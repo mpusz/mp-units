@@ -297,57 +297,87 @@ template<auto R1, typename Rep1, auto R2, typename Rep2, auto R3, typename Rep3>
 namespace isq {
 
 template<ReferenceOf<angular_measure> auto R, typename Rep>
-  requires treat_as_floating_point<Rep>
-[[nodiscard]] inline quantity<one, Rep> sin(const quantity<R, Rep>& q) noexcept
+[[nodiscard]] inline QuantityOf<dimensionless> auto sin(const quantity<R, Rep>& q) noexcept
   requires requires { sin(q.value()); } || requires { std::sin(q.value()); }
 {
   using std::sin;
-  return make_quantity<one>(static_cast<Rep>(sin(q.in(si::radian).value())));
+  if constexpr (!treat_as_floating_point<Rep>) {
+    // check what is the return type when called with the integral value
+    using rep = decltype(sin(value_cast<si::radian>(q).value()));
+    // use this type ahead of calling the function to prevent narrowing if a unit conversion is needed
+    return make_quantity<one>(sin(value_cast<rep>(q).value_in(si::radian)));
+  } else
+    return make_quantity<one>(sin(q.value_in(si::radian)));
 }
 
 template<ReferenceOf<angular_measure> auto R, typename Rep>
-  requires treat_as_floating_point<Rep>
-[[nodiscard]] inline quantity<one, Rep> cos(const quantity<R, Rep>& q) noexcept
+[[nodiscard]] inline QuantityOf<dimensionless> auto cos(const quantity<R, Rep>& q) noexcept
   requires requires { cos(q.value()); } || requires { std::cos(q.value()); }
 {
   using std::cos;
-  return make_quantity<one>(static_cast<Rep>(cos(q.in(si::radian).value())));
+  if constexpr (!treat_as_floating_point<Rep>) {
+    // check what is the return type when called with the integral value
+    using rep = decltype(cos(value_cast<si::radian>(q).value()));
+    // use this type ahead of calling the function to prevent narrowing if a unit conversion is needed
+    return make_quantity<one>(cos(value_cast<rep>(q).value_in(si::radian)));
+  } else
+    return make_quantity<one>(cos(q.value_in(si::radian)));
 }
 
 template<ReferenceOf<angular_measure> auto R, typename Rep>
-  requires treat_as_floating_point<Rep>
-[[nodiscard]] inline quantity<one, Rep> tan(const quantity<R, Rep>& q) noexcept
+[[nodiscard]] inline QuantityOf<dimensionless> auto tan(const quantity<R, Rep>& q) noexcept
   requires requires { tan(q.value()); } || requires { std::tan(q.value()); }
 {
   using std::tan;
-  return make_quantity<one>(static_cast<Rep>(tan(q.in(si::radian).value())));
+  if constexpr (!treat_as_floating_point<Rep>) {
+    // check what is the return type when called with the integral value
+    using rep = decltype(tan(value_cast<si::radian>(q).value()));
+    // use this type ahead of calling the function to prevent narrowing if a unit conversion is needed
+    return make_quantity<one>(tan(value_cast<rep>(q).value_in(si::radian)));
+  } else
+    return make_quantity<one>(tan(q.value_in(si::radian)));
 }
 
 template<ReferenceOf<dimensionless> auto R, typename Rep>
-  requires treat_as_floating_point<Rep>
-[[nodiscard]] inline quantity<si::radian, Rep> asin(const quantity<R, Rep>& q) noexcept
+[[nodiscard]] inline QuantityOf<isq::angular_measure> auto asin(const quantity<R, Rep>& q) noexcept
   requires requires { asin(q.value()); } || requires { std::asin(q.value()); }
 {
   using std::asin;
-  return make_quantity<si::radian>(static_cast<Rep>(asin(value_cast<one>(q).value())));
+  if constexpr (!treat_as_floating_point<Rep>) {
+    // check what is the return type when called with the integral value
+    using rep = decltype(asin(value_cast<one>(q).value()));
+    // use this type ahead of calling the function to prevent narrowing if a unit conversion is needed
+    return make_quantity<si::radian>(asin(value_cast<rep>(q).value_in(one)));
+  } else
+    return make_quantity<si::radian>(asin(q.value_in(one)));
 }
 
 template<ReferenceOf<dimensionless> auto R, typename Rep>
-  requires treat_as_floating_point<Rep>
-[[nodiscard]] inline quantity<si::radian, Rep> acos(const quantity<R, Rep>& q) noexcept
+[[nodiscard]] inline QuantityOf<isq::angular_measure> auto acos(const quantity<R, Rep>& q) noexcept
   requires requires { acos(q.value()); } || requires { std::acos(q.value()); }
 {
   using std::acos;
-  return make_quantity<si::radian>(static_cast<Rep>(acos(value_cast<one>(q).value())));
+  if constexpr (!treat_as_floating_point<Rep>) {
+    // check what is the return type when called with the integral value
+    using rep = decltype(acos(value_cast<one>(q).value()));
+    // use this type ahead of calling the function to prevent narrowing if a unit conversion is needed
+    return make_quantity<si::radian>(acos(value_cast<rep>(q).value_in(one)));
+  } else
+    return make_quantity<si::radian>(acos(q.value_in(one)));
 }
 
 template<ReferenceOf<dimensionless> auto R, typename Rep>
-  requires treat_as_floating_point<Rep>
-[[nodiscard]] inline quantity<si::radian, Rep> atan(const quantity<R, Rep>& q) noexcept
+[[nodiscard]] inline QuantityOf<isq::angular_measure> auto atan(const quantity<R, Rep>& q) noexcept
   requires requires { atan(q.value()); } || requires { std::atan(q.value()); }
 {
   using std::atan;
-  return make_quantity<si::radian>(static_cast<Rep>(atan(value_cast<one>(q).value())));
+  if constexpr (!treat_as_floating_point<Rep>) {
+    // check what is the return type when called with the integral value
+    using rep = decltype(atan(value_cast<one>(q).value()));
+    // use this type ahead of calling the function to prevent narrowing if a unit conversion is needed
+    return make_quantity<si::radian>(atan(value_cast<rep>(q).value_in(one)));
+  } else
+    return make_quantity<si::radian>(atan(q.value_in(one)));
 }
 
 }  // namespace isq
@@ -355,57 +385,87 @@ template<ReferenceOf<dimensionless> auto R, typename Rep>
 namespace angular {
 
 template<ReferenceOf<angle> auto R, typename Rep>
-  requires treat_as_floating_point<Rep>
-[[nodiscard]] inline quantity<one, Rep> sin(const quantity<R, Rep>& q) noexcept
+[[nodiscard]] inline QuantityOf<dimensionless> auto sin(const quantity<R, Rep>& q) noexcept
   requires requires { sin(q.value()); } || requires { std::sin(q.value()); }
 {
   using std::sin;
-  return make_quantity<one>(static_cast<Rep>(sin(q.in(radian).value())));
+  if constexpr (!treat_as_floating_point<Rep>) {
+    // check what is the return type when called with the integral value
+    using rep = decltype(sin(value_cast<radian>(q).value()));
+    // use this type ahead of calling the function to prevent narrowing if a unit conversion is needed
+    return make_quantity<one>(sin(value_cast<rep>(q).value_in(radian)));
+  } else
+    return make_quantity<one>(sin(q.value_in(radian)));
 }
 
 template<ReferenceOf<angle> auto R, typename Rep>
-  requires treat_as_floating_point<Rep>
-[[nodiscard]] inline quantity<one, Rep> cos(const quantity<R, Rep>& q) noexcept
+[[nodiscard]] inline QuantityOf<dimensionless> auto cos(const quantity<R, Rep>& q) noexcept
   requires requires { cos(q.value()); } || requires { std::cos(q.value()); }
 {
   using std::cos;
-  return make_quantity<one>(static_cast<Rep>(cos(q.in(radian).value())));
+  if constexpr (!treat_as_floating_point<Rep>) {
+    // check what is the return type when called with the integral value
+    using rep = decltype(cos(value_cast<radian>(q).value()));
+    // use this type ahead of calling the function to prevent narrowing if a unit conversion is needed
+    return make_quantity<one>(cos(value_cast<rep>(q).value_in(radian)));
+  } else
+    return make_quantity<one>(cos(q.value_in(radian)));
 }
 
 template<ReferenceOf<angle> auto R, typename Rep>
-  requires treat_as_floating_point<Rep>
-[[nodiscard]] inline quantity<one, Rep> tan(const quantity<R, Rep>& q) noexcept
+[[nodiscard]] inline QuantityOf<dimensionless> auto tan(const quantity<R, Rep>& q) noexcept
   requires requires { tan(q.value()); } || requires { std::tan(q.value()); }
 {
   using std::tan;
-  return make_quantity<one>(static_cast<Rep>(tan(q.in(radian).value())));
+  if constexpr (!treat_as_floating_point<Rep>) {
+    // check what is the return type when called with the integral value
+    using rep = decltype(tan(value_cast<radian>(q).value()));
+    // use this type ahead of calling the function to prevent narrowing if a unit conversion is needed
+    return make_quantity<one>(tan(value_cast<rep>(q).value_in(radian)));
+  } else
+    return make_quantity<one>(tan(q.value_in(radian)));
 }
 
 template<ReferenceOf<dimensionless> auto R, typename Rep>
-  requires treat_as_floating_point<Rep>
-[[nodiscard]] inline quantity<radian, Rep> asin(const quantity<R, Rep>& q) noexcept
+[[nodiscard]] inline QuantityOf<angle> auto asin(const quantity<R, Rep>& q) noexcept
   requires requires { asin(q.value()); } || requires { std::asin(q.value()); }
 {
   using std::asin;
-  return make_quantity<radian>(static_cast<Rep>(asin(value_cast<one>(q).value())));
+  if constexpr (!treat_as_floating_point<Rep>) {
+    // check what is the return type when called with the integral value
+    using rep = decltype(asin(value_cast<one>(q).value()));
+    // use this type ahead of calling the function to prevent narrowing if a unit conversion is needed
+    return make_quantity<radian>(asin(value_cast<rep>(q).value_in(one)));
+  } else
+    return make_quantity<radian>(asin(q.value_in(one)));
 }
 
 template<ReferenceOf<dimensionless> auto R, typename Rep>
-  requires treat_as_floating_point<Rep>
-[[nodiscard]] inline quantity<radian, Rep> acos(const quantity<R, Rep>& q) noexcept
+[[nodiscard]] inline QuantityOf<angle> auto acos(const quantity<R, Rep>& q) noexcept
   requires requires { acos(q.value()); } || requires { std::acos(q.value()); }
 {
   using std::acos;
-  return make_quantity<radian>(static_cast<Rep>(acos(value_cast<one>(q).value())));
+  if constexpr (!treat_as_floating_point<Rep>) {
+    // check what is the return type when called with the integral value
+    using rep = decltype(acos(value_cast<one>(q).value()));
+    // use this type ahead of calling the function to prevent narrowing if a unit conversion is needed
+    return make_quantity<radian>(acos(value_cast<rep>(q).value_in(one)));
+  } else
+    return make_quantity<radian>(acos(q.value_in(one)));
 }
 
 template<ReferenceOf<dimensionless> auto R, typename Rep>
-  requires treat_as_floating_point<Rep>
-[[nodiscard]] inline quantity<radian, Rep> atan(const quantity<R, Rep>& q) noexcept
+[[nodiscard]] inline QuantityOf<angle> auto atan(const quantity<R, Rep>& q) noexcept
   requires requires { atan(q.value()); } || requires { std::atan(q.value()); }
 {
   using std::atan;
-  return make_quantity<radian>(static_cast<Rep>(atan(value_cast<one>(q).value())));
+  if constexpr (!treat_as_floating_point<Rep>) {
+    // check what is the return type when called with the integral value
+    using rep = decltype(atan(value_cast<one>(q).value()));
+    // use this type ahead of calling the function to prevent narrowing if a unit conversion is needed
+    return make_quantity<radian>(atan(value_cast<rep>(q).value_in(one)));
+  } else
+    return make_quantity<radian>(atan(q.value_in(one)));
 }
 
 }  // namespace angular

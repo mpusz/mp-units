@@ -311,26 +311,26 @@ TEST_CASE("ISQ trigonometric functions", "[trig][isq]")
 {
   SECTION("sin")
   {
-    REQUIRE_THAT(isq::sin(0. * isq::angular_measure[deg]), AlmostEquals(0. * one));
-    REQUIRE_THAT(isq::sin(90. * isq::angular_measure[deg]), AlmostEquals(1. * one));
-    REQUIRE_THAT(isq::sin(180. * isq::angular_measure[deg]), AlmostEquals(0. * one));
-    REQUIRE_THAT(isq::sin(270. * isq::angular_measure[deg]), AlmostEquals(-1. * one));
+    REQUIRE_THAT(isq::sin(0 * deg), AlmostEquals(0. * one));
+    REQUIRE_THAT(isq::sin(90 * deg), AlmostEquals(1. * one));
+    REQUIRE_THAT(isq::sin(180 * deg), AlmostEquals(0. * one));
+    REQUIRE_THAT(isq::sin(270 * deg), AlmostEquals(-1. * one));
   }
 
   SECTION("cos")
   {
-    REQUIRE_THAT(isq::cos(0. * isq::angular_measure[deg]), AlmostEquals(1. * one));
-    REQUIRE_THAT(isq::cos(90. * isq::angular_measure[deg]), AlmostEquals(0. * one));
-    REQUIRE_THAT(isq::cos(180. * isq::angular_measure[deg]), AlmostEquals(-1. * one));
-    REQUIRE_THAT(isq::cos(270. * isq::angular_measure[deg]), AlmostEquals(0. * one));
+    REQUIRE_THAT(isq::cos(0 * deg), AlmostEquals(1. * one));
+    REQUIRE_THAT(isq::cos(90 * deg), AlmostEquals(0. * one));
+    REQUIRE_THAT(isq::cos(180 * deg), AlmostEquals(-1. * one));
+    REQUIRE_THAT(isq::cos(270 * deg), AlmostEquals(0. * one));
   }
 
   SECTION("tan")
   {
-    REQUIRE_THAT(isq::tan(0. * isq::angular_measure[deg]), AlmostEquals(0. * one));
-    REQUIRE_THAT(isq::tan(45. * isq::angular_measure[deg]), AlmostEquals(1. * one));
-    REQUIRE_THAT(isq::tan(135. * isq::angular_measure[deg]), AlmostEquals(-1. * one));
-    REQUIRE_THAT(isq::tan(180. * isq::angular_measure[deg]), AlmostEquals(0. * one));
+    REQUIRE_THAT(isq::tan(0 * deg), AlmostEquals(0. * one));
+    REQUIRE_THAT(isq::tan(45. * deg), AlmostEquals(1. * one));
+    REQUIRE_THAT(isq::tan(135. * deg), AlmostEquals(-1. * one));
+    REQUIRE_THAT(isq::tan(180. * deg), AlmostEquals(0. * one));
   }
 }
 
@@ -338,23 +338,23 @@ TEST_CASE("ISQ inverse trigonometric functions", "[inv trig][isq]")
 {
   SECTION("asin")
   {
-    REQUIRE_THAT(isq::asin(-1. * one), AlmostEquals(-90. * isq::angular_measure[deg]));
-    REQUIRE_THAT(isq::asin(0. * one), AlmostEquals(0. * isq::angular_measure[deg]));
-    REQUIRE_THAT(isq::asin(1. * one), AlmostEquals(90. * isq::angular_measure[deg]));
+    REQUIRE_THAT(isq::asin(-1 * one), AlmostEquals(-90. * deg));
+    REQUIRE_THAT(isq::asin(0 * one), AlmostEquals(0. * deg));
+    REQUIRE_THAT(isq::asin(1 * one), AlmostEquals(90. * deg));
   }
 
   SECTION("acos")
   {
-    REQUIRE_THAT(isq::asin(-1. * one), AlmostEquals(-90. * isq::angular_measure[deg]));
-    REQUIRE_THAT(isq::asin(0. * one), AlmostEquals(0. * isq::angular_measure[deg]));
-    REQUIRE_THAT(isq::asin(1. * one), AlmostEquals(90. * isq::angular_measure[deg]));
+    REQUIRE_THAT(isq::asin(-1 * one), AlmostEquals(-90. * deg));
+    REQUIRE_THAT(isq::asin(0 * one), AlmostEquals(0. * deg));
+    REQUIRE_THAT(isq::asin(1 * one), AlmostEquals(90. * deg));
   }
 
   SECTION("atan")
   {
-    REQUIRE_THAT(isq::atan(-1. * one), AlmostEquals(-45. * isq::angular_measure[deg]));
-    REQUIRE_THAT(isq::atan(0. * one), AlmostEquals(0. * isq::angular_measure[deg]));
-    REQUIRE_THAT(isq::atan(1. * one), AlmostEquals(45. * isq::angular_measure[deg]));
+    REQUIRE_THAT(isq::atan(-1 * one), AlmostEquals(-45. * deg));
+    REQUIRE_THAT(isq::atan(0 * one), AlmostEquals(0. * deg));
+    REQUIRE_THAT(isq::atan(1 * one), AlmostEquals(45. * deg));
   }
 }
 
@@ -367,41 +367,41 @@ TEST_CASE("Angle trigonometric functions", "[trig][angle]")
 
   SECTION("sin")
   {
-    REQUIRE_THAT(sin(0. * angle[deg]), AlmostEquals(0. * one));
-    REQUIRE_THAT(sin(90. * angle[deg]), AlmostEquals(1. * one));
-    REQUIRE_THAT(sin(180. * angle[deg]), AlmostEquals(0. * one));
-    REQUIRE_THAT(sin(270. * angle[deg]), AlmostEquals(-1. * one));
+    REQUIRE_THAT(sin(0 * angle[deg]), AlmostEquals(0. * one));
+    REQUIRE_THAT(sin(90 * angle[deg]), AlmostEquals(1. * one));
+    REQUIRE_THAT(sin(180 * angle[deg]), AlmostEquals(0. * one));
+    REQUIRE_THAT(sin(270 * angle[deg]), AlmostEquals(-1. * one));
 
-    REQUIRE_THAT(sin(0. * angle[grad]), AlmostEquals(0. * one));
-    REQUIRE_THAT(sin(100. * angle[grad]), AlmostEquals(1. * one));
-    REQUIRE_THAT(sin(200. * angle[grad]), AlmostEquals(0. * one));
-    REQUIRE_THAT(sin(300. * angle[grad]), AlmostEquals(-1. * one));
+    REQUIRE_THAT(sin(0 * angle[grad]), AlmostEquals(0. * one));
+    REQUIRE_THAT(sin(100 * angle[grad]), AlmostEquals(1. * one));
+    REQUIRE_THAT(sin(200 * angle[grad]), AlmostEquals(0. * one));
+    REQUIRE_THAT(sin(300 * angle[grad]), AlmostEquals(-1. * one));
   }
 
   SECTION("cos")
   {
-    REQUIRE_THAT(cos(0. * angle[deg]), AlmostEquals(1. * one));
-    REQUIRE_THAT(cos(90. * angle[deg]), AlmostEquals(0. * one));
-    REQUIRE_THAT(cos(180. * angle[deg]), AlmostEquals(-1. * one));
-    REQUIRE_THAT(cos(270. * angle[deg]), AlmostEquals(0. * one));
+    REQUIRE_THAT(cos(0 * angle[deg]), AlmostEquals(1. * one));
+    REQUIRE_THAT(cos(90 * angle[deg]), AlmostEquals(0. * one));
+    REQUIRE_THAT(cos(180 * angle[deg]), AlmostEquals(-1. * one));
+    REQUIRE_THAT(cos(270 * angle[deg]), AlmostEquals(0. * one));
 
-    REQUIRE_THAT(cos(0. * angle[grad]), AlmostEquals(1. * one));
-    REQUIRE_THAT(cos(100. * angle[grad]), AlmostEquals(0. * one));
-    REQUIRE_THAT(cos(200. * angle[grad]), AlmostEquals(-1. * one));
-    REQUIRE_THAT(cos(300. * angle[grad]), AlmostEquals(0. * one));
+    REQUIRE_THAT(cos(0 * angle[grad]), AlmostEquals(1. * one));
+    REQUIRE_THAT(cos(100 * angle[grad]), AlmostEquals(0. * one));
+    REQUIRE_THAT(cos(200 * angle[grad]), AlmostEquals(-1. * one));
+    REQUIRE_THAT(cos(300 * angle[grad]), AlmostEquals(0. * one));
   }
 
   SECTION("tan")
   {
-    REQUIRE_THAT(tan(0. * angle[deg]), AlmostEquals(0. * one));
-    REQUIRE_THAT(tan(45. * angle[deg]), AlmostEquals(1. * one));
-    REQUIRE_THAT(tan(135. * angle[deg]), AlmostEquals(-1. * one));
-    REQUIRE_THAT(tan(180. * angle[deg]), AlmostEquals(0. * one));
+    REQUIRE_THAT(tan(0 * angle[deg]), AlmostEquals(0. * one));
+    REQUIRE_THAT(tan(45 * angle[deg]), AlmostEquals(1. * one));
+    REQUIRE_THAT(tan(135 * angle[deg]), AlmostEquals(-1. * one));
+    REQUIRE_THAT(tan(180 * angle[deg]), AlmostEquals(0. * one));
 
-    REQUIRE_THAT(tan(0. * angle[grad]), AlmostEquals(0. * one));
-    REQUIRE_THAT(tan(50. * angle[grad]), AlmostEquals(1. * one));
-    REQUIRE_THAT(tan(150. * angle[grad]), AlmostEquals(-1. * one));
-    REQUIRE_THAT(tan(200. * angle[grad]), AlmostEquals(0. * one));
+    REQUIRE_THAT(tan(0 * angle[grad]), AlmostEquals(0. * one));
+    REQUIRE_THAT(tan(50 * angle[grad]), AlmostEquals(1. * one));
+    REQUIRE_THAT(tan(150 * angle[grad]), AlmostEquals(-1. * one));
+    REQUIRE_THAT(tan(200 * angle[grad]), AlmostEquals(0. * one));
   }
 }
 
@@ -413,22 +413,22 @@ TEST_CASE("Angle inverse trigonometric functions", "[inv trig][angle]")
 
   SECTION("asin")
   {
-    REQUIRE_THAT(asin(-1. * one), AlmostEquals(-90. * angle[deg]));
-    REQUIRE_THAT(asin(0. * one), AlmostEquals(0. * angle[deg]));
-    REQUIRE_THAT(asin(1. * one), AlmostEquals(90. * angle[deg]));
+    REQUIRE_THAT(asin(-1 * one), AlmostEquals(-90. * angle[deg]));
+    REQUIRE_THAT(asin(0 * one), AlmostEquals(0. * angle[deg]));
+    REQUIRE_THAT(asin(1 * one), AlmostEquals(90. * angle[deg]));
   }
 
   SECTION("acos")
   {
-    REQUIRE_THAT(asin(-1. * one), AlmostEquals(-90. * angle[deg]));
-    REQUIRE_THAT(asin(0. * one), AlmostEquals(0. * angle[deg]));
-    REQUIRE_THAT(asin(1. * one), AlmostEquals(90. * angle[deg]));
+    REQUIRE_THAT(asin(-1 * one), AlmostEquals(-90. * angle[deg]));
+    REQUIRE_THAT(asin(0 * one), AlmostEquals(0. * angle[deg]));
+    REQUIRE_THAT(asin(1 * one), AlmostEquals(90. * angle[deg]));
   }
 
   SECTION("atan")
   {
-    REQUIRE_THAT(atan(-1. * one), AlmostEquals(-45. * angle[deg]));
-    REQUIRE_THAT(atan(0. * one), AlmostEquals(0. * angle[deg]));
-    REQUIRE_THAT(atan(1. * one), AlmostEquals(45. * angle[deg]));
+    REQUIRE_THAT(atan(-1 * one), AlmostEquals(-45. * angle[deg]));
+    REQUIRE_THAT(atan(0 * one), AlmostEquals(0. * angle[deg]));
+    REQUIRE_THAT(atan(1 * one), AlmostEquals(45. * angle[deg]));
   }
 }
