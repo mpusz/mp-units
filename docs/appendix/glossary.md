@@ -106,7 +106,7 @@
         representation of the [dimension](#dimension) for such [quantities](#quantity).
         The term “quantity of dimension one” reflects the convention in which the symbolic
         representation of the [dimension](#dimension) for such [quantities](#quantity) is
-        the symbol `1`.
+        the symbol $1$.
       - The [measurement units](#unit) and [values](#quantity-value) of quantities of
         dimension one are numbers, but such quantities convey more information than a number.
       - Some quantities of dimension one are defined as the ratios of two
@@ -121,15 +121,16 @@
     - Measurement units are designated by conventionally assigned names and symbols.
     - Measurement units of [quantities](#quantity) of the same [quantity dimension](#dimension)
       may be designated by the same name and symbol even when the [quantities](#quantity) are
-      not of the same `kind`.
+      not of the same [kind](#kind).
         - For example, joule per kelvin and J/K are respectively the name and symbol of both a
           measurement unit of heat capacity and a measurement unit of entropy, which are generally
           not considered to be [quantities of the same kind](#kind). However, in some cases special
           measurement unit names are restricted to be used with [quantities](#quantity) of specific
           [kind](#kind) only. For example, the measurement unit ‘second to the power minus one’
-          (1/s) is called hertz (Hz) when used for frequencies and becquerel (Bq) when used for
-          activities of radionuclides. As another example, the joule (J) is used as a unit of
-          energy, but never as a unit of moment of force, i.e. the newton metre (N·m).
+          ($\mathsf{1/s}$) is called hertz ($\mathsf{Hz}$) when used for frequencies and
+          becquerel ($\mathsf{Bq}$) when used for activities of radionuclides. As another example,
+          the joule ($\mathsf{J}$) is used as a unit of energy, but never as a unit of moment of
+          force, i.e. the newton metre ($\mathsf{N·m}$).
     - Measurement units of [quantities of dimension one](#dimensionless-quantity) are
       numbers. In some cases, these measurement units are given special names, e.g. radian,
       steradian, and decibel, or are expressed by quotients such as millimole per mole equal
@@ -144,7 +145,7 @@
           the centimetre is the base unit of length.
     - A base unit may also serve for a [derived quantity](#derived-quantity) of the same
       [quantity dimension](#dimension).
-    - For number of entities, the number one, symbol `1`, can be regarded as a base unit in
+    - For number of entities, the number one, symbol $1$, can be regarded as a base unit in
       any system of units.
 
 [`derived unit`](#derived-unit){ #derived-unit }
@@ -176,7 +177,7 @@
         - For example, the centimetre per second is the coherent derived unit of speed in a CGS system
           of units but is not a coherent derived unit in the [SI](#si).
     - The coherent derived unit for every [derived quantity of dimension one](#dimensionless-quantity)
-      in a given [system of units](#system-of-units) is the number one, symbol `1`. The name and
+      in a given [system of units](#system-of-units) is the number one, symbol $1$. The name and
       symbol of the [measurement unit](#unit) one are generally not indicated.
 
 [`system of units`](#system-of-units){ #system-of-units }
@@ -199,7 +200,7 @@
 [`off-system measurement unit, off-system unit`](#off-system-unit){ #off-system-unit }
 
 :   - [Measurement unit](#unit) that does not belong to a given [system of units](#system-of-units).
-    - For example, the electronvolt (about $1.602\;18 × 10^{–19} \mathsf{J}$) is an
+    - For example, the electronvolt (about $1.602\;18 × 10^{–19}\;\mathsf{J}$) is an
       off-system measurement unit of energy with respect to the [SI](#si). Day, hour, minute
       are off-system measurement units of time with respect to the [SI](#si).
 
@@ -213,7 +214,7 @@
 [`quantity value, value of a quantity, value`](#quantity-value){ #quantity-value }
 
 :   - Number and reference together expressing magnitude of a [quantity](#quantity).
-        - For example, length of a given rod: `5.34 m` or `534 cm`.
+        - For example, length of a given rod: $5.34\;\mathsf{m}$ or $534\;\mathsf{cm}$.
     - The number can be complex.
     - A quantity value can be presented in more than one way.
     - In the case of vector or tensor quantities, each component has a quantity value.
@@ -224,10 +225,10 @@
 
 :   - Number in the expression of a [quantity value](#quantity-value), other than any number serving
       as the reference
-        - For example, in an amount-of-substance fraction equal to `3 mmol/mol`, the numerical
-          quantity value is `3` and the [unit](#unit) is `mmol/mol`. The [unit](#unit) `mmol/mol`
-          is numerically equal to `0.001`, but this number `0.001` is not part of the numerical
-          quantity value, which remains `3`.
+        - For example, in an amount-of-substance fraction equal to $3\;\mathsf{mmol/mol}$, the numerical
+          quantity value is $3$ and the [unit](#unit) is $\mathsf{mmol/mol}$. The [unit](#unit)
+          $\mathsf{mmol/mol}$ is numerically equal to $0.001$, but this number $0.001$ is not part
+          of the numerical quantity value, which remains $3$.
 
 [`quantity equation`](#quantity-equation){ #quantity-equation }
 
@@ -250,8 +251,9 @@
 :   - Mathematical relation between numerical [quantity values](#quantity-value), based on
       a given [quantity equation](#quantity-equation) and specified [measurement units](#unit).
     - For example, in the [quantity equation](#quantity-equation) for kinetic energy of a particle,
-      $T = (1/2) mv^2$, if $m = 2 kg$ and $v = 3 m/s$, then ${T} = (1/2) × 2 × 3^2$ is a numerical
-      value equation giving the numerical value $9$ of $T$ in joules.
+      $T = (1/2) mv^2$, if $m = 2\;\mathsf{kg}$ and $v = 3\;\mathsf{m/s}$,
+      then ${T} = (1/2)\:×\:2\:×\:3^2$ is a numerical value equation giving the numerical value
+      $9$ of $T$ in joules.
 
 ## Other definitions
 
@@ -342,8 +344,8 @@
 
 :   - An explicit, known at compile-time, point on an axis of values of a specific [quantity](#quantity)
       type serving as a reference for other [quantities](#quantity).
-    - For example, an ice point is a quantity point with a value of `273.15 K` that is used as
-      the zero point of a degree Celsius scale.
+    - For example, an ice point is a quantity point with a value of $273.15\;\mathsf{K}$ that
+      is used as the zero point of a degree Celsius scale.
 
 [`quantity point origin`, `point origin`](#point-origin){ #point-origin }
 
