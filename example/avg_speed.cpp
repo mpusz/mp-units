@@ -20,11 +20,16 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// !!! Before you commit any changes to this file please make sure to check if it !!!
+// !!! renders correctly in the documentation "Examples" section.                 !!!
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 #include <mp-units/ostream.h>
 #include <mp-units/systems/cgs/cgs.h>
 #include <mp-units/systems/international/international.h>
-#include <mp-units/systems/isq/space_and_time.h>
-#include <mp-units/systems/si/unit_symbols.h>
+#include <mp-units/systems/isq/isq.h>
+#include <mp-units/systems/si/si.h>
 #include <exception>
 #include <iostream>
 
