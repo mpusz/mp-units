@@ -213,11 +213,21 @@
 [`quantity value, value of a quantity, value`](#quantity-value){ #quantity-value }
 
 :   - Number and reference together expressing magnitude of a [quantity](#quantity).
+        - For example, length of a given rod: `5.34 m` or `534 cm`.
     - The number can be complex.
     - A quantity value can be presented in more than one way.
     - In the case of vector or tensor quantities, each component has a quantity value.
         - For example, force acting on a given particle, e.g. in Cartesian components
           $(F_x; F_y; F_z) = (−31.5; 43.2; 17.0)\;\mathsf{N}$.
+
+[`numerical quantity value, numerical value of a quantity, numerical value`](#numerical-value){ #numerical-value }
+
+:   - Number in the expression of a [quantity value](#quantity-value), other than any number serving
+      as the reference
+        - For example, in an amount-of-substance fraction equal to `3 mmol/mol`, the numerical
+          quantity value is `3` and the [unit](#unit) is `mmol/mol`. The [unit](#unit) `mmol/mol`
+          is numerically equal to `0.001`, but this number `0.001` is not part of the numerical
+          quantity value, which remains `3`.
 
 [`quantity equation`](#quantity-equation){ #quantity-equation }
 
