@@ -16,7 +16,7 @@ behind this is that:
 - Users always work with objects and never have to spell such a type name.
 - The types appear in the compilation errors and during debugging.
 
-!!! info
+!!! important
 
     To improve compiler errors' readability and make it easier to correlate them with
     a user's written code, a new idiom in the library is to use the same identifier for
@@ -133,7 +133,7 @@ type = class mp_units::quantity<mp_units::derived_unit<metre, mp_units::per<seco
 
 The same type identifier will be visible in the compilation error (in case it happens).
 
-!!! info
+!!! important
 
     Expressions templates are extensively used throughout the library to improve the readability
     of the resulting types.

@@ -124,7 +124,7 @@ generators. For example:
 tools.cmake.cmaketoolchain:generator="Ninja Multi-Config"
 ```
 
-!!! note
+!!! info
 
     _~/.conan2/global.conf_ file may also set `tools.cmake.cmake_layout:build_folder_vars` which
     [makes working with several compilers or build configurations easier](https://docs.conan.io/2/reference/tools/cmake/cmake_layout.html#multi-setting-option-cmake-layout).
@@ -222,7 +222,7 @@ cmake .. -G "Ninja Multi-Config" -DCMAKE_TOOLCHAIN_FILE=<path_to_generators_dir>
 cmake --build . --config Release
 ```
 
-!!! note
+!!! tip
 
     In case you can't use CMake 3.23 but you have access to CMake 3.20 or later, you can append
     `-c tools.cmake.cmaketoolchain.presets:max_schema_version=2` to the `conan install` command
@@ -234,7 +234,7 @@ cmake --build . --config Release
 There are many different ways of installing/reusing **mp-units** in your project. Below we mention
 only a few of many options possible.
 
-!!! info
+!!! important
 
     The easiest and most recommended way to obtain **mp-units** is with the Conan package manager.
     See [Conan + CMake (release)](#conan-cmake-release) for a detailed instruction.

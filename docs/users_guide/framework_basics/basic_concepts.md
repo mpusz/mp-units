@@ -137,7 +137,7 @@ including:
 `QuantitySpecOf` concept is satisfied when both arguments satisfy a [`QuantitySpec`](#QuantitySpec) concept
 and when `T` is implicitly convertible to `V`.
 
-??? note "More details"
+??? info "More details"
 
     Additionally:
 
@@ -253,7 +253,7 @@ units can be passed as an argument to a `prefixed_unit` class template.
 `UnitOf` concept is satisfied for all units `T` matching an [`AssociatedUnit`](#AssociatedUnit)
 concept with an associated quantity type implicitly convertible to `V`.
 
-??? note "More details"
+??? info "More details"
 
     Additionally, the kind of `V` and the kind of quantity type associated with `T` must be the same,
     or the quantity type associated with `T` may not be derived from the kind of `V`.

@@ -33,7 +33,7 @@ using namespace mp_units::si::unit_symbols;
 quantity q = 42 * m;
 ```
 
-!!! note
+!!! tip
 
     Unit symbols introduce a lot of short identifiers into the current namespace, and that is
     why they are opt-in. A user has to explicitly "import" them from a dedicated `unit_symbols`

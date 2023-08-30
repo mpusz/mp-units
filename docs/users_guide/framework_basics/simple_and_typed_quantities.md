@@ -27,7 +27,7 @@ The concept `Reference` is satisfied by either:
 - a unit with an associated quantity type (i.e. `si::metre`)
 - a reference type explicitly specifying the quantity type and its unit.
 
-!!! note
+!!! important
 
     All units in the SI system have an associated quantity type.
 

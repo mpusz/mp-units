@@ -29,7 +29,7 @@ previous chapter) with a unit that is used to express it:
 inline constexpr struct metre : named_unit<"m", kind_of<isq::length>> {} metre;
 ```
 
-!!! note
+!!! important
 
     The `kind_of<isq::length>` above states explicitly that this unit has
     an associated quantity kind. In other words, `si::metre` (and scaled units based

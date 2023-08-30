@@ -37,7 +37,7 @@ The text output will always print the [value of a quantity](../../appendix/gloss
 typically followed by a space and then the symbol of a [unit](../../appendix/glossary.md#unit)
 associated with this quantity.
 
-!!! note
+!!! important
 
     Remember that when we deal with a quantity of an "unknown" `auto` type, it is a good practice
     to always [convert the unit to the expected one](value_conversions.md#value-conversions)

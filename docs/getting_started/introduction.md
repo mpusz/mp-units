@@ -6,7 +6,7 @@ manipulation. The initial versions of the library were inspired by the
 but with each release, the interfaces diverged from the original to provide a better user
 experience.
 
-!!! note
+!!! info
 
     A brief introduction to the library's interfaces and the rationale for changes in the version 2.0
     of **mp-units** were provided in detail by [Mateusz Pusz](https://github.com/mpusz) in the
@@ -36,7 +36,7 @@ To achieve this goal, several techniques are applied:
 - [usage of expression templates to improve the readability of generated types](../users_guide/framework_basics/interface_introduction.md#expression-templates),
 - limiting the number of template arguments to the bare minimum.
 
-!!! note
+!!! important
 
     In many generic C++ libraries compile-time errors do not happen often. It is hard to
     break `std::string` or `std::vector` in a way it won't compile with a huge error

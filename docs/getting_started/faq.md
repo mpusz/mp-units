@@ -156,7 +156,7 @@ magnitudes. In that case, you may end up with a really small or a huge floating-
 in losing lots of precision. Returning a dimensionless quantity from such cases allows us to benefit from
 all the properties of scaled units and is consistent with the rest of the library.
 
-!!! info
+!!! note
 
     More information on the current design can be found in
     [the Dimensionless Quantities chapter](../users_guide/framework_basics/dimensionless_quantities.md).
@@ -171,7 +171,7 @@ standards specify Unicode symbols as the official unit names for some quantities
 As **mp-units** library will be proposed for standardization as a part of the C++ Standard Library
 we have to obey the rules and be consistent with ISO specifications.
 
-!!! info
+!!! note
 
     We do understand engineering reality and the constraints of some environments. This is why the library
     has the option of ASCII-only Quantity Symbols.
@@ -210,7 +210,7 @@ This is why our projects have two entry points:
 - _./src/CMakeLists.txt_ contains only a pure library definition and should be used by the customers
   that prefer to use CMake's `add_subdirectory()` to handle the dependencies.
 
-!!! info
+!!! note
 
     For more details on this please refer to the [CMake + Conan: 3 Years Later - Mateusz Pusz](https://youtu.be/mrSwJBJ-0z8?t=1931)
     lecture that Mateusz Pusz provided at the C++Now 2021 conference.

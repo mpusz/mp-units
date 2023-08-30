@@ -1,6 +1,6 @@
 # Tags Index
 
-!!! note
+!!! tip
 
     All usage examples in this chapter are categorized with appropriate tags to simplify navigation and
     search of relevant code. You can either read all the examples one-by-one in the order provided by

@@ -7,7 +7,7 @@ performance, and developer experience.
 The library source code is hosted on [GitHub](https://github.com/mpusz/mp-units) with a permissive
 [MIT license](https://github.com/mpusz/units/blob/master/LICENSE.md).
 
-!!! info "Help needed!"
+!!! important "Help needed!"
 
     The **mp-units** library might be the subject of ISO standardization for C++29. More on this can
     be found in the ISO C++ proposal [P1935](https://wg21.link/p1935). We are actively looking for

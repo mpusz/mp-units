@@ -52,7 +52,7 @@ All of those quantities have the same dimension, namely $\mathsf{T}^{-1}$, but p
 is not wise to allow adding, subtracting, or comparing them, as they describe vastly different
 physical properties.
 
-!!! info
+!!! important
 
     More than one quantity may be defined for the same dimension:
 
@@ -354,7 +354,7 @@ To annotate a quantity to represent its kind (and not just a hierarchy tree's ro
 we introduced a `kind_of<>` specifier. For example, to express any quantity of length, we need
 to type `kind_of<isq::length>`.
 
-!!! note
+!!! important
 
     `isq::length` and `kind_of<isq::length>` are two different things.
 
@@ -380,7 +380,7 @@ static_assert(!same_type<kind_of<isq::length> / isq::time, kind_of<isq::length /
 static_assert(same_type<kind_of<isq::length> / isq::time, isq::length / isq::time>);
 ```
 
-!!! note
+!!! info
 
     Only a root quantity from the hierarchy tree or the one marked with `is_kind` specifier
     in the `quantity_spec` definition can be put as a template parameter to the `kind_of`

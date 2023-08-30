@@ -138,7 +138,7 @@ quantities deriving from them.
 As we observed above, the most common unit for dimensionless quantities is `one`. It has the
 ratio of `1` and does not output any textual symbol.
 
-!!! note
+!!! important
 
     A unit `one` is special in the entire type system of units as it is considered to be
     [an identity operand in the unit expression templates](interface_introduction.md#identities).

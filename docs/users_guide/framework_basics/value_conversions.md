@@ -12,7 +12,7 @@ The second line above converts the current quantity to the one expressed in metr
 contents. The third line converts the quantity expressed in kilometres into the one measured
 in metres.
 
-!!! note
+!!! important
 
     It is always assumed that one can convert a quantity into another one with a unit of a higher
     resolution. There is no protection against overflow of the representation type. In case the target
