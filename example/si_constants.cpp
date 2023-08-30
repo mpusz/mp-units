@@ -53,8 +53,6 @@ int main()
                                         1. * si2019::boltzmann_constant, (1. * si2019::boltzmann_constant).in(J / K));
   std::cout << MP_UNITS_STD_FMT::format("- Avogadro constant:                    {} = {:%.8eQ %q}\n",
                                         1. * si2019::avogadro_constant, (1. * si2019::avogadro_constant).in(1 / mol));
-  // TODO uncomment the below when ISQ is done
-  // std::cout << MP_UNITS_STD_FMT::format("- luminous efficacy:                    {} = {}\n",
-  // si2019::luminous_efficacy(1.),
-  //                              si2019::luminous_efficacy(1.)[lm / W]);
+  std::cout << MP_UNITS_STD_FMT::format("- luminous efficacy:                    {} = {}\n",
+                                        1. * si2019::luminous_efficacy, (1. * si2019::luminous_efficacy).in(lm / W));
 }
