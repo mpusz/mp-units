@@ -126,7 +126,7 @@ public:
 
   template<detail::QuantityConvertibleTo<quantity> Q>
   constexpr explicit(!std::convertible_to<typename Q::rep, Rep>) quantity(const Q& q) :
-      value_(detail::sudo_cast<quantity>(q).value())
+      value_(detail::sudo_cast<quantity>(q).numerical_value())
   {
   }
 
@@ -149,17 +149,17 @@ public:
     return std::forward<Self>(self).value_;
   }
 #else
-  [[nodiscard]] constexpr rep& value() & noexcept { return value_; }
-  [[nodiscard]] constexpr const rep& value() const& noexcept { return value_; }
-  [[nodiscard]] constexpr rep&& value() && noexcept { return std::move(value_); }
-  [[nodiscard]] constexpr const rep&& value() const&& noexcept { return std::move(value_); }
+  [[nodiscard]] constexpr rep& numerical_value() & noexcept { return value_; }
+  [[nodiscard]] constexpr const rep& numerical_value() const& noexcept { return value_; }
+  [[nodiscard]] constexpr rep&& numerical_value() && noexcept { return std::move(value_); }
+  [[nodiscard]] constexpr const rep&& numerical_value() const&& noexcept { return std::move(value_); }
 #endif
 
   template<Unit U>
     requires requires(quantity q) { q.in(U{}); }
-  [[nodiscard]] constexpr rep value_in(U) const noexcept
+  [[nodiscard]] constexpr rep numerical_value_in(U) const noexcept
   {
-    return (*this).in(U{}).value();
+    return (*this).in(U{}).numerical_value();
   }
 
   template<Unit U>
@@ -177,7 +177,7 @@ public:
       } -> std::common_with<rep>;
     }
   {
-    return make_quantity<reference>(+value());
+    return make_quantity<reference>(+numerical_value());
   }
 
   [[nodiscard]] constexpr Quantity auto operator-() const
@@ -187,7 +187,7 @@ public:
       } -> std::common_with<rep>;
     }
   {
-    return make_quantity<reference>(-value());
+    return make_quantity<reference>(-numerical_value());
   }
 
   constexpr quantity& operator++()
@@ -239,7 +239,7 @@ public:
       } -> std::same_as<rep&>;
     }
   {
-    value_ += q.value();
+    value_ += q.numerical_value();
     return *this;
   }
 
@@ -250,7 +250,7 @@ public:
       } -> std::same_as<rep&>;
     }
   {
-    value_ -= q.value();
+    value_ -= q.numerical_value();
     return *this;
   }
 
@@ -274,7 +274,7 @@ public:
     }
   constexpr quantity& operator*=(const Q& rhs)
   {
-    value_ *= rhs.value();
+    value_ *= rhs.numerical_value();
     return *this;
   }
 
@@ -299,8 +299,8 @@ public:
     }
   constexpr quantity& operator/=(const Q& rhs)
   {
-    gsl_ExpectsAudit(rhs.value() != quantity_values<typename Q::rep>::zero());
-    value_ /= rhs.value();
+    gsl_ExpectsAudit(rhs.numerical_value() != quantity_values<typename Q::rep>::zero());
+    value_ /= rhs.numerical_value();
     return *this;
   }
 
@@ -311,8 +311,8 @@ public:
       } -> std::same_as<rep&>;
     }
   {
-    gsl_ExpectsAudit(q.value() != quantity_values<rep>::zero());
-    value_ %= q.value();
+    gsl_ExpectsAudit(q.numerical_value() != quantity_values<rep>::zero());
+    value_ %= q.numerical_value();
     return *this;
   }
 
@@ -341,7 +341,7 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
 [[nodiscard]] constexpr Quantity auto operator+(const quantity<R1, Rep1>& lhs, const quantity<R2, Rep2>& rhs)
 {
   using ret = detail::common_quantity_for<std::plus<>, quantity<R1, Rep1>, quantity<R2, Rep2>>;
-  return make_quantity<ret::reference>(ret(lhs).value() + ret(rhs).value());
+  return make_quantity<ret::reference>(ret(lhs).numerical_value() + ret(rhs).numerical_value());
 }
 
 template<auto R1, typename Rep1, auto R2, typename Rep2>
@@ -349,7 +349,7 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
 [[nodiscard]] constexpr Quantity auto operator-(const quantity<R1, Rep1>& lhs, const quantity<R2, Rep2>& rhs)
 {
   using ret = detail::common_quantity_for<std::minus<>, quantity<R1, Rep1>, quantity<R2, Rep2>>;
-  return make_quantity<ret::reference>(ret(lhs).value() - ret(rhs).value());
+  return make_quantity<ret::reference>(ret(lhs).numerical_value() - ret(rhs).numerical_value());
 }
 
 template<auto R1, typename Rep1, auto R2, typename Rep2>
@@ -357,7 +357,7 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
                                   Rep2>
 [[nodiscard]] constexpr Quantity auto operator*(const quantity<R1, Rep1>& lhs, const quantity<R2, Rep2>& rhs)
 {
-  return make_quantity<R1 * R2>(lhs.value() * rhs.value());
+  return make_quantity<R1 * R2>(lhs.numerical_value() * rhs.numerical_value());
 }
 
 template<auto R, typename Rep, typename Value>
@@ -365,7 +365,7 @@ template<auto R, typename Rep, typename Value>
           detail::InvokeResultOf<get_quantity_spec(R).character, std::multiplies<>, Rep, const Value&>
 [[nodiscard]] constexpr Quantity auto operator*(const quantity<R, Rep>& q, const Value& v)
 {
-  return make_quantity<R>(q.value() * v);
+  return make_quantity<R>(q.numerical_value() * v);
 }
 
 template<typename Value, auto R, typename Rep>
@@ -373,15 +373,15 @@ template<typename Value, auto R, typename Rep>
           detail::InvokeResultOf<get_quantity_spec(R).character, std::multiplies<>, const Value&, Rep>
 [[nodiscard]] constexpr Quantity auto operator*(const Value& v, const quantity<R, Rep>& q)
 {
-  return make_quantity<R>(v * q.value());
+  return make_quantity<R>(v * q.numerical_value());
 }
 
 template<auto R1, typename Rep1, auto R2, typename Rep2>
   requires detail::InvokeResultOf<(get_quantity_spec(R1) / get_quantity_spec(R2)).character, std::divides<>, Rep1, Rep2>
 [[nodiscard]] constexpr Quantity auto operator/(const quantity<R1, Rep1>& lhs, const quantity<R2, Rep2>& rhs)
 {
-  gsl_ExpectsAudit(rhs.value() != quantity_values<Rep2>::zero());
-  return make_quantity<R1 / R2>(lhs.value() / rhs.value());
+  gsl_ExpectsAudit(rhs.numerical_value() != quantity_values<Rep2>::zero());
+  return make_quantity<R1 / R2>(lhs.numerical_value() / rhs.numerical_value());
 }
 
 template<auto R, typename Rep, typename Value>
@@ -390,7 +390,7 @@ template<auto R, typename Rep, typename Value>
 [[nodiscard]] constexpr Quantity auto operator/(const quantity<R, Rep>& q, const Value& v)
 {
   gsl_ExpectsAudit(v != quantity_values<Value>::zero());
-  return make_quantity<R>(q.value() / v);
+  return make_quantity<R>(q.numerical_value() / v);
 }
 
 template<typename Value, auto R, typename Rep>
@@ -398,7 +398,7 @@ template<typename Value, auto R, typename Rep>
           detail::InvokeResultOf<get_quantity_spec(R).character, std::divides<>, const Value&, Rep>
 [[nodiscard]] constexpr Quantity auto operator/(const Value& v, const quantity<R, Rep>& q)
 {
-  return make_quantity<::mp_units::one / R>(v / q.value());
+  return make_quantity<::mp_units::one / R>(v / q.numerical_value());
 }
 
 template<auto R1, typename Rep1, auto R2, typename Rep2>
@@ -406,9 +406,9 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
           detail::InvocableQuantities<std::modulus<>, quantity<R1, Rep1>, quantity<R2, Rep2>>
 [[nodiscard]] constexpr Quantity auto operator%(const quantity<R1, Rep1>& lhs, const quantity<R2, Rep2>& rhs)
 {
-  gsl_ExpectsAudit(rhs.value() != quantity_values<Rep1>::zero());
+  gsl_ExpectsAudit(rhs.numerical_value() != quantity_values<Rep1>::zero());
   using ret = detail::common_quantity_for<std::modulus<>, quantity<R1, Rep1>, quantity<R2, Rep2>>;
-  return make_quantity<ret::reference>(ret(lhs).value() % ret(rhs).value());
+  return make_quantity<ret::reference>(ret(lhs).numerical_value() % ret(rhs).numerical_value());
 }
 
 template<auto R1, typename Rep1, auto R2, typename Rep2>
@@ -417,7 +417,7 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
 [[nodiscard]] constexpr bool operator==(const quantity<R1, Rep1>& lhs, const quantity<R2, Rep2>& rhs)
 {
   using ct = std::common_type_t<quantity<R1, Rep1>, quantity<R2, Rep2>>;
-  return ct(lhs).value() == ct(rhs).value();
+  return ct(lhs).numerical_value() == ct(rhs).numerical_value();
 }
 
 template<auto R1, typename Rep1, auto R2, typename Rep2>
@@ -426,7 +426,7 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
 [[nodiscard]] constexpr auto operator<=>(const quantity<R1, Rep1>& lhs, const quantity<R2, Rep2>& rhs)
 {
   using ct = std::common_type_t<quantity<R1, Rep1>, quantity<R2, Rep2>>;
-  return ct(lhs).value() <=> ct(rhs).value();
+  return ct(lhs).numerical_value() <=> ct(rhs).numerical_value();
 }
 
 // make_quantity

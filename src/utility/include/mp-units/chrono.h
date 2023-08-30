@@ -92,7 +92,7 @@ template<QuantityOf<isq::time> Q>
 {
   constexpr auto canonical = detail::get_canonical_unit(Q::unit);
   constexpr ratio r = as_ratio(canonical.mag);
-  return std::chrono::duration<typename Q::rep, std::ratio<r.num, r.den>>{q.value()};
+  return std::chrono::duration<typename Q::rep, std::ratio<r.num, r.den>>{q.numerical_value()};
 }
 
 template<QuantityPointOf<isq::time> QP>

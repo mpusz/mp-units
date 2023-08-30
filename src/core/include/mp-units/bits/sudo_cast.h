@@ -63,10 +63,10 @@ template<Quantity To, typename From>
   if constexpr (q_unit == To::unit) {
     // no scaling of the number needed
     return make_quantity<To::reference>(static_cast<MP_UNITS_TYPENAME To::rep>(
-      std::forward<From>(q).value()));  // this is the only (and recommended) way to do
-                                        // a truncating conversion on a number, so we are
-                                        // using static_cast to suppress all the compiler
-                                        // warnings on conversions
+      std::forward<From>(q).numerical_value()));  // this is the only (and recommended) way to do
+                                                  // a truncating conversion on a number, so we are
+                                                  // using static_cast to suppress all the compiler
+                                                  // warnings on conversions
   } else {
     // scale the number
     constexpr Magnitude auto c_mag = get_canonical_unit(q_unit).mag / get_canonical_unit(To::unit).mag;
@@ -78,8 +78,8 @@ template<Quantity To, typename From>
     using multiplier_type =
       conditional<treat_as_floating_point<c_rep_type>, std::common_type_t<c_mag_type, long double>, c_mag_type>;
     constexpr auto val = [](Magnitude auto m) { return get_value<multiplier_type>(m); };
-    return static_cast<MP_UNITS_TYPENAME To::rep>(static_cast<c_rep_type>(std::forward<From>(q).value()) * val(num) /
-                                                  val(den) * val(irr)) *
+    return static_cast<MP_UNITS_TYPENAME To::rep>(static_cast<c_rep_type>(std::forward<From>(q).numerical_value()) *
+                                                  val(num) / val(den) * val(irr)) *
            To::reference;
   }
 }

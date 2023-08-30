@@ -54,7 +54,7 @@ template<std::intmax_t Num, std::intmax_t Den = 1, auto R, typename Rep>
   requires detail::non_zero<Den> &&
            requires { quantity_values<Rep>::one(); }
            [[nodiscard]] constexpr quantity<pow<Num, Den>(R), Rep> pow(const quantity<R, Rep>& q) noexcept
-             requires requires { pow(q.value(), 1.0); } || requires { std::pow(q.value(), 1.0); }
+             requires requires { pow(q.numerical_value(), 1.0); } || requires { std::pow(q.numerical_value(), 1.0); }
 {
   if constexpr (Num == 0) {
     return quantity<pow<Num, Den>(R), Rep>::one();
@@ -63,7 +63,7 @@ template<std::intmax_t Num, std::intmax_t Den = 1, auto R, typename Rep>
   } else {
     using std::pow;
     return make_quantity<pow<Num, Den>(R)>(
-      static_cast<Rep>(pow(q.value(), static_cast<double>(Num) / static_cast<double>(Den))));
+      static_cast<Rep>(pow(q.numerical_value(), static_cast<double>(Num) / static_cast<double>(Den))));
   }
 }
 
@@ -77,10 +77,10 @@ template<std::intmax_t Num, std::intmax_t Den = 1, auto R, typename Rep>
  */
 template<auto R, typename Rep>
 [[nodiscard]] constexpr quantity<sqrt(R), Rep> sqrt(const quantity<R, Rep>& q) noexcept
-  requires requires { sqrt(q.value()); } || requires { std::sqrt(q.value()); }
+  requires requires { sqrt(q.numerical_value()); } || requires { std::sqrt(q.numerical_value()); }
 {
   using std::sqrt;
-  return make_quantity<sqrt(R)>(static_cast<Rep>(sqrt(q.value())));
+  return make_quantity<sqrt(R)>(static_cast<Rep>(sqrt(q.numerical_value())));
 }
 
 /**
@@ -93,10 +93,10 @@ template<auto R, typename Rep>
  */
 template<auto R, typename Rep>
 [[nodiscard]] constexpr quantity<cbrt(R), Rep> cbrt(const quantity<R, Rep>& q) noexcept
-  requires requires { cbrt(q.value()); } || requires { std::cbrt(q.value()); }
+  requires requires { cbrt(q.numerical_value()); } || requires { std::cbrt(q.numerical_value()); }
 {
   using std::cbrt;
-  return make_quantity<cbrt(R)>(static_cast<Rep>(cbrt(q.value())));
+  return make_quantity<cbrt(R)>(static_cast<Rep>(cbrt(q.numerical_value())));
 }
 
 /**
@@ -109,11 +109,11 @@ template<auto R, typename Rep>
  */
 template<ReferenceOf<dimensionless> auto R, typename Rep>
 [[nodiscard]] constexpr quantity<R, Rep> exp(const quantity<R, Rep>& q)
-  requires requires { exp(q.value()); } || requires { std::exp(q.value()); }
+  requires requires { exp(q.numerical_value()); } || requires { std::exp(q.numerical_value()); }
 {
   using std::exp;
   return value_cast<get_unit(R)>(
-    make_quantity<detail::clone_reference_with<one>(R)>(static_cast<Rep>(exp(value_cast<one>(q).value()))));
+    make_quantity<detail::clone_reference_with<one>(R)>(static_cast<Rep>(exp(value_cast<one>(q).numerical_value()))));
 }
 
 /**
@@ -124,10 +124,10 @@ template<ReferenceOf<dimensionless> auto R, typename Rep>
  */
 template<auto R, typename Rep>
 [[nodiscard]] constexpr quantity<R, Rep> abs(const quantity<R, Rep>& q) noexcept
-  requires requires { abs(q.value()); } || requires { std::abs(q.value()); }
+  requires requires { abs(q.numerical_value()); } || requires { std::abs(q.numerical_value()); }
 {
   using std::abs;
-  return make_quantity<R>(static_cast<Rep>(abs(q.value())));
+  return make_quantity<R>(static_cast<Rep>(abs(q.numerical_value())));
 }
 
 /**
@@ -153,7 +153,8 @@ template<Representation Rep, Reference R>
  */
 template<Unit auto To, auto R, typename Rep>
 [[nodiscard]] constexpr quantity<detail::clone_reference_with<To>(R), Rep> floor(const quantity<R, Rep>& q) noexcept
-  requires((!treat_as_floating_point<Rep>) || requires { floor(q.value()); } || requires { std::floor(q.value()); }) &&
+  requires((!treat_as_floating_point<Rep>) || requires { floor(q.numerical_value()); } ||
+           requires { std::floor(q.numerical_value()); }) &&
           (To == get_unit(R) || requires {
             ::mp_units::value_cast<To>(q);
             quantity_values<Rep>::one();
@@ -168,10 +169,10 @@ template<Unit auto To, auto R, typename Rep>
   if constexpr (treat_as_floating_point<Rep>) {
     using std::floor;
     if constexpr (To == get_unit(R)) {
-      return make_quantity<detail::clone_reference_with<To>(R)>(static_cast<Rep>(floor(q.value())));
+      return make_quantity<detail::clone_reference_with<To>(R)>(static_cast<Rep>(floor(q.numerical_value())));
     } else {
-      return handle_signed_results(
-        make_quantity<detail::clone_reference_with<To>(R)>(static_cast<Rep>(floor(value_cast<To>(q).value()))));
+      return handle_signed_results(make_quantity<detail::clone_reference_with<To>(R)>(
+        static_cast<Rep>(floor(value_cast<To>(q).numerical_value()))));
     }
   } else {
     if constexpr (To == get_unit(R)) {
@@ -190,7 +191,8 @@ template<Unit auto To, auto R, typename Rep>
  */
 template<Unit auto To, auto R, typename Rep>
 [[nodiscard]] constexpr quantity<detail::clone_reference_with<To>(R), Rep> ceil(const quantity<R, Rep>& q) noexcept
-  requires((!treat_as_floating_point<Rep>) || requires { ceil(q.value()); } || requires { std::ceil(q.value()); }) &&
+  requires((!treat_as_floating_point<Rep>) || requires { ceil(q.numerical_value()); } ||
+           requires { std::ceil(q.numerical_value()); }) &&
           (To == get_unit(R) || requires {
             ::mp_units::value_cast<To>(q);
             quantity_values<Rep>::one();
@@ -205,10 +207,10 @@ template<Unit auto To, auto R, typename Rep>
   if constexpr (treat_as_floating_point<Rep>) {
     using std::ceil;
     if constexpr (To == get_unit(R)) {
-      return make_quantity<detail::clone_reference_with<To>(R)>(static_cast<Rep>(ceil(q.value())));
+      return make_quantity<detail::clone_reference_with<To>(R)>(static_cast<Rep>(ceil(q.numerical_value())));
     } else {
-      return handle_signed_results(
-        make_quantity<detail::clone_reference_with<To>(R)>(static_cast<Rep>(ceil(value_cast<To>(q).value()))));
+      return handle_signed_results(make_quantity<detail::clone_reference_with<To>(R)>(
+        static_cast<Rep>(ceil(value_cast<To>(q).numerical_value()))));
     }
   } else {
     if constexpr (To == get_unit(R)) {
@@ -229,7 +231,8 @@ template<Unit auto To, auto R, typename Rep>
  */
 template<Unit auto To, auto R, typename Rep>
 [[nodiscard]] constexpr quantity<detail::clone_reference_with<To>(R), Rep> round(const quantity<R, Rep>& q) noexcept
-  requires((!treat_as_floating_point<Rep>) || requires { round(q.value()); } || requires { std::round(q.value()); }) &&
+  requires((!treat_as_floating_point<Rep>) || requires { round(q.numerical_value()); } ||
+           requires { std::round(q.numerical_value()); }) &&
           (To == get_unit(R) || requires {
             ::mp_units::floor<To>(q);
             quantity_values<Rep>::one();
@@ -238,7 +241,7 @@ template<Unit auto To, auto R, typename Rep>
   if constexpr (To == get_unit(R)) {
     if constexpr (treat_as_floating_point<Rep>) {
       using std::round;
-      return make_quantity<detail::clone_reference_with<To>(R)>(static_cast<Rep>(round(q.value())));
+      return make_quantity<detail::clone_reference_with<To>(R)>(static_cast<Rep>(round(q.numerical_value())));
     } else {
       return value_cast<To>(q);
     }
@@ -248,7 +251,7 @@ template<Unit auto To, auto R, typename Rep>
     const auto diff0 = q - res_low;
     const auto diff1 = res_high - q;
     if (diff0 == diff1) {
-      if (static_cast<int>(res_low.value()) & 1) {
+      if (static_cast<int>(res_low.numerical_value()) & 1) {
         return res_high;
       }
       return res_low;
@@ -269,12 +272,13 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
   const quantity<R1, Rep1>& x, const quantity<R2, Rep2>& y) noexcept
   requires requires { common_reference(R1, R2); } &&
            (
-             requires { hypot(x.value(), y.value()); } || requires { std::hypot(x.value(), y.value()); })
+             requires { hypot(x.numerical_value(), y.numerical_value()); } ||
+             requires { std::hypot(x.numerical_value(), y.numerical_value()); })
 {
   constexpr auto ref = common_reference(R1, R2);
   constexpr auto unit = get_unit(ref);
   using std::hypot;
-  return make_quantity<ref>(hypot(x.value_in(unit), y.value_in(unit)));
+  return make_quantity<ref>(hypot(x.numerical_value_in(unit), y.numerical_value_in(unit)));
 }
 
 /**
@@ -284,100 +288,101 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
 template<auto R1, typename Rep1, auto R2, typename Rep2, auto R3, typename Rep3>
 [[nodiscard]] constexpr QuantityOf<get_quantity_spec(common_reference(R1, R2, R3))> auto hypot(
   const quantity<R1, Rep1>& x, const quantity<R2, Rep2>& y, const quantity<R3, Rep3>& z) noexcept
-  requires requires { common_reference(R1, R2, R3); } && (
-                                                           requires { hypot(x.value(), y.value(), z.value()); } ||
-                                                           requires { std::hypot(x.value(), y.value(), z.value()); })
+  requires requires { common_reference(R1, R2, R3); } &&
+           (
+             requires { hypot(x.numerical_value(), y.numerical_value(), z.numerical_value()); } ||
+             requires { std::hypot(x.numerical_value(), y.numerical_value(), z.numerical_value()); })
 {
   constexpr auto ref = common_reference(R1, R2);
   constexpr auto unit = get_unit(ref);
   using std::hypot;
-  return make_quantity<ref>(hypot(x.value_in(unit), y.value_in(unit), z.value_in(unit)));
+  return make_quantity<ref>(hypot(x.numerical_value_in(unit), y.numerical_value_in(unit), z.numerical_value_in(unit)));
 }
 
 namespace isq {
 
 template<ReferenceOf<angular_measure> auto R, typename Rep>
 [[nodiscard]] inline QuantityOf<dimensionless> auto sin(const quantity<R, Rep>& q) noexcept
-  requires requires { sin(q.value()); } || requires { std::sin(q.value()); }
+  requires requires { sin(q.numerical_value()); } || requires { std::sin(q.numerical_value()); }
 {
   using std::sin;
   if constexpr (!treat_as_floating_point<Rep>) {
     // check what is the return type when called with the integral value
-    using rep = decltype(sin(value_cast<si::radian>(q).value()));
+    using rep = decltype(sin(value_cast<si::radian>(q).numerical_value()));
     // use this type ahead of calling the function to prevent narrowing if a unit conversion is needed
-    return make_quantity<one>(sin(value_cast<rep>(q).value_in(si::radian)));
+    return make_quantity<one>(sin(value_cast<rep>(q).numerical_value_in(si::radian)));
   } else
-    return make_quantity<one>(sin(q.value_in(si::radian)));
+    return make_quantity<one>(sin(q.numerical_value_in(si::radian)));
 }
 
 template<ReferenceOf<angular_measure> auto R, typename Rep>
 [[nodiscard]] inline QuantityOf<dimensionless> auto cos(const quantity<R, Rep>& q) noexcept
-  requires requires { cos(q.value()); } || requires { std::cos(q.value()); }
+  requires requires { cos(q.numerical_value()); } || requires { std::cos(q.numerical_value()); }
 {
   using std::cos;
   if constexpr (!treat_as_floating_point<Rep>) {
     // check what is the return type when called with the integral value
-    using rep = decltype(cos(value_cast<si::radian>(q).value()));
+    using rep = decltype(cos(value_cast<si::radian>(q).numerical_value()));
     // use this type ahead of calling the function to prevent narrowing if a unit conversion is needed
-    return make_quantity<one>(cos(value_cast<rep>(q).value_in(si::radian)));
+    return make_quantity<one>(cos(value_cast<rep>(q).numerical_value_in(si::radian)));
   } else
-    return make_quantity<one>(cos(q.value_in(si::radian)));
+    return make_quantity<one>(cos(q.numerical_value_in(si::radian)));
 }
 
 template<ReferenceOf<angular_measure> auto R, typename Rep>
 [[nodiscard]] inline QuantityOf<dimensionless> auto tan(const quantity<R, Rep>& q) noexcept
-  requires requires { tan(q.value()); } || requires { std::tan(q.value()); }
+  requires requires { tan(q.numerical_value()); } || requires { std::tan(q.numerical_value()); }
 {
   using std::tan;
   if constexpr (!treat_as_floating_point<Rep>) {
     // check what is the return type when called with the integral value
-    using rep = decltype(tan(value_cast<si::radian>(q).value()));
+    using rep = decltype(tan(value_cast<si::radian>(q).numerical_value()));
     // use this type ahead of calling the function to prevent narrowing if a unit conversion is needed
-    return make_quantity<one>(tan(value_cast<rep>(q).value_in(si::radian)));
+    return make_quantity<one>(tan(value_cast<rep>(q).numerical_value_in(si::radian)));
   } else
-    return make_quantity<one>(tan(q.value_in(si::radian)));
+    return make_quantity<one>(tan(q.numerical_value_in(si::radian)));
 }
 
 template<ReferenceOf<dimensionless> auto R, typename Rep>
 [[nodiscard]] inline QuantityOf<isq::angular_measure> auto asin(const quantity<R, Rep>& q) noexcept
-  requires requires { asin(q.value()); } || requires { std::asin(q.value()); }
+  requires requires { asin(q.numerical_value()); } || requires { std::asin(q.numerical_value()); }
 {
   using std::asin;
   if constexpr (!treat_as_floating_point<Rep>) {
     // check what is the return type when called with the integral value
-    using rep = decltype(asin(value_cast<one>(q).value()));
+    using rep = decltype(asin(value_cast<one>(q).numerical_value()));
     // use this type ahead of calling the function to prevent narrowing if a unit conversion is needed
-    return make_quantity<si::radian>(asin(value_cast<rep>(q).value_in(one)));
+    return make_quantity<si::radian>(asin(value_cast<rep>(q).numerical_value_in(one)));
   } else
-    return make_quantity<si::radian>(asin(q.value_in(one)));
+    return make_quantity<si::radian>(asin(q.numerical_value_in(one)));
 }
 
 template<ReferenceOf<dimensionless> auto R, typename Rep>
 [[nodiscard]] inline QuantityOf<isq::angular_measure> auto acos(const quantity<R, Rep>& q) noexcept
-  requires requires { acos(q.value()); } || requires { std::acos(q.value()); }
+  requires requires { acos(q.numerical_value()); } || requires { std::acos(q.numerical_value()); }
 {
   using std::acos;
   if constexpr (!treat_as_floating_point<Rep>) {
     // check what is the return type when called with the integral value
-    using rep = decltype(acos(value_cast<one>(q).value()));
+    using rep = decltype(acos(value_cast<one>(q).numerical_value()));
     // use this type ahead of calling the function to prevent narrowing if a unit conversion is needed
-    return make_quantity<si::radian>(acos(value_cast<rep>(q).value_in(one)));
+    return make_quantity<si::radian>(acos(value_cast<rep>(q).numerical_value_in(one)));
   } else
-    return make_quantity<si::radian>(acos(q.value_in(one)));
+    return make_quantity<si::radian>(acos(q.numerical_value_in(one)));
 }
 
 template<ReferenceOf<dimensionless> auto R, typename Rep>
 [[nodiscard]] inline QuantityOf<isq::angular_measure> auto atan(const quantity<R, Rep>& q) noexcept
-  requires requires { atan(q.value()); } || requires { std::atan(q.value()); }
+  requires requires { atan(q.numerical_value()); } || requires { std::atan(q.numerical_value()); }
 {
   using std::atan;
   if constexpr (!treat_as_floating_point<Rep>) {
     // check what is the return type when called with the integral value
-    using rep = decltype(atan(value_cast<one>(q).value()));
+    using rep = decltype(atan(value_cast<one>(q).numerical_value()));
     // use this type ahead of calling the function to prevent narrowing if a unit conversion is needed
-    return make_quantity<si::radian>(atan(value_cast<rep>(q).value_in(one)));
+    return make_quantity<si::radian>(atan(value_cast<rep>(q).numerical_value_in(one)));
   } else
-    return make_quantity<si::radian>(atan(q.value_in(one)));
+    return make_quantity<si::radian>(atan(q.numerical_value_in(one)));
 }
 
 }  // namespace isq
@@ -386,86 +391,86 @@ namespace angular {
 
 template<ReferenceOf<angle> auto R, typename Rep>
 [[nodiscard]] inline QuantityOf<dimensionless> auto sin(const quantity<R, Rep>& q) noexcept
-  requires requires { sin(q.value()); } || requires { std::sin(q.value()); }
+  requires requires { sin(q.numerical_value()); } || requires { std::sin(q.numerical_value()); }
 {
   using std::sin;
   if constexpr (!treat_as_floating_point<Rep>) {
     // check what is the return type when called with the integral value
-    using rep = decltype(sin(value_cast<radian>(q).value()));
+    using rep = decltype(sin(value_cast<radian>(q).numerical_value()));
     // use this type ahead of calling the function to prevent narrowing if a unit conversion is needed
-    return make_quantity<one>(sin(value_cast<rep>(q).value_in(radian)));
+    return make_quantity<one>(sin(value_cast<rep>(q).numerical_value_in(radian)));
   } else
-    return make_quantity<one>(sin(q.value_in(radian)));
+    return make_quantity<one>(sin(q.numerical_value_in(radian)));
 }
 
 template<ReferenceOf<angle> auto R, typename Rep>
 [[nodiscard]] inline QuantityOf<dimensionless> auto cos(const quantity<R, Rep>& q) noexcept
-  requires requires { cos(q.value()); } || requires { std::cos(q.value()); }
+  requires requires { cos(q.numerical_value()); } || requires { std::cos(q.numerical_value()); }
 {
   using std::cos;
   if constexpr (!treat_as_floating_point<Rep>) {
     // check what is the return type when called with the integral value
-    using rep = decltype(cos(value_cast<radian>(q).value()));
+    using rep = decltype(cos(value_cast<radian>(q).numerical_value()));
     // use this type ahead of calling the function to prevent narrowing if a unit conversion is needed
-    return make_quantity<one>(cos(value_cast<rep>(q).value_in(radian)));
+    return make_quantity<one>(cos(value_cast<rep>(q).numerical_value_in(radian)));
   } else
-    return make_quantity<one>(cos(q.value_in(radian)));
+    return make_quantity<one>(cos(q.numerical_value_in(radian)));
 }
 
 template<ReferenceOf<angle> auto R, typename Rep>
 [[nodiscard]] inline QuantityOf<dimensionless> auto tan(const quantity<R, Rep>& q) noexcept
-  requires requires { tan(q.value()); } || requires { std::tan(q.value()); }
+  requires requires { tan(q.numerical_value()); } || requires { std::tan(q.numerical_value()); }
 {
   using std::tan;
   if constexpr (!treat_as_floating_point<Rep>) {
     // check what is the return type when called with the integral value
-    using rep = decltype(tan(value_cast<radian>(q).value()));
+    using rep = decltype(tan(value_cast<radian>(q).numerical_value()));
     // use this type ahead of calling the function to prevent narrowing if a unit conversion is needed
-    return make_quantity<one>(tan(value_cast<rep>(q).value_in(radian)));
+    return make_quantity<one>(tan(value_cast<rep>(q).numerical_value_in(radian)));
   } else
-    return make_quantity<one>(tan(q.value_in(radian)));
+    return make_quantity<one>(tan(q.numerical_value_in(radian)));
 }
 
 template<ReferenceOf<dimensionless> auto R, typename Rep>
 [[nodiscard]] inline QuantityOf<angle> auto asin(const quantity<R, Rep>& q) noexcept
-  requires requires { asin(q.value()); } || requires { std::asin(q.value()); }
+  requires requires { asin(q.numerical_value()); } || requires { std::asin(q.numerical_value()); }
 {
   using std::asin;
   if constexpr (!treat_as_floating_point<Rep>) {
     // check what is the return type when called with the integral value
-    using rep = decltype(asin(value_cast<one>(q).value()));
+    using rep = decltype(asin(value_cast<one>(q).numerical_value()));
     // use this type ahead of calling the function to prevent narrowing if a unit conversion is needed
-    return make_quantity<radian>(asin(value_cast<rep>(q).value_in(one)));
+    return make_quantity<radian>(asin(value_cast<rep>(q).numerical_value_in(one)));
   } else
-    return make_quantity<radian>(asin(q.value_in(one)));
+    return make_quantity<radian>(asin(q.numerical_value_in(one)));
 }
 
 template<ReferenceOf<dimensionless> auto R, typename Rep>
 [[nodiscard]] inline QuantityOf<angle> auto acos(const quantity<R, Rep>& q) noexcept
-  requires requires { acos(q.value()); } || requires { std::acos(q.value()); }
+  requires requires { acos(q.numerical_value()); } || requires { std::acos(q.numerical_value()); }
 {
   using std::acos;
   if constexpr (!treat_as_floating_point<Rep>) {
     // check what is the return type when called with the integral value
-    using rep = decltype(acos(value_cast<one>(q).value()));
+    using rep = decltype(acos(value_cast<one>(q).numerical_value()));
     // use this type ahead of calling the function to prevent narrowing if a unit conversion is needed
-    return make_quantity<radian>(acos(value_cast<rep>(q).value_in(one)));
+    return make_quantity<radian>(acos(value_cast<rep>(q).numerical_value_in(one)));
   } else
-    return make_quantity<radian>(acos(q.value_in(one)));
+    return make_quantity<radian>(acos(q.numerical_value_in(one)));
 }
 
 template<ReferenceOf<dimensionless> auto R, typename Rep>
 [[nodiscard]] inline QuantityOf<angle> auto atan(const quantity<R, Rep>& q) noexcept
-  requires requires { atan(q.value()); } || requires { std::atan(q.value()); }
+  requires requires { atan(q.numerical_value()); } || requires { std::atan(q.numerical_value()); }
 {
   using std::atan;
   if constexpr (!treat_as_floating_point<Rep>) {
     // check what is the return type when called with the integral value
-    using rep = decltype(atan(value_cast<one>(q).value()));
+    using rep = decltype(atan(value_cast<one>(q).numerical_value()));
     // use this type ahead of calling the function to prevent narrowing if a unit conversion is needed
-    return make_quantity<radian>(atan(value_cast<rep>(q).value_in(one)));
+    return make_quantity<radian>(atan(value_cast<rep>(q).numerical_value_in(one)));
   } else
-    return make_quantity<radian>(atan(q.value_in(one)));
+    return make_quantity<radian>(atan(q.numerical_value_in(one)));
 }
 
 }  // namespace angular

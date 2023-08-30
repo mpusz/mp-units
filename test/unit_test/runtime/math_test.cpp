@@ -90,12 +90,13 @@ TEST_CASE("numeric_limits functions", "[limits]")
 {
   SECTION("'epsilon' works as expected using default floating type")
   {
-    REQUIRE(epsilon<double>(isq::length[m]).value() ==
+    REQUIRE(epsilon<double>(isq::length[m]).numerical_value() ==
             std::numeric_limits<decltype(1. * isq::length[m])::rep>::epsilon());
   }
   SECTION("'epsilon' works as expected using integers")
   {
-    REQUIRE(epsilon<int>(isq::length[m]).value() == std::numeric_limits<decltype(1 * isq::length[m])::rep>::epsilon());
+    REQUIRE(epsilon<int>(isq::length[m]).numerical_value() ==
+            std::numeric_limits<decltype(1 * isq::length[m])::rep>::epsilon());
   }
 }
 

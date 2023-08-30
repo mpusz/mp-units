@@ -35,7 +35,7 @@ static std::vector<typename Q::rep> i_qty_to_rep(InputIt first, InputIt last)
   std::vector<typename Q::rep> intervals_rep;
   intervals_rep.reserve(static_cast<size_t>(std::distance(first, last)));
   for (auto itr = first; itr != last; ++itr) {
-    intervals_rep.push_back(itr->value());
+    intervals_rep.push_back(itr->numerical_value());
   }
   return intervals_rep;
 }
@@ -46,7 +46,7 @@ static std::vector<typename Q::rep> bl_qty_to_rep(std::initializer_list<Q>& bl)
   std::vector<typename Q::rep> bl_rep;
   bl_rep.reserve(bl.size());
   for (const Q& qty : bl) {
-    bl_rep.push_back(qty.value());
+    bl_rep.push_back(qty.numerical_value());
   }
   return bl_rep;
 }
@@ -88,7 +88,7 @@ struct uniform_int_distribution : public std::uniform_int_distribution<typename 
   using base = MP_UNITS_TYPENAME std::uniform_int_distribution<rep>;
 
   uniform_int_distribution() : base() {}
-  uniform_int_distribution(const Q& a, const Q& b) : base(a.value(), b.value()) {}
+  uniform_int_distribution(const Q& a, const Q& b) : base(a.numerical_value(), b.numerical_value()) {}
 
   template<typename Generator>
   Q operator()(Generator& g)
@@ -110,7 +110,7 @@ struct uniform_real_distribution : public std::uniform_real_distribution<typenam
   using base = MP_UNITS_TYPENAME std::uniform_real_distribution<rep>;
 
   uniform_real_distribution() : base() {}
-  uniform_real_distribution(const Q& a, const Q& b) : base(a.value(), b.value()) {}
+  uniform_real_distribution(const Q& a, const Q& b) : base(a.numerical_value(), b.numerical_value()) {}
 
   template<typename Generator>
   Q operator()(Generator& g)
@@ -132,7 +132,7 @@ struct binomial_distribution : public std::binomial_distribution<typename Q::rep
   using base = MP_UNITS_TYPENAME std::binomial_distribution<rep>;
 
   binomial_distribution() : base() {}
-  binomial_distribution(const Q& t, double p) : base(t.value(), p) {}
+  binomial_distribution(const Q& t, double p) : base(t.numerical_value(), p) {}
 
   template<typename Generator>
   Q operator()(Generator& g)
@@ -153,7 +153,7 @@ struct negative_binomial_distribution : public std::negative_binomial_distributi
   using base = MP_UNITS_TYPENAME std::negative_binomial_distribution<rep>;
 
   negative_binomial_distribution() : base() {}
-  negative_binomial_distribution(const Q& k, double p) : base(k.value(), p) {}
+  negative_binomial_distribution(const Q& k, double p) : base(k.numerical_value(), p) {}
 
   template<typename Generator>
   Q operator()(Generator& g)
@@ -269,7 +269,7 @@ struct extreme_value_distribution : public std::extreme_value_distribution<typen
   using base = MP_UNITS_TYPENAME std::extreme_value_distribution<rep>;
 
   extreme_value_distribution() : base() {}
-  extreme_value_distribution(const Q& a, const rep& b) : base(a.value(), b) {}
+  extreme_value_distribution(const Q& a, const rep& b) : base(a.numerical_value(), b) {}
 
   template<typename Generator>
   Q operator()(Generator& g)
@@ -290,7 +290,7 @@ struct normal_distribution : public std::normal_distribution<typename Q::rep> {
   using base = MP_UNITS_TYPENAME std::normal_distribution<rep>;
 
   normal_distribution() : base() {}
-  normal_distribution(const Q& mean, const Q& stddev) : base(mean.value(), stddev.value()) {}
+  normal_distribution(const Q& mean, const Q& stddev) : base(mean.numerical_value(), stddev.numerical_value()) {}
 
   template<typename Generator>
   Q operator()(Generator& g)
@@ -312,7 +312,7 @@ struct lognormal_distribution : public std::lognormal_distribution<typename Q::r
   using base = MP_UNITS_TYPENAME std::lognormal_distribution<rep>;
 
   lognormal_distribution() : base() {}
-  lognormal_distribution(const Q& m, const Q& s) : base(m.value(), s.value()) {}
+  lognormal_distribution(const Q& m, const Q& s) : base(m.numerical_value(), s.numerical_value()) {}
 
   template<typename Generator>
   Q operator()(Generator& g)
@@ -353,7 +353,7 @@ struct cauchy_distribution : public std::cauchy_distribution<typename Q::rep> {
   using base = MP_UNITS_TYPENAME std::cauchy_distribution<rep>;
 
   cauchy_distribution() : base() {}
-  cauchy_distribution(const Q& a, const Q& b) : base(a.value(), b.value()) {}
+  cauchy_distribution(const Q& a, const Q& b) : base(a.numerical_value(), b.numerical_value()) {}
 
   template<typename Generator>
   Q operator()(Generator& g)
@@ -470,7 +470,7 @@ public:
 
   template<typename UnaryOperation>
   piecewise_constant_distribution(std::size_t nw, const Q& xmin, const Q& xmax, UnaryOperation fw) :
-      base(nw, xmin.value(), xmax.value(), [fw](rep val) { return fw(val * Q::reference); })
+      base(nw, xmin.numerical_value(), xmax.numerical_value(), [fw](rep val) { return fw(val * Q::reference); })
   {
   }
 
@@ -528,7 +528,7 @@ public:
 
   template<typename UnaryOperation>
   piecewise_linear_distribution(std::size_t nw, const Q& xmin, const Q& xmax, UnaryOperation fw) :
-      base(nw, xmin.value(), xmax.value(), [fw](rep val) { return fw(val * Q::reference); })
+      base(nw, xmin.numerical_value(), xmax.numerical_value(), [fw](rep val) { return fw(val * Q::reference); })
   {
   }
 
