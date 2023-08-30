@@ -140,6 +140,8 @@ nav:
       - Examples:
           - Tags Index: users_guide/examples/tags_index.md
           - hello_units: users_guide/examples/hello_units.md
+          - avg_speed: users_guide/examples/avg_speed.md
+          - si_constants: users_guide/examples/si_constants.md
   - Library Reference:
       - Core Library: library_reference/core_library.md
       - Magnitudes: library_reference/magnitudes.md
