@@ -73,6 +73,9 @@ using common_quantity_for = quantity<common_reference(Q1::reference, Q2::referen
 
 }  // namespace detail
 
+inline constexpr struct zero_t {
+} zero;
+
 /**
  * @brief A quantity
  *
@@ -124,6 +127,8 @@ public:
   quantity(const quantity&) = default;
   quantity(quantity&&) = default;
 
+  constexpr explicit(false) quantity(zero_t) : value_(quantity_values<rep>::zero()) {}
+
   template<detail::QuantityConvertibleTo<quantity> Q>
   constexpr explicit(!std::convertible_to<typename Q::rep, Rep>) quantity(const Q& q) :
       value_(detail::sudo_cast<quantity>(q).numerical_value())
@@ -140,6 +145,11 @@ public:
 
   quantity& operator=(const quantity&) = default;
   quantity& operator=(quantity&&) = default;
+  quantity& operator=(zero_t)
+  {
+    value_ = quantity_values<rep>::zero();
+    return *this;
+  }
 
   // data access
 #ifdef __cpp_explicit_this_parameter
@@ -316,6 +326,8 @@ public:
     return *this;
   }
 
+  constexpr quantity& operator%=(zero_t) = delete;
+
 private:
 #if defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 17
   template<auto R2, typename Rep2>
@@ -428,6 +440,44 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
   using ct = std::common_type_t<quantity<R1, Rep1>, quantity<R2, Rep2>>;
   return ct(lhs).numerical_value() <=> ct(rhs).numerical_value();
 }
+
+
+template<auto R, typename Rep>
+[[nodiscard]] constexpr Quantity auto operator+(const quantity<R, Rep>& q, zero_t)
+{
+  return q;
+}
+
+template<auto R, typename Rep>
+[[nodiscard]] constexpr Quantity auto operator+(zero_t, const quantity<R, Rep>& q)
+{
+  return q;
+}
+
+template<auto R, typename Rep>
+[[nodiscard]] constexpr Quantity auto operator-(const quantity<R, Rep>& q, zero_t)
+{
+  return q;
+}
+
+template<auto R, typename Rep>
+[[nodiscard]] constexpr Quantity auto operator-(zero_t, const quantity<R, Rep>& q)
+{
+  return -q;
+}
+
+template<auto R, typename Rep>
+[[nodiscard]] constexpr bool operator==(const quantity<R, Rep>& q, zero_t)
+{
+  return q.numerical_value() == quantity_values<Rep>::zero();
+}
+
+template<auto R, typename Rep>
+[[nodiscard]] constexpr auto operator<=>(const quantity<R, Rep>& q, zero_t)
+{
+  return q.numerical_value() <=> quantity_values<Rep>::zero();
+}
+
 
 // make_quantity
 #if defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 17

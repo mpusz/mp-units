@@ -128,9 +128,8 @@ struct MP_UNITS_STD_FMT::formatter<geographic::latitude<T>> : formatter<T> {
   template<typename FormatContext>
   auto format(geographic::latitude<T> lat, FormatContext& ctx)
   {
-    MP_UNITS_STD_FMT::format_to(ctx.out(), "{}", lat > geographic::latitude<T>::zero() ? 'N' : 'S');
-    return formatter<T>::format(lat > geographic::latitude<T>::zero() ? lat.numerical_value() : -lat.numerical_value(),
-                                ctx);
+    MP_UNITS_STD_FMT::format_to(ctx.out(), "{}", lat > mp_units::zero ? 'N' : 'S');
+    return formatter<T>::format(lat > mp_units::zero ? lat.numerical_value() : -lat.numerical_value(), ctx);
   }
 };
 
@@ -139,9 +138,8 @@ struct MP_UNITS_STD_FMT::formatter<geographic::longitude<T>> : formatter<T> {
   template<typename FormatContext>
   auto format(geographic::longitude<T> lon, FormatContext& ctx)
   {
-    MP_UNITS_STD_FMT::format_to(ctx.out(), "{}", lon > geographic::longitude<T>::zero() ? 'E' : 'W');
-    return formatter<T>::format(lon > geographic::longitude<T>::zero() ? lon.numerical_value() : -lon.numerical_value(),
-                                ctx);
+    MP_UNITS_STD_FMT::format_to(ctx.out(), "{}", lon > mp_units::zero ? 'E' : 'W');
+    return formatter<T>::format(lon > mp_units::zero ? lon.numerical_value() : -lon.numerical_value(), ctx);
   }
 };
 

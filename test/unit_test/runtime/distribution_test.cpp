@@ -42,7 +42,7 @@ TEST_CASE("uniform_int_distribution")
   {
     auto dist = mp_units::uniform_int_distribution<q>();
 
-    CHECK(dist.a() == q::zero());
+    CHECK(dist.a() == zero);
     CHECK(dist.b() == q::max());
   }
 
@@ -70,7 +70,7 @@ TEST_CASE("uniform_real_distribution")
   {
     auto dist = mp_units::uniform_real_distribution<q>();
 
-    CHECK(dist.a() == q::zero());
+    CHECK(dist.a() == zero);
     CHECK(dist.b() == q::one());
   }
 
@@ -285,7 +285,7 @@ TEST_CASE("extreme_value_distribution")
   {
     auto dist = mp_units::extreme_value_distribution<q>();
 
-    CHECK(dist.a() == q::zero());
+    CHECK(dist.a() == zero);
     CHECK(dist.b() == 1.0);
   }
 
@@ -313,7 +313,7 @@ TEST_CASE("normal_distribution")
   {
     auto dist = mp_units::normal_distribution<q>();
 
-    CHECK(dist.mean() == q::zero());
+    CHECK(dist.mean() == zero);
     CHECK(dist.stddev() == q::one());
   }
 
@@ -341,7 +341,7 @@ TEST_CASE("lognormal_distribution")
   {
     auto dist = mp_units::lognormal_distribution<q>();
 
-    CHECK(dist.m() == q::zero());
+    CHECK(dist.m() == zero);
     CHECK(dist.s() == q::one());
   }
 
@@ -394,7 +394,7 @@ TEST_CASE("cauchy_distribution")
   {
     auto dist = mp_units::cauchy_distribution<q>();
 
-    CHECK(dist.a() == q::zero());
+    CHECK(dist.a() == zero);
     CHECK(dist.b() == q::one());
   }
 

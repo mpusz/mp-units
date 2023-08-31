@@ -120,6 +120,24 @@ static_assert(quantity<isq::length[m], double>::min().numerical_value() == std::
 static_assert(quantity<isq::length[m], double>::max().numerical_value() == std::numeric_limits<double>::max());
 
 
+///////////////////////////
+// construction from zero
+///////////////////////////
+
+// construction from a value is private
+static_assert(std::constructible_from<quantity<isq::length[m]>, zero_t>);
+static_assert(std::convertible_to<zero_t, quantity<isq::length[m]>>);
+
+static_assert(std::constructible_from<quantity<isq::length[m], int>, zero_t>);
+static_assert(std::convertible_to<zero_t, quantity<isq::length[m], int>>);
+
+static_assert(std::constructible_from<quantity<dimensionless[one]>, zero_t>);
+static_assert(std::convertible_to<zero_t, quantity<dimensionless[one]>>);
+
+static_assert(std::constructible_from<quantity<dimensionless[one], int>, zero_t>);
+static_assert(std::convertible_to<zero_t, quantity<dimensionless[one], int>>);
+
+
 //////////////////////////////
 // construction from a value
 //////////////////////////////
@@ -425,6 +443,11 @@ concept invalid_compound_assignments = requires() {
   requires !requires(Q<isq::length[m], int> l) { l *= m; };
   requires !requires(Q<isq::length[m], int> l) { l /= m; };
   requires !requires(Q<isq::length[m], int> l) { l %= m; };
+
+  // zero
+  requires !requires(Q<isq::length[m], int> l) { l *= zero; };
+  requires !requires(Q<isq::length[m], int> l) { l /= zero; };
+  requires !requires(Q<isq::length[m], int> l) { l %= zero; };
 };
 static_assert(invalid_compound_assignments<quantity>);
 
@@ -454,6 +477,14 @@ concept invalid_binary_operations = requires {
   requires !requires { m + Q<isq::length[m], int>(1); };
   requires !requires { m - Q<isq::length[m], int>(1); };
   requires !requires { m % Q<isq::length[m], int>(1); };
+
+  // zero
+  requires !requires(Q<isq::length[m], double> a) { a* zero; };
+  requires !requires(Q<isq::length[m], double> a) { zero* a; };
+  requires !requires(Q<isq::length[m], double> a) { zero / a; };
+  requires !requires(Q<isq::length[m], double> a) { a / zero; };
+  requires !requires(Q<isq::length[m], double> a) { a % zero; };
+  requires !requires(Q<isq::length[m], double> a) { zero % a; };
 };
 static_assert(invalid_binary_operations<quantity>);
 
@@ -746,6 +777,25 @@ static_assert(is_same_v<decltype((std::uint8_t(0) * one % (std::uint8_t(0) * one
 static_assert(2 * one * (1 * m) == 2 * m);
 static_assert(2 * one / (1 * m) == 2 / (1 * m));
 
+// zero
+static_assert(quantity<si::metre>{zero} == 0 * m);
+
+static_assert((1 * m += zero) == 1 * m);
+static_assert((1 * m -= zero) == 1 * m);
+
+static_assert(1 * m + zero == 1 * m);
+static_assert(zero + 1 * m == 1 * m);
+static_assert(1 * m - zero == 1 * m);
+static_assert(zero - 1 * m == -1 * m);
+
+static_assert(0 * m == zero);
+static_assert(1 * m != zero);
+static_assert(-1 * m != zero);
+
+static_assert(1 * m > zero);
+static_assert(1 * m >= zero);
+static_assert(-1 * m < zero);
+static_assert(-1 * m <= zero);
 
 ///////////////////////
 // equality operators

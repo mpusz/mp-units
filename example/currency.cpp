@@ -33,7 +33,7 @@ inline constexpr struct dim_currency : base_dimension<"$"> {} dim_currency;
 
 QUANTITY_SPEC(currency, dim_currency);
 
-constexpr struct zero : absolute_point_origin<currency> {} zero;
+constexpr struct no_money : absolute_point_origin<currency> {} no_money;
 
 inline constexpr struct euro : named_unit<"EUR", kind_of<currency>> {} euro;
 inline constexpr struct us_dollar : named_unit<"USD", kind_of<currency>> {} us_dollar;
@@ -82,13 +82,13 @@ template<ReferenceOf<currency> auto To, ReferenceOf<currency> auto From, auto PO
 quantity_point<To, PO, Rep> exchange_to(quantity_point<From, PO, Rep> q)
 {
   return quantity_point{
-    zero +
+    no_money +
     static_cast<Rep>(exchange_rate<q.unit, get_unit(To)>() * (q - q.absolute_point_origin).numerical_value()) * To};
 }
 
 int main()
 {
-  quantity_point price_usd = zero + 100 * us_dollar;
+  quantity_point price_usd = no_money + 100 * us_dollar;
   quantity_point price_euro = exchange_to<euro>(price_usd);
 
   std::cout << price_usd.quantity_from_origin() << " -> " << price_euro.quantity_from_origin() << "\n";
