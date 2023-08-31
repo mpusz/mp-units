@@ -231,9 +231,10 @@ Taxi distance:   31.2544 km
 
 !!! note
 
-    It is not allowed to subtract two point origins defined in terms of `absolute_point_origin`
-    (i.e. `mean_sea_level - mean_sea_level`) as those do not contain information about the unit
-    so we are not able to determine a resulting `quantity` type.
+    Subtracting two point origins defined in terms of `absolute_point_origin`
+    (i.e. `mean_sea_level - mean_sea_level`) results with `zero` as those do not contain
+    any information about the unit so we are not able to determine more explicit resulting
+    `quantity` type.
 
 
 ### Temperature support

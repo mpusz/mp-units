@@ -736,9 +736,6 @@ concept invalid_binary_operations = requires {
   // cant'subtract two unrelated points
   requires !requires { Origin - OtherOrigin; };
 
-  // cant'subtract the same point as we do not know the unit for the resulting quantity
-  requires !requires { Origin - Origin; };
-
   // unit constants
   requires !requires { QP<si::metre, mean_sea_level, int>(1) + m; };
   requires !requires { QP<si::metre, mean_sea_level, int>(1) - m; };
@@ -921,6 +918,7 @@ static_assert(is_of_type<mean_sea_level - ground_level, quantity<isq::height[m],
 static_assert(is_of_type<ground_level - mean_sea_level, quantity<isq::height[m], int>>);
 static_assert(is_of_type<ground_level - tower_peak, quantity<isq::height[m], int>>);
 static_assert(is_of_type<tower_peak - ground_level, quantity<isq::height[m], int>>);
+static_assert(is_of_type<mean_sea_level - mean_sea_level, zero_t>);
 
 static_assert(is_of_type<(1 * m + mean_sea_level) - (1 * m + ground_level), quantity<isq::height[m], int>>);
 static_assert(is_of_type<(1 * m + ground_level) - (1 * m + mean_sea_level), quantity<isq::height[m], int>>);

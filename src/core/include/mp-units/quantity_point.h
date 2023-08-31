@@ -322,6 +322,13 @@ template<PointOrigin PO, QuantityPointOf<PO{}> QP>
   return -(qp - po);
 }
 
+template<PointOrigin PO>
+  requires detail::is_derived_from_specialization_of_absolute_point_origin<PO>
+[[nodiscard]] constexpr zero_t operator-(PO, PO)
+{
+  return {};
+}
+
 template<PointOrigin PO1, detail::SameAbsolutePointOriginAs<PO1{}> PO2>
   requires QuantitySpecOf<std::remove_const_t<decltype(PO1::quantity_spec)>, PO2::quantity_spec> &&
            (detail::is_derived_from_specialization_of_relative_point_origin<PO1> ||
