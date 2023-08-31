@@ -255,7 +255,7 @@ this is what Richard Smith said about this issue:
     an `int` if it produces a dimensionless quantity for `10 s * 5 GHz`, but it could equally
     produce `50 G * 2 uW = 100 kW` without any overflow, and presumably would if the terms were merely
     reordered.
-    
+
     If people want to use integer-valued quantities, I think it's fundamental that you need
     to know what the units of the result of an operation will be, and take that into account in how you
     express computations; the simplest rule for heterogeneous operators like `*` or `/` seems to be that
