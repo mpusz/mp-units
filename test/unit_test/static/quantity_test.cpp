@@ -862,6 +862,10 @@ template</*Reference*/ auto R1, /*Reference*/ auto R2>  // TODO Use `Reference` 
 concept invalid_comparison = !requires { 2 * R1 == 2 * R2; } && !requires { 2 * R2 == 2 * R1; };
 static_assert(invalid_comparison<activity[Bq], isq::frequency[Hz]>);
 
+// zero
+static_assert(zero == zero);
+static_assert(!(zero != zero));
+
 
 ///////////////////////
 // ordering operators
@@ -916,6 +920,12 @@ static_assert(!(321 * km <= 123'000 * m));
 static_assert(!(123 * km > 321'000 * m));
 static_assert(!(123 * km > 123'000 * m));
 static_assert(!(123 * km >= 321'000 * m));
+
+// zero
+static_assert(zero <= zero);
+static_assert(zero >= zero);
+static_assert(!(zero < zero));
+static_assert(!(zero > zero));
 
 
 //////////////////

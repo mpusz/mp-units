@@ -75,6 +75,8 @@ using common_quantity_for = quantity<common_reference(Q1::reference, Q2::referen
 
 inline constexpr struct zero_t {
 } zero;
+[[nodiscard]] consteval bool operator==(zero_t, zero_t) { return true; }
+[[nodiscard]] consteval auto operator<=>(zero_t, zero_t) { return std::partial_ordering::equivalent; }
 
 /**
  * @brief A quantity
