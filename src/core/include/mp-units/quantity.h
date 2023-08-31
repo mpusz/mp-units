@@ -232,6 +232,7 @@ public:
     return make_quantity<reference>(value_--);
   }
 
+  // compound assignment operators
   constexpr quantity& operator+=(const quantity& q)
     requires requires(rep a, rep b) {
       {
@@ -251,6 +252,18 @@ public:
     }
   {
     value_ -= q.numerical_value();
+    return *this;
+  }
+
+  constexpr quantity& operator%=(const quantity& q)
+    requires(!treat_as_floating_point<rep>) && requires(rep a, rep b) {
+      {
+        a %= b
+      } -> std::same_as<rep&>;
+    }
+  {
+    gsl_ExpectsAudit(q.numerical_value() != quantity_values<rep>::zero());
+    value_ %= q.numerical_value();
     return *this;
   }
 
@@ -304,18 +317,6 @@ public:
     return *this;
   }
 
-  constexpr quantity& operator%=(const quantity& q)
-    requires(!treat_as_floating_point<rep>) && requires(rep a, rep b) {
-      {
-        a %= b
-      } -> std::same_as<rep&>;
-    }
-  {
-    gsl_ExpectsAudit(q.numerical_value() != quantity_values<rep>::zero());
-    value_ %= q.numerical_value();
-    return *this;
-  }
-
 private:
 #if defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 17
   template<auto R2, typename Rep2>
@@ -350,6 +351,16 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
 {
   using ret = detail::common_quantity_for<std::minus<>, quantity<R1, Rep1>, quantity<R2, Rep2>>;
   return make_quantity<ret::reference>(ret(lhs).numerical_value() - ret(rhs).numerical_value());
+}
+
+template<auto R1, typename Rep1, auto R2, typename Rep2>
+  requires(!treat_as_floating_point<Rep1>) && (!treat_as_floating_point<Rep2>) &&
+          detail::InvocableQuantities<std::modulus<>, quantity<R1, Rep1>, quantity<R2, Rep2>>
+[[nodiscard]] constexpr Quantity auto operator%(const quantity<R1, Rep1>& lhs, const quantity<R2, Rep2>& rhs)
+{
+  gsl_ExpectsAudit(rhs.numerical_value() != quantity_values<Rep1>::zero());
+  using ret = detail::common_quantity_for<std::modulus<>, quantity<R1, Rep1>, quantity<R2, Rep2>>;
+  return make_quantity<ret::reference>(ret(lhs).numerical_value() % ret(rhs).numerical_value());
 }
 
 template<auto R1, typename Rep1, auto R2, typename Rep2>
@@ -399,16 +410,6 @@ template<typename Value, auto R, typename Rep>
 [[nodiscard]] constexpr Quantity auto operator/(const Value& v, const quantity<R, Rep>& q)
 {
   return make_quantity<::mp_units::one / R>(v / q.numerical_value());
-}
-
-template<auto R1, typename Rep1, auto R2, typename Rep2>
-  requires(!treat_as_floating_point<Rep1>) && (!treat_as_floating_point<Rep2>) &&
-          detail::InvocableQuantities<std::modulus<>, quantity<R1, Rep1>, quantity<R2, Rep2>>
-[[nodiscard]] constexpr Quantity auto operator%(const quantity<R1, Rep1>& lhs, const quantity<R2, Rep2>& rhs)
-{
-  gsl_ExpectsAudit(rhs.numerical_value() != quantity_values<Rep1>::zero());
-  using ret = detail::common_quantity_for<std::modulus<>, quantity<R1, Rep1>, quantity<R2, Rep2>>;
-  return make_quantity<ret::reference>(ret(lhs).numerical_value() % ret(rhs).numerical_value());
 }
 
 template<auto R1, typename Rep1, auto R2, typename Rep2>
