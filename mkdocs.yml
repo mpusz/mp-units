@@ -118,10 +118,10 @@ nav:
           - Simple and Typed Quantities: users_guide/framework_basics/simple_and_typed_quantities.md
           - Value Conversions: users_guide/framework_basics/value_conversions.md
           - Character of a Quantity: users_guide/framework_basics/character_of_a_quantity.md
+          - Dimensionless Quantities: users_guide/framework_basics/dimensionless_quantities.md
           - Quantity Arithmetics: users_guide/framework_basics/quantity_arithmetics.md
           - Generic Interfaces: users_guide/framework_basics/generic_interfaces.md
           - Faster-than-lightspeed Constants: users_guide/framework_basics/faster_than_lightspeed_constants.md
-          - Dimensionless Quantities: users_guide/framework_basics/dimensionless_quantities.md
           - The Affine Space: users_guide/framework_basics/the_affine_space.md
           - Obtaining Metadata: users_guide/framework_basics/obtaining_metadata.md
           - Text Output: users_guide/framework_basics/text_output.md
