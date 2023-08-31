@@ -82,6 +82,10 @@ As we can see above, the `quantity_point` class template exposes one additional 
 to `quantity`. The `PO` parameter satisfies a [`PointOriginFor` concept](basic_concepts.md#PointOriginFor)
 and specifies the origin of our measurement scale.
 
+!!! tip
+
+    `quantity_point` definition can be found in the `mp-units/quantity_point.h` header file.
+
 As a _point_ can be represented with a _vector_ from the origin, a `quantity_point` class
 template can be created with the following operations:
 
