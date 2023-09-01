@@ -192,6 +192,7 @@ public:
     return quantity_point(q_--);
   }
 
+  // compound assignment operators
   constexpr quantity_point& operator+=(const quantity_type& q)
     requires requires { q_ += q; }
   {

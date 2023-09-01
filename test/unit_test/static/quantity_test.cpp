@@ -100,9 +100,9 @@ static_assert(quantity<isq::length[m]>::quantity_spec == isq::length);
 static_assert(quantity<isq::length[m]>::dimension == isq::dim_length);
 static_assert(quantity<isq::length[m]>::unit == si::metre);
 
-//////////////////
+/////////////////
 // member types
-//////////////////
+/////////////////
 
 static_assert(is_same_v<quantity<isq::length[m]>::rep, double>);
 static_assert(is_same_v<quantity<isq::length[m], int>::rep, int>);
@@ -113,9 +113,11 @@ static_assert(is_same_v<quantity<isq::length[m], int>::rep, int>);
 ////////////////////////////
 
 static_assert(quantity<isq::length[m], int>::zero().numerical_value() == 0);
+static_assert(quantity<isq::length[m], int>::one().numerical_value() == 1);
 static_assert(quantity<isq::length[m], int>::min().numerical_value() == std::numeric_limits<int>::lowest());
 static_assert(quantity<isq::length[m], int>::max().numerical_value() == std::numeric_limits<int>::max());
 static_assert(quantity<isq::length[m], double>::zero().numerical_value() == 0.0);
+static_assert(quantity<isq::length[m], double>::one().numerical_value() == 1.0);
 static_assert(quantity<isq::length[m], double>::min().numerical_value() == std::numeric_limits<double>::lowest());
 static_assert(quantity<isq::length[m], double>::max().numerical_value() == std::numeric_limits<double>::max());
 

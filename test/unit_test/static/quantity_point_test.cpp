@@ -1056,6 +1056,49 @@ static_assert((ground_level + 42 * m) - (other_ground_level + 42 * m) == -81 * m
 static_assert((other_ground_level + 42 * m) - (tower_peak + 42 * m) == 39 * m);
 static_assert((tower_peak + 42 * m) - (other_ground_level + 42 * m) == -39 * m);
 
+static_assert((mean_sea_level + 42 * m).quantity_from_origin() == 42 * m);
+static_assert((42 * m + mean_sea_level).quantity_from_origin() == 42 * m);
+static_assert((mean_sea_level - 42 * m).quantity_from_origin() == -42 * m);
+static_assert((ground_level + 42 * m).quantity_from_origin() == 42 * m);
+static_assert((42 * m + ground_level).quantity_from_origin() == 42 * m);
+static_assert((ground_level - 42 * m).quantity_from_origin() == -42 * m);
+static_assert((tower_peak + 42 * m).quantity_from_origin() == 42 * m);
+static_assert((42 * m + tower_peak).quantity_from_origin() == 42 * m);
+static_assert((tower_peak - 42 * m).quantity_from_origin() == -42 * m);
+
+static_assert((mean_sea_level + 42 * m) - ground_level == 0 * m);
+static_assert((ground_level + 42 * m) - mean_sea_level == 84 * m);
+static_assert((tower_peak + 42 * m) - ground_level == 84 * m);
+static_assert((ground_level + 42 * m) - tower_peak == 0 * m);
+static_assert((tower_peak + 42 * m) - mean_sea_level == 126 * m);
+static_assert((mean_sea_level + 42 * m) - tower_peak == -42 * m);
+static_assert((other_ground_level + 42 * m) - ground_level == 123 * m);
+static_assert((ground_level + 42 * m) - other_ground_level == -39 * m);
+static_assert((other_ground_level + 42 * m) - tower_peak == 81 * m);
+static_assert((tower_peak + 42 * m) - other_ground_level == 3 * m);
+
+static_assert(mean_sea_level - (ground_level + 42 * m) == -84 * m);
+static_assert(ground_level - (mean_sea_level + 42 * m) == 0 * m);
+static_assert(tower_peak - (ground_level + 42 * m) == 0 * m);
+static_assert(ground_level - (tower_peak + 42 * m) == -84 * m);
+static_assert(tower_peak - (mean_sea_level + 42 * m) == 42 * m);
+static_assert(mean_sea_level - (tower_peak + 42 * m) == -126 * m);
+static_assert(other_ground_level - (ground_level + 42 * m) == 39 * m);
+static_assert(ground_level - (other_ground_level + 42 * m) == -123 * m);
+static_assert(other_ground_level - (tower_peak + 42 * m) == -3 * m);
+static_assert(tower_peak - (other_ground_level + 42 * m) == -81 * m);
+
+static_assert(mean_sea_level - ground_level == -42 * m);
+static_assert(ground_level - mean_sea_level == 42 * m);
+static_assert(tower_peak - ground_level == 42 * m);
+static_assert(ground_level - tower_peak == -42 * m);
+static_assert(tower_peak - mean_sea_level == 84 * m);
+static_assert(mean_sea_level - tower_peak == -84 * m);
+static_assert(other_ground_level - ground_level == 81 * m);
+static_assert(ground_level - other_ground_level == -81 * m);
+static_assert(other_ground_level - tower_peak == 39 * m);
+static_assert(tower_peak - other_ground_level == -39 * m);
+
 inline constexpr struct zero_m_per_s : absolute_point_origin<kind_of<isq::speed>> {
 } zero_m_per_s;
 

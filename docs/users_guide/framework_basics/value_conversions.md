@@ -38,8 +38,10 @@ std::cout << q1.in(km) << '\n';
 quantity<si::kilo<si::metre>> q2 = q1;
 ```
 
-The **mp-units** library follows [`std::chrono::duration`](https://en.cppreference.com/w/cpp/chrono/duration)
-logic and treats floating-point types as value-preserving.
+!!! important
+
+    The **mp-units** library follows [`std::chrono::duration`](https://en.cppreference.com/w/cpp/chrono/duration)
+    logic and treats floating-point types as value-preserving.
 
 
 ## Value-truncating conversions
