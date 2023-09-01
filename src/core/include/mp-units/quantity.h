@@ -24,6 +24,7 @@
 #pragma once
 
 #include <mp-units/bits/dimension_concepts.h>
+#include <mp-units/bits/external/zero.h>
 #include <mp-units/bits/quantity_concepts.h>
 #include <mp-units/bits/quantity_spec_concepts.h>
 #include <mp-units/bits/reference_concepts.h>
@@ -72,11 +73,6 @@ using common_quantity_for = quantity<common_reference(Q1::reference, Q2::referen
                                      std::invoke_result_t<Func, typename Q1::rep, typename Q2::rep>>;
 
 }  // namespace detail
-
-inline constexpr struct zero_t {
-} zero;
-[[nodiscard]] consteval bool operator==(zero_t, zero_t) { return true; }
-[[nodiscard]] consteval auto operator<=>(zero_t, zero_t) { return std::partial_ordering::equivalent; }
 
 /**
  * @brief A quantity
