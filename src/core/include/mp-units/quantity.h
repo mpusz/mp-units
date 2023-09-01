@@ -270,7 +270,7 @@ public:
       } -> std::same_as<rep&>;
     }
   {
-    gsl_ExpectsAudit(q != zero);
+    gsl_ExpectsAudit(q != ::mp_units::zero);
     value_ %= q.numerical_value();
     return *this;
   }
