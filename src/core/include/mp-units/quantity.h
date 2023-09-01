@@ -275,8 +275,6 @@ public:
     return *this;
   }
 
-  constexpr quantity& operator%=(zero_t) = delete;
-
   template<typename Value>
     requires(!Quantity<Value>) && requires(rep a, const Value b) {
       {
@@ -438,31 +436,6 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
 {
   using ct = std::common_type_t<quantity<R1, Rep1>, quantity<R2, Rep2>>;
   return ct(lhs).numerical_value() <=> ct(rhs).numerical_value();
-}
-
-
-template<auto R, typename Rep>
-[[nodiscard]] constexpr Quantity auto operator+(const quantity<R, Rep>& q, zero_t)
-{
-  return q;
-}
-
-template<auto R, typename Rep>
-[[nodiscard]] constexpr Quantity auto operator+(zero_t, const quantity<R, Rep>& q)
-{
-  return q;
-}
-
-template<auto R, typename Rep>
-[[nodiscard]] constexpr Quantity auto operator-(const quantity<R, Rep>& q, zero_t)
-{
-  return q;
-}
-
-template<auto R, typename Rep>
-[[nodiscard]] constexpr Quantity auto operator-(zero_t, const quantity<R, Rep>& q)
-{
-  return -q;
 }
 
 template<auto R, typename Rep>

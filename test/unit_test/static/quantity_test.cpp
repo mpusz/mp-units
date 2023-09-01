@@ -445,11 +445,6 @@ concept invalid_compound_assignments = requires() {
   requires !requires(Q<isq::length[m], int> l) { l *= m; };
   requires !requires(Q<isq::length[m], int> l) { l /= m; };
   requires !requires(Q<isq::length[m], int> l) { l %= m; };
-
-  // zero
-  requires !requires(Q<isq::length[m], int> l) { l *= zero; };
-  requires !requires(Q<isq::length[m], int> l) { l /= zero; };
-  requires !requires(Q<isq::length[m], int> l) { l %= zero; };
 };
 static_assert(invalid_compound_assignments<quantity>);
 
@@ -481,6 +476,10 @@ concept invalid_binary_operations = requires {
   requires !requires { m % Q<isq::length[m], int>(1); };
 
   // zero
+  requires !requires(Q<isq::length[m], double> a) { a + zero; };
+  requires !requires(Q<isq::length[m], double> a) { zero + a; };
+  requires !requires(Q<isq::length[m], double> a) { a - zero; };
+  requires !requires(Q<isq::length[m], double> a) { zero - a; };
   requires !requires(Q<isq::length[m], double> a) { a* zero; };
   requires !requires(Q<isq::length[m], double> a) { zero* a; };
   requires !requires(Q<isq::length[m], double> a) { zero / a; };
@@ -781,14 +780,6 @@ static_assert(2 * one / (1 * m) == 2 / (1 * m));
 
 // zero
 static_assert(quantity<si::metre>{zero} == 0 * m);
-
-static_assert((1 * m += zero) == 1 * m);
-static_assert((1 * m -= zero) == 1 * m);
-
-static_assert(1 * m + zero == 1 * m);
-static_assert(zero + 1 * m == 1 * m);
-static_assert(1 * m - zero == 1 * m);
-static_assert(zero - 1 * m == -1 * m);
 
 static_assert(0 * m == zero);
 static_assert(1 * m != zero);
