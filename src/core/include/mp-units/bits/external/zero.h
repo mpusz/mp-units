@@ -22,25 +22,36 @@
 
 #pragma once
 
+#include <compare>
+
 namespace mp_units {
 
 /**
  * @brief Universal abstraction for a value zero
  *
  * This type and value is meant to be used universally as a value zero for any numeric-like type.
- * It is really useful in comparison and sign checking, but can also be handy during initialization
- * (for example when a type does not support value initialization and does not want to zero
- * initialize its members during default construction) and assignment.
+ *
+ * It is really useful in comparison and sign checking, but can also be handy in:
+ * - initialization
+ *   - for example when a type does not support value-initialization and does not want to
+ *     zero-initialize its members during default-construction
+ * - assignment
+ *   - for example to assign a value zero to any numerical type in a generic code
  *
  * Moreover, as its value is known at compile-time, this type may enable some optimizations in
- * numerical libraries which will result in a faster runtime code.
+ * numerical libraries which will result in faster runtime code for:
+ * - addition
+ * - subtraction
+ * - multiplication
+ * - division (as LHS)
+ * - modulo (as LHS)
  */
 struct zero_t {
-  consteval zero_t& operator+=(zero_t) { return *this; }
-  consteval zero_t& operator-=(zero_t) { return *this; }
-  consteval zero_t& operator*=(zero_t) { return *this; }
-  consteval zero_t& operator/=(zero_t) = delete;
-  consteval zero_t& operator%=(zero_t) = delete;
+  consteval zero_t operator+=(zero_t) const { return zero_t{}; }
+  consteval zero_t operator-=(zero_t) const { return zero_t{}; }
+  consteval zero_t operator*=(zero_t) const { return zero_t{}; }
+  consteval zero_t operator/=(zero_t) const = delete;
+  consteval zero_t operator%=(zero_t) const = delete;
 
   [[nodiscard]] friend consteval zero_t operator+(zero_t, zero_t) { return zero_t{}; }
   [[nodiscard]] friend consteval zero_t operator-(zero_t, zero_t) { return zero_t{}; }
