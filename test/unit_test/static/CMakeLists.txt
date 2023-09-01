@@ -61,6 +61,7 @@ add_library(
     unit_test.cpp
     unit_symbol_test.cpp
     usc_test.cpp
+    zero_test.cpp
 )
 
 target_link_libraries(unit_tests_static PRIVATE mp-units::mp-units)
