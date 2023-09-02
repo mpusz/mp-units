@@ -74,7 +74,7 @@ using longitude =
 template<class CharT, class Traits, typename T>
 std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const latitude<T>& lat)
 {
-  if (lat.numerical_value() > 0)
+  if (lat > mp_units::zero)
     return os << "N" << lat.numerical_value();
   else
     return os << "S" << -lat.numerical_value();
@@ -83,7 +83,7 @@ std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>&
 template<class CharT, class Traits, typename T>
 std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const longitude<T>& lon)
 {
-  if (lon.numerical_value() > 0)
+  if (lon > mp_units::zero)
     return os << "E" << lon.numerical_value();
   else
     return os << "W" << -lon.numerical_value();
