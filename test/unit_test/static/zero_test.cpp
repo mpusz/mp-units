@@ -35,13 +35,15 @@ concept invalid_operations = requires {
 };
 static_assert(invalid_operations<zero>);
 
-static_assert((zero += zero) == zero);
-static_assert((zero -= zero) == zero);
-static_assert((zero *= zero) == zero);
+constexpr zero_t other_zero = zero;
 
-static_assert(zero + zero == zero);
-static_assert(zero - zero == zero);
-static_assert(zero * zero == zero);
+static_assert((zero += other_zero) == zero);
+static_assert((zero -= other_zero) == zero);
+static_assert((zero *= other_zero) == zero);
+
+static_assert(zero + other_zero == zero);
+static_assert(zero - other_zero == zero);
+static_assert(zero * other_zero == zero);
 
 static_assert(zero == zero);
 static_assert(!(zero != zero));
