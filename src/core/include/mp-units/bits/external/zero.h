@@ -60,7 +60,7 @@ struct zero_t {
   friend consteval zero_t operator%(zero_t, zero_t) = delete;
 
   [[nodiscard]] consteval bool operator==(zero_t) const { return true; }
-  [[nodiscard]] consteval auto operator<=>(zero_t) const { return std::partial_ordering::equivalent; }
+  [[nodiscard]] consteval auto operator<=>(zero_t) const { return std::strong_ordering::equal; }
 };
 inline constexpr zero_t zero;
 
