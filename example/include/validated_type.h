@@ -25,6 +25,7 @@
 #include <gsl/gsl-lite.hpp>
 #include <mp-units/bits/external/hacks.h>
 #include <mp-units/bits/fmt.h>
+#include <mp-units/customization_points.h>
 #include <ostream>
 #include <utility>
 
@@ -99,6 +100,9 @@ public:
     requires std::three_way_comparable<T>
   = default;
 };
+
+template<typename T, typename Validator>
+inline constexpr bool mp_units::is_scalar<validated_type<T, Validator>> = mp_units::is_scalar<T>;
 
 
 template<typename CharT, typename Traits, typename T, typename Validator>
