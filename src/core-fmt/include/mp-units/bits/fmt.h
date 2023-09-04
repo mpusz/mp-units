@@ -27,6 +27,8 @@
 //
 // For the license information refer to format.h.
 
+#pragma once
+
 #include <gsl/gsl-lite.hpp>
 #include <mp-units/bits/fmt_hacks.h>
 #include <concepts>
