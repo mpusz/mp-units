@@ -807,6 +807,15 @@ constexpr Out unit_symbol_impl(Out out, const derived_unit<Expr...>&, unit_symbo
 
 }  // namespace detail
 
+/**
+ * @brief Puts a space ' ' sign before a unit symbol
+ *
+ * Quantities of some units (e.g. degree, arcminute, arcsecond) should not be printed with the
+ * space between a number and a unit. For those a partial specialization with the value `false` should
+ * be provided.
+ */
+template<Unit auto U>
+inline constexpr bool space_before_unit_symbol = true;
 
 template<typename CharT = char, std::output_iterator<CharT> Out, Unit U>
 constexpr Out unit_symbol_to(Out out, U u, unit_symbol_formatting fmt = unit_symbol_formatting{})

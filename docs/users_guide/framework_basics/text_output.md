@@ -13,7 +13,36 @@ any quantity in the most user-friendly way.
     a much better solution, but the library does not have enough information to print it that way by itself.
 
 
-## Output Streams
+## Customization point
+
+The [SI Brochure](../appendix/references.md#SIBrochure) says:
+
+!!! quote "SI Brochure"
+
+    The numerical value always precedes the unit and a space is always used to separate the unit from
+    the number. ... The only exceptions to this rule are for the unit symbols for degree, minute and
+    second for plane angle, `°`, `′` and `″`, respectively, for which no space is left between the
+    numerical value and the unit symbol.
+
+To support the above, the library exposes `space_before_unit_symbol` customization point. By default,
+its value is `true` for all the units, so the space between a number and a unit will be present in the
+output text. To change this behavior, we have to provide a partial specialization for a specific unit:
+
+```cpp
+template<>
+inline constexpr bool space_before_unit_symbol<non_si::degree> = false;
+```
+
+!!! note
+
+    The above works only for [the default formatting](#default-formatting). In case we provide our own
+    format specification (i.e. `std::format("{:%Q %q}", q)`), the library will always obey this
+    specification for all the units (no matter of what is the actual value of the
+    `space_before_unit_symbol` customization point) and the separating space will always be present
+    in this case.
+
+
+## Output streams
 
 !!! tip
 

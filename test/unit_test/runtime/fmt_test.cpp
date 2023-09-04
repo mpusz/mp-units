@@ -236,6 +236,45 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
     }
   }
 
+  SECTION("no space before unit symbol")
+  {
+    SECTION("degree")
+    {
+      const auto q = 42 * deg;
+      os << q;
+
+      SECTION("iostream") { CHECK(os.str() == "42°"); }
+
+      SECTION("fmt with default format {} on a quantity") { CHECK(MP_UNITS_STD_FMT::format("{}", q) == os.str()); }
+
+      SECTION("fmt with format {:%Q %q} on a quantity") { CHECK(MP_UNITS_STD_FMT::format("{:%Q %q}", q) == "42 °"); }
+    }
+
+    SECTION("arcminute")
+    {
+      const auto q = 42 * arcmin;
+      os << q;
+
+      SECTION("iostream") { CHECK(os.str() == "42′"); }
+
+      SECTION("fmt with default format {} on a quantity") { CHECK(MP_UNITS_STD_FMT::format("{}", q) == os.str()); }
+
+      SECTION("fmt with format {:%Q %q} on a quantity") { CHECK(MP_UNITS_STD_FMT::format("{:%Q %q}", q) == "42 ′"); }
+    }
+
+    SECTION("arcsecond")
+    {
+      const auto q = 42 * arcsec;
+      os << q;
+
+      SECTION("iostream") { CHECK(os.str() == "42″"); }
+
+      SECTION("fmt with default format {} on a quantity") { CHECK(MP_UNITS_STD_FMT::format("{}", q) == os.str()); }
+
+      SECTION("fmt with format {:%Q %q} on a quantity") { CHECK(MP_UNITS_STD_FMT::format("{:%Q %q}", q) == "42 ″"); }
+    }
+  }
+
   SECTION("8-bit integers")
   {
     SECTION("signed positive")

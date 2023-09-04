@@ -40,7 +40,7 @@ void to_stream(std::basic_ostream<CharT, Traits>& os, const quantity<R, Rep>& q)
   else
     os << q.numerical_value();
   if constexpr (has_unit_symbol(get_unit(R))) {
-    os << " ";
+    if constexpr (space_before_unit_symbol<get_unit(R)>) os << " ";
     unit_symbol_to<CharT>(std::ostream_iterator<CharT>(os), get_unit(R));
   }
 }

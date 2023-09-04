@@ -123,4 +123,11 @@ inline constexpr bool unit_can_be_prefixed<non_si::hour> = false;
 template<>
 inline constexpr bool unit_can_be_prefixed<non_si::day> = false;
 
+template<>
+inline constexpr bool space_before_unit_symbol<non_si::degree> = false;
+template<>
+inline constexpr bool space_before_unit_symbol<non_si::arcminute> = false;
+template<>
+inline constexpr bool space_before_unit_symbol<non_si::arcsecond> = false;
+
 }  // namespace mp_units
