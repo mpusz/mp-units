@@ -200,6 +200,10 @@ static_assert(quantity<isq::length[km]>(1500 * m).numerical_value() == 1.5);
 // converting to a different unit
 ///////////////////////////////////
 
+static_assert(is_of_type<(2. * km).in(m), quantity<si::metre>>);
+static_assert(is_of_type<isq::length(2. * km).in(m), quantity<isq::length[m]>>);
+static_assert(is_of_type<isq::height(2. * km).in(m), quantity<isq::height[m]>>);
+
 static_assert(quantity<isq::length[km]>(2. * km).in(km).numerical_value() == 2.);
 static_assert(quantity<isq::length[km]>(2. * km).in(m).numerical_value() == 2000.);
 static_assert(quantity<isq::length[m]>(2000. * m).in(km).numerical_value() == 2.);

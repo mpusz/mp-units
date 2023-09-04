@@ -163,8 +163,8 @@ public:
   }
 
   template<Unit U>
-    requires detail::QuantityConvertibleTo<quantity, quantity<::mp_units::reference<quantity_spec, U{}>{}, Rep>>
-  [[nodiscard]] constexpr quantity<::mp_units::reference<quantity_spec, U{}>{}, Rep> in(U) const
+    requires detail::QuantityConvertibleTo<quantity, quantity<quantity_spec[U{}], Rep>>
+  [[nodiscard]] constexpr quantity<quantity_spec[U{}], Rep> in(U) const
   {
     return quantity<quantity_spec[U{}], Rep>{*this};
   }
