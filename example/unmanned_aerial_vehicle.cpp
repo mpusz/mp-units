@@ -96,9 +96,10 @@ double GeographicLibWhatsMyOffset(long double /* lat */, long double /* lon */)
 template<earth_gravity_model M>
 hae_altitude<M> to_hae(msl_altitude msl, position<long double> pos)
 {
-  const auto geoid_undulation = isq::height(
-    GeographicLibWhatsMyOffset(pos.lat.numerical_value_in(si::degree), pos.lon.numerical_value_in(si::degree)) *
-    si::metre);
+  const auto geoid_undulation =
+    isq::height(GeographicLibWhatsMyOffset(pos.lat.quantity_from_origin().numerical_value_in(si::degree),
+                                           pos.lon.quantity_from_origin().numerical_value_in(si::degree)) *
+                si::metre);
   return height_above_ellipsoid<M> + (msl - mean_sea_level - geoid_undulation);
 }
 

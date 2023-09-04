@@ -63,46 +63,53 @@ struct MP_UNITS_STD_FMT::formatter<geographic::msl_altitude> : formatter<geograp
 
 namespace geographic {
 
-template<typename T = double>
-using latitude =
-  mp_units::quantity<mp_units::isq::angular_measure[mp_units::si::degree], ranged_representation<T, -90, 90>>;
+inline constexpr struct equator : mp_units::absolute_point_origin<mp_units::isq::angular_measure> {
+} equator;
+inline constexpr struct prime_meridian : mp_units::absolute_point_origin<mp_units::isq::angular_measure> {
+} prime_meridian;
+
 
 template<typename T = double>
-using longitude =
-  mp_units::quantity<mp_units::isq::angular_measure[mp_units::si::degree], ranged_representation<T, -180, 180>>;
+using latitude = mp_units::quantity_point<mp_units::si::degree, equator, ranged_representation<T, -90, 90>>;
+
+template<typename T = double>
+using longitude = mp_units::quantity_point<mp_units::si::degree, prime_meridian, ranged_representation<T, -180, 180>>;
 
 template<class CharT, class Traits, typename T>
 std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const latitude<T>& lat)
 {
-  if (lat.numerical_value() > 0)
-    return os << "N" << lat.numerical_value();
+  if (lat > latitude<T>::zero())
+    return os << lat.quantity_from_origin() << " N";
   else
-    return os << "S" << -lat.numerical_value();
+    return os << -lat.quantity_from_origin() << " S";
 }
 
 template<class CharT, class Traits, typename T>
 std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const longitude<T>& lon)
 {
-  if (lon.numerical_value() > 0)
-    return os << "E" << lon.numerical_value();
+  if (lon > longitude<T>::zero())
+    return os << lon.quantity_from_origin() << " E";
   else
-    return os << "W" << -lon.numerical_value();
+    return os << -lon.quantity_from_origin() << " W";
 }
 
 inline namespace literals {
 
-constexpr latitude<long double> operator"" _N(long double v) { return latitude<long double>{v * mp_units::si::degree}; }
+constexpr latitude<long double> operator"" _N(long double v)
+{
+  return equator + ranged_representation<long double, -90, 90>{v} * mp_units::si::degree;
+}
 constexpr latitude<long double> operator"" _S(long double v)
 {
-  return latitude<long double>{-v * mp_units::si::degree};
+  return equator - ranged_representation<long double, -90, 90>{v} * mp_units::si::degree;
 }
 constexpr longitude<long double> operator"" _E(long double v)
 {
-  return longitude<long double>{v * mp_units::si::degree};
+  return prime_meridian + ranged_representation<long double, -180, 180>{v} * mp_units::si::degree;
 }
 constexpr longitude<long double> operator"" _W(long double v)
 {
-  return longitude<long double>{-v * mp_units::si::degree};
+  return prime_meridian - ranged_representation<long double, -180, 180>{v} * mp_units::si::degree;
 }
 
 }  // namespace literals
@@ -124,24 +131,28 @@ class std::numeric_limits<geographic::longitude<T>> : public numeric_limits<T> {
 };
 
 template<typename T>
-struct MP_UNITS_STD_FMT::formatter<geographic::latitude<T>> : formatter<T> {
+struct MP_UNITS_STD_FMT::formatter<geographic::latitude<T>> :
+    formatter<typename geographic::latitude<T>::quantity_type> {
   template<typename FormatContext>
   auto format(geographic::latitude<T> lat, FormatContext& ctx)
   {
-    MP_UNITS_STD_FMT::format_to(ctx.out(), "{}", lat > geographic::latitude<T>::zero() ? 'N' : 'S');
-    return formatter<T>::format(lat > geographic::latitude<T>::zero() ? lat.numerical_value() : -lat.numerical_value(),
-                                ctx);
+    formatter<typename geographic::latitude<T>::quantity_type>::format(
+      lat > geographic::latitude<T>::zero() ? lat.quantity_from_origin() : -lat.quantity_from_origin(), ctx);
+    MP_UNITS_STD_FMT::format_to(ctx.out(), "{}", lat > geographic::latitude<T>::zero() ? " N" : "S");
+    return ctx.out();
   }
 };
 
 template<typename T>
-struct MP_UNITS_STD_FMT::formatter<geographic::longitude<T>> : formatter<T> {
+struct MP_UNITS_STD_FMT::formatter<geographic::longitude<T>> :
+    formatter<typename geographic::longitude<T>::quantity_type> {
   template<typename FormatContext>
   auto format(geographic::longitude<T> lon, FormatContext& ctx)
   {
-    MP_UNITS_STD_FMT::format_to(ctx.out(), "{}", lon > geographic::longitude<T>::zero() ? 'E' : 'W');
-    return formatter<T>::format(lon > geographic::longitude<T>::zero() ? lon.numerical_value() : -lon.numerical_value(),
-                                ctx);
+    formatter<typename geographic::longitude<T>::quantity_type>::format(
+      lon > geographic::longitude<T>::zero() ? lon.quantity_from_origin() : -lon.quantity_from_origin(), ctx);
+    MP_UNITS_STD_FMT::format_to(ctx.out(), "{}", lon > geographic::longitude<T>::zero() ? " E" : " W");
+    return ctx.out();
   }
 };
 
@@ -163,19 +174,24 @@ distance spherical_distance(position<T> from, position<T> to)
 
   using isq::sin, isq::cos, isq::asin, isq::acos;
 
+  const auto& from_lat = from.lat.quantity_from_origin();
+  const auto& from_lon = from.lon.quantity_from_origin();
+  const auto& to_lat = to.lat.quantity_from_origin();
+  const auto& to_lon = to.lon.quantity_from_origin();
+
   // https://en.wikipedia.org/wiki/Great-circle_distance#Formulae
   if constexpr (sizeof(T) >= 8) {
     // spherical law of cosines
-    const auto central_angle = acos(sin(from.lat) * sin(to.lat) + cos(from.lat) * cos(to.lat) * cos(to.lon - from.lon));
-    // const auto central_angle = 2 * asin(sqrt(0.5 - cos(to.lat - from.lat) / 2 + cos(from.lat) * cos(to.lat) * (1
-    // - cos(lon2_rad - from.lon)) / 2));
+    const auto central_angle = acos(sin(from_lat) * sin(to_lat) + cos(from_lat) * cos(to_lat) * cos(to_lon - from_lon));
+    // const auto central_angle = 2 * asin(sqrt(0.5 - cos(to_lat - from_lat) / 2 + cos(from_lat) * cos(to_lat) * (1
+    // - cos(lon2_rad - from_lon)) / 2));
 
     return quantity_cast<isq::distance>(earth_radius * central_angle);
   } else {
     // the haversine formula
-    const auto sin_lat = sin((to.lat - from.lat) / 2);
-    const auto sin_lon = sin((to.lon - from.lon) / 2);
-    const auto central_angle = 2 * asin(sqrt(sin_lat * sin_lat + cos(from.lat) * cos(to.lat) * sin_lon * sin_lon));
+    const auto sin_lat = sin((to_lat - from_lat) / 2);
+    const auto sin_lon = sin((to_lon - from_lon) / 2);
+    const auto central_angle = 2 * asin(sqrt(sin_lat * sin_lat + cos(from_lat) * cos(to_lat) * sin_lon * sin_lon));
 
     return quantity_cast<isq::distance>(earth_radius * central_angle);
   }
