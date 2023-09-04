@@ -24,6 +24,8 @@
 
 #include <gsl/gsl-lite.hpp>
 #include <mp-units/bits/external/hacks.h>
+#include <mp-units/bits/fmt.h>
+#include <ostream>
 #include <utility>
 
 inline constexpr struct validated_tag {
@@ -96,4 +98,23 @@ public:
   auto operator<=>(const validated_type&) const
     requires std::three_way_comparable<T>
   = default;
+};
+
+
+template<typename CharT, typename Traits, typename T, typename Validator>
+std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os,
+                                              const validated_type<T, Validator>& v)
+  requires requires { os << v.value(); }
+{
+  return os << v.value();
+}
+
+
+template<typename T, typename Validator>
+struct MP_UNITS_STD_FMT::formatter<validated_type<T, Validator>> : formatter<T> {
+  template<typename FormatContext>
+  auto format(const validated_type<T, Validator>& v, FormatContext& ctx)
+  {
+    return formatter<T>::format(v.value(), ctx);
+  }
 };

@@ -24,6 +24,7 @@
 
 #include "validated_type.h"
 #include <mp-units/bits/external/hacks.h>
+#include <mp-units/bits/fmt.h>
 #include <mp-units/customization_points.h>
 #include <algorithm>
 #include <concepts>
@@ -53,3 +54,12 @@ public:
 
 template<typename T, auto Min, auto Max>
 inline constexpr bool mp_units::is_scalar<ranged_representation<T, Min, Max>> = mp_units::is_scalar<T>;
+
+template<typename T, auto Min, auto Max>
+struct MP_UNITS_STD_FMT::formatter<ranged_representation<T, Min, Max>> : formatter<T> {
+  template<typename FormatContext>
+  auto format(const ranged_representation<T, Min, Max>& v, FormatContext& ctx)
+  {
+    return formatter<T>::format(v.value(), ctx);
+  }
+};
