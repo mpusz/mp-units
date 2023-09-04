@@ -6,7 +6,17 @@ specific representation, and is represented in the library with a `quantity` cla
 
 ## Creating a quantity
 
-The quantity is created by multiplying a number with a predefined unit:
+The [SI Brochure](../appendix/references.md#SIBrochure) says:
+
+!!! quote "SI Brochure"
+
+    The value of the quantity is the product of the number and the unit. The space between the number
+    and the unit is regarded as a multiplication sign (just as a space between units implies
+    multiplication).
+
+
+Following the above, the value of a quantity in the **mp-units** library is created by multiplying
+a number with a predefined unit:
 
 ```cpp
 #include <mp-units/systems/si/si.h>
