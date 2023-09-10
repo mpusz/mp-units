@@ -34,6 +34,9 @@
 template<typename Rep = double>
 using vector = STD_LA::fixed_size_column_vector<Rep, 3>;
 
+template<class Rep>
+inline constexpr bool mp_units::treat_as_floating_point<vector<Rep>> = mp_units::treat_as_floating_point<Rep>;
+
 template<typename Rep>
 inline constexpr bool mp_units::is_vector<vector<Rep>> = true;
 
