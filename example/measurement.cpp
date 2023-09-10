@@ -118,6 +118,9 @@ private:
 }  // namespace
 
 template<class T>
+inline constexpr bool mp_units::treat_as_floating_point<measurement<T>> = mp_units::treat_as_floating_point<T>;
+
+template<class T>
 inline constexpr bool mp_units::is_scalar<measurement<T>> = true;
 template<class T>
 inline constexpr bool mp_units::is_vector<measurement<T>> = true;
