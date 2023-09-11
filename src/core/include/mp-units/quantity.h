@@ -145,7 +145,7 @@ public:
 #ifdef __cpp_explicit_this_parameter
   template<typename Self, Unit U>
     requires(U{} == unit)
-  [[nodiscard]] constexpr auto&& value_ref_in(this Self&& self, U) noexcept
+  [[nodiscard]] constexpr auto&& numerical_value_ref_in(this Self&& self, U) noexcept
   {
     return std::forward<Self>(self).value_;
   }
