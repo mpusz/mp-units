@@ -116,8 +116,8 @@ template<ReferenceOf<dimensionless> auto R, typename Rep>
            requires { std::exp(q.numerical_value_ref_in(q.unit)); }
 {
   using std::exp;
-  return value_cast<get_unit(R)>(make_quantity<detail::clone_reference_with<one>(R)>(
-    static_cast<Rep>(exp(value_cast<one>(q).numerical_value_ref_in(q.unit)))));
+  return value_cast<get_unit(R)>(
+    make_quantity<detail::clone_reference_with<one>(R)>(static_cast<Rep>(exp(q.force_numerical_value_in(q.unit)))));
 }
 
 /**
@@ -178,8 +178,8 @@ template<Unit auto To, auto R, typename Rep>
       return make_quantity<detail::clone_reference_with<To>(R)>(
         static_cast<Rep>(floor(q.numerical_value_ref_in(q.unit))));
     } else {
-      return handle_signed_results(make_quantity<detail::clone_reference_with<To>(R)>(
-        static_cast<Rep>(floor(value_cast<To>(q).numerical_value_ref_in(To)))));
+      return handle_signed_results(
+        make_quantity<detail::clone_reference_with<To>(R)>(static_cast<Rep>(floor(q.force_numerical_value_in(To)))));
     }
   } else {
     if constexpr (To == get_unit(R)) {
@@ -218,8 +218,8 @@ template<Unit auto To, auto R, typename Rep>
       return make_quantity<detail::clone_reference_with<To>(R)>(
         static_cast<Rep>(ceil(q.numerical_value_ref_in(q.unit))));
     } else {
-      return handle_signed_results(make_quantity<detail::clone_reference_with<To>(R)>(
-        static_cast<Rep>(ceil(value_cast<To>(q).numerical_value_ref_in(To)))));
+      return handle_signed_results(
+        make_quantity<detail::clone_reference_with<To>(R)>(static_cast<Rep>(ceil(q.force_numerical_value_in(To)))));
     }
   } else {
     if constexpr (To == get_unit(R)) {
@@ -327,7 +327,7 @@ template<ReferenceOf<angular_measure> auto R, typename Rep>
   using std::sin;
   if constexpr (!treat_as_floating_point<Rep>) {
     // check what is the return type when called with the integral value
-    using rep = decltype(sin(value_cast<si::radian>(q).numerical_value_in(si::radian)));
+    using rep = decltype(sin(q.force_numerical_value_in(si::radian)));
     // use this type ahead of calling the function to prevent narrowing if a unit conversion is needed
     return make_quantity<one>(sin(value_cast<rep>(q).numerical_value_in(si::radian)));
   } else
@@ -342,7 +342,7 @@ template<ReferenceOf<angular_measure> auto R, typename Rep>
   using std::cos;
   if constexpr (!treat_as_floating_point<Rep>) {
     // check what is the return type when called with the integral value
-    using rep = decltype(cos(value_cast<si::radian>(q).numerical_value_in(si::radian)));
+    using rep = decltype(cos(q.force_numerical_value_in(si::radian)));
     // use this type ahead of calling the function to prevent narrowing if a unit conversion is needed
     return make_quantity<one>(cos(value_cast<rep>(q).numerical_value_in(si::radian)));
   } else
@@ -357,7 +357,7 @@ template<ReferenceOf<angular_measure> auto R, typename Rep>
   using std::tan;
   if constexpr (!treat_as_floating_point<Rep>) {
     // check what is the return type when called with the integral value
-    using rep = decltype(tan(value_cast<si::radian>(q).numerical_value_in(si::radian)));
+    using rep = decltype(tan(q.force_numerical_value_in(si::radian)));
     // use this type ahead of calling the function to prevent narrowing if a unit conversion is needed
     return make_quantity<one>(tan(value_cast<rep>(q).numerical_value_in(si::radian)));
   } else
@@ -372,7 +372,7 @@ template<ReferenceOf<dimensionless> auto R, typename Rep>
   using std::asin;
   if constexpr (!treat_as_floating_point<Rep>) {
     // check what is the return type when called with the integral value
-    using rep = decltype(asin(value_cast<one>(q).numerical_value_in(one)));
+    using rep = decltype(asin(q.force_numerical_value_in(one)));
     // use this type ahead of calling the function to prevent narrowing if a unit conversion is needed
     return make_quantity<si::radian>(asin(value_cast<rep>(q).numerical_value_in(one)));
   } else
@@ -387,7 +387,7 @@ template<ReferenceOf<dimensionless> auto R, typename Rep>
   using std::acos;
   if constexpr (!treat_as_floating_point<Rep>) {
     // check what is the return type when called with the integral value
-    using rep = decltype(acos(value_cast<one>(q).numerical_value()));
+    using rep = decltype(acos(q.force_numerical_value_in(one)));
     // use this type ahead of calling the function to prevent narrowing if a unit conversion is needed
     return make_quantity<si::radian>(acos(value_cast<rep>(q).numerical_value_in(one)));
   } else
@@ -402,7 +402,7 @@ template<ReferenceOf<dimensionless> auto R, typename Rep>
   using std::atan;
   if constexpr (!treat_as_floating_point<Rep>) {
     // check what is the return type when called with the integral value
-    using rep = decltype(atan(value_cast<one>(q).numerical_value_in(one)));
+    using rep = decltype(atan(q.force_numerical_value_in(one)));
     // use this type ahead of calling the function to prevent narrowing if a unit conversion is needed
     return make_quantity<si::radian>(atan(value_cast<rep>(q).numerical_value_in(one)));
   } else
@@ -421,7 +421,7 @@ template<ReferenceOf<angle> auto R, typename Rep>
   using std::sin;
   if constexpr (!treat_as_floating_point<Rep>) {
     // check what is the return type when called with the integral value
-    using rep = decltype(sin(value_cast<radian>(q).numerical_value_in(radian)));
+    using rep = decltype(sin(q.force_numerical_value_in(radian)));
     // use this type ahead of calling the function to prevent narrowing if a unit conversion is needed
     return make_quantity<one>(sin(value_cast<rep>(q).numerical_value_in(radian)));
   } else
@@ -436,7 +436,7 @@ template<ReferenceOf<angle> auto R, typename Rep>
   using std::cos;
   if constexpr (!treat_as_floating_point<Rep>) {
     // check what is the return type when called with the integral value
-    using rep = decltype(cos(value_cast<radian>(q).numerical_value_in(radian)));
+    using rep = decltype(cos(q.force_numerical_value_in(radian)));
     // use this type ahead of calling the function to prevent narrowing if a unit conversion is needed
     return make_quantity<one>(cos(value_cast<rep>(q).numerical_value_in(radian)));
   } else
@@ -451,7 +451,7 @@ template<ReferenceOf<angle> auto R, typename Rep>
   using std::tan;
   if constexpr (!treat_as_floating_point<Rep>) {
     // check what is the return type when called with the integral value
-    using rep = decltype(tan(value_cast<radian>(q).numerical_value_in(radian)));
+    using rep = decltype(tan(q.force_numerical_value_in(radian)));
     // use this type ahead of calling the function to prevent narrowing if a unit conversion is needed
     return make_quantity<one>(tan(value_cast<rep>(q).numerical_value_in(radian)));
   } else
@@ -466,7 +466,7 @@ template<ReferenceOf<dimensionless> auto R, typename Rep>
   using std::asin;
   if constexpr (!treat_as_floating_point<Rep>) {
     // check what is the return type when called with the integral value
-    using rep = decltype(asin(value_cast<one>(q).numerical_value_in(one)));
+    using rep = decltype(asin(q.force_numerical_value_in(one)));
     // use this type ahead of calling the function to prevent narrowing if a unit conversion is needed
     return make_quantity<radian>(asin(value_cast<rep>(q).numerical_value_in(one)));
   } else
@@ -481,7 +481,7 @@ template<ReferenceOf<dimensionless> auto R, typename Rep>
   using std::acos;
   if constexpr (!treat_as_floating_point<Rep>) {
     // check what is the return type when called with the integral value
-    using rep = decltype(acos(value_cast<one>(q).numerical_value_in(one)));
+    using rep = decltype(acos(q.force_numerical_value_in(one)));
     // use this type ahead of calling the function to prevent narrowing if a unit conversion is needed
     return make_quantity<radian>(acos(value_cast<rep>(q).numerical_value_in(one)));
   } else
@@ -496,7 +496,7 @@ template<ReferenceOf<dimensionless> auto R, typename Rep>
   using std::atan;
   if constexpr (!treat_as_floating_point<Rep>) {
     // check what is the return type when called with the integral value
-    using rep = decltype(atan(value_cast<one>(q).numerical_value_in(one)));
+    using rep = decltype(atan(q.force_numerical_value_in(one)));
     // use this type ahead of calling the function to prevent narrowing if a unit conversion is needed
     return make_quantity<radian>(atan(value_cast<rep>(q).numerical_value_in(one)));
   } else

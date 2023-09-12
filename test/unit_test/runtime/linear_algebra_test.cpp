@@ -93,7 +93,7 @@ TEST_CASE("vector quantity", "[la]")
     SECTION("truncating")
     {
       const auto v = vector<int>{1001, 1002, 1003} * isq::position_vector[m];
-      CHECK(value_cast<km>(v).numerical_value_ref_in(km) == vector<int>{1, 1, 1});
+      CHECK(v.force_numerical_value_in(km) == vector<int>{1, 1, 1});
     }
   }
 

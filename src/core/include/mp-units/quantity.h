@@ -184,6 +184,13 @@ public:
   }
 
   template<Unit U>
+    requires requires(quantity q) { value_cast<U{}>(q); }
+  [[nodiscard]] constexpr rep force_numerical_value_in(U) const noexcept
+  {
+    return value_cast<U{}>(*this).numerical_value_in(U{});
+  }
+
+  template<Unit U>
     requires detail::QuantityConvertibleTo<quantity, quantity<quantity_spec[U{}], Rep>>
   [[nodiscard]] constexpr quantity<quantity_spec[U{}], Rep> in(U) const
   {
