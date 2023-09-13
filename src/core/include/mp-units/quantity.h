@@ -269,88 +269,97 @@ public:
   }
 
   // compound assignment operators
-  constexpr quantity& operator+=(const quantity& q)
-    requires requires(rep a, rep b) {
+  template<typename Q>
+    requires std::derived_from<std::remove_cvref_t<Q>, quantity> && requires(rep a, rep b) {
       {
         a += b
       } -> std::same_as<rep&>;
     }
+  friend constexpr decltype(auto) operator+=(Q&& lhs, const quantity& rhs)
   {
-    numerical_value_ += q.numerical_value_ref_in(unit);
-    return *this;
+    lhs.numerical_value_ += rhs.numerical_value_;
+    return std::forward<Q>(lhs);
   }
 
-  constexpr quantity& operator-=(const quantity& q)
-    requires requires(rep a, rep b) {
+  template<typename Q>
+    requires std::derived_from<std::remove_cvref_t<Q>, quantity> && requires(rep a, rep b) {
       {
         a -= b
       } -> std::same_as<rep&>;
     }
+  friend constexpr decltype(auto) operator-=(Q&& lhs, const quantity& rhs)
   {
-    numerical_value_ -= q.numerical_value_ref_in(unit);
-    return *this;
+    lhs.numerical_value_ -= rhs.numerical_value_;
+    return std::forward<Q>(lhs);
   }
 
-  constexpr quantity& operator%=(const quantity& q)
-    requires(!treat_as_floating_point<rep>) && requires(rep a, rep b) {
-      {
-        a %= b
-      } -> std::same_as<rep&>;
-    }
+  template<typename Q>
+    requires std::derived_from<std::remove_cvref_t<Q>, quantity> && (!treat_as_floating_point<rep>) &&
+             requires(rep a, rep b) {
+               {
+                 a %= b
+               } -> std::same_as<rep&>;
+             }
+  friend constexpr decltype(auto) operator%=(Q&& lhs, const quantity& rhs)
+
   {
-    gsl_ExpectsAudit(q != zero());
-    numerical_value_ %= q.numerical_value_ref_in(unit);
-    return *this;
+    gsl_ExpectsAudit(rhs != zero());
+    lhs.numerical_value_ %= rhs.numerical_value_;
+    return std::forward<Q>(lhs);
   }
 
-  template<typename Value>
-    requires(!Quantity<Value>) && requires(rep a, const Value b) {
-      {
-        a *= b
-      } -> std::same_as<rep&>;
-    }
-  constexpr quantity& operator*=(const Value& v)
+  template<typename Q, typename Value>
+    requires std::derived_from<std::remove_cvref_t<Q>, quantity> && (!Quantity<Value>) &&
+             requires(rep a, const Value b) {
+               {
+                 a *= b
+               } -> std::same_as<rep&>;
+             }
+  friend constexpr decltype(auto) operator*=(Q&& lhs, const Value& v)
   {
-    numerical_value_ *= v;
-    return *this;
+    lhs.numerical_value_ *= v;
+    return std::forward<Q>(lhs);
   }
 
-  template<QuantityOf<dimension_one> Q>
-    requires(Q::unit == ::mp_units::one) && requires(rep a, const typename Q::rep b) {
-      {
-        a *= b
-      } -> std::same_as<rep&>;
-    }
-  constexpr quantity& operator*=(const Q& rhs)
+  template<typename Q1, QuantityOf<dimension_one> Q2>
+    requires std::derived_from<std::remove_cvref_t<Q1>, quantity> && (Q2::unit == ::mp_units::one) &&
+             requires(rep a, const typename Q2::rep b) {
+               {
+                 a *= b
+               } -> std::same_as<rep&>;
+             }
+  friend constexpr decltype(auto) operator*=(Q1&& lhs, const Q2& rhs)
   {
-    numerical_value_ *= rhs.numerical_value_ref_in(::mp_units::one);
-    return *this;
+    lhs.numerical_value_ *= rhs.numerical_value_;
+    return std::forward<Q1>(lhs);
   }
 
-  template<typename Value>
-    requires(!Quantity<Value>) && requires(rep a, const Value b) {
-      {
-        a /= b
-      } -> std::same_as<rep&>;
-    }
-  constexpr quantity& operator/=(const Value& v)
+  template<typename Q, typename Value>
+    requires std::derived_from<std::remove_cvref_t<Q>, quantity> && (!Quantity<Value>) &&
+             requires(rep a, const Value b) {
+               {
+                 a /= b
+               } -> std::same_as<rep&>;
+             }
+  friend constexpr decltype(auto) operator/=(Q&& lhs, const Value& v)
   {
     gsl_ExpectsAudit(v != quantity_values<Value>::zero());
-    numerical_value_ /= v;
-    return *this;
+    lhs.numerical_value_ /= v;
+    return std::forward<Q>(lhs);
   }
 
-  template<QuantityOf<dimension_one> Q>
-    requires(Q::unit == ::mp_units::one) && requires(rep a, const typename Q::rep b) {
-      {
-        a /= b
-      } -> std::same_as<rep&>;
-    }
-  constexpr quantity& operator/=(const Q& rhs)
+  template<typename Q1, QuantityOf<dimension_one> Q2>
+    requires std::derived_from<std::remove_cvref_t<Q1>, quantity> && (Q2::unit == ::mp_units::one) &&
+             requires(rep a, const typename Q2::rep b) {
+               {
+                 a /= b
+               } -> std::same_as<rep&>;
+             }
+  friend constexpr decltype(auto) operator/=(Q1&& lhs, const Q2& rhs)
   {
     gsl_ExpectsAudit(rhs != rhs.zero());
-    numerical_value_ /= rhs.numerical_value_ref_in(::mp_units::one);
-    return *this;
+    lhs.numerical_value_ /= rhs.numerical_value_;
+    return std::forward<Q1>(lhs);
   }
 
 private:
