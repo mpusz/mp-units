@@ -162,7 +162,7 @@ template<Unit auto To, auto R, typename Rep>
 
            requires { std::floor(q.numerical_value_ref_in(q.unit)); }) &&
           (To == get_unit(R) || requires {
-            ::mp_units::value_cast<To>(q);
+            q.force_in(To);
             quantity_values<Rep>::one();
           })
 {
@@ -183,9 +183,9 @@ template<Unit auto To, auto R, typename Rep>
     }
   } else {
     if constexpr (To == get_unit(R)) {
-      return value_cast<To>(q);
+      return q.force_in(To);
     } else {
-      return handle_signed_results(value_cast<To>(q));
+      return handle_signed_results(q.force_in(To));
     }
   }
 }
@@ -202,7 +202,7 @@ template<Unit auto To, auto R, typename Rep>
 
            requires { std::ceil(q.numerical_value_ref_in(q.unit)); }) &&
           (To == get_unit(R) || requires {
-            ::mp_units::value_cast<To>(q);
+            q.force_in(To);
             quantity_values<Rep>::one();
           })
 {
@@ -223,9 +223,9 @@ template<Unit auto To, auto R, typename Rep>
     }
   } else {
     if constexpr (To == get_unit(R)) {
-      return value_cast<To>(q);
+      return q.force_in(To);
     } else {
-      return handle_signed_results(value_cast<To>(q));
+      return handle_signed_results(q.force_in(To));
     }
   }
 }
@@ -254,7 +254,7 @@ template<Unit auto To, auto R, typename Rep>
       return make_quantity<detail::clone_reference_with<To>(R)>(
         static_cast<Rep>(round(q.numerical_value_ref_in(q.unit))));
     } else {
-      return value_cast<To>(q);
+      return q.force_in(To);
     }
   } else {
     const auto res_low = mp_units::floor<To>(q);
