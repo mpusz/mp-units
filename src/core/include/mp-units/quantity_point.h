@@ -82,7 +82,7 @@ public:
   using rep = Rep;
   using quantity_type = quantity<reference, Rep>;
 
-  quantity_type q_;  // needs to be public for a structural type
+  quantity_type quantity_from_origin_;  // needs to be public for a structural type
 
   // static member functions
   [[nodiscard]] static constexpr quantity_point zero() noexcept
@@ -112,7 +112,7 @@ public:
     requires std::constructible_from<quantity_type, typename QP::quantity_type>
   // TODO add perfect forwarding
   constexpr explicit(!std::convertible_to<typename QP::quantity_type, quantity_type>) quantity_point(const QP& qp) :
-      q_([&] {
+      quantity_from_origin_([&] {
         if constexpr (is_same_v<std::remove_const_t<decltype(point_origin)>,
                                 std::remove_const_t<decltype(QP::point_origin)>>)
           return qp.quantity_ref_from(point_origin);
@@ -128,7 +128,8 @@ public:
              std::convertible_to<
                quantity<quantity_point_like_traits<QP>::reference, typename quantity_point_like_traits<QP>::rep>,
                quantity_type>
-  constexpr explicit quantity_point(const QP& qp) : q_(quantity_point_like_traits<QP>::quantity_from_origin(qp))
+  constexpr explicit quantity_point(const QP& qp) :
+      quantity_from_origin_(quantity_point_like_traits<QP>::quantity_from_origin(qp))
   {
   }
 
@@ -149,28 +150,28 @@ public:
   template<typename Self, std::same_as<std::remove_const_t<decltype(PO)>> PO2>
   [[nodiscard]] constexpr auto&& quantity_ref_from(this Self&& self, PO2) noexcept
   {
-    return std::forward<Self>(self).q_;
+    return std::forward<Self>(self).quantity_from_origin_;
   }
 #else
   template<std::same_as<std::remove_const_t<decltype(PO)>> PO2>
   [[nodiscard]] constexpr quantity_type& quantity_ref_from(PO2) & noexcept
   {
-    return q_;
+    return quantity_from_origin_;
   }
   template<std::same_as<std::remove_const_t<decltype(PO)>> PO2>
   [[nodiscard]] constexpr const quantity_type& quantity_ref_from(PO2) const& noexcept
   {
-    return q_;
+    return quantity_from_origin_;
   }
   template<std::same_as<std::remove_const_t<decltype(PO)>> PO2>
   [[nodiscard]] constexpr quantity_type&& quantity_ref_from(PO2) && noexcept
   {
-    return std::move(q_);
+    return std::move(quantity_from_origin_);
   }
   template<std::same_as<std::remove_const_t<decltype(PO)>> PO2>
   [[nodiscard]] constexpr const quantity_type&& quantity_ref_from(PO2) const&& noexcept
   {
-    return std::move(q_);
+    return std::move(quantity_from_origin_);
   }
 #endif
 
@@ -190,43 +191,43 @@ public:
 
   // member unary operators
   constexpr quantity_point& operator++()
-    requires requires { ++q_; }
+    requires requires { ++quantity_from_origin_; }
   {
-    ++q_;
+    ++quantity_from_origin_;
     return *this;
   }
 
   [[nodiscard]] constexpr quantity_point operator++(int)
-    requires requires { q_++; }
+    requires requires { quantity_from_origin_++; }
   {
-    return quantity_point(q_++);
+    return quantity_point(quantity_from_origin_++);
   }
 
   constexpr quantity_point& operator--()
-    requires requires { --q_; }
+    requires requires { --quantity_from_origin_; }
   {
-    --q_;
+    --quantity_from_origin_;
     return *this;
   }
 
   [[nodiscard]] constexpr quantity_point operator--(int)
-    requires requires { q_--; }
+    requires requires { quantity_from_origin_--; }
   {
-    return quantity_point(q_--);
+    return quantity_point(quantity_from_origin_--);
   }
 
   // compound assignment operators
   constexpr quantity_point& operator+=(const quantity_type& q)
-    requires requires { q_ += q; }
+    requires requires { quantity_from_origin_ += q; }
   {
-    q_ += q;
+    quantity_from_origin_ += q;
     return *this;
   }
 
   constexpr quantity_point& operator-=(const quantity_type& q)
-    requires requires { q_ -= q; }
+    requires requires { quantity_from_origin_ -= q; }
   {
-    q_ -= q;
+    quantity_from_origin_ -= q;
     return *this;
   }
 
@@ -242,7 +243,7 @@ private:
   template<Quantity Q>
     requires std::constructible_from<quantity_type, Q> &&
              ReferenceOf<std::remove_const_t<decltype(Q::reference)>, PO.quantity_spec>
-  constexpr explicit quantity_point(Q&& q) : q_(std::forward<Q>(q))
+  constexpr explicit quantity_point(Q&& q) : quantity_from_origin_(std::forward<Q>(q))
   {
   }
 };
