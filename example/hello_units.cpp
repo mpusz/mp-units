@@ -44,13 +44,13 @@ int main()
   using namespace mp_units::si::unit_symbols;
   using namespace mp_units::international::unit_symbols;
 
-  constexpr auto v1 = 110 * (km / h);
-  constexpr auto v2 = 70 * mph;
-  constexpr auto v3 = avg_speed(220. * km, 2 * h);
-  constexpr auto v4 = avg_speed(isq::distance(140. * mi), 2 * isq::duration[h]);
-  constexpr auto v5 = v3.in(m / s);
-  constexpr auto v6 = value_cast<m / s>(v4);
-  constexpr auto v7 = value_cast<int>(v6);
+  constexpr quantity v1 = 110 * (km / h);
+  constexpr quantity v2 = 70 * mph;
+  constexpr quantity v3 = avg_speed(220. * km, 2 * h);
+  constexpr quantity v4 = avg_speed(isq::distance(140. * mi), 2 * isq::duration[h]);
+  constexpr quantity v5 = v3.in(m / s);
+  constexpr quantity v6 = value_cast<m / s>(v4);
+  constexpr quantity v7 = value_cast<int>(v6);
 
   std::cout << v1 << '\n';                                                // 110 km/h
   std::cout << v2 << '\n';                                                // 70 mi/h
