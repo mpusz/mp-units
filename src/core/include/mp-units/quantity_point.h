@@ -146,34 +146,20 @@ public:
   }
 
   // data access
-#ifdef __cpp_explicit_this_parameter
-  template<typename Self, std::same_as<std::remove_const_t<decltype(PO)>> PO2>
-  [[nodiscard]] constexpr auto&& quantity_ref_from(this Self&& self, PO2) noexcept
-  {
-    return std::forward<Self>(self).quantity_from_origin_;
-  }
-#else
   template<std::same_as<std::remove_const_t<decltype(PO)>> PO2>
   [[nodiscard]] constexpr quantity_type& quantity_ref_from(PO2) & noexcept
   {
     return quantity_from_origin_;
   }
+
   template<std::same_as<std::remove_const_t<decltype(PO)>> PO2>
   [[nodiscard]] constexpr const quantity_type& quantity_ref_from(PO2) const& noexcept
   {
     return quantity_from_origin_;
   }
+
   template<std::same_as<std::remove_const_t<decltype(PO)>> PO2>
-  [[nodiscard]] constexpr quantity_type&& quantity_ref_from(PO2) && noexcept
-  {
-    return std::move(quantity_from_origin_);
-  }
-  template<std::same_as<std::remove_const_t<decltype(PO)>> PO2>
-  [[nodiscard]] constexpr const quantity_type&& quantity_ref_from(PO2) const&& noexcept
-  {
-    return std::move(quantity_from_origin_);
-  }
-#endif
+  constexpr const quantity_type&& quantity_ref_from(PO2) const&& noexcept = delete;
 
   template<PointOrigin PO2>
     requires requires { quantity_point{} - PO2{}; }
