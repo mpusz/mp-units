@@ -85,7 +85,7 @@ using common_quantity_for = quantity<common_reference(Q1::reference, Q2::referen
 template<Reference auto R, RepresentationOf<get_quantity_spec(R).character> Rep = double>
 class quantity {
 public:
-  Rep value_;  // needs to be public for a structural type
+  Rep numerical_value_;  // needs to be public for a structural type
 
   // member types and values
   static constexpr Reference auto reference = R;
@@ -126,7 +126,7 @@ public:
 
   template<detail::QuantityConvertibleTo<quantity> Q>
   constexpr explicit(!std::convertible_to<typename Q::rep, Rep>) quantity(const Q& q) :
-      value_(detail::sudo_cast<quantity>(q).numerical_value_ref_in(unit))
+      numerical_value_(detail::sudo_cast<quantity>(q).numerical_value_ref_in(unit))
   {
   }
 
@@ -162,32 +162,32 @@ public:
     requires(U{} == unit)
   [[nodiscard]] constexpr auto&& numerical_value_ref_in(this Self&& self, U) noexcept
   {
-    return std::forward<Self>(self).value_;
+    return std::forward<Self>(self).numerical_value_;
   }
 #else
   template<Unit U>
     requires(U{} == unit)
   [[nodiscard]] constexpr rep& numerical_value_ref_in(U) & noexcept
   {
-    return value_;
+    return numerical_value_;
   }
   template<Unit U>
     requires(U{} == unit)
   [[nodiscard]] constexpr const rep& numerical_value_ref_in(U) const& noexcept
   {
-    return value_;
+    return numerical_value_;
   }
   template<Unit U>
     requires(U{} == unit)
   [[nodiscard]] constexpr rep&& numerical_value_ref_in(U) && noexcept
   {
-    return std::move(value_);
+    return std::move(numerical_value_);
   }
   template<Unit U>
     requires(U{} == unit)
   [[nodiscard]] constexpr const rep&& numerical_value_ref_in(U) const&& noexcept
   {
-    return std::move(value_);
+    return std::move(numerical_value_);
   }
 #endif
 
@@ -233,7 +233,7 @@ public:
       } -> std::same_as<rep&>;
     }
   {
-    ++value_;
+    ++numerical_value_;
     return *this;
   }
 
@@ -244,7 +244,7 @@ public:
       } -> std::common_with<rep>;
     }
   {
-    return make_quantity<reference>(value_++);
+    return make_quantity<reference>(numerical_value_++);
   }
 
   constexpr quantity& operator--()
@@ -254,7 +254,7 @@ public:
       } -> std::same_as<rep&>;
     }
   {
-    --value_;
+    --numerical_value_;
     return *this;
   }
 
@@ -265,7 +265,7 @@ public:
       } -> std::common_with<rep>;
     }
   {
-    return make_quantity<reference>(value_--);
+    return make_quantity<reference>(numerical_value_--);
   }
 
   // compound assignment operators
@@ -276,7 +276,7 @@ public:
       } -> std::same_as<rep&>;
     }
   {
-    value_ += q.numerical_value_ref_in(unit);
+    numerical_value_ += q.numerical_value_ref_in(unit);
     return *this;
   }
 
@@ -287,7 +287,7 @@ public:
       } -> std::same_as<rep&>;
     }
   {
-    value_ -= q.numerical_value_ref_in(unit);
+    numerical_value_ -= q.numerical_value_ref_in(unit);
     return *this;
   }
 
@@ -299,7 +299,7 @@ public:
     }
   {
     gsl_ExpectsAudit(q != zero());
-    value_ %= q.numerical_value_ref_in(unit);
+    numerical_value_ %= q.numerical_value_ref_in(unit);
     return *this;
   }
 
@@ -311,7 +311,7 @@ public:
     }
   constexpr quantity& operator*=(const Value& v)
   {
-    value_ *= v;
+    numerical_value_ *= v;
     return *this;
   }
 
@@ -323,7 +323,7 @@ public:
     }
   constexpr quantity& operator*=(const Q& rhs)
   {
-    value_ *= rhs.numerical_value_ref_in(::mp_units::one);
+    numerical_value_ *= rhs.numerical_value_ref_in(::mp_units::one);
     return *this;
   }
 
@@ -336,7 +336,7 @@ public:
   constexpr quantity& operator/=(const Value& v)
   {
     gsl_ExpectsAudit(v != quantity_values<Value>::zero());
-    value_ /= v;
+    numerical_value_ /= v;
     return *this;
   }
 
@@ -349,7 +349,7 @@ public:
   constexpr quantity& operator/=(const Q& rhs)
   {
     gsl_ExpectsAudit(rhs != rhs.zero());
-    value_ /= rhs.numerical_value_ref_in(::mp_units::one);
+    numerical_value_ /= rhs.numerical_value_ref_in(::mp_units::one);
     return *this;
   }
 
@@ -363,7 +363,7 @@ private:
 
   template<typename Value>
     requires std::constructible_from<rep, Value&&>
-  constexpr explicit quantity(Value&& v) : value_(std::forward<Value>(v))
+  constexpr explicit quantity(Value&& v) : numerical_value_(std::forward<Value>(v))
   {
   }
 };
