@@ -5,6 +5,7 @@ Here is a small example of operations possible on scalar quantities:
 ```cpp
 #include <mp-units/systems/si/si.h>
 
+using namespace mp_units;
 using namespace mp_units::si::unit_symbols;
 
 // simple numeric operations
@@ -14,7 +15,7 @@ static_assert(10 * km / 2 == 5 * km);
 static_assert(1 * h == 3600 * s);
 static_assert(1 * km + 1 * m == 1001 * m);
 
-// dimension conversions
+// derived quantities
 inline constexpr auto kmph = km / h;
 static_assert(1 * km / (1 * s) == 1000 * (m / s));
 static_assert(2 * kmph * (2 * h) == 4 * km);
@@ -22,12 +23,12 @@ static_assert(2 * km / (2 * kmph) == 1 * h);
 
 static_assert(2 * m * (3 * m) == 6 * m2);
 
-static_assert(10 * km / (5 * km) == 2);
+static_assert(10 * km / (5 * km) == 2 * one);
 
 static_assert(1000 / (1 * s) == 1 * kHz);
 ```
 
-!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/j8afKnarv)"
+!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/81Ev7qhTd)"
 
 
 This library requires some C++20 features ([concepts and constraints](https://en.cppreference.com/w/cpp/language/constraints),
@@ -58,13 +59,13 @@ int main()
   using namespace mp_units::si::unit_symbols;
   using namespace mp_units::international::unit_symbols;
 
-  constexpr auto v1 = 110 * (km / h);
-  constexpr auto v2 = 70 * mph;
-  constexpr auto v3 = avg_speed(220. * isq::distance[km], 2 * h);
-  constexpr auto v4 = avg_speed(isq::distance(140. * mi), 2 * h);
-  constexpr auto v5 = v3.in(m / s);
-  constexpr auto v6 = value_cast<m / s>(v4);
-  constexpr auto v7 = value_cast<int>(v6);
+  constexpr quantity v1 = 110 * (km / h);
+  constexpr quantity v2 = 70 * mph;
+  constexpr quantity v3 = avg_speed(220. * isq::distance[km], 2 * h);
+  constexpr quantity v4 = avg_speed(isq::distance(140. * mi), 2 * h);
+  constexpr quantity v5 = v3.in(m / s);
+  constexpr quantity v6 = value_cast<m / s>(v4);
+  constexpr quantity v7 = value_cast<int>(v6);
 
   std::cout << v1 << '\n';                                  // 110 km/h
   std::cout << v2 << '\n';                                  // 70 mi/h
@@ -76,7 +77,7 @@ int main()
 }
 ```
 
-!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/E4rvPGa3n)"
+!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/Tsesa1Pvq)"
 
 !!! note
 

@@ -6,7 +6,7 @@ tags:
 
 # `hello_units`
 
-!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/E4rvPGa3n)"
+!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/Tsesa1Pvq)"
 
 This is a really simple example showcasing the features of the **mp-units** library.
 
