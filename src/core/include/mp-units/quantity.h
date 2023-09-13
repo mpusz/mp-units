@@ -262,7 +262,7 @@ public:
       } -> std::same_as<rep&>;
     }
   {
-    gsl_ExpectsAudit(q.numerical_value() != quantity_values<rep>::zero());
+    gsl_ExpectsAudit(q != zero());
     value_ %= q.numerical_value();
     return *this;
   }
@@ -312,7 +312,7 @@ public:
     }
   constexpr quantity& operator/=(const Q& rhs)
   {
-    gsl_ExpectsAudit(rhs.numerical_value() != quantity_values<typename Q::rep>::zero());
+    gsl_ExpectsAudit(rhs != rhs.zero());
     value_ /= rhs.numerical_value();
     return *this;
   }
@@ -358,7 +358,7 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
           detail::InvocableQuantities<std::modulus<>, quantity<R1, Rep1>, quantity<R2, Rep2>>
 [[nodiscard]] constexpr Quantity auto operator%(const quantity<R1, Rep1>& lhs, const quantity<R2, Rep2>& rhs)
 {
-  gsl_ExpectsAudit(rhs.numerical_value() != quantity_values<Rep1>::zero());
+  gsl_ExpectsAudit(rhs != rhs.zero());
   using ret = detail::common_quantity_for<std::modulus<>, quantity<R1, Rep1>, quantity<R2, Rep2>>;
   return make_quantity<ret::reference>(ret(lhs).numerical_value() % ret(rhs).numerical_value());
 }
@@ -391,7 +391,7 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
   requires detail::InvokeResultOf<(get_quantity_spec(R1) / get_quantity_spec(R2)).character, std::divides<>, Rep1, Rep2>
 [[nodiscard]] constexpr Quantity auto operator/(const quantity<R1, Rep1>& lhs, const quantity<R2, Rep2>& rhs)
 {
-  gsl_ExpectsAudit(rhs.numerical_value() != quantity_values<Rep2>::zero());
+  gsl_ExpectsAudit(rhs != rhs.zero());
   return make_quantity<R1 / R2>(lhs.numerical_value() / rhs.numerical_value());
 }
 
