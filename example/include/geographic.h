@@ -24,6 +24,7 @@
 
 #include "ranged_representation.h"
 #include <mp-units/bits/fmt_hacks.h>
+#include <mp-units/compare.h>
 #include <mp-units/format.h>
 #include <mp-units/math.h>
 #include <mp-units/quantity.h>
@@ -78,7 +79,7 @@ using longitude = mp_units::quantity_point<mp_units::si::degree, prime_meridian,
 template<class CharT, class Traits, typename T>
 std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const latitude<T>& lat)
 {
-  if (lat > latitude<T>::zero())
+  if (is_gt_zero(lat))
     return os << lat.quantity_from_origin() << " N";
   else
     return os << -lat.quantity_from_origin() << " S";
@@ -87,7 +88,7 @@ std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>&
 template<class CharT, class Traits, typename T>
 std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const longitude<T>& lon)
 {
-  if (lon > longitude<T>::zero())
+  if (is_gt_zero(lon))
     return os << lon.quantity_from_origin() << " E";
   else
     return os << -lon.quantity_from_origin() << " W";
@@ -137,8 +138,8 @@ struct MP_UNITS_STD_FMT::formatter<geographic::latitude<T>> :
   auto format(geographic::latitude<T> lat, FormatContext& ctx)
   {
     formatter<typename geographic::latitude<T>::quantity_type>::format(
-      lat > geographic::latitude<T>::zero() ? lat.quantity_from_origin() : -lat.quantity_from_origin(), ctx);
-    MP_UNITS_STD_FMT::format_to(ctx.out(), "{}", lat > geographic::latitude<T>::zero() ? " N" : "S");
+      is_gt_zero(lat) ? lat.quantity_from_origin() : -lat.quantity_from_origin(), ctx);
+    MP_UNITS_STD_FMT::format_to(ctx.out(), "{}", is_gt_zero(lat) ? " N" : "S");
     return ctx.out();
   }
 };
@@ -150,8 +151,8 @@ struct MP_UNITS_STD_FMT::formatter<geographic::longitude<T>> :
   auto format(geographic::longitude<T> lon, FormatContext& ctx)
   {
     formatter<typename geographic::longitude<T>::quantity_type>::format(
-      lon > geographic::longitude<T>::zero() ? lon.quantity_from_origin() : -lon.quantity_from_origin(), ctx);
-    MP_UNITS_STD_FMT::format_to(ctx.out(), "{}", lon > geographic::longitude<T>::zero() ? " E" : " W");
+      is_gt_zero(lon) ? lon.quantity_from_origin() : -lon.quantity_from_origin(), ctx);
+    MP_UNITS_STD_FMT::format_to(ctx.out(), "{}", is_gt_zero(lon) ? " E" : " W");
     return ctx.out();
   }
 };
