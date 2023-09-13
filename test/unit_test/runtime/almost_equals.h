@@ -36,8 +36,8 @@ struct AlmostEqualsMatcher : Catch::Matchers::MatcherGenericBase {
   {
     using std::abs;
     using common = std::common_type_t<T, U>;
-    const auto x = common(target_).numerical_value_ref_in(common::unit);
-    const auto y = common(other).numerical_value_ref_in(common::unit);
+    const auto x = common(target_).numerical_value_in(common::unit);
+    const auto y = common(other).numerical_value_in(common::unit);
     const auto maxXYOne = std::max({typename T::rep{1}, abs(x), abs(y)});
     return abs(x - y) <= std::numeric_limits<typename T::rep>::epsilon() * maxXYOne;
   }

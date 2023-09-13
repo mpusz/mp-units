@@ -111,8 +111,7 @@ struct quantity_spec_interface {
     requires Quantity<std::remove_cvref_t<Q>> &&
              (explicitly_convertible(std::remove_reference_t<Q>::quantity_spec, self))
   {
-    return make_quantity<reference<self, std::remove_cvref_t<Q>::unit>{}>(
-      std::forward<Q>(q).numerical_value_ref_in(q.unit));
+    return make_quantity<reference<self, std::remove_cvref_t<Q>::unit>{}>(std::forward<Q>(q).numerical_value_);
   }
 #else
   template<typename Self_ = Self, UnitOf<Self_{}> U>
@@ -129,8 +128,7 @@ struct quantity_spec_interface {
              (explicitly_convertible(std::remove_reference_t<Q>::quantity_spec, Self_{}))
   [[nodiscard]] constexpr Quantity auto operator()(Q&& q) const
   {
-    return make_quantity<reference<Self{}, std::remove_cvref_t<Q>::unit>{}>(
-      std::forward<Q>(q).numerical_value_ref_in(q.unit));
+    return make_quantity<reference<Self{}, std::remove_cvref_t<Q>::unit>{}>(std::forward<Q>(q).numerical_value_);
   }
 #endif
 };
@@ -309,8 +307,7 @@ struct quantity_spec<Self, QS, Args...> : std::remove_const_t<decltype(QS)> {
              (explicitly_convertible(std::remove_reference_t<Q>::quantity_spec, Self_{}))
   [[nodiscard]] constexpr Quantity auto operator()(Q&& q) const
   {
-    return make_quantity<reference<Self{}, std::remove_cvref_t<Q>::unit>{}>(
-      std::forward<Q>(q).numerical_value_ref_in(q.unit));
+    return make_quantity<reference<Self{}, std::remove_cvref_t<Q>::unit>{}>(std::forward<Q>(q).numerical_value_);
   }
 #endif
 };

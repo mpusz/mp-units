@@ -224,9 +224,9 @@ struct quantity_formatter {
   const quantity_format_specs<CharT>& specs;
   Locale loc;
 
-  explicit quantity_formatter(OutputIt o, quantity<Reference, Rep> q, const quantity_format_specs<CharT>& fspecs,
+  explicit quantity_formatter(OutputIt o, const quantity<Reference, Rep>& q, const quantity_format_specs<CharT>& fspecs,
                               Locale lc) :
-      out(o), val(std::move(q).numerical_value_ref_in(q.unit)), specs(fspecs), loc(std::move(lc))
+      out(o), val(q.numerical_value_ref_in(q.unit)), specs(fspecs), loc(std::move(lc))
   {
   }
 
