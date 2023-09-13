@@ -275,6 +275,59 @@ static_assert(1 * h % (59 * min) == 1 * min);
 ```
 
 
+## Comparison against zero
+
+In our code, we often want to compare the value of a quantity against zero. For example, we do it
+every time when we want to ensure that we deal with a non-zero or positive value.
+
+We could implement such checks in the following way:
+
+```cpp
+if (q1 / q2 != 0 * (m / s))
+  // ...
+```
+
+The above would work (assuming we are dealing with the quantity of speed), but could be suboptimal
+if the result of `q1 / q2` is not expressed in `m / s`. To eliminate the need for conversion, we
+need to write:
+
+```cpp
+if (auto q = q1 / q2; q != q.zero())
+  // ...
+```
+
+but that is a bit inconvenient, and inexperienced users could be unaware of this technique
+and its reasons.
+
+For the above reasons, the library provides dedicated interfaces to compare against zero that
+follow the naming convention of
+[named comparison functions](https://en.cppreference.com/w/cpp/utility/compare/named_comparison_functions)
+in the C++ Standard Library. The _mp-units/compare.h_ header file exposes the following functions:
+
+- `is_eq_zero`
+- `is_neq_zero`
+- `is_lt_zero`
+- `is_gt_zero`
+- `is_lteq_zero`
+- `is_gteq_zero`
+
+Thanks to them, to save typing and not pay for unneeded conversions, our check could be implemented
+as follows:
+
+```cpp
+if (is_neq_zero(q1 / q2))
+  // ...
+```
+
+!!! tip
+
+    Those functions will work with any type `T` that exposes `zero()` member function returning
+    something comparable to `T`. Thanks to that, we can use them not only with quantities but also
+    with [quantity points](the_affine_space.md#quantity_point),
+    [`std::chrono::duration`](https://en.cppreference.com/w/cpp/chrono/duration) or any other type
+    that exposes such an interface.
+
+
 ## Other maths
 
 This chapter scopes only on the `quantity` type's operators. However, there are many named math
