@@ -60,9 +60,10 @@ QUANTITY_SPEC(magnetic_constant,
               electric_potential* time / (electric_current * length));  // TODO what is a correct equation here?
 inline constexpr auto permeability_of_vacuum = magnetic_constant;
 QUANTITY_SPEC(phase_speed_of_electromagnetic_waves, angular_frequency / angular_wavenumber);
-QUANTITY_SPEC(speed_of_light, speed);
-inline constexpr auto light_speed = speed_of_light;
-QUANTITY_SPEC(electric_constant, 1 / (magnetic_constant * pow<2>(speed_of_light)));
+QUANTITY_SPEC(speed_of_light_in_vacuum, speed);
+inline constexpr auto light_speed_in_vacuum = speed_of_light_in_vacuum;
+inline constexpr auto luminal_speed = speed_of_light_in_vacuum;
+QUANTITY_SPEC(electric_constant, 1 / (magnetic_constant * pow<2>(speed_of_light_in_vacuum)));
 inline constexpr auto permittivity_of_vacuum = electric_constant;
 QUANTITY_SPEC(permittivity, electric_flux_density / electric_field_strength, quantity_character::scalar);
 QUANTITY_SPEC(relative_permittivity, dimensionless, permittivity / electric_constant);
