@@ -402,7 +402,7 @@ using type_list_of_unit_less = expr_less<T1, T2, unit_less>;
  * Multiplication by `1` returns the same unit, otherwise `scaled_unit` is being returned.
  */
 template<Magnitude M, Unit U>
-[[nodiscard]] consteval Unit auto operator*(M mag, const U u)
+[[nodiscard]] MP_UNITS_CONSTEVAL Unit auto operator*(M mag, const U u)
 {
   if constexpr (mag == mp_units::mag<1>)
     return u;
@@ -418,7 +418,7 @@ template<Magnitude M, Unit U>
  * to the derived unit and the magnitude remains outside forming another scaled unit as a result of the operation.
  */
 template<Unit Lhs, Unit Rhs>
-[[nodiscard]] consteval Unit auto operator*(Lhs lhs, Rhs rhs)
+[[nodiscard]] MP_UNITS_CONSTEVAL Unit auto operator*(Lhs lhs, Rhs rhs)
 {
   if constexpr (detail::is_specialization_of_scaled_unit<Lhs> && detail::is_specialization_of_scaled_unit<Rhs>)
     return (Lhs::mag * Rhs::mag) * (Lhs::reference_unit * Rhs::reference_unit);
@@ -436,7 +436,7 @@ template<Unit Lhs, Unit Rhs>
  * to the derived unit and the magnitude remains outside forming another scaled unit as a result of the operation.
  */
 template<Unit Lhs, Unit Rhs>
-[[nodiscard]] consteval Unit auto operator/(Lhs lhs, Rhs rhs)
+[[nodiscard]] MP_UNITS_CONSTEVAL Unit auto operator/(Lhs lhs, Rhs rhs)
 {
   if constexpr (detail::is_specialization_of_scaled_unit<Lhs> && detail::is_specialization_of_scaled_unit<Rhs>)
     return (Lhs::mag / Rhs::mag) * (Lhs::reference_unit / Rhs::reference_unit);
