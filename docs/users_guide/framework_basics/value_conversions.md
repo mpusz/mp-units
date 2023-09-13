@@ -38,6 +38,14 @@ std::cout << q1.in(km) << '\n';
 quantity<si::kilo<si::metre>> q2 = q1;
 ```
 
+or
+
+```cpp
+auto q1 = 5 * m;
+std::cout << value_cast<double>(q1).in(km) << '\n';
+quantity<si::kilo<si::metre>> q2 = q1;  // double by default
+```
+
 !!! important
 
     The **mp-units** library follows [`std::chrono::duration`](https://en.cppreference.com/w/cpp/chrono/duration)
