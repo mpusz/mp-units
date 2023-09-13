@@ -58,6 +58,5 @@ int main()
             << MP_UNITS_STD_FMT::format("lengthB.value( {} ) == lengthA.value( {} ) * conversion_factor( {} )\n",
                                         lengthB.numerical_value_ref_in(lengthB.unit),
                                         lengthA.numerical_value_ref_in(lengthA.unit),
-
                                         conversion_factor(lengthB, lengthA));
 }
