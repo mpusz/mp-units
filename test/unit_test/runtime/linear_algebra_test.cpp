@@ -56,11 +56,19 @@ namespace {
 using namespace mp_units;
 using namespace mp_units::si::unit_symbols;
 
-template<typename T>
-[[nodiscard]] auto get_magnitude(const vector<T>& v)
+template<QuantitySpec auto QS, QuantityOf<QS> Q>
+  requires(Q::quantity_spec.character == quantity_character::vector) && (QS.character == quantity_character::scalar)
+[[nodiscard]] QuantityOf<QS> auto get_magnitude(const Q& q)
 {
-  using namespace std;
-  return hypot(v(0), v(1), v(2));
+  const auto& v = q.numerical_value_ref_in(q.unit);
+  return hypot(v(0) * QS[q.unit], v(1) * QS[q.unit], v(2) * QS[q.unit]);
+}
+
+template<QuantitySpec auto QS, QuantityOf<QS> T>
+  requires(T::quantity_spec.character == quantity_character::vector) && (QS.character == quantity_character::scalar)
+[[nodiscard]] QuantityOf<QS> auto get_magnitude(const vector<T>& v)
+{
+  return hypot(QS(v(0)), QS(v(1)), QS(v(2)));
 }
 
 template<typename T, typename U>
@@ -100,8 +108,7 @@ TEST_CASE("vector quantity", "[la]")
   SECTION("to scalar magnitude")
   {
     const auto v = vector<int>{2, 3, 6} * isq::velocity[km / h];
-    const auto speed =
-      get_magnitude(v.numerical_value_ref_in(km / h)) * isq::speed[v.unit];  // TODO can we do better here?
+    const auto speed = get_magnitude<isq::speed>(v);
     CHECK(speed.numerical_value_ref_in(km / h) == 7);
   }
 
@@ -308,8 +315,7 @@ TEST_CASE("vector of quantities", "[la]")
   SECTION("to scalar magnitude")
   {
     const vector<quantity<isq::velocity[km / h], int>> v = {2 * (km / h), 3 * (km / h), 6 * (km / h)};
-    const auto speed =
-      get_magnitude(v).numerical_value_ref_in(km / h) * isq::speed[v(0).unit];  // TODO can we do better here?
+    const auto speed = get_magnitude<isq::speed>(v);
     CHECK(speed.numerical_value_ref_in(km / h) == 7);
   }
 
