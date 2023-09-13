@@ -141,6 +141,20 @@ public:
   quantity& operator=(const quantity&) = default;
   quantity& operator=(quantity&&) = default;
 
+  // conversions
+  template<Unit U>
+    requires detail::QuantityConvertibleTo<quantity, quantity<quantity_spec[U{}], Rep>>
+  [[nodiscard]] constexpr quantity<quantity_spec[U{}], Rep> in(U) const
+  {
+    return quantity<quantity_spec[U{}], Rep>{*this};
+  }
+  template<Unit U>
+    requires requires(quantity q) { value_cast<U{}>(q); }
+  [[nodiscard]] constexpr quantity<quantity_spec[U{}], Rep> force_in(U) const
+  {
+    return value_cast<U{}>(*this);
+  }
+
   // data access
 #ifdef __cpp_explicit_this_parameter
   template<typename Self, Unit U>
@@ -188,13 +202,6 @@ public:
   [[nodiscard]] constexpr rep force_numerical_value_in(U) const noexcept
   {
     return value_cast<U{}>(*this).numerical_value_in(U{});
-  }
-
-  template<Unit U>
-    requires detail::QuantityConvertibleTo<quantity, quantity<quantity_spec[U{}], Rep>>
-  [[nodiscard]] constexpr quantity<quantity_spec[U{}], Rep> in(U) const
-  {
-    return quantity<quantity_spec[U{}], Rep>{*this};
   }
 
   // member unary operators
