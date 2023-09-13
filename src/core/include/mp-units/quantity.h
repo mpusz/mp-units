@@ -198,10 +198,10 @@ public:
   }
 
   template<Unit U>
-    requires requires(quantity q) { value_cast<U{}>(q); }
+    requires requires(quantity q) { q.force_in(U{}); }
   [[nodiscard]] constexpr rep force_numerical_value_in(U) const noexcept
   {
-    return value_cast<U{}>(*this).numerical_value_in(U{});
+    return (*this).force_in(U{}).numerical_value_ref_in(U{});
   }
 
   // member unary operators
