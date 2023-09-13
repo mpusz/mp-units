@@ -174,6 +174,13 @@ public:
   }
 #endif
 
+  template<PointOrigin PO2>
+    requires requires { quantity_point{} - PO2{}; }
+  [[nodiscard]] constexpr Quantity auto quantity_from(PO2) const
+  {
+    return *this - PO2{};
+  }
+
   template<Unit U>
     requires detail::QuantityConvertibleTo<quantity_type, quantity<::mp_units::reference<quantity_spec, U{}>{}, Rep>>
   [[nodiscard]] constexpr quantity_point<::mp_units::reference<quantity_spec, U{}>{}, PO, Rep> in(U) const

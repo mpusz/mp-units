@@ -97,8 +97,8 @@ template<earth_gravity_model M>
 hae_altitude<M> to_hae(msl_altitude msl, position<long double> pos)
 {
   const auto geoid_undulation =
-    isq::height(GeographicLibWhatsMyOffset(pos.lat.quantity_ref_from(equator).numerical_value_in(si::degree),
-                                           pos.lon.quantity_ref_from(prime_meridian).numerical_value_in(si::degree)) *
+    isq::height(GeographicLibWhatsMyOffset(pos.lat.quantity_from(equator).numerical_value_in(si::degree),
+                                           pos.lon.quantity_from(prime_meridian).numerical_value_in(si::degree)) *
                 si::metre);
   return height_above_ellipsoid<M> + (msl - mean_sea_level - geoid_undulation);
 }
@@ -115,7 +115,7 @@ using hal_altitude = quantity_point<isq::altitude[si::metre], height_above_launc
 template<class CharT, class Traits>
 std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const hal_altitude& a)
 {
-  return os << a.quantity_ref_from(height_above_launch) << " HAL";
+  return os << a.quantity_from(height_above_launch) << " HAL";
 }
 
 template<>
@@ -123,7 +123,7 @@ struct MP_UNITS_STD_FMT::formatter<hal_altitude> : formatter<hal_altitude::quant
   template<typename FormatContext>
   auto format(const hal_altitude& a, FormatContext& ctx)
   {
-    formatter<hal_altitude::quantity_type>::format(a.quantity_ref_from(height_above_launch), ctx);
+    formatter<hal_altitude::quantity_type>::format(a.quantity_from(height_above_launch), ctx);
     return MP_UNITS_STD_FMT::format_to(ctx.out(), " HAL");
   }
 };

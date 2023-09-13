@@ -91,6 +91,6 @@ int main()
   quantity_point price_usd = zero + 100 * us_dollar;
   quantity_point price_euro = exchange_to<euro>(price_usd);
 
-  std::cout << price_usd.quantity_ref_from(zero) << " -> " << price_euro.quantity_ref_from(zero) << "\n";
-  // std::cout << price_usd.quantity_ref_from(zero) + price_euro.quantity_ref_from(zero) << "\n";  // does not compile
+  std::cout << price_usd.quantity_from(zero) << " -> " << price_euro.quantity_from(zero) << "\n";
+  // std::cout << price_usd.quantity_from(zero) + price_euro.quantity_from(zero) << "\n";  // does not compile
 }
