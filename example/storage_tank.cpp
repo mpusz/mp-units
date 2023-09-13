@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include <mp-units/chrono.h>
 #include <mp-units/format.h>
 #include <mp-units/math.h>
 #include <mp-units/systems/isq/mechanics.h>
@@ -28,10 +29,13 @@
 #include <mp-units/systems/si/unit_symbols.h>
 #include <mp-units/systems/si/units.h>
 #include <cassert>
+#include <chrono>
 #include <iostream>
 #include <numbers>
 #include <utility>
 
+// allows standard gravity (acceleration) and weight (force) to be expressed with scalar representation
+// types instead of requiring the usage of Linear Algebra library for this simple example
 template<class T>
   requires mp_units::is_scalar<T>
 inline constexpr bool mp_units::is_vector<T> = true;
@@ -108,22 +112,23 @@ public:
 
 int main()
 {
-  const auto height = isq::height(200 * mm);
+  const quantity height = isq::height(200 * mm);
   auto tank = RectangularStorageTank(horizontal_length(1'000 * mm), isq::width(500 * mm), height);
   tank.set_contents_density(1'000 * isq::mass_density[kg / m3]);
 
-  const auto fill_time = 200 * s;       // time since starting fill
-  const auto measured_mass = 20. * kg;  // measured mass at fill_time
+  const auto duration = std::chrono::seconds{200};
+  const quantity fill_time = value_cast<int>(quantity{duration});  // time since starting fill
+  const quantity measured_mass = 20. * kg;                         // measured mass at fill_time
 
-  const auto fill_level = tank.fill_level(measured_mass);
-  const auto spare_capacity = tank.spare_capacity(measured_mass);
-  const auto filled_weight = tank.filled_weight();
+  const quantity fill_level = tank.fill_level(measured_mass);
+  const quantity spare_capacity = tank.spare_capacity(measured_mass);
+  const quantity filled_weight = tank.filled_weight();
 
   const QuantityOf<isq::mass_change_rate> auto input_flow_rate = measured_mass / fill_time;
   const QuantityOf<isq::speed> auto float_rise_rate = fill_level / fill_time;
   const QuantityOf<isq::time> auto fill_time_left = (height / fill_level - 1 * one) * fill_time;
 
-  const auto fill_ratio = fill_level / height;
+  const quantity fill_ratio = fill_level / height;
 
   std::cout << MP_UNITS_STD_FMT::format("fill height at {} = {} ({} full)\n", fill_time, fill_level,
                                         fill_ratio.in(percent));
