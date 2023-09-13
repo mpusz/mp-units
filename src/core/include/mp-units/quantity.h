@@ -148,6 +148,7 @@ public:
   {
     return quantity<quantity_spec[U{}], Rep>{*this};
   }
+
   template<Unit U>
     requires requires(quantity q) { value_cast<U{}>(q); }
   [[nodiscard]] constexpr quantity<quantity_spec[U{}], Rep> force_in(U) const

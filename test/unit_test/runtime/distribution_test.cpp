@@ -559,10 +559,8 @@ TEST_CASE("piecewise_constant_distribution")
                                               3.0 * isq::length[si::metre]};
 
     auto stl_dist = std::piecewise_constant_distribution<rep>(intervals_rep, [](rep val) { return val; });
-    auto units_dist =
-
-      mp_units::piecewise_constant_distribution<q>(intervals_qty,
-                                                   [](q qty) { return qty.numerical_value_ref_in(qty.unit); });
+    auto units_dist = mp_units::piecewise_constant_distribution<q>(
+      intervals_qty, [](q qty) { return qty.numerical_value_ref_in(qty.unit); });
 
     CHECK(units_dist.intervals() == intervals_qty_vec);
     CHECK(units_dist.densities() == stl_dist.densities());
@@ -629,10 +627,8 @@ TEST_CASE("piecewise_linear_distribution")
                                               3.0 * isq::length[si::metre]};
 
     auto stl_dist = std::piecewise_linear_distribution<rep>(intervals_rep, [](rep val) { return val; });
-    auto units_dist =
-
-      mp_units::piecewise_linear_distribution<q>(intervals_qty,
-                                                 [](q qty) { return qty.numerical_value_ref_in(qty.unit); });
+    auto units_dist = mp_units::piecewise_linear_distribution<q>(
+      intervals_qty, [](q qty) { return qty.numerical_value_ref_in(qty.unit); });
 
     CHECK(units_dist.intervals() == intervals_qty_vec);
     CHECK(units_dist.densities() == stl_dist.densities());

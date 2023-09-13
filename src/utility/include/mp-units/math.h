@@ -159,7 +159,6 @@ template<Representation Rep, Reference R>
 template<Unit auto To, auto R, typename Rep>
 [[nodiscard]] constexpr quantity<detail::clone_reference_with<To>(R), Rep> floor(const quantity<R, Rep>& q) noexcept
   requires((!treat_as_floating_point<Rep>) || requires { floor(q.numerical_value_ref_in(q.unit)); } ||
-
            requires { std::floor(q.numerical_value_ref_in(q.unit)); }) &&
           (To == get_unit(R) || requires {
             q.force_in(To);
@@ -199,7 +198,6 @@ template<Unit auto To, auto R, typename Rep>
 template<Unit auto To, auto R, typename Rep>
 [[nodiscard]] constexpr quantity<detail::clone_reference_with<To>(R), Rep> ceil(const quantity<R, Rep>& q) noexcept
   requires((!treat_as_floating_point<Rep>) || requires { ceil(q.numerical_value_ref_in(q.unit)); } ||
-
            requires { std::ceil(q.numerical_value_ref_in(q.unit)); }) &&
           (To == get_unit(R) || requires {
             q.force_in(To);
@@ -241,7 +239,6 @@ template<Unit auto To, auto R, typename Rep>
 template<Unit auto To, auto R, typename Rep>
 [[nodiscard]] constexpr quantity<detail::clone_reference_with<To>(R), Rep> round(const quantity<R, Rep>& q) noexcept
   requires((!treat_as_floating_point<Rep>) || requires { round(q.numerical_value_ref_in(q.unit)); } ||
-
            requires { std::round(q.numerical_value_ref_in(q.unit)); }) &&
           (To == get_unit(R) || requires {
             ::mp_units::floor<To>(q);
@@ -284,7 +281,6 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
   requires requires { common_reference(R1, R2); } &&
            (
              requires { hypot(x.numerical_value_ref_in(x.unit), y.numerical_value_ref_in(y.unit)); } ||
-
              requires { std::hypot(x.numerical_value_ref_in(x.unit), y.numerical_value_ref_in(y.unit)); })
 {
   constexpr auto ref = common_reference(R1, R2);
