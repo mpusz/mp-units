@@ -105,8 +105,11 @@ auto q = 60 * km / 2 * h;
 ```
 
 Looks like `30 km/h`, right? But it is not. If the above code was allowed, it would result
-in `30 km⋅h`. In case you want to divide `60 * km` by `2 * h` a parenthesis is needed
-`60 * km / (2 * h)`.
+in `30 km⋅h`. In case you want to divide `60 * km` by `2 * h` a parenthesis is needed:
+
+```cpp
+auto q = 60 * km / (2 * h);
+```
 
 Another surprising issue could result from the following code:
 
@@ -126,7 +129,8 @@ auto v = 42 * m;
 auto q = make_length(v);
 ```
 
-Fortunately, with the current design, such issues are detected at compile-time.
+Fortunately, with the current design, such issues are detected at compile-time as
+multiplying or dividing a quantity by a unit is not be supported.
 
 
 ## Why a dimensionless quantity is not just a fundamental arithmetic type?
