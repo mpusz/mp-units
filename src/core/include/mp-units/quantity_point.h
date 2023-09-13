@@ -224,18 +224,22 @@ public:
   }
 
   // compound assignment operators
-  constexpr quantity_point& operator+=(const quantity_type& q)
-    requires requires { quantity_from_origin_ += q; }
+  template<typename QP>
+    requires std::derived_from<std::remove_cvref_t<QP>, quantity_point> &&
+             requires(quantity_type q) { quantity_from_origin_ += q; }
+  friend constexpr decltype(auto) operator+=(QP&& qp, const quantity_type& q)
   {
-    quantity_from_origin_ += q;
-    return *this;
+    qp.quantity_from_origin_ += q;
+    return std::forward<QP>(qp);
   }
 
-  constexpr quantity_point& operator-=(const quantity_type& q)
-    requires requires { quantity_from_origin_ -= q; }
+  template<typename QP>
+    requires std::derived_from<std::remove_cvref_t<QP>, quantity_point> &&
+             requires(quantity_type q) { quantity_from_origin_ -= q; }
+  friend constexpr decltype(auto) operator-=(QP&& qp, const quantity_type& q)
   {
-    quantity_from_origin_ -= q;
-    return *this;
+    qp.quantity_from_origin_ -= q;
+    return std::forward<QP>(qp);
   }
 
 private:
