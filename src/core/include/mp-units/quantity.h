@@ -210,15 +210,16 @@ public:
     return make_quantity<reference>(-numerical_value_);
   }
 
-  constexpr quantity& operator++()
-    requires requires(rep v) {
+  template<typename Q>
+  friend constexpr decltype(auto) operator++(Q&& q)
+    requires std::derived_from<std::remove_cvref_t<Q>, quantity> && requires(rep v) {
       {
         ++v
       } -> std::same_as<rep&>;
     }
   {
-    ++numerical_value_;
-    return *this;
+    ++q.numerical_value_;
+    return std::forward<Q>(q);
   }
 
   [[nodiscard]] constexpr Quantity auto operator++(int)
@@ -231,15 +232,16 @@ public:
     return make_quantity<reference>(numerical_value_++);
   }
 
-  constexpr quantity& operator--()
-    requires requires(rep v) {
+  template<typename Q>
+  friend constexpr decltype(auto) operator--(Q&& q)
+    requires std::derived_from<std::remove_cvref_t<Q>, quantity> && requires(rep v) {
       {
         --v
       } -> std::same_as<rep&>;
     }
   {
-    --numerical_value_;
-    return *this;
+    --q.numerical_value_;
+    return std::forward<Q>(q);
   }
 
   [[nodiscard]] constexpr Quantity auto operator--(int)

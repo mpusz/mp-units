@@ -183,11 +183,12 @@ public:
   }
 
   // member unary operators
-  constexpr quantity_point& operator++()
-    requires requires { ++quantity_from_origin_; }
+  template<typename QP>
+  friend constexpr decltype(auto) operator++(QP&& qp)
+    requires std::derived_from<std::remove_cvref_t<QP>, quantity_point> && requires { ++qp.quantity_from_origin_; }
   {
-    ++quantity_from_origin_;
-    return *this;
+    ++qp.quantity_from_origin_;
+    return std::forward<QP>(qp);
   }
 
   [[nodiscard]] constexpr quantity_point operator++(int)
@@ -196,11 +197,12 @@ public:
     return quantity_point(quantity_from_origin_++);
   }
 
-  constexpr quantity_point& operator--()
-    requires requires { --quantity_from_origin_; }
+  template<typename QP>
+  friend constexpr decltype(auto) operator--(QP&& qp)
+    requires std::derived_from<std::remove_cvref_t<QP>, quantity_point> && requires { --qp.quantity_from_origin_; }
   {
-    --quantity_from_origin_;
-    return *this;
+    --qp.quantity_from_origin_;
+    return std::forward<QP>(qp);
   }
 
   [[nodiscard]] constexpr quantity_point operator--(int)
