@@ -559,8 +559,8 @@ TEST_CASE("piecewise_constant_distribution")
                                               3.0 * isq::length[si::metre]};
 
     auto stl_dist = std::piecewise_constant_distribution<rep>(intervals_rep, [](rep val) { return val; });
-    auto units_dist =
-      mp_units::piecewise_constant_distribution<q>(intervals_qty, [](q qty) { return qty.numerical_value(); });
+    auto units_dist = mp_units::piecewise_constant_distribution<q>(
+      intervals_qty, [](q qty) { return qty.numerical_value_ref_in(qty.unit); });
 
     CHECK(units_dist.intervals() == intervals_qty_vec);
     CHECK(units_dist.densities() == stl_dist.densities());
@@ -573,8 +573,8 @@ TEST_CASE("piecewise_constant_distribution")
     constexpr q xmin_qty = 1.0 * isq::length[si::metre], xmax_qty = 3.0 * isq::length[si::metre];
 
     auto stl_dist = std::piecewise_constant_distribution<rep>(nw, xmin_rep, xmax_rep, [](rep val) { return val; });
-    auto units_dist =
-      mp_units::piecewise_constant_distribution<q>(nw, xmin_qty, xmax_qty, [](q qty) { return qty.numerical_value(); });
+    auto units_dist = mp_units::piecewise_constant_distribution<q>(
+      nw, xmin_qty, xmax_qty, [](q qty) { return qty.numerical_value_ref_in(qty.unit); });
 
     CHECK(units_dist.intervals() == intervals_qty_vec);
     CHECK(units_dist.densities() == stl_dist.densities());
@@ -627,8 +627,8 @@ TEST_CASE("piecewise_linear_distribution")
                                               3.0 * isq::length[si::metre]};
 
     auto stl_dist = std::piecewise_linear_distribution<rep>(intervals_rep, [](rep val) { return val; });
-    auto units_dist =
-      mp_units::piecewise_linear_distribution<q>(intervals_qty, [](q qty) { return qty.numerical_value(); });
+    auto units_dist = mp_units::piecewise_linear_distribution<q>(
+      intervals_qty, [](q qty) { return qty.numerical_value_ref_in(qty.unit); });
 
     CHECK(units_dist.intervals() == intervals_qty_vec);
     CHECK(units_dist.densities() == stl_dist.densities());
@@ -641,8 +641,8 @@ TEST_CASE("piecewise_linear_distribution")
     constexpr q xmin_qty = 1.0 * isq::length[si::metre], xmax_qty = 3.0 * isq::length[si::metre];
 
     auto stl_dist = std::piecewise_linear_distribution<rep>(nw, xmin_rep, xmax_rep, [](rep val) { return val; });
-    auto units_dist =
-      mp_units::piecewise_linear_distribution<q>(nw, xmin_qty, xmax_qty, [](q qty) { return qty.numerical_value(); });
+    auto units_dist = mp_units::piecewise_linear_distribution<q>(
+      nw, xmin_qty, xmax_qty, [](q qty) { return qty.numerical_value_ref_in(qty.unit); });
 
     CHECK(units_dist.intervals() == intervals_qty_vec);
     CHECK(units_dist.densities() == stl_dist.densities());

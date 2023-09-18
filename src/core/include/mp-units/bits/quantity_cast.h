@@ -51,9 +51,9 @@ template<QuantitySpec auto ToQS, typename Q>
 {
   if constexpr (detail::QuantityKindSpec<std::remove_const_t<decltype(ToQS)>> &&
                 AssociatedUnit<std::remove_const_t<decltype(Q::unit)>>)
-    return make_quantity<Q::unit>(std::forward<Q>(q).numerical_value());
+    return make_quantity<Q::unit>(std::forward<Q>(q).numerical_value_);
   else
-    return make_quantity<reference<ToQS, Q::unit>{}>(std::forward<Q>(q).numerical_value());
+    return make_quantity<reference<ToQS, Q::unit>{}>(std::forward<Q>(q).numerical_value_);
 }
 
 }  // namespace mp_units

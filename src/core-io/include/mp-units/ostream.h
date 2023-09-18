@@ -36,9 +36,9 @@ void to_stream(std::basic_ostream<CharT, Traits>& os, const quantity<R, Rep>& q)
 {
   if constexpr (is_same_v<Rep, std::uint8_t> || is_same_v<Rep, std::int8_t>)
     // promote the value to int
-    os << +q.numerical_value();
+    os << +q.numerical_value_ref_in(q.unit);
   else
-    os << q.numerical_value();
+    os << q.numerical_value_ref_in(q.unit);
   if constexpr (has_unit_symbol(get_unit(R))) {
     if constexpr (space_before_unit_symbol<get_unit(R)>) os << " ";
     unit_symbol_to<CharT>(std::ostream_iterator<CharT>(os), get_unit(R));
@@ -49,7 +49,7 @@ void to_stream(std::basic_ostream<CharT, Traits>& os, const quantity<R, Rep>& q)
 
 template<typename CharT, typename Traits, auto R, typename Rep>
 std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const quantity<R, Rep>& q)
-  requires requires { os << q.numerical_value(); }
+  requires requires { os << q.numerical_value_ref_in(q.unit); }
 {
   if (os.width()) {
     // std::setw() applies to the whole quantity output so it has to be first put into std::string

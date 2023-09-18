@@ -59,11 +59,17 @@ The second solution is to force a truncating conversion:
 ```cpp
 auto q1 = 5 * m;
 std::cout << value_cast<km>(q1) << '\n';
-quantity<si::kilo<si::metre>, int> q2 = value_cast<km>(q1);
+quantity<si::kilo<si::metre>, int> q2 = q1.force_in(km);
 ```
 
 This explicit cast makes it clear that something unsafe is going on. It is easy to spot in code
 reviews or while chasing a bug in the source code.
+
+!!! note
+
+    `q.force_in(U)` is just a shortcut to run `value_cast<U>(q)`. There is no difference in behavior
+    between those two interfaces. `q.force_in(U)` was added for consistency with `q.in(U)` and
+    `q.force_numerical_value_in(U)`.
 
 Another place where this cast is useful is when a user wants to convert a quantity with
 a floating-point representation to the one using an integral one. Again this is a truncating

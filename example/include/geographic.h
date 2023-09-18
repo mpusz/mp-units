@@ -138,7 +138,7 @@ struct MP_UNITS_STD_FMT::formatter<geographic::latitude<T>> :
   auto format(geographic::latitude<T> lat, FormatContext& ctx)
   {
     formatter<typename geographic::latitude<T>::quantity_type>::format(
-      is_gt_zero(lat) ? lat.quantity_from_origin() : -lat.quantity_from_origin(), ctx);
+      is_gt_zero(lat) ? lat.quantity_from(geographic::equator) : -lat.quantity_from(geographic::equator), ctx);
     MP_UNITS_STD_FMT::format_to(ctx.out(), "{}", is_gt_zero(lat) ? " N" : "S");
     return ctx.out();
   }
@@ -151,7 +151,8 @@ struct MP_UNITS_STD_FMT::formatter<geographic::longitude<T>> :
   auto format(geographic::longitude<T> lon, FormatContext& ctx)
   {
     formatter<typename geographic::longitude<T>::quantity_type>::format(
-      is_gt_zero(lon) ? lon.quantity_from_origin() : -lon.quantity_from_origin(), ctx);
+      is_gt_zero(lon) ? lon.quantity_from(geographic::prime_meridian) : -lon.quantity_from(geographic::prime_meridian),
+      ctx);
     MP_UNITS_STD_FMT::format_to(ctx.out(), "{}", is_gt_zero(lon) ? " E" : " W");
     return ctx.out();
   }
@@ -171,28 +172,29 @@ template<typename T>
 distance spherical_distance(position<T> from, position<T> to)
 {
   using namespace mp_units;
-  constexpr auto earth_radius = 6'371 * isq::radius[si::kilo<si::metre>];
+  constexpr quantity earth_radius = 6'371 * isq::radius[si::kilo<si::metre>];
 
   using isq::sin, isq::cos, isq::asin, isq::acos;
 
-  const auto& from_lat = from.lat.quantity_from_origin();
-  const auto& from_lon = from.lon.quantity_from_origin();
-  const auto& to_lat = to.lat.quantity_from_origin();
-  const auto& to_lon = to.lon.quantity_from_origin();
+  const quantity from_lat = from.lat.quantity_from(equator);
+  const quantity from_lon = from.lon.quantity_from(prime_meridian);
+  const quantity to_lat = to.lat.quantity_from(equator);
+  const quantity to_lon = to.lon.quantity_from(prime_meridian);
 
   // https://en.wikipedia.org/wiki/Great-circle_distance#Formulae
   if constexpr (sizeof(T) >= 8) {
     // spherical law of cosines
-    const auto central_angle = acos(sin(from_lat) * sin(to_lat) + cos(from_lat) * cos(to_lat) * cos(to_lon - from_lon));
+    const quantity central_angle =
+      acos(sin(from_lat) * sin(to_lat) + cos(from_lat) * cos(to_lat) * cos(to_lon - from_lon));
     // const auto central_angle = 2 * asin(sqrt(0.5 - cos(to_lat - from_lat) / 2 + cos(from_lat) * cos(to_lat) * (1
     // - cos(lon2_rad - from_lon)) / 2));
 
     return quantity_cast<isq::distance>(earth_radius * central_angle);
   } else {
     // the haversine formula
-    const auto sin_lat = sin((to_lat - from_lat) / 2);
-    const auto sin_lon = sin((to_lon - from_lon) / 2);
-    const auto central_angle = 2 * asin(sqrt(sin_lat * sin_lat + cos(from_lat) * cos(to_lat) * sin_lon * sin_lon));
+    const quantity sin_lat = sin((to_lat - from_lat) / 2);
+    const quantity sin_lon = sin((to_lon - from_lon) / 2);
+    const quantity central_angle = 2 * asin(sqrt(sin_lat * sin_lat + cos(from_lat) * cos(to_lat) * sin_lon * sin_lon));
 
     return quantity_cast<isq::distance>(earth_radius * central_angle);
   }

@@ -56,7 +56,7 @@ constexpr QuantityOf<isq::speed> auto avg_speed(QuantityOf<isq::length> auto d, 
 template<QuantityOf<isq::length> D, QuantityOf<isq::time> T, QuantityOf<isq::speed> V>
 void print_result(D distance, T duration, V speed)
 {
-  const auto result_in_kmph = value_cast<si::kilo<si::metre> / non_si::hour>(speed);
+  const auto result_in_kmph = speed.force_in(si::kilo<si::metre> / non_si::hour);
   std::cout << "Average speed of a car that makes " << distance << " in " << duration << " is " << result_in_kmph
             << ".\n";
 }
@@ -101,7 +101,7 @@ void example()
 
     // it is not possible to make a lossless conversion of miles to meters on an integral type
     // (explicit cast needed)
-    print_result(distance, duration, fixed_int_si_avg_speed(value_cast<si::metre>(distance), duration));
+    print_result(distance, duration, fixed_int_si_avg_speed(distance.force_in(m), duration));
     print_result(distance, duration, fixed_double_si_avg_speed(distance, duration));
     print_result(distance, duration, avg_speed(distance, duration));
   }
@@ -119,7 +119,7 @@ void example()
     // also it is not possible to make a lossless conversion of miles to meters on an integral type
     // (explicit cast needed)
     print_result(distance, duration,
-                 fixed_int_si_avg_speed(value_cast<int>(value_cast<si::metre>(distance)), value_cast<int>(duration)));
+                 fixed_int_si_avg_speed(value_cast<int>(distance.force_in(m)), value_cast<int>(duration)));
     print_result(distance, duration, fixed_double_si_avg_speed(distance, duration));
     print_result(distance, duration, avg_speed(distance, duration));
   }
@@ -133,7 +133,7 @@ void example()
 
     // it is not possible to make a lossless conversion of centimeters to meters on an integral type
     // (explicit cast needed)
-    print_result(distance, duration, fixed_int_si_avg_speed(value_cast<si::metre>(distance), duration));
+    print_result(distance, duration, fixed_int_si_avg_speed(distance.force_in(m), duration));
     print_result(distance, duration, fixed_double_si_avg_speed(distance, duration));
     print_result(distance, duration, avg_speed(distance, duration));
   }
@@ -149,7 +149,7 @@ void example()
     // it is not possible to make a lossless conversion of centimeters to meters on an integral type
     // (explicit cast needed)
     print_result(distance, duration,
-                 fixed_int_si_avg_speed(value_cast<int>(value_cast<m>(distance)), value_cast<int>(duration)));
+                 fixed_int_si_avg_speed(value_cast<int>(distance.force_in(m)), value_cast<int>(duration)));
 
     print_result(distance, duration, fixed_double_si_avg_speed(distance, duration));
     print_result(distance, duration, avg_speed(distance, duration));

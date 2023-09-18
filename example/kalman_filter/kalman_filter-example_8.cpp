@@ -45,7 +45,7 @@ template<QuantityPoint QP, QuantityOf<dimensionless> K>
 void print(auto iteration, K gain, QP measured, kalman::estimation<QP> current, kalman::estimation<QP> next)
 {
   std::cout << MP_UNITS_STD_FMT::format("{:2} | {:7%.3Q} | {:10%.3Q %q} | {:>16.2} | {:>16.2}\n", iteration, gain,
-                                        measured.quantity_from_origin(), current, next);
+                                        measured.quantity_ref_from(QP::point_origin), current, next);
 }
 
 int main()

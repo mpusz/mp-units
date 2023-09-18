@@ -65,11 +65,11 @@ some issues start to be clearly visible:
    Trying to use an integral type in this scenario will work only for `s1`, while `s2` and `s3`
    will fail to compile. Failing to compile is a good thing here as the library tries to prevent
    the user from doing a clearly wrong thing. To make the code compile, the user needs to use
-   a dedicated [`value_cast`](value_conversions.md#value-truncating-conversions) like this:
+   dedicated [`value_cast` or `force_in`](value_conversions.md#value-truncating-conversions) like this:
 
     ```cpp
     quantity<isq::speed[mi / h]> s2 = avg_speed(value_cast<km>(140 * mi), 2 * h);
-    quantity<isq::speed[m / s]> s3 = avg_speed(value_cast<km>(20 * m), value_cast<h>(2 * s));
+    quantity<isq::speed[m / s]> s3 = avg_speed((20 * m).force_in(km), (2 * s).force_in(h));
     ```
 
     but the above will obviously provide an incorrect behavior (i.e. division by `0` in the evaluation
