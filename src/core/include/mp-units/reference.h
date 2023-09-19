@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <mp-units/bits/fwd.h>
 #include <mp-units/bits/get_associated_quantity.h>
 #include <mp-units/bits/quantity_concepts.h>
 #include <mp-units/bits/reference_concepts.h>
@@ -154,9 +155,6 @@ struct reference {
     return implicitly_convertible(get_quantity_spec(u1), Q) && convertible(u1, U);
   }
 };
-
-template<Reference auto R, RepresentationOf<get_quantity_spec(R).character> Rep>
-class quantity;
 
 template<typename Rep, Reference R>
 [[nodiscard]] constexpr quantity<R{}, std::remove_cvref_t<Rep>> operator*(Rep&& lhs, R)

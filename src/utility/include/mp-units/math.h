@@ -274,7 +274,7 @@ template<Unit auto To, auto R, typename Rep>
 /**
  * @brief Computes the inverse of a quantity in a provided unit
  */
-template<Unit auto To, auto R, typename Rep>
+template<Unit auto To, auto R, set_with_inverse Rep>
 [[nodiscard]] constexpr QuantityOf<dimensionless / get_quantity_spec(R)> auto inverse(const quantity<R, Rep>& q)
   requires requires {
     quantity_values<Rep>::one();

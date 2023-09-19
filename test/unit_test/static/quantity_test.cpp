@@ -85,6 +85,10 @@ static_assert(std::regular<quantity<isq::length[m]>>);
 
 static_assert(std::three_way_comparable<quantity<isq::length[m]>>);
 
+static_assert(f_vector_space<quantity<isq::length[m]>>);
+static_assert(!scalar_number<quantity<dimensionless[one]>>,
+              "`std::common_with<quantity<dimensionless[one]>, double>` is `false`.");
+
 
 //////////////////
 // member values

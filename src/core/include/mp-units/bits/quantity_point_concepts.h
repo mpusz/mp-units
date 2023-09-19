@@ -107,6 +107,7 @@ concept PointOriginFor = PointOrigin<T> && QuantitySpecOf<std::remove_const_t<de
 
 template<Reference auto R, PointOriginFor<get_quantity_spec(R)> auto PO,
          RepresentationOf<get_quantity_spec(R).character> Rep>
+  requires vector_space<Rep>
 class quantity_point;
 
 #if defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 17

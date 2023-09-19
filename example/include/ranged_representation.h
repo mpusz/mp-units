@@ -38,7 +38,7 @@ template<std::movable T, MP_UNITS_CONSTRAINED_NTTP_WORKAROUND(std::convertible_t
          MP_UNITS_CONSTRAINED_NTTP_WORKAROUND(std::convertible_to<T>) auto Max>
 using is_in_range_t = decltype(is_in_range<T, Min, Max>);
 
-template<std::movable T, MP_UNITS_CONSTRAINED_NTTP_WORKAROUND(std::convertible_to<T>) auto Min,
+template<mp_units::vector_space T, MP_UNITS_CONSTRAINED_NTTP_WORKAROUND(std::convertible_to<T>) auto Min,
          MP_UNITS_CONSTRAINED_NTTP_WORKAROUND(std::convertible_to<T>) auto Max>
 class ranged_representation : public validated_type<T, is_in_range_t<T, Min, Max>> {
 public:
@@ -50,14 +50,43 @@ public:
   {
     return ranged_representation(-this->value());
   }
+
+  friend constexpr ranged_representation operator-(const ranged_representation& lhs, const ranged_representation& rhs)
+  {
+    return ranged_representation(lhs.value() - rhs.value());
+  }
+
+  constexpr ranged_representation& operator+=(ranged_representation that)
+  {
+    this->value() += that.value();
+    gsl_Expects(validate(this->value()));
+    return *this;
+  }
+  constexpr ranged_representation& operator-=(ranged_representation that)
+  {
+    this->value() -= that.value();
+    gsl_Expects(validate(this->value()));
+    return *this;
+  }
+  constexpr ranged_representation& operator*=(T rhs)
+  {
+    this->value() *= rhs;
+    gsl_Expects(validate(this->value()));
+    return *this;
+  }
 };
 
 template<typename T, auto Min, auto Max>
 inline constexpr bool mp_units::is_scalar<ranged_representation<T, Min, Max>> = mp_units::is_scalar<T>;
 
 template<typename T, auto Min, auto Max>
+struct mp_units::number_scalar<ranged_representation<T, Min, Max>> : std::type_identity<T> {};
+
+template<typename T, auto Min, auto Max>
 inline constexpr bool mp_units::treat_as_floating_point<ranged_representation<T, Min, Max>> =
   mp_units::treat_as_floating_point<T>;
+
+static_assert(mp_units::vector_space<ranged_representation<int, 17, 29>>);
 
 template<typename T, auto Min, auto Max>
 struct MP_UNITS_STD_FMT::formatter<ranged_representation<T, Min, Max>> : formatter<T> {

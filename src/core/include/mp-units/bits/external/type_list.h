@@ -24,6 +24,7 @@
 
 #include <mp-units/bits/external/hacks.h>  // IWYU pragma: keep
 #include <cstddef>
+#include <type_traits>
 #include <utility>
 
 MP_UNITS_DIAGNOSTIC_PUSH

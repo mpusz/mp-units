@@ -34,11 +34,16 @@
 template<typename Rep = double>
 using vector = STD_LA::fixed_size_column_vector<Rep, 3>;
 
+static_assert(mp_units::vector_space<decltype(vector<int>{3, 2, 1})>);
+
 template<class Rep>
 inline constexpr bool mp_units::treat_as_floating_point<vector<Rep>> = mp_units::treat_as_floating_point<Rep>;
 
 template<typename Rep>
 inline constexpr bool mp_units::is_vector<vector<Rep>> = true;
+
+template<typename Rep>
+constexpr bool mp_units::is_number_v<vector<Rep>> = mp_units::is_number_v<Rep>;
 
 template<typename Rep>
 std::ostream& operator<<(std::ostream& os, const vector<Rep>& v)

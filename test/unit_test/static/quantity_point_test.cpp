@@ -130,6 +130,8 @@ static_assert(std::regular<quantity_point<si::metre, mean_sea_level>>);
 
 static_assert(std::three_way_comparable<quantity_point<si::metre, mean_sea_level>>);
 
+static_assert(point_space<quantity_point<si::metre, mean_sea_level>>);
+
 
 //////////////////
 // member values

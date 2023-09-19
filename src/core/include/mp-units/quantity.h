@@ -83,6 +83,7 @@ using common_quantity_for = quantity<common_reference(Q1::reference, Q2::referen
  * @tparam Rep a type to be used to represent values of a quantity
  */
 template<Reference auto R, RepresentationOf<get_quantity_spec(R).character> Rep = double>
+  requires vector_space<Rep>
 class quantity {
 public:
   Rep numerical_value_;  // needs to be public for a structural type
@@ -201,92 +202,60 @@ public:
   }
 
   [[nodiscard]] constexpr Quantity auto operator-() const
-    requires requires(rep v) {
-      {
-        -v
-      } -> std::common_with<rep>;
-    }
+    requires negative<rep>
   {
     return make_quantity<reference>(-numerical_value_);
   }
 
   template<typename Q>
-  friend constexpr decltype(auto) operator++(Q&& q)
-    requires std::derived_from<std::remove_cvref_t<Q>, quantity> && requires(rep v) {
-      {
-        ++v
-      } -> std::same_as<rep&>;
-    }
+  friend constexpr decltype(auto) operator++(Q && q)
+    requires std::derived_from<std::remove_cvref_t<Q>, quantity> && number_line<rep>
   {
     ++q.numerical_value_;
     return std::forward<Q>(q);
   }
 
   [[nodiscard]] constexpr Quantity auto operator++(int)
-    requires requires(rep v) {
-      {
-        v++
-      } -> std::common_with<rep>;
-    }
+    requires number_line<rep>
   {
     return make_quantity<reference>(numerical_value_++);
   }
 
   template<typename Q>
-  friend constexpr decltype(auto) operator--(Q&& q)
-    requires std::derived_from<std::remove_cvref_t<Q>, quantity> && requires(rep v) {
-      {
-        --v
-      } -> std::same_as<rep&>;
-    }
+  friend constexpr decltype(auto) operator--(Q && q)
+    requires std::derived_from<std::remove_cvref_t<Q>, quantity> && number_line<rep>
   {
     --q.numerical_value_;
     return std::forward<Q>(q);
   }
 
   [[nodiscard]] constexpr Quantity auto operator--(int)
-    requires requires(rep v) {
-      {
-        v--
-      } -> std::common_with<rep>;
-    }
+    requires number_line<rep>
   {
     return make_quantity<reference>(numerical_value_--);
   }
 
   // compound assignment operators
   template<typename Q>
-    requires std::derived_from<std::remove_cvref_t<Q>, quantity> && requires(rep a, rep b) {
-      {
-        a += b
-      } -> std::same_as<rep&>;
-    }
-  friend constexpr decltype(auto) operator+=(Q&& lhs, const quantity& rhs)
+    requires std::derived_from<std::remove_cvref_t<Q>, quantity>
+  friend constexpr decltype(auto) operator+=(Q && lhs, const quantity & rhs)
   {
     lhs.numerical_value_ += rhs.numerical_value_;
     return std::forward<Q>(lhs);
   }
 
   template<typename Q>
-    requires std::derived_from<std::remove_cvref_t<Q>, quantity> && requires(rep a, rep b) {
-      {
-        a -= b
-      } -> std::same_as<rep&>;
-    }
-  friend constexpr decltype(auto) operator-=(Q&& lhs, const quantity& rhs)
+    requires std::derived_from<std::remove_cvref_t<Q>, quantity>
+  friend constexpr decltype(auto) operator-=(Q && lhs, const quantity & rhs)
   {
     lhs.numerical_value_ -= rhs.numerical_value_;
     return std::forward<Q>(lhs);
   }
 
   template<typename Q>
-    requires std::derived_from<std::remove_cvref_t<Q>, quantity> && (!treat_as_floating_point<rep>) &&
-             requires(rep a, rep b) {
-               {
-                 a %= b
-               } -> std::same_as<rep&>;
-             }
-  friend constexpr decltype(auto) operator%=(Q&& lhs, const quantity& rhs)
+    requires std::derived_from<std::remove_cvref_t<Q>, quantity> &&
+             (!treat_as_floating_point<rep>) && compound_modulus_for<rep, rep>
+  friend constexpr decltype(auto) operator%=(Q && lhs, const quantity & rhs)
 
   {
     gsl_ExpectsAudit(rhs != zero());
@@ -294,40 +263,26 @@ public:
     return std::forward<Q>(lhs);
   }
 
-  template<typename Q, typename Value>
-    requires std::derived_from<std::remove_cvref_t<Q>, quantity> && (!Quantity<Value>) &&
-             requires(rep a, const Value b) {
-               {
-                 a *= b
-               } -> std::same_as<rep&>;
-             }
-  friend constexpr decltype(auto) operator*=(Q&& lhs, const Value& v)
+  template<typename Q, compound_scalar_for<rep> Value>
+    requires std::derived_from<std::remove_cvref_t<Q>, quantity>
+  friend constexpr decltype(auto) operator*=(Q && lhs, const Value & v)
   {
     lhs.numerical_value_ *= v;
     return std::forward<Q>(lhs);
   }
 
   template<typename Q1, QuantityOf<dimension_one> Q2>
-    requires std::derived_from<std::remove_cvref_t<Q1>, quantity> && (Q2::unit == ::mp_units::one) &&
-             requires(rep a, const typename Q2::rep b) {
-               {
-                 a *= b
-               } -> std::same_as<rep&>;
-             }
-  friend constexpr decltype(auto) operator*=(Q1&& lhs, const Q2& rhs)
+    requires std::derived_from<std::remove_cvref_t<Q1>, quantity> &&
+             (Q2::unit == ::mp_units::one) && compound_scalar_for<typename Q2::rep, rep>
+  friend constexpr decltype(auto) operator*=(Q1 && lhs, const Q2 & rhs)
   {
     lhs.numerical_value_ *= rhs.numerical_value_;
     return std::forward<Q1>(lhs);
   }
 
-  template<typename Q, typename Value>
-    requires std::derived_from<std::remove_cvref_t<Q>, quantity> && (!Quantity<Value>) &&
-             requires(rep a, const Value b) {
-               {
-                 a /= b
-               } -> std::same_as<rep&>;
-             }
-  friend constexpr decltype(auto) operator/=(Q&& lhs, const Value& v)
+  template<typename Q, compound_field_for<rep> Value>
+    requires std::derived_from<std::remove_cvref_t<Q>, quantity>
+  friend constexpr decltype(auto) operator/=(Q && lhs, const Value & v)
   {
     gsl_ExpectsAudit(v != quantity_values<Value>::zero());
     lhs.numerical_value_ /= v;
@@ -335,13 +290,9 @@ public:
   }
 
   template<typename Q1, QuantityOf<dimension_one> Q2>
-    requires std::derived_from<std::remove_cvref_t<Q1>, quantity> && (Q2::unit == ::mp_units::one) &&
-             requires(rep a, const typename Q2::rep b) {
-               {
-                 a /= b
-               } -> std::same_as<rep&>;
-             }
-  friend constexpr decltype(auto) operator/=(Q1&& lhs, const Q2& rhs)
+    requires std::derived_from<std::remove_cvref_t<Q1>, quantity> &&
+             (Q2::unit == ::mp_units::one) && compound_field_for<typename Q2::rep, rep>
+  friend constexpr decltype(auto) operator/=(Q1 && lhs, const Q2 & rhs)
   {
     gsl_ExpectsAudit(rhs != rhs.zero());
     lhs.numerical_value_ /= rhs.numerical_value_;
@@ -471,6 +422,9 @@ template<Reference auto R, typename Rep>
 {
   return quantity<R, std::remove_cvref_t<Rep>>(std::forward<Rep>(v));
 }
+
+template<Quantity Q>
+struct number_scalar<Q> : number_scalar<typename Q::rep> {};
 
 }  // namespace mp_units
 
