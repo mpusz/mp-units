@@ -26,8 +26,6 @@
 #include <mp-units/systems/si/unit_symbols.h>
 #include <optional>
 
-#if __cpp_lib_constexpr_cmath || MP_UNITS_COMP_GCC
-
 namespace {
 
 using namespace mp_units;
@@ -39,6 +37,8 @@ template<typename T1, typename T2, typename... Ts>
 {
   return is_same_v<T1, T2> && v1 == v2 && (... && (v1 == vs));
 }
+
+#if __cpp_lib_constexpr_cmath || MP_UNITS_COMP_GCC
 
 static_assert(compare(pow<0>(2 * m), 1 * one));
 static_assert(compare(pow<1>(2 * m), 2 * m));
@@ -201,6 +201,20 @@ static_assert(compare(round<si::second>(-1499. * isq::time[ms]), -1. * isq::time
 static_assert(compare(round<si::second>(-1500. * isq::time[ms]), -2. * isq::time[s]));
 static_assert(compare(round<si::second>(-1999. * isq::time[ms]), -2. * isq::time[s]));
 
-}  // namespace
-
 #endif
+
+// non-truncating
+static_assert(compare(inverse<us>(250 * Hz), 4000 * us));
+static_assert(compare(inverse<us>(250 * kHz), 4 * us));
+static_assert(compare(inverse<ks>(250 * uHz), 4 * ks));
+
+// truncating
+static_assert(compare(inverse<s>(1 * kHz), 0 * s));
+
+// floating-point representation does not truncate
+static_assert(compare(inverse<s>(1. * kHz), 0.001 * s));
+
+// check if constraints work properly for a derived unit of a narrowed kind
+static_assert(compare(inverse<Hz>(1 * s), 1 * Hz));
+
+}  // namespace

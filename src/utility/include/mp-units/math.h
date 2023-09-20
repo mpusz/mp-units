@@ -272,6 +272,19 @@ template<Unit auto To, auto R, typename Rep>
 }
 
 /**
+ * @brief Computes the inverse of a quantity in a provided unit
+ */
+template<Unit auto To, auto R, typename Rep>
+[[nodiscard]] constexpr QuantityOf<dimensionless / get_quantity_spec(R)> auto inverse(const quantity<R, Rep>& q)
+  requires requires {
+    quantity_values<Rep>::one();
+    value_cast<To>(1 / q);
+  }
+{
+  return (quantity_values<Rep>::one() * one).force_in(To * q.unit) / q;
+}
+
+/**
  * @brief Computes the square root of the sum of the squares of x and y,
  *        without undue overflow or underflow at intermediate stages of the computation
  */
