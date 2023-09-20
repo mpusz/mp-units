@@ -339,6 +339,7 @@ the following:
 - `abs()`,
 - `epsilon()`,
 - `floor()`, `ceil()`, `round()`,
+- `inverse()`,
 - `hypot()`,
 - `sin()`, `cos()`, `tan()`,
 - `asin()`, `acos()`, `atan()`.
