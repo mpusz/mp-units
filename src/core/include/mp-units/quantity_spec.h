@@ -38,6 +38,16 @@ namespace mp_units {
 
 namespace detail {
 
+
+template<QuantitySpec QS, Unit U>
+[[nodiscard]] consteval Reference auto make_reference(QS qs, U u)
+{
+  if constexpr (detail::QuantityKindSpec<QS>)
+    return u;
+  else
+    return reference<qs, u>{};
+}
+
 // TODO revise the note in the below comment
 /**
  * @brief Returns the most restrictive character from the list
@@ -100,10 +110,7 @@ struct quantity_spec_interface {
   template<typename Self, UnitOf<Self{}> U>
   [[nodiscard]] consteval Reference auto operator[](this Self self, U u)
   {
-    if constexpr (detail::QuantityKindSpec<Self>)
-      return u;
-    else
-      return reference<self, u>{};
+    return detail::make_reference(self, u);
   }
 
   template<typename Self, typename Q>
@@ -117,10 +124,7 @@ struct quantity_spec_interface {
   template<typename Self_ = Self, UnitOf<Self_{}> U>
   [[nodiscard]] MP_UNITS_CONSTEVAL Reference auto operator[](U u) const
   {
-    if constexpr (detail::QuantityKindSpec<Self_>)
-      return u;
-    else
-      return reference<Self{}, u>{};
+    return detail::make_reference(Self{}, u);
   }
 
   template<typename Q, typename Self_ = Self>
@@ -296,10 +300,7 @@ struct quantity_spec<Self, QS, Args...> : std::remove_const_t<decltype(QS)> {
   template<typename Self_ = Self, UnitOf<Self_{}> U>
   [[nodiscard]] MP_UNITS_CONSTEVAL Reference auto operator[](U u) const
   {
-    if constexpr (detail::QuantityKindSpec<Self>)
-      return u;
-    else
-      return reference<Self{}, u>{};
+    return detail::make_reference(Self{}, u);
   }
 
   template<typename Q, typename Self_ = Self>

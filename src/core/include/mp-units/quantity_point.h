@@ -169,15 +169,15 @@ public:
   }
 
   template<Unit U>
-    requires detail::QuantityConvertibleTo<quantity_type, quantity<quantity_spec[U{}], Rep>>
-  [[nodiscard]] constexpr quantity_point<quantity_spec[U{}], PO, Rep> in(U) const
+    requires detail::QuantityConvertibleTo<quantity_type, quantity<detail::make_reference(quantity_spec, U{}), Rep>>
+  [[nodiscard]] constexpr quantity_point<detail::make_reference(quantity_spec, U{}), PO, Rep> in(U) const
   {
     return make_quantity_point<PO>(quantity_ref_from(PO).in(U{}));
   }
 
   template<Unit U>
     requires requires(quantity_type q) { value_cast<U{}>(q); }
-  [[nodiscard]] constexpr quantity_point<quantity_spec[U{}], PO, Rep> force_in(U) const
+  [[nodiscard]] constexpr quantity_point<detail::make_reference(quantity_spec, U{}), PO, Rep> force_in(U) const
   {
     return make_quantity_point<PO>(quantity_ref_from(PO).force_in(U{}));
   }
