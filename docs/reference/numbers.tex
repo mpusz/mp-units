@@ -1,0 +1,601 @@
+%!TEX root = std.tex
+\Sec0[nums]{Numbers library}
+
+\Sec1[nums.summary]{Summary}
+
+\pnum
+This Clause describes components for dealing with numbers,
+as summarized in \tref{nums.summary}.
+
+\begin{libsumtab}{Numbers library summary}{nums.summary}
+\ref{num.traits}        & Traits                                 & \tcode{<mp_units/numbers.h>} \\
+\ref{num.concepts}      & Concepts                               & \\
+\end{libsumtab}
+
+\Sec1[nums.syn]{Header \tcode{<mp_units/numbers.h>} synopsis}
+
+\indexheader{mp_units/numbers.h}%
+\begin{codeblock}
+namespace mp_units {
+
+// \ref{num.traits}, traits
+
+// \ref{num.opt.ins}, \cname{number} opt-ins
+template<typename T>
+struct is_number;
+template<typename T>
+struct is_complex_number;
+
+template<typename T>
+constexpr bool @\libglobal{is_number_v}@ = is_number<T>::value;
+template<typename T>
+constexpr bool @\libglobal{is_complex_number_v}@ = is_complex_number<T>::value;
+
+// \ref{num.ids}, identities
+template<typename T>
+struct number_zero;
+template<typename T>
+struct number_one;
+
+template<typename T>
+constexpr T @\libglobal{number_zero_v}@ = number_zero<T>::value;
+template<typename T>
+constexpr T @\libglobal{number_one_v}@ = number_one<T>::value;
+
+// \ref{num.assoc.types}, associated types
+template<typename T>
+struct number_scalar;
+
+template<typename T>
+using number_difference_t = decltype(std::declval<const T>() - std::declval<const T>());
+template<typename T>
+using @\libglobal{number_scalar_t}@ = number_scalar<T>::type;
+
+// \ref{num.concepts}, concepts
+template<typename T>
+concept number = @\seebelow@;
+template<typename T>
+concept ordered_number = @\seebelow@;
+template<typename T>
+concept number_line = @\seebelow@;
+template<typename T, typename U>
+concept modulo_with = @\seebelow@;
+template<typename T, typename U>
+concept compound_modulo_with = @\seebelow@;
+template<typename T, typename U>
+concept modulus_for = @\seebelow@;
+template<typename T, typename U>
+concept compound_modulus_for = @\seebelow@;
+template<typename T>
+concept negative = @\seebelow@;
+template<typename T>
+concept set_with_inverse = @\seebelow@;
+template<typename T, typename U>
+concept point_space_for = @\seebelow@;
+template<typename T, typename U>
+concept compound_point_space_for = @\seebelow@;
+template<typename T>
+concept point_space = @\seebelow@;
+template<typename T, typename U>
+concept vector_space_for = @\seebelow@;
+template<typename T, typename U>
+concept compound_vector_space_for = @\seebelow@;
+template<typename T, typename U>
+concept scalar_for = @\seebelow@;
+template<typename T, typename U>
+concept field_for = @\seebelow@;
+template<typename T, typename U>
+concept compound_scalar_for = @\seebelow@;
+template<typename T, typename U>
+concept compound_field_for = @\seebelow@;
+template<typename T>
+concept vector_space = @\seebelow@;
+template<typename T>
+concept f_vector_space = @\seebelow@;
+template<typename T>
+concept field_number = @\seebelow@;
+template<typename T>
+concept field_number_line = @\seebelow@;
+template<typename T>
+concept scalar_number = @\seebelow@;
+
+}  // namespace mp_units
+\end{codeblock}
+
+\Sec1[num.traits]{Traits}
+
+\Sec2[num.traits.reqs]{Requirements}
+
+\pnum
+Subclause \ref{num.traits} subsumes \refcpp{meta.rqmts},
+assumingly amended for its context.
+Pursuant to the subsumed \refcpp{namespace.std}\iref{spec.ext},
+each class template specified in \ref{num.traits}
+may be specialized for any numeric type\irefcppx{numeric.requirements}{def:type,numeric}.
+
+\pnum
+\indexlibrary{\idxexposid{number-trait}!{\tcode{const T}}}%
+Each template \tcode{\placeholder{number-trait}} specified in \ref{num.traits}
+has a partial specialization of the form
+\begin{codeblock}
+template<class T>
+struct @\placeholder{number-trait}@<const T> : @\placeholder{number-trait}@<T> { };
+\end{codeblock}
+
+\pnum
+Each template \tcode{\placeholder{number-trait}} specified in \ref{num.opt.ins}
+is a \oldconcept{UnaryTypeTrait}
+with a base characteristic of \tcode{std::bool_constant<\placeholder{B}>}.
+\tcode{\placeholder{B}} is a value consistent with \placeholdernc{\tcode{number-trait}}'s specification.
+
+\pnum
+Each template specified in \ref{num.ids}
+is a numeric distinguished value trait
+(\href{https://wg21.link/P1841R3}{P1841R3} [num.traits.val]),
+except that there are no declared specializations for arithmetic or volatile-qualified types.
+
+\pnum
+A specialization of any template \tcode{\placeholder{number-trait}} specified in \ref{num.assoc.types}
+has no members other than a \tcode{type} member
+that names a type consistent with \placeholdernc{\tcode{number-trait}}'s specification.
+
+\Sec2[num.opt.ins]{\cname{number} opt-ins}
+
+\begin{itemdecl}
+template<typename T>
+struct @\libglobal{is_number}@ : @\seebelow@ {};
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\cvalue
+\tcode{true} if \tcode{T} represents a number, and
+\tcode{false} otherwise.
+
+\pnum
+\dvalue
+\tcode{true} if \tcode{number_scalar_t<T>} is valid, and
+\tcode{false} otherwise.
+\end{itemdescr}
+
+\indexlibraryspec{is_number}{std::chrono::time_point}%
+\indexlibraryspec{is_number}{std::chrono::day}%
+\indexlibraryspec{is_number}{std::chrono::month}%
+\indexlibraryspec{is_number}{std::chrono::year}%
+\indexlibraryspec{is_number}{std::chrono::weekday}%
+\indexlibraryspec{is_number}{std::chrono::year_month}%
+\begin{itemdecl}
+template<class... T>
+struct is_number<std::chrono::time_point<T...>> : std::true_type {};
+template<>
+struct is_number<std::chrono::day> : std::true_type {};
+template<>
+struct is_number<std::chrono::month> : std::true_type {};
+template<>
+struct is_number<std::chrono::year> : std::true_type {};
+template<>
+struct is_number<std::chrono::weekday> : std::true_type {};
+template<>
+struct is_number<std::chrono::year_month> : std::true_type {};
+\end{itemdecl}
+
+\begin{itemdecl}
+template<typename T>
+struct @\libglobal{is_complex_number}@ : std::false_type {};
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\cvalue
+\tcode{true} if \tcode{T} represents a complex number\irefiev{102-02-09}, and
+\tcode{false} otherwise.
+\end{itemdescr}
+
+\indexlibraryspec{is_complex_number}{std::complex}%
+\begin{itemdecl}
+template<class T>
+struct is_complex_number<std::complex<T>> : std::true_type {};
+\end{itemdecl}
+
+\Sec2[num.ids]{Identities}
+
+\begin{codeblock}
+template<typename T>
+concept @\defexposconcept{inferable-identities}@ =
+  std::common_with<T, number_difference_t<T>> && std::constructible_from<T, int>;
+\end{codeblock}
+
+\indexlibrary{\idxcode{number_zero}!\idxexposconcept{inferable-identities}}%
+\begin{itemdecl}
+template<typename T>
+struct @\libglobal{number_zero}@ { @\seebelow@ };
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\cvalue
+\tcode{T}'s neutral element for addition\irefiev{102-01-12}, if any.
+
+\pnum
+\dvalue
+If \tcode{T} models \exposconcept{inferable-identities}, \tcode{T(0)}.
+\end{itemdescr}
+
+\indexlibrary{\idxcode{number_one}!\idxexposconcept{inferable-identities}}%
+\begin{itemdecl}
+template<typename T>
+struct @\libglobal{number_one}@ { @\seebelow@ };
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\cvalue
+\tcode{T}'s neutral element for multiplication\irefiev{102-01-19}, if any.
+
+\pnum
+\dvalue
+If \tcode{T} models \exposconcept{inferable-identities}, \tcode{T(1)}.
+\end{itemdescr}
+
+\Sec2[num.assoc.types]{Associated types}
+
+\begin{itemdecl}
+template<typename T>
+using @\libglobal{number_difference_t}@ = decltype(std::declval<const T>() - std::declval<const T>());
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\tcode{number_difference_t<T>} represents \tcode{T}'s difference's\irefiev{102-01-17} type, if any.
+\end{itemdescr}
+
+\indexlibrary{\idxcode{number_scalar}!arithmetic type}%
+\indexlibraryspec{number_scalar}{std::complex}%
+\indexlibraryspec{number_scalar}{std::chrono::duration}%
+\begin{itemdecl}
+template<typename T>
+struct @\libglobal{number_scalar}@ {};
+template<@\seebelow@>
+struct number_scalar<@\seebelow@> {
+  using type = @\seebelow@;
+};
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\ctype
+\tcode{T}'s scalar\irefiev{102-02-18}, if any.
+
+\pnum
+Each row of \tref{num.scalar} denotes a specialization.
+
+\begin{floattable}{Specializations of \tcode{number_scalar}}{num.scalar}{lll}
+\topline
+\lhdr{\fakegrammarterm{template-parameter-list}}
+                              & \chdr{\fakegrammarterm{template-argument-list}}
+                                                              & \rhdr{\Fundescx{Type}} \\ \rowsep
+\tcode{std::integral T}       & \tcode{T}                     & \tcode{T} \\ \rowsep
+\tcode{std::floating_point T} & \tcode{T}                     & \tcode{T} \\ \rowsep
+\tcode{class T}               & \tcode{std::complex<T>}       & \tcode{T} \\ \rowsep
+\tcode{class T, class U}      & \tcode{std::duration<T, U>}   & \tcode{T} \\
+\end{floattable}
+\end{itemdescr}
+
+\Sec1[num.concepts]{Concepts}
+
+\begin{itemdecl}
+template<typename T>
+concept @\deflibconcept{number}@ = is_number_v<T> && std::regular<T>;
+
+template<typename T>
+concept @\deflibconcept{ordered_number}@ = @\libconcept{number}@<T> && std::totally_ordered<T>;
+\end{itemdecl}
+
+\begin{itemdecl}
+template<class T>
+concept @\deflibconcept{number_line}@ =
+  @\libconcept{ordered_number}@<T> &&
+  requires(T& v) {
+    number_one_v<number_difference_t<T>>;
+    { ++v } -> std::same_as<T&>;
+    { --v } -> std::same_as<T&>;
+    { v++ } -> std::same_as<T>;
+    { v-- } -> std::same_as<T>;
+  };
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+Let \tcode{v} and \tcode{u} be equal objects of type \tcode{T},
+and \tcode{one} be the value \tcode{number_one_v<number_difference_t<T>>}.
+\tcode{T} models \libconcept{number_line} only if
+\begin{itemize}
+\item
+The expressions \tcode{++v} and \tcode{v++} have the same domain\irefcppx{concepts.equality}{def:expression,domain}.
+\item
+The expressions \tcode{--v} and \tcode{v--} have the same domain.
+\item
+If \tcode{v} is incrementable\irefcppx{iterator.concept.winc}{\#def:incrementable},
+then both \tcode{++v} and \tcode{v++} add \tcode{one} to \tcode{v},
+and the following expressions all equal \tcode{true}:
+\begin{itemize}
+\item \tcode{v++ == u},
+\item \tcode{((void)v++, v) == ++u}, and
+\item \tcode{std::addressof(++v) == std::addressof(v)}.
+\end{itemize}
+\item
+If \tcode{v} is decrementable\irefcppx{range.iota.view}{\#def:decrementable},
+then both \tcode{--v} and \tcode{v--} subtract \tcode{one} from \tcode{v},
+and the following expressions all equal \tcode{true}:
+\begin{itemize}
+\item \tcode{v-- == u},
+\item \tcode{((void)v--, v) == --u}, and
+\item \tcode{std::addressof(--v) == std::addressof(v)}.
+\end{itemize}
+\end{itemize}
+\end{itemdescr}
+
+\begin{itemdecl}
+template<class T, class U> concept @\defexposconceptnc{addition-with}@ =
+  @\libconcept{number}@<T> &&
+  @\libconcept{number}@<U> &&
+  requires(const T& c, const U& d) {
+    { c + d } -> std::common_with<T>;
+    { d + c } -> std::common_with<T>;
+  };
+
+template<class T, class U> concept @\defexposconceptnc{compound-addition-with}@ =
+  @\exposconcept{addition-with}@<T, U> &&
+  requires(T& l, const U& d) {
+    { l += d } -> std::same_as<T&>;
+  };
+
+template<class T, class U> concept @\defexposconceptnc{subtraction-with}@ =
+  @\exposconcept{addition-with}@<T, U> &&
+  requires(const T& c, const U& d) {
+    { c - d } -> std::common_with<T>;
+  };
+
+template<class T, class U> concept @\defexposconceptnc{compound-subtraction-with}@ =
+  @\exposconcept{subtraction-with}@<T, U> &&
+  @\exposconcept{compound-addition-with}@<T, U> &&
+  requires(T& l, const U& d) {
+    { l -= d } -> std::same_as<T&>;
+  };
+
+template<class T, class U, class V> concept @\defexposconceptnc{multiplication-with}@ =
+  @\libconcept{number}@<T> &&
+  @\libconcept{number}@<U> &&
+  @\libconcept{number}@<V> &&
+  requires(const T& c, const U& u) {
+    { c * u } -> std::common_with<V>;
+  };
+
+template<class T, class U> concept @\defexposconceptnc{compound-multiplication-with}@ =
+  @\exposconcept{multiplication-with}@<T, U, T> &&
+  requires(T& l, const U& u) {
+    { l *= u } -> std::same_as<T&>;
+  };
+
+template<class T, class U> concept @\defexposconceptnc{division-with}@ =
+  @\exposconcept{multiplication-with}@<T, U, T> &&
+  @\exposconcept{multiplication-with}@<U, T, T> &&
+  requires(const T& c, const U& u) {
+    { c / u } -> std::common_with<T>;
+  };
+
+template<class T, class U> concept @\defexposconceptnc{compound-division-with}@ =
+  @\exposconcept{division-with}@<T, U> &&
+  @\exposconcept{compound-multiplication-with}@<T, U> &&
+  requires(T& l, const U& u) {
+    { l /= u } -> std::same_as<T&>;
+  };
+
+export template<class T, class U> concept @\deflibconcept{modulo_with}@ =
+  @\libconcept{number}@<T> &&
+  @\libconcept{number}@<U> &&
+  requires(const T& c, const U& u) {
+    { c % u } -> std::common_with<T>;
+  };
+
+export template<class T, class U> concept @\deflibconcept{compound_modulo_with}@ =
+  @\libconcept{modulo_with}@<T, U> &&
+  requires(T& l, const U& u) {
+    { l %= u } -> std::same_as<T&>;
+  };
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+Let \tcode{q} be an object of type \tcode{T},
+and \tcode{r} be an object of type \tcode{U}.
+
+\pnum
+For \exposconcept{addition-with} and \exposconcept{compound-addition-with},
+let $E$ be the expression \tcode{q + r} or \tcode{r + q}, and \tcode{q += r}, respectively, and
+let $F$ be the addition\irefiev{102-01-11} of the inputs to $E$.
+
+\pnum
+For \exposconcept{subtraction-with} and \exposconcept{compound-subtraction-with},
+let $E$ be the expression \tcode{q - r} and \tcode{q -= r}, respectively, and
+let $F$ be the subtraction\irefiev{102-01-13} of the inputs to $E$.
+
+\pnum
+For \exposconcept{multiplication-with} and \exposconcept{compound-multiplication-with},
+let $E$ be the expression \tcode{q * r} and \tcode{q *= r}, respectively, and
+let $F$ be the multiplication\irefiev{102-01-18} of the inputs to $E$.
+
+\pnum
+For \exposconcept{division-with} and \exposconcept{compound-division-with},
+let $E$ be the expression \tcode{q / r} and \tcode{q /= r}, respectively, and
+let $F$ be the division\irefiev{102-01-21} of the inputs to $E$.
+
+\pnum
+For \libconcept{modulo_with} and \libconcept{compound_modulo_with},
+let $E$ be the expression \tcode{q \% r} and \tcode{q \%= r}, respectively, and
+let $F$ be the modulo\iref{def.mod} of the inputs to $E$.
+
+\pnum
+\tcode{T} respectively models
+\tcode{\exposconcept{addition-with}<U>},
+\tcode{\exposconcept{compound-addition-with}<U>},
+\tcode{\exposconcept{subtraction-with}<U>},
+\tcode{\exposconcept{compound-subtraction-with}<U>},
+\tcode{\exposconcept{multiplication-with}<U, V>},
+\tcode{\exposconcept{compound-multiplication-with}<U>},
+\tcode{\exposconcept{division-with}<U>},
+\tcode{\exposconcept{compound-division-with}<U>},
+\tcode{\libconcept{modulo_with}<U>}, and
+\tcode{\libconcept{compound_modulo_with}<U>}
+only if, for each respective $E$, when the inputs to $E$ are in the domain of $E$
+\begin{itemize}
+\item
+$E$ performs $F$ in an unspecified set.
+\item
+If the operator of $E$ is an \fakegrammarterm{assignment-operator},
+\begin{itemize}
+\item
+$E$ maps the value of $F$ to \tcode{q}, and
+the result of $E$ is a reference to \tcode{q}, and
+\item
+the result of $E$ is the value of $F$ mapped to the type of $E$ otherwise.
+\end{itemize}
+\end{itemize}
+\end{itemdescr}
+
+\begin{itemdecl}
+template<typename T, typename U>
+concept @\deflibconcept{modulus_for}@ = @\libconcept{modulo_with}@<U, T>;
+template<typename T, typename U>
+concept @\deflibconcept{compound_modulus_for}@ = @\libconcept{compound_modulo_with}@<U, T>;
+\end{itemdecl}
+
+\begin{itemdecl}
+export template<class T> concept @\deflibconcept{negative}@ =
+  @\exposconcept{compound-addition-with}@<T, T> &&
+  requires(const T& c) {
+    number_zero_v<T>;
+    { -c } -> std::common_with<T>;
+  };
+
+template<class T> concept @\deflibconcept{set_with_inverse}@ =
+  @\exposconcept{compound-multiplication-with}@<T, T> &&
+  requires(const T& c) {
+    { number_one_v<T> / c } -> std::common_with<T>;
+  };
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+Let \tcode{v} be an object of type \tcode{T}.
+
+\pnum
+For \libconcept{negative},
+let $E$ be the expression \tcode{-v}, and
+let $F$ be the negative\irefiev{102-01-14} of \tcode{v}.
+
+\pnum
+For \libconcept{set_with_inverse},
+let $E$ be the expression \tcode{number_one_v<T> / v}, and
+let $F$ be the inverse\irefiev{102-01-24} of \tcode{v}.
+
+\pnum
+\tcode{T} respectively models
+\tcode{\libconcept{negative}<U>} and
+\tcode{\libconcept{set_with_inverse}<U>}
+only if, for the respective $E$, when \tcode{v} is in the domain of $E$
+\begin{itemize}
+\item
+$E$ performs $F$ in an unspecified set.
+\item
+The result of $E$ is the value of $F$ mapped to the type of $E$.
+\end{itemize}
+\end{itemdescr}
+
+\begin{itemdecl}
+template<typename T, typename U>
+concept @\deflibconcept{point_space_for}@ =
+  @\exposconcept{subtraction-with}@<T, U> && @\libconcept{negative}@<U> && std::common_with<number_difference_t<T>, U>;
+template<typename T, typename U>
+concept @\deflibconcept{compound_point_space_for}@ = @\libconcept{point_space_for}@<T, U> && @\exposconcept{compound-subtraction-with}@<T, U>;
+template<typename T>
+concept @\deflibconcept{point_space}@ = @\libconcept{compound_point_space_for}@<T, number_difference_t<T>>;
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\begin{note}
+The \libconcept{point_space} concept is modeled by types
+that behave similarly to \tcode{std::chrono::sys_seconds}.
+\end{note}
+\end{itemdescr}
+
+\begin{itemdecl}
+template<typename T, typename U>
+concept @\deflibconcept{vector_space_for}@ = @\libconcept{point_space_for}@<U, T>;
+template<typename T, typename U>
+concept @\deflibconcept{compound_vector_space_for}@ = @\libconcept{compound_point_space_for}@<U, T>;
+
+template<typename T>
+concept @\defexposconceptnc{weak-scalar}@ =
+  std::common_with<T, number_difference_t<T>> && @\libconcept{point_space}@<T> && @\libconcept{negative}@<T>;
+
+template<typename T, typename U>
+concept @\defexposconceptnc{scales-with}@ = std::common_with<U, number_scalar_t<T>> && @\exposconcept{weak-scalar}@<U> &&
+                      @\exposconcept{multiplication-with}@<T, U, T> && @\libconcept{set_with_inverse}@<U>;
+template<typename T, typename U>
+concept @\defexposconceptnc{compound-scales-with}@ = @\exposconcept{scales-with}@<T, U> && @\exposconcept{compound-multiplication-with}@<T, U>;
+
+template<typename T, typename U>
+concept @\deflibconcept{scalar_for}@ = @\exposconcept{scales-with}@<U, T>;
+template<typename T, typename U>
+concept @\deflibconcept{field_for}@ = @\libconcept{scalar_for}@<T, U> && @\exposconcept{division-with}@<U, T>;
+template<typename T, typename U>
+concept @\deflibconcept{compound_scalar_for}@ = @\exposconcept{compound-scales-with}@<U, T>;
+template<typename T, typename U>
+concept @\deflibconcept{compound_field_for}@ = @\libconcept{compound_scalar_for}@<T, U> && @\exposconcept{compound-division-with}@<U, T>;
+
+template<typename T>
+concept @\deflibconcept{vector_space}@ = @\libconcept{point_space}@<T> && @\exposconcept{compound-scales-with}@<T, number_scalar_t<T>>;
+template<typename T>
+concept @\deflibconcept{f_vector_space}@ = @\libconcept{vector_space}@<T> && @\exposconcept{compound-division-with}@<T, number_scalar_t<T>>;
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\begin{note}
+The \libconcept{f_vector_space} concept is modeled by types
+that behave similarly to \tcode{std::chrono::seconds}.
+\end{note}
+\end{itemdescr}
+
+\begin{itemdecl}
+template<typename T>
+concept @\deflibconcept{field_number}@ = @\libconcept{f_vector_space}@<T> && @\exposconcept{compound-scales-with}@<T, T>;
+
+template<typename T>
+concept @\deflibconcept{field_number_line}@ = @\libconcept{field_number}@<T> && @\libconcept{number_line}@<T>;
+
+template<typename T>
+concept @\deflibconcept{scalar_number}@ = @\libconcept{field_number}@<T> && (@\libconcept{field_number_line}@<T> || is_complex_number_v<T>);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\begin{note}
+The \libconcept{field_number} concept is modeled by types
+that behave similarly to \tcode{std::complex<double>}.
+It represents an approximation of a field, see \refiev{102-02-18}, Note 2 to entry.
+\end{note}
+
+\pnum
+\begin{note}
+The \libconcept{field_number_line} concept is modeled by types
+that behave similarly to \tcode{double}.
+\end{note}
+
+\pnum
+\begin{note}
+\libconcept{scalar_number} represents an approximation of a scalar number\irefiev{102-02-18}.
+\end{note}
+\end{itemdescr}

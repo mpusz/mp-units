@@ -1,0 +1,61 @@
+parse:
+  additional_commands:
+    _jegp_common_yaml_anchors:
+      kwargs:
+        PUBLIC_INTERFACE_PRIVATE: &public_interface_private
+          kwargs:
+            PUBLIC: +
+            INTERFACE: +
+            PRIVATE: +
+    jegp_add_standardese_sources:
+      pargs:
+        nargs: 1
+        flags:
+        - EXCLUDE_PDF_FROM_MAIN
+        - EXCLUDE_HTML_FROM_MAIN
+        - EXCLUDE_FROM_ALL
+      kwargs:
+        LIBRARIES: +
+        APPENDICES: +
+        EXTENSIONS: +
+        CHECKED: 1
+        PDF_PATH: 1
+        HTML_PATH: 1
+    jegp_add_module:
+      pargs: &jegp_add_module_pargs
+        nargs: 1
+        flags:
+        - IMPORTABLE_HEADER
+      kwargs:
+        SOURCES: +
+        COMPILE_OPTIONS: *public_interface_private
+        LINK_LIBRARIES: *public_interface_private
+    jegp_cpp_module:
+      pargs: *jegp_add_module_pargs
+    jegp_target_link_header_units:
+      pargs:
+        nargs: 1+
+    jegp_add_headers_test:
+      pargs:
+        nargs: 1+
+      kwargs:
+        PRIVATE_REGEXES: +
+    jegp_add_test:
+      pargs:
+        nargs: 1+
+        flags:
+        - COMPILE_ONLY
+      kwargs:
+        TYPE: 1
+        SOURCES: +
+        COMPILE_OPTIONS: +
+        LINK_LIBRARIES: +
+    jegp_add_build_error:
+      pargs:
+        nargs: 1+
+      kwargs:
+        AS: 1
+        TYPE: 1
+        SOURCE: 1
+        COMPILE_OPTIONS: +
+        LINK_LIBRARIES: +

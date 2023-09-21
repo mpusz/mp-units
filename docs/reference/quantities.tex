@@ -1,0 +1,46 @@
+%!TEX root = std.tex
+\Sec0[qties]{Quantities library}
+
+\Sec1[qties.summary]{Summary}
+
+\pnum
+This Clause describes components for dealing with quantities,
+as summarized in \tref{qties.summary}.
+
+\begin{modularlibsumtab}{Quantities library summary}{qties.summary}
+\ref{qty.concepts}      & Concepts                               & \tcode{<mp_units/quantity.h>} \\
+\end{modularlibsumtab}
+
+\Sec1[qty.syn]{Header \tcode{<mp_units/quantity.h>} synopsis}
+
+\indexheader{mp_units/quantity.h}%
+\indexlibraryspec{number_scalar}{quantity}%
+\begin{codeblock}
+#include <mp_units/numbers.h>  // see \ref{nums.syn}
+
+namespace mp_units {
+
+// \ref{qty.concepts}, concepts
+template<class>
+concept scalar_quantity = @\seebelow@;
+
+template<Quantity Q>
+struct number_scalar<Q> : number_scalar<typename Q::rep> {};
+
+}  // namespace mp_units
+\end{codeblock}
+
+\Sec1[qty.concepts]{Concepts}
+
+\begin{itemdecl}
+template<class T>
+concept @\deflibconcept{scalar_quantity}@ = Quantity<T> && @\libconcept{scalar_number}@<typename T::rep>;
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\begin{note}
+The \libconcept{scalar_quantity} concept
+represents an approximation of a scalar quantity\irefiev{102-02-19}.
+\end{note}
+\end{itemdescr}
