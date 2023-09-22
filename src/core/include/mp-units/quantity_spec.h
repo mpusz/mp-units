@@ -275,19 +275,20 @@ struct quantity_spec<Self, Eq, Args...> : detail::quantity_spec_interface<Self> 
  *       errors. Having them of the same names improves user experience and somehow blurs those separate domains.
  *
  * @tparam Q quantity specification of a parent quantity
- * @tparam Args optionally a value of a `quantity_character` in case the base quantity should not be scalar
- *              or `is_kind` in case the quantity starts a new hierarchy tree of a kind
+ * @tparam Args optionally `is_kind` in case the quantity starts a new hierarchy tree of a kind
  */
 #ifdef __cpp_explicit_this_parameter
-template<detail::NamedQuantitySpec auto QS, one_of<quantity_character, struct is_kind> auto... Args>
+template<detail::NamedQuantitySpec auto QS, one_of<struct is_kind> auto... Args>
   requires(... && !QuantitySpec<std::remove_const_t<decltype(Args)>>)
 struct quantity_spec<QS, Args...> : std::remove_const_t<decltype(QS)> {
 #else
+// template<typename Self, detail::NamedQuantitySpec auto QS, one_of<struct is_kind> auto... Args>
 template<typename Self, detail::NamedQuantitySpec auto QS, one_of<quantity_character, struct is_kind> auto... Args>
   requires(... && !QuantitySpec<std::remove_const_t<decltype(Args)>>)
 struct quantity_spec<Self, QS, Args...> : std::remove_const_t<decltype(QS)> {
 #endif
   static constexpr auto _parent_ = QS;
+  // static constexpr quantity_character character = QS.character;
   static constexpr quantity_character character = detail::quantity_character_init<Args...>(QS.character);
 
 #ifndef __cpp_explicit_this_parameter
@@ -488,6 +489,7 @@ template<QuantitySpec auto... From, QuantitySpec Q>
 // Operators
 
 [[nodiscard]] consteval QuantitySpec auto operator*(QuantitySpec auto lhs, QuantitySpec auto rhs)
+  requires(lhs.character == quantity_character::scalar || rhs.character == quantity_character::scalar)
 {
   return clone_kind_of<lhs, rhs>(
     detail::expr_multiply<derived_quantity_spec, struct dimensionless, detail::type_list_of_quantity_spec_less>(
@@ -496,6 +498,7 @@ template<QuantitySpec auto... From, QuantitySpec Q>
 
 template<QuantitySpec Lhs, QuantitySpec Rhs>
 [[nodiscard]] consteval QuantitySpec auto operator/(Lhs lhs, Rhs rhs)
+  requires(rhs.character == quantity_character::scalar)
 {
   return clone_kind_of<lhs, rhs>(
     detail::expr_divide<derived_quantity_spec, struct dimensionless, detail::type_list_of_quantity_spec_less>(
@@ -503,6 +506,7 @@ template<QuantitySpec Lhs, QuantitySpec Rhs>
 }
 
 [[nodiscard]] consteval QuantitySpec auto operator/(int value, QuantitySpec auto q)
+  requires(q.character == quantity_character::scalar)
 {
   gsl_Expects(value == 1);
   return clone_kind_of<q>(detail::expr_invert<derived_quantity_spec, struct dimensionless>(q));
@@ -514,6 +518,28 @@ template<QuantitySpec Lhs, QuantitySpec Rhs>
 [[nodiscard]] consteval bool operator==(Lhs, Rhs)
 {
   return is_same_v<Lhs, Rhs>;
+}
+
+[[nodiscard]] consteval QuantitySpec auto dot_product(QuantitySpec auto lhs, QuantitySpec auto rhs)
+  requires(lhs.character == quantity_character::vector && rhs.character == quantity_character::vector)
+{
+  return clone_kind_of<lhs, rhs>(
+    detail::expr_multiply<derived_quantity_spec, struct dimensionless, detail::type_list_of_quantity_spec_less>(
+      remove_kind(lhs), remove_kind(rhs)));
+}
+
+[[nodiscard]] consteval QuantitySpec auto cross_product(QuantitySpec auto lhs, QuantitySpec auto rhs)
+  requires(lhs.character == quantity_character::vector && rhs.character == quantity_character::vector)
+{
+  return clone_kind_of<lhs, rhs>(
+    detail::expr_multiply<derived_quantity_spec, struct dimensionless, detail::type_list_of_quantity_spec_less>(
+      remove_kind(lhs), remove_kind(rhs)));
+}
+
+[[nodiscard]] consteval QuantitySpec auto norm(QuantitySpec auto q)
+  requires(q.character == quantity_character::vector)
+{
+  return q;
 }
 
 template<detail::QuantityKindSpec Lhs, detail::QuantityKindSpec Rhs>
@@ -1475,7 +1501,8 @@ template<QuantitySpec Q>
 
 template<QuantitySpec Q1, QuantitySpec Q2>
 [[nodiscard]] consteval QuantitySpec auto common_quantity_spec(Q1 q1, Q2 q2)
-  requires(implicitly_convertible(get_kind(q1), get_kind(q2)) || implicitly_convertible(get_kind(q2), get_kind(q1)))
+  requires(Q1::character == Q2::character) &&
+          (implicitly_convertible(get_kind(q1), get_kind(q2)) || implicitly_convertible(get_kind(q2), get_kind(q1)))
 {
   using QQ1 = std::remove_const_t<decltype(remove_kind(q1))>;
   using QQ2 = std::remove_const_t<decltype(remove_kind(q2))>;

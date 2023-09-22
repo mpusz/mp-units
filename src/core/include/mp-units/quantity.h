@@ -65,20 +65,6 @@ concept QuantityConvertibleTo =
   // deduced thus the function is evaluated here and may emit truncating conversion or other warnings)
   requires(QFrom q) { detail::sudo_cast<QTo>(q); };
 
-template<quantity_character Ch, typename Func, typename T, typename U>
-concept InvokeResultOf = std::regular_invocable<Func, T, U> && RepresentationOf<std::invoke_result_t<Func, T, U>, Ch>;
-
-template<typename Func, typename Q1, typename Q2>
-concept InvocableQuantities = Quantity<Q1> && Quantity<Q2> &&
-                              InvokeResultOf<common_quantity_spec(Q1::quantity_spec, Q2::quantity_spec).character, Func,
-                                             typename Q1::rep, typename Q2::rep> &&
-                              requires { common_reference(Q1::reference, Q2::reference); };
-
-template<typename Func, Quantity Q1, Quantity Q2>
-  requires detail::InvocableQuantities<Func, Q1, Q2>
-using common_quantity_for = quantity<common_reference(Q1::reference, Q2::reference),
-                                     std::invoke_result_t<Func, typename Q1::rep, typename Q2::rep>>;
-
 }  // namespace detail
 
 /**
@@ -341,24 +327,54 @@ explicit quantity(Q) -> quantity<quantity_like_traits<Q>::reference, typename qu
 
 // binary operators on quantities
 template<auto R1, typename Rep1, auto R2, typename Rep2>
-  requires detail::InvocableQuantities<std::plus<>, quantity<R1, Rep1>, quantity<R2, Rep2>>
+  requires requires(Rep1 a, Rep2 b) {
+    common_reference(R1, R2);
+    {
+      a + b
+    } -> detail::IsOfCharacter<get_quantity_spec(R1).character>
+  }
 [[nodiscard]] constexpr Quantity auto operator+(const quantity<R1, Rep1>& lhs, const quantity<R2, Rep2>& rhs)
 {
-  using ret = detail::common_quantity_for<std::plus<>, quantity<R1, Rep1>, quantity<R2, Rep2>>;
+  using ret = quantity<common_reference(R1, R2), decltype(lhs.number() + rhs.number())>;
   return make_quantity<ret::reference>(ret(lhs).number() + ret(rhs).number());
 }
 
 template<auto R1, typename Rep1, auto R2, typename Rep2>
-  requires detail::InvocableQuantities<std::minus<>, quantity<R1, Rep1>, quantity<R2, Rep2>>
+  requires requires(Rep1 a, Rep2 b) {
+    common_reference(R1, R2);
+    {
+      a - b
+    } -> detail::IsOfCharacter<get_quantity_spec(R1).character>
+  }
 [[nodiscard]] constexpr Quantity auto operator-(const quantity<R1, Rep1>& lhs, const quantity<R2, Rep2>& rhs)
 {
-  using ret = detail::common_quantity_for<std::minus<>, quantity<R1, Rep1>, quantity<R2, Rep2>>;
+  using ret = quantity<common_reference(R1, R2), decltype(lhs.number() - rhs.number())>;
   return make_quantity<ret::reference>(ret(lhs).number() - ret(rhs).number());
 }
 
+template<ReferenceOf<quantity_character::scalar> auto R1, typename Rep1,
+         ReferenceOf<quantity_character::scalar> auto R2, typename Rep2>
+  requires(!treat_as_floating_point<Rep1>) && (!treat_as_floating_point<Rep2>) && requires(Rep1 a, Rep2 b) {
+    common_reference(R1, R2);
+    {
+      a % b
+    } -> detail::IsOfCharacter<quantity_character::scalar>
+  }
+[[nodiscard]] constexpr Quantity auto operator%(const quantity<R1, Rep1>& lhs, const quantity<R2, Rep2>& rhs)
+{
+  gsl_ExpectsAudit(rhs.number() != quantity_values<Rep1>::zero());
+  using ret = quantity<common_reference(R1, R2), decltype(lhs.number() % rhs.number())>;
+  return make_quantity<ret::reference>(ret(lhs).number() % ret(rhs).number());
+}
+
 template<auto R1, typename Rep1, auto R2, typename Rep2>
-  requires detail::InvokeResultOf<(get_quantity_spec(R1) * get_quantity_spec(R2)).character, std::multiplies<>, Rep1,
-                                  Rep2>
+  requires(ReferenceOf<std::remove_const_t<decltype(R1)>, quantity_character::scalar> ||
+           ReferenceOf<std::remove_const_t<decltype(R2)>, quantity_character::scalar>) &&
+          requires(Rep1 a, Rep2 b) {
+            {
+              a* b
+            } -> detail::IsOfCharacter<(get_quantity_spec(R1) * get_quantity_spec(R2)).character>
+          }
 [[nodiscard]] constexpr Quantity auto operator*(const quantity<R1, Rep1>& lhs, const quantity<R2, Rep2>& rhs)
 {
   return make_quantity<R1 * R2>(lhs.number() * rhs.number());
@@ -366,21 +382,30 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
 
 template<auto R, typename Rep, typename Value>
   requires(!Quantity<Value>) &&
-          detail::InvokeResultOf<get_quantity_spec(R).character, std::multiplies<>, Rep, const Value&>
-[[nodiscard]] constexpr Quantity auto operator*(const quantity<R, Rep>& q, const Value& v)
+          (ReferenceOf<std::remove_const_t<decltype(R)>, quantity_character::scalar> || detail::Scalar<Value>) &&
+          requires(Rep a, Value b) {
+            {
+              a* b
+            } -> detail::IsOfCharacter<(get_quantity_spec(R) * detail::get_character(b)).character>
+          }
+
+detail::InvokeResultOf<get_quantity_spec(R).character, std::multiplies<>, Rep,
+                       const Value&> [[nodiscard]] constexpr Quantity auto
+operator*(const quantity<R, Rep>& q, const Value& v)
 {
   return make_quantity<R>(q.number() * v);
 }
 
 template<typename Value, auto R, typename Rep>
   requires(!Quantity<Value>) &&
+          (ReferenceOf<std::remove_const_t<decltype(R)>, quantity_character::scalar> || detail::Scalar<Value>) &&
           detail::InvokeResultOf<get_quantity_spec(R).character, std::multiplies<>, const Value&, Rep>
 [[nodiscard]] constexpr Quantity auto operator*(const Value& v, const quantity<R, Rep>& q)
 {
   return make_quantity<R>(v * q.number());
 }
 
-template<auto R1, typename Rep1, auto R2, typename Rep2>
+template<auto R1, typename Rep1, ReferenceOf<quantity_character::scalar> auto R2, typename Rep2>
   requires detail::InvokeResultOf<(get_quantity_spec(R1) / get_quantity_spec(R2)).character, std::divides<>, Rep1, Rep2>
 [[nodiscard]] constexpr Quantity auto operator/(const quantity<R1, Rep1>& lhs, const quantity<R2, Rep2>& rhs)
 {
@@ -405,14 +430,41 @@ template<typename Value, auto R, typename Rep>
   return make_quantity<::mp_units::one / R>(v / q.number());
 }
 
-template<auto R1, typename Rep1, auto R2, typename Rep2>
-  requires(!treat_as_floating_point<Rep1>) && (!treat_as_floating_point<Rep2>) &&
-          detail::InvocableQuantities<std::modulus<>, quantity<R1, Rep1>, quantity<R2, Rep2>>
-[[nodiscard]] constexpr Quantity auto operator%(const quantity<R1, Rep1>& lhs, const quantity<R2, Rep2>& rhs)
+template<ReferenceOf<quantity_character::vector> auto R1, typename Rep1,
+         ReferenceOf<quantity_character::vector> auto R2, typename Rep2>
+  requires requires(Rep1 v1, Rep2 v2) {
+    {
+      dot_product(v1, v2)
+    } -> detail::Vector;
+  }
+[[nodiscard]] QuantityOf<dot_product(get_quantity_spec(R1), get_quantity_spec(R2))> auto dot_product(
+  const quantity<R1, Rep1>& q1, const quantity<R2, Rep2>& q2)
 {
-  gsl_ExpectsAudit(rhs.number() != quantity_values<Rep1>::zero());
-  using ret = detail::common_quantity_for<std::modulus<>, quantity<R1, Rep1>, quantity<R2, Rep2>>;
-  return make_quantity<ret::reference>(ret(lhs).number() % ret(rhs).number());
+  return make_quantity<dot_product(R1, R2)>(dot_product(q1.number(), q2.number()));
+}
+
+template<ReferenceOf<quantity_character::vector> auto R1, typename Rep1,
+         ReferenceOf<quantity_character::vector> auto R2, typename Rep2>
+  requires requires(Rep1 v1, Rep2 v2) {
+    {
+      cross_product(v1, v2)
+    } -> detail::Scalar;
+  }
+[[nodiscard]] QuantityOf<cross_product(get_quantity_spec(R1), get_quantity_spec(R2))> auto cross_product(
+  const quantity<R1, Rep1>& q1, const quantity<R2, Rep2>& q2)
+{
+  return make_quantity<cross_product(R1, R2)>(cross_product(q1.number(), q2.number()));
+}
+
+template<ReferenceOf<quantity_character::vector> auto R, typename Rep>
+  requires requires(Rep v) {
+    {
+      norm(v)
+    } -> detail::Scalar;
+  }
+[[nodiscard]] QuantityOf<norm(get_quantity_spec(R))> auto norm(const quantity<R, Rep>& q)
+{
+  return make_quantity<norm(R)>(norm(q.number()));
 }
 
 template<auto R1, typename Rep1, auto R2, typename Rep2>
@@ -491,6 +543,7 @@ template<auto R, typename Rep, typename Value>
 {
   return q <=> make_quantity<::mp_units::one>(v);
 }
+
 
 // make_quantity
 template<Reference auto R, typename Rep>

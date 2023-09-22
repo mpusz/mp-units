@@ -52,10 +52,10 @@ QUANTITY_SPEC(electric_flux_density, electric_polarization);  // vector
 inline constexpr auto electric_displacement = electric_flux_density;
 QUANTITY_SPEC(capacitance, electric_charge / voltage);
 // TODO how to calculate an argument of a vector product?
-QUANTITY_SPEC(magnetic_flux_density, force / (electric_charge * velocity), quantity_character::vector);
-QUANTITY_SPEC(magnetic_vector_potential,
-              magnetic_flux_density* length);  // vector // TODO what is a correct equation here?
-QUANTITY_SPEC(linked_flux, magnetic_vector_potential* displacement, quantity_character::scalar);
+// QUANTITY_SPEC(magnetic_flux_density, force / (electric_charge * velocity), quantity_character::vector);
+// QUANTITY_SPEC(magnetic_vector_potential,
+//               magnetic_flux_density* length);  // vector // TODO what is a correct equation here?
+// QUANTITY_SPEC(linked_flux, magnetic_vector_potential* displacement, quantity_character::scalar);
 QUANTITY_SPEC(magnetic_constant,
               electric_potential* time / (electric_current * length));  // TODO what is a correct equation here?
 inline constexpr auto permeability_of_vacuum = magnetic_constant;
@@ -64,7 +64,7 @@ QUANTITY_SPEC(speed_of_light, speed);
 inline constexpr auto light_speed = speed_of_light;
 QUANTITY_SPEC(electric_constant, 1 / (magnetic_constant * pow<2>(speed_of_light)));
 inline constexpr auto permittivity_of_vacuum = electric_constant;
-QUANTITY_SPEC(permittivity, electric_flux_density / electric_field_strength, quantity_character::scalar);
+QUANTITY_SPEC(permittivity, norm(electric_flux_density) / norm(electric_field_strength), quantity_character::scalar);
 QUANTITY_SPEC(relative_permittivity, dimensionless, permittivity / electric_constant);
 QUANTITY_SPEC(electric_susceptibility, dimensionless,
               electric_polarization / electric_constant / electric_field_strength, quantity_character::scalar);
@@ -73,13 +73,13 @@ QUANTITY_SPEC(displacement_current_density, electric_flux_density / time);  // v
 QUANTITY_SPEC(displacement_current, electric_current, displacement_current_density* area, quantity_character::scalar);
 QUANTITY_SPEC(total_current, electric_current);
 QUANTITY_SPEC(total_current_density, electric_current_density);  // vector
-QUANTITY_SPEC(magnetic_flux, magnetic_flux_density* area, quantity_character::scalar);
+// QUANTITY_SPEC(magnetic_flux, magnetic_flux_density* area, quantity_character::scalar);
 QUANTITY_SPEC(magnetic_moment, electric_current* area, quantity_character::vector);
 inline constexpr auto magnetic_area_moment = magnetic_moment;
 QUANTITY_SPEC(magnetization, magnetic_moment / volume);  // vector
 QUANTITY_SPEC(magnetic_field_strength, magnetization);   // vector
 inline constexpr auto magnetizing_field = magnetic_field_strength;
-QUANTITY_SPEC(permeability, magnetic_flux_density / magnetic_field_strength, quantity_character::scalar);
+// QUANTITY_SPEC(permeability, magnetic_flux_density / magnetic_field_strength, quantity_character::scalar);
 QUANTITY_SPEC(relative_permeability, dimensionless, permeability / magnetic_constant);
 QUANTITY_SPEC(magnetic_susceptibility, dimensionless, magnetization / magnetic_field_strength,
               quantity_character::scalar);
@@ -101,15 +101,15 @@ QUANTITY_SPEC(current_linkage, electric_current);
 QUANTITY_SPEC(number_of_turns_in_a_winding, dimensionless);
 QUANTITY_SPEC(reluctance, magnetic_tension / magnetic_flux);
 QUANTITY_SPEC(permeance, 1 / reluctance);
-QUANTITY_SPEC(inductance, linked_flux / electric_current);
-inline constexpr auto self_inductance = inductance;
-QUANTITY_SPEC(mutual_inductance, linked_flux / electric_current);
+// QUANTITY_SPEC(inductance, linked_flux / electric_current);
+// inline constexpr auto self_inductance = inductance;
+// QUANTITY_SPEC(mutual_inductance, linked_flux / electric_current);
 QUANTITY_SPEC(coupling_factor, dimensionless, mutual_inductance / pow<1, 2>(pow<2>(self_inductance)));
 QUANTITY_SPEC(leakage_factor, dimensionless, pow<2>(coupling_factor));
 QUANTITY_SPEC(conductivity, electric_current_density / electric_field_strength, quantity_character::scalar);
 QUANTITY_SPEC(resistivity, 1 / conductivity);
-// QUANTITY_SPEC(power, voltage* electric_current);  // TODO conflicts with mechanical power
-// inline constexpr auto instantaneous_power = power;
+QUANTITY_SPEC(electric_power, power, voltage* electric_current);
+inline constexpr auto instantaneous_power = electric_power;
 QUANTITY_SPEC(instantaneous_power, voltage* electric_current);
 QUANTITY_SPEC(resistance, voltage / electric_current);
 QUANTITY_SPEC(conductance, 1 / resistance);

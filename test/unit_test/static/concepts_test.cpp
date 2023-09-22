@@ -295,7 +295,7 @@ static_assert(!ReferenceOf<std::remove_const_t<decltype(dimensionless[one])>, is
 // Representation
 static_assert(Representation<int>);
 static_assert(Representation<double>);
-static_assert(Representation<std::complex<double>>);
+static_assert(!Representation<std::complex<double>>);
 static_assert(!Representation<bool>);
 static_assert(!Representation<std::optional<int>>);
 static_assert(!Representation<std::chrono::seconds>);
@@ -304,7 +304,7 @@ static_assert(!Representation<std::string>);
 // RepresentationOf
 static_assert(RepresentationOf<int, quantity_character::scalar>);
 static_assert(RepresentationOf<double, quantity_character::scalar>);
-static_assert(RepresentationOf<std::complex<double>, quantity_character::scalar>);
+static_assert(!RepresentationOf<std::complex<double>, quantity_character::scalar>);
 static_assert(!RepresentationOf<bool, quantity_character::scalar>);
 static_assert(!RepresentationOf<std::optional<int>, quantity_character::scalar>);
 static_assert(!RepresentationOf<std::chrono::seconds, quantity_character::scalar>);

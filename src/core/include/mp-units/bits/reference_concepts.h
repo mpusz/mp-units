@@ -77,6 +77,7 @@ concept ReferenceOf =
    (QuantitySpec<std::remove_const_t<decltype(V)>> && implicitly_convertible(get_quantity_spec(T{}), V) &&
     !detail::DerivedFromQuantityKindSpecOf<get_quantity_spec(T{}), V> &&
     (detail::QuantityKindSpec<std::remove_const_t<decltype(get_quantity_spec(T{}))>> ||
-     !detail::DerivedFromQuantityKindSpecOf<V, get_quantity_spec(T{})>)));
+     !detail::DerivedFromQuantityKindSpecOf<V, get_quantity_spec(T{})>)) ||
+   (std::same_as<std::remove_const_t<decltype(V)>, quantity_character> && (get_quantity_spec(T{}).character == V)));
 
 }  // namespace mp_units

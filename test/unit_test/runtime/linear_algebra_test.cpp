@@ -35,9 +35,6 @@
 template<typename Rep = double>
 using vector = STD_LA::fixed_size_column_vector<Rep, 3>;
 
-template<typename Rep>
-inline constexpr bool mp_units::is_vector<vector<Rep>> = true;
-
 namespace STD_LA {
 
 template<typename Rep>
@@ -51,35 +48,58 @@ std::ostream& operator<<(std::ostream& os, const ::vector<Rep>& v)
   return os;
 }
 
-}  // namespace STD_LA
-
-namespace {
-
-using namespace mp_units;
-using namespace mp_units::si::unit_symbols;
-
-template<typename T>
-[[nodiscard]] auto get_magnitude(const vector<T>& v)
+template<typename Rep1, typename Rep2, auto N>
+[[nodiscard]] decltype(Rep1{} * Rep2{}) dot(const fixed_size_column_vector<Rep1, N>& a,
+                                            const fixed_size_column_vector<Rep2, N>& b)
 {
-  using namespace std;
-  return hypot(v(0), v(1), v(2));
+  return 42;
 }
 
-template<typename T, typename U>
-[[nodiscard]] vector<decltype(T{} * U{})> cross_product(const vector<T>& a, const vector<U>& b)
+template<typename Rep1, typename Rep2, auto N>
+[[nodiscard]] fixed_size_column_vector<decltype(Rep1{} * Rep2{}), N> cross(const fixed_size_column_vector<Rep1, N>& a,
+                                                                           const fixed_size_column_vector<Rep2, N>& b)
 {
   return {a(1) * b(2) - a(2) * b(1), a(2) * b(0) - a(0) * b(2), a(0) * b(1) - a(1) * b(0)};
 }
 
-template<Quantity Q1, Quantity Q2>
-  requires is_vector<typename Q1::rep> && is_vector<typename Q2::rep> &&
-           requires(typename Q1::rep v1, typename Q2::rep v2) { cross_product(v1, v2); }
-[[nodiscard]] QuantityOf<Q1::quantity_spec * Q2::quantity_spec> auto cross_product(const Q1& q1, const Q2& q2)
+namespace detail {
+
+template<typename Rep, auto N, std::size_t... I>
+[[nodiscard]] auto norm_impl(const fixed_size_column_vector<Rep, N>& v, std::index_sequence<I...>)
 {
-  return cross_product(q1.number(), q2.number()) * (Q1::reference * Q2::reference);
+  using namespace std;
+  return sqrt((... + (v(I) * v(I))));
 }
 
-}  // namespace
+}  // namespace detail
+
+template<typename Rep, auto N>
+[[nodiscard]] auto norm(const fixed_size_column_vector<Rep, N>& v)
+{
+  using namespace std;
+  if constexpr (N == 1)
+    return v(0);
+  else if constexpr (N == 2)
+    return hypot(v(0), v(1));
+  else if constexpr (N == 3)
+    return hypot(v(0), v(1), v(2));
+  else
+    return detail::norm_impl(v, std::make_index_sequence<N>{});
+}
+
+}  // namespace STD_LA
+
+template<typename Rep>
+inline constexpr bool mp_units::is_vector<vector<Rep>> = true;
+
+template<typename Rep, mp_units::Reference R>
+[[nodiscard]] constexpr mp_units::quantity<R{}, vector<Rep>> operator*(const vector<Rep>& lhs, R)
+{
+  return mp_units::make_quantity<R{}>(lhs);
+}
+
+using namespace mp_units;
+using namespace mp_units::si::unit_symbols;
 
 TEST_CASE("vector quantity", "[la]")
 {
@@ -101,7 +121,7 @@ TEST_CASE("vector quantity", "[la]")
   SECTION("to scalar magnitude")
   {
     const auto v = vector<int>{2, 3, 6} * isq::velocity[km / h];
-    const auto speed = get_magnitude(v.number()) * isq::speed[v.unit];  // TODO can we do better here?
+    const quantity<isq::speed[v.unit], int> speed = norm(v);
     CHECK(speed.number() == 7);
   }
 
@@ -122,12 +142,29 @@ TEST_CASE("vector quantity", "[la]")
     }
   }
 
-  SECTION("divide by scalar value")
+  SECTION("multiply by dimensionless quantity")
+  {
+    const auto v = vector<int>{1, 2, 3} * isq::position_vector[m];
+
+    SECTION("integral")
+    {
+      SECTION("scalar on LHS") { CHECK(((2 * one) * v).number() == vector<int>{2, 4, 6}); }
+      SECTION("scalar on RHS") { CHECK((v * (2 * one)).number() == vector<int>{2, 4, 6}); }
+    }
+
+    SECTION("floating-point")
+    {
+      SECTION("scalar on LHS") { CHECK(((0.5 * one) * v).number() == vector<double>{0.5, 1., 1.5}); }
+      SECTION("scalar on RHS") { CHECK((v * (0.5 * one)).number() == vector<double>{0.5, 1., 1.5}); }
+    }
+  }
+
+  SECTION("divide by dimensionless quantity")
   {
     const auto v = vector<int>{2, 4, 6} * isq::position_vector[m];
 
-    SECTION("integral") { CHECK((v / 2).number() == vector<int>{1, 2, 3}); }
-    SECTION("floating-point") { CHECK((v / 0.5).number() == vector<double>{4., 8., 12.}); }
+    SECTION("integral") { CHECK((v / (2 * one)).number() == vector<int>{1, 2, 3}); }
+    SECTION("floating-point") { CHECK((v / (0.5 * one)).number() == vector<double>{4., 8., 12.}); }
   }
 
   SECTION("add")
@@ -273,7 +310,7 @@ TEST_CASE("vector quantity", "[la]")
     const auto r = vector<int>{3, 0, 0} * isq::position_vector[m];
     const auto f = vector<int>{0, 10, 0} * isq::force[N];
 
-    CHECK(cross_product(r, f) == vector<int>{0, 0, 30} * isq::moment_of_force[N * m]);
+    CHECK(cross(r, f) == vector<int>{0, 0, 30} * isq::moment_of_force[N * m]);
   }
 }
 
@@ -299,7 +336,7 @@ TEST_CASE("vector of quantities", "[la]")
   SECTION("to scalar magnitude")
   {
     const vector<quantity<isq::velocity[km / h], int>> v = {2 * (km / h), 3 * (km / h), 6 * (km / h)};
-    const auto speed = get_magnitude(v).number() * isq::speed[v(0).unit];  // TODO can we do better here?
+    const auto speed = norm(v).number() * isq::speed[v(0).unit];  // TODO can we do better here?
     CHECK(speed.number() == 7);
   }
 
@@ -332,6 +369,38 @@ TEST_CASE("vector of quantities", "[la]")
     SECTION("floating-point")
     {
       CHECK(v / 0.5 == vector<quantity<isq::position_vector[m], double>>{4. * m, 8. * m, 12. * m});
+    }
+  }
+
+  SECTION("multiply by dimensionless quantity")
+  {
+    const vector<quantity<isq::position_vector[m], int>> v = {1 * m, 2 * m, 3 * m};
+
+    SECTION("integral")
+    {
+      const vector<quantity<isq::position_vector[m], int>> result = {2 * m, 4 * m, 6 * m};
+
+      SECTION("scalar on LHS") { CHECK((2 * one) * v == result); }
+      SECTION("scalar on RHS") { CHECK(v * (2 * one) == result); }
+    }
+
+    SECTION("floating-point")
+    {
+      const vector<quantity<isq::position_vector[m], double>> result = {0.5 * m, 1. * m, 1.5 * m};
+
+      SECTION("scalar on LHS") { CHECK((0.5 * one) * v == result); }
+      SECTION("scalar on RHS") { CHECK(v * (0.5 * one) == result); }
+    }
+  }
+
+  SECTION("divide by dimensionless quantity")
+  {
+    const vector<quantity<isq::position_vector[m], int>> v = {2 * m, 4 * m, 6 * m};
+
+    SECTION("integral") { CHECK(v / (2 * one) == vector<quantity<isq::position_vector[m], int>>{1 * m, 2 * m, 3 * m}); }
+    SECTION("floating-point")
+    {
+      CHECK(v / (0.5 * one) == vector<quantity<isq::position_vector[m], double>>{4. * m, 8. * m, 12. * m});
     }
   }
 

@@ -52,35 +52,88 @@ enum class quantity_character { scalar, vector, tensor };
 
 namespace detail {
 
-template<typename T, typename U>
-concept CommonTypeWith =
-  std::same_as<std::common_type_t<T, U>, std::common_type_t<U, T>> &&
-  std::constructible_from<std::common_type_t<T, U>, T> && std::constructible_from<std::common_type_t<T, U>, U>;
-
-template<typename T, typename U = T>
-concept ScalableNumber =
-  std::regular_invocable<std::multiplies<>, T, U> && std::regular_invocable<std::divides<>, T, U>;
+template<typename T>
+concept Scalar = is_scalar<T>;
 
 template<typename T>
-concept CastableNumber = CommonTypeWith<T, std::intmax_t> && ScalableNumber<std::common_type_t<T, std::intmax_t>>;
+concept Vector = is_vector<T>;
 
-// TODO Fix it according to sudo_cast implementation
 template<typename T>
-concept Scalable =
-  CastableNumber<T> ||
-  (requires { typename T::value_type; } && CastableNumber<typename T::value_type> &&
-   ScalableNumber<T, std::common_type_t<typename T::value_type, std::intmax_t>>) ||
-  (requires { typename T::element_type; } && CastableNumber<std::remove_reference_t<typename T::element_type>> &&
-   ScalableNumber<T, std::common_type_t<std::remove_reference_t<typename T::element_type>, std::intmax_t>>);
+concept Tensor = is_tensor<T>;
+
+template<typename T, quantity_character Ch>
+concept IsOfCharacter =
+  (Ch == quantity_character::scalar && is_scalar<T>) || (Ch == quantity_character::vector && is_vector<T>) ||
+  (Ch == quantity_character::tensor && is_tensor<T>);
+
+template<typename T>
+[[nodiscard]] consteval quantity_character get_character(T)
+{
+  if constexpr (Tensor<T>)
+    return quantity_character::tensor;
+  else if constexpr (Vector<T>)
+    return quantity_character::vector;
+  else if constexpr (Scalar<T>)
+    return quantity_character::scalar;
+}
+
+// clang-format off
+template<typename T>
+concept ScalarRepresentation = std::regular<T> && Scalar<T> &&
+  requires(T a, T b, std::intmax_t i, long double f) {
+    { a * i } -> Scalar;
+    { i * a } -> Scalar;
+    { a / i } -> Scalar;
+    { a * f } -> Scalar;  // TODO How this affects freestanding?
+    { f * a } -> Scalar;
+    { a / f } -> Scalar;
+    { a + b } -> Scalar;
+    { a - b } -> Scalar;
+    { a * b } -> Scalar;
+    { a / b } -> Scalar;
+  };
+
+template<typename T>
+concept VectorRepresentation = std::regular<T> && Vector<T> &&
+  requires(T a, T b, std::intmax_t i, long double f) {
+    { a * i } -> Vector;
+    { i * a } -> Vector;
+    { a / i } -> Vector;
+    { a * f } -> Vector;
+    { f * a } -> Vector;
+    { a / f } -> Vector;
+    { a + b } -> Vector;
+    { a - b } -> Vector;
+    { dot_product(a, b) } -> Scalar;
+    { cross_product(a, b) } -> Vector;
+    { tensor_product(a, b) } -> Tensor;
+    { norm(a) } -> Scalar;
+  };
+
+template<typename T>
+concept TensorRepresentation = std::regular<T> && Tensor<T> &&
+  requires(T a, T b, std::intmax_t i, long double f) {
+    { a * i } -> Tensor;
+    { i * a } -> Tensor;
+    { a / i } -> Tensor;
+    { a * f } -> Tensor;
+    { f * a } -> Tensor;
+    { a / f } -> Tensor;
+    { a + b } -> Tensor;
+    { a - b } -> Tensor;
+    { tensor_product(a, b) } -> Tensor;
+    { inner_product(a, b) } -> Tensor;
+    { scalar_product(a, b) } -> Scalar;
+  };
+// clang-format on
 
 }  // namespace detail
 
 template<typename T>
-concept Representation = (is_scalar<T> || is_vector<T> || is_tensor<T>)&&std::regular<T> && detail::Scalable<T>;
+concept Representation =
+  detail::ScalarRepresentation<T> || detail::VectorRepresentation<T> || detail::TensorRepresentation<T>;
 
 template<typename T, quantity_character Ch>
-concept RepresentationOf = Representation<T> && ((Ch == quantity_character::scalar && is_scalar<T>) ||
-                                                 (Ch == quantity_character::vector && is_vector<T>) ||
-                                                 (Ch == quantity_character::tensor && is_tensor<T>));
+concept RepresentationOf = detail::IsOfCharacter<T, Ch> && Representation<T>;
 
 }  // namespace mp_units
