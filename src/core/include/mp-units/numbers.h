@@ -74,6 +74,9 @@ constexpr T number_one_v = number_one<T>::value;
 template<typename T>
 concept number = is_number_v<T> && std::regular<T>;
 
+template<typename T, typename U>
+concept common_number_with = number<T> && number<U> && std::common_with<T, U>;
+
 template<typename T>
 concept ordered_number = number<T> && std::totally_ordered<T>;
 
@@ -95,8 +98,8 @@ concept addition_with =  // clang-format off
   number<T> &&
   number<U> &&
   requires( const T & c,  const U & d) {
-    { c + d } -> std::common_with<T>;
-    { d + c } -> std::common_with<T>;
+    { c + d } -> common_number_with<T>;
+    { d + c } -> common_number_with<T>;
   };  // clang-format on
 
 template<typename T, typename U>
@@ -110,7 +113,7 @@ template<typename T, typename U>
 concept subtraction_with =  // clang-format off
   addition_with<T,U> &&
   requires( const T & c,  const U & d) {
-    { c - d } -> std::common_with<T>;
+    { c - d } -> common_number_with<T>;
   };  // clang-format on
 
 template<typename T, typename U>
@@ -127,7 +130,7 @@ concept multiplication_with =  // clang-format off
   number<U> &&
   number<V> &&
   requires( const T & c,  const U & u) {
-    { (c * u) } -> std::common_with<V>;
+    { (c * u) } -> common_number_with<V>;
   };  // clang-format on
 
 template<typename T, typename U>
@@ -142,7 +145,7 @@ concept division_with =  // clang-format off
   multiplication_with<T,U,T> &&
   multiplication_with<U,T,T> &&
   requires( const T & c,  const U & u) {
-    { c / u } -> std::common_with<T>;
+    { c / u } -> common_number_with<T>;
   };  // clang-format on
 
 template<typename T, typename U>
@@ -160,7 +163,7 @@ concept modulo_with =  // clang-format off
   number<T> &&
   number<U> &&
   requires( const T & c,  const U & u) {
-    { (c % u) } -> std::common_with<T>;
+    { (c % u) } -> common_number_with<T>;
   };  // clang-format on
 
 template<typename T, typename U>
@@ -180,7 +183,7 @@ concept negative =  // clang-format off
   detail::compound_addition_with<T,T> &&
   requires( const T & c) {
     number_zero_v<T>;
-    { -c } -> std::common_with<T>;
+    { -c } -> common_number_with<T>;
   };  // clang-format on
 
 template<typename T>
@@ -191,7 +194,8 @@ concept set_with_inverse =  // clang-format off
   };  // clang-format on
 
 template<typename T, typename U>
-concept point_space_for = detail::subtraction_with<T, U> && negative<U> && std::common_with<number_difference_t<T>, U>;
+concept point_space_for =
+  detail::subtraction_with<T, U> && negative<U> && common_number_with<number_difference_t<T>, U>;
 template<typename T, typename U>
 concept compound_point_space_for = point_space_for<T, U> && detail::compound_subtraction_with<T, U>;
 template<typename T>
@@ -205,11 +209,11 @@ concept compound_vector_space_for = compound_point_space_for<U, T>;
 namespace detail {
 
 template<typename T>
-concept weak_scalar = std::common_with<T, number_difference_t<T>> && point_space<T> && negative<T>;
+concept weak_scalar = common_number_with<T, number_difference_t<T>> && point_space<T> && negative<T>;
 
 template<typename T, typename U>
 concept scales_with =
-  std::common_with<U, number_scalar_t<T>> && weak_scalar<U> && multiplication_with<T, U, T> && set_with_inverse<U>;
+  common_number_with<U, number_scalar_t<T>> && weak_scalar<U> && multiplication_with<T, U, T> && set_with_inverse<U>;
 template<typename T, typename U>
 concept compound_scales_with = scales_with<T, U> && detail::compound_multiplication_with<T, U>;
 
@@ -263,7 +267,7 @@ struct is_complex_number<std::complex<T>> : std::true_type {};
 namespace detail {
 
 template<typename T>
-concept inferable_identities = std::common_with<T, number_difference_t<T>> && std::constructible_from<T, int>;
+concept inferable_identities = common_number_with<T, number_difference_t<T>> && std::constructible_from<T, int>;
 
 template<detail::inferable_identities T>
 struct inferred_number_zero<T> {
