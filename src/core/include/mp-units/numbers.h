@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <chrono>
 #include <complex>
 #include <concepts>
 #include <type_traits>
