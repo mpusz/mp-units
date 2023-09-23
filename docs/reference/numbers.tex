@@ -8,13 +8,13 @@ This Clause describes components for dealing with numbers,
 as summarized in \tref{nums.summary}.
 
 \begin{libsumtab}{Numbers library summary}{nums.summary}
-\ref{num.traits}        & Traits                                 & \tcode{<mp_units/numbers.h>} \\
+\ref{num.traits}        & Traits                                 & \tcode{<mp-units/numbers.h>} \\
 \ref{num.concepts}      & Concepts                               & \\
 \end{libsumtab}
 
-\Sec1[nums.syn]{Header \tcode{<mp_units/numbers.h>} synopsis}
+\Sec1[nums.syn]{Header \tcode{<mp-units/numbers.h>} synopsis}
 
-\indexheader{mp_units/numbers.h}%
+\indexheader{mp-units/numbers.h}%
 \begin{codeblock}
 namespace mp_units {
 
@@ -273,11 +273,11 @@ Each row of \tref{num.scalar} denotes a specialization.
 \topline
 \lhdr{\fakegrammarterm{template-parameter-list}}
                               & \chdr{\fakegrammarterm{template-argument-list}}
-                                                              & \rhdr{\Fundescx{Type}} \\ \rowsep
-\tcode{std::integral T}       & \tcode{T}                     & \tcode{T} \\ \rowsep
-\tcode{std::floating_point T} & \tcode{T}                     & \tcode{T} \\ \rowsep
-\tcode{class T}               & \tcode{std::complex<T>}       & \tcode{T} \\ \rowsep
-\tcode{class T, class U}      & \tcode{std::duration<T, U>}   & \tcode{T} \\
+                                                                    & \rhdr{\Fundescx{Type}} \\ \rowsep
+\tcode{std::integral T}       & \tcode{T}                           & \tcode{T} \\ \rowsep
+\tcode{std::floating_point T} & \tcode{T}                           & \tcode{T} \\ \rowsep
+\tcode{class T}               & \tcode{std::complex<T>}             & \tcode{T} \\ \rowsep
+\tcode{class T, class U}      & \tcode{std::chrono::duration<T, U>} & \tcode{T} \\
 \end{floattable}
 \end{itemdescr}
 
@@ -391,14 +391,14 @@ template<class T, class U> concept @\defexposconceptnc{compound-division-with}@ 
     { l /= u } -> std::same_as<T&>;
   };
 
-export template<class T, class U> concept @\deflibconcept{modulo_with}@ =
+template<class T, class U> concept @\deflibconcept{modulo_with}@ =
   @\libconcept{number}@<T> &&
   @\libconcept{number}@<U> &&
   requires(const T& c, const U& u) {
     { c % u } -> std::common_with<T>;
   };
 
-export template<class T, class U> concept @\deflibconcept{compound_modulo_with}@ =
+template<class T, class U> concept @\deflibconcept{compound_modulo_with}@ =
   @\libconcept{modulo_with}@<T, U> &&
   requires(T& l, const U& u) {
     { l %= u } -> std::same_as<T&>;
@@ -437,14 +437,14 @@ let $F$ be the modulo\iref{def.mod} of the inputs to $E$.
 
 \pnum
 \tcode{T} respectively models
-\tcode{\exposconcept{addition-with}<U>},
-\tcode{\exposconcept{compound-addition-with}<U>},
-\tcode{\exposconcept{subtraction-with}<U>},
-\tcode{\exposconcept{compound-subtraction-with}<U>},
-\tcode{\exposconcept{multiplication-with}<U, V>},
-\tcode{\exposconcept{compound-multiplication-with}<U>},
-\tcode{\exposconcept{division-with}<U>},
-\tcode{\exposconcept{compound-division-with}<U>},
+\tcode{\exposconceptnc{addition-with}<U>},
+\tcode{\exposconceptnc{compound-addition-with}<U>},
+\tcode{\exposconceptnc{subtraction-with}<U>},
+\tcode{\exposconceptx{com\-pound-subtraction-with}{compound-subtraction-with}<U>},
+\tcode{\exposconceptnc{multiplication-with}<U, V>},
+\tcode{\exposconceptnc{compound-multiplication-with}<U>},
+\tcode{\exposconceptnc{division-with}<U>},
+\tcode{\exposconceptnc{compound-division-with}<U>},
 \tcode{\libconcept{modulo_with}<U>}, and
 \tcode{\libconcept{compound_modulo_with}<U>}
 only if, for each respective $E$, when the inputs to $E$ are in the domain of $E$
@@ -471,7 +471,7 @@ concept @\deflibconcept{compound_modulus_for}@ = @\libconcept{compound_modulo_wi
 \end{itemdecl}
 
 \begin{itemdecl}
-export template<class T> concept @\deflibconcept{negative}@ =
+template<class T> concept @\deflibconcept{negative}@ =
   @\exposconcept{compound-addition-with}@<T, T> &&
   requires(const T& c) {
     number_zero_v<T>;
