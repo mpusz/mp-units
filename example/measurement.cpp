@@ -144,7 +144,7 @@ template<class T>
 inline constexpr bool mp_units::is_vector<measurement<T>> = true;
 
 template<typename T>
-struct mp_units::number_scalar<measurement<T>> : std::type_identity<T> {};
+struct mp_units::vector_scalar<measurement<T>> : std::type_identity<T> {};
 
 static_assert(mp_units::RepresentationOf<measurement<double>, mp_units::quantity_character::scalar>);
 static_assert(mp_units::vector_space<measurement<double>>);

@@ -31,12 +31,12 @@
 namespace mp_units {
 
 template<typename T>
-struct number_scalar;
+struct vector_scalar;
 
 template<typename T>
 using number_difference_t = decltype(std::declval<const T>() - std::declval<const T>());
 template<typename T>
-using number_scalar_t = number_scalar<T>::type;
+using vector_scalar_t = vector_scalar<T>::type;
 
 namespace detail {
 
@@ -46,7 +46,7 @@ template<typename T>
 struct inferred_number_one {};
 
 template<typename T>
-concept is_inferred_number = std::regular<number_scalar_t<T>>;
+concept is_inferred_number = std::regular<vector_scalar_t<T>>;
 
 }  // namespace detail
 
@@ -59,7 +59,7 @@ struct number_zero : detail::inferred_number_zero<T> {};
 template<typename T>
 struct number_one : detail::inferred_number_one<T> {};
 template<typename T>
-struct number_scalar {};
+struct vector_scalar {};
 
 template<typename T>
 constexpr bool is_number_v = is_number<T>::value;
@@ -213,7 +213,7 @@ concept weak_scalar = common_number_with<T, number_difference_t<T>> && point_spa
 
 template<typename T, typename U>
 concept scales_with =
-  common_number_with<U, number_scalar_t<T>> && weak_scalar<U> && multiplication_with<T, U, T> && set_with_inverse<U>;
+  common_number_with<U, vector_scalar_t<T>> && weak_scalar<U> && multiplication_with<T, U, T> && set_with_inverse<U>;
 template<typename T, typename U>
 concept compound_scales_with = scales_with<T, U> && detail::compound_multiplication_with<T, U>;
 
@@ -229,9 +229,9 @@ template<typename T, typename U>
 concept compound_field_for = compound_scalar_for<T, U> && detail::compound_division_with<U, T>;
 
 template<typename T>
-concept vector_space = point_space<T> && detail::compound_scales_with<T, number_scalar_t<T>>;
+concept vector_space = point_space<T> && detail::compound_scales_with<T, vector_scalar_t<T>>;
 template<typename T>
-concept f_vector_space = vector_space<T> && detail::compound_division_with<T, number_scalar_t<T>>;
+concept f_vector_space = vector_space<T> && detail::compound_division_with<T, vector_scalar_t<T>>;
 
 template<typename T>
 concept field_number = f_vector_space<T> && detail::compound_scales_with<T, T>;
@@ -286,14 +286,14 @@ template<typename T>
 struct number_one<const T> : number_one<T> {};
 
 template<typename T>
-struct number_scalar<const T> : number_scalar<T> {};
+struct vector_scalar<const T> : vector_scalar<T> {};
 template<std::integral T>
-struct number_scalar<T> : std::type_identity<T> {};
+struct vector_scalar<T> : std::type_identity<T> {};
 template<std::floating_point T>
-struct number_scalar<T> : std::type_identity<T> {};
+struct vector_scalar<T> : std::type_identity<T> {};
 template<typename T>
-struct number_scalar<std::complex<T>> : std::type_identity<T> {};
+struct vector_scalar<std::complex<T>> : std::type_identity<T> {};
 template<typename T, typename U>
-struct number_scalar<std::chrono::duration<T, U>> : std::type_identity<T> {};
+struct vector_scalar<std::chrono::duration<T, U>> : std::type_identity<T> {};
 
 }  // namespace mp_units

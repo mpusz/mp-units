@@ -81,7 +81,7 @@ template<typename T, auto Min, auto Max>
 inline constexpr bool mp_units::is_scalar<ranged_representation<T, Min, Max>> = mp_units::is_scalar<T>;
 
 template<typename T, auto Min, auto Max>
-struct mp_units::number_scalar<ranged_representation<T, Min, Max>> : std::type_identity<T> {};
+struct mp_units::vector_scalar<ranged_representation<T, Min, Max>> : std::type_identity<T> {};
 
 template<typename T, auto Min, auto Max>
 inline constexpr bool mp_units::treat_as_floating_point<ranged_representation<T, Min, Max>> =

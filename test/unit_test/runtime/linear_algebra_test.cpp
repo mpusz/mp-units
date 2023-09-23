@@ -43,7 +43,7 @@ template<typename Rep>
 inline constexpr bool mp_units::is_vector<vector<Rep>> = true;
 
 template<typename Rep>
-struct mp_units::number_scalar<vector<Rep>> : std::type_identity<Rep> {};
+struct mp_units::vector_scalar<vector<Rep>> : std::type_identity<Rep> {};
 
 template<typename Rep>
 std::ostream& operator<<(std::ostream& os, const vector<Rep>& v)

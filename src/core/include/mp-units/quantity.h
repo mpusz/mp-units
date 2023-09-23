@@ -424,7 +424,7 @@ template<Reference auto R, typename Rep>
 }
 
 template<Quantity Q>
-struct number_scalar<Q> : number_scalar<typename Q::rep> {};
+struct vector_scalar<Q> : vector_scalar<typename Q::rep> {};
 
 }  // namespace mp_units
 

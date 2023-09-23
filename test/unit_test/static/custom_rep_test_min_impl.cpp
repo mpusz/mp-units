@@ -69,7 +69,7 @@ template<typename T>
 inline constexpr bool mp_units::is_scalar<min_impl<T>> = true;
 
 template<typename Rep>
-struct mp_units::number_scalar<min_impl<Rep>> : std::type_identity<Rep> {};
+struct mp_units::vector_scalar<min_impl<Rep>> : std::type_identity<Rep> {};
 
 template<typename T, typename U>
 struct std::common_type<min_impl<T>, min_impl<U>> : std::type_identity<min_impl<std::common_type_t<T, U>>> {};
