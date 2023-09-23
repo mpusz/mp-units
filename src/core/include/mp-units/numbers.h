@@ -75,7 +75,7 @@ template<typename T>
 concept number = is_number_v<T> && std::regular<T>;
 
 template<typename T, typename U>
-concept common_number_with = number<T> && number<U> && std::common_with<T, U>;
+concept common_number_with = number<T> && number<U> && std::common_with<T, U> && number<std::common_type_t<T, U>>;
 
 template<typename T>
 concept ordered_number = number<T> && std::totally_ordered<T>;
