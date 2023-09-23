@@ -22,14 +22,14 @@ namespace mp_units {
 
 // \ref{num.opt.ins}, \cname{number} opt-ins
 template<typename T>
-struct is_number;
+struct enable_number;
 template<typename T>
-struct is_complex_number;
+struct enable_complex_number;
 
 template<typename T>
-constexpr bool @\libglobal{is_number_v}@ = is_number<T>::value;
+constexpr bool @\libglobal{enable_number_v}@ = enable_number<T>::value;
 template<typename T>
-constexpr bool @\libglobal{is_complex_number_v}@ = is_complex_number<T>::value;
+constexpr bool @\libglobal{enable_complex_number_v}@ = enable_complex_number<T>::value;
 
 // \ref{num.ids}, identities
 template<typename T>
@@ -145,7 +145,7 @@ that names a type consistent with \placeholdernc{\tcode{number-trait}}'s specifi
 
 \begin{itemdecl}
 template<typename T>
-struct @\libglobal{is_number}@ : @\seebelow@ {};
+struct @\libglobal{enable_number}@ : @\seebelow@ {};
 \end{itemdecl}
 
 \begin{itemdescr}
@@ -160,30 +160,30 @@ struct @\libglobal{is_number}@ : @\seebelow@ {};
 \tcode{false} otherwise.
 \end{itemdescr}
 
-\indexlibraryspec{is_number}{std::chrono::time_point}%
-\indexlibraryspec{is_number}{std::chrono::day}%
-\indexlibraryspec{is_number}{std::chrono::month}%
-\indexlibraryspec{is_number}{std::chrono::year}%
-\indexlibraryspec{is_number}{std::chrono::weekday}%
-\indexlibraryspec{is_number}{std::chrono::year_month}%
+\indexlibraryspec{enable_number}{std::chrono::time_point}%
+\indexlibraryspec{enable_number}{std::chrono::day}%
+\indexlibraryspec{enable_number}{std::chrono::month}%
+\indexlibraryspec{enable_number}{std::chrono::year}%
+\indexlibraryspec{enable_number}{std::chrono::weekday}%
+\indexlibraryspec{enable_number}{std::chrono::year_month}%
 \begin{itemdecl}
 template<class... T>
-struct is_number<std::chrono::time_point<T...>> : std::true_type {};
+struct enable_number<std::chrono::time_point<T...>> : std::true_type {};
 template<>
-struct is_number<std::chrono::day> : std::true_type {};
+struct enable_number<std::chrono::day> : std::true_type {};
 template<>
-struct is_number<std::chrono::month> : std::true_type {};
+struct enable_number<std::chrono::month> : std::true_type {};
 template<>
-struct is_number<std::chrono::year> : std::true_type {};
+struct enable_number<std::chrono::year> : std::true_type {};
 template<>
-struct is_number<std::chrono::weekday> : std::true_type {};
+struct enable_number<std::chrono::weekday> : std::true_type {};
 template<>
-struct is_number<std::chrono::year_month> : std::true_type {};
+struct enable_number<std::chrono::year_month> : std::true_type {};
 \end{itemdecl}
 
 \begin{itemdecl}
 template<typename T>
-struct @\libglobal{is_complex_number}@ : std::false_type {};
+struct @\libglobal{enable_complex_number}@ : std::false_type {};
 \end{itemdecl}
 
 \begin{itemdescr}
@@ -193,10 +193,10 @@ struct @\libglobal{is_complex_number}@ : std::false_type {};
 \tcode{false} otherwise.
 \end{itemdescr}
 
-\indexlibraryspec{is_complex_number}{std::complex}%
+\indexlibraryspec{enable_complex_number}{std::complex}%
 \begin{itemdecl}
 template<class T>
-struct is_complex_number<std::complex<T>> : std::true_type {};
+struct enable_complex_number<std::complex<T>> : std::true_type {};
 \end{itemdecl}
 
 \Sec2[num.ids]{Identities}
@@ -287,7 +287,7 @@ Each row of \tref{num.scalar} denotes a specialization.
 
 \begin{itemdecl}
 template<typename T>
-concept @\deflibconcept{number}@ = is_number_v<T> && std::regular<T>;
+concept @\deflibconcept{number}@ = enable_number_v<T> && std::regular<T>;
 
 template<typename T, typename U>
 concept @\deflibconcept{common_number_with}@ =
@@ -583,7 +583,7 @@ template<typename T>
 concept @\deflibconcept{field_number_line}@ = @\libconcept{field_number}@<T> && @\libconcept{number_line}@<T>;
 
 template<typename T>
-concept @\deflibconcept{scalar_number}@ = @\libconcept{field_number}@<T> && (@\libconcept{field_number_line}@<T> || is_complex_number_v<T>);
+concept @\deflibconcept{scalar_number}@ = @\libconcept{field_number}@<T> && (@\libconcept{field_number_line}@<T> || enable_complex_number_v<T>);
 \end{itemdecl}
 
 \begin{itemdescr}
