@@ -44,12 +44,12 @@ constexpr T @\libglobal{number_one_v}@ = number_one<T>::value;
 
 // \ref{num.assoc.types}, associated types
 template<typename T>
-struct number_scalar;
+struct vector_scalar;
 
 template<typename T>
 using number_difference_t = decltype(std::declval<const T>() - std::declval<const T>());
 template<typename T>
-using @\libglobal{number_scalar_t}@ = number_scalar<T>::type;
+using @\libglobal{vector_scalar_t}@ = vector_scalar<T>::type;
 
 // \ref{num.concepts}, concepts
 template<typename T>
@@ -156,7 +156,7 @@ struct @\libglobal{is_number}@ : @\seebelow@ {};
 
 \pnum
 \dvalue
-\tcode{true} if \tcode{number_scalar_t<T>} is valid, and
+\tcode{true} if \tcode{vector_scalar_t<T>} is valid, and
 \tcode{false} otherwise.
 \end{itemdescr}
 
@@ -251,14 +251,14 @@ using @\libglobal{number_difference_t}@ = decltype(std::declval<const T>() - std
 \tcode{number_difference_t<T>} represents \tcode{T}'s difference's\irefiev{102-01-17} type, if any.
 \end{itemdescr}
 
-\indexlibrary{\idxcode{number_scalar}!arithmetic type}%
-\indexlibraryspec{number_scalar}{std::complex}%
-\indexlibraryspec{number_scalar}{std::chrono::duration}%
+\indexlibrary{\idxcode{vector_scalar}!arithmetic type}%
+\indexlibraryspec{vector_scalar}{std::complex}%
+\indexlibraryspec{vector_scalar}{std::chrono::duration}%
 \begin{itemdecl}
 template<typename T>
-struct @\libglobal{number_scalar}@ {};
+struct @\libglobal{vector_scalar}@ {};
 template<@\seebelow@>
-struct number_scalar<@\seebelow@> {
+struct vector_scalar<@\seebelow@> {
   using type = @\seebelow@;
 };
 \end{itemdecl}
@@ -266,12 +266,12 @@ struct number_scalar<@\seebelow@> {
 \begin{itemdescr}
 \pnum
 \ctype
-\tcode{T}'s scalar\irefiev{102-02-18}, if any.
+Scalar\irefiev{102-02-18} for the vector space\irefiev{102-03-01} \tcode{T}.
 
 \pnum
 Each row of \tref{num.scalar} denotes a specialization.
 
-\begin{floattable}{Specializations of \tcode{number_scalar}}{num.scalar}{lll}
+\begin{floattable}{Specializations of \tcode{vector_scalar}}{num.scalar}{lll}
 \topline
 \lhdr{\fakegrammarterm{template-parameter-list}}
                               & \chdr{\fakegrammarterm{template-argument-list}}
@@ -543,7 +543,7 @@ concept @\defexposconceptnc{weak-scalar}@ =
   common_number_with<T, number_difference_t<T>> && @\libconcept{point_space}@<T> && @\libconcept{negative}@<T>;
 
 template<typename T, typename U>
-concept @\defexposconceptnc{scales-with}@ = common_number_with<U, number_scalar_t<T>> && @\exposconcept{weak-scalar}@<U> &&
+concept @\defexposconceptnc{scales-with}@ = common_number_with<U, vector_scalar_t<T>> && @\exposconcept{weak-scalar}@<U> &&
                       @\exposconcept{multiplication-with}@<T, U, T> && @\libconcept{set_with_inverse}@<U>;
 template<typename T, typename U>
 concept @\defexposconceptnc{compound-scales-with}@ = @\exposconcept{scales-with}@<T, U> && @\exposconcept{compound-multiplication-with}@<T, U>;
@@ -558,9 +558,9 @@ template<typename T, typename U>
 concept @\deflibconcept{compound_field_for}@ = @\libconcept{compound_scalar_for}@<T, U> && @\exposconcept{compound-division-with}@<U, T>;
 
 template<typename T>
-concept @\deflibconcept{vector_space}@ = @\libconcept{point_space}@<T> && @\exposconcept{compound-scales-with}@<T, number_scalar_t<T>>;
+concept @\deflibconcept{vector_space}@ = @\libconcept{point_space}@<T> && @\exposconcept{compound-scales-with}@<T, vector_scalar_t<T>>;
 template<typename T>
-concept @\deflibconcept{f_vector_space}@ = @\libconcept{vector_space}@<T> && @\exposconcept{compound-division-with}@<T, number_scalar_t<T>>;
+concept @\deflibconcept{f_vector_space}@ = @\libconcept{vector_space}@<T> && @\exposconcept{compound-division-with}@<T, vector_scalar_t<T>>;
 \end{itemdecl}
 
 \begin{itemdescr}
