@@ -246,7 +246,7 @@ template<typename T>
 struct is_number<const T> : is_number<T> {};
 template<typename T, typename U>
 struct is_number<std::chrono::time_point<T, U>> : std::true_type {};
-#if __cpp_lib_chrono >= 201803
+// #if __cpp_lib_chrono >= 201803
 template<>
 struct is_number<std::chrono::day> : std::true_type {};
 template<>
@@ -257,7 +257,7 @@ template<>
 struct is_number<std::chrono::weekday> : std::true_type {};
 template<>
 struct is_number<std::chrono::year_month> : std::true_type {};
-#endif
+// #endif
 
 template<typename T>
 struct is_complex_number<const T> : is_complex_number<T> {};
