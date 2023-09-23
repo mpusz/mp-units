@@ -394,6 +394,6 @@ template<PointOrigin auto PO, Quantity Q>
 }
 
 template<QuantityPoint QP>
-struct is_number<QP> : std::true_type {};
+struct enable_number<QP> : std::true_type {};
 
 }  // namespace mp_units

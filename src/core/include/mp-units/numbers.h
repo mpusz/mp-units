@@ -51,9 +51,9 @@ concept is_inferred_number = std::regular<vector_scalar_t<T>>;
 }  // namespace detail
 
 template<typename T>
-struct is_number : std::bool_constant<detail::is_inferred_number<T>> {};
+struct enable_number : std::bool_constant<detail::is_inferred_number<T>> {};
 template<typename T>
-struct is_complex_number : std::false_type {};
+struct enable_complex_number : std::false_type {};
 template<typename T>
 struct number_zero : detail::inferred_number_zero<T> {};
 template<typename T>
@@ -62,9 +62,9 @@ template<typename T>
 struct vector_scalar {};
 
 template<typename T>
-constexpr bool is_number_v = is_number<T>::value;
+constexpr bool enable_number_v = enable_number<T>::value;
 template<typename T>
-constexpr bool is_complex_number_v = is_complex_number<T>::value;
+constexpr bool enable_complex_number_v = enable_complex_number<T>::value;
 
 template<typename T>
 constexpr T number_zero_v = number_zero<T>::value;
@@ -72,7 +72,7 @@ template<typename T>
 constexpr T number_one_v = number_one<T>::value;
 
 template<typename T>
-concept number = is_number_v<T> && std::regular<T>;
+concept number = enable_number_v<T> && std::regular<T>;
 
 template<typename T, typename U>
 concept common_number_with = number<T> && number<U> && std::common_with<T, U> && number<std::common_type_t<T, U>>;
@@ -240,29 +240,29 @@ template<typename T>
 concept field_number_line = field_number<T> && number_line<T>;
 
 template<typename T>
-concept scalar_number = field_number<T> && (field_number_line<T> || is_complex_number_v<T>);
+concept scalar_number = field_number<T> && (field_number_line<T> || enable_complex_number_v<T>);
 
 template<typename T>
-struct is_number<const T> : is_number<T> {};
+struct enable_number<const T> : enable_number<T> {};
 template<typename T, typename U>
-struct is_number<std::chrono::time_point<T, U>> : std::true_type {};
+struct enable_number<std::chrono::time_point<T, U>> : std::true_type {};
 // #if __cpp_lib_chrono >= 201803
 template<>
-struct is_number<std::chrono::day> : std::true_type {};
+struct enable_number<std::chrono::day> : std::true_type {};
 template<>
-struct is_number<std::chrono::month> : std::true_type {};
+struct enable_number<std::chrono::month> : std::true_type {};
 template<>
-struct is_number<std::chrono::year> : std::true_type {};
+struct enable_number<std::chrono::year> : std::true_type {};
 template<>
-struct is_number<std::chrono::weekday> : std::true_type {};
+struct enable_number<std::chrono::weekday> : std::true_type {};
 template<>
-struct is_number<std::chrono::year_month> : std::true_type {};
+struct enable_number<std::chrono::year_month> : std::true_type {};
 // #endif
 
 template<typename T>
-struct is_complex_number<const T> : is_complex_number<T> {};
+struct enable_complex_number<const T> : enable_complex_number<T> {};
 template<typename T>
-struct is_complex_number<std::complex<T>> : std::true_type {};
+struct enable_complex_number<std::complex<T>> : std::true_type {};
 
 namespace detail {
 
