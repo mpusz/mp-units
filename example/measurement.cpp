@@ -65,13 +65,13 @@ public:
     return measurement(lhs.value() - rhs.value(), hypot(lhs.uncertainty(), rhs.uncertainty()));
   }
 
-  constexpr measurement& operator+=(measurement that)
+  constexpr measurement& operator+=(const measurement& that)
   {
     value_ = *this + that;
     return *this;
   }
 
-  constexpr measurement& operator-=(measurement that)
+  constexpr measurement& operator-=(const measurement& that)
   {
     value_ = *this - that;
     return *this;

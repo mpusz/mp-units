@@ -32,6 +32,11 @@ namespace mp_units {
 template<typename T>
 struct number_scalar;
 
+template<typename T>
+using number_difference_t = decltype(std::declval<const T>() - std::declval<const T>());
+template<typename T>
+using number_scalar_t = number_scalar<T>::type;
+
 namespace detail {
 
 template<typename T>
@@ -39,18 +44,13 @@ struct inferred_number_zero {};
 template<typename T>
 struct inferred_number_one {};
 
-}  // namespace detail
-
-template<typename T>
-using number_difference_t = decltype(std::declval<const T>() - std::declval<const T>());
-template<typename T>
-using number_scalar_t = number_scalar<T>::type;
-
 template<typename T>
 concept is_inferred_number = std::regular<number_scalar_t<T>>;
 
+}  // namespace detail
+
 template<typename T>
-struct is_number : std::bool_constant<is_inferred_number<T>> {};
+struct is_number : std::bool_constant<detail::is_inferred_number<T>> {};
 template<typename T>
 struct is_complex_number : std::false_type {};
 template<typename T>
@@ -266,11 +266,11 @@ concept inferable_identities = std::common_with<T, number_difference_t<T>> && st
 
 template<detail::inferable_identities T>
 struct inferred_number_zero<T> {
-  auto static constexpr value = T(0);
+  static constexpr auto value = T(0);
 };
 template<detail::inferable_identities T>
 struct inferred_number_one<T> {
-  auto static constexpr value = T(1);
+  static constexpr auto value = T(1);
 };
 
 }  // namespace detail

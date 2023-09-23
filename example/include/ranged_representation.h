@@ -51,24 +51,25 @@ public:
     return ranged_representation(-this->value());
   }
 
-  friend constexpr ranged_representation operator-(const ranged_representation& lhs, const ranged_representation& rhs)
+  [[nodiscard]] friend constexpr ranged_representation operator-(const ranged_representation& lhs,
+                                                                 const ranged_representation& rhs)
   {
     return ranged_representation(lhs.value() - rhs.value());
   }
 
-  constexpr ranged_representation& operator+=(ranged_representation that)
+  constexpr ranged_representation& operator+=(const ranged_representation& that)
   {
     this->value() += that.value();
     gsl_Expects(validate(this->value()));
     return *this;
   }
-  constexpr ranged_representation& operator-=(ranged_representation that)
+  constexpr ranged_representation& operator-=(const ranged_representation& that)
   {
     this->value() -= that.value();
     gsl_Expects(validate(this->value()));
     return *this;
   }
-  constexpr ranged_representation& operator*=(T rhs)
+  constexpr ranged_representation& operator*=(const T& rhs)
   {
     this->value() *= rhs;
     gsl_Expects(validate(this->value()));
