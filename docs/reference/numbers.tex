@@ -289,6 +289,10 @@ Each row of \tref{num.scalar} denotes a specialization.
 template<typename T>
 concept @\deflibconcept{number}@ = is_number_v<T> && std::regular<T>;
 
+template<typename T, typename U>
+concept @\deflibconcept{common_number_with}@ =
+  @\libconcept{number}@<T> && @\libconcept{number}@<U> && std::common_with<T, U> && @\libconcept{number}@<std::common_type_t<T, U>>;
+
 template<typename T>
 concept @\deflibconcept{ordered_number}@ = @\libconcept{number}@<T> && std::totally_ordered<T>;
 \end{itemdecl}
