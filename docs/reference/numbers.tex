@@ -54,6 +54,8 @@ using @\libglobal{number_scalar_t}@ = number_scalar<T>::type;
 // \ref{num.concepts}, concepts
 template<typename T>
 concept number = @\seebelow@;
+template<typename T, typename U>
+concept common_number_with = @\seebelow@;
 template<typename T>
 concept ordered_number = @\seebelow@;
 template<typename T>
@@ -202,7 +204,7 @@ struct is_complex_number<std::complex<T>> : std::true_type {};
 \begin{codeblock}
 template<typename T>
 concept @\defexposconcept{inferable-identities}@ =
-  std::common_with<T, number_difference_t<T>> && std::constructible_from<T, int>;
+  common_number_with<T, number_difference_t<T>> && std::constructible_from<T, int>;
 \end{codeblock}
 
 \indexlibrary{\idxcode{number_zero}!\idxexposconcept{inferable-identities}}%
@@ -340,8 +342,8 @@ template<class T, class U> concept @\defexposconceptnc{addition-with}@ =
   @\libconcept{number}@<T> &&
   @\libconcept{number}@<U> &&
   requires(const T& c, const U& d) {
-    { c + d } -> std::common_with<T>;
-    { d + c } -> std::common_with<T>;
+    { c + d } -> common_number_with<T>;
+    { d + c } -> common_number_with<T>;
   };
 
 template<class T, class U> concept @\defexposconceptnc{compound-addition-with}@ =
@@ -353,7 +355,7 @@ template<class T, class U> concept @\defexposconceptnc{compound-addition-with}@ 
 template<class T, class U> concept @\defexposconceptnc{subtraction-with}@ =
   @\exposconcept{addition-with}@<T, U> &&
   requires(const T& c, const U& d) {
-    { c - d } -> std::common_with<T>;
+    { c - d } -> common_number_with<T>;
   };
 
 template<class T, class U> concept @\defexposconceptnc{compound-subtraction-with}@ =
@@ -368,7 +370,7 @@ template<class T, class U, class V> concept @\defexposconceptnc{multiplication-w
   @\libconcept{number}@<U> &&
   @\libconcept{number}@<V> &&
   requires(const T& c, const U& u) {
-    { c * u } -> std::common_with<V>;
+    { c * u } -> common_number_with<V>;
   };
 
 template<class T, class U> concept @\defexposconceptnc{compound-multiplication-with}@ =
@@ -381,7 +383,7 @@ template<class T, class U> concept @\defexposconceptnc{division-with}@ =
   @\exposconcept{multiplication-with}@<T, U, T> &&
   @\exposconcept{multiplication-with}@<U, T, T> &&
   requires(const T& c, const U& u) {
-    { c / u } -> std::common_with<T>;
+    { c / u } -> common_number_with<T>;
   };
 
 template<class T, class U> concept @\defexposconceptnc{compound-division-with}@ =
@@ -395,7 +397,7 @@ template<class T, class U> concept @\deflibconcept{modulo_with}@ =
   @\libconcept{number}@<T> &&
   @\libconcept{number}@<U> &&
   requires(const T& c, const U& u) {
-    { c % u } -> std::common_with<T>;
+    { c % u } -> common_number_with<T>;
   };
 
 template<class T, class U> concept @\deflibconcept{compound_modulo_with}@ =
@@ -475,7 +477,7 @@ template<class T> concept @\deflibconcept{negative}@ =
   @\exposconcept{compound-addition-with}@<T, T> &&
   requires(const T& c) {
     number_zero_v<T>;
-    { -c } -> std::common_with<T>;
+    { -c } -> common_number_with<T>;
   };
 
 template<class T> concept @\deflibconcept{set_with_inverse}@ =
@@ -515,7 +517,7 @@ The result of $E$ is the value of $F$ mapped to the type of $E$.
 \begin{itemdecl}
 template<typename T, typename U>
 concept @\deflibconcept{point_space_for}@ =
-  @\exposconcept{subtraction-with}@<T, U> && @\libconcept{negative}@<U> && std::common_with<number_difference_t<T>, U>;
+  @\exposconcept{subtraction-with}@<T, U> && @\libconcept{negative}@<U> && common_number_with<number_difference_t<T>, U>;
 template<typename T, typename U>
 concept @\deflibconcept{compound_point_space_for}@ = @\libconcept{point_space_for}@<T, U> && @\exposconcept{compound-subtraction-with}@<T, U>;
 template<typename T>
@@ -538,10 +540,10 @@ concept @\deflibconcept{compound_vector_space_for}@ = @\libconcept{compound_poin
 
 template<typename T>
 concept @\defexposconceptnc{weak-scalar}@ =
-  std::common_with<T, number_difference_t<T>> && @\libconcept{point_space}@<T> && @\libconcept{negative}@<T>;
+  common_number_with<T, number_difference_t<T>> && @\libconcept{point_space}@<T> && @\libconcept{negative}@<T>;
 
 template<typename T, typename U>
-concept @\defexposconceptnc{scales-with}@ = std::common_with<U, number_scalar_t<T>> && @\exposconcept{weak-scalar}@<U> &&
+concept @\defexposconceptnc{scales-with}@ = common_number_with<U, number_scalar_t<T>> && @\exposconcept{weak-scalar}@<U> &&
                       @\exposconcept{multiplication-with}@<T, U, T> && @\libconcept{set_with_inverse}@<U>;
 template<typename T, typename U>
 concept @\defexposconceptnc{compound-scales-with}@ = @\exposconcept{scales-with}@<T, U> && @\exposconcept{compound-multiplication-with}@<T, U>;
