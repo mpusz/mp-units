@@ -45,35 +45,19 @@ public:
   using validated_type<T, is_in_range_t<T, Min, Max>>::validated_type;
   constexpr ranged_representation() : validated_type<T, is_in_range_t<T, Min, Max>>(T{}) {}
 
-  [[nodiscard]] constexpr ranged_representation operator-() const
-    requires requires(T t) { -t; }
-  {
-    return ranged_representation(-this->value());
-  }
+  [[nodiscard]] constexpr ranged_representation operator-() const { return ranged_representation(-this->value()); }
 
-  [[nodiscard]] friend constexpr ranged_representation operator-(const ranged_representation& lhs,
-                                                                 const ranged_representation& rhs)
+  constexpr ranged_representation& operator+=(const T& that)
   {
-    return ranged_representation(lhs.value() - rhs.value());
+    return *this = ranged_representation(this->value() + that);
   }
-
-  constexpr ranged_representation& operator+=(const ranged_representation& that)
+  constexpr ranged_representation& operator-=(const T& that)
   {
-    this->value() += that.value();
-    gsl_Expects(validate(this->value()));
-    return *this;
-  }
-  constexpr ranged_representation& operator-=(const ranged_representation& that)
-  {
-    this->value() -= that.value();
-    gsl_Expects(validate(this->value()));
-    return *this;
+    return *this = ranged_representation(this->value() - that);
   }
   constexpr ranged_representation& operator*=(const T& rhs)
   {
-    this->value() *= rhs;
-    gsl_Expects(validate(this->value()));
-    return *this;
+    return *this = ranged_representation(this->value() * rhs);
   }
 };
 
