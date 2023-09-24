@@ -29,8 +29,9 @@
 namespace mp_units {
 
 namespace detail {
+
 template<Quantity Q, typename InputIt>
-static std::vector<typename Q::rep> i_qty_to_rep(InputIt first, InputIt last)
+std::vector<typename Q::rep> i_qty_to_rep(InputIt first, InputIt last)
 {
   std::vector<typename Q::rep> intervals_rep;
   intervals_rep.reserve(static_cast<size_t>(std::distance(first, last)));
@@ -41,7 +42,7 @@ static std::vector<typename Q::rep> i_qty_to_rep(InputIt first, InputIt last)
 }
 
 template<Quantity Q>
-static std::vector<typename Q::rep> bl_qty_to_rep(std::initializer_list<Q>& bl)
+std::vector<typename Q::rep> bl_qty_to_rep(std::initializer_list<Q>& bl)
 {
   std::vector<typename Q::rep> bl_rep;
   bl_rep.reserve(bl.size());
@@ -52,7 +53,7 @@ static std::vector<typename Q::rep> bl_qty_to_rep(std::initializer_list<Q>& bl)
 }
 
 template<Quantity Q, typename UnaryOperation>
-inline static std::vector<typename Q::rep> fw_bl_pwc(std::initializer_list<Q>& bl, UnaryOperation fw)
+std::vector<typename Q::rep> fw_bl_pwc(std::initializer_list<Q>& bl, UnaryOperation fw)
 {
   using rep = MP_UNITS_TYPENAME Q::rep;
   std::vector<rep> w_bl;
@@ -70,7 +71,7 @@ inline static std::vector<typename Q::rep> fw_bl_pwc(std::initializer_list<Q>& b
 }
 
 template<Quantity Q, typename UnaryOperation>
-static std::vector<typename Q::rep> fw_bl_pwl(std::initializer_list<Q>& bl, UnaryOperation fw)
+std::vector<typename Q::rep> fw_bl_pwl(std::initializer_list<Q>& bl, UnaryOperation fw)
 {
   std::vector<typename Q::rep> weights;
   weights.reserve(bl.size());
