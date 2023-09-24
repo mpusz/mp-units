@@ -60,7 +60,7 @@ concept AbsolutePointOrigin =
 /**
  * @brief A concept matching all quantity points in the library
  *
- * Satisfied by all types being a either specialization or derived from `quantity_point`
+ * Satisfied by all types being either a specialization or derived from `quantity_point`
  */
 template<typename T>
 concept QuantityPoint = detail::is_quantity_point<T>;
