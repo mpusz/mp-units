@@ -2,32 +2,38 @@
 
 ## mp-units
 
-### 2.0.0 <small>WIP</small> { id="2.0.0" }
+### 2.1.0 <small>WIP</small> { id="2.1.0" }
+
+### 2.0.0 <small>September 24, 2023</small> { id="2.0.0" }
 
 - `units` namespace renamed to `mp_units` (#317)
 - header files in the `<mp-units/...>` rather then in `<units/...>` (#317)
 - the downcasting facility is removed (#383, #211, #32)
 - unified and simplified quantity creation (#274)
-- Determining the best way to create a quantity (#413)
-- V2 quantity_point (#414)
+- determining the best way to create a quantity (#413)
+- V2 `quantity_point` (#414)
 - introduction of `quantity_spec` to store not only `dimension` but also additional information about quantities (#405)
 - `quantity` now takes `reference` object, which aggregates `quantity_spec` and a `unit` and a `representation` type
 - units, prefixes, dimensions, quantity specifications, and references are passed as NTTPs to templates and provide arithmetic operations and comparison
 - expression templates consistently used in all derived types to increase the readability (#351, #166)
 - derived dimensions are now factors of only base dimensions (#281)
-- Interconvertibility of derived quantities (#427)
+- convertibility of derived quantities (#427)
 - dimensions, quantity specifications, units, and references are now composable, significantly reducing the number of definitions and resulting types
 - heavily simplified unit systems definitions (no need to define unnamed derived units, systems-specific dimensions, aliases for quantities, concepts, UDLs, ... anymore)
 - improved definition of all systems
-- support for all (or at least most) ISO 80000 quantities
+- support for ISO 80000 Part 3-6 quantities
 - faster than lightspeed constants (#169)
 - extensions to quantity formatting with `fmt`
 - `quantity_kind` removed
-- much easier and safe casting of unit with `operator[]` and `.number_in(Unit)`
-- quantity can no longer be constructed with a raw value (#434)
+- improved casting of unit with `.in(Unit)`, `.force_in(Unit)` for `quantity` and `quantity_spec`
+- numerical value accessor safety improved with `.numerical_value_in(Unit)` and `.force_numerical_value_in(Unit)`
+- `quantity` can no longer be constructed with a raw value (#434)
 - Implicit construction of quantities from a value (#410)
+- `quantity_point` can no longer be constructed with just a `quantity` and an explicit `PointOrigin` is always needed
 - `ceil` and `floor` are dangerous (#432)
 - quecto, ronto, ronna, quetta new SI prefixes support
+- comparison against zero added (#487)
+- documentation rewritten from scratch
 - many smaller changes not possible to address with the previous design (#205, #210, #134)
 
 ### 0.8.0 <small>June 14, 2023</small> { id="0.8.0" }
