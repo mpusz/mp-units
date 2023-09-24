@@ -287,7 +287,7 @@ To obtain an official library release, the following steps may be performed:
 
     ```ini title="conanfile.txt"
     [requires]
-    mp-units/0.8.0
+    mp-units/2.0.0
 
     [layout]
     cmake_layout
@@ -344,7 +344,7 @@ with the following differences:
 
     ```ini title="conanfile.txt" hl_lines="2"
     [requires]
-    mp-units/2.0.0@mpusz/testing
+    mp-units/2.1.0@mpusz/testing
 
     [layout]
     cmake_layout
