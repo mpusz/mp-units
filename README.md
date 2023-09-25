@@ -7,7 +7,7 @@
 [![GitHub Workflow Documentation](https://img.shields.io/github/actions/workflow/status/mpusz/mp-units/documentation.yml?branch=master&label=Documentation)](https://github.com/mpusz/mp-units/actions?query=workflow%3ADocumentation+branch%3Amaster)
 
 [![Conan stable](https://img.shields.io/conan/v/mp-units?label=ConanCenter&color=blue)](https://conan.io/center/mp-units)
-[![Conan testing](https://img.shields.io/badge/mpusz.jfrog.io-2.0.0%3Atesting-blue)](https://mpusz.jfrog.io/ui/packages/conan:%2F%2Fmp-units/2.0.0)
+[![Conan testing](https://img.shields.io/badge/mpusz.jfrog.io-2.1.0%3Atesting-blue)](https://mpusz.jfrog.io/ui/packages/conan:%2F%2Fmp-units/2.1.0)
 
 
 # `mp-units` - A Physical Quantities and Units library for C++
