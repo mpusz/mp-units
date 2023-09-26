@@ -72,8 +72,6 @@ inline constexpr struct henry : named_unit<"H", weber / ampere> {} henry;
 inline constexpr struct degree_Celsius : named_unit<basic_symbol_text{"°C", "`C"}, kelvin> {} degree_Celsius;
 inline constexpr struct lumen : named_unit<"lm", candela * steradian> {} lumen;
 inline constexpr struct lux : named_unit<"lx", lumen / square(metre)> {} lux;
-// TODO add when isq::activity will be supported
-// inline constexpr struct becquerel : named_unit<"Bq", 1 / second, kind_of<isq::activity>> {} becquerel;
 inline constexpr struct becquerel : named_unit<"Bq", 1 / second, kind_of<isq::activity>> {} becquerel;
 inline constexpr struct gray : named_unit<"Gy", joule / kilogram> {} gray;
 inline constexpr struct sievert : named_unit<"Sv", joule / kilogram> {} sievert;
