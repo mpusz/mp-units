@@ -159,11 +159,6 @@ jobs:
         with:
           key: ${{ matrix.config.os }}-${{ matrix.config.compiler.type }}-${{ matrix.config.compiler.version }}-${{ matrix.config.lib }}-${{ matrix.build_type }}
           max-size: 50M
-      - name: Install gcc-12
-        if: matrix.config.compiler.type == 'GCC' && matrix.config.compiler.version == '12'
-        shell: bash
-        run: |
-          sudo apt install -y g++-${{ matrix.config.compiler.version }}
       - name: Install gcc-13
         if: matrix.config.compiler.type == 'GCC' && matrix.config.compiler.version == '13'
         shell: bash
