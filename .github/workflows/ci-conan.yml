@@ -106,6 +106,20 @@ jobs:
               lib: "libc++",
               conan-config: "",
             }
+          - {
+              name: "Ubuntu Clang-17 + libc++",
+              os: ubuntu-22.04,
+              compiler:
+                {
+                  type: CLANG,
+                  version: 17,
+                  cc: "clang-17",
+                  cxx: "clang++-17",
+                  std: 20,
+                },
+              lib: "libc++",
+              conan-config: "",
+            }
           # - {
           #     name: "MacOS Apple Clang 13",
           #     os: macos-11,
