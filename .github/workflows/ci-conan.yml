@@ -230,7 +230,7 @@ jobs:
         run: |
           conan create . --user mpusz --channel ${CHANNEL} --lockfile-out=package.lock \
                          -b mp-units/* -b missing -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" \
-                         -c user.build:all=True -c user.build:skip_docs=True ${{ matrix.config.conan-config }}
+                         -c user.build:all=True ${{ matrix.config.conan-config }}
       - name: Obtain package reference
         id: get-package-ref
         shell: bash
