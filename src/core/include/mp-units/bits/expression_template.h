@@ -348,9 +348,6 @@ template<typename NumList, typename DenList, typename OneType, template<typename
 /**
  * @brief Creates an expression template spec based on provided numerator and denominator parts
  */
-template<typename NumList, typename DenList, typename OneType, template<typename...> typename To>
-using expr_make_spec = decltype(expr_make_spec_impl<NumList, DenList, OneType, To>());
-
 template<typename NumList, typename DenList, typename OneType, template<typename, typename> typename Pred,
          template<typename...> typename To>
 [[nodiscard]] consteval auto get_optimized_expression()
@@ -358,8 +355,9 @@ template<typename NumList, typename DenList, typename OneType, template<typename
   using num_list = expr_consolidate<NumList>;
   using den_list = expr_consolidate<DenList>;
   using simple = expr_simplify<num_list, den_list, Pred>;
-  using expr = expr_make_spec<typename simple::num, typename simple::den, OneType, To>;
-  return expr{};
+  // the usage of `std::identity` below helps to resolve an using alias identifier to the actual
+  // type identifier in the clang compile-time errors
+  return std::identity{}(expr_make_spec_impl<typename simple::num, typename simple::den, OneType, To>());
 }
 
 /**
@@ -444,7 +442,9 @@ template<template<typename...> typename To, typename OneType, typename T>
 [[nodiscard]] consteval auto expr_invert(T)
 {
   if constexpr (is_specialization_of<T, To>)
-    return expr_make_spec<typename T::_den_, typename T::_num_, OneType, To>{};
+    // the usage of `std::identity` below helps to resolve an using alias identifier to the actual
+    // type identifier in the clang compile-time errors
+    return std::identity{}(expr_make_spec_impl<typename T::_den_, typename T::_num_, OneType, To>());
   else
     return To<OneType, per<T>>{};
 }
