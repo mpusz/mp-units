@@ -77,6 +77,18 @@ jobs:
                 },
             }
           - {
+              name: "Ubuntu GCC-13",
+              os: ubuntu-22.04,
+              compiler:
+                {
+                  type: GCC,
+                  version: 13,
+                  cc: "gcc-13",
+                  cxx: "g++-13",
+                  std: 20,
+                },
+            }
+          - {
               name: "Ubuntu Clang-16 + libc++",
               os: ubuntu-22.04,
               compiler:
