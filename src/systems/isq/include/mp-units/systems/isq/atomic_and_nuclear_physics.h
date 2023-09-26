@@ -24,11 +24,15 @@
 
 #include <mp-units/quantity_spec.h>
 #include <mp-units/systems/isq/base_quantities.h>
+#include <mp-units/systems/isq/mechanics.h>
 #include <mp-units/systems/isq/space_and_time.h>
 
 namespace mp_units::isq {
 
 // TODO Add all the remaining ISQ definitions
 QUANTITY_SPEC(activity, 1 / duration);
+QUANTITY_SPEC(absorbed_dose, energy / mass);
+QUANTITY_SPEC(ionizing_radiation_quality_factor, dimensionless);
+QUANTITY_SPEC(dose_equivalent, absorbed_dose* ionizing_radiation_quality_factor);
 
 }  // namespace mp_units::isq

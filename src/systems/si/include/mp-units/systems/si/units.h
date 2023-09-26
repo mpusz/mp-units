@@ -73,8 +73,8 @@ inline constexpr struct degree_Celsius : named_unit<basic_symbol_text{"°C", "`C
 inline constexpr struct lumen : named_unit<"lm", candela * steradian> {} lumen;
 inline constexpr struct lux : named_unit<"lx", lumen / square(metre)> {} lux;
 inline constexpr struct becquerel : named_unit<"Bq", 1 / second, kind_of<isq::activity>> {} becquerel;
-inline constexpr struct gray : named_unit<"Gy", joule / kilogram> {} gray;
-inline constexpr struct sievert : named_unit<"Sv", joule / kilogram> {} sievert;
+inline constexpr struct gray : named_unit<"Gy", joule / kilogram, kind_of<isq::absorbed_dose>> {} gray;
+inline constexpr struct sievert : named_unit<"Sv", joule / kilogram, kind_of<isq::dose_equivalent>> {} sievert;
 inline constexpr struct katal : named_unit<"kat", mole / second> {} katal;
 // clang-format on
 

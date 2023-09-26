@@ -326,4 +326,10 @@ static_assert(verify(isq::reactive_power, scalar, V* A));
 static_assert(verify(isq::non_active_power, scalar, V* A));
 static_assert(verify(isq::active_energy, scalar, J, W* h));
 
+// atomic and nuclear physics
+static_assert(verify(isq::activity, scalar, Bq, 1 / s));
+static_assert(verify(isq::absorbed_dose, scalar, Gy, J / kg, m2 / s2));
+static_assert(verify(isq::quality_factor, scalar, one));
+static_assert(verify(isq::dose_equivalent, scalar, Sv, J / kg, m2 / s2));
+
 }  // namespace
