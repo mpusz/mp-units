@@ -58,21 +58,21 @@ using namespace mp_units::si::unit_symbols;
 
 template<QuantitySpec auto QS, QuantityOf<QS> Q>
   requires(Q::quantity_spec.character == quantity_character::vector) && (QS.character == quantity_character::scalar)
-[[nodiscard]] QuantityOf<QS> auto get_magnitude(const Q& q)
+[[nodiscard]] constexpr QuantityOf<QS> auto get_magnitude(const Q& q)
 {
   const auto& v = q.numerical_value_ref_in(q.unit);
-  return hypot(v(0) * QS[q.unit], v(1) * QS[q.unit], v(2) * QS[q.unit]);
+  return hypot(v(0) * QS[Q::unit], v(1) * QS[Q::unit], v(2) * QS[Q::unit]);
 }
 
 template<QuantitySpec auto QS, QuantityOf<QS> T>
   requires(T::quantity_spec.character == quantity_character::vector) && (QS.character == quantity_character::scalar)
-[[nodiscard]] QuantityOf<QS> auto get_magnitude(const vector<T>& v)
+[[nodiscard]] constexpr QuantityOf<QS> auto get_magnitude(const vector<T>& v)
 {
   return hypot(QS(v(0)), QS(v(1)), QS(v(2)));
 }
 
 template<typename T, typename U>
-[[nodiscard]] vector<decltype(T{} * U{})> cross_product(const vector<T>& a, const vector<U>& b)
+[[nodiscard]] constexpr vector<decltype(T{} * U{})> cross_product(const vector<T>& a, const vector<U>& b)
 {
   return {a(1) * b(2) - a(2) * b(1), a(2) * b(0) - a(0) * b(2), a(0) * b(1) - a(1) * b(0)};
 }
@@ -80,7 +80,7 @@ template<typename T, typename U>
 template<Quantity Q1, Quantity Q2>
   requires is_vector<typename Q1::rep> && is_vector<typename Q2::rep> &&
            requires(typename Q1::rep v1, typename Q2::rep v2) { cross_product(v1, v2); }
-[[nodiscard]] QuantityOf<Q1::quantity_spec * Q2::quantity_spec> auto cross_product(const Q1& q1, const Q2& q2)
+[[nodiscard]] constexpr QuantityOf<Q1::quantity_spec * Q2::quantity_spec> auto cross_product(const Q1& q1, const Q2& q2)
 {
   return cross_product(q1.numerical_value_ref_in(q1.unit), q2.numerical_value_ref_in(q2.unit)) *
          (Q1::reference * Q2::reference);
