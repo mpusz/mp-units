@@ -68,7 +68,6 @@ inline constexpr struct siemens : named_unit<"S", 1 / ohm> {} siemens;
 inline constexpr struct weber : named_unit<"Wb", volt * second> {} weber;
 inline constexpr struct tesla : named_unit<"T", weber / square(metre)> {} tesla;
 inline constexpr struct henry : named_unit<"H", weber / ampere> {} henry;
-// inline constexpr struct degree_Celsius : named_unit<basic_symbol_text{"°C", "`C"}, kelvin, offset<-mag<273150> * milli<kelvin>, only_for<isq::Celsius_temperature> {} degree_Celsius;
 inline constexpr struct degree_Celsius : named_unit<basic_symbol_text{"°C", "`C"}, kelvin> {} degree_Celsius;
 inline constexpr struct lumen : named_unit<"lm", candela * steradian> {} lumen;
 inline constexpr struct lux : named_unit<"lx", lumen / square(metre)> {} lux;
