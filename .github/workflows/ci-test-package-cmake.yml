@@ -124,10 +124,10 @@ jobs:
     steps:
       - name: Downcase 'build_type'
         id: build_type
-        uses: ASzc/change-string-case-action@v2
+        uses: ASzc/change-string-case-action@v5
         with:
           string: ${{ matrix.build_type }}
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Cache Conan data
         uses: actions/cache@v3
         env:
