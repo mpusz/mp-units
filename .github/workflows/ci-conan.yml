@@ -214,6 +214,7 @@ jobs:
         if: matrix.config.compiler.type == 'CLANG'
         shell: bash
         run: |
+          conan profile show
           sed -i -e 's/"8", "9", "10", "11", "12", "13", "14", "15", "16"]/"8", "9", "10", "11", "12", "13", "14", "15", "16", "17"]/' ~/.conan2/settings.yml
       - name: Configure Conan
         shell: bash
