@@ -45,7 +45,6 @@ static_assert(sizeof(quantity<isq::length[m]>) == sizeof(double));
 static_assert(sizeof(quantity<si::metre, short>) == sizeof(short));
 static_assert(sizeof(quantity<isq::length[m], short>) == sizeof(short));
 
-#if MP_UNITS_COMP_GCC != 10 || MP_UNITS_COMP_GCC_MINOR > 2
 template<template<auto, typename> typename Q>
 concept invalid_types = requires {
   requires !requires { typename Q<isq::dim_length, double>; };  // dimension instead of reference
@@ -55,7 +54,6 @@ concept invalid_types = requires {
   requires !requires { typename Q<isq::position_vector[si::metre], double>; };   // vector representation expected
 };
 static_assert(invalid_types<quantity>);
-#endif
 
 static_assert(std::is_trivially_default_constructible_v<quantity<isq::length[m]>>);
 static_assert(std::is_trivially_copy_constructible_v<quantity<isq::length[m]>>);
@@ -208,14 +206,12 @@ static_assert(quantity<isq::length[m]>(2000. * m).in(km).numerical_value_ == 2.)
 static_assert(quantity<isq::length[km], int>(2 * km).in(km).numerical_value_ == 2);
 static_assert(quantity<isq::length[km], int>(2 * km).in(m).numerical_value_ == 2000);
 
-#if MP_UNITS_COMP_GCC != 10 || MP_UNITS_COMP_GCC_MINOR > 2
 template<template<auto, typename> typename Q>
 concept invalid_unit_conversion = requires {
   requires !requires { Q<isq::length[m], int>(2000 * m).in(km); };  // truncating conversion
   requires !requires { Q<isq::length[m], int>(2 * m).in(s); };      // invalid unit
 };
 static_assert(invalid_unit_conversion<quantity>);
-#endif
 
 static_assert(quantity<isq::length[km]>(2. * km).numerical_value_in(km) == 2.);
 static_assert(quantity<isq::length[km]>(2. * km).numerical_value_in(m) == 2000.);
@@ -223,14 +219,12 @@ static_assert(quantity<isq::length[m]>(2000. * m).numerical_value_in(km) == 2.);
 static_assert(quantity<isq::length[km], int>(2 * km).numerical_value_in(km) == 2);
 static_assert(quantity<isq::length[km], int>(2 * km).numerical_value_in(m) == 2000);
 
-#if MP_UNITS_COMP_GCC != 10 || MP_UNITS_COMP_GCC_MINOR > 2
 template<template<auto, typename> typename Q>
 concept invalid_getter_with_unit_conversion = requires {
   requires !requires { Q<isq::length[m], int>(2000 * m).numerical_value_in(km); };  // truncating conversion
   requires !requires { Q<isq::length[m], int>(2 * m).numerical_value_in(s); };      // invalid unit
 };
 static_assert(invalid_getter_with_unit_conversion<quantity>);
-#endif
 
 
 ///////////////////////////////////////

@@ -587,14 +587,12 @@ static_assert((tower_peak + 2. * km).in(km).quantity_from_origin_.numerical_valu
 static_assert((tower_peak + 2. * km).in(m).quantity_from_origin_.numerical_value_ == 2000.);
 static_assert((tower_peak + 2000. * m).in(km).quantity_from_origin_.numerical_value_ == 2.);
 
-#if MP_UNITS_COMP_GCC != 10 || MP_UNITS_COMP_GCC_MINOR > 2
 template<template<auto, auto, typename> typename QP>
 concept invalid_unit_conversion = requires {
   requires !requires { QP<isq::height[m], mean_sea_level, int>(2000 * m).in(km); };  // truncating conversion
   requires !requires { QP<isq::height[m], mean_sea_level, int>(2 * m).in(s); };      // invalid unit
 };
 static_assert(invalid_unit_conversion<quantity_point>);
-#endif
 
 
 /////////

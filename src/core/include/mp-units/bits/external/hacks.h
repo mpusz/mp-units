@@ -96,31 +96,11 @@
 #if MP_UNITS_COMP_MSVC
 
 #define MP_UNITS_CONSTRAINED_AUTO_WORKAROUND(X)
-
-#else
-
-#define MP_UNITS_CONSTRAINED_AUTO_WORKAROUND(X) X
-
-#endif
-
-#if MP_UNITS_COMP_MSVC || (MP_UNITS_COMP_GCC && MP_UNITS_COMP_GCC < 11)
-
 #define MP_UNITS_CONSTRAINED_NTTP_WORKAROUND(X)
 
 #else
 
+#define MP_UNITS_CONSTRAINED_AUTO_WORKAROUND(X) X
 #define MP_UNITS_CONSTRAINED_NTTP_WORKAROUND(X) X
 
 #endif
-
-
-namespace std {
-
-#if MP_UNITS_COMP_GCC
-
-template<class T>
-concept default_constructible = constructible_from<T>;
-
-#endif
-
-}  // namespace std
