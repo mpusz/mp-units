@@ -153,12 +153,11 @@ jobs:
             build-${{ matrix.config.os }}-${{ matrix.build_type }}-${{ matrix.config.compiler.type }}-
             build-${{ matrix.config.os }}-${{ matrix.build_type }}-
             build-${{ matrix.config.os }}-
-      - name: Install gcc-11
-        if: matrix.config.compiler.type == 'GCC' && matrix.config.compiler.version == '11'
+      - name: Install gcc-13
+        if: matrix.config.compiler.type == 'GCC' && matrix.config.compiler.version == '13'
         shell: bash
         run: |
           sudo apt install -y g++-${{ matrix.config.compiler.version }}
-          sudo apt install -y clang-tools-${{ matrix.config.compiler.version }}
       - name: Install Clang
         if: matrix.config.compiler.type == 'CLANG'
         shell: bash
