@@ -36,8 +36,6 @@ namespace {
 using namespace mp_units;
 using namespace mp_units::si::unit_symbols;
 
-QUANTITY_SPEC(activity, 1 / isq::time);
-
 //////////////////////////////
 // quantity class invariants
 //////////////////////////////
@@ -695,8 +693,8 @@ consteval bool invalid_arithmetic(Ts... ts)
 {
   return !requires { (... + ts); } && !requires { (... - ts); };
 }
-static_assert(invalid_arithmetic(5 * activity[Bq], 5 * isq::frequency[Hz]));
-static_assert(invalid_arithmetic(5 * activity[Bq], 10 / (2 * isq::time[s]), 5 * isq::frequency[Hz]));
+static_assert(invalid_arithmetic(5 * isq::activity[Bq], 5 * isq::frequency[Hz]));
+static_assert(invalid_arithmetic(5 * isq::activity[Bq], 10 / (2 * isq::time[s]), 5 * isq::frequency[Hz]));
 
 // Physical constants
 static_assert(1 * si::si2019::speed_of_light_in_vacuum + 10 * isq::speed[m / s] == 299'792'468 * isq::speed[m / s]);
@@ -817,7 +815,7 @@ static_assert(1 * si::si2019::speed_of_light_in_vacuum == 299'792'458 * isq::spe
 // Different named dimensions
 template</*Reference*/ auto R1, /*Reference*/ auto R2>  // TODO Use `Reference` when Clang supports it.
 concept invalid_comparison = !requires { 2 * R1 == 2 * R2; } && !requires { 2 * R2 == 2 * R1; };
-static_assert(invalid_comparison<activity[Bq], isq::frequency[Hz]>);
+static_assert(invalid_comparison<isq::activity[Bq], isq::frequency[Hz]>);
 
 
 ///////////////////////

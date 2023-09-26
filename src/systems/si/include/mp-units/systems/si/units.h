@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <mp-units/systems/isq/atomic_and_nuclear_physics.h>
 #include <mp-units/systems/isq/base_quantities.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si/prefixes.h>
@@ -73,7 +74,7 @@ inline constexpr struct lumen : named_unit<"lm", candela * steradian> {} lumen;
 inline constexpr struct lux : named_unit<"lx", lumen / square(metre)> {} lux;
 // TODO add when isq::activity will be supported
 // inline constexpr struct becquerel : named_unit<"Bq", 1 / second, kind_of<isq::activity>> {} becquerel;
-inline constexpr struct becquerel : named_unit<"Bq", 1 / second> {} becquerel;
+inline constexpr struct becquerel : named_unit<"Bq", 1 / second, kind_of<isq::activity>> {} becquerel;
 inline constexpr struct gray : named_unit<"Gy", joule / kilogram> {} gray;
 inline constexpr struct sievert : named_unit<"Sv", joule / kilogram> {} sievert;
 inline constexpr struct katal : named_unit<"kat", mole / second> {} katal;

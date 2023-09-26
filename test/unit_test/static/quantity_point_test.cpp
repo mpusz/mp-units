@@ -55,7 +55,6 @@ inline constexpr struct zero : absolute_point_origin<dimensionless> {
 } zero;
 
 QUANTITY_SPEC(special_height, isq::height);
-QUANTITY_SPEC(activity, 1 / isq::time);
 
 /////////////////////
 // class invariants
@@ -1203,18 +1202,18 @@ consteval bool invalid_subtraction(Ts... ts)
   return !requires { (... - ts); };
 }
 
-inline constexpr struct zero_Bq : absolute_point_origin<kind_of<activity>> {
+inline constexpr struct zero_Bq : absolute_point_origin<kind_of<isq::activity>> {
 } zero_Bq;
 
-static_assert(invalid_addition(zero_Bq + 5 * activity[Bq], 5 * isq::frequency[Hz]));
-static_assert(invalid_addition(5 * activity[Bq], zero_Hz + 5 * isq::frequency[Hz]));
-static_assert(invalid_subtraction(zero_Bq + 5 * activity[Bq], 5 * isq::frequency[Hz]));
-static_assert(invalid_subtraction(zero_Bq + 5 * activity[Bq], zero_Hz + 5 * isq::frequency[Hz]));
+static_assert(invalid_addition(zero_Bq + 5 * isq::activity[Bq], 5 * isq::frequency[Hz]));
+static_assert(invalid_addition(5 * isq::activity[Bq], zero_Hz + 5 * isq::frequency[Hz]));
+static_assert(invalid_subtraction(zero_Bq + 5 * isq::activity[Bq], 5 * isq::frequency[Hz]));
+static_assert(invalid_subtraction(zero_Bq + 5 * isq::activity[Bq], zero_Hz + 5 * isq::frequency[Hz]));
 
-static_assert(invalid_addition(zero_Bq + 5 * activity[Bq], 10 / (2 * isq::time[s]), 5 * isq::frequency[Hz]));
-static_assert(invalid_addition(5 * activity[Bq], zero_Hz + 10 / (2 * isq::time[s]), 5 * isq::frequency[Hz]));
-static_assert(invalid_addition(5 * activity[Bq], 10 / (2 * isq::time[s]), zero_Hz + 5 * isq::frequency[Hz]));
-static_assert(invalid_subtraction(zero_Bq + 5 * activity[Bq], 10 / (2 * isq::time[s]), 5 * isq::frequency[Hz]));
+static_assert(invalid_addition(zero_Bq + 5 * isq::activity[Bq], 10 / (2 * isq::time[s]), 5 * isq::frequency[Hz]));
+static_assert(invalid_addition(5 * isq::activity[Bq], zero_Hz + 10 / (2 * isq::time[s]), 5 * isq::frequency[Hz]));
+static_assert(invalid_addition(5 * isq::activity[Bq], 10 / (2 * isq::time[s]), zero_Hz + 5 * isq::frequency[Hz]));
+static_assert(invalid_subtraction(zero_Bq + 5 * isq::activity[Bq], 10 / (2 * isq::time[s]), 5 * isq::frequency[Hz]));
 
 
 /////////////////////////

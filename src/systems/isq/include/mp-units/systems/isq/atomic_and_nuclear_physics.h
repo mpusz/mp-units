@@ -22,11 +22,13 @@
 
 #pragma once
 
-// IWYU pragma: begin_exports
-#include <mp-units/systems/isq/atomic_and_nuclear_physics.h>
+#include <mp-units/quantity_spec.h>
 #include <mp-units/systems/isq/base_quantities.h>
-#include <mp-units/systems/isq/electromagnetism.h>
-#include <mp-units/systems/isq/mechanics.h>
 #include <mp-units/systems/isq/space_and_time.h>
-#include <mp-units/systems/isq/thermodynamics.h>
-// IWYU pragma: end_exports
+
+namespace mp_units::isq {
+
+// TODO Add all the remaining ISQ definitions
+QUANTITY_SPEC(activity, 1 / duration);
+
+}  // namespace mp_units::isq
