@@ -132,6 +132,38 @@ constexpr T max(std::initializer_list<T> ilist)
   return *max_element(ilist.begin(), ilist.end());
 }
 
+template<class T>
+constexpr const T& max(const T& a, const T& b)
+{
+  return (a < b) ? b : a;
+}
+
+template<class ForwardIt>
+constexpr ForwardIt min_element(ForwardIt first, ForwardIt last)
+{
+  if (first == last) return last;
+
+  ForwardIt smallest = first;
+  ++first;
+
+  for (; first != last; ++first)
+    if (*first < *smallest) smallest = first;
+
+  return smallest;
+}
+
+template<class T>
+constexpr T min(std::initializer_list<T> ilist)
+{
+  return *min_element(ilist.begin(), ilist.end());
+}
+
+template<class T>
+constexpr const T& min(const T& a, const T& b)
+{
+  return (b < a) ? b : a;
+}
+
 template<class I, class O>
 struct in_out_result {
   [[no_unique_address]] I in;

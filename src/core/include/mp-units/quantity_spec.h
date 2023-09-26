@@ -702,7 +702,7 @@ struct explode_result {
   template<typename T>
   [[nodiscard]] consteval explode_result common_convertibility_with(explode_to_equation_result<T> res) const
   {
-    return {quantity, std::min(result, res.result)};
+    return {quantity, min(result, res.result)};
   }
 };
 
@@ -724,10 +724,10 @@ template<int Complexity, QuantitySpec Q, typename Num, typename... Nums, typenam
 {
   constexpr auto n = get_complexity(Num{});
   constexpr auto d = get_complexity(Den{});
-  constexpr auto max = n > d ? n : d;
+  constexpr auto max_compl = n > d ? n : d;
 
-  if constexpr (max == Complexity || ((n >= d && !requires { explode_to_equation(Num{}); }) ||
-                                      (n < d && !requires { explode_to_equation(Den{}); })))
+  if constexpr (max_compl == Complexity || ((n >= d && !requires { explode_to_equation(Num{}); }) ||
+                                            (n < d && !requires { explode_to_equation(Den{}); })))
     return explode_result{(map_power(Num{}) * ... * map_power(Nums{})) / (map_power(Den{}) * ... * map_power(Dens{}))};
   else {
     if constexpr (n >= d) {
@@ -932,23 +932,19 @@ template<process_entities Entities, auto Ext, TypeList NumFrom, TypeList DenFrom
   if constexpr (Entities == process_entities::numerators || Entities == process_entities::denominators) {
     constexpr auto res = convertible_impl(Ext.from, Ext.to);
     if constexpr (Ext.prepend == prepend_rest::no)
-      return std::min(res, are_ingredients_convertible(num_from, den_from, num_to, den_to));
+      return min(res, are_ingredients_convertible(num_from, den_from, num_to, den_to));
     else {
       using elem = std::remove_cvref_t<decltype(Ext.elem)>;
       if constexpr (Entities == process_entities::numerators) {
         if constexpr (Ext.prepend == prepend_rest::first)
-          return std::min(res,
-                          are_ingredients_convertible(type_list_push_front<NumFrom, elem>{}, den_from, num_to, den_to));
+          return min(res, are_ingredients_convertible(type_list_push_front<NumFrom, elem>{}, den_from, num_to, den_to));
         else
-          return std::min(res,
-                          are_ingredients_convertible(num_from, den_from, type_list_push_front<NumTo, elem>{}, den_to));
+          return min(res, are_ingredients_convertible(num_from, den_from, type_list_push_front<NumTo, elem>{}, den_to));
       } else {
         if constexpr (Ext.prepend == prepend_rest::first)
-          return std::min(res,
-                          are_ingredients_convertible(num_from, type_list_push_front<DenFrom, elem>{}, num_to, den_to));
+          return min(res, are_ingredients_convertible(num_from, type_list_push_front<DenFrom, elem>{}, num_to, den_to));
         else
-          return std::min(res,
-                          are_ingredients_convertible(num_from, den_from, num_to, type_list_push_front<DenTo, elem>{}));
+          return min(res, are_ingredients_convertible(num_from, den_from, num_to, type_list_push_front<DenTo, elem>{}));
       }
     }
   } else {
@@ -995,30 +991,30 @@ template<typename NumFrom, typename... NumsFrom, typename DenFrom, typename... D
     constexpr auto den_from_compl = get_complexity(DenFrom{});
     constexpr auto num_to_compl = get_complexity(NumTo{});
     constexpr auto den_to_compl = get_complexity(DenTo{});
-    constexpr auto max = std::max({num_from_compl, num_to_compl, den_from_compl, den_to_compl});
-    if constexpr (max > 1) {
-      if constexpr (num_from_compl == max) {
+    constexpr auto max_compl = max({num_from_compl, num_to_compl, den_from_compl, den_to_compl});
+    if constexpr (max_compl > 1) {
+      if constexpr (num_from_compl == max_compl) {
         constexpr auto res = explode_to_equation(NumFrom{});
         return convertible_impl(
           (res.equation * ... * map_power(NumsFrom{})) / (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
           (map_power(NumTo{}) * ... * map_power(NumsTo{})) / (map_power(DenTo{}) * ... * map_power(DensTo{})));
-      } else if constexpr (den_from_compl == max) {
+      } else if constexpr (den_from_compl == max_compl) {
         constexpr auto res = explode_to_equation(DenFrom{});
         return convertible_impl(
           (map_power(NumFrom{}) * ... * map_power(NumsFrom{})) / (res.equation * ... * map_power(DensFrom{})),
           (map_power(NumTo{}) * ... * map_power(NumsTo{})) / (map_power(DenTo{}) * ... * map_power(DensTo{})));
-      } else if constexpr (num_to_compl == max) {
+      } else if constexpr (num_to_compl == max_compl) {
         constexpr auto res = explode_to_equation(NumTo{});
-        return std::min(res.result, convertible_impl((map_power(NumFrom{}) * ... * map_power(NumsFrom{})) /
-                                                       (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
-                                                     (res.equation * ... * map_power(NumsTo{})) /
-                                                       (map_power(DenTo{}) * ... * map_power(DensTo{}))));
+        return min(res.result, convertible_impl((map_power(NumFrom{}) * ... * map_power(NumsFrom{})) /
+                                                  (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
+                                                (res.equation * ... * map_power(NumsTo{})) /
+                                                  (map_power(DenTo{}) * ... * map_power(DensTo{}))));
       } else {
         constexpr auto res = explode_to_equation(DenTo{});
-        return std::min(res.result, convertible_impl((map_power(NumFrom{}) * ... * map_power(NumsFrom{})) /
-                                                       (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
-                                                     (map_power(NumTo{}) * ... * map_power(NumsTo{})) /
-                                                       (res.equation * ... * map_power(DensTo{}))));
+        return min(res.result, convertible_impl((map_power(NumFrom{}) * ... * map_power(NumsFrom{})) /
+                                                  (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
+                                                (map_power(NumTo{}) * ... * map_power(NumsTo{})) /
+                                                  (res.equation * ... * map_power(DensTo{}))));
       }
     }
   }
@@ -1041,25 +1037,23 @@ template<typename DenFrom, typename... DensFrom, typename NumTo, typename... Num
     constexpr auto den_from_compl = get_complexity(DenFrom{});
     constexpr auto num_to_compl = get_complexity(NumTo{});
     constexpr auto den_to_compl = get_complexity(DenTo{});
-    constexpr auto max = std::max({num_to_compl, den_from_compl, den_to_compl});
-    if constexpr (max > 1) {
-      if constexpr (den_from_compl == max) {
+    constexpr auto max_compl = max({num_to_compl, den_from_compl, den_to_compl});
+    if constexpr (max_compl > 1) {
+      if constexpr (den_from_compl == max_compl) {
         constexpr auto res = explode_to_equation(DenFrom{});
         return convertible_impl(
           dimensionless / (res.equation * ... * map_power(DensFrom{})),
           (map_power(NumTo{}) * ... * map_power(NumsTo{})) / (map_power(DenTo{}) * ... * map_power(DensTo{})));
-      } else if constexpr (num_to_compl == max) {
+      } else if constexpr (num_to_compl == max_compl) {
         constexpr auto res = explode_to_equation(NumTo{});
-        return std::min(
-          res.result, convertible_impl(
-                        dimensionless / (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
-                        (res.equation * ... * map_power(NumsTo{})) / (map_power(DenTo{}) * ... * map_power(DensTo{}))));
+        return min(res.result, convertible_impl(dimensionless / (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
+                                                (res.equation * ... * map_power(NumsTo{})) /
+                                                  (map_power(DenTo{}) * ... * map_power(DensTo{}))));
       } else {
         constexpr auto res = explode_to_equation(DenTo{});
-        return std::min(
-          res.result, convertible_impl(
-                        dimensionless / (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
-                        (map_power(NumTo{}) * ... * map_power(NumsTo{})) / (res.equation * ... * map_power(DensTo{}))));
+        return min(res.result, convertible_impl(dimensionless / (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
+                                                (map_power(NumTo{}) * ... * map_power(NumsTo{})) /
+                                                  (res.equation * ... * map_power(DensTo{}))));
       }
     }
   }
@@ -1082,23 +1076,23 @@ template<typename NumFrom, typename... NumsFrom, typename NumTo, typename... Num
     constexpr auto num_from_compl = get_complexity(NumFrom{});
     constexpr auto num_to_compl = get_complexity(NumTo{});
     constexpr auto den_to_compl = get_complexity(DenTo{});
-    constexpr auto max = std::max({num_from_compl, num_to_compl, den_to_compl});
-    if constexpr (max > 1) {
-      if constexpr (num_from_compl == max) {
+    constexpr auto max_compl = max({num_from_compl, num_to_compl, den_to_compl});
+    if constexpr (max_compl > 1) {
+      if constexpr (num_from_compl == max_compl) {
         constexpr auto res = explode_to_equation(NumFrom{});
         return convertible_impl(
           (res.equation * ... * map_power(NumsFrom{})),
           (map_power(NumTo{}) * ... * map_power(NumsTo{})) / (map_power(DenTo{}) * ... * map_power(DensTo{})));
-      } else if constexpr (num_to_compl == max) {
+      } else if constexpr (num_to_compl == max_compl) {
         constexpr auto res = explode_to_equation(NumTo{});
-        return std::min(res.result, convertible_impl((map_power(NumFrom{}) * ... * map_power(NumsFrom{})),
-                                                     (res.equation * ... * map_power(NumsTo{})) /
-                                                       (map_power(DenTo{}) * ... * map_power(DensTo{}))));
+        return min(res.result, convertible_impl((map_power(NumFrom{}) * ... * map_power(NumsFrom{})),
+                                                (res.equation * ... * map_power(NumsTo{})) /
+                                                  (map_power(DenTo{}) * ... * map_power(DensTo{}))));
       } else {
         constexpr auto res = explode_to_equation(DenTo{});
-        return std::min(res.result, convertible_impl((map_power(NumFrom{}) * ... * map_power(NumsFrom{})),
-                                                     (map_power(NumTo{}) * ... * map_power(NumsTo{})) /
-                                                       (res.equation * ... * map_power(DensTo{}))));
+        return min(res.result, convertible_impl((map_power(NumFrom{}) * ... * map_power(NumsFrom{})),
+                                                (map_power(NumTo{}) * ... * map_power(NumsTo{})) /
+                                                  (res.equation * ... * map_power(DensTo{}))));
       }
     }
   }
@@ -1122,23 +1116,23 @@ template<typename NumFrom, typename... NumsFrom, typename DenFrom, typename... D
     constexpr auto num_from_compl = get_complexity(NumFrom{});
     constexpr auto den_from_compl = get_complexity(DenFrom{});
     constexpr auto den_to_compl = get_complexity(DenTo{});
-    constexpr auto max = std::max({num_from_compl, den_from_compl, den_to_compl});
-    if constexpr (max > 1) {
-      if constexpr (num_from_compl == max) {
+    constexpr auto max_compl = max({num_from_compl, den_from_compl, den_to_compl});
+    if constexpr (max_compl > 1) {
+      if constexpr (num_from_compl == max_compl) {
         constexpr auto res = explode_to_equation(NumFrom{});
         return convertible_impl(
           (res.equation * ... * map_power(NumsFrom{})) / (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
           dimensionless / (map_power(DenTo{}) * ... * map_power(DensTo{})));
-      } else if constexpr (den_from_compl == max) {
+      } else if constexpr (den_from_compl == max_compl) {
         constexpr auto res = explode_to_equation(DenFrom{});
         return convertible_impl(
           (map_power(NumFrom{}) * ... * map_power(NumsFrom{})) / (res.equation * ... * map_power(DensFrom{})),
           dimensionless / (map_power(DenTo{}) * ... * map_power(DensTo{})));
       } else {
         constexpr auto res = explode_to_equation(DenTo{});
-        return std::min(res.result, convertible_impl((map_power(NumFrom{}) * ... * map_power(NumsFrom{})) /
-                                                       (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
-                                                     dimensionless / (res.equation * ... * map_power(DensTo{}))));
+        return min(res.result, convertible_impl((map_power(NumFrom{}) * ... * map_power(NumsFrom{})) /
+                                                  (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
+                                                dimensionless / (res.equation * ... * map_power(DensTo{}))));
       }
     }
   }
@@ -1162,23 +1156,23 @@ template<typename NumFrom, typename... NumsFrom, typename DenFrom, typename... D
     constexpr auto num_from_compl = get_complexity(NumFrom{});
     constexpr auto den_from_compl = get_complexity(DenFrom{});
     constexpr auto num_to_compl = get_complexity(NumTo{});
-    constexpr auto max = std::max({num_from_compl, num_to_compl, den_from_compl});
-    if constexpr (max > 1) {
-      if constexpr (num_from_compl == max) {
+    constexpr auto max_compl = max({num_from_compl, num_to_compl, den_from_compl});
+    if constexpr (max_compl > 1) {
+      if constexpr (num_from_compl == max_compl) {
         constexpr auto res = explode_to_equation(NumFrom{});
         return convertible_impl(
           (res.equation * ... * map_power(NumsFrom{})) / (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
           (map_power(NumTo{}) * ... * map_power(NumsTo{})));
-      } else if constexpr (den_from_compl == max) {
+      } else if constexpr (den_from_compl == max_compl) {
         constexpr auto res = explode_to_equation(DenFrom{});
         return convertible_impl(
           (map_power(NumFrom{}) * ... * map_power(NumsFrom{})) / (res.equation * ... * map_power(DensFrom{})),
           (map_power(NumTo{}) * ... * map_power(NumsTo{})));
       } else {
         constexpr auto res = explode_to_equation(NumTo{});
-        return std::min(res.result, convertible_impl((map_power(NumFrom{}) * ... * map_power(NumsFrom{})) /
-                                                       (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
-                                                     (res.equation * ... * map_power(NumsTo{}))));
+        return min(res.result, convertible_impl((map_power(NumFrom{}) * ... * map_power(NumsFrom{})) /
+                                                  (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
+                                                (res.equation * ... * map_power(NumsTo{}))));
       }
     }
   }
@@ -1197,16 +1191,16 @@ template<typename NumFrom, typename... NumsFrom, typename NumTo, typename... Num
   } else {
     constexpr auto num_from_compl = get_complexity(NumFrom{});
     constexpr auto num_to_compl = get_complexity(NumTo{});
-    constexpr auto max = std::max({num_from_compl, num_to_compl});
-    if constexpr (max > 1) {
-      if constexpr (num_from_compl == max) {
+    constexpr auto max_compl = max(num_from_compl, num_to_compl);
+    if constexpr (max_compl > 1) {
+      if constexpr (num_from_compl == max_compl) {
         constexpr auto res = explode_to_equation(NumFrom{});
         return convertible_impl((res.equation * ... * map_power(NumsFrom{})),
                                 (map_power(NumTo{}) * ... * map_power(NumsTo{})));
       } else {
         constexpr auto res = explode_to_equation(NumTo{});
-        return std::min(res.result, convertible_impl((map_power(NumFrom{}) * ... * map_power(NumsFrom{})),
-                                                     (res.equation * ... * map_power(NumsTo{}))));
+        return min(res.result, convertible_impl((map_power(NumFrom{}) * ... * map_power(NumsFrom{})),
+                                                (res.equation * ... * map_power(NumsTo{}))));
       }
     }
   }
@@ -1225,17 +1219,16 @@ template<typename DenFrom, typename... DensFrom, typename DenTo, typename... Den
   else {
     constexpr auto den_from_compl = get_complexity(DenFrom{});
     constexpr auto den_to_compl = get_complexity(DenTo{});
-    constexpr auto max = std::max({den_from_compl, den_to_compl});
-    if constexpr (max > 1) {
-      if constexpr (den_from_compl == max) {
+    constexpr auto max_compl = max(den_from_compl, den_to_compl);
+    if constexpr (max_compl > 1) {
+      if constexpr (den_from_compl == max_compl) {
         constexpr auto res = explode_to_equation(DenFrom{});
         return convertible_impl(dimensionless / (res.equation * ... * map_power(DensFrom{})),
                                 dimensionless / (map_power(DenTo{}) * ... * map_power(DensTo{})));
       } else {
         constexpr auto res = explode_to_equation(DenTo{});
-        return std::min(res.result,
-                        convertible_impl(dimensionless / (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
-                                         dimensionless / (res.equation * ... * map_power(DensTo{}))));
+        return min(res.result, convertible_impl(dimensionless / (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
+                                                dimensionless / (res.equation * ... * map_power(DensTo{}))));
       }
     }
   }
@@ -1375,7 +1368,7 @@ template<QuantitySpec From, QuantitySpec To>
         return convertible_impl(explode<get_complexity(to)>(from).quantity, to);
       else {
         constexpr auto res = explode<get_complexity(from)>(to);
-        return std::min(res.result, convertible_impl(from, res.quantity));
+        return min(res.result, convertible_impl(from, res.quantity));
       }
     }
   } else if constexpr (IntermediateDerivedQuantitySpec<From> && IntermediateDerivedQuantitySpec<To>) {
@@ -1386,17 +1379,17 @@ template<QuantitySpec From, QuantitySpec To>
       return convertible_impl(res.quantity, to);
     else if constexpr (requires { to._equation_; }) {
       constexpr auto eq = explode_to_equation(to);
-      return std::min(eq.result, convertible_impl(res.quantity, eq.equation));
+      return min(eq.result, convertible_impl(res.quantity, eq.equation));
     } else
       return are_ingredients_convertible(from, to);
   } else if constexpr (IntermediateDerivedQuantitySpec<To>) {
     auto res = explode<get_complexity(from)>(to);
     if constexpr (NamedQuantitySpec<std::remove_const_t<decltype(res.quantity)>>)
-      return std::min(res.result, convertible_impl(from, res.quantity));
+      return min(res.result, convertible_impl(from, res.quantity));
     else if constexpr (requires { from._equation_; })
-      return std::min(res.result, convertible_impl(from._equation_, res.quantity));
+      return min(res.result, convertible_impl(from._equation_, res.quantity));
     else
-      return std::min(res.result, are_ingredients_convertible(from, to));
+      return min(res.result, are_ingredients_convertible(from, to));
   }
   return no;
 }

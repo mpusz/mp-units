@@ -23,6 +23,7 @@
 #include <catch2/matchers/catch_matchers_templated.hpp>
 #include <mp-units/format.h>
 #include <mp-units/quantity.h>
+#include <algorithm>
 
 namespace mp_units {
 
