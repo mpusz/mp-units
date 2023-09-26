@@ -93,12 +93,6 @@ class MPUnitsConan(ConanFile):
         std_support = compiler == "msvc" and version >= 193 and compiler.cppstd == 23
         return not std_support
 
-    @property
-    def _use_range_v3(self):
-        compiler = self.settings.compiler
-        version = Version(self.settings.compiler.version)
-        return "clang" in compiler and compiler.libcxx == "libc++" and version < 14
-
     def set_version(self):
         content = load(self, os.path.join(self.recipe_folder, "src/CMakeLists.txt"))
         version = re.search(
@@ -110,8 +104,6 @@ class MPUnitsConan(ConanFile):
         self.requires("gsl-lite/0.40.0")
         if self._use_libfmt:
             self.requires("fmt/10.1.0")
-        if self._use_range_v3:
-            self.requires("range-v3/0.11.0")
 
     def build_requirements(self):
         if self._build_all:
@@ -174,8 +166,6 @@ class MPUnitsConan(ConanFile):
         self.cpp_info.components["core"].requires = ["gsl-lite::gsl-lite"]
         if compiler == "msvc":
             self.cpp_info.components["core"].cxxflags = ["/utf-8"]
-        if self._use_range_v3:
-            self.cpp_info.components["core"].requires.append("range-v3::range-v3")
 
         # rest
         self.cpp_info.components["core-io"].requires = ["core"]

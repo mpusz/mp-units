@@ -27,10 +27,6 @@ if(NOT TARGET gsl::gsl-lite)
     find_package(gsl-lite CONFIG REQUIRED)
 endif()
 
-# check if libc++ is being used
-include(CheckLibcxxInUse)
-check_libcxx_in_use(${projectPrefix}LIBCXX)
-
 # core library definition
 add_library(
     mp-units-core
@@ -78,14 +74,7 @@ target_include_directories(
                                              $<INSTALL_INTERFACE:include>
 )
 
-if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    if(${projectPrefix}LIBCXX AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS "14")
-        if(NOT TARGET range-v3::range-v3)
-            find_package(range-v3 CONFIG REQUIRED)
-        endif()
-        target_link_libraries(mp-units-core INTERFACE range-v3::range-v3)
-    endif()
-elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     target_compile_options(
         mp-units-core
         INTERFACE /utf-8 # Specifies both the source character set and the execution character set as UTF-8

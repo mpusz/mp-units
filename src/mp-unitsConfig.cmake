@@ -20,25 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-function(__check_libcxx_in_use variable)
-    if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-        message(CHECK_START "Checking if libc++ is being used")
-        list(APPEND CMAKE_MESSAGE_INDENT "  ")
-
-        include(CheckCXXSymbolExists)
-        check_cxx_symbol_exists(_LIBCPP_VERSION "ciso646" ${variable})
-        set(${variable} ${${variable}} PARENT_SCOPE)
-
-        list(POP_BACK CMAKE_MESSAGE_INDENT)
-
-        if(${variable})
-            message(CHECK_PASS "found")
-        else()
-            message(CHECK_FAIL "not found")
-        endif()
-    endif()
-endfunction()
-
 include(CMakeFindDependencyMacro)
 
 if(MP_UNITS_USE_LIBFMT)
@@ -46,16 +27,5 @@ if(MP_UNITS_USE_LIBFMT)
 endif()
 
 find_dependency(gsl-lite)
-
-# add range-v3 dependency only for clang + libc++
-if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    __check_libcxx_in_use(__units_libcxx)
-
-    if(__units_libcxx AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS "14")
-        find_dependency(range-v3)
-    endif()
-
-    unset(__units_libcxx)
-endif()
 
 include("${CMAKE_CURRENT_LIST_DIR}/mp-unitsTargets.cmake")
