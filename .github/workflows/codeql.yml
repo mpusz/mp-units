@@ -14,11 +14,13 @@ name: "CodeQL"
 on:
   push:
     branches: [ "master" ]
+    paths-ignore:
+      - "docs/**"
   pull_request:
     # The branches below must be a subset of the branches above
     branches: [ "master" ]
-  schedule:
-    - cron: '26 5 * * 4'
+    paths-ignore:
+      - "docs/**"
 
 jobs:
   analyze:
@@ -34,6 +36,13 @@ jobs:
       actions: read
       contents: read
       security-events: write
+    env:
+      CC: gcc-11
+      CXX: g++-11
+      BUILD_TYPE: Debug
+      COMPILER_TYPE: GCC
+      COMPILER_VERSION: 11
+      STDLIB: libstdc++11
 
     strategy:
       fail-fast: false
@@ -46,7 +55,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
@@ -64,17 +73,38 @@ jobs:
     # Autobuild attempts to build any compiled languages (C/C++, C#, Go, Java, or Swift).
     # If this step fails, then you should remove it and run the build manually (see below)
     - name: Autobuild
+      if: matrix.language != 'cpp'
       uses: github/codeql-action/autobuild@v2
 
     # ℹ️ Command-line programs to run using the OS shell.
     # 📚 See https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsrun
 
-    #   If the Autobuild fails above, remove it and uncomment the following three lines.
-    #   modify them (or add more) to build your code if your project, please refer to the EXAMPLE below for guidance.
-
-    # - run: |
-    #     echo "Run, Build Application using script"
-    #     ./location_of_script_within_repo/buildscript.sh
+    - name: Cache Conan data
+      if: matrix.language == 'cpp'
+      uses: actions/cache@v3
+      env:
+        cache-name: cache-conan-data
+      with:
+        path: ~/.conan2/p
+        key: build-${{ matrix.os }}-$BUILD_TYPE-$COMPILER_TYPE-$COMPILER_VERSION-$STDLIB
+        restore-keys: |
+          build-${{ matrix.os }}-$BUILD_TYPE-$COMPILER_TYPE-$COMPILER_VERSION-
+          build-${{ matrix.os }}-$BUILD_TYPE-$COMPILER_TYPE-
+          build-${{ matrix.os }}-$BUILD_TYPE-
+          build-${{ matrix.os }}-
+    - name: Set up Python
+      if: matrix.language == 'cpp'
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.8"
+    - name: Conan build
+      if: matrix.language == 'cpp'
+      run: |
+        pip install -U conan
+        conan profile detect --force
+        conan remote add artifactory https://mpusz.jfrog.io/artifactory/api/conan/conan-oss
+        mkdir _lgtm_build_dir && cd _lgtm_build_dir
+        conan build .. -s compiler.cppstd=20 -c user.build:all=True -b missing
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
