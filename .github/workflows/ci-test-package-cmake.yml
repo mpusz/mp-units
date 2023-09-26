@@ -146,6 +146,7 @@ jobs:
         shell: bash
         run: |
           sudo apt install -y g++-${{ matrix.config.compiler.version }}
+          sudo apt install -y clang-tools-${{ matrix.config.compiler.version }}
       - name: Install Clang
         if: matrix.config.compiler.type == 'CLANG'
         shell: bash
