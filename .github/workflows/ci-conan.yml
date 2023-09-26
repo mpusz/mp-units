@@ -106,20 +106,20 @@ jobs:
               lib: "libc++",
               conan-config: "",
             }
-          # - {
-          #     name: "Ubuntu Clang-17 + libc++",
-          #     os: ubuntu-22.04,
-          #     compiler:
-          #       {
-          #         type: CLANG,
-          #         version: 17,
-          #         cc: "clang-17",
-          #         cxx: "clang++-17",
-          #         std: 20,
-          #       },
-          #     lib: "libc++",
-          #     conan-config: "",
-          #   }
+          - {
+              name: "Ubuntu Clang-17 + libc++",
+              os: ubuntu-22.04,
+              compiler:
+                {
+                  type: CLANG,
+                  version: 17,
+                  cc: "clang-17",
+                  cxx: "clang++-17",
+                  std: 20,
+                },
+              lib: "libc++",
+              conan-config: "",
+            }
           # - {
           #     name: "MacOS Apple Clang 13",
           #     os: macos-11,
@@ -210,12 +210,6 @@ jobs:
         shell: bash
         run: |
           pip install -U conan
-      # - name: Add support for clang-17 to Conan's settings.yml
-      #   # TODO Remove when Conan will support clang-17
-      #   if: matrix.config.compiler.type == 'CLANG'
-      #   shell: bash
-      #   run: |
-      #     sed -i -e 's/"8", "9", "10", "11", "12", "13", "14", "15", "16"]/"8", "9", "10", "11", "12", "13", "14", "15", "16", "17"]/' ~/.conan2/settings.yml
       - name: Configure Conan
         shell: bash
         run: |
