@@ -144,14 +144,14 @@ public:
   // conversions
   template<UnitCompatibleWith<unit, quantity_spec> U>
     requires detail::QuantityConvertibleTo<quantity, quantity<detail::make_reference(quantity_spec, U{}), Rep>>
-  [[nodiscard]] constexpr quantity<detail::make_reference(quantity_spec, U{}), Rep> in(U) const
+  [[nodiscard]] constexpr Quantity auto in(U) const
   {
     return quantity<detail::make_reference(quantity_spec, U{}), Rep>{*this};
   }
 
   template<UnitCompatibleWith<unit, quantity_spec> U>
     requires requires(quantity q) { value_cast<U{}>(q); }
-  [[nodiscard]] constexpr quantity<detail::make_reference(quantity_spec, U{}), Rep> force_in(U) const
+  [[nodiscard]] constexpr Quantity auto force_in(U) const
   {
     return value_cast<U{}>(*this);
   }
