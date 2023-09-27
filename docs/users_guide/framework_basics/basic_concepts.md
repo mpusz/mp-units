@@ -263,13 +263,23 @@ concept with an associated quantity type implicitly convertible to `V`.
     [nested quantity kind within the dimensionless quantities tree](dimensionless_quantities.md/#nested-quantity-kinds).
 
 
+### `UnitCompatibleWith<T, V1, V2>` { #UnitCompatibleWith }
+
+`UnitCompatibleWith` concept is satisfied for all units `T` when:
+
+- `V1` is a [`Unit`](#Unit),
+- `V2` is a [`QuantitySpec`](#QuantitySpec),
+- `T` and `V1` are defined in terms of the same reference unit,
+- if `T` is an [`AssociatedUnit`](#AssociatedUnit) it should satisfy [`UnitOf<V2>`](#UnitOf).
+
+
 ## `Reference<T>` { #Reference }
 
 `Reference` concept is satisfied by all [quantity reference](../../appendix/glossary.md#reference)
 types. Such types provide all the meta-information required to create a [`Quantity`](#Quantity).
 A `Reference` can either be:
 
-- An [AssociatedUnit](#AssociatedUnit).
+- An [`AssociatedUnit`](#AssociatedUnit).
 - The instantiation of a `reference` class template with a [`QuantitySpec`](#QuantitySpec) passed as
   the first template argument and a [`Unit`](#Unit) passed as the second one.
 

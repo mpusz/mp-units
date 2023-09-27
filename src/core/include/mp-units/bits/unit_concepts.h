@@ -193,4 +193,22 @@ concept UnitOf =
   // the below is to make `dimensionless[radian]` invalid
   (get_kind(QS) == get_kind(get_quantity_spec(U{})) || !detail::NestedQuantityKindSpecOf<get_quantity_spec(U{}), QS>);
 
+namespace detail {
+
+[[nodiscard]] consteval bool have_same_canonical_reference_unit(Unit auto u1, Unit auto u2);
+
+}
+
+/**
+ * @brief A concept matching all units compatible with the provided unit and quantity spec
+ *
+ * Satisfied by all units that have the same canonical reference as `U2` and in case they
+ * have associated quantity specification it should satisfy `UnitOf<QS>`.
+ */
+template<typename U, auto U2, auto QS>
+concept UnitCompatibleWith =
+  Unit<U> && Unit<std::remove_const_t<decltype(U2)>> && QuantitySpec<std::remove_const_t<decltype(QS)>> &&
+  (!AssociatedUnit<U> || UnitOf<U, QS>)&&detail::have_same_canonical_reference_unit(U{}, U2);
+
+
 }  // namespace mp_units

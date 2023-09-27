@@ -40,6 +40,7 @@ namespace detail {
 
 
 template<QuantitySpec QS, Unit U>
+  requires(!AssociatedUnit<U>) || UnitOf<U, QS{}>
 [[nodiscard]] consteval Reference auto make_reference(QS qs, U u)
 {
   if constexpr (detail::QuantityKindSpec<QS>)

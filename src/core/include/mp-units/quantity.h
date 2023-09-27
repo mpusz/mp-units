@@ -142,14 +142,14 @@ public:
   quantity& operator=(quantity&&) = default;
 
   // conversions
-  template<Unit U>
+  template<UnitCompatibleWith<unit, quantity_spec> U>
     requires detail::QuantityConvertibleTo<quantity, quantity<detail::make_reference(quantity_spec, U{}), Rep>>
   [[nodiscard]] constexpr quantity<detail::make_reference(quantity_spec, U{}), Rep> in(U) const
   {
     return quantity<detail::make_reference(quantity_spec, U{}), Rep>{*this};
   }
 
-  template<Unit U>
+  template<UnitCompatibleWith<unit, quantity_spec> U>
     requires requires(quantity q) { value_cast<U{}>(q); }
   [[nodiscard]] constexpr quantity<detail::make_reference(quantity_spec, U{}), Rep> force_in(U) const
   {
@@ -175,14 +175,14 @@ public:
     requires(U{} == unit)
   constexpr const rep&& numerical_value_ref_in(U) const&& noexcept = delete;
 
-  template<Unit U>
+  template<UnitCompatibleWith<unit, quantity_spec> U>
     requires requires(quantity q) { q.in(U{}); }
   [[nodiscard]] constexpr rep numerical_value_in(U) const noexcept
   {
     return (*this).in(U{}).numerical_value_;
   }
 
-  template<Unit U>
+  template<UnitCompatibleWith<unit, quantity_spec> U>
     requires requires(quantity q) { q.force_in(U{}); }
   [[nodiscard]] constexpr rep force_numerical_value_in(U) const noexcept
   {
