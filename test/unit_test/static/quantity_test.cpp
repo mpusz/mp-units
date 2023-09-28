@@ -206,10 +206,27 @@ static_assert(quantity<isq::length[m]>(2000. * m).in(km).numerical_value_ == 2.)
 static_assert(quantity<isq::length[km], int>(2 * km).in(km).numerical_value_ == 2);
 static_assert(quantity<isq::length[km], int>(2 * km).in(m).numerical_value_ == 2000);
 
+static_assert(is_of_type<(2. * km).force_in(m), quantity<si::metre>>);
+static_assert(is_of_type<isq::length(2. * km).force_in(m), quantity<isq::length[m]>>);
+static_assert(is_of_type<isq::height(2. * km).force_in(m), quantity<isq::height[m]>>);
+
+static_assert(quantity<isq::length[km]>(2. * km).force_in(km).numerical_value_ == 2.);
+static_assert(quantity<isq::length[km]>(2. * km).force_in(m).numerical_value_ == 2000.);
+static_assert(quantity<isq::length[m]>(2000. * m).force_in(km).numerical_value_ == 2.);
+static_assert(quantity<isq::length[km], int>(2 * km).force_in(km).numerical_value_ == 2);
+static_assert(quantity<isq::length[km], int>(2 * km).force_in(m).numerical_value_ == 2000);
+static_assert(quantity<isq::length[m], int>(2000 * m).force_in(km).numerical_value_ == 2);
+
 template<template<auto, typename> typename Q>
 concept invalid_unit_conversion = requires {
-  requires !requires { Q<isq::length[m], int>(2000 * m).in(km); };  // truncating conversion
-  requires !requires { Q<isq::length[m], int>(2 * m).in(s); };      // invalid unit
+  requires !requires { Q<isq::length[m], int>(2000 * m).in(km); };     // truncating conversion
+  requires !requires { Q<isq::length[m], int>(2 * m).in(s); };         // unit of a different quantity & dimension
+  requires !requires { Q<isq::frequency[Hz], int>(60 * Hz).in(Bq); };  // unit of a different kind (same dimension)
+
+  requires !requires { Q<isq::length[m], int>(2 * m).force_in(s); };  // unit of a different quantity & dimension
+  requires !requires {
+    Q<isq::frequency[Hz], int>(60 * Hz).force_in(Bq);
+  };  // unit of a different kind (same dimension)
 };
 static_assert(invalid_unit_conversion<quantity>);
 
