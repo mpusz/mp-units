@@ -15,7 +15,7 @@ any quantity in the most user-friendly way.
 
 ## Customization point
 
-The [SI Brochure](../appendix/references.md#SIBrochure) says:
+The [SI Brochure](../../appendix/references.md#SIBrochure) says:
 
 !!! quote "SI Brochure"
 
