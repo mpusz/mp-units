@@ -281,7 +281,7 @@ template<Unit auto To, auto R, typename Rep>
     value_cast<To>(1 / q);
   }
 {
-  return (quantity_values<Rep>::one() * one).force_in(To * q.unit) / q;
+  return (quantity_values<Rep>::one() * one).force_in(To * quantity<R, Rep>::unit) / q;
 }
 
 /**
