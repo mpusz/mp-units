@@ -695,7 +695,7 @@ constexpr Out print_separator(Out out, unit_symbol_formatting fmt)
 template<Unit U>
 [[nodiscard]] consteval bool has_unit_symbol(U)
 {
-  return !std::derived_from<U, derived_unit<>>;
+  return requires { U::symbol; } || !std::derived_from<U, derived_unit<>>;
 }
 
 template<typename CharT, std::output_iterator<CharT> Out, Unit U>
