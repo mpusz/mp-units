@@ -234,6 +234,18 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("fmt with format {:%Q %q} on a quantity") { CHECK(MP_UNITS_STD_FMT::format("{:%Q %q}", q) == os.str()); }
     }
+
+    SECTION("radians")
+    {
+      const auto q = 42 * rad;
+      os << q;
+
+      SECTION("iostream") { CHECK(os.str() == "42 rad"); }
+
+      SECTION("fmt with default format {} on a quantity") { CHECK(MP_UNITS_STD_FMT::format("{}", q) == os.str()); }
+
+      SECTION("fmt with format {:%Q %q} on a quantity") { CHECK(MP_UNITS_STD_FMT::format("{:%Q %q}", q) == os.str()); }
+    }
   }
 
   SECTION("no space before unit symbol")
