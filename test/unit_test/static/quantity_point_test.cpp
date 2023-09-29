@@ -525,7 +525,7 @@ static_assert(!std::convertible_to<quantity_point<isq::height[m], ground_level>,
 static_assert(
   std::constructible_from<quantity_point<isq::time[s], chrono_point_origin<std::chrono::system_clock>>, sys_seconds>);
 static_assert(
-  !std::convertible_to<sys_seconds, quantity_point<isq::time[s], chrono_point_origin<std::chrono::system_clock>>>);
+  std::convertible_to<sys_seconds, quantity_point<isq::time[s], chrono_point_origin<std::chrono::system_clock>>>);
 
 // incompatible origin
 static_assert(

@@ -74,15 +74,19 @@ concept QuantityOf = Quantity<Q> && ReferenceOf<std::remove_const_t<decltype(Q::
  * all quantity-specific information.
  */
 template<typename T>
-concept QuantityLike = requires(T q) {
+concept QuantityLike = requires {
   quantity_like_traits<T>::reference;
   requires Reference<std::remove_const_t<decltype(quantity_like_traits<T>::reference)>>;
   typename quantity_like_traits<T>::rep;
   requires RepresentationOf<typename quantity_like_traits<T>::rep,
                             get_quantity_spec(quantity_like_traits<T>::reference).character>;
+} && requires(T q, typename quantity_like_traits<T>::rep v) {
   {
-    make_quantity<quantity_like_traits<T>::reference>(quantity_like_traits<T>::value(q))
-  } -> std::same_as<quantity<quantity_like_traits<T>::reference, typename quantity_like_traits<T>::rep>>;
+    quantity_like_traits<T>::to_numerical_value(q)
+  } -> detail::ConversionSpecOf<typename quantity_like_traits<T>::rep>;
+  {
+    quantity_like_traits<T>::from_numerical_value(v)
+  } -> detail::ConversionSpecOf<T>;
 };
 
 }  // namespace mp_units

@@ -128,8 +128,10 @@ public:
              std::convertible_to<
                quantity<quantity_point_like_traits<QP>::reference, typename quantity_point_like_traits<QP>::rep>,
                quantity_type>
-  constexpr explicit quantity_point(const QP& qp) :
-      quantity_from_origin_(quantity_point_like_traits<QP>::quantity_from_origin(qp))
+  constexpr explicit(
+    is_specialization_of<decltype(quantity_point_like_traits<QP>::to_quantity(std::declval<QP>())), convert_explicitly>)
+    quantity_point(const QP& qp) :
+      quantity_from_origin_(quantity_point_like_traits<QP>::to_quantity(qp).value)
   {
   }
 
@@ -180,6 +182,27 @@ public:
   [[nodiscard]] constexpr QuantityPoint auto force_in(U) const
   {
     return make_quantity_point<PO>(quantity_ref_from(PO).force_in(U{}));
+  }
+
+  // conversion operators
+  template<QuantityPointLike QP>
+  [[nodiscard]] explicit(
+    is_specialization_of<decltype(quantity_point_like_traits<QP>::from_quantity(quantity_from_origin_)),
+                         convert_explicitly>) constexpr
+  operator QP() const& noexcept(noexcept(quantity_point_like_traits<QP>::from_quantity(quantity_from_origin_)) &&
+                                std::is_nothrow_copy_constructible_v<rep>)
+  {
+    return quantity_point_like_traits<QP>::from_quantity(quantity_from_origin_).value;
+  }
+
+  template<QuantityPointLike QP>
+  [[nodiscard]] explicit(
+    is_specialization_of<decltype(quantity_point_like_traits<QP>::from_quantity(quantity_from_origin_)),
+                         convert_explicitly>) constexpr
+  operator QP() const&& noexcept(noexcept(quantity_point_like_traits<QP>::from_quantity(quantity_from_origin_)) &&
+                                 std::is_nothrow_copy_constructible_v<rep>)
+  {
+    return quantity_point_like_traits<QP>::from_quantity(std::move(quantity_from_origin_)).value;
   }
 
   // member unary operators
@@ -249,9 +272,11 @@ private:
 
 // CTAD
 template<QuantityPointLike QP>
-explicit quantity_point(QP)
-  -> quantity_point<quantity_point_like_traits<QP>::reference, quantity_point_like_traits<QP>::point_origin,
-                    typename quantity_point_like_traits<QP>::rep>;
+explicit(
+  is_specialization_of<decltype(quantity_point_like_traits<QP>::to_quantity(std::declval<QP>())), convert_explicitly>)
+  quantity_point(QP)
+    -> quantity_point<quantity_point_like_traits<QP>::reference, quantity_point_like_traits<QP>::point_origin,
+                      typename quantity_point_like_traits<QP>::rep>;
 
 template<auto R1, auto PO1, typename Rep1, auto R2, typename Rep2>
 // TODO simplify when gcc catches up

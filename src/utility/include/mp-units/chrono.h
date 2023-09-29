@@ -64,7 +64,18 @@ template<typename Rep, typename Period>
 struct quantity_like_traits<std::chrono::duration<Rep, Period>> {
   static constexpr auto reference = detail::time_unit_from_chrono_period<Period>();
   using rep = Rep;
-  [[nodiscard]] static constexpr rep value(const std::chrono::duration<Rep, Period>& q) { return q.count(); }
+
+  [[nodiscard]] static constexpr convert_implicitly<rep> to_numerical_value(
+    const std::chrono::duration<Rep, Period>& q) noexcept(std::is_nothrow_copy_constructible_v<rep>)
+  {
+    return q.count();
+  }
+
+  [[nodiscard]] static constexpr convert_implicitly<std::chrono::duration<Rep, Period>> from_numerical_value(
+    const rep& v) noexcept(std::is_nothrow_copy_constructible_v<rep>)
+  {
+    return std::chrono::duration<Rep, Period>(v);
+  }
 };
 
 template<typename C>
@@ -77,13 +88,21 @@ inline constexpr chrono_point_origin_<C> chrono_point_origin;
 
 template<typename C, typename Rep, typename Period>
 struct quantity_point_like_traits<std::chrono::time_point<C, std::chrono::duration<Rep, Period>>> {
+  using T = std::chrono::time_point<C, std::chrono::duration<Rep, Period>>;
   static constexpr auto reference = detail::time_unit_from_chrono_period<Period>();
   static constexpr auto point_origin = chrono_point_origin<C>;
   using rep = Rep;
-  [[nodiscard]] static constexpr quantity<reference, rep> quantity_from_origin(
-    const std::chrono::time_point<C, std::chrono::duration<Rep, Period>>& qp)
+
+  [[nodiscard]] static constexpr convert_implicitly<quantity<reference, rep>> to_quantity(const T& qp) noexcept(
+    std::is_nothrow_copy_constructible_v<rep>)
   {
     return quantity{qp.time_since_epoch()};
+  }
+
+  [[nodiscard]] static constexpr convert_implicitly<T> from_quantity(const quantity<reference, rep>& q) noexcept(
+    std::is_nothrow_copy_constructible_v<rep>)
+  {
+    return T(q);
   }
 };
 
@@ -92,7 +111,7 @@ template<QuantityOf<isq::time> Q>
 {
   constexpr auto canonical = detail::get_canonical_unit(Q::unit);
   constexpr ratio r = as_ratio(canonical.mag);
-  return std::chrono::duration<typename Q::rep, std::ratio<r.num, r.den>>{q.numerical_value_ref_in(Q::unit)};
+  return std::chrono::duration<typename Q::rep, std::ratio<r.num, r.den>>{q};
 }
 
 template<QuantityPointOf<isq::time> QP>
