@@ -199,8 +199,8 @@ public:
   [[nodiscard]] explicit(
     is_specialization_of<decltype(quantity_point_like_traits<QP>::from_quantity(quantity_from_origin_)),
                          convert_explicitly>) constexpr
-  operator QP() const&& noexcept(noexcept(quantity_point_like_traits<QP>::from_quantity(quantity_from_origin_)) &&
-                                 std::is_nothrow_copy_constructible_v<rep>)
+  operator QP() && noexcept(noexcept(quantity_point_like_traits<QP>::from_quantity(quantity_from_origin_)) &&
+                                 std::is_nothrow_move_constructible_v<rep>)
   {
     return quantity_point_like_traits<QP>::from_quantity(std::move(quantity_from_origin_)).value;
   }
