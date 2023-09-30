@@ -108,7 +108,7 @@ static_assert(is_of_type<42 * metre, quantity<metre, int>>);
 static_assert(quantity<metre, int>::quantity_spec == length);
 static_assert(is_of_type<42 * square(metre), quantity<square(metre), int>>);
 static_assert(quantity<square(metre), int>::quantity_spec == pow<2>(length));
-static_assert(is_of_type<42 * (metre / second), quantity<metre / second, int>>);
+static_assert(is_of_type<42 * metre / second, quantity<metre / second, int>>);
 static_assert(quantity<metre / second, int>::quantity_spec == length / time);
 static_assert(is_of_type<42 * newton, quantity<newton, int>>);
 static_assert(quantity<newton, int>::quantity_spec == mass * length / pow<2>(time));
@@ -156,8 +156,6 @@ concept invalid_operations = requires {
   requires !requires { s < 1 * time[second]; };
   requires !requires { 1 * time[second] + s; };
   requires !requires { 1 * time[second] - s; };
-  requires !requires { 1 * time[second] * s; };
-  requires !requires { 1 * time[second] / s; };
   requires !requires { 1 * time[second] == s; };
   requires !requires { 1 * time[second] < s; };
 };

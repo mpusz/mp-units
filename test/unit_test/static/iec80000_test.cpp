@@ -92,8 +92,8 @@ static_assert(storage_capacity(1 * Pibit) == storage_capacity(1024 * Tibit));
 static_assert(storage_capacity(1 * Eibit) == storage_capacity(1024 * Pibit));
 
 // transfer rate
-static_assert(storage_capacity(16 * B) / isq::duration(2 * s) == transfer_rate(8 * (B / s)));
-static_assert(storage_capacity(120 * kB) / isq::duration(2 * min) == transfer_rate(1000 * (B / s)));
+static_assert(storage_capacity(16 * B) / isq::duration(2 * s) == transfer_rate(8 * B / s));
+static_assert(storage_capacity(120 * kB) / isq::duration(2 * min) == transfer_rate(1000 * B / s));
 
 // modulation rate
 static_assert(12 / isq::duration(2 * s) == modulation_rate(6 * Bd));

@@ -47,6 +47,6 @@ static_assert(isq::length(10'000'000'000 * A) == 1 * si::metre);
 static_assert(round<si::metre>(isq::length(1.L * pc)) == 30'856'775'814'913'673 * si::metre);
 #endif
 
-static_assert(isq::speed(1 * c_0) == 299'792'458 * (si::metre / si::second));
+static_assert(isq::speed(1 * c_0) == 299'792'458 * si::metre / si::second);
 
 }  // namespace

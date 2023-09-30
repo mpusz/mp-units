@@ -53,7 +53,7 @@ QUANTITY_SPEC(horizontal_length, isq::length);
 QUANTITY_SPEC(horizontal_area, isq::area, horizontal_length* isq::width);
 
 inline constexpr auto g = 1 * si::standard_gravity;
-inline constexpr auto air_density = isq::mass_density(1.225 * (kg / m3));
+inline constexpr auto air_density = isq::mass_density(1.225 * kg / m3);
 
 class StorageTank {
   quantity<horizontal_area[m2]> base_;
@@ -114,7 +114,7 @@ int main()
 {
   const quantity height = isq::height(200 * mm);
   auto tank = RectangularStorageTank(horizontal_length(1'000 * mm), isq::width(500 * mm), height);
-  tank.set_contents_density(1'000 * isq::mass_density[kg / m3]);
+  tank.set_contents_density(1'000 * kg / m3);
 
   const auto duration = std::chrono::seconds{200};
   const quantity fill_time = value_cast<int>(quantity{duration});  // time since starting fill

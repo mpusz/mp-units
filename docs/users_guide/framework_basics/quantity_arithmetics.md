@@ -136,7 +136,7 @@ However, suppose we multiply or divide quantities of the same or different types
 number by a quantity. In that case, we most probably will end up in a quantity of yet another type:
 
 ```cpp
-static_assert(120 * km / (2 * h) == 60 * (km / h));
+static_assert(120 * km / (2 * h) == 60 * km / h);
 static_assert(isq::width(2 * m) * isq::length(2 * m) == isq::area(4 * m2));
 static_assert(50 / isq::time(1 * s) == isq::frequency(50 * Hz));
 ```
@@ -283,7 +283,7 @@ every time when we want to ensure that we deal with a non-zero or positive value
 We could implement such checks in the following way:
 
 ```cpp
-if (q1 / q2 != 0 * (m / s))
+if (q1 / q2 != 0 * m / s)
   // ...
 ```
 

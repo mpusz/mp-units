@@ -114,7 +114,7 @@ static_assert(quantity{std::chrono::years{1}} == 31556952 * s);
 // operators
 static_assert(quantity{1s} + 1 * s == 2 * s);
 static_assert(quantity{1s} + 1 * min == 61 * s);
-static_assert(10 * m / quantity{2s} == 5 * (m / s));
+static_assert(10 * m / quantity{2s} == 5 * m / s);
 static_assert(quantity_point{sys_seconds{1s}} + 1 * s == chrono_point_origin<std::chrono::system_clock> + 2 * s);
 static_assert(quantity_point{sys_seconds{1s}} + 1 * min == chrono_point_origin<std::chrono::system_clock> + 61 * s);
 

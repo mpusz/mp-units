@@ -82,11 +82,11 @@ int main()
   auto bismark = Ship{.length{251. * m},
                       .draft{9.3 * m},
                       .beam{36 * m},
-                      .speed{56 * (km / h)},
+                      .speed{56 * km / h},
                       .mass{50'300 * t},
                       .mainGuns{380 * mm},
                       .shellMass{800 * kg},
-                      .shellSpeed{820. * (m / s)},
+                      .shellSpeed{820. * m / s},
                       .power{110.45 * kW}};
 
   // USS Iowa, using units from the foot-pound-second system
@@ -97,7 +97,7 @@ int main()
                    .mass{57'540 * imperial::long_ton},
                    .mainGuns{16 * in},
                    .shellMass{2700 * lb},
-                   .shellSpeed{2690. * (ft / s)},
+                   .shellSpeed{2690. * ft / s},
                    .power{212'000 * hp}};
 
   // HMS King George V, using units from the foot-pound-second system
@@ -108,7 +108,7 @@ int main()
                   .mass{42'245 * imperial::long_ton},
                   .mainGuns{14 * in},
                   .shellMass{1590 * lb},
-                  .shellSpeed{2483. * (ft / s)},
+                  .shellSpeed{2483. * ft / s},
                   .power{110'000 * hp}};
 
   print_details("KMS Bismark, defined in appropriate units from the SI system", bismark);

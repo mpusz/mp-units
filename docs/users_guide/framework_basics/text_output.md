@@ -291,12 +291,12 @@ in the denominator), or never in which case a parenthesis will be added to enclo
 units.
 
 ```cpp
-std::println("{:%Q %q}", 1 * (m / s));         // 1 m/s
-std::println("{:%Q %q}", 1 * (kg / m / s2));   // 1 kg m⁻¹ s⁻²
-std::println("{:%Q %aq}", 1 * (m / s));        // 1 m/s
-std::println("{:%Q %aq}", 1 * (kg / m / s2));  // 1 kg/(m s²)
-std::println("{:%Q %nq}", 1 * (m / s));        // 1 m s⁻¹
-std::println("{:%Q %nq}", 1 * (kg / m / s2));  // 1 kg m⁻¹ s⁻²
+std::println("{:%Q %q}", 1 * m / s);         // 1 m/s
+std::println("{:%Q %q}", 1 * kg / m / s2);   // 1 kg m⁻¹ s⁻²
+std::println("{:%Q %aq}", 1 * m / s);        // 1 m/s
+std::println("{:%Q %aq}", 1 * kg / m / s2);  // 1 kg/(m s²)
+std::println("{:%Q %nq}", 1 * m / s);        // 1 m s⁻¹
+std::println("{:%Q %nq}", 1 * kg / m / s2);  // 1 kg m⁻¹ s⁻²
 ```
 
 Also, there are a few options to separate the units being multiplied:
@@ -319,6 +319,6 @@ to just use the `·` symbol as a separator.
 The `units-unit-symbol-separator` token allows us to obtain the following outputs:
 
 ```cpp
-std::println("{:%Q %q}", 1 * (kg * m2 / s2));   // 1 kg m²/s²
-std::println("{:%Q %dq}", 1 * (kg * m2 / s2));  // 1 kg⋅m²/s²
+std::println("{:%Q %q}", 1 * kg * m2 / s2);   // 1 kg m²/s²
+std::println("{:%Q %dq}", 1 * kg * m2 / s2);  // 1 kg⋅m²/s²
 ```

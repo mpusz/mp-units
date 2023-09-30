@@ -594,8 +594,8 @@ static_assert(is_of_type<1. * km - 1. * m, quantity<si::metre, double>>);
 static_assert(is_of_type<1 * m % (1 * km), quantity<si::metre, int>>);
 
 // different dimensions
-static_assert(is_of_type<1 * (m / s) * (1 * s), quantity<si::metre, int>>);
-static_assert(is_of_type<1 * (m / s) * (1 * h),
+static_assert(is_of_type<1 * m / s * (1 * s), quantity<si::metre, int>>);
+static_assert(is_of_type<1 * m / s * (1 * h),
                          quantity<derived_unit<struct si::hour, struct si::metre, per<struct si::second>>{}, int>>);
 static_assert(is_of_type<1 * m * (1 * min), quantity<derived_unit<struct si::metre, struct si::minute>{}, int>>);
 static_assert(is_of_type<1 * s * (1 * Hz), quantity<derived_unit<struct si::hertz, struct si::second>{}, int>>);

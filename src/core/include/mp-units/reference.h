@@ -164,7 +164,21 @@ template<typename Rep, Reference R>
   return make_quantity<R{}>(std::forward<Rep>(lhs));
 }
 
-void /*Use `q * (1 * r)` rather than `q * r`.*/ operator*(Quantity auto, Reference auto) = delete;
+template<typename Q, Reference R>
+  requires Quantity<std::remove_cvref_t<Q>>
+[[nodiscard]] constexpr quantity<std::remove_cvref_t<Q>::reference * R{}, typename std::remove_cvref_t<Q>::rep>
+operator*(Q&& q, R)
+{
+  return make_quantity<std::remove_cvref_t<Q>::reference * R{}>(std::forward<Q>(q).numerical_value_);
+}
+
+template<typename Q, Reference R>
+  requires Quantity<std::remove_cvref_t<Q>>
+[[nodiscard]] constexpr quantity<std::remove_cvref_t<Q>::reference / R{}, typename std::remove_cvref_t<Q>::rep>
+operator/(Q&& q, R)
+{
+  return make_quantity<std::remove_cvref_t<Q>::reference / R{}>(std::forward<Q>(q).numerical_value_);
+}
 
 [[nodiscard]] consteval AssociatedUnit auto common_reference(AssociatedUnit auto u1, AssociatedUnit auto u2,
                                                              AssociatedUnit auto... rest)
