@@ -204,8 +204,8 @@ public:
   template<QuantityLike Q>
   [[nodiscard]] explicit(is_specialization_of<decltype(quantity_like_traits<Q>::from_numerical_value(numerical_value_)),
                                               convert_explicitly>) constexpr
-  operator Q() const&& noexcept(noexcept(quantity_like_traits<Q>::from_numerical_value(numerical_value_)) &&
-                                std::is_nothrow_copy_constructible_v<rep>)
+  operator Q() && noexcept(noexcept(quantity_like_traits<Q>::from_numerical_value(numerical_value_)) &&
+                                std::is_nothrow_move_constructible_v<rep>)
   {
     return quantity_like_traits<Q>::from_numerical_value(std::move(numerical_value_)).value;
   }
