@@ -143,7 +143,7 @@ public:
   quantity& operator=(const quantity&) = default;
   quantity& operator=(quantity&&) = default;
 
-  // conversions
+  // unit conversions
   template<UnitCompatibleWith<unit, quantity_spec> U>
     requires detail::QuantityConvertibleTo<quantity, quantity<detail::make_reference(quantity_spec, U{}), Rep>>
   [[nodiscard]] constexpr Quantity auto in(U) const
@@ -192,7 +192,8 @@ public:
   }
 
   // conversion operators
-  template<QuantityLike Q>
+  template<typename Q>
+    requires QuantityLike<std::remove_cvref_t<Q>>
   [[nodiscard]] explicit(is_specialization_of<decltype(quantity_like_traits<Q>::from_numerical_value(numerical_value_)),
                                               convert_explicitly>) constexpr
   operator Q() const& noexcept(noexcept(quantity_like_traits<Q>::from_numerical_value(numerical_value_)) &&
@@ -201,11 +202,12 @@ public:
     return quantity_like_traits<Q>::from_numerical_value(numerical_value_).value;
   }
 
-  template<QuantityLike Q>
+  template<typename Q>
+    requires QuantityLike<std::remove_cvref_t<Q>>
   [[nodiscard]] explicit(is_specialization_of<decltype(quantity_like_traits<Q>::from_numerical_value(numerical_value_)),
                                               convert_explicitly>) constexpr
   operator Q() && noexcept(noexcept(quantity_like_traits<Q>::from_numerical_value(numerical_value_)) &&
-                                std::is_nothrow_move_constructible_v<rep>)
+                           std::is_nothrow_move_constructible_v<rep>)
   {
     return quantity_like_traits<Q>::from_numerical_value(std::move(numerical_value_)).value;
   }

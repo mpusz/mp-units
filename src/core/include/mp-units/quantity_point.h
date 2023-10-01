@@ -170,6 +170,7 @@ public:
     return *this - PO2{};
   }
 
+  // unit conversions
   template<UnitCompatibleWith<unit, quantity_spec> U>
     requires detail::QuantityConvertibleTo<quantity_type, quantity<detail::make_reference(quantity_spec, U{}), Rep>>
   [[nodiscard]] constexpr QuantityPoint auto in(U) const
@@ -185,7 +186,8 @@ public:
   }
 
   // conversion operators
-  template<QuantityPointLike QP>
+  template<typename QP>
+    requires QuantityPointLike<std::remove_cvref_t<QP>>
   [[nodiscard]] explicit(
     is_specialization_of<decltype(quantity_point_like_traits<QP>::from_quantity(quantity_from_origin_)),
                          convert_explicitly>) constexpr
@@ -195,12 +197,13 @@ public:
     return quantity_point_like_traits<QP>::from_quantity(quantity_from_origin_).value;
   }
 
-  template<QuantityPointLike QP>
+  template<typename QP>
+    requires QuantityPointLike<std::remove_cvref_t<QP>>
   [[nodiscard]] explicit(
     is_specialization_of<decltype(quantity_point_like_traits<QP>::from_quantity(quantity_from_origin_)),
                          convert_explicitly>) constexpr
   operator QP() && noexcept(noexcept(quantity_point_like_traits<QP>::from_quantity(quantity_from_origin_)) &&
-                                 std::is_nothrow_move_constructible_v<rep>)
+                            std::is_nothrow_move_constructible_v<rep>)
   {
     return quantity_point_like_traits<QP>::from_quantity(std::move(quantity_from_origin_)).value;
   }
