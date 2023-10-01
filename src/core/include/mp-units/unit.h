@@ -431,6 +431,15 @@ template<Unit Lhs, Unit Rhs>
 }
 
 /**
+ * Returns the result of multiplication with an inverse unit.
+ */
+template<Magnitude M, Unit U>
+[[nodiscard]] MP_UNITS_CONSTEVAL Unit auto operator/(M mag, const U u)
+{
+  return mag * (1 / u);
+}
+
+/**
  * `scaled_unit` specializations have priority in this operation. This means that the library framework
  * prevents passing it as an element to the `derived_unit`. In such case only the reference unit is passed
  * to the derived unit and the magnitude remains outside forming another scaled unit as a result of the operation.
