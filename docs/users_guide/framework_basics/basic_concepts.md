@@ -427,7 +427,12 @@ for which an instantiation of `quantity_like_traits` type trait yields a valid t
 - Static data member `reference` that matches the [`Reference`](#Reference) concept,
 - `rep` type that matches [`RepresentationOf`](#RepresentationOf) concept with the character provided
   in `reference`,
-- `value(T)` static member function returning a raw value of the quantity.
+- `to_numerical_value(T)` static member function returning a raw value of the quantity packed in
+  either `convert_explicitly` or `convert_implicitly` wrapper that enables implicit conversion in
+  the latter case,
+- `from_numerical_value(rep)` static member function returning `T` packed in either `convert_explicitly`
+  or `convert_implicitly` wrapper that enables implicit conversion in the latter case.
+
 
 ??? abstract "Examples"
 
@@ -438,10 +443,20 @@ for which an instantiation of `quantity_like_traits` type trait yields a valid t
     struct mp_units::quantity_like_traits<std::chrono::seconds> {
       static constexpr auto reference = si::second;
       using rep = std::chrono::seconds::rep;
-      [[nodiscard]] static constexpr rep value(const std::chrono::seconds& q) { return q.count(); }
+
+      [[nodiscard]] static constexpr convert_implicitly<rep> to_numerical_value(const std::chrono::seconds& q)
+      {
+        return q.count();
+      }
+
+      [[nodiscard]] static constexpr convert_implicitly<std::chrono::seconds> from_numerical_value(const rep& v)
+      {
+        return std::chrono::seconds(v);
+      }
     };
 
-    quantity q(42s);
+    quantity q = 42s;
+    std::chrono::seconds dur = 42 * s;
     ```
 
 
@@ -454,8 +469,13 @@ for which an instantiation of `quantity_point_like_traits` type trait yields a v
 - Static data member `point_origin` that matches the [`PointOrigin`](#PointOrigin) concept
 - `rep` type that matches [`RepresentationOf`](#RepresentationOf) concept with the character provided
   in `reference`
-- `quantity_from_origin(T)` static member function returning the `quantity` being the offset of the point
-  from the origin
+- `to_quantity(T)` static member function returning the `quantity` being the offset of the point
+  from the origin packed in either `convert_explicitly` or `convert_implicitly` wrapper that enables
+  implicit conversion in the latter case,
+- `from_quantity(quantity<reference, rep>)` static member function returning `T` packed in either
+  `convert_explicitly` or `convert_implicitly` wrapper that enables implicit conversion in the latter
+  case.
+
 
 ??? abstract "Examples"
 
@@ -464,14 +484,22 @@ for which an instantiation of `quantity_point_like_traits` type trait yields a v
     ```cpp
     template<typename C>
     struct mp_units::quantity_point_like_traits<std::chrono::time_point<C, std::chrono::seconds>> {
+      using T = std::chrono::time_point<C, std::chrono::seconds>;
       static constexpr auto reference = si::second;
-      static constexpr auto point_origin = chrono_point_origin;
+      static constexpr struct point_origin : absolute_point_origin<isq::time> {} point_origin{};
       using rep = std::chrono::seconds::rep;
-      [[nodiscard]] static constexpr auto quantity_from_origin(const std::chrono::time_point<C, std::chrono::seconds>& qp)
+
+      [[nodiscard]] static constexpr convert_implicitly<quantity<reference, rep>> to_quantity(const T& qp)
       {
-        return quantity{std::chrono::duration_cast<std::chrono::seconds>(qp.time_since_epoch())};
+        return quantity{qp.time_since_epoch()};
+      }
+
+      [[nodiscard]] static constexpr convert_implicitly<T> from_quantity(const quantity<reference, rep>& q)
+      {
+        return T(q);
       }
     };
 
-    quantity_point qp(time_point_cast<std::chrono::seconds>(std::chrono::system_clock::now()));
+    quantity_point qp = time_point_cast<std::chrono::seconds>(std::chrono::system_clock::now());
+    std::chrono::sys_seconds q = qp + 42 * s;
     ```

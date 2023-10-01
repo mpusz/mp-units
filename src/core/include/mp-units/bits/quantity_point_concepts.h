@@ -173,7 +173,7 @@ concept QuantityPointOf =
  * all quantity_point-specific information.
  */
 template<typename T>
-concept QuantityPointLike = requires(T qp) {
+concept QuantityPointLike = requires {
   quantity_point_like_traits<T>::reference;
   requires Reference<std::remove_const_t<decltype(quantity_point_like_traits<T>::reference)>>;
   quantity_point_like_traits<T>::point_origin;
@@ -181,13 +181,15 @@ concept QuantityPointLike = requires(T qp) {
   typename quantity_point_like_traits<T>::rep;
   requires RepresentationOf<typename quantity_point_like_traits<T>::rep,
                             get_quantity_spec(quantity_point_like_traits<T>::reference).character>;
-  requires Quantity<std::remove_cvref_t<decltype(quantity_point_like_traits<T>::quantity_from_origin(qp))>>;
+} && requires(T qp, quantity<quantity_point_like_traits<T>::reference, typename quantity_point_like_traits<T>::rep> q) {
   {
-    make_quantity_point<quantity_point_like_traits<T>::point_origin>(
-      quantity_point_like_traits<T>::quantity_from_origin(qp))
-  }
-  -> std::same_as<quantity_point<quantity_point_like_traits<T>::reference, quantity_point_like_traits<T>::point_origin,
-                                 typename quantity_point_like_traits<T>::rep>>;
+    quantity_point_like_traits<T>::to_quantity(qp)
+  } -> detail::ConversionSpecOf<
+    quantity<quantity_point_like_traits<T>::reference, typename quantity_point_like_traits<T>::rep>>;
+
+  {
+    quantity_point_like_traits<T>::from_quantity(q)
+  } -> detail::ConversionSpecOf<T>;
 };
 
 }  // namespace mp_units

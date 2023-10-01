@@ -133,15 +133,17 @@ public:
   template<QuantityLike Q>
     requires detail::QuantityConvertibleTo<
       quantity<quantity_like_traits<Q>::reference, typename quantity_like_traits<Q>::rep>, quantity>
-  constexpr explicit quantity(const Q& q) :
-      quantity(make_quantity<quantity_like_traits<Q>::reference>(quantity_like_traits<Q>::value(q)))
+  constexpr explicit(
+    is_specialization_of<decltype(quantity_like_traits<Q>::to_numerical_value(std::declval<Q>())), convert_explicitly>)
+    quantity(const Q& q) :
+      quantity(make_quantity<quantity_like_traits<Q>::reference>(quantity_like_traits<Q>::to_numerical_value(q).value))
   {
   }
 
   quantity& operator=(const quantity&) = default;
   quantity& operator=(quantity&&) = default;
 
-  // conversions
+  // unit conversions
   template<UnitCompatibleWith<unit, quantity_spec> U>
     requires detail::QuantityConvertibleTo<quantity, quantity<detail::make_reference(quantity_spec, U{}), Rep>>
   [[nodiscard]] constexpr Quantity auto in(U) const
@@ -187,6 +189,27 @@ public:
   [[nodiscard]] constexpr rep force_numerical_value_in(U) const noexcept
   {
     return (*this).force_in(U{}).numerical_value_;
+  }
+
+  // conversion operators
+  template<typename Q>
+    requires QuantityLike<std::remove_cvref_t<Q>>
+  [[nodiscard]] explicit(is_specialization_of<decltype(quantity_like_traits<Q>::from_numerical_value(numerical_value_)),
+                                              convert_explicitly>) constexpr
+  operator Q() const& noexcept(noexcept(quantity_like_traits<Q>::from_numerical_value(numerical_value_)) &&
+                               std::is_nothrow_copy_constructible_v<rep>)
+  {
+    return quantity_like_traits<Q>::from_numerical_value(numerical_value_).value;
+  }
+
+  template<typename Q>
+    requires QuantityLike<std::remove_cvref_t<Q>>
+  [[nodiscard]] explicit(is_specialization_of<decltype(quantity_like_traits<Q>::from_numerical_value(numerical_value_)),
+                                              convert_explicitly>) constexpr
+  operator Q() && noexcept(noexcept(quantity_like_traits<Q>::from_numerical_value(numerical_value_)) &&
+                           std::is_nothrow_move_constructible_v<rep>)
+  {
+    return quantity_like_traits<Q>::from_numerical_value(std::move(numerical_value_)).value;
   }
 
   // member unary operators
@@ -365,7 +388,9 @@ private:
 
 // CTAD
 template<QuantityLike Q>
-explicit quantity(Q) -> quantity<quantity_like_traits<Q>::reference, typename quantity_like_traits<Q>::rep>;
+explicit(
+  is_specialization_of<decltype(quantity_like_traits<Q>::to_numerical_value(std::declval<Q>())), convert_explicitly>)
+  quantity(Q) -> quantity<quantity_like_traits<Q>::reference, typename quantity_like_traits<Q>::rep>;
 
 // binary operators on quantities
 template<auto R1, typename Rep1, auto R2, typename Rep2>
