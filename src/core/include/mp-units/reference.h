@@ -166,16 +166,14 @@ template<typename Rep, Reference R>
 
 template<typename Q, Reference R>
   requires Quantity<std::remove_cvref_t<Q>>
-[[nodiscard]] constexpr quantity<std::remove_cvref_t<Q>::reference * R{}, typename std::remove_cvref_t<Q>::rep>
-operator*(Q&& q, R)
+[[nodiscard]] constexpr Quantity auto operator*(Q&& q, R)
 {
   return make_quantity<std::remove_cvref_t<Q>::reference * R{}>(std::forward<Q>(q).numerical_value_);
 }
 
 template<typename Q, Reference R>
   requires Quantity<std::remove_cvref_t<Q>>
-[[nodiscard]] constexpr quantity<std::remove_cvref_t<Q>::reference / R{}, typename std::remove_cvref_t<Q>::rep>
-operator/(Q&& q, R)
+[[nodiscard]] constexpr Quantity auto operator/(Q&& q, R)
 {
   return make_quantity<std::remove_cvref_t<Q>::reference / R{}>(std::forward<Q>(q).numerical_value_);
 }
