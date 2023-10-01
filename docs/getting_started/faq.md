@@ -166,6 +166,30 @@ all the properties of scaled units and is consistent with the rest of the librar
     [the Dimensionless Quantities chapter](../users_guide/framework_basics/dimensionless_quantities.md).
 
 
+## Why do the identifiers for concepts in the library use `CamelCase`?
+
+Initially, C++20 was meant to use `CamelCase` for all the concept identifiers. All the concepts
+from the `std::ranges` library were merged with such names into the standard document draft.
+Frustratingly, `CamelCase` concepts got dropped from the C++ standard at the last moment before
+releasing C++20. Now, we are facing the predictable consequences of running out of names.
+
+As long as some concepts in the library could be easily named with a `standard_case` there are
+some that are hard to distinguish from the corresponding type names, such as `Quantity`,
+`QuantityPoint`, `QuantitySpec`, or `Reference`. This is why we decided to use `CamelCase`
+consistently for all the concept identifiers to make it clear when we are talking about a type
+or concept identifier.
+
+However, we are aware that this might be a temporary solution. In case the library gets
+standardized, we can expect the ISO C++ Committee to bikeshed/rename all of
+the concept identifiers to a `standard_case`, even if it will result in a harder to understand
+code.
+
+!!! note
+
+    In case you have a good idea on how to rename [existing concepts](../users_guide/framework_basics/basic_concepts.md)
+    to the `standard_case`, please let us know in the associated [GitHub Issue](). 
+
+
 ## Why Unicode quantity symbols are used by default instead of ASCII-only characters?
 
 Both C++ and [ISO 80000](../appendix/references.md#ISO80000) are standardized by the ISO.
