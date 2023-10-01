@@ -187,7 +187,7 @@ code.
 !!! note
 
     In case you have a good idea on how to rename [existing concepts](../users_guide/framework_basics/basic_concepts.md)
-    to the `standard_case`, please let us know in the associated [GitHub Issue](). 
+    to the `standard_case`, please let us know in the associated [GitHub Issue]().
 
 
 ## Why Unicode quantity symbols are used by default instead of ASCII-only characters?
