@@ -79,7 +79,7 @@ using longitude = mp_units::quantity_point<mp_units::si::degree, prime_meridian,
 template<class CharT, class Traits, typename T>
 std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const latitude<T>& lat)
 {
-  if (is_gt_zero(lat))
+  if (is_gteq_zero(lat))
     return os << lat.quantity_from_origin() << " N";
   else
     return os << -lat.quantity_from_origin() << " S";
@@ -88,7 +88,7 @@ std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>&
 template<class CharT, class Traits, typename T>
 std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const longitude<T>& lon)
 {
-  if (is_gt_zero(lon))
+  if (is_gteq_zero(lon))
     return os << lon.quantity_from_origin() << " E";
   else
     return os << -lon.quantity_from_origin() << " W";
@@ -138,8 +138,8 @@ struct MP_UNITS_STD_FMT::formatter<geographic::latitude<T>> :
   auto format(geographic::latitude<T> lat, FormatContext& ctx)
   {
     formatter<typename geographic::latitude<T>::quantity_type>::format(
-      is_gt_zero(lat) ? lat.quantity_from(geographic::equator) : -lat.quantity_from(geographic::equator), ctx);
-    MP_UNITS_STD_FMT::format_to(ctx.out(), "{}", is_gt_zero(lat) ? " N" : "S");
+      is_gteq_zero(lat) ? lat.quantity_from(geographic::equator) : -lat.quantity_from(geographic::equator), ctx);
+    MP_UNITS_STD_FMT::format_to(ctx.out(), "{}", is_gteq_zero(lat) ? " N" : "S");
     return ctx.out();
   }
 };
@@ -151,9 +151,10 @@ struct MP_UNITS_STD_FMT::formatter<geographic::longitude<T>> :
   auto format(geographic::longitude<T> lon, FormatContext& ctx)
   {
     formatter<typename geographic::longitude<T>::quantity_type>::format(
-      is_gt_zero(lon) ? lon.quantity_from(geographic::prime_meridian) : -lon.quantity_from(geographic::prime_meridian),
+      is_gteq_zero(lon) ? lon.quantity_from(geographic::prime_meridian)
+                        : -lon.quantity_from(geographic::prime_meridian),
       ctx);
-    MP_UNITS_STD_FMT::format_to(ctx.out(), "{}", is_gt_zero(lon) ? " E" : " W");
+    MP_UNITS_STD_FMT::format_to(ctx.out(), "{}", is_gteq_zero(lon) ? " E" : " W");
     return ctx.out();
   }
 };
