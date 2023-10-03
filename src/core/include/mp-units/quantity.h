@@ -133,9 +133,9 @@ public:
   template<QuantityLike Q>
     requires detail::QuantityConvertibleTo<
       quantity<quantity_like_traits<Q>::reference, typename quantity_like_traits<Q>::rep>, quantity>
-  constexpr explicit(
-    is_specialization_of<decltype(quantity_like_traits<Q>::to_numerical_value(std::declval<Q>())), convert_explicitly>)
-    quantity(const Q& q) :
+  constexpr explicit(is_specialization_of<decltype(quantity_like_traits<Q>::to_numerical_value(std::declval<Q>())),
+                                          convert_explicitly> ||
+                     !std::convertible_to<typename Q::rep, Rep>) quantity(const Q& q) :
       quantity(make_quantity<quantity_like_traits<Q>::reference>(quantity_like_traits<Q>::to_numerical_value(q).value))
   {
   }
@@ -192,22 +192,26 @@ public:
   }
 
   // conversion operators
-  template<typename Q>
-    requires QuantityLike<std::remove_cvref_t<Q>>
+  template<typename Q_, QuantityLike Q = std::remove_cvref_t<Q_>>
+    requires detail::QuantityConvertibleTo<
+      quantity, quantity<quantity_like_traits<Q>::reference, typename quantity_like_traits<Q>::rep>>
   [[nodiscard]] explicit(is_specialization_of<decltype(quantity_like_traits<Q>::from_numerical_value(numerical_value_)),
-                                              convert_explicitly>) constexpr
-  operator Q() const& noexcept(noexcept(quantity_like_traits<Q>::from_numerical_value(numerical_value_)) &&
-                               std::is_nothrow_copy_constructible_v<rep>)
+                                              convert_explicitly> ||
+                         !std::convertible_to<Rep, typename Q::rep>) constexpr
+  operator Q_() const& noexcept(noexcept(quantity_like_traits<Q>::from_numerical_value(numerical_value_)) &&
+                                std::is_nothrow_copy_constructible_v<rep>)
   {
     return quantity_like_traits<Q>::from_numerical_value(numerical_value_).value;
   }
 
-  template<typename Q>
-    requires QuantityLike<std::remove_cvref_t<Q>>
+  template<typename Q_, QuantityLike Q = std::remove_cvref_t<Q_>>
+    requires detail::QuantityConvertibleTo<
+      quantity, quantity<quantity_like_traits<Q>::reference, typename quantity_like_traits<Q>::rep>>
   [[nodiscard]] explicit(is_specialization_of<decltype(quantity_like_traits<Q>::from_numerical_value(numerical_value_)),
-                                              convert_explicitly>) constexpr
-  operator Q() && noexcept(noexcept(quantity_like_traits<Q>::from_numerical_value(numerical_value_)) &&
-                           std::is_nothrow_move_constructible_v<rep>)
+                                              convert_explicitly> ||
+                         !std::convertible_to<Rep, typename Q::rep>) constexpr
+  operator Q_() && noexcept(noexcept(quantity_like_traits<Q>::from_numerical_value(numerical_value_)) &&
+                            std::is_nothrow_move_constructible_v<rep>)
   {
     return quantity_like_traits<Q>::from_numerical_value(std::move(numerical_value_)).value;
   }
