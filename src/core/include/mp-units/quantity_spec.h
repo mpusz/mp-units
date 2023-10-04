@@ -887,7 +887,7 @@ extract_results(bool, From = {}, To = {}, prepend_rest = {}, Elem = {}) -> extra
 #endif
 
 template<typename From, typename To>
-[[nodiscard]] consteval auto extract_convertible_quantities(From from, To to)
+[[nodiscard]] consteval auto extract_convertible_quantities(From, To)
 {
   constexpr auto qfrom = map_power(From{});
   constexpr auto qto = map_power(To{});
