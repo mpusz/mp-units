@@ -32,7 +32,7 @@ namespace {
  *
  * @tparam T element type
  */
-template<typename T>
+template<mp_units::vector_space T>
 class min_impl {
   T value_;
 public:
@@ -45,12 +45,31 @@ public:
   {
   }
   constexpr explicit(false) operator T() const noexcept { return value_; }
+
+  constexpr min_impl& operator+=(min_impl that)
+  {
+    value_ += that.value_;
+    return *this;
+  }
+  constexpr min_impl& operator-=(min_impl that)
+  {
+    value_ -= that.value_;
+    return *this;
+  }
+  constexpr min_impl& operator*=(T rhs)
+  {
+    value_ *= rhs;
+    return *this;
+  }
 };
 
 }  // namespace
 
 template<typename T>
 inline constexpr bool mp_units::is_scalar<min_impl<T>> = true;
+
+template<typename Rep>
+struct mp_units::vector_scalar<min_impl<Rep>> : std::type_identity<Rep> {};
 
 template<typename T, typename U>
 struct std::common_type<min_impl<T>, min_impl<U>> : std::type_identity<min_impl<std::common_type_t<T, U>>> {};
@@ -65,6 +84,8 @@ using namespace mp_units;
 
 static_assert(Representation<min_impl<int>>);
 static_assert(Representation<min_impl<double>>);
+static_assert(vector_space<min_impl<int>>);
+static_assert(vector_space<min_impl<double>>);
 
 // construction from a value is not allowed
 static_assert(!std::constructible_from<quantity<si::metre, min_impl<int>>, min_impl<int>>);

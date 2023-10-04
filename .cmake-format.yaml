@@ -1,3 +1,4 @@
+include: ["cmake/.cmake-format-additional_commands-jegp.cmake_modules.yaml"]
 parse:
   additional_commands:
     add_documentation:

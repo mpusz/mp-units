@@ -22,15 +22,13 @@
 
 #pragma once
 
+#include <mp-units/bits/fwd.h>
 #include <mp-units/bits/quantity_spec_concepts.h>
 #include <mp-units/bits/reference_concepts.h>
 #include <mp-units/bits/representation_concepts.h>
 #include <mp-units/customization_points.h>
 
 namespace mp_units {
-
-template<Reference auto R, RepresentationOf<get_quantity_spec(R).character> Rep>
-class quantity;
 
 #if defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 17
 template<auto R, typename Rep>

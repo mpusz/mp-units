@@ -20,24 +20,24 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-cmake_minimum_required(VERSION 3.2)
+cmake_minimum_required(VERSION 3.19.0)
+project(mp-units-reference-documentations LANGUAGES NONE)
 
-find_package(Catch2 3 CONFIG REQUIRED)
+include(JEGPAddStandardeseSources)
 
-add_executable(unit_tests_runtime distribution_test.cpp fmt_test.cpp math_test.cpp)
-target_link_libraries(unit_tests_runtime PRIVATE mp-units::mp-units Catch2::Catch2WithMain)
-
-# if(${projectPrefix}BUILD_LA)
-#     find_package(wg21_linear_algebra CONFIG REQUIRED)
-#     target_sources(unit_tests_runtime PRIVATE linear_algebra_test.cpp)
-#     target_link_libraries(unit_tests_runtime PRIVATE wg21_linear_algebra::wg21_linear_algebra)
-# endif()
-
-if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    target_compile_options(
-        unit_tests_runtime PRIVATE /wd4244 # 'conversion' conversion from 'type1' to 'type2', possible loss of data
-    )
-endif()
-
-include(Catch)
-catch_discover_tests(unit_tests_runtime)
+set(pdf_title "mp-units - A Physical Quantities and Units library for C++")
+set(page_license "MIT License")
+set(first_library_chapter "nums")
+set(last_library_chapter "qties")
+# set(pdf_creator "") # Defaults to "the `user.name` of Git's configuration".
+# set(document_number [[\unspec]])
+# set(previous_document_number [[\unspec]])
+set(cover_title "mp-units Library Reference Documentations")
+set(reply_to "\\href{${PROJECT_HOMEPAGE_URL}/discussions}{Discussions}, \\href{${PROJECT_HOMEPAGE_URL}/issues}{issues}")
+jegp_add_standardese_sources(
+    mp-units-reference-documentations
+    LIBRARIES intro numbers;quantities
+    EXTENSIONS macros_extensions
+    # CHECKED TRUE
+    PDF_PATH "mp_units.pdf"
+)

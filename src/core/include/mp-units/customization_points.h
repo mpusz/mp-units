@@ -24,6 +24,7 @@
 
 #include <mp-units/bits/external/hacks.h>
 #include <mp-units/bits/external/type_traits.h>
+#include <mp-units/numbers.h>
 #include <limits>
 #include <type_traits>
 

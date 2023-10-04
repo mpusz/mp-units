@@ -30,7 +30,7 @@
 
 namespace {
 
-template<typename T>
+template<mp_units::vector_space T>
 class measurement {
 public:
   using value_type = T;
@@ -65,6 +65,18 @@ public:
     return measurement(lhs.value() - rhs.value(), hypot(lhs.uncertainty(), rhs.uncertainty()));
   }
 
+  constexpr measurement& operator+=(const measurement& that)
+  {
+    value_ = *this + that;
+    return *this;
+  }
+
+  constexpr measurement& operator-=(const measurement& that)
+  {
+    value_ = *this - that;
+    return *this;
+  }
+
   [[nodiscard]] friend constexpr measurement operator*(const measurement& lhs, const measurement& rhs)
   {
     const auto val = lhs.value() * rhs.value();
@@ -76,6 +88,12 @@ public:
   {
     const auto val = lhs.value() * value;
     return measurement(val, val * lhs.relative_uncertainty());
+  }
+
+  constexpr measurement& operator*=(const value_type& value)
+  {
+    value_ = *this * value;
+    return *this;
   }
 
   [[nodiscard]] friend constexpr measurement operator*(const value_type& value, const measurement& rhs)
@@ -125,7 +143,11 @@ inline constexpr bool mp_units::is_scalar<measurement<T>> = true;
 template<class T>
 inline constexpr bool mp_units::is_vector<measurement<T>> = true;
 
+template<typename T>
+struct mp_units::vector_scalar<measurement<T>> : std::type_identity<T> {};
+
 static_assert(mp_units::RepresentationOf<measurement<double>, mp_units::quantity_character::scalar>);
+static_assert(mp_units::vector_space<measurement<double>>);
 
 namespace {
 
