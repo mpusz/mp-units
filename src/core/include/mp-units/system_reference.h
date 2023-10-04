@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <mp-units/bits/external/hacks.h>
 #include <mp-units/quantity_spec.h>
 #include <mp-units/reference.h>
 #include <mp-units/unit.h>
@@ -63,7 +64,11 @@ struct system_reference {
 
   template<Unit U>
     requires(convertible(coherent_unit, U{}))
+#if MP_UNITS_COMP_MSVC
+  [[nodiscard]] constexpr decltype(reference<quantity_spec, U{}>{}) operator[](U) const
+#else
   [[nodiscard]] constexpr reference<quantity_spec, U{}> operator[](U) const
+#endif
   {
     return {};
   }

@@ -41,12 +41,12 @@ namespace detail {
 
 template<QuantitySpec QS, Unit U>
   requires(!AssociatedUnit<U>) || UnitOf<U, QS{}>
-[[nodiscard]] consteval Reference auto make_reference(QS qs, U u)
+[[nodiscard]] consteval Reference auto make_reference(QS, U u)
 {
   if constexpr (detail::QuantityKindSpec<QS>)
     return u;
   else
-    return reference<qs, u>{};
+    return reference<QS{}, U{}>{};
 }
 
 // TODO revise the note in the below comment
@@ -494,9 +494,10 @@ template<QuantitySpec auto... From, QuantitySpec Q>
 
 // Operators
 
-[[nodiscard]] consteval QuantitySpec auto operator*(QuantitySpec auto lhs, QuantitySpec auto rhs)
+template<QuantitySpec Lhs, QuantitySpec Rhs>
+[[nodiscard]] consteval QuantitySpec auto operator*(Lhs lhs, Rhs rhs)
 {
-  return clone_kind_of<lhs, rhs>(
+  return clone_kind_of<Lhs{}, Rhs{}>(
     detail::expr_multiply<derived_quantity_spec, struct dimensionless, detail::type_list_of_quantity_spec_less>(
       remove_kind(lhs), remove_kind(rhs)));
 }
@@ -504,15 +505,16 @@ template<QuantitySpec auto... From, QuantitySpec Q>
 template<QuantitySpec Lhs, QuantitySpec Rhs>
 [[nodiscard]] consteval QuantitySpec auto operator/(Lhs lhs, Rhs rhs)
 {
-  return clone_kind_of<lhs, rhs>(
+  return clone_kind_of<Lhs{}, Rhs{}>(
     detail::expr_divide<derived_quantity_spec, struct dimensionless, detail::type_list_of_quantity_spec_less>(
       remove_kind(lhs), remove_kind(rhs)));
 }
 
-[[nodiscard]] consteval QuantitySpec auto operator/(int value, QuantitySpec auto q)
+template<QuantitySpec QS>
+[[nodiscard]] consteval QuantitySpec auto operator/(int value, QS qs)
 {
   gsl_Expects(value == 1);
-  return clone_kind_of<q>(detail::expr_invert<derived_quantity_spec, struct dimensionless>(q));
+  return clone_kind_of<QS{}>(detail::expr_invert<derived_quantity_spec, struct dimensionless>(qs));
 }
 
 [[nodiscard]] consteval QuantitySpec auto operator/(QuantitySpec auto, int) = delete;
@@ -554,7 +556,7 @@ template<std::intmax_t Num, std::intmax_t Den = 1, QuantitySpec Q>
   // `2 * one * (2 * one)` should compare to `4 * one`
   // `2 * rad * (2 * rad)` should compare to `4 * rad^2`
   // all are dimensionless quantities :-(
-  if constexpr (Num == 0 || q == dimensionless)
+  if constexpr (Num == 0 || Q{} == dimensionless)
     return dimensionless;
   else if constexpr (ratio{Num, Den} == 1)
     return q;
@@ -779,7 +781,7 @@ template<int Complexity, QuantitySpec Q>
 template<int Complexity, IntermediateDerivedQuantitySpec Q>
 [[nodiscard]] consteval auto explode(Q q)
 {
-  constexpr auto c = get_complexity(q);
+  constexpr auto c = get_complexity(Q{});
   if constexpr (c > Complexity)
     return explode<Complexity>(q, type_list_sort<typename Q::_num_, type_list_of_ingredients_less>{},
                                type_list_sort<typename Q::_den_, type_list_of_ingredients_less>{});
@@ -790,9 +792,9 @@ template<int Complexity, IntermediateDerivedQuantitySpec Q>
 template<int Complexity, NamedQuantitySpec Q>
 [[nodiscard]] consteval auto explode(Q q)
 {
-  constexpr auto c = get_complexity(q);
+  constexpr auto c = get_complexity(Q{});
   if constexpr (c > Complexity && requires { Q::_equation_; }) {
-    constexpr auto res = explode_to_equation(q);
+    constexpr auto res = explode_to_equation(Q{});
     return explode<Complexity>(res.equation).common_convertibility_with(res);
   } else
     return explode_result{q};
@@ -887,8 +889,8 @@ extract_results(bool, From = {}, To = {}, prepend_rest = {}, Elem = {}) -> extra
 template<typename From, typename To>
 [[nodiscard]] consteval auto extract_convertible_quantities(From from, To to)
 {
-  constexpr auto qfrom = map_power(from);
-  constexpr auto qto = map_power(to);
+  constexpr auto qfrom = map_power(From{});
+  constexpr auto qto = map_power(To{});
   if constexpr (qfrom.dimension == qto.dimension) {
     if constexpr (is_specialization_of_power<From> && is_specialization_of_power<To>) {
       constexpr auto cr = common_ratio(From::exponent, To::exponent);
@@ -905,8 +907,8 @@ template<typename From, typename To>
       else
         return std::tuple{Q{}, ratio{1}};
     };
-    constexpr auto from_norm = normalize(from);
-    constexpr auto to_norm = normalize(to);
+    constexpr auto from_norm = normalize(From{});
+    constexpr auto to_norm = normalize(To{});
     constexpr auto from_factor = std::get<0>(from_norm);
     constexpr auto from_exp = std::get<1>(from_norm);
     constexpr auto to_factor = std::get<0>(to_norm);
@@ -1335,11 +1337,11 @@ template<QuantitySpec From, QuantitySpec To>
 
   if constexpr (From::dimension != To::dimension)
     return no;
-  else if constexpr (from == to)
+  else if constexpr (From{} == To{})
     return yes;
   else if constexpr (QuantityKindSpec<From> || QuantityKindSpec<To>) {
-    constexpr auto from_kind = get_kind(from);
-    constexpr auto to_kind = get_kind(to);
+    constexpr auto from_kind = get_kind(From{});
+    constexpr auto to_kind = get_kind(To{});
     constexpr auto exploded_kind_result = [](specs_convertible_result res) {
       using enum specs_convertible_result;
       return res == no ? no : yes;
@@ -1354,21 +1356,21 @@ template<QuantitySpec From, QuantitySpec To>
     else
       return exploded_kind_result(
         convertible_impl(from_kind, get_kind(explode<get_complexity(from_kind)>(to_kind).quantity)));
-  } else if constexpr (NestedQuantityKindSpecOf<get_kind(to), from> && get_kind(to) == to)
+  } else if constexpr (NestedQuantityKindSpecOf<get_kind(To{}), from> && get_kind(To{}) == To{})
     return yes;
   else if constexpr (NamedQuantitySpec<From> && NamedQuantitySpec<To>) {
-    if constexpr (have_common_base(from, to)) {
+    if constexpr (have_common_base(From{}, To{})) {
       if (std::derived_from<From, To>)
         return yes;
       else
         return std::derived_from<To, From> ? explicit_conversion : (get_kind(from) == get_kind(to) ? cast : no);
-    } else if constexpr (get_kind(from) != get_kind(to))
+    } else if constexpr (get_kind(From{}) != get_kind(To{}))
       return no;
-    else if constexpr (get_complexity(from) != get_complexity(to)) {
-      if constexpr (get_complexity(from) > get_complexity(to))
+    else if constexpr (get_complexity(From{}) != get_complexity(To{})) {
+      if constexpr (get_complexity(From{}) > get_complexity(To{}))
         return convertible_impl(explode<get_complexity(to)>(from).quantity, to);
       else {
-        constexpr auto res = explode<get_complexity(from)>(to);
+        auto res = explode<get_complexity(from)>(to);
         return min(res.result, convertible_impl(from, res.quantity));
       }
     }
@@ -1379,7 +1381,7 @@ template<QuantitySpec From, QuantitySpec To>
     if constexpr (NamedQuantitySpec<std::remove_const_t<decltype(res.quantity)>>)
       return convertible_impl(res.quantity, to);
     else if constexpr (requires { to._equation_; }) {
-      constexpr auto eq = explode_to_equation(to);
+      auto eq = explode_to_equation(to);
       return min(eq.result, convertible_impl(res.quantity, eq.equation));
     } else
       return are_ingredients_convertible(from, to);
@@ -1449,16 +1451,16 @@ template<QuantitySpec Q>
 template<QuantitySpec Q>
 [[nodiscard]] consteval QuantitySpec auto get_kind(Q q)
 {
-  auto defined_as_kind = [](auto qq) {
+  auto defined_as_kind = []<typename QQ>(QQ qq) {
     if constexpr (requires { detail::defined_as_kind(qq); })
-      return detail::defined_as_kind(qq);
+      return detail::defined_as_kind(QQ{});
     else
       return false;
   };
 
   if constexpr (detail::QuantityKindSpec<Q>) {
     return remove_kind(q);
-  } else if constexpr (defined_as_kind(q)) {
+  } else if constexpr (defined_as_kind(Q{})) {
     return q;
   } else if constexpr (requires { Q::_parent_; }) {
     return get_kind(Q::_parent_);
@@ -1481,25 +1483,25 @@ template<QuantitySpec Q1, QuantitySpec Q2>
   using QQ2 = std::remove_const_t<decltype(remove_kind(q2))>;
   if constexpr (is_same_v<Q1, Q2>)
     return q1;
-  else if constexpr (detail::NestedQuantityKindSpecOf<q1, q2>)
+  else if constexpr (detail::NestedQuantityKindSpecOf<Q1{}, Q2{}>)
     return remove_kind(q1);
-  else if constexpr (detail::NestedQuantityKindSpecOf<q2, q1>)
+  else if constexpr (detail::NestedQuantityKindSpecOf<Q2{}, Q1{}>)
     return remove_kind(q2);
   else if constexpr ((detail::QuantityKindSpec<Q1> && !detail::QuantityKindSpec<Q2>) ||
                      (detail::IntermediateDerivedQuantitySpec<QQ1> && detail::NamedQuantitySpec<QQ2> &&
-                      implicitly_convertible(q1, q2)))
+                      implicitly_convertible(Q1{}, Q2{})))
     return q2;
   else if constexpr ((!detail::QuantityKindSpec<Q1> && detail::QuantityKindSpec<Q2>) ||
                      (detail::NamedQuantitySpec<QQ1> && detail::IntermediateDerivedQuantitySpec<QQ2> &&
-                      implicitly_convertible(q2, q1)))
+                      implicitly_convertible(Q2{}, Q1{})))
     return q1;
-  else if constexpr (detail::have_common_base(q1, q2))
+  else if constexpr (detail::have_common_base(Q1{}, Q2{}))
     return detail::get_common_base(q1, q2);
-  else if constexpr (implicitly_convertible(q1, q2))
+  else if constexpr (implicitly_convertible(Q1{}, Q2{}))
     return q2;
-  else if constexpr (implicitly_convertible(q2, q1))
+  else if constexpr (implicitly_convertible(Q2{}, Q1{}))
     return q1;
-  else if constexpr (implicitly_convertible(get_kind(q1), get_kind(q2)))
+  else if constexpr (implicitly_convertible(get_kind(Q1{}), get_kind(Q2{})))
     return get_kind(q2);
   else
     return get_kind(q1);

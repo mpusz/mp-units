@@ -58,8 +58,8 @@ template<QuantitySpec A, QuantitySpec B>
 template<QuantitySpec A, QuantitySpec B>
 [[nodiscard]] consteval auto have_common_base(A a, B b)
 {
-  constexpr int a_length = hierarchy_path_length(A{});
-  constexpr int b_length = hierarchy_path_length(B{});
+  constexpr std::size_t a_length = hierarchy_path_length(A{});
+  constexpr std::size_t b_length = hierarchy_path_length(B{});
   if constexpr (a_length > b_length)
     return have_common_base_in_hierarchy_of_equal_length(hierarchy_path_advance<a_length - b_length>(a), b);
   else
