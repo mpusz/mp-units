@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <mp-units/bits/external/hacks.h>
 #include <mp-units/bits/get_associated_quantity.h>
 #include <mp-units/bits/quantity_concepts.h>
 #include <mp-units/bits/reference_concepts.h>
@@ -73,13 +74,21 @@ struct reference {
   }
 
   template<AssociatedUnit U2>
+#if MP_UNITS_COMP_MSVC
+  [[nodiscard]] friend consteval decltype(reference<Q * get_quantity_spec(U2{}), U * U2{}>{}) operator*(reference, U2)
+#else
   [[nodiscard]] friend consteval reference<Q * get_quantity_spec(U2{}), U * U2{}> operator*(reference, U2)
+#endif
   {
     return {};
   }
 
   template<AssociatedUnit U1>
+#if MP_UNITS_COMP_MSVC
+  [[nodiscard]] friend consteval decltype(reference<get_quantity_spec(U1{}) * Q, U1{} * U>{}) operator*(U1, reference)
+#else
   [[nodiscard]] friend consteval reference<get_quantity_spec(U1{}) * Q, U1{} * U> operator*(U1, reference)
+#endif
   {
     return {};
   }
@@ -91,13 +100,21 @@ struct reference {
   }
 
   template<AssociatedUnit U2>
+#if MP_UNITS_COMP_MSVC
+  [[nodiscard]] friend consteval decltype(reference<Q / get_quantity_spec(U2{}), U / U2{}>{}) operator/(reference, U2)
+#else
   [[nodiscard]] friend consteval reference<Q / get_quantity_spec(U2{}), U / U2{}> operator/(reference, U2)
+#endif
   {
     return {};
   }
 
   template<AssociatedUnit U1>
+#if MP_UNITS_COMP_MSVC
+  [[nodiscard]] friend consteval decltype(reference<get_quantity_spec(U1{}) / Q, U1{} / U>{}) operator/(U1, reference)
+#else
   [[nodiscard]] friend consteval reference<get_quantity_spec(U1{}) / Q, U1{} / U> operator/(U1, reference)
+#endif
   {
     return {};
   }
