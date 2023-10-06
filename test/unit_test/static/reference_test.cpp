@@ -160,6 +160,21 @@ concept invalid_operations = requires {
 };
 static_assert(invalid_operations<time[second]>);
 
+static_assert(is_of_type<2 / second, quantity<derived_unit<one_, per<second_>>{}, int>>);
+static_assert(is_of_type<2 / time[second], quantity<reference<derived_quantity_spec<dimensionless_, per<time_>>{},
+                                                              derived_unit<one_, per<second_>>{}>{},
+                                                    int>>);
+static_assert(is_of_type<1 * time[second] * second, quantity<reference<pow<2>(time), pow<2>(second)>{}, int>>);
+static_assert(is_of_type<1 * time[second] * time[second], quantity<reference<pow<2>(time), pow<2>(second)>{}, int>>);
+static_assert(is_of_type<1 * time[second] / second, quantity<reference<dimensionless, one>{}, int>>);
+static_assert(is_of_type<1 * time[second] / time[second], quantity<reference<dimensionless, one>{}, int>>);
+
+static_assert(
+  is_of_type<
+    1 * inverse(time[second]),
+    quantity<reference<derived_quantity_spec<dimensionless_, per<time_>>{}, derived_unit<one_, per<second_>>{}>{},
+             int>>);
+
 static_assert(
   is_of_type<
     2 * length[metre] / (1 * time[second]),
