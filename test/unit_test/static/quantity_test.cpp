@@ -518,6 +518,7 @@ static_assert(is_of_type<1 * m / (1 * one), quantity<si::metre, int>>);
 static_assert(is_of_type<1 * m / (1 * percent), quantity<derived_unit<struct si::metre, per<struct percent>>{}, int>>);
 
 static_assert(is_of_type<1 / (1 * s), quantity<derived_unit<struct one, per<struct si::second>>{}, int>>);
+static_assert(is_of_type<1 / s, quantity<derived_unit<struct one, per<struct si::second>>{}, int>>);
 static_assert(is_of_type<1 * one / (1 * s), quantity<derived_unit<struct one, per<struct si::second>>{}, int>>);
 static_assert(is_of_type<1 * percent / (1 * s), quantity<derived_unit<struct percent, per<struct si::second>>{}, int>>);
 
@@ -566,6 +567,7 @@ static_assert(
   is_of_type<1 * m / (1. * percent), quantity<derived_unit<struct si::metre, per<struct percent>>{}, double>>);
 
 static_assert(is_of_type<1 / (1. * s), quantity<derived_unit<struct one, per<struct si::second>>{}, double>>);
+static_assert(is_of_type<1. / s, quantity<derived_unit<struct one, per<struct si::second>>{}, double>>);
 static_assert(is_of_type<1. * one / (1 * s), quantity<derived_unit<struct one, per<struct si::second>>{}, double>>);
 static_assert(
   is_of_type<1 * percent / (1. * s), quantity<derived_unit<struct percent, per<struct si::second>>{}, double>>);
@@ -602,6 +604,9 @@ static_assert(is_of_type<1 * s * (1 * Hz), quantity<derived_unit<struct si::hert
 static_assert(is_of_type<1 / (1 * min), quantity<derived_unit<struct one, per<struct si::minute>>{}, int>>);
 static_assert(is_of_type<1 / (1 * Hz), quantity<derived_unit<struct one, per<struct si::hertz>>{}, int>>);
 static_assert(is_of_type<1 / (1 * km), quantity<derived_unit<struct one, per<si::kilo_<si::metre>>>{}, int>>);
+static_assert(is_of_type<1 / min, quantity<derived_unit<struct one, per<struct si::minute>>{}, int>>);
+static_assert(is_of_type<1 / Hz, quantity<derived_unit<struct one, per<struct si::hertz>>{}, int>>);
+static_assert(is_of_type<1 / km, quantity<derived_unit<struct one, per<si::kilo_<si::metre>>>{}, int>>);
 static_assert(is_of_type<1 * km / (1 * m), quantity<derived_unit<si::kilo_<si::metre>, per<struct si::metre>>{}, int>>);
 static_assert(is_of_type<1 * m / (1 * s), quantity<derived_unit<struct si::metre, per<struct si::second>>{}, int>>);
 static_assert(is_of_type<1 * m / (1 * min), quantity<derived_unit<struct si::metre, per<struct si::minute>>{}, int>>);
@@ -811,8 +816,8 @@ static_assert(10 * isq::length[m] / (2 * isq::time[s]) == 5 * isq::speed[m / s])
 static_assert(5 * isq::speed[m / s] == 10 * isq::length[m] / (2 * isq::time[s]));
 
 // Same named dimension & different but equivalent unit
-static_assert(10 * isq::frequency[1 / s] == 10 * isq::frequency[Hz]);
-static_assert(10 * isq::frequency[Hz] == 10 * isq::frequency[1 / s]);
+static_assert(10 * isq::frequency[one / s] == 10 * isq::frequency[Hz]);
+static_assert(10 * isq::frequency[Hz] == 10 * isq::frequency[one / s]);
 
 // Named and derived dimensions (different but equivalent units)
 static_assert(10 / (2 * isq::time[s]) == 5 * isq::frequency[Hz]);

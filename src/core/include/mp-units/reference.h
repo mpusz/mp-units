@@ -102,6 +102,8 @@ struct reference {
     return {};
   }
 
+  [[nodiscard]] friend consteval reference<inverse(Q), inverse(U)> inverse(reference) { return {}; }
+
   /**
    * @brief Computes the value of a reference raised to the `Num/Den` power
    *
@@ -159,10 +161,26 @@ template<Reference auto R, RepresentationOf<get_quantity_spec(R).character> Rep>
 class quantity;
 
 template<typename Rep, Reference R>
+  requires RepresentationOf<std::remove_cvref_t<Rep>, get_quantity_spec(R{}).character>
 [[nodiscard]] constexpr quantity<R{}, std::remove_cvref_t<Rep>> operator*(Rep&& lhs, R)
 {
   return make_quantity<R{}>(std::forward<Rep>(lhs));
 }
+
+template<typename Rep, Reference R>
+  requires RepresentationOf<std::remove_cvref_t<Rep>, get_quantity_spec(R{}).character>
+[[nodiscard]] constexpr quantity<inverse(R{}), std::remove_cvref_t<Rep>> operator/(Rep&& lhs, R)
+{
+  return make_quantity<inverse(R{})>(std::forward<Rep>(lhs));
+}
+
+template<Reference R, typename Rep>
+  requires RepresentationOf<std::remove_cvref_t<Rep>, get_quantity_spec(R{}).character>
+constexpr auto operator*(R, Rep&&) = delete;
+
+template<Reference R, typename Rep>
+  requires RepresentationOf<std::remove_cvref_t<Rep>, get_quantity_spec(R{}).character>
+constexpr auto operator/(R, Rep&&) = delete;
 
 template<typename Q, Reference R>
   requires Quantity<std::remove_cvref_t<Q>>
@@ -177,6 +195,14 @@ template<typename Q, Reference R>
 {
   return make_quantity<std::remove_cvref_t<Q>::reference / R{}>(std::forward<Q>(q).numerical_value_);
 }
+
+template<Reference R, typename Q>
+  requires Quantity<std::remove_cvref_t<Q>>
+constexpr auto operator*(R, Q&& q) = delete;
+
+template<Reference R, typename Q>
+  requires Quantity<std::remove_cvref_t<Q>>
+constexpr auto operator/(R, Q&& q) = delete;
 
 [[nodiscard]] consteval AssociatedUnit auto common_reference(AssociatedUnit auto u1, AssociatedUnit auto u2,
                                                              AssociatedUnit auto... rest)

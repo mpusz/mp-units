@@ -36,8 +36,8 @@ inline constexpr struct electronvolt : named_unit<"eV"> {} electronvolt;
 inline constexpr struct gigaelectronvolt : decltype(si::giga<electronvolt>) {} gigaelectronvolt;
 
 // system references
-inline constexpr struct time : system_reference<isq::time, 1 / gigaelectronvolt> {} time;
-inline constexpr struct length : system_reference<isq::length, 1 / gigaelectronvolt> {} length;
+inline constexpr struct time : system_reference<isq::time, inverse(gigaelectronvolt)> {} time;
+inline constexpr struct length : system_reference<isq::length, inverse(gigaelectronvolt)> {} length;
 inline constexpr struct mass : system_reference<isq::mass, gigaelectronvolt> {} mass;
 inline constexpr struct velocity : system_reference<isq::velocity, one> {} velocity;
 inline constexpr struct speed : system_reference<isq::speed, one> {} speed;

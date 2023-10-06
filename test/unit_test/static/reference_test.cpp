@@ -51,8 +51,8 @@ QUANTITY_SPEC_(width, length);
 QUANTITY_SPEC_(radius, width);
 QUANTITY_SPEC_(arc_length, length);
 
-QUANTITY_SPEC_(frequency, 1 / time);
-QUANTITY_SPEC_(activity, 1 / time);
+QUANTITY_SPEC_(frequency, inverse(time));
+QUANTITY_SPEC_(activity, inverse(time));
 QUANTITY_SPEC_(area, length* length);
 QUANTITY_SPEC_(angular_measure, dimensionless, arc_length / radius, is_kind);
 QUANTITY_SPEC_(solid_angular_measure, dimensionless, area / pow<2>(radius), is_kind);
@@ -83,8 +83,8 @@ inline constexpr struct speed : system_reference<speed_{}, second / second> {} s
 // derived named units
 inline constexpr struct radian_ : named_unit<"rad", metre / metre, kind_of<angular_measure>> {} radian;
 inline constexpr struct steradian_ : named_unit<"sr", square(metre) / square(metre), kind_of<solid_angular_measure>> {} steradian;
-inline constexpr struct hertz_ : named_unit<"Hz", 1 / second, kind_of<frequency>> {} hertz;
-inline constexpr struct becquerel_ : named_unit<"Bq", 1 / second, kind_of<activity>> {} becquerel;
+inline constexpr struct hertz_ : named_unit<"Hz", inverse(second), kind_of<frequency>> {} hertz;
+inline constexpr struct becquerel_ : named_unit<"Bq", inverse(second), kind_of<activity>> {} becquerel;
 inline constexpr struct newton_ : named_unit<"N", kilogram * metre / square(second)> {} newton;
 inline constexpr struct joule_ : named_unit<"J", newton * metre> {} joule;
 inline constexpr struct watt_ : named_unit<"W", joule / second> {} watt;
@@ -138,7 +138,6 @@ static_assert(is_of_type<20 * speed[metre / second] / (10 * length[metre]) * (5 
 
 template<auto s>
 concept invalid_operations = requires {
-  requires !requires { 2 / s; };
   requires !requires { s / 2; };
   requires !requires { s * 2; };
   requires !requires { s + 2; };

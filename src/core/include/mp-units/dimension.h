@@ -88,7 +88,7 @@ using type_list_of_base_dimension_less = expr_less<T1, T2, base_dimension_less>;
  * For example:
  *
  * @code{.cpp}
- * using frequency = decltype(1 / dim_time);
+ * using frequency = decltype(inverse(dim_time));
  * using speed = decltype(dim_length / dim_time);
  * using acceleration = decltype(dim_speed / dim_time);
  * using force = decltype(dim_mass * dim_acceleration);
@@ -150,21 +150,13 @@ template<Dimension Lhs, Dimension Rhs>
                                                                                                                 Rhs{});
 }
 
-template<Dimension D>
-[[nodiscard]] consteval Dimension auto operator/(int value, D)
-{
-  gsl_Expects(value == 1);
-  return detail::expr_invert<derived_dimension, struct dimension_one>(D{});
-}
-
-template<Dimension D>
-[[nodiscard]] consteval Dimension auto operator/(D, int) = delete;
-
 template<Dimension Lhs, Dimension Rhs>
 [[nodiscard]] consteval bool operator==(Lhs, Rhs)
 {
   return is_same_v<Lhs, Rhs>;
 }
+
+[[nodiscard]] consteval Dimension auto inverse(Dimension auto d) { return dimension_one / d; }
 
 /**
  * @brief Computes the value of a dimension raised to the `Num/Den` power

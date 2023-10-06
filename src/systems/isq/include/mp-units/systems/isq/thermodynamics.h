@@ -30,12 +30,12 @@
 namespace mp_units::isq {
 
 QUANTITY_SPEC(Celsius_temperature, thermodynamic_temperature);  // TODO should we account for T0 here?
-QUANTITY_SPEC(linear_expansion_coefficient, 1 / length * (length / thermodynamic_temperature));
-QUANTITY_SPEC(cubic_expansion_coefficient, 1 / volume * (volume / thermodynamic_temperature));
-QUANTITY_SPEC(relative_pressure_coefficient, 1 / pressure * (pressure / thermodynamic_temperature));
+QUANTITY_SPEC(linear_expansion_coefficient, inverse(length) * (length / thermodynamic_temperature));
+QUANTITY_SPEC(cubic_expansion_coefficient, inverse(volume) * (volume / thermodynamic_temperature));
+QUANTITY_SPEC(relative_pressure_coefficient, inverse(pressure) * (pressure / thermodynamic_temperature));
 QUANTITY_SPEC(pressure_coefficient, pressure / thermodynamic_temperature);
-QUANTITY_SPEC(isothermal_compressibility, 1 / volume * (volume / pressure));  // TODO how to handle "negative" part
-QUANTITY_SPEC(isentropic_compressibility, 1 / volume * (volume / pressure));  // TODO how to handle "negative" part
+QUANTITY_SPEC(isothermal_compressibility, inverse(volume) * (volume / pressure));  // TODO how to handle "negative" part
+QUANTITY_SPEC(isentropic_compressibility, inverse(volume) * (volume / pressure));  // TODO how to handle "negative" part
 // energy definition moved to mechanics
 QUANTITY_SPEC(heat, energy);
 inline constexpr auto amount_of_heat = heat;
@@ -45,10 +45,10 @@ QUANTITY_SPEC(density_of_heat_flow_rate, heat_flow_rate / area);
 QUANTITY_SPEC(thermal_conductivity, density_of_heat_flow_rate*(length / thermodynamic_temperature));
 QUANTITY_SPEC(coefficient_of_heat_transfer, density_of_heat_flow_rate / thermodynamic_temperature);
 QUANTITY_SPEC(surface_coefficient_of_heat_transfer, density_of_heat_flow_rate / thermodynamic_temperature);
-QUANTITY_SPEC(thermal_insulance, 1 / coefficient_of_heat_transfer);
+QUANTITY_SPEC(thermal_insulance, inverse(coefficient_of_heat_transfer));
 inline constexpr auto coefficient_of_thermal_insulance = thermal_insulance;
 QUANTITY_SPEC(thermal_resistance, thermodynamic_temperature / heat_flow_rate);
-QUANTITY_SPEC(thermal_conductance, 1 / thermal_resistance);
+QUANTITY_SPEC(thermal_conductance, inverse(thermal_resistance));
 QUANTITY_SPEC(heat_capacity, heat / thermodynamic_temperature);
 QUANTITY_SPEC(specific_heat_capacity, heat_capacity / mass);
 QUANTITY_SPEC(specific_heat_capacity_at_constant_pressure, specific_heat_capacity);

@@ -30,7 +30,7 @@ namespace mp_units::isq {
 
 QUANTITY_SPEC(mass_density, mass / volume);
 inline constexpr auto density = mass_density;
-QUANTITY_SPEC(specific_volume, 1 / mass_density);
+QUANTITY_SPEC(specific_volume, inverse(mass_density));
 QUANTITY_SPEC(relative_mass_density, mass_density / mass_density);
 inline constexpr auto relative_density = relative_mass_density;
 QUANTITY_SPEC(surface_mass_density, mass / area);
@@ -70,7 +70,7 @@ QUANTITY_SPEC(modulus_of_rigidity, shear_stress / shear_strain);
 inline constexpr auto shear_modulus = modulus_of_rigidity;
 QUANTITY_SPEC(modulus_of_compression, pressure / relative_volume_strain);
 inline constexpr auto bulk_modulus = modulus_of_compression;
-QUANTITY_SPEC(compressibility, 1 / volume * (volume / pressure));
+QUANTITY_SPEC(compressibility, inverse(volume) * (volume / pressure));
 QUANTITY_SPEC(second_axial_moment_of_area, pow<2>(radial_distance) * area);
 QUANTITY_SPEC(second_polar_moment_of_area, pow<2>(radial_distance) * area);
 QUANTITY_SPEC(section_modulus, second_axial_moment_of_area / radial_distance);

@@ -152,20 +152,22 @@ identities used in the library:
 | `QuantitySpec` | `dimensionless` |
 | `Unit`         |      `one`      |
 
-In the equations, a user can refer to an identity object either explicitly:
+In the equations, a user can explicitly refer to an identity object:
 
 ```cpp
 constexpr auto my_unit = one / second;
 ```
 
-or implicitly:
+!!! note
 
-```cpp
-constexpr auto my_unit = 1 / second;
-```
+    Another way to achieve the same result is to call an `inverse()` function:
 
-Both cases with result in the same expression template being generated and put into the wrapper
-class template.
+    ```cpp
+    constexpr auto my_unit = inverse(second);
+    ```
+
+    Both cases will result in the same expression template being generated and put into the wrapper
+    class template.
 
 
 ### Supported operations and their results

@@ -61,8 +61,8 @@ inline constexpr struct nu_second_ : named_unit<"s"> {} nu_second;
 // derived named units
 inline constexpr struct radian_ : named_unit<"rad", metre / metre> {} radian;
 inline constexpr struct steradian_ : named_unit<"sr", square(metre) / square(metre)> {} steradian;
-inline constexpr struct hertz_ : named_unit<"Hz", 1 / second> {} hertz;
-inline constexpr struct becquerel_ : named_unit<"Bq", 1 / second> {} becquerel;
+inline constexpr struct hertz_ : named_unit<"Hz", inverse(second)> {} hertz;
+inline constexpr struct becquerel_ : named_unit<"Bq", inverse(second)> {} becquerel;
 inline constexpr struct newton_ : named_unit<"N", kilogram * metre / square(second)> {} newton;
 inline constexpr struct pascal_ : named_unit<"Pa", newton / square(metre)> {} pascal;
 inline constexpr struct joule_ : named_unit<"J", newton * metre> {} joule;
@@ -267,13 +267,13 @@ static_assert(get_canonical_unit(kJ_42).mag == mag<42'000'000>);
 
 
 // derived unit expression template syntax verification
-static_assert(is_of_type<1 / second, derived_unit<one_, per<second_>>>);
-static_assert(is_of_type<1 / (1 / second), second_>);
+static_assert(is_of_type<inverse(second), derived_unit<one_, per<second_>>>);
+static_assert(is_of_type<one / (inverse(second)), second_>);
 
 static_assert(is_of_type<one * second, second_>);
 static_assert(is_of_type<second * one, second_>);
-static_assert(is_of_type<one * (1 / second), derived_unit<one_, per<second_>>>);
-static_assert(is_of_type<1 / second * one, derived_unit<one_, per<second_>>>);
+static_assert(is_of_type<one * inverse(second), derived_unit<one_, per<second_>>>);
+static_assert(is_of_type<one / second * one, derived_unit<one_, per<second_>>>);
 
 static_assert(is_of_type<metre * second, derived_unit<metre_, second_>>);
 static_assert(is_of_type<metre * metre, derived_unit<power<metre_, 2>>>);
@@ -295,18 +295,18 @@ static_assert(is_of_type<metre * second * metre, derived_unit<power<metre_, 2>, 
 static_assert(is_of_type<metre*(second* metre), derived_unit<power<metre_, 2>, second_>>);
 static_assert(is_of_type<second*(metre* metre), derived_unit<power<metre_, 2>, second_>>);
 
-static_assert(is_of_type<1 / second * metre, derived_unit<metre_, per<second_>>>);
-static_assert(is_of_type<1 / second * second, one_>);
+static_assert(is_of_type<one / second * metre, derived_unit<metre_, per<second_>>>);
+static_assert(is_of_type<one / second * second, one_>);
 
 static_assert(is_of_type<second / one, second_>);
-static_assert(is_of_type<1 / second / one, derived_unit<one_, per<second_>>>);
+static_assert(is_of_type<one / second / one, derived_unit<one_, per<second_>>>);
 
 static_assert(is_of_type<metre / second * second, metre_>);
-static_assert(is_of_type<1 / second * (1 / second), derived_unit<one_, per<power<second_, 2>>>>);
-static_assert(is_of_type<1 / (second * second), derived_unit<one_, per<power<second_, 2>>>>);
-static_assert(is_of_type<1 / (1 / (second * second)), derived_unit<power<second_, 2>>>);
+static_assert(is_of_type<one / second * inverse(second), derived_unit<one_, per<power<second_, 2>>>>);
+static_assert(is_of_type<one / (second * second), derived_unit<one_, per<power<second_, 2>>>>);
+static_assert(is_of_type<one / inverse(second* second), derived_unit<power<second_, 2>>>);
 
-static_assert(is_of_type<metre / second * (1 / second), derived_unit<metre_, per<power<second_, 2>>>>);
+static_assert(is_of_type<metre / second * inverse(second), derived_unit<metre_, per<power<second_, 2>>>>);
 static_assert(is_of_type<metre / second*(metre / second), derived_unit<power<metre_, 2>, per<power<second_, 2>>>>);
 static_assert(is_of_type<metre / second*(second / metre), one_>);
 
@@ -314,12 +314,13 @@ static_assert(is_of_type<watt / joule, derived_unit<watt_, per<joule_>>>);
 static_assert(is_of_type<joule / watt, derived_unit<joule_, per<watt_>>>);
 
 static_assert(is_of_type<one / second, derived_unit<one_, per<second_>>>);
-static_assert(is_of_type<1 / (1 / second), second_>);
-static_assert(is_of_type<one / (1 / second), second_>);
+static_assert(is_of_type<one / inverse(second), second_>);
+static_assert(is_of_type<one / inverse(second), second_>);
 
-static_assert(is_of_type<1 / pascal, derived_unit<one_, per<pascal_>>>);
-static_assert(is_of_type<1 / gram * metre * square(second), derived_unit<metre_, power<second_, 2>, per<gram_>>>);
-static_assert(is_of_type<1 / (gram / (metre * square(second))), derived_unit<metre_, power<second_, 2>, per<gram_>>>);
+static_assert(is_of_type<inverse(pascal), derived_unit<one_, per<pascal_>>>);
+static_assert(is_of_type<inverse(gram) * metre * square(second), derived_unit<metre_, power<second_, 2>, per<gram_>>>);
+static_assert(
+  is_of_type<inverse(gram / (metre * square(second))), derived_unit<metre_, power<second_, 2>, per<gram_>>>);
 static_assert(is_of_type<one*(metre* square(second) / gram), derived_unit<metre_, power<second_, 2>, per<gram_>>>);
 static_assert(is_of_type<one * metre * square(second) / gram, derived_unit<metre_, power<second_, 2>, per<gram_>>>);
 static_assert(is_of_type<(metre * square(second) / gram) * one, derived_unit<metre_, power<second_, 2>, per<gram_>>>);
@@ -335,11 +336,11 @@ static_assert(is_of_type<speed_of_light_in_vacuum * gram * standard_gravity,
 static_assert(is_of_type<gram * standard_gravity * speed_of_light_in_vacuum,
                          derived_unit<speed_of_light_in_vacuum_, gram_, standard_gravity_>>);
 
-static_assert(std::is_same_v<decltype(1 / second * metre), decltype(metre / second)>);
-static_assert(std::is_same_v<decltype(metre * (1 / second)), decltype(metre / second)>);
-static_assert(std::is_same_v<decltype((metre / second) * (1 / second)), decltype(metre / second / second)>);
-static_assert(std::is_same_v<decltype((metre / second) * (1 / second)), decltype(metre / (second * second))>);
-static_assert(std::is_same_v<decltype((metre / second) * (1 / second)), decltype(metre / square(second))>);
+static_assert(std::is_same_v<decltype(inverse(second) * metre), decltype(metre / second)>);
+static_assert(std::is_same_v<decltype(metre * inverse(second)), decltype(metre / second)>);
+static_assert(std::is_same_v<decltype((metre / second) * inverse(second)), decltype(metre / second / second)>);
+static_assert(std::is_same_v<decltype((metre / second) * inverse(second)), decltype(metre / (second * second))>);
+static_assert(std::is_same_v<decltype((metre / second) * inverse(second)), decltype(metre / square(second))>);
 
 
 // derived unit normalization
@@ -357,13 +358,13 @@ static_assert(is_of_type<km_per_h, derived_unit<kilometre_, per<hour_>>>);
 static_assert(is_of_type<get_canonical_unit(km_per_h).reference_unit, derived_unit<metre_, per<second_>>>);
 static_assert(get_canonical_unit(km_per_h).mag == mag<ratio{1000, 3600}>);
 
-static_assert(is_of_type<get_canonical_unit(1 / metre).reference_unit, derived_unit<one_, per<metre_>>>);
-static_assert(is_of_type<get_canonical_unit(1 / hertz).reference_unit, second_>);
+static_assert(is_of_type<get_canonical_unit(inverse(metre)).reference_unit, derived_unit<one_, per<metre_>>>);
+static_assert(is_of_type<get_canonical_unit(inverse(hertz)).reference_unit, second_>);
 
 static_assert(
   is_of_type<get_canonical_unit(pascal).reference_unit, derived_unit<gram_, per<metre_, power<second_, 2>>>>);
 static_assert(
-  is_of_type<get_canonical_unit(1 / pascal).reference_unit, derived_unit<metre_, power<second_, 2>, per<gram_>>>);
+  is_of_type<get_canonical_unit(one / pascal).reference_unit, derived_unit<metre_, power<second_, 2>, per<gram_>>>);
 
 static_assert(
   is_of_type<get_canonical_unit(standard_gravity).reference_unit, derived_unit<metre_, per<power<second_, 2>>>>);
@@ -384,7 +385,7 @@ static_assert(is_of_type<u2, scaled_unit<mag<1000>, derived_unit<kilometre_, per
 static_assert(is_of_type<get_canonical_unit(u2).reference_unit, derived_unit<metre_, per<second_>>>);
 static_assert(get_canonical_unit(u2).mag == mag<ratio{1'000'000, 3'600}>);
 
-constexpr auto u3 = 1 / hour * (mag<1000> * kilometre);
+constexpr auto u3 = one / hour * (mag<1000> * kilometre);
 static_assert(is_of_type<u3, scaled_unit<mag<1000>, derived_unit<kilometre_, per<hour_>>>>);
 static_assert(is_of_type<get_canonical_unit(u3).reference_unit, derived_unit<metre_, per<second_>>>);
 static_assert(get_canonical_unit(u3).mag == mag<ratio{1'000'000, 3'600}>);
@@ -432,8 +433,8 @@ static_assert(si::milli<metre> * si::kilo<metre> == si::deci<metre> * si::deca<m
 static_assert(si::kilo<metre> * si::milli<metre> == si::deca<metre> * si::deci<metre>);
 
 // comparisons of equivalent units (named vs unnamed/derived)
-static_assert(1 / second == hertz);
-static_assert(convertible(1 / second, hertz));
+static_assert(one / second == hertz);
+static_assert(convertible(one / second, hertz));
 
 // comparisons of equivalent units of different quantities
 static_assert(hertz == becquerel);
@@ -472,7 +473,7 @@ static_assert(percent * one == percent);
 static_assert(is_of_type<one * percent, percent_>);
 static_assert(is_of_type<percent * one, percent_>);
 
-static_assert(hertz == 1 / second);
+static_assert(hertz == one / second);
 static_assert(newton == kilogram * metre / square(second));
 static_assert(joule == kilogram * square(metre) / square(second));
 static_assert(joule == newton * metre);
@@ -516,8 +517,8 @@ static_assert(is_of_type<common_unit(si::kilo<gram>, kilogram), kilogram_>);
 static_assert(is_of_type<common_unit(kilogram, si::kilo<gram>), kilogram_>);
 static_assert(is_of_type<common_unit(mag<1000>* gram, kilogram), kilogram_>);
 static_assert(is_of_type<common_unit(kilogram, mag<1000>* gram), kilogram_>);
-static_assert(is_of_type<common_unit(1 / second, hertz), hertz_>);
-static_assert(is_of_type<common_unit(hertz, 1 / second), hertz_>);
+static_assert(is_of_type<common_unit(one / second, hertz), hertz_>);
+static_assert(is_of_type<common_unit(hertz, one / second), hertz_>);
 static_assert(is_of_type<common_unit(gram, kilogram), gram_>);
 static_assert(is_of_type<common_unit(kilogram, gram), gram_>);
 static_assert(is_of_type<common_unit(second, hour), second_>);

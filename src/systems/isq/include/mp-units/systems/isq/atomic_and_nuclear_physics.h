@@ -30,7 +30,7 @@
 namespace mp_units::isq {
 
 // TODO Add all the remaining ISQ definitions
-QUANTITY_SPEC(activity, 1 / duration);
+QUANTITY_SPEC(activity, inverse(duration));
 QUANTITY_SPEC(absorbed_dose, energy / mass);
 QUANTITY_SPEC(ionizing_radiation_quality_factor, dimensionless);
 QUANTITY_SPEC(dose_equivalent, absorbed_dose* ionizing_radiation_quality_factor);

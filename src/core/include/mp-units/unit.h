@@ -77,7 +77,7 @@ inline constexpr bool is_specialization_of_scaled_unit<scaled_unit<M, U>> = true
  * @code{.cpp}
  * inline constexpr struct second : named_unit<"s", time> {} second;
  * inline constexpr struct metre : named_unit<"m", length> {} metre;
- * inline constexpr struct hertz : named_unit<"Hz", 1 / second> {} hertz;
+ * inline constexpr struct hertz : named_unit<"Hz", inverse(second)> {} hertz;
  * inline constexpr struct newton : named_unit<"N", kilogram * metre / square(second)> {} newton;
  * inline constexpr struct degree_Celsius : named_unit<basic_symbol_text{"°C", "`C"}, kelvin> {} degree_Celsius;
  * inline constexpr struct minute : named_unit<"min", mag<60> * second> {} minute;
@@ -212,8 +212,8 @@ struct is_one : std::false_type {};
  * For example:
  *
  * @code{.cpp}
- * static_assert(is_of_type<1 / second, derived_unit<one, per<second>>>);
- * static_assert(is_of_type<1 / (1 / second), second>);
+ * static_assert(is_of_type<inverse(second), derived_unit<one, per<second>>>);
+ * static_assert(is_of_type<one / inverse(second), second>);
  * static_assert(is_of_type<one * second, second>);
  * static_assert(is_of_type<metre * metre, derived_unit<power<metre, 2>>>);
  * static_assert(is_of_type<metre * second, derived_unit<metre, second>>);
@@ -436,7 +436,7 @@ template<Unit Lhs, Unit Rhs>
 template<Magnitude M, Unit U>
 [[nodiscard]] MP_UNITS_CONSTEVAL Unit auto operator/(M mag, const U u)
 {
-  return mag * (1 / u);
+  return mag * inverse(u);
 }
 
 /**
@@ -457,13 +457,8 @@ template<Unit Lhs, Unit Rhs>
     return detail::expr_divide<derived_unit, struct one, detail::type_list_of_unit_less>(lhs, rhs);
 }
 
-[[nodiscard]] MP_UNITS_CONSTEVAL Unit auto operator/(int value, Unit auto u)
-{
-  gsl_Expects(value == 1);
-  return detail::expr_invert<derived_unit, struct one>(u);
-}
+[[nodiscard]] MP_UNITS_CONSTEVAL Unit auto inverse(Unit auto u) { return one / u; }
 
-[[nodiscard]] consteval Unit auto operator/(Unit auto, int) = delete;
 
 namespace detail {
 

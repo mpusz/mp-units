@@ -167,7 +167,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 
       SECTION("compressibility")
       {
-        const auto q = 123 * isq::compressibility[1 / Pa];
+        const auto q = 123 * isq::compressibility[one / Pa];
         os << q;
 
         SECTION("iostream") { CHECK(os.str() == "123 1/Pa"); }

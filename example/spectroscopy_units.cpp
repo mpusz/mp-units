@@ -61,7 +61,7 @@ template<QuantityOf<isq::energy> T1, QuantityOf<isq::wavenumber> T2, QuantityOf<
 void print_line_si(const std::tuple<T1, T2, T3, T4, T5>& t)
 {
   MP_UNITS_STD_FMT::println("| {:<15} | {:<15} | {:<15} | {:<15} | {:<15} |", std::get<0>(t).in(eV),
-                            std::get<1>(t).in(1 / cm), std::get<2>(t).in(THz), std::get<3>(t).in(K),
+                            std::get<1>(t).in(one / cm), std::get<2>(t).in(THz), std::get<3>(t).in(K),
                             std::get<4>(t).in(um));
 }
 
@@ -71,7 +71,7 @@ int main()
   const auto t1 = std::make_tuple(q1, isq::wavenumber(q1 / (h * c)), isq::frequency(q1 / h),
                                   isq::thermodynamic_temperature(q1 / kb), isq::wavelength(h * c / q1));
 
-  const auto q2 = 1. * isq::wavenumber[1 / cm];
+  const auto q2 = 1. * isq::wavenumber[one / cm];
   const auto t2 = std::make_tuple(isq::energy(q2 * h * c), q2, isq::frequency(q2 * c),
                                   isq::thermodynamic_temperature(q2 * h * c / kb), isq::wavelength(1 / q2));
 

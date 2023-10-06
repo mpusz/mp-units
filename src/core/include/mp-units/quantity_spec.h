@@ -395,7 +395,7 @@ struct quantity_spec<Self, QS, Eq, Args...> : quantity_spec<Self, QS, Args...> {
  * For example:
  *
  * @code{.cpp}
- * auto frequency = 1 / period_duration;
+ * auto frequency = inverse(period_duration);
  * auto area = pow<2>(length);
  * auto speed = distance / duration;
  * auto velocity = position_vector / duration;
@@ -496,7 +496,7 @@ template<QuantitySpec auto... From, QuantitySpec Q>
 
 [[nodiscard]] consteval QuantitySpec auto operator*(QuantitySpec auto lhs, QuantitySpec auto rhs)
 {
-  return clone_kind_of<lhs, rhs>(
+  return detail::clone_kind_of<lhs, rhs>(
     detail::expr_multiply<derived_quantity_spec, struct dimensionless, detail::type_list_of_quantity_spec_less>(
       remove_kind(lhs), remove_kind(rhs)));
 }
@@ -504,18 +504,10 @@ template<QuantitySpec auto... From, QuantitySpec Q>
 template<QuantitySpec Lhs, QuantitySpec Rhs>
 [[nodiscard]] consteval QuantitySpec auto operator/(Lhs lhs, Rhs rhs)
 {
-  return clone_kind_of<lhs, rhs>(
+  return detail::clone_kind_of<lhs, rhs>(
     detail::expr_divide<derived_quantity_spec, struct dimensionless, detail::type_list_of_quantity_spec_less>(
       remove_kind(lhs), remove_kind(rhs)));
 }
-
-[[nodiscard]] consteval QuantitySpec auto operator/(int value, QuantitySpec auto q)
-{
-  gsl_Expects(value == 1);
-  return clone_kind_of<q>(detail::expr_invert<derived_quantity_spec, struct dimensionless>(q));
-}
-
-[[nodiscard]] consteval QuantitySpec auto operator/(QuantitySpec auto, int) = delete;
 
 template<QuantitySpec Lhs, QuantitySpec Rhs>
 [[nodiscard]] consteval bool operator==(Lhs, Rhs)
@@ -533,6 +525,11 @@ template<QuantitySpec Lhs, detail::QuantityKindSpec Rhs>
 [[nodiscard]] consteval bool operator==(Lhs, Rhs rhs)
 {
   return is_same_v<Lhs, std::remove_const_t<decltype(remove_kind(rhs))>>;
+}
+
+[[nodiscard]] consteval QuantitySpec auto inverse(QuantitySpec auto q)
+{
+  return dimensionless / q;
 }
 
 
