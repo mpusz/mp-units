@@ -527,10 +527,7 @@ template<QuantitySpec Lhs, detail::QuantityKindSpec Rhs>
   return is_same_v<Lhs, std::remove_const_t<decltype(remove_kind(rhs))>>;
 }
 
-[[nodiscard]] consteval QuantitySpec auto inverse(QuantitySpec auto q)
-{
-  return dimensionless / q;
-}
+[[nodiscard]] consteval QuantitySpec auto inverse(QuantitySpec auto q) { return dimensionless / q; }
 
 
 /**

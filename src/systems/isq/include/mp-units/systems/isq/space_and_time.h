@@ -80,6 +80,6 @@ QUANTITY_SPEC(attenuation, inverse(distance));
 inline constexpr auto extinction = attenuation;
 QUANTITY_SPEC(phase_coefficient, phase_angle / path_length);
 QUANTITY_SPEC(propagation_coefficient, inverse(length));  // γ = α + iβ where α denotes attenuation
-                                                     // and β the phase coefficient of a plane wave
+                                                          // and β the phase coefficient of a plane wave
 
 }  // namespace mp_units::isq
