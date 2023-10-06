@@ -134,11 +134,11 @@ void example()
   using namespace mp_units;
   using namespace mp_units::si::unit_symbols;
 
-  const auto a = isq::acceleration(measurement{9.8, 0.1} * m / s2);
-  const auto t = measurement{1.2, 0.1} * s;
+  const auto acceleration = isq::acceleration(measurement{9.8, 0.1} * m / s2);
+  const auto time = measurement{1.2, 0.1} * s;
 
-  const QuantityOf<isq::velocity> auto v = a * t;
-  std::cout << a << " * " << t << " = " << v << " = " << v.in(km / h) << '\n';
+  const QuantityOf<isq::velocity> auto velocity = acceleration * time;
+  std::cout << acceleration << " * " << time << " = " << velocity << " = " << velocity.in(km / h) << '\n';
 
   const auto length = measurement{123., 1.} * m;
   std::cout << "10 * " << length << " = " << 10 * length << '\n';

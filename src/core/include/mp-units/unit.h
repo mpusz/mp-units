@@ -354,9 +354,9 @@ template<typename T, typename F, int Num, int... Den>
 template<typename... Us>
 [[nodiscard]] consteval auto get_canonical_unit_impl(const type_list<Us...>&)
 {
-  auto mag = (mp_units::mag<1> * ... * get_canonical_unit_impl(Us{}, Us{}).mag);
+  auto m = (mp_units::mag<1> * ... * get_canonical_unit_impl(Us{}, Us{}).mag);
   auto u = (one * ... * get_canonical_unit_impl(Us{}, Us{}).reference_unit);
-  return canonical_unit{mag, u};
+  return canonical_unit{m, u};
 }
 
 template<Unit T, typename... Expr>
@@ -402,12 +402,12 @@ using type_list_of_unit_less = expr_less<T1, T2, unit_less>;
  * Multiplication by `1` returns the same unit, otherwise `scaled_unit` is being returned.
  */
 template<Magnitude M, Unit U>
-[[nodiscard]] MP_UNITS_CONSTEVAL Unit auto operator*(M mag, const U u)
+[[nodiscard]] MP_UNITS_CONSTEVAL Unit auto operator*(M, const U u)
 {
-  if constexpr (mag == mp_units::mag<1>)
+  if constexpr (std::is_same_v<M, std::remove_cvref_t<decltype(mp_units::mag<1>)>>)
     return u;
   else
-    return scaled_unit<mag, U>{};
+    return scaled_unit<M{}, U>{};
 }
 
 [[nodiscard]] consteval Unit auto operator*(Unit auto, Magnitude auto) = delete;

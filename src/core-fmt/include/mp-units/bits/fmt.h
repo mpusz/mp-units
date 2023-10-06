@@ -103,9 +103,9 @@ struct width_checker {
         if (value < 0) MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("negative width"));
       }
       return static_cast<unsigned long long>(value);
-    } else {
-      MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("width is not integer"));
     }
+    MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("width is not integer"));
+    return 0;  // should never happen
   }
 };
 
@@ -118,9 +118,9 @@ struct precision_checker {
         if (value < 0) MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("negative precision"));
       }
       return static_cast<unsigned long long>(value);
-    } else {
-      MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("precision is not integer"));
     }
+    MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("precision is not integer"));
+    return 0;  // should never happen
   }
 };
 
@@ -230,6 +230,7 @@ template<std::input_iterator It, std::sentinel_for<It> S, typename IDHandler>
     return begin;
   }
   MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("invalid format string"));
+  return begin;  // should never happen
 }
 
 template<std::input_iterator It, std::sentinel_for<It> S, typename IDHandler>

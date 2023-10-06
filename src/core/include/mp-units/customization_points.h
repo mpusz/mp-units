@@ -132,11 +132,42 @@ struct quantity_values {
   }
 };
 
+template<typename T>
+struct convert_explicitly {
+  using value_type = T;
+  T value;
+  constexpr explicit(false) convert_explicitly(T v) noexcept(std::is_nothrow_constructible_v<T>) : value(std::move(v))
+  {
+  }
+};
+
+template<typename T>
+struct convert_implicitly {
+  using value_type = T;
+  T value;
+  constexpr explicit(false) convert_implicitly(T v) noexcept(std::is_nothrow_constructible_v<T>) : value(std::move(v))
+  {
+  }
+};
+
+namespace detail {
+
+template<typename T>
+concept ConversionSpec = is_specialization_of<T, convert_explicitly> || is_specialization_of<T, convert_implicitly>;
+
+template<typename T, typename U>
+concept ConversionSpecOf = ConversionSpec<T> && std::same_as<typename T::value_type, U>;
+
+}  // namespace detail
+
 /**
  * @brief Provides support for external quantity-like types
  *
  * The type trait should provide the @c reference object, a type alias @c rep,
- * and a static member function @c value(T) that returns the raw value of the quantity.
+ * and static member functions @c to_numerical_value(T) that returns the raw value
+ * of the quantity and @c from_numerical_value(rep) that returns @c T from @c rep.
+ * Both return types should be encapsulated in either @c convert_explicitly or
+ * @c convert_implicitly to specify if the conversion is allowed to happen implicitly.
  *
  * Usage example can be found in @c units/chrono.h header file.
  *
@@ -149,8 +180,11 @@ struct quantity_like_traits;
  * @brief Provides support for external quantity point-like types
  *
  * The type trait should provide nested @c reference and @c origin objects,
- * a type alias @c rep, and a static member function @c quantity_from_origin(T) that will
- * return the quantity being the offset of the point from the origin.
+ * a type alias @c rep, and static member functions @c to_quantity(T) that returns
+ * the quantity being the offset of the point from the origin and
+ * @c from_quantity(quantity<reference, rep>) that returns @c T form this quantity.
+ * Both return types should be encapsulated in either @c convert_explicitly or
+ * @c convert_implicitly to specify if the conversion is allowed to happen implicitly.
  *
  * Usage example can be found in @c units/chrono.h header file.
  *
