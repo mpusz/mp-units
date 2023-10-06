@@ -212,9 +212,9 @@ either:
     The following does not work:
 
     ```cpp
-    Quantity auto q1 = la_vector{1, 2, 3} * (m / s);
-    Quantity auto q2 = isq::velocity(la_vector{1, 2, 3} * (m / s));
-    quantity<isq::velocity[m/s]> q3{la_vector{1, 2, 3} * (m / s)};
+    Quantity auto q1 = la_vector{1, 2, 3} * m / s;
+    Quantity auto q2 = isq::velocity(la_vector{1, 2, 3} * m / s);
+    quantity<isq::velocity[m/s]> q3{la_vector{1, 2, 3} * m / s};
     ```
 
     In all the cases above, the SI unit `m / s` has an associated scalar quantity of `isq::length / isq::time`.

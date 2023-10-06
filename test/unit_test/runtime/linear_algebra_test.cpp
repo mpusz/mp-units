@@ -311,7 +311,7 @@ TEST_CASE("vector of quantities", "[la]")
 
   SECTION("to scalar magnitude")
   {
-    const vector<quantity<isq::velocity[km / h], int>> v = {2 * (km / h), 3 * (km / h), 6 * (km / h)};
+    const vector<quantity<isq::velocity[km / h], int>> v = {2 * km / h, 3 * km / h, 6 * km / h};
     const auto speed = get_magnitude<isq::speed>(v);
     CHECK(speed.numerical_value_ref_in(km / h) == 7);
   }
@@ -384,12 +384,12 @@ TEST_CASE("vector of quantities", "[la]")
 
   SECTION("multiply by scalar quantity")
   {
-    const vector<quantity<isq::velocity[m / s], int>> v = {1 * (m / s), 2 * (m / s), 3 * (m / s)};
+    const vector<quantity<isq::velocity[m / s], int>> v = {1 * m / s, 2 * m / s, 3 * m / s};
 
     SECTION("integral")
     {
       const auto mass = 2 * isq::mass[kg];
-      const auto result = vector<quantity<isq::momentum[N * s], int>>{2 * (N * s), 4 * (N * s), 6 * (N * s)};
+      const auto result = vector<quantity<isq::momentum[N * s], int>>{2 * N * s, 4 * N * s, 6 * N * s};
 
       SECTION("derived_quantity_spec")
       {
@@ -417,7 +417,7 @@ TEST_CASE("vector of quantities", "[la]")
     SECTION("floating-point")
     {
       const auto mass = 0.5 * isq::mass[kg];
-      const auto result = vector<quantity<isq::momentum[N * s], double>>{0.5 * (N * s), 1. * (N * s), 1.5 * (N * s)};
+      const auto result = vector<quantity<isq::momentum[N * s], double>>{0.5 * N * s, 1. * N * s, 1.5 * N * s};
 
       SECTION("derived_quantity_spec")
       {
@@ -453,7 +453,7 @@ TEST_CASE("vector of quantities", "[la]")
 
       SECTION("derived_quantity_spec")
       {
-        CHECK(pos / dur == vector<quantity<isq::velocity[km / h], int>>{15 * (km / h), 10 * (km / h), 5 * (km / h)});
+        CHECK(pos / dur == vector<quantity<isq::velocity[km / h], int>>{15 * km / h, 10 * km / h, 5 * km / h});
       }
 
       // no way to apply quantity_cast to sub-components
@@ -461,7 +461,7 @@ TEST_CASE("vector of quantities", "[la]")
       SECTION("quantity of velocity")
       {
         const vector<quantity<isq::velocity[km / h], int>> v = pos / dur;
-        CHECK(v == vector<quantity<isq::velocity[km / h], int>>{15 * (km / h), 10 * (km / h), 5 * (km / h)});
+        CHECK(v == vector<quantity<isq::velocity[km / h], int>>{15 * km / h, 10 * km / h, 5 * km / h});
       }
     }
 
@@ -471,8 +471,7 @@ TEST_CASE("vector of quantities", "[la]")
 
       SECTION("derived_quantity_spec")
       {
-        CHECK(pos / dur ==
-              vector<quantity<isq::velocity[km / h], double>>{60. * (km / h), 40. * (km / h), 20. * (km / h)});
+        CHECK(pos / dur == vector<quantity<isq::velocity[km / h], double>>{60. * km / h, 40. * km / h, 20. * km / h});
       }
 
       // no way to apply quantity_cast to sub-components
@@ -480,7 +479,7 @@ TEST_CASE("vector of quantities", "[la]")
       SECTION("quantity of velocity")
       {
         const vector<quantity<isq::velocity[km / h], double>> v = pos / dur;
-        CHECK(v == vector<quantity<isq::velocity[km / h], double>>{60. * (km / h), 40. * (km / h), 20. * (km / h)});
+        CHECK(v == vector<quantity<isq::velocity[km / h], double>>{60. * km / h, 40. * km / h, 20. * km / h});
       }
     }
   }
@@ -490,7 +489,6 @@ TEST_CASE("vector of quantities", "[la]")
     const vector<quantity<isq::position_vector[m], int>> r = {3 * m, 0 * m, 0 * m};
     const vector<quantity<isq::force[N], int>> f = {0 * N, 10 * N, 0 * N};
 
-    CHECK(cross_product(r, f) ==
-          vector<quantity<isq::moment_of_force[N * m], int>>{0 * (N * m), 0 * (N * m), 30 * (N * m)});
+    CHECK(cross_product(r, f) == vector<quantity<isq::moment_of_force[N * m], int>>{0 * N * m, 0 * N * m, 30 * N * m});
   }
 }

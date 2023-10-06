@@ -53,7 +53,7 @@ int main()
   using state = kalman::state<quantity<isq::position_vector[m]>, quantity<isq::velocity[m / s]>>;
 
   const auto interval = isq::duration(5 * s);
-  const state initial = {30 * km, 50 * (m / s)};
+  const state initial = {30 * km, 50 * m / s};
   const quantity<isq::position_vector[m], int> measurements[] = {30'160 * m, 30'365 * m, 30'890 * m, 31'050 * m,
                                                                  31'785 * m, 32'215 * m, 33'130 * m, 34'510 * m,
                                                                  36'010 * m, 37'265 * m};

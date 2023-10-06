@@ -67,13 +67,8 @@ quantity q = make_quantity<si::metre>(42);
 Sometimes it might be awkward to type some derived units:
 
 ```cpp
-quantity speed = 60 * (km / h);
+quantity speed = 60 * km / h;
 ```
-
-!!! note
-
-    Please note that `60 * km / h` will not compile. To read more about the rationale for such
-    a design please check our [FAQ](faq.md#why-dont-we-use-udls-to-create-a-quantity).
 
 In case such a unit is used a lot in the project, a user can easily provide a nicely named
 wrapper for it with:

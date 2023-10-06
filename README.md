@@ -63,10 +63,9 @@ static_assert(1 * h == 3600 * s);
 static_assert(1 * km + 1 * m == 1001 * m);
 
 // derived quantities
-inline constexpr auto kmph = km / h;
-static_assert(1 * km / (1 * s) == 1000 * (m / s));
-static_assert(2 * kmph * (2 * h) == 4 * km);
-static_assert(2 * km / (2 * kmph) == 1 * h);
+static_assert(1 * km / (1 * s) == 1000 * m / s);
+static_assert(2 * km / h * (2 * h) == 4 * km);
+static_assert(2 * km / (2 * km / h) == 1 * h);
 
 static_assert(2 * m * (3 * m) == 6 * m2);
 
@@ -103,7 +102,7 @@ int main()
   using namespace mp_units::si::unit_symbols;
   using namespace mp_units::international::unit_symbols;
 
-  constexpr quantity v1 = 110 * (km / h);
+  constexpr quantity v1 = 110 * km / h;
   constexpr quantity v2 = 70 * mph;
   constexpr quantity v3 = avg_speed(220. * isq::distance[km], 2 * h);
   constexpr quantity v4 = avg_speed(isq::distance(140. * mi), 2 * h);

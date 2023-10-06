@@ -107,8 +107,8 @@ However, it also explicitly states:
 The library allows constraining such units in the following way:
 
 ```cpp
-inline constexpr struct hertz : named_unit<"Hz", 1 / second, kind_of<isq::frequency>> {} hertz;
-inline constexpr struct becquerel : named_unit<"Bq", 1 / second, kind_of<isq::activity>> {} becquerel;
+inline constexpr struct hertz : named_unit<"Hz", one / second, kind_of<isq::frequency>> {} hertz;
+inline constexpr struct becquerel : named_unit<"Bq", one / second, kind_of<isq::activity>> {} becquerel;
 ```
 
 With the above, `hertz` can only be used for frequencies while becquerel should only be used for

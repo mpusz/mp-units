@@ -48,22 +48,22 @@ static_assert(verify(traffic_load, scalar, E));
 static_assert(verify(mean_queue_length, scalar, one));
 static_assert(verify(loss_probability, scalar, one));
 static_assert(verify(waiting_probability, scalar, one));
-static_assert(verify(call_intensity, scalar, 1 / s));
-static_assert(verify(calling_rate, scalar, 1 / s));
-static_assert(verify(completed_call_intensity, scalar, 1 / s));
+static_assert(verify(call_intensity, scalar, one / s));
+static_assert(verify(calling_rate, scalar, one / s));
+static_assert(verify(completed_call_intensity, scalar, one / s));
 static_assert(verify(storage_capacity, scalar, one, bit, o, B));
 static_assert(verify(storage_size, scalar, one, bit, o, B));
 static_assert(verify(equivalent_binary_storage_capacity, scalar, one, bit));
-static_assert(verify(transfer_rate, scalar, 1 / s, o / s, B / s));
+static_assert(verify(transfer_rate, scalar, one / s, o / s, B / s));
 static_assert(verify(period_of_data_elements, scalar, s));
-static_assert(verify(binary_digit_rate, scalar, 1 / s, bit / s));
-static_assert(verify(bit_rate, scalar, 1 / s, bit / s));
+static_assert(verify(binary_digit_rate, scalar, one / s, bit / s));
+static_assert(verify(bit_rate, scalar, one / s, bit / s));
 static_assert(verify(period_of_binary_digits, scalar, s));
 static_assert(verify(bit_period, scalar, s));
-static_assert(verify(equivalent_binary_digit_rate, scalar, 1 / s, bit / s));
-static_assert(verify(equivalent_bit_rate, scalar, 1 / s, bit / s));
-static_assert(verify(modulation_rate, scalar, 1 / s, Bd));
-static_assert(verify(line_digit_rate, scalar, 1 / s, Bd));
+static_assert(verify(equivalent_binary_digit_rate, scalar, one / s, bit / s));
+static_assert(verify(equivalent_bit_rate, scalar, one / s, bit / s));
+static_assert(verify(modulation_rate, scalar, one / s, Bd));
+static_assert(verify(line_digit_rate, scalar, one / s, Bd));
 static_assert(verify(quantizing_distortion_power, scalar, W));
 static_assert(verify(carrier_power, scalar, W));
 static_assert(verify(signal_energy_per_binary_digit, scalar, J));
@@ -92,8 +92,8 @@ static_assert(storage_capacity(1 * Pibit) == storage_capacity(1024 * Tibit));
 static_assert(storage_capacity(1 * Eibit) == storage_capacity(1024 * Pibit));
 
 // transfer rate
-static_assert(storage_capacity(16 * B) / isq::duration(2 * s) == transfer_rate(8 * (B / s)));
-static_assert(storage_capacity(120 * kB) / isq::duration(2 * min) == transfer_rate(1000 * (B / s)));
+static_assert(storage_capacity(16 * B) / isq::duration(2 * s) == transfer_rate(8 * B / s));
+static_assert(storage_capacity(120 * kB) / isq::duration(2 * min) == transfer_rate(1000 * B / s));
 
 // modulation rate
 static_assert(12 / isq::duration(2 * s) == modulation_rate(6 * Bd));

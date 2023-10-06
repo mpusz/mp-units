@@ -134,7 +134,7 @@ void example()
   using namespace mp_units;
   using namespace mp_units::si::unit_symbols;
 
-  const auto acceleration = isq::acceleration(measurement{9.8, 0.1} * (m / s2));
+  const auto acceleration = isq::acceleration(measurement{9.8, 0.1} * m / s2);
   const auto time = measurement{1.2, 0.1} * s;
 
   const QuantityOf<isq::velocity> auto velocity = acceleration * time;

@@ -35,6 +35,7 @@ inline constexpr bool mp_units::is_vector<T> = true;
 
 int main()
 {
+  using namespace mp_units;
   using namespace mp_units::si;
   using namespace mp_units::si::unit_symbols;
 
@@ -52,7 +53,7 @@ int main()
   std::cout << MP_UNITS_STD_FMT::format("- Boltzmann constant:                   {} = {:%.6eQ %q}\n",
                                         1. * si2019::boltzmann_constant, (1. * si2019::boltzmann_constant).in(J / K));
   std::cout << MP_UNITS_STD_FMT::format("- Avogadro constant:                    {} = {:%.8eQ %q}\n",
-                                        1. * si2019::avogadro_constant, (1. * si2019::avogadro_constant).in(1 / mol));
+                                        1. * si2019::avogadro_constant, (1. * si2019::avogadro_constant).in(one / mol));
   std::cout << MP_UNITS_STD_FMT::format("- luminous efficacy:                    {} = {}\n",
                                         1. * si2019::luminous_efficacy, (1. * si2019::luminous_efficacy).in(lm / W));
 }

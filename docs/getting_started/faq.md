@@ -92,47 +92,6 @@ In the **mp-units** library, both a number and a unit have to always be explicit
 form a quantity.
 
 
-## Why `60 * km / h` does not compile?
-
-The library design does not allow multiplying or dividing a quantity (the result of `60 * km`)
-by another unit. This significantly limits the number of possible errors and surprises in the
-quantity equations.
-
-Consider the following expression:
-
-```cpp
-auto q = 60 * km / 2 * h;
-```
-
-Looks like `30 km/h`, right? But it is not. If the above code was allowed, it would result
-in `30 km⋅h`. In case you want to divide `60 * km` by `2 * h` a parenthesis is needed:
-
-```cpp
-auto q = 60 * km / (2 * h);
-```
-
-Another surprising issue could result from the following code:
-
-```cpp
-template<typename T>
-auto make_length(T v) { return v * si::metre; }
-
-auto v = 42;
-auto q = make_length(v);
-```
-
-The above might look like a good idea, but consider what would happen in the user provided
-an already existing quantity:
-
-```cpp
-auto v = 42 * m;
-auto q = make_length(v);
-```
-
-Fortunately, with the current design, such issues are detected at compile-time as
-multiplying or dividing a quantity by a unit is not be supported.
-
-
 ## Why a dimensionless quantity is not just a fundamental arithmetic type?
 
 In the initial design of this library, the resulting type of division of two quantities was their

@@ -42,7 +42,7 @@ QUANTITY_SPEC(radial_distance, distance);
 QUANTITY_SPEC(position_vector, length, quantity_character::vector);
 QUANTITY_SPEC(displacement, length, quantity_character::vector);
 QUANTITY_SPEC(radius_of_curvature, radius);
-QUANTITY_SPEC(curvature, 1 / radius_of_curvature);
+QUANTITY_SPEC(curvature, inverse(radius_of_curvature));
 QUANTITY_SPEC(area, pow<2>(length));
 QUANTITY_SPEC(volume, pow<3>(length));
 QUANTITY_SPEC(angular_measure, dimensionless, arc_length / radius, is_kind);
@@ -61,25 +61,25 @@ QUANTITY_SPEC(period_duration, duration);
 inline constexpr auto period = period_duration;
 QUANTITY_SPEC(time_constant, duration);
 QUANTITY_SPEC(rotation, dimensionless);
-QUANTITY_SPEC(frequency, 1 / period_duration);
+QUANTITY_SPEC(frequency, inverse(period_duration));
 QUANTITY_SPEC(rotational_frequency, rotation / duration);
 QUANTITY_SPEC(angular_frequency, phase_angle / duration);
 QUANTITY_SPEC(wavelength, length);
-QUANTITY_SPEC(repetency, 1 / wavelength);
+QUANTITY_SPEC(repetency, inverse(wavelength));
 inline constexpr auto wavenumber = repetency;
 QUANTITY_SPEC(wave_vector, repetency, quantity_character::vector);
-QUANTITY_SPEC(angular_repetency, 1 / wavelength);
+QUANTITY_SPEC(angular_repetency, inverse(wavelength));
 inline constexpr auto angular_wavenumber = angular_repetency;
 QUANTITY_SPEC(phase_velocity, angular_frequency / angular_repetency);
 inline constexpr auto phase_speed = phase_velocity;
 QUANTITY_SPEC(group_velocity, angular_frequency / angular_repetency);
 inline constexpr auto group_speed = group_velocity;
-QUANTITY_SPEC(damping_coefficient, 1 / time_constant);
+QUANTITY_SPEC(damping_coefficient, inverse(time_constant));
 QUANTITY_SPEC(logarithmic_decrement, dimensionless, damping_coefficient* period_duration);
-QUANTITY_SPEC(attenuation, 1 / distance);
+QUANTITY_SPEC(attenuation, inverse(distance));
 inline constexpr auto extinction = attenuation;
 QUANTITY_SPEC(phase_coefficient, phase_angle / path_length);
-QUANTITY_SPEC(propagation_coefficient, 1 / length);  // γ = α + iβ where α denotes attenuation
-                                                     // and β the phase coefficient of a plane wave
+QUANTITY_SPEC(propagation_coefficient, inverse(length));  // γ = α + iβ where α denotes attenuation
+                                                          // and β the phase coefficient of a plane wave
 
 }  // namespace mp_units::isq

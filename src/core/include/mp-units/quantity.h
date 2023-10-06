@@ -432,7 +432,7 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
 }
 
 template<auto R, typename Rep, typename Value>
-  requires(!Quantity<Value>) &&
+  requires(!Quantity<Value>) && (!Reference<Value>) &&
           detail::InvokeResultOf<get_quantity_spec(R).character, std::multiplies<>, Rep, const Value&>
 [[nodiscard]] constexpr Quantity auto operator*(const quantity<R, Rep>& q, const Value& v)
 {
@@ -440,7 +440,7 @@ template<auto R, typename Rep, typename Value>
 }
 
 template<typename Value, auto R, typename Rep>
-  requires(!Quantity<Value>) &&
+  requires(!Quantity<Value>) && (!Reference<Value>) &&
           detail::InvokeResultOf<get_quantity_spec(R).character, std::multiplies<>, const Value&, Rep>
 [[nodiscard]] constexpr Quantity auto operator*(const Value& v, const quantity<R, Rep>& q)
 {
@@ -456,7 +456,7 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
 }
 
 template<auto R, typename Rep, typename Value>
-  requires(!Quantity<Value>) &&
+  requires(!Quantity<Value>) && (!Reference<Value>) &&
           detail::InvokeResultOf<get_quantity_spec(R).character, std::divides<>, Rep, const Value&>
 [[nodiscard]] constexpr Quantity auto operator/(const quantity<R, Rep>& q, const Value& v)
 {
@@ -465,7 +465,7 @@ template<auto R, typename Rep, typename Value>
 }
 
 template<typename Value, auto R, typename Rep>
-  requires(!Quantity<Value>) &&
+  requires(!Quantity<Value>) && (!Reference<Value>) &&
           detail::InvokeResultOf<get_quantity_spec(R).character, std::divides<>, const Value&, Rep>
 [[nodiscard]] constexpr Quantity auto operator/(const Value& v, const quantity<R, Rep>& q)
 {

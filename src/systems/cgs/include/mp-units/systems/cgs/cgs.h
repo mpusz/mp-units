@@ -37,7 +37,7 @@ inline constexpr struct erg : named_unit<"erg", dyne * centimetre> {} erg;
 inline constexpr struct barye : named_unit<"Ba", gram / (centimetre * square(second))> {} barye;
 inline constexpr struct poise : named_unit<"P", gram / (centimetre * second)> {} poise;
 inline constexpr struct stokes : named_unit<"St", square(centimetre) / second> {} stokes;
-inline constexpr struct kayser : named_unit<"K", 1 / centimetre> {} kayser;
+inline constexpr struct kayser : named_unit<"K", one / centimetre> {} kayser;
 // clang-format on
 
 namespace unit_symbols {
