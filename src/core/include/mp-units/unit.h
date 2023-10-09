@@ -370,25 +370,7 @@ template<Unit T, typename... Expr>
 [[nodiscard]] consteval auto get_canonical_unit(Unit auto u) { return get_canonical_unit_impl(u, u); }
 
 template<Unit Lhs, Unit Rhs>
-[[nodiscard]] consteval bool less(Lhs, Rhs)
-{
-  if constexpr (requires {
-                  Lhs::symbol;
-                  Rhs::symbol;
-                })
-    // prefer symbols comparison if possible as it gives typically better results
-    // i.e. it puts upper case in from so `N m` is correct
-    return Lhs::symbol < Rhs::symbol;
-  else
-    return type_name<Lhs>() < type_name<Rhs>();
-}
-
-
-// TODO What if the same unit will have different types (i.e. user will inherit its own type from `metre`)?
-// Is there a better way to sort units here? Some of them may not have symbol at all (like all units of
-// dimensionless quantities).
-template<Unit Lhs, Unit Rhs>
-struct unit_less : std::bool_constant<less(Lhs{}, Rhs{})> {};
+struct unit_less : std::bool_constant<(Lhs::symbol < Rhs::symbol)> {};
 
 template<typename T1, typename T2>
 using type_list_of_unit_less = expr_less<T1, T2, unit_less>;
