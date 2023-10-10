@@ -47,7 +47,7 @@
 // - thermals exactly where and when we need them ;-)
 // - no airspaces
 // - ground level changes linearly between waypoints
-// - no ground obstacles (i.e. mountains) to pass
+// - no ground obstacles (e.g. mountains) to pass
 // - flight path exactly on a shortest possible line to destination
 
 namespace glide_computer {

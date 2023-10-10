@@ -36,7 +36,7 @@ inline constexpr bool space_before_unit_symbol<non_si::degree> = false;
 !!! note
 
     The above works only for [the default formatting](#default-formatting). In case we provide our own
-    format specification (i.e. `std::format("{:%Q %q}", q)`), the library will always obey this
+    format specification (e.g. `std::format("{:%Q %q}", q)`), the library will always obey this
     specification for all the units (no matter of what is the actual value of the
     `space_before_unit_symbol` customization point) and the separating space will always be present
     in this case.
@@ -130,17 +130,17 @@ In the above grammar:
   chapter of the C++ standard specification,
 - `units-text-encoding` tokens specify the unit text encoding:
     - `U` (default) uses the **Unicode** symbols defined by the [SI](../../appendix/glossary.md#si)
-      specification (i.e. `m³`, `µs`)
-    - `A` token forces non-standard **ASCII**-only output (i.e. `m^3`, `us`)
+      specification (e.g. `m³`, `µs`)
+    - `A` token forces non-standard **ASCII**-only output (e.g. `m^3`, `us`)
 - `units-unit-symbol-solidus` tokens specify how the division of units should look like:
     - `o` (default) outputs `/` only when there is only **one** unit in the denominator, otherwise negative
-      exponents are printed (i.e. `m/s`, `kg m⁻¹ s⁻¹`)
-    - `a` **always** uses solidus (i.e. `m/s`, `kg/(m s)`)
-    - `n` **never** prints solidus, which means that negative exponents are always used (i.e. `m s⁻¹`,
+      exponents are printed (e.g. `m/s`, `kg m⁻¹ s⁻¹`)
+    - `a` **always** uses solidus (e.g. `m/s`, `kg/(m s)`)
+    - `n` **never** prints solidus, which means that negative exponents are always used (e.g. `m s⁻¹`,
       `kg m⁻¹ s⁻¹`)
 - `units-unit-symbol-separator` tokens specify how multiplied unit symbols should be separated:
-    - `s` (default) uses **space** as a separator (i.e. `kg m²/s²`)
-    - `d` uses half-high **dot** (`⋅`) as a separator (i.e. `kg⋅m²/s²`)
+    - `s` (default) uses **space** as a separator (e.g. `kg m²/s²`)
+    - `d` uses half-high **dot** (`⋅`) as a separator (e.g. `kg⋅m²/s²`)
 
 
 ### Default formatting
@@ -266,7 +266,7 @@ std::println("{:%.3GQ %q}", 1.2345678e8 * m);    // 1.23E+08 m
 ### Unit symbol formatting
 
 Unit symbols of some quantities are specified to use Unicode signs by the
-[SI](../../appendix/glossary.md#si) (i.e. `Ω` symbol for the resistance quantity). The **mp-units**
+[SI](../../appendix/glossary.md#si) (e.g. `Ω` symbol for the resistance quantity). The **mp-units**
 library follows this by default. From the engineering point of view, sometimes Unicode text might
 not be the best solution as terminals of many (especially embedded) devices are ASCII-only.
 In such a case, the unit symbol can be forced to be printed using ASCII-only characters thanks to

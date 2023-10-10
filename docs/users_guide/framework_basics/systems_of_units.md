@@ -7,7 +7,7 @@ quantities and provide automated conversion factors between various compatible u
 
 Probably all the libraries in the wild model the [SI](../../appendix/glossary.md#si)
 and many of them provide support for additional units belonging to various other systems
-(i.e. imperial).
+(e.g. imperial).
 
 
 ## Systems of Units are based on Systems of Quantities

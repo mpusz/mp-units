@@ -2,8 +2,8 @@
 
 The affine space has two types of entities:
 
-- **_point_** - a position specified with coordinate values (i.e. location, address, etc.)
-- **_vector_** - the difference between two points (i.e. shift, offset, displacement, duration, etc.)
+- **_point_** - a position specified with coordinate values (e.g. location, address, etc.)
+- **_vector_** - the difference between two points (e.g. shift, offset, displacement, duration, etc.)
 
 
 !!! note
@@ -236,7 +236,7 @@ Taxi distance:   31.2544 km
 !!! note
 
     It is not allowed to subtract two point origins defined in terms of `absolute_point_origin`
-    (i.e. `mean_sea_level - mean_sea_level`) as those do not contain information about the unit
+    (e.g. `mean_sea_level - mean_sea_level`) as those do not contain information about the unit
     so we are not able to determine a resulting `quantity` type.
 
 

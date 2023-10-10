@@ -137,7 +137,7 @@ tools.cmake.cmaketoolchain:generator="Ninja Multi-Config"
 
     In such a case, you will need to use a configuration-specific preset name in the Conan instructions
     provided below rather then just `conan-default` and `conan-release`
-    (i.e. `conan-gcc-11` and `conan-gcc-11-release`)
+    (e.g. `conan-gcc-11` and `conan-gcc-11-release`)
 
 
 ## Build Options

@@ -71,7 +71,7 @@
 :   - Expression of the dependence of a [quantity](#quantity) on the [base quantities](#base-quantity)
       of a [system of quantities](#system-of-quantities) as a product of powers of factors corresponding
       to the [base quantities](#base-quantity), omitting any numerical factor.
-        - i.e. in the [ISQ](#isq), the quantity dimension of force is denoted by $\textsf{dim }F = \mathsf{LMT}^{–2}$.
+        - e.g. in the [ISQ](#isq), the quantity dimension of force is denoted by $\textsf{dim }F = \mathsf{LMT}^{–2}$.
     - A power of a factor is the factor raised to an exponent. Each factor is the dimension
       of a [base quantity](#base-quantity).
     - In deriving the dimension of a quantity, no account is taken of its scalar, vector, or
@@ -130,7 +130,7 @@
           ($\mathsf{1/s}$) is called hertz ($\mathsf{Hz}$) when used for frequencies and
           becquerel ($\mathsf{Bq}$) when used for activities of radionuclides. As another example,
           the joule ($\mathsf{J}$) is used as a unit of energy, but never as a unit of moment of
-          force, i.e. the newton metre ($\mathsf{N·m}$).
+          force, e.g. the newton metre ($\mathsf{N·m}$).
     - Measurement units of [quantities of dimension one](#dimensionless-quantity) are
       numbers. In some cases, these measurement units are given special names, e.g. radian,
       steradian, and decibel, or are expressed by quotients such as millimole per mole equal
@@ -141,7 +141,7 @@
 :   - [Measurement unit](#unit) that is adopted by convention for a [base quantity](#base-quantity).
     - In each [coherent system of units](#coherent-system-of-units), there is only one base unit
       for each [base quantity](#base-quantity).
-        - i.e. in the [SI](#si), the metre is the base unit of length. In the CGS systems,
+        - e.g. in the [SI](#si), the metre is the base unit of length. In the CGS systems,
           the centimetre is the base unit of length.
     - A base unit may also serve for a [derived quantity](#derived-quantity) of the same
       [quantity dimension](#dimension).
@@ -280,9 +280,9 @@
 [`quantity kind hierarchy, quantity hierarchy`](#quantity-hierarchy){ #quantity-hierarchy }
 
 :   - [Quantities of the same kind](#kind) form a hierarchy that determines their:
-        - convertibility (i.e. every width is a length, but width should not be
+        - convertibility (e.g. every width is a length, but width should not be
           convertible to height)
-        - common quantity type (i.e. width + height -> length)
+        - common quantity type (e.g. width + height -> length)
 
 [`quantity character, character of a quantity, character`](#character){ #character }
 
@@ -316,7 +316,7 @@
         - [dimension of a quantity](#dimension)
         - [quantity kind](#kind)
         - [quantity character](#character)
-        - additional constraints (i.e. non-negative)
+        - additional constraints (e.g. non-negative)
     - [Dimension of a quantity](#dimension) is not enough to specify all the properties of
       a [quantity](#quantity).
 

@@ -36,7 +36,7 @@ template<Quantity From, Quantity To>
 {
   if constexpr (requires { typename std::common_type_t<typename From::rep, typename To::rep>; })
     // returns a common type of two representation types if available
-    // i.e. `double` and `int` will end up with `double` precision
+    // e.g. `double` and `int` will end up with `double` precision
     return std::common_type_t<typename From::rep, typename To::rep>{};
   else
     return typename From::rep{};

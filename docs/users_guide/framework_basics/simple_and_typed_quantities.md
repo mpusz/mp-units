@@ -24,7 +24,7 @@ class quantity;
 
 The concept `Reference` is satisfied by either:
 
-- a unit with an associated quantity type (i.e. `si::metre`)
+- a unit with an associated quantity type (e.g. `si::metre`)
 - a reference type explicitly specifying the quantity type and its unit.
 
 !!! important
@@ -397,7 +397,7 @@ related to quantities, this should be the first function to look for.
 
 In case you wonder which mode you should choose for your project, we have good news for you.
 Simple and typed quantity modes can be freely mixed with each other. When you use different
-quantities of the same kind (i.e. radius, wavelength, altitude, ...), you should probably
+quantities of the same kind (e.g. radius, wavelength, altitude, ...), you should probably
 reach for typed quantities to bring additional safety for those cases. Otherwise, just use
 simple mode for the remaining quantities. The **mp-units** library will do its best to protect
 your project based on the information provided.

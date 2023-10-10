@@ -9,7 +9,7 @@ properly constrained set of arithmetic operations on one or two operands.
 
     Every single arithmetic operator is exposed by the `quantity` class template only if
     the underlying representation type provides it as well and its implementation has proper
-    semantics (i.e. returns a reasonable type).
+    semantics (e.g. returns a reasonable type).
 
 For example, in the following code, `-a` will compile only if `MyInt` exposes such an operation
 as well:

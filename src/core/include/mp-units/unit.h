@@ -68,8 +68,8 @@ inline constexpr bool is_specialization_of_scaled_unit<scaled_unit<M, U>> = true
  * @brief A named unit
  *
  * Defines a unit with a special name. It may be used to provide a base unit in the system
- * of units (i.e. `metre`) or a name assigned to another scaled or derived unit
- * (i.e. `hour`, `joule`).
+ * of units (e.g. `metre`) or a name assigned to another scaled or derived unit
+ * (e.g. `hour`, `joule`).
  * Most of the named units may be composed with a prefix to create a `prefixed_unit`.
  *
  * For example:
@@ -135,7 +135,7 @@ struct named_unit<Symbol> {
 /**
  * @brief Specialization for a unit with special name
  *
- * Allows assigning a special name to another scaled or derived unit (i.e. `hour`, `joule`).
+ * Allows assigning a special name to another scaled or derived unit (e.g. `hour`, `joule`).
  *
  * @tparam Symbol a short text representation of the unit
  * @tparam Unit a unit for which we provide a special name

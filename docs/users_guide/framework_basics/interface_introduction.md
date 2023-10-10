@@ -40,7 +40,7 @@ to improve the user experience while debugging the program or analyzing the comp
 ## Entities composability
 
 Many physical units libraries (in C++ or any other programming language) assign strong types
-to library entities (i.e. derived units). While `metre_per_second` as a type may not look too
+to library entities (e.g. derived units). While `metre_per_second` as a type may not look too
 scary, consider, for example, units of angular momentum. If we followed this path, its
 [coherent unit](../../appendix/glossary.md#coherent-derived-unit) would look like
 `kilogram_metre_sq_per_second`. Now, consider how many scaled versions of this unit would you
@@ -74,7 +74,7 @@ auto q = la_vector{1, 2, 3} * isq::angular_momentum[kg * m2 / s];
 ```
 
 It is a much better solution. It is terse and easy to understand. Please also notice how
-easy it is to obtain any scaled version of such a unit (i.e. `mg * square(mm) / min`)
+easy it is to obtain any scaled version of such a unit (e.g. `mg * square(mm) / min`)
 without having to introduce hundreds of types to predefine them.
 
 
@@ -207,8 +207,8 @@ the resulting expression template.
     static_assert(std::is_same_v<decltype(A * B), decltype(B * A)>);
     ```
 
-    This is probably the most important of all steps, as it allows comparing types and enables the rest of
-    simplification rules.
+    This is probably the most important of all the steps, as it allows comparing types and enables
+    the rest of simplification rules.
 
 2. **Aggregation**
 

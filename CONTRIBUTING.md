@@ -6,7 +6,7 @@
 
 The easiest way to start coding is to jump straight into [Gitpod](https://www.gitpod.io). You can either click the button
 below or prefix any `mp-units` URL (main branch, other branches, issues, PRs, ...) in your web browser with `gitpod.io/#`
-(i.e. <https://gitpod.io/#https://github.com/mpusz/units>).
+(e.g. <https://gitpod.io/#https://github.com/mpusz/units>).
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/mpusz/units)
 

@@ -72,7 +72,7 @@ some issues start to be clearly visible:
     quantity<isq::speed[m / s]> s3 = avg_speed((20 * m).force_in(km), (2 * s).force_in(h));
     ```
 
-    but the above will obviously provide an incorrect behavior (i.e. division by `0` in the evaluation
+    but the above will obviously provide an incorrect behavior (e.g. division by `0` in the evaluation
     of `s3`).
 
 

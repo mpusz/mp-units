@@ -34,7 +34,7 @@ namespace mp_units {
  * @brief Explicit cast of a quantity's unit
  *
  * Implicit conversions between quantities of different types are allowed only for "safe"
- * (i.e. non-truncating) conversion. In truncating cases an explicit cast have to be used.
+ * (e.g. non-truncating) conversion. In truncating cases an explicit cast have to be used.
  *
  * auto d = value_cast<si::second>(1234 * ms);
  *
@@ -59,7 +59,7 @@ template<Unit auto ToU, typename Q>
  * @brief Explicit cast of a quantity's representation type
  *
  * Implicit conversions between quantities of different types are allowed only for "safe"
- * (i.e. non-truncating) conversion. In truncating cases an explicit cast have to be used.
+ * (e.g. non-truncating) conversion. In truncating cases an explicit cast have to be used.
  *
  * auto q = value_cast<int>(1.23 * ms);
  *

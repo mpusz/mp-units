@@ -28,7 +28,7 @@ Many reasons make UDLs a poor choice for a physical units library:
    `K` (kelvin), `d` (day), `l` or `L` (litre), `erg`, `ergps`. For a while for those we used `_` prefix
    to make the library work at all, but at some point, we had to unify the naming, and we came up with `_q_`
    prefix, which resulted in creating a quantity of a provided unit. So in case the library is
-   standardized, all quantities would be created with UDLs having `q_` prefix (i.e. `42q_s`)
+   standardized, all quantities would be created with UDLs having `q_` prefix (e.g. `42q_s`)
    which is not that nice anymore.
 
 4. UDLs with the same identifiers defined in different namespace can't be disambiguated in the C++
@@ -154,7 +154,7 @@ code.
 Both C++ and [ISO 80000](../appendix/references.md#ISO80000) are standardized by the ISO.
 [ISO 80000](../appendix/references.md#ISO80000) and the [SI](../appendix/references.md#SIBrochure)
 standards specify Unicode symbols as the official unit names for some quantities
-(i.e. `Ω` symbol for the resistance quantity).
+(e.g. `Ω` symbol for the resistance quantity).
 As **mp-units** library will be proposed for standardization as a part of the C++ Standard Library
 we have to obey the rules and be consistent with ISO specifications.
 

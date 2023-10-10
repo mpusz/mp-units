@@ -344,7 +344,7 @@ satisfied by all types being or deriving from and instantiation of a `quantity` 
     All of `42 * m`, `42 * si::metre`, `42 * isq::height[m]`, and `isq::height(42 * m)` create a quantity
     and thus satisfy a `Quantity` concept.
 
-    A quantity type can also be specified explicitly (i.e. `quantity<si::metre, int>`,
+    A quantity type can also be specified explicitly (e.g. `quantity<si::metre, int>`,
     `quantity<isq::height[m]>`).
 
 ### `QuantityOf<T, V>` { #QuantityOf }

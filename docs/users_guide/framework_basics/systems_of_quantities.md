@@ -56,8 +56,8 @@ physical properties.
 
     More than one quantity may be defined for the same dimension:
 
-    - quantities of _different kinds_ (i.e. frequency, modulation rate, activity, ...)
-    - quantities of _the same kind_ (i.e. length, width, altitude, distance, radius, wavelength, position vector, ...)
+    - quantities of _different kinds_ (e.g. frequency, modulation rate, activity, ...)
+    - quantities of _the same kind_ (e.g. length, width, altitude, distance, radius, wavelength, position vector, ...)
 
 It turns out that the above issues can't be solved correctly without proper modeling of
 a [system of quantities](../../appendix/glossary.md#system-of-quantities).
