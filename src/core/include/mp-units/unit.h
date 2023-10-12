@@ -765,7 +765,7 @@ constexpr Out unit_symbol_impl(Out out, const type_list<Nums...>& nums, const ty
   } else {
     using enum unit_symbol_solidus;
     if constexpr (sizeof...(Nums) > 0) {
-      unit_symbol_impl<CharT>(out, nums, std::index_sequence_for<Nums...>(), fmt, false);
+      out = unit_symbol_impl<CharT>(out, nums, std::index_sequence_for<Nums...>(), fmt, false);
     }
 
     if (fmt.solidus == always || (fmt.solidus == one_denominator && sizeof...(Dens) == 1)) {
