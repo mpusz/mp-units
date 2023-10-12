@@ -817,4 +817,27 @@ template<typename CharT = char, Unit U>
   return buffer;
 }
 
+template<typename CharT, Unit U, unit_symbol_formatting fmt>
+struct const_unit_symbol {
+  static constexpr std::size_t size{255};
+  static constexpr auto impl() noexcept
+  {
+    std::array<CharT, size> array{};
+    auto out_it{mp_units::unit_symbol_to(array.begin(), U{}, fmt)};
+    auto len = std::distance(array.begin(), out_it);
+    return std::make_pair(array, len);
+  }
+  // Give the joined string static storage
+  static constexpr auto arr = impl();
+  static_assert(arr.second < size);
+  // View as a std::string_view
+  static constexpr std::basic_string_view<CharT> value{arr.first.data(), arr.second};
+};
+
+template<typename CharT = char, Unit U, unit_symbol_formatting fmt = unit_symbol_formatting{}>
+[[nodiscard]] constexpr std::basic_string_view<CharT> unit_symbol_view(U)
+{
+  return const_unit_symbol<CharT, U, fmt>::value;
+}
+
 }  // namespace mp_units

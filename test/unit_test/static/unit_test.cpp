@@ -540,4 +540,11 @@ static_assert(is_of_type<common_unit(kilometre, mile), scaled_unit<mag<ratio{8, 
 static_assert(is_of_type<common_unit(mile, kilometre), scaled_unit<mag<ratio{8, 125}>, metre_>>);
 static_assert(is_of_type<common_unit(speed_of_light_in_vacuum, metre / second), derived_unit<metre_, per<second_>>>);
 
+using ::std::string_view_literals::operator""sv;
+static_assert(unit_symbol_view(kilometre) == "km"sv);
+static_assert(unit_symbol_view(kilometre / hour) == "km/h"sv);
+static_assert(unit_symbol_view(kilometre / (hour * hour)) == "km/h²"sv);
+static_assert(unit_symbol_view(degree_Celsius) == "°C"sv);
+static_assert(unit_symbol_view(kelvin) == "K"sv);
+
 }  // namespace
