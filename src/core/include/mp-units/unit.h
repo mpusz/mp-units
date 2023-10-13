@@ -819,19 +819,17 @@ template<typename CharT = char, Unit U>
 
 template<typename CharT, Unit U, unit_symbol_formatting fmt>
 struct const_unit_symbol {
-  static constexpr std::size_t size{255};
+  static consteval auto unit_symbol_len() -> std::size_t { return unit_symbol(U{}, fmt).size(); }
   static constexpr auto impl() noexcept
   {
-    std::array<CharT, size> array{};
-    auto out_it{mp_units::unit_symbol_to(array.begin(), U{}, fmt)};
-    auto len = std::distance(array.begin(), out_it);
-    return std::make_pair(array, len);
+    std::array<CharT, unit_symbol_len() + 1> buffer{};
+    mp_units::unit_symbol_to(std::begin(buffer), U{}, fmt);
+    return buffer;
   }
   // Give the joined string static storage
   static constexpr auto arr = impl();
-  static_assert(arr.second < size);
   // View as a std::string_view
-  static constexpr std::basic_string_view<CharT> value{arr.first.data(), arr.second};
+  static constexpr std::basic_string_view<CharT> value{arr.data(), arr.size() - 1};
 };
 
 template<typename CharT = char, Unit U, unit_symbol_formatting fmt = unit_symbol_formatting{}>
