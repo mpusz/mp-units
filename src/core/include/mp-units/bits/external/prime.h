@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <mp-units/bits/algorithm.h>
+#include <mp-units/bits/external/algorithm.h>
 #include <array>
 #include <cstddef>
 #include <cstdint>

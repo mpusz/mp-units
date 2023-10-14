@@ -31,19 +31,19 @@ endif()
 add_library(
     mp-units-core
     INTERFACE
+    include/mp-units/bits/external/algorithm.h
     include/mp-units/bits/external/fixed_string.h
     include/mp-units/bits/external/hacks.h
+    include/mp-units/bits/external/math_concepts.h
+    include/mp-units/bits/external/prime.h
     include/mp-units/bits/external/type_list.h
     include/mp-units/bits/external/type_name.h
     include/mp-units/bits/external/type_traits.h
-    include/mp-units/bits/algorithm.h
     include/mp-units/bits/dimension_concepts.h
     include/mp-units/bits/expression_template.h
     include/mp-units/bits/get_associated_quantity.h
     include/mp-units/bits/get_common_base.h
     include/mp-units/bits/magnitude.h
-    include/mp-units/bits/math_concepts.h
-    include/mp-units/bits/prime.h
     include/mp-units/bits/quantity_cast.h
     include/mp-units/bits/quantity_concepts.h
     include/mp-units/bits/quantity_point_concepts.h

@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <mp-units/bits/algorithm.h>
+#include <mp-units/bits/external/algorithm.h>
 #include <mp-units/bits/fmt.h>
 #include <mp-units/customization_points.h>
 #include <mp-units/quantity.h>

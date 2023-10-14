@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <mp-units/bits/prime.h>
+#include <mp-units/bits/external/prime.h>
 #include <type_traits>
 #include <utility>
 

@@ -22,8 +22,8 @@
 
 #pragma once
 
-#include <mp-units/bits/algorithm.h>
 #include <mp-units/bits/expression_template.h>
+#include <mp-units/bits/external/algorithm.h>
 #include <mp-units/bits/external/fixed_string.h>
 #include <mp-units/bits/external/type_name.h>
 #include <mp-units/bits/external/type_traits.h>

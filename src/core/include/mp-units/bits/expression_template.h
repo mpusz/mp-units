@@ -22,9 +22,9 @@
 
 #pragma once
 
+#include <mp-units/bits/external/math_concepts.h>
 #include <mp-units/bits/external/type_list.h>
 #include <mp-units/bits/external/type_traits.h>
-#include <mp-units/bits/math_concepts.h>
 #include <mp-units/bits/ratio.h>
 
 namespace mp_units {

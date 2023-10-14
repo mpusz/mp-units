@@ -24,10 +24,10 @@
 
 #include <mp-units/bits/expression_template.h>
 #include <mp-units/bits/external/hacks.h>
+#include <mp-units/bits/external/math_concepts.h>
+#include <mp-units/bits/external/prime.h>
 #include <mp-units/bits/external/type_name.h>
 #include <mp-units/bits/external/type_traits.h>
-#include <mp-units/bits/math_concepts.h>
-#include <mp-units/bits/prime.h>
 #include <mp-units/bits/ratio.h>
 #include <mp-units/bits/symbol_text.h>
 #include <mp-units/bits/text_tools.h>
