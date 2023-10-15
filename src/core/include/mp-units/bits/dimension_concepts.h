@@ -85,11 +85,11 @@ namespace detail {
 /**
  * @brief A concept matching all derived dimensions in the library.
  *
- * Satisfied by all dimension types either being a specialization of `derived_dimension`
- * or derived from it (inheritance needed to properly handle `dimension_one`).
+ * Satisfied by all dimension types being a specialization of `derived_dimension` or
+ * being the `dimension_one`.
  */
 template<typename T>
-concept DerivedDimension = is_derived_from_specialization_of<T, derived_dimension>;
+concept DerivedDimension = is_specialization_of<T, derived_dimension> || is_dimension_one<T>::value;
 
 }  // namespace detail
 

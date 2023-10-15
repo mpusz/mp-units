@@ -153,7 +153,7 @@ template<Dimension Lhs, Dimension Rhs>
 template<Dimension Lhs, Dimension Rhs>
 [[nodiscard]] consteval bool operator==(Lhs, Rhs)
 {
-  return is_same_v<Lhs, Rhs>;
+  return std::derived_from<Lhs, Rhs> || std::derived_from<Rhs, Lhs>;
 }
 
 [[nodiscard]] consteval Dimension auto inverse(Dimension auto d) { return dimension_one / d; }
