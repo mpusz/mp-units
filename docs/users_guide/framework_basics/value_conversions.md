@@ -12,13 +12,6 @@ The second line above converts the current quantity to the one expressed in metr
 contents. The third line converts the quantity expressed in kilometres into the one measured
 in metres.
 
-!!! important
-
-    It is always assumed that one can convert a quantity into another one with a unit of a higher
-    resolution. There is no protection against overflow of the representation type. In case the target
-    quantity ends up with a value bigger than the representation type can handle, you will be facing
-    Undefined Behavior.
-
 In case a user would like to perform an opposite transformation:
 
 ```cpp
