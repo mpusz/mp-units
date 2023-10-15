@@ -289,7 +289,7 @@ flowchart TD
     energy["energy\n(mass * length^2 / time^2)"]
     energy --- mechanical_energy
     mechanical_energy --- potential_energy
-    potential_energy --- gravitational_potential_energy["gravitational_potential_energy\n(mass / acceleration_of_free_fall / height)"]
+    potential_energy --- gravitational_potential_energy["gravitational_potential_energy\n(mass * acceleration_of_free_fall * height)"]
     potential_energy --- elastic_potential_energy["elastic_potential_energy\n(spring_constant * amount_of_compression^2)"]
     mechanical_energy --- kinetic_energy["kinetic_energy\n(mass * speed^2)"]
     energy --- enthalpy
