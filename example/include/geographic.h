@@ -79,19 +79,21 @@ using longitude = mp_units::quantity_point<mp_units::si::degree, prime_meridian,
 template<class CharT, class Traits, typename T>
 std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const latitude<T>& lat)
 {
-  if (is_gteq_zero(lat))
-    return os << lat.quantity_from_origin() << " N";
+  const auto& q = lat.quantity_ref_from(geographic::equator);
+  if (is_gteq_zero(q))
+    return os << q << " N";
   else
-    return os << -lat.quantity_from_origin() << " S";
+    return os << -q << " S";
 }
 
 template<class CharT, class Traits, typename T>
 std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const longitude<T>& lon)
 {
-  if (is_gteq_zero(lon))
-    return os << lon.quantity_from_origin() << " E";
+  const auto& q = lon.quantity_ref_from(geographic::prime_meridian);
+  if (is_gteq_zero(q))
+    return os << q << " E";
   else
-    return os << -lon.quantity_from_origin() << " W";
+    return os << -q << " W";
 }
 
 inline namespace literals {
@@ -137,9 +139,9 @@ struct MP_UNITS_STD_FMT::formatter<geographic::latitude<T>> :
   template<typename FormatContext>
   auto format(geographic::latitude<T> lat, FormatContext& ctx)
   {
-    formatter<typename geographic::latitude<T>::quantity_type>::format(
-      is_gteq_zero(lat) ? lat.quantity_from(geographic::equator) : -lat.quantity_from(geographic::equator), ctx);
-    MP_UNITS_STD_FMT::format_to(ctx.out(), "{}", is_gteq_zero(lat) ? " N" : "S");
+    const auto& q = lat.quantity_ref_from(geographic::equator);
+    formatter<typename geographic::latitude<T>::quantity_type>::format(is_gteq_zero(q) ? q : -q, ctx);
+    MP_UNITS_STD_FMT::format_to(ctx.out(), "{}", is_gteq_zero(q) ? " N" : "S");
     return ctx.out();
   }
 };
@@ -150,11 +152,9 @@ struct MP_UNITS_STD_FMT::formatter<geographic::longitude<T>> :
   template<typename FormatContext>
   auto format(geographic::longitude<T> lon, FormatContext& ctx)
   {
-    formatter<typename geographic::longitude<T>::quantity_type>::format(
-      is_gteq_zero(lon) ? lon.quantity_from(geographic::prime_meridian)
-                        : -lon.quantity_from(geographic::prime_meridian),
-      ctx);
-    MP_UNITS_STD_FMT::format_to(ctx.out(), "{}", is_gteq_zero(lon) ? " E" : " W");
+    const auto& q = lon.quantity_ref_from(geographic::prime_meridian);
+    formatter<typename geographic::longitude<T>::quantity_type>::format(is_gteq_zero(q) ? q : -q, ctx);
+    MP_UNITS_STD_FMT::format_to(ctx.out(), "{}", is_gteq_zero(q) ? " E" : " W");
     return ctx.out();
   }
 };

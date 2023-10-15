@@ -240,15 +240,11 @@ static_assert(
 // static member functions
 ////////////////////////////
 
-static_assert(quantity_point<isq::height[m], mean_sea_level>::zero().quantity_from_origin_.numerical_value_ == 0);
 static_assert(quantity_point<isq::height[m], mean_sea_level>::min().quantity_from_origin_.numerical_value_ ==
               std::numeric_limits<double>::lowest());
 static_assert(quantity_point<isq::height[m], mean_sea_level>::max().quantity_from_origin_.numerical_value_ ==
               std::numeric_limits<double>::max());
 
-static_assert(
-
-  quantity_point<isq::height[m], ground_level, int>::zero().quantity_from_origin_.numerical_value_ == 0);
 static_assert(quantity_point<isq::height[m], ground_level, int>::min().quantity_from_origin_.numerical_value_ ==
               std::numeric_limits<int>::lowest());
 static_assert(quantity_point<isq::height[m], ground_level, int>::max().quantity_from_origin_.numerical_value_ ==
