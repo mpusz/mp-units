@@ -809,12 +809,36 @@ constexpr Out unit_symbol_to(Out out, U u, unit_symbol_formatting fmt = unit_sym
   return detail::unit_symbol_impl<CharT>(out, u, fmt, false);
 }
 
-template<typename CharT = char, Unit U>
-[[nodiscard]] constexpr std::basic_string<CharT> unit_symbol(U u, unit_symbol_formatting fmt = unit_symbol_formatting{})
+namespace detail {
+
+template<typename CharT, std::size_t N, unit_symbol_formatting fmt, Unit U>
+[[nodiscard]] consteval std::array<CharT, N + 1> get_symbol_buffer(U)
 {
-  std::basic_string<CharT> buffer;
-  unit_symbol_to<CharT>(std::back_inserter(buffer), u, fmt);
+  std::array<CharT, N + 1> buffer{};
+  unit_symbol_to<CharT>(buffer.begin(), U{}, fmt);
   return buffer;
+}
+
+}  // namespace detail
+
+template<unit_symbol_formatting fmt = unit_symbol_formatting{}, typename CharT = char, Unit U>
+[[nodiscard]] constexpr auto unit_symbol(U)
+{
+  auto get_size = []() consteval {
+    std::basic_string<CharT> buffer;
+    unit_symbol_to<CharT>(std::back_inserter(buffer), U{}, fmt);
+    return buffer.size();
+  };
+
+#if __cpp_constexpr >= 202211L  // Permitting static constexpr variables in constexpr functions
+  static constexpr std::size_t size = get_size();
+  static constexpr auto buffer = detail::get_symbol_buffer<CharT, size, fmt>(U{});
+  return std::string_view(buffer.data(), size);
+#else
+  constexpr std::size_t size = get_size();
+  constexpr auto buffer = detail::get_symbol_buffer<CharT, size, fmt>(U{});
+  return basic_fixed_string(buffer.data(), std::integral_constant<std::size_t, size>{});
+#endif
 }
 
 }  // namespace mp_units
