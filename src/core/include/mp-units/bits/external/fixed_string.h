@@ -46,7 +46,6 @@ template<typename CharT, std::size_t N>
 struct basic_fixed_string {
   CharT data_[N + 1] = {};
 
-  using iterator = CharT*;
   using const_iterator = const CharT*;
 
   constexpr explicit(false) basic_fixed_string(CharT ch) noexcept { data_[0] = ch; }
@@ -62,11 +61,8 @@ struct basic_fixed_string {
   [[nodiscard]] constexpr const CharT* data() const noexcept { return data_; }
   [[nodiscard]] constexpr const CharT* c_str() const noexcept { return data(); }
   [[nodiscard]] constexpr const CharT& operator[](std::size_t index) const noexcept { return data()[index]; }
-  [[nodiscard]] constexpr CharT operator[](std::size_t index) noexcept { return data()[index]; }
 
-  [[nodiscard]] constexpr iterator begin() noexcept { return data(); }
   [[nodiscard]] constexpr const_iterator begin() const noexcept { return data(); }
-  [[nodiscard]] constexpr iterator end() noexcept { return data() + size(); }
   [[nodiscard]] constexpr const_iterator end() const noexcept { return data() + size(); }
 
   template<std::size_t N2>
