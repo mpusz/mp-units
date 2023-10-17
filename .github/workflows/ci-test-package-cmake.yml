@@ -36,24 +36,24 @@ on:
 
 jobs:
   test_package:
-    name: ${{ matrix.config.name }} ${{ matrix.build_type }}
+    name: "C++${{ matrix.std }} ${{ matrix.config.name }} ${{ matrix.build_type }}"
     runs-on: ${{ matrix.config.os }}
     strategy:
       fail-fast: false
       matrix:
         config:
           # - {
-          #     name: "Windows MSVC 14.2",
+          #     name: "MSVC 14.2",
           #     os: windows-2019,
-          #     compiler: { type: VISUAL, version: 16, cc: "", cxx: "", std: 20 },
+          #     compiler: { type: VISUAL, version: 16, cc: "", cxx: "" },
           #   }
           # - {
-          #     name: "Windows MSVC 14.3",
+          #     name: "MSVC 14.3",
           #     os: windows-2022,
-          #     compiler: { type: MSVC, version: 193, cc: "", cxx: "", std: 23 },
+          #     compiler: { type: MSVC, version: 193, cc: "", cxx: "" },
           #   }
           - {
-              name: "Ubuntu GCC-11",
+              name: "GCC-11",
               os: ubuntu-22.04,
               compiler:
                 {
@@ -61,11 +61,10 @@ jobs:
                   version: 11,
                   cc: "gcc-11",
                   cxx: "g++-11",
-                  std: 20,
                 },
             }
           - {
-              name: "Ubuntu GCC-12",
+              name: "GCC-12",
               os: ubuntu-22.04,
               compiler:
                 {
@@ -73,11 +72,10 @@ jobs:
                   version: 12,
                   cc: "gcc-12",
                   cxx: "g++-12",
-                  std: 20,
                 },
             }
           - {
-              name: "Ubuntu GCC-13",
+              name: "GCC-13",
               os: ubuntu-22.04,
               compiler:
                 {
@@ -85,11 +83,10 @@ jobs:
                   version: 13,
                   cc: "gcc-13",
                   cxx: "g++-13",
-                  std: 20,
                 },
             }
           - {
-              name: "Ubuntu Clang-16 + libc++",
+              name: "Clang-16",
               os: ubuntu-22.04,
               compiler:
                 {
@@ -97,12 +94,11 @@ jobs:
                   version: 16,
                   cc: "clang-16",
                   cxx: "clang++-16",
-                  std: 20,
                 },
               lib: "libc++",
             }
           - {
-              name: "Ubuntu Clang-17 + libc++",
+              name: "Clang-17",
               os: ubuntu-22.04,
               compiler:
                 {
@@ -110,13 +106,12 @@ jobs:
                   version: 17,
                   cc: "clang-17",
                   cxx: "clang++-17",
-                  std: 20,
                 },
               lib: "libc++",
               conan-config: "",
             }
           # - {
-          #     name: "MacOS Apple Clang 13",
+          #     name: "Apple Clang 13",
           #     os: macos-11,
           #     compiler:
           #       {
@@ -124,10 +119,10 @@ jobs:
           #         version: "13.0",
           #         cc: "clang",
           #         cxx: "clang++",
-          #         std: 20,
           #       },
           #   }
         build_type: ["Release", "Debug"]
+        std: [20, 23]
 
     env:
       CC: ${{ matrix.config.compiler.cc }}
@@ -146,12 +141,13 @@ jobs:
           cache-name: cache-conan-data
         with:
           path: ~/.conan2/p
-          key: build-${{ matrix.config.os }}-${{ matrix.build_type }}-${{ matrix.config.compiler.type }}-${{ matrix.config.compiler.version }}-${{ matrix.config.lib }}
+          key: build-${{ matrix.config.os }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-${{ matrix.std }}
           restore-keys: |
-            build-${{ matrix.config.os }}-${{ matrix.build_type }}-${{ matrix.config.compiler.type }}-${{ matrix.config.compiler.version }}-${{ matrix.config.lib }}
-            build-${{ matrix.config.os }}-${{ matrix.build_type }}-${{ matrix.config.compiler.type }}-${{ matrix.config.compiler.version }}-
-            build-${{ matrix.config.os }}-${{ matrix.build_type }}-${{ matrix.config.compiler.type }}-
-            build-${{ matrix.config.os }}-${{ matrix.build_type }}-
+            build-${{ matrix.config.os }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-${{ matrix.std }}
+            build-${{ matrix.config.os }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-
+            build-${{ matrix.config.os }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-
+            build-${{ matrix.config.os }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-
+            build-${{ matrix.config.os }}-${{ matrix.config.compiler.type }}-
             build-${{ matrix.config.os }}-
       - name: Install gcc-13
         if: matrix.config.compiler.type == 'GCC' && matrix.config.compiler.version == '13'
@@ -206,7 +202,7 @@ jobs:
           if [[ "${{ matrix.config.compiler.type }}" == "CLANG" ]]; then
             sed -i.backup '/^\[settings\]$/,/^\[/ s/^compiler.libcxx=.*/compiler.libcxx=${{ matrix.config.lib }}/' ~/.conan2/profiles/default
           fi
-          sed -i.backup '/^\[settings\]$/,/^\[/ s/^compiler.cppstd=.*/compiler.cppstd=${{ matrix.config.compiler.std }}/' ~/.conan2/profiles/default
+          sed -i.backup '/^\[settings\]$/,/^\[/ s/^compiler.cppstd=.*/compiler.cppstd=${{ matrix.std }}/' ~/.conan2/profiles/default
           sed -i.backup '/^\[settings\]$/,/^\[/ s/^build_type=.*/build_type=${{ matrix.build_type }}/' ~/.conan2/profiles/default
           conan profile show -pr default
       - name: Install Conan dependencies
