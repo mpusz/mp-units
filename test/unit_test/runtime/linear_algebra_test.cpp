@@ -118,14 +118,14 @@ TEST_CASE("vector quantity", "[la]")
 
     SECTION("integral")
     {
-      SECTION("scalar on LHS") { CHECK((2 * v).numerical_value_ == vector<int>{2, 4, 6}); }
-      SECTION("scalar on RHS") { CHECK((v * 2).numerical_value_ == vector<int>{2, 4, 6}); }
+      SECTION("scalar on LHS") { CHECK((2 * v).numerical_value_in(m) == vector<int>{2, 4, 6}); }
+      SECTION("scalar on RHS") { CHECK((v * 2).numerical_value_in(m) == vector<int>{2, 4, 6}); }
     }
 
     SECTION("floating-point")
     {
-      SECTION("scalar on LHS") { CHECK((0.5 * v).numerical_value_ == vector<double>{0.5, 1., 1.5}); }
-      SECTION("scalar on RHS") { CHECK((v * 0.5).numerical_value_ == vector<double>{0.5, 1., 1.5}); }
+      SECTION("scalar on LHS") { CHECK((0.5 * v).numerical_value_in(m) == vector<double>{0.5, 1., 1.5}); }
+      SECTION("scalar on RHS") { CHECK((v * 0.5).numerical_value_in(m) == vector<double>{0.5, 1., 1.5}); }
     }
   }
 
@@ -133,8 +133,8 @@ TEST_CASE("vector quantity", "[la]")
   {
     const auto v = vector<int>{2, 4, 6} * isq::position_vector[m];
 
-    SECTION("integral") { CHECK((v / 2).numerical_value_ == vector<int>{1, 2, 3}); }
-    SECTION("floating-point") { CHECK((v / 0.5).numerical_value_ == vector<double>{4., 8., 12.}); }
+    SECTION("integral") { CHECK((v / 2).numerical_value_in(m) == vector<int>{1, 2, 3}); }
+    SECTION("floating-point") { CHECK((v / 0.5).numerical_value_in(m) == vector<double>{4., 8., 12.}); }
   }
 
   SECTION("add")
@@ -144,12 +144,12 @@ TEST_CASE("vector quantity", "[la]")
     SECTION("same unit")
     {
       const auto u = vector<int>{3, 2, 1} * isq::position_vector[m];
-      CHECK((v + u).numerical_value_ == vector<int>{4, 4, 4});
+      CHECK((v + u).numerical_value_in(m) == vector<int>{4, 4, 4});
     }
     SECTION("different units")
     {
       const auto u = vector<int>{3, 2, 1} * isq::position_vector[km];
-      CHECK((v + u).numerical_value_ == vector<int>{3001, 2002, 1003});
+      CHECK((v + u).numerical_value_in(m) == vector<int>{3001, 2002, 1003});
     }
   }
 
@@ -160,12 +160,12 @@ TEST_CASE("vector quantity", "[la]")
     SECTION("same unit")
     {
       const auto u = vector<int>{3, 2, 1} * isq::position_vector[m];
-      CHECK((v - u).numerical_value_ == vector<int>{-2, 0, 2});
+      CHECK((v - u).numerical_value_in(m) == vector<int>{-2, 0, 2});
     }
     SECTION("different units")
     {
       const auto u = vector<int>{3, 2, 1} * isq::position_vector[km];
-      CHECK((v - u).numerical_value_ == vector<int>{-2999, -1998, -997});
+      CHECK((v - u).numerical_value_in(m) == vector<int>{-2999, -1998, -997});
     }
   }
 
@@ -179,18 +179,18 @@ TEST_CASE("vector quantity", "[la]")
 
       SECTION("derived_quantity_spec")
       {
-        SECTION("scalar on LHS") { CHECK((mass * v).numerical_value_ == vector<int>{2, 4, 6}); }
-        SECTION("scalar on RHS") { CHECK((v * mass).numerical_value_ == vector<int>{2, 4, 6}); }
+        SECTION("scalar on LHS") { CHECK((mass * v).numerical_value_in(kg * m / s) == vector<int>{2, 4, 6}); }
+        SECTION("scalar on RHS") { CHECK((v * mass).numerical_value_in(kg * m / s) == vector<int>{2, 4, 6}); }
       }
       SECTION("quantity_cast to momentum")
       {
         SECTION("scalar on LHS")
         {
-          CHECK(quantity_cast<isq::momentum>(mass * v).numerical_value_ == vector<int>{2, 4, 6});
+          CHECK(quantity_cast<isq::momentum>(mass * v).numerical_value_in(N * s) == vector<int>{2, 4, 6});
         }
         SECTION("scalar on RHS")
         {
-          CHECK(quantity_cast<isq::momentum>(v * mass).numerical_value_ == vector<int>{2, 4, 6});
+          CHECK(quantity_cast<isq::momentum>(v * mass).numerical_value_in(N * s) == vector<int>{2, 4, 6});
         }
       }
       SECTION("quantity of momentum")
@@ -198,12 +198,12 @@ TEST_CASE("vector quantity", "[la]")
         SECTION("scalar on LHS")
         {
           const quantity<isq::momentum[N * s], vector<int>> momentum = mass * v;
-          CHECK(momentum.numerical_value_ == vector<int>{2, 4, 6});
+          CHECK(momentum.numerical_value_ref_in(N * s) == vector<int>{2, 4, 6});
         }
         SECTION("scalar on RHS")
         {
           const quantity<isq::momentum[N * s], vector<int>> momentum = v * mass;
-          CHECK(momentum.numerical_value_ == vector<int>{2, 4, 6});
+          CHECK(momentum.numerical_value_ref_in(N * s) == vector<int>{2, 4, 6});
         }
       }
     }
@@ -214,18 +214,18 @@ TEST_CASE("vector quantity", "[la]")
 
       SECTION("derived_quantity_spec")
       {
-        SECTION("scalar on LHS") { CHECK((mass * v).numerical_value_ == vector<double>{0.5, 1., 1.5}); }
-        SECTION("scalar on RHS") { CHECK((v * mass).numerical_value_ == vector<double>{0.5, 1., 1.5}); }
+        SECTION("scalar on LHS") { CHECK((mass * v).numerical_value_in(kg * m / s) == vector<double>{0.5, 1., 1.5}); }
+        SECTION("scalar on RHS") { CHECK((v * mass).numerical_value_in(kg * m / s) == vector<double>{0.5, 1., 1.5}); }
       }
       SECTION("quantity_cast to momentum")
       {
         SECTION("scalar on LHS")
         {
-          CHECK(quantity_cast<isq::momentum>(mass * v).numerical_value_ == vector<double>{0.5, 1., 1.5});
+          CHECK(quantity_cast<isq::momentum>(mass * v).numerical_value_in(N * s) == vector<double>{0.5, 1., 1.5});
         }
         SECTION("scalar on RHS")
         {
-          CHECK(quantity_cast<isq::momentum>(v * mass).numerical_value_ == vector<double>{0.5, 1., 1.5});
+          CHECK(quantity_cast<isq::momentum>(v * mass).numerical_value_in(N * s) == vector<double>{0.5, 1., 1.5});
         }
       }
       SECTION("quantity of momentum")
@@ -233,12 +233,12 @@ TEST_CASE("vector quantity", "[la]")
         SECTION("scalar on LHS")
         {
           const quantity<isq::momentum[N * s], vector<double>> momentum = mass * v;
-          CHECK(momentum.numerical_value_ == vector<double>{0.5, 1., 1.5});
+          CHECK(momentum.numerical_value_ref_in(N * s) == vector<double>{0.5, 1., 1.5});
         }
         SECTION("scalar on RHS")
         {
           const quantity<isq::momentum[N * s], vector<double>> momentum = v * mass;
-          CHECK(momentum.numerical_value_ == vector<double>{0.5, 1., 1.5});
+          CHECK(momentum.numerical_value_ref_in(N * s) == vector<double>{0.5, 1., 1.5});
         }
       }
     }
@@ -252,15 +252,15 @@ TEST_CASE("vector quantity", "[la]")
     {
       const auto dur = 2 * isq::duration[h];
 
-      SECTION("derived_quantity_spec") { CHECK((pos / dur).numerical_value_ == vector<int>{15, 10, 5}); }
+      SECTION("derived_quantity_spec") { CHECK((pos / dur).numerical_value_in(km / h) == vector<int>{15, 10, 5}); }
       SECTION("quantity_cast to velocity")
       {
-        CHECK(quantity_cast<isq::velocity>(pos / dur).numerical_value_ == vector<int>{15, 10, 5});
+        CHECK(quantity_cast<isq::velocity>(pos / dur).numerical_value_in(km / h) == vector<int>{15, 10, 5});
       }
       SECTION("quantity of velocity")
       {
         const quantity<isq::velocity[km / h], vector<int>> v = pos / dur;
-        CHECK(v.numerical_value_ == vector<int>{15, 10, 5});
+        CHECK(v.numerical_value_ref_in(km / h) == vector<int>{15, 10, 5});
       }
     }
 
@@ -268,15 +268,15 @@ TEST_CASE("vector quantity", "[la]")
     {
       const auto dur = 0.5 * isq::duration[h];
 
-      SECTION("derived_quantity_spec") { CHECK((pos / dur).numerical_value_ == vector<double>{60, 40, 20}); }
+      SECTION("derived_quantity_spec") { CHECK((pos / dur).numerical_value_in(km / h) == vector<double>{60, 40, 20}); }
       SECTION("quantity_cast to velocity")
       {
-        CHECK(quantity_cast<isq::velocity>(pos / dur).numerical_value_ == vector<double>{60, 40, 20});
+        CHECK(quantity_cast<isq::velocity>(pos / dur).numerical_value_in(km / h) == vector<double>{60, 40, 20});
       }
       SECTION("quantity of velocity")
       {
         const quantity<isq::velocity[km / h], vector<double>> v = pos / dur;
-        CHECK(v.numerical_value_ == vector<double>{60, 40, 20});
+        CHECK(v.numerical_value_ref_in(km / h) == vector<double>{60, 40, 20});
       }
     }
   }

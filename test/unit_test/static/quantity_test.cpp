@@ -108,14 +108,14 @@ static_assert(is_same_v<quantity<isq::length[m], int>::rep, int>);
 // static member functions
 ////////////////////////////
 
-static_assert(quantity<isq::length[m], int>::zero().numerical_value_ == 0);
-static_assert(quantity<isq::length[m], int>::one().numerical_value_ == 1);
-static_assert(quantity<isq::length[m], int>::min().numerical_value_ == std::numeric_limits<int>::lowest());
-static_assert(quantity<isq::length[m], int>::max().numerical_value_ == std::numeric_limits<int>::max());
-static_assert(quantity<isq::length[m], double>::zero().numerical_value_ == 0.0);
-static_assert(quantity<isq::length[m], double>::one().numerical_value_ == 1.0);
-static_assert(quantity<isq::length[m], double>::min().numerical_value_ == std::numeric_limits<double>::lowest());
-static_assert(quantity<isq::length[m], double>::max().numerical_value_ == std::numeric_limits<double>::max());
+static_assert(quantity<isq::length[m], int>::zero().numerical_value_in(m) == 0);
+static_assert(quantity<isq::length[m], int>::one().numerical_value_in(m) == 1);
+static_assert(quantity<isq::length[m], int>::min().numerical_value_in(m) == std::numeric_limits<int>::lowest());
+static_assert(quantity<isq::length[m], int>::max().numerical_value_in(m) == std::numeric_limits<int>::max());
+static_assert(quantity<isq::length[m], double>::zero().numerical_value_in(m) == 0.0);
+static_assert(quantity<isq::length[m], double>::one().numerical_value_in(m) == 1.0);
+static_assert(quantity<isq::length[m], double>::min().numerical_value_in(m) == std::numeric_limits<double>::lowest());
+static_assert(quantity<isq::length[m], double>::max().numerical_value_in(m) == std::numeric_limits<double>::max());
 
 
 //////////////////////////////
@@ -186,10 +186,10 @@ static_assert(std::convertible_to<quantity<isq::length[m], int>, quantity<isq::l
 // obtaining a number
 ///////////////////////
 
-static_assert(quantity<isq::length[m], int>(123 * m).numerical_value_ == 123);
-static_assert(quantity<isq::length[m], int>(2 * km).numerical_value_ == 2000);
-static_assert(quantity<isq::length[km], int>(2 * km).numerical_value_ == 2);
-static_assert(quantity<isq::length[km]>(1500 * m).numerical_value_ == 1.5);
+static_assert(quantity<isq::length[m], int>(123 * m).numerical_value_in(m) == 123);
+static_assert(quantity<isq::length[m], int>(2 * km).numerical_value_in(m) == 2000);
+static_assert(quantity<isq::length[km], int>(2 * km).numerical_value_in(km) == 2);
+static_assert(quantity<isq::length[km]>(1500 * m).numerical_value_in(km) == 1.5);
 
 
 ///////////////////////////////////
@@ -200,22 +200,22 @@ static_assert(is_of_type<(2. * km).in(m), quantity<si::metre>>);
 static_assert(is_of_type<isq::length(2. * km).in(m), quantity<isq::length[m]>>);
 static_assert(is_of_type<isq::height(2. * km).in(m), quantity<isq::height[m]>>);
 
-static_assert(quantity<isq::length[km]>(2. * km).in(km).numerical_value_ == 2.);
-static_assert(quantity<isq::length[km]>(2. * km).in(m).numerical_value_ == 2000.);
-static_assert(quantity<isq::length[m]>(2000. * m).in(km).numerical_value_ == 2.);
-static_assert(quantity<isq::length[km], int>(2 * km).in(km).numerical_value_ == 2);
-static_assert(quantity<isq::length[km], int>(2 * km).in(m).numerical_value_ == 2000);
+static_assert(quantity<isq::length[km]>(2. * km).in(km).numerical_value_in(km) == 2.);
+static_assert(quantity<isq::length[km]>(2. * km).in(m).numerical_value_in(m) == 2000.);
+static_assert(quantity<isq::length[m]>(2000. * m).in(km).numerical_value_in(km) == 2.);
+static_assert(quantity<isq::length[km], int>(2 * km).in(km).numerical_value_in(km) == 2);
+static_assert(quantity<isq::length[km], int>(2 * km).in(m).numerical_value_in(m) == 2000);
 
 static_assert(is_of_type<(2. * km).force_in(m), quantity<si::metre>>);
 static_assert(is_of_type<isq::length(2. * km).force_in(m), quantity<isq::length[m]>>);
 static_assert(is_of_type<isq::height(2. * km).force_in(m), quantity<isq::height[m]>>);
 
-static_assert(quantity<isq::length[km]>(2. * km).force_in(km).numerical_value_ == 2.);
-static_assert(quantity<isq::length[km]>(2. * km).force_in(m).numerical_value_ == 2000.);
-static_assert(quantity<isq::length[m]>(2000. * m).force_in(km).numerical_value_ == 2.);
-static_assert(quantity<isq::length[km], int>(2 * km).force_in(km).numerical_value_ == 2);
-static_assert(quantity<isq::length[km], int>(2 * km).force_in(m).numerical_value_ == 2000);
-static_assert(quantity<isq::length[m], int>(2000 * m).force_in(km).numerical_value_ == 2);
+static_assert(quantity<isq::length[km]>(2. * km).force_in(km).numerical_value_in(km) == 2.);
+static_assert(quantity<isq::length[km]>(2. * km).force_in(m).numerical_value_in(m) == 2000.);
+static_assert(quantity<isq::length[m]>(2000. * m).force_in(km).numerical_value_in(km) == 2.);
+static_assert(quantity<isq::length[km], int>(2 * km).force_in(km).numerical_value_in(km) == 2);
+static_assert(quantity<isq::length[km], int>(2 * km).force_in(m).numerical_value_in(m) == 2000);
+static_assert(quantity<isq::length[m], int>(2000 * m).force_in(km).numerical_value_in(km) == 2);
 
 template<template<auto, typename> typename Q>
 concept invalid_unit_conversion = requires {
@@ -317,28 +317,28 @@ static_assert([] {
   auto l1(1 * m), l2(2 * m);
   return l2 = l1;
 }()
-                .numerical_value_ == 1);
+                .numerical_value_in(m) == 1);
 static_assert([] {
   const auto l1(1 * m);
   auto l2(2 * m);
   return l2 = l1;
 }()
-                .numerical_value_ == 1);
+                .numerical_value_in(m) == 1);
 static_assert([]() {
   auto l1(1 * m), l2(2 * m);
   return l2 = std::move(l1);
 }()
-                .numerical_value_ == 1);
+                .numerical_value_in(m) == 1);
 
 
 ////////////////////
 // unary operators
 ////////////////////
 
-static_assert((+123 * m).numerical_value_ == 123);
-static_assert((-123 * m).numerical_value_ == -123);
-static_assert((+(-123 * m)).numerical_value_ == -123);
-static_assert((-(-123 * m)).numerical_value_ == 123);
+static_assert((+123 * m).numerical_value_in(m) == 123);
+static_assert((-123 * m).numerical_value_in(m) == -123);
+static_assert((+(-123 * m)).numerical_value_in(m) == -123);
+static_assert((-(-123 * m)).numerical_value_in(m) == 123);
 
 static_assert([](auto v) {
   auto vv = v++;
@@ -357,7 +357,7 @@ static_assert([](auto v) {
   return std::pair(v, vv);
 }(123 * m) == std::pair(122 * m, 122 * m));
 
-static_assert(is_same_v<decltype((+(short{0} * m)).numerical_value_), int>);
+static_assert(is_same_v<decltype((+(short{0} * m)).numerical_value_in(m)), int>);
 
 
 ////////////////////////
@@ -365,31 +365,31 @@ static_assert(is_same_v<decltype((+(short{0} * m)).numerical_value_), int>);
 ////////////////////////
 
 // same type
-static_assert((1 * m += 1 * m).numerical_value_ == 2);
-static_assert((2 * m -= 1 * m).numerical_value_ == 1);
-static_assert((1 * m *= 2).numerical_value_ == 2);
-static_assert((2 * m /= 2).numerical_value_ == 1);
-static_assert((1 * m *= 2 * one).numerical_value_ == 2);
-static_assert((2 * m /= 2 * one).numerical_value_ == 1);
-static_assert((7 * m %= 2 * m).numerical_value_ == 1);
+static_assert((1 * m += 1 * m).numerical_value_in(m) == 2);
+static_assert((2 * m -= 1 * m).numerical_value_in(m) == 1);
+static_assert((1 * m *= 2).numerical_value_in(m) == 2);
+static_assert((2 * m /= 2).numerical_value_in(m) == 1);
+static_assert((1 * m *= 2 * one).numerical_value_in(m) == 2);
+static_assert((2 * m /= 2 * one).numerical_value_in(m) == 1);
+static_assert((7 * m %= 2 * m).numerical_value_in(m) == 1);
 
 // different types
-static_assert((2.5 * m += 3 * m).numerical_value_ == 5.5);
-static_assert((123 * m += 1 * km).numerical_value_ == 1123);
-static_assert((5.5 * m -= 3 * m).numerical_value_ == 2.5);
-static_assert((1123 * m -= 1 * km).numerical_value_ == 123);
-static_assert((2.5 * m *= 3).numerical_value_ == 7.5);
-static_assert((7.5 * m /= 3).numerical_value_ == 2.5);
-static_assert((2.5 * m *= 3 * one).numerical_value_ == 7.5);
-static_assert((7.5 * m /= 3 * one).numerical_value_ == 2.5);
-static_assert((3500 * m %= 1 * km).numerical_value_ == 500);
+static_assert((2.5 * m += 3 * m).numerical_value_in(m) == 5.5);
+static_assert((123 * m += 1 * km).numerical_value_in(m) == 1123);
+static_assert((5.5 * m -= 3 * m).numerical_value_in(m) == 2.5);
+static_assert((1123 * m -= 1 * km).numerical_value_in(m) == 123);
+static_assert((2.5 * m *= 3).numerical_value_in(m) == 7.5);
+static_assert((7.5 * m /= 3).numerical_value_in(m) == 2.5);
+static_assert((2.5 * m *= 3 * one).numerical_value_in(m) == 7.5);
+static_assert((7.5 * m /= 3 * one).numerical_value_in(m) == 2.5);
+static_assert((3500 * m %= 1 * km).numerical_value_in(m) == 500);
 
-// static_assert((std::uint8_t(255) * m %= 256 * m).numerical_value_ == [] {
+// static_assert((std::uint8_t(255) * m %= 256 * m).numerical_value_in(m) == [] {
 //   std::uint8_t ui(255);
 //   return ui %= 256;
 // }());  // UB
 // TODO: Fix
-static_assert((std::uint8_t(255) * m %= 257 * m).numerical_value_ != [] {
+static_assert((std::uint8_t(255) * m %= 257 * m).numerical_value_in(m) != [] {
   std::uint8_t ui(255);
   return ui %= 257;
 }());
@@ -399,10 +399,10 @@ static_assert((std::uint8_t(255) * m %= 257 * m).numerical_value_ != [] {
 #ifndef MP_UNITS_COMP_MSVC
 // next two lines trigger conversions warnings
 // (warning disabled in CMake for this file)
-static_assert((22 * m *= 33.33).numerical_value_ == 733);
-static_assert((22 * m /= 3.33).numerical_value_ == 6);
-static_assert((22 * m *= 33.33 * one).numerical_value_ == 733);
-static_assert((22 * m /= 3.33 * one).numerical_value_ == 6);
+static_assert((22 * m *= 33.33).numerical_value_in(m) == 733);
+static_assert((22 * m /= 3.33).numerical_value_in(m) == 6);
+static_assert((22 * m *= 33.33 * one).numerical_value_in(m) == 733);
+static_assert((22 * m /= 3.33 * one).numerical_value_in(m) == 6);
 #endif
 
 template<template<auto, typename> typename Q>
@@ -530,9 +530,9 @@ static_assert(is_of_type<4 * one % (2 * one), quantity<one, int>>);
 // check for integral types promotion
 static_assert(is_same_v<decltype(std::uint8_t(0) * m + std::uint8_t(0) * m)::rep, int>);
 static_assert(is_same_v<decltype(std::uint8_t(0) * m - std::uint8_t(0) * m)::rep, int>);
-static_assert((std::uint8_t(128) * m + std::uint8_t(128) * m).numerical_value_ ==
+static_assert((std::uint8_t(128) * m + std::uint8_t(128) * m).numerical_value_in(m) ==
               std::uint8_t(128) + std::uint8_t(128));
-static_assert((std::uint8_t(0) * m - std::uint8_t(1) * m).numerical_value_ == std::uint8_t(0) - std::uint8_t(1));
+static_assert((std::uint8_t(0) * m - std::uint8_t(1) * m).numerical_value_in(m) == std::uint8_t(0) - std::uint8_t(1));
 
 static_assert(
   is_same_v<decltype((std::uint8_t(0) * m) % (std::uint8_t(0) * m))::rep, decltype(std::uint8_t(0) % std::uint8_t(0))>);
@@ -612,67 +612,67 @@ static_assert(is_of_type<1 * m / (1 * s), quantity<derived_unit<struct si::metre
 static_assert(is_of_type<1 * m / (1 * min), quantity<derived_unit<struct si::metre, per<struct si::minute>>{}, int>>);
 static_assert(is_of_type<1 * min / (1 * m), quantity<derived_unit<struct si::minute, per<struct si::metre>>{}, int>>);
 
-static_assert((1 * m + 1 * m).numerical_value_ == 2);
-static_assert((1 * m + 1 * km).numerical_value_ == 1001);
-static_assert((1 * km + 1 * m).numerical_value_ == 1001);
-static_assert((2 * m - 1 * m).numerical_value_ == 1);
-static_assert((1 * km - 1 * m).numerical_value_ == 999);
-static_assert((2 * m * 2).numerical_value_ == 4);
-static_assert((2 * m * (2 * one)).numerical_value_ == 4);
-static_assert((2 * m * (2 * percent)).numerical_value_ == 4);
-static_assert((3 * 3 * m).numerical_value_ == 9);
-static_assert(((3 * one) * (3 * m)).numerical_value_ == 9);
-static_assert(((3 * percent) * (3 * m)).numerical_value_ == 9);
-static_assert((4 * m / 2).numerical_value_ == 2);
-static_assert((4 * m / (2 * one)).numerical_value_ == 2);
-static_assert((4 * m / (2 * percent)).numerical_value_ == 2);
-static_assert((4 * km / (2 * m)).numerical_value_ == 2);
-static_assert((4000 * m / (2 * m)).numerical_value_ == 2000);
+static_assert((1 * m + 1 * m).numerical_value_in(m) == 2);
+static_assert((1 * m + 1 * km).numerical_value_in(m) == 1001);
+static_assert((1 * km + 1 * m).numerical_value_in(m) == 1001);
+static_assert((2 * m - 1 * m).numerical_value_in(m) == 1);
+static_assert((1 * km - 1 * m).numerical_value_in(m) == 999);
+static_assert((2 * m * 2).numerical_value_in(m) == 4);
+static_assert((2 * m * (2 * one)).numerical_value_in(m) == 4);
+static_assert((2 * m * (2 * percent)).numerical_value_in(percent * m) == 4);
+static_assert((3 * 3 * m).numerical_value_in(m) == 9);
+static_assert(((3 * one) * (3 * m)).numerical_value_in(m) == 9);
+static_assert(((3 * percent) * (3 * m)).numerical_value_in(percent * m) == 9);
+static_assert((4 * m / 2).numerical_value_in(m) == 2);
+static_assert((4 * m / (2 * one)).numerical_value_in(m) == 2);
+static_assert((4 * m / (2 * percent)).numerical_value_in(m / percent) == 2);
+static_assert((4 * km / (2 * m)).numerical_value_in(km / m) == 2);
+static_assert((4000 * m / (2 * m)).numerical_value_in(one) == 2000);
 
-static_assert((1.5 * m + 1 * m).numerical_value_ == 2.5);
-static_assert((1.5 * m + 1 * km).numerical_value_ == 1001.5);
-static_assert((1.5 * km + 1 * m).numerical_value_ == 1501);
-static_assert((2.5 * m - 1 * m).numerical_value_ == 1.5);
-static_assert((1.5 * km - 1 * m).numerical_value_ == 1499);
-static_assert((2.5 * m * 2).numerical_value_ == 5);
-static_assert((2.5 * m * (2 * one)).numerical_value_ == 5);
-static_assert((2.5 * m * (2 * percent)).numerical_value_ == 5);
-static_assert((2.5L * (2 * m)).numerical_value_ == 5);
-static_assert((2.5L * one * (2 * m)).numerical_value_ == 5);
-static_assert((2.5L * percent * (2 * m)).numerical_value_ == 5);
-static_assert((5. * m / 2).numerical_value_ == 2.5);
-static_assert((5. * m / (2 * one)).numerical_value_ == 2.5);
-static_assert((5. * m / (2 * percent)).numerical_value_ == 2.5);
-static_assert((5. * km / (2 * m)).numerical_value_ == 2.5);
-static_assert((5000. * m / (2 * m)).numerical_value_ == 2500);
+static_assert((1.5 * m + 1 * m).numerical_value_in(m) == 2.5);
+static_assert((1.5 * m + 1 * km).numerical_value_in(m) == 1001.5);
+static_assert((1.5 * km + 1 * m).numerical_value_in(m) == 1501);
+static_assert((2.5 * m - 1 * m).numerical_value_in(m) == 1.5);
+static_assert((1.5 * km - 1 * m).numerical_value_in(m) == 1499);
+static_assert((2.5 * m * 2).numerical_value_in(m) == 5);
+static_assert((2.5 * m * (2 * one)).numerical_value_in(m) == 5);
+static_assert((2.5 * m * (2 * percent)).numerical_value_in(m * percent) == 5);
+static_assert((2.5L * (2 * m)).numerical_value_in(m) == 5);
+static_assert((2.5L * one * (2 * m)).numerical_value_in(m) == 5);
+static_assert((2.5L * percent * (2 * m)).numerical_value_in(m * percent) == 5);
+static_assert((5. * m / 2).numerical_value_in(m) == 2.5);
+static_assert((5. * m / (2 * one)).numerical_value_in(m) == 2.5);
+static_assert((5. * m / (2 * percent)).numerical_value_in(m / percent) == 2.5);
+static_assert((5. * km / (2 * m)).numerical_value_in(km / m) == 2.5);
+static_assert((5000. * m / (2 * m)).numerical_value_in(one) == 2500);
 
-static_assert((1 * m + 1.5 * m).numerical_value_ == 2.5);
-static_assert((1 * m + 1.5 * km).numerical_value_ == 1501);
-static_assert((1 * km + 1.5 * m).numerical_value_ == 1001.5);
-static_assert((2 * m - 1.5 * m).numerical_value_ == 0.5);
-static_assert((1 * km - 1.5 * m).numerical_value_ == 998.5);
-static_assert((2 * m * 2.5L).numerical_value_ == 5);
-static_assert((2 * m * (2.5L * one)).numerical_value_ == 5);
-static_assert((2 * m * (2.5L * percent)).numerical_value_ == 5);
-static_assert((2 * 2.5 * m).numerical_value_ == 5);
-static_assert((2 * one * (2.5 * m)).numerical_value_ == 5);
-static_assert((2 * percent * (2.5 * m)).numerical_value_ == 5);
-static_assert((5 * m / 2.5L).numerical_value_ == 2);
-static_assert((5 * m / (2.5L * one)).numerical_value_ == 2);
-static_assert((5 * m / (2.5L * percent)).numerical_value_ == 2);
-static_assert((5 * km / (2.5 * m)).numerical_value_ == 2);
-static_assert((5000 * m / (2.5 * m)).numerical_value_ == 2000);
+static_assert((1 * m + 1.5 * m).numerical_value_in(m) == 2.5);
+static_assert((1 * m + 1.5 * km).numerical_value_in(m) == 1501);
+static_assert((1 * km + 1.5 * m).numerical_value_in(m) == 1001.5);
+static_assert((2 * m - 1.5 * m).numerical_value_in(m) == 0.5);
+static_assert((1 * km - 1.5 * m).numerical_value_in(m) == 998.5);
+static_assert((2 * m * 2.5L).numerical_value_in(m) == 5);
+static_assert((2 * m * (2.5L * one)).numerical_value_in(m) == 5);
+static_assert((2 * m * (2.5L * percent)).numerical_value_in(m * percent) == 5);
+static_assert((2 * 2.5 * m).numerical_value_in(m) == 5);
+static_assert((2 * one * (2.5 * m)).numerical_value_in(m) == 5);
+static_assert((2 * percent * (2.5 * m)).numerical_value_in(m * percent) == 5);
+static_assert((5 * m / 2.5L).numerical_value_in(m) == 2);
+static_assert((5 * m / (2.5L * one)).numerical_value_in(m) == 2);
+static_assert((5 * m / (2.5L * percent)).numerical_value_in(m / percent) == 2);
+static_assert((5 * km / (2.5 * m)).numerical_value_in(km / m) == 2);
+static_assert((5000 * m / (2.5 * m)).numerical_value_in(one) == 2000);
 
-static_assert((7 * m % (2 * m)).numerical_value_ == 1);
-static_assert((7 * km % (2000 * m)).numerical_value_ == 1000);
-static_assert((1300 * m % (1 * km)).numerical_value_ == 300);
-static_assert((7 * one % (2 * one)).numerical_value_ == 1);
+static_assert((7 * m % (2 * m)).numerical_value_in(m) == 1);
+static_assert((7 * km % (2000 * m)).numerical_value_in(m) == 1000);
+static_assert((1300 * m % (1 * km)).numerical_value_in(m) == 300);
+static_assert((7 * one % (2 * one)).numerical_value_in(one) == 1);
 
 static_assert((10 * m2 * (10 * m2)) / (50 * m2) == 2 * m2);
 
-static_assert((10 * km / (5 * m)).numerical_value_ == 2);
+static_assert((10 * km / (5 * m)).numerical_value_in(km / m) == 2);
 static_assert((10 * km / (5 * m)).numerical_value_in(one) == 2000);
-static_assert((10 * s * (2 * kHz)).numerical_value_ == 20);
+static_assert((10 * s * (2 * kHz)).numerical_value_in(s * kHz) == 20);
 
 // commutativity and associativity
 static_assert(10 * isq::length[si::metre] / (2 * isq::time[s]) + 5 * isq::speed[m / s] == 10 * isq::speed[m / s]);
@@ -758,9 +758,10 @@ static_assert(1 * one + 30 * percent == (100 + 30) * percent);
 
 static_assert(is_same_v<decltype(std::uint8_t(0) * one + std::uint8_t(0) * one)::rep, int>);
 static_assert(is_same_v<decltype(std::uint8_t(0) * one - std::uint8_t(0) * one)::rep, int>);
-static_assert((std::uint8_t(128) * one + std::uint8_t(128) * one).numerical_value_ ==
+static_assert((std::uint8_t(128) * one + std::uint8_t(128) * one).numerical_value_in(one) ==
               std::uint8_t(128) + std::uint8_t(128));
-static_assert((std::uint8_t(0) * one - std::uint8_t(1) * one).numerical_value_ == std::uint8_t(0) - std::uint8_t(1));
+static_assert((std::uint8_t(0) * one - std::uint8_t(1) * one).numerical_value_in(one) ==
+              std::uint8_t(0) - std::uint8_t(1));
 static_assert(is_same_v<decltype(std::uint8_t(0) * one % (std::uint8_t(0) * one))::rep,
                         decltype(std::uint8_t(0) % std::uint8_t(0))>);
 
@@ -905,14 +906,14 @@ static_assert((50. * percent).numerical_value_in(one) == 0.5);
 // value_cast
 //////////////////
 
-static_assert(value_cast<m>(2 * km).numerical_value_ == 2000);
-static_assert(value_cast<km>(2000 * m).numerical_value_ == 2);
-static_assert(value_cast<int>(1.23 * m).numerical_value_ == 1);
-static_assert(value_cast<km / h>(2000.0 * m / (3600.0 * s)).numerical_value_ == 2);
+static_assert(value_cast<m>(2 * km).numerical_value_in(m) == 2000);
+static_assert(value_cast<km>(2000 * m).numerical_value_in(km) == 2);
+static_assert(value_cast<int>(1.23 * m).numerical_value_in(m) == 1);
+static_assert(value_cast<km / h>(2000.0 * m / (3600.0 * s)).numerical_value_in(km / h) == 2);
 
-static_assert((2 * km).force_in(m).numerical_value_ == 2000);
-static_assert((2000 * m).force_in(km).numerical_value_ == 2);
-static_assert((2000.0 * m / (3600.0 * s)).force_in(km / h).numerical_value_ == 2);
+static_assert((2 * km).force_in(m).numerical_value_in(m) == 2000);
+static_assert((2000 * m).force_in(km).numerical_value_in(km) == 2);
+static_assert((2000.0 * m / (3600.0 * s)).force_in(km / h).numerical_value_in(km / h) == 2);
 
 //////////////////
 // quantity_cast
