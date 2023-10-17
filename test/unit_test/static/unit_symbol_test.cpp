@@ -41,59 +41,59 @@ static_assert(unit_symbol(metre) == "m");
 static_assert(unit_symbol(second) == "s");
 static_assert(unit_symbol(joule) == "J");
 static_assert(unit_symbol(degree_Celsius) == "\u00B0C");
-static_assert(unit_symbol(degree_Celsius, {.encoding = ascii}) == "`C");
+static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii}>(degree_Celsius) == "`C");
 static_assert(unit_symbol(kilogram) == "kg");
 static_assert(unit_symbol(hour) == "h");
 
 // prefixed units
 static_assert(unit_symbol(quecto<ohm>) == "qΩ");
-static_assert(unit_symbol(quecto<ohm>, {.encoding = ascii}) == "qohm");
+static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii}>(quecto<ohm>) == "qohm");
 static_assert(unit_symbol(ronto<ohm>) == "rΩ");
-static_assert(unit_symbol(ronto<ohm>, {.encoding = ascii}) == "rohm");
+static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii}>(ronto<ohm>) == "rohm");
 static_assert(unit_symbol(yocto<ohm>) == "yΩ");
-static_assert(unit_symbol(yocto<ohm>, {.encoding = ascii}) == "yohm");
+static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii}>(yocto<ohm>) == "yohm");
 static_assert(unit_symbol(zepto<ohm>) == "zΩ");
-static_assert(unit_symbol(zepto<ohm>, {.encoding = ascii}) == "zohm");
+static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii}>(zepto<ohm>) == "zohm");
 static_assert(unit_symbol(atto<ohm>) == "aΩ");
-static_assert(unit_symbol(atto<ohm>, {.encoding = ascii}) == "aohm");
+static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii}>(atto<ohm>) == "aohm");
 static_assert(unit_symbol(femto<ohm>) == "fΩ");
-static_assert(unit_symbol(femto<ohm>, {.encoding = ascii}) == "fohm");
+static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii}>(femto<ohm>) == "fohm");
 static_assert(unit_symbol(pico<ohm>) == "pΩ");
-static_assert(unit_symbol(pico<ohm>, {.encoding = ascii}) == "pohm");
+static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii}>(pico<ohm>) == "pohm");
 static_assert(unit_symbol(nano<ohm>) == "nΩ");
-static_assert(unit_symbol(nano<ohm>, {.encoding = ascii}) == "nohm");
+static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii}>(nano<ohm>) == "nohm");
 static_assert(unit_symbol(micro<ohm>) == "µΩ");
-static_assert(unit_symbol(micro<ohm>, {.encoding = ascii}) == "uohm");
+static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii}>(micro<ohm>) == "uohm");
 static_assert(unit_symbol(milli<ohm>) == "mΩ");
-static_assert(unit_symbol(milli<ohm>, {.encoding = ascii}) == "mohm");
+static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii}>(milli<ohm>) == "mohm");
 static_assert(unit_symbol(centi<ohm>) == "cΩ");
-static_assert(unit_symbol(centi<ohm>, {.encoding = ascii}) == "cohm");
+static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii}>(centi<ohm>) == "cohm");
 static_assert(unit_symbol(deci<ohm>) == "dΩ");
-static_assert(unit_symbol(deci<ohm>, {.encoding = ascii}) == "dohm");
+static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii}>(deci<ohm>) == "dohm");
 static_assert(unit_symbol(deca<ohm>) == "daΩ");
-static_assert(unit_symbol(deca<ohm>, {.encoding = ascii}) == "daohm");
+static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii}>(deca<ohm>) == "daohm");
 static_assert(unit_symbol(hecto<ohm>) == "hΩ");
-static_assert(unit_symbol(hecto<ohm>, {.encoding = ascii}) == "hohm");
+static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii}>(hecto<ohm>) == "hohm");
 static_assert(unit_symbol(kilo<ohm>) == "kΩ");
-static_assert(unit_symbol(kilo<ohm>, {.encoding = ascii}) == "kohm");
+static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii}>(kilo<ohm>) == "kohm");
 static_assert(unit_symbol(mega<ohm>) == "MΩ");
-static_assert(unit_symbol(mega<ohm>, {.encoding = ascii}) == "Mohm");
+static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii}>(mega<ohm>) == "Mohm");
 static_assert(unit_symbol(giga<ohm>) == "GΩ");
-static_assert(unit_symbol(giga<ohm>, {.encoding = ascii}) == "Gohm");
+static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii}>(giga<ohm>) == "Gohm");
 static_assert(unit_symbol(tera<ohm>) == "TΩ");
-static_assert(unit_symbol(tera<ohm>, {.encoding = ascii}) == "Tohm");
+static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii}>(tera<ohm>) == "Tohm");
 static_assert(unit_symbol(peta<ohm>) == "PΩ");
-static_assert(unit_symbol(peta<ohm>, {.encoding = ascii}) == "Pohm");
+static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii}>(peta<ohm>) == "Pohm");
 static_assert(unit_symbol(exa<ohm>) == "EΩ");
-static_assert(unit_symbol(exa<ohm>, {.encoding = ascii}) == "Eohm");
+static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii}>(exa<ohm>) == "Eohm");
 static_assert(unit_symbol(zetta<ohm>) == "ZΩ");
-static_assert(unit_symbol(zetta<ohm>, {.encoding = ascii}) == "Zohm");
+static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii}>(zetta<ohm>) == "Zohm");
 static_assert(unit_symbol(yotta<ohm>) == "YΩ");
-static_assert(unit_symbol(yotta<ohm>, {.encoding = ascii}) == "Yohm");
+static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii}>(yotta<ohm>) == "Yohm");
 static_assert(unit_symbol(ronna<ohm>) == "RΩ");
-static_assert(unit_symbol(ronna<ohm>, {.encoding = ascii}) == "Rohm");
+static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii}>(ronna<ohm>) == "Rohm");
 static_assert(unit_symbol(quetta<ohm>) == "QΩ");
-static_assert(unit_symbol(quetta<ohm>, {.encoding = ascii}) == "Qohm");
+static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii}>(quetta<ohm>) == "Qohm");
 
 static_assert(unit_symbol(kibi<bit>) == "Kibit");
 static_assert(unit_symbol(mebi<bit>) == "Mibit");
@@ -106,55 +106,72 @@ static_assert(unit_symbol(yobi<bit>) == "Yibit");
 
 // scaled units
 static_assert(unit_symbol(mag<100> * metre) == "× 10² m");
-static_assert(unit_symbol(mag<100> * metre, {.encoding = ascii}) == "x 10^2 m");
+static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii}>(mag<100> * metre) == "x 10^2 m");
 static_assert(unit_symbol(mag<60> * second) == "[6 × 10¹] s");
-static_assert(unit_symbol(mag<60> * second, {.encoding = ascii}) == "[6 x 10^1] s");
+static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii}>(mag<60> * second) == "[6 x 10^1] s");
 static_assert(unit_symbol(mag<ratio{1, 18}> * metre / second) == "[1/18] m/s");
 
 // derived units
 static_assert(unit_symbol(one) == "");
 static_assert(unit_symbol(percent) == "%");
 static_assert(unit_symbol(per_mille) == "‰");
-static_assert(unit_symbol(per_mille, {.encoding = ascii}) == "%o");
+static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii}>(per_mille) == "%o");
 static_assert(unit_symbol(square(metre)) == "m²");
-static_assert(unit_symbol(square(metre), {.encoding = ascii}) == "m^2");
+static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii}>(square(metre)) == "m^2");
 static_assert(unit_symbol(cubic(metre)) == "m³");
-static_assert(unit_symbol(cubic(metre), {.encoding = ascii}) == "m^3");
+static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii}>(cubic(metre)) == "m^3");
 static_assert(unit_symbol(kilo<metre> * metre) == "km m");
-static_assert(unit_symbol(kilo<metre> * metre, {.separator = half_high_dot}) == "km⋅m");
+static_assert(unit_symbol<unit_symbol_formatting{.separator = half_high_dot}>(kilo<metre> * metre) == "km⋅m");
 static_assert(unit_symbol(metre / metre) == "");
 static_assert(unit_symbol(kilo<metre> / metre) == "km/m");
-static_assert(unit_symbol(kilo<metre> / metre, {.solidus = never}) == "km m⁻¹");
-static_assert(unit_symbol(kilo<metre> / metre, {.encoding = ascii, .solidus = never}) == "km m^-1");
+static_assert(unit_symbol<unit_symbol_formatting{.solidus = never}>(kilo<metre> / metre) == "km m⁻¹");
+static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii, .solidus = never}>(kilo<metre> / metre) ==
+              "km m^-1");
 static_assert(unit_symbol(metre / second) == "m/s");
-static_assert(unit_symbol(metre / second, {.solidus = always}) == "m/s");
-static_assert(unit_symbol(metre / second, {.solidus = never}) == "m s⁻¹");
-static_assert(unit_symbol(metre / second, {.encoding = ascii, .solidus = never}) == "m s^-1");
-static_assert(unit_symbol(metre / second, {.solidus = never, .separator = half_high_dot}) == "m⋅s⁻¹");
+static_assert(unit_symbol<unit_symbol_formatting{.solidus = always}>(metre / second) == "m/s");
+static_assert(unit_symbol<unit_symbol_formatting{.solidus = never}>(metre / second) == "m s⁻¹");
+static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii, .solidus = never}>(metre / second) == "m s^-1");
+static_assert(unit_symbol<unit_symbol_formatting{.solidus = never, .separator = half_high_dot}>(metre / second) ==
+              "m⋅s⁻¹");
 static_assert(unit_symbol(metre / square(second)) == "m/s²");
-static_assert(unit_symbol(metre / square(second), {.encoding = ascii}) == "m/s^2");
-static_assert(unit_symbol(metre / square(second), {.solidus = always}) == "m/s²");
-static_assert(unit_symbol(metre / square(second), {.encoding = ascii, .solidus = always}) == "m/s^2");
-static_assert(unit_symbol(metre / square(second), {.solidus = never}) == "m s⁻²");
-static_assert(unit_symbol(metre / square(second), {.encoding = ascii, .solidus = never}) == "m s^-2");
-static_assert(unit_symbol(metre / square(second), {.solidus = never, .separator = half_high_dot}) == "m⋅s⁻²");
+static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii}>(metre / square(second)) == "m/s^2");
+static_assert(unit_symbol<unit_symbol_formatting{.solidus = always}>(metre / square(second)) == "m/s²");
+static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii, .solidus = always}>(metre / square(second)) ==
+              "m/s^2");
+static_assert(unit_symbol<unit_symbol_formatting{.solidus = never}>(metre / square(second)) == "m s⁻²");
+static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii, .solidus = never}>(metre / square(second)) ==
+              "m s^-2");
+static_assert(unit_symbol<unit_symbol_formatting{.solidus = never, .separator = half_high_dot}>(metre /
+                                                                                                square(second)) ==
+              "m⋅s⁻²");
 static_assert(unit_symbol(kilogram * metre / square(second)) == "kg m/s²");
-static_assert(unit_symbol(kilogram * metre / square(second), {.separator = half_high_dot}) == "kg⋅m/s²");
-static_assert(unit_symbol(kilogram * metre / square(second), {.encoding = ascii}) == "kg m/s^2");
-static_assert(unit_symbol(kilogram * metre / square(second), {.solidus = always}) == "kg m/s²");
-static_assert(unit_symbol(kilogram * metre / square(second), {.encoding = ascii, .solidus = always}) == "kg m/s^2");
-static_assert(unit_symbol(kilogram * metre / square(second), {.solidus = never}) == "kg m s⁻²");
-static_assert(unit_symbol(kilogram * metre / square(second), {.encoding = ascii, .solidus = never}) == "kg m s^-2");
-static_assert(unit_symbol(kilogram * metre / square(second), {.solidus = never, .separator = half_high_dot}) ==
+static_assert(unit_symbol<unit_symbol_formatting{.separator = half_high_dot}>(kilogram * metre / square(second)) ==
+              "kg⋅m/s²");
+static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii}>(kilogram * metre / square(second)) == "kg m/s^2");
+static_assert(unit_symbol<unit_symbol_formatting{.solidus = always}>(kilogram * metre / square(second)) == "kg m/s²");
+static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii, .solidus = always}>(kilogram * metre /
+                                                                                        square(second)) == "kg m/s^2");
+static_assert(unit_symbol<unit_symbol_formatting{.solidus = never}>(kilogram * metre / square(second)) == "kg m s⁻²");
+static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii, .solidus = never}>(kilogram * metre /
+                                                                                       square(second)) == "kg m s^-2");
+static_assert(unit_symbol<unit_symbol_formatting{.solidus = never, .separator = half_high_dot}>(kilogram * metre /
+                                                                                                square(second)) ==
               "kg⋅m⋅s⁻²");
 static_assert(unit_symbol(kilogram / metre / square(second)) == "kg m⁻¹ s⁻²");
-static_assert(unit_symbol(kilogram / metre / square(second), {.separator = half_high_dot}) == "kg⋅m⁻¹⋅s⁻²");
-static_assert(unit_symbol(kilogram / metre / square(second), {.encoding = ascii}) == "kg m^-1 s^-2");
-static_assert(unit_symbol(kilogram / metre / square(second), {.solidus = always}) == "kg/(m s²)");
-static_assert(unit_symbol(kilogram / metre / square(second), {.encoding = ascii, .solidus = always}) == "kg/(m s^2)");
-static_assert(unit_symbol(kilogram / metre / square(second), {.solidus = never}) == "kg m⁻¹ s⁻²");
-static_assert(unit_symbol(kilogram / metre / square(second), {.encoding = ascii, .solidus = never}) == "kg m^-1 s^-2");
-static_assert(unit_symbol(kilogram / metre / square(second), {.solidus = never, .separator = half_high_dot}) ==
+static_assert(unit_symbol<unit_symbol_formatting{.separator = half_high_dot}>(kilogram / metre / square(second)) ==
+              "kg⋅m⁻¹⋅s⁻²");
+static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii}>(kilogram / metre / square(second)) ==
+              "kg m^-1 s^-2");
+static_assert(unit_symbol<unit_symbol_formatting{.solidus = always}>(kilogram / metre / square(second)) == "kg/(m s²)");
+static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii, .solidus = always}>(kilogram / metre /
+                                                                                        square(second)) ==
+              "kg/(m s^2)");
+static_assert(unit_symbol<unit_symbol_formatting{.solidus = never}>(kilogram / metre / square(second)) == "kg m⁻¹ s⁻²");
+static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii, .solidus = never}>(kilogram / metre /
+                                                                                       square(second)) ==
+              "kg m^-1 s^-2");
+static_assert(unit_symbol<unit_symbol_formatting{.solidus = never, .separator = half_high_dot}>(kilogram / metre /
+                                                                                                square(second)) ==
               "kg⋅m⁻¹⋅s⁻²");
 static_assert(unit_symbol(pow<123>(metre)) == "m¹²³");
 static_assert(unit_symbol(pow<1, 2>(metre)) == "m^(1/2)");
