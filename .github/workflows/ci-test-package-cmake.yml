@@ -41,6 +41,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        std: [20, 23]
         config:
           # - {
           #     name: "MSVC 14.2",
@@ -122,7 +123,6 @@ jobs:
           #       },
           #   }
         build_type: ["Release", "Debug"]
-        std: [20, 23]
 
     env:
       CC: ${{ matrix.config.compiler.cc }}
