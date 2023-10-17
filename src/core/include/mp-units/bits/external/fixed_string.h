@@ -60,6 +60,12 @@ struct basic_fixed_string {
       for (std::size_t i = 0; i < N; ++i) data_[i] = txt[i];
   }
 
+  constexpr basic_fixed_string(const CharT* ptr, std::integral_constant<std::size_t, N>) noexcept
+  {
+    if constexpr (N != 0)
+      for (std::size_t i = 0; i < N; ++i) data_[i] = *ptr++;
+  }
+
   [[nodiscard]] constexpr bool empty() const noexcept { return N == 0; }
   [[nodiscard]] constexpr std::size_t size() const noexcept { return N; }
   [[nodiscard]] constexpr const CharT* data() const noexcept { return data_; }
@@ -104,6 +110,9 @@ struct basic_fixed_string {
 
 template<typename CharT, std::size_t N>
 basic_fixed_string(const CharT (&str)[N]) -> basic_fixed_string<CharT, N - 1>;
+
+template<typename CharT, std::size_t N>
+basic_fixed_string(const CharT* ptr, std::integral_constant<std::size_t, N>) -> basic_fixed_string<CharT, N>;
 
 template<typename CharT>
 basic_fixed_string(CharT) -> basic_fixed_string<CharT, 1>;
