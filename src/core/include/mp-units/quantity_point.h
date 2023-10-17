@@ -82,7 +82,7 @@ public:
   using rep = Rep;
   using quantity_type = quantity<reference, Rep>;
 
-  quantity_type quantity_from_origin_;  // needs to be public for a structural type
+  quantity_type quantity_from_origin_is_an_implementation_detail_;  // needs to be public for a structural type
 
   // static member functions
   [[nodiscard]] static constexpr quantity_point min() noexcept
@@ -106,7 +106,7 @@ public:
     requires std::constructible_from<quantity_type, typename QP::quantity_type>
   // TODO add perfect forwarding
   constexpr explicit(!std::convertible_to<typename QP::quantity_type, quantity_type>) quantity_point(const QP& qp) :
-      quantity_from_origin_([&] {
+      quantity_from_origin_is_an_implementation_detail_([&] {
         if constexpr (is_same_v<std::remove_const_t<decltype(point_origin)>,
                                 std::remove_const_t<decltype(QP::point_origin)>>)
           return qp.quantity_ref_from(point_origin);
@@ -128,7 +128,7 @@ public:
     !std::convertible_to<
       quantity<quantity_point_like_traits<QP>::reference, typename quantity_point_like_traits<QP>::rep>, quantity_type>)
     quantity_point(const QP& qp) :
-      quantity_from_origin_(quantity_point_like_traits<QP>::to_quantity(qp).value)
+      quantity_from_origin_is_an_implementation_detail_(quantity_point_like_traits<QP>::to_quantity(qp).value)
   {
   }
 
@@ -149,13 +149,13 @@ public:
   template<std::same_as<std::remove_const_t<decltype(PO)>> PO2>
   [[nodiscard]] constexpr quantity_type& quantity_ref_from(PO2) & noexcept
   {
-    return quantity_from_origin_;
+    return quantity_from_origin_is_an_implementation_detail_;
   }
 
   template<std::same_as<std::remove_const_t<decltype(PO)>> PO2>
   [[nodiscard]] constexpr const quantity_type& quantity_ref_from(PO2) const& noexcept
   {
-    return quantity_from_origin_;
+    return quantity_from_origin_is_an_implementation_detail_;
   }
 
   template<std::same_as<std::remove_const_t<decltype(PO)>> PO2>
@@ -190,14 +190,16 @@ public:
              std::convertible_to<quantity_type, quantity<quantity_point_like_traits<QP>::reference,
                                                          typename quantity_point_like_traits<QP>::rep>>
   [[nodiscard]] explicit(
-    is_specialization_of<decltype(quantity_point_like_traits<QP>::from_quantity(quantity_from_origin_)),
-                         convert_explicitly> ||
+    is_specialization_of<
+      decltype(quantity_point_like_traits<QP>::from_quantity(quantity_from_origin_is_an_implementation_detail_)),
+      convert_explicitly> ||
     !std::convertible_to<quantity_type, quantity<quantity_point_like_traits<QP>::reference,
                                                  typename quantity_point_like_traits<QP>::rep>>) constexpr
-  operator QP_() const& noexcept(noexcept(quantity_point_like_traits<QP>::from_quantity(quantity_from_origin_)) &&
-                                 std::is_nothrow_copy_constructible_v<rep>)
+  operator QP_() const& noexcept(
+    noexcept(quantity_point_like_traits<QP>::from_quantity(quantity_from_origin_is_an_implementation_detail_)) &&
+    std::is_nothrow_copy_constructible_v<rep>)
   {
-    return quantity_point_like_traits<QP>::from_quantity(quantity_from_origin_).value;
+    return quantity_point_like_traits<QP>::from_quantity(quantity_from_origin_is_an_implementation_detail_).value;
   }
 
   template<typename QP_, QuantityPointLike QP = std::remove_cvref_t<QP_>>
@@ -206,61 +208,66 @@ public:
              std::convertible_to<quantity_type, quantity<quantity_point_like_traits<QP>::reference,
                                                          typename quantity_point_like_traits<QP>::rep>>
   [[nodiscard]] explicit(
-    is_specialization_of<decltype(quantity_point_like_traits<QP>::from_quantity(quantity_from_origin_)),
-                         convert_explicitly> ||
+    is_specialization_of<
+      decltype(quantity_point_like_traits<QP>::from_quantity(quantity_from_origin_is_an_implementation_detail_)),
+      convert_explicitly> ||
     !std::convertible_to<quantity_type, quantity<quantity_point_like_traits<QP>::reference,
                                                  typename quantity_point_like_traits<QP>::rep>>) constexpr
-  operator QP_() && noexcept(noexcept(quantity_point_like_traits<QP>::from_quantity(quantity_from_origin_)) &&
-                             std::is_nothrow_move_constructible_v<rep>)
+  operator QP_() && noexcept(
+    noexcept(quantity_point_like_traits<QP>::from_quantity(quantity_from_origin_is_an_implementation_detail_)) &&
+    std::is_nothrow_move_constructible_v<rep>)
   {
-    return quantity_point_like_traits<QP>::from_quantity(std::move(quantity_from_origin_)).value;
+    return quantity_point_like_traits<QP>::from_quantity(std::move(quantity_from_origin_is_an_implementation_detail_))
+      .value;
   }
 
   // member unary operators
   template<typename QP>
   friend constexpr decltype(auto) operator++(QP&& qp)
-    requires std::derived_from<std::remove_cvref_t<QP>, quantity_point> && requires { ++qp.quantity_from_origin_; }
+    requires std::derived_from<std::remove_cvref_t<QP>, quantity_point> &&
+             requires { ++qp.quantity_from_origin_is_an_implementation_detail_; }
   {
-    ++qp.quantity_from_origin_;
+    ++qp.quantity_from_origin_is_an_implementation_detail_;
     return std::forward<QP>(qp);
   }
 
   [[nodiscard]] constexpr quantity_point operator++(int)
-    requires requires { quantity_from_origin_++; }
+    requires requires { quantity_from_origin_is_an_implementation_detail_++; }
   {
-    return quantity_point(quantity_from_origin_++);
+    return quantity_point(quantity_from_origin_is_an_implementation_detail_++);
   }
 
   template<typename QP>
   friend constexpr decltype(auto) operator--(QP&& qp)
-    requires std::derived_from<std::remove_cvref_t<QP>, quantity_point> && requires { --qp.quantity_from_origin_; }
+    requires std::derived_from<std::remove_cvref_t<QP>, quantity_point> &&
+             requires { --qp.quantity_from_origin_is_an_implementation_detail_; }
   {
-    --qp.quantity_from_origin_;
+    --qp.quantity_from_origin_is_an_implementation_detail_;
     return std::forward<QP>(qp);
   }
 
   [[nodiscard]] constexpr quantity_point operator--(int)
-    requires requires { quantity_from_origin_--; }
+    requires requires { quantity_from_origin_is_an_implementation_detail_--; }
   {
-    return quantity_point(quantity_from_origin_--);
+    return quantity_point(quantity_from_origin_is_an_implementation_detail_--);
   }
 
   // compound assignment operators
   template<typename QP>
     requires std::derived_from<std::remove_cvref_t<QP>, quantity_point> &&
-             requires(quantity_type q) { quantity_from_origin_ += q; }
+             requires(quantity_type q) { quantity_from_origin_is_an_implementation_detail_ += q; }
   friend constexpr decltype(auto) operator+=(QP&& qp, const quantity_type& q)
   {
-    qp.quantity_from_origin_ += q;
+    qp.quantity_from_origin_is_an_implementation_detail_ += q;
     return std::forward<QP>(qp);
   }
 
   template<typename QP>
     requires std::derived_from<std::remove_cvref_t<QP>, quantity_point> &&
-             requires(quantity_type q) { quantity_from_origin_ -= q; }
+             requires(quantity_type q) { quantity_from_origin_is_an_implementation_detail_ -= q; }
   friend constexpr decltype(auto) operator-=(QP&& qp, const quantity_type& q)
   {
-    qp.quantity_from_origin_ -= q;
+    qp.quantity_from_origin_is_an_implementation_detail_ -= q;
     return std::forward<QP>(qp);
   }
 
@@ -276,7 +283,7 @@ private:
   template<Quantity Q>
     requires std::constructible_from<quantity_type, Q> &&
              ReferenceOf<std::remove_const_t<decltype(Q::reference)>, PO.quantity_spec>
-  constexpr explicit quantity_point(Q&& q) : quantity_from_origin_(std::forward<Q>(q))
+  constexpr explicit quantity_point(Q&& q) : quantity_from_origin_is_an_implementation_detail_(std::forward<Q>(q))
   {
   }
 };
