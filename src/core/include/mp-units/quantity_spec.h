@@ -516,18 +516,6 @@ template<QuantitySpec Lhs, QuantitySpec Rhs>
   return is_same_v<Lhs, Rhs>;
 }
 
-template<detail::QuantityKindSpec Lhs, detail::QuantityKindSpec Rhs>
-[[nodiscard]] consteval bool operator==(Lhs, Rhs)
-{
-  return is_same_v<Lhs, Rhs>;
-}
-
-template<QuantitySpec Lhs, detail::QuantityKindSpec Rhs>
-[[nodiscard]] consteval bool operator==(Lhs, Rhs rhs)
-{
-  return is_same_v<Lhs, std::remove_const_t<decltype(remove_kind(rhs))>>;
-}
-
 [[nodiscard]] consteval QuantitySpec auto inverse(QuantitySpec auto q) { return dimensionless / q; }
 
 

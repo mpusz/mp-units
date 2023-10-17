@@ -92,7 +92,7 @@ constexpr mp_units::quantity<mp_units::dimensionless[mp_units::one]> kalman_gain
 
 // state update
 template<typename Q, QuantityOrQuantityPoint QM, mp_units::QuantityOf<mp_units::dimensionless> K>
-  requires(Q::quantity_spec == QM::quantity_spec)
+  requires(implicitly_convertible(QM::quantity_spec, Q::quantity_spec))
 constexpr state<Q> state_update(const state<Q>& predicted, QM measured, K gain)
 {
   return {get<0>(predicted) + gain * (measured - get<0>(predicted))};
@@ -100,7 +100,7 @@ constexpr state<Q> state_update(const state<Q>& predicted, QM measured, K gain)
 
 template<typename Q1, typename Q2, QuantityOrQuantityPoint QM, mp_units::QuantityOf<mp_units::dimensionless> K,
          mp_units::QuantityOf<mp_units::isq::time> T>
-  requires(Q1::quantity_spec == QM::quantity_spec)
+  requires(implicitly_convertible(QM::quantity_spec, Q1::quantity_spec))
 constexpr state<Q1, Q2> state_update(const state<Q1, Q2>& predicted, QM measured, std::array<K, 2> gain, T interval)
 {
   const auto q1 = get<0>(predicted) + get<0>(gain) * (measured - get<0>(predicted));
@@ -110,7 +110,7 @@ constexpr state<Q1, Q2> state_update(const state<Q1, Q2>& predicted, QM measured
 
 template<typename Q1, typename Q2, typename Q3, QuantityOrQuantityPoint QM,
          mp_units::QuantityOf<mp_units::dimensionless> K, mp_units::QuantityOf<mp_units::isq::time> T>
-  requires(Q1::quantity_spec == QM::quantity_spec)
+  requires(implicitly_convertible(QM::quantity_spec, Q1::quantity_spec))
 constexpr state<Q1, Q2, Q3> state_update(const state<Q1, Q2, Q3>& predicted, QM measured, std::array<K, 3> gain,
                                          T interval)
 {

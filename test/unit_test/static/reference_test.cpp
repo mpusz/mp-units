@@ -105,15 +105,15 @@ static_assert(is_of_type<(kind_of<length> / kind_of<time>)[metre / second], deri
 
 // Unit as a reference
 static_assert(is_of_type<42 * metre, quantity<metre, int>>);
-static_assert(quantity<metre, int>::quantity_spec == length);
+static_assert(quantity<metre, int>::quantity_spec == kind_of<length>);
 static_assert(is_of_type<42 * square(metre), quantity<square(metre), int>>);
-static_assert(quantity<square(metre), int>::quantity_spec == pow<2>(length));
+static_assert(quantity<square(metre), int>::quantity_spec == kind_of<pow<2>(length)>);
 static_assert(is_of_type<42 * metre / second, quantity<metre / second, int>>);
-static_assert(quantity<metre / second, int>::quantity_spec == length / time);
+static_assert(quantity<metre / second, int>::quantity_spec == kind_of<length / time>);
 static_assert(is_of_type<42 * newton, quantity<newton, int>>);
-static_assert(quantity<newton, int>::quantity_spec == mass * length / pow<2>(time));
+static_assert(quantity<newton, int>::quantity_spec == kind_of<mass * length / pow<2>(time)>);
 static_assert(is_of_type<42 * hertz, quantity<hertz, int>>);
-static_assert(quantity<hertz, int>::quantity_spec == frequency);
+static_assert(quantity<hertz, int>::quantity_spec == kind_of<frequency>);
 
 // Named quantity/dimension and unit
 static_assert(is_of_type<5 * power[watt], quantity<reference<power, watt>{}, int>>);
@@ -240,13 +240,13 @@ static_assert(invalid_nu_unit<mass * length / time, kilogram * nu::second / nu::
 static_assert(invalid_nu_unit<force, kilogram * nu::second / nu::second>);
 
 // mixing associated units and references
-static_assert(second == time[second]);
-static_assert(time[second] == second);
-static_assert(second * second == time[second] * time[second]);
+static_assert(second != time[second]);
+static_assert(time[second] != second);
+static_assert(second * second != time[second] * time[second]);
 static_assert(second * time[second] == time[second] * second);
 static_assert(is_of_type<second * time[second], decltype(time[second] * second)>);
 static_assert(is_of_type<second * time[second], decltype(time[second] * time[second])>);
-static_assert(metre / second == length[metre] / time[second]);
+static_assert(metre / second != length[metre] / time[second]);
 static_assert(metre / time[second] == length[metre] / second);
 static_assert(is_of_type<metre / time[second], decltype(length[metre] / second)>);
 static_assert(is_of_type<metre / time[second], decltype(length[metre] / time[second])>);
