@@ -48,7 +48,11 @@ struct basic_fixed_string {
 
   using const_iterator = const CharT*;
 
-  constexpr explicit(false) basic_fixed_string(CharT ch) noexcept { data_[0] = ch; }
+  constexpr explicit(false) basic_fixed_string(CharT ch) noexcept
+    requires(N == 1)
+  {
+    data_[0] = ch;
+  }
 
   constexpr explicit(false) basic_fixed_string(const CharT (&txt)[N + 1]) noexcept
   {
