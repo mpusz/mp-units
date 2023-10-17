@@ -671,7 +671,7 @@ constexpr Out print_separator(Out out, unit_symbol_formatting fmt)
     if (fmt.encoding != text_encoding::unicode)
       throw std::invalid_argument(
         "'unit_symbol_separator::half_high_dot' can be only used with 'text_encoding::unicode'");
-    copy(std::string_view("⋅"), out);
+    out = copy(std::string_view("⋅"), out).out;
   } else {
     *out++ = ' ';
   }
