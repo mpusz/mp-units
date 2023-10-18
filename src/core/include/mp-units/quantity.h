@@ -538,18 +538,4 @@ public:
                                   common_type_t<typename Q1::rep, typename Q2::rep>>;
 };
 
-// dimensionless quantities support for interacting with raw values
-template<mp_units::Quantity Q, typename Value>
-  requires(!mp_units::Quantity<Value>) && (Q::dimension == mp_units::dimension_one) && (Q::unit == mp_units::one) &&
-          requires { typename common_type_t<typename Q::rep, Value>; }
-struct common_type<Q, Value> {
-public:
-  using type = mp_units::quantity<mp_units::one, common_type_t<typename Q::rep, Value>>;
-};
-
-template<mp_units::Quantity Q, typename Value>
-  requires(!mp_units::Quantity<Value>) && (Q::dimension == mp_units::dimension_one) && (Q::unit == mp_units::one) &&
-          requires { typename common_type_t<typename Q::rep, Value>; }
-struct common_type<Value, Q> : common_type<Q, Value> {};
-
 }  // namespace std
