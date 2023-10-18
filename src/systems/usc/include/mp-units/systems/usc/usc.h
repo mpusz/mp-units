@@ -111,6 +111,8 @@ inline constexpr struct inch_of_mercury : named_unit<"inHg", mag<ratio(3'386'389
 
 // https://en.wikipedia.org/wiki/United_States_customary_units#Temperature
 inline constexpr struct degree_Fahrenheit : named_unit<basic_symbol_text{"°F", "`F"}, mag<ratio{5, 9}> * si::degree_Celsius> {} degree_Fahrenheit;
+
+inline constexpr struct zero_Fahrenheit : relative_point_origin<si::ice_point - 32 * degree_Fahrenheit> {} zero_Fahrenheit;
 // clang-format on
 
 namespace unit_symbols {
