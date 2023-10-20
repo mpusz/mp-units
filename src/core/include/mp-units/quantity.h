@@ -450,8 +450,7 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
   requires detail::InvocableQuantities<std::multiplies<>, quantity<R1, Rep1>, quantity<R2, Rep2>>
 [[nodiscard]] constexpr Quantity auto operator*(const quantity<R1, Rep1>& lhs, const quantity<R2, Rep2>& rhs)
 {
-  return make_quantity<R1 * R2>(lhs.numerical_value_ref_in(quantity<R1, Rep1>::unit) *
-                                rhs.numerical_value_ref_in(quantity<R2, Rep2>::unit));
+  return make_quantity<R1 * R2>(lhs.numerical_value_ref_in(get_unit(R1)) * rhs.numerical_value_ref_in(get_unit(R2)));
 }
 
 template<auto R, typename Rep, typename Value>
@@ -459,7 +458,7 @@ template<auto R, typename Rep, typename Value>
           detail::InvokeResultOf<get_quantity_spec(R).character, std::multiplies<>, Rep, const Value&>
 [[nodiscard]] constexpr Quantity auto operator*(const quantity<R, Rep>& q, const Value& v)
 {
-  return make_quantity<R>(q.numerical_value_ref_in(quantity<R, Rep>::unit) * v);
+  return make_quantity<R>(q.numerical_value_ref_in(get_unit(R)) * v);
 }
 
 template<typename Value, auto R, typename Rep>
@@ -467,7 +466,7 @@ template<typename Value, auto R, typename Rep>
           detail::InvokeResultOf<get_quantity_spec(R).character, std::multiplies<>, const Value&, Rep>
 [[nodiscard]] constexpr Quantity auto operator*(const Value& v, const quantity<R, Rep>& q)
 {
-  return make_quantity<R>(v * q.numerical_value_ref_in(quantity<R, Rep>::unit));
+  return make_quantity<R>(v * q.numerical_value_ref_in(get_unit(R)));
 }
 
 template<auto R1, typename Rep1, auto R2, typename Rep2>
@@ -475,8 +474,7 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
 [[nodiscard]] constexpr Quantity auto operator/(const quantity<R1, Rep1>& lhs, const quantity<R2, Rep2>& rhs)
 {
   gsl_ExpectsAudit(rhs != rhs.zero());
-  return make_quantity<R1 / R2>(lhs.numerical_value_ref_in(quantity<R1, Rep1>::unit) /
-                                rhs.numerical_value_ref_in(quantity<R2, Rep2>::unit));
+  return make_quantity<R1 / R2>(lhs.numerical_value_ref_in(get_unit(R1)) / rhs.numerical_value_ref_in(get_unit(R2)));
 }
 
 template<auto R, typename Rep, typename Value>
@@ -485,7 +483,7 @@ template<auto R, typename Rep, typename Value>
 [[nodiscard]] constexpr Quantity auto operator/(const quantity<R, Rep>& q, const Value& v)
 {
   gsl_ExpectsAudit(v != quantity_values<Value>::zero());
-  return make_quantity<R>(q.numerical_value_ref_in(quantity<R, Rep>::unit) / v);
+  return make_quantity<R>(q.numerical_value_ref_in(get_unit(R)) / v);
 }
 
 template<typename Value, auto R, typename Rep>
@@ -493,7 +491,7 @@ template<typename Value, auto R, typename Rep>
           detail::InvokeResultOf<get_quantity_spec(R).character, std::divides<>, const Value&, Rep>
 [[nodiscard]] constexpr Quantity auto operator/(const Value& v, const quantity<R, Rep>& q)
 {
-  return make_quantity<::mp_units::one / R>(v / q.numerical_value_ref_in(quantity<R, Rep>::unit));
+  return make_quantity<::mp_units::one / R>(v / q.numerical_value_ref_in(get_unit(R)));
 }
 
 template<auto R1, typename Rep1, auto R2, typename Rep2>
