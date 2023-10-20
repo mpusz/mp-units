@@ -4,6 +4,31 @@
 
 ### 2.1.0 <small>WIP</small> { id="2.1.0" }
 
+- (!) feat: `inverse()` support added for dimensions, quantity_spec, units, and references
+            (`1 / s` will now create `quantity` and not a `Unit`)
+- (!) feat: `quantity_point` does not provide `zero()` anymore
+- (!) feat: `quantity_spec` and its kind should not compare equal
+- (!) feat: mutating interface removed from `fixed_string`
+- feat: `basic_fixed_string(const CharT*, std::integral_constant<std::size_t, N>)` constructor added
+- feat: `isq::activity` added and `becquerel` definition updated to benefit from it
+- feat: `gray` and `sievert` now have correct associated quantity kinds
+- feat: `UnitCompatibleWith` concept added and applied to `in(U)` and `force_in(U)` functions
+- feat: quantities can now be multiplied and divided by units (no parenthesis needed anymore)
+- feat: `Magnitude / Unit` operator added
+- feat: interoperability with other libraries redesigned
+- feat: equality for dimensions now will allow derived classes as well (but not from `derived_dimension`)
+- feat: `zero_Fahrenheit` point origin added
+- (!) refactor: `unit_symbol<fmt>(U)` signature refactored and the resulting text can now also be used at runtime
+- refactor: `in(U)` and `force_in(U)` now return `auto` to provide better diagnostics on clang
+- fix: symbols of named dimensionless units with the ratio = 1 were not printed
+- fix: iterator is now properly updated for all cases in `unit_symbol`
+- fix: Fahrenheit conversion ratio was inverted
+- fix(example): `latitude` and `longitude` fixed to include `0` for `N` and `E` respectively
+- ci: clang-17 enabled
+- ci: Added C++23 builds to the CI matrix
+- docs: `CameCase` concept identifiers FAQ added
+- docs: `gravitational_potential_energy` equation fixed on a graph
+
 ### 2.0.0 <small>September 24, 2023</small> { id="2.0.0" }
 
 - `units` namespace renamed to `mp_units` (#317)
