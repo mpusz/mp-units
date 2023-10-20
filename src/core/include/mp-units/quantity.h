@@ -68,9 +68,11 @@ concept InvocableQuantities =
 
 template<typename Func, typename Q1, typename Q2>
 concept CommonlyInvocableQuantities =
-  Quantity<Q1> && Quantity<Q2> && (Q1::quantity_spec.character == Q2::quantity_spec.character) && requires {
-    common_reference(Q1::reference, Q2::reference);
-  } && InvocableQuantities<Func, Q1, Q2, common_quantity_spec(Q1::quantity_spec, Q2::quantity_spec).character>;
+  Quantity<Q1> && Quantity<Q2> &&
+  // (Q1::quantity_spec.character == Q2::quantity_spec.character) && // TODO enable when vector quantities are handled
+  // correctly
+  requires { common_reference(Q1::reference, Q2::reference); } &&
+  InvocableQuantities<Func, Q1, Q2, common_quantity_spec(Q1::quantity_spec, Q2::quantity_spec).character>;
 
 
 template<typename Func, Quantity Q1, Quantity Q2>
