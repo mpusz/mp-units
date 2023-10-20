@@ -60,14 +60,21 @@ concept QuantityConvertibleTo =
 template<quantity_character Ch, typename Func, typename T, typename U>
 concept InvokeResultOf = std::regular_invocable<Func, T, U> && RepresentationOf<std::invoke_result_t<Func, T, U>, Ch>;
 
+template<typename Func, typename Q1, typename Q2,
+         quantity_character Ch = std::invoke_result_t<Func, std::remove_const_t<decltype(Q1::quantity_spec)>,
+                                                      std::remove_const_t<decltype(Q2::quantity_spec)>>::character>
+concept InvocableQuantities =
+  Quantity<Q1> && Quantity<Q2> && InvokeResultOf<Ch, Func, typename Q1::rep, typename Q2::rep>;
+
 template<typename Func, typename Q1, typename Q2>
-concept InvocableQuantities = Quantity<Q1> && Quantity<Q2> &&
-                              InvokeResultOf<common_quantity_spec(Q1::quantity_spec, Q2::quantity_spec).character, Func,
-                                             typename Q1::rep, typename Q2::rep> &&
-                              requires { common_reference(Q1::reference, Q2::reference); };
+concept CommonlyInvocableQuantities =
+  Quantity<Q1> && Quantity<Q2> && (Q1::quantity_spec.character == Q2::quantity_spec.character) && requires {
+    common_reference(Q1::reference, Q2::reference);
+  } && InvocableQuantities<Func, Q1, Q2, common_quantity_spec(Q1::quantity_spec, Q2::quantity_spec).character>;
+
 
 template<typename Func, Quantity Q1, Quantity Q2>
-  requires detail::InvocableQuantities<Func, Q1, Q2>
+  requires detail::CommonlyInvocableQuantities<Func, Q1, Q2>
 using common_quantity_for = quantity<common_reference(Q1::reference, Q2::reference),
                                      std::invoke_result_t<Func, typename Q1::rep, typename Q2::rep>>;
 
@@ -403,7 +410,7 @@ explicit(
 
 // binary operators on quantities
 template<auto R1, typename Rep1, auto R2, typename Rep2>
-  requires detail::InvocableQuantities<std::plus<>, quantity<R1, Rep1>, quantity<R2, Rep2>>
+  requires detail::CommonlyInvocableQuantities<std::plus<>, quantity<R1, Rep1>, quantity<R2, Rep2>>
 [[nodiscard]] constexpr Quantity auto operator+(const quantity<R1, Rep1>& lhs, const quantity<R2, Rep2>& rhs)
 {
   using ret = detail::common_quantity_for<std::plus<>, quantity<R1, Rep1>, quantity<R2, Rep2>>;
@@ -414,7 +421,7 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
 }
 
 template<auto R1, typename Rep1, auto R2, typename Rep2>
-  requires detail::InvocableQuantities<std::minus<>, quantity<R1, Rep1>, quantity<R2, Rep2>>
+  requires detail::CommonlyInvocableQuantities<std::minus<>, quantity<R1, Rep1>, quantity<R2, Rep2>>
 [[nodiscard]] constexpr Quantity auto operator-(const quantity<R1, Rep1>& lhs, const quantity<R2, Rep2>& rhs)
 {
   using ret = detail::common_quantity_for<std::minus<>, quantity<R1, Rep1>, quantity<R2, Rep2>>;
@@ -426,7 +433,7 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
 
 template<auto R1, typename Rep1, auto R2, typename Rep2>
   requires(!treat_as_floating_point<Rep1>) && (!treat_as_floating_point<Rep2>) &&
-          detail::InvocableQuantities<std::modulus<>, quantity<R1, Rep1>, quantity<R2, Rep2>>
+          detail::CommonlyInvocableQuantities<std::modulus<>, quantity<R1, Rep1>, quantity<R2, Rep2>>
 [[nodiscard]] constexpr Quantity auto operator%(const quantity<R1, Rep1>& lhs, const quantity<R2, Rep2>& rhs)
 {
   gsl_ExpectsAudit(rhs != rhs.zero());
@@ -438,8 +445,7 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
 }
 
 template<auto R1, typename Rep1, auto R2, typename Rep2>
-  requires detail::InvokeResultOf<(get_quantity_spec(R1) * get_quantity_spec(R2)).character, std::multiplies<>, Rep1,
-                                  Rep2>
+  requires detail::InvocableQuantities<std::multiplies<>, quantity<R1, Rep1>, quantity<R2, Rep2>>
 [[nodiscard]] constexpr Quantity auto operator*(const quantity<R1, Rep1>& lhs, const quantity<R2, Rep2>& rhs)
 {
   return make_quantity<R1 * R2>(lhs.numerical_value_ref_in(quantity<R1, Rep1>::unit) *
@@ -463,7 +469,7 @@ template<typename Value, auto R, typename Rep>
 }
 
 template<auto R1, typename Rep1, auto R2, typename Rep2>
-  requires detail::InvokeResultOf<(get_quantity_spec(R1) / get_quantity_spec(R2)).character, std::divides<>, Rep1, Rep2>
+  requires detail::InvocableQuantities<std::divides<>, quantity<R1, Rep1>, quantity<R2, Rep2>>
 [[nodiscard]] constexpr Quantity auto operator/(const quantity<R1, Rep1>& lhs, const quantity<R2, Rep2>& rhs)
 {
   gsl_ExpectsAudit(rhs != rhs.zero());
