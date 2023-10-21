@@ -174,8 +174,6 @@ struct reference {
   }
 };
 
-template<Reference auto R, RepresentationOf<get_quantity_spec(R).character> Rep>
-class quantity;
 
 template<typename Rep, Reference R>
   requires RepresentationOf<std::remove_cvref_t<Rep>, get_quantity_spec(R{}).character>
