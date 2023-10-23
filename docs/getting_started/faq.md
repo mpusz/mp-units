@@ -98,7 +98,7 @@ In the initial design of this library, the resulting type of division of two qua
 common representation type:
 
 ```cpp
-static_assert(std::is_same_v<decltype(10 * km / (5 * km)), std::int64_t>);
+static_assert(std::is_same_v<decltype(10 * km / (5 * km)), int>);
 ```
 
 First of all, this was consistent with
