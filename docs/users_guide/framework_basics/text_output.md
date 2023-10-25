@@ -174,8 +174,8 @@ std::println("|{:*^10}|", 123 * m);  // |**123 m***|
 
 !!! note
 
-    [`std::println` is a C++23 facility](https://en.cppreference.com/w/cpp/io/print). In case you
-    do not have access to C++23, you can obtain the same output with:
+    [`std::println` is a C++23 facility](https://en.cppreference.com/w/cpp/io/print). In case we
+    do not have access to C++23, we can obtain the same output with:
 
     ```cpp
     std::cout << std::format("<format-string>\n", <format-args>);

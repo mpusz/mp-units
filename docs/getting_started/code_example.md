@@ -80,4 +80,4 @@ int main()
 
 !!! note
 
-    You can find more code examples in the [Examples](../users_guide/examples/tags_index.md) chapter.
+    More code examples can be found in the [Examples](../users_guide/examples/tags_index.md) chapter.

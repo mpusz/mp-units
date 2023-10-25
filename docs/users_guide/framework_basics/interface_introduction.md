@@ -55,7 +55,7 @@ possible. For example, to create a quantity with a unit of speed, one may write:
 quantity<si::metre / si::second> q;
 ```
 
-In case you use such an unit often and would prefer to have a handy helper for it, you can
+In case we use such an unit often and would prefer to have a handy helper for it, we can
 always do something like this:
 
 ```cpp

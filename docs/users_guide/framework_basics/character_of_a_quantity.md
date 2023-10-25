@@ -169,7 +169,7 @@ associated with this quantity type.
     as a vector or tensor quantity representation type.
 
 To enable the usage of a user-defined type as a representation type for vector or tensor quantities,
-you need to provide a partial specialization of `is_vector` or `is_tensor` customization points.
+we need to provide a partial specialization of `is_vector` or `is_tensor` customization points.
 
 For example, here is how it can be done for the [P1385](https://wg21.link/p1385) types:
 
@@ -223,12 +223,12 @@ either:
 
 ## Hacking the character
 
-Sometimes you want to use a vector quantity, but you don't care about its direction. For example,
-the standard gravity acceleration constant always points down, so you might not care about this
-in a particular scenario. In such a case, you may want to "hack" the library to allow scalar types
+Sometimes we want to use a vector quantity, but we don't care about its direction. For example,
+the standard gravity acceleration constant always points down, so we might not care about this
+in a particular scenario. In such a case, we may want to "hack" the library to allow scalar types
 to be used as a representation type for scalar quantities.
 
-For example, you can do the following:
+For example, we can do the following:
 
 ```cpp
 template<class T>

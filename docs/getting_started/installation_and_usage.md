@@ -67,7 +67,7 @@ This repository contains three independent CMake-based projects:
     that prefer to use CMake's `add_subdirectory()` to handle the dependencies.
 
     To learn more about the rationale, please check our
-    [FAQ](faq.md#why-dont-you-have-cmake-options-to-disable-building-of-tests-and-examples).
+    [FAQ](faq.md#why-dont-we-have-cmake-options-to-disable-building-of-tests-and-examples).
 
 
 ## Obtaining Dependencies
@@ -107,13 +107,13 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
 !!! tip "Setting the language version"
 
     Please note that the **mp-units** library requires at least C++20 to be set in a Conan profile
-    or forced via the Conan command line. If you do the former, you will not need to provide
-    `-s compiler.cppstd=20` every time you run a Conan command line (as provided in the command
+    or forced via the Conan command line. If we do the former, we will not need to provide
+    `-s compiler.cppstd=20` every time we run a Conan command line (as provided in the command
     line instructions below).
 
 !!! tip "Using Ninja as a CMake generator for Conan"
 
-    It is highly recommended to set Ninja as a CMake generator for Conan. To do so, you should
+    It is highly recommended to set Ninja as a CMake generator for Conan. To do so, we should
     create a _~/.conan2/global.conf_ file that will set `tools.cmake.cmaketoolchain:generator`
     to one of the Ninja generators. For example:
 
@@ -132,7 +132,7 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
     tools.cmake.cmake_layout:build_folder_vars=["settings.compiler", "settings.compiler.version", "settings.compiler.cppstd"]
     ```
 
-    In such a case, you will need to use a configuration-specific preset name in the Conan instructions
+    In such a case, we will need to use a configuration-specific preset name in the Conan instructions
     provided below rather than just `conan-default` and `conan-release`
     (e.g. `conan-gcc-13-23` and `conan-gcc-13-23-release`)
 
@@ -366,7 +366,8 @@ with the following differences:
 ### Install
 
 In case you don't want to use Conan in your project and just want to install the **mp-units**
-library on your file system and use `find_package(mp-units)` from another repository to find it; it is enough to perform the following steps:
+library on your file system and use `find_package(mp-units)` from another repository to find it;
+it is enough to perform the following steps:
 
 ```shell
 conan install . -pr <your_conan_profile> -s compiler.cppstd=20 -b=missing

@@ -116,9 +116,9 @@ error: could not convert 'mp_units::operator*<si::metre(), double, si::second(),
 
 ## Typed quantities
 
-Simple mode is all about and just about units. In case you care about a specific quantity type,
-**typed quantities** should be preferred. With this mode, for example, you can specify if you
-deal with `width`, `height`, or `radius` and ensure you will not assign one to another by
+Simple mode is all about and just about units. In case we care about a specific quantity type,
+**typed quantities** should be preferred. With this mode, for example, we can specify if we
+deal with `width`, `height`, or `radius` and ensure we will not assign one to another by
 accident.
 
 The previous example can be re-typed using typed quantities in the following way:

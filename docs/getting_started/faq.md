@@ -37,8 +37,8 @@ Many reasons make UDLs a poor choice for a physical units library:
    to specify which one to use in case both namespaces are "imported" with using directives.
 
 5. Another bad property of UDLs is that they do not compose. A coherent unit of angular momentum would
-   have a UDL specified as `_q_kg_m2_per_s`. Now imagine that you want to make every possible user happy.
-   How many variations of that unit would you predefine for differently scaled versions of all unit
+   have a UDL specified as `_q_kg_m2_per_s`. Now imagine that we want to make every possible user happy.
+   How many variations of that unit would we predefine for differently scaled versions of all unit
    ingredients?
 
 6. UDLs are also really expensive to define and specify. Typically, for each unit, we need two
@@ -124,8 +124,8 @@ it might be either a quantity or a fundamental type. If we want to raise such a 
 must use `units::pow` or `std::pow` depending on the resulting type. Those are only a few issues related
 to such an approach.
 
-Moreover, suppose you divide quantities of the same dimension but with units of significantly different
-magnitudes. In that case, you may end up with a really small or a huge floating-point value, which may result
+Moreover, suppose we divide quantities of the same dimension but with units of significantly different
+magnitudes. In that case, we may end up with a really small or a huge floating-point value, which may result
 in losing lots of precision. Returning a dimensionless quantity from such cases allows us to benefit from
 all the properties of scaled units and is consistent with the rest of the library.
 
@@ -175,7 +175,7 @@ we have to obey the rules and be consistent with ISO specifications.
     has the option of [ASCII-only Quantity Symbols](../users_guide/framework_basics/text_output.md#unit-symbol-formatting).
 
 
-## Why don't you have CMake options to disable the building of tests and examples?
+## Why don't we have CMake options to disable the building of tests and examples?
 
 Over time, many people provided PRs proposing adding options to build tests and examples conditionally.
 Here are a few examples:
