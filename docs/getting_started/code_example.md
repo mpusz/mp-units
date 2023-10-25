@@ -32,7 +32,7 @@ static_assert(1000 / (1 * s) == 1 * kHz);
 
 This library requires some C++20 features ([concepts and constraints](https://en.cppreference.com/w/cpp/language/constraints),
 [classes as NTTP](https://en.cppreference.com/w/cpp/language/template_parameters), ...). Thanks to them,
-the user gets a powerful but still easy-to-use interface where all unit conversions and dimensional analysis can be
+a user gets a powerful but still easy-to-use interface where all unit conversions and dimensional analysis can be
 performed without sacrificing accuracy. Please see the below example for a quick preview of basic library features:
 
 *[NTTP]: Non-Type Template Parameter

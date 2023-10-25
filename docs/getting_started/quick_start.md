@@ -1,7 +1,7 @@
 # Quick Start
 
-A **quantity** is a concrete amount of a unit for a quantity type of a specified dimension with a
-specific representation, and is represented in the library with a `quantity` class template.
+A **quantity** is a concrete amount of a unit representing a quantity type of a specified dimension with a
+specific representation. It is represented in the library with a `quantity` class template.
 
 
 ## Creating a quantity
@@ -75,15 +75,6 @@ wrapper for it with:
 
 ```cpp
 constexpr auto kmph = km / h;
-quantity speed = 60 * kmph;
-```
-
-or even:
-
-```cpp
-constexpr auto kilometre = si::kilo<si::metre>;
-constexpr auto kilometre_per_hour = kilometre / si::hour;
-constexpr auto kmph = kilometre_per_hour;
 quantity speed = 60 * kmph;
 ```
 

@@ -34,9 +34,7 @@ This repository contains three independent CMake-based projects:
         - [gsl-lite](https://github.com/gsl-lite/gsl-lite) to verify runtime contracts with
           the `gsl_Expects` macro,
         - [{fmt}](https://github.com/fmtlib/fmt) to provide text formatting of quantities
-          (if `std::format` is not supported yet on a specific compiler),
-        - [only for clang < 14 with libc++] [range-v3](https://github.com/ericniebler/range-v3)
-          to provide needed C++20 concepts and utilities.
+          (if `std::format` is not supported yet on a specific compiler).
 
 - _._
 
@@ -44,21 +42,17 @@ This repository contains three independent CMake-based projects:
     - it wraps _./src_ project together with usage examples and tests
     - additionally to the dependencies of _./src_ project, it uses:
 
-        - `Catch2 <https://github.com/catchorg/Catch2>`_ library as a unit tests framework,
-        - `linear algebra <https://github.com/BobSteagall/wg21/tree/master/include>`_
-          library based on proposal `P1385 <https://wg21.link/P1385>`_ used in some examples
+        - [Catch2](https://github.com/catchorg/Catch2) library as a unit tests framework,
+        - [linear algebra](https://github.com/BobSteagall/wg21/tree/master/include)
+          library based on proposal [P1385](https://wg21.link/P1385) used in some examples
           and tests.
-
-    - in case you also want to generate the project's documentation, you will need:
-
-        - [Material for MkDocs](https://squidfunk.github.io/mkdocs-material)
 
 - *./test_package*
 
-    - library installation and Conan package verification.
+    - CMake library installation and Conan package verification.
 
 
-!!! tip
+!!! important "Important: Library users should not use the top-level CMake file"
 
     Top level _CMakeLists.txt_ file should only be used by **mp-units** developers and contributors
     as an entry point for the project's development. We want to ensure that everyone will build **ALL**
@@ -110,34 +104,37 @@ os=Linux
 tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
 ```
 
-!!! tip
+!!! tip "Setting the language version"
 
-    Please note that the **mp-units** library requires C++20 to be set in a Conan profile or forced
-    via the Conan command line. If you do the former, you will not need to provide `-s compiler.cppstd=20`
-    every time your run a Conan command line (as provided in the command line instructions below).
+    Please note that the **mp-units** library requires at least C++20 to be set in a Conan profile
+    or forced via the Conan command line. If you do the former, you will not need to provide
+    `-s compiler.cppstd=20` every time you run a Conan command line (as provided in the command
+    line instructions below).
 
-Additionally, it is recommended to set Ninja as a CMake generator for Conan. To do so, you should create
-a _~/.conan2/global.conf_ file that will set `tools.cmake.cmaketoolchain:generator` to one of Ninja
-generators. For example:
+!!! tip "Using Ninja as a CMake generator for Conan"
 
-```text title="~/.conan2/global.conf"
-tools.cmake.cmaketoolchain:generator="Ninja Multi-Config"
-```
+    It is highly recommended to set Ninja as a CMake generator for Conan. To do so, you should
+    create a _~/.conan2/global.conf_ file that will set `tools.cmake.cmaketoolchain:generator`
+    to one of the Ninja generators. For example:
 
-!!! info
+    ```text title="~/.conan2/global.conf"
+    tools.cmake.cmaketoolchain:generator="Ninja Multi-Config"
+    ```
+
+!!! tip "Separate build folders for different configurations"
 
     _~/.conan2/global.conf_ file may also set `tools.cmake.cmake_layout:build_folder_vars` which
     [makes working with several compilers or build configurations easier](https://docs.conan.io/2/reference/tools/cmake/cmake_layout.html#multi-setting-option-cmake-layout).
     For example, the below line will force Conan to generate separate CMake presets and folders for
-    each compiler:
+    each compiler and C++ standard version:
 
     ```text title="~/.conan2/global.conf"
-    tools.cmake.cmake_layout:build_folder_vars=["settings.compiler", "settings.compiler.version"]
+    tools.cmake.cmake_layout:build_folder_vars=["settings.compiler", "settings.compiler.version", "settings.compiler.cppstd"]
     ```
 
     In such a case, you will need to use a configuration-specific preset name in the Conan instructions
-    provided below rather then just `conan-default` and `conan-release`
-    (e.g. `conan-gcc-11` and `conan-gcc-11-release`)
+    provided below rather than just `conan-default` and `conan-release`
+    (e.g. `conan-gcc-13-23` and `conan-gcc-13-23-release`)
 
 
 ## Build Options
@@ -148,8 +145,7 @@ tools.cmake.cmaketoolchain:generator="Ninja Multi-Config"
 
 :   [:octicons-tag-24: 0.8.0][build all support] · :octicons-milestone-24: `True`/`False` (Default: `False`)
 
-    Enables compilation of all the source code including tests and examples. To support
-    this it requires some additional Conan build dependencies described in
+    Enables compilation of all the source code, including tests and examples. To support this, it requires some additional Conan build dependencies described in
     [Repository Structure and Dependencies](#repository-structure-and-dependencies).
     It also runs unit tests during Conan build (unless `tools.build:skip_test`
     configuration property is set to `True`).
@@ -162,7 +158,7 @@ tools.cmake.cmaketoolchain:generator="Ninja Multi-Config"
 :   [:octicons-tag-24: 0.8.0][skip la support] · :octicons-milestone-24: `True`/`False` (Default: `False`)
 
     If `user.build:all` is enabled, among others, Conan installs the external
-    [wg21-linear_algebra](https://conan.io/center/wg21-linear_algebra)
+    [wg21-linear_algebra](https://conan.io/center/recipes/wg21-linear_algebra)
     dependency and enables the compilation of linear algebra-based tests and usage examples.
     Such behavior can be disabled with this option.
 
@@ -203,7 +199,7 @@ tools.cmake.cmaketoolchain:generator="Ninja Multi-Config"
 
 :   [:octicons-tag-24: 2.0.0][use libfmt support] · :octicons-milestone-24: `ON`/`OFF` (Default: `ON`)
 
-    Enables usage of [{fmt}](https://github.com/fmtlib/fmt) library instead of the C++20 Standard
+    Forces usage of [{fmt}](https://github.com/fmtlib/fmt) library instead of the C++20 Standard
     Library feature.
 
     [use libfmt support]: https://github.com/mpusz/mp-units/releases/tag/v2.0.0
@@ -212,7 +208,7 @@ tools.cmake.cmaketoolchain:generator="Ninja Multi-Config"
 ## CMake with Presets Support
 
 It is recommended to use at least CMake 3.23 to build this project as this version introduced support
-for CMake Presets schema version 4 used now by Conan to generate presets files. All build instructions
+for CMake Presets schema version 4, used now by Conan to generate presets files. All build instructions
 below assume that you have such support. If not, your CMake invocations have to be replaced with something
 like:
 
@@ -234,7 +230,7 @@ cmake --build . --config Release
 There are many different ways of installing/reusing **mp-units** in your project. Below we mention
 only a few of many options possible.
 
-!!! important
+!!! important "Important: Prefer using Conan if possible"
 
     The easiest and most recommended way to obtain **mp-units** is with the Conan package manager.
     See [Conan + CMake (release)](#conan-cmake-release) for a detailed instruction.
@@ -247,7 +243,7 @@ to your source tree.
 
 !!! note
 
-    In such a case, you are on your own to ensure all the dependencies are installed, and their header
+    In such a case, you are on your own to ensure all the dependencies are installed and their header
     files can be located during the build. Please also note that some compiler-specific flags are needed
     to make the code compile without issues.
 
@@ -255,7 +251,7 @@ to your source tree.
 ### Copy + CMake
 
 If you copy the whole **mp-units** repository to your project's file tree, you can reuse CMake targets
-defined by the library. To do so, you should use _CMakeLists.txt_ file from the _./src_ directory:
+defined by the library. To do so, **you should use _CMakeLists.txt_ file from the _./src_ directory**:
 
 ```cmake
 add_subdirectory(<path_to_units_folder>/src)
@@ -278,8 +274,8 @@ target_link_libraries(<your_target> <PUBLIC|PRIVATE|INTERFACE> mp-units::mp-unit
     [Consuming packages](https://docs.conan.io/2/tutorial/consuming_packages.html)
     chapter of the official Conan documentation for more information.
 
-**mp-units** releases are hosted on [Conan-Center](https://conan.io/center/mp-units).
-To obtain an official library release, the following steps may be performed:
+**mp-units** releases are hosted on [Conan-Center](https://conan.io/center/recipes/mp-units).
+The following steps may be performed to obtain an official library release:
 
 1. Create Conan configuration file (either _conanfile.txt_ or _conanfile.py_) in your
    project's top-level directory and add **mp-units** as a dependency of your project.
@@ -320,13 +316,13 @@ To obtain an official library release, the following steps may be performed:
 
 ### Conan + CMake (Live At Head)
 
-This chapter describes the procedure to Live At Head, which means using the latest version
+This chapter describes the procedure to Live At Head, which means using the latest stable version
 of **mp-units** all the time.
 
 !!! note
 
     Please note that even though the Conan packages that you will be using are generated **ONLY**
-    for builds that are considered stable (passed our CI tests) some minor regressions may happen
+    for builds that are considered stable (passed our CI tests), some minor regressions may happen
     (our CI and C++20 build environment is not perfect yet). Also, please expect that the library
     interface might, and probably will, change occasionally. Even though we do our best, such
     changes might not be reflected in the project's documentation right away.
@@ -370,8 +366,7 @@ with the following differences:
 ### Install
 
 In case you don't want to use Conan in your project and just want to install the **mp-units**
-library on your file system and use `find_package(mp-units)` from another repository
-to find it, it is enough to perform the following steps:
+library on your file system and use `find_package(mp-units)` from another repository to find it; it is enough to perform the following steps:
 
 ```shell
 conan install . -pr <your_conan_profile> -s compiler.cppstd=20 -b=missing
@@ -438,7 +433,7 @@ After that, you can either:
 To test CMake installation and Conan packaging or create a Conan package run:
 
 ```shell
-conan create . <username>/<channel> -pr <your_conan_profile> -s compiler.cppstd=20 -c user.build:all=True -b missing
+conan create . --user <username> --channel <channel> -pr <your_conan_profile> -s compiler.cppstd=20 -c user.build:all=True -b missing
 ```
 
 The above will create a Conan package and run tests provided in _./test_package_ directory.
