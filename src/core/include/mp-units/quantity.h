@@ -252,7 +252,7 @@ public:
   }
 
   template<typename Q>
-  friend constexpr decltype(auto) operator++(Q&& q)
+  friend constexpr decltype(auto) operator++(Q && q)
     requires std::derived_from<std::remove_cvref_t<Q>, quantity> && requires(rep v) {
       {
         ++v
@@ -274,7 +274,7 @@ public:
   }
 
   template<typename Q>
-  friend constexpr decltype(auto) operator--(Q&& q)
+  friend constexpr decltype(auto) operator--(Q && q)
     requires std::derived_from<std::remove_cvref_t<Q>, quantity> && requires(rep v) {
       {
         --v
@@ -302,7 +302,7 @@ public:
         a += b
       } -> std::same_as<rep&>;
     }
-  friend constexpr decltype(auto) operator+=(Q&& lhs, const quantity& rhs)
+  friend constexpr decltype(auto) operator+=(Q && lhs, const quantity & rhs)
   {
     lhs.numerical_value_is_an_implementation_detail_ += rhs.numerical_value_is_an_implementation_detail_;
     return std::forward<Q>(lhs);
@@ -314,7 +314,7 @@ public:
         a -= b
       } -> std::same_as<rep&>;
     }
-  friend constexpr decltype(auto) operator-=(Q&& lhs, const quantity& rhs)
+  friend constexpr decltype(auto) operator-=(Q && lhs, const quantity & rhs)
   {
     lhs.numerical_value_is_an_implementation_detail_ -= rhs.numerical_value_is_an_implementation_detail_;
     return std::forward<Q>(lhs);
@@ -327,7 +327,7 @@ public:
                  a %= b
                } -> std::same_as<rep&>;
              }
-  friend constexpr decltype(auto) operator%=(Q&& lhs, const quantity& rhs)
+  friend constexpr decltype(auto) operator%=(Q && lhs, const quantity & rhs)
 
   {
     gsl_ExpectsAudit(rhs != zero());
@@ -342,7 +342,7 @@ public:
                  a *= b
                } -> std::same_as<rep&>;
              }
-  friend constexpr decltype(auto) operator*=(Q&& lhs, const Value& v)
+  friend constexpr decltype(auto) operator*=(Q && lhs, const Value & v)
   {
     lhs.numerical_value_is_an_implementation_detail_ *= v;
     return std::forward<Q>(lhs);
@@ -355,7 +355,7 @@ public:
                  a *= b
                } -> std::same_as<rep&>;
              }
-  friend constexpr decltype(auto) operator*=(Q1&& lhs, const Q2& rhs)
+  friend constexpr decltype(auto) operator*=(Q1 && lhs, const Q2 & rhs)
   {
     lhs.numerical_value_is_an_implementation_detail_ *= rhs.numerical_value_is_an_implementation_detail_;
     return std::forward<Q1>(lhs);
@@ -368,7 +368,7 @@ public:
                  a /= b
                } -> std::same_as<rep&>;
              }
-  friend constexpr decltype(auto) operator/=(Q&& lhs, const Value& v)
+  friend constexpr decltype(auto) operator/=(Q && lhs, const Value & v)
   {
     gsl_ExpectsAudit(v != quantity_values<Value>::zero());
     lhs.numerical_value_is_an_implementation_detail_ /= v;
@@ -382,7 +382,7 @@ public:
                  a /= b
                } -> std::same_as<rep&>;
              }
-  friend constexpr decltype(auto) operator/=(Q1&& lhs, const Q2& rhs)
+  friend constexpr decltype(auto) operator/=(Q1 && lhs, const Q2 & rhs)
   {
     gsl_ExpectsAudit(rhs != rhs.zero());
     lhs.numerical_value_is_an_implementation_detail_ /= rhs.numerical_value_is_an_implementation_detail_;
