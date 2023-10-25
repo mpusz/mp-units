@@ -10,10 +10,10 @@ inline constexpr struct metre : named_unit<"m", kind_of<isq::length>> {} metre;
 inline constexpr struct second : named_unit<"s", kind_of<isq::time>> {} second;
 ```
 
-Please note that the above reuses the same identifier for a type and its object. The rationale
+Please note that the above reuses the same identifier for a type and its value. The rationale
 behind this is that:
 
-- Users always work with objects and never have to spell such a type name.
+- Users always work with values and never have to spell such a type name.
 - The types appear in the compilation errors and during debugging.
 
 !!! important
@@ -33,17 +33,17 @@ to improve the user experience while debugging the program or analyzing the comp
 !!! note
 
     Such a practice is rare in the industry. Some popular C++ physical units libraries
-    generate enormously long error messages where even only the first line failed o fit
+    generate enormously long error messages where even only the first line failed to fit
     on a slide with a tiny font.
 
 
 ## Entities composability
 
 Many physical units libraries (in C++ or any other programming language) assign strong types
-to library entities (e.g. derived units). While `metre_per_second` as a type may not look too
+to library entities (e.g., derived units). While `metre_per_second` as a type may not look too
 scary, consider, for example, units of angular momentum. If we followed this path, its
 [coherent unit](../../appendix/glossary.md#coherent-derived-unit) would look like
-`kilogram_metre_sq_per_second`. Now, consider how many scaled versions of this unit would you
+`kilogram_metre_sq_per_second`. Now, consider how many scaled versions of this unit you would
 predefine in the library to ensure that all users are happy with your choice?
 How expensive would it be from the implementation point of view?
 What about potential future standardization efforts?
@@ -55,7 +55,7 @@ possible. For example, to create a quantity with a unit of speed, one may write:
 quantity<si::metre / si::second> q;
 ```
 
-In case we use such an unit often and would prefer to have a handy helper for it, we can
+In case we use such a unit often and would prefer to have a handy helper for it, we can
 always do something like this:
 
 ```cpp
@@ -63,7 +63,7 @@ constexpr auto metre_per_second = si::metre / si::second;
 quantity<metre_per_second> q;
 ```
 
-or choose any shorter identifier of your choice.
+or choose any shorter identifier of our choice.
 
 Coming back to the angular momentum case, thanks to the composability of units, a user can
 create such a quantity in the following way:
@@ -74,13 +74,13 @@ auto q = la_vector{1, 2, 3} * isq::angular_momentum[kg * m2 / s];
 ```
 
 It is a much better solution. It is terse and easy to understand. Please also notice how
-easy it is to obtain any scaled version of such a unit (e.g. `mg * square(mm) / min`)
+easy it is to obtain any scaled version of such a unit (e.g., `mg * square(mm) / min`)
 without having to introduce hundreds of types to predefine them.
 
 
 ## Value-based equations
 
-The **mp-units** library is based on C++20, which greatly improves a user's experience. One of
+The **mp-units** library is based on C++20, significantly improving user experience. One of
 such improvements are value-based equations.
 
 As we have learned above, the entities are being used as values in the code, and they compose.
@@ -89,7 +89,7 @@ This is a huge improvement compared to what we can find in other physical units 
 what we have to deal with when we want to write some equations for `std::ratio`.
 
 For example, below are a few definitions of the SI derived units showing the power of C++20
-extensions to Non-Type Template Parameters, which allows us to directly pass a result of
+extensions to Non-Type Template Parameters, which allow us to directly pass a result of
 the value-based [unit equation](../../appendix/glossary.md#unit-equation) to a class template
 definition:
 
@@ -141,7 +141,7 @@ The same type identifier will be visible in the compilation error (in case it ha
 
 ### Identities
 
-As mentioned above, equations can be done on dimensions, quantities, and units. Each such domain must
+As mentioned above, equations can be performed on dimensions, quantities, and units. Each such domain must
 introduce an identity object that can be used in the resulting expressions. Here is the list of
 identities used in the library:
 
@@ -152,7 +152,7 @@ identities used in the library:
 | `QuantitySpec` | `dimensionless` |
 | `Unit`         |      `one`      |
 
-In the equations, a user can explicitly refer to an identity object:
+In the equations, a user can explicitly refer to an identity object. For example:
 
 ```cpp
 constexpr auto my_unit = one / second;
@@ -172,7 +172,7 @@ constexpr auto my_unit = one / second;
 
 ### Supported operations and their results
 
-There are only a few operations that one can do on such entities and the result of each of them has
+There are only a few operations that one can do on such entities, and the result of each of them has
 its unique representation in the library:
 
 |                   Operation                   | Resulting template expression arguments |
@@ -208,7 +208,7 @@ the resulting expression template.
     ```
 
     This is probably the most important of all the steps, as it allows comparing types and enables
-    the rest of simplification rules.
+    the rest of the simplification rules.
 
 2. **Aggregation**
 
@@ -263,13 +263,13 @@ Thanks to all of the features described above, a user may write the code like th
 
 ```cpp
 using namespace mp_units::si::unit_symbols;
-auto speed = 60. * isq::speed[km / h];
-auto duration = 8 * s;
-auto acceleration = speed / duration;
+quantity speed = 60. * isq::speed[km / h];
+quantity duration = 8 * s;
+quantity acceleration = speed / duration;
 std::cout << "acceleration: " << acceleration << " (" << acceleration.in(m / s2) << ")\n";
 ```
 
-The `acceleration`, being the result of the above code, has the following type
+The `acceleration` quantity, being the result of the above code, has the following type
 (after stripping the `mp_units` namespace for brevity):
 
 ```text

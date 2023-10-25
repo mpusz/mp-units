@@ -1,7 +1,10 @@
 # Basic Concepts
 
-The most important concepts in the **mp-units** library are `Dimension`, `QuantitySpec`, `Unit`,
-`Reference`, `Representation`, `Quantity`, and `QuantityPoint`:
+The most important concepts in the **mp-units** library are [`Dimension`](#Dimension),
+[`QuantitySpec`](#QuantitySpec), [`Unit`](#Unit), [`Reference`](#Reference),
+[`Representation`](#Representation), [`Quantity`](#Quantity), and [`QuantityPoint`](#QuantityPoint).
+
+The tree provided below presents how those and a few other concepts depend on each other:
 
 ```mermaid
 flowchart TD
@@ -29,7 +32,7 @@ flowchart TD
 `Dimension` concept matches a [dimension](../../appendix/glossary.md#dimension) of either a base
 or derived [quantity](../../appendix/glossary.md#quantity):
 
-- [Base dimensions](../../appendix/glossary.md#base-dimension) are explicitly defined by a user
+- [Base dimensions](../../appendix/glossary.md#base-dimension) are explicitly defined by the user
   by inheriting from the instantiation of a `base_dimension` class template. It should be instantiated with
   a unique symbol identifier describing this dimension in a specific
   [system of quantities](../../appendix/glossary.md#system-of-quantities).
@@ -44,8 +47,8 @@ or derived [quantity](../../appendix/glossary.md#quantity):
     `isq::dim_luminous_intensity` are the dimensions of base quantities in the
     [ISQ](../../appendix/glossary.md#isq).
 
-    IEC 80000 provides `iec80000::dim_traffic_intensity` base dimension to extend ISQ
-    with information technology quantities.
+    The implementation of IEC 80000 in this library provides `iec80000::dim_traffic_intensity`
+    base dimension to extend ISQ with information technology quantities.
 
     A `Dimension` can be defined by the user in the following way:
 
@@ -182,9 +185,9 @@ and when `T` is implicitly convertible to `V`.
     `si::second`, `si::metre`, `si::kilogram`, `si::ampere`, `si::kelvin`, `si::mole`, and `si::candela`
     are the base units of [SI](../../appendix/glossary.md#si).
 
-    `si::kilo<si::metre>` is a prefixed unit on length.
+    `si::kilo<si::metre>` is a prefixed unit of length.
 
-    `si::radian`, `si::newton`, and `si::watt` are examples of named derived quantities within
+    `si::radian`, `si::newton`, and `si::watt` are examples of named derived units within
     [SI](../../appendix/glossary.md#si).
 
     `non_si::minute` is an example of a scaled unit of time.
@@ -226,7 +229,7 @@ and is satisfied by:
     `si::second` is specified to measure `isq::time`.
 
     Natural units typically do not have an associated quantity. For example, if we assume `c = 1`,
-    a `natural::second` unit can be used to measure both `time` and `length`. In such case `speed`
+    a `natural::second` unit can be used to measure both `time` and `length`. In such case, `speed`
     would be a [dimensionless quantity](../../appendix/glossary.md#dimensionless-quantity).
 
 
@@ -241,7 +244,7 @@ units can be passed as an argument to a `prefixed_unit` class template.
     All units in the [SI](../../appendix/glossary.md#si) can be prefixed with SI-defined prefixes.
 
     Some [off-system units](../../appendix/glossary.md#off-system-unit) like `non_si::day`
-    can't be prefixed. To enforce that the following has to be provided:
+    can't be prefixed. To enforce that, the following has to be provided:
 
     ```cpp
     template<> inline constexpr bool unit_can_be_prefixed<non_si::day> = false;
@@ -259,7 +262,7 @@ concept with an associated quantity type implicitly convertible to `V`.
     or the quantity type associated with `T` may not be derived from the kind of `V`.
 
     This condition is required to make `dimensionless[si::radian]` invalid as `si::radian` should
-    be only used for `isq::angular_measure` which is a
+    be only used for `isq::angular_measure`, which is a
     [nested quantity kind within the dimensionless quantities tree](dimensionless_quantities.md/#nested-quantity-kinds).
 
 
@@ -296,11 +299,10 @@ A `Reference` can either be:
 
 `ReferenceOf` concept is satisfied by references `T` that match the following value `V`:
 
-| `V`                  | Condition                                                                                     |
-|----------------------|-----------------------------------------------------------------------------------------------|
-| `Dimension`          | The dimension of a quantity specification satisfies [`DimensionOf<V>`](#DimensionOf) concept. |
-| `QuantitySpec`       | The quantity specification satisfies [`QuantitySpecOf<V>`](#QuantitySpecOf) concept.          |
-| `quantity_character` | The quantity specification has a character of `V`.                                            |
+| `V`            | Condition                                                                                     |
+|----------------|-----------------------------------------------------------------------------------------------|
+| `Dimension`    | The dimension of a quantity specification satisfies [`DimensionOf<V>`](#DimensionOf) concept. |
+| `QuantitySpec` | The quantity specification satisfies [`QuantitySpecOf<V>`](#QuantitySpecOf) concept.          |
 
 
 ## `Representation<T>` { #Representation }
@@ -324,8 +326,8 @@ with `true` for one or more of the following variable templates:
 
 ??? abstract "Examples"
 
-    If we want to use scalar types to express [vector quantities](character_of_a_quantity.md#defining-vector-and-tensor-quantities)
-    (e.g. ignoring the "direction" of the vector) the following definition can be provided to enable such a behavior:
+    If we want to use scalar types to also express [vector quantities](character_of_a_quantity.md#defining-vector-and-tensor-quantities)
+    (e.g., ignoring the "direction" of the vector) the following definition can be provided to enable such a behavior:
 
     ```cpp
     template<class T>
@@ -337,14 +339,14 @@ with `true` for one or more of the following variable templates:
 ## `Quantity<T>` { #Quantity }
 
 `Quantity` concept matches every [quantity](../../appendix/glossary.md#quantity) in the library and is
-satisfied by all types being or deriving from and instantiation of a `quantity` class template.
+satisfied by all types being or deriving from an instantiation of a `quantity` class template.
 
 ??? abstract "Examples"
 
     All of `42 * m`, `42 * si::metre`, `42 * isq::height[m]`, and `isq::height(42 * m)` create a quantity
     and thus satisfy a `Quantity` concept.
 
-    A quantity type can also be specified explicitly (e.g. `quantity<si::metre, int>`,
+    A quantity type can also be specified explicitly (e.g., `quantity<si::metre, int>`,
     `quantity<isq::height[m]>`).
 
 ### `QuantityOf<T, V>` { #QuantityOf }
@@ -359,7 +361,7 @@ is `true`.
 the library. It is satisfied by either:
 
 - All types derived from an `absolute_point_origin` class template.
-- All types derived from an `relative_point_origin` class template.
+- All types derived from a `relative_point_origin` class template.
 
 ??? abstract "Examples"
 
@@ -390,8 +392,8 @@ implicitly convertible from quantity specification `V`, which means that `V` mus
     then it can't be used as a point origin for _points_ of `isq::length` or `isq::width` as none of them
     is implicitly convertible to `isq::altitude`:
 
-    - not every "length" is an "altitude",
-    - "width" is not compatible with "altitude".
+    - not every _length_ is an _altitude_,
+    - _width_ is not compatible with _altitude_.
 
 
 ## `QuantityPoint<T>` { #QuantityPoint }
