@@ -5,7 +5,7 @@
 If we think about it, the `quantity` class template is just a "smart" numeric wrapper. It exposes
 properly constrained set of arithmetic operations on one or two operands.
 
-!!! important
+!!! important "Important: `quantity` propagates the underlying interface"
 
     Every single arithmetic operator is exposed by the `quantity` class template only if
     the underlying representation type provides it as well and its implementation has proper
@@ -166,7 +166,7 @@ dimensionless kind.
 2. The resulting quantity of the LHS is `0 * dimensionless[h / min]`. To be consistent with the division
 of different quantity types, we do not convert quantity values to a common unit before the division.
 
-!!! important "Beware of integral division"
+!!! important "Important: Beware of integral division"
 
     The physical units library can't do any runtime branching logic for the division operator.
     All logic has to be done at compile-time when the actual values are not known, and the quantity types

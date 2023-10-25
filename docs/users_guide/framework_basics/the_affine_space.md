@@ -341,7 +341,7 @@ The following operations are not allowed in the affine space:
     - How to subtract a point on our trip to CppCon measured relatively to our home location from
       a point measured relative to the center of the Solar System?
 
-!!! important
+!!! important "Important: The affine space improves safety"
 
     The usage of `quantity_point` and affine space types in general, improves expressiveness and
     type-safety of the code we write.
