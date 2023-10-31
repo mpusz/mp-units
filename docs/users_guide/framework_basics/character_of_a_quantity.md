@@ -152,7 +152,7 @@ template<Reference auto R,
 class quantity;
 ```
 
-The second template parameter is constrained with a [`RepresentationOf`](basic_concepts.md#RepresentationOf)
+The second template parameter is constrained with a [`RepresentationOf`](concepts.md#RepresentationOf)
 concept that checks if the provided representation type satisfies the requirements for the character
 associated with this quantity type.
 

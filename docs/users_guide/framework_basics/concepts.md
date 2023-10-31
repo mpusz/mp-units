@@ -1,30 +1,6 @@
-# Basic Concepts
+# Concepts
 
-The most important concepts in the **mp-units** library are [`Dimension`](#Dimension),
-[`QuantitySpec`](#QuantitySpec), [`Unit`](#Unit), [`Reference`](#Reference),
-[`Representation`](#Representation), [`Quantity`](#Quantity), and [`QuantityPoint`](#QuantityPoint).
-
-The tree provided below presents how those and a few other concepts depend on each other:
-
-```mermaid
-flowchart TD
-    Dimension --- QuantitySpec
-    QuantitySpec --- Reference
-    Unit --- Reference
-    Reference --- Quantity
-    Representation --- Quantity
-    Quantity --- QuantityPoint
-    PointOrigin --- QuantityPoint
-
-    click Dimension "#Dimension"
-    click QuantitySpec "#QuantitySpec"
-    click Unit "#Unit"
-    click Reference "#Reference"
-    click Representation "#Representation"
-    click Quantity "#Quantity"
-    click PointOrigin "#PointOrigin"
-    click QuantityPoint "#QuantityPoint"
-```
+This chapter enumerates all the user-facing concepts in the **mp-units** library.
 
 
 ## `Dimension<T>` { #Dimension }
@@ -39,31 +15,6 @@ or derived [quantity](../../appendix/glossary.md#quantity):
 - [Derived dimensions](../../appendix/glossary.md#derived-dimension) are implicitly created
   by the library's framework based on the [quantity equation](../../appendix/glossary.md#quantity-equation)
   provided in the [quantity specification](../../appendix/glossary.md#quantity_spec).
-
-??? abstract "Examples"
-
-    `isq::dim_length`, `isq::dim_mass`, `isq::dim_time`, `isq::dim_electric_current`,
-    `isq::dim_thermodynamic_temperature`, `isq::dim_amount_of_substance`, and
-    `isq::dim_luminous_intensity` are the dimensions of base quantities in the
-    [ISQ](../../appendix/glossary.md#isq).
-
-    The implementation of IEC 80000 in this library provides `iec80000::dim_traffic_intensity`
-    base dimension to extend ISQ with information technology quantities.
-
-    A `Dimension` can be defined by the user in the following way:
-
-    ```cpp
-    inline constexpr struct dim_length : base_dimension<"L"> {} dim_length;
-    ```
-
-    The division on quantity specifications also divides their dimensions:
-
-    ```cpp
-    static_assert((isq::length / isq::time).dimension == isq::dim_length / isq::dim_time);
-    ```
-
-    The [dimension equation](../../appendix/glossary.md#dimension-equation) of `isq::dim_length / isq::dim_time`
-    results in the `derived_dimension<isq::dim_length, per<isq::dim_time>>` type.
 
 
 ### `DimensionOf<T, V>` { #DimensionOf }
@@ -91,49 +42,6 @@ including:
 - Intermediate [derived quantity](../../appendix/glossary.md#derived-quantity) specifications being
   a result of a [quantity equations](../../appendix/glossary.md#quantity-equation) on other specifications.
 
-??? abstract "Examples"
-
-    `isq::length`, `isq::mass`, `isq::time`, `isq::electric_current`, `isq::thermodynamic_temperature`,
-    `isq::amount_of_substance`, and `isq::luminous_intensity` are the specifications of base quantities
-    in the [ISQ](../../appendix/glossary.md#isq).
-
-    `isq::width`, `isq::height`, `isq::radius`, and `isq::position_vector` are only a few of many
-    quantities of a kind length specified in the [ISQ](../../appendix/glossary.md#isq).
-
-    `kind_of<isq::length>` behaves as any of the quantities of a kind length.
-
-    `isq::area`, `isq::speed`, `isq::moment_of_force` are only a few of many derived quantities provided
-    in the [ISQ](../../appendix/glossary.md#isq).
-
-    `QuantitySpec` can be defined by the user in one of the following ways:
-
-    === "C++23"
-
-        ```cpp
-        inline constexpr struct length : quantity_spec<dim_length> {} length;
-        inline constexpr struct height : quantity_spec<length> {} height;
-        inline constexpr struct speed : quantity_spec<length / time> {} speed;
-        ```
-
-    === "C++20"
-
-        ```cpp
-        inline constexpr struct length : quantity_spec<length, dim_length> {} length;
-        inline constexpr struct height : quantity_spec<height, length> {} height;
-        inline constexpr struct speed : quantity_spec<speed, length / time> {} speed;
-        ```
-
-    === "Portable"
-
-        ```cpp
-        QUANTITY_SPEC(length, dim_length);
-        QUANTITY_SPEC(height, length);
-        QUANTITY_SPEC(speed, length / time);
-        ```
-
-    The [quantity equation](../../appendix/glossary.md#quantity-equation) of `isq::length / isq::time` results
-    in the `derived_quantity_spec<isq::length, per<isq::time>>` type.
-
 
 ### `QuantitySpecOf<T, V>` { #QuantitySpecOf }
 
@@ -159,7 +67,7 @@ and when `T` is implicitly convertible to `V`.
     ```
 
 
-## `Unit<T> ` { #Unit }
+## `Unit<T>` { #Unit }
 
 `Unit` concept matches all the [units](../../appendix/glossary.md#unit) in the library including:
 
@@ -180,38 +88,6 @@ and when `T` is implicitly convertible to `V`.
 
     In the **mp-units** library, [physical constants are also implemented as units](faster_than_lightspeed_constants.md).
 
-??? abstract "Examples"
-
-    `si::second`, `si::metre`, `si::kilogram`, `si::ampere`, `si::kelvin`, `si::mole`, and `si::candela`
-    are the base units of [SI](../../appendix/glossary.md#si).
-
-    `si::kilo<si::metre>` is a prefixed unit of length.
-
-    `si::radian`, `si::newton`, and `si::watt` are examples of named derived units within
-    [SI](../../appendix/glossary.md#si).
-
-    `non_si::minute` is an example of a scaled unit of time.
-
-    `si::si2019::speed_of_light_in_vacuum` is a physical constant standardized by the SI in 2019.
-
-    `Unit` can be defined by the user in one of the following ways:
-
-    ```cpp
-    template<PrefixableUnit auto U> struct kilo_ : prefixed_unit<"k", mag_power<10, 3>, U> {};
-    template<PrefixableUnit auto U> inline constexpr kilo_<U> kilo;
-
-    inline constexpr struct second : named_unit<"s", kind_of<isq::time>> {} second;
-    inline constexpr struct gram : named_unit<"g", kind_of<isq::mass>> {} gram;
-    inline constexpr struct minute : named_unit<"min", mag<60> * second> {} minute;
-    inline constexpr struct kilogram : decltype(kilo<gram>) {} kilogram;
-    inline constexpr struct newton : named_unit<"N", kilogram * metre / square(second)> {} newton;
-
-    inline constexpr struct speed_of_light_in_vacuum : named_unit<"c", mag<299'792'458> * metre / second> {} speed_of_light_in_vacuum;
-    ```
-
-    The [unit equation](../../appendix/glossary.md#unit-equation) of `si::metre / si::second` results
-    in the `derived_unit<si::metre, per<si::second>>` type.
-
 
 ### `AssociatedUnit<T>` { #AssociatedUnit }
 
@@ -219,8 +95,8 @@ and when `T` is implicitly convertible to `V`.
 and is satisfied by:
 
 - All units derived from a `named_unit` class template instantiated with a unique symbol identifier
-  and a [`QuantitySpec`](#quantityspec).
-- All units being a result of a [unit equations](../../appendix/glossary.md#unit-equation) on other
+  and a [`QuantitySpec`](#quantityspec) of a [quantity kind](../../appendix/glossary.md#kind).
+- All units being a result of [unit equations](../../appendix/glossary.md#unit-equation) on other
   associated units.
 
 ??? abstract "Examples"
@@ -230,7 +106,7 @@ and is satisfied by:
 
     Natural units typically do not have an associated quantity. For example, if we assume `c = 1`,
     a `natural::second` unit can be used to measure both `time` and `length`. In such case, `speed`
-    would be a [dimensionless quantity](../../appendix/glossary.md#dimensionless-quantity).
+    would have a unit of `one`.
 
 
 ### `PrefixableUnit<T>` { #PrefixableUnit }
@@ -286,14 +162,6 @@ A `Reference` can either be:
 - The instantiation of a `reference` class template with a [`QuantitySpec`](#QuantitySpec) passed as
   the first template argument and a [`Unit`](#Unit) passed as the second one.
 
-??? abstract "Examples"
-
-    `si::metre` is defined in the [SI](../../appendix/glossary.md#si) as a unit of `isq::length`
-    and thus can be used as a reference to instantiate a quantity of length.
-
-    The expression `isq::height[m]` results with `reference<isq::height, si::metre>` which can be used to
-    instantiate a quantity of `isq::height` with a unit of `si::metre`.
-
 
 ### `ReferenceOf<T, V>` { #ReferenceOf }
 
@@ -324,7 +192,7 @@ with `true` for one or more of the following variable templates:
 - `is_tensor<T>`
 
 
-??? abstract "Examples"
+??? tip
 
     If we want to use scalar types to also express [vector quantities](character_of_a_quantity.md#defining-vector-and-tensor-quantities)
     (e.g., ignoring the "direction" of the vector) the following definition can be provided to enable such a behavior:
@@ -341,13 +209,6 @@ with `true` for one or more of the following variable templates:
 `Quantity` concept matches every [quantity](../../appendix/glossary.md#quantity) in the library and is
 satisfied by all types being or deriving from an instantiation of a `quantity` class template.
 
-??? abstract "Examples"
-
-    All of `42 * m`, `42 * si::metre`, `42 * isq::height[m]`, and `isq::height(42 * m)` create a quantity
-    and thus satisfy a `Quantity` concept.
-
-    A quantity type can also be specified explicitly (e.g., `quantity<si::metre, int>`,
-    `quantity<isq::height[m]>`).
 
 ### `QuantityOf<T, V>` { #QuantityOf }
 
@@ -363,14 +224,6 @@ the library. It is satisfied by either:
 - All types derived from an `absolute_point_origin` class template.
 - All types derived from a `relative_point_origin` class template.
 
-??? abstract "Examples"
-
-    The types of both definitions below satisfy a `PointOrigin` concept:
-
-    ```cpp
-    inline constexpr struct absolute_zero : absolute_point_origin<isq::thermodynamic_temperature> {} absolute_zero;
-    inline constexpr struct ice_point : relative_point_origin<absolute_zero + 273.15 * kelvin> {} ice_point;
-    ```
 
 ### `PointOriginFor<T, V>` { #PointOriginFor }
 
@@ -380,8 +233,8 @@ implicitly convertible from quantity specification `V`, which means that `V` mus
 
 ??? abstract "Examples"
 
-    `ice_point` can serve as a point origin for _points_ of `isq::Celsius_temperature` because this quantity
-    type implicitly converts to `isq::thermodynamic_temperature`.
+    `si::ice_point` can serve as a point origin for _points_ of `isq::Celsius_temperature` because this
+    quantity type implicitly converts to `isq::thermodynamic_temperature`.
 
     However, if we define `mean_sea_level` in the following way:
 
@@ -401,15 +254,6 @@ implicitly convertible from quantity specification `V`, which means that `V` mus
 `QuantityPoint` concept is satisfied by all types being either a specialization or derived from `quantity_point`
 class template.
 
-??? abstract "Examples"
-
-    The following specifies a quantity point defined in terms of an `ice_point` quantity point origin
-    provided in the previous example:
-
-    ```cpp
-    constexpr auto room_reference_temperature = ice_point + isq::Celsius_temperature(21 * deg_C);
-    ```
-
 
 ### `QuantityPointOf<T, V>` { #QuantityPointOf }
 
@@ -428,10 +272,10 @@ for which an instantiation of `quantity_like_traits` type trait yields a valid t
 
 - Static data member `reference` that matches the [`Reference`](#Reference) concept,
 - `rep` type that matches [`RepresentationOf`](#RepresentationOf) concept with the character provided
-  in `reference`,
+  in `reference`.
 - `to_numerical_value(T)` static member function returning a raw value of the quantity packed in
   either `convert_explicitly` or `convert_implicitly` wrapper that enables implicit conversion in
-  the latter case,
+  the latter case.
 - `from_numerical_value(rep)` static member function returning `T` packed in either `convert_explicitly`
   or `convert_implicitly` wrapper that enables implicit conversion in the latter case.
 
@@ -467,13 +311,13 @@ for which an instantiation of `quantity_like_traits` type trait yields a valid t
 `QuantityPointLike` concept provides interoperability with other libraries and is satisfied by a type `T`
 for which an instantiation of `quantity_point_like_traits` type trait yields a valid type that provides:
 
-- Static data member `reference` that matches the [`Reference`](#Reference) concept
-- Static data member `point_origin` that matches the [`PointOrigin`](#PointOrigin) concept
+- Static data member `reference` that matches the [`Reference`](#Reference) concept.
+- Static data member `point_origin` that matches the [`PointOrigin`](#PointOrigin) concept.
 - `rep` type that matches [`RepresentationOf`](#RepresentationOf) concept with the character provided
-  in `reference`
+  in `reference`.
 - `to_quantity(T)` static member function returning the `quantity` being the offset of the point
   from the origin packed in either `convert_explicitly` or `convert_implicitly` wrapper that enables
-  implicit conversion in the latter case,
+  implicit conversion in the latter case.
 - `from_quantity(quantity<reference, rep>)` static member function returning `T` packed in either
   `convert_explicitly` or `convert_implicitly` wrapper that enables implicit conversion in the latter
   case.

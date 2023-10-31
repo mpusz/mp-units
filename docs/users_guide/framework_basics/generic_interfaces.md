@@ -107,7 +107,7 @@ accepts everything:
 
 ## Constraining function template arguments with concepts
 
-Much better generic code can be implemented using [basic concepts](basic_concepts.md)
+Much better generic code can be implemented using [basic concepts](concepts.md)
 provided with the library:
 
 ```cpp
@@ -119,7 +119,7 @@ auto avg_speed(QuantityOf<isq::length> auto distance,
 ```
 
 This explicitly states that the arguments passed by the user must not only satisfy
-a [`Quantity`](basic_concepts.md#Quantity) concept but also their quantity specification must
+a [`Quantity`](concepts.md#Quantity) concept but also their quantity specification must
 be implicitly convertible to `isq::length` and `isq::time` accordingly. This no longer leaves
 room for error while still allowing the compiler to generate the most efficient code.
 
@@ -192,4 +192,4 @@ what we expected here.
 
     The `QuantityOf` and `QuantityPointOf` concepts are probably the most useful, but there
     are a few more to play with. A list of all the concepts can be found in
-    [the "Basic Concepts" chapter](basic_concepts.md).
+    [the "Basic Concepts" chapter](concepts.md).

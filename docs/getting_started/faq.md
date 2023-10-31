@@ -98,7 +98,7 @@ to form a quantity.
 
     The same applies to the `quantity_point` construction. To prevent similar issues during
     construction, it always needs to get both a `quantity` and
-    a [`PointOrigin`](../users_guide/framework_basics/basic_concepts.md#PointOrigin) that we use
+    a [`PointOrigin`](../users_guide/framework_basics/concepts.md#PointOrigin) that we use
     as a reference point.
 
 
@@ -156,7 +156,7 @@ code.
 !!! note
 
     In case you have a good idea of how to rename
-    [existing concepts](../users_guide/framework_basics/basic_concepts.md) to the `standard_case`,
+    [existing concepts](../users_guide/framework_basics/concepts.md) to the `standard_case`,
     please let us know in the associated [GitHub Issue](https://github.com/mpusz/mp-units/issues/93).
 
 

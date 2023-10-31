@@ -55,7 +55,7 @@ the affine space.
 
 In the **mp-units** library the _point_ abstraction is modelled by:
 
-- [`PointOrigin` concept](basic_concepts.md#PointOrigin) that specifies measurement origin,
+- [`PointOrigin` concept](concepts.md#PointOrigin) that specifies measurement origin,
 - `quantity_point` class template that specifies a _point_ relative to a specific predefined origin.
 
 ### Absolute _point_ origin
@@ -79,7 +79,7 @@ class quantity_point;
 ```
 
 As we can see above, the `quantity_point` class template exposes one additional parameter compared
-to `quantity`. The `PO` parameter satisfies a [`PointOriginFor` concept](basic_concepts.md#PointOriginFor)
+to `quantity`. The `PO` parameter satisfies a [`PointOriginFor` concept](concepts.md#PointOriginFor)
 and specifies the origin of our measurement scale.
 
 !!! tip

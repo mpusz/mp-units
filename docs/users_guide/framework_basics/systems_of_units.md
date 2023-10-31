@@ -138,7 +138,7 @@ template<PrefixableUnit auto U> struct quecto_ : prefixed_unit<"q", mag_power<10
 template<PrefixableUnit auto U> inline constexpr quecto_<U> quecto;
 ```
 
-and then a [PrefixableUnit](basic_concepts.md#PrefixableUnit) can be prefixed in the following
+and then a [PrefixableUnit](concepts.md#PrefixableUnit) can be prefixed in the following
 way:
 
 ```cpp

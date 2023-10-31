@@ -31,7 +31,7 @@ errors and debugging as easy and user-friendly as possible.
 
 To achieve this goal, several techniques are applied:
 
-- [usage of C++20 concepts](../users_guide/framework_basics/basic_concepts.md) that improve
+- [usage of C++20 concepts](../users_guide/framework_basics/concepts.md) that improve
   compile-times and the readability of error messages when compared to the traditional template
   metaprogramming with [SFINAE](https://en.cppreference.com/w/cpp/language/sfinae),
 - [usage of strong types for framework entities](../users_guide/framework_basics/interface_introduction.md#strong-types-instead-of-aliases) (instead of type aliases),

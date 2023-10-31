@@ -111,8 +111,8 @@ nav:
   - User's Guide:
       - Terms and Definitions: users_guide/terms_and_definitions.md
       - Framework Basics:
-          - Basic Concepts: users_guide/framework_basics/basic_concepts.md
           - Interface Introduction: users_guide/framework_basics/interface_introduction.md
+          - Design Overview: users_guide/framework_basics/design_overview.md
           - Systems of Quantities: users_guide/framework_basics/systems_of_quantities.md
           - Systems of Units: users_guide/framework_basics/systems_of_units.md
           - Simple and Typed Quantities: users_guide/framework_basics/simple_and_typed_quantities.md
@@ -124,6 +124,7 @@ nav:
           - Faster-than-lightspeed Constants: users_guide/framework_basics/faster_than_lightspeed_constants.md
           - The Affine Space: users_guide/framework_basics/the_affine_space.md
           - Obtaining Metadata: users_guide/framework_basics/obtaining_metadata.md
+          - Concepts: users_guide/framework_basics/concepts.md
           - Text Output: users_guide/framework_basics/text_output.md
       - Defining Systems:
           - Introduction: users_guide/defining_systems/introduction.md
