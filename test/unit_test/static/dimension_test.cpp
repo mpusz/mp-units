@@ -38,7 +38,8 @@ inline constexpr struct length_ : base_dimension<"L"> {} length;
 inline constexpr struct mass_ : base_dimension<"M"> {} mass;
 inline constexpr struct time_ : base_dimension<"T"> {} time;
 
-inline constexpr struct my_length_ : decltype(length) {} my_length;
+inline constexpr struct my_length1_ : decltype(length) {} my_length1;
+inline constexpr struct my_length2_ : decltype(length) {} my_length2;
 
 QUANTITY_SPEC_(q_time, time);
 inline constexpr struct second_ : named_unit<"s", kind_of<q_time>> {} second;
@@ -170,7 +171,8 @@ static_assert(invalid_operations<time>);
 
 // comparisons of the same dimensions
 static_assert(length == length);
-static_assert(length == my_length);
+static_assert(length == my_length1);
+static_assert(my_length1 == my_length2);
 static_assert(speed == speed);
 
 // comparisons of equivalent dimensions (named vs unnamed/derived)

@@ -150,10 +150,23 @@ template<Dimension Lhs, Dimension Rhs>
                                                                                                                 Rhs{});
 }
 
-template<Dimension Lhs, Dimension Rhs>
-[[nodiscard]] consteval bool operator==(Lhs, Rhs)
+namespace detail {
+
+template<auto Symbol>
+[[nodiscard]] consteval std::true_type derived_from_the_same_base_dimension(const base_dimension<Symbol>&,
+                                                                            const base_dimension<Symbol>&)
 {
-  return std::derived_from<Lhs, Rhs> || std::derived_from<Rhs, Lhs>;
+  return {};
+}
+
+[[nodiscard]] consteval std::false_type derived_from_the_same_base_dimension(...) { return {}; }
+
+}  // namespace detail
+
+template<Dimension Lhs, Dimension Rhs>
+[[nodiscard]] consteval bool operator==(Lhs lhs, Rhs rhs)
+{
+  return is_same_v<Lhs, Rhs> || detail::derived_from_the_same_base_dimension(lhs, rhs);
 }
 
 [[nodiscard]] consteval Dimension auto inverse(Dimension auto d) { return dimension_one / d; }
