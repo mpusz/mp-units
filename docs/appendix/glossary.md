@@ -333,6 +333,20 @@
       associated with a specific quantity ([quantity specification](#quantity_spec) and
       [unit](#unit)).
 
+[`canonical representation of a unit, canonical unit`](#canonical-unit){ #canonical-unit }
+
+:   - A canonical representation of a unit consists of:
+        - a reference unit being the result of extraction of all the intermediate
+          [derived units](#derived-unit),
+        - a magnitude being a product of all the prefixes and magnitudes of extracted scaled units.
+    - All units having the same canonical unit are deemed equal.
+    - All units having the same reference unit are convertible
+      (their magnitude may differ and is used during conversion).
+
+[`reference unit`](#reference-unit){ #reference-unit }
+
+:   See [canonical representation of a unit](#canonical-unit)
+
 [`absolute quantity point origin`, `absolute point origin`](#absolute-point-origin){ #absolute-point-origin }
 
 :   - An explicit point on an axis of values of a specific [quantity](#quantity) type that serves

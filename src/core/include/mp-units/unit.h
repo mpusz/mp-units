@@ -262,16 +262,13 @@ struct is_one<struct one> : std::true_type {};
 /**
  * @brief A canonical representation of a unit
  *
- * A canonical representation of a unit consists of a `reference_unit` and its scaling
- * factor represented by the magnitude `mag`.
- *
- * `reference_unit` is a unit (possibly derived one) that consists only named base units.
- * All of the intermediate derived units are extracted, prefixes and magnitudes of scaled
- * units are stripped from them and accounted in the `mag`.
+ * A canonical representation of a unit consists of:
+ * - a reference unit being the result of extraction of all the intermediate derived units,
+ * - a magnitude being a product of all the prefixes and magnitudes of extracted scaled units.
  *
  * All units having the same canonical unit are deemed equal.
- * All units having the same `reference_unit` are convertible (their `mag` may differ
- * and is the subject of conversion).
+ * All units having the same reference unit are convertible (their magnitude may differ and
+ * is used during conversion).
  *
  * @tparam U a unit to use as a `reference_unit`
  * @tparam M a Magnitude representing an absolute scaling factor of this unit
