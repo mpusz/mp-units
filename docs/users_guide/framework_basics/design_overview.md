@@ -132,7 +132,7 @@ enum class quantity_character { scalar, vector, tensor };
 !!! info
 
     You can read more on quantity characters in the ["Character of a Quantity"](character_of_a_quantity.md)
-    chapter. 
+    chapter.
 
 
 ## Quantity specification
@@ -276,7 +276,7 @@ In the library, we have two different ways to provide a reference:
 - every unit with the associated [quantity kind](systems_of_quantities.md#quantities-of-the-same-kind)
   is a valid reference,
 - providing a unit to an indexing operator of a quantity specification explicitly instantiates
-  a `reference` class template with this quantity spec and a unit passed as arguments.  
+  a `reference` class template with this quantity spec and a unit passed as arguments.
 
 !!! note
 
@@ -344,7 +344,7 @@ In the **mp-units** library, we have two types of point origins:
 For example:
 
 - the absolute point origin can be defined in the following way:
-  
+
   ```cpp
   inline constexpr struct absolute_zero : absolute_point_origin<isq::thermodynamic_temperature> {} absolute_zero;
   ```
