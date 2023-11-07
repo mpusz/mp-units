@@ -7,14 +7,14 @@ quantities and provide automated conversion factors between various compatible u
 
 Probably all the libraries in the wild model the [SI](../../appendix/glossary.md#si)
 and many of them provide support for additional units belonging to various other systems
-(e.g. imperial).
+(e.g., imperial, cgs, etc).
 
 
 ## Systems of Units are based on Systems of Quantities
 
 [Systems of quantities](../../appendix/glossary.md#system-of-quantities) specify a set
 of quantities and equations relating to those quantities. Those equations do not take any
-unit or a numerical representation into account at all. In order to create a quantity,
+unit or a numerical representation into account at all. To create a quantity,
 we need to add those missing pieces of information. This is where
 a [system of units](../../appendix/glossary.md#system-of-units) kicks in.
 
@@ -33,14 +33,14 @@ inline constexpr struct metre : named_unit<"m", kind_of<isq::length>> {} metre;
 
     The `kind_of<isq::length>` above states explicitly that this unit has
     an associated quantity kind. In other words, `si::metre` (and scaled units based
-    on it) can be used to express the amount of any quantity of kind length.
+    on it) can be used to express the amount of any quantity of kind _length_.
 
 
 ## Units compose
 
-One of the strongest points of the [SI](../../appendix/glossary.md#si) system
+One of the most vital points of the [SI](../../appendix/glossary.md#si) system
 is that its units compose. This allows providing thousands of different units for
-hundreds of various quantities with a really small set of predefined units
+hundreds of various quantities with a tiny set of predefined units
 and prefixes.
 
 The same is modeled in the **mp-units** library, which also allows composing
@@ -51,9 +51,9 @@ predefined units to create a nearly infinite number of different
 quantity<si::metre / si::second> q;
 ```
 
-to express a quantity of speed. The resulting quantity type is implicitly inferred
+to express a quantity of _speed_. The resulting quantity type is implicitly inferred
 from the [unit equation](../../appendix/glossary.md#unit-equation) by repeating
-exactly the same operations on the associated quantity kinds.
+the same operations on the associated quantity kinds.
 
 
 ## Many shades of the same unit
@@ -64,13 +64,13 @@ The [SI](../../appendix/glossary.md#si) provides the names for 22 common
 
 Each such named [derived unit](../../appendix/glossary.md#derived-unit) is a result
 of a specific predefined [unit equation](../../appendix/glossary.md#unit-equation).
-For example, a unit of power quantity is defined in the library as:
+For example, a unit of _power_ quantity is defined in the library as:
 
 ```cpp
 inline constexpr struct watt : named_unit<"W", joule / second> {} watt;
 ```
 
-However, a power quantity can be expressed in other units as well. For example,
+However, a _power_ quantity can be expressed in other units as well. For example,
 the following:
 
 ```cpp
@@ -96,23 +96,26 @@ All of the above quantities are equivalent and mean exactly the same.
 ## Constraining a derived unit to work only with a specific derived quantity
 
 Some derived units are valid only for specific derived quantities. For example,
-SI specifies both `hertz` and `becquerel` derived units with the same unit equation `1 / s`.
-However, it also explicitly states:
+[SI](../../appendix/glossary.md#si) specifies both `hertz` and `becquerel` derived units
+with the same unit equation `1 / s`. However, it also explicitly states:
 
 !!! quote "SI Brochure"
 
     The hertz shall only be used for periodic phenomena and the becquerel shall only be used for
     stochastic processes in activity referred to a radionuclide.
 
-The library allows constraining such units in the following way:
+The above means that the usage of `becquerel` as a unit of a _frequency_ quantity is an error.
+
+The library allows constraining such units to work only with quantities of a specific kind in
+the following way:
 
 ```cpp
 inline constexpr struct hertz : named_unit<"Hz", one / second, kind_of<isq::frequency>> {} hertz;
 inline constexpr struct becquerel : named_unit<"Bq", one / second, kind_of<isq::activity>> {} becquerel;
 ```
 
-With the above, `hertz` can only be used for frequencies while becquerel should only be used for
-quantities of activity. This means that the following equation will not compile:
+With the above, `hertz` can only be used with _frequencies_, while `becquerel` should only be used with
+quantities of _activity_. This means that the following equation will not compile:
 
 ```cpp
 auto q = 1 * Hz + 1 * Bq;   // Fails to compile
@@ -131,7 +134,7 @@ Implementation of `std::ratio` provided by all major compilers is able to expres
 16 of them. This is why, in the **mp-units**, we had to find an alternative way to represent
 unit magnitude in a more flexible way.
 
-Each prefix is implemented as:
+Each prefix is implemented similarly to the following:
 
 ```cpp
 template<PrefixableUnit auto U> struct quecto_ : prefixed_unit<"q", mag_power<10, -30>, U> {};
@@ -145,7 +148,7 @@ way:
 inline constexpr auto qm = quecto<metre>;
 ```
 
-The usage of `mag_power` not only enables providing support for SI prefixes but it can also
+The usage of `mag_power` not only enables providing support for SI prefixes, but it can also
 efficiently represent any rational magnitude. For example, IEC 80000 prefixes used in the
 IT industry can be implemented as:
 
@@ -157,10 +160,10 @@ template<PrefixableUnit auto U> inline constexpr yobi_<U> yobi;
 ## Scaled units
 
 In the [SI](../../appendix/glossary.md#si), all units are either base or derived units or prefixed
-versions of those. However, those are not the only options possible.
+versions of those. However, those are only some of the options possible.
 
 For example, there is a list of [off-system units](../../appendix/glossary.md#off-system-unit)
-accepted for use with SI. All of those are scaled versions of the SI units with ratios that can't
+accepted for use with SI. Those are scaled versions of the SI units with ratios that can't
 be explicitly expressed with predefined SI prefixes. Those include units like minute, hour, or
 electronvolt:
 

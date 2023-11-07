@@ -33,10 +33,10 @@ Box my_box(2 * m, 3 * m, 1 * m);
 How do you like such an interface? It turns out that in most existing strongly-typed libraries
 this is often the best we can do :woozy_face:
 
-Another typical question many users ask is how to deal with energy and moment of force.
+Another typical question many users ask is how to deal with _work_ and _torque_.
 Both of those have the same dimension but are different quantities.
 
-Another question is what should be the result of:
+A similar issue is related to figuring out what should be the result of:
 
 ```cpp
 auto res = 1 * Hz + 1 * Bq + 1 * Bd;
@@ -44,20 +44,27 @@ auto res = 1 * Hz + 1 * Bq + 1 * Bd;
 
 where:
 
-- `Hz` (hertz) - unit of frequency
-- `Bq` (becquerel) - unit of activity
-- `Bd` (baud) - unit of modulation rate
+- `Hz` (hertz) - unit of _frequency_
+- `Bq` (becquerel) - unit of _activity_
+- `Bd` (baud) - unit of _modulation rate_
 
 All of those quantities have the same dimension, namely $\mathsf{T}^{-1}$, but probably it
 is not wise to allow adding, subtracting, or comparing them, as they describe vastly different
 physical properties.
 
+If the above example seems too abstract, let's consider a _fuel consumption_ (fuel _volume_
+divided by _distance_, e.g., `6.7 l/km`) and an _area_. Again, both have the same dimension
+$\mathsf{L}^{2}$, but probably it wouldn't be wise to allow adding, subtracting, or comparing
+a _fuel consumption_ of a car and the _area_ of a football field. Such an operation does not
+have any physical sense and should fail to compile.
+
 !!! important
 
     More than one quantity may be defined for the same dimension:
 
-    - quantities of _different kinds_ (e.g. frequency, modulation rate, activity, ...)
-    - quantities of _the same kind_ (e.g. length, width, altitude, distance, radius, wavelength, position vector, ...)
+    - quantities of **different kinds** (e.g. _frequency_, _modulation rate_, _activity_, ...)
+    - quantities of **the same kind** (e.g. _length_, _width_, _altitude_, _distance_, _radius_,
+      _wavelength_, _position vector_, ...)
 
 It turns out that the above issues can't be solved correctly without proper modeling of
 a [system of quantities](../../appendix/glossary.md#system-of-quantities).
@@ -76,7 +83,7 @@ a [system of quantities](../../appendix/glossary.md#system-of-quantities).
       dimension**
     - Quantities of the **same dimension are not necessarily of the same kind**
 
-The above quotes from ISO 80000 answer to all the issues above. Two quantities can't be
+The above quotes from ISO 80000 provide answers to all the issues above. Two quantities can't be
 added, subtracted, or compared unless they belong to the same [kind](../../appendix/glossary.md#kind).
 As frequency, activity, and modulation rate are different kinds, the expression provided above should
 not compile.
@@ -106,11 +113,12 @@ flowchart TD
     radius --- radius_of_curvature
 ```
 
-Each of the above quantities expresses some kind of length, and each can be measured with `si::metre`.
-However, each of them has different properties, usage, and sometimes even a different
+Each of the above quantities expresses some kind of _length_, and each can be measured with `si::metre`.
+However, each of them has different properties, usage, and sometimes even requires a different
 representation type (notice that `position_vector` and `displacement` are vector quantities).
 
-Analyzing such a hierarchy can help us in defining arithmetics and conversion rules.
+Such a hierarchy helps us in defining arithmetics and conversion rules for various quantities of
+the same kind.
 
 
 ## Defining quantities
@@ -206,14 +214,14 @@ For example, here is how the above quantity kind tree can be modeled in the libr
 
 ## Comparing, adding, and subtracting quantities
 
-ISO 80000 explicitly states that `width` and `height` are quantities of the same kind, and as such they:
+ISO 80000 explicitly states that _width_ and _height_ are quantities of the same kind, and as such they:
 
-- are mutually comparable
-- can be added and subtracted
+- are mutually comparable,
+- can be added and subtracted.
 
 If we take the above for granted, the only reasonable result of `1 * width + 1 * height` is `2 * length`,
-where the result of `length` is known as a common quantity type. A result of such an equation is always
-the first common branch in a hierarchy tree of the same kind. For example:
+where the result of `length` is known as a **common quantity** type. A result of such an equation is always
+the first common node in a hierarchy tree of the same kind. For example:
 
 ```cpp
 static_assert(common_quantity_spec(isq::width, isq::height) == isq::length);
@@ -228,33 +236,33 @@ Based on the same hierarchy of quantities of kind length, we can define quantity
 
 1. **Implicit conversions**
 
-    - every `width` is a `length`
-    - every `radius` is a `width`
+    - every _width_ is a _length_
+    - every _radius_ is a _width_
 
     ```cpp
     static_assert(implicitly_convertible(isq::width, isq::length));
-    static_assert(implicitly_convertible(isq::radius, isq::length));
     static_assert(implicitly_convertible(isq::radius, isq::width));
+    static_assert(implicitly_convertible(isq::radius, isq::length));
     ```
 
 2. **Explicit conversions**
 
-    - not every `length` is a `width`
-    - not every `width` is a `radius`
+    - not every _length_ is a _width_
+    - not every _width_ is a _radius_
 
     ```cpp
     static_assert(!implicitly_convertible(isq::length, isq::width));
-    static_assert(!implicitly_convertible(isq::length, isq::radius));
     static_assert(!implicitly_convertible(isq::width, isq::radius));
+    static_assert(!implicitly_convertible(isq::length, isq::radius));
     static_assert(explicitly_convertible(isq::length, isq::width));
-    static_assert(explicitly_convertible(isq::length, isq::radius));
     static_assert(explicitly_convertible(isq::width, isq::radius));
+    static_assert(explicitly_convertible(isq::length, isq::radius));
     ```
 
 3. **Explicit casts**
 
-    - `height` is not a `width`
-    - both `height` and `width` are quantities of kind `length`
+    - _height_ is not a _width_
+    - both _height_ and _width_ are quantities of kind _length_
 
     ```cpp
     static_assert(!implicitly_convertible(isq::height, isq::width));
@@ -264,7 +272,7 @@ Based on the same hierarchy of quantities of kind length, we can define quantity
 
 4. **No conversion**
 
-    - `time` has nothing in common with `length`
+    - _time_ has nothing in common with _length_
 
     ```cpp
     static_assert(!implicitly_convertible(isq::time, isq::length));
@@ -286,12 +294,12 @@ The below presents some arbitrary hierarchy of derived quantities of kind energy
 
 ```mermaid
 flowchart TD
-    energy["energy\n(mass * length^2 / time^2)"]
+    energy["energy\n(mass * length<sup>2</sup> / time<sup>2</sup>)"]
     energy --- mechanical_energy
     mechanical_energy --- potential_energy
     potential_energy --- gravitational_potential_energy["gravitational_potential_energy\n(mass * acceleration_of_free_fall * height)"]
-    potential_energy --- elastic_potential_energy["elastic_potential_energy\n(spring_constant * amount_of_compression^2)"]
-    mechanical_energy --- kinetic_energy["kinetic_energy\n(mass * speed^2)"]
+    potential_energy --- elastic_potential_energy["elastic_potential_energy\n(spring_constant * amount_of_compression<sup>2</sup>)"]
+    mechanical_energy --- kinetic_energy["kinetic_energy\n(mass * speed<sup>2</sup>)"]
     energy --- enthalpy
     enthalpy --- internal_energy[internal_energy, thermodynamic_energy]
     internal_energy --- Helmholtz_energy[Helmholtz_energy, Helmholtz_function]
@@ -301,21 +309,21 @@ flowchart TD
 
 Notice, that even though all of those quantities have the same dimension and can be expressed
 in the same units, they have different [quantity equations](../../appendix/glossary.md#quantity-equation)
-used to create them implicitly:
+that can be used to create them implicitly:
 
-- `energy` is the most generic one and thus can be created from base quantities of `mass`, `length`,
-  and `time`. As those are also the roots of quantities of their kinds and all other quantities are
-  implicitly convertible to them (we agreed on that "every `width` is a `length`" already), it means
-  that an `energy` can be implicitly constructed from any quantity of mass, length, and time.
+- _energy_ is the most generic one and thus can be created from base quantities of _mass_, _length_,
+  and _time_. As those are also the roots of quantities of their kinds and all other quantities from their
+  trees are implicitly convertible to them (we agreed on that "every _width_ is a _length_" already),
+  it means that an _energy_ can be implicitly constructed from any quantity of _mass_, _length_, and _time_:
 
     ```cpp
     static_assert(implicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::time), isq::energy));
     static_assert(implicitly_convertible(isq::mass * pow<2>(isq::height) / pow<2>(isq::time), isq::energy));
     ```
 
-- `mechanical_energy` is a more "specialized" quantity than `energy` (not every `energy` is
-  a `mechanical_energy`). It is why an explicit cast is needed to convert from either `energy` or
-  the results of its [quantity equation](../../appendix/glossary.md#quantity-equation).
+- _mechanical energy_ is a more "specialized" quantity than _energy_ (not every _energy_ is
+  a _mechanical energy_). It is why an explicit cast is needed to convert from either _energy_ or
+  the results of its [quantity equation](../../appendix/glossary.md#quantity-equation):
 
     ```cpp
     static_assert(!implicitly_convertible(isq::energy, isq::mechanical_energy));
@@ -326,10 +334,10 @@ used to create them implicitly:
                                          isq::mechanical_energy));
     ```
 
-- `gravitational_potential_energy` is not only even more specialized one but additionally,
+- _gravitational potential energy_ is not only even more specialized one but additionally,
   it is special in a way that it provides its own "constrained"
   [quantity equation](../../appendix/glossary.md#quantity-equation). Maybe not every
-  `mass * pow<2>(length) / pow<2>(time)` is a `gravitational_potential_energy`, but every
+  `mass * pow<2>(length) / pow<2>(time)` is a _gravitational potential energy_, but every
   `mass * acceleration_of_free_fall * height` is.
 
     ```cpp
@@ -372,7 +380,7 @@ Additionally, the result of operations on quantity kinds is also a quantity kind
 static_assert(same_type<kind_of<isq::length> / kind_of<isq::time>, kind_of<isq::length / isq::time>>);
 ```
 
-However, if at least one equation's operand is not a kind, the result becomes a "strong"
+However, if at least one equation's operand is not a quantity kind, the result becomes a "strong"
 quantity where all the kinds are converted to the hierarchy tree's root quantities:
 
 ```cpp
