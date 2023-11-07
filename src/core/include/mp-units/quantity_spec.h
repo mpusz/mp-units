@@ -1238,7 +1238,7 @@ template<typename... NumsTo, typename... DensTo>
                                                                              type_list<NumsTo...>, type_list<DensTo...>)
 {
   if constexpr (((... * map_power(NumsTo{})) / (... * map_power(DensTo{}))).dimension == dimension_one)
-    return specs_convertible_result::yes;
+    return specs_convertible_result::explicit_conversion;
   else
     return specs_convertible_result::no;
 }
@@ -1268,17 +1268,17 @@ template<typename... NumsTo>
                                                                              type_list<NumsTo...>, type_list<>)
 {
   if constexpr ((... * map_power(NumsTo{})).dimension == dimension_one)
-    return specs_convertible_result::yes;
+    return specs_convertible_result::explicit_conversion;
   else
     return specs_convertible_result::no;
 }
 
-template<typename... DensFrom>
+template<typename... DensTo>
 [[nodiscard]] consteval specs_convertible_result are_ingredients_convertible(type_list<>, type_list<>, type_list<>,
-                                                                             type_list<DensFrom...>)
+                                                                             type_list<DensTo...>)
 {
-  if constexpr ((... * map_power(DensFrom{})).dimension == dimension_one)
-    return specs_convertible_result::yes;
+  if constexpr ((... * map_power(DensTo{})).dimension == dimension_one)
+    return specs_convertible_result::explicit_conversion;
   else
     return specs_convertible_result::no;
 }
