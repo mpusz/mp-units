@@ -99,7 +99,7 @@ int main()
 {
   using namespace unit_symbols;
 
-  quantity_point price_usd = zero<currency> + 100 * USD;
+  quantity_point price_usd = zero + 100 * USD;
   quantity_point price_euro = exchange_to<euro>(price_usd);
 
   std::cout << price_usd.quantity_from(zero) << " -> " << price_euro.quantity_from(zero) << "\n";
