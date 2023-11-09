@@ -19,7 +19,7 @@ flowchart TD
     quantity_character["Quantity character"] --- QuantitySpec
     QuantitySpec --- Reference["Quantity reference"]
     Reference --- Quantity
-    quantity_character --- Representation
+    quantity_character -.- Representation
     Representation --- Quantity
     Quantity --- QuantityPoint["Quantity point"]
     PointOrigin["Point origin"] --- QuantityPoint

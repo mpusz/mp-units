@@ -41,6 +41,15 @@ inline constexpr struct great_british_pound : named_unit<"GBP", kind_of<currency
 inline constexpr struct japanese_jen : named_unit<"JPY", kind_of<currency>> {} japanese_jen;
 // clang-format on
 
+namespace unit_symbols {
+
+inline constexpr auto EUR = euro;
+inline constexpr auto USD = us_dollar;
+inline constexpr auto GBP = great_british_pound;
+inline constexpr auto JPY = japanese_jen;
+
+}  // namespace unit_symbols
+
 static_assert(!std::equality_comparable_with<quantity<euro, int>, quantity<us_dollar, int>>);
 
 
@@ -88,7 +97,9 @@ quantity_point<To, PO, Rep> exchange_to(quantity_point<From, PO, Rep> q)
 
 int main()
 {
-  quantity_point price_usd = zero + 100 * us_dollar;
+  using namespace unit_symbols;
+
+  quantity_point price_usd = zero + 100 * USD;
   quantity_point price_euro = exchange_to<euro>(price_usd);
 
   std::cout << price_usd.quantity_from(zero) << " -> " << price_euro.quantity_from(zero) << "\n";

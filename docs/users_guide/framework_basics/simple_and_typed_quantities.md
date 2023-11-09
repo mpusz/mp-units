@@ -1,16 +1,18 @@
 # Simple and Typed Quantities
 
-ISO specifies a quantity as:
+ISO defines a quantity as:
 
 !!! quote
 
-    property of a phenomenon, body, or substance, where the property has a magnitude that can be expressed as a number and a reference
+    property of a phenomenon, body, or substance, where the property has a magnitude
+    that can be expressed as a number and a reference
 
 After that, it says:
 
 !!! quote
 
-    A reference can be a measurement unit, a measurement procedure, a reference material, or a combination of such.
+    A reference can be a measurement unit, a measurement procedure, a reference material,
+    or a combination of such.
 
 ## `quantity` class template
 
@@ -22,9 +24,10 @@ template<Reference auto R,
 class quantity;
 ```
 
-The concept `Reference` is satisfied by either:
+The concept `Reference` is satisfied by a type that provides all the domain-specific metadata describing
+a quantity (besides the representation type and its value). Such a type can be either:
 
-- a unit with an associated quantity type (e.g. `si::metre`)
+- a unit with an associated quantity type (e.g., `si::metre`, `m / s`),
 - a reference type explicitly specifying the quantity type and its unit.
 
 !!! important
@@ -37,9 +40,10 @@ A reference type is implicitly created as a result of the following expression:
 constexpr auto ref = isq::length[m];
 ```
 
-The above example resulted in the following type `reference<isq::length(), si::metre()>` being instantiated.
+The above example results in the following type `reference<isq::length(), si::metre()>` being instantiated.
 
-Based on this property, the **mp-units** library provides two modes of dealing with quantities.
+As we have two alternative options that satisfy the `Reference` concept in the **mp-units** library,
+we also have two modes of dealing with quantities.
 
 
 ## Simple quantities
@@ -85,7 +89,7 @@ A car driving 110 km in 2 h has an average speed of 15.2778 m/s (55 km/h)
 !!! example "[Try it on Compiler Explorer](https://godbolt.org/z/zWe8ecf93)"
 
 
-### Easy to understand compilation error messages
+### Easy-to-understand compilation error messages
 
 In case a user makes an error in a quantity equation and the result of the calculation
 will not match the function return type, the compiler will detect such an issue at
@@ -175,7 +179,7 @@ As we can see above, the compilation error is longer but still relatively easy t
 
 Based on the previous example, it might seem that typed quantities are not that useful,
 more to type and provide harder-to-understand error messages. It might be true in some cases,
-but there are cases where they provide an additional level of safety.
+but there are scenarios where they offer an additional level of safety.
 
 Let's see another example:
 
@@ -292,7 +296,7 @@ Let's see another example:
 
 In the above example, the highlighted call doesn't look that safe anymore in the case
 of simple quantities, right? Suppose someone, either by mistake or due to some refactoring,
-will call the function with invalid order of arguments. In that case, the program will compile
+will call the function with an invalid order of arguments. In that case, the program will compile
 fine but not work as expected.
 
 Let's see what will happen if we reorder the arguments in the case of typed quantities:
@@ -303,7 +307,7 @@ auto tank = RectangularStorageTank(horizontal_length(1'000 * mm),
                                    isq::width(500 * mm));
 ```
 
-This time a compiler provides the following compilation error:
+This time, a compiler provides the following compilation error:
 
 ```text
 In function 'int main()':
@@ -319,7 +323,7 @@ note:   no known conversion for argument 2 from 'mp_units::quantity<mp_units::re
 ```
 
 What about derived quantities? In the above example, you probably noticed that we also defined
-a custom `horizontal_area` quantity of kind `isq::area`. This quantity has the special property
+a custom `horizontal_area` quantity of kind `isq::area`. This quantity has the unique property
 of being implicitly constructible only from the result of the multiplication of quantities of
 `horizontal_area` and `isq::width` or the ones that implicitly convert to them.
 
@@ -377,15 +381,15 @@ public:
 };
 ```
 
-As `isq::radius` is not convertible to either a `horizontal_length` or `isq::width`,
-the derived quantity of `pow<2>(radius)` can't be converted to `horizontal_area` as well.
+As `isq::radius` is not convertible to `horizontal_length`, the derived quantity of
+`pow<2>(radius)` can't be converted to `horizontal_area` as well.
 It would be unsafe to allow such a conversion as not all of the circles lie flat on the
 ground, right?
 
 In such a case, the user has to explicitly force such an unsafe conversion with the
 help of a `quantity_cast()`. This function name is easy to spot in code reviews or while
-searching the project for problems if something goes sideways. In case of unexpected issues
-related to quantities, this should be the first function to look for.
+searching the project for problems if something goes sideways. In case of unexpected
+quantities-related issues, this should be the first function to look for.
 
 !!! tip
 
@@ -397,7 +401,7 @@ related to quantities, this should be the first function to look for.
 
 In case you wonder which mode you should choose for your project, we have good news for you.
 Simple and typed quantity modes can be freely mixed with each other. When you use different
-quantities of the same kind (e.g. radius, wavelength, altitude, ...), you should probably
+quantities of the same kind (e.g., _radius_, _wavelength_, _altitude_, ...), you should probably
 reach for typed quantities to bring additional safety for those cases. Otherwise, just use
 simple mode for the remaining quantities. The **mp-units** library will do its best to protect
 your project based on the information provided.
