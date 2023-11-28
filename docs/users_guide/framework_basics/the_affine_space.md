@@ -102,11 +102,11 @@ quantity_point qp3 = mean_sea_level - 42 * m;
 
 Similarly to [creation of a quantity](../../getting_started/quick_start.md#creating-a-quantity),
 if someone does not like the operator-based syntax to create a `quantity_point`, the same results
-can be achieved with `make_quantity_point` factory function:
+can be achieved with two-parameter constructor:
 
 ```cpp
-quantity_point qp4 = make_quantity_point<mean_sea_level>(42 * m);
-quantity_point qp5 = make_quantity_point<mean_sea_level>(-42 * m);
+quantity_point qp4{42 * m, mean_sea_level};
+quantity_point qp5{-42 * m, mean_sea_level};
 ```
 
 The provided `quantity` representing an offset from the origin is stored inside the `quantity_point`

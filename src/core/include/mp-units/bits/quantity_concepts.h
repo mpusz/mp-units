@@ -32,13 +32,6 @@ namespace mp_units {
 template<Reference auto R, RepresentationOf<get_quantity_spec(R).character> Rep>
 class quantity;
 
-#if defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 17
-template<auto R, typename Rep>
-#else
-template<Reference auto R, typename Rep>
-#endif
-[[nodiscard]] constexpr quantity<R, std::remove_cvref_t<Rep>> make_quantity(Rep&& v);
-
 namespace detail {
 
 template<auto R, typename Rep>

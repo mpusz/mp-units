@@ -191,10 +191,10 @@ Quantity auto q = la_vector{1, 2, 3} * isq::velocity[m / s];
 In case there is an ambiguity of `operator*` between **mp-units** and a linear algebra library, we can
 either:
 
-- use `make_quantity` factory function
+- use two-parameter constructor
 
     ```cpp
-    Quantity auto q = make_quantity<isq::velocity[m / s]>(la_vector{1, 2, 3});
+    Quantity auto q = quantity{la_vector{1, 2, 3}, isq::velocity[m / s]};
     ```
 
 - provide a dedicated overload of `operator*` that will resolve the ambiguity and wrap the above
@@ -203,7 +203,7 @@ either:
     template<Reference R>
     Quantity auto operator*(la_vector rep, R)
     {
-      return make_quantity<R{}>(rep);
+      return quantity{rep, R{}};
     }
     ```
 

@@ -179,14 +179,14 @@ template<typename Rep, Reference R>
   requires RepresentationOf<std::remove_cvref_t<Rep>, get_quantity_spec(R{}).character>
 [[nodiscard]] constexpr quantity<R{}, std::remove_cvref_t<Rep>> operator*(Rep&& lhs, R)
 {
-  return make_quantity<R{}>(std::forward<Rep>(lhs));
+  return quantity{std::forward<Rep>(lhs), R{}};
 }
 
 template<typename Rep, Reference R>
   requires RepresentationOf<std::remove_cvref_t<Rep>, get_quantity_spec(R{}).character>
 [[nodiscard]] constexpr quantity<inverse(R{}), std::remove_cvref_t<Rep>> operator/(Rep&& lhs, R)
 {
-  return make_quantity<inverse(R{})>(std::forward<Rep>(lhs));
+  return quantity{std::forward<Rep>(lhs), inverse(R{})};
 }
 
 template<Reference R, typename Rep>
@@ -201,16 +201,16 @@ template<typename Q, Reference R>
   requires Quantity<std::remove_cvref_t<Q>>
 [[nodiscard]] constexpr Quantity auto operator*(Q&& q, R)
 {
-  return make_quantity<std::remove_cvref_t<Q>::reference * R{}>(
-    std::forward<Q>(q).numerical_value_is_an_implementation_detail_);
+  return quantity{std::forward<Q>(q).numerical_value_is_an_implementation_detail_,
+                  std::remove_cvref_t<Q>::reference * R{}};
 }
 
 template<typename Q, Reference R>
   requires Quantity<std::remove_cvref_t<Q>>
 [[nodiscard]] constexpr Quantity auto operator/(Q&& q, R)
 {
-  return make_quantity<std::remove_cvref_t<Q>::reference / R{}>(
-    std::forward<Q>(q).numerical_value_is_an_implementation_detail_);
+  return quantity{std::forward<Q>(q).numerical_value_is_an_implementation_detail_,
+                  std::remove_cvref_t<Q>::reference / R{}};
 }
 
 template<Reference R, typename Q>

@@ -50,15 +50,15 @@ quantity q = 42 * m;
     namespace.
 
 In case someone doesn't like the multiply syntax or there is an ambiguity between `operator*`
-provided by this and other libraries, a quantity can also be created with a dedicated factory
-function:
+provided by this and other libraries, a quantity can also be created with a two-parameter
+constructor:
 
 ```cpp
 #include <mp-units/systems/si/si.h>
 
 using namespace mp_units;
 
-quantity q = make_quantity<si::metre>(42);
+quantity q{42, si::metre};
 ```
 
 
