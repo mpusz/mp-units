@@ -241,7 +241,7 @@ public:
 
   // member unary operators
   template<typename QP>
-  friend constexpr decltype(auto) operator++(QP && qp)
+  friend constexpr decltype(auto) operator++(QP&& qp)
     requires std::derived_from<std::remove_cvref_t<QP>, quantity_point> &&
              requires { ++qp.quantity_from_origin_is_an_implementation_detail_; }
   {
@@ -256,7 +256,7 @@ public:
   }
 
   template<typename QP>
-  friend constexpr decltype(auto) operator--(QP && qp)
+  friend constexpr decltype(auto) operator--(QP&& qp)
     requires std::derived_from<std::remove_cvref_t<QP>, quantity_point> &&
              requires { --qp.quantity_from_origin_is_an_implementation_detail_; }
   {
@@ -274,7 +274,7 @@ public:
   template<typename QP>
     requires std::derived_from<std::remove_cvref_t<QP>, quantity_point> &&
              requires(quantity_type q) { quantity_from_origin_is_an_implementation_detail_ += q; }
-  friend constexpr decltype(auto) operator+=(QP && qp, const quantity_type & q)
+  friend constexpr decltype(auto) operator+=(QP&& qp, const quantity_type& q)
   {
     qp.quantity_from_origin_is_an_implementation_detail_ += q;
     return std::forward<QP>(qp);
@@ -283,7 +283,7 @@ public:
   template<typename QP>
     requires std::derived_from<std::remove_cvref_t<QP>, quantity_point> &&
              requires(quantity_type q) { quantity_from_origin_is_an_implementation_detail_ -= q; }
-  friend constexpr decltype(auto) operator-=(QP && qp, const quantity_type & q)
+  friend constexpr decltype(auto) operator-=(QP&& qp, const quantity_type& q)
   {
     qp.quantity_from_origin_is_an_implementation_detail_ -= q;
     return std::forward<QP>(qp);
