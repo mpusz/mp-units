@@ -116,7 +116,7 @@ results in the `derived_dimension<isq::dim_length, per<isq::dim_time>>` type.
 
 ## Quantity character
 
-[ISO 80000](../appendix/references.md#ISO80000) explicitly states that quantities (even of the same kind) may have
+[ISO 80000](../../appendix/references.md#ISO80000) explicitly states that quantities (even of the same kind) may have
 different [characters](../../appendix/glossary.md#character):
 
 - scalar,
@@ -138,7 +138,7 @@ enum class quantity_character { scalar, vector, tensor };
 ## Quantity specification
 
 [Dimension is not enough to describe a quantity](systems_of_quantities.md#dimension-is-not-enough-to-describe-a-quantity).
-This is why the [ISO 80000](../appendix/references.md#ISO80000) provides hundreds of named quantity
+This is why the [ISO 80000](../../appendix/references.md#ISO80000) provides hundreds of named quantity
 types. It turns out that there are many more quantity types in the [ISQ](../../appendix/glossary.md#isq)
 than the named units in the [SI](../../appendix/glossary.md#si).
 
@@ -154,7 +154,7 @@ This is why the **mp-units** library introduces a quantity specification entity 
 
     We know that it might be sometimes confusing to talk about quantities, quantity types/names, and quantity
     specifications. However, it might be important to notice here that even the
-    [ISO 80000](../appendix/references.md#ISO80000) admits that:
+    [ISO 80000](../../appendix/references.md#ISO80000) admits that:
 
     > It is customary to use the same term, "quantity", to refer to both general quantities, such as length,
     > mass, etc., and their instances, such as given lengths, given masses, etc. Accordingly, we are used to
