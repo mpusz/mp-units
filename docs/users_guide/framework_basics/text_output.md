@@ -146,15 +146,24 @@ In the above grammar:
 
 ### Default formatting
 
-To format `quantity` values the formatting facility uses `units-format-spec`. If it is left empty,
-the default formatting of `{:%Q %q}` is applied. The same default formatting is also applied
-to the output streams. This is why the following code lines produce the same output:
+To format `quantity` values, the formatting facility uses `units-format-spec`. If left empty,
+the default formatting is applied. The same default formatting is also applied to the output streams.
+This is why the following code lines produce the same output:
 
 ```cpp
 std::cout << "Distance: " << 123 * km << "\n";
 std::cout << std::format("Distance: {}\n", 123 * km);
 std::cout << std::format("Distance: {:%Q %q}\n", 123 * km);
 ```
+
+!!! note
+
+    For some quantities the `{:%Q %q}` format may provide a different output than the default one.
+    It will happen for example for:
+
+    - units for which [`space_before_unit_symbol`](#customization-point) customization point is set
+      to `false`,
+    - quantities of dimension one with a unit one.
 
 
 ### Controlling width, fill, and alignment
