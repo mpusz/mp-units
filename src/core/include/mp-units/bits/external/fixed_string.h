@@ -46,7 +46,15 @@ template<typename CharT, std::size_t N>
 struct basic_fixed_string {
   CharT data_[N + 1] = {};
 
+  using value_type = CharT;
+  using pointer = CharT*;
+  using const_pointer = const CharT*;
+  using reference = CharT&;
+  using const_reference = const CharT&;
   using const_iterator = const CharT*;
+  using iterator = const_iterator;
+  using size_type = std::size_t;
+  using difference_type = std::ptrdiff_t;
 
   constexpr explicit(false) basic_fixed_string(CharT ch) noexcept
     requires(N == 1)
@@ -67,13 +75,15 @@ struct basic_fixed_string {
   }
 
   [[nodiscard]] constexpr bool empty() const noexcept { return N == 0; }
-  [[nodiscard]] constexpr std::size_t size() const noexcept { return N; }
-  [[nodiscard]] constexpr const CharT* data() const noexcept { return data_; }
+  [[nodiscard]] constexpr size_type size() const noexcept { return N; }
+  [[nodiscard]] constexpr const_pointer data() const noexcept { return data_; }
   [[nodiscard]] constexpr const CharT* c_str() const noexcept { return data(); }
-  [[nodiscard]] constexpr const CharT& operator[](std::size_t index) const noexcept { return data()[index]; }
+  [[nodiscard]] constexpr const_reference operator[](size_type index) const noexcept { return data()[index]; }
 
   [[nodiscard]] constexpr const_iterator begin() const noexcept { return data(); }
+  [[nodiscard]] constexpr const_iterator cbegin() const noexcept { return data(); }
   [[nodiscard]] constexpr const_iterator end() const noexcept { return data() + size(); }
+  [[nodiscard]] constexpr const_iterator cend() const noexcept { return data() + size(); }
 
   template<std::size_t N2>
   [[nodiscard]] constexpr friend basic_fixed_string<CharT, N + N2> operator+(
@@ -108,14 +118,14 @@ struct basic_fixed_string {
   }
 };
 
+template<typename CharT>
+basic_fixed_string(CharT) -> basic_fixed_string<CharT, 1>;
+
 template<typename CharT, std::size_t N>
 basic_fixed_string(const CharT (&str)[N]) -> basic_fixed_string<CharT, N - 1>;
 
 template<typename CharT, std::size_t N>
 basic_fixed_string(const CharT* ptr, std::integral_constant<std::size_t, N>) -> basic_fixed_string<CharT, N>;
-
-template<typename CharT>
-basic_fixed_string(CharT) -> basic_fixed_string<CharT, 1>;
 
 template<std::size_t N>
 using fixed_string = basic_fixed_string<char, N>;
