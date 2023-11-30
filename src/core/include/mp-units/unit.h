@@ -818,6 +818,8 @@ template<typename CharT, std::size_t N, unit_symbol_formatting fmt, Unit U>
 
 }  // namespace detail
 
+
+// TODO Refactor to `unit_symbol(U, fmt)` when P1045: constexpr Function Parameters is available
 template<unit_symbol_formatting fmt = unit_symbol_formatting{}, typename CharT = char, Unit U>
 [[nodiscard]] constexpr auto unit_symbol(U)
 {
