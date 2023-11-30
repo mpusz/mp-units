@@ -617,20 +617,20 @@ template<Unit U1, Unit U2>
 
 // get_unit_symbol
 
-enum class text_encoding {
+enum class text_encoding : std::int8_t {
   unicode,  // m³;  µs
   ascii,    // m^3; us
   default_encoding = unicode
 };
 
-enum class unit_symbol_solidus {
+enum class unit_symbol_solidus : std::int8_t {
   one_denominator,  // m/s;   kg m⁻¹ s⁻¹
   always,           // m/s;   kg/(m s)
   never,            // m s⁻¹; kg m⁻¹ s⁻¹
   default_denominator = one_denominator
 };
 
-enum class unit_symbol_separator {
+enum class unit_symbol_separator : std::int8_t {
   space,          // kg m²/s²
   half_high_dot,  // kg⋅m²/s²  (valid only for unicode encoding)
   default_separator = space
