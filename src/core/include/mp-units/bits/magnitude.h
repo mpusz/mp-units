@@ -869,23 +869,23 @@ template<Magnitude auto M>
   if constexpr (num_value == 1 && den_value == 1 && exp10 != 0) {
     return base_multiplier + superscript<exp10>();
   } else if constexpr (num_value != 1 || den_value != 1 || exp10 != 0) {
-    auto txt = basic_fixed_string("[") + regular<num_value>();
+    auto txt = basic_symbol_text("[") + regular<num_value>();
     if constexpr (den_value == 1) {
       if constexpr (exp10 == 0) {
-        return txt + basic_fixed_string("]");
+        return txt + basic_symbol_text("]");
       } else {
-        return txt + " " + base_multiplier + superscript<exp10>() + basic_fixed_string("]");
+        return txt + basic_symbol_text(" ") + base_multiplier + superscript<exp10>() + basic_symbol_text("]");
       }
     } else {
       if constexpr (exp10 == 0) {
-        return txt + basic_fixed_string("/") + regular<den_value>() + basic_fixed_string("]");
+        return txt + basic_symbol_text("/") + regular<den_value>() + basic_symbol_text("]");
       } else {
-        return txt + basic_fixed_string("/") + regular<den_value>() + " " + base_multiplier + superscript<exp10>() +
-               basic_fixed_string("]");
+        return txt + basic_symbol_text("/") + regular<den_value>() + basic_symbol_text(" ") + base_multiplier +
+               superscript<exp10>() + basic_symbol_text("]");
       }
     }
   } else {
-    return basic_fixed_string("");
+    return basic_symbol_text("");
   }
 }
 

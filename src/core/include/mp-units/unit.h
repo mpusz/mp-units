@@ -720,8 +720,8 @@ constexpr auto unit_symbol_impl(Out out, const power<F, Num, Den...>&, unit_symb
   constexpr ratio r = power<F, Num, Den...>::exponent;
   if constexpr (r.den != 1) {
     // add root part
-    constexpr auto txt = basic_fixed_string("^(") + regular<r.num>() + basic_fixed_string("/") + regular<r.den>() +
-                         basic_fixed_string(")");
+    constexpr auto txt =
+      basic_symbol_text("^(") + regular<r.num>() + basic_symbol_text("/") + regular<r.den>() + basic_symbol_text(")");
     return copy<CharT>(txt, fmt.encoding, out);
   } else if constexpr (r.num != 1) {
     // add exponent part

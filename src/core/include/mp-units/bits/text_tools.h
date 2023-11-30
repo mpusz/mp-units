@@ -77,7 +77,7 @@ template<std::intmax_t Value>
 [[nodiscard]] consteval auto regular()
 {
   if constexpr (Value < 0)
-    return basic_fixed_string("-") + superscript_helper<-Value>();
+    return basic_symbol_text("-") + superscript_helper<-Value>();
   else if constexpr (Value < 10)
     return basic_symbol_text(static_cast<char>('0' + Value));
   else

@@ -39,12 +39,6 @@ static_assert(sym1 >= 'a');
 static_assert(sym1.unicode() == "b");
 static_assert(sym1.ascii() == "b");
 
-constexpr basic_symbol_text sym2('a', 'b');
-static_assert(sym2 == basic_symbol_text('a', 'b'));
-static_assert(sym2 != 'b');
-static_assert(sym2.unicode() == 'a');
-static_assert(sym2.ascii() == 'b');
-
 constexpr basic_symbol_text sym3("ab");
 static_assert(sym3.unicode() == "ab");
 static_assert(sym3.ascii() == "ab");
@@ -77,19 +71,13 @@ static_assert(sym6 >= basic_symbol_text("bc"));
 static_assert(basic_symbol_text("a") + sym4 == basic_symbol_text("abc"));
 static_assert(sym4 + basic_symbol_text("f") == basic_symbol_text("bcf"));
 
-static_assert(basic_fixed_string("a") + sym4 == basic_symbol_text("abc"));
-static_assert(sym4 + basic_fixed_string("f") == basic_symbol_text("bcf"));
-
 static_assert(basic_symbol_text("a", "f") + sym6 == basic_symbol_text("abc", "fde"));
 static_assert(sym6 + basic_symbol_text("a", "f") == basic_symbol_text("bca", "def"));
 
-static_assert('a' + sym6 == basic_symbol_text("abc", "ade"));
-static_assert(sym6 + 'f' == basic_symbol_text("bcf", "def"));
+static_assert(basic_symbol_text('a') + sym6 == basic_symbol_text("abc", "ade"));
+static_assert(sym6 + basic_symbol_text('f') == basic_symbol_text("bcf", "def"));
 
-static_assert(basic_fixed_string("a") + sym6 == basic_symbol_text("abc", "ade"));
-static_assert(sym6 + basic_fixed_string("f") == basic_symbol_text("bcf", "def"));
-
-static_assert("a" + sym6 == basic_symbol_text("abc", "ade"));
-static_assert(sym6 + "f" == basic_symbol_text("bcf", "def"));
+static_assert(basic_symbol_text("a") + sym6 == basic_symbol_text("abc", "ade"));
+static_assert(sym6 + basic_symbol_text("f") == basic_symbol_text("bcf", "def"));
 
 }  // namespace
