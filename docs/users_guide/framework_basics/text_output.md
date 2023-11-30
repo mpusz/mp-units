@@ -13,7 +13,91 @@ any quantity in the most user-friendly way.
     a much better solution, but the library does not have enough information to print it that way by itself.
 
 
-## Customization point
+## Derived unit symbols generation
+
+Based on the provided definitions for base units, the library creates symbols for derived ones.
+
+### `unit_symbol_formatting`
+
+`unit_symbol_formatting` is a data type describing the configuration of the symbol generation
+algorithm. It contains three orthogonal fields, and each of them has a default value.
+
+```cpp
+enum class text_encoding : std::int8_t {
+  unicode,  // m³;  µs
+  ascii,    // m^3; us
+  default_encoding = unicode
+};
+
+enum class unit_symbol_solidus : std::int8_t {
+  one_denominator,  // m/s;   kg m⁻¹ s⁻¹
+  always,           // m/s;   kg/(m s)
+  never,            // m s⁻¹; kg m⁻¹ s⁻¹
+  default_denominator = one_denominator
+};
+
+enum class unit_symbol_separator : std::int8_t {
+  space,          // kg m²/s²
+  half_high_dot,  // kg⋅m²/s²  (valid only for unicode encoding)
+  default_separator = space
+};
+
+struct unit_symbol_formatting {
+  text_encoding encoding = text_encoding::default_encoding;
+  unit_symbol_solidus solidus = unit_symbol_solidus::default_denominator;
+  unit_symbol_separator separator = unit_symbol_separator::default_separator;
+};
+```
+
+### `unit_symbol()`
+
+Returns a `std::string_view` with the symbol of a unit for the provided configuration:
+
+```cpp
+template<unit_symbol_formatting fmt = unit_symbol_formatting{}, typename CharT = char, Unit U>
+[[nodiscard]] consteval auto unit_symbol(U);
+```
+
+For example:
+
+```cpp
+static_assert(unit_symbol<{.solidus = unit_symbol_solidus::never,
+                           .separator = unit_symbol_separator::half_high_dot}>(kg * m / s2) == "kg⋅m⋅s⁻²");
+```
+
+!!! note
+
+    `std::string_view` is returned only when C++23 is available. Otherwise, an instance of a
+    `basic_fixed_string` is being returned.
+
+### `unit_symbol_to()`
+
+Inserts the generated unit symbol to the output text iterator at runtime based on the provided
+configuration.
+
+```cpp
+template<typename CharT = char, std::output_iterator<CharT> Out, Unit U>
+constexpr Out unit_symbol_to(Out out, U u, unit_symbol_formatting fmt = unit_symbol_formatting{});
+```
+
+For example:
+
+```cpp
+std::string txt;
+unit_symbol_to(std::back_inserter(txt), kg * m / s2,
+               {.solidus = unit_symbol_solidus::never, .separator = unit_symbol_separator::half_high_dot});
+std::cout << txt << "\n";
+```
+
+The above prints:
+
+```text
+kg⋅m⋅s⁻²
+```
+
+## Quantity text output
+
+### Customization point
 
 The [SI Brochure](../../appendix/references.md#SIBrochure) says:
 
@@ -42,7 +126,7 @@ inline constexpr bool space_before_unit_symbol<non_si::degree> = false;
     in this case.
 
 
-## Output streams
+### Output streams
 
 !!! tip
 
@@ -78,7 +162,7 @@ associated with this quantity.
     ```
 
 
-### Output stream formatting
+#### Output stream formatting
 
 Only basic formatting can be applied for output streams. It includes control over width, fill,
 and alignment of the entire quantity and formatting of a quantity numerical value according
@@ -91,7 +175,7 @@ std::cout << "|" << std::setw(10) << std::setfill('*') << 123 * m << "|\n";  // 
 ```
 
 
-## `std::format`
+### `std::format`
 
 !!! tip
 
@@ -102,7 +186,7 @@ The **mp-units** library provides custom formatters for `std::format` facility w
 fine-grained control over what and how it is being printed in the text output.
 
 
-### Grammar
+#### Grammar
 
 ```text
 units-format-spec   ::=  [fill-and-align] [width] [units-specs]
@@ -144,7 +228,7 @@ In the above grammar:
     - `d` uses half-high **dot** (`⋅`) as a separator (e.g. `kg⋅m²/s²`)
 
 
-### Default formatting
+#### Default formatting
 
 To format `quantity` values, the formatting facility uses `units-format-spec`. If left empty,
 the default formatting is applied. The same default formatting is also applied to the output streams.
@@ -166,7 +250,7 @@ std::cout << std::format("Distance: {:%Q %q}\n", 123 * km);
     - quantities of dimension one with a unit one.
 
 
-### Controlling width, fill, and alignment
+#### Controlling width, fill, and alignment
 
 To control width, fill, and alignment, the C++ standard grammar tokens `fill-and-align` and `width`
 are being used, and they treat a quantity value and symbol as a contiguous text:
@@ -192,7 +276,7 @@ std::println("|{:*^10}|", 123 * m);  // |**123 m***|
     ```
 
 
-### Quantity value, symbol, or both?
+#### Quantity value, symbol, or both?
 
 The user can easily decide to either print a whole quantity (value and symbol) or only its parts.
 Also, a custom style of quantity formatting might be applied:
@@ -204,7 +288,7 @@ std::println("{:%Q%q}", 123 * km);  // 123km
 ```
 
 
-### Quantity value formatting
+#### Quantity value formatting
 
 `sign` token allows us to specify how the value's sign is being printed:
 
@@ -273,7 +357,7 @@ std::println("{:%.3GQ %q}", 1.2345678e8 * m);    // 1.23E+08 m
 ```
 
 
-### Unit symbol formatting
+#### Unit symbol formatting
 
 Unit symbols of some quantities are specified to use Unicode signs by the
 [SI](../../appendix/glossary.md#si) (e.g. `Ω` symbol for the resistance quantity). The **mp-units**
