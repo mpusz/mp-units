@@ -115,7 +115,7 @@ units-type          ::=  [units-rep-modifier] 'Q'
                          [units-unit-modifier] 'q'
 units-rep-modifier  ::=  [sign] [#] [precision] [L] [units-rep-type]
 units-rep-type      ::=  one of "aAbBdeEfFgGoxX"
-units-unit-modifier ::=  [units-text-encoding, units-unit-symbol-denominator, units-unit-symbol-separator]
+units-unit-modifier ::=  [units-text-encoding units-unit-symbol-denominator units-unit-symbol-separator]
 units-text-encoding ::=  one of "UA"
 units-unit-symbol-solidus   ::=  one of "oan"
 units-unit-symbol-separator ::=  one of "sd"
