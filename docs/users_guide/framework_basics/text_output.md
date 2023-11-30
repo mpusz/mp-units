@@ -81,7 +81,8 @@ associated with this quantity.
 ### Output stream formatting
 
 Only basic formatting can be applied for output streams. It includes control over width, fill,
-and alignment:
+and alignment of the entire quantity and formatting of a quantity numerical value according
+to the general C++ rules:
 
 ```cpp
 std::cout << "|" << std::setw(10) << 123 * m << "|\n";                       // |     123 m|
