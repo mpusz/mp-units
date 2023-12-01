@@ -110,11 +110,11 @@ quantity_point qp5{-42 * m, mean_sea_level};
 ```
 
 The provided `quantity` representing an offset from the origin is stored inside the `quantity_point`
-class template and can be obtained with a `quantity_from_origin()` member function:
+class template and can be obtained with a `quantity_from(PointOrigin)` member function:
 
 ```cpp
 constexpr quantity_point everest_base_camp_alt = mean_sea_level + isq::altitude(5364 * m);
-static_assert(everest_base_camp_alt.quantity_from_origin() == 5364 * m);
+static_assert(everest_base_camp_alt.quantity_from(mean_sea_level) == 5364 * m);
 ```
 
 
@@ -137,17 +137,12 @@ The above can be used as an origin for subsequent _points_:
 
 ```cpp
 constexpr quantity_point first_climb_alt = everest_base_camp + isq::altitude(std::uint8_t{42} * m);
-static_assert(first_climb_alt.quantity_from_origin() == 42 * m);
+static_assert(first_climb_alt.quantity_from(everest_base_camp) == 42 * m);
+static_assert(first_climb_alt.quantity_from(mean_sea_level) == 5406 * m);
 ```
 
-As we can see above, the `quantity_from_origin()` member function returns a relative distance from
-the current point origin. In case we would like to know the absolute altitude that we reached on this climb,
-we can subtract the absolute point origin from the current _point_:
-
-```cpp
-static_assert(first_climb_alt - mean_sea_level == 5406 * m);
-static_assert(first_climb_alt - first_climb_alt.absolute_point_origin == 5406 * m);
-```
+As we can see above, the `quantity_from()` member function returns a relative distance from the
+provided point origin.
 
 
 ### Converting between different representations of the same _point_
@@ -162,14 +157,14 @@ For this purpose, we can either use:
 
     ```cpp
     constexpr quantity_point<isq::altitude[m], mean_sea_level, int> qp = first_climb_alt;
-    static_assert(qp.quantity_from_origin() == 5406 * m);
+    static_assert(qp.quantity_ref_from(qp.point_origin) == 5406 * m);
     ```
 
 - a dedicated conversion interface:
 
     ```cpp
     constexpr quantity_point qp = first_climb_alt.point_for(mean_sea_level);
-    static_assert(qp.quantity_from_origin() == 5406 * m);
+    static_assert(qp.quantity_ref_from(qp.point_origin) == 5406 * m);
     ```
 
 !!! note
