@@ -113,7 +113,7 @@ public:
     requires Quantity<std::remove_cvref_t<Q>> && std::constructible_from<quantity_type, Q> &&
              ReferenceOf<std::remove_const_t<decltype(std::remove_reference_t<Q>::reference)>, PO2::quantity_spec> &&
              detail::SameAbsolutePointOriginAs<PO2, PO>
-  quantity_point(Q&& q, PO2) :
+  constexpr quantity_point(Q&& q, PO2) :
       quantity_point(
         quantity_point<std::remove_reference_t<Q>::reference, PO2{}, typename std::remove_reference_t<Q>::rep>{
           std::forward<Q>(q), PO2{}})
