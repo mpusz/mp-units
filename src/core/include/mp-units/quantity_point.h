@@ -183,7 +183,7 @@ public:
   quantity_point& operator=(const quantity_point&) = default;
   quantity_point& operator=(quantity_point&&) = default;
 
-  template<PointOriginFor<quantity_spec> NewPO>
+  template<detail::SameAbsolutePointOriginAs<absolute_point_origin> NewPO>
   [[nodiscard]] constexpr MP_UNITS_CONSTRAINED_AUTO_WORKAROUND(QuantityPointOf<NewPO{}>) auto point_for(
     NewPO new_origin) const
   {
