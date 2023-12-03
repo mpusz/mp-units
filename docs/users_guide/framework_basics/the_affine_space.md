@@ -64,8 +64,15 @@ The **absolute point origin** specifies where the "zero" of our measurement's sc
 specify such an origin by deriving from the `absolute_point_origin` class template:
 
 ```cpp
-constexpr struct mean_sea_level : absolute_point_origin<isq::altitude> {} mean_sea_level;
+constexpr struct mean_sea_level : absolute_point_origin<mean_sea_level, isq::altitude> {} mean_sea_level;
 ```
+
+!!! info
+
+    The `absolute_point_origin` class template uses CRTP idiom to enforce the uniqueness of such a type.
+    You should pass the type of a derived class as the first argument of the template instantiation.
+
+*[CRTP]: Curiously Recurring Template Parameter
 
 ### `quantity_point`
 
@@ -185,7 +192,7 @@ the distance we will travel. We have to take a taxi to a local airport, fly to D
 a stopover in FRA, and, in the end, get a cab to the Gaylord Rockies Resort & Convention Center:
 
 ```cpp
-constexpr struct home : absolute_point_origin<isq::distance> {} home;
+constexpr struct home : absolute_point_origin<home, isq::distance> {} home;
 
 quantity_point<isq::distance[km], home> home_airport = home + 15 * km;
 quantity_point<isq::distance[km], home> fra_airport = home_airport + 829 * km;
@@ -246,7 +253,7 @@ two predefined point origins:
 ```cpp
 namespace mp_units::si {
 
-inline constexpr struct absolute_zero : absolute_point_origin<isq::thermodynamic_temperature> {} absolute_zero;
+inline constexpr struct absolute_zero : absolute_point_origin<absolute_zero, isq::thermodynamic_temperature> {} absolute_zero;
 inline constexpr struct ice_point : relative_point_origin<absolute_zero + 273.15 * kelvin> {} ice_point;
 
 }

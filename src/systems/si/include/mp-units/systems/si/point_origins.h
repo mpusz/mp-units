@@ -28,8 +28,11 @@
 namespace mp_units::si {
 
 // clang-format off
-inline constexpr struct absolute_zero : absolute_point_origin<isq::thermodynamic_temperature> {} absolute_zero;
+inline constexpr struct absolute_zero : absolute_point_origin<absolute_zero, isq::thermodynamic_temperature> {} absolute_zero;
+inline constexpr struct zeroth_kelvin : decltype(absolute_zero) {} zeroth_kelvin;
+
 inline constexpr struct ice_point : relative_point_origin<absolute_zero + 273.15 * kelvin> {} ice_point;
+inline constexpr struct zeroth_degree_Celsius : decltype(ice_point) {} zeroth_degree_Celsius;
 // clang-format on
 
 }  // namespace mp_units::si

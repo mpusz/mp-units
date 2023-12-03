@@ -30,7 +30,7 @@
 
 namespace mp_units {
 
-template<QuantitySpec auto Q>
+template<typename Derived, QuantitySpec auto QS>
 struct absolute_point_origin;
 
 namespace detail {
@@ -41,11 +41,11 @@ inline constexpr bool is_quantity_point = false;
 template<typename T>
 inline constexpr bool is_specialization_of_absolute_point_origin = false;
 
-template<auto Q>
-inline constexpr bool is_specialization_of_absolute_point_origin<absolute_point_origin<Q>> = true;
+template<typename D, auto Q>
+inline constexpr bool is_specialization_of_absolute_point_origin<absolute_point_origin<D, Q>> = true;
 
-template<auto Q>
-void to_base_specialization_of_absolute_point_origin(const volatile absolute_point_origin<Q>*);
+template<typename D, auto Q>
+void to_base_specialization_of_absolute_point_origin(const volatile absolute_point_origin<D, Q>*);
 
 template<typename T>
 inline constexpr bool is_derived_from_specialization_of_absolute_point_origin =
@@ -123,18 +123,16 @@ template<typename T>
 inline constexpr bool is_quantity_point<T> = true;
 
 template<PointOrigin PO1, PointOrigin PO2>
-[[nodiscard]] consteval bool same_absolute_point_origins(PO1, PO2)
+[[nodiscard]] consteval bool same_absolute_point_origins(PO1 po1, PO2 po2)
 {
-  if constexpr (is_same_v<PO1, PO2>)
-    return true;
-  else if constexpr (is_derived_from_specialization_of_relative_point_origin<PO1> &&
-                     is_derived_from_specialization_of_relative_point_origin<PO2>)
-    return is_same_v<std::remove_const_t<decltype(PO1::absolute_point_origin)>,
-                     std::remove_const_t<decltype(PO2::absolute_point_origin)>>;
-  else if constexpr (is_derived_from_specialization_of_relative_point_origin<PO1>)
-    return is_same_v<std::remove_const_t<decltype(PO1::absolute_point_origin)>, PO2>;
-  else if constexpr (is_derived_from_specialization_of_relative_point_origin<PO2>)
-    return is_same_v<PO1, std::remove_const_t<decltype(PO2::absolute_point_origin)>>;
+  if constexpr (AbsolutePointOrigin<PO1> && AbsolutePointOrigin<PO2>)
+    return po1 == po2;
+  else if constexpr (RelativePointOrigin<PO1> && RelativePointOrigin<PO2>)
+    return po1.absolute_point_origin == po2.absolute_point_origin;
+  else if constexpr (RelativePointOrigin<PO1>)
+    return po1.absolute_point_origin == po2;
+  else if constexpr (RelativePointOrigin<PO2>)
+    return po1 == po2.absolute_point_origin;
   else
     return false;
 }

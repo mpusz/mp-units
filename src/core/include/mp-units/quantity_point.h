@@ -29,9 +29,25 @@
 
 namespace mp_units {
 
-template<QuantitySpec auto QS>
+namespace detail {
+
+template<typename T>
+  requires requires {
+    {
+      T::zero()
+    } -> std::equality_comparable_with<T>;
+  }
+[[nodiscard]] constexpr bool is_eq_zero(T v)
+{
+  return v == T::zero();
+}
+
+}  // namespace detail
+
+template<typename Derived, QuantitySpec auto QS>
 struct absolute_point_origin {
   static constexpr QuantitySpec auto quantity_spec = QS;
+  using _type_ = absolute_point_origin;
 };
 
 template<QuantityPoint auto QP>
@@ -47,14 +63,30 @@ struct relative_point_origin {
   static constexpr PointOrigin auto absolute_point_origin = QP.absolute_point_origin;
 };
 
+template<PointOrigin PO1, PointOrigin PO2>
+[[nodiscard]] consteval bool operator==(PO1 po1, PO2 po2)
+{
+  if constexpr (detail::AbsolutePointOrigin<PO1> && detail::AbsolutePointOrigin<PO2>)
+    return is_same_v<typename PO1::_type_, typename PO2::_type_>;
+  else if constexpr (detail::RelativePointOrigin<PO1> && detail::RelativePointOrigin<PO2>)
+    return PO1::quantity_point == PO2::quantity_point;
+  else if constexpr (detail::RelativePointOrigin<PO1>)
+    return detail::same_absolute_point_origins(po1, po2) &&
+           detail::is_eq_zero(PO1::quantity_point.quantity_from(PO1::quantity_point.absolute_point_origin));
+  else if constexpr (detail::RelativePointOrigin<PO2>)
+    return detail::same_absolute_point_origins(po1, po2) &&
+           detail::is_eq_zero(PO2::quantity_point.quantity_from(PO2::quantity_point.absolute_point_origin));
+}
+
 namespace detail {
 
-[[nodiscard]] consteval PointOrigin auto get_absolute_point_origin(PointOrigin auto po)
+template<PointOrigin PO>
+[[nodiscard]] consteval PointOrigin auto get_absolute_point_origin(PO po)
 {
-  if constexpr (requires { po.quantity_point.absolute_point_origin; })
-    return po.quantity_point.absolute_point_origin;
-  else
+  if constexpr (AbsolutePointOrigin<PO>)
     return po;
+  else
+    return po.quantity_point.absolute_point_origin;
 }
 
 }  // namespace detail

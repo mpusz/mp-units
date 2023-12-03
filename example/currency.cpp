@@ -33,7 +33,7 @@ inline constexpr struct dim_currency : base_dimension<"$"> {} dim_currency;
 
 QUANTITY_SPEC(currency, dim_currency);
 
-constexpr struct zero : absolute_point_origin<currency> {} zero;
+constexpr struct zero : absolute_point_origin<zero, currency> {} zero;
 
 inline constexpr struct euro : named_unit<"EUR", kind_of<currency>> {} euro;
 inline constexpr struct us_dollar : named_unit<"USD", kind_of<currency>> {} us_dollar;
