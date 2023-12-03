@@ -45,7 +45,7 @@ quantity q = 42 * m;
 
 !!! tip
 
-    Unit symbols introduce a lot of short identifiers into the current namespace, and that is
+    Unit symbols introduce a lot of short identifiers into the current scope, and that is
     why they are opt-in. A user has to explicitly "import" them from a dedicated `unit_symbols`
     namespace.
 
