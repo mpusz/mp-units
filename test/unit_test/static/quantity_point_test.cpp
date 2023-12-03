@@ -661,6 +661,40 @@ static_assert(quantity_point{sys_seconds{24h}}.unit == si::second);
 static_assert(quantity_point{sys_seconds{24h}}.quantity_spec == kind_of<isq::time>);
 
 
+// ////////////
+// // getters
+// ////////////
+
+constexpr quantity_point mean_sea_level_qp = mean_sea_level + 1 * m;
+constexpr quantity_point my_mean_sea_level_qp = my_mean_sea_level + 1 * m;
+constexpr quantity_point ground_level_qp = ground_level + 1 * m;
+constexpr quantity_point my_ground_level_qp = my_ground_level + 1 * m;
+constexpr quantity_point same_ground_level1_qp = same_ground_level1 + 1 * m;
+constexpr quantity_point same_ground_level2_qp = same_ground_level2 + 1 * m;
+
+static_assert(mean_sea_level_qp.quantity_ref_from(mean_sea_level) == 1 * m);
+static_assert(mean_sea_level_qp.quantity_ref_from(my_mean_sea_level) == 1 * m);
+static_assert(my_mean_sea_level_qp.quantity_ref_from(my_mean_sea_level) == 1 * m);
+static_assert(my_mean_sea_level_qp.quantity_ref_from(mean_sea_level) == 1 * m);
+
+static_assert(ground_level_qp.quantity_ref_from(ground_level) == 1 * m);
+static_assert(ground_level_qp.quantity_ref_from(my_ground_level) == 1 * m);
+static_assert(ground_level_qp.quantity_ref_from(same_ground_level1) == 1 * m);
+static_assert(ground_level_qp.quantity_ref_from(same_ground_level2) == 1 * m);
+static_assert(my_ground_level_qp.quantity_ref_from(my_ground_level) == 1 * m);
+static_assert(my_ground_level_qp.quantity_ref_from(ground_level) == 1 * m);
+static_assert(my_ground_level_qp.quantity_ref_from(same_ground_level1) == 1 * m);
+static_assert(my_ground_level_qp.quantity_ref_from(same_ground_level2) == 1 * m);
+static_assert(same_ground_level1_qp.quantity_ref_from(my_ground_level) == 1 * m);
+static_assert(same_ground_level1_qp.quantity_ref_from(ground_level) == 1 * m);
+static_assert(same_ground_level1_qp.quantity_ref_from(same_ground_level1) == 1 * m);
+static_assert(same_ground_level1_qp.quantity_ref_from(same_ground_level2) == 1 * m);
+static_assert(same_ground_level2_qp.quantity_ref_from(my_ground_level) == 1 * m);
+static_assert(same_ground_level2_qp.quantity_ref_from(ground_level) == 1 * m);
+static_assert(same_ground_level2_qp.quantity_ref_from(same_ground_level1) == 1 * m);
+static_assert(same_ground_level2_qp.quantity_ref_from(same_ground_level2) == 1 * m);
+
+
 ////////////////////////
 // assignment operator
 ////////////////////////
