@@ -2,8 +2,8 @@
 
 The affine space has two types of entities:
 
-- **_point_** - a position specified with coordinate values (e.g. location, address, etc.)
-- **_vector_** - the difference between two points (e.g. shift, offset, displacement, duration, etc.)
+- **_point_** - a position specified with coordinate values (e.g., location, address, etc.)
+- **_vector_** - the difference between two points (e.g., shift, offset, displacement, duration, etc.)
 
 
 !!! note
@@ -38,16 +38,33 @@ Here are the primary operations one can do in the affine space:
     - multiply nor divide _points_ with anything else.
 
 
+## _Points_ are more common than most of us imagine
+
+_Point_ abstractions should be used more often in the C++ software.
+They are not only about temperature or time. _Points_ are everywhere around us and should become
+more popular in the products we implement. They can be used to implement:
+
+- temperature points,
+- timestamps,
+- daily mass readouts from the scale,
+- altitudes of mountain peaks on a map,
+- current speed displayed on a car's speed-o-meter,
+- today's price of instruments on the market,
+- and many more.
+
+Improving the affine space's _points_ intuition will allow us to write better and safer software.
+
+
 ## _Vector_ is modeled by `quantity`
 
-Up until now, each time when we used a `quantity` in our code, we were modeling some kind of a
+Up until now, each time we used a `quantity` in our code, we were modeling some kind of a
 difference between two things:
 
-- the distance between two points
-- duration between two time points
-- the difference in speed (even if relative to `0`)
+- the distance between two points,
+- duration between two time points,
+- the difference in speed (even if relative to zero).
 
-As we already know, a `quantity` type provides all operations required for _vector_ type in
+As we already know, a `quantity` type provides all operations required for a _vector_ type in
 the affine space.
 
 
@@ -327,7 +344,7 @@ The following operations are not allowed in the affine space:
 - **adding** two `quantity_point` objects
     - It is physically impossible to add positions of home and Denver airports.
 - **subtracting** a `quantity_point` from a `quantity`
-    - What would it mean to subtract DEN airport location from the distance to it?
+    - What would it mean to subtract the DEN airport location from the distance to it?
 - **multiplying/dividing** a `quantity_point` with a scalar
     - What is the position of `2 *` DEN airport location?
 - **multiplying/dividing** a `quantity_point` with a quantity
@@ -337,13 +354,13 @@ The following operations are not allowed in the affine space:
 - **mixing** `quantity_points` of different quantity kinds
     - It is physically impossible to subtract time from length.
 - **mixing** `quantity_points` of inconvertible quantities
-    - What does it mean to subtract a distance point to DEN airport from the Mount Everest base camp
-      altitude?
+    - What does subtracting a distance point to DEN airport from the Mount Everest base camp
+      altitude mean?
 - **mixing** `quantity_points` of convertible quantities but with unrelated origins
-    - How to subtract a point on our trip to CppCon measured relatively to our home location from
+    - How do we subtract a point on our trip to CppCon measured relatively to our home location from
       a point measured relative to the center of the Solar System?
 
 !!! important "Important: The affine space improves safety"
 
-    The usage of `quantity_point` and affine space types in general, improves expressiveness and
+    The usage of `quantity_point` and affine space types, in general, improves expressiveness and
     type-safety of the code we write.
