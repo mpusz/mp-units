@@ -66,7 +66,8 @@ namespace geographic {
 
 inline constexpr struct equator : mp_units::absolute_point_origin<equator, mp_units::isq::angular_measure> {
 } equator;
-inline constexpr struct prime_meridian : mp_units::absolute_point_origin<prime_meridian, mp_units::isq::angular_measure> {
+inline constexpr struct prime_meridian :
+    mp_units::absolute_point_origin<prime_meridian, mp_units::isq::angular_measure> {
 } prime_meridian;
 
 
