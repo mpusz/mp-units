@@ -18,6 +18,7 @@
         - please note that we observed some ICEs on gcc-11
         - no problems with gcc-12.2+
     - clang-16
+    - apple-clang-15
 
 
 ## Repository Structure and Dependencies

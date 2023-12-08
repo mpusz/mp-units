@@ -118,7 +118,7 @@ jobs:
             }
           - {
               name: "Apple Clang 15",
-              os: macos-latest,
+              os: macos-13,
               compiler:
                 {
                   type: APPLE_CLANG,
@@ -178,7 +178,7 @@ jobs:
         if: matrix.config.compiler.type == 'APPLE_CLANG' && matrix.config.compiler.version == '15.0'
         shell: bash
         run: |
-          sudo xcode-select -s /Applications/Xcode_15.0.1.app && /usr/bin/xcodebuild -version
+          sudo xcode-select -s /Applications/Xcode_15.0.app && /usr/bin/xcodebuild -version
       - name: Install Ninja
         shell: bash
         run: |

@@ -37,3 +37,4 @@ The library source code is hosted on [GitHub](https://github.com/mpusz/mp-units)
         - please note that we observed some ICEs on gcc-11
         - no problems with gcc-12.2+
     - clang-16
+    - apple-clang-15
