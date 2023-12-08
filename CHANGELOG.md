@@ -2,13 +2,16 @@
 
 ## mp-units
 
-### 2.1.0 <small>WIP</small> { id="2.1.0" }
+### 2.1.0 <small>December 8, 2023</small> { id="2.1.0" }
 
 - (!) feat: `inverse()` support added for dimensions, quantity_spec, units, and references
             (`1 / s` will now create `quantity` and not a `Unit`)
 - (!) feat: `quantity_point` does not provide `zero()` anymore
 - (!) feat: `quantity_spec` and its kind should not compare equal
 - (!) feat: mutating interface removed from `fixed_string`
+- (!) feat: `common_type` with a raw value is not needed anymore as for a long time now raw values are
+  not convertible to the dimensionless quantities
+- (!) feat: `symbol_text` definition simplified
 - feat: `basic_fixed_string(const CharT*, std::integral_constant<std::size_t, N>)` constructor added
 - feat: `isq::activity` added and `becquerel` definition updated to benefit from it
 - feat: `gray` and `sievert` now have correct associated quantity kinds
@@ -18,16 +21,41 @@
 - feat: interoperability with other libraries redesigned
 - feat: equality for dimensions now will allow derived classes as well (but not from `derived_dimension`)
 - feat: `zero_Fahrenheit` point origin added
+- feat: users are now allowed to inherit their ow types from absolute point origins
+- feat: equivalent point origins handling improved
+- feat(example): unit symbols added to the currency example
 - (!) refactor: `unit_symbol<fmt>(U)` signature refactored and the resulting text can now also be used at runtime
+- (!) refactor: `make_xxx` factory functions replaced with two-parameter constructors
+- (!) refactor: `unit_symbol` changed to `consteval`
 - refactor: `in(U)` and `force_in(U)` now return `auto` to provide better diagnostics on clang
+- refactor: `quantity` operators constraints refactored
+- refactor: more type members added to `fixed_string` definition
+- refactor: `unit_symbol_formatting` enums now use `std::int8_t` as a representation type
 - fix: symbols of named dimensionless units with the ratio = 1 were not printed
 - fix: iterator is now properly updated for all cases in `unit_symbol`
 - fix: Fahrenheit conversion ratio was inverted
+- fix: `CommonlyInvocableQuantities` was overconstrained for the current library design
+- fix: `are_ingredients_convertible` now mandates explicit conversion for `To` dimensionless quantities
+- fix: `quantity_point::point_for(PO)` constraints fixed
 - fix(example): `latitude` and `longitude` fixed to include `0` for `N` and `E` respectively
 - ci: clang-17 enabled
 - ci: Added C++23 builds to the CI matrix
+- docs: "Getting Started" chapters updated
+- docs: "Basic Concepts" and "Interface Introduction" chapters updated
+- docs: "Design Overview" chapter added and "Concepts" chapter reworked
+- docs: "Output stream formatting" chapter updated
+- docs: "Default formatting" chapter updated
+- docs: "Derived unit symbols generation" chapter added
+- docs: outdated affine space chapter updated
 - docs: `CameCase` concept identifiers FAQ added
 - docs: `gravitational_potential_energy` equation fixed on a graph
+- docs: YouTube video link updated to the C++ on Sea 2023
+- docs: ISO papers reference added to docs and README
+- docs: a representation type in a dimensionless quantity FAQ fixed
+- docs: titles added to some important admonitions
+- docs: "Terms and Definitions" slightly updated
+- docs: "canonical unit" added to glossary and its documentation in code was updated
+- docs: Design overview graph updated
 
 ### 2.0.0 <small>September 24, 2023</small> { id="2.0.0" }
 
