@@ -2,6 +2,9 @@
 
 ## mp-units
 
+### 2.2.0 <small>WIP</small> { id="2.2.0" }
+
+
 ### 2.1.0 <small>December 8, 2023</small> { id="2.1.0" }
 
 - (!) feat: `inverse()` support added for dimensions, quantity_spec, units, and references
@@ -39,6 +42,7 @@
 - fix: `quantity_point::point_for(PO)` constraints fixed
 - fix(example): `latitude` and `longitude` fixed to include `0` for `N` and `E` respectively
 - ci: clang-17 enabled
+- ci: apple-clang-15 enabled
 - ci: Added C++23 builds to the CI matrix
 - docs: "Getting Started" chapters updated
 - docs: "Basic Concepts" and "Interface Introduction" chapters updated
