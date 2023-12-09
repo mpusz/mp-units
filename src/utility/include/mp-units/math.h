@@ -137,6 +137,30 @@ template<auto R, typename Rep>
 }
 
 /**
+ * @brief Computes the fma of 3 quantities
+ *
+ * @param a: Multiplicand
+ * @param x: Multiplicand
+ * @param b: Addend
+ * @return Quantity: The nearest floating point representable to ax+b
+ */
+template<auto R, auto S, typename Rep>
+[[nodiscard]] constexpr quantity<R, Rep> fma(const quantity<R, Rep>& a, const quantity<S, Rep>& x,
+                                             const quantity<R, Rep>& b) noexcept
+  requires requires {
+    fma(a.numerical_value_ref_in(a.unit), x.numerical_value_ref_in(x.unit), b.numerical_value_ref_in(b.unit));
+  } || requires {
+    std::fma(a.numerical_value_ref_in(a.unit), x.numerical_value_ref_in(x.unit), b.numerical_value_ref_in(b.unit));
+  }
+{
+  using std::fma;
+  return {static_cast<Rep>(
+            fma(a.numerical_value_ref_in(a.unit), x.numerical_value_ref_in(x.unit), b.numerical_value_ref_in(b.unit))),
+          R};
+}
+
+
+/**
  * @brief Returns the epsilon of the quantity
  *
  * The returned value is defined by a <tt>std::numeric_limits<typename Q::rep>::epsilon()</tt>.
