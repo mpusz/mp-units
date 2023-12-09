@@ -5,7 +5,7 @@
 ### 2.2.0 <small>WIP</small> { id="2.2.0" }
 
 
-### 2.1.0 <small>December 8, 2023</small> { id="2.1.0" }
+### 2.1.0 <small>December 9, 2023</small> { id="2.1.0" }
 
 - (!) feat: `inverse()` support added for dimensions, quantity_spec, units, and references
             (`1 / s` will now create `quantity` and not a `Unit`)
