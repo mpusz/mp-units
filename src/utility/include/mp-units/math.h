@@ -144,19 +144,31 @@ template<auto R, typename Rep>
  * @param b: Addend
  * @return Quantity: The nearest floating point representable to ax+b
  */
-template<auto R, auto S, typename Rep>
-[[nodiscard]] constexpr quantity<R, Rep> fma(const quantity<R, Rep>& a, const quantity<S, Rep>& x,
-                                             const quantity<R, Rep>& b) noexcept
+
+template<auto R, auto S, auto T, typename Rep1, typename Rep2, typename Rep3>
+[[nodiscard]] constexpr QuantityOf<common_quantity_spec(get_quantity_spec(R) * get_quantity_spec(S),
+                                                        get_quantity_spec(T))> auto
+fma(  // QuantityOf takes a QuantitySpec as an argument
+  const quantity<R, Rep1>& a, const quantity<S, Rep2>& x, const quantity<T, Rep3>& b) noexcept
   requires requires {
-    fma(a.numerical_value_ref_in(a.unit), x.numerical_value_ref_in(x.unit), b.numerical_value_ref_in(b.unit));
-  } || requires {
-    std::fma(a.numerical_value_ref_in(a.unit), x.numerical_value_ref_in(x.unit), b.numerical_value_ref_in(b.unit));
-  }
+    common_quantity_spec(get_quantity_spec(R) * get_quantity_spec(S), get_quantity_spec(T));
+  } &&  // or just common_reference but I wanted to express that the quantity types must match here and we don't care
+        // too much about units
+           (get_unit(R) * get_unit(S) ==
+            get_unit(T)) &&  // units that we want to add are equivalent (have the same magnitude)
+           (
+             requires {
+               fma(a.numerical_value_ref_in(a.unit), x.numerical_value_ref_in(x.unit),
+                   b.numerical_value_ref_in(b.unit));
+             } ||
+             requires {
+               std::fma(a.numerical_value_ref_in(a.unit), x.numerical_value_ref_in(x.unit),
+                        b.numerical_value_ref_in(b.unit));
+             })
 {
   using std::fma;
-  return {static_cast<Rep>(
-            fma(a.numerical_value_ref_in(a.unit), x.numerical_value_ref_in(x.unit), b.numerical_value_ref_in(b.unit))),
-          R};
+  return quantity{
+    fma(a.numerical_value_ref_in(a.unit), x.numerical_value_ref_in(x.unit), b.numerical_value_ref_in(b.unit)), T};
 }
 
 

@@ -36,7 +36,7 @@ required_conan_version = ">=2.0.0"
 class MPUnitsConan(ConanFile):
     name = "mp-units"
     homepage = "https://github.com/mpusz/mp-units"
-    description = "A Physical Quantities and Units library for C++"
+    description = "A Quantities and Units library for C++"
     topics = (
         "units",
         "dimensions",
@@ -74,8 +74,9 @@ class MPUnitsConan(ConanFile):
     def _minimum_compilers_version(self):
         return {
             "gcc": "11",
-            "clang": "16"
-            # , "apple-clang": "13", "msvc": "192"
+            "clang": "16",
+            "apple-clang": "15"
+            # , "msvc": "192"
         }
 
     @property

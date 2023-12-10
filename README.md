@@ -7,16 +7,16 @@
 [![GitHub Workflow Documentation](https://img.shields.io/github/actions/workflow/status/mpusz/mp-units/documentation.yml?branch=master&label=Documentation)](https://github.com/mpusz/mp-units/actions?query=workflow%3ADocumentation+branch%3Amaster)
 
 [![Conan stable](https://img.shields.io/conan/v/mp-units?label=ConanCenter&color=blue)](https://conan.io/center/mp-units)
-[![Conan testing](https://img.shields.io/badge/mpusz.jfrog.io-2.1.0%3Atesting-blue)](https://mpusz.jfrog.io/ui/packages/conan:%2F%2Fmp-units/2.1.0)
+[![Conan testing](https://img.shields.io/badge/mpusz.jfrog.io-2.2.0%3Atesting-blue)](https://mpusz.jfrog.io/ui/packages/conan:%2F%2Fmp-units/2.2.0)
 
 
-# `mp-units` - A Physical Quantities and Units library for C++
+# `mp-units` - A Quantities and Units library for C++
 
 **The mp-units library might be the subject of ISO standardization for C++29. More on this can
 be found in the following ISO C++ proposals:**
 
 - [P1935: A C++ Approach to Physical Units](https://wg21.link/p1935),
-- [P2980: A motivation, scope, and plan for a physical quantities and units library](https://wg21.link/p2980),
+- [P2980: A motivation, scope, and plan for a quantities and units library](https://wg21.link/p2980),
 - [P2981: Improving our safety with a physical quantities and units library](https://wg21.link/p2981),
 - [P2982: `std::quantity` as a numeric type](https://wg21.link/p2982).
 

@@ -18,6 +18,7 @@
         - please note that we observed some ICEs on gcc-11
         - no problems with gcc-12.2+
     - clang-16
+    - apple-clang-15
 
 
 ## Repository Structure and Dependencies
@@ -283,7 +284,7 @@ The following steps may be performed to obtain an official library release:
 
     ```ini title="conanfile.txt"
     [requires]
-    mp-units/2.0.0
+    mp-units/2.1.0
 
     [layout]
     cmake_layout
@@ -340,7 +341,7 @@ with the following differences:
 
     ```ini title="conanfile.txt" hl_lines="2"
     [requires]
-    mp-units/2.1.0@mpusz/testing
+    mp-units/2.2.0@mpusz/testing
 
     [layout]
     cmake_layout
@@ -443,5 +444,5 @@ The above will create a Conan package and run tests provided in _./test_package_
 ## Uploading **mp-units** Package to the Conan Server
 
 ```shell
-conan upload -r <remote-name> --all mp-units/2.0.0@<user>/<channel>
+conan upload -r <remote-name> --all mp-units/2.1.0@<user>/<channel>
 ```
