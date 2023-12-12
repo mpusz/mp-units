@@ -51,6 +51,14 @@ theme:
 
 # Plugins
 plugins:
+  - blog
+  - rss:
+      match_path: blog/posts/.*
+      date_from_meta:
+        as_creation: date
+      categories:
+        - categories
+        - tags
   - search
   - tags:
       tags_file: users_guide/examples/tags_index.md
@@ -108,6 +116,8 @@ nav:
       - Quick Start: getting_started/quick_start.md
       - Installation and Usage: getting_started/installation_and_usage.md
       - FAQ: getting_started/faq.md
+  - Blog:
+      - blog/index.md
   - User's Guide:
       - Terms and Definitions: users_guide/terms_and_definitions.md
       - Framework Basics:

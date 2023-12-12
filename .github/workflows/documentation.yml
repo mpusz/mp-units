@@ -34,6 +34,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v4
         with:
           python-version: 3.x
@@ -46,7 +48,7 @@ jobs:
             mkdocs-material-
       - name: Installing pip packages
         run: |
-          pip install conan mkdocs-material mike
+          pip install conan mkdocs-material mkdocs-rss-plugin mike
       - name: Prepare git
         run: |
           git config --global user.name github-actions
