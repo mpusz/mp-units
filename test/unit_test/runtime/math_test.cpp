@@ -72,6 +72,12 @@ TEST_CASE("'fma()' returns a common reference.", "[math][fma]")
   REQUIRE(fma(isq::speed(10.0 * m / s), isq::time(2.0 * s), isq::height(42.0 * m)) == isq::length(62.0 * m));
 }
 
+TEST_CASE("'isfinite()' accepts dimensioned arguments", "[math][isfinite]") { REQUIRE(isfinite(4.0 * isq::length[m])); }
+
+TEST_CASE("'isinf()' accepts dimensioned arguments", "[math][isinf]") { REQUIRE(!isinf(4.0 * isq::length[m])); }
+
+TEST_CASE("'isnan()' accepts dimensioned arguments", "[math][isnan]") { REQUIRE(!isnan(4.0 * isq::length[m])); }
+
 
 TEST_CASE("'pow<Num, Den>()' on quantity changes the value and the dimension accordingly", "[math][pow]")
 {
