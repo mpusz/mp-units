@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-cmake_minimum_required(VERSION 3.2)
+cmake_minimum_required(VERSION 3.5)
 
 add_library(glide_computer_lib STATIC glide_computer_lib.cpp include/glide_computer_lib.h)
 target_link_libraries(glide_computer_lib PRIVATE mp-units::core-fmt PUBLIC mp-units::si mp-units::utility example_utils)
