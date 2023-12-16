@@ -137,6 +137,53 @@ template<auto R, typename Rep>
 }
 
 /**
+ * @brief Determines if a number is finite.
+ *
+ * @param a: Number to analyze.
+ * @return bool: Whether the number is finite or not.
+ */
+template<auto R, typename Rep>
+[[nodiscard]] constexpr bool isfinite(const quantity<R, Rep>& a) noexcept
+  requires(
+    requires { isfinite(a.numerical_value_ref_in(a.unit)); } ||
+    requires { std::isfinite(a.numerical_value_ref_in(a.unit)); })
+{
+  using std::isfinite;
+  return isfinite(a.numerical_value_ref_in(a.unit));
+}
+
+/**
+ * @brief Determines if a number is infinite.
+ *
+ * @param a: Number to analyze.
+ * @return bool: Whether the number is infinite or not.
+ */
+template<auto R, typename Rep>
+[[nodiscard]] constexpr bool isinf(const quantity<R, Rep>& a) noexcept
+  requires(
+    requires { isinf(a.numerical_value_ref_in(a.unit)); } || requires { std::isinf(a.numerical_value_ref_in(a.unit)); })
+{
+  using std::isinf;
+  return isinf(a.numerical_value_ref_in(a.unit));
+}
+
+
+/**
+ * @brief Determines if a number is a nan.
+ *
+ * @param a: Number to analyze.
+ * @return bool: Whether the number is a NaN or not.
+ */
+template<auto R, typename Rep>
+[[nodiscard]] constexpr bool isnan(const quantity<R, Rep>& a) noexcept
+  requires(
+    requires { isnan(a.numerical_value_ref_in(a.unit)); } || requires { std::isnan(a.numerical_value_ref_in(a.unit)); })
+{
+  using std::isnan;
+  return isnan(a.numerical_value_ref_in(a.unit));
+}
+
+/**
  * @brief Computes the fma of 3 quantities
  *
  * @param a: Multiplicand
