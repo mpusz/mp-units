@@ -37,17 +37,24 @@ template<typename T1, typename T2, typename... Ts>
 {
   return is_same_v<T1, T2> && v1 == v2 && (... && (v1 == vs));
 }
-
+// Ensure that default constructed objects are zero:
+using T = decltype(2.0 * s);
+constexpr auto ZERO = T{};
+static_assert(ZERO + ZERO == ZERO);
 #if __cpp_lib_constexpr_cmath || MP_UNITS_COMP_GCC
+// What if ZERO is not = 0, but infinity?
+// Then the test above still passes. So check that the value is finite:
+static_assert(isfinite(ZERO));
 
 template<auto One>
 concept invalid_fma = requires {
   requires !requires { fma(2 * m, One, 2 * s); };
   requires !requires { fma(2 * m, One, 2 * cm); };
 };
+
+
 static_assert(invalid_fma<1 * one>);
-
-
+static_assert(isfinite(ZERO));
 static_assert(compare(fma(2.0 * s, 3.0 * Hz, 1.0 * one), 7.0 * one));
 static_assert(compare(fma(2.0 * one, 3.0 * m, 1.0 * m), 7.0 * m));
 static_assert(compare(fma(2.0 * m, 3.0 * one, 1.0 * m), 7.0 * m));
