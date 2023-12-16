@@ -40,10 +40,19 @@ template<typename T1, typename T2, typename... Ts>
 
 #if __cpp_lib_constexpr_cmath || MP_UNITS_COMP_GCC
 
+template<auto One>
+concept invalid_fma = requires {
+  requires !requires { fma(2 * m, One, 2 * s); };
+  requires !requires { fma(2 * m, One, 2 * cm); };
+};
+static_assert(invalid_fma<1 * one>);
+
+
 static_assert(compare(fma(2.0 * s, 3.0 * Hz, 1.0 * one), 7.0 * one));
 static_assert(compare(fma(2.0 * one, 3.0 * m, 1.0 * m), 7.0 * m));
 static_assert(compare(fma(2.0 * m, 3.0 * one, 1.0 * m), 7.0 * m));
 static_assert(compare(fma(2 * m, 3.0f * m, 1.0 * m2), 7.0 * m2));
+static_assert(compare(fma(isq::width(2.0 * m), 2.0 * one, isq::height(3.0 * m)), isq::length(7.0 * m)));
 static_assert(compare(pow<0>(2 * m), 1 * one));
 static_assert(compare(pow<1>(2 * m), 2 * m));
 static_assert(compare(pow<2>(2 * m), 4 * pow<2>(m), 4 * m2));

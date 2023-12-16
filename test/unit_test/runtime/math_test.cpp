@@ -65,10 +65,6 @@ TEST_CASE("'cbrt()' on quantity changes the value and the dimension accordingly"
 TEST_CASE("'fma()' on quantity changes the value and the dimension accordingly", "[math][fma]")
 {
   REQUIRE(fma(1.0 * isq::length[m], 2.0 * one, 2.0 * isq::length[m]) == 4.0 * isq::length[m]);
-}
-
-TEST_CASE("'fma()' returns a common reference.", "[math][fma]")
-{
   REQUIRE(fma(isq::speed(10.0 * m / s), isq::time(2.0 * s), isq::height(42.0 * m)) == isq::length(62.0 * m));
 }
 
