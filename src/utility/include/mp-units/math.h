@@ -51,11 +51,12 @@ namespace mp_units {
  * @return Quantity The result of computation
  */
 template<std::intmax_t Num, std::intmax_t Den = 1, auto R, typename Rep>
-  requires detail::non_zero<Den> &&
-           requires { quantity_values<Rep>::one(); }
-           [[nodiscard]] constexpr quantity<pow<Num, Den>(R), Rep> pow(const quantity<R, Rep>& q) noexcept
-             requires requires { pow(q.numerical_value_ref_in(q.unit), 1.0); } ||
-                      requires { std::pow(q.numerical_value_ref_in(q.unit), 1.0); }
+  requires detail::non_zero<Den> && requires(Rep v) {
+    quantity_values<Rep>::one();
+    requires requires { pow(v, 1.0); } || requires { std::pow(v, 1.0); };
+  }
+[[nodiscard]] constexpr quantity<pow<Num, Den>(R), Rep> pow(const quantity<R, Rep>& q) noexcept
+
 {
   if constexpr (Num == 0) {
     return quantity<pow<Num, Den>(R), Rep>::one();
@@ -78,9 +79,8 @@ template<std::intmax_t Num, std::intmax_t Den = 1, auto R, typename Rep>
  * @return Quantity The result of computation
  */
 template<auto R, typename Rep>
+  requires requires(Rep v) { sqrt(v); } || requires(Rep v) { std::sqrt(v); }
 [[nodiscard]] constexpr quantity<sqrt(R), Rep> sqrt(const quantity<R, Rep>& q) noexcept
-  requires requires { sqrt(q.numerical_value_ref_in(q.unit)); } ||
-           requires { std::sqrt(q.numerical_value_ref_in(q.unit)); }
 {
   using std::sqrt;
   return {static_cast<Rep>(sqrt(q.numerical_value_ref_in(q.unit))), sqrt(R)};
@@ -95,9 +95,8 @@ template<auto R, typename Rep>
  * @return Quantity The result of computation
  */
 template<auto R, typename Rep>
+  requires requires(Rep v) { cbrt(v); } || requires(Rep v) { std::cbrt(v); }
 [[nodiscard]] constexpr quantity<cbrt(R), Rep> cbrt(const quantity<R, Rep>& q) noexcept
-  requires requires { cbrt(q.numerical_value_ref_in(q.unit)); } ||
-           requires { std::cbrt(q.numerical_value_ref_in(q.unit)); }
 {
   using std::cbrt;
   return {static_cast<Rep>(cbrt(q.numerical_value_ref_in(q.unit))), cbrt(R)};
@@ -112,9 +111,8 @@ template<auto R, typename Rep>
  * @return Quantity The value of the same quantity type
  */
 template<ReferenceOf<dimensionless> auto R, typename Rep>
+  requires requires(Rep v) { exp(v); } || requires(Rep v) { std::exp(v); }
 [[nodiscard]] constexpr quantity<R, Rep> exp(const quantity<R, Rep>& q)
-  requires requires { exp(q.numerical_value_ref_in(q.unit)); } ||
-           requires { std::exp(q.numerical_value_ref_in(q.unit)); }
 {
   using std::exp;
   return value_cast<get_unit(R)>(
@@ -128,9 +126,8 @@ template<ReferenceOf<dimensionless> auto R, typename Rep>
  * @return Quantity The absolute value of a provided quantity
  */
 template<auto R, typename Rep>
+  requires requires(Rep v) { abs(v); } || requires(Rep v) { std::abs(v); }
 [[nodiscard]] constexpr quantity<R, Rep> abs(const quantity<R, Rep>& q) noexcept
-  requires requires { abs(q.numerical_value_ref_in(q.unit)); } ||
-           requires { std::abs(q.numerical_value_ref_in(q.unit)); }
 {
   using std::abs;
   return {static_cast<Rep>(abs(q.numerical_value_ref_in(q.unit))), R};
@@ -143,10 +140,8 @@ template<auto R, typename Rep>
  * @return bool: Whether the number is finite or not.
  */
 template<auto R, typename Rep>
+  requires requires(Rep v) { isfinite(v); } || requires(Rep v) { std::isfinite(v); }
 [[nodiscard]] constexpr bool isfinite(const quantity<R, Rep>& a) noexcept
-  requires(
-    requires { isfinite(a.numerical_value_ref_in(a.unit)); } ||
-    requires { std::isfinite(a.numerical_value_ref_in(a.unit)); })
 {
   using std::isfinite;
   return isfinite(a.numerical_value_ref_in(a.unit));
@@ -159,9 +154,8 @@ template<auto R, typename Rep>
  * @return bool: Whether the number is infinite or not.
  */
 template<auto R, typename Rep>
+  requires requires(Rep v) { isinf(v); } || requires(Rep v) { std::isinf(v); }
 [[nodiscard]] constexpr bool isinf(const quantity<R, Rep>& a) noexcept
-  requires(
-    requires { isinf(a.numerical_value_ref_in(a.unit)); } || requires { std::isinf(a.numerical_value_ref_in(a.unit)); })
 {
   using std::isinf;
   return isinf(a.numerical_value_ref_in(a.unit));
@@ -175,9 +169,8 @@ template<auto R, typename Rep>
  * @return bool: Whether the number is a NaN or not.
  */
 template<auto R, typename Rep>
+  requires requires(Rep v) { isnan(v); } || requires(Rep v) { std::isnan(v); }
 [[nodiscard]] constexpr bool isnan(const quantity<R, Rep>& a) noexcept
-  requires(
-    requires { isnan(a.numerical_value_ref_in(a.unit)); } || requires { std::isnan(a.numerical_value_ref_in(a.unit)); })
 {
   using std::isnan;
   return isnan(a.numerical_value_ref_in(a.unit));
@@ -192,20 +185,14 @@ template<auto R, typename Rep>
  * @return Quantity: The nearest floating point representable to ax+b
  */
 template<auto R, auto S, auto T, typename Rep1, typename Rep2, typename Rep3>
-[[nodiscard]] constexpr QuantityOf<common_quantity_spec(get_quantity_spec(R) * get_quantity_spec(S),
-                                                        get_quantity_spec(T))> auto
-fma(const quantity<R, Rep1>& a, const quantity<S, Rep2>& x, const quantity<T, Rep3>& b) noexcept
   requires requires { common_quantity_spec(get_quantity_spec(R) * get_quantity_spec(S), get_quantity_spec(T)); } &&
-           (get_unit(R) * get_unit(S) == get_unit(T)) &&
-           (
-             requires {
-               fma(a.numerical_value_ref_in(a.unit), x.numerical_value_ref_in(x.unit),
-                   b.numerical_value_ref_in(b.unit));
-             } ||
-             requires {
-               std::fma(a.numerical_value_ref_in(a.unit), x.numerical_value_ref_in(x.unit),
-                        b.numerical_value_ref_in(b.unit));
-             })
+           (get_unit(R) * get_unit(S) == get_unit(T)) && requires(Rep1 v1, Rep2 v2, Rep3 v3) {
+             requires requires { fma(v1, v2, v3); } || requires { std::fma(v1, v2, v3); };
+           }
+[[nodiscard]] constexpr QuantityOf<common_quantity_spec(
+  get_quantity_spec(R) * get_quantity_spec(S), get_quantity_spec(T))> auto fma(const quantity<R, Rep1>& a,
+                                                                               const quantity<S, Rep2>& x,
+                                                                               const quantity<T, Rep3>& b) noexcept
 {
   using std::fma;
   return quantity{
@@ -237,8 +224,7 @@ template<Representation Rep, Reference R>
  */
 template<Unit auto To, auto R, typename Rep>
 [[nodiscard]] constexpr quantity<detail::clone_reference_with<To>(R), Rep> floor(const quantity<R, Rep>& q) noexcept
-  requires((!treat_as_floating_point<Rep>) || requires { floor(q.numerical_value_ref_in(q.unit)); } ||
-           requires { std::floor(q.numerical_value_ref_in(q.unit)); }) &&
+  requires((!treat_as_floating_point<Rep>) || requires(Rep v) { floor(v); } || requires(Rep v) { std::floor(v); }) &&
           (To == get_unit(R) || requires {
             q.force_in(To);
             quantity_values<Rep>::one();
@@ -275,8 +261,7 @@ template<Unit auto To, auto R, typename Rep>
  */
 template<Unit auto To, auto R, typename Rep>
 [[nodiscard]] constexpr quantity<detail::clone_reference_with<To>(R), Rep> ceil(const quantity<R, Rep>& q) noexcept
-  requires((!treat_as_floating_point<Rep>) || requires { ceil(q.numerical_value_ref_in(q.unit)); } ||
-           requires { std::ceil(q.numerical_value_ref_in(q.unit)); }) &&
+  requires((!treat_as_floating_point<Rep>) || requires(Rep v) { ceil(v); } || requires(Rep v) { std::ceil(v); }) &&
           (To == get_unit(R) || requires {
             q.force_in(To);
             quantity_values<Rep>::one();
@@ -315,8 +300,7 @@ template<Unit auto To, auto R, typename Rep>
  */
 template<Unit auto To, auto R, typename Rep>
 [[nodiscard]] constexpr quantity<detail::clone_reference_with<To>(R), Rep> round(const quantity<R, Rep>& q) noexcept
-  requires((!treat_as_floating_point<Rep>) || requires { round(q.numerical_value_ref_in(q.unit)); } ||
-           requires { std::round(q.numerical_value_ref_in(q.unit)); }) &&
+  requires((!treat_as_floating_point<Rep>) || requires(Rep v) { round(v); } || requires(Rep v) { std::round(v); }) &&
           (To == get_unit(R) || requires {
             ::mp_units::floor<To>(q);
             quantity_values<Rep>::one();
@@ -365,12 +349,12 @@ template<Unit auto To, auto R, typename Rep>
  *        without undue overflow or underflow at intermediate stages of the computation
  */
 template<auto R1, typename Rep1, auto R2, typename Rep2>
+  requires requires(Rep1 v1, Rep2 v2) {
+    common_reference(R1, R2);
+    requires requires { hypot(v1, v2); } || requires { std::hypot(v1, v2); };
+  }
 [[nodiscard]] constexpr QuantityOf<get_quantity_spec(common_reference(R1, R2))> auto hypot(
   const quantity<R1, Rep1>& x, const quantity<R2, Rep2>& y) noexcept
-  requires requires { common_reference(R1, R2); } &&
-           (
-             requires { hypot(x.numerical_value_ref_in(x.unit), y.numerical_value_ref_in(y.unit)); } ||
-             requires { std::hypot(x.numerical_value_ref_in(x.unit), y.numerical_value_ref_in(y.unit)); })
 {
   constexpr auto ref = common_reference(R1, R2);
   constexpr auto unit = get_unit(ref);
@@ -383,18 +367,12 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
  *        without undue overflow or underflow at intermediate stages of the computation
  */
 template<auto R1, typename Rep1, auto R2, typename Rep2, auto R3, typename Rep3>
+  requires requires(Rep1 v1, Rep2 v2, Rep3 v3) {
+    common_reference(R1, R2, R3);
+    requires requires { hypot(v1, v2, v3); } || requires { std::hypot(v1, v2, v3); };
+  }
 [[nodiscard]] constexpr QuantityOf<get_quantity_spec(common_reference(R1, R2, R3))> auto hypot(
   const quantity<R1, Rep1>& x, const quantity<R2, Rep2>& y, const quantity<R3, Rep3>& z) noexcept
-  requires requires { common_reference(R1, R2, R3); } &&
-           (
-             requires {
-               hypot(x.numerical_value_ref_in(x.unit), y.numerical_value_ref_in(y.unit),
-                     z.numerical_value_ref_in(z.unit));
-             } ||
-             requires {
-               std::hypot(x.numerical_value_ref_in(x.unit), y.numerical_value_ref_in(y.unit),
-                          z.numerical_value_ref_in(z.unit));
-             })
 {
   constexpr auto ref = common_reference(R1, R2);
   constexpr auto unit = get_unit(ref);
@@ -405,9 +383,8 @@ template<auto R1, typename Rep1, auto R2, typename Rep2, auto R3, typename Rep3>
 namespace isq {
 
 template<ReferenceOf<angular_measure> auto R, typename Rep>
+  requires requires(Rep v) { sin(v); } || requires(Rep v) { std::sin(v); }
 [[nodiscard]] inline QuantityOf<dimensionless> auto sin(const quantity<R, Rep>& q) noexcept
-  requires requires { sin(q.numerical_value_ref_in(q.unit)); } ||
-           requires { std::sin(q.numerical_value_ref_in(q.unit)); }
 {
   using std::sin;
   if constexpr (!treat_as_floating_point<Rep>) {
@@ -420,9 +397,8 @@ template<ReferenceOf<angular_measure> auto R, typename Rep>
 }
 
 template<ReferenceOf<angular_measure> auto R, typename Rep>
+  requires requires(Rep v) { cos(v); } || requires(Rep v) { std::cos(v); }
 [[nodiscard]] inline QuantityOf<dimensionless> auto cos(const quantity<R, Rep>& q) noexcept
-  requires requires { cos(q.numerical_value_ref_in(q.unit)); } ||
-           requires { std::cos(q.numerical_value_ref_in(q.unit)); }
 {
   using std::cos;
   if constexpr (!treat_as_floating_point<Rep>) {
@@ -435,9 +411,8 @@ template<ReferenceOf<angular_measure> auto R, typename Rep>
 }
 
 template<ReferenceOf<angular_measure> auto R, typename Rep>
+  requires requires(Rep v) { tan(v); } || requires(Rep v) { std::tan(v); }
 [[nodiscard]] inline QuantityOf<dimensionless> auto tan(const quantity<R, Rep>& q) noexcept
-  requires requires { tan(q.numerical_value_ref_in(q.unit)); } ||
-           requires { std::tan(q.numerical_value_ref_in(q.unit)); }
 {
   using std::tan;
   if constexpr (!treat_as_floating_point<Rep>) {
@@ -450,9 +425,8 @@ template<ReferenceOf<angular_measure> auto R, typename Rep>
 }
 
 template<ReferenceOf<dimensionless> auto R, typename Rep>
+  requires requires(Rep v) { asin(v); } || requires(Rep v) { std::asin(v); }
 [[nodiscard]] inline QuantityOf<isq::angular_measure> auto asin(const quantity<R, Rep>& q) noexcept
-  requires requires { asin(q.numerical_value_ref_in(q.unit)); } ||
-           requires { std::asin(q.numerical_value_ref_in(q.unit)); }
 {
   using std::asin;
   if constexpr (!treat_as_floating_point<Rep>) {
@@ -465,9 +439,8 @@ template<ReferenceOf<dimensionless> auto R, typename Rep>
 }
 
 template<ReferenceOf<dimensionless> auto R, typename Rep>
+  requires requires(Rep v) { acos(v); } || requires(Rep v) { std::acos(v); }
 [[nodiscard]] inline QuantityOf<isq::angular_measure> auto acos(const quantity<R, Rep>& q) noexcept
-  requires requires { acos(q.numerical_value_ref_in(q.unit)); } ||
-           requires { std::acos(q.numerical_value_ref_in(q.unit)); }
 {
   using std::acos;
   if constexpr (!treat_as_floating_point<Rep>) {
@@ -480,9 +453,8 @@ template<ReferenceOf<dimensionless> auto R, typename Rep>
 }
 
 template<ReferenceOf<dimensionless> auto R, typename Rep>
+  requires requires(Rep v) { atan(v); } || requires(Rep v) { std::atan(v); }
 [[nodiscard]] inline QuantityOf<isq::angular_measure> auto atan(const quantity<R, Rep>& q) noexcept
-  requires requires { atan(q.numerical_value_ref_in(q.unit)); } ||
-           requires { std::atan(q.numerical_value_ref_in(q.unit)); }
 {
   using std::atan;
   if constexpr (!treat_as_floating_point<Rep>) {
@@ -499,9 +471,8 @@ template<ReferenceOf<dimensionless> auto R, typename Rep>
 namespace angular {
 
 template<ReferenceOf<angle> auto R, typename Rep>
+  requires requires(Rep v) { sin(v); } || requires(Rep v) { std::sin(v); }
 [[nodiscard]] inline QuantityOf<dimensionless> auto sin(const quantity<R, Rep>& q) noexcept
-  requires requires { sin(q.numerical_value_ref_in(q.unit)); } ||
-           requires { std::sin(q.numerical_value_ref_in(q.unit)); }
 {
   using std::sin;
   if constexpr (!treat_as_floating_point<Rep>) {
@@ -514,9 +485,8 @@ template<ReferenceOf<angle> auto R, typename Rep>
 }
 
 template<ReferenceOf<angle> auto R, typename Rep>
+  requires requires(Rep v) { cos(v); } || requires(Rep v) { std::cos(v); }
 [[nodiscard]] inline QuantityOf<dimensionless> auto cos(const quantity<R, Rep>& q) noexcept
-  requires requires { cos(q.numerical_value_ref_in(q.unit)); } ||
-           requires { std::cos(q.numerical_value_ref_in(q.unit)); }
 {
   using std::cos;
   if constexpr (!treat_as_floating_point<Rep>) {
@@ -529,9 +499,8 @@ template<ReferenceOf<angle> auto R, typename Rep>
 }
 
 template<ReferenceOf<angle> auto R, typename Rep>
+  requires requires(Rep v) { tan(v); } || requires(Rep v) { std::tan(v); }
 [[nodiscard]] inline QuantityOf<dimensionless> auto tan(const quantity<R, Rep>& q) noexcept
-  requires requires { tan(q.numerical_value_ref_in(q.unit)); } ||
-           requires { std::tan(q.numerical_value_ref_in(q.unit)); }
 {
   using std::tan;
   if constexpr (!treat_as_floating_point<Rep>) {
@@ -544,9 +513,8 @@ template<ReferenceOf<angle> auto R, typename Rep>
 }
 
 template<ReferenceOf<dimensionless> auto R, typename Rep>
+  requires requires(Rep v) { asin(v); } || requires(Rep v) { std::asin(v); }
 [[nodiscard]] inline QuantityOf<angle> auto asin(const quantity<R, Rep>& q) noexcept
-  requires requires { asin(q.numerical_value_ref_in(q.unit)); } ||
-           requires { std::asin(q.numerical_value_ref_in(q.unit)); }
 {
   using std::asin;
   if constexpr (!treat_as_floating_point<Rep>) {
@@ -559,9 +527,8 @@ template<ReferenceOf<dimensionless> auto R, typename Rep>
 }
 
 template<ReferenceOf<dimensionless> auto R, typename Rep>
+  requires requires(Rep v) { acos(v); } || requires(Rep v) { std::acos(v); }
 [[nodiscard]] inline QuantityOf<angle> auto acos(const quantity<R, Rep>& q) noexcept
-  requires requires { acos(q.numerical_value_ref_in(q.unit)); } ||
-           requires { std::acos(q.numerical_value_ref_in(q.unit)); }
 {
   using std::acos;
   if constexpr (!treat_as_floating_point<Rep>) {
@@ -574,9 +541,8 @@ template<ReferenceOf<dimensionless> auto R, typename Rep>
 }
 
 template<ReferenceOf<dimensionless> auto R, typename Rep>
+  requires requires(Rep v) { atan(v); } || requires(Rep v) { std::atan(v); }
 [[nodiscard]] inline QuantityOf<angle> auto atan(const quantity<R, Rep>& q) noexcept
-  requires requires { atan(q.numerical_value_ref_in(q.unit)); } ||
-           requires { std::atan(q.numerical_value_ref_in(q.unit)); }
 {
   using std::atan;
   if constexpr (!treat_as_floating_point<Rep>) {
