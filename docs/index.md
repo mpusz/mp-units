@@ -1,3 +1,9 @@
+---
+hide:
+  - navigation
+  - toc
+---
+
 # Welcome to **mp-units**!
 
 **mp-units** is a compile-time enabled feature-rich Modern C++ modular/header-only library that

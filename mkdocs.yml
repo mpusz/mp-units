@@ -22,9 +22,10 @@ theme:
     - content.code.copy
     # - navigation.expand
     - navigation.indexes
-    - navigation.sections
-    # - navigation.tabs
+    # - navigation.sections
+    - navigation.tabs
     - navigation.footer
+    - navigation.top
     - search.highlight
     - search.share
     - search.suggest
@@ -116,8 +117,6 @@ nav:
       - Quick Start: getting_started/quick_start.md
       - Installation and Usage: getting_started/installation_and_usage.md
       - FAQ: getting_started/faq.md
-  - Blog:
-      - blog/index.md
   - User's Guide:
       - Terms and Definitions: users_guide/terms_and_definitions.md
       - Framework Basics:
@@ -150,14 +149,13 @@ nav:
           - Extending the Library: users_guide/use_cases/extending_the_library.md
       - Examples:
           - Tags Index: users_guide/examples/tags_index.md
-          - hello_units: users_guide/examples/hello_units.md
-          - avg_speed: users_guide/examples/avg_speed.md
-          - si_constants: users_guide/examples/si_constants.md
-  - Library Reference:
-      - Core Library: library_reference/core_library.md
-      - Magnitudes: library_reference/magnitudes.md
-  - Appendix:
-      - Glossary: appendix/glossary.md
-      - Mismeasure for Measure: appendix/mismeasure_for_measure.md
-      - Release Notes: appendix/release_notes.md
-      - References: appendix/references.md
+          - All Examples:
+              - hello_units: users_guide/examples/hello_units.md
+              - avg_speed: users_guide/examples/avg_speed.md
+              - si_constants: users_guide/examples/si_constants.md
+      - Appendix:
+          - Glossary: appendix/glossary.md
+          - References: appendix/references.md
+  - Blog:
+      - blog/index.md
+  - Release Notes: release_notes.md
