@@ -15,16 +15,16 @@
 - (!) feat: `common_type` with a raw value is not needed anymore as for a long time now raw values are
   not convertible to the dimensionless quantities
 - (!) feat: `symbol_text` definition simplified
+- (!) feat: users are now allowed to inherit their own types from absolute point origins
+- (!) feat: interoperability with other libraries redesigned
 - feat: `basic_fixed_string(const CharT*, std::integral_constant<std::size_t, N>)` constructor added
 - feat: `isq::activity` added and `becquerel` definition updated to benefit from it
 - feat: `gray` and `sievert` now have correct associated quantity kinds
 - feat: `UnitCompatibleWith` concept added and applied to `in(U)` and `force_in(U)` functions
 - feat: quantities can now be multiplied and divided by units (no parenthesis needed anymore)
 - feat: `Magnitude / Unit` operator added
-- feat: interoperability with other libraries redesigned
 - feat: equality for dimensions now will allow derived classes as well (but not from `derived_dimension`)
 - feat: `zero_Fahrenheit` point origin added
-- feat: users are now allowed to inherit their ow types from absolute point origins
 - feat: equivalent point origins handling improved
 - feat(example): unit symbols added to the currency example
 - (!) refactor: `unit_symbol<fmt>(U)` signature refactored and the resulting text can now also be used at runtime
