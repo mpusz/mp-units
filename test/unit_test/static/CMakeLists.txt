@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-cmake_minimum_required(VERSION 3.2)
+cmake_minimum_required(VERSION 3.5)
 
 add_library(unit_tests_static_truncating quantity_test.cpp)
 target_link_libraries(unit_tests_static_truncating PRIVATE mp-units::mp-units)
