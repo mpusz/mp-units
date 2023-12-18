@@ -145,7 +145,7 @@ nav:
           - Pure Dimensional Analysis: users_guide/use_cases/pure_dimensional_analysis.md
           - Working with Legacy Interfaces: users_guide/use_cases/working_with_legacy_interfaces.md
           - Using Custom Representation Types: users_guide/use_cases/using_custom_representation_types.md
-          - Interoperability with Other Units Libraries: users_guide/use_cases/interoperability_with_other_units_libraries.md
+          - Interoperability with Other Libraries: users_guide/use_cases/interoperability_with_other_libraries.md
           - Extending the Library: users_guide/use_cases/extending_the_library.md
       - Examples:
           - Tags Index: users_guide/examples/tags_index.md
