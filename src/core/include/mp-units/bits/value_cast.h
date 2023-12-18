@@ -23,6 +23,7 @@
 #pragma once
 
 #include <mp-units/bits/quantity_concepts.h>
+#include <mp-units/bits/quantity_point_concepts.h>
 #include <mp-units/bits/representation_concepts.h>
 #include <mp-units/bits/sudo_cast.h>
 #include <mp-units/bits/unit_concepts.h>
@@ -72,6 +73,43 @@ template<Representation ToRep, typename Q>
 [[nodiscard]] constexpr quantity<std::remove_reference_t<Q>::reference, ToRep> value_cast(Q&& q)
 {
   return detail::sudo_cast<quantity<std::remove_reference_t<Q>::reference, ToRep>>(std::forward<Q>(q));
+}
+
+/**
+ * @brief Explicit cast of a quantity point's unit
+ *
+ * Implicit conversions between quantity points of different types are allowed only for "safe"
+ * (e.g. non-truncating) conversion. In truncating cases an explicit cast have to be used.
+ *
+ * auto qp = value_cast<si::second>(quantity_point{1234 * ms});
+ *
+ * @tparam ToU a unit to use for a target quantity point
+ */
+template<Unit auto ToU, typename QP>
+[[nodiscard]] constexpr QuantityPoint auto value_cast(QP&& qp)
+  requires QuantityPoint<std::remove_cvref_t<QP>> && (convertible(std::remove_reference_t<QP>::reference, ToU))
+{
+  return QP{value_cast<ToU>(std::forward<QP>(qp).quantity_from_origin_is_an_implementation_detail_), qp.point_origin};
+}
+
+/**
+ * @brief Explicit cast of a quantity point's representation type
+ *
+ * Implicit conversions between quantity points of different types are allowed only for "safe"
+ * (e.g. non-truncating) conversion. In truncating cases an explicit cast have to be used.
+ *
+ * auto qp = value_cast<int>(quantity_point{1.23 * ms});
+ *
+ * @tparam ToRep a representation type to use for a target quantity point
+ */
+template<Representation ToRep, typename QP>
+  requires QuantityPoint<std::remove_cvref_t<QP>> &&
+           RepresentationOf<ToRep, std::remove_reference_t<QP>::quantity_spec.character> &&
+           std::constructible_from<ToRep, typename std::remove_reference_t<QP>::rep>
+[[nodiscard]] constexpr quantity_point<std::remove_reference_t<QP>::reference, QP::point_origin, ToRep> value_cast(
+  QP&& qp)
+{
+  return {value_cast<ToRep>(std::forward<QP>(qp).quantity_from_origin_is_an_implementation_detail_), qp.point_origin};
 }
 
 }  // namespace mp_units

@@ -23,6 +23,7 @@
 #pragma once
 
 #include <mp-units/bits/quantity_concepts.h>
+#include <mp-units/bits/quantity_point_concepts.h>
 #include <mp-units/reference.h>
 #include <type_traits>
 
@@ -54,6 +55,31 @@ template<QuantitySpec auto ToQS, typename Q>
     return quantity{std::forward<Q>(q).numerical_value_is_an_implementation_detail_, Q::unit};
   else
     return quantity{std::forward<Q>(q).numerical_value_is_an_implementation_detail_, reference<ToQS, Q::unit>{}};
+}
+
+/**
+ * @brief Explicit cast of a quantity point type
+ *
+ * This cast converts only a quantity point type. It might be used to force some quantity point type
+ * conversions that are not implicitly allowed but are allowed explicitly.
+ *
+ * For example:
+ *
+ * @code{.cpp}
+ * auto length = isq::length(quantity_point{42 * m});
+ * auto altitude = quantity_cast<isq::altitude>(length);
+ * @endcode
+ *
+ * @note This cast does not affect the underlying value of a number stored in a quantity point.
+ *
+ * @tparam ToQS a quantity specification to use for a target quantity point
+ */
+template<QuantitySpec auto ToQS, typename QP>
+  requires QuantityPoint<std::remove_cvref_t<QP>> && (castable(QP::quantity_spec, ToQS))
+[[nodiscard]] constexpr QuantityPoint auto quantity_cast(QP&& qp)
+{
+  return QP{quantity_cast<ToQS>(std::forward<QP>(qp).quantity_from_origin_is_an_implementation_detail_),
+            qp.point_origin};
 }
 
 }  // namespace mp_units
