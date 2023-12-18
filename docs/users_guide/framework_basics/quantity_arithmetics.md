@@ -334,10 +334,12 @@ This chapter scopes only on the `quantity` type's operators. However, there are 
 functions provided in the _mp-units/math.h_ header file. Among others, we can find there
 the following:
 
-- `pow()`, `sqrt()`, and `cbrt()`,
+- `pow()`, `sqrt()`, `cbrt()`,
 - `exp()`,
 - `abs()`,
 - `epsilon()`,
+- `fma()`,
+- `isfinite()`, `isinf()`, `isnan()`,
 - `floor()`, `ceil()`, `round()`,
 - `inverse()`,
 - `hypot()`,
