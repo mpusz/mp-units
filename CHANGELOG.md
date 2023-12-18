@@ -4,6 +4,14 @@
 
 ### 2.2.0 <small>WIP</small> { id="2.2.0" }
 
+- feat: `fma`, `isfinite`, `isinf`, and `isnan` math function added by @NAThompson
+- feat: `quantity_point` support added for `quantity_cast` and `value_cast`
+- (!) refactor: `zero_Fahrenheit` renamed to `zeroth_Fahrenheit`
+- refactor: math functions constraints refactored
+- fix: `QuantityLike` conversions required `Q::rep` instead of using one provided by `quantity_like_traits`
+- docs: project blog and first posts added
+- docs: project documentation layout refactored
+- docs: "Interoperability with Other Libraries" chapter added
 
 ### 2.1.0 <small>December 9, 2023</small> { id="2.1.0" }
 
