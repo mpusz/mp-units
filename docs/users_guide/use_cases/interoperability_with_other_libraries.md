@@ -285,10 +285,10 @@ std::chrono::sys_seconds ts_now = floor<seconds>(system_clock::now());
 quantity_point start_time = ts_now;
 quantity speed = 925. * km / h;
 quantity distance = 8111. * km;
-quantity flight_time = value_cast<int>((distance / speed).in(s));
+quantity flight_time = distance / speed;
 quantity_point exp_end_time = start_time + flight_time;
 
-std::chrono::sys_seconds ts_end = exp_end_time;
+std::chrono::sys_seconds ts_end = value_cast<int>(exp_end_time.in(s));
 
 auto curr_time = zoned_time(current_zone(), ts_now);
 auto mst_time = zoned_time("America/Denver", ts_end);
@@ -296,8 +296,6 @@ auto mst_time = zoned_time("America/Denver", ts_end);
 std::cout << "Takeoff: " << curr_time << "\n";
 std::cout << "Landing: " << mst_time << "\n";
 ```
-
-<!-- TODO fix the above to benefit from `value_cast` for `quantity_point` when implemented -->
 
 The above may print the following output:
 
