@@ -158,7 +158,7 @@ public:
       quantity<quantity_like_traits<Q>::reference, typename quantity_like_traits<Q>::rep>, quantity>
   constexpr explicit(is_specialization_of<decltype(quantity_like_traits<Q>::to_numerical_value(std::declval<Q>())),
                                           convert_explicitly> ||
-                     !std::convertible_to<typename Q::rep, Rep>) quantity(const Q& q) :
+                     !std::convertible_to<typename quantity_like_traits<Q>::rep, Rep>) quantity(const Q& q) :
       quantity(
         ::mp_units::quantity{quantity_like_traits<Q>::to_numerical_value(q).value, quantity_like_traits<Q>::reference})
   {
@@ -222,7 +222,7 @@ public:
   [[nodiscard]] explicit(is_specialization_of<decltype(quantity_like_traits<Q>::from_numerical_value(
                                                 numerical_value_is_an_implementation_detail_)),
                                               convert_explicitly> ||
-                         !std::convertible_to<Rep, typename Q::rep>) constexpr
+                         !std::convertible_to<Rep, typename quantity_like_traits<Q>::rep>) constexpr
   operator Q_() const& noexcept(
     noexcept(quantity_like_traits<Q>::from_numerical_value(numerical_value_is_an_implementation_detail_)) &&
     std::is_nothrow_copy_constructible_v<rep>)
@@ -236,7 +236,7 @@ public:
   [[nodiscard]] explicit(is_specialization_of<decltype(quantity_like_traits<Q>::from_numerical_value(
                                                 numerical_value_is_an_implementation_detail_)),
                                               convert_explicitly> ||
-                         !std::convertible_to<Rep, typename Q::rep>) constexpr
+                         !std::convertible_to<Rep, typename quantity_like_traits<Q>::rep>) constexpr
   operator Q_() && noexcept(
     noexcept(quantity_like_traits<Q>::from_numerical_value(numerical_value_is_an_implementation_detail_)) &&
     std::is_nothrow_move_constructible_v<rep>)
