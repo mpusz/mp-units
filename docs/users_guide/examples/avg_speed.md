@@ -83,7 +83,7 @@ Next, let's do the same for integral and floating-point representations, but thi
 using US Customary units:
 
 ```cpp title="avg_speed.cpp" linenums="54"
---8<-- "example/avg_speed.cpp:93:125"
+--8<-- "example/avg_speed.cpp:93:124"
 ```
 
 One important difference here is the fact that as it is not possible to make a lossless conversion
@@ -108,8 +108,8 @@ Please note how the first and third results get truncated using integral represe
 
 In the end, we repeat the scenario for CGS units:
 
-```cpp title="avg_speed.cpp" linenums="87"
---8<-- "example/avg_speed.cpp:127:157"
+```cpp title="avg_speed.cpp" linenums="86"
+--8<-- "example/avg_speed.cpp:126:155"
 ```
 
 Again, we observe `value_cast` being used in the same places and consistent truncation errors
@@ -129,6 +129,6 @@ Average speed of a car that makes 2.2e+07 cm in 7200 s is 110 km/h.
 
 The example file ends with a simple `main()` function:
 
-```cpp title="avg_speed.cpp" linenums="118"
---8<-- "example/avg_speed.cpp:159:"
+```cpp title="avg_speed.cpp" linenums="116"
+--8<-- "example/avg_speed.cpp:157:"
 ```

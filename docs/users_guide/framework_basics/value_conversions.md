@@ -77,3 +77,76 @@ quantity<si::metre, int> q3 = value_cast<int>(3.14 * m);
     It is often fine to use an integral as a representation type, but in general, floating-point
     types provide better precision and are privileged in the library as they are considered
     to be value-preserving.
+
+In some cases, a unit and a representation type should be changed simultaneously. Moreover,
+sometimes, the order of doing those operations matters. In such cases, the library provides
+the `value_cast<U, Rep>(q)` which always returns the most precise result:
+
+=== "C++23"
+
+    ```cpp
+    inline constexpr struct dim_currency : base_dimension<"$"> {} dim_currency;
+    inline constexpr struct currency : quantity_spec<dim_currency> {} currency;
+
+    inline constexpr struct us_dollar : named_unit<"USD", kind_of<currency>> {} us_dollar;
+    inline constexpr struct scaled_us_dollar : named_unit<"USD_s", mag_power<10, -8> * us_dollar> {} scaled_us_dollar;
+
+    namespace unit_symbols {
+
+    inline constexpr auto USD = us_dollar;
+    inline constexpr auto USD_s = scaled_us_dollar;
+
+    }  // namespace unit_symbols
+
+    using Price = quantity<currency[us_dollar], double>;
+    using Scaled = quantity<currency[scaled_us_dollar], std::int64_t>;
+
+    Price price = 12.95 * USD;
+    Scaled spx = value_cast<USD_s, std::int64_t>(price);
+    ```
+
+=== "C++20"
+
+    ```cpp
+    inline constexpr struct dim_currency : base_dimension<"$"> {} dim_currency;
+    inline constexpr struct currency : quantity_spec<currency, dim_currency> {} currency;
+
+    inline constexpr struct us_dollar : named_unit<"USD", kind_of<currency>> {} us_dollar;
+    inline constexpr struct scaled_us_dollar : named_unit<"USD_s", mag_power<10, -8> * us_dollar> {} scaled_us_dollar;
+
+    namespace unit_symbols {
+
+    inline constexpr auto USD = us_dollar;
+    inline constexpr auto USD_s = scaled_us_dollar;
+
+    }  // namespace unit_symbols
+
+    using Price = quantity<currency[us_dollar], double>;
+    using Scaled = quantity<currency[scaled_us_dollar], std::int64_t>;
+
+    Price price = 12.95 * USD;
+    Scaled spx = value_cast<USD_s, std::int64_t>(price);
+    ```
+
+=== "Portable"
+
+    ```cpp
+    inline constexpr struct dim_currency : base_dimension<"$"> {} dim_currency;
+    QUANTITY_SPEC(currency, dim_currency);
+
+    inline constexpr struct us_dollar : named_unit<"USD", kind_of<currency>> {} us_dollar;
+    inline constexpr struct scaled_us_dollar : named_unit<"USD_s", mag_power<10, -8> * us_dollar> {} scaled_us_dollar;
+
+    namespace unit_symbols {
+
+    inline constexpr auto USD = us_dollar;
+    inline constexpr auto USD_s = scaled_us_dollar;
+
+    }  // namespace unit_symbols
+
+    using Price = quantity<currency[us_dollar], double>;
+    using Scaled = quantity<currency[scaled_us_dollar], std::int64_t>;
+
+    Price price = 12.95 * USD;
+    Scaled spx = value_cast<USD_s, std::int64_t>(price);
+    ```

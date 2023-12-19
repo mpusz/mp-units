@@ -76,6 +76,26 @@ template<Representation ToRep, typename Q>
 }
 
 /**
+ * @brief Explicit cast of a quantity's unit and representation type
+ *
+ * Implicit conversions between quantities of different types are allowed only for "safe"
+ * (e.g. non-truncating) conversion. In truncating cases an explicit cast have to be used.
+ *
+ * auto q = value_cast<us, int>(1.23 * ms);
+ *
+ * @tparam ToRep a representation type to use for a target quantity
+ */
+template<Unit auto ToU, Representation ToRep, typename Q>
+  requires Quantity<std::remove_cvref_t<Q>> && (convertible(std::remove_reference_t<Q>::reference, ToU)) &&
+           RepresentationOf<ToRep, std::remove_reference_t<Q>::quantity_spec.character> &&
+           std::constructible_from<ToRep, typename std::remove_reference_t<Q>::rep>
+[[nodiscard]] constexpr Quantity auto value_cast(Q&& q)
+{
+  using q_type = std::remove_reference_t<Q>;
+  return detail::sudo_cast<quantity<q_type::quantity_spec[ToU], ToRep>>(std::forward<Q>(q));
+}
+
+/**
  * @brief Explicit cast of a quantity point's unit
  *
  * Implicit conversions between quantity points of different types are allowed only for "safe"
@@ -110,6 +130,26 @@ template<Representation ToRep, typename QP>
   QP&& qp)
 {
   return {value_cast<ToRep>(std::forward<QP>(qp).quantity_from_origin_is_an_implementation_detail_), qp.point_origin};
+}
+
+/**
+ * @brief Explicit cast of a quantity's unit and representation type
+ *
+ * Implicit conversions between quantities of different types are allowed only for "safe"
+ * (e.g. non-truncating) conversion. In truncating cases an explicit cast have to be used.
+ *
+ * auto q = value_cast<us, int>(1.23 * ms);
+ *
+ * @tparam ToRep a representation type to use for a target quantity
+ */
+template<Unit auto ToU, Representation ToRep, typename QP>
+  requires QuantityPoint<std::remove_cvref_t<QP>> && (convertible(std::remove_reference_t<QP>::reference, ToU)) &&
+           RepresentationOf<ToRep, std::remove_reference_t<QP>::quantity_spec.character> &&
+           std::constructible_from<ToRep, typename std::remove_reference_t<QP>::rep>
+[[nodiscard]] constexpr QuantityPoint auto value_cast(QP&& qp)
+{
+  return quantity_point{value_cast<ToU, ToRep>(std::forward<QP>(qp).quantity_from_origin_is_an_implementation_detail_),
+                        qp.point_origin};
 }
 
 }  // namespace mp_units

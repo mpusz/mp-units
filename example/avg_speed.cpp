@@ -118,8 +118,7 @@ void example()
     // conversion from a floating-point to an integral type is a truncating one so an explicit cast is needed
     // also it is not possible to make a lossless conversion of miles to meters on an integral type
     // (explicit cast needed)
-    print_result(distance, duration,
-                 fixed_int_si_avg_speed(value_cast<int>(distance.force_in(m)), value_cast<int>(duration)));
+    print_result(distance, duration, fixed_int_si_avg_speed(value_cast<m, int>(distance), value_cast<int>(duration)));
     print_result(distance, duration, fixed_double_si_avg_speed(distance, duration));
     print_result(distance, duration, avg_speed(distance, duration));
   }
@@ -148,8 +147,7 @@ void example()
     // conversion from a floating-point to an integral type is a truncating one so an explicit cast is needed
     // it is not possible to make a lossless conversion of centimeters to meters on an integral type
     // (explicit cast needed)
-    print_result(distance, duration,
-                 fixed_int_si_avg_speed(value_cast<int>(distance.force_in(m)), value_cast<int>(duration)));
+    print_result(distance, duration, fixed_int_si_avg_speed(value_cast<m, int>(distance), value_cast<int>(duration)));
 
     print_result(distance, duration, fixed_double_si_avg_speed(distance, duration));
     print_result(distance, duration, avg_speed(distance, duration));
