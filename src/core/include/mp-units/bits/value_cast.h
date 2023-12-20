@@ -42,18 +42,11 @@ namespace mp_units {
  * @tparam ToU a unit to use for a target quantity
  */
 template<Unit auto ToU, typename Q>
-[[nodiscard]] constexpr Quantity auto value_cast(Q&& q)
   requires Quantity<std::remove_cvref_t<Q>> && (convertible(std::remove_reference_t<Q>::reference, ToU))
+[[nodiscard]] constexpr Quantity auto value_cast(Q&& q)
 {
   using q_type = std::remove_reference_t<Q>;
-  constexpr auto r = [] {
-    if constexpr (detail::is_specialization_of_reference<std::remove_const_t<decltype(q_type::reference)>>::value ||
-                  !AssociatedUnit<std::remove_const_t<decltype(ToU)>>)
-      return reference<q_type::quantity_spec, ToU>{};
-    else
-      return ToU;
-  }();
-  return detail::sudo_cast<quantity<r, typename q_type::rep>>(std::forward<Q>(q));
+  return detail::sudo_cast<quantity<q_type::quantity_spec[ToU], typename q_type::rep>>(std::forward<Q>(q));
 }
 
 /**
@@ -106,10 +99,11 @@ template<Unit auto ToU, Representation ToRep, typename Q>
  * @tparam ToU a unit to use for a target quantity point
  */
 template<Unit auto ToU, typename QP>
-[[nodiscard]] constexpr QuantityPoint auto value_cast(QP&& qp)
   requires QuantityPoint<std::remove_cvref_t<QP>> && (convertible(std::remove_reference_t<QP>::reference, ToU))
+[[nodiscard]] constexpr QuantityPoint auto value_cast(QP&& qp)
 {
-  return QP{value_cast<ToU>(std::forward<QP>(qp).quantity_from_origin_is_an_implementation_detail_), qp.point_origin};
+  return quantity_point{value_cast<ToU>(std::forward<QP>(qp).quantity_from_origin_is_an_implementation_detail_),
+                        qp.point_origin};
 }
 
 /**
