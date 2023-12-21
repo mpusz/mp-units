@@ -168,7 +168,7 @@ this specific quantity type.
 !!! tip
 
     Storing _points_ is the most efficient representation we can choose in this scenario:
-    
+
     - to store a value, we read it directly from the instrument, and no additional transformation
       is needed,
     - to print the absolute value (e.g., odometer), we have the value available right away,
