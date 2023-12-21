@@ -46,21 +46,34 @@ inline constexpr struct smoot : named_unit<"smoot", mag<67> * usc::inch> {} smoo
 int main()
 {
   constexpr quantity dist = 364.4 * smoot;
-  std::cout << "Harward Bridge length = " << dist << "(" << dist.in(usc::foot) << ", " << dist.in(si::metre) << ") +- an ear :-)\n";
+  std::cout << "Harvard Bridge length = " << dist << "(" << dist.in(usc::foot) << ", " << dist.in(si::metre) << ") ± 1 εar\n";
 }
 ```
 
 Output:
 
 ```txt
-Harward Bridge length = 364.4 smoot(2034.57 ft, 620.136 m) +- an ear :-)
+Harvard Bridge length = 364.4 smoot(2034.57 ft, 620.136 m) ± 1 εar
 ```
 
 !!! example "[Try it on Compiler Explorer](https://godbolt.org/z/T6Tx93Ysc)"
 
 ??? question "What is `smoot`?"
 
-    More on the `smoot` unit can be found at <https://units.fandom.com/wiki/Smoot>.
+    The smoot (/ˈsmuːt/) is a nonstandard unit of length created as part of an MIT fraternity prank.
+    It is named after Oliver R. Smoot, a fraternity pledge to Lambda Chi Alpha, who in October 1958
+    lay on the Harvard Bridge (between Boston and Cambridge, Massachusetts), and was used by his
+    fraternity brothers to measure the length of the bridge.
+
+    One smoot is equal to Oliver Smoot's height at the time of the prank (five feet and seven inches).
+    The bridge's length was measured to be 364.4 smoots plus or minus one ear, with the "plus or minus"
+    intended to express uncertainty of measurement.
+
+    Oliver Smoot graduated from MIT with the class of 1962, became a lawyer, and later became
+    chairman of the American National Standards Institute (ANSI) and president of the International
+    Organization for Standardization (ISO).
+
+    More on the smoot unit of length can be found at <https://en.wikipedia.org/wiki/Smoot>.
 
 
 !!! important "Important: Help needed!"
