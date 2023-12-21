@@ -40,6 +40,18 @@
 
 namespace mp_units {
 
+namespace detail {
+
+template<Unit U, bool = requires { U::point_origin; }>
+struct propagate_point_origin {};
+
+template<Unit U>
+struct propagate_point_origin<U, true> {
+  static constexpr auto point_origin = U::point_origin;
+};
+
+}  // namespace detail
+
 /**
  * @brief Unit being a scaled version of another unit
  *
@@ -50,7 +62,7 @@ namespace mp_units {
  *       instantiate this type automatically based on the unit arithmetic equation provided by the user.
  */
 template<Magnitude auto M, Unit U>
-struct scaled_unit {
+struct scaled_unit : detail::propagate_point_origin<U> {
   static constexpr MP_UNITS_CONSTRAINED_AUTO_WORKAROUND(Magnitude) auto mag = M;
   static constexpr U reference_unit{};
 };

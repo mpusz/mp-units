@@ -106,6 +106,16 @@ static_assert(relative_po<absolute_po<isq::length> + isq::height(42 * m)>.quanti
 static_assert(relative_po<absolute_po<kind_of<isq::length>> + isq::height(42 * m)>.quantity_spec == isq::height);
 static_assert(relative_po<absolute_po<isq::height> + 42 * m>.quantity_spec == isq::height);
 
+inline constexpr struct my_kelvin : named_unit<"my_K", mag<10> * si::kelvin> {
+} my_kelvin;
+
+static_assert(zeroth_point_origin(si::kelvin) == si::absolute_zero);
+static_assert(zeroth_point_origin(si::milli<si::kelvin>) == si::absolute_zero);
+static_assert(zeroth_point_origin(mag<10> * si::kelvin) == si::absolute_zero);
+static_assert(zeroth_point_origin(my_kelvin) == si::absolute_zero);
+
+static_assert(zeroth_point_origin(si::degree_Celsius) == si::ice_point);
+static_assert(zeroth_point_origin(mag<10> * si::degree_Celsius) == si::ice_point);
 
 /////////////////////
 // class invariants
