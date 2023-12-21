@@ -85,8 +85,14 @@ static_assert(140 * km / (2 * h) == 70 * km / h);
 
 ## Quantity points
 
-The `quantity_point` class template specifies an absolute quantity with respect to an origin.
-Together with quantities they model [The Affine Space](../users_guide/framework_basics/the_affine_space.md).
+The quantity point specifies an absolute quantity with respect to an origin.
+Together with quantities, they model [The Affine Space](../users_guide/framework_basics/the_affine_space.md).
+
+Quantity points should be used in all places where adding two values is meaningless
+(e.g., temperature points, timestamps, altitudes, readouts from the car's odometer, etc.).
+
+The set of operations that can be done on quantity points is limited compared to quantities.
+This introduces an additional type-safety.
 
 ```cpp
 #include <mp-units/ostream.h>
@@ -112,3 +118,8 @@ The above outputs:
 ```text
 Temperature: 20 °C (68 °F)
 ```
+
+!!! info
+
+    Check [The Affine Space](../users_guide/framework_basics/the_affine_space.md) chapter to learn
+    more about quantity points.
