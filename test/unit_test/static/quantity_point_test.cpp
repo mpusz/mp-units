@@ -253,7 +253,7 @@ static_assert(quantity_point<si::degree_Celsius, si::ice_point>::dimension == is
 static_assert(quantity_point<si::degree_Celsius, si::ice_point>::unit == si::degree_Celsius);
 static_assert(is_of_type<quantity_point<si::degree_Celsius, si::ice_point>::point_origin, struct si::ice_point>);
 static_assert(
-  is_of_type<quantity_point<si::degree_Celsius, si::ice_point>::absolute_point_origin, struct si::absolute_zero>);
+  is_of_type<quantity_point<si::degree_Celsius, si::ice_point>::absolute_point_origin, struct si::zeroth_kelvin>);
 
 static_assert(quantity_point<isq::Celsius_temperature[si::degree_Celsius], si::ice_point>::reference ==
               isq::Celsius_temperature[si::degree_Celsius]);
@@ -266,7 +266,7 @@ static_assert(is_of_type<quantity_point<isq::Celsius_temperature[si::degree_Cels
                          struct si::ice_point>);
 static_assert(
   is_of_type<quantity_point<isq::Celsius_temperature[si::degree_Celsius], si::ice_point>::absolute_point_origin,
-             struct si::absolute_zero>);
+             struct si::zeroth_kelvin>);
 
 
 //////////////////

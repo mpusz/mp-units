@@ -71,11 +71,26 @@ template<PointOrigin PO1, PointOrigin PO2>
   else if constexpr (detail::RelativePointOrigin<PO1> && detail::RelativePointOrigin<PO2>)
     return PO1::quantity_point == PO2::quantity_point;
   else if constexpr (detail::RelativePointOrigin<PO1>)
-    return detail::same_absolute_point_origins(po1, po2) &&
+    return same_absolute_point_origins(po1, po2) &&
            detail::is_eq_zero(PO1::quantity_point.quantity_from(PO1::quantity_point.absolute_point_origin));
   else if constexpr (detail::RelativePointOrigin<PO2>)
-    return detail::same_absolute_point_origins(po1, po2) &&
+    return same_absolute_point_origins(po1, po2) &&
            detail::is_eq_zero(PO2::quantity_point.quantity_from(PO2::quantity_point.absolute_point_origin));
+}
+
+template<QuantitySpec auto QS>
+struct implicit_zeroth_point_origin_ : absolute_point_origin<implicit_zeroth_point_origin_<QS>, QS> {};
+
+template<QuantitySpec auto QS>
+inline constexpr implicit_zeroth_point_origin_<QS> implicit_zeroth_point_origin;
+
+template<Reference R>
+[[nodiscard]] consteval PointOriginFor<get_quantity_spec(R{})> auto zeroth_point_origin(R)
+{
+  if constexpr (requires { get_unit(R{}).point_origin; })
+    return get_unit(R{}).point_origin;
+  else
+    return implicit_zeroth_point_origin<get_quantity_spec(R{})>;
 }
 
 namespace detail {
@@ -100,7 +115,7 @@ template<PointOrigin PO>
  * @tparam PO a type that represents the origin point from which the quantity point is measured from
  * @tparam Rep a type to be used to represent values of a quantity point
  */
-template<Reference auto R, PointOriginFor<get_quantity_spec(R)> auto PO,
+template<Reference auto R, PointOriginFor<get_quantity_spec(R)> auto PO = zeroth_point_origin(R),
          RepresentationOf<get_quantity_spec(R).character> Rep = double>
 class quantity_point {
 public:
@@ -135,7 +150,14 @@ public:
   quantity_point(quantity_point&&) = default;
 
   template<typename Q>
-    requires std::same_as<std::remove_cvref_t<Q>, quantity_type>
+    requires QuantityOf<std::remove_cvref_t<Q>, get_quantity_spec(R)> && std::constructible_from<quantity_type, Q> &&
+             (point_origin == zeroth_point_origin(R)) && (point_origin == zeroth_point_origin(Q::reference))
+  constexpr explicit quantity_point(Q&& q) : quantity_from_origin_is_an_implementation_detail_(std::forward<Q>(q))
+  {
+  }
+
+  template<typename Q>
+    requires QuantityOf<std::remove_cvref_t<Q>, get_quantity_spec(R)> && std::constructible_from<quantity_type, Q>
   constexpr quantity_point(Q&& q, std::remove_const_t<decltype(PO)>) :
       quantity_from_origin_is_an_implementation_detail_(std::forward<Q>(q))
   {
@@ -217,6 +239,20 @@ public:
   [[nodiscard]] constexpr Quantity auto quantity_from(PO2) const
   {
     return *this - PO2{};
+  }
+
+  // returns always a value relative to the unit's zero
+  // available only if point is defined in terms of a unit's zero point origin
+  [[nodiscard]] constexpr Quantity auto quantity_from_zero() const
+    requires(detail::same_absolute_point_origins(absolute_point_origin, zeroth_point_origin(R)))
+  {
+    // original quantity point unit can be lost in the below operation
+    const auto q = quantity_from(zeroth_point_origin(R));
+    if constexpr (requires { q.in(unit); })
+      // restore it if possible (non-truncating)
+      return q.in(unit);
+    else
+      return q;
   }
 
   // unit conversions
@@ -322,6 +358,9 @@ public:
 };
 
 // CTAD
+template<Quantity Q>
+quantity_point(Q q) -> quantity_point<Q::reference, zeroth_point_origin(Q::reference), typename Q::rep>;
+
 template<Quantity Q, PointOriginFor<Q::quantity_spec> PO>
 quantity_point(Q q, PO) -> quantity_point<Q::reference, PO{}, typename Q::rep>;
 
