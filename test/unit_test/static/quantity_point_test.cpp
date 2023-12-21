@@ -117,6 +117,12 @@ static_assert(zeroth_point_origin(my_kelvin) == si::absolute_zero);
 static_assert(zeroth_point_origin(si::degree_Celsius) == si::ice_point);
 static_assert(zeroth_point_origin(mag<10> * si::degree_Celsius) == si::ice_point);
 
+static_assert(zeroth_point_origin(si::metre) == implicit_zeroth_point_origin<kind_of<isq::length>>);
+static_assert(zeroth_point_origin(si::kelvin / si::second) ==
+              implicit_zeroth_point_origin<kind_of<isq::thermodynamic_temperature / isq::time>>);
+static_assert(zeroth_point_origin(si::degree_Celsius / si::second) ==
+              implicit_zeroth_point_origin<kind_of<isq::thermodynamic_temperature / isq::time>>);
+
 /////////////////////
 // class invariants
 /////////////////////
