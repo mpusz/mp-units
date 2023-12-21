@@ -13,6 +13,35 @@ include safety, performance, and developer experience.
 The library source code is hosted on [GitHub](https://github.com/mpusz/mp-units) with a permissive
 [MIT license](https://github.com/mpusz/units/blob/master/LICENSE.md).
 
+
+```cpp
+#include <mp-units/ostream.h>
+#include <mp-units/systems/si/si.h>
+#include <mp-units/systems/usc/usc.h>
+#include <iostream>
+
+using namespace mp_units;
+
+inline constexpr struct smoot : named_unit<"smoot", mag<67> * usc::inch> {} smoot;
+
+int main()
+{
+  constexpr quantity dist = 364.4 * smoot;
+  std::cout << "Harward Bridge length = " << dist << "(" << dist.in(usc::foot) << ", " << dist.in(si::metre) << ") +- an ear :-)\n";
+}
+```
+
+Output:
+
+```txt
+Harward Bridge length = 364.4 smoot(2034.57 ft, 620.136 m) +- an ear :-)
+```
+
+??? question "What is `smoot`?"
+
+    More on the `smoot` unit can be found at <https://units.fandom.com/wiki/Smoot>.
+
+
 !!! important "Important: Help needed!"
 
     The **mp-units** library might be the subject of ISO standardization for C++29. More on this can
