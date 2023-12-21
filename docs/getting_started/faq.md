@@ -96,10 +96,10 @@ to form a quantity.
 
 !!! note
 
-    The same applies to the `quantity_point` construction. To prevent similar issues during
-    construction, it always needs to get both a `quantity` and
-    a [`PointOrigin`](../users_guide/framework_basics/concepts.md#PointOrigin) that we use
-    as a reference point.
+    The same applies to the construction of `quantity_point` using an explicit point origin.
+    To prevent similar safety issues during maintenance, the initialization always requires
+    providing both a `quantity` and a [`PointOrigin`](../users_guide/framework_basics/concepts.md#PointOrigin)
+    that we use as a reference point.
 
 
 ## Why a dimensionless quantity is not just a fundamental arithmetic type?
