@@ -110,7 +110,7 @@ int main()
 
   quantity_point temp{20. * deg_C};
   std::cout << "Temperature: "
-            << temp.quantity_from_zero() << " (" 
+            << temp.quantity_from_zero() << " ("
             << temp.in(deg_F).quantity_from_zero() << ")\n";
 }
 ```
