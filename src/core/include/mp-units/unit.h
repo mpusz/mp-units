@@ -153,13 +153,6 @@ struct named_unit<Symbol> {
   static constexpr auto symbol = Symbol;  ///< Unique base unit identifier
 };
 
-template<basic_symbol_text Symbol, PointOrigin auto PO>
-  requires(!Symbol.empty())
-struct named_unit<Symbol, PO> {
-  static constexpr auto symbol = Symbol;  ///< Unique base unit identifier
-  static constexpr auto point_origin = PO;
-};
-
 /**
  * @brief Specialization for a unit with special name
  *
