@@ -394,8 +394,8 @@ provided point origin.
 ### Converting between different representations of the same _point_
 
 As we might represent the same _point_ with _vectors_ from various origins, the **mp-units** library
-provides facilities to convert the _point_ to the `quantity_point` class templates expressed in
-terms of different origins.
+provides facilities to convert the _point_ to `quantity_point` class templates expressed in
+terms of origins relative to each other in the type system.
 
 For this purpose, we can use:
 
