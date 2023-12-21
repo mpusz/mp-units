@@ -1,4 +1,4 @@
-# Code Example
+# Look and Feel
 
 Here is a small example of operations possible on scalar quantities:
 
