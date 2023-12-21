@@ -89,6 +89,23 @@ A car driving 110 km in 2 h has an average speed of 15.2778 m/s (55 km/h)
 !!! example "[Try it on Compiler Explorer](https://godbolt.org/z/zWe8ecf93)"
 
 
+### User-provided unit wrappers
+
+Sometimes it might be awkward to type some derived units:
+
+```cpp
+quantity speed = 60 * km / h;
+```
+
+In case such a unit is used a lot in the project, a user can easily provide a nicely named
+wrapper for it with:
+
+```cpp
+constexpr auto kmph = km / h;
+quantity speed = 60 * kmph;
+```
+
+
 ### Easy-to-understand compilation error messages
 
 In case a user makes an error in a quantity equation and the result of the calculation
