@@ -71,10 +71,10 @@ template<PointOrigin PO1, PointOrigin PO2>
   else if constexpr (detail::RelativePointOrigin<PO1> && detail::RelativePointOrigin<PO2>)
     return PO1::quantity_point == PO2::quantity_point;
   else if constexpr (detail::RelativePointOrigin<PO1>)
-    return same_absolute_point_origins(po1, po2) &&
+    return detail::same_absolute_point_origins(po1, po2) &&
            detail::is_eq_zero(PO1::quantity_point.quantity_from(PO1::quantity_point.absolute_point_origin));
   else if constexpr (detail::RelativePointOrigin<PO2>)
-    return same_absolute_point_origins(po1, po2) &&
+    return detail::same_absolute_point_origins(po1, po2) &&
            detail::is_eq_zero(PO2::quantity_point.quantity_from(PO2::quantity_point.absolute_point_origin));
 }
 
