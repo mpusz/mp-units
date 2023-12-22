@@ -37,11 +37,11 @@ jobs:
       contents: read
       security-events: write
     env:
-      CC: gcc-11
-      CXX: g++-11
+      CC: gcc-12
+      CXX: g++-12
       BUILD_TYPE: Debug
       COMPILER_TYPE: GCC
-      COMPILER_VERSION: 11
+      COMPILER_VERSION: 12
       STDLIB: libstdc++11
 
     strategy:
