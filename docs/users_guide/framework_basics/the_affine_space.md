@@ -83,7 +83,7 @@ origin:
 
 ```cpp
 template<Reference auto R,
-         PointOriginFor<get_quantity_spec(R)> auto PO = zeroth_point_origin(R),
+         PointOriginFor<get_quantity_spec(R)> auto PO = default_point_origin(R),
          RepresentationOf<get_quantity_spec(R).character> Rep = double>
 class quantity_point;
 ```
@@ -95,7 +95,7 @@ zeroth point using the following rules:
 
 - if the measurement unit of a quantity specifies its point origin in its definition
   (e.g., degree Celsius), then this point is being used,
-- otherwise, an instantiation of `implicit_zeroth_point_origin<QuantitySpec>` is being used which
+- otherwise, an instantiation of `zeroth_point_origin<QuantitySpec>` is being used which
   provides a zeroth point for a specific quantity type.
 
 !!! tip
@@ -385,10 +385,12 @@ The above can be used as an origin for subsequent _points_:
 constexpr quantity_point first_climb_alt = everest_base_camp + isq::altitude(std::uint8_t{42} * m);
 static_assert(first_climb_alt.quantity_from(everest_base_camp) == 42 * m);
 static_assert(first_climb_alt.quantity_from(mean_sea_level) == 5406 * m);
+static_assert(first_climb_alt.quantity_from_zero() == 5406 * m);
 ```
 
 As we can see above, the `quantity_from()` member function returns a relative distance from the
-provided point origin.
+provided point origin while the `quantity_from_zero()` returns the distance from the absolute point
+origin.
 
 
 ### Converting between different representations of the same _point_

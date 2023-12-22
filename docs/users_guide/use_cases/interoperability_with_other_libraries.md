@@ -277,7 +277,7 @@ The **mp-units** library comes with built-in interoperability with those types. 
     ```
 
     1. `my_origin` is not defined in terms of `chrono_point_origin<Clock>`.
-    2. `implicit_zeroth_point_origin` is not defined in terms of `chrono_point_origin<Clock>`.
+    2. `zeroth_point_origin` is not defined in terms of `chrono_point_origin<Clock>`.
 
 Here is an example of how interoperability described in this chapter can be used in practice:
 

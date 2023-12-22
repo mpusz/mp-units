@@ -115,30 +115,28 @@ static_assert(relative_po<absolute_po<isq::height> + 42 * m>.quantity_spec == is
 inline constexpr struct my_kelvin : named_unit<"my_K", mag<10> * si::kelvin> {
 } my_kelvin;
 
-static_assert(zeroth_point_origin(si::kelvin) == si::absolute_zero);
-static_assert(zeroth_point_origin(si::milli<si::kelvin>) == si::absolute_zero);
-static_assert(zeroth_point_origin(mag<10> * si::kelvin) == si::absolute_zero);
-static_assert(zeroth_point_origin(my_kelvin) == si::absolute_zero);
+static_assert(default_point_origin(si::kelvin) == si::absolute_zero);
+static_assert(default_point_origin(si::milli<si::kelvin>) == si::absolute_zero);
+static_assert(default_point_origin(mag<10> * si::kelvin) == si::absolute_zero);
+static_assert(default_point_origin(my_kelvin) == si::absolute_zero);
 
-static_assert(zeroth_point_origin(si::degree_Celsius) == si::ice_point);
-static_assert(zeroth_point_origin(mag<10> * si::degree_Celsius) == si::ice_point);
+static_assert(default_point_origin(si::degree_Celsius) == si::ice_point);
+static_assert(default_point_origin(mag<10> * si::degree_Celsius) == si::ice_point);
 
-static_assert(zeroth_point_origin(si::metre) == implicit_zeroth_point_origin<kind_of<isq::length>>);
-static_assert(zeroth_point_origin(si::kelvin / si::second) ==
-              implicit_zeroth_point_origin<kind_of<isq::thermodynamic_temperature / isq::time>>);
-static_assert(zeroth_point_origin(si::degree_Celsius / si::second) ==
-              implicit_zeroth_point_origin<kind_of<isq::thermodynamic_temperature / isq::time>>);
+static_assert(default_point_origin(si::metre) == zeroth_point_origin<kind_of<isq::length>>);
+static_assert(default_point_origin(si::kelvin / si::second) ==
+              zeroth_point_origin<kind_of<isq::thermodynamic_temperature / isq::time>>);
+static_assert(default_point_origin(si::degree_Celsius / si::second) ==
+              zeroth_point_origin<kind_of<isq::thermodynamic_temperature / isq::time>>);
 
-static_assert(implicit_zeroth_point_origin<isq::length / isq::time> == implicit_zeroth_point_origin<isq::speed>);
-static_assert(implicit_zeroth_point_origin<inverse(isq::period_duration)> ==
-              implicit_zeroth_point_origin<isq::frequency>);
-static_assert(implicit_zeroth_point_origin<kind_of<isq::length>> == implicit_zeroth_point_origin<isq::height>);
-static_assert(implicit_zeroth_point_origin<kind_of<inverse(isq::time)>> ==
-              implicit_zeroth_point_origin<isq::frequency>);
+static_assert(zeroth_point_origin<isq::length / isq::time> == zeroth_point_origin<isq::speed>);
+static_assert(zeroth_point_origin<inverse(isq::period_duration)> == zeroth_point_origin<isq::frequency>);
+static_assert(zeroth_point_origin<kind_of<isq::length>> == zeroth_point_origin<isq::height>);
+static_assert(zeroth_point_origin<kind_of<inverse(isq::time)>> == zeroth_point_origin<isq::frequency>);
 
-static_assert(implicit_zeroth_point_origin<isq::length> != implicit_zeroth_point_origin<isq::height>);
-static_assert(implicit_zeroth_point_origin<isq::width> != implicit_zeroth_point_origin<isq::height>);
-static_assert(implicit_zeroth_point_origin<inverse(isq::time)> != implicit_zeroth_point_origin<isq::frequency>);
+static_assert(zeroth_point_origin<isq::length> != zeroth_point_origin<isq::height>);
+static_assert(zeroth_point_origin<isq::width> != zeroth_point_origin<isq::height>);
+static_assert(zeroth_point_origin<inverse(isq::time)> != zeroth_point_origin<isq::frequency>);
 
 /////////////////////
 // class invariants
@@ -159,8 +157,8 @@ concept invalid_types = requires {
   requires !requires { typename QP<isq::width[m], ground_level, int>; };
   requires !requires { typename QP<isq::length[m], mean_sea_level, int>; };
   requires !requires { typename QP<isq::length[m], ground_level, int>; };
-  requires !requires { typename QP<isq::length[m], implicit_zeroth_point_origin<isq::height>, int>; };
-  requires !requires { typename QP<isq::width[m], implicit_zeroth_point_origin<isq::height>, int>; };
+  requires !requires { typename QP<isq::length[m], zeroth_point_origin<isq::height>, int>; };
+  requires !requires { typename QP<isq::width[m], zeroth_point_origin<isq::height>, int>; };
   // quantity used as Rep
   requires !requires { typename QP<si::metre, mean_sea_level, quantity<si::metre, int>>; };
   // quantity point used as Rep
@@ -186,9 +184,9 @@ concept valid_types = requires {
   typename QP<si::metre, ground_level, int>;
   typename QP<isq::height[m], ground_level, int>;
   typename QP<special_height[m], ground_level, int>;
-  typename QP<isq::height[m], implicit_zeroth_point_origin<isq::length>, int>;
-  typename QP<isq::height[m], implicit_zeroth_point_origin<kind_of<isq::length>>, int>;
-  typename QP<si::metre, implicit_zeroth_point_origin<isq::height>, int>;
+  typename QP<isq::height[m], zeroth_point_origin<isq::length>, int>;
+  typename QP<isq::height[m], zeroth_point_origin<kind_of<isq::length>>, int>;
+  typename QP<si::metre, zeroth_point_origin<isq::height>, int>;
 };
 static_assert(valid_types<quantity_point>);
 
@@ -227,17 +225,15 @@ static_assert(quantity_point<si::metre>::reference == si::metre);
 static_assert(quantity_point<si::metre>::quantity_spec == kind_of<isq::length>);
 static_assert(quantity_point<si::metre>::dimension == isq::dim_length);
 static_assert(quantity_point<si::metre>::unit == si::metre);
-static_assert(is_of_type<quantity_point<si::metre>::point_origin, implicit_zeroth_point_origin_<kind_of<isq::length>>>);
-static_assert(
-  is_of_type<quantity_point<si::metre>::absolute_point_origin, implicit_zeroth_point_origin_<kind_of<isq::length>>>);
+static_assert(is_of_type<quantity_point<si::metre>::point_origin, zeroth_point_origin_<kind_of<isq::length>>>);
+static_assert(is_of_type<quantity_point<si::metre>::absolute_point_origin, zeroth_point_origin_<kind_of<isq::length>>>);
 
 static_assert(quantity_point<isq::height[m]>::reference == isq::height[m]);
 static_assert(quantity_point<isq::height[m]>::quantity_spec == isq::height);
 static_assert(quantity_point<isq::height[m]>::dimension == isq::dim_length);
 static_assert(quantity_point<isq::height[m]>::unit == si::metre);
-static_assert(is_of_type<quantity_point<isq::height[m]>::point_origin, implicit_zeroth_point_origin_<isq::height>>);
-static_assert(
-  is_of_type<quantity_point<isq::height[m]>::absolute_point_origin, implicit_zeroth_point_origin_<isq::height>>);
+static_assert(is_of_type<quantity_point<isq::height[m]>::point_origin, zeroth_point_origin_<isq::height>>);
+static_assert(is_of_type<quantity_point<isq::height[m]>::absolute_point_origin, zeroth_point_origin_<isq::height>>);
 
 static_assert(quantity_point<si::metre, mean_sea_level>::reference == si::metre);
 static_assert(quantity_point<si::metre, mean_sea_level>::quantity_spec == kind_of<isq::length>);
@@ -868,17 +864,17 @@ static_assert(invalid_unit_conversion<quantity_point>);
 
 static_assert(std::is_same_v<decltype(quantity_point{123 * m})::rep, int>);
 static_assert(std::is_same_v<std::remove_const_t<decltype(quantity_point{123 * m}.point_origin)>,
-                             implicit_zeroth_point_origin_<kind_of<isq::length>>>);
+                             zeroth_point_origin_<kind_of<isq::length>>>);
 static_assert(std::is_same_v<std::remove_const_t<decltype(quantity_point{123 * m}.absolute_point_origin)>,
-                             implicit_zeroth_point_origin_<kind_of<isq::length>>>);
+                             zeroth_point_origin_<kind_of<isq::length>>>);
 static_assert(quantity_point{123 * m}.unit == si::metre);
 static_assert(quantity_point{123 * m}.quantity_spec == kind_of<isq::length>);
 
 static_assert(std::is_same_v<decltype(quantity_point{isq::height(123 * m)})::rep, int>);
 static_assert(std::is_same_v<std::remove_const_t<decltype(quantity_point{isq::height(123 * m)}.point_origin)>,
-                             implicit_zeroth_point_origin_<isq::height>>);
+                             zeroth_point_origin_<isq::height>>);
 static_assert(std::is_same_v<std::remove_const_t<decltype(quantity_point{isq::height(123 * m)}.absolute_point_origin)>,
-                             implicit_zeroth_point_origin_<isq::height>>);
+                             zeroth_point_origin_<isq::height>>);
 static_assert(quantity_point{isq::height(123 * m)}.unit == si::metre);
 static_assert(quantity_point{isq::height(123 * m)}.quantity_spec == isq::height);
 
@@ -1031,37 +1027,30 @@ concept invalid_binary_operations = requires {
   requires !requires { isq::length(1 * m) + QP<si::metre, mean_sea_level, int>(1 * m); };
   requires !requires { QP<isq::height[m], mean_sea_level, int>(1 * m) + isq::length(1 * m); };
   requires !requires { isq::length(1 * m) + QP<isq::height[m], mean_sea_level, int>(1 * m); };
-  requires !requires { QP<si::metre, implicit_zeroth_point_origin<isq::height>, int>(1 * m) + isq::length(1 * m); };
-  requires !requires { isq::length(1 * m) + QP<si::metre, implicit_zeroth_point_origin<isq::height>, int>(1 * m); };
-  requires !requires {
-    QP<isq::height[m], implicit_zeroth_point_origin<isq::height>, int>(1 * m) + isq::length(1 * m);
-  };
-  requires !requires {
-    isq::length(1 * m) + QP<isq::height[m], implicit_zeroth_point_origin<isq::height>, int>(1 * m);
-  };
+  requires !requires { QP<si::metre, zeroth_point_origin<isq::height>, int>(1 * m) + isq::length(1 * m); };
+  requires !requires { isq::length(1 * m) + QP<si::metre, zeroth_point_origin<isq::height>, int>(1 * m); };
+  requires !requires { QP<isq::height[m], zeroth_point_origin<isq::height>, int>(1 * m) + isq::length(1 * m); };
+  requires !requires { isq::length(1 * m) + QP<isq::height[m], zeroth_point_origin<isq::height>, int>(1 * m); };
   requires !requires { Origin + isq::length(1 * m); };
   requires !requires { isq::length(1 * m) + Origin; };
 
   // can't subtract more generic quantity (violates point_origin quantity_spec)
   requires !requires { QP<si::metre, mean_sea_level, int>(1 * m) - isq::length(1 * m); };
   requires !requires { QP<isq::height[m], mean_sea_level, int>(1 * m) - isq::length(1 * m); };
-  requires !requires { QP<si::metre, implicit_zeroth_point_origin<isq::height>, int>(1 * m) - isq::length(1 * m); };
+  requires !requires { QP<si::metre, zeroth_point_origin<isq::height>, int>(1 * m) - isq::length(1 * m); };
+  requires !requires { QP<isq::height[m], zeroth_point_origin<isq::height>, int>(1 * m) - isq::length(1 * m); };
   requires !requires {
-    QP<isq::height[m], implicit_zeroth_point_origin<isq::height>, int>(1 * m) - isq::length(1 * m);
-  };
-  requires !requires {
-    QP<isq::height[m] / isq::time[s], implicit_zeroth_point_origin<isq::height / isq::time>, int>(10 * isq::height[m] /
-                                                                                                  (2 * isq::time[s])) +
+    QP<isq::height[m] / isq::time[s], zeroth_point_origin<isq::height / isq::time>, int>(10 * isq::height[m] /
+                                                                                         (2 * isq::time[s])) +
       5 * isq::speed[m / s];
   };
   requires !requires {
-    5 * isq::speed[m / s] +
-      QP<isq::height[m] / isq::time[s], implicit_zeroth_point_origin<isq::height / isq::time>, int>(
-        10 * isq::height[m] / (2 * isq::time[s]));
+    5 * isq::speed[m / s] + QP<isq::height[m] / isq::time[s], zeroth_point_origin<isq::height / isq::time>, int>(
+                              10 * isq::height[m] / (2 * isq::time[s]));
   };
   requires !requires {
-    QP<isq::height[m] / isq::time[s], implicit_zeroth_point_origin<isq::height / isq::time>, int>(10 * isq::height[m] /
-                                                                                                  (2 * isq::time[s])) -
+    QP<isq::height[m] / isq::time[s], zeroth_point_origin<isq::height / isq::time>, int>(10 * isq::height[m] /
+                                                                                         (2 * isq::time[s])) -
       5 * isq::speed[m / s];
   };
   requires !requires { Origin - isq::length(1 * m); };
@@ -1088,23 +1077,23 @@ concept invalid_binary_operations = requires {
   requires !requires { QP<isq::height[m], mean_sea_level, int>(1 * m) - quantity_point{1 * m}; };
   requires !requires { quantity_point{1 * m} - QP<isq::height[m], mean_sea_level, int>(1 * m); };
   requires !requires {
-    QP<isq::width[m], implicit_zeroth_point_origin<isq::width>, int>(1 * m) - quantity_point{isq::height(1 * m)};
+    QP<isq::width[m], zeroth_point_origin<isq::width>, int>(1 * m) - quantity_point{isq::height(1 * m)};
   };
   requires !requires {
-    quantity_point{isq::height(1 * m)} - QP<isq::width[m], implicit_zeroth_point_origin<isq::width>, int>(1 * m);
+    quantity_point{isq::height(1 * m)} - QP<isq::width[m], zeroth_point_origin<isq::width>, int>(1 * m);
   };
   requires !requires {
-    QP<isq::width[m], implicit_zeroth_point_origin<isq::width>, int>(1 * m) - quantity_point{isq::length(1 * m)};
+    QP<isq::width[m], zeroth_point_origin<isq::width>, int>(1 * m) - quantity_point{isq::length(1 * m)};
   };
   requires !requires {
-    quantity_point{isq::length(1 * m)} - QP<isq::width[m], implicit_zeroth_point_origin<isq::width>, int>(1 * m);
+    quantity_point{isq::length(1 * m)} - QP<isq::width[m], zeroth_point_origin<isq::width>, int>(1 * m);
   };
   requires !requires {
     quantity_point{10 * isq::height[m] / (2 * isq::time[s])} -
-      QP<isq::speed[m / s], implicit_zeroth_point_origin<isq::speed>, int>(5 * isq::speed[m / s]);
+      QP<isq::speed[m / s], zeroth_point_origin<isq::speed>, int>(5 * isq::speed[m / s]);
   };
   requires !requires {
-    QP<isq::speed[m / s], implicit_zeroth_point_origin<isq::speed>, int>(5 * isq::speed[m / s]) -
+    QP<isq::speed[m / s], zeroth_point_origin<isq::speed>, int>(5 * isq::speed[m / s]) -
       quantity_point{10 * isq::height[m] / (2 * isq::time[s])};
   };
 
@@ -1554,17 +1543,17 @@ static_assert((quantity_point{5 * isq::speed[m / s]} - 10 * isq::height[m] / (2 
               0 * isq::speed[m / s]);
 
 static_assert(is_of_type<quantity_point{10 * isq::length[m] / (2 * isq::time[s])} + 5 * isq::speed[m / s],
-                         quantity_point<isq::speed[m / s], implicit_zeroth_point_origin<isq::speed>, int>>);
+                         quantity_point<isq::speed[m / s], zeroth_point_origin<isq::speed>, int>>);
 static_assert(is_of_type<10 * isq::height[m] / (2 * isq::time[s]) + quantity_point{5 * isq::speed[m / s]},
-                         quantity_point<isq::speed[m / s], implicit_zeroth_point_origin<isq::speed>, int>>);
+                         quantity_point<isq::speed[m / s], zeroth_point_origin<isq::speed>, int>>);
 static_assert(is_of_type<quantity_point{5 * isq::speed[m / s]} + 10 * isq::height[m] / (2 * isq::time[s]),
-                         quantity_point<isq::speed[m / s], implicit_zeroth_point_origin<isq::speed>, int>>);
+                         quantity_point<isq::speed[m / s], zeroth_point_origin<isq::speed>, int>>);
 static_assert(is_of_type<5 * isq::speed[m / s] + quantity_point{10 * isq::length[m] / (2 * isq::time[s])},
-                         quantity_point<isq::speed[m / s], implicit_zeroth_point_origin<isq::speed>, int>>);
+                         quantity_point<isq::speed[m / s], zeroth_point_origin<isq::speed>, int>>);
 static_assert(is_of_type<quantity_point{10 * isq::length[m] / (2 * isq::time[s])} - 5 * isq::speed[m / s],
-                         quantity_point<isq::speed[m / s], implicit_zeroth_point_origin<isq::speed>, int>>);
+                         quantity_point<isq::speed[m / s], zeroth_point_origin<isq::speed>, int>>);
 static_assert(is_of_type<quantity_point{5 * isq::speed[m / s]} - 10 * isq::height[m] / (2 * isq::time[s]),
-                         quantity_point<isq::speed[m / s], implicit_zeroth_point_origin<isq::speed>, int>>);
+                         quantity_point<isq::speed[m / s], zeroth_point_origin<isq::speed>, int>>);
 static_assert(
   is_of_type<quantity_point{10 * isq::length[m] / (2 * isq::time[s])} - quantity_point{5 * isq::speed[m / s]},
              quantity<isq::speed[m / s], int>>);
@@ -1573,9 +1562,8 @@ static_assert(
              quantity<isq::speed[m / s], int>>);
 
 static_assert(
-  is_of_type<
-    quantity_point{10 * isq::height[m] / (2 * isq::time[s])} + (10 * isq::height[m] / (2 * isq::time[s])),
-    quantity_point<(isq::height / isq::time)[m / s], implicit_zeroth_point_origin<isq::height / isq::time>, int>>);
+  is_of_type<quantity_point{10 * isq::height[m] / (2 * isq::time[s])} + (10 * isq::height[m] / (2 * isq::time[s])),
+             quantity_point<(isq::height / isq::time)[m / s], zeroth_point_origin<isq::height / isq::time>, int>>);
 
 inline constexpr struct zero_Hz : absolute_point_origin<zero_Hz, kind_of<isq::frequency>> {
 } zero_Hz;
@@ -1632,17 +1620,17 @@ static_assert(quantity_point{5 * isq::frequency[Hz]} - quantity_point{10 / (2 * 
               0 * isq::frequency[Hz]);
 
 static_assert(is_of_type<quantity_point{10 / (2 * isq::period_duration[s])} + 5 * isq::frequency[Hz],
-                         quantity_point<isq::frequency[Hz], implicit_zeroth_point_origin<isq::frequency>, int>>);
+                         quantity_point<isq::frequency[Hz], zeroth_point_origin<isq::frequency>, int>>);
 static_assert(is_of_type<10 / (2 * isq::period_duration[s]) + quantity_point{5 * isq::frequency[Hz]},
-                         quantity_point<isq::frequency[Hz], implicit_zeroth_point_origin<isq::frequency>, int>>);
+                         quantity_point<isq::frequency[Hz], zeroth_point_origin<isq::frequency>, int>>);
 static_assert(is_of_type<quantity_point{5 * isq::frequency[Hz]} + 10 / (2 * isq::period_duration[s]),
-                         quantity_point<isq::frequency[Hz], implicit_zeroth_point_origin<isq::frequency>, int>>);
+                         quantity_point<isq::frequency[Hz], zeroth_point_origin<isq::frequency>, int>>);
 static_assert(is_of_type<5 * isq::frequency[Hz] + quantity_point{10 / (2 * isq::period_duration[s])},
-                         quantity_point<isq::frequency[Hz], implicit_zeroth_point_origin<isq::frequency>, int>>);
+                         quantity_point<isq::frequency[Hz], zeroth_point_origin<isq::frequency>, int>>);
 static_assert(is_of_type<quantity_point{10 / (2 * isq::period_duration[s])} - 5 * isq::frequency[Hz],
-                         quantity_point<isq::frequency[Hz], implicit_zeroth_point_origin<isq::frequency>, int>>);
+                         quantity_point<isq::frequency[Hz], zeroth_point_origin<isq::frequency>, int>>);
 static_assert(is_of_type<quantity_point{5 * isq::frequency[Hz]} - 10 / (2 * isq::period_duration[s]),
-                         quantity_point<isq::frequency[Hz], implicit_zeroth_point_origin<isq::frequency>, int>>);
+                         quantity_point<isq::frequency[Hz], zeroth_point_origin<isq::frequency>, int>>);
 static_assert(is_of_type<quantity_point{10 / (2 * isq::period_duration[s])} - quantity_point{5 * isq::frequency[Hz]},
                          quantity<isq::frequency[Hz], int>>);
 static_assert(is_of_type<quantity_point{5 * isq::frequency[Hz]} - quantity_point{10 / (2 * isq::period_duration[s])},
