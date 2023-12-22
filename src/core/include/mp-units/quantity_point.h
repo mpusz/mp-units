@@ -266,13 +266,11 @@ public:
       const auto q = quantity_from(unit.point_origin);
       if constexpr (requires { q.in(unit); })
         // restore the unit if possible (non-truncating)
-    // original quantity point unit can be lost in the below operation
-    const auto q = quantity_from(zeroth_point_origin(R));
-    if constexpr (requires { q.in(unit); })
-      // restore it if possible (non-truncating)
-      return q.in(unit);
-    else
-      return q;
+        return q.in(unit);
+      else
+        return q;
+    } else
+      return quantity_from(absolute_point_origin);
   }
 
   // unit conversions

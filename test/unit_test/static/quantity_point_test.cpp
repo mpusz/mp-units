@@ -798,6 +798,10 @@ static_assert(quantity_point{isq::height(42 * m)}.quantity_from_zero() == 42 * m
 static_assert(quantity_point{20 * deg_C}.quantity_from_zero() == 20 * deg_C);
 static_assert(quantity_point{20. * deg_C}.in(deg_F).quantity_from_zero() == 68 * deg_F);
 
+static_assert((mean_sea_level + 42 * m).quantity_from_zero() == 42 * m);
+static_assert((ground_level + 42 * m).quantity_from_zero() == 84 * m);
+static_assert((tower_peak + 42 * m).quantity_from_zero() == 126 * m);
+
 static_assert((mean_sea_level + 42 * m).quantity_from(mean_sea_level) == 42 * m);
 static_assert((mean_sea_level + isq::height(42 * m)).quantity_from(mean_sea_level) == 42 * m);
 
@@ -979,14 +983,14 @@ static_assert([](auto v) {
 ////////////////////////
 
 // same type
-static_assert((mean_sea_level + 1 * m += 1 * m).quantity_from(mean_sea_level).numerical_value_in(m) == 2);
-static_assert((mean_sea_level + 2 * m -= 1 * m).quantity_from(mean_sea_level).numerical_value_in(m) == 1);
+static_assert((mean_sea_level + 1 * m += 1 * m).quantity_from_zero().numerical_value_in(m) == 2);
+static_assert((mean_sea_level + 2 * m -= 1 * m).quantity_from_zero().numerical_value_in(m) == 1);
 
 // different types
-static_assert((mean_sea_level + 2.5 * m += 3 * m).quantity_from(mean_sea_level).numerical_value_in(m) == 5.5);
-static_assert((mean_sea_level + 123 * m += 1 * km).quantity_from(mean_sea_level).numerical_value_in(m) == 1123);
-static_assert((mean_sea_level + 5.5 * m -= 3 * m).quantity_from(mean_sea_level).numerical_value_in(m) == 2.5);
-static_assert((mean_sea_level + 1123 * m -= 1 * km).quantity_from(mean_sea_level).numerical_value_in(m) == 123);
+static_assert((mean_sea_level + 2.5 * m += 3 * m).quantity_from_zero().numerical_value_in(m) == 5.5);
+static_assert((mean_sea_level + 123 * m += 1 * km).quantity_from_zero().numerical_value_in(m) == 1123);
+static_assert((mean_sea_level + 5.5 * m -= 3 * m).quantity_from_zero().numerical_value_in(m) == 2.5);
+static_assert((mean_sea_level + 1123 * m -= 1 * km).quantity_from_zero().numerical_value_in(m) == 123);
 
 
 template<template<auto, auto, typename> typename QP>
