@@ -1401,6 +1401,12 @@ template<QuantitySpec From, QuantitySpec To>
   return detail::convertible_impl(from, to) >= detail::specs_convertible_result::cast;
 }
 
+template<QuantitySpec QS1, QuantitySpec QS2>
+[[nodiscard]] consteval bool interconvertible(QS1 qs1, QS2 qs2)
+{
+  return implicitly_convertible(qs1, qs2) && implicitly_convertible(qs2, qs1);
+}
+
 namespace detail {
 
 template<QuantitySpec Q>
