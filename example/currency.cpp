@@ -89,8 +89,7 @@ template<ReferenceOf<currency> auto To, ReferenceOf<currency> auto From, auto PO
 quantity_point<To, PO, Rep> exchange_to(quantity_point<From, PO, Rep> q)
 {
   return quantity_point{
-    static_cast<Rep>(exchange_rate<q.unit, get_unit(To)>() * (q - q.absolute_point_origin).numerical_value_in(q.unit)) *
-    To};
+    static_cast<Rep>(exchange_rate<q.unit, get_unit(To)>() * q.quantity_from_zero().numerical_value_in(q.unit)) * To};
 }
 
 int main()
