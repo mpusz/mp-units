@@ -14,9 +14,7 @@
 
     As of today, the library compiles fine on the following compilers (or newer):
 
-    - gcc-11
-        - please note that we observed some ICEs on gcc-11
-        - no problems with gcc-12.2+
+    - gcc-12
     - clang-16
     - apple-clang-15
 
