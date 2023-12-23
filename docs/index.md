@@ -61,13 +61,13 @@ Harvard Bridge length = 364.4 smoot(2034.57 ft, 620.136 m) ± 1 εar
 ??? question "What is `smoot`?"
 
     The smoot (/ˈsmuːt/) is a nonstandard unit of length created as part of an MIT fraternity prank.
-    It is named after Oliver R. Smoot, a fraternity pledge to Lambda Chi Alpha, who in October 1958
-    lay on the Harvard Bridge (between Boston and Cambridge, Massachusetts), and was used by his
+    It is named after Oliver R. Smoot, a fraternity pledge to Lambda Chi Alpha, who, in October 1958,
+    lay on the Harvard Bridge (between Boston and Cambridge, Massachusetts) and was used by his
     fraternity brothers to measure the length of the bridge.
 
-    One smoot is equal to Oliver Smoot's height at the time of the prank (five feet and seven inches).
+    One smoot equals Oliver Smoot's height at the time of the prank (five feet and seven inches).
     The bridge's length was measured to be 364.4 smoots plus or minus one ear, with the "plus or minus"
-    intended to express uncertainty of measurement.
+    intended to express the measurement uncertainty.
 
     Oliver Smoot graduated from MIT with the class of 1962, became a lawyer, and later became
     chairman of the American National Standards Institute (ANSI) and president of the International
