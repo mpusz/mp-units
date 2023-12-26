@@ -321,54 +321,54 @@ TEST_CASE("hypot functions", "[hypot]")
   }
 }
 
-TEST_CASE("ISQ trigonometric functions", "[trig][isq]")
+TEST_CASE("SI trigonometric functions", "[trig][si]")
 {
   SECTION("sin")
   {
-    REQUIRE_THAT(isq::sin(0 * deg), AlmostEquals(0. * one));
-    REQUIRE_THAT(isq::sin(90 * deg), AlmostEquals(1. * one));
-    REQUIRE_THAT(isq::sin(180 * deg), AlmostEquals(0. * one));
-    REQUIRE_THAT(isq::sin(270 * deg), AlmostEquals(-1. * one));
+    REQUIRE_THAT(si::sin(0 * deg), AlmostEquals(0. * one));
+    REQUIRE_THAT(si::sin(90 * deg), AlmostEquals(1. * one));
+    REQUIRE_THAT(si::sin(180 * deg), AlmostEquals(0. * one));
+    REQUIRE_THAT(si::sin(270 * deg), AlmostEquals(-1. * one));
   }
 
   SECTION("cos")
   {
-    REQUIRE_THAT(isq::cos(0 * deg), AlmostEquals(1. * one));
-    REQUIRE_THAT(isq::cos(90 * deg), AlmostEquals(0. * one));
-    REQUIRE_THAT(isq::cos(180 * deg), AlmostEquals(-1. * one));
-    REQUIRE_THAT(isq::cos(270 * deg), AlmostEquals(0. * one));
+    REQUIRE_THAT(si::cos(0 * deg), AlmostEquals(1. * one));
+    REQUIRE_THAT(si::cos(90 * deg), AlmostEquals(0. * one));
+    REQUIRE_THAT(si::cos(180 * deg), AlmostEquals(-1. * one));
+    REQUIRE_THAT(si::cos(270 * deg), AlmostEquals(0. * one));
   }
 
   SECTION("tan")
   {
-    REQUIRE_THAT(isq::tan(0 * deg), AlmostEquals(0. * one));
-    REQUIRE_THAT(isq::tan(45. * deg), AlmostEquals(1. * one));
-    REQUIRE_THAT(isq::tan(135. * deg), AlmostEquals(-1. * one));
-    REQUIRE_THAT(isq::tan(180. * deg), AlmostEquals(0. * one));
+    REQUIRE_THAT(si::tan(0 * deg), AlmostEquals(0. * one));
+    REQUIRE_THAT(si::tan(45. * deg), AlmostEquals(1. * one));
+    REQUIRE_THAT(si::tan(135. * deg), AlmostEquals(-1. * one));
+    REQUIRE_THAT(si::tan(180. * deg), AlmostEquals(0. * one));
   }
 }
 
-TEST_CASE("ISQ inverse trigonometric functions", "[inv trig][isq]")
+TEST_CASE("SI inverse trigonometric functions", "[inv trig][si]")
 {
   SECTION("asin")
   {
-    REQUIRE_THAT(isq::asin(-1 * one), AlmostEquals(-90. * deg));
-    REQUIRE_THAT(isq::asin(0 * one), AlmostEquals(0. * deg));
-    REQUIRE_THAT(isq::asin(1 * one), AlmostEquals(90. * deg));
+    REQUIRE_THAT(si::asin(-1 * one), AlmostEquals(-90. * deg));
+    REQUIRE_THAT(si::asin(0 * one), AlmostEquals(0. * deg));
+    REQUIRE_THAT(si::asin(1 * one), AlmostEquals(90. * deg));
   }
 
   SECTION("acos")
   {
-    REQUIRE_THAT(isq::asin(-1 * one), AlmostEquals(-90. * deg));
-    REQUIRE_THAT(isq::asin(0 * one), AlmostEquals(0. * deg));
-    REQUIRE_THAT(isq::asin(1 * one), AlmostEquals(90. * deg));
+    REQUIRE_THAT(si::asin(-1 * one), AlmostEquals(-90. * deg));
+    REQUIRE_THAT(si::asin(0 * one), AlmostEquals(0. * deg));
+    REQUIRE_THAT(si::asin(1 * one), AlmostEquals(90. * deg));
   }
 
   SECTION("atan")
   {
-    REQUIRE_THAT(isq::atan(-1 * one), AlmostEquals(-45. * deg));
-    REQUIRE_THAT(isq::atan(0 * one), AlmostEquals(0. * deg));
-    REQUIRE_THAT(isq::atan(1 * one), AlmostEquals(45. * deg));
+    REQUIRE_THAT(si::atan(-1 * one), AlmostEquals(-45. * deg));
+    REQUIRE_THAT(si::atan(0 * one), AlmostEquals(0. * deg));
+    REQUIRE_THAT(si::atan(1 * one), AlmostEquals(45. * deg));
   }
 }
 

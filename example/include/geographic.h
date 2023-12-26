@@ -176,7 +176,7 @@ distance spherical_distance(position<T> from, position<T> to)
   using namespace mp_units;
   constexpr quantity earth_radius = 6'371 * isq::radius[si::kilo<si::metre>];
 
-  using isq::sin, isq::cos, isq::asin, isq::acos;
+  using si::sin, si::cos, si::asin, si::acos;
 
   const quantity from_lat = from.lat.quantity_from(equator);
   const quantity from_lon = from.lon.quantity_from(prime_meridian);

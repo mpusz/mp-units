@@ -88,7 +88,7 @@ void print(const R& gliders)
                                             ratio,
                                             // TODO is it possible to make ADL work below (we need another set of trig
                                             // functions for strong angle in a different namespace)
-                                            isq::asin(1 / ratio).force_in(si::degree));
+                                            si::asin(1 / ratio).force_in(si::degree));
     }
     std::cout << "\n";
   }
