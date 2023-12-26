@@ -2,7 +2,7 @@
 
 The quantities we discussed so far always had some specific type and physical dimension.
 However, this is not always the case. While performing various computations, we sometimes end up with
-so-called "dimensionless" quantities, which ISO correctly defines as
+so-called "dimensionless" quantities, which ISO defines as
 [quantities of dimension one](../../appendix/glossary.md#dimensionless-quantity):
 
 !!! quote "ISO/IEC Guide 99"
@@ -70,8 +70,8 @@ static_assert(q.quantity_spec == isq::work / isq::heat);
 
 As shown above, the result is not of a `dimensionless` type anymore. Instead, we get a quantity type
 derived from the performed [quantity equation](../../appendix/glossary.md#quantity-equation).
-According to the [ISQ](../../appendix/glossary.md#isq), work divided by heat is the recipe for
-the thermodynamic efficiency quantity, thus:
+According to the [ISQ](../../appendix/glossary.md#isq), _work_ divided by _heat_ is the recipe for
+the _thermodynamic efficiency_ quantity, thus:
 
 ```cpp
 static_assert(implicitly_convertible(q.quantity_spec, isq::efficiency_thermodynamics));
@@ -91,7 +91,7 @@ Now, let's see what happens when we divide two quantities of the same type but d
 constexpr QuantityOf<dimensionless> auto q = isq::height(4 * km) / isq::height(2 * m);
 ```
 
-This time we still get a quantity of `dimensionless` type with a `dimension_one` as its dimension.
+This time, we still get a quantity of the `dimensionless` type with a `dimension_one` as its dimension.
 However, the resulting unit is not `one` anymore:
 
 ```cpp
@@ -101,16 +101,16 @@ static_assert(q.unit == mag_power<10, 3> * one);
 In case we would print the text output of this quantity, we would not see a raw value of `2000`,
 but `2 km/m`.
 
-First, it may look surprising, but this is actually consistent with the division of quantities
+First, it may look surprising, but this is consistent with dividing quantities
 of different dimensions. For example, if we divide `4 * km / 2 * s`, we do not expect `km` to be
 "expanded" to `m` before the division, right? We would expect the result of `2 km/s`, which is
 exactly what we get when we divide quantities of the same kind.
 
 This is a compelling feature that allows us to express huge or tiny ratios without the need
 for big and expensive representation types. With this, we can easily define things like
-a [Hubble's constant](https://en.wikipedia.org/wiki/Hubble%27s_law#Dimensionless_Hubble_constant)
+a [_Hubble's constant_](https://en.wikipedia.org/wiki/Hubble%27s_law#Dimensionless_Hubble_constant)
 that uses a unit that is proportional to the ratio of kilometers per megaparsecs, which are both
-units of length:
+units of _length_:
 
 ```cpp
 inline constexpr struct hubble_constant :
@@ -123,12 +123,12 @@ inline constexpr struct hubble_constant :
 Another important use case for dimensionless quantities is to provide strong types for counts
 of things. For example:
 
-- ISO-80000-3 provides a `rotation` quantity defined as the number of revolutions,
-- IEC-80000-6 provides a `number_of_turns_in_a_winding` quantity,
-- IEC-80000-13 provides a `Hamming_distance` quantity defined as the number of digit positions
+- ISO-80000-3 provides a _rotation_ quantity defined as the number of revolutions,
+- IEC-80000-6 provides a _number of turns in a winding_ quantity,
+- IEC-80000-13 provides a _Hamming distance_ quantity defined as the number of digit positions
   in which the corresponding digits of two words of the same length are different.
 
-Thanks to assigning strong names to such quantities, later on they can be explicitly used as
+Thanks to assigning strong names to such quantities, later on, they can be explicitly used as
 arguments in the [quantity equations](../../appendix/glossary.md#quantity-equation) of other
 quantities deriving from them.
 
@@ -165,17 +165,17 @@ inline constexpr struct per_mille : named_unit<basic_symbol_text{"‰", "%o"}, m
 
 ## Angular quantities
 
-Special, often controversial, examples of dimensionless quantities are an angular measure
-and solid angular measure quantities that are defined in the [ISQ](../../appendix/glossary.md#isq)
-to be the result of a division of `arc_length / radius` and `area / pow<2>(radius)` respectively.
+Special, often controversial, examples of dimensionless quantities are an _angular measure_
+and _solid angular measure_ quantities that are defined in the [ISQ](../../appendix/glossary.md#isq)
+to be the result of a division of $arc\; length / radius$ and $area / radius^2$ respectively.
 Moreover, [ISQ](../../appendix/glossary.md#isq) also explicitly states that both can be
-expressed in the unit `one`. This means that both `isq::angular_measure` and `isq::solid_angular_measure`
-should be of a [kind](../../appendix/glossary.md#kind) of `dimensionless`.
+expressed in the unit `one`. This means that both _angular measure_ and _solid angular measure_
+should be of a [kind](../../appendix/glossary.md#kind) dimensionless.
 
-On the other hand, [ISQ](../../appendix/glossary.md#isq) also specifies that a unit `radian` can
-be used for `isq::angular_measure`, and a unit `steradian` can be used for `isq::solid_angular_measure`.
+On the other hand, [ISQ](../../appendix/glossary.md#isq) also specifies that a unit radian can
+be used for _angular measure_, and a unit steradian can be used for _solid angular measure_.
 Those should not be mixed or used to express other types of dimensionless quantities. This means
-that both `isq::angular_measure` and `isq::solid_angular_measure` should also be
+that both _angular measure_ and _solid angular measure_ should also be
 [quantity kinds](../../appendix/glossary.md#kind) by themselves.
 
 !!! note
@@ -187,8 +187,8 @@ that both `isq::angular_measure` and `isq::solid_angular_measure` should also be
 
 ## Nested quantity kinds
 
-Angular quantities are not the only ones with such a "strange" behavior. Another, but a similar case
-is a `storage_capacity` quantity specified in IEC-80000-13 that again allows expressing it in both
+Angular quantities are not the only ones with such a "strange" behavior. Another but a similar case
+is a _storage capacity_ quantity specified in IEC-80000-13 that again allows expressing it in both
 `one` and `bit` units.
 
 Those cases make dimensionless quantities an exceptional tree in the library. This is the only
@@ -245,4 +245,4 @@ inline constexpr struct steradian : named_unit<"sr", square(metre) / square(metr
 inline constexpr struct bit : named_unit<"bit", one, kind_of<storage_capacity>> {} bit;
 ```
 
-but still allow a usage of `one` and its scaled versions for such quantities.
+but still allow the usage of `one` and its scaled versions for such quantities.

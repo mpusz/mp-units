@@ -8,9 +8,9 @@ std::cout << q1.in(m) << '\n';
 quantity<si::metre, int> q2 = q1;
 ```
 
-The second line above converts the current quantity to the one expressed in metres and prints its
-contents. The third line converts the quantity expressed in kilometres into the one measured
-in metres.
+The second line above converts the current quantity to the one expressed in meters and prints its
+contents. The third line converts the quantity expressed in kilometers into the one measured
+in meters.
 
 In case a user would like to perform an opposite transformation:
 
@@ -65,7 +65,7 @@ reviews or while chasing a bug in the source code.
     `q.force_numerical_value_in(U)`.
 
 Another place where this cast is useful is when a user wants to convert a quantity with
-a floating-point representation to the one using an integral one. Again this is a truncating
+a floating-point representation to the one using an integral one. Again, this is a truncating
 conversion, so an explicit cast is needed:
 
 ```cpp
@@ -74,7 +74,7 @@ quantity<si::metre, int> q3 = value_cast<int>(3.14 * m);
 
 !!! info
 
-    It is often fine to use an integral as a representation type, but in general, floating-point
+    It is often OK to use an integral as a representation type, but in general, floating-point
     types provide better precision and are privileged in the library as they are considered
     to be value-preserving.
 

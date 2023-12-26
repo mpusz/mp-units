@@ -139,7 +139,7 @@ error: could not convert 'mp_units::operator*<si::metre(), double, si::second(),
 
 Simple mode is all about and just about units. In case we care about a specific quantity type,
 **typed quantities** should be preferred. With this mode, for example, we can specify if we
-deal with `width`, `height`, or `radius` and ensure we will not assign one to another by
+deal with _width_, _height_, or _radius_ and ensure we will not assign one to another by
 accident.
 
 The previous example can be re-typed using typed quantities in the following way:
@@ -178,7 +178,7 @@ A car driving 110 km in 2 h has an average speed of 15.2778 m/s (55 km/h)
 !!! example "[Try it on Compiler Explorer](https://godbolt.org/z/q3PzMzqsh)"
 
 In case we will accidentally make the same calculation error as before, this time, we will
-get a bit longer error message also containing information about the quantity type:
+get a bit longer error message, this time also containing information about the quantity type:
 
 ```log
 In function 'constexpr mp_units::quantity<mp_units::reference<mp_units::isq::speed(), mp_units::derived_unit<mp_units::si::metre, mp_units::per<mp_units::si::second> >()>()> avg_speed(mp_units::quantity<mp_units::reference<mp_units::isq::length(), mp_units::si::metre()>()>, mp_units::quantity<mp_units::reference<mp_units::isq::time(), mp_units::si::second()>()>)':
@@ -196,7 +196,7 @@ As we can see above, the compilation error is longer but still relatively easy t
 
 Based on the previous example, it might seem that typed quantities are not that useful,
 more to type and provide harder-to-understand error messages. It might be true in some cases,
-but there are scenarios where they offer an additional level of safety.
+but there are scenarios where they offer additional level of safety.
 
 Let's see another example:
 
@@ -414,9 +414,9 @@ quantities-related issues, this should be the first function to look for.
     requested conversion is exactly what you need in this case.
 
 
-## Which mode to use in my project?
+## Which mode should I use in my project?
 
-In case you wonder which mode you should choose for your project, we have good news for you.
+We have good news for you if you wonder which mode you should choose for your project.
 Simple and typed quantity modes can be freely mixed with each other. When you use different
 quantities of the same kind (e.g., _radius_, _wavelength_, _altitude_, ...), you should probably
 reach for typed quantities to bring additional safety for those cases. Otherwise, just use

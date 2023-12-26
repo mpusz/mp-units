@@ -1,6 +1,6 @@
 # Generic Interfaces
 
-Using a concrete unit in the interface often has a lot of sense. It is especially useful if we
+Using a concrete unit in the interface often makes a lot of sense. It is especially useful if we
 store the data internally in the object. In such a case, we have to select a specific unit anyway.
 
 For example, let's consider a simple storage tank:
@@ -30,8 +30,7 @@ However, in many cases, using a specific unit in the interface is counterproduct
 the following function:
 
 ```cpp
-quantity<isq::speed[km / h]> avg_speed(quantity<isq::length[km]> distance,
-                                       quantity<isq::time[h]> duration)
+quantity<km / h> avg_speed(quantity<km> distance, quantity<h> duration)
 {
   return distance / duration;
 }
@@ -40,28 +39,28 @@ quantity<isq::speed[km / h]> avg_speed(quantity<isq::length[km]> distance,
 Everything seems fine for now. It also works great if we call it with:
 
 ```cpp
-quantity<isq::speed[km / h]> s1 = avg_speed(220 * km, 2 * h);
+quantity<km / h> s1 = avg_speed(220 * km, 2 * h);
 ```
 
 However, if the user starts doing the following:
 
 ```cpp
-quantity<isq::speed[mi / h]> s2 = avg_speed(140 * mi, 2 * h);
-quantity<isq::speed[m / s]> s3 = avg_speed(20 * m, 2 * s);
+quantity<mi / h> s2 = avg_speed(140 * mi, 2 * h);
+quantity<m / s> s3 = avg_speed(20 * m, 2 * s);
 ```
 
 some issues start to be clearly visible:
 
 1. The arguments must be converted to units mandated by the function's parameters at each call.
    This involves potentially expensive multiplication/division operations at runtime.
-2. After the function returns the speed in a unit of `km/h`, another potentially expensive
-   multiplication/division operations have to be performed to convert the resulting quantity into
+2. After the function returns the _speed_ in a unit of `km/h`, another potentially expensive
+   multiplication/division operations must be performed to convert the resulting quantity into
    a unit being the derived unit of the initial function's arguments.
-3. Besides the obvious runtime cost, some unit conversions may result in a data truncation which
+3. Besides the obvious runtime cost, some unit conversions may result in a value truncation, which
    means that the result will not be exactly equal to a direct division of the function's arguments.
 4. We have to use a floating-point representation type (the `quantity` class template by default uses
    `double` as a representation type) which is considered
-   [value preserving](value_conversions.md#value-preserving-conversions).
+   [value-preserving](value_conversions.md#value-preserving-conversions).
    Trying to use an integral type in this scenario will work only for `s1`, while `s2` and `s3`
    will fail to compile. Failing to compile is a good thing here as the library tries to prevent
    the user from doing a clearly wrong thing. To make the code compile, the user needs to use
@@ -72,7 +71,7 @@ some issues start to be clearly visible:
     quantity<isq::speed[m / s]> s3 = avg_speed((20 * m).force_in(km), (2 * s).force_in(h));
     ```
 
-    but the above will obviously provide an incorrect behavior (e.g. division by `0` in the evaluation
+    but the above will obviously provide an incorrect behavior (e.g., division by `0` in the evaluation
     of `s3`).
 
 
@@ -87,15 +86,15 @@ auto avg_speed(auto distance, auto duration)
 }
 ```
 
-Beware that there are better solutions than this. The above code is too generic. Such a function template
+Beware, this is not a good solution. The above code is too generic. Such a function template
 accepts everything:
 
 - quantities of other types
-    - the compiler will not prevent accidental reordering of the function's arguments
-    - quantities of different types can be passed as well
-- plain `double` arguments
+    - the compiler will not prevent accidental reordering of the function's arguments,
+    - quantities of different types can be passed as well,
+- plain `double` arguments,
 - `std::vector` and `std::lock_guard` will be accepted as well (of course, this will fail in the
-  function's body later in the compilation process)
+  instantiation of a function's body later in the compilation process).
 
 
 !!! note
@@ -110,16 +109,39 @@ accepts everything:
 Much better generic code can be implemented using [basic concepts](concepts.md)
 provided with the library:
 
-```cpp
-auto avg_speed(QuantityOf<isq::length> auto distance,
-               QuantityOf<isq::time> auto duration)
-{
-  return isq::speed(distance / duration);
-}
-```
+=== "Original template notation"
+
+    ```cpp
+    template<typename Distance, typename Duration>
+      requires QuantityOf<Distance, isq::length> && QuantityOf<Duration, isq::time>
+    auto avg_speed(Distance distance, Duration duration)
+    {
+      return isq::speed(distance / duration);
+    }
+    ```
+
+=== "The shorthand notation"
+
+    ```cpp
+    template<QuantityOf<isq::length> Distance, QuantityOf<isq::time> Duration>
+    auto avg_speed(Distance distance, Duration duration)
+    {
+      return isq::speed(distance / duration);
+    }
+    ```
+
+=== "Terse notation"
+
+    ```cpp
+    auto avg_speed(QuantityOf<isq::length> auto distance,
+                   QuantityOf<isq::time> auto duration)
+    {
+      return isq::speed(distance / duration);
+    }
+    ```
 
 This explicitly states that the arguments passed by the user must not only satisfy
-a [`Quantity`](concepts.md#Quantity) concept but also their quantity specification must
+a [`Quantity`](concepts.md#Quantity) concept, but also their quantity specification must
 be implicitly convertible to `isq::length` and `isq::time` accordingly. This no longer leaves
 room for error while still allowing the compiler to generate the most efficient code.
 
@@ -127,7 +149,7 @@ room for error while still allowing the compiler to generate the most efficient 
 
     Please note that now it is safe just to use integral types all the way which again
     improves the runtime performance as the multiplication/division operations are often
-    faster on integral rather than floating-point types.
+    faster on the integral rather than floating-point types.
 
 
 ## Constraining function template return type
@@ -156,7 +178,7 @@ Doing so has two important benefits:
 
 ## Constraining a variable on the stack
 
-If we know exactly what the function does in its internals and if we know the exact argument types
+If we know precisely what the function does in its internals and if we know the exact argument types
 passed to such a function, we often know the exact type that will be returned from its invocation.
 
 However, if we care about performance, we should often use the generic interfaces described in this
@@ -171,7 +193,17 @@ auto s2 = avg_speed(140 * mi, 2 * h);
 auto s3 = avg_speed(20 * m, 2 * s);
 ```
 
-In this case, it is probably OK to do so as the `avg_speed` function name explicitly provides
+or benefit from CTAD:
+
+```cpp
+quantity s1 = avg_speed(220 * km, 2 * h);
+quantity s2 = avg_speed(140 * mi, 2 * h);
+quantity s3 = avg_speed(20 * m, 2 * s);
+```
+
+*[CTAD]: Class Template Argument Deduction
+
+In both cases, it is probably OK to do so as the `avg_speed` function name explicitly provides
 the information on what to expect as a result.
 
 In other scenarios where the returned quantity type is not so obvious, it is again helpful to
@@ -183,7 +215,7 @@ QuantityOf<isq::speed> auto s2 = avg_speed(140 * mi, 2 * h);
 QuantityOf<isq::speed> auto s3 = avg_speed(20 * m, 2 * s);
 ```
 
-Again this explicitly provides additional information about the quantity we are dealing with in
+The above explicitly provides additional information about the quantity we are dealing with in
 the code, and it serves as a unit test checking if the "thing" returned from a function is actually
 what we expected here.
 
@@ -192,4 +224,4 @@ what we expected here.
 
     The `QuantityOf` and `QuantityPointOf` concepts are probably the most useful, but there
     are a few more to play with. A list of all the concepts can be found in
-    [the "Basic Concepts" chapter](concepts.md).
+    the [Basic Concepts](concepts.md) chapter.

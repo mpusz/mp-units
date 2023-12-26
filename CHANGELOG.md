@@ -4,7 +4,7 @@
 
 ### 2.2.0 <small>WIP</small> { id="2.2.0" }
 
-- feat: `fma`, `isfinite`, `isinf`, and `isnan` math function added by @NAThompson
+- feat: `fma`, `isfinite`, `isinf`, and `isnan` math function added by [@NAThompson](https://github.com/NAThompson)
 - feat: `quantity_point` support added for `quantity_cast` and `value_cast`
 - feat: `value_cast<Unit, Representation>` added
 - (!) refactor: `zero_Fahrenheit` renamed to `zeroth_degree_Fahrenheit`
@@ -15,6 +15,7 @@
 - docs: project blog and first posts added
 - docs: project documentation layout refactored
 - docs: "Interoperability with Other Libraries" chapter added
+- docs: "Framework Basics" chapters updated and cleaned up
 
 ### 2.1.0 <small>December 9, 2023</small> { id="2.1.0" }
 

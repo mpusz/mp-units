@@ -18,8 +18,8 @@
 Such distinction is important because each quantity character represents different properties
 and allows different operations to be done on its quantities.
 
-For example, imagine a physical units library that allows the creation of a `speed` quantity from both
-`length / time` and `length * time`. It wouldn't be too safe to use such a product, right?
+For example, imagine a physical units library that allows the creation of a $speed$ quantity from both
+$length / time$ and $length * time$. It wouldn't be too safe to use such a product, right?
 
 Now we have to realize that both of the above operations (multiplication and division) are not even
 mathematically defined for linear algebra types such as vectors or tensors. On the other hand, two vectors
@@ -34,36 +34,36 @@ results from both cases. This simply can't work.
 While defining quantities ISO 80000 explicitly mentions when a specific quantity has a vector or tensor
 character. Here are some examples:
 
-| Quantity               |  Character   |                 Quantity Equation                 |
-|------------------------|:------------:|:-------------------------------------------------:|
-| `duration`             |    scalar    |                 _{base quantity}_                 |
-| `mass`                 |    scalar    |                 _{base quantity}_                 |
-| `length`               |    scalar    |                 _{base quantity}_                 |
-| `path_length`          |    scalar    |                 _{base quantity}_                 |
-| `radius`               |    scalar    |                 _{base quantity}_                 |
-| `position_vector`      |  **vector**  |                 _{base quantity}_                 |
-| `velocity`             |  **vector**  |           `position_vector / duration`            |
-| `acceleration`         |  **vector**  |               `velocity / duration`               |
-| `force`                |  **vector**  |               `mass * acceleration`               |
-| `power`                |    scalar    |                `force ⋅ velocity`                 |
-| `moment_of_force`      |  **vector**  |             `position_vector × force`             |
-| `torque`               |    scalar    |         `moment_of_force ⋅ {unit-vector}`         |
-| `surface_tension`      |    scalar    |                `|force| / length`                 |
-| `angular_displacement` |    scalar    |              `path_length / radius`               |
-| `angular_velocity`     |  **vector**  | `angular_displacement / duration * {unit-vector}` |
-| `momentum`             |  **vector**  |                 `mass * velocity`                 |
-| `angular_momentum`     |  **vector**  |           `position_vector × momentum`            |
-| `moment_of_inertia`    | **_tensor_** |       `angular_momentum ⊗ angular_velocity`       |
+| Quantity                 |  Character   |                    Quantity Equation                    |
+|--------------------------|:------------:|:-------------------------------------------------------:|
+| $duration$               |    scalar    |                    _{base quantity}_                    |
+| $mass$                   |    scalar    |                    _{base quantity}_                    |
+| $length$                 |    scalar    |                    _{base quantity}_                    |
+| $path\; length$          |    scalar    |                    _{base quantity}_                    |
+| $radius$                 |    scalar    |                    _{base quantity}_                    |
+| $position\; vector$      |  **vector**  |                    _{base quantity}_                    |
+| $velocity$               |  **vector**  |             $position\; vector / duration$              |
+| $acceleration$           |  **vector**  |                  $velocity / duration$                  |
+| $force$                  |  **vector**  |                  $mass * acceleration$                  |
+| $power$                  |    scalar    |                 $force \cdot velocity$                  |
+| $moment\; of\; force$    |  **vector**  |            $position\; vector \times force$             |
+| $torque$                 |    scalar    |      $moment\; of\; force \cdot \{unit\; vector\}$      |
+| $surface\; tension$      |    scalar    |             $\lvert force \rvert / length$              |
+| $angular\; displacement$ |    scalar    |                $path\; length / radius$                 |
+| $angular\; velocity$     |  **vector**  | $angular\; displacement / duration * \{unit\; vector\}$ |
+| $momentum$               |  **vector**  |                    $mass * velocity$                    |
+| $angular\; momentum$     |  **vector**  |           $position\; vector \times momentum$           |
+| $moment\; of\; inertia$  | **_tensor_** |     $angular\; momentum \otimes angular\; velocity$     |
 
 In the above equations:
 
-- `a * b` - regular multiplication where one of the arguments has to be scalar
-- `a / b` - regular division where the divisor has to be scalar
-- `a ⋅ b` - dot product of two vectors
-- `a × b` - cross product of two vectors
-- `|a|` - magnitude of a vector
-- `{unit-vector}` - a special vector with the magnitude of `1`
-- `a ⊗ b` - tensor product of two vectors or tensors
+- $a * b$ - regular multiplication where one of the arguments has to be scalar
+- $a / b$ - regular division where the divisor has to be scalar
+- $a \cdot b$ - dot product of two vectors
+- $a \times b$ - cross product of two vectors
+- $\lvert a \rvert$ - magnitude of a vector
+- $\{unit\; vector\}$ - a special vector with the magnitude of $1$
+- $a \otimes b$ - tensor product of two vectors or tensors
 
 !!! note
 
