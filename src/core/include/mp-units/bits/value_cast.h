@@ -46,7 +46,8 @@ template<Unit auto ToU, typename Q>
 [[nodiscard]] constexpr Quantity auto value_cast(Q&& q)
 {
   using q_type = std::remove_reference_t<Q>;
-  return detail::sudo_cast<quantity<q_type::quantity_spec[ToU], typename q_type::rep>>(std::forward<Q>(q));
+  return detail::sudo_cast<quantity<detail::make_reference(q_type::quantity_spec, ToU), typename q_type::rep>>(
+    std::forward<Q>(q));
 }
 
 /**
@@ -85,7 +86,7 @@ template<Unit auto ToU, Representation ToRep, typename Q>
 [[nodiscard]] constexpr Quantity auto value_cast(Q&& q)
 {
   using q_type = std::remove_reference_t<Q>;
-  return detail::sudo_cast<quantity<q_type::quantity_spec[ToU], ToRep>>(std::forward<Q>(q));
+  return detail::sudo_cast<quantity<detail::make_reference(q_type::quantity_spec, ToU), ToRep>>(std::forward<Q>(q));
 }
 
 /**
