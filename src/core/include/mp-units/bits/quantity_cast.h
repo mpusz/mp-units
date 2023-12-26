@@ -50,11 +50,7 @@ template<QuantitySpec auto ToQS, typename Q>
   requires Quantity<std::remove_cvref_t<Q>> && (castable(Q::quantity_spec, ToQS))
 [[nodiscard]] constexpr Quantity auto quantity_cast(Q&& q)
 {
-  if constexpr (detail::QuantityKindSpec<std::remove_const_t<decltype(ToQS)>> &&
-                AssociatedUnit<std::remove_const_t<decltype(Q::unit)>>)
-    return quantity{std::forward<Q>(q).numerical_value_is_an_implementation_detail_, Q::unit};
-  else
-    return quantity{std::forward<Q>(q).numerical_value_is_an_implementation_detail_, reference<ToQS, Q::unit>{}};
+  return quantity{std::forward<Q>(q).numerical_value_is_an_implementation_detail_, make_reference(ToQS, Q::unit)};
 }
 
 /**
