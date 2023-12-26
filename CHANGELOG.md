@@ -8,6 +8,7 @@
 - feat: `quantity_point` support added for `quantity_cast` and `value_cast`
 - feat: `value_cast<Unit, Representation>` added
 - (!) refactor: `zero_Fahrenheit` renamed to `zeroth_degree_Fahrenheit`
+- refactor: `math.h` header file broke up to smaller pieces
 - refactor: math functions constraints refactored
 - fix: `QuantityLike` conversions required `Q::rep` instead of using one provided by `quantity_like_traits`
 - docs: project blog and first posts added
