@@ -29,6 +29,7 @@
 #include <mp-units/bits/external/type_traits.h>
 #include <mp-units/bits/get_associated_quantity.h>
 #include <mp-units/bits/magnitude.h>
+#include <mp-units/bits/quantity_point_concepts.h>
 #include <mp-units/bits/quantity_spec_concepts.h>
 #include <mp-units/bits/ratio.h>
 #include <mp-units/bits/symbol_text.h>
@@ -38,6 +39,18 @@
 #include <string>
 
 namespace mp_units {
+
+namespace detail {
+
+template<Unit U, bool = requires { U::point_origin; }>
+struct propagate_point_origin {};
+
+template<Unit U>
+struct propagate_point_origin<U, true> {
+  static constexpr auto point_origin = U::point_origin;
+};
+
+}  // namespace detail
 
 /**
  * @brief Unit being a scaled version of another unit
@@ -49,7 +62,7 @@ namespace mp_units {
  *       instantiate this type automatically based on the unit arithmetic equation provided by the user.
  */
 template<Magnitude auto M, Unit U>
-struct scaled_unit {
+struct scaled_unit : detail::propagate_point_origin<U> {
   static constexpr MP_UNITS_CONSTRAINED_AUTO_WORKAROUND(Magnitude) auto mag = M;
   static constexpr U reference_unit{};
 };
@@ -116,6 +129,14 @@ struct named_unit<Symbol, QS> {
   static constexpr auto quantity_spec = QS;
 };
 
+template<basic_symbol_text Symbol, detail::QuantityKindSpec auto QS, PointOrigin auto PO>
+  requires(!Symbol.empty()) && detail::BaseDimension<std::remove_const_t<decltype(QS.dimension)>>
+struct named_unit<Symbol, QS, PO> {
+  static constexpr auto symbol = Symbol;  ///< Unique base unit identifier
+  static constexpr auto quantity_spec = QS;
+  static constexpr auto point_origin = PO;
+};
+
 /**
  * @brief Specialization for a unit that can be reused by several base quantities
  *
@@ -146,6 +167,13 @@ struct named_unit<Symbol, U> : std::remove_const_t<decltype(U)> {
   static constexpr auto symbol = Symbol;  ///< Unique unit identifier
 };
 
+template<basic_symbol_text Symbol, Unit auto U, PointOrigin auto PO>
+  requires(!Symbol.empty())
+struct named_unit<Symbol, U, PO> : std::remove_const_t<decltype(U)> {
+  static constexpr auto symbol = Symbol;  ///< Unique unit identifier
+  static constexpr auto point_origin = PO;
+};
+
 /**
  * @brief Specialization for a unit with special name valid only for a specific quantity
  *
@@ -160,6 +188,14 @@ template<basic_symbol_text Symbol, AssociatedUnit auto U, detail::QuantityKindSp
 struct named_unit<Symbol, U, QS> : std::remove_const_t<decltype(U)> {
   static constexpr auto symbol = Symbol;  ///< Unique unit identifier
   static constexpr auto quantity_spec = QS;
+};
+
+template<basic_symbol_text Symbol, AssociatedUnit auto U, detail::QuantityKindSpec auto QS, PointOrigin auto PO>
+  requires(!Symbol.empty()) && (QS.dimension == detail::get_associated_quantity(U).dimension)
+struct named_unit<Symbol, U, QS, PO> : std::remove_const_t<decltype(U)> {
+  static constexpr auto symbol = Symbol;  ///< Unique unit identifier
+  static constexpr auto quantity_spec = QS;
+  static constexpr auto point_origin = PO;
 };
 
 /**
@@ -286,14 +322,14 @@ canonical_unit(M, U) -> canonical_unit<M, U>;
 
 #endif
 
-template<Unit T, basic_symbol_text Symbol, detail::QuantityKindSpec auto Q>
-[[nodiscard]] consteval auto get_canonical_unit_impl(T t, const named_unit<Symbol, Q>&);
+template<Unit T, basic_symbol_text Symbol, detail::QuantityKindSpec auto Q, auto... Args>
+[[nodiscard]] consteval auto get_canonical_unit_impl(T t, const named_unit<Symbol, Q, Args...>&);
 
-template<Unit T, basic_symbol_text Symbol>
-[[nodiscard]] consteval auto get_canonical_unit_impl(T t, const named_unit<Symbol>&);
+template<Unit T, basic_symbol_text Symbol, auto... Args>
+[[nodiscard]] consteval auto get_canonical_unit_impl(T t, const named_unit<Symbol, Args...>&);
 
-template<Unit T, basic_symbol_text Symbol, Unit auto U>
-[[nodiscard]] consteval auto get_canonical_unit_impl(T, const named_unit<Symbol, U>&);
+template<Unit T, basic_symbol_text Symbol, Unit auto U, auto... Args>
+[[nodiscard]] consteval auto get_canonical_unit_impl(T, const named_unit<Symbol, U, Args...>&);
 
 template<typename T, typename F, int Num, int... Den>
 [[nodiscard]] consteval auto get_canonical_unit_impl(T, const power<F, Num, Den...>&);
@@ -308,20 +344,20 @@ template<Unit T, auto M, typename U>
   return canonical_unit{M * base.mag, base.reference_unit};
 }
 
-template<Unit T, basic_symbol_text Symbol, detail::QuantityKindSpec auto Q>
-[[nodiscard]] consteval auto get_canonical_unit_impl(T t, const named_unit<Symbol, Q>&)
+template<Unit T, basic_symbol_text Symbol, detail::QuantityKindSpec auto Q, auto... Args>
+[[nodiscard]] consteval auto get_canonical_unit_impl(T t, const named_unit<Symbol, Q, Args...>&)
 {
   return canonical_unit{mag<1>, t};
 }
 
-template<Unit T, basic_symbol_text Symbol>
-[[nodiscard]] consteval auto get_canonical_unit_impl(T t, const named_unit<Symbol>&)
+template<Unit T, basic_symbol_text Symbol, auto... Args>
+[[nodiscard]] consteval auto get_canonical_unit_impl(T t, const named_unit<Symbol, Args...>&)
 {
   return canonical_unit{mag<1>, t};
 }
 
-template<Unit T, basic_symbol_text Symbol, Unit auto U>
-[[nodiscard]] consteval auto get_canonical_unit_impl(T, const named_unit<Symbol, U>&)
+template<Unit T, basic_symbol_text Symbol, Unit auto U, auto... Args>
+[[nodiscard]] consteval auto get_canonical_unit_impl(T, const named_unit<Symbol, U, Args...>&)
 {
   return get_canonical_unit_impl(U, U);
 }

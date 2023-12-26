@@ -86,6 +86,8 @@ static_assert(140 * km / (2 * h) == 70 * km / h);
 ## Quantity points
 
 The quantity point specifies an absolute quantity with respect to an origin.
+If no origin is provided explicitly, an implicit one will be provided by the library.
+
 Together with quantities, they model [The Affine Space](../users_guide/framework_basics/the_affine_space.md).
 
 Quantity points should be used in all places where adding two values is meaningless
@@ -106,10 +108,10 @@ int main()
   using namespace mp_units::si::unit_symbols;
   using namespace mp_units::usc::unit_symbols;
 
-  quantity_point temp = si::zeroth_degree_Celsius + 20. * deg_C;
+  quantity_point temp{20. * deg_C};
   std::cout << "Temperature: "
-            << temp.quantity_from(si::zeroth_degree_Celsius) << " ("
-            << temp.in(deg_F).quantity_from(usc::zeroth_degree_Fahrenheit) << ")\n";
+            << temp.quantity_from_zero() << " ("
+            << temp.in(deg_F).quantity_from_zero() << ")\n";
 }
 ```
 

@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <mp-units/quantity_point.h>
 #include <mp-units/systems/isq/atomic_and_nuclear_physics.h>
 #include <mp-units/systems/isq/base_quantities.h>
 #include <mp-units/systems/isq/space_and_time.h>
@@ -39,7 +40,11 @@ inline constexpr struct metre : named_unit<"m", kind_of<isq::length>> {} metre;
 inline constexpr struct gram : named_unit<"g", kind_of<isq::mass>> {} gram;
 inline constexpr struct kilogram : decltype(kilo<gram>) {} kilogram;
 inline constexpr struct ampere : named_unit<"A", kind_of<isq::electric_current>> {} ampere;
-inline constexpr struct kelvin : named_unit<"K", kind_of<isq::thermodynamic_temperature>> {} kelvin;
+
+inline constexpr struct absolute_zero : absolute_point_origin<absolute_zero, isq::thermodynamic_temperature> {} absolute_zero;
+inline constexpr struct zeroth_kelvin : decltype(absolute_zero) {} zeroth_kelvin;
+inline constexpr struct kelvin : named_unit<"K", kind_of<isq::thermodynamic_temperature>, zeroth_kelvin> {} kelvin;
+
 inline constexpr struct mole : named_unit<"mol", kind_of<isq::amount_of_substance>> {} mole;
 inline constexpr struct candela : named_unit<"cd", kind_of<isq::luminous_intensity>> {} candela;
 
@@ -68,7 +73,11 @@ inline constexpr struct siemens : named_unit<"S", one / ohm> {} siemens;
 inline constexpr struct weber : named_unit<"Wb", volt * second> {} weber;
 inline constexpr struct tesla : named_unit<"T", weber / square(metre)> {} tesla;
 inline constexpr struct henry : named_unit<"H", weber / ampere> {} henry;
-inline constexpr struct degree_Celsius : named_unit<basic_symbol_text{"°C", "`C"}, kelvin> {} degree_Celsius;
+
+inline constexpr struct ice_point : relative_point_origin<quantity_point{273.15 * kelvin}> {} ice_point;
+inline constexpr struct zeroth_degree_Celsius : decltype(ice_point) {} zeroth_degree_Celsius;
+inline constexpr struct degree_Celsius : named_unit<basic_symbol_text{"°C", "`C"}, kelvin, zeroth_degree_Celsius> {} degree_Celsius;
+
 inline constexpr struct lumen : named_unit<"lm", candela * steradian> {} lumen;
 inline constexpr struct lux : named_unit<"lx", lumen / square(metre)> {} lux;
 inline constexpr struct becquerel : named_unit<"Bq", one / second, kind_of<isq::activity>> {} becquerel;

@@ -55,18 +55,6 @@ jobs:
           #     conan-config: "",
           #   }
           - {
-              name: "GCC-11",
-              os: ubuntu-22.04,
-              compiler:
-                {
-                  type: GCC,
-                  version: 11,
-                  cc: "gcc-11",
-                  cxx: "g++-11",
-                },
-              conan-config: "",
-            }
-          - {
               name: "GCC-12",
               os: ubuntu-22.04,
               compiler:

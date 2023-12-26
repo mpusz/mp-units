@@ -271,9 +271,13 @@ The **mp-units** library comes with built-in interoperability with those types. 
 
     quantity_point qp4 = my_origin + 1 * s;
     auto tp4 = to_chrono_time_point(qp4);  // Compile-time Error (1)
+
+    quantity_point qp5{1 * s};
+    auto tp5 = to_chrono_time_point(qp5);  // Compile-time Error (2)
     ```
 
     1. `my_origin` is not defined in terms of `chrono_point_origin<Clock>`.
+    2. `zeroth_point_origin` is not defined in terms of `chrono_point_origin<Clock>`.
 
 Here is an example of how interoperability described in this chapter can be used in practice:
 

@@ -178,10 +178,10 @@ distance spherical_distance(position<T> from, position<T> to)
 
   using si::sin, si::cos, si::asin, si::acos;
 
-  const quantity from_lat = from.lat.quantity_from(equator);
-  const quantity from_lon = from.lon.quantity_from(prime_meridian);
-  const quantity to_lat = to.lat.quantity_from(equator);
-  const quantity to_lon = to.lon.quantity_from(prime_meridian);
+  const quantity from_lat = from.lat.quantity_from_zero();
+  const quantity from_lon = from.lon.quantity_from_zero();
+  const quantity to_lat = to.lat.quantity_from_zero();
+  const quantity to_lon = to.lon.quantity_from_zero();
 
   // https://en.wikipedia.org/wiki/Great-circle_distance#Formulae
   if constexpr (sizeof(T) >= 8) {

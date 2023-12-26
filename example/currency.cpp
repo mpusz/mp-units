@@ -33,8 +33,6 @@ inline constexpr struct dim_currency : base_dimension<"$"> {} dim_currency;
 
 QUANTITY_SPEC(currency, dim_currency);
 
-constexpr struct zero : absolute_point_origin<zero, currency> {} zero;
-
 inline constexpr struct euro : named_unit<"EUR", kind_of<currency>> {} euro;
 inline constexpr struct us_dollar : named_unit<"USD", kind_of<currency>> {} us_dollar;
 inline constexpr struct great_british_pound : named_unit<"GBP", kind_of<currency>> {} great_british_pound;
@@ -90,18 +88,18 @@ quantity<To, Rep> exchange_to(quantity<From, Rep> q)
 template<ReferenceOf<currency> auto To, ReferenceOf<currency> auto From, auto PO, typename Rep>
 quantity_point<To, PO, Rep> exchange_to(quantity_point<From, PO, Rep> q)
 {
-  return quantity_point{zero + static_cast<Rep>(exchange_rate<q.unit, get_unit(To)>() *
-                                                (q - q.absolute_point_origin).numerical_value_in(q.unit)) *
-                                 To};
+  return quantity_point{
+    static_cast<Rep>(exchange_rate<q.unit, get_unit(To)>() * q.quantity_from_zero().numerical_value_in(q.unit)) * To};
 }
 
 int main()
 {
   using namespace unit_symbols;
 
-  quantity_point price_usd = zero + 100 * USD;
+  quantity_point price_usd{100 * USD};
   quantity_point price_euro = exchange_to<euro>(price_usd);
 
-  std::cout << price_usd.quantity_from(zero) << " -> " << price_euro.quantity_from(zero) << "\n";
-  // std::cout << price_usd.quantity_from(zero) + price_euro.quantity_from(zero) << "\n";  // does not compile
+  std::cout << price_usd.quantity_from_zero() << " -> " << price_euro.quantity_from_zero() << "\n";
+  // std::cout << price_usd.quantity_from_zero() + price_euro.quantity_from_zero() << "\n";  // does
+  // not compile
 }
