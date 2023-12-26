@@ -4,6 +4,8 @@
 
 ### 2.2.0 <small>WIP</small> { id="2.2.0" }
 
+- feat: implicit point origins support added
+- feat: unit default point origin support added
 - feat: `fma`, `isfinite`, `isinf`, and `isnan` math function added by [@NAThompson](https://github.com/NAThompson)
 - feat: `quantity_point` support added for `quantity_cast` and `value_cast`
 - feat: `value_cast<Unit, Representation>` added

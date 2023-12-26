@@ -2,13 +2,13 @@
 
 The affine space has two types of entities:
 
-- **_point_** - a position specified with coordinate values (e.g., location, address, etc.)
-- **_vector_** - the difference between two points (e.g., shift, offset, displacement, duration, etc.)
+- **_Point_** - a position specified with coordinate values (e.g., location, address, etc.)
+- **_Vector_** - the difference between two points (e.g., shift, offset, displacement, duration, etc.)
 
 
 !!! note
 
-    The _vector_ described here is specific to the affine space theory and is not the same thing
+    The _Vector_ described here is specific to the affine space theory and is not the same thing
     as the quantity of a vector character that we discussed in the
     ["Scalars, vectors, and tensors" chapter](character_of_a_quantity.md#scalars-vectors-and-tensors)
     (although, in some cases, those terms may overlap).
@@ -18,41 +18,41 @@ The affine space has two types of entities:
 
 Here are the primary operations one can do in the affine space:
 
-- _vector_ + _vector_ -> _vector_
-- _vector_ - _vector_ -> _vector_
-- -_vector_ -> _vector_
-- _vector_ * scalar -> _vector_
-- scalar * _vector_ -> _vector_
-- _vector_ / scalar -> _vector_
-- _point_ - _point_ -> _vector_
-- _point_ + _vector_ -> _point_
-- _vector_ + _point_ -> _point_
-- _point_ - _vector_ -> _point_
+- _Vector_ + _Vector_ -> _Vector_
+- _Vector_ - _Vector_ -> _Vector_
+- -_Vector_ -> _Vector_
+- _Vector_ * Scalar -> _Vector_
+- Scalar * _Vector_ -> _Vector_
+- _Vector_ / Scalar -> _Vector_
+- _Point_ - _Point_ -> _Vector_
+- _Point_ + _Vector_ -> _Point_
+- _Vector_ + _Point_ -> _Point_
+- _Point_ - _Vector_ -> _Point_
 
 !!! important
 
     It is not possible to:
 
-    - add two _points_,
-    - subtract a _point_ from a _vector_,
-    - multiply nor divide _points_ with anything else.
+    - add two _Points_,
+    - subtract a _Point_ from a _Vector_,
+    - multiply nor divide _Points_ with anything else.
 
 
 ## _Points_ are more common than most of us imagine
 
 _Point_ abstractions should be used more often in the C++ software.
-They are not only about temperature or time. _Points_ are everywhere around us and should become
+They are not only about _temperature_ or _time_. _Points_ are everywhere around us and should become
 more popular in the products we implement. They can be used to implement:
 
-- temperature points,
+- _temperature_ points,
 - timestamps,
-- daily mass readouts from the scale,
-- altitudes of mountain peaks on a map,
-- current speed displayed on a car's speed-o-meter,
-- today's price of instruments on the market,
+- daily _mass_ readouts from the scale,
+- _altitudes_ of mountain peaks on a map,
+- current _speed_ displayed on a car's speed-o-meter,
+- today's _price_ of instruments on the market,
 - and many more.
 
-Improving the affine space's _points_ intuition will allow us to write better and safer software.
+Improving the affine space's _Points_ intuition will allow us to write better and safer software.
 
 
 ## _Vector_ is modeled by `quantity`
@@ -60,20 +60,20 @@ Improving the affine space's _points_ intuition will allow us to write better an
 Up until now, each time we used a `quantity` in our code, we were modeling some kind of a
 difference between two things:
 
-- the distance between two points,
-- duration between two time points,
-- the difference in speed (even if relative to zero).
+- the _distance_ between two points,
+- _duration_ between two time points,
+- the difference in _speed_ (even if relative to zero).
 
-As we already know, a `quantity` type provides all operations required for a _vector_ type in
+As we already know, a `quantity` type provides all operations required for a _Vector_ type in
 the affine space.
 
 
 ## _Point_ is modeled by `quantity_point` and `PointOrigin`
 
-In the **mp-units** library the _point_ abstraction is modelled by:
+In the **mp-units** library the _Point_ abstraction is modelled by:
 
 - [`PointOrigin` concept](concepts.md#PointOrigin) that specifies measurement origin,
-- `quantity_point` class template that specifies a _point_ relative to a specific predefined origin.
+- `quantity_point` class template that specifies a _Point_ relative to a specific predefined origin.
 
 
 ### `quantity_point`
@@ -167,7 +167,7 @@ this specific quantity type.
 
 !!! tip
 
-    Storing _points_ is the most efficient representation we can choose in this scenario:
+    Storing _Points_ is the most efficient representation we can choose in this scenario:
 
     - to store a value, we read it directly from the instrument, and no additional transformation
       is needed,
@@ -175,7 +175,7 @@ this specific quantity type.
     - to get any relative quantity (e.g., distance from the start, distance from the previous point,
       etc.), we have to perform a single subtraction operation.
 
-    If we stored _vectors_ in our database instead, we would have to pay at runtime for additional
+    If we stored _Vectors_ in our database instead, we would have to pay at runtime for additional
     operations:
 
     - to store a quantity, we would have to perform the subtraction right away to get the interval
@@ -195,7 +195,7 @@ The points from Alice's and Bob's trips should be considered separate, and to en
 compilation time, we need to introduce explicit origins.
 
 
-### Absolute _point_ origin
+### Absolute _Point_ origin
 
 The **absolute point origin** specifies the "zero" of our measurement's scale. User can
 specify such an origin by deriving from the `absolute_point_origin` class template:
@@ -232,10 +232,10 @@ clock.
 !!! note
 
     The **mp-units** library provides means to specify
-    [interoperability with other units libraries](../use_cases/interoperability_with_other_units_libraries.md).
+    [interoperability with other units libraries](../use_cases/interoperability_with_other_libraries.md).
     It also has built-in compatibility with `std::chrono` types, so users do not have to define
-    interoperability traits for such types by themselves. Those are provided in the
-    `mp-units/chrono.h` header file.
+    interoperability traits or point origins for such types by themselves. Those are already
+    provided in the `mp-units/chrono.h` header file.
 
 
 Now, we can refactor our database to benefit from the explicit points:
@@ -255,7 +255,7 @@ using trip_log = std::vector<trip_log_item<A>>;
 We also need to update the initialization part in our code. In the case of implicit zeroth origins,
 we could construct `quantity_point` directly from the value of a `quantity`. This is no longer
 the case.
-As a _point_ can be represented with a _vector_ from the origin, to improve the safety of the code
+As a _Point_ can be represented with a _Vector_ from the origin, to improve the safety of the code
 we write, a `quantity_point` class template must be created with one of the following operations:
 
 ```cpp
@@ -268,7 +268,7 @@ Although, the `qp3` above does not have a physical sense in this specific scenar
 
 !!! note
 
-    [It is not allowed to subtract a _point_ from a _vector_](#operations-in-the-affine-space)
+    [It is not allowed to subtract a _Point_ from a _Vector_](#operations-in-the-affine-space)
     thus `1356 * km - zeroth_odometer<actor::alice>` is an invalid operation.
 
 !!! info
@@ -359,7 +359,7 @@ Taxi distance:   31.2544 km
     to determine a resulting `quantity` type.
 
 
-### Relative _point_ origin
+### Relative _Point_ origin
 
 We often do not have only one ultimate "zero" point when we measure things.
 
@@ -379,7 +379,7 @@ For this purpose, we can define a `relative_point_origin` in the following way:
 constexpr struct everest_base_camp : relative_point_origin<mean_sea_level + 5364 * m> {} everest_base_camp;
 ```
 
-The above can be used as an origin for subsequent _points_:
+The above can be used as an origin for subsequent _Points_:
 
 ```cpp
 constexpr quantity_point first_climb_alt = everest_base_camp + isq::altitude(std::uint8_t{42} * m);
@@ -393,10 +393,10 @@ provided point origin while the `quantity_from_zero()` returns the distance from
 origin.
 
 
-### Converting between different representations of the same _point_
+### Converting between different representations of the same _Point_
 
-As we might represent the same _point_ with _vectors_ from various origins, the **mp-units** library
-provides facilities to convert the _point_ to `quantity_point` class templates expressed in
+As we might represent the same _Point_ with _Vectors_ from various origins, the **mp-units** library
+provides facilities to convert the _Point_ to `quantity_point` class templates expressed in
 terms of origins relative to each other in the type system.
 
 For this purpose, we can use:
@@ -418,8 +418,8 @@ For this purpose, we can use:
 !!! note
 
     It is only allowed to convert between various origins defined in terms of the same
-    `absolute_point_origin`. Even if it is theoretically possible to express the same _point_ as
-    a _vector_ from another `absolute_point_origin`, the library will not allow such a conversion.
+    `absolute_point_origin`. Even if it is theoretically possible to express the same _Point_ as
+    a _Vector_ from another `absolute_point_origin`, the library will not allow such a conversion.
     A custom user-defined conversion function will be needed to add this functionality.
 
     Said otherwise, in the **mp-units** library, there is no way to spell how two distinct
@@ -459,7 +459,7 @@ The above is a great example of how point origins can be stacked on top of each 
 !!! note
 
     Notice that while stacking point origins, we can use not only different representation types
-    but also different units for origins and a _point_. In the above example, the relative
+    but also different units for origins and a _Point_. In the above example, the relative
     point origin for degree Celsius is defined in terms of `si::kelvin`, while the quantity point
     for it will use `si::degree_Celsius` as a unit.
 
@@ -512,6 +512,8 @@ choose from here. Depending on our needs or taste we can:
     quantity_point q9{20.5 * deg_C};
     ```
 
+*[CTAD]: Class Template Argument Deduction
+
 In all of the above cases, we end up with the `quantity_point` of the same type and value.
 
 To play a bit more with temperatures, we can implement a simple room AC temperature controller in
@@ -560,10 +562,11 @@ Room reference temperature: 21 °C (69.8 °F, 294.15 K)
 ```
 
 
-### No text output for _points_
+### No text output for _Points_
 
 The library does not provide a text output for quantity points, as printing just a number and a unit
-is not enough to adequately describe a quantity point. Often, an additional postfix is required.
+is not enough to adequately describe a quantity point. Often, an additional prefix or postfix is
+required.
 
 For example, the text output of `42 m` may mean many things and can also be confused with an output
 of a regular quantity. On the other hand, printing `42 m AMSL` for altitudes above mean sea level is
