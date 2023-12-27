@@ -31,20 +31,33 @@
 
 // Grammar
 //
-// units-format-spec   ::=  [fill-and-align] [width] [units-specs]
-// units-specs         ::=  conversion-spec
-//                          units-specs conversion-spec
-//                          units-specs literal-char
-// literal-char        ::=  any character other than '{' or '}'
-// conversion-spec     ::=  '%' units-type
-// units-type          ::=  [units-rep-modifier] 'Q'
-//                          [units-unit-modifier] 'q'
-// units-rep-modifier  ::=  [sign] [#] [precision] [L] [units-rep-type]
-// units-rep-type      ::=  one of "aAbBdeEfFgGoxX"
-// units-unit-modifier ::=  [units-text-encoding, units-unit-symbol-denominator, units-unit-symbol-separator]
-// units-text-encoding ::=  one of "UA"
-// units-unit-symbol-solidus   ::=  one of "oan"
-// units-unit-symbol-separator ::=  one of "sd"
+// quantity-format-spec  ::=  [fill-and-align] [width] [quantity-specs]
+// quantity-specs        ::=  conversion-spec
+//                            quantity-specs conversion-spec
+//                            quantity-specs literal-char
+// literal-char          ::=  any character other than '{' or '}'
+// conversion-spec       ::=  '%' type
+// type                  ::=  [rep-modifier] 'Q'
+//                            [unit-modifier] 'q'
+// rep-modifier          ::=  [sign] [#] [precision] [L] [rep-type]
+// rep-type              ::=  one of
+//                            a A b B d e E f F g G o x X
+// unit-modifier         ::=  [text-encoding] [unit-symbol-solidus] [unit-symbol-separator]
+//                            [text-encoding] [unit-symbol-separator] [unit-symbol-solidus]
+//                            [unit-symbol-solidus] [text-encoding] [unit-symbol-separator]
+//                            [unit-symbol-solidus] [unit-symbol-separator] [text-encoding]
+//                            [unit-symbol-separator] [text-encoding] [unit-symbol-solidus]
+//                            [unit-symbol-separator] [unit-symbol-solidus] [text-encoding]
+// text-encoding         ::=  one of
+//                            U A
+// unit-symbol-solidus   ::=  one of
+//                            o a n
+// unit-symbol-separator ::=  one of
+//                            s d
+
+
+// TODO Should the below be allowed? Is it even possible to implement with `format()` being const?
+// std::cout << std::format("{:%Q %q %Q %q}\n", 123s);
 
 namespace mp_units::detail {
 
