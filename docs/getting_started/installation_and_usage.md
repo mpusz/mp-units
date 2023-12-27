@@ -410,7 +410,7 @@ to build our documentation. The easiest way to install all the required dependen
 is with `pip`:
 
 ```shell
-pip install -U mkdocs-material
+pip install -U mkdocs-material mkdocs-rss-plugin
 ```
 
 After that, you can either:
