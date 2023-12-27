@@ -167,24 +167,14 @@ jobs:
         shell: bash
         run: |
           sudo xcode-select -s /Applications/Xcode_${{ matrix.config.compiler.version }}.app && /usr/bin/xcodebuild -version
-      - name: Install Ninja
-        shell: bash
-        run: |
-          if [ $RUNNER_OS == 'Linux' ]; then
-            sudo apt install -y ninja-build
-          elif [ $RUNNER_OS == 'Windows' ]; then
-            choco install ninja
-          elif [ $RUNNER_OS == 'macOS' ]; then
-            brew update
-            brew install ninja
-          else
-            echo "'$RUNNER_OS' not supported"
-            exit 1
-          fi
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: "3.8"
+      - name: Install Ninja
+        shell: bash
+        run: |
+          pip install -U ninja
       - name: Install Conan
         shell: bash
         run: |
