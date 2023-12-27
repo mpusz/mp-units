@@ -120,7 +120,7 @@ inline constexpr bool space_before_unit_symbol<non_si::degree> = false;
 !!! note
 
     The above works only for [the default formatting](#default-formatting). In case we provide our own
-    format specification (e.g. `std::format("{:%Q %q}", q)`), the library will always obey this
+    format specification (e.g., `std::format("{:%Q %q}", q)`), the library will always obey this
     specification for all the units (no matter of what is the actual value of the
     `space_before_unit_symbol` customization point) and the separating space will always be present
     in this case.
@@ -152,7 +152,7 @@ associated with this quantity.
 
 !!! important "Important: Don't assume a unit"
 
-    Remember that when we deal with a quantity of an "unknown" (e.g. `auto`) type, it is a good
+    Remember that when we deal with a quantity of an "unknown" (e.g., `auto`) type, it is a good
     practice to always [convert the unit to the expected one](value_conversions.md#value-conversions)
     before passing it to the text output:
 
@@ -174,6 +174,11 @@ std::cout << "|" << std::setw(10) << std::left << 123 * m << "|\n";          // 
 std::cout << "|" << std::setw(10) << std::setfill('*') << 123 * m << "|\n";  // |123 m*****|
 ```
 
+!!! note
+
+    To have more control over the formatting of the quantity that is printed with the output
+    stream just use `std::cout << std::format(...)`.
+
 
 ### `std::format`
 
@@ -188,49 +193,58 @@ fine-grained control over what and how it is being printed in the text output.
 
 #### Grammar
 
-```text
-units-format-spec   ::=  [fill-and-align] [width] [units-specs]
-units-specs         ::=  conversion-spec
-                         units-specs conversion-spec
-                         units-specs literal-char
-literal-char        ::=  any character other than '{' or '}'
-conversion-spec     ::=  '%' units-type
-units-type          ::=  [units-rep-modifier] 'Q'
-                         [units-unit-modifier] 'q'
-units-rep-modifier  ::=  [sign] [#] [precision] [L] [units-rep-type]
-units-rep-type      ::=  one of "aAbBdeEfFgGoxX"
-units-unit-modifier ::=  [units-text-encoding units-unit-symbol-denominator units-unit-symbol-separator]
-units-text-encoding ::=  one of "UA"
-units-unit-symbol-solidus   ::=  one of "oan"
-units-unit-symbol-separator ::=  one of "sd"
+```ebnf
+quantity-format-spec  ::=  [fill-and-align] [width] [quantity-specs]
+quantity-specs        ::=  conversion-spec
+                           quantity-specs conversion-spec
+                           quantity-specs literal-char
+literal-char          ::=  any character other than '{' or '}'
+conversion-spec       ::=  '%' type
+type                  ::=  [rep-modifier] 'Q'
+                           [unit-modifier] 'q'
+rep-modifier          ::=  [sign] [#] [precision] [L] [rep-type]
+rep-type              ::=  one of
+                           a A b B d e E f F g G o x X
+unit-modifier         ::=  [text-encoding] [unit-symbol-solidus] [unit-symbol-separator]
+                           [text-encoding] [unit-symbol-separator] [unit-symbol-solidus]
+                           [unit-symbol-solidus] [text-encoding] [unit-symbol-separator]
+                           [unit-symbol-solidus] [unit-symbol-separator] [text-encoding]
+                           [unit-symbol-separator] [text-encoding] [unit-symbol-solidus]
+                           [unit-symbol-separator] [unit-symbol-solidus] [text-encoding] 
+text-encoding         ::=  one of
+                           U A
+unit-symbol-solidus   ::=  one of
+                           o a n
+unit-symbol-separator ::=  one of
+                           s d
 ```
 
 
 In the above grammar:
 
 - `fill-and-align`, `width`, `sign`, `#`, `precision`, and `L` tokens, as well as the individual
-  tokens of `units-rep-type` are defined in the [format.string.std](https://wg21.link/format.string.std)
+  tokens of `rep-type` are defined in the [format.string.std](https://wg21.link/format.string.std)
   chapter of the C++ standard specification,
-- tokens `Q` and `q` of `units-type` are described in the [time.format](https://wg21.link/time.format)
+- tokens `Q` and `q` of `type` are described in the [time.format](https://wg21.link/time.format)
   chapter of the C++ standard specification,
-- `units-text-encoding` tokens specify the unit text encoding:
+- `text-encoding` tokens specify the unit text encoding:
     - `U` (default) uses the **Unicode** symbols defined by the [SI](../../appendix/glossary.md#si)
-      specification (e.g. `m³`, `µs`)
-    - `A` token forces non-standard **ASCII**-only output (e.g. `m^3`, `us`)
-- `units-unit-symbol-solidus` tokens specify how the division of units should look like:
+      specification (e.g., `m³`, `µs`)
+    - `A` token forces non-standard **ASCII**-only output (e.g., `m^3`, `us`)
+- `unit-symbol-solidus` tokens specify how the division of units should look like:
     - `o` (default) outputs `/` only when there is only **one** unit in the denominator, otherwise negative
-      exponents are printed (e.g. `m/s`, `kg m⁻¹ s⁻¹`)
-    - `a` **always** uses solidus (e.g. `m/s`, `kg/(m s)`)
-    - `n` **never** prints solidus, which means that negative exponents are always used (e.g. `m s⁻¹`,
+      exponents are printed (e.g., `m/s`, `kg m⁻¹ s⁻¹`)
+    - `a` **always** uses solidus (e.g., `m/s`, `kg/(m s)`)
+    - `n` **never** prints solidus, which means that negative exponents are always used (e.g., `m s⁻¹`,
       `kg m⁻¹ s⁻¹`)
-- `units-unit-symbol-separator` tokens specify how multiplied unit symbols should be separated:
-    - `s` (default) uses **space** as a separator (e.g. `kg m²/s²`)
-    - `d` uses half-high **dot** (`⋅`) as a separator (e.g. `kg⋅m²/s²`)
+- `unit-symbol-separator` tokens specify how multiplied unit symbols should be separated:
+    - `s` (default) uses **space** as a separator (e.g., `kg m²/s²`)
+    - `d` uses half-high **dot** (`⋅`) as a separator (e.g., `kg⋅m²/s²`)
 
 
 #### Default formatting
 
-To format `quantity` values, the formatting facility uses `units-format-spec`. If left empty,
+To format `quantity` values, the formatting facility uses `quantity-format-spec`. If left empty,
 the default formatting is applied. The same default formatting is also applied to the output streams.
 This is why the following code lines produce the same output:
 
@@ -313,7 +327,7 @@ std::println("{:%.1Q %q}", 1.2345 * m);  // 1.2 m
 std::println("{:%.2Q %q}", 1.2345 * m);  // 1.23 m
 ```
 
-`units-rep-type` specifies how a value of the representation type is being printed.
+`rep-type` specifies how a value of the representation type is being printed.
 For integral types:
 
 ```cpp
@@ -335,7 +349,7 @@ std::println("{:%#xQ %q}", 42 * m);   // 0x2a m
 std::println("{:%#XQ %q}", 42 * m);   // 0X2A m
 ```
 
-For floating-point values, the `units-rep-type` token works as follows:
+For floating-point values, the `rep-type` token works as follows:
 
 ```cpp
 std::println("{:%aQ %q}",   1.2345678 * m);      // 0x1.3c0ca2a5b1d5dp+0 m
@@ -360,11 +374,11 @@ std::println("{:%.3GQ %q}", 1.2345678e8 * m);    // 1.23E+08 m
 #### Unit symbol formatting
 
 Unit symbols of some quantities are specified to use Unicode signs by the
-[SI](../../appendix/glossary.md#si) (e.g. `Ω` symbol for the resistance quantity). The **mp-units**
+[SI](../../appendix/glossary.md#si) (e.g., `Ω` symbol for the resistance quantity). The **mp-units**
 library follows this by default. From the engineering point of view, sometimes Unicode text might
 not be the best solution as terminals of many (especially embedded) devices are ASCII-only.
 In such a case, the unit symbol can be forced to be printed using ASCII-only characters thanks to
-`units-text-encoding` token:
+`text-encoding` token:
 
 ```cpp
 std::println("{}", 10 * si::ohm);             // 10 Ω
@@ -378,7 +392,7 @@ std::println("{:%Q %Aq}", 9.8 * (m / s2));    // 9.8 m/s^2
 Additionally, both [ISQ](../../appendix/glossary.md#isq) and [SI](../../appendix/glossary.md#si)
 leave some freedom on how to print unit symbols. This is why two additional tokens were introduced.
 
-`units-unit-symbol-solidus` specifies how the division of units should look like. By default,
+`unit-symbol-solidus` specifies how the division of units should look like. By default,
 `/` will be used only when the denominator contains only one unit. However, with the `a` or `n`
 options, we can force the facility to print the `/` character always (even when there are more units
 in the denominator), or never in which case a parenthesis will be added to enclose all denominator
@@ -410,7 +424,7 @@ to just use the `·` symbol as a separator.
 
     Please let us know in case you require more formatting options here.
 
-The `units-unit-symbol-separator` token allows us to obtain the following outputs:
+The `unit-symbol-separator` token allows us to obtain the following outputs:
 
 ```cpp
 std::println("{:%Q %q}", 1 * kg * m2 / s2);   // 1 kg m²/s²
