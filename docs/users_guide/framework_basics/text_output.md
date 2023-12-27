@@ -212,7 +212,7 @@ unit-modifier         ::=  [text-encoding] [unit-symbol-solidus] [unit-symbol-se
                            [unit-symbol-solidus] [text-encoding] [unit-symbol-separator]
                            [unit-symbol-solidus] [unit-symbol-separator] [text-encoding]
                            [unit-symbol-separator] [text-encoding] [unit-symbol-solidus]
-                           [unit-symbol-separator] [unit-symbol-solidus] [text-encoding] 
+                           [unit-symbol-separator] [unit-symbol-solidus] [text-encoding]
 text-encoding         ::=  one of
                            U A
 unit-symbol-solidus   ::=  one of
