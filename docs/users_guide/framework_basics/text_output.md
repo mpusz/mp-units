@@ -5,22 +5,24 @@ any quantity in the most user-friendly way.
 
 !!! note
 
-    The library does not provide a text output for quantity points, as printing just a number and a unit
-    is not enough to adequately describe a quantity point. Often an additional postfix is required.
+    The library does not provide a text output for quantity points, as printing just a number and
+    a unit is not enough to adequately describe a quantity point. Often, an additional postfix is
+    required.
 
-    For example, the text output of `42 m` may mean many things and can also be confused with an output
-    of a regular quantity. On the other hand, printing `42 m AMSL` for altitudes above mean sea level is
-    a much better solution, but the library does not have enough information to print it that way by itself.
+    For example, the text output of `42 m` may mean many things and can also be confused with an
+    output of a regular quantity. On the other hand, printing `42 m AMSL` for altitudes above mean
+    sea level is a much better solution, but the library does not have enough information to print
+    it that way by itself.
 
 
 ## Derived unit symbols generation
 
-Based on the provided definitions for base units, the library creates symbols for derived ones.
+The library creates symbols for derived ones based on the provided definitions for base units.
 
 ### `unit_symbol_formatting`
 
 `unit_symbol_formatting` is a data type describing the configuration of the symbol generation
-algorithm. It contains three orthogonal fields, and each of them has a default value.
+algorithm. It contains three orthogonal fields, each with a default value.
 
 ```cpp
 enum class text_encoding : std::int8_t {
@@ -119,8 +121,8 @@ inline constexpr bool space_before_unit_symbol<non_si::degree> = false;
 
 !!! note
 
-    The above works only for [the default formatting](#default-formatting). In case we provide our own
-    format specification (e.g., `std::format("{:%Q %q}", q)`), the library will always obey this
+    The above works only for [the default formatting](#default-formatting). In case we provide our
+    own format specification (e.g., `std::format("{:%Q %q}", q)`), the library will always obey this
     specification for all the units (no matter of what is the actual value of the
     `space_before_unit_symbol` customization point) and the separating space will always be present
     in this case.
@@ -164,7 +166,7 @@ associated with this quantity.
 
 #### Output stream formatting
 
-Only basic formatting can be applied for output streams. It includes control over width, fill,
+Only basic formatting can be applied to output streams. It includes control over width, fill,
 and alignment of the entire quantity and formatting of a quantity numerical value according
 to the general C++ rules:
 
@@ -232,11 +234,11 @@ In the above grammar:
       specification (e.g., `m³`, `µs`)
     - `A` token forces non-standard **ASCII**-only output (e.g., `m^3`, `us`)
 - `unit-symbol-solidus` tokens specify how the division of units should look like:
-    - `o` (default) outputs `/` only when there is only **one** unit in the denominator, otherwise negative
-      exponents are printed (e.g., `m/s`, `kg m⁻¹ s⁻¹`)
+    - `o` (default) outputs `/` only when there is only **one** unit in the denominator, otherwise
+      negative exponents are printed (e.g., `m/s`, `kg m⁻¹ s⁻¹`)
     - `a` **always** uses solidus (e.g., `m/s`, `kg/(m s)`)
-    - `n` **never** prints solidus, which means that negative exponents are always used (e.g., `m s⁻¹`,
-      `kg m⁻¹ s⁻¹`)
+    - `n` **never** prints solidus, which means that negative exponents are always used
+      (e.g., `m s⁻¹`, `kg m⁻¹ s⁻¹`)
 - `unit-symbol-separator` tokens specify how multiplied unit symbols should be separated:
     - `s` (default) uses **space** as a separator (e.g., `kg m²/s²`)
     - `d` uses half-high **dot** (`⋅`) as a separator (e.g., `kg⋅m²/s²`)
@@ -256,8 +258,8 @@ std::cout << std::format("Distance: {:%Q %q}\n", 123 * km);
 
 !!! note
 
-    For some quantities the `{:%Q %q}` format may provide a different output than the default one.
-    It will happen for example for:
+    For some quantities, the `{:%Q %q}` format may provide a different output than the default one.
+    It will happen, for example for:
 
     - units for which [`space_before_unit_symbol`](#customization-point) customization point is set
       to `false`,
@@ -378,7 +380,7 @@ Unit symbols of some quantities are specified to use Unicode signs by the
 library follows this by default. From the engineering point of view, sometimes Unicode text might
 not be the best solution as terminals of many (especially embedded) devices are ASCII-only.
 In such a case, the unit symbol can be forced to be printed using ASCII-only characters thanks to
-`text-encoding` token:
+the `text-encoding` token:
 
 ```cpp
 std::println("{}", 10 * si::ohm);             // 10 Ω
@@ -416,13 +418,13 @@ Also, there are a few options to separate the units being multiplied:
 
     _NOTE 1_ In some fields, e.g., vector algebra, distinction is made between `a ∙ b` and `a × b`.
 
-As of today, the **mp-units** library provides the support for `a b` and `a · b` only. Additionally,
+As of today, the **mp-units** library only supports `a b` and `a · b`. Additionally,
 we decided that the extraneous space in the latter case makes the result too verbose, so we decided
 to just use the `·` symbol as a separator.
 
 !!! note
 
-    Please let us know in case you require more formatting options here.
+    Please let us know if you require more formatting options here.
 
 The `unit-symbol-separator` token allows us to obtain the following outputs:
 
