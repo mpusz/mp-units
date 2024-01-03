@@ -61,6 +61,8 @@ plugins:
         - categories
         - tags
   - search
+  - social:
+      enabled: !ENV [CI, false]
   - tags:
       tags_file: users_guide/examples/tags_index.md
 

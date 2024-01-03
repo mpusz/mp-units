@@ -48,7 +48,7 @@ jobs:
             mkdocs-material-
       - name: Installing pip packages
         run: |
-          pip install conan mkdocs-material mkdocs-rss-plugin mike
+          pip install conan mkdocs-material mkdocs-rss-plugin mkdocs-material[imaging] mike
       - name: Prepare git
         run: |
           git config --global user.name github-actions
