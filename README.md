@@ -10,7 +10,7 @@
 [![Conan testing](https://img.shields.io/badge/mpusz.jfrog.io-2.2.0%3Atesting-blue)](https://mpusz.jfrog.io/ui/packages/conan:%2F%2Fmp-units/2.2.0)
 
 
-# `mp-units` - A Quantities and Units library for C++
+# `mp-units` - The quantities and units library for C++
 
 **The mp-units library might be the subject of ISO standardization for C++29. More on this can
 be found in the following ISO C++ proposals:**

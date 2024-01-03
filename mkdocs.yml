@@ -1,6 +1,6 @@
 # Project information
-site_name: "The mp-units library"
-site_description: "A Physical Quantities and Units library for C++"
+site_name: "mp-units"
+site_description: "The quantities and units library for C++"
 site_url: https://mpusz.github.io/mp-units
 site_author: "mp-units Team"
 

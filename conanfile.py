@@ -36,7 +36,7 @@ required_conan_version = ">=2.0.0"
 class MPUnitsConan(ConanFile):
     name = "mp-units"
     homepage = "https://github.com/mpusz/mp-units"
-    description = "A Quantities and Units library for C++"
+    description = "The quantities and units library for C++"
     topics = (
         "units",
         "dimensions",
