@@ -14,6 +14,8 @@ copyright: Copyright &copy; 2018-2023 Mateusz Pusz
 # Configuration
 theme:
   name: material
+  logo: assets/images/mp-units-logo-mono.svg
+  favicon: assets/images/mp-units-logo.svg
   custom_dir: docs/.overrides
   features:
     - content.action.edit
