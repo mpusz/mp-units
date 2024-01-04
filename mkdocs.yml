@@ -34,20 +34,27 @@ theme:
     - toc.follow
     - toc.integrate
   palette:
+    # Palette toggle for automatic mode
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/link
+        name: Switch to light mode
+
+    # Palette toggle for light mode
     - media: "(prefers-color-scheme: light)"
       scheme: default
-      primary: indigo
-      accent: indigo
-      toggle:
-        icon: material/weather-night
-        name: Switch to dark mode
-    - media: "(prefers-color-scheme: dark)"
-      scheme: slate
-      primary: indigo
-      accent: indigo
+      primary: custom
       toggle:
         icon: material/weather-sunny
-        name: Switch to light mode
+        name: Switch to dark mode
+
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: black
+      toggle:
+        icon: material/weather-night
+        name: Switch to system preference
   font:
     text: Roboto
     code: Roboto Mono
@@ -65,6 +72,8 @@ plugins:
   - search
   - social:
       enabled: !ENV [CI, false]
+      cards_layout_options:
+        background_color: "#00599c"
   - tags:
       tags_file: users_guide/examples/tags_index.md
 
