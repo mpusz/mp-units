@@ -44,6 +44,7 @@ theme:
     - media: "(prefers-color-scheme: light)"
       scheme: default
       primary: custom
+      accent: custom
       toggle:
         icon: material/weather-sunny
         name: Switch to dark mode
@@ -52,6 +53,7 @@ theme:
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
       primary: black
+      accent: custom
       toggle:
         icon: material/weather-night
         name: Switch to system preference
