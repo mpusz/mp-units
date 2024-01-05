@@ -1,4 +1,4 @@
-<img align="right" height=107px src="docs/assets/images/mp-units-color.svg">
+<img align="right" height=135px src="docs/assets/images/mp-units-color.svg">
 
 [![GitHub license](https://img.shields.io/github/license/mpusz/mp-units?cacheSeconds=3600&color=informational&label=License)](./LICENSE.md)
 [![GitHub license](https://img.shields.io/badge/C%2B%2B-20-blue)](https://en.cppreference.com/w/cpp/compiler_support#cpp20)
