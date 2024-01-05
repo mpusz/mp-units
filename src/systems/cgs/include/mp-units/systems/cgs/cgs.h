@@ -28,7 +28,11 @@
 namespace mp_units::cgs {
 
 // clang-format off
+#if MP_UNITS_COMP_MSVC
+inline constexpr struct centimetre : si::centi_<si::metre> {} centimetre;
+#else
 inline constexpr struct centimetre : decltype(si::centi<si::metre>) {} centimetre;
+#endif
 inline constexpr struct gram : decltype(si::gram) {} gram;
 inline constexpr struct second : decltype(si::second) {} second;
 inline constexpr struct gal : named_unit<"Gal", centimetre / square(second)> {} gal;

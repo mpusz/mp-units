@@ -38,7 +38,11 @@ namespace si {
 inline constexpr struct second : named_unit<"s", kind_of<isq::time>> {} second;
 inline constexpr struct metre : named_unit<"m", kind_of<isq::length>> {} metre;
 inline constexpr struct gram : named_unit<"g", kind_of<isq::mass>> {} gram;
+#if MP_UNITS_COMP_MSVC
+inline constexpr struct kilogram : kilo_<gram> {} kilogram;
+#else
 inline constexpr struct kilogram : decltype(kilo<gram>) {} kilogram;
+#endif
 inline constexpr struct ampere : named_unit<"A", kind_of<isq::electric_current>> {} ampere;
 
 inline constexpr struct absolute_zero : absolute_point_origin<absolute_zero, isq::thermodynamic_temperature> {} absolute_zero;
@@ -100,7 +104,11 @@ inline constexpr struct degree : named_unit<basic_symbol_text{"°", "deg"}, mag_
 inline constexpr struct arcminute : named_unit<basic_symbol_text{"′", "'"}, mag<ratio{1, 60}> * degree> {} arcminute;
 inline constexpr struct arcsecond : named_unit<basic_symbol_text{"″", "''"}, mag<ratio{1, 60}> * arcminute> {} arcsecond;
 inline constexpr struct are : named_unit<"a", square(si::deca<si::metre>)> {} are;
+#if MP_UNITS_COMP_MSVC
+inline constexpr struct hectare : si::hecto_<are> {} hectare;
+#else
 inline constexpr struct hectare : decltype(si::hecto<are>) {} hectare;
+#endif
 inline constexpr struct litre : named_unit<"l", cubic(si::deci<si::metre>)> {} litre;
 inline constexpr struct tonne : named_unit<"t", mag<1000> * si::kilogram> {} tonne;
 inline constexpr struct dalton : named_unit<"Da", mag<ratio{16'605'390'666'050, 10'000'000'000'000}> * mag_power<10, -27> * si::kilogram> {} dalton;
