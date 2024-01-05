@@ -352,7 +352,7 @@ For example:
 - the relative point origin can be defined in the following way:
 
   ```cpp
-  inline constexpr struct ice_point : relative_point_origin<absolute_zero + 273.15 * kelvin> {} ice_point;
+  inline constexpr struct ice_point : relative_point_origin<absolute_zero + 273'150 * milli<kelvin>> {} ice_point;
   ```
 
 

@@ -438,7 +438,7 @@ namespace si {
 inline constexpr struct absolute_zero : absolute_point_origin<absolute_zero, isq::thermodynamic_temperature> {} absolute_zero;
 inline constexpr struct zeroth_kelvin : decltype(absolute_zero) {} zeroth_kelvin;
 
-inline constexpr struct ice_point : relative_point_origin<quantity_point{273.15 * kelvin}> {} ice_point;
+inline constexpr struct ice_point : relative_point_origin<quantity_point{273'150 * milli<kelvin>}> {} ice_point;
 inline constexpr struct zeroth_degree_Celsius : decltype(ice_point) {} zeroth_degree_Celsius;
 
 }

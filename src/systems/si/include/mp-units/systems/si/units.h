@@ -78,7 +78,7 @@ inline constexpr struct weber : named_unit<"Wb", volt * second> {} weber;
 inline constexpr struct tesla : named_unit<"T", weber / square(metre)> {} tesla;
 inline constexpr struct henry : named_unit<"H", weber / ampere> {} henry;
 
-inline constexpr struct ice_point : relative_point_origin<quantity_point{273.15 * kelvin}> {} ice_point;
+inline constexpr struct ice_point : relative_point_origin<quantity_point{273'150 * milli<kelvin>}> {} ice_point;
 inline constexpr struct zeroth_degree_Celsius : decltype(ice_point) {} zeroth_degree_Celsius;
 inline constexpr struct degree_Celsius : named_unit<basic_symbol_text{"°C", "`C"}, kelvin, zeroth_degree_Celsius> {} degree_Celsius;
 
