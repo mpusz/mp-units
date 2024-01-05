@@ -137,7 +137,7 @@ void example()
   const auto acceleration = isq::acceleration(measurement{9.8, 0.1} * m / s2);
   const auto time = measurement{1.2, 0.1} * s;
 
-  const QuantityOf<isq::velocity> auto velocity = acceleration * time;
+  const MP_UNITS_CONSTRAINED_AUTO_WORKAROUND(QuantityOf<isq::velocity>) auto velocity = acceleration * time;
   std::cout << acceleration << " * " << time << " = " << velocity << " = " << velocity.in(km / h) << '\n';
 
   const auto length = measurement{123., 1.} * m;
