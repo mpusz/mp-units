@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include <version>
-
 #if __clang__
 #define MP_UNITS_COMP_CLANG __clang_major__
 #elif __GNUC__
@@ -70,9 +68,6 @@
 #define MP_UNITS_DIAGNOSTIC_IGNORE_DEPRECATED
 #endif
 
-#include <compare>
-#include <concepts>
-
 #if MP_UNITS_COMP_MSVC
 
 #define MP_UNITS_TYPENAME typename
@@ -83,7 +78,7 @@
 
 #endif
 
-#if (defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 17) || (defined MP_UNITS_COMP_GCC && MP_UNITS_COMP_GCC < 12)
+#if (defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 17)
 
 #define MP_UNITS_CONSTEVAL constexpr
 
@@ -102,5 +97,52 @@
 
 #define MP_UNITS_CONSTRAINED_AUTO_WORKAROUND(X) X
 #define MP_UNITS_CONSTRAINED_NTTP_WORKAROUND(X) X
+
+#endif
+
+#ifndef MP_UNITS_USE_LIBFMT
+#define MP_UNITS_USE_LIBFMT 1
+#endif
+
+#if MP_UNITS_USE_LIBFMT
+
+MP_UNITS_DIAGNOSTIC_PUSH
+MP_UNITS_DIAGNOSTIC_IGNORE_UNREACHABLE
+MP_UNITS_DIAGNOSTIC_IGNORE_SHADOW
+#include <fmt/format.h>
+MP_UNITS_DIAGNOSTIC_POP
+
+#define MP_UNITS_STD_FMT fmt
+#define MP_UNITS_FMT_LOCALE(loc) (loc).template get<std::locale>()
+#define MP_UNITS_FMT_TO_ARG_ID(arg) static_cast<int>(arg)
+#define MP_UNITS_FMT_FROM_ARG_ID(arg) static_cast<size_t>(arg)
+
+// This re-uses code from fmt;
+#if FMT_EXCEPTIONS
+#if FMT_MSC_VERSION || defined(__NVCC__)
+#define MP_UNITS_THROW(x) ::fmt::detail::do_throw(x)
+#else
+#define MP_UNITS_THROW(x) throw x
+#endif
+#else
+#define MP_UNITS_THROW(x)          \
+  do {                             \
+    FMT_ASSERT(false, (x).what()); \
+  } while (false)
+#endif
+
+#else
+
+#ifndef __cpp_lib_format
+#error "std::formatting facility not supported"
+#endif
+
+#include <format>
+
+#define MP_UNITS_STD_FMT std
+#define MP_UNITS_FMT_LOCALE(loc) loc
+#define MP_UNITS_FMT_TO_ARG_ID(arg) arg
+#define MP_UNITS_FMT_FROM_ARG_ID(arg) arg
+#define MP_UNITS_THROW(arg) throw arg
 
 #endif

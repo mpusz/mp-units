@@ -20,14 +20,18 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include <exception>
+#include <iostream>
+#ifdef MP_UNITS_MODULES
+import mp_units;
+#else
 #include <mp-units/math.h>
 #include <mp-units/ostream.h>
 #include <mp-units/systems/isq/mechanics.h>
 #include <mp-units/systems/natural/natural.h>
 #include <mp-units/systems/si/constants.h>
 #include <mp-units/systems/si/unit_symbols.h>
-#include <exception>
-#include <iostream>
+#endif
 
 template<class T>
   requires mp_units::is_scalar<T>

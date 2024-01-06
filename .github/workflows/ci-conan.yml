@@ -102,7 +102,7 @@ jobs:
                   cxx: "clang++-17",
                 },
               lib: "libc++",
-              conan-config: "",
+              conan-config: "-o cxx_modules=True",
             }
           - {
               name: "Apple Clang 15",

@@ -53,32 +53,62 @@ have shorter type identifiers, resulting in easier-to-understand error messages 
 
 Here is a simple example showing how to deal with such quantities:
 
-```cpp
-#include <mp-units/ostream.h>
-#include <mp-units/systems/si/si.h>
-#include <iostream>
+=== "C++ modules"
 
-using namespace mp_units;
+    ```cpp
+    #include <iostream>
+    import mp_units;
 
-constexpr quantity<si::metre / si::second> avg_speed(quantity<si::metre> d,
-                                                     quantity<si::second> t)
-{
-  return d / t;
-}
+    using namespace mp_units;
 
-int main()
-{
-  using namespace mp_units::si::unit_symbols;
+    constexpr quantity<si::metre / si::second> avg_speed(quantity<si::metre> d,
+                                                        quantity<si::second> t)
+    {
+      return d / t;
+    }
 
-  const quantity distance = 110 * km;
-  const quantity duration = 2 * h;
-  const quantity speed = avg_speed(distance, duration);
+    int main()
+    {
+      using namespace mp_units::si::unit_symbols;
 
-  std::cout << "A car driving " << distance << " in " << duration
-            << " has an average speed of " << speed
-            << " (" << speed.in(km / h) << ")\n";
-}
-```
+      const quantity distance = 110 * km;
+      const quantity duration = 2 * h;
+      const quantity speed = avg_speed(distance, duration);
+
+      std::cout << "A car driving " << distance << " in " << duration
+                << " has an average speed of " << speed
+                << " (" << speed.in(km / h) << ")\n";
+    }
+    ```
+
+=== "Header files"
+
+    ```cpp
+    #include <mp-units/ostream.h>
+    #include <mp-units/systems/si/si.h>
+    #include <iostream>
+
+    using namespace mp_units;
+
+    constexpr quantity<si::metre / si::second> avg_speed(quantity<si::metre> d,
+                                                        quantity<si::second> t)
+    {
+      return d / t;
+    }
+
+    int main()
+    {
+      using namespace mp_units::si::unit_symbols;
+
+      const quantity distance = 110 * km;
+      const quantity duration = 2 * h;
+      const quantity speed = avg_speed(distance, duration);
+
+      std::cout << "A car driving " << distance << " in " << duration
+                << " has an average speed of " << speed
+                << " (" << speed.in(km / h) << ")\n";
+    }
+    ```
 
 The code above prints:
 
@@ -144,38 +174,67 @@ accident.
 
 The previous example can be re-typed using typed quantities in the following way:
 
-```cpp
-#include <mp-units/ostream.h>
-#include <mp-units/systems/isq/space_and_time.h>
-#include <mp-units/systems/si/si.h>
-#include <iostream>
+=== "C++ modules"
 
-using namespace mp_units;
-using namespace mp_units::si::unit_symbols;
+    ```cpp
+    #include <iostream>
+    import mp_units;
 
-constexpr quantity<isq::speed[m / s]> avg_speed(quantity<isq::length[m]> d,
-                                                quantity<isq::time[s]> t)
-{
-  return d / t;
-}
+    using namespace mp_units;
+    using namespace mp_units::si::unit_symbols;
 
-int main()
-{
-  const quantity distance = isq::distance(110 * km);
-  const quantity duration = isq::time(2 * h);
-  const quantity speed = avg_speed(distance, duration);
+    constexpr quantity<isq::speed[m / s]> avg_speed(quantity<isq::length[m]> d,
+                                                    quantity<isq::time[s]> t)
+    {
+      return d / t;
+    }
 
-  std::cout << "A car driving " << distance << " in " << duration
-            << " has an average speed of " << speed
-            << " (" << speed.in(km / h) << ")\n";
-}
-```
+    int main()
+    {
+      const quantity distance = isq::distance(110 * km);
+      const quantity duration = isq::time(2 * h);
+      const quantity speed = avg_speed(distance, duration);
+
+      std::cout << "A car driving " << distance << " in " << duration
+                << " has an average speed of " << speed
+                << " (" << speed.in(km / h) << ")\n";
+    }
+    ```
+
+=== "Header files"
+
+    ```cpp
+    #include <mp-units/ostream.h>
+    #include <mp-units/systems/isq/isq.h>
+    #include <mp-units/systems/si/si.h>
+    #include <iostream>
+
+    using namespace mp_units;
+    using namespace mp_units::si::unit_symbols;
+
+    constexpr quantity<isq::speed[m / s]> avg_speed(quantity<isq::length[m]> d,
+                                                    quantity<isq::time[s]> t)
+    {
+      return d / t;
+    }
+
+    int main()
+    {
+      const quantity distance = isq::distance(110 * km);
+      const quantity duration = isq::time(2 * h);
+      const quantity speed = avg_speed(distance, duration);
+
+      std::cout << "A car driving " << distance << " in " << duration
+                << " has an average speed of " << speed
+                << " (" << speed.in(km / h) << ")\n";
+    }
+    ```
 
 ```text
 A car driving 110 km in 2 h has an average speed of 15.2778 m/s (55 km/h)
 ```
 
-!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/q3PzMzqsh)"
+!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/MWxG1j4Pc)"
 
 In case we will accidentally make the same calculation error as before, this time, we will
 get a bit longer error message, this time also containing information about the quantity type:
@@ -200,116 +259,228 @@ but there are scenarios where they offer additional level of safety.
 
 Let's see another example:
 
-=== "Simple"
+=== "C++ modules"
 
-    ```cpp hl_lines="42"
-    #include <mp-units/math.h>
-    #include <mp-units/systems/si/si.h>
-    #include <numbers>
+    === "Simple"
 
-    using namespace mp_units;
+        ```cpp hl_lines="41"
+        #include <numbers>
+        import mp_units;
 
-    class StorageTank {
-      quantity<square(si::metre)> base_;
-      quantity<si::metre> height_;
-    public:
-      constexpr StorageTank(const quantity<square(si::metre)>& base,
-                            const quantity<si::metre>& height) :
-        base_(base), height_(height)
-      {
-      }
+        using namespace mp_units;
 
-      // ...
-    };
+        class StorageTank {
+          quantity<square(si::metre)> base_;
+          quantity<si::metre> height_;
+        public:
+          constexpr StorageTank(const quantity<square(si::metre)>& base,
+                                const quantity<si::metre>& height) :
+            base_(base), height_(height)
+          {
+          }
 
-    class CylindricalStorageTank : public StorageTank {
-    public:
-      constexpr CylindricalStorageTank(const quantity<si::metre>& radius,
-                                       const quantity<si::metre>& height) :
-        StorageTank(std::numbers::pi * pow<2>(radius), height)
-      {
-      }
-    };
+          // ...
+        };
 
-    class RectangularStorageTank : public StorageTank {
-    public:
-      constexpr RectangularStorageTank(const quantity<si::metre>& length,
-                                       const quantity<si::metre>& width,
-                                       const quantity<si::metre>& height) :
-        StorageTank(length * width, height)
-      {
-      }
-    };
+        class CylindricalStorageTank : public StorageTank {
+        public:
+          constexpr CylindricalStorageTank(const quantity<si::metre>& radius,
+                                           const quantity<si::metre>& height) :
+            StorageTank(std::numbers::pi * pow<2>(radius), height)
+          {
+          }
+        };
 
-    int main()
-    {
-      using namespace mp_units::si::unit_symbols;
-      auto tank = RectangularStorageTank(1'000 * mm, 500 * mm, 200 * mm);
-      // ...
-    }
-    ```
+        class RectangularStorageTank : public StorageTank {
+        public:
+          constexpr RectangularStorageTank(const quantity<si::metre>& length,
+                                           const quantity<si::metre>& width,
+                                           const quantity<si::metre>& height) :
+            StorageTank(length * width, height)
+          {
+          }
+        };
 
-=== "Typed"
+        int main()
+        {
+          using namespace mp_units::si::unit_symbols;
+          auto tank = RectangularStorageTank(1'000 * mm, 500 * mm, 200 * mm);
+          // ...
+        }
+        ```
 
-    ```cpp hl_lines="53 54 55"
-    #include <mp-units/math.h>
-    #include <mp-units/systems/isq/space_and_time.h>
-    #include <mp-units/systems/si/si.h>
-    #include <numbers>
+    === "Typed"
 
-    using namespace mp_units;
-    using namespace mp_units::si::unit_symbols;
+        ```cpp hl_lines="51 52 53"
+        #include <numbers>
+        import mp_units;
 
-    // add a custom quantity type of kind isq::length
-    inline constexpr struct horizontal_length
-        : quantity_spec<isq::length> {} horizontal_length;
+        using namespace mp_units;
+        using namespace mp_units::si::unit_symbols;
 
-    // add a custom derived quantity type of kind isq::area
-    // with a constrained quantity equation
-    inline constexpr struct horizontal_area
-        : quantity_spec<isq::area, horizontal_length * isq::width> {} horizontal_area;
+        // add a custom quantity type of kind isq::length
+        inline constexpr struct horizontal_length
+            : quantity_spec<isq::length> {} horizontal_length;
 
-    class StorageTank {
-      quantity<horizontal_area[m2]> base_;
-      quantity<isq::height[m]> height_;
-    public:
-      constexpr StorageTank(const quantity<horizontal_area[m2]>& base,
-                            const quantity<isq::height[m]>& height) :
-        base_(base), height_(height)
-      {
-      }
+        // add a custom derived quantity type of kind isq::area
+        // with a constrained quantity equation
+        inline constexpr struct horizontal_area
+            : quantity_spec<isq::area, horizontal_length * isq::width> {} horizontal_area;
 
-      // ...
-    };
+        class StorageTank {
+          quantity<horizontal_area[m2]> base_;
+          quantity<isq::height[m]> height_;
+        public:
+          constexpr StorageTank(const quantity<horizontal_area[m2]>& base,
+                                const quantity<isq::height[m]>& height) :
+            base_(base), height_(height)
+          {
+          }
 
-    class CylindricalStorageTank : public StorageTank {
-    public:
-      constexpr CylindricalStorageTank(const quantity<isq::radius[m]>& radius,
-                                       const quantity<isq::height[m]>& height) :
-        StorageTank(quantity_cast<horizontal_area>(std::numbers::pi * pow<2>(radius)),
-                    height)
-      {
-      }
-    };
+          // ...
+        };
 
-    class RectangularStorageTank : public StorageTank {
-    public:
-      constexpr RectangularStorageTank(const quantity<horizontal_length[m]>& length,
-                                       const quantity<isq::width[m]>& width,
-                                       const quantity<isq::height[m]>& height) :
-        StorageTank(length * width, height)
-      {
-      }
-    };
+        class CylindricalStorageTank : public StorageTank {
+        public:
+          constexpr CylindricalStorageTank(const quantity<isq::radius[m]>& radius,
+                                           const quantity<isq::height[m]>& height) :
+            StorageTank(quantity_cast<horizontal_area>(std::numbers::pi * pow<2>(radius)),
+                        height)
+          {
+          }
+        };
 
-    int main()
-    {
-      auto tank = RectangularStorageTank(horizontal_length(1'000 * mm),
-                                         isq::width(500 * mm),
-                                         isq::height(200 * mm));
-      // ...
-    }
-    ```
+        class RectangularStorageTank : public StorageTank {
+        public:
+          constexpr RectangularStorageTank(const quantity<horizontal_length[m]>& length,
+                                           const quantity<isq::width[m]>& width,
+                                           const quantity<isq::height[m]>& height) :
+            StorageTank(length * width, height)
+          {
+          }
+        };
+
+        int main()
+        {
+          auto tank = RectangularStorageTank(horizontal_length(1'000 * mm),
+                                             isq::width(500 * mm),
+                                             isq::height(200 * mm));
+          // ...
+        }
+        ```
+
+=== "Header files"
+
+    === "Simple"
+
+        ```cpp hl_lines="42"
+        #include <mp-units/math.h>
+        #include <mp-units/systems/si/si.h>
+        #include <numbers>
+
+        using namespace mp_units;
+
+        class StorageTank {
+          quantity<square(si::metre)> base_;
+          quantity<si::metre> height_;
+        public:
+          constexpr StorageTank(const quantity<square(si::metre)>& base,
+                                const quantity<si::metre>& height) :
+            base_(base), height_(height)
+          {
+          }
+
+          // ...
+        };
+
+        class CylindricalStorageTank : public StorageTank {
+        public:
+          constexpr CylindricalStorageTank(const quantity<si::metre>& radius,
+                                           const quantity<si::metre>& height) :
+            StorageTank(std::numbers::pi * pow<2>(radius), height)
+          {
+          }
+        };
+
+        class RectangularStorageTank : public StorageTank {
+        public:
+          constexpr RectangularStorageTank(const quantity<si::metre>& length,
+                                           const quantity<si::metre>& width,
+                                           const quantity<si::metre>& height) :
+            StorageTank(length * width, height)
+          {
+          }
+        };
+
+        int main()
+        {
+          using namespace mp_units::si::unit_symbols;
+          auto tank = RectangularStorageTank(1'000 * mm, 500 * mm, 200 * mm);
+          // ...
+        }
+        ```
+
+    === "Typed"
+
+        ```cpp hl_lines="53 54 55"
+        #include <mp-units/math.h>
+        #include <mp-units/systems/isq/isq.h>
+        #include <mp-units/systems/si/si.h>
+        #include <numbers>
+
+        using namespace mp_units;
+        using namespace mp_units::si::unit_symbols;
+
+        // add a custom quantity type of kind isq::length
+        inline constexpr struct horizontal_length
+            : quantity_spec<isq::length> {} horizontal_length;
+
+        // add a custom derived quantity type of kind isq::area
+        // with a constrained quantity equation
+        inline constexpr struct horizontal_area
+            : quantity_spec<isq::area, horizontal_length * isq::width> {} horizontal_area;
+
+        class StorageTank {
+          quantity<horizontal_area[m2]> base_;
+          quantity<isq::height[m]> height_;
+        public:
+          constexpr StorageTank(const quantity<horizontal_area[m2]>& base,
+                                const quantity<isq::height[m]>& height) :
+            base_(base), height_(height)
+          {
+          }
+
+          // ...
+        };
+
+        class CylindricalStorageTank : public StorageTank {
+        public:
+          constexpr CylindricalStorageTank(const quantity<isq::radius[m]>& radius,
+                                           const quantity<isq::height[m]>& height) :
+            StorageTank(quantity_cast<horizontal_area>(std::numbers::pi * pow<2>(radius)),
+                        height)
+          {
+          }
+        };
+
+        class RectangularStorageTank : public StorageTank {
+        public:
+          constexpr RectangularStorageTank(const quantity<horizontal_length[m]>& length,
+                                           const quantity<isq::width[m]>& width,
+                                           const quantity<isq::height[m]>& height) :
+            StorageTank(length * width, height)
+          {
+          }
+        };
+
+        int main()
+        {
+          auto tank = RectangularStorageTank(horizontal_length(1'000 * mm),
+                                             isq::width(500 * mm),
+                                             isq::height(200 * mm));
+          // ...
+        }
+        ```
 
 In the above example, the highlighted call doesn't look that safe anymore in the case
 of simple quantities, right? Suppose someone, either by mistake or due to some refactoring,

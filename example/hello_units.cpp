@@ -25,12 +25,17 @@
 // !!! renders correctly in the documentation "Examples" section.                 !!!
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+#include <mp-units/compat_macros.h>
+#include <iostream>
+#ifdef MP_UNITS_MODULES
+import mp_units;
+#else
 #include <mp-units/format.h>
 #include <mp-units/ostream.h>
 #include <mp-units/systems/international/international.h>
 #include <mp-units/systems/isq/isq.h>
 #include <mp-units/systems/si/si.h>
-#include <iostream>
+#endif
 
 using namespace mp_units;
 

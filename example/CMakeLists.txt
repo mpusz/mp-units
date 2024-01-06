@@ -22,52 +22,52 @@
 
 cmake_minimum_required(VERSION 3.5)
 
-add_library(example_utils INTERFACE)
-target_include_directories(example_utils INTERFACE include)
+# find dependencies
+if(NOT TARGET gsl::gsl-lite)
+    find_package(gsl-lite CONFIG REQUIRED)
+endif()
+
+if(${projectPrefix}BUILD_CXX_MODULES)
+    add_library(example_utils INTERFACE)
+    target_compile_definitions(example_utils INTERFACE ${projectPrefix}MODULES)
+    target_include_directories(example_utils INTERFACE include)
+    target_link_libraries(example_utils INTERFACE gsl::gsl-lite)
+endif()
+
+add_library(example_utils-headers INTERFACE)
+target_include_directories(example_utils-headers INTERFACE include)
+target_link_libraries(example_utils-headers INTERFACE gsl::gsl-lite)
 
 #
 # add_example(target <depependencies>...)
 #
 function(add_example target)
-    add_executable(${target} ${target}.cpp)
-    target_link_libraries(${target} PRIVATE ${ARGN})
+    if(${projectPrefix}BUILD_CXX_MODULES)
+        add_executable(${target} ${target}.cpp)
+        target_compile_definitions(${target} PUBLIC ${projectPrefix}MODULES)
+        target_link_libraries(${target} PRIVATE mp-units::mp-units ${ARGN})
+    endif()
+
+    add_executable(${target}-headers ${target}.cpp)
+    list(TRANSFORM ARGN APPEND "-headers")
+    target_link_libraries(${target}-headers PRIVATE mp-units::mp-units ${ARGN})
 endfunction()
 
-add_example(avg_speed mp-units::core-io mp-units::si mp-units::cgs mp-units::usc)
-add_example(capacitor_time_curve mp-units::core-io mp-units::si mp-units::utility)
-add_example(
-    clcpp_response
-    mp-units::core-fmt
-    mp-units::core-io
-    mp-units::si
-    mp-units::iau
-    mp-units::imperial
-    mp-units::international
-    mp-units::typographic
-    mp-units::usc
-)
-add_example(conversion_factor mp-units::core-fmt mp-units::core-io mp-units::si)
-add_example(currency mp-units::core-io)
-add_example(foot_pound_second mp-units::core-fmt mp-units::international mp-units::imperial)
-add_example(glide_computer mp-units::core-fmt mp-units::international mp-units::utility glide_computer_lib)
-add_example(hello_units mp-units::core-fmt mp-units::core-io mp-units::si mp-units::usc)
-add_example(measurement mp-units::core-io mp-units::si)
-add_example(si_constants mp-units::core-fmt mp-units::si)
-add_example(spectroscopy_units mp-units::core-fmt mp-units::si)
-add_example(storage_tank mp-units::core-fmt mp-units::si mp-units::utility)
-add_example(
-    strong_angular_quantities mp-units::core-fmt mp-units::core-io mp-units::si mp-units::isq_angle mp-units::utility
-)
-add_example(total_energy mp-units::core-io mp-units::si mp-units::natural mp-units::utility)
-add_example(
-    unmanned_aerial_vehicle
-    mp-units::core-fmt
-    mp-units::core-io
-    mp-units::si
-    mp-units::international
-    mp-units::utility
-    example_utils
-)
+add_example(avg_speed)
+add_example(capacitor_time_curve)
+add_example(clcpp_response)
+add_example(conversion_factor)
+add_example(currency)
+add_example(foot_pound_second)
+add_example(glide_computer glide_computer_lib)
+add_example(hello_units)
+add_example(measurement)
+add_example(si_constants)
+add_example(spectroscopy_units)
+add_example(storage_tank)
+add_example(strong_angular_quantities)
+add_example(total_energy)
+add_example(unmanned_aerial_vehicle example_utils)
 
 add_subdirectory(glide_computer_lib)
 add_subdirectory(kalman_filter)

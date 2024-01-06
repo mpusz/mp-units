@@ -23,18 +23,21 @@
 #pragma once
 
 #include "ranged_representation.h"
-#include <mp-units/bits/fmt_hacks.h>
-#include <mp-units/compare.h>
-#include <mp-units/format.h>
-#include <mp-units/math.h>
-#include <mp-units/quantity.h>
-#include <mp-units/quantity_point.h>
-#include <mp-units/systems/isq/space_and_time.h>
-#include <mp-units/systems/si/units.h>
+#include <mp-units/compat_macros.h>
 #include <compare>
 #include <limits>
 #include <numbers>
 #include <ostream>
+#ifdef MP_UNITS_MODULES
+import mp_units;
+#else
+#include <mp-units/compare.h>
+#include <mp-units/format.h>
+#include <mp-units/quantity.h>
+#include <mp-units/quantity_point.h>
+#include <mp-units/systems/isq/space_and_time.h>
+#include <mp-units/systems/si/si.h>
+#endif
 
 namespace geographic {
 

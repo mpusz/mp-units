@@ -15,12 +15,17 @@
  along with this program. If not, see http://www.gnu.org/licenses./
 */
 
+#include <mp-units/compat_macros.h>
+#include <iostream>
+#include <type_traits>
+#ifdef MP_UNITS_MODULES
+import mp_units;
+#else
 #include <mp-units/format.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si/unit_symbols.h>
 #include <mp-units/systems/si/units.h>
-#include <iostream>
-#include <type_traits>
+#endif
 
 /*
   get conversion factor from one dimensionally equivalent

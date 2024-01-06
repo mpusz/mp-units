@@ -20,11 +20,15 @@
     physical_quantities
 */
 
+#include <iostream>
+#ifdef MP_UNITS_MODULES
+import mp_units;
+#else
 #include <mp-units/math.h>  // IWYU pragma: keep
 #include <mp-units/ostream.h>
 #include <mp-units/systems/isq/electromagnetism.h>
 #include <mp-units/systems/si/si.h>
-#include <iostream>
+#endif
 
 int main()
 {

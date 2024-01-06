@@ -25,28 +25,54 @@ The library source code is hosted on [GitHub](https://github.com/mpusz/mp-units)
     a [preprocessor macro](users_guide/framework_basics/systems_of_quantities.md#defining-quantities)
     providing a backward-compatible way to use it.
 
-    As of today, the library compiles fine on the following compilers (or newer):
+    The below table provides the minimum compiler version required to compile the code using the
+    specific feature:
 
-    - gcc-12
-    - clang-16
-    - apple-clang-15
+    | Feature              | gcc  | clang | apple-clang | MSVC |
+    |----------------------|:----:|:-----:|:-----------:|:----:|
+    | **Minimum support**  |  12  |  16   |     15      | None |
+    | **`std::format`**    | None | None  |    None     | None |
+    | **C++ modules**      | None |  17   |    None     | None |
+    | **C++23 extensions** | None | None  |    None     | None |
 
-```cpp
-#include <mp-units/ostream.h>
-#include <mp-units/systems/si/si.h>
-#include <mp-units/systems/usc/usc.h>
-#include <iostream>
+    More requirements for C++ modules support can be found in the
+    [CMake's documentation](https://cmake.org/cmake/help/latest/manual/cmake-cxxmodules.7.html).
 
-using namespace mp_units;
+=== "C++ modules"
 
-inline constexpr struct smoot : named_unit<"smoot", mag<67> * usc::inch> {} smoot;
+    ```cpp
+    #include <iostream>
+    import mp_units;
 
-int main()
-{
-  constexpr quantity dist = 364.4 * smoot;
-  std::cout << "Harvard Bridge length = " << dist << "(" << dist.in(usc::foot) << ", " << dist.in(si::metre) << ") ± 1 εar\n";
-}
-```
+    using namespace mp_units;
+
+    inline constexpr struct smoot : named_unit<"smoot", mag<67> * usc::inch> {} smoot;
+
+    int main()
+    {
+      constexpr quantity dist = 364.4 * smoot;
+      std::cout << "Harvard Bridge length = " << dist << "(" << dist.in(usc::foot) << ", " << dist.in(si::metre) << ") ± 1 εar\n";
+    }
+    ```
+
+=== "Header files"
+
+    ```cpp
+    #include <mp-units/ostream.h>
+    #include <mp-units/systems/si/si.h>
+    #include <mp-units/systems/usc/usc.h>
+    #include <iostream>
+
+    using namespace mp_units;
+
+    inline constexpr struct smoot : named_unit<"smoot", mag<67> * usc::inch> {} smoot;
+
+    int main()
+    {
+      constexpr quantity dist = 364.4 * smoot;
+      std::cout << "Harvard Bridge length = " << dist << "(" << dist.in(usc::foot) << ", " << dist.in(si::metre) << ") ± 1 εar\n";
+    }
+    ```
 
 Output:
 

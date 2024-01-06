@@ -23,26 +23,12 @@
 #pragma once
 
 #include <mp-units/bits/quantity_point_concepts.h>
+#include <mp-units/compare.h>
 #include <mp-units/customization_points.h>
 #include <mp-units/quantity.h>
 #include <compare>
 
 namespace mp_units {
-
-namespace detail {
-
-template<typename T>
-  requires requires {
-    {
-      T::zero()
-    } -> std::equality_comparable_with<T>;
-  }
-[[nodiscard]] constexpr bool is_eq_zero(T v)
-{
-  return v == T::zero();
-}
-
-}  // namespace detail
 
 template<typename Derived, QuantitySpec auto QS>
 struct absolute_point_origin {
@@ -95,11 +81,9 @@ template<PointOrigin PO1, PointOrigin PO2>
   else if constexpr (detail::RelativePointOrigin<PO1> && detail::RelativePointOrigin<PO2>)
     return PO1::quantity_point == PO2::quantity_point;
   else if constexpr (detail::RelativePointOrigin<PO1>)
-    return detail::same_absolute_point_origins(po1, po2) &&
-           detail::is_eq_zero(PO1::quantity_point.quantity_from_zero());
+    return detail::same_absolute_point_origins(po1, po2) && is_eq_zero(PO1::quantity_point.quantity_from_zero());
   else if constexpr (detail::RelativePointOrigin<PO2>)
-    return detail::same_absolute_point_origins(po1, po2) &&
-           detail::is_eq_zero(PO2::quantity_point.quantity_from_zero());
+    return detail::same_absolute_point_origins(po1, po2) && is_eq_zero(PO2::quantity_point.quantity_from_zero());
 }
 
 template<Reference R>

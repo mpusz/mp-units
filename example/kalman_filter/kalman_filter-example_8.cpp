@@ -21,13 +21,17 @@
 // SOFTWARE.
 
 #include "kalman.h"
+#include <array>
+#include <iostream>
+#ifdef MP_UNITS_MODULES
+import mp_units;
+#else
 #include <mp-units/format.h>
 #include <mp-units/math.h>
 #include <mp-units/quantity_point.h>
 #include <mp-units/systems/isq/thermodynamics.h>
 #include <mp-units/systems/si/si.h>
-#include <array>
-#include <iostream>
+#endif
 
 // Based on: https://www.kalmanfilter.net/kalman1d.html#ex8
 

@@ -24,11 +24,15 @@
 
 #include "validated_type.h"
 #include <mp-units/bits/external/hacks.h>
-#include <mp-units/bits/fmt.h>
-#include <mp-units/customization_points.h>
 #include <algorithm>
 #include <concepts>
 #include <type_traits>
+#ifdef MP_UNITS_MODULES
+import mp_units.core;
+#else
+#include <mp-units/bits/fmt.h>
+#include <mp-units/customization_points.h>
+#endif
 
 template<std::movable T, MP_UNITS_CONSTRAINED_NTTP_WORKAROUND(std::convertible_to<T>) auto Min,
          MP_UNITS_CONSTRAINED_NTTP_WORKAROUND(std::convertible_to<T>) auto Max>

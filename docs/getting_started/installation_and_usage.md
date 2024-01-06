@@ -1,5 +1,10 @@
 # Installation And Usage
 
+This chapter provides all the necessary information to obtain and build the code using **mp-units**.
+It also describes how to build or distribute the library and generate its documentation.
+
+## C++ compiler support { #cpp-compiler-support }
+
 !!! info
 
     **mp-units** library tries to provide the best user experience possible with the C++ language.
@@ -12,14 +17,42 @@
     a [preprocessor macro](../users_guide/framework_basics/systems_of_quantities.md#defining-quantities)
     providing a backward-compatible way to use it.
 
-    As of today, the library compiles fine on the following compilers (or newer):
+The below table provides the minimum compiler version required to compile the code using the
+specific feature:
 
-    - gcc-12
-    - clang-16
-    - apple-clang-15
+| Feature              | gcc  | clang | apple-clang | MSVC |
+|----------------------|:----:|:-----:|:-----------:|:----:|
+| **Minimum support**  |  12  |  16   |     15      | None |
+| **`std::format`**    | None | None  |    None     | None |
+| **C++ modules**      | None |  17   |    None     | None |
+| **C++23 extensions** | None | None  |    None     | None |
+
+More requirements for C++ modules support can be found in the
+[CMake's documentation](https://cmake.org/cmake/help/latest/manual/cmake-cxxmodules.7.html).
 
 
-## Repository Structure and Dependencies
+## Modules
+
+The **mp-units** library provides the following C++ modules.
+
+```mermaid
+flowchart TD
+    mp_units --- mp_units.systems --- mp_units.core
+```
+
+| C++ Module         | CMake Target         | Contents                                |
+|--------------------|----------------------|-----------------------------------------|
+| `mp_units.core`    | `mp-units::core`     | Core library framework                  |
+| `mp_units.systems` | `mp-units::systems`  | All the systems of quantities and units |
+| `mp_units`         | `mp-units::mp-units` | Core + Systems                          |
+
+!!! note
+
+    C++ modules are provided within the package only when [`cxx_modules`](#cxx_modules) Conan
+    option is set to `True`.
+
+
+## Repository structure and dependencies
 
 This repository contains three independent CMake-based projects:
 
@@ -60,16 +93,18 @@ This repository contains three independent CMake-based projects:
 
     This is why our projects have two entry points:
 
-    - _./CMakeLists.txt_ is to be used by projects developers to build **ALL** the project code with really
-    restrictive compilation flags,
-    - _./src/CMakeLists.txt_ contains only a pure library definition and should be used by the customers
-    that prefer to use CMake's `add_subdirectory()` to handle the dependencies.
+    - _./CMakeLists.txt_ is **to be used by projects developers** to build **ALL** the project code
+      with really restrictive compilation flags,
+    - _./src/CMakeLists.txt_ contains only a pure library definition and **should be used by the
+      customers** that prefer to use CMake's
+      [`add_subdirectory()`](https://cmake.org/cmake/help/latest/command/add_subdirectory.html) to
+      handle the dependencies.
 
     To learn more about the rationale, please check our
     [FAQ](faq.md#why-dont-we-have-cmake-options-to-disable-building-of-tests-and-examples).
 
 
-## Obtaining Dependencies
+## Obtaining dependencies
 
 This library assumes that most of the dependencies will be provided by the
 [Conan Package Manager](https://conan.io/). If you want to obtain required
@@ -78,7 +113,7 @@ The rest of the dependencies responsible for documentation generation are provid
 `python3-pip`.
 
 
-### Conan Quick Intro
+### Conan quick intro
 
 In case you are not familiar with Conan, to install it (or upgrade) just do:
 
@@ -136,9 +171,19 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
     (e.g. `conan-gcc-13-23` and `conan-gcc-13-23-release`)
 
 
-## Build Options
+## Build options
 
-### Conan Configuration Properties
+### Conan options
+
+[cxx_modules](#cxx_modules){ #cxx_modules }
+
+:   [:octicons-tag-24: 2.2.0][cxx modules support] · :octicons-milestone-24: `True`/`False` (Default: `False`)
+
+    Configures CMake to add C++ modules to the list of default targets.
+
+[cxx modules support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
+
+### Conan configuration properties
 
 [`user.build:all`](#user-build-all){ #user-build-all }
 
@@ -146,7 +191,8 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
 
     Enables compilation of all the source code, including tests and examples. To support this, it requires some additional Conan build dependencies described in
     [Repository Structure and Dependencies](#repository-structure-and-dependencies).
-    It also runs unit tests during Conan build (unless `tools.build:skip_test`
+    It also runs unit tests during Conan build (unless
+    [`tools.build:skip_test`](https://docs.conan.io/2/reference/commands/config.html?highlight=tools.build:skip_test#conan-config-list)
     configuration property is set to `True`).
 
 [build all support]: https://github.com/mpusz/mp-units/releases/tag/v0.8.0
@@ -164,7 +210,16 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
     [skip la support]: https://github.com/mpusz/mp-units/releases/tag/v0.8.0
 
 
-### CMake Options
+### CMake options
+
+[`MP_UNITS_BUILD_CXX_MODULES`](#MP_UNITS_BUILD_CXX_MODULES){ #MP_UNITS_BUILD_CXX_MODULES }
+
+:   [:octicons-tag-24: 2.2.0][build_cxx_modules support] · :octicons-milestone-24: `ON`/`OFF` (Default: `OFF`)
+
+    Adds C++ modules to the list of default targets.
+
+    [build_cxx_modules support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
+
 
 [`MP_UNITS_AS_SYSTEM_HEADERS`](#MP_UNITS_AS_SYSTEM_HEADERS){ #MP_UNITS_AS_SYSTEM_HEADERS }
 
@@ -199,12 +254,12 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
 :   [:octicons-tag-24: 2.0.0][use libfmt support] · :octicons-milestone-24: `ON`/`OFF` (Default: `ON`)
 
     Forces usage of [{fmt}](https://github.com/fmtlib/fmt) library instead of the C++20 Standard
-    Library feature.
+    Library features.
 
     [use libfmt support]: https://github.com/mpusz/mp-units/releases/tag/v2.0.0
 
 
-## CMake with Presets Support
+## CMake with presets support
 
 It is recommended to use at least CMake 3.23 to build this project as this version introduced support
 for CMake Presets schema version 4, used now by Conan to generate presets files. All build instructions
@@ -224,7 +279,7 @@ cmake --build . --config Release
     which will force Conan to use an older version of the CMake Presets schema.
 
 
-## Installation and Reuse
+## Installation and reuse
 
 There are many different ways of installing/reusing **mp-units** in your project. Below we mention
 only a few of many options possible.
@@ -284,6 +339,9 @@ The following steps may be performed to obtain an official library release:
     [requires]
     mp-units/2.1.0
 
+    [options]
+    mp-units:cxx_modules=True
+
     [layout]
     cmake_layout
 
@@ -341,6 +399,9 @@ with the following differences:
     [requires]
     mp-units/2.2.0@mpusz/testing
 
+    [options]
+    mp-units:cxx_modules=True
+
     [layout]
     cmake_layout
 
@@ -387,7 +448,7 @@ you should:
 
 ```shell
 git clone https://github.com/mpusz/mp-units.git && cd units
-conan build . -pr <your_conan_profile> -s compiler.cppstd=20 -c user.build:all=True -b missing
+conan build . -pr <your_conan_profile> -s compiler.cppstd=23 -o cxx_modules=True -c user.build:all=True -b missing
 ```
 
 The above will download and install all of the dependencies needed for the development of the library,
@@ -433,13 +494,13 @@ After that, you can either:
 To test CMake installation and Conan packaging or create a Conan package run:
 
 ```shell
-conan create . --user <username> --channel <channel> -pr <your_conan_profile> -s compiler.cppstd=20 -c user.build:all=True -b missing
+conan create . --user <username> --channel <channel> -pr <your_conan_profile> -s compiler.cppstd=20 -o cxx_modules=True -c user.build:all=True -b missing
 ```
 
 The above will create a Conan package and run tests provided in _./test_package_ directory.
 
 
-## Uploading **mp-units** Package to the Conan Server
+## Uploading **mp-units** package to the Conan server
 
 ```shell
 conan upload -r <remote-name> --all mp-units/2.1.0@<user>/<channel>

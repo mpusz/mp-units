@@ -25,31 +25,35 @@ project(mp-units VERSION 2.2.0 LANGUAGES CXX)
 
 set(projectPrefix MP_UNITS_)
 
+option(${projectPrefix}BUILD_CXX_MODULES "Add C++ modules to the list of default targets" OFF)
+message(STATUS "${projectPrefix}BUILD_CXX_MODULES: ${${projectPrefix}BUILD_CXX_MODULES}")
+
 option(${projectPrefix}AS_SYSTEM_HEADERS "Exports library as system headers" OFF)
 message(STATUS "${projectPrefix}AS_SYSTEM_HEADERS: ${${projectPrefix}AS_SYSTEM_HEADERS}")
 
+option(${projectPrefix}USE_LIBFMT "Enables usage of libfmt instead of the one from 'std'" ON)
+message(STATUS "${projectPrefix}USE_LIBFMT: ${${projectPrefix}USE_LIBFMT}")
+
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
-include(AddUnitsModule)
+include(AddMPUnitsModule)
 include(GNUInstallDirs)
+
+if(${projectPrefix}BUILD_CXX_MODULES)
+    set(${projectPrefix}TARGET_SCOPE "PUBLIC")
+else()
+    set(${projectPrefix}TARGET_SCOPE "INTERFACE")
+endif()
 
 if(${projectPrefix}AS_SYSTEM_HEADERS)
     set(unitsAsSystem SYSTEM)
 endif()
 
 add_subdirectory(core)
-add_subdirectory(core-fmt)
-add_subdirectory(core-io)
 add_subdirectory(systems)
-add_subdirectory(utility)
 
 # project-wide wrapper
-add_library(mp-units INTERFACE)
-target_link_libraries(
-    mp-units INTERFACE mp-units::core mp-units::core-io mp-units::core-fmt mp-units::systems mp-units::utility
-)
-add_library(mp-units::mp-units ALIAS mp-units)
-install(TARGETS mp-units EXPORT mp-unitsTargets)
+add_mp_units_module(mp-units mp-units DEPENDENCIES mp-units::core mp-units::systems MODULE_INTERFACE_UNIT mp-units.cpp)
 
 # local build
 export(EXPORT mp-unitsTargets NAMESPACE mp-units::)

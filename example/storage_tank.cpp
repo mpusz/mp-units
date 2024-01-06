@@ -20,19 +20,21 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <mp-units/chrono.h>
-#include <mp-units/format.h>
-#include <mp-units/math.h>
-#include <mp-units/systems/isq/mechanics.h>
-#include <mp-units/systems/isq/space_and_time.h>
-#include <mp-units/systems/si/constants.h>
-#include <mp-units/systems/si/unit_symbols.h>
-#include <mp-units/systems/si/units.h>
+#include <mp-units/compat_macros.h>
 #include <cassert>
 #include <chrono>
 #include <iostream>
 #include <numbers>
 #include <utility>
+#ifdef MP_UNITS_MODULES
+import mp_units;
+#else
+#include <mp-units/format.h>
+#include <mp-units/math.h>
+#include <mp-units/systems/isq/mechanics.h>
+#include <mp-units/systems/isq/space_and_time.h>
+#include <mp-units/systems/si/si.h>
+#endif
 
 // allows standard gravity (acceleration) and weight (force) to be expressed with scalar representation
 // types instead of requiring the usage of Linear Algebra library for this simple example

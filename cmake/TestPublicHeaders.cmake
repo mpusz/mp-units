@@ -43,7 +43,7 @@ function(get_target_sources target paths_out)
     list(APPEND targets ${target})
 
     foreach(t ${targets})
-        get_target_property(sources ${t} SOURCES)
+        get_target_property(sources ${t} HEADER_SET)
         if(sources)
             get_target_property(source_dir ${t} SOURCE_DIR)
             foreach(f ${sources})

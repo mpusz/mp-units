@@ -22,19 +22,11 @@
 
 cmake_minimum_required(VERSION 3.5)
 
-#
-# add_example(target <depependencies>...)
-#
-function(add_example target)
-    add_executable(${target} ${target}.cpp)
-    target_link_libraries(${target} PRIVATE ${ARGN})
-endfunction()
-
-add_example(kalman_filter-example_1 mp-units::core-fmt mp-units::si mp-units::utility)
-add_example(kalman_filter-example_2 mp-units::core-fmt mp-units::si mp-units::utility)
-add_example(kalman_filter-example_3 mp-units::core-fmt mp-units::si mp-units::utility)
-add_example(kalman_filter-example_4 mp-units::core-fmt mp-units::si mp-units::utility)
-add_example(kalman_filter-example_5 mp-units::core-fmt mp-units::si mp-units::utility)
-add_example(kalman_filter-example_6 mp-units::core-fmt mp-units::si mp-units::utility)
-add_example(kalman_filter-example_7 mp-units::core-fmt mp-units::si mp-units::utility)
-add_example(kalman_filter-example_8 mp-units::core-fmt mp-units::si mp-units::utility)
+add_example(kalman_filter-example_1)
+add_example(kalman_filter-example_2)
+add_example(kalman_filter-example_3)
+add_example(kalman_filter-example_4)
+add_example(kalman_filter-example_5)
+add_example(kalman_filter-example_6)
+add_example(kalman_filter-example_7)
+add_example(kalman_filter-example_8)
