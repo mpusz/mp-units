@@ -54,6 +54,13 @@ class MPUnitsConan(ConanFile):
     license = "MIT"
     url = "https://github.com/mpusz/mp-units"
     settings = "os", "arch", "compiler", "build_type"
+    options = {
+        "cxx_modules": [True, False],
+    }
+    default_options = {
+        "cxx_modules": False,
+    }
+
     exports = ["LICENSE.md"]
     exports_sources = [
         "docs/*",
@@ -133,6 +140,9 @@ class MPUnitsConan(ConanFile):
 
     def generate(self):
         tc = CMakeToolchain(self)
+        if self.options.cxx_modules:
+            tc.variables["CMAKE_CXX_SCAN_FOR_MODULES"] = True
+            tc.variables["MP_UNITS_BUILD_CXX_MODULES"] = True
         tc.variables["MP_UNITS_BUILD_LA"] = self._build_all and not self._skip_la
         tc.variables["MP_UNITS_USE_LIBFMT"] = self._use_libfmt
         tc.generate()
