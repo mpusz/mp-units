@@ -21,7 +21,7 @@
 // SOFTWARE.
 
 #include "geographic.h"
-#include <mp-units/compat_fmt_macros.h>
+#include <mp-units/compat_macros.h>
 #include <cassert>
 #include <iostream>
 #ifdef MP_UNITS_MODULES

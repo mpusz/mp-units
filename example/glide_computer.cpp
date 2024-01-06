@@ -21,7 +21,7 @@
 // SOFTWARE.
 
 #include "glide_computer_lib.h"
-#include <mp-units/compat_fmt_macros.h>
+#include <mp-units/compat_macros.h>
 #include <array>
 #include <exception>
 #include <iostream>

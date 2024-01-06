@@ -42,6 +42,7 @@ add_units_module(
             include/mp-units/bits/core_gmf.h
             include/mp-units/bits/dimension_concepts.h
             include/mp-units/bits/expression_template.h
+            include/mp-units/bits/fmt.h
             include/mp-units/bits/get_associated_quantity.h
             include/mp-units/bits/get_common_base.h
             include/mp-units/bits/magnitude.h
@@ -63,7 +64,9 @@ add_units_module(
             include/mp-units/core.h
             include/mp-units/customization_points.h
             include/mp-units/dimension.h
+            include/mp-units/format.h
             include/mp-units/math.h
+            include/mp-units/ostream.h
             include/mp-units/quantity.h
             include/mp-units/quantity_point.h
             include/mp-units/quantity_spec.h
@@ -73,6 +76,17 @@ add_units_module(
             include/mp-units/unit.h
     MODULE_INTERFACE_UNIT mp-units-core.cpp
 )
+
+target_compile_definitions(
+    mp-units-core ${${projectPrefix}TARGET_SCOPE} ${projectPrefix}USE_LIBFMT=$<BOOL:${${projectPrefix}USE_LIBFMT}>
+)
+
+if(${projectPrefix}USE_LIBFMT)
+    if(NOT TARGET fmt::fmt)
+        find_package(fmt CONFIG REQUIRED)
+    endif()
+    target_link_libraries(mp-units-core ${${projectPrefix}TARGET_SCOPE} fmt::fmt)
+endif()
 
 if(${projectPrefix}BUILD_CXX_MODULES)
     if(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")

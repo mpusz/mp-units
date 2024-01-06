@@ -23,7 +23,7 @@
 #pragma once
 
 #include "ranged_representation.h"
-#include <mp-units/compat_fmt_macros.h>
+#include <mp-units/compat_macros.h>
 #include <compare>
 #include <limits>
 #include <numbers>

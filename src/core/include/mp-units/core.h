@@ -27,7 +27,9 @@
 #include <mp-units/concepts.h>
 #include <mp-units/customization_points.h>
 #include <mp-units/dimension.h>
+#include <mp-units/format.h>
 #include <mp-units/math.h>
+#include <mp-units/ostream.h>
 #include <mp-units/quantity.h>
 #include <mp-units/quantity_point.h>
 #include <mp-units/quantity_spec.h>

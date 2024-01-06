@@ -15,7 +15,7 @@
  along with this program. If not, see http://www.gnu.org/licenses./
 */
 
-#include <mp-units/compat_fmt_macros.h>
+#include <mp-units/compat_macros.h>
 #include <iostream>
 #ifdef MP_UNITS_MODULES
 import mp_units;

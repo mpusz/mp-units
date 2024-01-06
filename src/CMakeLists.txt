@@ -47,13 +47,11 @@ if(${projectPrefix}AS_SYSTEM_HEADERS)
 endif()
 
 add_subdirectory(core)
-add_subdirectory(core-fmt)
-add_subdirectory(core-io)
 add_subdirectory(systems)
 
 # project-wide wrapper
 add_units_module(
-    mp-units DEPENDENCIES mp-units::core mp-units::core-io mp-units::core-fmt mp-units::systems
+    mp-units DEPENDENCIES mp-units::core mp-units::systems
     MODULE_INTERFACE_UNIT mp-units.cpp
 )
 

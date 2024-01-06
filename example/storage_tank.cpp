@@ -20,7 +20,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <mp-units/compat_fmt_macros.h>
 #include <mp-units/compat_macros.h>
 #include <cassert>
 #include <chrono>

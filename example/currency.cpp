@@ -24,7 +24,7 @@
 #include <iostream>
 #include <map>
 #ifdef MP_UNITS_MODULES
-import mp_units.core_io;
+import mp_units.core;
 #else
 #include <mp-units/ostream.h>
 #include <mp-units/quantity.h>

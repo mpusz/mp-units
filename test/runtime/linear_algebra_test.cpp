@@ -21,7 +21,7 @@
 // SOFTWARE.
 
 #include <catch2/catch_test_macros.hpp>
-#include <mp-units/compat_fmt_macros.h>
+#include <mp-units/compat_macros.h>
 #include <cmath>
 #include <matrix>
 #ifdef MP_UNITS_MODULES

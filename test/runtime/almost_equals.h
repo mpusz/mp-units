@@ -21,7 +21,7 @@
 // SOFTWARE.
 
 #include <catch2/matchers/catch_matchers_templated.hpp>
-#include <mp-units/compat_fmt_macros.h>
+#include <mp-units/compat_macros.h>
 #include <algorithm>
 #ifdef MP_UNITS_MODULES
 import mp_units;
