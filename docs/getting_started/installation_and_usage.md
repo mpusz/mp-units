@@ -1,5 +1,10 @@
 # Installation And Usage
 
+This chapter provides all the necessary information to obtain and build the code using **mp-units**.
+It also describes how to build or distribute the library and generate its documentation.
+
+## C++ compiler support { #cpp-compiler-support }
+
 !!! info
 
     **mp-units** library tries to provide the best user experience possible with the C++ language.
@@ -12,18 +17,18 @@
     a [preprocessor macro](../users_guide/framework_basics/systems_of_quantities.md#defining-quantities)
     providing a backward-compatible way to use it.
 
-    The below table provides the minimum compiler version required to compile the code using the
-    specific feature:
+The below table provides the minimum compiler version required to compile the code using the
+specific feature:
 
-    | Feature              | gcc  | clang | apple-clang | MSVC |
-    |----------------------|:----:|:-----:|:-----------:|:----:|
-    | **Minimum support**  |  12  |  16   |     15      | None |
-    | **`std::format`**    | None | None  |    None     | None |
-    | **C++ modules**      | None |  17   |    None     | None |
-    | **C++23 extensions** | None | None  |    None     | None |
+| Feature              | gcc  | clang | apple-clang | MSVC |
+|----------------------|:----:|:-----:|:-----------:|:----:|
+| **Minimum support**  |  12  |  16   |     15      | None |
+| **`std::format`**    | None | None  |    None     | None |
+| **C++ modules**      | None |  17   |    None     | None |
+| **C++23 extensions** | None | None  |    None     | None |
 
-    More requirements for C++ modules support can be found in the
-    [CMake's documentation](https://cmake.org/cmake/help/latest/manual/cmake-cxxmodules.7.html).
+More requirements for C++ modules support can be found in the
+[CMake's documentation](https://cmake.org/cmake/help/latest/manual/cmake-cxxmodules.7.html).
 
 
 ## Modules
@@ -42,7 +47,7 @@ flowchart TD
 | `mp_units`         | `mp-units::mp-units` | Core + Systems                          |
 
 
-## Repository Structure and Dependencies
+## Repository structure and dependencies
 
 This repository contains three independent CMake-based projects:
 
@@ -94,7 +99,7 @@ This repository contains three independent CMake-based projects:
     [FAQ](faq.md#why-dont-we-have-cmake-options-to-disable-building-of-tests-and-examples).
 
 
-## Obtaining Dependencies
+## Obtaining dependencies
 
 This library assumes that most of the dependencies will be provided by the
 [Conan Package Manager](https://conan.io/). If you want to obtain required
@@ -103,7 +108,7 @@ The rest of the dependencies responsible for documentation generation are provid
 `python3-pip`.
 
 
-### Conan Quick Intro
+### Conan quick intro
 
 In case you are not familiar with Conan, to install it (or upgrade) just do:
 
@@ -161,9 +166,9 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
     (e.g. `conan-gcc-13-23` and `conan-gcc-13-23-release`)
 
 
-## Build Options
+## Build options
 
-### Conan Options
+### Conan options
 
 [cxx_modules](#cxx_modules){ #cxx_modules }
 
@@ -173,7 +178,7 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
 
 [cxx modules support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 
-### Conan Configuration Properties
+### Conan configuration properties
 
 [`user.build:all`](#user-build-all){ #user-build-all }
 
@@ -200,7 +205,7 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
     [skip la support]: https://github.com/mpusz/mp-units/releases/tag/v0.8.0
 
 
-### CMake Options
+### CMake options
 
 [`MP_UNITS_BUILD_CXX_MODULES`](#MP_UNITS_BUILD_CXX_MODULES){ #MP_UNITS_BUILD_CXX_MODULES }
 
@@ -249,7 +254,7 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
     [use libfmt support]: https://github.com/mpusz/mp-units/releases/tag/v2.0.0
 
 
-## CMake with Presets Support
+## CMake with presets support
 
 It is recommended to use at least CMake 3.23 to build this project as this version introduced support
 for CMake Presets schema version 4, used now by Conan to generate presets files. All build instructions
@@ -269,7 +274,7 @@ cmake --build . --config Release
     which will force Conan to use an older version of the CMake Presets schema.
 
 
-## Installation and Reuse
+## Installation and reuse
 
 There are many different ways of installing/reusing **mp-units** in your project. Below we mention
 only a few of many options possible.
@@ -490,7 +495,7 @@ conan create . --user <username> --channel <channel> -pr <your_conan_profile> -s
 The above will create a Conan package and run tests provided in _./test_package_ directory.
 
 
-## Uploading **mp-units** Package to the Conan Server
+## Uploading **mp-units** package to the Conan server
 
 ```shell
 conan upload -r <remote-name> --all mp-units/2.1.0@<user>/<channel>
