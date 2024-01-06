@@ -114,7 +114,7 @@ jobs:
                   cc: "clang",
                   cxx: "clang++",
                 },
-              conan-config: "-o cxx_modules=True",
+              conan-config: "",
             }
         build_type: ["Release", "Debug"]
 
