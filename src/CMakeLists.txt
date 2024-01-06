@@ -25,11 +25,14 @@ project(mp-units VERSION 2.2.0 LANGUAGES CXX)
 
 set(projectPrefix MP_UNITS_)
 
+option(${projectPrefix}BUILD_CXX_MODULES "Add C++ modules to the list of default targets" OFF)
+message(STATUS "${projectPrefix}BUILD_CXX_MODULES: ${${projectPrefix}BUILD_CXX_MODULES}")
+
 option(${projectPrefix}AS_SYSTEM_HEADERS "Exports library as system headers" OFF)
 message(STATUS "${projectPrefix}AS_SYSTEM_HEADERS: ${${projectPrefix}AS_SYSTEM_HEADERS}")
 
-option(${projectPrefix}BUILD_CXX_MODULES "Add C++ modules to the list of default targets" OFF)
-message(STATUS "${projectPrefix}BUILD_CXX_MODULES: ${${projectPrefix}BUILD_CXX_MODULES}")
+option(${projectPrefix}USE_LIBFMT "Enables usage of libfmt instead of the one from 'std'" ON)
+message(STATUS "${projectPrefix}USE_LIBFMT: ${${projectPrefix}USE_LIBFMT}")
 
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
