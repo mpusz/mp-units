@@ -119,7 +119,7 @@ your code using **mp-units**:
 !!! tip
 
     Depending on your preferences, you can either write:
-    
+
     - terse code directly targeting your specific compiler's abilities,
     - verbose code using preprocessor branches and macros that provide the widest compatibility
       across various compilers.
