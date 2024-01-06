@@ -46,6 +46,11 @@ flowchart TD
 | `mp_units.systems` | `mp-units::systems`  | All the systems of quantities and units |
 | `mp_units`         | `mp-units::mp-units` | Core + Systems                          |
 
+!!! note
+
+    C++ modules are provided within the package only when [`cxx_modules`](#cxx_modules) Conan
+    option is set to `True`.
+
 
 ## Repository structure and dependencies
 
