@@ -20,6 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include <mp-units/bits/external/hacks.h>
+//
 #include "test_tools.h"
 #include <limits>
 #include <utility>
@@ -402,12 +404,15 @@ static_assert((std::uint8_t(255) * m %= 257 * m).numerical_value_in(m) != [] {
 // TODO ICE
 // (https://developercommunity2.visualstudio.com/t/ICE-on-a-constexpr-operator-in-mp-unit/1302907)
 #ifndef MP_UNITS_COMP_MSVC
+// clang-17 with modules build on ignores disabling conversion warnings
+#if !(defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 18 && defined MP_UNITS_MODULES)
 // next two lines trigger conversions warnings
 // (warning disabled in CMake for this file)
 static_assert((22 * m *= 33.33).numerical_value_in(m) == 733);
 static_assert((22 * m /= 3.33).numerical_value_in(m) == 6);
 static_assert((22 * m *= 33.33 * one).numerical_value_in(m) == 733);
 static_assert((22 * m /= 3.33 * one).numerical_value_in(m) == 6);
+#endif
 #endif
 
 template<template<auto, typename> typename Q>
