@@ -65,7 +65,7 @@ if(${projectPrefix}BUILD_CXX_MODULES)
                                     "mp-units-core.cpp"
     )
     target_compile_definitions(mp-units-core-module INTERFACE MP_UNITS_MODULES)
-    target_link_libraries(mp-units-core-module PRIVATE mp-units::core PUBLIC mp-units::core-macros)
+    target_link_libraries(mp-units-core-module PRIVATE mp-units::core mp-units::utility PUBLIC mp-units::core-macros)
     if(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 18)
         target_compile_options(mp-units-core-module PUBLIC "-Wno-include-angled-in-module-purview")
     endif()
