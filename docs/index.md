@@ -38,23 +38,41 @@ The library source code is hosted on [GitHub](https://github.com/mpusz/mp-units)
     More requirements for C++ modules support can be found in the
     [CMake's documentation](https://cmake.org/cmake/help/latest/manual/cmake-cxxmodules.7.html).
 
+=== "C++ modules"
 
-```cpp
-#include <mp-units/ostream.h>
-#include <mp-units/systems/si/si.h>
-#include <mp-units/systems/usc/usc.h>
-#include <iostream>
+    ```cpp
+    #include <iostream>
+    import mp_units;
 
-using namespace mp_units;
+    using namespace mp_units;
 
-inline constexpr struct smoot : named_unit<"smoot", mag<67> * usc::inch> {} smoot;
+    inline constexpr struct smoot : named_unit<"smoot", mag<67> * usc::inch> {} smoot;
 
-int main()
-{
-  constexpr quantity dist = 364.4 * smoot;
-  std::cout << "Harvard Bridge length = " << dist << "(" << dist.in(usc::foot) << ", " << dist.in(si::metre) << ") ± 1 εar\n";
-}
-```
+    int main()
+    {
+      constexpr quantity dist = 364.4 * smoot;
+      std::cout << "Harvard Bridge length = " << dist << "(" << dist.in(usc::foot) << ", " << dist.in(si::metre) << ") ± 1 εar\n";
+    }
+    ```
+
+=== "Header files"
+
+    ```cpp
+    #include <mp-units/ostream.h>
+    #include <mp-units/systems/si/si.h>
+    #include <mp-units/systems/usc/usc.h>
+    #include <iostream>
+
+    using namespace mp_units;
+
+    inline constexpr struct smoot : named_unit<"smoot", mag<67> * usc::inch> {} smoot;
+
+    int main()
+    {
+      constexpr quantity dist = 364.4 * smoot;
+      std::cout << "Harvard Bridge length = " << dist << "(" << dist.in(usc::foot) << ", " << dist.in(si::metre) << ") ± 1 εar\n";
+    }
+    ```
 
 Output:
 

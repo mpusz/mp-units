@@ -20,13 +20,25 @@ The [SI Brochure](../appendix/references.md#SIBrochure) says:
 Following the above, the value of a quantity in the **mp-units** library is created by multiplying
 a number with a predefined unit:
 
-```cpp
-#include <mp-units/systems/si/si.h>
+=== "C++ modules"
 
-using namespace mp_units;
+    ```cpp
+    import mp_units;
 
-quantity q = 42 * si::metre / si::second;
-```
+    using namespace mp_units;
+
+    quantity q = 42 * si::metre / si::second;
+    ```
+
+=== "Header files"
+
+    ```cpp
+    #include <mp-units/systems/si/si.h>
+
+    using namespace mp_units;
+
+    quantity q = 42 * si::metre / si::second;
+    ```
 
 !!! info
 
@@ -34,25 +46,50 @@ quantity q = 42 * si::metre / si::second;
     provided by this and other libraries, a quantity can also be created with a two-parameter
     constructor:
 
-    ```cpp
-    #include <mp-units/systems/si/si.h>
+    === "C++ modules"
 
-    using namespace mp_units;
+        ```cpp
+        import mp_units;
 
-    quantity q{42, si::metre / si::second};
-    ```
+        using namespace mp_units;
+
+        quantity q{42, si::metre / si::second};
+        ```
+
+    === "Header files"
+
+        ```cpp
+        #include <mp-units/systems/si/si.h>
+
+        using namespace mp_units;
+
+        quantity q{42, si::metre / si::second};
+        ```
 
 The above creates an instance of `quantity<derived_unit<si::metre, per<si::second>>{}, int>`.
 The same can be obtained using optional unit symbols:
 
-```cpp
-#include <mp-units/systems/si/si.h>
+=== "C++ modules"
 
-using namespace mp_units;
-using namespace mp_units::si::unit_symbols;
+    ```cpp
+    import mp_units;
 
-quantity q = 42 * m / s;
-```
+    using namespace mp_units;
+    using namespace mp_units::si::unit_symbols;
+
+    quantity q = 42 * m / s;
+    ```
+
+=== "Header files"
+
+    ```cpp
+    #include <mp-units/systems/si/si.h>
+
+    using namespace mp_units;
+    using namespace mp_units::si::unit_symbols;
+
+    quantity q = 42 * m / s;
+    ```
 
 !!! tip
 
@@ -62,14 +99,27 @@ quantity q = 42 * m / s;
 
 Quantities of the same kind can be added, subtracted, and compared to each other:
 
-```cpp
-#include <mp-units/systems/si/si.h>
+=== "C++ modules"
 
-using namespace mp_units;
-using namespace mp_units::si::unit_symbols;
+    ```cpp
+    import mp_units;
 
-static_assert(1 * km + 50 * m == 1050 * m);
-```
+    using namespace mp_units;
+    using namespace mp_units::si::unit_symbols;
+
+    static_assert(1 * km + 50 * m == 1050 * m);
+    ```
+
+=== "Header files"
+
+    ```cpp
+    #include <mp-units/systems/si/si.h>
+
+    using namespace mp_units;
+    using namespace mp_units::si::unit_symbols;
+
+    static_assert(1 * km + 50 * m == 1050 * m);
+    ```
 
 Various quantities can be multiplied or divided by each other:
 
@@ -96,24 +146,45 @@ Quantity points should be used in all places where adding two values is meaningl
 The set of operations that can be done on quantity points is limited compared to quantities.
 This introduces an additional type-safety.
 
-```cpp
-#include <mp-units/ostream.h>
-#include <mp-units/systems/si/si.h>
-#include <mp-units/systems/usc/usc.h>
-#include <iostream>
+=== "C++ modules"
 
-int main()
-{
-  using namespace mp_units;
-  using namespace mp_units::si::unit_symbols;
-  using namespace mp_units::usc::unit_symbols;
+    ```cpp
+    #include <iostream>
+    import mp_units;
 
-  quantity_point temp{20. * deg_C};
-  std::cout << "Temperature: "
-            << temp.quantity_from_zero() << " ("
-            << temp.in(deg_F).quantity_from_zero() << ")\n";
-}
-```
+    int main()
+    {
+      using namespace mp_units;
+      using namespace mp_units::si::unit_symbols;
+      using namespace mp_units::usc::unit_symbols;
+
+      quantity_point temp{20. * deg_C};
+      std::cout << "Temperature: "
+                  << temp.quantity_from_zero() << " ("
+                  << temp.in(deg_F).quantity_from_zero() << ")\n";
+    }
+    ```
+
+=== "Header files"
+
+    ```cpp
+    #include <mp-units/ostream.h>
+    #include <mp-units/systems/si/si.h>
+    #include <mp-units/systems/usc/usc.h>
+    #include <iostream>
+
+    int main()
+    {
+      using namespace mp_units;
+      using namespace mp_units::si::unit_symbols;
+      using namespace mp_units::usc::unit_symbols;
+
+      quantity_point temp{20. * deg_C};
+      std::cout << "Temperature: "
+                  << temp.quantity_from_zero() << " ("
+                  << temp.in(deg_F).quantity_from_zero() << ")\n";
+    }
+    ```
 
 The above outputs:
 
