@@ -29,5 +29,5 @@
 // This header is intentionally empty and just include other headers
 // `math.h` is just a convenience wrapper for not modular code
 // With C++20 modules:
-// - math_core is be a part of the mp_units.core module
+// - math_core is a part of the mp_units.core module
 // - math_si and math_angular is provided with the mp_units.systems module
