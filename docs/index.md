@@ -25,11 +25,19 @@ The library source code is hosted on [GitHub](https://github.com/mpusz/mp-units)
     a [preprocessor macro](users_guide/framework_basics/systems_of_quantities.md#defining-quantities)
     providing a backward-compatible way to use it.
 
-    As of today, the library compiles fine on the following compilers (or newer):
+    The below table provides the minimum compiler version required to compile the code using the
+    specific feature:
 
-    - gcc-12
-    - clang-16
-    - apple-clang-15
+    | Feature              | gcc  | clang | apple-clang | MSVC |
+    |----------------------|:----:|:-----:|:-----------:|:----:|
+    | **Minimum support**  |  12  |  16   |     15      | None |
+    | **`std::format`**    | None | None  |    None     | None |
+    | **C++ modules**      | None |  17   |    None     | None |
+    | **C++23 extensions** | None | None  |    None     | None |
+
+    More requirements for C++ modules support can be found in the
+    [CMake's documentation](https://cmake.org/cmake/help/latest/manual/cmake-cxxmodules.7.html).
+
 
 ```cpp
 #include <mp-units/ostream.h>
