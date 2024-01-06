@@ -21,7 +21,7 @@
 // SOFTWARE.
 
 #include "glide_computer_lib.h"
-#include <mp-units/bits/fmt_hacks.h>
+#include <mp-units/compat_fmt_macros.h>
 #include <array>
 #include <exception>
 #include <iostream>
@@ -32,10 +32,9 @@
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else
-#include <mp-units/chrono.h>
 #include <mp-units/math.h>
 #include <mp-units/systems/international/international.h>
-#include <mp-units/systems/si/unit_symbols.h>
+#include <mp-units/systems/si/si.h>
 #endif
 
 namespace {

@@ -1,22 +1,12 @@
 parse:
   additional_commands:
-    add_documentation:
-      pargs:
-        nargs: 1
-        flags:
-          - ALL
-      kwargs:
-        BREATHE_PROJECT: 1
-        CODE_SOURCE_DIR: 1
-        INSTALL_DIR: 1
-        CODE_DEPENDS: 1
-        DOCS_DEPENDS: 1
     add_units_module:
       pargs:
         nargs: 1
       kwargs:
-        DEPENDENCIES: +
-        HEADERS: +
+        DEPENDENCIES: "+"
+        HEADERS: "*"
+        MODULE_INTERFACE_UNIT: "?"
     enable_iwyu:
       pargs:
         flags:
@@ -26,13 +16,6 @@ parse:
       kwargs:
         MAPPING_FILE: 1
         MAX_LINE_LENGTH: 1
-    metabench_add_chart:
-      pargs:
-        nargs: 1
-      kwargs:
-        TITLE: 1
-        SUBTITLE: 1
-        DATASETS: +
 format:
   line_width: 120
   tab_size: 4

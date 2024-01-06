@@ -23,7 +23,7 @@
 #pragma once
 
 #include <gsl/gsl-lite.hpp>
-#include <mp-units/bits/fmt_hacks.h>
+#include <mp-units/compat_fmt_macros.h>
 #include <ostream>
 #include <utility>
 #ifdef MP_UNITS_MODULES

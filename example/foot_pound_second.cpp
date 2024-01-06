@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <mp-units/bits/fmt_hacks.h>
+#include <mp-units/compat_fmt_macros.h>
 #include <iostream>
 #include <string_view>
 #ifdef MP_UNITS_MODULES

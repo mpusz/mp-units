@@ -22,7 +22,5 @@
 
 cmake_minimum_required(VERSION 3.5)
 
-add_subdirectory(unit_test/runtime)
-add_subdirectory(unit_test/static)
-
-# add_subdirectory(metabench)
+add_subdirectory(runtime)
+add_subdirectory(static)

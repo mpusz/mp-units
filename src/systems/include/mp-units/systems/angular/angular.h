@@ -22,16 +22,5 @@
 
 #pragma once
 
-#include <mp-units/compare.h>
-#include <mp-units/compat_macros.h>
-#include <mp-units/concepts.h>
-#include <mp-units/customization_points.h>
-#include <mp-units/dimension.h>
-#include <mp-units/math.h>
-#include <mp-units/quantity.h>
-#include <mp-units/quantity_point.h>
-#include <mp-units/quantity_spec.h>
-#include <mp-units/random.h>
-#include <mp-units/reference.h>
-#include <mp-units/system_reference.h>
-#include <mp-units/unit.h>
+#include <mp-units/systems/angular/math.h>
+#include <mp-units/systems/angular/units.h>

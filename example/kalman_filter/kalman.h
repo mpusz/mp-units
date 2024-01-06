@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <mp-units/bits/fmt_hacks.h>
+#include <mp-units/compat_fmt_macros.h>
 #include <tuple>
 #ifdef MP_UNITS_MODULES
 import mp_units;

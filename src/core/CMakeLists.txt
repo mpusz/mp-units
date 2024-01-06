@@ -28,60 +28,67 @@ if(NOT TARGET gsl::gsl-lite)
 endif()
 
 # core library definition
-add_library(
-    mp-units-core
-    INTERFACE
-    include/mp-units/bits/external/algorithm.h
-    include/mp-units/bits/external/fixed_string.h
-    include/mp-units/bits/external/math_concepts.h
-    include/mp-units/bits/external/prime.h
-    include/mp-units/bits/external/type_list.h
-    include/mp-units/bits/external/type_name.h
-    include/mp-units/bits/external/type_traits.h
-    include/mp-units/bits/dimension_concepts.h
-    include/mp-units/bits/expression_template.h
-    include/mp-units/bits/get_associated_quantity.h
-    include/mp-units/bits/get_common_base.h
-    include/mp-units/bits/magnitude.h
-    include/mp-units/bits/quantity_cast.h
-    include/mp-units/bits/quantity_concepts.h
-    include/mp-units/bits/quantity_point_concepts.h
-    include/mp-units/bits/quantity_spec_concepts.h
-    include/mp-units/bits/ratio.h
-    include/mp-units/bits/reference_concepts.h
-    include/mp-units/bits/representation_concepts.h
-    include/mp-units/bits/sudo_cast.h
-    include/mp-units/bits/symbol_text.h
-    include/mp-units/bits/text_tools.h
-    include/mp-units/bits/unit_concepts.h
-    include/mp-units/bits/value_cast.h
-    include/mp-units/concepts.h
-    include/mp-units/core.h
-    include/mp-units/customization_points.h
-    include/mp-units/dimension.h
-    include/mp-units/quantity.h
-    include/mp-units/quantity_point.h
-    include/mp-units/quantity_spec.h
-    include/mp-units/reference.h
-    include/mp-units/system_reference.h
-    include/mp-units/unit.h
+add_units_module(
+    core
+    DEPENDENCIES gsl::gsl-lite
+    HEADERS include/mp-units/bits/external/algorithm.h
+            include/mp-units/bits/external/fixed_string.h
+            include/mp-units/bits/external/hacks.h
+            include/mp-units/bits/external/math_concepts.h
+            include/mp-units/bits/external/prime.h
+            include/mp-units/bits/external/type_list.h
+            include/mp-units/bits/external/type_name.h
+            include/mp-units/bits/external/type_traits.h
+            include/mp-units/bits/core_gmf.h
+            include/mp-units/bits/dimension_concepts.h
+            include/mp-units/bits/expression_template.h
+            include/mp-units/bits/get_associated_quantity.h
+            include/mp-units/bits/get_common_base.h
+            include/mp-units/bits/magnitude.h
+            include/mp-units/bits/quantity_cast.h
+            include/mp-units/bits/quantity_concepts.h
+            include/mp-units/bits/quantity_point_concepts.h
+            include/mp-units/bits/quantity_spec_concepts.h
+            include/mp-units/bits/ratio.h
+            include/mp-units/bits/reference_concepts.h
+            include/mp-units/bits/representation_concepts.h
+            include/mp-units/bits/sudo_cast.h
+            include/mp-units/bits/symbol_text.h
+            include/mp-units/bits/text_tools.h
+            include/mp-units/bits/unit_concepts.h
+            include/mp-units/bits/value_cast.h
+            include/mp-units/compare.h
+            include/mp-units/compat_macros.h
+            include/mp-units/concepts.h
+            include/mp-units/core.h
+            include/mp-units/customization_points.h
+            include/mp-units/dimension.h
+            include/mp-units/math.h
+            include/mp-units/quantity.h
+            include/mp-units/quantity_point.h
+            include/mp-units/quantity_spec.h
+            include/mp-units/random.h
+            include/mp-units/reference.h
+            include/mp-units/system_reference.h
+            include/mp-units/unit.h
+    MODULE_INTERFACE_UNIT mp-units-core.cpp
 )
-target_link_libraries(mp-units-core INTERFACE gsl::gsl-lite mp-units::core-macros)
-target_include_directories(
-    mp-units-core ${unitsAsSystem} INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-                                             $<INSTALL_INTERFACE:include>
-)
+
+if(${projectPrefix}BUILD_CXX_MODULES)
+    if(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
+        if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 18)
+            target_compile_definitions(mp-units-core PUBLIC _LIBCPP_NO_ABI_TAG)
+        endif()
+
+        if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 18)
+            target_compile_options(mp-units-core PUBLIC "-Wno-include-angled-in-module-purview")
+        endif()
+    endif()
+endif()
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     target_compile_options(
-        mp-units-core
-        INTERFACE /utf-8 # Specifies both the source character set and the execution character set as UTF-8
+        mp-units-core ${${projectPrefix}TARGET_SCOPE}
+        /utf-8 # Specifies both the source character set and the execution character set as UTF-8
     )
 endif()
-
-set_target_properties(mp-units-core PROPERTIES EXPORT_NAME core)
-add_library(mp-units::core ALIAS mp-units-core)
-
-# installation
-install(TARGETS mp-units-core EXPORT mp-unitsTargets)
-install(DIRECTORY include/mp-units TYPE INCLUDE)

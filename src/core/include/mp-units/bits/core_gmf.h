@@ -22,16 +22,29 @@
 
 #pragma once
 
-#include <mp-units/compare.h>
-#include <mp-units/compat_macros.h>
-#include <mp-units/concepts.h>
-#include <mp-units/customization_points.h>
-#include <mp-units/dimension.h>
-#include <mp-units/math.h>
-#include <mp-units/quantity.h>
-#include <mp-units/quantity_point.h>
-#include <mp-units/quantity_spec.h>
-#include <mp-units/random.h>
-#include <mp-units/reference.h>
-#include <mp-units/system_reference.h>
-#include <mp-units/unit.h>
+// core
+#include <gsl/gsl-lite.hpp>
+#include <mp-units/bits/external/hacks.h>
+#include <array>
+#include <cmath>
+#include <compare>
+#include <concepts>
+#include <cstddef>
+#include <cstdint>
+#include <functional>
+#include <initializer_list>
+#include <iterator>
+#include <limits>
+#include <numbers>
+#include <numeric>
+#include <optional>
+#include <random>
+#include <ranges>
+#include <string>
+#include <string_view>
+#include <tuple>
+#include <type_traits>
+#include <utility>
+
+// si
+#include <chrono>

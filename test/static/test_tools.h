@@ -22,16 +22,27 @@
 
 #pragma once
 
-#include <mp-units/compare.h>
+#include <type_traits>
+#ifdef MP_UNITS_MODULES
 #include <mp-units/compat_macros.h>
-#include <mp-units/concepts.h>
-#include <mp-units/customization_points.h>
-#include <mp-units/dimension.h>
-#include <mp-units/math.h>
-#include <mp-units/quantity.h>
-#include <mp-units/quantity_point.h>
+import mp_units;
+#else
 #include <mp-units/quantity_spec.h>
-#include <mp-units/random.h>
-#include <mp-units/reference.h>
-#include <mp-units/system_reference.h>
-#include <mp-units/unit.h>
+#endif
+
+template<auto V, typename T>
+inline constexpr bool is_of_type = std::is_same_v<std::remove_cvref_t<decltype(V)>, T>;
+
+#ifdef __cpp_explicit_this_parameter
+
+#define QUANTITY_SPEC_(name, ...)                                \
+  inline constexpr struct name##_ : quantity_spec<__VA_ARGS__> { \
+  } name
+
+#else
+
+#define QUANTITY_SPEC_(name, ...)                                         \
+  inline constexpr struct name##_ : quantity_spec<name##_, __VA_ARGS__> { \
+  } name
+
+#endif

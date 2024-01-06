@@ -22,11 +22,13 @@
 
 cmake_minimum_required(VERSION 3.5)
 
-add_library(glide_computer_lib STATIC glide_computer_lib.cpp include/glide_computer_lib.h)
-if(TARGET mp-units::modules)
-    target_link_libraries(glide_computer_lib PUBLIC gsl::gsl-lite mp-units::modules)
-else()
-    target_link_libraries(glide_computer_lib PRIVATE mp-units::core-fmt PUBLIC mp-units::si mp-units::utility)
+add_library(glide_computer_lib-headers STATIC glide_computer_lib.cpp include/glide_computer_lib.h)
+target_link_libraries(glide_computer_lib-headers PUBLIC mp-units::mp-units example_utils)
+target_include_directories(glide_computer_lib-headers PUBLIC include)
+
+if(${projectPrefix}BUILD_CXX_MODULES)
+    add_library(glide_computer_lib STATIC glide_computer_lib.cpp include/glide_computer_lib.h)
+    target_compile_definitions(glide_computer_lib PUBLIC ${projectPrefix}MODULES)
+    target_link_libraries(glide_computer_lib PUBLIC mp-units::mp-units example_utils)
+    target_include_directories(glide_computer_lib PUBLIC include)
 endif()
-target_link_libraries(glide_computer_lib PUBLIC example_utils)
-target_include_directories(glide_computer_lib PUBLIC include)

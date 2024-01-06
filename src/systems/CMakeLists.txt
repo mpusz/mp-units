@@ -22,40 +22,39 @@
 
 cmake_minimum_required(VERSION 3.19)
 
-# systems
-add_subdirectory(angular)
-add_subdirectory(iec80000)
-add_subdirectory(isq)
-add_subdirectory(isq_angle)
-add_subdirectory(natural)
-add_subdirectory(si)
-add_subdirectory(cgs)
-add_subdirectory(hep)
-add_subdirectory(iau)
-add_subdirectory(imperial)
-add_subdirectory(international)
-add_subdirectory(typographic)
-add_subdirectory(usc)
-
-# wrapper for all the systems
-add_library(mp-units-systems INTERFACE)
-target_link_libraries(
-    mp-units-systems
-    INTERFACE
-        mp-units::angular
-        mp-units::iec80000
-        mp-units::isq
-        mp-units::isq_angle
-        mp-units::natural
-        mp-units::si
-        mp-units::cgs
-        mp-units::hep
-        mp-units::iau
-        mp-units::imperial
-        mp-units::international
-        mp-units::typographic
-        mp-units::usc
+add_units_module(
+    systems
+    DEPENDENCIES mp-units::core
+    HEADERS include/mp-units/systems/angular/angular.h
+            include/mp-units/systems/angular/math.h
+            include/mp-units/systems/angular/units.h
+            include/mp-units/systems/cgs/cgs.h
+            include/mp-units/systems/hep/hep.h
+            include/mp-units/systems/iau/iau.h
+            include/mp-units/systems/iec80000/binary_prefixes.h
+            include/mp-units/systems/iec80000/iec80000.h
+            include/mp-units/systems/iec80000/quantities.h
+            include/mp-units/systems/iec80000/unit_symbols.h
+            include/mp-units/systems/iec80000/units.h
+            include/mp-units/systems/imperial/imperial.h
+            include/mp-units/systems/international/international.h
+            include/mp-units/systems/isq/atomic_and_nuclear_physics.h
+            include/mp-units/systems/isq/base_quantities.h
+            include/mp-units/systems/isq/electromagnetism.h
+            include/mp-units/systems/isq/isq.h
+            include/mp-units/systems/isq/mechanics.h
+            include/mp-units/systems/isq/space_and_time.h
+            include/mp-units/systems/isq/thermodynamics.h
+            include/mp-units/systems/isq_angle/isq_angle.h
+            include/mp-units/systems/natural/natural.h
+            include/mp-units/systems/si/chrono.h
+            include/mp-units/systems/si/constants.h
+            include/mp-units/systems/si/math.h
+            include/mp-units/systems/si/prefixes.h
+            include/mp-units/systems/si/si.h
+            include/mp-units/systems/si/unit_symbols.h
+            include/mp-units/systems/si/units.h
+            include/mp-units/systems/typographic/typographic.h
+            include/mp-units/systems/usc/usc.h
+    MODULE_INTERFACE_UNIT mp-units-systems.cpp
 )
-add_library(mp-units::systems ALIAS mp-units-systems)
-set_target_properties(mp-units-systems PROPERTIES EXPORT_NAME systems)
-install(TARGETS mp-units-systems EXPORT mp-unitsTargets)

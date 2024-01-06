@@ -31,8 +31,8 @@
 #include <mp-units/bits/quantity_spec_concepts.h>
 #include <mp-units/bits/reference_concepts.h>
 #include <mp-units/bits/representation_concepts.h>
+#include <mp-units/compat_macros.h>
 #include <mp-units/dimension.h>
-#include <mp-units/quantity_spec_macro.h>
 #include <tuple>
 
 namespace mp_units {
