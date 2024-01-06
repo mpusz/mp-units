@@ -94,14 +94,14 @@ void example()
     print_result(distance, duration, avg_speed(distance, duration));
   }
 
-  // Customary Units (int)
+  // International mile (int)
   {
     using namespace mp_units::international::unit_symbols;
 
     constexpr auto distance = 140 * mi;
     constexpr auto duration = 2 * h;
 
-    std::cout << "\nUS Customary Units with 'int' as representation\n";
+    std::cout << "\nInternational mile with 'int' as representation\n";
 
     // it is not possible to make a lossless conversion of miles to meters on an integral type
     // (explicit cast needed)
@@ -110,14 +110,14 @@ void example()
     print_result(distance, duration, avg_speed(distance, duration));
   }
 
-  // Customary Units (double)
+  // International mile (double)
   {
     using namespace mp_units::international::unit_symbols;
 
     constexpr auto distance = 140. * mi;
     constexpr auto duration = 2. * h;
 
-    std::cout << "\nUS Customary Units with 'double' as representation\n";
+    std::cout << "\nInternational mile with 'double' as representation\n";
 
     // conversion from a floating-point to an integral type is a truncating one so an explicit cast is needed
     // also it is not possible to make a lossless conversion of miles to meters on an integral type

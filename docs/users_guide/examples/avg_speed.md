@@ -14,8 +14,8 @@ library features as possible, but we will scope on different interfaces one can 
 with the **mp-units**. We will also describe some advantages and disadvantages of presented
 solutions.
 
-First, we include all the necessary header files and import all the identifiers from the
-`mp_units` namespace:
+First, we either import a module or include all the necessary header files and import all
+the identifiers from the `mp_units` namespace:
 
 ```cpp title="avg_speed.cpp" linenums="1"
 --8<-- "example/avg_speed.cpp:28:42"
@@ -52,11 +52,11 @@ Average speed of a car that makes 220 km in 2 h is 110 km/h.
 ```
 
 Please note that in the first two cases, we must convert length from `km` to `m` and
-time from `h` to `s`. The converted values are used to calculate speed in `m / s` which
-is then again converted to the one in `km / h`. Those conversions not only impact the
-application's runtime performance but may also affect the final result. Such truncation
-can be easily observed in the first case where we deal with integral representation types
-(the resulting speed is `108 km / h`).
+time from `h` to `s`. The converted values are used to calculate speed in `m/s` which
+is then again converted to the one in `km/h`. Those conversions not only impact the
+application's runtime performance but may also affect the precision of the final result.
+Such truncation can be easily observed in the first case where we deal with integral
+representation types (the resulting speed is `108 km/h`).
 
 The second scenario is really similar to the previous one, but this time, function arguments
 have floating-point representation types:
@@ -80,7 +80,7 @@ Average speed of a car that makes 220 km in 2 h is 110 km/h.
 ```
 
 Next, let's do the same for integral and floating-point representations, but this time
-using US Customary units:
+using international mile:
 
 ```cpp title="avg_speed.cpp" linenums="65"
 --8<-- "example/avg_speed.cpp:97:129"
@@ -88,17 +88,17 @@ using US Customary units:
 
 One important difference here is the fact that as it is not possible to make a lossless conversion
 of miles to meters on a quantity using an integral representation type, so this time, we need a
-`value_cast<si::metre>` to force it.
+`value_cast<m, int>` to force it.
 
 If we check the text output of the above, we will see the following:
 
 ```text
-US Customary Units with 'int' as representation
+International mile with 'int' as representation
 Average speed of a car that makes 140 mi in 2 h is 111 km/h.
 Average speed of a car that makes 140 mi in 2 h is 112.654 km/h.
 Average speed of a car that makes 140 mi in 2 h is 112 km/h.
 
-US Customary Units with 'double' as representation
+International mile with 'double' as representation
 Average speed of a car that makes 140 mi in 2 h is 111 km/h.
 Average speed of a car that makes 140 mi in 2 h is 112.654 km/h.
 Average speed of a car that makes 140 mi in 2 h is 112.654 km/h.
@@ -108,7 +108,7 @@ Please note how the first and third results get truncated using integral represe
 
 In the end, we repeat the scenario for CGS units:
 
-```cpp title="avg_speed.cpp" linenums="98"
+```cpp title="avg_speed.cpp" linenums="97"
 --8<-- "example/avg_speed.cpp:131:161"
 ```
 
@@ -129,6 +129,6 @@ Average speed of a car that makes 2.2e+07 cm in 7200 s is 110 km/h.
 
 The example file ends with a simple `main()` function:
 
-```cpp title="avg_speed.cpp" linenums="129"
+```cpp title="avg_speed.cpp" linenums="128"
 --8<-- "example/avg_speed.cpp:163:"
 ```
