@@ -61,7 +61,17 @@ function(add_mp_units_module name target_name)
     endif()
 
     # define the target for a module
-    add_library(${target_name} ${SCOPE} ${ARG_HEADERS})
+    add_library(${target_name} ${SCOPE})
+    target_sources(
+        ${target_name}
+        ${${projectPrefix}TARGET_SCOPE}
+        FILE_SET
+        HEADERS
+        BASE_DIRS
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+        FILES
+        ${ARG_HEADERS}
+    )
     target_link_libraries(${target_name} ${${projectPrefix}TARGET_SCOPE} ${ARG_DEPENDENCIES})
     if(ARG_HEADERS)
         target_include_directories(
@@ -76,13 +86,10 @@ function(add_mp_units_module name target_name)
         target_sources(${target_name} PUBLIC FILE_SET CXX_MODULES FILES ${ARG_MODULE_INTERFACE_UNIT})
         install(TARGETS ${target_name}
                 EXPORT mp-unitsTargets
-                FILE_SET CXX_MODULES
+                FILE_SET HEADERS FILE_SET CXX_MODULES
                 DESTINATION ${CMAKE_INSTALL_LIBDIR}/miu
         )
     else()
-        install(TARGETS ${target_name} EXPORT mp-unitsTargets)
-    endif()
-    if(ARG_HEADERS)
-        install(DIRECTORY include/mp-units TYPE INCLUDE)
+        install(TARGETS ${target_name} EXPORT mp-unitsTargets FILE_SET HEADERS)
     endif()
 endfunction()
