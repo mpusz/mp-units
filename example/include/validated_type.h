@@ -27,7 +27,7 @@
 #include <ostream>
 #include <utility>
 #ifdef MP_UNITS_MODULES
-import mp_units.core_fmt;
+import mp_units.core;
 #else
 #include <mp-units/bits/external/hacks.h>
 #include <mp-units/bits/fmt.h>

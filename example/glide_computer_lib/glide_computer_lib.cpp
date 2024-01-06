@@ -25,7 +25,7 @@
 #include <numeric>
 #include <string_view>
 #ifdef MP_UNITS_MODULES
-import mp_units.core_fmt;
+import mp_units.core;
 #else
 #include <mp-units/format.h>
 #endif
