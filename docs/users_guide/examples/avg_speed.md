@@ -18,28 +18,28 @@ First, we include all the necessary header files and import all the identifiers 
 `mp_units` namespace:
 
 ```cpp title="avg_speed.cpp" linenums="1"
---8<-- "example/avg_speed.cpp:28:38"
+--8<-- "example/avg_speed.cpp:28:42"
 ```
 
 Next, we define two functions calculating average speed based on quantities of fixed units
 and integral and floating-point representation types, respectively, and a third function
 that we introduced in the [previous example](hello_units.md):
 
-```cpp title="avg_speed.cpp" linenums="12"
---8<-- "example/avg_speed.cpp:40:54"
+```cpp title="avg_speed.cpp" linenums="16"
+--8<-- "example/avg_speed.cpp:44:58"
 ```
 
 We also added a simple utility to print our results:
 
-```cpp title="avg_speed.cpp" linenums="27"
---8<-- "example/avg_speed.cpp:56:62"
+```cpp title="avg_speed.cpp" linenums="31"
+--8<-- "example/avg_speed.cpp:60:66"
 ```
 
 Now, let's analyze how those three utility functions behave with different sets of arguments.
 First, we are going to use quantities of SI units and integral representation:
 
-```cpp title="avg_speed.cpp" linenums="27"
---8<-- "example/avg_speed.cpp:64:78"
+```cpp title="avg_speed.cpp" linenums="38"
+--8<-- "example/avg_speed.cpp:68:82"
 ```
 
 The above provides the following output:
@@ -61,8 +61,8 @@ can be easily observed in the first case where we deal with integral representat
 The second scenario is really similar to the previous one, but this time, function arguments
 have floating-point representation types:
 
-```cpp title="avg_speed.cpp" linenums="42"
---8<-- "example/avg_speed.cpp:80:91"
+```cpp title="avg_speed.cpp" linenums="53"
+--8<-- "example/avg_speed.cpp:84:95"
 ```
 
 Conversion from floating-point to integral representation types is
@@ -82,8 +82,8 @@ Average speed of a car that makes 220 km in 2 h is 110 km/h.
 Next, let's do the same for integral and floating-point representations, but this time
 using US Customary units:
 
-```cpp title="avg_speed.cpp" linenums="54"
---8<-- "example/avg_speed.cpp:93:124"
+```cpp title="avg_speed.cpp" linenums="65"
+--8<-- "example/avg_speed.cpp:97:129"
 ```
 
 One important difference here is the fact that as it is not possible to make a lossless conversion
@@ -108,8 +108,8 @@ Please note how the first and third results get truncated using integral represe
 
 In the end, we repeat the scenario for CGS units:
 
-```cpp title="avg_speed.cpp" linenums="86"
---8<-- "example/avg_speed.cpp:126:155"
+```cpp title="avg_speed.cpp" linenums="98"
+--8<-- "example/avg_speed.cpp:131:161"
 ```
 
 Again, we observe `value_cast` being used in the same places and consistent truncation errors
@@ -129,6 +129,6 @@ Average speed of a car that makes 2.2e+07 cm in 7200 s is 110 km/h.
 
 The example file ends with a simple `main()` function:
 
-```cpp title="avg_speed.cpp" linenums="116"
---8<-- "example/avg_speed.cpp:157:"
+```cpp title="avg_speed.cpp" linenums="129"
+--8<-- "example/avg_speed.cpp:163:"
 ```

@@ -18,20 +18,20 @@ First, we include the headers for:
 - text and stream output support
 
 ```cpp title="hello_units.cpp" linenums="1"
---8<-- "example/hello_units.cpp:28:33"
+--8<-- "example/hello_units.cpp:28:39"
 ```
 
 Also, to shorten the definitions, we "import" `mp_units` namespace.
 
-```cpp title="hello_units.cpp" linenums="7"
---8<-- "example/hello_units.cpp:35:36"
+```cpp title="hello_units.cpp" linenums="12"
+--8<-- "example/hello_units.cpp:40:41"
 ```
 
 Next we define a simple function that calculates average speed based on the provided
 arguments of length and time:
 
-```cpp title="hello_units.cpp" linenums="8"
---8<-- "example/hello_units.cpp:37:40"
+```cpp title="hello_units.cpp" linenums="13"
+--8<-- "example/hello_units.cpp:42:45"
 ```
 
 The above function template takes any quantities implicitly convertible to `isq::length`
@@ -45,16 +45,16 @@ that its quantity type is implicitly convertible to `isq::speed`.
     type is really useful for users of such a function as it provides more information
     of what to expect from a function than just using `auto`.
 
-```cpp title="hello_units.cpp" linenums="12"
---8<-- "example/hello_units.cpp:42:45"
+```cpp title="hello_units.cpp" linenums="17"
+--8<-- "example/hello_units.cpp:47:50"
 ```
 
 The above lines explicitly opt-in to use unit symbols from two systems of units.
 As this introduces a lot of short identifiers into the current scope, it is not done
 implicitly while including a header file.
 
-```cpp title="hello_units.cpp" linenums="16"
---8<-- "example/hello_units.cpp:47:53"
+```cpp title="hello_units.cpp" linenums="21"
+--8<-- "example/hello_units.cpp:52:58"
 ```
 
 - Lines `16` & `17` create a quantity of kind `isq::length / isq::time` with the numbers
@@ -74,8 +74,8 @@ implicitly while including a header file.
 - Line `22` does a [value-truncating conversion](../framework_basics/value_conversions.md#value-truncating-conversions)
   of changing the underlying representation type from `double` to `int`.
 
-```cpp title="hello_units.cpp" linenums="23"
---8<-- "example/hello_units.cpp:55"
+```cpp title="hello_units.cpp" linenums="28"
+--8<-- "example/hello_units.cpp:60"
 ```
 
 The above presents [various ways to print a quantity](../framework_basics/text_output.md).
