@@ -1,8 +1,8 @@
 parse:
   additional_commands:
-    add_units_module:
+    add_mp_units_module:
       pargs:
-        nargs: 1
+        nargs: 2
       kwargs:
         DEPENDENCIES: "+"
         HEADERS: "*"
