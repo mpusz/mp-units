@@ -8,4 +8,8 @@ export
 {
 // core
 #include <mp-units/core.h>
+
+// utility
+#include <mp-units/compare.h>
+#include <mp-units/random.h>
 }

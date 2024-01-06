@@ -26,7 +26,5 @@ export
 
 // utility
 #include <mp-units/chrono.h>
-#include <mp-units/compare.h>
 #include <mp-units/math.h>
-#include <mp-units/random.h>
 }
