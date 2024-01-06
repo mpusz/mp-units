@@ -21,14 +21,18 @@
 // SOFTWARE.
 
 #include <catch2/catch_test_macros.hpp>
-#include <mp-units/ostream.h>
-#include <mp-units/random.h>
-#include <mp-units/systems/si/unit_symbols.h>
-#include <mp-units/systems/si/units.h>
 #include <array>
 #include <initializer_list>
 #include <random>
 #include <vector>
+#ifdef MP_UNITS_MODULES
+import mp_units;
+#else
+#include <mp-units/ostream.h>
+#include <mp-units/random.h>
+#include <mp-units/systems/si/unit_symbols.h>
+#include <mp-units/systems/si/units.h>
+#endif
 
 
 using namespace mp_units;

@@ -20,11 +20,16 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include <mp-units/bits/fmt_hacks.h>
+#include <iostream>
+#include <tuple>
+#ifdef MP_UNITS_MODULES
+import mp_units;
+#else
 #include <mp-units/format.h>
 #include <mp-units/systems/isq/isq.h>
 #include <mp-units/systems/si/si.h>
-#include <iostream>
-#include <tuple>
+#endif
 
 // This example implements a table of units provided in the following article
 // http://cds.cern.ch/record/1481609/files/978-3-642-18018-7_BookBackMatter.pdf

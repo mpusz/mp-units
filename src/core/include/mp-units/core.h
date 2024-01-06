@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <mp-units/bits/math_core.h>
 #include <mp-units/concepts.h>
 #include <mp-units/customization_points.h>
 #include <mp-units/dimension.h>

@@ -33,7 +33,6 @@ add_library(
     INTERFACE
     include/mp-units/bits/external/algorithm.h
     include/mp-units/bits/external/fixed_string.h
-    include/mp-units/bits/external/hacks.h
     include/mp-units/bits/external/math_concepts.h
     include/mp-units/bits/external/prime.h
     include/mp-units/bits/external/type_list.h
@@ -44,6 +43,7 @@ add_library(
     include/mp-units/bits/get_associated_quantity.h
     include/mp-units/bits/get_common_base.h
     include/mp-units/bits/magnitude.h
+    include/mp-units/bits/math_core.h
     include/mp-units/bits/quantity_cast.h
     include/mp-units/bits/quantity_concepts.h
     include/mp-units/bits/quantity_point_concepts.h
@@ -67,8 +67,7 @@ add_library(
     include/mp-units/system_reference.h
     include/mp-units/unit.h
 )
-target_compile_features(mp-units-core INTERFACE cxx_std_20)
-target_link_libraries(mp-units-core INTERFACE gsl::gsl-lite)
+target_link_libraries(mp-units-core INTERFACE gsl::gsl-lite mp-units::core-macros)
 target_include_directories(
     mp-units-core ${unitsAsSystem} INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
                                              $<INSTALL_INTERFACE:include>

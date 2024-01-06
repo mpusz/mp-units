@@ -23,7 +23,11 @@
 cmake_minimum_required(VERSION 3.5)
 
 add_library(unit_tests_static_truncating quantity_test.cpp)
-target_link_libraries(unit_tests_static_truncating PRIVATE mp-units::mp-units)
+if(TARGET mp-units::modules)
+    target_link_libraries(unit_tests_static_truncating PRIVATE mp-units::modules)
+else()
+    target_link_libraries(unit_tests_static_truncating PRIVATE mp-units::mp-units)
+endif()
 target_compile_options(
     unit_tests_static_truncating PRIVATE $<IF:$<CXX_COMPILER_ID:MSVC>,/wd4242 /wd4244,-Wno-conversion>
 )
@@ -64,5 +68,9 @@ add_library(
     usc_test.cpp
 )
 
-target_link_libraries(unit_tests_static PRIVATE mp-units::mp-units)
-target_link_libraries(unit_tests_static PRIVATE unit_tests_static_truncating mp-units::mp-units)
+if(TARGET mp-units::modules)
+    target_link_libraries(unit_tests_static PRIVATE mp-units::modules)
+else()
+    target_link_libraries(unit_tests_static PRIVATE mp-units::mp-units)
+endif()
+target_link_libraries(unit_tests_static PRIVATE unit_tests_static_truncating)

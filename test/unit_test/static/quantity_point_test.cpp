@@ -21,14 +21,19 @@
 // SOFTWARE.
 
 #include "test_tools.h"
+#include <limits>
+#include <type_traits>
+#include <utility>
+#ifdef MP_UNITS_MODULES
+#include <chrono>
+import mp_units;
+#else
 #include <mp-units/chrono.h>
 #include <mp-units/quantity_point.h>
 #include <mp-units/systems/isq/isq.h>
 #include <mp-units/systems/si/si.h>
 #include <mp-units/systems/usc/usc.h>
-#include <limits>
-#include <type_traits>
-#include <utility>
+#endif
 
 namespace {
 

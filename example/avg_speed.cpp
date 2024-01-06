@@ -25,13 +25,17 @@
 // !!! renders correctly in the documentation "Examples" section.                 !!!
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+#include <exception>
+#include <iostream>
+#ifdef MP_UNITS_MODULES
+import mp_units;
+#else
 #include <mp-units/ostream.h>
 #include <mp-units/systems/cgs/cgs.h>
 #include <mp-units/systems/international/international.h>
-#include <mp-units/systems/isq/isq.h>
-#include <mp-units/systems/si/si.h>
-#include <exception>
-#include <iostream>
+#include <mp-units/systems/isq/space_and_time.h>
+#include <mp-units/systems/si/unit_symbols.h>
+#endif
 
 namespace {
 

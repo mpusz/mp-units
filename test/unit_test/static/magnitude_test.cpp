@@ -20,9 +20,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#ifdef MP_UNITS_MODULES
+import mp_units;
+#else
 #include <units/bits/magnitude.h>
 #include <units/bits/ratio.h>
 #include <type_traits>
+#endif
 
 using namespace units;
 using namespace units::detail;

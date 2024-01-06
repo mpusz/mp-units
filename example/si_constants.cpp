@@ -25,9 +25,14 @@
 // !!! renders correctly in the documentation "Examples" section.                 !!!
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+#include <mp-units/bits/fmt_hacks.h>
+#include <iostream>
+#ifdef MP_UNITS_MODULES
+import mp_units;
+#else
 #include <mp-units/format.h>
 #include <mp-units/systems/si/si.h>
-#include <iostream>
+#endif
 
 template<class T>
   requires mp_units::is_scalar<T>

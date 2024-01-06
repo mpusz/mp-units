@@ -27,6 +27,7 @@ message(STATUS "${projectPrefix}USE_LIBFMT: ${${projectPrefix}USE_LIBFMT}")
 
 add_units_module(core-fmt DEPENDENCIES mp-units::core HEADERS include/mp-units/format.h)
 target_compile_definitions(mp-units-core-fmt INTERFACE ${projectPrefix}USE_LIBFMT=$<BOOL:${${projectPrefix}USE_LIBFMT}>)
+target_link_libraries(mp-units-core-fmt INTERFACE mp-units::core-fmt-macros)
 
 if(${projectPrefix}USE_LIBFMT)
     if(NOT TARGET fmt::fmt)

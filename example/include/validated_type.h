@@ -23,11 +23,16 @@
 #pragma once
 
 #include <gsl/gsl-lite.hpp>
+#include <mp-units/bits/fmt_hacks.h>
+#include <ostream>
+#include <utility>
+#ifdef MP_UNITS_MODULES
+import mp_units.core_fmt;
+#else
 #include <mp-units/bits/external/hacks.h>
 #include <mp-units/bits/fmt.h>
 #include <mp-units/customization_points.h>
-#include <ostream>
-#include <utility>
+#endif
 
 inline constexpr struct validated_tag {
 } validated;

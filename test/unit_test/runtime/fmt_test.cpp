@@ -22,6 +22,13 @@
 
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/matchers/catch_matchers_exception.hpp>
+#include <mp-units/bits/fmt_hacks.h>
+#include <iomanip>
+#include <limits>
+#include <locale>
+#ifdef MP_UNITS_MODULES
+import mp_units;
+#else
 #include <mp-units/customization_points.h>
 #include <mp-units/format.h>
 #include <mp-units/ostream.h>
@@ -29,9 +36,7 @@
 #include <mp-units/systems/isq/mechanics.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si/si.h>
-#include <iomanip>
-#include <limits>
-#include <locale>
+#endif
 
 template<class T>
   requires mp_units::is_scalar<T>

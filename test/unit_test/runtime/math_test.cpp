@@ -22,13 +22,17 @@
 
 #include "almost_equals.h"
 #include <catch2/catch_all.hpp>
+#include <limits>
+#ifdef MP_UNITS_MODULES
+import mp_units;
+#else
 #include <mp-units/math.h>
 #include <mp-units/ostream.h>
 #include <mp-units/systems/angular/angular.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si/unit_symbols.h>
 #include <mp-units/systems/si/units.h>
-#include <limits>
+#endif
 
 using namespace mp_units;
 using namespace mp_units::si::unit_symbols;

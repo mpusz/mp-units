@@ -20,7 +20,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#ifdef MP_UNITS_MODULES
+import mp_units;
+#else
 #include <mp-units/bits/external/fixed_string.h>
+#endif
 
 using namespace mp_units;
 

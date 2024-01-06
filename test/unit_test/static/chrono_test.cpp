@@ -21,11 +21,16 @@
 // SOFTWARE.
 
 #include "test_tools.h"
+#include <ratio>
+#ifdef MP_UNITS_MODULES
+#include <chrono>
+import mp_units;
+#else
 #include <mp-units/bits/external/type_traits.h>
 #include <mp-units/chrono.h>
 #include <mp-units/quantity_point.h>
 #include <mp-units/systems/si/unit_symbols.h>
-#include <ratio>
+#endif
 
 namespace {
 

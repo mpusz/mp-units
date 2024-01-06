@@ -20,14 +20,18 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include <exception>
+#include <iostream>
+#ifdef MP_UNITS_MODULES
+import mp_units;
+#else
 #include <mp-units/math.h>
 #include <mp-units/ostream.h>
 #include <mp-units/systems/isq/mechanics.h>
 #include <mp-units/systems/natural/natural.h>
 #include <mp-units/systems/si/constants.h>
 #include <mp-units/systems/si/unit_symbols.h>
-#include <exception>
-#include <iostream>
+#endif
 
 template<class T>
   requires mp_units::is_scalar<T>
@@ -56,31 +60,21 @@ void si_example()
 
   std::cout << "\n*** SI units (c = " << c << " = " << c.in(si::metre / s) << ") ***\n";
 
-  std::cout << "\n[in `GeV` and `c`]\n"
-            << "p = " << p1 << "\n"
-            << "m = " << m1 << "\n"
-            << "E = " << E << "\n";
+  std::cout << "\n[in `GeV` and `c`]\n" << "p = " << p1 << "\n" << "m = " << m1 << "\n" << "E = " << E << "\n";
 
   const auto p2 = p1.in(GeV / (m / s));
   const auto m2 = m1.in(GeV / pow<2>(m / s));
   const auto E2 = total_energy(p2, m2, c).in(GeV);
 
-  std::cout << "\n[in `GeV`]\n"
-            << "p = " << p2 << "\n"
-            << "m = " << m2 << "\n"
-            << "E = " << E2 << "\n";
+  std::cout << "\n[in `GeV`]\n" << "p = " << p2 << "\n" << "m = " << m2 << "\n" << "E = " << E2 << "\n";
 
   const auto p3 = p1.in(kg * m / s);
   const auto m3 = m1.in(kg);
   const auto E3 = total_energy(p3, m3, c).in(J);
 
-  std::cout << "\n[in SI base units]\n"
-            << "p = " << p3 << "\n"
-            << "m = " << m3 << "\n"
-            << "E = " << E3 << "\n";
+  std::cout << "\n[in SI base units]\n" << "p = " << p3 << "\n" << "m = " << m3 << "\n" << "E = " << E3 << "\n";
 
-  std::cout << "\n[converted from SI units back to GeV]\n"
-            << "E = " << E3.force_in(GeV) << "\n";
+  std::cout << "\n[converted from SI units back to GeV]\n" << "E = " << E3.force_in(GeV) << "\n";
 }
 
 void natural_example()

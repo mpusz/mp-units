@@ -22,15 +22,25 @@
 
 cmake_minimum_required(VERSION 3.5)
 
+# find dependencies
+if(NOT TARGET gsl::gsl-lite)
+    find_package(gsl-lite CONFIG REQUIRED)
+endif()
+
 add_library(example_utils INTERFACE)
 target_include_directories(example_utils INTERFACE include)
+target_link_libraries(example_utils INTERFACE gsl::gsl-lite)
 
 #
-# add_example(target <depependencies>...)
+# add_example(target <mp-units-depependencies>...)
 #
 function(add_example target)
     add_executable(${target} ${target}.cpp)
-    target_link_libraries(${target} PRIVATE ${ARGN})
+    if(TARGET mp-units::modules)
+        target_link_libraries(${target} PRIVATE mp-units::modules)
+    else()
+        target_link_libraries(${target} PRIVATE ${ARGN})
+    endif()
 endfunction()
 
 add_example(avg_speed mp-units::core-io mp-units::si mp-units::cgs mp-units::usc)
@@ -49,7 +59,8 @@ add_example(
 add_example(conversion_factor mp-units::core-fmt mp-units::core-io mp-units::si)
 add_example(currency mp-units::core-io)
 add_example(foot_pound_second mp-units::core-fmt mp-units::international mp-units::imperial)
-add_example(glide_computer mp-units::core-fmt mp-units::international mp-units::utility glide_computer_lib)
+add_example(glide_computer mp-units::core-fmt mp-units::international mp-units::utility)
+target_link_libraries(glide_computer PRIVATE glide_computer_lib)
 add_example(hello_units mp-units::core-fmt mp-units::core-io mp-units::si mp-units::usc)
 add_example(measurement mp-units::core-io mp-units::si)
 add_example(si_constants mp-units::core-fmt mp-units::si)
@@ -60,14 +71,9 @@ add_example(
 )
 add_example(total_energy mp-units::core-io mp-units::si mp-units::natural mp-units::utility)
 add_example(
-    unmanned_aerial_vehicle
-    mp-units::core-fmt
-    mp-units::core-io
-    mp-units::si
-    mp-units::international
-    mp-units::utility
-    example_utils
+    unmanned_aerial_vehicle mp-units::core-fmt mp-units::core-io mp-units::si mp-units::international mp-units::utility
 )
+target_link_libraries(unmanned_aerial_vehicle PRIVATE example_utils)
 
 add_subdirectory(glide_computer_lib)
 add_subdirectory(kalman_filter)

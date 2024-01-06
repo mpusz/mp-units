@@ -21,13 +21,18 @@
 // SOFTWARE.
 
 #include "geographic.h"
+#include <mp-units/bits/fmt_hacks.h>
+#include <cassert>
+#include <iostream>
+#ifdef MP_UNITS_MODULES
+import mp_units;
+#else
 #include <mp-units/ostream.h>
 #include <mp-units/quantity_point.h>
 #include <mp-units/systems/international/international.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si/unit_symbols.h>
-#include <cassert>
-#include <iostream>
+#endif
 
 using namespace mp_units;
 using namespace geographic;

@@ -20,8 +20,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include <type_traits>
+#ifdef MP_UNITS_MODULES
+import mp_units;
+#else
 #include <mp-units/bits/external/type_list.h>
 #include <mp-units/bits/external/type_traits.h>
+#endif
 
 namespace {
 

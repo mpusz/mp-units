@@ -27,7 +27,11 @@ cmake_minimum_required(VERSION 3.5)
 #
 function(add_example target)
     add_executable(${target} ${target}.cpp)
-    target_link_libraries(${target} PRIVATE ${ARGN})
+    if(TARGET mp-units::modules)
+        target_link_libraries(${target} PRIVATE mp-units::modules)
+    else()
+        target_link_libraries(${target} PRIVATE ${ARGN})
+    endif()
 endfunction()
 
 add_example(kalman_filter-example_1 mp-units::core-fmt mp-units::si mp-units::utility)

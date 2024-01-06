@@ -27,6 +27,8 @@
 //
 // For the license information refer to format.h.
 
+#pragma once
+
 #include <mp-units/bits/external/hacks.h>
 
 #ifndef MP_UNITS_USE_LIBFMT

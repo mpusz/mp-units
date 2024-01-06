@@ -104,7 +104,7 @@ class MPUnitsConan(ConanFile):
     def requirements(self):
         self.requires("gsl-lite/0.40.0")
         if self._use_libfmt:
-            self.requires("fmt/10.1.0")
+            self.requires("fmt/10.1.1")
 
     def build_requirements(self):
         if self._build_all:

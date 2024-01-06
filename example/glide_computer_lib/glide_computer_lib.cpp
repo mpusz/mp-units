@@ -21,10 +21,14 @@
 // SOFTWARE.
 
 #include "glide_computer_lib.h"
-#include <mp-units/format.h>
 #include <iostream>
 #include <numeric>
 #include <string_view>
+#ifdef MP_UNITS_MODULES
+import mp_units.core_fmt;
+#else
+#include <mp-units/format.h>
+#endif
 
 namespace glide_computer {
 

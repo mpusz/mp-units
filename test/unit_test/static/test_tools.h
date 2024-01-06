@@ -22,8 +22,13 @@
 
 #pragma once
 
-#include <mp-units/quantity_spec.h>
 #include <type_traits>
+#ifdef MP_UNITS_MODULES
+#include <mp-units/quantity_spec_macro.h>
+import mp_units;
+#else
+#include <mp-units/quantity_spec.h>
+#endif
 
 template<auto V, typename T>
 inline constexpr bool is_of_type = std::is_same_v<std::remove_cvref_t<decltype(V)>, T>;

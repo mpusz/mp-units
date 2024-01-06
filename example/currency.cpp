@@ -20,11 +20,16 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include <mp-units/quantity_spec_macro.h>
+#include <iostream>
+#include <map>
+#ifdef MP_UNITS_MODULES
+import mp_units.core_io;
+#else
 #include <mp-units/ostream.h>
 #include <mp-units/quantity.h>
 #include <mp-units/quantity_point.h>
-#include <iostream>
-#include <map>
+#endif
 
 using namespace mp_units;
 

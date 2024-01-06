@@ -20,9 +20,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#ifdef MP_UNITS_MODULES
+import mp_units;
+#else
 #include <mp-units/systems/iau/iau.h>
 #include <mp-units/systems/iec80000/iec80000.h>
 #include <mp-units/systems/si/si.h>
+#endif
 
 namespace {
 

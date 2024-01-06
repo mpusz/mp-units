@@ -21,6 +21,12 @@
 // SOFTWARE.
 
 #include <catch2/catch_test_macros.hpp>
+#include <mp-units/bits/fmt_hacks.h>
+#include <cmath>
+#include <matrix>
+#ifdef MP_UNITS_MODULES
+import mp_units;
+#else
 #include <mp-units/customization_points.h>
 #include <mp-units/format.h>
 #include <mp-units/math.h>
@@ -28,8 +34,7 @@
 #include <mp-units/systems/isq/mechanics.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si/si.h>
-#include <cmath>
-#include <matrix>
+#endif
 
 template<typename Rep = double>
 using vector = STD_LA::fixed_size_column_vector<Rep, 3>;

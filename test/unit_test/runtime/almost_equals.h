@@ -21,9 +21,14 @@
 // SOFTWARE.
 
 #include <catch2/matchers/catch_matchers_templated.hpp>
+#include <mp-units/bits/fmt_hacks.h>
+#include <algorithm>
+#ifdef MP_UNITS_MODULES
+import mp_units;
+#else
 #include <mp-units/format.h>
 #include <mp-units/quantity.h>
-#include <algorithm>
+#endif
 
 namespace mp_units {
 

@@ -22,11 +22,9 @@
 
 #pragma once
 
+#include <mp-units/quantity_spec_macro.h>
+//
 #include "geographic.h"
-#include <mp-units/chrono.h>
-#include <mp-units/math.h>  // IWYU pragma: keep
-#include <mp-units/quantity_point.h>
-#include <mp-units/systems/isq/space_and_time.h>
 #include <algorithm>
 #include <array>
 #include <initializer_list>
@@ -35,6 +33,14 @@
 #include <ranges>
 #include <string>  // IWYU pragma: keep
 #include <vector>
+#ifdef MP_UNITS_MODULES
+import mp_units;
+#else
+#include <mp-units/chrono.h>
+#include <mp-units/math.h>  // IWYU pragma: keep
+#include <mp-units/quantity_point.h>
+#include <mp-units/systems/isq/space_and_time.h>
+#endif
 
 // An example of a really simplified tactical glide computer
 // Simplifications:

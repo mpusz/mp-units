@@ -15,6 +15,11 @@
  along with this program. If not, see http://www.gnu.org/licenses./
 */
 
+#include <mp-units/bits/fmt_hacks.h>
+#include <iostream>
+#ifdef MP_UNITS_MODULES
+import mp_units;
+#else
 #include <mp-units/format.h>
 #include <mp-units/ostream.h>
 #include <mp-units/systems/iau/iau.h>
@@ -24,7 +29,7 @@
 #include <mp-units/systems/si/si.h>
 #include <mp-units/systems/typographic/typographic.h>
 #include <mp-units/systems/usc/usc.h>
-#include <iostream>
+#endif
 
 namespace {
 

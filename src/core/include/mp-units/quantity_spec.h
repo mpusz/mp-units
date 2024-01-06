@@ -32,6 +32,7 @@
 #include <mp-units/bits/reference_concepts.h>
 #include <mp-units/bits/representation_concepts.h>
 #include <mp-units/dimension.h>
+#include <mp-units/quantity_spec_macro.h>
 #include <tuple>
 
 namespace mp_units {
@@ -363,20 +364,6 @@ struct quantity_spec<Self, QS, Eq, Args...> : quantity_spec<Self, QS, Args...> {
   static constexpr auto _equation_ = Eq;
   static constexpr quantity_character character = detail::quantity_character_init<Args...>(Eq.character);
 };
-
-#ifdef __cpp_explicit_this_parameter
-
-#define QUANTITY_SPEC(name, ...)                                          \
-  inline constexpr struct name : ::mp_units::quantity_spec<__VA_ARGS__> { \
-  } name
-
-#else
-
-#define QUANTITY_SPEC(name, ...)                                                \
-  inline constexpr struct name : ::mp_units::quantity_spec<name, __VA_ARGS__> { \
-  } name
-
-#endif
 
 
 /**
