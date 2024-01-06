@@ -28,8 +28,8 @@ if(NOT TARGET gsl::gsl-lite)
 endif()
 
 # core library definition
-add_units_module(
-    core
+add_mp_units_module(
+    core mp-units-core
     DEPENDENCIES gsl::gsl-lite
     HEADERS include/mp-units/bits/external/algorithm.h
             include/mp-units/bits/external/fixed_string.h

@@ -22,8 +22,8 @@
 
 cmake_minimum_required(VERSION 3.19)
 
-add_units_module(
-    systems
+add_mp_units_module(
+    systems mp-units-systems
     DEPENDENCIES mp-units::core
     HEADERS include/mp-units/systems/angular/angular.h
             include/mp-units/systems/angular/math.h

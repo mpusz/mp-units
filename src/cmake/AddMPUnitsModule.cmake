@@ -41,16 +41,16 @@ function(validate_arguments_exists module prefix)
 endfunction()
 
 #
-# add_units_module(ModuleName
-#                  DEPENDENCIES <depependency>...
-#                  [HEADERS <header_file>...]
-#                  MODULE_INTERFACE_UNIT <miu_file>)
+# add_mp_units_module(Name TargetName
+#                     DEPENDENCIES <depependency>...
+#                     [HEADERS <header_file>...]
+#                     MODULE_INTERFACE_UNIT <miu_file>)
 #
-function(add_units_module name)
+function(add_mp_units_module name target_name)
     # parse arguments
     set(oneValue MODULE_INTERFACE_UNIT)
     set(multiValues DEPENDENCIES HEADERS)
-    cmake_parse_arguments(PARSE_ARGV 1 ARG "" "${oneValue}" "${multiValues}")
+    cmake_parse_arguments(PARSE_ARGV 2 ARG "" "${oneValue}" "${multiValues}")
 
     # validate and process arguments
     validate_unparsed(${name} ARG)
@@ -61,26 +61,26 @@ function(add_units_module name)
     endif()
 
     # define the target for a module
-    add_library(mp-units-${name} ${SCOPE} ${ARG_HEADERS})
-    target_link_libraries(mp-units-${name} ${${projectPrefix}TARGET_SCOPE} ${ARG_DEPENDENCIES})
+    add_library(${target_name} ${SCOPE} ${ARG_HEADERS})
+    target_link_libraries(${target_name} ${${projectPrefix}TARGET_SCOPE} ${ARG_DEPENDENCIES})
     if(ARG_HEADERS)
         target_include_directories(
-            mp-units-${name} ${unitsAsSystem} ${${projectPrefix}TARGET_SCOPE}
+            ${target_name} ${unitsAsSystem} ${${projectPrefix}TARGET_SCOPE}
             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> $<INSTALL_INTERFACE:include>
         )
     endif()
-    set_target_properties(mp-units-${name} PROPERTIES EXPORT_NAME ${name})
-    add_library(mp-units::${name} ALIAS mp-units-${name})
+    set_target_properties(${target_name} PROPERTIES EXPORT_NAME ${name})
+    add_library(mp-units::${name} ALIAS ${target_name})
 
     if(${projectPrefix}BUILD_CXX_MODULES)
-        target_sources(mp-units-${name} PUBLIC FILE_SET CXX_MODULES FILES ${ARG_MODULE_INTERFACE_UNIT})
-        install(TARGETS mp-units-${name}
+        target_sources(${target_name} PUBLIC FILE_SET CXX_MODULES FILES ${ARG_MODULE_INTERFACE_UNIT})
+        install(TARGETS ${target_name}
                 EXPORT mp-unitsTargets
                 FILE_SET CXX_MODULES
                 DESTINATION ${CMAKE_INSTALL_LIBDIR}/miu
         )
     else()
-        install(TARGETS mp-units-${name} EXPORT mp-unitsTargets)
+        install(TARGETS ${target_name} EXPORT mp-unitsTargets)
     endif()
     if(ARG_HEADERS)
         install(DIRECTORY include/mp-units TYPE INCLUDE)

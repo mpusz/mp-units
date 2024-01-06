@@ -33,7 +33,7 @@ message(STATUS "${projectPrefix}BUILD_CXX_MODULES: ${${projectPrefix}BUILD_CXX_M
 
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
-include(AddUnitsModule)
+include(AddMPUnitsModule)
 include(GNUInstallDirs)
 
 if(${projectPrefix}BUILD_CXX_MODULES)
@@ -50,10 +50,7 @@ add_subdirectory(core)
 add_subdirectory(systems)
 
 # project-wide wrapper
-add_units_module(
-    mp-units DEPENDENCIES mp-units::core mp-units::systems
-    MODULE_INTERFACE_UNIT mp-units.cpp
-)
+add_mp_units_module(mp-units mp-units DEPENDENCIES mp-units::core mp-units::systems MODULE_INTERFACE_UNIT mp-units.cpp)
 
 # local build
 export(EXPORT mp-unitsTargets NAMESPACE mp-units::)
