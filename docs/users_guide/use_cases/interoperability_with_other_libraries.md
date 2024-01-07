@@ -13,7 +13,8 @@ library, we have to provide specializations of:
 
 Before we delve into the template specialization details, let's first decide if we want the
 conversions to happen implicitly or if explicit ones would be a better choice. Or maybe
-the conversion should be implicit in one direction only (e.g., into **mp-units** abstractions) while the explicit conversions in the other direction should be preferred?
+the conversion should be implicit in one direction only (e.g., into **mp-units** abstractions)
+while the explicit conversions in the other direction should be preferred?
 
 There is no one unified answer to the above questions. Everything depends on the use case.
 
@@ -243,7 +244,8 @@ Those are:
 - [`std::chrono::time_point`](https://en.cppreference.com/w/cpp/chrono/time_point) - specifies
   quantity points of time.
 
-The **mp-units** library comes with built-in interoperability with those types. It is enough to include the _mp-units/chrono.h_ file to benefit from it. This file provides:
+The **mp-units** library comes with built-in interoperability with those types. It is enough to
+include the _mp-units/systems/si/chrono.h_ file to benefit from it. This file provides:
 
 - partial specializations of `quantity_like_traits` and `quantity_point_like_traits` that provide
   support for implicit conversions between `std` and `mp_units` types in both directions,

@@ -169,7 +169,7 @@ concept ConversionSpecOf = ConversionSpec<T> && std::same_as<typename T::value_t
  * Both return types should be encapsulated in either @c convert_explicitly or
  * @c convert_implicitly to specify if the conversion is allowed to happen implicitly.
  *
- * Usage example can be found in @c units/chrono.h header file.
+ * Usage example can be found in @c mp-units/systems/si/chrono.h header file.
  *
  * @tparam T the type to provide support for
  */
@@ -186,7 +186,7 @@ struct quantity_like_traits;
  * Both return types should be encapsulated in either @c convert_explicitly or
  * @c convert_implicitly to specify if the conversion is allowed to happen implicitly.
  *
- * Usage example can be found in @c units/chrono.h header file.
+ * Usage example can be found in @c mp-units/systems/si/chrono.h header file.
  *
  * @tparam T the type to provide support for
  */

@@ -235,7 +235,7 @@ clock.
     [interoperability with other units libraries](../use_cases/interoperability_with_other_libraries.md).
     It also has built-in compatibility with `std::chrono` types, so users do not have to define
     interoperability traits or point origins for such types by themselves. Those are already
-    provided in the `mp-units/chrono.h` header file.
+    provided in the `mp-units/systems/si/chrono.h` header file.
 
 
 Now, we can refactor our database to benefit from the explicit points:
