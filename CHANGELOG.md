@@ -4,20 +4,34 @@
 
 ### 2.2.0 <small>WIP</small> { id="2.2.0" }
 
+- (!) feat: C++ modules support added by [@JohelEGP](https://github.com/JohelEGP)
 - feat: implicit point origins support added
 - feat: unit default point origin support added
 - feat: `fma`, `isfinite`, `isinf`, and `isnan` math function added by [@NAThompson](https://github.com/NAThompson)
 - feat: `quantity_point` support added for `quantity_cast` and `value_cast`
 - feat: `value_cast<Unit, Representation>` added
+- feat: `interconvertible(QuantitySpec, QuantitySpec)` added
+- feat: `qp.quantity_from_zero()` added
 - (!) refactor: `zero_Fahrenheit` renamed to `zeroth_degree_Fahrenheit`
 - (!) refactor: SI-related trigonometric functions moved to the `si` subnamespace
-- refactor: `math.h` header file broke up to smaller pieces
+- (!) refactor: `math.h` header file broke up to smaller pieces
 - refactor: math functions constraints refactored
 - fix: `QuantityLike` conversions required `Q::rep` instead of using one provided by `quantity_like_traits`
+- fix: `QuantitySpec[Unit]` replaced with `make_reference` in `value_cast`
+- fix: `ice_point` is now defined with the integral offset from `absolute_zero`
 - docs: project blog and first posts added
 - docs: project documentation layout refactored
 - docs: "Interoperability with Other Libraries" chapter added
 - docs: "Framework Basics" chapters updated and cleaned up
+- docs: `smoot` unit example added to the main page
+- docs: "Code Example" chapter renamed to "Look and Feel" and reordered in TOC to be after "Quick Start"
+- docs: "Quick Start" chapter reworked to be simpler and include quantity points
+- docs: "Quantity points" chapter extended
+- docs: "The Affine Space" chapter updated to reflect the recent design changes
+- docs: "Working with Legacy interfaces" chapter added
+- docs: "Text Output" chapter updated
+- docs: mkdocs social plugin enabled
+- docs: project logo and custom color scheme added
 
 ### 2.1.0 <small>December 9, 2023</small> { id="2.1.0" }
 
