@@ -40,11 +40,11 @@ flowchart TD
     mp_units --- mp_units.systems --- mp_units.core
 ```
 
-| C++ Module         | CMake Target         | Contents                                |
-|--------------------|----------------------|-----------------------------------------|
-| `mp_units.core`    | `mp-units::core`     | Core library framework                  |
-| `mp_units.systems` | `mp-units::systems`  | All the systems of quantities and units |
-| `mp_units`         | `mp-units::mp-units` | Core + Systems                          |
+| C++ Module         | CMake Target         | Contents                                                 |
+|--------------------|----------------------|----------------------------------------------------------|
+| `mp_units.core`    | `mp-units::core`     | Core library framework and systems-independent utilities |
+| `mp_units.systems` | `mp-units::systems`  | All the systems of quantities and units                  |
+| `mp_units`         | `mp-units::mp-units` | Core + Systems                                           |
 
 !!! note
 
