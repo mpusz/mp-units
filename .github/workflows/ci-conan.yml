@@ -64,6 +64,7 @@ jobs:
                   cc: "gcc-12",
                   cxx: "g++-12",
                 },
+              cxx_modules: False,
               conan-config: "",
             }
           - {
@@ -76,6 +77,7 @@ jobs:
                   cc: "gcc-13",
                   cxx: "g++-13",
                 },
+              cxx_modules: False,
               conan-config: "",
             }
           - {
@@ -89,6 +91,7 @@ jobs:
                   cxx: "clang++-16",
                 },
               lib: "libc++",
+              cxx_modules: False,
               conan-config: "",
             }
           - {
@@ -102,7 +105,8 @@ jobs:
                   cxx: "clang++-17",
                 },
               lib: "libc++",
-              conan-config: "-o cxx_modules=True",
+              cxx_modules: True,
+              conan-config: "",
             }
           - {
               name: "Apple Clang 15",
@@ -114,6 +118,7 @@ jobs:
                   cc: "clang",
                   cxx: "clang++",
                 },
+              cxx_modules: False,
               conan-config: "",
             }
         build_type: ["Release", "Debug"]
@@ -194,7 +199,7 @@ jobs:
         run: |
           conan create . --user mpusz --channel ${CHANNEL} --lockfile-out=package.lock \
                          -b mp-units/* -b missing -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" \
-                         -c user.build:all=True ${{ matrix.config.conan-config }}
+                         -c user.build:all=True -o cxx_modules=${{ matrix.config.cxx_modules }} ${{ matrix.config.conan-config }}
       - name: Obtain package reference
         id: get-package-ref
         shell: bash

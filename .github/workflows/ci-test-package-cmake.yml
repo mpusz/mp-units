@@ -63,6 +63,7 @@ jobs:
                   cc: "gcc-12",
                   cxx: "g++-12",
                 },
+              cxx_modules: False,
             }
           - {
               name: "GCC-13",
@@ -74,6 +75,7 @@ jobs:
                   cc: "gcc-13",
                   cxx: "g++-13",
                 },
+              cxx_modules: False,
             }
           - {
               name: "Clang-16",
@@ -86,6 +88,7 @@ jobs:
                   cxx: "clang++-16",
                 },
               lib: "libc++",
+              cxx_modules: False,
             }
           - {
               name: "Clang-17",
@@ -98,7 +101,7 @@ jobs:
                   cxx: "clang++-17",
                 },
               lib: "libc++",
-              conan-config: "-o cxx_modules=True",
+              cxx_modules: True,
             }
           - {
               name: "Apple Clang 15",
@@ -110,7 +113,7 @@ jobs:
                   cc: "clang",
                   cxx: "clang++",
                 },
-              conan-config: "",
+              cxx_modules: False,
             }
         build_type: ["Release", "Debug"]
 
@@ -188,7 +191,7 @@ jobs:
       - name: Install Conan dependencies
         shell: bash
         run: |
-          conan install . -b missing -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" -c user.build:all=False
+          conan install . -b missing -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" -c user.build:all=False -o cxx_modules=${{ matrix.config.cxx_modules }}
           mv CMakeUserPresets.json src
       - name: Configure mp-units CMake
         if: matrix.config.compiler.type == 'VISUAL' || matrix.config.compiler.type == 'MSVC'
