@@ -109,13 +109,13 @@ class MPUnitsConan(ConanFile):
         self.version = version.strip()
 
     def requirements(self):
-        self.requires("gsl-lite/0.40.0")
+        self.requires("gsl-lite/0.41.0")
         if self._use_libfmt:
-            self.requires("fmt/10.1.1")
+            self.requires("fmt/10.2.1")
 
     def build_requirements(self):
         if self._build_all:
-            self.test_requires("catch2/3.3.2")
+            self.test_requires("catch2/3.5.1")
             if not self._skip_la:
                 self.test_requires("wg21-linear_algebra/0.7.3")
 

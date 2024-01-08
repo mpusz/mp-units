@@ -32,6 +32,9 @@
 - docs: "Text Output" chapter updated
 - docs: mkdocs social plugin enabled
 - docs: project logo and custom color scheme added
+- build: gsl-lite updated to 0.41.0
+- build: catch2 updated to 3.5.1
+- build: fmt updated to 10.2.1
 
 ### 2.1.0 <small>December 9, 2023</small> { id="2.1.0" }
 
