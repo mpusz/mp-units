@@ -172,43 +172,9 @@ class MPUnitsConan(ConanFile):
 
     def package_info(self):
         compiler = self.settings.compiler
-
-        # core
         self.cpp_info.components["core"].requires = ["gsl-lite::gsl-lite"]
+        if self._use_libfmt:
+            self.cpp_info.components["core"].requires.append("fmt::fmt")
         if compiler == "msvc":
             self.cpp_info.components["core"].cxxflags = ["/utf-8"]
-
-        # rest
-        self.cpp_info.components["core-io"].requires = ["core"]
-        self.cpp_info.components["core-fmt"].requires = ["core"]
-        if self._use_libfmt:
-            self.cpp_info.components["core-fmt"].requires.append("fmt::fmt")
-        self.cpp_info.components["utility"].requires = ["core", "isq", "si", "angular"]
-        self.cpp_info.components["isq"].requires = ["core"]
-        self.cpp_info.components["angular"].requires = ["isq"]
-        self.cpp_info.components["isq_angular"].requires = ["isq", "angular"]
-        self.cpp_info.components["natural"].requires = ["isq"]
-        self.cpp_info.components["si"].requires = ["isq"]
-        self.cpp_info.components["cgs"].requires = ["si"]
-        self.cpp_info.components["hep"].requires = ["si"]
-        self.cpp_info.components["iau"].requires = ["si"]
-        self.cpp_info.components["imperial"].requires = ["si"]
-        self.cpp_info.components["international"].requires = ["si"]
-        self.cpp_info.components["typographic"].requires = ["usc"]
-        self.cpp_info.components["usc"].requires = ["international"]
-        self.cpp_info.components["iec80000"].requires = ["isq", "si"]
-        self.cpp_info.components["systems"].requires = [
-            "isq",
-            "angular",
-            "isq_angular",
-            "natural",
-            "si",
-            "cgs",
-            "hep",
-            "iau",
-            "imperial",
-            "international",
-            "typographic",
-            "usc",
-            "iec80000",
-        ]
+        self.cpp_info.components["systems"].requires = ["core"]
