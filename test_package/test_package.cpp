@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include <mp-units/format.h>
 #include <mp-units/ostream.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si/unit_symbols.h>
@@ -35,5 +36,5 @@ constexpr QuantityOf<isq::speed> auto avg_speed(QuantityOf<isq::distance> auto d
 int main()
 {
   using namespace mp_units::si::unit_symbols;
-  std::cout << "Average speed = " << avg_speed(240 * km, 2 * h) << '\n';
+  std::cout << MP_UNITS_STD_FMT::format("Average speed = {}\n", avg_speed(240 * km, 2 * h));
 }
