@@ -98,10 +98,10 @@ the `value_cast<U, Rep>(q)` which always returns the most precise result:
 
     }  // namespace unit_symbols
 
-    using Price = quantity<currency[us_dollar], double>;
-    using Scaled = quantity<currency[scaled_us_dollar], std::int64_t>;
+    using Price = quantity_point<currency[us_dollar]>;
+    using Scaled = quantity_point<currency[scaled_us_dollar], zeroth_point_origin<currency>, std::int64_t>;
 
-    Price price = 12.95 * USD;
+    Price price{12.95 * USD};
     Scaled spx = value_cast<USD_s, std::int64_t>(price);
     ```
 
@@ -121,10 +121,10 @@ the `value_cast<U, Rep>(q)` which always returns the most precise result:
 
     }  // namespace unit_symbols
 
-    using Price = quantity<currency[us_dollar], double>;
-    using Scaled = quantity<currency[scaled_us_dollar], std::int64_t>;
+    using Price = quantity_point<currency[us_dollar]>;
+    using Scaled = quantity_point<currency[scaled_us_dollar], zeroth_point_origin<currency>, std::int64_t>;
 
-    Price price = 12.95 * USD;
+    Price price{12.95 * USD};
     Scaled spx = value_cast<USD_s, std::int64_t>(price);
     ```
 
@@ -144,9 +144,9 @@ the `value_cast<U, Rep>(q)` which always returns the most precise result:
 
     }  // namespace unit_symbols
 
-    using Price = quantity<currency[us_dollar], double>;
-    using Scaled = quantity<currency[scaled_us_dollar], std::int64_t>;
+    using Price = quantity_point<currency[us_dollar]>;
+    using Scaled = quantity_point<currency[scaled_us_dollar], zeroth_point_origin<currency>, std::int64_t>;
 
-    Price price = 12.95 * USD;
+    Price price{12.95 * USD};
     Scaled spx = value_cast<USD_s, std::int64_t>(price);
     ```
