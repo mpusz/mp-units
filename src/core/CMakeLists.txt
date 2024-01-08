@@ -77,7 +77,6 @@ add_mp_units_module(
     MODULE_INTERFACE_UNIT mp-units-core.cpp
 )
 
-target_compile_features(mp-units-core INTERFACE cxx_std_20)
 target_compile_definitions(
     mp-units-core ${${projectPrefix}TARGET_SCOPE} ${projectPrefix}USE_LIBFMT=$<BOOL:${${projectPrefix}USE_LIBFMT}>
 )

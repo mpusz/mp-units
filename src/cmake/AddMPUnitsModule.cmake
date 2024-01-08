@@ -62,6 +62,7 @@ function(add_mp_units_module name target_name)
 
     # define the target for a module
     add_library(${target_name} ${SCOPE})
+    target_compile_features(${target_name} INTERFACE cxx_std_20)
     target_link_libraries(${target_name} ${${projectPrefix}TARGET_SCOPE} ${ARG_DEPENDENCIES})
     set_target_properties(${target_name} PROPERTIES EXPORT_NAME ${name})
     add_library(mp-units::${name} ALIAS ${target_name})

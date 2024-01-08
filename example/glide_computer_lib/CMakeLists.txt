@@ -23,11 +23,13 @@
 cmake_minimum_required(VERSION 3.5)
 
 add_library(glide_computer_lib-headers STATIC glide_computer_lib.cpp include/glide_computer_lib.h)
+target_compile_features(glide_computer_lib-headers PUBLIC cxx_std_20)
 target_link_libraries(glide_computer_lib-headers PUBLIC mp-units::mp-units example_utils-headers)
 target_include_directories(glide_computer_lib-headers PUBLIC include)
 
 if(${projectPrefix}BUILD_CXX_MODULES)
     add_library(glide_computer_lib STATIC glide_computer_lib.cpp include/glide_computer_lib.h)
+    target_compile_features(glide_computer_lib PUBLIC cxx_std_20)
     target_compile_definitions(glide_computer_lib PUBLIC ${projectPrefix}MODULES)
     target_link_libraries(glide_computer_lib PUBLIC mp-units::mp-units example_utils)
     target_include_directories(glide_computer_lib PUBLIC include)
