@@ -22,8 +22,8 @@
 
 #include <mp-units/format.h>
 #include <mp-units/ostream.h>
-#include <mp-units/systems/isq/space_and_time.h>
-#include <mp-units/systems/si/unit_symbols.h>
+#include <mp-units/systems/isq/isq.h>
+#include <mp-units/systems/si/si.h>
 #include <iostream>
 
 using namespace mp_units;
