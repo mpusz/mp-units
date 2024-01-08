@@ -64,7 +64,7 @@ jobs:
                   cc: "gcc-12",
                   cxx: "g++-12",
                 },
-              cxx_modules: False,
+              cxx_modules: "False",
               conan-config: "",
             }
           - {
@@ -77,7 +77,7 @@ jobs:
                   cc: "gcc-13",
                   cxx: "g++-13",
                 },
-              cxx_modules: False,
+              cxx_modules: "False",
               conan-config: "",
             }
           - {
@@ -91,7 +91,7 @@ jobs:
                   cxx: "clang++-16",
                 },
               lib: "libc++",
-              cxx_modules: False,
+              cxx_modules: "False",
               conan-config: "",
             }
           - {
@@ -105,7 +105,7 @@ jobs:
                   cxx: "clang++-17",
                 },
               lib: "libc++",
-              cxx_modules: True,
+              cxx_modules: "True",
               conan-config: "",
             }
           - {
@@ -118,7 +118,7 @@ jobs:
                   cc: "clang",
                   cxx: "clang++",
                 },
-              cxx_modules: False,
+              cxx_modules: "False",
               conan-config: "",
             }
         build_type: ["Release", "Debug"]
