@@ -155,6 +155,7 @@ jobs:
           wget https://apt.llvm.org/llvm.sh
           chmod +x llvm.sh
           sudo ./llvm.sh ${{ matrix.config.compiler.version }}
+          sudo apt install -y clang-tools-${{ matrix.config.compiler.version }}
       - name: Install Libc++
         if: matrix.config.compiler.type == 'CLANG' && matrix.config.lib == 'libc++'
         shell: bash
