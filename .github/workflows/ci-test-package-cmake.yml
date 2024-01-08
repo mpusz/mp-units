@@ -101,7 +101,7 @@ jobs:
                   cxx: "clang++-17",
                 },
               lib: "libc++",
-              cxx_modules: "True",
+              cxx_modules: "False",
             }
           - {
               name: "Apple Clang 15",
