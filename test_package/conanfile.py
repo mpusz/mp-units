@@ -32,13 +32,6 @@ class TestPackageConan(ConanFile):
     settings = "os", "arch", "compiler", "build_type"
     generators = "CMakeDeps"
 
-    @property
-    def _use_libfmt(self):
-        compiler = self.settings.compiler
-        version = Version(self.settings.compiler.version)
-        std_support = compiler == "msvc" and version >= 193 and compiler.cppstd == 23
-        return not std_support
-
     def requirements(self):
         self.requires(self.tested_reference_str)
 
@@ -47,7 +40,9 @@ class TestPackageConan(ConanFile):
 
     def generate(self):
         tc = CMakeToolchain(self)
-        tc.variables["MP_UNITS_USE_FMTLIB"] = self._use_libfmt
+        tc.variables["MP_UNITS_USE_FMTLIB"] = bool(
+            self.dependencies["mp-units"].options.use_fmtlib
+        )
         tc.generate()
 
     def build(self):

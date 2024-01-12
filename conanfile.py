@@ -56,9 +56,11 @@ class MPUnitsConan(ConanFile):
     settings = "os", "arch", "compiler", "build_type"
     options = {
         "cxx_modules": [True, False],
+        "use_fmtlib": [True, False],
     }
     default_options = {
         "cxx_modules": False,
+        "use_fmtlib": True,
     }
     tool_requires = "cmake/[>=3.28.1]"
     exports = ["LICENSE.md"]
@@ -94,13 +96,6 @@ class MPUnitsConan(ConanFile):
     def _skip_la(self):
         return bool(self.conf.get("user.build:skip_la", default=False))
 
-    @property
-    def _use_libfmt(self):
-        compiler = self.settings.compiler
-        version = Version(self.settings.compiler.version)
-        std_support = compiler == "msvc" and version >= 193 and compiler.cppstd == 23
-        return not std_support
-
     def set_version(self):
         content = load(self, os.path.join(self.recipe_folder, "src/CMakeLists.txt"))
         version = re.search(
@@ -110,7 +105,7 @@ class MPUnitsConan(ConanFile):
 
     def requirements(self):
         self.requires("gsl-lite/0.41.0")
-        if self._use_libfmt:
+        if self.options.use_fmtlib:
             self.requires("fmt/10.2.1")
 
     def build_requirements(self):
@@ -146,7 +141,7 @@ class MPUnitsConan(ConanFile):
             tc.variables["CMAKE_CXX_SCAN_FOR_MODULES"] = True
             tc.variables["MP_UNITS_BUILD_CXX_MODULES"] = True
         tc.variables["MP_UNITS_BUILD_LA"] = self._build_all and not self._skip_la
-        tc.variables["MP_UNITS_USE_FMTLIB"] = self._use_libfmt
+        tc.variables["MP_UNITS_USE_FMTLIB"] = bool(self.options.use_fmtlib)
         tc.generate()
         deps = CMakeDeps(self)
         deps.generate()
@@ -176,7 +171,7 @@ class MPUnitsConan(ConanFile):
     def package_info(self):
         compiler = self.settings.compiler
         self.cpp_info.components["core"].requires = ["gsl-lite::gsl-lite"]
-        if self._use_libfmt:
+        if self.options.use_fmtlib:
             self.cpp_info.components["core"].requires.append("fmt::fmt")
         if compiler == "msvc":
             self.cpp_info.components["core"].cxxflags = ["/utf-8"]

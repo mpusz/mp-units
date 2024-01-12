@@ -181,7 +181,16 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
 
     Configures CMake to add C++ modules to the list of default targets.
 
-[cxx modules support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
+    [cxx modules support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
+
+[use_fmtlib](#use_fmtlib){ #use_fmtlib }
+
+:   [:octicons-tag-24: 2.2.0][use fmtlib support] · :octicons-milestone-24: `True`/`False` (Default: `True`)
+
+    Forces usage of [{fmt}](https://github.com/fmtlib/fmt) library instead of the C++20 Standard
+    Library features.
+
+    [use fmtlib support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 
 ### Conan configuration properties
 
@@ -195,7 +204,7 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
     [`tools.build:skip_test`](https://docs.conan.io/2/reference/commands/config.html?highlight=tools.build:skip_test#conan-config-list)
     configuration property is set to `True`).
 
-[build all support]: https://github.com/mpusz/mp-units/releases/tag/v0.8.0
+    [build all support]: https://github.com/mpusz/mp-units/releases/tag/v0.8.0
 
 
 [`user.build:skip_la`](#user-skip-la){ #user-skip-la }
