@@ -79,7 +79,7 @@ jobs:
     # ℹ️ Command-line programs to run using the OS shell.
     # 📚 See https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsrun
 
-    - run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV
+    - run: echo "cache_id=$(/bin/date -u "+%Y%m%d")" >> $GITHUB_ENV
     - name: Cache Conan data
       if: matrix.language == 'cpp'
       uses: actions/cache@v3

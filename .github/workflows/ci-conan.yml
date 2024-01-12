@@ -129,7 +129,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV
+      - run: echo "cache_id=$(/bin/date -u "+%Y%m%d")" >> $GITHUB_ENV
       - name: Cache Conan data
         uses: actions/cache@v3
         if: always()
