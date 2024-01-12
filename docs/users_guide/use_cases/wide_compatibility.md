@@ -155,5 +155,5 @@ use [fmtlib](https://github.com/fmtlib/fmt) as their primary formatting facility
 from additional features provided with the library).
 
 This macro resolves to either the `std` or `fmt` namespace, depending on the value of
-[MP_UNITS_USE_LIBFMT](../../getting_started/installation_and_usage.md#MP_UNITS_USE_LIBFMT)
+[MP_UNITS_USE_FMTLIB](../../getting_started/installation_and_usage.md#MP_UNITS_USE_FMTLIB)
 CMake option.

@@ -78,10 +78,10 @@ add_mp_units_module(
 )
 
 target_compile_definitions(
-    mp-units-core ${${projectPrefix}TARGET_SCOPE} ${projectPrefix}USE_LIBFMT=$<BOOL:${${projectPrefix}USE_LIBFMT}>
+    mp-units-core ${${projectPrefix}TARGET_SCOPE} ${projectPrefix}USE_FMTLIB=$<BOOL:${${projectPrefix}USE_FMTLIB}>
 )
 
-if(${projectPrefix}USE_LIBFMT)
+if(${projectPrefix}USE_FMTLIB)
     if(NOT TARGET fmt::fmt)
         find_package(fmt REQUIRED)
     endif()

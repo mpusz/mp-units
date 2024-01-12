@@ -146,7 +146,7 @@ class MPUnitsConan(ConanFile):
             tc.variables["CMAKE_CXX_SCAN_FOR_MODULES"] = True
             tc.variables["MP_UNITS_BUILD_CXX_MODULES"] = True
         tc.variables["MP_UNITS_BUILD_LA"] = self._build_all and not self._skip_la
-        tc.variables["MP_UNITS_USE_LIBFMT"] = self._use_libfmt
+        tc.variables["MP_UNITS_USE_FMTLIB"] = self._use_libfmt
         tc.generate()
         deps = CMakeDeps(self)
         deps.generate()

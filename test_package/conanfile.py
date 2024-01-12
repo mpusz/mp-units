@@ -47,7 +47,7 @@ class TestPackageConan(ConanFile):
 
     def generate(self):
         tc = CMakeToolchain(self)
-        tc.variables["MP_UNITS_USE_LIBFMT"] = self._use_libfmt
+        tc.variables["MP_UNITS_USE_FMTLIB"] = self._use_libfmt
         tc.generate()
 
     def build(self):

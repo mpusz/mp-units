@@ -221,6 +221,16 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
     [build_cxx_modules support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 
 
+[`MP_UNITS_USE_FMTLIB`](#MP_UNITS_USE_FMTLIB){ #MP_UNITS_USE_FMTLIB }
+
+:   [:octicons-tag-24: 2.2.0][use fmtlib support] · :octicons-milestone-24: `ON`/`OFF` (Default: `ON`)
+
+    Forces usage of [{fmt}](https://github.com/fmtlib/fmt) library instead of the C++20 Standard
+    Library features.
+
+    [use fmtlib support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
+
+
 [`MP_UNITS_AS_SYSTEM_HEADERS`](#MP_UNITS_AS_SYSTEM_HEADERS){ #MP_UNITS_AS_SYSTEM_HEADERS }
 
 :   [:octicons-tag-24: 2.0.0][as system headers support] · :octicons-milestone-24: `ON`/`OFF` (Default: `OFF`)
@@ -247,16 +257,6 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
     Additionally turns on [`MP_UNITS_AS_SYSTEM_HEADERS`](#MP_UNITS_AS_SYSTEM_HEADERS).
 
     [iwyu support]: https://github.com/mpusz/mp-units/releases/tag/v2.0.0
-
-
-[`MP_UNITS_USE_LIBFMT`](#MP_UNITS_USE_LIBFMT){ #MP_UNITS_USE_LIBFMT }
-
-:   [:octicons-tag-24: 2.0.0][use libfmt support] · :octicons-milestone-24: `ON`/`OFF` (Default: `ON`)
-
-    Forces usage of [{fmt}](https://github.com/fmtlib/fmt) library instead of the C++20 Standard
-    Library features.
-
-    [use libfmt support]: https://github.com/mpusz/mp-units/releases/tag/v2.0.0
 
 
 ## CMake with presets support
