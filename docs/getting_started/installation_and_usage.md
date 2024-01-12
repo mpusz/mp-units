@@ -354,7 +354,7 @@ The following steps may be performed to obtain an official library release:
    with `find_package`:
 
     ```cmake
-    find_package(mp-units CONFIG REQUIRED)
+    find_package(mp-units REQUIRED)
     ```
 
 3. Link your CMake targets with **mp-units**:

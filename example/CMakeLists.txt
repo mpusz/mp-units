@@ -24,7 +24,7 @@ cmake_minimum_required(VERSION 3.5)
 
 # find dependencies
 if(NOT TARGET gsl::gsl-lite)
-    find_package(gsl-lite CONFIG REQUIRED)
+    find_package(gsl-lite REQUIRED)
 endif()
 
 if(${projectPrefix}BUILD_CXX_MODULES)

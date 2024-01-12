@@ -22,7 +22,7 @@
 
 cmake_minimum_required(VERSION 3.5)
 
-find_package(Catch2 3 CONFIG REQUIRED)
+find_package(Catch2 3 REQUIRED)
 
 add_executable(unit_tests_runtime distribution_test.cpp fmt_test.cpp math_test.cpp)
 if(${projectPrefix}BUILD_CXX_MODULES)
@@ -31,7 +31,7 @@ endif()
 target_link_libraries(unit_tests_runtime PRIVATE mp-units::mp-units Catch2::Catch2WithMain)
 
 if(${projectPrefix}BUILD_LA)
-    find_package(wg21_linear_algebra CONFIG REQUIRED)
+    find_package(wg21_linear_algebra REQUIRED)
     target_sources(unit_tests_runtime PRIVATE linear_algebra_test.cpp)
     target_link_libraries(unit_tests_runtime PRIVATE wg21_linear_algebra::wg21_linear_algebra)
 endif()

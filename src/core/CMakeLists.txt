@@ -24,7 +24,7 @@ cmake_minimum_required(VERSION 3.19)
 
 # find dependencies
 if(NOT TARGET gsl::gsl-lite)
-    find_package(gsl-lite CONFIG REQUIRED)
+    find_package(gsl-lite REQUIRED)
 endif()
 
 # core library definition
@@ -83,7 +83,7 @@ target_compile_definitions(
 
 if(${projectPrefix}USE_LIBFMT)
     if(NOT TARGET fmt::fmt)
-        find_package(fmt CONFIG REQUIRED)
+        find_package(fmt REQUIRED)
     endif()
     target_link_libraries(mp-units-core ${${projectPrefix}TARGET_SCOPE} fmt::fmt)
 endif()
