@@ -60,7 +60,7 @@ class MPUnitsConan(ConanFile):
     default_options = {
         "cxx_modules": False,
     }
-
+    tool_requires = "cmake/[>=3.28.1]"
     exports = ["LICENSE.md"]
     exports_sources = [
         "docs/*",
@@ -140,6 +140,8 @@ class MPUnitsConan(ConanFile):
 
     def generate(self):
         tc = CMakeToolchain(self)
+        if self._build_all:
+            tc.variables["CMAKE_VERIFY_INTERFACE_HEADER_SETS"] = True
         if self.options.cxx_modules:
             tc.variables["CMAKE_CXX_SCAN_FOR_MODULES"] = True
             tc.variables["MP_UNITS_BUILD_CXX_MODULES"] = True
@@ -154,6 +156,7 @@ class MPUnitsConan(ConanFile):
         cmake.configure(build_script_folder=None if self._build_all else "src")
         cmake.build()
         if self._build_all:
+            cmake.build(target="all_verify_interface_header_sets")
             cmake.test()
 
     def package_id(self):

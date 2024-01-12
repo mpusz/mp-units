@@ -460,6 +460,7 @@ the `conan build` with `conan install` command and then follow with a regular CM
 ```shell
 cmake --preset conan-default
 cmake --build --preset conan-release
+cmake --build --preset conan-release --target all_verify_interface_header_sets
 cmake --build --preset conan-release --target test
 ```
 
