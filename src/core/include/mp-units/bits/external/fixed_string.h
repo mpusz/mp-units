@@ -29,7 +29,7 @@
 // IWYU pragma: begin_exports
 #include <compare>
 #include <cstdlib>
-#include <iostream>
+#include <ostream>
 // IWYU pragma: end_exports
 
 #include <cstddef>
