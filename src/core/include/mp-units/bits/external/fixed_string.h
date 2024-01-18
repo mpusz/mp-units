@@ -88,7 +88,7 @@ struct basic_fixed_string {
 
   [[nodiscard]] constexpr std::basic_string_view<CharT> view() const noexcept
   {
-    return std::basic_string_view<CharT>(*this);
+    return std::basic_string_view<CharT>(cbegin(), cend());
   }
 
   template<std::size_t N2>
