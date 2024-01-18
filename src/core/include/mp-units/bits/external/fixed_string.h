@@ -78,7 +78,7 @@ struct basic_fixed_string {
   [[nodiscard]] constexpr size_type size() const noexcept { return N; }
   [[nodiscard]] constexpr const_pointer data() const noexcept { return data_; }
   [[nodiscard]] constexpr const CharT* c_str() const noexcept { return data(); }
-  [[nodiscard]] constexpr const_reference operator[](size_type index) const noexcept { return data()[index]; }
+  [[nodiscard]] constexpr value_type operator[](size_type index) const noexcept { return data()[index]; }
 
   [[nodiscard]] constexpr const_iterator begin() const noexcept { return data(); }
   [[nodiscard]] constexpr const_iterator cbegin() const noexcept { return data(); }
