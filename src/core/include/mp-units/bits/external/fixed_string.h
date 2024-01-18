@@ -56,7 +56,7 @@ struct basic_fixed_string {
   using size_type = std::size_t;
   using difference_type = std::ptrdiff_t;
 
-  constexpr explicit(false) basic_fixed_string(CharT ch) noexcept
+  constexpr explicit basic_fixed_string(CharT ch) noexcept
     requires(N == 1)
   {
     data_[0] = ch;
