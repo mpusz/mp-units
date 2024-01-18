@@ -29,6 +29,7 @@
 // IWYU pragma: begin_exports
 #include <compare>
 #include <cstdlib>
+#include <iostream>
 // IWYU pragma: end_exports
 
 #include <cstddef>
@@ -121,6 +122,13 @@ struct basic_fixed_string {
     // TODO std::lexicographical_compare_three_way(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
     return detail::lexicographical_compare_three_way(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
   }
+
+  template<typename Traits>
+  friend std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os,
+                                                       const basic_fixed_string<CharT, N>& str)
+  {
+    return os << str.c_str();
+  }
 };
 
 template<typename CharT>
@@ -136,3 +144,12 @@ template<std::size_t N>
 using fixed_string = basic_fixed_string<char, N>;
 
 }  // namespace mp_units
+
+template<typename CharT, std::size_t N>
+struct MP_UNITS_STD_FMT::formatter<mp_units::basic_fixed_string<CharT, N>> : formatter<std::basic_string_view<CharT>> {
+  template<typename FormatContext>
+  auto format(const mp_units::basic_fixed_string<CharT, N>& str, FormatContext& ctx)
+  {
+    return formatter<std::basic_string_view<CharT>>::format(str.view(), ctx);
+  }
+};
