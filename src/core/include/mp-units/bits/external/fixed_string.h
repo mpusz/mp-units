@@ -85,6 +85,11 @@ struct basic_fixed_string {
   [[nodiscard]] constexpr const_iterator end() const noexcept { return data() + size(); }
   [[nodiscard]] constexpr const_iterator cend() const noexcept { return data() + size(); }
 
+  [[nodiscard]] constexpr std::basic_string_view<CharT> view() const noexcept
+  {
+    return std::basic_string_view<CharT>(*this);
+  }
+
   template<std::size_t N2>
   [[nodiscard]] constexpr friend basic_fixed_string<CharT, N + N2> operator+(
     const basic_fixed_string& lhs, const basic_fixed_string<CharT, N2>& rhs) noexcept
