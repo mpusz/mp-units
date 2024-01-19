@@ -836,6 +836,11 @@ constexpr Out unit_symbol_impl(Out out, const derived_unit<Expr...>&, unit_symbo
 template<Unit auto U>
 inline constexpr bool space_before_unit_symbol = true;
 
+template<>
+inline constexpr bool space_before_unit_symbol<percent> = false;
+template<>
+inline constexpr bool space_before_unit_symbol<per_mille> = false;
+
 template<typename CharT = char, std::output_iterator<CharT> Out, Unit U>
 constexpr Out unit_symbol_to(Out out, U u, unit_symbol_formatting fmt = unit_symbol_formatting{})
 {
