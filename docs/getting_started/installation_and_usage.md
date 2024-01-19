@@ -25,7 +25,7 @@ specific feature:
 | **Minimum support**  |  12  |  16   |     15      | None |
 | **`std::format`**    | None | None  |    None     | None |
 | **C++ modules**      | None |  17   |    None     | None |
-| **C++23 extensions** | None | None  |    None     | None |
+| **C++23 extensions** |  14  |  18   |    None     | None |
 
 More requirements for C++ modules support can be found in the
 [CMake's documentation](https://cmake.org/cmake/help/latest/manual/cmake-cxxmodules.7.html).
