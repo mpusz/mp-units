@@ -30,17 +30,12 @@
 
 namespace mp_units::detail {
 
-// determines the best available representation type
-template<Quantity From, Quantity To>
-[[nodiscard]] consteval auto common_rep_type(From, To)
-{
-  if constexpr (requires { typename std::common_type_t<typename From::rep, typename To::rep>; })
-    // returns a common type of two representation types if available
-    // e.g. `double` and `int` will end up with `double` precision
-    return std::common_type_t<typename From::rep, typename To::rep>{};
-  else
-    return typename From::rep{};
-}
+template<typename T, typename Other>
+struct get_common_type : std::common_type<T, Other> {};
+
+template<typename T, typename Other>
+using maybe_common_type = MP_UNITS_TYPENAME std::conditional_t<requires { typename std::common_type_t<T, Other>; },
+                                                               get_common_type<T, Other>, std::type_identity<T>>::type;
 
 /**
  * @brief Explicit cast between different quantity types
@@ -73,15 +68,29 @@ template<Quantity To, typename From>
     constexpr Magnitude auto num = numerator(c_mag);
     constexpr Magnitude auto den = denominator(c_mag);
     constexpr Magnitude auto irr = c_mag * (den / num);
-    using c_rep_type = decltype(common_rep_type(q, To{}));
+    using c_rep_type = maybe_common_type<typename std::remove_reference_t<From>::rep, typename To::rep>;
     using c_mag_type = common_magnitude_type<c_mag>;
-    using multiplier_type =
-      conditional<treat_as_floating_point<c_rep_type>, std::common_type_t<c_mag_type, long double>, c_mag_type>;
+    using multiplier_type = conditional<treat_as_floating_point<c_rep_type>,
+                                        // ensure that the multiplier is also floating-point
+                                        conditional<std::is_arithmetic_v<underlying_type_t<c_rep_type>>,
+                                                    // reuse user's type if possible
+                                                    std::common_type_t<c_mag_type, underlying_type_t<c_rep_type>>,
+                                                    std::common_type_t<c_mag_type, double>>,
+                                        c_mag_type>;
+    using c_type = maybe_common_type<c_rep_type, multiplier_type>;
     constexpr auto val = [](Magnitude auto m) { return get_value<multiplier_type>(m); };
-    return {static_cast<MP_UNITS_TYPENAME To::rep>(
-              static_cast<c_rep_type>(std::forward<From>(q).numerical_value_is_an_implementation_detail_) * val(num) /
-              val(den) * val(irr)),
-            To::reference};
+    if constexpr (std::is_floating_point_v<multiplier_type>) {
+      // this results in great assembly
+      constexpr auto ratio = val(num) / val(den) * val(irr);
+      auto res = static_cast<MP_UNITS_TYPENAME To::rep>(
+        static_cast<c_type>(q.numerical_value_is_an_implementation_detail_) * ratio);
+      return {res, To::reference};
+    } else {
+      // this is slower but allows conversions like 2000 m -> 2 km without loosing data
+      auto res = static_cast<MP_UNITS_TYPENAME To::rep>(
+        static_cast<c_type>(q.numerical_value_is_an_implementation_detail_) * val(num) / val(den) * val(irr));
+      return {res, To::reference};
+    }
   }
 }
 
