@@ -362,7 +362,7 @@ public:
     return std::forward<Q>(lhs);
   }
 
-  template<typename Q1, QuantityOf<dimension_one> Q2>
+  template<typename Q1, QuantityOf<dimensionless> Q2>
     requires std::derived_from<std::remove_cvref_t<Q1>, quantity> && (Q2::unit == ::mp_units::one) &&
              requires(rep a, const typename Q2::rep b) {
                {
@@ -389,7 +389,7 @@ public:
     return std::forward<Q>(lhs);
   }
 
-  template<typename Q1, QuantityOf<dimension_one> Q2>
+  template<typename Q1, QuantityOf<dimensionless> Q2>
     requires std::derived_from<std::remove_cvref_t<Q1>, quantity> && (Q2::unit == ::mp_units::one) &&
              requires(rep a, const typename Q2::rep b) {
                {

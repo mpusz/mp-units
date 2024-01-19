@@ -958,7 +958,6 @@ static_assert(QuantityOf<quantity<m / s>, isq::position_vector / isq::duration>)
 static_assert(QuantityOf<quantity<kind_of<isq::speed>[m / s]>, isq::position_vector / isq::duration>);
 static_assert(QuantityOf<quantity<isq::velocity[m / s], int>, isq::position_vector / isq::duration>);
 
-static_assert(QuantityOf<decltype(10 * isq::speed[m / s] / (2 * isq::length[m]) * (4 * isq::time[s])), dimension_one>);
 static_assert(QuantityOf<decltype(10 * m), isq::height>);                        // kind of
 static_assert(QuantityOf<decltype(10 * kind_of<isq::length>[m]), isq::height>);  // kind of
 static_assert(!QuantityOf<decltype(10 * isq::length[m]), isq::height>);          // different kinds
