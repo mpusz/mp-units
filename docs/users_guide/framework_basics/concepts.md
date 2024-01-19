@@ -165,12 +165,8 @@ A `Reference` can either be:
 
 ### `ReferenceOf<T, V>` { #ReferenceOf }
 
-`ReferenceOf` concept is satisfied by references `T` that match the following value `V`:
-
-| `V`            | Condition                                                                                     |
-|----------------|-----------------------------------------------------------------------------------------------|
-| `Dimension`    | The dimension of a quantity specification satisfies [`DimensionOf<V>`](#DimensionOf) concept. |
-| `QuantitySpec` | The quantity specification satisfies [`QuantitySpecOf<V>`](#QuantitySpecOf) concept.          |
+`ReferenceOf` concept is satisfied by references `T` which have a quantity specification that satisfies
+[`QuantitySpecOf<V>`](#QuantitySpecOf) concept.          |
 
 
 ## `Representation<T>` { #Representation }
@@ -212,7 +208,7 @@ satisfied by all types being or deriving from an instantiation of a `quantity` c
 
 ### `QuantityOf<T, V>` { #QuantityOf }
 
-`QuantityOf` concept is satisfied by all the quantities for which a [`ReferenceOf<V>`](#ReferenceOf)
+`QuantityOf` concept is satisfied by all the quantities for which a [`QuantitySpecOf<V>`](#QuantitySpecOf)
 is `true`.
 
 
@@ -259,10 +255,10 @@ class template.
 
 `QuantityPointOf` concept is satisfied by all the quantity points `T` that match the following value `V`:
 
-| `V`           | Condition                                                                        |
-|---------------|----------------------------------------------------------------------------------|
-| `Reference`   | The quantity point reference satisfies [`ReferenceOf<V>`](#ReferenceOf) concept. |
-| `PointOrigin` | The _point_ and `V` have the same absolute point origin.                         |
+| `V`            | Condition                                                                                           |
+|----------------|-----------------------------------------------------------------------------------------------------|
+| `QuantitySpec` | The quantity point quantity specification satisfies [`QuantitySpecOf<V>`](#QuantitySpecOf) concept. |
+| `PointOrigin`  | The _point_ and `V` have the same absolute point origin.                                            |
 
 
 ## `QuantityLike<T>` { #QuantityLike }

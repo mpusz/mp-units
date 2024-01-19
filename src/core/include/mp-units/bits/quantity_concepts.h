@@ -52,13 +52,13 @@ template<typename T>
 concept Quantity = detail::is_derived_from_specialization_of_quantity<T>;
 
 /**
- * @brief A concept matching all quantities with provided dimension or quantity spec
+ * @brief A concept matching all quantities with provided quantity spec
  *
- * Satisfied by all quantities with a dimension/quantity_spec being the instantiation derived from
- * the provided dimension/quantity_spec type.
+ * Satisfied by all quantities with a quantity_spec being the instantiation derived from
+ * the provided quantity_spec type.
  */
-template<typename Q, auto V>
-concept QuantityOf = Quantity<Q> && ReferenceOf<std::remove_const_t<decltype(Q::reference)>, V>;
+template<typename Q, auto QS>
+concept QuantityOf = Quantity<Q> && QuantitySpecOf<std::remove_const_t<decltype(Q::quantity_spec)>, QS>;
 
 /**
  * @brief A concept matching all external quantities like types
