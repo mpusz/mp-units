@@ -83,6 +83,36 @@ template<typename T, template<typename...> typename Type>
 // inline constexpr bool // TODO: Replace with concept when it works with MSVC
 concept is_derived_from_specialization_of = requires(T* t) { detail::to_base_specialization_of<Type>(t); };
 
+
+namespace detail {
+
+template<typename T>
+struct get_value_type {
+  using type = MP_UNITS_TYPENAME T::value_type;
+};
+
+template<typename T>
+struct get_element_type {
+  using type = std::remove_reference_t<typename T::element_type>;
+};
+
+}  // namespace detail
+
+template<typename T>
+struct underlying_type {
+  using type = T;
+};
+
+template<typename T>
+  requires requires { typename T::value_type; } || requires { typename T::element_type; }
+struct underlying_type<T> {
+  using type = MP_UNITS_TYPENAME
+    conditional<requires { typename T::value_type; }, detail::get_value_type<T>, detail::get_element_type<T>>::type;
+};
+
+template<typename T>
+using underlying_type_t = MP_UNITS_TYPENAME underlying_type<T>::type;
+
 template<typename T, typename... Ts>
 concept one_of = (false || ... || std::same_as<T, Ts>);
 
