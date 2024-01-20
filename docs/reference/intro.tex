@@ -1,0 +1,134 @@
+%!TEX root = std.tex
+
+
+\rSec0[scope]{Scope}
+
+\pnum
+\indextext{scope|(}%
+This document describes the contents of the \defn{mp-units library}.
+\indextext{scope|)}
+
+
+\rSec0[refs]{References}
+
+\pnum
+\indextext{references|(}%
+The following documents are referred to in the text
+in such a way that some or all of their content
+constitutes requirements of this document.
+For dated references, only the edition cited applies.
+For undated references,
+the latest edition of the referenced document
+(including any amendments) applies.
+\begin{itemize}
+\item
+IEC 60050-102:2007/AMD3:2021,
+\doccite{Amendment 3 --- International Electrotechnical Vocabulary (IEV) ---
+Part 102: Mathematics --- General concepts and linear algebra}
+\item
+IEC 60050-112:2010/AMD2:2020,
+\doccite{Amendment 2 --- International Electrotechnical Vocabulary (IEV) ---
+Part 112: Quantities and units}
+\item
+ISO 80000 (all parts), \doccite{Quantities and units}
+\item
+The \Cpp{} Standards Committee.
+\IsoCpp{}: \doccite{Working Draft, Standard for Programming Language \Cpp{}}.
+Edited by Thomas K\"{o}ppe.
+Available from: \url{https://wg21.link/\IsoCpp{}}
+\item
+The \Cpp{} Standards Committee.
+SD-8: \doccite{Standard Library Compatibility}.
+Edited by Bryce Lelbach.
+Available from: \url{https://wg21.link/SD8}
+\end{itemize}
+\indextext{references|)}
+
+
+\rSec0[defs]{Terms and definitions}
+
+\pnum
+\indextext{definitions|(}%
+For the purposes of this document,
+the terms and definitions given in
+IEC 60050-102:2007/AMD3:2021,
+IEC 60050-112:2010/AMD2:2020,
+ISO 80000-2:2019,
+and
+\IsoCpp{},
+and the following apply.
+
+\pnum
+ISO and IEC maintain terminology databases
+for use in standardization
+at the following addresses:
+\begin{itemize}
+\item ISO Online browsing platform: available at \url{https://www.iso.org/obp}
+\item IEC Electropedia: available at \url{http://www.electropedia.org}
+\end{itemize}
+\indextext{definitions|)}
+
+
+\rSec0[spec]{Specification}
+
+\rSec1[spec.ext]{External}
+
+\pnum
+The specification of the mp-units library subsumes
+\refcpp{description}, \refcpp{requirements}, \refcpp{concepts.equality}, and SD-8,
+all assumingly amended for the context of this library.
+\begin{note}
+This means that, non exhaustively,
+\begin{itemize}
+\item \tcode{::mp_units2} is a reserved namespace, and
+\item
+\tcode{std::vector<mp_units::\placeholdernc{type}>}
+is a program-defined specialization and a library-defined specialization
+from the point of view of the \Cpp{} standard library and the mp-units library, respectively.
+\end{itemize}
+\end{note}
+
+\pnum
+The mp-units library is not part of the \Cpp{} implementation.
+
+\rSec1[spec.cats]{Categories}
+
+\pnum
+Detailed specifications for each of the components in the library are in
+\ref{\firstlibchapter}--\ref{\lastlibchapter},
+as shown in \tref{lib.cats}.
+
+\begin{floattable}{Library categories}{lib.cats}
+{ll}
+\topline
+\hdstyle{Clause}        & \hdstyle{Category}                              \\ \capsep
+\ref{qties}             & Quantities library                              \\
+\end{floattable}
+
+\pnum
+The quantities library\iref{qties}
+describes components for dealing with quantities.
+
+\rSec1[spec.mods]{Modules}
+
+\pnum
+The mp-units library provides the
+\defnx{mp-units modules}{module!mp-units},
+shown in \tref{modules}.
+
+\begin{multicolfloattable}{mp-units modules}{modules}
+{lll}
+\tcode{mp_units}                      \\
+\columnbreak
+\tcode{mp_units.core}                 \\
+\columnbreak
+\tcode{mp_units.systems}              \\
+\end{multicolfloattable}
+
+\rSec1[spec.reqs]{Library-wide requirements}
+
+\rSec2[spec.res.names]{Reserved names}
+
+\pnum
+The mp-units library reserves macro names that start with
+\tcode{MP_UNITS\opt{\gterm{digit-sequence}}_}.

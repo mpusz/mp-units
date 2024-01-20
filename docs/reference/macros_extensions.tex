@@ -1,0 +1,11 @@
+\newcommand{\IsoCpp}{N4971}
+
+%% Inline non-parenthesized C++ reference
+\newcommand{\refcpp}[1]{\href{https://wg21.link/#1}{\IsoCpp{}, [#1]}}
+\newcommand{\irefcpp}[1]{\nolinebreak[3] (\refcpp{#1})}
+\newcommand{\refcppx}[2]{\href{https://wg21.link/#1\##2}{\IsoCpp{}, [#1]}}
+\newcommand{\irefcppx}[2]{\nolinebreak[3] (\refcppx{#1}{#2})}
+
+%% Inline IEV reference
+\newcommand{\refiev}[1]{\href{https://www.electropedia.org/iev/iev.nsf/display?openform&ievref=#1}{IEC 60050, #1}}
+\newcommand{\irefiev}[1]{\nolinebreak[3] (\refiev{#1})}
