@@ -375,6 +375,22 @@ TEST_CASE("SI inverse trigonometric functions", "[inv trig][si]")
   }
 }
 
+TEST_CASE("SI atan2 functions", "[atan2][si]")
+{
+  SECTION("atan2 should work on the same quantities")
+  {
+    REQUIRE_THAT(si::atan2(-1. * isq::length[km], 1. * isq::length[km]), AlmostEquals(-45. * deg));
+    REQUIRE_THAT(si::atan2(0. * isq::length[km], 1. * isq::length[km]), AlmostEquals(0. * deg));
+    REQUIRE_THAT(si::atan2(1. * isq::length[km], 1. * isq::length[km]), AlmostEquals(45. * deg));
+  }
+  SECTION("atan2 should work with different units of the same dimension")
+  {
+    REQUIRE_THAT(si::atan2(-1. * isq::length[km], 1000. * isq::length[m]), AlmostEquals(-45. * deg));
+    REQUIRE_THAT(si::atan2(0. * isq::length[km], 1000. * isq::length[m]), AlmostEquals(0. * deg));
+    REQUIRE_THAT(si::atan2(1. * isq::length[km], 1000. * isq::length[m]), AlmostEquals(45. * deg));
+  }
+}
+
 
 TEST_CASE("Angle trigonometric functions", "[trig][angle]")
 {
@@ -447,5 +463,25 @@ TEST_CASE("Angle inverse trigonometric functions", "[inv trig][angle]")
     REQUIRE_THAT(atan(-1 * one), AlmostEquals(-45. * angle[deg]));
     REQUIRE_THAT(atan(0 * one), AlmostEquals(0. * angle[deg]));
     REQUIRE_THAT(atan(1 * one), AlmostEquals(45. * angle[deg]));
+  }
+}
+
+TEST_CASE("Angle atan2 functions", "[atan2][angle]")
+{
+  using namespace mp_units::angular;
+  using namespace mp_units::angular::unit_symbols;
+  using mp_units::angular::unit_symbols::deg;
+
+  SECTION("atan2 should work on the same quantities")
+  {
+    REQUIRE_THAT(atan2(-1. * isq::length[km], 1. * isq::length[km]), AlmostEquals(-45. * angle[deg]));
+    REQUIRE_THAT(atan2(0. * isq::length[km], 1. * isq::length[km]), AlmostEquals(0. * angle[deg]));
+    REQUIRE_THAT(atan2(1. * isq::length[km], 1. * isq::length[km]), AlmostEquals(45. * angle[deg]));
+  }
+  SECTION("atan2 should work with different units of the same dimension")
+  {
+    REQUIRE_THAT(atan2(-1. * isq::length[km], 1000. * isq::length[m]), AlmostEquals(-45. * angle[deg]));
+    REQUIRE_THAT(atan2(0. * isq::length[km], 1000. * isq::length[m]), AlmostEquals(0. * angle[deg]));
+    REQUIRE_THAT(atan2(1. * isq::length[km], 1000. * isq::length[m]), AlmostEquals(45. * angle[deg]));
   }
 }
