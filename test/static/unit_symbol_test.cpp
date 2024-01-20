@@ -120,6 +120,7 @@ static_assert(unit_symbol(one) == "");
 static_assert(unit_symbol(percent) == "%");
 static_assert(unit_symbol(per_mille) == "‰");
 static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii}>(per_mille) == "%o");
+static_assert(unit_symbol(parts_per_million) == "ppm");
 static_assert(unit_symbol(square(metre)) == "m²");
 static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii}>(square(metre)) == "m^2");
 static_assert(unit_symbol(cubic(metre)) == "m³");
