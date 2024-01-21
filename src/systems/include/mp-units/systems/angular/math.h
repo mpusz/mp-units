@@ -119,4 +119,24 @@ template<ReferenceOf<dimensionless> auto R, typename Rep>
     return quantity{atan(q.numerical_value_in(one)), radian};
 }
 
+template<auto R1, typename Rep1, auto R2, typename Rep2>
+  requires requires(Rep1 v1, Rep2 v2) {
+    common_reference(R1, R2);
+    requires requires { atan2(v1, v2); } || requires { std::atan2(v1, v2); };
+  }
+[[nodiscard]] inline QuantityOf<angle> auto atan2(const quantity<R1, Rep1>& y, const quantity<R2, Rep2>& x) noexcept
+{
+  constexpr auto ref = common_reference(R1, R2);
+  constexpr auto unit = get_unit(ref);
+  using std::atan2;
+  if constexpr (!treat_as_floating_point<Rep1> || !treat_as_floating_point<Rep2>) {
+    // check what is the return type when called with the integral value
+    using rep = decltype(atan2(y.force_numerical_value_in(unit), x.force_numerical_value_in(unit)));
+    // use this type ahead of calling the function to prevent narrowing if a unit conversion is needed
+    return quantity{atan2(value_cast<rep>(y).numerical_value_in(unit), value_cast<rep>(x).numerical_value_in(unit)),
+                    radian};
+  } else
+    return quantity{atan2(y.numerical_value_in(unit), x.numerical_value_in(unit)), radian};
+}
+
 }  // namespace mp_units::angular
