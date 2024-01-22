@@ -71,6 +71,24 @@ TEST_CASE("'fma()' on quantity changes the value and the dimension accordingly",
   REQUIRE(fma(isq::speed(10.0 * m / s), isq::time(2.0 * s), isq::height(42.0 * m)) == isq::length(62.0 * m));
 }
 
+TEST_CASE("fmod functions", "[math][fmod]")
+{
+  SECTION("fmod should work on the same quantities")
+  {
+    REQUIRE(fmod(4. * isq::length[km], 3. * isq::length[km]) == 1. * isq::length[km]);
+    REQUIRE(fmod(-9. * isq::length[km], 3. * isq::length[km]) == -0. * isq::length[km]);
+    REQUIRE(fmod(3 * isq::length[km], 2 * isq::length[km]) == 1 * isq::length[km]);
+    REQUIRE(fmod(4 * isq::length[km], 2.5f * isq::length[km]) == 1.5 * isq::length[km]);
+  }
+  SECTION("fmod should work with different units of the same dimension")
+  {
+    REQUIRE(fmod(4. * isq::length[km], 3000. * isq::length[m]) == 1000. * isq::length[m]);
+    REQUIRE(fmod(-9. * isq::length[km], 3000. * isq::length[m]) == -0. * isq::length[m]);
+    REQUIRE(fmod(3. * isq::length[km], 2000. * isq::length[m]) == 1000 * isq::length[m]);
+    REQUIRE(fmod(4 * isq::length[km], 2500 * isq::length[m]) == 1500 * isq::length[m]);
+  }
+}
+
 TEST_CASE("'isfinite()' accepts dimensioned arguments", "[math][isfinite]") { REQUIRE(isfinite(4.0 * isq::length[m])); }
 
 TEST_CASE("'isinf()' accepts dimensioned arguments", "[math][isinf]") { REQUIRE(!isinf(4.0 * isq::length[m])); }
