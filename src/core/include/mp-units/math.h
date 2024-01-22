@@ -199,6 +199,24 @@ template<auto R, auto S, auto T, typename Rep1, typename Rep2, typename Rep3>
 
 
 /**
+ * @brief Computes the floating-point remainder of the division operation x / y.
+ */
+template<auto R1, typename Rep1, auto R2, typename Rep2>
+  requires requires(Rep1 v1, Rep2 v2) {
+    common_reference(R1, R2);
+    requires requires { fmod(v1, v2); } || requires { std::fmod(v1, v2); };
+  }
+[[nodiscard]] constexpr QuantityOf<get_quantity_spec(R1)> auto fmod(const quantity<R1, Rep1>& x,
+                                                                    const quantity<R2, Rep2>& y) noexcept
+{
+  constexpr auto ref = common_reference(R1, R2);
+  constexpr auto unit = get_unit(ref);
+  using std::fmod;
+  return quantity{fmod(x.numerical_value_in(unit), y.numerical_value_in(unit)), ref};
+}
+
+
+/**
  * @brief Returns the epsilon of the quantity
  *
  * The returned value is defined by a <tt>std::numeric_limits<typename Q::rep>::epsilon()</tt>.
