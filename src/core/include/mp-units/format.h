@@ -40,6 +40,41 @@ struct fill_align_width_format_specs {
   fmt_arg_ref<Char> width_ref;
 };
 
+template<typename Char>
+[[nodiscard]] constexpr const Char* at_most_one_of(const Char* begin, const Char* end, std::string_view modifiers)
+{
+  auto it = find_first_of(begin, end, modifiers.begin(), modifiers.end());
+  if (it != end && find_first_of(it + 1, end, modifiers.begin(), modifiers.end()) != end)
+    throw MP_UNITS_STD_FMT::format_error("only one of '" + std::string(modifiers) +
+                                         "' unit modifiers may be used in the format spec");
+  return it;
+}
+
+template<typename Char, typename Handler>
+[[nodiscard]] constexpr const Char* parse_subentity_replacement_field(const Char* begin, const Char* end,
+                                                                      Handler&& handler)
+{
+  if (end - begin++ < 4)
+    return MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("`subentity-replacement-field` too short")), end;
+  if (*begin++ != '%')
+    MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("`subentity-replacement-field` should start with '%'"));
+  if (*begin == '}')
+    MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("`subentity-replacement-field` should have an identifier"));
+  auto it = begin;
+  for (; it != end; ++it) {
+    if (*it == '{' || *it == '%')
+      MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("invalid `subentity-replacement-field` format"));
+    if (*it == '}' || *it == ':') break;
+  }
+  if (it == end) MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("`subentity-replacement-field` too short"));
+  std::string_view id{begin, it};
+  if (*it == ':') ++it;
+  it = handler.on_replacement_field(id, it);
+  if (it == end || *it != '}')
+    MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("`subentity-replacement-field` should end with '}'"));
+  return ++it;
+}
+
 template<typename OutputIt, typename Char>
 OutputIt format_global_buffer(OutputIt out, const fill_align_width_format_specs<Char>& specs)
 {
@@ -62,16 +97,6 @@ OutputIt format_global_buffer(OutputIt out, const fill_align_width_format_specs<
   }
   if (specs.width >= 1) MP_UNITS_STD_FMT::format_to(out, "{}", specs.width);
   return MP_UNITS_STD_FMT::format_to(out, "}}");
-}
-
-template<typename Char>
-[[nodiscard]] constexpr const Char* at_most_one_of(const Char* begin, const Char* end, std::string_view modifiers)
-{
-  auto it = find_first_of(begin, end, modifiers.begin(), modifiers.end());
-  if (it != end && find_first_of(it + 1, end, modifiers.begin(), modifiers.end()) != end)
-    throw MP_UNITS_STD_FMT::format_error("only one of '" + std::string(modifiers) +
-                                         "' unit modifiers may be used in the format spec");
-  return it;
 }
 
 }  // namespace mp_units::detail
