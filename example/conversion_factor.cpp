@@ -58,7 +58,7 @@ int main()
 
   std::cout << MP_UNITS_STD_FMT::format("therefore ratio lengthA / lengthB == {}\n\n", lengthA / lengthB);
 
-  std::cout << MP_UNITS_STD_FMT::format("conversion factor from lengthA::unit of {:%q} to lengthB::unit of {:%q}:\n\n",
+  std::cout << MP_UNITS_STD_FMT::format("conversion factor from lengthA::unit of {:%U} to lengthB::unit of {:%U}:\n\n",
                                         lengthA, lengthB)
             << MP_UNITS_STD_FMT::format("lengthB.value( {} ) == lengthA.value( {} ) * conversion_factor( {} )\n",
                                         lengthB.numerical_value_ref_in(lengthB.unit),

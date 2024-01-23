@@ -82,7 +82,8 @@ void print(std::string_view phase_name, timestamp start_ts, const glide_computer
            const glide_computer::flight_point& new_point)
 {
   std::cout << MP_UNITS_STD_FMT::format(
-    "| {:<12} | {:>9%.1Q %q} (Total: {:>9%.1Q %q}) | {:>8%.1Q %q} (Total: {:>8%.1Q %q}) | {:>7%.0Q %q} ({:>6%.0Q %q}) "
+    "| {:<12} | {:>9{%N:.1} %U} (Total: {:>9{%N:.1} %U}) | {:>8{%N:.1} %U} (Total: {:>8{%N:.1} %U}) | {:>7{%N:.0} %U} "
+    "({:>6{%N:.0} %U}) "
     "|\n",
     phase_name, value_cast<si::minute>(new_point.ts - point.ts), value_cast<si::minute>(new_point.ts - start_ts),
     new_point.dist - point.dist, new_point.dist, new_point.alt - point.alt, new_point.alt);

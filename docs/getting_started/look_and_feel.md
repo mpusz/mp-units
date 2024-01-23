@@ -13,7 +13,7 @@ Here is a small example of operations possible on scalar quantities:
     // simple numeric operations
     static_assert(10 * km / 2 == 5 * km);
 
-    // unit conversions
+    // conversions to common units
     static_assert(1 * h == 3600 * s);
     static_assert(1 * km + 1 * m == 1001 * m);
 
@@ -40,7 +40,7 @@ Here is a small example of operations possible on scalar quantities:
     // simple numeric operations
     static_assert(10 * km / 2 == 5 * km);
 
-    // unit conversions
+    // conversions to common units
     static_assert(1 * h == 3600 * s);
     static_assert(1 * km + 1 * m == 1001 * m);
 
@@ -56,7 +56,7 @@ Here is a small example of operations possible on scalar quantities:
     static_assert(1000 / (1 * s) == 1 * kHz);
     ```
 
-!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/81Ev7qhTd)"
+!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/ox8a8dGTz)"
 
 
 This library requires some C++20 features ([concepts and constraints](https://en.cppreference.com/w/cpp/language/constraints),
@@ -69,6 +69,7 @@ performed without sacrificing accuracy. Please see the below example for a quick
 === "C++ modules"
 
     ```cpp
+    #include <iomanip>
     #include <iostream>
     import mp_units;
 
@@ -93,13 +94,13 @@ performed without sacrificing accuracy. Please see the below example for a quick
       constexpr quantity v6 = value_cast<m / s>(v4);
       constexpr quantity v7 = value_cast<int>(v6);
 
-      std::cout << v1 << '\n';                                  // 110 km/h
-      std::cout << v2 << '\n';                                  // 70 mi/h
-      std::cout << std::format("{}", v3) << '\n';               // 110 km/h
-      std::cout << std::format("{:*^14}", v4) << '\n';          // ***70 mi/h****
-      std::cout << std::format("{:%Q in %q}", v5) << '\n';      // 30.5556 in m/s
-      std::cout << std::format("{0:%Q} in {0:%q}", v6) << '\n'; // 31.2928 in m/s
-      std::cout << std::format("{:%Q}", v7) << '\n';            // 31
+      std::cout << v1 << '\n';                                        // 110 km/h
+      std::cout << std::setw(10) << std::setfill('*') << v2 << '\n';  // ***70 mi/h
+      std::cout << std::format("{:*^10}\n", v3);                      // *110 km/h*
+      std::cout << std::format("{:%N in %U}\n", v4);                  // 70 in mi/h
+      std::cout << std::format("{:{%N:.2f}%?%U}\n", v5);              // 30.56 in m/s
+      std::cout << std::format("{:{%N:.2f}%?{%U:n}}\n", v6);          // 31.29 in m s⁻¹
+      std::cout << std::format("{:%N}\n", v7);                        // 31
     }
     ```
 
@@ -111,6 +112,7 @@ performed without sacrificing accuracy. Please see the below example for a quick
     #include <mp-units/systems/international/international.h>
     #include <mp-units/systems/isq/isq.h>
     #include <mp-units/systems/si/si.h>
+    #include <iomanip>
     #include <iostream>
 
     using namespace mp_units;
@@ -134,13 +136,13 @@ performed without sacrificing accuracy. Please see the below example for a quick
       constexpr quantity v6 = value_cast<m / s>(v4);
       constexpr quantity v7 = value_cast<int>(v6);
 
-      std::cout << v1 << '\n';                                  // 110 km/h
-      std::cout << v2 << '\n';                                  // 70 mi/h
-      std::cout << std::format("{}", v3) << '\n';               // 110 km/h
-      std::cout << std::format("{:*^14}", v4) << '\n';          // ***70 mi/h****
-      std::cout << std::format("{:%Q in %q}", v5) << '\n';      // 30.5556 in m/s
-      std::cout << std::format("{0:%Q} in {0:%q}", v6) << '\n'; // 31.2928 in m/s
-      std::cout << std::format("{:%Q}", v7) << '\n';            // 31
+      std::cout << v1 << '\n';                                        // 110 km/h
+      std::cout << std::setw(10) << std::setfill('*') << v2 << '\n';  // ***70 mi/h
+      std::cout << std::format("{:*^10}\n", v3);                      // *110 km/h*
+      std::cout << std::format("{:%N in %U}\n", v4);                  // 70 in mi/h
+      std::cout << std::format("{:{%N:.2f}%?%U}\n", v5);              // 30.56 in m/s
+      std::cout << std::format("{:{%N:.2f}%?{%U:n}}\n", v6);          // 31.29 in m s⁻¹
+      std::cout << std::format("{:%N}\n", v7);                        // 31
     }
     ```
 

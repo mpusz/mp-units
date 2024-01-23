@@ -55,12 +55,14 @@ std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>&
 
 }  // namespace geographic
 
-template<>
-struct MP_UNITS_STD_FMT::formatter<geographic::msl_altitude> : formatter<geographic::msl_altitude::quantity_type> {
+template<typename Char>
+struct MP_UNITS_STD_FMT::formatter<geographic::msl_altitude, Char> :
+    formatter<geographic::msl_altitude::quantity_type, Char> {
   template<typename FormatContext>
-  auto format(const geographic::msl_altitude& a, FormatContext& ctx)
+  auto format(const geographic::msl_altitude& a, FormatContext& ctx) const -> decltype(ctx.out())
   {
-    formatter<geographic::msl_altitude::quantity_type>::format(a - geographic::mean_sea_level, ctx);
+    ctx.advance_to(
+      formatter<geographic::msl_altitude::quantity_type, Char>::format(a - geographic::mean_sea_level, ctx));
     return MP_UNITS_STD_FMT::format_to(ctx.out(), " AMSL");
   }
 };
@@ -137,29 +139,29 @@ class std::numeric_limits<geographic::longitude<T>> : public numeric_limits<T> {
   static constexpr auto max() noexcept { return geographic::longitude<T>(180); }
 };
 
-template<typename T>
-struct MP_UNITS_STD_FMT::formatter<geographic::latitude<T>> :
-    formatter<typename geographic::latitude<T>::quantity_type> {
+template<typename T, typename Char>
+struct MP_UNITS_STD_FMT::formatter<geographic::latitude<T>, Char> :
+    formatter<typename geographic::latitude<T>::quantity_type, Char> {
   template<typename FormatContext>
-  auto format(geographic::latitude<T> lat, FormatContext& ctx)
+  auto format(geographic::latitude<T> lat, FormatContext& ctx) const -> decltype(ctx.out())
   {
     const auto& q = lat.quantity_ref_from(geographic::equator);
-    formatter<typename geographic::latitude<T>::quantity_type>::format(is_gteq_zero(q) ? q : -q, ctx);
-    MP_UNITS_STD_FMT::format_to(ctx.out(), "{}", is_gteq_zero(q) ? " N" : "S");
-    return ctx.out();
+    ctx.advance_to(
+      formatter<typename geographic::latitude<T>::quantity_type, Char>::format(is_gteq_zero(q) ? q : -q, ctx));
+    return MP_UNITS_STD_FMT::format_to(ctx.out(), "{}", is_gteq_zero(q) ? " N" : "S");
   }
 };
 
-template<typename T>
-struct MP_UNITS_STD_FMT::formatter<geographic::longitude<T>> :
-    formatter<typename geographic::longitude<T>::quantity_type> {
+template<typename T, typename Char>
+struct MP_UNITS_STD_FMT::formatter<geographic::longitude<T>, Char> :
+    formatter<typename geographic::longitude<T>::quantity_type, Char> {
   template<typename FormatContext>
-  auto format(geographic::longitude<T> lon, FormatContext& ctx)
+  auto format(geographic::longitude<T> lon, FormatContext& ctx) const -> decltype(ctx.out())
   {
     const auto& q = lon.quantity_ref_from(geographic::prime_meridian);
-    formatter<typename geographic::longitude<T>::quantity_type>::format(is_gteq_zero(q) ? q : -q, ctx);
-    MP_UNITS_STD_FMT::format_to(ctx.out(), "{}", is_gteq_zero(q) ? " E" : " W");
-    return ctx.out();
+    ctx.advance_to(
+      formatter<typename geographic::longitude<T>::quantity_type, Char>::format(is_gteq_zero(q) ? q : -q, ctx));
+    return MP_UNITS_STD_FMT::format_to(ctx.out(), "{}", is_gteq_zero(q) ? " E" : " W");
   }
 };
 
