@@ -23,7 +23,7 @@ specific feature:
 | Feature              | gcc  | clang | apple-clang | MSVC |
 |----------------------|:----:|:-----:|:-----------:|:----:|
 | **Minimum support**  |  12  |  16   |     15      | None |
-| **`std::format`**    | None | None  |    None     | None |
+| **`std::format`**    |  13  |  17   |    None     | None |
 | **C++ modules**      | None |  17   |    None     | None |
 | **C++23 extensions** |  14  |  18   |    None     | None |
 
