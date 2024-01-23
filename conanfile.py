@@ -141,7 +141,8 @@ class MPUnitsConan(ConanFile):
             min_version = self._std_format_minimum_compilers_version.get(str(compiler))
             if min_version and loose_lt_semver(str(compiler.version), min_version):
                 raise ConanInvalidConfiguration(
-                    f"`std::format` requires at least {compiler} {min_version} ({compiler.version} in use). Use `-o use_fmtlib=True` instead."
+                    f"`std::format` requires at least {compiler} {min_version} ({compiler.version} in use). "
+                    "Use `-o use_fmtlib=True` instead."
                 )
 
     def layout(self):
