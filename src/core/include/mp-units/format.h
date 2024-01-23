@@ -265,7 +265,7 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
         return begin;
         // on_replacement_field<dimension_t>(begin);
       } else
-        throw MP_UNITS_STD_FMT::format_error("invalid format");
+        throw MP_UNITS_STD_FMT::format_error("unknown replacement field '" + std::string(id) + "'");
     }
 
   private:
@@ -275,7 +275,7 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
       MP_UNITS_STD_FMT::formatter<T> sf;
       ctx.advance_to(begin);
       auto ptr = sf.parse(ctx);
-      if (*ptr != '}') throw MP_UNITS_STD_FMT::format_error("invalid format");
+      if (*ptr != '}') throw MP_UNITS_STD_FMT::format_error("unmatched '}' in format string");
       format_str_lengths.push_back(mp_units::detail::to_unsigned(ptr - begin));
       return ptr;
     }
@@ -314,7 +314,7 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
       else if (id == "D")
         on_dimension(format_str());
       else
-        throw MP_UNITS_STD_FMT::format_error("invalid format");
+        throw MP_UNITS_STD_FMT::format_error("unknown replacement field '" + std::string(id) + "'");
       return begin + *format_str_lengths_it++;
     }
   };
@@ -325,7 +325,9 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
   constexpr const Char* parse_quantity_specs(const Char* begin, const Char* end, Handler&& handler) const
   {
     if (begin == end || *begin == '}') return begin;
-    if (*begin != '%' && *begin != '{') throw MP_UNITS_STD_FMT::format_error("invalid format");
+    if (*begin != '%' && *begin != '{')
+      throw MP_UNITS_STD_FMT::format_error(
+        "`quantity-specs` should start with a `conversion-spec` ('%' or '{' characters expected)})");
     auto ptr = begin;
     while (ptr != end) {
       auto c = *ptr;
@@ -341,7 +343,7 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
       }
       if (begin != ptr) handler.on_text(begin, ptr);
       ++ptr;  // consume '%'
-      if (ptr == end) throw MP_UNITS_STD_FMT::format_error("invalid format");
+      if (ptr == end) throw MP_UNITS_STD_FMT::format_error("invalid `placement-spec` format");
 
       c = *ptr++;
       switch (c) {
@@ -361,7 +363,7 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
           handler.on_text(ptr - 1, ptr);
           break;
         default:
-          throw MP_UNITS_STD_FMT::format_error("invalid format");
+          throw MP_UNITS_STD_FMT::format_error(std::string("unknown `placement-spec` token '") + c + "'");
       }
       begin = ptr;
     }

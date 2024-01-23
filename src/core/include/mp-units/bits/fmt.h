@@ -256,19 +256,24 @@ template<typename Char, typename Handler>
 [[nodiscard]] constexpr const Char* parse_subentity_replacement_field(const Char* begin, const Char* end,
                                                                       Handler&& handler)
 {
-  if (end - begin++ < 4) return MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("invalid format string")), end;
-  if (*begin++ != '%') MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("invalid format"));
-  if (*begin == '}') MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("invalid format"));
+  if (end - begin++ < 4)
+    return MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("`subentity-replacement-field` too short")), end;
+  if (*begin++ != '%')
+    MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("`subentity-replacement-field` should start with '%'"));
+  if (*begin == '}')
+    MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("`subentity-replacement-field` should have an identifier"));
   auto it = begin;
   for (; it != end; ++it) {
-    if (*it == '{' || *it == '%') MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("invalid format"));
+    if (*it == '{' || *it == '%')
+      MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("invalid `subentity-replacement-field` format"));
     if (*it == '}' || *it == ':') break;
   }
-  if (it == end) MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("invalid format"));
+  if (it == end) MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("`subentity-replacement-field` too short"));
   std::string_view id{begin, it};
   if (*it == ':') ++it;
   it = handler.on_replacement_field(id, it);
-  if (it == end || *it != '}') MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("invalid format"));
+  if (it == end || *it != '}')
+    MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("`subentity-replacement-field` should end with '}'"));
   return ++it;
 }
 
