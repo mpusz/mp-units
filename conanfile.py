@@ -88,6 +88,15 @@ class MPUnitsConan(ConanFile):
         }
 
     @property
+    def _std_format_minimum_compilers_version(self):
+        return {
+            "gcc": "13",
+            "clang": "17"
+            # , "apple-clang": "15"
+            # , "msvc": "192"
+        }
+
+    @property
     def _build_all(self):
         return bool(self.conf.get("user.build:all", default=False))
 
@@ -128,6 +137,12 @@ class MPUnitsConan(ConanFile):
             raise ConanInvalidConfiguration(
                 f"{self.ref} requires at least {compiler} {min_version} ({compiler.version} in use)"
             )
+        if not self.options.use_fmtlib:
+            min_version = self._std_format_minimum_compilers_version.get(str(compiler))
+            if min_version and loose_lt_semver(str(compiler.version), min_version):
+                raise ConanInvalidConfiguration(
+                    f"`std::format` requires at least {compiler} {min_version} ({compiler.version} in use). Use `-o use_fmtlib=True` instead."
+                )
 
     def layout(self):
         cmake_layout(self)
