@@ -50,6 +50,20 @@ template<typename Char>
   return it;
 }
 
+template<typename Char, typename Specs>
+[[nodiscard]] constexpr const Char* parse_fill_align_width(MP_UNITS_STD_FMT::basic_format_parse_context<Char>& ctx,
+                                                           const Char* begin, const Char* end, Specs& specs,
+                                                           fmt_align default_align = fmt_align::none)
+{
+  auto it = begin;
+  if (it == end || *it == '}') return it;
+
+  it = mp_units::detail::parse_align(it, end, specs, default_align);
+  if (it == end) return it;
+
+  return mp_units::detail::parse_dynamic_spec(it, end, specs.width, specs.width_ref, ctx);
+}
+
 template<typename Char, typename Handler>
 [[nodiscard]] constexpr const Char* parse_subentity_replacement_field(const Char* begin, const Char* end,
                                                                       Handler&& handler)
@@ -197,16 +211,11 @@ public:
   constexpr auto parse(MP_UNITS_STD_FMT::basic_format_parse_context<Char>& ctx) -> decltype(ctx.begin())
   {
     const auto begin = ctx.begin();
-    auto it = begin, end = ctx.end();
-    if (it == end || *it == '}') return it;
+    auto end = ctx.end();
 
-    it = mp_units::detail::parse_align(it, end, specs_);
-    if (it == end) return it;
-
-    it = mp_units::detail::parse_dynamic_spec(it, end, specs_.width, specs_.width_ref, ctx);
-    if (it == end) return it;
-
+    auto it = parse_fill_align_width(ctx, begin, end, specs_);
     fill_align_width_format_str_ = {begin, it};
+    if (it == end) return it;
 
     format_checker checker;
     end = parse_unit_specs(it, end, checker);
@@ -415,17 +424,12 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
   }
 
 public:
-  // parse quantity-format-specs
   constexpr auto parse(MP_UNITS_STD_FMT::basic_format_parse_context<Char>& ctx) -> decltype(ctx.begin())
   {
     const auto begin = ctx.begin();
-    auto it = begin, end = ctx.end();
-    if (it == end || *it == '}') return it;
+    auto end = ctx.end();
 
-    it = mp_units::detail::parse_align(it, end, specs_, mp_units::detail::fmt_align::right);
-    if (it == end) return it;
-
-    it = mp_units::detail::parse_dynamic_spec(it, end, specs_.width, specs_.width_ref, ctx);
+    auto it = parse_fill_align_width(ctx, begin, end, specs_, mp_units::detail::fmt_align::right);
     if (it == end) return it;
 
     format_checker checker(ctx, format_str_lengths_);
