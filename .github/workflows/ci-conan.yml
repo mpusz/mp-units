@@ -130,7 +130,7 @@ jobs:
         build_type: ["Release", "Debug"]
         exclude:
           - formatting: "std::format"
-            std_format_support: "False"
+            config.std_format_support: "False"
 
     env:
       CC: ${{ matrix.config.compiler.cc }}
