@@ -81,6 +81,8 @@ template<typename Char>
 //
 // dimension-format-spec       ::=  [fill-and-align] [width] [dimension-spec]
 // dimension-spec              ::=  [text-encoding]
+// text-encoding               ::=  one of
+//                                  U A
 
 // template<typename Char>
 // struct dimension_format_specs : fill_align_width_format_specs<Char>, dimension_symbol_formatting {};
@@ -96,8 +98,6 @@ template<typename Char>
 //                                  [unit-symbol-solidus] [unit-symbol-separator] [text-encoding] [L]
 //                                  [unit-symbol-separator] [text-encoding] [unit-symbol-solidus] [L]
 //                                  [unit-symbol-separator] [unit-symbol-solidus] [text-encoding] [L]
-// text-encoding               ::=  one of
-//                                  U A
 // unit-symbol-solidus         ::=  one of
 //                                  o a n
 // unit-symbol-separator       ::=  one of
@@ -227,7 +227,7 @@ public:
 //                                  N U D ? %
 // subentity-replacement-field ::= { % subentity-id [format-specifier] }
 // subentity-id                ::= any character other than {, }, or %
-// format-specifier            ::= format-spec
+// format-specifier            ::= : format-spec
 // format-spec                 ::= as specified by the formatter for the argument type; cannot start with }
 //
 template<auto Reference, typename Rep, typename Char>
