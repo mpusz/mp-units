@@ -40,6 +40,30 @@ struct fill_align_width_format_specs {
   fmt_arg_ref<Char> width_ref;
 };
 
+template<typename OutputIt, typename Char>
+OutputIt format_global_buffer(OutputIt out, const fill_align_width_format_specs<Char>& specs)
+{
+  MP_UNITS_STD_FMT::format_to(out, "{{:");
+  if (specs.fill.size() != 1 || specs.fill[0] != ' ') {
+    MP_UNITS_STD_FMT::format_to(out, "{}", specs.fill.data());
+  }
+  switch (specs.align) {
+    case fmt_align::left:
+      MP_UNITS_STD_FMT::format_to(out, "<");
+      break;
+    case fmt_align::right:
+      MP_UNITS_STD_FMT::format_to(out, ">");
+      break;
+    case fmt_align::center:
+      MP_UNITS_STD_FMT::format_to(out, "^");
+      break;
+    default:
+      break;
+  }
+  if (specs.width >= 1) MP_UNITS_STD_FMT::format_to(out, "{}", specs.width);
+  return MP_UNITS_STD_FMT::format_to(out, "}}");
+}
+
 template<typename Char>
 [[nodiscard]] constexpr const Char* at_most_one_of(const Char* begin, const Char* end, std::string_view modifiers)
 {
@@ -215,7 +239,6 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
 
   using format_specs = mp_units::detail::fill_align_width_format_specs<Char>;
 
-  std::basic_string_view<Char> fill_align_width_format_str_;
   std::basic_string_view<Char> modifiers_format_str_;
   std::vector<size_t> format_str_lengths_;
   format_specs specs_{};
@@ -370,13 +393,11 @@ public:
     auto it = begin, end = ctx.end();
     if (it == end || *it == '}') return it;
 
-    it = mp_units::detail::parse_align(it, end, specs_);
+    it = mp_units::detail::parse_align(it, end, specs_, mp_units::detail::fmt_align::right);
     if (it == end) return it;
 
     it = mp_units::detail::parse_dynamic_spec(it, end, specs_.width, specs_.width_ref, ctx);
     if (it == end) return it;
-
-    fill_align_width_format_str_ = {begin, it};
 
     format_checker checker(ctx, format_str_lengths_);
     end = parse_quantity_specs(it, end, checker);
@@ -397,8 +418,9 @@ public:
       std::basic_string<Char> quantity_buffer;
       format_quantity(std::back_inserter(quantity_buffer), q, ctx);
 
-      std::basic_string<Char> global_format_buffer = "{:" + std::basic_string<Char>{fill_align_width_format_str_} + "}";
-      return MP_UNITS_STD_FMT::vformat_to(ctx.out(), global_format_buffer,
+      std::basic_string<Char> fill_align_width_format_str;
+      mp_units::detail::format_global_buffer(std::back_inserter(fill_align_width_format_str), specs);
+      return MP_UNITS_STD_FMT::vformat_to(ctx.out(), fill_align_width_format_str,
                                           MP_UNITS_STD_FMT::make_format_args(quantity_buffer));
     }
   }

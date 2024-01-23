@@ -341,7 +341,8 @@ constexpr int code_point_length(It begin)
 
 // Parses fill and alignment.
 template<typename Char, typename Specs>
-[[nodiscard]] constexpr const Char* parse_align(const Char* begin, const Char* end, Specs& specs)
+[[nodiscard]] constexpr const Char* parse_align(const Char* begin, const Char* end, Specs& specs,
+                                                fmt_align default_align = fmt_align::none)
 {
   gsl_Expects(begin != end);
   auto align = fmt_align::none;
@@ -378,6 +379,7 @@ template<typename Char, typename Specs>
     }
     p = begin;
   }
+  if (align == fmt_align::none) align = default_align;  // mp-units extension
   specs.align = align;
   return begin;
 }
