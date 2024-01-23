@@ -59,7 +59,7 @@ class MPUnitsConan(ConanFile):
     }
     default_options = {
         "cxx_modules": False,
-        "use_fmtlib": True,
+        "use_fmtlib": False,
     }
     tool_requires = "cmake/[>=3.28.1]"
     exports = ["LICENSE.md"]

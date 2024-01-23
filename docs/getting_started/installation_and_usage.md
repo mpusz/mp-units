@@ -185,7 +185,7 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
 
 [use_fmtlib](#use_fmtlib){ #use_fmtlib }
 
-:   [:octicons-tag-24: 2.2.0][use fmtlib support] · :octicons-milestone-24: `True`/`False` (Default: `True`)
+:   [:octicons-tag-24: 2.2.0][use fmtlib support] · :octicons-milestone-24: `True`/`False` (Default: `False`)
 
     Forces usage of [{fmt}](https://github.com/fmtlib/fmt) library instead of the C++20 Standard
     Library features.
@@ -232,7 +232,7 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
 
 [`MP_UNITS_USE_FMTLIB`](#MP_UNITS_USE_FMTLIB){ #MP_UNITS_USE_FMTLIB }
 
-:   [:octicons-tag-24: 2.2.0][use fmtlib support] · :octicons-milestone-24: `ON`/`OFF` (Default: `ON`)
+:   [:octicons-tag-24: 2.2.0][use fmtlib support] · :octicons-milestone-24: `ON`/`OFF` (Default: `OFF`)
 
     Forces usage of [{fmt}](https://github.com/fmtlib/fmt) library instead of the C++20 Standard
     Library features.
