@@ -192,15 +192,17 @@ public:
   template<typename FormatContext>
   auto format(const U& u, FormatContext& ctx) const -> decltype(ctx.out())
   {
-    auto specs = specs_;
-    mp_units::detail::handle_dynamic_spec<mp_units::detail::width_checker>(specs.width, specs.width_ref, ctx);
+    unit_formatter f{specs_};
+    mp_units::detail::handle_dynamic_spec<mp_units::detail::width_checker>(f.specs.width, f.specs.width_ref, ctx);
 
-    if (specs.width == 0) {
+    parse_unit_specs(modifiers_format_str_.begin(), modifiers_format_str_.end(), f);
+
+    if (f.specs.width == 0) {
       // Avoid extra copying if width is not specified
-      return mp_units::unit_symbol_to<Char>(ctx.out(), u, specs);
+      return mp_units::unit_symbol_to<Char>(ctx.out(), u, f.specs);
     } else {
       std::basic_string<Char> unit_buffer;
-      mp_units::unit_symbol_to<Char>(std::back_inserter(unit_buffer), u, specs);
+      mp_units::unit_symbol_to<Char>(std::back_inserter(unit_buffer), u, f.specs);
 
       std::basic_string<Char> global_format_buffer = "{:" + std::basic_string<Char>{fill_align_width_format_str_} + "}";
       return MP_UNITS_STD_FMT::vformat_to(ctx.out(), global_format_buffer,
