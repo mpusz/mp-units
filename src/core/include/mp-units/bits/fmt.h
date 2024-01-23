@@ -35,15 +35,36 @@
 #include <limits>
 #include <string_view>
 
-// most of the below code is based on/copied from libfmt
+// most of the below code is based on/copied from fmtlib
 
 namespace mp_units::detail {
 
-struct auto_id {};
+enum class fmt_align { none, left, right, center, numeric };
+enum class fmt_arg_id_kind { none, index, name };
 
-enum class fmt_align { none, left, right, center };
-enum class fmt_sign { none, minus, plus, space };
-enum class arg_id_kind { none, index, name };
+template<typename Char>
+struct fmt_arg_ref {
+  fmt_arg_id_kind kind = fmt_arg_id_kind::none;
+  union value {
+    int index = 0;
+    std::basic_string_view<Char> name;
+
+    value() = default;
+    constexpr value(int idx) : index(idx) {}
+    constexpr value(std::basic_string_view<Char> n) : name(n) {}
+  } val{};
+
+  fmt_arg_ref() = default;
+  constexpr explicit fmt_arg_ref(int index) : kind(fmt_arg_id_kind::index), val(index) {}
+  constexpr explicit fmt_arg_ref(std::basic_string_view<Char> name) : kind(fmt_arg_id_kind::name), val(name) {}
+
+  [[nodiscard]] constexpr fmt_arg_ref& operator=(int idx)
+  {
+    kind = fmt_arg_id_kind::index;
+    val.index = idx;
+    return *this;
+  }
+};
 
 template<typename Char>
 struct fill_t {
@@ -74,12 +95,6 @@ template<typename T>
 inline constexpr bool is_integer = std::is_integral<T>::value && !std::is_same<T, bool>::value &&
                                    !std::is_same<T, char>::value && !std::is_same<T, wchar_t>::value;
 
-template<typename Char>
-[[nodiscard]] constexpr bool is_ascii_letter(Char c)
-{
-  return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
-}
-
 // Converts a character to ASCII. Returns a number > 127 on conversion failure.
 template<std::integral Char>
 [[nodiscard]] constexpr Char to_ascii(Char value)
@@ -89,9 +104,17 @@ template<std::integral Char>
 
 template<typename Char>
   requires std::is_enum_v<Char>
-[[nodiscard]] constexpr auto to_ascii(Char value) -> std::underlying_type_t<Char>
+[[nodiscard]] constexpr std::underlying_type_t<Char> to_ascii(Char value)
 {
   return value;
+}
+
+// Casts a nonnegative integer to unsigned.
+template<typename Int>
+[[nodiscard]] constexpr std::make_unsigned_t<Int> to_unsigned(Int value)
+{
+  gsl_Expects(std::is_unsigned_v<Int> || value >= 0);
+  return static_cast<std::make_unsigned_t<Int>>(value);
 }
 
 struct width_checker {
@@ -99,222 +122,180 @@ struct width_checker {
   [[nodiscard]] constexpr unsigned long long operator()(T value) const
   {
     if constexpr (is_integer<T>) {
-      if constexpr (std::numeric_limits<T>::is_signed) {
+      if constexpr (std::numeric_limits<T>::is_signed)
         if (value < 0) MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("negative width"));
-      }
       return static_cast<unsigned long long>(value);
     }
     MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("width is not integer"));
-    return 0;  // should never happen
+    return 0;
   }
 };
 
-struct precision_checker {
-  template<typename T>
-  [[nodiscard]] constexpr unsigned long long operator()(T value) const
-  {
-    if constexpr (is_integer<T>) {
-      if constexpr (std::numeric_limits<T>::is_signed) {
-        if (value < 0) MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("negative precision"));
-      }
-      return static_cast<unsigned long long>(value);
-    }
-    MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("precision is not integer"));
-    return 0;  // should never happen
-  }
-};
-
-// Format specifiers for built-in and string types.
-template<typename Char>
-struct basic_format_specs {
-  int width = 0;
-  int precision = -1;
-  char type = '\0';
-  fmt_align align : 4 = fmt_align::none;
-  fmt_sign sign : 3 = fmt_sign::none;
-  bool alt : 1 = false;  // Alternate form ('#').
-  bool localized : 1 = false;
-  fill_t<Char> fill;
-};
-
-// Format specifiers with width and precision resolved at formatting rather
-// than parsing time to allow re-using the same parsed specifiers with
-// different sets of arguments (precompilation of format strings).
-template<typename Char>
-struct dynamic_format_specs : basic_format_specs<Char> {
-  int dynamic_width_index = -1;
-  int dynamic_precision_index = -1;
-};
-
-[[nodiscard]] constexpr int verify_dynamic_arg_index_in_range(size_t idx)
+template<class Handler, typename FormatArg>
+[[nodiscard]] constexpr int get_dynamic_spec(FormatArg arg)
 {
-  if (idx > static_cast<size_t>(std::numeric_limits<int>::max())) {
-    MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("Dynamic width or precision index too large."));
-  }
-  return static_cast<int>(idx);
-}
-
-template<typename CharT>
-[[nodiscard]] constexpr int on_dynamic_arg(size_t arg_id, MP_UNITS_STD_FMT::basic_format_parse_context<CharT>& context)
-{
-  context.check_arg_id(MP_UNITS_FMT_TO_ARG_ID(arg_id));
-  return verify_dynamic_arg_index_in_range(arg_id);
-}
-
-template<typename CharT>
-[[nodiscard]] constexpr int on_dynamic_arg(auto_id, MP_UNITS_STD_FMT::basic_format_parse_context<CharT>& context)
-{
-  return verify_dynamic_arg_index_in_range(MP_UNITS_FMT_FROM_ARG_ID(context.next_arg_id()));
-}
-
-template<class Handler, typename FormatContext>
-[[nodiscard]] constexpr int get_dynamic_spec(int index, FormatContext& ctx)
-{
-  const unsigned long long value =
-    MP_UNITS_STD_FMT::visit_format_arg(Handler{}, ctx.arg(MP_UNITS_FMT_TO_ARG_ID(static_cast<size_t>(index))));
-  if (value > static_cast<unsigned long long>(std::numeric_limits<int>::max())) {
+  const unsigned long long value = MP_UNITS_STD_FMT::visit_format_arg(Handler{}, arg);
+  if (value > ::mp_units::detail::to_unsigned(std::numeric_limits<int>::max())) {
     MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("number is too big"));
   }
   return static_cast<int>(value);
 }
 
+template<typename Context, typename ID>
+[[nodiscard]] constexpr auto get_arg(Context& ctx, ID id) -> decltype(ctx.arg(id))
+{
+  auto arg = ctx.arg(id);
+  if (!arg) ctx.on_error("argument not found");
+  return arg;
+}
+
+template<class Handler, typename Context>
+constexpr void handle_dynamic_spec(int& value, fmt_arg_ref<typename Context::char_type> ref, Context& ctx)
+{
+  switch (ref.kind) {
+    case fmt_arg_id_kind::none:
+      break;
+    case fmt_arg_id_kind::index:
+      value = ::mp_units::detail::get_dynamic_spec<Handler>(get_arg(ctx, ref.val.index));
+      break;
+    case fmt_arg_id_kind::name:
+      value = ::mp_units::detail::get_dynamic_spec<Handler>(get_arg(ctx, ref.val.name));
+      break;
+  }
+}
+
 // Parses the range [begin, end) as an unsigned integer. This function assumes
 // that the range is non-empty and the first character is a digit.
-template<std::input_iterator It, std::sentinel_for<It> S>
-[[nodiscard]] constexpr It parse_nonnegative_int(It begin, S end, size_t& value)
+template<typename Char>
+[[nodiscard]] constexpr int parse_nonnegative_int(const Char*& begin, const Char* end, int error_value)
 {
   gsl_Expects(begin != end && '0' <= *begin && *begin <= '9');
-  constexpr auto max_int = static_cast<unsigned>(std::numeric_limits<int>::max());
-  constexpr auto big_int = max_int / 10u;
-  value = 0;
-
+  unsigned value = 0, prev = 0;
+  auto p = begin;
   do {
-    if (value > big_int) {
-      value = max_int + 1;
-      break;
-    }
-    value = value * 10 + static_cast<unsigned int>(*begin - '0');
-    ++begin;
-  } while (begin != end && '0' <= *begin && *begin <= '9');
-
-  if (value > max_int) MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("Number is too big"));
-
-  return begin;
+    prev = value;
+    value = value * 10 + unsigned(*p - '0');
+    ++p;
+  } while (p != end && '0' <= *p && *p <= '9');
+  auto num_digits = p - begin;
+  begin = p;
+  if (num_digits <= std::numeric_limits<int>::digits10) return static_cast<int>(value);
+  // Check for overflow.
+  const unsigned max = ::mp_units::detail::to_unsigned((std::numeric_limits<int>::max)());
+  return num_digits == std::numeric_limits<int>::digits10 + 1 && prev * 10ull + unsigned(p[-1] - '0') <= max
+           ? static_cast<int>(value)
+           : error_value;
 }
 
-template<std::input_iterator It, std::sentinel_for<It> S>
-[[nodiscard]] constexpr It parse_nonnegative_int(It begin, S end, int& value)
+template<typename Char>
+[[nodiscard]] constexpr bool is_name_start(Char c)
 {
-  size_t val_unsigned = 0;
-  begin = parse_nonnegative_int(begin, end, val_unsigned);
-  // Never invalid because parse_nonnegative_integer throws an error for values that don't fit in signed integers
-  value = static_cast<int>(val_unsigned);
-  return begin;
+  return ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z') || c == '_';
 }
 
-template<std::input_iterator It, std::sentinel_for<It> S, typename IDHandler>
-[[nodiscard]] constexpr It do_parse_arg_id(It begin, S end, IDHandler&& handler)
+template<typename Char, typename Handler>
+[[nodiscard]] constexpr const Char* do_parse_arg_id(const Char* begin, const Char* end, Handler&& handler)
 {
-  gsl_Expects(begin != end);
-  auto c = *begin;
+  Char c = *begin;
   if (c >= '0' && c <= '9') {
-    size_t index = 0;
+    int index = 0;
+    constexpr int max = (std::numeric_limits<int>::max)();
     if (c != '0')
-      begin = parse_nonnegative_int(begin, end, index);
+      index = ::mp_units::detail::parse_nonnegative_int(begin, end, max);
     else
       ++begin;
     if (begin == end || (*begin != '}' && *begin != ':'))
       MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("invalid format string"));
     else
-      handler(index);
+      handler.on_index(index);
     return begin;
   }
-  MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("invalid format string"));
-  return begin;  // should never happen
+  if (c == '%') return begin;  // mp-units extension
+  if (!::mp_units::detail::is_name_start(c)) {
+    MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("invalid format string"));
+    return begin;
+  }
+  auto it = begin;
+  do {
+    ++it;
+  } while (it != end && (::mp_units::detail::is_name_start(*it) || ('0' <= *it && *it <= '9')));
+  handler.on_name({begin, ::mp_units::detail::to_unsigned(it - begin)});
+  return it;
 }
 
-template<std::input_iterator It, std::sentinel_for<It> S, typename IDHandler>
-[[nodiscard]] constexpr It parse_arg_id(It begin, S end, IDHandler&& handler)
-{
-  auto c = *begin;
-  if (c != '}' && c != ':') return do_parse_arg_id(begin, end, handler);
-  handler();
-  return begin;
-}
-
-template<std::input_iterator It, std::sentinel_for<It> S, typename Handler>
-[[nodiscard]] constexpr It parse_sign(It begin, S end, Handler&& handler)
+template<typename Char, typename Handler>
+[[nodiscard]] constexpr const Char* parse_arg_id(const Char* begin, const Char* end, Handler&& handler)
 {
   gsl_Expects(begin != end);
-  switch (to_ascii(*begin)) {
-    case '+':
-      handler.on_sign(fmt_sign::plus);
-      ++begin;
-      break;
-    case '-':
-      handler.on_sign(fmt_sign::minus);
-      ++begin;
-      break;
-    case ' ':
-      handler.on_sign(fmt_sign::space);
-      ++begin;
-      break;
-    default:
-      break;
-  }
+  Char c = *begin;
+  if (c != '}' && c != ':') return ::mp_units::detail::do_parse_arg_id(begin, end, handler);
+  handler.on_auto();
   return begin;
 }
 
-template<std::input_iterator It, std::sentinel_for<It> S, typename Handler>
-[[nodiscard]] constexpr It parse_width(It begin, S end, Handler&& handler)
+template<typename Char, typename Handler>
+[[nodiscard]] constexpr const Char* parse_subentity_replacement_field(const Char* begin, const Char* end,
+                                                                      Handler&& handler)
 {
-  struct width_adapter {
-    Handler& handler;
-    constexpr void operator()() { handler.on_dynamic_width(auto_id{}); }
-    constexpr void operator()(size_t id) { handler.on_dynamic_width(id); }
-  };
+  if (end - begin++ < 4) return MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("invalid format string")), end;
+  if (*begin++ != '%') MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("invalid format"));
+  if (*begin == '}') MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("invalid format"));
+  auto it = begin;
+  for (; it != end; ++it) {
+    if (*it == '{' || *it == '%') MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("invalid format"));
+    if (*it == '}' || *it == ':') break;
+  }
+  if (it == end) MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("invalid format"));
+  std::string_view id{begin, it};
+  if (*it == ':') ++it;
+  it = handler.on_replacement_field(id, it);
+  if (it == end || *it != '}') MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("invalid format"));
+  return ++it;
+}
 
+template<typename Char>
+struct dynamic_spec_id_handler {
+  MP_UNITS_STD_FMT::basic_format_parse_context<Char>& ctx;
+  fmt_arg_ref<Char>& ref;
+
+  constexpr void on_auto()
+  {
+    int id = ctx.next_arg_id();
+    ref = fmt_arg_ref<Char>(id);
+    ctx.check_dynamic_spec(id);
+  }
+  constexpr void on_index(int id)
+  {
+    ref = fmt_arg_ref<Char>(id);
+    ctx.check_arg_id(id);
+    ctx.check_dynamic_spec(id);
+  }
+  constexpr void on_name(std::basic_string_view<Char> id)
+  {
+    ref = fmt_arg_ref<Char>(id);
+    ctx.check_arg_id(id);
+  }
+};
+
+template<typename Char>
+[[nodiscard]] constexpr const Char* parse_dynamic_spec(const Char* begin, const Char* end, int& value,
+                                                       fmt_arg_ref<Char>& ref,
+                                                       MP_UNITS_STD_FMT::basic_format_parse_context<Char>& ctx)
+{
   gsl_Expects(begin != end);
   if ('0' <= *begin && *begin <= '9') {
-    int width = 0;
-    begin = parse_nonnegative_int(begin, end, width);
-    if (width != -1)
-      handler.on_width(width);
+    int val = ::mp_units::detail::parse_nonnegative_int(begin, end, -1);
+    if (val != -1)
+      value = val;
     else
       MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("number is too big"));
   } else if (*begin == '{') {
     ++begin;
-    if (begin != end) begin = parse_arg_id(begin, end, width_adapter{handler});
-    if (begin == end || *begin != '}') MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("invalid format string"));
-    ++begin;
-  }
-  return begin;
-}
-
-template<std::input_iterator It, std::sentinel_for<It> S, typename Handler>
-[[nodiscard]] constexpr It parse_precision(It begin, S end, Handler&& handler)
-{
-  struct precision_adapter {
-    Handler& handler;
-    constexpr void operator()() { handler.on_dynamic_precision(auto_id{}); }
-    constexpr void operator()(size_t id) { handler.on_dynamic_precision(id); }
-  };
-
-  ++begin;
-  auto c = begin != end ? *begin : std::iter_value_t<It>();
-  if ('0' <= c && c <= '9') {
-    auto precision = 0;
-    begin = parse_nonnegative_int(begin, end, precision);
-    if (precision != -1)
-      handler.on_precision(precision);
-    else
-      MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("number is too big"));
-  } else if (c == '{') {
-    ++begin;
-    if (begin != end) begin = parse_arg_id(begin, end, precision_adapter{handler});
-    if (begin == end || *begin++ != '}') MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("invalid format string"));
-  } else {
-    MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("missing precision specifier"));
+    if (*begin == '%') return begin - 1;  // mp-units extension
+    auto handler = dynamic_spec_id_handler<Char>{ctx, ref};
+    if (begin != end) begin = ::mp_units::detail::parse_arg_id(begin, end, handler);
+    if (begin != end && *begin == '}') return ++begin;
+    MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("invalid format string"));
   }
   return begin;
 }
@@ -334,13 +315,13 @@ constexpr int code_point_length(It begin)
 }
 
 // Parses fill and alignment.
-template<std::input_iterator It, std::sentinel_for<It> S, typename Handler>
-[[nodiscard]] constexpr It parse_align(It begin, S end, Handler&& handler)
+template<typename Char, typename Specs>
+[[nodiscard]] constexpr const Char* parse_align(const Char* begin, const Char* end, Specs& specs)
 {
   gsl_Expects(begin != end);
   auto align = fmt_align::none;
   auto p = begin + code_point_length(begin);
-  if (p >= end) p = begin;
+  if (end - p <= 0) p = begin;
   for (;;) {
     switch (to_ascii(*p)) {
       case '<':
@@ -352,120 +333,28 @@ template<std::input_iterator It, std::sentinel_for<It> S, typename Handler>
       case '^':
         align = fmt_align::center;
         break;
-      default:
-        break;
     }
     if (align != fmt_align::none) {
       if (p != begin) {
         auto c = *begin;
-        if (c == '{') MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("invalid fill character '{'"));
-        handler.on_fill(std::basic_string_view<std::iter_value_t<It>>(&*begin, static_cast<size_t>(p - begin)));
+        if (c == '}') return begin;
+        if (c == '{') {
+          MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("invalid fill character '{'"));
+          return begin;
+        }
+        specs.fill = {begin, to_unsigned(p - begin)};
         begin = p + 1;
-      } else
+      } else {
         ++begin;
-      handler.on_align(align);
+      }
       break;
     } else if (p == begin) {
       break;
     }
     p = begin;
   }
+  specs.align = align;
   return begin;
 }
-
-// Parses standard format specifiers and sends notifications about parsed
-// components to handler.
-template<std::input_iterator It, std::sentinel_for<It> S, typename SpecHandler>
-[[nodiscard]] constexpr It parse_format_specs(It begin, S end, SpecHandler&& handler)
-{
-  if (begin + 1 < end && begin[1] == '}' && is_ascii_letter(*begin) && *begin != 'L') {
-    handler.on_type(*begin++);
-    return begin;
-  }
-
-  if (begin == end) return begin;
-
-  begin = ::mp_units::detail::parse_align(begin, end, handler);
-  if (begin == end) return begin;
-
-  // Parse sign.
-  begin = ::mp_units::detail::parse_sign(begin, end, handler);
-  if (begin == end) return begin;
-
-  if (*begin == '#') {
-    handler.on_hash();
-    if (++begin == end) return begin;
-  }
-
-  // Parse zero flag.
-  if (*begin == '0') {
-    handler.on_zero();
-    if (++begin == end) return begin;
-  }
-
-  begin = ::mp_units::detail::parse_width(begin, end, handler);
-  if (begin == end) return begin;
-
-  // Parse precision.
-  if (*begin == '.') {
-    begin = ::mp_units::detail::parse_precision(begin, end, handler);
-    if (begin == end) return begin;
-  }
-
-  if (*begin == 'L') {
-    handler.on_localized();
-    ++begin;
-  }
-
-  // Parse type.
-  if (begin != end && *begin != '}') handler.on_type(*begin++);
-  return begin;
-}
-
-// A format specifier handler that sets fields in basic_format_specs.
-template<typename Char>
-class specs_setter {
-protected:
-  basic_format_specs<Char>& specs_;
-public:
-  constexpr explicit specs_setter(basic_format_specs<Char>& specs) : specs_(specs) {}
-  constexpr void on_align(fmt_align align) { specs_.align = align; }
-  constexpr void on_fill(std::basic_string_view<Char> fill) { specs_.fill = fill; }
-  constexpr void on_sign(fmt_sign s) { specs_.sign = s; }
-  constexpr void on_hash() { specs_.alt = true; }
-  constexpr void on_localized() { specs_.localized = true; }
-  constexpr void on_zero() { specs_.fill[0] = Char('0'); }
-  constexpr void on_width(int width) { specs_.width = width; }
-  constexpr void on_precision(int precision) { specs_.precision = precision; }
-  constexpr void on_type(Char type) { specs_.type = static_cast<char>(type); }
-};
-
-// Format spec handler that saves references to arguments representing dynamic
-// width and precision to be resolved at formatting time.
-template<typename ParseContext>
-class dynamic_specs_handler : public specs_setter<typename ParseContext::char_type> {
-public:
-  using char_type = MP_UNITS_TYPENAME ParseContext::char_type;
-
-  constexpr dynamic_specs_handler(dynamic_format_specs<char_type>& specs, ParseContext& ctx) :
-      specs_setter<char_type>(specs), specs_(specs), context_(ctx)
-  {
-  }
-
-  template<typename T>
-  constexpr void on_dynamic_width(T t)
-  {
-    specs_.dynamic_width_index = on_dynamic_arg(t, context_);
-  }
-
-  template<typename T>
-  constexpr void on_dynamic_precision(T t)
-  {
-    specs_.dynamic_precision_index = on_dynamic_arg(t, context_);
-  }
-private:
-  dynamic_format_specs<char_type>& specs_;
-  ParseContext& context_;
-};
 
 }  // namespace mp_units::detail
