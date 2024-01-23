@@ -135,7 +135,7 @@ MP_UNITS_DIAGNOSTIC_POP
 
 #else
 
-#ifndef __cpp_lib_format
+#if !defined __cpp_lib_format && !defined MP_UNITS_COMP_CLANG
 #error "std::formatting facility not supported"
 #endif
 
