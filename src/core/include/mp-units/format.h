@@ -118,10 +118,10 @@ OutputIt format_global_buffer(OutputIt out, const fill_align_width_format_specs<
 //
 // Grammar
 //
-// dimension-format-spec       ::=  [fill-and-align] [width] [dimension-spec]
-// dimension-spec              ::=  [text-encoding]
-// text-encoding               ::=  one of
-//                                  U A
+// dimension-format-spec ::= [fill-and-align] [width] [dimension-spec]
+// dimension-spec        ::= [text-encoding]
+// text-encoding         ::= 'U' | 'A'
+//
 
 // template<typename Char>
 // struct dimension_format_specs : fill_align_width_format_specs<Char>, dimension_symbol_formatting {};
@@ -130,17 +130,16 @@ OutputIt format_global_buffer(OutputIt out, const fill_align_width_format_specs<
 //
 // Grammar
 //
-// unit-format-spec            ::=  [fill-and-align] [width] [unit-spec]
-// unit-spec                   ::=  [text-encoding] [unit-symbol-solidus] [unit-symbol-separator] [L]
-//                                  [text-encoding] [unit-symbol-separator] [unit-symbol-solidus] [L]
-//                                  [unit-symbol-solidus] [text-encoding] [unit-symbol-separator] [L]
-//                                  [unit-symbol-solidus] [unit-symbol-separator] [text-encoding] [L]
-//                                  [unit-symbol-separator] [text-encoding] [unit-symbol-solidus] [L]
-//                                  [unit-symbol-separator] [unit-symbol-solidus] [text-encoding] [L]
-// unit-symbol-solidus         ::=  one of
-//                                  1 a n
-// unit-symbol-separator       ::=  one of
-//                                  s d
+// unit-format-spec      ::= [fill-and-align] [width] [unit-spec]
+// unit-spec             ::= [text-encoding] [unit-symbol-solidus] [unit-symbol-separator] [L]
+//                           [text-encoding] [unit-symbol-separator] [unit-symbol-solidus] [L]
+//                           [unit-symbol-solidus] [text-encoding] [unit-symbol-separator] [L]
+//                           [unit-symbol-solidus] [unit-symbol-separator] [text-encoding] [L]
+//                           [unit-symbol-separator] [text-encoding] [unit-symbol-solidus] [L]
+//                           [unit-symbol-separator] [unit-symbol-solidus] [text-encoding] [L]
+// unit-symbol-solidus   ::= '1' | 'a' | 'n'1
+// unit-symbol-separator ::= 's' | 'd'
+//
 template<mp_units::Unit U, typename Char>
 class MP_UNITS_STD_FMT::formatter<U, Char> {
   struct format_specs : mp_units::detail::fill_align_width_format_specs<Char>, mp_units::unit_symbol_formatting {};
@@ -249,20 +248,20 @@ public:
 //
 // Grammar
 //
-// quantity-format-spec        ::=  [fill-and-align] [width] [quantity-specs]
-// quantity-specs              ::=  conversion-spec
-//                                  quantity-specs conversion-spec
-//                                  quantity-specs literal-char
-// literal-char                ::=  any character other than '{', '}', or '%'
-// conversion-spec             ::=  placement-spec
-//                                  subentity-replacement-field
-// placement-spec              ::=  '%' placement-type
-// placement-type              ::=  one of
-//                                  N U D ? %
-// subentity-replacement-field ::= { % subentity-id [format-specifier] }
-// subentity-id                ::= any character other than {, }, or %
-// format-specifier            ::= : format-spec
-// format-spec                 ::= as specified by the formatter for the argument type; cannot start with }
+// quantity-format-spec        ::= [fill-and-align] [width] [quantity-specs]
+// quantity-specs              ::= conversion-spec
+//                                 quantity-specs conversion-spec
+//                                 quantity-specs literal-char
+// literal-char                ::= <any character other than '{', '}', or '%'>
+// conversion-spec             ::= placement-spec
+//                                 subentity-replacement-field
+// placement-spec              ::= '%' placement-type
+// placement-type              ::= 'N' | 'U' | 'D' | '?' | '%'
+// subentity-replacement-field ::= '{' '%' subentity-id [format-specifier] '}'
+// subentity-id                ::= literal-char
+//                                 subentity-id literal-char
+// format-specifier            ::= ':' format-spec
+// format-spec                 ::= <as specified by the formatter for the argument type; cannot start with '}'>
 //
 template<auto Reference, typename Rep, typename Char>
 class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
