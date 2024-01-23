@@ -92,7 +92,7 @@ jobs:
                 },
               lib: "libc++",
               cxx_modules: "False",
-              std_format_support: "True",
+              std_format_support: "False",
             }
           - {
               name: "Clang-17",
@@ -119,7 +119,7 @@ jobs:
                   cxx: "clang++",
                 },
               cxx_modules: "False",
-              std_format_support: "True",
+              std_format_support: "False",
             }
         build_type: ["Release", "Debug"]
         exclude:
