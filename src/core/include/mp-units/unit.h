@@ -653,6 +653,23 @@ template<Unit U1, Unit U2>
 }
 
 
+/**
+ * @brief Puts a space ' ' sign before a unit symbol
+ *
+ * Quantities of some units (e.g. degree, arcminute, arcsecond) should not be printed with the
+ * space between a number and a unit. For those a partial specialization with the value `false` should
+ * be provided.
+ */
+template<Unit auto U>
+inline constexpr bool space_before_unit_symbol = true;
+
+template<>
+inline constexpr bool space_before_unit_symbol<one> = false;
+template<>
+inline constexpr bool space_before_unit_symbol<percent> = false;
+template<>
+inline constexpr bool space_before_unit_symbol<per_mille> = false;
+
 // get_unit_symbol
 
 enum class text_encoding : std::int8_t {
@@ -713,12 +730,6 @@ constexpr Out print_separator(Out out, unit_symbol_formatting fmt)
   return out;
 }
 
-template<Unit U>
-[[nodiscard]] consteval bool has_unit_symbol(U)
-{
-  return requires { U::symbol; } || !std::derived_from<U, derived_unit<>>;
-}
-
 template<typename CharT, std::output_iterator<CharT> Out, Unit U>
   requires requires { U::symbol; }
 constexpr Out unit_symbol_impl(Out out, U, unit_symbol_formatting fmt, bool negative_power)
@@ -741,12 +752,8 @@ constexpr Out unit_symbol_impl(Out out, const scaled_unit<M, U>& u, unit_symbol_
     constexpr auto mag_txt = magnitude_text<M>();
     out = copy<CharT>(mag_txt, fmt.encoding, out);
 
-    if constexpr (has_unit_symbol(scaled_unit<M, U>::reference_unit)) {
-      *out++ = ' ';
-      return unit_symbol_impl<CharT>(out, u.reference_unit, fmt, negative_power);
-    } else {
-      return out;
-    }
+    if constexpr (space_before_unit_symbol<scaled_unit<M, U>::reference_unit>) *out++ = ' ';
+    return unit_symbol_impl<CharT>(out, u.reference_unit, fmt, negative_power);
   }
 }
 
@@ -827,21 +834,6 @@ constexpr Out unit_symbol_impl(Out out, const derived_unit<Expr...>&, unit_symbo
 }
 
 }  // namespace detail
-
-/**
- * @brief Puts a space ' ' sign before a unit symbol
- *
- * Quantities of some units (e.g. degree, arcminute, arcsecond) should not be printed with the
- * space between a number and a unit. For those a partial specialization with the value `false` should
- * be provided.
- */
-template<Unit auto U>
-inline constexpr bool space_before_unit_symbol = true;
-
-template<>
-inline constexpr bool space_before_unit_symbol<percent> = false;
-template<>
-inline constexpr bool space_before_unit_symbol<per_mille> = false;
 
 template<typename CharT = char, std::output_iterator<CharT> Out, Unit U>
 constexpr Out unit_symbol_to(Out out, U u, unit_symbol_formatting fmt = unit_symbol_formatting{})

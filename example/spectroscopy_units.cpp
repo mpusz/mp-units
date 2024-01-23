@@ -55,8 +55,8 @@ template<QuantityOf<isq::energy> T1, QuantityOf<isq::wavenumber> T2, QuantityOf<
          QuantityOf<isq::thermodynamic_temperature> T4, QuantityOf<isq::wavelength> T5>
 void print_line(const std::tuple<T1, T2, T3, T4, T5>& t)
 {
-  MP_UNITS_STD_FMT::println("| {:<15} | {:<15} | {:<15} | {:<15} | {:<15} |", std::get<0>(t), std::get<1>(t),
-                            std::get<2>(t), std::get<3>(t), std::get<4>(t));
+  std::cout << MP_UNITS_STD_FMT::format("| {:<15} | {:<15} | {:<15} | {:<15} | {:<15} |\n", std::get<0>(t),
+                                        std::get<1>(t), std::get<2>(t), std::get<3>(t), std::get<4>(t));
 }
 
 // prints quantities in semi-SI units
@@ -65,9 +65,9 @@ template<QuantityOf<isq::energy> T1, QuantityOf<isq::wavenumber> T2, QuantityOf<
          QuantityOf<isq::thermodynamic_temperature> T4, QuantityOf<isq::wavelength> T5>
 void print_line_si(const std::tuple<T1, T2, T3, T4, T5>& t)
 {
-  MP_UNITS_STD_FMT::println("| {:<15} | {:<15} | {:<15} | {:<15} | {:<15} |", std::get<0>(t).in(eV),
-                            std::get<1>(t).in(one / cm), std::get<2>(t).in(THz), std::get<3>(t).in(K),
-                            std::get<4>(t).in(um));
+  std::cout << MP_UNITS_STD_FMT::format("| {:<15} | {:<15} | {:<15} | {:<15} | {:<15} |\n", std::get<0>(t).in(eV),
+                                        std::get<1>(t).in(one / cm), std::get<2>(t).in(THz), std::get<3>(t).in(K),
+                                        std::get<4>(t).in(um));
 }
 
 int main()
@@ -92,16 +92,16 @@ int main()
   const auto t5 = std::make_tuple(isq::energy(h * c / q5), isq::wavenumber(1 / q5), isq::frequency(c / q5),
                                   isq::thermodynamic_temperature(h * c / (q5 * kb)), q5);
 
-  MP_UNITS_STD_FMT::println("| {:<15} | {:<15} | {:<15} | {:<15} | {:<15} |", "Energy", "Wavenumber", "Frequency",
-                            "Temperature", "Wavelength");
-  MP_UNITS_STD_FMT::println("| {0:-^15} | {0:-^15} | {0:-^15} | {0:-^15} | {0:-^15} |", "");
+  std::cout << MP_UNITS_STD_FMT::format("| {:<15} | {:<15} | {:<15} | {:<15} | {:<15} |\n", "Energy", "Wavenumber",
+                                        "Frequency", "Temperature", "Wavelength");
+  std::cout << MP_UNITS_STD_FMT::format("| {0:-^15} | {0:-^15} | {0:-^15} | {0:-^15} | {0:-^15} |\n", "");
   print_line(t1);
   print_line(t2);
   print_line(t3);
   print_line(t4);
   print_line(t5);
 
-  MP_UNITS_STD_FMT::println("| {0:-^15} | {0:-^15} | {0:-^15} | {0:-^15} | {0:-^15} |", "");
+  std::cout << MP_UNITS_STD_FMT::format("| {0:-^15} | {0:-^15} | {0:-^15} | {0:-^15} | {0:-^15} |\n", "");
   print_line_si(t1);
   print_line_si(t2);
   print_line_si(t3);

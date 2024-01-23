@@ -23,7 +23,7 @@ specific feature:
 | Feature              | gcc  | clang | apple-clang | MSVC |
 |----------------------|:----:|:-----:|:-----------:|:----:|
 | **Minimum support**  |  12  |  16   |     15      | None |
-| **`std::format`**    | None | None  |    None     | None |
+| **`std::format`**    |  13  |  17   |    None     | None |
 | **C++ modules**      | None |  17   |    None     | None |
 | **C++23 extensions** |  14  |  18   |    None     | None |
 
@@ -185,7 +185,7 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
 
 [use_fmtlib](#use_fmtlib){ #use_fmtlib }
 
-:   [:octicons-tag-24: 2.2.0][use fmtlib support] · :octicons-milestone-24: `True`/`False` (Default: `True`)
+:   [:octicons-tag-24: 2.2.0][use fmtlib support] · :octicons-milestone-24: `True`/`False` (Default: `False`)
 
     Forces usage of [{fmt}](https://github.com/fmtlib/fmt) library instead of the C++20 Standard
     Library features.
@@ -232,7 +232,7 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
 
 [`MP_UNITS_USE_FMTLIB`](#MP_UNITS_USE_FMTLIB){ #MP_UNITS_USE_FMTLIB }
 
-:   [:octicons-tag-24: 2.2.0][use fmtlib support] · :octicons-milestone-24: `ON`/`OFF` (Default: `ON`)
+:   [:octicons-tag-24: 2.2.0][use fmtlib support] · :octicons-milestone-24: `ON`/`OFF` (Default: `OFF`)
 
     Forces usage of [{fmt}](https://github.com/fmtlib/fmt) library instead of the C++20 Standard
     Library features.

@@ -28,7 +28,6 @@ from conan.errors import ConanInvalidConfiguration
 from conan.tools.build import check_min_cppstd
 from conan.tools.cmake import CMake, CMakeDeps, CMakeToolchain, cmake_layout
 from conan.tools.files import copy, load, rmdir
-from conan.tools.scm import Version
 
 required_conan_version = ">=2.0.0"
 
@@ -60,7 +59,7 @@ class MPUnitsConan(ConanFile):
     }
     default_options = {
         "cxx_modules": False,
-        "use_fmtlib": True,
+        "use_fmtlib": False,
     }
     tool_requires = "cmake/[>=3.28.1]"
     exports = ["LICENSE.md"]
@@ -85,6 +84,15 @@ class MPUnitsConan(ConanFile):
             "gcc": "12",
             "clang": "16",
             "apple-clang": "15"
+            # , "msvc": "192"
+        }
+
+    @property
+    def _std_format_minimum_compilers_version(self):
+        return {
+            "gcc": "13",
+            "clang": "17"
+            # , "apple-clang": "15"
             # , "msvc": "192"
         }
 
@@ -129,6 +137,13 @@ class MPUnitsConan(ConanFile):
             raise ConanInvalidConfiguration(
                 f"{self.ref} requires at least {compiler} {min_version} ({compiler.version} in use)"
             )
+        if not self.options.use_fmtlib:
+            min_version = self._std_format_minimum_compilers_version.get(str(compiler))
+            if min_version and loose_lt_semver(str(compiler.version), min_version):
+                raise ConanInvalidConfiguration(
+                    f"`std::format` requires at least {compiler} {min_version} ({compiler.version} in use). "
+                    "Use `-o use_fmtlib=True` instead."
+                )
 
     def layout(self):
         cmake_layout(self)

@@ -36,11 +36,12 @@ on:
 
 jobs:
   test_package:
-    name: "C++${{ matrix.std }} ${{ matrix.config.name }} ${{ matrix.build_type }}"
+    name: "${{ matrix.formatting }} C++${{ matrix.std }} ${{ matrix.config.name }} ${{ matrix.build_type }}"
     runs-on: ${{ matrix.config.os }}
     strategy:
       fail-fast: false
       matrix:
+        formatting: ["std::format", "fmtlib"]
         std: [20, 23]
         config:
           # - {
@@ -64,6 +65,7 @@ jobs:
                   cxx: "g++-12",
                 },
               cxx_modules: "False",
+              std_format_support: "False",
             }
           - {
               name: "GCC-13",
@@ -76,6 +78,7 @@ jobs:
                   cxx: "g++-13",
                 },
               cxx_modules: "False",
+              std_format_support: "True",
             }
           - {
               name: "Clang-16",
@@ -89,6 +92,7 @@ jobs:
                 },
               lib: "libc++",
               cxx_modules: "False",
+              std_format_support: "False",
             }
           - {
               name: "Clang-17",
@@ -102,6 +106,7 @@ jobs:
                 },
               lib: "libc++",
               cxx_modules: "False",
+              std_format_support: "True",
             }
           - {
               name: "Apple Clang 15",
@@ -114,8 +119,12 @@ jobs:
                   cxx: "clang++",
                 },
               cxx_modules: "False",
+              std_format_support: "False",
             }
         build_type: ["Release", "Debug"]
+        exclude:
+          - formatting: "std::format"
+            config: { std_format_support: "False" }
 
     env:
       CC: ${{ matrix.config.compiler.cc }}
@@ -136,13 +145,14 @@ jobs:
           cache-name: cache-conan-data
         with:
           path: ~/.conan2/p
-          key: build-${{ matrix.config.os }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-${{ matrix.std }}-${{ env.cache_id }}
+          key: build-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-${{ matrix.std }}-${{ env.cache_id }}
           restore-keys: |
-            build-${{ matrix.config.os }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-${{ matrix.std }}-
-            build-${{ matrix.config.os }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-
-            build-${{ matrix.config.os }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-
-            build-${{ matrix.config.os }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-
-            build-${{ matrix.config.os }}-${{ matrix.config.compiler.type }}-
+            build-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-${{ matrix.std }}-
+            build-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-
+            build-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-
+            build-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-
+            build-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.config.compiler.type }}-
+            build-${{ matrix.config.os }}-${{ matrix.formatting }}-
             build-${{ matrix.config.os }}-
       - name: Install gcc-13
         if: matrix.config.compiler.type == 'GCC' && matrix.config.compiler.version == '13'
@@ -191,10 +201,12 @@ jobs:
           sed -i.backup '/^\[settings\]$/,/^\[/ s/^compiler.cppstd=.*/compiler.cppstd=${{ matrix.std }}/' ~/.conan2/profiles/default
           sed -i.backup '/^\[settings\]$/,/^\[/ s/^build_type=.*/build_type=${{ matrix.build_type }}/' ~/.conan2/profiles/default
           conan profile show -pr default
+      - run: echo "use_fmtlib=$([ "${{ matrix.formatting }}" == "fmtlib" ] && echo "True" || echo "False")" >> $GITHUB_ENV
       - name: Install Conan dependencies
         shell: bash
         run: |
-          conan install . -b missing -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" -c user.build:all=False -o cxx_modules=${{ matrix.config.cxx_modules }}
+          conan install . -b missing -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" -c user.build:all=False \
+                          -o cxx_modules=${{ matrix.config.cxx_modules }} -o use_fmtlib=${{ env.use_fmtlib }}
           mv CMakeUserPresets.json src
       - name: Configure mp-units CMake
         if: matrix.config.compiler.type == 'VISUAL' || matrix.config.compiler.type == 'MSVC'

@@ -18,20 +18,20 @@ First, we either import the `mp_units` module or include the headers for:
 - text formatting and stream output support
 
 ```cpp title="hello_units.cpp" linenums="1"
---8<-- "example/hello_units.cpp:28:39"
+--8<-- "example/hello_units.cpp:28:40"
 ```
 
 Also, to shorten the definitions, we "import" all the symbols from the `mp_units` namespace.
 
-```cpp title="hello_units.cpp" linenums="12"
---8<-- "example/hello_units.cpp:40:41"
+```cpp title="hello_units.cpp" linenums="13"
+--8<-- "example/hello_units.cpp:41:42"
 ```
 
 Next, we define a simple function that calculates the average speed based on the provided
 arguments of length and time:
 
-```cpp title="hello_units.cpp" linenums="13"
---8<-- "example/hello_units.cpp:42:45"
+```cpp title="hello_units.cpp" linenums="14"
+--8<-- "example/hello_units.cpp:43:46"
 ```
 
 The above function template takes any quantities implicitly convertible to `isq::length`
@@ -45,16 +45,16 @@ that its quantity type is implicitly convertible to `isq::speed`.
     type is beneficial for users of such a function as it provides more information
     of what to expect from a function than just using `auto`.
 
-```cpp title="hello_units.cpp" linenums="17"
---8<-- "example/hello_units.cpp:47:50"
+```cpp title="hello_units.cpp" linenums="18"
+--8<-- "example/hello_units.cpp:48:51"
 ```
 
 The above lines explicitly opt into using unit symbols from two systems of units.
 As this introduces a lot of short identifiers into the current scope, it is not done
 implicitly while including a header file.
 
-```cpp title="hello_units.cpp" linenums="21"
---8<-- "example/hello_units.cpp:52:58"
+```cpp title="hello_units.cpp" linenums="22"
+--8<-- "example/hello_units.cpp:53:59"
 ```
 
 - Lines `21` & `22` create a quantity of kind `isq::length / isq::time` with the numbers
@@ -74,8 +74,8 @@ implicitly while including a header file.
 - Line `27` does a [value-truncating conversion](../framework_basics/value_conversions.md#value-truncating-conversions)
   of changing the underlying representation type from `double` to `int`.
 
-```cpp title="hello_units.cpp" linenums="28"
---8<-- "example/hello_units.cpp:60"
+```cpp title="hello_units.cpp" linenums="29"
+--8<-- "example/hello_units.cpp:61"
 ```
 
 The above presents [various ways to print a quantity](../framework_basics/text_output.md).

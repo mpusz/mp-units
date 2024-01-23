@@ -79,13 +79,13 @@ std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>&
   return os << a - a.absolute_point_origin << " HAE(" << to_text(a.absolute_point_origin.egm) << ")";
 }
 
-template<QuantityPoint QP>
+template<QuantityPoint QP, typename Char>
   requires(is_hae(QP::absolute_point_origin))
-struct MP_UNITS_STD_FMT::formatter<QP> : formatter<typename QP::quantity_type> {
+struct MP_UNITS_STD_FMT::formatter<QP, Char> : formatter<typename QP::quantity_type, Char> {
   template<typename FormatContext>
-  auto format(const QP& a, FormatContext& ctx)
+  auto format(const QP& a, FormatContext& ctx) const -> decltype(ctx.out())
   {
-    formatter<typename QP::quantity_type>::format(a - a.absolute_point_origin, ctx);
+    formatter<typename QP::quantity_type, Char>::format(a - a.absolute_point_origin, ctx);
     return MP_UNITS_STD_FMT::format_to(ctx.out(), " HAE({})", to_text(QP::absolute_point_origin.egm));
   }
 };
@@ -123,12 +123,12 @@ std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>&
   return os << a.quantity_from(height_above_launch) << " HAL";
 }
 
-template<>
-struct MP_UNITS_STD_FMT::formatter<hal_altitude> : formatter<hal_altitude::quantity_type> {
+template<typename Char>
+struct MP_UNITS_STD_FMT::formatter<hal_altitude, Char> : formatter<hal_altitude::quantity_type, Char> {
   template<typename FormatContext>
-  auto format(const hal_altitude& a, FormatContext& ctx)
+  auto format(const hal_altitude& a, FormatContext& ctx) const -> decltype(ctx.out())
   {
-    formatter<hal_altitude::quantity_type>::format(a.quantity_from(height_above_launch), ctx);
+    formatter<hal_altitude::quantity_type, Char>::format(a.quantity_from(height_above_launch), ctx);
     return MP_UNITS_STD_FMT::format_to(ctx.out(), " HAL");
   }
 };
@@ -170,6 +170,6 @@ int main()
   };
 
   waypoint wpt = {"EPPR", {54.24772_N, 18.6745_E}, mean_sea_level + 16. * ft};
-  std::cout << MP_UNITS_STD_FMT::format("{}: {} {}, {:%.2Q %q}, {:%.2Q %q}\n", wpt.name, wpt.pos.lat, wpt.pos.lon,
+  std::cout << MP_UNITS_STD_FMT::format("{}: {} {}, {:{%N:.2} %U}, {:{%N:.2} %U}\n", wpt.name, wpt.pos.lat, wpt.pos.lon,
                                         wpt.msl_alt, to_hae<earth_gravity_model::egm2008_1>(wpt.msl_alt, wpt.pos));
 }
