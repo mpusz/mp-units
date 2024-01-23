@@ -337,13 +337,13 @@ Among others, we can find there the following:
 - `exp()`,
 - `abs()`,
 - `epsilon()`,
-- `fma()`,
+- `fma()`, `fmod()`,
 - `isfinite()`, `isinf()`, `isnan()`,
 - `floor()`, `ceil()`, `round()`,
 - `inverse()`,
 - `hypot()`,
 - `sin()`, `cos()`, `tan()`,
-- `asin()`, `acos()`, `atan()`.
+- `asin()`, `acos()`, `atan()`, `atan2()`.
 
 In the library, we can also find _mp-units/random.h_ header file with all the pseudo-random number
 generators working on quantity types.

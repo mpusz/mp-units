@@ -54,4 +54,8 @@ static_assert(basic_fixed_string('d') + txt2 == basic_fixed_string("dabc"));
 static_assert(txt2 + basic_fixed_string("def") == basic_fixed_string("abcdef"));
 static_assert(basic_fixed_string("def") + txt2 == basic_fixed_string("defabc"));
 
+#ifndef MP_UNITS_COMP_GCC
+static_assert(basic_fixed_string("abcd").view().find('c') == 2);
+#endif
+
 }  // namespace

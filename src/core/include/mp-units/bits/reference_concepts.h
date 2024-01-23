@@ -66,14 +66,12 @@ template<auto Q, auto U>
 }
 
 /**
- * @brief A concept matching all references with provided dimension or quantity spec
+ * @brief A concept matching all references with provided quantity spec
  *
- * Satisfied by all references with a dimension/quantity_spec being the instantiation derived from
- * the provided dimension/quantity_spec type.
+ * Satisfied by all references with a quantity_spec being the instantiation derived from
+ * the provided quantity_spec type.
  */
-template<typename T, auto V>
-concept ReferenceOf =
-  Reference<T> && (DimensionOf<std::remove_const_t<decltype(get_quantity_spec(T{}).dimension)>, V> ||
-                   QuantitySpecOf<std::remove_const_t<decltype(get_quantity_spec(T{}))>, V>);
+template<typename T, auto QS>
+concept ReferenceOf = Reference<T> && QuantitySpecOf<std::remove_const_t<decltype(get_quantity_spec(T{}))>, QS>;
 
 }  // namespace mp_units

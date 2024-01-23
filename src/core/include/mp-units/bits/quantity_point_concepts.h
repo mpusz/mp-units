@@ -145,15 +145,15 @@ concept SameAbsolutePointOriginAs =
 
 
 /**
- * @brief A concept matching all quantity points with provided dimension or quantity spec
+ * @brief A concept matching all quantity points with provided quantity spec
  *
- * Satisfied by all quantity points with a dimension/quantity_spec being the instantiation derived from
- * the provided dimension/quantity_spec type, or quantity points having the origin with the same
+ * Satisfied by all quantity points with a quantity_spec being the instantiation derived from
+ * the provided quantity_spec type, or quantity points having the origin with the same
  * `absolute_point_origin`.
  */
 template<typename QP, auto V>
 concept QuantityPointOf =
-  QuantityPoint<QP> && (ReferenceOf<std::remove_const_t<decltype(QP::reference)>, V> ||
+  QuantityPoint<QP> && (QuantitySpecOf<std::remove_const_t<decltype(QP::quantity_spec)>, V> ||
                         detail::SameAbsolutePointOriginAs<std::remove_const_t<decltype(QP::absolute_point_origin)>, V>);
 
 /**

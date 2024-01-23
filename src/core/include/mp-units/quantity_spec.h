@@ -411,7 +411,11 @@ struct quantity_spec<Self, QS, Eq, Args...> : quantity_spec<Self, QS, Args...> {
  */
 template<detail::IntermediateDerivedQuantitySpecExpr... Expr>
 struct derived_quantity_spec :
+#ifdef __cpp_explicit_this_parameter
+    detail::quantity_spec_interface,
+#else
     detail::quantity_spec_interface<derived_quantity_spec<Expr...>>,
+#endif
     detail::expr_fractions<detail::is_dimensionless, Expr...> {
   using _base_ = detail::expr_fractions<detail::is_dimensionless, Expr...>;
 
@@ -443,9 +447,9 @@ concept QuantitySpecWithNoSpecifiers = detail::NamedQuantitySpec<T> || detail::I
 }  // namespace detail
 
 #ifdef __cpp_explicit_this_parameter
-template<detail::QuantitySpecWithNoSpecifiers auto Q>
-  requires(get_kind(Q) == Q)
-struct kind_of_<Q> : Q {
+template<auto Q>
+  requires(detail::QuantitySpecWithNoSpecifiers<std::remove_const_t<decltype(Q)>>) && (get_kind(Q) == Q)
+struct kind_of_<Q> : std::remove_const_t<decltype(Q)> {
   static constexpr auto _quantity_spec_ = Q;
 };
 #else
@@ -1416,12 +1420,9 @@ template<typename Self, NamedQuantitySpec auto QS, auto... Args>
 template<QuantitySpec Q>
 [[nodiscard]] consteval auto remove_kind(Q q)
 {
-  if constexpr (detail::QuantityKindSpec<Q>) {
-    if constexpr (requires { Q::_parent_; })
-      return Q::_parent_;
-    else
-      return Q::_equation_;
-  } else
+  if constexpr (detail::QuantityKindSpec<Q>)
+    return Q::_quantity_spec_;
+  else
     return q;
 }
 

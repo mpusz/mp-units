@@ -71,6 +71,24 @@ TEST_CASE("'fma()' on quantity changes the value and the dimension accordingly",
   REQUIRE(fma(isq::speed(10.0 * m / s), isq::time(2.0 * s), isq::height(42.0 * m)) == isq::length(62.0 * m));
 }
 
+TEST_CASE("fmod functions", "[math][fmod]")
+{
+  SECTION("fmod should work on the same quantities")
+  {
+    REQUIRE(fmod(4. * isq::length[km], 3. * isq::length[km]) == 1. * isq::length[km]);
+    REQUIRE(fmod(-9. * isq::length[km], 3. * isq::length[km]) == -0. * isq::length[km]);
+    REQUIRE(fmod(3 * isq::length[km], 2 * isq::length[km]) == 1 * isq::length[km]);
+    REQUIRE(fmod(4 * isq::length[km], 2.5f * isq::length[km]) == 1.5 * isq::length[km]);
+  }
+  SECTION("fmod should work with different units of the same dimension")
+  {
+    REQUIRE(fmod(4. * isq::length[km], 3000. * isq::length[m]) == 1000. * isq::length[m]);
+    REQUIRE(fmod(-9. * isq::length[km], 3000. * isq::length[m]) == -0. * isq::length[m]);
+    REQUIRE(fmod(3. * isq::length[km], 2000. * isq::length[m]) == 1000 * isq::length[m]);
+    REQUIRE(fmod(4 * isq::length[km], 2500 * isq::length[m]) == 1500 * isq::length[m]);
+  }
+}
+
 TEST_CASE("'isfinite()' accepts dimensioned arguments", "[math][isfinite]") { REQUIRE(isfinite(4.0 * isq::length[m])); }
 
 TEST_CASE("'isinf()' accepts dimensioned arguments", "[math][isinf]") { REQUIRE(!isinf(4.0 * isq::length[m])); }
@@ -375,6 +393,22 @@ TEST_CASE("SI inverse trigonometric functions", "[inv trig][si]")
   }
 }
 
+TEST_CASE("SI atan2 functions", "[atan2][si]")
+{
+  SECTION("atan2 should work on the same quantities")
+  {
+    REQUIRE_THAT(si::atan2(-1. * isq::length[km], 1. * isq::length[km]), AlmostEquals(-45. * deg));
+    REQUIRE_THAT(si::atan2(0. * isq::length[km], 1. * isq::length[km]), AlmostEquals(0. * deg));
+    REQUIRE_THAT(si::atan2(1. * isq::length[km], 1. * isq::length[km]), AlmostEquals(45. * deg));
+  }
+  SECTION("atan2 should work with different units of the same dimension")
+  {
+    REQUIRE_THAT(si::atan2(-1. * isq::length[km], 1000. * isq::length[m]), AlmostEquals(-45. * deg));
+    REQUIRE_THAT(si::atan2(0. * isq::length[km], 1000. * isq::length[m]), AlmostEquals(0. * deg));
+    REQUIRE_THAT(si::atan2(1. * isq::length[km], 1000. * isq::length[m]), AlmostEquals(45. * deg));
+  }
+}
+
 
 TEST_CASE("Angle trigonometric functions", "[trig][angle]")
 {
@@ -447,5 +481,25 @@ TEST_CASE("Angle inverse trigonometric functions", "[inv trig][angle]")
     REQUIRE_THAT(atan(-1 * one), AlmostEquals(-45. * angle[deg]));
     REQUIRE_THAT(atan(0 * one), AlmostEquals(0. * angle[deg]));
     REQUIRE_THAT(atan(1 * one), AlmostEquals(45. * angle[deg]));
+  }
+}
+
+TEST_CASE("Angle atan2 functions", "[atan2][angle]")
+{
+  using namespace mp_units::angular;
+  using namespace mp_units::angular::unit_symbols;
+  using mp_units::angular::unit_symbols::deg;
+
+  SECTION("atan2 should work on the same quantities")
+  {
+    REQUIRE_THAT(atan2(-1. * isq::length[km], 1. * isq::length[km]), AlmostEquals(-45. * angle[deg]));
+    REQUIRE_THAT(atan2(0. * isq::length[km], 1. * isq::length[km]), AlmostEquals(0. * angle[deg]));
+    REQUIRE_THAT(atan2(1. * isq::length[km], 1. * isq::length[km]), AlmostEquals(45. * angle[deg]));
+  }
+  SECTION("atan2 should work with different units of the same dimension")
+  {
+    REQUIRE_THAT(atan2(-1. * isq::length[km], 1000. * isq::length[m]), AlmostEquals(-45. * angle[deg]));
+    REQUIRE_THAT(atan2(0. * isq::length[km], 1000. * isq::length[m]), AlmostEquals(0. * angle[deg]));
+    REQUIRE_THAT(atan2(1. * isq::length[km], 1000. * isq::length[m]), AlmostEquals(45. * angle[deg]));
   }
 }

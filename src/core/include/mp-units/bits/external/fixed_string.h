@@ -29,6 +29,7 @@
 // IWYU pragma: begin_exports
 #include <compare>
 #include <cstdlib>
+#include <ostream>
 // IWYU pragma: end_exports
 
 #include <cstddef>
@@ -56,16 +57,16 @@ struct basic_fixed_string {
   using size_type = std::size_t;
   using difference_type = std::ptrdiff_t;
 
-  constexpr explicit(false) basic_fixed_string(CharT ch) noexcept
-    requires(N == 1)
-  {
-    data_[0] = ch;
-  }
-
   constexpr explicit(false) basic_fixed_string(const CharT (&txt)[N + 1]) noexcept
   {
     if constexpr (N != 0)
       for (std::size_t i = 0; i < N; ++i) data_[i] = txt[i];
+  }
+
+  template<std::convertible_to<CharT>... Rest>
+    requires(1 + sizeof...(Rest) == N)
+  constexpr explicit basic_fixed_string(CharT first, Rest... rest) noexcept : data_{first, rest..., CharT('\0')}
+  {
   }
 
   constexpr basic_fixed_string(const CharT* ptr, std::integral_constant<std::size_t, N>) noexcept
@@ -78,12 +79,17 @@ struct basic_fixed_string {
   [[nodiscard]] constexpr size_type size() const noexcept { return N; }
   [[nodiscard]] constexpr const_pointer data() const noexcept { return data_; }
   [[nodiscard]] constexpr const CharT* c_str() const noexcept { return data(); }
-  [[nodiscard]] constexpr const_reference operator[](size_type index) const noexcept { return data()[index]; }
+  [[nodiscard]] constexpr value_type operator[](size_type index) const noexcept { return data()[index]; }
 
   [[nodiscard]] constexpr const_iterator begin() const noexcept { return data(); }
   [[nodiscard]] constexpr const_iterator cbegin() const noexcept { return data(); }
   [[nodiscard]] constexpr const_iterator end() const noexcept { return data() + size(); }
   [[nodiscard]] constexpr const_iterator cend() const noexcept { return data() + size(); }
+
+  [[nodiscard]] constexpr std::basic_string_view<CharT> view() const noexcept
+  {
+    return std::basic_string_view<CharT>(cbegin(), cend());
+  }
 
   template<std::size_t N2>
   [[nodiscard]] constexpr friend basic_fixed_string<CharT, N + N2> operator+(
@@ -116,13 +122,20 @@ struct basic_fixed_string {
     // TODO std::lexicographical_compare_three_way(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
     return detail::lexicographical_compare_three_way(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
   }
-};
 
-template<typename CharT>
-basic_fixed_string(CharT) -> basic_fixed_string<CharT, 1>;
+  template<typename Traits>
+  friend std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os,
+                                                       const basic_fixed_string<CharT, N>& str)
+  {
+    return os << str.c_str();
+  }
+};
 
 template<typename CharT, std::size_t N>
 basic_fixed_string(const CharT (&str)[N]) -> basic_fixed_string<CharT, N - 1>;
+
+template<typename CharT, std::convertible_to<CharT>... Rest>
+basic_fixed_string(CharT, Rest...) -> basic_fixed_string<CharT, 1 + sizeof...(Rest)>;
 
 template<typename CharT, std::size_t N>
 basic_fixed_string(const CharT* ptr, std::integral_constant<std::size_t, N>) -> basic_fixed_string<CharT, N>;
@@ -131,3 +144,12 @@ template<std::size_t N>
 using fixed_string = basic_fixed_string<char, N>;
 
 }  // namespace mp_units
+
+template<typename CharT, std::size_t N>
+struct MP_UNITS_STD_FMT::formatter<mp_units::basic_fixed_string<CharT, N>> : formatter<std::basic_string_view<CharT>> {
+  template<typename FormatContext>
+  auto format(const mp_units::basic_fixed_string<CharT, N>& str, FormatContext& ctx)
+  {
+    return formatter<std::basic_string_view<CharT>>::format(str.view(), ctx);
+  }
+};

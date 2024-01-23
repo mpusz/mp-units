@@ -605,6 +605,8 @@ template<std::intmax_t Num, std::intmax_t Den = 1, Unit U>
 // clang-format off
 inline constexpr struct percent : named_unit<"%", mag<ratio{1, 100}> * one> {} percent;
 inline constexpr struct per_mille : named_unit<basic_symbol_text{"‰", "%o"}, mag<ratio(1, 1000)> * one> {} per_mille;
+inline constexpr struct parts_per_million : named_unit<"ppm", mag<ratio(1, 1'000'000)> * one> {} parts_per_million;
+inline constexpr auto ppm = parts_per_million;
 // clang-format on
 
 
@@ -835,6 +837,11 @@ constexpr Out unit_symbol_impl(Out out, const derived_unit<Expr...>&, unit_symbo
  */
 template<Unit auto U>
 inline constexpr bool space_before_unit_symbol = true;
+
+template<>
+inline constexpr bool space_before_unit_symbol<percent> = false;
+template<>
+inline constexpr bool space_before_unit_symbol<per_mille> = false;
 
 template<typename CharT = char, std::output_iterator<CharT> Out, Unit U>
 constexpr Out unit_symbol_to(Out out, U u, unit_symbol_formatting fmt = unit_symbol_formatting{})
