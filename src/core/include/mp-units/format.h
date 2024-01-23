@@ -431,7 +431,7 @@ public:
     auto it = parse_fill_align_width(ctx, begin, end, specs_, mp_units::detail::fmt_align::right);
     if (it == end) return it;
 
-    format_checker checker(ctx, format_str_lengths_);
+    format_checker checker{ctx, format_str_lengths_};
     end = parse_quantity_specs(it, end, checker);
     modifiers_format_str_ = {it, end};
     return end;
