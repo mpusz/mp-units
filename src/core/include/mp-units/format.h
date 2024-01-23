@@ -99,7 +99,7 @@ template<typename Char>
 //                                  [unit-symbol-separator] [text-encoding] [unit-symbol-solidus] [L]
 //                                  [unit-symbol-separator] [unit-symbol-solidus] [text-encoding] [L]
 // unit-symbol-solidus         ::=  one of
-//                                  o a n
+//                                  1 a n
 // unit-symbol-separator       ::=  one of
 //                                  s d
 template<mp_units::Unit U, typename Char>
@@ -135,7 +135,7 @@ class MP_UNITS_STD_FMT::formatter<U, Char> {
     constexpr void on_unit_symbol_solidus(Char val)
     {
       switch (val) {
-        case 'o':
+        case '1':
           specs.solidus = one_denominator;
           break;
         case 'a':
@@ -155,7 +155,7 @@ class MP_UNITS_STD_FMT::formatter<U, Char> {
     auto it = begin;
     if (it == end || *it == '}') return begin;
 
-    constexpr auto valid_modifiers = std::string_view{"UAoansd"};
+    constexpr auto valid_modifiers = std::string_view{"UA1ansd"};
     for (; it != end && *it != '}'; ++it) {
       if (valid_modifiers.find(*it) == std::string_view::npos)
         throw MP_UNITS_STD_FMT::format_error("invalid unit modifier specified");
@@ -163,7 +163,7 @@ class MP_UNITS_STD_FMT::formatter<U, Char> {
     end = it;
 
     if (it = mp_units::detail::at_most_one_of(begin, end, "UA"); it != end) handler.on_text_encoding(*it);
-    if (it = mp_units::detail::at_most_one_of(begin, end, "oan"); it != end) handler.on_unit_symbol_solidus(*it);
+    if (it = mp_units::detail::at_most_one_of(begin, end, "1an"); it != end) handler.on_unit_symbol_solidus(*it);
     if (it = mp_units::detail::at_most_one_of(begin, end, "sd"); it != end) handler.on_unit_symbol_separator(*it);
     return end;
   }
