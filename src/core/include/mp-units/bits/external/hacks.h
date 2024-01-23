@@ -116,8 +116,8 @@ MP_UNITS_DIAGNOSTIC_POP
 
 #define MP_UNITS_STD_FMT fmt
 #define MP_UNITS_FMT_LOCALE(loc) (loc).template get<std::locale>()
-#define MP_UNITS_FMT_TO_ARG_ID(arg) static_cast<int>(arg)
-#define MP_UNITS_FMT_FROM_ARG_ID(arg) static_cast<size_t>(arg)
+#define MP_UNITS_FMT_TO_ARG_ID(arg) (arg)
+#define MP_UNITS_FMT_FROM_ARG_ID(arg) (arg)
 
 // This re-uses code from fmt;
 #if FMT_EXCEPTIONS
@@ -143,8 +143,8 @@ MP_UNITS_DIAGNOSTIC_POP
 
 #define MP_UNITS_STD_FMT std
 #define MP_UNITS_FMT_LOCALE(loc) loc
-#define MP_UNITS_FMT_TO_ARG_ID(arg) arg
-#define MP_UNITS_FMT_FROM_ARG_ID(arg) arg
+#define MP_UNITS_FMT_TO_ARG_ID(arg) static_cast<std::size_t>(arg)
+#define MP_UNITS_FMT_FROM_ARG_ID(arg) static_cast<int>(arg)
 #define MP_UNITS_THROW(arg) throw arg
 
 #endif

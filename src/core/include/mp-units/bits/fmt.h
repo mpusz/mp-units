@@ -40,23 +40,35 @@
 namespace mp_units::detail {
 
 enum class fmt_align { none, left, right, center, numeric };
-enum class fmt_arg_id_kind { none, index, name };
+enum class fmt_arg_id_kind {
+  none,
+#if MP_UNITS_USE_FMTLIB
+  name,
+#endif
+  index
+};
 
 template<typename Char>
 struct fmt_arg_ref {
   fmt_arg_id_kind kind = fmt_arg_id_kind::none;
   union value {
     int index = 0;
+#if MP_UNITS_USE_FMTLIB
     std::basic_string_view<Char> name;
+#endif
 
-    value() = default;
+    constexpr value() {}
     constexpr value(int idx) : index(idx) {}
+#if MP_UNITS_USE_FMTLIB
     constexpr value(std::basic_string_view<Char> n) : name(n) {}
+#endif
   } val{};
 
   fmt_arg_ref() = default;
   constexpr explicit fmt_arg_ref(int index) : kind(fmt_arg_id_kind::index), val(index) {}
+#if MP_UNITS_USE_FMTLIB
   constexpr explicit fmt_arg_ref(std::basic_string_view<Char> name) : kind(fmt_arg_id_kind::name), val(name) {}
+#endif
 
   [[nodiscard]] constexpr fmt_arg_ref& operator=(int idx)
   {
@@ -79,7 +91,7 @@ public:
   {
     auto size = str.size();
     if (size > max_size) MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("invalid fill"));
-    for (size_t i = 0; i < size; ++i) data_[i] = str[i];
+    for (size_t i = 0; i < size && i < max_size; ++i) data_[i] = str[i];
     size_ = static_cast<unsigned char>(size);
     return *this;
   }
@@ -144,8 +156,8 @@ template<class Handler, typename FormatArg>
 template<typename Context, typename ID>
 [[nodiscard]] constexpr auto get_arg(Context& ctx, ID id) -> decltype(ctx.arg(id))
 {
-  auto arg = ctx.arg(id);
-  if (!arg) ctx.on_error("argument not found");
+  auto arg = ctx.arg(MP_UNITS_FMT_TO_ARG_ID(id));
+  if (!arg) MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("argument not found"));
   return arg;
 }
 
@@ -158,9 +170,11 @@ constexpr void handle_dynamic_spec(int& value, fmt_arg_ref<typename Context::cha
     case fmt_arg_id_kind::index:
       value = ::mp_units::detail::get_dynamic_spec<Handler>(get_arg(ctx, ref.val.index));
       break;
+#if MP_UNITS_USE_FMTLIB
     case fmt_arg_id_kind::name:
       value = ::mp_units::detail::get_dynamic_spec<Handler>(get_arg(ctx, ref.val.name));
       break;
+#endif
   }
 }
 
@@ -219,7 +233,12 @@ template<typename Char, typename Handler>
   do {
     ++it;
   } while (it != end && (::mp_units::detail::is_name_start(*it) || ('0' <= *it && *it <= '9')));
+#if MP_UNITS_USE_FMTLIB
   handler.on_name({begin, ::mp_units::detail::to_unsigned(it - begin)});
+#else
+  MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("named arguments are not supported in the C++ standard facilities"));
+#endif
+
   return it;
 }
 
@@ -260,21 +279,27 @@ struct dynamic_spec_id_handler {
 
   constexpr void on_auto()
   {
-    int id = ctx.next_arg_id();
+    int id = MP_UNITS_FMT_FROM_ARG_ID(ctx.next_arg_id());
     ref = fmt_arg_ref<Char>(id);
+#if MP_UNITS_USE_FMTLIB || __cpp_lib_format >= 202305L
     ctx.check_dynamic_spec(id);
+#endif
   }
   constexpr void on_index(int id)
   {
     ref = fmt_arg_ref<Char>(id);
-    ctx.check_arg_id(id);
+    ctx.check_arg_id(MP_UNITS_FMT_TO_ARG_ID(id));
+#if MP_UNITS_USE_FMTLIB || __cpp_lib_format >= 202305L
     ctx.check_dynamic_spec(id);
+#endif
   }
-  constexpr void on_name(std::basic_string_view<Char> id)
+#if MP_UNITS_USE_FMTLIB
+  constexpr void on_name([[maybe_unused]] std::basic_string_view<Char> id)
   {
     ref = fmt_arg_ref<Char>(id);
     ctx.check_arg_id(id);
   }
+#endif
 };
 
 template<typename Char>

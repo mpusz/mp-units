@@ -293,6 +293,8 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
       return begin + *format_str_lengths_it++;
     }
   };
+  template<typename OutputIt, typename... Args>
+  quantity_formatter(OutputIt, Args...) -> quantity_formatter<OutputIt>;
 
   template<typename Handler>
   constexpr const Char* parse_quantity_specs(const Char* begin, const Char* end, Handler&& handler) const
@@ -345,7 +347,7 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
   template<typename OutputIt, typename FormatContext>
   OutputIt format_quantity(OutputIt out, const quantity_t& q, FormatContext& ctx) const
   {
-    std::locale locale = ctx.locale().template get<std::locale>();
+    std::locale locale = MP_UNITS_FMT_LOCALE(ctx.locale());
     if (modifiers_format_str_.empty()) {
       // default format should print value followed by the unit separated with 1 space
       out = MP_UNITS_STD_FMT::vformat_to(out, locale, "{}",
