@@ -23,7 +23,9 @@
 #pragma once
 
 #include <mp-units/quantity_spec.h>
+#include <mp-units/systems/isq/mechanics.h>
 #include <mp-units/systems/isq/si_quantities.h>
+#include <mp-units/systems/isq/space_and_time.h>
 
 namespace mp_units::isq {
 
