@@ -23,9 +23,7 @@
 #pragma once
 
 #include <mp-units/quantity_point.h>
-#include <mp-units/systems/isq/atomic_and_nuclear_physics.h>
-#include <mp-units/systems/isq/base_quantities.h>
-#include <mp-units/systems/isq/space_and_time.h>
+#include <mp-units/systems/isq/si_quantities.h>
 #include <mp-units/systems/si/prefixes.h>
 #include <mp-units/unit.h>
 

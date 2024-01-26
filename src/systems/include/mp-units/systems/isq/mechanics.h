@@ -23,7 +23,7 @@
 #pragma once
 
 #include <mp-units/quantity_spec.h>
-#include <mp-units/systems/isq/base_quantities.h>
+#include <mp-units/systems/isq/si_quantities.h>
 #include <mp-units/systems/isq/space_and_time.h>
 
 namespace mp_units::isq {
@@ -88,9 +88,8 @@ QUANTITY_SPEC(kinematic_viscosity, dynamic_viscosity / mass_density);
 QUANTITY_SPEC(surface_tension, force / length, quantity_character::scalar);  // TODO what is a correct equation here?
 QUANTITY_SPEC(power, mass* pow<2>(length) / pow<3>(time));                   // not in ISO 80000
 QUANTITY_SPEC(mechanical_power, power, force* velocity, quantity_character::scalar);
-QUANTITY_SPEC(energy, mass* pow<2>(length) / pow<2>(time));  // differs from ISO 80000 (defined in thermodynamics)
-QUANTITY_SPEC(mechanical_energy, energy);                    // differs from ISO 80000
-QUANTITY_SPEC(potential_energy, mechanical_energy);          // differs from ISO 80000
+QUANTITY_SPEC(mechanical_energy, energy);                               // differs from ISO 80000
+QUANTITY_SPEC(potential_energy, mechanical_energy);                     // differs from ISO 80000
 QUANTITY_SPEC(kinetic_energy, mechanical_energy, mass* pow<2>(speed));  // differs from ISO 80000
 QUANTITY_SPEC(mechanical_work, force* displacement, quantity_character::scalar);
 inline constexpr auto work = mechanical_work;

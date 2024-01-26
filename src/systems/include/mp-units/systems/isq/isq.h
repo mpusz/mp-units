@@ -27,6 +27,7 @@
 #include <mp-units/systems/isq/base_quantities.h>
 #include <mp-units/systems/isq/electromagnetism.h>
 #include <mp-units/systems/isq/mechanics.h>
+#include <mp-units/systems/isq/si_quantities.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/isq/thermodynamics.h>
 // IWYU pragma: end_exports

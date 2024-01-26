@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include <mp-units/systems/si/si.h>
+#include <mp-units/systems/si/constants.h>
+#include <mp-units/systems/si/units.h>
 #include <mp-units/unit.h>
 
 namespace mp_units::international {

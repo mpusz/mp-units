@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include <mp-units/systems/si/si.h>
+#include <mp-units/systems/si/constants.h>
+#include <mp-units/systems/si/units.h>
 #include <mp-units/unit.h>
 
 template<>
@@ -52,8 +53,6 @@ inline constexpr struct speed_of_light : decltype(si::si2019::speed_of_light_in_
 
 namespace unit_symbols {
 
-using si::unit_symbols::eV;
-
 inline constexpr auto qeV = si::quecto<electronvolt>;
 inline constexpr auto reV = si::ronto<electronvolt>;
 inline constexpr auto yeV = si::yocto<electronvolt>;
@@ -66,6 +65,7 @@ inline constexpr auto ueV = si::micro<electronvolt>;
 inline constexpr auto meV = si::milli<electronvolt>;
 inline constexpr auto ceV = si::centi<electronvolt>;
 inline constexpr auto deV = si::deci<electronvolt>;
+inline constexpr auto eV = electronvolt;
 inline constexpr auto daeV = si::deca<electronvolt>;
 inline constexpr auto heV = si::hecto<electronvolt>;
 inline constexpr auto keV = si::kilo<electronvolt>;
