@@ -25,7 +25,8 @@ import mp_units;
 #else
 #include <mp-units/math.h>
 #include <mp-units/systems/iau/iau.h>
-#include <mp-units/systems/si/unit_symbols.h>
+#include <mp-units/systems/isq/space_and_time.h>
+#include <mp-units/systems/si/si.h>
 #endif
 
 /* ************** DERIVED DIMENSIONS THAT INCLUDE UNITS WITH SPECIAL NAMES **************** */
