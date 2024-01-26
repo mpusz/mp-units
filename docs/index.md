@@ -28,12 +28,12 @@ The library source code is hosted on [GitHub](https://github.com/mpusz/mp-units)
     The below table provides the minimum compiler version required to compile the code using the
     specific feature:
 
-    | Feature              | gcc  | clang | apple-clang | MSVC |
-    |----------------------|:----:|:-----:|:-----------:|:----:|
-    | **Minimum support**  |  12  |  16   |     15      | None |
-    | **`std::format`**    |  13  |  17   |    None     | None |
-    | **C++ modules**      | None |  17   |    None     | None |
-    | **C++23 extensions** |  14  |  18   |    None     | None |
+    | Feature              | gcc | clang | apple-clang | MSVC |
+    |----------------------|:---:|:-----:|:-----------:|:----:|
+    | **Minimum support**  | 12  |  16   |     15      | None |
+    | **`std::format`**    | 13  |  17   |    None     | None |
+    | **C++ modules**      | 14  |  17   |    None     | None |
+    | **C++23 extensions** | 14  |  18   |    None     | None |
 
     More requirements for C++ modules support can be found in the
     [CMake's documentation](https://cmake.org/cmake/help/latest/manual/cmake-cxxmodules.7.html).
