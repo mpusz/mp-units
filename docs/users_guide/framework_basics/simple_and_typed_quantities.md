@@ -205,22 +205,22 @@ The previous example can be re-typed using typed quantities in the following way
     #include <mp-units/systems/isq/isq.h>
     #include <mp-units/systems/si/si.h>
     #include <print>
-    
+
     using namespace mp_units;
     using namespace mp_units::si::unit_symbols;
-    
+
     constexpr quantity<isq::speed[m / s]> avg_speed(quantity<isq::length[m]> dist,
                                                     quantity<isq::time[s]> time)
     {
       return dist / time;
     }
-    
+
     int main()
     {
       const quantity distance = isq::distance(110 * km);
       const quantity duration = isq::time(2 * h);
       const quantity speed = avg_speed(distance, duration);
-    
+
       std::println("A car driving {} in {} has an average speed of {:{%N:.4} %U} ({:{%N:.4} %U})",
                    distance, duration, speed, speed.in(km / h));
     }

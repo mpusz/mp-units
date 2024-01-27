@@ -157,7 +157,7 @@ This introduces an additional type-safety.
       using namespace mp_units;
       using namespace mp_units::si::unit_symbols;
       using namespace mp_units::usc::unit_symbols;
-    
+
       quantity_point temp{20. * deg_C};
       std::println("Temperature: {} ({})",
                    temp.quantity_from_zero(),
@@ -172,13 +172,13 @@ This introduces an additional type-safety.
     #include <mp-units/systems/si/si.h>
     #include <mp-units/systems/usc/usc.h>
     #include <print>
-    
+
     int main()
     {
       using namespace mp_units;
       using namespace mp_units::si::unit_symbols;
       using namespace mp_units::usc::unit_symbols;
-    
+
       quantity_point temp{20. * deg_C};
       std::println("Temperature: {} ({})",
                    temp.quantity_from_zero(),

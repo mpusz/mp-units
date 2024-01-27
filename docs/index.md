@@ -64,11 +64,11 @@ The library source code is hosted on [GitHub](https://github.com/mpusz/mp-units)
     #include <mp-units/systems/si/si.h>
     #include <mp-units/systems/usc/usc.h>
     #include <print>
-    
+
     using namespace mp_units;
-    
+
     inline constexpr struct smoot : named_unit<"smoot", mag<67> * usc::inch> {} smoot;
-    
+
     int main()
     {
       constexpr quantity dist = 364.4 * smoot;
