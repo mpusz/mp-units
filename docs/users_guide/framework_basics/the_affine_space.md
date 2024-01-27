@@ -150,8 +150,8 @@ Having such a database, we can print the trip log in the following way:
 ```cpp
 for (const auto& item : log) {
   std::cout << "POI: " << item.name << "\n";
-  std::cout << "- Distance from home: " << item.odometer - log.front().odometer;
-  std::cout << "- Trip duration from start: " << (item.timestamp - log.front().timestamp).in(non_si::minute);
+  std::cout << "- Distance from home: " << item.odometer - log.front().odometer << "\n";
+  std::cout << "- Trip duration from start: " << (item.timestamp - log.front().timestamp).in(non_si::minute) << "\n";
 }
 ```
 
@@ -159,7 +159,7 @@ Moreover, if Alice had reset the car's trip odometer before leaving home, we cou
 one of the previous lines like that:
 
 ```cpp
-std::cout << "Distance from home: " << item.odometer.quantity_from_zero();
+std::cout << "Distance from home: " << item.odometer.quantity_from_zero() << "\n";
 ```
 
 The above always returns a quantity measured from the "ultimate" zeroth point of a scale used for
@@ -540,8 +540,8 @@ std::println("| {:<14} | {:^18} | {:^18} | {:^18} |",
 std::println("|{0:=^16}|{0:=^20}|{0:=^20}|{0:=^20}|", "");
 
 auto print = [&](std::string_view label, auto v) {
-  fmt::println("| {:<14} | {:^18} | {:^18} | {:^18} |", label,
-               v - room_reference_temp, v - si::ice_point, v - si::absolute_zero);
+  std::println("| {:<14} | {:^18} | {:^18} | {:^18{%N:.2f} %U} |", label,
+               v - room_reference_temp, (v - si::ice_point).in(deg_C), (v - si::absolute_zero).in(deg_C));
 };
 
 print("Lowest", room_low);

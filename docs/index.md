@@ -42,6 +42,7 @@ The library source code is hosted on [GitHub](https://github.com/mpusz/mp-units)
 
     ```cpp
     #include <iostream>
+    #include <print>
     import mp_units;
 
     using namespace mp_units;
@@ -51,36 +52,38 @@ The library source code is hosted on [GitHub](https://github.com/mpusz/mp-units)
     int main()
     {
       constexpr quantity dist = 364.4 * smoot;
-      std::cout << "Harvard Bridge length = " << dist << "(" << dist.in(usc::foot) << ", " << dist.in(si::metre) << ") ± 1 εar\n";
+      std::println("Harvard Bridge length = {:{%N:.5} %U} ({:{%N:.5} %U}, {:{%N:.5} %U}) ± 1 εar",
+                   dist, dist.in(usc::foot), dist.in(si::metre));
     }
     ```
 
 === "Header files"
 
     ```cpp
-    #include <mp-units/ostream.h>
+    #include <mp-units/format.h>
     #include <mp-units/systems/si/si.h>
     #include <mp-units/systems/usc/usc.h>
-    #include <iostream>
-
+    #include <print>
+    
     using namespace mp_units;
-
+    
     inline constexpr struct smoot : named_unit<"smoot", mag<67> * usc::inch> {} smoot;
-
+    
     int main()
     {
       constexpr quantity dist = 364.4 * smoot;
-      std::cout << "Harvard Bridge length = " << dist << "(" << dist.in(usc::foot) << ", " << dist.in(si::metre) << ") ± 1 εar\n";
+      std::println("Harvard Bridge length = {:{%N:.5} %U} ({:{%N:.5} %U}, {:{%N:.5} %U}) ± 1 εar",
+                   dist, dist.in(usc::foot), dist.in(si::metre));
     }
     ```
 
 Output:
 
 ```txt
-Harvard Bridge length = 364.4 smoot(2034.57 ft, 620.136 m) ± 1 εar
+Harvard Bridge length = 364.4 smoot (2034.6 ft, 620.14 m) ± 1 εar
 ```
 
-!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/K66zKsT89)"
+!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/x77WEWahs)"
 
 ??? question "What is `smoot`?"
 

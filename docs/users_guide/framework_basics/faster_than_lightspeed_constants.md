@@ -61,13 +61,13 @@ constexpr auto speed_of_light_in_vacuum = 1 * si::si2019::speed_of_light_in_vacu
 
 QuantityOf<isq::permittivity_of_vacuum> auto q = 1 / (permeability_of_vacuum * pow<2>(speed_of_light_in_vacuum));
 
-std::cout << "permittivity of vacuum = " << q << " = " << q.in(F / m) << "\n";
+std::println("permittivity of vacuum = {} = {:{%N:.3e} %U}", q, q.in(F / m));
 ```
 
 The above first prints the following:
 
 ```text
-permittivity of vacuum = 1  μ₀⁻¹ c⁻² = 8.85419e-12 F/m
+permittivity of vacuum = 1  μ₀⁻¹ c⁻² = 8.854e-12 F/m
 ```
 
 As we can clearly see, all the calculations above were just about multiplying and dividing

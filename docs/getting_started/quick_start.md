@@ -149,7 +149,7 @@ This introduces an additional type-safety.
 === "C++ modules"
 
     ```cpp
-    #include <iostream>
+    #include <print>
     import mp_units;
 
     int main()
@@ -157,32 +157,32 @@ This introduces an additional type-safety.
       using namespace mp_units;
       using namespace mp_units::si::unit_symbols;
       using namespace mp_units::usc::unit_symbols;
-
+    
       quantity_point temp{20. * deg_C};
-      std::cout << "Temperature: "
-                  << temp.quantity_from_zero() << " ("
-                  << temp.in(deg_F).quantity_from_zero() << ")\n";
+      std::println("Temperature: {} ({})",
+                   temp.quantity_from_zero(),
+                   temp.in(deg_F).quantity_from_zero());
     }
     ```
 
 === "Header files"
 
     ```cpp
-    #include <mp-units/ostream.h>
+    #include <mp-units/format.h>
     #include <mp-units/systems/si/si.h>
     #include <mp-units/systems/usc/usc.h>
-    #include <iostream>
-
+    #include <print>
+    
     int main()
     {
       using namespace mp_units;
       using namespace mp_units::si::unit_symbols;
       using namespace mp_units::usc::unit_symbols;
-
+    
       quantity_point temp{20. * deg_C};
-      std::cout << "Temperature: "
-                  << temp.quantity_from_zero() << " ("
-                  << temp.in(deg_F).quantity_from_zero() << ")\n";
+      std::println("Temperature: {} ({})",
+                   temp.quantity_from_zero(),
+                   temp.in(deg_F).quantity_from_zero());
     }
     ```
 

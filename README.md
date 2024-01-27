@@ -82,7 +82,7 @@ static_assert(10 * km / (5 * km) == 2 * one);
 static_assert(1000 / (1 * s) == 1 * kHz);
 ```
 
-_Try it on the [Compiler Explorer](https://godbolt.org/z/81Ev7qhTd)._
+_Try it on the [Compiler Explorer](https://godbolt.org/z/ox8a8dGTz)._
 
 This library heavily uses C++20 features (concepts, classes as NTTPs, ...). Thanks to
 them the user gets a powerful but still easy to use interfaces and all unit conversions
@@ -90,8 +90,10 @@ and dimensional analysis can be performed without sacrificing on runtime perform
 accuracy. Please see the below example for a quick preview of basic library features:
 
 ```cpp
+#include <format>
 #include <iomanip>
 #include <iostream>
+#include <print>
 import mp_units;
 
 using namespace mp_units;
@@ -118,11 +120,11 @@ int main()
   std::cout << v1 << '\n';                                        // 110 km/h
   std::cout << std::setw(10) << std::setfill('*') << v2 << '\n';  // ***70 mi/h
   std::cout << std::format("{:*^10}\n", v3);                      // *110 km/h*
-  std::cout << std::format("{:%N in %U}\n", v4);                  // 70 in mi/h
-  std::cout << std::format("{:{%N:.2f}%?%U}\n", v5);              // 30.56 in m/s
-  std::cout << std::format("{:{%N:.2f}%?{%U:n}}\n", v6);          // 31.29 in m s⁻¹
-  std::cout << std::format("{:%N}\n", v7);                        // 31
+  std::println("{:%N in %U}", v4);                                // 70 in mi/h
+  std::println("{:{%N:.2f}%?%U}", v5);                            // 30.56 m/s
+  std::println("{:{%N:.2f}%?{%U:n}}", v6);                        // 31.29 m s⁻¹
+  std::println("{:%N}", v7);                                      // 31
 }
 ```
 
-_Try it on the [Compiler Explorer](https://godbolt.org/z/Tsesa1Pvq)._
+_Try it on the [Compiler Explorer](https://godbolt.org/z/hWzxf1j1M)._

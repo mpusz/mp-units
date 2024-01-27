@@ -56,15 +56,15 @@ Here is a simple example showing how to deal with such quantities:
 === "C++ modules"
 
     ```cpp
-    #include <iostream>
+    #include <print>
     import mp_units;
 
     using namespace mp_units;
 
-    constexpr quantity<si::metre / si::second> avg_speed(quantity<si::metre> d,
-                                                        quantity<si::second> t)
+    constexpr quantity<si::metre / si::second> avg_speed(quantity<si::metre> dist,
+                                                         quantity<si::second> time)
     {
-      return d / t;
+      return dist / time;
     }
 
     int main()
@@ -75,25 +75,24 @@ Here is a simple example showing how to deal with such quantities:
       const quantity duration = 2 * h;
       const quantity speed = avg_speed(distance, duration);
 
-      std::cout << "A car driving " << distance << " in " << duration
-                << " has an average speed of " << speed
-                << " (" << speed.in(km / h) << ")\n";
+      std::println("A car driving {} in {} has an average speed of {:{%N:.4} %U} ({:{%N:.4} %U})",
+                   distance, duration, speed, speed.in(km / h));
     }
     ```
 
 === "Header files"
 
     ```cpp
-    #include <mp-units/ostream.h>
+    #include <mp-units/format.h>
     #include <mp-units/systems/si/si.h>
-    #include <iostream>
+    #include <print>
 
     using namespace mp_units;
 
-    constexpr quantity<si::metre / si::second> avg_speed(quantity<si::metre> d,
-                                                        quantity<si::second> t)
+    constexpr quantity<si::metre / si::second> avg_speed(quantity<si::metre> dist,
+                                                         quantity<si::second> time)
     {
-      return d / t;
+      return dist / time;
     }
 
     int main()
@@ -104,19 +103,18 @@ Here is a simple example showing how to deal with such quantities:
       const quantity duration = 2 * h;
       const quantity speed = avg_speed(distance, duration);
 
-      std::cout << "A car driving " << distance << " in " << duration
-                << " has an average speed of " << speed
-                << " (" << speed.in(km / h) << ")\n";
+      std::println("A car driving {} in {} has an average speed of {:{%N:.4} %U} ({:{%N:.4} %U})",
+                   distance, duration, speed, speed.in(km / h));
     }
     ```
 
 The code above prints:
 
 ```text
-A car driving 110 km in 2 h has an average speed of 15.2778 m/s (55 km/h)
+A car driving 110 km in 2 h has an average speed of 15.28 m/s (55 km/h)
 ```
 
-!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/zWe8ecf93)"
+!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/svdof9dv4)"
 
 
 ### User-provided unit wrappers
@@ -145,10 +143,10 @@ compile-time.
 For example, in case we will make the following error:
 
 ```cpp hl_lines="4"
-constexpr quantity<si::metre / si::second> avg_speed(quantity<si::metre> d,
-                                                     quantity<si::second> t)
+constexpr quantity<si::metre / si::second> avg_speed(quantity<si::metre> dist,
+                                                     quantity<si::second> time)
 {
-  return d * t;  // (1)!
+  return dist * time;  // (1)!
 }
 ```
 
@@ -157,12 +155,12 @@ constexpr quantity<si::metre / si::second> avg_speed(quantity<si::metre> d,
 the following compilation error message will be provided:
 
 ```text
-In function 'constexpr mp_units::quantity<mp_units::derived_unit<mp_units::si::metre, mp_units::per<mp_units::si::second> >()> avg_speed(mp_units::quantity<mp_units::si::metre()>, mp_units::quantity<mp_units::si::second()>)':
-error: could not convert 'mp_units::operator*<si::metre(), double, si::second(), double>(d, t)' from 'quantity<mp_units::derived_unit<mp_units::si::metre, mp_units::si::second>(),[...]>' to 'quantity<mp_units::derived_unit<mp_units::si::metre, mp_units::per<mp_units::si::second> >(),[...]>'
-   11 |   return d * t;
-      |          ~~^~~
-      |            |
-      |            quantity<mp_units::derived_unit<mp_units::si::metre, mp_units::si::second>(),[...]>
+error: no viable conversion from returned value of type
+       'quantity<mp_units::derived_unit<mp_units::si::metre, mp_units::si::second>{{{}}}, [...]>'
+       to function return type
+       'quantity<mp_units::derived_unit<mp_units::si::metre, mp_units::per<mp_units::si::second>>{{{}}}, [...]>'
+   10 |   return dist * time;
+      |          ^~~~~~~~~~~
 ```
 
 ## Typed quantities
@@ -177,16 +175,16 @@ The previous example can be re-typed using typed quantities in the following way
 === "C++ modules"
 
     ```cpp
-    #include <iostream>
+    #include <print>
     import mp_units;
 
     using namespace mp_units;
     using namespace mp_units::si::unit_symbols;
 
-    constexpr quantity<isq::speed[m / s]> avg_speed(quantity<isq::length[m]> d,
-                                                    quantity<isq::time[s]> t)
+    constexpr quantity<isq::speed[m / s]> avg_speed(quantity<isq::length[m]> dist,
+                                                    quantity<isq::time[s]> time)
     {
-      return d / t;
+      return dist / time;
     }
 
     int main()
@@ -195,57 +193,55 @@ The previous example can be re-typed using typed quantities in the following way
       const quantity duration = isq::time(2 * h);
       const quantity speed = avg_speed(distance, duration);
 
-      std::cout << "A car driving " << distance << " in " << duration
-                << " has an average speed of " << speed
-                << " (" << speed.in(km / h) << ")\n";
+      std::println("A car driving {} in {} has an average speed of {:{%N:.4} %U} ({:{%N:.4} %U})",
+                   distance, duration, speed, speed.in(km / h));
     }
     ```
 
 === "Header files"
 
     ```cpp
-    #include <mp-units/ostream.h>
+    #include <mp-units/format.h>
     #include <mp-units/systems/isq/isq.h>
     #include <mp-units/systems/si/si.h>
-    #include <iostream>
-
+    #include <print>
+    
     using namespace mp_units;
     using namespace mp_units::si::unit_symbols;
-
-    constexpr quantity<isq::speed[m / s]> avg_speed(quantity<isq::length[m]> d,
-                                                    quantity<isq::time[s]> t)
+    
+    constexpr quantity<isq::speed[m / s]> avg_speed(quantity<isq::length[m]> dist,
+                                                    quantity<isq::time[s]> time)
     {
-      return d / t;
+      return dist / time;
     }
-
+    
     int main()
     {
       const quantity distance = isq::distance(110 * km);
       const quantity duration = isq::time(2 * h);
       const quantity speed = avg_speed(distance, duration);
-
-      std::cout << "A car driving " << distance << " in " << duration
-                << " has an average speed of " << speed
-                << " (" << speed.in(km / h) << ")\n";
+    
+      std::println("A car driving {} in {} has an average speed of {:{%N:.4} %U} ({:{%N:.4} %U})",
+                   distance, duration, speed, speed.in(km / h));
     }
     ```
 
 ```text
-A car driving 110 km in 2 h has an average speed of 15.2778 m/s (55 km/h)
+A car driving 110 km in 2 h has an average speed of 15.28 m/s (55 km/h)
 ```
 
-!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/MWxG1j4Pc)"
+!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/3qdh3xhh7)"
 
 In case we will accidentally make the same calculation error as before, this time, we will
 get a bit longer error message, this time also containing information about the quantity type:
 
 ```log
-In function 'constexpr mp_units::quantity<mp_units::reference<mp_units::isq::speed(), mp_units::derived_unit<mp_units::si::metre, mp_units::per<mp_units::si::second> >()>()> avg_speed(mp_units::quantity<mp_units::reference<mp_units::isq::length(), mp_units::si::metre()>()>, mp_units::quantity<mp_units::reference<mp_units::isq::time(), mp_units::si::second()>()>)':
-error: could not convert 'mp_units::operator*<reference<isq::length(), si::metre()>(), double, reference<isq::time(), si::second()>(), double>(d, t)' from 'quantity<mp_units::reference<mp_units::derived_quantity_spec<mp_units::isq::length, mp_units::isq::time>(), mp_units::derived_unit<mp_units::si::metre, mp_units::si::second>()>(),[...]>' to 'quantity<mp_units::reference<mp_units::isq::speed(), mp_units::derived_unit<mp_units::si::metre, mp_units::per<mp_units::si::second> >()>(),[...]>'
-   12 |   return d * t;
-      |          ~~^~~
-      |            |
-      |            quantity<mp_units::reference<mp_units::derived_quantity_spec<mp_units::isq::length, mp_units::isq::time>(), mp_units::derived_unit<mp_units::si::metre, mp_units::si::second>()>(),[...]>
+error: no viable conversion from returned value of type
+       'quantity<reference<get_quantity_spec(metre{}) * struct time{{{}}}, metre{} * second{{}}>{}, [...]>'
+       to function return type
+       'quantity<reference<speed{}, derived_unit<metre, per<second>>{}>{}, [...]>'
+   12 |   return dist * time;
+      |          ^~~~~~~~~~~
 ```
 
 As we can see above, the compilation error is longer but still relatively easy to understand.
@@ -498,16 +494,21 @@ auto tank = RectangularStorageTank(horizontal_length(1'000 * mm),
 This time, a compiler provides the following compilation error:
 
 ```text
-In function 'int main()':
-error: no matching function for call to 'RectangularStorageTank::RectangularStorageTank(mp_units::quantity<mp_units::reference<horizontal_length(), mp_units::si::milli_<mp_units::si::metre()>()>(), int>, mp_units::quantity<mp_units::reference<mp_units::isq::height(), mp_units::si::milli_<mp_units::si::metre()>()>(), int>, mp_units::quantity<mp_units::reference<mp_units::isq::width(), mp_units::si::milli_<mp_units::si::metre()>()>(), int>)'
-   47 |                                      isq::width(500 * mm));
-      |                                                          ^
-note: candidate: 'constexpr RectangularStorageTank::RectangularStorageTank(const mp_units::quantity<mp_units::reference<horizontal_length(), mp_units::si::metre()>()>&, const mp_units::quantity<mp_units::reference<mp_units::isq::width(), mp_units::si::metre()>()>&, const mp_units::quantity<mp_units::reference<mp_units::isq::height(), mp_units::si::metre()>()>&)'
-   35 |   constexpr RectangularStorageTank(const quantity<horizontal_length[m]>& length,
-      |             ^~~~~~~~~~~~~~~~~~~~~~
-note:   no known conversion for argument 2 from 'mp_units::quantity<mp_units::reference<mp_units::isq::height(), mp_units::si::milli_<mp_units::si::metre()>()>(), int>' to 'const mp_units::quantity<mp_units::reference<mp_units::isq::width(), mp_units::si::metre()>()>&'
-   36 |                                    const quantity<isq::width[m]>& width,
-      |                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~
+<source>:53:15: error: no matching constructor for initialization of 'RectangularStorageTank'
+   53 |   auto tank = RectangularStorageTank(horizontal_length(1'000 * mm),
+      |               ^                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   54 |                                      isq::height(200 * mm),
+      |                                      ~~~~~~~~~~~~~~~~~~~~~~
+   55 |                                      isq::width(500 * mm));
+      |                                      ~~~~~~~~~~~~~~~~~~~~
+<source>:43:13: note: candidate constructor not viable: no known conversion from
+                'quantity<mp_units::reference<mp_units::isq::height{{{{{}}}}},
+                                              mp_units::si::milli_<mp_units::si::metre{{}}>{{{{}}}}>{}, int>' to
+                'const quantity<reference<width{}, metre{}>{}, (default) double>' for 2nd argument
+   43 |   constexpr RectangularStorageTank(const quantity<horizontal_length[m]>& length,
+      |             ^
+   44 |                                    const quantity<isq::width[m]>& width,
+      |                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ```
 
 What about derived quantities? In the above example, you probably noticed that we also defined
@@ -535,16 +536,15 @@ public:
 we will again get a compilation error message like this one:
 
 ```text
-In constructor 'constexpr RectangularStorageTank::RectangularStorageTank(const mp_units::quantity<mp_units::reference<horizontal_length(), mp_units::si::metre()>()>&, const mp_units::quantity<mp_units::reference<mp_units::isq::width(), mp_units::si::metre()>()>&, const mp_units::quantity<mp_units::reference<mp_units::isq::height(), mp_units::si::metre()>()>&)':
-error: no matching function for call to 'StorageTank::StorageTank(mp_units::quantity<mp_units::reference<mp_units::derived_quantity_spec<horizontal_length, mp_units::isq::height>(), mp_units::derived_unit<mp_units::power<mp_units::si::metre, 2> >()>(), double>, const mp_units::quantity<mp_units::reference<mp_units::isq::height(), mp_units::si::metre()>()>&)'
-   39 |       StorageTank(length * height, height)
-      |                                          ^
-note: candidate: 'constexpr StorageTank::StorageTank(const mp_units::quantity<mp_units::reference<horizontal_area(), mp_units::derived_unit<mp_units::power<mp_units::si::metre, 2> >()>()>&, const mp_units::quantity<mp_units::reference<mp_units::isq::height(), mp_units::si::metre()>()>&)'
-   16 |   constexpr StorageTank(const quantity<horizontal_area[m2]>& base,
-      |             ^~~~~~~~~~~
-<source>:16:62: note:   no known conversion for argument 1 from 'mp_units::quantity<mp_units::reference<mp_units::derived_quantity_spec<horizontal_length, mp_units::isq::height>(), mp_units::derived_unit<mp_units::power<mp_units::si::metre, 2> >()>(), double>' to 'const mp_units::quantity<mp_units::reference<horizontal_area(), mp_units::derived_unit<mp_units::power<mp_units::si::metre, 2> >()>()>&'
-   16 |   constexpr StorageTank(const quantity<horizontal_area[m2]>& base,
-      |                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+error: no matching constructor for initialization of 'StorageTank'
+   46 |     StorageTank(length * height, height)
+      |     ^           ~~~~~~~~~~~~~~~~~~~~~~~
+<source>:22:13: note: candidate constructor not viable: no known conversion from
+                'quantity<mp_units::reference<mp_units::derived_quantity_spec<horizontal_length, mp_units::isq::height>{{}, {{}}},
+                                              mp_units::derived_unit<mp_units::power<mp_units::si::metre, 2>>{{{}}}>{}, [...]>' to
+                'const quantity<reference<horizontal_area{}, derived_unit<power<metre, 2>>{}>{}, [...]>' for 1st argument
+   22 |   constexpr StorageTank(const quantity<horizontal_area[m2]>& base,
+      |             ^           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ```
 
 !!! tip
