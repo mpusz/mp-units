@@ -37,7 +37,6 @@ vscode:
     - hbenl.vscode-test-explorer
     - matepek.vscode-catch2-test-adapter
     - redhat.vscode-yaml
-    - ritwickdey.liveserver
     - ms-python.python
 
 # --------------------------------------------------------
@@ -85,8 +84,10 @@ tasks:
       exit
   - name: install python packages
     before: |
+      python -m venv ${PYTHON_VENV}
       source ${PYTHON_VENV}/bin/activate
       pip install -Ur requirements.txt
+      conan profile detect
       conan config install $PWD/.gitpod/conan
       gp sync-done python-init
       exit
@@ -122,5 +123,5 @@ tasks:
     init: |
       gp sync-await python-init
       source ${PYTHON_VENV}/bin/activate
-      mkdocs serve
-      echo "📚 Documentation generation done! You can open it by clicking on 'Go Live' in the VSCode status bar. 📚"
+      mkdocs serve &
+      echo "📚 Documentation generation done! You can open it by clicking on 'Open Preview' or 'Open Browser' in the VSCode dialog window. 📚"
