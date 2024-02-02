@@ -1,5 +1,5 @@
 image:
-  file: .gitpod.Dockerfile
+  file: .gitpod/Dockerfile
 
 # --------------------------------------------------------
 # exposing ports for VSCode Live Server
@@ -50,6 +50,15 @@ tasks:
       {
         "cmake.generator": "Ninja Multi-Config",
         "cmake.configureOnOpen": true,
+        "cmake.options.statusBarVisibility": "visible",
+        "cmake.options.advanced": {
+          "testPreset": {
+            "statusBarVisibility": "hidden"
+          },
+          "ctest": {
+            "statusBarVisibility": "hidden"
+          }
+        },
         "clang-format.executable": "/usr/bin/clang-format-15",
         "editor.tabSize": 2,
         "editor.formatOnSave": true,
@@ -74,117 +83,44 @@ tasks:
 
       EOF
       exit
-  - name: conan
+  - name: install python packages
     before: |
-      pip3 install -U conan
-      conan config init
-      conan profile update settings.compiler.libcxx=libstdc++11 default
-      conan profile update settings.compiler.cppstd=20 default
-      conan remote add -i 0 conan-mpusz https://mpusz.jfrog.io/artifactory/api/conan/conan-oss
-      pushd /workspace/.conan/profiles
-      cp default gcc10
-      cp default gcc11
-      cp default gcc12
-      cp default clang13
-      cp default clang14
-      cp default clang15
-      popd
-      conan profile update settings.compiler.version=10 gcc10
-      conan profile update 'conf.tools.build.compiler_executables={"c": "gcc-10", "cpp": "g++-10"}' gcc10
-      conan profile update settings.compiler.version=11 gcc11
-      conan profile update 'conf.tools.build.compiler_executables={"c": "gcc-11", "cpp": "g++-11"}' gcc11
-      conan profile update settings.compiler.version=11 gcc12
-      conan profile update 'conf.tools.build.compiler_executables={"c": "gcc-12", "cpp": "g++-12"}' gcc12
-      conan profile update settings.compiler=clang clang13
-      conan profile update settings.compiler.version=13 clang13
-      conan profile update settings.compiler.libcxx=libstdc++11 clang13
-      conan profile update 'conf.tools.build.compiler_executables={"c": "clang-13", "cpp": "clang++-13"}' clang13
-      conan profile update settings.compiler=clang clang14
-      conan profile update settings.compiler.version=14 clang14
-      conan profile update settings.compiler.libcxx=libstdc++11 clang14
-      conan profile update 'conf.tools.build.compiler_executables={"c": "clang-14", "cpp": "clang++-14"}' clang14
-      conan profile update settings.compiler=clang clang15
-      conan profile update settings.compiler.version=15 clang15
-      conan profile update settings.compiler.libcxx=libc++ clang15
-      conan profile update 'conf.tools.build.compiler_executables={"c": "clang-15", "cpp": "clang++-15"}' clang15
-      echo 'tools.cmake.cmaketoolchain:generator=Ninja Multi-Config' > /workspace/.conan/global.conf
-      echo 'tools.cmake.cmake_layout:build_folder_vars=["settings.compiler", "settings.compiler.version"]' >> /workspace/.conan/global.conf
-      gp sync-done conan-init
+      source ${PYTHON_VENV}/bin/activate
+      pip install -Ur requirements.txt
+      conan config install $PWD/.gitpod/conan
+      gp sync-done python-init
       exit
-  - name: gcc-10
+  - name: gcc-12-20
     init: |
-      gp sync-await conan-init
-      conan install . -pr gcc10 -c user.build:all=True -c user.build:skip_docs=True -b outdated
-      conan install . -pr gcc10 -c user.build:all=True -c user.build:skip_docs=True -b outdated -s build_type=Debug
-      cmake --preset gcc-10
-      cmake --build --preset gcc-10-release -j
-      cmake --build --preset gcc-10-debug -j
-      ctest -C Release
-      ctest -C Debug
-      echo "🛠️ gcc-10 pre-build done! You can close this terminal and use 'Build' button in the VSCode status bar for incremental builds. 🛠️"
-  - name: gcc-11
+      gp sync-await python-init
+      source ${PYTHON_VENV}/bin/activate
+      conan build . -pr gcc12 -c user.build:all=True -o use_fmtlib=True -b missing
+      conan build . -pr gcc12 -c user.build:all=True -o use_fmtlib=True -b missing -s build_type=Debug
+      echo "🛠️ gcc-12 pre-build done for C++20 and libfmt! You can close this terminal and use 'Build' button in the VSCode status bar for incremental builds. 🛠️"
+  - name: gcc-13-20
     init: |
-      gp sync-await conan-init
-      conan install . -pr gcc11 -c user.build:all=True -c user.build:skip_docs=True -b outdated
-      conan install . -pr gcc11 -c user.build:all=True -c user.build:skip_docs=True -b outdated -s build_type=Debug
-      cmake --preset gcc-11
-      cmake --build --preset gcc-11-release -j
-      cmake --build --preset gcc-11-debug -j
-      ctest -C Release
-      ctest -C Debug
-      echo "🛠️ gcc-11 pre-build done! You can close this terminal and use 'Build' button in the VSCode status bar for incremental builds. 🛠️"
-  - name: gcc-12
+      gp sync-await python-init
+      source ${PYTHON_VENV}/bin/activate
+      conan build . -pr gcc13 -c user.build:all=True -b missing
+      conan build . -pr gcc13 -c user.build:all=True -b missing -s build_type=Debug
+      echo "🛠️ gcc-13 pre-build done for C++20 and `std::format`! You can close this terminal and use 'Build' button in the VSCode status bar for incremental builds. 🛠️"
+  - name: clang-16-20
     init: |
-      gp sync-await conan-init
-      conan install . -pr gcc12 -c user.build:all=True -c user.build:skip_docs=True -b outdated
-      conan install . -pr gcc12 -c user.build:all=True -c user.build:skip_docs=True -b outdated -s build_type=Debug
-      cmake --preset gcc-12
-      cmake --build --preset gcc-12-release -j
-      cmake --build --preset gcc-12-debug -j
-      ctest -C Release
-      ctest -C Debug
-      echo "🛠️ gcc-12 pre-build done! You can close this terminal and use 'Build' button in the VSCode status bar for incremental builds. 🛠️"
-  - name: clang-13
+      gp sync-await python-init
+      source ${PYTHON_VENV}/bin/activate
+      conan build . -pr clang16 -c user.build:all=True -o use_fmtlib=True -b missing
+      conan build . -pr clang16 -c user.build:all=True -o use_fmtlib=True -b missing -s build_type=Debug
+      echo "🛠️ clang-16 pre-build done for C++20 and libfmt! You can close this terminal and use 'Build' button in the VSCode status bar for incremental builds. 🛠️"
+  - name: clang-17-20
     init: |
-      gp sync-await conan-init
-      conan install . -pr clang13 -c user.build:all=True -c user.build:skip_docs=True -b outdated
-      conan install . -pr clang13 -c user.build:all=True -c user.build:skip_docs=True -b outdated -s build_type=Debug
-      cmake --preset clang-13
-      cmake --build --preset clang-13-release -j
-      cmake --build --preset clang-13-debug -j
-      ctest -C Release
-      ctest -C Debug
-      echo "🛠️ clang-13 pre-build done! You can close this terminal and use 'Build' button in the VSCode status bar for incremental builds. 🛠️"
-  - name: clang-14
-    init: |
-      gp sync-await conan-init
-      conan install . -pr clang14 -c user.build:all=True -c user.build:skip_docs=True -b outdated
-      conan install . -pr clang14 -c user.build:all=True -c user.build:skip_docs=True -b outdated -s build_type=Debug
-      cmake --preset clang-14
-      cmake --build --preset clang-14-release -j
-      cmake --build --preset clang-14-debug -j
-      ctest -C Release
-      ctest -C Debug
-      echo "🛠️ clang-14 pre-build done! You can close this terminal and use 'Build' button in the VSCode status bar for incremental builds. 🛠️"
-  - name: clang-15
-    init: |
-      gp sync-await conan-init
-      conan install . -pr clang15 -c user.build:all=True -c user.build:skip_docs=True -b outdated
-      conan install . -pr clang15 -c user.build:all=True -c user.build:skip_docs=True -b outdated -s build_type=Debug
-      cmake --preset clang-15
-      cmake --build --preset clang-15-release -j
-      cmake --build --preset clang-15-debug -j
-      ctest -C Release
-      ctest -C Debug
-      echo "🛠️ clang-15 pre-build done! You can close this terminal and use 'Build' button in the VSCode status bar for incremental builds. 🛠️"
+      gp sync-await python-init
+      source ${PYTHON_VENV}/bin/activate
+      conan build . -pr clang17 -c user.build:all=True -o cxx_modules=True -b missing
+      conan build . -pr clang17 -c user.build:all=True -o cxx_modules=True -b missing -s build_type=Debug 
+      echo "🛠️ clang-17 pre-build done for C++20, `std::format`, and C++20 modules! You can close this terminal and use 'Build' button in the VSCode status bar for incremental builds. 🛠️"
   - name: documentation
     init: |
-      gp sync-await conan-init
-      pip3 install -Ur docs/requirements.txt
-      pip3 install -U sphinx-autobuild rstcheck esbonio
-      mkdir -p build/docs && cd build/docs
-      gp sync-await conan-gcc-install
-      conan install ../.. -e mp-units:CONAN_RUN_TESTS=True -b outdated
-      cmake ../.. --toolchain conan_toolchain.cmake
-      cmake --build . --target documentation --config Release -j
-      echo "📚 Documentation pre-build complete! You can open it by clicking on 'Go Live' in the VSCode status bar. 📚"
+      gp sync-await python-init
+      source ${PYTHON_VENV}/bin/activate
+      mkdocs serve
+      echo "📚 Documentation generation done! You can open it by clicking on 'Go Live' in the VSCode status bar. 📚"

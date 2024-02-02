@@ -1,0 +1,11 @@
+[settings]
+arch=x86_64
+build_type=Release
+compiler=clang
+compiler.cppstd=20
+compiler.libcxx=libc++
+compiler.version=16
+os=Linux
+
+[conf]
+tools.build:compiler_executables={"c": "clang-16", "cpp": "clang++-16"}
