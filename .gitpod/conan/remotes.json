@@ -1,14 +1,14 @@
 {
- "remotes": [
-  {
-   "name": "conancenter",
-   "url": "https://center.conan.io",
-   "verify_ssl": true
-  },
-  {
-   "name": "conan-gitpod-mp-units",
-   "url": "https://mpusz.jfrog.io/artifactory/api/conan/conan-gitpod-mp-units",
-   "verify_ssl": true
-  }
- ]
+  "remotes": [
+    {
+      "name": "conancenter",
+      "url": "https://center.conan.io",
+      "verify_ssl": true
+    },
+    {
+      "name": "conan-gitpod-mp-units",
+      "url": "https://mpusz.jfrog.io/artifactory/api/conan/conan-gitpod-mp-units",
+      "verify_ssl": true
+    }
+  ]
 }
