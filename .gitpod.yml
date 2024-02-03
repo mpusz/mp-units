@@ -2,11 +2,6 @@ image:
   file: .gitpod/Dockerfile
 
 # --------------------------------------------------------
-# exposing ports for VSCode Live Server
-ports:
-  - port: 5500
-
-# --------------------------------------------------------
 # using prebuilds for the container
 github:
   prebuilds:
@@ -65,8 +60,6 @@ tasks:
         "editor.guides.bracketPairs": "active",
         "restructuredtext.preview.scrollEditorWithPreview": false,
         "restructuredtext.preview.scrollPreviewWithEditor": false,
-        "liveServer.settings.root": "/build/docs/docs/sphinx/",
-        "esbonio.sphinx.confDir": "${workspaceFolder}/docs",
         "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
         "yaml.schemas": {
           "https://squidfunk.github.io/mkdocs-material/schema.json": "mkdocs.yml"
