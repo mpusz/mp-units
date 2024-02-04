@@ -70,7 +70,8 @@ tasks:
           "tag:yaml.org,2002:python/name:materialx.emoji.to_svg",
           "tag:yaml.org,2002:python/name:materialx.emoji.twemoji",
           "tag:yaml.org,2002:python/name:pymdownx.superfences.fence_code_format"
-        ]
+        ],
+        "workbench.startupEditor": "none"
       }
 
       EOF
@@ -82,6 +83,7 @@ tasks:
       pip install -Ur requirements.txt
       conan profile detect
       conan config install $PWD/.gitpod/conan
+      conan graph info .
       gp sync-done python-init
       exit
   - name: gcc-12-20
@@ -97,7 +99,7 @@ tasks:
       source ${PYTHON_VENV}/bin/activate
       conan build . -pr gcc13 -c user.build:all=True -b missing
       conan build . -pr gcc13 -c user.build:all=True -b missing -s build_type=Debug
-      echo "🛠️ gcc-13 pre-build done for C++20 and `std::format`! You can close this terminal and use 'Build' button in the VSCode status bar for incremental builds. 🛠️"
+      echo "🛠️ gcc-13 pre-build done for C++20 and 'std::format'! You can close this terminal and use 'Build' button in the VSCode status bar for incremental builds. 🛠️"
   - name: clang-16-20
     init: |
       gp sync-await python-init
@@ -111,10 +113,14 @@ tasks:
       source ${PYTHON_VENV}/bin/activate
       conan build . -pr clang17 -c user.build:all=True -o cxx_modules=True -b missing
       conan build . -pr clang17 -c user.build:all=True -o cxx_modules=True -b missing -s build_type=Debug
-      echo "🛠️ clang-17 pre-build done for C++20, `std::format`, and C++20 modules! You can close this terminal and use 'Build' button in the VSCode status bar for incremental builds. 🛠️"
+      echo "🛠️ clang-17 pre-build done for C++20, 'std::format', and C++20 modules! You can close this terminal and use 'Build' button in the VSCode status bar for incremental builds. 🛠️"
   - name: documentation
     init: |
       gp sync-await python-init
       source ${PYTHON_VENV}/bin/activate
       mkdocs serve &
       echo "📚 Documentation generation done! You can open it by clicking on 'Open Preview' or 'Open Browser' in the VSCode dialog window. 📚"
+  - name: open-contributing-guide
+    command: |
+      gp open CONTRIBUTING.md
+      exit
