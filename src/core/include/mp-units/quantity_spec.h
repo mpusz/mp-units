@@ -47,7 +47,7 @@ template<QuantitySpec QS, Unit U>
   if constexpr (detail::QuantityKindSpec<QS>)
     return u;
   else
-    return reference<QS{}, U{}>{};
+    return reference<QS, U>{};
 }
 
 // TODO revise the note in the below comment
@@ -121,7 +121,7 @@ struct quantity_spec_interface {
              (explicitly_convertible(std::remove_reference_t<Q>::quantity_spec, self))
   {
     return quantity{std::forward<Q>(q).numerical_value_is_an_implementation_detail_,
-                    reference<self, std::remove_cvref_t<Q>::unit>{}};
+                    reference<Self, std::remove_const_t<decltype(std::remove_cvref_t<Q>::unit)>>{}};
   }
 #else
   template<typename Self_ = Self, UnitOf<Self_{}> U>
@@ -136,7 +136,7 @@ struct quantity_spec_interface {
   [[nodiscard]] constexpr Quantity auto operator()(Q&& q) const
   {
     return quantity{std::forward<Q>(q).numerical_value_is_an_implementation_detail_,
-                    reference<Self{}, std::remove_cvref_t<Q>::unit>{}};
+                    reference<Self, std::remove_const_t<decltype(std::remove_cvref_t<Q>::unit)>>){}};
   }
 #endif
 };
