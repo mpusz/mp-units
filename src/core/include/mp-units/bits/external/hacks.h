@@ -80,7 +80,14 @@
 
 #endif
 
-#if (defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 17)
+// TODO revise the below when clang-18 is released
+#if MP_UNITS_COMP_CLANG >= 18 && !defined __cpp_explicit_this_parameter
+
+#define __cpp_explicit_this_parameter
+
+#endif
+
+#if defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 17
 
 #define MP_UNITS_CONSTEVAL constexpr
 
