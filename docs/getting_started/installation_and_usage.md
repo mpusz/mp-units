@@ -194,9 +194,9 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
 
 ### Conan configuration properties
 
-[`user.build:all`](#user-build-all){ #user-build-all }
+[`user.mp-units.build:all`](#user.mp-units.build-all){ #user.mp-units.build-all }
 
-:   [:octicons-tag-24: 0.8.0][build all support] · :octicons-milestone-24: `True`/`False` (Default: `False`)
+:   [:octicons-tag-24: 2.2.0][build all support] · :octicons-milestone-24: `True`/`False` (Default: `False`)
 
     Enables compilation of all the source code, including tests and examples. To support this, it requires some additional Conan build dependencies described in
     [Repository Structure and Dependencies](#repository-structure-and-dependencies).
@@ -204,19 +204,19 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
     [`tools.build:skip_test`](https://docs.conan.io/2/reference/commands/config.html?highlight=tools.build:skip_test#conan-config-list)
     configuration property is set to `True`).
 
-    [build all support]: https://github.com/mpusz/mp-units/releases/tag/v0.8.0
+    [build all support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 
 
-[`user.build:skip_la`](#user-skip-la){ #user-skip-la }
+[`user.mp-units.build:skip_la`](#user-skip-la){ #user-skip-la }
 
-:   [:octicons-tag-24: 0.8.0][skip la support] · :octicons-milestone-24: `True`/`False` (Default: `False`)
+:   [:octicons-tag-24: 2.2.0][skip la support] · :octicons-milestone-24: `True`/`False` (Default: `False`)
 
-    If `user.build:all` is enabled, among others, Conan installs the external
+    If `user.mp-units.build:all` is enabled, among others, Conan installs the external
     [wg21-linear_algebra](https://conan.io/center/recipes/wg21-linear_algebra)
     dependency and enables the compilation of linear algebra-based tests and usage examples.
     Such behavior can be disabled with this option.
 
-    [skip la support]: https://github.com/mpusz/mp-units/releases/tag/v0.8.0
+    [skip la support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 
 
 ### CMake options
@@ -453,11 +453,11 @@ In case you would like to build all the **mp-units** source code (with unit test
 you should:
 
 1. Use the _CMakeLists.txt_ from the top-level directory.
-2. Run Conan with [`user.build:all`](#user-build-all) = `True`.
+2. Run Conan with [`user.mp-units.build:all`](#user.mp-units.build-all) = `True`.
 
 ```shell
 git clone https://github.com/mpusz/mp-units.git && cd units
-conan build . -pr <your_conan_profile> -s compiler.cppstd=23 -o cxx_modules=True -c user.build:all=True -b missing
+conan build . -pr <your_conan_profile> -s compiler.cppstd=23 -o cxx_modules=True -c user.mp-units.build:all=True -b missing
 ```
 
 The above will download and install all of the dependencies needed for the development of the library,
@@ -504,7 +504,7 @@ After that, you can either:
 To test CMake installation and Conan packaging or create a Conan package run:
 
 ```shell
-conan create . --user <username> --channel <channel> -pr <your_conan_profile> -s compiler.cppstd=20 -o cxx_modules=True -c user.build:all=True -b missing
+conan create . --user <username> --channel <channel> -pr <your_conan_profile> -s compiler.cppstd=20 -o cxx_modules=True -c user.mp-units.build:all=True -b missing
 ```
 
 The above will create a Conan package and run tests provided in _./test_package_ directory.

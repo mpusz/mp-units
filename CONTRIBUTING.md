@@ -56,12 +56,20 @@ After the script is done please make sure to stage all those changes to git comm
 The simplest way to verify if all targets build correctly and all unit tests pass is to run:
 
 ```bash
-conan build . -pr <your_conan_profile> -s compiler.cppstd=23 -o cxx_modules=True -c user.build:all=True -b missing
+conan build . -pr <your_conan_profile> -s compiler.cppstd=23 -o cxx_modules=True -c user.mp-units.build:all=True -b missing
 ```
 
 as described in the
 [Installation and Usage](https://mpusz.github.io/mp-units/latest/getting_started/installation_and_usage/#contributing-or-just-building-all-the-tests-and-examples)
 chapter of our documentation.
+
+_Hint:_ To ensure that that we always build all the targets and to save some typing of the Conan commands,
+it is a good practice to set the following in the `~/.conan2/global.conf`:
+
+```text
+user.mp-units.build:all=True
+```
+
 
 ### Backward Compatibility
 
