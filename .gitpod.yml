@@ -26,8 +26,14 @@ tasks:
       mkdir -p "$PWD/.vscode";
       cat << 'EOF' > "$PWD/.vscode/settings.json"
       {
+        "workbench.startupEditor": "none",
+        "editor.tabSize": 2,
+        "editor.formatOnSave": true,
+        "editor.bracketPairColorization.enabled": true,
+        "editor.guides.bracketPairs": "active",
         "cmake.generator": "Ninja Multi-Config",
         "cmake.configureOnOpen": true,
+        "cmake.useCMakePresets": "always",
         "cmake.options.statusBarVisibility": "visible",
         "cmake.options.advanced": {
           "testPreset": {
@@ -37,13 +43,7 @@ tasks:
             "statusBarVisibility": "hidden"
           }
         },
-        "clang-format.executable": "/usr/bin/clang-format-15",
-        "editor.tabSize": 2,
-        "editor.formatOnSave": true,
-        "editor.bracketPairColorization.enabled": true,
-        "editor.guides.bracketPairs": "active",
-        "restructuredtext.preview.scrollEditorWithPreview": false,
-        "restructuredtext.preview.scrollPreviewWithEditor": false,
+        "clang-format.executable": "/usr/bin/clang-format-17",
         "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
         "yaml.schemas": {
           "https://squidfunk.github.io/mkdocs-material/schema.json": "mkdocs.yml"
@@ -54,8 +54,7 @@ tasks:
           "tag:yaml.org,2002:python/name:materialx.emoji.to_svg",
           "tag:yaml.org,2002:python/name:materialx.emoji.twemoji",
           "tag:yaml.org,2002:python/name:pymdownx.superfences.fence_code_format"
-        ],
-        "workbench.startupEditor": "none"
+        ]
       }
 
       EOF
