@@ -34,7 +34,7 @@ using namespace mp_units::si::unit_symbols;
 
 TEST_CASE("std::atomic works with dimensioned types", "[atomic][assignment]")
 {
-  std::atomic<isq::area[m2]> a = 3.0 * isq::area[m2];
-  std::atomic<isq::area[m2]> b = 3.0 * isq::area[m2];
+  std::atomic<quantity<isq::area[m2]>> a = 3.0 * isq::area[m2];
+  std::atomic<quantity<isq::area[m2]>> b = 3.0 * isq::area[m2];
   REQUIRE(a == b);
 }
