@@ -21,9 +21,6 @@
 // SOFTWARE.
 
 #include <catch2/catch_all.hpp>
-#include <mp-units/math.h>
-#include <mp-units/ostream.h>
-#include <mp-units/systems/angular/angular.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si/unit_symbols.h>
 #include <mp-units/systems/si/units.h>
@@ -34,7 +31,7 @@ using namespace mp_units::si::unit_symbols;
 
 TEST_CASE("std::atomic works with dimensioned types", "[atomic][assignment]")
 {
-  std::atomic<quantity<isq::area[m2]>> a = 3.0 * isq::area[m2];
-  std::atomic<quantity<isq::area[m2]>> b = 3.0 * isq::area[m2];
-  REQUIRE(a == b);
+  std::atomic<quantity<isq::area[m2]>> a1 = 3.0 * isq::area[m2];
+  std::atomic<quantity<isq::area[m2]>> a2 = 3.0 * isq::area[m2];
+  REQUIRE(a1.load() == a2.load());
 }
