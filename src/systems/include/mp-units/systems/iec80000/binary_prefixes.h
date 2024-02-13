@@ -27,23 +27,23 @@
 namespace mp_units::iec80000 {
 
 // clang-format off
-template<PrefixableUnit auto U> struct kibi_ : prefixed_unit<"Ki", mag_power<2, 10>, U> {};
-template<PrefixableUnit auto U> struct mebi_ : prefixed_unit<"Mi", mag_power<2, 20>, U> {};
-template<PrefixableUnit auto U> struct gibi_ : prefixed_unit<"Gi", mag_power<2, 30>, U> {};
-template<PrefixableUnit auto U> struct tebi_ : prefixed_unit<"Ti", mag_power<2, 40>, U> {};
-template<PrefixableUnit auto U> struct pebi_ : prefixed_unit<"Pi", mag_power<2, 50>, U> {};
-template<PrefixableUnit auto U> struct exbi_ : prefixed_unit<"Ei", mag_power<2, 60>, U> {};
-template<PrefixableUnit auto U> struct zebi_ : prefixed_unit<"Zi", mag_power<2, 70>, U> {};
-template<PrefixableUnit auto U> struct yobi_ : prefixed_unit<"Yi", mag_power<2, 80>, U> {};
+template<PrefixableUnit U> struct kibi_ : prefixed_unit<"Ki", mag_power<2, 10>, U{}> {};
+template<PrefixableUnit U> struct mebi_ : prefixed_unit<"Mi", mag_power<2, 20>, U{}> {};
+template<PrefixableUnit U> struct gibi_ : prefixed_unit<"Gi", mag_power<2, 30>, U{}> {};
+template<PrefixableUnit U> struct tebi_ : prefixed_unit<"Ti", mag_power<2, 40>, U{}> {};
+template<PrefixableUnit U> struct pebi_ : prefixed_unit<"Pi", mag_power<2, 50>, U{}> {};
+template<PrefixableUnit U> struct exbi_ : prefixed_unit<"Ei", mag_power<2, 60>, U{}> {};
+template<PrefixableUnit U> struct zebi_ : prefixed_unit<"Zi", mag_power<2, 70>, U{}> {};
+template<PrefixableUnit U> struct yobi_ : prefixed_unit<"Yi", mag_power<2, 80>, U{}> {};
 
-template<PrefixableUnit auto U> inline constexpr kibi_<U> kibi;
-template<PrefixableUnit auto U> inline constexpr mebi_<U> mebi;
-template<PrefixableUnit auto U> inline constexpr gibi_<U> gibi;
-template<PrefixableUnit auto U> inline constexpr tebi_<U> tebi;
-template<PrefixableUnit auto U> inline constexpr pebi_<U> pebi;
-template<PrefixableUnit auto U> inline constexpr exbi_<U> exbi;
-template<PrefixableUnit auto U> inline constexpr zebi_<U> zebi;
-template<PrefixableUnit auto U> inline constexpr yobi_<U> yobi;
+template<PrefixableUnit auto U> inline constexpr kibi_<std::remove_const_t<decltype(U)>> kibi;
+template<PrefixableUnit auto U> inline constexpr mebi_<std::remove_const_t<decltype(U)>> mebi;
+template<PrefixableUnit auto U> inline constexpr gibi_<std::remove_const_t<decltype(U)>> gibi;
+template<PrefixableUnit auto U> inline constexpr tebi_<std::remove_const_t<decltype(U)>> tebi;
+template<PrefixableUnit auto U> inline constexpr pebi_<std::remove_const_t<decltype(U)>> pebi;
+template<PrefixableUnit auto U> inline constexpr exbi_<std::remove_const_t<decltype(U)>> exbi;
+template<PrefixableUnit auto U> inline constexpr zebi_<std::remove_const_t<decltype(U)>> zebi;
+template<PrefixableUnit auto U> inline constexpr yobi_<std::remove_const_t<decltype(U)>> yobi;
 // clang-format on
 
 }  // namespace mp_units::iec80000

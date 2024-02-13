@@ -212,8 +212,8 @@ static_assert(convertible(kilojoule, joule));
 static_assert(kilojoule != joule);
 static_assert(kilojoule.symbol == "kJ");
 
-static_assert(is_of_type<si::kilo<metre>, si::kilo_<metre>>);
-static_assert(is_of_type<si::kilo<joule>, si::kilo_<joule>>);
+static_assert(is_of_type<si::kilo<metre>, si::kilo_<metre_>>);
+static_assert(is_of_type<si::kilo<joule>, si::kilo_<joule_>>);
 
 // TODO Should the below be a scaled version of metre^2?
 static_assert(is_of_type<kilometre * metre, derived_unit<kilometre_, metre_>>);       // !!!
@@ -264,7 +264,7 @@ static_assert(is_of_type<get_canonical_unit(km_2).reference_unit, metre_>);
 static_assert(get_canonical_unit(km_2).mag == mag<2000>);
 
 constexpr auto kJ_42 = mag<42> * si::kilo<joule>;
-static_assert(is_of_type<kJ_42, scaled_unit<mag<42>, si::kilo_<joule>>>);
+static_assert(is_of_type<kJ_42, scaled_unit<mag<42>, si::kilo_<joule_>>>);
 static_assert(
   is_of_type<get_canonical_unit(kJ_42).reference_unit, derived_unit<gram_, power<metre_, 2>, per<power<second_, 2>>>>);
 static_assert(get_canonical_unit(kJ_42).mag == mag<42'000'000>);
@@ -467,7 +467,7 @@ static_assert(!convertible(metre, metre* metre));
 
 // one
 static_assert(is_of_type<metre / metre, one_>);
-static_assert(is_of_type<si::kilo<metre> / metre, derived_unit<si::kilo_<metre>, per<metre_>>>);
+static_assert(is_of_type<si::kilo<metre> / metre, derived_unit<si::kilo_<metre_>, per<metre_>>>);
 static_assert(metre / metre == one);
 static_assert(hertz * second == one);
 static_assert(one * one == one);
@@ -509,7 +509,7 @@ static_assert(is_of_type<pow<1, 2>(metre / (second * second)), derived_unit<powe
 static_assert(is_of_type<kilometre * kilometre, derived_unit<power<kilometre_, 2>>>);
 
 static_assert(is_of_type<pow<2>(kilometre), derived_unit<power<kilometre_, 2>>>);
-static_assert(is_of_type<pow<2>(si::kilo<metre>), derived_unit<power<si::kilo_<metre>, 2>>>);
+static_assert(is_of_type<pow<2>(si::kilo<metre>), derived_unit<power<si::kilo_<metre_>, 2>>>);
 static_assert(is_of_type<pow<2>(hour), derived_unit<power<hour_, 2>>>);
 static_assert(
   is_of_type<pow<2>(mag<3600>* second), scaled_unit<mag<3600> * mag<3600>, derived_unit<power<second_, 2>>>>);
