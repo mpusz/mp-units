@@ -444,11 +444,15 @@ namespace detail {
 template<typename T>
 concept QuantitySpecWithNoSpecifiers = detail::NamedQuantitySpec<T> || detail::IntermediateDerivedQuantitySpec<T>;
 
+template<QuantitySpec Q>
+[[nodiscard]] consteval QuantitySpec auto get_kind_tree_root(Q q);
+
 }  // namespace detail
 
 #ifdef __cpp_explicit_this_parameter
 template<auto Q>
-  requires(detail::QuantitySpecWithNoSpecifiers<std::remove_const_t<decltype(Q)>>) && (get_kind(Q) == Q)
+  requires(detail::QuantitySpecWithNoSpecifiers<std::remove_const_t<decltype(Q)>>) &&
+          (detail::detail::get_kind_tree_root(Q) == Q)
 struct kind_of_<Q> : std::remove_const_t<decltype(Q)> {
   static constexpr auto _quantity_spec_ = Q;
 };
@@ -456,10 +460,11 @@ struct kind_of_<Q> : std::remove_const_t<decltype(Q)> {
 
 #if MP_UNITS_COMP_CLANG
 template<auto Q>
-  requires detail::QuantitySpecWithNoSpecifiers<std::remove_cvref_t<decltype(Q)>> && (get_kind(Q) == Q)
+  requires detail::QuantitySpecWithNoSpecifiers<std::remove_cvref_t<decltype(Q)>> &&
+           (detail::get_kind_tree_root(Q) == Q)
 #else
 template<detail::QuantitySpecWithNoSpecifiers auto Q>
-  requires(get_kind(Q) == Q)
+  requires(detail::get_kind_tree_root(Q) == Q)
 #endif
 struct kind_of_<Q> : quantity_spec<kind_of_<Q>, Q> {
   static constexpr auto _quantity_spec_ = Q;
@@ -467,7 +472,7 @@ struct kind_of_<Q> : quantity_spec<kind_of_<Q>, Q> {
 #endif
 
 template<detail::QuantitySpecWithNoSpecifiers auto Q>
-  requires(get_kind(Q) == Q)
+  requires(detail::get_kind_tree_root(Q) == Q)
 inline constexpr kind_of_<Q> kind_of;
 
 namespace detail {
@@ -484,6 +489,15 @@ template<QuantitySpec auto... From, QuantitySpec Q>
     return q;
 }
 
+template<QuantitySpec Q>
+[[nodiscard]] consteval auto remove_kind(Q q)
+{
+  if constexpr (detail::QuantityKindSpec<Q>)
+    return Q::_quantity_spec_;
+  else
+    return q;
+}
+
 }  // namespace detail
 
 // Operators
@@ -493,7 +507,7 @@ template<QuantitySpec Lhs, QuantitySpec Rhs>
 {
   return detail::clone_kind_of<Lhs{}, Rhs{}>(
     detail::expr_multiply<derived_quantity_spec, struct dimensionless, detail::type_list_of_quantity_spec_less>(
-      remove_kind(lhs), remove_kind(rhs)));
+      detail::remove_kind(lhs), detail::remove_kind(rhs)));
 }
 
 template<QuantitySpec Lhs, QuantitySpec Rhs>
@@ -501,7 +515,7 @@ template<QuantitySpec Lhs, QuantitySpec Rhs>
 {
   return detail::clone_kind_of<Lhs{}, Rhs{}>(
     detail::expr_divide<derived_quantity_spec, struct dimensionless, detail::type_list_of_quantity_spec_less>(
-      remove_kind(lhs), remove_kind(rhs)));
+      detail::remove_kind(lhs), detail::remove_kind(rhs)));
 }
 
 template<QuantitySpec Lhs, QuantitySpec Rhs>
@@ -538,13 +552,13 @@ template<std::intmax_t Num, std::intmax_t Den = 1, QuantitySpec Q>
   else if constexpr (detail::IntermediateDerivedQuantitySpec<Q>)
     return detail::clone_kind_of<Q{}>(
       detail::expr_pow<Num, Den, derived_quantity_spec, struct dimensionless, detail::type_list_of_quantity_spec_less>(
-        remove_kind(q)));
+        detail::remove_kind(q)));
   else if constexpr (Den == 1)
     return detail::clone_kind_of<Q{}>(
-      derived_quantity_spec<power<std::remove_const_t<decltype(remove_kind(Q{}))>, Num>>{});
+      derived_quantity_spec<power<std::remove_const_t<decltype(detail::remove_kind(Q{}))>, Num>>{});
   else
     return detail::clone_kind_of<Q{}>(
-      derived_quantity_spec<power<std::remove_const_t<decltype(remove_kind(Q{}))>, Num, Den>>{});
+      derived_quantity_spec<power<std::remove_const_t<decltype(detail::remove_kind(Q{}))>, Num, Den>>{});
 }
 
 
@@ -1315,8 +1329,8 @@ template<QuantitySpec From, QuantitySpec To>
   else if constexpr (From{} == To{})
     return yes;
   else if constexpr (QuantityKindSpec<From> || QuantityKindSpec<To>) {
-    constexpr auto from_kind = get_kind(From{});
-    constexpr auto to_kind = get_kind(To{});
+    constexpr auto from_kind = get_kind_tree_root(From{});
+    constexpr auto to_kind = get_kind_tree_root(To{});
     constexpr auto exploded_kind_result = [](specs_convertible_result res) {
       using enum specs_convertible_result;
       return res == no ? no : yes;
@@ -1327,11 +1341,11 @@ template<QuantitySpec From, QuantitySpec To>
       return convertible_impl(from_kind, to_kind);
     else if constexpr (get_complexity(from_kind) > get_complexity(to_kind))
       return exploded_kind_result(
-        convertible_impl(get_kind(explode<get_complexity(to_kind)>(from_kind).quantity), to_kind));
+        convertible_impl(get_kind_tree_root(explode<get_complexity(to_kind)>(from_kind).quantity), to_kind));
     else
       return exploded_kind_result(
-        convertible_impl(from_kind, get_kind(explode<get_complexity(from_kind)>(to_kind).quantity)));
-  } else if constexpr (NestedQuantityKindSpecOf<get_kind(To{}), from> && get_kind(To{}) == To{})
+        convertible_impl(from_kind, get_kind_tree_root(explode<get_complexity(from_kind)>(to_kind).quantity)));
+  } else if constexpr (NestedQuantityKindSpecOf<get_kind_tree_root(To{}), from> && get_kind_tree_root(To{}) == To{})
     return yes;
   else if constexpr (NamedQuantitySpec<From> && NamedQuantitySpec<To>) {
     if constexpr (have_common_base(From{}, To{})) {
@@ -1401,8 +1415,8 @@ template<QuantitySpec QS1, QuantitySpec QS2>
 namespace detail {
 
 template<QuantitySpec Q>
-  requires requires(Q q) { get_kind(q); }
-using to_kind = std::remove_const_t<decltype(get_kind(Q{}))>;
+  requires requires(Q q) { get_kind_tree_root(q); }
+using to_kind = std::remove_const_t<decltype(get_kind_tree_root(Q{}))>;
 
 #ifdef __cpp_explicit_this_parameter
 template<NamedQuantitySpec auto QS, auto... Args>
@@ -1415,19 +1429,8 @@ template<typename Self, NamedQuantitySpec auto QS, auto... Args>
   return contains<struct is_kind, Args...>();
 }
 
-}  // namespace detail
-
 template<QuantitySpec Q>
-[[nodiscard]] consteval auto remove_kind(Q q)
-{
-  if constexpr (detail::QuantityKindSpec<Q>)
-    return Q::_quantity_spec_;
-  else
-    return q;
-}
-
-template<QuantitySpec Q>
-[[nodiscard]] consteval QuantitySpec auto get_kind(Q q)
+[[nodiscard]] consteval QuantitySpec auto get_kind_tree_root(Q q)
 {
   auto defined_as_kind = []<typename QQ>(QQ qq) {
     if constexpr (requires { detail::defined_as_kind(qq); })
@@ -1441,7 +1444,7 @@ template<QuantitySpec Q>
   } else if constexpr (defined_as_kind(Q{})) {
     return q;
   } else if constexpr (requires { Q::_parent_; }) {
-    return get_kind(Q::_parent_);
+    return get_kind_tree_root(Q::_parent_);
   } else if constexpr (detail::IntermediateDerivedQuantitySpec<Q>) {
     return detail::expr_map<detail::to_kind, derived_quantity_spec, struct dimensionless,
                             detail::type_list_of_quantity_spec_less>(q);
@@ -1451,20 +1454,29 @@ template<QuantitySpec Q>
   }
 }
 
+}  // namespace detail
+
+template<QuantitySpec Q>
+[[nodiscard]] consteval detail::QuantityKindSpec auto get_kind(Q q)
+{
+  return kind_of<detail::get_kind_tree_root(q)>;
+}
+
 [[nodiscard]] consteval QuantitySpec auto common_quantity_spec(QuantitySpec auto q) { return q; }
 
 template<QuantitySpec Q1, QuantitySpec Q2>
 [[nodiscard]] consteval QuantitySpec auto common_quantity_spec(Q1 q1, Q2 q2)
-  requires(implicitly_convertible(get_kind(q1), get_kind(q2)) || implicitly_convertible(get_kind(q2), get_kind(q1)))
+  requires(implicitly_convertible(get_kind_tree_root(q1), get_kind_tree_root(q2)) ||
+           implicitly_convertible(get_kind_tree_root(q2), get_kind_tree_root(q1)))
 {
-  using QQ1 = std::remove_const_t<decltype(remove_kind(q1))>;
-  using QQ2 = std::remove_const_t<decltype(remove_kind(q2))>;
+  using QQ1 = std::remove_const_t<decltype(detail::remove_kind(q1))>;
+  using QQ2 = std::remove_const_t<decltype(detail::remove_kind(q2))>;
   if constexpr (is_same_v<Q1, Q2>)
     return q1;
   else if constexpr (detail::NestedQuantityKindSpecOf<Q1{}, Q2{}>)
-    return remove_kind(q1);
+    return detail::remove_kind(q1);
   else if constexpr (detail::NestedQuantityKindSpecOf<Q2{}, Q1{}>)
-    return remove_kind(q2);
+    return detail::remove_kind(q2);
   else if constexpr ((detail::QuantityKindSpec<Q1> && !detail::QuantityKindSpec<Q2>) ||
                      (detail::IntermediateDerivedQuantitySpec<QQ1> && detail::NamedQuantitySpec<QQ2> &&
                       implicitly_convertible(Q1{}, Q2{})))
@@ -1479,10 +1491,10 @@ template<QuantitySpec Q1, QuantitySpec Q2>
     return q2;
   else if constexpr (implicitly_convertible(Q2{}, Q1{}))
     return q1;
-  else if constexpr (implicitly_convertible(get_kind(Q1{}), get_kind(Q2{})))
-    return get_kind(q2);
+  else if constexpr (implicitly_convertible(get_kind_tree_root(Q1{}), get_kind_tree_root(Q2{})))
+    return get_kind_tree_root(q2);
   else
-    return get_kind(q1);
+    return get_kind_tree_root(q1);
 }
 
 [[nodiscard]] consteval QuantitySpec auto common_quantity_spec(QuantitySpec auto q1, QuantitySpec auto q2,
