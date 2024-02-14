@@ -452,7 +452,7 @@ template<QuantitySpec Q>
 #ifdef __cpp_explicit_this_parameter
 template<auto Q>
   requires(detail::QuantitySpecWithNoSpecifiers<std::remove_const_t<decltype(Q)>>) &&
-          (detail::detail::get_kind_tree_root(Q) == Q)
+          (detail::get_kind_tree_root(Q) == Q)
 struct kind_of_<Q> : std::remove_const_t<decltype(Q)> {
   static constexpr auto _quantity_spec_ = Q;
 };
