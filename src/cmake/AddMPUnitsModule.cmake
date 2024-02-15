@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-cmake_minimum_required(VERSION 3.19)
+cmake_minimum_required(VERSION 3.23)
 
 function(validate_unparsed module prefix)
     if(${prefix}_UNPARSED_ARGUMENTS)
@@ -65,22 +65,17 @@ function(add_mp_units_module name target_name)
     target_compile_features(${target_name} ${${projectPrefix}TARGET_SCOPE} cxx_std_20)
     target_link_libraries(${target_name} ${${projectPrefix}TARGET_SCOPE} ${ARG_DEPENDENCIES})
     set_target_properties(${target_name} PROPERTIES EXPORT_NAME ${name})
-    add_library(mp-units::${name} ALIAS ${target_name})
 
     if(ARG_HEADERS)
         target_sources(
             ${target_name}
-            ${${projectPrefix}TARGET_SCOPE}
+            PUBLIC
             FILE_SET
             HEADERS
             BASE_DIRS
             ${CMAKE_CURRENT_SOURCE_DIR}/include
             FILES
             ${ARG_HEADERS}
-        )
-        target_include_directories(
-            ${target_name} ${unitsAsSystem} ${${projectPrefix}TARGET_SCOPE}
-            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> $<INSTALL_INTERFACE:include>
         )
     endif()
 
@@ -94,4 +89,6 @@ function(add_mp_units_module name target_name)
     else()
         install(TARGETS ${target_name} EXPORT mp-unitsTargets FILE_SET HEADERS)
     endif()
+
+    add_library(mp-units::${name} ALIAS ${target_name})
 endfunction()
