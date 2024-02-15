@@ -25,6 +25,10 @@ Many reasons make UDLs a poor choice for a physical units library:
     static_assert(std::is_same_v<decltype(d2)::rep, long double>);
     ```
 
+   When such UDL is intermixed in arithmetics with any quantity type of a shorter representation
+   type, it will always expand it to the longest one. In other words, such long type spreads until
+   all types use it everywhere.
+
 3. While increasing the coverage for the library, we learned that many unit symbols conflict with
    built-in types or numeric extensions. A few of those are: `F` (farad), `J` (joule), `W` (watt),
    `K` (kelvin), `d` (day), `l` or `L` (litre), `erg`, `ergps`. Usage of the `_` prefix would make

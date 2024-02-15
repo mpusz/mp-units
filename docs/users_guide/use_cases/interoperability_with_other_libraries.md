@@ -182,13 +182,10 @@ type trait:
 For example, for our `Timestamp` type, we could provide the following:
 
 ```cpp
-inline constexpr struct TimestampOrigin :
-    mp_units::absolute_point_origin<TimestampOrigin, mp_units::isq::time> {} TimestampOrigin;
-
 template<>
 struct mp_units::quantity_point_like_traits<Timestamp> {
   static constexpr auto reference = si::second;
-  static constexpr auto point_origin = TimestampOrigin;
+  static constexpr auto point_origin = default_point_origin(reference);
   using rep = decltype(Timestamp::seconds);
 
   static constexpr convert_implicitly<quantity<reference, rep>> to_quantity(Timestamp ts)
@@ -203,7 +200,7 @@ struct mp_units::quantity_point_like_traits<Timestamp> {
 };
 ```
 
-After that, we can check that the [`QuantityLike`](../framework_basics/concepts.md#QuantityLike)
+After that, we can check that the [`QuantityPointLike`](../framework_basics/concepts.md#QuantityPointLike)
 concept is satisfied:
 
 ```cpp
@@ -226,7 +223,7 @@ int main()
   // implicit conversion
   quantity_point qp = ts;
 
-  std::cout << qp.quantity_from(TimestampOrigin) << "\n";
+  std::cout << qp.quantity_from_zero() << "\n";
 
   // explicit conversion
   print(Timestamp(qp));
@@ -286,7 +283,7 @@ Here is an example of how interoperability described in this chapter can be used
 ```cpp
 using namespace std::chrono;
 
-std::chrono::sys_seconds ts_now = floor<seconds>(system_clock::now());
+sys_seconds ts_now = floor<seconds>(system_clock::now());
 
 quantity_point start_time = ts_now;
 quantity speed = 925. * km / h;
@@ -294,7 +291,7 @@ quantity distance = 8111. * km;
 quantity flight_time = distance / speed;
 quantity_point exp_end_time = start_time + flight_time;
 
-std::chrono::sys_seconds ts_end = value_cast<int>(exp_end_time.in(s));
+sys_seconds ts_end = value_cast<int>(exp_end_time.in(s));
 
 auto curr_time = zoned_time(current_zone(), ts_now);
 auto mst_time = zoned_time("America/Denver", ts_end);

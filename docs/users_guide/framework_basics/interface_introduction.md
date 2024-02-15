@@ -81,7 +81,7 @@ without having to introduce hundreds of types to predefine them.
 ## Value-based equations
 
 The **mp-units** library is based on C++20, significantly improving user experience. One of
-such improvements are value-based equations.
+such improvements is the usage of value-based equations.
 
 As we have learned above, the entities are being used as values in the code, and they compose.
 Moreover, derived entities can be defined in the library using such value-based equations.
