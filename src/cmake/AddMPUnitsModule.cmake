@@ -68,14 +68,7 @@ function(add_mp_units_module name target_name)
 
     if(ARG_HEADERS)
         target_sources(
-            ${target_name}
-            PUBLIC
-            FILE_SET
-            HEADERS
-            BASE_DIRS
-            ${CMAKE_CURRENT_SOURCE_DIR}/include
-            FILES
-            ${ARG_HEADERS}
+            ${target_name} PUBLIC FILE_SET HEADERS BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include FILES ${ARG_HEADERS}
         )
     endif()
 
