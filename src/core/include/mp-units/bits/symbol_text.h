@@ -32,11 +32,21 @@
 
 #include <gsl/gsl-lite.hpp>
 
+#if __cpp_lib_text_encoding
+#include <text_encoding>
+static_assert(std::text_encoding::literal().mib() == std::text_encoding::id::UTF8);
+#endif
+
 namespace mp_units {
 
 namespace detail {
 
-constexpr void validate_ascii_char([[maybe_unused]] char c) noexcept { gsl_Expects((c & 0x80) == 0); }
+constexpr void validate_ascii_char([[maybe_unused]] char c) noexcept
+{
+  // check if character belongs to basic character literal set
+  // https://en.cppreference.com/w/cpp/language/charset
+  gsl_Expects(c == 0x00 || (0x07 <= c && c <= 0x0D) || (0x20 <= c && c <= 0x7E));
+}
 
 template<std::size_t N>
 constexpr void validate_ascii_string([[maybe_unused]] const char (&s)[N + 1]) noexcept
@@ -45,6 +55,12 @@ constexpr void validate_ascii_string([[maybe_unused]] const char (&s)[N + 1]) no
   if constexpr (N != 0)
     for (size_t i = 0; i < N; ++i) validate_ascii_char(s[i]);
 #endif
+}
+
+template<std::size_t N>
+constexpr fixed_u8string<N> to_u8string(fixed_string<N> txt)
+{
+  return std::bit_cast<fixed_u8string<N>>(txt);
 }
 
 }  // namespace detail
@@ -57,37 +73,37 @@ constexpr void validate_ascii_string([[maybe_unused]] const char (&s)[N + 1]) no
  * representation. In the libary it is used to define symbols of units and prefixes.
  * Each symbol can have two versions: Unicode and ASCI-only.
  *
- * @tparam UnicodeCharT Character type to be used for a Unicode representation
  * @tparam N The size of a Unicode symbol
  * @tparam M The size of the ASCII-only symbol
  */
-template<typename UnicodeCharT, std::size_t N, std::size_t M>
+template<std::size_t N, std::size_t M>
 struct basic_symbol_text {
-  basic_fixed_string<UnicodeCharT, N> unicode_;
-  basic_fixed_string<char, M> ascii_;
+  fixed_u8string<N> unicode_;
+  fixed_string<M> ascii_;
 
-  constexpr explicit(false) basic_symbol_text(char txt) : unicode_(txt), ascii_(txt)
+  constexpr explicit(false) basic_symbol_text(char txt) : unicode_(static_cast<char8_t>(txt)), ascii_(txt)
   {
     detail::validate_ascii_char(txt);
   }
 
-  constexpr explicit(false) basic_symbol_text(const char (&txt)[N + 1]) : unicode_(txt), ascii_(txt)
+  constexpr explicit(false) basic_symbol_text(const char (&txt)[N + 1]) :
+      unicode_(detail::to_u8string(basic_fixed_string{txt})), ascii_(txt)
   {
     detail::validate_ascii_string<N>(txt);
   }
 
-  constexpr explicit(false) basic_symbol_text(const basic_fixed_string<char, N>& txt) : unicode_(txt), ascii_(txt)
+  constexpr explicit(false) basic_symbol_text(const fixed_string<N>& txt) :
+      unicode_(detail::to_u8string(txt)), ascii_(txt)
   {
     detail::validate_ascii_string<N>(txt.data_);
   }
 
-  constexpr basic_symbol_text(const UnicodeCharT (&u)[N + 1], const char (&a)[M + 1]) : unicode_(u), ascii_(a)
+  constexpr basic_symbol_text(const char8_t (&u)[N + 1], const char (&a)[M + 1]) : unicode_(u), ascii_(a)
   {
     detail::validate_ascii_string<M>(a);
   }
 
-  constexpr basic_symbol_text(const basic_fixed_string<UnicodeCharT, N>& u, const basic_fixed_string<char, M>& a) :
-      unicode_(u), ascii_(a)
+  constexpr basic_symbol_text(const fixed_u8string<N>& u, const fixed_string<M>& a) : unicode_(u), ascii_(a)
   {
     detail::validate_ascii_string<M>(a.data_);
   }
@@ -98,15 +114,15 @@ struct basic_symbol_text {
   [[nodiscard]] constexpr bool empty() const { return unicode().empty() && ascii().empty(); }
 
   template<std::size_t N2, std::size_t M2>
-  [[nodiscard]] constexpr friend basic_symbol_text<UnicodeCharT, N + N2, M + M2> operator+(
-    const basic_symbol_text& lhs, const basic_symbol_text<UnicodeCharT, N2, M2>& rhs)
+  [[nodiscard]] constexpr friend basic_symbol_text<N + N2, M + M2> operator+(const basic_symbol_text& lhs,
+                                                                             const basic_symbol_text<N2, M2>& rhs)
   {
-    return basic_symbol_text<UnicodeCharT, N + N2, M + M2>(lhs.unicode() + rhs.unicode(), lhs.ascii() + rhs.ascii());
+    return basic_symbol_text<N + N2, M + M2>(lhs.unicode() + rhs.unicode(), lhs.ascii() + rhs.ascii());
   }
 
-  template<typename UnicodeCharT2, std::size_t N2, std::size_t M2>
+  template<std::size_t N2, std::size_t M2>
   [[nodiscard]] friend constexpr auto operator<=>(const basic_symbol_text& lhs,
-                                                  const basic_symbol_text<UnicodeCharT2, N2, M2>& rhs) noexcept
+                                                  const basic_symbol_text<N2, M2>& rhs) noexcept
   {
     MP_UNITS_DIAGNOSTIC_PUSH
     MP_UNITS_DIAGNOSTIC_IGNORE_ZERO_AS_NULLPOINTER_CONSTANT
@@ -115,27 +131,26 @@ struct basic_symbol_text {
     return lhs.ascii() <=> rhs.ascii();
   }
 
-  template<typename UnicodeCharT2, std::size_t N2, std::size_t M2>
+  template<std::size_t N2, std::size_t M2>
   [[nodiscard]] friend constexpr bool operator==(const basic_symbol_text& lhs,
-                                                 const basic_symbol_text<UnicodeCharT2, N2, M2>& rhs) noexcept
+                                                 const basic_symbol_text<N2, M2>& rhs) noexcept
   {
     return lhs.unicode() == rhs.unicode() && lhs.ascii() == rhs.ascii();
   }
 };
 
-basic_symbol_text(char) -> basic_symbol_text<char, 1, 1>;
+basic_symbol_text(char) -> basic_symbol_text<1, 1>;
 
 template<std::size_t N>
-basic_symbol_text(const char (&)[N]) -> basic_symbol_text<char, N - 1, N - 1>;
+basic_symbol_text(const char (&)[N]) -> basic_symbol_text<N - 1, N - 1>;
 
 template<std::size_t N>
-basic_symbol_text(const basic_fixed_string<char, N>&) -> basic_symbol_text<char, N, N>;
+basic_symbol_text(const fixed_string<N>&) -> basic_symbol_text<N, N>;
 
-template<typename UnicodeCharT, std::size_t N, std::size_t M>
-basic_symbol_text(const UnicodeCharT (&)[N], const char (&)[M]) -> basic_symbol_text<UnicodeCharT, N - 1, M - 1>;
+template<std::size_t N, std::size_t M>
+basic_symbol_text(const char8_t (&)[N], const char (&)[M]) -> basic_symbol_text<N - 1, M - 1>;
 
-template<typename UnicodeCharT, std::size_t N, std::size_t M>
-basic_symbol_text(const basic_fixed_string<UnicodeCharT, N>&, const basic_fixed_string<char, M>&)
-  -> basic_symbol_text<UnicodeCharT, N, M>;
+template<std::size_t N, std::size_t M>
+basic_symbol_text(const fixed_u8string<N>&, const fixed_string<M>&) -> basic_symbol_text<N, M>;
 
 }  // namespace mp_units

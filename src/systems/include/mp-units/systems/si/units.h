@@ -70,7 +70,7 @@ inline constexpr struct watt : named_unit<"W", joule / second> {} watt;
 inline constexpr struct coulomb : named_unit<"C", ampere * second> {} coulomb;
 inline constexpr struct volt : named_unit<"V", watt / ampere> {} volt;
 inline constexpr struct farad : named_unit<"F", coulomb / volt> {} farad;
-inline constexpr struct ohm : named_unit<basic_symbol_text{"Ω", "ohm"}, volt / ampere> {} ohm;
+inline constexpr struct ohm : named_unit<basic_symbol_text{u8"Ω", "ohm"}, volt / ampere> {} ohm;
 inline constexpr struct siemens : named_unit<"S", one / ohm> {} siemens;
 inline constexpr struct weber : named_unit<"Wb", volt * second> {} weber;
 inline constexpr struct tesla : named_unit<"T", weber / square(metre)> {} tesla;
@@ -78,7 +78,7 @@ inline constexpr struct henry : named_unit<"H", weber / ampere> {} henry;
 
 inline constexpr struct ice_point : relative_point_origin<quantity_point{273'150 * milli<kelvin>}> {} ice_point;
 inline constexpr struct zeroth_degree_Celsius : decltype(ice_point) {} zeroth_degree_Celsius;
-inline constexpr struct degree_Celsius : named_unit<basic_symbol_text{"°C", "`C"}, kelvin, zeroth_degree_Celsius> {} degree_Celsius;
+inline constexpr struct degree_Celsius : named_unit<basic_symbol_text{u8"°C", "`C"}, kelvin, zeroth_degree_Celsius> {} degree_Celsius;
 
 inline constexpr struct lumen : named_unit<"lm", candela * steradian> {} lumen;
 inline constexpr struct lux : named_unit<"lx", lumen / square(metre)> {} lux;
@@ -98,9 +98,9 @@ inline constexpr struct minute : named_unit<"min", mag<60> * si::second> {} minu
 inline constexpr struct hour : named_unit<"h", mag<60> * minute> {} hour;
 inline constexpr struct day : named_unit<"d", mag<24> * hour> {} day;
 inline constexpr struct astronomical_unit : named_unit<"au", mag<149'597'870'700> * si::metre> {} astronomical_unit;
-inline constexpr struct degree : named_unit<basic_symbol_text{"°", "deg"}, mag_pi / mag<180> * si::radian> {} degree;
-inline constexpr struct arcminute : named_unit<basic_symbol_text{"′", "'"}, mag<ratio{1, 60}> * degree> {} arcminute;
-inline constexpr struct arcsecond : named_unit<basic_symbol_text{"″", "''"}, mag<ratio{1, 60}> * arcminute> {} arcsecond;
+inline constexpr struct degree : named_unit<basic_symbol_text{u8"°", "deg"}, mag_pi / mag<180> * si::radian> {} degree;
+inline constexpr struct arcminute : named_unit<basic_symbol_text{u8"′", "'"}, mag<ratio{1, 60}> * degree> {} arcminute;
+inline constexpr struct arcsecond : named_unit<basic_symbol_text{u8"″", "''"}, mag<ratio{1, 60}> * arcminute> {} arcsecond;
 inline constexpr struct are : named_unit<"a", square(si::deca<si::metre>)> {} are;
 #if MP_UNITS_COMP_MSVC
 inline constexpr struct hectare : si::hecto_<are> {} hectare;

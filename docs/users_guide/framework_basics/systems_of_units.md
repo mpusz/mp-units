@@ -188,5 +188,5 @@ inline constexpr struct mag_pi : magnitude<std::numbers::pi_v<long double>> {} m
 ```
 
 ```cpp
-inline constexpr struct degree : named_unit<basic_symbol_text{"°", "deg"}, mag_pi / mag<180> * si::radian> {} degree;
+inline constexpr struct degree : named_unit<{u8"°", "deg"}, mag_pi / mag<180> * si::radian> {} degree;
 ```

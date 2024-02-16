@@ -850,7 +850,7 @@ template<typename T, auto... Ms>
   return integer_part((detail::abs(power_of_2) < detail::abs(power_of_5)) ? power_of_2 : power_of_5);
 }
 
-inline constexpr basic_symbol_text base_multiplier("× 10", "x 10");
+inline constexpr basic_symbol_text base_multiplier(u8"× 10", "x 10");
 
 template<Magnitude auto M>
 [[nodiscard]] consteval auto magnitude_text()

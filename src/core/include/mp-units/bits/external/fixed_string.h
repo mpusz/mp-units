@@ -143,6 +143,9 @@ basic_fixed_string(const CharT* ptr, std::integral_constant<std::size_t, N>) -> 
 template<std::size_t N>
 using fixed_string = basic_fixed_string<char, N>;
 
+template<std::size_t N>
+using fixed_u8string = basic_fixed_string<char8_t, N>;
+
 }  // namespace mp_units
 
 template<typename CharT, std::size_t N>

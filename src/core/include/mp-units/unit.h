@@ -92,7 +92,7 @@ inline constexpr bool is_specialization_of_scaled_unit<scaled_unit<M, U>> = true
  * inline constexpr struct metre : named_unit<"m", length> {} metre;
  * inline constexpr struct hertz : named_unit<"Hz", inverse(second)> {} hertz;
  * inline constexpr struct newton : named_unit<"N", kilogram * metre / square(second)> {} newton;
- * inline constexpr struct degree_Celsius : named_unit<basic_symbol_text{"°C", "`C"}, kelvin> {} degree_Celsius;
+ * inline constexpr struct degree_Celsius : named_unit<{u8"°C", "`C"}, kelvin> {} degree_Celsius;
  * inline constexpr struct minute : named_unit<"min", mag<60> * second> {} minute;
  * @endcode
  *
@@ -604,7 +604,7 @@ template<std::intmax_t Num, std::intmax_t Den = 1, Unit U>
 // common dimensionless units
 // clang-format off
 inline constexpr struct percent : named_unit<"%", mag<ratio{1, 100}> * one> {} percent;
-inline constexpr struct per_mille : named_unit<basic_symbol_text{"‰", "%o"}, mag<ratio(1, 1000)> * one> {} per_mille;
+inline constexpr struct per_mille : named_unit<basic_symbol_text{u8"‰", "%o"}, mag<ratio(1, 1000)> * one> {} per_mille;
 inline constexpr struct parts_per_million : named_unit<"ppm", mag<ratio(1, 1'000'000)> * one> {} parts_per_million;
 inline constexpr auto ppm = parts_per_million;
 // clang-format on
@@ -699,17 +699,19 @@ struct unit_symbol_formatting {
 
 namespace detail {
 
-// TODO Should `basic_symbol_text` be fixed to use `char` type for both encodings?
-template<typename CharT, typename UnicodeCharT, std::size_t N, std::size_t M, std::output_iterator<CharT> Out>
-constexpr Out copy(const basic_symbol_text<UnicodeCharT, N, M>& txt, text_encoding encoding, Out out)
+template<typename CharT, std::size_t N, std::size_t M, std::output_iterator<CharT> Out>
+constexpr Out copy(const basic_symbol_text<N, M>& txt, text_encoding encoding, Out out)
 {
   if (encoding == text_encoding::unicode) {
-    if (is_same_v<CharT, UnicodeCharT>)
+    if constexpr (is_same_v<CharT, char8_t>)
       return copy(txt.unicode(), out).out;
-    else
+    else if constexpr (is_same_v<CharT, char>) {
+      for (char8_t ch : txt.unicode()) *out++ = static_cast<char>(ch);
+      return out;
+    } else
       throw std::invalid_argument("Unicode text can't be copied to CharT output");
   } else {
-    if (is_same_v<CharT, char>)
+    if constexpr (is_same_v<CharT, char>)
       return copy(txt.ascii(), out).out;
     else
       throw std::invalid_argument("ASCII text can't be copied to CharT output");

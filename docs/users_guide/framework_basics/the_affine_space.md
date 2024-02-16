@@ -472,15 +472,14 @@ namespace si {
 inline constexpr struct kelvin :
     named_unit<"K", kind_of<isq::thermodynamic_temperature>, zeroth_kelvin> {} kelvin;
 inline constexpr struct degree_Celsius :
-    named_unit<basic_symbol_text{"°C", "`C"}, kelvin, zeroth_degree_Celsius> {} degree_Celsius;
+    named_unit<{u8"°C", "`C"}, kelvin, zeroth_degree_Celsius> {} degree_Celsius;
 
 }
 
 namespace usc {
 
 inline constexpr struct degree_Fahrenheit :
-    named_unit<basic_symbol_text{"°F", "`F"}, mag<ratio{5, 9}> * si::degree_Celsius,
-               zeroth_degree_Fahrenheit> {} degree_Fahrenheit;
+    named_unit<{u8"°F", "`F"}, mag<ratio{5, 9}> * si::degree_Celsius, zeroth_degree_Fahrenheit> {} degree_Fahrenheit;
 
 }
 ```

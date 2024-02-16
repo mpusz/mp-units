@@ -31,7 +31,7 @@ namespace si2019 {
 
 // clang-format off
 inline constexpr struct hyperfine_structure_transition_frequency_of_cs :
-  named_unit<basic_symbol_text{"Δν_Cs", "dv_Cs"}, mag<9'192'631'770> * hertz> {} hyperfine_structure_transition_frequency_of_cs;
+  named_unit<basic_symbol_text{u8"Δν_Cs", "dv_Cs"}, mag<9'192'631'770> * hertz> {} hyperfine_structure_transition_frequency_of_cs;
 inline constexpr struct speed_of_light_in_vacuum :
   named_unit<"c", mag<299'792'458> * metre / second> {} speed_of_light_in_vacuum;
 inline constexpr struct planck_constant :
@@ -50,9 +50,9 @@ inline constexpr struct luminous_efficacy :
 
 // clang-format off
 inline constexpr struct standard_gravity :
-  named_unit<basic_symbol_text{"g₀", "g_0"}, mag<ratio{980'665, 100'000}> * metre / square(second)> {} standard_gravity;
+  named_unit<basic_symbol_text{u8"g₀", "g_0"}, mag<ratio{980'665, 100'000}> * metre / square(second)> {} standard_gravity;
 inline constexpr struct magnetic_constant :
-  named_unit<basic_symbol_text{"μ₀", "u_0"}, mag<4> * mag_pi * mag_power<10, -7> * henry / metre> {} magnetic_constant;
+  named_unit<basic_symbol_text{u8"μ₀", "u_0"}, mag<4> * mag_pi * mag_power<10, -7> * henry / metre> {} magnetic_constant;
 // clang-format on
 
 }  // namespace mp_units::si
