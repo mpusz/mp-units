@@ -83,7 +83,7 @@ class MPUnitsConan(ConanFile):
         return {
             "gcc": "12",
             "clang": "16",
-            "apple-clang": "15"
+            "apple-clang": "15",
             # , "msvc": "192"
         }
 
@@ -91,18 +91,18 @@ class MPUnitsConan(ConanFile):
     def _std_format_minimum_compilers_version(self):
         return {
             "gcc": "13",
-            "clang": "17"
+            "clang": "17",
             # , "apple-clang": "15"
             # , "msvc": "192"
         }
 
     @property
     def _build_all(self):
-        return bool(self.conf.get("user.build:all", default=False))
+        return bool(self.conf.get("user.mp-units.build:all", default=False))
 
     @property
     def _skip_la(self):
-        return bool(self.conf.get("user.build:skip_la", default=False))
+        return bool(self.conf.get("user.mp-units.build:skip_la", default=False))
 
     def set_version(self):
         content = load(self, os.path.join(self.recipe_folder, "src/CMakeLists.txt"))

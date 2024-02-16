@@ -47,7 +47,7 @@ jobs:
           #     name: "MSVC 14.2",
           #     os: windows-2019,
           #     compiler: { type: VISUAL, version: 16, cc: "", cxx: "" },
-          #     conan-config: "-c user.build:skip_la=True",
+          #     conan-config: "-c user.mp-units.build:skip_la=True",
           #   }
           # - {
           #     name: "MSVC 14.3",
@@ -212,7 +212,7 @@ jobs:
         run: |
           conan create . --user mpusz --channel ${CHANNEL} --lockfile-out=package.lock \
                          -b mp-units/* -b missing -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" \
-                         -c user.build:all=True -o cxx_modules=${{ matrix.config.cxx_modules }} -o use_fmtlib=${{ env.use_fmtlib }} ${{ matrix.config.conan-config }}
+                         -c user.mp-units.build:all=True -o cxx_modules=${{ matrix.config.cxx_modules }} -o use_fmtlib=${{ env.use_fmtlib }} ${{ matrix.config.conan-config }}
       - name: Obtain package reference
         id: get-package-ref
         shell: bash

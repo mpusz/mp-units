@@ -396,25 +396,25 @@ static_assert(acceleration * (time * time) != position_vector);
 static_assert(acceleration / speed != frequency);
 
 // get_kind
-static_assert(get_kind(length) == length);
-static_assert(get_kind(distance) == length);
-static_assert(get_kind(time) == time);
-static_assert(get_kind(period_duration) == time);
-static_assert(get_kind(length / time) == length / time);
-static_assert(get_kind(speed) == speed);
-static_assert(get_kind(height / time) == length / time);
-static_assert(get_kind(inverse(time)) == inverse(time));
-static_assert(get_kind(inverse(period_duration)) == inverse(time));
-static_assert(get_kind(frequency) == frequency);
-static_assert(get_kind(mass * frequency) == mass * frequency);
-static_assert(get_kind(moment_of_force) == moment_of_force);
-static_assert(get_kind(energy) == energy);
-static_assert(get_kind(potential_energy) == energy);
-static_assert(get_kind(kinetic_energy) == energy);
-static_assert(get_kind(pow<1, 2>(area)) == pow<1, 2>(area));
-static_assert(get_kind(angular_measure) == angular_measure);
-static_assert(get_kind(phase_angle) == angular_measure);
-static_assert(get_kind(rotational_displacement) == angular_measure);
+static_assert(get_kind(length) == kind_of<length>);
+static_assert(get_kind(distance) == kind_of<length>);
+static_assert(get_kind(time) == kind_of<time>);
+static_assert(get_kind(period_duration) == kind_of<time>);
+static_assert(get_kind(length / time) == kind_of<length / time>);
+static_assert(get_kind(speed) == kind_of<speed>);
+static_assert(get_kind(height / time) == kind_of<length / time>);
+static_assert(get_kind(inverse(time)) == kind_of<inverse(time)>);
+static_assert(get_kind(inverse(period_duration)) == kind_of<inverse(time)>);
+static_assert(get_kind(frequency) == kind_of<frequency>);
+static_assert(get_kind(mass * frequency) == kind_of<mass * frequency>);
+static_assert(get_kind(moment_of_force) == kind_of<moment_of_force>);
+static_assert(get_kind(energy) == kind_of<energy>);
+static_assert(get_kind(potential_energy) == kind_of<energy>);
+static_assert(get_kind(kinetic_energy) == kind_of<energy>);
+static_assert(get_kind(pow<1, 2>(area)) == kind_of<pow<1, 2>(area)>);
+static_assert(get_kind(angular_measure) == kind_of<angular_measure>);
+static_assert(get_kind(phase_angle) == kind_of<angular_measure>);
+static_assert(get_kind(rotational_displacement) == kind_of<angular_measure>);
 
 // comparisons of the same dimensions
 static_assert(length == length);
@@ -507,7 +507,7 @@ static_assert(convertible_impl(width, width) == yes);
 static_assert(convertible_impl(energy, energy) == yes);
 static_assert(convertible_impl(kind_of<length>, kind_of<length>) == yes);
 static_assert(convertible_impl(kind_of<energy>, kind_of<energy>) == yes);
-static_assert(convertible_impl(kind_of<get_kind(moment_of_force)>, kind_of<get_kind(moment_of_force)>) == yes);
+static_assert(convertible_impl(get_kind(moment_of_force), get_kind(moment_of_force)) == yes);
 
 // converting to a different branch
 static_assert(convertible_impl(height, width) == cast);

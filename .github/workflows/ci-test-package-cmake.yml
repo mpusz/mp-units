@@ -205,7 +205,7 @@ jobs:
       - name: Install Conan dependencies
         shell: bash
         run: |
-          conan install . -b missing -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" -c user.build:all=False \
+          conan install . -b missing -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" -c user.mp-units.build:all=False \
                           -o cxx_modules=${{ matrix.config.cxx_modules }} -o use_fmtlib=${{ env.use_fmtlib }}
           mv CMakeUserPresets.json src
       - name: Configure mp-units CMake
