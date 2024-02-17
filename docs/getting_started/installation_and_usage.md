@@ -240,15 +240,6 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
     [use fmtlib support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 
 
-[`MP_UNITS_AS_SYSTEM_HEADERS`](#MP_UNITS_AS_SYSTEM_HEADERS){ #MP_UNITS_AS_SYSTEM_HEADERS }
-
-:   [:octicons-tag-24: 2.0.0][as system headers support] · :octicons-milestone-24: `ON`/`OFF` (Default: `OFF`)
-
-    Exports library as system headers.
-
-    [as system headers support]: https://github.com/mpusz/mp-units/releases/tag/v2.0.0
-
-
 [`MP_UNITS_BUILD_LA`](#MP_UNITS_BUILD_LA){ #MP_UNITS_BUILD_LA }
 
 :   [:octicons-tag-24: 2.0.0][build la support] · :octicons-milestone-24: `ON`/`OFF` (Default: `ON`)
