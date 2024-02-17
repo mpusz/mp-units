@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-cmake_minimum_required(VERSION 3.23)
+include_guard(GLOBAL)
 
 function(validate_unparsed module prefix)
     if(${prefix}_UNPARSED_ARGUMENTS)
