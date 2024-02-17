@@ -25,6 +25,13 @@ project(mp-units VERSION 2.2.0 LANGUAGES CXX)
 
 set(projectPrefix MP_UNITS_)
 
+list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
+
+include(CheckCXXFeatureSupported)
+include(AddMPUnitsModule)
+include(GNUInstallDirs)
+
+# project options
 option(${projectPrefix}BUILD_CXX_MODULES "Add C++ modules to the list of default targets" OFF)
 message(STATUS "${projectPrefix}BUILD_CXX_MODULES: ${${projectPrefix}BUILD_CXX_MODULES}")
 
@@ -34,21 +41,39 @@ message(STATUS "${projectPrefix}AS_SYSTEM_HEADERS: ${${projectPrefix}AS_SYSTEM_H
 option(${projectPrefix}USE_FMTLIB "Enables usage of fmtlib instead of the 'std::format' facilities" OFF)
 message(STATUS "${projectPrefix}USE_FMTLIB: ${${projectPrefix}USE_FMTLIB}")
 
-list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
+# C++ features
+check_cxx_feature_supported(__cpp_explicit_this_parameter ${projectPrefix}EXPLICIT_THIS_PARAMETER_SUPPORTED)
+check_cxx_feature_supported("__cpp_constexpr >= 202211L" ${projectPrefix}STATIC_CONSTEXPR_VARS_IN_CONSTEXPR_FUNCTIONS)
 
-include(AddMPUnitsModule)
-include(GNUInstallDirs)
+if(${projectPrefix}EXPLICIT_THIS_PARAMETER_SUPPORTED)
+    message(STATUS "API/ABI: `quantity_spec` uses explicit `this` parameter in its definition")
+else()
+    message(STATUS "API/ABI: `quantity_spec` uses CRTP in its definition")
+endif()
 
+if(${projectPrefix}STATIC_CONSTEXPR_VARS_IN_CONSTEXPR_FUNCTIONS)
+    message(STATUS "API/ABI: `unit_symbol()` returns `std::string_view`")
+else()
+    message(STATUS "API/ABI: `unit_symbol()` returns `fixed_string`")
+endif()
+
+# C++ modules
 if(${projectPrefix}BUILD_CXX_MODULES)
+    if(CMAKE_VERSION VERSION_LESS "3.28.1")
+        message(FATAL_ERROR, "CMake versions before 3.28.1 do not support C++ modules properly")
+    endif()
+    cmake_minimum_required(VERSION 3.28.1)
+
+    # # none of the below seems to work
+    # cmake_policy(VERSION 3.28.1)
+    # cmake_policy(SET CMP0155 NEW)
+
     set(${projectPrefix}TARGET_SCOPE "PUBLIC")
 else()
     set(${projectPrefix}TARGET_SCOPE "INTERFACE")
 endif()
 
-if(${projectPrefix}AS_SYSTEM_HEADERS)
-    set(unitsAsSystem SYSTEM)
-endif()
-
+# components/modules
 add_subdirectory(core)
 add_subdirectory(systems)
 
