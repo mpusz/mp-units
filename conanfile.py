@@ -151,12 +151,12 @@ class MPUnitsConan(ConanFile):
     def generate(self):
         tc = CMakeToolchain(self)
         if self._build_all:
-            tc.variables["CMAKE_VERIFY_INTERFACE_HEADER_SETS"] = True
+            tc.cache_variables["CMAKE_VERIFY_INTERFACE_HEADER_SETS"] = True
         if self.options.cxx_modules:
-            tc.variables["CMAKE_CXX_SCAN_FOR_MODULES"] = True
-            tc.variables["MP_UNITS_BUILD_CXX_MODULES"] = True
-        tc.variables["MP_UNITS_BUILD_LA"] = self._build_all and not self._skip_la
-        tc.variables["MP_UNITS_USE_FMTLIB"] = bool(self.options.use_fmtlib)
+            tc.cache_variables["CMAKE_CXX_SCAN_FOR_MODULES"] = True
+            tc.cache_variables["MP_UNITS_BUILD_CXX_MODULES"] = True
+        tc.cache_variables["MP_UNITS_BUILD_LA"] = self._build_all and not self._skip_la
+        tc.cache_variables["MP_UNITS_USE_FMTLIB"] = bool(self.options.use_fmtlib)
         tc.generate()
         deps = CMakeDeps(self)
         deps.generate()
