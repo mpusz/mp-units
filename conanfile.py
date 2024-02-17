@@ -62,15 +62,15 @@ class MPUnitsConan(ConanFile):
         "use_fmtlib": False,
     }
     tool_requires = "cmake/[>=3.28.1]"
-    exports = ["LICENSE.md"]
-    exports_sources = [
+    exports = "LICENSE.md"
+    exports_sources = (
         "docs/*",
         "src/*",
         "test/*",
         "cmake/*",
         "example/*",
         "CMakeLists.txt",
-    ]
+    )
     package_type = "header-library"
     no_copy_source = True
 
