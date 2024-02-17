@@ -25,7 +25,7 @@ import re
 
 from conan import ConanFile
 from conan.errors import ConanInvalidConfiguration
-from conan.tools.build import check_min_cppstd
+from conan.tools.build import can_run, check_min_cppstd
 from conan.tools.cmake import CMake, CMakeDeps, CMakeToolchain, cmake_layout
 from conan.tools.files import copy, load, rmdir
 
@@ -167,7 +167,8 @@ class MPUnitsConan(ConanFile):
         cmake.build()
         if self._build_all:
             cmake.build(target="all_verify_interface_header_sets")
-            cmake.test()
+            if can_run(self):
+                cmake.test()
 
     def package_id(self):
         self.info.clear()
