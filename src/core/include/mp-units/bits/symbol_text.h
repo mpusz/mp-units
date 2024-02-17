@@ -41,20 +41,18 @@ namespace mp_units {
 
 namespace detail {
 
-constexpr void validate_ascii_char([[maybe_unused]] char c) noexcept
+constexpr bool is_basic_literal_character_set_char(char ch)
 {
-  // check if character belongs to basic character literal set
   // https://en.cppreference.com/w/cpp/language/charset
-  gsl_Expects(c == 0x00 || (0x07 <= c && c <= 0x0D) || (0x20 <= c && c <= 0x7E));
-}
+  return ch == 0x00 || (0x07 <= ch && ch <= 0x0D) || (0x20 <= ch && ch <= 0x7E);
+};
 
 template<std::size_t N>
-constexpr void validate_ascii_string([[maybe_unused]] const char (&s)[N + 1]) noexcept
+constexpr bool is_basic_literal_character_set(const char (&txt)[N]) noexcept
 {
-#ifndef NDEBUG
-  if constexpr (N != 0)
-    for (size_t i = 0; i < N; ++i) validate_ascii_char(s[i]);
-#endif
+  for (auto ch : txt)
+    if (!is_basic_literal_character_set_char(ch)) return false;
+  return true;
 }
 
 template<std::size_t N>
@@ -81,31 +79,31 @@ struct basic_symbol_text {
   fixed_u8string<N> unicode_;
   fixed_string<M> ascii_;
 
-  constexpr explicit(false) basic_symbol_text(char txt) : unicode_(static_cast<char8_t>(txt)), ascii_(txt)
+  constexpr explicit(false) basic_symbol_text(char ch) : unicode_(static_cast<char8_t>(ch)), ascii_(ch)
   {
-    detail::validate_ascii_char(txt);
+    gsl_Expects(detail::is_basic_literal_character_set_char(ch));
   }
 
   constexpr explicit(false) basic_symbol_text(const char (&txt)[N + 1]) :
       unicode_(detail::to_u8string(basic_fixed_string{txt})), ascii_(txt)
   {
-    detail::validate_ascii_string<N>(txt);
+    gsl_Expects(detail::is_basic_literal_character_set(txt));
   }
 
   constexpr explicit(false) basic_symbol_text(const fixed_string<N>& txt) :
       unicode_(detail::to_u8string(txt)), ascii_(txt)
   {
-    detail::validate_ascii_string<N>(txt.data_);
+    gsl_Expects(detail::is_basic_literal_character_set(txt.data_));
   }
 
   constexpr basic_symbol_text(const char8_t (&u)[N + 1], const char (&a)[M + 1]) : unicode_(u), ascii_(a)
   {
-    detail::validate_ascii_string<M>(a);
+    gsl_Expects(detail::is_basic_literal_character_set(a));
   }
 
   constexpr basic_symbol_text(const fixed_u8string<N>& u, const fixed_string<M>& a) : unicode_(u), ascii_(a)
   {
-    detail::validate_ascii_string<M>(a.data_);
+    gsl_Expects(detail::is_basic_literal_character_set(a.data_));
   }
 
   [[nodiscard]] constexpr const auto& unicode() const { return unicode_; }
