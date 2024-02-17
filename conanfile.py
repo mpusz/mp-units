@@ -75,10 +75,6 @@ class MPUnitsConan(ConanFile):
     no_copy_source = True
 
     @property
-    def _min_cppstd(self):
-        return "20"
-
-    @property
     def _minimum_compilers_version(self):
         return {
             "gcc": "12",
@@ -123,7 +119,7 @@ class MPUnitsConan(ConanFile):
                 self.test_requires("wg21-linear_algebra/0.7.3")
 
     def validate(self):
-        check_min_cppstd(self, self._min_cppstd)
+        check_min_cppstd(self, "20")
 
         def loose_lt_semver(v1, v2):
             lv1 = [int(v) for v in v1.split(".")]
