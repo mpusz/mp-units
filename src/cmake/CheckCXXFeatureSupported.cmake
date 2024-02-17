@@ -62,58 +62,56 @@ For example:
 include_guard(GLOBAL)
 
 macro(CHECK_CXX_FEATURE_SUPPORTED CONDITION VARIABLE)
-  if(NOT DEFINED "${VARIABLE}" OR "x${${VARIABLE}}" STREQUAL "x${VARIABLE}")
-    set(_CFS_SOURCE "/* */\n")
-    set(MACRO_CHECK_FEATURE_EXISTS_FLAGS ${CMAKE_REQUIRED_FLAGS})
-    if(CMAKE_REQUIRED_LINK_OPTIONS)
-      set(CHECK_FEATURE_EXISTS_LINK_OPTIONS
-        LINK_OPTIONS ${CMAKE_REQUIRED_LINK_OPTIONS})
-    else()
-      set(CHECK_FEATURE_EXISTS_LINK_OPTIONS)
-    endif()
-    if(CMAKE_REQUIRED_LIBRARIES)
-      set(CHECK_FEATURE_EXISTS_LIBS
-        LINK_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES})
-    else()
-      set(CHECK_FEATURE_EXISTS_LIBS)
-    endif()
-    if(CMAKE_REQUIRED_INCLUDES)
-      set(CMAKE_FEATURE_EXISTS_INCLUDES
-        "-DINCLUDE_DIRECTORIES:STRING=${CMAKE_REQUIRED_INCLUDES}")
-    else()
-      set(CMAKE_FEATURE_EXISTS_INCLUDES)
-    endif()
-    string(APPEND _CFS_SOURCE
-      "#include <version>\n")
-    string(APPEND _CFS_SOURCE "
+    if(NOT DEFINED "${VARIABLE}" OR "x${${VARIABLE}}" STREQUAL "x${VARIABLE}")
+        set(_CFS_SOURCE "/* */\n")
+        set(MACRO_CHECK_FEATURE_EXISTS_FLAGS ${CMAKE_REQUIRED_FLAGS})
+        if(CMAKE_REQUIRED_LINK_OPTIONS)
+            set(CHECK_FEATURE_EXISTS_LINK_OPTIONS LINK_OPTIONS ${CMAKE_REQUIRED_LINK_OPTIONS})
+        else()
+            set(CHECK_FEATURE_EXISTS_LINK_OPTIONS)
+        endif()
+        if(CMAKE_REQUIRED_LIBRARIES)
+            set(CHECK_FEATURE_EXISTS_LIBS LINK_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES})
+        else()
+            set(CHECK_FEATURE_EXISTS_LIBS)
+        endif()
+        if(CMAKE_REQUIRED_INCLUDES)
+            set(CMAKE_FEATURE_EXISTS_INCLUDES "-DINCLUDE_DIRECTORIES:STRING=${CMAKE_REQUIRED_INCLUDES}")
+        else()
+            set(CMAKE_FEATURE_EXISTS_INCLUDES)
+        endif()
+        string(APPEND _CFS_SOURCE "#include <version>\n")
+        string(APPEND
+               _CFS_SOURCE
+               "
 int main()
 {
   static_assert(${CONDITION});
-}\n")
+}\n"
+        )
 
-    if(NOT CMAKE_REQUIRED_QUIET)
-      message(CHECK_START "Checking C++ feature test macro '${CONDITION}'")
+        if(NOT CMAKE_REQUIRED_QUIET)
+            message(CHECK_START "Checking C++ feature test macro '${CONDITION}'")
+        endif()
+        try_compile(
+            ${VARIABLE} SOURCE_FROM_VAR
+            "CheckFeatureExists.cxx" _CFS_SOURCE
+            COMPILE_DEFINITIONS ${CMAKE_REQUIRED_DEFINITIONS} ${CHECK_FEATURE_EXISTS_LINK_OPTIONS}
+                                ${CHECK_FEATURE_EXISTS_LIBS}
+            CMAKE_FLAGS -DCOMPILE_DEFINITIONS:STRING=${MACRO_CHECK_FEATURE_EXISTS_FLAGS}
+                        "${CMAKE_FEATURE_EXISTS_INCLUDES}"
+        )
+        if(${VARIABLE})
+            if(NOT CMAKE_REQUIRED_QUIET)
+                message(CHECK_PASS "SUCCESS")
+            endif()
+            set(${VARIABLE} 1 CACHE INTERNAL "C++ feature test macro '${CONDITION}' supported")
+        else()
+            if(NOT CMAKE_REQUIRED_QUIET)
+                message(CHECK_FAIL "FAIL")
+            endif()
+            set(${VARIABLE} "" CACHE INTERNAL "C++ feature test macro '${CONDITION}' supported")
+        endif()
+        unset(_CFS_SOURCE)
     endif()
-    try_compile(${VARIABLE}
-      SOURCE_FROM_VAR "CheckFeatureExists.cxx" _CFS_SOURCE
-      COMPILE_DEFINITIONS ${CMAKE_REQUIRED_DEFINITIONS}
-      ${CHECK_FEATURE_EXISTS_LINK_OPTIONS}
-      ${CHECK_FEATURE_EXISTS_LIBS}
-      CMAKE_FLAGS
-      -DCOMPILE_DEFINITIONS:STRING=${MACRO_CHECK_FEATURE_EXISTS_FLAGS}
-      "${CMAKE_FEATURE_EXISTS_INCLUDES}"
-      )
-    if(${VARIABLE})
-      if(NOT CMAKE_REQUIRED_QUIET)
-        message(CHECK_PASS "SUCCESS")
-      endif()
-      set(${VARIABLE} 1 CACHE INTERNAL "C++ feature test macro '${CONDITION}' supported")
-    else()
-      if(NOT CMAKE_REQUIRED_QUIET)
-        message(CHECK_FAIL "FAIL")
-      endif()
-      set(${VARIABLE} "" CACHE INTERNAL "C++ feature test macro '${CONDITION}' supported")
-    endif()
-    unset(_CFS_SOURCE)
-  endif()
 endmacro()
