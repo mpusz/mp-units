@@ -198,6 +198,8 @@ static_assert(is_of_type<pow<2>(length) / pow<2>(length), dimensionless_>);
 static_assert(is_of_type<pow<2>(length) / length, length_>);
 static_assert(is_of_type<length / pow<2>(length), derived_quantity_spec<dimensionless_, per<length_>>>);
 
+static_assert(is_of_type<length / height, derived_quantity_spec<length_, per<height_>>>);
+
 static_assert(is_of_type<length * time, derived_quantity_spec<length_, time_>>);
 static_assert(is_of_type<length * length, derived_quantity_spec<mp_units::power<length_, 2>>>);
 
@@ -624,6 +626,10 @@ static_assert(convertible_impl(mass * pow<2>(length) / pow<2>(time), gravitation
 static_assert(convertible_impl(power / power, efficiency) == explicit_conversion);
 static_assert(convertible_impl(stress / stress, strain) == explicit_conversion);
 static_assert(convertible_impl(stress / stress, efficiency) == explicit_conversion);
+
+// specialized dimensionless to dimensionless and back
+static_assert(convertible_impl(height / width, dimensionless) == yes);
+static_assert(convertible_impl(dimensionless, height / width) == explicit_conversion);
 
 // derived with dimensionless remainder after explosion
 // TODO revise that
