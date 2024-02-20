@@ -34,7 +34,7 @@ template<typename, auto...>
 #endif
 struct quantity_spec;
 
-template<auto Q>
+template<typename Q>
 struct kind_of_;
 
 namespace detail {
@@ -42,7 +42,7 @@ namespace detail {
 template<typename T>
 inline constexpr bool is_specialization_of_kind_of = false;
 
-template<auto Q>
+template<typename Q>
 inline constexpr bool is_specialization_of_kind_of<kind_of_<Q>> = true;
 
 template<typename T>

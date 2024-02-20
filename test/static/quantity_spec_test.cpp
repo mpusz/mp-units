@@ -111,10 +111,10 @@ static_assert(detail::NamedQuantitySpec<dimensionless_>);
 static_assert(!detail::IntermediateDerivedQuantitySpec<dimensionless_>);
 static_assert(!detail::QuantityKindSpec<dimensionless_>);
 
-static_assert(QuantitySpec<kind_of_<length>>);
-static_assert(!detail::NamedQuantitySpec<kind_of_<length>>);
-static_assert(!detail::IntermediateDerivedQuantitySpec<kind_of_<length>>);
-static_assert(detail::QuantityKindSpec<kind_of_<length>>);
+static_assert(QuantitySpec<kind_of_<length_>>);
+static_assert(!detail::NamedQuantitySpec<kind_of_<length_>>);
+static_assert(!detail::IntermediateDerivedQuantitySpec<kind_of_<length_>>);
+static_assert(detail::QuantityKindSpec<kind_of_<length_>>);
 
 static_assert(QuantitySpec<frequency_>);
 static_assert(detail::NamedQuantitySpec<frequency_>);
@@ -126,10 +126,10 @@ static_assert(!detail::NamedQuantitySpec<decltype(inverse(time))>);
 static_assert(detail::IntermediateDerivedQuantitySpec<decltype(inverse(time))>);
 static_assert(!detail::QuantityKindSpec<decltype(inverse(time))>);
 
-static_assert(QuantitySpec<kind_of_<length / time>>);
-static_assert(!detail::NamedQuantitySpec<kind_of_<length / time>>);
-static_assert(detail::IntermediateDerivedQuantitySpec<kind_of_<length / time>>);
-static_assert(detail::QuantityKindSpec<kind_of_<length / time>>);
+static_assert(QuantitySpec<kind_of_<std::remove_const_t<decltype(length / time)>>>);
+static_assert(!detail::NamedQuantitySpec<kind_of_<std::remove_const_t<decltype(length / time)>>>);
+static_assert(detail::IntermediateDerivedQuantitySpec<kind_of_<std::remove_const_t<decltype(length / time)>>>);
+static_assert(detail::QuantityKindSpec<kind_of_<std::remove_const_t<decltype(length / time)>>>);
 
 static_assert(QuantitySpec<decltype(kind_of<length> / kind_of<time>)>);
 static_assert(!detail::NamedQuantitySpec<decltype(kind_of<length> / kind_of<time>)>);
@@ -267,8 +267,8 @@ static_assert(is_of_type<acceleration * mass, derived_quantity_spec<acceleration
 static_assert(is_of_type<(acceleration * mass).dimension,
                          derived_dimension<dim_length_, dim_mass_, per<mp_units::power<dim_time_, 2>>>>);
 
-static_assert(is_of_type<kind_of<length> / kind_of<time>, kind_of_<derived_quantity_spec<length_, per<time_>>{}>>);
-static_assert(is_of_type<kind_of<length / time>, kind_of_<derived_quantity_spec<length_, per<time_>>{}>>);
+static_assert(is_of_type<kind_of<length> / kind_of<time>, kind_of_<derived_quantity_spec<length_, per<time_>>>>);
+static_assert(is_of_type<kind_of<length / time>, kind_of_<derived_quantity_spec<length_, per<time_>>>>);
 
 // power
 static_assert(is_of_type<pow<0>(length), dimensionless_>);

@@ -450,30 +450,28 @@ template<QuantitySpec Q>
 }  // namespace detail
 
 #ifdef __cpp_explicit_this_parameter
-template<auto Q>
-  requires(detail::QuantitySpecWithNoSpecifiers<std::remove_const_t<decltype(Q)>>) &&
-          (detail::get_kind_tree_root(Q) == Q)
-struct kind_of_<Q> : std::remove_const_t<decltype(Q)> {
-  static constexpr auto _quantity_spec_ = Q;
+template<typename Q>
+  requires detail::QuantitySpecWithNoSpecifiers<Q> && (detail::get_kind_tree_root(Q{}) == Q{})
+struct kind_of_<Q> : Q {
+  static constexpr auto _quantity_spec_ = Q{};
 };
 #else
 
 #if MP_UNITS_COMP_CLANG
-template<auto Q>
-  requires detail::QuantitySpecWithNoSpecifiers<std::remove_cvref_t<decltype(Q)>> &&
-           (detail::get_kind_tree_root(Q) == Q)
+template<typename Q>
+  requires detail::QuantitySpecWithNoSpecifiers<Q> && (detail::get_kind_tree_root(Q{}) == Q{})
 #else
-template<detail::QuantitySpecWithNoSpecifiers auto Q>
-  requires(detail::get_kind_tree_root(Q) == Q)
+template<detail::QuantitySpecWithNoSpecifiers Q>
+  requires(detail::get_kind_tree_root(Q{}) == Q{})
 #endif
-struct kind_of_<Q> : quantity_spec<kind_of_<Q>, Q> {
-  static constexpr auto _quantity_spec_ = Q;
+struct kind_of_<Q> : quantity_spec<kind_of_<Q>, Q{}> {
+  static constexpr auto _quantity_spec_ = Q{};
 };
 #endif
 
 template<detail::QuantitySpecWithNoSpecifiers auto Q>
   requires(detail::get_kind_tree_root(Q) == Q)
-inline constexpr kind_of_<Q> kind_of;
+inline constexpr kind_of_<std::remove_const_t<decltype(Q)>> kind_of;
 
 namespace detail {
 
@@ -601,10 +599,10 @@ template<QuantitySpec Q, int... Ints>
   return get_complexity(Q{});
 }
 
-template<auto Q>
+template<typename Q>
 [[nodiscard]] consteval int get_complexity(kind_of_<Q>)
 {
-  return get_complexity(Q);
+  return get_complexity(Q{});
 }
 
 template<QuantitySpec Q>
