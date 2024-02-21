@@ -101,10 +101,12 @@ inline constexpr struct bit_ : named_unit<"bit", one, kind_of<storage_capacity>>
 // clang-format on
 
 
-static_assert(is_of_type<length[metre], reference<length, metre>>);
+static_assert(is_of_type<length[metre], reference<length_, metre_>>);
 static_assert(is_of_type<kind_of<length>[metre], metre_>);
 
-static_assert(is_of_type<(length / time)[metre / second], reference<length / time, metre / second>>);
+static_assert(
+  is_of_type<(length / time)[metre / second],
+             reference<std::remove_const_t<decltype(length / time)>, std::remove_const_t<decltype(metre / second)>>>);
 static_assert(is_of_type<(kind_of<length> / kind_of<time>)[metre / second], derived_unit<metre_, per<second_>>>);
 
 // Unit as a reference
@@ -120,25 +122,25 @@ static_assert(is_of_type<42 * hertz, quantity<hertz, int>>);
 static_assert(quantity<hertz, int>::quantity_spec == kind_of<frequency>);
 
 // Named quantity/dimension and unit
-static_assert(is_of_type<5 * power[watt], quantity<reference<power, watt>{}, int>>);
+static_assert(is_of_type<5 * power[watt], quantity<reference<power_, watt_>{}, int>>);
 
 // Named quantity/dimension and derived (unnamed) unit
 static_assert(
-  is_of_type<5 * speed[metre / second], quantity<reference<speed, derived_unit<metre_, per<second_>>{}>{}, int>>);
+  is_of_type<5 * speed[metre / second], quantity<reference<speed_, derived_unit<metre_, per<second_>>>{}, int>>);
 
 // Derived (unnamed) quantity/dimension and derived (unnamed) unit
 static_assert(
   is_of_type<
     10 * length[metre] / (2 * time[second]),
-    quantity<reference<derived_quantity_spec<length_, per<time_>>{}, derived_unit<metre_, per<second_>>{}>{}, int>>);
+    quantity<reference<derived_quantity_spec<length_, per<time_>>, derived_unit<metre_, per<second_>>>{}, int>>);
 
 // Base quantity as a result of dimensional transformation
 static_assert(is_of_type<5 * speed[metre / second] * (5 * time[second]),
-                         quantity<reference<derived_quantity_spec<speed_, time_>{}, metre>{}, int>>);
+                         quantity<reference<derived_quantity_spec<speed_, time_>, metre_>{}, int>>);
 
 // dimensionless
 static_assert(is_of_type<20 * speed[metre / second] / (10 * length[metre]) * (5 * time[second]),
-                         quantity<reference<derived_quantity_spec<speed_, time_, per<length_>>{}, one>{}, int>>);
+                         quantity<reference<derived_quantity_spec<speed_, time_, per<length_>>, one_>{}, int>>);
 
 template<auto s>
 concept invalid_operations = requires {
@@ -165,38 +167,40 @@ concept invalid_operations = requires {
 static_assert(invalid_operations<time[second]>);
 
 static_assert(is_of_type<2 / second, quantity<derived_unit<one_, per<second_>>{}, int>>);
-static_assert(is_of_type<2 / time[second], quantity<reference<derived_quantity_spec<dimensionless_, per<time_>>{},
-                                                              derived_unit<one_, per<second_>>{}>{},
-                                                    int>>);
-static_assert(is_of_type<1 * time[second] * second, quantity<reference<pow<2>(time), pow<2>(second)>{}, int>>);
-static_assert(is_of_type<1 * time[second] * time[second], quantity<reference<pow<2>(time), pow<2>(second)>{}, int>>);
-static_assert(is_of_type<1 * time[second] / second, quantity<reference<dimensionless, one>{}, int>>);
-static_assert(is_of_type<1 * time[second] / time[second], quantity<reference<dimensionless, one>{}, int>>);
+static_assert(
+  is_of_type<
+    2 / time[second],
+    quantity<reference<derived_quantity_spec<dimensionless_, per<time_>>, derived_unit<one_, per<second_>>>{}, int>>);
+static_assert(
+  is_of_type<1 * time[second] * second, quantity<reference<decltype(pow<2>(time)), decltype(pow<2>(second))>{}, int>>);
+static_assert(is_of_type<1 * time[second] * time[second],
+                         quantity<reference<decltype(pow<2>(time)), decltype(pow<2>(second))>{}, int>>);
+static_assert(is_of_type<1 * time[second] / second, quantity<reference<dimensionless_, one_>{}, int>>);
+static_assert(is_of_type<1 * time[second] / time[second], quantity<reference<dimensionless_, one_>{}, int>>);
 
 static_assert(
   is_of_type<
     1 * inverse(time[second]),
-    quantity<reference<derived_quantity_spec<dimensionless_, per<time_>>{}, derived_unit<one_, per<second_>>{}>{},
-             int>>);
+    quantity<reference<derived_quantity_spec<dimensionless_, per<time_>>, derived_unit<one_, per<second_>>>{}, int>>);
 
 static_assert(
   is_of_type<
     2 * length[metre] / (1 * time[second]),
-    quantity<reference<derived_quantity_spec<length_, per<time_>>{}, derived_unit<metre_, per<second_>>{}>{}, int>>);
+    quantity<reference<derived_quantity_spec<length_, per<time_>>, derived_unit<metre_, per<second_>>>{}, int>>);
 static_assert(
   is_of_type<
     2 * (length[metre] / time[second]),
-    quantity<reference<derived_quantity_spec<length_, per<time_>>{}, derived_unit<metre_, per<second_>>{}>{}, int>>);
+    quantity<reference<derived_quantity_spec<length_, per<time_>>, derived_unit<metre_, per<second_>>>{}, int>>);
 static_assert(
-  is_of_type<2 * (speed[metre / second]), quantity<reference<speed, derived_unit<metre_, per<second_>>{}>{}, int>>);
+  is_of_type<2 * (speed[metre / second]), quantity<reference<speed_, derived_unit<metre_, per<second_>>>{}, int>>);
 
 constexpr auto m_per_s = speed[metre / second];
-static_assert(is_of_type<2 * m_per_s, quantity<reference<speed, derived_unit<metre_, per<second_>>{}>{}, int>>);
+static_assert(is_of_type<2 * m_per_s, quantity<reference<speed_, derived_unit<metre_, per<second_>>>{}, int>>);
 
 static_assert(
   is_of_type<
     120 * length[kilometre] / (2 * time[hour]),
-    quantity<reference<derived_quantity_spec<length_, per<time_>>{}, derived_unit<kilometre_, per<hour_>>{}>{}, int>>);
+    quantity<reference<derived_quantity_spec<length_, per<time_>>, derived_unit<kilometre_, per<hour_>>>{}, int>>);
 static_assert(120 * length[kilometre] / (2 * time[hour]) == 60 * speed[kilometre / hour]);
 static_assert(
   is_of_type<
@@ -205,32 +209,32 @@ static_assert(
       const auto duration = 2;
       return distance * length[kilometre] / (duration * time[hour]);
     }(),
-    quantity<reference<derived_quantity_spec<length_, per<time_>>{}, derived_unit<kilometre_, per<hour_>>{}>{}, int>>);
+    quantity<reference<derived_quantity_spec<length_, per<time_>>, derived_unit<kilometre_, per<hour_>>>{}, int>>);
 static_assert(
   is_of_type<std::int64_t{120} * length[kilometre] / (2 * time[hour]),
-             quantity<reference<derived_quantity_spec<length_, per<time_>>{}, derived_unit<kilometre_, per<hour_>>{}>{},
+             quantity<reference<derived_quantity_spec<length_, per<time_>>, derived_unit<kilometre_, per<hour_>>>{},
                       std::int64_t>>);
 static_assert(
   is_of_type<120.L * length[kilometre] / (2 * time[hour]),
-             quantity<reference<derived_quantity_spec<length_, per<time_>>{}, derived_unit<kilometre_, per<hour_>>{}>{},
+             quantity<reference<derived_quantity_spec<length_, per<time_>>, derived_unit<kilometre_, per<hour_>>>{},
                       long double>>);
 
 static_assert(is_of_type<1. / 4 * area[square(metre)], decltype(1. * area[square(metre)] / 4)>);
 static_assert(1. / 4 * area[square(metre)] == 1. * area[square(metre)] / 4);
 
 // Natural Units
-static_assert(is_of_type<42 * nu::time[nu::second], quantity<reference<time, nu::second>{}, int>>);
-static_assert(is_of_type<42 * nu::time[nu::minute], quantity<reference<time, nu::minute>{}, int>>);
-static_assert(is_of_type<42 * nu::length[nu::second], quantity<reference<length, nu::second>{}, int>>);
-static_assert(is_of_type<42 * nu::length[nu::minute], quantity<reference<length, nu::minute>{}, int>>);
+static_assert(is_of_type<42 * nu::time[nu::second], quantity<reference<time_, nu::second_>{}, int>>);
+static_assert(is_of_type<42 * nu::time[nu::minute], quantity<reference<time_, nu::minute_>{}, int>>);
+static_assert(is_of_type<42 * nu::length[nu::second], quantity<reference<length_, nu::second_>{}, int>>);
+static_assert(is_of_type<42 * nu::length[nu::minute], quantity<reference<length_, nu::minute_>{}, int>>);
 static_assert(is_of_type<42 * (nu::length[nu::second] / nu::time[nu::second]),
-                         quantity<reference<derived_quantity_spec<length_, per<time_>>{}, one>{}, int>>);
+                         quantity<reference<derived_quantity_spec<length_, per<time_>>, one_>{}, int>>);
 static_assert(is_of_type<42 * nu::length[nu::second] / (42 * nu::time[nu::second]),
-                         quantity<reference<derived_quantity_spec<length_, per<time_>>{}, one>{}, int>>);
-static_assert(is_of_type<42 * nu::speed[nu::second / nu::second], quantity<reference<speed, one>{}, int>>);
-static_assert(is_of_type<42 * nu::speed[one], quantity<reference<speed, one>{}, int>>);
+                         quantity<reference<derived_quantity_spec<length_, per<time_>>, one_>{}, int>>);
+static_assert(is_of_type<42 * nu::speed[nu::second / nu::second], quantity<reference<speed_, one_>{}, int>>);
+static_assert(is_of_type<42 * nu::speed[one], quantity<reference<speed_, one_>{}, int>>);
 static_assert(is_of_type<42 * mass[kilogram] * (1 * nu::length[nu::second]) / (1 * nu::time[nu::second]),
-                         quantity<reference<derived_quantity_spec<length_, mass_, per<time_>>{}, kilogram>{}, int>>);
+                         quantity<reference<derived_quantity_spec<length_, mass_, per<time_>>, kilogram_>{}, int>>);
 
 template<auto dim, auto unit>
 concept invalid_nu_unit = !requires { dim[unit]; };
@@ -271,17 +275,17 @@ static_assert(invalid_unit<solid_angular_measure, bit>);
 static_assert(invalid_unit<storage_capacity, radian>);
 static_assert(invalid_unit<storage_capacity, steradian>);
 
-static_assert(is_of_type<common_reference(dimensionless[one], one), reference<dimensionless, one>>);
+static_assert(is_of_type<common_reference(dimensionless[one], one), reference<dimensionless_, one_>>);
 static_assert(is_of_type<common_reference(radian, one), radian_>);
 static_assert(is_of_type<common_reference(one, radian), radian_>);
-static_assert(is_of_type<common_reference(radian, dimensionless[one]), reference<angular_measure, radian>>);
-static_assert(is_of_type<common_reference(dimensionless[one], radian), reference<angular_measure, radian>>);
-static_assert(is_of_type<common_reference(angular_measure[radian], one), reference<angular_measure, radian>>);
-static_assert(is_of_type<common_reference(one, angular_measure[radian]), reference<angular_measure, radian>>);
+static_assert(is_of_type<common_reference(radian, dimensionless[one]), reference<angular_measure_, radian_>>);
+static_assert(is_of_type<common_reference(dimensionless[one], radian), reference<angular_measure_, radian_>>);
+static_assert(is_of_type<common_reference(angular_measure[radian], one), reference<angular_measure_, radian_>>);
+static_assert(is_of_type<common_reference(one, angular_measure[radian]), reference<angular_measure_, radian_>>);
 static_assert(
-  is_of_type<common_reference(angular_measure[radian], dimensionless[one]), reference<angular_measure, radian>>);
+  is_of_type<common_reference(angular_measure[radian], dimensionless[one]), reference<angular_measure_, radian_>>);
 static_assert(
-  is_of_type<common_reference(dimensionless[one], angular_measure[radian]), reference<angular_measure, radian>>);
+  is_of_type<common_reference(dimensionless[one], angular_measure[radian]), reference<angular_measure_, radian_>>);
 
 template<auto R1, auto R2>
 concept no_common_reference = requires {

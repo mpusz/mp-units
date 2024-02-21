@@ -30,6 +30,13 @@
 
 namespace mp_units {
 
+namespace detail {
+
+template<QuantitySpec auto Q, Unit auto U>
+using reference_t = reference<std::remove_const_t<decltype(Q)>, std::remove_const_t<decltype(U)>>;
+
+}
+
 [[nodiscard]] consteval QuantitySpec auto get_quantity_spec(AssociatedUnit auto u)
 {
   return detail::get_associated_quantity(u);
@@ -53,73 +60,57 @@ namespace mp_units {
  * The following syntaxes are not allowed:
  * `2 / kmph`, `kmph * 3`, `kmph / 4`, `70 * isq::length[km] / isq:time[h]`.
  */
-template<QuantitySpec auto Q, Unit auto U>
+template<QuantitySpec Q, Unit U>
 struct reference {
-  template<auto Q2, auto U2>
+  template<typename Q2, typename U2>
   [[nodiscard]] friend consteval bool operator==(reference, reference<Q2, U2>)
   {
-    return Q == Q2 && U == U2;
+    return Q{} == Q2{} && U{} == U2{};
   }
 
   template<AssociatedUnit U2>
   [[nodiscard]] friend consteval bool operator==(reference, U2 u2)
   {
-    return Q == get_quantity_spec(u2) && U == u2;
+    return Q{} == get_quantity_spec(u2) && U{} == u2;
   }
 
-  template<auto Q2, auto U2>
-  [[nodiscard]] friend consteval reference<Q * Q2, U * U2> operator*(reference, reference<Q2, U2>)
+  template<typename Q2, typename U2>
+  [[nodiscard]] friend consteval detail::reference_t<Q{} * Q2{}, U{} * U2{}> operator*(reference, reference<Q2, U2>)
   {
     return {};
   }
 
   template<AssociatedUnit U2>
-#if MP_UNITS_COMP_MSVC
-  [[nodiscard]] friend consteval decltype(reference<Q * get_quantity_spec(U2{}), U * U2{}>{}) operator*(reference, U2)
-#else
-  [[nodiscard]] friend consteval reference<Q * get_quantity_spec(U2{}), U * U2{}> operator*(reference, U2)
-#endif
+  [[nodiscard]] friend consteval detail::reference_t<Q{} * get_quantity_spec(U2{}), U{} * U2{}> operator*(reference, U2)
   {
     return {};
   }
 
   template<AssociatedUnit U1>
-#if MP_UNITS_COMP_MSVC
-  [[nodiscard]] friend consteval decltype(reference<get_quantity_spec(U1{}) * Q, U1{} * U>{}) operator*(U1, reference)
-#else
-  [[nodiscard]] friend consteval reference<get_quantity_spec(U1{}) * Q, U1{} * U> operator*(U1, reference)
-#endif
+  [[nodiscard]] friend consteval detail::reference_t<get_quantity_spec(U1{}) * Q{}, U1{} * U{}> operator*(U1, reference)
   {
     return {};
   }
 
-  template<auto Q2, auto U2>
-  [[nodiscard]] friend consteval reference<Q / Q2, U / U2> operator/(reference, reference<Q2, U2>)
+  template<typename Q2, typename U2>
+  [[nodiscard]] friend consteval detail::reference_t<Q{} / Q2{}, U{} / U2{}> operator/(reference, reference<Q2, U2>)
   {
     return {};
   }
 
   template<AssociatedUnit U2>
-#if MP_UNITS_COMP_MSVC
-  [[nodiscard]] friend consteval decltype(reference<Q / get_quantity_spec(U2{}), U / U2{}>{}) operator/(reference, U2)
-#else
-  [[nodiscard]] friend consteval reference<Q / get_quantity_spec(U2{}), U / U2{}> operator/(reference, U2)
-#endif
+  [[nodiscard]] friend consteval detail::reference_t<Q{} / get_quantity_spec(U2{}), U{} / U2{}> operator/(reference, U2)
   {
     return {};
   }
 
   template<AssociatedUnit U1>
-#if MP_UNITS_COMP_MSVC
-  [[nodiscard]] friend consteval decltype(reference<get_quantity_spec(U1{}) / Q, U1{} / U>{}) operator/(U1, reference)
-#else
-  [[nodiscard]] friend consteval reference<get_quantity_spec(U1{}) / Q, U1{} / U> operator/(U1, reference)
-#endif
+  [[nodiscard]] friend consteval detail::reference_t<get_quantity_spec(U1{}) / Q{}, U1{} / U{}> operator/(U1, reference)
   {
     return {};
   }
 
-  [[nodiscard]] friend consteval reference<inverse(Q), inverse(U)> inverse(reference) { return {}; }
+  [[nodiscard]] friend consteval detail::reference_t<inverse(Q{}), inverse(U{})> inverse(reference) { return {}; }
 
   /**
    * @brief Computes the value of a reference raised to the `Num/Den` power
@@ -132,7 +123,7 @@ struct reference {
    */
   template<std::intmax_t Num, std::intmax_t Den = 1>
     requires detail::non_zero<Den>
-  [[nodiscard]] friend consteval reference<pow<Num, Den>(Q), pow<Num, Den>(U)> pow(reference)
+  [[nodiscard]] friend consteval detail::reference_t<pow<Num, Den>(Q{}), pow<Num, Den>(U{})> pow(reference)
   {
     return {};
   }
@@ -144,7 +135,7 @@ struct reference {
    *
    * @return The result of computation
    */
-  [[nodiscard]] friend consteval reference<sqrt(Q), sqrt(U)> sqrt(reference) { return {}; }
+  [[nodiscard]] friend consteval detail::reference_t<sqrt(Q{}), sqrt(U{})> sqrt(reference) { return {}; }
 
   /**
    * @brief Computes the cubic root of a reference
@@ -153,24 +144,24 @@ struct reference {
    *
    * @return The result of computation
    */
-  [[nodiscard]] friend consteval reference<cbrt(Q), cbrt(U)> cbrt(reference) { return {}; }
+  [[nodiscard]] friend consteval detail::reference_t<cbrt(Q{}), cbrt(U{})> cbrt(reference) { return {}; }
 
-  template<auto Q2, auto U2>
+  template<typename Q2, typename U2>
   [[nodiscard]] friend consteval bool convertible(reference, reference<Q2, U2>)
   {
-    return implicitly_convertible(Q, Q2) && convertible(U, U2);
+    return implicitly_convertible(Q{}, Q2{}) && convertible(U{}, U2{});
   }
 
   template<AssociatedUnit U2>
   [[nodiscard]] friend consteval bool convertible(reference, U2 u2)
   {
-    return implicitly_convertible(Q, get_quantity_spec(u2)) && convertible(U, u2);
+    return implicitly_convertible(Q{}, get_quantity_spec(u2)) && convertible(U{}, u2);
   }
 
   template<AssociatedUnit U1>
   [[nodiscard]] friend consteval bool convertible(U1 u1, reference)
   {
-    return implicitly_convertible(get_quantity_spec(u1), Q) && convertible(u1, U);
+    return implicitly_convertible(get_quantity_spec(u1), Q{}) && convertible(u1, U{});
   }
 };
 
@@ -246,8 +237,9 @@ template<Reference R1, Reference R2, Reference... Rest>
     } -> Unit;
   }
 {
-  return reference<common_quantity_spec(get_quantity_spec(r1), get_quantity_spec(r2), get_quantity_spec(rest)...),
-                   common_unit(get_unit(r1), get_unit(r2), get_unit(rest)...)>{};
+  return detail::reference_t<common_quantity_spec(get_quantity_spec(r1), get_quantity_spec(r2),
+                                                  get_quantity_spec(rest)...),
+                             common_unit(get_unit(r1), get_unit(r2), get_unit(rest)...)>{};
 }
 
 namespace detail {
@@ -258,8 +250,8 @@ template<AssociatedUnit auto To, AssociatedUnit From>
   return {};
 }
 
-template<Unit auto To, QuantitySpec auto QS, Unit auto U>
-[[nodiscard]] consteval reference<QS, To> clone_reference_with(reference<QS, U>)
+template<Unit auto To, QuantitySpec QS, Unit U>
+[[nodiscard]] consteval reference<QS, std::remove_const_t<decltype(To)>> clone_reference_with(reference<QS, U>)
 {
   return {};
 }

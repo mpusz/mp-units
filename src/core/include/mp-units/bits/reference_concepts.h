@@ -27,7 +27,7 @@
 
 namespace mp_units {
 
-template<QuantitySpec auto Q, Unit auto U>
+template<QuantitySpec Q, Unit U>
 struct reference;
 
 namespace detail {
@@ -36,7 +36,7 @@ namespace detail {
 template<typename T>
 struct is_specialization_of_reference : std::false_type {};
 
-template<auto Q, auto U>
+template<typename Q, typename U>
 struct is_specialization_of_reference<reference<Q, U>> : std::true_type {};
 
 }  // namespace detail
@@ -51,18 +51,18 @@ concept Reference = AssociatedUnit<T> || detail::is_specialization_of_reference<
 
 [[nodiscard]] consteval QuantitySpec auto get_quantity_spec(AssociatedUnit auto u);
 
-template<auto Q, auto U>
+template<typename Q, typename U>
 [[nodiscard]] consteval QuantitySpec auto get_quantity_spec(reference<Q, U>)
 {
-  return Q;
+  return Q{};
 }
 
 [[nodiscard]] consteval Unit auto get_unit(AssociatedUnit auto u) { return u; }
 
-template<auto Q, auto U>
+template<typename Q, typename U>
 [[nodiscard]] consteval Unit auto get_unit(reference<Q, U>)
 {
-  return U;
+  return U{};
 }
 
 /**
