@@ -27,7 +27,6 @@
 #include <mp-units/bits/external/type_name.h>
 #include <mp-units/bits/external/type_traits.h>
 #include <mp-units/bits/get_common_base.h>
-#include <mp-units/bits/make_reference.h>
 #include <mp-units/bits/quantity_concepts.h>
 #include <mp-units/bits/quantity_spec_concepts.h>
 #include <mp-units/bits/reference_concepts.h>
@@ -39,6 +38,17 @@
 namespace mp_units {
 
 namespace detail {
+
+
+template<QuantitySpec QS, Unit U>
+  requires(!AssociatedUnit<U>) || UnitOf<U, QS{}>
+[[nodiscard]] consteval Reference auto make_reference(QS, U u)
+{
+  if constexpr (detail::QuantityKindSpec<QS>)
+    return u;
+  else
+    return reference<QS, U>{};
+}
 
 // TODO revise the note in the below comment
 /**
