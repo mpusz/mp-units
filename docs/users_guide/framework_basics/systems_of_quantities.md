@@ -136,7 +136,7 @@ from such an instantiation.
     is provided and used consistently through the library to allow the code to compile with C++20
     compilers, thanks to the CRTP usage under the hood.
 
-    *[CRTP]: Curiously Recurring Template Pattern
+    *[CRTP]: Curiously Recurring Template Parameter
 
 For example, here is how the above quantity kind tree can be modeled in the library:
 

@@ -145,7 +145,7 @@ added in C++23 to remove the need for CRTP idiom, which significantly simplifies
 This macro benefits from the new C++23 feature if available. Otherwise, it uses the CRTP idiom under
 the hood.
 
-*[CRTP]: Curiously Recurring Template Pattern
+*[CRTP]: Curiously Recurring Template Parameter
 
 ### `MP_UNITS_STD_FMT`
 
