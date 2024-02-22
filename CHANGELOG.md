@@ -5,6 +5,9 @@
 ### 2.2.0 <small>WIP</small> { id="2.2.0" }
 
 - (!) feat: C++ modules support added by [@JohelEGP](https://github.com/JohelEGP)
+- (!) feat: formatting grammar improved and units formatting support added
+- (!) feat: `has_unit_symbol` support removed
+- (!) feat: ABI concerns resolved with introduction of u8 strings for symbols
 - feat: implicit point origins support added
 - feat: unit default point origin support added
 - feat: `fma`, `isfinite`, `isinf`, and `isnan` math function added by [@NAThompson](https://github.com/NAThompson)
@@ -12,13 +15,31 @@
 - feat: `value_cast<Unit, Representation>` added
 - feat: `interconvertible(QuantitySpec, QuantitySpec)` added
 - feat: `qp.quantity_from_zero()` added
+- feat: `underlying_type` type trait added
+- feat: do not print space between a number and `percent` or `per_mille`
+- feat: `ppm` parts per million added by [@nebkat](https://github.com/nebkat)
+- feat: `atan2` 2-argument arctangent added by [@nebkat](https://github.com/nebkat)
+- feat: `fmod` floating-point division remainder added by [@nebkat](https://github.com/nebkat)
+- feat: `std::format` support added
+- feat: unit text output support added
+- feat: formatting error messages improved
+- feat: improve types readability by eliminating extraneous `()` in references, prefixes, and `kind_of`
 - (!) refactor: `zero_Fahrenheit` renamed to `zeroth_degree_Fahrenheit`
 - (!) refactor: SI-related trigonometric functions moved to the `si` subnamespace
 - (!) refactor: `math.h` header file broke up to smaller pieces
+- (!) refactor: `fixed_string` interface refactored
+- (!) refactor: `ReferenceOf` does not take a dimension anymore
+- (!) refactor: 'o' replaced with '1' as a modifier for `unit_symbol_solidus::one_denominator`
+- (!) refactor: `get_kind()` now returns `kind_of`
 - refactor: math functions constraints refactored
+- refactor: `si_quantities.h` added to improve compile-times
+- refactor: `validate_ascii_string` refactored to `is_basic_literal_character_set`
 - fix: `QuantityLike` conversions required `Q::rep` instead of using one provided by `quantity_like_traits`
 - fix: `QuantitySpec[Unit]` replaced with `make_reference` in `value_cast`
 - fix: `ice_point` is now defined with the integral offset from `absolute_zero`
+- fix: performance regression in `sudo_cast` fixed
+- fix: explicit object parameter support fixed
+- fix: missing `version` header file added to `hacks.h`
 - docs: project blog and first posts added
 - docs: project documentation layout refactored
 - docs: "Interoperability with Other Libraries" chapter added
@@ -32,9 +53,17 @@
 - docs: "Text Output" chapter updated
 - docs: mkdocs social plugin enabled
 - docs: project logo and custom color scheme added
+- docs: minimum compiler requirements updated
+- docs: Cairo dependency described in the MkDocs section
+- (!) build: Conan and CMake options refactored
+- (!) build: `MP_UNITS_AS_SYSTEM_HEADERS` support removed
 - build: gsl-lite updated to 0.41.0
 - build: catch2 updated to 3.5.1
 - build: fmt updated to 10.2.1
+- build: gitpod environment updated
+- build: `check_cxx_feature_supported` added
+- build(conan): `generate()` now set `cache_variables`
+- build(conan): `can_run` check added before running tests
 
 ### 2.1.0 <small>December 9, 2023</small> { id="2.1.0" }
 
