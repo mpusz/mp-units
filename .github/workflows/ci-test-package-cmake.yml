@@ -139,7 +139,7 @@ jobs:
       - uses: actions/checkout@v4
       - run: echo "cache_id=$(/bin/date -u "+%Y%m%d")" >> $GITHUB_ENV
       - name: Cache Conan data
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         if: always()
         env:
           cache-name: cache-conan-data
@@ -179,7 +179,7 @@ jobs:
         run: |
           sudo xcode-select -s /Applications/Xcode_${{ matrix.config.compiler.version }}.app && /usr/bin/xcodebuild -version
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: "3.8"
       - name: Install Ninja
