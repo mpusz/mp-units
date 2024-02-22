@@ -22,7 +22,6 @@
 
 #pragma once
 
-#include <mp-units/bits/external/hacks.h>
 #include <mp-units/bits/external/type_traits.h>
 #include <limits>
 #include <type_traits>

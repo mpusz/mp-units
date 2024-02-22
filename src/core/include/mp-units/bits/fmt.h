@@ -30,7 +30,7 @@
 #pragma once
 
 #include <gsl/gsl-lite.hpp>
-#include <mp-units/bits/external/hacks.h>
+#include <mp-units/compat_macros.h>
 #include <concepts>
 #include <limits>
 #include <string_view>

@@ -22,7 +22,6 @@
 
 #pragma once
 
-#include <mp-units/bits/external/hacks.h>
 #include <mp-units/bits/get_associated_quantity.h>
 #include <mp-units/bits/quantity_concepts.h>
 #include <mp-units/bits/reference_concepts.h>
