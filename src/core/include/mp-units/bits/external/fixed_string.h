@@ -22,9 +22,9 @@
 
 #pragma once
 
-#include <mp-units/bits/external/hacks.h>  // IWYU pragma: keep
 // TODO use <algorithm> when moved to C++20 modules (parsing takes too long for each translation unit)
 #include <mp-units/bits/external/algorithm.h>
+#include <mp-units/compat_macros.h>  // IWYU pragma: keep
 
 // IWYU pragma: begin_exports
 #include <compare>
