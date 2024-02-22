@@ -475,6 +475,10 @@ is with `pip`:
 pip install -U mkdocs-material mkdocs-rss-plugin
 ```
 
+Additionally, a [Cairo Graphics library](https://www.cairographics.org/) is required by
+Material for MkDocs. Please follow the
+[official MkDocs documentation to install it](https://squidfunk.github.io/mkdocs-material/plugins/requirements/image-processing/#cairo-graphics).
+
 After that, you can either:
 
 - easily [start a live server to preview the documentation as you write](https://squidfunk.github.io/mkdocs-material/creating-your-site/#previewing-as-you-write)
