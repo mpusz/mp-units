@@ -22,12 +22,14 @@
 
 #pragma once
 
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <mp-units/customization_points.h>
 #include <mp-units/quantity_point.h>
+#include <chrono>
+#endif
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si/prefixes.h>
 #include <mp-units/systems/si/units.h>
-#include <chrono>
 
 namespace mp_units {
 

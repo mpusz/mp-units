@@ -22,9 +22,11 @@
 
 #pragma once
 
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <mp-units/dimension.h>
 #include <mp-units/quantity_spec.h>
 #include <mp-units/unit.h>
+#endif
 
 namespace mp_units::angular {
 

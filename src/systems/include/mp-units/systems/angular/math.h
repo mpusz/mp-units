@@ -22,12 +22,14 @@
 
 #pragma once
 
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <mp-units/bits/external/hacks.h>
 #include <mp-units/bits/value_cast.h>
 #include <mp-units/customization_points.h>
 #include <mp-units/quantity.h>
-#include <mp-units/systems/angular/units.h>
 #include <mp-units/unit.h>
+#endif
+#include <mp-units/systems/angular/units.h>
 
 // IWYU pragma: begin_exports
 #include <cmath>

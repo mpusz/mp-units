@@ -22,9 +22,11 @@
 
 #pragma once
 
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
+#include <mp-units/unit.h>
+#endif
 #include <mp-units/systems/iec80000/quantities.h>
 #include <mp-units/systems/si/units.h>
-#include <mp-units/unit.h>
 
 namespace mp_units::iec80000 {
 

@@ -9,6 +9,8 @@ export import mp_units.core;
 
 export
 {
+#define MP_UNITS_IN_MODULE_INTERFACE
+
 #include <mp-units/systems/angular/angular.h>
 #include <mp-units/systems/cgs/cgs.h>
 #include <mp-units/systems/hep/hep.h>

@@ -22,8 +22,10 @@
 
 #pragma once
 
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <mp-units/dimension.h>
 #include <mp-units/quantity_spec.h>
+#endif
 #include <mp-units/systems/isq/mechanics.h>
 #include <mp-units/systems/isq/space_and_time.h>
 

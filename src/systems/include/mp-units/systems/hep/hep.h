@@ -22,8 +22,10 @@
 
 #pragma once
 
-#include <mp-units/systems/si/si.h>
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <mp-units/unit.h>
+#endif
+#include <mp-units/systems/si/si.h>
 
 template<>
 inline constexpr std::optional<std::intmax_t> mp_units::known_first_factor<334'524'384'739> = 334'524'384'739;

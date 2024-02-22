@@ -22,8 +22,10 @@
 
 #pragma once
 
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <mp-units/quantity_spec.h>
 #include <mp-units/reference.h>
+#endif
 #include <mp-units/systems/angular/angular.h>
 #include <mp-units/systems/isq/isq.h>
 

@@ -22,11 +22,13 @@
 
 #pragma once
 
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <mp-units/system_reference.h>
+#include <mp-units/unit.h>
+#endif
 #include <mp-units/systems/isq/mechanics.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si/prefixes.h>
-#include <mp-units/unit.h>
 
 namespace mp_units::natural {
 

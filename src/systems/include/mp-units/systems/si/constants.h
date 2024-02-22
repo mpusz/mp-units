@@ -22,7 +22,9 @@
 
 #pragma once
 
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <mp-units/quantity.h>
+#endif
 #include <mp-units/systems/si/units.h>
 
 namespace mp_units::si {

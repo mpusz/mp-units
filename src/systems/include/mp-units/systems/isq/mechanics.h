@@ -22,7 +22,9 @@
 
 #pragma once
 
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <mp-units/quantity_spec.h>
+#endif
 #include <mp-units/systems/isq/si_quantities.h>
 #include <mp-units/systems/isq/space_and_time.h>
 

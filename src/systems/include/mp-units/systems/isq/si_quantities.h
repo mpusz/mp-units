@@ -22,7 +22,9 @@
 
 #pragma once
 
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <mp-units/quantity_spec.h>
+#endif
 #include <mp-units/systems/isq/base_quantities.h>
 
 namespace mp_units::isq {

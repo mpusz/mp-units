@@ -22,10 +22,13 @@
 
 #pragma once
 
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <mp-units/quantity_point.h>
+#include <mp-units/unit.h>
+#endif
+// #include <mp-units/systems/isq/mechanics.h>
 #include <mp-units/systems/isq/si_quantities.h>
 #include <mp-units/systems/si/prefixes.h>
-#include <mp-units/unit.h>
 
 namespace mp_units {
 
@@ -55,17 +58,20 @@ inline constexpr struct radian : named_unit<"rad", metre / metre, kind_of<isq::a
 inline constexpr struct steradian : named_unit<"sr", square(metre) / square(metre), kind_of<isq::solid_angular_measure>> {} steradian;
 inline constexpr struct hertz : named_unit<"Hz", one / second, kind_of<isq::frequency>> {} hertz;
 inline constexpr struct newton : named_unit<"N", kilogram * metre / square(second)> {} newton;
+// inline constexpr struct newton : named_unit<"N", kilogram * metre / square(second), kind_of<isq::force>> {} newton;
 #ifdef pascal
 #pragma push_macro("pascal")
 #undef pascal
 #define MP_UNITS_REDEFINE_PASCAL
 #endif
 inline constexpr struct pascal : named_unit<"Pa", newton / square(metre)> {} pascal;
+// inline constexpr struct pascal : named_unit<"Pa", newton / square(metre), kind_of<isq::pressure>> {} pascal;
 #ifdef MP_UNITS_REDEFINE_PASCAL
 #pragma pop_macro("pascal")
 #undef MP_UNITS_REDEFINE_PASCAL
 #endif
 inline constexpr struct joule : named_unit<"J", newton * metre> {} joule;
+// inline constexpr struct joule : named_unit<"J", newton * metre, kind_of<isq::energy>> {} joule;
 inline constexpr struct watt : named_unit<"W", joule / second> {} watt;
 inline constexpr struct coulomb : named_unit<"C", ampere * second> {} coulomb;
 inline constexpr struct volt : named_unit<"V", watt / ampere> {} volt;
