@@ -209,7 +209,7 @@ QualifierAlignment: Left
 # ShortNamespaceLines: 1
 # SortIncludes:    CaseSensitive
 # SortJavaStaticImport: Before
-# SortUsingDeclarations: LexicographicNumeric
+SortUsingDeclarations: false
 # SpaceAfterCStyleCast: false
 # SpaceAfterLogicalNot: false
 SpaceAfterTemplateKeyword: false
