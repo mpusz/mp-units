@@ -1,7 +1,7 @@
 module;
 
 #include <mp-units/bits/core_gmf.h>
-#include <mp-units/compat_macros.h>
+#include <chrono>
 
 export module mp_units.systems;
 

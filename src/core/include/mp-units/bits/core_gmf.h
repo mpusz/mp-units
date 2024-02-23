@@ -22,7 +22,6 @@
 
 #pragma once
 
-// core
 #include <gsl/gsl-lite.hpp>
 #include <mp-units/bits/external/hacks.h>
 #include <mp-units/compat_macros.h>
@@ -41,11 +40,12 @@
 #include <optional>
 #include <random>
 #include <ranges>
-#include <string>
+#include <sstream>
 #include <string_view>
 #include <tuple>
 #include <type_traits>
 #include <utility>
 
-// si
-#include <chrono>
+#if __cpp_lib_text_encoding
+#include <text_encoding>
+#endif
