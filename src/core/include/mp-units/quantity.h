@@ -24,6 +24,7 @@
 #pragma once
 
 #include <mp-units/bits/dimension_concepts.h>
+#include <mp-units/bits/module_macros.h>
 #include <mp-units/bits/quantity_concepts.h>
 #include <mp-units/bits/quantity_spec_concepts.h>
 #include <mp-units/bits/reference_concepts.h>
@@ -32,8 +33,11 @@
 #include <mp-units/bits/unit_concepts.h>
 #include <mp-units/customization_points.h>
 #include <mp-units/reference.h>
+
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <compare>
 #include <utility>
+#endif
 
 // the below is not used in this header but should be exposed with it
 #include <mp-units/bits/quantity_cast.h>
@@ -81,6 +85,8 @@ using common_quantity_for = quantity<common_reference(Q1::reference, Q2::referen
                                      std::invoke_result_t<Func, typename Q1::rep, typename Q2::rep>>;
 
 }  // namespace detail
+
+MP_UNITS_EXPORT_BEGIN
 
 /**
  * @brief A quantity
@@ -519,6 +525,8 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
   const ct ct_rhs(rhs);
   return ct_lhs.numerical_value_ref_in(ct::unit) <=> ct_rhs.numerical_value_ref_in(ct::unit);
 }
+
+MP_UNITS_EXPORT_END
 
 }  // namespace mp_units
 

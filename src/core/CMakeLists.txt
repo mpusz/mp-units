@@ -46,6 +46,7 @@ add_mp_units_module(
             include/mp-units/bits/get_associated_quantity.h
             include/mp-units/bits/get_common_base.h
             include/mp-units/bits/magnitude.h
+            include/mp-units/bits/module_macros.h
             include/mp-units/bits/quantity_cast.h
             include/mp-units/bits/quantity_concepts.h
             include/mp-units/bits/quantity_point_concepts.h

@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <mp-units/bits/module_macros.h>
 #include <mp-units/bits/quantity_spec_concepts.h>
 #include <mp-units/bits/reference_concepts.h>
 #include <mp-units/bits/representation_concepts.h>
@@ -29,7 +30,7 @@
 
 namespace mp_units {
 
-template<Reference auto R, RepresentationOf<get_quantity_spec(R).character> Rep>
+MP_UNITS_EXPORT template<Reference auto R, RepresentationOf<get_quantity_spec(R).character> Rep>
 class quantity;
 
 namespace detail {
@@ -42,6 +43,8 @@ inline constexpr bool is_derived_from_specialization_of_quantity =
   requires(std::remove_reference_t<T>* t) { to_base_specialization_of_quantity(t); };
 
 }  // namespace detail
+
+MP_UNITS_EXPORT_BEGIN
 
 /**
  * @brief A concept matching all quantities in the library
@@ -81,5 +84,7 @@ concept QuantityLike = requires {
     quantity_like_traits<T>::from_numerical_value(v)
   } -> detail::ConversionSpecOf<T>;
 };
+
+MP_UNITS_EXPORT_END
 
 }  // namespace mp_units

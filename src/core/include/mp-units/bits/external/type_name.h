@@ -2,7 +2,9 @@
 
 #pragma once
 
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <string_view>
+#endif
 
 template<typename T>
 [[nodiscard]] consteval std::string_view type_name()

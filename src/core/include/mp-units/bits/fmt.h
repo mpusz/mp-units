@@ -29,11 +29,14 @@
 
 #pragma once
 
-#include <gsl/gsl-lite.hpp>
 #include <mp-units/compat_macros.h>
+
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
+#include <gsl/gsl-lite.hpp>
 #include <concepts>
 #include <limits>
 #include <string_view>
+#endif
 
 // most of the below code is based on/copied from fmtlib
 

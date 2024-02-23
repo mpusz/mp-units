@@ -22,13 +22,16 @@
 
 #pragma once
 
-#ifndef MP_UNITS_IN_MODULE_INTERFACE
-#include <mp-units/quantity_spec.h>
-#endif
+#include <mp-units/bits/module_macros.h>
 #include <mp-units/systems/isq/base_quantities.h>
 #include <mp-units/systems/isq/mechanics.h>
 #include <mp-units/systems/isq/space_and_time.h>
 
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
+#include <mp-units/quantity_spec.h>
+#endif
+
+MP_UNITS_EXPORT
 namespace mp_units::isq {
 
 QUANTITY_SPEC(electric_charge, electric_current* time);

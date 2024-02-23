@@ -22,14 +22,16 @@
 
 #pragma once
 
+#include <mp-units/bits/module_macros.h>
+#include <mp-units/systems/isq/space_and_time.h>
+#include <mp-units/systems/si/prefixes.h>
+#include <mp-units/systems/si/units.h>
+
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <mp-units/customization_points.h>
 #include <mp-units/quantity_point.h>
 #include <chrono>
 #endif
-#include <mp-units/systems/isq/space_and_time.h>
-#include <mp-units/systems/si/prefixes.h>
-#include <mp-units/systems/si/units.h>
 
 namespace mp_units {
 
@@ -62,7 +64,7 @@ template<typename Period>
 
 }  // namespace detail
 
-template<typename Rep, typename Period>
+MP_UNITS_EXPORT template<typename Rep, typename Period>
 struct quantity_like_traits<std::chrono::duration<Rep, Period>> {
   static constexpr auto reference = detail::time_unit_from_chrono_period<Period>();
   using rep = Rep;
@@ -84,9 +86,10 @@ template<typename C>
 struct chrono_point_origin_ : absolute_point_origin<chrono_point_origin_<C>, isq::time> {
   using clock = C;
 };
-template<typename C>
+MP_UNITS_EXPORT template<typename C>
 inline constexpr chrono_point_origin_<C> chrono_point_origin;
 
+MP_UNITS_EXPORT_BEGIN
 
 template<typename C, typename Rep, typename Period>
 struct quantity_point_like_traits<std::chrono::time_point<C, std::chrono::duration<Rep, Period>>> {
@@ -111,7 +114,7 @@ struct quantity_point_like_traits<std::chrono::time_point<C, std::chrono::durati
 template<QuantityOf<isq::time> Q>
 [[nodiscard]] constexpr auto to_chrono_duration(const Q& q)
 {
-  constexpr auto canonical = detail::get_canonical_unit(Q::unit);
+  constexpr auto canonical = get_canonical_unit(Q::unit);
   constexpr ratio r = as_ratio(canonical.mag);
   return std::chrono::duration<typename Q::rep, std::ratio<r.num, r.den>>{q};
 }
@@ -122,10 +125,12 @@ template<QuantityPointOf<isq::time> QP>
 {
   using clock = MP_UNITS_TYPENAME decltype(QP::absolute_point_origin)::clock;
   using rep = MP_UNITS_TYPENAME QP::rep;
-  constexpr auto canonical = detail::get_canonical_unit(QP::unit);
+  constexpr auto canonical = get_canonical_unit(QP::unit);
   constexpr ratio r = as_ratio(canonical.mag);
   using ret_type = std::chrono::time_point<clock, std::chrono::duration<rep, std::ratio<r.num, r.den>>>;
   return ret_type(to_chrono_duration(qp - qp.absolute_point_origin));
 }
+
+MP_UNITS_EXPORT_END
 
 }  // namespace mp_units

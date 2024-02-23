@@ -22,21 +22,25 @@
 
 #pragma once
 
+#include <mp-units/bits/module_macros.h>
 #include <mp-units/bits/quantity_point_concepts.h>
 #include <mp-units/compare.h>
 #include <mp-units/customization_points.h>
 #include <mp-units/quantity.h>
+
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <compare>
+#endif
 
 namespace mp_units {
 
-template<typename Derived, QuantitySpec auto QS>
+MP_UNITS_EXPORT template<typename Derived, QuantitySpec auto QS>
 struct absolute_point_origin {
   static constexpr QuantitySpec auto quantity_spec = QS;
   using _type_ = absolute_point_origin;
 };
 
-template<QuantityPoint auto QP>
+MP_UNITS_EXPORT template<QuantityPoint auto QP>
 struct relative_point_origin {
   static constexpr QuantityPoint auto quantity_point = QP;
   static constexpr QuantitySpec auto quantity_spec = []() {
@@ -52,7 +56,7 @@ struct relative_point_origin {
 template<QuantitySpec auto QS>
 struct zeroth_point_origin_ : absolute_point_origin<zeroth_point_origin_<QS>, QS> {};
 
-template<QuantitySpec auto QS>
+MP_UNITS_EXPORT template<QuantitySpec auto QS>
 inline constexpr zeroth_point_origin_<QS> zeroth_point_origin;
 
 namespace detail {
@@ -71,7 +75,7 @@ template<PointOrigin PO>
 
 }  // namespace detail
 
-template<PointOrigin PO1, PointOrigin PO2>
+MP_UNITS_EXPORT template<PointOrigin PO1, PointOrigin PO2>
 [[nodiscard]] consteval bool operator==(PO1 po1, PO2 po2)
 {
   if constexpr (detail::AbsolutePointOrigin<PO1> && detail::AbsolutePointOrigin<PO2>)
@@ -86,7 +90,7 @@ template<PointOrigin PO1, PointOrigin PO2>
     return detail::same_absolute_point_origins(po1, po2) && is_eq_zero(PO2::quantity_point.quantity_from_zero());
 }
 
-template<Reference R>
+MP_UNITS_EXPORT template<Reference R>
 [[nodiscard]] consteval PointOriginFor<get_quantity_spec(R{})> auto default_point_origin(R)
 {
   if constexpr (requires { get_unit(R{}).point_origin; })
@@ -107,6 +111,8 @@ template<PointOrigin PO>
 }
 
 }  // namespace detail
+
+MP_UNITS_EXPORT_BEGIN
 
 /**
  * @brief A quantity point
@@ -506,5 +512,7 @@ template<QuantityPoint QP1, QuantityPointOf<QP1::absolute_point_origin> QP2>
   else
     return lhs - lhs.absolute_point_origin == rhs - rhs.absolute_point_origin;
 }
+
+MP_UNITS_EXPORT_END
 
 }  // namespace mp_units

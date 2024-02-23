@@ -23,8 +23,12 @@
 #pragma once
 
 #include <mp-units/bits/external/hacks.h>
+#include <mp-units/bits/module_macros.h>
+
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <type_traits>
 #include <utility>
+#endif
 
 namespace mp_units {
 
@@ -44,6 +48,8 @@ struct conditional_impl<true> {
 };
 
 }  // namespace detail
+
+MP_UNITS_EXPORT_BEGIN
 
 template<bool B, typename T, typename F>
 using conditional = MP_UNITS_TYPENAME detail::conditional_impl<B>::template type<T, F>;
@@ -70,6 +76,8 @@ inline constexpr bool is_specialization_of_v = false;
 
 template<auto... Params, template<auto...> typename Type>
 inline constexpr bool is_specialization_of_v<Type<Params...>, Type> = true;
+
+MP_UNITS_EXPORT_END
 
 // is_derived_from_specialization_of
 namespace detail {

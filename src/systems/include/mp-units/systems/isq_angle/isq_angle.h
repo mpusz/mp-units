@@ -22,13 +22,16 @@
 
 #pragma once
 
+#include <mp-units/bits/module_macros.h>
+#include <mp-units/systems/angular/angular.h>
+#include <mp-units/systems/isq/isq.h>
+
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <mp-units/quantity_spec.h>
 #include <mp-units/reference.h>
 #endif
-#include <mp-units/systems/angular/angular.h>
-#include <mp-units/systems/isq/isq.h>
 
+MP_UNITS_EXPORT
 namespace mp_units::isq_angle {
 
 using namespace isq;

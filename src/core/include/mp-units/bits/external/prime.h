@@ -23,12 +23,15 @@
 #pragma once
 
 #include <mp-units/bits/external/algorithm.h>
+
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <array>
 #include <cstddef>
 #include <cstdint>
 #include <numeric>
 #include <optional>
 #include <tuple>
+#endif
 
 namespace mp_units::detail {
 

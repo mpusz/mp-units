@@ -22,6 +22,8 @@
 
 #pragma once
 
+#include <mp-units/bits/module_macros.h>
+
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <mp-units/unit.h>
 #endif
@@ -38,6 +40,8 @@ template<PrefixableUnit U> struct exbi_ : prefixed_unit<"Ei", mag_power<2, 60>, 
 template<PrefixableUnit U> struct zebi_ : prefixed_unit<"Zi", mag_power<2, 70>, U{}> {};
 template<PrefixableUnit U> struct yobi_ : prefixed_unit<"Yi", mag_power<2, 80>, U{}> {};
 
+MP_UNITS_EXPORT_BEGIN
+
 template<PrefixableUnit auto U> inline constexpr kibi_<std::remove_const_t<decltype(U)>> kibi;
 template<PrefixableUnit auto U> inline constexpr mebi_<std::remove_const_t<decltype(U)>> mebi;
 template<PrefixableUnit auto U> inline constexpr gibi_<std::remove_const_t<decltype(U)>> gibi;
@@ -47,5 +51,7 @@ template<PrefixableUnit auto U> inline constexpr exbi_<std::remove_const_t<declt
 template<PrefixableUnit auto U> inline constexpr zebi_<std::remove_const_t<decltype(U)>> zebi;
 template<PrefixableUnit auto U> inline constexpr yobi_<std::remove_const_t<decltype(U)>> yobi;
 // clang-format on
+
+MP_UNITS_EXPORT_END
 
 }  // namespace mp_units::iec80000

@@ -24,9 +24,13 @@
 
 #include <gsl/gsl-lite.hpp>
 #include <mp-units/bits/external/hacks.h>
+#include <mp-units/bits/module_macros.h>
+
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <compare>
 #include <cstdint>
 #include <numeric>
+#endif
 
 namespace mp_units {
 
@@ -63,7 +67,7 @@ template<typename T>
  * This class is really similar to @c std::ratio.  An important difference is the fact that the objects of that class
  * are used as class NTTPs rather then a type template parameter kind.
  */
-struct ratio {
+MP_UNITS_EXPORT struct ratio {
   std::intmax_t num;
   std::intmax_t den;
 

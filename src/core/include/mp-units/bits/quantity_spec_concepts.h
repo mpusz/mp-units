@@ -24,9 +24,11 @@
 
 #include <mp-units/bits/dimension_concepts.h>
 #include <mp-units/bits/expression_template.h>
+#include <mp-units/bits/module_macros.h>
 
 namespace mp_units {
 
+MP_UNITS_EXPORT
 #ifdef __cpp_explicit_this_parameter
 template<auto...>
 #else
@@ -125,11 +127,11 @@ concept IntermediateDerivedQuantitySpec =
 }  // namespace detail
 
 
-template<typename T>
+MP_UNITS_EXPORT template<typename T>
 concept QuantitySpec =
   detail::NamedQuantitySpec<T> || detail::IntermediateDerivedQuantitySpec<T> || detail::QuantityKindSpec<T>;
 
-template<QuantitySpec Q>
+MP_UNITS_EXPORT template<QuantitySpec Q>
 [[nodiscard]] consteval detail::QuantityKindSpec auto get_kind(Q q);
 
 namespace detail {
@@ -142,7 +144,7 @@ concept NestedQuantityKindSpecOf =
 
 }
 
-template<typename T, auto QS>
+MP_UNITS_EXPORT template<typename T, auto QS>
 concept QuantitySpecOf =
   QuantitySpec<T> && QuantitySpec<std::remove_const_t<decltype(QS)>> && implicitly_convertible(T{}, QS) &&
   // the below is to make the following work

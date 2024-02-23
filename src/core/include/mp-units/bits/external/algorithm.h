@@ -23,10 +23,13 @@
 #pragma once
 
 #include <mp-units/bits/external/hacks.h>  // IWYU pragma: keep
+
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <compare>
 #include <initializer_list>
 #include <iterator>
 #include <ranges>
+#endif
 
 namespace mp_units::detail {
 

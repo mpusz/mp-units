@@ -22,9 +22,11 @@
 
 #pragma once
 
+#include <mp-units/bits/module_macros.h>
 #include <mp-units/systems/si/prefixes.h>
 #include <mp-units/systems/si/units.h>
 
+MP_UNITS_EXPORT
 namespace mp_units {
 
 namespace si::unit_symbols {

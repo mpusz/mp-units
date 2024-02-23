@@ -23,9 +23,12 @@
 #pragma once
 
 #include <mp-units/bits/external/hacks.h>  // IWYU pragma: keep
+
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <cstddef>
 #include <type_traits>
 #include <utility>
+#endif
 
 MP_UNITS_DIAGNOSTIC_PUSH
 MP_UNITS_DIAGNOSTIC_IGNORE_EXPR_ALWAYS_TF

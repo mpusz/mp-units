@@ -23,10 +23,12 @@
 #pragma once
 
 #include <mp-units/bits/external/hacks.h>
+#include <mp-units/bits/module_macros.h>
 #include <mp-units/quantity_spec.h>
 #include <mp-units/reference.h>
 #include <mp-units/unit.h>
 
+MP_UNITS_EXPORT
 namespace mp_units {
 
 /**

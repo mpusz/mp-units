@@ -24,11 +24,12 @@
 
 #include <mp-units/bits/expression_template.h>
 #include <mp-units/bits/external/type_traits.h>
+#include <mp-units/bits/module_macros.h>
 #include <mp-units/bits/symbol_text.h>
 
 namespace mp_units {
 
-template<basic_symbol_text Symbol>
+MP_UNITS_EXPORT template<basic_symbol_text Symbol>
 struct base_dimension;
 
 namespace detail {
@@ -98,7 +99,7 @@ concept DerivedDimension = is_specialization_of<T, derived_dimension> || is_dime
  *
  * Satisfied by all dimension types for which either `BaseDimension<T>` or `DerivedDimension<T>` is `true`.
  */
-template<typename T>
+MP_UNITS_EXPORT template<typename T>
 concept Dimension = detail::BaseDimension<T> || detail::DerivedDimension<T>;
 
 /**
@@ -106,7 +107,7 @@ concept Dimension = detail::BaseDimension<T> || detail::DerivedDimension<T>;
  *
  * Satisfied when both argument satisfy a `Dimension` concept and when they compare equal.
  */
-template<typename T, auto D>
+MP_UNITS_EXPORT template<typename T, auto D>
 concept DimensionOf = Dimension<T> && Dimension<std::remove_const_t<decltype(D)>> && (T{} == D);
 
 }  // namespace mp_units

@@ -22,6 +22,8 @@
 
 #pragma once
 
+#include <mp-units/bits/module_macros.h>
+
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <mp-units/unit.h>
 #endif
@@ -54,6 +56,8 @@ template<PrefixableUnit U> struct yotta_ : prefixed_unit<"Y", mag_power<10, 24>,
 template<PrefixableUnit U> struct ronna_ : prefixed_unit<"R", mag_power<10, 27>, U{}> {};
 template<PrefixableUnit U> struct quetta_ : prefixed_unit<"Q", mag_power<10, 30>, U{}> {};
 
+MP_UNITS_EXPORT_BEGIN
+
 template<PrefixableUnit auto U> inline constexpr quecto_<std::remove_const_t<decltype(U)>> quecto;
 template<PrefixableUnit auto U> inline constexpr ronto_<std::remove_const_t<decltype(U)>> ronto;
 template<PrefixableUnit auto U> inline constexpr yocto_<std::remove_const_t<decltype(U)>> yocto;
@@ -79,5 +83,7 @@ template<PrefixableUnit auto U> inline constexpr yotta_<std::remove_const_t<decl
 template<PrefixableUnit auto U> inline constexpr ronna_<std::remove_const_t<decltype(U)>> ronna;
 template<PrefixableUnit auto U> inline constexpr quetta_<std::remove_const_t<decltype(U)>> quetta;
 // clang-format on
+
+MP_UNITS_EXPORT_END
 
 }  // namespace mp_units::si

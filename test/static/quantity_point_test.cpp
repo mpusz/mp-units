@@ -24,15 +24,10 @@
 #include <limits>
 #include <type_traits>
 #include <utility>
-#ifdef MP_UNITS_MODULES
-#include <chrono>
-import mp_units;
-#else
 #include <mp-units/quantity_point.h>
 #include <mp-units/systems/isq/isq.h>
 #include <mp-units/systems/si/si.h>
 #include <mp-units/systems/usc/usc.h>
-#endif
 
 namespace {
 

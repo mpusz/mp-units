@@ -21,13 +21,9 @@
 // SOFTWARE.
 
 #include <mp-units/compat_macros.h>
-#ifdef MP_UNITS_MODULES
-import mp_units;
-#else
 #include <mp-units/math.h>
 #include <mp-units/systems/isq/electromagnetism.h>
 #include <mp-units/systems/si/units.h>
-#endif
 
 namespace {
 

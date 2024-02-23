@@ -24,17 +24,17 @@
 
 // TODO use <algorithm> when moved to C++20 modules (parsing takes too long for each translation unit)
 #include <mp-units/bits/external/algorithm.h>
+#include <mp-units/bits/module_macros.h>
 #include <mp-units/compat_macros.h>  // IWYU pragma: keep
 
-// IWYU pragma: begin_exports
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <compare>
+#include <cstddef>
 #include <cstdlib>
 #include <ostream>
-// IWYU pragma: end_exports
+#endif
 
-#include <cstddef>
-
-
+MP_UNITS_EXPORT
 namespace mp_units {
 
 /**

@@ -20,13 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifdef MP_UNITS_MODULES
-import mp_units;
-#else
 #include <mp-units/reference.h>
 #include <mp-units/systems/isq/isq.h>
 #include <mp-units/systems/si/unit_symbols.h>
-#endif
 
 namespace {
 

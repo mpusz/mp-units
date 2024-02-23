@@ -28,8 +28,10 @@
 #include <mp-units/customization_points.h>
 #include <mp-units/quantity.h>
 #include <mp-units/unit.h>
-#include <cstdint>
 
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
+#include <cstdint>
+#endif
 
 namespace mp_units::detail {
 

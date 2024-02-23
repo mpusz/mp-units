@@ -22,20 +22,20 @@
 
 #pragma once
 
+#include <mp-units/bits/module_macros.h>
 #include <mp-units/bits/value_cast.h>
 #include <mp-units/customization_points.h>
 #include <mp-units/quantity.h>
 #include <mp-units/unit.h>
 
-// IWYU pragma: begin_exports
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <cmath>
 #include <cstdint>
-// IWYU pragma: end_exports
-
 #include <limits>
+#endif
 
+MP_UNITS_EXPORT
 namespace mp_units {
-
 /**
  * @brief Computes the value of a quantity raised to the `Num/Den` power
  *

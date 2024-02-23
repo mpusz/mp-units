@@ -22,12 +22,15 @@
 
 #pragma once
 
-#ifndef MP_UNITS_IN_MODULE_INTERFACE
-#include <mp-units/quantity_spec.h>
-#endif
+#include <mp-units/bits/module_macros.h>
 #include <mp-units/systems/isq/si_quantities.h>
 #include <mp-units/systems/isq/space_and_time.h>
 
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
+#include <mp-units/quantity_spec.h>
+#endif
+
+MP_UNITS_EXPORT
 namespace mp_units::isq {
 
 QUANTITY_SPEC(mass_density, mass / volume);

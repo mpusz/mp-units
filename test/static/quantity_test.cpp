@@ -20,19 +20,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <mp-units/bits/external/hacks.h>
-//
 #include "test_tools.h"
-#include <limits>
-#include <utility>
-#ifdef MP_UNITS_MODULES
-#include <chrono>
-import mp_units;
-#else
+#include <mp-units/bits/external/hacks.h>
 #include <mp-units/systems/isq/mechanics.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si/si.h>
-#endif
+#include <limits>
+#include <utility>
 
 template<>
 inline constexpr bool mp_units::is_vector<int> = true;

@@ -23,6 +23,7 @@
 #pragma once
 
 #include <mp-units/bits/get_associated_quantity.h>
+#include <mp-units/bits/module_macros.h>
 #include <mp-units/bits/quantity_concepts.h>
 #include <mp-units/bits/reference_concepts.h>
 #include <mp-units/bits/representation_concepts.h>
@@ -35,6 +36,8 @@ template<QuantitySpec auto Q, Unit auto U>
 using reference_t = reference<std::remove_const_t<decltype(Q)>, std::remove_const_t<decltype(U)>>;
 
 }
+
+MP_UNITS_EXPORT_BEGIN
 
 [[nodiscard]] consteval QuantitySpec auto get_quantity_spec(AssociatedUnit auto u)
 {
@@ -240,6 +243,8 @@ template<Reference R1, Reference R2, Reference... Rest>
                                                   get_quantity_spec(rest)...),
                              common_unit(get_unit(r1), get_unit(r2), get_unit(rest)...)>{};
 }
+
+MP_UNITS_EXPORT_END
 
 namespace detail {
 

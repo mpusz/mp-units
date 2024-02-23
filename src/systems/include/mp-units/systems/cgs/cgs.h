@@ -22,11 +22,14 @@
 
 #pragma once
 
+#include <mp-units/bits/module_macros.h>
+#include <mp-units/systems/si/units.h>
+
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <mp-units/unit.h>
 #endif
-#include <mp-units/systems/si/units.h>
 
+MP_UNITS_EXPORT
 namespace mp_units::cgs {
 
 // clang-format off

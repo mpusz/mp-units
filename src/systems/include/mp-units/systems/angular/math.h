@@ -22,18 +22,19 @@
 
 #pragma once
 
+#include <mp-units/bits/module_macros.h>
+#include <mp-units/systems/angular/units.h>
+
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <mp-units/bits/value_cast.h>
 #include <mp-units/customization_points.h>
 #include <mp-units/quantity.h>
 #include <mp-units/unit.h>
-#endif
-#include <mp-units/systems/angular/units.h>
-
-// IWYU pragma: begin_exports
 #include <cmath>
-// IWYU pragma: end_exports
+#endif
 
+
+MP_UNITS_EXPORT
 namespace mp_units::angular {
 
 template<ReferenceOf<angle> auto R, typename Rep>

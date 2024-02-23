@@ -20,14 +20,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifdef MP_UNITS_MODULES
-import mp_units;
-#else
 #include <mp-units/quantity.h>
 #include <mp-units/reference.h>
 #include <mp-units/systems/iec80000/iec80000.h>
 #include <mp-units/systems/si/unit_symbols.h>
-#endif
 
 /* ************** DERIVED DIMENSIONS THAT INCLUDE UNITS WITH SPECIAL NAMES **************** */
 

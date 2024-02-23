@@ -22,11 +22,15 @@
 
 #pragma once
 
+#include <mp-units/bits/module_macros.h>
 #include <mp-units/customization_points.h>
+
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <concepts>
 #include <cstdint>
 #include <functional>
 #include <type_traits>
+#endif
 
 namespace mp_units {
 
@@ -48,7 +52,7 @@ namespace mp_units {
  * For example, the Cauchy stress tensor possess magnitude, direction,
  * and orientation qualities.
  */
-enum class quantity_character { scalar, vector, tensor };
+MP_UNITS_EXPORT enum class quantity_character { scalar, vector, tensor };
 
 namespace detail {
 
@@ -75,10 +79,10 @@ concept Scalable =
 
 }  // namespace detail
 
-template<typename T>
+MP_UNITS_EXPORT template<typename T>
 concept Representation = (is_scalar<T> || is_vector<T> || is_tensor<T>)&&std::regular<T> && detail::Scalable<T>;
 
-template<typename T, quantity_character Ch>
+MP_UNITS_EXPORT template<typename T, quantity_character Ch>
 concept RepresentationOf = Representation<T> && ((Ch == quantity_character::scalar && is_scalar<T>) ||
                                                  (Ch == quantity_character::vector && is_vector<T>) ||
                                                  (Ch == quantity_character::tensor && is_tensor<T>));

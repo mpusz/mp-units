@@ -22,8 +22,13 @@
 
 #pragma once
 
-#include <compare>
+#include <mp-units/bits/module_macros.h>
 
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
+#include <compare>
+#endif
+
+MP_UNITS_EXPORT
 namespace mp_units {
 
 template<typename T>

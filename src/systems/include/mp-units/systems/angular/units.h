@@ -22,12 +22,15 @@
 
 #pragma once
 
+#include <mp-units/bits/module_macros.h>
+
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <mp-units/dimension.h>
 #include <mp-units/quantity_spec.h>
 #include <mp-units/unit.h>
 #endif
 
+MP_UNITS_EXPORT
 namespace mp_units::angular {
 
 // clang-format off

@@ -23,10 +23,16 @@
 #pragma once
 
 #include <mp-units/bits/external/type_traits.h>
+#include <mp-units/bits/module_macros.h>
+
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <limits>
 #include <type_traits>
+#endif
 
 namespace mp_units {
+
+MP_UNITS_EXPORT_BEGIN
 
 /**
  * @brief Specifies if a value of a type should be treated as a floating-point value
@@ -149,15 +155,6 @@ struct convert_implicitly {
   }
 };
 
-namespace detail {
-
-template<typename T>
-concept ConversionSpec = is_specialization_of<T, convert_explicitly> || is_specialization_of<T, convert_implicitly>;
-
-template<typename T, typename U>
-concept ConversionSpecOf = ConversionSpec<T> && std::same_as<typename T::value_type, U>;
-
-}  // namespace detail
 
 /**
  * @brief Provides support for external quantity-like types
@@ -191,5 +188,17 @@ struct quantity_like_traits;
  */
 template<typename T>
 struct quantity_point_like_traits;
+
+MP_UNITS_EXPORT_END
+
+namespace detail {
+
+template<typename T>
+concept ConversionSpec = is_specialization_of<T, convert_explicitly> || is_specialization_of<T, convert_implicitly>;
+
+template<typename T, typename U>
+concept ConversionSpecOf = ConversionSpec<T> && std::same_as<typename T::value_type, U>;
+
+}  // namespace detail
 
 }  // namespace mp_units

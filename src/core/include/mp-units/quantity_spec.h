@@ -27,18 +27,21 @@
 #include <mp-units/bits/external/type_name.h>
 #include <mp-units/bits/external/type_traits.h>
 #include <mp-units/bits/get_common_base.h>
+#include <mp-units/bits/module_macros.h>
 #include <mp-units/bits/quantity_concepts.h>
 #include <mp-units/bits/quantity_spec_concepts.h>
 #include <mp-units/bits/reference_concepts.h>
 #include <mp-units/bits/representation_concepts.h>
 #include <mp-units/compat_macros.h>
 #include <mp-units/dimension.h>
+
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <tuple>
+#endif
 
 namespace mp_units {
 
 namespace detail {
-
 
 template<QuantitySpec QS, Unit U>
   requires(!AssociatedUnit<U>) || UnitOf<U, QS{}>
@@ -143,6 +146,8 @@ struct quantity_spec_interface {
 
 }  // namespace detail
 
+MP_UNITS_EXPORT_BEGIN
+
 /**
  * @brief Quantity Specification
  *
@@ -170,6 +175,8 @@ struct quantity_spec;
 
 inline constexpr struct is_kind {
 } is_kind;
+
+MP_UNITS_EXPORT_END
 
 /**
  * @brief Specialization defining a base quantity
@@ -432,7 +439,7 @@ struct derived_quantity_spec :
  * Quantity of dimension one also commonly named as "dimensionless" is a quantity with a dimension
  * for which all the exponents of the factors corresponding to the base dimensions are zero.
  */
-QUANTITY_SPEC(dimensionless, derived_quantity_spec<>{});
+MP_UNITS_EXPORT QUANTITY_SPEC(dimensionless, derived_quantity_spec<>{});
 
 /**
  * @brief Quantity kind specifier
@@ -469,7 +476,7 @@ struct kind_of_<Q> : quantity_spec<kind_of_<Q>, Q{}> {
 };
 #endif
 
-template<detail::QuantitySpecWithNoSpecifiers auto Q>
+MP_UNITS_EXPORT template<detail::QuantitySpecWithNoSpecifiers auto Q>
   requires(detail::get_kind_tree_root(Q) == Q)
 inline constexpr kind_of_<std::remove_const_t<decltype(Q)>> kind_of;
 
@@ -497,6 +504,8 @@ template<QuantitySpec Q>
 }
 
 }  // namespace detail
+
+MP_UNITS_EXPORT_BEGIN
 
 // Operators
 
@@ -579,6 +588,7 @@ template<std::intmax_t Num, std::intmax_t Den = 1, QuantitySpec Q>
  */
 [[nodiscard]] consteval QuantitySpec auto cbrt(QuantitySpec auto q) { return pow<1, 3>(q); }
 
+MP_UNITS_EXPORT_END
 
 namespace detail {
 
@@ -1386,6 +1396,8 @@ template<QuantitySpec From, QuantitySpec To>
 
 }  // namespace detail
 
+MP_UNITS_EXPORT_BEGIN
+
 template<QuantitySpec From, QuantitySpec To>
 [[nodiscard]] consteval bool implicitly_convertible(From from, To to)
 {
@@ -1409,6 +1421,8 @@ template<QuantitySpec QS1, QuantitySpec QS2>
 {
   return implicitly_convertible(qs1, qs2) && implicitly_convertible(qs2, qs1);
 }
+
+MP_UNITS_EXPORT_END
 
 namespace detail {
 
@@ -1453,6 +1467,8 @@ template<QuantitySpec Q>
 }
 
 }  // namespace detail
+
+MP_UNITS_EXPORT_BEGIN
 
 template<QuantitySpec Q>
 [[nodiscard]] consteval detail::QuantityKindSpec auto get_kind(Q q)
@@ -1501,5 +1517,7 @@ template<QuantitySpec Q1, QuantitySpec Q2>
 {
   return common_quantity_spec(common_quantity_spec(q1, q2), q3, rest...);
 }
+
+MP_UNITS_EXPORT_END
 
 }  // namespace mp_units

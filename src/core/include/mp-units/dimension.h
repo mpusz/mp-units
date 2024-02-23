@@ -25,6 +25,7 @@
 #include <mp-units/bits/dimension_concepts.h>
 #include <mp-units/bits/expression_template.h>
 #include <mp-units/bits/external/type_traits.h>
+#include <mp-units/bits/module_macros.h>
 #include <mp-units/bits/symbol_text.h>
 
 namespace mp_units {
@@ -57,7 +58,7 @@ namespace mp_units {
  *
  * @tparam Symbol an unique identifier of the base dimension used to provide dimensional analysis support
  */
-template<basic_symbol_text Symbol>
+MP_UNITS_EXPORT template<basic_symbol_text Symbol>
 struct base_dimension {
   static constexpr auto symbol = Symbol;  ///< Unique base dimension identifier
 };
@@ -124,7 +125,7 @@ struct derived_dimension : detail::expr_fractions<detail::is_dimension_one, Expr
  * dimensions are zero. It is a dimension of a quantity of dimension one also known as
  * "dimensionless".
  */
-inline constexpr struct dimension_one : derived_dimension<> {
+MP_UNITS_EXPORT inline constexpr struct dimension_one : derived_dimension<> {
 } dimension_one;
 
 namespace detail {
@@ -136,14 +137,14 @@ struct is_dimension_one<struct dimension_one> : std::true_type {};
 
 // Operators
 
-template<Dimension Lhs, Dimension Rhs>
+MP_UNITS_EXPORT template<Dimension Lhs, Dimension Rhs>
 [[nodiscard]] consteval Dimension auto operator*(Lhs, Rhs)
 {
   return detail::expr_multiply<derived_dimension, struct dimension_one, detail::type_list_of_base_dimension_less>(
     Lhs{}, Rhs{});
 }
 
-template<Dimension Lhs, Dimension Rhs>
+MP_UNITS_EXPORT template<Dimension Lhs, Dimension Rhs>
 [[nodiscard]] consteval Dimension auto operator/(Lhs, Rhs)
 {
   return detail::expr_divide<derived_dimension, struct dimension_one, detail::type_list_of_base_dimension_less>(Lhs{},
@@ -163,13 +164,13 @@ template<auto Symbol>
 
 }  // namespace detail
 
-template<Dimension Lhs, Dimension Rhs>
+MP_UNITS_EXPORT template<Dimension Lhs, Dimension Rhs>
 [[nodiscard]] consteval bool operator==(Lhs lhs, Rhs rhs)
 {
   return is_same_v<Lhs, Rhs> || detail::derived_from_the_same_base_dimension(lhs, rhs);
 }
 
-[[nodiscard]] consteval Dimension auto inverse(Dimension auto d) { return dimension_one / d; }
+MP_UNITS_EXPORT [[nodiscard]] consteval Dimension auto inverse(Dimension auto d) { return dimension_one / d; }
 
 /**
  * @brief Computes the value of a dimension raised to the `Num/Den` power
@@ -180,7 +181,7 @@ template<Dimension Lhs, Dimension Rhs>
  *
  * @return Dimension The result of computation
  */
-template<std::intmax_t Num, std::intmax_t Den = 1, Dimension D>
+MP_UNITS_EXPORT template<std::intmax_t Num, std::intmax_t Den = 1, Dimension D>
   requires detail::non_zero<Den>
 [[nodiscard]] consteval Dimension auto pow(D d)
 {
@@ -201,7 +202,7 @@ template<std::intmax_t Num, std::intmax_t Den = 1, Dimension D>
  *
  * @return Dimension The result of computation
  */
-[[nodiscard]] consteval Dimension auto sqrt(Dimension auto d) { return pow<1, 2>(d); }
+MP_UNITS_EXPORT [[nodiscard]] consteval Dimension auto sqrt(Dimension auto d) { return pow<1, 2>(d); }
 
 /**
  * @brief Computes the cubic root of a dimension
@@ -210,7 +211,7 @@ template<std::intmax_t Num, std::intmax_t Den = 1, Dimension D>
  *
  * @return Dimension The result of computation
  */
-[[nodiscard]] consteval Dimension auto cbrt(Dimension auto d) { return pow<1, 3>(d); }
+MP_UNITS_EXPORT [[nodiscard]] consteval Dimension auto cbrt(Dimension auto d) { return pow<1, 3>(d); }
 
 
 // TODO consider adding the support for text output of the dimensional equation

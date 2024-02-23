@@ -21,14 +21,10 @@
 // SOFTWARE.
 
 #include "test_tools.h"
-#ifdef MP_UNITS_MODULES
-import mp_units;
-#else
 #include <mp-units/systems/cgs/cgs.h>
 #include <mp-units/systems/isq/mechanics.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si/unit_symbols.h>
-#endif
 
 template<class T>
   requires mp_units::is_scalar<T>

@@ -21,14 +21,10 @@
 // SOFTWARE.
 
 #include <optional>
-#ifdef MP_UNITS_MODULES
-import mp_units;
-#else
 #include <mp-units/math.h>  // IWYU pragma: keep
 #include <mp-units/systems/international/international.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si/unit_symbols.h>
-#endif
 
 namespace {
 

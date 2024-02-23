@@ -21,13 +21,9 @@
 // SOFTWARE.
 
 #include <mp-units/bits/external/hacks.h>
+#include <mp-units/systems/si/units.h>
 #include <concepts>
 #include <type_traits>
-#ifdef MP_UNITS_MODULES
-import mp_units;
-#else
-#include <mp-units/systems/si/units.h>
-#endif
 
 namespace {
 

@@ -20,13 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include <mp-units/bits/external/prime.h>
 #include <type_traits>
 #include <utility>
-#ifdef MP_UNITS_MODULES
-import mp_units;
-#else
-#include <mp-units/bits/external/prime.h>
-#endif
 
 using namespace mp_units::detail;
 

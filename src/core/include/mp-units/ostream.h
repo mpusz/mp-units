@@ -23,9 +23,13 @@
 
 #pragma once
 
+#include <mp-units/bits/module_macros.h>
 #include <mp-units/quantity.h>
 #include <mp-units/unit.h>
+
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <sstream>
+#endif
 
 namespace mp_units {
 
@@ -50,6 +54,8 @@ void to_stream(std::basic_ostream<CharT, Traits>& os, const quantity<R, Rep>& q)
 }
 
 }  //  namespace detail
+
+MP_UNITS_EXPORT_BEGIN
 
 template<typename CharT, typename Traits, Unit U>
 std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, U u)
@@ -85,5 +91,7 @@ std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>&
   detail::to_stream(os, q);
   return os;
 }
+
+MP_UNITS_EXPORT_END
 
 }  // namespace mp_units

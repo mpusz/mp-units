@@ -29,14 +29,18 @@
 #include <mp-units/bits/external/type_traits.h>
 #include <mp-units/bits/get_associated_quantity.h>
 #include <mp-units/bits/magnitude.h>
+#include <mp-units/bits/module_macros.h>
 #include <mp-units/bits/quantity_point_concepts.h>
 #include <mp-units/bits/quantity_spec_concepts.h>
 #include <mp-units/bits/ratio.h>
 #include <mp-units/bits/symbol_text.h>
 #include <mp-units/bits/text_tools.h>
 #include <mp-units/bits/unit_concepts.h>
+
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <iterator>
-#include <string>
+#include <string_view>
+#endif
 
 namespace mp_units {
 
@@ -103,7 +107,7 @@ inline constexpr bool is_specialization_of_scaled_unit<scaled_unit<M, U>> = true
  *
  * @tparam Symbol a short text representation of the unit
  */
-template<basic_symbol_text Symbol, auto...>
+MP_UNITS_EXPORT template<basic_symbol_text Symbol, auto...>
 struct named_unit;
 
 /**
@@ -220,7 +224,7 @@ struct named_unit<Symbol, U, QS, PO> : std::remove_const_t<decltype(U)> {
  * @tparam M scaling factor of the prefix
  * @tparam U a named unit to be prefixed
  */
-template<basic_symbol_text Symbol, Magnitude auto M, PrefixableUnit auto U>
+MP_UNITS_EXPORT template<basic_symbol_text Symbol, Magnitude auto M, PrefixableUnit auto U>
   requires(!Symbol.empty())
 struct prefixed_unit : std::remove_const_t<decltype(M * U)> {
   static constexpr auto symbol = Symbol + U.symbol;
@@ -287,7 +291,7 @@ struct derived_unit : detail::expr_fractions<detail::is_one, Expr...> {};
  * Unit of a dimensionless quantity.
  */
 // clang-format off
-inline constexpr struct one : derived_unit<> {} one;
+MP_UNITS_EXPORT inline constexpr struct one : derived_unit<> {} one;
 // clang-format on
 
 namespace detail {
@@ -477,6 +481,7 @@ template<Unit Lhs, Unit Rhs>
 
 [[nodiscard]] MP_UNITS_CONSTEVAL Unit auto inverse(Unit auto u) { return one / u; }
 
+MP_UNITS_EXPORT_END
 
 namespace detail {
 
@@ -522,7 +527,7 @@ template<typename... Expr1, typename... Expr2>
 }  // namespace detail
 
 
-[[nodiscard]] consteval bool operator==(Unit auto lhs, Unit auto rhs)
+MP_UNITS_EXPORT [[nodiscard]] consteval bool operator==(Unit auto lhs, Unit auto rhs)
 {
   auto canonical_lhs = get_canonical_unit(lhs);
   auto canonical_rhs = get_canonical_unit(rhs);
@@ -539,6 +544,8 @@ template<typename... Expr>
 inline constexpr bool is_specialization_of_derived_unit<derived_unit<Expr...>> = true;
 
 }  // namespace detail
+
+MP_UNITS_EXPORT_BEGIN
 
 /**
  * @brief Computes the value of a unit raised to the `Num/Den` power
@@ -700,6 +707,8 @@ struct unit_symbol_formatting {
   unit_symbol_separator separator = unit_symbol_separator::default_separator;
 };
 
+MP_UNITS_EXPORT_END
+
 namespace detail {
 
 template<typename CharT, std::size_t N, std::size_t M, std::output_iterator<CharT> Out>
@@ -840,7 +849,7 @@ constexpr Out unit_symbol_impl(Out out, const derived_unit<Expr...>&, unit_symbo
 
 }  // namespace detail
 
-template<typename CharT = char, std::output_iterator<CharT> Out, Unit U>
+MP_UNITS_EXPORT template<typename CharT = char, std::output_iterator<CharT> Out, Unit U>
 constexpr Out unit_symbol_to(Out out, U u, unit_symbol_formatting fmt = unit_symbol_formatting{})
 {
   return detail::unit_symbol_impl<CharT>(out, u, fmt, false);
@@ -860,7 +869,7 @@ template<typename CharT, std::size_t N, unit_symbol_formatting fmt, Unit U>
 
 
 // TODO Refactor to `unit_symbol(U, fmt)` when P1045: constexpr Function Parameters is available
-template<unit_symbol_formatting fmt = unit_symbol_formatting{}, typename CharT = char, Unit U>
+MP_UNITS_EXPORT template<unit_symbol_formatting fmt = unit_symbol_formatting{}, typename CharT = char, Unit U>
 [[nodiscard]] consteval auto unit_symbol(U)
 {
   auto get_size = []() consteval {

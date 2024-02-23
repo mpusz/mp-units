@@ -25,15 +25,19 @@
 // IWYU pragma: begin_exports
 #include <mp-units/bits/external/fixed_string.h>
 #include <mp-units/bits/external/hacks.h>
+#include <mp-units/bits/module_macros.h>
+
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
+#include <gsl/gsl-lite.hpp>
 #include <compare>
 #include <cstddef>
 #include <cstdint>
-// IWYU pragma: end_exports
-
-#include <gsl/gsl-lite.hpp>
+#endif
 
 #if __cpp_lib_text_encoding
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <text_encoding>
+#endif
 static_assert(std::text_encoding::literal().mib() == std::text_encoding::id::UTF8);
 #endif
 
@@ -74,7 +78,7 @@ constexpr fixed_u8string<N> to_u8string(fixed_string<N> txt)
  * @tparam N The size of a Unicode symbol
  * @tparam M The size of the ASCII-only symbol
  */
-template<std::size_t N, std::size_t M>
+MP_UNITS_EXPORT template<std::size_t N, std::size_t M>
 struct basic_symbol_text {
   fixed_u8string<N> unicode_;
   fixed_string<M> ascii_;

@@ -24,6 +24,7 @@
 
 #include <mp-units/bits/expression_template.h>
 #include <mp-units/bits/magnitude.h>
+#include <mp-units/bits/module_macros.h>
 #include <mp-units/bits/quantity_spec_concepts.h>
 #include <mp-units/bits/symbol_text.h>
 
@@ -42,13 +43,13 @@ struct is_unit : std::false_type {};
  *
  * Satisfied by all unit types provided by the library.
  */
-template<typename T>
+MP_UNITS_EXPORT template<typename T>
 concept Unit = detail::is_unit<T>::value;
 
 template<Magnitude auto M, Unit U>
 struct scaled_unit;
 
-template<basic_symbol_text Symbol, auto...>
+MP_UNITS_EXPORT template<basic_symbol_text Symbol, auto...>
 struct named_unit;
 
 namespace detail {
@@ -84,13 +85,13 @@ concept NamedUnit =
  * `hour` or `degree_Celsius`. For those a partial specialization with the value `false` should be
  * provided.
  */
-template<Unit auto V>
+MP_UNITS_EXPORT template<Unit auto V>
 inline constexpr bool unit_can_be_prefixed = true;
 
 /**
  * @brief A concept to be used to define prefixes for a unit
  */
-template<typename T>
+MP_UNITS_EXPORT template<typename T>
 concept PrefixableUnit = detail::NamedUnit<T> && unit_can_be_prefixed<T{}>;
 
 namespace detail {
@@ -113,7 +114,7 @@ concept DerivedUnitExpr = Unit<T> || detail::is_power_of_unit<T> || detail::is_p
 template<detail::DerivedUnitExpr... Expr>
 struct derived_unit;
 
-template<basic_symbol_text Symbol, Magnitude auto M, PrefixableUnit auto U>
+MP_UNITS_EXPORT template<basic_symbol_text Symbol, Magnitude auto M, PrefixableUnit auto U>
   requires(!Symbol.empty())
 struct prefixed_unit;
 
@@ -177,7 +178,7 @@ template<Unit U>
 /**
  * @brief A concept matching all units that can be used as quantity references
  */
-template<typename U>
+MP_UNITS_EXPORT template<typename U>
 concept AssociatedUnit = Unit<U> && detail::has_associated_quantity(U{});
 
 /**
@@ -186,7 +187,7 @@ concept AssociatedUnit = Unit<U> && detail::has_associated_quantity(U{});
  * Satisfied by all units associated with the quantity_spec being the instantiation derived from
  * the provided quantity_spec type.
  */
-template<typename U, auto QS>
+MP_UNITS_EXPORT template<typename U, auto QS>
 concept UnitOf =
   AssociatedUnit<U> && QuantitySpec<std::remove_const_t<decltype(QS)>> &&
   implicitly_convertible(get_quantity_spec(U{}), QS) &&
@@ -205,7 +206,7 @@ namespace detail {
  * Satisfied by all units that have the same canonical reference as `U2` and in case they
  * have associated quantity specification it should satisfy `UnitOf<QS>`.
  */
-template<typename U, auto U2, auto QS>
+MP_UNITS_EXPORT template<typename U, auto U2, auto QS>
 concept UnitCompatibleWith =
   Unit<U> && Unit<std::remove_const_t<decltype(U2)>> && QuantitySpec<std::remove_const_t<decltype(QS)>> &&
   (!AssociatedUnit<U> || UnitOf<U, QS>)&&detail::have_same_canonical_reference_unit(U{}, U2);

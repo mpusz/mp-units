@@ -7,8 +7,6 @@ export module mp_units.systems;
 
 export import mp_units.core;
 
-export
-{
 #define MP_UNITS_IN_MODULE_INTERFACE
 
 #include <mp-units/systems/angular/angular.h>
@@ -24,4 +22,3 @@ export
 #include <mp-units/systems/si/si.h>
 #include <mp-units/systems/typographic/typographic.h>
 #include <mp-units/systems/usc/usc.h>
-}

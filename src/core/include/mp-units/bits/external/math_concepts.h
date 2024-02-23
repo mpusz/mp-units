@@ -22,7 +22,9 @@
 
 #pragma once
 
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <cstdint>
+#endif
 
 namespace mp_units::detail {
 

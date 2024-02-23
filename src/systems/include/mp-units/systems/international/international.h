@@ -22,12 +22,15 @@
 
 #pragma once
 
-#ifndef MP_UNITS_IN_MODULE_INTERFACE
-#include <mp-units/unit.h>
-#endif
+#include <mp-units/bits/module_macros.h>
 #include <mp-units/systems/si/constants.h>
 #include <mp-units/systems/si/units.h>
 
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
+#include <mp-units/unit.h>
+#endif
+
+MP_UNITS_EXPORT
 namespace mp_units::international {
 
 // clang-format off

@@ -21,14 +21,10 @@
 // SOFTWARE.
 
 #include <mp-units/bits/external/hacks.h>
-#ifdef MP_UNITS_MODULES
-import mp_units;
-#else
 #include <mp-units/systems/isq/mechanics.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si/unit_symbols.h>
 #include <mp-units/systems/usc/usc.h>
-#endif
 
 namespace {
 

@@ -22,7 +22,9 @@
 
 #pragma once
 
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <version>
+#endif
 
 #if __clang__
 #define MP_UNITS_COMP_CLANG __clang_major__

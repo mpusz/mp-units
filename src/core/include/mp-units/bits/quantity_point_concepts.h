@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <mp-units/bits/module_macros.h>
 #include <mp-units/bits/quantity_concepts.h>
 #include <mp-units/bits/quantity_spec_concepts.h>
 #include <mp-units/bits/reference_concepts.h>
@@ -30,7 +31,7 @@
 
 namespace mp_units {
 
-template<typename Derived, QuantitySpec auto QS>
+MP_UNITS_EXPORT template<typename Derived, QuantitySpec auto QS>
 struct absolute_point_origin;
 
 namespace detail {
@@ -62,10 +63,10 @@ concept AbsolutePointOrigin =
  *
  * Satisfied by all types being either a specialization or derived from `quantity_point`
  */
-template<typename T>
+MP_UNITS_EXPORT template<typename T>
 concept QuantityPoint = detail::is_quantity_point<T>;
 
-template<QuantityPoint auto QP>
+MP_UNITS_EXPORT template<QuantityPoint auto QP>
 struct relative_point_origin;
 
 namespace detail {
@@ -94,7 +95,7 @@ concept RelativePointOrigin =
  *
  * Satisfied by either quantity points or by all types derived from `absolute_point_origin` class template.
  */
-template<typename T>
+MP_UNITS_EXPORT template<typename T>
 concept PointOrigin = detail::AbsolutePointOrigin<T> || detail::RelativePointOrigin<T>;
 
 /**
@@ -102,11 +103,11 @@ concept PointOrigin = detail::AbsolutePointOrigin<T> || detail::RelativePointOri
  *
  * Satisfied by all quantity point origins that are defined using a provided quantity specification.
  */
-template<typename T, auto QS>
+MP_UNITS_EXPORT template<typename T, auto QS>
 concept PointOriginFor = PointOrigin<T> && QuantitySpecOf<std::remove_const_t<decltype(QS)>, T::quantity_spec>;
 
-template<Reference auto R, PointOriginFor<get_quantity_spec(R)> auto PO,
-         RepresentationOf<get_quantity_spec(R).character> Rep>
+MP_UNITS_EXPORT template<Reference auto R, PointOriginFor<get_quantity_spec(R)> auto PO,
+                         RepresentationOf<get_quantity_spec(R).character> Rep>
 class quantity_point;
 
 namespace detail {
@@ -151,7 +152,7 @@ concept SameAbsolutePointOriginAs =
  * the provided quantity_spec type, or quantity points having the origin with the same
  * `absolute_point_origin`.
  */
-template<typename QP, auto V>
+MP_UNITS_EXPORT template<typename QP, auto V>
 concept QuantityPointOf =
   QuantityPoint<QP> && (QuantitySpecOf<std::remove_const_t<decltype(QP::quantity_spec)>, V> ||
                         detail::SameAbsolutePointOriginAs<std::remove_const_t<decltype(QP::absolute_point_origin)>, V>);
@@ -162,7 +163,7 @@ concept QuantityPointOf =
  * Satisfied by all external types (not-defined in mp-units) that via a `quantity_point_like_traits` provide
  * all quantity_point-specific information.
  */
-template<typename T>
+MP_UNITS_EXPORT template<typename T>
 concept QuantityPointLike = requires {
   quantity_point_like_traits<T>::reference;
   requires Reference<std::remove_const_t<decltype(quantity_point_like_traits<T>::reference)>>;

@@ -4,7 +4,6 @@ module;
 
 export module mp_units.core;
 
-export
-{
+#define MP_UNITS_IN_MODULE_INTERFACE
+
 #include <mp-units/core.h>
-}

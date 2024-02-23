@@ -22,15 +22,20 @@
 
 #pragma once
 
+#include <mp-units/bits/module_macros.h>
+#include <mp-units/systems/si/si.h>
+
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <mp-units/unit.h>
 #endif
-#include <mp-units/systems/si/si.h>
+
+MP_UNITS_EXPORT
+namespace mp_units {
 
 template<>
-inline constexpr std::optional<std::intmax_t> mp_units::known_first_factor<334'524'384'739> = 334'524'384'739;
+inline constexpr std::optional<std::intmax_t> known_first_factor<334'524'384'739> = 334'524'384'739;
 
-namespace mp_units::hep {
+namespace hep {
 
 // energy
 using si::electronvolt;
@@ -101,5 +106,5 @@ inline constexpr auto c = speed_of_light;
 inline constexpr auto c2 = square(speed_of_light);
 
 }  // namespace unit_symbols
-
-}  // namespace mp_units::hep
+}  // namespace hep
+}  // namespace mp_units

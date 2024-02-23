@@ -28,14 +28,18 @@
 #include <mp-units/bits/external/prime.h>
 #include <mp-units/bits/external/type_name.h>
 #include <mp-units/bits/external/type_traits.h>
+#include <mp-units/bits/module_macros.h>
 #include <mp-units/bits/ratio.h>
 #include <mp-units/bits/symbol_text.h>
 #include <mp-units/bits/text_tools.h>
 #include <mp-units/customization_points.h>
+
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <concepts>
 #include <cstdint>
 #include <numbers>
 #include <optional>
+#endif
 
 namespace mp_units {
 
@@ -59,7 +63,7 @@ inline constexpr bool is_specialization_of_magnitude = false;
 /**
  * @brief  Concept to detect whether T is a valid Magnitude.
  */
-template<typename T>
+MP_UNITS_EXPORT template<typename T>
 concept Magnitude = detail::is_magnitude<T>;
 
 /**
@@ -525,6 +529,8 @@ constexpr T get_value(const magnitude<Ms...>&)
   return result;
 }
 
+MP_UNITS_EXPORT_BEGIN
+
 /**
  * @brief  A convenient Magnitude constant for pi, which we can manipulate like a regular number.
  */
@@ -575,6 +581,8 @@ template<auto... Ms>
   return pow<1, 3>(m);
 }
 
+MP_UNITS_EXPORT_END
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Magnitude product implementation.
 
@@ -595,6 +603,7 @@ consteval bool less(MagnitudeSpec auto lhs, MagnitudeSpec auto rhs)
 
 }  // namespace detail
 
+MP_UNITS_EXPORT_BEGIN
 
 // Base cases, for when either (or both) inputs are the identity.
 constexpr Magnitude auto operator*(magnitude<>, magnitude<>) { return magnitude<>{}; }
@@ -643,6 +652,8 @@ template<auto H1, auto... T1, auto H2, auto... T2>
 // Magnitude quotient implementation.
 
 [[nodiscard]] consteval auto operator/(Magnitude auto l, Magnitude auto r) { return l * pow<-1>(r); }
+
+MP_UNITS_EXPORT_END
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Magnitude numerator and denominator implementation.
@@ -776,7 +787,7 @@ using common_magnitude_type = decltype(common_magnitude_type_impl(M));
 // To provide the first factor for a given number, specialize this variable template.
 //
 // WARNING:  The program behaviour will be undefined if you provide a wrong answer, so check your math!
-template<std::intmax_t N>
+MP_UNITS_EXPORT template<std::intmax_t N>
 inline constexpr std::optional<std::intmax_t> known_first_factor = std::nullopt;
 
 namespace detail {
@@ -819,14 +830,14 @@ inline constexpr auto prime_factorization_v = prime_factorization<N>::value;
  * This will be the main way end users create Magnitudes.  They should rarely (if ever) create a magnitude<...> by
  * manually adding base powers.
  */
-template<ratio R>
+MP_UNITS_EXPORT template<ratio R>
   requires detail::gt_zero<R.num>
 inline constexpr Magnitude auto mag = detail::prime_factorization_v<R.num> / detail::prime_factorization_v<R.den>;
 
 /**
  * @brief  Create a Magnitude which is some rational number raised to a rational power.
  */
-template<ratio Base, ratio Pow>
+MP_UNITS_EXPORT template<ratio Base, ratio Pow>
   requires detail::gt_zero<Base.num>
 inline constexpr Magnitude auto mag_power = pow<Pow.num, Pow.den>(mag<Base>);
 

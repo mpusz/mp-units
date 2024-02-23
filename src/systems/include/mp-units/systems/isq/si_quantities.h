@@ -22,11 +22,14 @@
 
 #pragma once
 
+#include <mp-units/bits/module_macros.h>
+#include <mp-units/systems/isq/base_quantities.h>
+
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <mp-units/quantity_spec.h>
 #endif
-#include <mp-units/systems/isq/base_quantities.h>
 
+MP_UNITS_EXPORT
 namespace mp_units::isq {
 
 // space and time

@@ -22,9 +22,13 @@
 
 #pragma once
 
+#include <mp-units/bits/module_macros.h>
 #include <mp-units/quantity.h>
+
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <functional>
 #include <random>
+#endif
 
 namespace mp_units {
 
@@ -81,6 +85,8 @@ std::vector<typename Q::rep> fw_bl_pwl(std::initializer_list<Q>& bl, UnaryOperat
   return weights;
 }
 }  // namespace detail
+
+MP_UNITS_EXPORT_BEGIN
 
 template<Quantity Q>
   requires std::integral<typename Q::rep>
@@ -570,5 +576,7 @@ public:
   Q min() const { return base::min() * Q::reference; }
   Q max() const { return base::max() * Q::reference; }
 };
+
+MP_UNITS_EXPORT_END
 
 }  // namespace mp_units

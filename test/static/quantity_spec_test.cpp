@@ -21,14 +21,10 @@
 // SOFTWARE.
 
 #include "test_tools.h"
-#ifdef MP_UNITS_MODULES
-import mp_units;
-#else
 #include <mp-units/quantity.h>
 #include <mp-units/quantity_spec.h>
 #include <mp-units/reference.h>
 #include <mp-units/unit.h>
-#endif
 
 namespace {
 

@@ -22,12 +22,13 @@
 
 #pragma once
 
+#include <mp-units/bits/module_macros.h>
 #include <mp-units/bits/quantity_spec_concepts.h>
 #include <mp-units/bits/unit_concepts.h>
 
 namespace mp_units {
 
-template<QuantitySpec Q, Unit U>
+MP_UNITS_EXPORT template<QuantitySpec Q, Unit U>
 struct reference;
 
 namespace detail {
@@ -40,6 +41,8 @@ template<typename Q, typename U>
 struct is_specialization_of_reference<reference<Q, U>> : std::true_type {};
 
 }  // namespace detail
+
+MP_UNITS_EXPORT_BEGIN
 
 /**
  * @brief A concept matching all references in the library.
@@ -73,5 +76,7 @@ template<typename Q, typename U>
  */
 template<typename T, auto QS>
 concept ReferenceOf = Reference<T> && QuantitySpecOf<std::remove_const_t<decltype(get_quantity_spec(T{}))>, QS>;
+
+MP_UNITS_EXPORT_END
 
 }  // namespace mp_units

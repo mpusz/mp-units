@@ -22,10 +22,12 @@
 
 #pragma once
 
+#include <mp-units/bits/module_macros.h>
 #include <mp-units/systems/iec80000/binary_prefixes.h>
 #include <mp-units/systems/iec80000/units.h>
 #include <mp-units/systems/si/prefixes.h>
 
+MP_UNITS_EXPORT
 namespace mp_units::iec80000::unit_symbols {
 
 // bit

@@ -20,19 +20,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <chrono>
-#include <complex>
-#include <optional>
-#include <string>
-#ifdef MP_UNITS_MODULES
-import mp_units;
-#else
 #include <mp-units/concepts.h>
 #include <mp-units/quantity_point.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/natural/natural.h>
 #include <mp-units/systems/si/si.h>
-#endif
+#include <chrono>
+#include <complex>
+#include <optional>
+#include <string>
 
 template<typename T>
 inline constexpr bool mp_units::is_scalar<std::complex<T>> = true;
