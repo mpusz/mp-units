@@ -22,8 +22,8 @@
 
 #pragma once
 
-#include <type_traits>
 #include <mp-units/quantity_spec.h>
+#include <type_traits>
 
 template<auto V, typename T>
 inline constexpr bool is_of_type = std::is_same_v<std::remove_cvref_t<decltype(V)>, T>;

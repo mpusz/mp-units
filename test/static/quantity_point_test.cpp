@@ -21,13 +21,13 @@
 // SOFTWARE.
 
 #include "test_tools.h"
-#include <limits>
-#include <type_traits>
-#include <utility>
 #include <mp-units/quantity_point.h>
 #include <mp-units/systems/isq/isq.h>
 #include <mp-units/systems/si/si.h>
 #include <mp-units/systems/usc/usc.h>
+#include <limits>
+#include <type_traits>
+#include <utility>
 
 namespace {
 
