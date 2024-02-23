@@ -81,7 +81,7 @@
 #endif
 
 // TODO revise the below when clang-18 is released
-#if MP_UNITS_COMP_CLANG >= 18 && !defined __cpp_explicit_this_parameter
+#if MP_UNITS_COMP_CLANG >= 18 && __cplusplus >= 202300L && !defined __cpp_explicit_this_parameter
 
 #define __cpp_explicit_this_parameter 202110L
 
