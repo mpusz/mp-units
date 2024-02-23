@@ -24,6 +24,7 @@
 
 #include <mp-units/bits/external/algorithm.h>
 #include <mp-units/bits/fmt.h>
+#include <mp-units/compat_macros.h>
 #include <mp-units/customization_points.h>
 #include <mp-units/quantity.h>
 #include <mp-units/unit.h>
