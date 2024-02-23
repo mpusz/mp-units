@@ -24,6 +24,7 @@
 
 #include "validated_type.h"
 #include <mp-units/bits/external/hacks.h>
+#include <mp-units/compat_macros.h>
 #include <algorithm>
 #include <concepts>
 #include <type_traits>
