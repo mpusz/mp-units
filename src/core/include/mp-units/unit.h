@@ -400,8 +400,6 @@ template<Unit T, typename... Expr>
   return canonical_unit{num.mag / den.mag, num.reference_unit / den.reference_unit};
 }
 
-[[nodiscard]] consteval auto get_canonical_unit(Unit auto u) { return get_canonical_unit_impl(u, u); }
-
 template<Unit Lhs, Unit Rhs>
 struct unit_less : std::bool_constant<(Lhs::symbol < Rhs::symbol)> {};
 
@@ -410,6 +408,11 @@ using type_list_of_unit_less = expr_less<T1, T2, unit_less>;
 
 }  // namespace detail
 
+// TODO this should really be in the `details` namespace but is used in `chrono.h` (a part of mp_units.systems)
+// Even though it is not exported, it is visible to the other module via ADL
+[[nodiscard]] consteval auto get_canonical_unit(Unit auto u) { return detail::get_canonical_unit_impl(u, u); }
+
+MP_UNITS_EXPORT_BEGIN
 
 // Operators
 
@@ -511,8 +514,8 @@ template<typename... Expr1, typename... Expr2>
 
 [[nodiscard]] consteval bool have_same_canonical_reference_unit(Unit auto u1, Unit auto u2)
 {
-  auto canonical_lhs = detail::get_canonical_unit(u1);
-  auto canonical_rhs = detail::get_canonical_unit(u2);
+  auto canonical_lhs = get_canonical_unit(u1);
+  auto canonical_rhs = get_canonical_unit(u2);
   return have_same_canonical_reference_unit_impl(canonical_lhs.reference_unit, canonical_rhs.reference_unit);
 }
 
@@ -521,8 +524,8 @@ template<typename... Expr1, typename... Expr2>
 
 [[nodiscard]] consteval bool operator==(Unit auto lhs, Unit auto rhs)
 {
-  auto canonical_lhs = detail::get_canonical_unit(lhs);
-  auto canonical_rhs = detail::get_canonical_unit(rhs);
+  auto canonical_lhs = get_canonical_unit(lhs);
+  auto canonical_rhs = get_canonical_unit(rhs);
   return detail::have_same_canonical_reference_unit(canonical_lhs.reference_unit, canonical_rhs.reference_unit) &&
          canonical_lhs.mag == canonical_rhs.mag;
 }
@@ -632,8 +635,8 @@ template<Unit U1, Unit U2>
       // TODO Check if there is a better choice here
       return better_type_name(u1, u2);
   } else {
-    constexpr auto canonical_lhs = detail::get_canonical_unit(U1{});
-    constexpr auto canonical_rhs = detail::get_canonical_unit(U2{});
+    constexpr auto canonical_lhs = get_canonical_unit(U1{});
+    constexpr auto canonical_rhs = get_canonical_unit(U2{});
 
     if constexpr (is_integral(canonical_lhs.mag / canonical_rhs.mag))
       return u2;
