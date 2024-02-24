@@ -105,7 +105,7 @@ jobs:
                   cxx: "clang++-17",
                 },
               lib: "libc++",
-              cxx_modules: "False",
+              cxx_modules: "True",
               std_format_support: "True",
             }
           - {
