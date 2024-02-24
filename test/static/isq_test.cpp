@@ -326,6 +326,29 @@ static_assert(verify(isq::reactive_power, scalar, V* A));
 static_assert(verify(isq::non_active_power, scalar, V* A));
 static_assert(verify(isq::active_energy, scalar, J, W* h));
 
+// light and radiation
+static_assert(verify(isq::speed_of_light_in_a_medium, scalar, m / s));
+static_assert(verify(isq::refractive_index, scalar, one));
+static_assert(verify(isq::radiant_energy, scalar, J, kg* m2 / s2));
+static_assert(verify(isq::spectral_radiant_energy, scalar, J / nm, kg* m / s2));
+static_assert(verify(isq::radiant_energy_density, scalar, J / m3, kg / m / s2));
+static_assert(verify(isq::spectral_radiant_energy_density_in_terms_of_wavelength, scalar, J / (m3 * nm), kg / m2 / s2));
+static_assert(verify(isq::spectral_radiant_energy_density_in_terms_of_wavenumber, scalar, J / m2, kg / s2));
+static_assert(verify(isq::radiant_flux, scalar, W, kg* m2 / s3));
+static_assert(verify(isq::radiant_power, scalar, W, kg* m2 / s3));
+static_assert(verify(isq::spectral_radiant_flux, scalar, W / nm, kg* m / s3));
+static_assert(verify(isq::spectral_radiant_power, scalar, W / nm, kg* m / s3));
+static_assert(verify(isq::radiant_intensity, scalar, W / sr, kg* m2 / s3 / sr));
+static_assert(verify(isq::spectral_radiant_intensity, scalar, W / (sr * nm), kg* m / s3 / sr));
+static_assert(verify(isq::radiance, scalar, W / (sr * m2), kg / s3 / sr));
+static_assert(verify(isq::spectral_radiance, scalar, W / (sr * m2 * nm), kg / m / s3 / sr));
+static_assert(verify(isq::irradiance, scalar, W / m2, kg / s3));
+static_assert(verify(isq::spectral_irradiance, scalar, W / (m2 * nm), kg / m / s3));
+static_assert(verify(isq::radiant_exitance, scalar, W / m2, kg / s3));
+static_assert(verify(isq::spectral_radiant_exitance, scalar, W / (m2 * nm), kg / m / s3));
+static_assert(verify(isq::radiant_exposure, scalar, J / m2, kg / s2));
+static_assert(verify(isq::spectral_radiant_exposure, scalar, J / (m2 * nm), kg / m / s2));
+
 // atomic and nuclear physics
 static_assert(verify(isq::activity, scalar, Bq, one / s));
 static_assert(verify(isq::absorbed_dose, scalar, Gy, J / kg, m2 / s2));

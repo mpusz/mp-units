@@ -26,6 +26,7 @@
 #include <mp-units/systems/isq/atomic_and_nuclear_physics.h>
 #include <mp-units/systems/isq/base_quantities.h>
 #include <mp-units/systems/isq/electromagnetism.h>
+#include <mp-units/systems/isq/light_and_radiation.h>
 #include <mp-units/systems/isq/mechanics.h>
 #include <mp-units/systems/isq/si_quantities.h>
 #include <mp-units/systems/isq/space_and_time.h>
