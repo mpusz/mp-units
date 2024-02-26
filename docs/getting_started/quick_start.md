@@ -96,13 +96,13 @@ The same can be obtained using optional unit symbols:
     Unit symbols introduce a lot of short identifiers into the current scope, which may cause
     naming collisions with unrelated but already existing identifiers in the code base.
     This is why unit symbols are opt-in.
-    
+
     A user has several options here to choose from depending on the required scenario and possible
     naming conflicts:
-    
+
     - explicitly "import" all of them from a dedicated `unit_symbols` namespace with a
       [using-directive](https://en.cppreference.com/w/cpp/language/namespace#Using-directives):
-      
+
         ```cpp
         import mp_units;
 
