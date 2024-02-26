@@ -91,11 +91,50 @@ The same can be obtained using optional unit symbols:
     quantity q = 42 * m / s;
     ```
 
-!!! tip
+!!! important
 
-    Unit symbols introduce a lot of short identifiers into the current scope, and that is
-    why they are opt-in. A user has to explicitly "import" them from a dedicated `unit_symbols`
-    namespace.
+    Unit symbols introduce a lot of short identifiers into the current scope, which may cause
+    naming collisions with unrelated but already existing identifiers in the code base.
+    This is why unit symbols are opt-in.
+    
+    A user has several options here to choose from depending on the required scenario and possible
+    naming conflicts:
+    
+    - explicitly "import" all of them from a dedicated `unit_symbols` namespace with a
+      [using-directive](https://en.cppreference.com/w/cpp/language/namespace#Using-directives):
+      
+        ```cpp
+        import mp_units;
+
+        using namespace mp_units;
+        using namespace mp_units::si::unit_symbols;  // imports all the SI symbols at once
+
+        quantity q = 42 * m / s;
+        ```
+
+    - selectively select only the required and not-conflicting ones with
+      [using-declarations](https://en.cppreference.com/w/cpp/language/using_declaration):
+
+        ```cpp
+        import mp_units;
+
+        using namespace mp_units;
+        using si::unit_symbols::m;
+        using si::unit_symbols::s;
+
+        quantity q = 42 * m / s;
+        ```
+
+    - specify a custom not conflicting unit identifier for a unit:
+
+        ```cpp
+        import mp_units;
+
+        using namespace mp_units;
+        constexpr Unit auto mps = si::metre / si::second;
+
+        quantity q = 42 * mps;
+        ```
 
 Quantities of the same kind can be added, subtracted, and compared to each other:
 
