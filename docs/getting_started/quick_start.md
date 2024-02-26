@@ -104,8 +104,6 @@ The same can be obtained using optional unit symbols:
       [using-directive](https://en.cppreference.com/w/cpp/language/namespace#Using-directives):
 
         ```cpp
-        import mp_units;
-
         using namespace mp_units;
         using namespace mp_units::si::unit_symbols;  // imports all the SI symbols at once
 
@@ -116,8 +114,6 @@ The same can be obtained using optional unit symbols:
       [using-declarations](https://en.cppreference.com/w/cpp/language/using_declaration):
 
         ```cpp
-        import mp_units;
-
         using namespace mp_units;
         using si::unit_symbols::m;
         using si::unit_symbols::s;
@@ -128,8 +124,6 @@ The same can be obtained using optional unit symbols:
     - specify a custom not conflicting unit identifier for a unit:
 
         ```cpp
-        import mp_units;
-
         using namespace mp_units;
         constexpr Unit auto mps = si::metre / si::second;
 
