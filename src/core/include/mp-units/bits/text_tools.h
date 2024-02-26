@@ -23,6 +23,7 @@
 #pragma once
 
 #include <mp-units/bits/external/fixed_string.h>
+#include <mp-units/bits/external/type_traits.h>
 #include <mp-units/bits/ratio.h>
 #include <mp-units/bits/symbol_text.h>
 
