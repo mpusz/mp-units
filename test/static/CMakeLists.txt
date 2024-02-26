@@ -38,6 +38,7 @@ add_library(
     # custom_rep_test_min_expl.cpp
     custom_rep_test_min_impl.cpp
     dimension_test.cpp
+    dimension_symbol_test.cpp
     fixed_string_test.cpp
     fractional_exponent_quantity.cpp
     hep_test.cpp

@@ -27,6 +27,7 @@
 #include <mp-units/bits/external/type_traits.h>
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/bits/symbol_text.h>
+#include <mp-units/bits/text_tools.h>
 
 namespace mp_units {
 
@@ -164,13 +165,15 @@ template<auto Symbol>
 
 }  // namespace detail
 
-MP_UNITS_EXPORT template<Dimension Lhs, Dimension Rhs>
+MP_UNITS_EXPORT_BEGIN
+
+template<Dimension Lhs, Dimension Rhs>
 [[nodiscard]] consteval bool operator==(Lhs lhs, Rhs rhs)
 {
   return is_same_v<Lhs, Rhs> || detail::derived_from_the_same_base_dimension(lhs, rhs);
 }
 
-MP_UNITS_EXPORT [[nodiscard]] consteval Dimension auto inverse(Dimension auto d) { return dimension_one / d; }
+[[nodiscard]] consteval Dimension auto inverse(Dimension auto d) { return dimension_one / d; }
 
 /**
  * @brief Computes the value of a dimension raised to the `Num/Den` power
@@ -181,7 +184,7 @@ MP_UNITS_EXPORT [[nodiscard]] consteval Dimension auto inverse(Dimension auto d)
  *
  * @return Dimension The result of computation
  */
-MP_UNITS_EXPORT template<std::intmax_t Num, std::intmax_t Den = 1, Dimension D>
+template<std::intmax_t Num, std::intmax_t Den = 1, Dimension D>
   requires detail::non_zero<Den>
 [[nodiscard]] consteval Dimension auto pow(D d)
 {
@@ -202,7 +205,7 @@ MP_UNITS_EXPORT template<std::intmax_t Num, std::intmax_t Den = 1, Dimension D>
  *
  * @return Dimension The result of computation
  */
-MP_UNITS_EXPORT [[nodiscard]] consteval Dimension auto sqrt(Dimension auto d) { return pow<1, 2>(d); }
+[[nodiscard]] consteval Dimension auto sqrt(Dimension auto d) { return pow<1, 2>(d); }
 
 /**
  * @brief Computes the cubic root of a dimension
@@ -211,9 +214,107 @@ MP_UNITS_EXPORT [[nodiscard]] consteval Dimension auto sqrt(Dimension auto d) { 
  *
  * @return Dimension The result of computation
  */
-MP_UNITS_EXPORT [[nodiscard]] consteval Dimension auto cbrt(Dimension auto d) { return pow<1, 3>(d); }
+[[nodiscard]] consteval Dimension auto cbrt(Dimension auto d) { return pow<1, 3>(d); }
 
 
-// TODO consider adding the support for text output of the dimensional equation
+struct dimension_symbol_formatting {
+  text_encoding encoding = text_encoding::default_encoding;
+};
+
+MP_UNITS_EXPORT_END
+
+namespace detail {
+
+template<typename CharT, std::output_iterator<CharT> Out, Dimension D>
+  requires requires { D::symbol; }
+constexpr Out dimension_symbol_impl(Out out, D, dimension_symbol_formatting fmt, bool negative_power)
+{
+  return copy_symbol<CharT>(D::symbol, fmt.encoding, negative_power, out);
+}
+
+template<typename CharT, std::output_iterator<CharT> Out, typename F, int Num, int... Den>
+constexpr auto dimension_symbol_impl(Out out, const power<F, Num, Den...>&, dimension_symbol_formatting fmt,
+                                     bool negative_power)
+{
+  out = dimension_symbol_impl<CharT>(out, F{}, fmt, false);  // negative power component will be added below if needed
+  return copy_symbol_exponent<CharT, Num, Den...>(fmt.encoding, negative_power, out);
+}
+
+template<typename CharT, std::output_iterator<CharT> Out, DerivedDimensionExpr... Ms>
+constexpr Out dimension_symbol_impl(Out out, const type_list<Ms...>&, dimension_symbol_formatting fmt,
+                                    bool negative_power)
+{
+  return (..., (out = dimension_symbol_impl<CharT>(out, Ms{}, fmt, negative_power)));
+}
+
+template<typename CharT, std::output_iterator<CharT> Out, DerivedDimensionExpr... Nums, DerivedDimensionExpr... Dens>
+constexpr Out dimension_symbol_impl(Out out, const type_list<Nums...>& nums, const type_list<Dens...>& dens,
+                                    dimension_symbol_formatting fmt)
+{
+  if constexpr (sizeof...(Nums) == 0 && sizeof...(Dens) == 0) {
+    // dimensionless quantity
+    *out++ = '1';
+    return out;
+  } else if constexpr (sizeof...(Dens) == 0) {
+    // no denominator
+    return dimension_symbol_impl<CharT>(out, nums, fmt, false);
+  } else {
+    if constexpr (sizeof...(Nums) > 0) out = dimension_symbol_impl<CharT>(out, nums, fmt, false);
+    return dimension_symbol_impl<CharT>(out, dens, fmt, true);
+  }
+}
+
+template<typename CharT, std::output_iterator<CharT> Out, typename... Expr>
+constexpr Out dimension_symbol_impl(Out out, const derived_dimension<Expr...>&, dimension_symbol_formatting fmt,
+                                    bool negative_power)
+{
+  gsl_Expects(negative_power == false);
+  return dimension_symbol_impl<CharT>(out, typename derived_dimension<Expr...>::_num_{},
+                                      typename derived_dimension<Expr...>::_den_{}, fmt);
+}
+
+
+}  // namespace detail
+
+MP_UNITS_EXPORT template<typename CharT = char, std::output_iterator<CharT> Out, Dimension D>
+constexpr Out dimension_symbol_to(Out out, D d, dimension_symbol_formatting fmt = dimension_symbol_formatting{})
+{
+  return detail::dimension_symbol_impl<CharT>(out, d, fmt, false);
+}
+
+namespace detail {
+
+template<typename CharT, std::size_t N, dimension_symbol_formatting fmt, Dimension D>
+[[nodiscard]] consteval std::array<CharT, N + 1> get_symbol_buffer(D)
+{
+  std::array<CharT, N + 1> buffer{};
+  dimension_symbol_to<CharT>(buffer.begin(), D{}, fmt);
+  return buffer;
+}
+
+}  // namespace detail
+
+
+// TODO Refactor to `dimension_symbol(D, fmt)` when P1045: constexpr Function Parameters is available
+MP_UNITS_EXPORT template<dimension_symbol_formatting fmt = dimension_symbol_formatting{}, typename CharT = char,
+                         Dimension D>
+[[nodiscard]] consteval auto dimension_symbol(D)
+{
+  auto get_size = []() consteval {
+    std::basic_string<CharT> buffer;
+    dimension_symbol_to<CharT>(std::back_inserter(buffer), D{}, fmt);
+    return buffer.size();
+  };
+
+#if __cpp_constexpr >= 202211L  // Permitting static constexpr variables in constexpr functions
+  static constexpr std::size_t size = get_size();
+  static constexpr auto buffer = detail::get_symbol_buffer<CharT, size, fmt>(D{});
+  return std::string_view(buffer.data(), size);
+#else
+  constexpr std::size_t size = get_size();
+  constexpr auto buffer = detail::get_symbol_buffer<CharT, size, fmt>(D{});
+  return basic_fixed_string(buffer.data(), std::integral_constant<std::size_t, size>{});
+#endif
+}
 
 }  // namespace mp_units

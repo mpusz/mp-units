@@ -23,9 +23,12 @@
 #pragma once
 
 #include <mp-units/bits/external/fixed_string.h>
+#include <mp-units/bits/ratio.h>
 #include <mp-units/bits/symbol_text.h>
 
-namespace mp_units::detail {
+namespace mp_units {
+
+namespace detail {
 
 template<std::intmax_t Value>
   requires(0 <= Value) && (Value < 10)
@@ -84,4 +87,73 @@ template<std::intmax_t Value>
     return regular<Value / 10>() + regular<Value % 10>();
 }
 
-}  // namespace mp_units::detail
+}  // namespace detail
+
+enum class text_encoding : std::int8_t {
+  unicode,  // m³;  µs
+  ascii,    // m^3; us
+  default_encoding = unicode
+};
+
+namespace detail {
+
+template<typename CharT, std::size_t N, std::size_t M, std::output_iterator<CharT> Out>
+constexpr Out copy(const basic_symbol_text<N, M>& txt, text_encoding encoding, Out out)
+{
+  if (encoding == text_encoding::unicode) {
+    if constexpr (is_same_v<CharT, char8_t>)
+      return copy(txt.unicode(), out).out;
+    else if constexpr (is_same_v<CharT, char>) {
+      for (char8_t ch : txt.unicode()) *out++ = static_cast<char>(ch);
+      return out;
+    } else
+      throw std::invalid_argument("Unicode text can't be copied to CharT output");
+  } else {
+    if constexpr (is_same_v<CharT, char>)
+      return copy(txt.ascii(), out).out;
+    else
+      throw std::invalid_argument("ASCII text can't be copied to CharT output");
+  }
+}
+
+template<typename CharT, std::size_t N, std::size_t M, std::output_iterator<CharT> Out>
+constexpr Out copy_symbol(const basic_symbol_text<N, M>& txt, text_encoding encoding, bool negative_power, Out out)
+{
+  out = copy<CharT>(txt, encoding, out);
+  if (negative_power) {
+    constexpr auto exp = superscript<-1>();
+    out = copy<CharT>(exp, encoding, out);
+  }
+  return out;
+}
+
+template<typename CharT, int Num, int... Den, std::output_iterator<CharT> Out>
+constexpr Out copy_symbol_exponent(text_encoding encoding, bool negative_power, Out out)
+{
+  constexpr ratio r{Num, Den...};
+  if constexpr (r.den != 1) {
+    // add root part
+    if (negative_power) {
+      constexpr auto txt = basic_symbol_text("^-(") + regular<r.num>() + basic_symbol_text("/") + regular<r.den>() +
+                           basic_symbol_text(")");
+      return copy<CharT>(txt, encoding, out);
+    } else {
+      constexpr auto txt =
+        basic_symbol_text("^(") + regular<r.num>() + basic_symbol_text("/") + regular<r.den>() + basic_symbol_text(")");
+      return copy<CharT>(txt, encoding, out);
+    }
+  } else if constexpr (r.num != 1) {
+    // add exponent part
+    if (negative_power) {
+      constexpr auto txt = superscript<-r.num>();
+      return copy<CharT>(txt, encoding, out);
+    } else {
+      constexpr auto txt = superscript<r.num>();
+      return copy<CharT>(txt, encoding, out);
+    }
+  }
+}
+
+}  // namespace detail
+
+}  // namespace mp_units

@@ -35,14 +35,21 @@ namespace mp_units {
 
 namespace detail {
 
+template<typename CharT, class Traits, Dimension D>
+void to_stream_impl(std::basic_ostream<CharT, Traits>& os, D d)
+{
+  dimension_symbol_to<CharT>(std::ostream_iterator<CharT>(os), d);
+}
+
 template<typename CharT, class Traits, Unit U>
-void to_stream(std::basic_ostream<CharT, Traits>& os, U u)
+void to_stream_impl(std::basic_ostream<CharT, Traits>& os, U u)
 {
   unit_symbol_to<CharT>(std::ostream_iterator<CharT>(os), u);
 }
 
 template<typename CharT, class Traits, auto R, typename Rep>
-void to_stream(std::basic_ostream<CharT, Traits>& os, const quantity<R, Rep>& q)
+void to_stream_impl(std::basic_ostream<CharT, Traits>& os, const quantity<R, Rep>& q)
+  requires requires { os << q.numerical_value_ref_in(q.unit); }
 {
   if constexpr (is_same_v<Rep, std::uint8_t> || is_same_v<Rep, std::int8_t>)
     // promote the value to int
@@ -50,46 +57,36 @@ void to_stream(std::basic_ostream<CharT, Traits>& os, const quantity<R, Rep>& q)
   else
     os << q.numerical_value_ref_in(q.unit);
   if constexpr (space_before_unit_symbol<get_unit(R)>) os << " ";
-  to_stream(os, get_unit(R));
+  to_stream_impl(os, get_unit(R));
+}
+
+template<typename CharT, class Traits, typename T>
+std::basic_ostream<CharT, Traits>& to_stream(std::basic_ostream<CharT, Traits>& os, const T& v)
+  requires requires { detail::to_stream_impl(os, v); }
+{
+  if (os.width()) {
+    // std::setw() applies to the whole output so it has to be first put into std::string
+    std::basic_ostringstream<CharT, Traits> oss;
+    oss.flags(os.flags());
+    oss.imbue(os.getloc());
+    oss.precision(os.precision());
+    detail::to_stream_impl(oss, v);
+    return os << std::move(oss).str();
+  }
+
+  detail::to_stream_impl(os, v);
+  return os;
 }
 
 }  //  namespace detail
 
 MP_UNITS_EXPORT_BEGIN
 
-template<typename CharT, typename Traits, Unit U>
-std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, U u)
+template<typename CharT, typename Traits, typename T>
+std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const T& v)
+  requires requires { detail::to_stream_impl(os, v); }
 {
-  if (os.width()) {
-    // std::setw() applies to the whole uni output so it has to be first put into std::string
-    std::basic_ostringstream<CharT, Traits> oss;
-    oss.flags(os.flags());
-    oss.imbue(os.getloc());
-    oss.precision(os.precision());
-    detail::to_stream(oss, u);
-    return os << std::move(oss).str();
-  }
-
-  detail::to_stream(os, u);
-  return os;
-}
-
-template<typename CharT, typename Traits, auto R, typename Rep>
-std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const quantity<R, Rep>& q)
-  requires requires { os << q.numerical_value_ref_in(q.unit); }
-{
-  if (os.width()) {
-    // std::setw() applies to the whole quantity output so it has to be first put into std::string
-    std::basic_ostringstream<CharT, Traits> oss;
-    oss.flags(os.flags());
-    oss.imbue(os.getloc());
-    oss.precision(os.precision());
-    detail::to_stream(oss, q);
-    return os << std::move(oss).str();
-  }
-
-  detail::to_stream(os, q);
-  return os;
+  return detail::to_stream(os, v);
 }
 
 MP_UNITS_EXPORT_END

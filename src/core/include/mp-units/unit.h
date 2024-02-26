@@ -682,12 +682,6 @@ inline constexpr bool space_before_unit_symbol<per_mille> = false;
 
 // get_unit_symbol
 
-enum class text_encoding : std::int8_t {
-  unicode,  // m³;  µs
-  ascii,    // m^3; us
-  default_encoding = unicode
-};
-
 enum class unit_symbol_solidus : std::int8_t {
   one_denominator,  // m/s;   kg m⁻¹ s⁻¹
   always,           // m/s;   kg/(m s)
@@ -711,25 +705,6 @@ MP_UNITS_EXPORT_END
 
 namespace detail {
 
-template<typename CharT, std::size_t N, std::size_t M, std::output_iterator<CharT> Out>
-constexpr Out copy(const basic_symbol_text<N, M>& txt, text_encoding encoding, Out out)
-{
-  if (encoding == text_encoding::unicode) {
-    if constexpr (is_same_v<CharT, char8_t>)
-      return copy(txt.unicode(), out).out;
-    else if constexpr (is_same_v<CharT, char>) {
-      for (char8_t ch : txt.unicode()) *out++ = static_cast<char>(ch);
-      return out;
-    } else
-      throw std::invalid_argument("Unicode text can't be copied to CharT output");
-  } else {
-    if constexpr (is_same_v<CharT, char>)
-      return copy(txt.ascii(), out).out;
-    else
-      throw std::invalid_argument("ASCII text can't be copied to CharT output");
-  }
-}
-
 template<typename CharT, std::output_iterator<CharT> Out>
 constexpr Out print_separator(Out out, unit_symbol_formatting fmt)
 {
@@ -748,12 +723,7 @@ template<typename CharT, std::output_iterator<CharT> Out, Unit U>
   requires requires { U::symbol; }
 constexpr Out unit_symbol_impl(Out out, U, unit_symbol_formatting fmt, bool negative_power)
 {
-  out = copy<CharT>(U::symbol, fmt.encoding, out);
-  if (negative_power) {
-    constexpr auto txt = superscript<-1>();
-    out = copy<CharT>(txt, fmt.encoding, out);
-  }
-  return out;
+  return copy_symbol<CharT>(U::symbol, fmt.encoding, negative_power, out);
 }
 
 template<typename CharT, std::output_iterator<CharT> Out, auto M, typename U>
@@ -775,23 +745,7 @@ template<typename CharT, std::output_iterator<CharT> Out, typename F, int Num, i
 constexpr auto unit_symbol_impl(Out out, const power<F, Num, Den...>&, unit_symbol_formatting fmt, bool negative_power)
 {
   out = unit_symbol_impl<CharT>(out, F{}, fmt, false);  // negative power component will be added below if needed
-
-  constexpr ratio r = power<F, Num, Den...>::exponent;
-  if constexpr (r.den != 1) {
-    // add root part
-    constexpr auto txt =
-      basic_symbol_text("^(") + regular<r.num>() + basic_symbol_text("/") + regular<r.den>() + basic_symbol_text(")");
-    return copy<CharT>(txt, fmt.encoding, out);
-  } else if constexpr (r.num != 1) {
-    // add exponent part
-    if (negative_power) {
-      constexpr auto txt = superscript<-r.num>();
-      return copy<CharT>(txt, fmt.encoding, out);
-    } else {
-      constexpr auto txt = superscript<r.num>();
-      return copy<CharT>(txt, fmt.encoding, out);
-    }
-  }
+  return copy_symbol_exponent<CharT, Num, Den...>(fmt.encoding, negative_power, out);
 }
 
 template<typename CharT, std::output_iterator<CharT> Out, DerivedUnitExpr M>

@@ -125,9 +125,80 @@ OutputIt format_global_buffer(OutputIt out, const fill_align_width_format_specs<
 // dimension-spec        ::= [text-encoding]
 // text-encoding         ::= 'U' | 'A'
 //
+template<mp_units::Dimension D, typename Char>
+class MP_UNITS_STD_FMT::formatter<D, Char> {
+  struct format_specs : mp_units::detail::fill_align_width_format_specs<Char>, mp_units::dimension_symbol_formatting {};
 
-// template<typename Char>
-// struct dimension_format_specs : fill_align_width_format_specs<Char>, dimension_symbol_formatting {};
+  std::basic_string_view<Char> fill_align_width_format_str_;
+  std::basic_string_view<Char> modifiers_format_str_;
+  format_specs specs_{};
+
+  struct format_checker {
+    using enum mp_units::text_encoding;
+    mp_units::text_encoding encoding = unicode;
+    constexpr void on_text_encoding(Char val) { encoding = (val == 'U') ? unicode : ascii; }
+  };
+
+  struct unit_formatter {
+    format_specs specs;
+    using enum mp_units::text_encoding;
+    constexpr void on_text_encoding(Char val) { specs.encoding = (val == 'U') ? unicode : ascii; }
+  };
+
+  template<typename Handler>
+  constexpr const Char* parse_dimension_specs(const Char* begin, const Char* end, Handler&& handler) const
+  {
+    auto it = begin;
+    if (it == end || *it == '}') return begin;
+
+    constexpr auto valid_modifiers = std::string_view{"UA"};
+    for (; it != end && *it != '}'; ++it) {
+      if (valid_modifiers.find(*it) == std::string_view::npos)
+        throw MP_UNITS_STD_FMT::format_error("invalid dimension modifier specified");
+    }
+    end = it;
+
+    if (it = mp_units::detail::at_most_one_of(begin, end, "UA"); it != end) handler.on_text_encoding(*it);
+    return end;
+  }
+
+public:
+  constexpr auto parse(MP_UNITS_STD_FMT::basic_format_parse_context<Char>& ctx) -> decltype(ctx.begin())
+  {
+    const auto begin = ctx.begin();
+    auto end = ctx.end();
+
+    auto it = parse_fill_align_width(ctx, begin, end, specs_);
+    fill_align_width_format_str_ = {begin, it};
+    if (it == end) return it;
+
+    format_checker checker;
+    end = parse_dimension_specs(it, end, checker);
+    modifiers_format_str_ = {it, end};
+    return end;
+  }
+
+  template<typename FormatContext>
+  auto format(const D& d, FormatContext& ctx) const -> decltype(ctx.out())
+  {
+    unit_formatter f{specs_};
+    mp_units::detail::handle_dynamic_spec<mp_units::detail::width_checker>(f.specs.width, f.specs.width_ref, ctx);
+
+    parse_dimension_specs(modifiers_format_str_.begin(), modifiers_format_str_.end(), f);
+
+    if (f.specs.width == 0) {
+      // Avoid extra copying if width is not specified
+      return mp_units::dimension_symbol_to<Char>(ctx.out(), d, f.specs);
+    } else {
+      std::basic_string<Char> unit_buffer;
+      mp_units::dimension_symbol_to<Char>(std::back_inserter(unit_buffer), d, f.specs);
+
+      std::basic_string<Char> global_format_buffer = "{:" + std::basic_string<Char>{fill_align_width_format_str_} + "}";
+      return MP_UNITS_STD_FMT::vformat_to(ctx.out(), global_format_buffer,
+                                          MP_UNITS_STD_FMT::make_format_args(unit_buffer));
+    }
+  }
+};
 
 
 //
@@ -297,10 +368,9 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
         return on_replacement_field<Rep>(begin);
       else if (id == "U")
         return on_replacement_field<unit_t>(begin);
-      else if (id == "D") {
-        return begin;
-        // on_replacement_field<dimension_t>(begin);
-      } else
+      else if (id == "D")
+        return on_replacement_field<dimension_t>(begin);
+      else
         throw MP_UNITS_STD_FMT::format_error("unknown replacement field '" + std::string(id) + "'");
     }
 
@@ -337,7 +407,10 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
     {
       out = MP_UNITS_STD_FMT::vformat_to(out, locale, format_str, MP_UNITS_STD_FMT::make_format_args(q.unit));
     }
-    void on_dimension(std::basic_string_view<Char>) {}
+    void on_dimension(std::basic_string_view<Char> format_str)
+    {
+      out = MP_UNITS_STD_FMT::vformat_to(out, locale, format_str, MP_UNITS_STD_FMT::make_format_args(q.dimension));
+    }
     void on_text(const Char* begin, const Char* end) const { std::copy(begin, end, out); }
 
     constexpr const Char* on_replacement_field(std::basic_string_view<Char> id, const Char* begin)
