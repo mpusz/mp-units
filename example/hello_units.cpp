@@ -58,11 +58,11 @@ int main()
   constexpr quantity v6 = value_cast<m / s>(v4);
   constexpr quantity v7 = value_cast<int>(v6);
 
-  std::cout << v1 << '\n';                                             // 110 km/h
-  std::cout << std::setw(10) << std::setfill('*') << v2 << '\n';       // ***70 mi/h
-  std::cout << MP_UNITS_STD_FMT::format("{:*^10}\n", v3);              // *110 km/h*
-  std::cout << MP_UNITS_STD_FMT::format("{:%N in %U}\n", v4);          // 70 in mi/h
-  std::cout << MP_UNITS_STD_FMT::format("{:{%N:.2f}%?%U}\n", v5);      // 30.56 in m/s
-  std::cout << MP_UNITS_STD_FMT::format("{:{%N:.2f}%?{%U:n}}\n", v6);  // 31.29 in m s⁻¹
-  std::cout << MP_UNITS_STD_FMT::format("{:%N}\n", v7);                // 31
+  std::cout << v1 << '\n';                                              // 110 km/h
+  std::cout << std::setw(10) << std::setfill('*') << v2 << '\n';        // ***70 mi/h
+  std::cout << MP_UNITS_STD_FMT::format("{:*^10}\n", v3);               // *110 km/h*
+  std::cout << MP_UNITS_STD_FMT::format("{:%N in %U of %D}\n", v4);     // 70 in mi/h of LT⁻¹
+  std::cout << MP_UNITS_STD_FMT::format("{:{%N:.2f}%?%U}\n", v5);       // 30.56 in m/s
+  std::cout << MP_UNITS_STD_FMT::format("{:{%N:.2f}%?{%U:dn}}\n", v6);  // 31.29 in m⋅s⁻¹
+  std::cout << MP_UNITS_STD_FMT::format("{:%N}\n", v7);                 // 31
 }

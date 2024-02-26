@@ -120,11 +120,11 @@ int main()
   std::cout << v1 << '\n';                                        // 110 km/h
   std::cout << std::setw(10) << std::setfill('*') << v2 << '\n';  // ***70 mi/h
   std::cout << std::format("{:*^10}\n", v3);                      // *110 km/h*
-  std::println("{:%N in %U}", v4);                                // 70 in mi/h
+  std::println("{:%N in %U of %D}", v4);                          // 70 in mi/h of LT⁻¹
   std::println("{:{%N:.2f}%?%U}", v5);                            // 30.56 m/s
-  std::println("{:{%N:.2f}%?{%U:n}}", v6);                        // 31.29 m s⁻¹
+  std::println("{:{%N:.2f}%?{%U:dn}}", v6);                       // 31.29 m⋅s⁻¹
   std::println("{:%N}", v7);                                      // 31
 }
 ```
 
-_Try it on the [Compiler Explorer](https://godbolt.org/z/hWzxf1j1M)._
+_Try it on the [Compiler Explorer](https://godbolt.org/z/n8GEdfeed)._
