@@ -296,7 +296,7 @@ inline constexpr bool space_before_unit_symbol<non_si::degree> = false;
     The above works only for [the default formatting](#default-formatting) or for the format
     strings that use `%?` placement field (`std::format("{}", q)` is equivalent to
     `std::format("{:%N%?%U}", q)`).
-    
+
     In case a user provides custom format specification (e.g., `std::format("{:%N %U}", q)`),
     the library will always obey this specification for all the units (no matter what the actual
     value of the `space_before_unit_symbol` customization point is) and the separating space will always
@@ -503,7 +503,7 @@ Also, there are a few options to separate the units being multiplied. ISO 80000 
 
     When symbols for quantities are combined in a product of two or more quantities, this combination
     is indicated in one of the following ways: `ab`, `a b`, `a · b`, `a × b`
-    
+
     _NOTE 1_ In some fields, e.g., vector algebra, distinction is made between `a ∙ b` and `a × b`.
 
 The library supports `a b` and `a · b` only. Additionally, we decided that the extraneous space
@@ -634,7 +634,7 @@ Thanks to the grammar provided above, the user can easily decide to either:
 
     The above grammar allows repeating the same field many times, possibly with a different
     format spec. For example:
-    
+
     ```cpp
     std::println("Speed: {:%N {%N:.4f} {%N:.2f} {%U:n}}", 100. * km / (3 * h));
     ```
