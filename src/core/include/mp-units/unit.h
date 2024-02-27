@@ -25,6 +25,7 @@
 #include <mp-units/bits/expression_template.h>
 #include <mp-units/bits/external/algorithm.h>
 #include <mp-units/bits/external/fixed_string.h>
+#include <mp-units/bits/external/hacks.h>
 #include <mp-units/bits/external/type_name.h>
 #include <mp-units/bits/external/type_traits.h>
 #include <mp-units/bits/get_associated_quantity.h>
@@ -826,7 +827,11 @@ template<typename CharT, std::size_t N, unit_symbol_formatting fmt, Unit U>
 
 // TODO Refactor to `unit_symbol(U, fmt)` when P1045: constexpr Function Parameters is available
 MP_UNITS_EXPORT template<unit_symbol_formatting fmt = unit_symbol_formatting{}, typename CharT = char, Unit U>
+#if defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG <= 18
+[[nodiscard]] constexpr auto unit_symbol(U)
+#else
 [[nodiscard]] consteval auto unit_symbol(U)
+#endif
 {
   auto get_size = []() consteval {
     std::basic_string<CharT> buffer;

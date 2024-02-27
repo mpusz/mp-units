@@ -24,6 +24,7 @@
 
 #include <mp-units/bits/dimension_concepts.h>
 #include <mp-units/bits/expression_template.h>
+#include <mp-units/bits/external/hacks.h>
 #include <mp-units/bits/external/type_traits.h>
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/bits/symbol_text.h>
@@ -305,7 +306,11 @@ template<typename CharT, std::size_t N, dimension_symbol_formatting fmt, Dimensi
 // TODO Refactor to `dimension_symbol(D, fmt)` when P1045: constexpr Function Parameters is available
 MP_UNITS_EXPORT template<dimension_symbol_formatting fmt = dimension_symbol_formatting{}, typename CharT = char,
                          Dimension D>
+#if defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG <= 18
+[[nodiscard]] constexpr auto dimension_symbol(D)
+#else
 [[nodiscard]] consteval auto dimension_symbol(D)
+#endif
 {
   auto get_size = []() consteval {
     std::basic_string<CharT> buffer;
