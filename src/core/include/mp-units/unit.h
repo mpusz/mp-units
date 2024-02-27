@@ -38,7 +38,9 @@
 #include <mp-units/bits/unit_concepts.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
+#include <array>
 #include <iterator>
+#include <string>
 #include <string_view>
 #endif
 

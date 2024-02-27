@@ -29,6 +29,13 @@
 #include <mp-units/bits/symbol_text.h>
 #include <mp-units/bits/text_tools.h>
 
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
+#include <array>
+#include <iterator>
+#include <string>
+#include <string_view>
+#endif
+
 namespace mp_units {
 
 /**
