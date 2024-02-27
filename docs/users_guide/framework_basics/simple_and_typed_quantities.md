@@ -179,16 +179,17 @@ The previous example can be re-typed using typed quantities in the following way
     import mp_units;
 
     using namespace mp_units;
-    using namespace mp_units::si::unit_symbols;
 
-    constexpr quantity<isq::speed[m / s]> avg_speed(quantity<isq::length[m]> dist,
-                                                    quantity<isq::time[s]> time)
+    constexpr quantity<isq::speed[si::metre / si::second]> avg_speed(quantity<isq::length[si::metre]> dist,
+                                                                     quantity<isq::time[si::second]> time)
     {
       return dist / time;
     }
 
     int main()
     {
+      using namespace mp_units::si::unit_symbols;
+
       const quantity distance = isq::distance(110 * km);
       const quantity duration = isq::time(2 * h);
       const quantity speed = avg_speed(distance, duration);
@@ -207,16 +208,17 @@ The previous example can be re-typed using typed quantities in the following way
     #include <print>
 
     using namespace mp_units;
-    using namespace mp_units::si::unit_symbols;
 
-    constexpr quantity<isq::speed[m / s]> avg_speed(quantity<isq::length[m]> dist,
-                                                    quantity<isq::time[s]> time)
+    constexpr quantity<isq::speed[si::metre / si::second]> avg_speed(quantity<isq::length[si::metre]> dist,
+                                                                     quantity<isq::time[si::second]> time)
     {
       return dist / time;
     }
 
     int main()
     {
+      using namespace mp_units::si::unit_symbols;
+
       const quantity distance = isq::distance(110 * km);
       const quantity duration = isq::time(2 * h);
       const quantity speed = avg_speed(distance, duration);
@@ -312,7 +314,6 @@ Let's see another example:
         import mp_units;
 
         using namespace mp_units;
-        using namespace mp_units::si::unit_symbols;
 
         // add a custom quantity type of kind isq::length
         inline constexpr struct horizontal_length
@@ -324,11 +325,11 @@ Let's see another example:
             : quantity_spec<isq::area, horizontal_length * isq::width> {} horizontal_area;
 
         class StorageTank {
-          quantity<horizontal_area[m2]> base_;
-          quantity<isq::height[m]> height_;
+          quantity<horizontal_area[square(si::metre)]> base_;
+          quantity<isq::height[si::metre]> height_;
         public:
-          constexpr StorageTank(const quantity<horizontal_area[m2]>& base,
-                                const quantity<isq::height[m]>& height) :
+          constexpr StorageTank(const quantity<horizontal_area[square(si::metre)]>& base,
+                                const quantity<isq::height[si::metre]>& height) :
             base_(base), height_(height)
           {
           }
@@ -338,8 +339,8 @@ Let's see another example:
 
         class CylindricalStorageTank : public StorageTank {
         public:
-          constexpr CylindricalStorageTank(const quantity<isq::radius[m]>& radius,
-                                           const quantity<isq::height[m]>& height) :
+          constexpr CylindricalStorageTank(const quantity<isq::radius[si::metre]>& radius,
+                                           const quantity<isq::height[si::metre]>& height) :
             StorageTank(quantity_cast<horizontal_area>(std::numbers::pi * pow<2>(radius)),
                         height)
           {
@@ -348,9 +349,9 @@ Let's see another example:
 
         class RectangularStorageTank : public StorageTank {
         public:
-          constexpr RectangularStorageTank(const quantity<horizontal_length[m]>& length,
-                                           const quantity<isq::width[m]>& width,
-                                           const quantity<isq::height[m]>& height) :
+          constexpr RectangularStorageTank(const quantity<horizontal_length[si::metre]>& length,
+                                           const quantity<isq::width[si::metre]>& width,
+                                           const quantity<isq::height[si::metre]>& height) :
             StorageTank(length * width, height)
           {
           }
@@ -358,6 +359,7 @@ Let's see another example:
 
         int main()
         {
+          using namespace mp_units::si::unit_symbols;
           auto tank = RectangularStorageTank(horizontal_length(1'000 * mm),
                                              isq::width(500 * mm),
                                              isq::height(200 * mm));
@@ -425,7 +427,6 @@ Let's see another example:
         #include <numbers>
 
         using namespace mp_units;
-        using namespace mp_units::si::unit_symbols;
 
         // add a custom quantity type of kind isq::length
         inline constexpr struct horizontal_length
@@ -437,11 +438,11 @@ Let's see another example:
             : quantity_spec<isq::area, horizontal_length * isq::width> {} horizontal_area;
 
         class StorageTank {
-          quantity<horizontal_area[m2]> base_;
-          quantity<isq::height[m]> height_;
+          quantity<horizontal_area[square(si::metre)]> base_;
+          quantity<isq::height[si::metre]> height_;
         public:
-          constexpr StorageTank(const quantity<horizontal_area[m2]>& base,
-                                const quantity<isq::height[m]>& height) :
+          constexpr StorageTank(const quantity<horizontal_area[square(si::metre)]>& base,
+                                const quantity<isq::height[si::metre]>& height) :
             base_(base), height_(height)
           {
           }
@@ -451,8 +452,8 @@ Let's see another example:
 
         class CylindricalStorageTank : public StorageTank {
         public:
-          constexpr CylindricalStorageTank(const quantity<isq::radius[m]>& radius,
-                                           const quantity<isq::height[m]>& height) :
+          constexpr CylindricalStorageTank(const quantity<isq::radius[si::metre]>& radius,
+                                           const quantity<isq::height[si::metre]>& height) :
             StorageTank(quantity_cast<horizontal_area>(std::numbers::pi * pow<2>(radius)),
                         height)
           {
@@ -461,9 +462,9 @@ Let's see another example:
 
         class RectangularStorageTank : public StorageTank {
         public:
-          constexpr RectangularStorageTank(const quantity<horizontal_length[m]>& length,
-                                           const quantity<isq::width[m]>& width,
-                                           const quantity<isq::height[m]>& height) :
+          constexpr RectangularStorageTank(const quantity<horizontal_length[si::metre]>& length,
+                                           const quantity<isq::width[si::metre]>& width,
+                                           const quantity<isq::height[si::metre]>& height) :
             StorageTank(length * width, height)
           {
           }
@@ -471,6 +472,7 @@ Let's see another example:
 
         int main()
         {
+          using namespace mp_units::si::unit_symbols;
           auto tank = RectangularStorageTank(horizontal_length(1'000 * mm),
                                              isq::width(500 * mm),
                                              isq::height(200 * mm));

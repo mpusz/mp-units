@@ -95,39 +95,86 @@ The same can be obtained using optional unit symbols:
 
     Unit symbols introduce a lot of short identifiers into the current scope, which may cause
     naming collisions with unrelated but already existing identifiers in the code base.
-    This is why unit symbols are opt-in.
+    This is why unit symbols are opt-in and typically should be imported only in the context
+    where they are being used (e.g., function scope).
 
     A user has several options here to choose from depending on the required scenario and possible
     naming conflicts:
 
-    - explicitly "import" all of them from a dedicated `unit_symbols` namespace with a
-      [using-directive](https://en.cppreference.com/w/cpp/language/namespace#Using-directives):
+    === "using-directive"
+
+        Explicitly "import" all of the symbols of a specific system of units from a dedicated
+        `unit_symbols` namespace with a
+        [using-directive](https://en.cppreference.com/w/cpp/language/namespace#Using-directives):
 
         ```cpp
         using namespace mp_units;
-        using namespace mp_units::si::unit_symbols;  // imports all the SI symbols at once
 
-        quantity q = 42 * m / s;
+        void foo(double speed_m_s)
+        {
+          // imports all the SI symbols at once
+          using namespace si::unit_symbols;
+          quantity speed = speed_m_s * m / s;
+          // ...
+        }
         ```
 
-    - selectively select only the required and not-conflicting ones with
-      [using-declarations](https://en.cppreference.com/w/cpp/language/using_declaration):
+        !!! note
+
+            This solution is perfect for small and isolated scopes but can cause surprising issues
+            when used in larger scopes or when used for the entire program namespace.
+
+            There are 29 named units in SI, and each of them has many prefixed variations (e.g.,
+            `ng`, `kcd`, ...). It is pretty easy to introduce a name collision with those.
+
+    === "using-declaration"
+
+        Selectively bring only the required and not-conflicting symbols with
+        [using-declarations](https://en.cppreference.com/w/cpp/language/using_declaration):
 
         ```cpp
         using namespace mp_units;
-        using si::unit_symbols::m;
-        using si::unit_symbols::s;
 
-        quantity q = 42 * m / s;
+        void foo(double N)
+        {
+          // 'N' function parameter would collide with the SI symbol for Newton, so we only bring what we need
+          using si::unit_symbols::m;
+          using si::unit_symbols::s;
+          quantity speed = N * m / s;
+          // ...
+        }
         ```
 
-    - specify a custom not conflicting unit identifier for a unit:
+    === "custom short identifier"
+
+        Specify a custom not conflicting unit identifier for a unit:
 
         ```cpp
         using namespace mp_units;
-        constexpr Unit auto mps = si::metre / si::second;
 
-        quantity q = 42 * mps;
+        void foo(double speed_m_s)
+        {
+          // names of some local variables are conflicting with the symbols we want to use
+          auto m = ...;
+          auto s = ...;
+
+          constexpr Unit auto mps = si::metre / si::second;
+          quantity speed = speed_m_s * mps;
+        }
+        ```
+
+    === "unit names"
+
+        Full unit names are straightforward to use and often provide the most readable code:
+
+        ```cpp
+        using namespace mp_units;
+
+        void foo(double m, double s)
+        {
+          quantity speed = m * si::metre / (s * si::second);
+          // ...
+        }
         ```
 
 Quantities of the same kind can be added, subtracted, and compared to each other:

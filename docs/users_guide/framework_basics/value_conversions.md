@@ -100,9 +100,6 @@ the `value_cast<U, Rep>(q)` which always returns the most precise result:
 
     using Price = quantity_point<currency[us_dollar]>;
     using Scaled = quantity_point<currency[scaled_us_dollar], zeroth_point_origin<currency>, std::int64_t>;
-
-    Price price{12.95 * USD};
-    Scaled spx = value_cast<USD_s, std::int64_t>(price);
     ```
 
 === "C++20"
@@ -123,9 +120,6 @@ the `value_cast<U, Rep>(q)` which always returns the most precise result:
 
     using Price = quantity_point<currency[us_dollar]>;
     using Scaled = quantity_point<currency[scaled_us_dollar], zeroth_point_origin<currency>, std::int64_t>;
-
-    Price price{12.95 * USD};
-    Scaled spx = value_cast<USD_s, std::int64_t>(price);
     ```
 
 === "Portable"
@@ -146,7 +140,10 @@ the `value_cast<U, Rep>(q)` which always returns the most precise result:
 
     using Price = quantity_point<currency[us_dollar]>;
     using Scaled = quantity_point<currency[scaled_us_dollar], zeroth_point_origin<currency>, std::int64_t>;
-
-    Price price{12.95 * USD};
-    Scaled spx = value_cast<USD_s, std::int64_t>(price);
     ```
+
+```cpp
+using namespace unit_symbols;
+Price price{12.95 * USD};
+Scaled spx = value_cast<USD_s, std::int64_t>(price);
+```
