@@ -882,6 +882,58 @@ TEST_CASE("localization with the 'L' specifier", "[text][fmt][localization]")
   }
 }
 
+TEST_CASE("unit_symbol", "[text]")
+{
+  using enum text_encoding;
+  using enum unit_symbol_solidus;
+  using enum unit_symbol_separator;
+
+  std::ostringstream os;
+
+  SECTION("default formatting")
+  {
+    os << unit_symbol(m / s2);
+    CHECK(os.str() == "m/s²");
+  }
+
+  SECTION("ASCII mode")
+  {
+    os << unit_symbol<unit_symbol_formatting{.encoding = ascii}>(m / s2);
+    CHECK(os.str() == "m/s^2");
+  }
+
+  SECTION("solidus")
+  {
+    os << unit_symbol<unit_symbol_formatting{.solidus = never}>(m / s2);
+    CHECK(os.str() == "m s⁻²");
+  }
+
+  SECTION("separator")
+  {
+    os << unit_symbol<unit_symbol_formatting{.solidus = never, .separator = half_high_dot}>(m / s2);
+    CHECK(os.str() == "m⋅s⁻²");
+  }
+}
+
+TEST_CASE("dimension_symbol", "[text]")
+{
+  using enum text_encoding;
+
+  std::ostringstream os;
+
+  SECTION("default formatting")
+  {
+    os << dimension_symbol(isq::power.dimension);
+    CHECK(os.str() == "L²MT⁻³");
+  }
+
+  SECTION("ASCII mode")
+  {
+    os << dimension_symbol<dimension_symbol_formatting{.encoding = ascii}>(isq::power.dimension);
+    CHECK(os.str() == "L^2MT^-3");
+  }
+}
+
 TEST_CASE("value_cast", "[text][ostream]")
 {
   std::ostringstream os;
