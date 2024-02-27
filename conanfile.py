@@ -164,7 +164,7 @@ class MPUnitsConan(ConanFile):
         if self._build_all:
             cmake.build(target="all_verify_interface_header_sets")
             if can_run(self):
-                cmake.test()
+                cmake.ctest(cli_args=["--output-on-failure"])
 
     def package_id(self):
         self.info.clear()
