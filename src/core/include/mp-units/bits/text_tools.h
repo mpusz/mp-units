@@ -91,8 +91,8 @@ template<std::intmax_t Value>
 }  // namespace detail
 
 MP_UNITS_EXPORT enum class text_encoding : std::int8_t {
-  unicode,  // m³;  µs
-  ascii,    // m^3; us
+  unicode,  // µs; m³;  L²MT⁻³
+  ascii,    // us; m^3; L^2MT^-3
   default_encoding = unicode
 };
 
