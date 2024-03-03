@@ -176,14 +176,14 @@ public:
   // unit conversions
   template<UnitCompatibleWith<unit, quantity_spec> U>
     requires detail::QuantityConvertibleTo<quantity, quantity<detail::make_reference(quantity_spec, U{}), Rep>>
-  [[nodiscard]] constexpr Quantity auto in(U) const
+  [[nodiscard]] constexpr QuantityOf<quantity_spec> auto in(U) const
   {
     return quantity<detail::make_reference(quantity_spec, U{}), Rep>{*this};
   }
 
   template<UnitCompatibleWith<unit, quantity_spec> U>
     requires requires(quantity q) { value_cast<U{}>(q); }
-  [[nodiscard]] constexpr Quantity auto force_in(U) const
+  [[nodiscard]] constexpr QuantityOf<quantity_spec> auto force_in(U) const
   {
     return value_cast<U{}>(*this);
   }
@@ -251,7 +251,7 @@ public:
   }
 
   // member unary operators
-  [[nodiscard]] constexpr Quantity auto operator+() const
+  [[nodiscard]] constexpr QuantityOf<quantity_spec> auto operator+() const
     requires requires(rep v) {
       {
         +v
@@ -261,7 +261,7 @@ public:
     return ::mp_units::quantity{+numerical_value_is_an_implementation_detail_, reference};
   }
 
-  [[nodiscard]] constexpr Quantity auto operator-() const
+  [[nodiscard]] constexpr QuantityOf<quantity_spec> auto operator-() const
     requires requires(rep v) {
       {
         -v
@@ -283,7 +283,7 @@ public:
     return std::forward<Q>(q);
   }
 
-  [[nodiscard]] constexpr Quantity auto operator++(int)
+  [[nodiscard]] constexpr QuantityOf<quantity_spec> auto operator++(int)
     requires requires(rep v) {
       {
         v++
@@ -305,7 +305,7 @@ public:
     return std::forward<Q>(q);
   }
 
-  [[nodiscard]] constexpr Quantity auto operator--(int)
+  [[nodiscard]] constexpr QuantityOf<quantity_spec> auto operator--(int)
     requires requires(rep v) {
       {
         v--
@@ -466,7 +466,7 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
 template<auto R, typename Rep, typename Value>
   requires(!Quantity<Value>) && (!Reference<Value>) &&
           detail::InvokeResultOf<get_quantity_spec(R).character, std::multiplies<>, Rep, const Value&>
-[[nodiscard]] constexpr Quantity auto operator*(const quantity<R, Rep>& q, const Value& v)
+[[nodiscard]] constexpr QuantityOf<get_quantity_spec(R)> auto operator*(const quantity<R, Rep>& q, const Value& v)
 {
   return quantity{q.numerical_value_ref_in(get_unit(R)) * v, R};
 }
@@ -474,7 +474,7 @@ template<auto R, typename Rep, typename Value>
 template<typename Value, auto R, typename Rep>
   requires(!Quantity<Value>) && (!Reference<Value>) &&
           detail::InvokeResultOf<get_quantity_spec(R).character, std::multiplies<>, const Value&, Rep>
-[[nodiscard]] constexpr Quantity auto operator*(const Value& v, const quantity<R, Rep>& q)
+[[nodiscard]] constexpr QuantityOf<get_quantity_spec(R)> auto operator*(const Value& v, const quantity<R, Rep>& q)
 {
   return quantity{v * q.numerical_value_ref_in(get_unit(R)), R};
 }
@@ -490,7 +490,7 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
 template<auto R, typename Rep, typename Value>
   requires(!Quantity<Value>) && (!Reference<Value>) &&
           detail::InvokeResultOf<get_quantity_spec(R).character, std::divides<>, Rep, const Value&>
-[[nodiscard]] constexpr Quantity auto operator/(const quantity<R, Rep>& q, const Value& v)
+[[nodiscard]] constexpr QuantityOf<get_quantity_spec(R)> auto operator/(const quantity<R, Rep>& q, const Value& v)
 {
   gsl_ExpectsAudit(v != quantity_values<Value>::zero());
   return quantity{q.numerical_value_ref_in(get_unit(R)) / v, R};
@@ -499,7 +499,8 @@ template<auto R, typename Rep, typename Value>
 template<typename Value, auto R, typename Rep>
   requires(!Quantity<Value>) && (!Reference<Value>) &&
           detail::InvokeResultOf<get_quantity_spec(R).character, std::divides<>, const Value&, Rep>
-[[nodiscard]] constexpr Quantity auto operator/(const Value& v, const quantity<R, Rep>& q)
+[[nodiscard]] constexpr QuantityOf<inverse(get_quantity_spec(R))> auto operator/(const Value& v,
+                                                                                 const quantity<R, Rep>& q)
 {
   return quantity{v / q.numerical_value_ref_in(get_unit(R)), ::mp_units::one / R};
 }

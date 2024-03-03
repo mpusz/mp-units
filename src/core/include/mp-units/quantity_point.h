@@ -266,14 +266,14 @@ public:
   // unit conversions
   template<UnitCompatibleWith<unit, quantity_spec> U>
     requires detail::QuantityConvertibleTo<quantity_type, quantity<detail::make_reference(quantity_spec, U{}), Rep>>
-  [[nodiscard]] constexpr QuantityPoint auto in(U) const
+  [[nodiscard]] constexpr QuantityPointOf<quantity_spec> auto in(U) const
   {
     return ::mp_units::quantity_point{quantity_ref_from(PO).in(U{}), PO};
   }
 
   template<UnitCompatibleWith<unit, quantity_spec> U>
     requires requires(quantity_type q) { value_cast<U{}>(q); }
-  [[nodiscard]] constexpr QuantityPoint auto force_in(U) const
+  [[nodiscard]] constexpr QuantityPointOf<quantity_spec> auto force_in(U) const
   {
     return ::mp_units::quantity_point{quantity_ref_from(PO).force_in(U{}), PO};
   }
