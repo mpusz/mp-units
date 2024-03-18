@@ -91,6 +91,7 @@ struct basic_symbol_text {
   constexpr explicit(false) basic_symbol_text(const char (&txt)[N + 1]) :
       unicode_(detail::to_u8string(basic_fixed_string{txt})), ascii_(txt)
   {
+    gsl_ExpectsAudit(txt[N] == char{});
     gsl_Expects(detail::is_basic_literal_character_set(txt));
   }
 
@@ -102,6 +103,8 @@ struct basic_symbol_text {
 
   constexpr basic_symbol_text(const char8_t (&u)[N + 1], const char (&a)[M + 1]) : unicode_(u), ascii_(a)
   {
+    gsl_ExpectsAudit(u[N] == char8_t{});
+    gsl_ExpectsAudit(a[M] == char{});
     gsl_Expects(detail::is_basic_literal_character_set(a));
   }
 
@@ -113,7 +116,11 @@ struct basic_symbol_text {
   [[nodiscard]] constexpr const auto& unicode() const { return unicode_; }
   [[nodiscard]] constexpr const auto& ascii() const { return ascii_; }
 
-  [[nodiscard]] constexpr bool empty() const { return unicode().empty() && ascii().empty(); }
+  [[nodiscard]] constexpr bool empty() const
+  {
+    gsl_Expects(unicode().empty() == ascii().empty());
+    return unicode().empty();
+  }
 
   template<std::size_t N2, std::size_t M2>
   [[nodiscard]] constexpr friend basic_symbol_text<N + N2, M + M2> operator+(const basic_symbol_text& lhs,
