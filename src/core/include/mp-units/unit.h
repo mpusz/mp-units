@@ -816,9 +816,9 @@ constexpr Out unit_symbol_to(Out out, U u, unit_symbol_formatting fmt = unit_sym
 namespace detail {
 
 template<typename CharT, std::size_t N, unit_symbol_formatting fmt, Unit U>
-[[nodiscard]] consteval std::array<CharT, N + 1> get_symbol_buffer(U)
+[[nodiscard]] consteval std::array<CharT, N> get_symbol_buffer(U)
 {
-  std::array<CharT, N + 1> buffer{};
+  std::array<CharT, N> buffer;
   unit_symbol_to<CharT>(buffer.begin(), U{}, fmt);
   return buffer;
 }
@@ -847,7 +847,7 @@ MP_UNITS_EXPORT template<unit_symbol_formatting fmt = unit_symbol_formatting{}, 
 #else
   constexpr std::size_t size = get_size();
   constexpr auto buffer = detail::get_symbol_buffer<CharT, size, fmt>(U{});
-  return basic_fixed_string(buffer.data(), std::integral_constant<std::size_t, size>{});
+  return basic_fixed_string<CharT, size>(buffer.begin(), buffer.end());
 #endif
 }
 

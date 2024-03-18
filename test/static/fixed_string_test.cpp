@@ -30,6 +30,8 @@ constexpr basic_fixed_string txt1('a');
 static_assert(txt1.size() == 1);
 static_assert(txt1[0] == 'a');
 static_assert(txt1 == basic_fixed_string("a"));
+static_assert(txt1 != basic_fixed_string("b"));
+static_assert(txt1 != basic_fixed_string("aa"));
 static_assert(txt1 < basic_fixed_string("b"));
 static_assert(txt1 < basic_fixed_string("aa"));
 static_assert(txt1 + basic_fixed_string('b') == basic_fixed_string("ab"));
@@ -43,6 +45,8 @@ static_assert(txt2[0] == 'a');
 static_assert(txt2[1] == 'b');
 static_assert(txt2[2] == 'c');
 static_assert(txt2 == basic_fixed_string("abc"));
+static_assert(txt2 != basic_fixed_string("cba"));
+static_assert(txt2 != basic_fixed_string("abcd"));
 static_assert(txt2 < basic_fixed_string("b"));
 static_assert(txt2 > basic_fixed_string("aa"));
 static_assert(txt2 + basic_fixed_string('d') == basic_fixed_string("abcd"));
@@ -51,7 +55,7 @@ static_assert(txt2 + basic_fixed_string("def") == basic_fixed_string("abcdef"));
 static_assert(basic_fixed_string("def") + txt2 == basic_fixed_string("defabc"));
 
 #ifndef MP_UNITS_COMP_GCC
-static_assert(basic_fixed_string("abcd").view().find('c') == 2);
+static_assert(std::string_view(basic_fixed_string("abcd")).find('c') == 2);
 #endif
 
 }  // namespace

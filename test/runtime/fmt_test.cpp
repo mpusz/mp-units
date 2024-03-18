@@ -46,6 +46,18 @@ inline constexpr bool mp_units::is_vector<T> = true;
 using namespace mp_units;
 using namespace mp_units::si::unit_symbols;
 
+TEST_CASE("fixed_string", "[text][ostream][fmt]")
+{
+  basic_fixed_string txt = "units";
+  SECTION("iostream")
+  {
+    std::ostringstream os;
+    os << txt;
+    CHECK(os.str() == "units");
+  }
+  SECTION("fmt") { CHECK(MP_UNITS_STD_FMT::format("{}", txt) == "units"); }
+}
+
 TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
 {
   std::ostringstream os;

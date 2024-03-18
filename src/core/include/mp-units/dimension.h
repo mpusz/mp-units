@@ -294,9 +294,9 @@ constexpr Out dimension_symbol_to(Out out, D d, dimension_symbol_formatting fmt 
 namespace detail {
 
 template<typename CharT, std::size_t N, dimension_symbol_formatting fmt, Dimension D>
-[[nodiscard]] consteval std::array<CharT, N + 1> get_symbol_buffer(D)
+[[nodiscard]] consteval std::array<CharT, N> get_symbol_buffer(D)
 {
-  std::array<CharT, N + 1> buffer{};
+  std::array<CharT, N> buffer{};
   dimension_symbol_to<CharT>(buffer.begin(), D{}, fmt);
   return buffer;
 }
@@ -326,7 +326,7 @@ MP_UNITS_EXPORT template<dimension_symbol_formatting fmt = dimension_symbol_form
 #else
   constexpr std::size_t size = get_size();
   constexpr auto buffer = detail::get_symbol_buffer<CharT, size, fmt>(D{});
-  return basic_fixed_string(buffer.data(), std::integral_constant<std::size_t, size>{});
+  return basic_fixed_string<CharT, size>(buffer.begin(), buffer.end());
 #endif
 }
 
