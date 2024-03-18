@@ -861,7 +861,7 @@ template<typename T, auto... Ms>
   return integer_part((detail::abs(power_of_2) < detail::abs(power_of_5)) ? power_of_2 : power_of_5);
 }
 
-inline constexpr basic_symbol_text base_multiplier(u8"× 10", "x 10");
+inline constexpr symbol_text base_multiplier(u8"× 10", "x 10");
 
 template<Magnitude auto M>
 [[nodiscard]] consteval auto magnitude_text()
@@ -880,23 +880,23 @@ template<Magnitude auto M>
   if constexpr (num_value == 1 && den_value == 1 && exp10 != 0) {
     return base_multiplier + superscript<exp10>();
   } else if constexpr (num_value != 1 || den_value != 1 || exp10 != 0) {
-    auto txt = basic_symbol_text("[") + regular<num_value>();
+    auto txt = symbol_text("[") + regular<num_value>();
     if constexpr (den_value == 1) {
       if constexpr (exp10 == 0) {
-        return txt + basic_symbol_text("]");
+        return txt + symbol_text("]");
       } else {
-        return txt + basic_symbol_text(" ") + base_multiplier + superscript<exp10>() + basic_symbol_text("]");
+        return txt + symbol_text(" ") + base_multiplier + superscript<exp10>() + symbol_text("]");
       }
     } else {
       if constexpr (exp10 == 0) {
-        return txt + basic_symbol_text("/") + regular<den_value>() + basic_symbol_text("]");
+        return txt + symbol_text("/") + regular<den_value>() + symbol_text("]");
       } else {
-        return txt + basic_symbol_text("/") + regular<den_value>() + basic_symbol_text(" ") + base_multiplier +
-               superscript<exp10>() + basic_symbol_text("]");
+        return txt + symbol_text("/") + regular<den_value>() + symbol_text(" ") + base_multiplier +
+               superscript<exp10>() + symbol_text("]");
       }
     }
   } else {
-    return basic_symbol_text("");
+    return symbol_text("");
   }
 }
 

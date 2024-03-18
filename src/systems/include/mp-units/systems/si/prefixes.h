@@ -39,7 +39,7 @@ template<PrefixableUnit U> struct atto_  : prefixed_unit<"a", mag_power<10, -18>
 template<PrefixableUnit U> struct femto_ : prefixed_unit<"f", mag_power<10, -15>, U{}> {};
 template<PrefixableUnit U> struct pico_  : prefixed_unit<"p", mag_power<10, -12>, U{}> {};
 template<PrefixableUnit U> struct nano_  : prefixed_unit<"n", mag_power<10, -9>, U{}> {};
-template<PrefixableUnit U> struct micro_ : prefixed_unit<basic_symbol_text{u8"µ", "u"}, mag_power<10, -6>, U{}> {};
+template<PrefixableUnit U> struct micro_ : prefixed_unit<symbol_text{u8"µ", "u"}, mag_power<10, -6>, U{}> {};
 template<PrefixableUnit U> struct milli_ : prefixed_unit<"m", mag_power<10, -3>, U{}> {};
 template<PrefixableUnit U> struct centi_ : prefixed_unit<"c", mag_power<10, -2>, U{}> {};
 template<PrefixableUnit U> struct deci_  : prefixed_unit<"d", mag_power<10, -1>, U{}> {};

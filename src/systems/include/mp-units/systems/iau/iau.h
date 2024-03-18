@@ -43,7 +43,7 @@ inline constexpr struct Julian_year : named_unit<"a", mag<ratio{365'25, 100}> * 
 // mass
 // https://en.wikipedia.org/wiki/Solar_mass
 // TODO What is the official mass of sun (every source in the Internet provides a different value)
-inline constexpr struct solar_mass : named_unit<basic_symbol_text{u8"M_☉", "M_SUN"}, mag<ratio{198'847, 100'000}> * mag_power<10, 30> * si::kilogram> {} solar_mass;
+inline constexpr struct solar_mass : named_unit<symbol_text{u8"M_☉", "M_SUN"}, mag<ratio{198'847, 100'000}> * mag_power<10, 30> * si::kilogram> {} solar_mass;
 inline constexpr struct Jupiter_mass : named_unit<"M_JUP", mag<ratio{1'898, 1'000}> * mag_power<10, 27> * si::kilogram> {} Jupiter_mass;
 inline constexpr struct Earth_mass : named_unit<"M_EARTH", mag<ratio{59'742, 10'000}> * mag_power<10, 24> * si::kilogram> {} Earth_mass;
 
@@ -60,7 +60,7 @@ inline constexpr struct light_year : named_unit<"ly", mag<9'460'730'472'580'800>
 inline constexpr struct parsec : named_unit<"pc", astronomical_unit / (mag<ratio{1, 60 * 60}> * si::degree)> {} parsec;
 
 // https://en.wikipedia.org/wiki/Angstrom
-inline constexpr struct angstrom : named_unit<basic_symbol_text{u8"Å", "A"}, mag_power<10, -10> * si::metre> {} angstrom;
+inline constexpr struct angstrom : named_unit<symbol_text{u8"Å", "A"}, mag_power<10, -10> * si::metre> {} angstrom;
 
 // selected constants
 // https://en.wikipedia.org/wiki/Astronomical_constant
@@ -68,13 +68,13 @@ inline constexpr struct gaussian_gravitational_constant :
     named_unit<"k", mag<ratio{1'720'209'895, 100'000'000'000}> * pow<3, 2>(astronomical_unit) / pow<1,2>(solar_mass) / day> {} gaussian_gravitational_constant;
 
 inline constexpr struct speed_of_light :
-    named_unit<basic_symbol_text{u8"c₀", "c_0"}, si::si2019::speed_of_light_in_vacuum> {} speed_of_light;
+    named_unit<symbol_text{u8"c₀", "c_0"}, si::si2019::speed_of_light_in_vacuum> {} speed_of_light;
 
 inline constexpr struct constant_of_gravitation :
     named_unit<"G", mag<ratio{667'430, 100'000}> * mag_power<10, -11> * cubic(si::metre) / si::kilogram / square(si::second)> {} constant_of_gravitation;
 
 inline constexpr struct hubble_constant :
-    named_unit<basic_symbol_text{u8"H₀", "H_0"}, mag<ratio{701, 10}> * si::kilo<si::metre> / si::second / si::mega<parsec>> {} hubble_constant;
+    named_unit<symbol_text{u8"H₀", "H_0"}, mag<ratio{701, 10}> * si::kilo<si::metre> / si::second / si::mega<parsec>> {} hubble_constant;
 // clang-format on
 
 namespace unit_symbols {

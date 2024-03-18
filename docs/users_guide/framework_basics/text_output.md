@@ -101,11 +101,11 @@ and units of derived quantities.
 
 !!! tip
 
-    For older compilers, it might be required to specify a `basic_symbol_text` class explicitly
+    For older compilers, it might be required to specify a `symbol_text` class explicitly
     template name to initialize it with two symbols:
 
     ```cpp
-    inline constexpr struct ohm : named_unit<basic_symbol_text{u8"Ω", "ohm"}, volt / ampere> {} ohm;
+    inline constexpr struct ohm : named_unit<symbol_text{u8"Ω", "ohm"}, volt / ampere> {} ohm;
     ```
 
 

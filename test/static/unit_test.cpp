@@ -40,7 +40,7 @@ using percent_ = struct percent;
 inline constexpr struct dim_length_ : base_dimension<"L"> {} dim_length;
 inline constexpr struct dim_mass_ : base_dimension<"M"> {} dim_mass;
 inline constexpr struct dim_time_ : base_dimension<"T"> {} dim_time;
-inline constexpr struct dim_thermodynamic_temperature_ : base_dimension<basic_symbol_text{u8"Θ", "O"}> {} dim_thermodynamic_temperature;
+inline constexpr struct dim_thermodynamic_temperature_ : base_dimension<symbol_text{u8"Θ", "O"}> {} dim_thermodynamic_temperature;
 
 // quantities specification
 QUANTITY_SPEC_(length, dim_length);
@@ -67,11 +67,11 @@ inline constexpr struct newton_ : named_unit<"N", kilogram * metre / square(seco
 inline constexpr struct pascal_ : named_unit<"Pa", newton / square(metre)> {} pascal;
 inline constexpr struct joule_ : named_unit<"J", newton * metre> {} joule;
 inline constexpr struct watt_ : named_unit<"W", joule / second> {} watt;
-inline constexpr struct degree_Celsius_ : named_unit<basic_symbol_text{u8"°C", "`C"}, kelvin> {} degree_Celsius;
+inline constexpr struct degree_Celsius_ : named_unit<symbol_text{u8"°C", "`C"}, kelvin> {} degree_Celsius;
 
 inline constexpr struct minute_ : named_unit<"min", mag<60> * second> {} minute;
 inline constexpr struct hour_ : named_unit<"h", mag<60> * minute> {} hour;
-inline constexpr struct degree_ : named_unit<basic_symbol_text{u8"°", "deg"}, mag_pi / mag<180> * radian> {} degree;
+inline constexpr struct degree_ : named_unit<symbol_text{u8"°", "deg"}, mag_pi / mag<180> * radian> {} degree;
 
 inline constexpr struct yard_ : named_unit<"yd", mag<ratio{9'144, 10'000}> * metre> {} yard;
 inline constexpr struct mile_ : named_unit<"mi", mag<1760> * yard> {} mile;
@@ -80,7 +80,7 @@ inline constexpr struct kilometre_ : decltype(si::kilo<metre>) {} kilometre;
 inline constexpr struct kilojoule_ : decltype(si::kilo<joule>) {} kilojoule;
 
 // physical constant units
-inline constexpr struct standard_gravity_ : named_unit<basic_symbol_text{u8"g₀", "g_0"}, mag<ratio{980'665, 100'000}> * metre / square(second)> {} standard_gravity;
+inline constexpr struct standard_gravity_ : named_unit<symbol_text{u8"g₀", "g_0"}, mag<ratio{980'665, 100'000}> * metre / square(second)> {} standard_gravity;
 inline constexpr struct speed_of_light_in_vacuum_ : named_unit<"c", mag<299'792'458> * metre / second> {} speed_of_light_in_vacuum;
 
 // clang-format on
@@ -190,7 +190,7 @@ static_assert(convertible(standard_gravity, standard_gravity));
 static_assert(convertible(standard_gravity, metre / square(second)));
 static_assert(standard_gravity == standard_gravity);
 static_assert(standard_gravity != metre / square(second));  // magnitude is different
-static_assert(standard_gravity.symbol == basic_symbol_text{u8"g₀", "g_0"});
+static_assert(standard_gravity.symbol == symbol_text{u8"g₀", "g_0"});
 
 // prefixed_unit
 static_assert(is_of_type<kilometre, kilometre_>);
@@ -225,7 +225,7 @@ static_assert(si::atto<metre>.symbol == "am");
 static_assert(si::femto<metre>.symbol == "fm");
 static_assert(si::pico<metre>.symbol == "pm");
 static_assert(si::nano<metre>.symbol == "nm");
-static_assert(si::micro<metre>.symbol == basic_symbol_text{u8"µm", "um"});
+static_assert(si::micro<metre>.symbol == symbol_text{u8"µm", "um"});
 static_assert(si::milli<metre>.symbol == "mm");
 static_assert(si::centi<metre>.symbol == "cm");
 static_assert(si::deci<metre>.symbol == "dm");

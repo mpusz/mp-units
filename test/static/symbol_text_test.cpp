@@ -26,10 +26,10 @@ using namespace mp_units;
 
 namespace {
 
-constexpr basic_symbol_text sym1('b');
+constexpr symbol_text sym1('b');
 static_assert(sym1 == 'b');
 static_assert(sym1 != 'a');
-static_assert(sym1 != basic_symbol_text("ab"));
+static_assert(sym1 != symbol_text("ab"));
 static_assert(sym1 < 'c');
 static_assert(sym1 > 'a');
 static_assert(sym1 <= 'b');
@@ -39,45 +39,45 @@ static_assert(sym1 >= 'a');
 static_assert(sym1.unicode() == u8"b");
 static_assert(sym1.ascii() == "b");
 
-constexpr basic_symbol_text sym3("ab");
+constexpr symbol_text sym3("ab");
 static_assert(sym3.unicode() == u8"ab");
 static_assert(sym3.ascii() == "ab");
 
 constexpr basic_fixed_string txt1("bc");
-constexpr basic_symbol_text sym4(txt1);
+constexpr symbol_text sym4(txt1);
 static_assert(sym4.unicode() == u8"bc");
 static_assert(sym4.ascii() == "bc");
 
-constexpr basic_symbol_text sym5(u8"bc", "de");
+constexpr symbol_text sym5(u8"bc", "de");
 static_assert(sym5.unicode() == u8"bc");
 static_assert(sym5.ascii() == "de");
 
 constexpr basic_fixed_string txt2("de");
-constexpr basic_symbol_text sym6(sym4.unicode(), txt2);
+constexpr symbol_text sym6(sym4.unicode(), txt2);
 static_assert(sym6.unicode() == u8"bc");
 static_assert(sym6.ascii() == "de");
 
-static_assert(sym6 == basic_symbol_text(u8"bc", "de"));
-static_assert(sym6 != basic_symbol_text(u8"fg", "hi"));
-static_assert(sym6 != basic_symbol_text(u8"bcd", "ef"));
+static_assert(sym6 == symbol_text(u8"bc", "de"));
+static_assert(sym6 != symbol_text(u8"fg", "hi"));
+static_assert(sym6 != symbol_text(u8"bcd", "ef"));
 
-static_assert(sym6 < basic_symbol_text("c"));
-static_assert(sym6 > basic_symbol_text("a"));
-static_assert(sym6 <= basic_symbol_text("c"));
-static_assert(sym6 <= basic_symbol_text("bcd"));
-static_assert(sym6 >= basic_symbol_text("a"));
-static_assert(sym6 >= basic_symbol_text("bc"));
+static_assert(sym6 < symbol_text("c"));
+static_assert(sym6 > symbol_text("a"));
+static_assert(sym6 <= symbol_text("c"));
+static_assert(sym6 <= symbol_text("bcd"));
+static_assert(sym6 >= symbol_text("a"));
+static_assert(sym6 >= symbol_text("bc"));
 
-static_assert(basic_symbol_text("a") + sym4 == basic_symbol_text("abc"));
-static_assert(sym4 + basic_symbol_text("f") == basic_symbol_text("bcf"));
+static_assert(symbol_text("a") + sym4 == symbol_text("abc"));
+static_assert(sym4 + symbol_text("f") == symbol_text("bcf"));
 
-static_assert(basic_symbol_text(u8"a", "f") + sym6 == basic_symbol_text(u8"abc", "fde"));
-static_assert(sym6 + basic_symbol_text(u8"a", "f") == basic_symbol_text(u8"bca", "def"));
+static_assert(symbol_text(u8"a", "f") + sym6 == symbol_text(u8"abc", "fde"));
+static_assert(sym6 + symbol_text(u8"a", "f") == symbol_text(u8"bca", "def"));
 
-static_assert(basic_symbol_text('a') + sym6 == basic_symbol_text(u8"abc", "ade"));
-static_assert(sym6 + basic_symbol_text('f') == basic_symbol_text(u8"bcf", "def"));
+static_assert(symbol_text('a') + sym6 == symbol_text(u8"abc", "ade"));
+static_assert(sym6 + symbol_text('f') == symbol_text(u8"bcf", "def"));
 
-static_assert(basic_symbol_text("a") + sym6 == basic_symbol_text(u8"abc", "ade"));
-static_assert(sym6 + basic_symbol_text("f") == basic_symbol_text(u8"bcf", "def"));
+static_assert(symbol_text("a") + sym6 == symbol_text(u8"abc", "ade"));
+static_assert(sym6 + symbol_text("f") == symbol_text(u8"bcf", "def"));
 
 }  // namespace

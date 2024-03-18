@@ -29,12 +29,12 @@
 
 namespace mp_units {
 
-MP_UNITS_EXPORT template<basic_symbol_text Symbol>
+MP_UNITS_EXPORT template<symbol_text Symbol>
 struct base_dimension;
 
 namespace detail {
 
-template<basic_symbol_text Symbol>
+template<symbol_text Symbol>
 void to_base_specialization_of_base_dimension(const volatile base_dimension<Symbol>*);
 
 template<typename T>
@@ -44,7 +44,7 @@ inline constexpr bool is_derived_from_specialization_of_base_dimension =
 template<typename T>
 inline constexpr bool is_specialization_of_base_dimension = false;
 
-template<basic_symbol_text Symbol>
+template<symbol_text Symbol>
 inline constexpr bool is_specialization_of_base_dimension<base_dimension<Symbol>> = true;
 
 /**

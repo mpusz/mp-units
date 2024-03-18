@@ -49,12 +49,12 @@ concept Unit = detail::is_unit<T>::value;
 template<Magnitude auto M, Unit U>
 struct scaled_unit;
 
-MP_UNITS_EXPORT template<basic_symbol_text Symbol, auto...>
+MP_UNITS_EXPORT template<symbol_text Symbol, auto...>
 struct named_unit;
 
 namespace detail {
 
-template<basic_symbol_text Symbol, auto... Args>
+template<symbol_text Symbol, auto... Args>
 void to_base_specialization_of_named_unit(const volatile named_unit<Symbol, Args...>*);
 
 template<typename T>
@@ -64,7 +64,7 @@ inline constexpr bool is_derived_from_specialization_of_named_unit =
 template<typename T>
 inline constexpr bool is_specialization_of_named_unit = false;
 
-template<basic_symbol_text Symbol, auto... Args>
+template<symbol_text Symbol, auto... Args>
 inline constexpr bool is_specialization_of_named_unit<named_unit<Symbol, Args...>> = true;
 
 /**
@@ -114,7 +114,7 @@ concept DerivedUnitExpr = Unit<T> || detail::is_power_of_unit<T> || detail::is_p
 template<detail::DerivedUnitExpr... Expr>
 struct derived_unit;
 
-MP_UNITS_EXPORT template<basic_symbol_text Symbol, Magnitude auto M, PrefixableUnit auto U>
+MP_UNITS_EXPORT template<symbol_text Symbol, Magnitude auto M, PrefixableUnit auto U>
   requires(!Symbol.empty())
 struct prefixed_unit;
 
@@ -123,7 +123,7 @@ namespace detail {
 template<auto M, typename U>
 void is_unit_impl(const scaled_unit<M, U>*);
 
-template<basic_symbol_text Symbol, auto... Args>
+template<symbol_text Symbol, auto... Args>
 void is_unit_impl(const named_unit<Symbol, Args...>*);
 
 template<typename... Expr>
@@ -132,13 +132,13 @@ void is_unit_impl(const derived_unit<Expr...>*);
 template<typename T>
 inline constexpr bool is_specialization_of_unit = false;
 
-template<basic_symbol_text Symbol, auto... Args>
+template<symbol_text Symbol, auto... Args>
 inline constexpr bool is_specialization_of_unit<named_unit<Symbol, Args...>> = true;
 
 template<typename T>
 inline constexpr bool is_specialization_of_prefixed_unit = false;
 
-template<basic_symbol_text Symbol, Magnitude auto M, PrefixableUnit auto U>
+template<symbol_text Symbol, Magnitude auto M, PrefixableUnit auto U>
 inline constexpr bool is_specialization_of_prefixed_unit<prefixed_unit<Symbol, M, U>> = true;
 
 template<typename T>

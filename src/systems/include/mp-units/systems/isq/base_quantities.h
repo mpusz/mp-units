@@ -39,7 +39,7 @@ inline constexpr struct dim_length : base_dimension<"L"> {} dim_length;
 inline constexpr struct dim_mass : base_dimension<"M"> {} dim_mass;
 inline constexpr struct dim_time : base_dimension<"T"> {} dim_time;
 inline constexpr struct dim_electric_current : base_dimension<"I"> {} dim_electric_current;
-inline constexpr struct dim_thermodynamic_temperature : base_dimension<basic_symbol_text{u8"Θ", "O"}> {} dim_thermodynamic_temperature;
+inline constexpr struct dim_thermodynamic_temperature : base_dimension<symbol_text{u8"Θ", "O"}> {} dim_thermodynamic_temperature;
 inline constexpr struct dim_amount_of_substance : base_dimension<"N"> {} dim_amount_of_substance;
 inline constexpr struct dim_luminous_intensity : base_dimension<"J"> {} dim_luminous_intensity;
 // clang-format on

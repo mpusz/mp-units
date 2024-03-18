@@ -56,9 +56,9 @@ inline constexpr basic_fixed_string superscript_number<8> = u8"\u2078";
 template<>
 inline constexpr basic_fixed_string superscript_number<9> = u8"\u2079";
 
-inline constexpr basic_symbol_text superscript_minus(u8"\u207b", "-");
+inline constexpr symbol_text superscript_minus(u8"\u207b", "-");
 
-inline constexpr basic_symbol_text superscript_prefix(u8"", "^");
+inline constexpr symbol_text superscript_prefix(u8"", "^");
 
 template<std::intmax_t Value>
 [[nodiscard]] consteval auto superscript_helper()
@@ -66,7 +66,7 @@ template<std::intmax_t Value>
   if constexpr (Value < 0)
     return superscript_minus + superscript_helper<-Value>();
   else if constexpr (Value < 10)
-    return basic_symbol_text(superscript_number<Value>, basic_fixed_string(static_cast<char>('0' + Value)));
+    return symbol_text(superscript_number<Value>, basic_fixed_string(static_cast<char>('0' + Value)));
   else
     return superscript_helper<Value / 10>() + superscript_helper<Value % 10>();
 }
@@ -81,9 +81,9 @@ template<std::intmax_t Value>
 [[nodiscard]] consteval auto regular()
 {
   if constexpr (Value < 0)
-    return basic_symbol_text("-") + superscript_helper<-Value>();
+    return symbol_text("-") + superscript_helper<-Value>();
   else if constexpr (Value < 10)
-    return basic_symbol_text(static_cast<char>('0' + Value));
+    return symbol_text(static_cast<char>('0' + Value));
   else
     return regular<Value / 10>() + regular<Value % 10>();
 }
@@ -99,7 +99,7 @@ MP_UNITS_EXPORT enum class text_encoding : std::int8_t {
 namespace detail {
 
 template<typename CharT, std::size_t N, std::size_t M, std::output_iterator<CharT> Out>
-constexpr Out copy(const basic_symbol_text<N, M>& txt, text_encoding encoding, Out out)
+constexpr Out copy(const symbol_text<N, M>& txt, text_encoding encoding, Out out)
 {
   if (encoding == text_encoding::unicode) {
     if constexpr (is_same_v<CharT, char8_t>)
@@ -118,7 +118,7 @@ constexpr Out copy(const basic_symbol_text<N, M>& txt, text_encoding encoding, O
 }
 
 template<typename CharT, std::size_t N, std::size_t M, std::output_iterator<CharT> Out>
-constexpr Out copy_symbol(const basic_symbol_text<N, M>& txt, text_encoding encoding, bool negative_power, Out out)
+constexpr Out copy_symbol(const symbol_text<N, M>& txt, text_encoding encoding, bool negative_power, Out out)
 {
   out = copy<CharT>(txt, encoding, out);
   if (negative_power) {
@@ -135,12 +135,12 @@ constexpr Out copy_symbol_exponent(text_encoding encoding, bool negative_power, 
   if constexpr (r.den != 1) {
     // add root part
     if (negative_power) {
-      constexpr auto txt = basic_symbol_text("^-(") + regular<r.num>() + basic_symbol_text("/") + regular<r.den>() +
-                           basic_symbol_text(")");
+      constexpr auto txt =
+        symbol_text("^-(") + regular<r.num>() + symbol_text("/") + regular<r.den>() + symbol_text(")");
       return copy<CharT>(txt, encoding, out);
     } else {
       constexpr auto txt =
-        basic_symbol_text("^(") + regular<r.num>() + basic_symbol_text("/") + regular<r.den>() + basic_symbol_text(")");
+        symbol_text("^(") + regular<r.num>() + symbol_text("/") + regular<r.den>() + symbol_text(")");
       return copy<CharT>(txt, encoding, out);
     }
   } else if constexpr (r.num != 1) {

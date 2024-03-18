@@ -68,7 +68,7 @@ namespace mp_units {
  *
  * @tparam Symbol an unique identifier of the base dimension used to provide dimensional analysis support
  */
-MP_UNITS_EXPORT template<basic_symbol_text Symbol>
+MP_UNITS_EXPORT template<symbol_text Symbol>
 struct base_dimension {
   static constexpr auto symbol = Symbol;  ///< Unique base dimension identifier
 };

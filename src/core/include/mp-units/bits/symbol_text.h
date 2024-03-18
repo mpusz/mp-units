@@ -79,36 +79,35 @@ constexpr fixed_u8string<N> to_u8string(fixed_string<N> txt)
  * @tparam M The size of the ASCII-only symbol
  */
 MP_UNITS_EXPORT template<std::size_t N, std::size_t M>
-struct basic_symbol_text {
+struct symbol_text {
   fixed_u8string<N> unicode_;
   fixed_string<M> ascii_;
 
-  constexpr explicit(false) basic_symbol_text(char ch) : unicode_(static_cast<char8_t>(ch)), ascii_(ch)
+  constexpr explicit(false) symbol_text(char ch) : unicode_(static_cast<char8_t>(ch)), ascii_(ch)
   {
     gsl_Expects(detail::is_basic_literal_character_set_char(ch));
   }
 
-  constexpr explicit(false) basic_symbol_text(const char (&txt)[N + 1]) :
+  constexpr explicit(false) symbol_text(const char (&txt)[N + 1]) :
       unicode_(detail::to_u8string(basic_fixed_string{txt})), ascii_(txt)
   {
     gsl_ExpectsAudit(txt[N] == char{});
     gsl_Expects(detail::is_basic_literal_character_set(txt));
   }
 
-  constexpr explicit(false) basic_symbol_text(const fixed_string<N>& txt) :
-      unicode_(detail::to_u8string(txt)), ascii_(txt)
+  constexpr explicit(false) symbol_text(const fixed_string<N>& txt) : unicode_(detail::to_u8string(txt)), ascii_(txt)
   {
     gsl_Expects(detail::is_basic_literal_character_set(txt.data_));
   }
 
-  constexpr basic_symbol_text(const char8_t (&u)[N + 1], const char (&a)[M + 1]) : unicode_(u), ascii_(a)
+  constexpr symbol_text(const char8_t (&u)[N + 1], const char (&a)[M + 1]) : unicode_(u), ascii_(a)
   {
     gsl_ExpectsAudit(u[N] == char8_t{});
     gsl_ExpectsAudit(a[M] == char{});
     gsl_Expects(detail::is_basic_literal_character_set(a));
   }
 
-  constexpr basic_symbol_text(const fixed_u8string<N>& u, const fixed_string<M>& a) : unicode_(u), ascii_(a)
+  constexpr symbol_text(const fixed_u8string<N>& u, const fixed_string<M>& a) : unicode_(u), ascii_(a)
   {
     gsl_Expects(detail::is_basic_literal_character_set(a.data_));
   }
@@ -123,15 +122,14 @@ struct basic_symbol_text {
   }
 
   template<std::size_t N2, std::size_t M2>
-  [[nodiscard]] constexpr friend basic_symbol_text<N + N2, M + M2> operator+(const basic_symbol_text& lhs,
-                                                                             const basic_symbol_text<N2, M2>& rhs)
+  [[nodiscard]] constexpr friend symbol_text<N + N2, M + M2> operator+(const symbol_text& lhs,
+                                                                       const symbol_text<N2, M2>& rhs)
   {
-    return basic_symbol_text<N + N2, M + M2>(lhs.unicode() + rhs.unicode(), lhs.ascii() + rhs.ascii());
+    return symbol_text<N + N2, M + M2>(lhs.unicode() + rhs.unicode(), lhs.ascii() + rhs.ascii());
   }
 
   template<std::size_t N2, std::size_t M2>
-  [[nodiscard]] friend constexpr auto operator<=>(const basic_symbol_text& lhs,
-                                                  const basic_symbol_text<N2, M2>& rhs) noexcept
+  [[nodiscard]] friend constexpr auto operator<=>(const symbol_text& lhs, const symbol_text<N2, M2>& rhs) noexcept
   {
     MP_UNITS_DIAGNOSTIC_PUSH
     MP_UNITS_DIAGNOSTIC_IGNORE_ZERO_AS_NULLPOINTER_CONSTANT
@@ -141,25 +139,24 @@ struct basic_symbol_text {
   }
 
   template<std::size_t N2, std::size_t M2>
-  [[nodiscard]] friend constexpr bool operator==(const basic_symbol_text& lhs,
-                                                 const basic_symbol_text<N2, M2>& rhs) noexcept
+  [[nodiscard]] friend constexpr bool operator==(const symbol_text& lhs, const symbol_text<N2, M2>& rhs) noexcept
   {
     return lhs.unicode() == rhs.unicode() && lhs.ascii() == rhs.ascii();
   }
 };
 
-basic_symbol_text(char) -> basic_symbol_text<1, 1>;
+symbol_text(char) -> symbol_text<1, 1>;
 
 template<std::size_t N>
-basic_symbol_text(const char (&)[N]) -> basic_symbol_text<N - 1, N - 1>;
+symbol_text(const char (&)[N]) -> symbol_text<N - 1, N - 1>;
 
 template<std::size_t N>
-basic_symbol_text(const fixed_string<N>&) -> basic_symbol_text<N, N>;
+symbol_text(const fixed_string<N>&) -> symbol_text<N, N>;
 
 template<std::size_t N, std::size_t M>
-basic_symbol_text(const char8_t (&)[N], const char (&)[M]) -> basic_symbol_text<N - 1, M - 1>;
+symbol_text(const char8_t (&)[N], const char (&)[M]) -> symbol_text<N - 1, M - 1>;
 
 template<std::size_t N, std::size_t M>
-basic_symbol_text(const fixed_u8string<N>&, const fixed_string<M>&) -> basic_symbol_text<N, M>;
+symbol_text(const fixed_u8string<N>&, const fixed_string<M>&) -> symbol_text<N, M>;
 
 }  // namespace mp_units
