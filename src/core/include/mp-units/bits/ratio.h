@@ -22,11 +22,11 @@
 
 #pragma once
 
-#include <gsl/gsl-lite.hpp>
 #include <mp-units/bits/external/hacks.h>
 #include <mp-units/bits/module_macros.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
+#include <gsl/gsl-lite.hpp>
 #include <compare>
 #include <cstdint>
 #include <numeric>

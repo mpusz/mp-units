@@ -35,6 +35,7 @@
 #include <mp-units/reference.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
+#include <gsl/gsl-lite.hpp>
 #include <compare>
 #include <utility>
 #endif

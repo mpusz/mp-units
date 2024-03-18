@@ -31,6 +31,7 @@
 #include <mp-units/bits/text_tools.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
+#include <gsl/gsl-lite.hpp>
 #include <array>
 #include <iterator>
 #include <string>

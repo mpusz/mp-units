@@ -28,6 +28,7 @@
 #include <mp-units/compat_macros.h>  // IWYU pragma: keep
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
+#include <gsl/gsl-lite.hpp>
 #include <compare>
 #include <cstddef>
 #include <cstdlib>
