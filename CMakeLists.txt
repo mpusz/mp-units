@@ -42,9 +42,6 @@ enable_ccache(BASE_DIR ${PROJECT_SOURCE_DIR})
 include(warnings)
 set_warnings()
 
-# set all contracts checking in a Debug build
-add_compile_definitions($<$<CONFIG:Debug>:gsl_CONFIG_CONTRACT_CHECKING_AUDIT>)
-
 # enable include-what-you-use
 option(${projectPrefix}IWYU "Enables include-what-you-use" OFF)
 

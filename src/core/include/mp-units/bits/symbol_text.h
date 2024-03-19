@@ -91,7 +91,7 @@ struct symbol_text {
   constexpr explicit(false) symbol_text(const char (&txt)[N + 1]) :
       unicode_(detail::to_u8string(basic_fixed_string{txt})), ascii_(txt)
   {
-    gsl_ExpectsAudit(txt[N] == char{});
+    gsl_Expects(txt[N] == char{});
     gsl_Expects(detail::is_basic_literal_character_set(txt));
   }
 
@@ -102,8 +102,8 @@ struct symbol_text {
 
   constexpr symbol_text(const char8_t (&u)[N + 1], const char (&a)[M + 1]) : unicode_(u), ascii_(a)
   {
-    gsl_ExpectsAudit(u[N] == char8_t{});
-    gsl_ExpectsAudit(a[M] == char{});
+    gsl_Expects(u[N] == char8_t{});
+    gsl_Expects(a[M] == char{});
     gsl_Expects(detail::is_basic_literal_character_set(a));
   }
 
@@ -117,7 +117,7 @@ struct symbol_text {
 
   [[nodiscard]] constexpr bool empty() const
   {
-    gsl_Expects(unicode().empty() == ascii().empty());
+    gsl_AssertDebug(unicode().empty() == ascii().empty());
     return unicode().empty();
   }
 

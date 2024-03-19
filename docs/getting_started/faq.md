@@ -52,7 +52,7 @@ Many reasons make UDLs a poor choice for a physical units library:
     ```cpp
     constexpr auto operator"" _q_kg_m2_per_s(unsigned long long l)
     {
-      gsl_ExpectsAudit(std::in_range<std::int64_t>(l));
+      gsl_Expects(std::in_range<std::int64_t>(l));
       return angular_momentum<kilogram_metre_sq_per_second, std::int64_t>(static_cast<std::int64_t>(l));
     }
 

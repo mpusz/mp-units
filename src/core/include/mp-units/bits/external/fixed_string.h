@@ -61,7 +61,7 @@ struct basic_fixed_string {
 
   constexpr explicit(false) basic_fixed_string(const CharT (&txt)[N + 1]) noexcept
   {
-    gsl_ExpectsAudit(txt[N] == CharT{});
+    gsl_Expects(txt[N] == CharT{});
     for (std::size_t i = 0; i < N; ++i) data_[i] = txt[i];
   }
 
@@ -69,7 +69,7 @@ struct basic_fixed_string {
     requires std::convertible_to<std::iter_value_t<It>, CharT>
   constexpr explicit basic_fixed_string(It first, S last) noexcept
   {
-    gsl_ExpectsAudit(std::distance(last, first) == N);
+    gsl_Expects(std::distance(first, last) == N);
     for (auto it = data_; first != last; ++first, ++it) *it = *first;
   }
 
@@ -85,7 +85,7 @@ struct basic_fixed_string {
   [[nodiscard]] constexpr const CharT* c_str() const noexcept { return data(); }
   [[nodiscard]] constexpr value_type operator[](size_type index) const noexcept
   {
-    gsl_ExpectsAudit(index < N);
+    gsl_Expects(index < N);
     return data()[index];
   }
 
