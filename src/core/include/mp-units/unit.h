@@ -818,7 +818,7 @@ namespace detail {
 template<typename CharT, std::size_t N, unit_symbol_formatting fmt, Unit U>
 [[nodiscard]] consteval std::array<CharT, N> get_symbol_buffer(U)
 {
-  std::array<CharT, N> buffer;
+  std::array<CharT, N> buffer{};
   unit_symbol_to<CharT>(buffer.begin(), U{}, fmt);
   return buffer;
 }
