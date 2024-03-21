@@ -178,13 +178,22 @@ class MPUnitsConan(ConanFile):
         )
         cmake = CMake(self)
         cmake.install()
-        rmdir(self, os.path.join(self.package_folder, "lib", "cmake"))
+        if not self.options.cxx_modules:
+            # We have to preserve those files for C++ modules build as Conan
+            # can't generate such CMake targets for now
+            rmdir(self, os.path.join(self.package_folder, "lib", "cmake"))
 
     def package_info(self):
         compiler = self.settings.compiler
-        self.cpp_info.components["core"].requires = ["gsl-lite::gsl-lite"]
-        if self.options.use_fmtlib:
-            self.cpp_info.components["core"].requires.append("fmt::fmt")
-        if compiler == "msvc":
-            self.cpp_info.components["core"].cxxflags = ["/utf-8"]
-        self.cpp_info.components["systems"].requires = ["core"]
+        if self.options.cxx_modules:
+            # CMakeDeps does not generate C++ modules definitions for now
+            # Skip the Conan-generated files and use the mp-unitsConfig.cmake bundled with mp-units
+            self.cpp_info.set_property("cmake_find_mode", "none")
+            self.cpp_info.builddirs = ["."]
+        else:
+            self.cpp_info.components["core"].requires = ["gsl-lite::gsl-lite"]
+            if self.options.use_fmtlib:
+                self.cpp_info.components["core"].requires.append("fmt::fmt")
+            if compiler == "msvc":
+                self.cpp_info.components["core"].cxxflags = ["/utf-8"]
+            self.cpp_info.components["systems"].requires = ["core"]

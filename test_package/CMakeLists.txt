@@ -23,8 +23,19 @@
 cmake_minimum_required(VERSION 3.15)
 project(test_package LANGUAGES CXX)
 
+message(STATUS "MP_UNITS_BUILD_CXX_MODULES: ${MP_UNITS_BUILD_CXX_MODULES}")
+message(STATUS "MP_UNITS_USE_LIBFMT: ${MP_UNITS_USE_LIBFMT}")
+
 find_package(mp-units REQUIRED)
 
-add_executable(test_package test_package.cpp)
-target_link_libraries(test_package PRIVATE mp-units::mp-units)
-target_compile_definitions(test_package PRIVATE MP_UNITS_USE_FMTLIB=$<BOOL:${MP_UNITS_USE_FMTLIB}>)
+add_executable(test_package-headers test_package.cpp)
+target_compile_features(test_package-headers PRIVATE cxx_std_20)
+target_link_libraries(test_package-headers PRIVATE mp-units::mp-units)
+target_compile_definitions(test_package-headers PRIVATE MP_UNITS_USE_FMTLIB=$<BOOL:${MP_UNITS_USE_FMTLIB}>)
+
+if(MP_UNITS_BUILD_CXX_MODULES)
+    add_executable(test_package test_package.cpp)
+    target_compile_features(test_package PUBLIC cxx_std_20)
+    target_link_libraries(test_package PRIVATE mp-units::mp-units)
+    target_compile_definitions(test_package PRIVATE MP_UNITS_MODULES MP_UNITS_USE_FMTLIB=$<BOOL:${MP_UNITS_USE_FMTLIB}>)
+endif()
