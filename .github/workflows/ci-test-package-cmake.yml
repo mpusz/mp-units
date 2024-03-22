@@ -109,6 +109,20 @@ jobs:
               std_format_support: "True",
             }
           - {
+              name: "Clang-18",
+              os: ubuntu-22.04,
+              compiler:
+                {
+                  type: CLANG,
+                  version: 18,
+                  cc: "clang-18",
+                  cxx: "clang++-18",
+                },
+              lib: "libc++",
+              cxx_modules: "False",
+              std_format_support: "True"
+            }
+          - {
               name: "Apple Clang 15",
               os: macos-13,
               compiler:

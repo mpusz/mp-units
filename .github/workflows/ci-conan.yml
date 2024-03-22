@@ -114,6 +114,21 @@ jobs:
               conan-config: "",
             }
           - {
+              name: "Clang-18",
+              os: ubuntu-22.04,
+              compiler:
+                {
+                  type: CLANG,
+                  version: 18,
+                  cc: "clang-18",
+                  cxx: "clang++-18",
+                },
+              lib: "libc++",
+              cxx_modules: "True",
+              std_format_support: "True",
+              conan-config: "",
+            }
+          - {
               name: "Apple Clang 15",
               os: macos-13,
               compiler:
