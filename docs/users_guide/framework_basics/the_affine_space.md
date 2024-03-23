@@ -174,7 +174,7 @@ inline constexpr struct origin : absolute_point_origin<origin, isq::distance> {}
 quantity_point<si::metre, origin> qp1 = origin + 100 * m;
 quantity_point<si::metre, origin> qp2 = 120 * m + origin;
 
-// assert(qp1.quantity_from_zero() == 100 * m);   // Compile-time error  
+// assert(qp1.quantity_from_zero() == 100 * m);   // Compile-time error
 // assert(qp2.quantity_from_zero() == 120 * m);   // Compile-time error
 assert(qp1.quantity_from(origin) == 100 * m);
 assert(qp2.quantity_from(origin) == 120 * m);
