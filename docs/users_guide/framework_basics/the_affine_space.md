@@ -51,7 +51,7 @@ more popular in the products we implement. They can be used to implement:
 - timestamps,
 - daily _mass_ readouts from the scale,
 - _altitudes_ of mountain peaks on a map,
-- current _speed_ displayed on a car's speed-o-meter,
+- current _path length_ measured by the car's odometer,
 - today's _price_ of instruments on the market,
 - and many more.
 
@@ -67,7 +67,7 @@ difference between two things:
 - _duration_ between two time points,
 - the difference in _speed_ (even if relative to zero).
 
-As we already know, a `quantity` type provides all operations required for a _displacement vcector_
+As we already know, a `quantity` type provides all operations required for a _displacement vector_
 abstraction in an affine space.
 
 
@@ -105,7 +105,7 @@ parameter is initialized with the `default_point_origin(R)` that provides the qu
 scale zeroth point using the following rules:
 
 - if the measurement unit of a quantity specifies its point origin in its definition
-  (e.g., degree Celsius), then this point is being used,
+  (e.g., degree Celsius), then this origin is being used,
 - otherwise, an instantiation of `zeroth_point_origin<QuantitySpec>` is being used which
   provides a well-established zeroth point for a specific quantity type.
 
@@ -117,8 +117,9 @@ scale zeroth point using the following rules:
 #### `zeroth_point_origin<QuantitySpec>`
 
 `zeroth_point_origin<QuantitySpec>` is meant to be used in cases where the specific domain has
-a well-established, non-controversial zeroth point on the measurement scale. This saves the user
-from the need to write a boilerplate code that would predefine such a type for such a domain.
+a well-established, non-controversial, and unique zeroth point on the measurement scale.
+This saves the user from the need to write a boilerplate code that would predefine such a type
+for this domain.
 
 ![affine_space_1](affine_space_1.svg){style="width:80%;display: block;margin: 0 auto;"}
 
@@ -128,6 +129,8 @@ quantity_point<isq::distance[si::metre]> qp2{120 * m};
 
 assert(qp1.quantity_from_zero() == 100 * m);
 assert(qp2.quantity_from_zero() == 120 * m);
+assert(qp2.quantity_from(qp1) == 20 * m);
+assert(qp1.quantity_from(qp2) == -20 * m);
 
 assert(qp2 - qp1 == 20 * m);
 assert(qp1 - qp2 == -20 * m);
@@ -153,6 +156,8 @@ compatible:
 quantity_point<si::metre> qp1{isq::distance(100 * m)};
 quantity_point<si::metre> qp2{isq::height(120 * m)};
 
+assert(qp2.quantity_from(qp1) == 20 * m);
+assert(qp1.quantity_from(qp2) == -20 * m);
 assert(qp2 - qp1 == 20 * m);
 assert(qp1 - qp2 == -20 * m);
 ```
@@ -178,18 +183,35 @@ quantity_point<si::metre, origin> qp2 = 120 * m + origin;
 // assert(qp2.quantity_from_zero() == 120 * m);   // Compile-time error
 assert(qp1.quantity_from(origin) == 100 * m);
 assert(qp2.quantity_from(origin) == 120 * m);
+assert(qp2.quantity_from(qp1) == 20 * m);
+assert(qp1.quantity_from(qp2) == -20 * m);
 
 assert(qp1 - origin == 100 * m);
 assert(qp2 - origin == 120 * m);
+assert(qp2 - qp1 == 20 * m);
+assert(qp1 - qp2 == -20 * m);
+
 assert(origin - qp1 == -100 * m);
 assert(origin - qp2 == -120 * m);
 
-assert(qp2 - qp1 == 20 * m);
+// assert(origin - origin == 0 * m);   // Compile-time error
 ```
 
-This time, we can't construct a quantity point from any quantity. In order to prevent potential safety
-issues, when a custom point origin is being used, we always need to provide its object in
-an expression that results in a quantity point instantiation.
+!!! info
+
+    The `absolute_point_origin` class template uses the CRTP idiom to enforce the uniqueness of
+    such a type. You should pass the type of a derived class as the first argument of the template
+    instantiation.
+
+*[CRTP]: Curiously Recurring Template Parameter
+
+We can't construct a quantity point directly from the quantity anymore when a custom, named origin
+is used. To prevent potential safety and maintenance issues, we always need to
+explicitly provide both a compatible origin and a quantity measured from it to construct a quantity
+point.
+
+Said otherwise, a quantity point defined in terms of a specific origin is the result of adding
+the origin and the _displacement vector_ measured from it to the point we create.
 
 !!! info
 
@@ -207,24 +229,19 @@ quantity_point qp1{100 * m, origin};
 
 Again, CTAD always helps to use precisely the type we need in a current case.
 
-!!! info
-
-    The `absolute_point_origin` class template uses the CRTP idiom to enforce the uniqueness of
-    such a type. You should pass the type of a derived class as the first argument of the template
-    instantiation.
-
-*[CRTP]: Curiously Recurring Template Parameter
-
-!!! note
-
-    Unfortunately, due to inconsistencies in C++ language rules:
-
-    - we can't define the above in one line of code,
-    - provide the same identifier for a class and variable template.
+Additionally, if a quantity point is defined in terms of a custom, named origin, then we can't use
+a `quantity_from_zero()` member function anymore. This is to prevent surprises, as our origin may
+not necessarily be perceived as an absolute zero in the domain we model. Also, as we will learn soon,
+we can define several related origins in one space, and then it gets harder to understand which
+one is the "zero" one. This is why, to be specific and always correct about the points we use,
+a `quantity_from(QP)` member function can be used (where `QP` can either be an origin or another
+quantity point).
 
 Finally, please note that it is not allowed to subtract two point origins defined in terms of
 `absolute_point_origin` (e.g., `origin - origin`) as those do not contain information about the
 unit, so we cannot determine a resulting `quantity` type.
+
+#### Modeling independent spaces in one domain
 
 Absolute point origins are also perfect for establishing independent spaces even if the same quantity
 type and unit is being used:
@@ -249,6 +266,7 @@ assert(origin2 - qp2 == -120 * m);
 // assert(qp2 - qp1 == 20 * m);                    // Compile-time error
 // assert(qp1 - origin2 == 100 * m);               // Compile-time error
 // assert(qp2 - origin1 == 120 * m);               // Compile-time error
+// assert(qp2.quantity_from(qp1) == 20 * m);       // Compile-time error
 // assert(qp1.quantity_from(origin2) == 100 * m);  // Compile-time error
 // assert(qp2.quantity_from(origin1) == 120 * m);  // Compile-time error
 ```
@@ -277,38 +295,42 @@ quantity_point qp2 = D + 120 * m;
 assert(qp1.quantity_ref_from(qp1.point_origin) == 100 * m);
 assert(qp2.quantity_ref_from(qp2.point_origin) == 120 * m);
 
-assert(qp1 - A == 120 * m);
-assert(qp1 - B == 110 * m);
-assert(qp1 - C == 100 * m);
-assert(qp1 - D == 90 * m);
+assert(qp2.quantity_from(qp1) == 30 * m);
+assert(qp1.quantity_from(qp2) == -30 * m);
+assert(qp2 - qp1 == 30 * m);
+assert(qp1 - qp2 == -30 * m);
+
 assert(qp1.quantity_from(A) == 120 * m);
 assert(qp1.quantity_from(B) == 110 * m);
 assert(qp1.quantity_from(C) == 100 * m);
 assert(qp1.quantity_from(D) == 90 * m);
+assert(qp1 - A == 120 * m);
+assert(qp1 - B == 110 * m);
+assert(qp1 - C == 100 * m);
+assert(qp1 - D == 90 * m);
 
-assert(qp2 - A == 150 * m);
-assert(qp2 - B == 140 * m);
-assert(qp2 - C == 130 * m);
-assert(qp2 - D == 120 * m);
 assert(qp2.quantity_from(A) == 150 * m);
 assert(qp2.quantity_from(B) == 140 * m);
 assert(qp2.quantity_from(C) == 130 * m);
 assert(qp2.quantity_from(D) == 120 * m);
-
-assert(qp2 - qp1 == 30 * m);
+assert(qp2 - A == 150 * m);
+assert(qp2 - B == 140 * m);
+assert(qp2 - C == 130 * m);
+assert(qp2 - D == 120 * m);
 
 assert(B - A == 10 * m);
 assert(C - A == 20 * m);
 assert(D - A == 30 * m);
 assert(D - C == 10 * m);
+
+assert(B - B == 0 * m);
+// assert(A - A == 0 * m);  // Compile-time error
 ```
 
-As we can see above, the `quantity_from()` member function returns a relative distance from the
-provided point origin while the `quantity_from_zero()` always returns the distance from the
-absolute point origin.
+!!! note
 
-Also, please note that as long as we can't subtract two absolute point origins from each other,
-it is possible to subtract relative ones or a relative and absolute one.
+    Even though we can't subtract two absolute point origins from each other, it is possible to
+    subtract relative ones or relative and absolute ones.
 
 
 ### Converting between different representations of the same _point_
@@ -338,8 +360,8 @@ For this purpose, we can use either:
     assert(qp2A.quantity_ref_from(qp2A.point_origin) == 150 * m);
     ```
 
-It is important to understand that the point remains the same after such a translation
-(all of them compare equal):
+It is important to understand that all such translations still describe exactly the same point
+(e.g., all of them compare equal):
 
 ```cpp
 assert(qp2 == qp2C);
@@ -347,12 +369,13 @@ assert(qp2 == qp2B);
 assert(qp2 == qp2A);
 ```
 
-!!! note
+!!! important
 
     It is only allowed to convert between various origins defined in terms of the same
     `absolute_point_origin`. Even if it is possible to express the same _point_ as a
     _displacement vector_ from another `absolute_point_origin`, the library will not provide such
-    a conversion. A custom user-defined conversion function will be needed to add this functionality.
+    a conversion. A custom user-defined conversion function will be needed to add such a
+    functionality.
 
     Said another way, in the library, there is no way to spell how two distinct `absolute_point_origin`
     types relate to each other.
@@ -363,7 +386,8 @@ assert(qp2 == qp2A);
 Support for temperature quantity points is probably one of the most common examples of relative
 point origins in action that we use in daily life.
 
-The [@SI] definition in the library provides a few predefined point origins for this purpose:
+The [SI](../../appendix/references.md#SIBrochure) definition in the library provides a few predefined
+point origins for this purpose:
 
 ```cpp
 namespace si {
@@ -391,10 +415,10 @@ The above is a great example of how point origins can be stacked on top of each 
 
 !!! note
 
-    Notice that while stacking point origins, we can use not only different representation types
-    but also different units for origins and a _point_. In the above example, the relative
-    point origin for degree Celsius is defined in terms of `si::kelvin`, while the quantity point
-    for it will use `si::degree_Celsius` as a unit.
+    Notice that while stacking point origins, we can use different representation types and units
+    for origins and a _point_. In the above example, the relative point origin for degree Celsius
+    is defined in terms of `si::kelvin`, while the quantity point for it will use
+    `si::degree_Celsius` as a unit.
 
 The temperature point origins defined above are provided explicitly in the respective units'
 definitions:
@@ -417,6 +441,10 @@ inline constexpr struct degree_Fahrenheit :
 
 }
 ```
+
+As it was described above, `default_point_origin(R)` returns a `zeroth_point_origin<QuantitySpec>`
+when a unit does not provide any origin in its definition. As of today, the units of temperature
+are the only ones in the entire **mp-units** library that provide such origins.
 
 Now, let's see how we can benefit from the above definitions. We have quite a few alternatives to
 choose from here. Depending on our needs or tastes, we can:
@@ -463,23 +491,23 @@ room_temp room_ref{};
 room_temp room_low = room_ref - number_of_steps * step_delta;
 room_temp room_high = room_ref + number_of_steps * step_delta;
 
-std::println("Room reference temperature: {} ({}, {})\n",
+std::println("Room reference temperature: {} ({}, {:{%N:.2f}%?%U})\n",
              room_ref.quantity_from_zero(),
              room_ref.in(usc::degree_Fahrenheit).quantity_from_zero(),
              room_ref.in(si::kelvin).quantity_from_zero());
 
-std::println("| {:<14} | {:^18} | {:^18} | {:^18} |",
-             "Temperature", "Room reference", "Ice point", "Absolute zero");
-std::println("|{0:=^16}|{0:=^20}|{0:=^20}|{0:=^20}|", "");
+std::println("| {:<18} | {:^18} | {:^18} | {:^18} |",
+             "Temperature delta", "Room reference", "Ice point", "Absolute zero");
+std::println("|{0:=^20}|{0:=^20}|{0:=^20}|{0:=^20}|", "");
 
-auto print = [&](std::string_view label, auto v) {
-  std::println("| {:<14} | {:^18} | {:^18} | {:^18:N[.2f]} |", label,
+auto print_temp = [&](std::string_view label, auto v) {
+  std::println("| {:<18} | {:^18} | {:^18} | {:^18{%N:.2f}%?%U} |", label,
                v - room_reference_temp, (v - si::ice_point).in(deg_C), (v - si::absolute_zero).in(deg_C));
 };
 
-print("Lowest", room_low);
-print("Default", room_ref);
-print("Highest", room_high);
+print_temp("Lowest", room_low);
+print_temp("Default", room_ref);
+print_temp("Highest", room_high);
 ```
 
 The above prints:
@@ -487,11 +515,11 @@ The above prints:
 ```text
 Room reference temperature: 21 °C (69.8 °F, 294.15 K)
 
-| Temperature    |   Room reference   |     Ice point      |   Absolute zero    |
-|================|====================|====================|====================|
-| Lowest         |       -3 °C        |       18 °C        |     291.15 °C      |
-| Default        |        0 °C        |       21 °C        |     294.15 °C      |
-| Highest        |        3 °C        |       24 °C        |     297.15 °C      |
+| Temperature delta  |   Room reference   |     Ice point      |   Absolute zero    |
+|====================|====================|====================|====================|
+| Lowest             |       -3 °C        |       18 °C        |     291.15 °C      |
+| Default            |        0 °C        |       21 °C        |     294.15 °C      |
+| Highest            |        3 °C        |       24 °C        |     297.15 °C      |
 ```
 
 
