@@ -239,8 +239,9 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
 
     [use fmtlib support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 
+#### Options for mp-units project developers
 
-[`MP_UNITS_BUILD_LA`](#MP_UNITS_BUILD_LA){ #MP_UNITS_BUILD_LA }
+[`MP_UNITS_DEV_BUILD_LA`](#MP_UNITS_DEV_BUILD_LA){ #MP_UNITS_DEV_BUILD_LA }
 
 :   [:octicons-tag-24: 2.0.0][build la support] · :octicons-milestone-24: `ON`/`OFF` (Default: `ON`)
 
@@ -249,12 +250,11 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
     [build la support]: https://github.com/mpusz/mp-units/releases/tag/v2.0.0
 
 
-[`MP_UNITS_IWYU`](#MP_UNITS_IWYU){ #MP_UNITS_IWYU }
+[`MP_UNITS_DEV_IWYU`](#MP_UNITS_DEV_IWYU){ #MP_UNITS_DEV_IWYU }
 
 :   [:octicons-tag-24: 2.0.0][iwyu support] · :octicons-milestone-24: `ON`/`OFF` (Default: `OFF`)
 
     Enables `include-what-you-use` when compiling with a clang compiler.
-    Additionally turns on [`MP_UNITS_AS_SYSTEM_HEADERS`](#MP_UNITS_AS_SYSTEM_HEADERS).
 
     [iwyu support]: https://github.com/mpusz/mp-units/releases/tag/v2.0.0
 

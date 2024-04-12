@@ -151,7 +151,9 @@ class MPUnitsConan(ConanFile):
         if self.options.cxx_modules:
             tc.cache_variables["CMAKE_CXX_SCAN_FOR_MODULES"] = True
             tc.cache_variables["MP_UNITS_BUILD_CXX_MODULES"] = True
-        tc.cache_variables["MP_UNITS_BUILD_LA"] = self._build_all and not self._skip_la
+        tc.cache_variables["MP_UNITS_DEV_BUILD_LA"] = (
+            self._build_all and not self._skip_la
+        )
         tc.cache_variables["MP_UNITS_USE_FMTLIB"] = bool(self.options.use_fmtlib)
         tc.generate()
         deps = CMakeDeps(self)

@@ -27,8 +27,8 @@ list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 set(projectPrefix MP_UNITS_)
 
-option(${projectPrefix}BUILD_LA "Build code depending on the linear algebra library" ON)
-message(STATUS "${projectPrefix}BUILD_LA: ${${projectPrefix}BUILD_LA}")
+option(${projectPrefix}DEV_BUILD_LA "Build code depending on the linear algebra library" ON)
+message(STATUS "${projectPrefix}DEV_BUILD_LA: ${${projectPrefix}DEV_BUILD_LA}")
 
 # make sure that the file is being used as an entry point
 include(modern_project_structure)
@@ -43,9 +43,9 @@ include(warnings)
 set_warnings()
 
 # enable include-what-you-use
-option(${projectPrefix}IWYU "Enables include-what-you-use" OFF)
+option(${projectPrefix}DEV_IWYU "Enables include-what-you-use" OFF)
 
-if(${projectPrefix}IWYU)
+if(${projectPrefix}DEV_IWYU)
     include(include-what-you-use)
     enable_iwyu(
         MAPPING_FILE "${PROJECT_SOURCE_DIR}/.mp-units.imp"
@@ -53,10 +53,6 @@ if(${projectPrefix}IWYU)
         MAX_LINE_LENGTH 120
         NO_COMMENTS
     )
-
-    if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-        set(${projectPrefix}AS_SYSTEM_HEADERS ON)
-    endif()
 endif()
 
 # enable_clang_tidy()
