@@ -110,3 +110,15 @@
 #define MP_UNITS_CONSTRAINED_NTTP_WORKAROUND(X) X
 
 #endif
+
+#if !defined MP_UNITS_API_STRING_VIEW_RET && __cpp_constexpr >= 202211L
+
+#define MP_UNITS_API_STRING_VIEW_RET 1
+
+#endif
+
+#if !defined MP_UNITS_API_NO_CRTP && __cpp_explicit_this_parameter
+
+#define MP_UNITS_API_NO_CRTP 1
+
+#endif

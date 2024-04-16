@@ -16,27 +16,13 @@ The library source code is hosted on [GitHub](https://github.com/mpusz/mp-units)
 ??? info "Supported compilers"
 
     This library tries to provide the best user experience possible with the C++ language.
-    To achieve that, it extensively uses C++20 features and the
-    [explicit object parameter](https://en.cppreference.com/w/cpp/language/member_functions#Explicit_object_parameter)
-    from C++23.
+    To achieve that, it extensively uses the latest C++ language features.
 
-    Even though the library benefits from C++23 (if available), C++20 is enough to compile and
-    use all of the library's functionality. C++23 features are hidden behind
-    a [preprocessor macro](users_guide/framework_basics/systems_of_quantities.md#defining-quantities)
-    providing a backward-compatible way to use it.
+    Even though the library benefits from the latest C++ versions (if available), C++20 is enough
+    to compile and use all of the library's functionality.
 
-    The below table provides the minimum compiler version required to compile the code using the
-    specific feature:
-
-    | Feature              | gcc | clang | apple-clang | MSVC |
-    |----------------------|:---:|:-----:|:-----------:|:----:|
-    | **Minimum support**  | 12  |  16   |     15      | None |
-    | **`std::format`**    | 13  |  17   |    None     | None |
-    | **C++ modules**      | 14  |  17   |    None     | None |
-    | **C++23 extensions** | 14  |  18   |    None     | None |
-
-    More requirements for C++ modules support can be found in the
-    [CMake's documentation](https://cmake.org/cmake/help/latest/manual/cmake-cxxmodules.7.html).
+    Please refer to [C++ compiler support chapter](getting_started/cpp_compiler_support.md)
+    for more details.
 
 === "C++ modules"
 

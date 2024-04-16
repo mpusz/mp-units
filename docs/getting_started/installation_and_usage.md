@@ -3,60 +3,12 @@
 This chapter provides all the necessary information to obtain and build the code using **mp-units**.
 It also describes how to build or distribute the library and generate its documentation.
 
-## C++ compiler support { #cpp-compiler-support }
-
-!!! info
-
-    **mp-units** library tries to provide the best user experience possible with the C++ language.
-    To achieve that, it extensively uses C++20 features and the
-    [explicit object parameter](https://en.cppreference.com/w/cpp/language/member_functions#Explicit_object_parameter)
-    from C++23.
-
-    Even though the library benefits from C++23 (if available), C++20 is enough to compile and
-    use all of the library's functionality. C++23 features are hidden behind
-    a [preprocessor macro](../users_guide/framework_basics/systems_of_quantities.md#defining-quantities)
-    providing a backward-compatible way to use it.
-
-The below table provides the minimum compiler version required to compile the code using the
-specific feature:
-
-| Feature              | gcc | clang | apple-clang | MSVC |
-|----------------------|:---:|:-----:|:-----------:|:----:|
-| **Minimum support**  | 12  |  16   |     15      | None |
-| **`std::format`**    | 13  |  17   |    None     | None |
-| **C++ modules**      | 14  |  17   |    None     | None |
-| **C++23 extensions** | 14  |  18   |    None     | None |
-
-More requirements for C++ modules support can be found in the
-[CMake's documentation](https://cmake.org/cmake/help/latest/manual/cmake-cxxmodules.7.html).
-
-
-## Modules
-
-The **mp-units** library provides the following C++ modules.
-
-```mermaid
-flowchart TD
-    mp_units --- mp_units.systems --- mp_units.core
-```
-
-| C++ Module         | CMake Target         | Contents                                                 |
-|--------------------|----------------------|----------------------------------------------------------|
-| `mp_units.core`    | `mp-units::core`     | Core library framework and systems-independent utilities |
-| `mp_units.systems` | `mp-units::systems`  | All the systems of quantities and units                  |
-| `mp_units`         | `mp-units::mp-units` | Core + Systems                                           |
-
-!!! note
-
-    C++ modules are provided within the package only when [`cxx_modules`](#cxx_modules) Conan
-    option is set to `True`.
-
 
 ## Repository structure and dependencies
 
 This repository contains three independent CMake-based projects:
 
-- _./src_
+- **_./src_**
 
     - header-only project containing whole **mp-units** library
     - _./src/CMakeList.txt_ file is intended as an **entry point for library users**
@@ -68,7 +20,7 @@ This repository contains three independent CMake-based projects:
         - [{fmt}](https://github.com/fmtlib/fmt) to provide text formatting of quantities
           (if `std::format` is not supported yet on a specific compiler).
 
-- _._
+- **_._**
 
     - project used as an **entry point for library development and CI/CD**
     - it wraps _./src_ project together with usage examples and tests
@@ -79,7 +31,7 @@ This repository contains three independent CMake-based projects:
           library based on proposal [P1385](https://wg21.link/P1385) used in some examples
           and tests.
 
-- *./test_package*
+- **_./test_package_**
 
     - CMake library installation and Conan package verification.
 
@@ -104,6 +56,27 @@ This repository contains three independent CMake-based projects:
     [FAQ](faq.md#why-dont-we-have-cmake-options-to-disable-building-of-tests-and-examples).
 
 
+## Modules
+
+The **mp-units** library provides the following C++ modules:
+
+```mermaid
+flowchart TD
+    mp_units --- mp_units.systems --- mp_units.core
+```
+
+| C++ Module         | CMake Target         | Contents                                                 |
+|--------------------|----------------------|----------------------------------------------------------|
+| `mp_units.core`    | `mp-units::core`     | Core library framework and systems-independent utilities |
+| `mp_units.systems` | `mp-units::systems`  | All the systems of quantities and units                  |
+| `mp_units`         | `mp-units::mp-units` | Core + Systems                                           |
+
+!!! note
+
+    C++ modules are provided within the package only when [`cxx_modules`](#cxx_modules) Conan
+    option is set to `True`.
+
+
 ## Obtaining dependencies
 
 This library assumes that most of the dependencies will be provided by the
@@ -118,7 +91,7 @@ The rest of the dependencies responsible for documentation generation are provid
 In case you are not familiar with Conan, to install it (or upgrade) just do:
 
 ```shell
-pip3 install -U conan
+pip install -U conan
 ```
 
 After that, you might need to add a custom profile file for your development environment
@@ -173,30 +146,59 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
 
 ## Build options
 
+!!! note
+
+    Most of the below options are related to the C++ language features available in the compilers.
+    Please refer to the [C++ compiler support](cpp_compiler_support.md) chapter to learn more
+    about which C++ features are required and which compiler support them.
+
 ### Conan options
 
 [cxx_modules](#cxx_modules){ #cxx_modules }
 
-:   [:octicons-tag-24: 2.2.0][cxx modules support] · :octicons-milestone-24: `True`/`False` (Default: `False`)
+:   [:octicons-tag-24: 2.2.0][conan C++ modules support] · :octicons-milestone-24: `auto`/`True`/`False` (Default: `auto`)
 
     Configures CMake to add C++ modules to the list of default targets.
 
-    [cxx modules support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
+    [conan C++ modules support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 
-[use_fmtlib](#use_fmtlib){ #use_fmtlib }
+[std_format](#std_format){ #std_format }
 
-:   [:octicons-tag-24: 2.2.0][use fmtlib support] · :octicons-milestone-24: `True`/`False` (Default: `False`)
+:   [:octicons-tag-24: 2.2.0][conan std::format support] · :octicons-milestone-24: `auto`/`True`/`False` (Default: `auto`)
 
-    Forces usage of [{fmt}](https://github.com/fmtlib/fmt) library instead of the C++20 Standard
-    Library features.
+    Enables the usage of [`std::format`](https://en.cppreference.com/w/cpp/utility/format/format)
+    and associated facilities for text formatting. If it is not supported, then
+    the [{fmt}](https://github.com/fmtlib/fmt) library is used instead.
 
-    [use fmtlib support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
+    [conan std::format support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
+
+[string_view_ret](#string_view_ret){ #string_view_ret }
+
+:   [:octicons-tag-24: 2.2.0][conan returning string_view] · :octicons-milestone-24: `auto`/`True`/`False` (Default: `auto`)
+
+    Enables returning `std::string_view` from the
+    [`unit_symbol()`](../users_guide/framework_basics/text_output.md#unit_symbol)
+    and [`dimension_symbol()`](../users_guide/framework_basics/text_output.md#dimension_symbol)
+    functions.  If this feature is not available, those functions will return
+    `mp_units::basic_fixed_string<CharT, N>` instead.
+
+    [conan returning string_view]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
+
+[no_crtp](#no_crtp){ #no_crtp }
+
+:   [:octicons-tag-24: 2.2.0][conan no crtp support] · :octicons-milestone-24: `auto`/`True`/`False` (Default: `auto`)
+
+    Removes the need for the usage of the CRTP idiom in the
+    [`quantity_spec` definitions](../users_guide/framework_basics/systems_of_quantities.md#defining-quantities).
+
+    [conan no crtp support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
+
 
 ### Conan configuration properties
 
 [`user.mp-units.build:all`](#user.mp-units.build-all){ #user.mp-units.build-all }
 
-:   [:octicons-tag-24: 2.2.0][build all support] · :octicons-milestone-24: `True`/`False` (Default: `False`)
+:   [:octicons-tag-24: 2.2.0][conan build all support] · :octicons-milestone-24: `True`/`False` (Default: `False`)
 
     Enables compilation of all the source code, including tests and examples. To support this, it requires some additional Conan build dependencies described in
     [Repository Structure and Dependencies](#repository-structure-and-dependencies).
@@ -204,19 +206,19 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
     [`tools.build:skip_test`](https://docs.conan.io/2/reference/commands/config.html?highlight=tools.build:skip_test#conan-config-list)
     configuration property is set to `True`).
 
-    [build all support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
+    [conan build all support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 
 
 [`user.mp-units.build:skip_la`](#user-skip-la){ #user-skip-la }
 
-:   [:octicons-tag-24: 2.2.0][skip la support] · :octicons-milestone-24: `True`/`False` (Default: `False`)
+:   [:octicons-tag-24: 2.2.0][conan skip la support] · :octicons-milestone-24: `True`/`False` (Default: `False`)
 
     If `user.mp-units.build:all` is enabled, among others, Conan installs the external
     [wg21-linear_algebra](https://conan.io/center/recipes/wg21-linear_algebra)
     dependency and enables the compilation of linear algebra-based tests and usage examples.
     Such behavior can be disabled with this option.
 
-    [skip la support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
+    [conan skip la support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 
 
 ### CMake options
@@ -229,15 +231,36 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
 
     [build_cxx_modules support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 
+[`MP_UNITS_API_STD_FORMAT`](#MP_UNITS_API_STD_FORMAT){ #MP_UNITS_API_STD_FORMAT }
 
-[`MP_UNITS_USE_FMTLIB`](#MP_UNITS_USE_FMTLIB){ #MP_UNITS_USE_FMTLIB }
+:   [:octicons-tag-24: 2.2.0][use fmtlib support] · :octicons-milestone-24: `AUTO`/`ON`/`OFF` (Default: `AUTO`)
 
-:   [:octicons-tag-24: 2.2.0][use fmtlib support] · :octicons-milestone-24: `ON`/`OFF` (Default: `OFF`)
-
-    Forces usage of [{fmt}](https://github.com/fmtlib/fmt) library instead of the C++20 Standard
-    Library features.
+    Enables the usage of [`std::format`](https://en.cppreference.com/w/cpp/utility/format/format)
+    and associated facilities for text formatting. If it is not supported, then
+    the [{fmt}](https://github.com/fmtlib/fmt) library is used instead.
 
     [use fmtlib support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
+
+[`MP_UNITS_API_STRING_VIEW_RET`](#MP_UNITS_API_STRING_VIEW_RET){ #MP_UNITS_API_STRING_VIEW_RET }
+
+:   [:octicons-tag-24: 2.2.0][cmake returning string_view] · :octicons-milestone-24: `AUTO`/`ON`/`OFF` (Default: `AUTO`)
+
+    Enables returning `std::string_view` from the
+    [`unit_symbol()`](../users_guide/framework_basics/text_output.md#unit_symbol)
+    and [`dimension_symbol()`](../users_guide/framework_basics/text_output.md#dimension_symbol)
+    functions.  If this feature is not available, those functions will return
+    `mp_units::basic_fixed_string<CharT, N>` instead.
+
+    [cmake returning string_view]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
+
+[`MP_UNITS_API_NO_CRTP`](#MP_UNITS_API_NO_CRTP){ #MP_UNITS_API_NO_CRTP }
+
+:   [:octicons-tag-24: 2.2.0][cmake no crtp support] · :octicons-milestone-24: `AUTO`/`ON`/`OFF` (Default: `AUTO`)
+
+    Removes the need for the usage of the CRTP idiom in the
+    [`quantity_spec` definitions](../users_guide/framework_basics/systems_of_quantities.md#defining-quantities).
+
+    [cmake no crtp support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 
 #### Options for mp-units project developers
 

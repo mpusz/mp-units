@@ -319,7 +319,7 @@ MP_UNITS_EXPORT template<dimension_symbol_formatting fmt = dimension_symbol_form
     return buffer.size();
   };
 
-#if __cpp_constexpr >= 202211L  // Permitting static constexpr variables in constexpr functions
+#if MP_UNITS_API_STRING_VIEW_RET  // Permitting static constexpr variables in constexpr functions
   static constexpr std::size_t size = get_size();
   static constexpr auto buffer = detail::get_symbol_buffer<CharT, size, fmt>(D{});
   return std::string_view(buffer.data(), size);

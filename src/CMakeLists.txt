@@ -31,43 +31,67 @@ include(CheckCXXFeatureSupported)
 include(AddMPUnitsModule)
 include(GNUInstallDirs)
 
-# project options
+# check if libc++ is being used
+include(CheckLibcxxInUse)
+check_libcxx_in_use(${projectPrefix}LIBCXX)
+
+# project build options
 option(${projectPrefix}BUILD_CXX_MODULES "Add C++ modules to the list of default targets" OFF)
 message(STATUS "${projectPrefix}BUILD_CXX_MODULES: ${${projectPrefix}BUILD_CXX_MODULES}")
 
-option(${projectPrefix}AS_SYSTEM_HEADERS "Exports library as system headers" OFF)
-message(STATUS "${projectPrefix}AS_SYSTEM_HEADERS: ${${projectPrefix}AS_SYSTEM_HEADERS}")
+# project API settings
+function(cache_var_values name)
+    set_property(CACHE ${projectPrefix}${name} PROPERTY STRINGS ${ARGN})
+    if(NOT ${projectPrefix}${name} IN_LIST ARGN)
+        message(FATAL_ERROR
+                    "Invalid value '${${projectPrefix}${name}}' provided for a cache variable ${projectPrefix}${name} (${ARGN} allowed)"
+        )
+    endif()
+    message(STATUS "${projectPrefix}${name}: ${${projectPrefix}${name}}")
+endfunction()
 
-option(${projectPrefix}USE_FMTLIB "Enables usage of fmtlib instead of the 'std::format' facilities" OFF)
-message(STATUS "${projectPrefix}USE_FMTLIB: ${${projectPrefix}USE_FMTLIB}")
+set(${projectPrefix}API_STD_FORMAT AUTO CACHE STRING "Enable `std::format` support")
+cache_var_values(API_STD_FORMAT AUTO TRUE FALSE)
+
+set(${projectPrefix}API_STRING_VIEW_RET AUTO CACHE STRING
+                                                   "Enable returning `std::string_view` from `constexpr` functions"
+)
+cache_var_values(API_STRING_VIEW_RET AUTO TRUE FALSE)
+
+set(${projectPrefix}API_NO_CRTP AUTO CACHE STRING "Enable class definitions without CRTP idiom")
+cache_var_values(API_NO_CRTP AUTO TRUE FALSE)
 
 # C++ features
-check_cxx_feature_supported(__cpp_explicit_this_parameter ${projectPrefix}EXPLICIT_THIS_PARAMETER_SUPPORTED)
+check_cxx_feature_supported(__cpp_lib_format ${projectPrefix}LIB_FORMAT_SUPPORTED)
 check_cxx_feature_supported("__cpp_constexpr >= 202211L" ${projectPrefix}STATIC_CONSTEXPR_VARS_IN_CONSTEXPR_FUNCTIONS)
+check_cxx_feature_supported(__cpp_explicit_this_parameter ${projectPrefix}EXPLICIT_THIS_PARAMETER_SUPPORTED)
 
-if(${projectPrefix}EXPLICIT_THIS_PARAMETER_SUPPORTED)
-    message(STATUS "API/ABI: `quantity_spec` uses explicit `this` parameter in its definition")
-else()
-    message(STATUS "API/ABI: `quantity_spec` uses CRTP in its definition")
+# validate settings
+if(${projectPrefix}API_STD_FORMAT STREQUAL "TRUE"
+   AND NOT
+       (${projectPrefix}LIB_FORMAT_SUPPORTED
+        # libc++ has a basic supports for std::format but does not set __cpp_lib_format
+        # https://github.com/llvm/llvm-project/issues/77773
+        OR (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "17"
+            AND ${projectPrefix}LIBCXX))
+)
+    message(FATAL_ERROR "`std::format` enabled but not supported")
 endif()
 
-if(${projectPrefix}STATIC_CONSTEXPR_VARS_IN_CONSTEXPR_FUNCTIONS)
-    message(STATUS "API/ABI: `unit_symbol()` returns `std::string_view`")
-else()
-    message(STATUS "API/ABI: `unit_symbol()` returns `fixed_string`")
+if(${projectPrefix}API_STRING_VIEW_RET STREQUAL "TRUE" AND NOT
+                                                           ${projectPrefix}STATIC_CONSTEXPR_VARS_IN_CONSTEXPR_FUNCTIONS
+)
+    message(FATAL_ERROR "`std::string_view` returns enabled but not supported")
 endif()
 
-# C++ modules
-if(${projectPrefix}BUILD_CXX_MODULES)
-    if(CMAKE_VERSION VERSION_LESS "3.28.1")
-        message(FATAL_ERROR, "CMake versions before 3.28.1 do not support C++ modules properly")
+if(${projectPrefix}API_NO_CRTP STREQUAL "TRUE" AND NOT ${projectPrefix}EXPLICIT_THIS_PARAMETER_SUPPORTED)
+    message(FATAL_ERROR "`NO_CRTP` mode enabled but explicit `this` parameter is not supported")
+endif()
+
+if(${projectPrefix}BUILD_CXX_MODULES STREQUAL "TRUE")
+    if(CMAKE_VERSION VERSION_LESS "3.29")
+        message(FATAL_ERROR "CMake versions before 3.29 do not support C++ modules properly")
     endif()
-    cmake_minimum_required(VERSION 3.28.1)
-
-    # # none of the below seems to work
-    # cmake_policy(VERSION 3.28.1)
-    # cmake_policy(SET CMP0155 NEW)
-
     set(${projectPrefix}TARGET_SCOPE "PUBLIC")
 else()
     set(${projectPrefix}TARGET_SCOPE "INTERFACE")

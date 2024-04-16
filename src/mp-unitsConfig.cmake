@@ -22,7 +22,7 @@
 
 include(CMakeFindDependencyMacro)
 
-if(MP_UNITS_USE_FMTLIB)
+if(MP_UNITS_API_STD_FORMAT)
     find_dependency(fmt)
 endif()
 

@@ -11,7 +11,7 @@ macros that can be used to ensure the wide compatibility of our code.
 !!! note
 
     Those macros are used in our short [example applications](../examples/tags_index.md) as those are meant
-    to be built on all of [the supported compilers](../../getting_started/installation_and_usage.md#cpp-compiler-support).
+    to be built on all of [the supported compilers](../../getting_started/cpp_compiler_support.md).
     Some still do not support `std::format`, C++ modules, or C++ versions newer than C++20.
 
 
@@ -155,5 +155,5 @@ use [fmtlib](https://github.com/fmtlib/fmt) as their primary formatting facility
 from additional features provided with the library).
 
 This macro resolves to either the `std` or `fmt` namespace, depending on the value of
-[MP_UNITS_USE_FMTLIB](../../getting_started/installation_and_usage.md#MP_UNITS_USE_FMTLIB)
+[MP_UNITS_API_STD_FORMAT](../../getting_started/installation_and_usage.md#MP_UNITS_API_STD_FORMAT)
 CMake option.

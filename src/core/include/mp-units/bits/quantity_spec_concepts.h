@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <mp-units/bits/external/hacks.h>
 #include <mp-units/bits/dimension_concepts.h>
 #include <mp-units/bits/expression_template.h>
 #include <mp-units/bits/module_macros.h>
@@ -29,7 +30,7 @@
 namespace mp_units {
 
 MP_UNITS_EXPORT
-#ifdef __cpp_explicit_this_parameter
+#ifdef MP_UNITS_API_NO_CRTP
 template<auto...>
 #else
 template<typename, auto...>
@@ -50,7 +51,7 @@ inline constexpr bool is_specialization_of_kind_of<kind_of_<Q>> = true;
 template<typename T>
 concept QuantityKindSpec = is_specialization_of_kind_of<T>;
 
-#ifdef __cpp_explicit_this_parameter
+#ifdef MP_UNITS_API_NO_CRTP
 template<auto... Args>
 void to_base_specialization_of_quantity_spec(const volatile quantity_spec<Args...>*);
 #else
@@ -65,7 +66,7 @@ inline constexpr bool is_derived_from_specialization_of_quantity_spec =
 template<typename T>
 inline constexpr bool is_specialization_of_quantity_spec = false;
 
-#ifdef __cpp_explicit_this_parameter
+#ifdef MP_UNITS_API_NO_CRTP
 template<auto... Args>
 inline constexpr bool is_specialization_of_quantity_spec<quantity_spec<Args...>> = true;
 #else

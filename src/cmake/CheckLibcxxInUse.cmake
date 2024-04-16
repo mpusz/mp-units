@@ -21,10 +21,21 @@
 # SOFTWARE.
 
 cmake_minimum_required(VERSION 3.15)
-project(test_package LANGUAGES CXX)
 
-find_package(mp-units REQUIRED)
+function(check_libcxx_in_use variable)
+    if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+        message(CHECK_START "Checking if libc++ is being used")
+        list(APPEND CMAKE_MESSAGE_INDENT "  ")
 
-add_executable(test_package test_package.cpp)
-target_link_libraries(test_package PRIVATE mp-units::mp-units)
-target_compile_definitions(test_package PRIVATE MP_UNITS_API_STD_FORMAT=$<BOOL:${MP_UNITS_API_STD_FORMAT}>)
+        include(CheckCXXSymbolExists)
+        check_cxx_symbol_exists(_LIBCPP_VERSION "ciso646" ${variable})
+        set(${variable} ${${variable}} PARENT_SCOPE)
+
+        list(POP_BACK CMAKE_MESSAGE_INDENT)
+        if(${variable})
+            message(CHECK_PASS "found")
+        else()
+            message(CHECK_FAIL "not found")
+        endif()
+    endif()
+endfunction()

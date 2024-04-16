@@ -22,13 +22,14 @@
 
 #pragma once
 
+#include <mp-units/bits/external/hacks.h>
 #include <mp-units/quantity_spec.h>
 #include <type_traits>
 
 template<auto V, typename T>
 inline constexpr bool is_of_type = std::is_same_v<std::remove_cvref_t<decltype(V)>, T>;
 
-#ifdef __cpp_explicit_this_parameter
+#ifdef MP_UNITS_API_NO_CRTP
 
 #define QUANTITY_SPEC_(name, ...)                                \
   inline constexpr struct name##_ : quantity_spec<__VA_ARGS__> { \

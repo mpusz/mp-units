@@ -22,6 +22,15 @@
 
 cmake_minimum_required(VERSION 3.23)
 
+function(set_feature_flag name)
+    set(val_list "TRUE" "FALSE")
+    if(${projectPrefix}${name} IN_LIST val_list)
+        target_compile_definitions(
+            mp-units-core ${${projectPrefix}TARGET_SCOPE} ${projectPrefix}${name}=$<BOOL:${${projectPrefix}${name}}>
+        )
+    endif()
+endfunction()
+
 # find dependencies
 if(NOT TARGET gsl::gsl-lite)
     find_package(gsl-lite REQUIRED)
@@ -78,11 +87,13 @@ add_mp_units_module(
     MODULE_INTERFACE_UNIT mp-units-core.cpp
 )
 
-target_compile_definitions(
-    mp-units-core ${${projectPrefix}TARGET_SCOPE} ${projectPrefix}USE_FMTLIB=$<BOOL:${${projectPrefix}USE_FMTLIB}>
-)
+set_feature_flag(API_STD_FORMAT)
+set_feature_flag(API_STRING_VIEW_RET)
+set_feature_flag(API_NO_CRTP)
 
-if(${projectPrefix}USE_FMTLIB)
+if(${projectPrefix}API_STD_FORMAT STREQUAL "FALSE" OR (${projectPrefix}API_STD_FORMAT STREQUAL "AUTO"
+                                                       AND NOT ${projectPrefix}LIB_FORMAT_SUPPORTED)
+)
     if(NOT TARGET fmt::fmt)
         find_package(fmt REQUIRED)
     endif()

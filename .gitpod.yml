@@ -70,17 +70,17 @@ tasks:
       gp sync-await python-init
       conan profile detect
       conan config install $PWD/.gitpod/conan
-      conan install . -pr gcc12 -o use_fmtlib=True -b missing
-      conan install . -pr gcc12 -o use_fmtlib=True -b missing -s build_type=Debug
+      conan install . -pr gcc12 -o std_format=False -b missing
+      conan install . -pr gcc12 -o std_format=False -b missing -s build_type=Debug
       gp sync-done conan-gcc12-20
-      conan install . -pr gcc13 -b missing
-      conan install . -pr gcc13 -b missing -s build_type=Debug
+      conan install . -pr gcc13 -o std_format=True -b missing
+      conan install . -pr gcc13 -o std_format=True -b missing -s build_type=Debug
       gp sync-done conan-gcc13-20
-      conan install . -pr clang16 -o use_fmtlib=True -b missing
-      conan install . -pr clang16 -o use_fmtlib=True -b missing -s build_type=Debug
+      conan install . -pr clang16 -o std_format=False -b missing
+      conan install . -pr clang16 -o std_format=False -b missing -s build_type=Debug
       gp sync-done conan-clang16-20
-      conan install . -pr clang17 -o cxx_modules=True -b missing
-      conan install . -pr clang17 -o cxx_modules=True -b missing -s build_type=Debug
+      conan install . -pr clang17 -o std_format=True -o cxx_modules=True -b missing
+      conan install . -pr clang17 -o std_format=True -o cxx_modules=True -b missing -s build_type=Debug
       gp sync-done conan-clang17-20
       conan remote login -p $ARTIFACTORY_TOKEN conan-gitpod-mp-units $ARTIFACTORY_USER
       conan upload "*" -r conan-gitpod-mp-units -c
@@ -88,29 +88,29 @@ tasks:
     init: |
       gp sync-await conan-gcc12-20
       source ${PYTHON_VENV}/bin/activate
-      conan build . -pr gcc12 -o use_fmtlib=True
-      conan build . -pr gcc12 -o use_fmtlib=True -s build_type=Debug
+      conan build . -pr gcc12 -o std_format=False
+      conan build . -pr gcc12 -o std_format=False -s build_type=Debug
       echo "🛠️ gcc-12 pre-build done for C++20, header files, and libfmt! You can close this terminal and use 'Build' button in the VSCode status bar for incremental builds. 🛠️"
   - name: gcc-13-20
     init: |
       gp sync-await conan-gcc13-20
       source ${PYTHON_VENV}/bin/activate
-      conan build . -pr gcc13
-      conan build . -pr gcc13 -s build_type=Debug
+      conan build . -pr gcc13 -o std_format=True
+      conan build . -pr gcc13 -o std_format=True -s build_type=Debug
       echo "🛠️ gcc-13 pre-build done for C++20 and header files! You can close this terminal and use 'Build' button in the VSCode status bar for incremental builds. 🛠️"
   - name: clang-16-20
     init: |
       gp sync-await conan-clang16-20
       source ${PYTHON_VENV}/bin/activate
-      conan build . -pr clang16 -o use_fmtlib=True
-      conan build . -pr clang16 -o use_fmtlib=True -s build_type=Debug
+      conan build . -pr clang16 -o std_format=False
+      conan build . -pr clang16 -o std_format=False -s build_type=Debug
       echo "🛠️ clang-16 pre-build done for C++20, header files, and libfmt! You can close this terminal and use 'Build' button in the VSCode status bar for incremental builds. 🛠️"
   - name: clang-17-20
     init: |
       gp sync-await conan-clang17-20
       source ${PYTHON_VENV}/bin/activate
-      conan build . -pr clang17 -o cxx_modules=True
-      conan build . -pr clang17 -o cxx_modules=True -s build_type=Debug
+      conan build . -pr clang17 -o std_format=True -o cxx_modules=True
+      conan build . -pr clang17 -o std_format=True -o cxx_modules=True -s build_type=Debug
       echo "🛠️ clang-17 pre-build done for C++20! You can close this terminal and use 'Build' button in the VSCode status bar for incremental builds. 🛠️"
   - name: documentation
     init: |

@@ -215,12 +215,12 @@ jobs:
           sed -i.backup '/^\[settings\]$/,/^\[/ s/^compiler.cppstd=.*/compiler.cppstd=${{ matrix.std }}/' ~/.conan2/profiles/default
           sed -i.backup '/^\[settings\]$/,/^\[/ s/^build_type=.*/build_type=${{ matrix.build_type }}/' ~/.conan2/profiles/default
           conan profile show -pr default
-      - run: echo "use_fmtlib=$([ "${{ matrix.formatting }}" == "fmtlib" ] && echo "True" || echo "False")" >> $GITHUB_ENV
+      - run: echo "std_format=$([ "${{ matrix.formatting }}" == "std::format" ] && echo "True" || echo "False")" >> $GITHUB_ENV
       - name: Install Conan dependencies
         shell: bash
         run: |
           conan install . -b missing -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" -c user.mp-units.build:all=False \
-                          -o cxx_modules=${{ matrix.config.cxx_modules }} -o use_fmtlib=${{ env.use_fmtlib }}
+                          -o cxx_modules=${{ matrix.config.cxx_modules }} -o std_format=${{ env.std_format }}
           mv CMakeUserPresets.json src
       - name: Configure mp-units CMake
         if: matrix.config.compiler.type == 'VISUAL' || matrix.config.compiler.type == 'MSVC'

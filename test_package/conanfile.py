@@ -39,8 +39,8 @@ class TestPackageConan(ConanFile):
 
     def generate(self):
         tc = CMakeToolchain(self)
-        tc.variables["MP_UNITS_USE_FMTLIB"] = bool(
-            self.dependencies["mp-units"].options.use_fmtlib
+        tc.variables["MP_UNITS_API_STD_FORMAT"] = bool(
+            self.dependencies["mp-units"].options.std_format
         )
         tc.generate()
 

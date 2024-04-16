@@ -24,7 +24,7 @@
 
 #include <mp-units/bits/external/hacks.h>
 
-#ifdef __cpp_explicit_this_parameter
+#ifdef MP_UNITS_API_NO_CRTP
 
 #define QUANTITY_SPEC(name, ...)                                          \
   inline constexpr struct name : ::mp_units::quantity_spec<__VA_ARGS__> { \
@@ -35,6 +35,14 @@
 #define QUANTITY_SPEC(name, ...)                                                \
   inline constexpr struct name : ::mp_units::quantity_spec<name, __VA_ARGS__> { \
   } name
+
+#endif
+
+#if !defined MP_UNITS_API_STD_FORMAT || !MP_UNITS_API_STD_FORMAT
+
+#if __has_include(<fmt/format.h>)
+#define MP_UNITS_USE_FMTLIB 1
+#endif
 
 #endif
 

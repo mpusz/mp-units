@@ -77,7 +77,7 @@ Before submission, please remember to check if the code compiles fine on the sup
 The CI will check it anyway but it is good to check at least some of the configurations before pushing changes.
 Especially older compilers can be tricky as those do not support all the C++20 features well enough. The official
 list of supported compilers can be always found in the
-[Installation And Usage](https://mpusz.github.io/mp-units/latest/getting_started/installation_and_usage/#cpp-compiler-support)
+[Installation And Usage](https://mpusz.github.io/mp-units/latest/getting_started/cpp_compiler_support)
 chapter of our documentation.
 
 
