@@ -264,7 +264,7 @@ class MPUnitsConan(ConanFile):
     def package_info(self):
         compiler = self.settings.compiler
         self.cpp_info.components["core"].requires = ["gsl-lite::gsl-lite"]
-        if self.options.use_fmtlib:
+        if self._use_fmtlib:
             self.cpp_info.components["core"].requires.append("fmt::fmt")
         if compiler == "msvc":
             self.cpp_info.components["core"].cxxflags = ["/utf-8"]
