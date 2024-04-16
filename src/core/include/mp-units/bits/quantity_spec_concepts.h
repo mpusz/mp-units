@@ -22,9 +22,9 @@
 
 #pragma once
 
-#include <mp-units/bits/external/hacks.h>
 #include <mp-units/bits/dimension_concepts.h>
 #include <mp-units/bits/expression_template.h>
+#include <mp-units/bits/external/hacks.h>
 #include <mp-units/bits/module_macros.h>
 
 namespace mp_units {
