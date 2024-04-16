@@ -70,6 +70,9 @@ it is a good practice to set the following in the `~/.conan2/global.conf`:
 user.mp-units.build:all=True
 ```
 
+Non-Conan users should:
+- build `all` and `all_verify_interface_header_sets` CMake targets,
+- run all unit tests.
 
 ### Backward Compatibility
 
