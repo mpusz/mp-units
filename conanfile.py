@@ -147,7 +147,7 @@ class MPUnitsConan(ConanFile):
 
         # check compiler version
         min_version = feature["compiler"].get(str(compiler))
-        if min_version is None:
+        if min_version == None:
             # not tested compiler being used - use at your own risk
             return
         if min_version == "":
@@ -166,7 +166,7 @@ class MPUnitsConan(ConanFile):
         feature = self._feature_compatibility[feature_name]
         min_version = feature["compiler"].get(str(compiler))
         return bool(
-            opt is True
+            opt == True
             or (
                 opt == "auto"
                 and min_version
@@ -211,7 +211,7 @@ class MPUnitsConan(ConanFile):
     def validate(self):
         self._check_feature_supported("mp-units", "minimum_support")
         for key, value in self._option_feature_map.items():
-            if self.options.get_safe(key) is True:
+            if self.options.get_safe(key) == True:
                 self._check_feature_supported(key, value)
 
     def layout(self):
