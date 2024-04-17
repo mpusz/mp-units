@@ -61,7 +61,7 @@ constexpr auto speed_of_light_in_vacuum = 1 * si::si2019::speed_of_light_in_vacu
 
 QuantityOf<isq::permittivity_of_vacuum> auto q = 1 / (permeability_of_vacuum * pow<2>(speed_of_light_in_vacuum));
 
-std::println("permittivity of vacuum = {} = {:{%N:.3e} %U}", q, q.in(F / m));
+std::println("permittivity of vacuum = {} = {::N[.3e]}", q, q.in(F / m));
 ```
 
 The above first prints the following:

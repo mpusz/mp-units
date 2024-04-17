@@ -38,7 +38,7 @@ The library source code is hosted on [GitHub](https://github.com/mpusz/mp-units)
     int main()
     {
       constexpr quantity dist = 364.4 * smoot;
-      std::println("Harvard Bridge length = {:{%N:.5} %U} ({:{%N:.5} %U}, {:{%N:.5} %U}) ± 1 εar",
+      std::println("Harvard Bridge length = {::N[.5]} ({::N[.5]}, {::N[.5]}) ± 1 εar",
                    dist, dist.in(usc::foot), dist.in(si::metre));
     }
     ```
@@ -58,7 +58,7 @@ The library source code is hosted on [GitHub](https://github.com/mpusz/mp-units)
     int main()
     {
       constexpr quantity dist = 364.4 * smoot;
-      std::println("Harvard Bridge length = {:{%N:.5} %U} ({:{%N:.5} %U}, {:{%N:.5} %U}) ± 1 εar",
+      std::println("Harvard Bridge length = {::N[.5]} ({::N[.5]}, {::N[.5]}) ± 1 εar",
                    dist, dist.in(usc::foot), dist.in(si::metre));
     }
     ```

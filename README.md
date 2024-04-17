@@ -121,8 +121,8 @@ int main()
   std::cout << std::setw(10) << std::setfill('*') << v2 << '\n';  // ***70 mi/h
   std::cout << std::format("{:*^10}\n", v3);                      // *110 km/h*
   std::println("{:%N in %U of %D}", v4);                          // 70 in mi/h of LT⁻¹
-  std::println("{:{%N:.2f}%?%U}", v5);                            // 30.56 m/s
-  std::println("{:{%N:.2f}%?{%U:dn}}", v6);                       // 31.29 m⋅s⁻¹
+  std::println("{::N[.2f]}", v5);                                 // 30.56 m/s
+  std::println("{::N[.2f]U[dn]}", v6);                            // 31.29 m⋅s⁻¹
   std::println("{:%N}", v7);                                      // 31
 }
 ```

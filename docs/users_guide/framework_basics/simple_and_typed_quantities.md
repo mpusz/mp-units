@@ -75,7 +75,7 @@ Here is a simple example showing how to deal with such quantities:
       const quantity duration = 2 * h;
       const quantity speed = avg_speed(distance, duration);
 
-      std::println("A car driving {} in {} has an average speed of {:{%N:.4} %U} ({:{%N:.4} %U})",
+      std::println("A car driving {} in {} has an average speed of {::N[.4]} ({::N[.4]})",
                    distance, duration, speed, speed.in(km / h));
     }
     ```
@@ -103,7 +103,7 @@ Here is a simple example showing how to deal with such quantities:
       const quantity duration = 2 * h;
       const quantity speed = avg_speed(distance, duration);
 
-      std::println("A car driving {} in {} has an average speed of {:{%N:.4} %U} ({:{%N:.4} %U})",
+      std::println("A car driving {} in {} has an average speed of {::N[.4]} ({::N[.4]})",
                    distance, duration, speed, speed.in(km / h));
     }
     ```
@@ -194,7 +194,7 @@ The previous example can be re-typed using typed quantities in the following way
       const quantity duration = isq::time(2 * h);
       const quantity speed = avg_speed(distance, duration);
 
-      std::println("A car driving {} in {} has an average speed of {:{%N:.4} %U} ({:{%N:.4} %U})",
+      std::println("A car driving {} in {} has an average speed of {::N[.4]} ({::N[.4]})",
                    distance, duration, speed, speed.in(km / h));
     }
     ```
@@ -223,7 +223,7 @@ The previous example can be re-typed using typed quantities in the following way
       const quantity duration = isq::time(2 * h);
       const quantity speed = avg_speed(distance, duration);
 
-      std::println("A car driving {} in {} has an average speed of {:{%N:.4} %U} ({:{%N:.4} %U})",
+      std::println("A car driving {} in {} has an average speed of {::N[.4]} ({::N[.4]})",
                    distance, duration, speed, speed.in(km / h));
     }
     ```

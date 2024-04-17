@@ -349,6 +349,9 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
   using format_specs = mp_units::detail::fill_align_width_format_specs<Char>;
 
   std::basic_string_view<Char> modifiers_format_str_;
+  std::basic_string_view<Char> default_number_format_str_ = {};
+  std::basic_string_view<Char> default_unit_format_str_ = {};
+  std::basic_string_view<Char> default_dimension_format_str_ = {};
   std::vector<size_t> format_str_lengths_;
   format_specs specs_{};
 
@@ -431,9 +434,9 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
   quantity_formatter(OutputIt, Args...) -> quantity_formatter<OutputIt>;
 
   template<typename Handler>
-  constexpr const Char* parse_quantity_specs(const Char* begin, const Char* end, Handler&& handler) const
+  constexpr const Char* parse_format_spec(const Char* begin, const Char* end, Handler&& handler) const
   {
-    if (begin == end || *begin == '}') return begin;
+    if (begin == end || *begin == ':' || *begin == '}') return begin;
     if (*begin != '%' && *begin != '{')
       throw MP_UNITS_STD_FMT::format_error(
         "`quantity-specs` should start with a `conversion-spec` ('%' or '{' characters expected)})");
@@ -441,6 +444,15 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
     while (ptr != end) {
       auto c = *ptr;
       if (c == '}') break;
+      if (c == ":") {
+        if (ptr + 1 != end && *(ptr + 1) == ":") {
+          handler.on_text(begin, ++ptr);  // account for ':'
+          ++ptr;                          // consume the second ':'
+          continue;
+        } else
+          // default specs started
+          break;
+      }
       if (c == '{') {
         if (begin != ptr) handler.on_text(begin, ptr);
         begin = ptr = mp_units::detail::parse_subentity_replacement_field(ptr, end, handler);
@@ -457,13 +469,13 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
       c = *ptr++;
       switch (c) {
         case 'N':
-          handler.on_number("{}");
+          handler.on_number(default_number_format_str_);
           break;
         case 'U':
-          handler.on_unit("{}");
+          handler.on_unit(default_unit_format_str_);
           break;
         case 'D':
-          handler.on_dimension("{}");
+          handler.on_dimension(default_dimension_format_str_);
           break;
         case '?':
           handler.on_maybe_space();
@@ -477,7 +489,20 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
       begin = ptr;
     }
     if (begin != ptr) handler.on_text(begin, ptr);
+    if (ptr != end&&* ptr = ':') {
+    }
     return ptr;
+  }
+
+  template<typename Handler>
+  constexpr const Char* parse_default_specs(const Char* begin, const Char* end, Handler&& handler) const
+  {
+  }
+
+  template<typename Handler>
+  constexpr const Char* parse_quantity_specs(const Char* begin, const Char* end, Handler&& handler) const
+  {
+    auto it = parse_format_spec(begin, end, handler);
   }
 
   template<typename OutputIt, typename FormatContext>
@@ -486,10 +511,11 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
     std::locale locale = MP_UNITS_FMT_LOCALE(ctx.locale());
     if (modifiers_format_str_.empty()) {
       // default format should print value followed by the unit separated with 1 space
-      out = MP_UNITS_STD_FMT::vformat_to(out, locale, "{}",
+      out = MP_UNITS_STD_FMT::vformat_to(out, locale, default_number_format_str_,
                                          MP_UNITS_STD_FMT::make_format_args(q.numerical_value_ref_in(q.unit)));
       if constexpr (mp_units::space_before_unit_symbol<unit>) *out++ = ' ';
-      return MP_UNITS_STD_FMT::vformat_to(out, locale, "{}", MP_UNITS_STD_FMT::make_format_args(q.unit));
+      return MP_UNITS_STD_FMT::vformat_to(out, locale, default_unit_format_str_,
+                                          MP_UNITS_STD_FMT::make_format_args(q.unit));
     } else {
       // user provided format
       quantity_formatter f{out, q, format_str_lengths_.cbegin(), locale};
@@ -501,16 +527,16 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
 public:
   constexpr auto parse(MP_UNITS_STD_FMT::basic_format_parse_context<Char>& ctx) -> decltype(ctx.begin())
   {
-    const auto begin = ctx.begin();
-    auto end = ctx.end();
+    auto begin = ctx.begin(), end = ctx.end();
 
-    auto it = parse_fill_align_width(ctx, begin, end, specs_, mp_units::detail::fmt_align::right);
-    if (it == end) return it;
+    auto begin = parse_fill_align_width(ctx, begin, end, specs_, mp_units::detail::fmt_align::right);
+    if (begin == end) return begin;
 
     format_checker checker{ctx, format_str_lengths_};
-    end = parse_quantity_specs(it, end, checker);
-    modifiers_format_str_ = {it, end};
-    return end;
+    auto it = parse_quantity_specs(begin, end, checker);
+    modifiers_format_str_ = {begin, it};
+
+    return parse_default_specs(it, end, handler);
   }
 
   template<typename FormatContext>
