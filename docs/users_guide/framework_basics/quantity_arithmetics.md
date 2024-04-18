@@ -337,7 +337,7 @@ Among others, we can find there the following:
 - `exp()`,
 - `abs()`,
 - `epsilon()`,
-- `fma()`, `fmod()`,
+- `fma()`, `fmod()`, `remainder()`,
 - `isfinite()`, `isinf()`, `isnan()`,
 - `floor()`, `ceil()`, `round()`,
 - `inverse()`,
