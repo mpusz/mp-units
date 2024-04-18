@@ -1006,7 +1006,7 @@ TEST_CASE("localization with the 'L' specifier", "[text][fmt][localization]")
   std::locale grp2{std::locale::classic(), new group2};
   std::locale grp3{std::locale::classic(), new group3};
 
-  SECTION("full format {:{%N:L}%?%U} on a quantity")
+  SECTION("full format on a quantity")
   {
     SECTION("default spec")
     {
