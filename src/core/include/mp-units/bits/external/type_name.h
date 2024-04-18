@@ -6,6 +6,8 @@
 #include <string_view>
 #endif
 
+namespace mp_units::detail {
+
 template<typename T>
 [[nodiscard]] consteval std::string_view type_name()
 {
@@ -40,3 +42,5 @@ template<typename T1, typename T2>
   else
     return v2;
 }
+
+}  // namespace mp_units::detail
