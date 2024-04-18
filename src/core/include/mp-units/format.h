@@ -265,7 +265,11 @@ public:
 // subentity-id                ::= 'N' | 'U' | 'D'
 // format-spec                 ::= <as specified by the formatter for the argument type>
 //
+#if __cpp_lib_format_ranges
 template<auto Reference, typename Char, std::formattable<Char> Rep>
+#else
+template<auto Reference, typename Rep, typename Char>
+#endif
 class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
   static constexpr auto unit = get_unit(Reference);
   static constexpr auto dimension = get_quantity_spec(Reference).dimension;
