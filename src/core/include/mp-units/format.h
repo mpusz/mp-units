@@ -67,31 +67,6 @@ template<typename Char, typename Specs>
   return mp_units::detail::parse_dynamic_spec(it, end, specs.width, specs.width_ref, ctx);
 }
 
-template<typename Char, typename Handler>
-[[nodiscard]] constexpr const Char* parse_subentity_replacement_field(const Char* begin, const Char* end,
-                                                                      Handler&& handler)
-{
-  if (end - begin++ < 4)
-    return MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("`subentity-replacement-field` too short")), end;
-  if (*begin++ != '%')
-    MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("`subentity-replacement-field` should start with '%'"));
-  if (*begin == '}')
-    MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("`subentity-replacement-field` should have an identifier"));
-  auto it = begin;
-  for (; it != end; ++it) {
-    if (*it == '{' || *it == '%')
-      MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("invalid `subentity-replacement-field` format"));
-    if (*it == '}' || *it == ':') break;
-  }
-  if (it == end) MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("`subentity-replacement-field` too short"));
-  std::string_view id{begin, it};
-  if (*it == ':') ++it;
-  it = handler.on_replacement_field(id, it);
-  if (it == end || *it != '}')
-    MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("`subentity-replacement-field` should end with '}'"));
-  return ++it;
-}
-
 template<typename OutputIt, typename Char>
 OutputIt format_global_buffer(OutputIt out, const fill_align_width_format_specs<Char>& specs)
 {
@@ -128,25 +103,10 @@ OutputIt format_global_buffer(OutputIt out, const fill_align_width_format_specs<
 template<mp_units::Dimension D, typename Char>
 class MP_UNITS_STD_FMT::formatter<D, Char> {
   struct format_specs : mp_units::detail::fill_align_width_format_specs<Char>, mp_units::dimension_symbol_formatting {};
-
-  std::basic_string_view<Char> fill_align_width_format_str_;
-  std::basic_string_view<Char> modifiers_format_str_;
   format_specs specs_{};
+  std::basic_string_view<Char> fill_align_width_format_str_;
 
-  struct format_checker {
-    using enum mp_units::text_encoding;
-    mp_units::text_encoding encoding = unicode;
-    constexpr void on_text_encoding(Char val) { encoding = (val == 'U') ? unicode : ascii; }
-  };
-
-  struct unit_formatter {
-    format_specs specs;
-    using enum mp_units::text_encoding;
-    constexpr void on_text_encoding(Char val) { specs.encoding = (val == 'U') ? unicode : ascii; }
-  };
-
-  template<typename Handler>
-  constexpr const Char* parse_dimension_specs(const Char* begin, const Char* end, Handler&& handler) const
+  constexpr const Char* parse_dimension_specs(const Char* begin, const Char* end)
   {
     auto it = begin;
     if (it == end || *it == '}') return begin;
@@ -158,7 +118,9 @@ class MP_UNITS_STD_FMT::formatter<D, Char> {
     }
     end = it;
 
-    if (it = mp_units::detail::at_most_one_of(begin, end, "UA"); it != end) handler.on_text_encoding(*it);
+    if (it = mp_units::detail::at_most_one_of(begin, end, "UA"); it != end)
+      specs_.encoding = (*it == 'U') ? mp_units::text_encoding::unicode : mp_units::text_encoding::ascii;
+
     return end;
   }
 
@@ -172,26 +134,21 @@ public:
     fill_align_width_format_str_ = {begin, it};
     if (it == end) return it;
 
-    format_checker checker;
-    end = parse_dimension_specs(it, end, checker);
-    modifiers_format_str_ = {it, end};
-    return end;
+    return parse_dimension_specs(it, end);
   }
 
   template<typename FormatContext>
   auto format(const D& d, FormatContext& ctx) const -> decltype(ctx.out())
   {
-    unit_formatter f{specs_};
-    mp_units::detail::handle_dynamic_spec<mp_units::detail::width_checker>(f.specs.width, f.specs.width_ref, ctx);
+    auto specs = specs_;
+    mp_units::detail::handle_dynamic_spec<mp_units::detail::width_checker>(specs.width, specs.width_ref, ctx);
 
-    parse_dimension_specs(modifiers_format_str_.begin(), modifiers_format_str_.end(), f);
-
-    if (f.specs.width == 0) {
+    if (specs.width == 0) {
       // Avoid extra copying if width is not specified
-      return mp_units::dimension_symbol_to<Char>(ctx.out(), d, f.specs);
+      return mp_units::dimension_symbol_to<Char>(ctx.out(), d, specs);
     } else {
       std::basic_string<Char> unit_buffer;
-      mp_units::dimension_symbol_to<Char>(std::back_inserter(unit_buffer), d, f.specs);
+      mp_units::dimension_symbol_to<Char>(std::back_inserter(unit_buffer), d, specs);
 
       std::basic_string<Char> global_format_buffer = "{:" + std::basic_string<Char>{fill_align_width_format_str_} + "}";
       return MP_UNITS_STD_FMT::vformat_to(ctx.out(), global_format_buffer,
@@ -217,52 +174,11 @@ public:
 template<mp_units::Unit U, typename Char>
 class MP_UNITS_STD_FMT::formatter<U, Char> {
   struct format_specs : mp_units::detail::fill_align_width_format_specs<Char>, mp_units::unit_symbol_formatting {};
-
-  std::basic_string_view<Char> fill_align_width_format_str_;
-  std::basic_string_view<Char> modifiers_format_str_;
   format_specs specs_{};
 
-  struct format_checker {
-    using enum mp_units::text_encoding;
+  std::basic_string_view<Char> fill_align_width_format_str_;
 
-    mp_units::text_encoding encoding = unicode;
-
-    constexpr void on_text_encoding(Char val) { encoding = (val == 'U') ? unicode : ascii; }
-    constexpr void on_unit_symbol_solidus(Char) const {}
-    constexpr void on_unit_symbol_separator(Char val) const
-    {
-      if (val == 'd' && encoding == ascii)
-        throw MP_UNITS_STD_FMT::format_error("half_high_dot unit separator allowed only for Unicode encoding");
-    }
-  };
-
-  struct unit_formatter {
-    format_specs specs;
-
-    using enum mp_units::text_encoding;
-    using enum mp_units::unit_symbol_solidus;
-    using enum mp_units::unit_symbol_separator;
-
-    constexpr void on_text_encoding(Char val) { specs.encoding = (val == 'U') ? unicode : ascii; }
-    constexpr void on_unit_symbol_solidus(Char val)
-    {
-      switch (val) {
-        case '1':
-          specs.solidus = one_denominator;
-          break;
-        case 'a':
-          specs.solidus = always;
-          break;
-        case 'n':
-          specs.solidus = never;
-          break;
-      }
-    }
-    constexpr void on_unit_symbol_separator(Char val) { specs.separator = (val == 's') ? space : half_high_dot; }
-  };
-
-  template<typename Handler>
-  constexpr const Char* parse_unit_specs(const Char* begin, const Char* end, Handler&& handler) const
+  constexpr const Char* parse_unit_specs(const Char* begin, const Char* end)
   {
     auto it = begin;
     if (it == end || *it == '}') return begin;
@@ -274,9 +190,27 @@ class MP_UNITS_STD_FMT::formatter<U, Char> {
     }
     end = it;
 
-    if (it = mp_units::detail::at_most_one_of(begin, end, "UA"); it != end) handler.on_text_encoding(*it);
-    if (it = mp_units::detail::at_most_one_of(begin, end, "1an"); it != end) handler.on_unit_symbol_solidus(*it);
-    if (it = mp_units::detail::at_most_one_of(begin, end, "sd"); it != end) handler.on_unit_symbol_separator(*it);
+    if (it = mp_units::detail::at_most_one_of(begin, end, "UA"); it != end)
+      specs_.encoding = (*it == 'U') ? mp_units::text_encoding::unicode : mp_units::text_encoding::ascii;
+    if (it = mp_units::detail::at_most_one_of(begin, end, "1an"); it != end) {
+      switch (*it) {
+        case '1':
+          specs_.solidus = mp_units::unit_symbol_solidus::one_denominator;
+          break;
+        case 'a':
+          specs_.solidus = mp_units::unit_symbol_solidus::always;
+          break;
+        case 'n':
+          specs_.solidus = mp_units::unit_symbol_solidus::never;
+          break;
+      }
+    }
+    if (it = mp_units::detail::at_most_one_of(begin, end, "sd"); it != end) {
+      if (*it == 'd' && specs_.encoding == mp_units::text_encoding::ascii)
+        throw MP_UNITS_STD_FMT::format_error("half_high_dot unit separator allowed only for Unicode encoding");
+      specs_.separator =
+        (*it == 's') ? mp_units::unit_symbol_separator::space : mp_units::unit_symbol_separator::half_high_dot;
+    }
     return end;
   }
 
@@ -290,26 +224,21 @@ public:
     fill_align_width_format_str_ = {begin, it};
     if (it == end) return it;
 
-    format_checker checker;
-    end = parse_unit_specs(it, end, checker);
-    modifiers_format_str_ = {it, end};
-    return end;
+    return parse_unit_specs(it, end);
   }
 
   template<typename FormatContext>
   auto format(const U& u, FormatContext& ctx) const -> decltype(ctx.out())
   {
-    unit_formatter f{specs_};
-    mp_units::detail::handle_dynamic_spec<mp_units::detail::width_checker>(f.specs.width, f.specs.width_ref, ctx);
+    auto specs = specs_;
+    mp_units::detail::handle_dynamic_spec<mp_units::detail::width_checker>(specs.width, specs.width_ref, ctx);
 
-    parse_unit_specs(modifiers_format_str_.begin(), modifiers_format_str_.end(), f);
-
-    if (f.specs.width == 0) {
+    if (specs.width == 0) {
       // Avoid extra copying if width is not specified
-      return mp_units::unit_symbol_to<Char>(ctx.out(), u, f.specs);
+      return mp_units::unit_symbol_to<Char>(ctx.out(), u, specs);
     } else {
       std::basic_string<Char> unit_buffer;
-      mp_units::unit_symbol_to<Char>(std::back_inserter(unit_buffer), u, f.specs);
+      mp_units::unit_symbol_to<Char>(std::back_inserter(unit_buffer), u, specs);
 
       std::basic_string<Char> global_format_buffer = "{:" + std::basic_string<Char>{fill_align_width_format_str_} + "}";
       return MP_UNITS_STD_FMT::vformat_to(ctx.out(), global_format_buffer,
@@ -322,22 +251,21 @@ public:
 //
 // Grammar
 //
-// quantity-format-spec        ::= [fill-and-align] [width] [quantity-specs]
+// quantity-format-spec        ::= [fill-and-align] [width] [quantity-specs] [defaults-specs]
 // quantity-specs              ::= conversion-spec
 //                                 quantity-specs conversion-spec
 //                                 quantity-specs literal-char
 // literal-char                ::= <any character other than '{', '}', or '%'>
-// conversion-spec             ::= placement-spec
-//                                 subentity-replacement-field
-// placement-spec              ::= '%' placement-type
-// placement-type              ::= 'N' | 'U' | 'D' | '?' | '%'
-// subentity-replacement-field ::= '{' '%' subentity-id [format-specifier] '}'
-// subentity-id                ::= literal-char
-//                                 subentity-id literal-char
-// format-specifier            ::= ':' format-spec
-// format-spec                 ::= <as specified by the formatter for the argument type; cannot start with '}'>
+// conversion-spec             ::= '%' placement-type
+// placement-type              ::= subentity-id | '?' | '%'
+// defaults-specs              ::= ':' default-spec-list
+// default-spec-list           ::= default-spec
+//                                 default-spec-list default-spec
+// default-spec                ::= subentity-id '[' format-spec ']'
+// subentity-id                ::= 'N' | 'U' | 'D'
+// format-spec                 ::= <as specified by the formatter for the argument type>
 //
-template<auto Reference, typename Rep, typename Char>
+template<auto Reference, typename Char, std::formattable<Char> Rep>
 class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
   static constexpr auto unit = get_unit(Reference);
   static constexpr auto dimension = get_quantity_spec(Reference).dimension;
@@ -345,107 +273,68 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
   using quantity_t = mp_units::quantity<Reference, Rep>;
   using unit_t = std::remove_const_t<decltype(unit)>;
   using dimension_t = std::remove_const_t<decltype(dimension)>;
-
   using format_specs = mp_units::detail::fill_align_width_format_specs<Char>;
 
-  std::basic_string_view<Char> modifiers_format_str_;
-  std::basic_string_view<Char> default_number_format_str_ = {};
-  std::basic_string_view<Char> default_unit_format_str_ = {};
-  std::basic_string_view<Char> default_dimension_format_str_ = {};
-  std::vector<size_t> format_str_lengths_;
   format_specs specs_{};
 
+  std::basic_string_view<Char> modifiers_format_str_;
+  std::basic_string<Char> rep_format_str_ = "{}";
+  std::basic_string<Char> unit_format_str_ = "{}";
+  std::basic_string<Char> dimension_format_str_ = "{}";
+
+  MP_UNITS_STD_FMT::formatter<Rep> rep_formatter_;
+  MP_UNITS_STD_FMT::formatter<unit_t> unit_formatter_;
+  MP_UNITS_STD_FMT::formatter<dimension_t> dimension_formatter_;
+
   struct format_checker {
-    MP_UNITS_STD_FMT::basic_format_parse_context<Char>& ctx;
-    std::vector<size_t>& format_str_lengths;
-
-    constexpr void on_number(std::basic_string_view<Char>) const {}
+    constexpr void on_number() const {}
     constexpr void on_maybe_space() const {}
-    constexpr void on_unit(std::basic_string_view<Char>) const {}
-    constexpr void on_dimension(std::basic_string_view<Char>) const {}
+    constexpr void on_unit() const {}
+    constexpr void on_dimension() const {}
     constexpr void on_text(const Char*, const Char*) const {}
-
-    constexpr const Char* on_replacement_field(std::basic_string_view<Char> id, const Char* begin)
-    {
-      if (id == "N")
-        return on_replacement_field<Rep>(begin);
-      else if (id == "U")
-        return on_replacement_field<unit_t>(begin);
-      else if (id == "D")
-        return on_replacement_field<dimension_t>(begin);
-      else
-        throw MP_UNITS_STD_FMT::format_error("unknown replacement field '" + std::string(id) + "'");
-    }
-
-  private:
-    template<typename T>
-    constexpr const Char* on_replacement_field(const Char* begin) const
-    {
-      MP_UNITS_STD_FMT::formatter<T> sf;
-      ctx.advance_to(begin);
-      auto ptr = sf.parse(ctx);
-      if (*ptr != '}') throw MP_UNITS_STD_FMT::format_error("unmatched '}' in format string");
-      format_str_lengths.push_back(mp_units::detail::to_unsigned(ptr - begin));
-      return ptr;
-    }
   };
 
   template<typename OutputIt>
   struct quantity_formatter {
+    const formatter& f;
     OutputIt out;
     const quantity_t& q;
-    std::vector<size_t>::const_iterator format_str_lengths_it;
     std::locale locale;
 
-    void on_number(std::basic_string_view<Char> format_str)
+    void on_number()
     {
-      out = MP_UNITS_STD_FMT::vformat_to(out, locale, format_str,
+      out = MP_UNITS_STD_FMT::vformat_to(out, locale, f.rep_format_str_,
                                          MP_UNITS_STD_FMT::make_format_args(q.numerical_value_ref_in(q.unit)));
     }
     void on_maybe_space()
     {
       if constexpr (mp_units::space_before_unit_symbol<unit>) *out++ = ' ';
     }
-    void on_unit(std::basic_string_view<Char> format_str)
+    void on_unit()
     {
-      out = MP_UNITS_STD_FMT::vformat_to(out, locale, format_str, MP_UNITS_STD_FMT::make_format_args(q.unit));
+      out = MP_UNITS_STD_FMT::vformat_to(out, locale, f.unit_format_str_, MP_UNITS_STD_FMT::make_format_args(q.unit));
     }
-    void on_dimension(std::basic_string_view<Char> format_str)
+    void on_dimension()
     {
-      out = MP_UNITS_STD_FMT::vformat_to(out, locale, format_str, MP_UNITS_STD_FMT::make_format_args(q.dimension));
+      out = MP_UNITS_STD_FMT::vformat_to(out, locale, f.dimension_format_str_,
+                                         MP_UNITS_STD_FMT::make_format_args(q.dimension));
     }
     void on_text(const Char* begin, const Char* end) const { std::copy(begin, end, out); }
-
-    constexpr const Char* on_replacement_field(std::basic_string_view<Char> id, const Char* begin)
-    {
-      auto format_str = [&] { return "{:" + std::string(begin, *format_str_lengths_it + 1); };
-      if (id == "N")
-        on_number(format_str());
-      else if (id == "U")
-        on_unit(format_str());
-      else if (id == "D")
-        on_dimension(format_str());
-      else
-        throw MP_UNITS_STD_FMT::format_error("unknown replacement field '" + std::string(id) + "'");
-      return begin + *format_str_lengths_it++;
-    }
   };
-  template<typename OutputIt, typename... Args>
-  quantity_formatter(OutputIt, Args...) -> quantity_formatter<OutputIt>;
 
   template<typename Handler>
-  constexpr const Char* parse_format_spec(const Char* begin, const Char* end, Handler&& handler) const
+  constexpr const Char* parse_quantity_specs(const Char* begin, const Char* end, Handler&& handler) const
   {
     if (begin == end || *begin == ':' || *begin == '}') return begin;
-    if (*begin != '%' && *begin != '{')
+    if (*begin != '%')
       throw MP_UNITS_STD_FMT::format_error(
-        "`quantity-specs` should start with a `conversion-spec` ('%' or '{' characters expected)})");
+        "`quantity-specs` should start with a `conversion-spec` ('%' characters expected)");
     auto ptr = begin;
     while (ptr != end) {
       auto c = *ptr;
       if (c == '}') break;
-      if (c == ":") {
-        if (ptr + 1 != end && *(ptr + 1) == ":") {
+      if (c == ':') {
+        if (ptr + 1 != end && *(ptr + 1) == ':') {
           handler.on_text(begin, ++ptr);  // account for ':'
           ++ptr;                          // consume the second ':'
           continue;
@@ -453,29 +342,24 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
           // default specs started
           break;
       }
-      if (c == '{') {
-        if (begin != ptr) handler.on_text(begin, ptr);
-        begin = ptr = mp_units::detail::parse_subentity_replacement_field(ptr, end, handler);
-        continue;
-      }
       if (c != '%') {
         ++ptr;
         continue;
       }
       if (begin != ptr) handler.on_text(begin, ptr);
       ++ptr;  // consume '%'
-      if (ptr == end) throw MP_UNITS_STD_FMT::format_error("invalid `placement-spec` format");
+      if (ptr == end) throw MP_UNITS_STD_FMT::format_error("invalid `conversion-spec` format");
 
       c = *ptr++;
       switch (c) {
         case 'N':
-          handler.on_number(default_number_format_str_);
+          handler.on_number();
           break;
         case 'U':
-          handler.on_unit(default_unit_format_str_);
+          handler.on_unit();
           break;
         case 'D':
-          handler.on_dimension(default_dimension_format_str_);
+          handler.on_dimension();
           break;
         case '?':
           handler.on_maybe_space();
@@ -484,25 +368,56 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
           handler.on_text(ptr - 1, ptr);
           break;
         default:
-          throw MP_UNITS_STD_FMT::format_error(std::string("unknown `placement-spec` token '") + c + "'");
+          throw MP_UNITS_STD_FMT::format_error(std::string("unknown `placement-type` token '") + c + "'");
       }
       begin = ptr;
     }
     if (begin != ptr) handler.on_text(begin, ptr);
-    if (ptr != end&&* ptr = ':') {
-    }
     return ptr;
   }
 
-  template<typename Handler>
-  constexpr const Char* parse_default_specs(const Char* begin, const Char* end, Handler&& handler) const
+  template<typename Formatter>
+  constexpr const Char* parse_default_spec(const Char* begin, const Char* end, Formatter& f, std::string& format_str)
   {
+    if (begin == end || *begin++ != '[')
+      throw MP_UNITS_STD_FMT::format_error("`default-spec` should contain a `[` character");
+    auto it = begin;
+    for (int nested_brackets = 0; it != end && !(*it == ']' && nested_brackets == 0); it++) {
+      if (*it == '[') ++nested_brackets;
+      if (*it == ']') {
+        if (nested_brackets == 0) throw MP_UNITS_STD_FMT::format_error("unmatched ']' in format string");
+        --nested_brackets;
+      }
+    }
+    format_str = "{:" + std::string(begin, it) + '}';
+    if (it == end) throw MP_UNITS_STD_FMT::format_error("unmatched '[' in format string");
+    MP_UNITS_STD_FMT::basic_format_parse_context<Char> ctx(std::string_view(begin, it));
+    auto ptr = f.parse(ctx);
+    if (ptr != it) throw MP_UNITS_STD_FMT::format_error("invalid subentity format '" + std::string(begin, it) + "'");
+    return ++it;  // skip `]`
   }
 
-  template<typename Handler>
-  constexpr const Char* parse_quantity_specs(const Char* begin, const Char* end, Handler&& handler) const
+  [[nodiscard]] constexpr const Char* parse_defaults_specs(const Char* begin, const Char* end)
   {
-    auto it = parse_format_spec(begin, end, handler);
+    if (begin == end || *begin == '}') return begin;
+    if (*begin++ != ':') throw MP_UNITS_STD_FMT::format_error("`defaults-specs` should start with a `:`");
+    do {
+      auto c = *begin++;
+      switch (c) {
+        case 'N':
+          begin = parse_default_spec(begin, end, rep_formatter_, rep_format_str_);
+          break;
+        case 'U':
+          begin = parse_default_spec(begin, end, unit_formatter_, unit_format_str_);
+          break;
+        case 'D':
+          begin = parse_default_spec(begin, end, dimension_formatter_, dimension_format_str_);
+          break;
+        default:
+          throw MP_UNITS_STD_FMT::format_error(std::string("unknown `subentity-id` token '") + c + "'");
+      }
+    } while (begin != end && *begin != '}');
+    return begin;
   }
 
   template<typename OutputIt, typename FormatContext>
@@ -510,15 +425,14 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
   {
     std::locale locale = MP_UNITS_FMT_LOCALE(ctx.locale());
     if (modifiers_format_str_.empty()) {
-      // default format should print value followed by the unit separated with 1 space
-      out = MP_UNITS_STD_FMT::vformat_to(out, locale, default_number_format_str_,
+      // default
+      out = MP_UNITS_STD_FMT::vformat_to(out, locale, rep_format_str_,
                                          MP_UNITS_STD_FMT::make_format_args(q.numerical_value_ref_in(q.unit)));
       if constexpr (mp_units::space_before_unit_symbol<unit>) *out++ = ' ';
-      return MP_UNITS_STD_FMT::vformat_to(out, locale, default_unit_format_str_,
-                                          MP_UNITS_STD_FMT::make_format_args(q.unit));
+      return MP_UNITS_STD_FMT::vformat_to(out, locale, unit_format_str_, MP_UNITS_STD_FMT::make_format_args(q.unit));
     } else {
       // user provided format
-      quantity_formatter f{out, q, format_str_lengths_.cbegin(), locale};
+      quantity_formatter f{*this, out, q, locale};
       parse_quantity_specs(modifiers_format_str_.begin(), modifiers_format_str_.end(), f);
       return f.out;
     }
@@ -529,14 +443,14 @@ public:
   {
     auto begin = ctx.begin(), end = ctx.end();
 
-    auto begin = parse_fill_align_width(ctx, begin, end, specs_, mp_units::detail::fmt_align::right);
+    begin = parse_fill_align_width(ctx, begin, end, specs_, mp_units::detail::fmt_align::right);
     if (begin == end) return begin;
 
-    format_checker checker{ctx, format_str_lengths_};
+    format_checker checker{};
     auto it = parse_quantity_specs(begin, end, checker);
     modifiers_format_str_ = {begin, it};
 
-    return parse_default_specs(it, end, handler);
+    return parse_defaults_specs(it, end);
   }
 
   template<typename FormatContext>
@@ -547,7 +461,8 @@ public:
 
     if (specs.width == 0) {
       // Avoid extra copying if width is not specified
-      return format_quantity(ctx.out(), q, ctx);
+      format_quantity(ctx.out(), q, ctx);
+      return ctx.out();
     } else {
       std::basic_string<Char> quantity_buffer;
       format_quantity(std::back_inserter(quantity_buffer), q, ctx);
