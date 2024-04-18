@@ -38,9 +38,13 @@
 
 #endif
 
-#if !defined MP_UNITS_API_STD_FORMAT || !MP_UNITS_API_STD_FORMAT
+#if defined MP_UNITS_API_STD_FORMAT && !MP_UNITS_API_STD_FORMAT
 
-#if __has_include(<fmt/format.h>)
+#define MP_UNITS_USE_FMTLIB 1
+
+#elif !defined MP_UNITS_API_STD_FORMAT
+
+#if !__has_include(<format>) && __has_include(<fmt/format.h>)
 #define MP_UNITS_USE_FMTLIB 1
 #endif
 
