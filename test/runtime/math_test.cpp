@@ -89,6 +89,24 @@ TEST_CASE("fmod functions", "[math][fmod]")
   }
 }
 
+TEST_CASE("remainder functions", "[math][remainder]")
+{
+  SECTION("remainder should work on the same quantities")
+  {
+    REQUIRE(remainder(4. * isq::length[km], 3. * isq::length[km]) == 1. * isq::length[km]);
+    REQUIRE(remainder(-9. * isq::length[km], 3. * isq::length[km]) == -0. * isq::length[km]);
+    REQUIRE(remainder(3 * isq::length[km], 2 * isq::length[km]) == -1 * isq::length[km]);
+    REQUIRE(remainder(4 * isq::length[km], 2.75f * isq::length[km]) == 1.25 * isq::length[km]);
+  }
+  SECTION("remainder should work with different units of the same dimension")
+  {
+    REQUIRE(remainder(4. * isq::length[km], 3000. * isq::length[m]) == 1000. * isq::length[m]);
+    REQUIRE(remainder(-9. * isq::length[km], 3000. * isq::length[m]) == -0. * isq::length[m]);
+    REQUIRE(remainder(3. * isq::length[km], 2000. * isq::length[m]) == -1000 * isq::length[m]);
+    REQUIRE(remainder(4 * isq::length[km], 2750 * isq::length[m]) == 1250 * isq::length[m]);
+  }
+}
+
 TEST_CASE("'isfinite()' accepts dimensioned arguments", "[math][isfinite]") { REQUIRE(isfinite(4.0 * isq::length[m])); }
 
 TEST_CASE("'isinf()' accepts dimensioned arguments", "[math][isinf]") { REQUIRE(!isinf(4.0 * isq::length[m])); }

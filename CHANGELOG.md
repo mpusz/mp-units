@@ -20,6 +20,7 @@
 - feat: `ppm` parts per million added by [@nebkat](https://github.com/nebkat)
 - feat: `atan2` 2-argument arctangent added by [@nebkat](https://github.com/nebkat)
 - feat: `fmod` floating-point division remainder added by [@nebkat](https://github.com/nebkat)
+- feat: `remainder` IEEE division remainder added by [@nebkat](https://github.com/nebkat)
 - feat: `std::format` support added
 - feat: unit text output support added
 - feat: formatting error messages improved

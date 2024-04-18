@@ -214,6 +214,23 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
   return quantity{fmod(x.numerical_value_in(unit), y.numerical_value_in(unit)), ref};
 }
 
+/**
+ * @brief Computes the IEEE remainder of the floating point division operation x / y.
+ */
+template<auto R1, typename Rep1, auto R2, typename Rep2>
+  requires requires(Rep1 v1, Rep2 v2) {
+    common_reference(R1, R2);
+    requires requires { remainder(v1, v2); } || requires { std::remainder(v1, v2); };
+  }
+[[nodiscard]] constexpr QuantityOf<get_quantity_spec(R1)> auto remainder(const quantity<R1, Rep1>& x,
+                                                                         const quantity<R2, Rep2>& y) noexcept
+{
+  constexpr auto ref = common_reference(R1, R2);
+  constexpr auto unit = get_unit(ref);
+  using std::remainder;
+  return quantity{remainder(x.numerical_value_in(unit), y.numerical_value_in(unit)), ref};
+}
+
 
 /**
  * @brief Returns the epsilon of the quantity
