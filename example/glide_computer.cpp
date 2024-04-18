@@ -87,8 +87,7 @@ void print(const R& gliders)
     std::cout << "- Polar:\n";
     for (const auto& p : g.polar) {
       const auto ratio = glide_ratio(g.polar[0]).force_in(one);
-      std::cout << MP_UNITS_STD_FMT::format("  * {::N[.4]} @ {::N[.1]} -> {::N[.1]} ({::N[.1]})\n",
-                                            p.climb, p.v, ratio,
+      std::cout << MP_UNITS_STD_FMT::format("  * {::N[.4]} @ {::N[.1]} -> {::N[.1]} ({::N[.1]})\n", p.climb, p.v, ratio,
                                             // TODO is it possible to make ADL work below (we need another set of trig
                                             // functions for strong angle in a different namespace)
                                             si::asin(1 / ratio).force_in(si::degree));
@@ -135,8 +134,7 @@ void print(const task& t)
   std::cout << "- Legs: "
             << "\n";
   for (const auto& l : t.get_legs())
-    std::cout << MP_UNITS_STD_FMT::format("  * {} -> {} ({::N[.1]})\n", l.begin().name, l.end().name,
-                                          l.get_distance());
+    std::cout << MP_UNITS_STD_FMT::format("  * {} -> {} ({::N[.1]})\n", l.begin().name, l.end().name, l.get_distance());
   std::cout << "\n";
 }
 
