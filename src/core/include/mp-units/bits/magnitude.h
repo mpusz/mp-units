@@ -594,7 +594,7 @@ consteval bool less(MagnitudeSpec auto lhs, MagnitudeSpec auto rhs)
   using rhs_base_t = decltype(get_base_value(rhs));
 
   if constexpr (is_named_magnitude<lhs_base_t> && is_named_magnitude<rhs_base_t>)
-    return type_name<lhs_base_t>() < type_name<rhs_base_t>();
+    return detail::type_name<lhs_base_t>() < detail::type_name<rhs_base_t>();
   else if constexpr (!is_named_magnitude<lhs_base_t> && !is_named_magnitude<rhs_base_t>)
     return get_base_value(lhs) < get_base_value(rhs);
   else
