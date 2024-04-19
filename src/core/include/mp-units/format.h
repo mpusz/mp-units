@@ -265,7 +265,7 @@ public:
 // subentity-id                ::= 'N' | 'U' | 'D'
 // format-spec                 ::= <as specified by the formatter for the argument type>
 //
-#if __cpp_lib_format_ranges
+#if __cpp_lib_format_ranges && !MP_UNITS_USE_FMTLIB
 template<auto Reference, typename Char, std::formattable<Char> Rep>
 #else
 template<auto Reference, typename Rep, typename Char>
