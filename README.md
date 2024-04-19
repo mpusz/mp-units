@@ -19,8 +19,7 @@ be found in the following ISO C++ proposals:**
 
 - [P1935: A C++ Approach to Physical Units](https://wg21.link/p1935),
 - [P2980: A motivation, scope, and plan for a quantities and units library](https://wg21.link/p2980),
-- [P2981: Improving our safety with a physical quantities and units library](https://wg21.link/p2981),
-- [P2982: `std::quantity` as a numeric type](https://wg21.link/p2982).
+- [P3045: Quantities and units library](https://wg21.link/p3045).
 
 **We are actively looking for parties interested in field-trialing the library.**
 
