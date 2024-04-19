@@ -325,6 +325,8 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
     }
     void on_text(const Char* begin, const Char* end) const { std::copy(begin, end, out); }
   };
+  template<typename OutputIt, typename... Args>
+  quantity_formatter(const formatter&, OutputIt, Args...) -> quantity_formatter<OutputIt>;
 
   template<typename Handler>
   constexpr const Char* parse_quantity_specs(const Char* begin, const Char* end, Handler&& handler) const
