@@ -491,7 +491,7 @@ room_temp room_ref{};
 room_temp room_low = room_ref - number_of_steps * step_delta;
 room_temp room_high = room_ref + number_of_steps * step_delta;
 
-std::println("Room reference temperature: {} ({}, {:{%N:.2f}%?%U})\n",
+std::println("Room reference temperature: {} ({}, {::N[.2f]})\n",
              room_ref.quantity_from_zero(),
              room_ref.in(usc::degree_Fahrenheit).quantity_from_zero(),
              room_ref.in(si::kelvin).quantity_from_zero());
@@ -501,7 +501,7 @@ std::println("| {:<18} | {:^18} | {:^18} | {:^18} |",
 std::println("|{0:=^20}|{0:=^20}|{0:=^20}|{0:=^20}|", "");
 
 auto print_temp = [&](std::string_view label, auto v) {
-  std::println("| {:<18} | {:^18} | {:^18} | {:^18{%N:.2f}%?%U} |", label,
+  std::println("| {:<14} | {:^18} | {:^18} | {:^18:N[.2f]} |", label,
                v - room_reference_temp, (v - si::ice_point).in(deg_C), (v - si::absolute_zero).in(deg_C));
 };
 

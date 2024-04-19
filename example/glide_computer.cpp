@@ -87,8 +87,7 @@ void print(const R& gliders)
     std::cout << "- Polar:\n";
     for (const auto& p : g.polar) {
       const auto ratio = glide_ratio(g.polar[0]).force_in(one);
-      std::cout << MP_UNITS_STD_FMT::format("  * {:{%N:.4} %U} @ {:{%N:.1} %U} -> {:{%N:.1} %U} ({:{%N:.1} %U})\n",
-                                            p.climb, p.v, ratio,
+      std::cout << MP_UNITS_STD_FMT::format("  * {::N[.4]} @ {::N[.1]} -> {::N[.1]} ({::N[.1]})\n", p.climb, p.v, ratio,
                                             // TODO is it possible to make ADL work below (we need another set of trig
                                             // functions for strong angle in a different namespace)
                                             si::asin(1 / ratio).force_in(si::degree));
@@ -106,8 +105,8 @@ void print(const R& conditions)
   for (const auto& c : conditions) {
     std::cout << "- " << c.first << "\n";
     const auto& w = c.second;
-    std::cout << "  * Cloud base:        " << MP_UNITS_STD_FMT::format("{:{%N:.0} %U}", w.cloud_base) << " AGL\n";
-    std::cout << "  * Thermals strength: " << MP_UNITS_STD_FMT::format("{:{%N:.1} %U}", w.thermal_strength) << "\n";
+    std::cout << "  * Cloud base:        " << MP_UNITS_STD_FMT::format("{::N[.0]}", w.cloud_base) << " AGL\n";
+    std::cout << "  * Thermals strength: " << MP_UNITS_STD_FMT::format("{::N[.1]}", w.thermal_strength) << "\n";
     std::cout << "\n";
   }
 }
@@ -119,7 +118,7 @@ void print(const R& waypoints)
   std::cout << "Waypoints:\n";
   std::cout << "==========\n";
   for (const auto& w : waypoints)
-    std::cout << MP_UNITS_STD_FMT::format("- {}: {} {}, {:{%N:.1} %U}\n", w.name, w.pos.lat, w.pos.lon, w.alt);
+    std::cout << MP_UNITS_STD_FMT::format("- {}: {} {}, {::N[.1]}\n", w.name, w.pos.lat, w.pos.lon, w.alt);
   std::cout << "\n";
 }
 
@@ -130,13 +129,12 @@ void print(const task& t)
 
   std::cout << "- Start: " << t.get_start().name << "\n";
   std::cout << "- Finish: " << t.get_finish().name << "\n";
-  std::cout << "- Length:  " << MP_UNITS_STD_FMT::format("{:{%N:.1} %U}", t.get_distance()) << "\n";
+  std::cout << "- Length:  " << MP_UNITS_STD_FMT::format("{::N[.1]}", t.get_distance()) << "\n";
 
   std::cout << "- Legs: "
             << "\n";
   for (const auto& l : t.get_legs())
-    std::cout << MP_UNITS_STD_FMT::format("  * {} -> {} ({:{%N:.1} %U})\n", l.begin().name, l.end().name,
-                                          l.get_distance());
+    std::cout << MP_UNITS_STD_FMT::format("  * {} -> {} ({::N[.1]})\n", l.begin().name, l.end().name, l.get_distance());
   std::cout << "\n";
 }
 
@@ -144,7 +142,7 @@ void print(const safety& s)
 {
   std::cout << "Safety:\n";
   std::cout << "=======\n";
-  std::cout << "- Min AGL separation: " << MP_UNITS_STD_FMT::format("{:{%N:.0} %U}", s.min_agl_height) << "\n";
+  std::cout << "- Min AGL separation: " << MP_UNITS_STD_FMT::format("{::N[.0]}", s.min_agl_height) << "\n";
   std::cout << "\n";
 }
 
@@ -153,8 +151,8 @@ void print(const aircraft_tow& tow)
   std::cout << "Tow:\n";
   std::cout << "====\n";
   std::cout << "- Type:        aircraft\n";
-  std::cout << "- Height:      " << MP_UNITS_STD_FMT::format("{:{%N:.0} %U}", tow.height_agl) << "\n";
-  std::cout << "- Performance: " << MP_UNITS_STD_FMT::format("{:{%N:.1} %U}", tow.performance) << "\n";
+  std::cout << "- Height:      " << MP_UNITS_STD_FMT::format("{::N[.0]}", tow.height_agl) << "\n";
+  std::cout << "- Performance: " << MP_UNITS_STD_FMT::format("{::N[.1]}", tow.performance) << "\n";
   std::cout << "\n";
 }
 

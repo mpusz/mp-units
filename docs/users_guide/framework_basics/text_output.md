@@ -529,20 +529,19 @@ std::println("{:d}", kg * m2 / s2);  // kg⋅m²/s²
 ### Quantity formatting
 
 ```bnf
-quantity-format-spec        ::= [fill-and-align] [width] [quantity-specs]
+quantity-format-spec        ::= [fill-and-align] [width] [quantity-specs] [defaults-specs]
 quantity-specs              ::= conversion-spec
                                 quantity-specs conversion-spec
                                 quantity-specs literal-char
 literal-char                ::= <any character other than '{', '}', or '%'>
-conversion-spec             ::= placement-spec
-                                subentity-replacement-field
-placement-spec              ::= '%' placement-type
-placement-type              ::= 'N' | 'U' | 'D' | '?' | '%'
-subentity-replacement-field ::= '{' '%' subentity-id [format-specifier] '}'
-subentity-id                ::= literal-char
-                                subentity-id literal-char
-format-specifier            ::= ':' format-spec
-format-spec                 ::= <as specified by the formatter for the argument type; cannot start with '}'>
+conversion-spec             ::= '%' placement-type
+placement-type              ::= subentity-id | '?' | '%'
+defaults-specs              ::= ':' default-spec-list
+default-spec-list           ::= default-spec
+                                default-spec-list default-spec
+default-spec                ::= subentity-id '[' format-spec ']'
+subentity-id                ::= 'N' | 'U' | 'D'
+format-spec                 ::= <as specified by the formatter for the argument type>
 ```
 
 In the above grammar:
@@ -556,12 +555,9 @@ In the above grammar:
     - '?' inserts an optional separator between the number and a unit based on the value of
       `space_before_unit_symbol` for this unit,
     - '%' just inserts '%' character.
-- `subentity-replacement-field` token allows the composition of formatters. The following identifiers
-  are recognized by the quantity formatter:
-    - 'N' passes `format-spec` to the `formatter` specialization for the quantity representation
-      type,
-    - 'U' passes `format-spec` to the `formatter` specialization for the unit type,
-    - 'D' passes `format-spec` to the `formatter` specialization for the dimension type.
+- `defaults-specs` token allows overwriting defaults for the underlying formatters with the custom
+  format string. Each override starts with a subentity identifier ('N', 'U', or 'D') followed by
+  the format string enclosed in square brackets.
 
 #### Default formatting
 
@@ -573,7 +569,6 @@ This is why the following code lines produce the same output:
 std::cout << "Distance: " << 123 * km << "\n";
 std::cout << std::format("Distance: {}\n", 123 * km);
 std::cout << std::format("Distance: {:%N%?%U}\n", 123 * km);
-std::cout << std::format("Distance: {:{%N}%?{%U}}\n", 123 * km);
 ```
 
 !!! note
@@ -610,7 +605,7 @@ Thanks to the grammar provided above, the user can easily decide to either:
 - provide custom formatting for components:
 
     ```cpp
-    std::println("Speed: {:{%N:.2f} {%U:n}}", 100. * km / (3 * h));
+    std::println("Speed: {::N[.2f]U[n]}", 100. * km / (3 * h));
     ```
 
     ```text
@@ -630,25 +625,11 @@ Thanks to the grammar provided above, the user can easily decide to either:
     - dimension: LT⁻¹
     ```
 
-!!! note
-
-    The above grammar allows repeating the same field many times, possibly with a different
-    format spec. For example:
-
-    ```cpp
-    std::println("Speed: {:%N {%N:.4f} {%N:.2f} {%U:n}}", 100. * km / (3 * h));
-    ```
-
-    ```text
-    Speed: 33.333333333333336 33.3333 33.33 km h⁻¹
-    ```
-
-
 #### Formatting of the quantity numerical value
 
 The representation type used as a numerical value of a quantity must provide its own formatter
 specialization. It will be called by the quantity formatter with the format-spec provided
-by the user in the `%N` replacement field.
+by the user in the `N` defaults specification.
 
 In case we use C++ fundamental arithmetic types with our quantities the standard formatter
 specified in [format.string.std](https://wg21.link/format.string.std) will be used. The rest
@@ -657,8 +638,8 @@ of this chapter assumes that it is the case and provides some usage examples.
 `sign` token allows us to specify how the value's sign is being printed:
 
 ```cpp
-std::println("{0:%N %U},{0:{%N:+} %U},{0:{%N:-} %U},{0:{%N: } %U}", 1 * m);   // 1 m,+1 m,1 m, 1 m
-std::println("{0:%N %U},{0:{%N:+} %U},{0:{%N:-} %U},{0:{%N: } %U}", -1 * m);  // -1 m,-1 m,-1 m,-1 m
+std::println("{0},{0::N[+]},{0::N[-]},{0::N[ ]}", 1 * m);   // 1 m,+1 m,1 m, 1 m
+std::println("{0},{0::N[+]},{0::N[-]},{0::N[ ]}", -1 * m);  // -1 m,-1 m,-1 m,-1 m
 ```
 
 where:
@@ -672,54 +653,54 @@ where:
 `precision` token is allowed only for floating-point representation types:
 
 ```cpp
-std::println("{:{%N:.0} %U}", 1.2345 * m);   // 1 m
-std::println("{:{%N:.1} %U}", 1.2345 * m);   // 1 m
-std::println("{:{%N:.2} %U}", 1.2345 * m);   // 1.2 m
-std::println("{:{%N:.3} %U}", 1.2345 * m);   // 1.23 m
-std::println("{:{%N:.0f} %U}", 1.2345 * m);  // 1 m
-std::println("{:{%N:.1f} %U}", 1.2345 * m);  // 1.2 m
-std::println("{:{%N:.2f} %U}", 1.2345 * m);  // 1.23 m
+std::println("{::N[.0]}", 1.2345 * m);   // 1 m
+std::println("{::N[.1]}", 1.2345 * m);   // 1 m
+std::println("{::N[.2]}", 1.2345 * m);   // 1.2 m
+std::println("{::N[.3]}", 1.2345 * m);   // 1.23 m
+std::println("{::N[.0f]}", 1.2345 * m);  // 1 m
+std::println("{::N[.1f]}", 1.2345 * m);  // 1.2 m
+std::println("{::N[.2f]}", 1.2345 * m);  // 1.23 m
 ```
 
 `type` specifies how a value of the representation type is being printed.
 For integral types:
 
 ```cpp
-std::println("{:{%N:b} %U}", 42 * m);    // 101010 m
-std::println("{:{%N:B} %U}", 42 * m);    // 101010 m
-std::println("{:{%N:d} %U}", 42 * m);    // 42 m
-std::println("{:{%N:o} %U}", 42 * m);    // 52 m
-std::println("{:{%N:x} %U}", 42 * m);    // 2a m
-std::println("{:{%N:X} %U}", 42 * m);    // 2A m
+std::println("{::N[b]}", 42 * m);    // 101010 m
+std::println("{::N[B]}", 42 * m);    // 101010 m
+std::println("{::N[d]}", 42 * m);    // 42 m
+std::println("{::N[o]}", 42 * m);    // 52 m
+std::println("{::N[x]}", 42 * m);    // 2a m
+std::println("{::N[X]}", 42 * m);    // 2A m
 ```
 
 The above can be printed in an alternate version thanks to the `#` token:
 
 ```cpp
-std::println("{:{%N:#b} %U}", 42 * m);   // 0b101010 m
-std::println("{:{%N:#B} %U}", 42 * m);   // 0B101010 m
-std::println("{:{%N:#o} %U}", 42 * m);   // 052 m
-std::println("{:{%N:#x} %U}", 42 * m);   // 0x2a m
-std::println("{:{%N:#X} %U}", 42 * m);   // 0X2A m
+std::println("{::N[#b]}", 42 * m);   // 0b101010 m
+std::println("{::N[#B]}", 42 * m);   // 0B101010 m
+std::println("{::N[#o]}", 42 * m);   // 052 m
+std::println("{::N[#x]}", 42 * m);   // 0x2a m
+std::println("{::N[#X]}", 42 * m);   // 0X2A m
 ```
 
 For floating-point values, the `type` token works as follows:
 
 ```cpp
-std::println("{:{%N:a} %U}",   1.2345678 * m);      // 1.3c0ca2a5b1d5dp+0 m
-std::println("{:{%N:.3a} %U}", 1.2345678 * m);      // 1.3c1p+0 m
-std::println("{:{%N:A} %U}",   1.2345678 * m);      // 1.3C0CA2A5B1D5DP+0 m
-std::println("{:{%N:.3A} %U}", 1.2345678 * m);      // 1.3C1P+0 m
-std::println("{:{%N:e} %U}",   1.2345678 * m);      // 1.234568e+00 m
-std::println("{:{%N:.3e} %U}", 1.2345678 * m);      // 1.235e+00 m
-std::println("{:{%N:E} %U}",   1.2345678 * m);      // 1.234568E+00 m
-std::println("{:{%N:.3E} %U}", 1.2345678 * m);      // 1.235E+00 m
-std::println("{:{%N:g} %U}",   1.2345678 * m);      // 1.23457 m
-std::println("{:{%N:g} %U}",   1.2345678e8 * m);    // 1.23457e+08 m
-std::println("{:{%N:.3g} %U}", 1.2345678 * m);      // 1.23 m
-std::println("{:{%N:.3g} %U}", 1.2345678e8 * m);    // 1.23e+08 m
-std::println("{:{%N:G} %U}",   1.2345678 * m);      // 1.23457 m
-std::println("{:{%N:G} %U}",   1.2345678e8 * m);    // 1.23457E+08 m
-std::println("{:{%N:.3G} %U}", 1.2345678 * m);      // 1.23 m
-std::println("{:{%N:.3G} %U}", 1.2345678e8 * m);    // 1.23E+08 m
+std::println("{::N[a]}",   1.2345678 * m);      // 1.3c0ca2a5b1d5dp+0 m
+std::println("{::N[.3a]}", 1.2345678 * m);      // 1.3c1p+0 m
+std::println("{::N[A]}",   1.2345678 * m);      // 1.3C0CA2A5B1D5DP+0 m
+std::println("{::N[.3A]}", 1.2345678 * m);      // 1.3C1P+0 m
+std::println("{::N[e]}",   1.2345678 * m);      // 1.234568e+00 m
+std::println("{::N[.3e]}", 1.2345678 * m);      // 1.235e+00 m
+std::println("{::N[E]}",   1.2345678 * m);      // 1.234568E+00 m
+std::println("{::N[.3E]}", 1.2345678 * m);      // 1.235E+00 m
+std::println("{::N[g]}",   1.2345678 * m);      // 1.23457 m
+std::println("{::N[g]}",   1.2345678e8 * m);    // 1.23457e+08 m
+std::println("{::N[.3g]}", 1.2345678 * m);      // 1.23 m
+std::println("{::N[.3g]}", 1.2345678e8 * m);    // 1.23e+08 m
+std::println("{::N[G]}",   1.2345678 * m);      // 1.23457 m
+std::println("{::N[G]}",   1.2345678e8 * m);    // 1.23457E+08 m
+std::println("{::N[.3G]}", 1.2345678 * m);      // 1.23 m
+std::println("{::N[.3G]}", 1.2345678e8 * m);    // 1.23E+08 m
 ```

@@ -738,45 +738,72 @@ TEST_CASE("sign specification", "[text][fmt]")
 
   SECTION("full format {:%N%?%U} on a quantity")
   {
-    CHECK(MP_UNITS_STD_FMT::format("{0:%N%U},{0:{%N:+}%U},{0:{%N:-}%U},{0:{%N: }%U}", 1 * isq::length[m]) ==
+    CHECK(MP_UNITS_STD_FMT::format("{0:%N%U},{0:%N%U:N[+]},{0:%N%U:N[-]},{0:%N%U:N[ ]}", 1 * isq::length[m]) ==
           "1m,+1m,1m, 1m");
-    CHECK(MP_UNITS_STD_FMT::format("{0:%N%U},{0:{%N:+}%U},{0:{%N:-}%U},{0:{%N: }%U}", -1 * isq::length[m]) ==
+    CHECK(MP_UNITS_STD_FMT::format("{0:%N%U},{0:%N%U:N[+]},{0:%N%U:N[-]},{0:%N%U:N[ ]}", -1 * isq::length[m]) ==
           "-1m,-1m,-1m,-1m");
-    CHECK(MP_UNITS_STD_FMT::format("{0:%N%U},{0:{%N:+}%U},{0:{%N:-}%U},{0:{%N: }%U}", inf) == "infm,+infm,infm, infm");
-    CHECK(MP_UNITS_STD_FMT::format("{0:%N%U},{0:{%N:+}%U},{0:{%N:-}%U},{0:{%N: }%U}", nan) == "nanm,+nanm,nanm, nanm");
+    CHECK(MP_UNITS_STD_FMT::format("{0:%N%U},{0:%N%U:N[+]},{0:%N%U:N[-]},{0:%N%U:N[ ]}", inf) ==
+          "infm,+infm,infm, infm");
+    CHECK(MP_UNITS_STD_FMT::format("{0:%N%U},{0:%N%U:N[+]},{0:%N%U:N[-]},{0:%N%U:N[ ]}", nan) ==
+          "nanm,+nanm,nanm, nanm");
   }
 
   SECTION("value only format {:%N} on a quantity")
   {
-    CHECK(MP_UNITS_STD_FMT::format("{0:%N},{0:{%N:+}},{0:{%N:-}},{0:{%N: }}", 1 * isq::length[m]) == "1,+1,1, 1");
-    CHECK(MP_UNITS_STD_FMT::format("{0:%N},{0:{%N:+}},{0:{%N:-}},{0:{%N: }}", -1 * isq::length[m]) == "-1,-1,-1,-1");
-    CHECK(MP_UNITS_STD_FMT::format("{0:%N},{0:{%N:+}},{0:{%N:-}},{0:{%N: }}", inf) == "inf,+inf,inf, inf");
-    CHECK(MP_UNITS_STD_FMT::format("{0:%N},{0:{%N:+}},{0:{%N:-}},{0:{%N: }}", nan) == "nan,+nan,nan, nan");
+    CHECK(MP_UNITS_STD_FMT::format("{0:%N},{0:%N:N[+]},{0:%N:N[-]},{0:%N:N[ ]}", 1 * isq::length[m]) == "1,+1,1, 1");
+    CHECK(MP_UNITS_STD_FMT::format("{0:%N},{0:%N:N[+]},{0:%N:N[-]},{0:%N:N[ ]}", -1 * isq::length[m]) == "-1,-1,-1,-1");
+    CHECK(MP_UNITS_STD_FMT::format("{0:%N},{0:%N:N[+]},{0:%N:N[-]},{0:%N:N[ ]}", inf) == "inf,+inf,inf, inf");
+    CHECK(MP_UNITS_STD_FMT::format("{0:%N},{0:%N:N[+]},{0:%N:N[-]},{0:%N:N[ ]}", nan) == "nan,+nan,nan, nan");
   }
 }
 
 TEST_CASE("precision specification", "[text][fmt]")
 {
-  SECTION("full format {:%N%?%U} on a quantity")
+  SECTION("full format on a quantity")
   {
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:.0f}%?%U}", 1.2345 * isq::length[m]) == "1 m");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:.1f}%?%U}", 1.2345 * isq::length[m]) == "1.2 m");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:.2f}%?%U}", 1.2345 * isq::length[m]) == "1.23 m");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:.3f}%?%U}", 1.2345 * isq::length[m]) == "1.234 m");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:.4f}%?%U}", 1.2345 * isq::length[m]) == "1.2345 m");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:.5f}%?%U}", 1.2345 * isq::length[m]) == "1.23450 m");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:.10f}%?%U}", 1.2345 * isq::length[m]) == "1.2345000000 m");
+    SECTION("default spec")
+    {
+      CHECK(MP_UNITS_STD_FMT::format("{::N[.0f]}", 1.2345 * isq::length[m]) == "1 m");
+      CHECK(MP_UNITS_STD_FMT::format("{::N[.1f]}", 1.2345 * isq::length[m]) == "1.2 m");
+      CHECK(MP_UNITS_STD_FMT::format("{::N[.2f]}", 1.2345 * isq::length[m]) == "1.23 m");
+      CHECK(MP_UNITS_STD_FMT::format("{::N[.3f]}", 1.2345 * isq::length[m]) == "1.234 m");
+      CHECK(MP_UNITS_STD_FMT::format("{::N[.4f]}", 1.2345 * isq::length[m]) == "1.2345 m");
+      CHECK(MP_UNITS_STD_FMT::format("{::N[.5f]}", 1.2345 * isq::length[m]) == "1.23450 m");
+      CHECK(MP_UNITS_STD_FMT::format("{::N[.10f]}", 1.2345 * isq::length[m]) == "1.2345000000 m");
+    }
+
+    SECTION("explicit spec")
+    {
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%?%U:N[.0f]}", 1.2345 * isq::length[m]) == "1 m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%?%U:N[.1f]}", 1.2345 * isq::length[m]) == "1.2 m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%?%U:N[.2f]}", 1.2345 * isq::length[m]) == "1.23 m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%?%U:N[.3f]}", 1.2345 * isq::length[m]) == "1.234 m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%?%U:N[.4f]}", 1.2345 * isq::length[m]) == "1.2345 m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%?%U:N[.5f]}", 1.2345 * isq::length[m]) == "1.23450 m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%?%U:N[.10f]}", 1.2345 * isq::length[m]) == "1.2345000000 m");
+    }
+
+    SECTION("modified spec")
+    {
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%U:N[.0f]}", 1.2345 * isq::length[m]) == "1m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%U:N[.1f]}", 1.2345 * isq::length[m]) == "1.2m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%U:N[.2f]}", 1.2345 * isq::length[m]) == "1.23m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%U:N[.3f]}", 1.2345 * isq::length[m]) == "1.234m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%U:N[.4f]}", 1.2345 * isq::length[m]) == "1.2345m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%U:N[.5f]}", 1.2345 * isq::length[m]) == "1.23450m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%U:N[.10f]}", 1.2345 * isq::length[m]) == "1.2345000000m");
+    }
   }
 
   SECTION("value only format {:%N} on a quantity")
   {
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:.0f}}", 1.2345 * isq::length[m]) == "1");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:.1f}}", 1.2345 * isq::length[m]) == "1.2");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:.2f}}", 1.2345 * isq::length[m]) == "1.23");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:.3f}}", 1.2345 * isq::length[m]) == "1.234");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:.4f}}", 1.2345 * isq::length[m]) == "1.2345");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:.5f}}", 1.2345 * isq::length[m]) == "1.23450");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:.10f}}", 1.2345 * isq::length[m]) == "1.2345000000");
+    CHECK(MP_UNITS_STD_FMT::format("{:%N:N[.0f]}", 1.2345 * isq::length[m]) == "1");
+    CHECK(MP_UNITS_STD_FMT::format("{:%N:N[.1f]}", 1.2345 * isq::length[m]) == "1.2");
+    CHECK(MP_UNITS_STD_FMT::format("{:%N:N[.2f]}", 1.2345 * isq::length[m]) == "1.23");
+    CHECK(MP_UNITS_STD_FMT::format("{:%N:N[.3f]}", 1.2345 * isq::length[m]) == "1.234");
+    CHECK(MP_UNITS_STD_FMT::format("{:%N:N[.4f]}", 1.2345 * isq::length[m]) == "1.2345");
+    CHECK(MP_UNITS_STD_FMT::format("{:%N:N[.5f]}", 1.2345 * isq::length[m]) == "1.23450");
+    CHECK(MP_UNITS_STD_FMT::format("{:%N:N[.10f]}", 1.2345 * isq::length[m]) == "1.2345000000");
   }
 }
 
@@ -784,70 +811,141 @@ TEST_CASE("type specification", "[text][fmt]")
 {
   SECTION("full format {:%N%?%U} on a quantity")
   {
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:b}%?%U}", 42 * isq::length[m]) == "101010 m");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:B}%?%U}", 42 * isq::length[m]) == "101010 m");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:d}%?%U}", 42 * isq::length[m]) == "42 m");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:o}%?%U}", 42 * isq::length[m]) == "52 m");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:x}%?%U}", 42 * isq::length[m]) == "2a m");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:X}%?%U}", 42 * isq::length[m]) == "2A m");
+    SECTION("default spec")
+    {
+      CHECK(MP_UNITS_STD_FMT::format("{::N[b]}", 42 * isq::length[m]) == "101010 m");
+      CHECK(MP_UNITS_STD_FMT::format("{::N[B]}", 42 * isq::length[m]) == "101010 m");
+      CHECK(MP_UNITS_STD_FMT::format("{::N[d]}", 42 * isq::length[m]) == "42 m");
+      CHECK(MP_UNITS_STD_FMT::format("{::N[o]}", 42 * isq::length[m]) == "52 m");
+      CHECK(MP_UNITS_STD_FMT::format("{::N[x]}", 42 * isq::length[m]) == "2a m");
+      CHECK(MP_UNITS_STD_FMT::format("{::N[X]}", 42 * isq::length[m]) == "2A m");
 
 #if MP_UNITS_USE_FMTLIB
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:a}%?%U}", 1.2345678 * isq::length[m]) == "0x1.3c0ca2a5b1d5dp+0 m");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:.3a}%?%U}", 1.2345678 * isq::length[m]) == "0x1.3c1p+0 m");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:A}%?%U}", 1.2345678 * isq::length[m]) == "0X1.3C0CA2A5B1D5DP+0 m");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:.3A}%?%U}", 1.2345678 * isq::length[m]) == "0X1.3C1P+0 m");
+      CHECK(MP_UNITS_STD_FMT::format("{::N[a]}", 1.2345678 * isq::length[m]) == "0x1.3c0ca2a5b1d5dp+0 m");
+      CHECK(MP_UNITS_STD_FMT::format("{::N[.3a]}", 1.2345678 * isq::length[m]) == "0x1.3c1p+0 m");
+      CHECK(MP_UNITS_STD_FMT::format("{::N[A]}", 1.2345678 * isq::length[m]) == "0X1.3C0CA2A5B1D5DP+0 m");
+      CHECK(MP_UNITS_STD_FMT::format("{::N[.3A]}", 1.2345678 * isq::length[m]) == "0X1.3C1P+0 m");
 #else
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:a}%?%U}", 1.2345678 * isq::length[m]) == "1.3c0ca2a5b1d5dp+0 m");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:.3a}%?%U}", 1.2345678 * isq::length[m]) == "1.3c1p+0 m");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:A}%?%U}", 1.2345678 * isq::length[m]) == "1.3C0CA2A5B1D5DP+0 m");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:.3A}%?%U}", 1.2345678 * isq::length[m]) == "1.3C1P+0 m");
+      CHECK(MP_UNITS_STD_FMT::format("{::N[a]}", 1.2345678 * isq::length[m]) == "1.3c0ca2a5b1d5dp+0 m");
+      CHECK(MP_UNITS_STD_FMT::format("{::N[.3a]}", 1.2345678 * isq::length[m]) == "1.3c1p+0 m");
+      CHECK(MP_UNITS_STD_FMT::format("{::N[A]}", 1.2345678 * isq::length[m]) == "1.3C0CA2A5B1D5DP+0 m");
+      CHECK(MP_UNITS_STD_FMT::format("{::N[.3A]}", 1.2345678 * isq::length[m]) == "1.3C1P+0 m");
 #endif
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:e}%?%U}", 1.2345678 * isq::length[m]) == "1.234568e+00 m");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:.3e}%?%U}", 1.2345678 * isq::length[m]) == "1.235e+00 m");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:E}%?%U}", 1.2345678 * isq::length[m]) == "1.234568E+00 m");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:.3E}%?%U}", 1.2345678 * isq::length[m]) == "1.235E+00 m");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:g}%?%U}", 1.2345678 * isq::length[m]) == "1.23457 m");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:g}%?%U}", 1.2345678e8 * isq::length[m]) == "1.23457e+08 m");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:.3g}%?%U}", 1.2345678 * isq::length[m]) == "1.23 m");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:.3g}%?%U}", 1.2345678e8 * isq::length[m]) == "1.23e+08 m");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:G}%?%U}", 1.2345678 * isq::length[m]) == "1.23457 m");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:G}%?%U}", 1.2345678e8 * isq::length[m]) == "1.23457E+08 m");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:.3G}%?%U}", 1.2345678 * isq::length[m]) == "1.23 m");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:.3G}%?%U}", 1.2345678e8 * isq::length[m]) == "1.23E+08 m");
+      CHECK(MP_UNITS_STD_FMT::format("{::N[e]}", 1.2345678 * isq::length[m]) == "1.234568e+00 m");
+      CHECK(MP_UNITS_STD_FMT::format("{::N[.3e]}", 1.2345678 * isq::length[m]) == "1.235e+00 m");
+      CHECK(MP_UNITS_STD_FMT::format("{::N[E]}", 1.2345678 * isq::length[m]) == "1.234568E+00 m");
+      CHECK(MP_UNITS_STD_FMT::format("{::N[.3E]}", 1.2345678 * isq::length[m]) == "1.235E+00 m");
+      CHECK(MP_UNITS_STD_FMT::format("{::N[g]}", 1.2345678 * isq::length[m]) == "1.23457 m");
+      CHECK(MP_UNITS_STD_FMT::format("{::N[g]}", 1.2345678e8 * isq::length[m]) == "1.23457e+08 m");
+      CHECK(MP_UNITS_STD_FMT::format("{::N[.3g]}", 1.2345678 * isq::length[m]) == "1.23 m");
+      CHECK(MP_UNITS_STD_FMT::format("{::N[.3g]}", 1.2345678e8 * isq::length[m]) == "1.23e+08 m");
+      CHECK(MP_UNITS_STD_FMT::format("{::N[G]}", 1.2345678 * isq::length[m]) == "1.23457 m");
+      CHECK(MP_UNITS_STD_FMT::format("{::N[G]}", 1.2345678e8 * isq::length[m]) == "1.23457E+08 m");
+      CHECK(MP_UNITS_STD_FMT::format("{::N[.3G]}", 1.2345678 * isq::length[m]) == "1.23 m");
+      CHECK(MP_UNITS_STD_FMT::format("{::N[.3G]}", 1.2345678e8 * isq::length[m]) == "1.23E+08 m");
+    }
+
+    SECTION("explicit spec")
+    {
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%?%U:N[b]}", 42 * isq::length[m]) == "101010 m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%?%U:N[B]}", 42 * isq::length[m]) == "101010 m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%?%U:N[d]}", 42 * isq::length[m]) == "42 m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%?%U:N[o]}", 42 * isq::length[m]) == "52 m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%?%U:N[x]}", 42 * isq::length[m]) == "2a m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%?%U:N[X]}", 42 * isq::length[m]) == "2A m");
+
+#if MP_UNITS_USE_FMTLIB
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%?%U:N[a]}", 1.2345678 * isq::length[m]) == "0x1.3c0ca2a5b1d5dp+0 m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%?%U:N[.3a]}", 1.2345678 * isq::length[m]) == "0x1.3c1p+0 m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%?%U:N[A]}", 1.2345678 * isq::length[m]) == "0X1.3C0CA2A5B1D5DP+0 m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%?%U:N[.3A]}", 1.2345678 * isq::length[m]) == "0X1.3C1P+0 m");
+#else
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%?%U:N[a]}", 1.2345678 * isq::length[m]) == "1.3c0ca2a5b1d5dp+0 m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%?%U:N[.3a]}", 1.2345678 * isq::length[m]) == "1.3c1p+0 m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%?%U:N[A]}", 1.2345678 * isq::length[m]) == "1.3C0CA2A5B1D5DP+0 m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%?%U:N[.3A]}", 1.2345678 * isq::length[m]) == "1.3C1P+0 m");
+#endif
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%?%U:N[e]}", 1.2345678 * isq::length[m]) == "1.234568e+00 m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%?%U:N[.3e]}", 1.2345678 * isq::length[m]) == "1.235e+00 m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%?%U:N[E]}", 1.2345678 * isq::length[m]) == "1.234568E+00 m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%?%U:N[.3E]}", 1.2345678 * isq::length[m]) == "1.235E+00 m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%?%U:N[g]}", 1.2345678 * isq::length[m]) == "1.23457 m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%?%U:N[g]}", 1.2345678e8 * isq::length[m]) == "1.23457e+08 m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%?%U:N[.3g]}", 1.2345678 * isq::length[m]) == "1.23 m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%?%U:N[.3g]}", 1.2345678e8 * isq::length[m]) == "1.23e+08 m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%?%U:N[G]}", 1.2345678 * isq::length[m]) == "1.23457 m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%?%U:N[G]}", 1.2345678e8 * isq::length[m]) == "1.23457E+08 m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%?%U:N[.3G]}", 1.2345678 * isq::length[m]) == "1.23 m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%?%U:N[.3G]}", 1.2345678e8 * isq::length[m]) == "1.23E+08 m");
+    }
+
+    SECTION("modified spec")
+    {
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%U:N[b]}", 42 * isq::length[m]) == "101010m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%U:N[B]}", 42 * isq::length[m]) == "101010m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%U:N[d]}", 42 * isq::length[m]) == "42m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%U:N[o]}", 42 * isq::length[m]) == "52m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%U:N[x]}", 42 * isq::length[m]) == "2am");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%U:N[X]}", 42 * isq::length[m]) == "2Am");
+
+#if MP_UNITS_USE_FMTLIB
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%U:N[a]}", 1.2345678 * isq::length[m]) == "0x1.3c0ca2a5b1d5dp+0m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%U:N[.3a]}", 1.2345678 * isq::length[m]) == "0x1.3c1p+0m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%U:N[A]}", 1.2345678 * isq::length[m]) == "0X1.3C0CA2A5B1D5DP+0m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%U:N[.3A]}", 1.2345678 * isq::length[m]) == "0X1.3C1P+0m");
+#else
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%U:N[a]}", 1.2345678 * isq::length[m]) == "1.3c0ca2a5b1d5dp+0m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%U:N[.3a]}", 1.2345678 * isq::length[m]) == "1.3c1p+0m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%U:N[A]}", 1.2345678 * isq::length[m]) == "1.3C0CA2A5B1D5DP+0m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%U:N[.3A]}", 1.2345678 * isq::length[m]) == "1.3C1P+0m");
+#endif
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%U:N[e]}", 1.2345678 * isq::length[m]) == "1.234568e+00m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%U:N[.3e]}", 1.2345678 * isq::length[m]) == "1.235e+00m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%U:N[E]}", 1.2345678 * isq::length[m]) == "1.234568E+00m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%U:N[.3E]}", 1.2345678 * isq::length[m]) == "1.235E+00m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%U:N[g]}", 1.2345678 * isq::length[m]) == "1.23457m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%U:N[g]}", 1.2345678e8 * isq::length[m]) == "1.23457e+08m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%U:N[.3g]}", 1.2345678 * isq::length[m]) == "1.23m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%U:N[.3g]}", 1.2345678e8 * isq::length[m]) == "1.23e+08m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%U:N[G]}", 1.2345678 * isq::length[m]) == "1.23457m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%U:N[G]}", 1.2345678e8 * isq::length[m]) == "1.23457E+08m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%U:N[.3G]}", 1.2345678 * isq::length[m]) == "1.23m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%U:N[.3G]}", 1.2345678e8 * isq::length[m]) == "1.23E+08m");
+    }
   }
 
   SECTION("value only format {:%N} on a quantity")
   {
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:b}}", 42 * isq::length[m]) == "101010");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:B}}", 42 * isq::length[m]) == "101010");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:d}}", 42 * isq::length[m]) == "42");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:o}}", 42 * isq::length[m]) == "52");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:x}}", 42 * isq::length[m]) == "2a");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:X}}", 42 * isq::length[m]) == "2A");
+    CHECK(MP_UNITS_STD_FMT::format("{:%N:N[b]}", 42 * isq::length[m]) == "101010");
+    CHECK(MP_UNITS_STD_FMT::format("{:%N:N[B]}", 42 * isq::length[m]) == "101010");
+    CHECK(MP_UNITS_STD_FMT::format("{:%N:N[d]}", 42 * isq::length[m]) == "42");
+    CHECK(MP_UNITS_STD_FMT::format("{:%N:N[o]}", 42 * isq::length[m]) == "52");
+    CHECK(MP_UNITS_STD_FMT::format("{:%N:N[x]}", 42 * isq::length[m]) == "2a");
+    CHECK(MP_UNITS_STD_FMT::format("{:%N:N[X]}", 42 * isq::length[m]) == "2A");
 
 #if MP_UNITS_USE_FMTLIB
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:a}}", 1.2345678 * isq::length[m]) == "0x1.3c0ca2a5b1d5dp+0");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:.3a}}", 1.2345678 * isq::length[m]) == "0x1.3c1p+0");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:A}}", 1.2345678 * isq::length[m]) == "0X1.3C0CA2A5B1D5DP+0");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:.3A}}", 1.2345678 * isq::length[m]) == "0X1.3C1P+0");
+    CHECK(MP_UNITS_STD_FMT::format("{:%N:N[a]}", 1.2345678 * isq::length[m]) == "0x1.3c0ca2a5b1d5dp+0");
+    CHECK(MP_UNITS_STD_FMT::format("{:%N:N[.3a]}", 1.2345678 * isq::length[m]) == "0x1.3c1p+0");
+    CHECK(MP_UNITS_STD_FMT::format("{:%N:N[A]}", 1.2345678 * isq::length[m]) == "0X1.3C0CA2A5B1D5DP+0");
+    CHECK(MP_UNITS_STD_FMT::format("{:%N:N[.3A]}", 1.2345678 * isq::length[m]) == "0X1.3C1P+0");
 #else
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:a}}", 1.2345678 * isq::length[m]) == "1.3c0ca2a5b1d5dp+0");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:.3a}}", 1.2345678 * isq::length[m]) == "1.3c1p+0");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:A}}", 1.2345678 * isq::length[m]) == "1.3C0CA2A5B1D5DP+0");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:.3A}}", 1.2345678 * isq::length[m]) == "1.3C1P+0");
+    CHECK(MP_UNITS_STD_FMT::format("{:%N:N[a]}", 1.2345678 * isq::length[m]) == "1.3c0ca2a5b1d5dp+0");
+    CHECK(MP_UNITS_STD_FMT::format("{:%N:N[.3a]}", 1.2345678 * isq::length[m]) == "1.3c1p+0");
+    CHECK(MP_UNITS_STD_FMT::format("{:%N:N[A]}", 1.2345678 * isq::length[m]) == "1.3C0CA2A5B1D5DP+0");
+    CHECK(MP_UNITS_STD_FMT::format("{:%N:N[.3A]}", 1.2345678 * isq::length[m]) == "1.3C1P+0");
 #endif
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:e}}", 1.2345678 * isq::length[m]) == "1.234568e+00");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:.3e}}", 1.2345678 * isq::length[m]) == "1.235e+00");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:E}}", 1.2345678 * isq::length[m]) == "1.234568E+00");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:.3E}}", 1.2345678 * isq::length[m]) == "1.235E+00");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:g}}", 1.2345678 * isq::length[m]) == "1.23457");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:g}}", 1.2345678e8 * isq::length[m]) == "1.23457e+08");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:.3g}}", 1.2345678 * isq::length[m]) == "1.23");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:.3g}}", 1.2345678e8 * isq::length[m]) == "1.23e+08");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:G}}", 1.2345678 * isq::length[m]) == "1.23457");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:G}}", 1.2345678e8 * isq::length[m]) == "1.23457E+08");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:.3G}}", 1.2345678 * isq::length[m]) == "1.23");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:.3G}}", 1.2345678e8 * isq::length[m]) == "1.23E+08");
+    CHECK(MP_UNITS_STD_FMT::format("{:%N:N[e]}", 1.2345678 * isq::length[m]) == "1.234568e+00");
+    CHECK(MP_UNITS_STD_FMT::format("{:%N:N[.3e]}", 1.2345678 * isq::length[m]) == "1.235e+00");
+    CHECK(MP_UNITS_STD_FMT::format("{:%N:N[E]}", 1.2345678 * isq::length[m]) == "1.234568E+00");
+    CHECK(MP_UNITS_STD_FMT::format("{:%N:N[.3E]}", 1.2345678 * isq::length[m]) == "1.235E+00");
+    CHECK(MP_UNITS_STD_FMT::format("{:%N:N[g]}", 1.2345678 * isq::length[m]) == "1.23457");
+    CHECK(MP_UNITS_STD_FMT::format("{:%N:N[g]}", 1.2345678e8 * isq::length[m]) == "1.23457e+08");
+    CHECK(MP_UNITS_STD_FMT::format("{:%N:N[.3g]}", 1.2345678 * isq::length[m]) == "1.23");
+    CHECK(MP_UNITS_STD_FMT::format("{:%N:N[.3g]}", 1.2345678e8 * isq::length[m]) == "1.23e+08");
+    CHECK(MP_UNITS_STD_FMT::format("{:%N:N[G]}", 1.2345678 * isq::length[m]) == "1.23457");
+    CHECK(MP_UNITS_STD_FMT::format("{:%N:N[G]}", 1.2345678e8 * isq::length[m]) == "1.23457E+08");
+    CHECK(MP_UNITS_STD_FMT::format("{:%N:N[.3G]}", 1.2345678 * isq::length[m]) == "1.23");
+    CHECK(MP_UNITS_STD_FMT::format("{:%N:N[.3G]}", 1.2345678e8 * isq::length[m]) == "1.23E+08");
   }
 }
 
@@ -855,20 +953,41 @@ TEST_CASE("different base types with the # specifier", "[text][fmt]")
 {
   SECTION("full format {:%N%?%U} on a quantity")
   {
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:#b}%?%U}", 42 * isq::length[m]) == "0b101010 m");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:#B}%?%U}", 42 * isq::length[m]) == "0B101010 m");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:#o}%?%U}", 42 * isq::length[m]) == "052 m");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:#x}%?%U}", 42 * isq::length[m]) == "0x2a m");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:#X}%?%U}", 42 * isq::length[m]) == "0X2A m");
+    SECTION("default spec")
+    {
+      CHECK(MP_UNITS_STD_FMT::format("{::N[#b]}", 42 * isq::length[m]) == "0b101010 m");
+      CHECK(MP_UNITS_STD_FMT::format("{::N[#B]}", 42 * isq::length[m]) == "0B101010 m");
+      CHECK(MP_UNITS_STD_FMT::format("{::N[#o]}", 42 * isq::length[m]) == "052 m");
+      CHECK(MP_UNITS_STD_FMT::format("{::N[#x]}", 42 * isq::length[m]) == "0x2a m");
+      CHECK(MP_UNITS_STD_FMT::format("{::N[#X]}", 42 * isq::length[m]) == "0X2A m");
+    }
+
+    SECTION("explicit spec")
+    {
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%?%U:N[#b]}", 42 * isq::length[m]) == "0b101010 m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%?%U:N[#B]}", 42 * isq::length[m]) == "0B101010 m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%?%U:N[#o]}", 42 * isq::length[m]) == "052 m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%?%U:N[#x]}", 42 * isq::length[m]) == "0x2a m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%?%U:N[#X]}", 42 * isq::length[m]) == "0X2A m");
+    }
+
+    SECTION("modified spec")
+    {
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%U:N[#b]}", 42 * isq::length[m]) == "0b101010m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%U:N[#B]}", 42 * isq::length[m]) == "0B101010m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%U:N[#o]}", 42 * isq::length[m]) == "052m");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%U:N[#x]}", 42 * isq::length[m]) == "0x2am");
+      CHECK(MP_UNITS_STD_FMT::format("{:%N%U:N[#X]}", 42 * isq::length[m]) == "0X2Am");
+    }
   }
 
   SECTION("value only format {:%N} on a quantity")
   {
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:#b}}", 42 * isq::length[m]) == "0b101010");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:#B}}", 42 * isq::length[m]) == "0B101010");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:#o}}", 42 * isq::length[m]) == "052");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:#x}}", 42 * isq::length[m]) == "0x2a");
-    CHECK(MP_UNITS_STD_FMT::format("{:{%N:#X}}", 42 * isq::length[m]) == "0X2A");
+    CHECK(MP_UNITS_STD_FMT::format("{:%N:N[#b]}", 42 * isq::length[m]) == "0b101010");
+    CHECK(MP_UNITS_STD_FMT::format("{:%N:N[#B]}", 42 * isq::length[m]) == "0B101010");
+    CHECK(MP_UNITS_STD_FMT::format("{:%N:N[#o]}", 42 * isq::length[m]) == "052");
+    CHECK(MP_UNITS_STD_FMT::format("{:%N:N[#x]}", 42 * isq::length[m]) == "0x2a");
+    CHECK(MP_UNITS_STD_FMT::format("{:%N:N[#X]}", 42 * isq::length[m]) == "0X2A");
   }
 }
 
@@ -887,10 +1006,25 @@ TEST_CASE("localization with the 'L' specifier", "[text][fmt][localization]")
   std::locale grp2{std::locale::classic(), new group2};
   std::locale grp3{std::locale::classic(), new group3};
 
-  SECTION("full format {:{%N:L}%?%U} on a quantity")
+  SECTION("full format on a quantity")
   {
-    CHECK(MP_UNITS_STD_FMT::format(grp2, "{:{%N:L}%?%U}", 299'792'458 * isq::speed[m / s]) == "2_99_79_24_58 m/s");
-    CHECK(MP_UNITS_STD_FMT::format(grp3, "{:{%N:L}%?%U}", 299'792'458 * isq::speed[m / s]) == "299'792'458 m/s");
+    SECTION("default spec")
+    {
+      CHECK(MP_UNITS_STD_FMT::format(grp2, "{::N[L]}", 299'792'458 * isq::speed[m / s]) == "2_99_79_24_58 m/s");
+      CHECK(MP_UNITS_STD_FMT::format(grp3, "{::N[L]}", 299'792'458 * isq::speed[m / s]) == "299'792'458 m/s");
+    }
+
+    SECTION("explicit spec")
+    {
+      CHECK(MP_UNITS_STD_FMT::format(grp2, "{:%N%?%U:N[L]}", 299'792'458 * isq::speed[m / s]) == "2_99_79_24_58 m/s");
+      CHECK(MP_UNITS_STD_FMT::format(grp3, "{:%N%?%U:N[L]}", 299'792'458 * isq::speed[m / s]) == "299'792'458 m/s");
+    }
+
+    SECTION("modified spec")
+    {
+      CHECK(MP_UNITS_STD_FMT::format(grp2, "{:%N%U:N[L]}", 299'792'458 * isq::speed[m / s]) == "2_99_79_24_58m/s");
+      CHECK(MP_UNITS_STD_FMT::format(grp3, "{:%N%U:N[L]}", 299'792'458 * isq::speed[m / s]) == "299'792'458m/s");
+    }
   }
 }
 
