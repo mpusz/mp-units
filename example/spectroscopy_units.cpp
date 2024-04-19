@@ -55,8 +55,9 @@ template<QuantityOf<isq::energy> T1, QuantityOf<isq::wavenumber> T2, QuantityOf<
          QuantityOf<isq::thermodynamic_temperature> T4, QuantityOf<isq::wavelength> T5>
 void print_line(const std::tuple<T1, T2, T3, T4, T5>& t)
 {
-  std::cout << MP_UNITS_STD_FMT::format("| {:<15} | {:<15} | {:<15} | {:<15} | {:<15} |\n", std::get<0>(t),
-                                        std::get<1>(t), std::get<2>(t), std::get<3>(t), std::get<4>(t));
+  std::cout << MP_UNITS_STD_FMT::format(
+    "| {:<15:N[.6]} | {:<15:N[.6]} | {:<15:N[.6]} | {:<15:N[.6]} | {:<15:N[.6]} |\n", std::get<0>(t), std::get<1>(t),
+    std::get<2>(t), std::get<3>(t), std::get<4>(t));
 }
 
 // prints quantities in semi-SI units
@@ -65,9 +66,9 @@ template<QuantityOf<isq::energy> T1, QuantityOf<isq::wavenumber> T2, QuantityOf<
          QuantityOf<isq::thermodynamic_temperature> T4, QuantityOf<isq::wavelength> T5>
 void print_line_si(const std::tuple<T1, T2, T3, T4, T5>& t)
 {
-  std::cout << MP_UNITS_STD_FMT::format("| {:<15} | {:<15} | {:<15} | {:<15} | {:<15} |\n", std::get<0>(t).in(eV),
-                                        std::get<1>(t).in(one / cm), std::get<2>(t).in(THz), std::get<3>(t).in(K),
-                                        std::get<4>(t).in(um));
+  std::cout << MP_UNITS_STD_FMT::format(
+    "| {:<15:N[.6]} | {:<15:N[.6]} | {:<15:N[.6]} | {:<15:N[.6]} | {:<15:N[.6]} |\n", std::get<0>(t).in(eV),
+    std::get<1>(t).in(one / cm), std::get<2>(t).in(THz), std::get<3>(t).in(K), std::get<4>(t).in(um));
 }
 
 int main()

@@ -158,10 +158,10 @@ int main()
   unmanned_aerial_vehicle uav;
   uav.take_off(mean_sea_level + 6'000 * ft);
   uav.current(mean_sea_level + 10'000 * ft);
-  std::cout << MP_UNITS_STD_FMT::format("hal = {}\n", uav.hal());
+  std::cout << MP_UNITS_STD_FMT::format("hal = {::N[.2f]}\n", uav.hal());
 
   msl_altitude ground_level = mean_sea_level + 123 * m;
-  std::cout << MP_UNITS_STD_FMT::format("agl = {}\n", uav.current() - ground_level);
+  std::cout << MP_UNITS_STD_FMT::format("agl = {::N[.2f]}\n", uav.current() - ground_level);
 
   struct waypoint {
     std::string name;
@@ -170,6 +170,6 @@ int main()
   };
 
   waypoint wpt = {"EPPR", {54.24772_N, 18.6745_E}, mean_sea_level + 16. * ft};
-  std::cout << MP_UNITS_STD_FMT::format("{}: {} {}, {::N[.2]}, {::N[.2]}\n", wpt.name, wpt.pos.lat, wpt.pos.lon,
+  std::cout << MP_UNITS_STD_FMT::format("{}: {} {}, {::N[.2f]}, {::N[.2f]}\n", wpt.name, wpt.pos.lat, wpt.pos.lon,
                                         wpt.msl_alt, to_hae<earth_gravity_model::egm2008_1>(wpt.msl_alt, wpt.pos));
 }
