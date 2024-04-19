@@ -35,20 +35,20 @@ namespace mp_units::international {
 
 // clang-format off
 // mass
-inline constexpr struct pound : named_unit<"lb", mag<ratio{45'359'237, 100'000'000}> * si::kilogram> {} pound;
-inline constexpr struct ounce : named_unit<"oz", mag<ratio(1, 16)> * pound> {} ounce;
-inline constexpr struct dram : named_unit<"dr", mag<ratio(1, 16)> * ounce> {} dram;
-inline constexpr struct grain : named_unit<"gr", mag<ratio(1, 7'000)> * pound> {} grain;
+inline constexpr struct pound : named_unit<"lb", mag_ratio<45'359'237, 100'000'000> * si::kilogram> {} pound;
+inline constexpr struct ounce : named_unit<"oz", mag_ratio<1, 16> * pound> {} ounce;
+inline constexpr struct dram : named_unit<"dr", mag_ratio<1, 16> * ounce> {} dram;
+inline constexpr struct grain : named_unit<"gr", mag_ratio<1, 7'000> * pound> {} grain;
 
 // length
 // https://en.wikipedia.org/wiki/United_States_customary_units#Length
-inline constexpr struct yard : named_unit<"yd", mag<ratio{9'144, 10'000}> * si::metre> {} yard;
-inline constexpr struct foot : named_unit<"ft", mag<ratio{1, 3}> * yard> {} foot;
-inline constexpr struct inch : named_unit<"in", mag<ratio{1, 12}> * foot> {} inch;
-inline constexpr struct pica : named_unit<"P", mag<ratio{1, 6}> * inch> {} pica;
-inline constexpr struct point : named_unit<"p", mag<ratio{1, 12}> * pica> {} point;
-inline constexpr struct mil : named_unit<"mil", mag<ratio{1, 1'000}> * inch> {} mil;
-inline constexpr struct twip : named_unit<"twip", mag<ratio{1, 20}> * point> {} twip;
+inline constexpr struct yard : named_unit<"yd", mag_ratio<9'144, 10'000> * si::metre> {} yard;
+inline constexpr struct foot : named_unit<"ft", mag_ratio<1, 3> * yard> {} foot;
+inline constexpr struct inch : named_unit<"in", mag_ratio<1, 12> * foot> {} inch;
+inline constexpr struct pica : named_unit<"P", mag_ratio<1, 6> * inch> {} pica;
+inline constexpr struct point : named_unit<"p", mag_ratio<1, 12> * pica> {} point;
+inline constexpr struct mil : named_unit<"mil", mag_ratio<1, 1'000> * inch> {} mil;
+inline constexpr struct twip : named_unit<"twip", mag_ratio<1, 20> * point> {} twip;
 inline constexpr struct mile : named_unit<"mi", mag<1760> * yard> {} mile;
 inline constexpr struct league : named_unit<"le", mag<3> * mile> {} league;
 

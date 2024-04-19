@@ -32,9 +32,7 @@
 #include <numeric>
 #endif
 
-namespace mp_units {
-
-namespace detail {
+namespace mp_units::detail {
 
 template<typename T>
 [[nodiscard]] MP_UNITS_CONSTEVAL T abs(T v) noexcept
@@ -59,14 +57,13 @@ template<typename T>
   return lhs * rhs;
 }
 
-}  // namespace detail
-
 /**
  * @brief Provides compile-time rational arithmetic support.
  *
  * This class is really similar to @c std::ratio.  An important difference is the fact that the objects of that class
  * are used as class NTTPs rather then a type template parameter kind.
  */
+// TODO This probably should not be exported but is used in chrono.h
 MP_UNITS_EXPORT struct ratio {
   std::intmax_t num;
   std::intmax_t den;
@@ -123,4 +120,4 @@ MP_UNITS_EXPORT struct ratio {
   return ratio{num / gcd, den / gcd};
 }
 
-}  // namespace mp_units
+}  // namespace mp_units::detail

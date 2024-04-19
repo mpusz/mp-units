@@ -36,18 +36,18 @@ using namespace international;
 
 // clang-format off
 // https://en.wikipedia.org/wiki/Imperial_units#Length
-inline constexpr struct hand : named_unit<"hh", mag<ratio{1, 3}> * foot> {} hand;
-inline constexpr struct barleycorn : named_unit<"Bc", mag<ratio(1, 3)> * inch> {} barleycorn;
-inline constexpr struct thou : named_unit<"th", mag<ratio{1, 12'000}> * foot> {} thou;
+inline constexpr struct hand : named_unit<"hh", mag_ratio<1, 3> * foot> {} hand;
+inline constexpr struct barleycorn : named_unit<"Bc", mag_ratio<1, 3> * inch> {} barleycorn;
+inline constexpr struct thou : named_unit<"th", mag_ratio<1, 12'000> * foot> {} thou;
 inline constexpr struct chain : named_unit<"ch", mag<22> * yard> {} chain;
 inline constexpr struct furlong : named_unit<"fur", mag<10> * chain> {} furlong;
 
 // maritime units
-inline constexpr struct cable : named_unit<"cb", mag<ratio{1, 10}> * nautical_mile> {} cable;
-inline constexpr struct fathom : named_unit<"ftm", mag<ratio{1, 1000}> * nautical_mile> {} fathom;
+inline constexpr struct cable : named_unit<"cb", mag_ratio<1, 10> * nautical_mile> {} cable;
+inline constexpr struct fathom : named_unit<"ftm", mag_ratio<1, 1000> * nautical_mile> {} fathom;
 
 // survey
-inline constexpr struct link : named_unit<"li", mag<ratio{1, 100}> * chain> {} link;
+inline constexpr struct link : named_unit<"li", mag_ratio<1, 100> * chain> {} link;
 inline constexpr struct rod : named_unit<"rd", mag<25> * link> {} rod;
 
 // https://en.wikipedia.org/wiki/Imperial_units#Area
@@ -56,11 +56,11 @@ inline constexpr struct rood : decltype(mag<40> * perch) {} rood;
 inline constexpr struct acre : decltype(mag<4> * rood) {} acre;
 
 // https://en.wikipedia.org/wiki/Imperial_units#Volume
-inline constexpr struct gallon : named_unit<"gal", mag<ratio{454'609, 100'000}> * si::litre> {} gallon;
-inline constexpr struct quart : named_unit<"qt", mag<ratio{1, 4}> * gallon> {} quart;
-inline constexpr struct pint : named_unit<"pt", mag<ratio{1, 2}> * quart> {} pint;
-inline constexpr struct gill : named_unit<"gi", mag<ratio{1, 4}> * pint> {} gill;
-inline constexpr struct fluid_ounce : named_unit<"fl oz", mag<ratio{1, 5}> * gill> {} fluid_ounce;
+inline constexpr struct gallon : named_unit<"gal", mag_ratio<454'609, 100'000> * si::litre> {} gallon;
+inline constexpr struct quart : named_unit<"qt", mag_ratio<1, 4> * gallon> {} quart;
+inline constexpr struct pint : named_unit<"pt", mag_ratio<1, 2> * quart> {} pint;
+inline constexpr struct gill : named_unit<"gi", mag_ratio<1, 4> * pint> {} gill;
+inline constexpr struct fluid_ounce : named_unit<"fl oz", mag_ratio<1, 5> * gill> {} fluid_ounce;
 
 // https://en.wikipedia.org/wiki/Avoirdupois_system#Post-Elizabethan_units
 inline constexpr auto drachm = dram;

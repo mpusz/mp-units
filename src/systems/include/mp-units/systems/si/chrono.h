@@ -59,7 +59,7 @@ template<typename Period>
   else if constexpr (is_same_v<Period, std::chrono::weeks::period>)
     return mag<7> * day;
   else
-    return mag<ratio{Period::num, Period::den}> * second;
+    return mag_ratio<Period::num, Period::den> * second;
 }
 
 }  // namespace detail
@@ -115,7 +115,7 @@ template<QuantityOf<isq::time> Q>
 [[nodiscard]] constexpr auto to_chrono_duration(const Q& q)
 {
   constexpr auto canonical = get_canonical_unit(Q::unit);
-  constexpr ratio r = as_ratio(canonical.mag);
+  constexpr detail::ratio r = detail::as_ratio(canonical.mag);
   return std::chrono::duration<typename Q::rep, std::ratio<r.num, r.den>>{q};
 }
 
@@ -126,7 +126,7 @@ template<QuantityPointOf<isq::time> QP>
   using clock = MP_UNITS_TYPENAME decltype(QP::absolute_point_origin)::clock;
   using rep = MP_UNITS_TYPENAME QP::rep;
   constexpr auto canonical = get_canonical_unit(QP::unit);
-  constexpr ratio r = as_ratio(canonical.mag);
+  constexpr detail::ratio r = detail::as_ratio(canonical.mag);
   using ret_type = std::chrono::time_point<clock, std::chrono::duration<rep, std::ratio<r.num, r.den>>>;
   return ret_type(to_chrono_duration(qp - qp.absolute_point_origin));
 }

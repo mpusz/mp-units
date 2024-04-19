@@ -403,7 +403,7 @@ inline constexpr struct zeroth_degree_Celsius : decltype(ice_point) {} zeroth_de
 namespace usc {
 
 inline constexpr struct zeroth_degree_Fahrenheit :
-  relative_point_origin<si::zeroth_degree_Celsius - 32 * (mag<ratio{5, 9}> * si::degree_Celsius)> {} zeroth_degree_Fahrenheit;
+  relative_point_origin<si::zeroth_degree_Celsius - 32 * (mag_ratio<5, 9> * si::degree_Celsius)> {} zeroth_degree_Fahrenheit;
 
 }
 ```
@@ -436,7 +436,7 @@ inline constexpr struct degree_Celsius :
 namespace usc {
 
 inline constexpr struct degree_Fahrenheit :
-    named_unit<{u8"°F", "`F"}, mag<ratio{5, 9}> * si::degree_Celsius,
+    named_unit<{u8"°F", "`F"}, mag_ratio<5, 9> * si::degree_Celsius,
                zeroth_degree_Fahrenheit> {} degree_Fahrenheit;
 
 }

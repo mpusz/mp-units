@@ -73,14 +73,14 @@ inline constexpr struct minute_ : named_unit<"min", mag<60> * second> {} minute;
 inline constexpr struct hour_ : named_unit<"h", mag<60> * minute> {} hour;
 inline constexpr struct degree_ : named_unit<symbol_text{u8"°", "deg"}, mag_pi / mag<180> * radian> {} degree;
 
-inline constexpr struct yard_ : named_unit<"yd", mag<ratio{9'144, 10'000}> * metre> {} yard;
+inline constexpr struct yard_ : named_unit<"yd", mag_ratio<9'144, 10'000> * metre> {} yard;
 inline constexpr struct mile_ : named_unit<"mi", mag<1760> * yard> {} mile;
 
 inline constexpr struct kilometre_ : decltype(si::kilo<metre>) {} kilometre;
 inline constexpr struct kilojoule_ : decltype(si::kilo<joule>) {} kilojoule;
 
 // physical constant units
-inline constexpr struct standard_gravity_ : named_unit<symbol_text{u8"g₀", "g_0"}, mag<ratio{980'665, 100'000}> * metre / square(second)> {} standard_gravity;
+inline constexpr struct standard_gravity_ : named_unit<symbol_text{u8"g₀", "g_0"}, mag_ratio<980'665, 100'000> * metre / square(second)> {} standard_gravity;
 inline constexpr struct speed_of_light_in_vacuum_ : named_unit<"c", mag<299'792'458> * metre / second> {} speed_of_light_in_vacuum;
 
 // clang-format on
@@ -185,7 +185,7 @@ static_assert(is_of_type<nu_second / nu_second, one_>);
 static_assert(is_of_type<standard_gravity, standard_gravity_>);
 static_assert(
   is_of_type<get_canonical_unit(standard_gravity).reference_unit, derived_unit<metre_, per<power<second_, 2>>>>);
-static_assert(get_canonical_unit(standard_gravity).mag == mag<ratio{980'665, 100'000}>);
+static_assert(get_canonical_unit(standard_gravity).mag == mag_ratio<980'665, 100'000>);
 static_assert(convertible(standard_gravity, standard_gravity));
 static_assert(convertible(standard_gravity, metre / square(second)));
 static_assert(standard_gravity == standard_gravity);
@@ -356,7 +356,7 @@ static_assert(get_canonical_unit(km_per_s).mag == mag<1000>);
 constexpr auto km_per_h = kilometre / hour;
 static_assert(is_of_type<km_per_h, derived_unit<kilometre_, per<hour_>>>);
 static_assert(is_of_type<get_canonical_unit(km_per_h).reference_unit, derived_unit<metre_, per<second_>>>);
-static_assert(get_canonical_unit(km_per_h).mag == mag<ratio{1000, 3600}>);
+static_assert(get_canonical_unit(km_per_h).mag == mag_ratio<1000, 3600>);
 
 static_assert(is_of_type<get_canonical_unit(inverse(metre)).reference_unit, derived_unit<one_, per<metre_>>>);
 static_assert(is_of_type<get_canonical_unit(inverse(hertz)).reference_unit, second_>);
@@ -368,7 +368,7 @@ static_assert(
 
 static_assert(
   is_of_type<get_canonical_unit(standard_gravity).reference_unit, derived_unit<metre_, per<power<second_, 2>>>>);
-static_assert(get_canonical_unit(standard_gravity).mag == mag<ratio{980'665, 100'000}>);
+static_assert(get_canonical_unit(standard_gravity).mag == mag_ratio<980'665, 100'000>);
 static_assert(is_of_type<get_canonical_unit(standard_gravity* gram).reference_unit,
                          derived_unit<gram_, metre_, per<power<second_, 2>>>>);
 static_assert(is_of_type<get_canonical_unit(standard_gravity / speed_of_light_in_vacuum).reference_unit,
@@ -378,17 +378,17 @@ static_assert(is_of_type<get_canonical_unit(standard_gravity / speed_of_light_in
 constexpr auto u1 = mag<1000> * kilometre / hour;
 static_assert(is_of_type<u1, scaled_unit<mag<1000>, derived_unit<kilometre_, per<hour_>>>>);
 static_assert(is_of_type<get_canonical_unit(u1).reference_unit, derived_unit<metre_, per<second_>>>);
-static_assert(get_canonical_unit(u1).mag == mag<ratio{1'000'000, 3'600}>);
+static_assert(get_canonical_unit(u1).mag == mag_ratio<1'000'000, 3'600>);
 
 constexpr auto u2 = mag<1000> * (kilometre / hour);
 static_assert(is_of_type<u2, scaled_unit<mag<1000>, derived_unit<kilometre_, per<hour_>>>>);
 static_assert(is_of_type<get_canonical_unit(u2).reference_unit, derived_unit<metre_, per<second_>>>);
-static_assert(get_canonical_unit(u2).mag == mag<ratio{1'000'000, 3'600}>);
+static_assert(get_canonical_unit(u2).mag == mag_ratio<1'000'000, 3'600>);
 
 constexpr auto u3 = one / hour * (mag<1000> * kilometre);
 static_assert(is_of_type<u3, scaled_unit<mag<1000>, derived_unit<kilometre_, per<hour_>>>>);
 static_assert(is_of_type<get_canonical_unit(u3).reference_unit, derived_unit<metre_, per<second_>>>);
-static_assert(get_canonical_unit(u3).mag == mag<ratio{1'000'000, 3'600}>);
+static_assert(get_canonical_unit(u3).mag == mag_ratio<1'000'000, 3'600>);
 
 template<auto& s>
 concept invalid_operations = requires {
@@ -448,7 +448,7 @@ static_assert(convertible(si::kilo<metre>, kilometre));
 static_assert(convertible(mag<1000> * metre, si::kilo<metre>));
 static_assert(convertible(mag<1000> * metre, kilometre));
 
-static_assert(mag<60> * metre / second == metre / (mag<ratio{1, 60}> * second));
+static_assert(mag<60> * metre / second == metre / (mag_ratio<1, 60> * second));
 
 static_assert(metre != kilometre);
 static_assert(convertible(metre, kilometre));
@@ -533,11 +533,11 @@ static_assert(is_of_type<common_unit(yard, mile), yard_>);
 static_assert(is_of_type<common_unit(mile, yard), yard_>);
 // TODO The below have long/unreadable magnitude types
 static_assert(is_of_type<common_unit(kilometre / hour, metre / second),
-                         scaled_unit<mag<ratio{1, 18}>, derived_unit<metre_, per<second_>>>>);
+                         scaled_unit<mag_ratio<1, 18>, derived_unit<metre_, per<second_>>>>);
 static_assert(is_of_type<common_unit(metre / second, kilometre / hour),
-                         scaled_unit<mag<ratio{1, 18}>, derived_unit<metre_, per<second_>>>>);
-static_assert(is_of_type<common_unit(kilometre, mile), scaled_unit<mag<ratio{8, 125}>, metre_>>);
-static_assert(is_of_type<common_unit(mile, kilometre), scaled_unit<mag<ratio{8, 125}>, metre_>>);
+                         scaled_unit<mag_ratio<1, 18>, derived_unit<metre_, per<second_>>>>);
+static_assert(is_of_type<common_unit(kilometre, mile), scaled_unit<mag_ratio<8, 125>, metre_>>);
+static_assert(is_of_type<common_unit(mile, kilometre), scaled_unit<mag_ratio<8, 125>, metre_>>);
 static_assert(is_of_type<common_unit(speed_of_light_in_vacuum, metre / second), derived_unit<metre_, per<second_>>>);
 
 }  // namespace

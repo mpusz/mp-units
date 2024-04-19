@@ -24,7 +24,7 @@
 
 namespace {
 
-using namespace mp_units;
+using namespace mp_units::detail;
 
 static_assert(ratio(2, 4) == ratio(1, 2));
 

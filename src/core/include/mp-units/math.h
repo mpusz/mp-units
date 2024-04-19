@@ -56,7 +56,7 @@ template<std::intmax_t Num, std::intmax_t Den = 1, auto R, typename Rep>
 {
   if constexpr (Num == 0) {
     return quantity<pow<Num, Den>(R), Rep>::one();
-  } else if constexpr (ratio{Num, Den} == 1) {
+  } else if constexpr (Num == Den) {
     return q;
   } else {
     using std::pow;

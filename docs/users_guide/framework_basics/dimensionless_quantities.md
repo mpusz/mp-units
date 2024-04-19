@@ -114,7 +114,7 @@ units of _length_:
 
 ```cpp
 inline constexpr struct hubble_constant :
-    named_unit<{u8"H₀", "H_0"}, mag<ratio{701, 10}> * si::kilo<si::metre> / si::second / si::mega<parsec>> {} hubble_constant;
+    named_unit<{u8"H₀", "H_0"}, mag_ratio<701, 10> * si::kilo<si::metre> / si::second / si::mega<parsec>> {} hubble_constant;
 ```
 
 
@@ -158,9 +158,9 @@ Besides the unit `one`, there are a few other scaled units predefined in the lib
 with dimensionless quantities:
 
 ```cpp
-inline constexpr struct percent : named_unit<"%", mag<ratio{1, 100}> * one> {} percent;
-inline constexpr struct per_mille : named_unit<{u8"‰", "%o"}, mag<ratio(1, 1000)> * one> {} per_mille;
-inline constexpr struct parts_per_million : named_unit<"ppm", mag<ratio(1, 1'000'000)> * one> {} parts_per_million;
+inline constexpr struct percent : named_unit<"%", mag_ratio<1, 100> * one> {} percent;
+inline constexpr struct per_mille : named_unit<{u8"‰", "%o"}, mag_ratio<1, 1000> * one> {} per_mille;
+inline constexpr struct parts_per_million : named_unit<"ppm", mag_ratio<1, 1'000'000> * one> {} parts_per_million;
 inline constexpr auto ppm = parts_per_million;
 ```
 

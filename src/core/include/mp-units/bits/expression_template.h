@@ -99,7 +99,7 @@ template<typename F, int Num, int... Den>
   requires(detail::valid_ratio<Num, Den...> && detail::positive_ratio<Num, Den...> && !detail::ratio_one<Num, Den...>)
 struct power {
   using factor = F;
-  static constexpr ratio exponent{Num, Den...};
+  static constexpr detail::ratio exponent{Num, Den...};
 };
 
 namespace detail {

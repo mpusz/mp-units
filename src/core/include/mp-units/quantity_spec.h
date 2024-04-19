@@ -555,7 +555,7 @@ template<std::intmax_t Num, std::intmax_t Den = 1, QuantitySpec Q>
   // all are dimensionless quantities :-(
   if constexpr (Num == 0 || Q{} == dimensionless)
     return dimensionless;
-  else if constexpr (ratio{Num, Den} == 1)
+  else if constexpr (detail::ratio{Num, Den} == 1)
     return q;
   else if constexpr (detail::IntermediateDerivedQuantitySpec<Q>)
     return detail::clone_kind_of<Q{}>(

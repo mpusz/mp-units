@@ -170,14 +170,14 @@ electronvolt:
 ```cpp
 inline constexpr struct minute : named_unit<"min", mag<60> * si::second> {} minute;
 inline constexpr struct hour : named_unit<"h", mag<60> * minute> {} hour;
-inline constexpr struct electronvolt : named_unit<"eV", mag<ratio{1'602'176'634, 1'000'000'000}> * mag_power<10, -19> * si::joule> {} electronvolt;
+inline constexpr struct electronvolt : named_unit<"eV", mag_ratio<1'602'176'634, 1'000'000'000> * mag_power<10, -19> * si::joule> {} electronvolt;
 ```
 
 Also, units of other [systems of units](../../appendix/glossary.md#system-of-units) are often defined
 in terms of scaled versions of the SI units. For example, the international yard is defined as:
 
 ```cpp
-inline constexpr struct yard : named_unit<"yd", mag<ratio{9'144, 10'000}> * si::metre> {} yard;
+inline constexpr struct yard : named_unit<"yd", mag_ratio<9'144, 10'000> * si::metre> {} yard;
 ```
 
 For some units, a magnitude might also be irrational. The best example here is a `degree` which

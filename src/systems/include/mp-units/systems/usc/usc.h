@@ -42,7 +42,7 @@ inline constexpr struct fathom : named_unit<"ftm(us)", mag<2> * yard> {} fathom;
 inline constexpr struct cable : named_unit<"cb(us)", mag<120> * fathom> {} cable;
 
 // survey
-struct us_survey_foot : named_unit<"ft(us)", mag<ratio{1'200, 3'937}> * si::metre> {};
+struct us_survey_foot : named_unit<"ft(us)", mag_ratio<1'200, 3'937> * si::metre> {};
 struct us_survey_mile : named_unit<"mi(us)", mag<5280> * us_survey_foot{}> {};
 
 [[deprecated("In accordance with NIST SP 811, as of January 1, 2023, the use of the U.S. survey foot and U.S. survey mile is deprecated.")]]
@@ -51,7 +51,7 @@ inline constexpr us_survey_foot us_survey_foot;
 [[deprecated("In accordance with NIST SP 811, as of January 1, 2023, the use of the U.S. survey foot and U.S. survey mile is deprecated.")]]
 inline constexpr us_survey_mile us_survey_mile;
 
-inline constexpr struct link : named_unit<"li", mag<ratio{33, 50}> * foot> {} link;
+inline constexpr struct link : named_unit<"li", mag_ratio<33, 50> * foot> {} link;
 inline constexpr struct rod : named_unit<"rd", mag<25> * link> {} rod;
 inline constexpr struct chain : named_unit<"ch", mag<4> * rod> {} chain;
 inline constexpr struct furlong : named_unit<"fur", mag<10> * chain> {} furlong;
@@ -60,8 +60,8 @@ inline constexpr struct furlong : named_unit<"fur", mag<10> * chain> {} furlong;
 namespace survey1893 {
 
 // clang-format off
-inline constexpr struct us_survey_foot : named_unit<"ft(us)", mag<ratio{1'200, 3'937}> * si::metre> {} us_survey_foot;
-inline constexpr struct link : named_unit<"li", mag<ratio{33, 50}> * us_survey_foot> {} link;
+inline constexpr struct us_survey_foot : named_unit<"ft(us)", mag_ratio<1'200, 3'937> * si::metre> {} us_survey_foot;
+inline constexpr struct link : named_unit<"li", mag_ratio<33, 50> * us_survey_foot> {} link;
 inline constexpr struct rod : named_unit<"rd", mag<25> * link> {} rod;
 inline constexpr struct chain : named_unit<"ch", mag<4> * rod> {} chain;
 inline constexpr struct furlong : named_unit<"fur", mag<10> * chain> {} furlong;
@@ -78,28 +78,28 @@ inline constexpr struct section : named_unit<"section", mag<640> * acre> {} sect
 
 // https://en.wikipedia.org/wiki/United_States_customary_units#Fluid_volume
 inline constexpr struct gallon : named_unit<"gal", mag<231> * cubic(inch)> {} gallon;
-inline constexpr struct pottle : named_unit<"pot", mag<ratio{1, 2}> * gallon> {} pottle;
-inline constexpr struct quart : named_unit<"qt", mag<ratio{1, 2}> * pottle> {} quart;
-inline constexpr struct pint : named_unit<"pt", mag<ratio{1, 2}> * quart> {} pint;
-inline constexpr struct cup : named_unit<"c", mag<ratio{1, 2}> * pint> {} cup;
-inline constexpr struct gill : named_unit<"gi", mag<ratio{1, 2}> * cup> {} gill;
-inline constexpr struct fluid_ounce : named_unit<"fl oz", mag<ratio{1, 4}> * gill> {} fluid_ounce;
-inline constexpr struct tablespoon : named_unit<"tbsp", mag<ratio{1, 2}> * fluid_ounce> {} tablespoon;
+inline constexpr struct pottle : named_unit<"pot", mag_ratio<1, 2> * gallon> {} pottle;
+inline constexpr struct quart : named_unit<"qt", mag_ratio<1, 2> * pottle> {} quart;
+inline constexpr struct pint : named_unit<"pt", mag_ratio<1, 2> * quart> {} pint;
+inline constexpr struct cup : named_unit<"c", mag_ratio<1, 2> * pint> {} cup;
+inline constexpr struct gill : named_unit<"gi", mag_ratio<1, 2> * cup> {} gill;
+inline constexpr struct fluid_ounce : named_unit<"fl oz", mag_ratio<1, 4> * gill> {} fluid_ounce;
+inline constexpr struct tablespoon : named_unit<"tbsp", mag_ratio<1, 2> * fluid_ounce> {} tablespoon;
 inline constexpr struct shot : named_unit<"jig", mag<3> * tablespoon> {} shot;
-inline constexpr struct teaspoon : named_unit<"tsp", mag<ratio{1, 3}> * tablespoon> {} teaspoon;
-inline constexpr struct minim : named_unit<"min", mag<ratio{1, 80}> * teaspoon> {} minim;
+inline constexpr struct teaspoon : named_unit<"tsp", mag_ratio<1, 3> * tablespoon> {} teaspoon;
+inline constexpr struct minim : named_unit<"min", mag_ratio<1, 80> * teaspoon> {} minim;
 inline constexpr struct fluid_dram : named_unit<"fl dr", mag<60> * minim> {} fluid_dram;
-inline constexpr struct barrel : named_unit<"bbl", mag<ratio{315, 10}> * gallon> {} barrel;
-inline constexpr struct oil_barrel : named_unit<"bbl", mag<ratio{4, 3}> * barrel> {} oil_barrel;
+inline constexpr struct barrel : named_unit<"bbl", mag_ratio<315, 10> * gallon> {} barrel;
+inline constexpr struct oil_barrel : named_unit<"bbl", mag_ratio<4, 3> * barrel> {} oil_barrel;
 inline constexpr struct hogshead : decltype(mag<63> * gallon) {} hogshead;
 
 // https://en.wikipedia.org/wiki/United_States_customary_units#Dry_volume
 inline constexpr struct dry_barrel : named_unit<"bbl", mag<7056> * cubic(inch)> {} dry_barrel;
-inline constexpr struct bushel : named_unit<"bu", mag<ratio{3'523'907'016'688, 100'000'000'000}> * si::litre> {} bushel;
-inline constexpr struct peck : named_unit<"pk", mag<ratio{1, 4}> * bushel> {} peck;
-inline constexpr struct dry_gallon : named_unit<"gal", mag<ratio{1, 2}> * peck> {} dry_gallon;
-inline constexpr struct dry_quart : named_unit<"qt", mag<ratio{1, 4}> * dry_gallon> {} dry_quart;
-inline constexpr struct dry_pint : named_unit<"pt", mag<ratio{1, 2}> * dry_quart> {} dry_pint;
+inline constexpr struct bushel : named_unit<"bu", mag_ratio<3'523'907'016'688, 100'000'000'000> * si::litre> {} bushel;
+inline constexpr struct peck : named_unit<"pk", mag_ratio<1, 4> * bushel> {} peck;
+inline constexpr struct dry_gallon : named_unit<"gal", mag_ratio<1, 2> * peck> {} dry_gallon;
+inline constexpr struct dry_quart : named_unit<"qt", mag_ratio<1, 4> * dry_gallon> {} dry_quart;
+inline constexpr struct dry_pint : named_unit<"pt", mag_ratio<1, 2> * dry_quart> {} dry_pint;
 
 // https://en.wikipedia.org/wiki/United_States_customary_units#Mass_and_Weight
 // https://en.wikipedia.org/wiki/Avoirdupois_system#American_customary_system
@@ -112,11 +112,11 @@ inline constexpr struct troy_once : named_unit<"oz t", mag<20> * pennyweight> {}
 inline constexpr struct troy_pound : named_unit<"lb t", mag<12> * troy_once> {} troy_pound;
 
 // https://en.wikipedia.org/wiki/Inch_of_mercury
-inline constexpr struct inch_of_mercury : named_unit<"inHg", mag<ratio(3'386'389, 1'000)> * si::pascal> {} inch_of_mercury;
+inline constexpr struct inch_of_mercury : named_unit<"inHg", mag_ratio<3'386'389, 1'000> * si::pascal> {} inch_of_mercury;
 
 // https://en.wikipedia.org/wiki/United_States_customary_units#Temperature
-inline constexpr struct zeroth_degree_Fahrenheit : relative_point_origin<si::zeroth_degree_Celsius - 32 * (mag<ratio{5, 9}> * si::degree_Celsius)> {} zeroth_degree_Fahrenheit;
-inline constexpr struct degree_Fahrenheit : named_unit<symbol_text{u8"°F", "`F"}, mag<ratio{5, 9}> * si::degree_Celsius, zeroth_degree_Fahrenheit> {} degree_Fahrenheit;
+inline constexpr struct zeroth_degree_Fahrenheit : relative_point_origin<si::zeroth_degree_Celsius - 32 * (mag_ratio<5, 9> * si::degree_Celsius)> {} zeroth_degree_Fahrenheit;
+inline constexpr struct degree_Fahrenheit : named_unit<symbol_text{u8"°F", "`F"}, mag_ratio<5, 9> * si::degree_Celsius, zeroth_degree_Fahrenheit> {} degree_Fahrenheit;
 
 // clang-format on
 

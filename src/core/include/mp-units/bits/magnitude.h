@@ -166,7 +166,7 @@ template<PowerVBase auto V, int Num, int... Den>
   requires(detail::valid_ratio<Num, Den...> && !detail::ratio_one<Num, Den...>)
 struct power_v {
   static constexpr auto base = V;
-  static constexpr ratio exponent{Num, Den...};
+  static constexpr detail::ratio exponent{Num, Den...};
 };
 
 namespace detail {
@@ -565,7 +565,8 @@ template<std::intmax_t Num, std::intmax_t Den = 1, auto... Ms>
   if constexpr (Num == 0) {
     return magnitude<>{};
   } else {
-    return magnitude<detail::power_v_or_T<detail::get_base(Ms), detail::get_exponent(Ms) * ratio{Num, Den}>()...>{};
+    return magnitude<
+      detail::power_v_or_T<detail::get_base(Ms), detail::get_exponent(Ms) * detail::ratio{Num, Den}>()...>{};
   }
 }
 
@@ -675,8 +676,6 @@ template<auto M>
   }
 }
 
-}  // namespace detail
-
 template<auto... Ms>
 [[nodiscard]] consteval auto numerator(magnitude<Ms...>)
 {
@@ -685,8 +684,8 @@ template<auto... Ms>
 
 [[nodiscard]] consteval auto denominator(Magnitude auto m) { return numerator(pow<-1>(m)); }
 
-// Implementation of conversion to ratio goes here, because it needs `numerator()` and `denominator()`.
-constexpr ratio as_ratio(Magnitude auto m)
+// TODO This probably should not be exported but is used in chrono.h
+MP_UNITS_EXPORT constexpr ratio as_ratio(Magnitude auto m)
   requires(is_rational(decltype(m){}))
 {
   return ratio{
@@ -694,7 +693,6 @@ constexpr ratio as_ratio(Magnitude auto m)
     get_value<std::intmax_t>(denominator(m)),
   };
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Common Magnitude.
@@ -713,8 +711,6 @@ constexpr ratio as_ratio(Magnitude auto m)
 // When we go to retrieve our value, we'll be stuck with a floating point approximation no matter what choice we make.
 // Thus, we make the _simplest_ choice which reproduces the correct convention in the rational case: namely, taking the
 // minimum power for each base (where absent bases implicitly have a power of 0).
-
-namespace detail {
 
 template<auto M>
 [[nodiscard]] consteval auto remove_positive_power(magnitude<M> m)
@@ -830,16 +826,20 @@ inline constexpr auto prime_factorization_v = prime_factorization<N>::value;
  * This will be the main way end users create Magnitudes.  They should rarely (if ever) create a magnitude<...> by
  * manually adding base powers.
  */
-MP_UNITS_EXPORT template<ratio R>
-  requires detail::gt_zero<R.num>
-inline constexpr Magnitude auto mag = detail::prime_factorization_v<R.num> / detail::prime_factorization_v<R.den>;
+MP_UNITS_EXPORT template<std::intmax_t V>
+  requires detail::gt_zero<V>
+inline constexpr Magnitude auto mag = detail::prime_factorization_v<V>;
+
+MP_UNITS_EXPORT template<std::intmax_t N, std::intmax_t D>
+  requires detail::gt_zero<N>
+inline constexpr Magnitude auto mag_ratio = detail::prime_factorization_v<N> / detail::prime_factorization_v<D>;
 
 /**
  * @brief  Create a Magnitude which is some rational number raised to a rational power.
  */
-MP_UNITS_EXPORT template<ratio Base, ratio Pow>
-  requires detail::gt_zero<Base.num>
-inline constexpr Magnitude auto mag_power = pow<Pow.num, Pow.den>(mag<Base>);
+MP_UNITS_EXPORT template<std::intmax_t Base, std::intmax_t Pow>
+  requires detail::gt_zero<Base>
+inline constexpr Magnitude auto mag_power = pow<Pow>(mag<Base>);
 
 namespace detail {
 

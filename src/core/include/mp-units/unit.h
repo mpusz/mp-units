@@ -566,7 +566,7 @@ template<std::intmax_t Num, std::intmax_t Den = 1, Unit U>
 {
   if constexpr (Num == 0 || is_same_v<U, struct one>)
     return one;
-  else if constexpr (ratio{Num, Den} == 1)
+  else if constexpr (detail::ratio{Num, Den} == 1)
     return u;
   else if constexpr (detail::is_specialization_of_scaled_unit<U>)
     return scaled_unit<pow<Num, Den>(U::mag), std::remove_const_t<decltype(pow<Num, Den>(U::reference_unit))>>{};
@@ -617,9 +617,9 @@ template<std::intmax_t Num, std::intmax_t Den = 1, Unit U>
 
 // common dimensionless units
 // clang-format off
-inline constexpr struct percent : named_unit<"%", mag<ratio{1, 100}> * one> {} percent;
-inline constexpr struct per_mille : named_unit<symbol_text{u8"‰", "%o"}, mag<ratio(1, 1000)> * one> {} per_mille;
-inline constexpr struct parts_per_million : named_unit<"ppm", mag<ratio(1, 1'000'000)> * one> {} parts_per_million;
+inline constexpr struct percent : named_unit<"%", mag_ratio<1, 100> * one> {} percent;
+inline constexpr struct per_mille : named_unit<symbol_text{u8"‰", "%o"}, mag_ratio<1, 1000> * one> {} per_mille;
+inline constexpr struct parts_per_million : named_unit<"ppm", mag_ratio<1, 1'000'000> * one> {} parts_per_million;
 inline constexpr auto ppm = parts_per_million;
 // clang-format on
 

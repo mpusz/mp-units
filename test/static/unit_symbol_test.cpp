@@ -107,7 +107,7 @@ static_assert(unit_symbol(mag<100> * metre) == "× 10² m");
 static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii}>(mag<100> * metre) == "x 10^2 m");
 static_assert(unit_symbol(mag<60> * second) == "[6 × 10¹] s");
 static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii}>(mag<60> * second) == "[6 x 10^1] s");
-static_assert(unit_symbol(mag<ratio{1, 18}> * metre / second) == "[1/18] m/s");
+static_assert(unit_symbol(mag_ratio<1, 18> * metre / second) == "[1/18] m/s");
 
 // derived units
 static_assert(unit_symbol(one) == "");

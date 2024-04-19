@@ -104,8 +104,8 @@ inline constexpr struct hour : named_unit<"h", mag<60> * minute> {} hour;
 inline constexpr struct day : named_unit<"d", mag<24> * hour> {} day;
 inline constexpr struct astronomical_unit : named_unit<"au", mag<149'597'870'700> * si::metre> {} astronomical_unit;
 inline constexpr struct degree : named_unit<symbol_text{u8"°", "deg"}, mag_pi / mag<180> * si::radian> {} degree;
-inline constexpr struct arcminute : named_unit<symbol_text{u8"′", "'"}, mag<ratio{1, 60}> * degree> {} arcminute;
-inline constexpr struct arcsecond : named_unit<symbol_text{u8"″", "''"}, mag<ratio{1, 60}> * arcminute> {} arcsecond;
+inline constexpr struct arcminute : named_unit<symbol_text{u8"′", "'"}, mag_ratio<1, 60> * degree> {} arcminute;
+inline constexpr struct arcsecond : named_unit<symbol_text{u8"″", "''"}, mag_ratio<1, 60> * arcminute> {} arcsecond;
 inline constexpr struct are : named_unit<"a", square(si::deca<si::metre>)> {} are;
 #if MP_UNITS_COMP_MSVC
 inline constexpr struct hectare : si::hecto_<are> {} hectare;
@@ -114,9 +114,9 @@ inline constexpr struct hectare : decltype(si::hecto<are>) {} hectare;
 #endif
 inline constexpr struct litre : named_unit<"l", cubic(si::deci<si::metre>)> {} litre;
 inline constexpr struct tonne : named_unit<"t", mag<1000> * si::kilogram> {} tonne;
-inline constexpr struct dalton : named_unit<"Da", mag<ratio{16'605'390'666'050, 10'000'000'000'000}> * mag_power<10, -27> * si::kilogram> {} dalton;
+inline constexpr struct dalton : named_unit<"Da", mag_ratio<16'605'390'666'050, 10'000'000'000'000> * mag_power<10, -27> * si::kilogram> {} dalton;
 // TODO A different value is provided in the SI Brochure and different in the ISO 80000
-inline constexpr struct electronvolt : named_unit<"eV", mag<ratio{1'602'176'634, 1'000'000'000}> * mag_power<10, -19> * si::joule> {} electronvolt;
+inline constexpr struct electronvolt : named_unit<"eV", mag_ratio<1'602'176'634, 1'000'000'000> * mag_power<10, -19> * si::joule> {} electronvolt;
 // TODO the below are logarithmic units - how to support those?
 // neper
 // bel
