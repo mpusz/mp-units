@@ -150,7 +150,7 @@ static_assert(std::is_same_v<decltype(get_base(power_v<mag_2, 5, 8>{})), mag_2_>
 //   auto check_product_with_inverse_is_identity = [](auto x) { CHECK(x * pow<-1>(x) == mag<1>()); };
 
 //   check_product_with_inverse_is_identity(mag<3>());
-//   check_product_with_inverse_is_identity(mag<ratio{4, 17}>());
+//   check_product_with_inverse_is_identity(mag_ratio<4, 17>());
 //   check_product_with_inverse_is_identity(pi_to_the<ratio{-22, 7}>());
 // }
 
@@ -173,13 +173,13 @@ static_assert(std::is_same_v<decltype(get_base(power_v<mag_2, 5, 8>{})), mag_2_>
 //     CHECK(mag<792>() == magnitude<base_power{2, 3}, base_power{3, 2}, base_power{11}>{});
 //   }
 
-//   SECTION("Supports fractions") { CHECK(mag<ratio{5, 8}>() == magnitude<base_power{2, -3}, base_power{5}>{}); }
+//   SECTION("Supports fractions") { CHECK(mag_ratio<5, 8>() == magnitude<base_power{2, -3}, base_power{5}>{}); }
 
 //   SECTION("Can handle prime factor which would be large enough to overflow int")
 //   {
 //     // This was taken from a case which failed when we used `int` for our base to store prime numbers.
 //     // The failure was due to a prime factor which is larger than 2^31.
-//     mag<ratio(16'605'390'666'050, 10'000'000'000'000)>();
+//     mag_ratio<16'605'390'666'050, 10'000'000'000'000>();
 //   }
 
 //   SECTION("Can bypass computing primes by providing known_first_factor<N>")
@@ -209,7 +209,7 @@ static_assert(std::is_same_v<decltype(get_base(power_v<mag_2, 5, 8>{})), mag_2_>
 
 //   SECTION("Negative integer powers of integer bases compute correct values")
 //   {
-//     constexpr auto mag_0p125 = mag<ratio{1, 8}>();
+//     constexpr auto mag_0p125 = mag_ratio<1, 8>();
 //     check_same_type_and_value(get_value<float>(mag_0p125), 0.125f);
 //     check_same_type_and_value(get_value<double>(mag_0p125), 0.125);
 //   }
@@ -266,38 +266,38 @@ static_assert(std::is_same_v<decltype(get_base(power_v<mag_2, 5, 8>{})), mag_2_>
 //   {
 //     CHECK(mag<1>() == mag<1>());
 //     CHECK(mag<3>() == mag<3>());
-//     CHECK(mag<ratio{3, 4}>() == mag<ratio{9, 12}>());
+//     CHECK(mag_ratio<3, 4>() == mag_ratio<9, 12>());
 //   }
 
 //   SECTION("Different ratios are unequal")
 //   {
 //     CHECK(mag<3>() != mag<5>());
-//     CHECK(mag<3>() != mag<ratio{3, 2}>());
+//     CHECK(mag<3>() != mag_ratio<3, 2>());
 //   }
 
 //   SECTION("Supports constexpr")
 //   {
-//     constexpr auto eq = (mag<ratio{4, 5}>() == mag<ratio{4, 3}>());
+//     constexpr auto eq = (mag_ratio<4, 5>() == mag_ratio<4, 3>());
 //     CHECK(!eq);
 //   }
 // }
 
 // TEST_CASE("Multiplication works for magnitudes")
 // {
-//   SECTION("Reciprocals reduce to null magnitude") { CHECK(mag<ratio{3, 4}>() * mag<ratio{4, 3}>() == mag<1>()); }
+//   SECTION("Reciprocals reduce to null magnitude") { CHECK(mag_ratio<3, 4>() * mag_ratio<4, 3>() == mag<1>()); }
 
-//   SECTION("Products work as expected") { CHECK(mag<ratio{4, 5}>() * mag<ratio{4, 3}>() == mag<ratio{16, 15}>()); }
+//   SECTION("Products work as expected") { CHECK(mag_ratio<4, 5>() * mag_ratio<4, 3>() == mag_ratio<16, 15>()); }
 
 //   SECTION("Products handle pi correctly")
 //   {
-//     CHECK(pi_to_the<1>() * mag<ratio{2, 3}>() * pi_to_the<ratio{-1, 2}>() ==
+//     CHECK(pi_to_the<1>() * mag_ratio<2, 3>() * pi_to_the<ratio{-1, 2}>() ==
 //           magnitude<base_power{2}, base_power{3, -1}, base_power<pi_base>{ratio{1, 2}}>{});
 //   }
 
 //   SECTION("Supports constexpr")
 //   {
-//     constexpr auto p = mag<ratio{4, 5}>() * mag<ratio{4, 3}>();
-//     CHECK(p == mag<ratio{16, 15}>());
+//     constexpr auto p = mag_ratio<4, 5>() * mag_ratio<4, 3>();
+//     CHECK(p == mag_ratio<16, 15>());
 //   }
 // }
 
@@ -318,7 +318,7 @@ static_assert(std::is_same_v<decltype(get_base(power_v<mag_2, 5, 8>{})), mag_2_>
 
 //   SECTION("Handles fractions")
 //   {
-//     CHECK(common_magnitude(mag<ratio{3, 8}>(), mag<ratio{5, 6}>()) == mag<ratio{1, 24}>());
+//     CHECK(common_magnitude(mag_ratio<3, 8>(), mag_ratio<5, 6>()) == mag_ratio<1, 24>());
 //   }
 // }
 
@@ -326,16 +326,16 @@ static_assert(std::is_same_v<decltype(get_base(power_v<mag_2, 5, 8>{})), mag_2_>
 // {
 //   SECTION("Dividing anything by itself reduces to null magnitude")
 //   {
-//     CHECK(mag<ratio{3, 4}>() / mag<ratio{3, 4}>() == mag<1>());
+//     CHECK(mag_ratio<3, 4>() / mag_ratio<3, 4>() == mag<1>());
 //     CHECK(mag<15>() / mag<15>() == mag<1>());
 //   }
 
-//   SECTION("Quotients work as expected") { CHECK(mag<ratio{4, 5}>() / mag<ratio{4, 3}>() == mag<ratio{3, 5}>()); }
+//   SECTION("Quotients work as expected") { CHECK(mag_ratio<4, 5>() / mag_ratio<4, 3>() == mag_ratio<3, 5>()); }
 
 //   SECTION("Supports constexpr")
 //   {
-//     constexpr auto q = mag<ratio{4, 5}>() / mag<ratio{4, 3}>();
-//     CHECK(q == mag<ratio{3, 5}>());
+//     constexpr auto q = mag_ratio<4, 5>() / mag_ratio<4, 3>();
+//     CHECK(q == mag_ratio<3, 5>());
 //   }
 // }
 
@@ -345,7 +345,7 @@ static_assert(std::is_same_v<decltype(get_base(power_v<mag_2, 5, 8>{})), mag_2_>
 //   {
 //     CHECK(pow<0>(mag<1>()) == mag<1>());
 //     CHECK(pow<0>(mag<123>()) == mag<1>());
-//     CHECK(pow<0>(mag<ratio{3, 4}>()) == mag<1>());
+//     CHECK(pow<0>(mag_ratio<3, 4>()) == mag<1>());
 //     CHECK(pow<0>(pi_to_the<ratio{-1, 2}>()) == mag<1>());
 //   }
 
@@ -353,7 +353,7 @@ static_assert(std::is_same_v<decltype(get_base(power_v<mag_2, 5, 8>{})), mag_2_>
 //   {
 //     CHECK(pow<1>(mag<1>()) == mag<1>());
 //     CHECK(pow<1>(mag<123>()) == mag<123>());
-//     CHECK(pow<1>(mag<ratio{3, 4}>()) == mag<ratio{3, 4}>());
+//     CHECK(pow<1>(mag_ratio<3, 4>()) == mag_ratio<3, 4>());
 //     CHECK(pow<1>(pi_to_the<ratio{-1, 2}>()) == pi_to_the<ratio{-1, 2}>());
 //   }
 
@@ -376,7 +376,7 @@ static_assert(std::is_same_v<decltype(get_base(power_v<mag_2, 5, 8>{})), mag_2_>
 //     check_rational_and_integral(mag<3>());
 //     check_rational_and_integral(mag<8>());
 //     check_rational_and_integral(mag<412>());
-//     check_rational_and_integral(mag<ratio{1, 1}>());
+//     check_rational_and_integral(mag_ratio<1, 1>());
 //   }
 
 //   SECTION("Fractional magnitudes are rational, but not integral")
@@ -385,8 +385,8 @@ static_assert(std::is_same_v<decltype(get_base(power_v<mag_2, 5, 8>{})), mag_2_>
 //       CHECK(!is_integral(m));
 //       CHECK(is_rational(m));
 //     };
-//     check_rational_but_not_integral(mag<ratio{1, 2}>());
-//     check_rational_but_not_integral(mag<ratio{5, 8}>());
+//     check_rational_but_not_integral(mag_ratio<1, 2>());
+//     check_rational_but_not_integral(mag_ratio<5, 8>());
 //   }
 // }
 
@@ -403,7 +403,7 @@ static_assert(std::is_same_v<decltype(get_base(power_v<mag_2, 5, 8>{})), mag_2_>
 
 //   SECTION("Rational magnitude converts to ratio")
 //   {
-//     constexpr ratio r = as_ratio(mag<ratio{22, 7}>());
+//     constexpr ratio r = as_ratio(mag_ratio<22, 7>());
 //     CHECK(r == ratio{22, 7});
 //   }
 
