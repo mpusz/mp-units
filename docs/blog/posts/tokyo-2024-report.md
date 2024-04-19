@@ -1,9 +1,9 @@
 ---
 date: 2024-04-15
 authors:
- - mpusz
+  - mpusz
 categories:
- - WG21
+  - WG21
 ---
 
 # Report from the Tokyo 2024 ISO C++ Committee meeting
