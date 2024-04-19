@@ -36,8 +36,8 @@ The following poll was taken by the LEWG:
 !!! question "LEWG POLL: Given that our time is limited, more time should be promised for a quantities and units library"
 
     | Strongly in Favor | In favor | Neutral | Against | Strongly Against |
-    |-------------------|----------|---------|---------|------------------|
-    | 10                | 13       | 4       | 0       | 0                |
+    |:-----------------:|:--------:|:-------:|:-------:|:----------------:|
+    |        10         |    13    |    4    |    0    |        0         |
 
     Attendance: 22 + 6
 
