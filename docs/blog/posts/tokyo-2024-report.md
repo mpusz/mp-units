@@ -1,9 +1,9 @@
 ---
 date: 2024-04-15
 authors:
-  - mpusz
+  - mpusz
 categories:
-  - WG21
+  - WG21
 ---
 
 # Report from the Tokyo 2024 ISO C++ Committee meeting
@@ -23,13 +23,13 @@ We run a few polls in SG6 as well:
 
 !!! question "POLL: The syntax `number * unit` is the right solution for constructing quantities. Not allowing reordering the operands is correct."
 
-  | Strongly in Favor | In favor | Neutral | Against | Strongly Against |
-  |:-----------------:|:--------:|:-------:|:-------:|:----------------:|
-  |         5         |    4     |    1    |    0    |        1         |
+    | Strongly in Favor | In favor | Neutral | Against | Strongly Against |
+    |:-----------------:|:--------:|:-------:|:-------:|:----------------:|
+    |         5         |    4     |    1    |    0    |        1         |
 
 !!! question "POLL: Not defining any UDLs is the right solution."
 
-  No objection to unanimous consent.
+    No objection to unanimous consent.
 
 The paper was also briefly discussed in SG18 LEWG Incubator, and the initial feedback was also
 positive. No polls were taken.
@@ -50,36 +50,36 @@ Plenty of polls were taken:
 
 !!! question "POLL: We should promise more committee time to pursuing std::basic_fixed_string, knowing that our time is scarce and this will leave less time for other work."
 
-  | Strongly in Favor | In favor | Neutral | Against | Strongly Against |
-  |:-----------------:|:--------:|:-------:|:-------:|:----------------:|
-  |        11         |    0     |    0    |    0    |        0         |
+    | Strongly in Favor | In favor | Neutral | Against | Strongly Against |
+    |:-----------------:|:--------:|:-------:|:-------:|:----------------:|
+    |        11         |    0     |    0    |    0    |        0         |
 
 !!! question "POLL: Should the constructor from a string literal be consteval?"
 
-  | Strongly in Favor | In favor | Neutral | Against | Strongly Against |
-  |:-----------------:|:--------:|:-------:|:-------:|:----------------:|
-  |         6         |    3     |    2    |    0    |        0         |
+    | Strongly in Favor | In favor | Neutral | Against | Strongly Against |
+    |:-----------------:|:--------:|:-------:|:-------:|:----------------:|
+    |         6         |    3     |    2    |    0    |        0         |
 
 !!! question "POLL: Do we want to add .view()?"
 
-  | Strongly in Favor | In favor | Neutral | Against | Strongly Against |
-  |:-----------------:|:--------:|:-------:|:-------:|:----------------:|
-  |         3         |    5     |    3    |    0    |        0         |
+    | Strongly in Favor | In favor | Neutral | Against | Strongly Against |
+    |:-----------------:|:--------:|:-------:|:-------:|:----------------:|
+    |         3         |    5     |    3    |    0    |        0         |
 
 !!! question "POLL: Do we want the .size member to be an integral_constant<size_t, N> (and .empty to be bool_constant<N==0>)?"
 
-  | Strongly in Favor | In favor | Neutral | Against | Strongly Against |
-  |:-----------------:|:--------:|:-------:|:-------:|:----------------:|
-  |         5         |    2     |    2    |    2    |        0         |
+    | Strongly in Favor | In favor | Neutral | Against | Strongly Against |
+    |:-----------------:|:--------:|:-------:|:-------:|:----------------:|
+    |         5         |    2     |    2    |    2    |        0         |
 
 !!! question "POLL: Should the index operator[] return a reference to const?"
 
-  | Strongly in Favor | In favor | Neutral | Against | Strongly Against |
-  |:-----------------:|:--------:|:-------:|:-------:|:----------------:|
-  |         2         |    2     |    3    |    3    |        0         |
+    | Strongly in Favor | In favor | Neutral | Against | Strongly Against |
+    |:-----------------:|:--------:|:-------:|:-------:|:----------------:|
+    |         2         |    2     |    3    |    3    |        0         |
 
 !!! question "POLL: Should the constructor from a string literal have a precondition that txt[N] == 0?"
 
-  | Strongly in Favor | In favor | Neutral | Against | Strongly Against |
-  |:-----------------:|:--------:|:-------:|:-------:|:----------------:|
-  |         6         |    1     |    2    |    0    |        2         |
+    | Strongly in Favor | In favor | Neutral | Against | Strongly Against |
+    |:-----------------:|:--------:|:-------:|:-------:|:----------------:|
+    |         6         |    1     |    2    |    0    |        2         |
