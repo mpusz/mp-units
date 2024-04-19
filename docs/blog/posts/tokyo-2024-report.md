@@ -48,37 +48,37 @@ paper is expected to progress to LEWG (Library Evolution Working Group) in St. L
 
 Plenty of polls were taken:
 
-!!! question "POLL: We should promise more committee time to pursuing std::basic_fixed_string, knowing that our time is scarce and this will leave less time for other work."
+!!! question "POLL: We should promise more committee time to pursuing `std::basic_fixed_string`, knowing that our time is scarce and this will leave less time for other work."
 
     | Strongly in Favor | In favor | Neutral | Against | Strongly Against |
     |:-----------------:|:--------:|:-------:|:-------:|:----------------:|
     |        11         |    0     |    0    |    0    |        0         |
 
-!!! question "POLL: Should the constructor from a string literal be consteval?"
+!!! question "POLL: Should the constructor from a string literal be `consteval`?"
 
     | Strongly in Favor | In favor | Neutral | Against | Strongly Against |
     |:-----------------:|:--------:|:-------:|:-------:|:----------------:|
     |         6         |    3     |    2    |    0    |        0         |
 
-!!! question "POLL: Do we want to add .view()?"
+!!! question "POLL: Do we want to add `.view()`?"
 
     | Strongly in Favor | In favor | Neutral | Against | Strongly Against |
     |:-----------------:|:--------:|:-------:|:-------:|:----------------:|
     |         3         |    5     |    3    |    0    |        0         |
 
-!!! question "POLL: Do we want the .size member to be an integral_constant<size_t, N> (and .empty to be bool_constant<N==0>)?"
+!!! question "POLL: Do we want the `.size` member to be an `integral_constant<size_t, N>` (and `.empty` to be `bool_constant<N==0>`)?"
 
     | Strongly in Favor | In favor | Neutral | Against | Strongly Against |
     |:-----------------:|:--------:|:-------:|:-------:|:----------------:|
     |         5         |    2     |    2    |    2    |        0         |
 
-!!! question "POLL: Should the index operator[] return a reference to const?"
+!!! question "POLL: Should the index `operator[]` return a reference to `const`?"
 
     | Strongly in Favor | In favor | Neutral | Against | Strongly Against |
     |:-----------------:|:--------:|:-------:|:-------:|:----------------:|
     |         2         |    2     |    3    |    3    |        0         |
 
-!!! question "POLL: Should the constructor from a string literal have a precondition that txt[N] == 0?"
+!!! question "POLL: Should the constructor from a string literal have a precondition that `txt[N] == 0`?"
 
     | Strongly in Favor | In favor | Neutral | Against | Strongly Against |
     |:-----------------:|:--------:|:-------:|:-------:|:----------------:|
