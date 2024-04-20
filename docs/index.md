@@ -38,7 +38,7 @@ The library source code is hosted on [GitHub](https://github.com/mpusz/mp-units)
     int main()
     {
       constexpr quantity dist = 364.4 * smoot;
-      std::println("Harvard Bridge length = {::N[.5]} ({::N[.5]}, {::N[.5]}) ± 1 εar",
+      std::println("Harvard Bridge length = {::N[.1f]} ({::N[.1f]}, {::N[.2f]}) ± 1 εar",
                    dist, dist.in(usc::foot), dist.in(si::metre));
     }
     ```
@@ -58,7 +58,7 @@ The library source code is hosted on [GitHub](https://github.com/mpusz/mp-units)
     int main()
     {
       constexpr quantity dist = 364.4 * smoot;
-      std::println("Harvard Bridge length = {::N[.5]} ({::N[.5]}, {::N[.5]}) ± 1 εar",
+      std::println("Harvard Bridge length = {::N[.1f]} ({::N[.1f]}, {::N[.2f]}) ± 1 εar",
                    dist, dist.in(usc::foot), dist.in(si::metre));
     }
     ```
@@ -69,7 +69,7 @@ Output:
 Harvard Bridge length = 364.4 smoot (2034.6 ft, 620.14 m) ± 1 εar
 ```
 
-!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/j5GhdEWv5)"
+!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/Ee8oGd5dq)"
 
 ??? question "What is `smoot`?"
 
