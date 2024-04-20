@@ -126,4 +126,4 @@ int main()
 }
 ```
 
-_Try it on the [Compiler Explorer](https://godbolt.org/z/n8GEdfeed)._
+_Try it on the [Compiler Explorer](https://godbolt.org/z/Pe8ah9WYT)._

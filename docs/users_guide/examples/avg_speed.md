@@ -7,7 +7,7 @@ tags:
 
 # `avg_speed`
 
-!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/75zWdffj1)"
+!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/vvxbMjeof)"
 
 Let's continue the previous example. This time, our purpose will not be to showcase as many
 library features as possible, but we will scope on different interfaces one can provide

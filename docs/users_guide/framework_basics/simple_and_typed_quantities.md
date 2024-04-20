@@ -114,7 +114,7 @@ The code above prints:
 A car driving 110 km in 2 h has an average speed of 15.28 m/s (55 km/h)
 ```
 
-!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/svdof9dv4)"
+!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/h1nne9eaG)"
 
 
 ### User-provided unit wrappers
@@ -232,7 +232,7 @@ The previous example can be re-typed using typed quantities in the following way
 A car driving 110 km in 2 h has an average speed of 15.28 m/s (55 km/h)
 ```
 
-!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/3qdh3xhh7)"
+!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/aYGdrWsT6)"
 
 In case we will accidentally make the same calculation error as before, this time, we will
 get a bit longer error message, this time also containing information about the quantity type:
