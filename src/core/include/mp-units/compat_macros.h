@@ -52,12 +52,6 @@
 
 #if MP_UNITS_USE_FMTLIB
 
-MP_UNITS_DIAGNOSTIC_PUSH
-MP_UNITS_DIAGNOSTIC_IGNORE_UNREACHABLE
-MP_UNITS_DIAGNOSTIC_IGNORE_SHADOW
-#include <fmt/format.h>
-MP_UNITS_DIAGNOSTIC_POP
-
 #define MP_UNITS_STD_FMT fmt
 #define MP_UNITS_FMT_LOCALE(loc) (loc).template get<std::locale>()
 #define MP_UNITS_FMT_TO_ARG_ID(arg) (arg)
@@ -82,8 +76,6 @@ MP_UNITS_DIAGNOSTIC_POP
 #if !defined __cpp_lib_format && !defined MP_UNITS_COMP_CLANG
 #error "std::formatting facility not supported"
 #endif
-
-#include <format>
 
 #define MP_UNITS_STD_FMT std
 #define MP_UNITS_FMT_LOCALE(loc) loc
