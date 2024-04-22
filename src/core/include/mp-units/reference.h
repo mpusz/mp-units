@@ -112,7 +112,7 @@ struct reference {
     return {};
   }
 
-  [[nodiscard]] friend consteval detail::reference_t<inverse(Q{}), inverse(U{})> inverse(reference) { return {}; }
+  [[nodiscard]] friend consteval auto inverse(reference) { return detail::reference_t<inverse(Q{}), inverse(U{})>{}; }
 
   /**
    * @brief Computes the value of a reference raised to the `Num/Den` power
@@ -125,9 +125,9 @@ struct reference {
    */
   template<std::intmax_t Num, std::intmax_t Den = 1>
     requires detail::non_zero<Den>
-  [[nodiscard]] friend consteval detail::reference_t<pow<Num, Den>(Q{}), pow<Num, Den>(U{})> pow(reference)
+  [[nodiscard]] friend consteval auto pow(reference)
   {
-    return {};
+    return detail::reference_t<pow<Num, Den>(Q{}), pow<Num, Den>(U{})>{};
   }
 
   /**
@@ -137,7 +137,7 @@ struct reference {
    *
    * @return The result of computation
    */
-  [[nodiscard]] friend consteval detail::reference_t<sqrt(Q{}), sqrt(U{})> sqrt(reference) { return {}; }
+  [[nodiscard]] friend consteval auto sqrt(reference) { return detail::reference_t<sqrt(Q{}), sqrt(U{})>{}; }
 
   /**
    * @brief Computes the cubic root of a reference
@@ -146,7 +146,7 @@ struct reference {
    *
    * @return The result of computation
    */
-  [[nodiscard]] friend consteval detail::reference_t<cbrt(Q{}), cbrt(U{})> cbrt(reference) { return {}; }
+  [[nodiscard]] friend consteval auto cbrt(reference) { return detail::reference_t<cbrt(Q{}), cbrt(U{})>{}; }
 
   template<typename Q2, typename U2>
   [[nodiscard]] friend consteval bool convertible(reference, reference<Q2, U2>)
