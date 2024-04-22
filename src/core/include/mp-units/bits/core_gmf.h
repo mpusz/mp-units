@@ -47,6 +47,16 @@
 #include <type_traits>
 #include <utility>
 
+#if MP_UNITS_USE_FMTLIB
+MP_UNITS_DIAGNOSTIC_PUSH
+MP_UNITS_DIAGNOSTIC_IGNORE_UNREACHABLE
+MP_UNITS_DIAGNOSTIC_IGNORE_SHADOW
+#include <fmt/format.h>
+MP_UNITS_DIAGNOSTIC_POP
+#else
+#include <format>
+#endif
+
 #if __cpp_lib_text_encoding
 #include <text_encoding>
 #endif
