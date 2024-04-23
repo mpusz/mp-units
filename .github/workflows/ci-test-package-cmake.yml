@@ -159,15 +159,15 @@ jobs:
           cache-name: cache-conan-data
         with:
           path: ~/.conan2/p
-          key: build-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-${{ matrix.std }}-${{ env.cache_id }}
+          key: cmake-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-${{ matrix.std }}-${{ env.cache_id }}
           restore-keys: |
-            build-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-${{ matrix.std }}-
-            build-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-
-            build-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-
-            build-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-
-            build-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.config.compiler.type }}-
-            build-${{ matrix.config.os }}-${{ matrix.formatting }}-
-            build-${{ matrix.config.os }}-
+            cmake-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-${{ matrix.std }}-
+            cmake-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-
+            cmake-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-
+            cmake-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-
+            cmake-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.config.compiler.type }}-
+            cmake-${{ matrix.config.os }}-${{ matrix.formatting }}-
+            cmake-${{ matrix.config.os }}-
       - name: Install gcc-13
         if: matrix.config.compiler.type == 'GCC' && matrix.config.compiler.version == '13'
         shell: bash

@@ -161,15 +161,15 @@ jobs:
           cache-name: cache-conan-data
         with:
           path: ~/.conan2/p
-          key: build-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-${{ matrix.std }}-${{ env.cache_id }}
+          key: conan-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-${{ matrix.std }}-${{ env.cache_id }}
           restore-keys: |
-            build-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-${{ matrix.std }}-
-            build-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-
-            build-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-
-            build-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-
-            build-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.config.compiler.type }}-
-            build-${{ matrix.config.os }}-${{ matrix.formatting }}-
-            build-${{ matrix.config.os }}-
+            conan-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-${{ matrix.std }}-
+            conan-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-
+            conan-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-
+            conan-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-
+            conan-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.config.compiler.type }}-
+            conan-${{ matrix.config.os }}-${{ matrix.formatting }}-
+            conan-${{ matrix.config.os }}-
       - uses: hendrikmuhs/ccache-action@v1.2
         if: runner.os == 'Linux'
         with:
