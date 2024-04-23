@@ -84,3 +84,18 @@
 #define MP_UNITS_THROW(arg) throw arg
 
 #endif
+
+
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
+
+#if MP_UNITS_USE_FMTLIB
+MP_UNITS_DIAGNOSTIC_PUSH
+MP_UNITS_DIAGNOSTIC_IGNORE_UNREACHABLE
+MP_UNITS_DIAGNOSTIC_IGNORE_SHADOW
+#include <fmt/format.h>
+MP_UNITS_DIAGNOSTIC_POP
+#else
+#include <format>
+#endif
+
+#endif
