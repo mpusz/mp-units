@@ -41,6 +41,7 @@
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <gsl/gsl-lite.hpp>
 #include <array>
+#include <cstdint>
 #include <iterator>
 #include <string>
 #include <string_view>

@@ -27,6 +27,7 @@
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <mp-units/unit.h>
+#include <cstdint>
 #endif
 
 MP_UNITS_EXPORT

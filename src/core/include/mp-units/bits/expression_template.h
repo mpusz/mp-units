@@ -27,6 +27,10 @@
 #include <mp-units/bits/external/type_traits.h>
 #include <mp-units/bits/ratio.h>
 
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
+#include <cstdint>
+#endif
+
 namespace mp_units {
 
 /**

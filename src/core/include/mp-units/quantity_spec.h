@@ -38,6 +38,7 @@
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <tuple>
+#include <cstdint>
 #endif
 
 namespace mp_units {

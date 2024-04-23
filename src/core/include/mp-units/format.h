@@ -29,10 +29,6 @@
 #include <mp-units/quantity.h>
 #include <mp-units/unit.h>
 
-#ifndef MP_UNITS_IN_MODULE_INTERFACE
-#include <cstdint>
-#endif
-
 namespace mp_units::detail {
 
 template<typename Char>
@@ -409,6 +405,7 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
     if (*begin++ != ':') throw MP_UNITS_STD_FMT::format_error("`defaults-specs` should start with a `:`");
     do {
       auto c = *begin++;
+      // TODO check if not repeated
       switch (c) {
         case 'N':
           begin = parse_default_spec(begin, end, rep_formatter_, rep_format_str_);

@@ -28,6 +28,10 @@
 #include <mp-units/bits/reference_concepts.h>
 #include <mp-units/bits/representation_concepts.h>
 
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
+#include <cstdint>
+#endif
+
 namespace mp_units {
 
 namespace detail {

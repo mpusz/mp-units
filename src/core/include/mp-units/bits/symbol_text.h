@@ -31,7 +31,6 @@
 #include <gsl/gsl-lite.hpp>
 #include <compare>
 #include <cstddef>
-#include <cstdint>
 #endif
 
 #if __cpp_lib_text_encoding

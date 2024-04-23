@@ -29,6 +29,7 @@
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <sstream>
+#include <cstdint>
 #endif
 
 namespace mp_units {

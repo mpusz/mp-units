@@ -25,6 +25,7 @@
 #include <mp-units/systems/isq/isq.h>
 #include <mp-units/systems/si/si.h>
 #include <mp-units/systems/usc/usc.h>
+#include <cstdint>
 #include <limits>
 #include <type_traits>
 #include <utility>
