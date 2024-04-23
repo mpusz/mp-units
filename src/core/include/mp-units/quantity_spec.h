@@ -37,8 +37,8 @@
 #include <mp-units/dimension.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
-#include <tuple>
 #include <cstdint>
+#include <tuple>
 #endif
 
 namespace mp_units {

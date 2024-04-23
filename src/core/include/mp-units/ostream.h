@@ -28,8 +28,8 @@
 #include <mp-units/unit.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
-#include <sstream>
 #include <cstdint>
+#include <sstream>
 #endif
 
 namespace mp_units {
