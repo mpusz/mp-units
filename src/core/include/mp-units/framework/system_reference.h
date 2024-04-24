@@ -22,11 +22,12 @@
 
 #pragma once
 
-#include <mp-units/bits/external/hacks.h>
+// IWYU pragma: private, include <mp-units/framework.h>
+#include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
-#include <mp-units/quantity_spec.h>
-#include <mp-units/reference.h>
-#include <mp-units/unit.h>
+#include <mp-units/framework/quantity_spec.h>
+#include <mp-units/framework/reference.h>
+#include <mp-units/framework/unit.h>
 
 MP_UNITS_EXPORT
 namespace mp_units {

@@ -23,6 +23,7 @@
 #include <mp-units/systems/iau/iau.h>
 #include <mp-units/systems/iec80000/iec80000.h>
 #include <mp-units/systems/si/si.h>
+#include <string_view>
 
 namespace {
 

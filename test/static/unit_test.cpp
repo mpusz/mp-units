@@ -21,11 +21,10 @@
 // SOFTWARE.
 
 #include "test_tools.h"
-#include <mp-units/dimension.h>
-#include <mp-units/quantity.h>
-#include <mp-units/reference.h>
+#include <mp-units/ext/type_traits.h>
+#include <mp-units/framework.h>
 #include <mp-units/systems/si/prefixes.h>
-#include <mp-units/unit.h>
+#include <type_traits>
 
 namespace {
 
@@ -336,11 +335,11 @@ static_assert(is_of_type<speed_of_light_in_vacuum * gram * standard_gravity,
 static_assert(is_of_type<gram * standard_gravity * speed_of_light_in_vacuum,
                          derived_unit<speed_of_light_in_vacuum_, gram_, standard_gravity_>>);
 
-static_assert(std::is_same_v<decltype(inverse(second) * metre), decltype(metre / second)>);
-static_assert(std::is_same_v<decltype(metre * inverse(second)), decltype(metre / second)>);
-static_assert(std::is_same_v<decltype((metre / second) * inverse(second)), decltype(metre / second / second)>);
-static_assert(std::is_same_v<decltype((metre / second) * inverse(second)), decltype(metre / (second * second))>);
-static_assert(std::is_same_v<decltype((metre / second) * inverse(second)), decltype(metre / square(second))>);
+static_assert(is_same_v<decltype(inverse(second) * metre), decltype(metre / second)>);
+static_assert(is_same_v<decltype(metre * inverse(second)), decltype(metre / second)>);
+static_assert(is_same_v<decltype((metre / second) * inverse(second)), decltype(metre / second / second)>);
+static_assert(is_same_v<decltype((metre / second) * inverse(second)), decltype(metre / (second * second))>);
+static_assert(is_same_v<decltype((metre / second) * inverse(second)), decltype(metre / square(second))>);
 
 
 // derived unit normalization

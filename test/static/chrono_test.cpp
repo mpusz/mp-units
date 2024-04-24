@@ -21,9 +21,12 @@
 // SOFTWARE.
 
 #include "test_tools.h"
-#include <mp-units/bits/external/type_traits.h>
-#include <mp-units/quantity_point.h>
+#include <mp-units/ext/type_traits.h>
+#include <mp-units/framework/quantity_point.h>  // IWYU pragma: keep
+#include <mp-units/systems/isq/si_quantities.h>
 #include <mp-units/systems/si/si.h>
+#include <chrono>
+#include <concepts>
 #include <ratio>
 
 namespace {

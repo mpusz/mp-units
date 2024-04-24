@@ -40,50 +40,51 @@ endif()
 add_mp_units_module(
     core mp-units-core
     DEPENDENCIES gsl::gsl-lite
-    HEADERS include/mp-units/bits/external/algorithm.h
-            include/mp-units/bits/external/fixed_string.h
-            include/mp-units/bits/external/hacks.h
-            include/mp-units/bits/external/math_concepts.h
-            include/mp-units/bits/external/prime.h
-            include/mp-units/bits/external/type_list.h
-            include/mp-units/bits/external/type_name.h
-            include/mp-units/bits/external/type_traits.h
-            include/mp-units/bits/core_gmf.h
-            include/mp-units/bits/dimension_concepts.h
-            include/mp-units/bits/expression_template.h
+    HEADERS include/mp-units/bits/core_gmf.h
             include/mp-units/bits/fmt.h
             include/mp-units/bits/get_associated_quantity.h
             include/mp-units/bits/get_common_base.h
-            include/mp-units/bits/magnitude.h
+            include/mp-units/bits/hacks.h
+            include/mp-units/bits/math_concepts.h
             include/mp-units/bits/module_macros.h
-            include/mp-units/bits/quantity_cast.h
-            include/mp-units/bits/quantity_concepts.h
-            include/mp-units/bits/quantity_point_concepts.h
-            include/mp-units/bits/quantity_spec_concepts.h
             include/mp-units/bits/ratio.h
-            include/mp-units/bits/reference_concepts.h
-            include/mp-units/bits/representation_concepts.h
             include/mp-units/bits/sudo_cast.h
-            include/mp-units/bits/symbol_text.h
             include/mp-units/bits/text_tools.h
-            include/mp-units/bits/unit_concepts.h
-            include/mp-units/bits/value_cast.h
-            include/mp-units/compare.h
+            include/mp-units/bits/type_list.h
+            include/mp-units/ext/algorithm.h
+            include/mp-units/ext/fixed_string.h
+            include/mp-units/ext/prime.h
+            include/mp-units/ext/type_name.h
+            include/mp-units/ext/type_traits.h
+            include/mp-units/framework/compare.h
+            include/mp-units/framework/customization_points.h
+            include/mp-units/framework/dimension.h
+            include/mp-units/framework/dimension_concepts.h
+            include/mp-units/framework/expression_template.h
+            include/mp-units/framework/magnitude.h
+            include/mp-units/framework/quantity.h
+            include/mp-units/framework/quantity_cast.h
+            include/mp-units/framework/quantity_concepts.h
+            include/mp-units/framework/quantity_point.h
+            include/mp-units/framework/quantity_point_concepts.h
+            include/mp-units/framework/quantity_spec.h
+            include/mp-units/framework/quantity_spec_concepts.h
+            include/mp-units/framework/reference.h
+            include/mp-units/framework/reference_concepts.h
+            include/mp-units/framework/representation_concepts.h
+            include/mp-units/framework/symbol_text.h
+            include/mp-units/framework/system_reference.h
+            include/mp-units/framework/unit.h
+            include/mp-units/framework/unit_concepts.h
+            include/mp-units/framework/value_cast.h
             include/mp-units/compat_macros.h
             include/mp-units/concepts.h
             include/mp-units/core.h
-            include/mp-units/customization_points.h
-            include/mp-units/dimension.h
             include/mp-units/format.h
+            include/mp-units/framework.h
             include/mp-units/math.h
             include/mp-units/ostream.h
-            include/mp-units/quantity.h
-            include/mp-units/quantity_point.h
-            include/mp-units/quantity_spec.h
             include/mp-units/random.h
-            include/mp-units/reference.h
-            include/mp-units/system_reference.h
-            include/mp-units/unit.h
     MODULE_INTERFACE_UNIT mp-units-core.cpp
 )
 

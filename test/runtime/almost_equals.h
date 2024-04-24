@@ -27,7 +27,7 @@
 import mp_units;
 #else
 #include <mp-units/format.h>
-#include <mp-units/quantity.h>
+#include <mp-units/framework/quantity.h>
 #endif
 
 namespace mp_units {

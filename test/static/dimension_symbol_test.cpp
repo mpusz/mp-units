@@ -20,7 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include <mp-units/framework.h>
 #include <mp-units/systems/isq/isq.h>
+#include <string_view>
 
 namespace {
 

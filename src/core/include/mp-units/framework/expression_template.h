@@ -22,10 +22,10 @@
 
 #pragma once
 
-#include <mp-units/bits/external/math_concepts.h>
-#include <mp-units/bits/external/type_list.h>
-#include <mp-units/bits/external/type_traits.h>
+#include <mp-units/bits/math_concepts.h>
 #include <mp-units/bits/ratio.h>
+#include <mp-units/bits/type_list.h>
+#include <mp-units/ext/type_traits.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <cstdint>

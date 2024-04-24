@@ -22,13 +22,15 @@
 
 #pragma once
 
-#include <mp-units/bits/dimension_concepts.h>
-#include <mp-units/bits/expression_template.h>
-#include <mp-units/bits/external/hacks.h>
-#include <mp-units/bits/external/type_traits.h>
+// IWYU pragma: private, include <mp-units/framework.h>
+#include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
-#include <mp-units/bits/symbol_text.h>
 #include <mp-units/bits/text_tools.h>
+#include <mp-units/ext/fixed_string.h>
+#include <mp-units/ext/type_traits.h>
+#include <mp-units/framework/dimension_concepts.h>
+#include <mp-units/framework/expression_template.h>
+#include <mp-units/framework/symbol_text.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <gsl/gsl-lite.hpp>

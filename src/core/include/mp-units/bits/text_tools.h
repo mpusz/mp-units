@@ -22,18 +22,16 @@
 
 #pragma once
 
-#include <mp-units/bits/external/fixed_string.h>
-#include <mp-units/bits/external/type_traits.h>
 #include <mp-units/bits/ratio.h>
-#include <mp-units/bits/symbol_text.h>
+#include <mp-units/ext/fixed_string.h>
+#include <mp-units/ext/type_traits.h>
+#include <mp-units/framework/symbol_text.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <cstdint>
 #endif
 
-namespace mp_units {
-
-namespace detail {
+namespace mp_units::detail {
 
 template<std::intmax_t Value>
   requires(0 <= Value) && (Value < 10)
@@ -92,16 +90,6 @@ template<std::intmax_t Value>
     return regular<Value / 10>() + regular<Value % 10>();
 }
 
-}  // namespace detail
-
-MP_UNITS_EXPORT enum class text_encoding : std::int8_t {
-  unicode,  // µs; m³;  L²MT⁻³
-  ascii,    // us; m^3; L^2MT^-3
-  default_encoding = unicode
-};
-
-namespace detail {
-
 template<typename CharT, std::size_t N, std::size_t M, std::output_iterator<CharT> Out>
 constexpr Out copy(const symbol_text<N, M>& txt, text_encoding encoding, Out out)
 {
@@ -159,6 +147,4 @@ constexpr Out copy_symbol_exponent(text_encoding encoding, bool negative_power, 
   }
 }
 
-}  // namespace detail
-
-}  // namespace mp_units
+}  // namespace mp_units::detail

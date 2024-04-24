@@ -22,9 +22,9 @@
 
 #pragma once
 
-#include <mp-units/bits/expression_template.h>
-#include <mp-units/bits/unit_concepts.h>
-#include <mp-units/quantity_spec.h>
+#include <mp-units/framework/expression_template.h>
+#include <mp-units/framework/quantity_spec.h>
+#include <mp-units/framework/unit_concepts.h>
 
 namespace mp_units::detail {
 

@@ -20,9 +20,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+// IWYU pragma: always_keep
+
 #pragma once
 
-#include <mp-units/bits/external/hacks.h>
+#include <mp-units/bits/hacks.h>
 
 #ifdef MP_UNITS_API_NO_CRTP
 

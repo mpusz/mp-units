@@ -22,19 +22,20 @@
 
 #pragma once
 
-#include <mp-units/bits/expression_template.h>
-#include <mp-units/bits/external/algorithm.h>
-#include <mp-units/bits/external/hacks.h>
-#include <mp-units/bits/external/type_name.h>
-#include <mp-units/bits/external/type_traits.h>
+// IWYU pragma: private, include <mp-units/framework.h>
 #include <mp-units/bits/get_common_base.h>
+#include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
-#include <mp-units/bits/quantity_concepts.h>
-#include <mp-units/bits/quantity_spec_concepts.h>
-#include <mp-units/bits/reference_concepts.h>
-#include <mp-units/bits/representation_concepts.h>
 #include <mp-units/compat_macros.h>
-#include <mp-units/dimension.h>
+#include <mp-units/ext/algorithm.h>
+#include <mp-units/ext/type_name.h>
+#include <mp-units/ext/type_traits.h>
+#include <mp-units/framework/dimension.h>
+#include <mp-units/framework/expression_template.h>
+#include <mp-units/framework/quantity_concepts.h>
+#include <mp-units/framework/quantity_spec_concepts.h>
+#include <mp-units/framework/reference_concepts.h>
+#include <mp-units/framework/representation_concepts.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <cstdint>

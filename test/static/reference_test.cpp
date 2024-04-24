@@ -21,13 +21,10 @@
 // SOFTWARE.
 
 #include "test_tools.h"
-#include <mp-units/dimension.h>
-#include <mp-units/quantity.h>
-#include <mp-units/quantity_spec.h>
-#include <mp-units/reference.h>
-#include <mp-units/system_reference.h>
+#include <mp-units/framework.h>
 #include <mp-units/systems/si/prefixes.h>
-#include <mp-units/unit.h>
+#include <cstdint>
+#include <type_traits>
 
 namespace {
 

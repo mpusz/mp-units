@@ -25,9 +25,11 @@
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/systems/si/units.h>
 
+// IWYU pragma: begin_exports
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
-#include <mp-units/unit.h>
+#include <mp-units/framework.h>
 #endif
+// IWYU pragma: end_exports
 
 MP_UNITS_EXPORT
 namespace mp_units::cgs {

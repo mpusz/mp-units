@@ -45,6 +45,7 @@ macro(_process_iwyu_arguments offset log_postfix)
     set(_options
         QUIET
         REQUIRED
+        ERROR
         NO_DEFAULT_MAPPINGS
         PCH_IN_CODE
         TRANSITIVE_INCLUDES_ONLY
@@ -112,6 +113,7 @@ macro(_process_iwyu_arguments offset log_postfix)
         _iwyu_args_append("--max_line_length=${_enable_iwyu_MAX_LINE_LENGTH}")
     endif()
 
+    _iwyu_args_append_if_present(ERROR "--error")
     _iwyu_args_append_if_present(NO_DEFAULT_MAPPINGS "--no_default_mappings")
     _iwyu_args_append_if_present(PCH_IN_CODE "--pch_in_code")
     _iwyu_args_append_if_present(TRANSITIVE_INCLUDES_ONLY "--transitive_includes_only")

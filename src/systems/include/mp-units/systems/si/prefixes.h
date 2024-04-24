@@ -25,7 +25,7 @@
 #include <mp-units/bits/module_macros.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
-#include <mp-units/unit.h>
+#include <mp-units/framework/unit.h>
 #endif
 
 namespace mp_units::si {

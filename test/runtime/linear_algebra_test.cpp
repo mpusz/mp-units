@@ -22,15 +22,14 @@
 
 #include <catch2/catch_test_macros.hpp>
 #include <mp-units/compat_macros.h>
-#include <cmath>
 #include <matrix>
+#include <ostream>
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else
-#include <mp-units/customization_points.h>
 #include <mp-units/format.h>
 #include <mp-units/math.h>
-#include <mp-units/ostream.h>
+#include <mp-units/ostream.h>  // IWYU pragma: keep
 #include <mp-units/systems/isq/mechanics.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si/si.h>

@@ -22,8 +22,8 @@
 
 #pragma once
 
-#include <mp-units/bits/external/hacks.h>
-#include <mp-units/quantity_spec.h>
+#include <mp-units/bits/hacks.h>
+#include <mp-units/framework/quantity_spec.h>
 #include <type_traits>
 
 template<auto V, typename T>

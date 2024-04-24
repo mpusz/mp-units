@@ -22,8 +22,9 @@
 
 #pragma once
 
-#include <mp-units/bits/external/type_traits.h>
+// IWYU pragma: private, include <mp-units/framework.h>
 #include <mp-units/bits/module_macros.h>
+#include <mp-units/ext/type_traits.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <limits>

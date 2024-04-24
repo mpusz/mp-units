@@ -21,10 +21,9 @@
 // SOFTWARE.
 
 #include "test_tools.h"
-#include <mp-units/quantity.h>
-#include <mp-units/quantity_spec.h>
-#include <mp-units/reference.h>
-#include <mp-units/unit.h>
+#include <mp-units/ext/type_traits.h>
+#include <mp-units/framework.h>
+#include <type_traits>
 
 namespace {
 

@@ -20,7 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <mp-units/bits/external/hacks.h>
+#include <mp-units/bits/hacks.h>
+#include <mp-units/framework.h>
+#include <mp-units/systems/si/prefixes.h>
 #include <mp-units/systems/si/units.h>
 #include <concepts>
 #include <type_traits>

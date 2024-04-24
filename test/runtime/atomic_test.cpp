@@ -20,11 +20,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <catch2/catch_all.hpp>
-#include <mp-units/systems/isq/space_and_time.h>
-#include <mp-units/systems/si/unit_symbols.h>
-#include <mp-units/systems/si/units.h>
+#include <catch2/catch_test_macros.hpp>
 #include <atomic>
+#ifdef MP_UNITS_MODULES
+import mp_units;
+#else
+#include <mp-units/ostream.h>  // IWYU pragma: keep
+#include <mp-units/systems/isq/space_and_time.h>
+#include <mp-units/systems/si/si.h>
+#endif
 
 using namespace mp_units;
 using namespace mp_units::si::unit_symbols;

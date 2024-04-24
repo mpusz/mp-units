@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <mp-units/compare.h>
+#include <mp-units/framework/compare.h>  // IWYU pragma: keep
 #include <mp-units/systems/si/si.h>
 
 namespace {

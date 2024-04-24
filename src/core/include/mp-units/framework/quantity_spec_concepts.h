@@ -22,10 +22,11 @@
 
 #pragma once
 
-#include <mp-units/bits/dimension_concepts.h>
-#include <mp-units/bits/expression_template.h>
-#include <mp-units/bits/external/hacks.h>
+// IWYU pragma: private, include <mp-units/framework.h>
+#include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
+#include <mp-units/framework/dimension_concepts.h>
+#include <mp-units/framework/expression_template.h>
 
 namespace mp_units {
 

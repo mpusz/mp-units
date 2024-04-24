@@ -20,14 +20,16 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+// IWYU pragma: always_keep
+
 #pragma once
 
-#include <mp-units/bits/external/algorithm.h>
 #include <mp-units/bits/fmt.h>
 #include <mp-units/compat_macros.h>
-#include <mp-units/customization_points.h>
-#include <mp-units/quantity.h>
-#include <mp-units/unit.h>
+#include <mp-units/ext/algorithm.h>
+#include <mp-units/framework/customization_points.h>
+#include <mp-units/framework/quantity.h>
+#include <mp-units/framework/unit.h>
 
 namespace mp_units::detail {
 

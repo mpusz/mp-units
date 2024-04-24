@@ -21,7 +21,7 @@
 // SOFTWARE.
 
 #include <mp-units/systems/isq_angle/isq_angle.h>
-#include <mp-units/systems/si/unit_symbols.h>
+#include <mp-units/systems/si/si.h>
 
 namespace {
 

@@ -22,8 +22,9 @@
 
 #pragma once
 
+// IWYU pragma: private, include <mp-units/framework.h>
 #include <mp-units/bits/module_macros.h>
-#include <mp-units/customization_points.h>
+#include <mp-units/framework/customization_points.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <concepts>

@@ -27,4 +27,8 @@
 #include <mp-units/systems/iec80000/quantities.h>
 #include <mp-units/systems/iec80000/unit_symbols.h>
 #include <mp-units/systems/iec80000/units.h>
+
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
+#include <mp-units/framework.h>
+#endif
 // IWYU pragma: end_exports

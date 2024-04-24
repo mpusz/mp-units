@@ -20,10 +20,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <mp-units/bits/external/hacks.h>
+#include <mp-units/bits/hacks.h>
 #include <mp-units/systems/isq/mechanics.h>
 #include <mp-units/systems/isq/space_and_time.h>
-#include <mp-units/systems/si/unit_symbols.h>
+#include <mp-units/systems/si/prefixes.h>
+#include <mp-units/systems/si/units.h>
 #include <mp-units/systems/usc/usc.h>
 
 namespace {

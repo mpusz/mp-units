@@ -22,11 +22,12 @@
 
 #pragma once
 
+// IWYU pragma: private, include <mp-units/framework.h>
 #include <mp-units/bits/get_associated_quantity.h>
 #include <mp-units/bits/module_macros.h>
-#include <mp-units/bits/quantity_concepts.h>
-#include <mp-units/bits/reference_concepts.h>
-#include <mp-units/bits/representation_concepts.h>
+#include <mp-units/framework/quantity_concepts.h>
+#include <mp-units/framework/reference_concepts.h>
+#include <mp-units/framework/representation_concepts.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <cstdint>

@@ -20,7 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <mp-units/bits/symbol_text.h>
+#include <mp-units/ext/fixed_string.h>
+#include <mp-units/framework.h>
 
 using namespace mp_units;
 

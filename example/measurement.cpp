@@ -20,17 +20,21 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include <mp-units/bits/hacks.h>
 #include <mp-units/compat_macros.h>
 #include <cmath>
+#include <compare>  // IWYU pragma: export
+#include <cstdlib>
 #include <exception>
 #include <iostream>
+#include <utility>
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else
+#include <mp-units/framework.h>
 #include <mp-units/ostream.h>
 #include <mp-units/systems/isq/space_and_time.h>
-#include <mp-units/systems/si/unit_symbols.h>
-#include <mp-units/systems/si/units.h>
+#include <mp-units/systems/si/si.h>
 #endif
 
 namespace {

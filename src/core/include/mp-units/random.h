@@ -23,7 +23,7 @@
 #pragma once
 
 #include <mp-units/bits/module_macros.h>
-#include <mp-units/quantity.h>
+#include <mp-units/framework/quantity.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <functional>

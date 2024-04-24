@@ -24,8 +24,8 @@
 #pragma once
 
 #include <mp-units/bits/module_macros.h>
-#include <mp-units/quantity.h>
-#include <mp-units/unit.h>
+#include <mp-units/framework/quantity.h>
+#include <mp-units/framework/unit.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <cstdint>

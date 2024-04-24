@@ -25,9 +25,9 @@
 #include <mp-units/bits/module_macros.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
-#include <mp-units/dimension.h>
-#include <mp-units/quantity.h>
-#include <mp-units/quantity_spec.h>
+#include <mp-units/framework/dimension.h>
+#include <mp-units/framework/quantity.h>
+#include <mp-units/framework/quantity_spec.h>
 #endif
 
 MP_UNITS_EXPORT

@@ -26,10 +26,10 @@
 #include <mp-units/systems/angular/units.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
-#include <mp-units/bits/value_cast.h>
-#include <mp-units/customization_points.h>
-#include <mp-units/quantity.h>
-#include <mp-units/unit.h>
+#include <mp-units/framework/customization_points.h>
+#include <mp-units/framework/quantity.h>
+#include <mp-units/framework/unit.h>
+#include <mp-units/framework/value_cast.h>
 #include <cmath>
 #endif
 

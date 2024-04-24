@@ -36,8 +36,8 @@
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else
+#include <mp-units/framework/quantity_point.h>
 #include <mp-units/math.h>  // IWYU pragma: keep
-#include <mp-units/quantity_point.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si/chrono.h>
 #endif

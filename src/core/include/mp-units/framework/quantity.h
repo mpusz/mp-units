@@ -23,26 +23,23 @@
 
 #pragma once
 
-#include <mp-units/bits/dimension_concepts.h>
+// IWYU pragma: private, include <mp-units/framework.h>
 #include <mp-units/bits/module_macros.h>
-#include <mp-units/bits/quantity_concepts.h>
-#include <mp-units/bits/quantity_spec_concepts.h>
-#include <mp-units/bits/reference_concepts.h>
-#include <mp-units/bits/representation_concepts.h>
 #include <mp-units/bits/sudo_cast.h>
-#include <mp-units/bits/unit_concepts.h>
-#include <mp-units/customization_points.h>
-#include <mp-units/reference.h>
+#include <mp-units/framework/customization_points.h>
+#include <mp-units/framework/dimension_concepts.h>
+#include <mp-units/framework/quantity_concepts.h>
+#include <mp-units/framework/quantity_spec_concepts.h>
+#include <mp-units/framework/reference.h>
+#include <mp-units/framework/reference_concepts.h>
+#include <mp-units/framework/representation_concepts.h>
+#include <mp-units/framework/unit_concepts.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <gsl/gsl-lite.hpp>
-#include <compare>
+#include <compare>  // IWYU pragma: export
 #include <utility>
 #endif
-
-// the below is not used in this header but should be exposed with it
-#include <mp-units/bits/quantity_cast.h>
-#include <mp-units/bits/value_cast.h>
 
 namespace mp_units {
 

@@ -24,12 +24,15 @@
 
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/systems/isq/mechanics.h>
-#include <mp-units/systems/isq/si_quantities.h>
 #include <mp-units/systems/isq/space_and_time.h>
 
+// IWYU pragma: begin_exports
+#include <mp-units/systems/isq/si_quantities.h>
+
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
-#include <mp-units/quantity_spec.h>
+#include <mp-units/framework/quantity_spec.h>
 #endif
+// IWYU pragma: end_exports
 
 MP_UNITS_EXPORT
 namespace mp_units::isq {

@@ -21,12 +21,17 @@
 // SOFTWARE.
 
 #include "test_tools.h"
-#include <mp-units/bits/external/hacks.h>
+#include <mp-units/bits/hacks.h>
+#include <mp-units/ext/fixed_string.h>
+#include <mp-units/ext/type_traits.h>
 #include <mp-units/systems/isq/mechanics.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si/si.h>
+#include <chrono>
+#include <concepts>
 #include <cstdint>
 #include <limits>
+#include <type_traits>
 #include <utility>
 
 template<>

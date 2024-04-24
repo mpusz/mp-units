@@ -23,7 +23,7 @@
 #pragma once
 
 #include <gsl/gsl-lite.hpp>
-#include <mp-units/bits/external/hacks.h>
+#include <mp-units/bits/hacks.h>
 #include <mp-units/compat_macros.h>
 #include <array>
 #include <cmath>

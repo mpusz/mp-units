@@ -22,10 +22,12 @@
 
 #pragma once
 
-#include <mp-units/bits/dimension_concepts.h>
-#include <mp-units/bits/quantity_concepts.h>
-#include <mp-units/bits/quantity_point_concepts.h>
-#include <mp-units/bits/quantity_spec_concepts.h>
-#include <mp-units/bits/reference_concepts.h>
-#include <mp-units/bits/representation_concepts.h>
-#include <mp-units/bits/unit_concepts.h>
+// IWYU pragma: begin_exports
+#include <mp-units/framework/dimension_concepts.h>
+#include <mp-units/framework/quantity_concepts.h>
+#include <mp-units/framework/quantity_point_concepts.h>
+#include <mp-units/framework/quantity_spec_concepts.h>
+#include <mp-units/framework/reference_concepts.h>
+#include <mp-units/framework/representation_concepts.h>
+#include <mp-units/framework/unit_concepts.h>
+// IWYU pragma: end_exports

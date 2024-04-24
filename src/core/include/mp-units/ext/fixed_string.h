@@ -23,13 +23,13 @@
 #pragma once
 
 // TODO use <algorithm> when moved to C++20 modules (parsing takes too long for each translation unit)
-#include <mp-units/bits/external/algorithm.h>
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/compat_macros.h>  // IWYU pragma: keep
+#include <mp-units/ext/algorithm.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <gsl/gsl-lite.hpp>
-#include <compare>
+#include <compare>  // IWYU pragma: export
 #include <cstddef>
 #include <cstdlib>
 #include <ostream>

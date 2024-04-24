@@ -23,11 +23,24 @@
 #pragma once
 
 // IWYU pragma: begin_exports
-#include <mp-units/compat_macros.h>
-#include <mp-units/concepts.h>
-#include <mp-units/format.h>
-#include <mp-units/framework.h>
-#include <mp-units/math.h>
-#include <mp-units/ostream.h>
-#include <mp-units/random.h>
+#include <mp-units/framework/compare.h>
+#include <mp-units/framework/customization_points.h>
+#include <mp-units/framework/dimension.h>
+#include <mp-units/framework/dimension_concepts.h>
+#include <mp-units/framework/expression_template.h>
+#include <mp-units/framework/magnitude.h>
+#include <mp-units/framework/quantity.h>
+#include <mp-units/framework/quantity_cast.h>
+#include <mp-units/framework/quantity_concepts.h>
+#include <mp-units/framework/quantity_point.h>
+#include <mp-units/framework/quantity_point_concepts.h>
+#include <mp-units/framework/quantity_spec.h>
+#include <mp-units/framework/quantity_spec_concepts.h>
+#include <mp-units/framework/reference.h>
+#include <mp-units/framework/representation_concepts.h>
+#include <mp-units/framework/symbol_text.h>
+#include <mp-units/framework/system_reference.h>
+#include <mp-units/framework/unit.h>
+#include <mp-units/framework/unit_concepts.h>
+#include <mp-units/framework/value_cast.h>
 // IWYU pragma: end_exports

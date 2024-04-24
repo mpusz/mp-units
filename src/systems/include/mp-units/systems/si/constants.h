@@ -26,7 +26,7 @@
 #include <mp-units/systems/si/units.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
-#include <mp-units/quantity.h>
+#include <mp-units/framework/quantity.h>
 #endif
 
 MP_UNITS_EXPORT

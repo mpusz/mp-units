@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <mp-units/bits/external/hacks.h>
+#include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE

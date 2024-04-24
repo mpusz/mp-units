@@ -22,11 +22,12 @@
 
 #pragma once
 
-#include <mp-units/bits/expression_template.h>
-#include <mp-units/bits/magnitude.h>
+// IWYU pragma: private, include <mp-units/framework.h>
 #include <mp-units/bits/module_macros.h>
-#include <mp-units/bits/quantity_spec_concepts.h>
-#include <mp-units/bits/symbol_text.h>
+#include <mp-units/framework/expression_template.h>
+#include <mp-units/framework/magnitude.h>
+#include <mp-units/framework/quantity_spec_concepts.h>
+#include <mp-units/framework/symbol_text.h>
 
 namespace mp_units {
 

@@ -21,8 +21,10 @@
 // SOFTWARE.
 
 #include <mp-units/compat_macros.h>
+#include <mp-units/framework.h>
 #include <mp-units/math.h>
 #include <mp-units/systems/isq/electromagnetism.h>
+#include <mp-units/systems/isq/si_quantities.h>
 #include <mp-units/systems/si/units.h>
 
 namespace {

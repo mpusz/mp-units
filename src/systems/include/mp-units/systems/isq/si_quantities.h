@@ -23,11 +23,14 @@
 #pragma once
 
 #include <mp-units/bits/module_macros.h>
+
+// IWYU pragma: begin_exports
 #include <mp-units/systems/isq/base_quantities.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
-#include <mp-units/quantity_spec.h>
+#include <mp-units/framework/quantity_spec.h>
 #endif
+// IWYU pragma: end_exports
 
 MP_UNITS_EXPORT
 namespace mp_units::isq {

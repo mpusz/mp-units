@@ -33,8 +33,8 @@ import mp_units;
 #include <mp-units/ostream.h>
 #include <mp-units/systems/cgs/cgs.h>
 #include <mp-units/systems/international/international.h>
-#include <mp-units/systems/isq/space_and_time.h>
-#include <mp-units/systems/si/unit_symbols.h>
+#include <mp-units/systems/isq/isq.h>
+#include <mp-units/systems/si/si.h>
 #endif
 
 namespace {

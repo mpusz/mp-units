@@ -21,13 +21,14 @@
 // SOFTWARE.
 
 #include "almost_equals.h"
-#include <catch2/catch_all.hpp>
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers.hpp>
 #include <limits>
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else
 #include <mp-units/math.h>
-#include <mp-units/ostream.h>
+#include <mp-units/ostream.h>  // IWYU pragma: keep
 #include <mp-units/systems/angular/angular.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si/si.h>

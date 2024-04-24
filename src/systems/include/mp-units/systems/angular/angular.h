@@ -22,5 +22,11 @@
 
 #pragma once
 
+// IWYU pragma: begin_exports
 #include <mp-units/systems/angular/math.h>
 #include <mp-units/systems/angular/units.h>
+
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
+#include <mp-units/framework.h>
+#endif
+// IWYU pragma: end_exports

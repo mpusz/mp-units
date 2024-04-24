@@ -22,21 +22,22 @@
 
 #pragma once
 
-#include <mp-units/bits/expression_template.h>
-#include <mp-units/bits/external/algorithm.h>
-#include <mp-units/bits/external/fixed_string.h>
-#include <mp-units/bits/external/hacks.h>
-#include <mp-units/bits/external/type_name.h>
-#include <mp-units/bits/external/type_traits.h>
+// IWYU pragma: private, include <mp-units/framework.h>
 #include <mp-units/bits/get_associated_quantity.h>
-#include <mp-units/bits/magnitude.h>
+#include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
-#include <mp-units/bits/quantity_point_concepts.h>
-#include <mp-units/bits/quantity_spec_concepts.h>
 #include <mp-units/bits/ratio.h>
-#include <mp-units/bits/symbol_text.h>
 #include <mp-units/bits/text_tools.h>
-#include <mp-units/bits/unit_concepts.h>
+#include <mp-units/ext/algorithm.h>
+#include <mp-units/ext/fixed_string.h>
+#include <mp-units/ext/type_name.h>
+#include <mp-units/ext/type_traits.h>
+#include <mp-units/framework/expression_template.h>
+#include <mp-units/framework/magnitude.h>
+#include <mp-units/framework/quantity_point_concepts.h>
+#include <mp-units/framework/quantity_spec_concepts.h>
+#include <mp-units/framework/symbol_text.h>
+#include <mp-units/framework/unit_concepts.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <gsl/gsl-lite.hpp>

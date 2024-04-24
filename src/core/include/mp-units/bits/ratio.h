@@ -22,12 +22,12 @@
 
 #pragma once
 
-#include <mp-units/bits/external/hacks.h>
+#include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <gsl/gsl-lite.hpp>
-#include <compare>
+#include <compare>  // IWYU pragma: export
 #include <cstdint>
 #include <numeric>
 #endif

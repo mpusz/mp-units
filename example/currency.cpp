@@ -21,14 +21,16 @@
 // SOFTWARE.
 
 #include <mp-units/compat_macros.h>
+#include <concepts>
 #include <iostream>
 #include <map>
+#include <string_view>
+#include <utility>
 #ifdef MP_UNITS_MODULES
 import mp_units.core;
 #else
+#include <mp-units/framework.h>
 #include <mp-units/ostream.h>
-#include <mp-units/quantity.h>
-#include <mp-units/quantity_point.h>
 #endif
 
 using namespace mp_units;

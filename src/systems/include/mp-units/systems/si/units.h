@@ -27,8 +27,8 @@
 #include <mp-units/systems/si/prefixes.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
-#include <mp-units/quantity_point.h>
-#include <mp-units/unit.h>
+#include <mp-units/framework/quantity_point.h>
+#include <mp-units/framework/unit.h>
 #endif
 
 MP_UNITS_EXPORT

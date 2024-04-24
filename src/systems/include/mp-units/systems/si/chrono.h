@@ -28,8 +28,8 @@
 #include <mp-units/systems/si/units.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
-#include <mp-units/customization_points.h>
-#include <mp-units/quantity_point.h>
+#include <mp-units/framework/customization_points.h>
+#include <mp-units/framework/quantity_point.h>
 #include <chrono>
 #endif
 

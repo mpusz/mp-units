@@ -23,7 +23,7 @@
 #pragma once
 
 #include "validated_type.h"
-#include <mp-units/bits/external/hacks.h>
+#include <mp-units/bits/hacks.h>
 #include <mp-units/compat_macros.h>
 #include <algorithm>
 #include <concepts>
@@ -32,7 +32,7 @@
 import mp_units.core;
 #else
 #include <mp-units/bits/fmt.h>
-#include <mp-units/customization_points.h>
+#include <mp-units/framework/customization_points.h>
 #endif
 
 template<std::movable T, MP_UNITS_CONSTRAINED_NTTP_WORKAROUND(std::convertible_to<T>) auto Min,

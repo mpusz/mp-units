@@ -22,11 +22,11 @@
 
 #pragma once
 
-#include <mp-units/bits/external/type_traits.h>
-#include <mp-units/bits/magnitude.h>
-#include <mp-units/bits/quantity_concepts.h>
-#include <mp-units/bits/reference_concepts.h>
-#include <mp-units/unit.h>
+#include <mp-units/ext/type_traits.h>
+#include <mp-units/framework/magnitude.h>
+#include <mp-units/framework/quantity_concepts.h>
+#include <mp-units/framework/reference_concepts.h>
+#include <mp-units/framework/unit.h>
 
 namespace mp_units::detail {
 

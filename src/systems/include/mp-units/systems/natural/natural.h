@@ -27,10 +27,11 @@
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si/prefixes.h>
 
+// IWYU pragma: begin_exports
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
-#include <mp-units/system_reference.h>
-#include <mp-units/unit.h>
+#include <mp-units/framework.h>
 #endif
+// IWYU pragma: end_exports
 
 MP_UNITS_EXPORT
 namespace mp_units::natural {

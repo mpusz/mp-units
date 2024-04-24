@@ -22,14 +22,15 @@
 
 #pragma once
 
+// IWYU pragma: private, include <mp-units/framework.h>
 #include <mp-units/bits/module_macros.h>
-#include <mp-units/bits/quantity_point_concepts.h>
-#include <mp-units/compare.h>
-#include <mp-units/customization_points.h>
-#include <mp-units/quantity.h>
+#include <mp-units/framework/compare.h>
+#include <mp-units/framework/customization_points.h>
+#include <mp-units/framework/quantity.h>
+#include <mp-units/framework/quantity_point_concepts.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
-#include <compare>
+#include <compare>  // IWYU pragma: export
 #endif
 
 namespace mp_units {

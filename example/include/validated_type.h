@@ -23,16 +23,17 @@
 #pragma once
 
 #include <gsl/gsl-lite.hpp>
-#include <mp-units/bits/external/hacks.h>
+#include <mp-units/bits/hacks.h>
 #include <mp-units/compat_macros.h>
+#include <compare>  // IWYU pragma: export
 #include <ostream>
 #include <utility>
 #ifdef MP_UNITS_MODULES
 import mp_units.core;
 #else
-#include <mp-units/bits/external/hacks.h>
 #include <mp-units/bits/fmt.h>
-#include <mp-units/customization_points.h>
+#include <mp-units/bits/hacks.h>
+#include <mp-units/framework/customization_points.h>
 #endif
 
 inline constexpr struct validated_tag {

@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <mp-units/bits/external/algorithm.h>
+#include <mp-units/ext/algorithm.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <array>

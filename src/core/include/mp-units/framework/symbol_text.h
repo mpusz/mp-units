@@ -22,15 +22,16 @@
 
 #pragma once
 
-// IWYU pragma: begin_exports
-#include <mp-units/bits/external/fixed_string.h>
-#include <mp-units/bits/external/hacks.h>
+// IWYU pragma: private, include <mp-units/framework.h>
+#include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
+#include <mp-units/ext/fixed_string.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <gsl/gsl-lite.hpp>
-#include <compare>
+#include <compare>  // IWYU pragma: export
 #include <cstddef>
+#include <cstdint>
 #endif
 
 #if __cpp_lib_text_encoding
@@ -41,6 +42,12 @@ static_assert(std::text_encoding::literal().mib() == std::text_encoding::id::UTF
 #endif
 
 namespace mp_units {
+
+MP_UNITS_EXPORT enum class text_encoding : std::int8_t {
+  unicode,  // µs; m³;  L²MT⁻³
+  ascii,    // us; m^3; L^2MT^-3
+  default_encoding = unicode
+};
 
 namespace detail {
 

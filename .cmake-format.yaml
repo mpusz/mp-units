@@ -10,9 +10,15 @@ parse:
     enable_iwyu:
       pargs:
         flags:
+          - QUIET
+          - REQUIRED
           - NO_FORWARD_DECLARATIONS
-          - QUOTED_INCLUDES_FIRST
+          - PCH_IN_CODE
+          - TRANSITIVE_INCLUDES_ONLY
           - NO_COMMENTS
+          - NO_FORWARD_DECLARATIONS
+          - CXX17_NAMESPACES
+          - QUOTED_INCLUDES_FIRST
       kwargs:
         MAPPING_FILE: 1
         MAX_LINE_LENGTH: 1
