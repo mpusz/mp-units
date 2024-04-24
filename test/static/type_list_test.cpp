@@ -27,6 +27,7 @@
 namespace {
 
 using namespace mp_units;
+using namespace mp_units::detail;
 
 template<typename... Types>
 struct type_list;
