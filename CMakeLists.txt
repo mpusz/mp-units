@@ -38,10 +38,6 @@ ensure_entry_point()
 include(ccache)
 enable_ccache(BASE_DIR ${PROJECT_SOURCE_DIR})
 
-# set restrictive compilation warnings
-include(warnings)
-set_warnings()
-
 # enable include-what-you-use
 option(${projectPrefix}DEV_IWYU "Enables include-what-you-use" OFF)
 
@@ -53,6 +49,11 @@ if(${projectPrefix}DEV_IWYU)
         MAX_LINE_LENGTH 120
         NO_COMMENTS
     )
+else()
+    # set restrictive compilation warnings
+    # (some gcc warnings are not recognized by IWYU which is based on clang)
+    include(warnings)
+    set_warnings()
 endif()
 
 # enable_clang_tidy()

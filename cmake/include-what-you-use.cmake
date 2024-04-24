@@ -22,12 +22,6 @@
 
 cmake_minimum_required(VERSION 3.7)
 
-if(NOT CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-    # run IWYU only for clang compiler
-    # other compilers will generate i.e. unknown compilation flags warnings
-    return()
-endif()
-
 set(IWYU_VERBOSITY_LEVEL 3 CACHE STRING "IWYU verbosity level (the higher the level, the more output)")
 
 macro(_iwyu_args_append arg)
