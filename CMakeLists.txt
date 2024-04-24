@@ -42,6 +42,8 @@ enable_ccache(BASE_DIR ${PROJECT_SOURCE_DIR})
 option(${projectPrefix}DEV_IWYU "Enables include-what-you-use" OFF)
 
 if(${projectPrefix}DEV_IWYU)
+    set(${projectPrefix}BUILD_AS_SYSTEM_HEADERS ON)
+
     include(include-what-you-use)
     enable_iwyu(
         MAPPING_FILE "${PROJECT_SOURCE_DIR}/.mp-units.imp"

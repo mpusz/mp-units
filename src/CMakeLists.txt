@@ -36,8 +36,15 @@ include(CheckLibcxxInUse)
 check_libcxx_in_use(${projectPrefix}LIBCXX)
 
 # project build options
+option(${projectPrefix}BUILD_AS_SYSTEM_HEADERS "Exports library as system headers" OFF)
+message(STATUS "${projectPrefix}BUILD_AS_SYSTEM_HEADERS: ${${projectPrefix}BUILD_AS_SYSTEM_HEADERS}")
+
 option(${projectPrefix}BUILD_CXX_MODULES "Add C++ modules to the list of default targets" OFF)
 message(STATUS "${projectPrefix}BUILD_CXX_MODULES: ${${projectPrefix}BUILD_CXX_MODULES}")
+
+if(${projectPrefix}BUILD_AS_SYSTEM_HEADERS)
+    set(${projectPrefix}_AS_SYSTEM SYSTEM)
+endif()
 
 # project API settings
 function(cache_var_values name)
