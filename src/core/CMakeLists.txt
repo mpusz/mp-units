@@ -79,7 +79,6 @@ add_mp_units_module(
             include/mp-units/framework/value_cast.h
             include/mp-units/compat_macros.h
             include/mp-units/concepts.h
-            include/mp-units/core.h
             include/mp-units/format.h
             include/mp-units/framework.h
             include/mp-units/math.h
@@ -119,3 +118,5 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
         /utf-8 # Specifies both the source character set and the execution character set as UTF-8
     )
 endif()
+
+# target_compile_options(mp-units-core ${${projectPrefix}TARGET_SCOPE} "-ftime-trace")
