@@ -95,7 +95,7 @@ if(${projectPrefix}API_NO_CRTP STREQUAL "TRUE" AND NOT ${projectPrefix}EXPLICIT_
     message(FATAL_ERROR "`NO_CRTP` mode enabled but explicit `this` parameter is not supported")
 endif()
 
-if(${projectPrefix}BUILD_CXX_MODULES STREQUAL "TRUE")
+if(${projectPrefix}BUILD_CXX_MODULES)
     if(CMAKE_VERSION VERSION_LESS "3.29")
         message(FATAL_ERROR "CMake versions before 3.29 do not support C++ modules properly")
     endif()
