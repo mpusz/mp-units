@@ -20,6 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+// To be replaced with:
+// P3094: std::basic_fixed_string
+
 #pragma once
 
 // TODO use <algorithm> when moved to C++20 modules (parsing takes too long for each translation unit)

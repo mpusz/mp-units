@@ -20,6 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+// To be replaced with:
+// P3133: Fast first-factor finding function
+
 #pragma once
 
 #include <mp-units/ext/algorithm.h>
@@ -110,6 +113,22 @@ template<std::size_t N>
     product *= v;
   }
   return product;
+}
+
+template<class InputIt, class UnaryFunction>
+constexpr std::invoke_result_t<UnaryFunction, std::iter_value_t<InputIt>> get_first_of(InputIt first, InputIt last,
+                                                                                       UnaryFunction f)
+{
+  for (; first != last; ++first)
+    if (auto opt = f(*first)) return *opt;
+  return {};
+}
+
+template<class Rng, class UnaryFunction>
+constexpr auto get_first_of(const Rng& rng, UnaryFunction f)
+{
+  using std::begin, std::end;
+  return get_first_of(begin(rng), end(rng), f);
 }
 
 // A configurable instantiation of the "wheel factorization" algorithm [1] for prime numbers.

@@ -1,5 +1,8 @@
 // https://stackoverflow.com/questions/81870/is-it-possible-to-print-a-variables-type-in-standard-c/56766138#56766138
 
+// To be replaced with:
+// P2830: Standardized Constexpr Type Ordering
+
 #pragma once
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE

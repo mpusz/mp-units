@@ -20,6 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+// Copy-pasted C++ standard libraries to be replaced with `import std;` when available
+// `#include <algorithm.h>` is too heavy to do in every translation unit
+
 #pragma once
 
 #include <mp-units/bits/hacks.h>  // IWYU pragma: keep
@@ -33,37 +36,6 @@
 
 namespace mp_units::detail {
 
-// TODO refactor two below functions with std::ranges when moved to modules
-
-
-/**
- * @brief Returns the first successful value obtained from applying the function object to the elements of a given
- * range, if any.
- *
- * @tparam InputIt must meet the requirements of LegacyInputIterator
- * @tparam UnaryFunction must meet the requirements of MoveConstructible
- * @param first the beginning of the range of elements to examine
- * @param last the end of the range of elements to examine
- * @param f function object, to be applied to the result of dereferencing every iterator in the range
- * @return std::invoke_result_t<UnaryPredicate, std::iter_value_t<InputIt>>
- */
-template<class InputIt, class UnaryFunction>
-constexpr std::invoke_result_t<UnaryFunction, std::iter_value_t<InputIt>> get_first_of(InputIt first, InputIt last,
-                                                                                       UnaryFunction f)
-{
-  for (; first != last; ++first)
-    if (auto opt = f(*first)) return *opt;
-  return {};
-}
-
-template<class Rng, class UnaryFunction>
-constexpr auto get_first_of(const Rng& rng, UnaryFunction f)
-{
-  using std::begin, std::end;
-  return get_first_of(begin(rng), end(rng), f);
-}
-
-// TODO remove all the below and use std when moved to modules
 template<class InputIt, class ForwardIt>
 constexpr InputIt find_first_of(InputIt first, InputIt last, ForwardIt s_first, ForwardIt s_last)
 {
@@ -206,6 +178,5 @@ constexpr copy_result<std::ranges::borrowed_iterator_t<R>, O> copy(R&& r, O resu
 {
   return ::mp_units::detail::copy(std::ranges::begin(r), std::ranges::end(r), std::move(result));
 }
-
 
 }  // namespace mp_units::detail
