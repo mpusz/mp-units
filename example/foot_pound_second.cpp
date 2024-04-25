@@ -22,16 +22,17 @@
 
 #include <mp-units/compat_macros.h>
 #include <iostream>
+#include <string>
 #include <string_view>
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else
 #include <mp-units/format.h>
 #include <mp-units/systems/imperial.h>
-#include <mp-units/systems/international.h>
+#include <mp-units/systems/international.h>  // IWYU pragma: keep
 #include <mp-units/systems/isq/mechanics.h>
 #include <mp-units/systems/isq/space_and_time.h>
-#include <mp-units/systems/si/unit_symbols.h>
+#include <mp-units/systems/si.h>
 #endif
 
 using namespace mp_units;

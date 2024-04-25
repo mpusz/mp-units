@@ -21,17 +21,21 @@
 // SOFTWARE.
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers.hpp>
 #include <catch2/matchers/catch_matchers_exception.hpp>
 #include <mp-units/compat_macros.h>
 #include <cstdint>
 #include <iomanip>
 #include <limits>
 #include <locale>
+#include <sstream>
+#include <string>
+#include <string_view>
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else
+#include <mp-units/ext/fixed_string.h>
 #include <mp-units/format.h>
-#include <mp-units/framework/customization_points.h>
 #include <mp-units/ostream.h>  // IWYU pragma: keep
 #include <mp-units/systems/cgs.h>
 #include <mp-units/systems/isq/electromagnetism.h>

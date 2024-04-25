@@ -24,7 +24,6 @@
 #include <mp-units/compat_macros.h>
 #include <cmath>
 #include <compare>  // IWYU pragma: export
-#include <cstdlib>
 #include <exception>
 #include <iostream>
 #include <utility>

@@ -1,7 +1,10 @@
 [
-  { include: ["<functional>", "public", "<algorithm>", "public"] },
-  { include: ["<string>", "public", "<fmt/format.h>", "public"] },
-  { include: ["<memory>", "public", "<catch2/catch.hpp>", "public"] },
-  { include: ["<initializer_list>", "public", "<linear_algebra.hpp>", "public"] },
-  { symbol: ["abs", "private", "<cmath>", public]}
+  { include: ["<bits/chrono.h>", "private", "<chrono>", "public"] },
+  { symbol: ["std::string_view", "private", "<string_view>", public]},
+  { symbol: ["std::char_traits", "private", "<string_view>", public]},
+  { symbol: ["std::abs", "private", "<cmath>", public]},
+  { symbol: ["std::locale", "private", "<locale>", public]},
+  { symbol: ["std::numpunct", "private", "<locale>", public]},
+  { symbol: ["std::ostream", "private", "<ostream>", public]},
+  { symbol: ["std::ostringstream", "private", "<sstream>", public]}
 ]

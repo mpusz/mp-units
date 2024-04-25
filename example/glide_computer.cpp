@@ -20,19 +20,21 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include "geographic.h"
 #include "glide_computer_lib.h"
+#include <mp-units/bits/hacks.h>
 #include <mp-units/compat_macros.h>
 #include <array>
+#include <chrono>
+#include <concepts>
 #include <exception>
 #include <iostream>
-#include <iterator>
+#include <ranges>
 #include <string>
 #include <utility>
-#include <vector>
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else
-#include <mp-units/math.h>
 #include <mp-units/systems/international.h>
 #include <mp-units/systems/si.h>
 #endif

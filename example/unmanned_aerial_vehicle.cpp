@@ -21,14 +21,14 @@
 // SOFTWARE.
 
 #include "geographic.h"
+#include "ranged_representation.h"
 #include <mp-units/compat_macros.h>
 #include <cassert>
 #include <iostream>
+#include <string>
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else
-#include <mp-units/framework/quantity_point.h>
-#include <mp-units/ostream.h>
 #include <mp-units/systems/international.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si.h>

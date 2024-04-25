@@ -27,19 +27,20 @@
 #include "geographic.h"
 #include <algorithm>
 #include <array>
+#include <chrono>
+#include <concepts>
+#include <cstddef>
 #include <initializer_list>
 #include <iterator>
-#include <ostream>
 #include <ranges>
 #include <string>  // IWYU pragma: keep
 #include <vector>
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else
-#include <mp-units/framework/quantity_point.h>
 #include <mp-units/math.h>  // IWYU pragma: keep
 #include <mp-units/systems/isq/space_and_time.h>
-#include <mp-units/systems/si/chrono.h>
+#include <mp-units/systems/si.h>
 #endif
 
 // An example of a really simplified tactical glide computer

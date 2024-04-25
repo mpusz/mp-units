@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 #include "glide_computer_lib.h"
+#include <functional>
 #include <iostream>
 #include <numeric>
 #include <string_view>
