@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <mp-units/systems/isq_angle/isq_angle.h>
-#include <mp-units/systems/si/si.h>
+#include <mp-units/systems/isq_angle.h>
+#include <mp-units/systems/si.h>
 
 namespace {
 

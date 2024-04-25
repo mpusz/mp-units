@@ -33,9 +33,9 @@ import mp_units;
 #else
 #include <mp-units/format.h>
 #include <mp-units/ostream.h>
-#include <mp-units/systems/international/international.h>
-#include <mp-units/systems/isq/isq.h>
-#include <mp-units/systems/si/si.h>
+#include <mp-units/systems/international.h>
+#include <mp-units/systems/isq.h>
+#include <mp-units/systems/si.h>
 #endif
 
 using namespace mp_units;

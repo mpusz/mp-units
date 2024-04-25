@@ -33,8 +33,8 @@
 import mp_units;
 #else
 #include <mp-units/math.h>
-#include <mp-units/systems/international/international.h>
-#include <mp-units/systems/si/si.h>
+#include <mp-units/systems/international.h>
+#include <mp-units/systems/si.h>
 #endif
 
 namespace {

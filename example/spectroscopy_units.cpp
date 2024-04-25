@@ -27,8 +27,8 @@
 import mp_units;
 #else
 #include <mp-units/format.h>
-#include <mp-units/systems/isq/isq.h>
-#include <mp-units/systems/si/si.h>
+#include <mp-units/systems/isq.h>
+#include <mp-units/systems/si.h>
 #endif
 
 // This example implements a table of units provided in the following article

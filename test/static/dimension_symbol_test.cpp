@@ -21,7 +21,7 @@
 // SOFTWARE.
 
 #include <mp-units/framework.h>
-#include <mp-units/systems/isq/isq.h>
+#include <mp-units/systems/isq.h>
 #include <string_view>
 
 namespace {

@@ -31,8 +31,8 @@ import mp_units;
 #else
 #include <mp-units/format.h>
 #include <mp-units/math.h>
-#include <mp-units/systems/isq/isq.h>
-#include <mp-units/systems/si/si.h>
+#include <mp-units/systems/isq.h>
+#include <mp-units/systems/si.h>
 #endif
 
 // allows standard gravity (acceleration) and weight (force) to be expressed with scalar representation

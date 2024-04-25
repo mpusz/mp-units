@@ -33,7 +33,7 @@ a number with a predefined unit:
 === "Header files"
 
     ```cpp
-    #include <mp-units/systems/si/si.h>
+    #include <mp-units/systems/si.h>
 
     using namespace mp_units;
 
@@ -59,7 +59,7 @@ a number with a predefined unit:
     === "Header files"
 
         ```cpp
-        #include <mp-units/systems/si/si.h>
+        #include <mp-units/systems/si.h>
 
         using namespace mp_units;
 
@@ -83,7 +83,7 @@ The same can be obtained using optional unit symbols:
 === "Header files"
 
     ```cpp
-    #include <mp-units/systems/si/si.h>
+    #include <mp-units/systems/si.h>
 
     using namespace mp_units;
     using namespace mp_units::si::unit_symbols;
@@ -193,7 +193,7 @@ Quantities of the same kind can be added, subtracted, and compared to each other
 === "Header files"
 
     ```cpp
-    #include <mp-units/systems/si/si.h>
+    #include <mp-units/systems/si.h>
 
     using namespace mp_units;
     using namespace mp_units::si::unit_symbols;
@@ -249,8 +249,8 @@ This introduces an additional type-safety.
 
     ```cpp
     #include <mp-units/format.h>
-    #include <mp-units/systems/si/si.h>
-    #include <mp-units/systems/usc/usc.h>
+    #include <mp-units/systems/si.h>
+    #include <mp-units/systems/usc.h>
     #include <print>
 
     int main()

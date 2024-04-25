@@ -25,7 +25,7 @@
 #include <mp-units/bits/module_macros.h>
 
 // IWYU pragma: begin_exports
-#include <mp-units/systems/international/international.h>
+#include <mp-units/systems/international.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <mp-units/framework.h>

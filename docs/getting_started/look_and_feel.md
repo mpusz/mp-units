@@ -32,7 +32,7 @@ Here is a small example of operations possible on scalar quantities:
 === "Header files"
 
     ```cpp
-    #include <mp-units/systems/si/si.h>
+    #include <mp-units/systems/si.h>
 
     using namespace mp_units;
     using namespace mp_units::si::unit_symbols;
@@ -111,9 +111,9 @@ performed without sacrificing accuracy. Please see the below example for a quick
     ```cpp
     #include <mp-units/format.h>
     #include <mp-units/ostream.h>
-    #include <mp-units/systems/international/international.h>
-    #include <mp-units/systems/isq/isq.h>
-    #include <mp-units/systems/si/si.h>
+    #include <mp-units/systems/international.h>
+    #include <mp-units/systems/isq.h>
+    #include <mp-units/systems/si.h>
     #include <format>
     #include <iomanip>
     #include <iostream>

@@ -84,7 +84,7 @@ Here is a simple example showing how to deal with such quantities:
 
     ```cpp
     #include <mp-units/format.h>
-    #include <mp-units/systems/si/si.h>
+    #include <mp-units/systems/si.h>
     #include <print>
 
     using namespace mp_units;
@@ -203,8 +203,8 @@ The previous example can be re-typed using typed quantities in the following way
 
     ```cpp
     #include <mp-units/format.h>
-    #include <mp-units/systems/isq/isq.h>
-    #include <mp-units/systems/si/si.h>
+    #include <mp-units/systems/isq.h>
+    #include <mp-units/systems/si.h>
     #include <print>
 
     using namespace mp_units;
@@ -373,7 +373,7 @@ Let's see another example:
 
         ```cpp hl_lines="42"
         #include <mp-units/math.h>
-        #include <mp-units/systems/si/si.h>
+        #include <mp-units/systems/si.h>
         #include <numbers>
 
         using namespace mp_units;
@@ -422,8 +422,8 @@ Let's see another example:
 
         ```cpp hl_lines="53 54 55"
         #include <mp-units/math.h>
-        #include <mp-units/systems/isq/isq.h>
-        #include <mp-units/systems/si/si.h>
+        #include <mp-units/systems/isq.h>
+        #include <mp-units/systems/si.h>
         #include <numbers>
 
         using namespace mp_units;

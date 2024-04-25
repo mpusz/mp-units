@@ -21,7 +21,7 @@
 // SOFTWARE.
 
 #include <mp-units/math.h>
-#include <mp-units/systems/international/international.h>
+#include <mp-units/systems/international.h>
 #include <mp-units/systems/isq/mechanics.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si/constants.h>

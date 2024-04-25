@@ -23,7 +23,7 @@
 #pragma once
 
 #include <mp-units/bits/module_macros.h>
-#include <mp-units/systems/si/si.h>
+#include <mp-units/systems/si.h>
 #include <cstdint>
 
 // IWYU pragma: begin_exports

@@ -25,8 +25,8 @@
 import mp_units;
 #else
 #include <mp-units/ostream.h>
-#include <mp-units/systems/isq_angle/isq_angle.h>
-#include <mp-units/systems/si/si.h>
+#include <mp-units/systems/isq_angle.h>
+#include <mp-units/systems/si.h>
 #endif
 
 template<class T>

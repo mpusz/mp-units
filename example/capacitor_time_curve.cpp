@@ -27,7 +27,7 @@ import mp_units;
 #include <mp-units/math.h>
 #include <mp-units/ostream.h>
 #include <mp-units/systems/isq/electromagnetism.h>
-#include <mp-units/systems/si/si.h>
+#include <mp-units/systems/si.h>
 #endif
 
 int main()

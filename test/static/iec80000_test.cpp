@@ -20,9 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <mp-units/systems/iec80000/iec80000.h>
+#include <mp-units/systems/iec80000.h>
 #include <mp-units/systems/isq/base_quantities.h>
-#include <mp-units/systems/si/si.h>
+#include <mp-units/systems/si.h>
 
 /* ************** DERIVED DIMENSIONS THAT INCLUDE UNITS WITH SPECIAL NAMES **************** */
 

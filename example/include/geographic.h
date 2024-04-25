@@ -34,7 +34,7 @@ import mp_units;
 #include <mp-units/format.h>
 #include <mp-units/framework.h>
 #include <mp-units/systems/isq/space_and_time.h>
-#include <mp-units/systems/si/si.h>
+#include <mp-units/systems/si.h>
 #endif
 
 namespace geographic {

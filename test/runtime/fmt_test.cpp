@@ -33,11 +33,11 @@ import mp_units;
 #include <mp-units/format.h>
 #include <mp-units/framework/customization_points.h>
 #include <mp-units/ostream.h>  // IWYU pragma: keep
-#include <mp-units/systems/cgs/cgs.h>
+#include <mp-units/systems/cgs.h>
 #include <mp-units/systems/isq/electromagnetism.h>
 #include <mp-units/systems/isq/mechanics.h>
 #include <mp-units/systems/isq/space_and_time.h>
-#include <mp-units/systems/si/si.h>
+#include <mp-units/systems/si.h>
 #endif
 
 template<class T>

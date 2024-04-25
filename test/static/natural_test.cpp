@@ -23,7 +23,7 @@
 #include <mp-units/math.h>
 #include <mp-units/systems/isq/mechanics.h>
 #include <mp-units/systems/isq/space_and_time.h>
-#include <mp-units/systems/natural/natural.h>
+#include <mp-units/systems/natural.h>
 
 template<class T>
   requires mp_units::is_scalar<T>

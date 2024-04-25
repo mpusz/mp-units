@@ -23,7 +23,7 @@
 #pragma once
 
 #include <mp-units/bits/module_macros.h>
-#include <mp-units/systems/international/international.h>
+#include <mp-units/systems/international.h>
 
 // IWYU pragma: begin_exports
 #ifndef MP_UNITS_IN_MODULE_INTERFACE

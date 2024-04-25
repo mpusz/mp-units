@@ -32,7 +32,7 @@ import mp_units;
 #include <mp-units/ostream.h>  // IWYU pragma: keep
 #include <mp-units/systems/isq/mechanics.h>
 #include <mp-units/systems/isq/space_and_time.h>
-#include <mp-units/systems/si/si.h>
+#include <mp-units/systems/si.h>
 #endif
 
 template<typename Rep = double>

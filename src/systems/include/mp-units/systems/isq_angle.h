@@ -25,8 +25,8 @@
 #include <mp-units/bits/module_macros.h>
 
 // IWYU pragma: begin_exports
-#include <mp-units/systems/angular/angular.h>
-#include <mp-units/systems/isq/isq.h>
+#include <mp-units/systems/angular.h>
+#include <mp-units/systems/isq.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <mp-units/framework/quantity_spec.h>

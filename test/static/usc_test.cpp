@@ -25,7 +25,7 @@
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si/prefixes.h>
 #include <mp-units/systems/si/units.h>
-#include <mp-units/systems/usc/usc.h>
+#include <mp-units/systems/usc.h>
 
 namespace {
 

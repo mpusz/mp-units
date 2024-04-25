@@ -21,7 +21,7 @@
 // SOFTWARE.
 
 #include <mp-units/framework/compare.h>  // IWYU pragma: keep
-#include <mp-units/systems/si/si.h>
+#include <mp-units/systems/si.h>
 
 namespace {
 

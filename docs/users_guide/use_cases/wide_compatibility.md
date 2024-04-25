@@ -57,9 +57,9 @@ your code using **mp-units**:
     ```cpp
     #include <mp-units/format.h>
     #include <mp-units/ostream.h>
-    #include <mp-units/systems/international/international.h>
-    #include <mp-units/systems/isq/isq.h>
-    #include <mp-units/systems/si/si.h>
+    #include <mp-units/systems/international.h>
+    #include <mp-units/systems/isq.h>
+    #include <mp-units/systems/si.h>
     #include <format>
     #include <iostream>
 
@@ -77,9 +77,9 @@ your code using **mp-units**:
     ```cpp
     #include <mp-units/format.h>
     #include <mp-units/ostream.h>
-    #include <mp-units/systems/international/international.h>
-    #include <mp-units/systems/isq/isq.h>
-    #include <mp-units/systems/si/si.h>
+    #include <mp-units/systems/international.h>
+    #include <mp-units/systems/isq.h>
+    #include <mp-units/systems/si.h>
     #include <fmt/format.h>
     #include <iostream>
 
@@ -102,9 +102,9 @@ your code using **mp-units**:
     #else
     #include <mp-units/format.h>
     #include <mp-units/ostream.h>
-    #include <mp-units/systems/international/international.h>
-    #include <mp-units/systems/isq/isq.h>
-    #include <mp-units/systems/si/si.h>
+    #include <mp-units/systems/international.h>
+    #include <mp-units/systems/isq.h>
+    #include <mp-units/systems/si.h>
     #endif
 
     // ...

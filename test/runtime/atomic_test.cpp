@@ -27,7 +27,7 @@ import mp_units;
 #else
 #include <mp-units/ostream.h>  // IWYU pragma: keep
 #include <mp-units/systems/isq/space_and_time.h>
-#include <mp-units/systems/si/si.h>
+#include <mp-units/systems/si.h>
 #endif
 
 using namespace mp_units;

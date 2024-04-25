@@ -20,9 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <mp-units/systems/international/international.h>
+#include <mp-units/systems/international.h>
 #include <mp-units/systems/isq/space_and_time.h>
-#include <mp-units/systems/typographic/typographic.h>
+#include <mp-units/systems/typographic.h>
 
 namespace {
 

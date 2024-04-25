@@ -21,9 +21,9 @@
 // SOFTWARE.
 
 #include <mp-units/math.h>  // IWYU pragma: keep
-#include <mp-units/systems/iau/iau.h>
+#include <mp-units/systems/iau.h>
 #include <mp-units/systems/isq/space_and_time.h>
-#include <mp-units/systems/si/si.h>
+#include <mp-units/systems/si.h>
 
 /* ************** DERIVED DIMENSIONS THAT INCLUDE UNITS WITH SPECIAL NAMES **************** */
 

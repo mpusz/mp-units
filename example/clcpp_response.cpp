@@ -22,13 +22,13 @@ import mp_units;
 #else
 #include <mp-units/format.h>
 #include <mp-units/ostream.h>
-#include <mp-units/systems/iau/iau.h>
-#include <mp-units/systems/imperial/imperial.h>
-#include <mp-units/systems/international/international.h>
+#include <mp-units/systems/iau.h>
+#include <mp-units/systems/imperial.h>
+#include <mp-units/systems/international.h>
 #include <mp-units/systems/isq/space_and_time.h>
-#include <mp-units/systems/si/si.h>
-#include <mp-units/systems/typographic/typographic.h>
-#include <mp-units/systems/usc/usc.h>
+#include <mp-units/systems/si.h>
+#include <mp-units/systems/typographic.h>
+#include <mp-units/systems/usc.h>
 #endif
 
 namespace {

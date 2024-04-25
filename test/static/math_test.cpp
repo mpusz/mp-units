@@ -21,8 +21,8 @@
 // SOFTWARE.
 
 #include <mp-units/math.h>  // IWYU pragma: keep
-#include <mp-units/systems/international/international.h>
-#include <mp-units/systems/si/si.h>
+#include <mp-units/systems/international.h>
+#include <mp-units/systems/si.h>
 
 namespace {
 

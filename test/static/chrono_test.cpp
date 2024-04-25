@@ -24,7 +24,7 @@
 #include <mp-units/ext/type_traits.h>
 #include <mp-units/framework/quantity_point.h>  // IWYU pragma: keep
 #include <mp-units/systems/isq/si_quantities.h>
-#include <mp-units/systems/si/si.h>
+#include <mp-units/systems/si.h>
 #include <chrono>
 #include <concepts>
 #include <ratio>

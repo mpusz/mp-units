@@ -23,9 +23,9 @@
 #include "test_tools.h"
 #include <mp-units/compat_macros.h>
 #include <mp-units/ext/type_traits.h>
-#include <mp-units/systems/isq/isq.h>
-#include <mp-units/systems/si/si.h>
-#include <mp-units/systems/usc/usc.h>
+#include <mp-units/systems/isq.h>
+#include <mp-units/systems/si.h>
+#include <mp-units/systems/usc.h>
 #include <chrono>
 #include <concepts>
 #include <cstdint>

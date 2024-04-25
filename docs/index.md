@@ -47,8 +47,8 @@ The library source code is hosted on [GitHub](https://github.com/mpusz/mp-units)
 
     ```cpp
     #include <mp-units/format.h>
-    #include <mp-units/systems/si/si.h>
-    #include <mp-units/systems/usc/usc.h>
+    #include <mp-units/systems/si.h>
+    #include <mp-units/systems/usc.h>
     #include <print>
 
     using namespace mp_units;
