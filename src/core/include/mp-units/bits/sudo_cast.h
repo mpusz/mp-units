@@ -70,13 +70,13 @@ template<Quantity To, typename From>
     constexpr Magnitude auto irr = c_mag * (den / num);
     using c_rep_type = maybe_common_type<typename std::remove_reference_t<From>::rep, typename To::rep>;
     using c_mag_type = common_magnitude_type<c_mag>;
-    using multiplier_type = conditional<treat_as_floating_point<c_rep_type>,
-                                        // ensure that the multiplier is also floating-point
-                                        conditional<std::is_arithmetic_v<underlying_type_t<c_rep_type>>,
-                                                    // reuse user's type if possible
-                                                    std::common_type_t<c_mag_type, underlying_type_t<c_rep_type>>,
-                                                    std::common_type_t<c_mag_type, double>>,
-                                        c_mag_type>;
+    using multiplier_type = conditional<
+      treat_as_floating_point<c_rep_type>,
+      // ensure that the multiplier is also floating-point
+      conditional<std::is_arithmetic_v<value_type_t<c_rep_type>>,
+                  // reuse user's type if possible
+                  std::common_type_t<c_mag_type, value_type_t<c_rep_type>>, std::common_type_t<c_mag_type, double>>,
+      c_mag_type>;
     using c_type = maybe_common_type<c_rep_type, multiplier_type>;
     constexpr auto val = [](Magnitude auto m) { return get_value<multiplier_type>(m); };
     if constexpr (std::is_floating_point_v<multiplier_type>) {

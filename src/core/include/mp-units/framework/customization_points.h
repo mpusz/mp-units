@@ -48,14 +48,8 @@ template<typename Rep>
 inline constexpr bool treat_as_floating_point = std::is_floating_point_v<Rep>;
 
 template<typename Rep>
-  requires requires { typename Rep::value_type; } || requires { typename Rep::element_type; }
-inline constexpr bool treat_as_floating_point<Rep> = requires {
-  typename Rep::value_type;
-  requires treat_as_floating_point<typename Rep::value_type>;
-} || requires {
-  typename Rep::element_type;
-  requires treat_as_floating_point<std::remove_reference_t<typename Rep::element_type>>;
-};
+  requires requires { typename wrapped_type_t<Rep>; }
+inline constexpr bool treat_as_floating_point<Rep> = treat_as_floating_point<wrapped_type_t<Rep>>;
 
 /**
  * @brief Specifies a type to have a scalar character

@@ -107,19 +107,29 @@ struct get_element_type {
 }  // namespace detail
 
 template<typename T>
-struct underlying_type {
-  using type = T;
-};
-
-template<typename T>
   requires requires { typename T::value_type; } || requires { typename T::element_type; }
-struct underlying_type<T> {
+struct wrapped_type {
   using type = MP_UNITS_TYPENAME
     conditional<requires { typename T::value_type; }, detail::get_value_type<T>, detail::get_element_type<T>>::type;
 };
 
 template<typename T>
-using underlying_type_t = MP_UNITS_TYPENAME underlying_type<T>::type;
+  requires requires { typename T::value_type; } || requires { typename T::element_type; }
+using wrapped_type_t = MP_UNITS_TYPENAME wrapped_type<T>::type;
+
+template<typename T>
+struct value_type {
+  using type = T;
+};
+
+template<typename T>
+  requires requires { typename wrapped_type_t<T>; }
+struct value_type<T> {
+  using type = MP_UNITS_TYPENAME wrapped_type_t<T>;
+};
+
+template<typename T>
+using value_type_t = MP_UNITS_TYPENAME value_type<T>::type;
 
 template<typename T, typename... Ts>
 concept one_of = (false || ... || std::same_as<T, Ts>);
