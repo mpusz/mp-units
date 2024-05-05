@@ -94,9 +94,9 @@ OutputIt format_global_buffer(OutputIt out, const fill_align_width_format_specs<
 //
 // Grammar
 //
-// dimension-format-spec ::= [fill-and-align] [width] [dimension-spec]
-// dimension-spec        ::= [text-encoding]
-// text-encoding         ::= 'U' | 'A'
+// dimension-format-spec = [fill-and-align], [width], [dimension-spec];
+// dimension-spec        = [text-encoding];
+// text-encoding         = 'U' | 'A';
 //
 template<mp_units::Dimension D, typename Char>
 class MP_UNITS_STD_FMT::formatter<D, Char> {
@@ -159,15 +159,15 @@ public:
 //
 // Grammar
 //
-// unit-format-spec      ::= [fill-and-align] [width] [unit-spec]
-// unit-spec             ::= [text-encoding] [unit-symbol-solidus] [unit-symbol-separator] [L]
-//                           [text-encoding] [unit-symbol-separator] [unit-symbol-solidus] [L]
-//                           [unit-symbol-solidus] [text-encoding] [unit-symbol-separator] [L]
-//                           [unit-symbol-solidus] [unit-symbol-separator] [text-encoding] [L]
-//                           [unit-symbol-separator] [text-encoding] [unit-symbol-solidus] [L]
-//                           [unit-symbol-separator] [unit-symbol-solidus] [text-encoding] [L]
-// unit-symbol-solidus   ::= '1' | 'a' | 'n'1
-// unit-symbol-separator ::= 's' | 'd'
+// unit-format-spec      = [fill-and-align], [width], [unit-spec];
+// unit-spec             = [text-encoding], [unit-symbol-solidus], [unit-symbol-separator], [L]
+//                       | [text-encoding], [unit-symbol-separator], [unit-symbol-solidus], [L]
+//                       | [unit-symbol-solidus], [text-encoding], [unit-symbol-separator], [L]
+//                       | [unit-symbol-solidus], [unit-symbol-separator], [text-encoding], [L]
+//                       | [unit-symbol-separator], [text-encoding], [unit-symbol-solidus], [L]
+//                       | [unit-symbol-separator], [unit-symbol-solidus], [text-encoding], [L];
+// unit-symbol-solidus   = '1' | 'a' | 'n';
+// unit-symbol-separator = 's' | 'd';
 //
 template<mp_units::Unit U, typename Char>
 class MP_UNITS_STD_FMT::formatter<U, Char> {
@@ -249,19 +249,19 @@ public:
 //
 // Grammar
 //
-// quantity-format-spec        ::= [fill-and-align] [width] [quantity-specs] [defaults-specs]
-// quantity-specs              ::= conversion-spec
-//                                 quantity-specs conversion-spec
-//                                 quantity-specs literal-char
-// literal-char                ::= <any character other than '{', '}', or '%'>
-// conversion-spec             ::= '%' placement-type
-// placement-type              ::= subentity-id | '?' | '%'
-// defaults-specs              ::= ':' default-spec-list
-// default-spec-list           ::= default-spec
-//                                 default-spec-list default-spec
-// default-spec                ::= subentity-id '[' format-spec ']'
-// subentity-id                ::= 'N' | 'U' | 'D'
-// format-spec                 ::= <as specified by the formatter for the argument type>
+// quantity-format-spec        = [fill-and-align], [width], [quantity-specs], [defaults-specs];
+// quantity-specs              = conversion-spec;
+//                             | quantity-specs, conversion-spec;
+//                             | quantity-specs, literal-char;
+// literal-char                = ? any character other than '{', '}', or '%' ?;
+// conversion-spec             = '%', placement-type;
+// placement-type              = subentity-id | '?' | '%';
+// defaults-specs              = ':', default-spec-list;
+// default-spec-list           = default-spec;
+//                             | default-spec-list, default-spec;
+// default-spec                = subentity-id, '[' format-spec ']';
+// subentity-id                = 'N' | 'U' | 'D';
+// format-spec                 = ? as specified by the formatter for the argument type ?;
 //
 #if __cpp_lib_format_ranges && !MP_UNITS_USE_FMTLIB
 template<auto Reference, typename Char, std::formattable<Char> Rep>

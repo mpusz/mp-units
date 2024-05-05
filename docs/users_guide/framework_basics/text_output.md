@@ -399,10 +399,10 @@ as text and, thus, are aligned to the left by default.
 
 ### Dimension formatting
 
-```bnf
-dimension-format-spec ::= [fill-and-align] [width] [dimension-spec]
-dimension-spec        ::= [text-encoding]
-text-encoding         ::= 'U' | 'A'
+```ebnf
+dimension-format-spec = [fill-and-align], [width], [dimension-spec];
+dimension-spec        = [text-encoding];
+text-encoding         = 'U' | 'A';
 ```
 
 In the above grammar:
@@ -429,16 +429,16 @@ std::println("{:A}", isq::power.dimension);               // L^2MT^-3
 
 ### Unit formatting
 
-```bnf
-unit-format-spec      ::= [fill-and-align] [width] [unit-spec]
-unit-spec             ::= [text-encoding] [unit-symbol-solidus] [unit-symbol-separator] [L]
-                          [text-encoding] [unit-symbol-separator] [unit-symbol-solidus] [L]
-                          [unit-symbol-solidus] [text-encoding] [unit-symbol-separator] [L]
-                          [unit-symbol-solidus] [unit-symbol-separator] [text-encoding] [L]
-                          [unit-symbol-separator] [text-encoding] [unit-symbol-solidus] [L]
-                          [unit-symbol-separator] [unit-symbol-solidus] [text-encoding] [L]
-unit-symbol-solidus   ::= '1' | 'a' | 'n'
-unit-symbol-separator ::= 's' | 'd'
+```ebnf
+unit-format-spec      = [fill-and-align], [width], [unit-spec];
+unit-spec             = [text-encoding], [unit-symbol-solidus], [unit-symbol-separator], [L]
+                      | [text-encoding], [unit-symbol-separator], [unit-symbol-solidus], [L]
+                      | [unit-symbol-solidus], [text-encoding], [unit-symbol-separator], [L]
+                      | [unit-symbol-solidus], [unit-symbol-separator], [text-encoding], [L]
+                      | [unit-symbol-separator], [text-encoding], [unit-symbol-solidus], [L]
+                      | [unit-symbol-separator], [unit-symbol-solidus], [text-encoding], [L];
+unit-symbol-solidus   = '1' | 'a' | 'n';
+unit-symbol-separator = 's' | 'd';
 ```
 
 In the above grammar:
@@ -528,20 +528,20 @@ std::println("{:d}", kg * m2 / s2);  // kg⋅m²/s²
 
 ### Quantity formatting
 
-```bnf
-quantity-format-spec        ::= [fill-and-align] [width] [quantity-specs] [defaults-specs]
-quantity-specs              ::= conversion-spec
-                                quantity-specs conversion-spec
-                                quantity-specs literal-char
-literal-char                ::= <any character other than '{', '}', or '%'>
-conversion-spec             ::= '%' placement-type
-placement-type              ::= subentity-id | '?' | '%'
-defaults-specs              ::= ':' default-spec-list
-default-spec-list           ::= default-spec
-                                default-spec-list default-spec
-default-spec                ::= subentity-id '[' format-spec ']'
-subentity-id                ::= 'N' | 'U' | 'D'
-format-spec                 ::= <as specified by the formatter for the argument type>
+```ebnf
+quantity-format-spec        = [fill-and-align], [width], [quantity-specs], [defaults-specs];
+quantity-specs              = conversion-spec;
+                            | quantity-specs, conversion-spec;
+                            | quantity-specs, literal-char;
+literal-char                = ? any character other than '{', '}', or '%' ?;
+conversion-spec             = '%', placement-type;
+placement-type              = subentity-id | '?' | '%';
+defaults-specs              = ':', default-spec-list;
+default-spec-list           = default-spec;
+                            | default-spec-list, default-spec;
+default-spec                = subentity-id, '[' format-spec ']';
+subentity-id                = 'N' | 'U' | 'D';
+format-spec                 = ? as specified by the formatter for the argument type ?;
 ```
 
 In the above grammar:
