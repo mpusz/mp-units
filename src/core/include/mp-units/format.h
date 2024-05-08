@@ -319,7 +319,7 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
       out = MP_UNITS_STD_FMT::vformat_to(out, locale, f.dimension_format_str_,
                                          MP_UNITS_STD_FMT::make_format_args(q.dimension));
     }
-    void on_text(const Char* begin, const Char* end) const { std::copy(begin, end, out); }
+    void on_text(const Char* begin, const Char* end) const { mp_units::detail::copy(begin, end, out); }
   };
   template<typename OutputIt, typename... Args>
   quantity_formatter(const formatter&, OutputIt, Args...) -> quantity_formatter<OutputIt>;

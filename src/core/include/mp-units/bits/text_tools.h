@@ -95,7 +95,7 @@ constexpr Out copy(const symbol_text<N, M>& txt, text_encoding encoding, Out out
 {
   if (encoding == text_encoding::unicode) {
     if constexpr (is_same_v<CharT, char8_t>)
-      return copy(txt.unicode(), out).out;
+      return ::mp_units::detail::copy(txt.unicode().begin(), txt.unicode().end(), out);
     else if constexpr (is_same_v<CharT, char>) {
       for (const char8_t ch : txt.unicode()) *out++ = static_cast<char>(ch);
       return out;
@@ -103,7 +103,7 @@ constexpr Out copy(const symbol_text<N, M>& txt, text_encoding encoding, Out out
       throw std::invalid_argument("Unicode text can't be copied to CharT output");
   } else {
     if constexpr (is_same_v<CharT, char>)
-      return copy(txt.ascii(), out).out;
+      return ::mp_units::detail::copy(txt.ascii().begin(), txt.ascii().end(), out);
     else
       throw std::invalid_argument("ASCII text can't be copied to CharT output");
   }

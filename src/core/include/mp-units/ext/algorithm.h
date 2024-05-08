@@ -31,7 +31,6 @@
 #include <compare>
 #include <initializer_list>
 #include <iterator>
-#include <ranges>
 #endif
 
 namespace mp_units::detail {
@@ -164,44 +163,11 @@ constexpr const T& min(const T& a, const T& b)
   return (b < a) ? b : a;
 }
 
-template<class I, class O>
-struct in_out_result {
-  [[no_unique_address]] I in;
-  [[no_unique_address]] O out;
-
-  template<class I2, class O2>
-    requires std::convertible_to<const I&, I2> && std::convertible_to<const O&, O2>
-  constexpr operator in_out_result<I2, O2>() const&
-  {
-    return {in, out};
-  }
-
-  template<class I2, class O2>
-    requires std::convertible_to<I, I2> && std::convertible_to<O, O2>
-  constexpr operator in_out_result<I2, O2>() &&
-  {
-    return {std::move(in), std::move(out)};
-  }
-};
-
-template<class I, class O>
-using copy_result = in_out_result<I, O>;
-
-template<std::input_iterator I, std::sentinel_for<I> S, std::weakly_incrementable O>
-  requires std::indirectly_copyable<I, O>
-constexpr copy_result<I, O> copy(I first, S last, O result)
+template<class InputIt, class OutputIt>
+constexpr OutputIt copy(InputIt first, InputIt last, OutputIt d_first)
 {
-  for (; first != last; ++first, (void)++result) {
-    *result = *first;
-  }
-  return {std::move(first), std::move(result)};
-}
-
-template<std::ranges::input_range R, std::weakly_incrementable O>
-  requires std::indirectly_copyable<std::ranges::iterator_t<R>, O>
-constexpr copy_result<std::ranges::borrowed_iterator_t<R>, O> copy(R&& r, O result)
-{
-  return ::mp_units::detail::copy(std::ranges::begin(r), std::ranges::end(r), std::move(result));
+  for (; first != last; (void)++first, (void)++d_first) *d_first = *first;
+  return d_first;
 }
 
 }  // namespace mp_units::detail
