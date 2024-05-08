@@ -773,7 +773,7 @@ template<int Complexity, QuantitySpec Q, typename Den, typename... Dens>
 template<int Complexity, QuantitySpec Q>
 [[nodiscard]] consteval auto explode(Q, type_list<>, type_list<>)
 {
-  return explode_result{.quantity = dimensionless};
+  return explode_result{dimensionless};
 }
 
 template<int Complexity, IntermediateDerivedQuantitySpec Q>
@@ -912,7 +912,7 @@ template<typename From, typename To>
     constexpr auto to_factor = std::get<0>(to_norm);
     constexpr auto to_exp = std::get<1>(to_norm);
     if constexpr (from_factor.dimension != to_factor.dimension)
-      return extract_results{.same_dimension = false};
+      return extract_results{false};
     else if constexpr (from_exp > to_exp)
       return extract_results{true, pow<to_exp.num, to_exp.den>(from_factor), pow<to_exp.num, to_exp.den>(to_factor),
                              prepend_rest::first,
