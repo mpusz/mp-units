@@ -264,7 +264,9 @@ struct derived_quantity : quantity<Q::reference, Rep> {
   using R = quantity<reference, Rep>;
 
   derived_quantity() = default;
+  // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
   constexpr explicit(!std::is_trivial_v<Rep>) derived_quantity(const R& t) : R(t) {}
+  // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
   constexpr explicit(!std::is_trivial_v<Rep>) derived_quantity(R&& t) : R(std::move(t)) {}
 
   constexpr derived_quantity& operator=(const R& t)

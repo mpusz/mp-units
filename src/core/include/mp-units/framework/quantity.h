@@ -152,6 +152,7 @@ public:
   }
 
   template<detail::QuantityConvertibleTo<quantity> Q>
+  // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
   constexpr explicit(!std::convertible_to<typename Q::rep, Rep>) quantity(const Q& q) :
       numerical_value_is_an_implementation_detail_(
         detail::sudo_cast<quantity>(q).numerical_value_is_an_implementation_detail_)
@@ -163,6 +164,7 @@ public:
       quantity<quantity_like_traits<Q>::reference, typename quantity_like_traits<Q>::rep>, quantity>
   constexpr explicit(is_specialization_of<decltype(quantity_like_traits<Q>::to_numerical_value(std::declval<Q>())),
                                           convert_explicitly> ||
+                     // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
                      !std::convertible_to<typename quantity_like_traits<Q>::rep, Rep>) quantity(const Q& q) :
       quantity(
         ::mp_units::quantity{quantity_like_traits<Q>::to_numerical_value(q).value, quantity_like_traits<Q>::reference})

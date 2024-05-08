@@ -188,6 +188,7 @@ public:
   template<QuantityPointOf<absolute_point_origin> QP>
     requires std::constructible_from<quantity_type, typename QP::quantity_type>
   // TODO add perfect forwarding
+  // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
   constexpr explicit(!std::convertible_to<typename QP::quantity_type, quantity_type>) quantity_point(const QP& qp) :
       quantity_from_origin_is_an_implementation_detail_([&] {
         if constexpr (point_origin == QP::point_origin)
@@ -208,6 +209,7 @@ public:
                          convert_explicitly> ||
     !std::convertible_to<
       quantity<quantity_point_like_traits<QP>::reference, typename quantity_point_like_traits<QP>::rep>, quantity_type>)
+    // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
     quantity_point(const QP& qp) :
       quantity_from_origin_is_an_implementation_detail_(quantity_point_like_traits<QP>::to_quantity(qp).value)
   {
@@ -292,7 +294,7 @@ public:
       convert_explicitly> ||
     !std::convertible_to<quantity_type, quantity<quantity_point_like_traits<QP>::reference,
                                                  typename quantity_point_like_traits<QP>::rep>>) constexpr
-  // NOLINTNEXTLINE(*-explicit-conversions, google-explicit-constructor)
+  // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
   operator QP_() const& noexcept(
     noexcept(quantity_point_like_traits<QP>::from_quantity(quantity_from_origin_is_an_implementation_detail_)) &&
     std::is_nothrow_copy_constructible_v<rep>)
@@ -310,7 +312,7 @@ public:
       convert_explicitly> ||
     !std::convertible_to<quantity_type, quantity<quantity_point_like_traits<QP>::reference,
                                                  typename quantity_point_like_traits<QP>::rep>>) constexpr
-  // NOLINTNEXTLINE(*-explicit-conversions, google-explicit-constructor)
+  // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
   operator QP_() && noexcept(
     noexcept(quantity_point_like_traits<QP>::from_quantity(quantity_from_origin_is_an_implementation_detail_)) &&
     std::is_nothrow_move_constructible_v<rep>)

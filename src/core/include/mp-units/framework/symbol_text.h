@@ -89,12 +89,13 @@ struct symbol_text {
   fixed_u8string<N> unicode_;
   fixed_string<M> ascii_;
 
+  // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
   constexpr explicit(false) symbol_text(char ch) : unicode_(static_cast<char8_t>(ch)), ascii_(ch)
   {
     gsl_Expects(detail::is_basic_literal_character_set_char(ch));
   }
 
-  // NOLINTNEXTLINE(*-avoid-c-arrays)
+  // NOLINTNEXTLINE(*-avoid-c-arrays, google-explicit-constructor, hicpp-explicit-conversions)
   constexpr explicit(false) symbol_text(const char (&txt)[N + 1]) :
       unicode_(detail::to_u8string(basic_fixed_string{txt})), ascii_(txt)
   {
@@ -102,6 +103,7 @@ struct symbol_text {
     gsl_Expects(detail::is_basic_literal_character_set(txt));
   }
 
+  // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
   constexpr explicit(false) symbol_text(const fixed_string<N>& txt) : unicode_(detail::to_u8string(txt)), ascii_(txt)
   {
     gsl_Expects(detail::is_basic_literal_character_set(txt.data_));

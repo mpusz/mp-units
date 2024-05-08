@@ -43,8 +43,10 @@ public:
   using value_type = T;
 
   min_impl() = default;
+  // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
   constexpr explicit(false) min_impl(T v) noexcept : value_(v) {}
   template<typename U>
+  // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
   constexpr explicit(false) min_impl(min_impl<U> i) noexcept : value_(static_cast<T>(static_cast<U>(i)))
   {
   }

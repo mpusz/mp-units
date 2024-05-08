@@ -63,6 +63,7 @@ struct basic_fixed_string {
   using size_type = std::size_t;
   using difference_type = std::ptrdiff_t;
 
+  // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
   constexpr explicit(false) basic_fixed_string(const CharT (&txt)[N + 1]) noexcept
   {
     gsl_Expects(txt[N] == CharT{});

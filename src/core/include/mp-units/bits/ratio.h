@@ -69,7 +69,7 @@ MP_UNITS_EXPORT struct ratio {
   std::intmax_t num;
   std::intmax_t den;
 
-  // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+  // NOLINTNEXTLINE(bugprone-easily-swappable-parameters, google-explicit-constructor, hicpp-explicit-conversions)
   MP_UNITS_CONSTEVAL explicit(false) ratio(std::intmax_t n, std::intmax_t d = 1) : num{n}, den{d}
   {
     gsl_Expects(den != 0);

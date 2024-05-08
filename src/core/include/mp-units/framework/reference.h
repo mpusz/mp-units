@@ -189,10 +189,12 @@ template<typename Rep, Reference R>
 
 template<Reference R, typename Rep>
   requires RepresentationOf<std::remove_cvref_t<Rep>, get_quantity_spec(R{}).character>
+// NOLINTNEXTLINE(cppcoreguidelines-missing-std-forward)
 constexpr auto operator*(R, Rep&&) = delete;
 
 template<Reference R, typename Rep>
   requires RepresentationOf<std::remove_cvref_t<Rep>, get_quantity_spec(R{}).character>
+// NOLINTNEXTLINE(cppcoreguidelines-missing-std-forward)
 constexpr auto operator/(R, Rep&&) = delete;
 
 template<typename Q, Reference R>
@@ -213,10 +215,12 @@ template<typename Q, Reference R>
 
 template<Reference R, typename Q>
   requires Quantity<std::remove_cvref_t<Q>>
+// NOLINTNEXTLINE(cppcoreguidelines-missing-std-forward)
 constexpr auto operator*(R, Q&& q) = delete;
 
 template<Reference R, typename Q>
   requires Quantity<std::remove_cvref_t<Q>>
+// NOLINTNEXTLINE(cppcoreguidelines-missing-std-forward)
 constexpr auto operator/(R, Q&& q) = delete;
 
 [[nodiscard]] consteval AssociatedUnit auto common_reference(AssociatedUnit auto u1, AssociatedUnit auto u2,

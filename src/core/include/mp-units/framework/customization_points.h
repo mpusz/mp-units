@@ -136,6 +136,7 @@ template<typename T>
 struct convert_explicitly {
   using value_type = T;
   T value;
+  // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
   constexpr explicit(false) convert_explicitly(T v) noexcept(std::is_nothrow_constructible_v<T>) : value(std::move(v))
   {
   }
@@ -145,6 +146,7 @@ template<typename T>
 struct convert_implicitly {
   using value_type = T;
   T value;
+  // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
   constexpr explicit(false) convert_implicitly(T v) noexcept(std::is_nothrow_constructible_v<T>) : value(std::move(v))
   {
   }
