@@ -221,7 +221,11 @@ jobs:
         run: |
           conan install . -b missing -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" -c user.mp-units.build:all=False \
                           -o cxx_modules=${{ matrix.config.cxx_modules }} -o std_format=${{ env.std_format }}
-          mv CMakeUserPresets.json src
+      - name: Provide dependencies for the build
+        shell: bash
+        working-directory: src
+        run: |
+          echo -e '{\n    "version": 4,\n    "include": [\n        "../CMakeUserPresets.json"\n    ]\n}' | cat > CMakeUserPresets.json
       - name: Configure mp-units CMake
         if: matrix.config.compiler.type == 'VISUAL' || matrix.config.compiler.type == 'MSVC'
         shell: cmd
@@ -246,7 +250,7 @@ jobs:
         shell: bash
         working-directory: test_package
         run: |
-          cp ../src/CMakeUserPresets.json .
+          echo -e '{\n    "version": 4,\n    "include": [\n        "../CMakeUserPresets.json"\n    ]\n}' | cat > CMakeUserPresets.json
       - name: Build test_package CMake (local build)
         if: matrix.config.compiler.type == 'VISUAL' || matrix.config.compiler.type == 'MSVC'
         shell: cmd
