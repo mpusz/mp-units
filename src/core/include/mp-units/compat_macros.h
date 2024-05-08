@@ -21,7 +21,7 @@
 // SOFTWARE.
 
 // IWYU pragma: always_keep
-
+// NOLINTBEGIN(cppcoreguidelines-macro-usage)
 #pragma once
 
 #include <mp-units/bits/hacks.h>
@@ -103,3 +103,4 @@ MP_UNITS_DIAGNOSTIC_POP
 // IWYU pragma: end_exports
 
 #endif
+// NOLINTEND(cppcoreguidelines-macro-usage)

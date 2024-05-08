@@ -769,7 +769,7 @@ inline constexpr auto d = day;
 
 namespace si::unit_symbols {
 
-using namespace non_si::unit_symbols;
+using namespace non_si::unit_symbols;  // NOLINT(google-build-using-namespace)
 
 }  // namespace si::unit_symbols
 

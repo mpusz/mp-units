@@ -1,23 +1,48 @@
----
 Checks: '
     *,
+    -abseil-*,
+    -altera-*,
+    -cert-dcl37-c,
+    -cert-dcl50-cpp,
+    -cert-dcl51-cpp,
+    -cert-dcl58-cpp,
+    -cppcoreguidelines-avoid-const-or-ref-data-members,
+    -cppcoreguidelines-avoid-do-while,
+    -cppcoreguidelines-pro-bounds-constant-array-index,
+    -cppcoreguidelines-pro-bounds-pointer-arithmetic,
+    -cppcoreguidelines-pro-type-vararg,
     -llvm-header-guard,
     -llvm-include-order,
-    -bugprone-branch-clone,
-    -bugprone-reserved-identifier,
-    -modernize-use-trailing-return-type,
+    -llvm-namespace-comment,
+    -llvmlibc-*,
     -fuchsia-default-arguments-calls,
+    -fuchsia-default-arguments-declarations,
+    -fuchsia-multiple-inheritance,
     -fuchsia-overloaded-operator,
     -fuchsia-statically-constructed-objects,
     -fuchsia-trailing-return,
-    -*-special-member-functions,
-    -cppcoreguidelines-owning-memory,
-    -cert-err58-cpp,
-    -cert-dcl37-c,
-    -cert-dcl51-cpp
+    -google-readability-namespace-comments,
+    -google-readability-todo,
+    -google-runtime-int,
+    -hicpp-signed-bitwise,
+    -hicpp-vararg,
+    -misc-include-cleaner,
+    -modernize-use-trailing-return-type,
+    -modernize-use-designated-initializers,
+    -readability-identifier-length,
+    -readability-isolate-declaration,
+    -readability-magic-numbers,
+    -readability-static-accessed-through-instance,
+    -*-braces-around-statements,
+    -*-named-parameter,
+    -*-uppercase-literal-suffix,
+    -misc-no-recursion
 '
+CheckOptions:
+    - key: hicpp-signed-bitwise.IgnorePositiveIntegerLiterals
+      value: true
+    - key: misc-non-private-member-variables-in-classes.IgnoreClassesWithAllMemberVariablesBeingPublic
+      value: true
 WarningsAsErrors: '*'
 HeaderFilterRegex: '.*'
-AnalyzeTemporaryDtors: false
 FormatStyle: file
-...

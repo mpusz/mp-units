@@ -52,7 +52,7 @@ void si_example()
   using namespace mp_units::si::unit_symbols;
   constexpr Unit auto GeV = si::giga<si::electronvolt>;
   constexpr quantity c = 1. * si::si2019::speed_of_light_in_vacuum;
-  quantity c2 = pow<2>(c);
+  const quantity c2 = pow<2>(c);
 
   const quantity p1 = isq::momentum(4. * GeV / c);
   const QuantityOf<isq::mass> auto m1 = 3. * GeV / c2;

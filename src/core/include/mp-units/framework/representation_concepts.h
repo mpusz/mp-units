@@ -53,7 +53,7 @@ namespace mp_units {
  * For example, the Cauchy stress tensor possess magnitude, direction,
  * and orientation qualities.
  */
-MP_UNITS_EXPORT enum class quantity_character { scalar, vector, tensor };
+MP_UNITS_EXPORT enum class quantity_character : std::int8_t { scalar, vector, tensor };
 
 namespace detail {
 

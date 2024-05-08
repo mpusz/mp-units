@@ -36,6 +36,24 @@
 
 namespace mp_units::detail {
 
+template<class InputIt, class UnaryPred>
+constexpr InputIt find_if(InputIt first, InputIt last, UnaryPred p)
+{
+  for (; first != last; ++first)
+    if (p(*first)) return first;
+
+  return last;
+}
+
+template<class InputIt, class UnaryPred>
+constexpr InputIt find_if_not(InputIt first, InputIt last, UnaryPred q)
+{
+  for (; first != last; ++first)
+    if (!q(*first)) return first;
+
+  return last;
+}
+
 template<class InputIt, class ForwardIt>
 constexpr InputIt find_first_of(InputIt first, InputIt last, ForwardIt s_first, ForwardIt s_last)
 {
@@ -47,6 +65,12 @@ constexpr InputIt find_first_of(InputIt first, InputIt last, ForwardIt s_first, 
     }
   }
   return last;
+}
+
+template<class InputIt, class UnaryPred>
+constexpr bool all_of(InputIt first, InputIt last, UnaryPred p)
+{
+  return find_if_not(first, last, p) == last;
 }
 
 template<class InputIt1, class InputIt2>
@@ -61,30 +85,31 @@ constexpr bool equal(InputIt1 first1, InputIt1 last1, InputIt2 first2)
 }
 
 template<class I1, class I2, class Cmp>
-constexpr auto lexicographical_compare_three_way(I1 f1, I1 l1, I2 f2, I2 l2, Cmp comp) -> decltype(comp(*f1, *f2))
+constexpr auto lexicographical_compare_three_way(I1 first1, I1 last1, I2 first2, I2 last2, Cmp comp)
+  -> decltype(comp(*first1, *first2))
 {
-  using ret_t = decltype(comp(*f1, *f2));
+  using ret_t = decltype(comp(*first1, *first2));
   static_assert(std::disjunction_v<std::is_same<ret_t, std::strong_ordering>, std::is_same<ret_t, std::weak_ordering>,
                                    std::is_same<ret_t, std::partial_ordering>>,
                 "The return type must be a comparison category type.");
 
-  bool exhaust1 = (f1 == l1);
-  bool exhaust2 = (f2 == l2);
+  bool exhaust1 = (first1 == last1);
+  bool exhaust2 = (first2 == last2);
   MP_UNITS_DIAGNOSTIC_PUSH
   MP_UNITS_DIAGNOSTIC_IGNORE_ZERO_AS_NULLPOINTER_CONSTANT
-  for (; !exhaust1 && !exhaust2; exhaust1 = (++f1 == l1), exhaust2 = (++f2 == l2))
-    if (auto c = comp(*f1, *f2); c != 0) return c;
+  for (; !exhaust1 && !exhaust2; exhaust1 = (++first1 == last1), exhaust2 = (++first2 == last2))
+    if (auto c = comp(*first1, *first2); c != 0) return c;
   MP_UNITS_DIAGNOSTIC_POP
 
-  return !exhaust1   ? std::strong_ordering::greater
-         : !exhaust2 ? std::strong_ordering::less
-                     : std::strong_ordering::equal;
+  if (!exhaust1) return std::strong_ordering::greater;
+  if (!exhaust2) return std::strong_ordering::less;
+  return std::strong_ordering::equal;
 }
 
 template<class I1, class I2>
-constexpr auto lexicographical_compare_three_way(I1 f1, I1 l1, I2 f2, I2 l2)
+constexpr auto lexicographical_compare_three_way(I1 first1, I1 last1, I2 first2, I2 last2)
 {
-  return ::mp_units::detail::lexicographical_compare_three_way(f1, l1, f2, l2, std::compare_three_way());
+  return ::mp_units::detail::lexicographical_compare_three_way(first1, last1, first2, last2, std::compare_three_way());
 }
 
 template<class ForwardIt>

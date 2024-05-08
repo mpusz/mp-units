@@ -44,7 +44,7 @@ struct fill_align_width_format_specs {
 template<typename Char>
 [[nodiscard]] constexpr const Char* at_most_one_of(const Char* begin, const Char* end, std::string_view modifiers)
 {
-  auto it = find_first_of(begin, end, modifiers.begin(), modifiers.end());
+  const Char* const it = find_first_of(begin, end, modifiers.begin(), modifiers.end());
   if (it != end && find_first_of(it + 1, end, modifiers.begin(), modifiers.end()) != end)
     throw MP_UNITS_STD_FMT::format_error("only one of '" + std::string(modifiers) +
                                          "' unit modifiers may be used in the format spec");
@@ -141,17 +141,16 @@ public:
     auto specs = specs_;
     mp_units::detail::handle_dynamic_spec<mp_units::detail::width_checker>(specs.width, specs.width_ref, ctx);
 
-    if (specs.width == 0) {
+    if (specs.width == 0)
       // Avoid extra copying if width is not specified
       return mp_units::dimension_symbol_to<Char>(ctx.out(), d, specs);
-    } else {
-      std::basic_string<Char> unit_buffer;
-      mp_units::dimension_symbol_to<Char>(std::back_inserter(unit_buffer), d, specs);
+    std::basic_string<Char> unit_buffer;
+    mp_units::dimension_symbol_to<Char>(std::back_inserter(unit_buffer), d, specs);
 
-      std::basic_string<Char> global_format_buffer = "{:" + std::basic_string<Char>{fill_align_width_format_str_} + "}";
-      return MP_UNITS_STD_FMT::vformat_to(ctx.out(), global_format_buffer,
-                                          MP_UNITS_STD_FMT::make_format_args(unit_buffer));
-    }
+    const std::basic_string<Char> global_format_buffer =
+      "{:" + std::basic_string<Char>{fill_align_width_format_str_} + "}";
+    return MP_UNITS_STD_FMT::vformat_to(ctx.out(), global_format_buffer,
+                                        MP_UNITS_STD_FMT::make_format_args(unit_buffer));
   }
 };
 
@@ -231,17 +230,16 @@ public:
     auto specs = specs_;
     mp_units::detail::handle_dynamic_spec<mp_units::detail::width_checker>(specs.width, specs.width_ref, ctx);
 
-    if (specs.width == 0) {
+    if (specs.width == 0)
       // Avoid extra copying if width is not specified
       return mp_units::unit_symbol_to<Char>(ctx.out(), u, specs);
-    } else {
-      std::basic_string<Char> unit_buffer;
-      mp_units::unit_symbol_to<Char>(std::back_inserter(unit_buffer), u, specs);
+    std::basic_string<Char> unit_buffer;
+    mp_units::unit_symbol_to<Char>(std::back_inserter(unit_buffer), u, specs);
 
-      std::basic_string<Char> global_format_buffer = "{:" + std::basic_string<Char>{fill_align_width_format_str_} + "}";
-      return MP_UNITS_STD_FMT::vformat_to(ctx.out(), global_format_buffer,
-                                          MP_UNITS_STD_FMT::make_format_args(unit_buffer));
-    }
+    const std::basic_string<Char> global_format_buffer =
+      "{:" + std::basic_string<Char>{fill_align_width_format_str_} + "}";
+    return MP_UNITS_STD_FMT::vformat_to(ctx.out(), global_format_buffer,
+                                        MP_UNITS_STD_FMT::make_format_args(unit_buffer));
   }
 };
 
@@ -327,7 +325,7 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
   quantity_formatter(const formatter&, OutputIt, Args...) -> quantity_formatter<OutputIt>;
 
   template<typename Handler>
-  constexpr const Char* parse_quantity_specs(const Char* begin, const Char* end, Handler&& handler) const
+  constexpr const Char* parse_quantity_specs(const Char* begin, const Char* end, Handler& handler) const
   {
     if (begin == end || *begin == ':' || *begin == '}') return begin;
     if (*begin != '%')
@@ -342,9 +340,9 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
           handler.on_text(begin, ++ptr);  // account for ':'
           ++ptr;                          // consume the second ':'
           continue;
-        } else
-          // default specs started
-          break;
+        }
+        // default specs started
+        break;
       }
       if (c != '%') {
         ++ptr;
@@ -383,9 +381,9 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
   template<typename Formatter>
   constexpr const Char* parse_default_spec(const Char* begin, const Char* end, Formatter& f, std::string& format_str)
   {
-    if (begin == end || *begin++ != '[')
+    if (begin == end || *begin != '[')
       throw MP_UNITS_STD_FMT::format_error("`default-spec` should contain a `[` character");
-    auto it = begin;
+    auto it = ++begin;
     for (int nested_brackets = 0; it != end && !(*it == ']' && nested_brackets == 0); it++) {
       if (*it == '[') ++nested_brackets;
       if (*it == ']') {
@@ -428,19 +426,18 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
   template<typename OutputIt, typename FormatContext>
   OutputIt format_quantity(OutputIt out, const quantity_t& q, FormatContext& ctx) const
   {
-    std::locale locale = MP_UNITS_FMT_LOCALE(ctx.locale());
+    const std::locale locale = MP_UNITS_FMT_LOCALE(ctx.locale());
     if (modifiers_format_str_.empty()) {
       // default
       out = MP_UNITS_STD_FMT::vformat_to(out, locale, rep_format_str_,
                                          MP_UNITS_STD_FMT::make_format_args(q.numerical_value_ref_in(q.unit)));
       if constexpr (mp_units::space_before_unit_symbol<unit>) *out++ = ' ';
       return MP_UNITS_STD_FMT::vformat_to(out, locale, unit_format_str_, MP_UNITS_STD_FMT::make_format_args(q.unit));
-    } else {
-      // user provided format
-      quantity_formatter f{*this, out, q, locale};
-      parse_quantity_specs(modifiers_format_str_.begin(), modifiers_format_str_.end(), f);
-      return f.out;
     }
+    // user provided format
+    quantity_formatter f{*this, out, q, locale};
+    parse_quantity_specs(modifiers_format_str_.begin(), modifiers_format_str_.end(), f);
+    return f.out;
   }
 
 public:
@@ -451,15 +448,15 @@ public:
     begin = parse_fill_align_width(ctx, begin, end, specs_, mp_units::detail::fmt_align::right);
     if (begin == end) return begin;
 
-    format_checker checker{};
+    const format_checker checker{};
     auto it = parse_quantity_specs(begin, end, checker);
     modifiers_format_str_ = {begin, it};
 
     return parse_defaults_specs(it, end);
   }
 
-  template<typename FormatContext>
-  auto format(const quantity_t& q, FormatContext& ctx) const -> decltype(ctx.out())
+  template<typename OutIt>
+  OutIt format(const quantity_t& q, MP_UNITS_STD_FMT::basic_format_context<OutIt, Char>& ctx) const
   {
     auto specs = specs_;
     mp_units::detail::handle_dynamic_spec<mp_units::detail::width_checker>(specs.width, specs.width_ref, ctx);
@@ -468,14 +465,13 @@ public:
       // Avoid extra copying if width is not specified
       format_quantity(ctx.out(), q, ctx);
       return ctx.out();
-    } else {
-      std::basic_string<Char> quantity_buffer;
-      format_quantity(std::back_inserter(quantity_buffer), q, ctx);
-
-      std::basic_string<Char> fill_align_width_format_str;
-      mp_units::detail::format_global_buffer(std::back_inserter(fill_align_width_format_str), specs);
-      return MP_UNITS_STD_FMT::vformat_to(ctx.out(), fill_align_width_format_str,
-                                          MP_UNITS_STD_FMT::make_format_args(quantity_buffer));
     }
+    std::basic_string<Char> quantity_buffer;
+    format_quantity(std::back_inserter(quantity_buffer), q, ctx);
+
+    std::basic_string<Char> fill_align_width_format_str;
+    mp_units::detail::format_global_buffer(std::back_inserter(fill_align_width_format_str), specs);
+    return MP_UNITS_STD_FMT::vformat_to(ctx.out(), fill_align_width_format_str,
+                                        MP_UNITS_STD_FMT::make_format_args(quantity_buffer));
   }
 };

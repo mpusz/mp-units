@@ -111,7 +111,7 @@ static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii}>(mag<60> * s
 static_assert(unit_symbol(mag_ratio<1, 18> * metre / second) == "[1/18] m/s");
 
 // derived units
-static_assert(unit_symbol(one) == "");
+static_assert(unit_symbol(one) == "");  // NOLINT(readability-container-size-empty)
 static_assert(unit_symbol(percent) == "%");
 static_assert(unit_symbol(per_mille) == "‰");
 static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii}>(per_mille) == "%o");
@@ -122,7 +122,7 @@ static_assert(unit_symbol(cubic(metre)) == "m³");
 static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii}>(cubic(metre)) == "m^3");
 static_assert(unit_symbol(kilo<metre> * metre) == "km m");
 static_assert(unit_symbol<unit_symbol_formatting{.separator = half_high_dot}>(kilo<metre> * metre) == "km⋅m");
-static_assert(unit_symbol(metre / metre) == "");
+static_assert(unit_symbol(metre / metre) == "");  // NOLINT(readability-container-size-empty)
 static_assert(unit_symbol(kilo<metre> / metre) == "km/m");
 static_assert(unit_symbol<unit_symbol_formatting{.solidus = never}>(kilo<metre> / metre) == "km m⁻¹");
 static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii, .solidus = never}>(kilo<metre> / metre) ==

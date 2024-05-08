@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+// NOLINTBEGIN(bugprone-reserved-identifier, cppcoreguidelines-macro-usage)
 #pragma once
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
@@ -122,3 +123,4 @@
 #define MP_UNITS_API_NO_CRTP 1
 
 #endif
+// NOLINTEND(bugprone-reserved-identifier, cppcoreguidelines-macro-usage)

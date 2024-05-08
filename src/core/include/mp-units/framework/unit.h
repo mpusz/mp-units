@@ -688,6 +688,7 @@ inline constexpr bool space_before_unit_symbol<per_mille> = false;
 
 // get_unit_symbol
 
+// NOLINTNEXTLINE(readability-enum-initial-value)
 enum class unit_symbol_solidus : std::int8_t {
   one_denominator,  // m/s;   kg m⁻¹ s⁻¹
   always,           // m/s;   kg/(m s)
@@ -695,6 +696,7 @@ enum class unit_symbol_solidus : std::int8_t {
   default_denominator = one_denominator
 };
 
+// NOLINTNEXTLINE(readability-enum-initial-value)
 enum class unit_symbol_separator : std::int8_t {
   space,          // kg m²/s²
   half_high_dot,  // kg⋅m²/s²  (valid only for unicode encoding)
@@ -712,7 +714,7 @@ MP_UNITS_EXPORT_END
 namespace detail {
 
 template<typename CharT, std::output_iterator<CharT> Out>
-constexpr Out print_separator(Out out, unit_symbol_formatting fmt)
+constexpr Out print_separator(Out out, const unit_symbol_formatting& fmt)
 {
   if (fmt.separator == unit_symbol_separator::half_high_dot) {
     if (fmt.encoding != text_encoding::unicode)
@@ -727,13 +729,14 @@ constexpr Out print_separator(Out out, unit_symbol_formatting fmt)
 
 template<typename CharT, std::output_iterator<CharT> Out, Unit U>
   requires requires { U::symbol; }
-constexpr Out unit_symbol_impl(Out out, U, unit_symbol_formatting fmt, bool negative_power)
+constexpr Out unit_symbol_impl(Out out, U, const unit_symbol_formatting& fmt, bool negative_power)
 {
   return copy_symbol<CharT>(U::symbol, fmt.encoding, negative_power, out);
 }
 
 template<typename CharT, std::output_iterator<CharT> Out, auto M, typename U>
-constexpr Out unit_symbol_impl(Out out, const scaled_unit<M, U>& u, unit_symbol_formatting fmt, bool negative_power)
+constexpr Out unit_symbol_impl(Out out, const scaled_unit<M, U>& u, const unit_symbol_formatting& fmt,
+                               bool negative_power)
 {
   if constexpr (M == mag<1>) {
     // no ratio/prefix
@@ -748,14 +751,15 @@ constexpr Out unit_symbol_impl(Out out, const scaled_unit<M, U>& u, unit_symbol_
 }
 
 template<typename CharT, std::output_iterator<CharT> Out, typename F, int Num, int... Den>
-constexpr auto unit_symbol_impl(Out out, const power<F, Num, Den...>&, unit_symbol_formatting fmt, bool negative_power)
+constexpr auto unit_symbol_impl(Out out, const power<F, Num, Den...>&, const unit_symbol_formatting& fmt,
+                                bool negative_power)
 {
   out = unit_symbol_impl<CharT>(out, F{}, fmt, false);  // negative power component will be added below if needed
   return copy_symbol_exponent<CharT, Num, Den...>(fmt.encoding, negative_power, out);
 }
 
 template<typename CharT, std::output_iterator<CharT> Out, DerivedUnitExpr M>
-constexpr Out unit_symbol_impl(Out out, M m, std::size_t Idx, unit_symbol_formatting fmt, bool negative_power)
+constexpr Out unit_symbol_impl(Out out, M m, std::size_t Idx, const unit_symbol_formatting& fmt, bool negative_power)
 {
   if (Idx > 0) out = print_separator<CharT>(out, fmt);
   return unit_symbol_impl<CharT>(out, m, fmt, negative_power);
@@ -763,14 +767,14 @@ constexpr Out unit_symbol_impl(Out out, M m, std::size_t Idx, unit_symbol_format
 
 template<typename CharT, std::output_iterator<CharT> Out, DerivedUnitExpr... Ms, std::size_t... Idxs>
 constexpr Out unit_symbol_impl(Out out, const type_list<Ms...>&, std::index_sequence<Idxs...>,
-                               unit_symbol_formatting fmt, bool negative_power)
+                               const unit_symbol_formatting& fmt, bool negative_power)
 {
   return (..., (out = unit_symbol_impl<CharT>(out, Ms{}, Idxs, fmt, negative_power)));
 }
 
 template<typename CharT, std::output_iterator<CharT> Out, DerivedUnitExpr... Nums, DerivedUnitExpr... Dens>
 constexpr Out unit_symbol_impl(Out out, const type_list<Nums...>& nums, const type_list<Dens...>& dens,
-                               unit_symbol_formatting fmt)
+                               const unit_symbol_formatting& fmt)
 {
   if constexpr (sizeof...(Nums) == 0 && sizeof...(Dens) == 0) {
     // dimensionless quantity
@@ -792,7 +796,7 @@ constexpr Out unit_symbol_impl(Out out, const type_list<Nums...>& nums, const ty
     }
 
     if (fmt.solidus == always && sizeof...(Dens) > 1) *out++ = '(';
-    bool negative_power = fmt.solidus == never || (fmt.solidus == one_denominator && sizeof...(Dens) > 1);
+    const bool negative_power = fmt.solidus == never || (fmt.solidus == one_denominator && sizeof...(Dens) > 1);
     out = unit_symbol_impl<CharT>(out, dens, std::index_sequence_for<Dens...>(), fmt, negative_power);
     if (fmt.solidus == always && sizeof...(Dens) > 1) *out++ = ')';
     return out;
@@ -800,7 +804,8 @@ constexpr Out unit_symbol_impl(Out out, const type_list<Nums...>& nums, const ty
 }
 
 template<typename CharT, std::output_iterator<CharT> Out, typename... Expr>
-constexpr Out unit_symbol_impl(Out out, const derived_unit<Expr...>&, unit_symbol_formatting fmt, bool negative_power)
+constexpr Out unit_symbol_impl(Out out, const derived_unit<Expr...>&, const unit_symbol_formatting& fmt,
+                               bool negative_power)
 {
   gsl_Expects(negative_power == false);
   return unit_symbol_impl<CharT>(out, typename derived_unit<Expr...>::_num_{}, typename derived_unit<Expr...>::_den_{},
@@ -810,7 +815,7 @@ constexpr Out unit_symbol_impl(Out out, const derived_unit<Expr...>&, unit_symbo
 }  // namespace detail
 
 MP_UNITS_EXPORT template<typename CharT = char, std::output_iterator<CharT> Out, Unit U>
-constexpr Out unit_symbol_to(Out out, U u, unit_symbol_formatting fmt = unit_symbol_formatting{})
+constexpr Out unit_symbol_to(Out out, U u, const unit_symbol_formatting& fmt = unit_symbol_formatting{})
 {
   return detail::unit_symbol_impl<CharT>(out, u, fmt, false);
 }

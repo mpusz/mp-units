@@ -36,6 +36,7 @@ template<typename T>
 template<typename T1, typename T2>
 [[nodiscard]] consteval auto better_type_name(T1 v1, T2 v2)
 {
+  // NOLINTBEGIN(bugprone-branch-clone)
   if constexpr (type_name<T1>().size() < type_name<T2>().size())
     return v1;
   else if constexpr (type_name<T2>().size() < type_name<T1>().size())
@@ -44,6 +45,7 @@ template<typename T1, typename T2>
     return v1;
   else
     return v2;
+  // NOLINTEND(bugprone-branch-clone)
 }
 
 }  // namespace mp_units::detail

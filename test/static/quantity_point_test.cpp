@@ -835,7 +835,7 @@ static_assert((tower_peak + 42 * m).point_for(tower_peak).quantity_from(tower_pe
 static_assert((mean_sea_level + 42 * m).point_for(tower_peak).quantity_from(tower_peak) == -42 * m);
 static_assert((ground_level + 84 * m).point_for(tower_peak).quantity_from(tower_peak) == 42 * m);
 
-static_assert(is_of_type<(ground_level + isq::height(short(42) * m)).point_for(mean_sea_level),
+static_assert(is_of_type<(ground_level + isq::height(short{42} * m)).point_for(mean_sea_level),
                          quantity_point<isq::height[m], mean_sea_level, int>>);
 
 
@@ -938,7 +938,8 @@ static_assert(same_ground_level2_qp.quantity_ref_from(same_ground_level2) == 1 *
 ////////////////////////
 
 static_assert(([]() {
-                quantity_point l1{mean_sea_level + 1 * m}, l2{mean_sea_level + 2 * m};
+                const quantity_point l1{mean_sea_level + 1 * m};
+                quantity_point l2{mean_sea_level + 2 * m};
                 return l2 = l1;
               }())
                 .quantity_from(mean_sea_level) == 1 * m);
@@ -950,7 +951,7 @@ static_assert(([]() {
                 .quantity_from(mean_sea_level) == 1 * m);
 static_assert(([]() {
                 quantity_point l1{mean_sea_level + 1 * m}, l2{mean_sea_level + 2 * m};
-                return l2 = std::move(l1);
+                return l2 = std::move(l1);  // NOLINT(*-move-const-arg)
               }())
                 .quantity_from(mean_sea_level) == 1 * m);
 
@@ -960,19 +961,19 @@ static_assert(([]() {
 ////////////////////
 
 static_assert([](auto v) {
-  auto vv = v++;
+  auto vv = v++;  // NOLINT(bugprone-inc-dec-in-conditions)
   return std::pair(v, vv);
 }(mean_sea_level + 123 * m) == std::pair(mean_sea_level + 124 * m, quantity_point(mean_sea_level + 123 * m)));
 static_assert([](auto v) {
-  auto vv = ++v;
+  auto vv = ++v;  // NOLINT(bugprone-inc-dec-in-conditions)
   return std::pair(v, vv);
 }(mean_sea_level + 123 * m) == std::pair(mean_sea_level + 124 * m, mean_sea_level + 124 * m));
 static_assert([](auto v) {
-  auto vv = v--;
+  auto vv = v--;  // NOLINT(bugprone-inc-dec-in-conditions)
   return std::pair(v, vv);
 }(mean_sea_level + 123 * m) == std::pair(mean_sea_level + 122 * m, mean_sea_level + 123 * m));
 static_assert([](auto v) {
-  auto vv = --v;
+  auto vv = --v;  // NOLINT(bugprone-inc-dec-in-conditions)
   return std::pair(v, vv);
 }(mean_sea_level + 123 * m) == std::pair(mean_sea_level + 122 * m, mean_sea_level + 122 * m));
 
@@ -1302,32 +1303,32 @@ static_assert(is_of_type<(1 * m + tower_peak) - (1 * m + other_ground_level), qu
 
 
 // check for integral types promotion
-static_assert(is_same_v<decltype(((mean_sea_level + std::uint8_t(0) * m) + std::uint8_t(0) * m)
+static_assert(is_same_v<decltype(((mean_sea_level + std::uint8_t{0} * m) + std::uint8_t{0} * m)
                                    .quantity_from(mean_sea_level)
                                    .numerical_value_in(m)),
                         int>);
-static_assert(is_same_v<decltype((std::uint8_t(0) * m + (mean_sea_level + std::uint8_t(0) * m))
+static_assert(is_same_v<decltype((std::uint8_t{0} * m + (mean_sea_level + std::uint8_t{0} * m))
                                    .quantity_from(mean_sea_level)
                                    .numerical_value_in(m)),
                         int>);
-static_assert(is_same_v<decltype(((mean_sea_level + std::uint8_t(0) * m) - std::uint8_t(0) * m)
+static_assert(is_same_v<decltype(((mean_sea_level + std::uint8_t{0} * m) - std::uint8_t{0} * m)
                                    .quantity_from(mean_sea_level)
                                    .numerical_value_in(m)),
                         int>);
-static_assert(is_same_v<decltype(((mean_sea_level + std::uint8_t(0) * m) - (mean_sea_level + std::uint8_t(0) * m))
+static_assert(is_same_v<decltype(((mean_sea_level + std::uint8_t{0} * m) - (mean_sea_level + std::uint8_t{0} * m))
                                    .numerical_value_in(m)),
                         int>);
-static_assert(((mean_sea_level + std::uint8_t(128) * m) + std::uint8_t(128) * m)
+static_assert(((mean_sea_level + std::uint8_t{128} * m) + std::uint8_t{128} * m)
                 .quantity_from(mean_sea_level)
-                .numerical_value_in(m) == std::uint8_t(128) + std::uint8_t(128));
-static_assert((std::uint8_t(128) * m + (mean_sea_level + std::uint8_t(128) * m))
+                .numerical_value_in(m) == std::uint8_t{128} + std::uint8_t{128});
+static_assert((std::uint8_t{128} * m + (mean_sea_level + std::uint8_t{128} * m))
                 .quantity_from(mean_sea_level)
-                .numerical_value_in(m) == std::uint8_t(128) + std::uint8_t(128));
+                .numerical_value_in(m) == std::uint8_t{128} + std::uint8_t{128});
 static_assert(
-  ((mean_sea_level + std::uint8_t(0) * m) - std::uint8_t(1) * m).quantity_from(mean_sea_level).numerical_value_in(m) ==
-  std::uint8_t(0) - std::uint8_t(1));
-static_assert(((mean_sea_level + std::uint8_t(0) * m) - (mean_sea_level + std::uint8_t(1) * m)).numerical_value_in(m) ==
-              std::uint8_t(0) - std::uint8_t(1));
+  ((mean_sea_level + std::uint8_t{0} * m) - std::uint8_t{1} * m).quantity_from(mean_sea_level).numerical_value_in(m) ==
+  std::uint8_t{0} - std::uint8_t{1});
+static_assert(((mean_sea_level + std::uint8_t{0} * m) - (mean_sea_level + std::uint8_t{1} * m)).numerical_value_in(m) ==
+              std::uint8_t{0} - std::uint8_t{1});
 
 // different representation types
 static_assert(is_of_type<(mean_sea_level + 1. * m) + 1 * m, quantity_point<si::metre, mean_sea_level, double>>);
@@ -1675,6 +1676,5 @@ static_assert(invalid_addition(5 * isq::activity[Bq], quantity_point{10 / (2 * i
 static_assert(invalid_addition(5 * isq::activity[Bq], 10 / (2 * isq::time[s]), quantity_point{5 * isq::frequency[Hz]}));
 static_assert(invalid_subtraction(quantity_point{5 * isq::activity[Bq]}, 10 / (2 * isq::time[s]),
                                   5 * isq::frequency[Hz]));
-
 
 }  // namespace

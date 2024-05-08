@@ -277,11 +277,12 @@ struct derived_quantity : quantity<Q::reference, Rep> {
     R::operator=(std::move(t));
     return *this;
   }
-
-  constexpr operator R&() & noexcept { return *this; }
-  constexpr operator const R&() const& noexcept { return *this; }
-  constexpr operator R&&() && noexcept { return *this; }
-  constexpr operator const R&&() const&& noexcept { return *this; }
+  // NOLINTBEGIN(google-explicit-constructor, hicpp-explicit-conversions)
+  constexpr explicit(false) operator R&() & noexcept { return *this; }
+  constexpr explicit(false) operator const R&() const& noexcept { return *this; }
+  constexpr explicit(false) operator R&&() && noexcept { return *this; }
+  constexpr explicit(false) operator const R&&() const&& noexcept { return *this; }
+  // NOLINTEND(google-explicit-constructor, hicpp-explicit-conversions)
 };
 
 static_assert(Quantity<derived_quantity<double, quantity<isq::length[m]>, "NTTP type description">>);
@@ -320,19 +321,19 @@ static_assert(quantity{24h}.quantity_spec == kind_of<isq::time>);
 ////////////////////////
 
 static_assert([] {
-  auto l1(1 * m), l2(2 * m);
+  auto l1 = 1 * m, l2 = 2 * m;
   return l2 = l1;
 }()
                 .numerical_value_in(m) == 1);
 static_assert([] {
-  const auto l1(1 * m);
-  auto l2(2 * m);
+  const auto l1 = 1 * m;
+  auto l2 = 2 * m;
   return l2 = l1;
 }()
                 .numerical_value_in(m) == 1);
 static_assert([]() {
-  auto l1(1 * m), l2(2 * m);
-  return l2 = std::move(l1);
+  auto l1 = 1 * m, l2 = 2 * m;
+  return l2 = std::move(l1);  // NOLINT(*-move-const-arg)
 }()
                 .numerical_value_in(m) == 1);
 
@@ -347,19 +348,19 @@ static_assert((+(-123 * m)).numerical_value_in(m) == -123);
 static_assert((-(-123 * m)).numerical_value_in(m) == 123);
 
 static_assert([](auto v) {
-  auto vv = v++;
+  const auto vv = v++;  // NOLINT(bugprone-inc-dec-in-conditions)
   return std::pair(v, vv);
 }(123 * m) == std::pair(124 * m, 123 * m));
 static_assert([](auto v) {
-  auto vv = ++v;
+  const auto vv = ++v;  // NOLINT(bugprone-inc-dec-in-conditions)
   return std::pair(v, vv);
 }(123 * m) == std::pair(124 * m, 124 * m));
 static_assert([](auto v) {
-  auto vv = v--;
+  const auto vv = v--;  // NOLINT(bugprone-inc-dec-in-conditions)
   return std::pair(v, vv);
 }(123 * m) == std::pair(122 * m, 123 * m));
 static_assert([](auto v) {
-  auto vv = --v;
+  const auto vv = --v;  // NOLINT(bugprone-inc-dec-in-conditions)
   return std::pair(v, vv);
 }(123 * m) == std::pair(122 * m, 122 * m));
 
@@ -390,12 +391,12 @@ static_assert((2.5 * m *= 3 * one).numerical_value_in(m) == 7.5);
 static_assert((7.5 * m /= 3 * one).numerical_value_in(m) == 2.5);
 static_assert((3500 * m %= 1 * km).numerical_value_in(m) == 500);
 
-// static_assert((std::uint8_t(255) * m %= 256 * m).numerical_value_in(m) == [] {
+// static_assert((std::uint8_t{255} * m %= 256 * m).numerical_value_in(m) == [] {
 //   std::uint8_t ui(255);
 //   return ui %= 256;
 // }());  // UB
 // TODO: Fix
-static_assert((std::uint8_t(255) * m %= 257 * m).numerical_value_in(m) != [] {
+static_assert((std::uint8_t{255}* m %= 257 * m).numerical_value_in(m) != [] {
   std::uint8_t ui(255);
   return ui %= 257;
 }());
@@ -538,14 +539,14 @@ static_assert(is_of_type<1 * km % (300 * m), quantity<si::metre, int>>);
 static_assert(is_of_type<4 * one % (2 * one), quantity<one, int>>);
 
 // check for integral types promotion
-static_assert(is_same_v<decltype(std::uint8_t(0) * m + std::uint8_t(0) * m)::rep, int>);
-static_assert(is_same_v<decltype(std::uint8_t(0) * m - std::uint8_t(0) * m)::rep, int>);
-static_assert((std::uint8_t(128) * m + std::uint8_t(128) * m).numerical_value_in(m) ==
-              std::uint8_t(128) + std::uint8_t(128));
-static_assert((std::uint8_t(0) * m - std::uint8_t(1) * m).numerical_value_in(m) == std::uint8_t(0) - std::uint8_t(1));
+static_assert(is_same_v<decltype(std::uint8_t{0} * m + std::uint8_t{0} * m)::rep, int>);
+static_assert(is_same_v<decltype(std::uint8_t{0} * m - std::uint8_t{0} * m)::rep, int>);
+static_assert((std::uint8_t{128} * m + std::uint8_t{128} * m).numerical_value_in(m) ==
+              std::uint8_t{128} + std::uint8_t{128});
+static_assert((std::uint8_t{0} * m - std::uint8_t{1} * m).numerical_value_in(m) == std::uint8_t{0} - std::uint8_t{1});
 
 static_assert(
-  is_same_v<decltype((std::uint8_t(0) * m) % (std::uint8_t(0) * m))::rep, decltype(std::uint8_t(0) % std::uint8_t(0))>);
+  is_same_v<decltype((std::uint8_t{0} * m) % (std::uint8_t{0} * m))::rep, decltype(std::uint8_t{0} % std::uint8_t{0})>);
 
 // different representation types
 static_assert(is_of_type<1. * m + 1 * m, quantity<si::metre, double>>);
@@ -767,14 +768,14 @@ static_assert(is_same_v<decltype(0.0 * one - 0 * one), decltype(0.0 * one)>);
 static_assert(1 * one - 30 * percent == (100 - 30) * percent);
 static_assert(1 * one + 30 * percent == (100 + 30) * percent);
 
-static_assert(is_same_v<decltype(std::uint8_t(0) * one + std::uint8_t(0) * one)::rep, int>);
-static_assert(is_same_v<decltype(std::uint8_t(0) * one - std::uint8_t(0) * one)::rep, int>);
-static_assert((std::uint8_t(128) * one + std::uint8_t(128) * one).numerical_value_in(one) ==
-              std::uint8_t(128) + std::uint8_t(128));
-static_assert((std::uint8_t(0) * one - std::uint8_t(1) * one).numerical_value_in(one) ==
-              std::uint8_t(0) - std::uint8_t(1));
-static_assert(is_same_v<decltype(std::uint8_t(0) * one % (std::uint8_t(0) * one))::rep,
-                        decltype(std::uint8_t(0) % std::uint8_t(0))>);
+static_assert(is_same_v<decltype(std::uint8_t{0} * one + std::uint8_t{0} * one)::rep, int>);
+static_assert(is_same_v<decltype(std::uint8_t{0} * one - std::uint8_t{0} * one)::rep, int>);
+static_assert((std::uint8_t{128} * one + std::uint8_t{128} * one).numerical_value_in(one) ==
+              std::uint8_t{128} + std::uint8_t{128});
+static_assert((std::uint8_t{0} * one - std::uint8_t{1} * one).numerical_value_in(one) ==
+              std::uint8_t{0} - std::uint8_t{1});
+static_assert(is_same_v<decltype(std::uint8_t{0} * one % (std::uint8_t{0} * one))::rep,
+                        decltype(std::uint8_t{0} % std::uint8_t{0})>);
 
 static_assert(2 * one * (1 * m) == 2 * m);
 static_assert(2 * one / (1 * m) == 2 / (1 * m));

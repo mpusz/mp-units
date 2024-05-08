@@ -45,11 +45,13 @@ public:
 
   measurement() = default;
 
-  constexpr explicit measurement(value_type val, const value_type& err = {}) : value_(std::move(val))
+  // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+  constexpr explicit measurement(value_type val, const value_type& err = {}) :
+      value_(std::move(val)), uncertainty_([&] {
+        using namespace std;
+        return abs(err);
+      }())
   {
-    // it sucks that using declaration cannot be provided for a constructor initializer list
-    using namespace std;
-    uncertainty_ = abs(err);
   }
 
   [[nodiscard]] constexpr const value_type& value() const { return value_; }

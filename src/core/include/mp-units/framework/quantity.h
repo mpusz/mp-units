@@ -136,6 +136,7 @@ public:
   quantity() = default;
   quantity(const quantity&) = default;
   quantity(quantity&&) = default;
+  ~quantity() = default;
 
   template<typename Value>
     requires std::same_as<std::remove_cvref_t<Value>, Rep>
@@ -227,6 +228,7 @@ public:
                                                 numerical_value_is_an_implementation_detail_)),
                                               convert_explicitly> ||
                          !std::convertible_to<Rep, typename quantity_like_traits<Q>::rep>) constexpr
+  // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
   operator Q_() const& noexcept(
     noexcept(quantity_like_traits<Q>::from_numerical_value(numerical_value_is_an_implementation_detail_)) &&
     std::is_nothrow_copy_constructible_v<rep>)
@@ -241,6 +243,7 @@ public:
                                                 numerical_value_is_an_implementation_detail_)),
                                               convert_explicitly> ||
                          !std::convertible_to<Rep, typename quantity_like_traits<Q>::rep>) constexpr
+  // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
   operator Q_() && noexcept(
     noexcept(quantity_like_traits<Q>::from_numerical_value(numerical_value_is_an_implementation_detail_)) &&
     std::is_nothrow_move_constructible_v<rep>)
@@ -529,19 +532,15 @@ MP_UNITS_EXPORT_END
 
 }  // namespace mp_units
 
-namespace std {
-
 template<mp_units::Quantity Q1, mp_units::Quantity Q2>
   requires requires {
     {
       mp_units::common_reference(Q1::reference, Q2::reference)
     } -> mp_units::Reference;
-    typename common_type_t<typename Q1::rep, typename Q2::rep>;
+    typename std::common_type_t<typename Q1::rep, typename Q2::rep>;
   }
-struct common_type<Q1, Q2> {
+struct std::common_type<Q1, Q2> {
 public:
   using type = mp_units::quantity<mp_units::common_reference(Q1::reference, Q2::reference),
-                                  common_type_t<typename Q1::rep, typename Q2::rep>>;
+                                  std::common_type_t<typename Q1::rep, typename Q2::rep>>;
 };
-
-}  // namespace std

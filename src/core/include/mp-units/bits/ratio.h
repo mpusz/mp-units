@@ -42,17 +42,18 @@ template<typename T>
 
 [[nodiscard]] consteval std::intmax_t safe_multiply(std::intmax_t lhs, std::intmax_t rhs)
 {
-  constexpr std::intmax_t c = std::uintmax_t(1) << (sizeof(std::intmax_t) * 4);
+  constexpr std::intmax_t c = std::uintmax_t{1} << (sizeof(std::intmax_t) * 4);
 
   const std::intmax_t a0 = abs(lhs) % c;
   const std::intmax_t a1 = abs(lhs) / c;
   const std::intmax_t b0 = abs(rhs) % c;
   const std::intmax_t b1 = abs(rhs) / c;
 
-  gsl_Assert(a1 == 0 || b1 == 0);                               // overflow in multiplication
-  gsl_Assert(a0 * b1 + b0 * a1 < (c >> 1));                     // overflow in multiplication
-  gsl_Assert(b0 * a0 <= INTMAX_MAX);                            // overflow in multiplication
-  gsl_Assert((a0 * b1 + b0 * a1) * c <= INTMAX_MAX - b0 * a0);  // overflow in multiplication
+  // overflow in multiplication
+  gsl_Assert(a1 == 0 || b1 == 0);
+  gsl_Assert(a0 * b1 + b0 * a1 < (c >> 1));  // NOLINT(hicpp-signed-bitwise)
+  gsl_Assert(b0 * a0 <= INTMAX_MAX);
+  gsl_Assert((a0 * b1 + b0 * a1) * c <= INTMAX_MAX - b0 * a0);
 
   return lhs * rhs;
 }
@@ -68,13 +69,14 @@ MP_UNITS_EXPORT struct ratio {
   std::intmax_t num;
   std::intmax_t den;
 
+  // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
   MP_UNITS_CONSTEVAL explicit(false) ratio(std::intmax_t n, std::intmax_t d = 1) : num{n}, den{d}
   {
     gsl_Expects(den != 0);
     if (num == 0)
       den = 1;
     else {
-      std::intmax_t gcd = std::gcd(num, den);
+      const std::intmax_t gcd = std::gcd(num, den);
       num = num * (den < 0 ? -1 : 1) / gcd;
       den = detail::abs(den) / gcd;
     }
@@ -114,9 +116,9 @@ MP_UNITS_EXPORT struct ratio {
   gsl_Assert(std::numeric_limits<std::intmax_t>::max() / r2.num > r1.den);
   gsl_Assert(std::numeric_limits<std::intmax_t>::max() / r1.den > r2.den);
 
-  std::intmax_t num = std::gcd(r1.num * r2.den, r2.num * r1.den);
-  std::intmax_t den = r1.den * r2.den;
-  std::intmax_t gcd = std::gcd(num, den);
+  const std::intmax_t num = std::gcd(r1.num * r2.den, r2.num * r1.den);
+  const std::intmax_t den = r1.den * r2.den;
+  const std::intmax_t gcd = std::gcd(num, den);
   return ratio{num / gcd, den / gcd};
 }
 

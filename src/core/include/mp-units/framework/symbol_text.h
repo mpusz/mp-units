@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+// NOLINTBEGIN(*-avoid-c-arrays)
 #pragma once
 
 // IWYU pragma: private, include <mp-units/framework.h>
@@ -43,6 +44,7 @@ static_assert(std::text_encoding::literal().mib() == std::text_encoding::id::UTF
 
 namespace mp_units {
 
+// NOLINTNEXTLINE(readability-enum-initial-value)
 MP_UNITS_EXPORT enum class text_encoding : std::int8_t {
   unicode,  // µs; m³;  L²MT⁻³
   ascii,    // us; m^3; L^2MT^-3
@@ -60,9 +62,7 @@ constexpr bool is_basic_literal_character_set_char(char ch)
 template<std::size_t N>
 constexpr bool is_basic_literal_character_set(const char (&txt)[N]) noexcept
 {
-  for (auto ch : txt)
-    if (!is_basic_literal_character_set_char(ch)) return false;
-  return true;
+  return detail::all_of(std::begin(txt), std::end(txt), is_basic_literal_character_set_char);
 }
 
 template<std::size_t N>
@@ -94,6 +94,7 @@ struct symbol_text {
     gsl_Expects(detail::is_basic_literal_character_set_char(ch));
   }
 
+  // NOLINTNEXTLINE(*-avoid-c-arrays)
   constexpr explicit(false) symbol_text(const char (&txt)[N + 1]) :
       unicode_(detail::to_u8string(basic_fixed_string{txt})), ascii_(txt)
   {
@@ -106,6 +107,7 @@ struct symbol_text {
     gsl_Expects(detail::is_basic_literal_character_set(txt.data_));
   }
 
+  // NOLINTNEXTLINE(*-avoid-c-arrays)
   constexpr symbol_text(const char8_t (&u)[N + 1], const char (&a)[M + 1]) : unicode_(u), ascii_(a)
   {
     gsl_Expects(u[N] == char8_t{});
@@ -166,3 +168,4 @@ template<std::size_t N, std::size_t M>
 symbol_text(const fixed_u8string<N>&, const fixed_string<M>&) -> symbol_text<N, M>;
 
 }  // namespace mp_units
+// NOLINTEND(*-avoid-c-arrays)

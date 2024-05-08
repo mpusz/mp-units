@@ -38,7 +38,7 @@ namespace mp_units {
 namespace detail {
 
 template<typename Period>
-[[nodiscard]] inline consteval auto time_unit_from_chrono_period()
+[[nodiscard]] consteval auto time_unit_from_chrono_period()
 {
   using namespace si;
 

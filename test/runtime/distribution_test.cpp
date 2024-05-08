@@ -499,7 +499,7 @@ TEST_CASE("discrete_distribution")
 
   SECTION("parametrized_initializer_list")
   {
-    std::initializer_list<double> weights = {1.0, 2.0, 3.0};
+    const std::initializer_list<double> weights = {1.0, 2.0, 3.0};
 
     auto stl_dist = std::discrete_distribution<rep>(weights);
     auto units_dist = mp_units::discrete_distribution<q>(weights);
@@ -560,8 +560,8 @@ TEST_CASE("piecewise_constant_distribution")
 
   SECTION("parametrized_initializer_list")
   {
-    std::initializer_list<rep> intervals_rep = {1.0, 2.0, 3.0};
-    std::initializer_list<q> intervals_qty = {1.0 * isq::length[si::metre], 2.0 * isq::length[si::metre],
+    const std::initializer_list<rep> intervals_rep = {1.0, 2.0, 3.0};
+    const std::initializer_list<q> intervals_qty = {1.0 * isq::length[si::metre], 2.0 * isq::length[si::metre],
                                               3.0 * isq::length[si::metre]};
 
     auto stl_dist = std::piecewise_constant_distribution<rep>(intervals_rep, [](rep val) { return val; });
@@ -628,8 +628,8 @@ TEST_CASE("piecewise_linear_distribution")
 
   SECTION("parametrized_initializer_list")
   {
-    std::initializer_list<rep> intervals_rep = {1.0, 2.0, 3.0};
-    std::initializer_list<q> intervals_qty = {1.0 * isq::length[si::metre], 2.0 * isq::length[si::metre],
+    const std::initializer_list<rep> intervals_rep = {1.0, 2.0, 3.0};
+    const std::initializer_list<q> intervals_qty = {1.0 * isq::length[si::metre], 2.0 * isq::length[si::metre],
                                               3.0 * isq::length[si::metre]};
 
     auto stl_dist = std::piecewise_linear_distribution<rep>(intervals_rep, [](rep val) { return val; });

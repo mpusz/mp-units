@@ -39,7 +39,7 @@ std::vector<typename Q::rep> i_qty_to_rep(InputIt first, InputIt last)
 {
   std::vector<typename Q::rep> intervals_rep;
   intervals_rep.reserve(static_cast<size_t>(std::distance(first, last)));
-  for (auto itr = first; itr != last; ++itr) {
+  for (InputIt itr = first; itr != last; ++itr) {
     intervals_rep.push_back(itr->numerical_value_ref_in(Q::unit));
   }
   return intervals_rep;
@@ -106,11 +106,11 @@ struct uniform_int_distribution : public std::uniform_int_distribution<typename 
     return base::operator()(g) * Q::reference;
   }
 
-  Q a() const { return base::a() * Q::reference; }
-  Q b() const { return base::b() * Q::reference; }
+  [[nodiscard]] Q a() const { return base::a() * Q::reference; }
+  [[nodiscard]] Q b() const { return base::b() * Q::reference; }
 
-  Q min() const { return base::min() * Q::reference; }
-  Q max() const { return base::max() * Q::reference; }
+  [[nodiscard]] Q min() const { return base::min() * Q::reference; }
+  [[nodiscard]] Q max() const { return base::max() * Q::reference; }
 };
 
 template<Quantity Q>
@@ -131,11 +131,11 @@ struct uniform_real_distribution : public std::uniform_real_distribution<typenam
     return base::operator()(g) * Q::reference;
   }
 
-  Q a() const { return base::a() * Q::reference; }
-  Q b() const { return base::b() * Q::reference; }
+  [[nodiscard]] Q a() const { return base::a() * Q::reference; }
+  [[nodiscard]] Q b() const { return base::b() * Q::reference; }
 
-  Q min() const { return base::min() * Q::reference; }
-  Q max() const { return base::max() * Q::reference; }
+  [[nodiscard]] Q min() const { return base::min() * Q::reference; }
+  [[nodiscard]] Q max() const { return base::max() * Q::reference; }
 };
 
 template<Quantity Q>
@@ -153,10 +153,10 @@ struct binomial_distribution : public std::binomial_distribution<typename Q::rep
     return base::operator()(g) * Q::reference;
   }
 
-  Q t() const { return base::t() * Q::reference; }
+  [[nodiscard]] Q t() const { return base::t() * Q::reference; }
 
-  Q min() const { return base::min() * Q::reference; }
-  Q max() const { return base::max() * Q::reference; }
+  [[nodiscard]] Q min() const { return base::min() * Q::reference; }
+  [[nodiscard]] Q max() const { return base::max() * Q::reference; }
 };
 
 template<Quantity Q>
@@ -174,10 +174,10 @@ struct negative_binomial_distribution : public std::negative_binomial_distributi
     return base::operator()(g) * Q::reference;
   }
 
-  Q k() const { return base::k() * Q::reference; }
+  [[nodiscard]] Q k() const { return base::k() * Q::reference; }
 
-  Q min() const { return base::min() * Q::reference; }
-  Q max() const { return base::max() * Q::reference; }
+  [[nodiscard]] Q min() const { return base::min() * Q::reference; }
+  [[nodiscard]] Q max() const { return base::max() * Q::reference; }
 };
 
 template<Quantity Q>
@@ -187,7 +187,7 @@ struct geometric_distribution : public std::geometric_distribution<typename Q::r
   using base = MP_UNITS_TYPENAME std::geometric_distribution<rep>;
 
   geometric_distribution() : base() {}
-  geometric_distribution(double p) : base(p) {}
+  explicit geometric_distribution(double p) : base(p) {}
 
   template<typename Generator>
   Q operator()(Generator& g)
@@ -195,8 +195,8 @@ struct geometric_distribution : public std::geometric_distribution<typename Q::r
     return base::operator()(g) * Q::reference;
   }
 
-  Q min() const { return base::min() * Q::reference; }
-  Q max() const { return base::max() * Q::reference; }
+  [[nodiscard]] Q min() const { return base::min() * Q::reference; }
+  [[nodiscard]] Q max() const { return base::max() * Q::reference; }
 };
 
 template<Quantity Q>
@@ -214,8 +214,8 @@ struct poisson_distribution : public std::poisson_distribution<typename Q::rep> 
     return base::operator()(g) * Q::reference;
   }
 
-  Q min() const { return base::min() * Q::reference; }
-  Q max() const { return base::max() * Q::reference; }
+  [[nodiscard]] Q min() const { return base::min() * Q::reference; }
+  [[nodiscard]] Q max() const { return base::max() * Q::reference; }
 };
 
 template<Quantity Q>
@@ -233,8 +233,8 @@ struct exponential_distribution : public std::exponential_distribution<typename 
     return base::operator()(g) * Q::reference;
   }
 
-  Q min() const { return base::min() * Q::reference; }
-  Q max() const { return base::max() * Q::reference; }
+  [[nodiscard]] Q min() const { return base::min() * Q::reference; }
+  [[nodiscard]] Q max() const { return base::max() * Q::reference; }
 };
 
 template<Quantity Q>
@@ -252,8 +252,8 @@ struct gamma_distribution : public std::gamma_distribution<typename Q::rep> {
     return base::operator()(g) * Q::reference;
   }
 
-  Q min() const { return base::min() * Q::reference; }
-  Q max() const { return base::max() * Q::reference; }
+  [[nodiscard]] Q min() const { return base::min() * Q::reference; }
+  [[nodiscard]] Q max() const { return base::max() * Q::reference; }
 };
 
 template<Quantity Q>
@@ -271,8 +271,8 @@ struct weibull_distribution : public std::weibull_distribution<typename Q::rep> 
     return base::operator()(g) * Q::reference;
   }
 
-  Q min() const { return base::min() * Q::reference; }
-  Q max() const { return base::max() * Q::reference; }
+  [[nodiscard]] Q min() const { return base::min() * Q::reference; }
+  [[nodiscard]] Q max() const { return base::max() * Q::reference; }
 };
 
 template<Quantity Q>
@@ -290,10 +290,10 @@ struct extreme_value_distribution : public std::extreme_value_distribution<typen
     return Q(base::operator()(g));
   }
 
-  Q a() const { return base::a() * Q::reference; }
+  [[nodiscard]] Q a() const { return base::a() * Q::reference; }
 
-  Q min() const { return base::min() * Q::reference; }
-  Q max() const { return base::max() * Q::reference; }
+  [[nodiscard]] Q min() const { return base::min() * Q::reference; }
+  [[nodiscard]] Q max() const { return base::max() * Q::reference; }
 };
 
 template<Quantity Q>
@@ -314,11 +314,11 @@ struct normal_distribution : public std::normal_distribution<typename Q::rep> {
     return Q(base::operator()(g));
   }
 
-  Q mean() const { return base::mean() * Q::reference; }
-  Q stddev() const { return base::stddev() * Q::reference; }
+  [[nodiscard]] Q mean() const { return base::mean() * Q::reference; }
+  [[nodiscard]] Q stddev() const { return base::stddev() * Q::reference; }
 
-  Q min() const { return base::min() * Q::reference; }
-  Q max() const { return base::max() * Q::reference; }
+  [[nodiscard]] Q min() const { return base::min() * Q::reference; }
+  [[nodiscard]] Q max() const { return base::max() * Q::reference; }
 };
 
 template<Quantity Q>
@@ -339,11 +339,11 @@ struct lognormal_distribution : public std::lognormal_distribution<typename Q::r
     return base::operator()(g) * Q::reference;
   }
 
-  Q m() const { return base::m() * Q::reference; }
-  Q s() const { return base::s() * Q::reference; }
+  [[nodiscard]] Q m() const { return base::m() * Q::reference; }
+  [[nodiscard]] Q s() const { return base::s() * Q::reference; }
 
-  Q min() const { return base::min() * Q::reference; }
-  Q max() const { return base::max() * Q::reference; }
+  [[nodiscard]] Q min() const { return base::min() * Q::reference; }
+  [[nodiscard]] Q max() const { return base::max() * Q::reference; }
 };
 
 template<Quantity Q>
@@ -361,8 +361,8 @@ struct chi_squared_distribution : public std::chi_squared_distribution<typename 
     return base::operator()(g) * Q::reference;
   }
 
-  Q min() const { return base::min() * Q::reference; }
-  Q max() const { return base::max() * Q::reference; }
+  [[nodiscard]] Q min() const { return base::min() * Q::reference; }
+  [[nodiscard]] Q max() const { return base::max() * Q::reference; }
 };
 
 template<Quantity Q>
@@ -383,11 +383,11 @@ struct cauchy_distribution : public std::cauchy_distribution<typename Q::rep> {
     return base::operator()(g) * Q::reference;
   }
 
-  Q a() const { return base::a() * Q::reference; }
-  Q b() const { return base::b() * Q::reference; }
+  [[nodiscard]] Q a() const { return base::a() * Q::reference; }
+  [[nodiscard]] Q b() const { return base::b() * Q::reference; }
 
-  Q min() const { return base::min() * Q::reference; }
-  Q max() const { return base::max() * Q::reference; }
+  [[nodiscard]] Q min() const { return base::min() * Q::reference; }
+  [[nodiscard]] Q max() const { return base::max() * Q::reference; }
 };
 
 template<Quantity Q>
@@ -405,8 +405,8 @@ struct fisher_f_distribution : public std::fisher_f_distribution<typename Q::rep
     return base::operator()(g) * Q::reference;
   }
 
-  Q min() const { return base::min() * Q::reference; }
-  Q max() const { return base::max() * Q::reference; }
+  [[nodiscard]] Q min() const { return base::min() * Q::reference; }
+  [[nodiscard]] Q max() const { return base::max() * Q::reference; }
 };
 
 template<Quantity Q>
@@ -424,8 +424,8 @@ struct student_t_distribution : public std::student_t_distribution<typename Q::r
     return base::operator()(g) * Q::reference;
   }
 
-  Q min() const { return base::min() * Q::reference; }
-  Q max() const { return base::max() * Q::reference; }
+  [[nodiscard]] Q min() const { return base::min() * Q::reference; }
+  [[nodiscard]] Q max() const { return base::max() * Q::reference; }
 };
 
 template<Quantity Q>
@@ -455,8 +455,8 @@ struct discrete_distribution : public std::discrete_distribution<typename Q::rep
     return base::operator()(g) * Q::reference;
   }
 
-  Q min() const { return base::min() * Q::reference; }
-  Q max() const { return base::max() * Q::reference; }
+  [[nodiscard]] Q min() const { return base::min() * Q::reference; }
+  [[nodiscard]] Q max() const { return base::max() * Q::reference; }
 };
 
 template<Quantity Q>
@@ -503,9 +503,9 @@ public:
     return base::operator()(g) * Q::reference;
   }
 
-  std::vector<Q> intervals() const
+  [[nodiscard]] std::vector<Q> intervals() const
   {
-    std::vector<rep> intervals_rep = base::intervals();
+    const std::vector<rep> intervals_rep = base::intervals();
     std::vector<Q> intervals_qty;
     intervals_qty.reserve(intervals_rep.size());
     for (const rep& val : intervals_rep) {
@@ -514,8 +514,8 @@ public:
     return intervals_qty;
   }
 
-  Q min() const { return base::min() * Q::reference; }
-  Q max() const { return base::max() * Q::reference; }
+  [[nodiscard]] Q min() const { return base::min() * Q::reference; }
+  [[nodiscard]] Q max() const { return base::max() * Q::reference; }
 };
 
 template<Quantity Q>
@@ -562,9 +562,9 @@ public:
     return base::operator()(g) * Q::reference;
   }
 
-  std::vector<Q> intervals() const
+  [[nodiscard]] std::vector<Q> intervals() const
   {
-    std::vector<rep> intervals_rep = base::intervals();
+    const std::vector<rep> intervals_rep = base::intervals();
     std::vector<Q> intervals_qty;
     intervals_qty.reserve(intervals_rep.size());
     for (const rep& val : intervals_rep) {
@@ -573,8 +573,8 @@ public:
     return intervals_qty;
   }
 
-  Q min() const { return base::min() * Q::reference; }
-  Q max() const { return base::max() * Q::reference; }
+  [[nodiscard]] Q min() const { return base::min() * Q::reference; }
+  [[nodiscard]] Q max() const { return base::max() * Q::reference; }
 };
 
 MP_UNITS_EXPORT_END

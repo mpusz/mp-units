@@ -97,7 +97,7 @@ constexpr Out copy(const symbol_text<N, M>& txt, text_encoding encoding, Out out
     if constexpr (is_same_v<CharT, char8_t>)
       return copy(txt.unicode(), out).out;
     else if constexpr (is_same_v<CharT, char>) {
-      for (char8_t ch : txt.unicode()) *out++ = static_cast<char>(ch);
+      for (const char8_t ch : txt.unicode()) *out++ = static_cast<char>(ch);
       return out;
     } else
       throw std::invalid_argument("Unicode text can't be copied to CharT output");
@@ -130,20 +130,17 @@ constexpr Out copy_symbol_exponent(text_encoding encoding, bool negative_power, 
       constexpr auto txt =
         symbol_text("^-(") + regular<r.num>() + symbol_text("/") + regular<r.den>() + symbol_text(")");
       return copy<CharT>(txt, encoding, out);
-    } else {
-      constexpr auto txt =
-        symbol_text("^(") + regular<r.num>() + symbol_text("/") + regular<r.den>() + symbol_text(")");
-      return copy<CharT>(txt, encoding, out);
     }
+    constexpr auto txt = symbol_text("^(") + regular<r.num>() + symbol_text("/") + regular<r.den>() + symbol_text(")");
+    return copy<CharT>(txt, encoding, out);
   } else if constexpr (r.num != 1) {
     // add exponent part
     if (negative_power) {
       constexpr auto txt = superscript<-r.num>();
       return copy<CharT>(txt, encoding, out);
-    } else {
-      constexpr auto txt = superscript<r.num>();
-      return copy<CharT>(txt, encoding, out);
     }
+    constexpr auto txt = superscript<r.num>();
+    return copy<CharT>(txt, encoding, out);
   }
 }
 

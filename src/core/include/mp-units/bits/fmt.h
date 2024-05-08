@@ -27,13 +27,16 @@
 //
 // For the license information refer to format.h.
 
+// NOLINTBEGIN(cppcoreguidelines-pro-bounds-pointer-arithmetic, cppcoreguidelines-pro-type-union-access)
 #pragma once
 
 #include <mp-units/compat_macros.h>
+#include <mp-units/ext/algorithm.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <gsl/gsl-lite.hpp>
 #include <concepts>
+#include <cstdint>
 #include <limits>
 #include <string_view>
 #endif
@@ -42,8 +45,8 @@
 
 namespace mp_units::detail {
 
-enum class fmt_align { none, left, right, center, numeric };
-enum class fmt_arg_id_kind {
+enum class fmt_align : std::int8_t { none, left, right, center, numeric };
+enum class fmt_arg_id_kind : std::int8_t {
   none,
 #if MP_UNITS_USE_FMTLIB
   name,
@@ -61,7 +64,7 @@ struct fmt_arg_ref {
 #endif
 
     constexpr value() {}
-    constexpr value(int idx) : index(idx) {}
+    constexpr explicit value(int idx) : index(idx) {}
 #if MP_UNITS_USE_FMTLIB
     constexpr value(std::basic_string_view<Char> n) : name(n) {}
 #endif
@@ -86,7 +89,7 @@ struct fill_t {
 private:
   static constexpr size_t max_size = 4 / sizeof(Char);
   // At most one codepoint (so one char32_t or four utf-8 char8_t)
-  Char data_[max_size] = {Char{' '}};
+  std::array<Char, max_size> data_ = {Char{' '}};
   unsigned char size_ = 1;
 
 public:
@@ -100,15 +103,15 @@ public:
   }
 
   [[nodiscard]] constexpr size_t size() const { return size_; }
-  [[nodiscard]] constexpr const Char* data() const { return data_; }
+  [[nodiscard]] constexpr const Char* data() const { return data_.data(); }
 
   [[nodiscard]] constexpr Char& operator[](size_t index) { return data_[index]; }
   [[nodiscard]] constexpr const Char& operator[](size_t index) const { return data_[index]; }
 };
 
 template<typename T>
-inline constexpr bool is_integer = std::is_integral<T>::value && !std::is_same<T, bool>::value &&
-                                   !std::is_same<T, char>::value && !std::is_same<T, wchar_t>::value;
+inline constexpr bool is_integer =
+  std::is_integral_v<T> && !std::is_same_v<T, bool> && !std::is_same_v<T, char> && !std::is_same_v<T, wchar_t>;
 
 // Converts a character to ASCII. Returns a number > 127 on conversion failure.
 template<std::integral Char>
@@ -211,7 +214,7 @@ template<typename Char>
 }
 
 template<typename Char, typename Handler>
-[[nodiscard]] constexpr const Char* do_parse_arg_id(const Char* begin, const Char* end, Handler&& handler)
+[[nodiscard]] constexpr const Char* do_parse_arg_id(const Char* begin, const Char* end, Handler& handler)
 {
   Char c = *begin;
   if (c >= '0' && c <= '9') {
@@ -223,8 +226,7 @@ template<typename Char, typename Handler>
       ++begin;
     if (begin == end || (*begin != '}' && *begin != ':'))
       MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("invalid format string"));
-    else
-      handler.on_index(index);
+    handler.on_index(index);
     return begin;
   }
   if (c == '%') return begin;  // mp-units extension
@@ -246,7 +248,7 @@ template<typename Char, typename Handler>
 }
 
 template<typename Char, typename Handler>
-[[nodiscard]] constexpr const Char* parse_arg_id(const Char* begin, const Char* end, Handler&& handler)
+[[nodiscard]] constexpr const Char* parse_arg_id(const Char* begin, const Char* end, Handler& handler)
 {
   gsl_Expects(begin != end);
   Char c = *begin;
@@ -262,7 +264,7 @@ struct dynamic_spec_id_handler {
 
   constexpr void on_auto()
   {
-    int id = MP_UNITS_FMT_FROM_ARG_ID(ctx.next_arg_id());
+    const int id = MP_UNITS_FMT_FROM_ARG_ID(ctx.next_arg_id());
     ref = fmt_arg_ref<Char>(id);
 #if MP_UNITS_USE_FMTLIB || __cpp_lib_format >= 202305L
     ctx.check_dynamic_spec(id);
@@ -292,7 +294,7 @@ template<typename Char>
 {
   gsl_Expects(begin != end);
   if ('0' <= *begin && *begin <= '9') {
-    int val = ::mp_units::detail::parse_nonnegative_int(begin, end, -1);
+    const int val = ::mp_units::detail::parse_nonnegative_int(begin, end, -1);
     if (val != -1)
       value = val;
     else
@@ -312,9 +314,9 @@ template<std::input_iterator It>
 constexpr int code_point_length(It begin)
 {
   if constexpr (sizeof(std::iter_value_t<It>) != 1) return 1;
-  constexpr char lengths[] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                              0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 3, 3, 4, 0};
-  int len = lengths[static_cast<unsigned char>(*begin) >> 3];
+  constexpr std::array lengths = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                                  0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 3, 3, 4, 0};
+  const int len = lengths[static_cast<unsigned char>(*begin) >> 3];
 
   // Compute the pointer to the next character early so that the next
   // iteration can start working on the next character. Neither Clang
@@ -357,9 +359,8 @@ template<typename Char, typename Specs>
         ++begin;
       }
       break;
-    } else if (p == begin) {
-      break;
     }
+    if (p == begin) break;
     p = begin;
   }
   if (align == fmt_align::none) align = default_align;  // mp-units extension
@@ -368,3 +369,4 @@ template<typename Char, typename Specs>
 }
 
 }  // namespace mp_units::detail
+// NOLINTEND(cppcoreguidelines-pro-bounds-pointer-arithmetic, cppcoreguidelines-pro-type-union-access)

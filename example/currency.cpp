@@ -58,7 +58,7 @@ inline constexpr auto JPY = japanese_jen;
 static_assert(!std::equality_comparable_with<quantity<euro, int>, quantity<us_dollar, int>>);
 
 
-#if 0
+#if 0  // NOLINT(readability-avoid-unconditional-preprocessor-if)
 
 // if you have only a few currencies to handle
 template<Unit auto From, Unit auto To>
@@ -76,12 +76,12 @@ template<Unit auto From, Unit auto To>
 template<Unit auto From, Unit auto To>
 [[nodiscard]] double exchange_rate()
 {
-  static std::map<std::pair<std::string_view, std::string_view>, double> rates = {
+  static const std::map<std::pair<std::string_view, std::string_view>, double> rates = {
     {{"USD", "EUR"}, 0.9215}, {{"EUR", "USD"}, 1.0848},
     // ...
   };
 
-  return rates[std::make_pair(to_string_view(From), to_string_view(To))];
+  return rates.at(std::make_pair(to_string_view(From), to_string_view(To)));
 }
 
 #endif
@@ -103,8 +103,8 @@ int main()
 {
   using namespace unit_symbols;
 
-  quantity_point price_usd{100 * USD};
-  quantity_point price_euro = exchange_to<euro>(price_usd);
+  const quantity_point price_usd{100 * USD};
+  const quantity_point price_euro = exchange_to<euro>(price_usd);
 
   std::cout << price_usd.quantity_from_zero() << " -> " << price_euro.quantity_from_zero() << "\n";
   // std::cout << price_usd.quantity_from_zero() + price_euro.quantity_from_zero() << "\n";  // does

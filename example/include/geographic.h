@@ -84,20 +84,14 @@ template<class CharT, class Traits, typename T>
 std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const latitude<T>& lat)
 {
   const auto& q = lat.quantity_ref_from(geographic::equator);
-  if (is_gteq_zero(q))
-    return os << q << " N";
-  else
-    return os << -q << " S";
+  return (is_gteq_zero(q)) ? (os << q << " N") : (os << -q << " S");
 }
 
 template<class CharT, class Traits, typename T>
 std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const longitude<T>& lon)
 {
   const auto& q = lon.quantity_ref_from(geographic::prime_meridian);
-  if (is_gteq_zero(q))
-    return os << q << " E";
-  else
-    return os << -q << " W";
+  return (is_gteq_zero(q)) ? (os << q << " E") : (os << -q << " W");
 }
 
 inline namespace literals {
@@ -174,6 +168,7 @@ struct position {
 };
 
 template<typename T>
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 distance spherical_distance(position<T> from, position<T> to)
 {
   using namespace mp_units;

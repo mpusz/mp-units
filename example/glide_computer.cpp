@@ -181,7 +181,7 @@ void example()
 
   for (const auto& g : gliders) {
     for (const auto& c : weather_conditions) {
-      std::string txt = "Scenario: Glider = " + g.name + ", Weather = " + c.first;
+      const std::string txt = "Scenario: Glider = " + g.name + ", Weather = " + c.first;
       std::cout << txt << "\n";
       std::cout << MP_UNITS_STD_FMT::format("{0:=^{1}}\n\n", "", txt.size());
 

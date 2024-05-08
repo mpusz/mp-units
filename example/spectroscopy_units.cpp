@@ -40,8 +40,6 @@ using namespace mp_units;
 using mp_units::si::unit_symbols::cm;
 using mp_units::si::unit_symbols::eV;
 using mp_units::si::unit_symbols::K;
-using mp_units::si::unit_symbols::kJ;
-using mp_units::si::unit_symbols::mol;
 using mp_units::si::unit_symbols::THz;
 using mp_units::si::unit_symbols::um;
 

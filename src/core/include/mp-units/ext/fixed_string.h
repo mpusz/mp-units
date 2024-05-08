@@ -23,6 +23,7 @@
 // To be replaced with:
 // P3094: std::basic_fixed_string
 
+// NOLINTBEGIN(*-avoid-c-arrays)
 #pragma once
 
 // TODO use <algorithm> when moved to C++20 modules (parsing takes too long for each translation unit)
@@ -84,7 +85,7 @@ struct basic_fixed_string {
 
   [[nodiscard]] constexpr bool empty() const noexcept { return N == 0; }
   [[nodiscard]] constexpr size_type size() const noexcept { return N; }
-  [[nodiscard]] constexpr const_pointer data() const noexcept { return data_; }
+  [[nodiscard]] constexpr const_pointer data() const noexcept { return static_cast<const_pointer>(data_); }
   [[nodiscard]] constexpr const CharT* c_str() const noexcept { return data(); }
   [[nodiscard]] constexpr value_type operator[](size_type index) const noexcept
   {
@@ -97,7 +98,8 @@ struct basic_fixed_string {
   [[nodiscard]] constexpr const_iterator end() const noexcept { return data() + size(); }
   [[nodiscard]] constexpr const_iterator cend() const noexcept { return data() + size(); }
 
-  [[nodiscard]] constexpr operator std::basic_string_view<CharT>() const noexcept
+  // NOLINTNEXTLINE(*-explicit-conversions, google-explicit-constructor)
+  [[nodiscard]] constexpr explicit(false) operator std::basic_string_view<CharT>() const noexcept
   {
     return std::basic_string_view<CharT>(cbegin(), cend());
   }
@@ -169,3 +171,4 @@ struct MP_UNITS_STD_FMT::formatter<mp_units::basic_fixed_string<CharT, N>> : for
     return formatter<std::basic_string_view<CharT>>::format(std::basic_string_view<CharT>(str), ctx);
   }
 };
+// NOLINTEND(*-avoid-c-arrays)

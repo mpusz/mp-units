@@ -48,6 +48,7 @@ public:
   constexpr explicit(false) min_impl(min_impl<U> i) noexcept : value_(static_cast<T>(static_cast<U>(i)))
   {
   }
+  // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
   constexpr explicit(false) operator T() const noexcept { return value_; }
 };
 
@@ -140,9 +141,9 @@ static_assert(min_impl<int>{1} * si::metre + min_impl<double>{1.5} * si::metre =
 static_assert(1 * si::metre + min_impl<int>{1} * si::metre == min_impl<int>{2} * si::metre);
 static_assert(1 * si::metre + min_impl<double>{1.5} * si::metre == min_impl<double>{2.5} * si::metre);
 static_assert(min_impl<int>{1} * si::metre + 1 * si::metre == min_impl<int>{2} * si::metre);
-static_assert(min_impl<int>{1} * si::metre + double{1.5} * si::metre == min_impl<double>{2.5} * si::metre);
+static_assert(min_impl<int>{1} * si::metre + 1.5 * si::metre == min_impl<double>{2.5} * si::metre);
 static_assert(min_impl<int>{1} * si::metre + min_impl<int>{1} * si::metre == 2 * si::metre);
-static_assert(min_impl<int>{1} * si::metre + min_impl<double>{1.5} * si::metre == double{2.5} * si::metre);
+static_assert(min_impl<int>{1} * si::metre + min_impl<double>{1.5} * si::metre == 2.5 * si::metre);
 
 static_assert(min_impl<int>{1} * si::kilo<si::metre> + min_impl<int>{1} * si::metre ==
               min_impl<int>{1'001} * si::metre);
@@ -151,9 +152,9 @@ static_assert(min_impl<int>{1} * si::kilo<si::metre> + min_impl<double>{1.5} * s
 static_assert(1 * si::kilo<si::metre> + min_impl<int>{1} * si::metre == min_impl<int>{1'001} * si::metre);
 static_assert(1 * si::kilo<si::metre> + min_impl<double>{1.5} * si::metre == min_impl<double>{1001.5} * si::metre);
 static_assert(min_impl<int>{1} * si::kilo<si::metre> + 1 * si::metre == min_impl<int>{1'001} * si::metre);
-static_assert(min_impl<int>{1} * si::kilo<si::metre> + double{1.5} * si::metre == min_impl<double>{1001.5} * si::metre);
+static_assert(min_impl<int>{1} * si::kilo<si::metre> + 1.5 * si::metre == min_impl<double>{1001.5} * si::metre);
 static_assert(min_impl<int>{1} * si::kilo<si::metre> + min_impl<int>{1} * si::metre == 1'001 * si::metre);
-static_assert(min_impl<int>{1} * si::kilo<si::metre> + min_impl<double>{1.5} * si::metre == double{1001.5} * si::metre);
+static_assert(min_impl<int>{1} * si::kilo<si::metre> + min_impl<double>{1.5} * si::metre == 1001.5 * si::metre);
 
 static_assert(min_impl<int>{1} * si::metre + min_impl<int>{1} * si::kilo<si::metre> ==
               min_impl<int>{1'001} * si::metre);
@@ -162,7 +163,7 @@ static_assert(min_impl<int>{1} * si::metre + min_impl<double>{1.5} * si::kilo<si
 static_assert(1 * si::metre + min_impl<int>{1} * si::kilo<si::metre> == min_impl<int>{1'001} * si::metre);
 static_assert(1 * si::metre + min_impl<double>{1.5} * si::kilo<si::metre> == min_impl<double>{1'501} * si::metre);
 static_assert(min_impl<int>{1} * si::metre + 1 * si::kilo<si::metre> == min_impl<int>{1'001} * si::metre);
-static_assert(min_impl<int>{1} * si::metre + double{1.5} * si::kilo<si::metre> == min_impl<double>{1'501} * si::metre);
+static_assert(min_impl<int>{1} * si::metre + 1.5 * si::kilo<si::metre> == min_impl<double>{1'501} * si::metre);
 static_assert(min_impl<int>{1} * si::metre + min_impl<int>{1} * si::kilo<si::metre> == 1'001 * si::metre);
 static_assert(min_impl<int>{1} * si::metre + min_impl<double>{1.5} * si::kilo<si::metre> == double{1'501} * si::metre);
 
@@ -171,9 +172,9 @@ static_assert(min_impl<int>{2} * si::metre - min_impl<double>{1.5} * si::metre =
 static_assert(2 * si::metre - min_impl<int>{1} * si::metre == min_impl<int>{1} * si::metre);
 static_assert(2 * si::metre - min_impl<double>{1.5} * si::metre == min_impl<double>{0.5} * si::metre);
 static_assert(min_impl<int>{2} * si::metre - 1 * si::metre == min_impl<int>{1} * si::metre);
-static_assert(min_impl<int>{2} * si::metre - double{1.5} * si::metre == min_impl<double>{0.5} * si::metre);
+static_assert(min_impl<int>{2} * si::metre - 1.5 * si::metre == min_impl<double>{0.5} * si::metre);
 static_assert(min_impl<int>{2} * si::metre - min_impl<int>{1} * si::metre == 1 * si::metre);
-static_assert(min_impl<int>{2} * si::metre - min_impl<double>{1.5} * si::metre == double{0.5} * si::metre);
+static_assert(min_impl<int>{2} * si::metre - min_impl<double>{1.5} * si::metre == 0.5 * si::metre);
 
 static_assert(min_impl<int>{2} * si::kilo<si::metre> - min_impl<int>{1} * si::metre ==
               min_impl<int>{1'999} * si::metre);
@@ -182,9 +183,9 @@ static_assert(min_impl<int>{2} * si::kilo<si::metre> - min_impl<double>{1.5} * s
 static_assert(2 * si::kilo<si::metre> - min_impl<int>{1} * si::metre == min_impl<int>{1'999} * si::metre);
 static_assert(2 * si::kilo<si::metre> - min_impl<double>{1.5} * si::metre == min_impl<double>{1998.5} * si::metre);
 static_assert(min_impl<int>{2} * si::kilo<si::metre> - 1 * si::metre == min_impl<int>{1'999} * si::metre);
-static_assert(min_impl<int>{2} * si::kilo<si::metre> - double{1.5} * si::metre == min_impl<double>{1998.5} * si::metre);
+static_assert(min_impl<int>{2} * si::kilo<si::metre> - 1.5 * si::metre == min_impl<double>{1998.5} * si::metre);
 static_assert(min_impl<int>{2} * si::kilo<si::metre> - min_impl<int>{1} * si::metre == 1'999 * si::metre);
-static_assert(min_impl<int>{2} * si::kilo<si::metre> - min_impl<double>{1.5} * si::metre == double{1998.5} * si::metre);
+static_assert(min_impl<int>{2} * si::kilo<si::metre> - min_impl<double>{1.5} * si::metre == 1998.5 * si::metre);
 
 static_assert(min_impl<int>{2'000} * si::metre - min_impl<int>{1} * si::kilo<si::metre> ==
               min_impl<int>{1'000} * si::metre);
@@ -193,8 +194,7 @@ static_assert(min_impl<int>{2'000} * si::metre - min_impl<double>{1.5} * si::kil
 static_assert(2'000 * si::metre - min_impl<int>{1} * si::kilo<si::metre> == min_impl<int>{1'000} * si::metre);
 static_assert(2'000 * si::metre - min_impl<double>{1.5} * si::kilo<si::metre> == min_impl<double>{500} * si::metre);
 static_assert(min_impl<int>{2'000} * si::metre - 1 * si::kilo<si::metre> == min_impl<int>{1'000} * si::metre);
-static_assert(min_impl<int>{2'000} * si::metre - double{1.5} * si::kilo<si::metre> ==
-              min_impl<double>{500} * si::metre);
+static_assert(min_impl<int>{2'000} * si::metre - 1.5 * si::kilo<si::metre> == min_impl<double>{500} * si::metre);
 static_assert(min_impl<int>{2'000} * si::metre - min_impl<int>{1} * si::kilo<si::metre> == 1'000 * si::metre);
 static_assert(min_impl<int>{2'000} * si::metre - min_impl<double>{1.5} * si::kilo<si::metre> ==
               double{500} * si::metre);
@@ -225,7 +225,7 @@ static_assert(min_impl<int>{123} * si::metre / (2. * one) == min_impl<double>{61
 static_assert(123 * si::metre / (min_impl<double>(2.) * one) == min_impl<double>{61.5} * si::metre);
 
 static_assert(min_impl<int>{123} * si::metre / (min_impl<double>{2.} * si::metre) == 61.5 * one);
-static_assert(min_impl<int>{123} * si::metre / (double{2.} * si::metre) == 61.5 * one);
+static_assert(min_impl<int>{123} * si::metre / (2. * si::metre) == 61.5 * one);
 static_assert(123 * si::metre / (min_impl<double>{2.} * si::metre) == 61.5 * one);
 #endif
 

@@ -111,10 +111,11 @@ public:
     const waypoint* end_;
     distance length_ = geographic::spherical_distance(begin().pos, end().pos);
   public:
+    // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
     leg(const waypoint& b, const waypoint& e) noexcept : begin_(&b), end_(&e) {}
-    constexpr const waypoint& begin() const { return *begin_; };
-    constexpr const waypoint& end() const { return *end_; }
-    constexpr distance get_distance() const { return length_; }
+    [[nodiscard]] constexpr const waypoint& begin() const { return *begin_; };
+    [[nodiscard]] constexpr const waypoint& end() const { return *end_; }
+    [[nodiscard]] constexpr distance get_distance() const { return length_; }
   };
   using legs = std::vector<leg>;
 
@@ -126,19 +127,19 @@ public:
 
   task(std::initializer_list<waypoint> wpts) : waypoints_(wpts) {}
 
-  const waypoints& get_waypoints() const { return waypoints_; }
-  const legs& get_legs() const { return legs_; }
+  [[nodiscard]] const waypoints& get_waypoints() const { return waypoints_; }
+  [[nodiscard]] const legs& get_legs() const { return legs_; }
 
-  const waypoint& get_start() const { return waypoints_.front(); }
-  const waypoint& get_finish() const { return waypoints_.back(); }
+  [[nodiscard]] const waypoint& get_start() const { return waypoints_.front(); }
+  [[nodiscard]] const waypoint& get_finish() const { return waypoints_.back(); }
 
-  distance get_distance() const { return length_; }
+  [[nodiscard]] distance get_distance() const { return length_; }
 
-  distance get_leg_dist_offset(std::size_t leg_index) const
+  [[nodiscard]] distance get_leg_dist_offset(std::size_t leg_index) const
   {
     return leg_index == 0 ? distance{} : leg_total_distances_[leg_index - 1];
   }
-  std::size_t get_leg_index(distance dist) const
+  [[nodiscard]] std::size_t get_leg_index(distance dist) const
   {
     return static_cast<std::size_t>(
       std::ranges::distance(leg_total_distances_.cbegin(), std::ranges::lower_bound(leg_total_distances_, dist)));

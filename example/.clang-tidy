@@ -1,0 +1,6 @@
+Checks: '
+    -bugprone-exception-escape,
+    -cppcoreguidelines-avoid-magic-numbers,
+    -google-build-using-namespace
+'
+InheritParentConfig: true

@@ -24,6 +24,7 @@
 #include "ranged_representation.h"
 #include <mp-units/compat_macros.h>
 #include <cassert>
+#include <cstdint>
 #include <iostream>
 #include <string>
 #ifdef MP_UNITS_MODULES
@@ -39,14 +40,14 @@ using namespace geographic;
 
 // **** HAE ****
 
-enum class earth_gravity_model { egm84_15, egm95_5, egm2008_1 };
+enum class earth_gravity_model : std::int8_t { egm84_15, egm95_5, egm2008_1 };
 
 template<earth_gravity_model M>
 struct height_above_ellipsoid_t : absolute_point_origin<height_above_ellipsoid_t<M>, isq::altitude> {
   static constexpr earth_gravity_model egm = M;
 };
 template<earth_gravity_model M>
-inline constexpr height_above_ellipsoid_t<M> height_above_ellipsoid;
+inline constexpr height_above_ellipsoid_t<M> height_above_ellipsoid;  // NOLINT(google-readability-casting)
 
 template<earth_gravity_model M>
 using hae_altitude = quantity_point<isq::altitude[si::metre], height_above_ellipsoid<M>>;
@@ -141,12 +142,12 @@ class unmanned_aerial_vehicle {
   msl_altitude launch_ = current_;
 public:
   void take_off(msl_altitude alt) { launch_ = alt; }
-  msl_altitude take_off() const { return launch_; }
+  [[nodiscard]] msl_altitude take_off() const { return launch_; }
 
   void current(msl_altitude alt) { current_ = alt; }
-  msl_altitude current() const { return current_; }
+  [[nodiscard]] msl_altitude current() const { return current_; }
 
-  hal_altitude hal() const { return height_above_launch + (current_ - launch_); }
+  [[nodiscard]] hal_altitude hal() const { return height_above_launch + (current_ - launch_); }
 };
 
 
@@ -160,7 +161,7 @@ int main()
   uav.current(mean_sea_level + 10'000 * ft);
   std::cout << MP_UNITS_STD_FMT::format("hal = {::N[.2f]}\n", uav.hal());
 
-  msl_altitude ground_level = mean_sea_level + 123 * m;
+  const msl_altitude ground_level = mean_sea_level + 123 * m;
   std::cout << MP_UNITS_STD_FMT::format("agl = {::N[.2f]}\n", uav.current() - ground_level);
 
   struct waypoint {
@@ -169,7 +170,7 @@ int main()
     msl_altitude msl_alt;
   };
 
-  waypoint wpt = {"EPPR", {54.24772_N, 18.6745_E}, mean_sea_level + 16. * ft};
+  const waypoint wpt = {"EPPR", {54.24772_N, 18.6745_E}, mean_sea_level + 16. * ft};
   std::cout << MP_UNITS_STD_FMT::format("{}: {} {}, {::N[.2f]}, {::N[.2f]}\n", wpt.name, wpt.pos.lat, wpt.pos.lon,
                                         wpt.msl_alt, to_hae<earth_gravity_model::egm2008_1>(wpt.msl_alt, wpt.pos));
 }

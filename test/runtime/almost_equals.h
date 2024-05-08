@@ -34,7 +34,7 @@ namespace mp_units {
 
 template<Quantity T>
 struct AlmostEqualsMatcher : Catch::Matchers::MatcherGenericBase {
-  AlmostEqualsMatcher(const T& target) : target_{target} {}
+  explicit AlmostEqualsMatcher(const T& target) : target_{target} {}
 
   template<std::convertible_to<T> U>
     requires std::same_as<typename T::rep, typename U::rep> && treat_as_floating_point<typename T::rep>
@@ -57,7 +57,7 @@ private:
 template<Quantity T>
 AlmostEqualsMatcher<T> AlmostEquals(const T& target)
 {
-  return {target};
+  return AlmostEqualsMatcher<T>{target};
 }
 
 }  // namespace mp_units

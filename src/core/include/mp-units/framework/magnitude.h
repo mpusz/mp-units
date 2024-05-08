@@ -374,6 +374,7 @@ namespace detail {
 // Divide a number by a given base raised to some power.
 //
 // Undefined unless base > 1, pow >= 0, and (base ^ pow) evenly divides n.
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 [[nodiscard]] consteval std::intmax_t remove_power(std::intmax_t base, std::intmax_t pow, std::intmax_t n)
 {
   while (pow-- > 0) {
@@ -795,8 +796,9 @@ template<std::intmax_t N>
 struct prime_factorization {
   [[nodiscard]] static consteval std::intmax_t get_or_compute_first_factor()
   {
-    if constexpr (known_first_factor<N>.has_value()) {
-      return known_first_factor<N>.value();
+    constexpr auto opt = known_first_factor<N>;
+    if constexpr (opt.has_value()) {
+      return opt.value();  // NOLINT(bugprone-unchecked-optional-access)
     } else {
       return static_cast<std::intmax_t>(factorizer::find_first_factor(N));
     }

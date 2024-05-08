@@ -36,6 +36,7 @@
 namespace mp_units {
 
 MP_UNITS_EXPORT template<typename Derived, QuantitySpec auto QS>
+// NOLINTNEXTLINE(bugprone-crtp-constructor-accessibility)
 struct absolute_point_origin {
   static constexpr QuantitySpec auto quantity_spec = QS;
   using _type_ = absolute_point_origin;
@@ -157,6 +158,7 @@ public:
   quantity_point() = default;
   quantity_point(const quantity_point&) = default;
   quantity_point(quantity_point&&) = default;
+  ~quantity_point() = default;
 
   template<typename Q>
     requires QuantityOf<std::remove_cvref_t<Q>, get_quantity_spec(R)> && std::constructible_from<quantity_type, Q> &&
@@ -290,6 +292,7 @@ public:
       convert_explicitly> ||
     !std::convertible_to<quantity_type, quantity<quantity_point_like_traits<QP>::reference,
                                                  typename quantity_point_like_traits<QP>::rep>>) constexpr
+  // NOLINTNEXTLINE(*-explicit-conversions, google-explicit-constructor)
   operator QP_() const& noexcept(
     noexcept(quantity_point_like_traits<QP>::from_quantity(quantity_from_origin_is_an_implementation_detail_)) &&
     std::is_nothrow_copy_constructible_v<rep>)
@@ -307,6 +310,7 @@ public:
       convert_explicitly> ||
     !std::convertible_to<quantity_type, quantity<quantity_point_like_traits<QP>::reference,
                                                  typename quantity_point_like_traits<QP>::rep>>) constexpr
+  // NOLINTNEXTLINE(*-explicit-conversions, google-explicit-constructor)
   operator QP_() && noexcept(
     noexcept(quantity_point_like_traits<QP>::from_quantity(quantity_from_origin_is_an_implementation_detail_)) &&
     std::is_nothrow_move_constructible_v<rep>)

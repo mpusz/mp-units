@@ -999,17 +999,17 @@ TEST_CASE("different base types with the # specifier", "[text][fmt]")
 TEST_CASE("localization with the 'L' specifier", "[text][fmt][localization]")
 {
   struct group2 : std::numpunct<char> {
-    char do_thousands_sep() const override { return '_'; }
-    std::string do_grouping() const override { return "\2"; }
+    [[nodiscard]] char do_thousands_sep() const override { return '_'; }
+    [[nodiscard]] std::string do_grouping() const override { return "\2"; }
   };
 
   struct group3 : std::numpunct<char> {
-    char do_thousands_sep() const override { return '\''; }
-    std::string do_grouping() const override { return "\3"; }
+    [[nodiscard]] char do_thousands_sep() const override { return '\''; }
+    [[nodiscard]] std::string do_grouping() const override { return "\3"; }
   };
 
-  std::locale grp2{std::locale::classic(), new group2};
-  std::locale grp3{std::locale::classic(), new group3};
+  const std::locale grp2{std::locale::classic(), new group2};
+  const std::locale grp3{std::locale::classic(), new group3};
 
   SECTION("full format on a quantity")
   {

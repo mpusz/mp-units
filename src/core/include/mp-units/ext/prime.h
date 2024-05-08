@@ -65,7 +65,7 @@ namespace mp_units::detail {
 template<std::size_t N>
 [[nodiscard]] consteval std::array<std::uintmax_t, N> first_n_primes()
 {
-  std::array<std::uintmax_t, N> primes;
+  std::array<std::uintmax_t, N> primes{};
   primes[0] = 2;
   for (std::size_t i = 1; i < N; ++i) {
     primes[i] = primes[i - 1] + 1;
@@ -77,7 +77,7 @@ template<std::size_t N>
 }
 
 template<std::size_t N, typename Callable>
-consteval void call_for_coprimes_up_to(std::uintmax_t n, const std::array<std::uintmax_t, N>& basis, Callable&& call)
+consteval void call_for_coprimes_up_to(std::uintmax_t n, const std::array<std::uintmax_t, N>& basis, Callable call)
 {
   for (std::uintmax_t i = 0u; i < n; ++i) {
     if (std::apply([&i](auto... primes) { return ((i % primes != 0) && ...); }, basis)) {
@@ -97,7 +97,7 @@ template<std::size_t N>
 template<std::size_t ResultSize, std::size_t N>
 [[nodiscard]] consteval auto coprimes_up_to(std::size_t n, const std::array<std::uintmax_t, N>& basis)
 {
-  std::array<std::uintmax_t, ResultSize> coprimes;
+  std::array<std::uintmax_t, ResultSize> coprimes{};
   std::size_t i = 0u;
 
   call_for_coprimes_up_to(n, basis, [&coprimes, &i](std::uintmax_t cp) { coprimes[i++] = cp; });
@@ -120,7 +120,7 @@ constexpr std::invoke_result_t<UnaryFunction, std::iter_value_t<InputIt>> get_fi
                                                                                        UnaryFunction f)
 {
   for (; first != last; ++first)
-    if (auto opt = f(*first)) return *opt;
+    if (auto opt = f(*first)) return opt;
   return {};
 }
 

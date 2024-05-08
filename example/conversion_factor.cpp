@@ -35,7 +35,7 @@ namespace {
 
 template<mp_units::Quantity Target, mp_units::Quantity Source>
   requires std::constructible_from<Target, Source>
-inline constexpr double conversion_factor(Target, Source)
+constexpr double conversion_factor(Target, Source)
 {
   return (1. * Source::reference).force_numerical_value_in(Target::unit);
 }

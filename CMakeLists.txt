@@ -28,7 +28,12 @@ list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 set(projectPrefix MP_UNITS_)
 
 option(${projectPrefix}DEV_BUILD_LA "Build code depending on the linear algebra library" ON)
+option(${projectPrefix}DEV_IWYU "Enables include-what-you-use" OFF)
+option(${projectPrefix}DEV_CLANG_TIDY "Enables clang-tidy" OFF)
+
 message(STATUS "${projectPrefix}DEV_BUILD_LA: ${${projectPrefix}DEV_BUILD_LA}")
+message(STATUS "${projectPrefix}DEV_IWYU: ${${projectPrefix}DEV_IWYU}")
+message(STATUS "${projectPrefix}DEV_CLANG_TIDY: ${${projectPrefix}DEV_CLANG_TIDY}")
 
 # make sure that the file is being used as an entry point
 include(modern_project_structure)
@@ -37,9 +42,6 @@ ensure_entry_point()
 # use ccache if available
 include(ccache)
 enable_ccache(BASE_DIR ${PROJECT_SOURCE_DIR})
-
-# enable include-what-you-use
-option(${projectPrefix}DEV_IWYU "Enables include-what-you-use" OFF)
 
 if(${projectPrefix}DEV_IWYU)
     set(${projectPrefix}BUILD_AS_SYSTEM_HEADERS ON)
@@ -51,14 +53,15 @@ if(${projectPrefix}DEV_IWYU)
         MAX_LINE_LENGTH 120
         NO_COMMENTS
     )
+elseif(${projectPrefix}DEV_CLANG_TIDY)
+    include(static_analysis)
+    enable_clang_tidy()
 else()
     # set restrictive compilation warnings
     # (some gcc warnings are not recognized by IWYU which is based on clang)
     include(warnings)
     set_warnings()
 endif()
-
-# enable_clang_tidy()
 
 # add project code
 add_subdirectory(src)
