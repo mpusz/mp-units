@@ -73,6 +73,7 @@ class MPUnitsConan(ConanFile):
         "no_crtp": "auto",
     }
     tool_requires = "cmake/[>=3.29]"
+    implements = "auto_header_only"
     exports = "LICENSE.md"
     exports_sources = (
         "docs/*",
@@ -220,6 +221,7 @@ class MPUnitsConan(ConanFile):
     def generate(self):
         tc = CMakeToolchain(self)
         if self._build_all:
+            tc.cache_variables["CMAKE_EXPORT_COMPILE_COMMANDS"] = True
             tc.cache_variables["CMAKE_VERIFY_INTERFACE_HEADER_SETS"] = True
             tc.cache_variables["MP_UNITS_DEV_BUILD_LA"] = not self._skip_la
         if self._build_cxx_modules:
@@ -246,9 +248,6 @@ class MPUnitsConan(ConanFile):
             cmake.build(target="all_verify_interface_header_sets")
             if can_run(self):
                 cmake.ctest(cli_args=["--output-on-failure"])
-
-    def package_id(self):
-        self.info.clear()
 
     def package(self):
         copy(
