@@ -3,6 +3,7 @@ Checks: '
     -abseil-*,
     -altera-*,
     -cert-dcl37-c,
+    -cert-dcl21-cpp,
     -cert-dcl50-cpp,
     -cert-dcl51-cpp,
     -cert-dcl58-cpp,

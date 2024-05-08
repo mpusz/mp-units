@@ -48,6 +48,7 @@ if(${projectPrefix}DEV_IWYU)
 
     include(include-what-you-use)
     enable_iwyu(
+        REQUIRED
         MAPPING_FILE "${PROJECT_SOURCE_DIR}/.mp-units.imp"
         NO_FORWARD_DECLARATIONS QUOTED_INCLUDES_FIRST
         MAX_LINE_LENGTH 120
@@ -55,7 +56,7 @@ if(${projectPrefix}DEV_IWYU)
     )
 elseif(${projectPrefix}DEV_CLANG_TIDY)
     include(static_analysis)
-    enable_clang_tidy()
+    enable_clang_tidy(PROGRAM clang-tidy-18 REQUIRED)
 else()
     # set restrictive compilation warnings
     # (some gcc warnings are not recognized by IWYU which is based on clang)
