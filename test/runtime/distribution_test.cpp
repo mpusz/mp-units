@@ -562,7 +562,7 @@ TEST_CASE("piecewise_constant_distribution")
   {
     const std::initializer_list<rep> intervals_rep = {1.0, 2.0, 3.0};
     const std::initializer_list<q> intervals_qty = {1.0 * isq::length[si::metre], 2.0 * isq::length[si::metre],
-                                              3.0 * isq::length[si::metre]};
+                                                    3.0 * isq::length[si::metre]};
 
     auto stl_dist = std::piecewise_constant_distribution<rep>(intervals_rep, [](rep val) { return val; });
     auto units_dist = mp_units::piecewise_constant_distribution<q>(
@@ -630,7 +630,7 @@ TEST_CASE("piecewise_linear_distribution")
   {
     const std::initializer_list<rep> intervals_rep = {1.0, 2.0, 3.0};
     const std::initializer_list<q> intervals_qty = {1.0 * isq::length[si::metre], 2.0 * isq::length[si::metre],
-                                              3.0 * isq::length[si::metre]};
+                                                    3.0 * isq::length[si::metre]};
 
     auto stl_dist = std::piecewise_linear_distribution<rep>(intervals_rep, [](rep val) { return val; });
     auto units_dist = mp_units::piecewise_linear_distribution<q>(
