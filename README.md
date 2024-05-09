@@ -57,7 +57,7 @@ analysis and unit/quantity manipulation.
 Here is a small example of possible operations:
 
 ```cpp
-import mp_units;
+#include <mp-units/systems/si.h>
 
 using namespace mp_units;
 using namespace mp_units::si::unit_symbols;
@@ -89,11 +89,15 @@ and dimensional analysis can be performed without sacrificing on runtime perform
 accuracy. Please see the below example for a quick preview of basic library features:
 
 ```cpp
+#include <mp-units/format.h>
+#include <mp-units/ostream.h>
+#include <mp-units/systems/international.h>
+#include <mp-units/systems/isq.h>
+#include <mp-units/systems/si.h>
 #include <format>
 #include <iomanip>
 #include <iostream>
 #include <print>
-import mp_units;
 
 using namespace mp_units;
 
