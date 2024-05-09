@@ -69,7 +69,7 @@ Output:
 Harvard Bridge length = 364.4 smoot (2034.6 ft, 620.14 m) ± 1 εar
 ```
 
-!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/Ee8oGd5dq)"
+!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/zsW1f6Tn1)"
 
 ??? question "What is `smoot`?"
 
