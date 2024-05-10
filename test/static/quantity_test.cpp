@@ -939,7 +939,7 @@ static_assert(is_of_type<quantity_cast<kind_of<isq::length>>(isq::length(1 * m))
 static_assert(is_of_type<quantity_cast<kind_of<isq::length>>(isq::distance(1 * m)), quantity<si::metre, int>>);
 // lvalue references in quantity_cast
 namespace lvalue_tests {
-quantity<m, int> lvalue_q = 1 * m;
+constexpr quantity<m, int> lvalue_q = 1 * m;
 static_assert(is_of_type<quantity_cast<isq::distance>(lvalue_q), quantity<isq::distance[m], int>>);
 }  // namespace lvalue_tests
 
