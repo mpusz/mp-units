@@ -56,7 +56,8 @@ template<QuantitySpec auto ToQS, typename Q>
   requires Quantity<std::remove_cvref_t<Q>> && (castable(std::remove_reference_t<Q>::quantity_spec, ToQS))
 [[nodiscard]] constexpr Quantity auto quantity_cast(Q&& q)
 {
-  return quantity{std::forward<Q>(q).numerical_value_is_an_implementation_detail_, make_reference(ToQS, q.unit)};
+  return quantity{std::forward<Q>(q).numerical_value_is_an_implementation_detail_,
+                  make_reference(ToQS, std::remove_reference_t<Q>::unit)};
 }
 
 /**
@@ -81,7 +82,7 @@ template<QuantitySpec auto ToQS, typename QP>
 [[nodiscard]] constexpr QuantityPoint auto quantity_cast(QP&& qp)
 {
   return QP{quantity_cast<ToQS>(std::forward<QP>(qp).quantity_from_origin_is_an_implementation_detail_),
-            qp.point_origin};
+            std::remove_reference_t<QP>::point_origin};
 }
 
 }  // namespace mp_units

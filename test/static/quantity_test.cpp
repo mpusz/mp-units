@@ -938,7 +938,8 @@ static_assert(is_of_type<quantity_cast<isq::distance>(isq::length(1 * m)), quant
 static_assert(is_of_type<quantity_cast<kind_of<isq::length>>(isq::length(1 * m)), quantity<si::metre, int>>);
 static_assert(is_of_type<quantity_cast<kind_of<isq::length>>(isq::distance(1 * m)), quantity<si::metre, int>>);
 // lvalue references in quantity_cast
-inline constexpr quantity<isq::distance[m], int> to_distance(quantity<m,int> arg){
+inline constexpr quantity<isq::distance[m], int> to_distance(quantity<m, int> arg)
+{
   return quantity_cast<isq::distance>(arg);
 }
 
