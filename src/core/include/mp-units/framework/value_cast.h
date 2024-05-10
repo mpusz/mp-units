@@ -124,10 +124,12 @@ template<Representation ToRep, typename QP>
   requires QuantityPoint<std::remove_cvref_t<QP>> &&
            RepresentationOf<ToRep, std::remove_reference_t<QP>::quantity_spec.character> &&
            std::constructible_from<ToRep, typename std::remove_reference_t<QP>::rep>
-[[nodiscard]] constexpr quantity_point<std::remove_reference_t<QP>::reference, std::remove_reference_t<QP>::point_origin, ToRep> value_cast(
-  QP&& qp)
+[[nodiscard]] constexpr quantity_point<std::remove_reference_t<QP>::reference,
+                                       std::remove_reference_t<QP>::point_origin, ToRep>
+value_cast(QP&& qp)
 {
-  return {value_cast<ToRep>(std::forward<QP>(qp).quantity_from_origin_is_an_implementation_detail_), std::remove_reference_t<QP>::point_origin};
+  return {value_cast<ToRep>(std::forward<QP>(qp).quantity_from_origin_is_an_implementation_detail_),
+          std::remove_reference_t<QP>::point_origin};
 }
 
 /**
