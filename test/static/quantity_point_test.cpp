@@ -1692,4 +1692,25 @@ static_assert(value_cast<float>(lvalue_qp).quantity_from_zero().numerical_value_
 static_assert(value_cast<m, float>(lvalue_qp).quantity_from_zero().numerical_value_in(m) == 2000.f);
 }  // namespace lvalue_tests
 
+static_assert(value_cast<quantity<km, int>>(quantity_point{2000 * m}).quantity_from_zero().numerical_value_in(km) == 2);
+static_assert(value_cast<quantity_point<km>>(quantity_point{2000 * m}).quantity_from_zero().numerical_value_in(km) ==
+              2);
+static_assert(
+  !requires(quantity_point<isq::width[m]> qp) { value_cast<quantity<m>>(qp); },
+  "value_cast shall not cast between different quantity types");
+static_assert(
+  !requires(quantity_point<m> qp) { value_cast<quantity<isq::width[m]>>(qp); },
+  "value_cast shall not cast between different quantity types");
+static_assert(value_cast<quantity_point<m, mean_sea_level>>(quantity_point<km, ground_level>{2 * km})
+                .quantity_ref_from(mean_sea_level)
+                .numerical_value_in(m) == 2042);
+static_assert(value_cast<quantity_point<cm, mean_sea_level, int>>(quantity_point<mm, ground_level, std::int8_t>{
+                                                                    std::int8_t{100} * mm})
+                .quantity_ref_from(mean_sea_level)
+                .numerical_value_in(cm) == 4210);
+static_assert(value_cast<quantity_point<mm, ground_level, std::int8_t>>(quantity_point<cm, mean_sea_level>{4210 * cm})
+                .quantity_ref_from(ground_level)
+                .numerical_value_in(mm) == 100);
+
+
 }  // namespace
