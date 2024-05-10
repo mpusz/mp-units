@@ -1689,7 +1689,7 @@ namespace lvalue_tests {
 constexpr quantity_point lvalue_qp{2 * km};
 static_assert(value_cast<m>(lvalue_qp).quantity_from_zero().numerical_value_in(m) == 2000);
 static_assert(value_cast<float>(lvalue_qp).quantity_from_zero().numerical_value_in(km) == 2.f);
-static_assert(value_cast<m,float>(lvalue_qp).quantity_from_zero().numerical_value_in(m) == 2000.f);
+static_assert(value_cast<m, float>(lvalue_qp).quantity_from_zero().numerical_value_in(m) == 2000.f);
 }  // namespace lvalue_tests
 
 }  // namespace
