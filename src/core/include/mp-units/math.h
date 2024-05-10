@@ -151,11 +151,10 @@ template<auto R, typename Rep>
  * @return bool: Whether the quantity point is finite or not.
  */
 template<auto R, auto PO, typename Rep>
-  requires requires(Rep v) { isfinite(v); } || requires(Rep v) { std::isfinite(v); }
+  requires requires(quantity<R, Rep> q) { isfinite(q); }
 [[nodiscard]] constexpr bool isfinite(const quantity_point<R, PO, Rep>& a) noexcept
 {
-  using std::isfinite;
-  return isfinite(a.quantity_ref_from(a.point_origin).numerical_value_ref_in(a.unit));
+  return isfinite(a.quantity_ref_from(a.point_origin));
 }
 
 /**
@@ -179,11 +178,10 @@ template<auto R, typename Rep>
  * @return bool: Whether the quantity point is infinite or not.
  */
 template<auto R, auto PO, typename Rep>
-  requires requires(Rep v) { isinf(v); } || requires(Rep v) { std::isinf(v); }
+  requires requires(quantity<R, Rep> q) { isinf(q); }
 [[nodiscard]] constexpr bool isinf(const quantity_point<R, PO, Rep>& a) noexcept
 {
-  using std::isinf;
-  return isinf(a.quantity_ref_from(a.point_origin).numerical_value_ref_in(a.unit));
+  return isinf(a.quantity_ref_from(a.point_origin));
 }
 
 
@@ -209,11 +207,10 @@ template<auto R, typename Rep>
  * @return bool: Whether the quantity point is a NaN or not.
  */
 template<auto R, auto PO, typename Rep>
-  requires requires(Rep v) { isnan(v); } || requires(Rep v) { std::isnan(v); }
+  requires requires(quantity<R, Rep> q) { isnan(q); }
 [[nodiscard]] constexpr bool isnan(const quantity_point<R, PO, Rep>& a) noexcept
 {
-  using std::isnan;
-  return isnan(a.quantity_ref_from(a.point_origin).numerical_value_ref_in(a.unit));
+  return isnan(a.quantity_ref_from(a.point_origin));
 }
 
 /**
