@@ -1677,4 +1677,19 @@ static_assert(invalid_addition(5 * isq::activity[Bq], 10 / (2 * isq::time[s]), q
 static_assert(invalid_subtraction(quantity_point{5 * isq::activity[Bq]}, 10 / (2 * isq::time[s]),
                                   5 * isq::frequency[Hz]));
 
+// value_cast
+
+static_assert(value_cast<m>(quantity_point{2 * km}).quantity_from_zero().numerical_value_in(m) == 2000);
+static_assert(value_cast<km>(quantity_point{2000 * m}).quantity_from_zero().numerical_value_in(km) == 2);
+static_assert(value_cast<int>(quantity_point{1.23 * m}).quantity_from_zero().numerical_value_in(m) == 1);
+static_assert(
+  value_cast<km / h>(quantity_point{2000.0 * m / (3600.0 * s)}).quantity_from_zero().numerical_value_in(km / h) == 2);
+// lvalue references in value_cast
+namespace lvalue_tests {
+constexpr quantity_point lvalue_qp{2 * km};
+static_assert(value_cast<m>(lvalue_qp).quantity_from_zero().numerical_value_in(m) == 2000);
+static_assert(value_cast<float>(lvalue_qp).quantity_from_zero().numerical_value_in(km) == 2.f);
+static_assert(value_cast<m, float>(lvalue_qp).quantity_from_zero().numerical_value_in(m) == 2000.f);
+}  // namespace lvalue_tests
+
 }  // namespace
