@@ -13,6 +13,7 @@
 - feat: `fma`, `isfinite`, `isinf`, and `isnan` math function added by [@NAThompson](https://github.com/NAThompson)
 - feat: `quantity_point` support added for `quantity_cast` and `value_cast`
 - feat: `value_cast<Unit, Representation>` added
+- feat: `value_cast<Quantity>(q)`, `value_cast<Quantity>(qp)` and `value_cast<QuantityPoint>(qp)` added by [@burnpanck](https://github.com/burnpanck)
 - feat: `interconvertible(QuantitySpec, QuantitySpec)` added
 - feat: `qp.quantity_from_zero()` added
 - feat: `underlying_type` type trait added

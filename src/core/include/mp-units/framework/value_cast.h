@@ -232,7 +232,8 @@ template<QuantityPoint ToQP, typename QP>
 [[nodiscard]] constexpr QuantityPoint auto value_cast(QP&& qp)
 {
   using qp_type = std::remove_reference_t<QP>;
-  if constexpr (is_same_v<std::remove_const_t<decltype(ToQP::point_origin)>, std::remove_const_t<decltype(qp_type::point_origin)>>) {
+  if constexpr (is_same_v<std::remove_const_t<decltype(ToQP::point_origin)>,
+                          std::remove_const_t<decltype(qp_type::point_origin)>>) {
     return quantity_point{
       value_cast<typename ToQP::quantity_type>(std::forward<QP>(qp).quantity_from(qp_type::point_origin)),
       qp_type::point_origin};

@@ -147,3 +147,17 @@ using namespace unit_symbols;
 Price price{12.95 * USD};
 Scaled spx = value_cast<USD_s, std::int64_t>(price);
 ```
+
+As a shortcut, instead of providing a unit and a representation type to `value_cast`, you may also provide a
+`Quantity` type directly, from which unit and representation type are taken. However, `value_cast<Quantity>`,
+still only allows for changes in unit and representation type, but not changing the type of the quantity.
+For that, you will have to use a `quantity_cast` instead.
+
+Overloads are also provided for instances of `quantity_point`. Furthermore, in that case, there is
+an overload `value_cast<ToQP>(qp)`, which is roughly equivalent to
+`value_cast<typename ToQP::quantity_type>(qp).point_for(ToQP::point_origin)`.
+In contrast to a separate `value_cast` followed by `point_for` (or vice-versa), the combined
+`value_cast` tries to choose the order of the individual conversion steps in such a way,
+to avoid both overflow and unnecessary loss of precision. Overflow is a risk because the change of origin point
+may require an addition of a potentially large offset (the difference between the origin points),
+which may well be outside the range of one or both quantity types.
