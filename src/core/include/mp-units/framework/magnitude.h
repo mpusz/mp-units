@@ -767,7 +767,7 @@ template<auto H1, auto... T1, auto H2, auto... T2>
 template<auto... Ms>
 [[nodiscard]] consteval auto common_magnitude_type_impl(magnitude<Ms...>)
 {
-  return (... * decltype(get_base_value(Ms)){}) * std::intmax_t{};
+  return (decltype(get_base_value(Ms)){} * ... * std::intmax_t{});
 }
 
 // Returns the most precise type to express the magnitude factor
