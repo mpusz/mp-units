@@ -231,10 +231,51 @@ template<QuantityPoint ToQP, typename QP>
            std::constructible_from<typename ToQP::rep, typename std::remove_reference_t<QP>::rep>
 [[nodiscard]] constexpr QuantityPoint auto value_cast(QP&& qp)
 {
-  return quantity_point{
-    value_cast<typename ToQP::quantity_type>(std::forward<QP>(qp).quantity_from_origin_is_an_implementation_detail_),
-    std::remove_reference_t<QP>::point_origin}
-    .point_for(ToQP::point_origin);
+  using qp_type = std::remove_reference_t<QP>;
+  if constexpr (is_same_v<std::remove_const_t<decltype(ToQP::point_origin)>, std::remove_const_t<decltype(qp_type::point_origin)>>) {
+    return quantity_point{
+      value_cast<typename ToQP::quantity_type>(std::forward<QP>(qp).quantity_from(qp_type::point_origin)),
+      qp_type::point_origin};
+  } else {
+    // it's unclear how hard we should try to avoid truncation here. For now, the only corner case we cater for,
+    // is when the range of the quantity type of at most one of QP or ToQP doesn't cover the offset between the
+    // point origins. In that case, we need to be careful to ensure we use the quantity type with the larger range
+    // of the two to perform the point_origin conversion.
+    // Numerically, we'll potentially need to do three things:
+    //  (a) cast the representation type
+    //  (b) scale the numerical value
+    //  (c) add/subtract the origin difference
+    // In the following, we carefully select the order of these three operations: each of (a) and (b) is scheduled
+    // either before or after (c), such that (c) acts on the largest range possible among all combination of source
+    // and target unit and represenation.
+    constexpr Magnitude auto c_mag = get_canonical_unit(qp_type::unit).mag / get_canonical_unit(ToQP::unit).mag;
+    constexpr Magnitude auto num = detail::numerator(c_mag);
+    constexpr Magnitude auto den = detail::denominator(c_mag);
+    constexpr Magnitude auto irr = c_mag * (den / num);
+    using c_rep_type = detail::maybe_common_type<typename ToQP::rep, typename qp_type::rep>;
+    using c_mag_type = detail::common_magnitude_type<c_mag>;
+    using multiplier_type = conditional<
+      treat_as_floating_point<c_rep_type>,
+      // ensure that the multiplier is also floating-point
+      conditional<std::is_arithmetic_v<value_type_t<c_rep_type>>,
+                  // reuse user's type if possible
+                  std::common_type_t<c_mag_type, value_type_t<c_rep_type>>, std::common_type_t<c_mag_type, double>>,
+      c_mag_type>;
+    constexpr auto val = [](Magnitude auto m) { return get_value<multiplier_type>(m); };
+    if constexpr (val(num) * val(irr) > val(den)) {
+      // original unit had a larger unit magnitude; if we first convert to the common representation but retain the
+      // unit, we obtain the largest possible range while not causing truncation of fractional values. This is optimal
+      // for the offset computation.
+      return value_cast<typename ToQP::quantity_type>(
+        value_cast<c_rep_type>(std::forward<QP>(qp)).point_for(ToQP::point_origin));
+    } else {
+      // new unit may have a larger unit magnitude; we first need to convert to the new unit (potentially causing
+      // truncation, but no more than if we did the conversion later), but make sure we keep the larger of the two
+      // representation types. Then, we can perform the offset computation.
+      return value_cast<typename ToQP::quantity_type>(
+        value_cast<ToQP::unit, c_rep_type>(std::forward<QP>(qp)).point_for(ToQP::point_origin));
+    }
+  }
 }
 
 
