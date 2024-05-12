@@ -1706,9 +1706,21 @@ static_assert(value_cast_is_forbidden<quantity_point<m>, quantity_point<isq::wid
               "value_cast shall not cast between different quantity types");
 static_assert(value_cast_is_forbidden<quantity_point<isq::width[m]>, quantity_point<m>>(),
               "value_cast shall not cast between different quantity types");
+// value_cast which does not touch the point_origin
+static_assert(value_cast<quantity_point<isq::height[m]>>(quantity_point{2 * isq::height[km]})
+                .quantity_from_origin_is_an_implementation_detail_.numerical_value_in(m) == 2000);
+static_assert(value_cast<quantity_point<isq::height[km]>>(quantity_point{2000 * isq::height[m]})
+                .quantity_from_origin_is_an_implementation_detail_.numerical_value_in(km) == 2);
+// a value_cast which includes a change to the point origin
+static_assert(value_cast<quantity_point<isq::height[m], mean_sea_level>>(quantity_point{2000 * isq::height[m],
+                                                                                        ground_level})
+                .quantity_from_origin_is_an_implementation_detail_.numerical_value_in(m) == 2042);
+// a value_cast which includes a change to the point origin as-well as a change in units
 static_assert(value_cast<quantity_point<isq::height[m], mean_sea_level>>(quantity_point{2 * isq::height[km],
                                                                                         ground_level})
                 .quantity_from_origin_is_an_implementation_detail_.numerical_value_in(m) == 2042);
+// a value_cast which changes all three of unit, rep, point_origin simultaneously, and the range of either FromQP or
+// ToQP does not include the other's point_origin
 static_assert(value_cast<quantity_point<isq::height[cm], mean_sea_level, int>>(
                 quantity_point{std::int8_t{100} * isq::height[mm], ground_level})
                 .quantity_from_origin_is_an_implementation_detail_.numerical_value_in(cm) == 4210);
