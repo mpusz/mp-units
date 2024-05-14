@@ -486,7 +486,7 @@ inline constexpr auto uohm = micro<si::ohm>;
 inline constexpr auto mohm = milli<si::ohm>;
 inline constexpr auto cohm = centi<si::ohm>;
 inline constexpr auto dohm = deci<si::ohm>;
-inline constexpr auto ohm = si::ohm;
+using si::ohm;
 inline constexpr auto daohm = deca<si::ohm>;
 inline constexpr auto hohm = hecto<si::ohm>;
 inline constexpr auto kohm = kilo<si::ohm>;
