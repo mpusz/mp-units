@@ -460,9 +460,9 @@ concept QuantitySpecWithNoSpecifiers = detail::NamedQuantitySpec<T> || detail::I
 }  // namespace detail
 
 #ifdef __cpp_explicit_this_parameter
-template<detail::QuantitySpecWithNoSpecifiers auto Q>
-  requires(get_kind(Q) == Q)
-struct kind_of_<Q> : Q {
+template<auto Q>
+  requires detail::QuantitySpecWithNoSpecifiers<std::remove_cvref_t<decltype(Q)>> && (get_kind(Q) == Q)
+struct kind_of_<Q> : std::remove_cvref_t<decltype(Q)> {
   static constexpr auto _quantity_spec_ = Q;
 };
 #else
