@@ -85,7 +85,7 @@ jobs:
             }
           - {
               name: "Clang-16",
-              os: ubuntu-24.04,
+              os: ubuntu-22.04,
               compiler:
                 {
                   type: CLANG,
