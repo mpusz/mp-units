@@ -90,6 +90,20 @@
 
 #endif
 
+
+#if !defined __cpp_lib_ranges_to_container
+
+namespace std {
+
+struct from_range_t {
+  explicit from_range_t() = default;
+};
+inline constexpr from_range_t from_range{};
+
+}  // namespace std
+
+#endif
+
 #if defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 17
 
 #define MP_UNITS_CONSTEVAL constexpr

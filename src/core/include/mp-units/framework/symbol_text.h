@@ -24,8 +24,10 @@
 #pragma once
 
 // IWYU pragma: private, include <mp-units/framework.h>
+// TODO use <algorithm> when moved to C++20 modules (parsing takes too long for each translation unit)
 #include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
+#include <mp-units/ext/algorithm.h>
 #include <mp-units/ext/fixed_string.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
@@ -85,7 +87,8 @@ constexpr fixed_u8string<N> to_u8string(fixed_string<N> txt)
  * @tparam M The size of the ASCII-only symbol
  */
 MP_UNITS_EXPORT template<std::size_t N, std::size_t M>
-struct symbol_text {
+class symbol_text {
+public:
   fixed_u8string<N> unicode_;
   fixed_string<M> ascii_;
 
@@ -96,7 +99,7 @@ struct symbol_text {
   }
 
   // NOLINTNEXTLINE(*-avoid-c-arrays, google-explicit-constructor, hicpp-explicit-conversions)
-  constexpr explicit(false) symbol_text(const char (&txt)[N + 1]) :
+  consteval explicit(false) symbol_text(const char (&txt)[N + 1]) :
       unicode_(detail::to_u8string(basic_fixed_string{txt})), ascii_(txt)
   {
     gsl_Expects(txt[N] == char{});
@@ -110,7 +113,7 @@ struct symbol_text {
   }
 
   // NOLINTNEXTLINE(*-avoid-c-arrays)
-  constexpr symbol_text(const char8_t (&u)[N + 1], const char (&a)[M + 1]) : unicode_(u), ascii_(a)
+  consteval symbol_text(const char8_t (&u)[N + 1], const char (&a)[M + 1]) : unicode_(u), ascii_(a)
   {
     gsl_Expects(u[N] == char8_t{});
     gsl_Expects(a[M] == char{});

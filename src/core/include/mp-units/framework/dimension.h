@@ -328,8 +328,7 @@ MP_UNITS_EXPORT template<dimension_symbol_formatting fmt = dimension_symbol_form
   return std::string_view(buffer.data(), size);
 #else
   constexpr std::size_t size = get_size();
-  constexpr auto buffer = detail::get_symbol_buffer<CharT, size, fmt>(D{});
-  return basic_fixed_string<CharT, size>(buffer.begin(), buffer.end());
+  return basic_fixed_string(std::from_range, detail::get_symbol_buffer<CharT, size, fmt>(D{}));
 #endif
 }
 

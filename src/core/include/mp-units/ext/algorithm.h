@@ -72,45 +72,6 @@ constexpr bool all_of(InputIt first, InputIt last, UnaryPred p)
   return find_if_not(first, last, p) == last;
 }
 
-template<class InputIt1, class InputIt2>
-constexpr bool equal(InputIt1 first1, InputIt1 last1, InputIt2 first2)
-{
-  for (; first1 != last1; ++first1, ++first2) {
-    if (!(*first1 == *first2)) {
-      return false;
-    }
-  }
-  return true;
-}
-
-template<class I1, class I2, class Cmp>
-constexpr auto lexicographical_compare_three_way(I1 first1, I1 last1, I2 first2, I2 last2, Cmp comp)
-  -> decltype(comp(*first1, *first2))
-{
-  using ret_t = decltype(comp(*first1, *first2));
-  static_assert(std::disjunction_v<std::is_same<ret_t, std::strong_ordering>, std::is_same<ret_t, std::weak_ordering>,
-                                   std::is_same<ret_t, std::partial_ordering>>,
-                "The return type must be a comparison category type.");
-
-  bool exhaust1 = (first1 == last1);
-  bool exhaust2 = (first2 == last2);
-  MP_UNITS_DIAGNOSTIC_PUSH
-  MP_UNITS_DIAGNOSTIC_IGNORE_ZERO_AS_NULLPOINTER_CONSTANT
-  for (; !exhaust1 && !exhaust2; exhaust1 = (++first1 == last1), exhaust2 = (++first2 == last2))
-    if (auto c = comp(*first1, *first2); c != 0) return c;
-  MP_UNITS_DIAGNOSTIC_POP
-
-  if (!exhaust1) return std::strong_ordering::greater;
-  if (!exhaust2) return std::strong_ordering::less;
-  return std::strong_ordering::equal;
-}
-
-template<class I1, class I2>
-constexpr auto lexicographical_compare_three_way(I1 first1, I1 last1, I2 first2, I2 last2)
-{
-  return ::mp_units::detail::lexicographical_compare_three_way(first1, last1, first2, last2, std::compare_three_way());
-}
-
 template<class ForwardIt>
 constexpr ForwardIt max_element(ForwardIt first, ForwardIt last)
 {

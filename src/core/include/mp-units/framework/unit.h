@@ -854,8 +854,7 @@ MP_UNITS_EXPORT template<unit_symbol_formatting fmt = unit_symbol_formatting{}, 
   return std::string_view(buffer.data(), size);
 #else
   constexpr std::size_t size = get_size();
-  constexpr auto buffer = detail::get_symbol_buffer<CharT, size, fmt>(U{});
-  return basic_fixed_string<CharT, size>(buffer.begin(), buffer.end());
+  return basic_fixed_string(std::from_range, detail::get_symbol_buffer<CharT, size, fmt>(U{}));
 #endif
 }
 
