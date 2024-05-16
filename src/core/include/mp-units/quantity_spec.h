@@ -424,7 +424,11 @@ struct quantity_spec<Self, QS, Eq, Args...> : quantity_spec<Self, QS, Args...> {
  */
 template<detail::IntermediateDerivedQuantitySpecExpr... Expr>
 struct derived_quantity_spec :
+#ifdef __cpp_explicit_this_parameter
+    detail::quantity_spec_interface,
+#else
     detail::quantity_spec_interface<derived_quantity_spec<Expr...>>,
+#endif
     detail::expr_fractions<detail::is_dimensionless, Expr...> {
   using _base_ = detail::expr_fractions<detail::is_dimensionless, Expr...>;
 
