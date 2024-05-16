@@ -1427,12 +1427,9 @@ template<typename Self, NamedQuantitySpec auto QS, auto... Args>
 template<QuantitySpec Q>
 [[nodiscard]] consteval auto remove_kind(Q q)
 {
-  if constexpr (detail::QuantityKindSpec<Q>) {
-    if constexpr (requires { Q::_parent_; })
-      return Q::_parent_;
-    else
-      return Q::_equation_;
-  } else
+  if constexpr (detail::QuantityKindSpec<Q>)
+    return Q::_quantity_spec_;
+  else
     return q;
 }
 
