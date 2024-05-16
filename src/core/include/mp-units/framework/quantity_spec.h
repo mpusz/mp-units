@@ -38,8 +38,10 @@
 #include <mp-units/framework/representation_concepts.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
+#include <concepts>
 #include <cstdint>
 #include <tuple>
+#include <type_traits>
 #endif
 
 namespace mp_units {
