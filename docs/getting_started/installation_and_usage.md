@@ -341,7 +341,7 @@ with the following differences:
 
     ```ini title="conanfile.txt" hl_lines="2"
     [requires]
-    mp-units/2.1.0@mpusz/testing
+    mp-units/2.1.1@mpusz/testing
 
     [layout]
     cmake_layout

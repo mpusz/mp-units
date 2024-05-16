@@ -4,6 +4,10 @@
 
 ### 2.2.0 <small>WIP</small> { id="2.2.0" }
 
+### 2.1.1 <small>May 16, 2024</small> { id="2.1.1" }
+
+- fix: unit tests compilation on gcc-14 fixed
+- fix: explicit `this` parameter support fixed
 
 ### 2.1.0 <small>December 8, 2023</small> { id="2.1.0" }
 
