@@ -63,6 +63,6 @@ add_library(
     unit_symbol_test.cpp
     usc_test.cpp
 )
-
+target_compile_options(unit_tests_static PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Wno-subobject-linkage>)
 target_link_libraries(unit_tests_static PRIVATE mp-units::mp-units)
 target_link_libraries(unit_tests_static PRIVATE unit_tests_static_truncating mp-units::mp-units)
