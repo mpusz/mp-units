@@ -118,7 +118,7 @@ inline constexpr struct troy_pound : named_unit<"lb t", mag<12> * troy_once> {} 
 inline constexpr struct inch_of_mercury : named_unit<"inHg", mag_ratio<3'386'389, 1'000> * si::pascal> {} inch_of_mercury;
 
 // https://en.wikipedia.org/wiki/United_States_customary_units#Temperature
-inline constexpr struct zeroth_degree_Fahrenheit : relative_point_origin<si::zeroth_degree_Celsius - 32 * (mag_ratio<5, 9> * si::degree_Celsius)> {} zeroth_degree_Fahrenheit;
+inline constexpr struct zeroth_degree_Fahrenheit : relative_point_origin<quantity_point{-32 * (mag_ratio<5, 9> * si::degree_Celsius)}> {} zeroth_degree_Fahrenheit;
 inline constexpr struct degree_Fahrenheit : named_unit<symbol_text{u8"°F", "`F"}, mag_ratio<5, 9> * si::degree_Celsius, zeroth_degree_Fahrenheit> {} degree_Fahrenheit;
 
 // clang-format on
