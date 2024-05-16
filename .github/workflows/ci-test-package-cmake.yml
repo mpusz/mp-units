@@ -90,9 +90,8 @@ jobs:
                   cc: "gcc-14",
                   cxx: "g++-14",
                 },
-              cxx_modules: "True",
-              std_format_support: "True",
-              conan-config: "",
+              cxx_modules: "False",
+              std_format_support: "True"
             }
           - {
               name: "Clang-16",
