@@ -84,6 +84,20 @@ jobs:
               conan-config: "",
             }
           - {
+              name: "GCC-14",
+              os: ubuntu-24.04,
+              compiler:
+                {
+                  type: GCC,
+                  version: 14,
+                  cc: "gcc-14",
+                  cxx: "g++-14",
+                },
+              cxx_modules: "True",
+              std_format_support: "True",
+              conan-config: "",
+            }
+          - {
               name: "Clang-16",
               os: ubuntu-22.04,
               compiler:
