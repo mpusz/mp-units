@@ -68,7 +68,7 @@ jobs:
             }
           - {
               name: "GCC-12",
-              os: ubuntu-22.04,
+              os: ubuntu-24.04,
               compiler:
                 {
                   type: GCC,
@@ -80,13 +80,25 @@ jobs:
             }
           - {
               name: "GCC-13",
-              os: ubuntu-22.04,
+              os: ubuntu-24.04,
               compiler:
                 {
                   type: GCC,
                   version: 13,
                   cc: "gcc-13",
                   cxx: "g++-13",
+                },
+              conan-config: "",
+            }
+          - {
+              name: "GCC-14",
+              os: ubuntu-24.04,
+              compiler:
+                {
+                  type: GCC,
+                  version: 14,
+                  cc: "gcc-14",
+                  cxx: "g++-14",
                 },
               conan-config: "",
             }
@@ -105,7 +117,7 @@ jobs:
             }
           - {
               name: "Clang-17",
-              os: ubuntu-22.04,
+              os: ubuntu-24.04,
               compiler:
                 {
                   type: CLANG,
@@ -118,7 +130,7 @@ jobs:
             }
           - {
               name: "Apple Clang 15",
-              os: macos-13,
+              os: macos-14,
               compiler:
                 {
                   type: APPLE_CLANG,
@@ -196,7 +208,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.8"
+          python-version: 3.x
       - name: Install Conan
         shell: bash
         run: |
@@ -249,7 +261,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.8"
+          python-version: 3.x
       - name: Install Conan
         shell: bash
         run: |
