@@ -66,6 +66,11 @@
 - build(conan): `generate()` now set `cache_variables`
 - build(conan): `can_run` check added before running tests
 
+### 2.1.1 <small>May 16, 2024</small> { id="2.1.1" }
+
+- fix: unit tests compilation on gcc-14 fixed
+- fix: explicit `this` parameter support fixed
+
 ### 2.1.0 <small>December 9, 2023</small> { id="2.1.0" }
 
 - (!) feat: `inverse()` support added for dimensions, quantity_spec, units, and references
