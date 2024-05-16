@@ -56,7 +56,7 @@ jobs:
           #   }
           - {
               name: "GCC-12",
-              os: ubuntu-22.04,
+              os: ubuntu-24.04,
               compiler:
                 {
                   type: GCC,
@@ -69,7 +69,7 @@ jobs:
             }
           - {
               name: "GCC-13",
-              os: ubuntu-22.04,
+              os: ubuntu-24.04,
               compiler:
                 {
                   type: GCC,
@@ -82,7 +82,7 @@ jobs:
             }
           - {
               name: "Clang-16",
-              os: ubuntu-22.04,
+              os: ubuntu-24.04,
               compiler:
                 {
                   type: CLANG,
@@ -96,7 +96,7 @@ jobs:
             }
           - {
               name: "Clang-17",
-              os: ubuntu-22.04,
+              os: ubuntu-24.04,
               compiler:
                 {
                   type: CLANG,
@@ -110,7 +110,7 @@ jobs:
             }
           - {
               name: "Clang-18",
-              os: ubuntu-22.04,
+              os: ubuntu-24.04,
               compiler:
                 {
                   type: CLANG,

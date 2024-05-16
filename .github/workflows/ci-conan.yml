@@ -57,7 +57,7 @@ jobs:
           #   }
           - {
               name: "GCC-12",
-              os: ubuntu-22.04,
+              os: ubuntu-24.04,
               compiler:
                 {
                   type: GCC,
@@ -71,7 +71,7 @@ jobs:
             }
           - {
               name: "GCC-13",
-              os: ubuntu-22.04,
+              os: ubuntu-24.04,
               compiler:
                 {
                   type: GCC,
@@ -85,7 +85,7 @@ jobs:
             }
           - {
               name: "Clang-16",
-              os: ubuntu-22.04,
+              os: ubuntu-24.04,
               compiler:
                 {
                   type: CLANG,
@@ -100,7 +100,7 @@ jobs:
             }
           - {
               name: "Clang-17",
-              os: ubuntu-22.04,
+              os: ubuntu-24.04,
               compiler:
                 {
                   type: CLANG,
@@ -115,7 +115,7 @@ jobs:
             }
           - {
               name: "Clang-18",
-              os: ubuntu-22.04,
+              os: ubuntu-24.04,
               compiler:
                 {
                   type: CLANG,
@@ -254,7 +254,7 @@ jobs:
     if: github.ref == 'refs/heads/master' || (github.ref_type == 'tag' && startsWith(github.ref_name, 'v'))
     needs: build
     name: Promote Conan package
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
