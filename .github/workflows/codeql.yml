@@ -97,7 +97,7 @@ jobs:
       if: matrix.language == 'cpp'
       uses: actions/setup-python@v5
       with:
-        python-version: "3.8"
+        python-version: 3.x
     - name: Conan build
       if: matrix.language == 'cpp'
       run: |
