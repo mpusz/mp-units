@@ -130,4 +130,4 @@ int main()
 }
 ```
 
-_Try it on the [Compiler Explorer](https://godbolt.org/z/fsdovTcYh)._
+_Try it on the [Compiler Explorer](https://godbolt.org/z/nhqhT8Mzb)._
