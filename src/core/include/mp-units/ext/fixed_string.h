@@ -112,10 +112,10 @@ public:
   [[nodiscard]] constexpr const_reverse_iterator crend() const noexcept { return rend(); }
 
   // capacity
-  [[nodiscard]] constexpr size_type size() const noexcept { return N; }
-  [[nodiscard]] constexpr size_type length() const noexcept { return size(); }
-  [[nodiscard]] constexpr size_type max_size() const noexcept { return size(); }
-  [[nodiscard]] constexpr bool empty() const noexcept { return size() == 0; }
+  [[nodiscard]] static constexpr std::integral_constant<size_type, N> size() noexcept { return {}; }
+  [[nodiscard]] static constexpr std::integral_constant<size_type, N> length() noexcept { return {}; }
+  [[nodiscard]] static constexpr std::integral_constant<size_type, N> max_size() noexcept { return {}; }
+  [[nodiscard]] static constexpr std::bool_constant<N == 0> empty() noexcept { return {}; }
 
   // element access
   [[nodiscard]] constexpr const_reference operator[](size_type pos) const
