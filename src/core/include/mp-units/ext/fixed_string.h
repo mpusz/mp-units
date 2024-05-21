@@ -84,7 +84,7 @@ public:
 
   template<std::input_iterator It, std::sentinel_for<It> S>
     requires std::convertible_to<std::iter_value_t<It>, CharT>
-  constexpr explicit basic_fixed_string(It begin, S end)
+  constexpr basic_fixed_string(It begin, S end)
   {
     gsl_Expects(std::distance(begin, end) == N);
     for (auto it = data_; begin != end; ++begin, ++it) *it = *begin;
@@ -92,7 +92,7 @@ public:
 
   template<std::ranges::input_range R>
     requires std::convertible_to<std::ranges::range_reference_t<R>, CharT>
-  constexpr explicit basic_fixed_string(std::from_range_t, R&& r)
+  constexpr basic_fixed_string(std::from_range_t, R&& r)
   {
     gsl_Expects(std::ranges::size(r) == N);
     for (auto it = data_; auto&& v : std::forward<R>(r)) *it++ = std::forward<decltype(v)>(v);
