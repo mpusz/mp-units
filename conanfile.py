@@ -221,6 +221,7 @@ class MPUnitsConan(ConanFile):
     def generate(self):
         tc = CMakeToolchain(self)
         if self._build_all:
+            tc.absolute_paths = True  # only needed for CMake CI
             tc.cache_variables["CMAKE_EXPORT_COMPILE_COMMANDS"] = True
             tc.cache_variables["CMAKE_VERIFY_INTERFACE_HEADER_SETS"] = True
             tc.cache_variables["MP_UNITS_DEV_BUILD_LA"] = not self._skip_la
