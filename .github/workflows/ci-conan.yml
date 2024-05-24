@@ -144,7 +144,7 @@ jobs:
             }
           - {
               name: "Apple Clang 15",
-              os: macos-14,
+              os: macos-13,
               compiler:
                 {
                   type: APPLE_CLANG,
