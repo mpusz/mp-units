@@ -160,7 +160,7 @@ jobs:
     steps:
       - name: Downcase 'build_type'
         id: build_type
-        uses: ASzc/change-string-case-action@v5
+        uses: ASzc/change-string-case-action@v6
         with:
           string: ${{ matrix.build_type }}
       - uses: actions/checkout@v4
