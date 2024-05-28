@@ -141,7 +141,7 @@ public:
   }
 
   // modifiers
-  constexpr void swap(basic_fixed_string& s) noexcept { std::swap_ranges(begin(), end(), s.begin()); }
+  constexpr void swap(basic_fixed_string& s) noexcept { swap_ranges(begin(), end(), s.begin()); }
 
   // string operations
   [[nodiscard]] constexpr const_pointer c_str() const noexcept { return data(); }
