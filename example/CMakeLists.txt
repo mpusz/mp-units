@@ -72,4 +72,4 @@ add_example(total_energy)
 add_example(unmanned_aerial_vehicle example_utils)
 
 add_subdirectory(glide_computer_lib)
-# add_subdirectory(kalman_filter)
+add_subdirectory(kalman_filter)

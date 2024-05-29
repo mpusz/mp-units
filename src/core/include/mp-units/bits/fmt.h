@@ -30,6 +30,7 @@
 // NOLINTBEGIN(cppcoreguidelines-pro-bounds-pointer-arithmetic, cppcoreguidelines-pro-type-union-access)
 #pragma once
 
+#include <mp-units/bits/module_macros.h>
 #include <mp-units/compat_macros.h>
 #include <mp-units/ext/algorithm.h>
 
@@ -44,6 +45,9 @@
 // most of the below code is based on/copied from fmtlib
 
 namespace mp_units::detail {
+
+// TODO the below should be exposed by the C++ Standard Library (used in our examples)
+MP_UNITS_EXPORT_BEGIN
 
 enum class fmt_align : std::int8_t { none, left, right, center, numeric };
 enum class fmt_arg_id_kind : std::int8_t {
@@ -109,6 +113,8 @@ public:
   [[nodiscard]] constexpr const Char& operator[](size_t index) const { return data_[index]; }
 };
 
+MP_UNITS_EXPORT_END
+
 template<typename T>
 inline constexpr bool is_integer =
   std::is_integral_v<T> && !std::is_same_v<T, bool> && !std::is_same_v<T, char> && !std::is_same_v<T, wchar_t>;
@@ -135,20 +141,6 @@ template<typename Int>
   return static_cast<std::make_unsigned_t<Int>>(value);
 }
 
-struct width_checker {
-  template<typename T>
-  [[nodiscard]] constexpr unsigned long long operator()(T value) const
-  {
-    if constexpr (is_integer<T>) {
-      if constexpr (std::numeric_limits<T>::is_signed)
-        if (value < 0) MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("negative width"));
-      return static_cast<unsigned long long>(value);
-    }
-    MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("width is not integer"));
-    return 0;
-  }
-};
-
 template<class Handler, typename FormatArg>
 [[nodiscard]] constexpr int get_dynamic_spec(FormatArg arg)
 {
@@ -167,6 +159,9 @@ template<typename Context, typename ID>
   return arg;
 }
 
+// TODO the below should be exposed by the C++ Standard Library (used in our examples)
+MP_UNITS_EXPORT_BEGIN
+
 template<class Handler, typename Context>
 constexpr void handle_dynamic_spec(int& value, fmt_arg_ref<typename Context::char_type> ref, Context& ctx)
 {
@@ -183,6 +178,22 @@ constexpr void handle_dynamic_spec(int& value, fmt_arg_ref<typename Context::cha
 #endif
   }
 }
+
+struct width_checker {
+  template<typename T>
+  [[nodiscard]] constexpr unsigned long long operator()(T value) const
+  {
+    if constexpr (is_integer<T>) {
+      if constexpr (std::numeric_limits<T>::is_signed)
+        if (value < 0) MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("negative width"));
+      return static_cast<unsigned long long>(value);
+    }
+    MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("width is not integer"));
+    return 0;
+  }
+};
+
+MP_UNITS_EXPORT_END
 
 // Parses the range [begin, end) as an unsigned integer. This function assumes
 // that the range is non-empty and the first character is a digit.
