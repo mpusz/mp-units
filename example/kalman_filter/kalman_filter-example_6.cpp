@@ -75,11 +75,11 @@ int main()
 
   print_header(initial);
   estimate next = predict(initial);
-  for (int index = 1; const auto& m : measurements) {
+  for (int index = 1; const auto& measurement : measurements) {
     const estimate& previous = next;
     const quantity gain = kalman::kalman_gain(previous.variance(), measurement_variance);
-    const estimate current = state_estimate_update(previous, m, gain);
+    const estimate current = state_estimate_update(previous, measurement, gain);
     next = predict(current);
-    print(index++, m, gain, current, next);
+    print(index++, measurement, gain, current, next);
   }
 }

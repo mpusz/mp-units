@@ -61,11 +61,11 @@ int main()
 
   print_header(initial_guess);
   state next = initial_guess;
-  for (int index = 1; const auto& m : measurements) {
+  for (int index = 1; const auto& measurement : measurements) {
     const state& previous = next;
     const quantity gain = 1. / index * one;
-    const state current = state_update(previous, m, gain);
+    const state current = state_update(previous, measurement, gain);
     next = current;
-    print(index++, gain, m, current, next);
+    print(index++, gain, measurement, current, next);
   }
 }
