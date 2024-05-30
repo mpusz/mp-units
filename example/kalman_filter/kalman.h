@@ -263,6 +263,7 @@ class MP_UNITS_STD_FMT::formatter<kalman::system_state<QPs...>, Char> {
   }
 
   template<typename OutputIt, typename FormatContext, std::size_t Idx, std::size_t... Rest>
+    requires(sizeof...(Rest) > 0)
   OutputIt format_system_state(OutputIt out, const kalman::system_state<QPs...>& s, FormatContext& ctx,
                                std::index_sequence<Idx, Rest...>) const
   {
