@@ -36,13 +36,13 @@ contact:
     given-names: Mateusz
     family-names: Pusz
 
-repository-code: "https://github.com/mpusz/units"
-url: "https://mpusz.github.io/units"
+repository-code: "https://github.com/mpusz/mp-units"
+url: "https://mpusz.github.io/mp-units"
 repository-artifact: "https://conan.io/center/mp-units"
 
-version: 0.7.0
-date-released: "2021-05-11"
+version: 2.1.1
+date-released: "2024-05-16"
 identifiers:
-  - description: "The GitHub release URL of tag 0.7.0"
+  - description: "The GitHub release URL of tag 2.1.1"
     type: url
-    value: "https://github.com/mpusz/units/releases/tag/v0.7.0"
+    value: "https://github.com/mpusz/mp-units/releases/tag/v2.1.1"
