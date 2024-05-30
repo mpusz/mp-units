@@ -84,7 +84,8 @@ check_cxx_feature_supported("__cpp_constexpr >= 202211L" ${projectPrefix}STATIC_
 check_cxx_feature_supported(__cpp_explicit_this_parameter ${projectPrefix}EXPLICIT_THIS_PARAMETER_SUPPORTED)
 
 # validate settings
-if(${projectPrefix}API_STD_FORMAT STREQUAL "TRUE"
+if(NOT ${projectPrefix}API_FREESTANDING
+   AND ${projectPrefix}API_STD_FORMAT STREQUAL "TRUE"
    AND NOT
        (${projectPrefix}LIB_FORMAT_SUPPORTED
         # libc++ has a basic supports for std::format but does not set __cpp_lib_format

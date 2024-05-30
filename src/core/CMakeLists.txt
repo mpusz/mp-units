@@ -98,8 +98,9 @@ set_feature_flag(API_STRING_VIEW_RET)
 set_feature_flag(API_NO_CRTP)
 
 # Text formatting
-if(${projectPrefix}API_STD_FORMAT STREQUAL "FALSE" OR (${projectPrefix}API_STD_FORMAT STREQUAL "AUTO"
-                                                       AND NOT ${projectPrefix}LIB_FORMAT_SUPPORTED)
+if(NOT ${projectPrefix}API_FREESTANDING
+   AND (${projectPrefix}API_STD_FORMAT STREQUAL "FALSE" OR (${projectPrefix}API_STD_FORMAT STREQUAL "AUTO"
+                                                            AND NOT ${projectPrefix}LIB_FORMAT_SUPPORTED))
 )
     if(NOT TARGET fmt::fmt)
         find_package(fmt REQUIRED)

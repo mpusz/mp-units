@@ -22,7 +22,7 @@
 
 include(CMakeFindDependencyMacro)
 
-if(NOT MP_UNITS_API_STD_FORMAT)
+if(NOT MP_UNITS_API_FREESTANDING AND NOT MP_UNITS_API_STD_FORMAT)
     find_dependency(fmt)
 endif()
 
