@@ -211,12 +211,13 @@ class MPUnitsConan(ConanFile):
             self.requires("gsl-lite/0.41.0")
         elif self.options.contracts == "ms-gsl":
             self.requires("ms-gsl/4.0.0")
-        if self._use_fmtlib:
+        if self._use_fmtlib and not self.options.freestanding:
             self.requires("fmt/10.2.1")
 
     def build_requirements(self):
         if self._build_all:
-            self.test_requires("catch2/3.5.1")
+            if not self.options.freestanding:
+                self.test_requires("catch2/3.5.1")
             if not self._skip_la:
                 self.test_requires("wg21-linear_algebra/0.7.3")
 
@@ -289,7 +290,7 @@ class MPUnitsConan(ConanFile):
             self.cpp_info.components["core"].requires = ["gsl-lite::gsl-lite"]
         elif self.options.contracts == "ms-gsl":
             self.cpp_info.components["core"].requires = ["ms-gsl::ms-gsl"]
-        if self._use_fmtlib:
+        if self._use_fmtlib and not self.options.freestanding:
             self.cpp_info.components["core"].requires.append("fmt::fmt")
         if compiler == "msvc":
             self.cpp_info.components["core"].cxxflags = ["/utf-8"]
