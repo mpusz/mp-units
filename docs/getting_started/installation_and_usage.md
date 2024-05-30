@@ -276,6 +276,17 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
 
     [conan contracts]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 
+[`freestanding`](#freestanding){ #freestanding }
+
+:   [:octicons-tag-24: 2.2.0][conan freestanding] · :octicons-milestone-24: `True`/`False` (Default: `False`)
+
+    Configures the library in the [freestanding](https://en.cppreference.com/w/cpp/freestanding)
+    mode. When enabled, the library's source code should build with the compiler's
+    [`-ffreestanding`](https://gcc.gnu.org/onlinedocs/gcc/C-Dialect-Options.html) compilation option
+    without any issues.
+
+    [conan freestanding]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
+
 ### Conan configuration properties
 
 [`user.mp-units.build:all`](#user.mp-units.build-all){ #user.mp-units.build-all }
@@ -367,6 +378,17 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
     Enables checking of preconditions and additional asserts in the code.
 
     [cmake contracts]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
+
+[`MP_UNITS_API_FREESTANDING`](#MP_UNITS_API_FREESTANDING){ #MP_UNITS_API_FREESTANDING }
+
+:   [:octicons-tag-24: 2.2.0][cmake freestanding] · :octicons-milestone-24: `ON`/`OFF` (Default: `OFF`)
+
+    Configures the library in the [freestanding](https://en.cppreference.com/w/cpp/freestanding)
+    mode. When enabled, the library's source code should build with the compiler's
+    [`-ffreestanding`](https://gcc.gnu.org/onlinedocs/gcc/C-Dialect-Options.html) compilation option
+    without any issues.
+
+    [cmake freestanding]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 
 #### Options for mp-units project developers
 
