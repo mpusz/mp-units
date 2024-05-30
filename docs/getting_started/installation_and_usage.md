@@ -18,8 +18,8 @@ projects:
     - in case this library becomes part of the C++ standard, it will have no external dependencies
       but until then, it depends on the following:
 
-        - [gsl-lite](https://github.com/gsl-lite/gsl-lite) to verify runtime contracts with
-          the `gsl_Expects` macro,
+        - [gsl-lite](https://github.com/gsl-lite/gsl-lite) or [ms-gsl](https://github.com/microsoft/GSL)
+          to verify runtime contracts (if contract checking is enabled),
         - [{fmt}](https://github.com/fmtlib/fmt) to provide text formatting of quantities
           (if `std::format` is not supported yet on a specific compiler).
 
@@ -229,7 +229,7 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
 
 ### Conan options
 
-[cxx_modules](#cxx_modules){ #cxx_modules }
+[`cxx_modules`](#cxx_modules){ #cxx_modules }
 
 :   [:octicons-tag-24: 2.2.0][conan C++ modules support] · :octicons-milestone-24: `auto`/`True`/`False` (Default: `auto`)
 
@@ -237,7 +237,7 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
 
     [conan C++ modules support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 
-[std_format](#std_format){ #std_format }
+[`std_format`](#std_format){ #std_format }
 
 :   [:octicons-tag-24: 2.2.0][conan std::format support] · :octicons-milestone-24: `auto`/`True`/`False` (Default: `auto`)
 
@@ -247,7 +247,7 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
 
     [conan std::format support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 
-[string_view_ret](#string_view_ret){ #string_view_ret }
+[`string_view_ret`](#string_view_ret){ #string_view_ret }
 
 :   [:octicons-tag-24: 2.2.0][conan returning string_view] · :octicons-milestone-24: `auto`/`True`/`False` (Default: `auto`)
 
@@ -259,7 +259,7 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
 
     [conan returning string_view]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 
-[no_crtp](#no_crtp){ #no_crtp }
+[`no_crtp`](#no_crtp){ #no_crtp }
 
 :   [:octicons-tag-24: 2.2.0][conan no crtp support] · :octicons-milestone-24: `auto`/`True`/`False` (Default: `auto`)
 
@@ -268,6 +268,13 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
 
     [conan no crtp support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 
+[`contracts`](#contracts){ #contracts }
+
+:   [:octicons-tag-24: 2.2.0][conan contracts] · :octicons-milestone-24: `none`/`gsl-lite`/`ms-gsl` (Default: `gsl-lite`)
+
+    Enables checking of preconditions and additional asserts in the code.
+
+    [conan contracts]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 
 ### Conan configuration properties
 
@@ -344,6 +351,14 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
     [`quantity_spec` definitions](../users_guide/framework_basics/systems_of_quantities.md#defining-quantities).
 
     [cmake no crtp support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
+
+[`MP_UNITS_API_CONTRACTS`](#MP_UNITS_API_CONTRACTS){ #MP_UNITS_API_CONTRACTS }
+
+:   [:octicons-tag-24: 2.2.0][cmake contracts] · :octicons-milestone-24: `NONE`/`GSL-LITE`/`MS-GSL` (Default: `GSL-LITE`)
+
+    Enables checking of preconditions and additional asserts in the code.
+
+    [cmake contracts]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 
 #### Options for mp-units project developers
 

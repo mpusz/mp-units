@@ -26,6 +26,10 @@ if(NOT MP_UNITS_API_STD_FORMAT)
     find_dependency(fmt)
 endif()
 
-find_dependency(gsl-lite)
+if(MP_UNITS_API_CONTRACTS STREQUAL "GSL-LITE")
+    find_dependency(gsl-lite)
+elseif(MP_UNITS_API_CONTRACTS STREQUAL "MS-GSL")
+    find_dependency(Microsoft.GSL)
+endif()
 
 include("${CMAKE_CURRENT_LIST_DIR}/mp-unitsTargets.cmake")

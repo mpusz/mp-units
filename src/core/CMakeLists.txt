@@ -31,15 +31,9 @@ function(set_feature_flag name)
     endif()
 endfunction()
 
-# find dependencies
-if(NOT TARGET gsl::gsl-lite)
-    find_package(gsl-lite REQUIRED)
-endif()
-
 # core library definition
 add_mp_units_module(
     core mp-units-core
-    DEPENDENCIES gsl::gsl-lite
     HEADERS include/mp-units/bits/core_gmf.h
             include/mp-units/bits/fmt.h
             include/mp-units/bits/get_associated_quantity.h
@@ -91,6 +85,7 @@ set_feature_flag(API_STD_FORMAT)
 set_feature_flag(API_STRING_VIEW_RET)
 set_feature_flag(API_NO_CRTP)
 
+# Text formatting
 if(${projectPrefix}API_STD_FORMAT STREQUAL "FALSE" OR (${projectPrefix}API_STD_FORMAT STREQUAL "AUTO"
                                                        AND NOT ${projectPrefix}LIB_FORMAT_SUPPORTED)
 )
@@ -100,6 +95,24 @@ if(${projectPrefix}API_STD_FORMAT STREQUAL "FALSE" OR (${projectPrefix}API_STD_F
     target_link_libraries(mp-units-core ${${projectPrefix}TARGET_SCOPE} fmt::fmt)
 endif()
 
+# Contracts checking
+if(${projectPrefix}API_CONTRACTS STREQUAL "NONE")
+    target_compile_definitions(mp-units-core ${${projectPrefix}TARGET_SCOPE} ${projectPrefix}API_CONTRACTS=0)
+elseif(${projectPrefix}API_CONTRACTS STREQUAL "GSL-LITE")
+    if(NOT TARGET gsl::gsl-lite)
+        find_package(gsl-lite REQUIRED)
+    endif()
+    target_link_libraries(mp-units-core ${${projectPrefix}TARGET_SCOPE} gsl::gsl-lite)
+    target_compile_definitions(mp-units-core ${${projectPrefix}TARGET_SCOPE} ${projectPrefix}API_CONTRACTS=2)
+elseif(${projectPrefix}API_CONTRACTS STREQUAL "MS-GSL")
+    if(NOT TARGET Microsoft.GSL::GSL)
+        find_package(Microsoft.GSL REQUIRED)
+    endif()
+    target_link_libraries(mp-units-core ${${projectPrefix}TARGET_SCOPE} Microsoft.GSL::GSL)
+    target_compile_definitions(mp-units-core ${${projectPrefix}TARGET_SCOPE} ${projectPrefix}API_CONTRACTS=3)
+endif()
+
+# C++20 modules
 if(${projectPrefix}BUILD_CXX_MODULES)
     if(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
         if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 18)
@@ -112,6 +125,7 @@ if(${projectPrefix}BUILD_CXX_MODULES)
     endif()
 endif()
 
+# UTF-8 source and execution character set
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     target_compile_options(
         mp-units-core ${${projectPrefix}TARGET_SCOPE}

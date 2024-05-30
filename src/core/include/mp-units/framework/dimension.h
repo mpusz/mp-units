@@ -26,6 +26,7 @@
 #include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/bits/text_tools.h>
+#include <mp-units/compat_macros.h>
 #include <mp-units/ext/fixed_string.h>
 #include <mp-units/ext/type_traits.h>
 #include <mp-units/framework/dimension_concepts.h>
@@ -33,7 +34,6 @@
 #include <mp-units/framework/symbol_text.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
-#include <gsl/gsl-lite.hpp>
 #include <array>
 #include <cstdint>
 #include <iterator>
@@ -280,7 +280,8 @@ template<typename CharT, std::output_iterator<CharT> Out, typename... Expr>
 constexpr Out dimension_symbol_impl(Out out, const derived_dimension<Expr...>&, const dimension_symbol_formatting& fmt,
                                     bool negative_power)
 {
-  gsl_Expects(negative_power == false);
+  (void)negative_power;
+  MP_UNITS_EXPECTS(negative_power == false);
   return dimension_symbol_impl<CharT>(out, typename derived_dimension<Expr...>::_num_{},
                                       typename derived_dimension<Expr...>::_den_{}, fmt);
 }

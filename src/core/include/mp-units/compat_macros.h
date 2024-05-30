@@ -103,4 +103,36 @@ MP_UNITS_DIAGNOSTIC_POP
 // IWYU pragma: end_exports
 
 #endif
+
+#if MP_UNITS_API_CONTRACTS == 2 || __has_include(<gsl/gsl-lite.hpp>)
+
+#include <gsl/gsl-lite.hpp>
+
+#define MP_UNITS_EXPECTS(expr) gsl_Expects(expr)
+#define MP_UNITS_EXPECTS_DEBUG(expr) gsl_ExpectsDebug(expr)
+#define MP_UNITS_ASSERT(expr) gsl_Assert(expr)
+#define MP_UNITS_ASSERT_DEBUG(expr) gsl_AssertDebug(expr)
+
+#elif MP_UNITS_API_CONTRACTS == 3 || __has_include(<gsl/gsl>)
+
+#include <gsl/gsl>
+#include <cassert>
+
+#define MP_UNITS_EXPECTS(expr) Expects(expr)
+#if defined NDEBUG
+#define MP_UNITS_EXPECTS_DEBUG(expr) static_cast<void>(0)
+#else
+#define MP_UNITS_EXPECTS_DEBUG(expr) Expects(expr)
+#endif
+#define MP_UNITS_ASSERT(expr) Expects(expr)
+#define MP_UNITS_ASSERT_DEBUG(expr) assert(expr)
+
+#else
+
+#define MP_UNITS_EXPECTS(expr) static_cast<void>(0)
+#define MP_UNITS_EXPECTS_DEBUG(expr) static_cast<void>(0)
+#define MP_UNITS_ASSERT(expr) static_cast<void>(0)
+#define MP_UNITS_ASSERT_DEBUG(expr) static_cast<void>(0)
+
+#endif
 // NOLINTEND(cppcoreguidelines-macro-usage)

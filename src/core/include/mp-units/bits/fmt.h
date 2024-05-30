@@ -35,7 +35,6 @@
 #include <mp-units/ext/algorithm.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
-#include <gsl/gsl-lite.hpp>
 #include <array>
 #include <concepts>
 #include <cstdint>
@@ -138,7 +137,7 @@ template<typename Char>
 template<typename Int>
 [[nodiscard]] constexpr std::make_unsigned_t<Int> to_unsigned(Int value)
 {
-  gsl_Expects(std::is_unsigned_v<Int> || value >= 0);
+  MP_UNITS_EXPECTS(std::is_unsigned_v<Int> || value >= 0);
   return static_cast<std::make_unsigned_t<Int>>(value);
 }
 
@@ -201,7 +200,7 @@ MP_UNITS_EXPORT_END
 template<typename Char>
 [[nodiscard]] constexpr int parse_nonnegative_int(const Char*& begin, const Char* end, int error_value)
 {
-  gsl_Expects(begin != end && '0' <= *begin && *begin <= '9');
+  MP_UNITS_EXPECTS(begin != end && '0' <= *begin && *begin <= '9');
   unsigned value = 0, prev = 0;
   auto p = begin;
   do {
@@ -262,7 +261,7 @@ template<typename Char, typename Handler>
 template<typename Char, typename Handler>
 [[nodiscard]] constexpr const Char* parse_arg_id(const Char* begin, const Char* end, Handler& handler)
 {
-  gsl_Expects(begin != end);
+  MP_UNITS_EXPECTS(begin != end);
   Char c = *begin;
   if (c != '}' && c != ':') return ::mp_units::detail::do_parse_arg_id(begin, end, handler);
   handler.on_auto();
@@ -304,7 +303,7 @@ template<typename Char>
                                                        fmt_arg_ref<Char>& ref,
                                                        MP_UNITS_STD_FMT::basic_format_parse_context<Char>& ctx)
 {
-  gsl_Expects(begin != end);
+  MP_UNITS_EXPECTS(begin != end);
   if ('0' <= *begin && *begin <= '9') {
     const int val = ::mp_units::detail::parse_nonnegative_int(begin, end, -1);
     if (val != -1)
@@ -341,7 +340,7 @@ template<typename Char, typename Specs>
 [[nodiscard]] constexpr const Char* parse_align(const Char* begin, const Char* end, Specs& specs,
                                                 fmt_align default_align = fmt_align::none)
 {
-  gsl_Expects(begin != end);
+  MP_UNITS_EXPECTS(begin != end);
   auto align = fmt_align::none;
   auto p = begin + code_point_length(begin);
   if (end - p <= 0) p = begin;

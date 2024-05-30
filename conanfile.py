@@ -65,12 +65,14 @@ class MPUnitsConan(ConanFile):
         "std_format": ["auto", True, False],
         "string_view_ret": ["auto", True, False],
         "no_crtp": ["auto", True, False],
+        "contracts": ["none", "gsl-lite", "ms-gsl"],
     }
     default_options = {
         "cxx_modules": "auto",
         "std_format": "auto",
         "string_view_ret": "auto",
         "no_crtp": "auto",
+        "contracts": "gsl-lite",
     }
     tool_requires = "cmake/[>=3.29]"
     implements = "auto_header_only"
@@ -199,7 +201,10 @@ class MPUnitsConan(ConanFile):
         self.version = version.strip()
 
     def requirements(self):
-        self.requires("gsl-lite/0.41.0")
+        if self.options.contracts == "gsl-lite":
+            self.requires("gsl-lite/0.41.0")
+        elif self.options.contracts == "ms-gsl":
+            self.requires("ms-gsl/4.0.0")
         if self._use_fmtlib:
             self.requires("fmt/10.2.1")
 
@@ -237,6 +242,9 @@ class MPUnitsConan(ConanFile):
             self.options.string_view_ret
         ).upper()
         tc.cache_variables["MP_UNITS_API_NO_CRTP"] = str(self.options.no_crtp).upper()
+        tc.cache_variables["MP_UNITS_API_CONTRACTS"] = str(
+            self.options.contracts
+        ).upper()
         tc.generate()
         deps = CMakeDeps(self)
         deps.generate()
@@ -263,7 +271,10 @@ class MPUnitsConan(ConanFile):
 
     def package_info(self):
         compiler = self.settings.compiler
-        self.cpp_info.components["core"].requires = ["gsl-lite::gsl-lite"]
+        if self.options.contracts == "gsl-lite":
+            self.cpp_info.components["core"].requires = ["gsl-lite::gsl-lite"]
+        elif self.options.contracts == "ms-gsl":
+            self.cpp_info.components["core"].requires = ["ms-gsl::ms-gsl"]
         if self._use_fmtlib:
             self.cpp_info.components["core"].requires.append("fmt::fmt")
         if compiler == "msvc":

@@ -22,7 +22,6 @@
 
 #pragma once
 
-#include <gsl/gsl-lite.hpp>
 #include <mp-units/bits/hacks.h>
 #include <mp-units/compat_macros.h>
 #include <compare>  // IWYU pragma: export
@@ -50,13 +49,13 @@ public:
     requires std::copyable<T>
       : value_(value)
   {
-    gsl_Expects(validate(value_));
+    MP_UNITS_EXPECTS(validate(value_));
   }
 
   constexpr explicit validated_type(T&& value) noexcept(std::is_nothrow_move_constructible_v<T>) :
       value_(std::move(value))
   {
-    gsl_Expects(validate(value_));
+    MP_UNITS_EXPECTS(validate(value_));
   }
 
   constexpr validated_type(const T& value, validated_tag) noexcept(std::is_nothrow_copy_constructible_v<T>)

@@ -27,11 +27,11 @@
 // TODO use <algorithm> when moved to C++20 modules (parsing takes too long for each translation unit)
 #include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
+#include <mp-units/compat_macros.h>
 #include <mp-units/ext/algorithm.h>
 #include <mp-units/ext/fixed_string.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
-#include <gsl/gsl-lite.hpp>
 #include <compare>  // IWYU pragma: export
 #include <cstddef>
 #include <cstdint>
@@ -95,34 +95,34 @@ public:
   // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
   constexpr explicit(false) symbol_text(char ch) : unicode_(static_cast<char8_t>(ch)), ascii_(ch)
   {
-    gsl_Expects(detail::is_basic_literal_character_set_char(ch));
+    MP_UNITS_EXPECTS(detail::is_basic_literal_character_set_char(ch));
   }
 
   // NOLINTNEXTLINE(*-avoid-c-arrays, google-explicit-constructor, hicpp-explicit-conversions)
   consteval explicit(false) symbol_text(const char (&txt)[N + 1]) :
       unicode_(detail::to_u8string(basic_fixed_string{txt})), ascii_(txt)
   {
-    gsl_Expects(txt[N] == char{});
-    gsl_Expects(detail::is_basic_literal_character_set(txt));
+    MP_UNITS_EXPECTS(txt[N] == char{});
+    MP_UNITS_EXPECTS(detail::is_basic_literal_character_set(txt));
   }
 
   // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
   constexpr explicit(false) symbol_text(const fixed_string<N>& txt) : unicode_(detail::to_u8string(txt)), ascii_(txt)
   {
-    gsl_Expects(detail::is_basic_literal_character_set(txt.data_));
+    MP_UNITS_EXPECTS(detail::is_basic_literal_character_set(txt.data_));
   }
 
   // NOLINTNEXTLINE(*-avoid-c-arrays)
   consteval symbol_text(const char8_t (&u)[N + 1], const char (&a)[M + 1]) : unicode_(u), ascii_(a)
   {
-    gsl_Expects(u[N] == char8_t{});
-    gsl_Expects(a[M] == char{});
-    gsl_Expects(detail::is_basic_literal_character_set(a));
+    MP_UNITS_EXPECTS(u[N] == char8_t{});
+    MP_UNITS_EXPECTS(a[M] == char{});
+    MP_UNITS_EXPECTS(detail::is_basic_literal_character_set(a));
   }
 
   constexpr symbol_text(const fixed_u8string<N>& u, const fixed_string<M>& a) : unicode_(u), ascii_(a)
   {
-    gsl_Expects(detail::is_basic_literal_character_set(a.data_));
+    MP_UNITS_EXPECTS(detail::is_basic_literal_character_set(a.data_));
   }
 
   [[nodiscard]] constexpr const auto& unicode() const { return unicode_; }
@@ -130,7 +130,7 @@ public:
 
   [[nodiscard]] constexpr bool empty() const
   {
-    gsl_AssertDebug(unicode().empty() == ascii().empty());
+    MP_UNITS_ASSERT_DEBUG(unicode().empty() == ascii().empty());
     return unicode().empty();
   }
 

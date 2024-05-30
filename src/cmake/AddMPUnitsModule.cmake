@@ -54,7 +54,7 @@ function(add_mp_units_module name target_name)
 
     # validate and process arguments
     validate_unparsed(${name} ARG)
-    validate_arguments_exists(${name} ARG DEPENDENCIES MODULE_INTERFACE_UNIT)
+    validate_arguments_exists(${name} ARG MODULE_INTERFACE_UNIT)
 
     if(${projectPrefix}TARGET_SCOPE STREQUAL INTERFACE)
         set(SCOPE "INTERFACE")

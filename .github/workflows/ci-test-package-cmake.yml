@@ -36,12 +36,13 @@ on:
 
 jobs:
   test_package:
-    name: "${{ matrix.formatting }} C++${{ matrix.std }} ${{ matrix.config.name }} ${{ matrix.build_type }}"
+    name: "${{ matrix.formatting }} ${{ matrix.contracts }} C++${{ matrix.std }} ${{ matrix.config.name }} ${{ matrix.build_type }}"
     runs-on: ${{ matrix.config.os }}
     strategy:
       fail-fast: false
       matrix:
         formatting: ["std::format", "fmtlib"]
+        contracts: ["none", "gsl-lite", "ms-gsl"]
         std: [20, 23]
         config:
           # - {
@@ -172,13 +173,14 @@ jobs:
           cache-name: cache-conan-data
         with:
           path: ~/.conan2/p
-          key: cmake-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-${{ matrix.std }}-${{ env.cache_id }}
+          key: cmake-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-${{ matrix.std }}-${{ env.cache_id }}
           restore-keys: |
-            cmake-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-${{ matrix.std }}-
-            cmake-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-
-            cmake-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-
-            cmake-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-
-            cmake-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.config.compiler.type }}-
+            cmake-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-${{ matrix.std }}-
+            cmake-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-
+            cmake-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-
+            cmake-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-
+            cmake-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.config.compiler.type }}-
+            cmake-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-
             cmake-${{ matrix.config.os }}-${{ matrix.formatting }}-
             cmake-${{ matrix.config.os }}-
       - name: Install gcc-13
@@ -233,7 +235,7 @@ jobs:
         shell: bash
         run: |
           conan install . -b missing -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" -c user.mp-units.build:all=False \
-                          -o cxx_modules=${{ matrix.config.cxx_modules }} -o std_format=${{ env.std_format }}
+                          -o cxx_modules=${{ matrix.config.cxx_modules }} -o std_format=${{ env.std_format }} -o contracts=${{ matrix.contracts }}
       - name: Provide dependencies for the build
         shell: bash
         working-directory: src

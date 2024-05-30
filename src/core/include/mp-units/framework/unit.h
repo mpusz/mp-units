@@ -28,6 +28,7 @@
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/bits/ratio.h>
 #include <mp-units/bits/text_tools.h>
+#include <mp-units/compat_macros.h>
 #include <mp-units/ext/algorithm.h>
 #include <mp-units/ext/fixed_string.h>
 #include <mp-units/ext/type_name.h>
@@ -40,7 +41,6 @@
 #include <mp-units/framework/unit_concepts.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
-#include <gsl/gsl-lite.hpp>
 #include <array>
 #include <cstdint>
 #include <iterator>
@@ -808,7 +808,8 @@ template<typename CharT, std::output_iterator<CharT> Out, typename... Expr>
 constexpr Out unit_symbol_impl(Out out, const derived_unit<Expr...>&, const unit_symbol_formatting& fmt,
                                bool negative_power)
 {
-  gsl_Expects(negative_power == false);
+  (void)negative_power;
+  MP_UNITS_EXPECTS(negative_power == false);
   return unit_symbol_impl<CharT>(out, typename derived_unit<Expr...>::_num_{}, typename derived_unit<Expr...>::_den_{},
                                  fmt);
 }

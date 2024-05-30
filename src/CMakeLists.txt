@@ -68,6 +68,9 @@ cache_var_values(API_STRING_VIEW_RET AUTO TRUE FALSE)
 set(${projectPrefix}API_NO_CRTP AUTO CACHE STRING "Enable class definitions without CRTP idiom")
 cache_var_values(API_NO_CRTP AUTO TRUE FALSE)
 
+set(${projectPrefix}API_CONTRACTS GSL-LITE CACHE STRING "Enable contract checking")
+cache_var_values(API_CONTRACTS NONE GSL-LITE MS-GSL)
+
 # C++ features
 check_cxx_feature_supported(__cpp_lib_format ${projectPrefix}LIB_FORMAT_SUPPORTED)
 check_cxx_feature_supported("__cpp_constexpr >= 202211L" ${projectPrefix}STATIC_CONSTEXPR_VARS_IN_CONSTEXPR_FUNCTIONS)
