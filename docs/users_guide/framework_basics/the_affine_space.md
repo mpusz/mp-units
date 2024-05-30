@@ -219,7 +219,7 @@ the origin and the _displacement vector_ measured from it to the point we create
     [Why can't I create a quantity by passing a number to a constructor?](../../getting_started/faq.md#why-cant-i-create-a-quantity-by-passing-a-number-to-a-constructor)
     chapter.
 
-Similarly to [creation of a quantity](../../getting_started/quick_start.md#creating-a-quantity),
+Similarly to [creation of a quantity](../../getting_started/quick_start.md#quantities),
 if someone does not like the operator-based syntax to create a `quantity_point`, the same results
 can be achieved with a two-parameter constructor:
 

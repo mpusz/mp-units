@@ -56,7 +56,7 @@ projects:
       handle the dependencies.
 
     To learn more about the rationale, please check our
-    [FAQ](faq.md#why-dont-we-have-cmake-options-to-disable-building-of-tests-and-examples).
+    [FAQ](faq.md#why-dont-we-have-cmake-options-to-disable-the-building-of-tests-and-examples).
 
 ### Modules
 
@@ -276,7 +276,7 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
 :   [:octicons-tag-24: 2.2.0][conan build all support] · :octicons-milestone-24: `True`/`False` (Default: `False`)
 
     Enables compilation of all the source code, including tests and examples. To support this, it requires some additional Conan build dependencies described in
-    [Repository Structure and Dependencies](#repository-structure-and-dependencies).
+    [Repository directory tree and dependencies](#repository-directory-tree-and-dependencies).
     It also runs unit tests during Conan build (unless
     [`tools.build:skip_test`](https://docs.conan.io/2/reference/commands/config.html?highlight=tools.build:skip_test#conan-config-list)
     configuration property is set to `True`).

@@ -241,7 +241,7 @@ static_assert(unit_symbol<{.solidus = unit_symbol_solidus::never,
 
     `std::string_view` is returned only when C++23 is available. Otherwise, an instance of a
     `basic_fixed_string` is being returned. See more in the
-    [C++ compiler support](../../getting_started/installation_and_usage.md#static-constexpr-variables-in-constexpr-functions)
+    [C++ compiler support](../../getting_started/cpp_compiler_support.md#static-constexpr-variables-in-constexpr-functions)
     chapter.
 
 #### `unit_symbol_to()`

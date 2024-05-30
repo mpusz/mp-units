@@ -29,7 +29,7 @@ C++ feature:
 
 ## `std::format`
 
-- Provides [powerful text formatting capabilities](../users_guide/framework_basics/text_output.md#stdformat)
+- Provides [powerful text formatting capabilities](../users_guide/framework_basics/text_output.md#text-formatting)
   for C++.
 - An alternative [fmtlib](https://github.com/fmtlib/fmt) library can be used instead if
     - the C++ language feature is not supported,
