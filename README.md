@@ -5,6 +5,7 @@
 
 [![Conan CI](https://img.shields.io/github/actions/workflow/status/mpusz/mp-units/ci-conan.yml?branch=master&label=Conan%20CI)](https://github.com/mpusz/mp-units/actions?query=workflow%3A%22Conan%20CI%22+branch%3Amaster)
 [![CMake CI](https://img.shields.io/github/actions/workflow/status/mpusz/mp-units/ci-test-package-cmake.yml?branch=master&label=CMake%20CI)](https://github.com/mpusz/mp-units/actions?query=workflow%3A%22CMake+Test+Package+CI%22+branch%3Amaster)
+[![clang-tidy](https://img.shields.io/github/actions/workflow/status/mpusz/mp-units/ci-clang-tidy.yml?branch=master&label=clang-tidy)](https://github.com/mpusz/mp-units/actions?query=workflow%3A%22clang-tidy%20CI%22+branch%3Amaster)
 [![Formatting CI](https://img.shields.io/github/actions/workflow/status/mpusz/mp-units/ci-formatting.yml?branch=master&label=Formatting%20CI)](https://github.com/mpusz/mp-units/actions?query=workflow%3A%22Formatting%20CI%22+branch%3Amaster)
 [![GitHub Workflow Documentation](https://img.shields.io/github/actions/workflow/status/mpusz/mp-units/documentation.yml?branch=master&label=Documentation)](https://github.com/mpusz/mp-units/actions?query=workflow%3ADocumentation+branch%3Amaster)
 

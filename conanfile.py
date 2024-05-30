@@ -193,6 +193,10 @@ class MPUnitsConan(ConanFile):
     def _skip_la(self):
         return bool(self.conf.get("user.mp-units.build:skip_la", default=False))
 
+    @property
+    def _run_clang_tidy(self):
+        return bool(self.conf.get("user.mp-units.analyze:clang-tidy", default=False))
+
     def set_version(self):
         content = load(self, os.path.join(self.recipe_folder, "src/CMakeLists.txt"))
         version = re.search(
@@ -230,6 +234,8 @@ class MPUnitsConan(ConanFile):
             tc.cache_variables["CMAKE_EXPORT_COMPILE_COMMANDS"] = True
             tc.cache_variables["CMAKE_VERIFY_INTERFACE_HEADER_SETS"] = True
             tc.cache_variables["MP_UNITS_DEV_BUILD_LA"] = not self._skip_la
+            if self._run_clang_tidy:
+                tc.cache_variables["MP_UNITS_DEV_CLANG_TIDY"] = True
         if self._build_cxx_modules:
             tc.cache_variables["CMAKE_CXX_SCAN_FOR_MODULES"] = True
             tc.cache_variables["MP_UNITS_BUILD_CXX_MODULES"] = str(

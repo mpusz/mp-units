@@ -303,6 +303,14 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
     [conan skip la support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 
 
+[`user.mp-units.analyze:clang-tidy`](#user.mp-units.analyze-clang-tidy){ #user.mp-units.analyze-clang-tidy }
+
+:   [:octicons-tag-24: 2.2.0][conan clang-tidy support] · :octicons-milestone-24: `True`/`False` (Default: `False`)
+
+    Enables clang-tidy analysis.
+
+    [conan clang-tidy support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
+
 ### CMake options
 
 [`MP_UNITS_BUILD_AS_SYSTEM_HEADERS`](#MP_UNITS_BUILD_AS_SYSTEM_HEADERS){ #MP_UNITS_BUILD_AS_SYSTEM_HEADERS }
