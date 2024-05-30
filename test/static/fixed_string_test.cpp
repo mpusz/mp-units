@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 #include <mp-units/ext/fixed_string.h>
+#include <array>
 #include <string_view>
 
 using namespace mp_units;

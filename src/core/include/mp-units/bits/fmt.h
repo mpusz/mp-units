@@ -36,6 +36,7 @@
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <gsl/gsl-lite.hpp>
+#include <array>
 #include <concepts>
 #include <cstdint>
 #include <limits>
