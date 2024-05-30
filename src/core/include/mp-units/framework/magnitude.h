@@ -38,6 +38,7 @@
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <concepts>
 #include <cstdint>
+#include <cstdlib>
 #include <numbers>
 #include <optional>
 #endif
@@ -278,7 +279,7 @@ template<typename T>
   // As this function should only be called at compile time, the terminations herein function as
   // "parameter-compatible static_asserts", and should not result in terminations at runtime.
   if (exp < 0) {
-    std::terminate();  // int_power only supports positive integer powers
+    std::abort();  // int_power only supports positive integer powers
   }
 
   constexpr auto checked_multiply = [](auto a, auto b) {
@@ -286,7 +287,7 @@ template<typename T>
     MP_UNITS_DIAGNOSTIC_PUSH
     MP_UNITS_DIAGNOSTIC_IGNORE_FLOAT_EQUAL
     if (result / a != b) {
-      std::terminate();  // Wraparound detected
+      std::abort();  // Wraparound detected
     }
     MP_UNITS_DIAGNOSTIC_POP
     return result;
@@ -319,12 +320,12 @@ template<typename T>
   // terminations is to act as "static_assert substitutes", not to actually terminate at runtime.
   const auto exp = get_exponent(el);
   if (exp.den != 1) {
-    std::terminate();  // Rational powers not yet supported
+    std::abort();  // Rational powers not yet supported
   }
 
   if (exp.num < 0) {
     if constexpr (std::is_integral_v<T>) {
-      std::terminate();  // Cannot represent reciprocal as integer
+      std::abort();  // Cannot represent reciprocal as integer
     } else {
       return T{1} / compute_base_power<T>(inverse(el));
     }
@@ -347,7 +348,7 @@ template<typename To, typename From>
   // to produce compiler errors, because we cannot `static_assert` on function arguments.
   if constexpr (std::is_integral_v<To>) {
     if (!std::in_range<To>(x)) {
-      std::terminate();  // Cannot represent magnitude in this type
+      std::abort();  // Cannot represent magnitude in this type
     }
   }
 
