@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-name: clang-tidy
+name: clang-tidy CI
 
 on:
   push:
@@ -29,9 +29,6 @@ on:
   pull_request:
     paths-ignore:
       - "docs/**"
-
-env:
-  CHANNEL: ${{ fromJSON('["testing", "stable"]')[github.ref_type == 'tag' && startsWith(github.ref_name, 'v')] }}
 
 jobs:
   build:
@@ -60,9 +57,6 @@ jobs:
               conan-config: "",
             }
         build_type: ["Release", "Debug"]
-        exclude:
-          - formatting: "std::format"
-            config: { std_format_support: "False" }
 
     env:
       CC: ${{ matrix.config.compiler.cc }}
