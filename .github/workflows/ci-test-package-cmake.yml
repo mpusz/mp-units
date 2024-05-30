@@ -306,3 +306,9 @@ jobs:
         working-directory: test_package/build/install/${{ matrix.build_type }}
         run: |
           ./test_package
+      - name: Clean Conan cache before backup
+        shell: bash
+        run: |
+          conan remove *#~latest --confirm
+          conan remove *:*#~latest --confirm
+          conan cache clean "*" -s -b -d

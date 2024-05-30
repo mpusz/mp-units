@@ -260,8 +260,8 @@ jobs:
         shell: bash
         run: |
           conan remove mp-units --confirm
-          conan remove *#!latest --confirm
-          conan remove *:*#!latest --confirm
+          conan remove *#~latest --confirm
+          conan remove *:*#~latest --confirm
           conan cache clean "*" -s -b -d
     outputs:
       package_ref: ${{ steps.get-package-ref.outputs.PACKAGE_REF }}
