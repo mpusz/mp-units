@@ -23,14 +23,18 @@
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/natural.h>
 #include <mp-units/systems/si.h>
+#include <optional>
+#include <type_traits>
+#if MP_UNITS_HOSTED
 #include <chrono>
 #include <complex>
-#include <optional>
 #include <string>
-#include <type_traits>
+#endif
 
+#if MP_UNITS_HOSTED
 template<typename T>
 inline constexpr bool mp_units::is_scalar<std::complex<T>> = true;
+#endif
 
 namespace {
 
@@ -157,7 +161,9 @@ static_assert(!Unit<named_unit<"?", si::metre, isq::length>>);
 static_assert(!Unit<prefixed_unit<"?", mag<10>, si::second>>);
 static_assert(!Unit<struct isq::dim_length>);
 static_assert(!Unit<int>);
+#if MP_UNITS_HOSTED
 static_assert(!Unit<std::chrono::seconds>);
+#endif
 
 // NamedUnit
 static_assert(detail::NamedUnit<struct si::metre>);
@@ -181,7 +187,9 @@ static_assert(!detail::NamedUnit<named_unit<"?", si::metre, isq::length>>);
 static_assert(!detail::NamedUnit<prefixed_unit<"?", mag<10>, si::second>>);
 static_assert(!detail::NamedUnit<struct isq::dim_length>);
 static_assert(!detail::NamedUnit<int>);
+#if MP_UNITS_HOSTED
 static_assert(!detail::NamedUnit<std::chrono::seconds>);
+#endif
 
 // PrefixableUnit
 static_assert(PrefixableUnit<struct si::metre>);
@@ -205,7 +213,9 @@ static_assert(!PrefixableUnit<named_unit<"?", si::metre, isq::length>>);
 static_assert(!PrefixableUnit<prefixed_unit<"?", mag<10>, si::second>>);
 static_assert(!PrefixableUnit<struct isq::dim_length>);
 static_assert(!PrefixableUnit<int>);
+#if MP_UNITS_HOSTED
 static_assert(!PrefixableUnit<std::chrono::seconds>);
+#endif
 
 // AssociatedUnit
 static_assert(AssociatedUnit<struct si::metre>);
@@ -229,7 +239,9 @@ static_assert(!AssociatedUnit<named_unit<"?", si::metre, isq::length>>);
 static_assert(!AssociatedUnit<prefixed_unit<"?", mag<10>, si::second>>);
 static_assert(!AssociatedUnit<struct isq::dim_length>);
 static_assert(!AssociatedUnit<int>);
+#if MP_UNITS_HOSTED
 static_assert(!AssociatedUnit<std::chrono::seconds>);
+#endif
 
 // UnitOf
 static_assert(UnitOf<struct si::metre, isq::length>);
@@ -284,27 +296,33 @@ static_assert(!ReferenceOf<std::remove_const_t<decltype(dimensionless[one])>, is
 // Representation
 static_assert(Representation<int>);
 static_assert(Representation<double>);
-static_assert(Representation<std::complex<double>>);
 static_assert(!Representation<bool>);
 static_assert(!Representation<std::optional<int>>);
-static_assert(!Representation<std::chrono::seconds>);
+#if MP_UNITS_HOSTED
+static_assert(Representation<std::complex<double>>);
 static_assert(!Representation<std::string>);
+static_assert(!Representation<std::chrono::seconds>);
+#endif
 
 // RepresentationOf
 static_assert(RepresentationOf<int, quantity_character::scalar>);
 static_assert(RepresentationOf<double, quantity_character::scalar>);
-static_assert(RepresentationOf<std::complex<double>, quantity_character::scalar>);
 static_assert(!RepresentationOf<bool, quantity_character::scalar>);
 static_assert(!RepresentationOf<std::optional<int>, quantity_character::scalar>);
+#if MP_UNITS_HOSTED
+static_assert(RepresentationOf<std::complex<double>, quantity_character::scalar>);
 static_assert(!RepresentationOf<std::chrono::seconds, quantity_character::scalar>);
 static_assert(!RepresentationOf<std::string, quantity_character::scalar>);
+#endif
 
 // Quantity
 static_assert(Quantity<quantity<si::metre>>);
 static_assert(Quantity<quantity<isq::length[si::metre]>>);
 static_assert(Quantity<quantity<si::metre, int>>);
 static_assert(Quantity<quantity<isq::length[si::metre], int>>);
+#if MP_UNITS_HOSTED
 static_assert(!Quantity<std::chrono::seconds>);
+#endif
 static_assert(!Quantity<quantity_point<si::metre, my_origin>>);
 static_assert(!Quantity<std::remove_const_t<decltype(isq::length[si::metre])>>);
 
@@ -332,8 +350,10 @@ static_assert(!QuantityOf<quantity<dimensionless[one]>, isq::rotation>);
 static_assert(!QuantityOf<quantity<dimensionless[one]>, isq::angular_measure>);
 
 // QuantityLike
+#if MP_UNITS_HOSTED
 static_assert(QuantityLike<std::chrono::seconds>);
 static_assert(QuantityLike<std::chrono::hours>);
+#endif
 static_assert(!QuantityLike<quantity<isq::time[si::second]>>);
 static_assert(!QuantityLike<quantity_point<isq::length[si::metre], my_origin>>);
 static_assert(!QuantityLike<int>);
@@ -349,8 +369,10 @@ static_assert(!QuantityPoint<std::remove_const_t<decltype(isq::length[si::metre]
 static_assert(!QuantityPoint<absolute_point_origin<struct my_origin, isq::length>>);
 static_assert(!QuantityPoint<struct my_origin>);
 static_assert(!QuantityPoint<struct my_relative_origin>);
+#if MP_UNITS_HOSTED
 static_assert(!QuantityPoint<std::chrono::seconds>);
 static_assert(!QuantityPoint<std::chrono::time_point<std::chrono::system_clock>>);
+#endif
 static_assert(!QuantityPoint<int>);
 
 // QuantityPointOf
@@ -384,8 +406,10 @@ static_assert(!PointOrigin<quantity_point<si::metre, my_origin>>);
 static_assert(!PointOrigin<quantity_point<isq::length[si::metre], my_origin>>);
 static_assert(!PointOrigin<quantity_point<isq::radius[si::metre], my_origin>>);
 static_assert(!PointOrigin<std::remove_const_t<decltype(isq::length[si::metre])>>);
+#if MP_UNITS_HOSTED
 static_assert(!PointOrigin<std::chrono::seconds>);
 static_assert(!PointOrigin<std::chrono::time_point<std::chrono::system_clock>>);
+#endif
 static_assert(!PointOrigin<int>);
 
 // PointOriginFor
@@ -408,13 +432,17 @@ static_assert(!PointOriginFor<quantity_point<isq::radius[si::metre], my_relative
 static_assert(!PointOriginFor<quantity_point<isq::radius[si::metre], my_relative_origin>, isq::radius>);
 static_assert(!PointOriginFor<quantity_point<isq::radius[si::metre], my_relative_origin>, isq::time>);
 static_assert(!PointOriginFor<std::remove_const_t<decltype(isq::length[si::metre])>, isq::length>);
+#if MP_UNITS_HOSTED
 static_assert(!PointOriginFor<std::chrono::seconds, isq::length>);
 static_assert(!PointOriginFor<std::chrono::time_point<std::chrono::system_clock>, isq::length>);
+#endif
 static_assert(!PointOriginFor<int, isq::length>);
 
 // QuantityPointLike
+#if MP_UNITS_HOSTED
 static_assert(QuantityPointLike<std::chrono::time_point<std::chrono::system_clock>>);
 static_assert(!QuantityPointLike<std::chrono::seconds>);
+#endif
 static_assert(!QuantityPointLike<quantity<isq::time[si::second]>>);
 static_assert(!QuantityPointLike<quantity_point<si::metre, my_origin>>);
 static_assert(!QuantityPointLike<int>);

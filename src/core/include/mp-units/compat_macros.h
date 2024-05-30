@@ -40,6 +40,15 @@
 
 #endif
 
+#if MP_UNITS_HOSTED
+#define MP_UNITS_THROW(expr) throw expr
+#else
+#include <cstdlib>
+#define MP_UNITS_THROW(expr) std::abort()
+#endif
+
+#if MP_UNITS_HOSTED
+
 #if defined MP_UNITS_API_STD_FORMAT && !MP_UNITS_API_STD_FORMAT
 
 #define MP_UNITS_USE_FMTLIB 1
@@ -59,21 +68,7 @@
 #define MP_UNITS_FMT_TO_ARG_ID(arg) (arg)
 #define MP_UNITS_FMT_FROM_ARG_ID(arg) (arg)
 
-// This re-uses code from fmt;
-#if FMT_EXCEPTIONS
-#if FMT_MSC_VERSION || defined(__NVCC__)
-#define MP_UNITS_THROW(x) ::fmt::detail::do_throw(x)
-#else
-#define MP_UNITS_THROW(x) throw x
-#endif
-#else
-#define MP_UNITS_THROW(x)          \
-  do {                             \
-    FMT_ASSERT(false, (x).what()); \
-  } while (false)
-#endif
-
-#else
+#else  // MP_UNITS_USE_FMTLIB
 
 #if !defined __cpp_lib_format && !defined MP_UNITS_COMP_CLANG
 #error "std::formatting facility not supported"
@@ -83,10 +78,8 @@
 #define MP_UNITS_FMT_LOCALE(loc) loc
 #define MP_UNITS_FMT_TO_ARG_ID(arg) static_cast<std::size_t>(arg)
 #define MP_UNITS_FMT_FROM_ARG_ID(arg) static_cast<int>(arg)
-#define MP_UNITS_THROW(arg) throw arg
 
-#endif
-
+#endif  // MP_UNITS_USE_FMTLIB
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 
@@ -103,6 +96,8 @@ MP_UNITS_DIAGNOSTIC_POP
 // IWYU pragma: end_exports
 
 #endif
+
+#endif  // MP_UNITS_HOSTED
 
 #if MP_UNITS_API_CONTRACTS == 2 || __has_include(<gsl/gsl-lite.hpp>)
 

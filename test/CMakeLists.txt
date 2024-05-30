@@ -22,5 +22,7 @@
 
 cmake_minimum_required(VERSION 3.5)
 
-add_subdirectory(runtime)
+if(!${projectPrefix}API_FREESTANDING)
+    add_subdirectory(runtime)
+endif()
 add_subdirectory(static)

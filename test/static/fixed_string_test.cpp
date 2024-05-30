@@ -31,12 +31,12 @@ namespace {
 constexpr std::array array = {'a', 'b', 'c'};
 
 auto from_string = [] {
-  std::string txt = "abc";
+  std::string_view txt = "abc";
   return fixed_string<3>(std::from_range, txt);
 };
 
 auto from_string_iter = [] {
-  std::string txt = "abc";
+  std::string_view txt = "abc";
   return fixed_string<3>(txt.begin(), txt.end());
 };
 
@@ -90,6 +90,7 @@ static_assert(txt9[0] == 'c');
 static_assert(txt9[1] == 'b');
 static_assert(txt9[2] == 'a');
 
+#if MP_UNITS_HOSTED
 static_assert(txt1.at(0) == 'a');
 static_assert(txt2.at(0) == 'a');
 static_assert(txt2.at(1) == 'b');
@@ -97,6 +98,7 @@ static_assert(txt2.at(2) == 'c');
 static_assert(txt9.at(0) == 'c');
 static_assert(txt9.at(1) == 'b');
 static_assert(txt9.at(2) == 'a');
+#endif
 
 static_assert(txt1.front() == 'a');
 static_assert(txt1.back() == 'a');

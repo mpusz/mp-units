@@ -35,8 +35,11 @@
 #include <compare>  // IWYU pragma: export
 #include <cstddef>
 #include <cstdlib>
-#include <ostream>
+#include <ranges>
 #include <string_view>
+#if MP_UNITS_HOSTED
+#include <ostream>
+#endif
 #endif
 
 MP_UNITS_EXPORT
@@ -123,11 +126,14 @@ public:
     return data()[pos];
   }
 
+#if MP_UNITS_HOSTED
   [[nodiscard]] constexpr const_reference at(size_type pos) const
   {
     if (pos >= size()) throw std::out_of_range("basic_fixed_string::at");
     return (*this)[pos];
   }
+#endif
+
   [[nodiscard]] constexpr const_reference front() const
   {
     MP_UNITS_EXPECTS(!empty());
@@ -239,11 +245,13 @@ public:
   }
 
   // inserters and extractors
+#if MP_UNITS_HOSTED
   friend std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os,
                                                        const basic_fixed_string& str)
   {
     return os << str.c_str();
   }
+#endif
 };
 
 // deduction guides
@@ -282,6 +290,7 @@ struct std::hash<mp_units::fixed_u32string<N>> : std::hash<std::u32string_view> 
 template<std::size_t N>
 struct std::hash<mp_units::fixed_wstring<N>> : std::hash<std::wstring_view> {};
 
+#if MP_UNITS_HOSTED
 // formatting support
 template<typename CharT, std::size_t N>
 struct MP_UNITS_STD_FMT::formatter<mp_units::basic_fixed_string<CharT, N>> : formatter<std::basic_string_view<CharT>> {
@@ -291,4 +300,6 @@ struct MP_UNITS_STD_FMT::formatter<mp_units::basic_fixed_string<CharT, N>> : for
     return formatter<std::basic_string_view<CharT>>::format(std::basic_string_view<CharT>(str), ctx);
   }
 };
+#endif
+
 // NOLINTEND(*-avoid-c-arrays)

@@ -35,7 +35,6 @@ endfunction()
 add_mp_units_module(
     core mp-units-core
     HEADERS include/mp-units/bits/core_gmf.h
-            include/mp-units/bits/fmt.h
             include/mp-units/bits/get_associated_quantity.h
             include/mp-units/bits/get_common_base.h
             include/mp-units/bits/hacks.h
@@ -73,13 +72,26 @@ add_mp_units_module(
             include/mp-units/framework/value_cast.h
             include/mp-units/compat_macros.h
             include/mp-units/concepts.h
-            include/mp-units/format.h
             include/mp-units/framework.h
-            include/mp-units/math.h
-            include/mp-units/ostream.h
-            include/mp-units/random.h
     MODULE_INTERFACE_UNIT mp-units-core.cpp
 )
+
+if(NOT ${projectPrefix}API_FREESTANDING)
+    target_sources(
+        mp-units-core
+        PUBLIC FILE_SET
+               HEADERS
+               BASE_DIRS
+               ${CMAKE_CURRENT_SOURCE_DIR}/include
+               FILES
+               include/mp-units/bits/fmt.h
+               include/mp-units/bits/requires_hosted.h
+               include/mp-units/math.h
+               include/mp-units/ostream.h
+               include/mp-units/format.h
+               include/mp-units/random.h
+    )
+endif()
 
 set_feature_flag(API_STD_FORMAT)
 set_feature_flag(API_STRING_VIEW_RET)
@@ -133,4 +145,8 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     )
 endif()
 
-# target_compile_options(mp-units-core ${${projectPrefix}TARGET_SCOPE} "-ftime-trace")
+# Freestanding
+target_compile_definitions(
+    mp-units-core ${${projectPrefix}TARGET_SCOPE}
+                  ${projectPrefix}HOSTED=$<NOT:$<BOOL:${${projectPrefix}API_FREESTANDING}>>
+)

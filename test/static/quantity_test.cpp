@@ -27,12 +27,14 @@
 #include <mp-units/systems/isq/mechanics.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si.h>
-#include <chrono>
 #include <concepts>
 #include <cstdint>
 #include <limits>
 #include <type_traits>
 #include <utility>
+#if MP_UNITS_HOSTED
+#include <chrono>
+#endif
 
 template<>
 inline constexpr bool mp_units::is_vector<int> = true;
@@ -311,12 +313,13 @@ static_assert(quantity{123. * m}.quantity_spec == kind_of<isq::length>);
 static_assert(quantity{123. * h}.unit == si::hour);
 static_assert(quantity{123. * h}.quantity_spec == kind_of<isq::time>);
 
+#if MP_UNITS_HOSTED
 using namespace std::chrono_literals;
 static_assert(std::is_same_v<decltype(quantity{123s})::rep, std::chrono::seconds::rep>);
 static_assert(std::is_same_v<decltype(quantity{123.s})::rep, long double>);
 static_assert(quantity{24h}.unit == si::hour);
 static_assert(quantity{24h}.quantity_spec == kind_of<isq::time>);
-
+#endif
 
 ////////////////////////
 // assignment operator

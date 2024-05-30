@@ -66,6 +66,7 @@ class MPUnitsConan(ConanFile):
         "string_view_ret": ["auto", True, False],
         "no_crtp": ["auto", True, False],
         "contracts": ["none", "gsl-lite", "ms-gsl"],
+        "freestanding": [True, False],
     }
     default_options = {
         "cxx_modules": "auto",
@@ -73,6 +74,7 @@ class MPUnitsConan(ConanFile):
         "string_view_ret": "auto",
         "no_crtp": "auto",
         "contracts": "gsl-lite",
+        "freestanding": "False",
     }
     tool_requires = "cmake/[>=3.29]"
     implements = "auto_header_only"
@@ -223,6 +225,10 @@ class MPUnitsConan(ConanFile):
         for key, value in self._option_feature_map.items():
             if self.options.get_safe(key) == True:
                 self._check_feature_supported(key, value)
+        if self.options.freestanding and self.options.contracts != "none":
+            raise ConanInvalidConfiguration(
+                "'contracts' should be set to 'none' for a freestanding build"
+            )
 
     def layout(self):
         cmake_layout(self)
@@ -251,6 +257,7 @@ class MPUnitsConan(ConanFile):
         tc.cache_variables["MP_UNITS_API_CONTRACTS"] = str(
             self.options.contracts
         ).upper()
+        tc.cache_variables["MP_UNITS_API_FREESTANDING"] = self.options.freestanding
         tc.generate()
         deps = CMakeDeps(self)
         deps.generate()

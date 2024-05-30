@@ -37,8 +37,10 @@
 #include <array>
 #include <cstdint>
 #include <iterator>
-#include <string>
 #include <string_view>
+#if MP_UNITS_HOSTED
+#include <string>
+#endif
 #endif
 
 namespace mp_units {
@@ -318,9 +320,15 @@ MP_UNITS_EXPORT template<dimension_symbol_formatting fmt = dimension_symbol_form
 #endif
 {
   auto get_size = []() consteval {
+#if MP_UNITS_HOSTED
     std::basic_string<CharT> buffer;
     dimension_symbol_to<CharT>(std::back_inserter(buffer), D{}, fmt);
     return buffer.size();
+#else
+    std::array<CharT, 128> buffer;  // TODO unsafe
+    auto end = dimension_symbol_to<CharT>(buffer.begin(), D{}, fmt);
+    return end - buffer.begin();
+#endif
   };
 
 #if MP_UNITS_API_STRING_VIEW_RET  // Permitting static constexpr variables in constexpr functions

@@ -73,6 +73,10 @@
 #define MP_UNITS_DIAGNOSTIC_IGNORE_DEPRECATED
 #endif
 
+#if !defined MP_UNITS_HOSTED && defined __STDC_HOSTED__
+#define MP_UNITS_HOSTED __STDC_HOSTED__
+#endif
+
 #if MP_UNITS_COMP_MSVC
 
 #define MP_UNITS_TYPENAME typename

@@ -44,8 +44,10 @@
 #include <array>
 #include <cstdint>
 #include <iterator>
-#include <string>
 #include <string_view>
+#if MP_UNITS_HOSTED
+#include <string>
+#endif
 #endif
 
 namespace mp_units {
@@ -718,8 +720,8 @@ constexpr Out print_separator(Out out, const unit_symbol_formatting& fmt)
 {
   if (fmt.separator == unit_symbol_separator::half_high_dot) {
     if (fmt.encoding != text_encoding::unicode)
-      throw std::invalid_argument(
-        "'unit_symbol_separator::half_high_dot' can be only used with 'text_encoding::unicode'");
+      MP_UNITS_THROW(
+        std::invalid_argument("'unit_symbol_separator::half_high_dot' can be only used with 'text_encoding::unicode'"));
     const std::string_view dot = "⋅";
     out = detail::copy(dot.begin(), dot.end(), out);
   } else {
@@ -844,9 +846,15 @@ MP_UNITS_EXPORT template<unit_symbol_formatting fmt = unit_symbol_formatting{}, 
 #endif
 {
   auto get_size = []() consteval {
+#if MP_UNITS_HOSTED
     std::basic_string<CharT> buffer;
     unit_symbol_to<CharT>(std::back_inserter(buffer), U{}, fmt);
     return buffer.size();
+#else
+    std::array<CharT, 128> buffer;  // TODO unsafe
+    auto end = unit_symbol_to<CharT>(buffer.begin(), U{}, fmt);
+    return end - buffer.begin();
+#endif
   };
 
 #if MP_UNITS_API_STRING_VIEW_RET  // Permitting static constexpr variables in constexpr functions
