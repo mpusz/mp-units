@@ -32,6 +32,10 @@
 #include <mp-units/framework/quantity.h>
 #include <mp-units/framework/unit.h>
 
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
+#include <locale>
+#endif
+
 namespace mp_units::detail {
 
 template<typename Char>

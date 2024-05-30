@@ -24,6 +24,7 @@
 
 #include <mp-units/compat_macros.h>
 #include <algorithm>
+#include <locale>
 #include <tuple>
 #ifdef MP_UNITS_MODULES
 import mp_units;

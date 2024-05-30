@@ -35,6 +35,7 @@
 #include <initializer_list>
 #include <iterator>
 #include <limits>
+#include <locale>
 #include <numbers>
 #include <numeric>
 #include <optional>
