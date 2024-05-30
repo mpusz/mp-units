@@ -271,6 +271,7 @@ class MPUnitsConan(ConanFile):
 
     def package_info(self):
         compiler = self.settings.compiler
+        self.cpp_info.components["core"]
         if self.options.contracts == "gsl-lite":
             self.cpp_info.components["core"].requires = ["gsl-lite::gsl-lite"]
         elif self.options.contracts == "ms-gsl":
