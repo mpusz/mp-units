@@ -71,6 +71,10 @@ jobs:
               conan-config: "",
             }
         build_type: ["Release", "Debug"]
+        # TODO For some reason Clang-18 Debug with -ffreestanding does not pass CMakeTestCXXCompiler 
+        exclude:
+          - build_type: "Debug"
+            config: { name: "Clang-18" }
 
     env:
       CC: ${{ matrix.config.compiler.cc }}
