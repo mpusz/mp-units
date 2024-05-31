@@ -394,20 +394,27 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
 
 [`MP_UNITS_DEV_BUILD_LA`](#MP_UNITS_DEV_BUILD_LA){ #MP_UNITS_DEV_BUILD_LA }
 
-:   [:octicons-tag-24: 2.0.0][build la support] · :octicons-milestone-24: `ON`/`OFF` (Default: `ON`)
+:   [:octicons-tag-24: 2.2.0][cmake build la support] · :octicons-milestone-24: `ON`/`OFF` (Default: `ON`)
 
     Enables building code depending on the linear algebra library.
 
-    [build la support]: https://github.com/mpusz/mp-units/releases/tag/v2.0.0
-
+    [cmake build la support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 
 [`MP_UNITS_DEV_IWYU`](#MP_UNITS_DEV_IWYU){ #MP_UNITS_DEV_IWYU }
 
-:   [:octicons-tag-24: 2.0.0][iwyu support] · :octicons-milestone-24: `ON`/`OFF` (Default: `OFF`)
+:   [:octicons-tag-24: 2.2.0][cmake iwyu support] · :octicons-milestone-24: `ON`/`OFF` (Default: `OFF`)
 
-    Enables `include-what-you-use` when compiling with a clang compiler.
+    Enables include-what-you-use analysis.
 
-    [iwyu support]: https://github.com/mpusz/mp-units/releases/tag/v2.0.0
+    [cmake iwyu support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
+
+[`MP_UNITS_DEV_CLANG_TIDY`](#MP_UNITS_DEV_CLANG_TIDY){ #MP_UNITS_DEV_CLANG_TIDY }
+
+:   [:octicons-tag-24: 2.2.0][cmake clang-tidy support] · :octicons-milestone-24: `ON`/`OFF` (Default: `OFF`)
+
+    Enables clang-tidy analysis.
+
+    [cmake clang-tidy support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 
 
 ## CMake with presets support
