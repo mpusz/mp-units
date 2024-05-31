@@ -90,8 +90,6 @@ void print(const R& gliders)
     for (const auto& p : g.polar) {
       const auto ratio = glide_ratio(g.polar[0]).force_in(one);
       std::cout << MP_UNITS_STD_FMT::format("  * {::N[.4]} @ {::N[.1]} -> {::N[.1]} ({::N[.1]})\n", p.climb, p.v, ratio,
-                                            // TODO is it possible to make ADL work below (we need another set of trig
-                                            // functions for strong angle in a different namespace)
                                             si::asin(1 / ratio).force_in(si::degree));
     }
     std::cout << "\n";
@@ -168,8 +166,6 @@ void example()
   const auto weather_conditions = get_weather_conditions();
   const task t = {waypoints[0], waypoints[1], waypoints[0]};
   const aircraft_tow tow = {400 * m, 1.6 * m / s};
-  // TODO use C++20 date library when available
-  // set `start_time` to 11:00 am today
   const timestamp start_time(std::chrono::system_clock::now());
 
   print(sfty);
