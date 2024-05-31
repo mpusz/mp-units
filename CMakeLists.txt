@@ -67,7 +67,7 @@ endif()
 # add project code
 add_subdirectory(src)
 
-if(!${projectPrefix}API_FREESTANDING)
+if(NOT ${projectPrefix}API_FREESTANDING)
     # add usage example
     add_subdirectory(example)
 endif()
