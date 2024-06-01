@@ -483,7 +483,7 @@ struct kind_of_<Q> : quantity_spec<kind_of_<Q>, Q{}> {
 
 MP_UNITS_EXPORT template<detail::QuantitySpecWithNoSpecifiers auto Q>
   requires(detail::get_kind_tree_root(Q) == Q)
-inline constexpr kind_of_<decltype(Q)> kind_of;
+inline constexpr kind_of_<MP_UNITS_REMOVE_CONST(decltype(Q))> kind_of;
 
 namespace detail {
 
@@ -493,7 +493,7 @@ struct is_dimensionless<struct dimensionless> : std::true_type {};
 template<QuantitySpec auto... From, QuantitySpec Q>
 [[nodiscard]] consteval QuantitySpec auto clone_kind_of(Q q)
 {
-  if constexpr ((... && QuantityKindSpec<decltype(From)>))
+  if constexpr ((... && QuantityKindSpec<MP_UNITS_REMOVE_CONST(decltype(From))>))
     return kind_of<Q{}>;
   else
     return q;

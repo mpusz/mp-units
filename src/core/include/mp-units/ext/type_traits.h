@@ -136,7 +136,7 @@ concept one_of = (false || ... || std::same_as<T, Ts>);
 template<typename T, auto... Vs>
 [[nodiscard]] consteval bool contains()
 {
-  return (false || ... || is_same_v<decltype(Vs), T>);
+  return (false || ... || is_same_v<MP_UNITS_REMOVE_CONST(decltype(Vs)), T>);
 }
 
 template<template<typename...> typename T, typename... Ts>
@@ -160,7 +160,7 @@ template<typename T, std::same_as<T> auto V>
 template<typename T, auto V1, auto V2, auto... Vs>
 [[nodiscard]] consteval auto get()
 {
-  if constexpr (is_same_v<T, decltype(V1)>)
+  if constexpr (is_same_v<T, MP_UNITS_REMOVE_CONST(decltype(V1))>)
     return V1;
   else
     return get<T, V2, Vs...>();

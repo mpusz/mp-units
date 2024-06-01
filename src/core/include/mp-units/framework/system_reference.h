@@ -68,9 +68,9 @@ struct system_reference {
   template<Unit U>
     requires(convertible(coherent_unit, U{}))
 #if MP_UNITS_COMP_MSVC
-  [[nodiscard]] constexpr decltype(reference<decltype(Q), U>{}) operator[](U) const
+  [[nodiscard]] constexpr decltype(reference<MP_UNITS_REMOVE_CONST(decltype(quantity_spec)), U>{}) operator[](U) const
 #else
-  [[nodiscard]] constexpr reference<decltype(Q), U> operator[](U) const
+  [[nodiscard]] constexpr reference<MP_UNITS_REMOVE_CONST(decltype(quantity_spec)), U> operator[](U) const
 #endif
   {
     return {};

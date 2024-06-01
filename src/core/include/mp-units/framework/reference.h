@@ -38,7 +38,7 @@ namespace mp_units {
 namespace detail {
 
 template<QuantitySpec auto Q, Unit auto U>
-using reference_t = reference<decltype(Q), decltype(U)>;
+using reference_t = reference<MP_UNITS_REMOVE_CONST(decltype(Q)), MP_UNITS_REMOVE_CONST(decltype(U))>;
 
 }
 
@@ -258,13 +258,13 @@ MP_UNITS_EXPORT_END
 namespace detail {
 
 template<AssociatedUnit auto To, AssociatedUnit From>
-[[nodiscard]] consteval decltype(To) clone_reference_with(From)
+[[nodiscard]] consteval MP_UNITS_REMOVE_CONST(decltype(To)) clone_reference_with(From)
 {
   return {};
 }
 
 template<Unit auto To, QuantitySpec QS, Unit U>
-[[nodiscard]] consteval reference<QS, decltype(To)> clone_reference_with(reference<QS, U>)
+[[nodiscard]] consteval reference<QS, MP_UNITS_REMOVE_CONST(decltype(To))> clone_reference_with(reference<QS, U>)
 {
   return {};
 }

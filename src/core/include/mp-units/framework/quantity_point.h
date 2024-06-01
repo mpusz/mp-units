@@ -386,7 +386,7 @@ explicit(
 
 template<auto R1, auto PO1, typename Rep1, auto R2, typename Rep2>
 // TODO simplify when gcc catches up
-  requires ReferenceOf<decltype(R2), PO1.quantity_spec>
+  requires ReferenceOf<MP_UNITS_REMOVE_CONST(decltype(R2)), PO1.quantity_spec>
 [[nodiscard]] constexpr QuantityPoint auto operator+(const quantity_point<R1, PO1, Rep1>& qp,
                                                      const quantity<R2, Rep2>& q)
   requires requires { qp.quantity_ref_from(PO1) + q; }
@@ -399,7 +399,7 @@ template<auto R1, auto PO1, typename Rep1, auto R2, typename Rep2>
 
 template<auto R1, typename Rep1, auto R2, auto PO2, typename Rep2>
 // TODO simplify when gcc catches up
-  requires ReferenceOf<decltype(R1), PO2.quantity_spec>
+  requires ReferenceOf<MP_UNITS_REMOVE_CONST(decltype(R1)), PO2.quantity_spec>
 [[nodiscard]] constexpr QuantityPoint auto operator+(const quantity<R1, Rep1>& q,
                                                      const quantity_point<R2, PO2, Rep2>& qp)
   requires requires { q + qp.quantity_ref_from(PO2); }
@@ -423,7 +423,7 @@ template<Quantity Q, PointOrigin PO>
 
 template<auto R1, auto PO1, typename Rep1, auto R2, typename Rep2>
 // TODO simplify when gcc catches up
-  requires ReferenceOf<decltype(R2), PO1.quantity_spec>
+  requires ReferenceOf<MP_UNITS_REMOVE_CONST(decltype(R2)), PO1.quantity_spec>
 [[nodiscard]] constexpr QuantityPoint auto operator-(const quantity_point<R1, PO1, Rep1>& qp,
                                                      const quantity<R2, Rep2>& q)
   requires requires { qp.quantity_ref_from(PO1) - q; }
