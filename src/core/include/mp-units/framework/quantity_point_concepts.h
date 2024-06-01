@@ -105,7 +105,7 @@ concept PointOrigin = detail::AbsolutePointOrigin<T> || detail::RelativePointOri
  * Satisfied by all quantity point origins that are defined using a provided quantity specification.
  */
 MP_UNITS_EXPORT template<typename T, auto QS>
-concept PointOriginFor = PointOrigin<T> && QuantitySpecOf<std::remove_const_t<decltype(QS)>, T::quantity_spec>;
+concept PointOriginFor = PointOrigin<T> && QuantitySpecOf<MP_UNITS_REMOVE_CONST(decltype(QS)), T::quantity_spec>;
 
 MP_UNITS_EXPORT template<Reference auto R, PointOriginFor<get_quantity_spec(R)> auto PO,
                          RepresentationOf<get_quantity_spec(R).character> Rep>
@@ -141,7 +141,7 @@ template<PointOrigin PO1, PointOrigin PO2>
 
 template<typename T, auto V>
 concept SameAbsolutePointOriginAs =
-  PointOrigin<T> && PointOrigin<std::remove_const_t<decltype(V)>> && same_absolute_point_origins(T{}, V);
+  PointOrigin<T> && PointOrigin<MP_UNITS_REMOVE_CONST(decltype(V))> && same_absolute_point_origins(T{}, V);
 
 }  // namespace detail
 

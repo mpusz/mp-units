@@ -190,7 +190,7 @@ concept AssociatedUnit = Unit<U> && detail::has_associated_quantity(U{});
  */
 MP_UNITS_EXPORT template<typename U, auto QS>
 concept UnitOf =
-  AssociatedUnit<U> && QuantitySpec<std::remove_const_t<decltype(QS)>> &&
+  AssociatedUnit<U> && QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS))> &&
   implicitly_convertible(get_quantity_spec(U{}), QS) &&
   // the below is to make `dimensionless[radian]` invalid
   (get_kind(QS) == get_kind(get_quantity_spec(U{})) || !detail::NestedQuantityKindSpecOf<get_quantity_spec(U{}), QS>);
@@ -209,7 +209,7 @@ namespace detail {
  */
 MP_UNITS_EXPORT template<typename U, auto U2, auto QS>
 concept UnitCompatibleWith =
-  Unit<U> && Unit<std::remove_const_t<decltype(U2)>> && QuantitySpec<std::remove_const_t<decltype(QS)>> &&
+  Unit<U> && Unit<MP_UNITS_REMOVE_CONST(decltype(U2))> && QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS))> &&
   (!AssociatedUnit<U> || UnitOf<U, QS>)&&detail::have_same_canonical_reference_unit(U{}, U2);
 
 

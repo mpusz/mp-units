@@ -76,7 +76,7 @@ template<typename Q, typename U>
  * the provided quantity_spec type.
  */
 template<typename T, auto QS>
-concept ReferenceOf = Reference<T> && QuantitySpecOf<std::remove_const_t<decltype(get_quantity_spec(T{}))>, QS>;
+concept ReferenceOf = Reference<T> && QuantitySpecOf<decltype(get_quantity_spec(T{})), QS>;
 
 MP_UNITS_EXPORT_END
 

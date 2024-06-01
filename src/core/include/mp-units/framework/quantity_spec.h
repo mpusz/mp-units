@@ -218,11 +218,11 @@ MP_UNITS_EXPORT_END
  */
 #ifdef MP_UNITS_API_NO_CRTP
 template<detail::BaseDimension auto Dim, one_of<quantity_character> auto... Args>
-  requires(... && !QuantitySpec<std::remove_const_t<decltype(Args)>>)
+  requires(... && !QuantitySpec<decltype(Args)>)
 struct quantity_spec<Dim, Args...> : detail::quantity_spec_interface {
 #else
 template<typename Self, detail::BaseDimension auto Dim, one_of<quantity_character> auto... Args>
-  requires(... && !QuantitySpec<std::remove_const_t<decltype(Args)>>)
+  requires(... && !QuantitySpec<decltype(Args)>)
 struct quantity_spec<Self, Dim, Args...> : detail::quantity_spec_interface<Self> {
 #endif
   static constexpr detail::BaseDimension auto dimension = Dim;
@@ -261,11 +261,11 @@ struct quantity_spec<Self, Dim, Args...> : detail::quantity_spec_interface<Self>
  */
 #ifdef MP_UNITS_API_NO_CRTP
 template<detail::IntermediateDerivedQuantitySpec auto Eq, one_of<quantity_character> auto... Args>
-  requires(... && !QuantitySpec<std::remove_const_t<decltype(Args)>>)
+  requires(... && !QuantitySpec<decltype(Args)>)
 struct quantity_spec<Eq, Args...> : detail::quantity_spec_interface {
 #else
 template<typename Self, detail::IntermediateDerivedQuantitySpec auto Eq, one_of<quantity_character> auto... Args>
-  requires(... && !QuantitySpec<std::remove_const_t<decltype(Args)>>)
+  requires(... && !QuantitySpec<decltype(Args)>)
 struct quantity_spec<Self, Eq, Args...> : detail::quantity_spec_interface<Self> {
 #endif
   static constexpr auto _equation_ = Eq;
@@ -302,12 +302,12 @@ struct quantity_spec<Self, Eq, Args...> : detail::quantity_spec_interface<Self> 
  */
 #ifdef MP_UNITS_API_NO_CRTP
 template<detail::NamedQuantitySpec auto QS, one_of<quantity_character, struct is_kind> auto... Args>
-  requires(... && !QuantitySpec<std::remove_const_t<decltype(Args)>>)
-struct quantity_spec<QS, Args...> : std::remove_const_t<decltype(QS)> {
+  requires(... && !QuantitySpec<decltype(Args)>)
+struct quantity_spec<QS, Args...> : decltype(QS) {
 #else
 template<typename Self, detail::NamedQuantitySpec auto QS, one_of<quantity_character, struct is_kind> auto... Args>
-  requires(... && !QuantitySpec<std::remove_const_t<decltype(Args)>>)
-struct quantity_spec<Self, QS, Args...> : std::remove_const_t<decltype(QS)> {
+  requires(... && !QuantitySpec<decltype(Args)>)
+struct quantity_spec<Self, QS, Args...> : decltype(QS) {
 #endif
   static constexpr auto _parent_ = QS;
   static constexpr quantity_character character = detail::quantity_character_init<Args...>(QS.character);
@@ -361,16 +361,16 @@ struct quantity_spec<Self, QS, Args...> : std::remove_const_t<decltype(QS)> {
 #ifdef MP_UNITS_API_NO_CRTP
 template<detail::NamedQuantitySpec auto QS, detail::IntermediateDerivedQuantitySpec auto Eq,
          one_of<quantity_character, struct is_kind> auto... Args>
-  requires(!requires { QS._equation_; } ||
-           (requires { QS._equation_; } && (explicitly_convertible(Eq, QS._equation_)))) &&
-          (... && !QuantitySpec<std::remove_const_t<decltype(Args)>>)
+  requires(!requires { QS._equation_; } || (requires {
+            QS._equation_;
+          } && (explicitly_convertible(Eq, QS._equation_)))) && (... && !QuantitySpec<decltype(Args)>)
 struct quantity_spec<QS, Eq, Args...> : quantity_spec<QS, Args...> {
 #else
 template<typename Self, detail::NamedQuantitySpec auto QS, detail::IntermediateDerivedQuantitySpec auto Eq,
          one_of<quantity_character, struct is_kind> auto... Args>
-  requires(!requires { QS._equation_; } ||
-           (requires { QS._equation_; } && (explicitly_convertible(Eq, QS._equation_)))) &&
-          (... && !QuantitySpec<std::remove_const_t<decltype(Args)>>)
+  requires(!requires { QS._equation_; } || (requires {
+            QS._equation_;
+          } && (explicitly_convertible(Eq, QS._equation_)))) && (... && !QuantitySpec<decltype(Args)>)
 struct quantity_spec<Self, QS, Eq, Args...> : quantity_spec<Self, QS, Args...> {
 #endif
   static constexpr auto _equation_ = Eq;
@@ -483,7 +483,7 @@ struct kind_of_<Q> : quantity_spec<kind_of_<Q>, Q{}> {
 
 MP_UNITS_EXPORT template<detail::QuantitySpecWithNoSpecifiers auto Q>
   requires(detail::get_kind_tree_root(Q) == Q)
-inline constexpr kind_of_<std::remove_const_t<decltype(Q)>> kind_of;
+inline constexpr kind_of_<decltype(Q)> kind_of;
 
 namespace detail {
 
@@ -493,7 +493,7 @@ struct is_dimensionless<struct dimensionless> : std::true_type {};
 template<QuantitySpec auto... From, QuantitySpec Q>
 [[nodiscard]] consteval QuantitySpec auto clone_kind_of(Q q)
 {
-  if constexpr ((... && QuantityKindSpec<std::remove_const_t<decltype(From)>>))
+  if constexpr ((... && QuantityKindSpec<decltype(From)>))
     return kind_of<Q{}>;
   else
     return q;
@@ -566,11 +566,9 @@ template<std::intmax_t Num, std::intmax_t Den = 1, QuantitySpec Q>
       detail::expr_pow<Num, Den, derived_quantity_spec, struct dimensionless, detail::type_list_of_quantity_spec_less>(
         detail::remove_kind(q)));
   else if constexpr (Den == 1)
-    return detail::clone_kind_of<Q{}>(
-      derived_quantity_spec<power<std::remove_const_t<decltype(detail::remove_kind(Q{}))>, Num>>{});
+    return detail::clone_kind_of<Q{}>(derived_quantity_spec<power<decltype(detail::remove_kind(Q{})), Num>>{});
   else
-    return detail::clone_kind_of<Q{}>(
-      derived_quantity_spec<power<std::remove_const_t<decltype(detail::remove_kind(Q{}))>, Num, Den>>{});
+    return detail::clone_kind_of<Q{}>(derived_quantity_spec<power<decltype(detail::remove_kind(Q{})), Num, Den>>{});
 }
 
 
@@ -1398,7 +1396,7 @@ template<QuantitySpec From, QuantitySpec To>
     return are_ingredients_convertible(from, to);
   } else if constexpr (IntermediateDerivedQuantitySpec<From>) {
     auto res = explode<get_complexity(to)>(from);
-    if constexpr (NamedQuantitySpec<std::remove_const_t<decltype(res.quantity)>>)
+    if constexpr (NamedQuantitySpec<decltype(res.quantity)>)
       return convertible_impl(res.quantity, to);
     else if constexpr (requires { to._equation_; }) {
       auto eq = explode_to_equation(to);
@@ -1407,7 +1405,7 @@ template<QuantitySpec From, QuantitySpec To>
       return are_ingredients_convertible(from, to);
   } else if constexpr (IntermediateDerivedQuantitySpec<To>) {
     auto res = explode<get_complexity(from)>(to);
-    if constexpr (NamedQuantitySpec<std::remove_const_t<decltype(res.quantity)>>)
+    if constexpr (NamedQuantitySpec<decltype(res.quantity)>)
       return min(res.result, convertible_impl(from, res.quantity));
     else if constexpr (requires { from._equation_; })
       return min(res.result, convertible_impl(from._equation_, res.quantity));
@@ -1452,7 +1450,7 @@ namespace detail {
 
 template<QuantitySpec Q>
   requires requires(Q q) { get_kind_tree_root(q); }
-using to_kind = std::remove_const_t<decltype(get_kind_tree_root(Q{}))>;
+using to_kind = decltype(get_kind_tree_root(Q{}));
 
 #ifdef MP_UNITS_API_NO_CRTP
 template<NamedQuantitySpec auto QS, auto... Args>
@@ -1509,8 +1507,8 @@ template<QuantitySpec Q1, QuantitySpec Q2>
   requires(implicitly_convertible(get_kind_tree_root(q1), get_kind_tree_root(q2)) ||
            implicitly_convertible(get_kind_tree_root(q2), get_kind_tree_root(q1)))
 {
-  using QQ1 = std::remove_const_t<decltype(detail::remove_kind(q1))>;
-  using QQ2 = std::remove_const_t<decltype(detail::remove_kind(q2))>;
+  using QQ1 = decltype(detail::remove_kind(q1));
+  using QQ2 = decltype(detail::remove_kind(q2));
 
   // NOLINTBEGIN(bugprone-branch-clone)
   if constexpr (is_same_v<Q1, Q2>)

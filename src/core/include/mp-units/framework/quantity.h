@@ -140,8 +140,7 @@ public:
 
   template<typename Value>
     requires std::same_as<std::remove_cvref_t<Value>, Rep>
-  constexpr quantity(Value&& v, std::remove_const_t<decltype(R)>) :
-      numerical_value_is_an_implementation_detail_(std::forward<Value>(v))
+  constexpr quantity(Value&& v, decltype(R)) : numerical_value_is_an_implementation_detail_(std::forward<Value>(v))
   {
   }
 

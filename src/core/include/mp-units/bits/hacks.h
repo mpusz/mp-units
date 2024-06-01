@@ -87,6 +87,13 @@
 
 #endif
 
+#if MP_UNITS_COMP_GCC
+
+#define MP_UNITS_REMOVE_CONST(expr) std::remove_const_t<expr>
+
+#else
+
+#define MP_UNITS_REMOVE_CONST(expr) expr
 
 #endif
 
