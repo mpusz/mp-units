@@ -231,8 +231,8 @@ For example:
 A unit can be defined by the user in one of the following ways:
 
 ```cpp
-template<PrefixableUnit auto U> struct kilo_ : prefixed_unit<"k", mag_power<10, 3>, U> {};
-template<PrefixableUnit auto U> inline constexpr kilo_<U> kilo;
+template<PrefixableUnit U> struct kilo_ : prefixed_unit<"k", mag_power<10, 3>, U{}> {};
+template<PrefixableUnit auto U> inline constexpr kilo_<decltype(U)> kilo;
 
 inline constexpr struct second : named_unit<"s", kind_of<isq::time>> {} second;
 inline constexpr struct minute : named_unit<"min", mag<60> * second> {} minute;
