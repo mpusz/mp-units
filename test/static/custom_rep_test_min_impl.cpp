@@ -82,7 +82,7 @@ static_assert(!std::convertible_to<min_impl<double>, quantity<si::metre, min_imp
 
 // multiply syntax should work
 template<typename T, auto U>
-concept creates_quantity = Unit<std::remove_cvref_t<decltype(U)>> && requires { T{} * U; };
+concept creates_quantity = Unit<decltype(U)> && requires { T{} * U; };
 
 static_assert(creates_quantity<min_impl<int>, si::metre>);
 static_assert(creates_quantity<min_impl<double>, si::metre>);

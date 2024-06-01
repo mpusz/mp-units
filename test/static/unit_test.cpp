@@ -240,7 +240,6 @@ static_assert(si::yotta<metre>.symbol == "Ym");
 static_assert(si::ronna<metre>.symbol == "Rm");
 static_assert(si::quetta<metre>.symbol == "Qm");
 
-
 // scaled_unit
 constexpr auto m_1 = mag<1> * metre;
 static_assert(is_of_type<m_1, metre_>);

@@ -41,7 +41,7 @@ void to_base_specialization_of_quantity(const volatile quantity<R, Rep>*);
 
 template<typename T>
 inline constexpr bool is_derived_from_specialization_of_quantity =
-  requires(std::remove_reference_t<T>* t) { to_base_specialization_of_quantity(t); };
+  requires(T* t) { to_base_specialization_of_quantity(t); };
 
 }  // namespace detail
 

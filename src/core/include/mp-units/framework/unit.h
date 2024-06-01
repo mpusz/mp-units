@@ -432,9 +432,9 @@ MP_UNITS_EXPORT_BEGIN
  * Multiplication by `1` returns the same unit, otherwise `scaled_unit` is being returned.
  */
 template<Magnitude M, Unit U>
-[[nodiscard]] MP_UNITS_CONSTEVAL Unit auto operator*(M, const U u)
+[[nodiscard]] MP_UNITS_CONSTEVAL Unit auto operator*(M, U u)
 {
-  if constexpr (std::is_same_v<M, std::remove_cvref_t<decltype(mp_units::mag<1>)>>)
+  if constexpr (std::is_same_v<M, std::remove_const_t<decltype(mp_units::mag<1>)>>)
     return u;
   else
     return scaled_unit<M{}, U>{};
@@ -446,7 +446,7 @@ template<Magnitude M, Unit U>
  * Returns the result of multiplication with an inverse unit.
  */
 template<Magnitude M, Unit U>
-[[nodiscard]] MP_UNITS_CONSTEVAL Unit auto operator/(M mag, const U u)
+[[nodiscard]] MP_UNITS_CONSTEVAL Unit auto operator/(M mag, U u)
 {
   return mag * inverse(u);
 }

@@ -915,12 +915,11 @@ template<typename From, typename To>
       return extract_results{false};
     else if constexpr (from_exp > to_exp)
       return extract_results{true, pow<to_exp.num, to_exp.den>(from_factor), pow<to_exp.num, to_exp.den>(to_factor),
-                             prepend_rest::first,
-                             power_or_T<std::remove_cvref_t<decltype(from_factor)>, from_exp - to_exp>{}};
+                             prepend_rest::first, power_or_T<decltype(from_factor), from_exp - to_exp>{}};
     else
       return extract_results{true, pow<from_exp.num, from_exp.den>(from_factor),
                              pow<from_exp.num, from_exp.den>(to_factor), prepend_rest::second,
-                             power_or_T<std::remove_cvref_t<decltype(to_factor)>, to_exp - from_exp>{}};
+                             power_or_T<decltype(to_factor), to_exp - from_exp>{}};
   }
 }
 
@@ -934,7 +933,7 @@ template<process_entities Entities, auto Ext, TypeList NumFrom, TypeList DenFrom
   if constexpr (Ext.prepend == prepend_rest::no)
     return min(res, are_ingredients_convertible(num_from, den_from, num_to, den_to));
   else {
-    using elem = std::remove_cvref_t<decltype(Ext.elem)>;
+    using elem = decltype(Ext.elem);
     if constexpr (Entities == process_entities::numerators) {
       if constexpr (Ext.prepend == prepend_rest::first)
         return min(res, are_ingredients_convertible(type_list_push_front<NumFrom, elem>{}, den_from, num_to, den_to));
@@ -959,7 +958,7 @@ template<process_entities Entities, auto Ext, TypeList NumFrom, TypeList DenFrom
     if constexpr (Ext.prepend == prepend_rest::no)
       return are_ingredients_convertible(num_from, den_from, num_to, den_to);
     else {
-      using elem = std::remove_cvref_t<decltype(Ext.elem)>;
+      using elem = decltype(Ext.elem);
       if constexpr (Entities == process_entities::from) {
         if constexpr (Ext.prepend == prepend_rest::first)
           return are_ingredients_convertible(type_list_push_front<NumFrom, elem>{}, den_from, num_to, den_to);
@@ -1342,8 +1341,7 @@ template<QuantitySpec From, QuantitySpec To>
     using enum specs_convertible_result;
     return res == no ? no : yes;
   };
-  if constexpr ((NamedQuantitySpec<std::remove_cvref_t<decltype(from_kind)>> &&
-                 NamedQuantitySpec<std::remove_cvref_t<decltype(to_kind)>>) ||
+  if constexpr ((NamedQuantitySpec<decltype(from_kind)> && NamedQuantitySpec<decltype(to_kind)>) ||
                 get_complexity(from_kind) == get_complexity(to_kind))
     return convertible_impl(from_kind, to_kind);
   else if constexpr (get_complexity(from_kind) > get_complexity(to_kind))
