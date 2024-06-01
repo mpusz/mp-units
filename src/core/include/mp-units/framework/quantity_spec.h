@@ -552,11 +552,6 @@ template<std::intmax_t Num, std::intmax_t Den = 1, QuantitySpec Q>
   requires detail::non_zero<Den>
 [[nodiscard]] consteval QuantitySpec auto pow(Q q)
 {
-  // TODO Does the below make sense?
-  // `2 * 2` should compare to `4`
-  // `2 * one * (2 * one)` should compare to `4 * one`
-  // `2 * rad * (2 * rad)` should compare to `4 * rad^2`
-  // all are dimensionless quantities :-(
   if constexpr (Num == 0 || Q{} == dimensionless)
     return dimensionless;
   else if constexpr (detail::ratio{Num, Den} == 1)

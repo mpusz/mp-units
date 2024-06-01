@@ -744,6 +744,8 @@ static_assert(4 / (2 * one) == 2 * one);
 static_assert(4 * one / 2 == 2 * one);
 static_assert(4 * one % (2 * one) == 0 * one);
 
+static_assert(2 * rad * (2 * rad) == 4 * pow<2>(rad));
+
 // modulo arithmetics
 static_assert(5 * h % (120 * min) == 60 * min);
 static_assert(300 * min % (2 * h) == 60 * min);

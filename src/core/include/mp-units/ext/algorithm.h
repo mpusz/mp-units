@@ -20,8 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// Copy-pasted C++ standard libraries to be replaced with `import std;` when available
-// `#include <algorithm.h>` is too heavy to do in every translation unit
+// Copy-pasted C++ standard libraries
+// TODO To be replaced with `import std;` when available
+//      `#include <algorithm.h>` is too heavy to do in every translation unit
 
 #pragma once
 

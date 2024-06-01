@@ -295,17 +295,8 @@ template<typename T>
 
   constexpr auto checked_square = [checked_multiply](auto a) { return checked_multiply(a, a); };
 
-  // TODO(chogg): Unify this implementation with the one in pow.h.  That one takes its exponent as a
-  // template parameter, rather than a function parameter.
-
-  if (exp == 0) {
-    return T{1};
-  }
-
-  if (exp % 2 == 1) {
-    return checked_multiply(base, int_power(base, exp - 1));
-  }
-
+  if (exp == 0) return T{1};
+  if (exp % 2 == 1) return checked_multiply(base, int_power(base, exp - 1));
   return checked_square(int_power(base, exp / 2));
 }
 
@@ -340,7 +331,6 @@ template<typename T>
 // The input is the desired result, but in a (wider) intermediate type.  The point of this function
 // is to cast to the desired type, but avoid overflow in doing so.
 template<typename To, typename From>
-// TODO(chogg): Migrate this to use `treat_as_floating_point`.
   requires(!std::is_integral_v<To> || std::is_integral_v<From>)
 [[nodiscard]] consteval To checked_static_cast(From x)
 {

@@ -24,7 +24,6 @@
 #pragma once
 
 // IWYU pragma: private, include <mp-units/framework.h>
-// TODO use <algorithm> when moved to C++20 modules (parsing takes too long for each translation unit)
 #include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/compat_macros.h>
