@@ -137,8 +137,8 @@ unit magnitude in a more flexible way.
 Each prefix is implemented similarly to the following:
 
 ```cpp
-template<PrefixableUnit auto U> struct quecto_ : prefixed_unit<"q", mag_power<10, -30>, U> {};
-template<PrefixableUnit auto U> inline constexpr quecto_<U> quecto;
+template<PrefixableUnit U> struct quecto_ : prefixed_unit<"q", mag_power<10, -30>, U{}> {};
+template<PrefixableUnit auto U> inline constexpr quecto_<decltype(U)> quecto;
 ```
 
 and then a [PrefixableUnit](concepts.md#PrefixableUnit) can be prefixed in the following
@@ -153,8 +153,8 @@ efficiently represent any rational magnitude. For example, IEC 80000 prefixes us
 IT industry can be implemented as:
 
 ```cpp
-template<PrefixableUnit auto U> struct yobi_ : prefixed_unit<"Yi", mag_power<2, 80>, U> {};
-template<PrefixableUnit auto U> inline constexpr yobi_<U> yobi;
+template<PrefixableUnit U> struct yobi_ : prefixed_unit<"Yi", mag_power<2, 80>, U{}> {};
+template<PrefixableUnit auto U> inline constexpr yobi_<decltype(U)> yobi;
 ```
 
 ## Scaled units

@@ -98,8 +98,7 @@ static_assert(is_of_type<length[metre], reference<length_, metre_>>);
 static_assert(is_of_type<kind_of<length>[metre], metre_>);
 
 static_assert(
-  is_of_type<(length / time)[metre / second],
-             reference<std::remove_const_t<decltype(length / time)>, std::remove_const_t<decltype(metre / second)>>>);
+  is_of_type<(length / time)[metre / second], reference<decltype(length / time), decltype(metre / second)>>);
 static_assert(is_of_type<(kind_of<length> / kind_of<time>)[metre / second], derived_unit<metre_, per<second_>>>);
 
 // Unit as a reference

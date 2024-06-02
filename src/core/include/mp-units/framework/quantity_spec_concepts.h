@@ -140,15 +140,14 @@ namespace detail {
 
 template<auto To, auto From>
 concept NestedQuantityKindSpecOf =
-  QuantitySpec<std::remove_const_t<decltype(From)>> && QuantitySpec<std::remove_const_t<decltype(To)>> &&
-  get_kind(From) != get_kind(To) &&
-  std::derived_from<std::remove_cvref_t<decltype(To)>, std::remove_cvref_t<decltype(get_kind(From)._quantity_spec_)>>;
+  QuantitySpec<decltype(From)> && QuantitySpec<decltype(To)> && get_kind(From) != get_kind(To) &&
+  std::derived_from<decltype(To), std::remove_const_t<decltype(get_kind(From)._quantity_spec_)>>;
 
 }
 
 MP_UNITS_EXPORT template<typename T, auto QS>
 concept QuantitySpecOf =
-  QuantitySpec<T> && QuantitySpec<std::remove_const_t<decltype(QS)>> && implicitly_convertible(T{}, QS) &&
+  QuantitySpec<T> && QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS))> && implicitly_convertible(T{}, QS) &&
   // the below is to make the following work
   // static_assert(ReferenceOf<si::radian, isq::angular_measure>);
   // static_assert(!ReferenceOf<si::radian, dimensionless>);

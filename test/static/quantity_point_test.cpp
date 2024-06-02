@@ -26,20 +26,25 @@
 #include <mp-units/systems/isq.h>
 #include <mp-units/systems/si.h>
 #include <mp-units/systems/usc.h>
-#include <chrono>
 #include <concepts>
 #include <cstdint>
 #include <limits>
 #include <type_traits>
 #include <utility>
+#if MP_UNITS_HOSTED
+#include <chrono>
+#endif
 
 namespace {
 
 using namespace mp_units;
 using namespace mp_units::si::unit_symbols;
 using namespace mp_units::usc::unit_symbols;
+
+#if MP_UNITS_HOSTED
 using namespace std::chrono_literals;
 using sys_seconds = std::chrono::time_point<std::chrono::system_clock, std::chrono::seconds>;
+#endif
 
 inline constexpr struct zeroth_length : absolute_point_origin<zeroth_length, isq::length> {
 } zeroth_length;
@@ -444,6 +449,7 @@ static_assert(!std::convertible_to<quantity<isq::length[m]>, quantity_point<isq:
 static_assert(!std::constructible_from<quantity_point<special_height[m]>, quantity<isq::height[m]>>);
 static_assert(!std::convertible_to<quantity<special_height[m]>, quantity_point<isq::height[m]>>);
 
+#if MP_UNITS_HOSTED
 // quantity-like
 static_assert(!std::constructible_from<quantity_point<si::second>, std::chrono::seconds>);
 static_assert(!std::convertible_to<std::chrono::seconds, quantity_point<si::second>>);
@@ -453,7 +459,7 @@ static_assert(!std::convertible_to<std::chrono::seconds, quantity_point<isq::tim
 
 static_assert(!std::constructible_from<quantity_point<isq::period_duration[s]>, std::chrono::seconds>);
 static_assert(!std::convertible_to<std::chrono::seconds, quantity_point<isq::period_duration[s]>>);
-
+#endif
 
 // ----------------------
 // explicit point origins
@@ -499,6 +505,7 @@ static_assert(!std::convertible_to<quantity<special_height[m]>, quantity_point<i
 static_assert(!std::constructible_from<quantity_point<si::metre, mean_sea_level>, quantity<isq::length[m]>>);
 static_assert(!std::convertible_to<quantity<isq::length[m]>, quantity_point<si::metre, mean_sea_level>>);
 
+#if MP_UNITS_HOSTED
 // quantity-like
 static_assert(!std::constructible_from<quantity_point<si::second, chrono_point_origin<std::chrono::system_clock>>,
                                        std::chrono::seconds>);
@@ -516,6 +523,7 @@ static_assert(
 static_assert(
   !std::convertible_to<std::chrono::seconds,
                        quantity_point<isq::period_duration[s], chrono_point_origin<std::chrono::system_clock>>>);
+#endif
 
 
 ///////////////////////////////////////
@@ -775,6 +783,7 @@ static_assert(!std::constructible_from<quantity_point<isq::height[m], other_abso
 static_assert(!std::convertible_to<quantity_point<isq::height[m], ground_level>,
                                    quantity_point<isq::height[m], other_absolute_level>>);
 
+#if MP_UNITS_HOSTED
 // quantity-point-like
 static_assert(
   std::constructible_from<quantity_point<isq::time[s], chrono_point_origin<std::chrono::system_clock>>, sys_seconds>);
@@ -786,6 +795,7 @@ static_assert(
   !std::constructible_from<quantity_point<isq::time[s], chrono_point_origin<std::chrono::steady_clock>>, sys_seconds>);
 static_assert(
   !std::convertible_to<sys_seconds, quantity_point<isq::time[s], chrono_point_origin<std::chrono::steady_clock>>>);
+#endif
 
 
 //////////////////////////////////
@@ -889,6 +899,7 @@ static_assert(std::is_same_v<std::remove_const_t<decltype(quantity_point{20 * de
 static_assert(quantity_point{20 * deg_C}.unit == si::degree_Celsius);
 static_assert(quantity_point{20 * deg_C}.quantity_spec == kind_of<isq::thermodynamic_temperature>);
 
+#if MP_UNITS_HOSTED
 using namespace std::chrono_literals;
 static_assert(std::is_same_v<decltype(quantity_point{sys_seconds{123s}})::rep, std::chrono::seconds::rep>);
 static_assert(std::is_same_v<std::remove_const_t<decltype(quantity_point{sys_seconds{123s}}.point_origin)>,
@@ -897,6 +908,7 @@ static_assert(std::is_same_v<std::remove_const_t<decltype(quantity_point{sys_sec
                              chrono_point_origin_<std::chrono::system_clock>>);
 static_assert(quantity_point{sys_seconds{24h}}.unit == si::second);
 static_assert(quantity_point{sys_seconds{24h}}.quantity_spec == kind_of<isq::time>);
+#endif
 
 
 ////////////

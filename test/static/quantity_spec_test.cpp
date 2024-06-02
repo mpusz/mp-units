@@ -121,10 +121,10 @@ static_assert(!detail::NamedQuantitySpec<decltype(inverse(time))>);
 static_assert(detail::IntermediateDerivedQuantitySpec<decltype(inverse(time))>);
 static_assert(!detail::QuantityKindSpec<decltype(inverse(time))>);
 
-static_assert(QuantitySpec<kind_of_<std::remove_const_t<decltype(length / time)>>>);
-static_assert(!detail::NamedQuantitySpec<kind_of_<std::remove_const_t<decltype(length / time)>>>);
-static_assert(detail::IntermediateDerivedQuantitySpec<kind_of_<std::remove_const_t<decltype(length / time)>>>);
-static_assert(detail::QuantityKindSpec<kind_of_<std::remove_const_t<decltype(length / time)>>>);
+static_assert(QuantitySpec<kind_of_<decltype(length / time)>>);
+static_assert(!detail::NamedQuantitySpec<kind_of_<decltype(length / time)>>);
+static_assert(detail::IntermediateDerivedQuantitySpec<kind_of_<decltype(length / time)>>);
+static_assert(detail::QuantityKindSpec<kind_of_<decltype(length / time)>>);
 
 static_assert(QuantitySpec<decltype(kind_of<length> / kind_of<time>)>);
 static_assert(!detail::NamedQuantitySpec<decltype(kind_of<length> / kind_of<time>)>);

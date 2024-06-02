@@ -23,6 +23,7 @@
 #pragma once
 
 #include <mp-units/bits/ratio.h>
+#include <mp-units/compat_macros.h>
 #include <mp-units/ext/fixed_string.h>
 #include <mp-units/ext/type_traits.h>
 #include <mp-units/framework/symbol_text.h>
@@ -100,12 +101,12 @@ constexpr Out copy(const symbol_text<N, M>& txt, text_encoding encoding, Out out
       for (const char8_t ch : txt.unicode()) *out++ = static_cast<char>(ch);
       return out;
     } else
-      throw std::invalid_argument("Unicode text can't be copied to CharT output");
+      MP_UNITS_THROW(std::invalid_argument("Unicode text can't be copied to CharT output"));
   } else {
     if constexpr (is_same_v<CharT, char>)
       return ::mp_units::detail::copy(txt.ascii().begin(), txt.ascii().end(), out);
     else
-      throw std::invalid_argument("ASCII text can't be copied to CharT output");
+      MP_UNITS_THROW(std::invalid_argument("ASCII text can't be copied to CharT output"));
   }
 }
 

@@ -219,7 +219,7 @@ the origin and the _displacement vector_ measured from it to the point we create
     [Why can't I create a quantity by passing a number to a constructor?](../../getting_started/faq.md#why-cant-i-create-a-quantity-by-passing-a-number-to-a-constructor)
     chapter.
 
-Similarly to [creation of a quantity](../../getting_started/quick_start.md#creating-a-quantity),
+Similarly to [creation of a quantity](../../getting_started/quick_start.md#quantities),
 if someone does not like the operator-based syntax to create a `quantity_point`, the same results
 can be achieved with a two-parameter constructor:
 
@@ -403,7 +403,7 @@ inline constexpr struct zeroth_degree_Celsius : decltype(ice_point) {} zeroth_de
 namespace usc {
 
 inline constexpr struct zeroth_degree_Fahrenheit :
-  relative_point_origin<si::zeroth_degree_Celsius - 32 * (mag_ratio<5, 9> * si::degree_Celsius)> {} zeroth_degree_Fahrenheit;
+  relative_point_origin<quantity_point{-32 * (mag_ratio<5, 9> * si::degree_Celsius)}> {} zeroth_degree_Fahrenheit;
 
 }
 ```

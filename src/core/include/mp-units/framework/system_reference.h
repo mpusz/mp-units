@@ -60,7 +60,7 @@ namespace mp_units {
  * @tparam CoU coherent unit for a quantity in this system
  */
 template<QuantitySpec auto Q, Unit auto CoU>
-  requires(!AssociatedUnit<std::remove_const_t<decltype(CoU)>>) || (CoU == one)
+  requires(!AssociatedUnit<decltype(CoU)>) || (CoU == one)
 struct system_reference {
   static constexpr auto quantity_spec = Q;
   static constexpr auto coherent_unit = CoU;
@@ -68,9 +68,9 @@ struct system_reference {
   template<Unit U>
     requires(convertible(coherent_unit, U{}))
 #if MP_UNITS_COMP_MSVC
-  [[nodiscard]] constexpr decltype(reference<std::remove_const_t<decltype(quantity_spec)>, U>{}) operator[](U) const
+  [[nodiscard]] constexpr decltype(reference<MP_UNITS_REMOVE_CONST(decltype(Q)), U>{}) operator[](U) const
 #else
-  [[nodiscard]] constexpr reference<std::remove_const_t<decltype(quantity_spec)>, U> operator[](U) const
+  [[nodiscard]] constexpr reference<MP_UNITS_REMOVE_CONST(decltype(Q)), U> operator[](U) const
 #endif
   {
     return {};

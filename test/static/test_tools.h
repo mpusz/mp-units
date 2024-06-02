@@ -27,7 +27,7 @@
 #include <type_traits>
 
 template<auto V, typename T>
-inline constexpr bool is_of_type = std::is_same_v<std::remove_cvref_t<decltype(V)>, T>;
+inline constexpr bool is_of_type = std::is_same_v<MP_UNITS_REMOVE_CONST(decltype(V)), T>;
 
 // NOLINTBEGIN(cppcoreguidelines-macro-usage)
 #ifdef MP_UNITS_API_NO_CRTP

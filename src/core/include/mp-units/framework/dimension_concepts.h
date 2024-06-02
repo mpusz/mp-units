@@ -109,6 +109,6 @@ concept Dimension = detail::BaseDimension<T> || detail::DerivedDimension<T>;
  * Satisfied when both argument satisfy a `Dimension` concept and when they compare equal.
  */
 MP_UNITS_EXPORT template<typename T, auto D>
-concept DimensionOf = Dimension<T> && Dimension<std::remove_const_t<decltype(D)>> && (T{} == D);
+concept DimensionOf = Dimension<T> && Dimension<MP_UNITS_REMOVE_CONST(decltype(D))> && (T{} == D);
 
 }  // namespace mp_units

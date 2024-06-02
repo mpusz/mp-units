@@ -73,6 +73,10 @@
 #define MP_UNITS_DIAGNOSTIC_IGNORE_DEPRECATED
 #endif
 
+#if !defined MP_UNITS_HOSTED && defined __STDC_HOSTED__
+#define MP_UNITS_HOSTED __STDC_HOSTED__
+#endif
+
 #if MP_UNITS_COMP_MSVC
 
 #define MP_UNITS_TYPENAME typename
@@ -83,10 +87,26 @@
 
 #endif
 
-// TODO revise the below when clang-18 is released
-#if MP_UNITS_COMP_CLANG >= 18 && __cplusplus >= 202300L && !defined __cpp_explicit_this_parameter
+#if MP_UNITS_COMP_GCC
 
-#define __cpp_explicit_this_parameter 202110L
+#define MP_UNITS_REMOVE_CONST(expr) std::remove_const_t<expr>
+
+#else
+
+#define MP_UNITS_REMOVE_CONST(expr) expr
+
+#endif
+
+#if !defined __cpp_lib_ranges_to_container
+
+namespace std {
+
+struct from_range_t {
+  explicit from_range_t() = default;
+};
+inline constexpr from_range_t from_range{};
+
+}  // namespace std
 
 #endif
 

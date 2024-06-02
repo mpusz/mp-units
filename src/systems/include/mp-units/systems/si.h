@@ -23,9 +23,11 @@
 #pragma once
 
 // IWYU pragma: begin_exports
+#if MP_UNITS_HOSTED
 #include <mp-units/systems/si/chrono.h>
-#include <mp-units/systems/si/constants.h>
 #include <mp-units/systems/si/math.h>
+#endif
+#include <mp-units/systems/si/constants.h>
 #include <mp-units/systems/si/prefixes.h>
 #include <mp-units/systems/si/unit_symbols.h>
 #include <mp-units/systems/si/units.h>

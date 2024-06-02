@@ -20,49 +20,49 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#pragma once
-
-#include <mp-units/bits/hacks.h>
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers_exception.hpp>
 #include <mp-units/compat_macros.h>
-#include <array>
-#include <compare>
-#include <concepts>
-#include <cstddef>
-#include <cstdint>
-#include <cstdlib>
-#include <functional>
-#include <initializer_list>
-#include <iterator>
-#include <limits>
-#include <numbers>
-#include <numeric>
-#include <optional>
-#include <ranges>
-#include <string_view>
-#include <tuple>
-#include <type_traits>
-#include <utility>
-
-#if MP_UNITS_HOSTED
-#include <cmath>
-#include <locale>
-#include <ostream>
-#include <random>
 #include <sstream>
-#include <string>
-
-#if MP_UNITS_USE_FMTLIB
-MP_UNITS_DIAGNOSTIC_PUSH
-MP_UNITS_DIAGNOSTIC_IGNORE_UNREACHABLE
-MP_UNITS_DIAGNOSTIC_IGNORE_SHADOW
-#include <fmt/format.h>
-MP_UNITS_DIAGNOSTIC_POP
+#include <string_view>
+#ifdef MP_UNITS_MODULES
+import mp_units;
 #else
-#include <format>
+#include <mp-units/ext/fixed_string.h>
 #endif
 
-#endif
+using namespace mp_units;
 
-#if __cpp_lib_text_encoding
-#include <text_encoding>
-#endif
+TEST_CASE("fixed_string::at", "[fixed_string]")
+{
+  basic_fixed_string txt = "abc";
+  SECTION("in range")
+  {
+    CHECK(txt.at(0) == 'a');
+    CHECK(txt.at(1) == 'b');
+    CHECK(txt.at(2) == 'c');
+  }
+  SECTION("out of range")
+  {
+    REQUIRE_THROWS_MATCHES(txt.at(3), std::out_of_range, Catch::Matchers::Message("basic_fixed_string::at"));
+    REQUIRE_THROWS_MATCHES(txt.at(1024), std::out_of_range, Catch::Matchers::Message("basic_fixed_string::at"));
+  }
+}
+
+TEST_CASE("fixed_string text output", "[fixed_string][ostream][fmt]")
+{
+  basic_fixed_string txt = "units";
+  SECTION("iostream")
+  {
+    std::ostringstream os;
+    os << txt;
+    CHECK(os.str() == "units");
+  }
+  SECTION("fmt") { CHECK(MP_UNITS_STD_FMT::format("{}", txt) == "units"); }
+}
+
+TEST_CASE("fixed_string hash", "[fixed_string][hash]")
+{
+  basic_fixed_string txt = "units";
+  CHECK(std::hash<fixed_string<5>>{}(txt) == std::hash<std::string_view>{}("units"));
+}

@@ -35,12 +35,13 @@ env:
 
 jobs:
   build:
-    name: "${{ matrix.formatting }} C++${{ matrix.std }} ${{ matrix.config.name }} ${{ matrix.build_type }}"
+    name: "${{ matrix.formatting }} ${{ matrix.contracts }} C++${{ matrix.std }} ${{ matrix.config.name }} ${{ matrix.build_type }}"
     runs-on: ${{ matrix.config.os }}
     strategy:
       fail-fast: false
       matrix:
         formatting: ["std::format", "fmtlib"]
+        contracts: ["none", "gsl-lite", "ms-gsl"]
         std: [20, 23]
         config:
           # - {
@@ -57,7 +58,7 @@ jobs:
           #   }
           - {
               name: "GCC-12",
-              os: ubuntu-22.04,
+              os: ubuntu-24.04,
               compiler:
                 {
                   type: GCC,
@@ -71,13 +72,27 @@ jobs:
             }
           - {
               name: "GCC-13",
-              os: ubuntu-22.04,
+              os: ubuntu-24.04,
               compiler:
                 {
                   type: GCC,
                   version: 13,
                   cc: "gcc-13",
                   cxx: "g++-13",
+                },
+              cxx_modules: "False",
+              std_format_support: "True",
+              conan-config: "",
+            }
+          - {
+              name: "GCC-14",
+              os: ubuntu-24.04,
+              compiler:
+                {
+                  type: GCC,
+                  version: 14,
+                  cc: "gcc-14",
+                  cxx: "g++-14",
                 },
               cxx_modules: "False",
               std_format_support: "True",
@@ -100,7 +115,7 @@ jobs:
             }
           - {
               name: "Clang-17",
-              os: ubuntu-22.04,
+              os: ubuntu-24.04,
               compiler:
                 {
                   type: CLANG,
@@ -115,7 +130,7 @@ jobs:
             }
           - {
               name: "Clang-18",
-              os: ubuntu-22.04,
+              os: ubuntu-24.04,
               compiler:
                 {
                   type: CLANG,
@@ -161,19 +176,20 @@ jobs:
           cache-name: cache-conan-data
         with:
           path: ~/.conan2/p
-          key: conan-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-${{ matrix.std }}-${{ env.cache_id }}
+          key: conan-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-${{ matrix.std }}-${{ env.cache_id }}
           restore-keys: |
-            conan-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-${{ matrix.std }}-
-            conan-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-
-            conan-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-
-            conan-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-
-            conan-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.config.compiler.type }}-
+            conan-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-${{ matrix.std }}-
+            conan-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-
+            conan-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-
+            conan-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-
+            conan-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.config.compiler.type }}-
+            conan-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-
             conan-${{ matrix.config.os }}-${{ matrix.formatting }}-
             conan-${{ matrix.config.os }}-
       - uses: hendrikmuhs/ccache-action@v1.2
         if: runner.os == 'Linux'
         with:
-          key: ${{ matrix.config.os }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-${{ matrix.std }}
+          key: ${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-${{ matrix.std }}
           max-size: 50M
       - name: Install gcc-13
         if: matrix.config.compiler.type == 'GCC' && matrix.config.compiler.version == '13'
@@ -202,7 +218,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.8"
+          python-version: 3.x
       - name: Install Ninja
         shell: bash
         run: |
@@ -227,7 +243,7 @@ jobs:
         run: |
           conan create . --user mpusz --channel ${CHANNEL} --lockfile-out=package.lock \
                          -b mp-units/* -b missing -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" \
-                         -c user.mp-units.build:all=True -o cxx_modules=${{ matrix.config.cxx_modules }} -o std_format=${{ env.std_format }} ${{ matrix.config.conan-config }}
+                         -c user.mp-units.build:all=True -o cxx_modules=${{ matrix.config.cxx_modules }} -o std_format=${{ env.std_format }} -o contracts=${{ matrix.contracts }} ${{ matrix.config.conan-config }}
       - name: Obtain package reference
         id: get-package-ref
         shell: bash
@@ -244,8 +260,8 @@ jobs:
         shell: bash
         run: |
           conan remove mp-units --confirm
-          conan remove *#!latest --confirm
-          conan remove *:*#!latest --confirm
+          conan remove *#~latest --confirm
+          conan remove *:*#~latest --confirm
           conan cache clean "*" -s -b -d
     outputs:
       package_ref: ${{ steps.get-package-ref.outputs.PACKAGE_REF }}
@@ -254,13 +270,13 @@ jobs:
     if: github.ref == 'refs/heads/master' || (github.ref_type == 'tag' && startsWith(github.ref_name, 'v'))
     needs: build
     name: Promote Conan package
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.8"
+          python-version: 3.x
       - name: Install Conan
         shell: bash
         run: |

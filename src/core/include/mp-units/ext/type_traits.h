@@ -88,9 +88,8 @@ void to_base_specialization_of(const volatile Type<Params...>*);
 }  // namespace detail
 
 template<typename T, template<typename...> typename Type>
-// inline constexpr bool // TODO: Replace with concept when it works with MSVC
-concept is_derived_from_specialization_of = requires(T* t) { detail::to_base_specialization_of<Type>(t); };
-
+inline constexpr bool is_derived_from_specialization_of =
+  requires(T* t) { detail::to_base_specialization_of<Type>(t); };
 
 namespace detail {
 
@@ -137,7 +136,7 @@ concept one_of = (false || ... || std::same_as<T, Ts>);
 template<typename T, auto... Vs>
 [[nodiscard]] consteval bool contains()
 {
-  return (false || ... || is_same_v<std::remove_const_t<decltype(Vs)>, T>);
+  return (false || ... || is_same_v<MP_UNITS_REMOVE_CONST(decltype(Vs)), T>);
 }
 
 template<template<typename...> typename T, typename... Ts>
@@ -161,7 +160,7 @@ template<typename T, std::same_as<T> auto V>
 template<typename T, auto V1, auto V2, auto... Vs>
 [[nodiscard]] consteval auto get()
 {
-  if constexpr (is_same_v<T, std::remove_const_t<decltype(V1)>>)
+  if constexpr (is_same_v<T, MP_UNITS_REMOVE_CONST(decltype(V1))>)
     return V1;
   else
     return get<T, V2, Vs...>();

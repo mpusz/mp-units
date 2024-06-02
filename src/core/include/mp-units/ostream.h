@@ -23,6 +23,8 @@
 
 #pragma once
 
+#include <mp-units/bits/requires_hosted.h>
+//
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/framework/quantity.h>
 #include <mp-units/framework/unit.h>

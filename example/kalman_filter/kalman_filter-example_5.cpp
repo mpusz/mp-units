@@ -36,45 +36,45 @@ import mp_units;
 
 using namespace mp_units;
 
-template<Quantity Q>
-void print_header(kalman::estimation<Q> initial)
+template<QuantityPoint QP>
+void print_header(kalman::system_state_estimate<QP> initial)
 {
-  std::cout << MP_UNITS_STD_FMT::format("Initial: {}\n", initial);
-  std::cout << MP_UNITS_STD_FMT::format("{:>2} | {:>5} | {:>8} | {:>16} | {:>16}\n", "N", "Gain", "Measured",
+  std::cout << MP_UNITS_STD_FMT::format("Initial: {} {}\n", initial.state(), initial.variance());
+  std::cout << MP_UNITS_STD_FMT::format("{:>2} | {:>8} | {:>5} | {:>16} | {:>16}\n", "N", "Measured", "Gain",
                                         "Curr. Estimate", "Next Estimate");
 }
 
-template<Quantity Q, QuantityOf<dimensionless> K>
-void print(auto iteration, K gain, Q measured, kalman::estimation<Q> current, kalman::estimation<Q> next)
+template<QuantityPoint QP, QuantityOf<dimensionless> K>
+void print(auto iteration, QP measured, K gain, kalman::system_state_estimate<QP> current,
+           kalman::system_state_estimate<QP> next)
 {
-  std::cout << MP_UNITS_STD_FMT::format("{:2} | {:5%.2Q} | {:8} | {:>16.2} | {:>16.2}\n", iteration, gain, measured,
-                                        current, next);
+  std::cout << MP_UNITS_STD_FMT::format(
+    "{:2} | {:8} | {:5:N[.2f]} | {:6:0[:N[.2f]]} {:8:N[.2f]} | {:6:0[:N[.2f]]} {:8:N[.2f]}\n", iteration, measured,
+    gain, current.state(), current.variance(), next.state(), next.variance());
 }
 
 int main()
 {
-  using namespace kalman;
   using namespace mp_units::si::unit_symbols;
+  using qp = quantity_point<isq::height[m]>;
+  using estimate = kalman::system_state_estimate<qp>;
+  using state = estimate::state_type;
 
-  const estimation initial = {state{isq::height(60. * m)}, pow<2>(isq::height(15. * m))};
-  const quantity<isq::height[m]> measurements[] = {48.54 * m, 47.11 * m, 55.01 * m, 55.15 * m, 49.89 * m,
-                                                   40.85 * m, 46.72 * m, 50.05 * m, 51.27 * m, 49.95 * m};
-  const auto measurement_uncertainty = pow<2>(isq::height(5. * m));
+  const estimate initial{state{qp{60. * m}}, 15. * m};
+  const std::array measurements = {qp{49.03 * m}, qp{48.44 * m}, qp{55.21 * m}, qp{49.98 * m}, qp{50.6 * m},
+                                   qp{52.61 * m}, qp{45.87 * m}, qp{42.64 * m}, qp{48.26 * m}, qp{55.84 * m}};
+  const quantity measurement_error = isq::height(5. * m);
+  const quantity measurement_variance = pow<2>(measurement_error);
 
-  auto update = [=]<Quantity Q>(const estimation<Q>& previous, const Q& measurement,
-                                QuantityOf<dimensionless> auto gain) {
-    return estimation{state_update(previous.state, measurement, gain), covariance_update(previous.uncertainty, gain)};
-  };
-
-  auto predict = []<Quantity Q>(const estimation<Q>& current) { return current; };
+  auto predict = [](const estimate& current) { return current; };
 
   print_header(initial);
-  estimation next = predict(initial);
-  for (int index = 1; const auto& measured : measurements) {
-    const auto& previous = next;
-    const auto gain = kalman_gain(previous.uncertainty, measurement_uncertainty);
-    const estimation current = update(previous, measured, gain);
+  estimate next = predict(initial);
+  for (int index = 1; const auto& measurement : measurements) {
+    const estimate& previous = next;
+    const quantity gain = kalman::kalman_gain(previous.variance(), measurement_variance);
+    const estimate current = state_estimate_update(previous, measurement, gain);
     next = predict(current);
-    print(index++, gain, measured, current, next);
+    print(index++, measurement, gain, current, next);
   }
 }

@@ -176,7 +176,7 @@ we have to obey the rules and be consistent with ISO specifications.
 !!! note
 
     We do understand engineering reality and the constraints of some environments. This is why the library
-    has the option of [ASCII-only Quantity Symbols](../users_guide/framework_basics/text_output.md#unit-symbol-formatting).
+    has the option of [ASCII-only Quantity Symbols](../users_guide/framework_basics/text_output.md#unit_symbol_formatting).
 
 
 ## Why don't we have CMake options to disable the building of tests and examples?

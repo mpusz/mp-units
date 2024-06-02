@@ -150,7 +150,7 @@ performed without sacrificing accuracy. Please see the below example for a quick
     }
     ```
 
-!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/fsdovTcYh)"
+!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/nhqhT8Mzb)"
 
 !!! note
 

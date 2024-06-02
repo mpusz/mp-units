@@ -95,7 +95,7 @@ and when `T` is implicitly convertible to `V`.
 and is satisfied by:
 
 - All units derived from a `named_unit` class template instantiated with a unique symbol identifier
-  and a [`QuantitySpec`](#quantityspec) of a [quantity kind](../../appendix/glossary.md#kind).
+  and a [`QuantitySpec`](#QuantitySpec) of a [quantity kind](../../appendix/glossary.md#kind).
 - All units being a result of [unit equations](../../appendix/glossary.md#unit-equation) on other
   associated units.
 

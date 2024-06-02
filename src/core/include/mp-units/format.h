@@ -24,22 +24,21 @@
 
 #pragma once
 
+#include <mp-units/bits/requires_hosted.h>
+//
 #include <mp-units/bits/fmt.h>
+#include <mp-units/bits/module_macros.h>
 #include <mp-units/compat_macros.h>
 #include <mp-units/ext/algorithm.h>
 #include <mp-units/framework/customization_points.h>
 #include <mp-units/framework/quantity.h>
 #include <mp-units/framework/unit.h>
 
-namespace mp_units::detail {
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
+#include <locale>
+#endif
 
-template<typename Char>
-struct fill_align_width_format_specs {
-  fill_t<Char> fill;
-  fmt_align align : 4 = fmt_align::none;
-  int width = 0;
-  fmt_arg_ref<Char> width_ref;
-};
+namespace mp_units::detail {
 
 template<typename Char>
 [[nodiscard]] constexpr const Char* at_most_one_of(const Char* begin, const Char* end, std::string_view modifiers)
@@ -50,6 +49,17 @@ template<typename Char>
                                          "' unit modifiers may be used in the format spec");
   return it;
 }
+
+// TODO the below should be exposed by the C++ Standard Library (used in our examples)
+MP_UNITS_EXPORT_BEGIN
+
+template<typename Char>
+struct fill_align_width_format_specs {
+  fill_t<Char> fill;
+  fmt_align align : 4 = fmt_align::none;
+  int width = 0;
+  fmt_arg_ref<Char> width_ref;
+};
 
 template<typename Char, typename Specs>
 [[nodiscard]] constexpr const Char* parse_fill_align_width(MP_UNITS_STD_FMT::basic_format_parse_context<Char>& ctx,
@@ -88,6 +98,8 @@ OutputIt format_global_buffer(OutputIt out, const fill_align_width_format_specs<
   if (specs.width >= 1) MP_UNITS_STD_FMT::format_to(out, "{}", specs.width);
   return MP_UNITS_STD_FMT::format_to(out, "}}");
 }
+
+MP_UNITS_EXPORT_END
 
 }  // namespace mp_units::detail
 

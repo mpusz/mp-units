@@ -24,9 +24,9 @@
 
 #include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
+#include <mp-units/compat_macros.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
-#include <gsl/gsl-lite.hpp>
 #include <compare>  // IWYU pragma: export
 #include <cstdint>
 #include <numeric>
@@ -44,16 +44,16 @@ template<typename T>
 {
   constexpr std::intmax_t c = std::uintmax_t{1} << (sizeof(std::intmax_t) * 4);
 
-  const std::intmax_t a0 = abs(lhs) % c;
-  const std::intmax_t a1 = abs(lhs) / c;
-  const std::intmax_t b0 = abs(rhs) % c;
-  const std::intmax_t b1 = abs(rhs) / c;
+  [[maybe_unused]] const std::intmax_t a0 = abs(lhs) % c;
+  [[maybe_unused]] const std::intmax_t a1 = abs(lhs) / c;
+  [[maybe_unused]] const std::intmax_t b0 = abs(rhs) % c;
+  [[maybe_unused]] const std::intmax_t b1 = abs(rhs) / c;
 
   // overflow in multiplication
-  gsl_Assert(a1 == 0 || b1 == 0);
-  gsl_Assert(a0 * b1 + b0 * a1 < (c >> 1));  // NOLINT(hicpp-signed-bitwise)
-  gsl_Assert(b0 * a0 <= INTMAX_MAX);
-  gsl_Assert((a0 * b1 + b0 * a1) * c <= INTMAX_MAX - b0 * a0);
+  MP_UNITS_ASSERT(a1 == 0 || b1 == 0);
+  MP_UNITS_ASSERT(a0 * b1 + b0 * a1 < (c >> 1));  // NOLINT(hicpp-signed-bitwise)
+  MP_UNITS_ASSERT(b0 * a0 <= INTMAX_MAX);
+  MP_UNITS_ASSERT((a0 * b1 + b0 * a1) * c <= INTMAX_MAX - b0 * a0);
 
   return lhs * rhs;
 }
@@ -72,7 +72,7 @@ MP_UNITS_EXPORT struct ratio {
   // NOLINTNEXTLINE(bugprone-easily-swappable-parameters, google-explicit-constructor, hicpp-explicit-conversions)
   MP_UNITS_CONSTEVAL explicit(false) ratio(std::intmax_t n, std::intmax_t d = 1) : num{n}, den{d}
   {
-    gsl_Expects(den != 0);
+    MP_UNITS_EXPECTS(den != 0);
     if (num == 0)
       den = 1;
     else {
@@ -112,9 +112,9 @@ MP_UNITS_EXPORT struct ratio {
   if (r1.num == r2.num && r1.den == r2.den) return ratio{r1.num, r1.den};
 
   // gcd(a/b,c/d) = gcd(a⋅d, c⋅b) / b⋅d
-  gsl_Assert(std::numeric_limits<std::intmax_t>::max() / r1.num > r2.den);
-  gsl_Assert(std::numeric_limits<std::intmax_t>::max() / r2.num > r1.den);
-  gsl_Assert(std::numeric_limits<std::intmax_t>::max() / r1.den > r2.den);
+  MP_UNITS_ASSERT(std::numeric_limits<std::intmax_t>::max() / r1.num > r2.den);
+  MP_UNITS_ASSERT(std::numeric_limits<std::intmax_t>::max() / r2.num > r1.den);
+  MP_UNITS_ASSERT(std::numeric_limits<std::intmax_t>::max() / r1.den > r2.den);
 
   const std::intmax_t num = std::gcd(r1.num * r2.den, r2.num * r1.den);
   const std::intmax_t den = r1.den * r2.den;

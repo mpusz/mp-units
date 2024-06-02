@@ -36,12 +36,13 @@ on:
 
 jobs:
   test_package:
-    name: "${{ matrix.formatting }} C++${{ matrix.std }} ${{ matrix.config.name }} ${{ matrix.build_type }}"
+    name: "${{ matrix.formatting }} ${{ matrix.contracts }} C++${{ matrix.std }} ${{ matrix.config.name }} ${{ matrix.build_type }}"
     runs-on: ${{ matrix.config.os }}
     strategy:
       fail-fast: false
       matrix:
         formatting: ["std::format", "fmtlib"]
+        contracts: ["none", "gsl-lite", "ms-gsl"]
         std: [20, 23]
         config:
           # - {
@@ -56,7 +57,7 @@ jobs:
           #   }
           - {
               name: "GCC-12",
-              os: ubuntu-22.04,
+              os: ubuntu-24.04,
               compiler:
                 {
                   type: GCC,
@@ -69,7 +70,7 @@ jobs:
             }
           - {
               name: "GCC-13",
-              os: ubuntu-22.04,
+              os: ubuntu-24.04,
               compiler:
                 {
                   type: GCC,
@@ -79,6 +80,19 @@ jobs:
                 },
               cxx_modules: "False",
               std_format_support: "True",
+            }
+          - {
+              name: "GCC-14",
+              os: ubuntu-24.04,
+              compiler:
+                {
+                  type: GCC,
+                  version: 14,
+                  cc: "gcc-14",
+                  cxx: "g++-14",
+                },
+              cxx_modules: "False",
+              std_format_support: "True"
             }
           - {
               name: "Clang-16",
@@ -96,7 +110,7 @@ jobs:
             }
           - {
               name: "Clang-17",
-              os: ubuntu-22.04,
+              os: ubuntu-24.04,
               compiler:
                 {
                   type: CLANG,
@@ -110,7 +124,7 @@ jobs:
             }
           - {
               name: "Clang-18",
-              os: ubuntu-22.04,
+              os: ubuntu-24.04,
               compiler:
                 {
                   type: CLANG,
@@ -124,7 +138,7 @@ jobs:
             }
           - {
               name: "Apple Clang 15",
-              os: macos-13,
+              os: macos-14,
               compiler:
                 {
                   type: APPLE_CLANG,
@@ -147,7 +161,7 @@ jobs:
     steps:
       - name: Downcase 'build_type'
         id: build_type
-        uses: ASzc/change-string-case-action@v5
+        uses: ASzc/change-string-case-action@v6
         with:
           string: ${{ matrix.build_type }}
       - uses: actions/checkout@v4
@@ -159,13 +173,14 @@ jobs:
           cache-name: cache-conan-data
         with:
           path: ~/.conan2/p
-          key: cmake-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-${{ matrix.std }}-${{ env.cache_id }}
+          key: cmake-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-${{ matrix.std }}-${{ env.cache_id }}
           restore-keys: |
-            cmake-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-${{ matrix.std }}-
-            cmake-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-
-            cmake-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-
-            cmake-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-
-            cmake-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.config.compiler.type }}-
+            cmake-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-${{ matrix.std }}-
+            cmake-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-
+            cmake-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-
+            cmake-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-
+            cmake-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.config.compiler.type }}-
+            cmake-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-
             cmake-${{ matrix.config.os }}-${{ matrix.formatting }}-
             cmake-${{ matrix.config.os }}-
       - name: Install gcc-13
@@ -195,7 +210,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.8"
+          python-version: 3.x
       - name: Install Ninja
         shell: bash
         run: |
@@ -220,7 +235,7 @@ jobs:
         shell: bash
         run: |
           conan install . -b missing -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" -c user.mp-units.build:all=False \
-                          -o cxx_modules=${{ matrix.config.cxx_modules }} -o std_format=${{ env.std_format }}
+                          -o cxx_modules=${{ matrix.config.cxx_modules }} -o std_format=${{ env.std_format }} -o contracts=${{ matrix.contracts }}
       - name: Provide dependencies for the build
         shell: bash
         working-directory: src
@@ -291,3 +306,9 @@ jobs:
         working-directory: test_package/build/install/${{ matrix.build_type }}
         run: |
           ./test_package
+      - name: Clean Conan cache before backup
+        shell: bash
+        run: |
+          conan remove *#~latest --confirm
+          conan remove *:*#~latest --confirm
+          conan cache clean "*" -s -b -d

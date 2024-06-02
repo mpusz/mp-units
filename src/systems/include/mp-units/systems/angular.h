@@ -23,7 +23,9 @@
 #pragma once
 
 // IWYU pragma: begin_exports
+#if MP_UNITS_HOSTED
 #include <mp-units/systems/angular/math.h>
+#endif
 #include <mp-units/systems/angular/units.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE

@@ -210,7 +210,6 @@ static_assert(kilojoule.symbol == "kJ");
 static_assert(is_of_type<si::kilo<metre>, si::kilo_<metre_>>);
 static_assert(is_of_type<si::kilo<joule>, si::kilo_<joule_>>);
 
-// TODO Should the below be a scaled version of metre^2?
 static_assert(is_of_type<kilometre * metre, derived_unit<kilometre_, metre_>>);       // !!!
 static_assert(is_of_type<kilometre / metre, derived_unit<kilometre_, per<metre_>>>);  // !!!
 
@@ -240,7 +239,6 @@ static_assert(si::zetta<metre>.symbol == "Zm");
 static_assert(si::yotta<metre>.symbol == "Ym");
 static_assert(si::ronna<metre>.symbol == "Rm");
 static_assert(si::quetta<metre>.symbol == "Qm");
-
 
 // scaled_unit
 constexpr auto m_1 = mag<1> * metre;

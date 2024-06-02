@@ -169,8 +169,7 @@ public:
 
   template<typename Q>
     requires QuantityOf<std::remove_cvref_t<Q>, get_quantity_spec(R)> && std::constructible_from<quantity_type, Q>
-  constexpr quantity_point(Q&& q, std::remove_const_t<decltype(PO)>) :
-      quantity_from_origin_is_an_implementation_detail_(std::forward<Q>(q))
+  constexpr quantity_point(Q&& q, decltype(PO)) : quantity_from_origin_is_an_implementation_detail_(std::forward<Q>(q))
   {
   }
 
@@ -187,7 +186,6 @@ public:
 
   template<QuantityPointOf<absolute_point_origin> QP>
     requires std::constructible_from<quantity_type, typename QP::quantity_type>
-  // TODO add perfect forwarding
   // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
   constexpr explicit(!std::convertible_to<typename QP::quantity_type, quantity_type>) quantity_point(const QP& qp) :
       quantity_from_origin_is_an_implementation_detail_([&] {
@@ -222,7 +220,7 @@ public:
   [[nodiscard]] constexpr MP_UNITS_CONSTRAINED_AUTO_WORKAROUND(QuantityPointOf<NewPO{}>) auto point_for(
     NewPO new_origin) const
   {
-    if constexpr (is_same_v<NewPO, std::remove_const_t<decltype(point_origin)>>)
+    if constexpr (is_same_v<NewPO, decltype(PO)>)
       return *this;
     else
       return ::mp_units::quantity_point{*this - new_origin, new_origin};
@@ -388,7 +386,7 @@ explicit(
 
 template<auto R1, auto PO1, typename Rep1, auto R2, typename Rep2>
 // TODO simplify when gcc catches up
-  requires ReferenceOf<std::remove_const_t<decltype(R2)>, PO1.quantity_spec>
+  requires ReferenceOf<MP_UNITS_REMOVE_CONST(decltype(R2)), PO1.quantity_spec>
 [[nodiscard]] constexpr QuantityPoint auto operator+(const quantity_point<R1, PO1, Rep1>& qp,
                                                      const quantity<R2, Rep2>& q)
   requires requires { qp.quantity_ref_from(PO1) + q; }
@@ -401,7 +399,7 @@ template<auto R1, auto PO1, typename Rep1, auto R2, typename Rep2>
 
 template<auto R1, typename Rep1, auto R2, auto PO2, typename Rep2>
 // TODO simplify when gcc catches up
-  requires ReferenceOf<std::remove_const_t<decltype(R1)>, PO2.quantity_spec>
+  requires ReferenceOf<MP_UNITS_REMOVE_CONST(decltype(R1)), PO2.quantity_spec>
 [[nodiscard]] constexpr QuantityPoint auto operator+(const quantity<R1, Rep1>& q,
                                                      const quantity_point<R2, PO2, Rep2>& qp)
   requires requires { q + qp.quantity_ref_from(PO2); }
@@ -425,7 +423,7 @@ template<Quantity Q, PointOrigin PO>
 
 template<auto R1, auto PO1, typename Rep1, auto R2, typename Rep2>
 // TODO simplify when gcc catches up
-  requires ReferenceOf<std::remove_const_t<decltype(R2)>, PO1.quantity_spec>
+  requires ReferenceOf<MP_UNITS_REMOVE_CONST(decltype(R2)), PO1.quantity_spec>
 [[nodiscard]] constexpr QuantityPoint auto operator-(const quantity_point<R1, PO1, Rep1>& qp,
                                                      const quantity<R2, Rep2>& q)
   requires requires { qp.quantity_ref_from(PO1) - q; }

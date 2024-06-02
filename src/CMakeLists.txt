@@ -42,6 +42,9 @@ message(STATUS "${projectPrefix}BUILD_AS_SYSTEM_HEADERS: ${${projectPrefix}BUILD
 option(${projectPrefix}BUILD_CXX_MODULES "Add C++ modules to the list of default targets" OFF)
 message(STATUS "${projectPrefix}BUILD_CXX_MODULES: ${${projectPrefix}BUILD_CXX_MODULES}")
 
+option(${projectPrefix}API_FREESTANDING "Builds only freestanding part of the library" OFF)
+message(STATUS "${projectPrefix}API_FREESTANDING: ${${projectPrefix}API_FREESTANDING}")
+
 if(${projectPrefix}BUILD_AS_SYSTEM_HEADERS)
     set(${projectPrefix}_AS_SYSTEM SYSTEM)
 endif()
@@ -68,13 +71,21 @@ cache_var_values(API_STRING_VIEW_RET AUTO TRUE FALSE)
 set(${projectPrefix}API_NO_CRTP AUTO CACHE STRING "Enable class definitions without CRTP idiom")
 cache_var_values(API_NO_CRTP AUTO TRUE FALSE)
 
+set(${projectPrefix}API_CONTRACTS GSL-LITE CACHE STRING "Enable contract checking")
+cache_var_values(API_CONTRACTS NONE GSL-LITE MS-GSL)
+
+if(${projectPrefix}API_FREESTANDING AND NOT ${projectPrefix}API_CONTRACTS STREQUAL "NONE")
+    message(FATAL_ERROR "'${projectPrefix}API_CONTRACTS' should be set to 'NONE' for a freestanding build")
+endif()
+
 # C++ features
 check_cxx_feature_supported(__cpp_lib_format ${projectPrefix}LIB_FORMAT_SUPPORTED)
 check_cxx_feature_supported("__cpp_constexpr >= 202211L" ${projectPrefix}STATIC_CONSTEXPR_VARS_IN_CONSTEXPR_FUNCTIONS)
 check_cxx_feature_supported(__cpp_explicit_this_parameter ${projectPrefix}EXPLICIT_THIS_PARAMETER_SUPPORTED)
 
 # validate settings
-if(${projectPrefix}API_STD_FORMAT STREQUAL "TRUE"
+if(NOT ${projectPrefix}API_FREESTANDING
+   AND ${projectPrefix}API_STD_FORMAT STREQUAL "TRUE"
    AND NOT
        (${projectPrefix}LIB_FORMAT_SUPPORTED
         # libc++ has a basic supports for std::format but does not set __cpp_lib_format

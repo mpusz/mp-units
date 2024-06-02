@@ -59,7 +59,7 @@ template<AssociatedUnit U>
 [[nodiscard]] consteval auto get_associated_quantity_impl(U u);
 
 template<AssociatedUnit U>
-using to_quantity_spec = std::remove_const_t<decltype(get_associated_quantity_impl(U{}))>;
+using to_quantity_spec = decltype(get_associated_quantity_impl(U{}));
 
 template<AssociatedUnit U>
 [[nodiscard]] consteval auto get_associated_quantity_impl(U u)

@@ -30,11 +30,12 @@
 // NOLINTBEGIN(cppcoreguidelines-pro-bounds-pointer-arithmetic, cppcoreguidelines-pro-type-union-access)
 #pragma once
 
+#include <mp-units/bits/module_macros.h>
 #include <mp-units/compat_macros.h>
 #include <mp-units/ext/algorithm.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
-#include <gsl/gsl-lite.hpp>
+#include <array>
 #include <concepts>
 #include <cstdint>
 #include <limits>
@@ -44,6 +45,9 @@
 // most of the below code is based on/copied from fmtlib
 
 namespace mp_units::detail {
+
+// TODO the below should be exposed by the C++ Standard Library (used in our examples)
+MP_UNITS_EXPORT_BEGIN
 
 enum class fmt_align : std::int8_t { none, left, right, center, numeric };
 enum class fmt_arg_id_kind : std::int8_t {
@@ -109,6 +113,8 @@ public:
   [[nodiscard]] constexpr const Char& operator[](size_t index) const { return data_[index]; }
 };
 
+MP_UNITS_EXPORT_END
+
 template<typename T>
 inline constexpr bool is_integer =
   std::is_integral_v<T> && !std::is_same_v<T, bool> && !std::is_same_v<T, char> && !std::is_same_v<T, wchar_t>;
@@ -131,23 +137,9 @@ template<typename Char>
 template<typename Int>
 [[nodiscard]] constexpr std::make_unsigned_t<Int> to_unsigned(Int value)
 {
-  gsl_Expects(std::is_unsigned_v<Int> || value >= 0);
+  MP_UNITS_EXPECTS(std::is_unsigned_v<Int> || value >= 0);
   return static_cast<std::make_unsigned_t<Int>>(value);
 }
-
-struct width_checker {
-  template<typename T>
-  [[nodiscard]] constexpr unsigned long long operator()(T value) const
-  {
-    if constexpr (is_integer<T>) {
-      if constexpr (std::numeric_limits<T>::is_signed)
-        if (value < 0) MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("negative width"));
-      return static_cast<unsigned long long>(value);
-    }
-    MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("width is not integer"));
-    return 0;
-  }
-};
 
 template<class Handler, typename FormatArg>
 [[nodiscard]] constexpr int get_dynamic_spec(FormatArg arg)
@@ -167,6 +159,9 @@ template<typename Context, typename ID>
   return arg;
 }
 
+// TODO the below should be exposed by the C++ Standard Library (used in our examples)
+MP_UNITS_EXPORT_BEGIN
+
 template<class Handler, typename Context>
 constexpr void handle_dynamic_spec(int& value, fmt_arg_ref<typename Context::char_type> ref, Context& ctx)
 {
@@ -184,12 +179,28 @@ constexpr void handle_dynamic_spec(int& value, fmt_arg_ref<typename Context::cha
   }
 }
 
+struct width_checker {
+  template<typename T>
+  [[nodiscard]] constexpr unsigned long long operator()(T value) const
+  {
+    if constexpr (is_integer<T>) {
+      if constexpr (std::numeric_limits<T>::is_signed)
+        if (value < 0) MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("negative width"));
+      return static_cast<unsigned long long>(value);
+    }
+    MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("width is not integer"));
+    return 0;
+  }
+};
+
+MP_UNITS_EXPORT_END
+
 // Parses the range [begin, end) as an unsigned integer. This function assumes
 // that the range is non-empty and the first character is a digit.
 template<typename Char>
 [[nodiscard]] constexpr int parse_nonnegative_int(const Char*& begin, const Char* end, int error_value)
 {
-  gsl_Expects(begin != end && '0' <= *begin && *begin <= '9');
+  MP_UNITS_EXPECTS(begin != end && '0' <= *begin && *begin <= '9');
   unsigned value = 0, prev = 0;
   auto p = begin;
   do {
@@ -250,7 +261,7 @@ template<typename Char, typename Handler>
 template<typename Char, typename Handler>
 [[nodiscard]] constexpr const Char* parse_arg_id(const Char* begin, const Char* end, Handler& handler)
 {
-  gsl_Expects(begin != end);
+  MP_UNITS_EXPECTS(begin != end);
   Char c = *begin;
   if (c != '}' && c != ':') return ::mp_units::detail::do_parse_arg_id(begin, end, handler);
   handler.on_auto();
@@ -292,7 +303,7 @@ template<typename Char>
                                                        fmt_arg_ref<Char>& ref,
                                                        MP_UNITS_STD_FMT::basic_format_parse_context<Char>& ctx)
 {
-  gsl_Expects(begin != end);
+  MP_UNITS_EXPECTS(begin != end);
   if ('0' <= *begin && *begin <= '9') {
     const int val = ::mp_units::detail::parse_nonnegative_int(begin, end, -1);
     if (val != -1)
@@ -329,7 +340,7 @@ template<typename Char, typename Specs>
 [[nodiscard]] constexpr const Char* parse_align(const Char* begin, const Char* end, Specs& specs,
                                                 fmt_align default_align = fmt_align::none)
 {
-  gsl_Expects(begin != end);
+  MP_UNITS_EXPECTS(begin != end);
   auto align = fmt_align::none;
   auto p = begin + code_point_length(begin);
   if (end - p <= 0) p = begin;

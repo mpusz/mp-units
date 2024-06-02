@@ -31,17 +31,10 @@ function(set_feature_flag name)
     endif()
 endfunction()
 
-# find dependencies
-if(NOT TARGET gsl::gsl-lite)
-    find_package(gsl-lite REQUIRED)
-endif()
-
 # core library definition
 add_mp_units_module(
     core mp-units-core
-    DEPENDENCIES gsl::gsl-lite
     HEADERS include/mp-units/bits/core_gmf.h
-            include/mp-units/bits/fmt.h
             include/mp-units/bits/get_associated_quantity.h
             include/mp-units/bits/get_common_base.h
             include/mp-units/bits/hacks.h
@@ -79,20 +72,35 @@ add_mp_units_module(
             include/mp-units/framework/value_cast.h
             include/mp-units/compat_macros.h
             include/mp-units/concepts.h
-            include/mp-units/format.h
             include/mp-units/framework.h
-            include/mp-units/math.h
-            include/mp-units/ostream.h
-            include/mp-units/random.h
     MODULE_INTERFACE_UNIT mp-units-core.cpp
 )
+
+if(NOT ${projectPrefix}API_FREESTANDING)
+    target_sources(
+        mp-units-core
+        PUBLIC FILE_SET
+               HEADERS
+               BASE_DIRS
+               ${CMAKE_CURRENT_SOURCE_DIR}/include
+               FILES
+               include/mp-units/bits/fmt.h
+               include/mp-units/bits/requires_hosted.h
+               include/mp-units/math.h
+               include/mp-units/ostream.h
+               include/mp-units/format.h
+               include/mp-units/random.h
+    )
+endif()
 
 set_feature_flag(API_STD_FORMAT)
 set_feature_flag(API_STRING_VIEW_RET)
 set_feature_flag(API_NO_CRTP)
 
-if(${projectPrefix}API_STD_FORMAT STREQUAL "FALSE" OR (${projectPrefix}API_STD_FORMAT STREQUAL "AUTO"
-                                                       AND NOT ${projectPrefix}LIB_FORMAT_SUPPORTED)
+# Text formatting
+if(NOT ${projectPrefix}API_FREESTANDING
+   AND (${projectPrefix}API_STD_FORMAT STREQUAL "FALSE" OR (${projectPrefix}API_STD_FORMAT STREQUAL "AUTO"
+                                                            AND NOT ${projectPrefix}LIB_FORMAT_SUPPORTED))
 )
     if(NOT TARGET fmt::fmt)
         find_package(fmt REQUIRED)
@@ -100,6 +108,24 @@ if(${projectPrefix}API_STD_FORMAT STREQUAL "FALSE" OR (${projectPrefix}API_STD_F
     target_link_libraries(mp-units-core ${${projectPrefix}TARGET_SCOPE} fmt::fmt)
 endif()
 
+# Contracts checking
+if(${projectPrefix}API_CONTRACTS STREQUAL "NONE")
+    target_compile_definitions(mp-units-core ${${projectPrefix}TARGET_SCOPE} ${projectPrefix}API_CONTRACTS=0)
+elseif(${projectPrefix}API_CONTRACTS STREQUAL "GSL-LITE")
+    if(NOT TARGET gsl::gsl-lite)
+        find_package(gsl-lite REQUIRED)
+    endif()
+    target_link_libraries(mp-units-core ${${projectPrefix}TARGET_SCOPE} gsl::gsl-lite)
+    target_compile_definitions(mp-units-core ${${projectPrefix}TARGET_SCOPE} ${projectPrefix}API_CONTRACTS=2)
+elseif(${projectPrefix}API_CONTRACTS STREQUAL "MS-GSL")
+    if(NOT TARGET Microsoft.GSL::GSL)
+        find_package(Microsoft.GSL REQUIRED)
+    endif()
+    target_link_libraries(mp-units-core ${${projectPrefix}TARGET_SCOPE} Microsoft.GSL::GSL)
+    target_compile_definitions(mp-units-core ${${projectPrefix}TARGET_SCOPE} ${projectPrefix}API_CONTRACTS=3)
+endif()
+
+# C++20 modules
 if(${projectPrefix}BUILD_CXX_MODULES)
     if(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
         if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 18)
@@ -112,6 +138,7 @@ if(${projectPrefix}BUILD_CXX_MODULES)
     endif()
 endif()
 
+# UTF-8 source and execution character set
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     target_compile_options(
         mp-units-core ${${projectPrefix}TARGET_SCOPE}
@@ -119,4 +146,8 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     )
 endif()
 
-# target_compile_options(mp-units-core ${${projectPrefix}TARGET_SCOPE} "-ftime-trace")
+# Freestanding
+target_compile_definitions(
+    mp-units-core ${${projectPrefix}TARGET_SCOPE}
+                  ${projectPrefix}HOSTED=$<NOT:$<BOOL:${${projectPrefix}API_FREESTANDING}>>
+)

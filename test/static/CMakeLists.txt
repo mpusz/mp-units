@@ -32,7 +32,6 @@ add_library(
     unit_tests_static
     angular_test.cpp
     cgs_test.cpp
-    chrono_test.cpp
     compare_test.cpp
     concepts_test.cpp
     # custom_rep_test_min_expl.cpp
@@ -40,7 +39,6 @@ add_library(
     dimension_test.cpp
     dimension_symbol_test.cpp
     fixed_string_test.cpp
-    fractional_exponent_quantity.cpp
     hep_test.cpp
     iau_test.cpp
     iec80000_test.cpp
@@ -49,7 +47,6 @@ add_library(
     isq_test.cpp
     isq_angle_test.cpp
     # magnitude_test.cpp
-    math_test.cpp
     natural_test.cpp
     prime_test.cpp
     quantity_point_test.cpp
@@ -65,5 +62,10 @@ add_library(
     usc_test.cpp
 )
 
+if(NOT ${projectPrefix}API_FREESTANDING)
+    target_sources(unit_tests_static PRIVATE chrono_test.cpp fractional_exponent_quantity.cpp math_test.cpp)
+endif()
+
+target_compile_options(unit_tests_static PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Wno-subobject-linkage>)
 target_link_libraries(unit_tests_static PRIVATE mp-units::mp-units)
 target_link_libraries(unit_tests_static PRIVATE unit_tests_static_truncating)

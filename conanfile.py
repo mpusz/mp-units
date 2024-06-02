@@ -65,12 +65,16 @@ class MPUnitsConan(ConanFile):
         "std_format": ["auto", True, False],
         "string_view_ret": ["auto", True, False],
         "no_crtp": ["auto", True, False],
+        "contracts": ["none", "gsl-lite", "ms-gsl"],
+        "freestanding": [True, False],
     }
     default_options = {
         "cxx_modules": "auto",
         "std_format": "auto",
         "string_view_ret": "auto",
         "no_crtp": "auto",
+        "contracts": "gsl-lite",
+        "freestanding": "False",
     }
     tool_requires = "cmake/[>=3.29]"
     implements = "auto_header_only"
@@ -191,6 +195,10 @@ class MPUnitsConan(ConanFile):
     def _skip_la(self):
         return bool(self.conf.get("user.mp-units.build:skip_la", default=False))
 
+    @property
+    def _run_clang_tidy(self):
+        return bool(self.conf.get("user.mp-units.analyze:clang-tidy", default=False))
+
     def set_version(self):
         content = load(self, os.path.join(self.recipe_folder, "src/CMakeLists.txt"))
         version = re.search(
@@ -199,13 +207,17 @@ class MPUnitsConan(ConanFile):
         self.version = version.strip()
 
     def requirements(self):
-        self.requires("gsl-lite/0.41.0")
-        if self._use_fmtlib:
+        if self.options.contracts == "gsl-lite":
+            self.requires("gsl-lite/0.41.0")
+        elif self.options.contracts == "ms-gsl":
+            self.requires("ms-gsl/4.0.0")
+        if self._use_fmtlib and not self.options.freestanding:
             self.requires("fmt/10.2.1")
 
     def build_requirements(self):
         if self._build_all:
-            self.test_requires("catch2/3.5.1")
+            if not self.options.freestanding:
+                self.test_requires("catch2/3.5.1")
             if not self._skip_la:
                 self.test_requires("wg21-linear_algebra/0.7.3")
 
@@ -214,16 +226,23 @@ class MPUnitsConan(ConanFile):
         for key, value in self._option_feature_map.items():
             if self.options.get_safe(key) == True:
                 self._check_feature_supported(key, value)
+        if self.options.freestanding and self.options.contracts != "none":
+            raise ConanInvalidConfiguration(
+                "'contracts' should be set to 'none' for a freestanding build"
+            )
 
     def layout(self):
         cmake_layout(self)
 
     def generate(self):
         tc = CMakeToolchain(self)
+        tc.absolute_paths = True  # only needed for CMake CI
         if self._build_all:
             tc.cache_variables["CMAKE_EXPORT_COMPILE_COMMANDS"] = True
             tc.cache_variables["CMAKE_VERIFY_INTERFACE_HEADER_SETS"] = True
             tc.cache_variables["MP_UNITS_DEV_BUILD_LA"] = not self._skip_la
+            if self._run_clang_tidy:
+                tc.cache_variables["MP_UNITS_DEV_CLANG_TIDY"] = True
         if self._build_cxx_modules:
             tc.cache_variables["CMAKE_CXX_SCAN_FOR_MODULES"] = True
             tc.cache_variables["MP_UNITS_BUILD_CXX_MODULES"] = str(
@@ -236,6 +255,10 @@ class MPUnitsConan(ConanFile):
             self.options.string_view_ret
         ).upper()
         tc.cache_variables["MP_UNITS_API_NO_CRTP"] = str(self.options.no_crtp).upper()
+        tc.cache_variables["MP_UNITS_API_CONTRACTS"] = str(
+            self.options.contracts
+        ).upper()
+        tc.cache_variables["MP_UNITS_API_FREESTANDING"] = self.options.freestanding
         tc.generate()
         deps = CMakeDeps(self)
         deps.generate()
@@ -262,8 +285,12 @@ class MPUnitsConan(ConanFile):
 
     def package_info(self):
         compiler = self.settings.compiler
-        self.cpp_info.components["core"].requires = ["gsl-lite::gsl-lite"]
-        if self._use_fmtlib:
+        self.cpp_info.components["core"]
+        if self.options.contracts == "gsl-lite":
+            self.cpp_info.components["core"].requires = ["gsl-lite::gsl-lite"]
+        elif self.options.contracts == "ms-gsl":
+            self.cpp_info.components["core"].requires = ["ms-gsl::ms-gsl"]
+        if self._use_fmtlib and not self.options.freestanding:
             self.cpp_info.components["core"].requires.append("fmt::fmt")
         if compiler == "msvc":
             self.cpp_info.components["core"].cxxflags = ["/utf-8"]

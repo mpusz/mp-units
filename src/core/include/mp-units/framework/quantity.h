@@ -26,6 +26,7 @@
 // IWYU pragma: private, include <mp-units/framework.h>
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/bits/sudo_cast.h>
+#include <mp-units/compat_macros.h>
 #include <mp-units/framework/customization_points.h>
 #include <mp-units/framework/dimension_concepts.h>
 #include <mp-units/framework/quantity_concepts.h>
@@ -36,7 +37,6 @@
 #include <mp-units/framework/unit_concepts.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
-#include <gsl/gsl-lite.hpp>
 #include <compare>  // IWYU pragma: export
 #include <utility>
 #endif
@@ -140,8 +140,7 @@ public:
 
   template<typename Value>
     requires std::same_as<std::remove_cvref_t<Value>, Rep>
-  constexpr quantity(Value&& v, std::remove_const_t<decltype(R)>) :
-      numerical_value_is_an_implementation_detail_(std::forward<Value>(v))
+  constexpr quantity(Value&& v, decltype(R)) : numerical_value_is_an_implementation_detail_(std::forward<Value>(v))
   {
   }
 
@@ -353,7 +352,7 @@ public:
   friend constexpr decltype(auto) operator%=(Q&& lhs, const quantity& rhs)
 
   {
-    gsl_ExpectsDebug(rhs != zero());
+    MP_UNITS_EXPECTS_DEBUG(rhs != zero());
     lhs.numerical_value_is_an_implementation_detail_ %= rhs.numerical_value_is_an_implementation_detail_;
     return std::forward<Q>(lhs);
   }
@@ -393,7 +392,7 @@ public:
              }
   friend constexpr decltype(auto) operator/=(Q&& lhs, const Value& v)
   {
-    gsl_ExpectsDebug(v != quantity_values<Value>::zero());
+    MP_UNITS_EXPECTS_DEBUG(v != quantity_values<Value>::zero());
     lhs.numerical_value_is_an_implementation_detail_ /= v;
     return std::forward<Q>(lhs);
   }
@@ -407,7 +406,7 @@ public:
              }
   friend constexpr decltype(auto) operator/=(Q1&& lhs, const Q2& rhs)
   {
-    gsl_ExpectsDebug(rhs != rhs.zero());
+    MP_UNITS_EXPECTS_DEBUG(rhs != rhs.zero());
     lhs.numerical_value_is_an_implementation_detail_ /= rhs.numerical_value_is_an_implementation_detail_;
     return std::forward<Q1>(lhs);
   }
@@ -451,7 +450,7 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
           detail::CommonlyInvocableQuantities<std::modulus<>, quantity<R1, Rep1>, quantity<R2, Rep2>>
 [[nodiscard]] constexpr Quantity auto operator%(const quantity<R1, Rep1>& lhs, const quantity<R2, Rep2>& rhs)
 {
-  gsl_ExpectsDebug(rhs != rhs.zero());
+  MP_UNITS_EXPECTS_DEBUG(rhs != rhs.zero());
   using ret = detail::common_quantity_for<std::modulus<>, quantity<R1, Rep1>, quantity<R2, Rep2>>;
   const ret ret_lhs(lhs);
   const ret ret_rhs(rhs);
@@ -486,7 +485,7 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
   requires detail::InvocableQuantities<std::divides<>, quantity<R1, Rep1>, quantity<R2, Rep2>>
 [[nodiscard]] constexpr Quantity auto operator/(const quantity<R1, Rep1>& lhs, const quantity<R2, Rep2>& rhs)
 {
-  gsl_ExpectsDebug(rhs != rhs.zero());
+  MP_UNITS_EXPECTS_DEBUG(rhs != rhs.zero());
   return quantity{lhs.numerical_value_ref_in(get_unit(R1)) / rhs.numerical_value_ref_in(get_unit(R2)), R1 / R2};
 }
 
@@ -495,7 +494,7 @@ template<auto R, typename Rep, typename Value>
           detail::InvokeResultOf<get_quantity_spec(R).character, std::divides<>, Rep, const Value&>
 [[nodiscard]] constexpr QuantityOf<get_quantity_spec(R)> auto operator/(const quantity<R, Rep>& q, const Value& v)
 {
-  gsl_ExpectsDebug(v != quantity_values<Value>::zero());
+  MP_UNITS_EXPECTS_DEBUG(v != quantity_values<Value>::zero());
   return quantity{q.numerical_value_ref_in(get_unit(R)) / v, R};
 }
 

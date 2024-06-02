@@ -83,7 +83,7 @@ static_assert(Magnitude<decltype(mag<2>)>);
 static_assert(Magnitude<mag_2_>);
 
 // is_named_magnitude
-static_assert(!is_named_magnitude<std::remove_cvref_t<decltype(mag<2>)>>);
+static_assert(!is_named_magnitude<decltype(mag<2>)>);
 static_assert(is_named_magnitude<mag_2_>);
 
 // power_v

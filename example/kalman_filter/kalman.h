@@ -23,21 +23,23 @@
 #pragma once
 
 #include <mp-units/compat_macros.h>
+#include <algorithm>
+#include <locale>
 #include <tuple>
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else
+#include <mp-units/ext/algorithm.h>
 #include <mp-units/format.h>
+#include <mp-units/framework/quantity.h>
+#include <mp-units/framework/quantity_point.h>
 #include <mp-units/math.h>
-#include <mp-units/quantity.h>
-#include <mp-units/quantity_point.h>
-#include <mp-units/systems/isq/space_and_time.h>
+#include <mp-units/systems/isq/base_quantities.h>
 #endif
 
 namespace kalman {
 
-template<typename T>
-concept QuantityOrQuantityPoint = mp_units::Quantity<T> || mp_units::QuantityPoint<T>;
+namespace detail {
 
 template<mp_units::Dimension auto... Ds>
 inline constexpr bool are_time_derivatives = false;
@@ -49,192 +51,262 @@ template<mp_units::Dimension auto D1, mp_units::Dimension auto D2, mp_units::Dim
 inline constexpr bool are_time_derivatives<D1, D2, Ds...> =
   (D1 / D2 == mp_units::isq::dim_time) && are_time_derivatives<D2, Ds...>;
 
-// state
-template<QuantityOrQuantityPoint... QQPs>
-  requires(sizeof...(QQPs) > 0) && (sizeof...(QQPs) <= 3) && are_time_derivatives<QQPs::dimension...>
-struct state {
-  std::tuple<QQPs...> variables_;
-  constexpr state(QQPs... qqps) : variables_(std::move(qqps)...) {}
+}  // namespace detail
+
+// system state
+template<mp_units::QuantityPoint... QPs>
+  requires(sizeof...(QPs) > 0) && (sizeof...(QPs) <= 3) && detail::are_time_derivatives<QPs::dimension...>
+class system_state {
+  std::tuple<QPs...> variables_;
+public:
+  constexpr explicit system_state(QPs... qps) : variables_(std::move(qps)...) {}
+
+  template<std::size_t Idx>
+  [[nodiscard]] friend constexpr auto& get(system_state<QPs...>& s)
+  {
+    return get<Idx>(s.variables_);
+  }
+
+  template<std::size_t Idx>
+  [[nodiscard]] friend constexpr const auto& get(const system_state<QPs...>& s)
+  {
+    return get<Idx>(s.variables_);
+  }
 };
 
 template<typename T>
-concept State = mp_units::is_specialization_of<T, state>;
+concept SystemState = mp_units::is_specialization_of<T, system_state>;
 
-template<std::size_t Idx, typename... Qs>
-constexpr auto& get(state<Qs...>& s)
-{
-  return get<Idx>(s.variables_);
-}
 
-template<std::size_t Idx, typename... Qs>
-constexpr const auto& get(const state<Qs...>& s)
-{
-  return get<Idx>(s.variables_);
-}
-
-// estimation
-template<QuantityOrQuantityPoint QQP, QuantityOrQuantityPoint... QQPs>
-struct estimation {
-private:
-  static constexpr auto uncertainty_ref = QQP::reference * QQP::reference;
-  using uncertainty_type = mp_units::quantity<uncertainty_ref, typename QQP::rep>;
+// system state estimation
+template<mp_units::QuantityPoint QP, mp_units::QuantityPoint... Rest>
+  requires requires { typename system_state<QP, Rest...>; }
+class system_state_estimate {
 public:
-  kalman::state<QQP, QQPs...> state;  // TODO extend kalman functions to work with this variadic parameter list
-  uncertainty_type uncertainty;
+  using state_type = system_state<QP, Rest...>;
+  using standard_deviation_type = QP::quantity_type;
+  using variance_type =
+    mp_units::quantity<pow<2>(standard_deviation_type::reference), typename standard_deviation_type::rep>;
+private:
+  state_type state_;
+  variance_type variance_;
+public:
+  constexpr system_state_estimate(state_type state, standard_deviation_type standard_deviation) :
+      state_(state), variance_(pow<2>(standard_deviation))
+  {
+  }
+  constexpr system_state_estimate(state_type state, variance_type variance) : state_(state), variance_(variance) {}
+  [[nodiscard]] constexpr const state_type& state() const { return state_; }
+  [[nodiscard]] constexpr const variance_type& variance() const { return variance_; }
+  [[nodiscard]] constexpr standard_deviation_type standard_deviation() const { return sqrt(variance_); }
 };
 
-template<QuantityOrQuantityPoint QQP, mp_units::Quantity U>
-estimation(state<QQP>, U) -> estimation<QQP>;
-
 // kalman gain
-template<mp_units::Quantity Q>
-constexpr mp_units::quantity<mp_units::dimensionless[mp_units::one]> kalman_gain(Q estimate_uncertainty,
-                                                                                 Q measurement_uncertainty)
+template<mp_units::Quantity Q1, mp_units::Quantity Q2>
+  requires requires { mp_units::common_reference(Q1::reference, Q2::reference); }
+[[nodiscard]] constexpr mp_units::quantity<mp_units::dimensionless[mp_units::one]> kalman_gain(
+  Q1 variance_in_estimate, Q2 variance_in_measurement)
 {
-  return estimate_uncertainty / (estimate_uncertainty + measurement_uncertainty);
+  return variance_in_estimate / (variance_in_estimate + variance_in_measurement);
 }
 
 // state update
-template<typename Q, QuantityOrQuantityPoint QM, mp_units::QuantityOf<mp_units::dimensionless> K>
-  requires(implicitly_convertible(QM::quantity_spec, Q::quantity_spec))
-constexpr state<Q> state_update(const state<Q>& predicted, QM measured, K gain)
+template<typename QP, mp_units::QuantityPoint QM, mp_units::QuantityOf<mp_units::dimensionless> K>
+  requires(implicitly_convertible(QM::quantity_spec, QP::quantity_spec))
+[[nodiscard]] constexpr system_state<QP> state_update(const system_state<QP>& predicted, QM measured, K gain)
 {
-  return {get<0>(predicted) + gain * (measured - get<0>(predicted))};
+  return system_state<QP>{get<0>(predicted) + gain * (measured - get<0>(predicted))};
 }
 
-template<typename Q1, typename Q2, QuantityOrQuantityPoint QM, mp_units::QuantityOf<mp_units::dimensionless> K,
+template<typename QP1, typename QP2, mp_units::QuantityPoint QM, mp_units::QuantityOf<mp_units::dimensionless> K,
          mp_units::QuantityOf<mp_units::isq::time> T>
-  requires(implicitly_convertible(QM::quantity_spec, Q1::quantity_spec))
-constexpr state<Q1, Q2> state_update(const state<Q1, Q2>& predicted, QM measured, std::array<K, 2> gain, T interval)
+  requires(implicitly_convertible(QM::quantity_spec, QP1::quantity_spec))
+[[nodiscard]] constexpr system_state<QP1, QP2> state_update(const system_state<QP1, QP2>& predicted, QM measured,
+                                                            std::array<K, 2> gain, T interval)
 {
-  const auto q1 = get<0>(predicted) + get<0>(gain) * (measured - get<0>(predicted));
-  const auto q2 = get<1>(predicted) + get<1>(gain) * (measured - get<0>(predicted)) / interval;
-  return {q1, q2};
+  const auto qp1 = fma(get<0>(gain), measured - get<0>(predicted), get<0>(predicted));
+  const auto qp2 = fma(get<1>(gain), (measured - get<0>(predicted)) / interval, get<1>(predicted));
+  return system_state<QP1, QP2>{qp1, qp2};
 }
 
-template<typename Q1, typename Q2, typename Q3, QuantityOrQuantityPoint QM,
+template<typename QP1, typename QP2, typename QP3, mp_units::QuantityPoint QM,
          mp_units::QuantityOf<mp_units::dimensionless> K, mp_units::QuantityOf<mp_units::isq::time> T>
-  requires(implicitly_convertible(QM::quantity_spec, Q1::quantity_spec))
-constexpr state<Q1, Q2, Q3> state_update(const state<Q1, Q2, Q3>& predicted, QM measured, std::array<K, 3> gain,
-                                         T interval)
+  requires(implicitly_convertible(QM::quantity_spec, QP1::quantity_spec))
+[[nodiscard]] constexpr system_state<QP1, QP2, QP3> state_update(const system_state<QP1, QP2, QP3>& predicted,
+                                                                 QM measured, std::array<K, 3> gain, T interval)
 {
-  const auto q1 = get<0>(predicted) + get<0>(gain) * (measured - get<0>(predicted));
-  const auto q2 = get<1>(predicted) + get<1>(gain) * (measured - get<0>(predicted)) / interval;
-  const auto q3 = get<2>(predicted) + get<2>(gain) * (measured - get<0>(predicted)) / (interval * interval / 2);
-  return {q1, q2, q3};
+  const auto qp1 = fma(get<0>(gain), measured - get<0>(predicted), get<0>(predicted));
+  const auto qp2 = fma(get<1>(gain), (measured - get<0>(predicted)) / interval, get<1>(predicted));
+  const auto qp3 = fma(get<2>(gain), (measured - get<0>(predicted)) / (interval * interval / 2), get<2>(predicted));
+  return system_state<QP1, QP2, QP3>{qp1, qp2, qp3};
 }
 
 // covariance update
 template<mp_units::Quantity Q, mp_units::QuantityOf<mp_units::dimensionless> K>
-constexpr Q covariance_update(Q uncertainty, K gain)
+[[nodiscard]] constexpr Q covariance_update(Q uncertainty, K gain)
 {
   return (1 * mp_units::one - gain) * uncertainty;
 }
 
-// state extrapolation
-template<typename Q1, typename Q2, mp_units::QuantityOf<mp_units::isq::time> T>
-constexpr state<Q1, Q2> state_extrapolation(const state<Q1, Q2>& estimated, T interval)
+template<mp_units::QuantityPoint... QPs, mp_units::QuantityPoint QP, mp_units::QuantityOf<mp_units::dimensionless> K>
+[[nodiscard]] constexpr system_state_estimate<QPs...> state_estimate_update(
+  const system_state_estimate<QPs...>& previous, QP measurement, K gain)
 {
-  const auto q1 = get<0>(estimated) + get<1>(estimated) * interval;
-  const auto q2 = get<1>(estimated);
-  return {q1, q2};
+  return {state_update(previous.state(), measurement, gain), covariance_update(previous.variance(), gain)};
+};
+
+
+// state extrapolation
+template<typename QP1, typename QP2, mp_units::QuantityOf<mp_units::isq::time> T>
+[[nodiscard]] constexpr system_state<QP1, QP2> state_extrapolation(const system_state<QP1, QP2>& estimated, T interval)
+{
+  auto to_quantity = [](const auto& qp) { return qp.quantity_ref_from(qp.point_origin); };
+  const auto qp1 = fma(to_quantity(get<1>(estimated)), interval, get<0>(estimated));
+  const auto qp2 = get<1>(estimated);
+  return system_state<QP1, QP2>{qp1, qp2};
 }
 
-template<typename Q1, typename Q2, typename Q3, mp_units::QuantityOf<mp_units::isq::time> T>
-constexpr state<Q1, Q2, Q3> state_extrapolation(const state<Q1, Q2, Q3>& estimated, T interval)
+template<typename QP1, typename QP2, typename QP3, mp_units::QuantityOf<mp_units::isq::time> T>
+[[nodiscard]] constexpr system_state<QP1, QP2, QP3> state_extrapolation(const system_state<QP1, QP2, QP3>& estimated,
+                                                                        T interval)
 {
-  const auto q1 = get<0>(estimated) + get<1>(estimated) * interval + get<2>(estimated) * pow<2>(interval) / 2;
-  const auto q2 = get<1>(estimated) + get<2>(estimated) * interval;
-  const auto q3 = get<2>(estimated);
-  return {q1, q2, q3};
+  auto to_quantity = [](const auto& qp) { return qp.quantity_ref_from(qp.point_origin); };
+  const auto qp1 = to_quantity(get<2>(estimated)) * pow<2>(interval) / 2 +
+                   fma(to_quantity(get<1>(estimated)), interval, get<0>(estimated));
+  const auto qp2 = fma(to_quantity(get<2>(estimated)), interval, get<1>(estimated));
+  const auto qp3 = get<2>(estimated);
+  return system_state<QP1, QP2, QP3>{qp1, qp2, qp3};
 }
 
 // covariance extrapolation
-template<mp_units::Quantity Q>
-constexpr Q covariance_extrapolation(Q uncertainty, Q process_noise_variance)
+template<mp_units::Quantity Q1, mp_units::Quantity Q2>
+  requires requires { mp_units::common_reference(Q1::reference, Q2::reference); }
+[[nodiscard]] constexpr mp_units::Quantity auto covariance_extrapolation(Q1 uncertainty, Q2 process_noise_variance)
 {
   return uncertainty + process_noise_variance;
 }
 
 }  // namespace kalman
 
-template<typename... Qs>
-struct MP_UNITS_STD_FMT::formatter<kalman::state<Qs...>> {
-  constexpr auto parse(format_parse_context& ctx)
-  {
-    mp_units::detail::dynamic_specs_handler handler(specs, ctx);
-    return mp_units::detail::parse_format_specs(ctx.begin(), ctx.end(), handler);
-  }
-
+template<auto R, auto PO, typename Rep, typename Char>
+struct MP_UNITS_STD_FMT::formatter<mp_units::quantity_point<R, PO, Rep>, Char> :
+    MP_UNITS_STD_FMT::formatter<typename mp_units::quantity_point<R, PO, Rep>::quantity_type> {
   template<typename FormatContext>
-  auto format(const kalman::state<Qs...>& s, FormatContext& ctx)
+  auto format(const mp_units::quantity_point<R, PO, Rep>& qp, FormatContext& ctx) const -> decltype(ctx.out())
   {
-    std::string value_buffer;
-    auto to_value_buffer = std::back_inserter(value_buffer);
-    if (specs.precision != -1) {
-      if constexpr (sizeof...(Qs) == 1)
-        MP_UNITS_STD_FMT::format_to(to_value_buffer, "{1:%.{0}Q %q}", specs.precision, kalman::get<0>(s));
-      else if constexpr (sizeof...(Qs) == 2)
-        MP_UNITS_STD_FMT::format_to(to_value_buffer, "{{ {1:%.{0}Q %q}, {2:%.{0}Q %q} }}", specs.precision,
-                                    kalman::get<0>(s), kalman::get<1>(s));
-      else
-        MP_UNITS_STD_FMT::format_to(to_value_buffer, "{{ {1:%.{0}Q %q}, {2:%.{0}Q %q}, {3:%.{0}Q %q} }}",
-                                    specs.precision, kalman::get<0>(s), kalman::get<1>(s), kalman::get<2>(s));
-    } else {
-      if constexpr (sizeof...(Qs) == 1)
-        MP_UNITS_STD_FMT::format_to(to_value_buffer, "{}", kalman::get<0>(s));
-      else if constexpr (sizeof...(Qs) == 2)
-        MP_UNITS_STD_FMT::format_to(to_value_buffer, "{{ {}, {} }}", kalman::get<0>(s), kalman::get<1>(s));
-      else
-        MP_UNITS_STD_FMT::format_to(to_value_buffer, "{{ {}, {}, {} }}", kalman::get<0>(s), kalman::get<1>(s),
-                                    kalman::get<2>(s));
-    }
-
-    std::string global_format_buffer;
-    mp_units::detail::quantity_global_format_specs<char> global_specs = {specs.fill, specs.align, specs.width};
-    mp_units::detail::format_global_buffer(std::back_inserter(global_format_buffer), global_specs);
-
-    return MP_UNITS_STD_FMT::vformat_to(ctx.out(), global_format_buffer,
-                                        MP_UNITS_STD_FMT::make_format_args(value_buffer));
+    return MP_UNITS_STD_FMT::formatter<typename mp_units::quantity_point<R, PO, Rep>::quantity_type>::format(
+      qp.quantity_ref_from(qp.point_origin), ctx);
   }
-private:
-  mp_units::detail::dynamic_format_specs<char> specs;
 };
 
-template<typename Q>
-struct MP_UNITS_STD_FMT::formatter<kalman::estimation<Q>> {
-  constexpr auto parse(format_parse_context& ctx)
+template<typename... QPs, typename Char>
+class MP_UNITS_STD_FMT::formatter<kalman::system_state<QPs...>, Char> {
+  using format_specs = mp_units::detail::fill_align_width_format_specs<Char>;
+  format_specs specs_{};
+  std::array<std::basic_string<Char>, sizeof...(QPs)> format_str_;
+  std::tuple<MP_UNITS_STD_FMT::formatter<typename QPs::quantity_type, Char>...> formatters_{};
+
+  template<typename Formatter>
+  constexpr const Char* parse_default_spec(const Char* begin, const Char* end, Formatter& f, std::string& format_str)
   {
-    mp_units::detail::dynamic_specs_handler handler(specs, ctx);
-    return mp_units::detail::parse_format_specs(ctx.begin(), ctx.end(), handler);
+    if (begin == end || *begin++ != '[')
+      throw MP_UNITS_STD_FMT::format_error("`default-spec` should contain a `[` character");
+    auto it = begin;
+    for (int nested_brackets = 0; it != end && !(*it == ']' && nested_brackets == 0); it++) {
+      if (*it == '[') ++nested_brackets;
+      if (*it == ']') {
+        if (nested_brackets == 0) throw MP_UNITS_STD_FMT::format_error("unmatched ']' in format string");
+        --nested_brackets;
+      }
+    }
+    format_str = "{:" + std::string(begin, it) + '}';
+    if (it == end) throw MP_UNITS_STD_FMT::format_error("unmatched '[' in format string");
+    MP_UNITS_STD_FMT::basic_format_parse_context<Char> ctx(std::string_view(begin, it));
+    auto ptr = f.parse(ctx);
+    if (ptr != it) throw MP_UNITS_STD_FMT::format_error("invalid subentity format '" + std::string(begin, it) + "'");
+    return ++it;  // skip `]`
+  }
+
+  template<std::size_t... Is>
+  [[nodiscard]] constexpr const Char* parse_default_spec(const Char* begin, const Char* end, size_t idx,
+                                                         std::index_sequence<Is...>)
+  {
+    auto parse = [&](bool flag, auto& f, std::basic_string<Char>& str) {
+      return flag ? parse_default_spec(begin, end, f, str) : begin;
+    };
+    return std::max({parse(idx == Is, std::get<Is>(formatters_), format_str_[Is])...});
+  }
+
+  [[nodiscard]] constexpr const Char* parse_defaults_specs(const Char* begin, const Char* end)
+  {
+    if (begin == end || *begin == '}') return begin;
+    if (*begin++ != ':') throw MP_UNITS_STD_FMT::format_error("`defaults-specs` should start with a `:`");
+    do {
+      auto c = *begin++;
+      if (c < '0' || c >= static_cast<char>('0' + sizeof...(QPs)))
+        throw MP_UNITS_STD_FMT::format_error(std::string("unknown `subentity-id` token '") + c + "'");
+      const size_t idx = static_cast<size_t>(c - '0');
+      begin = parse_default_spec(begin, end, idx, std::index_sequence_for<QPs...>{});
+    } while (begin != end && *begin != '}');
+    return begin;
+  }
+
+  template<typename OutputIt, typename FormatContext, std::size_t Idx>
+  OutputIt format_system_state(OutputIt out, const kalman::system_state<QPs...>& s, FormatContext& ctx,
+                               std::index_sequence<Idx>) const
+  {
+    const std::locale locale = MP_UNITS_FMT_LOCALE(ctx.locale());
+    auto f = [&](const std::basic_string<Char>& str, const mp_units::QuantityPoint auto& qp) {
+      return MP_UNITS_STD_FMT::vformat_to(out, locale, str, MP_UNITS_STD_FMT::make_format_args(qp));
+    };
+    return f(get<Idx>(format_str_), get<Idx>(s));
+  }
+
+  template<typename OutputIt, typename FormatContext, std::size_t Idx, std::size_t... Rest>
+    requires(sizeof...(Rest) > 0)
+  OutputIt format_system_state(OutputIt out, const kalman::system_state<QPs...>& s, FormatContext& ctx,
+                               std::index_sequence<Idx, Rest...>) const
+  {
+    const std::locale locale = MP_UNITS_FMT_LOCALE(ctx.locale());
+    auto f = [&](const std::basic_string<Char>& str, const mp_units::QuantityPoint auto& qp) {
+      return MP_UNITS_STD_FMT::vformat_to(out, locale, str, MP_UNITS_STD_FMT::make_format_args(qp));
+    };
+    return f(get<Idx>(format_str_), get<Idx>(s)), ((*out++ = ' ', f(get<Rest>(format_str_), get<Rest>(s))), ...);
+  }
+
+public:
+  constexpr formatter()
+  {
+    for (auto& str : format_str_) str = "{}";
+  }
+
+  constexpr auto parse(format_parse_context& ctx) -> decltype(ctx.begin())
+  {
+    auto begin = ctx.begin(), end = ctx.end();
+
+    begin = parse_fill_align_width(ctx, begin, end, specs_, mp_units::detail::fmt_align::right);
+    if (begin == end) return begin;
+
+    return parse_defaults_specs(begin, end);
   }
 
   template<typename FormatContext>
-  auto format(kalman::estimation<Q> e, FormatContext& ctx)
+  auto format(const kalman::system_state<QPs...>& s, FormatContext& ctx) const -> decltype(ctx.out())
   {
-    mp_units::Quantity auto q = [](const Q& t) {
-      if constexpr (mp_units::Quantity<Q>)
-        return t;
-      else
-        return t.quantity_ref_from(t.point_origin);
-    }(kalman::get<0>(e.state));
+    auto specs = specs_;
+    mp_units::detail::handle_dynamic_spec<mp_units::detail::width_checker>(specs.width, specs.width_ref, ctx);
 
-    std::string value_buffer;
-    auto to_value_buffer = std::back_inserter(value_buffer);
-    if (specs.precision != -1) {
-      MP_UNITS_STD_FMT::format_to(to_value_buffer, "{0:%.{2}Q} ± {1:%.{2}Q} {0:%q}", q, sqrt(e.uncertainty),
-                                  specs.precision);
-    } else {
-      MP_UNITS_STD_FMT::format_to(to_value_buffer, "{0:%Q} ± {1:%Q} {0:%q}", q, sqrt(e.uncertainty));
+    if (specs.width == 0) {
+      // Avoid extra copying if width is not specified
+      format_system_state(ctx.out(), s, ctx, std::index_sequence_for<QPs...>{});
+      return ctx.out();
     }
+    std::basic_string<Char> quantity_buffer;
+    format_system_state(std::back_inserter(quantity_buffer), s, ctx, std::index_sequence_for<QPs...>{});
 
-    std::string global_format_buffer;
-    mp_units::detail::quantity_global_format_specs<char> global_specs = {specs.fill, specs.align, specs.width};
-    mp_units::detail::format_global_buffer(std::back_inserter(global_format_buffer), global_specs);
-
-    return MP_UNITS_STD_FMT::vformat_to(ctx.out(), global_format_buffer,
-                                        MP_UNITS_STD_FMT::make_format_args(value_buffer));
+    std::basic_string<Char> fill_align_width_format_str;
+    mp_units::detail::format_global_buffer(std::back_inserter(fill_align_width_format_str), specs);
+    return MP_UNITS_STD_FMT::vformat_to(ctx.out(), fill_align_width_format_str,
+                                        MP_UNITS_STD_FMT::make_format_args(quantity_buffer));
   }
-private:
-  mp_units::detail::dynamic_format_specs<char> specs;
 };

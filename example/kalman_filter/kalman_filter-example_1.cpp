@@ -35,36 +35,37 @@ import mp_units;
 
 using namespace mp_units;
 
-void print_header(const kalman::State auto& initial)
+void print_header(const kalman::SystemState auto& initial)
 {
   std::cout << MP_UNITS_STD_FMT::format("Initial: {}\n", initial);
   std::cout << MP_UNITS_STD_FMT::format("{:>2} | {:>9} | {:>8} | {:>14} | {:>14}\n", "N", "Gain", "Measured",
                                         "Curr. Estimate", "Next Estimate");
 }
 
-void print(auto iteration, QuantityOf<dimensionless> auto gain, Quantity auto measured,
-           const kalman::State auto& current, const kalman::State auto& next)
+void print(auto iteration, QuantityOf<dimensionless> auto gain, QuantityPoint auto measured,
+           const kalman::SystemState auto& current, const kalman::SystemState auto& next)
 {
-  std::cout << MP_UNITS_STD_FMT::format("{:2} | {:9} | {:8} | {:14} | {:14}\n", iteration, gain, measured, current,
-                                        next);
+  std::cout << MP_UNITS_STD_FMT::format("{:2} | {:9:N[.2f]} | {:8} | {:14:0[:N[.2f]]} | {:14:0[:N[.2f]]}\n", iteration,
+                                        gain, measured, current, next);
 }
 
 int main()
 {
   using namespace mp_units::si::unit_symbols;
-  using state = kalman::state<quantity<isq::mass[g]>>;
+  using state = kalman::system_state<quantity_point<isq::mass[g]>>;
+  using qp = quantity_point<isq::mass[g]>;
 
-  const state initial = {1 * kg};
-  const std::array measurements = {1'030 * g, 989 * g,   1'017 * g, 1'009 * g, 1'013 * g,
-                                   979 * g,   1'008 * g, 1'042 * g, 1'012 * g, 1'011 * g};
+  const state initial_guess{qp{1 * kg}};
+  const std::array measurements = {qp{996 * g},  qp{994 * g}, qp{1021 * g}, qp{1000 * g}, qp{1002 * g},
+                                   qp{1010 * g}, qp{983 * g}, qp{971 * g},  qp{993 * g},  qp{1023 * g}};
 
-  print_header(initial);
-  state next = initial;
-  for (int index = 1; const auto& v : measurements) {
-    const auto& previous = next;
-    const auto gain = 1. / index * one;
-    const auto current = state_update(previous, v, gain);
+  print_header(initial_guess);
+  state next = initial_guess;
+  for (int index = 1; const auto& measurement : measurements) {
+    const state& previous = next;
+    const quantity gain = 1. / index * one;
+    const state current = state_update(previous, measurement, gain);
     next = current;
-    print(index++, gain, v, current, next);
+    print(index++, gain, measurement, current, next);
   }
 }

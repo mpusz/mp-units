@@ -62,14 +62,14 @@ and units of derived quantities.
 === "Prefixes"
 
     ```cpp
-    template<PrefixableUnit auto U> struct micro_ : prefixed_unit<{u8"µ", "u"}, mag_power<10, -6>, U> {};
-    template<PrefixableUnit auto U> struct milli_ : prefixed_unit<"m", mag_power<10, -3>, U> {};
-    template<PrefixableUnit auto U> struct centi_ : prefixed_unit<"c", mag_power<10, -2>, U> {};
-    template<PrefixableUnit auto U> struct deci_  : prefixed_unit<"d", mag_power<10, -1>, U> {};
-    template<PrefixableUnit auto U> struct deca_  : prefixed_unit<"da", mag_power<10, 1>, U> {};
-    template<PrefixableUnit auto U> struct hecto_ : prefixed_unit<"h", mag_power<10, 2>, U> {};
-    template<PrefixableUnit auto U> struct kilo_  : prefixed_unit<"k", mag_power<10, 3>, U> {};
-    template<PrefixableUnit auto U> struct mega_  : prefixed_unit<"M", mag_power<10, 6>, U> {};
+    template<PrefixableUnit U> struct micro_ : prefixed_unit<{u8"µ", "u"}, mag_power<10, -6>, U{}> {};
+    template<PrefixableUnit U> struct milli_ : prefixed_unit<"m", mag_power<10, -3>, U{}> {};
+    template<PrefixableUnit U> struct centi_ : prefixed_unit<"c", mag_power<10, -2>, U{}> {};
+    template<PrefixableUnit U> struct deci_  : prefixed_unit<"d", mag_power<10, -1>, U{}> {};
+    template<PrefixableUnit U> struct deca_  : prefixed_unit<"da", mag_power<10, 1>, U{}> {};
+    template<PrefixableUnit U> struct hecto_ : prefixed_unit<"h", mag_power<10, 2>, U{}> {};
+    template<PrefixableUnit U> struct kilo_  : prefixed_unit<"k", mag_power<10, 3>, U{}> {};
+    template<PrefixableUnit U> struct mega_  : prefixed_unit<"M", mag_power<10, 6>, U{}> {};
     ```
 
 === "Constants"
@@ -241,7 +241,7 @@ static_assert(unit_symbol<{.solidus = unit_symbol_solidus::never,
 
     `std::string_view` is returned only when C++23 is available. Otherwise, an instance of a
     `basic_fixed_string` is being returned. See more in the
-    [C++ compiler support](../../getting_started/installation_and_usage.md#static-constexpr-variables-in-constexpr-functions)
+    [C++ compiler support](../../getting_started/cpp_compiler_support.md#static-constexpr-variables-in-constexpr-functions)
     chapter.
 
 #### `unit_symbol_to()`

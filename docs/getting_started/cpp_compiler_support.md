@@ -13,13 +13,13 @@
 The table below provides the minimum compiler version required to compile the code using a specific
 C++ feature:
 
-| C++ Feature                                               | C++ version | gcc | clang | apple-clang | MSVC |
-|-----------------------------------------------------------|:-----------:|:---:|:-----:|:-----------:|:----:|
-| **Minimum support**                                       |     20      | 12  |  16   |     15      | None |
-| **`std::format`**                                         |     20      | 13  |  17   |    None     | None |
-| **C++ modules**                                           |     20      | 14  |  17   |    None     | None |
-| **Static `constexpr` variables in `constexpr` functions** |     23      | 13  |  17   |    None     | None |
-| **Explicit `this` parameter**                             |     23      | 14  |  18   |    None     | None |
+| C++ Feature                                               | C++ version | gcc  | clang | apple-clang | MSVC |
+|-----------------------------------------------------------|:-----------:|:----:|:-----:|:-----------:|:----:|
+| **Minimum support**                                       |     20      |  12  |  16   |     15      | None |
+| **`std::format`**                                         |     20      |  13  |  17   |    None     | None |
+| **C++ modules**                                           |     20      | None |  17   |    None     | None |
+| **Static `constexpr` variables in `constexpr` functions** |     23      |  13  |  17   |    None     | None |
+| **Explicit `this` parameter**                             |     23      |  14  |  18   |    None     | None |
 
 !!! important
 
@@ -29,7 +29,7 @@ C++ feature:
 
 ## `std::format`
 
-- Provides [powerful text formatting capabilities](../users_guide/framework_basics/text_output.md#stdformat)
+- Provides [powerful text formatting capabilities](../users_guide/framework_basics/text_output.md#text-formatting)
   for C++.
 - An alternative [fmtlib](https://github.com/fmtlib/fmt) library can be used instead if
     - the C++ language feature is not supported,

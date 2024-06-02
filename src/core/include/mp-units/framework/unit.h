@@ -28,6 +28,7 @@
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/bits/ratio.h>
 #include <mp-units/bits/text_tools.h>
+#include <mp-units/compat_macros.h>
 #include <mp-units/ext/algorithm.h>
 #include <mp-units/ext/fixed_string.h>
 #include <mp-units/ext/type_name.h>
@@ -40,12 +41,13 @@
 #include <mp-units/framework/unit_concepts.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
-#include <gsl/gsl-lite.hpp>
 #include <array>
 #include <cstdint>
 #include <iterator>
-#include <string>
 #include <string_view>
+#if MP_UNITS_HOSTED
+#include <string>
+#endif
 #endif
 
 namespace mp_units {
@@ -173,13 +175,13 @@ struct named_unit<Symbol> {
  */
 template<symbol_text Symbol, Unit auto U>
   requires(!Symbol.empty())
-struct named_unit<Symbol, U> : std::remove_const_t<decltype(U)> {
+struct named_unit<Symbol, U> : decltype(U) {
   static constexpr auto symbol = Symbol;  ///< Unique unit identifier
 };
 
 template<symbol_text Symbol, Unit auto U, PointOrigin auto PO>
   requires(!Symbol.empty())
-struct named_unit<Symbol, U, PO> : std::remove_const_t<decltype(U)> {
+struct named_unit<Symbol, U, PO> : decltype(U) {
   static constexpr auto symbol = Symbol;  ///< Unique unit identifier
   static constexpr auto point_origin = PO;
 };
@@ -195,14 +197,14 @@ struct named_unit<Symbol, U, PO> : std::remove_const_t<decltype(U)> {
  */
 template<symbol_text Symbol, AssociatedUnit auto U, detail::QuantityKindSpec auto QS>
   requires(!Symbol.empty()) && (QS.dimension == detail::get_associated_quantity(U).dimension)
-struct named_unit<Symbol, U, QS> : std::remove_const_t<decltype(U)> {
+struct named_unit<Symbol, U, QS> : decltype(U) {
   static constexpr auto symbol = Symbol;  ///< Unique unit identifier
   static constexpr auto quantity_spec = QS;
 };
 
 template<symbol_text Symbol, AssociatedUnit auto U, detail::QuantityKindSpec auto QS, PointOrigin auto PO>
   requires(!Symbol.empty()) && (QS.dimension == detail::get_associated_quantity(U).dimension)
-struct named_unit<Symbol, U, QS, PO> : std::remove_const_t<decltype(U)> {
+struct named_unit<Symbol, U, QS, PO> : decltype(U) {
   static constexpr auto symbol = Symbol;  ///< Unique unit identifier
   static constexpr auto quantity_spec = QS;
   static constexpr auto point_origin = PO;
@@ -232,7 +234,7 @@ struct named_unit<Symbol, U, QS, PO> : std::remove_const_t<decltype(U)> {
  */
 MP_UNITS_EXPORT template<symbol_text Symbol, Magnitude auto M, PrefixableUnit auto U>
   requires(!Symbol.empty())
-struct prefixed_unit : std::remove_const_t<decltype(M * U)> {
+struct prefixed_unit : decltype(M * U) {
   static constexpr auto symbol = Symbol + U.symbol;
 };
 
@@ -390,7 +392,7 @@ template<typename T, typename F, int Num, int... Den>
     return canonical_unit{pow<Num, Den...>(base.mag) * num.mag / den.mag, num.reference_unit / den.reference_unit};
   } else {
     return canonical_unit{pow<Num, Den...>(base.mag),
-                          derived_unit<power<std::remove_const_t<decltype(base.reference_unit)>, Num, Den...>>{}};
+                          derived_unit<power<decltype(base.reference_unit), Num, Den...>>{}};
   }
 }
 
@@ -430,9 +432,9 @@ MP_UNITS_EXPORT_BEGIN
  * Multiplication by `1` returns the same unit, otherwise `scaled_unit` is being returned.
  */
 template<Magnitude M, Unit U>
-[[nodiscard]] MP_UNITS_CONSTEVAL Unit auto operator*(M, const U u)
+[[nodiscard]] MP_UNITS_CONSTEVAL Unit auto operator*(M, U u)
 {
-  if constexpr (std::is_same_v<M, std::remove_cvref_t<decltype(mp_units::mag<1>)>>)
+  if constexpr (std::is_same_v<M, std::remove_const_t<decltype(mp_units::mag<1>)>>)
     return u;
   else
     return scaled_unit<M{}, U>{};
@@ -444,7 +446,7 @@ template<Magnitude M, Unit U>
  * Returns the result of multiplication with an inverse unit.
  */
 template<Magnitude M, Unit U>
-[[nodiscard]] MP_UNITS_CONSTEVAL Unit auto operator/(M mag, const U u)
+[[nodiscard]] MP_UNITS_CONSTEVAL Unit auto operator/(M mag, U u)
 {
   return mag * inverse(u);
 }
@@ -571,7 +573,7 @@ template<std::intmax_t Num, std::intmax_t Den = 1, Unit U>
   else if constexpr (detail::ratio{Num, Den} == 1)
     return u;
   else if constexpr (detail::is_specialization_of_scaled_unit<U>)
-    return scaled_unit<pow<Num, Den>(U::mag), std::remove_const_t<decltype(pow<Num, Den>(U::reference_unit))>>{};
+    return scaled_unit<pow<Num, Den>(U::mag), decltype(pow<Num, Den>(U::reference_unit))>{};
   else if constexpr (detail::is_specialization_of_derived_unit<U>)
     return detail::expr_pow<Num, Den, derived_unit, struct one, detail::type_list_of_unit_less>(u);
   else if constexpr (Den == 1)
@@ -657,7 +659,7 @@ template<Unit U1, Unit U2>
       return u1;
     else {
       constexpr auto cm = detail::common_magnitude(canonical_lhs.mag, canonical_rhs.mag);
-      return scaled_unit<cm, std::remove_const_t<decltype(canonical_lhs.reference_unit)>>{};
+      return scaled_unit<cm, decltype(canonical_lhs.reference_unit)>{};
     }
   }
 }
@@ -718,8 +720,8 @@ constexpr Out print_separator(Out out, const unit_symbol_formatting& fmt)
 {
   if (fmt.separator == unit_symbol_separator::half_high_dot) {
     if (fmt.encoding != text_encoding::unicode)
-      throw std::invalid_argument(
-        "'unit_symbol_separator::half_high_dot' can be only used with 'text_encoding::unicode'");
+      MP_UNITS_THROW(
+        std::invalid_argument("'unit_symbol_separator::half_high_dot' can be only used with 'text_encoding::unicode'"));
     const std::string_view dot = "⋅";
     out = detail::copy(dot.begin(), dot.end(), out);
   } else {
@@ -808,7 +810,8 @@ template<typename CharT, std::output_iterator<CharT> Out, typename... Expr>
 constexpr Out unit_symbol_impl(Out out, const derived_unit<Expr...>&, const unit_symbol_formatting& fmt,
                                bool negative_power)
 {
-  gsl_Expects(negative_power == false);
+  (void)negative_power;
+  MP_UNITS_EXPECTS(negative_power == false);
   return unit_symbol_impl<CharT>(out, typename derived_unit<Expr...>::_num_{}, typename derived_unit<Expr...>::_den_{},
                                  fmt);
 }
@@ -843,9 +846,15 @@ MP_UNITS_EXPORT template<unit_symbol_formatting fmt = unit_symbol_formatting{}, 
 #endif
 {
   auto get_size = []() consteval {
+#if MP_UNITS_HOSTED
     std::basic_string<CharT> buffer;
     unit_symbol_to<CharT>(std::back_inserter(buffer), U{}, fmt);
     return buffer.size();
+#else
+    std::array<CharT, 128> buffer;  // TODO unsafe
+    auto end = unit_symbol_to<CharT>(buffer.begin(), U{}, fmt);
+    return end - buffer.begin();
+#endif
   };
 
 #if MP_UNITS_API_STRING_VIEW_RET  // Permitting static constexpr variables in constexpr functions
@@ -854,8 +863,7 @@ MP_UNITS_EXPORT template<unit_symbol_formatting fmt = unit_symbol_formatting{}, 
   return std::string_view(buffer.data(), size);
 #else
   constexpr std::size_t size = get_size();
-  constexpr auto buffer = detail::get_symbol_buffer<CharT, size, fmt>(U{});
-  return basic_fixed_string<CharT, size>(buffer.begin(), buffer.end());
+  return basic_fixed_string(std::from_range, detail::get_symbol_buffer<CharT, size, fmt>(U{}));
 #endif
 }
 

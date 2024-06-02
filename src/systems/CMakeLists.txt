@@ -25,8 +25,7 @@ cmake_minimum_required(VERSION 3.23)
 add_mp_units_module(
     systems mp-units-systems
     DEPENDENCIES mp-units::core
-    HEADERS include/mp-units/systems/angular/math.h
-            include/mp-units/systems/angular/units.h
+    HEADERS include/mp-units/systems/angular/units.h
             include/mp-units/systems/iec80000/binary_prefixes.h
             include/mp-units/systems/iec80000/quantities.h
             include/mp-units/systems/iec80000/unit_symbols.h
@@ -39,9 +38,7 @@ add_mp_units_module(
             include/mp-units/systems/isq/si_quantities.h
             include/mp-units/systems/isq/space_and_time.h
             include/mp-units/systems/isq/thermodynamics.h
-            include/mp-units/systems/si/chrono.h
             include/mp-units/systems/si/constants.h
-            include/mp-units/systems/si/math.h
             include/mp-units/systems/si/prefixes.h
             include/mp-units/systems/si/unit_symbols.h
             include/mp-units/systems/si/units.h
@@ -60,3 +57,17 @@ add_mp_units_module(
             include/mp-units/systems/usc.h
     MODULE_INTERFACE_UNIT mp-units-systems.cpp
 )
+
+if(NOT ${projectPrefix}API_FREESTANDING)
+    target_sources(
+        mp-units-systems
+        PUBLIC FILE_SET
+               HEADERS
+               BASE_DIRS
+               ${CMAKE_CURRENT_SOURCE_DIR}/include
+               FILES
+               include/mp-units/systems/angular/math.h
+               include/mp-units/systems/si/math.h
+               include/mp-units/systems/si/chrono.h
+    )
+endif()

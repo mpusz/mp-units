@@ -18,8 +18,8 @@ projects:
     - in case this library becomes part of the C++ standard, it will have no external dependencies
       but until then, it depends on the following:
 
-        - [gsl-lite](https://github.com/gsl-lite/gsl-lite) to verify runtime contracts with
-          the `gsl_Expects` macro,
+        - [gsl-lite](https://github.com/gsl-lite/gsl-lite) or [ms-gsl](https://github.com/microsoft/GSL)
+          to verify runtime contracts (if contract checking is enabled),
         - [{fmt}](https://github.com/fmtlib/fmt) to provide text formatting of quantities
           (if `std::format` is not supported yet on a specific compiler).
 
@@ -56,7 +56,7 @@ projects:
       handle the dependencies.
 
     To learn more about the rationale, please check our
-    [FAQ](faq.md#why-dont-we-have-cmake-options-to-disable-building-of-tests-and-examples).
+    [FAQ](faq.md#why-dont-we-have-cmake-options-to-disable-the-building-of-tests-and-examples).
 
 ### Modules
 
@@ -229,7 +229,7 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
 
 ### Conan options
 
-[cxx_modules](#cxx_modules){ #cxx_modules }
+[`cxx_modules`](#cxx_modules){ #cxx_modules }
 
 :   [:octicons-tag-24: 2.2.0][conan C++ modules support] · :octicons-milestone-24: `auto`/`True`/`False` (Default: `auto`)
 
@@ -237,7 +237,7 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
 
     [conan C++ modules support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 
-[std_format](#std_format){ #std_format }
+[`std_format`](#std_format){ #std_format }
 
 :   [:octicons-tag-24: 2.2.0][conan std::format support] · :octicons-milestone-24: `auto`/`True`/`False` (Default: `auto`)
 
@@ -247,7 +247,7 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
 
     [conan std::format support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 
-[string_view_ret](#string_view_ret){ #string_view_ret }
+[`string_view_ret`](#string_view_ret){ #string_view_ret }
 
 :   [:octicons-tag-24: 2.2.0][conan returning string_view] · :octicons-milestone-24: `auto`/`True`/`False` (Default: `auto`)
 
@@ -259,7 +259,7 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
 
     [conan returning string_view]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 
-[no_crtp](#no_crtp){ #no_crtp }
+[`no_crtp`](#no_crtp){ #no_crtp }
 
 :   [:octicons-tag-24: 2.2.0][conan no crtp support] · :octicons-milestone-24: `auto`/`True`/`False` (Default: `auto`)
 
@@ -268,6 +268,24 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
 
     [conan no crtp support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 
+[`contracts`](#contracts){ #contracts }
+
+:   [:octicons-tag-24: 2.2.0][conan contracts] · :octicons-milestone-24: `none`/`gsl-lite`/`ms-gsl` (Default: `gsl-lite`)
+
+    Enables checking of preconditions and additional asserts in the code.
+
+    [conan contracts]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
+
+[`freestanding`](#freestanding){ #freestanding }
+
+:   [:octicons-tag-24: 2.2.0][conan freestanding] · :octicons-milestone-24: `True`/`False` (Default: `False`)
+
+    Configures the library in the [freestanding](https://en.cppreference.com/w/cpp/freestanding)
+    mode. When enabled, the library's source code should build with the compiler's
+    [`-ffreestanding`](https://gcc.gnu.org/onlinedocs/gcc/C-Dialect-Options.html) compilation option
+    without any issues.
+
+    [conan freestanding]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 
 ### Conan configuration properties
 
@@ -276,7 +294,7 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
 :   [:octicons-tag-24: 2.2.0][conan build all support] · :octicons-milestone-24: `True`/`False` (Default: `False`)
 
     Enables compilation of all the source code, including tests and examples. To support this, it requires some additional Conan build dependencies described in
-    [Repository Structure and Dependencies](#repository-structure-and-dependencies).
+    [Repository directory tree and dependencies](#repository-directory-tree-and-dependencies).
     It also runs unit tests during Conan build (unless
     [`tools.build:skip_test`](https://docs.conan.io/2/reference/commands/config.html?highlight=tools.build:skip_test#conan-config-list)
     configuration property is set to `True`).
@@ -295,6 +313,14 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
 
     [conan skip la support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 
+
+[`user.mp-units.analyze:clang-tidy`](#user.mp-units.analyze-clang-tidy){ #user.mp-units.analyze-clang-tidy }
+
+:   [:octicons-tag-24: 2.2.0][conan clang-tidy support] · :octicons-milestone-24: `True`/`False` (Default: `False`)
+
+    Enables clang-tidy analysis.
+
+    [conan clang-tidy support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 
 ### CMake options
 
@@ -345,24 +371,50 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
 
     [cmake no crtp support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 
+[`MP_UNITS_API_CONTRACTS`](#MP_UNITS_API_CONTRACTS){ #MP_UNITS_API_CONTRACTS }
+
+:   [:octicons-tag-24: 2.2.0][cmake contracts] · :octicons-milestone-24: `NONE`/`GSL-LITE`/`MS-GSL` (Default: `GSL-LITE`)
+
+    Enables checking of preconditions and additional asserts in the code.
+
+    [cmake contracts]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
+
+[`MP_UNITS_API_FREESTANDING`](#MP_UNITS_API_FREESTANDING){ #MP_UNITS_API_FREESTANDING }
+
+:   [:octicons-tag-24: 2.2.0][cmake freestanding] · :octicons-milestone-24: `ON`/`OFF` (Default: `OFF`)
+
+    Configures the library in the [freestanding](https://en.cppreference.com/w/cpp/freestanding)
+    mode. When enabled, the library's source code should build with the compiler's
+    [`-ffreestanding`](https://gcc.gnu.org/onlinedocs/gcc/C-Dialect-Options.html) compilation option
+    without any issues.
+
+    [cmake freestanding]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
+
 #### Options for mp-units project developers
 
 [`MP_UNITS_DEV_BUILD_LA`](#MP_UNITS_DEV_BUILD_LA){ #MP_UNITS_DEV_BUILD_LA }
 
-:   [:octicons-tag-24: 2.0.0][build la support] · :octicons-milestone-24: `ON`/`OFF` (Default: `ON`)
+:   [:octicons-tag-24: 2.2.0][cmake build la support] · :octicons-milestone-24: `ON`/`OFF` (Default: `ON`)
 
     Enables building code depending on the linear algebra library.
 
-    [build la support]: https://github.com/mpusz/mp-units/releases/tag/v2.0.0
-
+    [cmake build la support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 
 [`MP_UNITS_DEV_IWYU`](#MP_UNITS_DEV_IWYU){ #MP_UNITS_DEV_IWYU }
 
-:   [:octicons-tag-24: 2.0.0][iwyu support] · :octicons-milestone-24: `ON`/`OFF` (Default: `OFF`)
+:   [:octicons-tag-24: 2.2.0][cmake iwyu support] · :octicons-milestone-24: `ON`/`OFF` (Default: `OFF`)
 
-    Enables `include-what-you-use` when compiling with a clang compiler.
+    Enables include-what-you-use analysis.
 
-    [iwyu support]: https://github.com/mpusz/mp-units/releases/tag/v2.0.0
+    [cmake iwyu support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
+
+[`MP_UNITS_DEV_CLANG_TIDY`](#MP_UNITS_DEV_CLANG_TIDY){ #MP_UNITS_DEV_CLANG_TIDY }
+
+:   [:octicons-tag-24: 2.2.0][cmake clang-tidy support] · :octicons-milestone-24: `ON`/`OFF` (Default: `OFF`)
+
+    Enables clang-tidy analysis.
+
+    [cmake clang-tidy support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 
 
 ## CMake with presets support

@@ -27,62 +27,59 @@
 import mp_units;
 #else
 #include <mp-units/format.h>
+#include <mp-units/framework/quantity_point.h>
 #include <mp-units/math.h>
-#include <mp-units/quantity_point.h>
 #include <mp-units/systems/isq/thermodynamics.h>
-#include <mp-units/systems/si/si.h>
+#include <mp-units/systems/si.h>
 #endif
 
-// Based on: https://www.kalmanfilter.net/kalman1d.html#ex8
+// Based on: https://www.kalmanfilter.net/kalman1d_pn.html#ex8
 
 using namespace mp_units;
 
 template<QuantityPoint QP>
-void print_header(kalman::estimation<QP> initial)
+void print_header(kalman::system_state_estimate<QP> initial)
 {
-  std::cout << MP_UNITS_STD_FMT::format("Initial: {}\n", initial);
-  std::cout << MP_UNITS_STD_FMT::format("{:>2} | {:>7} | {:>10} | {:>16} | {:>16}\n", "N", "Gain", "Measured",
+  std::cout << MP_UNITS_STD_FMT::format("Initial: {}\n", initial.state(), initial.variance());
+  std::cout << MP_UNITS_STD_FMT::format("{:>2} | {:>10} | {:>7} | {:>22} | {:>22}\n", "N", "Measured", "Gain",
                                         "Curr. Estimate", "Next Estimate");
 }
 
 template<QuantityPoint QP, QuantityOf<dimensionless> K>
-void print(auto iteration, K gain, QP measured, kalman::estimation<QP> current, kalman::estimation<QP> next)
+void print(auto iteration, QP measured, K gain, kalman::system_state_estimate<QP> current,
+           kalman::system_state_estimate<QP> next)
 {
-  std::cout << MP_UNITS_STD_FMT::format("{:2} | {:7%.3Q} | {:10%.3Q %q} | {:>16.2} | {:>16.2}\n", iteration, gain,
-                                        measured.quantity_ref_from(QP::point_origin), current, next);
+  std::cout << MP_UNITS_STD_FMT::format(
+    "{:2} | {:10} | {:7:N[.4f]} | {:10:0[:N[.3f]]} {:11:N[.4f]} | {:10:0[:N[.3f]]} {:11:N[.4f]}\n", iteration, measured,
+    gain, current.state(), current.variance(), next.state(), next.variance());
 }
 
 int main()
 {
-  constexpr auto deg_C = isq::Celsius_temperature[si::degree_Celsius];
+  using namespace mp_units::si::unit_symbols;
+  using qp = quantity_point<isq::Celsius_temperature[deg_C]>;
+  using estimate = kalman::system_state_estimate<qp>;
+  using state = estimate::state_type;
 
-  using namespace kalman;
+  const quantity process_noise_variance = 0.15 * pow<2>(deg_C);
+  const estimate initial{state{qp{10. * deg_C}}, 100. * deg_C};
+  const std::array measurements = {qp{50.486 * deg_C}, qp{50.963 * deg_C}, qp{51.597 * deg_C}, qp{52.001 * deg_C},
+                                   qp{52.518 * deg_C}, qp{53.05 * deg_C},  qp{53.438 * deg_C}, qp{53.858 * deg_C},
+                                   qp{54.465 * deg_C}, qp{55.114 * deg_C}};
+  const quantity measurement_error = 0.1 * deg_C;
+  const quantity measurement_variance = pow<2>(measurement_error);
 
-  const auto process_noise_variance = 0.15 * (deg_C * deg_C);
-  const estimation initial = {state{si::ice_point + 10. * deg_C}, pow<2>(100. * deg_C)};
-  const std::array measurements = {si::ice_point + 50.45 * deg_C,  si::ice_point + 50.967 * deg_C,
-                                   si::ice_point + 51.6 * deg_C,   si::ice_point + 52.106 * deg_C,
-                                   si::ice_point + 52.492 * deg_C, si::ice_point + 52.819 * deg_C,
-                                   si::ice_point + 53.433 * deg_C, si::ice_point + 54.007 * deg_C,
-                                   si::ice_point + 54.523 * deg_C, si::ice_point + 54.99 * deg_C};
-  const auto measurement_uncertainty = pow<2>(0.1 * deg_C);
-
-  auto update = [=]<QuantityPoint QP>(const estimation<QP>& previous, const QP& meassurement,
-                                      QuantityOf<dimensionless> auto gain) {
-    return estimation{state_update(previous.state, meassurement, gain), covariance_update(previous.uncertainty, gain)};
-  };
-
-  auto predict = [=]<QuantityPoint QP>(const estimation<QP>& current) {
-    return estimation{current.state, covariance_extrapolation(current.uncertainty, process_noise_variance)};
+  auto predict = [=](const estimate& current) {
+    return estimate{current.state(), kalman::covariance_extrapolation(current.variance(), process_noise_variance)};
   };
 
   print_header(initial);
-  estimation next = predict(initial);
-  for (int index = 1; const auto& m : measurements) {
-    const auto& previous = next;
-    const auto gain = kalman_gain(previous.uncertainty, measurement_uncertainty);
-    const estimation current = update(previous, m, gain);
+  estimate next = predict(initial);
+  for (int index = 1; const auto& measurement : measurements) {
+    const estimate& previous = next;
+    const quantity gain = kalman::kalman_gain(previous.variance(), measurement_variance);
+    const estimate current = state_estimate_update(previous, measurement, gain);
     next = predict(current);
-    print(index++, gain, m, current, next);
+    print(index++, measurement, gain, current, next);
   }
 }

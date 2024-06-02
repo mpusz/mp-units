@@ -20,8 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// Copy-pasted C++ standard libraries to be replaced with `import std;` when available
-// `#include <algorithm.h>` is too heavy to do in every translation unit
+// Copy-pasted C++ standard libraries
+// TODO To be replaced with `import std;` when available
+//      `#include <algorithm.h>` is too heavy to do in every translation unit
 
 #pragma once
 
@@ -70,45 +71,6 @@ template<class InputIt, class UnaryPred>
 constexpr bool all_of(InputIt first, InputIt last, UnaryPred p)
 {
   return find_if_not(first, last, p) == last;
-}
-
-template<class InputIt1, class InputIt2>
-constexpr bool equal(InputIt1 first1, InputIt1 last1, InputIt2 first2)
-{
-  for (; first1 != last1; ++first1, ++first2) {
-    if (!(*first1 == *first2)) {
-      return false;
-    }
-  }
-  return true;
-}
-
-template<class I1, class I2, class Cmp>
-constexpr auto lexicographical_compare_three_way(I1 first1, I1 last1, I2 first2, I2 last2, Cmp comp)
-  -> decltype(comp(*first1, *first2))
-{
-  using ret_t = decltype(comp(*first1, *first2));
-  static_assert(std::disjunction_v<std::is_same<ret_t, std::strong_ordering>, std::is_same<ret_t, std::weak_ordering>,
-                                   std::is_same<ret_t, std::partial_ordering>>,
-                "The return type must be a comparison category type.");
-
-  bool exhaust1 = (first1 == last1);
-  bool exhaust2 = (first2 == last2);
-  MP_UNITS_DIAGNOSTIC_PUSH
-  MP_UNITS_DIAGNOSTIC_IGNORE_ZERO_AS_NULLPOINTER_CONSTANT
-  for (; !exhaust1 && !exhaust2; exhaust1 = (++first1 == last1), exhaust2 = (++first2 == last2))
-    if (auto c = comp(*first1, *first2); c != 0) return c;
-  MP_UNITS_DIAGNOSTIC_POP
-
-  if (!exhaust1) return std::strong_ordering::greater;
-  if (!exhaust2) return std::strong_ordering::less;
-  return std::strong_ordering::equal;
-}
-
-template<class I1, class I2>
-constexpr auto lexicographical_compare_three_way(I1 first1, I1 last1, I2 first2, I2 last2)
-{
-  return ::mp_units::detail::lexicographical_compare_three_way(first1, last1, first2, last2, std::compare_three_way());
 }
 
 template<class ForwardIt>
@@ -168,6 +130,20 @@ constexpr OutputIt copy(InputIt first, InputIt last, OutputIt d_first)
 {
   for (; first != last; (void)++first, (void)++d_first) *d_first = *first;
   return d_first;
+}
+
+template<class ForwardIt1, class ForwardIt2>
+constexpr void iter_swap(ForwardIt1 a, ForwardIt2 b)
+{
+  using std::swap;
+  swap(*a, *b);
+}
+
+template<class ForwardIt1, class ForwardIt2>
+constexpr ForwardIt2 swap_ranges(ForwardIt1 first1, ForwardIt1 last1, ForwardIt2 first2)
+{
+  for (; first1 != last1; ++first1, ++first2) iter_swap(first1, first2);
+  return first2;
 }
 
 }  // namespace mp_units::detail
