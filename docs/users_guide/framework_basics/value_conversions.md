@@ -153,11 +153,25 @@ As a shortcut, instead of providing a unit and a representation type to `value_c
 still only allows for changes in unit and representation type, but not changing the type of the quantity.
 For that, you will have to use a `quantity_cast` instead.
 
-Overloads are also provided for instances of `quantity_point`. Furthermore, in that case, there is
-an overload `value_cast<ToQP>(qp)`, which is roughly equivalent to
-`value_cast<typename ToQP::quantity_type>(qp).point_for(ToQP::point_origin)`.
+Overloads are also provided for instances of `quantity_point`.
+All variants of `value_cast<...>(q)` that apply to instances of `quantity`
+have a corresponding version applicable to `quantity_point`, where the `point_origin` remains untouched,
+and the cast changes how the "offset" from the origin is represented.
+Specifically, for any `quantity_point` instance `qp`, all of the following equivalences hold:
+```cpp
+static_assert( value_cast<Rep>(qp) == quantity_point{value_cast<Rep>(qp.quantity_from(qp.point_origin)), qp.point_origin} );
+static_assert( value_cast<U>(qp) == quantity_point{value_cast<U>(qp.quantity_from(qp.point_origin)), qp.point_origin} );
+static_assert( value_cast<U, Rep>(qp) == quantity_point{value_cast<U, Rep>(qp.quantity_from(qp.point_origin)), qp.point_origin} );
+static_assert( value_cast<Q>(qp) == quantity_point{value_cast<Q>(qp.quantity_from(qp.point_origin)), qp.point_origin} );
+```
+
+Furthermore, there is one additional overload `value_cast<ToQP>(qp)`.
+This overload permits to additionally replace the `point_origin` with another compatible one,
+while still representing the same point in the affine space.
+Thus, it is roughly equivalent to
+`value_cast<ToQP::unit, ToQP::rep>(qp).point_for(ToQP::point_origin)`.
 In contrast to a separate `value_cast` followed by `point_for` (or vice-versa), the combined
-`value_cast` tries to choose the order of the individual conversion steps in such a way,
+`value_cast` tries to choose the order of the individual conversion steps in a way
 to avoid both overflow and unnecessary loss of precision. Overflow is a risk because the change of origin point
 may require an addition of a potentially large offset (the difference between the origin points),
 which may well be outside the range of one or both quantity types.
