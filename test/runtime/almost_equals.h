@@ -37,18 +37,36 @@ struct AlmostEqualsMatcher : Catch::Matchers::MatcherGenericBase {
   explicit AlmostEqualsMatcher(const T& target) : target_{target} {}
 
   template<std::convertible_to<T> U>
-    requires std::same_as<typename T::rep, typename U::rep> && treat_as_floating_point<typename T::rep>
+    requires std::same_as<typename T::rep, typename U::rep>
   bool match(const U& other) const
   {
     using std::abs;
-    using common = std::common_type_t<T, U>;
+    using rep = typename T::rep;
+    using common = conditional<treat_as_floating_point<rep>, std::common_type_t<T, U>, T>;
     const auto x = common(target_).numerical_value_in(common::unit);
     const auto y = common(other).numerical_value_in(common::unit);
-    const auto maxXYOne = std::max({typename T::rep{1}, abs(x), abs(y)});
-    return abs(x - y) <= std::numeric_limits<typename T::rep>::epsilon() * maxXYOne;
+    if constexpr (treat_as_floating_point<rep>) {
+      const auto maxXYOne = std::max({rep{1}, abs(x), abs(y)});
+      return abs(x - y) <= std::numeric_limits<rep>::epsilon() * maxXYOne;
+    } else {
+      if (x >= 0) {
+        return x - 1 <= y && y - 1 <= x;
+      } else {
+        return x <= y + 1 && y <= x + 1;
+      }
+    }
   }
 
-  std::string describe() const override { return "almost equals: " + MP_UNITS_STD_FMT::format("{}", target_); }
+  std::string describe() const override
+  {
+    if constexpr (treat_as_floating_point<typename T::rep>) {
+      return "almost equals: " + MP_UNITS_STD_FMT::format("{}", target_);
+    } else {
+      return "almost equals: " + MP_UNITS_STD_FMT::format("[ {0} ({0:#x}) +/- 1 ] {1}",
+                                                          target_.numerical_value_is_an_implementation_detail_,
+                                                          target_.unit);
+    }
+  }
 
 private:
   const T& target_;
@@ -59,5 +77,6 @@ AlmostEqualsMatcher<T> AlmostEquals(const T& target)
 {
   return AlmostEqualsMatcher<T>{target};
 }
+
 
 }  // namespace mp_units
