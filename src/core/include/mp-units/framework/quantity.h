@@ -46,8 +46,9 @@ namespace mp_units {
 namespace detail {
 
 template<auto UFrom, auto UTo>
-concept IntegralConversionFactor = Unit<decltype(UFrom)> && Unit<decltype(UTo)> &&
-                                   is_integral(get_canonical_unit(UFrom).mag / get_canonical_unit(UTo).mag);
+concept IntegralConversionFactor =
+  Unit<decltype(UFrom)> && Unit<decltype(UTo)> &&
+  is_integral(decltype(decltype(get_canonical_unit(UFrom))::mag / decltype(get_canonical_unit(UTo))::mag){});
 
 template<typename QFrom, typename QTo>
 concept QuantityConvertibleTo =

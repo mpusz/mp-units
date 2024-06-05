@@ -33,9 +33,8 @@ namespace mp_units {
 
 namespace detail {
 
-// do not refactor below to a variable template - GCC-11 does not like it
 template<typename T>
-struct is_unit : std::false_type {};
+inline constexpr bool is_unit = false;
 
 }  // namespace detail
 
@@ -45,7 +44,7 @@ struct is_unit : std::false_type {};
  * Satisfied by all unit types provided by the library.
  */
 MP_UNITS_EXPORT template<typename T>
-concept Unit = detail::is_unit<T>::value;
+concept Unit = detail::is_unit<T>;
 
 template<Magnitude auto M, Unit U>
 struct scaled_unit;
@@ -144,8 +143,8 @@ inline constexpr bool is_specialization_of_prefixed_unit<prefixed_unit<Symbol, M
 
 template<typename T>
   requires requires(T* t) { is_unit_impl(t); } && (!is_specialization_of_named_unit<T>) &&
-           (!is_specialization_of_prefixed_unit<T>)
-struct is_unit<T> : std::true_type {};
+             (!is_specialization_of_prefixed_unit<T>)
+inline constexpr bool is_unit<T> = true;
 
 template<Unit U>
 [[nodiscard]] consteval bool has_associated_quantity(U);
@@ -197,7 +196,7 @@ concept UnitOf =
 
 namespace detail {
 
-[[nodiscard]] consteval bool have_same_canonical_reference_unit(Unit auto u1, Unit auto u2);
+[[nodiscard]] consteval auto have_same_canonical_reference_unit(Unit auto u1, Unit auto u2);
 
 }
 
@@ -210,7 +209,7 @@ namespace detail {
 MP_UNITS_EXPORT template<typename U, auto U2, auto QS>
 concept UnitCompatibleWith =
   Unit<U> && Unit<MP_UNITS_REMOVE_CONST(decltype(U2))> && QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS))> &&
-  (!AssociatedUnit<U> || UnitOf<U, QS>)&&detail::have_same_canonical_reference_unit(U{}, U2);
+  (!AssociatedUnit<U> || UnitOf<U, QS>)&&decltype(detail::have_same_canonical_reference_unit(U{}, U2))::value;
 
 
 }  // namespace mp_units
