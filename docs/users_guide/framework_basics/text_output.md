@@ -48,7 +48,7 @@ and units of derived quantities.
     inline constexpr struct second : named_unit<"s", kind_of<isq::time>> {} second;
     inline constexpr struct metre : named_unit<"m", kind_of<isq::length>> {} metre;
     inline constexpr struct gram : named_unit<"g", kind_of<isq::mass>> {} gram;
-    inline constexpr struct kilogram : decltype(kilo<gram>) {} kilogram;
+    inline constexpr auto kilogram = kilo<gram>;
 
     inline constexpr struct newton : named_unit<"N", kilogram * metre / square(second)> {} newton;
     inline constexpr struct joule : named_unit<"J", newton * metre> {} joule;

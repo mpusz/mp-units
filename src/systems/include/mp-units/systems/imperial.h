@@ -54,9 +54,9 @@ inline constexpr struct link : named_unit<"li", mag_ratio<1, 100> * chain> {} li
 inline constexpr struct rod : named_unit<"rd", mag<25> * link> {} rod;
 
 // https://en.wikipedia.org/wiki/Imperial_units#Area
-inline constexpr struct perch : decltype(square(rod)) {} perch;
-inline constexpr struct rood : decltype(mag<40> * perch) {} rood;
-inline constexpr struct acre : decltype(mag<4> * rood) {} acre;
+inline constexpr struct perch : named_unit<"perch", square(rod)> {} perch;
+inline constexpr struct rood : named_unit<"rood", mag<40> * perch> {} rood;
+inline constexpr struct acre : named_unit<"acre", mag<4> * rood> {} acre;
 
 // https://en.wikipedia.org/wiki/Imperial_units#Volume
 inline constexpr struct gallon : named_unit<"gal", mag_ratio<454'609, 100'000> * si::litre> {} gallon;

@@ -50,7 +50,7 @@ inline constexpr struct Jupiter_mass : named_unit<"M_JUP", mag_ratio<1'898, 1'00
 inline constexpr struct Earth_mass : named_unit<"M_EARTH", mag_ratio<59'742, 10'000> * mag_power<10, 24> * si::kilogram> {} Earth_mass;
 
 // length
-inline constexpr struct astronomical_unit : decltype(si::astronomical_unit) {} astronomical_unit;
+inline constexpr auto astronomical_unit = si::astronomical_unit;
 
 // https://en.wikipedia.org/wiki/Lunar_distance_(astronomy)
 inline constexpr struct lunar_distance : named_unit<"LD", mag<384'399> * si::kilo<si::metre>> {} lunar_distance;

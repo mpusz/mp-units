@@ -94,7 +94,7 @@ inline constexpr struct minim : named_unit<"min", mag_ratio<1, 80> * teaspoon> {
 inline constexpr struct fluid_dram : named_unit<"fl dr", mag<60> * minim> {} fluid_dram;
 inline constexpr struct barrel : named_unit<"bbl", mag_ratio<315, 10> * gallon> {} barrel;
 inline constexpr struct oil_barrel : named_unit<"bbl", mag_ratio<4, 3> * barrel> {} oil_barrel;
-inline constexpr struct hogshead : decltype(mag<63> * gallon) {} hogshead;
+inline constexpr struct hogshead : named_unit<"hogshead", mag<63> * gallon> {} hogshead;
 
 // https://en.wikipedia.org/wiki/United_States_customary_units#Dry_volume
 inline constexpr struct dry_barrel : named_unit<"bbl", mag<7056> * cubic(inch)> {} dry_barrel;

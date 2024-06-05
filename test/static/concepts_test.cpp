@@ -141,7 +141,7 @@ static_assert(!detail::QuantityKindSpec<int>);
 struct metre_per_second : decltype(si::metre / si::second) {};
 
 static_assert(Unit<struct si::metre>);
-static_assert(Unit<struct si::kilogram>);
+static_assert(Unit<decltype(si::kilogram)>);
 static_assert(Unit<decltype(si::kilo<si::gram>)>);
 static_assert(Unit<struct natural::electronvolt>);
 static_assert(Unit<decltype(si::metre / si::second)>);
@@ -168,7 +168,7 @@ static_assert(!Unit<std::chrono::seconds>);
 // NamedUnit
 static_assert(detail::NamedUnit<struct si::metre>);
 static_assert(detail::NamedUnit<struct natural::electronvolt>);
-static_assert(!detail::NamedUnit<struct si::kilogram>);
+static_assert(!detail::NamedUnit<decltype(si::kilogram)>);
 static_assert(!detail::NamedUnit<decltype(si::kilo<si::gram>)>);
 static_assert(!detail::NamedUnit<decltype(si::metre / si::second)>);
 static_assert(!detail::NamedUnit<decltype(inverse(si::second))>);
@@ -194,7 +194,7 @@ static_assert(!detail::NamedUnit<std::chrono::seconds>);
 // PrefixableUnit
 static_assert(PrefixableUnit<struct si::metre>);
 static_assert(PrefixableUnit<struct natural::electronvolt>);
-static_assert(!PrefixableUnit<struct si::kilogram>);
+static_assert(!PrefixableUnit<decltype(si::kilogram)>);
 static_assert(!PrefixableUnit<decltype(si::kilo<si::gram>)>);
 static_assert(!PrefixableUnit<decltype(si::metre / si::second)>);
 static_assert(!PrefixableUnit<decltype(inverse(si::second))>);
@@ -220,7 +220,7 @@ static_assert(!PrefixableUnit<std::chrono::seconds>);
 // AssociatedUnit
 static_assert(AssociatedUnit<struct si::metre>);
 static_assert(!AssociatedUnit<struct natural::electronvolt>);
-static_assert(AssociatedUnit<struct si::kilogram>);
+static_assert(AssociatedUnit<decltype(si::kilogram)>);
 static_assert(AssociatedUnit<decltype(si::kilo<si::gram>)>);
 static_assert(AssociatedUnit<decltype(si::metre / si::second)>);
 static_assert(AssociatedUnit<decltype(inverse(si::second))>);
@@ -246,7 +246,7 @@ static_assert(!AssociatedUnit<std::chrono::seconds>);
 // UnitOf
 static_assert(UnitOf<struct si::metre, isq::length>);
 static_assert(UnitOf<struct si::metre, isq::radius>);
-static_assert(UnitOf<struct si::kilogram, isq::mass>);
+static_assert(UnitOf<decltype(si::kilogram), isq::mass>);
 static_assert(UnitOf<struct si::hertz, isq::frequency>);
 static_assert(UnitOf<struct si::hertz, inverse(isq::time)>);
 static_assert(UnitOf<struct one, dimensionless>);

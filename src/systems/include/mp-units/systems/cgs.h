@@ -35,13 +35,9 @@ MP_UNITS_EXPORT
 namespace mp_units::cgs {
 
 // clang-format off
-#if MP_UNITS_COMP_MSVC
-inline constexpr struct centimetre : si::centi_<si::metre> {} centimetre;
-#else
-inline constexpr struct centimetre : decltype(si::centi<si::metre>) {} centimetre;
-#endif
-inline constexpr struct gram : decltype(si::gram) {} gram;
-inline constexpr struct second : decltype(si::second) {} second;
+inline constexpr auto centimetre = si::centi<si::metre>;
+inline constexpr auto gram = si::gram;
+inline constexpr auto second = si::second;
 inline constexpr struct gal : named_unit<"Gal", centimetre / square(second)> {} gal;
 inline constexpr struct dyne : named_unit<"dyn", gram * centimetre / square(second)> {} dyne;
 inline constexpr struct erg : named_unit<"erg", dyne * centimetre> {} erg;

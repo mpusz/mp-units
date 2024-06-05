@@ -67,11 +67,7 @@ inline constexpr struct poundal : named_unit<"pdl", pound * foot / square(si::se
 inline constexpr struct pound_force : named_unit<"lbf", pound * si::standard_gravity> {} pound_force;
 
 // https://en.wikipedia.org/wiki/Kip_(unit),
-#if MP_UNITS_COMP_MSVC
-inline constexpr struct kip : si::kilo_<pound_force> {} kip;
-#else
-inline constexpr struct kip : decltype(si::kilo<pound_force>) {} kip;
-#endif
+inline constexpr auto kip = si::kilo<pound_force>;
 
 // pressure
 inline constexpr struct psi : named_unit<"psi", pound_force / square(inch)> {} psi;

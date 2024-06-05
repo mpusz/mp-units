@@ -57,7 +57,7 @@ inline constexpr struct proton_mass : named_unit<"m_p", mag_ratio<1'672'621'923'
 inline constexpr struct neutron_mass : named_unit<"m_n", mag_ratio<1'674'927'498'049, 1'000'000'000'000> * mag_power<10, -27> * si::kilogram> {} neutron_mass;
 
 // speed
-inline constexpr struct speed_of_light : decltype(si::si2019::speed_of_light_in_vacuum) {} speed_of_light;
+inline constexpr auto speed_of_light = si::si2019::speed_of_light_in_vacuum;
 // clang-format on
 
 namespace unit_symbols {
