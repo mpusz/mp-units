@@ -342,7 +342,7 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
 
 [`MP_UNITS_API_STD_FORMAT`](#MP_UNITS_API_STD_FORMAT){ #MP_UNITS_API_STD_FORMAT }
 
-:   [:octicons-tag-24: 2.2.0][use fmtlib support] · :octicons-milestone-24: `AUTO`/`ON`/`OFF` (Default: `AUTO`)
+:   [:octicons-tag-24: 2.2.0][use fmtlib support] · :octicons-milestone-24: `AUTO`/`TRUE`/`FALSE` (Default: `AUTO`)
 
     Enables the usage of [`std::format`](https://en.cppreference.com/w/cpp/utility/format/format)
     and associated facilities for text formatting. If it is not supported, then
@@ -352,7 +352,7 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
 
 [`MP_UNITS_API_STRING_VIEW_RET`](#MP_UNITS_API_STRING_VIEW_RET){ #MP_UNITS_API_STRING_VIEW_RET }
 
-:   [:octicons-tag-24: 2.2.0][cmake returning string_view] · :octicons-milestone-24: `AUTO`/`ON`/`OFF` (Default: `AUTO`)
+:   [:octicons-tag-24: 2.2.0][cmake returning string_view] · :octicons-milestone-24: `AUTO`/`TRUE`/`FALSE` (Default: `AUTO`)
 
     Enables returning `std::string_view` from the
     [`unit_symbol()`](../users_guide/framework_basics/text_output.md#unit_symbol)
@@ -364,7 +364,7 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
 
 [`MP_UNITS_API_NO_CRTP`](#MP_UNITS_API_NO_CRTP){ #MP_UNITS_API_NO_CRTP }
 
-:   [:octicons-tag-24: 2.2.0][cmake no crtp support] · :octicons-milestone-24: `AUTO`/`ON`/`OFF` (Default: `AUTO`)
+:   [:octicons-tag-24: 2.2.0][cmake no crtp support] · :octicons-milestone-24: `AUTO`/`TRUE`/`FALSE` (Default: `AUTO`)
 
     Removes the need for the usage of the CRTP idiom in the
     [`quantity_spec` definitions](../users_guide/framework_basics/systems_of_quantities.md#defining-quantities).

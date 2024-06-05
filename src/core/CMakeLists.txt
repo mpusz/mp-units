@@ -23,8 +23,7 @@
 cmake_minimum_required(VERSION 3.23)
 
 function(set_feature_flag name)
-    set(val_list "TRUE" "FALSE")
-    if(${projectPrefix}${name} IN_LIST val_list)
+    if(NOT ${projectPrefix}${name} STREQUAL "AUTO")
         target_compile_definitions(
             mp-units-core ${${projectPrefix}TARGET_SCOPE} ${projectPrefix}${name}=$<BOOL:${${projectPrefix}${name}}>
         )
@@ -99,8 +98,8 @@ set_feature_flag(API_NO_CRTP)
 
 # Text formatting
 if(NOT ${projectPrefix}API_FREESTANDING
-   AND (${projectPrefix}API_STD_FORMAT STREQUAL "FALSE" OR (${projectPrefix}API_STD_FORMAT STREQUAL "AUTO"
-                                                            AND NOT ${projectPrefix}LIB_FORMAT_SUPPORTED))
+   AND (NOT ${projectPrefix}API_STD_FORMAT OR (${projectPrefix}API_STD_FORMAT STREQUAL "AUTO"
+                                               AND NOT ${projectPrefix}LIB_FORMAT_SUPPORTED))
 )
     if(NOT TARGET fmt::fmt)
         find_package(fmt REQUIRED)
