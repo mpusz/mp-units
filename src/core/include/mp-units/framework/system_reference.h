@@ -45,10 +45,10 @@ namespace mp_units {
  * @code{.cpp}
  * // hypothetical natural system of units for c=1
  *
- * inline constexpr struct second : named_unit<"s"> {} second;
- * inline constexpr struct minute : named_unit<"min", mag<60> * second> {} minute;
- * inline constexpr struct gram : named_unit<"g"> {} gram;
- * inline constexpr struct kilogram : decltype(si::kilo<gram>) {} kilogram;
+ * inline constexpr struct second final : named_unit<"s"> {} second;
+ * inline constexpr struct minute final : named_unit<"min", mag<60> * second> {} minute;
+ * inline constexpr struct gram final : named_unit<"g"> {} gram;
+ * inline constexpr auto kilogram = si::kilo<gram>;
  *
  * inline constexpr struct time : system_reference<isq::time, second> {} time;
  * inline constexpr struct length : system_reference<isq::length, second> {} length;

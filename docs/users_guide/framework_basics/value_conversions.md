@@ -88,8 +88,8 @@ the `value_cast<U, Rep>(q)` which always returns the most precise result:
     inline constexpr struct dim_currency : base_dimension<"$"> {} dim_currency;
     inline constexpr struct currency : quantity_spec<dim_currency> {} currency;
 
-    inline constexpr struct us_dollar : named_unit<"USD", kind_of<currency>> {} us_dollar;
-    inline constexpr struct scaled_us_dollar : named_unit<"USD_s", mag_power<10, -8> * us_dollar> {} scaled_us_dollar;
+    inline constexpr struct us_dollar final : named_unit<"USD", kind_of<currency>> {} us_dollar;
+    inline constexpr struct scaled_us_dollar final : named_unit<"USD_s", mag_power<10, -8> * us_dollar> {} scaled_us_dollar;
 
     namespace unit_symbols {
 
@@ -108,8 +108,8 @@ the `value_cast<U, Rep>(q)` which always returns the most precise result:
     inline constexpr struct dim_currency : base_dimension<"$"> {} dim_currency;
     inline constexpr struct currency : quantity_spec<currency, dim_currency> {} currency;
 
-    inline constexpr struct us_dollar : named_unit<"USD", kind_of<currency>> {} us_dollar;
-    inline constexpr struct scaled_us_dollar : named_unit<"USD_s", mag_power<10, -8> * us_dollar> {} scaled_us_dollar;
+    inline constexpr struct us_dollar final : named_unit<"USD", kind_of<currency>> {} us_dollar;
+    inline constexpr struct scaled_us_dollar final : named_unit<"USD_s", mag_power<10, -8> * us_dollar> {} scaled_us_dollar;
 
     namespace unit_symbols {
 
@@ -128,8 +128,8 @@ the `value_cast<U, Rep>(q)` which always returns the most precise result:
     inline constexpr struct dim_currency : base_dimension<"$"> {} dim_currency;
     QUANTITY_SPEC(currency, dim_currency);
 
-    inline constexpr struct us_dollar : named_unit<"USD", kind_of<currency>> {} us_dollar;
-    inline constexpr struct scaled_us_dollar : named_unit<"USD_s", mag_power<10, -8> * us_dollar> {} scaled_us_dollar;
+    inline constexpr struct us_dollar final : named_unit<"USD", kind_of<currency>> {} us_dollar;
+    inline constexpr struct scaled_us_dollar final : named_unit<"USD_s", mag_power<10, -8> * us_dollar> {} scaled_us_dollar;
 
     namespace unit_symbols {
 

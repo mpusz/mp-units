@@ -37,7 +37,7 @@ using namespace mp_units;
 using namespace mp_units::angular;
 using namespace mp_units::angular::unit_symbols;
 
-inline constexpr struct half_revolution : named_unit<"hrev", mag_pi * radian> {
+inline constexpr struct half_revolution final : named_unit<"hrev", mag_pi * radian> {
 } half_revolution;
 inline constexpr auto hrev = half_revolution;
 

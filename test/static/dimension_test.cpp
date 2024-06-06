@@ -40,7 +40,7 @@ inline constexpr struct my_length1_ : decltype(length) {} my_length1;
 inline constexpr struct my_length2_ : decltype(length) {} my_length2;
 
 QUANTITY_SPEC_(q_time, time);
-inline constexpr struct second_ : named_unit<"s", kind_of<q_time>> {} second;
+inline constexpr struct second_ final : named_unit<"s", kind_of<q_time>> {} second;
 
 inline constexpr auto frequency = inverse(time);
 inline constexpr auto action = inverse(time);

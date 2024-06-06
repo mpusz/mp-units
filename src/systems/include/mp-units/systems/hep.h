@@ -49,12 +49,12 @@ using si::electronvolt;
 // effective cross-sectional area according to EU council directive 80/181/EEC
 // https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:01980L0181-20090527#page=10
 // https://www.fedlex.admin.ch/eli/cc/1994/3109_3109_3109/de
-inline constexpr struct barn : named_unit<"b", mag_power<10, -28> * square(si::metre)> {} barn;
+inline constexpr struct barn final : named_unit<"b", mag_power<10, -28> * square(si::metre)> {} barn;
 
 // mass
-inline constexpr struct electron_mass : named_unit<"m_e", mag_ratio<9'109'383'701'528, 1'000'000'000'000> * mag_power<10, -31> * si::kilogram> {} electron_mass;
-inline constexpr struct proton_mass : named_unit<"m_p", mag_ratio<1'672'621'923'695, 1'000'000'000'000> * mag_power<10, -27> * si::kilogram> {} proton_mass;
-inline constexpr struct neutron_mass : named_unit<"m_n", mag_ratio<1'674'927'498'049, 1'000'000'000'000> * mag_power<10, -27> * si::kilogram> {} neutron_mass;
+inline constexpr struct electron_mass final : named_unit<"m_e", mag_ratio<9'109'383'701'528, 1'000'000'000'000> * mag_power<10, -31> * si::kilogram> {} electron_mass;
+inline constexpr struct proton_mass final : named_unit<"m_p", mag_ratio<1'672'621'923'695, 1'000'000'000'000> * mag_power<10, -27> * si::kilogram> {} proton_mass;
+inline constexpr struct neutron_mass final : named_unit<"m_n", mag_ratio<1'674'927'498'049, 1'000'000'000'000> * mag_power<10, -27> * si::kilogram> {} neutron_mass;
 
 // speed
 inline constexpr auto speed_of_light = si::si2019::speed_of_light_in_vacuum;

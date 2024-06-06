@@ -45,18 +45,18 @@ and units of derived quantities.
 === "Units"
 
     ```cpp
-    inline constexpr struct second : named_unit<"s", kind_of<isq::time>> {} second;
-    inline constexpr struct metre : named_unit<"m", kind_of<isq::length>> {} metre;
-    inline constexpr struct gram : named_unit<"g", kind_of<isq::mass>> {} gram;
+    inline constexpr struct second final : named_unit<"s", kind_of<isq::time>> {} second;
+    inline constexpr struct metre final : named_unit<"m", kind_of<isq::length>> {} metre;
+    inline constexpr struct gram final : named_unit<"g", kind_of<isq::mass>> {} gram;
     inline constexpr auto kilogram = kilo<gram>;
 
-    inline constexpr struct newton : named_unit<"N", kilogram * metre / square(second)> {} newton;
-    inline constexpr struct joule : named_unit<"J", newton * metre> {} joule;
-    inline constexpr struct watt : named_unit<"W", joule / second> {} watt;
-    inline constexpr struct coulomb : named_unit<"C", ampere * second> {} coulomb;
-    inline constexpr struct volt : named_unit<"V", watt / ampere> {} volt;
-    inline constexpr struct farad : named_unit<"F", coulomb / volt> {} farad;
-    inline constexpr struct ohm : named_unit<{u8"Ω", "ohm"}, volt / ampere> {} ohm;
+    inline constexpr struct newton final : named_unit<"N", kilogram * metre / square(second)> {} newton;
+    inline constexpr struct joule final : named_unit<"J", newton * metre> {} joule;
+    inline constexpr struct watt final : named_unit<"W", joule / second> {} watt;
+    inline constexpr struct coulomb final : named_unit<"C", ampere * second> {} coulomb;
+    inline constexpr struct volt final : named_unit<"V", watt / ampere> {} volt;
+    inline constexpr struct farad final : named_unit<"F", coulomb / volt> {} farad;
+    inline constexpr struct ohm final : named_unit<{u8"Ω", "ohm"}, volt / ampere> {} ohm;
     ```
 
 === "Prefixes"
@@ -75,13 +75,13 @@ and units of derived quantities.
 === "Constants"
 
     ```cpp
-    inline constexpr struct hyperfine_structure_transition_frequency_of_cs : named_unit<{u8"Δν_Cs", "dv_Cs"}, mag<9'192'631'770> * hertz> {} hyperfine_structure_transition_frequency_of_cs;
-    inline constexpr struct speed_of_light_in_vacuum : named_unit<"c", mag<299'792'458> * metre / second> {} speed_of_light_in_vacuum;
-    inline constexpr struct planck_constant : named_unit<"h", mag_ratio<662'607'015, 100'000'000> * mag_power<10, -34> * joule * second> {} planck_constant;
-    inline constexpr struct elementary_charge : named_unit<"e", mag_ratio<1'602'176'634, 1'000'000'000> * mag_power<10, -19> * coulomb> {} elementary_charge;
-    inline constexpr struct boltzmann_constant : named_unit<"k", mag_ratio<1'380'649, 1'000'000> * mag_power<10, -23> * joule / kelvin> {} boltzmann_constant;
-    inline constexpr struct avogadro_constant : named_unit<"N_A", mag_ratio<602'214'076, 100'000'000> * mag_power<10, 23> / mole> {} avogadro_constant;
-    inline constexpr struct luminous_efficacy : named_unit<"K_cd", mag<683> * lumen / watt> {} luminous_efficacy;
+    inline constexpr struct hyperfine_structure_transition_frequency_of_cs final : named_unit<{u8"Δν_Cs", "dv_Cs"}, mag<9'192'631'770> * hertz> {} hyperfine_structure_transition_frequency_of_cs;
+    inline constexpr struct speed_of_light_in_vacuum final : named_unit<"c", mag<299'792'458> * metre / second> {} speed_of_light_in_vacuum;
+    inline constexpr struct planck_constant final : named_unit<"h", mag_ratio<662'607'015, 100'000'000> * mag_power<10, -34> * joule * second> {} planck_constant;
+    inline constexpr struct elementary_charge final : named_unit<"e", mag_ratio<1'602'176'634, 1'000'000'000> * mag_power<10, -19> * coulomb> {} elementary_charge;
+    inline constexpr struct boltzmann_constant final : named_unit<"k", mag_ratio<1'380'649, 1'000'000> * mag_power<10, -23> * joule / kelvin> {} boltzmann_constant;
+    inline constexpr struct avogadro_constant final : named_unit<"N_A", mag_ratio<602'214'076, 100'000'000> * mag_power<10, 23> / mole> {} avogadro_constant;
+    inline constexpr struct luminous_efficacy final : named_unit<"K_cd", mag<683> * lumen / watt> {} luminous_efficacy;
     ```
 
 !!! important
@@ -105,7 +105,7 @@ and units of derived quantities.
     template name to initialize it with two symbols:
 
     ```cpp
-    inline constexpr struct ohm : named_unit<symbol_text{u8"Ω", "ohm"}, volt / ampere> {} ohm;
+    inline constexpr struct ohm final : named_unit<symbol_text{u8"Ω", "ohm"}, volt / ampere> {} ohm;
     ```
 
 

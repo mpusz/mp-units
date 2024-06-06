@@ -38,13 +38,13 @@ namespace mp_units::cgs {
 inline constexpr auto centimetre = si::centi<si::metre>;
 inline constexpr auto gram = si::gram;
 inline constexpr auto second = si::second;
-inline constexpr struct gal : named_unit<"Gal", centimetre / square(second)> {} gal;
-inline constexpr struct dyne : named_unit<"dyn", gram * centimetre / square(second)> {} dyne;
-inline constexpr struct erg : named_unit<"erg", dyne * centimetre> {} erg;
-inline constexpr struct barye : named_unit<"Ba", gram / (centimetre * square(second))> {} barye;
-inline constexpr struct poise : named_unit<"P", gram / (centimetre * second)> {} poise;
-inline constexpr struct stokes : named_unit<"St", square(centimetre) / second> {} stokes;
-inline constexpr struct kayser : named_unit<"K", one / centimetre> {} kayser;
+inline constexpr struct gal final : named_unit<"Gal", centimetre / square(second)> {} gal;
+inline constexpr struct dyne final : named_unit<"dyn", gram * centimetre / square(second)> {} dyne;
+inline constexpr struct erg final : named_unit<"erg", dyne * centimetre> {} erg;
+inline constexpr struct barye final : named_unit<"Ba", gram / (centimetre * square(second))> {} barye;
+inline constexpr struct poise final : named_unit<"P", gram / (centimetre * second)> {} poise;
+inline constexpr struct stokes final : named_unit<"St", square(centimetre) / second> {} stokes;
+inline constexpr struct kayser final : named_unit<"K", one / centimetre> {} kayser;
 // clang-format on
 
 namespace unit_symbols {

@@ -120,7 +120,7 @@ static_assert(relative_po<absolute_po<isq::length> + isq::height(42 * m)>.quanti
 static_assert(relative_po<absolute_po<kind_of<isq::length>> + isq::height(42 * m)>.quantity_spec == isq::height);
 static_assert(relative_po<absolute_po<isq::height> + 42 * m>.quantity_spec == isq::height);
 
-inline constexpr struct my_kelvin : named_unit<"my_K", mag<10> * si::kelvin> {
+inline constexpr struct my_kelvin final : named_unit<"my_K", mag<10> * si::kelvin> {
 } my_kelvin;
 
 static_assert(default_point_origin(si::kelvin) == si::absolute_zero);

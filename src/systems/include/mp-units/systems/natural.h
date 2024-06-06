@@ -38,7 +38,7 @@ namespace mp_units::natural {
 
 // clang-format off
 // units
-inline constexpr struct electronvolt : named_unit<"eV"> {} electronvolt;
+inline constexpr struct electronvolt final : named_unit<"eV"> {} electronvolt;
 inline constexpr auto gigaelectronvolt = si::giga<electronvolt>;
 
 // system references

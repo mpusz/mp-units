@@ -234,13 +234,13 @@ A unit can be defined by the user in one of the following ways:
 template<PrefixableUnit U> struct kilo_ : prefixed_unit<"k", mag_power<10, 3>, U{}> {};
 template<PrefixableUnit auto U> inline constexpr kilo_<decltype(U)> kilo;
 
-inline constexpr struct second : named_unit<"s", kind_of<isq::time>> {} second;
-inline constexpr struct minute : named_unit<"min", mag<60> * second> {} minute;
-inline constexpr struct gram : named_unit<"g", kind_of<isq::mass>> {} gram;
-inline constexpr struct kilogram : decltype(kilo<gram>) {} kilogram;
-inline constexpr struct newton : named_unit<"N", kilogram * metre / square(second)> {} newton;
+inline constexpr struct second final : named_unit<"s", kind_of<isq::time>> {} second;
+inline constexpr struct minute final : named_unit<"min", mag<60> * second> {} minute;
+inline constexpr struct gram   final : named_unit<"g", kind_of<isq::mass>> {} gram;
+inline constexpr auto kilogram = kilo<gram>;
+inline constexpr struct newton final : named_unit<"N", kilogram * metre / square(second)> {} newton;
 
-inline constexpr struct speed_of_light_in_vacuum : named_unit<"c", mag<299'792'458> * metre / second> {} speed_of_light_in_vacuum;
+inline constexpr struct speed_of_light_in_vacuum final : named_unit<"c", mag<299'792'458> * metre / second> {} speed_of_light_in_vacuum;
 ```
 
 The [unit equation](../../appendix/glossary.md#unit-equation) of `si::metre / si::second` results

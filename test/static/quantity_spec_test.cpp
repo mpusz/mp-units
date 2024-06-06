@@ -42,7 +42,7 @@ QUANTITY_SPEC_(length, dim_length);
 QUANTITY_SPEC_(mass, dim_mass);
 QUANTITY_SPEC_(time, dim_time);
 
-inline constexpr struct second_ : named_unit<"s", kind_of<time>> {} second;
+inline constexpr struct second_ final : named_unit<"s", kind_of<time>> {} second;
 
 QUANTITY_SPEC_(height, length);
 QUANTITY_SPEC_(width, length);

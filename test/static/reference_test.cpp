@@ -60,16 +60,16 @@ QUANTITY_SPEC_(power, force* speed);
 QUANTITY_SPEC_(storage_capacity, dimensionless, is_kind);
 
 // base units
-inline constexpr struct second_ : named_unit<"s", kind_of<time>> {} second;
-inline constexpr struct metre_ : named_unit<"m", kind_of<length>> {} metre;
-inline constexpr struct gram_ : named_unit<"g", kind_of<mass>> {} gram;
-inline constexpr struct kilogram_ : decltype(si::kilo<gram>) {} kilogram;
+inline constexpr struct second_ final : named_unit<"s", kind_of<time>> {} second;
+inline constexpr struct metre_ final : named_unit<"m", kind_of<length>> {} metre;
+inline constexpr struct gram_ final : named_unit<"g", kind_of<mass>> {} gram;
+inline constexpr auto kilogram = si::kilo<gram>;
 
 namespace nu {
 // hypothetical natural system of units for c=1
 
-inline constexpr struct second_ : named_unit<"s"> {} second;
-inline constexpr struct minute_ : named_unit<"min", mag<60> * second> {} minute;
+inline constexpr struct second_ final : named_unit<"s"> {} second;
+inline constexpr struct minute_ final : named_unit<"min", mag<60> * second> {} minute;
 
 inline constexpr struct time : system_reference<time_{}, second> {} time;
 inline constexpr struct length : system_reference<length_{}, second> {} length;
@@ -78,19 +78,19 @@ inline constexpr struct speed : system_reference<speed_{}, second / second> {} s
 }
 
 // derived named units
-inline constexpr struct radian_ : named_unit<"rad", metre / metre, kind_of<angular_measure>> {} radian;
-inline constexpr struct steradian_ : named_unit<"sr", square(metre) / square(metre), kind_of<solid_angular_measure>> {} steradian;
-inline constexpr struct hertz_ : named_unit<"Hz", inverse(second), kind_of<frequency>> {} hertz;
-inline constexpr struct becquerel_ : named_unit<"Bq", inverse(second), kind_of<activity>> {} becquerel;
-inline constexpr struct newton_ : named_unit<"N", kilogram * metre / square(second)> {} newton;
-inline constexpr struct joule_ : named_unit<"J", newton * metre> {} joule;
-inline constexpr struct watt_ : named_unit<"W", joule / second> {} watt;
+inline constexpr struct radian_ final : named_unit<"rad", metre / metre, kind_of<angular_measure>> {} radian;
+inline constexpr struct steradian_ final : named_unit<"sr", square(metre) / square(metre), kind_of<solid_angular_measure>> {} steradian;
+inline constexpr struct hertz_ final : named_unit<"Hz", inverse(second), kind_of<frequency>> {} hertz;
+inline constexpr struct becquerel_ final : named_unit<"Bq", inverse(second), kind_of<activity>> {} becquerel;
+inline constexpr struct newton_ final : named_unit<"N", kilogram * metre / square(second)> {} newton;
+inline constexpr struct joule_ final : named_unit<"J", newton * metre> {} joule;
+inline constexpr struct watt_ final : named_unit<"W", joule / second> {} watt;
 
-inline constexpr struct minute_ : named_unit<"min", mag<60> * second> {} minute;
-inline constexpr struct hour_ : named_unit<"h", mag<60> * minute> {} hour;
-inline constexpr struct kilometre_ : decltype(si::kilo<metre>) {} kilometre;
+inline constexpr struct minute_ final : named_unit<"min", mag<60> * second> {} minute;
+inline constexpr struct hour_ final : named_unit<"h", mag<60> * minute> {} hour;
+inline constexpr auto kilometre = si::kilo<metre>;
 
-inline constexpr struct bit_ : named_unit<"bit", one, kind_of<storage_capacity>> {} bit;
+inline constexpr struct bit_ final : named_unit<"bit", one, kind_of<storage_capacity>> {} bit;
 // clang-format on
 
 

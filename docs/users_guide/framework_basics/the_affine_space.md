@@ -426,16 +426,16 @@ definitions:
 ```cpp
 namespace si {
 
-inline constexpr struct kelvin :
+inline constexpr struct kelvin final :
     named_unit<"K", kind_of<isq::thermodynamic_temperature>, zeroth_kelvin> {} kelvin;
-inline constexpr struct degree_Celsius :
+inline constexpr struct degree_Celsius final :
     named_unit<{u8"°C", "`C"}, kelvin, zeroth_degree_Celsius> {} degree_Celsius;
 
 }
 
 namespace usc {
 
-inline constexpr struct degree_Fahrenheit :
+inline constexpr struct degree_Fahrenheit final :
     named_unit<{u8"°F", "`F"}, mag_ratio<5, 9> * si::degree_Celsius,
                zeroth_degree_Fahrenheit> {} degree_Fahrenheit;
 
