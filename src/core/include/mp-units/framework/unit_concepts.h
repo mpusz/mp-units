@@ -137,12 +137,6 @@ void is_unit_impl(const derived_unit<Expr...>*);
 void is_unit_impl(const one*);
 
 template<typename T>
-inline constexpr bool is_specialization_of_unit = false;
-
-template<symbol_text Symbol, auto... Args>
-inline constexpr bool is_specialization_of_unit<named_unit<Symbol, Args...>> = true;
-
-template<typename T>
 inline constexpr bool is_specialization_of_prefixed_unit = false;
 
 template<symbol_text Symbol, Magnitude auto M, PrefixableUnit auto U>
