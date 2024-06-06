@@ -84,6 +84,8 @@ and when `T` is implicitly convertible to `V`.
 - [Derived unnamed units](../../appendix/glossary.md#derived-unit) being a result of a
   [unit equations](../../appendix/glossary.md#unit-equation) on other units.
 
+All of the above units have to be marked as `final`.
+
 !!! note
 
     In the **mp-units** library, [physical constants are also implemented as units](faster_than_lightspeed_constants.md).
