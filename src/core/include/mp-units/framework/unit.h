@@ -500,11 +500,16 @@ MP_UNITS_EXPORT_END
 
 namespace detail {
 
-[[nodiscard]] consteval auto have_same_canonical_reference_unit(Unit auto u1, Unit auto u2)
+template<Unit U1, Unit U2>
+[[nodiscard]] consteval auto have_same_canonical_reference_unit(U1 u1, U2 u2)
 {
-  using canonical_lhs = decltype(get_canonical_unit(u1));
-  using canonical_rhs = decltype(get_canonical_unit(u2));
-  return std::is_same<decltype(canonical_lhs::reference_unit), decltype(canonical_rhs::reference_unit)>{};
+  if constexpr (is_same_v<U1, U2>)
+    return std::true_type{};
+  else {
+    using canonical_lhs = decltype(get_canonical_unit(u1));
+    using canonical_rhs = decltype(get_canonical_unit(u2));
+    return std::is_same<decltype(canonical_lhs::reference_unit), decltype(canonical_rhs::reference_unit)>{};
+  }
 }
 
 }  // namespace detail
@@ -513,8 +518,11 @@ namespace detail {
 MP_UNITS_EXPORT template<Unit U1, Unit U2>
 [[nodiscard]] consteval bool operator==(U1 lhs, U2 rhs)
 {
-  return decltype(detail::have_same_canonical_reference_unit(lhs, rhs))::value &&
-         decltype(get_canonical_unit(lhs))::mag == decltype(get_canonical_unit(rhs))::mag;
+  if constexpr (is_same_v<U1, U2>)
+    return true;
+  else
+    return decltype(detail::have_same_canonical_reference_unit(lhs, rhs))::value &&
+           decltype(get_canonical_unit(lhs))::mag == decltype(get_canonical_unit(rhs))::mag;
 }
 
 namespace detail {
@@ -603,9 +611,13 @@ inline constexpr auto ppm = parts_per_million;
 
 
 // convertible_to
-[[nodiscard]] consteval bool convertible(Unit auto from, Unit auto to)
+template<Unit U1, Unit U2>
+[[nodiscard]] consteval bool convertible(U1 from, U2 to)
 {
-  return decltype(detail::have_same_canonical_reference_unit(from, to))::value;
+  if constexpr (is_same_v<U1, U2>)
+    return true;
+  else
+    return decltype(detail::have_same_canonical_reference_unit(from, to))::value;
 }
 
 // Common unit
@@ -615,7 +627,9 @@ template<Unit U1, Unit U2>
 [[nodiscard]] consteval Unit auto common_unit(U1 u1, U2 u2)
   requires(decltype(detail::have_same_canonical_reference_unit(u1, u2))::value)
 {
-  if constexpr (U1{} == U2{}) {
+  if constexpr (is_same_v<U1, U2>)
+    return u1;
+  else if constexpr (U1{} == U2{}) {
     if constexpr (std::derived_from<U1, typename U2::_base_type_>)
       return u1;
     else if constexpr (std::derived_from<U2, typename U1::_base_type_>)
