@@ -137,14 +137,7 @@ void is_unit_impl(const derived_unit<Expr...>*);
 void is_unit_impl(const one*);
 
 template<typename T>
-inline constexpr bool is_specialization_of_prefixed_unit = false;
-
-template<symbol_text Symbol, Magnitude auto M, PrefixableUnit auto U>
-inline constexpr bool is_specialization_of_prefixed_unit<prefixed_unit<Symbol, M, U>> = true;
-
-template<typename T>
-  requires requires(T* t) { is_unit_impl(t); } && (!is_specialization_of_named_unit<T>) &&
-             (!is_specialization_of_prefixed_unit<T>)
+  requires requires(T* t) { is_unit_impl(t); } && std::is_final_v<T>
 inline constexpr bool is_unit<T> = true;
 
 template<Unit U>
