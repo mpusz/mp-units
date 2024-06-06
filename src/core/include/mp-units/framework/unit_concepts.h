@@ -190,7 +190,8 @@ concept UnitOf =
 
 namespace detail {
 
-[[nodiscard]] consteval auto have_same_canonical_reference_unit(Unit auto u1, Unit auto u2);
+template<Unit U1, Unit U2>
+[[nodiscard]] consteval auto have_same_canonical_reference_unit(U1 u1, U2 u2);
 
 }
 
