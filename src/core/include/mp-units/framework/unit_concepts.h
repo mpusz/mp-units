@@ -52,6 +52,8 @@ struct scaled_unit;
 MP_UNITS_EXPORT template<symbol_text Symbol, auto...>
 struct named_unit;
 
+MP_UNITS_EXPORT struct one;
+
 namespace detail {
 
 template<symbol_text Symbol, auto... Args>
@@ -126,8 +128,13 @@ void is_unit_impl(const scaled_unit<M, U>*);
 template<symbol_text Symbol, auto... Args>
 void is_unit_impl(const named_unit<Symbol, Args...>*);
 
+template<symbol_text Symbol, auto M, auto U>
+void is_unit_impl(const prefixed_unit<Symbol, M, U>*);
+
 template<typename... Expr>
 void is_unit_impl(const derived_unit<Expr...>*);
+
+void is_unit_impl(const one*);
 
 template<typename T>
 inline constexpr bool is_specialization_of_unit = false;
