@@ -33,7 +33,7 @@ The library source code is hosted on [GitHub](https://github.com/mpusz/mp-units)
 
     using namespace mp_units;
 
-    inline constexpr struct smoot : named_unit<"smoot", mag<67> * usc::inch> {} smoot;
+    inline constexpr struct smoot final : named_unit<"smoot", mag<67> * usc::inch> {} smoot;
 
     int main()
     {
@@ -53,7 +53,7 @@ The library source code is hosted on [GitHub](https://github.com/mpusz/mp-units)
 
     using namespace mp_units;
 
-    inline constexpr struct smoot : named_unit<"smoot", mag<67> * usc::inch> {} smoot;
+    inline constexpr struct smoot final : named_unit<"smoot", mag<67> * usc::inch> {} smoot;
 
     int main()
     {
