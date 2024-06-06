@@ -108,21 +108,7 @@ if(NOT ${projectPrefix}API_FREESTANDING
 endif()
 
 # Contracts checking
-if(${projectPrefix}API_CONTRACTS STREQUAL "NONE")
-    target_compile_definitions(mp-units-core ${${projectPrefix}TARGET_SCOPE} ${projectPrefix}API_CONTRACTS=0)
-elseif(${projectPrefix}API_CONTRACTS STREQUAL "GSL-LITE")
-    if(NOT TARGET gsl::gsl-lite)
-        find_package(gsl-lite REQUIRED)
-    endif()
-    target_link_libraries(mp-units-core ${${projectPrefix}TARGET_SCOPE} gsl::gsl-lite)
-    target_compile_definitions(mp-units-core ${${projectPrefix}TARGET_SCOPE} ${projectPrefix}API_CONTRACTS=2)
-elseif(${projectPrefix}API_CONTRACTS STREQUAL "MS-GSL")
-    if(NOT TARGET Microsoft.GSL::GSL)
-        find_package(Microsoft.GSL REQUIRED)
-    endif()
-    target_link_libraries(mp-units-core ${${projectPrefix}TARGET_SCOPE} Microsoft.GSL::GSL)
-    target_compile_definitions(mp-units-core ${${projectPrefix}TARGET_SCOPE} ${projectPrefix}API_CONTRACTS=3)
-endif()
+target_link_libraries(mp-units-core ${${projectPrefix}TARGET_SCOPE} mp-units-contracts)
 
 # C++20 modules
 if(${projectPrefix}BUILD_CXX_MODULES)
