@@ -476,16 +476,16 @@ namespace detail {
 template<MagnitudeSpec auto... Ms>
 // requires detail::is_element_pack_valid<Ms...>
 struct magnitude {
-  [[nodiscard]] friend consteval bool is_integral(const magnitude&)
+  [[nodiscard]] friend consteval auto is_integral(const magnitude&)
   {
     using namespace detail;  // needed for recursive case when magnitudes are in the MagnitudeSpec
-    return (is_integral(Ms) && ...);
+    return std::bool_constant<(is_integral(Ms) && ...)>{};
   }
 
-  [[nodiscard]] friend consteval bool is_rational(const magnitude&)
+  [[nodiscard]] friend consteval auto is_rational(const magnitude&)
   {
     using namespace detail;  // needed for recursive case when magnitudes are in the MagnitudeSpec
-    return (is_rational(Ms) && ...);
+    return std::bool_constant<(is_rational(Ms) && ...)>{};
   }
 };
 
@@ -508,21 +508,19 @@ inline constexpr bool is_specialization_of_magnitude<magnitude<Ms...>> = true;
 
 }  // namespace detail
 
+MP_UNITS_EXPORT_BEGIN
 
 /**
  * @brief  The value of a Magnitude in a desired type T.
  */
 template<typename T, auto... Ms>
-  requires(is_integral(magnitude<Ms...>{})) || treat_as_floating_point<T>
-constexpr T get_value(const magnitude<Ms...>&)
+  requires(decltype(is_integral(magnitude<Ms...>{}))::value) || treat_as_floating_point<T>
+constexpr auto get_value(const magnitude<Ms...>&)
 {
   // Force the expression to be evaluated in a constexpr context, to catch, e.g., overflow.
   constexpr auto result = detail::checked_static_cast<T>((detail::compute_base_power<T>(Ms) * ... * T{1}));
-
-  return result;
+  return std::integral_constant<T, result>{};
 }
-
-MP_UNITS_EXPORT_BEGIN
 
 /**
  * @brief  A convenient Magnitude constant for pi, which we can manipulate like a regular number.
@@ -558,21 +556,21 @@ template<std::intmax_t Num, std::intmax_t Den = 1, auto... Ms>
   if constexpr (Num == 0) {
     return magnitude<>{};
   } else {
-    return magnitude<
-      detail::power_v_or_T<detail::get_base(Ms), detail::get_exponent(Ms) * detail::ratio{Num, Den}>()...>{};
+    return decltype(magnitude<detail::power_v_or_T<detail::get_base(Ms),
+                                                   detail::get_exponent(Ms) * detail::ratio{Num, Den}>()...>{}){};
   }
 }
 
 template<auto... Ms>
 [[nodiscard]] consteval auto sqrt(magnitude<Ms...> m)
 {
-  return pow<1, 2>(m);
+  return decltype(pow<1, 2>(m)){};
 }
 
 template<auto... Ms>
 [[nodiscard]] consteval auto cbrt(magnitude<Ms...> m)
 {
-  return pow<1, 3>(m);
+  return decltype(pow<1, 3>(m)){};
 }
 
 MP_UNITS_EXPORT_END
@@ -615,13 +613,13 @@ template<auto H1, auto... T1, auto H2, auto... T2>
       // Shortcut for the "pure prepend" case, which makes it easier to implement some of the other cases.
       return magnitude<H1, H2, T2...>{};
     } else {
-      return magnitude<H1>{} * (magnitude<T1...>{} * magnitude<H2, T2...>{});
+      return decltype(magnitude<H1>{} * (decltype(magnitude<T1...>{} * magnitude<H2, T2...>{}){})){};
     }
   } else if constexpr (less(H2, H1)) {
-    return magnitude<H2>{} * (magnitude<H1, T1...>{} * magnitude<T2...>{});
+    return decltype(magnitude<H2>{} * (decltype(magnitude<H1, T1...>{} * magnitude<T2...>{}){})){};
   } else {
     if constexpr (is_same_v<decltype(get_base(H1)), decltype(get_base(H2))>) {
-      constexpr auto partial_product = magnitude<T1...>{} * magnitude<T2...>{};
+      constexpr auto partial_product = decltype(magnitude<T1...>{} * magnitude<T2...>{}){};
       if constexpr (get_exponent(H1) + get_exponent(H2) == 0) {
         return partial_product;
       } else {
@@ -631,13 +629,13 @@ template<auto H1, auto... T1, auto H2, auto... T2>
         if constexpr (get_exponent(new_head) == 0) {
           return partial_product;
         } else {
-          return magnitude<new_head>{} * partial_product;
+          return decltype(magnitude<new_head>{} * partial_product){};
         }
       }
     } else if constexpr (is_named_magnitude<decltype(get_base(H1))>) {
-      return magnitude<H1>{} * (magnitude<T1...>{} * magnitude<H2, T2...>{});
+      return decltype(magnitude<H1>{} * decltype((magnitude<T1...>{} * magnitude<H2, T2...>{})){}){};
     } else {
-      return magnitude<H2>{} * (magnitude<H1, T1...>{} * magnitude<T2...>{});
+      return decltype(magnitude<H2>{} * decltype((magnitude<H1, T1...>{} * magnitude<T2...>{})){}){};
     }
   }
 }
@@ -645,7 +643,7 @@ template<auto H1, auto... T1, auto H2, auto... T2>
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Magnitude quotient implementation.
 
-[[nodiscard]] consteval auto operator/(Magnitude auto l, Magnitude auto r) { return l * pow<-1>(r); }
+[[nodiscard]] consteval auto operator/(Magnitude auto l, Magnitude auto r) { return decltype(l * pow<-1>(r)){}; }
 
 MP_UNITS_EXPORT_END
 
@@ -672,20 +670,10 @@ template<auto M>
 template<auto... Ms>
 [[nodiscard]] consteval auto numerator(magnitude<Ms...>)
 {
-  return (detail::integer_part(magnitude<Ms>{}) * ... * magnitude<>{});
+  return decltype((decltype(detail::integer_part(magnitude<Ms>{})){} * ... * magnitude<>{})){};
 }
 
-[[nodiscard]] consteval auto denominator(Magnitude auto m) { return numerator(pow<-1>(m)); }
-
-// TODO This probably should not be exported but is used in chrono.h
-MP_UNITS_EXPORT constexpr ratio as_ratio(Magnitude auto m)
-  requires(is_rational(decltype(m){}))
-{
-  return ratio{
-    get_value<std::intmax_t>(numerator(m)),
-    get_value<std::intmax_t>(denominator(m)),
-  };
-}
+[[nodiscard]] consteval auto denominator(Magnitude auto m) { return decltype(numerator(pow<-1>(m))){}; }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Common Magnitude.
@@ -725,11 +713,11 @@ template<auto... Ms>
 [[nodiscard]] consteval auto common_magnitude(magnitude<>, magnitude<>) { return magnitude<>{}; }
 [[nodiscard]] consteval auto common_magnitude(magnitude<>, Magnitude auto m)
 {
-  return detail::remove_positive_powers(m);
+  return decltype(detail::remove_positive_powers(m)){};
 }
 [[nodiscard]] consteval auto common_magnitude(Magnitude auto m, magnitude<>)
 {
-  return detail::remove_positive_powers(m);
+  return decltype(detail::remove_positive_powers(m)){};
 }
 
 // Recursive case for the common Magnitude of any two non-identity Magnitudes.
@@ -740,17 +728,19 @@ template<auto H1, auto... T1, auto H2, auto... T2>
 
   if constexpr (detail::get_base_value(H1) < detail::get_base_value(H2)) {
     // When H1 has the smaller base, prepend to result from recursion.
-    return remove_positive_power(magnitude<H1>{}) * common_magnitude(magnitude<T1...>{}, magnitude<H2, T2...>{});
+    return decltype(decltype(remove_positive_power(magnitude<H1>{})){} *
+                    decltype(common_magnitude(magnitude<T1...>{}, magnitude<H2, T2...>{})){}){};
   } else if constexpr (detail::get_base_value(H2) < detail::get_base_value(H1)) {
     // When H2 has the smaller base, prepend to result from recursion.
-    return remove_positive_power(magnitude<H2>{}) * common_magnitude(magnitude<H1, T1...>{}, magnitude<T2...>{});
+    return decltype(decltype(remove_positive_power(magnitude<H2>{})){} *
+                    decltype(common_magnitude(magnitude<H1, T1...>{}, magnitude<T2...>{})){}){};
   } else {
     // When the bases are equal, pick whichever has the lower power.
-    constexpr auto common_tail = common_magnitude(magnitude<T1...>{}, magnitude<T2...>{});
+    constexpr auto common_tail = decltype(common_magnitude(magnitude<T1...>{}, magnitude<T2...>{})){};
     if constexpr (detail::get_exponent(H1) < detail::get_exponent(H2)) {
-      return magnitude<H1>{} * common_tail;
+      return decltype(magnitude<H1>{} * common_tail){};
     } else {
-      return magnitude<H2>{} * common_tail;
+      return decltype(magnitude<H2>{} * common_tail){};
     }
   }
 }
@@ -758,7 +748,7 @@ template<auto H1, auto... T1, auto H2, auto... T2>
 template<auto... Ms>
 [[nodiscard]] consteval auto common_magnitude_type_impl(magnitude<Ms...>)
 {
-  return (... * decltype(get_base_value(Ms)){}) * std::intmax_t{};
+  return (std::intmax_t{} * ... * decltype(get_base_value(Ms)){});
 }
 
 // Returns the most precise type to express the magnitude factor
@@ -791,7 +781,7 @@ struct prime_factorization {
     if constexpr (opt.has_value()) {
       return opt.value();  // NOLINT(bugprone-unchecked-optional-access)
     } else {
-      return static_cast<std::intmax_t>(factorizer::find_first_factor(N));
+      return static_cast<std::intmax_t>(decltype(factorizer::find_first_factor<N>())::value);
     }
   }
 
@@ -826,14 +816,15 @@ inline constexpr Magnitude auto mag = detail::prime_factorization_v<V>;
 
 MP_UNITS_EXPORT template<std::intmax_t N, std::intmax_t D>
   requires detail::gt_zero<N>
-inline constexpr Magnitude auto mag_ratio = detail::prime_factorization_v<N> / detail::prime_factorization_v<D>;
+inline constexpr Magnitude auto mag_ratio =
+  decltype(detail::prime_factorization_v<N> / detail::prime_factorization_v<D>){};
 
 /**
  * @brief  Create a Magnitude which is some rational number raised to a rational power.
  */
 MP_UNITS_EXPORT template<std::intmax_t Base, std::intmax_t Pow>
   requires detail::gt_zero<Base>
-inline constexpr Magnitude auto mag_power = pow<Pow>(mag<Base>);
+inline constexpr Magnitude auto mag_power = decltype(pow<Pow>(mag<Base>)){};
 
 namespace detail {
 
@@ -862,20 +853,20 @@ template<Magnitude auto M>
 {
   constexpr auto exp10 = extract_power_of_10(M);
 
-  constexpr Magnitude auto base = M / mag_power<10, exp10>;
-  constexpr Magnitude auto num = numerator(base);
-  constexpr Magnitude auto den = denominator(base);
+  using base = decltype(M / mag_power<10, exp10>);
+  using num = decltype(numerator(base{}));
+  using den = decltype(denominator(base{}));
   // TODO address the below
-  static_assert(base == num / den, "Printing rational powers, or irrational bases, not yet supported");
+  static_assert(base{} == num{} / den{}, "Printing rational powers, or irrational bases, not yet supported");
 
-  constexpr auto num_value = get_value<std::intmax_t>(num);
-  constexpr auto den_value = get_value<std::intmax_t>(den);
+  using num_value = decltype(get_value<std::intmax_t>(num{}));
+  using den_value = decltype(get_value<std::intmax_t>(den{}));
 
-  if constexpr (num_value == 1 && den_value == 1 && exp10 != 0) {
+  if constexpr (num_value{} == 1 && den_value{} == 1 && exp10 != 0) {
     return base_multiplier + superscript<exp10>();
-  } else if constexpr (num_value != 1 || den_value != 1 || exp10 != 0) {
-    auto txt = symbol_text("[") + regular<num_value>();
-    if constexpr (den_value == 1) {
+  } else if constexpr (num_value{} != 1 || den_value{} != 1 || exp10 != 0) {
+    auto txt = symbol_text("[") + regular<num_value{}>();
+    if constexpr (den_value{} == 1) {
       if constexpr (exp10 == 0) {
         return txt + symbol_text("]");
       } else {
@@ -883,9 +874,9 @@ template<Magnitude auto M>
       }
     } else {
       if constexpr (exp10 == 0) {
-        return txt + symbol_text("/") + regular<den_value>() + symbol_text("]");
+        return txt + symbol_text("/") + regular<den_value{}>() + symbol_text("]");
       } else {
-        return txt + symbol_text("/") + regular<den_value>() + symbol_text(" ") + base_multiplier +
+        return txt + symbol_text("/") + regular<den_value{}>() + symbol_text(" ") + base_multiplier +
                superscript<exp10>() + symbol_text("]");
       }
     }

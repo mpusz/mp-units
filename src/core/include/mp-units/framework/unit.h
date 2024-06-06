@@ -627,9 +627,9 @@ template<Unit U1, Unit U2>
     using canonical_lhs = decltype(get_canonical_unit(U1{}));
     using canonical_rhs = decltype(get_canonical_unit(U2{}));
 
-    if constexpr (is_integral(decltype(canonical_lhs::mag / canonical_rhs::mag){}))
+    if constexpr (decltype(is_integral(decltype(canonical_lhs::mag / canonical_rhs::mag){}))::value)
       return u2;
-    else if constexpr (is_integral(decltype(canonical_rhs::mag / canonical_lhs::mag){}))
+    else if constexpr (decltype(is_integral(decltype(canonical_rhs::mag / canonical_lhs::mag){}))::value)
       return u1;
     else {
       constexpr auto cm = decltype(detail::common_magnitude(canonical_lhs::mag, canonical_rhs::mag)){};

@@ -157,22 +157,30 @@ struct wheel_factorizer {
   static constexpr auto coprimes_in_first_wheel =
     coprimes_up_to<num_coprimes_up_to(wheel_size, basis)>(wheel_size, basis);
 
-  [[nodiscard]] static consteval std::uintmax_t find_first_factor(std::uintmax_t n)
+  template<std::size_t N>
+  [[nodiscard]] static consteval auto find_first_factor()
   {
-    if (const auto k = detail::get_first_of(basis, [&](auto p) { return first_factor_maybe(n, p); })) return *k;
+    constexpr std::uintmax_t res = [] {
+      if (const auto k = detail::get_first_of(basis, [&](auto p) { return first_factor_maybe(N, p); })) return *k;
 
-    if (const auto k = detail::get_first_of(std::next(begin(coprimes_in_first_wheel)), end(coprimes_in_first_wheel),
-                                            [&](auto p) { return first_factor_maybe(n, p); }))
-      return *k;
-
-    for (std::size_t wheel = wheel_size; wheel < n; wheel += wheel_size)
-      if (const auto k =
-            detail::get_first_of(coprimes_in_first_wheel, [&](auto p) { return first_factor_maybe(n, wheel + p); }))
+      if (const auto k = detail::get_first_of(std::next(begin(coprimes_in_first_wheel)), end(coprimes_in_first_wheel),
+                                              [&](auto p) { return first_factor_maybe(N, p); }))
         return *k;
-    return n;
+
+      for (std::size_t wheel = wheel_size; wheel < N; wheel += wheel_size)
+        if (const auto k =
+              detail::get_first_of(coprimes_in_first_wheel, [&](auto p) { return first_factor_maybe(N, wheel + p); }))
+          return *k;
+      return N;
+    }();
+    return std::integral_constant<std::uintmax_t, res>{};
   }
 
-  [[nodiscard]] static consteval bool is_prime(std::size_t n) { return (n > 1) && find_first_factor(n) == n; }
+  template<std::size_t N>
+  [[nodiscard]] static consteval auto is_prime()
+  {
+    return std::bool_constant<(N > 1 && decltype(find_first_factor<N>())::value == N)>{};
+  }
 };
 
 }  // namespace mp_units::detail
