@@ -118,8 +118,7 @@ namespace detail {
 constexpr auto as_ratio(Magnitude auto m)
   requires(decltype(is_rational(decltype(m){}))::value)
 {
-  return std::ratio<decltype(get_value<std::intmax_t>(numerator(m))){},
-                    decltype(get_value<std::intmax_t>(denominator(m))){}>{};
+  return std::ratio<get_value<std::intmax_t>(numerator(m)), get_value<std::intmax_t>(denominator(m))>{};
 }
 
 }  // namespace detail

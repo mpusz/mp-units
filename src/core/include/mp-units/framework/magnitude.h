@@ -515,11 +515,11 @@ MP_UNITS_EXPORT_BEGIN
  */
 template<typename T, auto... Ms>
   requires(decltype(is_integral(magnitude<Ms...>{}))::value) || treat_as_floating_point<T>
-constexpr auto get_value(const magnitude<Ms...>&)
+constexpr T get_value(const magnitude<Ms...>&)
 {
   // Force the expression to be evaluated in a constexpr context, to catch, e.g., overflow.
-  constexpr auto result = detail::checked_static_cast<T>((detail::compute_base_power<T>(Ms) * ... * T{1}));
-  return std::integral_constant<T, result>{};
+  constexpr T result = detail::checked_static_cast<T>((detail::compute_base_power<T>(Ms) * ... * T{1}));
+  return result;
 }
 
 /**
@@ -859,14 +859,14 @@ template<Magnitude auto M>
   // TODO address the below
   static_assert(base{} == num{} / den{}, "Printing rational powers, or irrational bases, not yet supported");
 
-  using num_value = decltype(get_value<std::intmax_t>(num{}));
-  using den_value = decltype(get_value<std::intmax_t>(den{}));
+  constexpr auto num_value = get_value<std::intmax_t>(num{});
+  constexpr auto den_value = get_value<std::intmax_t>(den{});
 
-  if constexpr (num_value{} == 1 && den_value{} == 1 && exp10 != 0) {
+  if constexpr (num_value == 1 && den_value == 1 && exp10 != 0) {
     return base_multiplier + superscript<exp10>();
-  } else if constexpr (num_value{} != 1 || den_value{} != 1 || exp10 != 0) {
-    auto txt = symbol_text("[") + regular<num_value{}>();
-    if constexpr (den_value{} == 1) {
+  } else if constexpr (num_value != 1 || den_value != 1 || exp10 != 0) {
+    auto txt = symbol_text("[") + regular<num_value>();
+    if constexpr (den_value == 1) {
       if constexpr (exp10 == 0) {
         return txt + symbol_text("]");
       } else {
@@ -874,9 +874,9 @@ template<Magnitude auto M>
       }
     } else {
       if constexpr (exp10 == 0) {
-        return txt + symbol_text("/") + regular<den_value{}>() + symbol_text("]");
+        return txt + symbol_text("/") + regular<den_value>() + symbol_text("]");
       } else {
-        return txt + symbol_text("/") + regular<den_value{}>() + symbol_text(" ") + base_multiplier +
+        return txt + symbol_text("/") + regular<den_value>() + symbol_text(" ") + base_multiplier +
                superscript<exp10>() + symbol_text("]");
       }
     }
