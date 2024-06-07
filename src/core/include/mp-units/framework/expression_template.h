@@ -534,8 +534,8 @@ template<template<typename> typename Proj, template<typename...> typename To, ty
          expr_type_projectable<Proj>... Dens>
 [[nodiscard]] consteval auto expr_map_impl(type_list<Nums...>, type_list<Dens...>)
 {
-  return (OneType{} * ... * map_power(typename expr_type_map<Nums, Proj>::type{})) /
-         (OneType{} * ... * map_power(typename expr_type_map<Dens, Proj>::type{}));
+  return decltype(decltype((OneType{} * ... * map_power(typename expr_type_map<Nums, Proj>::type{}))){} /
+                  decltype((OneType{} * ... * map_power(typename expr_type_map<Dens, Proj>::type{}))){}){};
 }
 
 /**
