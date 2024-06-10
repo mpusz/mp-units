@@ -34,6 +34,7 @@
 #include <mp-units/framework/symbol_text.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
+#include <mp-units/ext/contracts.h>
 #include <array>
 #include <cstdint>
 #include <iterator>

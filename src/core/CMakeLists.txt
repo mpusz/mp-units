@@ -44,6 +44,7 @@ add_mp_units_module(
             include/mp-units/bits/text_tools.h
             include/mp-units/bits/type_list.h
             include/mp-units/ext/algorithm.h
+            include/mp-units/ext/contracts.h
             include/mp-units/ext/fixed_string.h
             include/mp-units/ext/prime.h
             include/mp-units/ext/type_name.h

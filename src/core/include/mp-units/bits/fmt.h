@@ -40,6 +40,7 @@
 #include <cstdint>
 #include <limits>
 #include <string_view>
+#include <mp-units/ext/contracts.h>
 #endif
 
 // most of the below code is based on/copied from fmtlib

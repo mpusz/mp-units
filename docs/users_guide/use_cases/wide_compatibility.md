@@ -157,3 +157,23 @@ from additional features provided with the library).
 This macro resolves to either the `std` or `fmt` namespace, depending on the value of
 [MP_UNITS_API_STD_FORMAT](../../getting_started/installation_and_usage.md#MP_UNITS_API_STD_FORMAT)
 CMake option.
+
+### Contracts
+
+The mp-units library internally does contract checking by default. It can be disabled with a Conan
+or CMake option. However, when enabled, it can use either [gsl-lite](https://github.com/gsl-lite/gsl-lite)
+or [ms-gsl](https://github.com/microsoft/GSL). To write a code that is independent from the
+underlying framework, the following preprocessor macros are exposed:
+
+- `MP_UNITS_EXPECTS(expr)`
+- `MP_UNITS_EXPECTS_DEBUG(expr)`
+- `MP_UNITS_ASSERT(expr)`
+- `MP_UNITS_ASSERT_DEBUG(expr)`
+
+Their meaning is consistent with respective [gsl-lite](https://github.com/gsl-lite/gsl-lite?tab=readme-ov-file#contract-checking-configuration-macros).
+
+Also, to include the header files of the underlying framework, the following include should be used:
+
+```cpp
+#include <mp-units/ext/contracts.h>
+```

@@ -27,6 +27,7 @@
 #include <mp-units/compat_macros.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
+#include <mp-units/ext/contracts.h>
 #include <compare>  // IWYU pragma: export
 #include <cstdint>
 #include <numeric>
