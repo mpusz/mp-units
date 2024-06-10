@@ -207,12 +207,13 @@ class MPUnitsConan(ConanFile):
         self.version = version.strip()
 
     def requirements(self):
-        if self.options.contracts == "gsl-lite":
-            self.requires("gsl-lite/0.41.0")
-        elif self.options.contracts == "ms-gsl":
-            self.requires("ms-gsl/4.0.0")
-        if self._use_fmtlib and not self.options.freestanding:
-            self.requires("fmt/10.2.1")
+        if not self.options.freestanding:
+            if self.options.contracts == "gsl-lite":
+                self.requires("gsl-lite/0.41.0")
+            elif self.options.contracts == "ms-gsl":
+                self.requires("ms-gsl/4.0.0")
+            if self._use_fmtlib:
+                self.requires("fmt/10.2.1")
 
     def build_requirements(self):
         if self._build_all:
@@ -248,9 +249,12 @@ class MPUnitsConan(ConanFile):
             tc.cache_variables["MP_UNITS_BUILD_CXX_MODULES"] = str(
                 self.options.cxx_modules
             ).upper()
-        tc.cache_variables["MP_UNITS_API_STD_FORMAT"] = str(
-            self.options.std_format
-        ).upper()
+        if self.options.freestanding:
+            tc.cache_variables["MP_UNITS_API_FREESTANDING"] = True
+        else:
+            tc.cache_variables["MP_UNITS_API_STD_FORMAT"] = str(
+                self.options.std_format
+            ).upper()
         tc.cache_variables["MP_UNITS_API_STRING_VIEW_RET"] = str(
             self.options.string_view_ret
         ).upper()
@@ -258,7 +262,6 @@ class MPUnitsConan(ConanFile):
         tc.cache_variables["MP_UNITS_API_CONTRACTS"] = str(
             self.options.contracts
         ).upper()
-        tc.cache_variables["MP_UNITS_API_FREESTANDING"] = self.options.freestanding
         tc.generate()
         deps = CMakeDeps(self)
         deps.generate()
