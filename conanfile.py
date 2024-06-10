@@ -288,13 +288,39 @@ class MPUnitsConan(ConanFile):
 
     def package_info(self):
         compiler = self.settings.compiler
-        self.cpp_info.components["core"]
-        if self.options.contracts == "gsl-lite":
-            self.cpp_info.components["core"].requires = ["gsl-lite::gsl-lite"]
+
+        # handle contracts
+        if self.options.contracts == "none":
+            self.cpp_info.components["core"].defines.append("MP_UNITS_API_CONTRACTS=0")
+        elif self.options.contracts == "gsl-lite":
+            self.cpp_info.components["core"].requires.append("gsl-lite::gsl-lite")
+            self.cpp_info.components["core"].defines.append("MP_UNITS_API_CONTRACTS=2")
         elif self.options.contracts == "ms-gsl":
-            self.cpp_info.components["core"].requires = ["ms-gsl::ms-gsl"]
-        if self._use_fmtlib and not self.options.freestanding:
+            self.cpp_info.components["core"].requires.append("ms-gsl::ms-gsl")
+            self.cpp_info.components["core"].defines.append("MP_UNITS_API_CONTRACTS=3")
+
+        # handle API options
+        if self.options.string_view_ret != "auto":
+            self.cpp_info.components["core"].defines.append(
+                "MP_UNITS_API_STRING_VIEW_RET="
+                + str(int(self.options.string_view_ret == True))
+            )
+        if self.options.no_crtp != "auto":
+            self.cpp_info.components["core"].defines.append(
+                "MP_UNITS_API_NO_CRTP=" + str(int(self.options.no_crtp == True))
+            )
+        if self.options.std_format != "auto":
+            self.cpp_info.components["core"].defines.append(
+                "MP_UNITS_API_STD_FORMAT=" + str(int(self.options.std_format == True))
+            )
+        if self._use_fmtlib:
             self.cpp_info.components["core"].requires.append("fmt::fmt")
+
+        # handle hosted configuration
+        if not self.options.freestanding:
+            self.cpp_info.components["core"].defines.append("MP_UNITS_HOSTED=1")
+
         if compiler == "msvc":
             self.cpp_info.components["core"].cxxflags = ["/utf-8"]
+
         self.cpp_info.components["systems"].requires = ["core"]
