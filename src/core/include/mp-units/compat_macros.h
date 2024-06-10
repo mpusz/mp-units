@@ -83,18 +83,6 @@
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 
-// IWYU pragma: begin_exports
-#if MP_UNITS_USE_FMTLIB
-MP_UNITS_DIAGNOSTIC_PUSH
-MP_UNITS_DIAGNOSTIC_IGNORE_UNREACHABLE
-MP_UNITS_DIAGNOSTIC_IGNORE_SHADOW
-#include <fmt/format.h>
-MP_UNITS_DIAGNOSTIC_POP
-#else
-#include <format>
-#endif
-// IWYU pragma: end_exports
-
 #endif
 
 #endif  // MP_UNITS_HOSTED

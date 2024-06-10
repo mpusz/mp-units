@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 #include <mp-units/compat_macros.h>
+#include <mp-units/ext/format.h>
 #include <cassert>
 #include <chrono>
 #include <iostream>

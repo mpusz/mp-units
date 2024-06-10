@@ -23,6 +23,7 @@
 #include "kalman.h"
 #include <array>
 #include <iostream>
+#include <mp-units/ext/format.h>
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else

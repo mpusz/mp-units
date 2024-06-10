@@ -24,6 +24,7 @@
 
 #include "ranged_representation.h"
 #include <mp-units/compat_macros.h>
+#include <mp-units/ext/format.h>
 #include <compare>
 #include <limits>
 #include <numbers>

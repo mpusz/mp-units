@@ -25,6 +25,7 @@
 #include <mp-units/bits/hacks.h>
 #include <mp-units/compat_macros.h>
 #include <mp-units/ext/contracts.h>
+#include <mp-units/ext/format.h>
 #include <compare>  // IWYU pragma: export
 #include <ostream>
 #include <utility>

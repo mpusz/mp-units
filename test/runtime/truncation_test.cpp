@@ -24,6 +24,7 @@
 #include <catch2/catch_template_test_macros.hpp>
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/matchers/catch_matchers.hpp>
+#include <mp-units/ext/format.h>
 #include <limits>
 #include <numbers>
 #ifdef MP_UNITS_MODULES

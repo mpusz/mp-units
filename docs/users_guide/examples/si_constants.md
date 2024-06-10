@@ -13,7 +13,7 @@ how [Faster-than-lightspeed Constants](../framework_basics/faster_than_lightspee
 work in practice.
 
 ```cpp title="si_constants.cpp" linenums="1"
---8<-- "example/si_constants.cpp:28:39"
+--8<-- "example/si_constants.cpp:28:40"
 ```
 
 As always, we start with the inclusion of all the needed header files. After that, for
@@ -21,8 +21,8 @@ the simplicity of this example, we
 [hack the character of quantities](../framework_basics/character_of_a_quantity.md#hacking-the-character)
 to be able to express vector quantities with simple scalar types.
 
-```cpp title="si_constants.cpp" linenums="13"
---8<-- "example/si_constants.cpp:41:"
+```cpp title="si_constants.cpp" linenums="14"
+--8<-- "example/si_constants.cpp:42:"
 ```
 
 The main part of the example prints all of the SI-defining constants. While analyzing the output of

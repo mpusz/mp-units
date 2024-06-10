@@ -24,6 +24,7 @@
 #include "glide_computer_lib.h"
 #include <mp-units/bits/hacks.h>
 #include <mp-units/compat_macros.h>
+#include <mp-units/ext/format.h>
 #include <array>
 #include <chrono>
 #include <concepts>

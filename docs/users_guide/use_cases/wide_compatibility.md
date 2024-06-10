@@ -96,6 +96,7 @@ your code using **mp-units**:
 
     ```cpp
     #include <iostream>
+    #include <mp-units/ext/format.h>
     #ifdef MP_UNITS_MODULES
     #include <mp-units/compat_macros.h>
     import mp_units;
@@ -157,6 +158,13 @@ from additional features provided with the library).
 This macro resolves to either the `std` or `fmt` namespace, depending on the value of
 [MP_UNITS_API_STD_FORMAT](../../getting_started/installation_and_usage.md#MP_UNITS_API_STD_FORMAT)
 CMake option.
+
+To include the header files of the underlying text formatting framework, the following include
+should be used:
+
+```cpp
+#include <mp-units/ext/format.h>
+```
 
 ### Contracts
 

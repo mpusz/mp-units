@@ -24,6 +24,7 @@
 #include <mp-units/compat_macros.h>
 #include <matrix>
 #include <ostream>
+#include <mp-units/ext/format.h>
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else

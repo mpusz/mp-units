@@ -18,20 +18,20 @@ First, we either import the `mp_units` module or include the headers for:
 - text formatting and stream output support
 
 ```cpp title="hello_units.cpp" linenums="1"
---8<-- "example/hello_units.cpp:28:40"
+--8<-- "example/hello_units.cpp:28:41"
 ```
 
 Also, to shorten the definitions, we "import" all the symbols from the `mp_units` namespace.
 
-```cpp title="hello_units.cpp" linenums="13"
---8<-- "example/hello_units.cpp:41:42"
+```cpp title="hello_units.cpp" linenums="14"
+--8<-- "example/hello_units.cpp:42:43"
 ```
 
 Next, we define a simple function that calculates the average speed based on the provided
 arguments of length and time:
 
-```cpp title="hello_units.cpp" linenums="14"
---8<-- "example/hello_units.cpp:43:46"
+```cpp title="hello_units.cpp" linenums="15"
+--8<-- "example/hello_units.cpp:44:47"
 ```
 
 The above function template takes any quantities implicitly convertible to `isq::length`
@@ -45,37 +45,37 @@ that its quantity type is implicitly convertible to `isq::speed`.
     type is beneficial for users of such a function as it provides more information
     of what to expect from a function than just using `auto`.
 
-```cpp title="hello_units.cpp" linenums="18"
---8<-- "example/hello_units.cpp:48:51"
+```cpp title="hello_units.cpp" linenums="19"
+--8<-- "example/hello_units.cpp:49:52"
 ```
 
 The above lines explicitly opt into using unit symbols from two systems of units.
 As this introduces a lot of short identifiers into the current scope, it is not done
 implicitly while including a header file.
 
-```cpp title="hello_units.cpp" linenums="22"
---8<-- "example/hello_units.cpp:53:59"
+```cpp title="hello_units.cpp" linenums="23"
+--8<-- "example/hello_units.cpp:54:60"
 ```
 
-- Lines `21` & `22` create a quantity of kind `isq::length / isq::time` with the numbers
+- Lines `23` & `24` create a quantity of kind `isq::length / isq::time` with the numbers
   and units provided. Such quantities can be converted or assigned to any other quantity
   with a matching kind.
-- Line `23` calls our function template with quantities of kind `isq::length` and
+- Line `25` calls our function template with quantities of kind `isq::length` and
   `isq::time` and number and units provided.
-- Line `24` explicitly provides quantity types of the quantities passed to a function template.
+- Line `26` explicitly provides quantity types of the quantities passed to a function template.
   This time, those will not be quantity kinds anymore and will have
   [more restrictive conversion rules](../framework_basics/simple_and_typed_quantities.md#quantity_cast-to-force-unsafe-conversions).
-- Line `25` changes the unit of a quantity `v3` to `m / s` in a
+- Line `27` changes the unit of a quantity `v3` to `m / s` in a
   [value-preserving way](../framework_basics/value_conversions.md#value-preserving-conversions)
   (floating-point representations are considered to be value-preserving).
-- Line `26` does a similar operation, but this time, it would also succeed for
+- Line `28` does a similar operation, but this time, it would also succeed for
   [value-truncating cases](../framework_basics/value_conversions.md#value-truncating-conversions)
   (if that was the case).
-- Line `27` does a [value-truncating conversion](../framework_basics/value_conversions.md#value-truncating-conversions)
+- Line `29` does a [value-truncating conversion](../framework_basics/value_conversions.md#value-truncating-conversions)
   of changing the underlying representation type from `double` to `int`.
 
-```cpp title="hello_units.cpp" linenums="29"
---8<-- "example/hello_units.cpp:61"
+```cpp title="hello_units.cpp" linenums="30"
+--8<-- "example/hello_units.cpp:62"
 ```
 
 The above presents [various ways to print a quantity](../framework_basics/text_output.md).

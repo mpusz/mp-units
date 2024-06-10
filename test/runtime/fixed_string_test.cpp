@@ -25,6 +25,7 @@
 #include <mp-units/compat_macros.h>
 #include <sstream>
 #include <string_view>
+#include <mp-units/ext/format.h>
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else

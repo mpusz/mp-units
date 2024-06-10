@@ -22,38 +22,21 @@
 
 #pragma once
 
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
+
+#include <mp-units/bits/requires_hosted.h>
+//
 #include <mp-units/bits/hacks.h>
 #include <mp-units/compat_macros.h>
-#include <mp-units/ext/contracts.h>
-#include <array>
-#include <compare>
-#include <concepts>
-#include <cstddef>
-#include <cstdint>
-#include <cstdlib>
-#include <functional>
-#include <initializer_list>
-#include <iterator>
-#include <limits>
-#include <numbers>
-#include <numeric>
-#include <optional>
-#include <ranges>
-#include <string_view>
-#include <tuple>
-#include <type_traits>
-#include <utility>
 
-#if MP_UNITS_HOSTED
-#include <mp-units/ext/format.h>
-#include <cmath>
-#include <locale>
-#include <ostream>
-#include <random>
-#include <sstream>
-#include <string>
+#if MP_UNITS_USE_FMTLIB
+MP_UNITS_DIAGNOSTIC_PUSH
+MP_UNITS_DIAGNOSTIC_IGNORE_UNREACHABLE
+MP_UNITS_DIAGNOSTIC_IGNORE_SHADOW
+#include <fmt/format.h>
+MP_UNITS_DIAGNOSTIC_POP
+#else
+#include <format>
 #endif
 
-#if __cpp_lib_text_encoding
-#include <text_encoding>
 #endif

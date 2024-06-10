@@ -23,6 +23,7 @@
 #include "geographic.h"
 #include "ranged_representation.h"
 #include <mp-units/compat_macros.h>
+#include <mp-units/ext/format.h>
 #include <cassert>
 #include <cstdint>
 #include <iostream>
@@ -30,6 +31,7 @@
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else
+#include <mp-units/bits/fmt.h>
 #include <mp-units/systems/international.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si.h>

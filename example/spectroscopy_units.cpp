@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 #include <mp-units/compat_macros.h>
+#include <mp-units/ext/format.h>
 #include <iostream>
 #include <tuple>
 #ifdef MP_UNITS_MODULES
