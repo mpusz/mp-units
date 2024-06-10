@@ -39,6 +39,7 @@
 #include <ranges>
 #include <string_view>
 #if MP_UNITS_HOSTED
+#include <mp-units/ext/format.h>
 #include <ostream>
 #endif
 #endif
