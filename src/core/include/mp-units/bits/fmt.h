@@ -35,13 +35,13 @@
 #include <mp-units/ext/algorithm.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
+#include <mp-units/ext/contracts.h>
+#include <mp-units/ext/format.h>
 #include <array>
 #include <concepts>
 #include <cstdint>
 #include <limits>
 #include <string_view>
-#include <mp-units/ext/contracts.h>
-#include <mp-units/ext/format.h>
 #endif
 
 // most of the below code is based on/copied from fmtlib
