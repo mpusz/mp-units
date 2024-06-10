@@ -46,7 +46,6 @@ add_mp_units_module(
             include/mp-units/ext/algorithm.h
             include/mp-units/ext/contracts.h
             include/mp-units/ext/fixed_string.h
-            include/mp-units/ext/format.h
             include/mp-units/ext/prime.h
             include/mp-units/ext/type_name.h
             include/mp-units/ext/type_traits.h
@@ -87,6 +86,7 @@ if(NOT ${projectPrefix}API_FREESTANDING)
                FILES
                include/mp-units/bits/fmt.h
                include/mp-units/bits/requires_hosted.h
+               include/mp-units/ext/format.h
                include/mp-units/math.h
                include/mp-units/ostream.h
                include/mp-units/format.h
