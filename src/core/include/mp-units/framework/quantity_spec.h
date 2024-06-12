@@ -199,9 +199,9 @@ MP_UNITS_EXPORT_END
  * For example:
  *
  * @code{.cpp}
- * inline constexpr struct dim_length : base_dimension<"L"> {} dim_length;
- * inline constexpr struct dim_mass : base_dimension<"M"> {} dim_mass;
- * inline constexpr struct dim_time : base_dimension<"T"> {} dim_time;
+ * inline constexpr struct dim_length final : base_dimension<"L"> {} dim_length;
+ * inline constexpr struct dim_mass final : base_dimension<"M"> {} dim_mass;
+ * inline constexpr struct dim_time final : base_dimension<"T"> {} dim_time;
  *
  * inline constexpr struct length : quantity_spec<dim_length> {} length;
  * inline constexpr struct mass : quantity_spec<dim_mass> {} mass;

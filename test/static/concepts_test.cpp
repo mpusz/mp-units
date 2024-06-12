@@ -45,7 +45,7 @@ inline constexpr struct my_origin : absolute_point_origin<my_origin, isq::length
 inline constexpr struct my_relative_origin : relative_point_origin<my_origin + isq::length(42 * si::metre)> {
 } my_relative_origin;
 
-struct dim_speed : decltype(isq::dim_length / isq::dim_time) {};
+inline constexpr auto dim_speed = isq::dim_length / isq::dim_time;
 
 // BaseDimension
 static_assert(detail::BaseDimension<struct isq::dim_length>);
@@ -53,7 +53,7 @@ static_assert(!detail::BaseDimension<decltype(isq::dim_length / isq::dim_time)>)
 static_assert(!detail::BaseDimension<decltype(inverse(isq::dim_time))>);
 static_assert(!detail::BaseDimension<decltype(pow<2>(isq::dim_length))>);
 static_assert(!detail::BaseDimension<derived_dimension<struct isq::dim_length, per<struct isq::dim_time>>>);
-static_assert(!detail::BaseDimension<dim_speed>);
+static_assert(!detail::BaseDimension<std::remove_const_t<decltype(dim_speed)>>);
 static_assert(!detail::BaseDimension<base_dimension<"L">>);
 static_assert(!detail::BaseDimension<struct si::metre>);
 static_assert(!detail::BaseDimension<int>);
@@ -64,7 +64,7 @@ static_assert(detail::DerivedDimension<decltype(inverse(isq::dim_time))>);
 static_assert(detail::DerivedDimension<decltype(pow<2>(isq::dim_length))>);
 static_assert(detail::DerivedDimension<derived_dimension<struct isq::dim_length, per<struct isq::dim_time>>>);
 static_assert(detail::DerivedDimension<struct dimension_one>);
-static_assert(!detail::DerivedDimension<dim_speed>);
+static_assert(detail::DerivedDimension<std::remove_const_t<decltype(dim_speed)>>);
 static_assert(!detail::DerivedDimension<struct isq::dim_length>);
 static_assert(!detail::DerivedDimension<struct si::metre>);
 static_assert(!detail::DerivedDimension<int>);
@@ -76,7 +76,7 @@ static_assert(Dimension<decltype(inverse(isq::dim_time))>);
 static_assert(Dimension<decltype(pow<2>(isq::dim_length))>);
 static_assert(Dimension<derived_dimension<struct isq::dim_length, per<struct isq::dim_time>>>);
 static_assert(Dimension<struct dimension_one>);
-static_assert(!Dimension<dim_speed>);
+static_assert(Dimension<std::remove_const_t<decltype(dim_speed)>>);
 static_assert(!Dimension<base_dimension<"L">>);
 static_assert(!Dimension<struct si::metre>);
 static_assert(!Dimension<int>);

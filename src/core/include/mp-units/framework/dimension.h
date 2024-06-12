@@ -62,9 +62,9 @@ namespace mp_units {
  * For example:
  *
  * @code{.cpp}
- * inline constexpr struct dim_length : base_dimension<"L"> {} dim_length;
- * inline constexpr struct dim_time : base_dimension<"T"> {} dim_time;
- * inline constexpr struct dim_mass : base_dimension<"M"> {} dim_mass;
+ * inline constexpr struct dim_length final : base_dimension<"L"> {} dim_length;
+ * inline constexpr struct dim_time final : base_dimension<"T"> {} dim_time;
+ * inline constexpr struct dim_mass final : base_dimension<"M"> {} dim_mass;
  * @endcode
  *
  * @note A common convention in this library is to assign the same name for a type and an object of this type.
@@ -86,6 +86,9 @@ struct base_dimension_less : std::bool_constant<(Lhs::symbol < Rhs::symbol)> {};
 
 template<typename T1, typename T2>
 using type_list_of_base_dimension_less = expr_less<T1, T2, base_dimension_less>;
+
+template<detail::DerivedDimensionExpr... Expr>
+struct derived_dimension_impl : detail::expr_fractions<detail::is_dimension_one, Expr...> {};
 
 }  // namespace detail
 
@@ -132,7 +135,7 @@ using type_list_of_base_dimension_less = expr_less<T1, T2, base_dimension_less>;
  *       instantiate this type automatically based on the dimensional arithmetic equation provided by the user.
  */
 template<detail::DerivedDimensionExpr... Expr>
-struct derived_dimension : detail::expr_fractions<detail::is_dimension_one, Expr...> {};
+struct derived_dimension final : detail::derived_dimension_impl<Expr...> {};
 
 /**
  * @brief Dimension one
@@ -141,7 +144,7 @@ struct derived_dimension : detail::expr_fractions<detail::is_dimension_one, Expr
  * dimensions are zero. It is a dimension of a quantity of dimension one also known as
  * "dimensionless".
  */
-MP_UNITS_EXPORT inline constexpr struct dimension_one : derived_dimension<> {
+MP_UNITS_EXPORT inline constexpr struct dimension_one final : detail::derived_dimension_impl<> {
 } dimension_one;
 
 namespace detail {
@@ -280,13 +283,13 @@ constexpr Out dimension_symbol_impl(Out out, const type_list<Nums...>& nums, con
 }
 
 template<typename CharT, std::output_iterator<CharT> Out, typename... Expr>
-constexpr Out dimension_symbol_impl(Out out, const derived_dimension<Expr...>&, const dimension_symbol_formatting& fmt,
-                                    bool negative_power)
+constexpr Out dimension_symbol_impl(Out out, const derived_dimension_impl<Expr...>&,
+                                    const dimension_symbol_formatting& fmt, bool negative_power)
 {
   (void)negative_power;
   MP_UNITS_EXPECTS(negative_power == false);
-  return dimension_symbol_impl<CharT>(out, typename derived_dimension<Expr...>::_num_{},
-                                      typename derived_dimension<Expr...>::_den_{}, fmt);
+  return dimension_symbol_impl<CharT>(out, typename derived_dimension_impl<Expr...>::_num_{},
+                                      typename derived_dimension_impl<Expr...>::_den_{}, fmt);
 }
 
 

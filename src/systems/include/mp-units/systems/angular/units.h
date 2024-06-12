@@ -34,7 +34,7 @@ MP_UNITS_EXPORT
 namespace mp_units::angular {
 
 // clang-format off
-inline constexpr struct dim_angle : base_dimension<"A"> {} dim_angle;
+inline constexpr struct dim_angle final : base_dimension<"A"> {} dim_angle;
 QUANTITY_SPEC(angle, dim_angle);
 QUANTITY_SPEC(solid_angle, pow<2>(angle));
 

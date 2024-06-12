@@ -60,8 +60,8 @@ For example:
 the following way:
 
 ```cpp
-inline constexpr struct dim_length : base_dimension<"L"> {} dim_length;
-inline constexpr struct dim_time : base_dimension<"T"> {} dim_time;
+inline constexpr struct dim_length final : base_dimension<"L"> {} dim_length;
+inline constexpr struct dim_time final : base_dimension<"T"> {} dim_time;
 ```
 
 [Derived dimensions](../../appendix/glossary.md#derived-dimension) are implicitly created

@@ -36,10 +36,10 @@ using percent_ = struct percent;
 
 // base dimensions
 // clang-format off
-inline constexpr struct dim_length_ : base_dimension<"L"> {} dim_length;
-inline constexpr struct dim_mass_ : base_dimension<"M"> {} dim_mass;
-inline constexpr struct dim_time_ : base_dimension<"T"> {} dim_time;
-inline constexpr struct dim_thermodynamic_temperature_ : base_dimension<symbol_text{u8"Θ", "O"}> {} dim_thermodynamic_temperature;
+inline constexpr struct dim_length_ final : base_dimension<"L"> {} dim_length;
+inline constexpr struct dim_mass_ final : base_dimension<"M"> {} dim_mass;
+inline constexpr struct dim_time_ final : base_dimension<"T"> {} dim_time;
+inline constexpr struct dim_thermodynamic_temperature_ final : base_dimension<symbol_text{u8"Θ", "O"}> {} dim_thermodynamic_temperature;
 
 // quantities specification
 QUANTITY_SPEC_(length, dim_length);

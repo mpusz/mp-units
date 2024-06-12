@@ -35,9 +35,9 @@ using one_ = struct one;
 
 // base dimensions
 // clang-format off
-inline constexpr struct dim_length_ : base_dimension<"L"> {} dim_length;
-inline constexpr struct dim_mass_ : base_dimension<"M"> {} dim_mass;
-inline constexpr struct dim_time_ : base_dimension<"T"> {} dim_time;
+inline constexpr struct dim_length_ final : base_dimension<"L"> {} dim_length;
+inline constexpr struct dim_mass_ final : base_dimension<"M"> {} dim_mass;
+inline constexpr struct dim_time_ final : base_dimension<"T"> {} dim_time;
 
 // quantities specification
 QUANTITY_SPEC_(length, dim_length);

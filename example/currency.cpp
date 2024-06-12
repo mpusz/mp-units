@@ -36,7 +36,7 @@ import mp_units.core;
 using namespace mp_units;
 
 // clang-format off
-inline constexpr struct dim_currency : base_dimension<"$"> {} dim_currency;
+inline constexpr struct dim_currency final : base_dimension<"$"> {} dim_currency;
 
 QUANTITY_SPEC(currency, dim_currency);
 
