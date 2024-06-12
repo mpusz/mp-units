@@ -260,11 +260,11 @@ struct quantity_spec<Self, Dim, Args...> : detail::quantity_spec_interface<Self>
  * @tparam Args optionally a value of a `quantity_character` in case the base quantity should not be scalar
  */
 #ifdef MP_UNITS_API_NO_CRTP
-template<detail::IntermediateDerivedQuantitySpec auto Eq, one_of<quantity_character> auto... Args>
+template<detail::DerivedQuantitySpec auto Eq, one_of<quantity_character> auto... Args>
   requires(... && !QuantitySpec<decltype(Args)>)
 struct quantity_spec<Eq, Args...> : detail::quantity_spec_interface {
 #else
-template<typename Self, detail::IntermediateDerivedQuantitySpec auto Eq, one_of<quantity_character> auto... Args>
+template<typename Self, detail::DerivedQuantitySpec auto Eq, one_of<quantity_character> auto... Args>
   requires(... && !QuantitySpec<decltype(Args)>)
 struct quantity_spec<Self, Eq, Args...> : detail::quantity_spec_interface<Self> {
 #endif
@@ -359,14 +359,14 @@ struct quantity_spec<Self, QS, Args...> : decltype(QS) {
  *              or `is_kind` in case the quantity starts a new hierarchy tree of a kind
  */
 #ifdef MP_UNITS_API_NO_CRTP
-template<detail::NamedQuantitySpec auto QS, detail::IntermediateDerivedQuantitySpec auto Eq,
+template<detail::NamedQuantitySpec auto QS, detail::DerivedQuantitySpec auto Eq,
          one_of<quantity_character, struct is_kind> auto... Args>
   requires(!requires { QS._equation_; } || (requires {
             QS._equation_;
           } && (explicitly_convertible(Eq, QS._equation_)))) && (... && !QuantitySpec<decltype(Args)>)
 struct quantity_spec<QS, Eq, Args...> : quantity_spec<QS, Args...> {
 #else
-template<typename Self, detail::NamedQuantitySpec auto QS, detail::IntermediateDerivedQuantitySpec auto Eq,
+template<typename Self, detail::NamedQuantitySpec auto QS, detail::DerivedQuantitySpec auto Eq,
          one_of<quantity_character, struct is_kind> auto... Args>
   requires(!requires { QS._equation_; } || (requires {
             QS._equation_;
@@ -421,7 +421,7 @@ struct quantity_spec<Self, QS, Eq, Args...> : quantity_spec<Self, QS, Args...> {
  * @note User should not instantiate this type! It is not exported from the C++ module. The library will
  *       instantiate this type automatically based on the dimensional arithmetic equation provided by the user.
  */
-template<detail::IntermediateDerivedQuantitySpecExpr... Expr>
+template<detail::DerivedQuantitySpecExpr... Expr>
 struct derived_quantity_spec :
 #ifdef MP_UNITS_API_NO_CRTP
     detail::quantity_spec_interface,
@@ -454,7 +454,7 @@ MP_UNITS_EXPORT QUANTITY_SPEC(dimensionless, derived_quantity_spec<>{});
 namespace detail {
 
 template<typename T>
-concept QuantitySpecWithNoSpecifiers = detail::NamedQuantitySpec<T> || detail::IntermediateDerivedQuantitySpec<T>;
+concept QuantitySpecWithNoSpecifiers = detail::NamedQuantitySpec<T> || detail::DerivedQuantitySpec<T>;
 
 template<QuantitySpec Q>
 [[nodiscard]] consteval QuantitySpec auto get_kind_tree_root(Q q);
@@ -556,7 +556,7 @@ template<std::intmax_t Num, std::intmax_t Den = 1, QuantitySpec Q>
     return dimensionless;
   else if constexpr (detail::ratio{Num, Den} == 1)
     return q;
-  else if constexpr (detail::IntermediateDerivedQuantitySpec<Q>)
+  else if constexpr (detail::DerivedQuantitySpec<Q>)
     return detail::clone_kind_of<Q{}>(
       detail::expr_pow<Num, Den, derived_quantity_spec, struct dimensionless, detail::type_list_of_quantity_spec_less>(
         detail::remove_kind(q)));
@@ -616,7 +616,7 @@ template<typename Q>
 template<QuantitySpec Q>
 [[nodiscard]] consteval int get_complexity(Q)
 {
-  if constexpr (detail::IntermediateDerivedQuantitySpec<Q>)
+  if constexpr (detail::DerivedQuantitySpec<Q>)
     return get_complexity(typename Q::_num_{}) + get_complexity(typename Q::_den_{});
   else if constexpr (requires { Q::_equation_; })
     return 1 + get_complexity(Q::_equation_);
@@ -709,7 +709,7 @@ explode_result(Q) -> explode_result<Q>;
 
 #endif
 
-template<int Complexity, IntermediateDerivedQuantitySpec Q>
+template<int Complexity, DerivedQuantitySpec Q>
 [[nodiscard]] consteval auto explode(Q q);
 
 template<int Complexity, NamedQuantitySpec Q>
@@ -771,7 +771,7 @@ template<int Complexity, QuantitySpec Q>
   return explode_result{dimensionless};
 }
 
-template<int Complexity, IntermediateDerivedQuantitySpec Q>
+template<int Complexity, DerivedQuantitySpec Q>
 [[nodiscard]] consteval auto explode(Q q)
 {
   constexpr auto c = get_complexity(Q{});
@@ -1304,7 +1304,7 @@ template<typename... DensTo>
   return specs_convertible_result::yes;
 }
 
-template<IntermediateDerivedQuantitySpec From, IntermediateDerivedQuantitySpec To>
+template<DerivedQuantitySpec From, DerivedQuantitySpec To>
 [[nodiscard]] consteval specs_convertible_result are_ingredients_convertible(From, To)
 {
   return are_ingredients_convertible(type_list_sort<typename From::_num_, type_list_of_ingredients_less>{},
@@ -1313,7 +1313,7 @@ template<IntermediateDerivedQuantitySpec From, IntermediateDerivedQuantitySpec T
                                      type_list_sort<typename To::_den_, type_list_of_ingredients_less>{});
 }
 
-template<IntermediateDerivedQuantitySpec From, NamedQuantitySpec To>
+template<DerivedQuantitySpec From, NamedQuantitySpec To>
 [[nodiscard]] consteval specs_convertible_result are_ingredients_convertible(From, To)
 {
   return are_ingredients_convertible(type_list_sort<typename From::_num_, type_list_of_ingredients_less>{},
@@ -1321,7 +1321,7 @@ template<IntermediateDerivedQuantitySpec From, NamedQuantitySpec To>
                                      type_list<To>{}, type_list<>{});
 }
 
-template<NamedQuantitySpec From, IntermediateDerivedQuantitySpec To>
+template<NamedQuantitySpec From, DerivedQuantitySpec To>
 [[nodiscard]] consteval specs_convertible_result are_ingredients_convertible(From, To)
 {
   return are_ingredients_convertible(type_list<From>{}, type_list<>{},
@@ -1385,9 +1385,9 @@ template<QuantitySpec From, QuantitySpec To>
     return yes;
   else if constexpr (NamedQuantitySpec<From> && NamedQuantitySpec<To>) {
     return convertible_named(from, to);
-  } else if constexpr (IntermediateDerivedQuantitySpec<From> && IntermediateDerivedQuantitySpec<To>) {
+  } else if constexpr (DerivedQuantitySpec<From> && DerivedQuantitySpec<To>) {
     return are_ingredients_convertible(from, to);
-  } else if constexpr (IntermediateDerivedQuantitySpec<From>) {
+  } else if constexpr (DerivedQuantitySpec<From>) {
     auto res = explode<get_complexity(to)>(from);
     if constexpr (NamedQuantitySpec<decltype(res.quantity)>)
       return convertible_impl(res.quantity, to);
@@ -1396,7 +1396,7 @@ template<QuantitySpec From, QuantitySpec To>
       return min(eq.result, convertible_impl(res.quantity, eq.equation));
     } else
       return are_ingredients_convertible(from, to);
-  } else if constexpr (IntermediateDerivedQuantitySpec<To>) {
+  } else if constexpr (DerivedQuantitySpec<To>) {
     auto res = explode<get_complexity(from)>(to);
     if constexpr (NamedQuantitySpec<decltype(res.quantity)>)
       return min(res.result, convertible_impl(from, res.quantity));
@@ -1473,7 +1473,7 @@ template<QuantitySpec Q>
     return q;
   } else if constexpr (requires { Q::_parent_; }) {
     return get_kind_tree_root(Q::_parent_);
-  } else if constexpr (detail::IntermediateDerivedQuantitySpec<Q>) {
+  } else if constexpr (detail::DerivedQuantitySpec<Q>) {
     return detail::expr_map<detail::to_kind, derived_quantity_spec, struct dimensionless,
                             detail::type_list_of_quantity_spec_less>(q);
   } else {
@@ -1511,11 +1511,11 @@ template<QuantitySpec Q1, QuantitySpec Q2>
   else if constexpr (detail::NestedQuantityKindSpecOf<Q2{}, Q1{}>)
     return detail::remove_kind(q2);
   else if constexpr ((detail::QuantityKindSpec<Q1> && !detail::QuantityKindSpec<Q2>) ||
-                     (detail::IntermediateDerivedQuantitySpec<QQ1> && detail::NamedQuantitySpec<QQ2> &&
+                     (detail::DerivedQuantitySpec<QQ1> && detail::NamedQuantitySpec<QQ2> &&
                       implicitly_convertible(Q1{}, Q2{})))
     return q2;
   else if constexpr ((!detail::QuantityKindSpec<Q1> && detail::QuantityKindSpec<Q2>) ||
-                     (detail::NamedQuantitySpec<QQ1> && detail::IntermediateDerivedQuantitySpec<QQ2> &&
+                     (detail::NamedQuantitySpec<QQ1> && detail::DerivedQuantitySpec<QQ2> &&
                       implicitly_convertible(Q2{}, Q1{})))
     return q1;
   else if constexpr (detail::have_common_base(Q1{}, Q2{}))
