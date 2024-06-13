@@ -5,11 +5,12 @@
 ### 2.2.0 <small>WIP</small> { id="2.2.0" }
 
 - (!) feat: C++ modules support added by [@JohelEGP](https://github.com/JohelEGP)
-- (!) feat: formatting grammar improved and units formatting support added
+- (!) feat: New formatting specification implemented
 - (!) feat: `has_unit_symbol` support removed
 - (!) feat: ABI concerns resolved with introduction of u8 strings for symbols
 - (!) feat: API-related Conan, CMake, and preprocessor options redesigned
-- (!) feat: :boom: `core.h` removed
+- (!) feat: `core.h` removed
+- (!) feat: from now on units, dimensions, and quantity specifications have to be marked as `final`
 - feat: implicit point origins support added
 - feat: unit default point origin support added
 - feat: `fma`, `isfinite`, `isinf`, and `isnan` math function added by [@NAThompson](https://github.com/NAThompson)
@@ -28,10 +29,10 @@
 - feat: unit text output support added
 - feat: formatting error messages improved
 - feat: improve types readability by eliminating extraneous `()` in references, prefixes, and `kind_of`
-- feat: dimension text output added
+- feat: dimension and unit text output added
 - feat: some light and radiation ISQ quantities added
-- feat: New formatting specification implemented
 - feat: allow configuring GSL library use
+- feat: freestanding support added
 - (!) refactor: `zero_Fahrenheit` renamed to `zeroth_degree_Fahrenheit`
 - (!) refactor: SI-related trigonometric functions moved to the `si` subnamespace
 - (!) refactor: `math.h` header file broke up to smaller pieces
@@ -46,6 +47,8 @@
 - (!) refactor: `framework.h` introduced
 - (!) refactor: type list tools made an implementation detail of the library
 - (!) refactor: header files with the entire system definitions moved up in the directory tree
+- refactor: system's units do not inherit from one another anymore
+- refactor: all units made `final`
 - refactor: math functions constraints refactored
 - refactor: `si_quantities.h` added to improve compile-times
 - refactor: `validate_ascii_string` refactored to `is_basic_literal_character_set`
@@ -53,6 +56,8 @@
 - refactor: code refactored to comply with clang-tidy
 - refactor: remove dependency on `<ranges>` header and switch to use an iterator-based `copy` algorithm
 - refactor: `terminate` replaced with `abort` and a header file added
+- refactor: most `std::remove_const_t` removed and some replaced with the GCC-specific workaround
+- refactor: not needed `remove_reference_t` and `remove_cvref_t` removed
 - fix: `QuantityLike` conversions required `Q::rep` instead of using one provided by `quantity_like_traits`
 - fix: `QuantitySpec[Unit]` replaced with `make_reference` in `value_cast`
 - fix: `ice_point` is now defined with the integral offset from `absolute_zero`
@@ -81,6 +86,7 @@
 - docs: "Text Output" chapter updated with the recent formatting changes
 - docs: formatting grammar language changed to EBNF
 - docs: "Project structure" chapter expanded
+- docs: CITATION.cff updated
 - (!) build: Conan and CMake options refactored
 - (!) build: `MP_UNITS_AS_SYSTEM_HEADERS` renamed to `MP_UNITS_BUILD_AS_SYSTEM_HEADERS`
 - (!) build: `MP_UNITS_BUILD_LA` and `MP_UNITS_IWYU` CMake options now have `_DEV_` in the name
@@ -96,6 +102,7 @@
 - build(conan): `can_run` check added before running tests
 - ci: Conan and CMake CI now use different cache names
 - ci: gcc-14 added
+- ci: `clang-tidy` CI added
 
 ### 2.1.1 <small>May 16, 2024</small> { id="2.1.1" }
 
