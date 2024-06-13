@@ -85,7 +85,7 @@ static_assert(!Dimension<int>);
 // TODO add tests
 
 // QuantitySpec
-struct speed : decltype(isq::length / isq::time) {};  // this is not recommended
+inline constexpr auto speed = isq::length / isq::time;
 
 static_assert(QuantitySpec<struct isq::length>);
 static_assert(QuantitySpec<struct isq::radius>);
@@ -94,7 +94,7 @@ static_assert(QuantitySpec<decltype(kind_of<isq::length>)>);
 static_assert(QuantitySpec<decltype(isq::length / isq::time)>);
 static_assert(QuantitySpec<decltype(pow<2>(isq::length))>);
 static_assert(QuantitySpec<struct dimensionless>);
-static_assert(!QuantitySpec<speed>);
+static_assert(QuantitySpec<std::remove_const_t<decltype(speed)>>);
 static_assert(!QuantitySpec<struct isq::dim_length>);
 static_assert(!QuantitySpec<int>);
 
@@ -106,21 +106,21 @@ static_assert(!detail::NamedQuantitySpec<std::remove_const_t<decltype(kind_of<is
 static_assert(!detail::NamedQuantitySpec<decltype(isq::length / isq::time)>);
 static_assert(!detail::NamedQuantitySpec<decltype(pow<2>(isq::length))>);
 static_assert(detail::NamedQuantitySpec<struct dimensionless>);
-static_assert(!detail::NamedQuantitySpec<speed>);
+static_assert(!detail::NamedQuantitySpec<std::remove_const_t<decltype(speed)>>);
 static_assert(!detail::NamedQuantitySpec<struct isq::dim_length>);
 static_assert(!detail::NamedQuantitySpec<int>);
 
-// IntermediateDerivedQuantitySpec
-static_assert(!detail::IntermediateDerivedQuantitySpec<struct isq::length>);
-static_assert(!detail::IntermediateDerivedQuantitySpec<struct isq::radius>);
-static_assert(!detail::IntermediateDerivedQuantitySpec<decltype(kind_of<isq::length>)>);
-static_assert(!detail::IntermediateDerivedQuantitySpec<struct isq::speed>);
-static_assert(detail::IntermediateDerivedQuantitySpec<decltype(isq::length / isq::time)>);
-static_assert(detail::IntermediateDerivedQuantitySpec<decltype(pow<2>(isq::length))>);
-static_assert(!detail::IntermediateDerivedQuantitySpec<struct dimensionless>);
-static_assert(!detail::IntermediateDerivedQuantitySpec<speed>);
-static_assert(!detail::IntermediateDerivedQuantitySpec<struct isq::dim_length>);
-static_assert(!detail::IntermediateDerivedQuantitySpec<int>);
+// DerivedQuantitySpec
+static_assert(!detail::DerivedQuantitySpec<struct isq::length>);
+static_assert(!detail::DerivedQuantitySpec<struct isq::radius>);
+static_assert(!detail::DerivedQuantitySpec<decltype(kind_of<isq::length>)>);
+static_assert(!detail::DerivedQuantitySpec<struct isq::speed>);
+static_assert(detail::DerivedQuantitySpec<decltype(isq::length / isq::time)>);
+static_assert(detail::DerivedQuantitySpec<decltype(pow<2>(isq::length))>);
+static_assert(!detail::DerivedQuantitySpec<struct dimensionless>);
+static_assert(detail::DerivedQuantitySpec<std::remove_const_t<decltype(speed)>>);
+static_assert(!detail::DerivedQuantitySpec<struct isq::dim_length>);
+static_assert(!detail::DerivedQuantitySpec<int>);
 
 // QuantityKindSpec
 static_assert(!detail::QuantityKindSpec<struct isq::length>);
@@ -130,7 +130,7 @@ static_assert(!detail::QuantityKindSpec<struct isq::speed>);
 static_assert(!detail::QuantityKindSpec<decltype(isq::length / isq::time)>);
 static_assert(!detail::QuantityKindSpec<decltype(pow<2>(isq::length))>);
 static_assert(!detail::QuantityKindSpec<struct dimensionless>);
-static_assert(!detail::QuantityKindSpec<speed>);
+static_assert(!detail::QuantityKindSpec<std::remove_const_t<decltype(speed)>>);
 static_assert(!detail::QuantityKindSpec<struct isq::dim_length>);
 static_assert(!detail::QuantityKindSpec<int>);
 

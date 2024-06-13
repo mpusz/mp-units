@@ -64,25 +64,14 @@ template<typename T>
 inline constexpr bool is_derived_from_specialization_of_quantity_spec =
   requires(T* t) { to_base_specialization_of_quantity_spec(t); };
 
-template<typename T>
-inline constexpr bool is_specialization_of_quantity_spec = false;
-
-#ifdef MP_UNITS_API_NO_CRTP
-template<auto... Args>
-inline constexpr bool is_specialization_of_quantity_spec<quantity_spec<Args...>> = true;
-#else
-template<typename T, auto... Args>
-inline constexpr bool is_specialization_of_quantity_spec<quantity_spec<T, Args...>> = true;
-#endif
-
 /**
  * @brief Concept matching all named quantity specification types
  *
  * Satisfied by all types that derive from `quantity_spec`.
  */
 template<typename T>
-concept NamedQuantitySpec = is_derived_from_specialization_of_quantity_spec<T> &&
-                            (!is_specialization_of_quantity_spec<T>)&&(!QuantityKindSpec<T>);
+concept NamedQuantitySpec =
+  is_derived_from_specialization_of_quantity_spec<T> && std::is_final_v<T> && (!QuantityKindSpec<T>);
 
 template<typename T>
 struct is_dimensionless : std::false_type {};
@@ -136,12 +125,15 @@ MP_UNITS_EXPORT template<QuantitySpec Q>
 
 namespace detail {
 
+template<QuantitySpec Child, QuantitySpec Parent>
+[[nodiscard]] consteval auto is_child_of(Child ch, Parent);
+
 template<auto To, auto From>
 concept NestedQuantityKindSpecOf =
   QuantitySpec<decltype(From)> && QuantitySpec<decltype(To)> && get_kind(From) != get_kind(To) &&
-  std::derived_from<decltype(To), std::remove_const_t<decltype(get_kind(From)._quantity_spec_)>>;
+  decltype(is_child_of(To, get_kind(From)._quantity_spec_))::value;
 
-}
+}  // namespace detail
 
 MP_UNITS_EXPORT template<typename T, auto QS>
 concept QuantitySpecOf =

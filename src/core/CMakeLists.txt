@@ -35,10 +35,10 @@ add_mp_units_module(
     core mp-units-core
     HEADERS include/mp-units/bits/core_gmf.h
             include/mp-units/bits/get_associated_quantity.h
-            include/mp-units/bits/get_common_base.h
             include/mp-units/bits/hacks.h
             include/mp-units/bits/math_concepts.h
             include/mp-units/bits/module_macros.h
+            include/mp-units/bits/quantity_spec_hierarchy.h
             include/mp-units/bits/ratio.h
             include/mp-units/bits/sudo_cast.h
             include/mp-units/bits/text_tools.h

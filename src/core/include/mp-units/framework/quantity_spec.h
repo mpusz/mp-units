@@ -23,9 +23,9 @@
 #pragma once
 
 // IWYU pragma: private, include <mp-units/framework.h>
-#include <mp-units/bits/get_common_base.h>
 #include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
+#include <mp-units/bits/quantity_spec_hierarchy.h>
 #include <mp-units/compat_macros.h>
 #include <mp-units/ext/algorithm.h>
 #include <mp-units/ext/type_name.h>
@@ -203,9 +203,9 @@ MP_UNITS_EXPORT_END
  * inline constexpr struct dim_mass final : base_dimension<"M"> {} dim_mass;
  * inline constexpr struct dim_time final : base_dimension<"T"> {} dim_time;
  *
- * inline constexpr struct length : quantity_spec<dim_length> {} length;
- * inline constexpr struct mass : quantity_spec<dim_mass> {} mass;
- * inline constexpr struct time : quantity_spec<dim_time> {} time;
+ * inline constexpr struct length final : quantity_spec<dim_length> {} length;
+ * inline constexpr struct mass final : quantity_spec<dim_mass> {} mass;
+ * inline constexpr struct time final : quantity_spec<dim_time> {} time;
  * @endcode
  *
  * @note A common convention in this library is to assign the same name for a type and an object of this type.
@@ -225,6 +225,7 @@ template<typename Self, detail::BaseDimension auto Dim, one_of<quantity_characte
   requires(... && !QuantitySpec<decltype(Args)>)
 struct quantity_spec<Self, Dim, Args...> : detail::quantity_spec_interface<Self> {
 #endif
+  using _base_type_ = quantity_spec;
   static constexpr detail::BaseDimension auto dimension = Dim;
   static constexpr quantity_character character = detail::quantity_character_init<Args...>(quantity_character::scalar);
 };
@@ -243,12 +244,12 @@ struct quantity_spec<Self, Dim, Args...> : detail::quantity_spec_interface<Self>
  * For example:
  *
  * @code{.cpp}
- * inline constexpr struct area : quantity_spec<pow<2>(length)> {} area;
- * inline constexpr struct volume : quantity_spec<pow<3>(length)> {} volume;
- * inline constexpr struct velocity : quantity_spec<position_vector / duration> {} velocity;
- * inline constexpr struct speed : quantity_spec<length / time> {} speed;
- * inline constexpr struct force : quantity_spec<mass * acceleration, quantity_character::vector> {} force;
- * inline constexpr struct power : quantity_spec<force * velocity, quantity_character::scalar> {} power;
+ * inline constexpr struct area final : quantity_spec<pow<2>(length)> {} area;
+ * inline constexpr struct volume final : quantity_spec<pow<3>(length)> {} volume;
+ * inline constexpr struct velocity final : quantity_spec<position_vector / duration> {} velocity;
+ * inline constexpr struct speed final : quantity_spec<length / time> {} speed;
+ * inline constexpr struct force final : quantity_spec<mass * acceleration, quantity_character::vector> {} force;
+ * inline constexpr struct power final : quantity_spec<force * velocity, quantity_character::scalar> {} power;
  * @endcode
  *
  * @note A common convention in this library is to assign the same name for a type and an object of this type.
@@ -268,10 +269,23 @@ template<typename Self, detail::DerivedQuantitySpec auto Eq, one_of<quantity_cha
   requires(... && !QuantitySpec<decltype(Args)>)
 struct quantity_spec<Self, Eq, Args...> : detail::quantity_spec_interface<Self> {
 #endif
+  using _base_type_ = quantity_spec;
   static constexpr auto _equation_ = Eq;
   static constexpr Dimension auto dimension = Eq.dimension;
   static constexpr quantity_character character = detail::quantity_character_init<Args...>(Eq.character);
 };
+
+namespace detail {
+
+template<QuantitySpec auto Q, bool = requires { Q._equation_; }>
+struct propagate_equation {};
+
+template<QuantitySpec auto Q>
+struct propagate_equation<Q, true> {
+  static constexpr auto _equation_ = Q._equation_;
+};
+
+}  // namespace detail
 
 /**
  * @brief Specialization defining a leaf quantity in the hierarchy
@@ -285,10 +299,10 @@ struct quantity_spec<Self, Eq, Args...> : detail::quantity_spec_interface<Self> 
  * For example:
  *
  * @code{.cpp}
- * inline constexpr struct width : quantity_spec<length> {} width;
- * inline constexpr struct height : quantity_spec<length> {} height;
- * inline constexpr struct diameter : quantity_spec<width> {} diameter;
- * inline constexpr struct position_vector : quantity_spec<length, quantity_character::vector> {} position_vector;
+ * inline constexpr struct width final : quantity_spec<length> {} width;
+ * inline constexpr struct height final : quantity_spec<length> {} height;
+ * inline constexpr struct diameter final : quantity_spec<width> {} diameter;
+ * inline constexpr struct position_vector final : quantity_spec<length, quantity_character::vector> {} position_vector;
  * @endcode
  *
  * @note A common convention in this library is to assign the same name for a type and an object of this type.
@@ -303,13 +317,15 @@ struct quantity_spec<Self, Eq, Args...> : detail::quantity_spec_interface<Self> 
 #ifdef MP_UNITS_API_NO_CRTP
 template<detail::NamedQuantitySpec auto QS, one_of<quantity_character, struct is_kind> auto... Args>
   requires(... && !QuantitySpec<decltype(Args)>)
-struct quantity_spec<QS, Args...> : decltype(QS) {
+struct quantity_spec<QS, Args...> : detail::propagate_equation<QS>, detail::quantity_spec_interface {
 #else
 template<typename Self, detail::NamedQuantitySpec auto QS, one_of<quantity_character, struct is_kind> auto... Args>
   requires(... && !QuantitySpec<decltype(Args)>)
-struct quantity_spec<Self, QS, Args...> : decltype(QS) {
+struct quantity_spec<Self, QS, Args...> : detail::propagate_equation<QS>, detail::quantity_spec_interface<Self> {
 #endif
+  using _base_type_ = quantity_spec;
   static constexpr auto _parent_ = QS;
+  static constexpr Dimension auto dimension = _parent_.dimension;
   static constexpr quantity_character character = detail::quantity_character_init<Args...>(QS.character);
 
 #ifndef MP_UNITS_API_NO_CRTP
@@ -330,6 +346,7 @@ struct quantity_spec<Self, QS, Args...> : decltype(QS) {
 #endif
 };
 
+// clang-format off
 /**
  * @brief Specialization defining a leaf derived quantity in the hierarchy and refining paren't equation
  *
@@ -343,10 +360,10 @@ struct quantity_spec<Self, QS, Args...> : decltype(QS) {
  * For example:
  *
  * @code{.cpp}
- * inline constexpr struct angular_measure : quantity_spec<dimensionless, arc_length / radius, is_kind> {}
- * angular_measure; inline constexpr struct velocity : quantity_spec<speed, position_vector / duration> {} velocity;
- * inline constexpr struct weight : quantity_spec<force, mass * acceleration_of_free_fall> {} weight;
- * inline constexpr struct kinetic_energy : quantity_spec<mechanical_energy, mass * pow<2>(speed)> {} kinetic_energy;
+ * inline constexpr struct angular_measure final : quantity_spec<dimensionless, arc_length / radius, is_kind> {} angular_measure;
+ * inline constexpr struct velocity final : quantity_spec<speed, position_vector / duration> {} velocity;
+ * inline constexpr struct weight final : quantity_spec<force, mass * acceleration_of_free_fall> {} weight;
+ * inline constexpr struct kinetic_energy final : quantity_spec<mechanical_energy, mass * pow<2>(speed)> {} kinetic_energy;
  * @endcode
  *
  * @note A common convention in this library is to assign the same name for a type and an object of this type.
@@ -358,25 +375,50 @@ struct quantity_spec<Self, QS, Args...> : decltype(QS) {
  * @tparam Args optionally a value of a `quantity_character` in case the base quantity should not be scalar
  *              or `is_kind` in case the quantity starts a new hierarchy tree of a kind
  */
+// clang-format on
 #ifdef MP_UNITS_API_NO_CRTP
 template<detail::NamedQuantitySpec auto QS, detail::DerivedQuantitySpec auto Eq,
          one_of<quantity_character, struct is_kind> auto... Args>
   requires(!requires { QS._equation_; } || (requires {
             QS._equation_;
           } && (explicitly_convertible(Eq, QS._equation_)))) && (... && !QuantitySpec<decltype(Args)>)
-struct quantity_spec<QS, Eq, Args...> : quantity_spec<QS, Args...> {
+struct quantity_spec<QS, Eq, Args...> : detail::quantity_spec_interface {
 #else
 template<typename Self, detail::NamedQuantitySpec auto QS, detail::DerivedQuantitySpec auto Eq,
          one_of<quantity_character, struct is_kind> auto... Args>
   requires(!requires { QS._equation_; } || (requires {
             QS._equation_;
           } && (explicitly_convertible(Eq, QS._equation_)))) && (... && !QuantitySpec<decltype(Args)>)
-struct quantity_spec<Self, QS, Eq, Args...> : quantity_spec<Self, QS, Args...> {
+struct quantity_spec<Self, QS, Eq, Args...> : detail::quantity_spec_interface<Self> {
 #endif
+  using _base_type_ = quantity_spec;
+  static constexpr auto _parent_ = QS;
   static constexpr auto _equation_ = Eq;
+  static constexpr Dimension auto dimension = _parent_.dimension;
   static constexpr quantity_character character = detail::quantity_character_init<Args...>(Eq.character);
 };
 
+namespace detail {
+
+template<detail::DerivedQuantitySpecExpr... Expr>
+struct derived_quantity_spec_impl :
+#ifdef MP_UNITS_API_NO_CRTP
+    detail::quantity_spec_interface,
+#else
+    detail::quantity_spec_interface<derived_quantity_spec<Expr...>>,
+#endif
+    detail::expr_fractions<detail::is_dimensionless, Expr...> {
+  using _base_type_ = derived_quantity_spec_impl;
+  using _base_ = detail::expr_fractions<detail::is_dimensionless, Expr...>;
+
+  static constexpr Dimension auto dimension =
+    detail::expr_map<detail::to_dimension, derived_dimension, struct dimension_one,
+                     detail::type_list_of_base_dimension_less>(_base_{});
+  static constexpr quantity_character character =
+    detail::derived_quantity_character(typename _base_::_num_{}, typename _base_::_den_{});
+};
+
+}  // namespace detail
 
 /**
  * @brief A specification of a derived quantity
@@ -422,21 +464,7 @@ struct quantity_spec<Self, QS, Eq, Args...> : quantity_spec<Self, QS, Args...> {
  *       instantiate this type automatically based on the dimensional arithmetic equation provided by the user.
  */
 template<detail::DerivedQuantitySpecExpr... Expr>
-struct derived_quantity_spec :
-#ifdef MP_UNITS_API_NO_CRTP
-    detail::quantity_spec_interface,
-#else
-    detail::quantity_spec_interface<derived_quantity_spec<Expr...>>,
-#endif
-    detail::expr_fractions<detail::is_dimensionless, Expr...> {
-  using _base_ = detail::expr_fractions<detail::is_dimensionless, Expr...>;
-
-  static constexpr Dimension auto dimension =
-    detail::expr_map<detail::to_dimension, derived_dimension, struct dimension_one,
-                     detail::type_list_of_base_dimension_less>(_base_{});
-  static constexpr quantity_character character =
-    detail::derived_quantity_character(typename _base_::_num_{}, typename _base_::_den_{});
-};
+struct derived_quantity_spec final : detail::derived_quantity_spec_impl<Expr...> {};
 
 /**
  * @brief Quantity of dimension one
@@ -445,6 +473,13 @@ struct derived_quantity_spec :
  * for which all the exponents of the factors corresponding to the base dimensions are zero.
  */
 MP_UNITS_EXPORT QUANTITY_SPEC(dimensionless, derived_quantity_spec<>{});
+
+namespace detail {
+
+template<>
+struct is_dimensionless<struct dimensionless> : std::true_type {};
+
+}  // namespace detail
 
 /**
  * @brief Quantity kind specifier
@@ -464,7 +499,8 @@ template<QuantitySpec Q>
 #ifdef MP_UNITS_API_NO_CRTP
 template<typename Q>
   requires detail::QuantitySpecWithNoSpecifiers<Q> && (detail::get_kind_tree_root(Q{}) == Q{})
-struct kind_of_<Q> : Q {
+struct kind_of_<Q> final : Q::_base_type_ {
+  using _base_type_ = kind_of_;
   static constexpr auto _quantity_spec_ = Q{};
 };
 #else
@@ -476,7 +512,8 @@ template<typename Q>
 template<detail::QuantitySpecWithNoSpecifiers Q>
   requires(detail::get_kind_tree_root(Q{}) == Q{})
 #endif
-struct kind_of_<Q> : quantity_spec<kind_of_<Q>, Q{}> {
+struct kind_of_<Q> final : quantity_spec<kind_of_<Q>, Q{}>::_base_type_ {
+  using _base_type_ = kind_of_;
   static constexpr auto _quantity_spec_ = Q{};
 };
 #endif
@@ -486,9 +523,6 @@ MP_UNITS_EXPORT template<detail::QuantitySpecWithNoSpecifiers auto Q>
 inline constexpr kind_of_<MP_UNITS_REMOVE_CONST(decltype(Q))> kind_of;
 
 namespace detail {
-
-template<>
-struct is_dimensionless<struct dimensionless> : std::true_type {};
 
 template<QuantitySpec auto... From, QuantitySpec Q>
 [[nodiscard]] consteval QuantitySpec auto clone_kind_of(Q q)
@@ -1353,8 +1387,8 @@ template<NamedQuantitySpec From, NamedQuantitySpec To>
   using enum specs_convertible_result;
 
   if constexpr (have_common_base(From{}, To{})) {
-    if constexpr (std::derived_from<From, To>) return yes;
-    if constexpr (std::derived_from<To, From>) return explicit_conversion;
+    if constexpr (decltype(is_child_of(From{}, To{}))::value) return yes;
+    if constexpr (decltype(is_child_of(To{}, From{}))::value) return explicit_conversion;
     if constexpr (get_kind(From{}) == get_kind(To{})) return cast;
     return no;
   } else if constexpr (get_kind(From{}) != get_kind(To{}))

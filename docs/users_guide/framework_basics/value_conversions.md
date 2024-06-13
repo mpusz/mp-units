@@ -86,7 +86,7 @@ the `value_cast<U, Rep>(q)` which always returns the most precise result:
 
     ```cpp
     inline constexpr struct dim_currency final : base_dimension<"$"> {} dim_currency;
-    inline constexpr struct currency : quantity_spec<dim_currency> {} currency;
+    inline constexpr struct currency final : quantity_spec<dim_currency> {} currency;
 
     inline constexpr struct us_dollar final : named_unit<"USD", kind_of<currency>> {} us_dollar;
     inline constexpr struct scaled_us_dollar final : named_unit<"USD_s", mag_power<10, -8> * us_dollar> {} scaled_us_dollar;
@@ -106,7 +106,7 @@ the `value_cast<U, Rep>(q)` which always returns the most precise result:
 
     ```cpp
     inline constexpr struct dim_currency final : base_dimension<"$"> {} dim_currency;
-    inline constexpr struct currency : quantity_spec<currency, dim_currency> {} currency;
+    inline constexpr struct currency final : quantity_spec<currency, dim_currency> {} currency;
 
     inline constexpr struct us_dollar final : named_unit<"USD", kind_of<currency>> {} us_dollar;
     inline constexpr struct scaled_us_dollar final : named_unit<"USD_s", mag_power<10, -8> * us_dollar> {} scaled_us_dollar;

@@ -88,98 +88,98 @@ QUANTITY_SPEC_(kinetic_energy, mechanical_energy, mass* pow<2>(speed));
 // concepts verification
 static_assert(QuantitySpec<length_>);
 static_assert(detail::NamedQuantitySpec<length_>);
-static_assert(!detail::IntermediateDerivedQuantitySpec<length_>);
+static_assert(!detail::DerivedQuantitySpec<length_>);
 static_assert(!detail::QuantityKindSpec<length_>);
 
 static_assert(QuantitySpec<frequency_>);
 static_assert(detail::NamedQuantitySpec<frequency_>);
-static_assert(!detail::IntermediateDerivedQuantitySpec<frequency_>);
+static_assert(!detail::DerivedQuantitySpec<frequency_>);
 static_assert(!detail::QuantityKindSpec<frequency_>);
 
 static_assert(QuantitySpec<decltype(inverse(time))>);
 static_assert(!detail::NamedQuantitySpec<decltype(inverse(time))>);
-static_assert(detail::IntermediateDerivedQuantitySpec<decltype(inverse(time))>);
+static_assert(detail::DerivedQuantitySpec<decltype(inverse(time))>);
 static_assert(!detail::QuantityKindSpec<decltype(inverse(time))>);
 
 static_assert(QuantitySpec<dimensionless_>);
 static_assert(detail::NamedQuantitySpec<dimensionless_>);
-static_assert(!detail::IntermediateDerivedQuantitySpec<dimensionless_>);
+static_assert(!detail::DerivedQuantitySpec<dimensionless_>);
 static_assert(!detail::QuantityKindSpec<dimensionless_>);
 
 static_assert(QuantitySpec<kind_of_<length_>>);
 static_assert(!detail::NamedQuantitySpec<kind_of_<length_>>);
-static_assert(!detail::IntermediateDerivedQuantitySpec<kind_of_<length_>>);
+static_assert(!detail::DerivedQuantitySpec<kind_of_<length_>>);
 static_assert(detail::QuantityKindSpec<kind_of_<length_>>);
 
 static_assert(QuantitySpec<frequency_>);
 static_assert(detail::NamedQuantitySpec<frequency_>);
-static_assert(!detail::IntermediateDerivedQuantitySpec<frequency_>);
+static_assert(!detail::DerivedQuantitySpec<frequency_>);
 static_assert(!detail::QuantityKindSpec<frequency_>);
 
 static_assert(QuantitySpec<decltype(inverse(time))>);
 static_assert(!detail::NamedQuantitySpec<decltype(inverse(time))>);
-static_assert(detail::IntermediateDerivedQuantitySpec<decltype(inverse(time))>);
+static_assert(detail::DerivedQuantitySpec<decltype(inverse(time))>);
 static_assert(!detail::QuantityKindSpec<decltype(inverse(time))>);
 
 static_assert(QuantitySpec<kind_of_<decltype(length / time)>>);
 static_assert(!detail::NamedQuantitySpec<kind_of_<decltype(length / time)>>);
-static_assert(detail::IntermediateDerivedQuantitySpec<kind_of_<decltype(length / time)>>);
+static_assert(detail::DerivedQuantitySpec<kind_of_<decltype(length / time)>>);
 static_assert(detail::QuantityKindSpec<kind_of_<decltype(length / time)>>);
 
 static_assert(QuantitySpec<decltype(kind_of<length> / kind_of<time>)>);
 static_assert(!detail::NamedQuantitySpec<decltype(kind_of<length> / kind_of<time>)>);
-static_assert(detail::IntermediateDerivedQuantitySpec<decltype(kind_of<length> / kind_of<time>)>);
+static_assert(detail::DerivedQuantitySpec<decltype(kind_of<length> / kind_of<time>)>);
 static_assert(detail::QuantityKindSpec<decltype(kind_of<length> / kind_of<time>)>);
 
 static_assert(QuantitySpec<decltype(kind_of<length> * kind_of<time>)>);
 static_assert(!detail::NamedQuantitySpec<decltype(kind_of<length> * kind_of<time>)>);
-static_assert(detail::IntermediateDerivedQuantitySpec<decltype(kind_of<length> * kind_of<time>)>);
+static_assert(detail::DerivedQuantitySpec<decltype(kind_of<length> * kind_of<time>)>);
 static_assert(detail::QuantityKindSpec<decltype(kind_of<length> * kind_of<time>)>);
 
 // dimensionless
 static_assert(QuantitySpec<dimensionless_>);
 static_assert(detail::NamedQuantitySpec<dimensionless_>);
-static_assert(!detail::IntermediateDerivedQuantitySpec<dimensionless_>);
+static_assert(!detail::DerivedQuantitySpec<dimensionless_>);
 static_assert(!detail::QuantityKindSpec<dimensionless_>);
 
 static_assert(QuantitySpec<decltype(length / length)>);
 static_assert(detail::NamedQuantitySpec<decltype(length / length)>);
-static_assert(!detail::IntermediateDerivedQuantitySpec<decltype(length / length)>);
+static_assert(!detail::DerivedQuantitySpec<decltype(length / length)>);
 static_assert(!detail::QuantityKindSpec<decltype(length / length)>);
 
 static_assert(QuantitySpec<decltype(width / length)>);
 static_assert(!detail::NamedQuantitySpec<decltype(width / length)>);
-static_assert(detail::IntermediateDerivedQuantitySpec<decltype(width / length)>);
+static_assert(detail::DerivedQuantitySpec<decltype(width / length)>);
 static_assert(!detail::QuantityKindSpec<decltype(width / length)>);
 
 static_assert(QuantitySpec<decltype(kind_of<length> / kind_of<length>)>);
 static_assert(!detail::NamedQuantitySpec<decltype(kind_of<length> / kind_of<length>)>);
-static_assert(!detail::IntermediateDerivedQuantitySpec<decltype(kind_of<length> / kind_of<length>)>);
+static_assert(!detail::DerivedQuantitySpec<decltype(kind_of<length> / kind_of<length>)>);
 static_assert(detail::QuantityKindSpec<decltype(kind_of<length> / kind_of<length>)>);
 
 static_assert(QuantitySpec<decltype(kind_of<length> / length)>);
 static_assert(detail::NamedQuantitySpec<decltype(kind_of<length> / length)>);
-static_assert(!detail::IntermediateDerivedQuantitySpec<decltype(kind_of<length> / length)>);
+static_assert(!detail::DerivedQuantitySpec<decltype(kind_of<length> / length)>);
 static_assert(!detail::QuantityKindSpec<decltype(kind_of<length> / length)>);
 
 static_assert(QuantitySpec<decltype(length / kind_of<length>)>);
 static_assert(detail::NamedQuantitySpec<decltype(length / kind_of<length>)>);
-static_assert(!detail::IntermediateDerivedQuantitySpec<decltype(length / kind_of<length>)>);
+static_assert(!detail::DerivedQuantitySpec<decltype(length / kind_of<length>)>);
 static_assert(!detail::QuantityKindSpec<decltype(length / kind_of<length>)>);
 
 static_assert(QuantitySpec<decltype(width / kind_of<length>)>);
 static_assert(!detail::NamedQuantitySpec<decltype(width / kind_of<length>)>);
-static_assert(detail::IntermediateDerivedQuantitySpec<decltype(width / kind_of<length>)>);
+static_assert(detail::DerivedQuantitySpec<decltype(width / kind_of<length>)>);
 static_assert(!detail::QuantityKindSpec<decltype(width / kind_of<length>)>);
 
 // length
 static_assert(QuantitySpec<decltype(speed * time)>);
 static_assert(!detail::NamedQuantitySpec<decltype(speed * time)>);
-static_assert(detail::IntermediateDerivedQuantitySpec<decltype(speed * time)>);
+static_assert(detail::DerivedQuantitySpec<decltype(speed * time)>);
 
 // derived QuantitySpec expression template syntax verification
 static_assert(!detail::NamedQuantitySpec<decltype(speed * time)>);
-static_assert(detail::IntermediateDerivedQuantitySpec<decltype(speed * time)>);
+static_assert(detail::DerivedQuantitySpec<decltype(speed * time)>);
 
 static_assert(is_of_type<dimensionless * time, time_>);
 static_assert(is_of_type<time * dimensionless, time_>);

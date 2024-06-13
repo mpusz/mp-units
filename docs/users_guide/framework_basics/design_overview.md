@@ -71,9 +71,9 @@ provided in the [quantity specification](../../appendix/glossary.md#quantity_spe
 === "C++23"
 
     ```cpp
-    inline constexpr struct length : quantity_spec<dim_length> {} length;
-    inline constexpr struct time : quantity_spec<dim_time> {} time;
-    inline constexpr struct speed : quantity_spec<length / time> {} speed;
+    inline constexpr struct length final : quantity_spec<dim_length> {} length;
+    inline constexpr struct time final : quantity_spec<dim_time> {} time;
+    inline constexpr struct speed final : quantity_spec<length / time> {} speed;
 
     static_assert(speed.dimension == dim_length / dim_time);
     ```
@@ -81,9 +81,9 @@ provided in the [quantity specification](../../appendix/glossary.md#quantity_spe
 === "C++20"
 
     ```cpp
-    inline constexpr struct length : quantity_spec<length, dim_length> {} length;
-    inline constexpr struct time : quantity_spec<time, dim_time> {} time;
-    inline constexpr struct speed : quantity_spec<speed, length / time> {} speed;
+    inline constexpr struct length final : quantity_spec<length, dim_length> {} length;
+    inline constexpr struct time final : quantity_spec<time, dim_time> {} time;
+    inline constexpr struct speed final : quantity_spec<speed, length / time> {} speed;
 
     static_assert(speed.dimension == dim_length / dim_time);
     ```
@@ -183,17 +183,17 @@ Quantity specification  can be defined by the user in one of the following ways:
 === "C++23"
 
     ```cpp
-    inline constexpr struct length : quantity_spec<dim_length> {} length;
-    inline constexpr struct height : quantity_spec<length> {} height;
-    inline constexpr struct speed : quantity_spec<length / time> {} speed;
+    inline constexpr struct length final : quantity_spec<dim_length> {} length;
+    inline constexpr struct height final : quantity_spec<length> {} height;
+    inline constexpr struct speed final : quantity_spec<length / time> {} speed;
     ```
 
 === "C++20"
 
     ```cpp
-    inline constexpr struct length : quantity_spec<length, dim_length> {} length;
-    inline constexpr struct height : quantity_spec<height, length> {} height;
-    inline constexpr struct speed : quantity_spec<speed, length / time> {} speed;
+    inline constexpr struct length final : quantity_spec<length, dim_length> {} length;
+    inline constexpr struct height final : quantity_spec<height, length> {} height;
+    inline constexpr struct speed final : quantity_spec<speed, length / time> {} speed;
     ```
 
 === "Portable"

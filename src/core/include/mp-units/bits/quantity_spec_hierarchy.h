@@ -88,4 +88,19 @@ template<QuantitySpec A, QuantitySpec B>
     return get_common_base_for_hierarchy_of_equal_length(a, hierarchy_path_advance<b_length - a_length>(b));
 }
 
+template<QuantitySpec Child, QuantitySpec Parent>
+[[nodiscard]] consteval auto is_child_of(Child ch, Parent)
+{
+  if constexpr (Child{} == Parent{})
+    return std::true_type{};
+  else {
+    constexpr auto child_length = hierarchy_path_length(Child{});
+    constexpr auto parent_length = hierarchy_path_length(Parent{});
+    if constexpr (parent_length > child_length)
+      return std::false_type{};
+    else
+      return std::bool_constant<hierarchy_path_advance<child_length - parent_length>(ch) == Parent{}>{};
+  }
+}
+
 }  // namespace mp_units::detail

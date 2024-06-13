@@ -29,7 +29,7 @@ your code using **mp-units**:
 
     // ...
 
-    inline constexpr struct horizontal_length : quantity_spec<isq::length> {} horizontal_length;
+    inline constexpr struct horizontal_length final : quantity_spec<isq::length> {} horizontal_length;
 
     // ...
 
@@ -45,7 +45,7 @@ your code using **mp-units**:
 
     // ...
 
-    inline constexpr struct horizontal_length : quantity_spec<horizontal_length, isq::length> {} horizontal_length;
+    inline constexpr struct horizontal_length final : quantity_spec<horizontal_length, isq::length> {} horizontal_length;
 
     // ...
 
@@ -65,7 +65,7 @@ your code using **mp-units**:
 
     // ...
 
-    inline constexpr struct horizontal_length : quantity_spec<horizontal_length, isq::length> {} horizontal_length;
+    inline constexpr struct horizontal_length final : quantity_spec<horizontal_length, isq::length> {} horizontal_length;
 
     // ...
 
@@ -85,7 +85,7 @@ your code using **mp-units**:
 
     // ...
 
-    inline constexpr struct horizontal_length : quantity_spec<horizontal_length, isq::length> {} horizontal_length;
+    inline constexpr struct horizontal_length final : quantity_spec<horizontal_length, isq::length> {} horizontal_length;
 
     // ...
 
