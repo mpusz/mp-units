@@ -206,7 +206,7 @@ struct named_unit<Symbol, U, PO> : decltype(U)::_base_type_ {
  * @tparam QuantitySpec a specification of a quantity to be measured with this unit
  */
 template<symbol_text Symbol, AssociatedUnit auto U, detail::QuantityKindSpec auto QS>
-  requires(!Symbol.empty()) && (QS.dimension == detail::get_associated_quantity(U).dimension)
+  requires(!Symbol.empty()) && (QS.dimension == decltype(detail::get_associated_quantity(U))::dimension)
 struct named_unit<Symbol, U, QS> : decltype(U)::_base_type_ {
   using _base_type_ = named_unit;         // exposition only
   static constexpr auto symbol = Symbol;  ///< Unique unit identifier
@@ -214,7 +214,7 @@ struct named_unit<Symbol, U, QS> : decltype(U)::_base_type_ {
 };
 
 template<symbol_text Symbol, AssociatedUnit auto U, detail::QuantityKindSpec auto QS, PointOrigin auto PO>
-  requires(!Symbol.empty()) && (QS.dimension == detail::get_associated_quantity(U).dimension)
+  requires(!Symbol.empty()) && (QS.dimension == decltype(detail::get_associated_quantity(U))::dimension)
 struct named_unit<Symbol, U, QS, PO> : decltype(U)::_base_type_ {
   using _base_type_ = named_unit;         // exposition only
   static constexpr auto symbol = Symbol;  ///< Unique unit identifier
