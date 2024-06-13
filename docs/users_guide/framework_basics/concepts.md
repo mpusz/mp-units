@@ -16,6 +16,8 @@ or derived [quantity](../../appendix/glossary.md#quantity):
   by the library's framework based on the [quantity equation](../../appendix/glossary.md#quantity-equation)
   provided in the [quantity specification](../../appendix/glossary.md#quantity_spec).
 
+All of the above dimensions have to be marked as `final`.
+
 
 ### `DimensionOf<T, V>` { #DimensionOf }
 
@@ -41,6 +43,8 @@ including:
 - [Quantity kinds](../../appendix/glossary.md#kind) describing a family of mutually comparable quantities.
 - Intermediate [derived quantity](../../appendix/glossary.md#derived-quantity) specifications being
   a result of a [quantity equations](../../appendix/glossary.md#quantity-equation) on other specifications.
+
+All of the above quantity specifications have to be marked as `final`.
 
 
 ### `QuantitySpecOf<T, V>` { #QuantitySpecOf }
@@ -237,7 +241,7 @@ implicitly convertible from quantity specification `V`, which means that `V` mus
     However, if we define `mean_sea_level` in the following way:
 
     ```cpp
-    inline constexpr struct mean_sea_level : absolute_point_origin<isq::altitude> {} mean_sea_level;
+    inline constexpr struct mean_sea_level final : absolute_point_origin<isq::altitude> {} mean_sea_level;
     ```
 
     then it can't be used as a point origin for _points_ of `isq::length` or `isq::width` as none of them
@@ -330,7 +334,7 @@ for which an instantiation of `quantity_point_like_traits` type trait yields a v
     struct mp_units::quantity_point_like_traits<std::chrono::time_point<C, std::chrono::seconds>> {
       using T = std::chrono::time_point<C, std::chrono::seconds>;
       static constexpr auto reference = si::second;
-      static constexpr struct point_origin : absolute_point_origin<isq::time> {} point_origin{};
+      static constexpr struct point_origin final : absolute_point_origin<isq::time> {} point_origin{};
       using rep = std::chrono::seconds::rep;
 
       [[nodiscard]] static constexpr convert_implicitly<quantity<reference, rep>> to_quantity(const T& qp)

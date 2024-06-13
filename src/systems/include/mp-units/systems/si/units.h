@@ -44,8 +44,8 @@ inline constexpr struct gram final : named_unit<"g", kind_of<isq::mass>> {} gram
 inline constexpr auto kilogram = kilo<gram>;
 inline constexpr struct ampere final : named_unit<"A", kind_of<isq::electric_current>> {} ampere;
 
-inline constexpr struct absolute_zero : absolute_point_origin<absolute_zero, isq::thermodynamic_temperature> {} absolute_zero;
-inline constexpr struct zeroth_kelvin : decltype(absolute_zero) {} zeroth_kelvin;
+inline constexpr struct absolute_zero final : absolute_point_origin<isq::thermodynamic_temperature> {} absolute_zero;
+inline constexpr auto zeroth_kelvin  = absolute_zero;
 inline constexpr struct kelvin final : named_unit<"K", kind_of<isq::thermodynamic_temperature>, zeroth_kelvin> {} kelvin;
 
 inline constexpr struct mole final : named_unit<"mol", kind_of<isq::amount_of_substance>> {} mole;
@@ -77,8 +77,8 @@ inline constexpr struct weber final : named_unit<"Wb", volt * second> {} weber;
 inline constexpr struct tesla final : named_unit<"T", weber / square(metre)> {} tesla;
 inline constexpr struct henry final : named_unit<"H", weber / ampere> {} henry;
 
-inline constexpr struct ice_point : relative_point_origin<quantity_point{273'150 * milli<kelvin>}> {} ice_point;
-inline constexpr struct zeroth_degree_Celsius : decltype(ice_point) {} zeroth_degree_Celsius;
+inline constexpr struct ice_point final : relative_point_origin<quantity_point{273'150 * milli<kelvin>}> {} ice_point;
+inline constexpr auto zeroth_degree_Celsius = ice_point;
 inline constexpr struct degree_Celsius final : named_unit<symbol_text{u8"°C", "`C"}, kelvin, zeroth_degree_Celsius> {} degree_Celsius;
 
 inline constexpr struct lumen final : named_unit<"lm", candela * steradian> {} lumen;

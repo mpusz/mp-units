@@ -10,7 +10,7 @@
 - (!) feat: ABI concerns resolved with introduction of u8 strings for symbols
 - (!) feat: API-related Conan, CMake, and preprocessor options redesigned
 - (!) feat: `core.h` removed
-- (!) feat: from now on units, dimensions, and quantity specifications have to be marked as `final`
+- (!) feat: from now on units, dimensions, quantity specifications, and point origins have to be marked as `final`
 - feat: implicit point origins support added
 - feat: unit default point origin support added
 - feat: `fma`, `isfinite`, `isinf`, and `isnan` math function added by [@NAThompson](https://github.com/NAThompson)
@@ -47,6 +47,7 @@
 - (!) refactor: `framework.h` introduced
 - (!) refactor: type list tools made an implementation detail of the library
 - (!) refactor: header files with the entire system definitions moved up in the directory tree
+- (!) refactor: `absolute_point_origin` does not use CRTP anymore
 - refactor: system's units do not inherit from one another anymore
 - refactor: all units made `final`
 - refactor: math functions constraints refactored

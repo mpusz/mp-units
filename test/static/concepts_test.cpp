@@ -40,9 +40,9 @@ namespace {
 
 using namespace mp_units;
 
-inline constexpr struct my_origin : absolute_point_origin<my_origin, isq::length> {
+inline constexpr struct my_origin final : absolute_point_origin<isq::length> {
 } my_origin;
-inline constexpr struct my_relative_origin : relative_point_origin<my_origin + isq::length(42 * si::metre)> {
+inline constexpr struct my_relative_origin final : relative_point_origin<my_origin + isq::length(42 * si::metre)> {
 } my_relative_origin;
 
 inline constexpr auto dim_speed = isq::dim_length / isq::dim_time;
@@ -360,7 +360,7 @@ static_assert(QuantityPoint<quantity_point<isq::length[si::metre], my_relative_o
 static_assert(QuantityPoint<quantity_point<isq::radius[si::metre], my_origin>>);
 static_assert(QuantityPoint<quantity_point<isq::radius[si::metre], my_relative_origin>>);
 static_assert(!QuantityPoint<decltype(isq::length[si::metre])>);
-static_assert(!QuantityPoint<absolute_point_origin<struct my_origin, isq::length>>);
+static_assert(!QuantityPoint<absolute_point_origin<isq::length>>);
 static_assert(!QuantityPoint<struct my_origin>);
 static_assert(!QuantityPoint<struct my_relative_origin>);
 #if MP_UNITS_HOSTED
@@ -394,7 +394,7 @@ static_assert(QuantityPointOf<quantity_point<isq::radius[si::metre], my_relative
 // PointOrigin
 static_assert(PointOrigin<struct my_origin>);
 static_assert(PointOrigin<struct my_relative_origin>);
-static_assert(!PointOrigin<absolute_point_origin<struct my_origin, isq::length>>);
+static_assert(!PointOrigin<absolute_point_origin<isq::length>>);
 static_assert(!PointOrigin<relative_point_origin<my_origin + 42 * si::metre>>);
 static_assert(!PointOrigin<quantity_point<si::metre, my_origin>>);
 static_assert(!PointOrigin<quantity_point<isq::length[si::metre], my_origin>>);

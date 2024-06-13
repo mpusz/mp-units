@@ -172,7 +172,7 @@ origin.
 ![affine_space_2](affine_space_2.svg){style="width:80%;display: block;margin: 0 auto;"}
 
 ```cpp
-inline constexpr struct origin : absolute_point_origin<origin, isq::distance> {} origin;
+inline constexpr struct origin final : absolute_point_origin<isq::distance> {} origin;
 
 // quantity_point<si::metre, origin> qp1{100 * m};  // Compile-time error
 // quantity_point<si::metre, origin> qp2{120 * m};  // Compile-time error
@@ -196,14 +196,6 @@ assert(origin - qp2 == -120 * m);
 
 // assert(origin - origin == 0 * m);   // Compile-time error
 ```
-
-!!! info
-
-    The `absolute_point_origin` class template uses the CRTP idiom to enforce the uniqueness of
-    such a type. You should pass the type of a derived class as the first argument of the template
-    instantiation.
-
-*[CRTP]: Curiously Recurring Template Parameter
 
 We can't construct a quantity point directly from the quantity anymore when a custom, named origin
 is used. To prevent potential safety and maintenance issues, we always need to
@@ -249,8 +241,8 @@ type and unit is being used:
 ![affine_space_3](affine_space_3.svg){style="width:80%;display: block;margin: 0 auto;"}
 
 ```cpp
-inline constexpr struct origin1 : absolute_point_origin<origin1, isq::distance> {} origin1;
-inline constexpr struct origin2 : absolute_point_origin<origin2, isq::distance> {} origin2;
+inline constexpr struct origin1 final : absolute_point_origin<isq::distance> {} origin1;
+inline constexpr struct origin2 final : absolute_point_origin<isq::distance> {} origin2;
 
 quantity_point qp1 = origin1 + 100 * m;
 quantity_point qp2 = origin2 + 120 * m;
@@ -284,10 +276,10 @@ For such cases, relative point origins should be used:
 ![affine_space_4](affine_space_4.svg){style="width:80%;display: block;margin: 0 auto;"}
 
 ```cpp
-inline constexpr struct A : absolute_point_origin<A, isq::distance> {} A;
-inline constexpr struct B : relative_point_origin<A + 10 * m> {} B;
-inline constexpr struct C : relative_point_origin<B + 10 * m> {} C;
-inline constexpr struct D : relative_point_origin<A + 30 * m> {} D;
+inline constexpr struct A final : absolute_point_origin<isq::distance> {} A;
+inline constexpr struct B final : relative_point_origin<A + 10 * m> {} B;
+inline constexpr struct C final : relative_point_origin<B + 10 * m> {} C;
+inline constexpr struct D final : relative_point_origin<A + 30 * m> {} D;
 
 quantity_point qp1 = C + 100 * m;
 quantity_point qp2 = D + 120 * m;
@@ -392,17 +384,17 @@ point origins for this purpose:
 ```cpp
 namespace si {
 
-inline constexpr struct absolute_zero : absolute_point_origin<absolute_zero, isq::thermodynamic_temperature> {} absolute_zero;
-inline constexpr struct zeroth_kelvin : decltype(absolute_zero) {} zeroth_kelvin;
+inline constexpr struct absolute_zero final : absolute_point_origin<isq::thermodynamic_temperature> {} absolute_zero;
+inline constexpr auto zeroth_kelvin = absolute_zero;
 
-inline constexpr struct ice_point : relative_point_origin<quantity_point{273'150 * milli<kelvin>}> {} ice_point;
-inline constexpr struct zeroth_degree_Celsius : decltype(ice_point) {} zeroth_degree_Celsius;
+inline constexpr struct ice_point final : relative_point_origin<quantity_point{273'150 * milli<kelvin>}> {} ice_point;
+inline constexpr auto zeroth_degree_Celsius = ice_point;
 
 }
 
 namespace usc {
 
-inline constexpr struct zeroth_degree_Fahrenheit :
+inline constexpr struct zeroth_degree_Fahrenheit final :
   relative_point_origin<quantity_point{-32 * (mag_ratio<5, 9> * si::degree_Celsius)}> {} zeroth_degree_Fahrenheit;
 
 }
@@ -481,7 +473,7 @@ the following way:
 ![affine_space_6](affine_space_6.svg){style="width:80%;display: block;margin: 0 auto;"}
 
 ```cpp
-constexpr struct room_reference_temp : relative_point_origin<quantity_point{21 * deg_C}> {} room_reference_temp;
+constexpr struct room_reference_temp final : relative_point_origin<quantity_point{21 * deg_C}> {} room_reference_temp;
 using room_temp = quantity_point<isq::Celsius_temperature[deg_C], room_reference_temp>;
 
 constexpr auto step_delta = isq::Celsius_temperature(0.5 * deg_C);

@@ -35,11 +35,10 @@
 
 namespace mp_units {
 
-MP_UNITS_EXPORT template<typename Derived, QuantitySpec auto QS>
+MP_UNITS_EXPORT template<QuantitySpec auto QS>
 // NOLINTNEXTLINE(bugprone-crtp-constructor-accessibility)
 struct absolute_point_origin {
   static constexpr QuantitySpec auto quantity_spec = QS;
-  using _type_ = absolute_point_origin;
 };
 
 MP_UNITS_EXPORT template<QuantityPoint auto QP>
@@ -56,7 +55,7 @@ struct relative_point_origin {
 };
 
 template<QuantitySpec auto QS>
-struct zeroth_point_origin_ : absolute_point_origin<zeroth_point_origin_<QS>, QS> {};
+struct zeroth_point_origin_ final : absolute_point_origin<QS> {};
 
 MP_UNITS_EXPORT template<QuantitySpec auto QS>
 inline constexpr zeroth_point_origin_<QS> zeroth_point_origin;
@@ -81,9 +80,8 @@ MP_UNITS_EXPORT template<PointOrigin PO1, PointOrigin PO2>
 [[nodiscard]] consteval bool operator==(PO1 po1, PO2 po2)
 {
   if constexpr (detail::AbsolutePointOrigin<PO1> && detail::AbsolutePointOrigin<PO2>)
-    return is_same_v<typename PO1::_type_, typename PO2::_type_> ||
-           (detail::is_zeroth_point_origin(po1) && detail::is_zeroth_point_origin(po2) &&
-            interconvertible(po1.quantity_spec, po2.quantity_spec));
+    return is_same_v<PO1, PO2> || (detail::is_zeroth_point_origin(po1) && detail::is_zeroth_point_origin(po2) &&
+                                   interconvertible(po1.quantity_spec, po2.quantity_spec));
   else if constexpr (detail::RelativePointOrigin<PO1> && detail::RelativePointOrigin<PO2>)
     return PO1::quantity_point == PO2::quantity_point;
   else if constexpr (detail::RelativePointOrigin<PO1>)
