@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 #include "kalman.h"
+#include <mp-units/ext/format.h>
 #include <array>
 #include <iostream>
 #ifdef MP_UNITS_MODULES
@@ -63,7 +64,7 @@ int main()
 
   const quantity process_noise_variance = 0.0001 * pow<2>(deg_C);
   const estimate initial{state{qp{60. * deg_C}}, 100. * deg_C};
-  const std::array measurements = {qp{49.986 * deg_C}, qp{49.963 * deg_C}, qp{50.09 * deg_C},  qp{50.001 * deg_C},
+  const std::array measurements = {qp{49.986 * deg_C}, qp{49.963 * deg_C}, qp{50.097 * deg_C}, qp{50.001 * deg_C},
                                    qp{50.018 * deg_C}, qp{50.05 * deg_C},  qp{49.938 * deg_C}, qp{49.858 * deg_C},
                                    qp{49.965 * deg_C}, qp{50.114 * deg_C}};
   const quantity measurement_error = 0.1 * deg_C;

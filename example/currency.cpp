@@ -36,14 +36,14 @@ import mp_units.core;
 using namespace mp_units;
 
 // clang-format off
-inline constexpr struct dim_currency : base_dimension<"$"> {} dim_currency;
+inline constexpr struct dim_currency final : base_dimension<"$"> {} dim_currency;
 
 QUANTITY_SPEC(currency, dim_currency);
 
-inline constexpr struct euro : named_unit<"EUR", kind_of<currency>> {} euro;
-inline constexpr struct us_dollar : named_unit<"USD", kind_of<currency>> {} us_dollar;
-inline constexpr struct great_british_pound : named_unit<"GBP", kind_of<currency>> {} great_british_pound;
-inline constexpr struct japanese_jen : named_unit<"JPY", kind_of<currency>> {} japanese_jen;
+inline constexpr struct euro final : named_unit<"EUR", kind_of<currency>> {} euro;
+inline constexpr struct us_dollar final : named_unit<"USD", kind_of<currency>> {} us_dollar;
+inline constexpr struct great_british_pound final : named_unit<"GBP", kind_of<currency>> {} great_british_pound;
+inline constexpr struct japanese_jen final : named_unit<"JPY", kind_of<currency>> {} japanese_jen;
 // clang-format on
 
 namespace unit_symbols {

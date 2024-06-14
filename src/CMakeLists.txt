@@ -83,26 +83,29 @@ check_cxx_feature_supported(__cpp_lib_format ${projectPrefix}LIB_FORMAT_SUPPORTE
 check_cxx_feature_supported("__cpp_constexpr >= 202211L" ${projectPrefix}STATIC_CONSTEXPR_VARS_IN_CONSTEXPR_FUNCTIONS)
 check_cxx_feature_supported(__cpp_explicit_this_parameter ${projectPrefix}EXPLICIT_THIS_PARAMETER_SUPPORTED)
 
+# libc++ has a basic supports for std::format but does not set __cpp_lib_format
+# https://github.com/llvm/llvm-project/issues/77773
+if(NOT ${projectPrefix}LIB_FORMAT_SUPPORTED
+   AND CMAKE_CXX_COMPILER_ID STREQUAL "Clang"
+   AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "17"
+   AND ${projectPrefix}LIBCXX
+)
+    message(STATUS "Clang 17+ with libc++ detected, overriding `std::format` support")
+    set(${projectPrefix}LIB_FORMAT_SUPPORTED 1)
+endif()
+
 # validate settings
-if(NOT ${projectPrefix}API_FREESTANDING
-   AND ${projectPrefix}API_STD_FORMAT STREQUAL "TRUE"
-   AND NOT
-       (${projectPrefix}LIB_FORMAT_SUPPORTED
-        # libc++ has a basic supports for std::format but does not set __cpp_lib_format
-        # https://github.com/llvm/llvm-project/issues/77773
-        OR (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "17"
-            AND ${projectPrefix}LIBCXX))
+if(NOT ${projectPrefix}API_FREESTANDING AND "${projectPrefix}API_STD_FORMAT" AND NOT
+                                                                                 ${projectPrefix}LIB_FORMAT_SUPPORTED
 )
     message(FATAL_ERROR "`std::format` enabled but not supported")
 endif()
 
-if(${projectPrefix}API_STRING_VIEW_RET STREQUAL "TRUE" AND NOT
-                                                           ${projectPrefix}STATIC_CONSTEXPR_VARS_IN_CONSTEXPR_FUNCTIONS
-)
+if("${projectPrefix}API_STRING_VIEW_RET" AND NOT ${projectPrefix}STATIC_CONSTEXPR_VARS_IN_CONSTEXPR_FUNCTIONS)
     message(FATAL_ERROR "`std::string_view` returns enabled but not supported")
 endif()
 
-if(${projectPrefix}API_NO_CRTP STREQUAL "TRUE" AND NOT ${projectPrefix}EXPLICIT_THIS_PARAMETER_SUPPORTED)
+if("${projectPrefix}API_NO_CRTP" AND NOT ${projectPrefix}EXPLICIT_THIS_PARAMETER_SUPPORTED)
     message(FATAL_ERROR "`NO_CRTP` mode enabled but explicit `this` parameter is not supported")
 endif()
 
@@ -116,6 +119,7 @@ else()
 endif()
 
 # components/modules
+include(MPUnitsContracts)
 add_subdirectory(core)
 add_subdirectory(systems)
 

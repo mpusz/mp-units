@@ -23,6 +23,7 @@
 #include "geographic.h"
 #include "ranged_representation.h"
 #include <mp-units/compat_macros.h>
+#include <mp-units/ext/format.h>
 #include <cassert>
 #include <cstdint>
 #include <iostream>
@@ -30,6 +31,7 @@
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else
+#include <mp-units/bits/fmt.h>
 #include <mp-units/systems/international.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si.h>
@@ -43,7 +45,7 @@ using namespace geographic;
 enum class earth_gravity_model : std::int8_t { egm84_15, egm95_5, egm2008_1 };
 
 template<earth_gravity_model M>
-struct height_above_ellipsoid_t : absolute_point_origin<height_above_ellipsoid_t<M>, isq::altitude> {
+struct height_above_ellipsoid_t final : absolute_point_origin<isq::altitude> {
   static constexpr earth_gravity_model egm = M;
 };
 template<earth_gravity_model M>
@@ -113,7 +115,7 @@ hae_altitude<M> to_hae(msl_altitude msl, position<long double> pos)
 // **** HAL ****
 
 // clang-format off
-inline constexpr struct height_above_launch : absolute_point_origin<height_above_launch, isq::altitude> {} height_above_launch;
+inline constexpr struct height_above_launch final : absolute_point_origin<isq::altitude> {} height_above_launch;
 // clang-format on
 
 using hal_altitude = quantity_point<isq::altitude[si::metre], height_above_launch>;

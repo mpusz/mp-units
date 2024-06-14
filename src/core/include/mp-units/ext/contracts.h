@@ -20,21 +20,30 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-module;
+#pragma once
 
-#include <mp-units/bits/core_gmf.h>
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
 
-export module mp_units.core;
-
-#define MP_UNITS_IN_MODULE_INTERFACE
-
+#include <mp-units/bits/hacks.h>
 #include <mp-units/compat_macros.h>
-#include <mp-units/concepts.h>
-#include <mp-units/framework.h>
+
+#if MP_UNITS_API_CONTRACTS == 2 || __has_include(<gsl/gsl-lite.hpp>)
 
 #if MP_UNITS_HOSTED
-#include <mp-units/format.h>
-#include <mp-units/math.h>
-#include <mp-units/ostream.h>
-#include <mp-units/random.h>
+#include <gsl/gsl-lite.hpp>
+#else
+#include <mp-units/bits/requires_hosted.h>
 #endif
+
+#elif MP_UNITS_API_CONTRACTS == 3 || __has_include(<gsl/gsl>)
+
+#if MP_UNITS_HOSTED
+#include <gsl/gsl>
+#include <cassert>
+#else
+#include <mp-units/bits/requires_hosted.h>
+#endif
+
+#endif
+
+#endif  // MP_UNITS_IN_MODULE_INTERFACE

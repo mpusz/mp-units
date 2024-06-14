@@ -28,14 +28,14 @@
 
 #ifdef MP_UNITS_API_NO_CRTP
 
-#define QUANTITY_SPEC(name, ...)                                          \
-  inline constexpr struct name : ::mp_units::quantity_spec<__VA_ARGS__> { \
+#define QUANTITY_SPEC(name, ...)                                                \
+  inline constexpr struct name final : ::mp_units::quantity_spec<__VA_ARGS__> { \
   } name
 
 #else
 
-#define QUANTITY_SPEC(name, ...)                                                \
-  inline constexpr struct name : ::mp_units::quantity_spec<name, __VA_ARGS__> { \
+#define QUANTITY_SPEC(name, ...)                                                      \
+  inline constexpr struct name final : ::mp_units::quantity_spec<name, __VA_ARGS__> { \
   } name
 
 #endif
@@ -83,25 +83,11 @@
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 
-// IWYU pragma: begin_exports
-#if MP_UNITS_USE_FMTLIB
-MP_UNITS_DIAGNOSTIC_PUSH
-MP_UNITS_DIAGNOSTIC_IGNORE_UNREACHABLE
-MP_UNITS_DIAGNOSTIC_IGNORE_SHADOW
-#include <fmt/format.h>
-MP_UNITS_DIAGNOSTIC_POP
-#else
-#include <format>
-#endif
-// IWYU pragma: end_exports
-
 #endif
 
 #endif  // MP_UNITS_HOSTED
 
 #if MP_UNITS_API_CONTRACTS == 2 || __has_include(<gsl/gsl-lite.hpp>)
-
-#include <gsl/gsl-lite.hpp>
 
 #define MP_UNITS_EXPECTS(expr) gsl_Expects(expr)
 #define MP_UNITS_EXPECTS_DEBUG(expr) gsl_ExpectsDebug(expr)
@@ -109,9 +95,6 @@ MP_UNITS_DIAGNOSTIC_POP
 #define MP_UNITS_ASSERT_DEBUG(expr) gsl_AssertDebug(expr)
 
 #elif MP_UNITS_API_CONTRACTS == 3 || __has_include(<gsl/gsl>)
-
-#include <gsl/gsl>
-#include <cassert>
 
 #define MP_UNITS_EXPECTS(expr) Expects(expr)
 #if defined NDEBUG

@@ -33,7 +33,7 @@ The library source code is hosted on [GitHub](https://github.com/mpusz/mp-units)
 
     using namespace mp_units;
 
-    inline constexpr struct smoot : named_unit<"smoot", mag<67> * usc::inch> {} smoot;
+    inline constexpr struct smoot final : named_unit<"smoot", mag<67> * usc::inch> {} smoot;
 
     int main()
     {
@@ -53,7 +53,7 @@ The library source code is hosted on [GitHub](https://github.com/mpusz/mp-units)
 
     using namespace mp_units;
 
-    inline constexpr struct smoot : named_unit<"smoot", mag<67> * usc::inch> {} smoot;
+    inline constexpr struct smoot final : named_unit<"smoot", mag<67> * usc::inch> {} smoot;
 
     int main()
     {
@@ -69,7 +69,7 @@ Output:
 Harvard Bridge length = 364.4 smoot (2034.6 ft, 620.14 m) ± 1 εar
 ```
 
-!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/zsW1f6Tn1)"
+!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/f8f4KnKh8)"
 
 ??? question "What is `smoot`?"
 

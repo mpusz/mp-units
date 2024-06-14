@@ -22,6 +22,7 @@
 
 #include <catch2/catch_test_macros.hpp>
 #include <mp-units/compat_macros.h>
+#include <mp-units/ext/format.h>
 #include <matrix>
 #include <ostream>
 #ifdef MP_UNITS_MODULES

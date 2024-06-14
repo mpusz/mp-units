@@ -31,14 +31,14 @@
 namespace mp_units::iec80000 {
 
 // clang-format off
-template<PrefixableUnit U> struct kibi_ : prefixed_unit<"Ki", mag_power<2, 10>, U{}> {};
-template<PrefixableUnit U> struct mebi_ : prefixed_unit<"Mi", mag_power<2, 20>, U{}> {};
-template<PrefixableUnit U> struct gibi_ : prefixed_unit<"Gi", mag_power<2, 30>, U{}> {};
-template<PrefixableUnit U> struct tebi_ : prefixed_unit<"Ti", mag_power<2, 40>, U{}> {};
-template<PrefixableUnit U> struct pebi_ : prefixed_unit<"Pi", mag_power<2, 50>, U{}> {};
-template<PrefixableUnit U> struct exbi_ : prefixed_unit<"Ei", mag_power<2, 60>, U{}> {};
-template<PrefixableUnit U> struct zebi_ : prefixed_unit<"Zi", mag_power<2, 70>, U{}> {};
-template<PrefixableUnit U> struct yobi_ : prefixed_unit<"Yi", mag_power<2, 80>, U{}> {};
+template<PrefixableUnit U> struct kibi_ final : prefixed_unit<"Ki", mag_power<2, 10>, U{}> {};
+template<PrefixableUnit U> struct mebi_ final : prefixed_unit<"Mi", mag_power<2, 20>, U{}> {};
+template<PrefixableUnit U> struct gibi_ final : prefixed_unit<"Gi", mag_power<2, 30>, U{}> {};
+template<PrefixableUnit U> struct tebi_ final : prefixed_unit<"Ti", mag_power<2, 40>, U{}> {};
+template<PrefixableUnit U> struct pebi_ final : prefixed_unit<"Pi", mag_power<2, 50>, U{}> {};
+template<PrefixableUnit U> struct exbi_ final : prefixed_unit<"Ei", mag_power<2, 60>, U{}> {};
+template<PrefixableUnit U> struct zebi_ final : prefixed_unit<"Zi", mag_power<2, 70>, U{}> {};
+template<PrefixableUnit U> struct yobi_ final : prefixed_unit<"Yi", mag_power<2, 80>, U{}> {};
 
 MP_UNITS_EXPORT_BEGIN
 

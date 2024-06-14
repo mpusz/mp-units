@@ -38,12 +38,8 @@ namespace mp_units::natural {
 
 // clang-format off
 // units
-inline constexpr struct electronvolt : named_unit<"eV"> {} electronvolt;
-#if MP_UNITS_COMP_MSVC
-inline constexpr struct gigaelectronvolt : si::giga_<electronvolt> {} gigaelectronvolt;
-#else
-inline constexpr struct gigaelectronvolt : decltype(si::giga<electronvolt>) {} gigaelectronvolt;
-#endif
+inline constexpr struct electronvolt final : named_unit<"eV"> {} electronvolt;
+inline constexpr auto gigaelectronvolt = si::giga<electronvolt>;
 
 // system references
 inline constexpr struct time : system_reference<isq::time, inverse(gigaelectronvolt)> {} time;

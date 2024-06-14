@@ -24,6 +24,7 @@
 #include <catch2/catch_template_test_macros.hpp>
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/matchers/catch_matchers.hpp>
+#include <mp-units/ext/format.h>
 #include <limits>
 #include <numbers>
 #ifdef MP_UNITS_MODULES
@@ -37,7 +38,7 @@ using namespace mp_units;
 using namespace mp_units::angular;
 using namespace mp_units::angular::unit_symbols;
 
-inline constexpr struct half_revolution : named_unit<"hrev", mag_pi * radian> {
+inline constexpr struct half_revolution final : named_unit<"hrev", mag_pi * radian> {
 } half_revolution;
 inline constexpr auto hrev = half_revolution;
 

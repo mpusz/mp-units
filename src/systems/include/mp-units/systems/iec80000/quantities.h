@@ -36,7 +36,7 @@ namespace mp_units::iec80000 {
 
 // dimensions of base quantities
 // clang-format off
-inline constexpr struct dim_traffic_intensity : base_dimension<"A"> {} dim_traffic_intensity;
+inline constexpr struct dim_traffic_intensity final : base_dimension<"A"> {} dim_traffic_intensity;
 // clang-format on
 
 // quantities

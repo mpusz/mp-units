@@ -64,25 +64,14 @@ template<typename T>
 inline constexpr bool is_derived_from_specialization_of_quantity_spec =
   requires(T* t) { to_base_specialization_of_quantity_spec(t); };
 
-template<typename T>
-inline constexpr bool is_specialization_of_quantity_spec = false;
-
-#ifdef MP_UNITS_API_NO_CRTP
-template<auto... Args>
-inline constexpr bool is_specialization_of_quantity_spec<quantity_spec<Args...>> = true;
-#else
-template<typename T, auto... Args>
-inline constexpr bool is_specialization_of_quantity_spec<quantity_spec<T, Args...>> = true;
-#endif
-
 /**
  * @brief Concept matching all named quantity specification types
  *
  * Satisfied by all types that derive from `quantity_spec`.
  */
 template<typename T>
-concept NamedQuantitySpec = is_derived_from_specialization_of_quantity_spec<T> &&
-                            (!is_specialization_of_quantity_spec<T>)&&(!QuantityKindSpec<T>);
+concept NamedQuantitySpec =
+  is_derived_from_specialization_of_quantity_spec<T> && std::is_final_v<T> && (!QuantityKindSpec<T>);
 
 template<typename T>
 struct is_dimensionless : std::false_type {};
@@ -101,13 +90,12 @@ inline constexpr bool is_per_of_quantity_specs<per<Ts...>> =
   (... && (NamedQuantitySpec<Ts> || is_dimensionless<Ts>::value || is_power_of_quantity_spec<Ts>));
 
 template<typename T>
-concept IntermediateDerivedQuantitySpecExpr =
-  detail::NamedQuantitySpec<T> || detail::is_dimensionless<T>::value || detail::is_power_of_quantity_spec<T> ||
-  detail::is_per_of_quantity_specs<T>;
+concept DerivedQuantitySpecExpr = detail::NamedQuantitySpec<T> || detail::is_dimensionless<T>::value ||
+                                  detail::is_power_of_quantity_spec<T> || detail::is_per_of_quantity_specs<T>;
 
 }  // namespace detail
 
-template<detail::IntermediateDerivedQuantitySpecExpr... Expr>
+template<detail::DerivedQuantitySpecExpr... Expr>
 struct derived_quantity_spec;
 
 namespace detail {
@@ -121,7 +109,7 @@ namespace detail {
  * explicitly not supported here.
  */
 template<typename T>
-concept IntermediateDerivedQuantitySpec =
+concept DerivedQuantitySpec =
   is_specialization_of<T, derived_quantity_spec> ||
   (QuantityKindSpec<T> &&
    is_specialization_of<std::remove_const_t<decltype(T::_quantity_spec_)>, derived_quantity_spec>);
@@ -130,20 +118,21 @@ concept IntermediateDerivedQuantitySpec =
 
 
 MP_UNITS_EXPORT template<typename T>
-concept QuantitySpec =
-  detail::NamedQuantitySpec<T> || detail::IntermediateDerivedQuantitySpec<T> || detail::QuantityKindSpec<T>;
+concept QuantitySpec = detail::NamedQuantitySpec<T> || detail::DerivedQuantitySpec<T> || detail::QuantityKindSpec<T>;
 
 MP_UNITS_EXPORT template<QuantitySpec Q>
 [[nodiscard]] consteval detail::QuantityKindSpec auto get_kind(Q q);
 
 namespace detail {
 
-template<auto To, auto From>
-concept NestedQuantityKindSpecOf =
-  QuantitySpec<decltype(From)> && QuantitySpec<decltype(To)> && get_kind(From) != get_kind(To) &&
-  std::derived_from<decltype(To), std::remove_const_t<decltype(get_kind(From)._quantity_spec_)>>;
+template<QuantitySpec Child, QuantitySpec Parent>
+[[nodiscard]] consteval bool is_child_of(Child ch, Parent p);
 
-}
+template<auto To, auto From>
+concept NestedQuantityKindSpecOf = QuantitySpec<decltype(From)> && QuantitySpec<decltype(To)> &&
+                                   get_kind(From) != get_kind(To) && is_child_of(To, get_kind(From)._quantity_spec_);
+
+}  // namespace detail
 
 MP_UNITS_EXPORT template<typename T, auto QS>
 concept QuantitySpecOf =

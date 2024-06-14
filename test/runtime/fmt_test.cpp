@@ -24,6 +24,7 @@
 #include <catch2/matchers/catch_matchers.hpp>
 #include <catch2/matchers/catch_matchers_exception.hpp>
 #include <mp-units/compat_macros.h>
+#include <mp-units/ext/format.h>
 #include <cstdint>
 #include <iomanip>
 #include <limits>

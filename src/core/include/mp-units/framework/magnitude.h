@@ -517,8 +517,7 @@ template<typename T, auto... Ms>
 constexpr T get_value(const magnitude<Ms...>&)
 {
   // Force the expression to be evaluated in a constexpr context, to catch, e.g., overflow.
-  constexpr auto result = detail::checked_static_cast<T>((detail::compute_base_power<T>(Ms) * ... * T{1}));
-
+  constexpr T result = detail::checked_static_cast<T>((detail::compute_base_power<T>(Ms) * ... * T{1}));
   return result;
 }
 
@@ -677,16 +676,6 @@ template<auto... Ms>
 
 [[nodiscard]] consteval auto denominator(Magnitude auto m) { return numerator(pow<-1>(m)); }
 
-// TODO This probably should not be exported but is used in chrono.h
-MP_UNITS_EXPORT constexpr ratio as_ratio(Magnitude auto m)
-  requires(is_rational(decltype(m){}))
-{
-  return ratio{
-    get_value<std::intmax_t>(numerator(m)),
-    get_value<std::intmax_t>(denominator(m)),
-  };
-}
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Common Magnitude.
 //
@@ -758,7 +747,7 @@ template<auto H1, auto... T1, auto H2, auto... T2>
 template<auto... Ms>
 [[nodiscard]] consteval auto common_magnitude_type_impl(magnitude<Ms...>)
 {
-  return (decltype(get_base_value(Ms)){} * ... * std::intmax_t{});
+  return (std::intmax_t{} * ... * decltype(get_base_value(Ms)){});
 }
 
 // Returns the most precise type to express the magnitude factor

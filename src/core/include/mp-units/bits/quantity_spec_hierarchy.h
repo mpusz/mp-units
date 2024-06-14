@@ -56,7 +56,7 @@ template<QuantitySpec A, QuantitySpec B>
 }
 
 template<QuantitySpec A, QuantitySpec B>
-[[nodiscard]] consteval auto have_common_base(A a, B b)
+[[nodiscard]] consteval bool have_common_base(A a, B b)
 {
   constexpr std::size_t a_length = hierarchy_path_length(A{});
   constexpr std::size_t b_length = hierarchy_path_length(B{});
@@ -68,7 +68,7 @@ template<QuantitySpec A, QuantitySpec B>
 
 template<QuantitySpec A, QuantitySpec B>
   requires(have_common_base_in_hierarchy_of_equal_length(A{}, B{}))
-[[nodiscard]] consteval auto get_common_base_for_hierarchy_of_equal_length(A a, B b)
+[[nodiscard]] consteval QuantitySpec auto get_common_base_for_hierarchy_of_equal_length(A a, B b)
 {
   if constexpr (is_same_v<A, B>)
     return a;
@@ -78,14 +78,29 @@ template<QuantitySpec A, QuantitySpec B>
 
 template<QuantitySpec A, QuantitySpec B>
   requires(have_common_base(A{}, B{}))
-[[nodiscard]] consteval auto get_common_base(A a, B b)
+[[nodiscard]] consteval QuantitySpec auto get_common_base(A a, B b)
 {
-  constexpr int a_length = hierarchy_path_length(A{});
-  constexpr int b_length = hierarchy_path_length(B{});
+  constexpr std::size_t a_length = hierarchy_path_length(A{});
+  constexpr std::size_t b_length = hierarchy_path_length(B{});
   if constexpr (a_length > b_length)
     return get_common_base_for_hierarchy_of_equal_length(hierarchy_path_advance<a_length - b_length>(a), b);
   else
     return get_common_base_for_hierarchy_of_equal_length(a, hierarchy_path_advance<b_length - a_length>(b));
+}
+
+template<QuantitySpec Child, QuantitySpec Parent>
+[[nodiscard]] consteval bool is_child_of(Child ch, Parent p)
+{
+  if constexpr (Child{} == Parent{})
+    return std::true_type{};
+  else {
+    constexpr std::size_t child_length = hierarchy_path_length(Child{});
+    constexpr std::size_t parent_length = hierarchy_path_length(Parent{});
+    if constexpr (parent_length > child_length)
+      return false;
+    else
+      return hierarchy_path_advance<child_length - parent_length>(ch) == p;
+  }
 }
 
 }  // namespace mp_units::detail

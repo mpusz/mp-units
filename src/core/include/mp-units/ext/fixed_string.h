@@ -32,12 +32,14 @@
 #include <mp-units/ext/type_traits.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
+#include <mp-units/ext/contracts.h>
 #include <compare>  // IWYU pragma: export
 #include <cstddef>
 #include <cstdlib>
 #include <ranges>
 #include <string_view>
 #if MP_UNITS_HOSTED
+#include <mp-units/ext/format.h>
 #include <ostream>
 #endif
 #endif

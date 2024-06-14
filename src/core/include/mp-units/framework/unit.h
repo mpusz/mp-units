@@ -41,6 +41,7 @@
 #include <mp-units/framework/unit_concepts.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
+#include <mp-units/ext/contracts.h>
 #include <array>
 #include <cstdint>
 #include <iterator>
@@ -62,6 +63,13 @@ struct propagate_point_origin<U, true> {
   static constexpr auto point_origin = U::point_origin;
 };
 
+template<Magnitude auto M, Unit U>
+struct scaled_unit_impl : detail::propagate_point_origin<U> {
+  using _base_type_ = scaled_unit_impl;  // exposition only
+  static constexpr MP_UNITS_CONSTRAINED_AUTO_WORKAROUND(Magnitude) auto mag = M;
+  static constexpr U reference_unit{};
+};
+
 }  // namespace detail
 
 /**
@@ -74,10 +82,7 @@ struct propagate_point_origin<U, true> {
  *       instantiate this type automatically based on the unit arithmetic equation provided by the user.
  */
 template<Magnitude auto M, Unit U>
-struct scaled_unit : detail::propagate_point_origin<U> {
-  static constexpr MP_UNITS_CONSTRAINED_AUTO_WORKAROUND(Magnitude) auto mag = M;
-  static constexpr U reference_unit{};
-};
+struct scaled_unit final : detail::scaled_unit_impl<M, U> {};
 
 namespace detail {
 
@@ -100,12 +105,12 @@ inline constexpr bool is_specialization_of_scaled_unit<scaled_unit<M, U>> = true
  * For example:
  *
  * @code{.cpp}
- * inline constexpr struct second : named_unit<"s", time> {} second;
- * inline constexpr struct metre : named_unit<"m", length> {} metre;
- * inline constexpr struct hertz : named_unit<"Hz", inverse(second)> {} hertz;
- * inline constexpr struct newton : named_unit<"N", kilogram * metre / square(second)> {} newton;
- * inline constexpr struct degree_Celsius : named_unit<{u8"°C", "`C"}, kelvin> {} degree_Celsius;
- * inline constexpr struct minute : named_unit<"min", mag<60> * second> {} minute;
+ * inline constexpr struct second final : named_unit<"s", kind_of<time>> {} second;
+ * inline constexpr struct metre final : named_unit<"m", kind_of<length> {} metre;
+ * inline constexpr struct hertz final : named_unit<"Hz", inverse(second), kind_of<frequency>> {} hertz;
+ * inline constexpr struct newton final : named_unit<"N", kilogram * metre / square(second)> {} newton;
+ * inline constexpr struct degree_Celsius final : named_unit<{u8"°C", "`C"}, kelvin, zeroth_degree_Celsius> {}
+ * degree_Celsius; inline constexpr struct minute final : named_unit<"min", mag<60> * second> {} minute;
  * @endcode
  *
  * @note A common convention in this library is to assign the same name for a type and an object of this type.
@@ -137,6 +142,7 @@ struct named_unit;
 template<symbol_text Symbol, detail::QuantityKindSpec auto QS>
   requires(!Symbol.empty()) && detail::BaseDimension<std::remove_const_t<decltype(QS.dimension)>>
 struct named_unit<Symbol, QS> {
+  using _base_type_ = named_unit;         // exposition only
   static constexpr auto symbol = Symbol;  ///< Unique base unit identifier
   static constexpr auto quantity_spec = QS;
 };
@@ -144,6 +150,7 @@ struct named_unit<Symbol, QS> {
 template<symbol_text Symbol, detail::QuantityKindSpec auto QS, PointOrigin auto PO>
   requires(!Symbol.empty()) && detail::BaseDimension<std::remove_const_t<decltype(QS.dimension)>>
 struct named_unit<Symbol, QS, PO> {
+  using _base_type_ = named_unit;         // exposition only
   static constexpr auto symbol = Symbol;  ///< Unique base unit identifier
   static constexpr auto quantity_spec = QS;
   static constexpr auto point_origin = PO;
@@ -162,6 +169,7 @@ struct named_unit<Symbol, QS, PO> {
 template<symbol_text Symbol>
   requires(!Symbol.empty())
 struct named_unit<Symbol> {
+  using _base_type_ = named_unit;         // exposition only
   static constexpr auto symbol = Symbol;  ///< Unique base unit identifier
 };
 
@@ -175,13 +183,15 @@ struct named_unit<Symbol> {
  */
 template<symbol_text Symbol, Unit auto U>
   requires(!Symbol.empty())
-struct named_unit<Symbol, U> : decltype(U) {
+struct named_unit<Symbol, U> : decltype(U)::_base_type_ {
+  using _base_type_ = named_unit;         // exposition only
   static constexpr auto symbol = Symbol;  ///< Unique unit identifier
 };
 
 template<symbol_text Symbol, Unit auto U, PointOrigin auto PO>
   requires(!Symbol.empty())
-struct named_unit<Symbol, U, PO> : decltype(U) {
+struct named_unit<Symbol, U, PO> : decltype(U)::_base_type_ {
+  using _base_type_ = named_unit;         // exposition only
   static constexpr auto symbol = Symbol;  ///< Unique unit identifier
   static constexpr auto point_origin = PO;
 };
@@ -197,14 +207,16 @@ struct named_unit<Symbol, U, PO> : decltype(U) {
  */
 template<symbol_text Symbol, AssociatedUnit auto U, detail::QuantityKindSpec auto QS>
   requires(!Symbol.empty()) && (QS.dimension == detail::get_associated_quantity(U).dimension)
-struct named_unit<Symbol, U, QS> : decltype(U) {
+struct named_unit<Symbol, U, QS> : decltype(U)::_base_type_ {
+  using _base_type_ = named_unit;         // exposition only
   static constexpr auto symbol = Symbol;  ///< Unique unit identifier
   static constexpr auto quantity_spec = QS;
 };
 
 template<symbol_text Symbol, AssociatedUnit auto U, detail::QuantityKindSpec auto QS, PointOrigin auto PO>
   requires(!Symbol.empty()) && (QS.dimension == detail::get_associated_quantity(U).dimension)
-struct named_unit<Symbol, U, QS, PO> : decltype(U) {
+struct named_unit<Symbol, U, QS, PO> : decltype(U)::_base_type_ {
+  using _base_type_ = named_unit;         // exposition only
   static constexpr auto symbol = Symbol;  ///< Unique unit identifier
   static constexpr auto quantity_spec = QS;
   static constexpr auto point_origin = PO;
@@ -225,7 +237,7 @@ struct named_unit<Symbol, U, QS, PO> : decltype(U) {
  * template<PrefixableUnit auto U>
  * inline constexpr kilo_<U> kilo;
  *
- * inline constexpr struct kilogram : decltype(si::kilo<gram>) {} kilogram;
+ * inline constexpr auto kilogram = si::kilo<gram>;
  * @endcode
  *
  * @tparam Symbol a prefix text to prepend to a unit symbol
@@ -234,7 +246,8 @@ struct named_unit<Symbol, U, QS, PO> : decltype(U) {
  */
 MP_UNITS_EXPORT template<symbol_text Symbol, Magnitude auto M, PrefixableUnit auto U>
   requires(!Symbol.empty())
-struct prefixed_unit : decltype(M * U) {
+struct prefixed_unit : decltype(M * U)::_base_type_ {
+  using _base_type_ = prefixed_unit;  // exposition only
   static constexpr auto symbol = Symbol + U.symbol;
 };
 
@@ -242,6 +255,11 @@ namespace detail {
 
 template<typename T>
 struct is_one : std::false_type {};
+
+template<DerivedUnitExpr... Expr>
+struct derived_unit_impl : detail::expr_fractions<detail::is_one, Expr...> {
+  using _base_type_ = derived_unit_impl;  // exposition only
+};
 
 }  // namespace detail
 
@@ -291,7 +309,7 @@ struct is_one : std::false_type {};
  *       instantiate this type automatically based on the unit arithmetic equation provided by the user.
  */
 template<detail::DerivedUnitExpr... Expr>
-struct derived_unit : detail::expr_fractions<detail::is_one, Expr...> {};
+struct derived_unit final : detail::derived_unit_impl<Expr...> {};
 
 /**
  * @brief Unit one
@@ -299,7 +317,7 @@ struct derived_unit : detail::expr_fractions<detail::is_one, Expr...> {};
  * Unit of a dimensionless quantity.
  */
 // clang-format off
-MP_UNITS_EXPORT inline constexpr struct one : derived_unit<> {} one;
+MP_UNITS_EXPORT inline constexpr struct one final : detail::derived_unit_impl<> {} one;
 // clang-format on
 
 namespace detail {
@@ -334,9 +352,6 @@ canonical_unit(M, U) -> canonical_unit<M, U>;
 
 #endif
 
-template<Unit T, symbol_text Symbol, detail::QuantityKindSpec auto Q, auto... Args>
-[[nodiscard]] consteval auto get_canonical_unit_impl(T t, const named_unit<Symbol, Q, Args...>&);
-
 template<Unit T, symbol_text Symbol, auto... Args>
 [[nodiscard]] consteval auto get_canonical_unit_impl(T t, const named_unit<Symbol, Args...>&);
 
@@ -347,19 +362,13 @@ template<typename T, typename F, int Num, int... Den>
 [[nodiscard]] consteval auto get_canonical_unit_impl(T, const power<F, Num, Den...>&);
 
 template<Unit T, typename... Expr>
-[[nodiscard]] consteval auto get_canonical_unit_impl(T, const derived_unit<Expr...>&);
+[[nodiscard]] consteval auto get_canonical_unit_impl(T, const derived_unit_impl<Expr...>&);
 
 template<Unit T, auto M, typename U>
-[[nodiscard]] consteval auto get_canonical_unit_impl(T, const scaled_unit<M, U>&)
+[[nodiscard]] consteval auto get_canonical_unit_impl(T, const scaled_unit_impl<M, U>&)
 {
   auto base = get_canonical_unit_impl(U{}, U{});
   return canonical_unit{M * base.mag, base.reference_unit};
-}
-
-template<Unit T, symbol_text Symbol, detail::QuantityKindSpec auto Q, auto... Args>
-[[nodiscard]] consteval auto get_canonical_unit_impl(T t, const named_unit<Symbol, Q, Args...>&)
-{
-  return canonical_unit{mag<1>, t};
 }
 
 template<Unit T, symbol_text Symbol, auto... Args>
@@ -405,7 +414,7 @@ template<typename... Us>
 }
 
 template<Unit T, typename... Expr>
-[[nodiscard]] consteval auto get_canonical_unit_impl(T, const derived_unit<Expr...>&)
+[[nodiscard]] consteval auto get_canonical_unit_impl(T, const derived_unit_impl<Expr...>&)
 {
   auto num = get_canonical_unit_impl(typename derived_unit<Expr...>::_num_{});
   auto den = get_canonical_unit_impl(typename derived_unit<Expr...>::_den_{});
@@ -493,43 +502,13 @@ MP_UNITS_EXPORT_END
 
 namespace detail {
 
-[[nodiscard]] consteval bool have_same_canonical_reference_unit_impl(...) { return false; }
-
-template<symbol_text Symbol, auto... D>
-[[nodiscard]] consteval bool have_same_canonical_reference_unit_impl(const named_unit<Symbol, D...>&,
-                                                                     const named_unit<Symbol, D...>&)
+template<Unit U1, Unit U2>
+[[nodiscard]] consteval bool have_same_canonical_reference_unit(U1 u1, U2 u2)
 {
-  return true;
-}
-
-template<typename F1, typename F2, auto... Vs>
-[[nodiscard]] consteval bool have_same_canonical_reference_unit_impl(const power<F1, Vs...>&, const power<F2, Vs...>&)
-{
-  return have_same_canonical_reference_unit_impl(F1{}, F2{});
-}
-
-template<typename... Us1, typename... Us2>
-  requires(sizeof...(Us1) == sizeof...(Us2))
-[[nodiscard]] consteval bool have_same_canonical_reference_unit_impl(const type_list<Us1...>&, const type_list<Us2...>&)
-{
-  return (... && have_same_canonical_reference_unit_impl(Us1{}, Us2{}));
-}
-
-template<typename... Expr1, typename... Expr2>
-[[nodiscard]] consteval bool have_same_canonical_reference_unit_impl(const derived_unit<Expr1...>&,
-                                                                     const derived_unit<Expr2...>&)
-{
-  return have_same_canonical_reference_unit_impl(typename derived_unit<Expr1...>::_num_{},
-                                                 typename derived_unit<Expr2...>::_num_{}) &&
-         have_same_canonical_reference_unit_impl(typename derived_unit<Expr1...>::_den_{},
-                                                 typename derived_unit<Expr2...>::_den_{});
-}
-
-[[nodiscard]] consteval bool have_same_canonical_reference_unit(Unit auto u1, Unit auto u2)
-{
-  auto canonical_lhs = get_canonical_unit(u1);
-  auto canonical_rhs = get_canonical_unit(u2);
-  return have_same_canonical_reference_unit_impl(canonical_lhs.reference_unit, canonical_rhs.reference_unit);
+  if constexpr (is_same_v<U1, U2>)
+    return true;
+  else
+    return is_same_v<decltype(get_canonical_unit(u1).reference_unit), decltype(get_canonical_unit(u2).reference_unit)>;
 }
 
 }  // namespace detail
@@ -621,17 +600,21 @@ template<std::intmax_t Num, std::intmax_t Den = 1, Unit U>
 
 // common dimensionless units
 // clang-format off
-inline constexpr struct percent : named_unit<"%", mag_ratio<1, 100> * one> {} percent;
-inline constexpr struct per_mille : named_unit<symbol_text{u8"‰", "%o"}, mag_ratio<1, 1000> * one> {} per_mille;
-inline constexpr struct parts_per_million : named_unit<"ppm", mag_ratio<1, 1'000'000> * one> {} parts_per_million;
+inline constexpr struct percent final : named_unit<"%", mag_ratio<1, 100> * one> {} percent;
+inline constexpr struct per_mille final : named_unit<symbol_text{u8"‰", "%o"}, mag_ratio<1, 1000> * one> {} per_mille;
+inline constexpr struct parts_per_million final : named_unit<"ppm", mag_ratio<1, 1'000'000> * one> {} parts_per_million;
 inline constexpr auto ppm = parts_per_million;
 // clang-format on
 
 
 // convertible_to
-[[nodiscard]] consteval bool convertible(Unit auto from, Unit auto to)
+template<Unit U1, Unit U2>
+[[nodiscard]] consteval bool convertible(U1 from, U2 to)
 {
-  return detail::have_same_canonical_reference_unit(from, to);
+  if constexpr (is_same_v<U1, U2>)
+    return true;
+  else
+    return detail::have_same_canonical_reference_unit(from, to);
 }
 
 // Common unit
@@ -641,10 +624,12 @@ template<Unit U1, Unit U2>
 [[nodiscard]] consteval Unit auto common_unit(U1 u1, U2 u2)
   requires(detail::have_same_canonical_reference_unit(u1, u2))
 {
-  if constexpr (U1{} == U2{}) {
-    if constexpr (std::derived_from<U1, U2>)
+  if constexpr (is_same_v<U1, U2>)
+    return u1;
+  else if constexpr (U1{} == U2{}) {
+    if constexpr (std::derived_from<U1, typename U2::_base_type_>)
       return u1;
-    else if constexpr (std::derived_from<U2, U1>)
+    else if constexpr (std::derived_from<U2, typename U1::_base_type_>)
       return u2;
     else
       // TODO Check if there is a better choice here
@@ -738,7 +723,7 @@ constexpr Out unit_symbol_impl(Out out, U, const unit_symbol_formatting& fmt, bo
 }
 
 template<typename CharT, std::output_iterator<CharT> Out, auto M, typename U>
-constexpr Out unit_symbol_impl(Out out, const scaled_unit<M, U>& u, const unit_symbol_formatting& fmt,
+constexpr Out unit_symbol_impl(Out out, const scaled_unit_impl<M, U>& u, const unit_symbol_formatting& fmt,
                                bool negative_power)
 {
   if constexpr (M == mag<1>) {
@@ -807,13 +792,13 @@ constexpr Out unit_symbol_impl(Out out, const type_list<Nums...>& nums, const ty
 }
 
 template<typename CharT, std::output_iterator<CharT> Out, typename... Expr>
-constexpr Out unit_symbol_impl(Out out, const derived_unit<Expr...>&, const unit_symbol_formatting& fmt,
+constexpr Out unit_symbol_impl(Out out, const derived_unit_impl<Expr...>&, const unit_symbol_formatting& fmt,
                                bool negative_power)
 {
   (void)negative_power;
   MP_UNITS_EXPECTS(negative_power == false);
-  return unit_symbol_impl<CharT>(out, typename derived_unit<Expr...>::_num_{}, typename derived_unit<Expr...>::_den_{},
-                                 fmt);
+  return unit_symbol_impl<CharT>(out, typename derived_unit_impl<Expr...>::_num_{},
+                                 typename derived_unit_impl<Expr...>::_den_{}, fmt);
 }
 
 }  // namespace detail

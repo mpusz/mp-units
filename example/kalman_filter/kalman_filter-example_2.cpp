@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 #include "kalman.h"
+#include <mp-units/ext/format.h>
 #include <array>
 #include <iostream>
 #ifdef MP_UNITS_MODULES

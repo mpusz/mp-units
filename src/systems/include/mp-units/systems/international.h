@@ -37,48 +37,44 @@ namespace mp_units::international {
 
 // clang-format off
 // mass
-inline constexpr struct pound : named_unit<"lb", mag_ratio<45'359'237, 100'000'000> * si::kilogram> {} pound;
-inline constexpr struct ounce : named_unit<"oz", mag_ratio<1, 16> * pound> {} ounce;
-inline constexpr struct dram : named_unit<"dr", mag_ratio<1, 16> * ounce> {} dram;
-inline constexpr struct grain : named_unit<"gr", mag_ratio<1, 7'000> * pound> {} grain;
+inline constexpr struct pound final : named_unit<"lb", mag_ratio<45'359'237, 100'000'000> * si::kilogram> {} pound;
+inline constexpr struct ounce final : named_unit<"oz", mag_ratio<1, 16> * pound> {} ounce;
+inline constexpr struct dram final : named_unit<"dr", mag_ratio<1, 16> * ounce> {} dram;
+inline constexpr struct grain final : named_unit<"gr", mag_ratio<1, 7'000> * pound> {} grain;
 
 // length
 // https://en.wikipedia.org/wiki/United_States_customary_units#Length
-inline constexpr struct yard : named_unit<"yd", mag_ratio<9'144, 10'000> * si::metre> {} yard;
-inline constexpr struct foot : named_unit<"ft", mag_ratio<1, 3> * yard> {} foot;
-inline constexpr struct inch : named_unit<"in", mag_ratio<1, 12> * foot> {} inch;
-inline constexpr struct pica : named_unit<"P", mag_ratio<1, 6> * inch> {} pica;
-inline constexpr struct point : named_unit<"p", mag_ratio<1, 12> * pica> {} point;
-inline constexpr struct mil : named_unit<"mil", mag_ratio<1, 1'000> * inch> {} mil;
-inline constexpr struct twip : named_unit<"twip", mag_ratio<1, 20> * point> {} twip;
-inline constexpr struct mile : named_unit<"mi", mag<1760> * yard> {} mile;
-inline constexpr struct league : named_unit<"le", mag<3> * mile> {} league;
+inline constexpr struct yard final : named_unit<"yd", mag_ratio<9'144, 10'000> * si::metre> {} yard;
+inline constexpr struct foot final : named_unit<"ft", mag_ratio<1, 3> * yard> {} foot;
+inline constexpr struct inch final : named_unit<"in", mag_ratio<1, 12> * foot> {} inch;
+inline constexpr struct pica final : named_unit<"P", mag_ratio<1, 6> * inch> {} pica;
+inline constexpr struct point final : named_unit<"p", mag_ratio<1, 12> * pica> {} point;
+inline constexpr struct mil final : named_unit<"mil", mag_ratio<1, 1'000> * inch> {} mil;
+inline constexpr struct twip final : named_unit<"twip", mag_ratio<1, 20> * point> {} twip;
+inline constexpr struct mile final : named_unit<"mi", mag<1760> * yard> {} mile;
+inline constexpr struct league final : named_unit<"le", mag<3> * mile> {} league;
 
-inline constexpr struct nautical_mile : named_unit<"nmi", mag<1852> * si::metre> {} nautical_mile;
+inline constexpr struct nautical_mile final : named_unit<"nmi", mag<1852> * si::metre> {} nautical_mile;
 
 // speed
-inline constexpr struct knot : named_unit<"kn", nautical_mile / si::hour> {} knot;
+inline constexpr struct knot final : named_unit<"kn", nautical_mile / si::hour> {} knot;
 
 // force
 // https://en.wikipedia.org/wiki/Poundal
-inline constexpr struct poundal : named_unit<"pdl", pound * foot / square(si::second)> {} poundal;
+inline constexpr struct poundal final : named_unit<"pdl", pound * foot / square(si::second)> {} poundal;
 
 // https://en.wikipedia.org/wiki/Pound_(force)
-inline constexpr struct pound_force : named_unit<"lbf", pound * si::standard_gravity> {} pound_force;
+inline constexpr struct pound_force final : named_unit<"lbf", pound * si::standard_gravity> {} pound_force;
 
 // https://en.wikipedia.org/wiki/Kip_(unit),
-#if MP_UNITS_COMP_MSVC
-inline constexpr struct kip : si::kilo_<pound_force> {} kip;
-#else
-inline constexpr struct kip : decltype(si::kilo<pound_force>) {} kip;
-#endif
+inline constexpr auto kip = si::kilo<pound_force>;
 
 // pressure
-inline constexpr struct psi : named_unit<"psi", pound_force / square(inch)> {} psi;
+inline constexpr struct psi final : named_unit<"psi", pound_force / square(inch)> {} psi;
 
 // power
 // https://en.wikipedia.org/wiki/Horsepower#Definitions
-inline constexpr struct mechanical_horsepower : named_unit<"hp(I)", mag<33'000> * foot * pound_force / si::minute> {} mechanical_horsepower;
+inline constexpr struct mechanical_horsepower final : named_unit<"hp(I)", mag<33'000> * foot * pound_force / si::minute> {} mechanical_horsepower;
 // clang-format on
 
 

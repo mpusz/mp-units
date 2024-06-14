@@ -32,15 +32,15 @@ using namespace mp_units;
 using dimension_one_ = struct dimension_one;
 
 // clang-format off
-inline constexpr struct length_ : base_dimension<"L"> {} length;
-inline constexpr struct mass_ : base_dimension<"M"> {} mass;
-inline constexpr struct time_ : base_dimension<"T"> {} time;
+inline constexpr struct length_ final : base_dimension<"L"> {} length;
+inline constexpr struct mass_ final : base_dimension<"M"> {} mass;
+inline constexpr struct time_ final : base_dimension<"T"> {} time;
 
-inline constexpr struct my_length1_ : decltype(length) {} my_length1;
-inline constexpr struct my_length2_ : decltype(length) {} my_length2;
+inline constexpr auto my_length1 = length;
+inline constexpr auto my_length2 = length;
 
 QUANTITY_SPEC_(q_time, time);
-inline constexpr struct second_ : named_unit<"s", kind_of<q_time>> {} second;
+inline constexpr struct second_ final : named_unit<"s", kind_of<q_time>> {} second;
 
 inline constexpr auto frequency = inverse(time);
 inline constexpr auto action = inverse(time);

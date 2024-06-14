@@ -35,9 +35,9 @@ using one_ = struct one;
 
 // base dimensions
 // clang-format off
-inline constexpr struct dim_length_ : base_dimension<"L"> {} dim_length;
-inline constexpr struct dim_mass_ : base_dimension<"M"> {} dim_mass;
-inline constexpr struct dim_time_ : base_dimension<"T"> {} dim_time;
+inline constexpr struct dim_length_ final : base_dimension<"L"> {} dim_length;
+inline constexpr struct dim_mass_ final : base_dimension<"M"> {} dim_mass;
+inline constexpr struct dim_time_ final : base_dimension<"T"> {} dim_time;
 
 // quantities specification
 QUANTITY_SPEC_(length, dim_length);
@@ -60,16 +60,16 @@ QUANTITY_SPEC_(power, force* speed);
 QUANTITY_SPEC_(storage_capacity, dimensionless, is_kind);
 
 // base units
-inline constexpr struct second_ : named_unit<"s", kind_of<time>> {} second;
-inline constexpr struct metre_ : named_unit<"m", kind_of<length>> {} metre;
-inline constexpr struct gram_ : named_unit<"g", kind_of<mass>> {} gram;
-inline constexpr struct kilogram_ : decltype(si::kilo<gram>) {} kilogram;
+inline constexpr struct second_ final : named_unit<"s", kind_of<time>> {} second;
+inline constexpr struct metre_ final : named_unit<"m", kind_of<length>> {} metre;
+inline constexpr struct gram_ final : named_unit<"g", kind_of<mass>> {} gram;
+inline constexpr auto kilogram = si::kilo<gram>;
 
 namespace nu {
 // hypothetical natural system of units for c=1
 
-inline constexpr struct second_ : named_unit<"s"> {} second;
-inline constexpr struct minute_ : named_unit<"min", mag<60> * second> {} minute;
+inline constexpr struct second_ final : named_unit<"s"> {} second;
+inline constexpr struct minute_ final : named_unit<"min", mag<60> * second> {} minute;
 
 inline constexpr struct time : system_reference<time_{}, second> {} time;
 inline constexpr struct length : system_reference<length_{}, second> {} length;
@@ -78,19 +78,19 @@ inline constexpr struct speed : system_reference<speed_{}, second / second> {} s
 }
 
 // derived named units
-inline constexpr struct radian_ : named_unit<"rad", metre / metre, kind_of<angular_measure>> {} radian;
-inline constexpr struct steradian_ : named_unit<"sr", square(metre) / square(metre), kind_of<solid_angular_measure>> {} steradian;
-inline constexpr struct hertz_ : named_unit<"Hz", inverse(second), kind_of<frequency>> {} hertz;
-inline constexpr struct becquerel_ : named_unit<"Bq", inverse(second), kind_of<activity>> {} becquerel;
-inline constexpr struct newton_ : named_unit<"N", kilogram * metre / square(second)> {} newton;
-inline constexpr struct joule_ : named_unit<"J", newton * metre> {} joule;
-inline constexpr struct watt_ : named_unit<"W", joule / second> {} watt;
+inline constexpr struct radian_ final : named_unit<"rad", metre / metre, kind_of<angular_measure>> {} radian;
+inline constexpr struct steradian_ final : named_unit<"sr", square(metre) / square(metre), kind_of<solid_angular_measure>> {} steradian;
+inline constexpr struct hertz_ final : named_unit<"Hz", inverse(second), kind_of<frequency>> {} hertz;
+inline constexpr struct becquerel_ final : named_unit<"Bq", inverse(second), kind_of<activity>> {} becquerel;
+inline constexpr struct newton_ final : named_unit<"N", kilogram * metre / square(second)> {} newton;
+inline constexpr struct joule_ final : named_unit<"J", newton * metre> {} joule;
+inline constexpr struct watt_ final : named_unit<"W", joule / second> {} watt;
 
-inline constexpr struct minute_ : named_unit<"min", mag<60> * second> {} minute;
-inline constexpr struct hour_ : named_unit<"h", mag<60> * minute> {} hour;
-inline constexpr struct kilometre_ : decltype(si::kilo<metre>) {} kilometre;
+inline constexpr struct minute_ final : named_unit<"min", mag<60> * second> {} minute;
+inline constexpr struct hour_ final : named_unit<"h", mag<60> * minute> {} hour;
+inline constexpr auto kilometre = si::kilo<metre>;
 
-inline constexpr struct bit_ : named_unit<"bit", one, kind_of<storage_capacity>> {} bit;
+inline constexpr struct bit_ final : named_unit<"bit", one, kind_of<storage_capacity>> {} bit;
 // clang-format on
 
 
@@ -189,27 +189,27 @@ static_assert(
 constexpr auto m_per_s = speed[metre / second];
 static_assert(is_of_type<2 * m_per_s, quantity<reference<speed_, derived_unit<metre_, per<second_>>>{}, int>>);
 
-static_assert(
-  is_of_type<
-    120 * length[kilometre] / (2 * time[hour]),
-    quantity<reference<derived_quantity_spec<length_, per<time_>>, derived_unit<kilometre_, per<hour_>>>{}, int>>);
+static_assert(is_of_type<120 * length[kilometre] / (2 * time[hour]),
+                         quantity<reference<derived_quantity_spec<length_, per<time_>>,
+                                            derived_unit<std::remove_const_t<decltype(si::kilo<metre>)>, per<hour_>>>{},
+                                  int>>);
 static_assert(120 * length[kilometre] / (2 * time[hour]) == 60 * speed[kilometre / hour]);
-static_assert(
-  is_of_type<
-    [] {
-      const auto distance = 120;
-      const auto duration = 2;
-      return distance * length[kilometre] / (duration * time[hour]);
-    }(),
-    quantity<reference<derived_quantity_spec<length_, per<time_>>, derived_unit<kilometre_, per<hour_>>>{}, int>>);
-static_assert(
-  is_of_type<std::int64_t{120} * length[kilometre] / (2 * time[hour]),
-             quantity<reference<derived_quantity_spec<length_, per<time_>>, derived_unit<kilometre_, per<hour_>>>{},
-                      std::int64_t>>);
-static_assert(
-  is_of_type<120.L * length[kilometre] / (2 * time[hour]),
-             quantity<reference<derived_quantity_spec<length_, per<time_>>, derived_unit<kilometre_, per<hour_>>>{},
-                      long double>>);
+static_assert(is_of_type<[] {
+  const auto distance = 120;
+  const auto duration = 2;
+  return distance * length[kilometre] / (duration * time[hour]);
+}(),
+                         quantity<reference<derived_quantity_spec<length_, per<time_>>,
+                                            derived_unit<std::remove_const_t<decltype(si::kilo<metre>)>, per<hour_>>>{},
+                                  int>>);
+static_assert(is_of_type<std::int64_t{120} * length[kilometre] / (2 * time[hour]),
+                         quantity<reference<derived_quantity_spec<length_, per<time_>>,
+                                            derived_unit<std::remove_const_t<decltype(si::kilo<metre>)>, per<hour_>>>{},
+                                  std::int64_t>>);
+static_assert(is_of_type<120.L * length[kilometre] / (2 * time[hour]),
+                         quantity<reference<derived_quantity_spec<length_, per<time_>>,
+                                            derived_unit<std::remove_const_t<decltype(si::kilo<metre>)>, per<hour_>>>{},
+                                  long double>>);
 
 static_assert(is_of_type<1. / 4 * area[square(metre)], decltype(1. * area[square(metre)] / 4)>);
 static_assert(1. / 4 * area[square(metre)] == 1. * area[square(metre)] / 4);
@@ -226,7 +226,9 @@ static_assert(is_of_type<42 * nu::length[nu::second] / (42 * nu::time[nu::second
 static_assert(is_of_type<42 * nu::speed[nu::second / nu::second], quantity<reference<speed_, one_>{}, int>>);
 static_assert(is_of_type<42 * nu::speed[one], quantity<reference<speed_, one_>{}, int>>);
 static_assert(is_of_type<42 * mass[kilogram] * (1 * nu::length[nu::second]) / (1 * nu::time[nu::second]),
-                         quantity<reference<derived_quantity_spec<length_, mass_, per<time_>>, kilogram_>{}, int>>);
+                         quantity<reference<derived_quantity_spec<length_, mass_, per<time_>>,
+                                            std::remove_const_t<decltype(si::kilo<gram>)>>{},
+                                  int>>);
 
 template<auto dim, auto unit>
 concept invalid_nu_unit = !requires { dim[unit]; };

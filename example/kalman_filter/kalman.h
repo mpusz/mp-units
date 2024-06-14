@@ -23,6 +23,7 @@
 #pragma once
 
 #include <mp-units/compat_macros.h>
+#include <mp-units/ext/format.h>
 #include <algorithm>
 #include <locale>
 #include <tuple>

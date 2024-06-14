@@ -20,21 +20,23 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-module;
+#pragma once
 
-#include <mp-units/bits/core_gmf.h>
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
 
-export module mp_units.core;
-
-#define MP_UNITS_IN_MODULE_INTERFACE
-
+#include <mp-units/bits/requires_hosted.h>
+//
+#include <mp-units/bits/hacks.h>
 #include <mp-units/compat_macros.h>
-#include <mp-units/concepts.h>
-#include <mp-units/framework.h>
 
-#if MP_UNITS_HOSTED
-#include <mp-units/format.h>
-#include <mp-units/math.h>
-#include <mp-units/ostream.h>
-#include <mp-units/random.h>
+#if MP_UNITS_USE_FMTLIB
+MP_UNITS_DIAGNOSTIC_PUSH
+MP_UNITS_DIAGNOSTIC_IGNORE_UNREACHABLE
+MP_UNITS_DIAGNOSTIC_IGNORE_SHADOW
+#include <fmt/format.h>
+MP_UNITS_DIAGNOSTIC_POP
+#else
+#include <format>
+#endif
+
 #endif

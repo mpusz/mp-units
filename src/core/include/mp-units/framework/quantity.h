@@ -37,6 +37,7 @@
 #include <mp-units/framework/unit_concepts.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
+#include <mp-units/ext/contracts.h>
 #include <compare>  // IWYU pragma: export
 #include <utility>
 #endif
@@ -45,16 +46,21 @@ namespace mp_units {
 
 namespace detail {
 
-template<auto UFrom, auto UTo>
-concept IntegralConversionFactor = Unit<decltype(UFrom)> && Unit<decltype(UTo)> &&
-                                   is_integral(get_canonical_unit(UFrom).mag / get_canonical_unit(UTo).mag);
+template<Unit UFrom, Unit UTo>
+[[nodiscard]] consteval bool integral_conversion_factor(UFrom from, UTo to)
+{
+  if constexpr (is_same_v<UFrom, UTo>)
+    return true;
+  else
+    return is_integral(get_canonical_unit(from).mag / get_canonical_unit(to).mag);
+}
 
 template<typename QFrom, typename QTo>
 concept QuantityConvertibleTo =
   Quantity<QFrom> && Quantity<QTo> && implicitly_convertible(QFrom::quantity_spec, QTo::quantity_spec) &&
   convertible(QFrom::unit, QTo::unit) &&
   (treat_as_floating_point<typename QTo::rep> ||
-   (!treat_as_floating_point<typename QFrom::rep> && IntegralConversionFactor<QFrom::unit, QTo::unit>)) &&
+   (!treat_as_floating_point<typename QFrom::rep> && (integral_conversion_factor(QFrom::unit, QTo::unit)))) &&
   // TODO consider providing constraints of sudo_cast here rather than testing if it can be called (its return type is
   // deduced thus the function is evaluated here and may emit truncating conversion or other warnings)
   requires(QFrom q) { detail::sudo_cast<QTo>(q); };

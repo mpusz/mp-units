@@ -113,7 +113,7 @@ that uses a unit that is proportional to the ratio of kilometers per megaparsecs
 units of _length_:
 
 ```cpp
-inline constexpr struct hubble_constant :
+inline constexpr struct hubble_constant final :
     named_unit<{u8"H₀", "H_0"}, mag_ratio<701, 10> * si::kilo<si::metre> / si::second / si::mega<parsec>> {} hubble_constant;
 ```
 
@@ -158,9 +158,9 @@ Besides the unit `one`, there are a few other scaled units predefined in the lib
 with dimensionless quantities:
 
 ```cpp
-inline constexpr struct percent : named_unit<"%", mag_ratio<1, 100> * one> {} percent;
-inline constexpr struct per_mille : named_unit<{u8"‰", "%o"}, mag_ratio<1, 1000> * one> {} per_mille;
-inline constexpr struct parts_per_million : named_unit<"ppm", mag_ratio<1, 1'000'000> * one> {} parts_per_million;
+inline constexpr struct percent final : named_unit<"%", mag_ratio<1, 100> * one> {} percent;
+inline constexpr struct per_mille final : named_unit<{u8"‰", "%o"}, mag_ratio<1, 1000> * one> {} per_mille;
+inline constexpr struct parts_per_million final : named_unit<"ppm", mag_ratio<1, 1'000'000> * one> {} parts_per_million;
 inline constexpr auto ppm = parts_per_million;
 ```
 
@@ -217,17 +217,17 @@ to the quantity specification:
 === "C++23"
 
     ```cpp
-    inline constexpr struct angular_measure : quantity_spec<dimensionless, arc_length / radius, is_kind> {} angular_measure;
-    inline constexpr struct solid_angular_measure : quantity_spec<dimensionless, area / pow<2>(radius), is_kind> {} solid_angular_measure;
-    inline constexpr struct storage_capacity : quantity_spec<dimensionless, is_kind> {} storage_capacity;
+    inline constexpr struct angular_measure final : quantity_spec<dimensionless, arc_length / radius, is_kind> {} angular_measure;
+    inline constexpr struct solid_angular_measure final : quantity_spec<dimensionless, area / pow<2>(radius), is_kind> {} solid_angular_measure;
+    inline constexpr struct storage_capacity final : quantity_spec<dimensionless, is_kind> {} storage_capacity;
     ```
 
 === "C++20"
 
     ```cpp
-    inline constexpr struct angular_measure : quantity_spec<angular_measure, dimensionless, arc_length / radius, is_kind> {} angular_measure;
-    inline constexpr struct solid_angular_measure : quantity_spec<solid_angular_measure, dimensionless, area / pow<2>(radius), is_kind> {} solid_angular_measure;
-    inline constexpr struct storage_capacity : quantity_spec<storage_capacity, dimensionless, is_kind> {} storage_capacity;
+    inline constexpr struct angular_measure final : quantity_spec<angular_measure, dimensionless, arc_length / radius, is_kind> {} angular_measure;
+    inline constexpr struct solid_angular_measure final : quantity_spec<solid_angular_measure, dimensionless, area / pow<2>(radius), is_kind> {} solid_angular_measure;
+    inline constexpr struct storage_capacity final : quantity_spec<storage_capacity, dimensionless, is_kind> {} storage_capacity;
     ```
 
 === "Portable"
@@ -242,9 +242,9 @@ With the above, we can constrain `radian`, `steradian`, and `bit` to be allowed 
 specific quantity kinds only:
 
 ```cpp
-inline constexpr struct radian : named_unit<"rad", metre / metre, kind_of<isq::angular_measure>> {} radian;
-inline constexpr struct steradian : named_unit<"sr", square(metre) / square(metre), kind_of<isq::solid_angular_measure>> {} steradian;
-inline constexpr struct bit : named_unit<"bit", one, kind_of<storage_capacity>> {} bit;
+inline constexpr struct radian final : named_unit<"rad", metre / metre, kind_of<isq::angular_measure>> {} radian;
+inline constexpr struct steradian final : named_unit<"sr", square(metre) / square(metre), kind_of<isq::solid_angular_measure>> {} steradian;
+inline constexpr struct bit final : named_unit<"bit", one, kind_of<storage_capacity>> {} bit;
 ```
 
 but still allow the usage of `one` and its scaled versions for such quantities.
