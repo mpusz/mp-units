@@ -2,7 +2,7 @@
 
 ## mp-units
 
-### 2.2.0 <small>WIP</small> { id="2.2.0" }
+### 2.2.0 <small>June 14, 2024</small> { id="2.2.0" }
 
 - (!) feat: C++ modules support added by [@JohelEGP](https://github.com/JohelEGP)
 - (!) feat: New formatting specification implemented

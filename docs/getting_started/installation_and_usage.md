@@ -495,7 +495,7 @@ The following steps may be performed to obtain an official library release:
 
     ```ini title="conanfile.txt"
     [requires]
-    mp-units/2.1.0
+    mp-units/2.2.0
 
     [options]
     mp-units:cxx_modules=True
@@ -555,7 +555,7 @@ with the following differences:
 
     ```ini title="conanfile.txt" hl_lines="2"
     [requires]
-    mp-units/2.2.0@mpusz/testing
+    mp-units/2.3.0@mpusz/testing
 
     [options]
     mp-units:cxx_modules=True
@@ -666,5 +666,5 @@ The above will create a Conan package and run tests provided in _./test_package_
 ## Uploading **mp-units** package to the Conan server
 
 ```shell
-conan upload -r <remote-name> --all mp-units/2.1.0@<user>/<channel>
+conan upload -r <remote-name> --all mp-units/2.2.0@<user>/<channel>
 ```
