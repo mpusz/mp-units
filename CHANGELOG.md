@@ -17,6 +17,7 @@
 - feat: `fma` for quantity points added
 - feat: `quantity_point` support added for `quantity_cast` and `value_cast`
 - feat: `value_cast<Unit, Representation>` added
+- feat: `value_cast<Quantity>(q)`, `value_cast<Quantity>(qp)` and `value_cast<QuantityPoint>(qp)` added by [@burnpanck](https://github.com/burnpanck)
 - feat: `interconvertible(QuantitySpec, QuantitySpec)` added
 - feat: `qp.quantity_from_zero()` added
 - feat: `value_type` type trait added

@@ -1702,4 +1702,41 @@ static_assert(value_cast<float>(lvalue_qp).quantity_from_zero().numerical_value_
 static_assert(value_cast<m, float>(lvalue_qp).quantity_from_zero().numerical_value_in(m) == 2000.f);
 }  // namespace lvalue_tests
 
+static_assert(value_cast<quantity<km, int>>(quantity_point{2000 * m}).quantity_from_zero().numerical_value_in(km) == 2);
+static_assert(value_cast<quantity_point<km>>(quantity_point{2000 * m}).quantity_from_zero().numerical_value_in(km) ==
+              2);
+
+template<typename ToQ, typename FromQ>
+constexpr bool value_cast_is_forbidden()
+{
+  // it appears we cannot have the requires clause right inside static_assert
+  return !requires(FromQ q) { value_cast<ToQ>(q); };
+}
+static_assert(value_cast_is_forbidden<quantity_point<m>, quantity_point<isq::width[m]>>(),
+              "value_cast shall not cast between different quantity types");
+static_assert(value_cast_is_forbidden<quantity_point<isq::width[m]>, quantity_point<m>>(),
+              "value_cast shall not cast between different quantity types");
+// value_cast which does not touch the point_origin
+static_assert(value_cast<quantity_point<isq::height[m]>>(quantity_point{2 * isq::height[km]})
+                .quantity_from_origin_is_an_implementation_detail_.numerical_value_in(m) == 2000);
+static_assert(value_cast<quantity_point<isq::height[km]>>(quantity_point{2000 * isq::height[m]})
+                .quantity_from_origin_is_an_implementation_detail_.numerical_value_in(km) == 2);
+// a value_cast which includes a change to the point origin
+static_assert(value_cast<quantity_point<isq::height[m], mean_sea_level>>(quantity_point{2000 * isq::height[m],
+                                                                                        ground_level})
+                .quantity_from_origin_is_an_implementation_detail_.numerical_value_in(m) == 2042);
+// a value_cast which includes a change to the point origin as-well as a change in units
+static_assert(value_cast<quantity_point<isq::height[m], mean_sea_level>>(quantity_point{2 * isq::height[km],
+                                                                                        ground_level})
+                .quantity_from_origin_is_an_implementation_detail_.numerical_value_in(m) == 2042);
+// a value_cast which changes all three of unit, rep, point_origin simultaneously, and the range of either FromQP or
+// ToQP does not include the other's point_origin
+static_assert(value_cast<quantity_point<isq::height[cm], mean_sea_level, int>>(
+                quantity_point{std::int8_t{100} * isq::height[mm], ground_level})
+                .quantity_from_origin_is_an_implementation_detail_.numerical_value_in(cm) == 4210);
+static_assert(value_cast<quantity_point<isq::height[mm], ground_level, std::int8_t>>(
+                quantity_point{4210 * isq::height[cm], mean_sea_level})
+                .quantity_from_origin_is_an_implementation_detail_.numerical_value_in(mm) == 100);
+
+
 }  // namespace
