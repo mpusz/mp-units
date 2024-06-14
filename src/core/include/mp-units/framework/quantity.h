@@ -52,8 +52,7 @@ template<Unit UFrom, Unit UTo>
   if constexpr (is_same_v<UFrom, UTo>)
     return true;
   else
-    return decltype(is_integral(
-      decltype(decltype(get_canonical_unit(from))::mag / decltype(get_canonical_unit(to))::mag){}))::value;
+    return is_integral(get_canonical_unit(from).mag / get_canonical_unit(to).mag);
 }
 
 template<typename QFrom, typename QTo>

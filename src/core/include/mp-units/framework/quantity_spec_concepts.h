@@ -126,12 +126,11 @@ MP_UNITS_EXPORT template<QuantitySpec Q>
 namespace detail {
 
 template<QuantitySpec Child, QuantitySpec Parent>
-[[nodiscard]] consteval auto is_child_of(Child ch, Parent);
+[[nodiscard]] consteval bool is_child_of(Child ch, Parent p);
 
 template<auto To, auto From>
-concept NestedQuantityKindSpecOf =
-  QuantitySpec<decltype(From)> && QuantitySpec<decltype(To)> && get_kind(From) != get_kind(To) &&
-  decltype(is_child_of(To, get_kind(From)._quantity_spec_))::value;
+concept NestedQuantityKindSpecOf = QuantitySpec<decltype(From)> && QuantitySpec<decltype(To)> &&
+                                   get_kind(From) != get_kind(To) && is_child_of(To, get_kind(From)._quantity_spec_);
 
 }  // namespace detail
 

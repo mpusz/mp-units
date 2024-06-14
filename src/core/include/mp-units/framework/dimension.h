@@ -159,15 +159,15 @@ struct is_dimension_one<struct dimension_one> : std::true_type {};
 MP_UNITS_EXPORT template<Dimension Lhs, Dimension Rhs>
 [[nodiscard]] consteval Dimension auto operator*(Lhs, Rhs)
 {
-  return decltype(detail::expr_multiply<derived_dimension, struct dimension_one,
-                                        detail::type_list_of_base_dimension_less>(Lhs{}, Rhs{})){};
+  return detail::expr_multiply<derived_dimension, struct dimension_one, detail::type_list_of_base_dimension_less>(
+    Lhs{}, Rhs{});
 }
 
 MP_UNITS_EXPORT template<Dimension Lhs, Dimension Rhs>
 [[nodiscard]] consteval Dimension auto operator/(Lhs, Rhs)
 {
-  return decltype(detail::expr_divide<derived_dimension, struct dimension_one,
-                                      detail::type_list_of_base_dimension_less>(Lhs{}, Rhs{})){};
+  return detail::expr_divide<derived_dimension, struct dimension_one, detail::type_list_of_base_dimension_less>(Lhs{},
+                                                                                                                Rhs{});
 }
 
 namespace detail {
@@ -191,7 +191,7 @@ template<Dimension Lhs, Dimension Rhs>
   return is_same_v<Lhs, Rhs> || detail::derived_from_the_same_base_dimension(lhs, rhs);
 }
 
-[[nodiscard]] consteval Dimension auto inverse(Dimension auto d) { return decltype(dimension_one / d){}; }
+[[nodiscard]] consteval Dimension auto inverse(Dimension auto d) { return dimension_one / d; }
 
 /**
  * @brief Computes the value of a dimension raised to the `Num/Den` power
@@ -212,8 +212,8 @@ template<std::intmax_t Num, std::intmax_t Den = 1, Dimension D>
     else
       return derived_dimension<power<D, Num, Den>>{};
   } else
-    return decltype(detail::expr_pow<Num, Den, derived_dimension, struct dimension_one,
-                                     detail::type_list_of_base_dimension_less>(d)){};
+    return detail::expr_pow<Num, Den, derived_dimension, struct dimension_one,
+                            detail::type_list_of_base_dimension_less>(d);
 }
 
 /**
@@ -223,7 +223,7 @@ template<std::intmax_t Num, std::intmax_t Den = 1, Dimension D>
  *
  * @return Dimension The result of computation
  */
-[[nodiscard]] consteval Dimension auto sqrt(Dimension auto d) { return decltype(pow<1, 2>(d)){}; }
+[[nodiscard]] consteval Dimension auto sqrt(Dimension auto d) { return pow<1, 2>(d); }
 
 /**
  * @brief Computes the cubic root of a dimension
@@ -232,7 +232,7 @@ template<std::intmax_t Num, std::intmax_t Den = 1, Dimension D>
  *
  * @return Dimension The result of computation
  */
-[[nodiscard]] consteval Dimension auto cbrt(Dimension auto d) { return decltype(pow<1, 3>(d)){}; }
+[[nodiscard]] consteval Dimension auto cbrt(Dimension auto d) { return pow<1, 3>(d); }
 
 
 struct dimension_symbol_formatting {

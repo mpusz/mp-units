@@ -64,11 +64,10 @@ template<Quantity To, typename From>
                              // warnings on conversions
   } else {
     // scale the number
-    constexpr Magnitude auto c_mag =
-      decltype(decltype(get_canonical_unit(q_unit))::mag / decltype(get_canonical_unit(To::unit))::mag){};
-    constexpr Magnitude auto num = decltype(numerator(c_mag)){};
-    constexpr Magnitude auto den = decltype(denominator(c_mag)){};
-    constexpr Magnitude auto irr = decltype(c_mag * decltype(den / num){}){};
+    constexpr Magnitude auto c_mag = get_canonical_unit(q_unit).mag / get_canonical_unit(To::unit).mag;
+    constexpr Magnitude auto num = numerator(c_mag);
+    constexpr Magnitude auto den = denominator(c_mag);
+    constexpr Magnitude auto irr = c_mag * (den / num);
     using c_rep_type = maybe_common_type<typename std::remove_reference_t<From>::rep, typename To::rep>;
     using c_mag_type = common_magnitude_type<c_mag>;
     using multiplier_type = conditional<

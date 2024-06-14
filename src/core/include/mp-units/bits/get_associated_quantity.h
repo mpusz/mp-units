@@ -34,25 +34,24 @@ template<AssociatedUnit U>
 template<typename U, auto... Vs>
 [[nodiscard]] consteval auto all_are_kinds(power<U, Vs...>)
 {
-  return decltype(all_are_kinds(U{})){};
+  return all_are_kinds(U{});
 }
 
 template<typename... Nums, typename... Dens>
-[[nodiscard]] consteval auto all_are_kinds(type_list<Nums...>, type_list<Dens...>)
+[[nodiscard]] consteval bool all_are_kinds(type_list<Nums...>, type_list<Dens...>)
 {
-  return std::bool_constant<((... && decltype(all_are_kinds(Nums{}))::value) &&
-                             (... && decltype(all_are_kinds(Dens{}))::value))>{};
+  return (... && all_are_kinds(Nums{})) && (... && all_are_kinds(Dens{}));
 }
 
 template<AssociatedUnit U>
 [[nodiscard]] consteval auto all_are_kinds(U)
 {
   if constexpr (requires { U::quantity_spec; })
-    return std::bool_constant<QuantityKindSpec<std::remove_const_t<decltype(U::quantity_spec)>>>{};
+    return QuantityKindSpec<std::remove_const_t<decltype(U::quantity_spec)>>;
   else if constexpr (requires { U::reference_unit; })
-    return decltype(all_are_kinds(U::reference_unit)){};
+    return all_are_kinds(U::reference_unit);
   else if constexpr (requires { typename U::_num_; }) {
-    return decltype(all_are_kinds(typename U::_num_{}, typename U::_den_{})){};
+    return all_are_kinds(typename U::_num_{}, typename U::_den_{});
   }
 }
 
@@ -68,21 +67,20 @@ template<AssociatedUnit U>
   if constexpr (requires { U::quantity_spec; })
     return remove_kind(U::quantity_spec);
   else if constexpr (requires { U::reference_unit; })
-    return decltype(get_associated_quantity_impl(U::reference_unit)){};
+    return get_associated_quantity_impl(U::reference_unit);
   else if constexpr (requires { typename U::_num_; }) {
-    return decltype(expr_map<to_quantity_spec, derived_quantity_spec, struct dimensionless,
-                             type_list_of_quantity_spec_less>(u)){};
+    return expr_map<to_quantity_spec, derived_quantity_spec, struct dimensionless, type_list_of_quantity_spec_less>(u);
   }
 }
 
 template<AssociatedUnit U>
 [[nodiscard]] consteval auto get_associated_quantity(U u)
 {
-  constexpr bool all_kinds = decltype(all_are_kinds(u)){};
+  constexpr bool all_kinds = all_are_kinds(u);
   if constexpr (all_kinds)
-    return kind_of<decltype(get_associated_quantity_impl(u)){}>;
+    return kind_of<get_associated_quantity_impl(u)>;
   else
-    return decltype(get_associated_quantity_impl(u)){};
+    return get_associated_quantity_impl(u);
 }
 
 }  // namespace mp_units::detail

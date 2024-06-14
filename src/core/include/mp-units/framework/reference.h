@@ -46,7 +46,7 @@ MP_UNITS_EXPORT_BEGIN
 
 [[nodiscard]] consteval QuantitySpec auto get_quantity_spec(AssociatedUnit auto u)
 {
-  return decltype(detail::get_associated_quantity(u)){};
+  return detail::get_associated_quantity(u);
 }
 
 /**

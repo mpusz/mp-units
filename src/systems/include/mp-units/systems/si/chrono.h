@@ -115,8 +115,8 @@ struct quantity_point_like_traits<std::chrono::time_point<C, std::chrono::durati
 
 namespace detail {
 
-constexpr auto as_ratio(Magnitude auto m)
-  requires(decltype(is_rational(decltype(m){}))::value)
+[[nodiscard]] constexpr auto as_ratio(Magnitude auto m)
+  requires(is_rational(m))
 {
   return std::ratio<get_value<std::intmax_t>(numerator(m)), get_value<std::intmax_t>(denominator(m))>{};
 }
@@ -126,8 +126,7 @@ constexpr auto as_ratio(Magnitude auto m)
 template<QuantityOf<isq::time> Q>
 [[nodiscard]] constexpr auto to_chrono_duration(const Q& q)
 {
-  return std::chrono::duration<typename Q::rep, decltype(detail::as_ratio(decltype(get_canonical_unit(Q::unit))::mag))>{
-    q};
+  return std::chrono::duration<typename Q::rep, decltype(detail::as_ratio(get_canonical_unit(Q::unit).mag))>{q};
 }
 
 template<QuantityPointOf<isq::time> QP>
@@ -136,8 +135,9 @@ template<QuantityPointOf<isq::time> QP>
 {
   using clock = MP_UNITS_TYPENAME decltype(QP::absolute_point_origin)::clock;
   using rep = MP_UNITS_TYPENAME QP::rep;
-  using ret_type = std::chrono::time_point<
-    clock, std::chrono::duration<rep, decltype(detail::as_ratio(decltype(get_canonical_unit(QP::unit))::mag))>>;
+  using ret_type =
+    std::chrono::time_point<clock,
+                            std::chrono::duration<rep, decltype(detail::as_ratio(get_canonical_unit(QP::unit).mag))>>;
   return ret_type(to_chrono_duration(qp - qp.absolute_point_origin));
 }
 

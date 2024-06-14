@@ -26,12 +26,12 @@
 
 namespace mp_units::detail {
 
-[[nodiscard]] consteval auto hierarchy_path_length(QuantitySpec auto q)
+[[nodiscard]] consteval std::size_t hierarchy_path_length(QuantitySpec auto q)
 {
   if constexpr (requires { q._parent_; })
-    return std::integral_constant<std::size_t, decltype(hierarchy_path_length(q._parent_))::value + 1>{};
+    return hierarchy_path_length(q._parent_) + 1;
   else
-    return std::integral_constant<std::size_t, 1>{};
+    return 1;
 }
 
 template<std::size_t Offset>
@@ -41,67 +41,65 @@ template<std::size_t Offset>
   if constexpr (Offset == 0)
     return q;
   else if constexpr (requires { q._parent_; })
-    return decltype(hierarchy_path_advance<Offset - 1>(q._parent_)){};
+    return hierarchy_path_advance<Offset - 1>(q._parent_);
 }
 
 template<QuantitySpec A, QuantitySpec B>
-[[nodiscard]] consteval auto have_common_base_in_hierarchy_of_equal_length(A a, B b)
+[[nodiscard]] consteval bool have_common_base_in_hierarchy_of_equal_length(A a, B b)
 {
   if constexpr (is_same_v<A, B>)
-    return std::true_type{};
+    return true;
   else if constexpr (requires { a._parent_; })
-    return decltype(have_common_base_in_hierarchy_of_equal_length(a._parent_, b._parent_)){};
+    return have_common_base_in_hierarchy_of_equal_length(a._parent_, b._parent_);
   else
-    return std::false_type{};
+    return false;
 }
 
 template<QuantitySpec A, QuantitySpec B>
-[[nodiscard]] consteval auto have_common_base(A a, B b)
+[[nodiscard]] consteval bool have_common_base(A a, B b)
 {
-  constexpr std::size_t a_length = decltype(hierarchy_path_length(A{}))::value;
-  constexpr std::size_t b_length = decltype(hierarchy_path_length(B{}))::value;
+  constexpr std::size_t a_length = hierarchy_path_length(A{});
+  constexpr std::size_t b_length = hierarchy_path_length(B{});
   if constexpr (a_length > b_length)
-    return decltype(have_common_base_in_hierarchy_of_equal_length(
-      decltype(hierarchy_path_advance<a_length - b_length>(a)){}, b)){};
+    return have_common_base_in_hierarchy_of_equal_length(hierarchy_path_advance<a_length - b_length>(a), b);
   else
-    return decltype(have_common_base_in_hierarchy_of_equal_length(
-      a, decltype(hierarchy_path_advance<b_length - a_length>(b)){})){};
+    return have_common_base_in_hierarchy_of_equal_length(a, hierarchy_path_advance<b_length - a_length>(b));
 }
 
 template<QuantitySpec A, QuantitySpec B>
-  requires(decltype(have_common_base_in_hierarchy_of_equal_length(A{}, B{}))::value)
+  requires(have_common_base_in_hierarchy_of_equal_length(A{}, B{}))
 [[nodiscard]] consteval QuantitySpec auto get_common_base_for_hierarchy_of_equal_length(A a, B b)
 {
   if constexpr (is_same_v<A, B>)
     return a;
   else
-    return decltype(get_common_base_for_hierarchy_of_equal_length(a._parent_, b._parent_)){};
+    return get_common_base_for_hierarchy_of_equal_length(a._parent_, b._parent_);
 }
 
 template<QuantitySpec A, QuantitySpec B>
-  requires(decltype(have_common_base(A{}, B{}))::value)
+  requires(have_common_base(A{}, B{}))
 [[nodiscard]] consteval QuantitySpec auto get_common_base(A a, B b)
 {
-  constexpr std::size_t a_length = decltype(hierarchy_path_length(A{}))::value;
-  constexpr std::size_t b_length = decltype(hierarchy_path_length(B{}))::value;
+  constexpr std::size_t a_length = hierarchy_path_length(A{});
+  constexpr std::size_t b_length = hierarchy_path_length(B{});
   if constexpr (a_length > b_length)
-    return decltype(get_common_base_for_hierarchy_of_equal_length(hierarchy_path_advance<a_length - b_length>(a), b)){};
+    return get_common_base_for_hierarchy_of_equal_length(hierarchy_path_advance<a_length - b_length>(a), b);
   else
-    return decltype(get_common_base_for_hierarchy_of_equal_length(a, hierarchy_path_advance<b_length - a_length>(b))){};
+    return get_common_base_for_hierarchy_of_equal_length(a, hierarchy_path_advance<b_length - a_length>(b));
 }
 
 template<QuantitySpec Child, QuantitySpec Parent>
-[[nodiscard]] consteval auto is_child_of(Child ch, Parent)
+[[nodiscard]] consteval bool is_child_of(Child ch, Parent p)
 {
   if constexpr (Child{} == Parent{})
     return std::true_type{};
   else {
-    constexpr std::size_t child_length = decltype(hierarchy_path_length(Child{}))::value;
-    constexpr std::size_t parent_length = decltype(hierarchy_path_length(Parent{}))::value;
+    constexpr std::size_t child_length = hierarchy_path_length(Child{});
+    constexpr std::size_t parent_length = hierarchy_path_length(Parent{});
     if constexpr (parent_length > child_length)
-      return std::false_type{};
+      return false;
     else
-      return std::bool_constant<hierarchy_path_advance<child_length - parent_length>(ch) == Parent{}>{};
+      return hierarchy_path_advance<child_length - parent_length>(ch) == p;
   }
 }
 

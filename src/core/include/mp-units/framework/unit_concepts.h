@@ -191,7 +191,7 @@ concept UnitOf =
 namespace detail {
 
 template<Unit U1, Unit U2>
-[[nodiscard]] consteval auto have_same_canonical_reference_unit(U1 u1, U2 u2);
+[[nodiscard]] consteval bool have_same_canonical_reference_unit(U1 u1, U2 u2);
 
 }
 
@@ -204,7 +204,7 @@ template<Unit U1, Unit U2>
 MP_UNITS_EXPORT template<typename U, auto U2, auto QS>
 concept UnitCompatibleWith =
   Unit<U> && Unit<MP_UNITS_REMOVE_CONST(decltype(U2))> && QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS))> &&
-  (!AssociatedUnit<U> || UnitOf<U, QS>)&&decltype(detail::have_same_canonical_reference_unit(U{}, U2))::value;
+  (!AssociatedUnit<U> || UnitOf<U, QS>)&&(detail::have_same_canonical_reference_unit(U{}, U2));
 
 
 }  // namespace mp_units

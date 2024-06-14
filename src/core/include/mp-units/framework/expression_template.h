@@ -362,7 +362,7 @@ template<typename NumList, typename DenList, typename OneType, template<typename
   using simple = expr_simplify<num_list, den_list, Pred>;
   // the usage of `std::identity` below helps to resolve an using alias identifier to the actual
   // type identifier in the clang compile-time errors
-  return std::identity{}(decltype(expr_make_spec_impl<typename simple::num, typename simple::den, OneType, To>()){});
+  return std::identity{}(expr_make_spec_impl<typename simple::num, typename simple::den, OneType, To>());
 }
 
 /**
@@ -384,19 +384,19 @@ template<template<typename...> typename To, typename OneType, template<typename,
     return Lhs{};
   } else if constexpr (is_specialization_of<Lhs, To> && is_specialization_of<Rhs, To>) {
     // two derived dimensions
-    return decltype(get_optimized_expression<type_list_merge_sorted<typename Lhs::_num_, typename Rhs::_num_, Pred>,
-                                             type_list_merge_sorted<typename Lhs::_den_, typename Rhs::_den_, Pred>,
-                                             OneType, Pred, To>()){};
+    return get_optimized_expression<type_list_merge_sorted<typename Lhs::_num_, typename Rhs::_num_, Pred>,
+                                    type_list_merge_sorted<typename Lhs::_den_, typename Rhs::_den_, Pred>, OneType,
+                                    Pred, To>();
   } else if constexpr (is_specialization_of<Lhs, To>) {
-    return decltype(get_optimized_expression<type_list_merge_sorted<typename Lhs::_num_, type_list<Rhs>, Pred>,
-                                             typename Lhs::_den_, OneType, Pred, To>()){};
+    return get_optimized_expression<type_list_merge_sorted<typename Lhs::_num_, type_list<Rhs>, Pred>,
+                                    typename Lhs::_den_, OneType, Pred, To>();
   } else if constexpr (is_specialization_of<Rhs, To>) {
-    return decltype(get_optimized_expression<type_list_merge_sorted<typename Rhs::_num_, type_list<Lhs>, Pred>,
-                                             typename Rhs::_den_, OneType, Pred, To>()){};
+    return get_optimized_expression<type_list_merge_sorted<typename Rhs::_num_, type_list<Lhs>, Pred>,
+                                    typename Rhs::_den_, OneType, Pred, To>();
   } else {
     // two base dimensions
-    return decltype(get_optimized_expression<type_list_merge_sorted<type_list<Lhs>, type_list<Rhs>, Pred>, type_list<>,
-                                             OneType, Pred, To>()){};
+    return get_optimized_expression<type_list_merge_sorted<type_list<Lhs>, type_list<Rhs>, Pred>, type_list<>, OneType,
+                                    Pred, To>();
   }
 }
 
@@ -418,19 +418,18 @@ template<template<typename...> typename To, typename OneType, template<typename,
   } else if constexpr (is_same_v<Rhs, OneType>) {
     return lhs;
   } else if constexpr (is_same_v<Lhs, OneType>) {
-    return decltype(expr_divide<To, OneType, Pred>(To<>{}, rhs)){};
+    return expr_divide<To, OneType, Pred>(To<>{}, rhs);
   } else if constexpr (is_specialization_of<Lhs, To> && is_specialization_of<Rhs, To>) {
     // two derived entities
-    return decltype(get_optimized_expression<type_list_merge_sorted<typename Lhs::_num_, typename Rhs::_den_, Pred>,
-                                             type_list_merge_sorted<typename Lhs::_den_, typename Rhs::_num_, Pred>,
-                                             OneType, Pred, To>()){};
+    return get_optimized_expression<type_list_merge_sorted<typename Lhs::_num_, typename Rhs::_den_, Pred>,
+                                    type_list_merge_sorted<typename Lhs::_den_, typename Rhs::_num_, Pred>, OneType,
+                                    Pred, To>();
   } else if constexpr (is_specialization_of<Lhs, To>) {
-    return decltype(get_optimized_expression<typename Lhs::_num_,
-                                             type_list_merge_sorted<typename Lhs::_den_, type_list<Rhs>, Pred>, OneType,
-                                             Pred, To>()){};
+    return get_optimized_expression<
+      typename Lhs::_num_, type_list_merge_sorted<typename Lhs::_den_, type_list<Rhs>, Pred>, OneType, Pred, To>();
   } else if constexpr (is_specialization_of<Rhs, To>) {
-    return decltype(get_optimized_expression<type_list_merge_sorted<typename Rhs::_den_, type_list<Lhs>, Pred>,
-                                             typename Rhs::_num_, OneType, Pred, To>()){};
+    return get_optimized_expression<type_list_merge_sorted<typename Rhs::_den_, type_list<Lhs>, Pred>,
+                                    typename Rhs::_num_, OneType, Pred, To>();
   } else {
     // two named entities
     return To<Lhs, per<Rhs>>{};
@@ -450,7 +449,7 @@ template<template<typename...> typename To, typename OneType, typename T>
   if constexpr (is_specialization_of<T, To>)
     // the usage of `std::identity` below helps to resolve an using alias identifier to the actual
     // type identifier in the clang compile-time errors
-    return std::identity{}(decltype(expr_make_spec_impl<typename T::_den_, typename T::_num_, OneType, To>()){});
+    return std::identity{}(expr_make_spec_impl<typename T::_den_, typename T::_num_, OneType, To>());
   else
     return To<OneType, per<T>>{};
 }
@@ -461,9 +460,8 @@ template<std::intmax_t Num, std::intmax_t Den, template<typename...> typename To
   requires detail::non_zero<Den>
 [[nodiscard]] consteval auto expr_pow_impl(type_list<Nums...>, type_list<Dens...>)
 {
-  return decltype(detail::get_optimized_expression<type_list<power_or_T<Nums, ratio{Num, Den}>...>,
-                                                   type_list<power_or_T<Dens, ratio{Num, Den}>...>, OneType, Pred,
-                                                   To>()){};
+  return detail::get_optimized_expression<type_list<power_or_T<Nums, ratio{Num, Den}>...>,
+                                          type_list<power_or_T<Dens, ratio{Num, Den}>...>, OneType, Pred, To>();
 }
 
 
@@ -482,7 +480,7 @@ template<std::intmax_t Num, std::intmax_t Den, template<typename...> typename To
   requires detail::non_zero<Den>
 [[nodiscard]] consteval auto expr_pow(T)
 {
-  return decltype(expr_pow_impl<Num, Den, To, OneType, Pred>(typename T::_num_{}, typename T::_den_{})){};
+  return expr_pow_impl<Num, Den, To, OneType, Pred>(typename T::_num_{}, typename T::_den_{});
 }
 
 
@@ -529,7 +527,7 @@ template<typename T>
 template<typename T, auto... Ints>
 [[nodiscard]] consteval auto map_power(power<T, Ints...>)
 {
-  return decltype(pow<Ints...>(T{})){};
+  return pow<Ints...>(T{});
 }
 
 template<template<typename> typename Proj, template<typename...> typename To, typename OneType,
@@ -537,8 +535,8 @@ template<template<typename> typename Proj, template<typename...> typename To, ty
          expr_type_projectable<Proj>... Dens>
 [[nodiscard]] consteval auto expr_map_impl(type_list<Nums...>, type_list<Dens...>)
 {
-  return decltype(decltype((OneType{} * ... * map_power(typename expr_type_map<Nums, Proj>::type{}))){} /
-                  decltype((OneType{} * ... * map_power(typename expr_type_map<Dens, Proj>::type{}))){}){};
+  return (OneType{} * ... * map_power(typename expr_type_map<Nums, Proj>::type{})) /
+         (OneType{} * ... * map_power(typename expr_type_map<Dens, Proj>::type{}));
 }
 
 /**
@@ -557,7 +555,7 @@ template<template<typename> typename Proj, template<typename...> typename To, ty
   if constexpr (type_list_size<typename T::_num_> + type_list_size<typename T::_den_> == 0)
     return OneType{};
   else
-    return decltype(expr_map_impl<Proj, To, OneType, Pred>(typename T::_num_{}, typename T::_den_{})){};
+    return expr_map_impl<Proj, To, OneType, Pred>(typename T::_num_{}, typename T::_den_{});
 }
 
 }  // namespace detail
