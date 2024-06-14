@@ -85,13 +85,19 @@ check_cxx_feature_supported(__cpp_explicit_this_parameter ${projectPrefix}EXPLIC
 
 # libc++ has a basic supports for std::format but does not set __cpp_lib_format
 # https://github.com/llvm/llvm-project/issues/77773
-if(NOT ${projectPrefix}LIB_FORMAT_SUPPORTED AND CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "17" AND ${projectPrefix}LIBCXX)
+if(NOT ${projectPrefix}LIB_FORMAT_SUPPORTED
+   AND CMAKE_CXX_COMPILER_ID STREQUAL "Clang"
+   AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "17"
+   AND ${projectPrefix}LIBCXX
+)
     message(STATUS "Clang 17+ with libc++ detected, overriding `std::format` support")
     set(${projectPrefix}LIB_FORMAT_SUPPORTED 1)
 endif()
 
 # validate settings
-if(NOT ${projectPrefix}API_FREESTANDING AND "${projectPrefix}API_STD_FORMAT" AND NOT ${projectPrefix}LIB_FORMAT_SUPPORTED)
+if(NOT ${projectPrefix}API_FREESTANDING AND "${projectPrefix}API_STD_FORMAT" AND NOT
+                                                                                 ${projectPrefix}LIB_FORMAT_SUPPORTED
+)
     message(FATAL_ERROR "`std::format` enabled but not supported")
 endif()
 
