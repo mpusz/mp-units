@@ -151,12 +151,12 @@ nav:
           - Obtaining Metadata: users_guide/framework_basics/obtaining_metadata.md
           - Concepts: users_guide/framework_basics/concepts.md
           - Text Output: users_guide/framework_basics/text_output.md
-      - Defining Systems:
-          - Introduction: users_guide/defining_systems/introduction.md
-          - International System of Quantities (ISQ): users_guide/defining_systems/isq.md
-          - International System of Units (SI): users_guide/defining_systems/si.md
-          - Strong Angular System: users_guide/defining_systems/strong_angular_system.md
-          - Natural Units: users_guide/defining_systems/natural_units.md
+      - Systems:
+          - Introduction: users_guide/systems/introduction.md
+          - International System of Quantities (ISQ): users_guide/systems/isq.md
+          - International System of Units (SI): users_guide/systems/si.md
+          - Strong Angular System: users_guide/systems/strong_angular_system.md
+          - Natural Units: users_guide/systems/natural_units.md
       - Use Cases:
           - Pure Dimensional Analysis: users_guide/use_cases/pure_dimensional_analysis.md
           - Working with Legacy Interfaces: users_guide/use_cases/working_with_legacy_interfaces.md
