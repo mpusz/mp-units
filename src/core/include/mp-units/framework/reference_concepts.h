@@ -80,4 +80,33 @@ concept ReferenceOf = Reference<T> && QuantitySpecOf<decltype(get_quantity_spec(
 
 MP_UNITS_EXPORT_END
 
+template<Reference R>
+struct relative_ final {
+  using _type_ = R;
+};
+
+template<Reference R>
+struct absolute_ final {
+  using _type_ = R;
+};
+
+template<Reference R>
+MP_UNITS_EXPORT [[nodiscard]] consteval relative_<R> relative(R)
+{
+  return {};
+}
+
+template<Reference R>
+MP_UNITS_EXPORT [[nodiscard]] consteval absolute_<R> absolute(R)
+{
+  return {};
+}
+
+template<typename T>
+MP_UNITS_EXPORT concept RelativeReference =
+  (Reference<T> && !requires { get_unit(T{}).point_origin; }) || is_specialization_of<T, relative_>;
+
+template<typename T>
+MP_UNITS_EXPORT concept AbsoluteReference = is_specialization_of<T, absolute_>;
+
 }  // namespace mp_units

@@ -115,7 +115,7 @@ template<ReferenceOf<dimensionless> auto R, typename Rep>
 {
   using std::exp;
   return value_cast<get_unit(R)>(
-    quantity{static_cast<Rep>(exp(q.force_numerical_value_in(q.unit))), detail::clone_reference_with<one>(R)});
+    quantity{static_cast<Rep>(exp(q.force_numerical_value_in(q.unit))), relative(detail::clone_reference_with<one>(R))});
 }
 
 /**
@@ -236,7 +236,7 @@ template<auto R, auto S, auto T, typename Rep1, typename Rep2, typename Rep3>
   using std::fma;
   return quantity{
     fma(a.numerical_value_ref_in(a.unit), x.numerical_value_ref_in(x.unit), b.numerical_value_ref_in(b.unit)),
-    common_reference(R * S, T)};
+    relative(common_reference(R * S, T))};
 }
 
 /**
@@ -260,7 +260,7 @@ template<auto R, auto S, auto T, auto Origin, typename Rep1, typename Rep2, type
   using std::fma;
   return Origin + quantity{fma(a.numerical_value_ref_in(a.unit), x.numerical_value_ref_in(x.unit),
                                b.quantity_ref_from(b.point_origin).numerical_value_ref_in(b.unit)),
-                           common_reference(R * S, T)};
+                           relative(common_reference(R * S, T))};
 }
 
 /**
@@ -277,7 +277,7 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
   constexpr auto ref = common_reference(R1, R2);
   constexpr auto unit = get_unit(ref);
   using std::fmod;
-  return quantity{fmod(x.numerical_value_in(unit), y.numerical_value_in(unit)), ref};
+  return quantity{fmod(x.numerical_value_in(unit), y.numerical_value_in(unit)), relative(ref)};
 }
 
 /**
@@ -294,7 +294,7 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
   constexpr auto ref = common_reference(R1, R2);
   constexpr auto unit = get_unit(ref);
   using std::remainder;
-  return quantity{remainder(x.numerical_value_in(unit), y.numerical_value_in(unit)), ref};
+  return quantity{remainder(x.numerical_value_in(unit), y.numerical_value_in(unit)), relative(ref)};
 }
 
 
@@ -339,7 +339,7 @@ template<Unit auto To, auto R, typename Rep>
       return {static_cast<Rep>(floor(q.numerical_value_ref_in(q.unit))), detail::clone_reference_with<To>(R)};
     } else {
       return handle_signed_results(
-        quantity{static_cast<Rep>(floor(q.force_numerical_value_in(To))), detail::clone_reference_with<To>(R)});
+        quantity{static_cast<Rep>(floor(q.force_numerical_value_in(To))), relative(detail::clone_reference_with<To>(R))});
     }
   } else {
     if constexpr (To == get_unit(R)) {
@@ -376,7 +376,7 @@ template<Unit auto To, auto R, typename Rep>
       return {static_cast<Rep>(ceil(q.numerical_value_ref_in(q.unit))), detail::clone_reference_with<To>(R)};
     } else {
       return handle_signed_results(
-        quantity{static_cast<Rep>(ceil(q.force_numerical_value_in(To))), detail::clone_reference_with<To>(R)});
+        quantity{static_cast<Rep>(ceil(q.force_numerical_value_in(To))), relative(detail::clone_reference_with<To>(R))});
     }
   } else {
     if constexpr (To == get_unit(R)) {
@@ -456,7 +456,7 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
   constexpr auto ref = common_reference(R1, R2);
   constexpr auto unit = get_unit(ref);
   using std::hypot;
-  return quantity{hypot(x.numerical_value_in(unit), y.numerical_value_in(unit)), ref};
+  return quantity{hypot(x.numerical_value_in(unit), y.numerical_value_in(unit)), relative(ref)};
 }
 
 /**
@@ -474,7 +474,7 @@ template<auto R1, typename Rep1, auto R2, typename Rep2, auto R3, typename Rep3>
   constexpr auto ref = common_reference(R1, R2);
   constexpr auto unit = get_unit(ref);
   using std::hypot;
-  return quantity{hypot(x.numerical_value_in(unit), y.numerical_value_in(unit), z.numerical_value_in(unit)), ref};
+  return quantity{hypot(x.numerical_value_in(unit), y.numerical_value_in(unit), z.numerical_value_in(unit)), relative(ref)};
 }
 
 }  // namespace mp_units
