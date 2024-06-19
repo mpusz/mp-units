@@ -198,6 +198,26 @@ template<typename Rep, RelativeReference R>
   return quantity{std::forward<Rep>(lhs), relative(inverse(detail::get_original_reference(R{})))};
 }
 
+template<typename Rep, AbsoluteReference R>
+  requires RepresentationOf<std::remove_cvref_t<Rep>, get_quantity_spec(detail::get_original_reference(R{})).character>
+[[nodiscard]] constexpr quantity_point<detail::get_original_reference(R{}),
+                                       default_point_origin(detail::get_original_reference(R{})),
+                                       std::remove_cvref_t<Rep>>
+operator*(Rep&& lhs, R)
+{
+  return quantity_point{std::forward<Rep>(lhs) * relative(detail::get_original_reference(R{}))};
+}
+
+template<typename Rep, AbsoluteReference R>
+  requires RepresentationOf<std::remove_cvref_t<Rep>, get_quantity_spec(detail::get_original_reference(R{})).character>
+[[nodiscard]] constexpr quantity_point<inverse(detail::get_original_reference(R{})),
+                                       default_point_origin(detail::get_original_reference(R{})),
+                                       std::remove_cvref_t<Rep>>
+operator/(Rep&& lhs, R)
+{
+  return quantity_point{std::forward<Rep>(lhs) * relative(inverse(detail::get_original_reference(R{})))};
+}
+
 template<Reference R, typename Rep>
   requires RepresentationOf<std::remove_cvref_t<Rep>, get_quantity_spec(R{}).character>
 // NOLINTNEXTLINE(cppcoreguidelines-missing-std-forward)

@@ -801,9 +801,12 @@ static_assert(
 //////////////////////////////////
 
 static_assert(quantity_point{42 * m}.quantity_from_zero() == 42 * m);
+static_assert((42 * absolute(m)).quantity_from_zero() == 42 * m);
 static_assert(quantity_point{isq::height(42 * m)}.quantity_from_zero() == 42 * m);
 static_assert(quantity_point{20 * relative(deg_C)}.quantity_from_zero() == 20 * relative(deg_C));
+static_assert((20 * absolute(deg_C)).quantity_from_zero() == 20 * relative(deg_C));
 static_assert(quantity_point{20. * relative(deg_C)}.in(deg_F).quantity_from_zero() == 68 * relative(deg_F));
+static_assert((20. * absolute(deg_C)).in(deg_F).quantity_from_zero() == 68 * relative(deg_F));
 
 static_assert((mean_sea_level + 42 * m).quantity_from_zero() == 42 * m);
 static_assert((ground_level + 42 * m).quantity_from_zero() == 84 * m);
@@ -889,13 +892,12 @@ static_assert(std::is_same_v<std::remove_const_t<decltype(quantity_point{isq::he
 static_assert(quantity_point{isq::height(123 * m)}.unit == si::metre);
 static_assert(quantity_point{isq::height(123 * m)}.quantity_spec == isq::height);
 
-static_assert(std::is_same_v<decltype(quantity_point{20 * relative(deg_C)})::rep, int>);
-static_assert(std::is_same_v<std::remove_const_t<decltype(quantity_point{20 * relative(deg_C)}.point_origin)>,
-                             struct si::ice_point>);
-static_assert(std::is_same_v<std::remove_const_t<decltype(quantity_point{20 * relative(deg_C)}.absolute_point_origin)>,
+static_assert(std::is_same_v<decltype(20 * absolute(deg_C))::rep, int>);
+static_assert(std::is_same_v<std::remove_const_t<decltype((20 * absolute(deg_C)).point_origin)>, struct si::ice_point>);
+static_assert(std::is_same_v<std::remove_const_t<decltype((20 * absolute(deg_C)).absolute_point_origin)>,
                              struct si::absolute_zero>);
-static_assert(quantity_point{20 * relative(deg_C)}.unit == si::degree_Celsius);
-static_assert(quantity_point{20 * relative(deg_C)}.quantity_spec == kind_of<isq::thermodynamic_temperature>);
+static_assert((20 * absolute(deg_C)).unit == si::degree_Celsius);
+static_assert((20 * absolute(deg_C)).quantity_spec == kind_of<isq::thermodynamic_temperature>);
 
 #if MP_UNITS_HOSTED
 using namespace std::chrono_literals;
