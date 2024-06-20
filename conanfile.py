@@ -28,15 +28,9 @@ from conan.errors import ConanInvalidConfiguration
 from conan.tools.build import can_run, default_cppstd, valid_min_cppstd
 from conan.tools.cmake import CMake, CMakeDeps, CMakeToolchain, cmake_layout
 from conan.tools.files import copy, load, rmdir
+from conan.tools.scm import Version
 
 required_conan_version = ">=2.0.0"
-
-
-def loose_lt_semver(v1, v2):
-    lv1 = [int(v) for v in v1.split(".")]
-    lv2 = [int(v) for v in v2.split(".")]
-    min_length = min(len(lv1), len(lv2))
-    return lv1[:min_length] < lv2[:min_length]
 
 
 class MPUnitsConan(ConanFile):
@@ -74,7 +68,7 @@ class MPUnitsConan(ConanFile):
         "string_view_ret": "auto",
         "no_crtp": "auto",
         "contracts": "gsl-lite",
-        "freestanding": "False",
+        "freestanding": False,
     }
     tool_requires = "cmake/[>=3.29]"
     implements = "auto_header_only"
@@ -113,7 +107,7 @@ class MPUnitsConan(ConanFile):
             },
             "cxx_modules": {
                 "std": "20",
-                "compiler": {"gcc": "14", "clang": "17", "apple-clang": "", "msvc": ""},
+                "compiler": {"gcc": "", "clang": "17", "apple-clang": "", "msvc": ""},
             },
             "static_constexpr_vars_in_constexpr_func": {
                 "std": "23",
@@ -159,7 +153,7 @@ class MPUnitsConan(ConanFile):
             raise ConanInvalidConfiguration(
                 f"'{name}' is not yet supported by any known {compiler} compiler"
             )
-        if loose_lt_semver(str(compiler.version), min_version):
+        if Version(compiler.version) < min_version:
             raise ConanInvalidConfiguration(
                 f"'{name}' requires at least {compiler}-{min_version} ({compiler}-{compiler.version} in use)"
             )
@@ -175,7 +169,7 @@ class MPUnitsConan(ConanFile):
             or (
                 opt == "auto"
                 and min_version
-                and not loose_lt_semver(str(compiler.version), min_version)
+                and Version(compiler.version) >= min_version
             )
         )
 
@@ -205,6 +199,10 @@ class MPUnitsConan(ConanFile):
             r"project\([^\)]+VERSION (\d+\.\d+\.\d+)[^\)]*\)", content
         ).group(1)
         self.version = version.strip()
+
+    def configure(self):
+        if self.options.freestanding:
+            self.options.rm_safe("std_format")
 
     def requirements(self):
         if not self.options.freestanding:
@@ -269,7 +267,8 @@ class MPUnitsConan(ConanFile):
     def build(self):
         cmake = CMake(self)
         cmake.configure(build_script_folder=None if self._build_all else "src")
-        cmake.build()
+        if self._build_all or self._build_cxx_modules:
+            cmake.build()
         if self._build_all:
             cmake.build(target="all_verify_interface_header_sets")
             if can_run(self):
