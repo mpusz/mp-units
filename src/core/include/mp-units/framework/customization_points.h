@@ -27,6 +27,7 @@
 #include <mp-units/ext/type_traits.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
+#include <concepts>
 #include <limits>
 #include <type_traits>
 #endif
