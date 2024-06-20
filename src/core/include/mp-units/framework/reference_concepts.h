@@ -80,27 +80,22 @@ concept ReferenceOf = Reference<T> && QuantitySpecOf<decltype(get_quantity_spec(
 
 MP_UNITS_EXPORT_END
 
+// reference specifiers
 template<Reference R>
 struct relative_ final {
-  using _type_ = R;
+  static constexpr Reference auto _original_reference_ = R{};
 };
 
 template<Reference R>
 struct absolute_ final {
-  using _type_ = R;
+  static constexpr Reference auto _original_reference_ = R{};
 };
 
-template<Reference R>
-MP_UNITS_EXPORT [[nodiscard]] consteval relative_<R> delta(R)
-{
-  return {};
-}
+template<Reference auto R>
+MP_UNITS_EXPORT inline constexpr relative_<MP_UNITS_REMOVE_CONST(decltype(R))> delta{};
 
-template<Reference R>
-MP_UNITS_EXPORT [[nodiscard]] consteval absolute_<R> absolute(R)
-{
-  return {};
-}
+template<Reference auto R>
+MP_UNITS_EXPORT inline constexpr absolute_<MP_UNITS_REMOVE_CONST(decltype(R))> absolute{};
 
 template<typename T>
 MP_UNITS_EXPORT concept DeltaReference =

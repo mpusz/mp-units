@@ -84,7 +84,7 @@ int main()
   const auto t3 = std::make_tuple(isq::energy(q3 * h), isq::wavenumber(q3 / c), q3,
                                   isq::thermodynamic_temperature(q3 * h / kb), isq::wavelength(c / q3));
 
-  const auto q4 = isq::thermodynamic_temperature(1. * delta(K));
+  const auto q4 = isq::thermodynamic_temperature(1. * delta<K>);
   const auto t4 = std::make_tuple(isq::energy(q4 * kb), isq::wavenumber(q4 * kb / (h * c)), isq::frequency(q4 * kb / h),
                                   q4, isq::wavelength(h * c / (q4 * kb)));
 
