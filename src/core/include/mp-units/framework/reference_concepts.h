@@ -91,7 +91,7 @@ struct absolute_ final {
 };
 
 template<Reference R>
-MP_UNITS_EXPORT [[nodiscard]] consteval relative_<R> relative(R)
+MP_UNITS_EXPORT [[nodiscard]] consteval relative_<R> delta(R)
 {
   return {};
 }
@@ -103,7 +103,7 @@ MP_UNITS_EXPORT [[nodiscard]] consteval absolute_<R> absolute(R)
 }
 
 template<typename T>
-MP_UNITS_EXPORT concept RelativeReference =
+MP_UNITS_EXPORT concept DeltaReference =
   (Reference<T> && !requires { get_unit(T{}).point_origin; }) || is_specialization_of<T, relative_>;
 
 template<typename T>

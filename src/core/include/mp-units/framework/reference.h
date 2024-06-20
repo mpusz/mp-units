@@ -41,7 +41,7 @@ template<QuantitySpec auto Q, Unit auto U>
 using reference_t = reference<MP_UNITS_REMOVE_CONST(decltype(Q)), MP_UNITS_REMOVE_CONST(decltype(U))>;
 
 template<typename R>
-  requires RelativeReference<R> || AbsoluteReference<R>
+  requires DeltaReference<R> || AbsoluteReference<R>
 [[nodiscard]] consteval Reference auto get_original_reference(R r)
 {
   if constexpr (requires { typename R::_type_; })
@@ -183,19 +183,19 @@ struct reference {
 };
 
 
-template<typename Rep, RelativeReference R>
+template<typename Rep, DeltaReference R>
   requires RepresentationOf<std::remove_cvref_t<Rep>, get_quantity_spec(detail::get_original_reference(R{})).character>
 [[nodiscard]] constexpr quantity<detail::get_original_reference(R{}), std::remove_cvref_t<Rep>> operator*(Rep&& lhs, R)
 {
   return quantity{std::forward<Rep>(lhs), R{}};
 }
 
-template<typename Rep, RelativeReference R>
+template<typename Rep, DeltaReference R>
   requires RepresentationOf<std::remove_cvref_t<Rep>, get_quantity_spec(detail::get_original_reference(R{})).character>
 [[nodiscard]] constexpr quantity<inverse(detail::get_original_reference(R{})), std::remove_cvref_t<Rep>> operator/(
   Rep&& lhs, R)
 {
-  return quantity{std::forward<Rep>(lhs), relative(inverse(detail::get_original_reference(R{})))};
+  return quantity{std::forward<Rep>(lhs), delta(inverse(detail::get_original_reference(R{})))};
 }
 
 template<typename Rep, AbsoluteReference R>
@@ -205,7 +205,7 @@ template<typename Rep, AbsoluteReference R>
                                        std::remove_cvref_t<Rep>>
 operator*(Rep&& lhs, R)
 {
-  return quantity_point{std::forward<Rep>(lhs) * relative(detail::get_original_reference(R{}))};
+  return quantity_point{std::forward<Rep>(lhs) * delta(detail::get_original_reference(R{}))};
 }
 
 template<typename Rep, AbsoluteReference R>
@@ -215,7 +215,7 @@ template<typename Rep, AbsoluteReference R>
                                        std::remove_cvref_t<Rep>>
 operator/(Rep&& lhs, R)
 {
-  return quantity_point{std::forward<Rep>(lhs) * relative(inverse(detail::get_original_reference(R{})))};
+  return quantity_point{std::forward<Rep>(lhs) * delta(inverse(detail::get_original_reference(R{})))};
 }
 
 template<Reference R, typename Rep>
@@ -233,7 +233,7 @@ template<typename Q, Reference R>
 [[nodiscard]] constexpr Quantity auto operator*(Q&& q, R)
 {
   return quantity{std::forward<Q>(q).numerical_value_is_an_implementation_detail_,
-                  relative(std::remove_cvref_t<Q>::reference * R{})};
+                  delta(std::remove_cvref_t<Q>::reference * R{})};
 }
 
 template<typename Q, Reference R>
@@ -241,7 +241,7 @@ template<typename Q, Reference R>
 [[nodiscard]] constexpr Quantity auto operator/(Q&& q, R)
 {
   return quantity{std::forward<Q>(q).numerical_value_is_an_implementation_detail_,
-                  relative(std::remove_cvref_t<Q>::reference / R{})};
+                  delta(std::remove_cvref_t<Q>::reference / R{})};
 }
 
 template<Reference R, typename Q>

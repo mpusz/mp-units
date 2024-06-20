@@ -129,7 +129,7 @@ struct quantity_spec_interface {
              (explicitly_convertible(std::remove_reference_t<Q>::quantity_spec, self))
   {
     return quantity{std::forward<Q>(q).numerical_value_is_an_implementation_detail_,
-                    relative(detail::make_reference(self, std::remove_cvref_t<Q>::unit))};
+                    delta(detail::make_reference(self, std::remove_cvref_t<Q>::unit))};
   }
 #else
   template<typename Self_ = Self, UnitOf<Self_{}> U>
@@ -144,7 +144,7 @@ struct quantity_spec_interface {
   [[nodiscard]] constexpr Quantity auto operator()(Q&& q) const
   {
     return quantity{std::forward<Q>(q).numerical_value_is_an_implementation_detail_,
-                    relative(detail::make_reference(Self{}, std::remove_cvref_t<Q>::unit))};
+                    delta(detail::make_reference(Self{}, std::remove_cvref_t<Q>::unit))};
   }
 #endif
 };
@@ -341,7 +341,7 @@ struct quantity_spec<Self, QS, Args...> : detail::propagate_equation<QS>, detail
   [[nodiscard]] constexpr Quantity auto operator()(Q&& q) const
   {
     return quantity{std::forward<Q>(q).numerical_value_is_an_implementation_detail_,
-                    relative(detail::make_reference(Self{}, std::remove_cvref_t<Q>::unit))};
+                    delta(detail::make_reference(Self{}, std::remove_cvref_t<Q>::unit))};
   }
 #endif
 };

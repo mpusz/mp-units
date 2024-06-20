@@ -803,10 +803,10 @@ static_assert(
 static_assert(quantity_point{42 * m}.quantity_from_zero() == 42 * m);
 static_assert((42 * absolute(m)).quantity_from_zero() == 42 * m);
 static_assert(quantity_point{isq::height(42 * m)}.quantity_from_zero() == 42 * m);
-static_assert(quantity_point{20 * relative(deg_C)}.quantity_from_zero() == 20 * relative(deg_C));
-static_assert((20 * absolute(deg_C)).quantity_from_zero() == 20 * relative(deg_C));
-static_assert(quantity_point{20. * relative(deg_C)}.in(deg_F).quantity_from_zero() == 68 * relative(deg_F));
-static_assert((20. * absolute(deg_C)).in(deg_F).quantity_from_zero() == 68 * relative(deg_F));
+static_assert(quantity_point{20 * delta(deg_C)}.quantity_from_zero() == 20 * delta(deg_C));
+static_assert((20 * absolute(deg_C)).quantity_from_zero() == 20 * delta(deg_C));
+static_assert(quantity_point{20. * delta(deg_C)}.in(deg_F).quantity_from_zero() == 68 * delta(deg_F));
+static_assert((20. * absolute(deg_C)).in(deg_F).quantity_from_zero() == 68 * delta(deg_F));
 
 static_assert((mean_sea_level + 42 * m).quantity_from_zero() == 42 * m);
 static_assert((ground_level + 42 * m).quantity_from_zero() == 84 * m);

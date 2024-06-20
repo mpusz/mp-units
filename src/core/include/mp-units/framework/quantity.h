@@ -89,7 +89,7 @@ using common_quantity_for = quantity<common_reference(Q1::reference, Q2::referen
                                      std::invoke_result_t<Func, typename Q1::rep, typename Q2::rep>>;
 
 template<typename T, typename R>
-concept SameOriginalReferenceAs = RelativeReference<T> && Reference<R> && (get_original_reference(T{}) == R{});
+concept SameOriginalReferenceAs = DeltaReference<T> && Reference<R> && (get_original_reference(T{}) == R{});
 
 template<typename R1, typename R2, typename Rep1, typename Rep2>
 concept SameValueAs = detail::SameOriginalReferenceAs<R1, R2> && std::same_as<Rep1, Rep2>;
@@ -123,25 +123,25 @@ public:
   [[nodiscard]] static constexpr quantity zero() noexcept
     requires requires { quantity_values<rep>::zero(); }
   {
-    return {quantity_values<rep>::zero(), relative(R)};
+    return {quantity_values<rep>::zero(), delta(R)};
   }
 
   [[nodiscard]] static constexpr quantity one() noexcept
     requires requires { quantity_values<rep>::one(); }
   {
-    return {quantity_values<rep>::one(), relative(R)};
+    return {quantity_values<rep>::one(), delta(R)};
   }
 
   [[nodiscard]] static constexpr quantity min() noexcept
     requires requires { quantity_values<rep>::min(); }
   {
-    return {quantity_values<rep>::min(), relative(R)};
+    return {quantity_values<rep>::min(), delta(R)};
   }
 
   [[nodiscard]] static constexpr quantity max() noexcept
     requires requires { quantity_values<rep>::max(); }
   {
-    return {quantity_values<rep>::max(), relative(R)};
+    return {quantity_values<rep>::max(), delta(R)};
   }
 
   // construction, assignment, destruction
@@ -150,13 +150,13 @@ public:
   quantity(quantity&&) = default;
   ~quantity() = default;
 
-  template<typename Value, RelativeReference R2>
+  template<typename Value, DeltaReference R2>
     requires detail::SameValueAs<R2, decltype(R), std::remove_cvref_t<Value>, Rep>
   constexpr quantity(Value&& v, R2) : numerical_value_is_an_implementation_detail_(std::forward<Value>(v))
   {
   }
 
-  template<typename Value, RelativeReference R2>
+  template<typename Value, DeltaReference R2>
     requires(!detail::SameValueAs<R2, decltype(R), std::remove_cvref_t<Value>, Rep>) &&
             detail::QuantityConvertibleTo<quantity<R2{}, std::remove_cvref_t<Value>>, quantity>
   constexpr quantity(Value&& v, R2) :
@@ -179,8 +179,8 @@ public:
                                           convert_explicitly> ||
                      // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
                      !std::convertible_to<typename quantity_like_traits<Q>::rep, Rep>) quantity(const Q& q) :
-      quantity(
-        ::mp_units::quantity{quantity_like_traits<Q>::to_numerical_value(q).value, relative(quantity_like_traits<Q>::reference)})
+      quantity(::mp_units::quantity{quantity_like_traits<Q>::to_numerical_value(q).value,
+                                    delta(quantity_like_traits<Q>::reference)})
   {
   }
 
@@ -274,7 +274,7 @@ public:
       } -> std::common_with<rep>;
     }
   {
-    return ::mp_units::quantity{+numerical_value_is_an_implementation_detail_, relative(reference)};
+    return ::mp_units::quantity{+numerical_value_is_an_implementation_detail_, delta(reference)};
   }
 
   [[nodiscard]] constexpr QuantityOf<quantity_spec> auto operator-() const
@@ -284,7 +284,7 @@ public:
       } -> std::common_with<rep>;
     }
   {
-    return ::mp_units::quantity{-numerical_value_is_an_implementation_detail_, relative(reference)};
+    return ::mp_units::quantity{-numerical_value_is_an_implementation_detail_, delta(reference)};
   }
 
   template<typename Q>
@@ -306,7 +306,7 @@ public:
       } -> std::common_with<rep>;
     }
   {
-    return ::mp_units::quantity{numerical_value_is_an_implementation_detail_++, relative(reference)};
+    return ::mp_units::quantity{numerical_value_is_an_implementation_detail_++, delta(reference)};
   }
 
   template<typename Q>
@@ -328,7 +328,7 @@ public:
       } -> std::common_with<rep>;
     }
   {
-    return ::mp_units::quantity{numerical_value_is_an_implementation_detail_--, relative(reference)};
+    return ::mp_units::quantity{numerical_value_is_an_implementation_detail_--, delta(reference)};
   }
 
   // compound assignment operators
@@ -427,7 +427,7 @@ public:
 };
 
 // CTAD
-template<typename Value, RelativeReference R>
+template<typename Value, DeltaReference R>
   requires RepresentationOf<Value, get_quantity_spec(detail::get_original_reference(R{})).character>
 quantity(Value v, R) -> quantity<detail::get_original_reference(R{}), Value>;
 
@@ -445,7 +445,7 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
   const ret ret_lhs(lhs);
   const ret ret_rhs(rhs);
   return quantity{ret_lhs.numerical_value_ref_in(ret::unit) + ret_rhs.numerical_value_ref_in(ret::unit),
-                  relative(ret::reference)};
+                  delta(ret::reference)};
 }
 
 template<auto R1, typename Rep1, auto R2, typename Rep2>
@@ -456,7 +456,7 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
   const ret ret_lhs(lhs);
   const ret ret_rhs(rhs);
   return quantity{ret_lhs.numerical_value_ref_in(ret::unit) - ret_rhs.numerical_value_ref_in(ret::unit),
-                  relative(ret::reference)};
+                  delta(ret::reference)};
 }
 
 template<auto R1, typename Rep1, auto R2, typename Rep2>
@@ -469,15 +469,14 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
   const ret ret_lhs(lhs);
   const ret ret_rhs(rhs);
   return quantity{ret_lhs.numerical_value_ref_in(ret::unit) % ret_rhs.numerical_value_ref_in(ret::unit),
-                  relative(ret::reference)};
+                  delta(ret::reference)};
 }
 
 template<auto R1, typename Rep1, auto R2, typename Rep2>
   requires detail::InvocableQuantities<std::multiplies<>, quantity<R1, Rep1>, quantity<R2, Rep2>>
 [[nodiscard]] constexpr Quantity auto operator*(const quantity<R1, Rep1>& lhs, const quantity<R2, Rep2>& rhs)
 {
-  return quantity{lhs.numerical_value_ref_in(get_unit(R1)) * rhs.numerical_value_ref_in(get_unit(R2)),
-                  relative(R1 * R2)};
+  return quantity{lhs.numerical_value_ref_in(get_unit(R1)) * rhs.numerical_value_ref_in(get_unit(R2)), delta(R1 * R2)};
 }
 
 template<auto R, typename Rep, typename Value>
@@ -485,7 +484,7 @@ template<auto R, typename Rep, typename Value>
           detail::InvokeResultOf<get_quantity_spec(R).character, std::multiplies<>, Rep, const Value&>
 [[nodiscard]] constexpr QuantityOf<get_quantity_spec(R)> auto operator*(const quantity<R, Rep>& q, const Value& v)
 {
-  return quantity{q.numerical_value_ref_in(get_unit(R)) * v, relative(R)};
+  return quantity{q.numerical_value_ref_in(get_unit(R)) * v, delta(R)};
 }
 
 template<typename Value, auto R, typename Rep>
@@ -493,7 +492,7 @@ template<typename Value, auto R, typename Rep>
           detail::InvokeResultOf<get_quantity_spec(R).character, std::multiplies<>, const Value&, Rep>
 [[nodiscard]] constexpr QuantityOf<get_quantity_spec(R)> auto operator*(const Value& v, const quantity<R, Rep>& q)
 {
-  return quantity{v * q.numerical_value_ref_in(get_unit(R)), relative(R)};
+  return quantity{v * q.numerical_value_ref_in(get_unit(R)), delta(R)};
 }
 
 template<auto R1, typename Rep1, auto R2, typename Rep2>
@@ -501,8 +500,7 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
 [[nodiscard]] constexpr Quantity auto operator/(const quantity<R1, Rep1>& lhs, const quantity<R2, Rep2>& rhs)
 {
   MP_UNITS_EXPECTS_DEBUG(rhs != rhs.zero());
-  return quantity{lhs.numerical_value_ref_in(get_unit(R1)) / rhs.numerical_value_ref_in(get_unit(R2)),
-                  relative(R1 / R2)};
+  return quantity{lhs.numerical_value_ref_in(get_unit(R1)) / rhs.numerical_value_ref_in(get_unit(R2)), delta(R1 / R2)};
 }
 
 template<auto R, typename Rep, typename Value>
@@ -511,7 +509,7 @@ template<auto R, typename Rep, typename Value>
 [[nodiscard]] constexpr QuantityOf<get_quantity_spec(R)> auto operator/(const quantity<R, Rep>& q, const Value& v)
 {
   MP_UNITS_EXPECTS_DEBUG(v != quantity_values<Value>::zero());
-  return quantity{q.numerical_value_ref_in(get_unit(R)) / v, relative(R)};
+  return quantity{q.numerical_value_ref_in(get_unit(R)) / v, delta(R)};
 }
 
 template<typename Value, auto R, typename Rep>
@@ -520,7 +518,7 @@ template<typename Value, auto R, typename Rep>
 [[nodiscard]] constexpr QuantityOf<inverse(get_quantity_spec(R))> auto operator/(const Value& v,
                                                                                  const quantity<R, Rep>& q)
 {
-  return quantity{v / q.numerical_value_ref_in(get_unit(R)), relative(::mp_units::one / R)};
+  return quantity{v / q.numerical_value_ref_in(get_unit(R)), delta(::mp_units::one / R)};
 }
 
 template<auto R1, typename Rep1, auto R2, typename Rep2>
