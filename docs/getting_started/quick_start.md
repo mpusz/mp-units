@@ -238,7 +238,7 @@ This introduces an additional type-safety.
       using namespace mp_units::si::unit_symbols;
       using namespace mp_units::usc::unit_symbols;
 
-      quantity_point temp{20. * deg_C};
+      quantity_point temp = 20. * absolute<deg_C>;
       std::println("Temperature: {} ({})",
                    temp.quantity_from_zero(),
                    temp.in(deg_F).quantity_from_zero());
@@ -259,7 +259,7 @@ This introduces an additional type-safety.
       using namespace mp_units::si::unit_symbols;
       using namespace mp_units::usc::unit_symbols;
 
-      quantity_point temp{20. * deg_C};
+      quantity_point temp = 20. * absolute<deg_C>;
       std::println("Temperature: {} ({})",
                    temp.quantity_from_zero(),
                    temp.in(deg_F).quantity_from_zero());

@@ -80,4 +80,32 @@ concept ReferenceOf = Reference<T> && QuantitySpecOf<decltype(get_quantity_spec(
 
 MP_UNITS_EXPORT_END
 
+// reference specifiers
+template<Reference R>
+struct relative_ final {
+  static constexpr Reference auto _original_reference_ = R{};
+};
+
+template<Reference R>
+struct absolute_ final {
+  static constexpr Reference auto _original_reference_ = R{};
+};
+
+MP_UNITS_EXPORT_BEGIN
+
+template<Reference auto R>
+inline constexpr relative_<MP_UNITS_REMOVE_CONST(decltype(R))> delta{};
+
+template<Reference auto R>
+inline constexpr absolute_<MP_UNITS_REMOVE_CONST(decltype(R))> absolute{};
+
+template<typename T>
+concept DeltaReference =
+  (Reference<T> && !requires { get_unit(T{}).point_origin; }) || is_specialization_of<T, relative_>;
+
+template<typename T>
+concept AbsoluteReference = is_specialization_of<T, absolute_>;
+
+MP_UNITS_EXPORT_END
+
 }  // namespace mp_units
