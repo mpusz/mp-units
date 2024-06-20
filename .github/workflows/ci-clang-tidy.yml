@@ -129,7 +129,7 @@ jobs:
         run: |
           conan build . -b missing -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" \
                         -c user.mp-units.build:all=True -c user.mp-units.analyze:clang-tidy=True \
-                        -o cxx_modules=${{ matrix.config.cxx_modules }} -o std_format=${{ env.std_format }} -o contracts=${{ matrix.contracts }} ${{ matrix.config.conan-config }}
+                        '-o &:cxx_modules=${{ matrix.config.cxx_modules }}' -o '&:std_format=${{ env.std_format }}' -o '&:contracts=${{ matrix.contracts }}' ${{ matrix.config.conan-config }}
       - name: Clean Conan cache before backup
         shell: bash
         run: |
