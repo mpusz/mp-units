@@ -88,10 +88,11 @@ template<typename Func, Quantity Q1, Quantity Q2>
 using common_quantity_for = quantity<common_reference(Q1::reference, Q2::reference),
                                      std::invoke_result_t<Func, typename Q1::rep, typename Q2::rep>>;
 
-template<typename T, typename R>
-concept SameOriginalReferenceAs = DeltaReference<T> && Reference<R> && (get_original_reference(T{}) == R{});
+template<auto T, auto R>
+concept SameOriginalReferenceAs = DeltaReference<MP_UNITS_REMOVE_CONST(decltype(T))> &&
+                                  Reference<MP_UNITS_REMOVE_CONST(decltype(R))> && (get_original_reference(T) == R);
 
-template<typename R1, typename R2, typename Rep1, typename Rep2>
+template<auto R1, auto R2, typename Rep1, typename Rep2>
 concept SameValueAs = detail::SameOriginalReferenceAs<R1, R2> && std::same_as<Rep1, Rep2>;
 
 }  // namespace detail
@@ -151,14 +152,15 @@ public:
   ~quantity() = default;
 
   template<typename Value, DeltaReference R2>
-    requires detail::SameValueAs<R2, decltype(R), std::remove_cvref_t<Value>, Rep>
+    requires detail::SameValueAs<R2{}, R, std::remove_cvref_t<Value>, Rep>
   constexpr quantity(Value&& v, R2) : numerical_value_is_an_implementation_detail_(std::forward<Value>(v))
   {
   }
 
   template<typename Value, DeltaReference R2>
-    requires(!detail::SameValueAs<R2, decltype(R), std::remove_cvref_t<Value>, Rep>) &&
-            detail::QuantityConvertibleTo<quantity<R2{}, std::remove_cvref_t<Value>>, quantity>
+    requires(!detail::SameValueAs<R2{}, R, std::remove_cvref_t<Value>, Rep>) &&
+            detail::QuantityConvertibleTo<quantity<detail::get_original_reference(R2{}), std::remove_cvref_t<Value>>,
+                                          quantity>
   constexpr quantity(Value&& v, R2) :
       quantity(quantity<detail::get_original_reference(R2{}), std::remove_cvref_t<Value>>{std::forward<Value>(v), R2{}})
   {
