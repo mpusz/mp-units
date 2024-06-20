@@ -606,7 +606,7 @@ you should:
 
 ```shell
 git clone https://github.com/mpusz/mp-units.git && cd units
-conan build . -pr <your_conan_profile> -s compiler.cppstd=23 -o cxx_modules=True -c user.mp-units.build:all=True -b missing
+conan build . -pr <your_conan_profile> -s compiler.cppstd=23 -o '&:cxx_modules=True' -c user.mp-units.build:all=True -b missing
 ```
 
 The above will download and install all of the dependencies needed for the development of the library,
@@ -657,7 +657,7 @@ After that, you can either:
 To test CMake installation and Conan packaging or create a Conan package run:
 
 ```shell
-conan create . --user <username> --channel <channel> -pr <your_conan_profile> -s compiler.cppstd=20 -o cxx_modules=True -c user.mp-units.build:all=True -b missing
+conan create . --user <username> --channel <channel> -pr <your_conan_profile> -s compiler.cppstd=20 -o '&:cxx_modules=True' -c user.mp-units.build:all=True -b missing
 ```
 
 The above will create a Conan package and run tests provided in _./test_package_ directory.
