@@ -224,7 +224,7 @@ template<typename Rep, Reference R>
 [[noreturn]] constexpr auto operator*(Rep&&, R)
 {
   static_assert(
-    false,
+    DeltaReference<R>,
     "References using offset units (e.g., temperatures) must be explicitly qualified with `delta` or `absolute`");
 }
 
@@ -233,7 +233,7 @@ template<typename Rep, Reference R>
 [[noreturn]] constexpr auto operator/(Rep&&, R)
 {
   static_assert(
-    false,
+    DeltaReference<R>,
     "References using offset units (e.g., temperatures) must be explicitly qualified with `delta` or `absolute`");
 }
 

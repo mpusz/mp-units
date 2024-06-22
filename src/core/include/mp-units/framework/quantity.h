@@ -171,7 +171,7 @@ public:
     requires(!DeltaReference<R2>)
   constexpr quantity(Value&&, R2)
   {
-    static_assert(false,
+    static_assert(DeltaReference<R2>,
                   "References using offset units (e.g., temperatures) must be explicitly qualified with `delta`");
   }
 
