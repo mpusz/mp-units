@@ -449,7 +449,12 @@ template<Magnitude M, Unit U>
     return scaled_unit<M{}, U>{};
 }
 
-[[nodiscard]] consteval Unit auto operator*(Unit auto, Magnitude auto) = delete;
+[[nodiscard]] consteval Unit auto operator*(Unit auto, Magnitude auto)
+#if __cpp_deleted_function
+  = delete("To scale a unit use `mag * unit` syntax");
+#else
+  = delete;
+#endif
 
 /**
  * Returns the result of multiplication with an inverse unit.

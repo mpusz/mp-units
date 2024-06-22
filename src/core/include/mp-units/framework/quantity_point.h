@@ -23,6 +23,7 @@
 #pragma once
 
 // IWYU pragma: private, include <mp-units/framework.h>
+#include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/framework/compare.h>
 #include <mp-units/framework/customization_points.h>
@@ -241,7 +242,12 @@ public:
 
   template<PointOrigin PO2>
     requires(PO2{} == point_origin)
-  constexpr const quantity_type&& quantity_ref_from(PO2) const&& noexcept = delete;
+  constexpr const quantity_type&& quantity_ref_from(PO2) const&& noexcept
+#if __cpp_deleted_function
+    = delete("Can't form a reference to a temporary");
+#else
+    = delete;
+#endif
 
   template<PointOrigin PO2>
     requires requires { quantity_point{} - PO2{}; }

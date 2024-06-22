@@ -24,6 +24,7 @@
 #pragma once
 
 // IWYU pragma: private, include <mp-units/framework.h>
+#include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/bits/sudo_cast.h>
 #include <mp-units/compat_macros.h>
@@ -229,7 +230,12 @@ public:
 
   template<Unit U>
     requires(U{} == unit)
-  constexpr const rep&& numerical_value_ref_in(U) const&& noexcept = delete;
+  constexpr const rep&& numerical_value_ref_in(U) const&& noexcept
+#if __cpp_deleted_function
+    = delete("Can't form a reference to a temporary");
+#else
+    = delete;
+#endif
 
   template<UnitCompatibleWith<unit, quantity_spec> U>
     requires requires(quantity q) { q.in(U{}); }

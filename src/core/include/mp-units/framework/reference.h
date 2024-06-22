@@ -240,12 +240,22 @@ template<typename Rep, Reference R>
 template<Reference R, typename Rep>
   requires RepresentationOf<std::remove_cvref_t<Rep>, get_quantity_spec(R{}).character>
 // NOLINTNEXTLINE(cppcoreguidelines-missing-std-forward)
-constexpr auto operator*(R, Rep&&) = delete;
+constexpr auto operator*(R, Rep&&)
+#if __cpp_deleted_function
+  = delete("To create a `quantity` or `quantity_point` use `Rep * R`");
+#else
+  = delete;
+#endif
 
 template<Reference R, typename Rep>
   requires RepresentationOf<std::remove_cvref_t<Rep>, get_quantity_spec(R{}).character>
 // NOLINTNEXTLINE(cppcoreguidelines-missing-std-forward)
-constexpr auto operator/(R, Rep&&) = delete;
+constexpr auto operator/(R, Rep&&)
+#if __cpp_deleted_function
+  = delete("To create a `quantity` or `quantity_point` use `Rep / R`");
+#else
+  = delete;
+#endif
 
 template<typename Q, Reference R>
   requires Quantity<std::remove_cvref_t<Q>>
