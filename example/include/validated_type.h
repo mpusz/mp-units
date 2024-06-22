@@ -97,7 +97,6 @@ public:
 
 #endif
 
-  constexpr T& value() & noexcept = delete;
   [[nodiscard]] constexpr const T& value() const& noexcept { return value_; }
   [[nodiscard]] constexpr T&& value() && noexcept { return std::move(value_); }
   [[nodiscard]] constexpr const T&& value() const&& noexcept { return std::move(value_); }
