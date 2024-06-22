@@ -119,7 +119,7 @@ jobs:
                   cxx: "clang++-17",
                 },
               lib: "libc++",
-              cxx_modules: "False",
+              cxx_modules: "True",
               std_format_support: "True",
             }
           - {
@@ -133,7 +133,7 @@ jobs:
                   cxx: "clang++-18",
                 },
               lib: "libc++",
-              cxx_modules: "False",
+              cxx_modules: "True",
               std_format_support: "True"
             }
           - {
@@ -281,7 +281,13 @@ jobs:
         run: |
           cmake --preset conan-default -Dmp-units_DIR=../build -Bbuild/local
           cmake --build build/local --config ${{ matrix.build_type }}
+      - name: Run test_package-headers (local build)
+        shell: bash
+        working-directory: test_package/build/local/${{ matrix.build_type }}
+        run: |
+          ./test_package-headers
       - name: Run test_package (local build)
+        if: matrix.config.cxx_modules == 'True'
         shell: bash
         working-directory: test_package/build/local/${{ matrix.build_type }}
         run: |
@@ -301,7 +307,13 @@ jobs:
         run: |
           cmake --preset conan-default -DCMAKE_INSTALL_PREFIX=../out -Bbuild/install
           cmake --build build/install --config ${{ matrix.build_type }}
+      - name: Run test_package-headers (installation)
+        shell: bash
+        working-directory: test_package/build/install/${{ matrix.build_type }}
+        run: |
+          ./test_package-headers
       - name: Run test_package (installation)
+        if: matrix.config.cxx_modules == 'True'
         shell: bash
         working-directory: test_package/build/install/${{ matrix.build_type }}
         run: |
