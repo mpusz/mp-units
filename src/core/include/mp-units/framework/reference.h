@@ -219,6 +219,24 @@ operator/(Rep&& lhs, R)
   return quantity_point{std::forward<Rep>(lhs) * delta<inverse(detail::get_original_reference(R{}))>};
 }
 
+template<typename Rep, Reference R>
+  requires(!DeltaReference<R>) && RepresentationOf<std::remove_cvref_t<Rep>, get_quantity_spec(R{}).character>
+[[noreturn]] constexpr auto operator*(Rep&&, R)
+{
+  static_assert(
+    false,
+    "References using offset units (e.g., temperatures) must be explicitly qualified with `delta` or `absolute`");
+}
+
+template<typename Rep, Reference R>
+  requires(!DeltaReference<R>) && RepresentationOf<std::remove_cvref_t<Rep>, get_quantity_spec(R{}).character>
+[[noreturn]] constexpr auto operator/(Rep&&, R)
+{
+  static_assert(
+    false,
+    "References using offset units (e.g., temperatures) must be explicitly qualified with `delta` or `absolute`");
+}
+
 template<Reference R, typename Rep>
   requires RepresentationOf<std::remove_cvref_t<Rep>, get_quantity_spec(R{}).character>
 // NOLINTNEXTLINE(cppcoreguidelines-missing-std-forward)

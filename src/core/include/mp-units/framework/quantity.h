@@ -166,6 +166,14 @@ public:
   {
   }
 
+  template<typename Value, Reference R2>
+    requires(!DeltaReference<R2>)
+  constexpr quantity(Value&&, R2)
+  {
+    static_assert(false,
+                  "References using offset units (e.g., temperatures) must be explicitly qualified with `delta`");
+  }
+
   template<detail::QuantityConvertibleTo<quantity> Q>
   // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
   constexpr explicit(!std::convertible_to<typename Q::rep, Rep>) quantity(const Q& q) :
@@ -432,6 +440,11 @@ public:
 template<typename Value, DeltaReference R>
   requires RepresentationOf<Value, get_quantity_spec(detail::get_original_reference(R{})).character>
 quantity(Value v, R) -> quantity<detail::get_original_reference(R{}), Value>;
+
+// the below is needed only to fire static_asserts in the constructor
+template<typename Value, Reference R>
+  requires(!DeltaReference<R>) && RepresentationOf<Value, get_quantity_spec(R{}).character>
+quantity(Value v, R) -> quantity<R{}, Value>;
 
 template<QuantityLike Q>
 explicit(
