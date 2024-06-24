@@ -76,7 +76,7 @@ template<typename Char, typename Specs>
 }
 
 template<typename OutputIt, typename Char>
-OutputIt format_global_buffer(OutputIt out, const fill_align_width_format_specs<Char>& specs)
+constexpr OutputIt format_global_buffer(OutputIt out, const fill_align_width_format_specs<Char>& specs)
 {
   MP_UNITS_STD_FMT::format_to(out, "{{:");
   if (specs.fill.size() != 1 || specs.fill[0] != ' ') {
@@ -148,7 +148,7 @@ public:
   }
 
   template<typename FormatContext>
-  auto format(const D& d, FormatContext& ctx) const -> decltype(ctx.out())
+  constexpr auto format(const D& d, FormatContext& ctx) const -> decltype(ctx.out())
   {
     auto specs = specs_;
     mp_units::detail::handle_dynamic_spec<mp_units::detail::width_checker>(specs.width, specs.width_ref, ctx);
@@ -237,7 +237,7 @@ public:
   }
 
   template<typename FormatContext>
-  auto format(const U& u, FormatContext& ctx) const -> decltype(ctx.out())
+  constexpr auto format(const U& u, FormatContext& ctx) const -> decltype(ctx.out())
   {
     auto specs = specs_;
     mp_units::detail::handle_dynamic_spec<mp_units::detail::width_checker>(specs.width, specs.width_ref, ctx);
@@ -436,7 +436,7 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
   }
 
   template<typename OutputIt, typename FormatContext>
-  OutputIt format_quantity(OutputIt out, const quantity_t& q, FormatContext& ctx) const
+  constexpr OutputIt format_quantity(OutputIt out, const quantity_t& q, FormatContext& ctx) const
   {
     const std::locale locale = MP_UNITS_FMT_LOCALE(ctx.locale());
     if (modifiers_format_str_.empty()) {
@@ -468,7 +468,7 @@ public:
   }
 
   template<typename OutIt>
-  OutIt format(const quantity_t& q, MP_UNITS_STD_FMT::basic_format_context<OutIt, Char>& ctx) const
+  constexpr OutIt format(const quantity_t& q, MP_UNITS_STD_FMT::basic_format_context<OutIt, Char>& ctx) const
   {
     auto specs = specs_;
     mp_units::detail::handle_dynamic_spec<mp_units::detail::width_checker>(specs.width, specs.width_ref, ctx);
