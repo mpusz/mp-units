@@ -124,9 +124,9 @@ struct quantity_spec_interface {
   }
 
   template<typename Self, typename Q>
-  [[nodiscard]] constexpr Quantity auto operator()(this Self self, Q&& q)
     requires Quantity<std::remove_cvref_t<Q>> &&
-             detail::QuantitySpecExplicitlyConvertibleTo<std::remove_reference_t<Q>::quantity_spec, self>
+             detail::QuantitySpecExplicitlyConvertibleTo<std::remove_reference_t<Q>::quantity_spec, Self{}>
+  [[nodiscard]] constexpr Quantity auto operator()(this Self self, Q&& q)
   {
     return quantity{std::forward<Q>(q).numerical_value_is_an_implementation_detail_,
                     detail::make_delta(detail::make_reference(self, std::remove_cvref_t<Q>::unit))};
