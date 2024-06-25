@@ -436,7 +436,7 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
   }
 
   template<typename OutputIt, typename FormatContext>
-  constexpr OutputIt format_quantity(OutputIt out, const quantity_t& q, FormatContext& ctx) const
+  OutputIt format_quantity(OutputIt out, const quantity_t& q, FormatContext& ctx) const
   {
     const std::locale locale = MP_UNITS_FMT_LOCALE(ctx.locale());
     if (modifiers_format_str_.empty()) {
@@ -468,7 +468,7 @@ public:
   }
 
   template<typename OutIt>
-  constexpr OutIt format(const quantity_t& q, MP_UNITS_STD_FMT::basic_format_context<OutIt, Char>& ctx) const
+  OutIt format(const quantity_t& q, MP_UNITS_STD_FMT::basic_format_context<OutIt, Char>& ctx) const
   {
     auto specs = specs_;
     mp_units::detail::handle_dynamic_spec<mp_units::detail::width_checker>(specs.width, specs.width_ref, ctx);
