@@ -214,7 +214,7 @@ For example, here is how the above quantity kind tree can be modeled in the libr
 !!! note
 
     More information on how to define a system of quantities can be found in the
-    ["International System of Quantities (ISQ)"](../defining_systems/isq.md) chapter.
+    ["International System of Quantities (ISQ)"](../systems/isq.md) chapter.
 
 
 ## Comparing, adding, and subtracting quantities

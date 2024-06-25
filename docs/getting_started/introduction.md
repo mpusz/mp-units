@@ -72,9 +72,9 @@ To achieve this goal, several techniques are applied:
 [Systems of Units]: ../users_guide/framework_basics/systems_of_units.md
 [Scalar, vector, and tensor quantities]: ../users_guide/framework_basics/character_of_a_quantity.md
 [The affine space]: ../users_guide/framework_basics/the_affine_space.md
-[Different models of the universe (e.g. natural units systems)]: ../users_guide/defining_systems/natural_units.md
+[Different models of the universe (e.g. natural units systems)]: ../users_guide/systems/natural_units.md
 [Strong dimensionless quantities]: ../users_guide/framework_basics/dimensionless_quantities.md
-[Strong angular system]: ../users_guide/defining_systems/strong_angular_system.md
+[Strong angular system]: ../users_guide/systems/strong_angular_system.md
 [Supports any unit's magnitude (huge, small, floating-point)]: ../users_guide/framework_basics/systems_of_units.md#scaled-units
 [Faster-than-lightspeed constants]: ../users_guide/framework_basics/faster_than_lightspeed_constants.md
 [Highly adjustable text-output formatting]: ../users_guide/framework_basics/text_output.md

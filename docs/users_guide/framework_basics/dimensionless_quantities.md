@@ -184,7 +184,7 @@ that both _angular measure_ and _solid angular measure_ should also be
 
     Many people claim that angle being a dimensionless quantity is a bad idea. There are
     proposals submitted to make an angle a base quantity and `rad` to become a base unit. More on this
-    topic can be found in the ["Strong Angular System" chapter](../defining_systems/strong_angular_system.md).
+    topic can be found in the ["Strong Angular System" chapter](../systems/strong_angular_system.md).
 
 
 ## Nested quantity kinds
