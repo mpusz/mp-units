@@ -125,18 +125,41 @@ MP_UNITS_EXPORT template<QuantitySpec Q>
 
 namespace detail {
 
+template<auto QS1, auto QS2>
+concept SameQuantitySpec = QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS1))> &&
+                           QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS2))> && (QS1 == QS2);
+
 template<QuantitySpec Child, QuantitySpec Parent>
 [[nodiscard]] consteval bool is_child_of(Child ch, Parent p);
 
+template<auto Child, auto Parent>
+concept ChildQuantitySpecOf = (is_child_of(Child, Parent));
+
 template<auto To, auto From>
-concept NestedQuantityKindSpecOf = QuantitySpec<decltype(From)> && QuantitySpec<decltype(To)> &&
-                                   get_kind(From) != get_kind(To) && is_child_of(To, get_kind(From)._quantity_spec_);
+concept NestedQuantityKindSpecOf =
+  QuantitySpec<decltype(From)> && QuantitySpec<decltype(To)> &&
+  (!SameQuantitySpec<get_kind(From), get_kind(To)>)&&ChildQuantitySpecOf<To, get_kind(From)._quantity_spec_>;
+
+template<auto From, auto To>
+concept QuantitySpecConvertibleTo =
+  QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(From))> && QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(To))> &&
+  implicitly_convertible(From, To);
+
+template<auto From, auto To>
+concept QuantitySpecExplicitlyConvertibleTo =
+  QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(From))> && QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(To))> &&
+  explicitly_convertible(From, To);
+
+template<auto From, auto To>
+concept QuantitySpecCastableTo =
+  QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(From))> && QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(To))> &&
+  castable(From, To);
 
 }  // namespace detail
 
 MP_UNITS_EXPORT template<typename T, auto QS>
 concept QuantitySpecOf =
-  QuantitySpec<T> && QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS))> && implicitly_convertible(T{}, QS) &&
+  QuantitySpec<T> && QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS))> && detail::QuantitySpecConvertibleTo<T{}, QS> &&
   // the below is to make the following work
   // static_assert(ReferenceOf<si::radian, isq::angular_measure>);
   // static_assert(!ReferenceOf<si::radian, dimensionless>);

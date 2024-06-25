@@ -97,12 +97,20 @@ concept DerivedDimension =
 MP_UNITS_EXPORT template<typename T>
 concept Dimension = detail::BaseDimension<T> || detail::DerivedDimension<T>;
 
+namespace detail {
+
+template<auto D1, auto D2>
+concept SameDimension =
+  Dimension<MP_UNITS_REMOVE_CONST(decltype(D1))> && Dimension<MP_UNITS_REMOVE_CONST(decltype(D2))> && (D1 == D2);
+
+}
+
 /**
  * @brief A concept checking if the argument is of the same dimension.
  *
  * Satisfied when both argument satisfy a `Dimension` concept and when they compare equal.
  */
 MP_UNITS_EXPORT template<typename T, auto D>
-concept DimensionOf = Dimension<T> && Dimension<MP_UNITS_REMOVE_CONST(decltype(D))> && (T{} == D);
+concept DimensionOf = Dimension<T> && Dimension<MP_UNITS_REMOVE_CONST(decltype(D))> && detail::SameDimension<T{}, D>;
 
 }  // namespace mp_units

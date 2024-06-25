@@ -66,7 +66,7 @@ struct system_reference {
   static constexpr auto coherent_unit = CoU;
 
   template<Unit U>
-    requires(convertible(coherent_unit, U{}))
+    requires detail::UnitConvertibleTo<coherent_unit, U{}>
 #if MP_UNITS_COMP_MSVC
   [[nodiscard]] constexpr decltype(reference<MP_UNITS_REMOVE_CONST(decltype(Q)), U>{}) operator[](U) const
 #else

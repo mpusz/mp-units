@@ -126,7 +126,7 @@ struct quantity_spec_interface {
   template<typename Self, typename Q>
   [[nodiscard]] constexpr Quantity auto operator()(this Self self, Q&& q)
     requires Quantity<std::remove_cvref_t<Q>> &&
-             (explicitly_convertible(std::remove_reference_t<Q>::quantity_spec, self))
+             detail::QuantitySpecExplicitlyConvertibleTo<std::remove_reference_t<Q>::quantity_spec, self>
   {
     return quantity{std::forward<Q>(q).numerical_value_is_an_implementation_detail_,
                     delta<detail::make_reference(self, std::remove_cvref_t<Q>::unit)>};
@@ -140,7 +140,7 @@ struct quantity_spec_interface {
 
   template<typename Q, typename Self_ = Self>
     requires Quantity<std::remove_cvref_t<Q>> &&
-             (explicitly_convertible(std::remove_reference_t<Q>::quantity_spec, Self_{}))
+             detail::QuantitySpecExplicitlyConvertibleTo<std::remove_reference_t<Q>::quantity_spec, Self_{}>
   [[nodiscard]] constexpr Quantity auto operator()(Q&& q) const
   {
     return quantity{std::forward<Q>(q).numerical_value_is_an_implementation_detail_,
@@ -337,7 +337,7 @@ struct quantity_spec<Self, QS, Args...> : detail::propagate_equation<QS>, detail
 
   template<typename Q, typename Self_ = Self>
     requires Quantity<std::remove_cvref_t<Q>> &&
-             (explicitly_convertible(std::remove_reference_t<Q>::quantity_spec, Self_{}))
+             detail::QuantitySpecExplicitlyConvertibleTo<std::remove_reference_t<Q>::quantity_spec, Self_{}>
   [[nodiscard]] constexpr Quantity auto operator()(Q&& q) const
   {
     return quantity{std::forward<Q>(q).numerical_value_is_an_implementation_detail_,
@@ -379,16 +379,16 @@ struct quantity_spec<Self, QS, Args...> : detail::propagate_equation<QS>, detail
 #ifdef MP_UNITS_API_NO_CRTP
 template<detail::NamedQuantitySpec auto QS, detail::DerivedQuantitySpec auto Eq,
          one_of<quantity_character, struct is_kind> auto... Args>
-  requires(!requires { QS._equation_; } || (requires {
-            QS._equation_;
-          } && (explicitly_convertible(Eq, QS._equation_)))) && (... && !QuantitySpec<decltype(Args)>)
+  requires(!requires { QS._equation_; } ||
+           ((requires { QS._equation_; }) && detail::QuantitySpecExplicitlyConvertibleTo<Eq, QS._equation_>)) &&
+          (... && !QuantitySpec<decltype(Args)>)
 struct quantity_spec<QS, Eq, Args...> : detail::quantity_spec_interface {
 #else
 template<typename Self, detail::NamedQuantitySpec auto QS, detail::DerivedQuantitySpec auto Eq,
          one_of<quantity_character, struct is_kind> auto... Args>
-  requires(!requires { QS._equation_; } || (requires {
-            QS._equation_;
-          } && (explicitly_convertible(Eq, QS._equation_)))) && (... && !QuantitySpec<decltype(Args)>)
+  requires(!requires { QS._equation_; } ||
+           ((requires { QS._equation_; }) && detail::QuantitySpecExplicitlyConvertibleTo<Eq, QS._equation_>)) &&
+          (... && !QuantitySpec<decltype(Args)>)
 struct quantity_spec<Self, QS, Eq, Args...> : detail::quantity_spec_interface<Self> {
 #endif
   using _base_type_ = quantity_spec;
@@ -498,7 +498,7 @@ template<QuantitySpec Q>
 
 #ifdef MP_UNITS_API_NO_CRTP
 template<typename Q>
-  requires detail::QuantitySpecWithNoSpecifiers<Q> && (detail::get_kind_tree_root(Q{}) == Q{})
+  requires detail::QuantitySpecWithNoSpecifiers<Q> && detail::SameQuantitySpec<detail::get_kind_tree_root(Q{}), Q{}>
 struct kind_of_<Q> final : Q::_base_type_ {
   using _base_type_ = kind_of_;
   static constexpr auto _quantity_spec_ = Q{};
@@ -507,10 +507,10 @@ struct kind_of_<Q> final : Q::_base_type_ {
 
 #if MP_UNITS_COMP_CLANG
 template<typename Q>
-  requires detail::QuantitySpecWithNoSpecifiers<Q> && (detail::get_kind_tree_root(Q{}) == Q{})
+  requires detail::QuantitySpecWithNoSpecifiers<Q> && detail::SameQuantitySpec<detail::get_kind_tree_root(Q{}), Q{}>
 #else
 template<detail::QuantitySpecWithNoSpecifiers Q>
-  requires(detail::get_kind_tree_root(Q{}) == Q{})
+  requires detail::SameQuantitySpec<detail::get_kind_tree_root(Q{}), Q{}>
 #endif
 struct kind_of_<Q> final : quantity_spec<kind_of_<Q>, Q{}>::_base_type_ {
   using _base_type_ = kind_of_;
@@ -519,7 +519,7 @@ struct kind_of_<Q> final : quantity_spec<kind_of_<Q>, Q{}>::_base_type_ {
 #endif
 
 MP_UNITS_EXPORT template<detail::QuantitySpecWithNoSpecifiers auto Q>
-  requires(detail::get_kind_tree_root(Q) == Q)
+  requires detail::SameQuantitySpec<detail::get_kind_tree_root(Q), Q>
 inline constexpr kind_of_<MP_UNITS_REMOVE_CONST(decltype(Q))> kind_of;
 
 namespace detail {
@@ -1531,8 +1531,8 @@ template<QuantitySpec Q>
 
 template<QuantitySpec Q1, QuantitySpec Q2>
 [[nodiscard]] consteval QuantitySpec auto common_quantity_spec(Q1 q1, Q2 q2)
-  requires(implicitly_convertible(get_kind_tree_root(q1), get_kind_tree_root(q2)) ||
-           implicitly_convertible(get_kind_tree_root(q2), get_kind_tree_root(q1)))
+  requires detail::QuantitySpecConvertibleTo<get_kind_tree_root(q1), get_kind_tree_root(q2)> ||
+           detail::QuantitySpecConvertibleTo<get_kind_tree_root(q2), get_kind_tree_root(q1)>
 {
   using QQ1 = decltype(detail::remove_kind(q1));
   using QQ2 = decltype(detail::remove_kind(q2));

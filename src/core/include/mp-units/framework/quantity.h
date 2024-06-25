@@ -56,12 +56,15 @@ template<Unit UFrom, Unit UTo>
     return is_integral(get_canonical_unit(from).mag / get_canonical_unit(to).mag);
 }
 
+template<typename T>
+concept IsFloatingPoint = treat_as_floating_point<T>;
+
 template<typename QFrom, typename QTo>
 concept QuantityConvertibleTo =
-  Quantity<QFrom> && Quantity<QTo> && implicitly_convertible(QFrom::quantity_spec, QTo::quantity_spec) &&
-  convertible(QFrom::unit, QTo::unit) &&
-  (treat_as_floating_point<typename QTo::rep> ||
-   (!treat_as_floating_point<typename QFrom::rep> && (integral_conversion_factor(QFrom::unit, QTo::unit)))) &&
+  Quantity<QFrom> && Quantity<QTo> && detail::QuantitySpecConvertibleTo<QFrom::quantity_spec, QTo::quantity_spec> &&
+  detail::UnitConvertibleTo<QFrom::unit, QTo::unit> &&
+  (IsFloatingPoint<typename QTo::rep> ||
+   (!IsFloatingPoint<typename QFrom::rep> && (integral_conversion_factor(QFrom::unit, QTo::unit)))) &&
   // TODO consider providing constraints of sudo_cast here rather than testing if it can be called (its return type is
   // deduced thus the function is evaluated here and may emit truncating conversion or other warnings)
   requires(QFrom q) { detail::sudo_cast<QTo>(q); };
@@ -75,14 +78,18 @@ template<typename Func, typename Q1, typename Q2,
 concept InvocableQuantities =
   Quantity<Q1> && Quantity<Q2> && InvokeResultOf<Ch, Func, typename Q1::rep, typename Q2::rep>;
 
+// TODO remove the following when clang diagnostics improve
+// https://github.com/llvm/llvm-project/issues/96660
+template<auto R1, auto R2>
+concept HaveCommonReferenceImpl = requires { common_reference(R1, R2); };
+
+template<auto R1, auto R2>
+concept HaveCommonReference = HaveCommonReferenceImpl<R1, R2>;
+
 template<typename Func, typename Q1, typename Q2>
 concept CommonlyInvocableQuantities =
-  Quantity<Q1> && Quantity<Q2> &&
-  // (Q1::quantity_spec.character == Q2::quantity_spec.character) && // TODO enable when vector quantities are handled
-  // correctly
-  requires { common_reference(Q1::reference, Q2::reference); } &&
+  Quantity<Q1> && Quantity<Q2> && HaveCommonReference<Q1::reference, Q2::reference> &&
   InvocableQuantities<Func, Q1, Q2, common_quantity_spec(Q1::quantity_spec, Q2::quantity_spec).character>;
-
 
 template<typename Func, Quantity Q1, Quantity Q2>
   requires detail::CommonlyInvocableQuantities<Func, Q1, Q2>
@@ -90,8 +97,9 @@ using common_quantity_for = quantity<common_reference(Q1::reference, Q2::referen
                                      std::invoke_result_t<Func, typename Q1::rep, typename Q2::rep>>;
 
 template<auto T, auto R>
-concept SameOriginalReferenceAs = DeltaReference<MP_UNITS_REMOVE_CONST(decltype(T))> &&
-                                  Reference<MP_UNITS_REMOVE_CONST(decltype(R))> && (get_original_reference(T) == R);
+concept SameOriginalReferenceAs =
+  DeltaReference<MP_UNITS_REMOVE_CONST(decltype(T))> && Reference<MP_UNITS_REMOVE_CONST(decltype(R))> &&
+  detail::SameReference<remove_reference_specifier(T), R>;
 
 template<auto R1, auto R2, typename Rep1, typename Rep2>
 concept SameValueAs = detail::SameOriginalReferenceAs<R1, R2> && std::same_as<Rep1, Rep2>;
@@ -238,14 +246,14 @@ public:
 #endif
 
   template<UnitCompatibleWith<unit, quantity_spec> U>
-    requires requires(quantity q) { q.in(U{}); }
+    requires detail::QuantityConvertibleTo<quantity, quantity<detail::make_reference(quantity_spec, U{}), Rep>>
   [[nodiscard]] constexpr rep numerical_value_in(U) const noexcept
   {
     return (*this).in(U{}).numerical_value_is_an_implementation_detail_;
   }
 
   template<UnitCompatibleWith<unit, quantity_spec> U>
-    requires requires(quantity q) { q.force_in(U{}); }
+    requires requires(quantity q) { value_cast<U{}>(q); }
   [[nodiscard]] constexpr rep force_numerical_value_in(U) const noexcept
   {
     return (*this).force_in(U{}).numerical_value_is_an_implementation_detail_;

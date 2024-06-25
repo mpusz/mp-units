@@ -518,12 +518,11 @@ template<Unit U1, Unit U2>
 
 }  // namespace detail
 
-
 MP_UNITS_EXPORT [[nodiscard]] consteval bool operator==(Unit auto lhs, Unit auto rhs)
 {
   auto canonical_lhs = get_canonical_unit(lhs);
   auto canonical_rhs = get_canonical_unit(rhs);
-  return detail::have_same_canonical_reference_unit(canonical_lhs.reference_unit, canonical_rhs.reference_unit) &&
+  return convertible(canonical_lhs.reference_unit, canonical_rhs.reference_unit) &&
          canonical_lhs.mag == canonical_rhs.mag;
 }
 
@@ -612,11 +611,11 @@ inline constexpr auto ppm = parts_per_million;
 // clang-format on
 
 
-// convertible_to
-template<Unit U1, Unit U2>
-[[nodiscard]] consteval bool convertible(U1 from, U2 to)
+// convertible
+template<Unit From, Unit To>
+[[nodiscard]] consteval bool convertible(From from, To to)
 {
-  if constexpr (is_same_v<U1, U2>)
+  if constexpr (is_same_v<From, To>)
     return true;
   else
     return detail::have_same_canonical_reference_unit(from, to);
@@ -627,7 +626,7 @@ template<Unit U1, Unit U2>
 
 template<Unit U1, Unit U2>
 [[nodiscard]] consteval Unit auto common_unit(U1 u1, U2 u2)
-  requires(detail::have_same_canonical_reference_unit(u1, u2))
+  requires(convertible(u1, u2))
 {
   if constexpr (is_same_v<U1, U2>)
     return u1;

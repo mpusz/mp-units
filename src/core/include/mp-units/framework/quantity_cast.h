@@ -53,7 +53,8 @@ namespace mp_units {
  * @tparam ToQS a quantity specification to use for a target quantity
  */
 template<QuantitySpec auto ToQS, typename Q>
-  requires Quantity<std::remove_cvref_t<Q>> && (castable(std::remove_reference_t<Q>::quantity_spec, ToQS))
+  requires Quantity<std::remove_cvref_t<Q>> &&
+           detail::QuantitySpecCastableTo<std::remove_reference_t<Q>::quantity_spec, ToQS>
 [[nodiscard]] constexpr Quantity auto quantity_cast(Q&& q)
 {
   return quantity{std::forward<Q>(q).numerical_value_is_an_implementation_detail_,
@@ -78,7 +79,8 @@ template<QuantitySpec auto ToQS, typename Q>
  * @tparam ToQS a quantity specification to use for a target quantity point
  */
 template<QuantitySpec auto ToQS, typename QP>
-  requires QuantityPoint<std::remove_cvref_t<QP>> && (castable(std::remove_reference_t<QP>::quantity_spec, ToQS))
+  requires QuantityPoint<std::remove_cvref_t<QP>> &&
+           detail::QuantitySpecCastableTo<std::remove_reference_t<QP>::quantity_spec, ToQS>
 [[nodiscard]] constexpr QuantityPoint auto quantity_cast(QP&& qp)
 {
   return QP{quantity_cast<ToQS>(std::forward<QP>(qp).quantity_from_origin_is_an_implementation_detail_),

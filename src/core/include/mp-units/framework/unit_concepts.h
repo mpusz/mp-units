@@ -182,18 +182,22 @@ concept AssociatedUnit = Unit<U> && detail::has_associated_quantity(U{});
  * the provided quantity_spec type.
  */
 MP_UNITS_EXPORT template<typename U, auto QS>
-concept UnitOf =
-  AssociatedUnit<U> && QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS))> &&
-  implicitly_convertible(get_quantity_spec(U{}), QS) &&
-  // the below is to make `dimensionless[radian]` invalid
-  (get_kind(QS) == get_kind(get_quantity_spec(U{})) || !detail::NestedQuantityKindSpecOf<get_quantity_spec(U{}), QS>);
+concept UnitOf = AssociatedUnit<U> && QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS))> &&
+                 detail::QuantitySpecConvertibleTo<get_quantity_spec(U{}), QS> &&
+                 // the below is to make `dimensionless[radian]` invalid
+                 (detail::SameQuantitySpec<get_kind(QS), get_kind(get_quantity_spec(U{}))> ||
+                  !detail::NestedQuantityKindSpecOf<get_quantity_spec(U{}), QS>);
+
+MP_UNITS_EXPORT template<Unit From, Unit To>
+[[nodiscard]] consteval bool convertible(From from, To to);
 
 namespace detail {
 
-template<Unit U1, Unit U2>
-[[nodiscard]] consteval bool have_same_canonical_reference_unit(U1 u1, U2 u2);
+template<auto From, auto To>
+concept UnitConvertibleTo =
+  Unit<MP_UNITS_REMOVE_CONST(decltype(From))> && Unit<MP_UNITS_REMOVE_CONST(decltype(To))> && (convertible(From, To));
 
-}
+}  // namespace detail
 
 /**
  * @brief A concept matching all units compatible with the provided unit and quantity spec
@@ -201,10 +205,9 @@ template<Unit U1, Unit U2>
  * Satisfied by all units that have the same canonical reference as `U2` and in case they
  * have associated quantity specification it should satisfy `UnitOf<QS>`.
  */
-MP_UNITS_EXPORT template<typename U, auto U2, auto QS>
+MP_UNITS_EXPORT template<typename U, auto FromU, auto QS>
 concept UnitCompatibleWith =
-  Unit<U> && Unit<MP_UNITS_REMOVE_CONST(decltype(U2))> && QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS))> &&
-  (!AssociatedUnit<U> || UnitOf<U, QS>)&&(detail::have_same_canonical_reference_unit(U{}, U2));
-
+  Unit<U> && Unit<MP_UNITS_REMOVE_CONST(decltype(FromU))> && QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS))> &&
+  (!AssociatedUnit<U> || UnitOf<U, QS>)&&detail::UnitConvertibleTo<FromU, U{}>;
 
 }  // namespace mp_units

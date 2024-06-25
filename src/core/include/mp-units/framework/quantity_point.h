@@ -271,18 +271,18 @@ public:
   }
 
   // unit conversions
-  template<UnitCompatibleWith<unit, quantity_spec> U>
-    requires detail::QuantityConvertibleTo<quantity_type, quantity<detail::make_reference(quantity_spec, U{}), Rep>>
-  [[nodiscard]] constexpr QuantityPointOf<quantity_spec> auto in(U) const
+  template<UnitCompatibleWith<unit, quantity_spec> ToU>
+    requires detail::QuantityConvertibleTo<quantity_type, quantity<detail::make_reference(quantity_spec, ToU{}), Rep>>
+  [[nodiscard]] constexpr QuantityPointOf<quantity_spec> auto in(ToU) const
   {
-    return ::mp_units::quantity_point{quantity_ref_from(PO).in(U{}), PO};
+    return ::mp_units::quantity_point{quantity_ref_from(PO).in(ToU{}), PO};
   }
 
-  template<UnitCompatibleWith<unit, quantity_spec> U>
-    requires requires(quantity_type q) { value_cast<U{}>(q); }
-  [[nodiscard]] constexpr QuantityPointOf<quantity_spec> auto force_in(U) const
+  template<UnitCompatibleWith<unit, quantity_spec> ToU>
+    requires requires(quantity_type q) { value_cast<ToU{}>(q); }
+  [[nodiscard]] constexpr QuantityPointOf<quantity_spec> auto force_in(ToU) const
   {
-    return ::mp_units::quantity_point{quantity_ref_from(PO).force_in(U{}), PO};
+    return ::mp_units::quantity_point{quantity_ref_from(PO).force_in(ToU{}), PO};
   }
 
   // conversion operators
