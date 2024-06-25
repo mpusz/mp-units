@@ -1530,9 +1530,9 @@ template<QuantitySpec Q>
 [[nodiscard]] consteval QuantitySpec auto common_quantity_spec(QuantitySpec auto q) { return q; }
 
 template<QuantitySpec Q1, QuantitySpec Q2>
+  requires detail::QuantitySpecConvertibleTo<detail::get_kind_tree_root(Q1{}), detail::get_kind_tree_root(Q2{})> ||
+           detail::QuantitySpecConvertibleTo<detail::get_kind_tree_root(Q2{}), detail::get_kind_tree_root(Q1{})>
 [[nodiscard]] consteval QuantitySpec auto common_quantity_spec(Q1 q1, Q2 q2)
-  requires detail::QuantitySpecConvertibleTo<get_kind_tree_root(q1), get_kind_tree_root(q2)> ||
-           detail::QuantitySpecConvertibleTo<get_kind_tree_root(q2), get_kind_tree_root(q1)>
 {
   using QQ1 = decltype(detail::remove_kind(q1));
   using QQ2 = decltype(detail::remove_kind(q2));
@@ -1558,10 +1558,10 @@ template<QuantitySpec Q1, QuantitySpec Q2>
     return q2;
   else if constexpr (implicitly_convertible(Q2{}, Q1{}))
     return q1;
-  else if constexpr (implicitly_convertible(get_kind_tree_root(Q1{}), get_kind_tree_root(Q2{})))
-    return get_kind_tree_root(q2);
+  else if constexpr (implicitly_convertible(detail::get_kind_tree_root(Q1{}), detail::get_kind_tree_root(Q2{})))
+    return detail::get_kind_tree_root(q2);
   else
-    return get_kind_tree_root(q1);
+    return detail::get_kind_tree_root(q1);
   // NOLINTEND(bugprone-branch-clone)
 }
 
