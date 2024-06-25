@@ -1439,6 +1439,17 @@ static_assert((ground_level + 42 * m) - (other_ground_level + 42 * m) == -81 * m
 static_assert((other_ground_level + 42 * m) - (tower_peak + 42 * m) == 39 * m);
 static_assert((tower_peak + 42 * m) - (other_ground_level + 42 * m) == -39 * m);
 
+static_assert((mean_sea_level + 42 * m).quantity_from(ground_level + 42 * m) == -42 * m);
+static_assert((ground_level + 42 * m).quantity_from(mean_sea_level + 42 * m) == 42 * m);
+static_assert((tower_peak + 42 * m).quantity_from(ground_level + 42 * m) == 42 * m);
+static_assert((ground_level + 42 * m).quantity_from(tower_peak + 42 * m) == -42 * m);
+static_assert((tower_peak + 42 * m).quantity_from(mean_sea_level + 42 * m) == 84 * m);
+static_assert((mean_sea_level + 42 * m).quantity_from(tower_peak + 42 * m) == -84 * m);
+static_assert((other_ground_level + 42 * m).quantity_from(ground_level + 42 * m) == 81 * m);
+static_assert((ground_level + 42 * m).quantity_from(other_ground_level + 42 * m) == -81 * m);
+static_assert((other_ground_level + 42 * m).quantity_from(tower_peak + 42 * m) == 39 * m);
+static_assert((tower_peak + 42 * m).quantity_from(other_ground_level + 42 * m) == -39 * m);
+
 static_assert((mean_sea_level + 42 * m).quantity_from(mean_sea_level) == 42 * m);
 static_assert((42 * m + mean_sea_level).quantity_from(mean_sea_level) == 42 * m);
 static_assert((mean_sea_level - 42 * m).quantity_from(mean_sea_level) == -42 * m);

@@ -256,6 +256,12 @@ public:
     return *this - PO2{};
   }
 
+  template<QuantityPointOf<absolute_point_origin> QP>
+  [[nodiscard]] constexpr Quantity auto quantity_from(const QP& qp) const
+  {
+    return *this - qp;
+  }
+
   [[nodiscard]] constexpr Quantity auto quantity_from_zero() const
   {
     if constexpr (requires { unit.point_origin; }) {

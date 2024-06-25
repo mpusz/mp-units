@@ -149,7 +149,7 @@ public:
   void current(msl_altitude alt) { current_ = alt; }
   [[nodiscard]] msl_altitude current() const { return current_; }
 
-  [[nodiscard]] hal_altitude hal() const { return height_above_launch + (current_ - launch_); }
+  [[nodiscard]] hal_altitude hal() const { return height_above_launch + current_.quantity_from(launch_); }
 };
 
 
@@ -164,7 +164,7 @@ int main()
   std::cout << MP_UNITS_STD_FMT::format("hal = {::N[.2f]}\n", uav.hal());
 
   const msl_altitude ground_level = mean_sea_level + 123 * m;
-  std::cout << MP_UNITS_STD_FMT::format("agl = {::N[.2f]}\n", uav.current() - ground_level);
+  std::cout << MP_UNITS_STD_FMT::format("agl = {::N[.2f]}\n", uav.current().quantity_from(ground_level));
 
   struct waypoint {
     std::string name;
