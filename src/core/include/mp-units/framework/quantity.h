@@ -215,18 +215,18 @@ public:
   quantity& operator=(quantity&&) = default;
 
   // unit conversions
-  template<UnitCompatibleWith<unit, quantity_spec> U>
-    requires detail::QuantityConvertibleTo<quantity, quantity<detail::make_reference(quantity_spec, U{}), Rep>>
-  [[nodiscard]] constexpr QuantityOf<quantity_spec> auto in(U) const
+  template<UnitCompatibleWith<unit, quantity_spec> ToU>
+    requires detail::QuantityConvertibleTo<quantity, quantity<detail::make_reference(quantity_spec, ToU{}), Rep>>
+  [[nodiscard]] constexpr QuantityOf<quantity_spec> auto in(ToU) const
   {
-    return quantity<detail::make_reference(quantity_spec, U{}), Rep>{*this};
+    return quantity<detail::make_reference(quantity_spec, ToU{}), Rep>{*this};
   }
 
-  template<UnitCompatibleWith<unit, quantity_spec> U>
-    requires requires(quantity q) { value_cast<U{}>(q); }
-  [[nodiscard]] constexpr QuantityOf<quantity_spec> auto force_in(U) const
+  template<UnitCompatibleWith<unit, quantity_spec> ToU>
+    requires requires(quantity q) { value_cast<ToU{}>(q); }
+  [[nodiscard]] constexpr QuantityOf<quantity_spec> auto force_in(ToU) const
   {
-    return value_cast<U{}>(*this);
+    return value_cast<ToU{}>(*this);
   }
 
   // data access
