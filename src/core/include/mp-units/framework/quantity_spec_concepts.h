@@ -151,9 +151,8 @@ concept QuantitySpecExplicitlyConvertibleTo =
   explicitly_convertible(From, To);
 
 template<auto From, auto To>
-concept QuantitySpecCastableTo =
-  QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(From))> && QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(To))> &&
-  castable(From, To);
+concept QuantitySpecCastableTo = QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(From))> &&
+                                 QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(To))> && castable(From, To);
 
 }  // namespace detail
 
