@@ -197,8 +197,6 @@ template<auto From, auto To>
 concept UnitConvertibleTo =
   Unit<MP_UNITS_REMOVE_CONST(decltype(From))> && Unit<MP_UNITS_REMOVE_CONST(decltype(To))> && (convertible(From, To));
 
-}  // namespace detail
-
 /**
  * @brief A concept matching all units compatible with the provided unit and quantity spec
  *
@@ -210,11 +208,9 @@ concept UnitCompatibleWith =
   Unit<U> && Unit<MP_UNITS_REMOVE_CONST(decltype(FromU))> && QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS))> &&
   (!AssociatedUnit<U> || UnitOf<U, QS>)&&detail::UnitConvertibleTo<FromU, U{}>;
 
-namespace detail {
-
 template<typename T>
 concept OffsetUnit = Unit<T> && requires { T::point_origin; };
 
-}
+}  // namespace detail
 
 }  // namespace mp_units

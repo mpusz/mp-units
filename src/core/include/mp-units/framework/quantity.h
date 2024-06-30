@@ -192,14 +192,14 @@ public:
   quantity& operator=(quantity&&) = default;
 
   // unit conversions
-  template<UnitCompatibleWith<unit, quantity_spec> ToU>
+  template<detail::UnitCompatibleWith<unit, quantity_spec> ToU>
     requires detail::QuantityConvertibleTo<quantity, quantity<detail::make_reference(quantity_spec, ToU{}), Rep>>
   [[nodiscard]] constexpr QuantityOf<quantity_spec> auto in(ToU) const
   {
     return quantity<detail::make_reference(quantity_spec, ToU{}), Rep>{*this};
   }
 
-  template<UnitCompatibleWith<unit, quantity_spec> ToU>
+  template<detail::UnitCompatibleWith<unit, quantity_spec> ToU>
     requires requires(quantity q) { value_cast<ToU{}>(q); }
   [[nodiscard]] constexpr QuantityOf<quantity_spec> auto force_in(ToU) const
   {
@@ -230,14 +230,14 @@ public:
     = delete;
 #endif
 
-  template<UnitCompatibleWith<unit, quantity_spec> U>
+  template<detail::UnitCompatibleWith<unit, quantity_spec> U>
     requires detail::QuantityConvertibleTo<quantity, quantity<detail::make_reference(quantity_spec, U{}), Rep>>
   [[nodiscard]] constexpr rep numerical_value_in(U) const noexcept
   {
     return (*this).in(U{}).numerical_value_is_an_implementation_detail_;
   }
 
-  template<UnitCompatibleWith<unit, quantity_spec> U>
+  template<detail::UnitCompatibleWith<unit, quantity_spec> U>
     requires requires(quantity q) { value_cast<U{}>(q); }
   [[nodiscard]] constexpr rep force_numerical_value_in(U) const noexcept
   {
