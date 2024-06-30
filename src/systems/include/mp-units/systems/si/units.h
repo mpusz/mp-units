@@ -80,7 +80,7 @@ inline constexpr struct henry final : named_unit<"H", weber / ampere> {} henry;
 
 inline constexpr struct ice_point final : relative_point_origin<absolute<milli<kelvin>>(273'150)> {} ice_point;
 inline constexpr auto zeroth_degree_Celsius = ice_point;
-inline constexpr struct degree_Celsius final : named_unit<symbol_text{u8"°C", "`C"}, kelvin, zeroth_degree_Celsius> {} degree_Celsius;
+inline constexpr struct degree_Celsius final : named_unit<symbol_text{u8"℃", "`C"}, kelvin, zeroth_degree_Celsius> {} degree_Celsius;
 
 inline constexpr struct lumen final : named_unit<"lm", candela * steradian> {} lumen;
 inline constexpr struct lux final : named_unit<"lx", lumen / square(metre)> {} lux;
