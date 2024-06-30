@@ -58,7 +58,7 @@ template<QuantitySpec auto ToQS, typename Q>
 [[nodiscard]] constexpr Quantity auto quantity_cast(Q&& q)
 {
   return quantity{std::forward<Q>(q).numerical_value_is_an_implementation_detail_,
-                  detail::make_delta(make_reference(ToQS, std::remove_reference_t<Q>::unit))};
+                  make_reference(ToQS, std::remove_reference_t<Q>::unit)};
 }
 
 /**

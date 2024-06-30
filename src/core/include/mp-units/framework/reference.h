@@ -41,16 +41,6 @@ namespace detail {
 template<QuantitySpec auto Q, Unit auto U>
 using reference_t = reference<MP_UNITS_REMOVE_CONST(decltype(Q)), MP_UNITS_REMOVE_CONST(decltype(U))>;
 
-template<typename R>
-  requires DeltaReference<R> || AbsoluteReference<R>
-[[nodiscard]] consteval Reference auto remove_reference_specifier(R r)
-{
-  if constexpr (requires { R::_original_reference_; })
-    return R::_original_reference_;
-  else
-    return r;
-}
-
 }  // namespace detail
 
 MP_UNITS_EXPORT_BEGIN
@@ -184,62 +174,40 @@ struct reference {
 };
 
 
-template<typename Rep, DeltaReference R>
-  requires RepresentationOf<std::remove_cvref_t<Rep>,
-                            get_quantity_spec(detail::remove_reference_specifier(R{})).character>
-[[nodiscard]] constexpr quantity<detail::remove_reference_specifier(R{}), std::remove_cvref_t<Rep>> operator*(Rep&& lhs,
-                                                                                                              R)
+template<typename Rep, Reference R>
+  requires(!detail::OffsetUnit<decltype(get_unit(R{}))>) &&
+          RepresentationOf<std::remove_cvref_t<Rep>, get_quantity_spec(R{}).character>
+[[nodiscard]] constexpr quantity<R{}, std::remove_cvref_t<Rep>> operator*(Rep&& lhs, R)
 {
   return quantity{std::forward<Rep>(lhs), R{}};
 }
 
-template<typename Rep, DeltaReference R>
-  requires RepresentationOf<std::remove_cvref_t<Rep>,
-                            get_quantity_spec(detail::remove_reference_specifier(R{})).character>
-[[nodiscard]] constexpr quantity<inverse(detail::remove_reference_specifier(R{})), std::remove_cvref_t<Rep>> operator/(
-  Rep&& lhs, R)
+template<typename Rep, Reference R>
+  requires(!detail::OffsetUnit<decltype(get_unit(R{}))>) &&
+          RepresentationOf<std::remove_cvref_t<Rep>, get_quantity_spec(R{}).character>
+[[nodiscard]] constexpr quantity<inverse(R{}), std::remove_cvref_t<Rep>> operator/(Rep&& lhs, R)
 {
-  return quantity{std::forward<Rep>(lhs), detail::make_delta(inverse(detail::remove_reference_specifier(R{})))};
-}
-
-template<typename Rep, AbsoluteReference R>
-  requires RepresentationOf<std::remove_cvref_t<Rep>,
-                            get_quantity_spec(detail::remove_reference_specifier(R{})).character>
-[[nodiscard]] constexpr quantity_point<detail::remove_reference_specifier(R{}),
-                                       default_point_origin(detail::remove_reference_specifier(R{})),
-                                       std::remove_cvref_t<Rep>>
-operator*(Rep&& lhs, R)
-{
-  return quantity_point{std::forward<Rep>(lhs) * detail::make_delta(detail::remove_reference_specifier(R{}))};
-}
-
-template<typename Rep, AbsoluteReference R>
-  requires RepresentationOf<std::remove_cvref_t<Rep>,
-                            get_quantity_spec(detail::remove_reference_specifier(R{})).character>
-[[nodiscard]] constexpr quantity_point<inverse(detail::remove_reference_specifier(R{})),
-                                       default_point_origin(detail::remove_reference_specifier(R{})),
-                                       std::remove_cvref_t<Rep>>
-operator/(Rep&& lhs, R)
-{
-  return quantity_point{std::forward<Rep>(lhs) * detail::make_delta(inverse(detail::remove_reference_specifier(R{})))};
+  return quantity{std::forward<Rep>(lhs), inverse(R{})};
 }
 
 template<typename Rep, Reference R>
-  requires(!DeltaReference<R>) && RepresentationOf<std::remove_cvref_t<Rep>, get_quantity_spec(R{}).character>
+  requires detail::OffsetUnit<decltype(get_unit(R{}))> &&
+           RepresentationOf<std::remove_cvref_t<Rep>, get_quantity_spec(R{}).character>
 [[noreturn]] constexpr auto operator*(Rep&&, R)
 {
-  static_assert(
-    DeltaReference<R>,
-    "References using offset units (e.g., temperatures) must be explicitly qualified with `delta` or `absolute`");
+  static_assert(!detail::OffsetUnit<decltype(get_unit(R{}))>,
+                "References using offset units (e.g., temperatures) may be constructed only with the `delta` or "
+                "`absolute` helpers");
 }
 
 template<typename Rep, Reference R>
-  requires(!DeltaReference<R>) && RepresentationOf<std::remove_cvref_t<Rep>, get_quantity_spec(R{}).character>
+  requires detail::OffsetUnit<decltype(get_unit(R{}))> &&
+           RepresentationOf<std::remove_cvref_t<Rep>, get_quantity_spec(R{}).character>
 [[noreturn]] constexpr auto operator/(Rep&&, R)
 {
-  static_assert(
-    DeltaReference<R>,
-    "References using offset units (e.g., temperatures) must be explicitly qualified with `delta` or `absolute`");
+  static_assert(!detail::OffsetUnit<decltype(get_unit(R{}))>,
+                "References using offset units (e.g., temperatures) may be constructed only with the `delta` or "
+                "`absolute` helpers");
 }
 
 template<Reference R, typename Rep>
@@ -267,7 +235,7 @@ template<typename Q, Reference R>
 [[nodiscard]] constexpr Quantity auto operator*(Q&& q, R)
 {
   return quantity{std::forward<Q>(q).numerical_value_is_an_implementation_detail_,
-                  detail::make_delta(std::remove_cvref_t<Q>::reference * R{})};
+                  std::remove_cvref_t<Q>::reference * R{}};
 }
 
 template<typename Q, Reference R>
@@ -275,7 +243,7 @@ template<typename Q, Reference R>
 [[nodiscard]] constexpr Quantity auto operator/(Q&& q, R)
 {
   return quantity{std::forward<Q>(q).numerical_value_is_an_implementation_detail_,
-                  detail::make_delta(std::remove_cvref_t<Q>::reference / R{})};
+                  std::remove_cvref_t<Q>::reference / R{}};
 }
 
 template<Reference R, typename Q>

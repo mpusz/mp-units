@@ -43,28 +43,51 @@ a number with a predefined unit:
 !!! info
 
     In case someone doesn't like the multiply syntax or there is an ambiguity between `operator*`
-    provided by this and other libraries, a quantity can also be created with a two-parameter
-    constructor:
+    provided by this and other libraries, there are two other ways to create a quantity:
 
-    === "C++ modules"
+    1. `delta` construction helper:
 
-        ```cpp
-        import mp_units;
+        === "C++ modules"
 
-        using namespace mp_units;
+            ```cpp
+            import mp_units;
 
-        quantity q{42, si::metre / si::second};
-        ```
+            using namespace mp_units;
 
-    === "Header files"
+            quantity q = delta<si::metre / si::second>(42);
+            ```
 
-        ```cpp
-        #include <mp-units/systems/si.h>
+        === "Header files"
 
-        using namespace mp_units;
+            ```cpp
+            #include <mp-units/systems/si.h>
 
-        quantity q{42, si::metre / si::second};
-        ```
+            using namespace mp_units;
+
+            quantity q = delta<si::metre / si::second>(42);
+            ```
+
+    2. A two-parameter constructor:
+
+        === "C++ modules"
+
+            ```cpp
+            import mp_units;
+
+            using namespace mp_units;
+
+            quantity q{42, si::metre / si::second};
+            ```
+
+        === "Header files"
+
+            ```cpp
+            #include <mp-units/systems/si.h>
+
+            using namespace mp_units;
+
+            quantity q{42, si::metre / si::second};
+            ```
 
 The above creates an instance of `quantity<derived_unit<si::metre, per<si::second>>{}, int>`.
 The same can be obtained using optional unit symbols:
@@ -238,7 +261,7 @@ This introduces an additional type-safety.
       using namespace mp_units::si::unit_symbols;
       using namespace mp_units::usc::unit_symbols;
 
-      quantity_point temp = 20. * absolute<deg_C>;
+      quantity_point temp = absolute<deg_C>(20.);
       std::println("Temperature: {} ({})",
                    temp.quantity_from_zero(),
                    temp.in(deg_F).quantity_from_zero());
@@ -259,7 +282,7 @@ This introduces an additional type-safety.
       using namespace mp_units::si::unit_symbols;
       using namespace mp_units::usc::unit_symbols;
 
-      quantity_point temp = 20. * absolute<deg_C>;
+      quantity_point temp = absolute<deg_C>(20.);
       std::println("Temperature: {} ({})",
                    temp.quantity_from_zero(),
                    temp.in(deg_F).quantity_from_zero());

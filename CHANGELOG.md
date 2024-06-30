@@ -4,7 +4,7 @@
 
 ### 2.3.0 <small>WIP</small> { id="2.3.0" }
 
-- (!) feat: Reference specifiers [#585](https://github.com/mpusz/mp-units/pull/585)
+- (!) feat: `delta` and `absolute` construction helpers
 
 ### 2.2.0 <small>June 14, 2024</small> { id="2.2.0" }
 

@@ -126,7 +126,7 @@ static_assert(isq::mass(1 * lb_t) == isq::mass(12 * oz_t));
 static_assert(isq::pressure(1'000 * inHg) == isq::pressure(3'386'389 * si::pascal));
 
 // Temperature
-static_assert(isq::thermodynamic_temperature(9 * delta<deg_F>) ==
-              isq::thermodynamic_temperature(5 * delta<si::degree_Celsius>));
+static_assert(delta<isq::thermodynamic_temperature[deg_F]>(9) ==
+              delta<isq::thermodynamic_temperature[si::degree_Celsius]>(5));
 
 }  // namespace

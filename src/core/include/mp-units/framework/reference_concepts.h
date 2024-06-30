@@ -80,43 +80,7 @@ concept ReferenceOf = Reference<T> && QuantitySpecOf<decltype(get_quantity_spec(
 
 MP_UNITS_EXPORT_END
 
-// reference specifiers
-template<Reference R>
-struct delta_ final {
-  static constexpr Reference auto _original_reference_ = R{};
-};
-
-template<Reference R>
-struct absolute_ final {
-  static constexpr Reference auto _original_reference_ = R{};
-};
-
-MP_UNITS_EXPORT_BEGIN
-
-template<Reference auto R>
-inline constexpr delta_<MP_UNITS_REMOVE_CONST(decltype(R))> delta{};
-
-template<Reference auto R>
-inline constexpr absolute_<MP_UNITS_REMOVE_CONST(decltype(R))> absolute{};
-
-template<typename T>
-concept DeltaReference = (Reference<T> && !requires { get_unit(T{}).point_origin; }) || is_specialization_of<T, delta_>;
-
-template<typename T>
-concept AbsoluteReference = is_specialization_of<T, absolute_>;
-
-MP_UNITS_EXPORT_END
-
 namespace detail {
-
-template<Reference R>
-[[nodiscard]] consteval DeltaReference auto make_delta(R r)
-{
-  if constexpr (requires { get_unit(R{}).point_origin; })
-    return delta<R{}>;
-  else
-    return r;
-}
 
 template<auto R1, auto R2>
 concept SameReference =

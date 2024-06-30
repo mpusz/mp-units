@@ -97,10 +97,8 @@ template<Quantity To, typename From>
   if constexpr (q_unit == To::unit) {
     // no scaling of the number needed
     return {static_cast<MP_UNITS_TYPENAME To::rep>(std::forward<From>(q).numerical_value_is_an_implementation_detail_),
-            make_delta(To::reference)};  // this is the only (and recommended) way to do
-                                         // a truncating conversion on a number, so we are
-                                         // using static_cast to suppress all the compiler
-                                         // warnings on conversions
+            To::reference};  // this is the only (and recommended) way to do a truncating conversion on a number, so we
+                             // are using static_cast to suppress all the compiler warnings on conversions
   } else {
     // scale the number
     using traits = magnitude_conversion_traits<To, std::remove_reference_t<From>>;
@@ -108,13 +106,13 @@ template<Quantity To, typename From>
       // this results in great assembly
       auto res = static_cast<MP_UNITS_TYPENAME To::rep>(
         static_cast<traits::c_type>(q.numerical_value_is_an_implementation_detail_) * traits::ratio);
-      return {res, make_delta(To::reference)};
+      return {res, To::reference};
     } else {
       // this is slower but allows conversions like 2000 m -> 2 km without loosing data
       auto res = static_cast<MP_UNITS_TYPENAME To::rep>(
         static_cast<traits::c_type>(q.numerical_value_is_an_implementation_detail_) * traits::num_mult /
         traits::den_mult * traits::irr_mult);
-      return {res, make_delta(To::reference)};
+      return {res, To::reference};
     }
   }
 }

@@ -50,6 +50,7 @@ add_mp_units_module(
             include/mp-units/ext/type_name.h
             include/mp-units/ext/type_traits.h
             include/mp-units/framework/compare.h
+            include/mp-units/framework/construction_helpers.h
             include/mp-units/framework/customization_points.h
             include/mp-units/framework/dimension.h
             include/mp-units/framework/dimension_concepts.h

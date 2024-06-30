@@ -62,13 +62,13 @@ int main()
   using estimate = kalman::system_state_estimate<qp>;
   using state = estimate::state_type;
 
-  const quantity process_noise_variance = 0.0001 * delta<pow<2>(deg_C)>;
-  const estimate initial{state{qp{60. * delta<deg_C>}}, 100. * delta<deg_C>};
-  const std::array measurements = {qp{49.986 * delta<deg_C>}, qp{49.963 * delta<deg_C>}, qp{50.097 * delta<deg_C>},
-                                   qp{50.001 * delta<deg_C>}, qp{50.018 * delta<deg_C>}, qp{50.05 * delta<deg_C>},
-                                   qp{49.938 * delta<deg_C>}, qp{49.858 * delta<deg_C>}, qp{49.965 * delta<deg_C>},
-                                   qp{50.114 * delta<deg_C>}};
-  const quantity measurement_error = 0.1 * delta<deg_C>;
+  const quantity process_noise_variance = delta<pow<2>(deg_C)>(0.0001);
+  const estimate initial{state{qp{delta<deg_C>(60.)}}, delta<deg_C>(100.)};
+  const std::array measurements = {qp{delta<deg_C>(49.986)}, qp{delta<deg_C>(49.963)}, qp{delta<deg_C>(50.097)},
+                                   qp{delta<deg_C>(50.001)}, qp{delta<deg_C>(50.018)}, qp{delta<deg_C>(50.05)},
+                                   qp{delta<deg_C>(49.938)}, qp{delta<deg_C>(49.858)}, qp{delta<deg_C>(49.965)},
+                                   qp{delta<deg_C>(50.114)}};
+  const quantity measurement_error = delta<deg_C>(0.1);
   const quantity measurement_variance = pow<2>(measurement_error);
 
   auto predict = [=](const estimate& current) {
