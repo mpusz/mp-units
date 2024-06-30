@@ -1184,15 +1184,6 @@ You're not viewing the latest version.
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#UnitCompatibleWith" class="md-nav__link">
-    <span class="md-ellipsis">
-      UnitCompatibleWith&lt;T, V1, V2&gt;
-    </span>
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
   
@@ -2443,14 +2434,6 @@ or the quantity type associated with <code>T</code> may not be derived from the 
 be only used for <code>isq::angular_measure</code>, which is a
 <a href="../dimensionless_quantities/#nested-quantity-kinds">nested quantity kind within the dimensionless quantities tree</a>.</p>
 </details>
-<h3 id="UnitCompatibleWith"><code>UnitCompatibleWith&lt;T, V1, V2&gt;</code><a class="headerlink" href="#UnitCompatibleWith" title="Permanent link">&para;</a></h3>
-<p><code>UnitCompatibleWith</code> concept is satisfied for all units <code>T</code> when:</p>
-<ul>
-<li><code>V1</code> is a <a href="#Unit"><code>Unit</code></a>,</li>
-<li><code>V2</code> is a <a href="#QuantitySpec"><code>QuantitySpec</code></a>,</li>
-<li><code>T</code> and <code>V1</code> are defined in terms of the same reference unit,</li>
-<li>if <code>T</code> is an <a href="#AssociatedUnit"><code>AssociatedUnit</code></a> it should satisfy <a href="#UnitOf"><code>UnitOf&lt;V2&gt;</code></a>.</li>
-</ul>
 <h2 id="Reference"><code>Reference&lt;T&gt;</code><a class="headerlink" href="#Reference" title="Permanent link">&para;</a></h2>
 <p><code>Reference</code> concept is satisfied by all <a href="../../../appendix/glossary/#reference">quantity reference</a>
 types. Such types provide all the meta-information required to create a <a href="#Quantity"><code>Quantity</code></a>.
