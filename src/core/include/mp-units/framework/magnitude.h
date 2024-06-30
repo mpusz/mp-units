@@ -514,7 +514,7 @@ inline constexpr bool is_specialization_of_magnitude<magnitude<Ms...>> = true;
  */
 template<typename T, auto... Ms>
   requires(is_integral(magnitude<Ms...>{})) || treat_as_floating_point<T>
-constexpr T get_value(const magnitude<Ms...>&)
+[[nodiscard]] consteval T get_value(const magnitude<Ms...>&)
 {
   // Force the expression to be evaluated in a constexpr context, to catch, e.g., overflow.
   constexpr T result = detail::checked_static_cast<T>((detail::compute_base_power<T>(Ms) * ... * T{1}));
@@ -581,7 +581,7 @@ MP_UNITS_EXPORT_END
 
 namespace detail {
 
-consteval bool less(MagnitudeSpec auto lhs, MagnitudeSpec auto rhs)
+[[nodiscard]] consteval bool less(MagnitudeSpec auto lhs, MagnitudeSpec auto rhs)
 {
   using lhs_base_t = decltype(get_base_value(lhs));
   using rhs_base_t = decltype(get_base_value(rhs));
@@ -599,9 +599,9 @@ consteval bool less(MagnitudeSpec auto lhs, MagnitudeSpec auto rhs)
 MP_UNITS_EXPORT_BEGIN
 
 // Base cases, for when either (or both) inputs are the identity.
-constexpr Magnitude auto operator*(magnitude<>, magnitude<>) { return magnitude<>{}; }
-constexpr Magnitude auto operator*(magnitude<>, Magnitude auto m) { return m; }
-constexpr Magnitude auto operator*(Magnitude auto m, magnitude<>) { return m; }
+[[nodiscard]] consteval Magnitude auto operator*(magnitude<>, magnitude<>) { return magnitude<>{}; }
+[[nodiscard]] consteval Magnitude auto operator*(magnitude<>, Magnitude auto m) { return m; }
+[[nodiscard]] consteval Magnitude auto operator*(Magnitude auto m, magnitude<>) { return m; }
 
 // Recursive case for the product of any two non-identity Magnitudes.
 template<auto H1, auto... T1, auto H2, auto... T2>
