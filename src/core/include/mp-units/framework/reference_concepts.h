@@ -45,14 +45,6 @@ struct is_specialization_of_reference<reference<Q, U>> : std::true_type {};
 
 MP_UNITS_EXPORT_BEGIN
 
-/**
- * @brief A concept matching all references in the library.
- *
- * Satisfied by all specializations of @c reference.
- */
-template<typename T>
-concept Reference = AssociatedUnit<T> || detail::is_specialization_of_reference<T>::value;
-
 [[nodiscard]] consteval QuantitySpec auto get_quantity_spec(AssociatedUnit auto u);
 
 template<typename Q, typename U>
@@ -68,6 +60,14 @@ template<typename Q, typename U>
 {
   return U{};
 }
+
+/**
+ * @brief A concept matching all references in the library.
+ *
+ * Satisfied by all specializations of @c reference.
+ */
+template<typename T>
+concept Reference = AssociatedUnit<T> || detail::is_specialization_of_reference<T>::value;
 
 /**
  * @brief A concept matching all references with provided quantity spec

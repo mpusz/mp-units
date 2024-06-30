@@ -37,7 +37,6 @@
 namespace mp_units {
 
 MP_UNITS_EXPORT template<QuantitySpec auto QS>
-// NOLINTNEXTLINE(bugprone-crtp-constructor-accessibility)
 struct absolute_point_origin {
   static constexpr QuantitySpec auto quantity_spec = QS;
 };

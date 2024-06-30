@@ -153,6 +153,9 @@ struct quantity_spec_interface {
 
 MP_UNITS_EXPORT_BEGIN
 
+inline constexpr struct is_kind {
+} is_kind;
+
 /**
  * @brief Quantity Specification
  *
@@ -177,9 +180,6 @@ template<auto...>
 template<typename, auto...>
 #endif
 struct quantity_spec;
-
-inline constexpr struct is_kind {
-} is_kind;
 
 MP_UNITS_EXPORT_END
 
