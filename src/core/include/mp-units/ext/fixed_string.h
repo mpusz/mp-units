@@ -266,6 +266,13 @@ basic_fixed_string(const CharT (&str)[N]) -> basic_fixed_string<CharT, N - 1>;
 template<one_of<char, char8_t, char16_t, char32_t, wchar_t> CharT, std::size_t N>
 basic_fixed_string(std::from_range_t, std::array<CharT, N>) -> basic_fixed_string<CharT, N>;
 
+// specialized algorithms
+template<class CharT, size_t N, class Traits>
+constexpr void swap(basic_fixed_string<CharT, N, Traits>& x, basic_fixed_string<CharT, N, Traits>& y) noexcept
+{
+  x.swap(y);
+}
+
 // typedef-names
 template<std::size_t N>
 using fixed_string = basic_fixed_string<char, N>;
