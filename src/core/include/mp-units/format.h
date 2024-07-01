@@ -467,8 +467,8 @@ public:
     return parse_defaults_specs(it, end);
   }
 
-  template<typename OutIt>
-  OutIt format(const quantity_t& q, MP_UNITS_STD_FMT::basic_format_context<OutIt, Char>& ctx) const
+  template<typename FormatContext>
+  auto format(const quantity_t& q, FormatContext& ctx) const
   {
     auto specs = specs_;
     mp_units::detail::handle_dynamic_spec<mp_units::detail::width_checker>(specs.width, specs.width_ref, ctx);
