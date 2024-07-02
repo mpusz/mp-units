@@ -469,7 +469,7 @@ choose from here. Depending on our needs or tastes, we can:
 
     ```cpp
     quantity_point<si::degree_Celsius, si::zeroth_degree_Celsius> q1 = si::zeroth_degree_Celsius + delta<deg_C>(20.5);
-    quantity_point<si::degree_Celsius, si::zeroth_degree_Celsius> q2 = {delta<deg_C>(20.5), si::zeroth_degree_Celsius};
+    quantity_point<si::degree_Celsius, si::zeroth_degree_Celsius> q2{delta<deg_C>(20.5), si::zeroth_degree_Celsius};
     quantity_point<si::degree_Celsius, si::zeroth_degree_Celsius> q3{delta<deg_C>(20.5)};
     quantity_point<si::degree_Celsius, si::zeroth_degree_Celsius> q4 = absolute<deg_C>(20.5);
     ```
@@ -478,7 +478,7 @@ choose from here. Depending on our needs or tastes, we can:
 
     ```cpp
     quantity_point<si::degree_Celsius> q5 = si::zeroth_degree_Celsius + delta<deg_C>(20.5);
-    quantity_point<si::degree_Celsius> q6 = {delta<deg_C>(20.5), si::zeroth_degree_Celsius};
+    quantity_point<si::degree_Celsius> q6{delta<deg_C>(20.5), si::zeroth_degree_Celsius};
     quantity_point<si::degree_Celsius> q7{delta<deg_C>(20.5)};
     quantity_point<si::degree_Celsius> q8 = absolute<deg_C>(20.5);
     ```
@@ -487,7 +487,7 @@ choose from here. Depending on our needs or tastes, we can:
 
     ```cpp
     quantity_point q9 = si::zeroth_degree_Celsius + delta<deg_C>(20.5);
-    quantity_point q10 = {delta<deg_C>(20.5), si::zeroth_degree_Celsius};
+    quantity_point q10{delta<deg_C>(20.5), si::zeroth_degree_Celsius};
     quantity_point q11{delta<deg_C>(20.5)};
     quantity_point q12 = absolute<deg_C>(20.5);
     ```
