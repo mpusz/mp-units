@@ -109,7 +109,7 @@ inline constexpr bool is_specialization_of_scaled_unit<scaled_unit<M, U>> = true
  * inline constexpr struct metre final : named_unit<"m", kind_of<length> {} metre;
  * inline constexpr struct hertz final : named_unit<"Hz", inverse(second), kind_of<frequency>> {} hertz;
  * inline constexpr struct newton final : named_unit<"N", kilogram * metre / square(second)> {} newton;
- * inline constexpr struct degree_Celsius final : named_unit<{u8"°C", "`C"}, kelvin, zeroth_degree_Celsius> {}
+ * inline constexpr struct degree_Celsius final : named_unit<{u8"℃", "`C"}, kelvin, zeroth_degree_Celsius> {}
  * degree_Celsius; inline constexpr struct minute final : named_unit<"min", mag<60> * second> {} minute;
  * @endcode
  *

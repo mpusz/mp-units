@@ -292,7 +292,7 @@ This introduces an additional type-safety.
 The above outputs:
 
 ```text
-Temperature: 20 °C (68 °F)
+Temperature: 20 ℃ (68 ℉)
 ```
 
 !!! info

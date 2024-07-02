@@ -445,14 +445,14 @@ namespace si {
 inline constexpr struct kelvin final :
     named_unit<"K", kind_of<isq::thermodynamic_temperature>, zeroth_kelvin> {} kelvin;
 inline constexpr struct degree_Celsius final :
-    named_unit<{u8"°C", "`C"}, kelvin, zeroth_degree_Celsius> {} degree_Celsius;
+    named_unit<{u8"℃", "`C"}, kelvin, zeroth_degree_Celsius> {} degree_Celsius;
 
 }
 
 namespace usc {
 
 inline constexpr struct degree_Fahrenheit final :
-    named_unit<{u8"°F", "`F"}, mag_ratio<5, 9> * si::degree_Celsius,
+    named_unit<{u8"℉", "`F"}, mag_ratio<5, 9> * si::degree_Celsius,
                zeroth_degree_Fahrenheit> {} degree_Fahrenheit;
 
 }
@@ -532,13 +532,13 @@ print_temp("Highest", room_high);
 The above prints:
 
 ```text
-Room reference temperature: 21 °C (69.8 °F, 294.15 K)
+Room reference temperature: 21 ℃ (69.8 ℉, 294.15 K)
 
 | Temperature delta  |   Room reference   |     Ice point      |   Absolute zero    |
 |====================|====================|====================|====================|
-| Lowest             |       -3 °C        |       18 °C        |     291.15 °C      |
-| Default            |        0 °C        |       21 °C        |     294.15 °C      |
-| Highest            |        3 °C        |       24 °C        |     297.15 °C      |
+| Lowest             |       -3 ℃        |       18 ℃        |     291.15 ℃      |
+| Default            |        0 ℃        |       21 ℃        |     294.15 ℃      |
+| Highest            |        3 ℃        |       24 ℃        |     297.15 ℃      |
 ```
 
 
