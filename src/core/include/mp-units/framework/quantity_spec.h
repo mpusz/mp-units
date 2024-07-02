@@ -112,11 +112,11 @@ using to_dimension = std::remove_const_t<decltype(Q::dimension)>;
 template<AssociatedUnit U>
 [[nodiscard]] consteval auto get_associated_quantity(U);
 
-#ifndef MP_UNITS_API_NO_CRTP
+#if !MP_UNITS_API_NO_CRTP
 template<typename Self>
 #endif
 struct quantity_spec_interface {
-#ifdef MP_UNITS_API_NO_CRTP
+#if MP_UNITS_API_NO_CRTP
   template<typename Self, UnitOf<Self{}> U>
   [[nodiscard]] consteval Reference auto operator[](this Self self, U u)
   {
@@ -171,7 +171,7 @@ MP_UNITS_EXPORT_BEGIN
  * types `speed` and `velocity` are considered not equal to `derived_dimension<length, per<time>>` or
  * to each other.
  */
-#ifdef MP_UNITS_API_NO_CRTP
+#if MP_UNITS_API_NO_CRTP
 template<auto...>
 #else
 template<typename, auto...>
@@ -216,7 +216,7 @@ MP_UNITS_EXPORT_END
  * @tparam BaseDimension base dimension for which a base quantity is being defined
  * @tparam Args optionally a value of a `quantity_character` in case the base quantity should not be scalar
  */
-#ifdef MP_UNITS_API_NO_CRTP
+#if MP_UNITS_API_NO_CRTP
 template<detail::BaseDimension auto Dim, one_of<quantity_character> auto... Args>
   requires(... && !QuantitySpec<decltype(Args)>)
 struct quantity_spec<Dim, Args...> : detail::quantity_spec_interface {
@@ -260,7 +260,7 @@ struct quantity_spec<Self, Dim, Args...> : detail::quantity_spec_interface<Self>
  * @tparam Eq quantity equation specification of a derived quantity
  * @tparam Args optionally a value of a `quantity_character` in case the base quantity should not be scalar
  */
-#ifdef MP_UNITS_API_NO_CRTP
+#if MP_UNITS_API_NO_CRTP
 template<detail::DerivedQuantitySpec auto Eq, one_of<quantity_character> auto... Args>
   requires(... && !QuantitySpec<decltype(Args)>)
 struct quantity_spec<Eq, Args...> : detail::quantity_spec_interface {
@@ -314,7 +314,7 @@ struct propagate_equation<Q, true> {
  * @tparam Args optionally a value of a `quantity_character` in case the base quantity should not be scalar
  *              or `is_kind` in case the quantity starts a new hierarchy tree of a kind
  */
-#ifdef MP_UNITS_API_NO_CRTP
+#if MP_UNITS_API_NO_CRTP
 template<detail::NamedQuantitySpec auto QS, one_of<quantity_character, struct is_kind> auto... Args>
   requires(... && !QuantitySpec<decltype(Args)>)
 struct quantity_spec<QS, Args...> : detail::propagate_equation<QS>, detail::quantity_spec_interface {
@@ -328,7 +328,7 @@ struct quantity_spec<Self, QS, Args...> : detail::propagate_equation<QS>, detail
   static constexpr Dimension auto dimension = _parent_.dimension;
   static constexpr quantity_character character = detail::quantity_character_init<Args...>(QS.character);
 
-#ifndef MP_UNITS_API_NO_CRTP
+#if !MP_UNITS_API_NO_CRTP
   template<typename Self_ = Self, UnitOf<Self_{}> U>
   [[nodiscard]] MP_UNITS_CONSTEVAL Reference auto operator[](U u) const
   {
@@ -376,7 +376,7 @@ struct quantity_spec<Self, QS, Args...> : detail::propagate_equation<QS>, detail
  *              or `is_kind` in case the quantity starts a new hierarchy tree of a kind
  */
 // clang-format on
-#ifdef MP_UNITS_API_NO_CRTP
+#if MP_UNITS_API_NO_CRTP
 template<detail::NamedQuantitySpec auto QS, detail::DerivedQuantitySpec auto Eq,
          one_of<quantity_character, struct is_kind> auto... Args>
   requires(!requires { QS._equation_; } || (requires {
@@ -402,7 +402,7 @@ namespace detail {
 
 template<detail::DerivedQuantitySpecExpr... Expr>
 struct derived_quantity_spec_impl :
-#ifdef MP_UNITS_API_NO_CRTP
+#if MP_UNITS_API_NO_CRTP
     detail::quantity_spec_interface,
 #else
     detail::quantity_spec_interface<derived_quantity_spec<Expr...>>,
@@ -496,7 +496,7 @@ template<QuantitySpec Q>
 
 }  // namespace detail
 
-#ifdef MP_UNITS_API_NO_CRTP
+#if MP_UNITS_API_NO_CRTP
 template<typename Q>
   requires detail::QuantitySpecWithNoSpecifiers<Q> && (detail::get_kind_tree_root(Q{}) == Q{})
 struct kind_of_<Q> final : Q::_base_type_ {
@@ -1479,7 +1479,7 @@ template<QuantitySpec Q>
   requires requires(Q q) { get_kind_tree_root(q); }
 using to_kind = decltype(get_kind_tree_root(Q{}));
 
-#ifdef MP_UNITS_API_NO_CRTP
+#if MP_UNITS_API_NO_CRTP
 template<NamedQuantitySpec auto QS, auto... Args>
 [[nodiscard]] consteval bool defined_as_kind(quantity_spec<QS, Args...>)
 #else

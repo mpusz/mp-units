@@ -26,7 +26,7 @@
 
 #include <mp-units/bits/hacks.h>
 
-#ifdef MP_UNITS_API_NO_CRTP
+#if MP_UNITS_API_NO_CRTP
 
 #define QUANTITY_SPEC(name, ...)                                                \
   inline constexpr struct name final : ::mp_units::quantity_spec<__VA_ARGS__> { \

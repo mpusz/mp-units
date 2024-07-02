@@ -31,7 +31,7 @@
 namespace mp_units {
 
 MP_UNITS_EXPORT
-#ifdef MP_UNITS_API_NO_CRTP
+#if MP_UNITS_API_NO_CRTP
 template<auto...>
 #else
 template<typename, auto...>
@@ -52,7 +52,7 @@ inline constexpr bool is_specialization_of_kind_of<kind_of_<Q>> = true;
 template<typename T>
 concept QuantityKindSpec = is_specialization_of_kind_of<T>;
 
-#ifdef MP_UNITS_API_NO_CRTP
+#if MP_UNITS_API_NO_CRTP
 template<auto... Args>
 void to_base_specialization_of_quantity_spec(const volatile quantity_spec<Args...>*);
 #else
