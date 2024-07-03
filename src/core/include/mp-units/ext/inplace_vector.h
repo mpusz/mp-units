@@ -128,7 +128,7 @@ public:
   }
 
 private:
-  T data_[N];
+  T data_[N] = {};
   size_type size_ = 0;
 };
 
