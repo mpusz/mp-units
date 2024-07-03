@@ -31,6 +31,7 @@
 #include <mp-units/compat_macros.h>
 #include <mp-units/ext/algorithm.h>
 #include <mp-units/ext/fixed_string.h>
+#include <mp-units/ext/inplace_vector.h>
 #include <mp-units/ext/type_name.h>
 #include <mp-units/ext/type_traits.h>
 #include <mp-units/framework/expression_template.h>
@@ -813,46 +814,22 @@ constexpr Out unit_symbol_to(Out out, U u, const unit_symbol_formatting& fmt = u
   return detail::unit_symbol_impl<CharT>(out, u, fmt, false);
 }
 
-namespace detail {
-
-template<typename CharT, std::size_t N, unit_symbol_formatting fmt, Unit U>
-[[nodiscard]] consteval std::array<CharT, N> get_symbol_buffer(U)
-{
-  std::array<CharT, N> buffer{};
-  unit_symbol_to<CharT>(buffer.begin(), U{}, fmt);
-  return buffer;
-}
-
-}  // namespace detail
-
-
 // TODO Refactor to `unit_symbol(U, fmt)` when P1045: constexpr Function Parameters is available
 MP_UNITS_EXPORT template<unit_symbol_formatting fmt = unit_symbol_formatting{}, typename CharT = char, Unit U>
-#if defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG <= 18
 [[nodiscard]] constexpr auto unit_symbol(U)
-#else
-[[nodiscard]] consteval auto unit_symbol(U)
-#endif
 {
-  auto get_size = []() consteval {
-#if MP_UNITS_HOSTED
-    std::basic_string<CharT> buffer;
-    unit_symbol_to<CharT>(std::back_inserter(buffer), U{}, fmt);
-    return buffer.size();
-#else
-    std::array<CharT, 128> buffer;  // TODO unsafe
-    auto end = unit_symbol_to<CharT>(buffer.begin(), U{}, fmt);
-    return end - buffer.begin();
-#endif
+  auto get_symbol_text = []() consteval {
+    detail::inplace_vector<CharT, 64> text;  // TODO can we improve here?
+    unit_symbol_to<CharT>(std::back_inserter(text), U{}, fmt);
+    return text;
   };
+  constexpr auto text = get_symbol_text();
 
 #if MP_UNITS_API_STRING_VIEW_RET  // Permitting static constexpr variables in constexpr functions
-  static constexpr std::size_t size = get_size();
-  static constexpr auto buffer = detail::get_symbol_buffer<CharT, size, fmt>(U{});
-  return std::string_view(buffer.data(), size);
+  static constexpr basic_fixed_string<CharT, text.size()> buffer(std::from_range, text);
+  return buffer.view();
 #else
-  constexpr std::size_t size = get_size();
-  return basic_fixed_string(std::from_range, detail::get_symbol_buffer<CharT, size, fmt>(U{}));
+  return basic_fixed_string<CharT, text.size()>(std::from_range, text);
 #endif
 }
 
