@@ -37,48 +37,16 @@ check_libcxx_in_use(${projectPrefix}LIBCXX)
 
 # project build options
 option(${projectPrefix}BUILD_AS_SYSTEM_HEADERS "Exports library as system headers" OFF)
-message(STATUS "${projectPrefix}BUILD_AS_SYSTEM_HEADERS: ${${projectPrefix}BUILD_AS_SYSTEM_HEADERS}")
-
 option(${projectPrefix}BUILD_CXX_MODULES "Add C++ modules to the list of default targets" OFF)
-message(STATUS "${projectPrefix}BUILD_CXX_MODULES: ${${projectPrefix}BUILD_CXX_MODULES}")
 
-option(${projectPrefix}API_FREESTANDING "Builds only freestanding part of the library" OFF)
-message(STATUS "${projectPrefix}API_FREESTANDING: ${${projectPrefix}API_FREESTANDING}")
+message(STATUS "${projectPrefix}BUILD_AS_SYSTEM_HEADERS: ${${projectPrefix}BUILD_AS_SYSTEM_HEADERS}")
+message(STATUS "${projectPrefix}BUILD_CXX_MODULES: ${${projectPrefix}BUILD_CXX_MODULES}")
 
 if(${projectPrefix}BUILD_AS_SYSTEM_HEADERS)
     set(${projectPrefix}_AS_SYSTEM SYSTEM)
 endif()
 
-# project API settings
-function(cache_var_values name)
-    set_property(CACHE ${projectPrefix}${name} PROPERTY STRINGS ${ARGN})
-    if(NOT ${projectPrefix}${name} IN_LIST ARGN)
-        message(FATAL_ERROR
-                    "Invalid value '${${projectPrefix}${name}}' provided for a cache variable ${projectPrefix}${name} (${ARGN} allowed)"
-        )
-    endif()
-    message(STATUS "${projectPrefix}${name}: ${${projectPrefix}${name}}")
-endfunction()
-
-set(${projectPrefix}API_STD_FORMAT AUTO CACHE STRING "Enable `std::format` support")
-cache_var_values(API_STD_FORMAT AUTO TRUE FALSE)
-
-set(${projectPrefix}API_STRING_VIEW_RET AUTO CACHE STRING
-                                                   "Enable returning `std::string_view` from `constexpr` functions"
-)
-cache_var_values(API_STRING_VIEW_RET AUTO TRUE FALSE)
-
-set(${projectPrefix}API_NO_CRTP AUTO CACHE STRING "Enable class definitions without CRTP idiom")
-cache_var_values(API_NO_CRTP AUTO TRUE FALSE)
-
-set(${projectPrefix}API_CONTRACTS GSL-LITE CACHE STRING "Enable contract checking")
-cache_var_values(API_CONTRACTS NONE GSL-LITE MS-GSL)
-
-if(${projectPrefix}API_FREESTANDING AND NOT ${projectPrefix}API_CONTRACTS STREQUAL "NONE")
-    message(FATAL_ERROR "'${projectPrefix}API_CONTRACTS' should be set to 'NONE' for a freestanding build")
-endif()
-
-# C++ features
+# check for C++ features
 check_cxx_feature_supported(__cpp_lib_format ${projectPrefix}LIB_FORMAT_SUPPORTED)
 check_cxx_feature_supported("__cpp_constexpr >= 202211L" ${projectPrefix}STATIC_CONSTEXPR_VARS_IN_CONSTEXPR_FUNCTIONS)
 check_cxx_feature_supported(__cpp_explicit_this_parameter ${projectPrefix}EXPLICIT_THIS_PARAMETER_SUPPORTED)
@@ -91,21 +59,59 @@ if(NOT ${projectPrefix}LIB_FORMAT_SUPPORTED
    AND ${projectPrefix}LIBCXX
 )
     message(STATUS "Clang 17+ with libc++ detected, overriding `std::format` support")
-    set(${projectPrefix}LIB_FORMAT_SUPPORTED 1)
+    set(${projectPrefix}LIB_FORMAT_SUPPORTED ON)
 endif()
 
-# validate settings
-if(NOT ${projectPrefix}API_FREESTANDING AND "${projectPrefix}API_STD_FORMAT" AND NOT
-                                                                                 ${projectPrefix}LIB_FORMAT_SUPPORTED
+# clang++-18 supports explicit `this` parameter
+# https://github.com/llvm/llvm-project/issues/82780
+if(NOT ${projectPrefix}EXPLICIT_THIS_PARAMETER_SUPPORTED
+   AND CMAKE_CXX_COMPILER_ID STREQUAL "Clang"
+   AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "18")
+    message(STATUS "Clang 18+ detected, overriding `no CRTP` support")
+    set(${projectPrefix}EXPLICIT_THIS_PARAMETER_SUPPORTED ON)
+endif()
+
+# project API settings
+option(${projectPrefix}API_STD_FORMAT "Enable `std::format` support" ${${projectPrefix}LIB_FORMAT_SUPPORTED})
+option(${projectPrefix}API_STRING_VIEW_RET "Enable returning `std::string_view` from `constexpr` functions"
+       ${${projectPrefix}STATIC_CONSTEXPR_VARS_IN_CONSTEXPR_FUNCTIONS}
 )
+option(${projectPrefix}API_NO_CRTP "Enable class definitions without CRTP idiom"
+       ${${projectPrefix}EXPLICIT_THIS_PARAMETER_SUPPORTED}
+)
+option(${projectPrefix}API_FREESTANDING "Builds only freestanding part of the library" OFF)
+set(${projectPrefix}API_CONTRACTS GSL-LITE CACHE STRING "Enable contract checking")
+
+message(STATUS "${projectPrefix}API_STD_FORMAT: ${${projectPrefix}API_STD_FORMAT}")
+message(STATUS "${projectPrefix}API_STRING_VIEW_RET: ${${projectPrefix}API_STRING_VIEW_RET}")
+message(STATUS "${projectPrefix}API_NO_CRTP: ${${projectPrefix}API_NO_CRTP}")
+message(STATUS "${projectPrefix}API_FREESTANDING: ${${projectPrefix}API_FREESTANDING}")
+
+function(cache_var_values name)
+    set_property(CACHE ${projectPrefix}${name} PROPERTY STRINGS ${ARGN})
+    if(NOT ${projectPrefix}${name} IN_LIST ARGN)
+        message(FATAL_ERROR
+                    "Invalid value '${${projectPrefix}${name}}' provided for a cache variable ${projectPrefix}${name} (${ARGN} allowed)"
+        )
+    endif()
+    message(STATUS "${projectPrefix}${name}: ${${projectPrefix}${name}}")
+endfunction()
+cache_var_values(API_CONTRACTS NONE GSL-LITE MS-GSL)
+
+# validate options
+if(${projectPrefix}API_FREESTANDING AND NOT ${projectPrefix}API_CONTRACTS STREQUAL "NONE")
+    message(FATAL_ERROR "'${projectPrefix}API_CONTRACTS' should be set to 'NONE' for a freestanding build")
+endif()
+
+if(NOT ${projectPrefix}API_FREESTANDING AND ${projectPrefix}API_STD_FORMAT AND NOT ${projectPrefix}LIB_FORMAT_SUPPORTED)
     message(FATAL_ERROR "`std::format` enabled but not supported")
 endif()
 
-if("${projectPrefix}API_STRING_VIEW_RET" AND NOT ${projectPrefix}STATIC_CONSTEXPR_VARS_IN_CONSTEXPR_FUNCTIONS)
+if(${projectPrefix}API_STRING_VIEW_RET AND NOT ${projectPrefix}STATIC_CONSTEXPR_VARS_IN_CONSTEXPR_FUNCTIONS)
     message(FATAL_ERROR "`std::string_view` returns enabled but not supported")
 endif()
 
-if("${projectPrefix}API_NO_CRTP" AND NOT ${projectPrefix}EXPLICIT_THIS_PARAMETER_SUPPORTED)
+if(${projectPrefix}API_NO_CRTP AND NOT ${projectPrefix}EXPLICIT_THIS_PARAMETER_SUPPORTED)
     message(FATAL_ERROR "`NO_CRTP` mode enabled but explicit `this` parameter is not supported")
 endif()
 

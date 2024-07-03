@@ -28,15 +28,9 @@ from conan.errors import ConanInvalidConfiguration
 from conan.tools.build import can_run, default_cppstd, valid_min_cppstd
 from conan.tools.cmake import CMake, CMakeDeps, CMakeToolchain, cmake_layout
 from conan.tools.files import copy, load, rmdir
+from conan.tools.scm import Version
 
 required_conan_version = ">=2.0.0"
-
-
-def loose_lt_semver(v1, v2):
-    lv1 = [int(v) for v in v1.split(".")]
-    lv2 = [int(v) for v in v2.split(".")]
-    min_length = min(len(lv1), len(lv2))
-    return lv1[:min_length] < lv2[:min_length]
 
 
 class MPUnitsConan(ConanFile):
@@ -61,22 +55,21 @@ class MPUnitsConan(ConanFile):
     url = "https://github.com/mpusz/mp-units"
     settings = "os", "arch", "compiler", "build_type"
     options = {
-        "cxx_modules": ["auto", True, False],
-        "std_format": ["auto", True, False],
-        "string_view_ret": ["auto", True, False],
-        "no_crtp": ["auto", True, False],
+        "cxx_modules": [True, False],
+        "std_format": [True, False],
+        "string_view_ret": [True, False],
+        "no_crtp": [True, False],
         "contracts": ["none", "gsl-lite", "ms-gsl"],
         "freestanding": [True, False],
     }
     default_options = {
-        "cxx_modules": "auto",
-        "std_format": "auto",
-        "string_view_ret": "auto",
-        "no_crtp": "auto",
+        # "cxx_modules" default set in config_options()
+        # "std_format" default set in config_options()
+        # "string_view_ret" default set in config_options()
+        # "no_crtp" default set in config_options()
         "contracts": "gsl-lite",
-        "freestanding": "False",
+        "freestanding": False,
     }
-    tool_requires = "cmake/[>=3.29]"
     implements = "auto_header_only"
     exports = "LICENSE.md"
     exports_sources = (
@@ -94,7 +87,7 @@ class MPUnitsConan(ConanFile):
     def _feature_compatibility(self):
         return {
             "minimum_support": {
-                "std": "20",
+                "min_cppstd": "20",
                 "compiler": {
                     "gcc": "12",
                     "clang": "16",
@@ -103,7 +96,7 @@ class MPUnitsConan(ConanFile):
                 },
             },
             "std_format": {
-                "std": "20",
+                "min_cppstd": "20",
                 "compiler": {
                     "gcc": "13",
                     "clang": "17",
@@ -112,15 +105,15 @@ class MPUnitsConan(ConanFile):
                 },
             },
             "cxx_modules": {
-                "std": "20",
-                "compiler": {"gcc": "14", "clang": "17", "apple-clang": "", "msvc": ""},
+                "min_cppstd": "20",
+                "compiler": {"gcc": "", "clang": "17", "apple-clang": "", "msvc": ""},
             },
             "static_constexpr_vars_in_constexpr_func": {
-                "std": "23",
+                "min_cppstd": "23",
                 "compiler": {"gcc": "13", "clang": "17", "apple-clang": "", "msvc": ""},
             },
             "explicit_this": {
-                "std": "23",
+                "min_cppstd": "23",
                 "compiler": {
                     "gcc": "14",
                     "clang": "18",
@@ -139,15 +132,30 @@ class MPUnitsConan(ConanFile):
             "no_crtp": "explicit_this",
         }
 
+    def _set_default_option(self, name):
+        compiler = self.settings.compiler
+        feature_name = self._option_feature_map[name]
+        feature = self._feature_compatibility[feature_name]
+        min_version = feature["compiler"].get(str(compiler))
+        setattr(
+            self.options,
+            name,
+            bool(
+                min_version
+                and Version(compiler.version) >= min_version
+                and valid_min_cppstd(self, feature["min_cppstd"])
+            ),
+        )
+
     def _check_feature_supported(self, name, feature_name=name):
         compiler = self.settings.compiler
         cppstd = compiler.get_safe("cppstd", default_cppstd(self))
         feature = self._feature_compatibility[feature_name]
 
         # check C++ version
-        if not valid_min_cppstd(self, feature["std"]):
+        if not valid_min_cppstd(self, feature["min_cppstd"]):
             raise ConanInvalidConfiguration(
-                f"'{name}' requires at least cppstd={feature['std']} ({cppstd} in use)",
+                f"'{name}' requires at least cppstd={feature['min_cppstd']} ({cppstd} in use)",
             )
 
         # check compiler version
@@ -157,39 +165,16 @@ class MPUnitsConan(ConanFile):
             return
         if min_version == "":
             raise ConanInvalidConfiguration(
-                f"'{name}' is not yet supported by any known {compiler} compiler"
+                f"'{name}' is not yet supported by any known {compiler} version"
             )
-        if loose_lt_semver(str(compiler.version), min_version):
+        if Version(compiler.version) < min_version:
             raise ConanInvalidConfiguration(
                 f"'{name}' requires at least {compiler}-{min_version} ({compiler}-{compiler.version} in use)"
             )
 
-    def _is_feature_enabled(self, name):
-        compiler = self.settings.compiler
-        opt = self.options.get_safe(name)
-        feature_name = self._option_feature_map[name]
-        feature = self._feature_compatibility[feature_name]
-        min_version = feature["compiler"].get(str(compiler))
-        return bool(
-            opt == True
-            or (
-                opt == "auto"
-                and min_version
-                and not loose_lt_semver(str(compiler.version), min_version)
-            )
-        )
-
     @property
     def _build_all(self):
         return bool(self.conf.get("user.mp-units.build:all", default=False))
-
-    @property
-    def _build_cxx_modules(self):
-        return self._is_feature_enabled("cxx_modules")
-
-    @property
-    def _use_fmtlib(self):
-        return not self._is_feature_enabled("std_format")
 
     @property
     def _skip_la(self):
@@ -206,16 +191,25 @@ class MPUnitsConan(ConanFile):
         ).group(1)
         self.version = version.strip()
 
+    def config_options(self):
+        for key in self._option_feature_map.keys():
+            self._set_default_option(key)
+
+    def configure(self):
+        if self.options.freestanding:
+            self.options.rm_safe("std_format")
+
     def requirements(self):
         if not self.options.freestanding:
             if self.options.contracts == "gsl-lite":
                 self.requires("gsl-lite/0.41.0")
             elif self.options.contracts == "ms-gsl":
                 self.requires("ms-gsl/4.0.0")
-            if self._use_fmtlib:
+            if not self.options.std_format:
                 self.requires("fmt/10.2.1")
 
     def build_requirements(self):
+        self.tool_requires("cmake/[>=3.29 <4]")
         if self._build_all:
             if not self.options.freestanding:
                 self.test_requires("catch2/3.5.1")
@@ -244,21 +238,17 @@ class MPUnitsConan(ConanFile):
             tc.cache_variables["MP_UNITS_DEV_BUILD_LA"] = not self._skip_la
             if self._run_clang_tidy:
                 tc.cache_variables["MP_UNITS_DEV_CLANG_TIDY"] = True
-        if self._build_cxx_modules:
+        if self.options.cxx_modules:
             tc.cache_variables["CMAKE_CXX_SCAN_FOR_MODULES"] = True
-            tc.cache_variables["MP_UNITS_BUILD_CXX_MODULES"] = str(
-                self.options.cxx_modules
-            ).upper()
+            tc.cache_variables["MP_UNITS_BUILD_CXX_MODULES"] = True
         if self.options.freestanding:
             tc.cache_variables["MP_UNITS_API_FREESTANDING"] = True
         else:
-            tc.cache_variables["MP_UNITS_API_STD_FORMAT"] = str(
-                self.options.std_format
-            ).upper()
-        tc.cache_variables["MP_UNITS_API_STRING_VIEW_RET"] = str(
+            tc.cache_variables["MP_UNITS_API_STD_FORMAT"] = self.options.std_format
+        tc.cache_variables["MP_UNITS_API_STRING_VIEW_RET"] = (
             self.options.string_view_ret
-        ).upper()
-        tc.cache_variables["MP_UNITS_API_NO_CRTP"] = str(self.options.no_crtp).upper()
+        )
+        tc.cache_variables["MP_UNITS_API_NO_CRTP"] = self.options.no_crtp
         tc.cache_variables["MP_UNITS_API_CONTRACTS"] = str(
             self.options.contracts
         ).upper()
@@ -269,7 +259,8 @@ class MPUnitsConan(ConanFile):
     def build(self):
         cmake = CMake(self)
         cmake.configure(build_script_folder=None if self._build_all else "src")
-        cmake.build()
+        if self._build_all or self.options.cxx_modules:
+            cmake.build()
         if self._build_all:
             cmake.build(target="all_verify_interface_header_sets")
             if can_run(self):
@@ -300,20 +291,17 @@ class MPUnitsConan(ConanFile):
             self.cpp_info.components["core"].defines.append("MP_UNITS_API_CONTRACTS=3")
 
         # handle API options
-        if self.options.string_view_ret != "auto":
-            self.cpp_info.components["core"].defines.append(
-                "MP_UNITS_API_STRING_VIEW_RET="
-                + str(int(self.options.string_view_ret == True))
-            )
-        if self.options.no_crtp != "auto":
-            self.cpp_info.components["core"].defines.append(
-                "MP_UNITS_API_NO_CRTP=" + str(int(self.options.no_crtp == True))
-            )
-        if self.options.std_format != "auto":
-            self.cpp_info.components["core"].defines.append(
-                "MP_UNITS_API_STD_FORMAT=" + str(int(self.options.std_format == True))
-            )
-        if self._use_fmtlib:
+        self.cpp_info.components["core"].defines.append(
+            "MP_UNITS_API_STRING_VIEW_RET="
+            + str(int(self.options.string_view_ret == True))
+        )
+        self.cpp_info.components["core"].defines.append(
+            "MP_UNITS_API_NO_CRTP=" + str(int(self.options.no_crtp == True))
+        )
+        self.cpp_info.components["core"].defines.append(
+            "MP_UNITS_API_STD_FORMAT=" + str(int(self.options.std_format == True))
+        )
+        if not self.options.std_format:
             self.cpp_info.components["core"].requires.append("fmt::fmt")
 
         # handle hosted configuration
