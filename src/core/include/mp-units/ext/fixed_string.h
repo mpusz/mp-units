@@ -34,6 +34,7 @@
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <mp-units/ext/contracts.h>
 #include <compare>  // IWYU pragma: export
+#include <concepts>
 #include <cstddef>
 #include <cstdlib>
 #include <ranges>
