@@ -2,6 +2,10 @@
 
 ## mp-units
 
+### 2.2.1 <small>July 3, 2024</small> { id="2.2.1" }
+
+- (!) feat: Conan and CMake options refactored
+
 ### 2.2.0 <small>June 14, 2024</small> { id="2.2.0" }
 
 - (!) feat: C++ modules support added by [@JohelEGP](https://github.com/JohelEGP)
