@@ -46,6 +46,7 @@ add_mp_units_module(
             include/mp-units/ext/algorithm.h
             include/mp-units/ext/contracts.h
             include/mp-units/ext/fixed_string.h
+            include/mp-units/ext/inplace_vector.h
             include/mp-units/ext/prime.h
             include/mp-units/ext/type_name.h
             include/mp-units/ext/type_traits.h
