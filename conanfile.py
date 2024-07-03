@@ -245,9 +245,9 @@ class MPUnitsConan(ConanFile):
             tc.cache_variables["MP_UNITS_API_FREESTANDING"] = True
         else:
             tc.cache_variables["MP_UNITS_API_STD_FORMAT"] = self.options.std_format
-        tc.cache_variables["MP_UNITS_API_STRING_VIEW_RET"] = (
-            self.options.string_view_ret
-        )
+        tc.cache_variables[
+            "MP_UNITS_API_STRING_VIEW_RET"
+        ] = self.options.string_view_ret
         tc.cache_variables["MP_UNITS_API_NO_CRTP"] = self.options.no_crtp
         tc.cache_variables["MP_UNITS_API_CONTRACTS"] = str(
             self.options.contracts
