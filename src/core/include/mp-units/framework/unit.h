@@ -833,7 +833,7 @@ MP_UNITS_EXPORT template<unit_symbol_formatting fmt = unit_symbol_formatting{}, 
                                                                                    oversized_symbol_text);
   return storage.view();
 #else
-  return basic_fixed_string<CharT, text.size()>(std::from_range, text);
+  return basic_fixed_string<CharT, oversized_symbol_text.size()>(std::from_range, oversized_symbol_text);
 #endif
 }
 
