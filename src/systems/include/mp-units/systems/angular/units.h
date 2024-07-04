@@ -31,7 +31,9 @@
 #endif
 
 MP_UNITS_EXPORT
-namespace mp_units::angular {
+namespace mp_units {
+
+namespace angular {
 
 // clang-format off
 inline constexpr struct dim_angle final : base_dimension<"A"> {} dim_angle;
@@ -57,4 +59,11 @@ inline constexpr auto deg2 = square(degree);
 
 }  // namespace unit_symbols
 
-}  // namespace mp_units::angular
+}  // namespace angular
+
+template<>
+inline constexpr bool space_before_unit_symbol<angular::degree> = false;
+template<>
+inline constexpr bool space_before_unit_symbol<angular::gradian> = false;
+
+}  // namespace mp_units
