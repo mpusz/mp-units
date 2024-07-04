@@ -10,4 +10,10 @@ RUN sudo install-packages \
   clang-16
 
 # Install mkdocs dependencies
-RUN sudo install-packages
+RUN sudo install-packages \
+  libcairo2-dev \
+  libfreetype6-dev \
+  libffi-dev \
+  libjpeg-dev \
+  libpng-dev \
+  libz-dev
