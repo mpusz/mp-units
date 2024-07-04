@@ -159,14 +159,12 @@ concept QuantityPointLike = requires {
   typename quantity_point_like_traits<T>::rep;
   requires RepresentationOf<typename quantity_point_like_traits<T>::rep,
                             get_quantity_spec(quantity_point_like_traits<T>::reference).character>;
-} && requires(T qp, quantity<quantity_point_like_traits<T>::reference, typename quantity_point_like_traits<T>::rep> q) {
+} && requires(T qp, typename quantity_point_like_traits<T>::rep v) {
   {
-    quantity_point_like_traits<T>::to_quantity(qp)
-  } -> detail::ConversionSpecOf<
-    quantity<quantity_point_like_traits<T>::reference, typename quantity_point_like_traits<T>::rep>>;
-
+    quantity_point_like_traits<T>::to_numerical_value(qp)
+  } -> detail::ConversionSpecOf<typename quantity_point_like_traits<T>::rep>;
   {
-    quantity_point_like_traits<T>::from_quantity(q)
+    quantity_point_like_traits<T>::from_numerical_value(v)
   } -> detail::ConversionSpecOf<T>;
 };
 

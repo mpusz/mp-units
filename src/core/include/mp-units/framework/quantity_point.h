@@ -201,13 +201,14 @@ public:
               quantity<quantity_point_like_traits<QP>::reference, typename quantity_point_like_traits<QP>::rep>,
               quantity_type>
   constexpr explicit(
-    is_specialization_of<decltype(quantity_point_like_traits<QP>::to_quantity(std::declval<QP>())),
+    is_specialization_of<decltype(quantity_point_like_traits<QP>::to_numerical_value(std::declval<QP>())),
                          convert_explicitly> ||
     !std::convertible_to<
       quantity<quantity_point_like_traits<QP>::reference, typename quantity_point_like_traits<QP>::rep>, quantity_type>)
     // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
     quantity_point(const QP& qp) :
-      quantity_from_origin_is_an_implementation_detail_(quantity_point_like_traits<QP>::to_quantity(qp).value)
+      quantity_from_origin_is_an_implementation_detail_(quantity_point_like_traits<QP>::to_numerical_value(qp).value,
+                                                        get_unit(quantity_point_like_traits<QP>::reference))
   {
   }
 
@@ -297,16 +298,20 @@ public:
                                                         typename quantity_point_like_traits<QP>::rep>>
   [[nodiscard]] explicit(
     is_specialization_of<
-      decltype(quantity_point_like_traits<QP>::from_quantity(quantity_from_origin_is_an_implementation_detail_)),
+      decltype(quantity_point_like_traits<QP>::from_numerical_value(
+        quantity_from_origin_is_an_implementation_detail_.numerical_value_is_an_implementation_detail_)),
       convert_explicitly> ||
     !std::convertible_to<quantity_type, quantity<quantity_point_like_traits<QP>::reference,
                                                  typename quantity_point_like_traits<QP>::rep>>) constexpr
   // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
   operator QP_() const& noexcept(
-    noexcept(quantity_point_like_traits<QP>::from_quantity(quantity_from_origin_is_an_implementation_detail_)) &&
+    noexcept(quantity_point_like_traits<QP>::from_numerical_value(
+      quantity_from_origin_is_an_implementation_detail_.numerical_value_is_an_implementation_detail_)) &&
     std::is_nothrow_copy_constructible_v<rep>)
   {
-    return quantity_point_like_traits<QP>::from_quantity(quantity_from_origin_is_an_implementation_detail_).value;
+    return quantity_point_like_traits<QP>::from_numerical_value(
+             quantity_from_origin_is_an_implementation_detail_.numerical_value_is_an_implementation_detail_)
+      .value;
   }
 
   template<typename QP_, QuantityPointLike QP = std::remove_cvref_t<QP_>>
@@ -315,16 +320,19 @@ public:
                                                         typename quantity_point_like_traits<QP>::rep>>
   [[nodiscard]] explicit(
     is_specialization_of<
-      decltype(quantity_point_like_traits<QP>::from_quantity(quantity_from_origin_is_an_implementation_detail_)),
+      decltype(quantity_point_like_traits<QP>::from_numerical_value(
+        quantity_from_origin_is_an_implementation_detail_.numerical_value_is_an_implementation_detail_)),
       convert_explicitly> ||
     !std::convertible_to<quantity_type, quantity<quantity_point_like_traits<QP>::reference,
                                                  typename quantity_point_like_traits<QP>::rep>>) constexpr
   // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
   operator QP_() && noexcept(
-    noexcept(quantity_point_like_traits<QP>::from_quantity(quantity_from_origin_is_an_implementation_detail_)) &&
+    noexcept(quantity_point_like_traits<QP>::from_numerical_value(
+      quantity_from_origin_is_an_implementation_detail_.numerical_value_is_an_implementation_detail_)) &&
     std::is_nothrow_move_constructible_v<rep>)
   {
-    return quantity_point_like_traits<QP>::from_quantity(std::move(quantity_from_origin_is_an_implementation_detail_))
+    return quantity_point_like_traits<QP>::from_numerical_value(
+             std::move(quantity_from_origin_is_an_implementation_detail_).numerical_value_is_an_implementation_detail_)
       .value;
   }
 
@@ -387,11 +395,10 @@ template<Quantity Q, PointOriginFor<Q::quantity_spec> PO>
 quantity_point(Q q, PO) -> quantity_point<Q::reference, PO{}, typename Q::rep>;
 
 template<QuantityPointLike QP>
-explicit(
-  is_specialization_of<decltype(quantity_point_like_traits<QP>::to_quantity(std::declval<QP>())), convert_explicitly>)
-  quantity_point(QP)
-    -> quantity_point<quantity_point_like_traits<QP>::reference, quantity_point_like_traits<QP>::point_origin,
-                      typename quantity_point_like_traits<QP>::rep>;
+explicit(is_specialization_of<decltype(quantity_point_like_traits<QP>::to_numerical_value(std::declval<QP>())),
+                              convert_explicitly>) quantity_point(QP)
+  -> quantity_point<quantity_point_like_traits<QP>::reference, quantity_point_like_traits<QP>::point_origin,
+                    typename quantity_point_like_traits<QP>::rep>;
 
 template<auto R1, auto PO1, typename Rep1, auto R2, typename Rep2>
 // TODO simplify when gcc catches up

@@ -100,16 +100,16 @@ struct quantity_point_like_traits<std::chrono::time_point<C, std::chrono::durati
   static constexpr auto point_origin = chrono_point_origin<C>;
   using rep = Rep;
 
-  [[nodiscard]] static constexpr convert_implicitly<quantity<reference, rep>> to_quantity(const T& qp) noexcept(
+  [[nodiscard]] static constexpr convert_implicitly<rep> to_numerical_value(const T& tp) noexcept(
     std::is_nothrow_copy_constructible_v<rep>)
   {
-    return quantity{qp.time_since_epoch()};
+    return tp.time_since_epoch().count();
   }
 
-  [[nodiscard]] static constexpr convert_implicitly<T> from_quantity(const quantity<reference, rep>& q) noexcept(
+  [[nodiscard]] static constexpr convert_implicitly<T> from_numerical_value(const rep& v) noexcept(
     std::is_nothrow_copy_constructible_v<rep>)
   {
-    return T(q);
+    return T(std::chrono::duration<Rep, Period>(v));
   }
 };
 

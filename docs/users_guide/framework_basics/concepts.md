@@ -282,9 +282,9 @@ for which an instantiation of `quantity_like_traits` type trait yields a valid t
       static constexpr auto reference = si::second;
       using rep = std::chrono::seconds::rep;
 
-      [[nodiscard]] static constexpr convert_implicitly<rep> to_numerical_value(const std::chrono::seconds& q)
+      [[nodiscard]] static constexpr convert_implicitly<rep> to_numerical_value(const std::chrono::seconds& d)
       {
-        return q.count();
+        return d.count();
       }
 
       [[nodiscard]] static constexpr convert_implicitly<std::chrono::seconds> from_numerical_value(const rep& v)
@@ -307,12 +307,11 @@ for which an instantiation of `quantity_point_like_traits` type trait yields a v
 - Static data member `point_origin` that matches the [`PointOrigin`](#PointOrigin) concept.
 - `rep` type that matches [`RepresentationOf`](#RepresentationOf) concept with the character provided
   in `reference`.
-- `to_quantity(T)` static member function returning the `quantity` being the offset of the point
-  from the origin packed in either `convert_explicitly` or `convert_implicitly` wrapper that enables
-  implicit conversion in the latter case.
-- `from_quantity(quantity<reference, rep>)` static member function returning `T` packed in either
-  `convert_explicitly` or `convert_implicitly` wrapper that enables implicit conversion in the latter
-  case.
+- `to_numerical_value(T)` static member function returning a raw value of the quantity being the offset
+  of the point from the origin packed in either `convert_explicitly` or `convert_implicitly` wrapper that
+  enables implicit conversion in the latter case.
+- `from_numerical_value(rep)` static member function returning `T` packed in either `convert_explicitly`
+  or `convert_implicitly` wrapper that enables implicit conversion in the latter case.
 
 
 ??? abstract "Examples"
@@ -324,17 +323,17 @@ for which an instantiation of `quantity_point_like_traits` type trait yields a v
     struct mp_units::quantity_point_like_traits<std::chrono::time_point<C, std::chrono::seconds>> {
       using T = std::chrono::time_point<C, std::chrono::seconds>;
       static constexpr auto reference = si::second;
-      static constexpr struct point_origin final : absolute_point_origin<isq::time> {} point_origin{};
+      static constexpr struct point_origin_ final : absolute_point_origin<isq::time> {} point_origin{};
       using rep = std::chrono::seconds::rep;
 
-      [[nodiscard]] static constexpr convert_implicitly<quantity<reference, rep>> to_quantity(const T& qp)
+      [[nodiscard]] static constexpr convert_implicitly<rep> to_numerical_value(const T& tp)
       {
-        return quantity{qp.time_since_epoch()};
+        return tp.time_since_epoch().count();
       }
 
-      [[nodiscard]] static constexpr convert_implicitly<T> from_quantity(const quantity<reference, rep>& q)
+      [[nodiscard]] static constexpr convert_implicitly<T> from_numerical_value(const rep& v)
       {
-        return T(q);
+        return T(std::chrono::seconds(v));
       }
     };
 

@@ -174,9 +174,9 @@ struct quantity_like_traits;
  * @brief Provides support for external quantity point-like types
  *
  * The type trait should provide nested @c reference and @c origin objects,
- * a type alias @c rep, and static member functions @c to_quantity(T) that returns
- * the quantity being the offset of the point from the origin and
- * @c from_quantity(quantity<reference, rep>) that returns @c T form this quantity.
+ * a type alias @c rep, and static member functions @c to_numerical_value(T) that
+ * returns the raw value of the the quantity being the offset of the point from the
+ * origin and @c from_numerical_value(rep) that returns @c T formed this raw value.
  * Both return types should be encapsulated in either @c convert_explicitly or
  * @c convert_implicitly to specify if the conversion is allowed to happen implicitly.
  *
