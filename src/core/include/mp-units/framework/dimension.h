@@ -312,7 +312,8 @@ MP_UNITS_EXPORT template<dimension_symbol_formatting fmt = dimension_symbol_form
 #endif
 {
   constexpr auto oversized_symbol_text = []() consteval {
-    detail::inplace_vector<CharT, 128> text;  // TODO can we improve here?
+    // std::basic_string<CharT> text;  // TODO uncomment when https://wg21.link/P3032 is supported
+    detail::inplace_vector<CharT, 128> text;
     dimension_symbol_to<CharT>(std::back_inserter(text), D{}, fmt);
     return text;
   }();

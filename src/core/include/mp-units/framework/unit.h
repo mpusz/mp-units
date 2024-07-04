@@ -823,7 +823,8 @@ MP_UNITS_EXPORT template<unit_symbol_formatting fmt = unit_symbol_formatting{}, 
 #endif
 {
   constexpr auto oversized_symbol_text = []() consteval {
-    detail::inplace_vector<CharT, 128> text;  // TODO can we improve here?
+    // std::basic_string<CharT> text;  // TODO uncomment when https://wg21.link/P3032 is supported
+    detail::inplace_vector<CharT, 128> text;
     unit_symbol_to<CharT>(std::back_inserter(text), U{}, fmt);
     return text;
   }();
