@@ -186,6 +186,40 @@ that both _angular measure_ and _solid angular measure_ should also be
     proposals submitted to make an angle a base quantity and `rad` to become a base unit. More on this
     topic can be found in the ["Strong Angular System" chapter](../systems/strong_angular_system.md).
 
+### Radians and degrees support
+
+Thanks to the usage of magnitudes the library provides efficient strong types for all angular
+types. This means that with the built-in support for magnitudes of $\pi$ we can provide accurate
+conversions between radians and degrees. The library also provides common trigonometric functions
+for angular quantities:
+
+```cpp
+quantity speed = 110 * km / h;
+quantity rate_of_climb = -0.63657 * m / s;
+quantity glide_ratio = speed / -rate_of_climb;
+quantity glide_angle = angular::asin(1 / glide_ratio);
+
+std::println("Glide ratio: {::N[.1f]}\n", value_cast<one>(glide_ratio));
+std::println("Glide angle:");
+std::println(" - {::N[.4f]}\n", glide_angle);
+std::println(" - {::N[.2f]}\n", value_cast<angular::degree>(glide_angle));
+std::println(" - {::N[.2f]}\n", value_cast<angular::gradian>(glide_angle));
+```
+
+The above program prints:
+
+```text
+Glide ratio: 48.0
+Glide angle:
+ - 0.0208 rad
+ - 1.19°
+ - 1.33ᵍ
+```
+
+!!! note
+
+    In the production code the above `speed` and `rate_of_climb` quantities should probably be
+    modelled as [separate typed quantities of the same kind](systems_of_quantities.md#system-of-quantities-is-not-only-about-kinds).
 
 ## Nested quantity kinds
 
