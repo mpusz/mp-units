@@ -199,11 +199,39 @@ public:
     return quantity<detail::make_reference(quantity_spec, ToU{}), Rep>{*this};
   }
 
+  template<RepresentationOf<get_quantity_spec(R).character> ToRep>
+    requires detail::QuantityConvertibleTo<quantity, quantity<reference, ToRep>>
+  [[nodiscard]] constexpr QuantityOf<quantity_spec> auto in() const
+  {
+    return quantity<reference, ToRep>{*this};
+  }
+
+  template<RepresentationOf<get_quantity_spec(R).character> ToRep, detail::UnitCompatibleWith<unit, quantity_spec> ToU>
+    requires detail::QuantityConvertibleTo<quantity, quantity<detail::make_reference(quantity_spec, ToU{}), ToRep>>
+  [[nodiscard]] constexpr QuantityOf<quantity_spec> auto in(ToU) const
+  {
+    return quantity<detail::make_reference(quantity_spec, ToU{}), ToRep>{*this};
+  }
+
   template<detail::UnitCompatibleWith<unit, quantity_spec> ToU>
     requires requires(quantity q) { value_cast<ToU{}>(q); }
   [[nodiscard]] constexpr QuantityOf<quantity_spec> auto force_in(ToU) const
   {
     return value_cast<ToU{}>(*this);
+  }
+
+  template<RepresentationOf<get_quantity_spec(R).character> ToRep>
+    requires requires(quantity q) { value_cast<ToRep>(q); }
+  [[nodiscard]] constexpr QuantityOf<quantity_spec> auto force_in() const
+  {
+    return value_cast<ToRep>(*this);
+  }
+
+  template<RepresentationOf<get_quantity_spec(R).character> ToRep, detail::UnitCompatibleWith<unit, quantity_spec> ToU>
+    requires requires(quantity q) { value_cast<ToU{}, ToRep>(q); }
+  [[nodiscard]] constexpr QuantityOf<quantity_spec> auto force_in(ToU) const
+  {
+    return value_cast<ToU{}, ToRep>(*this);
   }
 
   // data access

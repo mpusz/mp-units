@@ -208,6 +208,14 @@ static_assert(is_of_type<(2. * km).in(m), quantity<si::metre>>);
 static_assert(is_of_type<isq::length(2. * km).in(m), quantity<isq::length[m]>>);
 static_assert(is_of_type<isq::height(2. * km).in(m), quantity<isq::height[m]>>);
 
+static_assert(is_of_type<(2 * km).in<double>(m), quantity<si::metre>>);
+static_assert(is_of_type<isq::length(2 * km).in<double>(m), quantity<isq::length[m]>>);
+static_assert(is_of_type<isq::height(2 * km).in<double>(m), quantity<isq::height[m]>>);
+
+static_assert(is_of_type<(2 * m).in<double>(), quantity<si::metre>>);
+static_assert(is_of_type<isq::length(2 * m).in<double>(), quantity<isq::length[m]>>);
+static_assert(is_of_type<isq::height(2 * m).in<double>(), quantity<isq::height[m]>>);
+
 static_assert(quantity<isq::length[km]>(2. * km).in(km).numerical_value_in(km) == 2.);
 static_assert(quantity<isq::length[km]>(2. * km).in(m).numerical_value_in(m) == 2000.);
 static_assert(quantity<isq::length[m]>(2000. * m).in(km).numerical_value_in(km) == 2.);
@@ -923,12 +931,17 @@ static_assert((50. * percent).numerical_value_in(one) == 0.5);
 
 static_assert(value_cast<m>(2 * km).numerical_value_in(m) == 2000);
 static_assert(value_cast<km>(2000 * m).numerical_value_in(km) == 2);
-static_assert(value_cast<int>(1.23 * m).numerical_value_in(m) == 1);
 static_assert(value_cast<km / h>(2000.0 * m / (3600.0 * s)).numerical_value_in(km / h) == 2);
+
+static_assert(value_cast<int>(1.23 * m).numerical_value_in(m) == 1);
+static_assert(value_cast<km, int>(1.23 * m).numerical_value_in(km) == 0);
 
 static_assert((2 * km).force_in(m).numerical_value_in(m) == 2000);
 static_assert((2000 * m).force_in(km).numerical_value_in(km) == 2);
 static_assert((2000.0 * m / (3600.0 * s)).force_in(km / h).numerical_value_in(km / h) == 2);
+
+static_assert((1.23 * m).force_in<int>().numerical_value_in(m) == 1);
+static_assert((1.23 * m).force_in<int>(km).numerical_value_in(km) == 0);
 
 //////////////////
 // quantity_cast

@@ -863,6 +863,14 @@ static_assert((tower_peak + 2. * km).in(km).quantity_from(tower_peak).numerical_
 static_assert((tower_peak + 2. * km).in(m).quantity_from(tower_peak).numerical_value_in(m) == 2000.);
 static_assert((tower_peak + 2000. * m).in(km).quantity_from(tower_peak).numerical_value_in(km) == 2.);
 
+static_assert(is_of_type<(mean_sea_level + 2 * km).in(m), quantity_point<m, mean_sea_level, int>>);
+static_assert(is_of_type<(mean_sea_level + 2 * km).in<double>(), quantity_point<km, mean_sea_level>>);
+static_assert(is_of_type<(mean_sea_level + 2 * km).in<double>(m), quantity_point<m, mean_sea_level>>);
+
+static_assert(is_of_type<(mean_sea_level + 2500. * m).force_in(km), quantity_point<km, mean_sea_level>>);
+static_assert(is_of_type<(mean_sea_level + 2500. * m).force_in<int>(), quantity_point<m, mean_sea_level, int>>);
+static_assert(is_of_type<(mean_sea_level + 2500. * m).force_in<int>(km), quantity_point<km, mean_sea_level, int>>);
+
 template<template<auto, auto, typename> typename QP>
 concept invalid_unit_conversion = requires {
   requires !requires { QP<isq::height[m], mean_sea_level, int>(2000 * m).in(km); };  // truncating conversion
