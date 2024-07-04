@@ -204,7 +204,7 @@ quantity rate_of_climb = -0.63657 * m / s;
 quantity glide_ratio = speed / -rate_of_climb;
 quantity glide_angle = angular::asin(1 / glide_ratio);
 
-std::println("Glide ratio: {::N[.1f]}", value_cast<one>(glide_ratio));
+std::println("Glide ratio: {::N[.1f]}", glide_ratio.in(one));
 std::println("Glide angle:");
 std::println(" - {::N[.4f]}", glide_angle.in(rad));
 std::println(" - {::N[.2f]}", glide_angle.in(deg));
