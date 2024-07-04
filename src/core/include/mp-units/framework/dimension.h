@@ -305,18 +305,22 @@ constexpr Out dimension_symbol_to(Out out, D d, const dimension_symbol_formattin
 // TODO Refactor to `dimension_symbol(D, fmt)` when P1045: constexpr Function Parameters is available
 MP_UNITS_EXPORT template<dimension_symbol_formatting fmt = dimension_symbol_formatting{}, typename CharT = char,
                          Dimension D>
+#if defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG <= 18
 [[nodiscard]] constexpr auto dimension_symbol(D)
+#else
+[[nodiscard]] consteval auto dimension_symbol(D)
+#endif
 {
-  auto get_symbol_text = []() consteval {
-    detail::inplace_vector<CharT, 64> text;  // TODO can we improve here?
+  constexpr auto oversized_symbol_text = []() consteval {
+    detail::inplace_vector<CharT, 128> text;  // TODO can we improve here?
     dimension_symbol_to<CharT>(std::back_inserter(text), D{}, fmt);
     return text;
-  };
-  constexpr auto text = get_symbol_text();
+  }();
 
 #if MP_UNITS_API_STRING_VIEW_RET  // Permitting static constexpr variables in constexpr functions
-  static constexpr basic_fixed_string<CharT, text.size()> buffer(std::from_range, text);
-  return buffer.view();
+  static constexpr basic_fixed_string<CharT, oversized_symbol_text.size()> storage(std::from_range,
+                                                                                   oversized_symbol_text);
+  return storage.view();
 #else
   return basic_fixed_string<CharT, text.size()>(std::from_range, text);
 #endif

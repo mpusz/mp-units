@@ -816,18 +816,22 @@ constexpr Out unit_symbol_to(Out out, U u, const unit_symbol_formatting& fmt = u
 
 // TODO Refactor to `unit_symbol(U, fmt)` when P1045: constexpr Function Parameters is available
 MP_UNITS_EXPORT template<unit_symbol_formatting fmt = unit_symbol_formatting{}, typename CharT = char, Unit U>
+#if defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG <= 18
 [[nodiscard]] constexpr auto unit_symbol(U)
+#else
+[[nodiscard]] consteval auto unit_symbol(U)
+#endif
 {
-  auto get_symbol_text = []() consteval {
-    detail::inplace_vector<CharT, 64> text;  // TODO can we improve here?
+  constexpr auto oversized_symbol_text = []() consteval {
+    detail::inplace_vector<CharT, 128> text;  // TODO can we improve here?
     unit_symbol_to<CharT>(std::back_inserter(text), U{}, fmt);
     return text;
-  };
-  constexpr auto text = get_symbol_text();
+  }();
 
 #if MP_UNITS_API_STRING_VIEW_RET  // Permitting static constexpr variables in constexpr functions
-  static constexpr basic_fixed_string<CharT, text.size()> buffer(std::from_range, text);
-  return buffer.view();
+  static constexpr basic_fixed_string<CharT, oversized_symbol_text.size()> storage(std::from_range,
+                                                                                   oversized_symbol_text);
+  return storage.view();
 #else
   return basic_fixed_string<CharT, text.size()>(std::from_range, text);
 #endif
