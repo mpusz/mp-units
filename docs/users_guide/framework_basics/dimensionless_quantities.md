@@ -194,16 +194,21 @@ conversions between radians and degrees. The library also provides common trigon
 for angular quantities:
 
 ```cpp
+using namespace mp_units::si::unit_symbols;
+using mp_units::angular::unit_symbols::rad;
+using mp_units::angular::unit_symbols::deg;
+using mp_units::angular::unit_symbols::grad;
+
 quantity speed = 110 * km / h;
 quantity rate_of_climb = -0.63657 * m / s;
 quantity glide_ratio = speed / -rate_of_climb;
 quantity glide_angle = angular::asin(1 / glide_ratio);
 
-std::println("Glide ratio: {::N[.1f]}\n", value_cast<one>(glide_ratio));
+std::println("Glide ratio: {::N[.1f]}", value_cast<one>(glide_ratio));
 std::println("Glide angle:");
-std::println(" - {::N[.4f]}\n", glide_angle);
-std::println(" - {::N[.2f]}\n", value_cast<angular::degree>(glide_angle));
-std::println(" - {::N[.2f]}\n", value_cast<angular::gradian>(glide_angle));
+std::println(" - {::N[.4f]}", glide_angle.in(rad));
+std::println(" - {::N[.2f]}", glide_angle.in(deg));
+std::println(" - {::N[.2f]}", glide_angle.in(grad));
 ```
 
 The above program prints:
