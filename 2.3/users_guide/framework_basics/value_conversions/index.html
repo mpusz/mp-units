@@ -949,6 +949,15 @@ You're not viewing the latest version.
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#value-conversions-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      Value conversions summary
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2228,30 +2237,87 @@ the <code>value_cast&lt;U, Rep&gt;(q)</code> which always returns the most preci
 </span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="n">Price</span><span class="w"> </span><span class="n">price</span><span class="p">{</span><span class="mf">12.95</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">USD</span><span class="p">};</span>
 </span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="n">Scaled</span><span class="w"> </span><span class="n">spx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">value_cast</span><span class="o">&lt;</span><span class="n">USD_s</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">int64_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">price</span><span class="p">);</span>
 </span></code></pre></div>
-<p>As a shortcut, instead of providing a unit and a representation type to <code>value_cast</code>, you may also provide a
-<code>Quantity</code> type directly, from which unit and representation type are taken. However, <code>value_cast&lt;Quantity&gt;</code>,
-still only allows for changes in unit and representation type, but not changing the type of the quantity.
-For that, you will have to use a <code>quantity_cast</code> instead.</p>
-<p>Overloads are also provided for instances of <code>quantity_point</code>.
-All variants of <code>value_cast&lt;...&gt;(q)</code> that apply to instances of <code>quantity</code>
-have a corresponding version applicable to <code>quantity_point</code>, where the <code>point_origin</code> remains untouched,
-and the cast changes how the "offset" from the origin is represented.
-Specifically, for any <code>quantity_point</code> instance <code>qp</code>, all of the following equivalences hold:
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="k">static_assert</span><span class="p">(</span><span class="w"> </span><span class="n">value_cast</span><span class="o">&lt;</span><span class="n">Rep</span><span class="o">&gt;</span><span class="p">(</span><span class="n">qp</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">quantity_point</span><span class="p">{</span><span class="n">value_cast</span><span class="o">&lt;</span><span class="n">Rep</span><span class="o">&gt;</span><span class="p">(</span><span class="n">qp</span><span class="p">.</span><span class="n">quantity_from</span><span class="p">(</span><span class="n">qp</span><span class="p">.</span><span class="n">point_origin</span><span class="p">)),</span><span class="w"> </span><span class="n">qp</span><span class="p">.</span><span class="n">point_origin</span><span class="p">}</span><span class="w"> </span><span class="p">);</span>
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="k">static_assert</span><span class="p">(</span><span class="w"> </span><span class="n">value_cast</span><span class="o">&lt;</span><span class="n">U</span><span class="o">&gt;</span><span class="p">(</span><span class="n">qp</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">quantity_point</span><span class="p">{</span><span class="n">value_cast</span><span class="o">&lt;</span><span class="n">U</span><span class="o">&gt;</span><span class="p">(</span><span class="n">qp</span><span class="p">.</span><span class="n">quantity_from</span><span class="p">(</span><span class="n">qp</span><span class="p">.</span><span class="n">point_origin</span><span class="p">)),</span><span class="w"> </span><span class="n">qp</span><span class="p">.</span><span class="n">point_origin</span><span class="p">}</span><span class="w"> </span><span class="p">);</span>
-</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="k">static_assert</span><span class="p">(</span><span class="w"> </span><span class="n">value_cast</span><span class="o">&lt;</span><span class="n">U</span><span class="p">,</span><span class="w"> </span><span class="n">Rep</span><span class="o">&gt;</span><span class="p">(</span><span class="n">qp</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">quantity_point</span><span class="p">{</span><span class="n">value_cast</span><span class="o">&lt;</span><span class="n">U</span><span class="p">,</span><span class="w"> </span><span class="n">Rep</span><span class="o">&gt;</span><span class="p">(</span><span class="n">qp</span><span class="p">.</span><span class="n">quantity_from</span><span class="p">(</span><span class="n">qp</span><span class="p">.</span><span class="n">point_origin</span><span class="p">)),</span><span class="w"> </span><span class="n">qp</span><span class="p">.</span><span class="n">point_origin</span><span class="p">}</span><span class="w"> </span><span class="p">);</span>
-</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="k">static_assert</span><span class="p">(</span><span class="w"> </span><span class="n">value_cast</span><span class="o">&lt;</span><span class="n">Q</span><span class="o">&gt;</span><span class="p">(</span><span class="n">qp</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">quantity_point</span><span class="p">{</span><span class="n">value_cast</span><span class="o">&lt;</span><span class="n">Q</span><span class="o">&gt;</span><span class="p">(</span><span class="n">qp</span><span class="p">.</span><span class="n">quantity_from</span><span class="p">(</span><span class="n">qp</span><span class="p">.</span><span class="n">point_origin</span><span class="p">)),</span><span class="w"> </span><span class="n">qp</span><span class="p">.</span><span class="n">point_origin</span><span class="p">}</span><span class="w"> </span><span class="p">);</span>
-</span></code></pre></div></p>
-<p>Furthermore, there is one additional overload <code>value_cast&lt;ToQP&gt;(qp)</code>.
-This overload permits to additionally replace the <code>point_origin</code> with another compatible one,
-while still representing the same point in the affine space.
-Thus, it is roughly equivalent to
+<p>As a shortcut, instead of providing a unit and a representation type to <code>value_cast</code>, you may also
+provide a <code>Quantity</code> type directly, from which unit and representation type are taken. However,
+<code>value_cast&lt;Quantity&gt;</code>, still only allows for changes in unit and representation type, but not
+changing the type of the quantity. For that, you will have to use a <code>quantity_cast</code> instead.</p>
+<p>Overloads are also provided for instances of <code>quantity_point</code>. All variants of <code>value_cast&lt;...&gt;(q)</code>
+that apply to instances of <code>quantity</code> have a corresponding version applicable to <code>quantity_point</code>,
+where the <code>point_origin</code> remains untouched, and the cast changes how the "offset" from the origin
+is represented. Specifically, for any <code>quantity_point</code> instance <code>qp</code>, all of the following
+equivalences hold:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">value_cast</span><span class="o">&lt;</span><span class="n">Rep</span><span class="o">&gt;</span><span class="p">(</span><span class="n">qp</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">quantity_point</span><span class="p">{</span><span class="n">value_cast</span><span class="o">&lt;</span><span class="n">Rep</span><span class="o">&gt;</span><span class="p">(</span><span class="n">qp</span><span class="p">.</span><span class="n">quantity_from</span><span class="p">(</span><span class="n">qp</span><span class="p">.</span><span class="n">point_origin</span><span class="p">)),</span><span class="w"> </span><span class="n">qp</span><span class="p">.</span><span class="n">point_origin</span><span class="p">});</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">value_cast</span><span class="o">&lt;</span><span class="n">U</span><span class="o">&gt;</span><span class="p">(</span><span class="n">qp</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">quantity_point</span><span class="p">{</span><span class="n">value_cast</span><span class="o">&lt;</span><span class="n">U</span><span class="o">&gt;</span><span class="p">(</span><span class="n">qp</span><span class="p">.</span><span class="n">quantity_from</span><span class="p">(</span><span class="n">qp</span><span class="p">.</span><span class="n">point_origin</span><span class="p">)),</span><span class="w"> </span><span class="n">qp</span><span class="p">.</span><span class="n">point_origin</span><span class="p">});</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">value_cast</span><span class="o">&lt;</span><span class="n">U</span><span class="p">,</span><span class="w"> </span><span class="n">Rep</span><span class="o">&gt;</span><span class="p">(</span><span class="n">qp</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">quantity_point</span><span class="p">{</span><span class="n">value_cast</span><span class="o">&lt;</span><span class="n">U</span><span class="p">,</span><span class="w"> </span><span class="n">Rep</span><span class="o">&gt;</span><span class="p">(</span><span class="n">qp</span><span class="p">.</span><span class="n">quantity_from</span><span class="p">(</span><span class="n">qp</span><span class="p">.</span><span class="n">point_origin</span><span class="p">)),</span><span class="w"> </span><span class="n">qp</span><span class="p">.</span><span class="n">point_origin</span><span class="p">});</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">value_cast</span><span class="o">&lt;</span><span class="n">Q</span><span class="o">&gt;</span><span class="p">(</span><span class="n">qp</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">quantity_point</span><span class="p">{</span><span class="n">value_cast</span><span class="o">&lt;</span><span class="n">Q</span><span class="o">&gt;</span><span class="p">(</span><span class="n">qp</span><span class="p">.</span><span class="n">quantity_from</span><span class="p">(</span><span class="n">qp</span><span class="p">.</span><span class="n">point_origin</span><span class="p">)),</span><span class="w"> </span><span class="n">qp</span><span class="p">.</span><span class="n">point_origin</span><span class="p">});</span>
+</span></code></pre></div>
+<p>Furthermore, there is one additional overload <code>value_cast&lt;ToQP&gt;(qp)</code>. This overload permits to
+additionally replace the <code>point_origin</code> with another compatible one, while still representing
+the same point in the affine space. Thus, it is roughly equivalent to
 <code>value_cast&lt;ToQP::unit, ToQP::rep&gt;(qp).point_for(ToQP::point_origin)</code>.
 In contrast to a separate <code>value_cast</code> followed by <code>point_for</code> (or vice-versa), the combined
-<code>value_cast</code> tries to choose the order of the individual conversion steps in a way
-to avoid both overflow and unnecessary loss of precision. Overflow is a risk because the change of origin point
+<code>value_cast</code> tries to choose the order of the individual conversion steps in a way to avoid both
+overflow and unnecessary loss of precision. Overflow is a risk because the change of origin point
 may require an addition of a potentially large offset (the difference between the origin points),
 which may well be outside the range of one or both quantity types.</p>
+<h2 id="value-conversions-summary">Value conversions summary<a class="headerlink" href="#value-conversions-summary" title="Permanent link">&para;</a></h2>
+<p>The table below provides all the value conversions functions that may be run on <code>x</code> being the
+instance of either <code>quantity</code> or <code>quantity_point</code>:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Forcing</th>
+<th style="text-align: center;">Representation</th>
+<th style="text-align: center;">Unit</th>
+<th>Member function</th>
+<th>Conversion function</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;">Same</td>
+<td style="text-align: center;"><code>u</code></td>
+<td><code>x.in(u)</code></td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;"><code>T</code></td>
+<td style="text-align: center;">Same</td>
+<td><code>x.in&lt;T&gt;()</code></td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;"><code>T</code></td>
+<td style="text-align: center;"><code>u</code></td>
+<td><code>x.in&lt;T&gt;(u)</code></td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;">Same</td>
+<td style="text-align: center;"><code>u</code></td>
+<td><code>x.force_in(u)</code></td>
+<td><code>value_cast&lt;u&gt;(x)</code></td>
+</tr>
+<tr>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;"><code>T</code></td>
+<td style="text-align: center;">Same</td>
+<td><code>x.force_in&lt;T&gt;()</code></td>
+<td><code>value_cast&lt;T&gt;(x)</code></td>
+</tr>
+<tr>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;"><code>T</code></td>
+<td style="text-align: center;"><code>u</code></td>
+<td><code>x.force_in&lt;T&gt;(u)</code></td>
+<td><code>value_cast&lt;u, T&gt;(x)</code></td>
+</tr>
+</tbody>
+</table>
 
 
 
