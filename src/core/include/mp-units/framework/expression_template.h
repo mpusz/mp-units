@@ -199,80 +199,6 @@ template<typename List>
 using expr_consolidate = MP_UNITS_TYPENAME expr_consolidate_impl<List>::type;
 
 
-/**
- * @brief Simplifies the expression template
- *
- * Analyzes provided numerator and denominator type lists and simplifies elements with the same type.
- * If the same power exists in both list, this elements gets omitted. Otherwise, the power of its
- * exponent gets subtracted according to numerator and denominator elements powers.
- *
- * @tparam NumList type list for expression numerator
- * @tparam DenList type list for expression denominator
- * @tparam Pred predicate to be used for elements comparisons
- */
-template<typename NumList, typename DenList, template<typename, typename> typename Pred>
-struct expr_simplify;
-
-// when one of the lists is empty there is nothing to do
-template<typename NumList, typename DenList, template<typename, typename> typename Pred>
-  requires(type_list_size<NumList> == 0) || (type_list_size<DenList> == 0)
-struct expr_simplify<NumList, DenList, Pred> {
-  using num = NumList;
-  using den = DenList;
-};
-
-// in case when front elements are different progress to the next element
-template<typename Num, typename... NRest, typename Den, typename... DRest, template<typename, typename> typename Pred>
-struct expr_simplify<type_list<Num, NRest...>, type_list<Den, DRest...>, Pred> {
-  using impl = conditional<Pred<Num, Den>::value, expr_simplify<type_list<NRest...>, type_list<Den, DRest...>, Pred>,
-                           expr_simplify<type_list<Num, NRest...>, type_list<DRest...>, Pred>>;
-  using num = conditional<Pred<Num, Den>::value, type_list_push_front<typename impl::num, Num>, typename impl::num>;
-  using den = conditional<Pred<Num, Den>::value, typename impl::den, type_list_push_front<typename impl::den, Den>>;
-};
-
-// in case two elements are of the same power such element gets omitted
-template<typename T, typename... NRest, typename... DRest, template<typename, typename> typename Pred>
-struct expr_simplify<type_list<T, NRest...>, type_list<T, DRest...>, Pred> :
-    expr_simplify<type_list<NRest...>, type_list<DRest...>, Pred> {};
-
-template<typename T, ratio Num, ratio Den>
-struct expr_simplify_power {
-  static constexpr ratio r = Num - Den;
-  using type = power_or_T<T, ratio{abs(r.num), r.den}>;
-  using num = conditional<(r > 0), type_list<type>, type_list<>>;
-  using den = conditional<(r < 0), type_list<type>, type_list<>>;
-};
-
-// in case there are different powers for the same element simplify the power
-template<typename T, typename... NRest, int... Ints, typename... DRest, template<typename, typename> typename Pred>
-struct expr_simplify<type_list<power<T, Ints...>, NRest...>, type_list<T, DRest...>, Pred> {
-  using impl = expr_simplify<type_list<NRest...>, type_list<DRest...>, Pred>;
-  using type = expr_simplify_power<T, power<T, Ints...>::exponent, ratio{1}>;
-  using num = type_list_join<typename type::num, typename impl::num>;
-  using den = type_list_join<typename type::den, typename impl::den>;
-};
-
-// in case there are different powers for the same element simplify the power
-template<typename T, typename... NRest, typename... DRest, int... Ints, template<typename, typename> typename Pred>
-struct expr_simplify<type_list<T, NRest...>, type_list<power<T, Ints...>, DRest...>, Pred> {
-  using impl = expr_simplify<type_list<NRest...>, type_list<DRest...>, Pred>;
-  using type = expr_simplify_power<T, ratio{1}, power<T, Ints...>::exponent>;
-  using num = type_list_join<typename type::num, typename impl::num>;
-  using den = type_list_join<typename type::den, typename impl::den>;
-};
-
-// in case there are different powers for the same element simplify the power
-template<typename T, typename... NRest, int... Ints1, typename... DRest, int... Ints2,
-         template<typename, typename> typename Pred>
-  requires(!std::same_as<power<T, Ints1...>, power<T, Ints2...>>)
-struct expr_simplify<type_list<power<T, Ints1...>, NRest...>, type_list<power<T, Ints2...>, DRest...>, Pred> {
-  using impl = expr_simplify<type_list<NRest...>, type_list<DRest...>, Pred>;
-  using type = expr_simplify_power<T, power<T, Ints1...>::exponent, power<T, Ints2...>::exponent>;
-  using num = type_list_join<typename type::num, typename impl::num>;
-  using den = type_list_join<typename type::den, typename impl::den>;
-};
-
-
 // expr_less
 template<typename Lhs, typename Rhs, template<typename, typename, auto...> typename Pred>
 struct expr_less_impl : Pred<expr_type<Lhs>, expr_type<Rhs>> {};
@@ -328,9 +254,9 @@ template<template<typename> typename OneType, typename List>
 template<template<typename> typename OneType, typename... Ts>
 struct expr_fractions : decltype(expr_fractions_impl<OneType, type_list<Ts...>>()) {};
 
-// expr_make_spec
+// make_expr
 template<typename NumList, typename DenList, typename OneType, template<typename...> typename To>
-[[nodiscard]] consteval auto expr_make_spec_impl()
+[[nodiscard]] consteval auto make_expr()
 {
   constexpr std::size_t num = type_list_size<NumList>;
   constexpr std::size_t den = type_list_size<DenList>;
@@ -351,18 +277,109 @@ template<typename NumList, typename DenList, typename OneType, template<typename
 }
 
 /**
+ * @brief Simplifies the expression template
+ *
+ * Analyzes provided numerator and denominator type lists and simplifies elements with the same type.
+ * If the same power exists in both list, this elements gets omitted. Otherwise, the power of its
+ * exponent gets subtracted according to numerator and denominator elements powers.
+ *
+ * @tparam NumList type list for expression numerator
+ * @tparam DenList type list for expression denominator
+ * @tparam Pred predicate to be used for elements comparisons
+ */
+template<typename NumList, typename DenList, template<typename, typename> typename Pred>
+struct expr_simplify_impl;
+
+// when one of the lists is empty there is nothing to do
+template<typename NumList, typename DenList, template<typename, typename> typename Pred>
+  requires(type_list_size<NumList> == 0) || (type_list_size<DenList> == 0)
+struct expr_simplify_impl<NumList, DenList, Pred> {
+  using num = NumList;
+  using den = DenList;
+};
+
+// in case when front elements are different progress to the next element
+template<typename Num, typename... NRest, typename Den, typename... DRest, template<typename, typename> typename Pred>
+struct expr_simplify_impl<type_list<Num, NRest...>, type_list<Den, DRest...>, Pred> {
+  using impl =
+    conditional<Pred<Num, Den>::value, expr_simplify_impl<type_list<NRest...>, type_list<Den, DRest...>, Pred>,
+                expr_simplify_impl<type_list<Num, NRest...>, type_list<DRest...>, Pred>>;
+  using num = conditional<Pred<Num, Den>::value, type_list_push_front<typename impl::num, Num>, typename impl::num>;
+  using den = conditional<Pred<Num, Den>::value, typename impl::den, type_list_push_front<typename impl::den, Den>>;
+};
+
+// in case two elements are of the same power such element gets omitted
+template<typename T, typename... NRest, typename... DRest, template<typename, typename> typename Pred>
+struct expr_simplify_impl<type_list<T, NRest...>, type_list<T, DRest...>, Pred> :
+    expr_simplify_impl<type_list<NRest...>, type_list<DRest...>, Pred> {};
+
+template<typename T, ratio Num, ratio Den>
+struct expr_simplify_power {
+  static constexpr ratio r = Num - Den;
+  using type = power_or_T<T, ratio{abs(r.num), r.den}>;
+  using num = conditional<(r > 0), type_list<type>, type_list<>>;
+  using den = conditional<(r < 0), type_list<type>, type_list<>>;
+};
+
+// in case there are different powers for the same element simplify the power
+template<typename T, typename... NRest, int... Ints, typename... DRest, template<typename, typename> typename Pred>
+struct expr_simplify_impl<type_list<power<T, Ints...>, NRest...>, type_list<T, DRest...>, Pred> {
+  using impl = expr_simplify_impl<type_list<NRest...>, type_list<DRest...>, Pred>;
+  using type = expr_simplify_power<T, power<T, Ints...>::exponent, ratio{1}>;
+  using num = type_list_join<typename type::num, typename impl::num>;
+  using den = type_list_join<typename type::den, typename impl::den>;
+};
+
+// in case there are different powers for the same element simplify the power
+template<typename T, typename... NRest, typename... DRest, int... Ints, template<typename, typename> typename Pred>
+struct expr_simplify_impl<type_list<T, NRest...>, type_list<power<T, Ints...>, DRest...>, Pred> {
+  using impl = expr_simplify_impl<type_list<NRest...>, type_list<DRest...>, Pred>;
+  using type = expr_simplify_power<T, ratio{1}, power<T, Ints...>::exponent>;
+  using num = type_list_join<typename type::num, typename impl::num>;
+  using den = type_list_join<typename type::den, typename impl::den>;
+};
+
+// in case there are different powers for the same element simplify the power
+template<typename T, typename... NRest, int... Ints1, typename... DRest, int... Ints2,
+         template<typename, typename> typename Pred>
+  requires(!std::same_as<power<T, Ints1...>, power<T, Ints2...>>)
+struct expr_simplify_impl<type_list<power<T, Ints1...>, NRest...>, type_list<power<T, Ints2...>, DRest...>, Pred> {
+  using impl = expr_simplify_impl<type_list<NRest...>, type_list<DRest...>, Pred>;
+  using type = expr_simplify_power<T, power<T, Ints1...>::exponent, power<T, Ints2...>::exponent>;
+  using num = type_list_join<typename type::num, typename impl::num>;
+  using den = type_list_join<typename type::den, typename impl::den>;
+};
+
+template<template<typename...> typename To, typename OneType, template<typename, typename> typename Pred, typename T>
+[[nodiscard]] consteval auto expr_simplify(T)
+{
+  if constexpr (is_specialization_of<T, To>) {
+    using simple = expr_simplify_impl<typename T::_num_, typename T::_den_, Pred>;
+    // the usage of `std::identity` below helps to resolve an using alias identifier to the actual
+    // type identifier in the clang compile-time errors
+    return std::identity{}(make_expr<typename simple::num, typename simple::den, OneType, To>());
+  } else
+    return T{};
+}
+
+/**
  * @brief Creates an expression template spec based on provided numerator and denominator parts
  */
 template<typename NumList, typename DenList, typename OneType, template<typename, typename> typename Pred,
-         template<typename...> typename To>
+         bool Simplify, template<typename...> typename To>
 [[nodiscard]] consteval auto get_optimized_expression()
 {
   using num_list = expr_consolidate<NumList>;
   using den_list = expr_consolidate<DenList>;
-  using simple = expr_simplify<num_list, den_list, Pred>;
-  // the usage of `std::identity` below helps to resolve an using alias identifier to the actual
-  // type identifier in the clang compile-time errors
-  return std::identity{}(expr_make_spec_impl<typename simple::num, typename simple::den, OneType, To>());
+  if constexpr (Simplify) {
+    using simple = expr_simplify_impl<num_list, den_list, Pred>;
+    // the usage of `std::identity` below helps to resolve an using alias identifier to the actual
+    // type identifier in the clang compile-time errors
+    return std::identity{}(make_expr<typename simple::num, typename simple::den, OneType, To>());
+  } else
+    // the usage of `std::identity` below helps to resolve an using alias identifier to the actual
+    // type identifier in the clang compile-time errors
+    return std::identity{}(make_expr<num_list, den_list, OneType, To>());
 }
 
 /**
@@ -371,11 +388,12 @@ template<typename NumList, typename DenList, typename OneType, template<typename
  * @tparam To destination type list to put the result to
  * @tparam OneType type that represents the value `1`
  * @tparam Pred binary less then predicate
+ * @tparam Simplify specifies whether the resulting expression should be immediately simplified
  * @tparam Lhs lhs of the operation
  * @tparam Rhs rhs of the operation
  */
-template<template<typename...> typename To, typename OneType, template<typename, typename> typename Pred, typename Lhs,
-         typename Rhs>
+template<template<typename...> typename To, typename OneType, template<typename, typename> typename Pred, bool Simplify,
+         typename Lhs, typename Rhs>
 [[nodiscard]] consteval auto expr_multiply(Lhs, Rhs)
 {
   if constexpr (is_same_v<Lhs, OneType>) {
@@ -386,17 +404,17 @@ template<template<typename...> typename To, typename OneType, template<typename,
     // two derived dimensions
     return get_optimized_expression<type_list_merge_sorted<typename Lhs::_num_, typename Rhs::_num_, Pred>,
                                     type_list_merge_sorted<typename Lhs::_den_, typename Rhs::_den_, Pred>, OneType,
-                                    Pred, To>();
+                                    Pred, Simplify, To>();
   } else if constexpr (is_specialization_of<Lhs, To>) {
     return get_optimized_expression<type_list_merge_sorted<typename Lhs::_num_, type_list<Rhs>, Pred>,
-                                    typename Lhs::_den_, OneType, Pred, To>();
+                                    typename Lhs::_den_, OneType, Pred, Simplify, To>();
   } else if constexpr (is_specialization_of<Rhs, To>) {
     return get_optimized_expression<type_list_merge_sorted<typename Rhs::_num_, type_list<Lhs>, Pred>,
-                                    typename Rhs::_den_, OneType, Pred, To>();
+                                    typename Rhs::_den_, OneType, Pred, Simplify, To>();
   } else {
     // two base dimensions
     return get_optimized_expression<type_list_merge_sorted<type_list<Lhs>, type_list<Rhs>, Pred>, type_list<>, OneType,
-                                    Pred, To>();
+                                    Pred, Simplify, To>();
   }
 }
 
@@ -406,11 +424,12 @@ template<template<typename...> typename To, typename OneType, template<typename,
  * @tparam To destination type list to put the result to
  * @tparam OneType type that represents the value `1`
  * @tparam Pred binary less then predicate
+ * @tparam Simplify specifies whether the resulting expression should be immediately simplified
  * @tparam Lhs lhs of the operation
  * @tparam Rhs rhs of the operation
  */
-template<template<typename...> typename To, typename OneType, template<typename, typename> typename Pred, typename Lhs,
-         typename Rhs>
+template<template<typename...> typename To, typename OneType, template<typename, typename> typename Pred, bool Simplify,
+         typename Lhs, typename Rhs>
 [[nodiscard]] consteval auto expr_divide(Lhs lhs, Rhs rhs)
 {
   if constexpr (is_same_v<Lhs, Rhs>) {
@@ -418,18 +437,19 @@ template<template<typename...> typename To, typename OneType, template<typename,
   } else if constexpr (is_same_v<Rhs, OneType>) {
     return lhs;
   } else if constexpr (is_same_v<Lhs, OneType>) {
-    return expr_divide<To, OneType, Pred>(To<>{}, rhs);
+    return expr_divide<To, OneType, Pred, Simplify>(To<>{}, rhs);
   } else if constexpr (is_specialization_of<Lhs, To> && is_specialization_of<Rhs, To>) {
     // two derived entities
     return get_optimized_expression<type_list_merge_sorted<typename Lhs::_num_, typename Rhs::_den_, Pred>,
                                     type_list_merge_sorted<typename Lhs::_den_, typename Rhs::_num_, Pred>, OneType,
-                                    Pred, To>();
+                                    Pred, Simplify, To>();
   } else if constexpr (is_specialization_of<Lhs, To>) {
-    return get_optimized_expression<
-      typename Lhs::_num_, type_list_merge_sorted<typename Lhs::_den_, type_list<Rhs>, Pred>, OneType, Pred, To>();
+    return get_optimized_expression<typename Lhs::_num_,
+                                    type_list_merge_sorted<typename Lhs::_den_, type_list<Rhs>, Pred>, OneType, Pred,
+                                    Simplify, To>();
   } else if constexpr (is_specialization_of<Rhs, To>) {
     return get_optimized_expression<type_list_merge_sorted<typename Rhs::_den_, type_list<Lhs>, Pred>,
-                                    typename Rhs::_num_, OneType, Pred, To>();
+                                    typename Rhs::_num_, OneType, Pred, Simplify, To>();
   } else {
     // two named entities
     return To<Lhs, per<Rhs>>{};
@@ -442,26 +462,28 @@ template<template<typename...> typename To, typename OneType, template<typename,
  * @tparam T expression template spec to invert
  * @tparam OneType type that represents the value `1`
  * @tparam To destination type list to put the result to
+ * @tparam Simplify specifies whether the resulting expression should be immediately simplified
  */
-template<template<typename...> typename To, typename OneType, typename T>
+template<template<typename...> typename To, typename OneType, bool Simplify, typename T>
 [[nodiscard]] consteval auto expr_invert(T)
 {
   if constexpr (is_specialization_of<T, To>)
     // the usage of `std::identity` below helps to resolve an using alias identifier to the actual
     // type identifier in the clang compile-time errors
-    return std::identity{}(expr_make_spec_impl<typename T::_den_, typename T::_num_, OneType, To>());
+    return std::identity{}(make_expr<typename T::_den_, typename T::_num_, OneType, Simplify, To>());
   else
     return To<OneType, per<T>>{};
 }
 
 
 template<std::intmax_t Num, std::intmax_t Den, template<typename...> typename To, typename OneType,
-         template<typename, typename> typename Pred, typename... Nums, typename... Dens>
+         template<typename, typename> typename Pred, bool Simplify, typename... Nums, typename... Dens>
   requires detail::non_zero<Den>
 [[nodiscard]] consteval auto expr_pow_impl(type_list<Nums...>, type_list<Dens...>)
 {
   return detail::get_optimized_expression<type_list<power_or_T<Nums, ratio{Num, Den}>...>,
-                                          type_list<power_or_T<Dens, ratio{Num, Den}>...>, OneType, Pred, To>();
+                                          type_list<power_or_T<Dens, ratio{Num, Den}>...>, OneType, Pred, Simplify,
+                                          To>();
 }
 
 
@@ -473,14 +495,15 @@ template<std::intmax_t Num, std::intmax_t Den, template<typename...> typename To
  * @tparam To destination type list to put the result to
  * @tparam OneType type that represents the value `1`
  * @tparam Pred binary less then predicate
+ * @tparam Simplify specifies whether the resulting expression should be immediately simplified
  * @tparam T Expression being the base of the operation
  */
 template<std::intmax_t Num, std::intmax_t Den, template<typename...> typename To, typename OneType,
-         template<typename, typename> typename Pred, typename T>
+         template<typename, typename> typename Pred, bool Simplify, typename T>
   requires detail::non_zero<Den>
 [[nodiscard]] consteval auto expr_pow(T)
 {
-  return expr_pow_impl<Num, Den, To, OneType, Pred>(typename T::_num_{}, typename T::_den_{});
+  return expr_pow_impl<Num, Den, To, OneType, Pred, Simplify>(typename T::_num_{}, typename T::_den_{});
 }
 
 
