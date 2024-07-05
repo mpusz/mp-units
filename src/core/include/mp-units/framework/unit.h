@@ -481,7 +481,7 @@ template<Unit Lhs, Unit Rhs>
   else if constexpr (detail::is_specialization_of_scaled_unit<Rhs>)
     return Rhs::mag * (lhs * Rhs::reference_unit);
   else
-    return detail::expr_multiply<derived_unit, struct one, detail::type_list_of_unit_less, false>(lhs, rhs);
+    return detail::expr_multiply<derived_unit, struct one, detail::type_list_of_unit_less>(lhs, rhs);
 }
 
 /**
@@ -499,7 +499,7 @@ template<Unit Lhs, Unit Rhs>
   else if constexpr (detail::is_specialization_of_scaled_unit<Rhs>)
     return mag<1> / Rhs::mag * (lhs / Rhs::reference_unit);
   else
-    return detail::expr_divide<derived_unit, struct one, detail::type_list_of_unit_less, false>(lhs, rhs);
+    return detail::expr_divide<derived_unit, struct one, detail::type_list_of_unit_less>(lhs, rhs);
 }
 
 [[nodiscard]] MP_UNITS_CONSTEVAL Unit auto inverse(Unit auto u) { return one / u; }
@@ -559,7 +559,7 @@ template<std::intmax_t Num, std::intmax_t Den = 1, Unit U>
   else if constexpr (detail::is_specialization_of_scaled_unit<U>)
     return scaled_unit<pow<Num, Den>(U::mag), decltype(pow<Num, Den>(U::reference_unit))>{};
   else if constexpr (detail::is_specialization_of_derived_unit<U>)
-    return detail::expr_pow<Num, Den, derived_unit, struct one, detail::type_list_of_unit_less, false>(u);
+    return detail::expr_pow<Num, Den, derived_unit, struct one, detail::type_list_of_unit_less>(u);
   else if constexpr (Den == 1)
     return derived_unit<power<U, Num>>{};
   else

@@ -552,7 +552,7 @@ template<QuantitySpec Lhs, QuantitySpec Rhs>
 [[nodiscard]] consteval QuantitySpec auto operator*(Lhs lhs, Rhs rhs)
 {
   return detail::clone_kind_of<Lhs{}, Rhs{}>(
-    detail::expr_multiply<derived_quantity_spec, struct dimensionless, detail::type_list_of_quantity_spec_less, false>(
+    detail::expr_multiply<derived_quantity_spec, struct dimensionless, detail::type_list_of_quantity_spec_less>(
       detail::remove_kind(lhs), detail::remove_kind(rhs)));
 }
 
@@ -560,13 +560,8 @@ template<QuantitySpec Lhs, QuantitySpec Rhs>
 [[nodiscard]] consteval QuantitySpec auto operator/(Lhs lhs, Rhs rhs)
 {
   return detail::clone_kind_of<Lhs{}, Rhs{}>(
-    detail::expr_divide<derived_quantity_spec, struct dimensionless, detail::type_list_of_quantity_spec_less, false>(
+    detail::expr_divide<derived_quantity_spec, struct dimensionless, detail::type_list_of_quantity_spec_less>(
       detail::remove_kind(lhs), detail::remove_kind(rhs)));
-}
-
-[[nodiscard]] consteval QuantitySpec auto simplify(QuantitySpec auto q)
-{
-  return detail::expr_simplify<derived_quantity_spec, struct dimensionless, detail::type_list_of_quantity_spec_less>(q);
 }
 
 template<QuantitySpec Lhs, QuantitySpec Rhs>
@@ -597,8 +592,8 @@ template<std::intmax_t Num, std::intmax_t Den = 1, QuantitySpec Q>
     return q;
   else if constexpr (detail::DerivedQuantitySpec<Q>)
     return detail::clone_kind_of<Q{}>(
-      detail::expr_pow<Num, Den, derived_quantity_spec, struct dimensionless, detail::type_list_of_quantity_spec_less,
-                       false>(detail::remove_kind(q)));
+      detail::expr_pow<Num, Den, derived_quantity_spec, struct dimensionless, detail::type_list_of_quantity_spec_less>(
+        detail::remove_kind(q)));
   else if constexpr (Den == 1)
     return detail::clone_kind_of<Q{}>(derived_quantity_spec<power<decltype(detail::remove_kind(Q{})), Num>>{});
   else
