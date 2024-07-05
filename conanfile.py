@@ -206,7 +206,7 @@ class MPUnitsConan(ConanFile):
             elif self.options.contracts == "ms-gsl":
                 self.requires("ms-gsl/4.0.0")
             if not self.options.std_format:
-                self.requires("fmt/10.2.1")
+                self.requires("fmt/11.0.0")
 
     def build_requirements(self):
         self.tool_requires("cmake/[>=3.29 <4]")
