@@ -27,7 +27,7 @@
 #include <mp-units/bits/hacks.h>
 #include <mp-units/compat_macros.h>
 
-#if MP_UNITS_API_CONTRACTS == 2 || __has_include(<gsl/gsl-lite.hpp>)
+#if MP_UNITS_API_CONTRACTS == 2 || (!defined MP_UNITS_API_CONTRACTS && __has_include(<gsl/gsl-lite.hpp>))
 
 #if MP_UNITS_HOSTED
 #include <gsl/gsl-lite.hpp>
@@ -35,7 +35,7 @@
 #include <mp-units/bits/requires_hosted.h>
 #endif
 
-#elif MP_UNITS_API_CONTRACTS == 3 || __has_include(<gsl/gsl>)
+#elif MP_UNITS_API_CONTRACTS == 3 || (!defined MP_UNITS_API_CONTRACTS && __has_include(<gsl/gsl>))
 
 #if MP_UNITS_HOSTED
 #include <gsl/gsl>
