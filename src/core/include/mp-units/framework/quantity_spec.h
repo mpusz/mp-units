@@ -964,52 +964,42 @@ template<typename From, typename To>
 enum class extracted_entities : std::int8_t { numerators, denominators, from, to };
 
 template<extracted_entities Entities, auto Ext, TypeList NumFrom, TypeList DenFrom, TypeList NumTo, TypeList DenTo>
-[[nodiscard]] consteval specs_convertible_result process_num_den(NumFrom num_from, DenFrom den_from, NumTo num_to,
-                                                                 DenTo den_to)
-{
-  constexpr auto res = convertible_impl(Ext.from, Ext.to);
-  if constexpr (Ext.prepend == prepend_rest::no)
-    return min(res, are_ingredients_convertible(num_from, den_from, num_to, den_to));
-  else {
-    using elem = decltype(Ext.elem);
-    if constexpr (Entities == extracted_entities::numerators) {
-      if constexpr (Ext.prepend == prepend_rest::first)
-        return min(res, are_ingredients_convertible(type_list_push_front<NumFrom, elem>{}, den_from, num_to, den_to));
-      else
-        return min(res, are_ingredients_convertible(num_from, den_from, type_list_push_front<NumTo, elem>{}, den_to));
-    } else {
-      if constexpr (Ext.prepend == prepend_rest::first)
-        return min(res, are_ingredients_convertible(num_from, type_list_push_front<DenFrom, elem>{}, num_to, den_to));
-      else
-        return min(res, are_ingredients_convertible(num_from, den_from, num_to, type_list_push_front<DenTo, elem>{}));
-    }
-  }
-}
-
-template<extracted_entities Entities, auto Ext, TypeList NumFrom, TypeList DenFrom, TypeList NumTo, TypeList DenTo>
 [[nodiscard]] consteval specs_convertible_result prepend_and_process_rest(NumFrom num_from, DenFrom den_from,
                                                                           NumTo num_to, DenTo den_to)
 {
-  if constexpr (Entities == extracted_entities::numerators || Entities == extracted_entities::denominators) {
-    return process_num_den<Entities, Ext>(num_from, den_from, num_to, den_to);
-  } else {
+  constexpr auto res = [&]() consteval {
     if constexpr (Ext.prepend == prepend_rest::no)
       return are_ingredients_convertible(num_from, den_from, num_to, den_to);
     else {
       using elem = decltype(Ext.elem);
-      if constexpr (Entities == extracted_entities::from) {
+      if constexpr (Entities == extracted_entities::numerators) {
+        if constexpr (Ext.prepend == prepend_rest::first)
+          return are_ingredients_convertible(type_list_push_front<NumFrom, elem>{}, den_from, num_to, den_to);
+        else
+          return are_ingredients_convertible(num_from, den_from, type_list_push_front<NumTo, elem>{}, den_to);
+      } else if constexpr (Entities == extracted_entities::denominators) {
+        if constexpr (Ext.prepend == prepend_rest::first)
+          return are_ingredients_convertible(num_from, type_list_push_front<DenFrom, elem>{}, num_to, den_to);
+        else
+          return are_ingredients_convertible(num_from, den_from, num_to, type_list_push_front<DenTo, elem>{});
+      } else if constexpr (Entities == extracted_entities::from) {
         if constexpr (Ext.prepend == prepend_rest::first)
           return are_ingredients_convertible(type_list_push_front<NumFrom, elem>{}, den_from, num_to, den_to);
         else
           return are_ingredients_convertible(num_from, type_list_push_front<DenFrom, elem>{}, num_to, den_to);
-      } else {
+      } else if constexpr (Entities == extracted_entities::to) {
         if constexpr (Ext.prepend == prepend_rest::first)
           return are_ingredients_convertible(num_from, den_from, type_list_push_front<NumTo, elem>{}, den_to);
         else
           return are_ingredients_convertible(num_from, den_from, num_to, type_list_push_front<DenTo, elem>{});
       }
     }
-  }
+  }();
+
+  if constexpr (Entities == extracted_entities::numerators || Entities == extracted_entities::denominators)
+    return min(res, convertible_impl(Ext.from, Ext.to));
+  else
+    return res;
 }
 
 template<typename NumFrom, typename... NumsFrom, typename DenFrom, typename... DensFrom, typename NumTo,
