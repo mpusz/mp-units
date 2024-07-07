@@ -87,14 +87,14 @@
 
 #endif  // MP_UNITS_HOSTED
 
-#if MP_UNITS_API_CONTRACTS == 2 || __has_include(<gsl/gsl-lite.hpp>)
+#if MP_UNITS_API_CONTRACTS == 2 || (!defined MP_UNITS_API_CONTRACTS && __has_include(<gsl/gsl-lite.hpp>))
 
 #define MP_UNITS_EXPECTS(expr) gsl_Expects(expr)
 #define MP_UNITS_EXPECTS_DEBUG(expr) gsl_ExpectsDebug(expr)
 #define MP_UNITS_ASSERT(expr) gsl_Assert(expr)
 #define MP_UNITS_ASSERT_DEBUG(expr) gsl_AssertDebug(expr)
 
-#elif MP_UNITS_API_CONTRACTS == 3 || __has_include(<gsl/gsl>)
+#elif MP_UNITS_API_CONTRACTS == 3 || (!defined MP_UNITS_API_CONTRACTS && __has_include(<gsl/gsl>))
 
 #define MP_UNITS_EXPECTS(expr) Expects(expr)
 #if defined NDEBUG
