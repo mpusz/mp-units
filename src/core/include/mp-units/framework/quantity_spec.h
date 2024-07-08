@@ -1408,19 +1408,19 @@ template<QuantitySpec From, QuantitySpec To>
   using enum specs_convertible_result;
 
   // NOLINTBEGIN(bugprone-branch-clone)
-  if constexpr (From::dimension != To::dimension)
-    return no;
-  else if constexpr (From{} == To{})
+  if constexpr (From{} == To{})
     return yes;
+  else if constexpr (From::dimension != To::dimension)
+    return no;
   else if constexpr (QuantityKindSpec<From> || QuantityKindSpec<To>)
     return convertible_kinds(get_kind_tree_root(from), get_kind_tree_root(to));
   else if constexpr (NestedQuantityKindSpecOf<get_kind_tree_root(To{}), from> && get_kind_tree_root(To{}) == To{})
     return yes;
-  else if constexpr (NamedQuantitySpec<From> && NamedQuantitySpec<To>) {
+  else if constexpr (NamedQuantitySpec<From> && NamedQuantitySpec<To>)
     return convertible_named(from, to);
-  } else if constexpr (DerivedQuantitySpec<From> && DerivedQuantitySpec<To>) {
+  else if constexpr (DerivedQuantitySpec<From> && DerivedQuantitySpec<To>)
     return are_ingredients_convertible(from, to);
-  } else if constexpr (DerivedQuantitySpec<From>) {
+  else if constexpr (DerivedQuantitySpec<From>) {
     auto res = explode<get_complexity(to)>(from);
     if constexpr (NamedQuantitySpec<decltype(res.quantity)>)
       return convertible_impl(res.quantity, to);
