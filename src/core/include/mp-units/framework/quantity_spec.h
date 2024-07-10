@@ -899,7 +899,7 @@ enum class prepend_rest : std::int8_t { no, first, second };
 
 template<QuantitySpec From = struct dimensionless, QuantitySpec To = struct dimensionless, typename Elem = int>
 struct extract_results {
-  bool same_dimension{};
+  bool same_kind{};
   From from{};
   To to{};
   prepend_rest prepend{};
@@ -920,17 +920,12 @@ template<typename From, typename To>
 {
   constexpr auto qfrom = map_power(From{});
   constexpr auto qto = map_power(To{});
-  if constexpr (qfrom.dimension == qto.dimension) {
-    if constexpr (is_specialization_of_power<From> && is_specialization_of_power<To>) {
-      constexpr auto cr = common_ratio(From::exponent, To::exponent);
-      constexpr auto from_ratio = From::exponent / cr;
-      constexpr auto to_ratio = To::exponent / cr;
-      return extract_results{.same_dimension = true,
-                             .from = pow<from_ratio.num, from_ratio.den>(typename From::factor{}),
-                             .to = pow<to_ratio.num, to_ratio.den>(typename To::factor{}),
-                             .prepend = prepend_rest::no};
-    } else
-      return extract_results{.same_dimension = true, .from = qfrom, .to = qto, .prepend = prepend_rest::no};
+  if constexpr (get_kind_tree_root(qfrom) == get_kind_tree_root(qto)) {
+    if constexpr (is_specialization_of_power<From> && is_specialization_of_power<To>)
+      return extract_results{
+        .same_kind = true, .from = typename From::factor{}, .to = typename To::factor{}, .prepend = prepend_rest::no};
+    else
+      return extract_results{.same_kind = true, .from = qfrom, .to = qto, .prepend = prepend_rest::no};
   } else {
     auto normalize = []<typename Q>(Q) {
       if constexpr (is_specialization_of_power<Q>)
@@ -944,18 +939,18 @@ template<typename From, typename To>
     constexpr auto from_exp = std::get<1>(from_norm);
     constexpr auto to_factor = std::get<0>(to_norm);
     constexpr auto to_exp = std::get<1>(to_norm);
-    if constexpr (from_factor.dimension != to_factor.dimension)
-      return extract_results{.same_dimension = false};
+    if constexpr (get_kind_tree_root(from_factor) != get_kind_tree_root(to_factor))
+      return extract_results{.same_kind = false};
     else if constexpr (from_exp > to_exp)
-      return extract_results{.same_dimension = true,
-                             .from = pow<to_exp.num, to_exp.den>(from_factor),
-                             .to = pow<to_exp.num, to_exp.den>(to_factor),
+      return extract_results{.same_kind = true,
+                             .from = from_factor,
+                             .to = to_factor,
                              .prepend = prepend_rest::first,
                              .elem = power_or_T<decltype(from_factor), from_exp - to_exp>{}};
     else
-      return extract_results{.same_dimension = true,
-                             .from = pow<from_exp.num, from_exp.den>(from_factor),
-                             .to = pow<from_exp.num, from_exp.den>(to_factor),
+      return extract_results{.same_kind = true,
+                             .from = from_factor,
+                             .to = to_factor,
                              .prepend = prepend_rest::second,
                              .elem = power_or_T<decltype(to_factor), to_exp - from_exp>{}};
   }
@@ -1009,16 +1004,16 @@ template<typename NumFrom, typename... NumsFrom, typename DenFrom, typename... D
                                                                              type_list<NumTo, NumsTo...> num_to,
                                                                              type_list<DenTo, DensTo...> den_to)
 {
-  if constexpr (constexpr auto extN = extract_convertible_quantities(NumFrom{}, NumTo{}); extN.same_dimension)
+  if constexpr (constexpr auto extN = extract_convertible_quantities(NumFrom{}, NumTo{}); extN.same_kind)
     return prepend_and_process_rest<extracted_entities::numerators, extN>(type_list<NumsFrom...>{}, den_from,
                                                                           type_list<NumsTo...>{}, den_to);
-  else if constexpr (constexpr auto extD = extract_convertible_quantities(DenFrom{}, DenTo{}); extD.same_dimension)
+  else if constexpr (constexpr auto extD = extract_convertible_quantities(DenFrom{}, DenTo{}); extD.same_kind)
     return prepend_and_process_rest<extracted_entities::denominators, extD>(num_from, type_list<DensFrom...>{}, num_to,
                                                                             type_list<DensTo...>{});
-  else if constexpr (constexpr auto extF = extract_convertible_quantities(NumFrom{}, DenFrom{}); extF.same_dimension)
+  else if constexpr (constexpr auto extF = extract_convertible_quantities(NumFrom{}, DenFrom{}); extF.same_kind)
     return prepend_and_process_rest<extracted_entities::from, extF>(type_list<NumsFrom...>{}, type_list<DensFrom...>{},
                                                                     num_to, den_to);
-  else if constexpr (constexpr auto extT = extract_convertible_quantities(NumTo{}, DenTo{}); extT.same_dimension)
+  else if constexpr (constexpr auto extT = extract_convertible_quantities(NumTo{}, DenTo{}); extT.same_kind)
     return prepend_and_process_rest<extracted_entities::to, extT>(num_from, den_from, type_list<NumsTo...>{},
                                                                   type_list<DensTo...>{});
   else {
@@ -1053,7 +1048,6 @@ template<typename NumFrom, typename... NumsFrom, typename DenFrom, typename... D
       }
     }
   }
-  return specs_convertible_result::no;
 }
 
 template<typename DenFrom, typename... DensFrom, typename NumTo, typename... NumsTo, typename DenTo, typename... DensTo>
@@ -1062,10 +1056,10 @@ template<typename DenFrom, typename... DensFrom, typename NumTo, typename... Num
                                                                              type_list<NumTo, NumsTo...> num_to,
                                                                              type_list<DenTo, DensTo...>)
 {
-  if constexpr (constexpr auto extD = extract_convertible_quantities(DenFrom{}, DenTo{}); extD.same_dimension)
+  if constexpr (constexpr auto extD = extract_convertible_quantities(DenFrom{}, DenTo{}); extD.same_kind)
     return prepend_and_process_rest<extracted_entities::denominators, extD>(num_from, type_list<DensFrom...>{}, num_to,
                                                                             type_list<DensTo...>{});
-  else if constexpr (constexpr auto extT = extract_convertible_quantities(NumTo{}, DenTo{}); extT.same_dimension)
+  else if constexpr (constexpr auto extT = extract_convertible_quantities(NumTo{}, DenTo{}); extT.same_kind)
     return prepend_and_process_rest<extracted_entities::to, extT>(num_from, den_from, type_list<NumsTo...>{},
                                                                   type_list<DensTo...>{});
   else {
@@ -1092,7 +1086,6 @@ template<typename DenFrom, typename... DensFrom, typename NumTo, typename... Num
       }
     }
   }
-  return specs_convertible_result::no;
 }
 
 template<typename NumFrom, typename... NumsFrom, typename NumTo, typename... NumsTo, typename DenTo, typename... DensTo>
@@ -1101,10 +1094,10 @@ template<typename NumFrom, typename... NumsFrom, typename NumTo, typename... Num
                                                                              type_list<NumTo, NumsTo...>,
                                                                              type_list<DenTo, DensTo...> den_to)
 {
-  if constexpr (constexpr auto extN = extract_convertible_quantities(NumFrom{}, NumTo{}); extN.same_dimension)
+  if constexpr (constexpr auto extN = extract_convertible_quantities(NumFrom{}, NumTo{}); extN.same_kind)
     return prepend_and_process_rest<extracted_entities::numerators, extN>(type_list<NumsFrom...>{}, den_from,
                                                                           type_list<NumsTo...>{}, den_to);
-  else if constexpr (constexpr auto extT = extract_convertible_quantities(NumTo{}, DenTo{}); extT.same_dimension)
+  else if constexpr (constexpr auto extT = extract_convertible_quantities(NumTo{}, DenTo{}); extT.same_kind)
     return prepend_and_process_rest<extracted_entities::to, extT>(num_from, den_from, type_list<NumsTo...>{},
                                                                   type_list<DensTo...>{});
   else {
@@ -1131,7 +1124,6 @@ template<typename NumFrom, typename... NumsFrom, typename NumTo, typename... Num
       }
     }
   }
-  return specs_convertible_result::no;
 }
 
 template<typename NumFrom, typename... NumsFrom, typename DenFrom, typename... DensFrom, typename DenTo,
@@ -1141,10 +1133,10 @@ template<typename NumFrom, typename... NumsFrom, typename DenFrom, typename... D
                                                                              type_list<> num_to,
                                                                              type_list<DenTo, DensTo...> den_to)
 {
-  if constexpr (constexpr auto extD = extract_convertible_quantities(DenFrom{}, DenTo{}); extD.same_dimension)
+  if constexpr (constexpr auto extD = extract_convertible_quantities(DenFrom{}, DenTo{}); extD.same_kind)
     return prepend_and_process_rest<extracted_entities::denominators, extD>(num_from, type_list<DensFrom...>{}, num_to,
                                                                             type_list<DensTo...>{});
-  else if constexpr (constexpr auto extF = extract_convertible_quantities(NumFrom{}, DenFrom{}); extF.same_dimension)
+  else if constexpr (constexpr auto extF = extract_convertible_quantities(NumFrom{}, DenFrom{}); extF.same_kind)
     return prepend_and_process_rest<extracted_entities::from, extF>(type_list<NumsFrom...>{}, type_list<DensFrom...>{},
                                                                     num_to, den_to);
   else {
@@ -1171,7 +1163,6 @@ template<typename NumFrom, typename... NumsFrom, typename DenFrom, typename... D
       }
     }
   }
-  return specs_convertible_result::no;
 }
 
 template<typename NumFrom, typename... NumsFrom, typename DenFrom, typename... DensFrom, typename NumTo,
@@ -1181,10 +1172,10 @@ template<typename NumFrom, typename... NumsFrom, typename DenFrom, typename... D
                                                                              type_list<NumTo, NumsTo...> num_to,
                                                                              type_list<> den_to)
 {
-  if constexpr (constexpr auto extN = extract_convertible_quantities(NumFrom{}, NumTo{}); extN.same_dimension)
+  if constexpr (constexpr auto extN = extract_convertible_quantities(NumFrom{}, NumTo{}); extN.same_kind)
     return prepend_and_process_rest<extracted_entities::numerators, extN>(type_list<NumsFrom...>{}, den_from,
                                                                           type_list<NumsTo...>{}, den_to);
-  else if constexpr (constexpr auto extF = extract_convertible_quantities(NumFrom{}, DenFrom{}); extF.same_dimension)
+  else if constexpr (constexpr auto extF = extract_convertible_quantities(NumFrom{}, DenFrom{}); extF.same_kind)
     return prepend_and_process_rest<extracted_entities::from, extF>(type_list<NumsFrom...>{}, type_list<DensFrom...>{},
                                                                     num_to, den_to);
   else {
@@ -1211,7 +1202,6 @@ template<typename NumFrom, typename... NumsFrom, typename DenFrom, typename... D
       }
     }
   }
-  return specs_convertible_result::no;
 }
 
 template<typename NumFrom, typename... NumsFrom, typename NumTo, typename... NumsTo>
@@ -1220,7 +1210,7 @@ template<typename NumFrom, typename... NumsFrom, typename NumTo, typename... Num
                                                                              type_list<NumTo, NumsTo...>,
                                                                              type_list<> den_to)
 {
-  if constexpr (constexpr auto ext = extract_convertible_quantities(NumFrom{}, NumTo{}); ext.same_dimension) {
+  if constexpr (constexpr auto ext = extract_convertible_quantities(NumFrom{}, NumTo{}); ext.same_kind) {
     return prepend_and_process_rest<extracted_entities::numerators, ext>(type_list<NumsFrom...>{}, den_from,
                                                                          type_list<NumsTo...>{}, den_to);
   } else {
@@ -1239,7 +1229,6 @@ template<typename NumFrom, typename... NumsFrom, typename NumTo, typename... Num
       }
     }
   }
-  return specs_convertible_result::no;
 }
 
 template<typename DenFrom, typename... DensFrom, typename DenTo, typename... DensTo>
@@ -1248,7 +1237,7 @@ template<typename DenFrom, typename... DensFrom, typename DenTo, typename... Den
                                                                              type_list<> num_to,
                                                                              type_list<DenTo, DensTo...>)
 {
-  if constexpr (constexpr auto ext = extract_convertible_quantities(DenFrom{}, DenTo{}); ext.same_dimension)
+  if constexpr (constexpr auto ext = extract_convertible_quantities(DenFrom{}, DenTo{}); ext.same_kind)
     return prepend_and_process_rest<extracted_entities::denominators, ext>(num_from, type_list<DensFrom...>{}, num_to,
                                                                            type_list<DensTo...>{});
   else {
@@ -1267,7 +1256,6 @@ template<typename DenFrom, typename... DensFrom, typename DenTo, typename... Den
       }
     }
   }
-  return specs_convertible_result::no;
 }
 
 template<typename... NumsFrom, typename... DensFrom>
@@ -1275,60 +1263,42 @@ template<typename... NumsFrom, typename... DensFrom>
                                                                              type_list<DensFrom...>, type_list<>,
                                                                              type_list<>)
 {
-  if constexpr (((... * map_power(NumsFrom{})) / (... * map_power(DensFrom{}))).dimension == dimension_one)
-    return specs_convertible_result::yes;
-  else
-    return specs_convertible_result::no;
+  return specs_convertible_result::yes;
 }
 
 template<typename... NumsTo, typename... DensTo>
 [[nodiscard]] consteval specs_convertible_result are_ingredients_convertible(type_list<>, type_list<>,
                                                                              type_list<NumsTo...>, type_list<DensTo...>)
 {
-  if constexpr (((... * map_power(NumsTo{})) / (... * map_power(DensTo{}))).dimension == dimension_one)
-    return specs_convertible_result::explicit_conversion;
-  else
-    return specs_convertible_result::no;
+  return specs_convertible_result::explicit_conversion;
 }
 
 template<typename... NumsFrom>
 [[nodiscard]] consteval specs_convertible_result are_ingredients_convertible(type_list<NumsFrom...>, type_list<>,
                                                                              type_list<>, type_list<>)
 {
-  if constexpr ((... * map_power(NumsFrom{})).dimension == dimension_one)
-    return specs_convertible_result::yes;
-  else
-    return specs_convertible_result::no;
+  return specs_convertible_result::yes;
 }
 
 template<typename... DensFrom>
 [[nodiscard]] consteval specs_convertible_result are_ingredients_convertible(type_list<>, type_list<DensFrom...>,
                                                                              type_list<>, type_list<>)
 {
-  if constexpr ((... * map_power(DensFrom{})).dimension == dimension_one)
-    return specs_convertible_result::yes;
-  else
-    return specs_convertible_result::no;
+  return specs_convertible_result::yes;
 }
 
 template<typename... NumsTo>
 [[nodiscard]] consteval specs_convertible_result are_ingredients_convertible(type_list<>, type_list<>,
                                                                              type_list<NumsTo...>, type_list<>)
 {
-  if constexpr ((... * map_power(NumsTo{})).dimension == dimension_one)
-    return specs_convertible_result::explicit_conversion;
-  else
-    return specs_convertible_result::no;
+  return specs_convertible_result::explicit_conversion;
 }
 
 template<typename... DensTo>
 [[nodiscard]] consteval specs_convertible_result are_ingredients_convertible(type_list<>, type_list<>, type_list<>,
                                                                              type_list<DensTo...>)
 {
-  if constexpr ((... * map_power(DensTo{})).dimension == dimension_one)
-    return specs_convertible_result::explicit_conversion;
-  else
-    return specs_convertible_result::no;
+  return specs_convertible_result::explicit_conversion;
 }
 
 [[nodiscard]] consteval specs_convertible_result are_ingredients_convertible(type_list<>, type_list<>, type_list<>,
