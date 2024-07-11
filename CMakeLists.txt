@@ -27,7 +27,7 @@ list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 set(projectPrefix MP_UNITS_)
 
-option(${projectPrefix}DEV_BUILD_LA "Build code depending on the linear algebra library" ON)
+option(${projectPrefix}DEV_BUILD_LA "Build code depending on the linear algebra library" OFF)
 option(${projectPrefix}DEV_IWYU "Enables include-what-you-use" OFF)
 option(${projectPrefix}DEV_CLANG_TIDY "Enables clang-tidy" OFF)
 
