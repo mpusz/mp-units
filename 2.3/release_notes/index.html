@@ -2298,6 +2298,7 @@ You're not viewing the latest version.
 <li>refactor: <code>terminate</code> replaced with <code>abort</code> and a header file added</li>
 <li>refactor: most <code>std::remove_const_t</code> removed and some replaced with the GCC-specific workaround</li>
 <li>refactor: not needed <code>remove_reference_t</code> and <code>remove_cvref_t</code> removed</li>
+<li>refactor: binary operators of <code>quantity</code> and <code>quantity_point</code> are now hidden friends</li>
 <li>fix: <code>QuantityLike</code> conversions required <code>Q::rep</code> instead of using one provided by <code>quantity_like_traits</code></li>
 <li>fix: <code>QuantitySpec[Unit]</code> replaced with <code>make_reference</code> in <code>value_cast</code></li>
 <li>fix: <code>ice_point</code> is now defined with the integral offset from <code>absolute_zero</code></li>
