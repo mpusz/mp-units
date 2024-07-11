@@ -99,6 +99,9 @@ using common_quantity_for = quantity<common_reference(Q1::reference, Q2::referen
 template<auto R1, auto R2, typename Rep1, typename Rep2>
 concept SameValueAs = detail::SameReference<R1, R2> && std::same_as<Rep1, Rep2>;
 
+template<typename T>
+using quantity_like_type = quantity<quantity_like_traits<T>::reference, typename quantity_like_traits<T>::rep>;
+
 }  // namespace detail
 
 MP_UNITS_EXPORT_BEGIN
@@ -177,8 +180,7 @@ public:
   }
 
   template<QuantityLike Q>
-    requires detail::QuantityConvertibleTo<
-      quantity<quantity_like_traits<Q>::reference, typename quantity_like_traits<Q>::rep>, quantity>
+    requires detail::QuantityConvertibleTo<detail::quantity_like_type<Q>, quantity>
   constexpr explicit(is_specialization_of<decltype(quantity_like_traits<Q>::to_numerical_value(std::declval<Q>())),
                                           convert_explicitly> ||
                      // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
@@ -199,14 +201,14 @@ public:
     return quantity<detail::make_reference(quantity_spec, ToU{}), Rep>{*this};
   }
 
-  template<RepresentationOf<get_quantity_spec(R).character> ToRep>
+  template<RepresentationOf<quantity_spec.character> ToRep>
     requires detail::QuantityConvertibleTo<quantity, quantity<reference, ToRep>>
   [[nodiscard]] constexpr QuantityOf<quantity_spec> auto in() const
   {
     return quantity<reference, ToRep>{*this};
   }
 
-  template<RepresentationOf<get_quantity_spec(R).character> ToRep, detail::UnitCompatibleWith<unit, quantity_spec> ToU>
+  template<RepresentationOf<quantity_spec.character> ToRep, detail::UnitCompatibleWith<unit, quantity_spec> ToU>
     requires detail::QuantityConvertibleTo<quantity, quantity<detail::make_reference(quantity_spec, ToU{}), ToRep>>
   [[nodiscard]] constexpr QuantityOf<quantity_spec> auto in(ToU) const
   {
@@ -220,14 +222,14 @@ public:
     return value_cast<ToU{}>(*this);
   }
 
-  template<RepresentationOf<get_quantity_spec(R).character> ToRep>
+  template<RepresentationOf<quantity_spec.character> ToRep>
     requires requires(quantity q) { value_cast<ToRep>(q); }
   [[nodiscard]] constexpr QuantityOf<quantity_spec> auto force_in() const
   {
     return value_cast<ToRep>(*this);
   }
 
-  template<RepresentationOf<get_quantity_spec(R).character> ToRep, detail::UnitCompatibleWith<unit, quantity_spec> ToU>
+  template<RepresentationOf<quantity_spec.character> ToRep, detail::UnitCompatibleWith<unit, quantity_spec> ToU>
     requires requires(quantity q) { value_cast<ToU{}, ToRep>(q); }
   [[nodiscard]] constexpr QuantityOf<quantity_spec> auto force_in(ToU) const
   {
@@ -274,8 +276,7 @@ public:
 
   // conversion operators
   template<typename Q_, QuantityLike Q = std::remove_cvref_t<Q_>>
-    requires detail::QuantityConvertibleTo<
-      quantity, quantity<quantity_like_traits<Q>::reference, typename quantity_like_traits<Q>::rep>>
+    requires detail::QuantityConvertibleTo<quantity, detail::quantity_like_type<Q>>
   [[nodiscard]] explicit(is_specialization_of<decltype(quantity_like_traits<Q>::from_numerical_value(
                                                 numerical_value_is_an_implementation_detail_)),
                                               convert_explicitly> ||
@@ -289,8 +290,7 @@ public:
   }
 
   template<typename Q_, QuantityLike Q = std::remove_cvref_t<Q_>>
-    requires detail::QuantityConvertibleTo<
-      quantity, quantity<quantity_like_traits<Q>::reference, typename quantity_like_traits<Q>::rep>>
+    requires detail::QuantityConvertibleTo<quantity, detail::quantity_like_type<Q>>
   [[nodiscard]] explicit(is_specialization_of<decltype(quantity_like_traits<Q>::from_numerical_value(
                                                 numerical_value_is_an_implementation_detail_)),
                                               convert_explicitly> ||
@@ -502,24 +502,23 @@ public:
     requires detail::InvocableQuantities<std::multiplies<>, quantity, quantity<R2, Rep2>>
   [[nodiscard]] friend constexpr Quantity auto operator*(const quantity& lhs, const quantity<R2, Rep2>& rhs)
   {
-    return ::mp_units::quantity{lhs.numerical_value_ref_in(get_unit(R)) * rhs.numerical_value_ref_in(get_unit(R2)),
-                                R * R2};
+    return ::mp_units::quantity{lhs.numerical_value_ref_in(unit) * rhs.numerical_value_ref_in(rhs.unit), R * R2};
   }
 
   template<typename Value>
-    requires(!Quantity<Value>) && (!Reference<Value>) &&
-            detail::InvokeResultOf<get_quantity_spec(R).character, std::multiplies<>, Rep, const Value&>
-  [[nodiscard]] friend constexpr QuantityOf<get_quantity_spec(R)> auto operator*(const quantity& q, const Value& v)
+    requires(!Quantity<Value>) &&
+            (!Reference<Value>) && detail::InvokeResultOf<quantity_spec.character, std::multiplies<>, Rep, const Value&>
+  [[nodiscard]] friend constexpr QuantityOf<quantity_spec> auto operator*(const quantity& q, const Value& v)
   {
-    return ::mp_units::quantity{q.numerical_value_ref_in(get_unit(R)) * v, R};
+    return ::mp_units::quantity{q.numerical_value_ref_in(unit) * v, R};
   }
 
   template<typename Value>
-    requires(!Quantity<Value>) && (!Reference<Value>) &&
-            detail::InvokeResultOf<get_quantity_spec(R).character, std::multiplies<>, const Value&, Rep>
-  [[nodiscard]] friend constexpr QuantityOf<get_quantity_spec(R)> auto operator*(const Value& v, const quantity& q)
+    requires(!Quantity<Value>) &&
+            (!Reference<Value>) && detail::InvokeResultOf<quantity_spec.character, std::multiplies<>, const Value&, Rep>
+  [[nodiscard]] friend constexpr QuantityOf<quantity_spec> auto operator*(const Value& v, const quantity& q)
   {
-    return ::mp_units::quantity{v * q.numerical_value_ref_in(get_unit(R)), R};
+    return ::mp_units::quantity{v * q.numerical_value_ref_in(unit), R};
   }
 
   template<auto R2, typename Rep2>
@@ -527,26 +526,24 @@ public:
   [[nodiscard]] friend constexpr Quantity auto operator/(const quantity& lhs, const quantity<R2, Rep2>& rhs)
   {
     MP_UNITS_EXPECTS_DEBUG(rhs != rhs.zero());
-    return ::mp_units::quantity{lhs.numerical_value_ref_in(get_unit(R)) / rhs.numerical_value_ref_in(get_unit(R2)),
-                                R / R2};
+    return ::mp_units::quantity{lhs.numerical_value_ref_in(unit) / rhs.numerical_value_ref_in(rhs.unit), R / R2};
   }
 
   template<typename Value>
-    requires(!Quantity<Value>) && (!Reference<Value>) &&
-            detail::InvokeResultOf<get_quantity_spec(R).character, std::divides<>, Rep, const Value&>
-  [[nodiscard]] friend constexpr QuantityOf<get_quantity_spec(R)> auto operator/(const quantity& q, const Value& v)
+    requires(!Quantity<Value>) &&
+            (!Reference<Value>) && detail::InvokeResultOf<quantity_spec.character, std::divides<>, Rep, const Value&>
+  [[nodiscard]] friend constexpr QuantityOf<quantity_spec> auto operator/(const quantity& q, const Value& v)
   {
     MP_UNITS_EXPECTS_DEBUG(v != quantity_values<Value>::zero());
-    return ::mp_units::quantity{q.numerical_value_ref_in(get_unit(R)) / v, R};
+    return ::mp_units::quantity{q.numerical_value_ref_in(unit) / v, R};
   }
 
   template<typename Value>
-    requires(!Quantity<Value>) && (!Reference<Value>) &&
-            detail::InvokeResultOf<get_quantity_spec(R).character, std::divides<>, const Value&, Rep>
-  [[nodiscard]] friend constexpr QuantityOf<inverse(get_quantity_spec(R))> auto operator/(const Value& v,
-                                                                                          const quantity& q)
+    requires(!Quantity<Value>) &&
+            (!Reference<Value>) && detail::InvokeResultOf<quantity_spec.character, std::divides<>, const Value&, Rep>
+  [[nodiscard]] friend constexpr QuantityOf<inverse(quantity_spec)> auto operator/(const Value& v, const quantity& q)
   {
-    return ::mp_units::quantity{v / q.numerical_value_ref_in(get_unit(R)), ::mp_units::one / R};
+    return ::mp_units::quantity{v / q.numerical_value_ref_in(unit), ::mp_units::one / R};
   }
 
   template<auto R2, typename Rep2>
