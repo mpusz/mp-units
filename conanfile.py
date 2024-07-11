@@ -178,7 +178,8 @@ class MPUnitsConan(ConanFile):
 
     @property
     def _skip_la(self):
-        return bool(self.conf.get("user.mp-units.build:skip_la", default=False))
+        # broken until https://github.com/BobSteagall/wg21/issues/77 is fixed
+        return bool(self.conf.get("user.mp-units.build:skip_la", default=True))
 
     @property
     def _run_clang_tidy(self):

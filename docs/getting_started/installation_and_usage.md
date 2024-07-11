@@ -304,7 +304,7 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
 
 [`user.mp-units.build:skip_la`](#user-skip-la){ #user-skip-la }
 
-:   [:octicons-tag-24: 2.2.0][conan skip la support] · :octicons-milestone-24: `True`/`False` (Default: `False`)
+:   [:octicons-tag-24: 2.2.0][conan skip la support] · :octicons-milestone-24: `True`/`False` (Default: `True`)
 
     If `user.mp-units.build:all` is enabled, among others, Conan installs the external
     [wg21-linear_algebra](https://conan.io/center/recipes/wg21-linear_algebra)
