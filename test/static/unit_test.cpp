@@ -253,7 +253,7 @@ static_assert(is_of_type<get_canonical_unit(m_2).reference_unit, metre_>);
 static_assert(get_canonical_unit(m_2).mag == mag<2>);
 
 constexpr auto km_2 = mag<2> * kilometre;
-static_assert(is_of_type<km_2, scaled_unit<mag<2>, std::remove_const_t<decltype(si::kilo<metre>)>>>);
+static_assert(is_of_type<km_2, scaled_unit<mag<2>, si::kilo_<metre_>>>);
 static_assert(is_of_type<get_canonical_unit(km_2).reference_unit, metre_>);
 static_assert(get_canonical_unit(km_2).mag == mag<2000>);
 
@@ -347,12 +347,12 @@ static_assert(is_of_type<get_canonical_unit(m_per_s).reference_unit, derived_uni
 static_assert(get_canonical_unit(m_per_s).mag == mag<1>);
 
 constexpr auto km_per_s = kilometre / second;
-static_assert(is_of_type<km_per_s, derived_unit<std::remove_const_t<decltype(si::kilo<metre>)>, per<second_>>>);
+static_assert(is_of_type<km_per_s, derived_unit<si::kilo_<metre_>, per<second_>>>);
 static_assert(is_of_type<get_canonical_unit(km_per_s).reference_unit, derived_unit<metre_, per<second_>>>);
 static_assert(get_canonical_unit(km_per_s).mag == mag<1000>);
 
 constexpr auto km_per_h = kilometre / hour;
-static_assert(is_of_type<km_per_h, derived_unit<std::remove_const_t<decltype(si::kilo<metre>)>, per<hour_>>>);
+static_assert(is_of_type<km_per_h, derived_unit<si::kilo_<metre_>, per<hour_>>>);
 static_assert(is_of_type<get_canonical_unit(km_per_h).reference_unit, derived_unit<metre_, per<second_>>>);
 static_assert(get_canonical_unit(km_per_h).mag == mag_ratio<1000, 3600>);
 
@@ -374,20 +374,17 @@ static_assert(is_of_type<get_canonical_unit(standard_gravity / speed_of_light_in
 
 // operations commutativity
 constexpr auto u1 = mag<1000> * kilometre / hour;
-static_assert(
-  is_of_type<u1, scaled_unit<mag<1000>, derived_unit<std::remove_const_t<decltype(si::kilo<metre>)>, per<hour_>>>>);
+static_assert(is_of_type<u1, scaled_unit<mag<1000>, derived_unit<si::kilo_<metre_>, per<hour_>>>>);
 static_assert(is_of_type<get_canonical_unit(u1).reference_unit, derived_unit<metre_, per<second_>>>);
 static_assert(get_canonical_unit(u1).mag == mag_ratio<1'000'000, 3'600>);
 
 constexpr auto u2 = mag<1000> * (kilometre / hour);
-static_assert(
-  is_of_type<u2, scaled_unit<mag<1000>, derived_unit<std::remove_const_t<decltype(si::kilo<metre>)>, per<hour_>>>>);
+static_assert(is_of_type<u2, scaled_unit<mag<1000>, derived_unit<si::kilo_<metre_>, per<hour_>>>>);
 static_assert(is_of_type<get_canonical_unit(u2).reference_unit, derived_unit<metre_, per<second_>>>);
 static_assert(get_canonical_unit(u2).mag == mag_ratio<1'000'000, 3'600>);
 
 constexpr auto u3 = one / hour * (mag<1000> * kilometre);
-static_assert(
-  is_of_type<u3, scaled_unit<mag<1000>, derived_unit<std::remove_const_t<decltype(si::kilo<metre>)>, per<hour_>>>>);
+static_assert(is_of_type<u3, scaled_unit<mag<1000>, derived_unit<si::kilo_<metre_>, per<hour_>>>>);
 static_assert(is_of_type<get_canonical_unit(u3).reference_unit, derived_unit<metre_, per<second_>>>);
 static_assert(get_canonical_unit(u3).mag == mag_ratio<1'000'000, 3'600>);
 
@@ -503,10 +500,9 @@ static_assert(is_of_type<pow<1, 3>(metre* metre* metre), metre_>);
 static_assert(is_of_type<pow<1, 3>(metre* metre), derived_unit<power<metre_, 2, 3>>>);
 static_assert(is_of_type<pow<1, 2>(metre / second), derived_unit<power<metre_, 1, 2>, per<power<second_, 1, 2>>>>);
 static_assert(is_of_type<pow<1, 2>(metre / (second * second)), derived_unit<power<metre_, 1, 2>, per<second_>>>);
-static_assert(
-  is_of_type<kilometre * kilometre, derived_unit<power<std::remove_const_t<decltype(si::kilo<metre>)>, 2>>>);
+static_assert(is_of_type<kilometre * kilometre, derived_unit<power<si::kilo_<metre_>, 2>>>);
 
-static_assert(is_of_type<pow<2>(kilometre), derived_unit<power<std::remove_const_t<decltype(si::kilo<metre>)>, 2>>>);
+static_assert(is_of_type<pow<2>(kilometre), derived_unit<power<si::kilo_<metre_>, 2>>>);
 static_assert(is_of_type<pow<2>(si::kilo<metre>), derived_unit<power<si::kilo_<metre_>, 2>>>);
 static_assert(is_of_type<pow<2>(hour), derived_unit<power<hour_, 2>>>);
 static_assert(
@@ -514,11 +510,11 @@ static_assert(
 
 // common_unit
 static_assert(is_of_type<common_unit(gram, gram), gram_>);
-static_assert(is_of_type<common_unit(kilogram, kilogram), std::remove_const_t<decltype(si::kilo<gram>)>>);
-static_assert(is_of_type<common_unit(si::kilo<gram>, kilogram), std::remove_const_t<decltype(si::kilo<gram>)>>);
-static_assert(is_of_type<common_unit(kilogram, si::kilo<gram>), std::remove_const_t<decltype(si::kilo<gram>)>>);
-static_assert(is_of_type<common_unit(mag<1000>* gram, kilogram), std::remove_const_t<decltype(si::kilo<gram>)>>);
-static_assert(is_of_type<common_unit(kilogram, mag<1000>* gram), std::remove_const_t<decltype(si::kilo<gram>)>>);
+static_assert(is_of_type<common_unit(kilogram, kilogram), si::kilo_<gram_>>);
+static_assert(is_of_type<common_unit(si::kilo<gram>, kilogram), si::kilo_<gram_>>);
+static_assert(is_of_type<common_unit(kilogram, si::kilo<gram>), si::kilo_<gram_>>);
+static_assert(is_of_type<common_unit(mag<1000>* gram, kilogram), si::kilo_<gram_>>);
+static_assert(is_of_type<common_unit(kilogram, mag<1000>* gram), si::kilo_<gram_>>);
 static_assert(is_of_type<common_unit(one / second, hertz), hertz_>);
 static_assert(is_of_type<common_unit(hertz, one / second), hertz_>);
 static_assert(is_of_type<common_unit(gram, kilogram), gram_>);
@@ -527,10 +523,8 @@ static_assert(is_of_type<common_unit(second, hour), second_>);
 static_assert(is_of_type<common_unit(hour, second), second_>);
 static_assert(is_of_type<common_unit(minute, hour), minute_>);
 static_assert(is_of_type<common_unit(hour, minute), minute_>);
-static_assert(
-  is_of_type<common_unit(si::kilo<metre>, si::milli<metre>), std::remove_const_t<decltype(si::milli<metre>)>>);
-static_assert(
-  is_of_type<common_unit(si::milli<metre>, si::kilo<metre>), std::remove_const_t<decltype(si::milli<metre>)>>);
+static_assert(is_of_type<common_unit(si::kilo<metre>, si::milli<metre>), si::milli_<metre_>>);
+static_assert(is_of_type<common_unit(si::milli<metre>, si::kilo<metre>), si::milli_<metre_>>);
 static_assert(is_of_type<common_unit(yard, mile), yard_>);
 static_assert(is_of_type<common_unit(mile, yard), yard_>);
 // TODO The below have long/unreadable magnitude types
