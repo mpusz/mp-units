@@ -120,10 +120,34 @@ template<QuantitySpec auto... From, QuantitySpec Q>
 template<QuantitySpec Q>
 [[nodiscard]] consteval auto remove_kind(Q q);
 
+struct quantity_spec_interface_base {
+  template<QuantitySpec Lhs, QuantitySpec Rhs>
+  [[nodiscard]] friend consteval QuantitySpec auto operator*(Lhs lhs, Rhs rhs)
+  {
+    return clone_kind_of<Lhs{}, Rhs{}>(
+      expr_multiply<derived_quantity_spec, struct dimensionless, type_list_of_quantity_spec_less>(remove_kind(lhs),
+                                                                                                  remove_kind(rhs)));
+  }
+
+  template<QuantitySpec Lhs, QuantitySpec Rhs>
+  [[nodiscard]] friend consteval QuantitySpec auto operator/(Lhs lhs, Rhs rhs)
+  {
+    return clone_kind_of<Lhs{}, Rhs{}>(
+      expr_divide<derived_quantity_spec, struct dimensionless, type_list_of_quantity_spec_less>(remove_kind(lhs),
+                                                                                                remove_kind(rhs)));
+  }
+
+  template<QuantitySpec Lhs, QuantitySpec Rhs>
+  [[nodiscard]] friend consteval bool operator==(Lhs, Rhs)
+  {
+    return is_same_v<Lhs, Rhs>;
+  }
+};
+
 #if !MP_UNITS_API_NO_CRTP
 template<typename Self>
 #endif
-struct quantity_spec_interface {
+struct quantity_spec_interface : quantity_spec_interface_base {
 #if MP_UNITS_API_NO_CRTP
   template<typename Self, UnitOf<Self{}> U>
   [[nodiscard]] consteval Reference auto operator[](this Self self, U u)
@@ -155,28 +179,6 @@ struct quantity_spec_interface {
                     make_reference(Self{}, std::remove_cvref_t<Q>::unit)};
   }
 #endif
-
-  template<QuantitySpec Lhs, QuantitySpec Rhs>
-  [[nodiscard]] friend consteval QuantitySpec auto operator*(Lhs lhs, Rhs rhs)
-  {
-    return clone_kind_of<Lhs{}, Rhs{}>(
-      expr_multiply<derived_quantity_spec, struct dimensionless, type_list_of_quantity_spec_less>(remove_kind(lhs),
-                                                                                                  remove_kind(rhs)));
-  }
-
-  template<QuantitySpec Lhs, QuantitySpec Rhs>
-  [[nodiscard]] friend consteval QuantitySpec auto operator/(Lhs lhs, Rhs rhs)
-  {
-    return clone_kind_of<Lhs{}, Rhs{}>(
-      expr_divide<derived_quantity_spec, struct dimensionless, type_list_of_quantity_spec_less>(remove_kind(lhs),
-                                                                                                remove_kind(rhs)));
-  }
-
-  template<QuantitySpec Lhs, QuantitySpec Rhs>
-  [[nodiscard]] friend consteval bool operator==(Lhs, Rhs)
-  {
-    return is_same_v<Lhs, Rhs>;
-  }
 };
 
 }  // namespace detail
