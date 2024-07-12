@@ -46,13 +46,15 @@
 
 namespace mp_units {
 
+MP_UNITS_EXPORT struct dimensionless;
+
 namespace detail {
 
 template<QuantitySpec QS, Unit U>
   requires(!AssociatedUnit<U>) || UnitOf<U, QS{}>
 [[nodiscard]] consteval Reference auto make_reference(QS, U u)
 {
-  if constexpr (detail::QuantityKindSpec<QS>)
+  if constexpr (QuantityKindSpec<QS>)
     return u;
   else
     return reference<QS, U>{};
@@ -100,7 +102,7 @@ template<auto... Args>
 }
 
 template<NamedQuantitySpec Lhs, NamedQuantitySpec Rhs>
-struct quantity_spec_less : std::bool_constant<detail::type_name<Lhs>() < detail::type_name<Rhs>()> {};
+struct quantity_spec_less : std::bool_constant<type_name<Lhs>() < type_name<Rhs>()> {};
 
 template<typename T1, typename T2>
 using type_list_of_quantity_spec_less = expr_less<T1, T2, quantity_spec_less>;
@@ -112,6 +114,12 @@ using to_dimension = std::remove_const_t<decltype(Q::dimension)>;
 template<AssociatedUnit U>
 [[nodiscard]] consteval auto get_associated_quantity(U);
 
+template<QuantitySpec auto... From, QuantitySpec Q>
+[[nodiscard]] consteval QuantitySpec auto clone_kind_of(Q q);
+
+template<QuantitySpec Q>
+[[nodiscard]] consteval auto remove_kind(Q q);
+
 #if !MP_UNITS_API_NO_CRTP
 template<typename Self>
 #endif
@@ -120,33 +128,55 @@ struct quantity_spec_interface {
   template<typename Self, UnitOf<Self{}> U>
   [[nodiscard]] consteval Reference auto operator[](this Self self, U u)
   {
-    return detail::make_reference(self, u);
+    return make_reference(self, u);
   }
 
   template<typename Self, typename Q>
     requires Quantity<std::remove_cvref_t<Q>> &&
-             detail::QuantitySpecExplicitlyConvertibleTo<std::remove_reference_t<Q>::quantity_spec, Self{}>
+             QuantitySpecExplicitlyConvertibleTo<std::remove_reference_t<Q>::quantity_spec, Self{}>
   [[nodiscard]] constexpr Quantity auto operator()(this Self self, Q&& q)
   {
     return quantity{std::forward<Q>(q).numerical_value_is_an_implementation_detail_,
-                    detail::make_reference(self, std::remove_cvref_t<Q>::unit)};
+                    make_reference(self, std::remove_cvref_t<Q>::unit)};
   }
 #else
   template<typename Self_ = Self, UnitOf<Self_{}> U>
   [[nodiscard]] MP_UNITS_CONSTEVAL Reference auto operator[](U u) const
   {
-    return detail::make_reference(Self{}, u);
+    return make_reference(Self{}, u);
   }
 
   template<typename Q, typename Self_ = Self>
     requires Quantity<std::remove_cvref_t<Q>> &&
-             detail::QuantitySpecExplicitlyConvertibleTo<std::remove_reference_t<Q>::quantity_spec, Self_{}>
+             QuantitySpecExplicitlyConvertibleTo<std::remove_reference_t<Q>::quantity_spec, Self_{}>
   [[nodiscard]] constexpr Quantity auto operator()(Q&& q) const
   {
     return quantity{std::forward<Q>(q).numerical_value_is_an_implementation_detail_,
-                    detail::make_reference(Self{}, std::remove_cvref_t<Q>::unit)};
+                    make_reference(Self{}, std::remove_cvref_t<Q>::unit)};
   }
 #endif
+
+  template<QuantitySpec Lhs, QuantitySpec Rhs>
+  [[nodiscard]] friend consteval QuantitySpec auto operator*(Lhs lhs, Rhs rhs)
+  {
+    return clone_kind_of<Lhs{}, Rhs{}>(
+      expr_multiply<derived_quantity_spec, struct dimensionless, type_list_of_quantity_spec_less>(remove_kind(lhs),
+                                                                                                  remove_kind(rhs)));
+  }
+
+  template<QuantitySpec Lhs, QuantitySpec Rhs>
+  [[nodiscard]] friend consteval QuantitySpec auto operator/(Lhs lhs, Rhs rhs)
+  {
+    return clone_kind_of<Lhs{}, Rhs{}>(
+      expr_divide<derived_quantity_spec, struct dimensionless, type_list_of_quantity_spec_less>(remove_kind(lhs),
+                                                                                                remove_kind(rhs)));
+  }
+
+  template<QuantitySpec Lhs, QuantitySpec Rhs>
+  [[nodiscard]] friend consteval bool operator==(Lhs, Rhs)
+  {
+    return is_same_v<Lhs, Rhs>;
+  }
 };
 
 }  // namespace detail
@@ -545,30 +575,6 @@ template<QuantitySpec Q>
 }  // namespace detail
 
 MP_UNITS_EXPORT_BEGIN
-
-// Operators
-
-template<QuantitySpec Lhs, QuantitySpec Rhs>
-[[nodiscard]] consteval QuantitySpec auto operator*(Lhs lhs, Rhs rhs)
-{
-  return detail::clone_kind_of<Lhs{}, Rhs{}>(
-    detail::expr_multiply<derived_quantity_spec, struct dimensionless, detail::type_list_of_quantity_spec_less>(
-      detail::remove_kind(lhs), detail::remove_kind(rhs)));
-}
-
-template<QuantitySpec Lhs, QuantitySpec Rhs>
-[[nodiscard]] consteval QuantitySpec auto operator/(Lhs lhs, Rhs rhs)
-{
-  return detail::clone_kind_of<Lhs{}, Rhs{}>(
-    detail::expr_divide<derived_quantity_spec, struct dimensionless, detail::type_list_of_quantity_spec_less>(
-      detail::remove_kind(lhs), detail::remove_kind(rhs)));
-}
-
-template<QuantitySpec Lhs, QuantitySpec Rhs>
-[[nodiscard]] consteval bool operator==(Lhs, Rhs)
-{
-  return is_same_v<Lhs, Rhs>;
-}
 
 [[nodiscard]] consteval QuantitySpec auto inverse(QuantitySpec auto q) { return dimensionless / q; }
 

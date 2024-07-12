@@ -30,6 +30,20 @@
 
 namespace mp_units {
 
+namespace detail {
+
+struct dimension_interface;
+
+}
+
+/**
+ * @brief A concept matching all dimensions in the library.
+ *
+ * Satisfied by all dimension types in the library.
+ */
+MP_UNITS_EXPORT template<typename T>
+concept Dimension = std::derived_from<T, detail::dimension_interface> && std::is_final_v<T>;
+
 MP_UNITS_EXPORT template<symbol_text Symbol>
 struct base_dimension;
 
@@ -48,7 +62,7 @@ inline constexpr bool is_derived_from_specialization_of_base_dimension =
  * Satisfied by all dimension types derived from a specialization of `base_dimension`.
  */
 template<typename T>
-concept BaseDimension = is_derived_from_specialization_of_base_dimension<T> && std::is_final_v<T>;
+concept BaseDimension = Dimension<T> && is_derived_from_specialization_of_base_dimension<T>;
 
 template<typename T>
 struct is_dimension_one : std::false_type {};
@@ -70,40 +84,11 @@ template<typename T>
 concept DerivedDimensionExpr =
   BaseDimension<T> || is_dimension_one<T>::value || is_power_of_dim<T> || is_per_of_dims<T>;
 
-}  // namespace detail
-
-template<detail::DerivedDimensionExpr... Expr>
-struct derived_dimension;
-
-namespace detail {
-
-/**
- * @brief A concept matching all derived dimensions in the library.
- *
- * Satisfied by all dimension types being a specialization of `derived_dimension` or
- * being the `dimension_one`.
- */
-template<typename T>
-concept DerivedDimension =
-  (is_specialization_of<T, derived_dimension> || is_dimension_one<T>::value) && std::is_final_v<T>;
-
-}  // namespace detail
-
-/**
- * @brief A concept matching all dimensions in the library.
- *
- * Satisfied by all dimension types for which either `BaseDimension<T>` or `DerivedDimension<T>` is `true`.
- */
-MP_UNITS_EXPORT template<typename T>
-concept Dimension = detail::BaseDimension<T> || detail::DerivedDimension<T>;
-
-namespace detail {
-
 template<auto D1, auto D2>
 concept SameDimension =
   Dimension<MP_UNITS_REMOVE_CONST(decltype(D1))> && Dimension<MP_UNITS_REMOVE_CONST(decltype(D2))> && (D1 == D2);
 
-}
+}  // namespace detail
 
 /**
  * @brief A concept checking if the argument is of the same dimension.

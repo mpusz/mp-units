@@ -58,17 +58,6 @@ static_assert(!detail::BaseDimension<base_dimension<"L">>);
 static_assert(!detail::BaseDimension<struct si::metre>);
 static_assert(!detail::BaseDimension<int>);
 
-// DerivedDimension
-static_assert(detail::DerivedDimension<decltype(isq::dim_length / isq::dim_time)>);
-static_assert(detail::DerivedDimension<decltype(inverse(isq::dim_time))>);
-static_assert(detail::DerivedDimension<decltype(pow<2>(isq::dim_length))>);
-static_assert(detail::DerivedDimension<derived_dimension<struct isq::dim_length, per<struct isq::dim_time>>>);
-static_assert(detail::DerivedDimension<struct dimension_one>);
-static_assert(detail::DerivedDimension<std::remove_const_t<decltype(dim_speed)>>);
-static_assert(!detail::DerivedDimension<struct isq::dim_length>);
-static_assert(!detail::DerivedDimension<struct si::metre>);
-static_assert(!detail::DerivedDimension<int>);
-
 // Dimension
 static_assert(Dimension<struct isq::dim_length>);
 static_assert(Dimension<decltype(isq::dim_length / isq::dim_time)>);

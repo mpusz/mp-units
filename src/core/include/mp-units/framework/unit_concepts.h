@@ -33,8 +33,7 @@ namespace mp_units {
 
 namespace detail {
 
-template<typename T>
-inline constexpr bool is_unit = false;
+struct unit_interface;
 
 }  // namespace detail
 
@@ -44,7 +43,7 @@ inline constexpr bool is_unit = false;
  * Satisfied by all unit types provided by the library.
  */
 MP_UNITS_EXPORT template<typename T>
-concept Unit = detail::is_unit<T>;
+concept Unit = std::derived_from<T, detail::unit_interface> && std::is_final_v<T>;
 
 template<Magnitude auto M, Unit U>
 struct scaled_unit;
@@ -121,24 +120,6 @@ MP_UNITS_EXPORT template<symbol_text Symbol, Magnitude auto M, PrefixableUnit au
 struct prefixed_unit;
 
 namespace detail {
-
-template<auto M, typename U>
-void is_unit_impl(const scaled_unit<M, U>*);
-
-template<symbol_text Symbol, auto... Args>
-void is_unit_impl(const named_unit<Symbol, Args...>*);
-
-template<symbol_text Symbol, auto M, auto U>
-void is_unit_impl(const prefixed_unit<Symbol, M, U>*);
-
-template<typename... Expr>
-void is_unit_impl(const derived_unit<Expr...>*);
-
-void is_unit_impl(const one*);
-
-template<typename T>
-  requires requires(T* t) { is_unit_impl(t); } && std::is_final_v<T>
-inline constexpr bool is_unit<T> = true;
 
 template<Unit U>
 [[nodiscard]] consteval bool has_associated_quantity(U);

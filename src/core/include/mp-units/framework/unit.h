@@ -56,6 +56,155 @@ namespace mp_units {
 
 namespace detail {
 
+template<Magnitude auto M, Unit U>
+struct scaled_unit_impl;
+
+template<typename T>
+inline constexpr bool is_specialization_of_scaled_unit = false;
+
+template<DerivedUnitExpr... Expr>
+struct derived_unit_impl;
+
+/**
+ * @brief A canonical representation of a unit
+ *
+ * A canonical representation of a unit consists of:
+ * - a reference unit being the result of extraction of all the intermediate derived units,
+ * - a magnitude being a product of all the prefixes and magnitudes of extracted scaled units.
+ *
+ * All units having the same canonical unit are deemed equal.
+ * All units having the same reference unit are convertible (their magnitude may differ and
+ * is used during conversion).
+ *
+ * @tparam U a unit to use as a `reference_unit`
+ * @tparam M a Magnitude representing an absolute scaling factor of this unit
+ */
+template<Magnitude M, Unit U>
+struct canonical_unit {
+  M mag;
+  U reference_unit;
+};
+
+#if MP_UNITS_COMP_CLANG
+
+template<Magnitude M, Unit U>
+canonical_unit(M, U) -> canonical_unit<M, U>;
+
+#endif
+
+template<Unit T, symbol_text Symbol, auto... Args>
+[[nodiscard]] consteval auto get_canonical_unit_impl(T t, const named_unit<Symbol, Args...>&);
+
+template<Unit T, symbol_text Symbol, Unit auto U, auto... Args>
+[[nodiscard]] consteval auto get_canonical_unit_impl(T, const named_unit<Symbol, U, Args...>&);
+
+template<typename T, typename F, int Num, int... Den>
+[[nodiscard]] consteval auto get_canonical_unit_impl(T, const power<F, Num, Den...>&);
+
+template<Unit T, typename... Expr>
+[[nodiscard]] consteval auto get_canonical_unit_impl(T, const derived_unit_impl<Expr...>&);
+
+template<Unit T, auto M, typename U>
+[[nodiscard]] consteval auto get_canonical_unit_impl(T, const scaled_unit_impl<M, U>&);
+
+template<Unit Lhs, Unit Rhs>
+struct unit_less : std::bool_constant<(Lhs::symbol < Rhs::symbol)> {};
+
+template<typename T1, typename T2>
+using type_list_of_unit_less = expr_less<T1, T2, unit_less>;
+
+}  // namespace detail
+
+// TODO this should really be in the `details` namespace but is used in `chrono.h` (a part of mp_units.systems)
+// Even though it is not exported, it is visible to the other module via ADL
+[[nodiscard]] consteval auto get_canonical_unit(Unit auto u) { return detail::get_canonical_unit_impl(u, u); }
+
+namespace detail {
+
+template<Unit U1, Unit U2>
+[[nodiscard]] consteval bool have_same_canonical_reference_unit(U1 u1, U2 u2)
+{
+  if constexpr (is_same_v<U1, U2>)
+    return true;
+  else
+    return is_same_v<decltype(get_canonical_unit(u1).reference_unit), decltype(get_canonical_unit(u2).reference_unit)>;
+}
+
+
+struct unit_interface {
+  /**
+   * Multiplication by `1` returns the same unit, otherwise `scaled_unit` is being returned.
+   */
+  template<Magnitude M, Unit U>
+  [[nodiscard]] friend MP_UNITS_CONSTEVAL Unit auto operator*(M, U u)
+  {
+    if constexpr (std::is_same_v<M, std::remove_const_t<decltype(mp_units::mag<1>)>>)
+      return u;
+    else
+      return scaled_unit<M{}, U>{};
+  }
+
+  [[nodiscard]] friend consteval Unit auto operator*(Unit auto, Magnitude auto)
+#if __cpp_deleted_function
+    = delete("To scale a unit use `mag * unit` syntax");
+#else
+    = delete;
+#endif
+
+  /**
+   * Returns the result of multiplication with an inverse unit.
+   */
+  template<Magnitude M, Unit U>
+  [[nodiscard]] friend MP_UNITS_CONSTEVAL Unit auto operator/(M mag, U u)
+  {
+    return mag * inverse(u);
+  }
+
+  /**
+   * `scaled_unit` specializations have priority in this operation. This means that the library framework
+   * prevents passing it as an element to the `derived_unit`. In such case only the reference unit is passed
+   * to the derived unit and the magnitude remains outside forming another scaled unit as a result of the operation.
+   */
+  template<Unit Lhs, Unit Rhs>
+  [[nodiscard]] friend MP_UNITS_CONSTEVAL Unit auto operator*(Lhs lhs, Rhs rhs)
+  {
+    if constexpr (is_specialization_of_scaled_unit<Lhs> && is_specialization_of_scaled_unit<Rhs>)
+      return (Lhs::mag * Rhs::mag) * (Lhs::reference_unit * Rhs::reference_unit);
+    else if constexpr (is_specialization_of_scaled_unit<Lhs>)
+      return Lhs::mag * (Lhs::reference_unit * rhs);
+    else if constexpr (is_specialization_of_scaled_unit<Rhs>)
+      return Rhs::mag * (lhs * Rhs::reference_unit);
+    else
+      return expr_multiply<derived_unit, struct one, type_list_of_unit_less>(lhs, rhs);
+  }
+
+  /**
+   * `scaled_unit` specializations have priority in this operation. This means that the library framework
+   * prevents passing it as an element to the `derived_unit`. In such case only the reference unit is passed
+   * to the derived unit and the magnitude remains outside forming another scaled unit as a result of the operation.
+   */
+  template<Unit Lhs, Unit Rhs>
+  [[nodiscard]] friend MP_UNITS_CONSTEVAL Unit auto operator/(Lhs lhs, Rhs rhs)
+  {
+    if constexpr (is_specialization_of_scaled_unit<Lhs> && is_specialization_of_scaled_unit<Rhs>)
+      return (Lhs::mag / Rhs::mag) * (Lhs::reference_unit / Rhs::reference_unit);
+    else if constexpr (is_specialization_of_scaled_unit<Lhs>)
+      return Lhs::mag * (Lhs::reference_unit / rhs);
+    else if constexpr (is_specialization_of_scaled_unit<Rhs>)
+      return mag<1> / Rhs::mag * (lhs / Rhs::reference_unit);
+    else
+      return expr_divide<derived_unit, struct one, type_list_of_unit_less>(lhs, rhs);
+  }
+
+  [[nodiscard]] friend consteval bool operator==(Unit auto lhs, Unit auto rhs)
+  {
+    auto canonical_lhs = get_canonical_unit(lhs);
+    auto canonical_rhs = get_canonical_unit(rhs);
+    return convertible(canonical_lhs.reference_unit, canonical_rhs.reference_unit) &&
+           canonical_lhs.mag == canonical_rhs.mag;
+  }
+};
+
 template<Unit U, bool = requires { U::point_origin; }>
 struct propagate_point_origin {};
 
@@ -65,7 +214,7 @@ struct propagate_point_origin<U, true> {
 };
 
 template<Magnitude auto M, Unit U>
-struct scaled_unit_impl : detail::propagate_point_origin<U> {
+struct scaled_unit_impl : detail::unit_interface, detail::propagate_point_origin<U> {
   using _base_type_ = scaled_unit_impl;  // exposition only
   static constexpr MP_UNITS_CONSTRAINED_AUTO_WORKAROUND(Magnitude) auto mag = M;
   static constexpr U reference_unit{};
@@ -86,9 +235,6 @@ template<Magnitude auto M, Unit U>
 struct scaled_unit final : detail::scaled_unit_impl<M, U> {};
 
 namespace detail {
-
-template<typename T>
-inline constexpr bool is_specialization_of_scaled_unit = false;
 
 template<auto M, Unit U>
 inline constexpr bool is_specialization_of_scaled_unit<scaled_unit<M, U>> = true;
@@ -142,7 +288,7 @@ struct named_unit;
  */
 template<symbol_text Symbol, detail::QuantityKindSpec auto QS>
   requires(!Symbol.empty()) && detail::BaseDimension<std::remove_const_t<decltype(QS.dimension)>>
-struct named_unit<Symbol, QS> {
+struct named_unit<Symbol, QS> : detail::unit_interface {
   using _base_type_ = named_unit;         // exposition only
   static constexpr auto symbol = Symbol;  ///< Unique base unit identifier
   static constexpr auto quantity_spec = QS;
@@ -150,7 +296,7 @@ struct named_unit<Symbol, QS> {
 
 template<symbol_text Symbol, detail::QuantityKindSpec auto QS, PointOrigin auto PO>
   requires(!Symbol.empty()) && detail::BaseDimension<std::remove_const_t<decltype(QS.dimension)>>
-struct named_unit<Symbol, QS, PO> {
+struct named_unit<Symbol, QS, PO> : detail::unit_interface {
   using _base_type_ = named_unit;         // exposition only
   static constexpr auto symbol = Symbol;  ///< Unique base unit identifier
   static constexpr auto quantity_spec = QS;
@@ -169,7 +315,7 @@ struct named_unit<Symbol, QS, PO> {
  */
 template<symbol_text Symbol>
   requires(!Symbol.empty())
-struct named_unit<Symbol> {
+struct named_unit<Symbol> : detail::unit_interface {
   using _base_type_ = named_unit;         // exposition only
   static constexpr auto symbol = Symbol;  ///< Unique base unit identifier
 };
@@ -258,7 +404,7 @@ template<typename T>
 struct is_one : std::false_type {};
 
 template<DerivedUnitExpr... Expr>
-struct derived_unit_impl : detail::expr_fractions<detail::is_one, Expr...> {
+struct derived_unit_impl : detail::unit_interface, detail::expr_fractions<detail::is_one, Expr...> {
   using _base_type_ = derived_unit_impl;  // exposition only
 };
 
@@ -326,45 +472,6 @@ namespace detail {
 template<>
 struct is_one<struct one> : std::true_type {};
 
-/**
- * @brief A canonical representation of a unit
- *
- * A canonical representation of a unit consists of:
- * - a reference unit being the result of extraction of all the intermediate derived units,
- * - a magnitude being a product of all the prefixes and magnitudes of extracted scaled units.
- *
- * All units having the same canonical unit are deemed equal.
- * All units having the same reference unit are convertible (their magnitude may differ and
- * is used during conversion).
- *
- * @tparam U a unit to use as a `reference_unit`
- * @tparam M a Magnitude representing an absolute scaling factor of this unit
- */
-template<Magnitude M, Unit U>
-struct canonical_unit {
-  M mag;
-  U reference_unit;
-};
-
-#if MP_UNITS_COMP_CLANG
-
-template<Magnitude M, Unit U>
-canonical_unit(M, U) -> canonical_unit<M, U>;
-
-#endif
-
-template<Unit T, symbol_text Symbol, auto... Args>
-[[nodiscard]] consteval auto get_canonical_unit_impl(T t, const named_unit<Symbol, Args...>&);
-
-template<Unit T, symbol_text Symbol, Unit auto U, auto... Args>
-[[nodiscard]] consteval auto get_canonical_unit_impl(T, const named_unit<Symbol, U, Args...>&);
-
-template<typename T, typename F, int Num, int... Den>
-[[nodiscard]] consteval auto get_canonical_unit_impl(T, const power<F, Num, Den...>&);
-
-template<Unit T, typename... Expr>
-[[nodiscard]] consteval auto get_canonical_unit_impl(T, const derived_unit_impl<Expr...>&);
-
 template<Unit T, auto M, typename U>
 [[nodiscard]] consteval auto get_canonical_unit_impl(T, const scaled_unit_impl<M, U>&)
 {
@@ -422,113 +529,6 @@ template<Unit T, typename... Expr>
   return canonical_unit{num.mag / den.mag, num.reference_unit / den.reference_unit};
 }
 
-template<Unit Lhs, Unit Rhs>
-struct unit_less : std::bool_constant<(Lhs::symbol < Rhs::symbol)> {};
-
-template<typename T1, typename T2>
-using type_list_of_unit_less = expr_less<T1, T2, unit_less>;
-
-}  // namespace detail
-
-// TODO this should really be in the `details` namespace but is used in `chrono.h` (a part of mp_units.systems)
-// Even though it is not exported, it is visible to the other module via ADL
-[[nodiscard]] consteval auto get_canonical_unit(Unit auto u) { return detail::get_canonical_unit_impl(u, u); }
-
-MP_UNITS_EXPORT_BEGIN
-
-// Operators
-
-/**
- * Multiplication by `1` returns the same unit, otherwise `scaled_unit` is being returned.
- */
-template<Magnitude M, Unit U>
-[[nodiscard]] MP_UNITS_CONSTEVAL Unit auto operator*(M, U u)
-{
-  if constexpr (std::is_same_v<M, std::remove_const_t<decltype(mp_units::mag<1>)>>)
-    return u;
-  else
-    return scaled_unit<M{}, U>{};
-}
-
-[[nodiscard]] consteval Unit auto operator*(Unit auto, Magnitude auto)
-#if __cpp_deleted_function
-  = delete("To scale a unit use `mag * unit` syntax");
-#else
-  = delete;
-#endif
-
-/**
- * Returns the result of multiplication with an inverse unit.
- */
-template<Magnitude M, Unit U>
-[[nodiscard]] MP_UNITS_CONSTEVAL Unit auto operator/(M mag, U u)
-{
-  return mag * inverse(u);
-}
-
-/**
- * `scaled_unit` specializations have priority in this operation. This means that the library framework
- * prevents passing it as an element to the `derived_unit`. In such case only the reference unit is passed
- * to the derived unit and the magnitude remains outside forming another scaled unit as a result of the operation.
- */
-template<Unit Lhs, Unit Rhs>
-[[nodiscard]] MP_UNITS_CONSTEVAL Unit auto operator*(Lhs lhs, Rhs rhs)
-{
-  if constexpr (detail::is_specialization_of_scaled_unit<Lhs> && detail::is_specialization_of_scaled_unit<Rhs>)
-    return (Lhs::mag * Rhs::mag) * (Lhs::reference_unit * Rhs::reference_unit);
-  else if constexpr (detail::is_specialization_of_scaled_unit<Lhs>)
-    return Lhs::mag * (Lhs::reference_unit * rhs);
-  else if constexpr (detail::is_specialization_of_scaled_unit<Rhs>)
-    return Rhs::mag * (lhs * Rhs::reference_unit);
-  else
-    return detail::expr_multiply<derived_unit, struct one, detail::type_list_of_unit_less>(lhs, rhs);
-}
-
-/**
- * `scaled_unit` specializations have priority in this operation. This means that the library framework
- * prevents passing it as an element to the `derived_unit`. In such case only the reference unit is passed
- * to the derived unit and the magnitude remains outside forming another scaled unit as a result of the operation.
- */
-template<Unit Lhs, Unit Rhs>
-[[nodiscard]] MP_UNITS_CONSTEVAL Unit auto operator/(Lhs lhs, Rhs rhs)
-{
-  if constexpr (detail::is_specialization_of_scaled_unit<Lhs> && detail::is_specialization_of_scaled_unit<Rhs>)
-    return (Lhs::mag / Rhs::mag) * (Lhs::reference_unit / Rhs::reference_unit);
-  else if constexpr (detail::is_specialization_of_scaled_unit<Lhs>)
-    return Lhs::mag * (Lhs::reference_unit / rhs);
-  else if constexpr (detail::is_specialization_of_scaled_unit<Rhs>)
-    return mag<1> / Rhs::mag * (lhs / Rhs::reference_unit);
-  else
-    return detail::expr_divide<derived_unit, struct one, detail::type_list_of_unit_less>(lhs, rhs);
-}
-
-[[nodiscard]] MP_UNITS_CONSTEVAL Unit auto inverse(Unit auto u) { return one / u; }
-
-MP_UNITS_EXPORT_END
-
-namespace detail {
-
-template<Unit U1, Unit U2>
-[[nodiscard]] consteval bool have_same_canonical_reference_unit(U1 u1, U2 u2)
-{
-  if constexpr (is_same_v<U1, U2>)
-    return true;
-  else
-    return is_same_v<decltype(get_canonical_unit(u1).reference_unit), decltype(get_canonical_unit(u2).reference_unit)>;
-}
-
-}  // namespace detail
-
-MP_UNITS_EXPORT [[nodiscard]] consteval bool operator==(Unit auto lhs, Unit auto rhs)
-{
-  auto canonical_lhs = get_canonical_unit(lhs);
-  auto canonical_rhs = get_canonical_unit(rhs);
-  return convertible(canonical_lhs.reference_unit, canonical_rhs.reference_unit) &&
-         canonical_lhs.mag == canonical_rhs.mag;
-}
-
-namespace detail {
-
 template<typename T>
 inline constexpr bool is_specialization_of_derived_unit = false;
 
@@ -538,6 +538,8 @@ inline constexpr bool is_specialization_of_derived_unit<derived_unit<Expr...>> =
 }  // namespace detail
 
 MP_UNITS_EXPORT_BEGIN
+
+[[nodiscard]] MP_UNITS_CONSTEVAL Unit auto inverse(Unit auto u) { return one / u; }
 
 /**
  * @brief Computes the value of a unit raised to the `Num/Den` power

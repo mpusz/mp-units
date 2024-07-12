@@ -185,6 +185,9 @@ inline constexpr bool is_specialization_of_power_v<power_v<V, Ints...>> = true;
 template<typename T>
 concept MagnitudeSpec = PowerVBase<T> || detail::is_specialization_of_power_v<T>;
 
+template<MagnitudeSpec auto... Ms>
+struct magnitude;
+
 namespace detail {
 
 template<MagnitudeSpec Element>
@@ -464,123 +467,8 @@ namespace detail {
   return is_rational(element) && get_exponent(element).num > 0;
 }
 
-}  // namespace detail
-
-
-/**
- * @brief  A representation for positive real numbers which optimizes taking products and rational powers.
- *
- * Magnitudes can be treated as values.  Each type encodes exactly one value.  Users can multiply, divide, raise to
- * rational powers, and compare for equality.
- */
-template<MagnitudeSpec auto... Ms>
-// requires detail::is_element_pack_valid<Ms...>
-struct magnitude {
-  [[nodiscard]] friend consteval bool is_integral(const magnitude&)
-  {
-    using namespace detail;  // needed for recursive case when magnitudes are in the MagnitudeSpec
-    return (is_integral(Ms) && ...);
-  }
-
-  [[nodiscard]] friend consteval bool is_rational(const magnitude&)
-  {
-    using namespace detail;  // needed for recursive case when magnitudes are in the MagnitudeSpec
-    return (is_rational(Ms) && ...);
-  }
-};
-
-
-namespace detail {
-
-template<auto... Ms>
-void to_base_specialization_of_magnitude(const volatile magnitude<Ms...>*);
-
-template<typename T>
-inline constexpr bool is_derived_from_specialization_of_magnitude =
-  requires(T* t) { to_base_specialization_of_magnitude(t); };
-
-template<typename T>
-  requires is_derived_from_specialization_of_magnitude<T>
-inline constexpr bool is_magnitude<T> = true;
-
-template<auto... Ms>
-inline constexpr bool is_specialization_of_magnitude<magnitude<Ms...>> = true;
-
-}  // namespace detail
-
-
-/**
- * @brief  The value of a Magnitude in a desired type T.
- */
-template<typename T, auto... Ms>
-  requires(is_integral(magnitude<Ms...>{})) || treat_as_floating_point<T>
-[[nodiscard]] consteval T get_value(const magnitude<Ms...>&)
-{
-  // Force the expression to be evaluated in a constexpr context, to catch, e.g., overflow.
-  constexpr T result = detail::checked_static_cast<T>((detail::compute_base_power<T>(Ms) * ... * T{1}));
-  return result;
-}
-
-MP_UNITS_EXPORT_BEGIN
-
-/**
- * @brief  A convenient Magnitude constant for pi, which we can manipulate like a regular number.
- */
-#if MP_UNITS_COMP_CLANG
-
-inline constexpr struct mag_pi : magnitude<mag_value{std::numbers::pi_v<long double>}> {
-} mag_pi;
-
-#else
-
-inline constexpr struct mag_pi : magnitude<std::numbers::pi_v<long double>> {
-} mag_pi;
-
-#endif
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Magnitude equality implementation.
-
-template<Magnitude M1, Magnitude M2>
-[[nodiscard]] consteval bool operator==(M1, M2)
-{
-  return std::is_same_v<M1, M2>;
-}
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Magnitude rational powers implementation.
-
-template<std::intmax_t Num, std::intmax_t Den = 1, auto... Ms>
-[[nodiscard]] consteval auto pow(magnitude<Ms...>)
-{
-  if constexpr (Num == 0) {
-    return magnitude<>{};
-  } else {
-    return magnitude<
-      detail::power_v_or_T<detail::get_base(Ms), detail::get_exponent(Ms) * detail::ratio{Num, Den}>()...>{};
-  }
-}
-
-template<auto... Ms>
-[[nodiscard]] consteval auto sqrt(magnitude<Ms...> m)
-{
-  return pow<1, 2>(m);
-}
-
-template<auto... Ms>
-[[nodiscard]] consteval auto cbrt(magnitude<Ms...> m)
-{
-  return pow<1, 3>(m);
-}
-
-MP_UNITS_EXPORT_END
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Magnitude product implementation.
-
-namespace detail {
-
 [[nodiscard]] consteval bool less(MagnitudeSpec auto lhs, MagnitudeSpec auto rhs)
 {
   using lhs_base_t = decltype(get_base_value(lhs));
@@ -594,18 +482,8 @@ namespace detail {
     return is_named_magnitude<lhs_base_t>;
 }
 
-}  // namespace detail
-
-MP_UNITS_EXPORT_BEGIN
-
-// Base cases, for when either (or both) inputs are the identity.
-[[nodiscard]] consteval Magnitude auto operator*(magnitude<>, magnitude<>) { return magnitude<>{}; }
-[[nodiscard]] consteval Magnitude auto operator*(magnitude<>, Magnitude auto m) { return m; }
-[[nodiscard]] consteval Magnitude auto operator*(Magnitude auto m, magnitude<>) { return m; }
-
-// Recursive case for the product of any two non-identity Magnitudes.
 template<auto H1, auto... T1, auto H2, auto... T2>
-[[nodiscard]] consteval Magnitude auto operator*(magnitude<H1, T1...>, magnitude<H2, T2...>)
+[[nodiscard]] consteval Magnitude auto multiply_impl(magnitude<H1, T1...>, magnitude<H2, T2...>)
 {
   using namespace detail;
 
@@ -641,10 +519,123 @@ template<auto H1, auto... T1, auto H2, auto... T2>
   }
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Magnitude quotient implementation.
+}  // namespace detail
 
-[[nodiscard]] consteval auto operator/(Magnitude auto l, Magnitude auto r) { return l * pow<-1>(r); }
+
+/**
+ * @brief  A representation for positive real numbers which optimizes taking products and rational powers.
+ *
+ * Magnitudes can be treated as values.  Each type encodes exactly one value.  Users can multiply, divide, raise to
+ * rational powers, and compare for equality.
+ */
+template<MagnitudeSpec auto... Ms>
+// requires detail::is_element_pack_valid<Ms...>
+struct magnitude {
+  [[nodiscard]] friend consteval bool is_integral(const magnitude&)
+  {
+    using namespace detail;  // needed for recursive case when magnitudes are in the MagnitudeSpec
+    return (is_integral(Ms) && ...);
+  }
+
+  [[nodiscard]] friend consteval bool is_rational(const magnitude&)
+  {
+    using namespace detail;  // needed for recursive case when magnitudes are in the MagnitudeSpec
+    return (is_rational(Ms) && ...);
+  }
+
+  template<Magnitude M>
+  [[nodiscard]] friend consteval Magnitude auto operator*(magnitude m1, M m2)
+  {
+    if constexpr (sizeof...(Ms) == 0)
+      return m2;
+    else if constexpr (is_same_v<M, magnitude<>>)
+      return m1;
+    else
+      return detail::multiply_impl(m1, m2);
+  }
+
+  [[nodiscard]] friend consteval auto operator/(magnitude l, Magnitude auto r) { return l * pow<-1>(r); }
+
+  template<Magnitude M2>
+  [[nodiscard]] friend consteval bool operator==(magnitude, M2)
+  {
+    return std::is_same_v<magnitude, M2>;
+  }
+
+  /**
+   * @brief  The value of a Magnitude in a desired type T.
+   */
+  template<typename T>
+    requires((detail::is_integral(Ms) && ...)) || treat_as_floating_point<T>
+  [[nodiscard]] friend consteval T get_value(const magnitude&)
+  {
+    // Force the expression to be evaluated in a constexpr context, to catch, e.g., overflow.
+    constexpr T result = detail::checked_static_cast<T>((detail::compute_base_power<T>(Ms) * ... * T{1}));
+    return result;
+  }
+};
+
+
+namespace detail {
+
+template<auto... Ms>
+void to_base_specialization_of_magnitude(const volatile magnitude<Ms...>*);
+
+template<typename T>
+inline constexpr bool is_derived_from_specialization_of_magnitude =
+  requires(T* t) { to_base_specialization_of_magnitude(t); };
+
+template<typename T>
+  requires is_derived_from_specialization_of_magnitude<T>
+inline constexpr bool is_magnitude<T> = true;
+
+template<auto... Ms>
+inline constexpr bool is_specialization_of_magnitude<magnitude<Ms...>> = true;
+
+}  // namespace detail
+
+MP_UNITS_EXPORT_BEGIN
+
+/**
+ * @brief  A convenient Magnitude constant for pi, which we can manipulate like a regular number.
+ */
+#if MP_UNITS_COMP_CLANG
+
+inline constexpr struct mag_pi : magnitude<mag_value{std::numbers::pi_v<long double>}> {
+} mag_pi;
+
+#else
+
+inline constexpr struct mag_pi : magnitude<std::numbers::pi_v<long double>> {
+} mag_pi;
+
+#endif
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Magnitude rational powers implementation.
+
+template<std::intmax_t Num, std::intmax_t Den = 1, auto... Ms>
+[[nodiscard]] consteval auto pow(magnitude<Ms...>)
+{
+  if constexpr (Num == 0) {
+    return magnitude<>{};
+  } else {
+    return magnitude<
+      detail::power_v_or_T<detail::get_base(Ms), detail::get_exponent(Ms) * detail::ratio{Num, Den}>()...>{};
+  }
+}
+
+template<auto... Ms>
+[[nodiscard]] consteval auto sqrt(magnitude<Ms...> m)
+{
+  return pow<1, 2>(m);
+}
+
+template<auto... Ms>
+[[nodiscard]] consteval auto cbrt(magnitude<Ms...> m)
+{
+  return pow<1, 3>(m);
+}
 
 MP_UNITS_EXPORT_END
 

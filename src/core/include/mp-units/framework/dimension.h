@@ -47,6 +47,53 @@
 
 namespace mp_units {
 
+template<detail::DerivedDimensionExpr... Expr>
+struct derived_dimension;
+
+MP_UNITS_EXPORT struct dimension_one;
+
+namespace detail {
+
+template<typename Lhs, typename Rhs>
+struct base_dimension_less : std::bool_constant<(Lhs::symbol < Rhs::symbol)> {};
+
+template<typename T1, typename T2>
+using type_list_of_base_dimension_less = expr_less<T1, T2, base_dimension_less>;
+
+template<DerivedDimensionExpr... Expr>
+struct derived_dimension_impl : expr_fractions<is_dimension_one, Expr...> {};
+
+template<auto Symbol>
+[[nodiscard]] consteval std::true_type derived_from_the_same_base_dimension(const base_dimension<Symbol>&,
+                                                                            const base_dimension<Symbol>&)
+{
+  return {};
+}
+
+[[nodiscard]] consteval std::false_type derived_from_the_same_base_dimension(...) { return {}; }
+
+struct dimension_interface {
+  template<Dimension Lhs, Dimension Rhs>
+  [[nodiscard]] friend consteval Dimension auto operator*(Lhs, Rhs)
+  {
+    return expr_multiply<derived_dimension, struct dimension_one, type_list_of_base_dimension_less>(Lhs{}, Rhs{});
+  }
+
+  template<Dimension Lhs, Dimension Rhs>
+  [[nodiscard]] friend consteval Dimension auto operator/(Lhs, Rhs)
+  {
+    return expr_divide<derived_dimension, struct dimension_one, type_list_of_base_dimension_less>(Lhs{}, Rhs{});
+  }
+
+  template<Dimension Lhs, Dimension Rhs>
+  [[nodiscard]] friend consteval bool operator==(Lhs lhs, Rhs rhs)
+  {
+    return is_same_v<Lhs, Rhs> || derived_from_the_same_base_dimension(lhs, rhs);
+  }
+};
+
+}  // namespace detail
+
 /**
  * @brief A dimension of a base quantity
  *
@@ -76,22 +123,9 @@ namespace mp_units {
  * @tparam Symbol an unique identifier of the base dimension used to provide dimensional analysis support
  */
 MP_UNITS_EXPORT template<symbol_text Symbol>
-struct base_dimension {
+struct base_dimension : detail::dimension_interface {
   static constexpr auto symbol = Symbol;  ///< Unique base dimension identifier
 };
-
-namespace detail {
-
-template<BaseDimension Lhs, BaseDimension Rhs>
-struct base_dimension_less : std::bool_constant<(Lhs::symbol < Rhs::symbol)> {};
-
-template<typename T1, typename T2>
-using type_list_of_base_dimension_less = expr_less<T1, T2, base_dimension_less>;
-
-template<detail::DerivedDimensionExpr... Expr>
-struct derived_dimension_impl : detail::expr_fractions<detail::is_dimension_one, Expr...> {};
-
-}  // namespace detail
 
 /**
  * @brief A dimension of a derived quantity
@@ -136,7 +170,7 @@ struct derived_dimension_impl : detail::expr_fractions<detail::is_dimension_one,
  *       instantiate this type automatically based on the dimensional arithmetic equation provided by the user.
  */
 template<detail::DerivedDimensionExpr... Expr>
-struct derived_dimension final : detail::derived_dimension_impl<Expr...> {};
+struct derived_dimension final : detail::dimension_interface, detail::derived_dimension_impl<Expr...> {};
 
 /**
  * @brief Dimension one
@@ -145,7 +179,9 @@ struct derived_dimension final : detail::derived_dimension_impl<Expr...> {};
  * dimensions are zero. It is a dimension of a quantity of dimension one also known as
  * "dimensionless".
  */
-MP_UNITS_EXPORT inline constexpr struct dimension_one final : detail::derived_dimension_impl<> {
+MP_UNITS_EXPORT inline constexpr struct dimension_one final :
+    detail::dimension_interface,
+    detail::derived_dimension_impl<> {
 } dimension_one;
 
 namespace detail {
@@ -155,42 +191,7 @@ struct is_dimension_one<struct dimension_one> : std::true_type {};
 
 }  // namespace detail
 
-// Operators
-
-MP_UNITS_EXPORT template<Dimension Lhs, Dimension Rhs>
-[[nodiscard]] consteval Dimension auto operator*(Lhs, Rhs)
-{
-  return detail::expr_multiply<derived_dimension, struct dimension_one, detail::type_list_of_base_dimension_less>(
-    Lhs{}, Rhs{});
-}
-
-MP_UNITS_EXPORT template<Dimension Lhs, Dimension Rhs>
-[[nodiscard]] consteval Dimension auto operator/(Lhs, Rhs)
-{
-  return detail::expr_divide<derived_dimension, struct dimension_one, detail::type_list_of_base_dimension_less>(Lhs{},
-                                                                                                                Rhs{});
-}
-
-namespace detail {
-
-template<auto Symbol>
-[[nodiscard]] consteval std::true_type derived_from_the_same_base_dimension(const base_dimension<Symbol>&,
-                                                                            const base_dimension<Symbol>&)
-{
-  return {};
-}
-
-[[nodiscard]] consteval std::false_type derived_from_the_same_base_dimension(...) { return {}; }
-
-}  // namespace detail
-
 MP_UNITS_EXPORT_BEGIN
-
-template<Dimension Lhs, Dimension Rhs>
-[[nodiscard]] consteval bool operator==(Lhs lhs, Rhs rhs)
-{
-  return is_same_v<Lhs, Rhs> || detail::derived_from_the_same_base_dimension(lhs, rhs);
-}
 
 [[nodiscard]] consteval Dimension auto inverse(Dimension auto d) { return dimension_one / d; }
 

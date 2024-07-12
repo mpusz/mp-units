@@ -36,13 +36,81 @@
 
 namespace mp_units {
 
+namespace detail {
+
+template<PointOrigin PO>
+inline constexpr bool is_specialization_of_zeroth_point_origin = false;
+
+template<PointOrigin PO>
+[[nodiscard]] consteval bool is_zeroth_point_origin(PO)
+{
+  return is_specialization_of_zeroth_point_origin<PO>;
+}
+
+struct point_origin_interface {
+  template<PointOrigin PO, Quantity Q>
+    requires ReferenceOf<std::remove_const_t<decltype(Q::reference)>, PO::quantity_spec>
+  [[nodiscard]] friend constexpr quantity_point<Q::reference, PO{}, typename Q::rep> operator+(PO, Q&& q)
+  {
+    return quantity_point{std::forward<Q>(q), PO{}};
+  }
+
+  template<Quantity Q, PointOrigin PO>
+    requires ReferenceOf<std::remove_const_t<decltype(Q::reference)>, PO::quantity_spec>
+  [[nodiscard]] friend constexpr quantity_point<Q::reference, PO{}, typename Q::rep> operator+(Q&& q, PO po)
+  {
+    return po + std::forward<Q>(q);
+  }
+
+  template<PointOrigin PO, Quantity Q>
+    requires ReferenceOf<std::remove_const_t<decltype(Q::reference)>, PO::quantity_spec>
+  [[nodiscard]] friend constexpr QuantityPoint auto operator-(PO po, const Q& q)
+    requires requires { -q; }
+  {
+    return po + (-q);
+  }
+
+  template<PointOrigin PO1, detail::SameAbsolutePointOriginAs<PO1{}> PO2>
+    requires QuantitySpecOf<std::remove_const_t<decltype(PO1::quantity_spec)>, PO2::quantity_spec> &&
+             (detail::is_derived_from_specialization_of_relative_point_origin<PO1> ||
+              detail::is_derived_from_specialization_of_relative_point_origin<PO2>)
+  [[nodiscard]] friend constexpr Quantity auto operator-(PO1 po1, PO2 po2)
+  {
+    if constexpr (detail::is_derived_from_specialization_of_absolute_point_origin<PO1>) {
+      return -(po2.quantity_point - po2.quantity_point.absolute_point_origin);
+    } else if constexpr (detail::is_derived_from_specialization_of_absolute_point_origin<PO2>) {
+      return po1.quantity_point - po1.quantity_point.absolute_point_origin;
+    } else {
+      return po1.quantity_point - po2.quantity_point;
+    }
+  }
+
+  template<PointOrigin PO1, PointOrigin PO2>
+  [[nodiscard]] friend consteval bool operator==(PO1 po1, PO2 po2)
+  {
+    if constexpr (detail::is_derived_from_specialization_of_absolute_point_origin<PO1> &&
+                  detail::is_derived_from_specialization_of_absolute_point_origin<PO2>)
+      return is_same_v<PO1, PO2> || (detail::is_zeroth_point_origin(po1) && detail::is_zeroth_point_origin(po2) &&
+                                     interconvertible(po1.quantity_spec, po2.quantity_spec));
+    else if constexpr (detail::is_derived_from_specialization_of_relative_point_origin<PO1> &&
+                       detail::is_derived_from_specialization_of_relative_point_origin<PO2>)
+      return PO1::quantity_point == PO2::quantity_point;
+    else if constexpr (detail::is_derived_from_specialization_of_relative_point_origin<PO1>)
+      return detail::same_absolute_point_origins(po1, po2) && is_eq_zero(PO1::quantity_point.quantity_from_zero());
+    else if constexpr (detail::is_derived_from_specialization_of_relative_point_origin<PO2>)
+      return detail::same_absolute_point_origins(po1, po2) && is_eq_zero(PO2::quantity_point.quantity_from_zero());
+  }
+};
+
+}  // namespace detail
+
 MP_UNITS_EXPORT template<QuantitySpec auto QS>
-struct absolute_point_origin {
+struct absolute_point_origin : detail::point_origin_interface {
   static constexpr QuantitySpec auto quantity_spec = QS;
 };
 
 MP_UNITS_EXPORT template<QuantityPoint auto QP>
-struct relative_point_origin {
+struct relative_point_origin : detail::point_origin_interface {
   static constexpr QuantityPoint auto quantity_point = QP;
   static constexpr QuantitySpec auto quantity_spec = []() {
     // select the strongest of specs
@@ -62,33 +130,11 @@ inline constexpr zeroth_point_origin_<QS> zeroth_point_origin;
 
 namespace detail {
 
-template<PointOrigin PO>
-inline constexpr bool is_specialization_of_zeroth_point_origin = false;
-
 template<auto QS>
 inline constexpr bool is_specialization_of_zeroth_point_origin<zeroth_point_origin_<QS>> = true;
 
-template<PointOrigin PO>
-[[nodiscard]] consteval bool is_zeroth_point_origin(PO)
-{
-  return is_specialization_of_zeroth_point_origin<PO>;
-}
-
 }  // namespace detail
 
-MP_UNITS_EXPORT template<PointOrigin PO1, PointOrigin PO2>
-[[nodiscard]] consteval bool operator==(PO1 po1, PO2 po2)
-{
-  if constexpr (detail::AbsolutePointOrigin<PO1> && detail::AbsolutePointOrigin<PO2>)
-    return is_same_v<PO1, PO2> || (detail::is_zeroth_point_origin(po1) && detail::is_zeroth_point_origin(po2) &&
-                                   interconvertible(po1.quantity_spec, po2.quantity_spec));
-  else if constexpr (detail::RelativePointOrigin<PO1> && detail::RelativePointOrigin<PO2>)
-    return PO1::quantity_point == PO2::quantity_point;
-  else if constexpr (detail::RelativePointOrigin<PO1>)
-    return detail::same_absolute_point_origins(po1, po2) && is_eq_zero(PO1::quantity_point.quantity_from_zero());
-  else if constexpr (detail::RelativePointOrigin<PO2>)
-    return detail::same_absolute_point_origins(po1, po2) && is_eq_zero(PO2::quantity_point.quantity_from_zero());
-}
 
 MP_UNITS_EXPORT template<Reference R>
 [[nodiscard]] consteval PointOriginFor<get_quantity_spec(R{})> auto default_point_origin(R)
@@ -104,15 +150,13 @@ namespace detail {
 template<PointOrigin PO>
 [[nodiscard]] consteval PointOrigin auto get_absolute_point_origin(PO po)
 {
-  if constexpr (AbsolutePointOrigin<PO>)
+  if constexpr (is_derived_from_specialization_of_absolute_point_origin<PO>)
     return po;
   else
     return po.quantity_point.absolute_point_origin;
 }
 
 }  // namespace detail
-
-MP_UNITS_EXPORT_BEGIN
 
 /**
  * @brief A quantity point
@@ -123,8 +167,8 @@ MP_UNITS_EXPORT_BEGIN
  * @tparam PO a type that represents the origin point from which the quantity point is measured from
  * @tparam Rep a type to be used to represent values of a quantity point
  */
-template<Reference auto R, PointOriginFor<get_quantity_spec(R)> auto PO = default_point_origin(R),
-         RepresentationOf<get_quantity_spec(R).character> Rep = double>
+MP_UNITS_EXPORT template<Reference auto R, PointOriginFor<get_quantity_spec(R)> auto PO = default_point_origin(R),
+                         RepresentationOf<get_quantity_spec(R).character> Rep = double>
 class quantity_point {
 public:
   // member types and values
@@ -523,45 +567,5 @@ explicit(is_specialization_of<decltype(quantity_point_like_traits<QP>::to_numeri
                               convert_explicitly>) quantity_point(QP)
   -> quantity_point<quantity_point_like_traits<QP>::reference, quantity_point_like_traits<QP>::point_origin,
                     typename quantity_point_like_traits<QP>::rep>;
-
-// binary operators on point origins
-template<PointOrigin PO, Quantity Q>
-  requires ReferenceOf<std::remove_const_t<decltype(Q::reference)>, PO::quantity_spec>
-[[nodiscard]] constexpr quantity_point<Q::reference, PO{}, typename Q::rep> operator+(PO, Q&& q)
-{
-  return quantity_point{std::forward<Q>(q), PO{}};
-}
-
-template<Quantity Q, PointOrigin PO>
-  requires ReferenceOf<std::remove_const_t<decltype(Q::reference)>, PO::quantity_spec>
-[[nodiscard]] constexpr quantity_point<Q::reference, PO{}, typename Q::rep> operator+(Q&& q, PO po)
-{
-  return po + std::forward<Q>(q);
-}
-
-template<PointOrigin PO, Quantity Q>
-  requires ReferenceOf<std::remove_const_t<decltype(Q::reference)>, PO::quantity_spec>
-[[nodiscard]] constexpr QuantityPoint auto operator-(PO po, const Q& q)
-  requires requires { -q; }
-{
-  return po + (-q);
-}
-
-template<PointOrigin PO1, detail::SameAbsolutePointOriginAs<PO1{}> PO2>
-  requires QuantitySpecOf<std::remove_const_t<decltype(PO1::quantity_spec)>, PO2::quantity_spec> &&
-           (detail::is_derived_from_specialization_of_relative_point_origin<PO1> ||
-            detail::is_derived_from_specialization_of_relative_point_origin<PO2>)
-[[nodiscard]] constexpr Quantity auto operator-(PO1 po1, PO2 po2)
-{
-  if constexpr (detail::is_derived_from_specialization_of_absolute_point_origin<PO1>) {
-    return -(po2.quantity_point - po2.quantity_point.absolute_point_origin);
-  } else if constexpr (detail::is_derived_from_specialization_of_absolute_point_origin<PO2>) {
-    return po1.quantity_point - po1.quantity_point.absolute_point_origin;
-  } else {
-    return po1.quantity_point - po2.quantity_point;
-  }
-}
-
-MP_UNITS_EXPORT_END
 
 }  // namespace mp_units

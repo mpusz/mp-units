@@ -30,6 +30,31 @@
 
 namespace mp_units {
 
+#if MP_UNITS_API_NO_CRTP
+
+namespace detail {
+
+struct quantity_spec_interface;
+
+}
+
+MP_UNITS_EXPORT template<typename T>
+concept QuantitySpec = std::derived_from<T, detail::quantity_spec_interface> && std::is_final_v<T>;
+
+#else
+
+namespace detail {
+
+template<typename Self>
+struct quantity_spec_interface;
+
+}
+
+MP_UNITS_EXPORT template<typename T>
+concept QuantitySpec = is_derived_from_specialization_of<T, detail::quantity_spec_interface> && std::is_final_v<T>;
+
+#endif
+
 MP_UNITS_EXPORT
 #if MP_UNITS_API_NO_CRTP
 template<auto...>
@@ -71,7 +96,7 @@ inline constexpr bool is_derived_from_specialization_of_quantity_spec =
  */
 template<typename T>
 concept NamedQuantitySpec =
-  is_derived_from_specialization_of_quantity_spec<T> && std::is_final_v<T> && (!QuantityKindSpec<T>);
+  QuantitySpec<T> && is_derived_from_specialization_of_quantity_spec<T> && (!QuantityKindSpec<T>);
 
 template<typename T>
 struct is_dimensionless : std::false_type {};
@@ -110,15 +135,12 @@ namespace detail {
  */
 template<typename T>
 concept DerivedQuantitySpec =
-  is_specialization_of<T, derived_quantity_spec> ||
-  (QuantityKindSpec<T> &&
-   is_specialization_of<std::remove_const_t<decltype(T::_quantity_spec_)>, derived_quantity_spec>);
+  QuantitySpec<T> && (is_specialization_of<T, derived_quantity_spec> ||
+                      (QuantityKindSpec<T> &&
+                       is_specialization_of<std::remove_const_t<decltype(T::_quantity_spec_)>, derived_quantity_spec>));
 
 }  // namespace detail
 
-
-MP_UNITS_EXPORT template<typename T>
-concept QuantitySpec = detail::NamedQuantitySpec<T> || detail::DerivedQuantitySpec<T> || detail::QuantityKindSpec<T>;
 
 MP_UNITS_EXPORT template<QuantitySpec Q>
 [[nodiscard]] consteval detail::QuantityKindSpec auto get_kind(Q q);
