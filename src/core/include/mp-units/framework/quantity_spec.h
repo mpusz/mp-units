@@ -930,10 +930,9 @@ template<typename From, typename To>
   constexpr auto qto = map_power(To{});
   if constexpr (get_kind_tree_root(qfrom) == get_kind_tree_root(qto)) {
     if constexpr (is_specialization_of_power<From> && is_specialization_of_power<To>)
-      return extract_results{
-        .same_kind = true, .from = typename From::factor{}, .to = typename To::factor{}, .prepend = prepend_rest::no};
+      return extract_results{true, typename From::factor{}, typename To::factor{}, prepend_rest::no};
     else
-      return extract_results{.same_kind = true, .from = qfrom, .to = qto, .prepend = prepend_rest::no};
+      return extract_results{true, qfrom, qto, prepend_rest::no};
   } else {
     auto normalize = []<typename Q>(Q) {
       if constexpr (is_specialization_of_power<Q>)
@@ -948,19 +947,13 @@ template<typename From, typename To>
     constexpr auto to_factor = std::get<0>(to_norm);
     constexpr auto to_exp = std::get<1>(to_norm);
     if constexpr (get_kind_tree_root(from_factor) != get_kind_tree_root(to_factor))
-      return extract_results{.same_kind = false};
+      return extract_results{false};
     else if constexpr (from_exp > to_exp)
-      return extract_results{.same_kind = true,
-                             .from = from_factor,
-                             .to = to_factor,
-                             .prepend = prepend_rest::first,
-                             .elem = power_or_T<decltype(from_factor), from_exp - to_exp>{}};
+      return extract_results{true, from_factor, to_factor, prepend_rest::first,
+                             power_or_T<decltype(from_factor), from_exp - to_exp>{}};
     else
-      return extract_results{.same_kind = true,
-                             .from = from_factor,
-                             .to = to_factor,
-                             .prepend = prepend_rest::second,
-                             .elem = power_or_T<decltype(to_factor), to_exp - from_exp>{}};
+      return extract_results{true, from_factor, to_factor, prepend_rest::second,
+                             power_or_T<decltype(to_factor), to_exp - from_exp>{}};
   }
 }
 
