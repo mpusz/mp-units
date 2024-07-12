@@ -210,7 +210,7 @@ static_assert(kilojoule.symbol == "kJ");
 static_assert(is_of_type<si::kilo<metre>, si::kilo_<metre_>>);
 static_assert(is_of_type<si::kilo<joule>, si::kilo_<joule_>>);
 
-static_assert(is_of_type<kilometre * metre, derived_unit<metre_, si::kilo_<metre_>>>);  // !!!
+static_assert(is_of_type<kilometre * metre, derived_unit<si::kilo_<metre_>, metre_>>);  // !!!
 static_assert(
   is_of_type<kilometre / metre, derived_unit<std::remove_const_t<decltype(si::kilo<metre>)>, per<metre_>>>);  // !!!
 
