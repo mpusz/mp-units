@@ -518,7 +518,7 @@ static_assert(is_of_type<isq::length(1 * m) - 1 * m, quantity<isq::length[m], in
 static_assert(is_of_type<isq::length(1 * m) - 1 * km, quantity<isq::length[m], int>>);
 static_assert(is_of_type<isq::length(1 * km) - 1 * m, quantity<isq::length[m], int>>);
 
-static_assert(is_of_type<1 * N * (1 * m), quantity<derived_unit<struct si::newton, struct si::metre>{}, int>>);
+static_assert(is_of_type<1 * N * (1 * m), quantity<derived_unit<struct si::metre, struct si::newton>{}, int>>);
 
 static_assert(is_of_type<1 * m * 1, quantity<si::metre, int>>);
 static_assert(is_of_type<1 * m * (1 * one), quantity<si::metre, int>>);
@@ -566,7 +566,7 @@ static_assert(is_of_type<1 * m - 1. * m, quantity<si::metre, double>>);
 static_assert(is_of_type<1. * km - 1 * m, quantity<si::metre, double>>);
 static_assert(is_of_type<1. * m - 1 * km, quantity<si::metre, double>>);
 
-static_assert(is_of_type<1. * N * (1 * m), quantity<derived_unit<struct si::newton, struct si::metre>{}, double>>);
+static_assert(is_of_type<1. * N * (1 * m), quantity<derived_unit<struct si::metre, struct si::newton>{}, double>>);
 
 static_assert(is_of_type<1 * m * 1., quantity<si::metre, double>>);
 static_assert(is_of_type<1 * m * (1. * one), quantity<si::metre, double>>);
@@ -619,7 +619,7 @@ static_assert(is_of_type<1 * m % (1 * km), quantity<si::metre, int>>);
 static_assert(is_of_type<1 * m / s * (1 * s), quantity<si::metre, int>>);
 static_assert(is_of_type<1 * m / s * (1 * h),
                          quantity<derived_unit<struct si::hour, struct si::metre, per<struct si::second>>{}, int>>);
-static_assert(is_of_type<1 * m * (1 * min), quantity<derived_unit<struct si::metre, struct si::minute>{}, int>>);
+static_assert(is_of_type<1 * m * (1 * min), quantity<derived_unit<struct si::minute, struct si::metre>{}, int>>);
 static_assert(is_of_type<1 * s * (1 * Hz), quantity<derived_unit<struct si::hertz, struct si::second>{}, int>>);
 static_assert(is_of_type<1 / (1 * min), quantity<derived_unit<struct one, per<struct si::minute>>{}, int>>);
 static_assert(is_of_type<1 / (1 * Hz), quantity<derived_unit<struct one, per<struct si::hertz>>{}, int>>);

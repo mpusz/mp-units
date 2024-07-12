@@ -108,7 +108,7 @@ template<Unit T, auto M, typename U>
 [[nodiscard]] consteval auto get_canonical_unit_impl(T, const scaled_unit_impl<M, U>&);
 
 template<Unit Lhs, Unit Rhs>
-struct unit_less : std::bool_constant<(Lhs::symbol < Rhs::symbol)> {};
+struct unit_less : std::bool_constant<type_name<Lhs>() < type_name<Rhs>()> {};
 
 template<typename T1, typename T2>
 using type_list_of_unit_less = expr_less<T1, T2, unit_less>;

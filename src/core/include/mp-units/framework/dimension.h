@@ -29,6 +29,7 @@
 #include <mp-units/compat_macros.h>
 #include <mp-units/ext/fixed_string.h>
 #include <mp-units/ext/inplace_vector.h>
+#include <mp-units/ext/type_name.h>
 #include <mp-units/ext/type_traits.h>
 #include <mp-units/framework/dimension_concepts.h>
 #include <mp-units/framework/expression_template.h>
@@ -55,7 +56,7 @@ MP_UNITS_EXPORT struct dimension_one;
 namespace detail {
 
 template<typename Lhs, typename Rhs>
-struct base_dimension_less : std::bool_constant<(Lhs::symbol < Rhs::symbol)> {};
+struct base_dimension_less : std::bool_constant<type_name<Lhs>() < type_name<Rhs>()> {};
 
 template<typename T1, typename T2>
 using type_list_of_base_dimension_less = expr_less<T1, T2, base_dimension_less>;

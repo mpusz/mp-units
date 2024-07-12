@@ -210,8 +210,7 @@ static_assert(kilojoule.symbol == "kJ");
 static_assert(is_of_type<si::kilo<metre>, si::kilo_<metre_>>);
 static_assert(is_of_type<si::kilo<joule>, si::kilo_<joule_>>);
 
-static_assert(
-  is_of_type<kilometre * metre, derived_unit<std::remove_const_t<decltype(si::kilo<metre>)>, metre_>>);  // !!!
+static_assert(is_of_type<kilometre * metre, derived_unit<metre_, si::kilo_<metre_>>>);  // !!!
 static_assert(
   is_of_type<kilometre / metre, derived_unit<std::remove_const_t<decltype(si::kilo<metre>)>, per<metre_>>>);  // !!!
 
@@ -331,9 +330,9 @@ static_assert(is_of_type<standard_gravity / gram, derived_unit<standard_gravity_
 static_assert(is_of_type<gram / standard_gravity, derived_unit<gram_, per<standard_gravity_>>>);
 static_assert(is_of_type<standard_gravity * gram / standard_gravity, gram_>);
 static_assert(is_of_type<speed_of_light_in_vacuum * gram * standard_gravity,
-                         derived_unit<speed_of_light_in_vacuum_, gram_, standard_gravity_>>);
+                         derived_unit<gram_, speed_of_light_in_vacuum_, standard_gravity_>>);
 static_assert(is_of_type<gram * standard_gravity * speed_of_light_in_vacuum,
-                         derived_unit<speed_of_light_in_vacuum_, gram_, standard_gravity_>>);
+                         derived_unit<gram_, speed_of_light_in_vacuum_, standard_gravity_>>);
 
 static_assert(is_same_v<decltype(inverse(second) * metre), decltype(metre / second)>);
 static_assert(is_same_v<decltype(metre * inverse(second)), decltype(metre / second)>);
