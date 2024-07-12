@@ -22,6 +22,8 @@
 
 #pragma once
 
+#include <mp-units/bits/hacks.h>
+
 // IWYU pragma: begin_exports
 #if MP_UNITS_HOSTED
 #include <mp-units/systems/si/chrono.h>
