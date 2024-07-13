@@ -70,7 +70,7 @@ concept QuantityConvertibleTo =
   ValuePreservingTo<typename QFrom::rep, typename QTo::rep, QFrom::unit, QTo::unit> &&
   // TODO consider providing constraints of sudo_cast here rather than testing if it can be called (its return type is
   // deduced thus the function is evaluated here and may emit truncating conversion or other warnings)
-  requires(QFrom q) { detail::sudo_cast<QTo>(q); };
+  requires(QFrom q) { sudo_cast<QTo>(q); };
 
 template<quantity_character Ch, typename Func, typename T, typename U>
 concept InvokeResultOf = std::regular_invocable<Func, T, U> && RepresentationOf<std::invoke_result_t<Func, T, U>, Ch>;
@@ -95,12 +95,12 @@ concept CommonlyInvocableQuantities =
   InvocableQuantities<Func, Q1, Q2, common_quantity_spec(Q1::quantity_spec, Q2::quantity_spec).character>;
 
 template<typename Func, Quantity Q1, Quantity Q2>
-  requires detail::CommonlyInvocableQuantities<Func, Q1, Q2>
+  requires CommonlyInvocableQuantities<Func, Q1, Q2>
 using common_quantity_for = quantity<common_reference(Q1::reference, Q2::reference),
                                      std::invoke_result_t<Func, typename Q1::rep, typename Q2::rep>>;
 
 template<auto R1, auto R2, typename Rep1, typename Rep2>
-concept SameValueAs = detail::SameReference<R1, R2> && std::same_as<Rep1, Rep2>;
+concept SameValueAs = SameReference<R1, R2> && std::same_as<Rep1, Rep2>;
 
 template<typename T>
 using quantity_like_type = quantity<quantity_like_traits<T>::reference, typename quantity_like_traits<T>::rep>;
@@ -573,9 +573,11 @@ public:
 };
 
 // CTAD
-template<typename Value, Reference R>
-  requires RepresentationOf<Value, get_quantity_spec(R{}).character>
-quantity(Value v, R) -> quantity<R{}, Value>;
+template<Representation Value, Reference R>
+explicit(false) quantity(Value v, R) -> quantity<R{}, Value>;
+
+template<Representation Value>
+explicit(false) quantity(Value) -> quantity<one, Value>;
 
 template<QuantityLike Q>
 explicit(
