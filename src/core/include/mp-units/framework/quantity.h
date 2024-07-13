@@ -59,12 +59,15 @@ template<Unit UFrom, Unit UTo>
 template<typename T>
 concept IsFloatingPoint = treat_as_floating_point<T>;
 
+template<typename FromRep, typename ToRep, auto FromUnit = one, auto ToUnit = one>
+concept ValuePreservingTo =
+  IsFloatingPoint<ToRep> || (!IsFloatingPoint<FromRep> && (integral_conversion_factor(FromUnit, ToUnit)));
+
 template<typename QFrom, typename QTo>
 concept QuantityConvertibleTo =
-  Quantity<QFrom> && Quantity<QTo> && detail::QuantitySpecConvertibleTo<QFrom::quantity_spec, QTo::quantity_spec> &&
-  detail::UnitConvertibleTo<QFrom::unit, QTo::unit> &&
-  (IsFloatingPoint<typename QTo::rep> ||
-   (!IsFloatingPoint<typename QFrom::rep> && (integral_conversion_factor(QFrom::unit, QTo::unit)))) &&
+  Quantity<QFrom> && Quantity<QTo> && QuantitySpecConvertibleTo<QFrom::quantity_spec, QTo::quantity_spec> &&
+  UnitConvertibleTo<QFrom::unit, QTo::unit> &&
+  ValuePreservingTo<typename QFrom::rep, typename QTo::rep, QFrom::unit, QTo::unit> &&
   // TODO consider providing constraints of sudo_cast here rather than testing if it can be called (its return type is
   // deduced thus the function is evaluated here and may emit truncating conversion or other warnings)
   requires(QFrom q) { detail::sudo_cast<QTo>(q); };
