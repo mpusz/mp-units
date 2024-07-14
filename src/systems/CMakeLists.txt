@@ -20,8 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-cmake_minimum_required(VERSION 3.23)
-
 add_mp_units_module(
     systems mp-units-systems
     DEPENDENCIES mp-units::core

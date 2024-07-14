@@ -20,8 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-cmake_minimum_required(VERSION 3.23)
-
 function(set_feature_flag name)
     if(NOT ${projectPrefix}${name} STREQUAL "AUTO")
         target_compile_definitions(

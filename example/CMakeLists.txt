@@ -20,8 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-cmake_minimum_required(VERSION 3.5)
-
 # find dependencies
 if(${projectPrefix}BUILD_CXX_MODULES)
     add_library(example_utils INTERFACE)
