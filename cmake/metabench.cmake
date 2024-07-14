@@ -8,7 +8,7 @@
 # benchmarks. For documentation, questions and other resources please
 # visit the home of the project at https://github.com/ldionne/metabench.
 
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.15)
 
 find_package(Ruby 2.1 QUIET)
 if(NOT RUBY_EXECUTABLE)
