@@ -164,6 +164,21 @@ inline constexpr struct parts_per_million final : named_unit<"ppm", mag_ratio<1,
 inline constexpr auto ppm = parts_per_million;
 ```
 
+### Superpowers of the unit `one`
+
+Quantities of the unit `one` are the only ones that are implicitly convertible from a raw value
+and explicitly convertible to it. This property also expands to usual arithmetic operators.
+
+Thanks to the above, we can type:
+
+```cpp
+quantity<one> inc(quantity<one> q) { return q + 1; }
+void legacy(double) { /* ... */ }
+
+if (auto q = inc(42); q != 0)
+  legacy(static_cast<int>(q));
+```
+
 
 ## Angular quantities
 

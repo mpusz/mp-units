@@ -24,7 +24,7 @@ Here is a small example of operations possible on scalar quantities:
 
     static_assert(2 * m * (3 * m) == 6 * m2);
 
-    static_assert(10 * km / (5 * km) == 2 * one);
+    static_assert(10 * km / (5 * km) == 2);
 
     static_assert(1000 / (1 * s) == 1 * kHz);
     ```
@@ -51,7 +51,7 @@ Here is a small example of operations possible on scalar quantities:
 
     static_assert(2 * m * (3 * m) == 6 * m2);
 
-    static_assert(10 * km / (5 * km) == 2 * one);
+    static_assert(10 * km / (5 * km) == 2);
 
     static_assert(1000 / (1 * s) == 1 * kHz);
     ```

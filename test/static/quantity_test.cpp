@@ -126,9 +126,9 @@ static_assert(quantity<isq::length[m], double>::min().numerical_value_in(m) == s
 static_assert(quantity<isq::length[m], double>::max().numerical_value_in(m) == std::numeric_limits<double>::max());
 
 
-//////////////////////////////
-// construction from a value
-//////////////////////////////
+/////////////////////////////////////////////////
+// no construction from value (unless unit one)
+/////////////////////////////////////////////////
 
 // construction from a value is private
 static_assert(!std::constructible_from<quantity<isq::length[m]>, double>);
@@ -137,11 +137,17 @@ static_assert(!std::convertible_to<double, quantity<isq::length[m]>>);
 static_assert(!std::constructible_from<quantity<isq::length[m], int>, int>);
 static_assert(!std::convertible_to<int, quantity<isq::length[m], int>>);
 
-static_assert(!std::constructible_from<quantity<dimensionless[one]>, double>);
-static_assert(!std::convertible_to<double, quantity<dimensionless[one]>>);
+static_assert(std::constructible_from<quantity<one>, double>);
+static_assert(std::convertible_to<double, quantity<one>>);
 
-static_assert(!std::constructible_from<quantity<dimensionless[one]>, int>);
-static_assert(!std::convertible_to<int, quantity<dimensionless[one]>>);
+static_assert(std::constructible_from<quantity<one>, int>);
+static_assert(std::convertible_to<int, quantity<one>>);
+
+static_assert(std::constructible_from<quantity<dimensionless[one]>, double>);
+static_assert(std::convertible_to<double, quantity<dimensionless[one]>>);
+
+static_assert(std::constructible_from<quantity<dimensionless[one]>, int>);
+static_assert(std::convertible_to<int, quantity<dimensionless[one]>>);
 
 
 ///////////////////////////////////////
@@ -198,6 +204,24 @@ static_assert(quantity<isq::length[m], int>(123 * m).numerical_value_in(m) == 12
 static_assert(quantity<isq::length[m], int>(2 * km).numerical_value_in(m) == 2000);
 static_assert(quantity<isq::length[km], int>(2 * km).numerical_value_in(km) == 2);
 static_assert(quantity<isq::length[km]>(1500 * m).numerical_value_in(km) == 1.5);
+
+
+////////////////////////////////////////////////////////
+// explicit conversion to a number (when unit is one)
+////////////////////////////////////////////////////////
+
+static_assert(!std::convertible_to<quantity<one>, double>);
+static_assert(std::constructible_from<double, quantity<one>>);
+static_assert(!std::convertible_to<quantity<isq::angular_measure[one]>, double>);
+static_assert(std::constructible_from<double, quantity<isq::angular_measure[one]>>);
+static_assert(!std::convertible_to<quantity<one>, int>);
+static_assert(std::constructible_from<int, quantity<one>>);
+static_assert(!std::convertible_to<quantity<isq::angular_measure[one]>, int>);
+static_assert(std::constructible_from<int, quantity<isq::angular_measure[one]>>);
+static_assert(!std::convertible_to<quantity<one, int>, double>);
+static_assert(std::constructible_from<double, quantity<one, int>>);
+static_assert(!std::convertible_to<quantity<isq::angular_measure[one], int>, double>);
+static_assert(std::constructible_from<double, quantity<isq::angular_measure[one], int>>);
 
 
 ///////////////////////////////////
@@ -320,6 +344,10 @@ static_assert(quantity{123. * m}.unit == si::metre);
 static_assert(quantity{123. * m}.quantity_spec == kind_of<isq::length>);
 static_assert(quantity{123. * h}.unit == si::hour);
 static_assert(quantity{123. * h}.quantity_spec == kind_of<isq::time>);
+static_assert(std::is_same_v<decltype(quantity{123})::rep, int>);
+static_assert(std::is_same_v<decltype(quantity{123.})::rep, double>);
+static_assert(quantity{123}.unit == one);
+static_assert(quantity{123}.quantity_spec == kind_of<dimensionless>);
 
 #if MP_UNITS_HOSTED
 using namespace std::chrono_literals;
@@ -350,6 +378,11 @@ static_assert([]() {
 }()
                 .numerical_value_in(m) == 1);
 
+static_assert([]() {
+  quantity q(1);
+  return q = 2;
+}()
+                .numerical_value_in(one) == 2);
 
 ////////////////////
 // unary operators
@@ -752,6 +785,17 @@ static_assert(4 / (2 * one) == 2 * one);
 static_assert(4 * one / 2 == 2 * one);
 static_assert(4 * one % (2 * one) == 0 * one);
 
+static_assert(1 * one + 1 == 2);
+static_assert(1 + 1 * one == 2);
+static_assert(2 * one - 1 == 1);
+static_assert(2 - 1 * one == 1);
+static_assert(1 * one + 1.23 == 2.23);
+static_assert(1 + 1.23 * one == 2.23);
+static_assert(2.23 * one - 1 == 1.23);
+static_assert(2.23 - 1 * one == 1.23);
+static_assert(4 * one % (2) == 0);
+static_assert(4 % (2 * one) == 0);
+
 static_assert(2 * rad * (2 * rad) == 4 * pow<2>(rad));
 
 // modulo arithmetics
@@ -912,6 +956,9 @@ static_assert(!(123 * km > 321'000 * m));
 static_assert(!(123 * km > 123'000 * m));
 static_assert(!(123 * km >= 321'000 * m));
 
+static_assert(1 * one < 2);
+static_assert(1 < 2 * one);
+
 
 //////////////////
 // dimensionless
@@ -923,6 +970,32 @@ static_assert((50. * m / (100. * m)).numerical_value_in(percent) == 50);
 static_assert(50. * m / (100. * m) == 50 * percent);
 
 static_assert((50. * percent).numerical_value_in(one) == 0.5);
+
+
+//////////////////
+// common_type
+//////////////////
+
+static_assert(
+  is_same_v<std::common_type_t<quantity<isq::speed[m / s], int>, quantity<(isq::length / isq::time)[m / s], double>>,
+            quantity<isq::speed[m / s], double>>);
+static_assert(is_same_v<std::common_type_t<quantity<(isq::mass * pow<2>(isq::length / isq::time))[J], double>,
+                                           quantity<isq::energy[kg * m2 / s2], double>>,
+                        quantity<isq::energy[J], double>>);
+
+#if MP_UNITS_HOSTED
+static_assert(is_same_v<std::common_type_t<quantity<si::second, int>, std::chrono::seconds>, std::chrono::seconds>);
+#endif
+
+static_assert(is_same_v<std::common_type_t<quantity<one, int>, int>, quantity<one, int>>);
+// static_assert(is_same_v<std::common_type_t<quantity<one, int>, double>, quantity<one, double>>);
+// static_assert(is_same_v<std::common_type_t<quantity<one, double>, int>, quantity<one, double>>);
+static_assert(is_same_v<std::common_type_t<quantity<isq::angular_measure[one], int>, int>,
+                        quantity<isq::angular_measure[one], int>>);
+// static_assert(is_same_v<std::common_type_t<quantity<isq::angular_measure[one], int>, double>,
+//                         quantity<isq::angular_measure[one], double>>);
+// static_assert(is_same_v<std::common_type_t<quantity<isq::angular_measure[one], double>, int>,
+//                         quantity<isq::angular_measure[one], double>>);
 
 
 //////////////////

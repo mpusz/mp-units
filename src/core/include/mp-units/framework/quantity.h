@@ -177,6 +177,12 @@ public:
   {
   }
 
+  template<detail::ValuePreservingTo<Rep> Value>
+    requires(unit == ::mp_units::one)
+  constexpr explicit(false) quantity(Value&& v) : numerical_value_is_an_implementation_detail_(std::forward<Value>(v))
+  {
+  }
+
   template<detail::QuantityConvertibleTo<quantity> Q>
   // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
   constexpr explicit(!std::convertible_to<typename Q::rep, Rep>) quantity(const Q& q) :
@@ -198,6 +204,14 @@ public:
 
   quantity& operator=(const quantity&) = default;
   quantity& operator=(quantity&&) = default;
+
+  template<detail::ValuePreservingTo<Rep> Value>
+    requires(unit == ::mp_units::one)
+  constexpr quantity& operator=(Value&& v)
+  {
+    numerical_value_is_an_implementation_detail_ = std::forward<Value>(v);
+    return *this;
+  }
 
   // unit conversions
   template<detail::UnitCompatibleWith<unit, quantity_spec> ToU>
@@ -281,6 +295,13 @@ public:
   }
 
   // conversion operators
+  template<typename V_, std::constructible_from<Rep> Value = std::remove_cvref_t<V_>>
+    requires(unit == ::mp_units::one)
+  [[nodiscard]] explicit operator V_() const& noexcept
+  {
+    return numerical_value_is_an_implementation_detail_;
+  }
+
   template<typename Q_, QuantityLike Q = std::remove_cvref_t<Q_>>
     requires detail::QuantityConvertibleTo<quantity, detail::quantity_like_type<Q>>
   [[nodiscard]] explicit(is_specialization_of<decltype(quantity_like_traits<Q>::from_numerical_value(
@@ -480,6 +501,22 @@ public:
                                 ret::reference};
   }
 
+  template<std::derived_from<quantity> Q, RepresentationOf<quantity_character::scalar> Value>
+    requires(Q::unit == ::mp_units::one) &&
+            detail::InvokeResultOf<quantity_character::scalar, std::plus<>, Rep, const Value&>
+  [[nodiscard]] friend constexpr Quantity auto operator+(const Q& lhs, const Value& rhs)
+  {
+    return lhs + ::mp_units::quantity{rhs};
+  }
+
+  template<std::derived_from<quantity> Q, RepresentationOf<quantity_character::scalar> Value>
+    requires(Q::unit == ::mp_units::one) &&
+            detail::InvokeResultOf<quantity_character::scalar, std::plus<>, Rep, const Value&>
+  [[nodiscard]] friend constexpr Quantity auto operator+(const Value& lhs, const Q& rhs)
+  {
+    return ::mp_units::quantity{lhs} + rhs;
+  }
+
   template<std::derived_from<quantity> Q, auto R2, typename Rep2>
     requires detail::CommonlyInvocableQuantities<std::minus<>, quantity, quantity<R2, Rep2>>
   [[nodiscard]] friend constexpr Quantity auto operator-(const Q& lhs, const quantity<R2, Rep2>& rhs)
@@ -489,6 +526,22 @@ public:
     const ret ret_rhs(rhs);
     return ::mp_units::quantity{ret_lhs.numerical_value_ref_in(ret::unit) - ret_rhs.numerical_value_ref_in(ret::unit),
                                 ret::reference};
+  }
+
+  template<std::derived_from<quantity> Q, RepresentationOf<quantity_character::scalar> Value>
+    requires(Q::unit == ::mp_units::one) &&
+            detail::InvokeResultOf<quantity_character::scalar, std::minus<>, Rep, const Value&>
+  [[nodiscard]] friend constexpr Quantity auto operator-(const Q& lhs, const Value& rhs)
+  {
+    return lhs - ::mp_units::quantity{rhs};
+  }
+
+  template<std::derived_from<quantity> Q, RepresentationOf<quantity_character::scalar> Value>
+    requires(Q::unit == ::mp_units::one) &&
+            detail::InvokeResultOf<quantity_character::scalar, std::minus<>, Rep, const Value&>
+  [[nodiscard]] friend constexpr Quantity auto operator-(const Value& lhs, const Q& rhs)
+  {
+    return ::mp_units::quantity{lhs} - rhs;
   }
 
   template<std::derived_from<quantity> Q, auto R2, typename Rep2>
@@ -502,6 +555,22 @@ public:
     const ret ret_rhs(rhs);
     return ::mp_units::quantity{ret_lhs.numerical_value_ref_in(ret::unit) % ret_rhs.numerical_value_ref_in(ret::unit),
                                 ret::reference};
+  }
+
+  template<std::derived_from<quantity> Q, RepresentationOf<quantity_character::scalar> Value>
+    requires(Q::unit == ::mp_units::one) &&
+            detail::InvokeResultOf<quantity_character::scalar, std::modulus<>, Rep, const Value&>
+  [[nodiscard]] friend constexpr Quantity auto operator%(const Q& lhs, const Value& rhs)
+  {
+    return lhs % ::mp_units::quantity{rhs};
+  }
+
+  template<std::derived_from<quantity> Q, RepresentationOf<quantity_character::scalar> Value>
+    requires(Q::unit == ::mp_units::one) &&
+            detail::InvokeResultOf<quantity_character::scalar, std::modulus<>, Rep, const Value&>
+  [[nodiscard]] friend constexpr Quantity auto operator%(const Value& lhs, const Q& rhs)
+  {
+    return ::mp_units::quantity{lhs} % rhs;
   }
 
   template<std::derived_from<quantity> Q, auto R2, typename Rep2>
@@ -563,6 +632,13 @@ public:
     return ct_lhs.numerical_value_ref_in(ct::unit) == ct_rhs.numerical_value_ref_in(ct::unit);
   }
 
+  template<std::derived_from<quantity> Q, RepresentationOf<quantity_character::scalar> Value>
+    requires(Q::unit == ::mp_units::one) && std::equality_comparable_with<Rep, Value>
+  [[nodiscard]] friend constexpr bool operator==(const Q& lhs, const Value& rhs)
+  {
+    return lhs.numerical_value_ref_in(unit) == rhs;
+  }
+
   template<std::derived_from<quantity> Q, auto R2, typename Rep2>
     requires requires { typename std::common_type_t<quantity, quantity<R2, Rep2>>; } &&
              std::three_way_comparable<typename std::common_type_t<quantity, quantity<R2, Rep2>>::rep>
@@ -572,6 +648,13 @@ public:
     const ct ct_lhs(lhs);
     const ct ct_rhs(rhs);
     return ct_lhs.numerical_value_ref_in(ct::unit) <=> ct_rhs.numerical_value_ref_in(ct::unit);
+  }
+
+  template<std::derived_from<quantity> Q, RepresentationOf<quantity_character::scalar> Value>
+    requires(Q::unit == ::mp_units::one) && std::three_way_comparable_with<Rep, Value>
+  [[nodiscard]] friend constexpr auto operator<=>(const Q& lhs, const Value& rhs)
+  {
+    return lhs.numerical_value_ref_in(unit) <=> rhs;
   }
 };
 
@@ -599,7 +682,16 @@ template<mp_units::Quantity Q1, mp_units::Quantity Q2>
     typename std::common_type_t<typename Q1::rep, typename Q2::rep>;
   }
 struct std::common_type<Q1, Q2> {
-public:
   using type = mp_units::quantity<mp_units::common_reference(Q1::reference, Q2::reference),
                                   std::common_type_t<typename Q1::rep, typename Q2::rep>>;
 };
+
+template<mp_units::Quantity Q, mp_units::RepresentationOf<mp_units::quantity_character::scalar> Value>
+  requires(Q::unit == mp_units::one) && requires { typename std::common_type_t<typename Q::rep, Value>; }
+struct std::common_type<Q, Value> {
+  using type = mp_units::quantity<Q::reference, std::common_type_t<typename Q::rep, Value>>;
+};
+
+template<mp_units::Quantity Q, mp_units::RepresentationOf<mp_units::quantity_character::scalar> Value>
+  requires(Q::unit == mp_units::one) && requires { typename std::common_type_t<typename Q::rep, Value>; }
+struct std::common_type<Value, Q> : std::common_type<Q, Value> {};

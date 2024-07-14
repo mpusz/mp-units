@@ -64,7 +64,7 @@ int main()
   state next = initial_guess;
   for (int index = 1; const auto& measurement : measurements) {
     const state& previous = next;
-    const quantity gain = 1. / index * one;
+    const quantity gain = 1. / index;
     const state current = state_update(previous, measurement, gain);
     next = current;
     print(index++, gain, measurement, current, next);
