@@ -984,18 +984,18 @@ static_assert(is_same_v<std::common_type_t<quantity<(isq::mass * pow<2>(isq::len
                         quantity<isq::energy[J], double>>);
 
 #if MP_UNITS_HOSTED
-static_assert(is_same_v<std::common_type_t<quantity<si::second, int>, std::chrono::seconds>, std::chrono::seconds>);
+static_assert(is_same_v<std::common_type_t<quantity<si::second, std::chrono::seconds::rep>, std::chrono::seconds>, std::chrono::seconds>);
 #endif
 
 static_assert(is_same_v<std::common_type_t<quantity<one, int>, int>, quantity<one, int>>);
-// static_assert(is_same_v<std::common_type_t<quantity<one, int>, double>, quantity<one, double>>);
-// static_assert(is_same_v<std::common_type_t<quantity<one, double>, int>, quantity<one, double>>);
+static_assert(is_same_v<std::common_type_t<quantity<one, int>, double>, quantity<one, double>>);
+static_assert(is_same_v<std::common_type_t<quantity<one, double>, int>, quantity<one, double>>);
 static_assert(is_same_v<std::common_type_t<quantity<isq::angular_measure[one], int>, int>,
                         quantity<isq::angular_measure[one], int>>);
-// static_assert(is_same_v<std::common_type_t<quantity<isq::angular_measure[one], int>, double>,
-//                         quantity<isq::angular_measure[one], double>>);
-// static_assert(is_same_v<std::common_type_t<quantity<isq::angular_measure[one], double>, int>,
-//                         quantity<isq::angular_measure[one], double>>);
+static_assert(is_same_v<std::common_type_t<quantity<isq::angular_measure[one], int>, double>,
+                        quantity<isq::angular_measure[one], double>>);
+static_assert(is_same_v<std::common_type_t<quantity<isq::angular_measure[one], double>, int>,
+                        quantity<isq::angular_measure[one], double>>);
 
 
 //////////////////
