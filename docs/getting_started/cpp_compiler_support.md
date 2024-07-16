@@ -18,6 +18,7 @@ C++ feature:
 | **Minimum support**                                       |     20      |  12  |  16   |     15      | None |
 | **`std::format`**                                         |     20      |  13  |  17   |    None     | None |
 | **C++ modules**                                           |     20      | None |  17   |    None     | None |
+| **`import std;`**                                         |     23      | None |  18   |    None     | None |
 | **Static `constexpr` variables in `constexpr` functions** |     23      |  13  |  17   |    None     | None |
 | **Explicit `this` parameter**                             |     23      |  14  |  18   |    None     | None |
 
@@ -60,6 +61,15 @@ C++ feature:
 
     More requirements for C++ modules support can be found in the
     [CMake's documentation](https://cmake.org/cmake/help/latest/manual/cmake-cxxmodules.7.html).
+
+
+## `import std;`
+
+- If enabled, the library will obtain all the definitions from the `std` namespace via
+  `import std;` instead of the "old-style" header includes.
+- Related build options:
+    - Conan: [import_std](installation_and_usage.md#import_std)
+    - CMake: [MP_UNITS_BUILD_IMPORT_STD](installation_and_usage.md#MP_UNITS_BUILD_IMPORT_STD)
 
 
 ## Static `constexpr` variables in `constexpr` functions
