@@ -213,7 +213,7 @@ class MPUnitsConan(ConanFile):
         self.tool_requires("cmake/[>=3.29 <4]")
         if self._build_all:
             if not self.options.freestanding:
-                self.test_requires("catch2/3.5.1")
+                self.test_requires("catch2/3.6.0")
             if not self._skip_la:
                 self.test_requires("wg21-linear_algebra/0.7.3")
 
