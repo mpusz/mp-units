@@ -93,7 +93,7 @@ struct fmt_arg_ref {
 template<typename Char>
 struct fill_t {
 private:
-  static constexpr size_t max_size = 4 / sizeof(Char);
+  static constexpr std::size_t max_size = 4 / sizeof(Char);
   // At most one codepoint (so one char32_t or four utf-8 char8_t)
   std::array<Char, max_size> data_ = {Char{' '}};
   unsigned char size_ = 1;
@@ -103,16 +103,16 @@ public:
   {
     auto size = str.size();
     if (size > max_size) MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("invalid fill"));
-    for (size_t i = 0; i < size && i < max_size; ++i) data_[i] = str[i];
+    for (std::size_t i = 0; i < size && i < max_size; ++i) data_[i] = str[i];
     size_ = static_cast<unsigned char>(size);
     return *this;
   }
 
-  [[nodiscard]] constexpr size_t size() const { return size_; }
+  [[nodiscard]] constexpr std::size_t size() const { return size_; }
   [[nodiscard]] constexpr const Char* data() const { return data_.data(); }
 
-  [[nodiscard]] constexpr Char& operator[](size_t index) { return data_[index]; }
-  [[nodiscard]] constexpr const Char& operator[](size_t index) const { return data_[index]; }
+  [[nodiscard]] constexpr Char& operator[](std::size_t index) { return data_[index]; }
+  [[nodiscard]] constexpr const Char& operator[](std::size_t index) const { return data_[index]; }
 };
 
 MP_UNITS_EXPORT_END

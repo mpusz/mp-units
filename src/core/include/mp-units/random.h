@@ -38,7 +38,7 @@ template<Quantity Q, typename InputIt>
 std::vector<typename Q::rep> i_qty_to_rep(InputIt first, InputIt last)
 {
   std::vector<typename Q::rep> intervals_rep;
-  intervals_rep.reserve(static_cast<size_t>(std::distance(first, last)));
+  intervals_rep.reserve(static_cast<std::size_t>(std::distance(first, last)));
   for (InputIt itr = first; itr != last; ++itr) {
     intervals_rep.push_back(itr->numerical_value_ref_in(Q::unit));
   }
@@ -67,7 +67,7 @@ std::vector<typename Q::rep> fw_bl_pwc(std::initializer_list<Q>& bl, UnaryOperat
   }
   std::vector<rep> weights;
   weights.reserve(bl.size());
-  for (size_t i = 0; i < bl.size() - 1; ++i) {
+  for (std::size_t i = 0; i < bl.size() - 1; ++i) {
     weights.push_back(w_bl[i] + w_bl[i + 1]);
   }
   weights.push_back(0);

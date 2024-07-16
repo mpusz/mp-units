@@ -214,33 +214,33 @@ public:
     MP_UNITS_EXPECTS(lhs[N1 - 1] == CharT{});
     CharT txt[N1 + N];
     CharT* it = txt;
-    for (size_t i = 0; i != N1 - 1; ++i) *it++ = lhs[i];
+    for (std::size_t i = 0; i != N1 - 1; ++i) *it++ = lhs[i];
     for (CharT c : rhs) *it++ = c;
     *it++ = CharT();
     return txt;
   }
 
   // non-member comparison functions
-  template<size_t N2>
+  template<std::size_t N2>
   [[nodiscard]] friend constexpr bool operator==(const basic_fixed_string& lhs,
                                                  const basic_fixed_string<CharT, N2, Traits>& rhs)
   {
     return lhs.view() == rhs.view();
   }
-  template<size_t N2>
+  template<std::size_t N2>
   [[nodiscard]] friend consteval bool operator==(const basic_fixed_string& lhs, const CharT (&rhs)[N2])
   {
     MP_UNITS_EXPECTS(rhs[N2 - 1] == CharT{});
     return lhs.view() == std::basic_string_view<CharT, Traits>(std::cbegin(rhs), std::cend(rhs) - 1);
   }
 
-  template<size_t N2>
+  template<std::size_t N2>
   [[nodiscard]] friend constexpr auto operator<=>(const basic_fixed_string& lhs,
                                                   const basic_fixed_string<CharT, N2, Traits>& rhs)
   {
     return lhs.view() <=> rhs.view();
   }
-  template<size_t N2>
+  template<std::size_t N2>
   [[nodiscard]] friend consteval auto operator<=>(const basic_fixed_string& lhs, const CharT (&rhs)[N2])
   {
     MP_UNITS_EXPECTS(rhs[N2 - 1] == CharT{});
@@ -268,7 +268,7 @@ template<one_of<char, char8_t, char16_t, char32_t, wchar_t> CharT, std::size_t N
 basic_fixed_string(std::from_range_t, std::array<CharT, N>) -> basic_fixed_string<CharT, N>;
 
 // specialized algorithms
-template<class CharT, size_t N, class Traits>
+template<class CharT, std::size_t N, class Traits>
 constexpr void swap(basic_fixed_string<CharT, N, Traits>& x, basic_fixed_string<CharT, N, Traits>& y) noexcept
 {
   x.swap(y);
