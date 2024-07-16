@@ -36,7 +36,7 @@ include(CheckLibcxxInUse)
 check_libcxx_in_use(${projectPrefix}LIBCXX)
 
 # project build options
-option(${projectPrefix}BUILD_AS_SYSTEM_HEADERS "Exports library as system headers" OFF)
+option(${projectPrefix}BUILD_AS_SYSTEM_HEADERS "Export library as system headers" OFF)
 option(${projectPrefix}BUILD_CXX_MODULES "Add C++ modules to the list of default targets" OFF)
 option(${projectPrefix}BUILD_IMPORT_STD "Enable `import std;` usage" OFF)
 
