@@ -22,10 +22,8 @@
 
 module;
 
-#ifndef MP_UNITS_IMPORT_STD
 #include <mp-units/bits/core_gmf.h>
 #include <chrono>
-#endif
 
 export module mp_units.systems;
 

@@ -22,9 +22,13 @@
 
 #pragma once
 
+#define MP_UNITS_IN_GMF
+
 #include <mp-units/bits/hacks.h>
 #include <mp-units/compat_macros.h>
 #include <mp-units/ext/contracts.h>
+
+#ifndef MP_UNITS_IMPORT_STD
 #include <array>
 #include <compare>
 #include <concepts>
@@ -46,9 +50,11 @@
 #if __cpp_lib_text_encoding
 #include <text_encoding>
 #endif
+#endif
 
 #if MP_UNITS_HOSTED
 #include <mp-units/ext/format.h>
+#ifndef MP_UNITS_IMPORT_STD
 #include <cmath>
 #include <locale>
 #include <ostream>
@@ -56,3 +62,6 @@
 #include <sstream>
 #include <string>
 #endif
+#endif
+
+#undef MP_UNITS_IN_GMF

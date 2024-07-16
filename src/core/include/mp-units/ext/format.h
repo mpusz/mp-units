@@ -35,12 +35,14 @@ MP_UNITS_DIAGNOSTIC_IGNORE_UNREACHABLE
 MP_UNITS_DIAGNOSTIC_IGNORE_SHADOW
 #include <fmt/format.h>
 MP_UNITS_DIAGNOSTIC_POP
-#else
+#else  // MP_UNITS_USE_FMTLIB
 #ifdef MP_UNITS_IMPORT_STD
+#ifndef MP_UNITS_IN_GMF
 import std;
-#else
+#endif
+#else  // MP_UNITS_IMPORT_STD
 #include <format>
-#endif
-#endif
+#endif  // MP_UNITS_IMPORT_STD
+#endif  // MP_UNITS_USE_FMTLIB
 
 #endif
