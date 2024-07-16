@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+cmake_minimum_required(VERSION 3.25)
+
 add_library(mp-units-contracts INTERFACE)
 
 if(${projectPrefix}API_CONTRACTS STREQUAL "NONE")

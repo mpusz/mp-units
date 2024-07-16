@@ -59,6 +59,8 @@ For example:
   check_cxx_feature_supported("__cpp_constexpr >= 202211L" STATIC_CONSTEXPR_VARS_IN_CONSTEXPR_FUNCTIONS)
 #]=======================================================================]
 
+cmake_minimum_required(VERSION 3.25)
+
 include_guard(GLOBAL)
 
 macro(CHECK_CXX_FEATURE_SUPPORTED CONDITION VARIABLE)
