@@ -309,7 +309,6 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
 
     [conan build all support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 
-
 [`user.mp-units.build:skip_la`](#user-skip-la){ #user-skip-la }
 
 :   [:octicons-tag-24: 2.2.0][conan skip la support] · :octicons-milestone-24: `True`/`False` (Default: `True`)
@@ -320,7 +319,6 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
     Such behavior can be disabled with this option.
 
     [conan skip la support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
-
 
 [`user.mp-units.analyze:clang-tidy`](#user.mp-units.analyze-clang-tidy){ #user.mp-units.analyze-clang-tidy }
 
@@ -334,18 +332,19 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
 
 [`MP_UNITS_BUILD_AS_SYSTEM_HEADERS`](#MP_UNITS_BUILD_AS_SYSTEM_HEADERS){ #MP_UNITS_BUILD_AS_SYSTEM_HEADERS }
 
-:   [:octicons-tag-24: 2.2.0][as system headers support] · :octicons-milestone-24: `ON`/`OFF` (Default: `OFF`)
+:   [:octicons-tag-24: 2.2.0][cmake as system headers support] · :octicons-milestone-24: `ON`/`OFF` (Default: `OFF`)
 
     Exports library as system headers.
 
-    [as system headers support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
+    [cmake as system headers support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 
 [`MP_UNITS_BUILD_CXX_MODULES`](#MP_UNITS_BUILD_CXX_MODULES){ #MP_UNITS_BUILD_CXX_MODULES }
 
-:   [:octicons-tag-24: 2.2.0][build_cxx_modules support] · :octicons-milestone-24: `ON`/`OFF` (Default: `OFF`)
+:   [:octicons-tag-24: 2.2.0][cmake build cxx modules support] · :octicons-milestone-24: `ON`/`OFF` (Default: `OFF`)
 
     Adds C++ modules to the list of default targets.
 
+    [cmake build cxx modules support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 
 [`MP_UNITS_BUILD_IMPORT_STD`](#MP_UNITS_BUILD_IMPORT_STD){ #MP_UNITS_BUILD_IMPORT_STD }
 
@@ -357,13 +356,13 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
 
 [`MP_UNITS_API_STD_FORMAT`](#MP_UNITS_API_STD_FORMAT){ #MP_UNITS_API_STD_FORMAT }
 
-:   [:octicons-tag-24: 2.2.0][use fmtlib support] · :octicons-milestone-24: `ON`/`OFF` (Default: automatically determined)
+:   [:octicons-tag-24: 2.2.0][cmake std::format support] · :octicons-milestone-24: `ON`/`OFF` (Default: automatically determined)
 
     Enables the usage of [`std::format`](https://en.cppreference.com/w/cpp/utility/format/format)
     and associated facilities for text formatting. If it is not supported, then
     the [{fmt}](https://github.com/fmtlib/fmt) library is used instead.
 
-    [use fmtlib support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
+    [cmake std::format support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 
 [`MP_UNITS_API_STRING_VIEW_RET`](#MP_UNITS_API_STRING_VIEW_RET){ #MP_UNITS_API_STRING_VIEW_RET }
 
