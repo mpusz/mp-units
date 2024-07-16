@@ -32,7 +32,11 @@
 #include <mp-units/framework/quantity.h>
 #include <mp-units/framework/unit.h>
 #include <mp-units/framework/value_cast.h>
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
 #include <cmath>
+#endif
 #endif
 
 

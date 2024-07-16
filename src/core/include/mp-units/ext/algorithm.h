@@ -29,9 +29,13 @@
 #include <mp-units/bits/hacks.h>  // IWYU pragma: keep
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
 #include <compare>
 #include <initializer_list>
 #include <iterator>
+#endif
 #endif
 
 namespace mp_units::detail {

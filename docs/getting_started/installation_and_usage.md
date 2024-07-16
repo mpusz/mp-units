@@ -237,6 +237,14 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
 
     [conan C++ modules support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 
+[`import_std`](#import_std){ #import_std }
+
+:   [:octicons-tag-24: 2.3.0][conan import std support] · :octicons-milestone-24: `True`/`False` (Default: automatically determined from settings)
+
+    Enables `import std;` usage.
+
+    [conan import std support]: https://github.com/mpusz/mp-units/releases/tag/v2.3.0
+
 [`std_format`](#std_format){ #std_format }
 
 :   [:octicons-tag-24: 2.2.0][conan std::format support] · :octicons-milestone-24: `True`/`False` (Default: automatically determined from settings)
@@ -338,7 +346,14 @@ tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
 
     Adds C++ modules to the list of default targets.
 
-    [build_cxx_modules support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
+
+[`MP_UNITS_BUILD_IMPORT_STD`](#MP_UNITS_BUILD_IMPORT_STD){ #MP_UNITS_BUILD_IMPORT_STD }
+
+:   [:octicons-tag-24: 2.3.0][cmake import std support] · :octicons-milestone-24: `ON`/`OFF` (Default: `OFF`)
+
+    Enables `import std;` usage.
+
+    [cmake import std support]: https://github.com/mpusz/mp-units/releases/tag/v2.3.0
 
 [`MP_UNITS_API_STD_FORMAT`](#MP_UNITS_API_STD_FORMAT){ #MP_UNITS_API_STD_FORMAT }
 

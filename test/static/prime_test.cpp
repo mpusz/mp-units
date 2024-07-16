@@ -21,9 +21,13 @@
 // SOFTWARE.
 
 #include <mp-units/ext/prime.h>
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
 #include <array>
 #include <cstddef>
 #include <utility>
+#endif
 
 using namespace mp_units::detail;
 

@@ -25,10 +25,14 @@
 #include "ranged_representation.h"
 #include <mp-units/compat_macros.h>
 #include <mp-units/ext/format.h>
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
 #include <compare>
 #include <limits>
 #include <numbers>
 #include <ostream>
+#endif
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else

@@ -26,9 +26,13 @@
 #include <mp-units/bits/hacks.h>
 #include <mp-units/compat_macros.h>
 #include <mp-units/ext/format.h>
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
 #include <algorithm>
 #include <concepts>
 #include <type_traits>
+#endif
 #ifdef MP_UNITS_MODULES
 import mp_units.core;
 #else

@@ -43,6 +43,9 @@
 #include <tuple>
 #include <type_traits>
 #include <utility>
+#if __cpp_lib_text_encoding
+#include <text_encoding>
+#endif
 
 #if MP_UNITS_HOSTED
 #include <mp-units/ext/format.h>
@@ -52,8 +55,4 @@
 #include <random>
 #include <sstream>
 #include <string>
-#endif
-
-#if __cpp_lib_text_encoding
-#include <text_encoding>
 #endif

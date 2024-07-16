@@ -26,8 +26,10 @@
 #include <mp-units/framework/quantity.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
+#ifndef MP_UNITS_IMPORT_STD
 #include <functional>
 #include <random>
+#endif
 #endif
 
 namespace mp_units {

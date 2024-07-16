@@ -23,7 +23,11 @@
 #include <mp-units/systems/iau.h>
 #include <mp-units/systems/iec80000.h>
 #include <mp-units/systems/si.h>
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
 #include <string_view>
+#endif
 
 namespace {
 

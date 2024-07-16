@@ -20,7 +20,11 @@
     physical_quantities
 */
 
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
 #include <iostream>
+#endif
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else

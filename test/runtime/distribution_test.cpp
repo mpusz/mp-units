@@ -21,12 +21,16 @@
 // SOFTWARE.
 
 #include <catch2/catch_test_macros.hpp>
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
 #include <array>
 #include <cstddef>
 #include <cstdint>
 #include <initializer_list>
 #include <random>
 #include <vector>
+#endif
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else

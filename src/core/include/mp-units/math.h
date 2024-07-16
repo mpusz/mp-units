@@ -32,9 +32,13 @@
 #include <mp-units/framework/value_cast.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
 #include <cmath>
 #include <cstdint>
 #include <limits>
+#endif
 #endif
 
 MP_UNITS_EXPORT

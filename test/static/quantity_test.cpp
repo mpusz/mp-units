@@ -27,6 +27,9 @@
 #include <mp-units/systems/isq/mechanics.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si.h>
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
 #include <concepts>
 #include <cstdint>
 #include <limits>
@@ -34,6 +37,7 @@
 #include <utility>
 #if MP_UNITS_HOSTED
 #include <chrono>
+#endif
 #endif
 
 template<>

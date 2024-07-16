@@ -22,7 +22,11 @@
 
 #include <mp-units/bits/type_list.h>
 #include <mp-units/ext/type_traits.h>
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
 #include <type_traits>
+#endif
 
 namespace {
 

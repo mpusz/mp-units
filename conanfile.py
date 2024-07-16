@@ -56,6 +56,7 @@ class MPUnitsConan(ConanFile):
     settings = "os", "arch", "compiler", "build_type"
     options = {
         "cxx_modules": [True, False],
+        "import_std": [True, False],
         "std_format": [True, False],
         "string_view_ret": [True, False],
         "no_crtp": [True, False],
@@ -64,6 +65,7 @@ class MPUnitsConan(ConanFile):
     }
     default_options = {
         # "cxx_modules" default set in config_options()
+        # "import_std" default set in config_options()
         # "std_format" default set in config_options()
         # "string_view_ret" default set in config_options()
         # "no_crtp" default set in config_options()
@@ -108,6 +110,10 @@ class MPUnitsConan(ConanFile):
                 "min_cppstd": "20",
                 "compiler": {"gcc": "", "clang": "17", "apple-clang": "", "msvc": ""},
             },
+            "import_std": {
+                "min_cppstd": "23",
+                "compiler": {"gcc": "", "clang": "18", "apple-clang": "", "msvc": ""},
+            },
             "static_constexpr_vars_in_constexpr_func": {
                 "min_cppstd": "23",
                 "compiler": {"gcc": "13", "clang": "17", "apple-clang": "", "msvc": ""},
@@ -128,6 +134,7 @@ class MPUnitsConan(ConanFile):
         return {
             "std_format": "std_format",
             "cxx_modules": "cxx_modules",
+            "import_std": "import_std",
             "string_view_ret": "static_constexpr_vars_in_constexpr_func",
             "no_crtp": "explicit_this",
         }
@@ -210,7 +217,7 @@ class MPUnitsConan(ConanFile):
                 self.requires("fmt/11.0.1")
 
     def build_requirements(self):
-        self.tool_requires("cmake/[>=3.29 <4]")
+        self.tool_requires("cmake/[>=3.30 <4]")
         if self._build_all:
             if not self.options.freestanding:
                 self.test_requires("catch2/3.6.0")
@@ -226,6 +233,16 @@ class MPUnitsConan(ConanFile):
             raise ConanInvalidConfiguration(
                 "'contracts' should be set to 'none' for a freestanding build"
             )
+        # mixing of `import std;` and regular header files includes does not work for now
+        if self.options.import_std:
+            if self.options.contracts != "none":
+                raise ConanInvalidConfiguration(
+                    "'contracts' should be set to 'none' to use `import std;`"
+                )
+            if not self.options.std_format:
+                raise ConanInvalidConfiguration(
+                    "'std_format' should be enabled to use `import std;`"
+                )
 
     def layout(self):
         cmake_layout(self)
@@ -242,6 +259,12 @@ class MPUnitsConan(ConanFile):
         if self.options.cxx_modules:
             tc.cache_variables["CMAKE_CXX_SCAN_FOR_MODULES"] = True
             tc.cache_variables["MP_UNITS_BUILD_CXX_MODULES"] = True
+        if self.options.import_std:
+            tc.cache_variables["CMAKE_CXX_MODULE_STD"] = True
+            # Current experimental support according to `Help/dev/experimental.rst`
+            tc.cache_variables[
+                "CMAKE_EXPERIMENTAL_CXX_IMPORT_STD"
+            ] = "0e5b6991-d74f-4b3d-a41c-cf096e0b2508"
         if self.options.freestanding:
             tc.cache_variables["MP_UNITS_API_FREESTANDING"] = True
         else:

@@ -28,12 +28,16 @@
 #include <mp-units/ext/algorithm.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
 #include <array>
 #include <cstddef>
 #include <cstdint>
 #include <numeric>
 #include <optional>
 #include <tuple>
+#endif
 #endif
 
 namespace mp_units::detail {

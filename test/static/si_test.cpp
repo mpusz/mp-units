@@ -21,7 +21,11 @@
 // SOFTWARE.
 
 #include <mp-units/systems/si.h>
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
 #include <type_traits>
+#endif
 
 namespace {
 

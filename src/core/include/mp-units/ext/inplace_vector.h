@@ -28,9 +28,13 @@
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <mp-units/ext/contracts.h>
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
 #include <concepts>
 #include <cstddef>
 #include <ranges>
+#endif
 #endif
 
 // NOLINTBEGIN(*-avoid-c-arrays)

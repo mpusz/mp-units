@@ -25,8 +25,12 @@
 // !!! renders correctly in the documentation "Examples" section.                 !!!
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
 #include <exception>
 #include <iostream>
+#endif
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else

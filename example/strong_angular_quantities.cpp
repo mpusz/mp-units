@@ -20,7 +20,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
 #include <iostream>
+#endif
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else

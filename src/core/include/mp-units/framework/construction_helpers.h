@@ -28,7 +28,11 @@
 #include <mp-units/framework/representation_concepts.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
 #include <type_traits>
+#endif
 #endif
 
 namespace mp_units {

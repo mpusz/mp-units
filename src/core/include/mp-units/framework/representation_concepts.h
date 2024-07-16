@@ -27,10 +27,14 @@
 #include <mp-units/framework/customization_points.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
 #include <concepts>
 #include <cstdint>
 #include <functional>
 #include <type_traits>
+#endif
 #endif
 
 namespace mp_units {

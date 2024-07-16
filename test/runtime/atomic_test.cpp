@@ -21,7 +21,11 @@
 // SOFTWARE.
 
 #include <catch2/catch_test_macros.hpp>
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
 #include <atomic>
+#endif
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else

@@ -22,10 +22,14 @@
 
 #include "glide_computer_lib.h"
 #include <mp-units/ext/format.h>
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
 #include <functional>
 #include <iostream>
 #include <numeric>
 #include <string_view>
+#endif
 #ifdef MP_UNITS_MODULES
 import mp_units.core;
 #else

@@ -24,8 +24,12 @@
 #include <mp-units/framework.h>
 #include <mp-units/systems/si/prefixes.h>
 #include <mp-units/systems/si/units.h>
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
 #include <concepts>
 #include <type_traits>
+#endif
 
 namespace {
 

@@ -23,10 +23,14 @@
 #include <mp-units/compat_macros.h>
 #include <mp-units/ext/format.h>
 #include <cassert>
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
 #include <chrono>
 #include <iostream>
 #include <numbers>
 #include <string>
+#endif
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else

@@ -6,7 +6,11 @@
 #pragma once
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
 #include <string_view>
+#endif
 #endif
 
 namespace mp_units::detail {

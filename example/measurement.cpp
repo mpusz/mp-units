@@ -22,11 +22,15 @@
 
 #include <mp-units/bits/hacks.h>
 #include <mp-units/compat_macros.h>
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
 #include <cmath>
 #include <compare>  // IWYU pragma: export
 #include <exception>
 #include <iostream>
 #include <utility>
+#endif
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else

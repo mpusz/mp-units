@@ -23,8 +23,12 @@
 #include "test_tools.h"
 #include <mp-units/framework.h>
 #include <mp-units/systems/si/prefixes.h>
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
 #include <cstdint>
 #include <type_traits>
+#endif
 
 namespace {
 

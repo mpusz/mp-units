@@ -26,6 +26,9 @@
 #include <mp-units/systems/isq.h>
 #include <mp-units/systems/si.h>
 #include <mp-units/systems/usc.h>
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
 #include <concepts>
 #include <cstdint>
 #include <limits>
@@ -33,6 +36,7 @@
 #include <utility>
 #if MP_UNITS_HOSTED
 #include <chrono>
+#endif
 #endif
 
 namespace {

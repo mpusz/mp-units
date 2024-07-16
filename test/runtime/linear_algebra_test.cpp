@@ -23,8 +23,12 @@
 #include <catch2/catch_test_macros.hpp>
 #include <mp-units/compat_macros.h>
 #include <mp-units/ext/format.h>
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
 #include <matrix>
 #include <ostream>
+#endif
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else

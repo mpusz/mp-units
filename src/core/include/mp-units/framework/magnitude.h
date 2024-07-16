@@ -36,11 +36,15 @@
 #include <mp-units/framework/symbol_text.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
 #include <concepts>
 #include <cstdint>
 #include <cstdlib>
 #include <numbers>
 #include <optional>
+#endif
 #endif
 
 namespace mp_units {

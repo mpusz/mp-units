@@ -31,7 +31,11 @@
 #include <mp-units/framework/quantity_point_concepts.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
 #include <compare>  // IWYU pragma: export
+#endif
 #endif
 
 namespace mp_units {

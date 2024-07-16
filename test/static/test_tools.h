@@ -24,7 +24,11 @@
 
 #include <mp-units/bits/hacks.h>
 #include <mp-units/framework/quantity_spec.h>
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
 #include <type_traits>
+#endif
 
 template<auto V, typename T>
 inline constexpr bool is_of_type = std::is_same_v<MP_UNITS_REMOVE_CONST(decltype(V)), T>;

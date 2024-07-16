@@ -37,11 +37,15 @@
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <mp-units/ext/contracts.h>
 #include <mp-units/ext/format.h>
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
 #include <array>
 #include <concepts>
 #include <cstdint>
 #include <limits>
 #include <string_view>
+#endif
 #endif
 
 // most of the below code is based on/copied from fmtlib

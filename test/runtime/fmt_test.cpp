@@ -25,6 +25,9 @@
 #include <catch2/matchers/catch_matchers_exception.hpp>
 #include <mp-units/compat_macros.h>
 #include <mp-units/ext/format.h>
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
 #include <cstdint>
 #include <iomanip>
 #include <limits>
@@ -32,6 +35,7 @@
 #include <sstream>
 #include <string>
 #include <string_view>
+#endif
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else

@@ -25,9 +25,13 @@
 #include <mp-units/bits/hacks.h>  // IWYU pragma: keep
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
 #include <cstddef>
 #include <type_traits>
 #include <utility>
+#endif
 #endif
 
 MP_UNITS_DIAGNOSTIC_PUSH

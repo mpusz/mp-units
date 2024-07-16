@@ -25,8 +25,12 @@
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/matchers/catch_matchers.hpp>
 #include <mp-units/ext/format.h>
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
 #include <limits>
 #include <numbers>
+#endif
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else

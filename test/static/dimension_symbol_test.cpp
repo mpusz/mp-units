@@ -22,7 +22,11 @@
 
 #include <mp-units/framework.h>
 #include <mp-units/systems/isq.h>
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
 #include <string_view>
+#endif
 
 namespace {
 

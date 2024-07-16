@@ -43,6 +43,9 @@
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <mp-units/ext/contracts.h>
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
 #include <array>
 #include <cstdint>
 #include <iterator>
@@ -50,7 +53,8 @@
 #if MP_UNITS_HOSTED
 #include <string>
 #endif
-#endif
+#endif  // MP_UNITS_IMPORT_STD
+#endif  // MP_UNITS_IN_MODULE_INTERFACE
 
 namespace mp_units {
 

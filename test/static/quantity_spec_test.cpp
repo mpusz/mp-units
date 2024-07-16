@@ -23,7 +23,11 @@
 #include "test_tools.h"
 #include <mp-units/ext/type_traits.h>
 #include <mp-units/framework.h>
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
 #include <type_traits>
+#endif
 
 namespace {
 

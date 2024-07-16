@@ -33,17 +33,24 @@
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <mp-units/ext/contracts.h>
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
 #include <compare>  // IWYU pragma: export
 #include <concepts>
 #include <cstddef>
 #include <cstdlib>
 #include <ranges>
 #include <string_view>
+#endif  // MP_UNITS_IMPORT_STD
+
 #if MP_UNITS_HOSTED
 #include <mp-units/ext/format.h>
+#ifndef MP_UNITS_IMPORT_STD
 #include <ostream>
 #endif
-#endif
+#endif  // MP_UNITS_HOSTED
+#endif  // MP_UNITS_IN_MODULE_INTERFACE
 
 MP_UNITS_EXPORT
 namespace mp_units {

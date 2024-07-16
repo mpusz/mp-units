@@ -21,7 +21,11 @@
 // SOFTWARE.
 
 #include <mp-units/systems/isq_angle.h>
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
 #include <numbers>
+#endif
 
 namespace {
 

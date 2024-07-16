@@ -25,9 +25,13 @@
 #include <mp-units/framework/quantity_point.h>  // IWYU pragma: keep
 #include <mp-units/systems/isq/si_quantities.h>
 #include <mp-units/systems/si.h>
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
 #include <chrono>
 #include <concepts>
 #include <ratio>
+#endif
 
 namespace {
 

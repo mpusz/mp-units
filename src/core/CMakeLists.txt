@@ -125,6 +125,14 @@ if(${projectPrefix}BUILD_CXX_MODULES)
     endif()
 endif()
 
+if(${projectPrefix}BUILD_IMPORT_STD)
+    target_compile_definitions(mp-units-core PUBLIC ${projectPrefix}IMPORT_STD)
+    # https://github.com/llvm/llvm-project/issues/75057
+    if(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 19)
+        target_compile_options(mp-units-core PUBLIC "-Wno-deprecated-declarations")
+    endif()
+endif()
+
 # UTF-8 source and execution character set
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     target_compile_options(

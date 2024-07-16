@@ -36,7 +36,11 @@ MP_UNITS_DIAGNOSTIC_IGNORE_SHADOW
 #include <fmt/format.h>
 MP_UNITS_DIAGNOSTIC_POP
 #else
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
 #include <format>
+#endif
 #endif
 
 #endif

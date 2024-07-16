@@ -21,11 +21,15 @@
 // SOFTWARE.
 
 #include <mp-units/compat_macros.h>
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
 #include <concepts>
 #include <iostream>
 #include <map>
 #include <string_view>
 #include <utility>
+#endif
 #ifdef MP_UNITS_MODULES
 import mp_units.core;
 #else

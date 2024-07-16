@@ -22,12 +22,17 @@
 
 module;
 
+#ifndef MP_UNITS_IMPORT_STD
 #include <mp-units/bits/core_gmf.h>
 #include <chrono>
+#endif
 
 export module mp_units.systems;
 
 export import mp_units.core;
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#endif
 
 #define MP_UNITS_IN_MODULE_INTERFACE
 

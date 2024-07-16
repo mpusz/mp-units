@@ -38,9 +38,11 @@ check_libcxx_in_use(${projectPrefix}LIBCXX)
 # project build options
 option(${projectPrefix}BUILD_AS_SYSTEM_HEADERS "Exports library as system headers" OFF)
 option(${projectPrefix}BUILD_CXX_MODULES "Add C++ modules to the list of default targets" OFF)
+option(${projectPrefix}BUILD_IMPORT_STD "Enable `import std;` usage" OFF)
 
 message(STATUS "${projectPrefix}BUILD_AS_SYSTEM_HEADERS: ${${projectPrefix}BUILD_AS_SYSTEM_HEADERS}")
 message(STATUS "${projectPrefix}BUILD_CXX_MODULES: ${${projectPrefix}BUILD_CXX_MODULES}")
+message(STATUS "${projectPrefix}BUILD_IMPORT_STD: ${${projectPrefix}BUILD_IMPORT_STD}")
 
 if(${projectPrefix}BUILD_AS_SYSTEM_HEADERS)
     set(${projectPrefix}_AS_SYSTEM SYSTEM)
@@ -122,6 +124,15 @@ if(${projectPrefix}BUILD_CXX_MODULES)
     set(${projectPrefix}TARGET_SCOPE "PUBLIC")
 else()
     set(${projectPrefix}TARGET_SCOPE "INTERFACE")
+endif()
+
+if(${projectPrefix}BUILD_CXX_MODULES)
+    if(CMAKE_VERSION VERSION_LESS "3.30")
+        message(FATAL_ERROR "CMake versions before 3.30 do not support `import std;` properly")
+    endif()
+    if(CMAKE_CXX_STANDARD LESS 23)
+        message(FATAL_ERROR "`import std;` requires at lease C++23")
+    endif()
 endif()
 
 # components/modules

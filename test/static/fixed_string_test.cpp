@@ -21,8 +21,12 @@
 // SOFTWARE.
 
 #include <mp-units/ext/fixed_string.h>
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
 #include <array>
 #include <string_view>
+#endif
 
 using namespace mp_units;
 

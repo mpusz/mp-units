@@ -32,7 +32,11 @@
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <mp-units/framework/customization_points.h>
 #include <mp-units/framework/quantity_point.h>
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
 #include <chrono>
+#endif
 #endif
 
 namespace mp_units {

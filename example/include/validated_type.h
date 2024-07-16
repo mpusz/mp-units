@@ -26,9 +26,13 @@
 #include <mp-units/compat_macros.h>
 #include <mp-units/ext/contracts.h>
 #include <mp-units/ext/format.h>
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
 #include <compare>  // IWYU pragma: export
 #include <ostream>
 #include <utility>
+#endif
 #ifdef MP_UNITS_MODULES
 import mp_units.core;
 #else

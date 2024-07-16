@@ -25,6 +25,9 @@
 #include <mp-units/compat_macros.h>
 //
 #include "geographic.h"
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
 #include <algorithm>
 #include <array>
 #include <chrono>
@@ -35,6 +38,7 @@
 #include <ranges>
 #include <string>  // IWYU pragma: keep
 #include <vector>
+#endif
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else

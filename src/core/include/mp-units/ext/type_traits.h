@@ -26,8 +26,12 @@
 #include <mp-units/bits/module_macros.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
 #include <type_traits>
 #include <utility>
+#endif
 #endif
 
 namespace mp_units {

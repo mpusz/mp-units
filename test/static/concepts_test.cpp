@@ -23,12 +23,16 @@
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/natural.h>
 #include <mp-units/systems/si.h>
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
 #include <optional>
 #include <type_traits>
 #if MP_UNITS_HOSTED
 #include <chrono>
 #include <complex>
 #include <string>
+#endif
 #endif
 
 #if MP_UNITS_HOSTED

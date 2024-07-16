@@ -24,7 +24,11 @@
 #include <mp-units/ext/type_traits.h>
 #include <mp-units/framework.h>
 #include <mp-units/systems/si/prefixes.h>
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
 #include <type_traits>
+#endif
 
 namespace {
 
