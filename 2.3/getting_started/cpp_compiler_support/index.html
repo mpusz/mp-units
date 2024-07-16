@@ -630,6 +630,15 @@ You're not viewing the latest version.
 </li>
       
         <li class="md-nav__item">
+  <a href="#import-std" class="md-nav__link">
+    <span class="md-ellipsis">
+      import std;
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#static-constexpr-variables-in-constexpr-functions" class="md-nav__link">
     <span class="md-ellipsis">
       Static constexpr variables in constexpr functions
@@ -2172,6 +2181,14 @@ C++ feature:</p>
 <td style="text-align: center;">None</td>
 </tr>
 <tr>
+<td><strong><code>import std;</code></strong></td>
+<td style="text-align: center;">23</td>
+<td style="text-align: center;">None</td>
+<td style="text-align: center;">18</td>
+<td style="text-align: center;">None</td>
+<td style="text-align: center;">None</td>
+</tr>
+<tr>
 <td><strong>Static <code>constexpr</code> variables in <code>constexpr</code> functions</strong></td>
 <td style="text-align: center;">23</td>
 <td style="text-align: center;">13</td>
@@ -2235,6 +2252,16 @@ the customers' projects.</p>
 <p>More requirements for C++ modules support can be found in the
 <a href="https://cmake.org/cmake/help/latest/manual/cmake-cxxmodules.7.html">CMake's documentation</a>.</p>
 </div>
+<h2 id="import-std"><code>import std;</code><a class="headerlink" href="#import-std" title="Permanent link">&para;</a></h2>
+<ul>
+<li>If enabled, the library will obtain all the definitions from the <code>std</code> namespace via
+  <code>import std;</code> instead of the "old-style" header includes.</li>
+<li>Related build options:<ul>
+<li>Conan: <a href="../installation_and_usage/#import_std">import_std</a></li>
+<li>CMake: <a href="../installation_and_usage/#MP_UNITS_BUILD_IMPORT_STD">MP_UNITS_BUILD_IMPORT_STD</a></li>
+</ul>
+</li>
+</ul>
 <h2 id="static-constexpr-variables-in-constexpr-functions">Static <code>constexpr</code> variables in <code>constexpr</code> functions<a class="headerlink" href="#static-constexpr-variables-in-constexpr-functions" title="Permanent link">&para;</a></h2>
 <ul>
 <li>Allows returning <code>std::string_view</code> from the
