@@ -136,11 +136,27 @@ template<QuantityPoint ToQP, typename FromQP>
 [[nodiscard]] constexpr QuantityPoint auto sudo_cast(FromQP&& qp)
 {
   using qp_type = std::remove_reference_t<FromQP>;
-  if constexpr (is_same_v<std::remove_const_t<decltype(ToQP::point_origin)>,
-                          std::remove_const_t<decltype(qp_type::point_origin)>>) {
+  using traits = magnitude_conversion_traits<typename ToQP::quantity_type, typename qp_type::quantity_type>;
+  if constexpr (ToQP::point_origin == qp_type::point_origin) {
+    // no change of offset needed
     return quantity_point{
       sudo_cast<typename ToQP::quantity_type>(std::forward<FromQP>(qp).quantity_from(qp_type::point_origin)),
-      qp_type::point_origin};
+      ToQP::point_origin};
+  } else if constexpr (qp_type::quantity_type::unit == ToQP::quantity_type::unit) {
+    // no scaling of the unit is needed; thus we can perform all computation in a single unit without any runtime
+    // scaling anywhere
+    using offset_rep_type = typename traits::c_rep_type;
+    // in the following, we take the detour through `quantity_point` to determine the offset between the two
+    // point_origins; there seem to be cases where we have two `zeroeth_point_origins` of different units (i.e. m vs.
+    // km), where the subtraction for the latter is not defined.
+    static constexpr auto zero = offset_rep_type{0} * qp_type::reference;
+    // we statically convert the offset to unit of the quantities, to avoid runtime rescaling.
+    // TODO: should we implement do a rounding instead here?
+    static constexpr auto offset = sudo_cast<quantity<qp_type::reference, offset_rep_type>>(
+      quantity_point{zero, qp_type::point_origin} - quantity_point{zero, ToQP::point_origin});
+    return quantity_point{
+      sudo_cast<typename ToQP::quantity_type>(std::forward<FromQP>(qp).quantity_from(qp_type::point_origin) + offset),
+      ToQP::point_origin};
   } else {
     // it's unclear how hard we should try to avoid truncation here. For now, the only corner case we cater for,
     // is when the range of the quantity type of at most one of QP or ToQP doesn't cover the offset between the
@@ -153,23 +169,27 @@ template<QuantityPoint ToQP, typename FromQP>
     // In the following, we carefully select the order of these three operations: each of (a) and (b) is scheduled
     // either before or after (c), such that (c) acts on the largest range possible among all combination of source
     // and target unit and represenation.
-    using traits = magnitude_conversion_traits<typename ToQP::quantity_type, typename qp_type::quantity_type>;
-    using c_rep_type = typename traits::c_rep_type;
-    if constexpr (traits::num_mult * traits::irr_mult > traits::den_mult) {
-      // original unit had a larger unit magnitude; if we first convert to the common representation but retain the
-      // unit, we obtain the largest possible range while not causing truncation of fractional values. This is optimal
-      // for the offset computation.
-      return sudo_cast<ToQP>(
-        sudo_cast<quantity_point<qp_type::reference, qp_type::point_origin, c_rep_type>>(std::forward<FromQP>(qp))
-          .point_for(ToQP::point_origin));
-    } else {
-      // new unit may have a larger unit magnitude; we first need to convert to the new unit (potentially causing
-      // truncation, but no more than if we did the conversion later), but make sure we keep the larger of the two
-      // representation types. Then, we can perform the offset computation.
-      return sudo_cast<ToQP>(sudo_cast<quantity_point<make_reference(qp_type::quantity_spec, ToQP::unit),
-                                                      qp_type::point_origin, c_rep_type>>(std::forward<FromQP>(qp))
-                               .point_for(ToQP::point_origin));
-    }
+    //
+    // This implementation handles operations (a) and (b) by delegating to the `sudo_cast<quantity>`,
+    // while opertaion (c) is delegated to quantity::operator+. We ensure that no hidden conversions happen in the
+    // latter, by proving both operands in the same representation, the `intermediate_quantity_type`. The
+    // `intermediate_quantity_type` in turn is chosen such that operations (a) and (b) individually happen either during
+    // the inital conversion from the input, or during the final conversion to the output, whichever is optimal given
+    // the input and output types.
+    static constexpr auto intermediate_reference = make_reference(qp_type::quantity_spec, ToQP::unit);
+    // We always work in the larger of the two (input/output) representations.
+    using intermediate_rep_type = typename traits::c_type;
+    using intermediate_quantity_type = quantity<intermediate_reference, intermediate_rep_type>;
+    // in the following, we take the detour through `quantity_point` to determine the offset between the two
+    // point_origins; there seem to be cases where we have two `zeroeth_point_origins` of different units (i.e. m vs.
+    // km), where the subtraction for the latter is not defined.
+    static constexpr auto zero = intermediate_rep_type{0} * intermediate_reference;
+    static constexpr intermediate_quantity_type offset =
+      quantity_point{zero, qp_type::point_origin} - quantity_point{zero, ToQP::point_origin};
+    return quantity_point{
+      sudo_cast<typename ToQP::quantity_type>(
+        sudo_cast<intermediate_quantity_type>(std::forward<FromQP>(qp).quantity_from(qp_type::point_origin)) + offset),
+      ToQP::point_origin};
   }
 }
 

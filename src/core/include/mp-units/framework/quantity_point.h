@@ -238,7 +238,12 @@ public:
     requires std::constructible_from<quantity_type, typename QP::quantity_type>
   // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
   constexpr explicit(!std::convertible_to<typename QP::quantity_type, quantity_type>) quantity_point(const QP& qp) :
-      quantity_point(detail::sudo_cast<quantity_point>(qp))
+      quantity_from_origin_is_an_implementation_detail_([&] {
+        if constexpr (point_origin == QP::point_origin)
+          return qp.quantity_ref_from(point_origin);
+        else
+          return qp - point_origin;
+      }())
   {
   }
 
