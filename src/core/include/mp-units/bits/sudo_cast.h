@@ -73,6 +73,8 @@ struct magnitude_conversion_traits {
   static constexpr multiplier_type den_mult = val(den);
   static constexpr multiplier_type irr_mult = val(irr);
   static constexpr multiplier_type ratio = num_mult / den_mult * irr_mult;
+  // TODO: This may not be the right choice here; see #580 and #599
+  static constexpr bool use_floating_point_scaling = std::is_floating_point_v<multiplier_type>;
 };
 
 
@@ -102,13 +104,14 @@ template<Quantity To, typename From>
   } else {
     // scale the number
     using traits = magnitude_conversion_traits<To, std::remove_reference_t<From>>;
-    if constexpr (std::is_floating_point_v<typename traits::multiplier_type>) {
-      // this results in great assembly
+    if constexpr (traits::use_floating_point_scaling) {
+      // this results in great assembly for floating-point types
       auto res = static_cast<MP_UNITS_TYPENAME To::rep>(
         static_cast<traits::c_type>(q.numerical_value_is_an_implementation_detail_) * traits::ratio);
       return {res, To::reference};
     } else {
-      // this is slower but allows conversions like 2000 m -> 2 km without loosing data
+      // this avoids floating-point operations and thus guarantees exact conversion results
+      // where possible (like 2000 m -> 2 km), but may be slower for floating-point types.
       auto res = static_cast<MP_UNITS_TYPENAME To::rep>(
         static_cast<traits::c_type>(q.numerical_value_is_an_implementation_detail_) * traits::num_mult /
         traits::den_mult * traits::irr_mult);
@@ -137,27 +140,85 @@ template<QuantityPoint ToQP, typename FromQP>
 {
   using qp_type = std::remove_reference_t<FromQP>;
   using traits = magnitude_conversion_traits<typename ToQP::quantity_type, typename qp_type::quantity_type>;
+  using c_rep_type = typename traits::c_rep_type;
+  static constexpr auto output_unit_ref = make_reference(qp_type::quantity_spec, ToQP::unit);
+  static constexpr auto offset_represented_as = [](auto quantity) {
+    using Q = decltype(quantity);
+    // in the following, we take the detour through `quantity_point` to determine the offset between the two
+    // point_origins; there seem to be cases where we have two `zeroeth_point_origins` of different units (i.e. m vs.
+    // km), and the subtraction operator between such two origin points seems to be missing.
+    auto zero = Q::rep{0} * Q::reference;
+    // TODO: should we attempt to round values here, if needed?
+    return sudo_cast<Q>(quantity_point{zero, qp_type::point_origin} - quantity_point{zero, ToQP::point_origin});
+  };
   if constexpr (ToQP::point_origin == qp_type::point_origin) {
-    // no change of offset needed
+    // no change of offset needed; delegate to the pure sudo_cast<Q> implementation
     return quantity_point{
       sudo_cast<typename ToQP::quantity_type>(std::forward<FromQP>(qp).quantity_from(qp_type::point_origin)),
       ToQP::point_origin};
   } else if constexpr (qp_type::quantity_type::unit == ToQP::quantity_type::unit) {
     // no scaling of the unit is needed; thus we can perform all computation in a single unit without any runtime
     // scaling anywhere
-    using offset_rep_type = typename traits::c_rep_type;
-    // in the following, we take the detour through `quantity_point` to determine the offset between the two
-    // point_origins; there seem to be cases where we have two `zeroeth_point_origins` of different units (i.e. m vs.
-    // km), where the subtraction for the latter is not defined.
-    static constexpr auto zero = offset_rep_type{0} * qp_type::reference;
     // we statically convert the offset to unit of the quantities, to avoid runtime rescaling.
-    // TODO: should we implement do a rounding instead here?
-    static constexpr auto offset = sudo_cast<quantity<qp_type::reference, offset_rep_type>>(
-      quantity_point{zero, qp_type::point_origin} - quantity_point{zero, ToQP::point_origin});
+    static constexpr auto offset = offset_represented_as(quantity<qp_type::reference, c_rep_type>{});
     return quantity_point{
       sudo_cast<typename ToQP::quantity_type>(std::forward<FromQP>(qp).quantity_from(qp_type::point_origin) + offset),
       ToQP::point_origin};
+  } else if constexpr (traits::use_floating_point_scaling) {
+    // for the provided set of representation types, we will use floating-point intermediate representations
+    // (typically, when at least one of input or output representations is floating-point).
+    // with those, the choice of unit has almost no impact on the conversion accuracy, and thus we can choose
+    // the larger unit of the two (input/output) to ensure there is no risk of overflow.
+    static constexpr auto intermediate_reference = []() {
+      if constexpr (traits::num_mult * traits::irr_mult >= traits.den_mult) {
+        // the input unit is larger
+        return qp_type::reference;
+      } else {
+        return output_unit_ref;
+      }
+    }();
+    using intermediate_rep_type = typename traits::c_type;
+    using intermediate_quantity_type = quantity<intermediate_reference, intermediate_rep_type>;
+    static constexpr auto offset = offset_represented_as(intermediate_quantity_type{});
+    return quantity_point{
+      sudo_cast<typename ToQP::quantity_type>(
+        sudo_cast<intermediate_quantity_type>(std::forward<FromQP>(qp).quantity_from(qp_type::point_origin)) + offset),
+      ToQP::point_origin};
   } else {
+    // with integral representations, we expect the conversion result to be accurate to the resolution of the output
+    // representation. So, in general, we should perform the offset computation using the output units. However,
+    // if the offset is large compared to the output unit, there is a risk of overflow. Usually, this requires
+    // that the offset is specified in terms of a larger unit (because otherwise, the offset would overflow too).
+    // Therefore, we use the offset's unit as intermediate unit if the offset falls outside of the range of the
+    // smaller unit.
+    static constexpr auto intermediate_reference = []() {
+      if constexpr (traits::num_mult * traits::irr_mult >= traits.den_mult) {
+        // the output unit is smaller; check if we can represent the offset faithfully in the output unit without
+        // overflow
+        using candidate_offset_type = quantity<output_unit_ref, c_rep_type>;
+        constexpr auto min_representable_offset = value_cast<long double>(candidate_offset_type::min());
+        constexpr auto max_representable_offset = value_cast<long double>(candidate_offset_type::max());
+        constexpr auto offset_value = offset_represented_at<quantity<ToQP::reference, long double>>();
+        if constexpr ((min_representable_offset <= offset_value) && (offset_value <= max_representable_offset)) {
+          // the offset can reasonably be represented by the output unit, so we use that one
+          return output_unit_ref;
+        } else {
+          // the offset would overflow with expressed in the output unit; use the input unit instead
+          return qp_type::reference;
+        }
+      } else {
+        // the output units is larger; we always use that one
+        return output_unit_ref;
+      }
+    }();
+    using intermediate_rep_type = typename traits::c_type;
+    using intermediate_quantity_type = quantity<intermediate_reference, intermediate_rep_type>;
+    static constexpr auto offset = offset_represented_as(intermediate_quantity_type{});
+    return quantity_point{
+      sudo_cast<typename ToQP::quantity_type>(
+        sudo_cast<intermediate_quantity_type>(std::forward<FromQP>(qp).quantity_from(qp_type::point_origin)) + offset),
+      ToQP::point_origin};
+
     // it's unclear how hard we should try to avoid truncation here. For now, the only corner case we cater for,
     // is when the range of the quantity type of at most one of QP or ToQP doesn't cover the offset between the
     // point origins. In that case, we need to be careful to ensure we use the quantity type with the larger range
@@ -176,7 +237,7 @@ template<QuantityPoint ToQP, typename FromQP>
     // `intermediate_quantity_type` in turn is chosen such that operations (a) and (b) individually happen either during
     // the inital conversion from the input, or during the final conversion to the output, whichever is optimal given
     // the input and output types.
-    static constexpr auto intermediate_reference = make_reference(qp_type::quantity_spec, ToQP::unit);
+    static constexpr auto intermediate_reference = output_unit_ref;
     // We always work in the larger of the two (input/output) representations.
     using intermediate_rep_type = typename traits::c_type;
     using intermediate_quantity_type = quantity<intermediate_reference, intermediate_rep_type>;
