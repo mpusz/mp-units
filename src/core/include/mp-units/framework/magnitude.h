@@ -307,118 +307,118 @@ template<typename T>
   return checked_square(int_power(base, exp / 2));
 }
 
-template <typename T>
-[[nodiscard]] consteval std::optional<T> checked_int_pow(T base, std::uintmax_t exp) {
-    T result = T{1};
-    while (exp > 0u) {
-        if (exp % 2u == 1u) {
-            if (base > std::numeric_limits<T>::max() / result) {
-                return std::nullopt;
-            }
-            result *= base;
-        }
-
-        exp /= 2u;
-
-        if (base > std::numeric_limits<T>::max() / base) {
-            return (exp == 0u)
-                       ? std::make_optional(result)
-                       : std::nullopt;
-        }
-        base *= base;
+template<typename T>
+[[nodiscard]] consteval std::optional<T> checked_int_pow(T base, std::uintmax_t exp)
+{
+  T result = T{1};
+  while (exp > 0u) {
+    if (exp % 2u == 1u) {
+      if (base > std::numeric_limits<T>::max() / result) {
+        return std::nullopt;
+      }
+      result *= base;
     }
-    return result;
+
+    exp /= 2u;
+
+    if (base > std::numeric_limits<T>::max() / base) {
+      return (exp == 0u) ? std::make_optional(result) : std::nullopt;
+    }
+    base *= base;
+  }
+  return result;
 }
 
-template <typename T>
-[[nodiscard]] consteval std::optional<T> root(T x, std::uintmax_t n) {
-    // The "zeroth root" would be mathematically undefined.
-    if (n == 0) {
+template<typename T>
+[[nodiscard]] consteval std::optional<T> root(T x, std::uintmax_t n)
+{
+  // The "zeroth root" would be mathematically undefined.
+  if (n == 0) {
+    return std::nullopt;
+  }
+
+  // The "first root" is trivial.
+  if (n == 1) {
+    return x;
+  }
+
+  // We only support nontrivial roots of floating point types.
+  if (!std::is_floating_point<T>::value) {
+    return std::nullopt;
+  }
+
+  // Handle negative numbers: only odd roots are allowed.
+  if (x < 0) {
+    if (n % 2 == 0) {
+      return std::nullopt;
+    } else {
+      const auto negative_result = root(-x, n);
+      if (!negative_result.has_value()) {
         return std::nullopt;
+      }
+      return static_cast<T>(-negative_result.value());
+    }
+  }
+
+  // Handle special cases of zero and one.
+  if (x == 0 || x == 1) {
+    return x;
+  }
+
+  // Handle numbers bewtween 0 and 1.
+  if (x < 1) {
+    const auto inverse_result = root(T{1} / x, n);
+    if (!inverse_result.has_value()) {
+      return std::nullopt;
+    }
+    return static_cast<T>(T{1} / inverse_result.value());
+  }
+
+  //
+  // At this point, error conditions are finished, and we can proceed with the "core" algorithm.
+  //
+
+  // Always use `long double` for intermediate computations.  We don't ever expect people to be
+  // calling this at runtime, so we want maximum accuracy.
+  long double lo = 1.0;
+  long double hi = static_cast<long double>(x);
+
+  // Do a binary search to find the closest value such that `checked_int_pow` recovers the input.
+  //
+  // Because we know `n > 1`, and `x > 1`, and x^n is monotonically increasing, we know that
+  // `checked_int_pow(lo, n) < x < checked_int_pow(hi, n)`.  We will preserve this as an
+  // invariant.
+  while (lo < hi) {
+    long double mid = lo + (hi - lo) / 2;
+
+    auto result = checked_int_pow(mid, n);
+
+    if (!result.has_value()) {
+      return std::nullopt;
     }
 
-    // The "first root" is trivial.
-    if (n == 1) {
-        return x;
+    // Early return if we get lucky with an exact answer.
+    if (result.value() == x) {
+      return static_cast<T>(mid);
     }
 
-    // We only support nontrivial roots of floating point types.
-    if (!std::is_floating_point<T>::value) {
-        return std::nullopt;
+    // Check for stagnation.
+    if (mid == lo || mid == hi) {
+      break;
     }
 
-    // Handle negative numbers: only odd roots are allowed.
-    if (x < 0) {
-        if (n % 2 == 0) {
-            return std::nullopt;
-        } else {
-            const auto negative_result = root(-x, n);
-            if (!negative_result.has_value()) {
-                return std::nullopt;
-            }
-            return static_cast<T>(-negative_result.value());
-        }
+    // Preserve the invariant that `checked_int_pow(lo, n) < x < checked_int_pow(hi, n)`.
+    if (result.value() < x) {
+      lo = mid;
+    } else {
+      hi = mid;
     }
+  }
 
-    // Handle special cases of zero and one.
-    if (x == 0 || x == 1) {
-        return x;
-    }
-
-    // Handle numbers bewtween 0 and 1.
-    if (x < 1) {
-        const auto inverse_result = root(T{1} / x, n);
-        if (!inverse_result.has_value()) {
-            return std::nullopt;
-        }
-        return static_cast<T>(T{1} / inverse_result.value());
-    }
-
-    //
-    // At this point, error conditions are finished, and we can proceed with the "core" algorithm.
-    //
-
-    // Always use `long double` for intermediate computations.  We don't ever expect people to be
-    // calling this at runtime, so we want maximum accuracy.
-    long double lo = 1.0;
-    long double hi = static_cast<long double>(x);
-
-    // Do a binary search to find the closest value such that `checked_int_pow` recovers the input.
-    //
-    // Because we know `n > 1`, and `x > 1`, and x^n is monotonically increasing, we know that
-    // `checked_int_pow(lo, n) < x < checked_int_pow(hi, n)`.  We will preserve this as an
-    // invariant.
-    while (lo < hi) {
-        long double mid = lo + (hi - lo) / 2;
-
-        auto result = checked_int_pow(mid, n);
-
-        if (!result.has_value()) {
-            return std::nullopt;
-        }
-
-        // Early return if we get lucky with an exact answer.
-        if (result.value() == x) {
-            return static_cast<T>(mid);
-        }
-
-        // Check for stagnation.
-        if (mid == lo || mid == hi) {
-            break;
-        }
-
-        // Preserve the invariant that `checked_int_pow(lo, n) < x < checked_int_pow(hi, n)`.
-        if (result.value() < x) {
-            lo = mid;
-        } else {
-            hi = mid;
-        }
-    }
-
-    // Pick whichever one gets closer to the target.
-    const auto lo_diff = x - checked_int_pow(lo, n).value();
-    const auto hi_diff = checked_int_pow(hi, n).value() - x;
-    return static_cast<T>(lo_diff < hi_diff ? lo : hi);
+  // Pick whichever one gets closer to the target.
+  const auto lo_diff = x - checked_int_pow(lo, n).value();
+  const auto hi_diff = checked_int_pow(hi, n).value() - x;
+  return static_cast<T>(lo_diff < hi_diff ? lo : hi);
 }
 
 template<typename T>
@@ -444,13 +444,11 @@ template<typename T>
     const auto final_result = (exp.den > 1) ? root(pow_result.value(), static_cast<uintmax_t>(exp.den)) : pow_result;
     if (final_result.has_value()) {
       return final_result.value();
+    } else {
+      std::abort();  // Root computation failed.
     }
-    else {
-      std::abort(); // Root computation failed.
-    }
-  }
-  else {
-    std::abort(); // Power computation failed.
+  } else {
+    std::abort();  // Power computation failed.
   }
 }
 

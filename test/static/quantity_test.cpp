@@ -53,8 +53,9 @@ using namespace mp_units::si::unit_symbols;
 // quantity class invariants
 //////////////////////////////
 
-template <typename T>
-constexpr bool within_4_ulps(T a, T b) {
+template<typename T>
+constexpr bool within_4_ulps(T a, T b)
+{
   static_assert(std::is_floating_point_v<T>);
   auto walk_ulps = [](T x, int n) {
     while (n > 0) {
@@ -223,10 +224,8 @@ static_assert(within_4_ulps(sqrt((1.0 * m) * (1.0 * km)).numerical_value_in(m), 
 
 // Reproducing issue #494 exactly:
 constexpr auto val_issue_494 = 8.0 * si::si2019::boltzmann_constant * 1000.0 * K / (std::numbers::pi * 10 * Da);
-static_assert(
-  within_4_ulps(
-    sqrt(val_issue_494).numerical_value_in(m / s),
-    sqrt(val_issue_494.numerical_value_in(m * m / s / s))));
+static_assert(within_4_ulps(sqrt(val_issue_494).numerical_value_in(m / s),
+                            sqrt(val_issue_494.numerical_value_in(m* m / s / s))));
 
 
 ///////////////////////
