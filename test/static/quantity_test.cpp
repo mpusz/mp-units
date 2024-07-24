@@ -24,6 +24,7 @@
 #include <mp-units/bits/hacks.h>
 #include <mp-units/ext/fixed_string.h>
 #include <mp-units/ext/type_traits.h>
+#include <mp-units/math.h>
 #include <mp-units/systems/isq/mechanics.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si.h>
@@ -51,6 +52,24 @@ using namespace mp_units::si::unit_symbols;
 //////////////////////////////
 // quantity class invariants
 //////////////////////////////
+
+template <typename T>
+constexpr bool within_4_ulps(T a, T b) {
+  static_assert(std::is_floating_point_v<T>);
+  auto walk_ulps = [](T x, int n) {
+    while (n > 0) {
+      x = std::nextafter(x, std::numeric_limits<T>::infinity());
+      --n;
+    }
+    while (n < 0) {
+      x = std::nextafter(x, -std::numeric_limits<T>::infinity());
+      ++n;
+    }
+    return x;
+  };
+
+  return (walk_ulps(a, -4) <= b) && (b <= walk_ulps(a, 4));
+}
 
 static_assert(sizeof(quantity<si::metre>) == sizeof(double));
 static_assert(sizeof(quantity<isq::length[m]>) == sizeof(double));
@@ -198,6 +217,16 @@ static_assert(std::constructible_from<quantity<isq::length[m]>, quantity<isq::le
 static_assert(std::convertible_to<quantity<isq::length[km], int>, quantity<isq::length[m]>>);
 static_assert(std::constructible_from<quantity<isq::length[km]>, quantity<isq::length[m], int>>);
 static_assert(std::convertible_to<quantity<isq::length[m], int>, quantity<isq::length[km]>>);
+
+// conversion requiring radical magnitudes
+static_assert(within_4_ulps(sqrt((1.0 * m) * (1.0 * km)).numerical_value_in(m), sqrt(1000.0)));
+
+// Reproducing issue #494 exactly:
+constexpr auto val_issue_494 = 8.0 * si::si2019::boltzmann_constant * 1000.0 * K / (std::numbers::pi * 10 * Da);
+static_assert(
+  within_4_ulps(
+    sqrt(val_issue_494).numerical_value_in(m / s),
+    sqrt(val_issue_494.numerical_value_in(m * m / s / s))));
 
 
 ///////////////////////
