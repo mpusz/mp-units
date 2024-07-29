@@ -239,7 +239,7 @@ class MPUnitsConan(ConanFile):
                 raise ConanInvalidConfiguration(
                     "'contracts' should be set to 'none' to use `import std;`"
                 )
-            if not self.options.std_format:
+            if not self.options.get_safe("std_format", default=True):
                 raise ConanInvalidConfiguration(
                     "'std_format' should be enabled to use `import std;`"
                 )
