@@ -231,11 +231,12 @@ jobs:
           sed -i.backup '/^\[settings\]$/,/^\[/ s/^build_type=.*/build_type=${{ matrix.build_type }}/' ~/.conan2/profiles/default
           conan profile show -pr default
       - run: echo "std_format=$([ "${{ matrix.formatting }}" == "std::format" ] && echo "True" || echo "False")" >> $GITHUB_ENV
+      - run: echo "import_std=$([ "${{ matrix.config.cxx_modules }}" == "True" ] && [ "${{ matrix.config.contracts }}" == "none" ])" >> $GITHUB_ENV
       - name: Install Conan dependencies
         shell: bash
         run: |
           conan install . -b missing -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" -c user.mp-units.build:all=False \
-                          -o '&:cxx_modules=${{ matrix.config.cxx_modules }}' -o '&:import_std=False' -o '&:std_format=${{ env.std_format }}' -o '&:contracts=${{ matrix.contracts }}'
+                          -o '&:cxx_modules=${{ matrix.config.cxx_modules }}' -o '&:import_std=${{ env.import_std }}' -o '&:std_format=${{ env.std_format }}' -o '&:contracts=${{ matrix.contracts }}'
       - name: Provide dependencies for the build
         shell: bash
         working-directory: src
