@@ -46,8 +46,6 @@ inline constexpr struct half_revolution final : named_unit<"hrev", mag_pi * radi
 } half_revolution;
 inline constexpr auto hrev = half_revolution;
 
-// constexpr auto revb6 = mag_ratio<1,3> * mag_pi * rad;
-
 TEST_CASE("value_cast should not truncate for valid inputs", "[value_cast]")
 {
   SECTION("num > den > 1, irr = 1")
@@ -97,8 +95,18 @@ TEST_CASE("value_cast should not truncate for valid inputs", "[value_cast]")
 }
 
 
+inline constexpr std::int64_t one_64bit = 1;
+inline constexpr struct one_in_2to50 : named_unit<"oi2t50", mag_ratio<(one_64bit << 50) + 1, (one_64bit << 50)> * one> {
+} one_in_2to50;
+inline constexpr auto oi2t50 = one_in_2to50;
+
+inline constexpr struct one_in_2to60 : named_unit<"oi2t60", mag_ratio<(one_64bit << 60) + 1, (one_64bit << 60)> * one> {
+} one_in_2to60;
+inline constexpr auto oi2t60 = one_in_2to60;
+
+
 TEMPLATE_TEST_CASE("value_cast should not overflow internally for valid inputs", "[value_cast]", std::int8_t,
-                   std::uint8_t, std::int16_t, std::uint16_t, std::int32_t, std::uint32_t)
+                   std::uint8_t, std::int16_t, std::uint16_t, std::int32_t, std::uint32_t, std::int64_t, std::uint64_t)
 {
   // max()/20: small enough so that none of the tested factors are likely to cause overflow, but still be nonzero;
   // the "easy" test to verify the test itself is good.
@@ -108,24 +116,57 @@ TEMPLATE_TEST_CASE("value_cast should not overflow internally for valid inputs",
     test_values.push_back(std::numeric_limits<TestType>::min() + 1);
   }
 
-  for (TestType tv : test_values) {
-    SECTION("grad <-> deg")
-    {
-      auto deg_number = static_cast<TestType>(std::trunc(0.9 * tv));
-      auto grad_number = static_cast<TestType>(std::round(deg_number / 0.9));
+  SECTION("grad <-> deg")
+  {
+    for (TestType tv : test_values) {
+      // non-overflowing computation for b = 360/400 * a = (10 - 1)/10 * a = (1 - 1/10) * a = 1 - a/10
+      auto deg_number = tv - tv / 10;
+      // non-overflowing computation for b = 400/360 * a = (9 + 1)/9 * a = (1 + 1/9) * a = 1 + a/9
+      auto grad_number = deg_number + deg_number / 9;
       INFO(MP_UNITS_STD_FMT::format("{} deg ~ {} grad", deg_number, grad_number));
       REQUIRE_THAT(value_cast<grad>(deg_number * deg), AlmostEquals(grad_number * grad));
       REQUIRE_THAT(value_cast<deg>(grad_number * grad), AlmostEquals(deg_number * deg));
     }
+  }
 
+  if constexpr (std::numeric_limits<TestType>::digits >= 60) {
+    // ---- a couple of pathological conversion factors
 
+    // this one can still be correctly calculated using a double-precision calculation
+    SECTION("one <-> (1 + 2^-50) * one")
+    {
+      for (TestType tv : test_values) {
+        auto n1 = tv - tv >> 50;
+        auto n2 = n1 + n1 / ((one_64bit << 50) - 1);
+        INFO(MP_UNITS_STD_FMT::format("{} (1 + 2^-50) * one ~ {} one", n1, n2));
+        REQUIRE_THAT(value_cast<one>(n1 * oi2t50), AlmostEquals(n2 * one));
+        REQUIRE_THAT(value_cast<oi2t50>(n2 * one), AlmostEquals(n1 * oi2t50));
+      }
+    }
+
+    // this one cannot be correctly calculated in double-precision
+    SECTION("one <-> (1 + 2^-60) * one")
+    {
+      for (TestType tv : test_values) {
+        auto n1 = tv - tv >> 60;
+        auto n2 = n1 + n1 / ((one_64bit << 60) - 1);
+        INFO(MP_UNITS_STD_FMT::format("{} (1 + 2^-60) * one ~ {} one", n1, n2));
+        REQUIRE_THAT(value_cast<one>(n1 * oi2t60), AlmostEquals(n2 * one));
+        REQUIRE_THAT(value_cast<oi2t60>(n2 * one), AlmostEquals(n1 * oi2t60));
+      }
+    }
+  } else {
+    // skipping this oen for the 64 bit types; we don't know how to calculate the expected results to 64 bits
+    // precision...
     SECTION("rad <-> rev")
     {
-      auto rev_number = static_cast<TestType>(std::trunc(0.5 * std::numbers::inv_pi * tv));
-      auto rad_number = static_cast<TestType>(std::round(2 * std::numbers::pi * rev_number));
-      INFO(MP_UNITS_STD_FMT::format("{} rev ~ {} rad", rev_number, rad_number));
-      REQUIRE_THAT(value_cast<rad>(rev_number * rev), AlmostEquals(rad_number * rad));
-      REQUIRE_THAT(value_cast<rev>(rad_number * rad), AlmostEquals(rev_number * rev));
+      for (TestType tv : test_values) {
+        auto rev_number = static_cast<TestType>(std::trunc(0.5 * std::numbers::inv_pi * tv));
+        auto rad_number = static_cast<TestType>(std::round(2 * std::numbers::pi * rev_number));
+        INFO(MP_UNITS_STD_FMT::format("{} rev ~ {} rad", rev_number, rad_number));
+        REQUIRE_THAT(value_cast<rad>(rev_number * rev), AlmostEquals(rad_number * rad));
+        REQUIRE_THAT(value_cast<rev>(rad_number * rad), AlmostEquals(rev_number * rev));
+      }
     }
   }
 }

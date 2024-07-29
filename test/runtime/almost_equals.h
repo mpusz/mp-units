@@ -50,7 +50,7 @@ struct AlmostEqualsMatcher : Catch::Matchers::MatcherGenericBase {
       const auto maxXYOne = std::max({rep{1}, abs(x), abs(y)});
       return abs(x - y) <= std::numeric_limits<rep>::epsilon() * maxXYOne;
     } else {
-      if (x >= 0) {
+      if (x > 0) {
         return x - 1 <= y && y - 1 <= x;
       } else {
         return x <= y + 1 && y <= x + 1;
