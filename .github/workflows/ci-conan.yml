@@ -238,7 +238,7 @@ jobs:
           sed -i.backup '/^\[settings\]$/,/^\[/ s/^build_type=.*/build_type=${{ matrix.build_type }}/' ~/.conan2/profiles/default
           conan profile show -pr default
       - run: echo "std_format=$([ "${{ matrix.formatting }}" == "std::format" ] && echo "True" || echo "False")" >> $GITHUB_ENV
-      - run: echo "import_std=$([ "${{ matrix.config.cxx_modules }}" == "True" ] && [ "${{ matrix.config.contracts }}" == "none" ])" >> $GITHUB_ENV
+      - run: echo "import_std=$([ "${{ matrix.config.cxx_modules }}" == "True" ] && [ "${{ matrix.config.contracts }}" == "none" ] && [ "${{ matrix.formatting }}" == "std::format" ] && echo "True" || echo "False")" >> $GITHUB_ENV
       - name: Create Conan package
         shell: bash
         run: |
