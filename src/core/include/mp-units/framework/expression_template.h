@@ -334,7 +334,7 @@ struct expr_fractions : decltype(expr_fractions_impl<OneType, type_list<Ts...>>(
 
 // expr_make_spec
 template<typename NumList, typename DenList, typename OneType, template<typename...> typename To>
-[[nodiscard]] consteval auto expr_make_spec_impl()
+[[nodiscard]] MP_UNITS_CONSTEVAL auto expr_make_spec_impl()
 {
   constexpr std::size_t num = type_list_size<NumList>;
   constexpr std::size_t den = type_list_size<DenList>;
@@ -359,7 +359,7 @@ template<typename NumList, typename DenList, typename OneType, template<typename
  */
 template<typename NumList, typename DenList, typename OneType, template<typename, typename> typename Pred,
          template<typename...> typename To>
-[[nodiscard]] consteval auto get_optimized_expression()
+[[nodiscard]] MP_UNITS_CONSTEVAL auto get_optimized_expression()
 {
   using num_list = expr_consolidate<NumList>;
   using den_list = expr_consolidate<DenList>;
@@ -380,7 +380,7 @@ template<typename NumList, typename DenList, typename OneType, template<typename
  */
 template<template<typename...> typename To, typename OneType, template<typename, typename> typename Pred, typename Lhs,
          typename Rhs>
-[[nodiscard]] consteval auto expr_multiply(Lhs, Rhs)
+[[nodiscard]] MP_UNITS_CONSTEVAL auto expr_multiply(Lhs, Rhs)
 {
   if constexpr (is_same_v<Lhs, OneType>) {
     return Rhs{};
