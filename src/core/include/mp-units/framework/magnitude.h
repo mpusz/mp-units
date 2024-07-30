@@ -439,9 +439,11 @@ template<typename T>
     }
   }
 
-  const auto pow_result = checked_int_pow(static_cast<widen_t<T>>(get_base_value(el)), static_cast<uintmax_t>(exp.num));
+  const auto pow_result =
+    checked_int_pow(static_cast<widen_t<T>>(get_base_value(el)), static_cast<std::uintmax_t>(exp.num));
   if (pow_result.has_value()) {
-    const auto final_result = (exp.den > 1) ? root(pow_result.value(), static_cast<uintmax_t>(exp.den)) : pow_result;
+    const auto final_result =
+      (exp.den > 1) ? root(pow_result.value(), static_cast<std::uintmax_t>(exp.den)) : pow_result;
     if (final_result.has_value()) {
       return final_result.value();
     } else {

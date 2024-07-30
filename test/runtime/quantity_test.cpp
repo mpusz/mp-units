@@ -25,6 +25,7 @@
 import std;
 #else
 #include <atomic>
+#include <numbers>
 #endif
 #ifdef MP_UNITS_MODULES
 import mp_units;
