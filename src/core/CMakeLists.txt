@@ -126,10 +126,10 @@ if(${projectPrefix}BUILD_CXX_MODULES)
 endif()
 
 if(${projectPrefix}BUILD_IMPORT_STD)
-    target_compile_definitions(mp-units-core PUBLIC ${projectPrefix}IMPORT_STD)
+    target_compile_definitions(mp-units-core ${${projectPrefix}TARGET_SCOPE} ${projectPrefix}IMPORT_STD)
     # https://github.com/llvm/llvm-project/issues/75057
     if(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 19)
-        target_compile_options(mp-units-core PUBLIC "-Wno-deprecated-declarations")
+        target_compile_options(mp-units-core ${${projectPrefix}TARGET_SCOPE} "-Wno-deprecated-declarations")
     endif()
 endif()
 

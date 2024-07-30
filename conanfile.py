@@ -30,7 +30,7 @@ from conan.tools.cmake import CMake, CMakeDeps, CMakeToolchain, cmake_layout
 from conan.tools.files import copy, load, rmdir
 from conan.tools.scm import Version
 
-required_conan_version = ">=2.0.0"
+required_conan_version = ">=2.0.15"
 
 
 class MPUnitsConan(ConanFile):
@@ -239,7 +239,7 @@ class MPUnitsConan(ConanFile):
                 raise ConanInvalidConfiguration(
                     "'contracts' should be set to 'none' to use `import std;`"
                 )
-            if not self.options.std_format:
+            if not self.options.get_safe("std_format", default=True):
                 raise ConanInvalidConfiguration(
                     "'std_format' should be enabled to use `import std;`"
                 )
@@ -252,7 +252,9 @@ class MPUnitsConan(ConanFile):
         tc.absolute_paths = True  # only needed for CMake CI
         if self._build_all:
             tc.cache_variables["CMAKE_EXPORT_COMPILE_COMMANDS"] = True
-            tc.cache_variables["CMAKE_VERIFY_INTERFACE_HEADER_SETS"] = True
+            tc.cache_variables[
+                "CMAKE_VERIFY_INTERFACE_HEADER_SETS"
+            ] = not self.options.import_std
             tc.cache_variables["MP_UNITS_DEV_BUILD_LA"] = not self._skip_la
             if self._run_clang_tidy:
                 tc.cache_variables["MP_UNITS_DEV_CLANG_TIDY"] = True
@@ -287,7 +289,8 @@ class MPUnitsConan(ConanFile):
         if self._build_all or self.options.cxx_modules:
             cmake.build()
         if self._build_all:
-            cmake.build(target="all_verify_interface_header_sets")
+            if not self.options.import_std:
+                cmake.build(target="all_verify_interface_header_sets")
             if can_run(self):
                 cmake.ctest(cli_args=["--output-on-failure"])
 
