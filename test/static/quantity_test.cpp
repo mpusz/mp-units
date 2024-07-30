@@ -199,7 +199,6 @@ static_assert(std::convertible_to<quantity<isq::length[km], int>, quantity<isq::
 static_assert(std::constructible_from<quantity<isq::length[km]>, quantity<isq::length[m], int>>);
 static_assert(std::convertible_to<quantity<isq::length[m], int>, quantity<isq::length[km]>>);
 
-
 ///////////////////////
 // obtaining a number
 ///////////////////////
