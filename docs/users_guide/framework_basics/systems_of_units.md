@@ -190,3 +190,21 @@ inline constexpr struct mag_pi final : magnitude<std::numbers::pi_v<long double>
 ```cpp
 inline constexpr struct degree final : named_unit<{u8"°", "deg"}, mag_pi / mag<180> * si::radian> {} degree;
 ```
+
+!!! tip
+
+    The ISO 8000 and [SI](../../appendix/glossary.md#si) standards explicitly forbid using prefixes
+    with some units (e.g., day, minute, hour, degree Celsius). This is why the library disallows
+    this as well by providing specializations of the `unit_can_be_prefixed` variable template for
+    such units. Thanks to it trying to create a prefixed version for them will result in
+    a compile-time error.
+
+    However, some projects are not aware of those limitations and use prefixed version of such units
+    (e.g., [linux kernel uses millidegrees Celsius](https://github.com/search?q=repo%3Atorvalds%2Flinux+millidegree&type=code)).
+    To enable compatibility with those projects we can workaround the limitation in **mp-units**
+    by providing a scaled version of the unit explicitly:
+
+    ```cpp
+    inline constexpr struct milli_degree_celsius final : named_unit<symbol_text{u8"m℃", "m`C"}, mag_ratio<1, 1000> * si::degree_Celsius> {} milli_degree_celsius;
+    inline constexpr auto mdeg_C = milli_degree_celsius;
+    ```
