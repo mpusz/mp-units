@@ -155,31 +155,6 @@ static_assert(!Unit<int>);
 static_assert(!Unit<std::chrono::seconds>);
 #endif
 
-// NamedUnit
-static_assert(detail::NamedUnit<struct si::metre>);
-static_assert(detail::NamedUnit<struct natural::electronvolt>);
-static_assert(!detail::NamedUnit<decltype(si::kilogram)>);
-static_assert(!detail::NamedUnit<decltype(si::kilo<si::gram>)>);
-static_assert(!detail::NamedUnit<decltype(si::metre / si::second)>);
-static_assert(!detail::NamedUnit<decltype(inverse(si::second))>);
-static_assert(!detail::NamedUnit<decltype(mag<10> * si::second)>);
-static_assert(!detail::NamedUnit<decltype(square(si::metre))>);
-static_assert(!detail::NamedUnit<decltype(pow<2>(si::metre))>);
-static_assert(detail::NamedUnit<struct si::standard_gravity>);
-static_assert(!detail::NamedUnit<scaled_unit<mag<10>, struct si::second>>);
-static_assert(!detail::NamedUnit<derived_unit<struct si::metre, per<struct si::second>>>);
-static_assert(!detail::NamedUnit<struct one>);
-static_assert(!detail::NamedUnit<named_unit<"?", kind_of<isq::length>>>);
-static_assert(!detail::NamedUnit<named_unit<"?">>);
-static_assert(!detail::NamedUnit<named_unit<"?", si::metre / si::second>>);
-static_assert(!detail::NamedUnit<named_unit<"?", si::metre, kind_of<isq::length>>>);
-static_assert(!detail::NamedUnit<prefixed_unit<"?", mag<10>, si::second>>);
-static_assert(!detail::NamedUnit<struct isq::dim_length>);
-static_assert(!detail::NamedUnit<int>);
-#if MP_UNITS_HOSTED
-static_assert(!detail::NamedUnit<std::chrono::seconds>);
-#endif
-
 // PrefixableUnit
 static_assert(PrefixableUnit<struct si::metre>);
 static_assert(PrefixableUnit<struct natural::electronvolt>);

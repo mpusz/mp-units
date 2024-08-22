@@ -117,20 +117,8 @@ and is satisfied by:
 
 ### `PrefixableUnit<T>` { #PrefixableUnit }
 
-`PrefixableUnit` concept is satisfied by all units derived from a `named_unit` class template for
-which a customization point `unit_can_be_prefixed<T{}>` was not explicitly set to `false`. Such
-units can be passed as an argument to a `prefixed_unit` class template.
-
-??? abstract "Examples"
-
-    All units in the [SI](../../appendix/glossary.md#si) can be prefixed with SI-defined prefixes.
-
-    Some [off-system units](../../appendix/glossary.md#off-system-unit) like `non_si::day`
-    can't be prefixed. To enforce that, the following has to be provided:
-
-    ```cpp
-    template<> inline constexpr bool unit_can_be_prefixed<non_si::day> = false;
-    ```
+`PrefixableUnit` concept is satisfied by all units derived from a `named_unit` class template.
+Such units can be passed as an argument to a `prefixed_unit` class template.
 
 
 ### `UnitOf<T, V>` { #UnitOf }

@@ -62,38 +62,13 @@ template<typename T>
 inline constexpr bool is_derived_from_specialization_of_named_unit =
   requires(T* t) { to_base_specialization_of_named_unit(t); };
 
-template<typename T>
-inline constexpr bool is_specialization_of_named_unit = false;
-
-template<symbol_text Symbol, auto... Args>
-inline constexpr bool is_specialization_of_named_unit<named_unit<Symbol, Args...>> = true;
-
-/**
- * @brief A concept matching all units with special names
- *
- * Satisfied by all unit types derived from the specialization of `named_unit`.
- */
-template<typename T>
-concept NamedUnit =
-  Unit<T> && detail::is_derived_from_specialization_of_named_unit<T> && (!detail::is_specialization_of_named_unit<T>);
-
 }  // namespace detail
-
-/**
- * @brief Prevents assignment of a prefix to specific units
- *
- * By default all named units allow assigning a prefix for them. There are some notable exceptions like
- * `hour` or `degree_Celsius`. For those a partial specialization with the value `false` should be
- * provided.
- */
-MP_UNITS_EXPORT template<Unit auto V>
-inline constexpr bool unit_can_be_prefixed = true;
 
 /**
  * @brief A concept to be used to define prefixes for a unit
  */
 MP_UNITS_EXPORT template<typename T>
-concept PrefixableUnit = detail::NamedUnit<T> && unit_can_be_prefixed<T{}>;
+concept PrefixableUnit = Unit<T> && detail::is_derived_from_specialization_of_named_unit<T>;
 
 namespace detail {
 

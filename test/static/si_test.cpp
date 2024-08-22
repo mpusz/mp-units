@@ -63,10 +63,6 @@ static_assert(1 * Qm == 1'000'000'000'000'000'000 * Tm);
 template<template<typename U> typename prefix, auto V1>
 concept can_not_be_prefixed = Unit<decltype(V1)> && !requires { typename prefix<decltype(V1)>; };
 
-static_assert(can_not_be_prefixed<si::milli_, si::degree_Celsius>);
-static_assert(can_not_be_prefixed<si::milli_, si::minute>);
-static_assert(can_not_be_prefixed<si::milli_, si::hour>);
-static_assert(can_not_be_prefixed<si::milli_, si::day>);
 static_assert(can_not_be_prefixed<si::milli_, si::kilogram>);
 static_assert(can_not_be_prefixed<si::milli_, si::hectare>);
 static_assert(can_not_be_prefixed<si::milli_, si::kilo<si::metre>>);
