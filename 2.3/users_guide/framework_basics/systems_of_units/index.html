@@ -2270,21 +2270,6 @@ is defined using a floating-point magnitude having a factor of the number π (Pi
 </span></code></pre></div>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">degree</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">named_unit</span><span class="o">&lt;</span><span class="p">{</span><span class="sa">u8</span><span class="s">&quot;°&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;deg&quot;</span><span class="p">},</span><span class="w"> </span><span class="n">mag_pi</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">mag</span><span class="o">&lt;</span><span class="mi">180</span><span class="o">&gt;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">radian</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">degree</span><span class="p">;</span>
 </span></code></pre></div>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
-<p>The ISO 8000 and <a href="../../../appendix/glossary/#si">SI</a> standards explicitly forbid using prefixes
-with some units (e.g., day, minute, hour, degree Celsius). This is why the library disallows
-this as well by providing specializations of the <code>unit_can_be_prefixed</code> variable template for
-such units. Thanks to it trying to create a prefixed version for them will result in
-a compile-time error.</p>
-<p>However, some projects are not aware of those limitations and use prefixed version of such units
-(e.g., <a href="https://github.com/search?q=repo%3Atorvalds%2Flinux+millidegree&amp;type=code">linux kernel uses millidegrees Celsius</a>).
-To enable compatibility with those projects we can workaround the limitation in <strong>mp-units</strong>
-by providing a scaled version of the unit explicitly:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">milli_degree_celsius</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">named_unit</span><span class="o">&lt;</span><span class="n">symbol_text</span><span class="p">{</span><span class="sa">u8</span><span class="s">&quot;m℃&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;m`C&quot;</span><span class="p">},</span><span class="w"> </span><span class="n">mag_ratio</span><span class="o">&lt;</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1000</span><span class="o">&gt;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">degree_Celsius</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">milli_degree_celsius</span><span class="p">;</span>
-</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">mdeg_C</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">milli_degree_celsius</span><span class="p">;</span>
-</span></code></pre></div>
-</div>
 
 
 
