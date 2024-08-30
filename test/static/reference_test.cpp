@@ -34,8 +34,8 @@ namespace {
 
 using namespace mp_units;
 
-using dimensionless_ = struct dimensionless;
-using one_ = struct one;
+using dimensionless_ = struct mp_units::dimensionless;
+using one_ = struct mp_units::one;
 
 // base dimensions
 // clang-format off

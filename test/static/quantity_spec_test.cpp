@@ -33,8 +33,8 @@ namespace {
 
 using namespace mp_units;
 
-using dimensionless_ = struct dimensionless;
-using dim_one_ = struct dimension_one;
+using dimensionless_ = struct mp_units::dimensionless;
+using dim_one_ = struct mp_units::dimension_one;
 
 // clang-format off
 inline constexpr struct dim_length_ final : base_dimension<"L"> {} dim_length;
