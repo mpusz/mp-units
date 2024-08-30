@@ -926,13 +926,12 @@ static_assert(quantity_point{sys_seconds{24h}}.quantity_spec == kind_of<isq::tim
 ////////////
 // getters
 ////////////
-
-constexpr quantity_point mean_sea_level_qp = mean_sea_level + 1 * m;
-constexpr quantity_point my_mean_sea_level_qp = my_mean_sea_level + 1 * m;
-constexpr quantity_point ground_level_qp = ground_level + 1 * m;
-constexpr quantity_point my_ground_level_qp = my_ground_level + 1 * m;
-constexpr quantity_point same_ground_level1_qp = same_ground_level1 + 1 * m;
-constexpr quantity_point same_ground_level2_qp = same_ground_level2 + 1 * m;
+constexpr QuantityPoint auto mean_sea_level_qp = mean_sea_level + (1 * m);
+constexpr QuantityPoint auto my_mean_sea_level_qp = my_mean_sea_level + 1 * m;
+constexpr QuantityPoint auto ground_level_qp = ground_level + 1 * m;
+constexpr QuantityPoint auto my_ground_level_qp = my_ground_level + 1 * m;
+constexpr QuantityPoint auto same_ground_level1_qp = same_ground_level1 + 1 * m;
+constexpr QuantityPoint auto same_ground_level2_qp = same_ground_level2 + 1 * m;
 
 static_assert(mean_sea_level_qp.quantity_ref_from(mean_sea_level) == 1 * m);
 static_assert(mean_sea_level_qp.quantity_ref_from(my_mean_sea_level) == 1 * m);
@@ -957,24 +956,24 @@ static_assert(same_ground_level2_qp.quantity_ref_from(same_ground_level1) == 1 *
 static_assert(same_ground_level2_qp.quantity_ref_from(same_ground_level2) == 1 * m);
 
 
-////////////////////////
-// assignment operator
-////////////////////////
+// ////////////////////////
+// //assignment operator
+// ////////////////////////
 
 static_assert(([]() {
-                const quantity_point l1{mean_sea_level + 1 * m};
-                quantity_point l2{mean_sea_level + 2 * m};
+                const QuantityPoint auto l1{mean_sea_level + 1 * m};
+                QuantityPoint auto l2{mean_sea_level + 2 * m};
                 return l2 = l1;
               }())
                 .quantity_from(mean_sea_level) == 1 * m);
 static_assert(([]() {
-                const quantity_point l1{mean_sea_level + 1 * m};
-                quantity_point l2{mean_sea_level + 2 * m};
+                const QuantityPoint auto l1{mean_sea_level + 1 * m};
+                QuantityPoint auto l2{mean_sea_level + 2 * m};
                 return l2 = l1;
               }())
                 .quantity_from(mean_sea_level) == 1 * m);
 static_assert(([]() {
-                quantity_point l1{mean_sea_level + 1 * m}, l2{mean_sea_level + 2 * m};
+                QuantityPoint auto l1{mean_sea_level + 1 * m}, l2{mean_sea_level + 2 * m};
                 return l2 = std::move(l1);  // NOLINT(*-move-const-arg)
               }())
                 .quantity_from(mean_sea_level) == 1 * m);
@@ -987,7 +986,7 @@ static_assert(([]() {
 static_assert([](auto v) {
   auto vv = v++;  // NOLINT(bugprone-inc-dec-in-conditions)
   return std::pair(v, vv);
-}(mean_sea_level + 123 * m) == std::pair(mean_sea_level + 124 * m, quantity_point(mean_sea_level + 123 * m)));
+}(mean_sea_level + 123 * m) == std::pair(mean_sea_level + 124 * m, mean_sea_level + 123 * m));
 static_assert([](auto v) {
   auto vv = ++v;  // NOLINT(bugprone-inc-dec-in-conditions)
   return std::pair(v, vv);
@@ -1643,7 +1642,7 @@ static_assert(is_of_type<(zero_Hz + 5 * isq::frequency[Hz]) - (zero_Hz + 10 / (2
 
 static_assert((quantity_point{10 / (2 * isq::period_duration[s])} + 5 * isq::frequency[Hz]).quantity_from_zero() ==
               10 * isq::frequency[Hz]);
-static_assert((10 / (2 * isq::period_duration[s]) + quantity_point{zero_Hz + 5 * isq::frequency[Hz]})
+static_assert((10 / (2 * isq::period_duration[s]) + (zero_Hz + 5 * isq::frequency[Hz]))
                 .quantity_from_zero() == 10 * isq::frequency[Hz]);
 static_assert((quantity_point{5 * isq::frequency[Hz]} + 10 / (2 * isq::period_duration[s])).quantity_from_zero() ==
               10 * isq::frequency[Hz]);
