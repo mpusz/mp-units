@@ -87,37 +87,40 @@ struct reference {
   }
 
   template<typename Q2, typename U2>
-  [[nodiscard]] friend consteval detail::reference_t<Q{} * Q2{}, U{} * U2{}> operator*(reference, reference<Q2, U2>)
+  [[nodiscard]] friend consteval detail::reference_t<(Q{} * Q2{}), (U{} * U2{})> operator*(reference, reference<Q2, U2>)
   {
     return {};
   }
 
   template<AssociatedUnit U2>
-  [[nodiscard]] friend consteval detail::reference_t<Q{} * get_quantity_spec(U2{}), U{} * U2{}> operator*(reference, U2)
+  [[nodiscard]] friend consteval detail::reference_t<((Q{} * get_quantity_spec(U2{}))), (U{} * U2{})> operator*(reference,
+                                                                                                              U2)
   {
     return {};
   }
 
   template<AssociatedUnit U1>
-  [[nodiscard]] friend consteval detail::reference_t<get_quantity_spec(U1{}) * Q{}, U1{} * U{}> operator*(U1, reference)
+  [[nodiscard]] friend consteval detail::reference_t<(get_quantity_spec(U1{}) * Q{}), (U1{} * U{})> operator*(U1,
+                                                                                                              reference)
   {
     return {};
   }
 
   template<typename Q2, typename U2>
-  [[nodiscard]] friend consteval detail::reference_t<Q{} / Q2{}, U{} / U2{}> operator/(reference, reference<Q2, U2>)
+  [[nodiscard]] friend consteval detail::reference_t<(Q{} / Q2{}), (U{} / U2{})> operator/(reference, reference<Q2, U2>)
   {
     return {};
   }
 
   template<AssociatedUnit U2>
-  [[nodiscard]] friend consteval detail::reference_t<Q{} / get_quantity_spec(U2{}), U{} / U2{}> operator/(reference, U2)
+  [[nodiscard]] friend consteval detail::reference_t<(Q{} / get_quantity_spec(U2{})), (U{} / U2{})> operator/(reference,
+                                                                                                              U2)
   {
     return {};
   }
 
   template<AssociatedUnit U1>
-  [[nodiscard]] friend consteval detail::reference_t<get_quantity_spec(U1{}) / Q{}, U1{} / U{}> operator/(U1, reference)
+  [[nodiscard]] friend consteval detail::reference_t<(get_quantity_spec(U1{}) / Q{}), (U1{} / U{})> operator/(U1, reference)
   {
     return {};
   }
