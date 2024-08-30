@@ -520,9 +520,9 @@ template<typename T, typename F, int Num, int... Den>
 template<typename... Us>
 [[nodiscard]] consteval auto get_canonical_unit_impl(const type_list<Us...>&)
 {
-  auto m = (mp_units::mag<1> * ... * get_canonical_unit_impl(Us{}, Us{}).mag);
+  auto magnitude = (mp_units::mag<1> * ... * get_canonical_unit_impl(Us{}, Us{}).mag);
   auto u = (one * ... * get_canonical_unit_impl(Us{}, Us{}).reference_unit);
-  return canonical_unit{m, u};
+  return canonical_unit{magnitude, u};
 }
 
 template<Unit T, typename... Expr>
@@ -654,8 +654,8 @@ template<Unit U1, Unit U2>
     else if constexpr (is_integral(canonical_rhs.mag / canonical_lhs.mag))
       return u1;
     else {
-      constexpr auto cm = detail::common_magnitude(canonical_lhs.mag, canonical_rhs.mag);
-      return scaled_unit<cm, decltype(canonical_lhs.reference_unit)>{};
+      constexpr auto common_magnitude = detail::common_magnitude(canonical_lhs.mag, canonical_rhs.mag);
+      return scaled_unit<common_magnitude, decltype(canonical_lhs.reference_unit)>{};
     }
   }
 }

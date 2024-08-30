@@ -311,9 +311,9 @@ struct derived_quantity : quantity<Q::reference, Rep> {
     R::operator=(t);
     return *this;
   }
-  constexpr derived_quantity& operator=(R&& t)
+  constexpr derived_quantity& operator=(R&& other)
   {
-    R::operator=(std::move(t));
+    R::operator=(std::move(other));
     return *this;
   }
   // NOLINTBEGIN(google-explicit-constructor, hicpp-explicit-conversions)
