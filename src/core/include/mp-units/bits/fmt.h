@@ -48,6 +48,12 @@ import std;
 #endif
 #endif
 
+
+#ifdef _MSC_VER 
+#pragma warning(push)
+#pragma warning(disable : 4702)
+#endif
+
 // most of the below code is based on/copied from fmtlib
 
 namespace mp_units::detail {
@@ -390,4 +396,9 @@ template<typename Char, typename Specs>
 }
 
 }  // namespace mp_units::detail
+
+#ifdef _MSC_VER 
+#pragma warning( pop ) 
+#endif
+
 // NOLINTEND(cppcoreguidelines-pro-bounds-pointer-arithmetic, cppcoreguidelines-pro-type-union-access)
