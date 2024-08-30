@@ -452,7 +452,7 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
     }
     // user provided format
     quantity_formatter f{*this, out, q, locale};
-    parse_quantity_specs(modifiers_format_str_.begin(), modifiers_format_str_.end(), f);
+    parse_quantity_specs(modifiers_format_str_.data(), modifiers_format_str_.data() +  modifiers_format_str_.size(), f);
     return f.out;
   }
 
