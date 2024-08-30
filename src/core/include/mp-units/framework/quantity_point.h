@@ -191,13 +191,13 @@ public:
   [[nodiscard]] static constexpr quantity_point min() noexcept
     requires requires { quantity_type::min(); }
   {
-    return {quantity_type::min(), PO};
+    return {quantity_type::min(), point_origin};
   }
 
   [[nodiscard]] static constexpr quantity_point max() noexcept
     requires requires { quantity_type::max(); }
   {
-    return {quantity_type::max(), PO};
+    return {quantity_type::max(), point_origin};
   }
 
   // construction, assignment, destruction
@@ -264,10 +264,10 @@ public:
   quantity_point& operator=(quantity_point&&) = default;
 
   template<detail::SameAbsolutePointOriginAs<absolute_point_origin> NewPO>
-  [[nodiscard]] constexpr MP_UNITS_CONSTRAINED_AUTO_WORKAROUND(QuantityPointOf<NewPO{}>) auto point_for(
+  [[nodiscard]] constexpr QuantityPointOf<(NewPO{})> auto point_for(
     NewPO new_origin) const
   {
-    if constexpr (is_same_v<NewPO, decltype(PO)>)
+    if constexpr (is_same_v<NewPO, decltype(point_origin)>)
       return *this;
     else
       return ::mp_units::quantity_point{*this - new_origin, new_origin};
@@ -329,7 +329,7 @@ public:
     requires detail::QuantityConvertibleTo<quantity_type, quantity<detail::make_reference(quantity_spec, ToU{}), Rep>>
   [[nodiscard]] constexpr QuantityPointOf<quantity_spec> auto in(ToU) const
   {
-    return ::mp_units::quantity_point{quantity_ref_from(PO).in(ToU{}), PO};
+    return ::mp_units::quantity_point{quantity_ref_from(point_origin).in(ToU{}), point_origin};
   }
 
   template<RepresentationOf<quantity_spec.character> ToRep>
@@ -350,7 +350,7 @@ public:
     requires requires(quantity_type q) { value_cast<ToU{}>(q); }
   [[nodiscard]] constexpr QuantityPointOf<quantity_spec> auto force_in(ToU) const
   {
-    return ::mp_units::quantity_point{quantity_ref_from(PO).force_in(ToU{}), PO};
+    return ::mp_units::quantity_point{quantity_ref_from(point_origin).force_in(ToU{}), PO};
   }
 
   template<RepresentationOf<quantity_spec.character> ToRep>
@@ -364,7 +364,7 @@ public:
     requires requires(quantity_type q) { value_cast<ToU{}, ToRep>(q); }
   [[nodiscard]] constexpr QuantityPointOf<quantity_spec> auto force_in(ToU) const
   {
-    return ::mp_units::quantity_point{quantity_ref_from(PO).template force_in<ToRep>(ToU{}), PO};
+    return ::mp_units::quantity_point{quantity_ref_from(PO).template force_in<ToRep>(ToU{}), point_origin};
   }
 
   // conversion operators
