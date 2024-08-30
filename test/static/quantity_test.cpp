@@ -355,7 +355,8 @@ static_assert(quantity{123}.quantity_spec == kind_of<dimensionless>);
 #if MP_UNITS_HOSTED
 using namespace std::chrono_literals;
 static_assert(std::is_same_v<decltype(quantity{123s})::rep, std::chrono::seconds::rep>);
-static_assert(std::is_same_v<decltype(quantity{123.s})::rep, long double>);
+//return type for "s" is not specified. is double for msvc
+//static_assert(std::is_same_v<decltype(quantity{123.s})::rep, long double>);
 static_assert(quantity{24h}.unit == si::hour);
 static_assert(quantity{24h}.quantity_spec == kind_of<isq::time>);
 #endif
