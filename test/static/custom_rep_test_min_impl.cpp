@@ -78,18 +78,18 @@ static_assert(Representation<min_impl<int>>);
 static_assert(Representation<min_impl<double>>);
 
 // construction from a value is not allowed
-static_assert(!std::constructible_from<quantity<si::metre, min_impl<int>>, min_impl<int>>);
-static_assert(!std::convertible_to<min_impl<int>, quantity<si::metre, min_impl<int>>>);
+static_assert(!std::constructible_from<quantity<(si::metre), min_impl<int>>, min_impl<int>>);
+static_assert(!std::convertible_to<min_impl<int>, quantity<(si::metre), min_impl<int>>>);
 
-static_assert(!std::constructible_from<quantity<si::metre, min_impl<double>>, min_impl<double>>);
-static_assert(!std::convertible_to<min_impl<double>, quantity<si::metre, min_impl<double>>>);
+static_assert(!std::constructible_from<quantity<(si::metre), min_impl<double>>, min_impl<double>>);
+static_assert(!std::convertible_to<min_impl<double>, quantity<(si::metre), min_impl<double>>>);
 
 // multiply syntax should work
 template<typename T, auto U>
 concept creates_quantity = Unit<decltype(U)> && requires { T{} * U; };
 
-static_assert(creates_quantity<min_impl<int>, si::metre>);
-static_assert(creates_quantity<min_impl<double>, si::metre>);
+static_assert(creates_quantity<min_impl<int>, (si::metre)>);
+static_assert(creates_quantity<min_impl<double>, (si::metre)>);
 
 // multiply syntax
 static_assert(creates_quantity<min_impl<int>, one>);
@@ -99,46 +99,46 @@ static_assert(creates_quantity<min_impl<double>, percent>);
 
 // construction from a quantity
 // min_impl<T> -> min_impl<T>
-static_assert(std::constructible_from<quantity<si::metre, min_impl<int>>, quantity<si::metre, min_impl<int>>>);
-static_assert(std::convertible_to<quantity<si::metre, min_impl<int>>, quantity<si::metre, min_impl<int>>>);
+static_assert(std::constructible_from<quantity<(si::metre), min_impl<int>>, quantity<(si::metre), min_impl<int>>>);
+static_assert(std::convertible_to<quantity<(si::metre), min_impl<int>>, quantity<(si::metre), min_impl<int>>>);
 
-static_assert(std::constructible_from<quantity<si::metre, min_impl<double>>, quantity<si::metre, min_impl<double>>>);
-static_assert(std::convertible_to<quantity<si::metre, min_impl<double>>, quantity<si::metre, min_impl<double>>>);
+static_assert(std::constructible_from<quantity<(si::metre), min_impl<double>>, quantity<(si::metre), min_impl<double>>>);
+static_assert(std::convertible_to<quantity<(si::metre), min_impl<double>>, quantity<(si::metre), min_impl<double>>>);
 
-static_assert(std::constructible_from<quantity<si::metre, min_impl<double>>, quantity<si::metre, min_impl<int>>>);
-static_assert(std::convertible_to<quantity<si::metre, min_impl<int>>, quantity<si::metre, min_impl<double>>>);
+static_assert(std::constructible_from<quantity<(si::metre), min_impl<double>>, quantity<(si::metre), min_impl<int>>>);
+static_assert(std::convertible_to<quantity<(si::metre), min_impl<int>>, quantity<(si::metre), min_impl<double>>>);
 
-static_assert(!std::constructible_from<quantity<si::metre, min_impl<int>>,
-                                       quantity<si::metre, min_impl<double>>>);  // narrowing conversion
-static_assert(!std::convertible_to<quantity<si::metre, min_impl<double>>, quantity<si::metre, min_impl<int>>>);
+static_assert(!std::constructible_from<quantity<(si::metre), min_impl<int>>,
+                                       quantity<(si::metre), min_impl<double>>>);  // narrowing conversion
+static_assert(!std::convertible_to<quantity<(si::metre), min_impl<double>>, quantity<(si::metre), min_impl<int>>>);
 
 // T -> min_impl<T>
-static_assert(std::constructible_from<quantity<si::metre, min_impl<int>>, quantity<si::metre, int>>);
-static_assert(std::convertible_to<quantity<si::metre, int>, quantity<si::metre, min_impl<int>>>);
+static_assert(std::constructible_from<quantity<(si::metre), min_impl<int>>, quantity<(si::metre), int>>);
+static_assert(std::convertible_to<quantity<(si::metre), int>, quantity<(si::metre), min_impl<int>>>);
 
-static_assert(std::constructible_from<quantity<si::metre, min_impl<double>>, quantity<si::metre, double>>);
-static_assert(std::convertible_to<quantity<si::metre, double>, quantity<si::metre, min_impl<double>>>);
+static_assert(std::constructible_from<quantity<(si::metre), min_impl<double>>, quantity<(si::metre), double>>);
+static_assert(std::convertible_to<quantity<(si::metre), double>, quantity<(si::metre), min_impl<double>>>);
 
-static_assert(std::constructible_from<quantity<si::metre, min_impl<double>>, quantity<si::metre, int>>);
-static_assert(std::convertible_to<quantity<si::metre, int>, quantity<si::metre, min_impl<double>>>);
+static_assert(std::constructible_from<quantity<(si::metre), min_impl<double>>, quantity<(si::metre), int>>);
+static_assert(std::convertible_to<quantity<(si::metre), int>, quantity<(si::metre), min_impl<double>>>);
 
 static_assert(
-  !std::constructible_from<quantity<si::metre, min_impl<int>>, quantity<si::metre, double>>);  // narrowing conversion
-static_assert(!std::convertible_to<quantity<si::metre, double>, quantity<si::metre, min_impl<int>>>);
+  !std::constructible_from<quantity<(si::metre), min_impl<int>>, quantity<(si::metre), double>>);  // narrowing conversion
+static_assert(!std::convertible_to<quantity<(si::metre), double>, quantity<(si::metre), min_impl<int>>>);
 
 // min_impl<T> -> T
-static_assert(std::constructible_from<quantity<si::metre, int>, quantity<si::metre, min_impl<int>>>);
-static_assert(std::convertible_to<quantity<si::metre, min_impl<int>>, quantity<si::metre, int>>);
+static_assert(std::constructible_from<quantity<(si::metre), int>, quantity<(si::metre), min_impl<int>>>);
+static_assert(std::convertible_to<quantity<(si::metre), min_impl<int>>, quantity<(si::metre), int>>);
 
-static_assert(std::constructible_from<quantity<si::metre, double>, quantity<si::metre, min_impl<double>>>);
-static_assert(std::convertible_to<quantity<si::metre, min_impl<double>>, quantity<si::metre, double>>);
+static_assert(std::constructible_from<quantity<(si::metre), double>, quantity<(si::metre), min_impl<double>>>);
+static_assert(std::convertible_to<quantity<(si::metre), min_impl<double>>, quantity<(si::metre), double>>);
 
-static_assert(std::constructible_from<quantity<si::metre, double>, quantity<si::metre, min_impl<int>>>);
-static_assert(std::convertible_to<quantity<si::metre, min_impl<int>>, quantity<si::metre, double>>);
+static_assert(std::constructible_from<quantity<(si::metre), double>, quantity<(si::metre), min_impl<int>>>);
+static_assert(std::convertible_to<quantity<(si::metre), min_impl<int>>, quantity<(si::metre), double>>);
 
 static_assert(
-  !std::constructible_from<quantity<si::metre, int>, quantity<si::metre, min_impl<double>>>);  // narrowing conversion
-static_assert(!std::convertible_to<quantity<si::metre, min_impl<double>>, quantity<si::metre, int>>);
+  !std::constructible_from<quantity<(si::metre), int>, quantity<(si::metre), min_impl<double>>>);  // narrowing conversion
+static_assert(!std::convertible_to<quantity<(si::metre), min_impl<double>>, quantity<(si::metre), int>>);
 
 
 // arithmetic operators

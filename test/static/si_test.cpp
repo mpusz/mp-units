@@ -65,7 +65,7 @@ concept can_not_be_prefixed = Unit<decltype(V1)> && !requires { typename prefix<
 
 static_assert(can_not_be_prefixed<si::milli_, si::kilogram>);
 static_assert(can_not_be_prefixed<si::milli_, si::hectare>);
-static_assert(can_not_be_prefixed<si::milli_, si::kilo<si::metre>>);
+static_assert(can_not_be_prefixed<si::milli_, (si::kilo<(si::metre)>)>);
 static_assert(can_not_be_prefixed<si::milli_, si::metre / si::second>);
 static_assert(can_not_be_prefixed<si::milli_, mag_ratio<1, 60> * si::degree>);
 

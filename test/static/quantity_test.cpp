@@ -84,14 +84,14 @@ static_assert(std::is_nothrow_destructible_v<quantity<isq::length[m]>>);
 static_assert(std::is_trivially_copyable_v<quantity<isq::length[m]>>);
 static_assert(std::is_standard_layout_v<quantity<isq::length[m]>>);
 
-static_assert(std::default_initializable<quantity<isq::length[m]>>);
-static_assert(std::move_constructible<quantity<isq::length[m]>>);
-static_assert(std::copy_constructible<quantity<isq::length[m]>>);
-static_assert(std::equality_comparable<quantity<isq::length[m]>>);
-static_assert(std::totally_ordered<quantity<isq::length[m]>>);
-static_assert(std::regular<quantity<isq::length[m]>>);
+static_assert(std::default_initializable<quantity<(isq::length[m])>>);
+static_assert(std::move_constructible<quantity<(isq::length[m])>>);
+static_assert(std::copy_constructible<quantity<(isq::length[m])>>);
+static_assert(std::equality_comparable<quantity<(isq::length[m])>>);
+static_assert(std::totally_ordered<quantity<(isq::length[m])>>);
+static_assert(std::regular<quantity<(isq::length[m])>>);
 
-static_assert(std::three_way_comparable<quantity<isq::length[m]>>);
+static_assert(std::three_way_comparable<quantity<(isq::length[m])>>);
 
 
 //////////////////
@@ -112,8 +112,8 @@ static_assert(quantity<isq::length[m]>::unit == si::metre);
 // member types
 /////////////////
 
-static_assert(is_same_v<quantity<isq::length[m]>::rep, double>);
-static_assert(is_same_v<quantity<isq::length[m], int>::rep, int>);
+static_assert(is_same_v<quantity<(isq::length[m])>::rep, double>);
+static_assert(is_same_v<quantity<(isq::length[m]), int>::rep, int>);
 
 
 ////////////////////////////
@@ -135,11 +135,11 @@ static_assert(quantity<isq::length[m], double>::max().numerical_value_in(m) == s
 /////////////////////////////////////////////////
 
 // construction from a value is private
-static_assert(!std::constructible_from<quantity<isq::length[m]>, double>);
-static_assert(!std::convertible_to<double, quantity<isq::length[m]>>);
+static_assert(!std::constructible_from<quantity<(isq::length[m])>, double>);
+static_assert(!std::convertible_to<double, quantity<(isq::length[m])>>);
 
-static_assert(!std::constructible_from<quantity<isq::length[m], int>, int>);
-static_assert(!std::convertible_to<int, quantity<isq::length[m], int>>);
+static_assert(!std::constructible_from<quantity<(isq::length[m]), int>, int>);
+static_assert(!std::convertible_to<int, quantity<(isq::length[m]), int>>);
 
 static_assert(std::constructible_from<quantity<one>, double>);
 static_assert(std::convertible_to<double, quantity<one>>);
@@ -159,45 +159,45 @@ static_assert(std::convertible_to<int, quantity<dimensionless[one]>>);
 ///////////////////////////////////////
 
 // conversion only between convertible quantities
-static_assert(std::constructible_from<quantity<isq::length[m]>, quantity<isq::length[m]>>);
-static_assert(std::convertible_to<quantity<isq::length[m]>, quantity<isq::length[m]>>);
-static_assert(std::constructible_from<quantity<isq::length[m]>, quantity<isq::distance[m]>>);
-static_assert(std::convertible_to<quantity<isq::distance[m]>, quantity<isq::length[m]>>);
-static_assert(std::constructible_from<quantity<isq::length[m]>, quantity<isq::length[km]>>);
-static_assert(std::convertible_to<quantity<isq::length[km]>, quantity<isq::length[m]>>);
+static_assert(std::constructible_from<quantity<(isq::length[m])>, quantity<(isq::length[m])>>);
+static_assert(std::convertible_to<quantity<(isq::length[m])>, quantity<(isq::length[m])>>);
+static_assert(std::constructible_from<quantity<(isq::length[m])>, quantity<(isq::distance[m])>>);
+static_assert(std::convertible_to<quantity<(isq::distance[m])>, quantity<(isq::length[m])>>);
+static_assert(std::constructible_from<quantity<(isq::length[m])>, quantity<(isq::length[km])>>);
+static_assert(std::convertible_to<quantity<(isq::length[km])>, quantity<(isq::length[m])>>);
 
 // conversion between different quantities not allowed
-static_assert(!std::constructible_from<quantity<isq::length[m]>, quantity<isq::time[s]>>);
-static_assert(!std::convertible_to<quantity<isq::time[s]>, quantity<isq::length[m]>>);
-static_assert(!std::constructible_from<quantity<isq::length[m]>, quantity<isq::speed[m / s]>>);
-static_assert(!std::convertible_to<quantity<isq::speed[m / s]>, quantity<isq::length[m]>>);
+static_assert(!std::constructible_from<quantity<(isq::length[m])>, quantity<(isq::time[s])>>);
+static_assert(!std::convertible_to<quantity<(isq::time[s])>, quantity<(isq::length[m])>>);
+static_assert(!std::constructible_from<quantity<(isq::length[m])>, quantity<(isq::speed[m / s])>>);
+static_assert(!std::convertible_to<quantity<(isq::speed[m / s])>, quantity<(isq::length[m])>>);
 
 // implicit conversion from another quantity only if non-truncating
-static_assert(std::constructible_from<quantity<isq::length[m]>, quantity<isq::length[m], int>>);  // int -> double OK
-static_assert(std::convertible_to<quantity<isq::length[m], int>, quantity<isq::length[m]>>);      // int -> double OK
+static_assert(std::constructible_from<quantity<(isq::length[m])>, quantity<(isq::length[m]), int>>);  // int -> double OK
+static_assert(std::convertible_to<quantity<(isq::length[m]), int>, quantity<(isq::length[m])>>);      // int -> double OK
 
-static_assert(!std::constructible_from<quantity<isq::length[m], int>,
-                                       quantity<isq::length[m]>>);  // truncating double -> int not allowed
-static_assert(!std::convertible_to<quantity<isq::length[m]>,
-                                   quantity<isq::length[m], int>>);  // truncating double -> int not allowed
+static_assert(!std::constructible_from<quantity<(isq::length[m]), int>,
+                                       quantity<(isq::length[m])>>);  // truncating double -> int not allowed
+static_assert(!std::convertible_to<quantity<(isq::length[m])>,
+                                   quantity<(isq::length[m]), int>>);  // truncating double -> int not allowed
 
-static_assert(std::constructible_from<quantity<isq::length[m], int>,
-                                      quantity<isq::length[km], int>>);  // kilometre<int> -> metre<int> OK
-static_assert(std::convertible_to<quantity<isq::length[km], int>,
-                                  quantity<isq::length[m], int>>);  // kilometre<int> -> metre<int> OK
+static_assert(std::constructible_from<quantity<(isq::length[m]), int>,
+                                      quantity<(isq::length[km]), int>>);  // kilometre<int> -> metre<int> OK
+static_assert(std::convertible_to<quantity<(isq::length[km]), int>,
+                                  quantity<(isq::length[m]), int>>);  // kilometre<int> -> metre<int> OK
 
-static_assert(!std::constructible_from<quantity<isq::length[km], int>,
-                                       quantity<isq::length[m], int>>);  // truncating metre<int> ->
+static_assert(!std::constructible_from<quantity<(isq::length[km]), int>,
+                                       quantity<(isq::length[m]), int>>);  // truncating metre<int> ->
                                                                          // kilometre<int> not allowed
 static_assert(
-  !std::convertible_to<quantity<isq::length[m], int>,
-                       quantity<isq::length[km], int>>);  // truncating metre<int> -> kilometre<int> not allowed
+  !std::convertible_to<quantity<(isq::length[m]), int>,
+                       quantity<(isq::length[km]), int>>);  // truncating metre<int> -> kilometre<int> not allowed
 
 // converting to double always OK
-static_assert(std::constructible_from<quantity<isq::length[m]>, quantity<isq::length[km], int>>);
-static_assert(std::convertible_to<quantity<isq::length[km], int>, quantity<isq::length[m]>>);
-static_assert(std::constructible_from<quantity<isq::length[km]>, quantity<isq::length[m], int>>);
-static_assert(std::convertible_to<quantity<isq::length[m], int>, quantity<isq::length[km]>>);
+static_assert(std::constructible_from<quantity<(isq::length[m])>, quantity<(isq::length[km]), int>>);
+static_assert(std::convertible_to<quantity<(isq::length[km]), int>, quantity<(isq::length[m])>>);
+static_assert(std::constructible_from<quantity<(isq::length[km])>, quantity<(isq::length[m]), int>>);
+static_assert(std::convertible_to<quantity<(isq::length[m]), int>, quantity<(isq::length[km])>>);
 
 ///////////////////////
 // obtaining a number
@@ -324,9 +324,9 @@ struct derived_quantity : quantity<Q::reference, Rep> {
   // NOLINTEND(google-explicit-constructor, hicpp-explicit-conversions)
 };
 
-static_assert(Quantity<derived_quantity<double, quantity<isq::length[m]>, "NTTP type description">>);
+static_assert(Quantity<derived_quantity<double, quantity<(isq::length[m])>, "NTTP type description">>);
 
-constexpr QuantityOf<isq::length> auto get_length_derived_quantity() noexcept
+constexpr QuantityOf<(isq::length)> auto get_length_derived_quantity() noexcept
 {
   derived_quantity<double, quantity<isq::length[m]>, "NTTP type description"> dist{};
   dist += 1 * m;
@@ -454,10 +454,10 @@ static_assert((std::uint8_t{255}* m %= 257 * m).numerical_value_in(m) != [] {
 #if !(defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 18 && defined MP_UNITS_MODULES)
 // next two lines trigger conversions warnings
 // (warning disabled in CMake for this file)
-static_assert((22 * m *= 33.33).numerical_value_in(m) == 733);
-static_assert((22 * m /= 3.33).numerical_value_in(m) == 6);
-static_assert((22 * m *= 33.33 * one).numerical_value_in(m) == 733);
-static_assert((22 * m /= 3.33 * one).numerical_value_in(m) == 6);
+static_assert(((22 * m) *= 33.33).numerical_value_in(m) ==733);
+static_assert(((22 * m) /= 3.33).numerical_value_in(m) == 6);
+static_assert(((22 * m) *= 33.33 * one).numerical_value_in(m) == 733);
+static_assert(((22 * m) /= 3.33 * one).numerical_value_in(m) == 6);
 #endif
 
 template<template<auto, typename> typename Q>
@@ -843,27 +843,27 @@ static_assert(2 * one / (1 * m) == 2 / (1 * m));
 // equality operators
 ///////////////////////
 
-static_assert(std::equality_comparable_with<quantity<si::metre>, quantity<si::metre>>);
-static_assert(std::equality_comparable_with<quantity<si::metre>, quantity<si::metre, int>>);
-static_assert(std::equality_comparable_with<quantity<si::metre>, quantity<si::kilo<si::metre>, int>>);
-static_assert(std::equality_comparable_with<quantity<si::metre, int>, quantity<si::kilo<si::metre>, int>>);
-static_assert(std::equality_comparable_with<quantity<isq::length[si::metre]>, quantity<si::metre>>);
-static_assert(std::equality_comparable_with<quantity<isq::length[si::metre]>, quantity<si::metre, int>>);
-static_assert(std::equality_comparable_with<quantity<isq::length[si::metre]>, quantity<si::kilo<si::metre>, int>>);
-static_assert(std::equality_comparable_with<quantity<isq::width[si::metre]>, quantity<si::metre>>);
-static_assert(std::equality_comparable_with<quantity<isq::width[si::metre]>, quantity<si::metre, int>>);
-static_assert(std::equality_comparable_with<quantity<isq::width[si::metre]>, quantity<si::kilo<si::metre>, int>>);
-static_assert(std::equality_comparable_with<quantity<isq::width[si::metre]>, quantity<isq::height[si::metre]>>);
-static_assert(std::equality_comparable_with<quantity<isq::width[si::metre]>, quantity<isq::height[si::metre], int>>);
+static_assert(std::equality_comparable_with<quantity<(si::metre)>, quantity<(si::metre)>>);
+static_assert(std::equality_comparable_with<quantity<(si::metre)>, quantity<(si::metre), int>>);
+static_assert(std::equality_comparable_with<quantity<(si::metre)>, quantity<si::kilo<(si::metre)>, int>>);
+static_assert(std::equality_comparable_with<quantity<(si::metre), int>, quantity<si::kilo<(si::metre)>, int>>);
+static_assert(std::equality_comparable_with<quantity<(isq::length[(si::metre)])>, quantity<(si::metre)>>);
+static_assert(std::equality_comparable_with<quantity<(isq::length[(si::metre)])>, quantity<(si::metre), int>>);
+static_assert(std::equality_comparable_with<quantity<(isq::length[(si::metre)])>, quantity<si::kilo<(si::metre)>, int>>);
+static_assert(std::equality_comparable_with<quantity<(isq::width[(si::metre)])>, quantity<(si::metre)>>);
+static_assert(std::equality_comparable_with<quantity<(isq::width[(si::metre)])>, quantity<(si::metre), int>>);
+static_assert(std::equality_comparable_with<quantity<(isq::width[(si::metre)])>, quantity<(si::kilo<(si::metre)>), int>>);
+static_assert(std::equality_comparable_with<quantity<(isq::width[(si::metre)])>, quantity<(isq::height[(si::metre)])>>);
+static_assert(std::equality_comparable_with<quantity<(isq::width[(si::metre)])>, quantity<(isq::height[(si::metre)]), int>>);
 static_assert(
-  std::equality_comparable_with<quantity<isq::width[si::metre]>, quantity<isq::height[si::kilo<si::metre>], int>>);
+  std::equality_comparable_with<quantity<(isq::width[(si::metre)])>, quantity<(isq::height[(si::kilo<(si::metre)>)]), int>>);
 
 template<auto M>
 concept no_crossdimensional_equality = requires {
   requires !requires { 1 * s == 1 * M; };
   requires !requires { 1 * s != 1 * M; };
 };
-static_assert(no_crossdimensional_equality<si::metre>);
+static_assert(no_crossdimensional_equality<(si::metre)>);
 
 // same type
 static_assert(123 * m == 123 * m);
@@ -916,7 +916,7 @@ concept no_crossdimensional_ordering = requires {
   requires !requires { 1 * s <= 1 * M; };
   requires !requires { 1 * s >= 1 * M; };
 };
-static_assert(no_crossdimensional_ordering<si::metre>);
+static_assert(no_crossdimensional_ordering<(si::metre)>);
 
 // same type
 static_assert(123 * m < 321 * m);
@@ -1030,34 +1030,34 @@ static_assert(is_of_type<quantity_cast<isq::distance>(lvalue_q), quantity<isq::d
 }  // namespace lvalue_tests
 
 // QuantityOf
-static_assert(QuantityOf<quantity<isq::length[m]>, isq::length>);
-static_assert(QuantityOf<quantity<isq::width[m]>, isq::length>);
-static_assert(QuantityOf<quantity<isq::position_vector[m], int>, isq::length>);
-static_assert(!QuantityOf<quantity<isq::length[m]>, isq::width>);
-static_assert(QuantityOf<quantity<m>, isq::width>);
-static_assert(QuantityOf<quantity<m>, isq::position_vector>);
-static_assert(QuantityOf<quantity<kind_of<isq::length>[m]>, isq::width>);
-static_assert(QuantityOf<quantity<kind_of<isq::length>[m]>, isq::position_vector>);
-static_assert(!QuantityOf<quantity<isq::width[m]>, isq::altitude>);
+static_assert(QuantityOf<quantity<(isq::length[m])>, (isq::length)>);
+static_assert(QuantityOf<quantity<(isq::width[m])>, (isq::length)>);
+static_assert(QuantityOf<quantity<(isq::position_vector[m]), int>, (isq::length)>);
+static_assert(!QuantityOf<quantity<(isq::length[m])>, (isq::width)>);
+static_assert(QuantityOf<quantity<m>, (isq::width)>);
+static_assert(QuantityOf<quantity<m>, (isq::position_vector)>);
+static_assert(QuantityOf<quantity<kind_of<(isq::length)>[m]>, (isq::width)>);
+static_assert(QuantityOf<quantity<kind_of<(isq::length)>[m]>, (isq::position_vector)>);
+static_assert(!QuantityOf<quantity<(isq::width[m])>, isq::altitude>);
 
-static_assert(QuantityOf<quantity<isq::speed[m / s]>, isq::speed>);
-static_assert(QuantityOf<quantity<isq::speed[m / s]>, isq::length / isq::time>);
+static_assert(QuantityOf<quantity<(isq::speed[m / s])>, (isq::speed)>);
+static_assert(QuantityOf<quantity<(isq::speed[m / s])>, (isq::length) / (isq::time)>);
 static_assert(QuantityOf<quantity<m / s>, isq::length / isq::time>);
-static_assert(QuantityOf<quantity<kind_of<isq::speed>[m / s]>, isq::length / isq::time>);
-static_assert(!QuantityOf<quantity<isq::speed[m / s]>, isq::distance / isq::duration>);
-static_assert(!QuantityOf<quantity<isq::speed[m / s]>, isq::width / isq::duration>);
+static_assert(QuantityOf<quantity<kind_of<(isq::speed)>[m / s]>, (isq::length) / (isq::time)>);
+static_assert(!QuantityOf<quantity<(isq::speed[m / s])>, (isq::distance) / (isq::duration)>);
+static_assert(!QuantityOf<quantity<(isq::speed[m / s])>, (isq::width) / (isq::duration)>);
 static_assert(QuantityOf<quantity<m / s>, isq::width / isq::duration>);
-static_assert(QuantityOf<quantity<kind_of<isq::speed>[m / s]>, isq::width / isq::duration>);
-static_assert(!QuantityOf<quantity<isq::speed[m / s]>, isq::position_vector / isq::duration>);
+static_assert(QuantityOf<quantity<kind_of<(isq::speed)>[m / s]>, (isq::width) / (isq::duration)>);
+static_assert(!QuantityOf<quantity<(isq::speed[m / s])>, (isq::position_vector) / (isq::duration)>);
 static_assert(QuantityOf<quantity<m / s>, isq::position_vector / isq::duration>);
-static_assert(QuantityOf<quantity<kind_of<isq::speed>[m / s]>, isq::position_vector / isq::duration>);
-static_assert(QuantityOf<quantity<isq::velocity[m / s], int>, isq::position_vector / isq::duration>);
+static_assert(QuantityOf<quantity<kind_of<(isq::speed)>[m / s]>, isq::position_vector / isq::duration>);
+static_assert(QuantityOf<quantity<(isq::velocity)[m / s], int>, isq::position_vector / isq::duration>);
 
-static_assert(QuantityOf<decltype(10 * m), isq::height>);                        // kind of
-static_assert(QuantityOf<decltype(10 * kind_of<isq::length>[m]), isq::height>);  // kind of
-static_assert(!QuantityOf<decltype(10 * isq::length[m]), isq::height>);          // different kinds
-static_assert(!QuantityOf<decltype(10 * isq::width[m]), isq::height>);           // different kinds
-static_assert(QuantityOf<decltype(10 * isq::speed[m / s]), isq::speed>);
-static_assert(QuantityOf<decltype(20 * isq::length[m] / (2 * isq::time[s])), isq::speed>);  // derived unnamed quantity
+static_assert(QuantityOf<decltype(10 * m), (isq::height)>);                        // kind of
+static_assert(QuantityOf<decltype(10 * kind_of<(isq::length)>[m]), (isq::height)>);  // kind of
+static_assert(!QuantityOf<decltype(10 * (isq::length[m])), (isq::height)>);          // different kinds
+static_assert(!QuantityOf<decltype(10 * (isq::width[m])), (isq::height)>);           // different kinds
+static_assert(QuantityOf<decltype(10 * (isq::speed[m / s])), (isq::speed)>);
+static_assert(QuantityOf<decltype(20 * (isq::length[m]) / (2 * isq::time[s])), (isq::speed)>);  // derived unnamed quantity
 
 }  // namespace

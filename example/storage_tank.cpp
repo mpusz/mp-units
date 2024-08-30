@@ -77,10 +77,10 @@ public:
     density_ = density;
   }
 
-  [[nodiscard]] constexpr QuantityOf<isq::weight> auto filled_weight() const
+  [[nodiscard]] constexpr QuantityOf<(isq::weight)> auto filled_weight() const
   {
     const auto volume = isq::volume(base_ * height_);  // TODO check if we can remove that cast
-    const QuantityOf<isq::mass> auto mass = density_ * volume;
+    const QuantityOf<(isq::mass)> auto mass = density_ * volume;
     return isq::weight(mass * g);
   }
 
@@ -130,9 +130,9 @@ int main()
   const quantity spare_capacity = tank.spare_capacity(measured_mass);
   const quantity filled_weight = tank.filled_weight();
 
-  const QuantityOf<isq::mass_change_rate> auto input_flow_rate = measured_mass / fill_time;
-  const QuantityOf<isq::speed> auto float_rise_rate = fill_level / fill_time;
-  const QuantityOf<isq::time> auto fill_time_left = (height / fill_level - 1 * one) * fill_time;
+  const QuantityOf<(isq::mass_change_rate)> auto input_flow_rate = measured_mass / fill_time;
+  const QuantityOf<(isq::speed)> auto float_rise_rate = fill_level / fill_time;
+  const QuantityOf<(isq::time)> auto fill_time_left = (height / fill_level - 1 * one) * fill_time;
 
   const quantity fill_ratio = fill_level / height;
 
