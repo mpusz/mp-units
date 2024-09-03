@@ -48,12 +48,6 @@ import std;
 #endif
 #endif
 
-
-#ifdef _MSC_VER 
-#pragma warning(push)
-#pragma warning(disable : 4702)
-#endif
-
 // most of the below code is based on/copied from fmtlib
 
 namespace mp_units::detail {
@@ -195,6 +189,10 @@ constexpr void handle_dynamic_spec(int& value, fmt_arg_ref<typename Context::cha
   }
 }
 
+#ifdef _MSC_VER 
+#pragma warning(push)
+#pragma warning(disable : 4702)
+#endif
 struct width_checker {
   template<typename T>
   [[nodiscard]] constexpr unsigned long long operator()(T value) const
@@ -204,10 +202,13 @@ struct width_checker {
         if (value < 0) MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("negative width"));
       return static_cast<unsigned long long>(value);
     }
-    MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("width is not integer"));
-    return 0;
+    MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("width is not integer"));    
   }
 };
+
+#ifdef _MSC_VER 
+#pragma warning( pop ) 
+#endif
 
 MP_UNITS_EXPORT_END
 
@@ -259,7 +260,6 @@ template<typename Char, typename Handler>
   if (c == '%') return begin;  // mp-units extension
   if (!::mp_units::detail::is_name_start(c)) {
     MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("invalid format string"));
-    return begin;
   }
   auto it = begin;
   do {
@@ -378,7 +378,6 @@ template<typename Char, typename Specs>
         if (c == '}') return begin;
         if (c == '{') {
           MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("invalid fill character '{'"));
-          return begin;
         }
         specs.fill = {begin, to_unsigned(p - begin)};
         begin = p + 1;
@@ -396,9 +395,4 @@ template<typename Char, typename Specs>
 }
 
 }  // namespace mp_units::detail
-
-#ifdef _MSC_VER 
-#pragma warning( pop ) 
-#endif
-
 // NOLINTEND(cppcoreguidelines-pro-bounds-pointer-arithmetic, cppcoreguidelines-pro-type-union-access)
