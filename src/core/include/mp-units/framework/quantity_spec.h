@@ -673,9 +673,9 @@ template<QuantitySpec Q>
 template<Dimension D1, Dimension D2>
 [[nodiscard]] consteval bool ingredients_dimension_less(D1 lhs, D2 rhs)
 {
-  if constexpr (D1{} == D2{} || D1{} == dimension_one)
+  if constexpr (MP_UNITS_IS_CONST_EXPR(lhs) == MP_UNITS_IS_CONST_EXPR(rhs) || MP_UNITS_IS_CONST_EXPR(lhs) == dimension_one)
     return false;
-  else if constexpr (D2{} == dimension_one)
+  else if constexpr (MP_UNITS_IS_CONST_EXPR(rhs) == dimension_one)
     return true;
   else
     return detail::type_name<D1>() < detail::type_name<D2>();
@@ -1338,25 +1338,25 @@ template<NamedQuantitySpec From, DerivedQuantitySpec To>
 }
 
 template<QuantitySpec From, QuantitySpec To>
-[[nodiscard]] consteval specs_convertible_result convertible_kinds(From, To)
+[[nodiscard]] consteval specs_convertible_result convertible_kinds(From from_kind, To to_kind)
 {
   constexpr auto exploded_kind_result = [](specs_convertible_result res) {
     using enum specs_convertible_result;
     return res == no ? no : yes;
   };
-  if constexpr ((NamedQuantitySpec<decltype(From{})> && NamedQuantitySpec<decltype(To{})>) ||
-                get_complexity(From{}) == get_complexity(To{}))
-    return convertible_impl(From{}, To{});
-  else if constexpr (get_complexity(From{}) > get_complexity(To{}))
+  if constexpr ((NamedQuantitySpec<decltype(MP_UNITS_IS_CONST_EXPR(from_kind))> && NamedQuantitySpec<decltype(MP_UNITS_IS_CONST_EXPR(to_kind))>) ||
+                get_complexity(MP_UNITS_IS_CONST_EXPR(from_kind)) == get_complexity(MP_UNITS_IS_CONST_EXPR(to_kind)))
+    return convertible_impl(MP_UNITS_IS_CONST_EXPR(from_kind), MP_UNITS_IS_CONST_EXPR(to_kind));
+  else if constexpr (get_complexity(MP_UNITS_IS_CONST_EXPR(from_kind)) > get_complexity(MP_UNITS_IS_CONST_EXPR(to_kind)))
     return exploded_kind_result(
-      convertible_impl(get_kind_tree_root(explode<get_complexity(To{})>(From{}).quantity), To{}));
+      convertible_impl(get_kind_tree_root(explode<get_complexity(MP_UNITS_IS_CONST_EXPR(to_kind))>(MP_UNITS_IS_CONST_EXPR(from_kind)).quantity), MP_UNITS_IS_CONST_EXPR(to_kind)));
   else
     return exploded_kind_result(
-      convertible_impl(From{}, get_kind_tree_root(explode<get_complexity(From{})>(To{}).quantity)));
+      convertible_impl(MP_UNITS_IS_CONST_EXPR(from_kind), get_kind_tree_root(explode<get_complexity(MP_UNITS_IS_CONST_EXPR(from_kind))>(MP_UNITS_IS_CONST_EXPR(to_kind)).quantity)));
 }
 
 template<NamedQuantitySpec From, NamedQuantitySpec To>
-[[nodiscard]] consteval specs_convertible_result convertible_named(From, To)
+[[nodiscard]] consteval specs_convertible_result convertible_named(From from, To to)
 {
   using enum specs_convertible_result;
 
@@ -1369,16 +1369,16 @@ template<NamedQuantitySpec From, NamedQuantitySpec To>
     return no;
   else if constexpr (get_complexity(From{}) != get_complexity(To{})) {
     if constexpr (get_complexity(From{}) > get_complexity(To{}))
-      return convertible_impl(explode<get_complexity(To{})>(From{}).quantity, To{});
+      return convertible_impl(explode<get_complexity(MP_UNITS_IS_CONST_EXPR(to))>(MP_UNITS_IS_CONST_EXPR(from)).quantity, MP_UNITS_IS_CONST_EXPR(to));
     else {
-      auto res = explode<get_complexity(From{})>(To{});
-      return min(res.result, convertible_impl(From{}, res.quantity));
+      auto res = explode<get_complexity(MP_UNITS_IS_CONST_EXPR(from))>(MP_UNITS_IS_CONST_EXPR(to));
+      return min(res.result, convertible_impl(MP_UNITS_IS_CONST_EXPR(from), res.quantity));
     }
   }
 }
 
 template<QuantitySpec From, QuantitySpec To>
-[[nodiscard]] consteval specs_convertible_result convertible_impl(From, To)
+[[nodiscard]] consteval specs_convertible_result convertible_impl(From from, To to)
 {
   using enum specs_convertible_result;
 
@@ -1388,30 +1388,30 @@ template<QuantitySpec From, QuantitySpec To>
   else if constexpr (From::dimension != To::dimension)
     return no;
   else if constexpr (QuantityKindSpec<From> || QuantityKindSpec<To>)
-    return convertible_kinds(get_kind_tree_root(From{}), get_kind_tree_root(To{}));
-  else if constexpr (NestedQuantityKindSpecOf<get_kind_tree_root(To{}), From{}> && get_kind_tree_root(To{}) == To{})
+    return convertible_kinds(get_kind_tree_root(MP_UNITS_IS_CONST_EXPR(from)), get_kind_tree_root(MP_UNITS_IS_CONST_EXPR(to)));
+  else if constexpr (NestedQuantityKindSpecOf<get_kind_tree_root(To{}), from> && get_kind_tree_root(To{}) == To{})
     return yes;
-  else if constexpr (NamedQuantitySpec<From> && NamedQuantitySpec<To>) {
-    return convertible_named(From{}, To{});
-  } else if constexpr (DerivedQuantitySpec<From> && DerivedQuantitySpec<To>) {
-    return are_ingredients_convertible(From{}, To{});
-  } else if constexpr (DerivedQuantitySpec<From>) {
-    auto res = explode<get_complexity(To{})>(From{});
+  else if constexpr (NamedQuantitySpec<From> && NamedQuantitySpec<To>)
+    return convertible_named(MP_UNITS_IS_CONST_EXPR(from), MP_UNITS_IS_CONST_EXPR(to));
+  else if constexpr (DerivedQuantitySpec<From> && DerivedQuantitySpec<To>)
+    return are_ingredients_convertible(from, MP_UNITS_IS_CONST_EXPR(to));
+  else if constexpr (DerivedQuantitySpec<From>) {
+    auto res = explode<get_complexity(MP_UNITS_IS_CONST_EXPR(to))>(MP_UNITS_IS_CONST_EXPR(from));
     if constexpr (NamedQuantitySpec<decltype(res.quantity)>)
-      return convertible_impl(res.quantity, To{});
-    else if constexpr (requires { To{}._equation_; }) {
-      auto eq = explode_to_equation(To{});
+      return convertible_impl(res.quantity, MP_UNITS_IS_CONST_EXPR(to));
+    else if constexpr (requires { MP_UNITS_IS_CONST_EXPR(to)._equation_; }) {
+      auto eq = explode_to_equation(MP_UNITS_IS_CONST_EXPR(to));
       return min(eq.result, convertible_impl(res.quantity, eq.equation));
     } else
-      return are_ingredients_convertible(From{}, To{});
+      return are_ingredients_convertible(MP_UNITS_IS_CONST_EXPR(from), MP_UNITS_IS_CONST_EXPR(to));
   } else if constexpr (DerivedQuantitySpec<To>) {
-    auto res = explode<get_complexity(From{})>(To{});
+    auto res = explode<get_complexity(MP_UNITS_IS_CONST_EXPR(from))>(MP_UNITS_IS_CONST_EXPR(to));
     if constexpr (NamedQuantitySpec<decltype(res.quantity)>)
-      return min(res.result, convertible_impl(From{}, res.quantity));
-    else if constexpr (requires { From{}._equation_; })
-      return min(res.result, convertible_impl(From{}._equation_, res.quantity));
+      return min(res.result, convertible_impl(MP_UNITS_IS_CONST_EXPR(from), res.quantity));
+    else if constexpr (requires { MP_UNITS_IS_CONST_EXPR(from)._equation_; })
+      return min(res.result, convertible_impl(MP_UNITS_IS_CONST_EXPR(from)._equation_, res.quantity));
     else
-      return min(res.result, are_ingredients_convertible(From{}, To{}));
+      return min(res.result, are_ingredients_convertible(MP_UNITS_IS_CONST_EXPR(from), MP_UNITS_IS_CONST_EXPR(to)));
   }
   // NOLINTEND(bugprone-branch-clone)
   return no;
@@ -1498,7 +1498,7 @@ MP_UNITS_EXPORT_BEGIN
 template<QuantitySpec Q>
 [[nodiscard]] consteval detail::QuantityKindSpec auto get_kind(Q q)
 {
-  return kind_of<detail::get_kind_tree_root(decltype(q){})>;
+  return kind_of<detail::get_kind_tree_root(MP_UNITS_IS_CONST_EXPR(q))>;
 }
 
 [[nodiscard]] consteval QuantitySpec auto common_quantity_spec(QuantitySpec auto q) { return q; }

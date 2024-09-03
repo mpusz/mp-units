@@ -633,7 +633,7 @@ template<Unit From, Unit To>
 
 template<Unit U1, Unit U2>
 [[nodiscard]] consteval Unit auto common_unit(U1 u1, U2 u2)
-  requires(convertible(U1{}, U2{}))
+  requires(convertible(MP_UNITS_IS_CONST_EXPR(u1), MP_UNITS_IS_CONST_EXPR(u2)))
 {
   if constexpr (is_same_v<U1, U2>)
     return u1;
