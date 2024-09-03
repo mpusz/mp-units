@@ -128,9 +128,9 @@ public:
     MP_UNITS_EXPECTS(detail::is_basic_literal_character_set(a));
   }
 
-  constexpr symbol_text(const fixed_u8string<N>& u, const fixed_string<M>& text) : unicode_(u), ascii_(text)
+  constexpr symbol_text(const fixed_u8string<N>& unicode, const fixed_string<M>& ascii) : unicode_(unicode), ascii_(ascii)
   {
-    MP_UNITS_EXPECTS(detail::is_basic_literal_character_set(text.data_));
+    MP_UNITS_EXPECTS(detail::is_basic_literal_character_set(ascii.data_));
   }
 
   [[nodiscard]] constexpr const auto& unicode() const { return unicode_; }

@@ -764,15 +764,15 @@ template<int Complexity, NamedQuantitySpec Q>
 template<int Complexity, QuantitySpec Q, typename Num, typename... Nums, typename Den, typename... Dens>
 [[nodiscard]] consteval auto explode(Q, type_list<Num, Nums...>, type_list<Den, Dens...>)
 {
-  constexpr auto n = get_complexity(Num{});
+  constexpr auto num = get_complexity(Num{});
   constexpr auto den = get_complexity(Den{});
-  constexpr auto max_compl = n > den ? n : den;
+  constexpr auto max_compl = num > den ? num : den;
 
-  if constexpr (max_compl == Complexity || ((n >= den && !requires { explode_to_equation(Num{}); }) ||
-                                            (n < den && !requires { explode_to_equation(Den{}); })))
+  if constexpr (max_compl == Complexity || ((num >= den && !requires { explode_to_equation(Num{}); }) ||
+                                            (num < den && !requires { explode_to_equation(Den{}); })))
     return explode_result{(map_power(Num{}) * ... * map_power(Nums{})) / (map_power(Den{}) * ... * map_power(Dens{}))};
   else {
-    if constexpr (n >= den) {
+    if constexpr (num >= den) {
       constexpr auto res = explode_to_equation(Num{});
       return explode<Complexity>((res.equation * ... * map_power(Nums{})) /
                                  (map_power(Den{}) * ... * map_power(Dens{})))
