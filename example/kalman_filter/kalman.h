@@ -116,15 +116,15 @@ template<mp_units::Quantity Q1, mp_units::Quantity Q2>
 }
 
 // state update
-template<typename QP, mp_units::QuantityPoint QM, mp_units::QuantityOf<(mp_units::dimensionless)> K>
+template<typename QP, mp_units::QuantityPoint QM, mp_units::QuantityOf<mp_units::dimensionless> K>
   requires(implicitly_convertible(QM::quantity_spec, QP::quantity_spec))
 [[nodiscard]] constexpr system_state<QP> state_update(const system_state<QP>& predicted, QM measured, K gain)
 {
   return system_state<QP>{get<0>(predicted) + gain * (measured - get<0>(predicted))};
 }
 
-template<typename QP1, typename QP2, mp_units::QuantityPoint QM, mp_units::QuantityOf<(mp_units::dimensionless)> K,
-         mp_units::QuantityOf<(mp_units::isq::time)> T>
+template<typename QP1, typename QP2, mp_units::QuantityPoint QM, mp_units::QuantityOf<mp_units::dimensionless> K,
+         mp_units::QuantityOf<mp_units::isq::time> T>
   requires(implicitly_convertible(QM::quantity_spec, QP1::quantity_spec))
 [[nodiscard]] constexpr system_state<QP1, QP2> state_update(const system_state<QP1, QP2>& predicted, QM measured,
                                                             std::array<K, 2> gain, T interval)
@@ -135,7 +135,7 @@ template<typename QP1, typename QP2, mp_units::QuantityPoint QM, mp_units::Quant
 }
 
 template<typename QP1, typename QP2, typename QP3, mp_units::QuantityPoint QM,
-         mp_units::QuantityOf<(mp_units::dimensionless)> K, mp_units::QuantityOf<(mp_units::isq::time)> T>
+         mp_units::QuantityOf<mp_units::dimensionless> K, mp_units::QuantityOf<mp_units::isq::time> T>
   requires(implicitly_convertible(QM::quantity_spec, QP1::quantity_spec))
 [[nodiscard]] constexpr system_state<QP1, QP2, QP3> state_update(const system_state<QP1, QP2, QP3>& predicted,
                                                                  QM measured, std::array<K, 3> gain, T interval)
@@ -147,13 +147,13 @@ template<typename QP1, typename QP2, typename QP3, mp_units::QuantityPoint QM,
 }
 
 // covariance update
-template<mp_units::Quantity Q, mp_units::QuantityOf<(mp_units::dimensionless)> K>
+template<mp_units::Quantity Q, mp_units::QuantityOf<mp_units::dimensionless> K>
 [[nodiscard]] constexpr Q covariance_update(Q uncertainty, K gain)
 {
   return (1 * mp_units::one - gain) * uncertainty;
 }
 
-template<mp_units::QuantityPoint... QPs, mp_units::QuantityPoint QP, mp_units::QuantityOf<(mp_units::dimensionless)> K>
+template<mp_units::QuantityPoint... QPs, mp_units::QuantityPoint QP, mp_units::QuantityOf<mp_units::dimensionless> K>
 [[nodiscard]] constexpr system_state_estimate<QPs...> state_estimate_update(
   const system_state_estimate<QPs...>& previous, QP measurement, K gain)
 {
@@ -162,7 +162,7 @@ template<mp_units::QuantityPoint... QPs, mp_units::QuantityPoint QP, mp_units::Q
 
 
 // state extrapolation
-template<typename QP1, typename QP2, mp_units::QuantityOf<(mp_units::isq::time)> T>
+template<typename QP1, typename QP2, mp_units::QuantityOf<mp_units::isq::time> T>
 [[nodiscard]] constexpr system_state<QP1, QP2> state_extrapolation(const system_state<QP1, QP2>& estimated, T interval)
 {
   auto to_quantity = [](const auto& qp) { return qp.quantity_ref_from(qp.point_origin); };
@@ -171,7 +171,7 @@ template<typename QP1, typename QP2, mp_units::QuantityOf<(mp_units::isq::time)>
   return system_state<QP1, QP2>{qp1, qp2};
 }
 
-template<typename QP1, typename QP2, typename QP3, mp_units::QuantityOf<(mp_units::isq::time)> T>
+template<typename QP1, typename QP2, typename QP3, mp_units::QuantityOf<mp_units::isq::time> T>
 [[nodiscard]] constexpr system_state<QP1, QP2, QP3> state_extrapolation(const system_state<QP1, QP2, QP3>& estimated,
                                                                         T interval)
 {
