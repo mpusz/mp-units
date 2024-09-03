@@ -54,14 +54,14 @@ template<PointOrigin PO>
 struct point_origin_interface {
   template<PointOrigin PO, Quantity Q>
     requires ReferenceOf<std::remove_const_t<decltype(Q::reference)>, PO::quantity_spec>
-  [[nodiscard]] friend constexpr quantity_point<Q::reference, (PO{}), typename Q::rep> operator+(PO, Q&& q)
+  [[nodiscard]] friend constexpr quantity_point<Q::reference, MP_UNITS_EXPRESSION(PO{}), typename Q::rep> operator+(PO, Q&& q)
   {
     return quantity_point{std::forward<Q>(q), PO{}};
   }
 
   template<Quantity Q, PointOrigin PO>
     requires ReferenceOf<std::remove_const_t<decltype(Q::reference)>, PO::quantity_spec>
-  [[nodiscard]] friend constexpr quantity_point<Q::reference, (PO{}), typename Q::rep> operator+(Q&& q, PO po)
+  [[nodiscard]] friend constexpr quantity_point<Q::reference, MP_UNITS_EXPRESSION(PO{}), typename Q::rep> operator+(Q&& q, PO po)
   {
     return po + std::forward<Q>(q);
   }
@@ -191,13 +191,13 @@ public:
   [[nodiscard]] static constexpr quantity_point min() noexcept
     requires requires { quantity_type::min(); }
   {
-    return {quantity_type::min(), point_origin};
+    return {quantity_type::min(), PO};
   }
 
   [[nodiscard]] static constexpr quantity_point max() noexcept
     requires requires { quantity_type::max(); }
   {
-    return {quantity_type::max(), point_origin};
+    return {quantity_type::max(), PO};
   }
 
   // construction, assignment, destruction

@@ -80,10 +80,12 @@
 #if MP_UNITS_COMP_MSVC
 
 #define MP_UNITS_TYPENAME typename
+#define MP_UNITS_EXPRESSION(x) (x)
 
 #else
 
 #define MP_UNITS_TYPENAME
+#define MP_UNITS_EXPRESSION(x) x
 
 #endif
 
