@@ -54,14 +54,14 @@ template<PointOrigin PO>
 struct point_origin_interface {
   template<PointOrigin PO, Quantity Q>
     requires ReferenceOf<std::remove_const_t<decltype(Q::reference)>, PO::quantity_spec>
-  [[nodiscard]] friend constexpr quantity_point<Q::reference, PO{}, typename Q::rep> operator+(PO, Q&& q)
+  [[nodiscard]] friend constexpr quantity_point<Q::reference, (PO{}), typename Q::rep> operator+(PO, Q&& q)
   {
     return quantity_point{std::forward<Q>(q), PO{}};
   }
 
   template<Quantity Q, PointOrigin PO>
     requires ReferenceOf<std::remove_const_t<decltype(Q::reference)>, PO::quantity_spec>
-  [[nodiscard]] friend constexpr quantity_point<Q::reference, PO{}, typename Q::rep> operator+(Q&& q, PO po)
+  [[nodiscard]] friend constexpr quantity_point<Q::reference, (PO{}), typename Q::rep> operator+(Q&& q, PO po)
   {
     return po + std::forward<Q>(q);
   }
@@ -336,35 +336,35 @@ public:
     requires detail::QuantityConvertibleTo<quantity_type, quantity<reference, ToRep>>
   [[nodiscard]] constexpr QuantityPointOf<quantity_spec> auto in() const
   {
-    return ::mp_units::quantity_point{quantity_ref_from(PO).template in<ToRep>(), PO};
+    return ::mp_units::quantity_point{quantity_ref_from(point_origin).template in<ToRep>(), point_origin};
   }
 
   template<RepresentationOf<quantity_spec.character> ToRep, detail::UnitCompatibleWith<unit, quantity_spec> ToU>
     requires detail::QuantityConvertibleTo<quantity_type, quantity<detail::make_reference(quantity_spec, ToU{}), ToRep>>
   [[nodiscard]] constexpr QuantityPointOf<quantity_spec> auto in(ToU) const
   {
-    return ::mp_units::quantity_point{quantity_ref_from(PO).template in<ToRep>(ToU{}), PO};
+    return ::mp_units::quantity_point{quantity_ref_from(point_origin).template in<ToRep>(ToU{}), point_origin};
   }
 
   template<detail::UnitCompatibleWith<unit, quantity_spec> ToU>
     requires requires(quantity_type q) { value_cast<ToU{}>(q); }
   [[nodiscard]] constexpr QuantityPointOf<quantity_spec> auto force_in(ToU) const
   {
-    return ::mp_units::quantity_point{quantity_ref_from(point_origin).force_in(ToU{}), PO};
+    return ::mp_units::quantity_point{quantity_ref_from(point_origin).force_in(ToU{}), point_origin};
   }
 
   template<RepresentationOf<quantity_spec.character> ToRep>
     requires requires(quantity_type q) { value_cast<ToRep>(q); }
   [[nodiscard]] constexpr QuantityPointOf<quantity_spec> auto force_in() const
   {
-    return ::mp_units::quantity_point{quantity_ref_from(PO).template force_in<ToRep>(), PO};
+    return ::mp_units::quantity_point{quantity_ref_from(point_origin).template force_in<ToRep>(), point_origin};
   }
 
   template<RepresentationOf<quantity_spec.character> ToRep, detail::UnitCompatibleWith<unit, quantity_spec> ToU>
     requires requires(quantity_type q) { value_cast<ToU{}, ToRep>(q); }
   [[nodiscard]] constexpr QuantityPointOf<quantity_spec> auto force_in(ToU) const
   {
-    return ::mp_units::quantity_point{quantity_ref_from(PO).template force_in<ToRep>(ToU{}), point_origin};
+    return ::mp_units::quantity_point{quantity_ref_from(point_origin).template force_in<ToRep>(ToU{}), point_origin};
   }
 
   // conversion operators

@@ -673,9 +673,9 @@ template<QuantitySpec Q>
 template<Dimension D1, Dimension D2>
 [[nodiscard]] consteval bool ingredients_dimension_less(D1 lhs, D2 rhs)
 {
-  if constexpr (lhs == rhs || lhs == dimension_one)
+  if constexpr (D1{} == D2{} || D1{} == dimension_one)
     return false;
-  else if constexpr (rhs == dimension_one)
+  else if constexpr (D2{} == dimension_one)
     return true;
   else
     return detail::type_name<D1>() < detail::type_name<D2>();
@@ -1496,9 +1496,9 @@ template<QuantitySpec Q>
 MP_UNITS_EXPORT_BEGIN
 
 template<QuantitySpec Q>
-[[nodiscard]] consteval detail::QuantityKindSpec auto get_kind(Q)
+[[nodiscard]] consteval detail::QuantityKindSpec auto get_kind(Q q)
 {
-  return kind_of<detail::get_kind_tree_root(Q{})>;
+  return kind_of<detail::get_kind_tree_root(decltype(q){})>;
 }
 
 [[nodiscard]] consteval QuantitySpec auto common_quantity_spec(QuantitySpec auto q) { return q; }

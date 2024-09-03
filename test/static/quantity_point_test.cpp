@@ -1131,12 +1131,12 @@ concept invalid_binary_operations = requires {
   requires !requires { Origin - Origin; };
 
   // unit constants
-  requires !requires { QP<si::metre, mean_sea_level, int>(1) + m; };
-  requires !requires { QP<si::metre, mean_sea_level, int>(1) - m; };
+  requires !requires { QP<(si::metre), mean_sea_level, int>(1) + m; };
+  requires !requires { QP<(si::metre), mean_sea_level, int>(1) - m; };
   requires !requires { Origin + m; };
   requires !requires { Origin - m; };
-  requires !requires { m + QP<si::metre, mean_sea_level, int>(1); };
-  requires !requires { m - QP<si::metre, mean_sea_level, int>(1); };
+  requires !requires { m + QP<(si::metre), mean_sea_level, int>(1); };
+  requires !requires { m - QP<(si::metre), mean_sea_level, int>(1); };
   requires !requires { m + Origin; };
   requires !requires { m - Origin; };
 };
@@ -1717,7 +1717,7 @@ static_assert(value_cast<m>(quantity_point{2 * km}).quantity_from_zero().numeric
 static_assert(value_cast<km>(quantity_point{2000 * m}).quantity_from_zero().numerical_value_in(km) == 2);
 static_assert(value_cast<int>(quantity_point{1.23 * m}).quantity_from_zero().numerical_value_in(m) == 1);
 static_assert(
-  value_cast<km / h>(quantity_point{2000.0 * m / (3600.0 * s)}).quantity_from_zero().numerical_value_in(km / h) == 2);
+  value_cast<(km / h)>(quantity_point{2000.0 * m / (3600.0 * s)}).quantity_from_zero().numerical_value_in(km / h) == 2);
 // lvalue references in value_cast
 namespace lvalue_tests {
 constexpr quantity_point lvalue_qp{2 * km};

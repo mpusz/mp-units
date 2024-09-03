@@ -107,13 +107,13 @@ static_assert(is_of_type<quantity_point{sys_days{sys_days::duration{1}}},
 
 // conversion to chrono
 static_assert(
-  std::constructible_from<std::chrono::seconds, quantity<isq::time[si::second], std::chrono::seconds::rep>>);
-static_assert(std::convertible_to<quantity<isq::time[si::second], std::chrono::seconds::rep>, std::chrono::seconds>);
-static_assert(std::constructible_from<std::chrono::hours, quantity<isq::time[si::hour], std::chrono::hours::rep>>);
-static_assert(std::convertible_to<quantity<isq::time[si::hour], std::chrono::hours::rep>, std::chrono::hours>);
+  std::constructible_from<std::chrono::seconds, quantity<(isq::time[si::second]), std::chrono::seconds::rep>>);
+static_assert(std::convertible_to<quantity<(isq::time[si::second]), std::chrono::seconds::rep>, std::chrono::seconds>);
+static_assert(std::constructible_from<std::chrono::hours, quantity<(isq::time[si::hour]), std::chrono::hours::rep>>);
+static_assert(std::convertible_to<quantity<(isq::time[si::hour]), std::chrono::hours::rep>, std::chrono::hours>);
 static_assert(
-  std::constructible_from<sys_seconds, time_point<si::second, std::chrono::system_clock, sys_seconds::rep>>);
-static_assert(std::convertible_to<time_point<si::second, std::chrono::system_clock, sys_seconds::rep>, sys_seconds>);
+  std::constructible_from<sys_seconds, time_point<(si::second), std::chrono::system_clock, sys_seconds::rep>>);
+static_assert(std::convertible_to<time_point<(si::second), std::chrono::system_clock, sys_seconds::rep>, sys_seconds>);
 
 // units mapping
 static_assert(quantity{1ns} == 1 * ns);

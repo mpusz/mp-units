@@ -288,9 +288,9 @@ template<Reference R1, Reference R2, Reference... Rest>
     } -> Unit;
   }
 {
-  return detail::reference_t<common_quantity_spec(get_quantity_spec(r1), get_quantity_spec(r2),
+  return detail::reference_t<common_quantity_spec(get_quantity_spec(R1{}), get_quantity_spec(R2{}),
                                                   get_quantity_spec(rest)...),
-                             common_unit(get_unit(r1), get_unit(r2), get_unit(rest)...)>{};
+                             common_unit(get_unit(R1{}), get_unit(R2{}), get_unit(rest)...)>{};
 }
 
 MP_UNITS_EXPORT_END

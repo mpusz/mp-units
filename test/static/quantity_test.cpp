@@ -215,16 +215,16 @@ static_assert(quantity<isq::length[km]>(1500 * m).numerical_value_in(km) == 1.5)
 
 static_assert(!std::convertible_to<quantity<one>, double>);
 static_assert(std::constructible_from<double, quantity<one>>);
-static_assert(!std::convertible_to<quantity<isq::angular_measure[one]>, double>);
-static_assert(std::constructible_from<double, quantity<isq::angular_measure[one]>>);
+static_assert(!std::convertible_to<quantity<(isq::angular_measure[one])>, double>);
+static_assert(std::constructible_from<double, quantity<(isq::angular_measure[one])>>);
 static_assert(!std::convertible_to<quantity<one>, int>);
 static_assert(std::constructible_from<int, quantity<one>>);
-static_assert(!std::convertible_to<quantity<isq::angular_measure[one]>, int>);
-static_assert(std::constructible_from<int, quantity<isq::angular_measure[one]>>);
+static_assert(!std::convertible_to<quantity<(isq::angular_measure[one])>, int>);
+static_assert(std::constructible_from<int, quantity<(isq::angular_measure[one])>>);
 static_assert(!std::convertible_to<quantity<one, int>, double>);
 static_assert(std::constructible_from<double, quantity<one, int>>);
-static_assert(!std::convertible_to<quantity<isq::angular_measure[one], int>, double>);
-static_assert(std::constructible_from<double, quantity<isq::angular_measure[one], int>>);
+static_assert(!std::convertible_to<quantity<(isq::angular_measure[one]), int>, double>);
+static_assert(std::constructible_from<double, quantity<(isq::angular_measure[one]), int>>);
 
 
 ///////////////////////////////////
