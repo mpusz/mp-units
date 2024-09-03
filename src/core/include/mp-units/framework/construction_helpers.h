@@ -51,8 +51,8 @@ template<Reference R>
 struct absolute_ {
   template<typename Rep>
     requires RepresentationOf<std::remove_cvref_t<Rep>, get_quantity_spec(R{}).character>
-  [[nodiscard]] constexpr quantity_point<MP_UNITS_EXPRESSION(R{}), default_point_origin(R{}), std::remove_cvref_t<Rep>> operator()(
-    Rep&& lhs) const
+  [[nodiscard]] constexpr quantity_point<MP_UNITS_EXPRESSION(R{}), default_point_origin(R{}), std::remove_cvref_t<Rep>>
+  operator()(Rep&& lhs) const
   {
     return quantity_point{quantity{std::forward<Rep>(lhs), R{}}};
   }

@@ -54,14 +54,16 @@ template<PointOrigin PO>
 struct point_origin_interface {
   template<PointOrigin PO, Quantity Q>
     requires ReferenceOf<std::remove_const_t<decltype(Q::reference)>, PO::quantity_spec>
-  [[nodiscard]] friend constexpr quantity_point<Q::reference, MP_UNITS_EXPRESSION(PO{}), typename Q::rep> operator+(PO, Q&& q)
+  [[nodiscard]] friend constexpr quantity_point<Q::reference, MP_UNITS_EXPRESSION(PO{}), typename Q::rep> operator+(
+    PO, Q&& q)
   {
     return quantity_point{std::forward<Q>(q), PO{}};
   }
 
   template<Quantity Q, PointOrigin PO>
     requires ReferenceOf<std::remove_const_t<decltype(Q::reference)>, PO::quantity_spec>
-  [[nodiscard]] friend constexpr quantity_point<Q::reference, MP_UNITS_EXPRESSION(PO{}), typename Q::rep> operator+(Q&& q, PO po)
+  [[nodiscard]] friend constexpr quantity_point<Q::reference, MP_UNITS_EXPRESSION(PO{}), typename Q::rep> operator+(
+    Q&& q, PO po)
   {
     return po + std::forward<Q>(q);
   }
@@ -264,8 +266,7 @@ public:
   quantity_point& operator=(quantity_point&&) = default;
 
   template<detail::SameAbsolutePointOriginAs<absolute_point_origin> NewPO>
-  [[nodiscard]] constexpr QuantityPointOf<(NewPO{})> auto point_for(
-    NewPO new_origin) const
+  [[nodiscard]] constexpr QuantityPointOf<(NewPO{})> auto point_for(NewPO new_origin) const
   {
     if constexpr (is_same_v<NewPO, decltype(point_origin)>)
       return *this;

@@ -132,8 +132,8 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
     common_reference(R1, R2);
     requires requires { atan2(v1, v2); } || requires { std::atan2(v1, v2); };
   }
-[[nodiscard]] inline QuantityOf<MP_UNITS_IS_VALUE(isq::angular_measure)> auto atan2(const quantity<R1, Rep1>& y,
-                                                                 const quantity<R2, Rep2>& x) noexcept
+[[nodiscard]] inline QuantityOf<MP_UNITS_IS_VALUE(isq::angular_measure)> auto atan2(
+  const quantity<R1, Rep1>& y, const quantity<R2, Rep2>& x) noexcept
 {
   constexpr auto ref = common_reference(R1, R2);
   constexpr auto unit = get_unit(ref);

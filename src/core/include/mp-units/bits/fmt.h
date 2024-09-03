@@ -189,7 +189,7 @@ constexpr void handle_dynamic_spec(int& value, fmt_arg_ref<typename Context::cha
   }
 }
 
-#ifdef _MSC_VER 
+#ifdef _MSC_VER
 #pragma warning(push)
 #pragma warning(disable : 4702)
 #endif
@@ -202,12 +202,12 @@ struct width_checker {
         if (value < 0) MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("negative width"));
       return static_cast<unsigned long long>(value);
     }
-    MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("width is not integer"));    
+    MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("width is not integer"));
   }
 };
 
-#ifdef _MSC_VER 
-#pragma warning( pop ) 
+#ifdef _MSC_VER
+#pragma warning(pop)
 #endif
 
 MP_UNITS_EXPORT_END

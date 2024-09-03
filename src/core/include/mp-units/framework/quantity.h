@@ -461,8 +461,8 @@ public:
              }
   friend constexpr decltype(auto) operator*=(Q1&& lhs, const Q2& rhs)
   {
-    lhs.numerical_value_is_an_implementation_detail_ = lhs.numerical_value_is_an_implementation_detail_ *
-                                                        rhs.numerical_value_is_an_implementation_detail_;
+    lhs.numerical_value_is_an_implementation_detail_ =
+      lhs.numerical_value_is_an_implementation_detail_ * rhs.numerical_value_is_an_implementation_detail_;
     return std::forward<Q1>(lhs);
   }
 
@@ -490,8 +490,8 @@ public:
   friend constexpr decltype(auto) operator/=(Q1&& lhs, const Q2& rhs)
   {
     MP_UNITS_EXPECTS_DEBUG(rhs != rhs.zero());
-    lhs.numerical_value_is_an_implementation_detail_ =  lhs.numerical_value_is_an_implementation_detail_ 
-                                                      / rhs.numerical_value_is_an_implementation_detail_;
+    lhs.numerical_value_is_an_implementation_detail_ =
+      lhs.numerical_value_is_an_implementation_detail_ / rhs.numerical_value_is_an_implementation_detail_;
     return std::forward<Q1>(lhs);
   }
 

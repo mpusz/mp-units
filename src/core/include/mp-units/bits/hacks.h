@@ -82,7 +82,8 @@
 #define MP_UNITS_TYPENAME typename
 #define MP_UNITS_EXPRESSION(x) (x)
 #define MP_UNITS_IS_VALUE(x) (x)
-#define MP_UNITS_IS_CONST_EXPR(x) decltype(x){}
+#define MP_UNITS_IS_CONST_EXPR(x) \
+  decltype(x) {}
 
 #else
 

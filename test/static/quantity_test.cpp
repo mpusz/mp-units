@@ -173,8 +173,9 @@ static_assert(!std::constructible_from<quantity<(isq::length[m])>, quantity<(isq
 static_assert(!std::convertible_to<quantity<(isq::speed[m / s])>, quantity<(isq::length[m])>>);
 
 // implicit conversion from another quantity only if non-truncating
-static_assert(std::constructible_from<quantity<(isq::length[m])>, quantity<(isq::length[m]), int>>);  // int -> double OK
-static_assert(std::convertible_to<quantity<(isq::length[m]), int>, quantity<(isq::length[m])>>);      // int -> double OK
+static_assert(
+  std::constructible_from<quantity<(isq::length[m])>, quantity<(isq::length[m]), int>>);          // int -> double OK
+static_assert(std::convertible_to<quantity<(isq::length[m]), int>, quantity<(isq::length[m])>>);  // int -> double OK
 
 static_assert(!std::constructible_from<quantity<(isq::length[m]), int>,
                                        quantity<(isq::length[m])>>);  // truncating double -> int not allowed
@@ -188,7 +189,7 @@ static_assert(std::convertible_to<quantity<(isq::length[km]), int>,
 
 static_assert(!std::constructible_from<quantity<(isq::length[km]), int>,
                                        quantity<(isq::length[m]), int>>);  // truncating metre<int> ->
-                                                                         // kilometre<int> not allowed
+                                                                           // kilometre<int> not allowed
 static_assert(
   !std::convertible_to<quantity<(isq::length[m]), int>,
                        quantity<(isq::length[km]), int>>);  // truncating metre<int> -> kilometre<int> not allowed
@@ -355,8 +356,8 @@ static_assert(quantity{123}.quantity_spec == kind_of<dimensionless>);
 #if MP_UNITS_HOSTED
 using namespace std::chrono_literals;
 static_assert(std::is_same_v<decltype(quantity{123s})::rep, std::chrono::seconds::rep>);
-//return type for "s" is not specified. is double for msvc
-//static_assert(std::is_same_v<decltype(quantity{123.s})::rep, long double>);
+// return type for "s" is not specified. is double for msvc
+// static_assert(std::is_same_v<decltype(quantity{123.s})::rep, long double>);
 static_assert(quantity{24h}.unit == si::hour);
 static_assert(quantity{24h}.quantity_spec == kind_of<isq::time>);
 #endif
@@ -455,7 +456,7 @@ static_assert((std::uint8_t{255}* m %= 257 * m).numerical_value_in(m) != [] {
 #if !(defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 18 && defined MP_UNITS_MODULES)
 // next two lines trigger conversions warnings
 // (warning disabled in CMake for this file)
-static_assert(((22 * m) *= 33.33).numerical_value_in(m) ==733);
+static_assert(((22 * m) *= 33.33).numerical_value_in(m) == 733);
 static_assert(((22 * m) /= 3.33).numerical_value_in(m) == 6);
 static_assert(((22 * m) *= 33.33 * one).numerical_value_in(m) == 733);
 static_assert(((22 * m) /= 3.33 * one).numerical_value_in(m) == 6);
@@ -850,14 +851,17 @@ static_assert(std::equality_comparable_with<quantity<(si::metre)>, quantity<si::
 static_assert(std::equality_comparable_with<quantity<(si::metre), int>, quantity<si::kilo<(si::metre)>, int>>);
 static_assert(std::equality_comparable_with<quantity<(isq::length[(si::metre)])>, quantity<(si::metre)>>);
 static_assert(std::equality_comparable_with<quantity<(isq::length[(si::metre)])>, quantity<(si::metre), int>>);
-static_assert(std::equality_comparable_with<quantity<(isq::length[(si::metre)])>, quantity<si::kilo<(si::metre)>, int>>);
+static_assert(
+  std::equality_comparable_with<quantity<(isq::length[(si::metre)])>, quantity<si::kilo<(si::metre)>, int>>);
 static_assert(std::equality_comparable_with<quantity<(isq::width[(si::metre)])>, quantity<(si::metre)>>);
 static_assert(std::equality_comparable_with<quantity<(isq::width[(si::metre)])>, quantity<(si::metre), int>>);
-static_assert(std::equality_comparable_with<quantity<(isq::width[(si::metre)])>, quantity<(si::kilo<(si::metre)>), int>>);
-static_assert(std::equality_comparable_with<quantity<(isq::width[(si::metre)])>, quantity<(isq::height[(si::metre)])>>);
-static_assert(std::equality_comparable_with<quantity<(isq::width[(si::metre)])>, quantity<(isq::height[(si::metre)]), int>>);
 static_assert(
-  std::equality_comparable_with<quantity<(isq::width[(si::metre)])>, quantity<(isq::height[(si::kilo<(si::metre)>)]), int>>);
+  std::equality_comparable_with<quantity<(isq::width[(si::metre)])>, quantity<(si::kilo<(si::metre)>), int>>);
+static_assert(std::equality_comparable_with<quantity<(isq::width[(si::metre)])>, quantity<(isq::height[(si::metre)])>>);
+static_assert(
+  std::equality_comparable_with<quantity<(isq::width[(si::metre)])>, quantity<(isq::height[(si::metre)]), int>>);
+static_assert(std::equality_comparable_with<quantity<(isq::width[(si::metre)])>,
+                                            quantity<(isq::height[(si::kilo<(si::metre)>)]), int>>);
 
 template<auto M>
 concept no_crossdimensional_equality = requires {
@@ -1054,11 +1058,12 @@ static_assert(QuantityOf<quantity<m / s>, isq::position_vector / isq::duration>)
 static_assert(QuantityOf<quantity<kind_of<(isq::speed)>[m / s]>, isq::position_vector / isq::duration>);
 static_assert(QuantityOf<quantity<(isq::velocity)[m / s], int>, isq::position_vector / isq::duration>);
 
-static_assert(QuantityOf<decltype(10 * m), (isq::height)>);                        // kind of
+static_assert(QuantityOf<decltype(10 * m), (isq::height)>);                          // kind of
 static_assert(QuantityOf<decltype(10 * kind_of<(isq::length)>[m]), (isq::height)>);  // kind of
 static_assert(!QuantityOf<decltype(10 * (isq::length[m])), (isq::height)>);          // different kinds
 static_assert(!QuantityOf<decltype(10 * (isq::width[m])), (isq::height)>);           // different kinds
 static_assert(QuantityOf<decltype(10 * (isq::speed[m / s])), (isq::speed)>);
-static_assert(QuantityOf<decltype(20 * (isq::length[m]) / (2 * isq::time[s])), (isq::speed)>);  // derived unnamed quantity
+static_assert(
+  QuantityOf<decltype(20 * (isq::length[m]) / (2 * isq::time[s])), (isq::speed)>);  // derived unnamed quantity
 
 }  // namespace

@@ -45,8 +45,8 @@ namespace {
 
 using namespace mp_units;
 
-QuantityOf<(isq::mechanical_energy)> auto total_energy(QuantityOf<(isq::momentum)> auto p, QuantityOf<(isq::mass)> auto m,
-                                                     QuantityOf<(isq::speed)> auto c)
+QuantityOf<(isq::mechanical_energy)> auto total_energy(QuantityOf<(isq::momentum)> auto p,
+                                                       QuantityOf<(isq::mass)> auto m, QuantityOf<(isq::speed)> auto c)
 {
   return isq::mechanical_energy(sqrt(pow<2>(p * c) + pow<2>(m * pow<2>(c))));
 }

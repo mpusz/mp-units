@@ -30,23 +30,24 @@
 
 namespace mp_units::detail {
 
-template <typename AlwaysVoid, typename... Ts>
+template<typename AlwaysVoid, typename... Ts>
 struct has_common_type_impl : std::false_type {};
 
-template <typename... Ts>
+template<typename... Ts>
 struct has_common_type_impl<std::void_t<std::common_type_t<Ts...>>, Ts...> : std::true_type {};
 
-template <typename... Ts>
+template<typename... Ts>
 using has_common_type = typename has_common_type_impl<void, Ts...>::type;
 
-template <typename... Ts> constexpr bool has_common_type_v = has_common_type_impl<void, Ts...>::value;
+template<typename... Ts>
+constexpr bool has_common_type_v = has_common_type_impl<void, Ts...>::value;
 
 template<typename T, typename Other>
 struct get_common_type : std::common_type<T, Other> {};
 
 template<typename T, typename Other>
-using maybe_common_type = MP_UNITS_TYPENAME std::conditional_t<has_common_type_v<T, Other>,
-                                                               get_common_type<T, Other>, std::type_identity<T>>::type;
+using maybe_common_type = MP_UNITS_TYPENAME
+  std::conditional_t<has_common_type_v<T, Other>, get_common_type<T, Other>, std::type_identity<T>>::type;
 
 /**
  * @brief Details about the conversion from one quantity to another.
