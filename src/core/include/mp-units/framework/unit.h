@@ -220,7 +220,7 @@ struct propagate_point_origin<U, true> {
 template<Magnitude auto M, Unit U>
 struct scaled_unit_impl : detail::unit_interface, detail::propagate_point_origin<U> {
   using _base_type_ = scaled_unit_impl;  // exposition only
-  static constexpr MP_UNITS_CONSTRAINED_AUTO_WORKAROUND(Magnitude) auto mag = M;
+  static constexpr Magnitude auto mag = M;
   static constexpr U reference_unit{};
 };
 

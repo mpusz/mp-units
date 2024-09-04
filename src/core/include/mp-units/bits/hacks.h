@@ -76,7 +76,6 @@
 #if !defined MP_UNITS_HOSTED && defined __STDC_HOSTED__
 #define MP_UNITS_HOSTED __STDC_HOSTED__
 #endif
-
 #if MP_UNITS_COMP_GCC
 
 #define MP_UNITS_REMOVE_CONST(expr) std::remove_const_t<expr>
@@ -112,7 +111,6 @@ inline constexpr from_range_t from_range{};
 
 #if MP_UNITS_COMP_MSVC
 
-#define MP_UNITS_CONSTRAINED_AUTO_WORKAROUND(X)
 #define MP_UNITS_CONSTRAINED_NTTP_WORKAROUND(X)
 #define MP_UNITS_EXPRESSION_WORKAROUND(x) (x)
 #define MP_UNITS_IS_VALUE_WORKAROUND(x) (x)
@@ -121,8 +119,7 @@ inline constexpr from_range_t from_range{};
 
 #else
 
-#define MP_UNITS_CONSTRAINED_AUTO_WORKAROUND(X) X
-#define MP_UNITS_CONSTRAINED_NTTP_WORKAROUND(X) X'
+#define MP_UNITS_CONSTRAINED_NTTP_WORKAROUND(X) X
 #define  MP_UNITS_EXPRESSION_WORKAROUND(x) x
 #define MP_UNITS_IS_VALUE_WORKAROUND(x) x
 #define MP_UNITS_IS_CONST_EXPR_WORKAROUND(x) x
