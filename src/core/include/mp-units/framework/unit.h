@@ -220,7 +220,7 @@ struct propagate_point_origin<U, true> {
 template<Magnitude auto M, Unit U>
 struct scaled_unit_impl : detail::unit_interface, detail::propagate_point_origin<U> {
   using _base_type_ = scaled_unit_impl;  // exposition only
-  static constexpr MP_UNITS_CONSTRAINED_AUTO_WORKAROUND(Magnitude) auto mag = M;
+  static constexpr Magnitude auto mag = M;
   static constexpr U reference_unit{};
 };
 
@@ -633,7 +633,7 @@ template<Unit From, Unit To>
 
 template<Unit U1, Unit U2>
 [[nodiscard]] consteval Unit auto common_unit(U1 u1, U2 u2)
-  requires(convertible(MP_UNITS_IS_CONST_EXPR(u1), MP_UNITS_IS_CONST_EXPR(u2)))
+  requires(convertible(MP_UNITS_IS_CONST_EXPR_WORKAROUND(u1), MP_UNITS_IS_CONST_EXPR_WORKAROUND(u2)))
 {
   if constexpr (is_same_v<U1, U2>)
     return u1;

@@ -46,7 +46,7 @@ template<typename T, typename Other>
 struct get_common_type : std::common_type<T, Other> {};
 
 template<typename T, typename Other>
-using maybe_common_type = MP_UNITS_TYPENAME
+using maybe_common_type =  
   std::conditional_t<has_common_type_v<T, Other>, get_common_type<T, Other>, std::type_identity<T>>::type;
 
 /**
@@ -108,7 +108,7 @@ template<Quantity To, typename From>
   constexpr auto q_unit = std::remove_reference_t<From>::unit;
   if constexpr (q_unit == To::unit) {
     // no scaling of the number needed
-    return {static_cast<MP_UNITS_TYPENAME To::rep>(std::forward<From>(q).numerical_value_is_an_implementation_detail_),
+    return {static_cast<  To::rep>(std::forward<From>(q).numerical_value_is_an_implementation_detail_),
             To::reference};  // this is the only (and recommended) way to do a truncating conversion on a number, so we
                              // are using static_cast to suppress all the compiler warnings on conversions
   } else {
@@ -116,12 +116,12 @@ template<Quantity To, typename From>
     using traits = magnitude_conversion_traits<To, std::remove_reference_t<From>>;
     if constexpr (std::is_floating_point_v<typename traits::multiplier_type>) {
       // this results in great assembly
-      auto res = static_cast<MP_UNITS_TYPENAME To::rep>(
+      auto res = static_cast<  To::rep>(
         static_cast<traits::c_type>(q.numerical_value_is_an_implementation_detail_) * traits::ratio);
       return {res, To::reference};
     } else {
       // this is slower but allows conversions like 2000 m -> 2 km without loosing data
-      auto res = static_cast<MP_UNITS_TYPENAME To::rep>(
+      auto res = static_cast<  To::rep>(
         static_cast<traits::c_type>(q.numerical_value_is_an_implementation_detail_) * traits::num_mult /
         traits::den_mult * traits::irr_mult);
       return {res, To::reference};

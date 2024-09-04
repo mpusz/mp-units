@@ -127,18 +127,18 @@ namespace detail {
 
 }  // namespace detail
 
-template<QuantityOf<MP_UNITS_IS_VALUE(isq::time)> Q>
+template<QuantityOf<MP_UNITS_IS_VALUE_WORKAROUND(isq::time)> Q>
 [[nodiscard]] constexpr auto to_chrono_duration(const Q& q)
 {
   return std::chrono::duration<typename Q::rep, decltype(detail::as_ratio(get_canonical_unit(Q::unit).mag))>{q};
 }
 
-template<QuantityPointOf<MP_UNITS_IS_VALUE(isq::time)> QP>
+template<QuantityPointOf<MP_UNITS_IS_VALUE_WORKAROUND(isq::time)> QP>
   requires is_specialization_of<std::remove_const_t<decltype(QP::absolute_point_origin)>, chrono_point_origin_>
 [[nodiscard]] constexpr auto to_chrono_time_point(const QP& qp)
 {
-  using clock = MP_UNITS_TYPENAME decltype(QP::absolute_point_origin)::clock;
-  using rep = MP_UNITS_TYPENAME QP::rep;
+  using clock =   decltype(QP::absolute_point_origin)::clock;
+  using rep =   QP::rep;
   using ret_type =
     std::chrono::time_point<clock,
                             std::chrono::duration<rep, decltype(detail::as_ratio(get_canonical_unit(QP::unit).mag))>>;

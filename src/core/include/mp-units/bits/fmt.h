@@ -189,10 +189,8 @@ constexpr void handle_dynamic_spec(int& value, fmt_arg_ref<typename Context::cha
   }
 }
 
-#ifdef _MSC_VER
-#pragma warning(push)
-#pragma warning(disable : 4702)
-#endif
+MP_UNITS_DIAGNOSTIC_PUSH
+MP_UNITS_DIAGNOSTIC_IGNORE_UNREACHABLE
 struct width_checker {
   template<typename T>
   [[nodiscard]] constexpr unsigned long long operator()(T value) const
@@ -205,10 +203,7 @@ struct width_checker {
     MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("width is not integer"));
   }
 };
-
-#ifdef _MSC_VER
-#pragma warning(pop)
-#endif
+MP_UNITS_DIAGNOSTIC_POP
 
 MP_UNITS_EXPORT_END
 
