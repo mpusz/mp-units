@@ -85,16 +85,16 @@ std::basic_ostream<CharT, Traits>& to_stream(std::basic_ostream<CharT, Traits>& 
   return os;
 }
 
+template<typename OStream, typename T>
+constexpr bool is_mp_units_stream = requires(OStream os, T v) { detail::to_stream_impl(os, v); };
+
 }  //  namespace detail
 
 MP_UNITS_EXPORT_BEGIN
 
-template<typename OStream, typename T>
-concept is_mp_units_stream = requires(OStream os, T v) { detail::to_stream_impl(os, v); };
-
 template<typename CharT, typename Traits, typename T>
 std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const T& v)
-  requires is_mp_units_stream<std::basic_ostream<CharT, Traits>, T>
+  requires detail::is_mp_units_stream<std::basic_ostream<CharT, Traits>, T>
 {
   return detail::to_stream(os, v);
 }
