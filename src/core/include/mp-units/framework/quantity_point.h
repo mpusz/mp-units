@@ -54,16 +54,16 @@ template<PointOrigin PO>
 struct point_origin_interface {
   template<PointOrigin PO, Quantity Q>
     requires ReferenceOf<std::remove_const_t<decltype(Q::reference)>, PO::quantity_spec>
-  [[nodiscard]] friend constexpr quantity_point<Q::reference,  MP_UNITS_EXPRESSION_WORKAROUND(PO{}), typename Q::rep> operator+(
-    PO, Q&& q)
+  [[nodiscard]] friend constexpr quantity_point<Q::reference, MP_UNITS_EXPRESSION_WORKAROUND(PO{}), typename Q::rep>
+  operator+(PO, Q&& q)
   {
     return quantity_point{std::forward<Q>(q), PO{}};
   }
 
   template<Quantity Q, PointOrigin PO>
     requires ReferenceOf<std::remove_const_t<decltype(Q::reference)>, PO::quantity_spec>
-  [[nodiscard]] friend constexpr quantity_point<Q::reference,  MP_UNITS_EXPRESSION_WORKAROUND(PO{}), typename Q::rep> operator+(
-    Q&& q, PO po)
+  [[nodiscard]] friend constexpr quantity_point<Q::reference, MP_UNITS_EXPRESSION_WORKAROUND(PO{}), typename Q::rep>
+  operator+(Q&& q, PO po)
   {
     return po + std::forward<Q>(q);
   }

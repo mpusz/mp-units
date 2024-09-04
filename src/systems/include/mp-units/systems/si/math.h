@@ -87,7 +87,8 @@ template<ReferenceOf<MP_UNITS_IS_VALUE_WORKAROUND(isq::angular_measure)> auto R,
 
 template<ReferenceOf<dimensionless> auto R, typename Rep>
   requires requires(Rep v) { asin(v); } || requires(Rep v) { std::asin(v); }
-[[nodiscard]] inline QuantityOf<MP_UNITS_IS_VALUE_WORKAROUND(isq::angular_measure)> auto asin(const quantity<R, Rep>& q) noexcept
+[[nodiscard]] inline QuantityOf<MP_UNITS_IS_VALUE_WORKAROUND(isq::angular_measure)> auto asin(
+  const quantity<R, Rep>& q) noexcept
 {
   using std::asin;
   if constexpr (!treat_as_floating_point<Rep>) {
@@ -101,7 +102,8 @@ template<ReferenceOf<dimensionless> auto R, typename Rep>
 
 template<ReferenceOf<dimensionless> auto R, typename Rep>
   requires requires(Rep v) { acos(v); } || requires(Rep v) { std::acos(v); }
-[[nodiscard]] inline QuantityOf<MP_UNITS_IS_VALUE_WORKAROUND(isq::angular_measure)> auto acos(const quantity<R, Rep>& q) noexcept
+[[nodiscard]] inline QuantityOf<MP_UNITS_IS_VALUE_WORKAROUND(isq::angular_measure)> auto acos(
+  const quantity<R, Rep>& q) noexcept
 {
   using std::acos;
   if constexpr (!treat_as_floating_point<Rep>) {
@@ -115,7 +117,8 @@ template<ReferenceOf<dimensionless> auto R, typename Rep>
 
 template<ReferenceOf<dimensionless> auto R, typename Rep>
   requires requires(Rep v) { atan(v); } || requires(Rep v) { std::atan(v); }
-[[nodiscard]] inline QuantityOf<MP_UNITS_IS_VALUE_WORKAROUND(isq::angular_measure)> auto atan(const quantity<R, Rep>& q) noexcept
+[[nodiscard]] inline QuantityOf<MP_UNITS_IS_VALUE_WORKAROUND(isq::angular_measure)> auto atan(
+  const quantity<R, Rep>& q) noexcept
 {
   using std::atan;
   if constexpr (!treat_as_floating_point<Rep>) {
