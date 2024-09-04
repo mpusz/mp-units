@@ -56,7 +56,7 @@ struct conditional_impl<true> {
 MP_UNITS_EXPORT_BEGIN
 
 template<bool B, typename T, typename F>
-using conditional = MP_UNITS_TYPENAME detail::conditional_impl<B>::template type<T, F>;
+using conditional =   detail::conditional_impl<B>::template type<T, F>;
 
 // is_same
 template<class T, class U>
@@ -99,7 +99,7 @@ namespace detail {
 
 template<typename T>
 struct get_value_type {
-  using type = MP_UNITS_TYPENAME T::value_type;
+  using type =   T::value_type;
 };
 
 template<typename T>
@@ -112,13 +112,13 @@ struct get_element_type {
 template<typename T>
   requires requires { typename T::value_type; } || requires { typename T::element_type; }
 struct wrapped_type {
-  using type = MP_UNITS_TYPENAME
+  using type =  
     conditional<requires { typename T::value_type; }, detail::get_value_type<T>, detail::get_element_type<T>>::type;
 };
 
 template<typename T>
   requires requires { typename T::value_type; } || requires { typename T::element_type; }
-using wrapped_type_t = MP_UNITS_TYPENAME wrapped_type<T>::type;
+using wrapped_type_t =   wrapped_type<T>::type;
 
 template<typename T>
 struct value_type {
@@ -128,11 +128,11 @@ struct value_type {
 template<typename T>
   requires requires { typename wrapped_type_t<T>; }
 struct value_type<T> {
-  using type = MP_UNITS_TYPENAME wrapped_type_t<T>;
+  using type =   wrapped_type_t<T>;
 };
 
 template<typename T>
-using value_type_t = MP_UNITS_TYPENAME value_type<T>::type;
+using value_type_t =   value_type<T>::type;
 
 template<typename T, typename... Ts>
 concept one_of = (false || ... || std::same_as<T, Ts>);
