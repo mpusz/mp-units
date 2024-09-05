@@ -45,15 +45,15 @@ namespace mp_units {
  * @code{.cpp}
  * // hypothetical natural system of units for c=1
  *
- * inline constexpr struct second final : named_unit<"s"> {} second;
- * inline constexpr struct minute final : named_unit<"min", mag<60> * second> {} minute;
- * inline constexpr struct gram final : named_unit<"g"> {} gram;
- * inline constexpr auto kilogram = si::kilo<gram>;
+ * constexpr struct second final : named_unit<"s"> {} second;
+ * constexpr struct minute final : named_unit<"min", mag<60> * second> {} minute;
+ * constexpr struct gram final : named_unit<"g"> {} gram;
+ * constexpr auto kilogram = si::kilo<gram>;
  *
- * inline constexpr struct time : system_reference<isq::time, second> {} time;
- * inline constexpr struct length : system_reference<isq::length, second> {} length;
- * inline constexpr struct speed : system_reference<isq::speed, second / second> {} speed;
- * inline constexpr struct force : system_reference<isq::force, kilogram / second> {} force;
+ * constexpr struct time : system_reference<isq::time, second> {} time;
+ * constexpr struct length : system_reference<isq::length, second> {} length;
+ * constexpr struct speed : system_reference<isq::speed, second / second> {} speed;
+ * constexpr struct force : system_reference<isq::force, kilogram / second> {} force;
  * @endcode
  *
  * @tparam Q quantity for which a unit is being assigned

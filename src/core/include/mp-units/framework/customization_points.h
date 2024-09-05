@@ -50,11 +50,11 @@ MP_UNITS_EXPORT_BEGIN
  * @tparam Rep a representation type for which a type trait is defined
  */
 template<typename Rep>
-inline constexpr bool treat_as_floating_point = std::is_floating_point_v<Rep>;
+constexpr bool treat_as_floating_point = std::is_floating_point_v<Rep>;
 
 template<typename Rep>
   requires requires { typename wrapped_type_t<Rep>; }
-inline constexpr bool treat_as_floating_point<Rep> = treat_as_floating_point<wrapped_type_t<Rep>>;
+constexpr bool treat_as_floating_point<Rep> = treat_as_floating_point<wrapped_type_t<Rep>>;
 
 /**
  * @brief Specifies a type to have a scalar character
@@ -62,7 +62,7 @@ inline constexpr bool treat_as_floating_point<Rep> = treat_as_floating_point<wra
  * A scalar is a physical quantity that has magnitude but no direction.
  */
 template<typename Rep>
-inline constexpr bool is_scalar = std::is_floating_point_v<Rep> || (std::is_integral_v<Rep> && !is_same_v<Rep, bool>);
+constexpr bool is_scalar = std::is_floating_point_v<Rep> || (std::is_integral_v<Rep> && !is_same_v<Rep, bool>);
 
 /**
  * @brief Specifies a type to have a vector character
@@ -76,11 +76,11 @@ inline constexpr bool is_scalar = std::is_floating_point_v<Rep> || (std::is_inte
  * @code{.cpp}
  * template<class T>
  *   requires mp_units::is_scalar<T>
- * inline constexpr bool mp_units::is_vector<T> = true;
+ * constexpr bool mp_units::is_vector<T> = true;
  * @endcode
  */
 template<typename Rep>
-inline constexpr bool is_vector = false;
+constexpr bool is_vector = false;
 
 /**
  * @brief Specifies a type to have a tensor character
@@ -91,7 +91,7 @@ inline constexpr bool is_vector = false;
  * Similarly to `is_vector` a partial specialization is needed in such cases.
  */
 template<typename Rep>
-inline constexpr bool is_tensor = false;
+constexpr bool is_tensor = false;
 
 /**
  * @brief A type trait that defines zero, one, min, and max for a representation type

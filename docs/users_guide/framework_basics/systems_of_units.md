@@ -26,7 +26,7 @@ this is expressed by associating a quantity kind (that we discussed in detail in
 previous chapter) with a unit that is used to express it:
 
 ```cpp
-inline constexpr struct metre final : named_unit<"m", kind_of<isq::length>> {} metre;
+constexpr struct metre final : named_unit<"m", kind_of<isq::length>> {} metre;
 ```
 
 !!! important
@@ -67,7 +67,7 @@ of a specific predefined [unit equation](../../appendix/glossary.md#unit-equatio
 For example, a unit of _power_ quantity is defined in the library as:
 
 ```cpp
-inline constexpr struct watt final : named_unit<"W", joule / second> {} watt;
+constexpr struct watt final : named_unit<"W", joule / second> {} watt;
 ```
 
 However, a _power_ quantity can be expressed in other units as well. For example,
@@ -110,8 +110,8 @@ The library allows constraining such units to work only with quantities of a spe
 the following way:
 
 ```cpp
-inline constexpr struct hertz final : named_unit<"Hz", one / second, kind_of<isq::frequency>> {} hertz;
-inline constexpr struct becquerel final : named_unit<"Bq", one / second, kind_of<isq::activity>> {} becquerel;
+constexpr struct hertz final : named_unit<"Hz", one / second, kind_of<isq::frequency>> {} hertz;
+constexpr struct becquerel final : named_unit<"Bq", one / second, kind_of<isq::activity>> {} becquerel;
 ```
 
 With the above, `hertz` can only be used with _frequencies_, while `becquerel` should only be used with
@@ -138,14 +138,14 @@ Each prefix is implemented similarly to the following:
 
 ```cpp
 template<PrefixableUnit U> struct quecto_ : prefixed_unit<"q", mag_power<10, -30>, U{}> {};
-template<PrefixableUnit auto U> inline constexpr quecto_<decltype(U)> quecto;
+template<PrefixableUnit auto U> constexpr quecto_<decltype(U)> quecto;
 ```
 
 and then a [PrefixableUnit](concepts.md#PrefixableUnit) can be prefixed in the following
 way:
 
 ```cpp
-inline constexpr auto qm = quecto<metre>;
+constexpr auto qm = quecto<metre>;
 ```
 
 The usage of `mag_power` not only enables providing support for SI prefixes, but it can also
@@ -154,7 +154,7 @@ IT industry can be implemented as:
 
 ```cpp
 template<PrefixableUnit U> struct yobi_ : prefixed_unit<"Yi", mag_power<2, 80>, U{}> {};
-template<PrefixableUnit auto U> inline constexpr yobi_<decltype(U)> yobi;
+template<PrefixableUnit auto U> constexpr yobi_<decltype(U)> yobi;
 ```
 
 ## Scaled units
@@ -168,25 +168,25 @@ be explicitly expressed with predefined SI prefixes. Those include units like mi
 electronvolt:
 
 ```cpp
-inline constexpr struct minute final : named_unit<"min", mag<60> * si::second> {} minute;
-inline constexpr struct hour final : named_unit<"h", mag<60> * minute> {} hour;
-inline constexpr struct electronvolt final : named_unit<"eV", mag_ratio<1'602'176'634, 1'000'000'000> * mag_power<10, -19> * si::joule> {} electronvolt;
+constexpr struct minute final : named_unit<"min", mag<60> * si::second> {} minute;
+constexpr struct hour final : named_unit<"h", mag<60> * minute> {} hour;
+constexpr struct electronvolt final : named_unit<"eV", mag_ratio<1'602'176'634, 1'000'000'000> * mag_power<10, -19> * si::joule> {} electronvolt;
 ```
 
 Also, units of other [systems of units](../../appendix/glossary.md#system-of-units) are often defined
 in terms of scaled versions of the SI units. For example, the international yard is defined as:
 
 ```cpp
-inline constexpr struct yard final : named_unit<"yd", mag_ratio<9'144, 10'000> * si::metre> {} yard;
+constexpr struct yard final : named_unit<"yd", mag_ratio<9'144, 10'000> * si::metre> {} yard;
 ```
 
 For some units, a magnitude might also be irrational. The best example here is a `degree` which
 is defined using a floating-point magnitude having a factor of the number π (Pi):
 
 ```cpp
-inline constexpr struct mag_pi final : magnitude<std::numbers::pi_v<long double>> {} mag_pi;
+constexpr struct mag_pi final : magnitude<std::numbers::pi_v<long double>> {} mag_pi;
 ```
 
 ```cpp
-inline constexpr struct degree final : named_unit<{u8"°", "deg"}, mag_pi / mag<180> * si::radian> {} degree;
+constexpr struct degree final : named_unit<{u8"°", "deg"}, mag_pi / mag<180> * si::radian> {} degree;
 ```

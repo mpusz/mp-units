@@ -58,30 +58,30 @@ template<PrefixableUnit U> struct quetta_ final : prefixed_unit<"Q", mag_power<1
 
 MP_UNITS_EXPORT_BEGIN
 
-template<PrefixableUnit auto U> inline constexpr quecto_<MP_UNITS_REMOVE_CONST(decltype(U))> quecto;
-template<PrefixableUnit auto U> inline constexpr ronto_<MP_UNITS_REMOVE_CONST(decltype(U))> ronto;
-template<PrefixableUnit auto U> inline constexpr yocto_<MP_UNITS_REMOVE_CONST(decltype(U))> yocto;
-template<PrefixableUnit auto U> inline constexpr zepto_<MP_UNITS_REMOVE_CONST(decltype(U))> zepto;
-template<PrefixableUnit auto U> inline constexpr atto_<MP_UNITS_REMOVE_CONST(decltype(U))> atto;
-template<PrefixableUnit auto U> inline constexpr femto_<MP_UNITS_REMOVE_CONST(decltype(U))> femto;
-template<PrefixableUnit auto U> inline constexpr pico_<MP_UNITS_REMOVE_CONST(decltype(U))> pico;
-template<PrefixableUnit auto U> inline constexpr nano_<MP_UNITS_REMOVE_CONST(decltype(U))> nano;
-template<PrefixableUnit auto U> inline constexpr micro_<MP_UNITS_REMOVE_CONST(decltype(U))> micro;
-template<PrefixableUnit auto U> inline constexpr milli_<MP_UNITS_REMOVE_CONST(decltype(U))> milli;
-template<PrefixableUnit auto U> inline constexpr centi_<MP_UNITS_REMOVE_CONST(decltype(U))> centi;
-template<PrefixableUnit auto U> inline constexpr deci_<MP_UNITS_REMOVE_CONST(decltype(U))> deci;
-template<PrefixableUnit auto U> inline constexpr deca_<MP_UNITS_REMOVE_CONST(decltype(U))> deca;
-template<PrefixableUnit auto U> inline constexpr hecto_<MP_UNITS_REMOVE_CONST(decltype(U))> hecto;
-template<PrefixableUnit auto U> inline constexpr kilo_<MP_UNITS_REMOVE_CONST(decltype(U))> kilo;
-template<PrefixableUnit auto U> inline constexpr mega_<MP_UNITS_REMOVE_CONST(decltype(U))> mega;
-template<PrefixableUnit auto U> inline constexpr giga_<MP_UNITS_REMOVE_CONST(decltype(U))> giga;
-template<PrefixableUnit auto U> inline constexpr tera_<MP_UNITS_REMOVE_CONST(decltype(U))> tera;
-template<PrefixableUnit auto U> inline constexpr peta_<MP_UNITS_REMOVE_CONST(decltype(U))> peta;
-template<PrefixableUnit auto U> inline constexpr exa_<MP_UNITS_REMOVE_CONST(decltype(U))> exa;
-template<PrefixableUnit auto U> inline constexpr zetta_<MP_UNITS_REMOVE_CONST(decltype(U))> zetta;
-template<PrefixableUnit auto U> inline constexpr yotta_<MP_UNITS_REMOVE_CONST(decltype(U))> yotta;
-template<PrefixableUnit auto U> inline constexpr ronna_<MP_UNITS_REMOVE_CONST(decltype(U))> ronna;
-template<PrefixableUnit auto U> inline constexpr quetta_<MP_UNITS_REMOVE_CONST(decltype(U))> quetta;
+template<PrefixableUnit auto U> constexpr quecto_<MP_UNITS_REMOVE_CONST(decltype(U))> quecto;
+template<PrefixableUnit auto U> constexpr ronto_<MP_UNITS_REMOVE_CONST(decltype(U))> ronto;
+template<PrefixableUnit auto U> constexpr yocto_<MP_UNITS_REMOVE_CONST(decltype(U))> yocto;
+template<PrefixableUnit auto U> constexpr zepto_<MP_UNITS_REMOVE_CONST(decltype(U))> zepto;
+template<PrefixableUnit auto U> constexpr atto_<MP_UNITS_REMOVE_CONST(decltype(U))> atto;
+template<PrefixableUnit auto U> constexpr femto_<MP_UNITS_REMOVE_CONST(decltype(U))> femto;
+template<PrefixableUnit auto U> constexpr pico_<MP_UNITS_REMOVE_CONST(decltype(U))> pico;
+template<PrefixableUnit auto U> constexpr nano_<MP_UNITS_REMOVE_CONST(decltype(U))> nano;
+template<PrefixableUnit auto U> constexpr micro_<MP_UNITS_REMOVE_CONST(decltype(U))> micro;
+template<PrefixableUnit auto U> constexpr milli_<MP_UNITS_REMOVE_CONST(decltype(U))> milli;
+template<PrefixableUnit auto U> constexpr centi_<MP_UNITS_REMOVE_CONST(decltype(U))> centi;
+template<PrefixableUnit auto U> constexpr deci_<MP_UNITS_REMOVE_CONST(decltype(U))> deci;
+template<PrefixableUnit auto U> constexpr deca_<MP_UNITS_REMOVE_CONST(decltype(U))> deca;
+template<PrefixableUnit auto U> constexpr hecto_<MP_UNITS_REMOVE_CONST(decltype(U))> hecto;
+template<PrefixableUnit auto U> constexpr kilo_<MP_UNITS_REMOVE_CONST(decltype(U))> kilo;
+template<PrefixableUnit auto U> constexpr mega_<MP_UNITS_REMOVE_CONST(decltype(U))> mega;
+template<PrefixableUnit auto U> constexpr giga_<MP_UNITS_REMOVE_CONST(decltype(U))> giga;
+template<PrefixableUnit auto U> constexpr tera_<MP_UNITS_REMOVE_CONST(decltype(U))> tera;
+template<PrefixableUnit auto U> constexpr peta_<MP_UNITS_REMOVE_CONST(decltype(U))> peta;
+template<PrefixableUnit auto U> constexpr exa_<MP_UNITS_REMOVE_CONST(decltype(U))> exa;
+template<PrefixableUnit auto U> constexpr zetta_<MP_UNITS_REMOVE_CONST(decltype(U))> zetta;
+template<PrefixableUnit auto U> constexpr yotta_<MP_UNITS_REMOVE_CONST(decltype(U))> yotta;
+template<PrefixableUnit auto U> constexpr ronna_<MP_UNITS_REMOVE_CONST(decltype(U))> ronna;
+template<PrefixableUnit auto U> constexpr quetta_<MP_UNITS_REMOVE_CONST(decltype(U))> quetta;
 // clang-format on
 
 MP_UNITS_EXPORT_END

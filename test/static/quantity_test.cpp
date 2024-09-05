@@ -41,7 +41,7 @@ import std;
 #endif
 
 template<>
-inline constexpr bool mp_units::is_vector<int> = true;
+constexpr bool mp_units::is_vector<int> = true;
 
 namespace {
 
@@ -901,7 +901,7 @@ static_assert(1 * si::si2019::speed_of_light_in_vacuum == 299'792'458 * isq::spe
 
 // Different named dimensions
 template<Reference auto R1, Reference auto R2>
-inline constexpr bool invalid_comparison = !requires { 2 * R1 == 2 * R2; } && !requires { 2 * R2 == 2 * R1; };
+constexpr bool invalid_comparison = !requires { 2 * R1 == 2 * R2; } && !requires { 2 * R2 == 2 * R1; };
 static_assert(invalid_comparison<isq::activity[Bq], isq::frequency[Hz]>);
 
 

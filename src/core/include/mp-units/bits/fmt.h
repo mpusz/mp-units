@@ -122,7 +122,7 @@ public:
 MP_UNITS_EXPORT_END
 
 template<typename T>
-inline constexpr bool is_integer =
+constexpr bool is_integer =
   std::is_integral_v<T> && !std::is_same_v<T, bool> && !std::is_same_v<T, char> && !std::is_same_v<T, wchar_t>;
 
 // Converts a character to ASCII. Returns a number > 127 on conversion failure.

@@ -316,12 +316,12 @@ Let's see another example:
         using namespace mp_units;
 
         // add a custom quantity type of kind isq::length
-        inline constexpr struct horizontal_length final :
+        constexpr struct horizontal_length final :
             quantity_spec<isq::length> {} horizontal_length;
 
         // add a custom derived quantity type of kind isq::area
         // with a constrained quantity equation
-        inline constexpr struct horizontal_area final :
+        constexpr struct horizontal_area final :
             quantity_spec<isq::area, horizontal_length * isq::width> {} horizontal_area;
 
         class StorageTank {
@@ -429,12 +429,12 @@ Let's see another example:
         using namespace mp_units;
 
         // add a custom quantity type of kind isq::length
-        inline constexpr struct horizontal_length final :
+        constexpr struct horizontal_length final :
             quantity_spec<isq::length> {} horizontal_length;
 
         // add a custom derived quantity type of kind isq::area
         // with a constrained quantity equation
-        inline constexpr struct horizontal_area final :
+        constexpr struct horizontal_area final :
             quantity_spec<isq::area, horizontal_length * isq::width> {} horizontal_area;
 
         class StorageTank {

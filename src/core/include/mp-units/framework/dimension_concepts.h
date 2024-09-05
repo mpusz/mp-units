@@ -53,7 +53,7 @@ template<symbol_text Symbol>
 void to_base_specialization_of_base_dimension(const volatile base_dimension<Symbol>*);
 
 template<typename T>
-inline constexpr bool is_derived_from_specialization_of_base_dimension =
+constexpr bool is_derived_from_specialization_of_base_dimension =
   requires(T* t) { to_base_specialization_of_base_dimension(t); };
 
 /**
@@ -68,16 +68,16 @@ template<typename T>
 struct is_dimension_one : std::false_type {};
 
 template<typename T>
-inline constexpr bool is_power_of_dim = requires {
+constexpr bool is_power_of_dim = requires {
   requires is_specialization_of_power<T> &&
              (BaseDimension<typename T::factor> || is_dimension_one<typename T::factor>::value);
 };
 
 template<typename T>
-inline constexpr bool is_per_of_dims = false;
+constexpr bool is_per_of_dims = false;
 
 template<typename... Ts>
-inline constexpr bool is_per_of_dims<per<Ts...>> =
+constexpr bool is_per_of_dims<per<Ts...>> =
   (... && (BaseDimension<Ts> || is_dimension_one<Ts>::value || is_power_of_dim<Ts>));
 
 template<typename T>

@@ -60,8 +60,8 @@ For example:
 the following way:
 
 ```cpp
-inline constexpr struct dim_length final : base_dimension<"L"> {} dim_length;
-inline constexpr struct dim_time final : base_dimension<"T"> {} dim_time;
+constexpr struct dim_length final : base_dimension<"L"> {} dim_length;
+constexpr struct dim_time final : base_dimension<"T"> {} dim_time;
 ```
 
 [Derived dimensions](../../appendix/glossary.md#derived-dimension) are implicitly created
@@ -71,9 +71,9 @@ provided in the [quantity specification](../../appendix/glossary.md#quantity_spe
 === "C++23"
 
     ```cpp
-    inline constexpr struct length final : quantity_spec<dim_length> {} length;
-    inline constexpr struct time final : quantity_spec<dim_time> {} time;
-    inline constexpr struct speed final : quantity_spec<length / time> {} speed;
+    constexpr struct length final : quantity_spec<dim_length> {} length;
+    constexpr struct time final : quantity_spec<dim_time> {} time;
+    constexpr struct speed final : quantity_spec<length / time> {} speed;
 
     static_assert(speed.dimension == dim_length / dim_time);
     ```
@@ -81,9 +81,9 @@ provided in the [quantity specification](../../appendix/glossary.md#quantity_spe
 === "C++20"
 
     ```cpp
-    inline constexpr struct length final : quantity_spec<length, dim_length> {} length;
-    inline constexpr struct time final : quantity_spec<time, dim_time> {} time;
-    inline constexpr struct speed final : quantity_spec<speed, length / time> {} speed;
+    constexpr struct length final : quantity_spec<length, dim_length> {} length;
+    constexpr struct time final : quantity_spec<time, dim_time> {} time;
+    constexpr struct speed final : quantity_spec<speed, length / time> {} speed;
 
     static_assert(speed.dimension == dim_length / dim_time);
     ```
@@ -183,17 +183,17 @@ Quantity specification  can be defined by the user in one of the following ways:
 === "C++23"
 
     ```cpp
-    inline constexpr struct length final : quantity_spec<dim_length> {} length;
-    inline constexpr struct height final : quantity_spec<length> {} height;
-    inline constexpr struct speed final : quantity_spec<length / time> {} speed;
+    constexpr struct length final : quantity_spec<dim_length> {} length;
+    constexpr struct height final : quantity_spec<length> {} height;
+    constexpr struct speed final : quantity_spec<length / time> {} speed;
     ```
 
 === "C++20"
 
     ```cpp
-    inline constexpr struct length final : quantity_spec<length, dim_length> {} length;
-    inline constexpr struct height final : quantity_spec<height, length> {} height;
-    inline constexpr struct speed final : quantity_spec<speed, length / time> {} speed;
+    constexpr struct length final : quantity_spec<length, dim_length> {} length;
+    constexpr struct height final : quantity_spec<height, length> {} height;
+    constexpr struct speed final : quantity_spec<speed, length / time> {} speed;
     ```
 
 === "Portable"
@@ -232,15 +232,15 @@ A unit can be defined by the user in one of the following ways:
 
 ```cpp
 template<PrefixableUnit U> struct kilo_ : prefixed_unit<"k", mag_power<10, 3>, U{}> {};
-template<PrefixableUnit auto U> inline constexpr kilo_<decltype(U)> kilo;
+template<PrefixableUnit auto U> constexpr kilo_<decltype(U)> kilo;
 
-inline constexpr struct second final : named_unit<"s", kind_of<isq::time>> {} second;
-inline constexpr struct minute final : named_unit<"min", mag<60> * second> {} minute;
-inline constexpr struct gram   final : named_unit<"g", kind_of<isq::mass>> {} gram;
-inline constexpr auto kilogram = kilo<gram>;
-inline constexpr struct newton final : named_unit<"N", kilogram * metre / square(second)> {} newton;
+constexpr struct second final : named_unit<"s", kind_of<isq::time>> {} second;
+constexpr struct minute final : named_unit<"min", mag<60> * second> {} minute;
+constexpr struct gram   final : named_unit<"g", kind_of<isq::mass>> {} gram;
+constexpr auto kilogram = kilo<gram>;
+constexpr struct newton final : named_unit<"N", kilogram * metre / square(second)> {} newton;
 
-inline constexpr struct speed_of_light_in_vacuum final : named_unit<"c", mag<299'792'458> * metre / second> {} speed_of_light_in_vacuum;
+constexpr struct speed_of_light_in_vacuum final : named_unit<"c", mag<299'792'458> * metre / second> {} speed_of_light_in_vacuum;
 ```
 
 The [unit equation](../../appendix/glossary.md#unit-equation) of `si::metre / si::second` results
@@ -346,13 +346,13 @@ For example:
 - the absolute point origin can be defined in the following way:
 
   ```cpp
-  inline constexpr struct absolute_zero final : absolute_point_origin<isq::thermodynamic_temperature> {} absolute_zero;
+  constexpr struct absolute_zero final : absolute_point_origin<isq::thermodynamic_temperature> {} absolute_zero;
   ```
 
 - the relative point origin can be defined in the following way:
 
   ```cpp
-  inline constexpr struct ice_point final : relative_point_origin<absolute_zero + 273'150 * milli<kelvin>> {} ice_point;
+  constexpr struct ice_point final : relative_point_origin<absolute_zero + 273'150 * milli<kelvin>> {} ice_point;
   ```
 
 

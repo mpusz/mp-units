@@ -61,10 +61,10 @@ struct absolute_ {
 MP_UNITS_EXPORT_BEGIN
 
 template<Reference auto R>
-inline constexpr delta_<MP_UNITS_REMOVE_CONST(decltype(R))> delta{};
+constexpr delta_<MP_UNITS_REMOVE_CONST(decltype(R))> delta{};
 
 template<Reference auto R>
-inline constexpr absolute_<MP_UNITS_REMOVE_CONST(decltype(R))> absolute{};
+constexpr absolute_<MP_UNITS_REMOVE_CONST(decltype(R))> absolute{};
 
 MP_UNITS_EXPORT_END
 

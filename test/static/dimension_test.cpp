@@ -36,31 +36,31 @@ using namespace mp_units;
 using dimension_one_ = struct dimension_one;
 
 // clang-format off
-inline constexpr struct length_ final : base_dimension<"L"> {} length;
-inline constexpr struct mass_ final : base_dimension<"M"> {} mass;
-inline constexpr struct time_ final : base_dimension<"T"> {} time;
+constexpr struct length_ final : base_dimension<"L"> {} length;
+constexpr struct mass_ final : base_dimension<"M"> {} mass;
+constexpr struct time_ final : base_dimension<"T"> {} time;
 
-inline constexpr auto my_length1 = length;
-inline constexpr auto my_length2 = length;
+constexpr auto my_length1 = length;
+constexpr auto my_length2 = length;
 
 QUANTITY_SPEC_(q_time, time);
-inline constexpr struct second_ final : named_unit<"s", kind_of<q_time>> {} second;
+constexpr struct second_ final : named_unit<"s", kind_of<q_time>> {} second;
 
-inline constexpr auto frequency = inverse(time);
-inline constexpr auto action = inverse(time);
-inline constexpr auto area = length * length;
-inline constexpr auto volume = area * length;
-inline constexpr auto speed = length / time;
-inline constexpr auto acceleration = speed / time;
-inline constexpr auto force = mass * acceleration;
-inline constexpr auto moment_of_force = length * force;
-inline constexpr auto torque = moment_of_force;
-inline constexpr auto pressure = force / area;
-inline constexpr auto stress = pressure;
-inline constexpr auto strain = stress / stress;
-inline constexpr auto power = force * speed;
-inline constexpr auto efficiency = power / power;
-inline constexpr auto energy = force * length;
+constexpr auto frequency = inverse(time);
+constexpr auto action = inverse(time);
+constexpr auto area = length * length;
+constexpr auto volume = area * length;
+constexpr auto speed = length / time;
+constexpr auto acceleration = speed / time;
+constexpr auto force = mass * acceleration;
+constexpr auto moment_of_force = length * force;
+constexpr auto torque = moment_of_force;
+constexpr auto pressure = force / area;
+constexpr auto stress = pressure;
+constexpr auto strain = stress / stress;
+constexpr auto power = force * speed;
+constexpr auto efficiency = power / power;
+constexpr auto energy = force * length;
 // clang-format on
 
 // concepts verification

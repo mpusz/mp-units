@@ -35,35 +35,35 @@ MP_UNITS_EXPORT
 namespace mp_units::cgs {
 
 // clang-format off
-inline constexpr auto centimetre = si::centi<si::metre>;
-inline constexpr auto gram = si::gram;
-inline constexpr auto second = si::second;
-inline constexpr struct gal final : named_unit<"Gal", centimetre / square(second)> {} gal;
-inline constexpr struct dyne final : named_unit<"dyn", gram * centimetre / square(second)> {} dyne;
-inline constexpr struct erg final : named_unit<"erg", dyne * centimetre> {} erg;
-inline constexpr struct barye final : named_unit<"Ba", gram / (centimetre * square(second))> {} barye;
-inline constexpr struct poise final : named_unit<"P", gram / (centimetre * second)> {} poise;
-inline constexpr struct stokes final : named_unit<"St", square(centimetre) / second> {} stokes;
-inline constexpr struct kayser final : named_unit<"K", one / centimetre> {} kayser;
+constexpr auto centimetre = si::centi<si::metre>;
+constexpr auto gram = si::gram;
+constexpr auto second = si::second;
+constexpr struct gal final : named_unit<"Gal", centimetre / square(second)> {} gal;
+constexpr struct dyne final : named_unit<"dyn", gram * centimetre / square(second)> {} dyne;
+constexpr struct erg final : named_unit<"erg", dyne * centimetre> {} erg;
+constexpr struct barye final : named_unit<"Ba", gram / (centimetre * square(second))> {} barye;
+constexpr struct poise final : named_unit<"P", gram / (centimetre * second)> {} poise;
+constexpr struct stokes final : named_unit<"St", square(centimetre) / second> {} stokes;
+constexpr struct kayser final : named_unit<"K", one / centimetre> {} kayser;
 // clang-format on
 
 namespace unit_symbols {
 
-inline constexpr auto cm = centimetre;
-inline constexpr auto g = gram;
-inline constexpr auto s = second;
-inline constexpr auto Gal = gal;
-inline constexpr auto dyn = dyne;
-inline constexpr auto Ba = barye;
-inline constexpr auto P = poise;
-inline constexpr auto St = stokes;
-inline constexpr auto K = kayser;
+constexpr auto cm = centimetre;
+constexpr auto g = gram;
+constexpr auto s = second;
+constexpr auto Gal = gal;
+constexpr auto dyn = dyne;
+constexpr auto Ba = barye;
+constexpr auto P = poise;
+constexpr auto St = stokes;
+constexpr auto K = kayser;
 
 // commonly used squared and cubic units
-inline constexpr auto cm2 = square(centimetre);
-inline constexpr auto cm3 = cubic(centimetre);
-inline constexpr auto s2 = square(second);
-inline constexpr auto s3 = cubic(second);
+constexpr auto cm2 = square(centimetre);
+constexpr auto cm3 = cubic(centimetre);
+constexpr auto s2 = square(second);
+constexpr auto s3 = cubic(second);
 
 }  // namespace unit_symbols
 

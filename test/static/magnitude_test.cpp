@@ -32,7 +32,7 @@ using namespace units;
 using namespace units::detail;
 
 template<>
-inline constexpr std::optional<std::intmax_t> units::known_first_factor<9223372036854775783> = 9223372036854775783;
+constexpr std::optional<std::intmax_t> units::known_first_factor<9223372036854775783> = 9223372036854775783;
 
 namespace {
 
@@ -71,11 +71,11 @@ namespace {
 //   CHECK(round_trip == R);
 // }
 
-inline constexpr struct mag_2_ : magnitude<2> {
+constexpr struct mag_2_ : magnitude<2> {
 } mag_2;
-// inline constexpr struct mag_2_other : magnitude<2> {
+// constexpr struct mag_2_other : magnitude<2> {
 // } mag_2_other;
-// inline constexpr struct mag_3 : magnitude<2> {
+// constexpr struct mag_3 : magnitude<2> {
 // } mag_3;
 
 // concepts verification

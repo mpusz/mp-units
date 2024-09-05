@@ -40,32 +40,32 @@ namespace mp_units::detail {
 
 template<std::intmax_t Value>
   requires(0 <= Value) && (Value < 10)
-inline constexpr basic_fixed_string superscript_number = u8"";
+constexpr basic_fixed_string superscript_number = u8"";
 
 template<>
-inline constexpr basic_fixed_string superscript_number<0> = u8"\u2070";
+constexpr basic_fixed_string superscript_number<0> = u8"\u2070";
 template<>
-inline constexpr basic_fixed_string superscript_number<1> = u8"\u00b9";
+constexpr basic_fixed_string superscript_number<1> = u8"\u00b9";
 template<>
-inline constexpr basic_fixed_string superscript_number<2> = u8"\u00b2";
+constexpr basic_fixed_string superscript_number<2> = u8"\u00b2";
 template<>
-inline constexpr basic_fixed_string superscript_number<3> = u8"\u00b3";
+constexpr basic_fixed_string superscript_number<3> = u8"\u00b3";
 template<>
-inline constexpr basic_fixed_string superscript_number<4> = u8"\u2074";
+constexpr basic_fixed_string superscript_number<4> = u8"\u2074";
 template<>
-inline constexpr basic_fixed_string superscript_number<5> = u8"\u2075";
+constexpr basic_fixed_string superscript_number<5> = u8"\u2075";
 template<>
-inline constexpr basic_fixed_string superscript_number<6> = u8"\u2076";
+constexpr basic_fixed_string superscript_number<6> = u8"\u2076";
 template<>
-inline constexpr basic_fixed_string superscript_number<7> = u8"\u2077";
+constexpr basic_fixed_string superscript_number<7> = u8"\u2077";
 template<>
-inline constexpr basic_fixed_string superscript_number<8> = u8"\u2078";
+constexpr basic_fixed_string superscript_number<8> = u8"\u2078";
 template<>
-inline constexpr basic_fixed_string superscript_number<9> = u8"\u2079";
+constexpr basic_fixed_string superscript_number<9> = u8"\u2079";
 
-inline constexpr symbol_text superscript_minus(u8"\u207b", "-");
+constexpr symbol_text superscript_minus(u8"\u207b", "-");
 
-inline constexpr symbol_text superscript_prefix(u8"", "^");
+constexpr symbol_text superscript_prefix(u8"", "^");
 
 template<std::intmax_t Value>
 [[nodiscard]] consteval auto superscript_helper()

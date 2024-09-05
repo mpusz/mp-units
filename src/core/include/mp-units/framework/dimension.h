@@ -115,9 +115,9 @@ struct dimension_interface {
  * For example:
  *
  * @code{.cpp}
- * inline constexpr struct dim_length final : base_dimension<"L"> {} dim_length;
- * inline constexpr struct dim_time final : base_dimension<"T"> {} dim_time;
- * inline constexpr struct dim_mass final : base_dimension<"M"> {} dim_mass;
+ * constexpr struct dim_length final : base_dimension<"L"> {} dim_length;
+ * constexpr struct dim_time final : base_dimension<"T"> {} dim_time;
+ * constexpr struct dim_mass final : base_dimension<"M"> {} dim_mass;
  * @endcode
  *
  * @note A common convention in this library is to assign the same name for a type and an object of this type.
@@ -184,9 +184,7 @@ struct derived_dimension final : detail::dimension_interface, detail::derived_di
  * dimensions are zero. It is a dimension of a quantity of dimension one also known as
  * "dimensionless".
  */
-MP_UNITS_EXPORT inline constexpr struct dimension_one final :
-    detail::dimension_interface,
-    detail::derived_dimension_impl<> {
+MP_UNITS_EXPORT constexpr struct dimension_one final : detail::dimension_interface, detail::derived_dimension_impl<> {
 } dimension_one;
 
 namespace detail {

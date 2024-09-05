@@ -37,19 +37,19 @@ import std;
 
 #if MP_UNITS_HOSTED
 template<typename T>
-inline constexpr bool mp_units::is_scalar<std::complex<T>> = true;
+constexpr bool mp_units::is_scalar<std::complex<T>> = true;
 #endif
 
 namespace {
 
 using namespace mp_units;
 
-inline constexpr struct my_origin final : absolute_point_origin<isq::length> {
+constexpr struct my_origin final : absolute_point_origin<isq::length> {
 } my_origin;
-inline constexpr struct my_relative_origin final : relative_point_origin<my_origin + isq::length(42 * si::metre)> {
+constexpr struct my_relative_origin final : relative_point_origin<my_origin + isq::length(42 * si::metre)> {
 } my_relative_origin;
 
-inline constexpr auto dim_speed = isq::dim_length / isq::dim_time;
+constexpr auto dim_speed = isq::dim_length / isq::dim_time;
 
 // BaseDimension
 static_assert(detail::BaseDimension<struct isq::dim_length>);
@@ -78,7 +78,7 @@ static_assert(!Dimension<int>);
 // TODO add tests
 
 // QuantitySpec
-inline constexpr auto speed = isq::length / isq::time;
+constexpr auto speed = isq::length / isq::time;
 
 static_assert(QuantitySpec<struct isq::length>);
 static_assert(QuantitySpec<struct isq::radius>);

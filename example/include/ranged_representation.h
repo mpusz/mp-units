@@ -42,7 +42,7 @@ import mp_units.core;
 
 template<std::movable T, MP_UNITS_CONSTRAINED_NTTP_WORKAROUND(std::convertible_to<T>) auto Min,
          MP_UNITS_CONSTRAINED_NTTP_WORKAROUND(std::convertible_to<T>) auto Max>
-inline constexpr auto is_in_range = [](const auto& v) { return std::clamp(v, T{Min}, T{Max}) == v; };
+constexpr auto is_in_range = [](const auto& v) { return std::clamp(v, T{Min}, T{Max}) == v; };
 
 template<std::movable T, MP_UNITS_CONSTRAINED_NTTP_WORKAROUND(std::convertible_to<T>) auto Min,
          MP_UNITS_CONSTRAINED_NTTP_WORKAROUND(std::convertible_to<T>) auto Max>
@@ -63,10 +63,10 @@ public:
 };
 
 template<typename T, auto Min, auto Max>
-inline constexpr bool mp_units::is_scalar<ranged_representation<T, Min, Max>> = mp_units::is_scalar<T>;
+constexpr bool mp_units::is_scalar<ranged_representation<T, Min, Max>> = mp_units::is_scalar<T>;
 
 template<typename T, auto Min, auto Max>
-inline constexpr bool mp_units::treat_as_floating_point<ranged_representation<T, Min, Max>> =
+constexpr bool mp_units::treat_as_floating_point<ranged_representation<T, Min, Max>> =
   mp_units::treat_as_floating_point<T>;
 
 template<typename T, auto Min, auto Max, typename Char>

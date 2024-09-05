@@ -6,8 +6,8 @@ The **mp-units** library decided to use a rather unusual pattern to define entit
 Here is how we define `metre` and `second` [SI](../../appendix/glossary.md#si) base units:
 
 ```cpp
-inline constexpr struct metre final : named_unit<"m", kind_of<isq::length>> {} metre;
-inline constexpr struct second final : named_unit<"s", kind_of<isq::time>> {} second;
+constexpr struct metre final : named_unit<"m", kind_of<isq::length>> {} metre;
+constexpr struct second final : named_unit<"s", kind_of<isq::time>> {} second;
 ```
 
 Please note that the above reuses the same identifier for a type and its value. The rationale
@@ -97,9 +97,9 @@ the value-based [unit equation](../../appendix/glossary.md#unit-equation) to a c
 definition:
 
 ```cpp
-inline constexpr struct newton final : named_unit<"N", kilogram * metre / square(second)> {} newton;
-inline constexpr struct pascal final : named_unit<"Pa", newton / square(metre)> {} pascal;
-inline constexpr struct joule  final : named_unit<"J", newton * metre> {} joule;
+constexpr struct newton final : named_unit<"N", kilogram * metre / square(second)> {} newton;
+constexpr struct pascal final : named_unit<"Pa", newton / square(metre)> {} pascal;
+constexpr struct joule  final : named_unit<"J", newton * metre> {} joule;
 ```
 
 

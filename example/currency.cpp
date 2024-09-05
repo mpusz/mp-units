@@ -40,22 +40,22 @@ import mp_units.core;
 using namespace mp_units;
 
 // clang-format off
-inline constexpr struct dim_currency final : base_dimension<"$"> {} dim_currency;
+constexpr struct dim_currency final : base_dimension<"$"> {} dim_currency;
 
 QUANTITY_SPEC(currency, dim_currency);
 
-inline constexpr struct euro final : named_unit<"EUR", kind_of<currency>> {} euro;
-inline constexpr struct us_dollar final : named_unit<"USD", kind_of<currency>> {} us_dollar;
-inline constexpr struct great_british_pound final : named_unit<"GBP", kind_of<currency>> {} great_british_pound;
-inline constexpr struct japanese_jen final : named_unit<"JPY", kind_of<currency>> {} japanese_jen;
+constexpr struct euro final : named_unit<"EUR", kind_of<currency>> {} euro;
+constexpr struct us_dollar final : named_unit<"USD", kind_of<currency>> {} us_dollar;
+constexpr struct great_british_pound final : named_unit<"GBP", kind_of<currency>> {} great_british_pound;
+constexpr struct japanese_jen final : named_unit<"JPY", kind_of<currency>> {} japanese_jen;
 // clang-format on
 
 namespace unit_symbols {
 
-inline constexpr auto EUR = euro;
-inline constexpr auto USD = us_dollar;
-inline constexpr auto GBP = great_british_pound;
-inline constexpr auto JPY = japanese_jen;
+constexpr auto EUR = euro;
+constexpr auto USD = us_dollar;
+constexpr auto GBP = great_british_pound;
+constexpr auto JPY = japanese_jen;
 
 }  // namespace unit_symbols
 

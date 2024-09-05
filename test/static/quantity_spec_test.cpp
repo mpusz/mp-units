@@ -37,22 +37,22 @@ using dimensionless_ = struct dimensionless;
 using dim_one_ = struct dimension_one;
 
 // clang-format off
-inline constexpr struct dim_length_ final : base_dimension<"L"> {} dim_length;
-inline constexpr struct dim_mass_ final : base_dimension<"M"> {} dim_mass;
-inline constexpr struct dim_time_ final : base_dimension<"T"> {} dim_time;
+constexpr struct dim_length_ final : base_dimension<"L"> {} dim_length;
+constexpr struct dim_mass_ final : base_dimension<"M"> {} dim_mass;
+constexpr struct dim_time_ final : base_dimension<"T"> {} dim_time;
 
 // quantities specification
 QUANTITY_SPEC_(length, dim_length);
 QUANTITY_SPEC_(mass, dim_mass);
 QUANTITY_SPEC_(time, dim_time);
 
-inline constexpr struct second_ final : named_unit<"s", kind_of<time>> {} second;
+constexpr struct second_ final : named_unit<"s", kind_of<time>> {} second;
 
 QUANTITY_SPEC_(height, length);
 QUANTITY_SPEC_(width, length);
 QUANTITY_SPEC_(radius, width);
 QUANTITY_SPEC_(path_length, length);
-inline constexpr auto arc_length = path_length;
+constexpr auto arc_length = path_length;
 QUANTITY_SPEC_(distance, path_length);
 QUANTITY_SPEC_(position_vector, length, quantity_character::vector);
 QUANTITY_SPEC_(period_duration, time);

@@ -40,7 +40,7 @@ import mp_units.core;
 #include <mp-units/framework/customization_points.h>
 #endif
 
-inline constexpr struct validated_tag {
+constexpr struct validated_tag {
 } validated;
 
 template<std::movable T, std::predicate<T> Validator>
@@ -114,11 +114,10 @@ public:
 };
 
 template<typename T, typename Validator>
-inline constexpr bool mp_units::is_scalar<validated_type<T, Validator>> = mp_units::is_scalar<T>;
+constexpr bool mp_units::is_scalar<validated_type<T, Validator>> = mp_units::is_scalar<T>;
 
 template<typename T, typename Validator>
-inline constexpr bool mp_units::treat_as_floating_point<validated_type<T, Validator>> =
-  mp_units::treat_as_floating_point<T>;
+constexpr bool mp_units::treat_as_floating_point<validated_type<T, Validator>> = mp_units::treat_as_floating_point<T>;
 
 
 template<typename CharT, typename Traits, typename T, typename Validator>

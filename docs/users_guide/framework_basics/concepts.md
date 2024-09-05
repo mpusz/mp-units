@@ -180,7 +180,7 @@ with `true` for one or more of the following variable templates:
     ```cpp
     template<class T>
       requires mp_units::is_scalar<T>
-    inline constexpr bool mp_units::is_vector<T> = true;
+    constexpr bool mp_units::is_vector<T> = true;
     ```
 
 
@@ -219,7 +219,7 @@ implicitly convertible from quantity specification `V`, which means that `V` mus
     However, if we define `mean_sea_level` in the following way:
 
     ```cpp
-    inline constexpr struct mean_sea_level final : absolute_point_origin<isq::altitude> {} mean_sea_level;
+    constexpr struct mean_sea_level final : absolute_point_origin<isq::altitude> {} mean_sea_level;
     ```
 
     then it can't be used as a point origin for _points_ of `isq::length` or `isq::width` as none of them

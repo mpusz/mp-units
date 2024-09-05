@@ -43,7 +43,7 @@ namespace mp_units {
 namespace detail {
 
 template<PointOrigin PO>
-inline constexpr bool is_specialization_of_zeroth_point_origin = false;
+constexpr bool is_specialization_of_zeroth_point_origin = false;
 
 template<PointOrigin PO>
 [[nodiscard]] consteval bool is_zeroth_point_origin(PO)
@@ -130,12 +130,12 @@ template<QuantitySpec auto QS>
 struct zeroth_point_origin_ final : absolute_point_origin<QS> {};
 
 MP_UNITS_EXPORT template<QuantitySpec auto QS>
-inline constexpr zeroth_point_origin_<QS> zeroth_point_origin;
+constexpr zeroth_point_origin_<QS> zeroth_point_origin;
 
 namespace detail {
 
 template<auto QS>
-inline constexpr bool is_specialization_of_zeroth_point_origin<zeroth_point_origin_<QS>> = true;
+constexpr bool is_specialization_of_zeroth_point_origin<zeroth_point_origin_<QS>> = true;
 
 }  // namespace detail
 

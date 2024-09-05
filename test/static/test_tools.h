@@ -31,19 +31,19 @@ import std;
 #endif
 
 template<auto V, typename T>
-inline constexpr bool is_of_type = std::is_same_v<MP_UNITS_REMOVE_CONST(decltype(V)), T>;
+constexpr bool is_of_type = std::is_same_v<MP_UNITS_REMOVE_CONST(decltype(V)), T>;
 
 // NOLINTBEGIN(cppcoreguidelines-macro-usage)
 #if MP_UNITS_API_NO_CRTP
 
-#define QUANTITY_SPEC_(name, ...)                                      \
-  inline constexpr struct name##_ final : quantity_spec<__VA_ARGS__> { \
+#define QUANTITY_SPEC_(name, ...)                               \
+  constexpr struct name##_ final : quantity_spec<__VA_ARGS__> { \
   } name
 
 #else
 
-#define QUANTITY_SPEC_(name, ...)                                               \
-  inline constexpr struct name##_ final : quantity_spec<name##_, __VA_ARGS__> { \
+#define QUANTITY_SPEC_(name, ...)                                        \
+  constexpr struct name##_ final : quantity_spec<name##_, __VA_ARGS__> { \
   } name
 
 #endif

@@ -37,15 +37,15 @@ namespace mp_units::isq {
 
 // space and time
 QUANTITY_SPEC(width, length);
-inline constexpr auto breadth = width;
+constexpr auto breadth = width;
 QUANTITY_SPEC(radius, width);  // differs from ISO 80000
 QUANTITY_SPEC(path_length, length);
-inline constexpr auto arc_length = path_length;
+constexpr auto arc_length = path_length;
 QUANTITY_SPEC(area, pow<2>(length));
 QUANTITY_SPEC(angular_measure, dimensionless, arc_length / radius, is_kind);
 QUANTITY_SPEC(solid_angular_measure, dimensionless, area / pow<2>(radius), is_kind);
 QUANTITY_SPEC(period_duration, duration);
-inline constexpr auto period = period_duration;
+constexpr auto period = period_duration;
 QUANTITY_SPEC(frequency, inverse(period_duration));
 
 // mechanics

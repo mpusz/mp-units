@@ -40,10 +40,10 @@ using percent_ = struct percent;
 
 // base dimensions
 // clang-format off
-inline constexpr struct dim_length_ final : base_dimension<"L"> {} dim_length;
-inline constexpr struct dim_mass_ final : base_dimension<"M"> {} dim_mass;
-inline constexpr struct dim_time_ final : base_dimension<"T"> {} dim_time;
-inline constexpr struct dim_thermodynamic_temperature_ final : base_dimension<symbol_text{u8"Θ", "O"}> {} dim_thermodynamic_temperature;
+constexpr struct dim_length_ final : base_dimension<"L"> {} dim_length;
+constexpr struct dim_mass_ final : base_dimension<"M"> {} dim_mass;
+constexpr struct dim_time_ final : base_dimension<"T"> {} dim_time;
+constexpr struct dim_thermodynamic_temperature_ final : base_dimension<symbol_text{u8"Θ", "O"}> {} dim_thermodynamic_temperature;
 
 // quantities specification
 QUANTITY_SPEC_(length, dim_length);
@@ -52,39 +52,39 @@ QUANTITY_SPEC_(time, dim_time);
 QUANTITY_SPEC_(thermodynamic_temperature, dim_thermodynamic_temperature);
 
 // base units
-inline constexpr struct second_ final : named_unit<"s", kind_of<time>> {} second;
-inline constexpr struct metre_ final : named_unit<"m", kind_of<length>> {} metre;
-inline constexpr struct gram_ final : named_unit<"g", kind_of<mass>> {} gram;
-inline constexpr auto kilogram = si::kilo<gram>;
-inline constexpr struct kelvin_ final : named_unit<"K", kind_of<thermodynamic_temperature>> {} kelvin;
+constexpr struct second_ final : named_unit<"s", kind_of<time>> {} second;
+constexpr struct metre_ final : named_unit<"m", kind_of<length>> {} metre;
+constexpr struct gram_ final : named_unit<"g", kind_of<mass>> {} gram;
+constexpr auto kilogram = si::kilo<gram>;
+constexpr struct kelvin_ final : named_unit<"K", kind_of<thermodynamic_temperature>> {} kelvin;
 
 // hypothetical natural units for c=1
-inline constexpr struct nu_second_ final : named_unit<"s"> {} nu_second;
+constexpr struct nu_second_ final : named_unit<"s"> {} nu_second;
 
 // derived named units
-inline constexpr struct radian_ final : named_unit<"rad", metre / metre> {} radian;
-inline constexpr struct steradian_ final : named_unit<"sr", square(metre) / square(metre)> {} steradian;
-inline constexpr struct hertz_ final : named_unit<"Hz", inverse(second)> {} hertz;
-inline constexpr struct becquerel_ final : named_unit<"Bq", inverse(second)> {} becquerel;
-inline constexpr struct newton_ final : named_unit<"N", kilogram * metre / square(second)> {} newton;
-inline constexpr struct pascal_ final : named_unit<"Pa", newton / square(metre)> {} pascal;
-inline constexpr struct joule_ final : named_unit<"J", newton * metre> {} joule;
-inline constexpr struct watt_ final : named_unit<"W", joule / second> {} watt;
-inline constexpr struct degree_Celsius_ final : named_unit<symbol_text{u8"℃", "`C"}, kelvin> {} degree_Celsius;
+constexpr struct radian_ final : named_unit<"rad", metre / metre> {} radian;
+constexpr struct steradian_ final : named_unit<"sr", square(metre) / square(metre)> {} steradian;
+constexpr struct hertz_ final : named_unit<"Hz", inverse(second)> {} hertz;
+constexpr struct becquerel_ final : named_unit<"Bq", inverse(second)> {} becquerel;
+constexpr struct newton_ final : named_unit<"N", kilogram * metre / square(second)> {} newton;
+constexpr struct pascal_ final : named_unit<"Pa", newton / square(metre)> {} pascal;
+constexpr struct joule_ final : named_unit<"J", newton * metre> {} joule;
+constexpr struct watt_ final : named_unit<"W", joule / second> {} watt;
+constexpr struct degree_Celsius_ final : named_unit<symbol_text{u8"℃", "`C"}, kelvin> {} degree_Celsius;
 
-inline constexpr struct minute_ final : named_unit<"min", mag<60> * second> {} minute;
-inline constexpr struct hour_ final : named_unit<"h", mag<60> * minute> {} hour;
-inline constexpr struct degree_ final : named_unit<symbol_text{u8"°", "deg"}, mag_pi / mag<180> * radian> {} degree;
+constexpr struct minute_ final : named_unit<"min", mag<60> * second> {} minute;
+constexpr struct hour_ final : named_unit<"h", mag<60> * minute> {} hour;
+constexpr struct degree_ final : named_unit<symbol_text{u8"°", "deg"}, mag_pi / mag<180> * radian> {} degree;
 
-inline constexpr struct yard_ final : named_unit<"yd", mag_ratio<9'144, 10'000> * metre> {} yard;
-inline constexpr struct mile_ final : named_unit<"mi", mag<1760> * yard> {} mile;
+constexpr struct yard_ final : named_unit<"yd", mag_ratio<9'144, 10'000> * metre> {} yard;
+constexpr struct mile_ final : named_unit<"mi", mag<1760> * yard> {} mile;
 
-inline constexpr auto kilometre = si::kilo<metre>;
-inline constexpr auto kilojoule = si::kilo<joule>;
+constexpr auto kilometre = si::kilo<metre>;
+constexpr auto kilojoule = si::kilo<joule>;
 
 // physical constant units
-inline constexpr struct standard_gravity_ final : named_unit<symbol_text{u8"g₀", "g_0"}, mag_ratio<980'665, 100'000> * metre / square(second)> {} standard_gravity;
-inline constexpr struct speed_of_light_in_vacuum_ final : named_unit<"c", mag<299'792'458> * metre / second> {} speed_of_light_in_vacuum;
+constexpr struct standard_gravity_ final : named_unit<symbol_text{u8"g₀", "g_0"}, mag_ratio<980'665, 100'000> * metre / square(second)> {} standard_gravity;
+constexpr struct speed_of_light_in_vacuum_ final : named_unit<"c", mag<299'792'458> * metre / second> {} speed_of_light_in_vacuum;
 
 // clang-format on
 

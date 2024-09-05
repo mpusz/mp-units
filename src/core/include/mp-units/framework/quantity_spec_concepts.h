@@ -53,10 +53,10 @@ struct kind_of_;
 namespace detail {
 
 template<typename T>
-inline constexpr bool is_specialization_of_kind_of = false;
+constexpr bool is_specialization_of_kind_of = false;
 
 template<typename Q>
-inline constexpr bool is_specialization_of_kind_of<kind_of_<Q>> = true;
+constexpr bool is_specialization_of_kind_of<kind_of_<Q>> = true;
 
 template<typename T>
 concept QuantityKindSpec = is_specialization_of_kind_of<T>;
@@ -70,7 +70,7 @@ void to_base_specialization_of_quantity_spec(const volatile quantity_spec<T, Arg
 #endif
 
 template<typename T>
-inline constexpr bool is_derived_from_specialization_of_quantity_spec =
+constexpr bool is_derived_from_specialization_of_quantity_spec =
   requires(T* t) { to_base_specialization_of_quantity_spec(t); };
 
 /**
@@ -86,16 +86,16 @@ template<typename T>
 struct is_dimensionless : std::false_type {};
 
 template<typename T>
-inline constexpr bool is_power_of_quantity_spec = requires {
+constexpr bool is_power_of_quantity_spec = requires {
   requires is_specialization_of_power<T> &&
              (NamedQuantitySpec<typename T::factor> || is_dimensionless<typename T::factor>::value);
 };
 
 template<typename T>
-inline constexpr bool is_per_of_quantity_specs = false;
+constexpr bool is_per_of_quantity_specs = false;
 
 template<typename... Ts>
-inline constexpr bool is_per_of_quantity_specs<per<Ts...>> =
+constexpr bool is_per_of_quantity_specs<per<Ts...>> =
   (... && (NamedQuantitySpec<Ts> || is_dimensionless<Ts>::value || is_power_of_quantity_spec<Ts>));
 
 template<typename T>

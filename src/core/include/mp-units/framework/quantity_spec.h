@@ -189,7 +189,7 @@ struct quantity_spec_interface : quantity_spec_interface_base {
 
 MP_UNITS_EXPORT_BEGIN
 
-inline constexpr struct is_kind {
+constexpr struct is_kind {
 } is_kind;
 
 /**
@@ -235,13 +235,13 @@ MP_UNITS_EXPORT_END
  * For example:
  *
  * @code{.cpp}
- * inline constexpr struct dim_length final : base_dimension<"L"> {} dim_length;
- * inline constexpr struct dim_mass final : base_dimension<"M"> {} dim_mass;
- * inline constexpr struct dim_time final : base_dimension<"T"> {} dim_time;
+ * constexpr struct dim_length final : base_dimension<"L"> {} dim_length;
+ * constexpr struct dim_mass final : base_dimension<"M"> {} dim_mass;
+ * constexpr struct dim_time final : base_dimension<"T"> {} dim_time;
  *
- * inline constexpr struct length final : quantity_spec<dim_length> {} length;
- * inline constexpr struct mass final : quantity_spec<dim_mass> {} mass;
- * inline constexpr struct time final : quantity_spec<dim_time> {} time;
+ * constexpr struct length final : quantity_spec<dim_length> {} length;
+ * constexpr struct mass final : quantity_spec<dim_mass> {} mass;
+ * constexpr struct time final : quantity_spec<dim_time> {} time;
  * @endcode
  *
  * @note A common convention in this library is to assign the same name for a type and an object of this type.
@@ -280,12 +280,12 @@ struct quantity_spec<Self, Dim, Args...> : detail::quantity_spec_interface<Self>
  * For example:
  *
  * @code{.cpp}
- * inline constexpr struct area final : quantity_spec<pow<2>(length)> {} area;
- * inline constexpr struct volume final : quantity_spec<pow<3>(length)> {} volume;
- * inline constexpr struct velocity final : quantity_spec<position_vector / duration> {} velocity;
- * inline constexpr struct speed final : quantity_spec<length / time> {} speed;
- * inline constexpr struct force final : quantity_spec<mass * acceleration, quantity_character::vector> {} force;
- * inline constexpr struct power final : quantity_spec<force * velocity, quantity_character::scalar> {} power;
+ * constexpr struct area final : quantity_spec<pow<2>(length)> {} area;
+ * constexpr struct volume final : quantity_spec<pow<3>(length)> {} volume;
+ * constexpr struct velocity final : quantity_spec<position_vector / duration> {} velocity;
+ * constexpr struct speed final : quantity_spec<length / time> {} speed;
+ * constexpr struct force final : quantity_spec<mass * acceleration, quantity_character::vector> {} force;
+ * constexpr struct power final : quantity_spec<force * velocity, quantity_character::scalar> {} power;
  * @endcode
  *
  * @note A common convention in this library is to assign the same name for a type and an object of this type.
@@ -335,10 +335,10 @@ struct propagate_equation<Q, true> {
  * For example:
  *
  * @code{.cpp}
- * inline constexpr struct width final : quantity_spec<length> {} width;
- * inline constexpr struct height final : quantity_spec<length> {} height;
- * inline constexpr struct diameter final : quantity_spec<width> {} diameter;
- * inline constexpr struct position_vector final : quantity_spec<length, quantity_character::vector> {} position_vector;
+ * constexpr struct width final : quantity_spec<length> {} width;
+ * constexpr struct height final : quantity_spec<length> {} height;
+ * constexpr struct diameter final : quantity_spec<width> {} diameter;
+ * constexpr struct position_vector final : quantity_spec<length, quantity_character::vector> {} position_vector;
  * @endcode
  *
  * @note A common convention in this library is to assign the same name for a type and an object of this type.
@@ -396,10 +396,10 @@ struct quantity_spec<Self, QS, Args...> : detail::propagate_equation<QS>, detail
  * For example:
  *
  * @code{.cpp}
- * inline constexpr struct angular_measure final : quantity_spec<dimensionless, arc_length / radius, is_kind> {} angular_measure;
- * inline constexpr struct velocity final : quantity_spec<speed, position_vector / duration> {} velocity;
- * inline constexpr struct weight final : quantity_spec<force, mass * acceleration_of_free_fall> {} weight;
- * inline constexpr struct kinetic_energy final : quantity_spec<mechanical_energy, mass * pow<2>(speed)> {} kinetic_energy;
+ * constexpr struct angular_measure final : quantity_spec<dimensionless, arc_length / radius, is_kind> {} angular_measure;
+ * constexpr struct velocity final : quantity_spec<speed, position_vector / duration> {} velocity;
+ * constexpr struct weight final : quantity_spec<force, mass * acceleration_of_free_fall> {} weight;
+ * constexpr struct kinetic_energy final : quantity_spec<mechanical_energy, mass * pow<2>(speed)> {} kinetic_energy;
  * @endcode
  *
  * @note A common convention in this library is to assign the same name for a type and an object of this type.
@@ -556,7 +556,7 @@ struct kind_of_<Q> final : quantity_spec<kind_of_<Q>, Q{}>::_base_type_ {
 
 MP_UNITS_EXPORT template<detail::QuantitySpecWithNoSpecifiers auto Q>
   requires detail::SameQuantitySpec<detail::get_kind_tree_root(Q), Q>
-inline constexpr kind_of_<MP_UNITS_REMOVE_CONST(decltype(Q))> kind_of;
+constexpr kind_of_<MP_UNITS_REMOVE_CONST(decltype(Q))> kind_of;
 
 namespace detail {
 
