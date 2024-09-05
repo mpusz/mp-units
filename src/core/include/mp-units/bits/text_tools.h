@@ -43,25 +43,25 @@ template<std::intmax_t Value>
 constexpr basic_fixed_string superscript_number = u8"";
 
 template<>
-constexpr basic_fixed_string superscript_number<0> = u8"\u2070";
+MP_UNITS_INLINE constexpr basic_fixed_string superscript_number<0> = u8"\u2070";
 template<>
-constexpr basic_fixed_string superscript_number<1> = u8"\u00b9";
+MP_UNITS_INLINE constexpr basic_fixed_string superscript_number<1> = u8"\u00b9";
 template<>
-constexpr basic_fixed_string superscript_number<2> = u8"\u00b2";
+MP_UNITS_INLINE constexpr basic_fixed_string superscript_number<2> = u8"\u00b2";
 template<>
-constexpr basic_fixed_string superscript_number<3> = u8"\u00b3";
+MP_UNITS_INLINE constexpr basic_fixed_string superscript_number<3> = u8"\u00b3";
 template<>
-constexpr basic_fixed_string superscript_number<4> = u8"\u2074";
+MP_UNITS_INLINE constexpr basic_fixed_string superscript_number<4> = u8"\u2074";
 template<>
-constexpr basic_fixed_string superscript_number<5> = u8"\u2075";
+MP_UNITS_INLINE constexpr basic_fixed_string superscript_number<5> = u8"\u2075";
 template<>
-constexpr basic_fixed_string superscript_number<6> = u8"\u2076";
+MP_UNITS_INLINE constexpr basic_fixed_string superscript_number<6> = u8"\u2076";
 template<>
-constexpr basic_fixed_string superscript_number<7> = u8"\u2077";
+MP_UNITS_INLINE constexpr basic_fixed_string superscript_number<7> = u8"\u2077";
 template<>
-constexpr basic_fixed_string superscript_number<8> = u8"\u2078";
+MP_UNITS_INLINE constexpr basic_fixed_string superscript_number<8> = u8"\u2078";
 template<>
-constexpr basic_fixed_string superscript_number<9> = u8"\u2079";
+MP_UNITS_INLINE constexpr basic_fixed_string superscript_number<9> = u8"\u2079";
 
 inline constexpr symbol_text superscript_minus(u8"\u207b", "-");
 

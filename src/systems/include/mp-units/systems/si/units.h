@@ -126,10 +126,10 @@ using namespace non_si;
 }  // namespace si
 
 template<>
-constexpr bool space_before_unit_symbol<non_si::degree> = false;
+MP_UNITS_INLINE constexpr bool space_before_unit_symbol<non_si::degree> = false;
 template<>
-constexpr bool space_before_unit_symbol<non_si::arcminute> = false;
+MP_UNITS_INLINE constexpr bool space_before_unit_symbol<non_si::arcminute> = false;
 template<>
-constexpr bool space_before_unit_symbol<non_si::arcsecond> = false;
+MP_UNITS_INLINE constexpr bool space_before_unit_symbol<non_si::arcsecond> = false;
 
 }  // namespace mp_units

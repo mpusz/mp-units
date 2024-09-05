@@ -77,6 +77,9 @@
 #define MP_UNITS_HOSTED __STDC_HOSTED__
 #endif
 
+// workarounds for https://cplusplus.github.io/CWG/issues/2387.html
+#define MP_UNITS_INLINE inline
+
 #if MP_UNITS_COMP_MSVC
 
 #define MP_UNITS_TYPENAME typename

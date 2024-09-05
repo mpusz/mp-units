@@ -678,11 +678,11 @@ template<Unit auto U>
 constexpr bool space_before_unit_symbol = true;
 
 template<>
-constexpr bool space_before_unit_symbol<one> = false;
+MP_UNITS_INLINE constexpr bool space_before_unit_symbol<one> = false;
 template<>
-constexpr bool space_before_unit_symbol<percent> = false;
+MP_UNITS_INLINE constexpr bool space_before_unit_symbol<percent> = false;
 template<>
-constexpr bool space_before_unit_symbol<per_mille> = false;
+MP_UNITS_INLINE constexpr bool space_before_unit_symbol<per_mille> = false;
 
 // get_unit_symbol
 
