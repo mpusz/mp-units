@@ -148,45 +148,45 @@ For example, here is how the above quantity kind tree can be modeled in the libr
 === "C++23"
 
     ```cpp
-    constexpr struct length final : quantity_spec<dim_length> {} length;
-    constexpr struct width final : quantity_spec<length> {} width;
-    constexpr auto breadth = width;
-    constexpr struct height final : quantity_spec<length> {} height;
-    constexpr auto depth = height;
-    constexpr auto altitude = height;
-    constexpr struct thickness final : quantity_spec<width> {} thickness;
-    constexpr struct diameter final : quantity_spec<width> {} diameter;
-    constexpr struct radius final : quantity_spec<width> {} radius;
-    constexpr struct radius_of_curvature final : quantity_spec<radius> {} radius_of_curvature;
-    constexpr struct path_length final : quantity_spec<length> {} path_length;
-    constexpr auto arc_length = path_length;
-    constexpr struct distance final : quantity_spec<path_length> {} distance;
-    constexpr struct radial_distance final : quantity_spec<distance> {} radial_distance;
-    constexpr struct wavelength final : quantity_spec<length> {} wavelength;
-    constexpr struct position_vector final : quantity_spec<length, quantity_character::vector> {} position_vector;
-    constexpr struct displacement final : quantity_spec<length, quantity_character::vector> {} displacement;
+    inline constexpr struct length final : quantity_spec<dim_length> {} length;
+    inline constexpr struct width final : quantity_spec<length> {} width;
+    inline constexpr auto breadth = width;
+    inline constexpr struct height final : quantity_spec<length> {} height;
+    inline constexpr auto depth = height;
+    inline constexpr auto altitude = height;
+    inline constexpr struct thickness final : quantity_spec<width> {} thickness;
+    inline constexpr struct diameter final : quantity_spec<width> {} diameter;
+    inline constexpr struct radius final : quantity_spec<width> {} radius;
+    inline constexpr struct radius_of_curvature final : quantity_spec<radius> {} radius_of_curvature;
+    inline constexpr struct path_length final : quantity_spec<length> {} path_length;
+    inline constexpr auto arc_length = path_length;
+    inline constexpr struct distance final : quantity_spec<path_length> {} distance;
+    inline constexpr struct radial_distance final : quantity_spec<distance> {} radial_distance;
+    inline constexpr struct wavelength final : quantity_spec<length> {} wavelength;
+    inline constexpr struct position_vector final : quantity_spec<length, quantity_character::vector> {} position_vector;
+    inline constexpr struct displacement final : quantity_spec<length, quantity_character::vector> {} displacement;
     ```
 
 === "C++20"
 
     ```cpp
-    constexpr struct length final : quantity_spec<length, dim_length> {} length;
-    constexpr struct width final : quantity_spec<width, length> {} width;
-    constexpr auto breadth = width;
-    constexpr struct height final : quantity_spec<height, length> {} height;
-    constexpr auto depth = height;
-    constexpr auto altitude = height;
-    constexpr struct thickness final : quantity_spec<thickness, width> {} thickness;
-    constexpr struct diameter final : quantity_spec<diameter, width> {} diameter;
-    constexpr struct radius final : quantity_spec<radius, width> {} radius;
-    constexpr struct radius_of_curvature final : quantity_spec<radius_of_curvature, radius> {} radius_of_curvature;
-    constexpr struct path_length final : quantity_spec<path_length, length> {} path_length;
-    constexpr auto arc_length = path_length;
-    constexpr struct distance final : quantity_spec<distance, path_length> {} distance;
-    constexpr struct radial_distance final : quantity_spec<radial_distance, distance> {} radial_distance;
-    constexpr struct wavelength final : quantity_spec<wavelength, length> {} wavelength;
-    constexpr struct position_vector final : quantity_spec<position_vector, length, quantity_character::vector> {} position_vector;
-    constexpr struct displacement final : quantity_spec<displacement, length, quantity_character::vector> {} displacement;
+    inline constexpr struct length final : quantity_spec<length, dim_length> {} length;
+    inline constexpr struct width final : quantity_spec<width, length> {} width;
+    inline constexpr auto breadth = width;
+    inline constexpr struct height final : quantity_spec<height, length> {} height;
+    inline constexpr auto depth = height;
+    inline constexpr auto altitude = height;
+    inline constexpr struct thickness final : quantity_spec<thickness, width> {} thickness;
+    inline constexpr struct diameter final : quantity_spec<diameter, width> {} diameter;
+    inline constexpr struct radius final : quantity_spec<radius, width> {} radius;
+    inline constexpr struct radius_of_curvature final : quantity_spec<radius_of_curvature, radius> {} radius_of_curvature;
+    inline constexpr struct path_length final : quantity_spec<path_length, length> {} path_length;
+    inline constexpr auto arc_length = path_length;
+    inline constexpr struct distance final : quantity_spec<distance, path_length> {} distance;
+    inline constexpr struct radial_distance final : quantity_spec<radial_distance, distance> {} radial_distance;
+    inline constexpr struct wavelength final : quantity_spec<wavelength, length> {} wavelength;
+    inline constexpr struct position_vector final : quantity_spec<position_vector, length, quantity_character::vector> {} position_vector;
+    inline constexpr struct displacement final : quantity_spec<displacement, length, quantity_character::vector> {} displacement;
     ```
 
 === "Portable"
@@ -194,16 +194,16 @@ For example, here is how the above quantity kind tree can be modeled in the libr
     ```cpp
     QUANTITY_SPEC(length, dim_length);
     QUANTITY_SPEC(width, length);
-    constexpr auto breadth = width;
+    inline constexpr auto breadth = width;
     QUANTITY_SPEC(height, length);
-    constexpr auto depth = height;
-    constexpr auto altitude = height;
+    inline constexpr auto depth = height;
+    inline constexpr auto altitude = height;
     QUANTITY_SPEC(thickness, width);
     QUANTITY_SPEC(diameter, width);
     QUANTITY_SPEC(radius, width);
     QUANTITY_SPEC(radius_of_curvature, radius);
     QUANTITY_SPEC(path_length, length);
-    constexpr auto arc_length = path_length;
+    inline constexpr auto arc_length = path_length;
     QUANTITY_SPEC(distance, path_length);
     QUANTITY_SPEC(radial_distance, distance);
     QUANTITY_SPEC(wavelength, length);

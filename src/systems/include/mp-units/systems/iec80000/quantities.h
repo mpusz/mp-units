@@ -36,40 +36,40 @@ namespace mp_units::iec80000 {
 
 // dimensions of base quantities
 // clang-format off
-constexpr struct dim_traffic_intensity final : base_dimension<"A"> {} dim_traffic_intensity;
+inline constexpr struct dim_traffic_intensity final : base_dimension<"A"> {} dim_traffic_intensity;
 // clang-format on
 
 // quantities
 QUANTITY_SPEC(traffic_intensity, dim_traffic_intensity);
 QUANTITY_SPEC(traffic_offered_intensity, traffic_intensity);
 QUANTITY_SPEC(traffic_carried_intensity, traffic_intensity);
-constexpr auto traffic_load = traffic_carried_intensity;
+inline constexpr auto traffic_load = traffic_carried_intensity;
 QUANTITY_SPEC(mean_queue_length, dimensionless);
 QUANTITY_SPEC(loss_probability, dimensionless);
 QUANTITY_SPEC(waiting_probability, dimensionless);
 QUANTITY_SPEC(call_intensity, inverse(isq::duration));
-constexpr auto calling_rate = call_intensity;
+inline constexpr auto calling_rate = call_intensity;
 QUANTITY_SPEC(completed_call_intensity, call_intensity);
 QUANTITY_SPEC(storage_capacity, dimensionless, is_kind);
-constexpr auto storage_size = storage_capacity;
+inline constexpr auto storage_size = storage_capacity;
 QUANTITY_SPEC(equivalent_binary_storage_capacity, storage_capacity);
 QUANTITY_SPEC(transfer_rate, storage_capacity / isq::duration);
 QUANTITY_SPEC(period_of_data_elements, isq::period, inverse(transfer_rate));
 QUANTITY_SPEC(binary_digit_rate, transfer_rate);
-constexpr auto bit_rate = binary_digit_rate;
+inline constexpr auto bit_rate = binary_digit_rate;
 QUANTITY_SPEC(period_of_binary_digits, isq::period, inverse(binary_digit_rate));
-constexpr auto bit_period = period_of_binary_digits;
+inline constexpr auto bit_period = period_of_binary_digits;
 QUANTITY_SPEC(equivalent_binary_digit_rate, binary_digit_rate);
-constexpr auto equivalent_bit_rate = bit_rate;
+inline constexpr auto equivalent_bit_rate = bit_rate;
 QUANTITY_SPEC(modulation_rate, inverse(isq::duration));
-constexpr auto line_digit_rate = modulation_rate;
+inline constexpr auto line_digit_rate = modulation_rate;
 QUANTITY_SPEC(quantizing_distortion_power, isq::power);
 QUANTITY_SPEC(carrier_power, isq::power);
 QUANTITY_SPEC(signal_energy_per_binary_digit, carrier_power* period_of_binary_digits);
 QUANTITY_SPEC(error_probability, dimensionless);
 QUANTITY_SPEC(Hamming_distance, dimensionless);
 QUANTITY_SPEC(clock_frequency, isq::frequency);
-constexpr auto clock_rate = clock_frequency;
+inline constexpr auto clock_rate = clock_frequency;
 QUANTITY_SPEC(decision_content, dimensionless);
 
 // TODO how to model information_content and the following quantities???

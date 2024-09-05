@@ -119,7 +119,7 @@ hae_altitude<M> to_hae(msl_altitude msl, position<long double> pos)
 // **** HAL ****
 
 // clang-format off
-constexpr struct height_above_launch final : absolute_point_origin<isq::altitude> {} height_above_launch;
+inline constexpr struct height_above_launch final : absolute_point_origin<isq::altitude> {} height_above_launch;
 // clang-format on
 
 using hal_altitude = quantity_point<isq::altitude[si::metre], height_above_launch>;

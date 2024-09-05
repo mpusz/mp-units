@@ -28,14 +28,14 @@
 
 #if MP_UNITS_API_NO_CRTP
 
-#define QUANTITY_SPEC(name, ...)                                         \
-  constexpr struct name final : ::mp_units::quantity_spec<__VA_ARGS__> { \
+#define QUANTITY_SPEC(name, ...)                                                \
+  inline constexpr struct name final : ::mp_units::quantity_spec<__VA_ARGS__> { \
   } name
 
 #else
 
-#define QUANTITY_SPEC(name, ...)                                               \
-  constexpr struct name final : ::mp_units::quantity_spec<name, __VA_ARGS__> { \
+#define QUANTITY_SPEC(name, ...)                                                      \
+  inline constexpr struct name final : ::mp_units::quantity_spec<name, __VA_ARGS__> { \
   } name
 
 #endif

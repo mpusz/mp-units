@@ -196,7 +196,7 @@ origin.
 ![affine_space_2](affine_space_2.svg){style="width:80%;display: block;margin: 0 auto;"}
 
 ```cpp
-constexpr struct origin final : absolute_point_origin<isq::distance> {} origin;
+inline constexpr struct origin final : absolute_point_origin<isq::distance> {} origin;
 
 // quantity_point<si::metre, origin> qp1{100 * m};        // Compile-time error
 // quantity_point<si::metre, origin> qp2{delta<m>(120)};  // Compile-time error
@@ -265,8 +265,8 @@ type and unit is being used:
 ![affine_space_3](affine_space_3.svg){style="width:80%;display: block;margin: 0 auto;"}
 
 ```cpp
-constexpr struct origin1 final : absolute_point_origin<isq::distance> {} origin1;
-constexpr struct origin2 final : absolute_point_origin<isq::distance> {} origin2;
+inline constexpr struct origin1 final : absolute_point_origin<isq::distance> {} origin1;
+inline constexpr struct origin2 final : absolute_point_origin<isq::distance> {} origin2;
 
 quantity_point qp1 = origin1 + 100 * m;
 quantity_point qp2 = origin2 + 120 * m;
@@ -300,10 +300,10 @@ For such cases, relative point origins should be used:
 ![affine_space_4](affine_space_4.svg){style="width:80%;display: block;margin: 0 auto;"}
 
 ```cpp
-constexpr struct A final : absolute_point_origin<isq::distance> {} A;
-constexpr struct B final : relative_point_origin<A + 10 * m> {} B;
-constexpr struct C final : relative_point_origin<B + 10 * m> {} C;
-constexpr struct D final : relative_point_origin<A + 30 * m> {} D;
+inline constexpr struct A final : absolute_point_origin<isq::distance> {} A;
+inline constexpr struct B final : relative_point_origin<A + 10 * m> {} B;
+inline constexpr struct C final : relative_point_origin<B + 10 * m> {} C;
+inline constexpr struct D final : relative_point_origin<A + 30 * m> {} D;
 
 quantity_point qp1 = C + 100 * m;
 quantity_point qp2 = D + 120 * m;
@@ -408,17 +408,17 @@ point origins for this purpose:
 ```cpp
 namespace si {
 
-constexpr struct absolute_zero final : absolute_point_origin<isq::thermodynamic_temperature> {} absolute_zero;
-constexpr auto zeroth_kelvin = absolute_zero;
+inline constexpr struct absolute_zero final : absolute_point_origin<isq::thermodynamic_temperature> {} absolute_zero;
+inline constexpr auto zeroth_kelvin = absolute_zero;
 
-constexpr struct ice_point final : relative_point_origin<absolute<milli<kelvin>>(273'150)}> {} ice_point;
-constexpr auto zeroth_degree_Celsius = ice_point;
+inline constexpr struct ice_point final : relative_point_origin<absolute<milli<kelvin>>(273'150)}> {} ice_point;
+inline constexpr auto zeroth_degree_Celsius = ice_point;
 
 }
 
 namespace usc {
 
-constexpr struct zeroth_degree_Fahrenheit final :
+inline constexpr struct zeroth_degree_Fahrenheit final :
   relative_point_origin<absolute<mag_ratio<5, 9> * si::degree_Celsius>(-32)> {} zeroth_degree_Fahrenheit;
 
 }
@@ -442,16 +442,16 @@ definitions:
 ```cpp
 namespace si {
 
-constexpr struct kelvin final :
+inline constexpr struct kelvin final :
     named_unit<"K", kind_of<isq::thermodynamic_temperature>, zeroth_kelvin> {} kelvin;
-constexpr struct degree_Celsius final :
+inline constexpr struct degree_Celsius final :
     named_unit<{u8"℃", "`C"}, kelvin, zeroth_degree_Celsius> {} degree_Celsius;
 
 }
 
 namespace usc {
 
-constexpr struct degree_Fahrenheit final :
+inline constexpr struct degree_Fahrenheit final :
     named_unit<{u8"℉", "`F"}, mag_ratio<5, 9> * si::degree_Celsius,
                zeroth_degree_Fahrenheit> {} degree_Fahrenheit;
 

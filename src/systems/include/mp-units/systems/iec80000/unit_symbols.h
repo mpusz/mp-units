@@ -31,81 +31,81 @@ MP_UNITS_EXPORT
 namespace mp_units::iec80000::unit_symbols {
 
 // bit
-constexpr auto kbit = si::kilo<bit>;
-constexpr auto Mbit = si::mega<bit>;
-constexpr auto Gbit = si::giga<bit>;
-constexpr auto Tbit = si::tera<bit>;
-constexpr auto Pbit = si::peta<bit>;
-constexpr auto Ebit = si::exa<bit>;
-constexpr auto Zbit = si::zetta<bit>;
-constexpr auto Ybit = si::yotta<bit>;
-constexpr auto Rbit = si::ronna<bit>;
-constexpr auto Qbit = si::quetta<bit>;
+inline constexpr auto kbit = si::kilo<bit>;
+inline constexpr auto Mbit = si::mega<bit>;
+inline constexpr auto Gbit = si::giga<bit>;
+inline constexpr auto Tbit = si::tera<bit>;
+inline constexpr auto Pbit = si::peta<bit>;
+inline constexpr auto Ebit = si::exa<bit>;
+inline constexpr auto Zbit = si::zetta<bit>;
+inline constexpr auto Ybit = si::yotta<bit>;
+inline constexpr auto Rbit = si::ronna<bit>;
+inline constexpr auto Qbit = si::quetta<bit>;
 
-constexpr auto Kibit = kibi<bit>;
-constexpr auto Mibit = mebi<bit>;
-constexpr auto Gibit = gibi<bit>;
-constexpr auto Tibit = tebi<bit>;
-constexpr auto Pibit = pebi<bit>;
-constexpr auto Eibit = exbi<bit>;
+inline constexpr auto Kibit = kibi<bit>;
+inline constexpr auto Mibit = mebi<bit>;
+inline constexpr auto Gibit = gibi<bit>;
+inline constexpr auto Tibit = tebi<bit>;
+inline constexpr auto Pibit = pebi<bit>;
+inline constexpr auto Eibit = exbi<bit>;
 
 // octet
-constexpr auto o = octet;
+inline constexpr auto o = octet;
 
-constexpr auto ko = si::kilo<octet>;
-constexpr auto Mo = si::mega<octet>;
-constexpr auto Go = si::giga<octet>;
-constexpr auto To = si::tera<octet>;
-constexpr auto Po = si::peta<octet>;
-constexpr auto Eo = si::exa<octet>;
-constexpr auto Zo = si::zetta<octet>;
-constexpr auto Yo = si::yotta<octet>;
-constexpr auto Ro = si::ronna<octet>;
-constexpr auto Qo = si::quetta<octet>;
+inline constexpr auto ko = si::kilo<octet>;
+inline constexpr auto Mo = si::mega<octet>;
+inline constexpr auto Go = si::giga<octet>;
+inline constexpr auto To = si::tera<octet>;
+inline constexpr auto Po = si::peta<octet>;
+inline constexpr auto Eo = si::exa<octet>;
+inline constexpr auto Zo = si::zetta<octet>;
+inline constexpr auto Yo = si::yotta<octet>;
+inline constexpr auto Ro = si::ronna<octet>;
+inline constexpr auto Qo = si::quetta<octet>;
 
-constexpr auto Kio = kibi<octet>;
-constexpr auto Mio = mebi<octet>;
-constexpr auto Gio = gibi<octet>;
-constexpr auto Tio = tebi<octet>;
-constexpr auto Pio = pebi<octet>;
-constexpr auto Eio = exbi<octet>;
+inline constexpr auto Kio = kibi<octet>;
+inline constexpr auto Mio = mebi<octet>;
+inline constexpr auto Gio = gibi<octet>;
+inline constexpr auto Tio = tebi<octet>;
+inline constexpr auto Pio = pebi<octet>;
+inline constexpr auto Eio = exbi<octet>;
 
 // byte
-constexpr auto B = byte;
+inline constexpr auto B = byte;
 
-constexpr auto kB = si::kilo<byte>;
-constexpr auto MB = si::mega<byte>;
-constexpr auto GB = si::giga<byte>;
-constexpr auto TB = si::tera<byte>;
-constexpr auto PB = si::peta<byte>;
-constexpr auto EB = si::exa<byte>;
-constexpr auto ZB = si::zetta<byte>;
-constexpr auto YB = si::yotta<byte>;
-constexpr auto RB = si::ronna<byte>;
-constexpr auto QB = si::quetta<byte>;
+inline constexpr auto kB = si::kilo<byte>;
+inline constexpr auto MB = si::mega<byte>;
+inline constexpr auto GB = si::giga<byte>;
+inline constexpr auto TB = si::tera<byte>;
+inline constexpr auto PB = si::peta<byte>;
+inline constexpr auto EB = si::exa<byte>;
+inline constexpr auto ZB = si::zetta<byte>;
+inline constexpr auto YB = si::yotta<byte>;
+inline constexpr auto RB = si::ronna<byte>;
+inline constexpr auto QB = si::quetta<byte>;
 
-constexpr auto KiB = kibi<byte>;
-constexpr auto MiB = mebi<byte>;
-constexpr auto GiB = gibi<byte>;
-constexpr auto TiB = tebi<byte>;
-constexpr auto PiB = pebi<byte>;
-constexpr auto EiB = exbi<byte>;
+inline constexpr auto KiB = kibi<byte>;
+inline constexpr auto MiB = mebi<byte>;
+inline constexpr auto GiB = gibi<byte>;
+inline constexpr auto TiB = tebi<byte>;
+inline constexpr auto PiB = pebi<byte>;
+inline constexpr auto EiB = exbi<byte>;
 
 // baud
-constexpr auto Bd = baud;
-constexpr auto kBd = si::kilo<baud>;
-constexpr auto MBd = si::mega<baud>;
-constexpr auto GBd = si::giga<baud>;
-constexpr auto TBd = si::tera<baud>;
-constexpr auto PBd = si::peta<baud>;
-constexpr auto EBd = si::exa<baud>;
-constexpr auto ZBd = si::zetta<baud>;
-constexpr auto YBd = si::yotta<baud>;
-constexpr auto RBd = si::ronna<baud>;
-constexpr auto QBd = si::quetta<baud>;
+inline constexpr auto Bd = baud;
+inline constexpr auto kBd = si::kilo<baud>;
+inline constexpr auto MBd = si::mega<baud>;
+inline constexpr auto GBd = si::giga<baud>;
+inline constexpr auto TBd = si::tera<baud>;
+inline constexpr auto PBd = si::peta<baud>;
+inline constexpr auto EBd = si::exa<baud>;
+inline constexpr auto ZBd = si::zetta<baud>;
+inline constexpr auto YBd = si::yotta<baud>;
+inline constexpr auto RBd = si::ronna<baud>;
+inline constexpr auto QBd = si::quetta<baud>;
 
 // erlang
 // TODO do we need prefixed versions of Erlang?
-constexpr auto E = erlang;
+inline constexpr auto E = erlang;
 
 }  // namespace mp_units::iec80000::unit_symbols

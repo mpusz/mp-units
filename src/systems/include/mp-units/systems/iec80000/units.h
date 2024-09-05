@@ -34,11 +34,11 @@ MP_UNITS_EXPORT
 namespace mp_units::iec80000 {
 
 // clang-format off
-constexpr struct erlang final : named_unit<"E", kind_of<traffic_intensity>> {} erlang;
-constexpr struct bit final : named_unit<"bit", one, kind_of<storage_capacity>> {} bit;
-constexpr struct octet final : named_unit<"o", mag<8> * bit> {} octet;
-constexpr struct byte final : named_unit<"B", mag<8> * bit> {} byte;
-constexpr struct baud final : named_unit<"Bd", one / si::second, kind_of<modulation_rate>> {} baud;
+inline constexpr struct erlang final : named_unit<"E", kind_of<traffic_intensity>> {} erlang;
+inline constexpr struct bit final : named_unit<"bit", one, kind_of<storage_capacity>> {} bit;
+inline constexpr struct octet final : named_unit<"o", mag<8> * bit> {} octet;
+inline constexpr struct byte final : named_unit<"B", mag<8> * bit> {} byte;
+inline constexpr struct baud final : named_unit<"Bd", one / si::second, kind_of<modulation_rate>> {} baud;
 // clang-format on
 
 }  // namespace mp_units::iec80000

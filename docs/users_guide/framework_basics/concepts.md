@@ -219,7 +219,7 @@ implicitly convertible from quantity specification `V`, which means that `V` mus
     However, if we define `mean_sea_level` in the following way:
 
     ```cpp
-    constexpr struct mean_sea_level final : absolute_point_origin<isq::altitude> {} mean_sea_level;
+    inline constexpr struct mean_sea_level final : absolute_point_origin<isq::altitude> {} mean_sea_level;
     ```
 
     then it can't be used as a point origin for _points_ of `isq::length` or `isq::width` as none of them

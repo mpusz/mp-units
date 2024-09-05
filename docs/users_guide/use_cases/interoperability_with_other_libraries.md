@@ -249,8 +249,8 @@ include the _mp-units/systems/si/chrono.h_ file to benefit from it. This file pr
     to the `std::chrono` abstractions:
 
     ```cpp
-    constexpr struct ts_origin final : relative_point_origin<chrono_point_origin<system_clock> + 1 * h> {} ts_origin;
-    constexpr struct my_origin final : absolute_point_origin<isq::time> {} my_origin;
+    inline constexpr struct ts_origin final : relative_point_origin<chrono_point_origin<system_clock> + 1 * h> {} ts_origin;
+    inline constexpr struct my_origin final : absolute_point_origin<isq::time> {} my_origin;
 
     quantity_point qp1 = sys_seconds{1s};
     auto tp1 = to_chrono_time_point(qp1);  // OK

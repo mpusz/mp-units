@@ -104,7 +104,7 @@ namespace std {
 struct from_range_t {
   explicit from_range_t() = default;
 };
-constexpr from_range_t from_range{};
+inline constexpr from_range_t from_range{};
 
 }  // namespace std
 

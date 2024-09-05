@@ -184,7 +184,7 @@ template<Unit auto ToU, Representation ToRep, typename QP>
  * Implicit conversions between quantities of different types are allowed only for "safe"
  * (e.g. non-truncating) conversion. In truncating cases an explicit cast have to be used.
  *
- * constexpr struct A : absolute_point_origin<A, isq::distance> A;
+ * inline constexpr struct A : absolute_point_origin<A, isq::distance> A;
  *
  * using ToQ = quantity<mm, int>;
  * auto qp = value_cast<ToQ>(quantity_point{1.23 * m});
@@ -210,8 +210,8 @@ template<Quantity ToQ, typename QP>
  * Implicit conversions between quantities of different types are allowed only for "safe"
  * (e.g. non-truncating) conversion. In truncating cases an explicit cast have to be used.
  *
- * constexpr struct A : absolute_point_origin<A, isq::distance> A;
- * constexpr struct B : relative_point_origin<A + 1*m> B;
+ * inline constexpr struct A : absolute_point_origin<A, isq::distance> A;
+ * inline constexpr struct B : relative_point_origin<A + 1*m> B;
  *
  * using ToQP = quantity_point<mm, B, int>;
  * auto qp = value_cast<ToQP>(quantity_point{1.23 * m});

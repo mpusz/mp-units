@@ -256,12 +256,12 @@ constexpr bool is_specialization_of_scaled_unit<scaled_unit<M, U>> = true;
  * For example:
  *
  * @code{.cpp}
- * constexpr struct second final : named_unit<"s", kind_of<time>> {} second;
- * constexpr struct metre final : named_unit<"m", kind_of<length> {} metre;
- * constexpr struct hertz final : named_unit<"Hz", inverse(second), kind_of<frequency>> {} hertz;
- * constexpr struct newton final : named_unit<"N", kilogram * metre / square(second)> {} newton;
- * constexpr struct degree_Celsius final : named_unit<{u8"℃", "`C"}, kelvin, zeroth_degree_Celsius> {}
- * degree_Celsius; constexpr struct minute final : named_unit<"min", mag<60> * second> {} minute;
+ * inline constexpr struct second final : named_unit<"s", kind_of<time>> {} second;
+ * inline constexpr struct metre final : named_unit<"m", kind_of<length> {} metre;
+ * inline constexpr struct hertz final : named_unit<"Hz", inverse(second), kind_of<frequency>> {} hertz;
+ * inline constexpr struct newton final : named_unit<"N", kilogram * metre / square(second)> {} newton;
+ * inline constexpr struct degree_Celsius final : named_unit<{u8"℃", "`C"}, kelvin, zeroth_degree_Celsius> {}
+ * degree_Celsius; inline constexpr struct minute final : named_unit<"min", mag<60> * second> {} minute;
  * @endcode
  *
  * @note A common convention in this library is to assign the same name for a type and an object of this type.
@@ -388,7 +388,7 @@ struct named_unit<Symbol, U, QS, PO> : decltype(U)::_base_type_ {
  * template<PrefixableUnit auto U>
  * constexpr kilo_<U> kilo;
  *
- * constexpr auto kilogram = si::kilo<gram>;
+ * inline constexpr auto kilogram = si::kilo<gram>;
  * @endcode
  *
  * @tparam Symbol a prefix text to prepend to a unit symbol
@@ -468,7 +468,7 @@ struct derived_unit final : detail::derived_unit_impl<Expr...> {};
  * Unit of a dimensionless quantity.
  */
 // clang-format off
-MP_UNITS_EXPORT constexpr struct one final : detail::derived_unit_impl<> {} one;
+MP_UNITS_EXPORT inline constexpr struct one final : detail::derived_unit_impl<> {} one;
 // clang-format on
 
 namespace detail {
@@ -611,10 +611,10 @@ template<std::intmax_t Num, std::intmax_t Den = 1, Unit U>
 
 // common dimensionless units
 // clang-format off
-constexpr struct percent final : named_unit<"%", mag_ratio<1, 100> * one> {} percent;
-constexpr struct per_mille final : named_unit<symbol_text{u8"‰", "%o"}, mag_ratio<1, 1000> * one> {} per_mille;
-constexpr struct parts_per_million final : named_unit<"ppm", mag_ratio<1, 1'000'000> * one> {} parts_per_million;
-constexpr auto ppm = parts_per_million;
+inline constexpr struct percent final : named_unit<"%", mag_ratio<1, 100> * one> {} percent;
+inline constexpr struct per_mille final : named_unit<symbol_text{u8"‰", "%o"}, mag_ratio<1, 1000> * one> {} per_mille;
+inline constexpr struct parts_per_million final : named_unit<"ppm", mag_ratio<1, 1'000'000> * one> {} parts_per_million;
+inline constexpr auto ppm = parts_per_million;
 // clang-format on
 
 

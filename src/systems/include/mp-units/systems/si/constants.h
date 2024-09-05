@@ -35,28 +35,28 @@ namespace mp_units::si {
 namespace si2019 {
 
 // clang-format off
-constexpr struct hyperfine_structure_transition_frequency_of_cs final :
+inline constexpr struct hyperfine_structure_transition_frequency_of_cs final :
   named_unit<symbol_text{u8"Δν_Cs", "dv_Cs"}, mag<9'192'631'770> * hertz> {} hyperfine_structure_transition_frequency_of_cs;
-constexpr struct speed_of_light_in_vacuum final :
+inline constexpr struct speed_of_light_in_vacuum final :
   named_unit<"c", mag<299'792'458> * metre / second> {} speed_of_light_in_vacuum;
-constexpr struct planck_constant final :
+inline constexpr struct planck_constant final :
   named_unit<"h", mag_ratio<662'607'015, 100'000'000> * mag_power<10, -34> * joule * second> {} planck_constant;
-constexpr struct elementary_charge final :
+inline constexpr struct elementary_charge final :
   named_unit<"e", mag_ratio<1'602'176'634, 1'000'000'000> * mag_power<10, -19> * coulomb> {} elementary_charge;
-constexpr struct boltzmann_constant final :
+inline constexpr struct boltzmann_constant final :
   named_unit<"k", mag_ratio<1'380'649, 1'000'000> * mag_power<10, -23> * joule / kelvin> {} boltzmann_constant;
-constexpr struct avogadro_constant final :
+inline constexpr struct avogadro_constant final :
   named_unit<"N_A", mag_ratio<602'214'076, 100'000'000> * mag_power<10, 23> / mole> {} avogadro_constant;
-constexpr struct luminous_efficacy final :
+inline constexpr struct luminous_efficacy final :
   named_unit<"K_cd", mag<683> * lumen / watt> {} luminous_efficacy;
 // clang-format on
 
 }  // namespace si2019
 
 // clang-format off
-constexpr struct standard_gravity final :
+inline constexpr struct standard_gravity final :
   named_unit<symbol_text{u8"g₀", "g_0"}, mag_ratio<980'665, 100'000> * metre / square(second)> {} standard_gravity;
-constexpr struct magnetic_constant final :
+inline constexpr struct magnetic_constant final :
   named_unit<symbol_text{u8"μ₀", "u_0"}, mag<4> * mag_pi * mag_power<10, -7> * henry / metre> {} magnetic_constant;
 // clang-format on
 

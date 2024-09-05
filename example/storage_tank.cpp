@@ -58,8 +58,8 @@ QUANTITY_SPEC(horizontal_length, isq::length);
 // with a constrained quantity equation
 QUANTITY_SPEC(horizontal_area, isq::area, horizontal_length* isq::width);
 
-constexpr auto g = 1 * si::standard_gravity;
-constexpr auto air_density = isq::mass_density(1.225 * kg / m3);
+inline constexpr auto g = 1 * si::standard_gravity;
+inline constexpr auto air_density = isq::mass_density(1.225 * kg / m3);
 
 class StorageTank {
   quantity<horizontal_area[m2]> base_;

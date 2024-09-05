@@ -50,38 +50,38 @@ using namespace std::chrono_literals;
 using sys_seconds = std::chrono::time_point<std::chrono::system_clock, std::chrono::seconds>;
 #endif
 
-constexpr struct zeroth_length final : absolute_point_origin<isq::length> {
+inline constexpr struct zeroth_length final : absolute_point_origin<isq::length> {
 } zeroth_length;
 
-constexpr struct mean_sea_level final : absolute_point_origin<isq::height> {
+inline constexpr struct mean_sea_level final : absolute_point_origin<isq::height> {
 } mean_sea_level;
 
-constexpr auto my_mean_sea_level = mean_sea_level;
+inline constexpr auto my_mean_sea_level = mean_sea_level;
 
-constexpr struct same_mean_sea_level final : relative_point_origin<mean_sea_level + 0 * isq::height[m]> {
+inline constexpr struct same_mean_sea_level final : relative_point_origin<mean_sea_level + 0 * isq::height[m]> {
 } same_mean_sea_level;
 
-constexpr struct ground_level final : relative_point_origin<mean_sea_level + 42 * isq::height[m]> {
+inline constexpr struct ground_level final : relative_point_origin<mean_sea_level + 42 * isq::height[m]> {
 } ground_level;
 
-constexpr auto my_ground_level = ground_level;
+inline constexpr auto my_ground_level = ground_level;
 
-constexpr struct same_ground_level1 final : relative_point_origin<mean_sea_level + 42 * isq::height[m]> {
+inline constexpr struct same_ground_level1 final : relative_point_origin<mean_sea_level + 42 * isq::height[m]> {
 } same_ground_level1;
 
-constexpr struct same_ground_level2 final : relative_point_origin<my_mean_sea_level + 42 * isq::height[m]> {
+inline constexpr struct same_ground_level2 final : relative_point_origin<my_mean_sea_level + 42 * isq::height[m]> {
 } same_ground_level2;
 
-constexpr struct tower_peak final : relative_point_origin<ground_level + 42 * isq::height[m]> {
+inline constexpr struct tower_peak final : relative_point_origin<ground_level + 42 * isq::height[m]> {
 } tower_peak;
 
-constexpr struct other_ground_level final : relative_point_origin<mean_sea_level + 123 * isq::height[m]> {
+inline constexpr struct other_ground_level final : relative_point_origin<mean_sea_level + 123 * isq::height[m]> {
 } other_ground_level;
 
-constexpr struct other_absolute_level final : absolute_point_origin<isq::height> {
+inline constexpr struct other_absolute_level final : absolute_point_origin<isq::height> {
 } other_absolute_level;
 
-constexpr struct zero final : absolute_point_origin<dimensionless> {
+inline constexpr struct zero final : absolute_point_origin<dimensionless> {
 } zero;
 
 QUANTITY_SPEC(special_height, isq::height);
@@ -122,7 +122,7 @@ static_assert(relative_po<absolute_po<isq::length> + isq::height(42 * m)>.quanti
 static_assert(relative_po<absolute_po<kind_of<isq::length>> + isq::height(42 * m)>.quantity_spec == isq::height);
 static_assert(relative_po<absolute_po<isq::height> + 42 * m>.quantity_spec == isq::height);
 
-constexpr struct my_kelvin final : named_unit<"my_K", mag<10> * si::kelvin> {
+inline constexpr struct my_kelvin final : named_unit<"my_K", mag<10> * si::kelvin> {
 } my_kelvin;
 
 static_assert(default_point_origin(si::kelvin) == si::absolute_zero);
@@ -1516,7 +1516,7 @@ static_assert(ground_level - other_ground_level == -81 * m);
 static_assert(other_ground_level - tower_peak == 39 * m);
 static_assert(tower_peak - other_ground_level == -39 * m);
 
-constexpr struct zero_m_per_s final : absolute_point_origin<kind_of<isq::speed>> {
+inline constexpr struct zero_m_per_s final : absolute_point_origin<kind_of<isq::speed>> {
 } zero_m_per_s;
 
 // commutativity and associativity
@@ -1604,7 +1604,7 @@ static_assert(
   is_of_type<quantity_point{10 * isq::height[m] / (2 * isq::time[s])} + (10 * isq::height[m] / (2 * isq::time[s])),
              quantity_point<(isq::height / isq::time)[m / s], zeroth_point_origin<isq::height / isq::time>, int>>);
 
-constexpr struct zero_Hz final : absolute_point_origin<kind_of<isq::frequency>> {
+inline constexpr struct zero_Hz final : absolute_point_origin<kind_of<isq::frequency>> {
 } zero_Hz;
 
 static_assert(((zero_Hz + 10 / (2 * isq::period_duration[s])) + 5 * isq::frequency[Hz]).quantity_from(zero_Hz) ==
@@ -1688,7 +1688,7 @@ consteval bool invalid_subtraction(Ts... ts)
   return !requires { (... - ts); };
 }
 
-constexpr struct zero_Bq final : absolute_point_origin<kind_of<isq::activity>> {
+inline constexpr struct zero_Bq final : absolute_point_origin<kind_of<isq::activity>> {
 } zero_Bq;
 
 static_assert(invalid_addition(zero_Bq + 5 * isq::activity[Bq], 5 * isq::frequency[Hz]));

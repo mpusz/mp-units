@@ -38,28 +38,28 @@ namespace mp_units::natural {
 
 // clang-format off
 // units
-constexpr struct electronvolt final : named_unit<"eV"> {} electronvolt;
-constexpr auto gigaelectronvolt = si::giga<electronvolt>;
+inline constexpr struct electronvolt final : named_unit<"eV"> {} electronvolt;
+inline constexpr auto gigaelectronvolt = si::giga<electronvolt>;
 
 // system references
-constexpr struct time : system_reference<isq::time, inverse(gigaelectronvolt)> {} time;
-constexpr struct length : system_reference<isq::length, inverse(gigaelectronvolt)> {} length;
-constexpr struct mass : system_reference<isq::mass, gigaelectronvolt> {} mass;
-constexpr struct velocity : system_reference<isq::velocity, one> {} velocity;
-constexpr struct speed : system_reference<isq::speed, one> {} speed;
-constexpr struct acceleration : system_reference<isq::acceleration, gigaelectronvolt> {} acceleration;
-constexpr struct momentum : system_reference<isq::momentum, gigaelectronvolt> {} momentum;
-constexpr struct force : system_reference<isq::force, square(gigaelectronvolt)> {} force;
-constexpr struct energy : system_reference<isq::mechanical_energy, gigaelectronvolt> {} energy;
+inline constexpr struct time : system_reference<isq::time, inverse(gigaelectronvolt)> {} time;
+inline constexpr struct length : system_reference<isq::length, inverse(gigaelectronvolt)> {} length;
+inline constexpr struct mass : system_reference<isq::mass, gigaelectronvolt> {} mass;
+inline constexpr struct velocity : system_reference<isq::velocity, one> {} velocity;
+inline constexpr struct speed : system_reference<isq::speed, one> {} speed;
+inline constexpr struct acceleration : system_reference<isq::acceleration, gigaelectronvolt> {} acceleration;
+inline constexpr struct momentum : system_reference<isq::momentum, gigaelectronvolt> {} momentum;
+inline constexpr struct force : system_reference<isq::force, square(gigaelectronvolt)> {} force;
+inline constexpr struct energy : system_reference<isq::mechanical_energy, gigaelectronvolt> {} energy;
 // clang-format on
 
 // constants
-constexpr auto speed_of_light = speed[one];
+inline constexpr auto speed_of_light = speed[one];
 
 namespace unit_symbols {
 
-constexpr auto GeV = gigaelectronvolt;
-constexpr auto GeV2 = square(gigaelectronvolt);
+inline constexpr auto GeV = gigaelectronvolt;
+inline constexpr auto GeV2 = square(gigaelectronvolt);
 
 }  // namespace unit_symbols
 

@@ -37,24 +37,24 @@ MP_UNITS_EXPORT
 namespace mp_units::isq {
 
 QUANTITY_SPEC(mass_density, mass / volume);
-constexpr auto density = mass_density;
+inline constexpr auto density = mass_density;
 QUANTITY_SPEC(specific_volume, inverse(mass_density));
 QUANTITY_SPEC(relative_mass_density, mass_density / mass_density);
-constexpr auto relative_density = relative_mass_density;
+inline constexpr auto relative_density = relative_mass_density;
 QUANTITY_SPEC(surface_mass_density, mass / area);
-constexpr auto surface_density = surface_mass_density;
+inline constexpr auto surface_density = surface_mass_density;
 QUANTITY_SPEC(linear_mass_density, mass / length);
-constexpr auto linear_density = linear_mass_density;
+inline constexpr auto linear_density = linear_mass_density;
 QUANTITY_SPEC(momentum, mass* velocity);                        // vector
 QUANTITY_SPEC(force, mass* acceleration);                       // vector  // TODO what is a correct equation here?
 QUANTITY_SPEC(weight, force, mass* acceleration_of_free_fall);  // vector  // differs from ISO 80000
 QUANTITY_SPEC(static_friction_force, force);                    // vector
-constexpr auto static_friction = static_friction_force;
+inline constexpr auto static_friction = static_friction_force;
 QUANTITY_SPEC(kinetic_friction_force, force);  // vector
-constexpr auto dynamic_friction_force = kinetic_friction_force;
+inline constexpr auto dynamic_friction_force = kinetic_friction_force;
 QUANTITY_SPEC(rolling_resistance, force);  // vector
-constexpr auto rolling_drag = rolling_resistance;
-constexpr auto rolling_friction_force = rolling_resistance;
+inline constexpr auto rolling_drag = rolling_resistance;
+inline constexpr auto rolling_friction_force = rolling_resistance;
 QUANTITY_SPEC(drag_force, force);                            // vector
 QUANTITY_SPEC(impulse, force* time);                         // vector
 QUANTITY_SPEC(angular_momentum, position_vector* momentum);  // vector
@@ -73,24 +73,24 @@ QUANTITY_SPEC(shear_strain, dimensionless, displacement / thickness, quantity_ch
 QUANTITY_SPEC(relative_volume_strain, volume / volume);
 QUANTITY_SPEC(Poisson_number, dimensionless, width / length);
 QUANTITY_SPEC(modulus_of_elasticity, normal_stress / relative_linear_strain);
-constexpr auto Young_modulus = modulus_of_elasticity;
+inline constexpr auto Young_modulus = modulus_of_elasticity;
 QUANTITY_SPEC(modulus_of_rigidity, shear_stress / shear_strain);
-constexpr auto shear_modulus = modulus_of_rigidity;
+inline constexpr auto shear_modulus = modulus_of_rigidity;
 QUANTITY_SPEC(modulus_of_compression, pressure / relative_volume_strain);
-constexpr auto bulk_modulus = modulus_of_compression;
+inline constexpr auto bulk_modulus = modulus_of_compression;
 QUANTITY_SPEC(compressibility, inverse(volume) * (volume / pressure));
 QUANTITY_SPEC(second_axial_moment_of_area, pow<2>(radial_distance) * area);
 QUANTITY_SPEC(second_polar_moment_of_area, pow<2>(radial_distance) * area);
 QUANTITY_SPEC(section_modulus, second_axial_moment_of_area / radial_distance);
 QUANTITY_SPEC(static_friction_coefficient, dimensionless, static_friction_force / force, quantity_character::scalar);
-constexpr auto static_friction_factor = static_friction_coefficient;
-constexpr auto coefficient_of_static_friction = static_friction_coefficient;
+inline constexpr auto static_friction_factor = static_friction_coefficient;
+inline constexpr auto coefficient_of_static_friction = static_friction_coefficient;
 QUANTITY_SPEC(kinetic_friction_factor, dimensionless, kinetic_friction_force / force, quantity_character::scalar);
-constexpr auto dynamic_friction_factor = kinetic_friction_factor;
+inline constexpr auto dynamic_friction_factor = kinetic_friction_factor;
 QUANTITY_SPEC(rolling_resistance_factor, force / force, quantity_character::scalar);
 QUANTITY_SPEC(drag_coefficient, dimensionless, drag_force / (mass_density * pow<2>(speed) * area),
               quantity_character::scalar);
-constexpr auto drag_factor = drag_coefficient;
+inline constexpr auto drag_factor = drag_coefficient;
 QUANTITY_SPEC(dynamic_viscosity, shear_stress* length / velocity, quantity_character::scalar);
 QUANTITY_SPEC(kinematic_viscosity, dynamic_viscosity / mass_density);
 QUANTITY_SPEC(surface_tension, force / length, quantity_character::scalar);  // TODO what is a correct equation here?
@@ -100,7 +100,7 @@ QUANTITY_SPEC(mechanical_energy, energy);                               // diffe
 QUANTITY_SPEC(potential_energy, mechanical_energy);                     // differs from ISO 80000
 QUANTITY_SPEC(kinetic_energy, mechanical_energy, mass* pow<2>(speed));  // differs from ISO 80000
 QUANTITY_SPEC(mechanical_work, force* displacement, quantity_character::scalar);
-constexpr auto work = mechanical_work;
+inline constexpr auto work = mechanical_work;
 QUANTITY_SPEC(mechanical_efficiency, mechanical_power / mechanical_power);
 QUANTITY_SPEC(mass_flow, mass_density* velocity);  // vector
 QUANTITY_SPEC(mass_flow_rate, mass_flow* area, quantity_character::scalar);

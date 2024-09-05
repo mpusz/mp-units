@@ -44,12 +44,12 @@ namespace {
 
 using namespace mp_units;
 
-constexpr struct my_origin final : absolute_point_origin<isq::length> {
+inline constexpr struct my_origin final : absolute_point_origin<isq::length> {
 } my_origin;
-constexpr struct my_relative_origin final : relative_point_origin<my_origin + isq::length(42 * si::metre)> {
+inline constexpr struct my_relative_origin final : relative_point_origin<my_origin + isq::length(42 * si::metre)> {
 } my_relative_origin;
 
-constexpr auto dim_speed = isq::dim_length / isq::dim_time;
+inline constexpr auto dim_speed = isq::dim_length / isq::dim_time;
 
 // BaseDimension
 static_assert(detail::BaseDimension<struct isq::dim_length>);
@@ -78,7 +78,7 @@ static_assert(!Dimension<int>);
 // TODO add tests
 
 // QuantitySpec
-constexpr auto speed = isq::length / isq::time;
+inline constexpr auto speed = isq::length / isq::time;
 
 static_assert(QuantitySpec<struct isq::length>);
 static_assert(QuantitySpec<struct isq::radius>);

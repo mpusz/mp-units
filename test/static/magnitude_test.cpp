@@ -71,11 +71,11 @@ namespace {
 //   CHECK(round_trip == R);
 // }
 
-constexpr struct mag_2_ : magnitude<2> {
+inline constexpr struct mag_2_ : magnitude<2> {
 } mag_2;
-// constexpr struct mag_2_other : magnitude<2> {
+// inline constexpr struct mag_2_other : magnitude<2> {
 // } mag_2_other;
-// constexpr struct mag_3 : magnitude<2> {
+// inline constexpr struct mag_3 : magnitude<2> {
 // } mag_3;
 
 // concepts verification

@@ -725,12 +725,12 @@ MP_UNITS_EXPORT_BEGIN
  */
 #if MP_UNITS_COMP_CLANG
 
-constexpr struct mag_pi : magnitude<mag_value{std::numbers::pi_v<long double>}> {
+inline constexpr struct mag_pi : magnitude<mag_value{std::numbers::pi_v<long double>}> {
 } mag_pi;
 
 #else
 
-constexpr struct mag_pi : magnitude<std::numbers::pi_v<long double>> {
+inline constexpr struct mag_pi : magnitude<std::numbers::pi_v<long double>> {
 } mag_pi;
 
 #endif
@@ -959,7 +959,7 @@ template<typename T, auto... Ms>
   return integer_part((detail::abs(power_of_2) < detail::abs(power_of_5)) ? power_of_2 : power_of_5);
 }
 
-constexpr symbol_text base_multiplier(u8"× 10", "x 10");
+inline constexpr symbol_text base_multiplier(u8"× 10", "x 10");
 
 template<Magnitude auto M>
 [[nodiscard]] consteval auto magnitude_text()

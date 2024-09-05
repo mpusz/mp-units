@@ -40,7 +40,7 @@ import mp_units.core;
 #include <mp-units/framework/customization_points.h>
 #endif
 
-constexpr struct validated_tag {
+inline constexpr struct validated_tag {
 } validated;
 
 template<std::movable T, std::predicate<T> Validator>

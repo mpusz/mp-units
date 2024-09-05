@@ -35,20 +35,20 @@ namespace mp_units::isq {
 
 // clang-format off
 // dimensions of base quantities
-constexpr struct dim_length final : base_dimension<"L"> {} dim_length;
-constexpr struct dim_mass final : base_dimension<"M"> {} dim_mass;
-constexpr struct dim_time final : base_dimension<"T"> {} dim_time;
-constexpr struct dim_electric_current final : base_dimension<"I"> {} dim_electric_current;
-constexpr struct dim_thermodynamic_temperature final : base_dimension<symbol_text{u8"Θ", "O"}> {} dim_thermodynamic_temperature;
-constexpr struct dim_amount_of_substance final : base_dimension<"N"> {} dim_amount_of_substance;
-constexpr struct dim_luminous_intensity final : base_dimension<"J"> {} dim_luminous_intensity;
+inline constexpr struct dim_length final : base_dimension<"L"> {} dim_length;
+inline constexpr struct dim_mass final : base_dimension<"M"> {} dim_mass;
+inline constexpr struct dim_time final : base_dimension<"T"> {} dim_time;
+inline constexpr struct dim_electric_current final : base_dimension<"I"> {} dim_electric_current;
+inline constexpr struct dim_thermodynamic_temperature final : base_dimension<symbol_text{u8"Θ", "O"}> {} dim_thermodynamic_temperature;
+inline constexpr struct dim_amount_of_substance final : base_dimension<"N"> {} dim_amount_of_substance;
+inline constexpr struct dim_luminous_intensity final : base_dimension<"J"> {} dim_luminous_intensity;
 // clang-format on
 
 // base quantities
 QUANTITY_SPEC(length, dim_length);
 QUANTITY_SPEC(mass, dim_mass);
 QUANTITY_SPEC(time, dim_time);
-constexpr auto duration = time;
+inline constexpr auto duration = time;
 QUANTITY_SPEC(electric_current, dim_electric_current);
 QUANTITY_SPEC(thermodynamic_temperature, dim_thermodynamic_temperature);
 QUANTITY_SPEC(amount_of_substance, dim_amount_of_substance);

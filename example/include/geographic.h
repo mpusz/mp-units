@@ -44,7 +44,7 @@ import mp_units;
 
 namespace geographic {
 
-constexpr struct mean_sea_level final : mp_units::absolute_point_origin<mp_units::isq::altitude> {
+inline constexpr struct mean_sea_level final : mp_units::absolute_point_origin<mp_units::isq::altitude> {
 } mean_sea_level;
 
 using msl_altitude = mp_units::quantity_point<mp_units::isq::altitude[mp_units::si::metre], mean_sea_level>;
@@ -72,9 +72,9 @@ struct MP_UNITS_STD_FMT::formatter<geographic::msl_altitude, Char> :
 
 namespace geographic {
 
-constexpr struct equator final : mp_units::absolute_point_origin<mp_units::isq::angular_measure> {
+inline constexpr struct equator final : mp_units::absolute_point_origin<mp_units::isq::angular_measure> {
 } equator;
-constexpr struct prime_meridian final : mp_units::absolute_point_origin<mp_units::isq::angular_measure> {
+inline constexpr struct prime_meridian final : mp_units::absolute_point_origin<mp_units::isq::angular_measure> {
 } prime_meridian;
 
 

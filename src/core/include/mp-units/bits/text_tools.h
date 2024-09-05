@@ -63,9 +63,9 @@ constexpr basic_fixed_string superscript_number<8> = u8"\u2078";
 template<>
 constexpr basic_fixed_string superscript_number<9> = u8"\u2079";
 
-constexpr symbol_text superscript_minus(u8"\u207b", "-");
+inline constexpr symbol_text superscript_minus(u8"\u207b", "-");
 
-constexpr symbol_text superscript_prefix(u8"", "^");
+inline constexpr symbol_text superscript_prefix(u8"", "^");
 
 template<std::intmax_t Value>
 [[nodiscard]] consteval auto superscript_helper()
