@@ -56,13 +56,11 @@ namespace mp_units {
  *
  * @tparam ToQS a quantity specification to use for a target quantity
  */
-template<QuantitySpec auto ToQS, typename Q>
-  requires Quantity<std::remove_cvref_t<Q>> &&
-           detail::QuantitySpecCastableTo<std::remove_reference_t<Q>::quantity_spec, ToQS>
-[[nodiscard]] constexpr Quantity auto quantity_cast(Q&& q)
+template<QuantitySpec auto ToQS, typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>>
+  requires detail::QuantitySpecCastableTo<Q::quantity_spec, ToQS>
+[[nodiscard]] constexpr Quantity auto quantity_cast(FwdQ&& q)
 {
-  return quantity{std::forward<Q>(q).numerical_value_is_an_implementation_detail_,
-                  make_reference(ToQS, std::remove_reference_t<Q>::unit)};
+  return quantity{std::forward<FwdQ>(q).numerical_value_is_an_implementation_detail_, make_reference(ToQS, Q::unit)};
 }
 
 /**
@@ -82,13 +80,12 @@ template<QuantitySpec auto ToQS, typename Q>
  *
  * @tparam ToQS a quantity specification to use for a target quantity point
  */
-template<QuantitySpec auto ToQS, typename QP>
-  requires QuantityPoint<std::remove_cvref_t<QP>> &&
-           detail::QuantitySpecCastableTo<std::remove_reference_t<QP>::quantity_spec, ToQS>
-[[nodiscard]] constexpr QuantityPoint auto quantity_cast(QP&& qp)
+template<QuantitySpec auto ToQS, typename FwdQP, QuantityPoint QP = std::remove_cvref_t<FwdQP>>
+  requires detail::QuantitySpecCastableTo<QP::quantity_spec, ToQS>
+[[nodiscard]] constexpr QuantityPoint auto quantity_cast(FwdQP&& qp)
 {
-  return QP{quantity_cast<ToQS>(std::forward<QP>(qp).quantity_from_origin_is_an_implementation_detail_),
-            std::remove_reference_t<QP>::point_origin};
+  return QP{quantity_cast<ToQS>(std::forward<FwdQP>(qp).quantity_from_origin_is_an_implementation_detail_),
+            QP::point_origin};
 }
 
 }  // namespace mp_units

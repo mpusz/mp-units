@@ -39,22 +39,19 @@ namespace mp_units {
 
 template<Reference R>
 struct delta_ {
-  template<typename Rep>
-    requires RepresentationOf<std::remove_cvref_t<Rep>, get_quantity_spec(R{}).character>
-  [[nodiscard]] constexpr quantity<R{}, std::remove_cvref_t<Rep>> operator()(Rep&& lhs) const
+  template<typename FwdRep, RepresentationOf<get_quantity_spec(R{}).character> Rep = std::remove_cvref_t<FwdRep>>
+  [[nodiscard]] constexpr quantity<R{}, Rep> operator()(FwdRep&& lhs) const
   {
-    return quantity{std::forward<Rep>(lhs), R{}};
+    return quantity{std::forward<FwdRep>(lhs), R{}};
   }
 };
 
 template<Reference R>
 struct absolute_ {
-  template<typename Rep>
-    requires RepresentationOf<std::remove_cvref_t<Rep>, get_quantity_spec(R{}).character>
-  [[nodiscard]] constexpr quantity_point<R{}, default_point_origin(R{}), std::remove_cvref_t<Rep>> operator()(
-    Rep&& lhs) const
+  template<typename FwdRep, RepresentationOf<get_quantity_spec(R{}).character> Rep = std::remove_cvref_t<FwdRep>>
+  [[nodiscard]] constexpr quantity_point<R{}, default_point_origin(R{}), Rep> operator()(FwdRep&& lhs) const
   {
-    return quantity_point{quantity{std::forward<Rep>(lhs), R{}}};
+    return quantity_point{quantity{std::forward<FwdRep>(lhs), R{}}};
   }
 };
 

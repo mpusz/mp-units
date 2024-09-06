@@ -91,10 +91,10 @@ struct conversion_value_traits {
  *
  * @tparam To a target quantity type to cast to
  */
-template<Quantity To, typename FwdFrom, typename From = std::remove_cvref_t<FwdFrom>>
-  requires Quantity<From> && (castable(From::quantity_spec, To::quantity_spec)) &&
-           ((From::unit == To::unit && std::constructible_from<typename To::rep, typename From::rep>) ||
-            (From::unit != To::unit))  // && scalable_with_<typename To::rep>))
+template<Quantity To, typename FwdFrom, Quantity From = std::remove_cvref_t<FwdFrom>>
+  requires(castable(From::quantity_spec, To::quantity_spec)) &&
+          ((From::unit == To::unit && std::constructible_from<typename To::rep, typename From::rep>) ||
+           (From::unit != To::unit))  // && scalable_with_<typename To::rep>))
 // TODO how to constrain the second part here?
 [[nodiscard]] constexpr To sudo_cast(FwdFrom&& q)
 {
@@ -143,17 +143,17 @@ template<Quantity To, typename FwdFrom, typename From = std::remove_cvref_t<FwdF
  *
  * @tparam ToQP a target quantity point type to which to cast to
  */
-template<QuantityPoint ToQP, typename FwdFromQP, typename FromQP = std::remove_cvref_t<FwdFromQP>>
-  requires QuantityPoint<FromQP> && (castable(FromQP::quantity_spec, ToQP::quantity_spec)) &&
-           (detail::same_absolute_point_origins(ToQP::point_origin, FromQP::point_origin)) &&
-           ((FromQP::unit == ToQP::unit && std::constructible_from<typename ToQP::rep, typename FromQP::rep>) ||
-            (FromQP::unit != ToQP::unit))
+template<QuantityPoint ToQP, typename FwdFromQP, QuantityPoint FromQP = std::remove_cvref_t<FwdFromQP>>
+  requires(castable(FromQP::quantity_spec, ToQP::quantity_spec)) &&
+          (detail::same_absolute_point_origins(ToQP::point_origin, FromQP::point_origin)) &&
+          ((FromQP::unit == ToQP::unit && std::constructible_from<typename ToQP::rep, typename FromQP::rep>) ||
+           (FromQP::unit != ToQP::unit))
 [[nodiscard]] constexpr QuantityPoint auto sudo_cast(FwdFromQP&& qp)
 {
   if constexpr (is_same_v<std::remove_const_t<decltype(ToQP::point_origin)>,
                           std::remove_const_t<decltype(FromQP::point_origin)>>) {
     return quantity_point{
-      sudo_cast<typename ToQP::quantity_type>(std::forward<FromQP>(qp).quantity_from(FromQP::point_origin)),
+      sudo_cast<typename ToQP::quantity_type>(std::forward<FwdFromQP>(qp).quantity_from(FromQP::point_origin)),
       FromQP::point_origin};
   } else {
     // it's unclear how hard we should try to avoid truncation here. For now, the only corner case we cater for,
@@ -176,7 +176,7 @@ template<QuantityPoint ToQP, typename FwdFromQP, typename FromQP = std::remove_c
       // unit, we obtain the largest possible range while not causing truncation of fractional values. This is optimal
       // for the offset computation.
       return sudo_cast<ToQP>(
-        sudo_cast<quantity_point<FromQP::reference, FromQP::point_origin, c_rep_type>>(std::forward<FromQP>(qp))
+        sudo_cast<quantity_point<FromQP::reference, FromQP::point_origin, c_rep_type>>(std::forward<FwdFromQP>(qp))
           .point_for(ToQP::point_origin));
     } else {
       // new unit may have a larger unit magnitude; we first need to convert to the new unit (potentially causing
@@ -184,7 +184,7 @@ template<QuantityPoint ToQP, typename FwdFromQP, typename FromQP = std::remove_c
       // representation types. Then, we can perform the offset computation.
       return sudo_cast<ToQP>(
         sudo_cast<quantity_point<make_reference(FromQP::quantity_spec, ToQP::unit), FromQP::point_origin, c_rep_type>>(
-          std::forward<FromQP>(qp))
+          std::forward<FwdFromQP>(qp))
           .point_for(ToQP::point_origin));
     }
   }

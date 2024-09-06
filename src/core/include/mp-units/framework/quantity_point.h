@@ -52,18 +52,16 @@ template<PointOrigin PO>
 }
 
 struct point_origin_interface {
-  template<PointOrigin PO, Quantity Q>
-    requires ReferenceOf<std::remove_const_t<decltype(Q::reference)>, PO::quantity_spec>
-  [[nodiscard]] friend constexpr quantity_point<Q::reference, PO{}, typename Q::rep> operator+(PO, Q&& q)
+  template<PointOrigin PO, typename FwdQ, QuantityOf<PO::quantity_spec> Q = std::remove_cvref_t<FwdQ>>
+  [[nodiscard]] friend constexpr quantity_point<Q::reference, PO{}, typename Q::rep> operator+(PO, FwdQ&& q)
   {
-    return quantity_point{std::forward<Q>(q), PO{}};
+    return quantity_point{std::forward<FwdQ>(q), PO{}};
   }
 
-  template<Quantity Q, PointOrigin PO>
-    requires ReferenceOf<std::remove_const_t<decltype(Q::reference)>, PO::quantity_spec>
-  [[nodiscard]] friend constexpr quantity_point<Q::reference, PO{}, typename Q::rep> operator+(Q&& q, PO po)
+  template<Quantity FwdQ, PointOrigin PO, QuantityOf<PO::quantity_spec> Q = std::remove_cvref_t<FwdQ>>
+  [[nodiscard]] friend constexpr quantity_point<Q::reference, PO{}, typename Q::rep> operator+(FwdQ&& q, PO po)
   {
-    return po + std::forward<Q>(q);
+    return po + std::forward<FwdQ>(q);
   }
 
   template<PointOrigin PO, Quantity Q>
@@ -206,27 +204,26 @@ public:
   quantity_point(quantity_point&&) = default;
   ~quantity_point() = default;
 
-  template<typename Q>
-    requires QuantityOf<std::remove_cvref_t<Q>, quantity_spec> && std::constructible_from<quantity_type, Q> &&
-             (point_origin == default_point_origin(R)) && (implicitly_convertible(Q::quantity_spec, quantity_spec))
-  constexpr explicit quantity_point(Q&& q) : quantity_from_origin_is_an_implementation_detail_(std::forward<Q>(q))
+  template<typename FwdQ, QuantityOf<quantity_spec> Q = std::remove_cvref_t<FwdQ>>
+    requires std::constructible_from<quantity_type, FwdQ> && (point_origin == default_point_origin(R)) &&
+             (implicitly_convertible(Q::quantity_spec, quantity_spec))
+  constexpr explicit quantity_point(FwdQ&& q) : quantity_from_origin_is_an_implementation_detail_(std::forward<FwdQ>(q))
   {
   }
 
-  template<typename Q>
-    requires QuantityOf<std::remove_cvref_t<Q>, quantity_spec> && std::constructible_from<quantity_type, Q>
-  constexpr quantity_point(Q&& q, decltype(PO)) : quantity_from_origin_is_an_implementation_detail_(std::forward<Q>(q))
+  template<typename FwdQ, QuantityOf<quantity_spec> Q = std::remove_cvref_t<FwdQ>>
+    requires std::constructible_from<quantity_type, FwdQ>
+  constexpr quantity_point(FwdQ&& q, decltype(PO)) :
+      quantity_from_origin_is_an_implementation_detail_(std::forward<FwdQ>(q))
   {
   }
 
-  template<typename Q, PointOrigin PO2>
-    requires Quantity<std::remove_cvref_t<Q>> && std::constructible_from<quantity_type, Q> &&
-             ReferenceOf<std::remove_const_t<decltype(std::remove_reference_t<Q>::reference)>, PO2::quantity_spec> &&
-             detail::SameAbsolutePointOriginAs<PO2, PO>
-  constexpr quantity_point(Q&& q, PO2) :
+  template<typename FwdQ, PointOrigin PO2, QuantityOf<PO2::quantity_spec> Q = std::remove_cvref_t<FwdQ>>
+    requires std::constructible_from<quantity_type, FwdQ> && detail::SameAbsolutePointOriginAs<PO2, PO>
+  constexpr quantity_point(FwdQ&& q, PO2) :
       quantity_point(
         quantity_point<std::remove_reference_t<Q>::reference, PO2{}, typename std::remove_reference_t<Q>::rep>{
-          std::forward<Q>(q), PO2{}})
+          std::forward<FwdQ>(q), PO2{}})
   {
   }
 
@@ -413,13 +410,12 @@ public:
   }
 
   // member unary operators
-  template<typename QP>
-  friend constexpr decltype(auto) operator++(QP&& qp)
-    requires std::derived_from<std::remove_cvref_t<QP>, quantity_point> &&
-             requires { ++qp.quantity_from_origin_is_an_implementation_detail_; }
+  template<typename FwdQP, std::derived_from<quantity_point> QP = std::remove_cvref_t<FwdQP>>
+  friend constexpr decltype(auto) operator++(FwdQP&& qp)
+    requires requires { ++qp.quantity_from_origin_is_an_implementation_detail_; }
   {
     ++qp.quantity_from_origin_is_an_implementation_detail_;
-    return std::forward<QP>(qp);
+    return std::forward<FwdQP>(qp);
   }
 
   [[nodiscard]] constexpr quantity_point operator++(int)
@@ -428,13 +424,12 @@ public:
     return {quantity_from_origin_is_an_implementation_detail_++, PO};
   }
 
-  template<typename QP>
-  friend constexpr decltype(auto) operator--(QP&& qp)
-    requires std::derived_from<std::remove_cvref_t<QP>, quantity_point> &&
-             requires { --qp.quantity_from_origin_is_an_implementation_detail_; }
+  template<typename FwdQP, std::derived_from<quantity_point> QP = std::remove_cvref_t<FwdQP>>
+  friend constexpr decltype(auto) operator--(FwdQP&& qp)
+    requires requires { --qp.quantity_from_origin_is_an_implementation_detail_; }
   {
     --qp.quantity_from_origin_is_an_implementation_detail_;
-    return std::forward<QP>(qp);
+    return std::forward<FwdQP>(qp);
   }
 
   [[nodiscard]] constexpr quantity_point operator--(int)
@@ -444,22 +439,20 @@ public:
   }
 
   // compound assignment operators
-  template<typename QP>
-    requires std::derived_from<std::remove_cvref_t<QP>, quantity_point> &&
-             requires(quantity_type q) { quantity_from_origin_is_an_implementation_detail_ += q; }
-  friend constexpr decltype(auto) operator+=(QP&& qp, const quantity_type& q)
+  template<typename FwdQP, std::derived_from<quantity_point> QP = std::remove_cvref_t<FwdQP>>
+    requires requires(quantity_type q) { quantity_from_origin_is_an_implementation_detail_ += q; }
+  friend constexpr decltype(auto) operator+=(FwdQP&& qp, const quantity_type& q)
   {
     qp.quantity_from_origin_is_an_implementation_detail_ += q;
-    return std::forward<QP>(qp);
+    return std::forward<FwdQP>(qp);
   }
 
-  template<typename QP>
-    requires std::derived_from<std::remove_cvref_t<QP>, quantity_point> &&
-             requires(quantity_type q) { quantity_from_origin_is_an_implementation_detail_ -= q; }
-  friend constexpr decltype(auto) operator-=(QP&& qp, const quantity_type& q)
+  template<typename FwdQP, std::derived_from<quantity_point> QP = std::remove_cvref_t<FwdQP>>
+    requires requires(quantity_type q) { quantity_from_origin_is_an_implementation_detail_ -= q; }
+  friend constexpr decltype(auto) operator-=(FwdQP&& qp, const quantity_type& q)
   {
     qp.quantity_from_origin_is_an_implementation_detail_ -= q;
-    return std::forward<QP>(qp);
+    return std::forward<FwdQP>(qp);
   }
 
   // binary operators on quantity points

@@ -168,22 +168,23 @@ public:
   quantity(quantity&&) = default;
   ~quantity() = default;
 
-  template<typename Value, Reference R2>
-    requires detail::SameValueAs<R2{}, R, std::remove_cvref_t<Value>, Rep>
-  constexpr quantity(Value&& v, R2) : numerical_value_is_an_implementation_detail_(std::forward<Value>(v))
+  template<typename FwdValue, Reference R2>
+    requires detail::SameValueAs<R2{}, R, std::remove_cvref_t<FwdValue>, Rep>
+  constexpr quantity(FwdValue&& v, R2) : numerical_value_is_an_implementation_detail_(std::forward<FwdValue>(v))
   {
   }
 
-  template<typename Value, Reference R2>
-    requires(!detail::SameValueAs<R2{}, R, std::remove_cvref_t<Value>, Rep>) &&
-            detail::QuantityConvertibleTo<quantity<R2{}, std::remove_cvref_t<Value>>, quantity>
-  constexpr quantity(Value&& v, R2) : quantity(quantity<R2{}, std::remove_cvref_t<Value>>{std::forward<Value>(v), R2{}})
+  template<typename FwdValue, Reference R2, typename Value = std::remove_cvref_t<FwdValue>>
+    requires(!detail::SameValueAs<R2{}, R, Value, Rep>) &&
+            detail::QuantityConvertibleTo<quantity<R2{}, Value>, quantity>
+  constexpr quantity(FwdValue&& v, R2) : quantity(quantity<R2{}, Value>{std::forward<FwdValue>(v), R2{}})
   {
   }
 
-  template<detail::ValuePreservingTo<Rep> Value>
+  template<detail::ValuePreservingTo<Rep> FwdValue>
     requires(unit == ::mp_units::one)
-  constexpr explicit(false) quantity(Value&& v) : numerical_value_is_an_implementation_detail_(std::forward<Value>(v))
+  constexpr explicit(false) quantity(FwdValue&& v) :
+      numerical_value_is_an_implementation_detail_(std::forward<FwdValue>(v))
   {
   }
 
@@ -209,11 +210,11 @@ public:
   quantity& operator=(const quantity&) = default;
   quantity& operator=(quantity&&) = default;
 
-  template<detail::ValuePreservingTo<Rep> Value>
+  template<detail::ValuePreservingTo<Rep> FwdValue>
     requires(unit == ::mp_units::one)
-  constexpr quantity& operator=(Value&& v)
+  constexpr quantity& operator=(FwdValue&& v)
   {
-    numerical_value_is_an_implementation_detail_ = std::forward<Value>(v);
+    numerical_value_is_an_implementation_detail_ = std::forward<FwdValue>(v);
     return *this;
   }
 
@@ -355,16 +356,16 @@ public:
     return ::mp_units::quantity{-numerical_value_is_an_implementation_detail_, reference};
   }
 
-  template<typename Q>
-  friend constexpr decltype(auto) operator++(Q&& q)
-    requires std::derived_from<std::remove_cvref_t<Q>, quantity> && requires(rep v) {
+  template<typename FwdQ, std::derived_from<quantity> Q = std::remove_cvref_t<FwdQ>>
+  friend constexpr decltype(auto) operator++(FwdQ&& q)
+    requires requires(rep v) {
       {
         ++v
       } -> std::same_as<rep&>;
     }
   {
     ++q.numerical_value_is_an_implementation_detail_;
-    return std::forward<Q>(q);
+    return std::forward<FwdQ>(q);
   }
 
   [[nodiscard]] constexpr QuantityOf<quantity_spec> auto operator++(int)
@@ -377,16 +378,16 @@ public:
     return ::mp_units::quantity{numerical_value_is_an_implementation_detail_++, reference};
   }
 
-  template<typename Q>
-  friend constexpr decltype(auto) operator--(Q&& q)
-    requires std::derived_from<std::remove_cvref_t<Q>, quantity> && requires(rep v) {
+  template<typename FwdQ, std::derived_from<quantity> Q = std::remove_cvref_t<FwdQ>>
+  friend constexpr decltype(auto) operator--(FwdQ&& q)
+    requires requires(rep v) {
       {
         --v
       } -> std::same_as<rep&>;
     }
   {
     --q.numerical_value_is_an_implementation_detail_;
-    return std::forward<Q>(q);
+    return std::forward<FwdQ>(q);
   }
 
   [[nodiscard]] constexpr QuantityOf<quantity_spec> auto operator--(int)
@@ -400,97 +401,92 @@ public:
   }
 
   // compound assignment operators
-  template<typename Q>
-    requires std::derived_from<std::remove_cvref_t<Q>, quantity> && requires(rep a, rep b) {
+  template<typename FwdQ, std::derived_from<quantity> Q = std::remove_cvref_t<FwdQ>>
+    requires requires(rep a, rep b) {
       {
         a += b
       } -> std::same_as<rep&>;
     }
-  friend constexpr decltype(auto) operator+=(Q&& lhs, const quantity& rhs)
+  friend constexpr decltype(auto) operator+=(FwdQ&& lhs, const quantity& rhs)
   {
     lhs.numerical_value_is_an_implementation_detail_ += rhs.numerical_value_is_an_implementation_detail_;
-    return std::forward<Q>(lhs);
+    return std::forward<FwdQ>(lhs);
   }
 
-  template<typename Q>
-    requires std::derived_from<std::remove_cvref_t<Q>, quantity> && requires(rep a, rep b) {
+  template<typename FwdQ, std::derived_from<quantity> Q = std::remove_cvref_t<FwdQ>>
+    requires requires(rep a, rep b) {
       {
         a -= b
       } -> std::same_as<rep&>;
     }
-  friend constexpr decltype(auto) operator-=(Q&& lhs, const quantity& rhs)
+  friend constexpr decltype(auto) operator-=(FwdQ&& lhs, const quantity& rhs)
   {
     lhs.numerical_value_is_an_implementation_detail_ -= rhs.numerical_value_is_an_implementation_detail_;
-    return std::forward<Q>(lhs);
+    return std::forward<FwdQ>(lhs);
   }
 
-  template<typename Q>
-    requires std::derived_from<std::remove_cvref_t<Q>, quantity> && (!treat_as_floating_point<rep>) &&
-             requires(rep a, rep b) {
-               {
-                 a %= b
-               } -> std::same_as<rep&>;
-             }
-  friend constexpr decltype(auto) operator%=(Q&& lhs, const quantity& rhs)
+  template<typename FwdQ, std::derived_from<quantity> Q = std::remove_cvref_t<FwdQ>>
+    requires(!treat_as_floating_point<rep>) && requires(rep a, rep b) {
+      {
+        a %= b
+      } -> std::same_as<rep&>;
+    }
+  friend constexpr decltype(auto) operator%=(FwdQ&& lhs, const quantity& rhs)
 
   {
     MP_UNITS_EXPECTS_DEBUG(rhs != zero());
     lhs.numerical_value_is_an_implementation_detail_ %= rhs.numerical_value_is_an_implementation_detail_;
-    return std::forward<Q>(lhs);
+    return std::forward<FwdQ>(lhs);
   }
 
-  template<typename Q, typename Value>
-    requires std::derived_from<std::remove_cvref_t<Q>, quantity> && (!Quantity<Value>) &&
-             requires(rep a, const Value b) {
-               {
-                 a *= b
-               } -> std::same_as<rep&>;
-             }
-  friend constexpr decltype(auto) operator*=(Q&& lhs, const Value& v)
+  template<typename FwdQ, typename Value, std::derived_from<quantity> Q = std::remove_cvref_t<FwdQ>>
+    requires(!Quantity<Value>) && requires(rep a, const Value b) {
+      {
+        a *= b
+      } -> std::same_as<rep&>;
+    }
+  friend constexpr decltype(auto) operator*=(FwdQ&& lhs, const Value& v)
   {
     lhs.numerical_value_is_an_implementation_detail_ *= v;
-    return std::forward<Q>(lhs);
+    return std::forward<FwdQ>(lhs);
   }
 
-  template<typename Q1, QuantityOf<dimensionless> Q2>
-    requires std::derived_from<std::remove_cvref_t<Q1>, quantity> && (Q2::unit == ::mp_units::one) &&
-             requires(rep a, const typename Q2::rep b) {
-               {
-                 a *= b
-               } -> std::same_as<rep&>;
-             }
-  friend constexpr decltype(auto) operator*=(Q1&& lhs, const Q2& rhs)
+  template<typename FwdQ1, QuantityOf<dimensionless> Q2, std::derived_from<quantity> Q1 = std::remove_cvref_t<FwdQ1>>
+    requires(Q2::unit == ::mp_units::one) && requires(rep a, const typename Q2::rep b) {
+      {
+        a *= b
+      } -> std::same_as<rep&>;
+    }
+  friend constexpr decltype(auto) operator*=(FwdQ1&& lhs, const Q2& rhs)
   {
     lhs.numerical_value_is_an_implementation_detail_ *= rhs.numerical_value_is_an_implementation_detail_;
-    return std::forward<Q1>(lhs);
+    return std::forward<FwdQ1>(lhs);
   }
 
-  template<typename Q, typename Value>
-    requires std::derived_from<std::remove_cvref_t<Q>, quantity> && (!Quantity<Value>) &&
-             requires(rep a, const Value b) {
-               {
-                 a /= b
-               } -> std::same_as<rep&>;
-             }
-  friend constexpr decltype(auto) operator/=(Q&& lhs, const Value& v)
+  template<typename FwdQ, typename Value, std::derived_from<quantity> Q = std::remove_cvref_t<FwdQ>>
+    requires(!Quantity<Value>) && requires(rep a, const Value b) {
+      {
+        a /= b
+      } -> std::same_as<rep&>;
+    }
+  friend constexpr decltype(auto) operator/=(FwdQ&& lhs, const Value& v)
   {
     MP_UNITS_EXPECTS_DEBUG(v != quantity_values<Value>::zero());
     lhs.numerical_value_is_an_implementation_detail_ /= v;
-    return std::forward<Q>(lhs);
+    return std::forward<FwdQ>(lhs);
   }
 
-  template<typename Q1, QuantityOf<dimensionless> Q2>
-    requires std::derived_from<std::remove_cvref_t<Q1>, quantity> && (Q2::unit == ::mp_units::one) &&
-             requires(rep a, const typename Q2::rep b) {
-               {
-                 a /= b
-               } -> std::same_as<rep&>;
-             }
-  friend constexpr decltype(auto) operator/=(Q1&& lhs, const Q2& rhs)
+  template<typename FwdQ1, QuantityOf<dimensionless> Q2, std::derived_from<quantity> Q1 = std::remove_cvref_t<FwdQ1>>
+    requires(Q2::unit == ::mp_units::one) && requires(rep a, const typename Q2::rep b) {
+      {
+        a /= b
+      } -> std::same_as<rep&>;
+    }
+  friend constexpr decltype(auto) operator/=(FwdQ1&& lhs, const Q2& rhs)
   {
     MP_UNITS_EXPECTS_DEBUG(rhs != rhs.zero());
     lhs.numerical_value_is_an_implementation_detail_ /= rhs.numerical_value_is_an_implementation_detail_;
-    return std::forward<Q1>(lhs);
+    return std::forward<FwdQ1>(lhs);
   }
 
   // binary operators on quantities
