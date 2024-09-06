@@ -260,6 +260,9 @@ static_assert(quantity<isq::length[km], int>(2 * km).force_in(km).numerical_valu
 static_assert(quantity<isq::length[km], int>(2 * km).force_in(m).numerical_value_in(m) == 2000);
 static_assert(quantity<isq::length[m], int>(2000 * m).force_in(km).numerical_value_in(km) == 2);
 
+static_assert((15. * m).in(nm).numerical_value_in(m) == 15.);
+static_assert((15'000. * nm).in(m).numerical_value_in(nm) == 15'000.);
+
 template<template<auto, typename> typename Q>
 concept invalid_unit_conversion = requires {
   requires !requires { Q<isq::length[m], int>(2000 * m).in(km); };     // truncating conversion
