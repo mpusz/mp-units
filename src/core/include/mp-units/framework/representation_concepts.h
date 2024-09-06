@@ -79,10 +79,14 @@ concept Scalable =
   CastableNumber<T> || (requires { typename wrapped_type_t<T>; } && CastableNumber<wrapped_type_t<T>> &&
                         ScalableNumber<T, std::common_type_t<wrapped_type_t<T>, std::intmax_t>>);
 
+template<typename T>
+concept WeaklyRegular = std::copyable<T> && std::equality_comparable<T>;
+
 }  // namespace detail
 
 MP_UNITS_EXPORT template<typename T>
-concept Representation = (is_scalar<T> || is_vector<T> || is_tensor<T>)&&std::regular<T> && detail::Scalable<T>;
+concept Representation =
+  (is_scalar<T> || is_vector<T> || is_tensor<T>)&&detail::WeaklyRegular<T> && detail::Scalable<T>;
 
 MP_UNITS_EXPORT template<typename T, quantity_character Ch>
 concept RepresentationOf = Representation<T> && ((Ch == quantity_character::scalar && is_scalar<T>) ||
