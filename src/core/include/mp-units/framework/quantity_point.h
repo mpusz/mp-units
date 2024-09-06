@@ -295,7 +295,7 @@ public:
 #endif
 
   template<PointOrigin PO2>
-    requires requires { quantity_point{} - PO2{}; }
+    requires requires(quantity_point qp) { qp - PO2{}; }
   [[nodiscard]] constexpr Quantity auto quantity_from(PO2) const
   {
     return *this - PO2{};
