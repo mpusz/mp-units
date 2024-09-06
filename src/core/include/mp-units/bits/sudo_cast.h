@@ -105,7 +105,7 @@ template<Quantity To, typename FwdFrom, typename From = std::remove_cvref_t<FwdF
             To::reference};  // this is the only (and recommended) way to do a truncating conversion on a number, so we
                              // are using static_cast to suppress all the compiler warnings on conversions
   } else {
-    static constexpr Magnitude auto c_mag = get_canonical_unit(From::unit).mag / get_canonical_unit(To::unit).mag;
+    constexpr Magnitude auto c_mag = get_canonical_unit(From::unit).mag / get_canonical_unit(To::unit).mag;
     using type_traits = conversion_type_traits<c_mag, typename From::rep, typename To::rep>;
     using multiplier_type = typename type_traits::multiplier_type;
     auto scale = [&](std::invocable<typename type_traits::c_type> auto func) {
@@ -165,7 +165,7 @@ template<QuantityPoint ToQP, typename FwdFromQP, typename FromQP = std::remove_c
     // In the following, we carefully select the order of these three operations: each of (a) and (b) is scheduled
     // either before or after (c), such that (c) acts on the largest range possible among all combination of source
     // and target unit and representation.
-    static constexpr Magnitude auto c_mag = get_canonical_unit(FromQP::unit).mag / get_canonical_unit(ToQP::unit).mag;
+    constexpr Magnitude auto c_mag = get_canonical_unit(FromQP::unit).mag / get_canonical_unit(ToQP::unit).mag;
     using type_traits = conversion_type_traits<c_mag, typename FromQP::rep, typename ToQP::rep>;
     using value_traits = conversion_value_traits<c_mag, typename type_traits::multiplier_type>;
     using c_rep_type = typename type_traits::c_rep_type;
