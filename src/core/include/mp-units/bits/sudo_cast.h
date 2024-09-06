@@ -108,7 +108,9 @@ template<Quantity To, typename FwdFrom, typename From = std::remove_cvref_t<FwdF
     constexpr Magnitude auto c_mag = get_canonical_unit(From::unit).mag / get_canonical_unit(To::unit).mag;
     using type_traits = conversion_type_traits<c_mag, typename From::rep, typename To::rep>;
     using multiplier_type = typename type_traits::multiplier_type;
-    auto scale = [&](std::invocable<typename type_traits::c_type> auto func) {
+    // TODO the below crashed nearly every compiler I tried it on
+    // auto scale = [&](std::invocable<typename type_traits::c_type> auto func) {
+    auto scale = [&](auto func) {
       auto res =
         static_cast<To::rep>(func(static_cast<type_traits::c_type>(q.numerical_value_is_an_implementation_detail_)));
       return To{res, To::reference};
