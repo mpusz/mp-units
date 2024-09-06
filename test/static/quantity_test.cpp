@@ -115,6 +115,10 @@ static_assert(quantity<isq::length[m]>::unit == si::metre);
 static_assert(is_same_v<quantity<isq::length[m]>::rep, double>);
 static_assert(is_same_v<quantity<isq::length[m], int>::rep, int>);
 
+[[maybe_unused]] volatile std::int16_t vint = 123;
+static_assert(is_same_v<decltype(quantity(vint * m))::rep, std::int16_t>);
+static_assert(is_same_v<decltype(quantity(vint, m))::rep, std::int16_t>);
+
 
 ////////////////////////////
 // static member functions
