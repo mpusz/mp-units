@@ -1,0 +1,8 @@
+div.example { display: inline; color: #bb00bb; }
+div.note { display: inline; color: #bb00bb; }
+
+div.exampleBody { display: inline; background-color: inherit; }
+div.noteBody { display: inline; background-color: inherit; }
+
+a.example_link { text-decoration: none; color: inherit; }
+a.note_link { text-decoration: none; color: inherit; }

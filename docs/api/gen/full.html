@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+  <title>JEGP Library</title>
+  <meta charset='UTF-8' />
+  <link rel='stylesheet' type='text/css' href='14882.css' />
+  <link rel='stylesheet' type='text/css' href='expanded.css' title='Notes and examples expanded' />
+  <link rel='alternate stylesheet' type='text/css' href='colored.css' title='Notes and examples colored' />
+  <link rel='icon' href='icon.png' />
+</head>
+
+<body>
+  <div class='wrapper'>
+    <div id='scope' class='section'>
+      <h1><a class='secnum' style='min-width:73pt'>1</a> Scope <a class='abbr_ref' href='./#scope'>[scope]</a></h1>
+      <div class='para'>
+        <div class='marginalizedparent'><a class='marginalized' href='scope#1'>1</a></div>
+        <div class='sourceLinkParent'><a class='sourceLink'
+            href='https://github.com/johelegp/jegp/tree/4dfbe8f5446ba1f53439a36ce12119fe285268c9/doc/intro.tex#L4'>#</a>
+        </div>
+        <div id='scope-1.sentence-1' class='sentence'>This document describes the contents of the <a class='hidden_link'
+            href='#def:JEGP_library' id='def:JEGP_library'><i>JEGP library</i></a><a class='hidden_link'
+            href='#scope-1.sentence-1'>.</a></div>
+      </div>
+    </div>
+    <div id='refs' class='section'>
+      <h1><a class='secnum' style='min-width:73pt'>2</a> References <a class='abbr_ref' href='./#refs'>[refs]</a></h1>
+      <div class='para'>
+        <div class='marginalizedparent'><a class='marginalized' href='refs#1'>1</a></div>
+        <div class='sourceLinkParent'><a class='sourceLink'
+            href='https://github.com/johelegp/jegp/tree/4dfbe8f5446ba1f53439a36ce12119fe285268c9/doc/intro.tex#L9'>#</a>
+        </div>
+        <div id='refs-1.sentence-1' class='sentence'>The following documents are referred to in the text
+          in such a way that some or all of their content
+          constitutes requirements of this document<a class='hidden_link' href='#refs-1.sentence-1'>.</a></div>
+        <ul class='itemize'>
+          <li id='refs-1.1'>
+            <div class='marginalizedparent' style='left:-7em'><a class='marginalized' href='#refs-1.1'>(1.1)</a></div>
+            <div id='refs-1.1.sentence-1' class='sentence'>ISO/IEC 14882:2020, <span class='textit'>Programming
+                Languages — C++</span></div>
+          </li>
+        </ul>
+      </div>
+      <div class='para'>
+        <div class='marginalizedparent'><a class='marginalized' href='refs#2'>2</a></div>
+        <div class='sourceLinkParent'><a class='sourceLink'
+            href='https://github.com/johelegp/jegp/tree/4dfbe8f5446ba1f53439a36ce12119fe285268c9/doc/intro.tex#L18'>#</a>
+        </div>
+        <div id='refs-2.sentence-1' class='sentence'>ISO/IEC 14882 is herein called the <a class='hidden_link'
+            href='#def:C++_Standard' id='def:C++_Standard'><i>C++ Standard</i></a><a class='hidden_link'
+            href='#refs-2.sentence-1'>.</a></div>
+      </div>
+    </div>
+    <div id='intro' class='section'>
+      <h1><a class='secnum' style='min-width:73pt'>3</a> Introduction <a class='abbr_ref' href='./#intro'>[intro]</a>
+      </h1>
+      <div id='intro.general' class='section'>
+        <h2><a class='secnum' style='min-width:88pt'>3.1</a> General <a class='abbr_ref'
+            href='intro.general'>[intro.general]</a></h2>
+        <div class='para'>
+          <div class='marginalizedparent'><a class='marginalized' href='intro.general#1'>1</a></div>
+          <div class='sourceLinkParent'><a class='sourceLink'
+              href='https://github.com/johelegp/jegp/tree/4dfbe8f5446ba1f53439a36ce12119fe285268c9/doc/intro.tex#L25'>#</a>
+          </div>
+          <div id='intro.general-1.sentence-1' class='sentence'>The library specification subsumes the C++ Standard's <a
+              href="https://wg21.link/library">[library]</a>,
+            assumingly amended to the context of this library<a class='hidden_link'
+              href='#intro.general-1.sentence-1'>.</a></div>
+          <div id='intro.general-1.example-1' class='example'>[&nbsp;<a class='example_link'
+              href='#intro.general-1.example-1'><span class='textit'>Example</span></a>
+            <div class='exampleBody'><span class='textit'>:</span>
+              <ul class='itemize'>
+                <li>
+                  <div id='intro.general-1.sentence-1' class='sentence'>Per C++ Standard's <a
+                      href="https://wg21.link/namespace.future">[namespace.future]</a>, <span class='texttt'><span
+                        class='operator'>&#x200b;::&#x200b;</span>jegp2</span> is reserved<a class='hidden_link'
+                      href='#intro.general-1.sentence-1'>.</a></div>
+                </li>
+                <li>
+                  <div id='intro.general-1.sentence-1' class='sentence'>Per C++ Standard's <a
+                      href="https://wg21.link/contents">[contents]</a>#3, a name <span class='texttt'>x</span> means
+                    <span class='texttt'><span class='operator'>&#x200b;::&#x200b;</span>jegp<span
+                        class='operator'>&#x200b;::&#x200b;</span>x</span><a class='hidden_link'
+                      href='#intro.general-1.sentence-1'>.</a>
+                  </div>
+                </li>
+              </ul> —&nbsp;<i>end example</i>
+            </div>&nbsp;]
+          </div>
+          <div id='intro.general-1.sentence-2' class='sentence'>
+            The following subclauses describe additions to it<a class='hidden_link'
+              href='#intro.general-1.sentence-2'>.</a></div>
+          <div class='numberedTable' id='tab:library.categories'>Table <a href='#tab:library.categories'>1</a>: Library
+            categories &emsp;&ensp;[tab:library.categories]<br>
+            <table>
+              <tr class='rowsep'>
+                <td class='left'>
+                  <div id='intro.general-1.sentence-3' class='sentence'><b>Clause</b></div>
+                </td>
+                <td class='left'>
+                  <div id='intro.general-1.sentence-4' class='sentence'><b>Category</b></div>
+                </td>
+              </tr>
+              <tr class='capsep'>
+                <td class='left'>
+                  <div id='intro.general-1.sentence-5' class='sentence'><a href='#utilities'>[utilities]</a></div>
+                </td>
+                <td class='left'>
+                  <div id='intro.general-1.sentence-6' class='sentence'>General utilities library</div>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div id='requirements' class='section'>
+        <h2><a class='secnum' style='min-width:88pt'>3.2</a> Library-wide requirements <a class='abbr_ref'
+            href='requirements'>[requirements]</a></h2>
+        <div id='contents' class='section'>
+          <h3><a class='secnum' style='min-width:103pt'>3.2.1</a> Library contents <a class='abbr_ref'
+              href='contents'>[contents]</a></h3>
+          <div class='para'>
+            <div class='marginalizedparent'><a class='marginalized' href='contents#1'>1</a></div>
+            <div class='sourceLinkParent'><a class='sourceLink'
+                href='https://github.com/johelegp/jegp/tree/4dfbe8f5446ba1f53439a36ce12119fe285268c9/doc/intro.tex#L47'>#</a>
+            </div>
+            <div id='contents-1.sentence-1' class='sentence'>Whenever a name is qualified with <span
+                class='texttt'>X<span class='operator'>&#x200b;::&#x200b;</span></span>, <span class='texttt'><span
+                  class='operator'>&#x200b;::&#x200b;</span>X<span class='operator'>&#x200b;::&#x200b;</span></span> is
+              meant<a class='hidden_link' href='#contents-1.sentence-1'>.</a></div>
+            <div id='contents-1.example-1' class='example'>[&nbsp;<a class='example_link'
+                href='#contents-1.example-1'><span class='textit'>Example</span></a>
+              <div class='exampleBody'><span class='textit'>:</span>
+                <div id='contents-1.sentence-2' class='sentence'>When <span class='texttt'>std<span
+                      class='operator'>&#x200b;::&#x200b;</span>Y</span> is mentioned, <span class='texttt'><span
+                      class='operator'>&#x200b;::&#x200b;</span>std<span
+                      class='operator'>&#x200b;::&#x200b;</span>Y</span> is meant<a class='hidden_link'
+                    href='#contents-1.sentence-2'>.</a></div> —&nbsp;<i>end example</i>
+              </div>&nbsp;]
+            </div>
+          </div>
+        </div>
+        <div id='reserved.names' class='section'>
+          <h3><a class='secnum' style='min-width:103pt'>3.2.2</a> Reserved names <a class='abbr_ref'
+              href='reserved.names'>[reserved.names]</a></h3>
+          <div class='para'>
+            <div class='marginalizedparent'><a class='marginalized' href='reserved.names#1'>1</a></div>
+            <div class='sourceLinkParent'><a class='sourceLink'
+                href='https://github.com/johelegp/jegp/tree/4dfbe8f5446ba1f53439a36ce12119fe285268c9/doc/intro.tex#L55'>#</a>
+            </div>
+            <div id='reserved.names-1.sentence-1' class='sentence'>The JEGP library reserves macro names starting with
+              <span class='texttt'>JEGP_&shy;</span><a class='hidden_link' href='#reserved.names-1.sentence-1'>.</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id='utilities' class='section'>
+      <h1><a class='secnum' style='min-width:73pt'>4</a> General utilities library <a class='abbr_ref'
+          href='./#utilities'>[utilities]</a></h1>
+      <div id='utilities.general' class='section'>
+        <h2><a class='secnum' style='min-width:88pt'>4.1</a> General <a class='abbr_ref'
+            href='utilities.general'>[utilities.general]</a></h2>
+        <div class='para'>
+          <div class='marginalizedparent'><a class='marginalized' href='utilities.general#1'>1</a></div>
+          <div class='sourceLinkParent'><a class='sourceLink'
+              href='https://github.com/johelegp/jegp/tree/4dfbe8f5446ba1f53439a36ce12119fe285268c9/doc/utilities.tex#L6'>#</a>
+          </div>
+          <div id='utilities.general-1.sentence-1' class='sentence'>This clause describes generally useful utilities<a
+              class='hidden_link' href='#utilities.general-1.sentence-1'>.</a></div>
+          <div id='utilities.general-1.sentence-2' class='sentence'>These utilities are summarized in Table <a
+              href='#tab:utilities.summary'>2</a><a class='hidden_link' href='#utilities.general-1.sentence-2'>.</a>
+          </div>
+          <div class='numberedTable' id='tab:utilities.summary'>Table <a href='#tab:utilities.summary'>2</a>: General
+            utilities library summary &emsp;&ensp;[tab:utilities.summary]<br>
+            <table>
+              <tr class='rowsep'>
+                <td class='empty left'></td>
+                <td class='left'>
+                  <div id='utilities.general-1.sentence-3' class='sentence'><b>Subclause</b></div>
+                </td>
+                <td class='left'>
+                  <div id='utilities.general-1.sentence-4' class='sentence'><b>Header</b></div>
+                </td>
+              </tr>
+              <tr class='capsep'>
+                <td class='left'>
+                  <div id='utilities.general-1.sentence-5' class='sentence'><a href='#utility'>[utility]</a></div>
+                </td>
+                <td class='left'>
+                  <div id='utilities.general-1.sentence-6' class='sentence'>Utility components</div>
+                </td>
+                <td class='left'>
+                  <div id='utilities.general-1.sentence-7' class='sentence'><span class='texttt'><span
+                        class='anglebracket'>&lt;</span>jegp<span class='operator'>/</span>utility<span
+                        class='operator'>.</span>hpp<span class='anglebracket'>&gt;</span></span></div>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div id='utility' class='section'>
+        <h2><a class='secnum' style='min-width:88pt'>4.2</a> Utility components <a class='abbr_ref'
+            href='utility'>[utility]</a></h2>
+        <div id='utility.syn' class='section'>
+          <h3><a class='secnum' style='min-width:103pt'>4.2.1</a> Header <span
+              class='texttt'>&lt;jegp/utility.hpp&gt;</span> synopsis <a class='abbr_ref'
+              href='utility.syn'>[utility.syn]</a></h3>
+          <div class='para'>
+            <div class='marginalizedparent'><a class='marginalized' href='utility.syn#1'>1</a></div>
+            <div class='sourceLinkParent'><a class='sourceLink'
+                href='https://github.com/johelegp/jegp/tree/4dfbe8f5446ba1f53439a36ce12119fe285268c9/doc/utilities.tex#L18'>#</a>
+            </div>
+            <div id='utility.syn-1.sentence-1' class='sentence'>The header <span class='indexparent'><a class='index'
+                  id=':<jegp/utility.hpp>'></a></span><span class='texttt'><span
+                  class='anglebracket'>&lt;</span>jegp<span class='operator'>/</span>utility<span
+                  class='operator'>.</span>hpp<span class='anglebracket'>&gt;</span></span>
+              contains some basic constructs<a class='hidden_link' href='#utility.syn-1.sentence-1'>.</a></div><span
+              class='indexparent'><a class='index' id=':<jegp/utility.hpp>_'></a></span>
+            <pre class='codeblock'>
+<span class='keyword'>namespace</span> jegp
+<span class='curlybracket'>{</span>
+<span class='comment'>// <a href='#utility.underlying'>[utility.underlying]</a>, <span class='tcode_in_codeblock'>underlying</span></span>
+<span class='keyword'>template</span> <span class='anglebracket'>&lt;</span><span class='keyword'>class</span> Enum<span class='anglebracket'>&gt;</span>
+<span class='keyword'>constexpr</span> std<span class='operator'>::</span>underlying_type_t<span class='anglebracket'>&lt;</span>Enum<span class='anglebracket'>&gt;</span> underlying<span class='parenthesis'>(</span>Enum e<span class='parenthesis'>)</span> <span class='keyword'>noexcept</span>;
+
+<span class='comment'>// <a href='#static.downcast'>[static.downcast]</a>, <span class='tcode_in_codeblock'>static_&shy;downcast</span></span>
+<span class='keyword'>template</span> <span class='anglebracket'>&lt;</span><span class='keyword'>class</span> DerivedRef, <span class='keyword'>class</span> Base<span class='anglebracket'>&gt;</span>
+<span class='keyword'>constexpr</span> DerivedRef static_downcast<span class='parenthesis'>(</span>Base<span class='operator'>&amp;</span><span class='operator'>&amp;</span> base<span class='parenthesis'>)</span> <span class='keyword'>noexcept</span>;
+
+<span class='comment'>// <a href='#hash.combine'>[hash.combine]</a>, <span class='tcode_in_codeblock'>hash_&shy;combine</span></span>
+<span class='keyword'>template</span> <span class='anglebracket'>&lt;</span><span class='keyword'>class</span><span class='operator'>.</span><span class='operator'>.</span><span class='operator'>.</span> Args<span class='anglebracket'>&gt;</span>
+<span class='keyword'>constexpr</span> std<span class='operator'>::</span>size_t hash_combine<span class='parenthesis'>(</span><span class='keyword'>const</span> Args<span class='operator'>&amp;</span><span class='operator'>.</span><span class='operator'>.</span><span class='operator'>.</span> args<span class='parenthesis'>)</span> <span class='keyword'>noexcept</span><span class='parenthesis'>(</span><span class='textit'><span class='texttt'>see below</span></span><span class='parenthesis'>)</span>;
+
+<span class='curlybracket'>}</span> <span class='comment'>// namespace jegp</span>
+</pre>
+          </div>
+        </div>
+        <div id='utility.underlying' class='section'>
+          <h3><a class='secnum' style='min-width:103pt'>4.2.2</a> <span class='texttt'>underlying</span> <a
+              class='abbr_ref' href='utility.underlying'>[utility.underlying]</a></h3><span class='indexparent'><a
+              class='index' id='lib:underlying'></a></span>
+          <div class='itemdecl' id='utility.underlying-itemdecl:1'>
+            <div class='marginalizedparent'><a class='itemDeclLink' href='#utility.underlying-itemdecl:1'>🔗</a></div>
+            <code class='itemdeclcode'><span class='keyword'>template</span> <span class='anglebracket'>&lt;</span><span class='keyword'>class</span> Enum<span class='anglebracket'>&gt;</span>
+<span class='keyword'>constexpr</span> std<span class='operator'>::</span>underlying_type_t<span class='anglebracket'>&lt;</span>Enum<span class='anglebracket'>&gt;</span> underlying<span class='parenthesis'>(</span>Enum e<span class='parenthesis'>)</span> <span class='keyword'>noexcept</span>;
+</code>
+          </div>
+          <div class='itemdescr'></div>
+          <div class='para'>
+            <div class='marginalizedparent'><a class='marginalized' href='utility.underlying#1'>1</a></div>
+            <div class='itemdescr'>
+              <div class='sourceLinkParent'><a class='sourceLink'
+                  href='https://github.com/johelegp/jegp/tree/4dfbe8f5446ba1f53439a36ce12119fe285268c9/doc/utilities.tex#L50'>#</a>
+              </div>
+              <div id='utility.underlying-1.sentence-1' class='sentence'><span class='textit'>Constraints:</span>
+                <span class='texttt'>std<span class='operator'>&#x200b;::&#x200b;</span>is_&shy;enum_&shy;v<span
+                    class='anglebracket'>&lt;</span>Enum<span class='anglebracket'>&gt;</span></span> is <span
+                  class='texttt'><span class='literal'>true</span></span><a class='hidden_link'
+                  href='#utility.underlying-1.sentence-1'>.</a>
+              </div>
+            </div>
+          </div>
+          <div class='para'>
+            <div class='marginalizedparent'><a class='marginalized' href='utility.underlying#2'>2</a></div>
+            <div class='itemdescr'>
+              <div class='sourceLinkParent'><a class='sourceLink'
+                  href='https://github.com/johelegp/jegp/tree/4dfbe8f5446ba1f53439a36ce12119fe285268c9/doc/utilities.tex#L54'>#</a>
+              </div>
+              <div id='utility.underlying-2.sentence-1' class='sentence'><span class='textit'>Returns:</span>
+                <span class='texttt'><span class='keyword'>static_&shy;cast</span><span
+                    class='anglebracket'>&lt;</span>std<span
+                    class='operator'>&#x200b;::&#x200b;</span>underlying_&shy;type_&shy;t<span
+                    class='anglebracket'>&lt;</span>Enum<span class='anglebracket'>&gt;</span><span
+                    class='anglebracket'>&gt;</span><span class='parenthesis'>(</span>e<span
+                    class='parenthesis'>)</span></span><a class='hidden_link'
+                  href='#utility.underlying-2.sentence-1'>.</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id='static.downcast' class='section'>
+          <h3><a class='secnum' style='min-width:103pt'>4.2.3</a> <span class='texttt'>static_&shy;downcast</span> <a
+              class='abbr_ref' href='static.downcast'>[static.downcast]</a></h3>
+          <div class='para'>
+            <div class='marginalizedparent'><a class='marginalized' href='static.downcast#1'>1</a></div>
+            <div class='sourceLinkParent'><a class='sourceLink'
+                href='https://github.com/johelegp/jegp/tree/4dfbe8f5446ba1f53439a36ce12119fe285268c9/doc/utilities.tex#L61'>#</a>
+            </div>
+            <div id='static.downcast-1.sentence-1' class='sentence'>A <span class='texttt'><span
+                  class='keyword'>static_&shy;cast</span></span> that performs a downcast<a class='hidden_link'
+                href='#static.downcast-1.sentence-1'>.</a></div> <span class='indexparent'><a class='index'
+                id='lib:static_downcast'></a></span>
+          </div>
+          <div class='itemdecl' id='static.downcast-itemdecl:1'>
+            <div class='marginalizedparent'><a class='itemDeclLink' href='#static.downcast-itemdecl:1'>🔗</a></div><code
+              class='itemdeclcode'><span class='keyword'>template</span> <span class='anglebracket'>&lt;</span><span class='keyword'>class</span> DerivedRef, <span class='keyword'>class</span> Base<span class='anglebracket'>&gt;</span>
+<span class='keyword'>constexpr</span> DerivedRef static_downcast<span class='parenthesis'>(</span>Base<span class='operator'>&amp;</span><span class='operator'>&amp;</span> base<span class='parenthesis'>)</span> <span class='keyword'>noexcept</span>;
+</code>
+          </div>
+          <div class='itemdescr'></div>
+          <div class='para'>
+            <div class='marginalizedparent'><a class='marginalized' href='static.downcast#2'>2</a></div>
+            <div class='itemdescr'>
+              <div class='sourceLinkParent'><a class='sourceLink'
+                  href='https://github.com/johelegp/jegp/tree/4dfbe8f5446ba1f53439a36ce12119fe285268c9/doc/utilities.tex#L71'>#</a>
+              </div>
+              <div id='static.downcast-2.sentence-1' class='sentence'>Let <span class='texttt'><span
+                    class='textit'>derived-ref</span></span> be
+                <span class='texttt'><span class='keyword'>static_&shy;cast</span><span
+                    class='anglebracket'>&lt;</span>DerivedRef<span class='anglebracket'>&gt;</span><span
+                    class='parenthesis'>(</span>std<span class='operator'>&#x200b;::&#x200b;</span>forward<span
+                    class='anglebracket'>&lt;</span>Base<span class='anglebracket'>&gt;</span><span
+                    class='parenthesis'>(</span>base<span class='parenthesis'>)</span><span
+                    class='parenthesis'>)</span></span><a class='hidden_link' href='#static.downcast-2.sentence-1'>.</a>
+              </div>
+            </div>
+          </div>
+          <div class='para'>
+            <div class='marginalizedparent'><a class='marginalized' href='static.downcast#3'>3</a></div>
+            <div class='itemdescr'>
+              <div class='sourceLinkParent'><a class='sourceLink'
+                  href='https://github.com/johelegp/jegp/tree/4dfbe8f5446ba1f53439a36ce12119fe285268c9/doc/utilities.tex#L75'>#</a>
+              </div>
+              <div id='static.downcast-3.sentence-1' class='sentence'><span class='textit'>Constraints:</span>
+                <ul class='itemize'>
+                  <li id='static.downcast-3.1'>
+                    <div class='marginalizedparent' style='left:-10em'><a class='marginalized'
+                        href='#static.downcast-3.1'>(3.1)</a></div><span class='texttt'>DerivedRef</span> is a reference
+                    type,
+                  </li>
+                  <li id='static.downcast-3.2'>
+                    <div class='marginalizedparent' style='left:-10em'><a class='marginalized'
+                        href='#static.downcast-3.2'>(3.2)</a></div><span class='texttt'>std<span
+                        class='operator'>&#x200b;::&#x200b;</span>remove_&shy;cvref_&shy;t<span
+                        class='anglebracket'>&lt;</span>DerivedRef<span class='anglebracket'>&gt;</span></span> is
+                    derived from
+                    <span class='texttt'>std<span
+                        class='operator'>&#x200b;::&#x200b;</span>remove_&shy;cvref_&shy;t<span
+                        class='anglebracket'>&lt;</span>Base<span class='anglebracket'>&gt;</span></span>, and
+                  </li>
+                  <li id='static.downcast-3.3'>
+                    <div class='marginalizedparent' style='left:-10em'><a class='marginalized'
+                        href='#static.downcast-3.3'>(3.3)</a></div><span class='texttt'><span
+                        class='textit'>derived-ref</span></span> is well-formed<a class='hidden_link'
+                      href='#static.downcast-3.sentence-1'>.</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class='para'>
+            <div class='marginalizedparent'><a class='marginalized' href='static.downcast#4'>4</a></div>
+            <div class='itemdescr'>
+              <div class='sourceLinkParent'><a class='sourceLink'
+                  href='https://github.com/johelegp/jegp/tree/4dfbe8f5446ba1f53439a36ce12119fe285268c9/doc/utilities.tex#L87'>#</a>
+              </div>
+              <div id='static.downcast-4.sentence-1' class='sentence'><span class='textit'>Preconditions:</span>
+                <span class='texttt'><span class='textit'>derived-ref</span></span> has well-defined behavior<a
+                  class='hidden_link' href='#static.downcast-4.sentence-1'>.</a>
+              </div>
+            </div>
+          </div>
+          <div class='para'>
+            <div class='marginalizedparent'><a class='marginalized' href='static.downcast#5'>5</a></div>
+            <div class='itemdescr'>
+              <div class='sourceLinkParent'><a class='sourceLink'
+                  href='https://github.com/johelegp/jegp/tree/4dfbe8f5446ba1f53439a36ce12119fe285268c9/doc/utilities.tex#L91'>#</a>
+              </div>
+              <div id='static.downcast-5.sentence-1' class='sentence'><span class='textit'>Returns:</span>
+                <span class='texttt'><span class='textit'>derived-ref</span></span><a class='hidden_link'
+                  href='#static.downcast-5.sentence-1'>.</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id='hash.combine' class='section'>
+          <h3><a class='secnum' style='min-width:103pt'>4.2.4</a> <span class='texttt'>hash_&shy;combine</span> <a
+              class='abbr_ref' href='hash.combine'>[hash.combine]</a></h3>
+          <div class='para'>
+            <div class='marginalizedparent'><a class='marginalized' href='hash.combine#1'>1</a></div>
+            <div class='sourceLinkParent'><a class='sourceLink'
+                href='https://github.com/johelegp/jegp/tree/4dfbe8f5446ba1f53439a36ce12119fe285268c9/doc/utilities.tex#L98'>#</a>
+            </div>
+            <div id='hash.combine-1.sentence-1' class='sentence'>Insipred by <span class='texttt'>Boost<span
+                  class='operator'>.</span>ContainerHash</span><a class='hidden_link'
+                href='#hash.combine-1.sentence-1'>.</a></div>
+            <div id='hash.combine-1.sentence-2' class='sentence'>Useful in the specializations of <span
+                class='texttt'>std<span class='operator'>&#x200b;::&#x200b;</span>hash</span>
+              whose <span class='texttt'>Key</span>'s salient parts consist of two or more objects<a class='hidden_link'
+                href='#hash.combine-1.sentence-2'>.</a></div> <span class='indexparent'><a class='index'
+                id='lib:hash_combine'></a></span>
+          </div>
+          <div class='itemdecl' id='hash.combine-itemdecl:1'>
+            <div class='marginalizedparent'><a class='itemDeclLink' href='#hash.combine-itemdecl:1'>🔗</a></div><code
+              class='itemdeclcode'><span class='keyword'>template</span> <span class='anglebracket'>&lt;</span><span class='keyword'>class</span><span class='operator'>.</span><span class='operator'>.</span><span class='operator'>.</span> Args<span class='anglebracket'>&gt;</span>
+<span class='keyword'>constexpr</span> std<span class='operator'>::</span>size_t hash_combine<span class='parenthesis'>(</span><span class='keyword'>const</span> Args<span class='operator'>&amp;</span><span class='operator'>.</span><span class='operator'>.</span><span class='operator'>.</span> args<span class='parenthesis'>)</span> <span class='keyword'>noexcept</span><span class='parenthesis'>(</span><span class='textit'><span class='texttt'>see below</span></span><span class='parenthesis'>)</span>;
+</code>
+          </div>
+          <div class='itemdescr'></div>
+          <div class='para'>
+            <div class='marginalizedparent'><a class='marginalized' href='hash.combine#2'>2</a></div>
+            <div class='itemdescr'>
+              <div class='sourceLinkParent'><a class='sourceLink'
+                  href='https://github.com/johelegp/jegp/tree/4dfbe8f5446ba1f53439a36ce12119fe285268c9/doc/utilities.tex#L110'>#</a>
+              </div>
+              <div id='hash.combine-2.sentence-1' class='sentence'><span class='textit'>Constraints:</span>
+                <ul class='itemize'>
+                  <li id='hash.combine-2.1'>
+                    <div class='marginalizedparent' style='left:-10em'><a class='marginalized'
+                        href='#hash.combine-2.1'>(2.1)</a></div><span class="mjx-chtml"><span class="mjx-math"><span
+                          class="mjx-mrow" aria-hidden="true"><span class="mjx-texatom"><span class="mjx-mrow"><span
+                                class="mjx-mtext"><span class="mjx-char MJXc-TeX-type-R"
+                                  style="padding-top: 0.519em; padding-bottom: 0.519em;"><span
+                                    class='keyword'>sizeof</span><span class='operator'>.</span><span
+                                    class='operator'>.</span><span class='operator'>.</span><span
+                                    class='parenthesis'>(</span>Args<span
+                                    class='parenthesis'>)</span></span></span></span></span><span
+                            class="mjx-mo MJXc-space3"><span class="mjx-char MJXc-TeX-main-R"
+                              style="padding-top: 0.372em; padding-bottom: 0.446em;">≥</span></span><span
+                            class="mjx-texatom MJXc-space3"><span class="mjx-mrow"></span></span><span
+                            class="mjx-mn"><span class="mjx-char MJXc-TeX-main-R"
+                              style="padding-top: 0.372em; padding-bottom: 0.372em;">2</span></span></span></span></span>
+                    and
+                  </li>
+                  <li id='hash.combine-2.2'>
+                    <div class='marginalizedparent' style='left:-10em'><a class='marginalized'
+                        href='#hash.combine-2.2'>(2.2)</a></div><span class='texttt'>std<span
+                        class='operator'>&#x200b;::&#x200b;</span>hash<span class='anglebracket'>&lt;</span>T<span
+                        class='anglebracket'>&gt;</span></span> is enabled (C++ Standard's <a
+                      href="https://wg21.link/unord.hash">[unord.hash]</a>)
+                    for all <span class='texttt'>T</span> in <span class='texttt'>Args</span><a class='hidden_link'
+                      href='#hash.combine-2.sentence-1'>.</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class='para'>
+            <div class='marginalizedparent'><a class='marginalized' href='hash.combine#3'>3</a></div>
+            <div class='itemdescr'>
+              <div class='sourceLinkParent'><a class='sourceLink'
+                  href='https://github.com/johelegp/jegp/tree/4dfbe8f5446ba1f53439a36ce12119fe285268c9/doc/utilities.tex#L120'>#</a>
+              </div>
+              <div id='hash.combine-3.sentence-1' class='sentence'><span class='textit'>Effects:</span>
+                Equivalent to:
+                <pre class='codeblock'>
+std<span class='operator'>::</span>size_t seed<span class='curlybracket'>{</span><span class='literal'>0</span><span class='curlybracket'>}</span>;
+<span class='keyword'>return</span> <span class='parenthesis'>(</span><span class='operator'>.</span><span class='operator'>.</span><span class='operator'>.</span>, <span class='parenthesis'>(</span>seed <span class='operator'>^</span><span class='operator'>=</span> std<span class='operator'>::</span>hash<span class='anglebracket'>&lt;</span>Args<span class='anglebracket'>&gt;</span><span class='curlybracket'>{</span><span class='curlybracket'>}</span><span class='parenthesis'>(</span>args<span class='parenthesis'>)</span> <span class='operator'>+</span> <span class='parenthesis'>(</span>seed <span class='anglebracket'>&lt;</span><span class='anglebracket'>&lt;</span> <span class='literal'>6</span><span class='parenthesis'>)</span> <span class='operator'>+</span> <span class='parenthesis'>(</span>seed <span class='anglebracket'>&gt;</span><span class='anglebracket'>&gt;</span> <span class='literal'>2</span><span class='parenthesis'>)</span><span class='parenthesis'>)</span><span class='parenthesis'>)</span>;
+</pre>
+              </div>
+            </div>
+          </div>
+          <div class='para'>
+            <div class='marginalizedparent'><a class='marginalized' href='hash.combine#4'>4</a></div>
+            <div class='itemdescr'>
+              <div class='sourceLinkParent'><a class='sourceLink'
+                  href='https://github.com/johelegp/jegp/tree/4dfbe8f5446ba1f53439a36ce12119fe285268c9/doc/utilities.tex#L128'>#</a>
+              </div>
+              <div id='hash.combine-4.sentence-1' class='sentence'><span class='textit'>Remarks:</span>
+                The expression inside <span class='texttt'><span class='keyword'>noexcept</span></span> is equivalent to
+                <pre class='codeblock'>
+<span class='parenthesis'>(</span><span class='keyword'>noexcept</span><span class='parenthesis'>(</span>std<span class='operator'>::</span>hash<span class='anglebracket'>&lt;</span>Args<span class='anglebracket'>&gt;</span><span class='curlybracket'>{</span><span class='curlybracket'>}</span><span class='parenthesis'>(</span>args<span class='parenthesis'>)</span><span class='parenthesis'>)</span> <span class='operator'>&amp;</span><span class='operator'>&amp;</span> <span class='operator'>.</span><span class='operator'>.</span><span class='operator'>.</span><span class='parenthesis'>)</span>
+</pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
