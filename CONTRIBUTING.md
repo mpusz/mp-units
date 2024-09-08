@@ -3,7 +3,7 @@
 👍🎉 First off, thanks for taking the time to contribute! 🎉👍
 
 
-## Where To Start?
+## Where to start?
 
 If you are looking for a good issue to start with, please check the following:
 
@@ -106,7 +106,7 @@ To build all the **mp-units** source code (with unit tests and examples), you sh
 
 ```shell
 git clone https://github.com/mpusz/mp-units.git && cd units
-conan build . -pr <your_conan_profile> -s compiler.cppstd=23 -o '&:cxx_modules=True' -c user.mp-units.build:all=True -b missing
+conan build . -pr <your_conan_profile> -s compiler.cppstd=23 -c user.mp-units.build:all=True -b missing
 ```
 
 The above will download and install all of the dependencies needed for the development of the library,
@@ -116,7 +116,7 @@ If you prefer to build the project via CMake rather than Conan, then you should 
 the `conan build` with `conan install` command and then follow with a regular CMake build and testing:
 
 ```shell
-conan install . -pr <your_conan_profile> -s compiler.cppstd=23 -o '&:cxx_modules=True' -c user.mp-units.build:all=True -b missing
+conan install . -pr <your_conan_profile> -s compiler.cppstd=23 -c user.mp-units.build:all=True -b missing
 cmake --preset conan-default
 cmake --build --preset conan-release
 cmake --build --preset conan-release --target all_verify_interface_header_sets
@@ -137,12 +137,13 @@ cmake --build --preset conan-release --target test
 To test CMake installation and Conan packaging run:
 
 ```shell
-conan create . --user <username> --channel <channel> -pr <your_conan_profile> -s compiler.cppstd=20 -o '&:cxx_modules=True' -c user.mp-units.build:all=True -b missing
+conan create . --user <username> --channel <channel> -pr <your_conan_profile> -s compiler.cppstd=23 \
+               -c user.mp-units.build:all=True -b missing
 ```
 
 The above will create a Conan package and run tests provided in _./test_package_ directory.
 
-In case you would like to upload **mp-units** package to the Conan server do the following:
+In case you would like to upload **mp-units** package to the Conan server, do the following:
 
 ```shell
 conan upload -r <remote-name> --all mp-units/2.2.0@<user>/<channel>
@@ -151,7 +152,8 @@ conan upload -r <remote-name> --all mp-units/2.2.0@<user>/<channel>
 
 ## Building documentation
 
-We are building our documentation using [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/). The easiest way to install all the required dependencies is with `pip`:
+We are building our documentation using [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/).
+The easiest way to install all the required dependencies is with `pip`:
 
 ```shell
 pip install -U mkdocs-material mkdocs-rss-plugin
@@ -242,12 +244,13 @@ ln -sf ../../build/docs/api_reference/mp-units.html docs/api_reference/gen
 ```
 
 
+## Before committing git changes
 
 There are a few steps recommended to check before committing and pushing your changes to the git
 repository.
 
 
-### Naming Conventions
+### Naming conventions
 
 Here are the main rules for naming things in this repo:
 
@@ -256,9 +259,10 @@ Here are the main rules for naming things in this repo:
 - C++ concept names, for now, use `PascalCase`, but we plan to change it
  (see [GitHub Issue #93](https://github.com/mpusz/mp-units/issues/93) for more details).
 
-### Unified Code Formatting
+### Unified code formatting
 
-A formatting standard is enforced with the `pre-commit` script. Before committing your changes, please do the following:
+A formatting standard is enforced with the `pre-commit` script. Before committing your changes,
+please do the following:
 
 ```bash
 pip install -U pre-commit
@@ -274,12 +278,12 @@ This will run:
 The script will run on all the files in the repo and will apply the changes in place when needed.
 After the script is done, please make sure to review and stage all those changes for the git commit.
 
-
-### Backward Compatibility
+### Backward compatibility
 
 Before submission, please remember to check if the code compiles fine on the supported compilers.
 The CI will check it anyway, but it is good to check at least some of the configurations before
 pushing changes.
 Especially older compilers can be tricky as those do not have full C++20 conformance.
-The official list of supported compilers can be always found in the
-[C++ compiler support (API/ABI)](https://mpusz.github.io/mp-units/latest/getting_started/cpp_compiler_support) chapter of our documentation.
+The official list of supported compilers can always be found in the
+[C++ compiler support (API/ABI)](https://mpusz.github.io/mp-units/latest/getting_started/cpp_compiler_support)
+chapter of our documentation.
