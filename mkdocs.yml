@@ -175,6 +175,7 @@ nav:
       - Appendix:
           - Glossary: appendix/glossary.md
           - References: appendix/references.md
+  - API Reference: api.md
   - Blog:
       - blog/index.md
   - Release Notes: release_notes.md
