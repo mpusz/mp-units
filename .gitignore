@@ -49,4 +49,4 @@ CMakeUserPresets.json
 
 # cxxdraft-htmlgen
 docs/api_reference/src/source/
-
+docs/api_reference/gen/
