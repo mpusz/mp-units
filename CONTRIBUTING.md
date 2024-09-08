@@ -175,8 +175,73 @@ mkdocs serve
 mkdocs build
 ```
 
+### Generating API reference
 
-## Before Committing git Changes
+We need to take a few steps to set up our environment so that we are ready to generate API reference
+documents.
+
+First, we need to satisfy the requirements described in <https://github.com/Eelis/cxxdraft-htmlgen>.
+On the Ubuntu platform, this is equivalent to the following instructions run from the user's home
+directory:
+
+```bash
+sudo apt install haskell-stack graphviz nodejs npm ghc cabal-install
+npm install split mathjax-full mathjax-node-sre
+cabal update
+```
+
+Also, installing `mathjax-node-cli` through npm does not help because `tex2html` is not called within
+node.js. This is why we need to download `mathjax-node-cli` and add its `bin` folder to the `PATH`
+environment variable:
+
+```bash
+git clone https://github.com/mathjax/mathjax-node-cli
+echo "export PATH=\"$PWD/mathjax-node-cli/bin:\$PATH\"" >> ~/.bashrc && source ~/.bashrc
+```
+
+Next, we need to clone the following git repositories:
+
+- <https://github.com/JohelEGP/jegp.cmake_modules>
+- `standardese_sources_base` branch of <https://github.com/JohelEGP/draft>
+- `standardese_sources_base` branch of <https://github.com/JohelEGP/cxxdraft-htmlgen>
+
+For example:
+
+```bash
+git clone https://github.com/JohelEGP/jegp.cmake_modules.git --depth=1
+git clone https://github.com/JohelEGP/draft.git --branch=standardese_sources_base --depth=1
+git clone https://github.com/JohelEGP/cxxdraft-htmlgen.git --branch=standardese_sources_base --depth=1
+```
+
+Now, we are ready to start building our API reference. First, we need to configure CMake with the
+following:
+
+```bash
+cmake -S docs/api_reference/src -B build/docs/api_reference \
+      -DCMAKE_MODULE_PATH="<path to gh:JohelEGP/jegp.cmake_modules>/modules" \
+      -DJEGP_STANDARDESE_SOURCES_GIT_REPOSITORY="<path to gh:JohelEGP/draft>" \
+      -DJEGP_CXXDRAFT_HTMLGEN_GIT_REPOSITORY="<path to gh:JohelEGP/cxxdraft-htmlgen>"
+```
+
+Then we need to build the docs with CMake:
+
+```bash
+cmake --build build/docs/api_reference
+```
+
+In the end, we need to move the generated documentation to the `docs/api_reference/gen` subdirectory:
+
+```bash
+mv build/docs/api_reference/mp-units.html docs/api_reference/gen
+```
+
+or just link the entire directory:
+
+```bash
+ln -sf ../../build/docs/api_reference/mp-units.html docs/api_reference/gen
+```
+
+
 
 There are a few steps recommended to check before committing and pushing your changes to the git
 repository.
