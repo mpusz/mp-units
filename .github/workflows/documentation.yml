@@ -59,7 +59,7 @@ jobs:
       - name: Installing MathJax-Node-CLI
         run: |
           git clone https://github.com/mathjax/mathjax-node-cli --depth=1
-          echo "PATH=\"$PWD/mathjax-node-cli/bin\"" >> $GITHUB_PATH
+          echo "${{ github.workspace }}/mathjax-node-cli/bin" >> $GITHUB_PATH
       - name: Get git repos with API reference tools
         run: |
           git clone https://github.com/JohelEGP/jegp.cmake_modules.git --depth=1
