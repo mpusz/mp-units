@@ -46,14 +46,36 @@ jobs:
           path: .cache
           restore-keys: |
             mkdocs-material-
-      - name: Installing pip packages
-        run: |
-          pip install conan mkdocs-material mkdocs-rss-plugin mkdocs-material[imaging] mike
       - name: Prepare git
         run: |
           git config --global user.name github-actions
           git config --global user.email github-actions@github.com
           git fetch origin gh-pages --depth=1
+      - name: Installing API reference dependencies
+        run: |
+          sudo apt install haskell-stack graphviz nodejs npm ghc cabal-install
+          npm install split mathjax-full mathjax-node-sre
+          cabal update
+      - name: Installing MathJax-Node-CLI
+        run: |
+          git clone https://github.com/mathjax/mathjax-node-cli --depth=1
+          echo "PATH=\"$PWD/mathjax-node-cli/bin\"" >> $GITHUB_PATH
+      - name: Get git repos with API reference tools
+        run: |
+          git clone https://github.com/JohelEGP/jegp.cmake_modules.git --depth=1
+          git clone https://github.com/JohelEGP/draft.git --branch=standardese_sources_base --depth=1
+          git clone https://github.com/JohelEGP/cxxdraft-htmlgen.git --branch=standardese_sources_base --depth=1
+      - name: Generate API reference
+        run: |
+          cmake -S docs/api_reference_src -B build \
+                -DCMAKE_MODULE_PATH="${{ github.workspace }}/jegp.cmake_modules/modules" \
+                -DJEGP_STANDARDESE_SOURCES_GIT_REPOSITORY="${{ github.workspace }}/draft" \
+                -DJEGP_CXXDRAFT_HTMLGEN_GIT_REPOSITORY="${{ github.workspace }}/cxxdraft-htmlgen"
+          cmake --build build
+          mv build/mp-units.html docs/api_reference
+      - name: Installing pip dependencies
+        run: |
+          pip install conan mkdocs-material mkdocs-rss-plugin mkdocs-material[imaging] mkdocs-exclude mike
       - name: Building docs
         run: |
           mike deploy --push --update-aliases `conan inspect .  | sed -n -r 's/version: ([0-9]+.[0-9]+).[0-9]+/\1/p'` latest
