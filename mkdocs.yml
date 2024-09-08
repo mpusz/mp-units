@@ -64,6 +64,9 @@ theme:
 # Plugins
 plugins:
   - blog
+  - exclude:
+      glob:
+        - api_reference/src/*
   - rss:
       match_path: blog/posts/.*
       date_from_meta:
