@@ -14,7 +14,7 @@ jegp_add_standardese_sources(
     LIBRARIES intro quantities
     EXTENSIONS macros_extensions
     CHECKED TRUE
-#    PDF PATH "mp-units.pdf" #[[EXCLUDE_FROM_MAIN]]
+    # PDF PATH "mp-units.pdf" #[[EXCLUDE_FROM_MAIN]]
     HTML PATH "mp-units.html" #[[EXCLUDE_FROM_MAIN]]
          SECTION_FILE_STYLE "WithExtension"
          LATEX_REGEX_REPLACE

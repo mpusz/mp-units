@@ -28,7 +28,7 @@ $('#apiIframe').on('load', function() {
 });
 
 // reloads the window with the content when a user navigates over the browser's history
-function locationHashChanged() {  
+function locationHashChanged() {
   window.location.reload();
 }
 window.onhashchange = locationHashChanged;
