@@ -46,3 +46,7 @@ CMakeUserPresets.json
 # Conan
 *.pyc
 /test_package/build/
+
+# cxxdraft-htmlgen
+docs/api_reference/src/source/
+docs/api_reference/gen/

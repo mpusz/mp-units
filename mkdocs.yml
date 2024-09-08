@@ -64,6 +64,9 @@ theme:
 # Plugins
 plugins:
   - blog
+  - exclude:
+      glob:
+        - api_reference/src/*
   - rss:
       match_path: blog/posts/.*
       date_from_meta:
@@ -175,7 +178,7 @@ nav:
       - Appendix:
           - Glossary: appendix/glossary.md
           - References: appendix/references.md
-  - API Reference: api.md
+  - API Reference: api_reference.md
   - Blog:
       - blog/index.md
   - Release Notes: release_notes.md
