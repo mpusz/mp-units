@@ -48,4 +48,5 @@ CMakeUserPresets.json
 /test_package/build/
 
 # cxxdraft-htmlgen
-docs/reference/source/
+docs/api_reference/src/source/
+
