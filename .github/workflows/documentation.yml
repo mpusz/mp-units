@@ -67,7 +67,7 @@ jobs:
           git clone https://github.com/JohelEGP/cxxdraft-htmlgen.git --branch=standardese_sources_base --depth=1
       - name: Generate API reference
         run: |
-          cmake -S docs/api_reference_src -B build \
+          cmake -S docs/api_reference/src -B build \
                 -DCMAKE_MODULE_PATH="${{ github.workspace }}/jegp.cmake_modules/modules" \
                 -DJEGP_STANDARDESE_SOURCES_GIT_REPOSITORY="${{ github.workspace }}/draft" \
                 -DJEGP_CXXDRAFT_HTMLGEN_GIT_REPOSITORY="${{ github.workspace }}/cxxdraft-htmlgen"
