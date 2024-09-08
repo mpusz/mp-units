@@ -72,7 +72,7 @@ jobs:
                 -DJEGP_STANDARDESE_SOURCES_GIT_REPOSITORY="${{ github.workspace }}/draft" \
                 -DJEGP_CXXDRAFT_HTMLGEN_GIT_REPOSITORY="${{ github.workspace }}/cxxdraft-htmlgen"
           cmake --build build
-          mv build/mp-units.html docs/api_reference
+          mv build/mp-units.html docs/api_reference/gen
       - name: Installing pip dependencies
         run: |
           pip install conan mkdocs-material mkdocs-rss-plugin mkdocs-material[imaging] mkdocs-exclude mike
