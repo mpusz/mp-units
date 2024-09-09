@@ -93,7 +93,7 @@ struct chrono_point_origin_ final : absolute_point_origin<isq::time> {
   using clock = C;
 };
 MP_UNITS_EXPORT template<typename C>
-inline constexpr chrono_point_origin_<C> chrono_point_origin;
+constexpr chrono_point_origin_<C> chrono_point_origin;
 
 MP_UNITS_EXPORT_BEGIN
 

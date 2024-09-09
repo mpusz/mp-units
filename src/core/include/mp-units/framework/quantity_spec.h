@@ -159,13 +159,11 @@ struct quantity_spec_interface : quantity_spec_interface_base {
     return make_reference(self, u);
   }
 
-  template<typename Self, typename Q>
-    requires Quantity<std::remove_cvref_t<Q>> &&
-             QuantitySpecExplicitlyConvertibleTo<std::remove_reference_t<Q>::quantity_spec, Self{}>
-  [[nodiscard]] constexpr Quantity auto operator()(this Self self, Q&& q)
+  template<typename Self, typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>>
+    requires QuantitySpecExplicitlyConvertibleTo<Q::quantity_spec, Self{}>
+  [[nodiscard]] constexpr Quantity auto operator()(this Self self, FwdQ&& q)
   {
-    return quantity{std::forward<Q>(q).numerical_value_is_an_implementation_detail_,
-                    make_reference(self, std::remove_cvref_t<Q>::unit)};
+    return quantity{std::forward<FwdQ>(q).numerical_value_is_an_implementation_detail_, make_reference(self, Q::unit)};
   }
 #else
   template<typename Self_ = Self, UnitOf<Self_{}> U>
@@ -174,13 +172,12 @@ struct quantity_spec_interface : quantity_spec_interface_base {
     return make_reference(Self{}, u);
   }
 
-  template<typename Q, typename Self_ = Self>
-    requires Quantity<std::remove_cvref_t<Q>> &&
-             QuantitySpecExplicitlyConvertibleTo<std::remove_reference_t<Q>::quantity_spec, Self_{}>
-  [[nodiscard]] constexpr Quantity auto operator()(Q&& q) const
+  template<typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>, typename Self_ = Self>
+    requires QuantitySpecExplicitlyConvertibleTo<Q::quantity_spec, Self_{}>
+  [[nodiscard]] constexpr Quantity auto operator()(FwdQ&& q) const
   {
-    return quantity{std::forward<Q>(q).numerical_value_is_an_implementation_detail_,
-                    make_reference(Self{}, std::remove_cvref_t<Q>::unit)};
+    return quantity{std::forward<FwdQ>(q).numerical_value_is_an_implementation_detail_,
+                    make_reference(Self{}, Q::unit)};
   }
 #endif
 };
@@ -371,13 +368,12 @@ struct quantity_spec<Self, QS, Args...> : detail::propagate_equation<QS>, detail
     return detail::make_reference(Self{}, u);
   }
 
-  template<typename Q, typename Self_ = Self>
-    requires Quantity<std::remove_cvref_t<Q>> &&
-             detail::QuantitySpecExplicitlyConvertibleTo<std::remove_reference_t<Q>::quantity_spec, Self_{}>
-  [[nodiscard]] constexpr Quantity auto operator()(Q&& q) const
+  template<typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>, typename Self_ = Self>
+    requires detail::QuantitySpecExplicitlyConvertibleTo<Q::quantity_spec, Self_{}>
+  [[nodiscard]] constexpr Quantity auto operator()(FwdQ&& q) const
   {
-    return quantity{std::forward<Q>(q).numerical_value_is_an_implementation_detail_,
-                    detail::make_reference(Self{}, std::remove_cvref_t<Q>::unit)};
+    return quantity{std::forward<FwdQ>(q).numerical_value_is_an_implementation_detail_,
+                    detail::make_reference(Self{}, Q::unit)};
   }
 #endif
 };
@@ -556,7 +552,7 @@ struct kind_of_<Q> final : quantity_spec<kind_of_<Q>, Q{}>::_base_type_ {
 
 MP_UNITS_EXPORT template<detail::QuantitySpecWithNoSpecifiers auto Q>
   requires detail::SameQuantitySpec<detail::get_kind_tree_root(Q), Q>
-inline constexpr kind_of_<MP_UNITS_REMOVE_CONST(decltype(Q))> kind_of;
+constexpr kind_of_<MP_UNITS_REMOVE_CONST(decltype(Q))> kind_of;
 
 namespace detail {
 

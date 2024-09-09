@@ -76,6 +76,10 @@
 #if !defined MP_UNITS_HOSTED && defined __STDC_HOSTED__
 #define MP_UNITS_HOSTED __STDC_HOSTED__
 #endif
+
+// workarounds for https://cplusplus.github.io/CWG/issues/2387.html
+#define MP_UNITS_INLINE inline
+
 #if MP_UNITS_COMP_GCC
 
 #define MP_UNITS_REMOVE_CONST(expr) std::remove_const_t<expr>

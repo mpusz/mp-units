@@ -73,3 +73,9 @@ TEST_CASE("Issue 474 is fixed", "[conversion][radical]")
   REQUIRE(within_4_ulps(sqrt(val_issue_474).numerical_value_in(m / s),
                         sqrt(val_issue_474.numerical_value_in(m * m / s / s))));
 }
+
+TEST_CASE("Volatile representation type", "[volatile]")
+{
+  volatile std::int16_t vint = 123;
+  REQUIRE(quantity(vint * m).numerical_value_in(m) == 123);
+}

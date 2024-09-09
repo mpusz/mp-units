@@ -190,36 +190,36 @@ struct reference {
 };
 
 
-template<typename Rep, Reference R>
-  requires(!detail::OffsetUnit<decltype(get_unit(R{}))>) &&
-          RepresentationOf<std::remove_cvref_t<Rep>, get_quantity_spec(R{}).character>
-[[nodiscard]] constexpr quantity<R{}, std::remove_cvref_t<Rep>> operator*(Rep&& lhs, R)
+template<typename FwdRep, Reference R,
+         RepresentationOf<get_quantity_spec(R{}).character> Rep = std::remove_cvref_t<FwdRep>>
+  requires(!detail::OffsetUnit<decltype(get_unit(R{}))>)
+[[nodiscard]] constexpr quantity<R{}, Rep> operator*(FwdRep&& lhs, R)
 {
-  return quantity{std::forward<Rep>(lhs), R{}};
+  return quantity{std::forward<FwdRep>(lhs), R{}};
 }
 
-template<typename Rep, Reference R>
-  requires(!detail::OffsetUnit<decltype(get_unit(R{}))>) &&
-          RepresentationOf<std::remove_cvref_t<Rep>, get_quantity_spec(R{}).character>
-[[nodiscard]] constexpr quantity<inverse(R{}), std::remove_cvref_t<Rep>> operator/(Rep&& lhs, R)
+template<typename FwdRep, Reference R,
+         RepresentationOf<get_quantity_spec(R{}).character> Rep = std::remove_cvref_t<FwdRep>>
+  requires(!detail::OffsetUnit<decltype(get_unit(R{}))>)
+[[nodiscard]] constexpr quantity<inverse(R{}), Rep> operator/(FwdRep&& lhs, R)
 {
-  return quantity{std::forward<Rep>(lhs), inverse(R{})};
+  return quantity{std::forward<FwdRep>(lhs), inverse(R{})};
 }
 
-template<typename Rep, Reference R>
-  requires detail::OffsetUnit<decltype(get_unit(R{}))> &&
-           RepresentationOf<std::remove_cvref_t<Rep>, get_quantity_spec(R{}).character>
-[[noreturn]] constexpr auto operator*(Rep&&, R)
+template<typename FwdRep, Reference R,
+         RepresentationOf<get_quantity_spec(R{}).character> Rep = std::remove_cvref_t<FwdRep>>
+  requires detail::OffsetUnit<decltype(get_unit(R{}))>
+[[noreturn]] constexpr auto operator*(FwdRep&&, R)
 {
   static_assert(!detail::OffsetUnit<decltype(get_unit(R{}))>,
                 "References using offset units (e.g., temperatures) may be constructed only with the `delta` or "
                 "`absolute` helpers");
 }
 
-template<typename Rep, Reference R>
-  requires detail::OffsetUnit<decltype(get_unit(R{}))> &&
-           RepresentationOf<std::remove_cvref_t<Rep>, get_quantity_spec(R{}).character>
-[[noreturn]] constexpr auto operator/(Rep&&, R)
+template<typename FwdRep, Reference R,
+         RepresentationOf<get_quantity_spec(R{}).character> Rep = std::remove_cvref_t<FwdRep>>
+  requires detail::OffsetUnit<decltype(get_unit(R{}))>
+[[noreturn]] constexpr auto operator/(FwdRep&&, R)
 {
   static_assert(!detail::OffsetUnit<decltype(get_unit(R{}))>,
                 "References using offset units (e.g., temperatures) may be constructed only with the `delta` or "
@@ -246,20 +246,16 @@ constexpr auto operator/(R, Rep&&)
   = delete;
 #endif
 
-template<typename Q, Reference R>
-  requires Quantity<std::remove_cvref_t<Q>>
-[[nodiscard]] constexpr Quantity auto operator*(Q&& q, R)
+template<typename FwdQ, Reference R, Quantity Q = std::remove_cvref_t<FwdQ>>
+[[nodiscard]] constexpr Quantity auto operator*(FwdQ&& q, R)
 {
-  return quantity{std::forward<Q>(q).numerical_value_is_an_implementation_detail_,
-                  std::remove_cvref_t<Q>::reference * R{}};
+  return quantity{std::forward<FwdQ>(q).numerical_value_is_an_implementation_detail_, Q::reference * R{}};
 }
 
-template<typename Q, Reference R>
-  requires Quantity<std::remove_cvref_t<Q>>
-[[nodiscard]] constexpr Quantity auto operator/(Q&& q, R)
+template<typename FwdQ, Reference R, Quantity Q = std::remove_cvref_t<FwdQ>>
+[[nodiscard]] constexpr Quantity auto operator/(FwdQ&& q, R)
 {
-  return quantity{std::forward<Q>(q).numerical_value_is_an_implementation_detail_,
-                  std::remove_cvref_t<Q>::reference / R{}};
+  return quantity{std::forward<FwdQ>(q).numerical_value_is_an_implementation_detail_, Q::reference / R{}};
 }
 
 template<Reference R, typename Q>

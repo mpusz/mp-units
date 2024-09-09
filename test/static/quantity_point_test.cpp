@@ -111,12 +111,12 @@ static_assert(ground_level != other_ground_level);
 template<auto QS>
 struct absolute_po_ final : absolute_point_origin<QS> {};
 template<auto QS>
-inline constexpr absolute_po_<QS> absolute_po;
+constexpr absolute_po_<QS> absolute_po;
 
 template<auto QP>
 struct relative_po_ final : relative_point_origin<QP> {};
 template<auto QP>
-inline constexpr relative_po_<QP> relative_po;
+constexpr relative_po_<QP> relative_po;
 
 static_assert(relative_po<absolute_po<isq::length> + isq::height(42 * m)>.quantity_spec == isq::height);
 static_assert(relative_po<absolute_po<kind_of<isq::length>> + isq::height(42 * m)>.quantity_spec == isq::height);

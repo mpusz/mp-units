@@ -138,7 +138,7 @@ Each prefix is implemented similarly to the following:
 
 ```cpp
 template<PrefixableUnit U> struct quecto_ : prefixed_unit<"q", mag_power<10, -30>, U{}> {};
-template<PrefixableUnit auto U> inline constexpr quecto_<decltype(U)> quecto;
+template<PrefixableUnit auto U> constexpr quecto_<decltype(U)> quecto;
 ```
 
 and then a [PrefixableUnit](concepts.md#PrefixableUnit) can be prefixed in the following
@@ -154,7 +154,7 @@ IT industry can be implemented as:
 
 ```cpp
 template<PrefixableUnit U> struct yobi_ : prefixed_unit<"Yi", mag_power<2, 80>, U{}> {};
-template<PrefixableUnit auto U> inline constexpr yobi_<decltype(U)> yobi;
+template<PrefixableUnit auto U> constexpr yobi_<decltype(U)> yobi;
 ```
 
 ## Scaled units

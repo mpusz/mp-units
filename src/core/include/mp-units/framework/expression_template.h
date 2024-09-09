@@ -57,37 +57,37 @@ struct per {};
 namespace detail {
 
 template<typename T>
-inline constexpr bool is_specialization_of_per = false;
+constexpr bool is_specialization_of_per = false;
 
 template<typename... Ts>
-inline constexpr bool is_specialization_of_per<per<Ts...>> = true;
+constexpr bool is_specialization_of_per<per<Ts...>> = true;
 
 template<int Num, int... Den>
-inline constexpr bool valid_ratio = true;
+constexpr bool valid_ratio = true;
 
 template<int... Den>
-inline constexpr bool valid_ratio<0, Den...> = false;
+constexpr bool valid_ratio<0, Den...> = false;
 
 template<int Num>
-inline constexpr bool valid_ratio<Num, 0> = false;
+constexpr bool valid_ratio<Num, 0> = false;
 
 template<>
-inline constexpr bool valid_ratio<0, 0> = false;
+MP_UNITS_INLINE constexpr bool valid_ratio<0, 0> = false;
 
 template<int Num, int... Den>
-inline constexpr bool positive_ratio = gt_zero<Num>;
+constexpr bool positive_ratio = gt_zero<Num>;
 
 template<int Num, int Den>
-inline constexpr bool positive_ratio<Num, Den> = gt_zero<Num * Den>;
+constexpr bool positive_ratio<Num, Den> = gt_zero<Num * Den>;
 
 template<int Num, int... Den>
-inline constexpr bool ratio_one = false;
+constexpr bool ratio_one = false;
 
 template<>
-inline constexpr bool ratio_one<1> = true;
+MP_UNITS_INLINE constexpr bool ratio_one<1> = true;
 
 template<int N>
-inline constexpr bool ratio_one<N, N> = true;
+constexpr bool ratio_one<N, N> = true;
 
 }  // namespace detail
 
@@ -127,10 +127,10 @@ using expr_type = detail::expr_type_impl<T>::type;
 namespace detail {
 
 template<typename T>
-inline constexpr bool is_specialization_of_power = false;
+constexpr bool is_specialization_of_power = false;
 
 template<typename F, int... Ints>
-inline constexpr bool is_specialization_of_power<power<F, Ints...>> = true;
+constexpr bool is_specialization_of_power<power<F, Ints...>> = true;
 
 template<typename T, ratio R>
 consteval auto power_or_T_impl()
@@ -508,10 +508,10 @@ concept expr_type_projectable = (requires { typename Proj<T>; } ||
                                  (is_specialization_of_power<T> && requires { typename Proj<typename T::factor>; }));
 
 template<typename T, template<typename> typename Proj>
-inline constexpr bool expr_projectable_impl = false;
+constexpr bool expr_projectable_impl = false;
 
 template<typename... Ts, template<typename> typename Proj>
-inline constexpr bool expr_projectable_impl<type_list<Ts...>, Proj> = (... && expr_type_projectable<Ts, Proj>);
+constexpr bool expr_projectable_impl<type_list<Ts...>, Proj> = (... && expr_type_projectable<Ts, Proj>);
 
 template<typename T, template<typename> typename Proj>
 concept expr_projectable = requires {

@@ -44,7 +44,7 @@ import mp_units;
 // types instead of requiring the usage of Linear Algebra library for this simple example
 template<class T>
   requires mp_units::is_scalar<T>
-inline constexpr bool mp_units::is_vector<T> = true;
+constexpr bool mp_units::is_vector<T> = true;
 
 namespace {
 

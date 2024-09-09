@@ -59,10 +59,10 @@ using factorizer = wheel_factorizer<4>;
 namespace detail {
 
 template<typename T>
-inline constexpr bool is_magnitude = false;
+constexpr bool is_magnitude = false;
 
 template<typename T>
-inline constexpr bool is_specialization_of_magnitude = false;
+constexpr bool is_specialization_of_magnitude = false;
 
 }  // namespace detail
 
@@ -87,7 +87,7 @@ concept Magnitude = detail::is_magnitude<T>;
 // void to_base_specialization_of_constant(const volatile constant<V>*);
 
 // template<typename T>
-// inline constexpr bool is_derived_from_specialization_of_constant =
+// constexpr bool is_derived_from_specialization_of_constant =
 //   requires(T * t) { to_base_specialization_of_constant(t); };
 
 // }  // namespace detail
@@ -142,7 +142,7 @@ concept Magnitude = detail::is_magnitude<T>;
 namespace detail {
 
 template<typename T>
-inline constexpr bool is_named_magnitude = Magnitude<T> && !detail::is_specialization_of_magnitude<T>;
+constexpr bool is_named_magnitude = Magnitude<T> && !detail::is_specialization_of_magnitude<T>;
 
 }
 
@@ -178,10 +178,10 @@ struct power_v {
 namespace detail {
 
 template<typename T>
-inline constexpr bool is_specialization_of_power_v = false;
+constexpr bool is_specialization_of_power_v = false;
 
 template<auto V, int... Ints>
-inline constexpr bool is_specialization_of_power_v<power_v<V, Ints...>> = true;
+constexpr bool is_specialization_of_power_v<power_v<V, Ints...>> = true;
 
 }  // namespace detail
 
@@ -572,13 +572,13 @@ namespace detail {
 // }
 
 // template<MagnitudeSpec auto... Elements>
-// inline constexpr bool all_elements_valid = (is_valid_element(Elements) && ...);
+// constexpr bool all_elements_valid = (is_valid_element(Elements) && ...);
 
 // template<MagnitudeSpec auto... Elements>
-// inline constexpr bool all_elements_in_order = strictly_increasing(get_base_value(Elements)...);
+// constexpr bool all_elements_in_order = strictly_increasing(get_base_value(Elements)...);
 
 // template<MagnitudeSpec auto... Elements>
-// inline constexpr bool is_element_pack_valid = all_elements_valid<Elements...> && all_elements_in_order<Elements...>;
+// constexpr bool is_element_pack_valid = all_elements_valid<Elements...> && all_elements_in_order<Elements...>;
 
 [[nodiscard]] consteval bool is_rational(MagnitudeSpec auto element)
 {
@@ -707,15 +707,15 @@ template<auto... Ms>
 void to_base_specialization_of_magnitude(const volatile magnitude<Ms...>*);
 
 template<typename T>
-inline constexpr bool is_derived_from_specialization_of_magnitude =
+constexpr bool is_derived_from_specialization_of_magnitude =
   requires(T* type) { to_base_specialization_of_magnitude(type); };
 
 template<typename T>
   requires is_derived_from_specialization_of_magnitude<T>
-inline constexpr bool is_magnitude<T> = true;
+constexpr bool is_magnitude<T> = true;
 
 template<auto... Ms>
-inline constexpr bool is_specialization_of_magnitude<magnitude<Ms...>> = true;
+constexpr bool is_specialization_of_magnitude<magnitude<Ms...>> = true;
 
 }  // namespace detail
 
@@ -882,7 +882,7 @@ using common_magnitude_type = decltype(common_magnitude_type_impl(M));
 //
 // WARNING:  The program behaviour will be undefined if you provide a wrong answer, so check your math!
 MP_UNITS_EXPORT template<std::intmax_t N>
-inline constexpr std::optional<std::intmax_t> known_first_factor = std::nullopt;
+constexpr std::optional<std::intmax_t> known_first_factor = std::nullopt;
 
 namespace detail {
 
@@ -915,7 +915,7 @@ struct prime_factorization<1> {
 };
 
 template<std::intmax_t N>
-inline constexpr auto prime_factorization_v = prime_factorization<N>::value;
+constexpr auto prime_factorization_v = prime_factorization<N>::value;
 
 }  // namespace detail
 
@@ -927,18 +927,18 @@ inline constexpr auto prime_factorization_v = prime_factorization<N>::value;
  */
 MP_UNITS_EXPORT template<std::intmax_t V>
   requires detail::gt_zero<V>
-inline constexpr Magnitude auto mag = detail::prime_factorization_v<V>;
+constexpr Magnitude auto mag = detail::prime_factorization_v<V>;
 
 MP_UNITS_EXPORT template<std::intmax_t N, std::intmax_t D>
   requires detail::gt_zero<N>
-inline constexpr Magnitude auto mag_ratio = detail::prime_factorization_v<N> / detail::prime_factorization_v<D>;
+constexpr Magnitude auto mag_ratio = detail::prime_factorization_v<N> / detail::prime_factorization_v<D>;
 
 /**
  * @brief  Create a Magnitude which is some rational number raised to a rational power.
  */
 MP_UNITS_EXPORT template<std::intmax_t Base, std::intmax_t Pow>
   requires detail::gt_zero<Base>
-inline constexpr Magnitude auto mag_power = pow<Pow>(mag<Base>);
+constexpr Magnitude auto mag_power = pow<Pow>(mag<Base>);
 
 namespace detail {
 

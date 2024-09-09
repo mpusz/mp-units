@@ -64,7 +64,7 @@ template<Magnitude auto M, Unit U>
 struct scaled_unit_impl;
 
 template<typename T>
-inline constexpr bool is_specialization_of_scaled_unit = false;
+constexpr bool is_specialization_of_scaled_unit = false;
 
 template<DerivedUnitExpr... Expr>
 struct derived_unit_impl;
@@ -241,7 +241,7 @@ struct scaled_unit final : detail::scaled_unit_impl<M, U> {};
 namespace detail {
 
 template<auto M, Unit U>
-inline constexpr bool is_specialization_of_scaled_unit<scaled_unit<M, U>> = true;
+constexpr bool is_specialization_of_scaled_unit<scaled_unit<M, U>> = true;
 
 }  // namespace detail
 
@@ -386,7 +386,7 @@ struct named_unit<Symbol, U, QS, PO> : decltype(U)::_base_type_ {
  * struct kilo_ : prefixed_unit<"k", mag_power<10, 3>, U> {};
  *
  * template<PrefixableUnit auto U>
- * inline constexpr kilo_<U> kilo;
+ * constexpr kilo_<U> kilo;
  *
  * inline constexpr auto kilogram = si::kilo<gram>;
  * @endcode
@@ -534,10 +534,10 @@ template<Unit T, typename... Expr>
 }
 
 template<typename T>
-inline constexpr bool is_specialization_of_derived_unit = false;
+constexpr bool is_specialization_of_derived_unit = false;
 
 template<typename... Expr>
-inline constexpr bool is_specialization_of_derived_unit<derived_unit<Expr...>> = true;
+constexpr bool is_specialization_of_derived_unit<derived_unit<Expr...>> = true;
 
 }  // namespace detail
 
@@ -675,14 +675,14 @@ template<Unit U1, Unit U2>
  * be provided.
  */
 template<Unit auto U>
-inline constexpr bool space_before_unit_symbol = true;
+constexpr bool space_before_unit_symbol = true;
 
 template<>
-inline constexpr bool space_before_unit_symbol<one> = false;
+MP_UNITS_INLINE constexpr bool space_before_unit_symbol<one> = false;
 template<>
-inline constexpr bool space_before_unit_symbol<percent> = false;
+MP_UNITS_INLINE constexpr bool space_before_unit_symbol<percent> = false;
 template<>
-inline constexpr bool space_before_unit_symbol<per_mille> = false;
+MP_UNITS_INLINE constexpr bool space_before_unit_symbol<per_mille> = false;
 
 // get_unit_symbol
 

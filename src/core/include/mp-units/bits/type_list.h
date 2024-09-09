@@ -40,10 +40,10 @@ MP_UNITS_DIAGNOSTIC_IGNORE_EXPR_ALWAYS_TF
 namespace mp_units::detail {
 
 template<typename T>
-inline constexpr bool is_type_list = false;
+constexpr bool is_type_list = false;
 
 template<template<typename...> typename T, typename... Types>
-inline constexpr bool is_type_list<T<Types...>> = true;
+constexpr bool is_type_list<T<Types...>> = true;
 
 template<typename T>
 concept TypeList = is_type_list<T>;
@@ -56,7 +56,7 @@ template<template<typename...> typename List, typename... Types>
 struct type_list_size_impl<List<Types...>> : std::integral_constant<std::size_t, sizeof...(Types)> {};
 
 template<TypeList List>
-inline constexpr std::size_t type_list_size = type_list_size_impl<List>::value;
+constexpr std::size_t type_list_size = type_list_size_impl<List>::value;
 
 // map
 template<typename T, template<typename...> typename To>

@@ -40,7 +40,7 @@ template<auto R, typename Rep>
 void to_base_specialization_of_quantity(const volatile quantity<R, Rep>*);
 
 template<typename T>
-inline constexpr bool is_derived_from_specialization_of_quantity =
+constexpr bool is_derived_from_specialization_of_quantity =
   requires(T* type) { to_base_specialization_of_quantity(type); };
 
 }  // namespace detail

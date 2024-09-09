@@ -37,7 +37,7 @@ import std;
 
 #if MP_UNITS_HOSTED
 template<typename T>
-inline constexpr bool mp_units::is_scalar<std::complex<T>> = true;
+constexpr bool mp_units::is_scalar<std::complex<T>> = true;
 #endif
 
 namespace {

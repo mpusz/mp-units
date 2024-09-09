@@ -47,13 +47,13 @@ namespace kalman {
 namespace detail {
 
 template<mp_units::Dimension auto... Ds>
-inline constexpr bool are_time_derivatives = false;
+constexpr bool are_time_derivatives = false;
 
 template<mp_units::Dimension auto D>
-inline constexpr bool are_time_derivatives<D> = true;
+constexpr bool are_time_derivatives<D> = true;
 
 template<mp_units::Dimension auto D1, mp_units::Dimension auto D2, mp_units::Dimension auto... Ds>
-inline constexpr bool are_time_derivatives<D1, D2, Ds...> =
+constexpr bool are_time_derivatives<D1, D2, Ds...> =
   (D1 / D2 == mp_units::isq::dim_time) && are_time_derivatives<D2, Ds...>;
 
 }  // namespace detail

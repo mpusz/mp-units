@@ -59,7 +59,7 @@ template<symbol_text Symbol, auto... Args>
 void to_base_specialization_of_named_unit(const volatile named_unit<Symbol, Args...>*);
 
 template<typename T>
-inline constexpr bool is_derived_from_specialization_of_named_unit =
+constexpr bool is_derived_from_specialization_of_named_unit =
   requires(T* t) { to_base_specialization_of_named_unit(t); };
 
 }  // namespace detail
@@ -73,14 +73,13 @@ concept PrefixableUnit = Unit<T> && detail::is_derived_from_specialization_of_na
 namespace detail {
 
 template<typename T>
-inline constexpr bool is_power_of_unit =
-  requires { requires is_specialization_of_power<T> && Unit<typename T::factor>; };
+constexpr bool is_power_of_unit = requires { requires is_specialization_of_power<T> && Unit<typename T::factor>; };
 
 template<typename T>
-inline constexpr bool is_per_of_units = false;
+constexpr bool is_per_of_units = false;
 
 template<typename... Ts>
-inline constexpr bool is_per_of_units<per<Ts...>> = (... && (Unit<Ts> || is_power_of_unit<Ts>));
+constexpr bool is_per_of_units<per<Ts...>> = (... && (Unit<Ts> || is_power_of_unit<Ts>));
 
 template<typename T>
 concept DerivedUnitExpr = Unit<T> || detail::is_power_of_unit<T> || detail::is_per_of_units<T>;
