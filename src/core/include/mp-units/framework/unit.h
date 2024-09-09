@@ -632,8 +632,8 @@ template<Unit From, Unit To>
 [[nodiscard]] consteval Unit auto common_unit(Unit auto u) { return u; }
 
 template<Unit U1, Unit U2>
+requires(convertible(U1{}, U2{}))
 [[nodiscard]] consteval Unit auto common_unit(U1 u1, U2 u2)
-  requires(convertible(MP_UNITS_IS_CONST_EXPR_WORKAROUND(u1), MP_UNITS_IS_CONST_EXPR_WORKAROUND(u2)))
 {
   if constexpr (is_same_v<U1, U2>)
     return u1;
