@@ -33,7 +33,7 @@ namespace {
 
 using namespace mp_units;
 
-using dimension_one_ = struct mp_units::dimension_one;
+using dimension_one_ = struct dimension_one;
 
 // clang-format off
 inline constexpr struct length_ final : base_dimension<"L"> {} length;

@@ -45,8 +45,8 @@ namespace {
 
 using namespace mp_units;
 
-QuantityOf<(isq::mechanical_energy)> auto total_energy(QuantityOf<(isq::momentum)> auto p,
-                                                       QuantityOf<(isq::mass)> auto m, QuantityOf<(isq::speed)> auto c)
+QuantityOf<isq::mechanical_energy> auto total_energy(QuantityOf<isq::momentum> auto p, QuantityOf<isq::mass> auto m,
+                                                     QuantityOf<isq::speed> auto c)
 {
   return isq::mechanical_energy(sqrt(pow<2>(p * c) + pow<2>(m * pow<2>(c))));
 }
@@ -59,19 +59,19 @@ void si_example()
   const quantity c2 = pow<2>(c);
 
   const quantity p1 = isq::momentum(4. * GeV / c);
-  const QuantityOf<(isq::mass)> auto m1 = 3. * GeV / c2;
-  const quantity E1 = total_energy(p1, m1, c);
+  const QuantityOf<isq::mass> auto m1 = 3. * GeV / c2;
+  const quantity E = total_energy(p1, m1, c);
 
   std::cout << "\n*** SI units (c = " << c << " = " << c.in(si::metre / s) << ") ***\n";
 
   std::cout << "\n[in `GeV` and `c`]\n"
             << "p = " << p1 << "\n"
             << "m = " << m1 << "\n"
-            << "E = " << E1 << "\n";
+            << "E = " << E << "\n";
 
   const quantity p2 = p1.in(GeV / (m / s));
-  const quantity metre2 = m1.in(GeV / pow<2>(m / s));
-  const quantity E2 = total_energy(p2, metre2, c).in(GeV);
+  const quantity m2 = m1.in(GeV / pow<2>(m / s));
+  const quantity E2 = total_energy(p2, m2, c).in(GeV);
 
   std::cout << "\n[in `GeV`]\n"
             << "p = " << p2 << "\n"
@@ -79,8 +79,8 @@ void si_example()
             << "E = " << E2 << "\n";
 
   const quantity p3 = p1.in(kg * m / s);
-  const quantity metre3 = m1.in(kg);
-  const quantity E3 = total_energy(p3, metre3, c).in(J);
+  const quantity m3 = m1.in(kg);
+  const quantity E3 = total_energy(p3, m3, c).in(J);
 
   std::cout << "\n[in SI base units]\n"
             << "p = " << p3 << "\n"

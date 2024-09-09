@@ -35,8 +35,8 @@ namespace {
 using namespace mp_units;
 using namespace mp_units::detail;
 
-using one_ = struct mp_units::one;
-using percent_ = struct mp_units::percent;
+using one_ = struct one;
+using percent_ = struct percent;
 
 // base dimensions
 // clang-format off

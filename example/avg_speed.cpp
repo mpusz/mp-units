@@ -45,26 +45,26 @@ namespace {
 
 using namespace mp_units;
 
-constexpr quantity<si::metre / si::second, int> fixed_int_si_avg_speed(quantity<(si::metre), int> d,
-                                                                       quantity<(si::second), int> t)
+constexpr quantity<si::metre / si::second, int> fixed_int_si_avg_speed(quantity<si::metre, int> d,
+                                                                       quantity<si::second, int> t)
 {
   return d / t;
 }
 
-constexpr quantity<si::metre / si::second> fixed_double_si_avg_speed(quantity<(si::metre)> d, quantity<(si::second)> t)
+constexpr quantity<si::metre / si::second> fixed_double_si_avg_speed(quantity<si::metre> d, quantity<si::second> t)
 {
   return d / t;
 }
 
-constexpr QuantityOf<(isq::speed)> auto avg_speed(QuantityOf<(isq::length)> auto d, QuantityOf<(isq::time)> auto t)
+constexpr QuantityOf<isq::speed> auto avg_speed(QuantityOf<isq::length> auto d, QuantityOf<isq::time> auto t)
 {
   return d / t;
 }
 
-template<QuantityOf<(isq::length)> D, QuantityOf<(isq::time)> T, QuantityOf<(isq::speed)> V>
+template<QuantityOf<isq::length> D, QuantityOf<isq::time> T, QuantityOf<isq::speed> V>
 void print_result(D distance, T duration, V speed)
 {
-  const auto result_in_kmph = speed.force_in((si::kilo<(si::metre)> / non_si::hour));
+  const auto result_in_kmph = speed.force_in(si::kilo<si::metre> / non_si::hour);
   std::cout << "Average speed of a car that makes " << distance << " in " << duration << " is " << result_in_kmph
             << ".\n";
 }
