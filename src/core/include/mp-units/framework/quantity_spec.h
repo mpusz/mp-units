@@ -669,10 +669,9 @@ template<QuantitySpec Q>
 template<Dimension D1, Dimension D2>
 [[nodiscard]] consteval bool ingredients_dimension_less(D1 lhs, D2 rhs)
 {
-  if constexpr (MP_UNITS_IS_CONST_EXPR_WORKAROUND(lhs) == MP_UNITS_IS_CONST_EXPR_WORKAROUND(rhs) ||
-                MP_UNITS_IS_CONST_EXPR_WORKAROUND(lhs) == dimension_one)
+  if constexpr (D1{} == D2{} || D1{} == dimension_one)
     return false;
-  else if constexpr (MP_UNITS_IS_CONST_EXPR_WORKAROUND(rhs) == dimension_one)
+  else if constexpr (D2{}  == dimension_one)
     return true;
   else
     return detail::type_name<D1>() < detail::type_name<D2>();
@@ -1341,12 +1340,10 @@ template<QuantitySpec From, QuantitySpec To>
     using enum specs_convertible_result;
     return res == no ? no : yes;
   };
-  if constexpr ((NamedQuantitySpec<decltype(MP_UNITS_IS_CONST_EXPR_WORKAROUND(from_kind))> &&
-                 NamedQuantitySpec<decltype(MP_UNITS_IS_CONST_EXPR_WORKAROUND(to_kind))>) ||
-                get_complexity(MP_UNITS_IS_CONST_EXPR_WORKAROUND(from_kind)) == get_complexity(MP_UNITS_IS_CONST_EXPR_WORKAROUND(to_kind)))
+  if constexpr ((NamedQuantitySpec<decltype(From{})> && NamedQuantitySpec<decltype(To{})>) ||
+                get_complexity(From{}) == get_complexity(To{}))
     return convertible_impl(MP_UNITS_IS_CONST_EXPR_WORKAROUND(from_kind), MP_UNITS_IS_CONST_EXPR_WORKAROUND(to_kind));
-  else if constexpr (get_complexity(MP_UNITS_IS_CONST_EXPR_WORKAROUND(from_kind)) >
-                     get_complexity(MP_UNITS_IS_CONST_EXPR_WORKAROUND(to_kind)))
+  else if constexpr (get_complexity(From{}) > get_complexity(To{}))
     return exploded_kind_result(convertible_impl(
       get_kind_tree_root(
         explode<get_complexity(MP_UNITS_IS_CONST_EXPR_WORKAROUND(to_kind))>(MP_UNITS_IS_CONST_EXPR_WORKAROUND(from_kind)).quantity),
@@ -1405,7 +1402,7 @@ template<QuantitySpec From, QuantitySpec To>
     auto res = explode<get_complexity(MP_UNITS_IS_CONST_EXPR_WORKAROUND(to))>(MP_UNITS_IS_CONST_EXPR_WORKAROUND(from));
     if constexpr (NamedQuantitySpec<decltype(res.quantity)>)
       return convertible_impl(res.quantity, MP_UNITS_IS_CONST_EXPR_WORKAROUND(to));
-    else if constexpr (requires { MP_UNITS_IS_CONST_EXPR_WORKAROUND(to)._equation_; }) {
+    else if constexpr (requires { To{}._equation_; }) {
       auto eq = explode_to_equation(MP_UNITS_IS_CONST_EXPR_WORKAROUND(to));
       return min(eq.result, convertible_impl(res.quantity, eq.equation));
     } else
@@ -1414,7 +1411,7 @@ template<QuantitySpec From, QuantitySpec To>
     auto res = explode<get_complexity(MP_UNITS_IS_CONST_EXPR_WORKAROUND(from))>(MP_UNITS_IS_CONST_EXPR_WORKAROUND(to));
     if constexpr (NamedQuantitySpec<decltype(res.quantity)>)
       return min(res.result, convertible_impl(MP_UNITS_IS_CONST_EXPR_WORKAROUND(from), res.quantity));
-    else if constexpr (requires { MP_UNITS_IS_CONST_EXPR_WORKAROUND(from)._equation_; })
+    else if constexpr (requires { From{}._equation_; })
       return min(res.result, convertible_impl(MP_UNITS_IS_CONST_EXPR_WORKAROUND(from)._equation_, res.quantity));
     else
       return min(res.result, are_ingredients_convertible(MP_UNITS_IS_CONST_EXPR_WORKAROUND(from), MP_UNITS_IS_CONST_EXPR_WORKAROUND(to)));
