@@ -24,11 +24,12 @@
 #include <mp-units/ostream.h>
 #include <mp-units/systems/isq.h>
 #include <mp-units/systems/si.h>
+#include <mp-units/bits/hacks.h>
 #include <iostream>
 
 using namespace mp_units;
 
-constexpr QuantityOf<isq::speed> auto avg_speed(QuantityOf<(isq::distance)> auto d, QuantityOf<(isq::duration)> auto t)
+constexpr QuantityOf<isq::speed> auto avg_speed(QuantityOf<MP_UNITS_IS_VALUE_WORKAROUND(isq::distance)> auto d, QuantityOf<MP_UNITS_IS_VALUE_WORKAROUND(isq::duration)> auto t)
 {
   return d / t;
 }
