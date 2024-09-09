@@ -48,7 +48,7 @@ int main()
   constexpr auto RR = isq::resistance(4.7 * si::kilo<si::ohm>);
 
   for (auto tt = 0 * ms; tt <= 50 * ms; ++tt) {
-    const QuantityOf<isq::voltage> auto Vt = V0 * exp(dimensionless(-tt / (RR * CC)));
+    const QuantityOf<(isq::voltage)> auto Vt = V0 * exp(dimensionless(-tt / (RR * CC)));
     // TODO try to make the below work instead
     // const QuantityOf<isq::voltage> auto Vt = V0 * exp(-tt / (RR * CC));
 

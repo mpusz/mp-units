@@ -90,11 +90,11 @@ template<Unit auto From, Unit auto To>
 
 #endif
 
-template<ReferenceOf<currency> auto To, ReferenceOf<currency> auto From, typename Rep>
-quantity<To, Rep> exchange_to(quantity<From, Rep> q)
-{
-  return static_cast<Rep>(exchange_rate<q.unit, get_unit(To)>() * q.numerical_value()) * To;
-}
+// template<ReferenceOf<currency> auto To, ReferenceOf<currency> auto From, typename Rep>
+// quantity<To, Rep> exchange_to(quantity<From, Rep> q)
+// {
+//   return static_cast<Rep>(exchange_rate<q.unit, get_unit(To)>() * q.numerical_value()) * To;
+// }
 
 template<ReferenceOf<currency> auto To, ReferenceOf<currency> auto From, auto PO, typename Rep>
 quantity_point<To, PO, Rep> exchange_to(quantity_point<From, PO, Rep> q)
@@ -107,8 +107,8 @@ int main()
 {
   using namespace unit_symbols;
 
-  const quantity_point price_usd{100 * USD};
-  const quantity_point price_euro = exchange_to<euro>(price_usd);
+  const mp_units::quantity_point price_usd{100 * USD};
+  const mp_units::quantity_point<euro, default_point_origin(euro), int> price_euro = exchange_to<euro>(price_usd);
 
   std::cout << price_usd.quantity_from_zero() << " -> " << price_euro.quantity_from_zero() << "\n";
   // std::cout << price_usd.quantity_from_zero() + price_euro.quantity_from_zero() << "\n";  // does

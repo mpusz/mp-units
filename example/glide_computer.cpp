@@ -169,7 +169,7 @@ void example()
   const auto gliders = get_gliders();
   const auto waypoints = get_waypoints();
   const auto weather_conditions = get_weather_conditions();
-  const task t = {waypoints[0], waypoints[1], waypoints[0]};
+  const task glider_task = {waypoints[0], waypoints[1], waypoints[0]};
   const aircraft_tow tow = {400 * m, 1.6 * m / s};
   const timestamp start_time(std::chrono::system_clock::now());
 
@@ -177,16 +177,16 @@ void example()
   print(gliders);
   print(waypoints);
   print(weather_conditions);
-  print(t);
+  print(glider_task);
   print(tow);
 
-  for (const auto& g : gliders) {
+  for (const auto& glider : gliders) {
     for (const auto& c : weather_conditions) {
-      const std::string txt = "Scenario: Glider = " + g.name + ", Weather = " + c.first;
+      const std::string txt = "Scenario: Glider = " + glider.name + ", Weather = " + c.first;
       std::cout << txt << "\n";
       std::cout << MP_UNITS_STD_FMT::format("{0:=^{1}}\n\n", "", txt.size());
 
-      estimate(start_time, g, c.second, t, sfty, tow);
+      estimate(start_time, glider, c.second, glider_task, sfty, tow);
 
       std::cout << "\n\n";
     }

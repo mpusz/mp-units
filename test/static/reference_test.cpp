@@ -34,8 +34,8 @@ namespace {
 
 using namespace mp_units;
 
-using dimensionless_ = struct dimensionless;
-using one_ = struct one;
+using dimensionless_ = struct mp_units::dimensionless;
+using one_ = struct mp_units::one;
 
 // base dimensions
 // clang-format off
@@ -238,7 +238,7 @@ template<auto dim, auto unit>
 concept invalid_nu_unit = !requires { dim[unit]; };
 
 static_assert(invalid_nu_unit<time, nu::second>);
-static_assert(invalid_nu_unit<nu::time, second>);
+static_assert(invalid_nu_unit<(nu::time), second>);
 static_assert(invalid_nu_unit<length / time, nu::second / nu::second>);
 static_assert(invalid_nu_unit<speed, nu::second / nu::second>);
 static_assert(invalid_nu_unit<speed, nu::second / second>);

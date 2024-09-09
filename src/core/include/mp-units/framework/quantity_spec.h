@@ -1343,22 +1343,19 @@ template<QuantitySpec From, QuantitySpec To>
   };
   if constexpr ((NamedQuantitySpec<decltype(MP_UNITS_IS_CONST_EXPR_WORKAROUND(from_kind))> &&
                  NamedQuantitySpec<decltype(MP_UNITS_IS_CONST_EXPR_WORKAROUND(to_kind))>) ||
-                get_complexity(MP_UNITS_IS_CONST_EXPR_WORKAROUND(from_kind)) ==
-                  get_complexity(MP_UNITS_IS_CONST_EXPR_WORKAROUND(to_kind)))
+                get_complexity(MP_UNITS_IS_CONST_EXPR_WORKAROUND(from_kind)) == get_complexity(MP_UNITS_IS_CONST_EXPR_WORKAROUND(to_kind)))
     return convertible_impl(MP_UNITS_IS_CONST_EXPR_WORKAROUND(from_kind), MP_UNITS_IS_CONST_EXPR_WORKAROUND(to_kind));
   else if constexpr (get_complexity(MP_UNITS_IS_CONST_EXPR_WORKAROUND(from_kind)) >
                      get_complexity(MP_UNITS_IS_CONST_EXPR_WORKAROUND(to_kind)))
-    return exploded_kind_result(
-      convertible_impl(get_kind_tree_root(explode<get_complexity(MP_UNITS_IS_CONST_EXPR_WORKAROUND(to_kind))>(
-                                            MP_UNITS_IS_CONST_EXPR_WORKAROUND(from_kind))
-                                            .quantity),
-                       MP_UNITS_IS_CONST_EXPR_WORKAROUND(to_kind)));
+    return exploded_kind_result(convertible_impl(
+      get_kind_tree_root(
+        explode<get_complexity(MP_UNITS_IS_CONST_EXPR_WORKAROUND(to_kind))>(MP_UNITS_IS_CONST_EXPR_WORKAROUND(from_kind)).quantity),
+      MP_UNITS_IS_CONST_EXPR_WORKAROUND(to_kind)));
   else
-    return exploded_kind_result(
-      convertible_impl(MP_UNITS_IS_CONST_EXPR_WORKAROUND(from_kind),
-                       get_kind_tree_root(explode<get_complexity(MP_UNITS_IS_CONST_EXPR_WORKAROUND(from_kind))>(
-                                            MP_UNITS_IS_CONST_EXPR_WORKAROUND(to_kind))
-                                            .quantity)));
+    return exploded_kind_result(convertible_impl(
+      MP_UNITS_IS_CONST_EXPR_WORKAROUND(from_kind),
+      get_kind_tree_root(
+        explode<get_complexity(MP_UNITS_IS_CONST_EXPR_WORKAROUND(from_kind))>(MP_UNITS_IS_CONST_EXPR_WORKAROUND(to_kind)).quantity)));
 }
 
 template<NamedQuantitySpec From, NamedQuantitySpec To>
@@ -1376,12 +1373,10 @@ template<NamedQuantitySpec From, NamedQuantitySpec To>
   else if constexpr (get_complexity(From{}) != get_complexity(To{})) {
     if constexpr (get_complexity(From{}) > get_complexity(To{}))
       return convertible_impl(
-        explode<get_complexity(MP_UNITS_IS_CONST_EXPR_WORKAROUND(to))>(MP_UNITS_IS_CONST_EXPR_WORKAROUND(from))
-          .quantity,
+        explode<get_complexity(MP_UNITS_IS_CONST_EXPR_WORKAROUND(to))>(MP_UNITS_IS_CONST_EXPR_WORKAROUND(from)).quantity,
         MP_UNITS_IS_CONST_EXPR_WORKAROUND(to));
     else {
-      auto res =
-        explode<get_complexity(MP_UNITS_IS_CONST_EXPR_WORKAROUND(from))>(MP_UNITS_IS_CONST_EXPR_WORKAROUND(to));
+      auto res = explode<get_complexity(MP_UNITS_IS_CONST_EXPR_WORKAROUND(from))>(MP_UNITS_IS_CONST_EXPR_WORKAROUND(to));
       return min(res.result, convertible_impl(MP_UNITS_IS_CONST_EXPR_WORKAROUND(from), res.quantity));
     }
   }
@@ -1414,8 +1409,7 @@ template<QuantitySpec From, QuantitySpec To>
       auto eq = explode_to_equation(MP_UNITS_IS_CONST_EXPR_WORKAROUND(to));
       return min(eq.result, convertible_impl(res.quantity, eq.equation));
     } else
-      return are_ingredients_convertible(MP_UNITS_IS_CONST_EXPR_WORKAROUND(from),
-                                         MP_UNITS_IS_CONST_EXPR_WORKAROUND(to));
+      return are_ingredients_convertible(MP_UNITS_IS_CONST_EXPR_WORKAROUND(from), MP_UNITS_IS_CONST_EXPR_WORKAROUND(to));
   } else if constexpr (DerivedQuantitySpec<To>) {
     auto res = explode<get_complexity(MP_UNITS_IS_CONST_EXPR_WORKAROUND(from))>(MP_UNITS_IS_CONST_EXPR_WORKAROUND(to));
     if constexpr (NamedQuantitySpec<decltype(res.quantity)>)
@@ -1423,8 +1417,7 @@ template<QuantitySpec From, QuantitySpec To>
     else if constexpr (requires { MP_UNITS_IS_CONST_EXPR_WORKAROUND(from)._equation_; })
       return min(res.result, convertible_impl(MP_UNITS_IS_CONST_EXPR_WORKAROUND(from)._equation_, res.quantity));
     else
-      return min(res.result, are_ingredients_convertible(MP_UNITS_IS_CONST_EXPR_WORKAROUND(from),
-                                                         MP_UNITS_IS_CONST_EXPR_WORKAROUND(to)));
+      return min(res.result, are_ingredients_convertible(MP_UNITS_IS_CONST_EXPR_WORKAROUND(from), MP_UNITS_IS_CONST_EXPR_WORKAROUND(to)));
   }
   // NOLINTEND(bugprone-branch-clone)
   return no;

@@ -44,8 +44,8 @@ void simple_quantities()
   using namespace mp_units::si;
   using namespace mp_units::international;
 
-  using distance = quantity<isq::distance[kilo<metre>]>;
-  using duration = quantity<isq::duration[second]>;
+  using distance = quantity<(isq::distance[kilo<metre>])>;
+  using duration = quantity<(isq::duration[second])>;
 
   constexpr distance km = 1. * kilo<metre>;
   constexpr distance miles = 1. * mile;

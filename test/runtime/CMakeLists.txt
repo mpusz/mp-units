@@ -37,11 +37,11 @@ if(${projectPrefix}BUILD_CXX_MODULES)
 endif()
 target_link_libraries(unit_tests_runtime PRIVATE mp-units::mp-units Catch2::Catch2WithMain)
 
-if(${projectPrefix}DEV_BUILD_LA)
-    find_package(wg21_linear_algebra REQUIRED)
-    target_sources(unit_tests_runtime PRIVATE linear_algebra_test.cpp)
-    target_link_libraries(unit_tests_runtime PRIVATE wg21_linear_algebra::wg21_linear_algebra)
-endif()
+# if(${projectPrefix}DEV_BUILD_LA)
+#     find_package(wg21_linear_algebra REQUIRED)
+#     target_sources(unit_tests_runtime PRIVATE linear_algebra_test.cpp)
+#     target_link_libraries(unit_tests_runtime PRIVATE wg21_linear_algebra::wg21_linear_algebra)
+# endif()
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     target_compile_options(
