@@ -667,11 +667,11 @@ template<QuantitySpec Q>
 // dimension_one is always the last one
 // otherwise, sort by typename
 template<Dimension D1, Dimension D2>
-[[nodiscard]] consteval bool ingredients_dimension_less(D1 lhs, D2 rhs)
+[[nodiscard]] consteval bool ingredients_dimension_less(D1, D2)
 {
   if constexpr (D1{} == D2{} || D1{} == dimension_one)
     return false;
-  else if constexpr (D2{}  == dimension_one)
+  else if constexpr (D2{} == dimension_one)
     return true;
   else
     return detail::type_name<D1>() < detail::type_name<D2>();
@@ -684,7 +684,7 @@ struct ingredients_less :
     std::bool_constant<(lhs_compl > rhs_compl) ||
                        (lhs_compl == rhs_compl && ingredients_dimension_less(Lhs::dimension, Rhs::dimension)) ||
                        (lhs_compl == rhs_compl && Lhs::dimension == Rhs::dimension &&
-                        detail::type_name<Lhs>() < detail::type_name<Rhs>())> {};
+                        detail::type_name<Lhs>() < detail::type_name<Rhs>())>{};
 
 template<typename T1, typename T2>
 using type_list_of_ingredients_less = expr_less<T1, T2, ingredients_less>;
@@ -1344,11 +1344,11 @@ template<QuantitySpec From, QuantitySpec To>
                 get_complexity(From{}) == get_complexity(To{}))
     return convertible_impl(from_kind, to_kind);
   else if constexpr (get_complexity(From{}) > get_complexity(To{}))
-    return exploded_kind_result(convertible_impl(
-      get_kind_tree_root(explode<get_complexity(To{})>(from_kind).quantity),to_kind));
+    return exploded_kind_result(
+      convertible_impl(get_kind_tree_root(explode<get_complexity(To{})>(from_kind).quantity), to_kind));
   else
     return exploded_kind_result(
-      convertible_impl(from_kind,get_kind_tree_root(explode<get_complexity(From{})>(to_kind).quantity)));
+      convertible_impl(from_kind, get_kind_tree_root(explode<get_complexity(From{})>(to_kind).quantity)));
 }
 
 template<NamedQuantitySpec From, NamedQuantitySpec To>
@@ -1365,7 +1365,7 @@ template<NamedQuantitySpec From, NamedQuantitySpec To>
     return no;
   else if constexpr (get_complexity(From{}) != get_complexity(To{})) {
     if constexpr (get_complexity(From{}) > get_complexity(To{}))
-      return convertible_impl(explode<get_complexity(To{})>(from).quantity,to);
+      return convertible_impl(explode<get_complexity(To{})>(from).quantity, to);
     else {
       auto res = explode<get_complexity(From{})>(to);
       return min(res.result, convertible_impl(from, res.quantity));

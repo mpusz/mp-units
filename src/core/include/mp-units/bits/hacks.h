@@ -122,7 +122,7 @@ inline constexpr from_range_t from_range{};
 #else
 
 #define MP_UNITS_CONSTRAINED_NTTP_WORKAROUND(X) X
-#define  MP_UNITS_EXPRESSION_WORKAROUND(x) x
+#define MP_UNITS_EXPRESSION_WORKAROUND(x) x
 #define MP_UNITS_IS_VALUE_WORKAROUND(x) x
 
 #endif
