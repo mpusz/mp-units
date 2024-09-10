@@ -435,6 +435,8 @@ public:
     }
   friend constexpr decltype(auto) operator*=(FwdQ&& lhs, const Value& v)
   {
+    // TODO use *= when compiiler bug is resolved:
+    // https://developercommunity.visualstudio.com/t/Discrepancy-in-Behavior-of-operator-an/10732445
     lhs.numerical_value_is_an_implementation_detail_ = lhs.numerical_value_is_an_implementation_detail_ * v;
     return std::forward<FwdQ>(lhs);
   }
@@ -447,6 +449,8 @@ public:
     }
   friend constexpr decltype(auto) operator*=(FwdQ1&& lhs, const Q2& rhs)
   {
+    // TODO use *= when compiiler bug is resolved:
+    // https://developercommunity.visualstudio.com/t/Discrepancy-in-Behavior-of-operator-an/10732445
     lhs.numerical_value_is_an_implementation_detail_ =
       lhs.numerical_value_is_an_implementation_detail_ * rhs.numerical_value_is_an_implementation_detail_;
     return std::forward<FwdQ1>(lhs);
@@ -461,6 +465,8 @@ public:
   friend constexpr decltype(auto) operator/=(FwdQ&& lhs, const Value& v)
   {
     MP_UNITS_EXPECTS_DEBUG(v != quantity_values<Value>::zero());
+    // TODO use /= when compiiler bug is resolved:
+    // https://developercommunity.visualstudio.com/t/Discrepancy-in-Behavior-of-operator-an/10732445
     lhs.numerical_value_is_an_implementation_detail_ = lhs.numerical_value_is_an_implementation_detail_ / v;
     return std::forward<FwdQ>(lhs);
   }
@@ -474,6 +480,8 @@ public:
   friend constexpr decltype(auto) operator/=(FwdQ1&& lhs, const Q2& rhs)
   {
     MP_UNITS_EXPECTS_DEBUG(rhs != rhs.zero());
+    // TODO use /= when compiiler bug is resolved:
+    // https://developercommunity.visualstudio.com/t/Discrepancy-in-Behavior-of-operator-an/10732445
     lhs.numerical_value_is_an_implementation_detail_ =
       lhs.numerical_value_is_an_implementation_detail_ / rhs.numerical_value_is_an_implementation_detail_;
     return std::forward<FwdQ1>(lhs);
