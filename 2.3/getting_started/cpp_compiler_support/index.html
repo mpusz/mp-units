@@ -2245,7 +2245,7 @@ C++ feature:</p>
 <td style="text-align: center;">12</td>
 <td style="text-align: center;">16</td>
 <td style="text-align: center;">15</td>
-<td style="text-align: center;">None</td>
+<td style="text-align: center;">194 <img alt="🐛" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/1f41b.svg" title="BEWARE of MSVC Bugs!" /></td>
 </tr>
 <tr>
 <td><strong><code>std::format</code></strong></td>
@@ -2253,7 +2253,7 @@ C++ feature:</p>
 <td style="text-align: center;">13</td>
 <td style="text-align: center;">17</td>
 <td style="text-align: center;">None</td>
-<td style="text-align: center;">None</td>
+<td style="text-align: center;">194</td>
 </tr>
 <tr>
 <td><strong>C++ modules</strong></td>
@@ -2289,6 +2289,20 @@ C++ feature:</p>
 </tr>
 </tbody>
 </table>
+<details class="note">
+<summary>MSVC bugs</summary>
+<p>MSVC still has a poor C++20 conformance. We had to make many workarounds to our codebase to
+make it compile on this compiler. Usage of such nasty preprocessor macros degrade the
+readability and maintainability of our code. This is why we've applied those patches to
+the main library code but not to unit tests and examples. Those still do not compile on MSVC.</p>
+<p>Here is a list of the most important MSVC bugs:</p>
+<ul>
+<li><a href="https://developercommunity.visualstudio.com/t/Discrepancy-in-Behavior-of-operator-an/10732445">Discrepancy in Behavior of operator<em>= and operator</em> for Multiplying int and double at compile time</a></li>
+<li><a href="https://developercommunity.visualstudio.com/t/Syntax-error-when-using-non-type-templat/10729428">Syntax error when using non-type template parameters in templated class member function</a></li>
+<li><a href="https://developercommunity.visualstudio.com/t/Type-always-prefered-over-value-when-usi/10729382">Type always preferred over value when using qualified identifiers</a></li>
+</ul>
+<p>Please upvote them so they get a higher fixing priority at Microsoft.</p>
+</details>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
 <p>Enabling/disabling features listed above may influence the API of the library and the ABI of
