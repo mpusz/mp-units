@@ -314,25 +314,13 @@ public:
                                               convert_explicitly> ||
                          !std::convertible_to<Rep, typename quantity_like_traits<Q>::rep>) constexpr
   // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
-  operator Q_() const& noexcept(
-    noexcept(quantity_like_traits<Q>::from_numerical_value(numerical_value_is_an_implementation_detail_)) &&
-    std::is_nothrow_copy_constructible_v<rep>)
+  operator Q_() const
+    noexcept(noexcept(quantity_like_traits<Q>::from_numerical_value(numerical_value_is_an_implementation_detail_)) &&
+             std::is_nothrow_copy_constructible_v<rep>)
   {
-    return quantity_like_traits<Q>::from_numerical_value(numerical_value_is_an_implementation_detail_).value;
-  }
-
-  template<typename Q_, QuantityLike Q = std::remove_cvref_t<Q_>>
-    requires detail::QuantityConvertibleTo<quantity, detail::quantity_like_type<Q>>
-  [[nodiscard]] explicit(is_specialization_of<decltype(quantity_like_traits<Q>::from_numerical_value(
-                                                numerical_value_is_an_implementation_detail_)),
-                                              convert_explicitly> ||
-                         !std::convertible_to<Rep, typename quantity_like_traits<Q>::rep>) constexpr
-  // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
-  operator Q_() && noexcept(
-    noexcept(quantity_like_traits<Q>::from_numerical_value(numerical_value_is_an_implementation_detail_)) &&
-    std::is_nothrow_move_constructible_v<rep>)
-  {
-    return quantity_like_traits<Q>::from_numerical_value(std::move(numerical_value_is_an_implementation_detail_)).value;
+    return quantity_like_traits<Q>::from_numerical_value(
+             numerical_value_in(get_unit(quantity_like_traits<Q>::reference)))
+      .value;
   }
 
   // member unary operators
