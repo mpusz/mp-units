@@ -47,8 +47,8 @@ namespace mp_units::detail {
 template<typename Char>
 [[nodiscard]] constexpr const Char* at_most_one_of(const Char* begin, const Char* end, std::string_view modifiers)
 {
-  const Char* const it = find_first_of(begin, end, modifiers.begin(), modifiers.end());
-  if (it != end && find_first_of(it + 1, end, modifiers.begin(), modifiers.end()) != end)
+  const Char* const it = mp_units::detail::find_first_of(begin, end, modifiers.begin(), modifiers.end());
+  if (it != end && mp_units::detail::find_first_of(it + 1, end, modifiers.begin(), modifiers.end()) != end)
     throw MP_UNITS_STD_FMT::format_error("only one of '" + std::string(modifiers) +
                                          "' unit modifiers may be used in the format spec");
   return it;
@@ -452,7 +452,7 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
     }
     // user provided format
     quantity_formatter f{*this, out, q, locale};
-    parse_quantity_specs(modifiers_format_str_.begin(), modifiers_format_str_.end(), f);
+    parse_quantity_specs(modifiers_format_str_.data(), modifiers_format_str_.data() + modifiers_format_str_.size(), f);
     return f.out;
   }
 

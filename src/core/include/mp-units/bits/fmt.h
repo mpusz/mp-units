@@ -189,6 +189,8 @@ constexpr void handle_dynamic_spec(int& value, fmt_arg_ref<typename Context::cha
   }
 }
 
+MP_UNITS_DIAGNOSTIC_PUSH
+MP_UNITS_DIAGNOSTIC_IGNORE_UNREACHABLE
 struct width_checker {
   template<typename T>
   [[nodiscard]] constexpr unsigned long long operator()(T value) const
@@ -199,9 +201,9 @@ struct width_checker {
       return static_cast<unsigned long long>(value);
     }
     MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("width is not integer"));
-    return 0;
   }
 };
+MP_UNITS_DIAGNOSTIC_POP
 
 MP_UNITS_EXPORT_END
 
@@ -253,7 +255,6 @@ template<typename Char, typename Handler>
   if (c == '%') return begin;  // mp-units extension
   if (!::mp_units::detail::is_name_start(c)) {
     MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("invalid format string"));
-    return begin;
   }
   auto it = begin;
   do {
@@ -372,7 +373,6 @@ template<typename Char, typename Specs>
         if (c == '}') return begin;
         if (c == '{') {
           MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("invalid fill character '{'"));
-          return begin;
         }
         specs.fill = {begin, to_unsigned(p - begin)};
         begin = p + 1;

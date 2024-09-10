@@ -71,7 +71,7 @@ void to_base_specialization_of_quantity_spec(const volatile quantity_spec<T, Arg
 
 template<typename T>
 constexpr bool is_derived_from_specialization_of_quantity_spec =
-  requires(T* t) { to_base_specialization_of_quantity_spec(t); };
+  requires(T* type) { to_base_specialization_of_quantity_spec(type); };
 
 /**
  * @brief Concept matching all named quantity specification types

@@ -707,7 +707,8 @@ template<auto... Ms>
 void to_base_specialization_of_magnitude(const volatile magnitude<Ms...>*);
 
 template<typename T>
-constexpr bool is_derived_from_specialization_of_magnitude = requires(T* t) { to_base_specialization_of_magnitude(t); };
+constexpr bool is_derived_from_specialization_of_magnitude =
+  requires(T* type) { to_base_specialization_of_magnitude(type); };
 
 template<typename T>
   requires is_derived_from_specialization_of_magnitude<T>

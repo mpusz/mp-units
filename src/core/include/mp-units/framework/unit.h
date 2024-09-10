@@ -220,7 +220,7 @@ struct propagate_point_origin<U, true> {
 template<Magnitude auto M, Unit U>
 struct scaled_unit_impl : detail::unit_interface, detail::propagate_point_origin<U> {
   using _base_type_ = scaled_unit_impl;  // exposition only
-  static constexpr MP_UNITS_CONSTRAINED_AUTO_WORKAROUND(Magnitude) auto mag = M;
+  static constexpr Magnitude auto mag = M;
   static constexpr U reference_unit{};
 };
 
@@ -520,9 +520,9 @@ template<typename T, typename F, int Num, int... Den>
 template<typename... Us>
 [[nodiscard]] consteval auto get_canonical_unit_impl(const type_list<Us...>&)
 {
-  auto m = (mp_units::mag<1> * ... * get_canonical_unit_impl(Us{}, Us{}).mag);
+  auto magnitude = (mp_units::mag<1> * ... * get_canonical_unit_impl(Us{}, Us{}).mag);
   auto u = (one * ... * get_canonical_unit_impl(Us{}, Us{}).reference_unit);
-  return canonical_unit{m, u};
+  return canonical_unit{magnitude, u};
 }
 
 template<Unit T, typename... Expr>
@@ -632,8 +632,8 @@ template<Unit From, Unit To>
 [[nodiscard]] consteval Unit auto common_unit(Unit auto u) { return u; }
 
 template<Unit U1, Unit U2>
+  requires(convertible(U1{}, U2{}))
 [[nodiscard]] consteval Unit auto common_unit(U1 u1, U2 u2)
-  requires(convertible(u1, u2))
 {
   if constexpr (is_same_v<U1, U2>)
     return u1;
@@ -654,8 +654,8 @@ template<Unit U1, Unit U2>
     else if constexpr (is_integral(canonical_rhs.mag / canonical_lhs.mag))
       return u1;
     else {
-      constexpr auto cm = detail::common_magnitude(canonical_lhs.mag, canonical_rhs.mag);
-      return scaled_unit<cm, decltype(canonical_lhs.reference_unit)>{};
+      constexpr auto common_magnitude = detail::common_magnitude(canonical_lhs.mag, canonical_rhs.mag);
+      return scaled_unit<common_magnitude, decltype(canonical_lhs.reference_unit)>{};
     }
   }
 }

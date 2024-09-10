@@ -87,37 +87,49 @@ struct reference {
   }
 
   template<typename Q2, typename U2>
-  [[nodiscard]] friend consteval detail::reference_t<Q{} * Q2{}, U{} * U2{}> operator*(reference, reference<Q2, U2>)
+  [[nodiscard]] friend consteval detail::reference_t<MP_UNITS_EXPRESSION_WORKAROUND(Q{} * Q2{}),
+                                                     MP_UNITS_EXPRESSION_WORKAROUND(U{} * U2{})>
+  operator*(reference, reference<Q2, U2>)
   {
     return {};
   }
 
   template<AssociatedUnit U2>
-  [[nodiscard]] friend consteval detail::reference_t<Q{} * get_quantity_spec(U2{}), U{} * U2{}> operator*(reference, U2)
+  [[nodiscard]] friend consteval detail::reference_t<(MP_UNITS_EXPRESSION_WORKAROUND(Q{} * get_quantity_spec(U2{}))),
+                                                     MP_UNITS_EXPRESSION_WORKAROUND(U{} * U2{})>
+  operator*(reference, U2)
   {
     return {};
   }
 
   template<AssociatedUnit U1>
-  [[nodiscard]] friend consteval detail::reference_t<get_quantity_spec(U1{}) * Q{}, U1{} * U{}> operator*(U1, reference)
+  [[nodiscard]] friend consteval detail::reference_t<MP_UNITS_EXPRESSION_WORKAROUND(get_quantity_spec(U1{}) * Q{}),
+                                                     MP_UNITS_EXPRESSION_WORKAROUND(U1{} * U{})>
+  operator*(U1, reference)
   {
     return {};
   }
 
   template<typename Q2, typename U2>
-  [[nodiscard]] friend consteval detail::reference_t<Q{} / Q2{}, U{} / U2{}> operator/(reference, reference<Q2, U2>)
+  [[nodiscard]] friend consteval detail::reference_t<MP_UNITS_EXPRESSION_WORKAROUND(Q{} / Q2{}),
+                                                     MP_UNITS_EXPRESSION_WORKAROUND(U{} / U2{})>
+  operator/(reference, reference<Q2, U2>)
   {
     return {};
   }
 
   template<AssociatedUnit U2>
-  [[nodiscard]] friend consteval detail::reference_t<Q{} / get_quantity_spec(U2{}), U{} / U2{}> operator/(reference, U2)
+  [[nodiscard]] friend consteval detail::reference_t<MP_UNITS_EXPRESSION_WORKAROUND(Q{} / get_quantity_spec(U2{})),
+                                                     MP_UNITS_EXPRESSION_WORKAROUND(U{} / U2{})>
+  operator/(reference, U2)
   {
     return {};
   }
 
   template<AssociatedUnit U1>
-  [[nodiscard]] friend consteval detail::reference_t<get_quantity_spec(U1{}) / Q{}, U1{} / U{}> operator/(U1, reference)
+  [[nodiscard]] friend consteval detail::reference_t<MP_UNITS_EXPRESSION_WORKAROUND(get_quantity_spec(U1{}) / Q{}),
+                                                     MP_UNITS_EXPRESSION_WORKAROUND(U1{} / U{})>
+  operator/(U1, reference)
   {
     return {};
   }
@@ -281,9 +293,9 @@ template<Reference R1, Reference R2, Reference... Rest>
     } -> Unit;
   }
 {
-  return detail::reference_t<common_quantity_spec(get_quantity_spec(r1), get_quantity_spec(r2),
+  return detail::reference_t<common_quantity_spec(get_quantity_spec(R1{}), get_quantity_spec(R2{}),
                                                   get_quantity_spec(rest)...),
-                             common_unit(get_unit(r1), get_unit(r2), get_unit(rest)...)>{};
+                             common_unit(get_unit(R1{}), get_unit(R2{}), get_unit(rest)...)>{};
 }
 
 MP_UNITS_EXPORT_END

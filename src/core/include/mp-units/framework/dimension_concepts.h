@@ -54,7 +54,7 @@ void to_base_specialization_of_base_dimension(const volatile base_dimension<Symb
 
 template<typename T>
 constexpr bool is_derived_from_specialization_of_base_dimension =
-  requires(T* t) { to_base_specialization_of_base_dimension(t); };
+  requires(T* type) { to_base_specialization_of_base_dimension(type); };
 
 /**
  * @brief A concept matching all named base dimensions in the library.

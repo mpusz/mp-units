@@ -667,11 +667,11 @@ template<QuantitySpec Q>
 // dimension_one is always the last one
 // otherwise, sort by typename
 template<Dimension D1, Dimension D2>
-[[nodiscard]] consteval bool ingredients_dimension_less(D1 lhs, D2 rhs)
+[[nodiscard]] consteval bool ingredients_dimension_less(D1, D2)
 {
-  if constexpr (lhs == rhs || lhs == dimension_one)
+  if constexpr (D1{} == D2{} || D1{} == dimension_one)
     return false;
-  else if constexpr (rhs == dimension_one)
+  else if constexpr (D2{} == dimension_one)
     return true;
   else
     return detail::type_name<D1>() < detail::type_name<D2>();
@@ -760,15 +760,15 @@ template<int Complexity, NamedQuantitySpec Q>
 template<int Complexity, QuantitySpec Q, typename Num, typename... Nums, typename Den, typename... Dens>
 [[nodiscard]] consteval auto explode(Q, type_list<Num, Nums...>, type_list<Den, Dens...>)
 {
-  constexpr auto n = get_complexity(Num{});
-  constexpr auto d = get_complexity(Den{});
-  constexpr auto max_compl = n > d ? n : d;
+  constexpr auto num = get_complexity(Num{});
+  constexpr auto den = get_complexity(Den{});
+  constexpr auto max_compl = num > den ? num : den;
 
-  if constexpr (max_compl == Complexity || ((n >= d && !requires { explode_to_equation(Num{}); }) ||
-                                            (n < d && !requires { explode_to_equation(Den{}); })))
+  if constexpr (max_compl == Complexity || ((num >= den && !requires { explode_to_equation(Num{}); }) ||
+                                            (num < den && !requires { explode_to_equation(Den{}); })))
     return explode_result{(map_power(Num{}) * ... * map_power(Nums{})) / (map_power(Den{}) * ... * map_power(Dens{}))};
   else {
-    if constexpr (n >= d) {
+    if constexpr (num >= den) {
       constexpr auto res = explode_to_equation(Num{});
       return explode<Complexity>((res.equation * ... * map_power(Nums{})) /
                                  (map_power(Den{}) * ... * map_power(Dens{})))
@@ -797,8 +797,8 @@ template<int Complexity, QuantitySpec Q, typename Num, typename... Nums>
 template<int Complexity, QuantitySpec Q, typename Den, typename... Dens>
 [[nodiscard]] consteval auto explode(Q, type_list<>, type_list<Den, Dens...>)
 {
-  constexpr auto d = get_complexity(Den{});
-  if constexpr (d == Complexity || !requires { explode_to_equation(Den{}); })
+  constexpr auto den = get_complexity(Den{});
+  if constexpr (den == Complexity || !requires { explode_to_equation(Den{}); })
     return explode_result{dimensionless / (map_power(Den{}) * ... * map_power(Dens{}))};
   else {
     constexpr auto res = explode_to_equation(Den{});
@@ -816,8 +816,8 @@ template<int Complexity, QuantitySpec Q>
 template<int Complexity, DerivedQuantitySpec Q>
 [[nodiscard]] consteval auto explode(Q q)
 {
-  constexpr auto c = get_complexity(Q{});
-  if constexpr (c > Complexity)
+  constexpr auto complexity = get_complexity(Q{});
+  if constexpr (complexity > Complexity)
     return explode<Complexity>(q, type_list_sort<typename Q::_num_, type_list_of_ingredients_less>{},
                                type_list_sort<typename Q::_den_, type_list_of_ingredients_less>{});
   else
@@ -827,8 +827,8 @@ template<int Complexity, DerivedQuantitySpec Q>
 template<int Complexity, NamedQuantitySpec Q>
 [[nodiscard]] consteval auto explode(Q q)
 {
-  constexpr auto c = get_complexity(Q{});
-  if constexpr (c > Complexity && requires { Q::_equation_; }) {
+  constexpr auto complexity = get_complexity(Q{});
+  if constexpr (complexity > Complexity && requires { Q::_equation_; }) {
     constexpr auto res = explode_to_equation(Q{});
     return explode<Complexity>(res.equation).common_convertibility_with(res);
   } else
@@ -1340,15 +1340,15 @@ template<QuantitySpec From, QuantitySpec To>
     using enum specs_convertible_result;
     return res == no ? no : yes;
   };
-  if constexpr ((NamedQuantitySpec<decltype(from_kind)> && NamedQuantitySpec<decltype(to_kind)>) ||
-                get_complexity(from_kind) == get_complexity(to_kind))
+  if constexpr ((NamedQuantitySpec<decltype(From{})> && NamedQuantitySpec<decltype(To{})>) ||
+                get_complexity(From{}) == get_complexity(To{}))
     return convertible_impl(from_kind, to_kind);
-  else if constexpr (get_complexity(from_kind) > get_complexity(to_kind))
+  else if constexpr (get_complexity(From{}) > get_complexity(To{}))
     return exploded_kind_result(
-      convertible_impl(get_kind_tree_root(explode<get_complexity(to_kind)>(from_kind).quantity), to_kind));
+      convertible_impl(get_kind_tree_root(explode<get_complexity(To{})>(from_kind).quantity), to_kind));
   else
     return exploded_kind_result(
-      convertible_impl(from_kind, get_kind_tree_root(explode<get_complexity(from_kind)>(to_kind).quantity)));
+      convertible_impl(from_kind, get_kind_tree_root(explode<get_complexity(From{})>(to_kind).quantity)));
 }
 
 template<NamedQuantitySpec From, NamedQuantitySpec To>
@@ -1365,9 +1365,9 @@ template<NamedQuantitySpec From, NamedQuantitySpec To>
     return no;
   else if constexpr (get_complexity(From{}) != get_complexity(To{})) {
     if constexpr (get_complexity(From{}) > get_complexity(To{}))
-      return convertible_impl(explode<get_complexity(to)>(from).quantity, to);
+      return convertible_impl(explode<get_complexity(To{})>(from).quantity, to);
     else {
-      auto res = explode<get_complexity(from)>(to);
+      auto res = explode<get_complexity(From{})>(to);
       return min(res.result, convertible_impl(from, res.quantity));
     }
   }
@@ -1392,7 +1392,7 @@ template<QuantitySpec From, QuantitySpec To>
   else if constexpr (DerivedQuantitySpec<From> && DerivedQuantitySpec<To>)
     return are_ingredients_convertible(from, to);
   else if constexpr (DerivedQuantitySpec<From>) {
-    auto res = explode<get_complexity(to)>(from);
+    auto res = explode<get_complexity(To{})>(from);
     if constexpr (NamedQuantitySpec<decltype(res.quantity)>)
       return convertible_impl(res.quantity, to);
     else if constexpr (requires { to._equation_; }) {
@@ -1401,7 +1401,7 @@ template<QuantitySpec From, QuantitySpec To>
     } else
       return are_ingredients_convertible(from, to);
   } else if constexpr (DerivedQuantitySpec<To>) {
-    auto res = explode<get_complexity(from)>(to);
+    auto res = explode<get_complexity(From{})>(to);
     if constexpr (NamedQuantitySpec<decltype(res.quantity)>)
       return min(res.result, convertible_impl(from, res.quantity));
     else if constexpr (requires { from._equation_; })
@@ -1492,9 +1492,9 @@ template<QuantitySpec Q>
 MP_UNITS_EXPORT_BEGIN
 
 template<QuantitySpec Q>
-[[nodiscard]] consteval detail::QuantityKindSpec auto get_kind(Q q)
+[[nodiscard]] consteval detail::QuantityKindSpec auto get_kind(Q)
 {
-  return kind_of<detail::get_kind_tree_root(q)>;
+  return kind_of<detail::get_kind_tree_root(Q{})>;
 }
 
 [[nodiscard]] consteval QuantitySpec auto common_quantity_spec(QuantitySpec auto q) { return q; }
