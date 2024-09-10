@@ -44,10 +44,10 @@ import std;
 
 namespace mp_units::detail {
 
-template<typename Char>
-[[nodiscard]] constexpr const Char* at_most_one_of(const Char* begin, const Char* end, std::string_view modifiers)
+template<std::forward_iterator It>
+[[nodiscard]] constexpr It at_most_one_of(It begin, It end, std::string_view modifiers)
 {
-  const Char* const it = mp_units::detail::find_first_of(begin, end, modifiers.begin(), modifiers.end());
+  const It it = mp_units::detail::find_first_of(begin, end, modifiers.begin(), modifiers.end());
   if (it != end && mp_units::detail::find_first_of(it + 1, end, modifiers.begin(), modifiers.end()) != end)
     throw MP_UNITS_STD_FMT::format_error("only one of '" + std::string(modifiers) +
                                          "' unit modifiers may be used in the format spec");
@@ -65,10 +65,10 @@ struct fill_align_width_format_specs {
   fmt_arg_ref<Char> width_ref;
 };
 
-template<typename Char, typename Specs>
-[[nodiscard]] constexpr const Char* parse_fill_align_width(MP_UNITS_STD_FMT::basic_format_parse_context<Char>& ctx,
-                                                           const Char* begin, const Char* end, Specs& specs,
-                                                           fmt_align default_align = fmt_align::none)
+template<std::forward_iterator It, typename Specs>
+[[nodiscard]] constexpr It parse_fill_align_width(
+  MP_UNITS_STD_FMT::basic_format_parse_context<std::iter_value_t<It>>& ctx, It begin, It end, Specs& specs,
+  fmt_align default_align = fmt_align::none)
 {
   auto it = begin;
   if (it == end || *it == '}') return it;
@@ -79,8 +79,8 @@ template<typename Char, typename Specs>
   return mp_units::detail::parse_dynamic_spec(it, end, specs.width, specs.width_ref, ctx);
 }
 
-template<typename OutputIt, typename Char>
-constexpr OutputIt format_global_buffer(OutputIt out, const fill_align_width_format_specs<Char>& specs)
+template<typename Char, std::output_iterator<Char> It>
+constexpr It format_global_buffer(It out, const fill_align_width_format_specs<Char>& specs)
 {
   MP_UNITS_STD_FMT::format_to(out, "{{:");
   if (specs.fill.size() != 1 || specs.fill[0] != ' ') {
@@ -120,7 +120,8 @@ class MP_UNITS_STD_FMT::formatter<D, Char> {
   format_specs specs_{};
   std::basic_string_view<Char> fill_align_width_format_str_;
 
-  constexpr const Char* parse_dimension_specs(const Char* begin, const Char* end)
+  template<std::forward_iterator It>
+  constexpr It parse_dimension_specs(It begin, It end)
   {
     auto it = begin;
     if (it == end || *it == '}') return begin;
@@ -191,7 +192,8 @@ class MP_UNITS_STD_FMT::formatter<U, Char> {
 
   std::basic_string_view<Char> fill_align_width_format_str_;
 
-  constexpr const Char* parse_unit_specs(const Char* begin, const Char* end)
+  template<std::forward_iterator It>
+  constexpr It parse_unit_specs(It begin, It end)
   {
     auto it = begin;
     if (it == end || *it == '}') return begin;
@@ -307,7 +309,10 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
     constexpr void on_maybe_space() const {}
     constexpr void on_unit() const {}
     constexpr void on_dimension() const {}
-    constexpr void on_text(const Char*, const Char*) const {}
+    template<std::forward_iterator It>
+    constexpr void on_text(It, It) const
+    {
+    }
   };
 
   template<typename OutputIt>
@@ -335,13 +340,17 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
       out = MP_UNITS_STD_FMT::vformat_to(out, locale, f.dimension_format_str_,
                                          MP_UNITS_STD_FMT::make_format_args(q.dimension));
     }
-    void on_text(const Char* begin, const Char* end) const { mp_units::detail::copy(begin, end, out); }
+    template<std::forward_iterator It>
+    void on_text(It begin, It end) const
+    {
+      mp_units::detail::copy(begin, end, out);
+    }
   };
   template<typename OutputIt, typename... Args>
   quantity_formatter(const formatter&, OutputIt, Args...) -> quantity_formatter<OutputIt>;
 
-  template<typename Handler>
-  constexpr const Char* parse_quantity_specs(const Char* begin, const Char* end, Handler& handler) const
+  template<std::forward_iterator It, typename Handler>
+  constexpr const It parse_quantity_specs(It begin, It end, Handler& handler) const
   {
     if (begin == end || *begin == ':' || *begin == '}') return begin;
     if (*begin != '%')
@@ -394,8 +403,8 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
     return ptr;
   }
 
-  template<typename Formatter>
-  constexpr const Char* parse_default_spec(const Char* begin, const Char* end, Formatter& f, std::string& format_str)
+  template<std::forward_iterator It, typename Formatter>
+  constexpr It parse_default_spec(It begin, It end, Formatter& f, std::string& format_str)
   {
     if (begin == end || *begin != '[')
       throw MP_UNITS_STD_FMT::format_error("`default-spec` should contain a `[` character");
@@ -415,7 +424,8 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
     return ++it;  // skip `]`
   }
 
-  [[nodiscard]] constexpr const Char* parse_defaults_specs(const Char* begin, const Char* end)
+  template<std::forward_iterator It>
+  [[nodiscard]] constexpr It parse_defaults_specs(It begin, It end)
   {
     if (begin == end || *begin == '}') return begin;
     if (*begin++ != ':') throw MP_UNITS_STD_FMT::format_error("`defaults-specs` should start with a `:`");
