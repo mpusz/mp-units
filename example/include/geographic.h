@@ -79,10 +79,10 @@ inline constexpr struct prime_meridian final : mp_units::absolute_point_origin<m
 
 
 template<typename T = double>
-using latitude = mp_units::quantity_point<(mp_units::si::degree), equator, ranged_representation<T, -90, 90>>;
+using latitude = mp_units::quantity_point<mp_units::si::degree, equator, ranged_representation<T, -90, 90>>;
 
 template<typename T = double>
-using longitude = mp_units::quantity_point<(mp_units::si::degree), prime_meridian, ranged_representation<T, -180, 180>>;
+using longitude = mp_units::quantity_point<mp_units::si::degree, prime_meridian, ranged_representation<T, -180, 180>>;
 
 template<class CharT, class Traits, typename T>
 std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const latitude<T>& lat)
@@ -176,7 +176,7 @@ template<typename T>
 distance spherical_distance(position<T> from, position<T> to)
 {
   using namespace mp_units;
-  constexpr quantity earth_radius = 6'371 * isq::radius[si::kilo<(si::metre)>];
+  constexpr quantity earth_radius = 6'371 * isq::radius[si::kilo<si::metre>];
 
   using si::sin, si::cos, si::asin, si::acos;
 
@@ -193,7 +193,7 @@ distance spherical_distance(position<T> from, position<T> to)
     // const auto central_angle = 2 * asin(sqrt(0.5 - cos(to_lat - from_lat) / 2 + cos(from_lat) * cos(to_lat) * (1
     // - cos(lon2_rad - from_lon)) / 2));
 
-    return quantity_cast<(isq::distance)>(earth_radius * central_angle);
+    return quantity_cast<isq::distance>(earth_radius * central_angle);
   } else {
     // the haversine formula
     const quantity sin_lat = sin((to_lat - from_lat) / 2);

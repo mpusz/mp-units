@@ -58,24 +58,24 @@ inline constexpr struct mean_sea_level final : absolute_point_origin<isq::height
 
 inline constexpr auto my_mean_sea_level = mean_sea_level;
 
-inline constexpr struct same_mean_sea_level final : relative_point_origin<mean_sea_level + 0 * (isq::height[m])> {
+inline constexpr struct same_mean_sea_level final : relative_point_origin<mean_sea_level + 0 * isq::height[m]> {
 } same_mean_sea_level;
 
-inline constexpr struct ground_level final : relative_point_origin<mean_sea_level + 42 * (isq::height[m])> {
+inline constexpr struct ground_level final : relative_point_origin<mean_sea_level + 42 * isq::height[m]> {
 } ground_level;
 
 inline constexpr auto my_ground_level = ground_level;
 
-inline constexpr struct same_ground_level1 final : relative_point_origin<mean_sea_level + 42 * (isq::height[m])> {
+inline constexpr struct same_ground_level1 final : relative_point_origin<mean_sea_level + 42 * isq::height[m]> {
 } same_ground_level1;
 
-inline constexpr struct same_ground_level2 final : relative_point_origin<my_mean_sea_level + 42 * (isq::height[m])> {
+inline constexpr struct same_ground_level2 final : relative_point_origin<my_mean_sea_level + 42 * isq::height[m]> {
 } same_ground_level2;
 
-inline constexpr struct tower_peak final : relative_point_origin<ground_level + 42 * (isq::height[m])> {
+inline constexpr struct tower_peak final : relative_point_origin<ground_level + 42 * isq::height[m]> {
 } tower_peak;
 
-inline constexpr struct other_ground_level final : relative_point_origin<mean_sea_level + 123 * (isq::height[m])> {
+inline constexpr struct other_ground_level final : relative_point_origin<mean_sea_level + 123 * isq::height[m]> {
 } other_ground_level;
 
 inline constexpr struct other_absolute_level final : absolute_point_origin<isq::height> {
@@ -152,10 +152,10 @@ static_assert(zeroth_point_origin<inverse(isq::time)> != zeroth_point_origin<isq
 // class invariants
 /////////////////////
 
-static_assert(sizeof(quantity_point<(si::metre), mean_sea_level>) == sizeof(double));
-static_assert(sizeof(quantity_point<(isq::height[m]), mean_sea_level>) == sizeof(double));
-static_assert(sizeof(quantity_point<(si::metre), ground_level, short>) == sizeof(short));
-static_assert(sizeof(quantity_point<(isq::height[m]), ground_level, short>) == sizeof(short));
+static_assert(sizeof(quantity_point<si::metre, mean_sea_level>) == sizeof(double));
+static_assert(sizeof(quantity_point<isq::height[m], mean_sea_level>) == sizeof(double));
+static_assert(sizeof(quantity_point<si::metre, ground_level, short>) == sizeof(short));
+static_assert(sizeof(quantity_point<isq::height[m], ground_level, short>) == sizeof(short));
 
 template<template<auto, auto, typename> typename QP>
 concept invalid_types = requires {
@@ -188,15 +188,15 @@ static_assert(invalid_types<quantity_point>);
 
 template<template<auto, auto, typename> typename QP>
 concept valid_types = requires {
-  typename QP<(si::metre), mean_sea_level, int>;
-  typename QP<(isq::height[m]), mean_sea_level, int>;
-  typename QP<(special_height[m]), mean_sea_level, int>;
-  typename QP<(si::metre), ground_level, int>;
-  typename QP<(isq::height[m]), ground_level, int>;
-  typename QP<(special_height[m]), ground_level, int>;
-  typename QP<(isq::height[m]), zeroth_point_origin<(isq::length)>, int>;
-  typename QP<(isq::height[m]), zeroth_point_origin<kind_of<(isq::length)>>, int>;
-  typename QP<(si::metre), zeroth_point_origin<(isq::height)>, int>;
+  typename QP<si::metre, mean_sea_level, int>;
+  typename QP<isq::height[m], mean_sea_level, int>;
+  typename QP<special_height[m], mean_sea_level, int>;
+  typename QP<si::metre, ground_level, int>;
+  typename QP<isq::height[m], ground_level, int>;
+  typename QP<special_height[m], ground_level, int>;
+  typename QP<isq::height[m], zeroth_point_origin<isq::length>, int>;
+  typename QP<isq::height[m], zeroth_point_origin<kind_of<isq::length>>, int>;
+  typename QP<si::metre, zeroth_point_origin<isq::height>, int>;
 };
 static_assert(valid_types<quantity_point>);
 
@@ -217,14 +217,14 @@ static_assert(std::is_nothrow_destructible_v<quantity_point<si::metre, mean_sea_
 static_assert(std::is_trivially_copyable_v<quantity_point<si::metre, mean_sea_level>>);
 static_assert(std::is_standard_layout_v<quantity_point<si::metre, mean_sea_level>>);
 
-static_assert(std::default_initializable<quantity_point<(si::metre), mean_sea_level>>);
-static_assert(std::move_constructible<quantity_point<(si::metre), mean_sea_level>>);
-static_assert(std::copy_constructible<quantity_point<(si::metre), mean_sea_level>>);
-static_assert(std::equality_comparable<quantity_point<(si::metre), mean_sea_level>>);
-static_assert(std::totally_ordered<quantity_point<(si::metre), mean_sea_level>>);
-static_assert(std::regular<quantity_point<(si::metre), mean_sea_level>>);
+static_assert(std::default_initializable<quantity_point<si::metre, mean_sea_level>>);
+static_assert(std::move_constructible<quantity_point<si::metre, mean_sea_level>>);
+static_assert(std::copy_constructible<quantity_point<si::metre, mean_sea_level>>);
+static_assert(std::equality_comparable<quantity_point<si::metre, mean_sea_level>>);
+static_assert(std::totally_ordered<quantity_point<si::metre, mean_sea_level>>);
+static_assert(std::regular<quantity_point<si::metre, mean_sea_level>>);
 
-static_assert(std::three_way_comparable<quantity_point<(si::metre), mean_sea_level>>);
+static_assert(std::three_way_comparable<quantity_point<si::metre, mean_sea_level>>);
 
 
 //////////////////
@@ -235,53 +235,51 @@ static_assert(quantity_point<si::metre>::reference == si::metre);
 static_assert(quantity_point<si::metre>::quantity_spec == kind_of<isq::length>);
 static_assert(quantity_point<si::metre>::dimension == isq::dim_length);
 static_assert(quantity_point<si::metre>::unit == si::metre);
-static_assert(is_of_type<quantity_point<(si::metre)>::point_origin, zeroth_point_origin_<kind_of<isq::length>>>);
-static_assert(
-  is_of_type<quantity_point<(si::metre)>::absolute_point_origin, zeroth_point_origin_<kind_of<isq::length>>>);
+static_assert(is_of_type<quantity_point<si::metre>::point_origin, zeroth_point_origin_<kind_of<isq::length>>>);
+static_assert(is_of_type<quantity_point<si::metre>::absolute_point_origin, zeroth_point_origin_<kind_of<isq::length>>>);
 
 static_assert(quantity_point<isq::height[m]>::reference == isq::height[m]);
 static_assert(quantity_point<isq::height[m]>::quantity_spec == isq::height);
 static_assert(quantity_point<isq::height[m]>::dimension == isq::dim_length);
 static_assert(quantity_point<isq::height[m]>::unit == si::metre);
-static_assert(is_of_type<quantity_point<(isq::height[m])>::point_origin, zeroth_point_origin_<isq::height>>);
-static_assert(is_of_type<quantity_point<(isq::height[m])>::absolute_point_origin, zeroth_point_origin_<isq::height>>);
+static_assert(is_of_type<quantity_point<isq::height[m]>::point_origin, zeroth_point_origin_<isq::height>>);
+static_assert(is_of_type<quantity_point<isq::height[m]>::absolute_point_origin, zeroth_point_origin_<isq::height>>);
 
 static_assert(quantity_point<si::metre, mean_sea_level>::reference == si::metre);
 static_assert(quantity_point<si::metre, mean_sea_level>::quantity_spec == kind_of<isq::length>);
 static_assert(quantity_point<si::metre, mean_sea_level>::dimension == isq::dim_length);
 static_assert(quantity_point<si::metre, mean_sea_level>::unit == si::metre);
-static_assert(is_of_type<quantity_point<(si::metre), mean_sea_level>::point_origin, struct mean_sea_level>);
-static_assert(is_of_type<quantity_point<(si::metre), mean_sea_level>::absolute_point_origin, struct mean_sea_level>);
+static_assert(is_of_type<quantity_point<si::metre, mean_sea_level>::point_origin, struct mean_sea_level>);
+static_assert(is_of_type<quantity_point<si::metre, mean_sea_level>::absolute_point_origin, struct mean_sea_level>);
 
 static_assert(quantity_point<isq::height[m], mean_sea_level>::reference == isq::height[m]);
 static_assert(quantity_point<isq::height[m], mean_sea_level>::quantity_spec == isq::height);
 static_assert(quantity_point<isq::height[m], mean_sea_level>::dimension == isq::dim_length);
 static_assert(quantity_point<isq::height[m], mean_sea_level>::unit == si::metre);
-static_assert(is_of_type<quantity_point<(isq::height[m]), mean_sea_level>::point_origin, struct mean_sea_level>);
-static_assert(
-  is_of_type<quantity_point<(isq::height[m]), mean_sea_level>::absolute_point_origin, struct mean_sea_level>);
+static_assert(is_of_type<quantity_point<isq::height[m], mean_sea_level>::point_origin, struct mean_sea_level>);
+static_assert(is_of_type<quantity_point<isq::height[m], mean_sea_level>::absolute_point_origin, struct mean_sea_level>);
 
 static_assert(quantity_point<isq::height[m], ground_level>::reference == isq::height[m]);
 static_assert(quantity_point<isq::height[m], ground_level>::quantity_spec == isq::height);
 static_assert(quantity_point<isq::height[m], ground_level>::dimension == isq::dim_length);
 static_assert(quantity_point<isq::height[m], ground_level>::unit == si::metre);
-static_assert(is_of_type<quantity_point<(isq::height[m]), ground_level>::point_origin, struct ground_level>);
-static_assert(is_of_type<quantity_point<(isq::height[m]), ground_level>::absolute_point_origin, struct mean_sea_level>);
+static_assert(is_of_type<quantity_point<isq::height[m], ground_level>::point_origin, struct ground_level>);
+static_assert(is_of_type<quantity_point<isq::height[m], ground_level>::absolute_point_origin, struct mean_sea_level>);
 
 static_assert(quantity_point<isq::height[m], tower_peak>::reference == isq::height[m]);
 static_assert(quantity_point<isq::height[m], tower_peak>::quantity_spec == isq::height);
 static_assert(quantity_point<isq::height[m], tower_peak>::dimension == isq::dim_length);
 static_assert(quantity_point<isq::height[m], tower_peak>::unit == si::metre);
-static_assert(is_of_type<quantity_point<(isq::height[m]), tower_peak>::point_origin, struct tower_peak>);
-static_assert(is_of_type<quantity_point<(isq::height[m]), tower_peak>::absolute_point_origin, struct mean_sea_level>);
+static_assert(is_of_type<quantity_point<isq::height[m], tower_peak>::point_origin, struct tower_peak>);
+static_assert(is_of_type<quantity_point<isq::height[m], tower_peak>::absolute_point_origin, struct mean_sea_level>);
 
 static_assert(quantity_point<si::kelvin, si::absolute_zero>::reference == si::kelvin);
 static_assert(quantity_point<si::kelvin, si::absolute_zero>::quantity_spec == kind_of<isq::thermodynamic_temperature>);
 static_assert(quantity_point<si::kelvin, si::absolute_zero>::dimension == isq::dim_thermodynamic_temperature);
 static_assert(quantity_point<si::kelvin, si::absolute_zero>::unit == si::kelvin);
-static_assert(is_of_type<quantity_point<(si::kelvin), (si::absolute_zero)>::point_origin, struct si::absolute_zero>);
+static_assert(is_of_type<quantity_point<si::kelvin, si::absolute_zero>::point_origin, struct si::absolute_zero>);
 static_assert(
-  is_of_type<quantity_point<(si::kelvin), (si::absolute_zero)>::absolute_point_origin, struct si::absolute_zero>);
+  is_of_type<quantity_point<si::kelvin, si::absolute_zero>::absolute_point_origin, struct si::absolute_zero>);
 
 static_assert(quantity_point<isq::thermodynamic_temperature[si::kelvin], si::absolute_zero>::reference ==
               isq::thermodynamic_temperature[si::kelvin]);
@@ -290,11 +288,10 @@ static_assert(quantity_point<isq::thermodynamic_temperature[si::kelvin], si::abs
 static_assert(quantity_point<isq::thermodynamic_temperature[si::kelvin], si::absolute_zero>::dimension ==
               isq::dim_thermodynamic_temperature);
 static_assert(quantity_point<isq::thermodynamic_temperature[si::kelvin], si::absolute_zero>::unit == si::kelvin);
+static_assert(is_of_type<quantity_point<isq::thermodynamic_temperature[si::kelvin], si::absolute_zero>::point_origin,
+                         struct si::absolute_zero>);
 static_assert(
-  is_of_type<quantity_point<(isq::thermodynamic_temperature[si::kelvin]), (si::absolute_zero)>::point_origin,
-             struct si::absolute_zero>);
-static_assert(
-  is_of_type<quantity_point<(isq::thermodynamic_temperature[si::kelvin]), (si::absolute_zero)>::absolute_point_origin,
+  is_of_type<quantity_point<isq::thermodynamic_temperature[si::kelvin], si::absolute_zero>::absolute_point_origin,
              struct si::absolute_zero>);
 
 static_assert(quantity_point<isq::Celsius_temperature[si::kelvin], si::absolute_zero>::reference ==
@@ -304,20 +301,19 @@ static_assert(quantity_point<isq::Celsius_temperature[si::kelvin], si::absolute_
 static_assert(quantity_point<isq::Celsius_temperature[si::kelvin], si::absolute_zero>::dimension ==
               isq::dim_thermodynamic_temperature);
 static_assert(quantity_point<isq::Celsius_temperature[si::kelvin], si::absolute_zero>::unit == si::kelvin);
-static_assert(is_of_type<quantity_point<(isq::Celsius_temperature[si::kelvin]), (si::absolute_zero)>::point_origin,
+static_assert(is_of_type<quantity_point<isq::Celsius_temperature[si::kelvin], si::absolute_zero>::point_origin,
                          struct si::absolute_zero>);
-static_assert(
-  is_of_type<quantity_point<(isq::Celsius_temperature[si::kelvin]), (si::absolute_zero)>::absolute_point_origin,
-             struct si::absolute_zero>);
+static_assert(is_of_type<quantity_point<isq::Celsius_temperature[si::kelvin], si::absolute_zero>::absolute_point_origin,
+                         struct si::absolute_zero>);
 
 static_assert(quantity_point<si::degree_Celsius, si::ice_point>::reference == si::degree_Celsius);
 static_assert(quantity_point<si::degree_Celsius, si::ice_point>::quantity_spec ==
               kind_of<isq::thermodynamic_temperature>);
 static_assert(quantity_point<si::degree_Celsius, si::ice_point>::dimension == isq::dim_thermodynamic_temperature);
 static_assert(quantity_point<si::degree_Celsius, si::ice_point>::unit == si::degree_Celsius);
-static_assert(is_of_type<quantity_point<(si::degree_Celsius), (si::ice_point)>::point_origin, struct si::ice_point>);
+static_assert(is_of_type<quantity_point<si::degree_Celsius, si::ice_point>::point_origin, struct si::ice_point>);
 static_assert(
-  is_of_type<quantity_point<(si::degree_Celsius), (si::ice_point)>::absolute_point_origin, struct si::absolute_zero>);
+  is_of_type<quantity_point<si::degree_Celsius, si::ice_point>::absolute_point_origin, struct si::absolute_zero>);
 
 static_assert(quantity_point<isq::Celsius_temperature[si::degree_Celsius], si::ice_point>::reference ==
               isq::Celsius_temperature[si::degree_Celsius]);
@@ -326,10 +322,10 @@ static_assert(quantity_point<isq::Celsius_temperature[si::degree_Celsius], si::i
 static_assert(quantity_point<isq::Celsius_temperature[si::degree_Celsius], si::ice_point>::dimension ==
               isq::dim_thermodynamic_temperature);
 static_assert(quantity_point<isq::Celsius_temperature[si::degree_Celsius], si::ice_point>::unit == si::degree_Celsius);
-static_assert(is_of_type<quantity_point<(isq::Celsius_temperature[si::degree_Celsius]), (si::ice_point)>::point_origin,
+static_assert(is_of_type<quantity_point<isq::Celsius_temperature[si::degree_Celsius], si::ice_point>::point_origin,
                          struct si::ice_point>);
 static_assert(
-  is_of_type<quantity_point<(isq::Celsius_temperature[si::degree_Celsius]), (si::ice_point)>::absolute_point_origin,
+  is_of_type<quantity_point<isq::Celsius_temperature[si::degree_Celsius], si::ice_point>::absolute_point_origin,
              struct si::absolute_zero>);
 
 
@@ -337,18 +333,18 @@ static_assert(
 // member types
 //////////////////
 
-static_assert(is_same_v<quantity_point<(si::metre), mean_sea_level>::rep, double>);
-static_assert(is_same_v<quantity_point<(si::metre), mean_sea_level>::quantity_type, quantity<si::metre>>);
+static_assert(is_same_v<quantity_point<si::metre, mean_sea_level>::rep, double>);
+static_assert(is_same_v<quantity_point<si::metre, mean_sea_level>::quantity_type, quantity<si::metre>>);
 
-static_assert(is_same_v<quantity_point<(si::metre), mean_sea_level, int>::rep, int>);
-static_assert(is_same_v<quantity_point<(si::metre), mean_sea_level, int>::quantity_type, quantity<si::metre, int>>);
+static_assert(is_same_v<quantity_point<si::metre, mean_sea_level, int>::rep, int>);
+static_assert(is_same_v<quantity_point<si::metre, mean_sea_level, int>::quantity_type, quantity<si::metre, int>>);
 
-static_assert(is_same_v<quantity_point<(isq::height[m]), mean_sea_level>::rep, double>);
-static_assert(is_same_v<quantity_point<(isq::height[m]), mean_sea_level>::quantity_type, quantity<isq::height[m]>>);
+static_assert(is_same_v<quantity_point<isq::height[m], mean_sea_level>::rep, double>);
+static_assert(is_same_v<quantity_point<isq::height[m], mean_sea_level>::quantity_type, quantity<isq::height[m]>>);
 
-static_assert(is_same_v<quantity_point<(isq::height[m]), mean_sea_level, int>::rep, int>);
+static_assert(is_same_v<quantity_point<isq::height[m], mean_sea_level, int>::rep, int>);
 static_assert(
-  is_same_v<quantity_point<(isq::height[m]), mean_sea_level, int>::quantity_type, quantity<isq::height[m], int>>);
+  is_same_v<quantity_point<isq::height[m], mean_sea_level, int>::quantity_type, quantity<isq::height[m], int>>);
 
 
 ////////////////////////////
@@ -375,11 +371,11 @@ static_assert(
 //////////////////////////////
 
 // there is no construction from a value
-static_assert(!std::constructible_from<quantity_point<(isq::height[m]), mean_sea_level>, double>);
-static_assert(!std::convertible_to<double, quantity_point<(isq::height[m]), mean_sea_level>>);
+static_assert(!std::constructible_from<quantity_point<isq::height[m], mean_sea_level>, double>);
+static_assert(!std::convertible_to<double, quantity_point<isq::height[m], mean_sea_level>>);
 
-static_assert(!std::constructible_from<quantity_point<(isq::height[m]), ground_level, int>, int>);
-static_assert(!std::convertible_to<int, quantity_point<(isq::height[m]), ground_level, int>>);
+static_assert(!std::constructible_from<quantity_point<isq::height[m], ground_level, int>, int>);
+static_assert(!std::convertible_to<int, quantity_point<isq::height[m], ground_level, int>>);
 
 static_assert(!std::constructible_from<quantity_point<dimensionless[percent], zero>, double>);
 static_assert(!std::convertible_to<double, quantity_point<dimensionless[percent], zero>>);
@@ -400,135 +396,135 @@ static_assert(!std::convertible_to<int, quantity_point<dimensionless[one], zero,
 // implicit zeroth point origins
 // -----------------------------
 
-static_assert(std::constructible_from<quantity_point<(si::metre)>, quantity<(si::metre)>>);
-static_assert(!std::convertible_to<quantity<(si::metre)>, quantity_point<(si::metre)>>);
+static_assert(std::constructible_from<quantity_point<si::metre>, quantity<si::metre>>);
+static_assert(!std::convertible_to<quantity<si::metre>, quantity_point<si::metre>>);
 
-static_assert(std::constructible_from<quantity_point<(isq::height[m])>, quantity<(isq::height[m])>>);
-static_assert(!std::convertible_to<quantity<(isq::height[m])>, quantity_point<(isq::height[m])>>);
+static_assert(std::constructible_from<quantity_point<isq::height[m]>, quantity<isq::height[m]>>);
+static_assert(!std::convertible_to<quantity<isq::height[m]>, quantity_point<isq::height[m]>>);
 
-static_assert(std::constructible_from<quantity_point<(isq::height[m])>, quantity<(si::metre)>>);
-static_assert(!std::convertible_to<quantity<(si::metre)>, quantity_point<(isq::height[m])>>);
+static_assert(std::constructible_from<quantity_point<isq::height[m]>, quantity<si::metre>>);
+static_assert(!std::convertible_to<quantity<si::metre>, quantity_point<isq::height[m]>>);
 
-static_assert(std::constructible_from<quantity_point<(si::metre)>, quantity<(isq::height[m])>>);
-static_assert(!std::convertible_to<quantity<(isq::height[m])>, quantity_point<(si::metre)>>);
+static_assert(std::constructible_from<quantity_point<si::metre>, quantity<isq::height[m]>>);
+static_assert(!std::convertible_to<quantity<isq::height[m]>, quantity_point<si::metre>>);
 
-static_assert(std::constructible_from<quantity_point<m / s>, quantity<(isq::speed[m / s])>>);
-static_assert(!std::convertible_to<quantity<(isq::speed[m / s])>, quantity_point<m / s>>);
+static_assert(std::constructible_from<quantity_point<m / s>, quantity<isq::speed[m / s]>>);
+static_assert(!std::convertible_to<quantity<isq::speed[m / s]>, quantity_point<m / s>>);
 
-static_assert(std::constructible_from<quantity_point<(isq::speed[m / s])>, quantity<m / s>>);
-static_assert(!std::convertible_to<quantity<m / s>, quantity_point<(isq::speed[m / s])>>);
+static_assert(std::constructible_from<quantity_point<isq::speed[m / s]>, quantity<m / s>>);
+static_assert(!std::convertible_to<quantity<m / s>, quantity_point<isq::speed[m / s]>>);
 
-static_assert(std::constructible_from<quantity_point<(isq::length[m] / isq::time[s])>, quantity<(isq::speed[m / s])>>);
-static_assert(!std::convertible_to<quantity<(isq::speed[m / s])>, quantity_point<(isq::length[m] / isq::time[s])>>);
+static_assert(std::constructible_from<quantity_point<isq::length[m] / isq::time[s]>, quantity<isq::speed[m / s]>>);
+static_assert(!std::convertible_to<quantity<isq::speed[m / s]>, quantity_point<isq::length[m] / isq::time[s]>>);
 
-static_assert(std::constructible_from<quantity_point<(isq::speed[m / s])>, quantity<(isq::length[m] / isq::time[s])>>);
-static_assert(!std::convertible_to<quantity<(isq::length[m] / isq::time[s])>, quantity_point<(isq::speed[m / s])>>);
+static_assert(std::constructible_from<quantity_point<isq::speed[m / s]>, quantity<isq::length[m] / isq::time[s]>>);
+static_assert(!std::convertible_to<quantity<isq::length[m] / isq::time[s]>, quantity_point<isq::speed[m / s]>>);
 
-static_assert(std::constructible_from<quantity_point<(isq::speed[m / s])>, quantity<m / s>>);
-static_assert(!std::convertible_to<quantity<m / s>, quantity_point<(isq::speed[m / s])>>);
+static_assert(std::constructible_from<quantity_point<isq::speed[m / s]>, quantity<m / s>>);
+static_assert(!std::convertible_to<quantity<m / s>, quantity_point<isq::speed[m / s]>>);
 
 static_assert(std::constructible_from<quantity_point<dimensionless[one]>, quantity<dimensionless[one]>>);
 static_assert(!std::convertible_to<quantity<dimensionless[one]>, quantity_point<dimensionless[one]>>);
 
 // different dimensions
-static_assert(!std::constructible_from<quantity_point<(isq::height[m])>, quantity<(si::second)>>);
-static_assert(!std::convertible_to<quantity<(si::second)>, quantity_point<(isq::height[m])>>);
+static_assert(!std::constructible_from<quantity_point<isq::height[m]>, quantity<si::second>>);
+static_assert(!std::convertible_to<quantity<si::second>, quantity_point<isq::height[m]>>);
 
 // convertible but different quantity_specs
-static_assert(std::constructible_from<quantity_point<(isq::length[m])>, quantity<(isq::height[m])>>);
-static_assert(!std::convertible_to<quantity<(isq::height[m])>, quantity_point<(isq::length[m])>>);
+static_assert(std::constructible_from<quantity_point<isq::length[m]>, quantity<isq::height[m]>>);
+static_assert(!std::convertible_to<quantity<isq::height[m]>, quantity_point<isq::length[m]>>);
 
-static_assert(std::constructible_from<quantity_point<(isq::height[m])>, quantity<(special_height[m])>>);
-static_assert(!std::convertible_to<quantity<(special_height[m])>, quantity_point<(isq::height[m])>>);
+static_assert(std::constructible_from<quantity_point<isq::height[m]>, quantity<special_height[m]>>);
+static_assert(!std::convertible_to<quantity<special_height[m]>, quantity_point<isq::height[m]>>);
 
 // quantity_specs with common_quantity_spec
-static_assert(!std::constructible_from<quantity_point<(isq::width[m])>, quantity<(isq::height[m])>>);
-static_assert(!std::convertible_to<quantity<(isq::height[m])>, quantity_point<(isq::width[m])>>);
+static_assert(!std::constructible_from<quantity_point<isq::width[m]>, quantity<isq::height[m]>>);
+static_assert(!std::convertible_to<quantity<isq::height[m]>, quantity_point<isq::width[m]>>);
 
-static_assert(!std::constructible_from<quantity_point<(isq::height[m])>, quantity<(isq::width[m])>>);
-static_assert(!std::convertible_to<quantity<(isq::width[m])>, quantity_point<(isq::height[m])>>);
+static_assert(!std::constructible_from<quantity_point<isq::height[m]>, quantity<isq::width[m]>>);
+static_assert(!std::convertible_to<quantity<isq::width[m]>, quantity_point<isq::height[m]>>);
 
 // non-convertible quantity_specs
-static_assert(!std::constructible_from<quantity_point<(isq::height[m])>, quantity<(isq::length[m])>>);
-static_assert(!std::convertible_to<quantity<(isq::length[m])>, quantity_point<(isq::height[m])>>);
+static_assert(!std::constructible_from<quantity_point<isq::height[m]>, quantity<isq::length[m]>>);
+static_assert(!std::convertible_to<quantity<isq::length[m]>, quantity_point<isq::height[m]>>);
 
-static_assert(!std::constructible_from<quantity_point<special_height[m]>, quantity<(isq::height[m])>>);
-static_assert(!std::convertible_to<quantity<special_height[m]>, quantity_point<(isq::height[m])>>);
+static_assert(!std::constructible_from<quantity_point<special_height[m]>, quantity<isq::height[m]>>);
+static_assert(!std::convertible_to<quantity<special_height[m]>, quantity_point<isq::height[m]>>);
 
 #if MP_UNITS_HOSTED
 // quantity-like
-static_assert(!std::constructible_from<quantity_point<(si::second)>, std::chrono::seconds>);
-static_assert(!std::convertible_to<std::chrono::seconds, quantity_point<(si::second)>>);
+static_assert(!std::constructible_from<quantity_point<si::second>, std::chrono::seconds>);
+static_assert(!std::convertible_to<std::chrono::seconds, quantity_point<si::second>>);
 
-static_assert(!std::constructible_from<quantity_point<(isq::time[s])>, std::chrono::seconds>);
-static_assert(!std::convertible_to<std::chrono::seconds, quantity_point<(isq::time[s])>>);
+static_assert(!std::constructible_from<quantity_point<isq::time[s]>, std::chrono::seconds>);
+static_assert(!std::convertible_to<std::chrono::seconds, quantity_point<isq::time[s]>>);
 
-static_assert(!std::constructible_from<quantity_point<(isq::period_duration[s])>, std::chrono::seconds>);
-static_assert(!std::convertible_to<std::chrono::seconds, quantity_point<(isq::period_duration[s])>>);
+static_assert(!std::constructible_from<quantity_point<isq::period_duration[s]>, std::chrono::seconds>);
+static_assert(!std::convertible_to<std::chrono::seconds, quantity_point<isq::period_duration[s]>>);
 #endif
 
 // ----------------------
 // explicit point origins
 // ----------------------
 
-static_assert(!std::constructible_from<quantity_point<(si::metre), mean_sea_level>, quantity<(si::metre)>>);
-static_assert(!std::convertible_to<quantity<(si::metre)>, quantity_point<(si::metre), mean_sea_level>>);
+static_assert(!std::constructible_from<quantity_point<si::metre, mean_sea_level>, quantity<si::metre>>);
+static_assert(!std::convertible_to<quantity<si::metre>, quantity_point<si::metre, mean_sea_level>>);
 
-static_assert(!std::constructible_from<quantity_point<(isq::height[m]), mean_sea_level>, quantity<(isq::height[m])>>);
-static_assert(!std::convertible_to<quantity<(isq::height[m])>, quantity_point<(isq::height[m]), mean_sea_level>>);
+static_assert(!std::constructible_from<quantity_point<isq::height[m], mean_sea_level>, quantity<isq::height[m]>>);
+static_assert(!std::convertible_to<quantity<isq::height[m]>, quantity_point<isq::height[m], mean_sea_level>>);
 
-static_assert(!std::constructible_from<quantity_point<(isq::height[m]), mean_sea_level>, quantity<(si::metre)>>);
-static_assert(!std::convertible_to<quantity<(si::metre)>, quantity_point<(isq::height[m]), mean_sea_level>>);
+static_assert(!std::constructible_from<quantity_point<isq::height[m], mean_sea_level>, quantity<si::metre>>);
+static_assert(!std::convertible_to<quantity<si::metre>, quantity_point<isq::height[m], mean_sea_level>>);
 
-static_assert(!std::constructible_from<quantity_point<(si::metre), mean_sea_level>, quantity<(isq::height[m])>>);
-static_assert(!std::convertible_to<quantity<(isq::height[m])>, quantity_point<(si::metre), mean_sea_level>>);
+static_assert(!std::constructible_from<quantity_point<si::metre, mean_sea_level>, quantity<isq::height[m]>>);
+static_assert(!std::convertible_to<quantity<isq::height[m]>, quantity_point<si::metre, mean_sea_level>>);
 
-static_assert(!std::constructible_from<quantity_point<(isq::height[m]), mean_sea_level>, quantity<special_height[m]>>);
-static_assert(!std::convertible_to<quantity<special_height[m]>, quantity_point<(isq::height[m]), mean_sea_level>>);
+static_assert(!std::constructible_from<quantity_point<isq::height[m], mean_sea_level>, quantity<special_height[m]>>);
+static_assert(!std::convertible_to<quantity<special_height[m]>, quantity_point<isq::height[m], mean_sea_level>>);
 
 static_assert(!std::constructible_from<quantity_point<dimensionless[one], zero>, quantity<dimensionless[one]>>);
 static_assert(!std::convertible_to<quantity<dimensionless[one]>, quantity_point<dimensionless[one], zero>>);
 
 // quantity_specs with common_quantity_spec
-static_assert(!std::constructible_from<quantity_point<(isq::width[m]), zeroth_length>, quantity<(isq::height[m])>>);
-static_assert(!std::convertible_to<quantity<(isq::height[m])>, quantity_point<(isq::width[m]), zeroth_length>>);
+static_assert(!std::constructible_from<quantity_point<isq::width[m], zeroth_length>, quantity<isq::height[m]>>);
+static_assert(!std::convertible_to<quantity<isq::height[m]>, quantity_point<isq::width[m], zeroth_length>>);
 
-static_assert(!std::constructible_from<quantity_point<(isq::height[m]), zeroth_length>, quantity<(isq::width[m])>>);
-static_assert(!std::convertible_to<quantity<(isq::width[m])>, quantity_point<(isq::height[m]), zeroth_length>>);
+static_assert(!std::constructible_from<quantity_point<isq::height[m], zeroth_length>, quantity<isq::width[m]>>);
+static_assert(!std::convertible_to<quantity<isq::width[m]>, quantity_point<isq::height[m], zeroth_length>>);
 
 // different dimensions
-static_assert(!std::constructible_from<quantity_point<(isq::height[m]), mean_sea_level>, quantity<(si::second)>>);
-static_assert(!std::convertible_to<quantity<(si::second)>, quantity_point<(isq::height[m]), mean_sea_level>>);
+static_assert(!std::constructible_from<quantity_point<isq::height[m], mean_sea_level>, quantity<si::second>>);
+static_assert(!std::convertible_to<quantity<si::second>, quantity_point<isq::height[m], mean_sea_level>>);
 
 // non-convertible quantity_specs
-static_assert(!std::constructible_from<quantity_point<(isq::height[m]), mean_sea_level>, quantity<(isq::length[m])>>);
-static_assert(!std::convertible_to<quantity<(isq::length[m])>, quantity_point<(isq::height[m]), mean_sea_level>>);
+static_assert(!std::constructible_from<quantity_point<isq::height[m], mean_sea_level>, quantity<isq::length[m]>>);
+static_assert(!std::convertible_to<quantity<isq::length[m]>, quantity_point<isq::height[m], mean_sea_level>>);
 
-static_assert(!std::constructible_from<quantity_point<special_height[m], mean_sea_level>, quantity<(isq::height[m])>>);
-static_assert(!std::convertible_to<quantity<special_height[m]>, quantity_point<(isq::height[m]), mean_sea_level>>);
+static_assert(!std::constructible_from<quantity_point<special_height[m], mean_sea_level>, quantity<isq::height[m]>>);
+static_assert(!std::convertible_to<quantity<special_height[m]>, quantity_point<isq::height[m], mean_sea_level>>);
 
 // not-compatible origin
-static_assert(!std::constructible_from<quantity_point<((si::metre)), mean_sea_level>, quantity<(isq::length[m])>>);
-static_assert(!std::convertible_to<quantity<(isq::length[m])>, quantity_point<((si::metre)), mean_sea_level>>);
+static_assert(!std::constructible_from<quantity_point<si::metre, mean_sea_level>, quantity<isq::length[m]>>);
+static_assert(!std::convertible_to<quantity<isq::length[m]>, quantity_point<si::metre, mean_sea_level>>);
 
 #if MP_UNITS_HOSTED
 // quantity-like
-static_assert(!std::constructible_from<quantity_point<(si::second), chrono_point_origin<std::chrono::system_clock>>,
+static_assert(!std::constructible_from<quantity_point<si::second, chrono_point_origin<std::chrono::system_clock>>,
                                        std::chrono::seconds>);
 static_assert(!std::convertible_to<std::chrono::seconds,
-                                   quantity_point<(si::second), chrono_point_origin<std::chrono::system_clock>>>);
+                                   quantity_point<si::second, chrono_point_origin<std::chrono::system_clock>>>);
 
-static_assert(!std::constructible_from<quantity_point<(isq::time[s]), chrono_point_origin<std::chrono::system_clock>>,
+static_assert(!std::constructible_from<quantity_point<isq::time[s], chrono_point_origin<std::chrono::system_clock>>,
                                        std::chrono::seconds>);
 static_assert(!std::convertible_to<std::chrono::seconds,
-                                   quantity_point<(isq::time[s]), chrono_point_origin<std::chrono::system_clock>>>);
+                                   quantity_point<isq::time[s], chrono_point_origin<std::chrono::system_clock>>>);
 
 static_assert(
-  !std::constructible_from<quantity_point<(isq::period_duration[s]), chrono_point_origin<std::chrono::system_clock>>,
+  !std::constructible_from<quantity_point<isq::period_duration[s], chrono_point_origin<std::chrono::system_clock>>,
                            std::chrono::seconds>);
 static_assert(
   !std::convertible_to<std::chrono::seconds,
-                       quantity_point<(isq::period_duration[s]), chrono_point_origin<std::chrono::system_clock>>>);
+                       quantity_point<isq::period_duration[s], chrono_point_origin<std::chrono::system_clock>>>);
 #endif
 
 
@@ -537,146 +533,140 @@ static_assert(
 ///////////////////////////////////////
 
 // implicit origin
-static_assert(std::constructible_from<quantity_point<(si::metre)>, quantity_point<(si::metre)>>);
-static_assert(std::convertible_to<quantity_point<(si::metre)>, quantity_point<(si::metre)>>);
-static_assert(std::constructible_from<quantity_point<(isq::height[m])>, quantity_point<(isq::height[m])>>);
-static_assert(std::convertible_to<quantity_point<(isq::height[m])>, quantity_point<(isq::height[m])>>);
+static_assert(std::constructible_from<quantity_point<si::metre>, quantity_point<si::metre>>);
+static_assert(std::convertible_to<quantity_point<si::metre>, quantity_point<si::metre>>);
+static_assert(std::constructible_from<quantity_point<isq::height[m]>, quantity_point<isq::height[m]>>);
+static_assert(std::convertible_to<quantity_point<isq::height[m]>, quantity_point<isq::height[m]>>);
 
-static_assert(std::constructible_from<quantity_point<(si::metre)>, quantity_point<(isq::height[m])>>);
-static_assert(std::convertible_to<quantity_point<(isq::height[m])>, quantity_point<(si::metre)>>);
-static_assert(std::constructible_from<quantity_point<(isq::height[m])>, quantity_point<(si::metre)>>);
-static_assert(std::convertible_to<quantity_point<(si::metre)>, quantity_point<(isq::height[m])>>);
+static_assert(std::constructible_from<quantity_point<si::metre>, quantity_point<isq::height[m]>>);
+static_assert(std::convertible_to<quantity_point<isq::height[m]>, quantity_point<si::metre>>);
+static_assert(std::constructible_from<quantity_point<isq::height[m]>, quantity_point<si::metre>>);
+static_assert(std::convertible_to<quantity_point<si::metre>, quantity_point<isq::height[m]>>);
 
 static_assert(
-  std::constructible_from<quantity_point<(isq::length[m]) / isq::time[s]>, quantity_point<(isq::speed[m / s])>>);
-static_assert(
-  std::convertible_to<quantity_point<(isq::speed[m / s])>, quantity_point<(isq::length[m]) / isq::time[s]>>);
+  std::constructible_from<quantity_point<isq::length[m] / isq::time[s]>, quantity_point<isq::speed[m / s]>>);
+static_assert(std::convertible_to<quantity_point<isq::speed[m / s]>, quantity_point<isq::length[m] / isq::time[s]>>);
 
-static_assert(std::constructible_from<quantity_point<m / s>, quantity_point<(isq::speed[m / s])>>);
-static_assert(std::convertible_to<quantity_point<(isq::speed[m / s])>, quantity_point<m / s>>);
+static_assert(std::constructible_from<quantity_point<m / s>, quantity_point<isq::speed[m / s]>>);
+static_assert(std::convertible_to<quantity_point<isq::speed[m / s]>, quantity_point<m / s>>);
 
-static_assert(std::constructible_from<quantity_point<m / s>, quantity_point<(isq::length[m]) / isq::time[s]>>);
-static_assert(std::convertible_to<quantity_point<(isq::length[m]) / isq::time[s]>, quantity_point<m / s>>);
+static_assert(std::constructible_from<quantity_point<m / s>, quantity_point<isq::length[m] / isq::time[s]>>);
+static_assert(std::convertible_to<quantity_point<isq::length[m] / isq::time[s]>, quantity_point<m / s>>);
 
 // convertible but different quantity_specs
-static_assert(!std::constructible_from<quantity_point<(isq::length[m])>, quantity_point<(isq::height[m])>>);
-static_assert(!std::convertible_to<quantity_point<(isq::height[m])>, quantity_point<(isq::length[m])>>);
+static_assert(!std::constructible_from<quantity_point<isq::length[m]>, quantity_point<isq::height[m]>>);
+static_assert(!std::convertible_to<quantity_point<isq::height[m]>, quantity_point<isq::length[m]>>);
 
-static_assert(!std::constructible_from<quantity_point<(isq::height[m])>, quantity_point<special_height[m]>>);
-static_assert(!std::convertible_to<quantity_point<special_height[m]>, quantity_point<(isq::height[m])>>);
+static_assert(!std::constructible_from<quantity_point<isq::height[m]>, quantity_point<special_height[m]>>);
+static_assert(!std::convertible_to<quantity_point<special_height[m]>, quantity_point<isq::height[m]>>);
 
 // quantity_specs with common_quantity_spec
-static_assert(!std::constructible_from<quantity_point<(isq::width[m])>, quantity_point<(isq::height[m])>>);
-static_assert(!std::convertible_to<quantity_point<(isq::height[m])>, quantity_point<(isq::width[m])>>);
+static_assert(!std::constructible_from<quantity_point<isq::width[m]>, quantity_point<isq::height[m]>>);
+static_assert(!std::convertible_to<quantity_point<isq::height[m]>, quantity_point<isq::width[m]>>);
 
-static_assert(!std::constructible_from<quantity_point<(isq::height[m])>, quantity_point<(isq::width[m])>>);
-static_assert(!std::convertible_to<quantity_point<(isq::width[m])>, quantity_point<(isq::height[m])>>);
+static_assert(!std::constructible_from<quantity_point<isq::height[m]>, quantity_point<isq::width[m]>>);
+static_assert(!std::convertible_to<quantity_point<isq::width[m]>, quantity_point<isq::height[m]>>);
 
 // non-convertible quantity_specs
-static_assert(!std::constructible_from<quantity_point<(isq::height[m])>, quantity_point<(isq::length[m])>>);
-static_assert(!std::convertible_to<quantity_point<(isq::length[m])>, quantity_point<(isq::height[m])>>);
+static_assert(!std::constructible_from<quantity_point<isq::height[m]>, quantity_point<isq::length[m]>>);
+static_assert(!std::convertible_to<quantity_point<isq::length[m]>, quantity_point<isq::height[m]>>);
 
-static_assert(!std::constructible_from<quantity_point<special_height[m]>, quantity_point<(isq::height[m])>>);
-static_assert(!std::convertible_to<quantity_point<(isq::height[m])>, quantity_point<special_height[m]>>);
+static_assert(!std::constructible_from<quantity_point<special_height[m]>, quantity_point<isq::height[m]>>);
+static_assert(!std::convertible_to<quantity_point<isq::height[m]>, quantity_point<special_height[m]>>);
 
 // mixed origins
-static_assert(!std::constructible_from<quantity_point<(si::metre), mean_sea_level>, quantity_point<(si::metre)>>);
-static_assert(!std::convertible_to<quantity_point<(si::metre)>, quantity_point<(si::metre), mean_sea_level>>);
-static_assert(
-  !std::constructible_from<quantity_point<(isq::height[m]), mean_sea_level>, quantity_point<(isq::height[m])>>);
-static_assert(!std::convertible_to<quantity_point<(isq::height[m])>, quantity_point<(isq::height[m]), mean_sea_level>>);
+static_assert(!std::constructible_from<quantity_point<si::metre, mean_sea_level>, quantity_point<si::metre>>);
+static_assert(!std::convertible_to<quantity_point<si::metre>, quantity_point<si::metre, mean_sea_level>>);
+static_assert(!std::constructible_from<quantity_point<isq::height[m], mean_sea_level>, quantity_point<isq::height[m]>>);
+static_assert(!std::convertible_to<quantity_point<isq::height[m]>, quantity_point<isq::height[m], mean_sea_level>>);
 
-static_assert(!std::constructible_from<quantity_point<(si::metre)>, quantity_point<(si::metre), mean_sea_level>>);
-static_assert(!std::convertible_to<quantity_point<(si::metre), mean_sea_level>, quantity_point<(si::metre)>>);
-static_assert(
-  !std::constructible_from<quantity_point<(isq::height[m])>, quantity_point<(isq::height[m]), mean_sea_level>>);
-static_assert(!std::convertible_to<quantity_point<(isq::height[m]), mean_sea_level>, quantity_point<(isq::height[m])>>);
+static_assert(!std::constructible_from<quantity_point<si::metre>, quantity_point<si::metre, mean_sea_level>>);
+static_assert(!std::convertible_to<quantity_point<si::metre, mean_sea_level>, quantity_point<si::metre>>);
+static_assert(!std::constructible_from<quantity_point<isq::height[m]>, quantity_point<isq::height[m], mean_sea_level>>);
+static_assert(!std::convertible_to<quantity_point<isq::height[m], mean_sea_level>, quantity_point<isq::height[m]>>);
 
 // same explicit origins
 static_assert(
-  std::constructible_from<quantity_point<(si::metre), mean_sea_level>, quantity_point<(si::metre), mean_sea_level>>);
+  std::constructible_from<quantity_point<si::metre, mean_sea_level>, quantity_point<si::metre, mean_sea_level>>);
 static_assert(
-  std::convertible_to<quantity_point<(si::metre), mean_sea_level>, quantity_point<(si::metre), mean_sea_level>>);
+  std::convertible_to<quantity_point<si::metre, mean_sea_level>, quantity_point<si::metre, mean_sea_level>>);
 
-static_assert(std::constructible_from<quantity_point<(isq::height[m]), mean_sea_level>,
-                                      quantity_point<(isq::height[m]), mean_sea_level>>);
-static_assert(std::convertible_to<quantity_point<(isq::height[m]), mean_sea_level>,
-                                  quantity_point<(isq::height[m]), mean_sea_level>>);
-
-static_assert(std::constructible_from<quantity_point<(isq::height[km]), mean_sea_level>,
-                                      quantity_point<(isq::height[m]), mean_sea_level>>);
-static_assert(std::convertible_to<quantity_point<(isq::height[m]), mean_sea_level>,
-                                  quantity_point<(isq::height[km]), mean_sea_level>>);
-
-static_assert(std::constructible_from<quantity_point<(isq::height[m]), mean_sea_level>,
-                                      quantity_point<(isq::height[km]), mean_sea_level>>);
-static_assert(std::convertible_to<quantity_point<(isq::height[km]), mean_sea_level>,
-                                  quantity_point<(isq::height[m]), mean_sea_level>>);
-
-static_assert(std::constructible_from<quantity_point<(si::metre), mean_sea_level>,
-                                      quantity_point<(isq::height[m]), mean_sea_level>>);
+static_assert(std::constructible_from<quantity_point<isq::height[m], mean_sea_level>,
+                                      quantity_point<isq::height[m], mean_sea_level>>);
 static_assert(
-  std::convertible_to<quantity_point<(isq::height[m]), mean_sea_level>, quantity_point<(si::metre), mean_sea_level>>);
+  std::convertible_to<quantity_point<isq::height[m], mean_sea_level>, quantity_point<isq::height[m], mean_sea_level>>);
 
-static_assert(std::constructible_from<quantity_point<(isq::height[m]), mean_sea_level>,
-                                      quantity_point<(si::metre), mean_sea_level>>);
+static_assert(std::constructible_from<quantity_point<isq::height[km], mean_sea_level>,
+                                      quantity_point<isq::height[m], mean_sea_level>>);
 static_assert(
-  std::convertible_to<quantity_point<(si::metre), mean_sea_level>, quantity_point<(isq::height[m]), mean_sea_level>>);
+  std::convertible_to<quantity_point<isq::height[m], mean_sea_level>, quantity_point<isq::height[km], mean_sea_level>>);
 
-static_assert(std::constructible_from<quantity_point<(isq::height[m]), mean_sea_level>,
+static_assert(std::constructible_from<quantity_point<isq::height[m], mean_sea_level>,
+                                      quantity_point<isq::height[km], mean_sea_level>>);
+static_assert(
+  std::convertible_to<quantity_point<isq::height[km], mean_sea_level>, quantity_point<isq::height[m], mean_sea_level>>);
+
+static_assert(
+  std::constructible_from<quantity_point<si::metre, mean_sea_level>, quantity_point<isq::height[m], mean_sea_level>>);
+static_assert(
+  std::convertible_to<quantity_point<isq::height[m], mean_sea_level>, quantity_point<si::metre, mean_sea_level>>);
+
+static_assert(
+  std::constructible_from<quantity_point<isq::height[m], mean_sea_level>, quantity_point<si::metre, mean_sea_level>>);
+static_assert(
+  std::convertible_to<quantity_point<si::metre, mean_sea_level>, quantity_point<isq::height[m], mean_sea_level>>);
+
+static_assert(std::constructible_from<quantity_point<isq::height[m], mean_sea_level>,
                                       quantity_point<special_height[m], mean_sea_level>>);
 static_assert(std::convertible_to<quantity_point<special_height[m], mean_sea_level>,
-                                  quantity_point<(isq::height[m]), mean_sea_level>>);
+                                  quantity_point<isq::height[m], mean_sea_level>>);
 
 static_assert(
-  std::constructible_from<quantity_point<(si::metre), ground_level>, quantity_point<(si::metre), ground_level>>);
-static_assert(
-  std::convertible_to<quantity_point<(si::metre), ground_level>, quantity_point<(si::metre), ground_level>>);
-
-static_assert(std::constructible_from<quantity_point<(isq::height[m]), ground_level>,
-                                      quantity_point<(isq::height[m]), ground_level>>);
-static_assert(
-  std::convertible_to<quantity_point<(isq::height[m]), ground_level>, quantity_point<(isq::height[m]), ground_level>>);
-
-static_assert(std::constructible_from<quantity_point<(isq::height[km]), ground_level>,
-                                      quantity_point<(isq::height[m]), mean_sea_level>>);
-static_assert(std::convertible_to<quantity_point<(isq::height[m]), ground_level>,
-                                  quantity_point<(isq::height[km]), mean_sea_level>>);
-
-static_assert(std::constructible_from<quantity_point<(isq::height[m]), ground_level>,
-                                      quantity_point<(isq::height[km]), ground_level>>);
-static_assert(
-  std::convertible_to<quantity_point<(isq::height[km]), ground_level>, quantity_point<(isq::height[m]), ground_level>>);
+  std::constructible_from<quantity_point<si::metre, ground_level>, quantity_point<si::metre, ground_level>>);
+static_assert(std::convertible_to<quantity_point<si::metre, ground_level>, quantity_point<si::metre, ground_level>>);
 
 static_assert(
-  std::constructible_from<quantity_point<(si::metre), ground_level>, quantity_point<(isq::height[m]), ground_level>>);
+  std::constructible_from<quantity_point<isq::height[m], ground_level>, quantity_point<isq::height[m], ground_level>>);
 static_assert(
-  std::convertible_to<quantity_point<(isq::height[m]), ground_level>, quantity_point<(si::metre), ground_level>>);
+  std::convertible_to<quantity_point<isq::height[m], ground_level>, quantity_point<isq::height[m], ground_level>>);
+
+static_assert(std::constructible_from<quantity_point<isq::height[km], ground_level>,
+                                      quantity_point<isq::height[m], mean_sea_level>>);
+static_assert(
+  std::convertible_to<quantity_point<isq::height[m], ground_level>, quantity_point<isq::height[km], mean_sea_level>>);
 
 static_assert(
-  std::constructible_from<quantity_point<(isq::height[m]), ground_level>, quantity_point<(si::metre), ground_level>>);
+  std::constructible_from<quantity_point<isq::height[m], ground_level>, quantity_point<isq::height[km], ground_level>>);
 static_assert(
-  std::convertible_to<quantity_point<(si::metre), ground_level>, quantity_point<(isq::height[m]), ground_level>>);
+  std::convertible_to<quantity_point<isq::height[km], ground_level>, quantity_point<isq::height[m], ground_level>>);
 
-static_assert(std::constructible_from<quantity_point<(isq::height[m]), ground_level>,
+static_assert(
+  std::constructible_from<quantity_point<si::metre, ground_level>, quantity_point<isq::height[m], ground_level>>);
+static_assert(
+  std::convertible_to<quantity_point<isq::height[m], ground_level>, quantity_point<si::metre, ground_level>>);
+
+static_assert(
+  std::constructible_from<quantity_point<isq::height[m], ground_level>, quantity_point<si::metre, ground_level>>);
+static_assert(
+  std::convertible_to<quantity_point<si::metre, ground_level>, quantity_point<isq::height[m], ground_level>>);
+
+static_assert(std::constructible_from<quantity_point<isq::height[m], ground_level>,
                                       quantity_point<special_height[m], ground_level>>);
 static_assert(
-  std::convertible_to<quantity_point<special_height[m], ground_level>, quantity_point<(isq::height[m]), ground_level>>);
+  std::convertible_to<quantity_point<special_height[m], ground_level>, quantity_point<isq::height[m], ground_level>>);
 
 static_assert(
-  std::constructible_from<quantity_point<(si::metre), mean_sea_level>, quantity_point<(si::metre), ground_level>>);
-static_assert(
-  std::convertible_to<quantity_point<(si::metre), ground_level>, quantity_point<(si::metre), mean_sea_level>>);
+  std::constructible_from<quantity_point<si::metre, mean_sea_level>, quantity_point<si::metre, ground_level>>);
+static_assert(std::convertible_to<quantity_point<si::metre, ground_level>, quantity_point<si::metre, mean_sea_level>>);
 
 static_assert(
-  std::constructible_from<quantity_point<(si::metre), ground_level>, quantity_point<(si::metre), mean_sea_level>>);
-static_assert(
-  std::convertible_to<quantity_point<(si::metre), mean_sea_level>, quantity_point<(si::metre), ground_level>>);
+  std::constructible_from<quantity_point<si::metre, ground_level>, quantity_point<si::metre, mean_sea_level>>);
+static_assert(std::convertible_to<quantity_point<si::metre, mean_sea_level>, quantity_point<si::metre, ground_level>>);
 
 static_assert(
-  std::constructible_from<quantity_point<(si::metre), ground_level>, quantity_point<(si::metre), other_ground_level>>);
+  std::constructible_from<quantity_point<si::metre, ground_level>, quantity_point<si::metre, other_ground_level>>);
 static_assert(
-  std::convertible_to<quantity_point<(si::metre), other_ground_level>, quantity_point<(si::metre), ground_level>>);
+  std::convertible_to<quantity_point<si::metre, other_ground_level>, quantity_point<si::metre, ground_level>>);
 
 static_assert(
   std::constructible_from<quantity_point<dimensionless[one], zero>, quantity_point<dimensionless[one], zero>>);
@@ -692,121 +682,121 @@ static_assert(
 static_assert(
   std::convertible_to<quantity_point<dimensionless[one], zero>, quantity_point<dimensionless[percent], zero>>);
 
-static_assert(std::constructible_from<quantity_point<(isq::length[m]), zeroth_length>,
-                                      quantity_point<(isq::height[m]), zeroth_length>>);
-static_assert(std::convertible_to<quantity_point<(isq::height[m]), zeroth_length>,
-                                  quantity_point<(isq::length[m]), zeroth_length>>);
+static_assert(std::constructible_from<quantity_point<isq::length[m], zeroth_length>,
+                                      quantity_point<isq::height[m], zeroth_length>>);
+static_assert(
+  std::convertible_to<quantity_point<isq::height[m], zeroth_length>, quantity_point<isq::length[m], zeroth_length>>);
 
 // quantity_specs with common_quantity_spec
-static_assert(!std::constructible_from<quantity_point<(isq::width[m]), zeroth_length>,
-                                       quantity_point<(isq::height[m]), zeroth_length>>);
-static_assert(!std::convertible_to<quantity_point<(isq::height[m]), zeroth_length>,
-                                   quantity_point<(isq::width[m]), zeroth_length>>);
+static_assert(!std::constructible_from<quantity_point<isq::width[m], zeroth_length>,
+                                       quantity_point<isq::height[m], zeroth_length>>);
+static_assert(
+  !std::convertible_to<quantity_point<isq::height[m], zeroth_length>, quantity_point<isq::width[m], zeroth_length>>);
 
-static_assert(!std::constructible_from<quantity_point<(isq::height[m]), zeroth_length>,
-                                       quantity_point<(isq::width[m]), zeroth_length>>);
-static_assert(!std::convertible_to<quantity_point<(isq::width[m]), zeroth_length>,
-                                   quantity_point<(isq::height[m]), zeroth_length>>);
+static_assert(!std::constructible_from<quantity_point<isq::height[m], zeroth_length>,
+                                       quantity_point<isq::width[m], zeroth_length>>);
+static_assert(
+  !std::convertible_to<quantity_point<isq::width[m], zeroth_length>, quantity_point<isq::height[m], zeroth_length>>);
 
 // different dimensions
-static_assert(!std::constructible_from<quantity_point<(isq::height[m]), mean_sea_level>,
-                                       quantity_point<(si::kelvin), (si::ice_point)>>);
-static_assert(!std::convertible_to<quantity_point<(si::kelvin), (si::ice_point)>,
-                                   quantity_point<(isq::height[m]), mean_sea_level>>);
+static_assert(
+  !std::constructible_from<quantity_point<isq::height[m], mean_sea_level>, quantity_point<si::kelvin, si::ice_point>>);
+static_assert(
+  !std::convertible_to<quantity_point<si::kelvin, si::ice_point>, quantity_point<isq::height[m], mean_sea_level>>);
 
 // non-convertible quantity_specs
 static_assert(!std::constructible_from<quantity_point<special_height[m], mean_sea_level>,
-                                       quantity_point<(isq::height[m]), mean_sea_level>>);
-static_assert(!std::convertible_to<quantity_point<(isq::height[m]), mean_sea_level>,
+                                       quantity_point<isq::height[m], mean_sea_level>>);
+static_assert(!std::convertible_to<quantity_point<isq::height[m], mean_sea_level>,
                                    quantity_point<special_height[m], mean_sea_level>>);
 
 // implicit conversion from another quantity point only if non-truncating
 // int -> double OK
-static_assert(std::constructible_from<quantity_point<(isq::height[m]), mean_sea_level>,
-                                      quantity_point<(isq::height[m]), mean_sea_level, int>>);
-static_assert(std::convertible_to<quantity_point<(isq::height[m]), mean_sea_level, int>,
-                                  quantity_point<(isq::height[m]), mean_sea_level>>);
+static_assert(std::constructible_from<quantity_point<isq::height[m], mean_sea_level>,
+                                      quantity_point<isq::height[m], mean_sea_level, int>>);
+static_assert(std::convertible_to<quantity_point<isq::height[m], mean_sea_level, int>,
+                                  quantity_point<isq::height[m], mean_sea_level>>);
 
 // truncating double -> int not allowed
-static_assert(!std::constructible_from<quantity_point<(isq::height[m]), mean_sea_level, int>,
-                                       quantity_point<(isq::height[m]), mean_sea_level>>);
-static_assert(!std::convertible_to<quantity_point<(isq::height[m]), mean_sea_level>,
-                                   quantity_point<(isq::height[m]), mean_sea_level, int>>);
+static_assert(!std::constructible_from<quantity_point<isq::height[m], mean_sea_level, int>,
+                                       quantity_point<isq::height[m], mean_sea_level>>);
+static_assert(!std::convertible_to<quantity_point<isq::height[m], mean_sea_level>,
+                                   quantity_point<isq::height[m], mean_sea_level, int>>);
 
 // kilometre<int> -> metre<int> OK
-static_assert(std::constructible_from<quantity_point<(isq::height[m]), mean_sea_level, int>,
-                                      quantity_point<(isq::height[km]), mean_sea_level, int>>);
-static_assert(std::convertible_to<quantity_point<(isq::height[km]), mean_sea_level, int>,
-                                  quantity_point<(isq::height[m]), mean_sea_level, int>>);
+static_assert(std::constructible_from<quantity_point<isq::height[m], mean_sea_level, int>,
+                                      quantity_point<isq::height[km], mean_sea_level, int>>);
+static_assert(std::convertible_to<quantity_point<isq::height[km], mean_sea_level, int>,
+                                  quantity_point<isq::height[m], mean_sea_level, int>>);
 
 // truncating metre<int> -> kilometre<int> not allowed
-static_assert(!std::constructible_from<quantity_point<(isq::height[km]), mean_sea_level, int>,
-                                       quantity_point<(isq::height[m]), mean_sea_level, int>>);
-static_assert(!std::convertible_to<quantity_point<(isq::height[m]), mean_sea_level, int>,
-                                   quantity_point<(isq::height[km]), mean_sea_level, int>>);
+static_assert(!std::constructible_from<quantity_point<isq::height[km], mean_sea_level, int>,
+                                       quantity_point<isq::height[m], mean_sea_level, int>>);
+static_assert(!std::convertible_to<quantity_point<isq::height[m], mean_sea_level, int>,
+                                   quantity_point<isq::height[km], mean_sea_level, int>>);
 
 // converting to double always OK
-static_assert(std::constructible_from<quantity_point<(isq::height[m]), mean_sea_level>,
-                                      quantity_point<(isq::height[km]), mean_sea_level, int>>);
-static_assert(std::convertible_to<quantity_point<(isq::height[km]), mean_sea_level, int>,
-                                  quantity_point<(isq::height[m]), mean_sea_level>>);
-static_assert(std::constructible_from<quantity_point<(isq::height[km]), mean_sea_level>,
-                                      quantity_point<(isq::height[m]), mean_sea_level, int>>);
-static_assert(std::convertible_to<quantity_point<(isq::height[m]), mean_sea_level, int>,
-                                  quantity_point<(isq::height[km]), mean_sea_level>>);
+static_assert(std::constructible_from<quantity_point<isq::height[m], mean_sea_level>,
+                                      quantity_point<isq::height[km], mean_sea_level, int>>);
+static_assert(std::convertible_to<quantity_point<isq::height[km], mean_sea_level, int>,
+                                  quantity_point<isq::height[m], mean_sea_level>>);
+static_assert(std::constructible_from<quantity_point<isq::height[km], mean_sea_level>,
+                                      quantity_point<isq::height[m], mean_sea_level, int>>);
+static_assert(std::convertible_to<quantity_point<isq::height[m], mean_sea_level, int>,
+                                  quantity_point<isq::height[km], mean_sea_level>>);
 
 // same but not a default origin
-static_assert(std::constructible_from<quantity_point<(isq::height[m]), mean_sea_level>,
-                                      quantity_point<(isq::height[m]), mean_sea_level>>);
-static_assert(std::convertible_to<quantity_point<(isq::height[m]), mean_sea_level>,
-                                  quantity_point<(isq::height[m]), mean_sea_level>>);
-
-static_assert(std::constructible_from<quantity_point<(si::metre), mean_sea_level>,
-                                      quantity_point<(isq::height[m]), mean_sea_level>>);
+static_assert(std::constructible_from<quantity_point<isq::height[m], mean_sea_level>,
+                                      quantity_point<isq::height[m], mean_sea_level>>);
 static_assert(
-  std::convertible_to<quantity_point<(isq::height[m]), mean_sea_level>, quantity_point<(si::metre), mean_sea_level>>);
+  std::convertible_to<quantity_point<isq::height[m], mean_sea_level>, quantity_point<isq::height[m], mean_sea_level>>);
 
-static_assert(std::constructible_from<quantity_point<(isq::height[m]), mean_sea_level>,
-                                      quantity_point<(si::metre), mean_sea_level>>);
 static_assert(
-  std::convertible_to<quantity_point<(si::metre), mean_sea_level>, quantity_point<(isq::height[m]), mean_sea_level>>);
+  std::constructible_from<quantity_point<si::metre, mean_sea_level>, quantity_point<isq::height[m], mean_sea_level>>);
+static_assert(
+  std::convertible_to<quantity_point<isq::height[m], mean_sea_level>, quantity_point<si::metre, mean_sea_level>>);
 
-static_assert(std::constructible_from<quantity_point<(isq::height[m]), mean_sea_level>,
+static_assert(
+  std::constructible_from<quantity_point<isq::height[m], mean_sea_level>, quantity_point<si::metre, mean_sea_level>>);
+static_assert(
+  std::convertible_to<quantity_point<si::metre, mean_sea_level>, quantity_point<isq::height[m], mean_sea_level>>);
+
+static_assert(std::constructible_from<quantity_point<isq::height[m], mean_sea_level>,
                                       quantity_point<special_height[m], mean_sea_level>>);
 static_assert(std::convertible_to<quantity_point<special_height[m], mean_sea_level>,
-                                  quantity_point<(isq::height[m]), mean_sea_level>>);
+                                  quantity_point<isq::height[m], mean_sea_level>>);
 
 static_assert(!std::constructible_from<quantity_point<special_height[m], mean_sea_level>,
-                                       quantity_point<(isq::height[m]), mean_sea_level>>);
-static_assert(!std::convertible_to<quantity_point<(isq::height[m]), mean_sea_level>,
+                                       quantity_point<isq::height[m], mean_sea_level>>);
+static_assert(!std::convertible_to<quantity_point<isq::height[m], mean_sea_level>,
                                    quantity_point<special_height[m], mean_sea_level>>);
 
 // different origins
-static_assert(!std::constructible_from<quantity_point<(isq::height[m]), mean_sea_level>,
-                                       quantity_point<(isq::height[m]), other_absolute_level>>);
-static_assert(!std::convertible_to<quantity_point<(isq::height[m]), other_absolute_level>,
-                                   quantity_point<(isq::height[m]), mean_sea_level>>);
-static_assert(!std::constructible_from<quantity_point<(isq::height[m]), ground_level>,
-                                       quantity_point<(isq::height[m]), other_absolute_level>>);
-static_assert(!std::convertible_to<quantity_point<(isq::height[m]), other_absolute_level>,
-                                   quantity_point<(isq::height[m]), ground_level>>);
-static_assert(!std::constructible_from<quantity_point<(isq::height[m]), other_absolute_level>,
-                                       quantity_point<(isq::height[m]), ground_level>>);
-static_assert(!std::convertible_to<quantity_point<(isq::height[m]), ground_level>,
-                                   quantity_point<(isq::height[m]), other_absolute_level>>);
+static_assert(!std::constructible_from<quantity_point<isq::height[m], mean_sea_level>,
+                                       quantity_point<isq::height[m], other_absolute_level>>);
+static_assert(!std::convertible_to<quantity_point<isq::height[m], other_absolute_level>,
+                                   quantity_point<isq::height[m], mean_sea_level>>);
+static_assert(!std::constructible_from<quantity_point<isq::height[m], ground_level>,
+                                       quantity_point<isq::height[m], other_absolute_level>>);
+static_assert(!std::convertible_to<quantity_point<isq::height[m], other_absolute_level>,
+                                   quantity_point<isq::height[m], ground_level>>);
+static_assert(!std::constructible_from<quantity_point<isq::height[m], other_absolute_level>,
+                                       quantity_point<isq::height[m], ground_level>>);
+static_assert(!std::convertible_to<quantity_point<isq::height[m], ground_level>,
+                                   quantity_point<isq::height[m], other_absolute_level>>);
 
 #if MP_UNITS_HOSTED
 // quantity-point-like
 static_assert(
-  std::constructible_from<quantity_point<(isq::time[s]), chrono_point_origin<std::chrono::system_clock>>, sys_seconds>);
+  std::constructible_from<quantity_point<isq::time[s], chrono_point_origin<std::chrono::system_clock>>, sys_seconds>);
 static_assert(
-  std::convertible_to<sys_seconds, quantity_point<(isq::time[s]), chrono_point_origin<std::chrono::system_clock>>>);
+  std::convertible_to<sys_seconds, quantity_point<isq::time[s], chrono_point_origin<std::chrono::system_clock>>>);
 
 // incompatible origin
-static_assert(!std::constructible_from<quantity_point<(isq::time[s]), chrono_point_origin<std::chrono::steady_clock>>,
-                                       sys_seconds>);
 static_assert(
-  !std::convertible_to<sys_seconds, quantity_point<(isq::time[s]), chrono_point_origin<std::chrono::steady_clock>>>);
+  !std::constructible_from<quantity_point<isq::time[s], chrono_point_origin<std::chrono::steady_clock>>, sys_seconds>);
+static_assert(
+  !std::convertible_to<sys_seconds, quantity_point<isq::time[s], chrono_point_origin<std::chrono::steady_clock>>>);
 #endif
 
 
@@ -835,19 +825,17 @@ static_assert((mean_sea_level + 42 * m).quantity_from(mean_sea_level) == 42 * m)
 static_assert((ground_level + 42 * m).quantity_from(ground_level) == 42 * m);
 static_assert((tower_peak + 42 * m).quantity_from(tower_peak) == 42 * m);
 
-static_assert(quantity_point<(isq::height[m]), mean_sea_level>(ground_level + 42 * m).quantity_from(mean_sea_level) ==
+static_assert(quantity_point<isq::height[m], mean_sea_level>(ground_level + 42 * m).quantity_from(mean_sea_level) ==
               84 * m);
-static_assert(quantity_point<(isq::height[m]), mean_sea_level>(tower_peak + 42 * m).quantity_from(mean_sea_level) ==
+static_assert(quantity_point<isq::height[m], mean_sea_level>(tower_peak + 42 * m).quantity_from(mean_sea_level) ==
               126 * m);
 
-static_assert(quantity_point<(isq::height[m]), ground_level>(mean_sea_level + 84 * m).quantity_from(ground_level) ==
+static_assert(quantity_point<isq::height[m], ground_level>(mean_sea_level + 84 * m).quantity_from(ground_level) ==
               42 * m);
-static_assert(quantity_point<(isq::height[m]), ground_level>(tower_peak + 42 * m).quantity_from(ground_level) ==
-              84 * m);
+static_assert(quantity_point<isq::height[m], ground_level>(tower_peak + 42 * m).quantity_from(ground_level) == 84 * m);
 
-static_assert(quantity_point<(isq::height[m]), tower_peak>(mean_sea_level + 42 * m).quantity_from(tower_peak) ==
-              -42 * m);
-static_assert(quantity_point<(isq::height[m]), tower_peak>(ground_level + 84 * m).quantity_from(tower_peak) == 42 * m);
+static_assert(quantity_point<isq::height[m], tower_peak>(mean_sea_level + 42 * m).quantity_from(tower_peak) == -42 * m);
+static_assert(quantity_point<isq::height[m], tower_peak>(ground_level + 84 * m).quantity_from(tower_peak) == 42 * m);
 
 static_assert((mean_sea_level + 42 * m).point_for(mean_sea_level).quantity_from(mean_sea_level) == 42 * m);
 static_assert((ground_level + 42 * m).point_for(mean_sea_level).quantity_from(mean_sea_level) == 84 * m);
@@ -862,7 +850,7 @@ static_assert((mean_sea_level + 42 * m).point_for(tower_peak).quantity_from(towe
 static_assert((ground_level + 84 * m).point_for(tower_peak).quantity_from(tower_peak) == 42 * m);
 
 static_assert(is_of_type<(ground_level + isq::height(short{42} * m)).point_for(mean_sea_level),
-                         quantity_point<(isq::height[m]), mean_sea_level, int>>);
+                         quantity_point<isq::height[m], mean_sea_level, int>>);
 
 
 ///////////////////////////////////
@@ -889,8 +877,8 @@ static_assert(is_of_type<(mean_sea_level + 2500. * m).force_in<int>(km), quantit
 
 template<template<auto, auto, typename> typename QP>
 concept invalid_unit_conversion = requires {
-  requires !requires { QP<(isq::height[m]), mean_sea_level, int>(2000 * m).in(km); };  // truncating conversion
-  requires !requires { QP<(isq::height[m]), mean_sea_level, int>(2 * m).in(s); };      // invalid unit
+  requires !requires { QP<isq::height[m], mean_sea_level, int>(2000 * m).in(km); };  // truncating conversion
+  requires !requires { QP<isq::height[m], mean_sea_level, int>(2 * m).in(s); };      // invalid unit
 };
 static_assert(invalid_unit_conversion<quantity_point>);
 
@@ -938,12 +926,13 @@ static_assert(quantity_point{sys_seconds{24h}}.quantity_spec == kind_of<isq::tim
 ////////////
 // getters
 ////////////
-constexpr QuantityPoint auto mean_sea_level_qp = mean_sea_level + (1 * m);
-constexpr QuantityPoint auto my_mean_sea_level_qp = my_mean_sea_level + 1 * m;
-constexpr QuantityPoint auto ground_level_qp = ground_level + 1 * m;
-constexpr QuantityPoint auto my_ground_level_qp = my_ground_level + 1 * m;
-constexpr QuantityPoint auto same_ground_level1_qp = same_ground_level1 + 1 * m;
-constexpr QuantityPoint auto same_ground_level2_qp = same_ground_level2 + 1 * m;
+
+constexpr quantity_point mean_sea_level_qp = mean_sea_level + 1 * m;
+constexpr quantity_point my_mean_sea_level_qp = my_mean_sea_level + 1 * m;
+constexpr quantity_point ground_level_qp = ground_level + 1 * m;
+constexpr quantity_point my_ground_level_qp = my_ground_level + 1 * m;
+constexpr quantity_point same_ground_level1_qp = same_ground_level1 + 1 * m;
+constexpr quantity_point same_ground_level2_qp = same_ground_level2 + 1 * m;
 
 static_assert(mean_sea_level_qp.quantity_ref_from(mean_sea_level) == 1 * m);
 static_assert(mean_sea_level_qp.quantity_ref_from(my_mean_sea_level) == 1 * m);
@@ -968,24 +957,24 @@ static_assert(same_ground_level2_qp.quantity_ref_from(same_ground_level1) == 1 *
 static_assert(same_ground_level2_qp.quantity_ref_from(same_ground_level2) == 1 * m);
 
 
-// ////////////////////////
-// //assignment operator
-// ////////////////////////
+////////////////////////
+// assignment operator
+////////////////////////
 
 static_assert(([]() {
-                const QuantityPoint auto l1{mean_sea_level + 1 * m};
-                QuantityPoint auto l2{mean_sea_level + 2 * m};
+                const quantity_point l1{mean_sea_level + 1 * m};
+                quantity_point l2{mean_sea_level + 2 * m};
                 return l2 = l1;
               }())
                 .quantity_from(mean_sea_level) == 1 * m);
 static_assert(([]() {
-                const QuantityPoint auto l1{mean_sea_level + 1 * m};
-                QuantityPoint auto l2{mean_sea_level + 2 * m};
+                const quantity_point l1{mean_sea_level + 1 * m};
+                quantity_point l2{mean_sea_level + 2 * m};
                 return l2 = l1;
               }())
                 .quantity_from(mean_sea_level) == 1 * m);
 static_assert(([]() {
-                QuantityPoint auto l1{mean_sea_level + 1 * m}, l2{mean_sea_level + 2 * m};
+                quantity_point l1{mean_sea_level + 1 * m}, l2{mean_sea_level + 2 * m};
                 return l2 = std::move(l1);  // NOLINT(*-move-const-arg)
               }())
                 .quantity_from(mean_sea_level) == 1 * m);
@@ -998,7 +987,7 @@ static_assert(([]() {
 static_assert([](auto v) {
   auto vv = v++;  // NOLINT(bugprone-inc-dec-in-conditions)
   return std::pair(v, vv);
-}(mean_sea_level + 123 * m) == std::pair(mean_sea_level + 124 * m, mean_sea_level + 123 * m));
+}(mean_sea_level + 123 * m) == std::pair(mean_sea_level + 124 * m, quantity_point(mean_sea_level + 123 * m)));
 static_assert([](auto v) {
   auto vv = ++v;  // NOLINT(bugprone-inc-dec-in-conditions)
   return std::pair(v, vv);
@@ -1031,18 +1020,18 @@ static_assert((mean_sea_level + 1123 * m -= 1 * km).quantity_from_zero().numeric
 template<template<auto, auto, typename> typename QP>
 concept invalid_compound_assignments = requires() {
   // truncating not allowed
-  requires !requires(QP<(isq::height[m]), mean_sea_level, int> l) { l += 2.5 * m; };
-  requires !requires(QP<(isq::height[m]), mean_sea_level, int> l) { l -= 2.5 * m; };
-  requires !requires(QP<isq::height[km], mean_sea_level, int> l) { l += 2 * (isq::height[m]); };
-  requires !requires(QP<isq::height[km], mean_sea_level, int> l) { l -= 2 * (isq::height[m]); };
+  requires !requires(QP<isq::height[m], mean_sea_level, int> l) { l += 2.5 * m; };
+  requires !requires(QP<isq::height[m], mean_sea_level, int> l) { l -= 2.5 * m; };
+  requires !requires(QP<isq::height[km], mean_sea_level, int> l) { l += 2 * isq::height[m]; };
+  requires !requires(QP<isq::height[km], mean_sea_level, int> l) { l -= 2 * isq::height[m]; };
 
   // only quantities can be added or subtracted
-  requires !requires(QP<(isq::height[m]), mean_sea_level, int> l) { l += 2; };
-  requires !requires(QP<(isq::height[m]), mean_sea_level, int> l) { l -= 2; };
+  requires !requires(QP<isq::height[m], mean_sea_level, int> l) { l += 2; };
+  requires !requires(QP<isq::height[m], mean_sea_level, int> l) { l -= 2; };
 
   // no unit constants
-  requires !requires(QP<(isq::height[m]), mean_sea_level, int> l) { l += m; };
-  requires !requires(QP<(isq::height[m]), mean_sea_level, int> l) { l -= m; };
+  requires !requires(QP<isq::height[m], mean_sea_level, int> l) { l += m; };
+  requires !requires(QP<isq::height[m], mean_sea_level, int> l) { l -= m; };
 };
 static_assert(invalid_compound_assignments<quantity_point>);
 
@@ -1143,12 +1132,12 @@ concept invalid_binary_operations = requires {
   requires !requires { Origin - Origin; };
 
   // unit constants
-  requires !requires { QP<(si::metre), mean_sea_level, int>(1) + m; };
-  requires !requires { QP<(si::metre), mean_sea_level, int>(1) - m; };
+  requires !requires { QP<si::metre, mean_sea_level, int>(1) + m; };
+  requires !requires { QP<si::metre, mean_sea_level, int>(1) - m; };
   requires !requires { Origin + m; };
   requires !requires { Origin - m; };
-  requires !requires { m + QP<(si::metre), mean_sea_level, int>(1); };
-  requires !requires { m - QP<(si::metre), mean_sea_level, int>(1); };
+  requires !requires { m + QP<si::metre, mean_sea_level, int>(1); };
+  requires !requires { m - QP<si::metre, mean_sea_level, int>(1); };
   requires !requires { m + Origin; };
   requires !requires { m - Origin; };
 };
@@ -1185,36 +1174,36 @@ static_assert(is_of_type<1 * m + (mean_sea_level + 1 * km), quantity_point<si::m
 static_assert(is_of_type<1 * km + (mean_sea_level + 1 * m), quantity_point<si::metre, mean_sea_level, int>>);
 
 static_assert(
-  is_of_type<1 * m + (mean_sea_level + isq::height(1 * m)), quantity_point<(isq::height[m]), mean_sea_level, int>>);
+  is_of_type<1 * m + (mean_sea_level + isq::height(1 * m)), quantity_point<isq::height[m], mean_sea_level, int>>);
 static_assert(
-  is_of_type<1 * m + (mean_sea_level + isq::height(1 * km)), quantity_point<(isq::height[m]), mean_sea_level, int>>);
+  is_of_type<1 * m + (mean_sea_level + isq::height(1 * km)), quantity_point<isq::height[m], mean_sea_level, int>>);
 static_assert(
-  is_of_type<1 * km + (mean_sea_level + isq::height(1 * m)), quantity_point<(isq::height[m]), mean_sea_level, int>>);
+  is_of_type<1 * km + (mean_sea_level + isq::height(1 * m)), quantity_point<isq::height[m], mean_sea_level, int>>);
 
 static_assert(
-  is_of_type<isq::height(1 * m) + (mean_sea_level + 1 * m), quantity_point<(isq::height[m]), mean_sea_level, int>>);
+  is_of_type<isq::height(1 * m) + (mean_sea_level + 1 * m), quantity_point<isq::height[m], mean_sea_level, int>>);
 static_assert(
-  is_of_type<isq::height(1 * m) + (mean_sea_level + 1 * km), quantity_point<(isq::height[m]), mean_sea_level, int>>);
+  is_of_type<isq::height(1 * m) + (mean_sea_level + 1 * km), quantity_point<isq::height[m], mean_sea_level, int>>);
 static_assert(
-  is_of_type<isq::height(1 * km) + (mean_sea_level + 1 * m), quantity_point<(isq::height[m]), mean_sea_level, int>>);
+  is_of_type<isq::height(1 * km) + (mean_sea_level + 1 * m), quantity_point<isq::height[m], mean_sea_level, int>>);
 
 static_assert(is_of_type<isq::height(1 * m) + (mean_sea_level + isq::height(1 * m)),
-                         quantity_point<(isq::height[m]), mean_sea_level, int>>);
+                         quantity_point<isq::height[m], mean_sea_level, int>>);
 static_assert(is_of_type<isq::height(1 * m) + (mean_sea_level + isq::height(1 * km)),
-                         quantity_point<(isq::height[m]), mean_sea_level, int>>);
+                         quantity_point<isq::height[m], mean_sea_level, int>>);
 static_assert(is_of_type<isq::height(1 * km) + (mean_sea_level + isq::height(1 * m)),
-                         quantity_point<(isq::height[m]), mean_sea_level, int>>);
+                         quantity_point<isq::height[m], mean_sea_level, int>>);
 
 static_assert(is_of_type<mean_sea_level + 1 * m, quantity_point<si::metre, mean_sea_level, int>>);
 static_assert(is_of_type<mean_sea_level + 1 * km, quantity_point<si::kilo<si::metre>, mean_sea_level, int>>);
-static_assert(is_of_type<mean_sea_level + isq::height(1 * m), quantity_point<(isq::height[m]), mean_sea_level, int>>);
+static_assert(is_of_type<mean_sea_level + isq::height(1 * m), quantity_point<isq::height[m], mean_sea_level, int>>);
 static_assert(
   is_of_type<mean_sea_level + special_height(1 * m), quantity_point<special_height[si::metre], mean_sea_level, int>>);
 static_assert(is_of_type<mean_sea_level + special_height(1 * km),
                          quantity_point<special_height[si::kilo<si::metre>], mean_sea_level, int>>);
 static_assert(is_of_type<1 * m + mean_sea_level, quantity_point<si::metre, mean_sea_level, int>>);
 static_assert(is_of_type<1 * km + mean_sea_level, quantity_point<si::kilo<si::metre>, mean_sea_level, int>>);
-static_assert(is_of_type<isq::height(1 * m) + mean_sea_level, quantity_point<(isq::height[m]), mean_sea_level, int>>);
+static_assert(is_of_type<isq::height(1 * m) + mean_sea_level, quantity_point<isq::height[m], mean_sea_level, int>>);
 static_assert(
   is_of_type<special_height(1 * m) + mean_sea_level, quantity_point<special_height[si::metre], mean_sea_level, int>>);
 static_assert(is_of_type<special_height(1 * km) + mean_sea_level,
@@ -1230,25 +1219,25 @@ static_assert(is_of_type<(mean_sea_level + 1 * km) - 1 * m, quantity_point<si::m
 static_assert(is_of_type<(mean_sea_level + 1 * m) - 1 * km, quantity_point<si::metre, mean_sea_level, int>>);
 
 static_assert(
-  is_of_type<(mean_sea_level + 1 * m) - isq::height(1 * m), quantity_point<(isq::height[m]), mean_sea_level, int>>);
+  is_of_type<(mean_sea_level + 1 * m) - isq::height(1 * m), quantity_point<isq::height[m], mean_sea_level, int>>);
 static_assert(
-  is_of_type<(mean_sea_level + 1 * m) - isq::height(1 * km), quantity_point<(isq::height[m]), mean_sea_level, int>>);
+  is_of_type<(mean_sea_level + 1 * m) - isq::height(1 * km), quantity_point<isq::height[m], mean_sea_level, int>>);
 static_assert(
-  is_of_type<(mean_sea_level + 1 * km) - isq::height(1 * m), quantity_point<(isq::height[m]), mean_sea_level, int>>);
+  is_of_type<(mean_sea_level + 1 * km) - isq::height(1 * m), quantity_point<isq::height[m], mean_sea_level, int>>);
 
 static_assert(
-  is_of_type<(mean_sea_level + isq::height(1 * m)) - 1 * m, quantity_point<(isq::height[m]), mean_sea_level, int>>);
+  is_of_type<(mean_sea_level + isq::height(1 * m)) - 1 * m, quantity_point<isq::height[m], mean_sea_level, int>>);
 static_assert(
-  is_of_type<(mean_sea_level + isq::height(1 * m)) - 1 * km, quantity_point<(isq::height[m]), mean_sea_level, int>>);
+  is_of_type<(mean_sea_level + isq::height(1 * m)) - 1 * km, quantity_point<isq::height[m], mean_sea_level, int>>);
 static_assert(
-  is_of_type<(mean_sea_level + isq::height(1 * km)) - 1 * m, quantity_point<(isq::height[m]), mean_sea_level, int>>);
+  is_of_type<(mean_sea_level + isq::height(1 * km)) - 1 * m, quantity_point<isq::height[m], mean_sea_level, int>>);
 
 static_assert(is_of_type<(mean_sea_level + isq::height(1 * m)) - isq::height(1 * m),
-                         quantity_point<(isq::height[m]), mean_sea_level, int>>);
+                         quantity_point<isq::height[m], mean_sea_level, int>>);
 static_assert(is_of_type<(mean_sea_level + isq::height(1 * m)) - isq::height(1 * km),
-                         quantity_point<(isq::height[m]), mean_sea_level, int>>);
+                         quantity_point<isq::height[m], mean_sea_level, int>>);
 static_assert(is_of_type<(mean_sea_level + isq::height(1 * km)) - isq::height(1 * m),
-                         quantity_point<(isq::height[m]), mean_sea_level, int>>);
+                         quantity_point<isq::height[m], mean_sea_level, int>>);
 
 static_assert(is_of_type<mean_sea_level - 1 * m, quantity_point<si::metre, mean_sea_level, int>>);
 static_assert(is_of_type<mean_sea_level - 1 * km, quantity_point<si::kilo<si::metre>, mean_sea_level, int>>);
@@ -1265,39 +1254,39 @@ static_assert(is_of_type<(mean_sea_level + 1 * km) - (mean_sea_level + 1 * m), q
 static_assert(is_of_type<(mean_sea_level + 1 * m) - (mean_sea_level + 1 * km), quantity<si::metre, int>>);
 
 static_assert(
-  is_of_type<(mean_sea_level + 1 * m) - (mean_sea_level + isq::height(1 * m)), quantity<(isq::height[m]), int>>);
+  is_of_type<(mean_sea_level + 1 * m) - (mean_sea_level + isq::height(1 * m)), quantity<isq::height[m], int>>);
 static_assert(
-  is_of_type<(mean_sea_level + 1 * m) - (mean_sea_level + isq::height(1 * km)), quantity<(isq::height[m]), int>>);
+  is_of_type<(mean_sea_level + 1 * m) - (mean_sea_level + isq::height(1 * km)), quantity<isq::height[m], int>>);
 static_assert(
-  is_of_type<(mean_sea_level + 1 * km) - (mean_sea_level + isq::height(1 * m)), quantity<(isq::height[m]), int>>);
+  is_of_type<(mean_sea_level + 1 * km) - (mean_sea_level + isq::height(1 * m)), quantity<isq::height[m], int>>);
 
 static_assert(
-  is_of_type<(mean_sea_level + isq::height(1 * m)) - (mean_sea_level + 1 * m), quantity<(isq::height[m]), int>>);
+  is_of_type<(mean_sea_level + isq::height(1 * m)) - (mean_sea_level + 1 * m), quantity<isq::height[m], int>>);
 static_assert(
-  is_of_type<(mean_sea_level + isq::height(1 * m)) - (mean_sea_level + 1 * km), quantity<(isq::height[m]), int>>);
+  is_of_type<(mean_sea_level + isq::height(1 * m)) - (mean_sea_level + 1 * km), quantity<isq::height[m], int>>);
 static_assert(
-  is_of_type<(mean_sea_level + isq::height(1 * km)) - (mean_sea_level + 1 * m), quantity<(isq::height[m]), int>>);
+  is_of_type<(mean_sea_level + isq::height(1 * km)) - (mean_sea_level + 1 * m), quantity<isq::height[m], int>>);
 
 static_assert(is_of_type<(mean_sea_level + isq::height(1 * m)) - (mean_sea_level + isq::height(1 * m)),
-                         quantity<(isq::height[m]), int>>);
+                         quantity<isq::height[m], int>>);
 static_assert(is_of_type<(mean_sea_level + isq::height(1 * m)) - (mean_sea_level + isq::height(1 * km)),
-                         quantity<(isq::height[m]), int>>);
+                         quantity<isq::height[m], int>>);
 static_assert(is_of_type<(mean_sea_level + isq::height(1 * km)) - (mean_sea_level + isq::height(1 * m)),
-                         quantity<(isq::height[m]), int>>);
+                         quantity<isq::height[m], int>>);
 
 static_assert(is_of_type<(mean_sea_level + 1 * m) - (mean_sea_level + 1 * m), quantity<si::metre, int>>);
 static_assert(is_of_type<(ground_level + 1 * m) - (ground_level + 1 * m), quantity<si::metre, int>>);
 static_assert(is_of_type<(tower_peak + 1 * m) - (tower_peak + 1 * m), quantity<si::metre, int>>);
-static_assert(is_of_type<(mean_sea_level + 1 * m) - (ground_level + 1 * m), quantity<(isq::height[m]), int>>);
-static_assert(is_of_type<(ground_level + 1 * m) - (mean_sea_level + 1 * m), quantity<(isq::height[m]), int>>);
-static_assert(is_of_type<(tower_peak + 1 * m) - (ground_level + 1 * m), quantity<(isq::height[m]), int>>);
-static_assert(is_of_type<(ground_level + 1 * m) - (tower_peak + 1 * m), quantity<(isq::height[m]), int>>);
-static_assert(is_of_type<(tower_peak + 1 * m) - (mean_sea_level + 1 * m), quantity<(isq::height[m]), int>>);
-static_assert(is_of_type<(mean_sea_level + 1 * m) - (tower_peak + 1 * m), quantity<(isq::height[m]), int>>);
-static_assert(is_of_type<(other_ground_level + 1 * m) - (ground_level + 1 * m), quantity<(isq::height[m]), int>>);
-static_assert(is_of_type<(ground_level + 1 * m) - (other_ground_level + 1 * m), quantity<(isq::height[m]), int>>);
-static_assert(is_of_type<(other_ground_level + 1 * m) - (tower_peak + 1 * m), quantity<(isq::height[m]), int>>);
-static_assert(is_of_type<(tower_peak + 1 * m) - (other_ground_level + 1 * m), quantity<(isq::height[m]), int>>);
+static_assert(is_of_type<(mean_sea_level + 1 * m) - (ground_level + 1 * m), quantity<isq::height[m], int>>);
+static_assert(is_of_type<(ground_level + 1 * m) - (mean_sea_level + 1 * m), quantity<isq::height[m], int>>);
+static_assert(is_of_type<(tower_peak + 1 * m) - (ground_level + 1 * m), quantity<isq::height[m], int>>);
+static_assert(is_of_type<(ground_level + 1 * m) - (tower_peak + 1 * m), quantity<isq::height[m], int>>);
+static_assert(is_of_type<(tower_peak + 1 * m) - (mean_sea_level + 1 * m), quantity<isq::height[m], int>>);
+static_assert(is_of_type<(mean_sea_level + 1 * m) - (tower_peak + 1 * m), quantity<isq::height[m], int>>);
+static_assert(is_of_type<(other_ground_level + 1 * m) - (ground_level + 1 * m), quantity<isq::height[m], int>>);
+static_assert(is_of_type<(ground_level + 1 * m) - (other_ground_level + 1 * m), quantity<isq::height[m], int>>);
+static_assert(is_of_type<(other_ground_level + 1 * m) - (tower_peak + 1 * m), quantity<isq::height[m], int>>);
+static_assert(is_of_type<(tower_peak + 1 * m) - (other_ground_level + 1 * m), quantity<isq::height[m], int>>);
 
 static_assert(is_of_type<mean_sea_level - (mean_sea_level + 1 * m), quantity<si::metre, int>>);
 static_assert(is_of_type<mean_sea_level - (mean_sea_level + 1 * km), quantity<si::kilo<si::metre>, int>>);
@@ -1309,32 +1298,32 @@ static_assert(is_of_type<ground_level - (ground_level + 1 * km), quantity<si::ki
 static_assert(is_of_type<(ground_level + 1 * m) - ground_level, quantity<si::metre, int>>);
 static_assert(is_of_type<(ground_level + 1 * km) - ground_level, quantity<si::kilo<si::metre>, int>>);
 
-static_assert(is_of_type<mean_sea_level - (ground_level + 1 * m), quantity<(isq::height[m]), int>>);
-static_assert(is_of_type<mean_sea_level - (ground_level + 1 * km), quantity<(isq::height[m]), int>>);
-static_assert(is_of_type<(ground_level + 1 * m) - mean_sea_level, quantity<(isq::height[m]), int>>);
-static_assert(is_of_type<(ground_level + 1 * km) - mean_sea_level, quantity<(isq::height[m]), int>>);
+static_assert(is_of_type<mean_sea_level - (ground_level + 1 * m), quantity<isq::height[m], int>>);
+static_assert(is_of_type<mean_sea_level - (ground_level + 1 * km), quantity<isq::height[m], int>>);
+static_assert(is_of_type<(ground_level + 1 * m) - mean_sea_level, quantity<isq::height[m], int>>);
+static_assert(is_of_type<(ground_level + 1 * km) - mean_sea_level, quantity<isq::height[m], int>>);
 
-static_assert(is_of_type<ground_level - (mean_sea_level + 1 * m), quantity<(isq::height[m]), int>>);
-static_assert(is_of_type<ground_level - (mean_sea_level + 1 * km), quantity<(isq::height[m]), int>>);
-static_assert(is_of_type<(mean_sea_level + 1 * m) - ground_level, quantity<(isq::height[m]), int>>);
-static_assert(is_of_type<(mean_sea_level + 1 * km) - ground_level, quantity<(isq::height[m]), int>>);
+static_assert(is_of_type<ground_level - (mean_sea_level + 1 * m), quantity<isq::height[m], int>>);
+static_assert(is_of_type<ground_level - (mean_sea_level + 1 * km), quantity<isq::height[m], int>>);
+static_assert(is_of_type<(mean_sea_level + 1 * m) - ground_level, quantity<isq::height[m], int>>);
+static_assert(is_of_type<(mean_sea_level + 1 * km) - ground_level, quantity<isq::height[m], int>>);
 
-static_assert(is_of_type<ground_level - ground_level, quantity<(isq::height[m]), int>>);
-static_assert(is_of_type<mean_sea_level - ground_level, quantity<(isq::height[m]), int>>);
-static_assert(is_of_type<ground_level - mean_sea_level, quantity<(isq::height[m]), int>>);
-static_assert(is_of_type<ground_level - tower_peak, quantity<(isq::height[m]), int>>);
-static_assert(is_of_type<tower_peak - ground_level, quantity<(isq::height[m]), int>>);
+static_assert(is_of_type<ground_level - ground_level, quantity<isq::height[m], int>>);
+static_assert(is_of_type<mean_sea_level - ground_level, quantity<isq::height[m], int>>);
+static_assert(is_of_type<ground_level - mean_sea_level, quantity<isq::height[m], int>>);
+static_assert(is_of_type<ground_level - tower_peak, quantity<isq::height[m], int>>);
+static_assert(is_of_type<tower_peak - ground_level, quantity<isq::height[m], int>>);
 
-static_assert(is_of_type<(1 * m + mean_sea_level) - (1 * m + ground_level), quantity<(isq::height[m]), int>>);
-static_assert(is_of_type<(1 * m + ground_level) - (1 * m + mean_sea_level), quantity<(isq::height[m]), int>>);
-static_assert(is_of_type<(1 * m + tower_peak) - (1 * m + ground_level), quantity<(isq::height[m]), int>>);
-static_assert(is_of_type<(1 * m + ground_level) - (1 * m + tower_peak), quantity<(isq::height[m]), int>>);
-static_assert(is_of_type<(1 * m + tower_peak) - (1 * m + mean_sea_level), quantity<(isq::height[m]), int>>);
-static_assert(is_of_type<(1 * m + mean_sea_level) - (1 * m + tower_peak), quantity<(isq::height[m]), int>>);
-static_assert(is_of_type<(1 * m + other_ground_level) - (1 * m + ground_level), quantity<(isq::height[m]), int>>);
-static_assert(is_of_type<(1 * m + ground_level) - (1 * m + other_ground_level), quantity<(isq::height[m]), int>>);
-static_assert(is_of_type<(1 * m + other_ground_level) - (1 * m + tower_peak), quantity<(isq::height[m]), int>>);
-static_assert(is_of_type<(1 * m + tower_peak) - (1 * m + other_ground_level), quantity<(isq::height[m]), int>>);
+static_assert(is_of_type<(1 * m + mean_sea_level) - (1 * m + ground_level), quantity<isq::height[m], int>>);
+static_assert(is_of_type<(1 * m + ground_level) - (1 * m + mean_sea_level), quantity<isq::height[m], int>>);
+static_assert(is_of_type<(1 * m + tower_peak) - (1 * m + ground_level), quantity<isq::height[m], int>>);
+static_assert(is_of_type<(1 * m + ground_level) - (1 * m + tower_peak), quantity<isq::height[m], int>>);
+static_assert(is_of_type<(1 * m + tower_peak) - (1 * m + mean_sea_level), quantity<isq::height[m], int>>);
+static_assert(is_of_type<(1 * m + mean_sea_level) - (1 * m + tower_peak), quantity<isq::height[m], int>>);
+static_assert(is_of_type<(1 * m + other_ground_level) - (1 * m + ground_level), quantity<isq::height[m], int>>);
+static_assert(is_of_type<(1 * m + ground_level) - (1 * m + other_ground_level), quantity<isq::height[m], int>>);
+static_assert(is_of_type<(1 * m + other_ground_level) - (1 * m + tower_peak), quantity<isq::height[m], int>>);
+static_assert(is_of_type<(1 * m + tower_peak) - (1 * m + other_ground_level), quantity<isq::height[m], int>>);
 
 
 // check for integral types promotion
@@ -1654,8 +1643,8 @@ static_assert(is_of_type<(zero_Hz + 5 * isq::frequency[Hz]) - (zero_Hz + 10 / (2
 
 static_assert((quantity_point{10 / (2 * isq::period_duration[s])} + 5 * isq::frequency[Hz]).quantity_from_zero() ==
               10 * isq::frequency[Hz]);
-static_assert((10 / (2 * isq::period_duration[s]) + (zero_Hz + 5 * isq::frequency[Hz])).quantity_from_zero() ==
-              10 * isq::frequency[Hz]);
+static_assert((10 / (2 * isq::period_duration[s]) + quantity_point{zero_Hz + 5 * isq::frequency[Hz]})
+                .quantity_from_zero() == 10 * isq::frequency[Hz]);
 static_assert((quantity_point{5 * isq::frequency[Hz]} + 10 / (2 * isq::period_duration[s])).quantity_from_zero() ==
               10 * isq::frequency[Hz]);
 static_assert((5 * isq::frequency[Hz] + quantity_point{10 / (2 * isq::period_duration[s])}).quantity_from_zero() ==
@@ -1729,7 +1718,7 @@ static_assert(value_cast<m>(quantity_point{2 * km}).quantity_from_zero().numeric
 static_assert(value_cast<km>(quantity_point{2000 * m}).quantity_from_zero().numerical_value_in(km) == 2);
 static_assert(value_cast<int>(quantity_point{1.23 * m}).quantity_from_zero().numerical_value_in(m) == 1);
 static_assert(
-  value_cast<(km / h)>(quantity_point{2000.0 * m / (3600.0 * s)}).quantity_from_zero().numerical_value_in(km / h) == 2);
+  value_cast<km / h>(quantity_point{2000.0 * m / (3600.0 * s)}).quantity_from_zero().numerical_value_in(km / h) == 2);
 // lvalue references in value_cast
 namespace lvalue_tests {
 constexpr quantity_point lvalue_qp{2 * km};

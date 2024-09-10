@@ -54,8 +54,8 @@ constexpr auto h = 1 * si::si2019::planck_constant;
 constexpr auto kb = 1 * si::si2019::boltzmann_constant;
 
 // prints quantities in the resulting unit
-template<QuantityOf<(isq::energy)> T1, QuantityOf<(isq::wavenumber)> T2, QuantityOf<(isq::frequency)> T3,
-         QuantityOf<(isq::thermodynamic_temperature)> T4, QuantityOf<(isq::wavelength)> T5>
+template<QuantityOf<isq::energy> T1, QuantityOf<isq::wavenumber> T2, QuantityOf<isq::frequency> T3,
+         QuantityOf<isq::thermodynamic_temperature> T4, QuantityOf<isq::wavelength> T5>
 void print_line(const std::tuple<T1, T2, T3, T4, T5>& t)
 {
   std::cout << MP_UNITS_STD_FMT::format(
@@ -65,8 +65,8 @@ void print_line(const std::tuple<T1, T2, T3, T4, T5>& t)
 
 // prints quantities in semi-SI units
 // (eV is not an official SI unit)
-template<QuantityOf<(isq::energy)> T1, QuantityOf<(isq::wavenumber)> T2, QuantityOf<(isq::frequency)> T3,
-         QuantityOf<(isq::thermodynamic_temperature)> T4, QuantityOf<(isq::wavelength)> T5>
+template<QuantityOf<isq::energy> T1, QuantityOf<isq::wavenumber> T2, QuantityOf<isq::frequency> T3,
+         QuantityOf<isq::thermodynamic_temperature> T4, QuantityOf<isq::wavelength> T5>
 void print_line_si(const std::tuple<T1, T2, T3, T4, T5>& t)
 {
   std::cout << MP_UNITS_STD_FMT::format(
