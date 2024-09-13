@@ -182,11 +182,11 @@ which may well be outside the range of one or both quantity types.
 The table below provides all the value conversions functions that may be run on `x` being the
 instance of either `quantity` or `quantity_point`:
 
-| Forcing | Representation | Unit | Member function    | Conversion function   |
-|:-------:|:--------------:|:----:|--------------------|-----------------------|
-|   No    |      Same      | `u`  | `x.in(u)`          |                       |
-|   No    |      `T`       | Same | `x.in<T>()`        |                       |
-|   No    |      `T`       | `u`  | `x.in<T>(u)`       |                       |
-|   Yes   |      Same      | `u`  | `x.force_in(u)`    | `value_cast<u>(x)`    |
-|   Yes   |      `T`       | Same | `x.force_in<T>()`  | `value_cast<T>(x)`    |
-|   Yes   |      `T`       | `u`  | `x.force_in<T>(u)` | `value_cast<u, T>(x)` |
+| Forcing | Representation | Unit | Member function    | Non-member function                            |
+|:-------:|:--------------:|:----:|--------------------|------------------------------------------------|
+|   No    |      Same      | `u`  | `x.in(u)`          |                                                |
+|   No    |      `T`       | Same | `x.in<T>()`        |                                                |
+|   No    |      `T`       | `u`  | `x.in<T>(u)`       |                                                |
+|   Yes   |      Same      | `u`  | `x.force_in(u)`    | `value_cast<u>(x)`                             |
+|   Yes   |      `T`       | Same | `x.force_in<T>()`  | `value_cast<T>(x)`                             |
+|   Yes   |      `T`       | `u`  | `x.force_in<T>(u)` | `value_cast<u, T>(x)` or `value_cast<T, u>(x)` |
