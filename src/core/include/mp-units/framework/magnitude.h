@@ -380,8 +380,9 @@ template<typename T>
 
   // Always use `long double` for intermediate computations.  We don't ever expect people to be
   // calling this at runtime, so we want maximum accuracy.
+  long double xld = static_cast<long double>(x);
   long double lo = 1.0;
-  long double hi = static_cast<long double>(x);
+  long double hi = xld;
 
   // Do a binary search to find the closest value such that `checked_int_pow` recovers the input.
   //
@@ -398,7 +399,7 @@ template<typename T>
     }
 
     // Early return if we get lucky with an exact answer.
-    if (result.value() == x) {
+    if (result.value() == xld) {
       return static_cast<T>(mid);
     }
 
@@ -408,7 +409,7 @@ template<typename T>
     }
 
     // Preserve the invariant that `checked_int_pow(lo, n) < x < checked_int_pow(hi, n)`.
-    if (result.value() < x) {
+    if (result.value() < xld) {
       lo = mid;
     } else {
       hi = mid;
@@ -416,8 +417,8 @@ template<typename T>
   }
 
   // Pick whichever one gets closer to the target.
-  const auto lo_diff = x - checked_int_pow(lo, n).value();
-  const auto hi_diff = checked_int_pow(hi, n).value() - x;
+  const auto lo_diff = xld - checked_int_pow(lo, n).value();
+  const auto hi_diff = checked_int_pow(hi, n).value() - xld;
   return static_cast<T>(lo_diff < hi_diff ? lo : hi);
 }
 
