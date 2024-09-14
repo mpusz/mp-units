@@ -228,7 +228,7 @@ public:
   constexpr quantity_point(FwdQ&& q, PO2) :
       quantity_point(
         quantity_point<std::remove_reference_t<Q>::reference, PO2{}, typename std::remove_reference_t<Q>::rep>{
-          std::forward<Q>(q), PO2{}})
+          std::forward<FwdQ>(q), PO2{}})
   {
   }
 

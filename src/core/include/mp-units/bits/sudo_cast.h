@@ -157,7 +157,7 @@ template<QuantityPoint ToQP, typename FwdFromQP, QuantityPoint FromQP = std::rem
 {
   constexpr Magnitude auto c_mag = get_canonical_unit(FromQP::unit).mag / get_canonical_unit(ToQP::unit).mag;
   using type_traits = conversion_type_traits<c_mag, typename FromQP::rep, typename ToQP::rep>;
-  using c_rep_type = type_traits::c_rep_typ;
+  using c_rep_type = type_traits::c_rep_type;
   using multiplier_type = typename type_traits::multiplier_type;
   using value_traits = conversion_value_traits<c_mag, multiplier_type>;
 
