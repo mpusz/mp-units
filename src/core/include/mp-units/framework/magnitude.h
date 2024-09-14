@@ -59,10 +59,10 @@ using factorizer = wheel_factorizer<4>;
 namespace detail {
 
 template<typename T>
-inline constexpr bool is_magnitude = false;
+constexpr bool is_magnitude = false;
 
 template<typename T>
-inline constexpr bool is_specialization_of_magnitude = false;
+constexpr bool is_specialization_of_magnitude = false;
 
 }  // namespace detail
 
@@ -87,7 +87,7 @@ concept Magnitude = detail::is_magnitude<T>;
 // void to_base_specialization_of_constant(const volatile constant<V>*);
 
 // template<typename T>
-// inline constexpr bool is_derived_from_specialization_of_constant =
+// constexpr bool is_derived_from_specialization_of_constant =
 //   requires(T * t) { to_base_specialization_of_constant(t); };
 
 // }  // namespace detail
@@ -142,7 +142,7 @@ concept Magnitude = detail::is_magnitude<T>;
 namespace detail {
 
 template<typename T>
-inline constexpr bool is_named_magnitude = Magnitude<T> && !detail::is_specialization_of_magnitude<T>;
+constexpr bool is_named_magnitude = Magnitude<T> && !detail::is_specialization_of_magnitude<T>;
 
 }
 
@@ -178,10 +178,10 @@ struct power_v {
 namespace detail {
 
 template<typename T>
-inline constexpr bool is_specialization_of_power_v = false;
+constexpr bool is_specialization_of_power_v = false;
 
 template<auto V, int... Ints>
-inline constexpr bool is_specialization_of_power_v<power_v<V, Ints...>> = true;
+constexpr bool is_specialization_of_power_v<power_v<V, Ints...>> = true;
 
 }  // namespace detail
 
@@ -307,6 +307,119 @@ template<typename T>
   return checked_square(int_power(base, exp / 2));
 }
 
+template<typename T>
+[[nodiscard]] consteval std::optional<T> checked_int_pow(T base, std::uintmax_t exp)
+{
+  T result = T{1};
+  while (exp > 0u) {
+    if (exp % 2u == 1u) {
+      if (base > std::numeric_limits<T>::max() / result) {
+        return std::nullopt;
+      }
+      result *= base;
+    }
+
+    exp /= 2u;
+
+    if (base > std::numeric_limits<T>::max() / base) {
+      return (exp == 0u) ? std::make_optional(result) : std::nullopt;
+    }
+    base *= base;
+  }
+  return result;
+}
+
+template<typename T>
+[[nodiscard]] consteval std::optional<T> root(T x, std::uintmax_t n)
+{
+  // The "zeroth root" would be mathematically undefined.
+  if (n == 0) {
+    return std::nullopt;
+  }
+
+  // The "first root" is trivial.
+  if (n == 1) {
+    return x;
+  }
+
+  // We only support nontrivial roots of floating point types.
+  if (!std::is_floating_point<T>::value) {
+    return std::nullopt;
+  }
+
+  // Handle negative numbers: only odd roots are allowed.
+  if (x < 0) {
+    if (n % 2 == 0) {
+      return std::nullopt;
+    } else {
+      const auto negative_result = root(-x, n);
+      if (!negative_result.has_value()) {
+        return std::nullopt;
+      }
+      return static_cast<T>(-negative_result.value());
+    }
+  }
+
+  // Handle special cases of zero and one.
+  if (x == 0 || x == 1) {
+    return x;
+  }
+
+  // Handle numbers bewtween 0 and 1.
+  if (x < 1) {
+    const auto inverse_result = root(T{1} / x, n);
+    if (!inverse_result.has_value()) {
+      return std::nullopt;
+    }
+    return static_cast<T>(T{1} / inverse_result.value());
+  }
+
+  //
+  // At this point, error conditions are finished, and we can proceed with the "core" algorithm.
+  //
+
+  // Always use `long double` for intermediate computations.  We don't ever expect people to be
+  // calling this at runtime, so we want maximum accuracy.
+  long double lo = 1.0;
+  long double hi = static_cast<long double>(x);
+
+  // Do a binary search to find the closest value such that `checked_int_pow` recovers the input.
+  //
+  // Because we know `n > 1`, and `x > 1`, and x^n is monotonically increasing, we know that
+  // `checked_int_pow(lo, n) < x < checked_int_pow(hi, n)`.  We will preserve this as an
+  // invariant.
+  while (lo < hi) {
+    long double mid = lo + (hi - lo) / 2;
+
+    auto result = checked_int_pow(mid, n);
+
+    if (!result.has_value()) {
+      return std::nullopt;
+    }
+
+    // Early return if we get lucky with an exact answer.
+    if (result.value() == x) {
+      return static_cast<T>(mid);
+    }
+
+    // Check for stagnation.
+    if (mid == lo || mid == hi) {
+      break;
+    }
+
+    // Preserve the invariant that `checked_int_pow(lo, n) < x < checked_int_pow(hi, n)`.
+    if (result.value() < x) {
+      lo = mid;
+    } else {
+      hi = mid;
+    }
+  }
+
+  // Pick whichever one gets closer to the target.
+  const auto lo_diff = x - checked_int_pow(lo, n).value();
+  const auto hi_diff = checked_int_pow(hi, n).value() - x;
+  return static_cast<T>(lo_diff < hi_diff ? lo : hi);
+}
 
 template<typename T>
 [[nodiscard]] consteval widen_t<T> compute_base_power(MagnitudeSpec auto el)
@@ -317,9 +430,6 @@ template<typename T>
   // Note that since this function should only be called at compile time, the point of these
   // terminations is to act as "static_assert substitutes", not to actually terminate at runtime.
   const auto exp = get_exponent(el);
-  if (exp.den != 1) {
-    std::abort();  // Rational powers not yet supported
-  }
 
   if (exp.num < 0) {
     if constexpr (std::is_integral_v<T>) {
@@ -329,8 +439,19 @@ template<typename T>
     }
   }
 
-  auto power = exp.num;
-  return int_power(static_cast<widen_t<T>>(get_base_value(el)), power);
+  const auto pow_result =
+    checked_int_pow(static_cast<widen_t<T>>(get_base_value(el)), static_cast<std::uintmax_t>(exp.num));
+  if (pow_result.has_value()) {
+    const auto final_result =
+      (exp.den > 1) ? root(pow_result.value(), static_cast<std::uintmax_t>(exp.den)) : pow_result;
+    if (final_result.has_value()) {
+      return final_result.value();
+    } else {
+      std::abort();  // Root computation failed.
+    }
+  } else {
+    std::abort();  // Power computation failed.
+  }
 }
 
 // A converter for the value member variable of magnitude (below).
@@ -451,13 +572,13 @@ namespace detail {
 // }
 
 // template<MagnitudeSpec auto... Elements>
-// inline constexpr bool all_elements_valid = (is_valid_element(Elements) && ...);
+// constexpr bool all_elements_valid = (is_valid_element(Elements) && ...);
 
 // template<MagnitudeSpec auto... Elements>
-// inline constexpr bool all_elements_in_order = strictly_increasing(get_base_value(Elements)...);
+// constexpr bool all_elements_in_order = strictly_increasing(get_base_value(Elements)...);
 
 // template<MagnitudeSpec auto... Elements>
-// inline constexpr bool is_element_pack_valid = all_elements_valid<Elements...> && all_elements_in_order<Elements...>;
+// constexpr bool is_element_pack_valid = all_elements_valid<Elements...> && all_elements_in_order<Elements...>;
 
 [[nodiscard]] consteval bool is_rational(MagnitudeSpec auto element)
 {
@@ -586,15 +707,15 @@ template<auto... Ms>
 void to_base_specialization_of_magnitude(const volatile magnitude<Ms...>*);
 
 template<typename T>
-inline constexpr bool is_derived_from_specialization_of_magnitude =
-  requires(T* t) { to_base_specialization_of_magnitude(t); };
+constexpr bool is_derived_from_specialization_of_magnitude =
+  requires(T* type) { to_base_specialization_of_magnitude(type); };
 
 template<typename T>
   requires is_derived_from_specialization_of_magnitude<T>
-inline constexpr bool is_magnitude<T> = true;
+constexpr bool is_magnitude<T> = true;
 
 template<auto... Ms>
-inline constexpr bool is_specialization_of_magnitude<magnitude<Ms...>> = true;
+constexpr bool is_specialization_of_magnitude<magnitude<Ms...>> = true;
 
 }  // namespace detail
 
@@ -761,7 +882,7 @@ using common_magnitude_type = decltype(common_magnitude_type_impl(M));
 //
 // WARNING:  The program behaviour will be undefined if you provide a wrong answer, so check your math!
 MP_UNITS_EXPORT template<std::intmax_t N>
-inline constexpr std::optional<std::intmax_t> known_first_factor = std::nullopt;
+constexpr std::optional<std::intmax_t> known_first_factor = std::nullopt;
 
 namespace detail {
 
@@ -794,7 +915,7 @@ struct prime_factorization<1> {
 };
 
 template<std::intmax_t N>
-inline constexpr auto prime_factorization_v = prime_factorization<N>::value;
+constexpr auto prime_factorization_v = prime_factorization<N>::value;
 
 }  // namespace detail
 
@@ -806,18 +927,18 @@ inline constexpr auto prime_factorization_v = prime_factorization<N>::value;
  */
 MP_UNITS_EXPORT template<std::intmax_t V>
   requires detail::gt_zero<V>
-inline constexpr Magnitude auto mag = detail::prime_factorization_v<V>;
+constexpr Magnitude auto mag = detail::prime_factorization_v<V>;
 
 MP_UNITS_EXPORT template<std::intmax_t N, std::intmax_t D>
   requires detail::gt_zero<N>
-inline constexpr Magnitude auto mag_ratio = detail::prime_factorization_v<N> / detail::prime_factorization_v<D>;
+constexpr Magnitude auto mag_ratio = detail::prime_factorization_v<N> / detail::prime_factorization_v<D>;
 
 /**
  * @brief  Create a Magnitude which is some rational number raised to a rational power.
  */
 MP_UNITS_EXPORT template<std::intmax_t Base, std::intmax_t Pow>
   requires detail::gt_zero<Base>
-inline constexpr Magnitude auto mag_power = pow<Pow>(mag<Base>);
+constexpr Magnitude auto mag_power = pow<Pow>(mag<Base>);
 
 namespace detail {
 

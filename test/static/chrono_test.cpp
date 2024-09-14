@@ -127,6 +127,15 @@ static_assert(quantity{std::chrono::weeks{1}} == 7 * d);
 static_assert(quantity{std::chrono::months{1}} == 2629746 * s);
 static_assert(quantity{std::chrono::years{1}} == 31556952 * s);
 
+// conversion from chrono
+static_assert(quantity<ns>{1ns} == 1 * ns);
+static_assert(quantity<ns>{1s} == 1 * s);
+static_assert(quantity<s>{1ms} == 1 * ms);
+
+// conversion to chrono
+static_assert(std::chrono::nanoseconds(quantity{1 * ns}) == 1ns);
+static_assert(std::chrono::nanoseconds(quantity{1 * s}) == 1s);
+
 // operators
 static_assert(quantity{1s} + 1 * s == 2 * s);
 static_assert(quantity{1s} + 1 * min == 61 * s);

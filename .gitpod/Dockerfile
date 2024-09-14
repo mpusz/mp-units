@@ -17,3 +17,18 @@ RUN sudo install-packages \
   libjpeg-dev \
   libpng-dev \
   libz-dev
+
+# Install API reference dependencies
+RUN sudo install-packages \
+  haskell-stack \
+  graphviz \
+  nodejs \
+  npm \
+  ghc \
+  cabal-install
+RUN npm install split mathjax-full mathjax-node-sre
+RUN cabal update
+
+# Install MathJax-Node-CLI
+git clone https://github.com/mathjax/mathjax-node-cli --depth=1
+echo "export PATH=\"$PWD/mathjax-node-cli/bin:\$PATH\"" >> ~/.bashrc

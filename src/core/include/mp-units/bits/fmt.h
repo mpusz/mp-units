@@ -122,7 +122,7 @@ public:
 MP_UNITS_EXPORT_END
 
 template<typename T>
-inline constexpr bool is_integer =
+constexpr bool is_integer =
   std::is_integral_v<T> && !std::is_same_v<T, bool> && !std::is_same_v<T, char> && !std::is_same_v<T, wchar_t>;
 
 // Converts a character to ASCII. Returns a number > 127 on conversion failure.
@@ -189,6 +189,8 @@ constexpr void handle_dynamic_spec(int& value, fmt_arg_ref<typename Context::cha
   }
 }
 
+MP_UNITS_DIAGNOSTIC_PUSH
+MP_UNITS_DIAGNOSTIC_IGNORE_UNREACHABLE
 struct width_checker {
   template<typename T>
   [[nodiscard]] constexpr unsigned long long operator()(T value) const
@@ -199,16 +201,16 @@ struct width_checker {
       return static_cast<unsigned long long>(value);
     }
     MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("width is not integer"));
-    return 0;
   }
 };
+MP_UNITS_DIAGNOSTIC_POP
 
 MP_UNITS_EXPORT_END
 
 // Parses the range [begin, end) as an unsigned integer. This function assumes
 // that the range is non-empty and the first character is a digit.
-template<typename Char>
-[[nodiscard]] constexpr int parse_nonnegative_int(const Char*& begin, const Char* end, int error_value)
+template<std::forward_iterator It>
+[[nodiscard]] constexpr int parse_nonnegative_int(It& begin, It end, int error_value)
 {
   MP_UNITS_EXPECTS(begin != end && '0' <= *begin && *begin <= '9');
   unsigned value = 0, prev = 0;
@@ -234,10 +236,10 @@ template<typename Char>
   return ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z') || c == '_';
 }
 
-template<typename Char, typename Handler>
-[[nodiscard]] constexpr const Char* do_parse_arg_id(const Char* begin, const Char* end, Handler& handler)
+template<std::forward_iterator It, typename Handler>
+[[nodiscard]] constexpr const It do_parse_arg_id(It begin, It end, Handler& handler)
 {
-  Char c = *begin;
+  auto c = *begin;
   if (c >= '0' && c <= '9') {
     int index = 0;
     constexpr int max = (std::numeric_limits<int>::max)();
@@ -253,7 +255,6 @@ template<typename Char, typename Handler>
   if (c == '%') return begin;  // mp-units extension
   if (!::mp_units::detail::is_name_start(c)) {
     MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("invalid format string"));
-    return begin;
   }
   auto it = begin;
   do {
@@ -268,11 +269,11 @@ template<typename Char, typename Handler>
   return it;
 }
 
-template<typename Char, typename Handler>
-[[nodiscard]] constexpr const Char* parse_arg_id(const Char* begin, const Char* end, Handler& handler)
+template<std::forward_iterator It, typename Handler>
+[[nodiscard]] constexpr It parse_arg_id(It begin, It end, Handler& handler)
 {
   MP_UNITS_EXPECTS(begin != end);
-  Char c = *begin;
+  auto c = *begin;
   if (c != '}' && c != ':') return ::mp_units::detail::do_parse_arg_id(begin, end, handler);
   handler.on_auto();
   return begin;
@@ -308,10 +309,9 @@ struct dynamic_spec_id_handler {
 #endif
 };
 
-template<typename Char>
-[[nodiscard]] constexpr const Char* parse_dynamic_spec(const Char* begin, const Char* end, int& value,
-                                                       fmt_arg_ref<Char>& ref,
-                                                       MP_UNITS_STD_FMT::basic_format_parse_context<Char>& ctx)
+template<std::forward_iterator It, typename Char = std::iter_value_t<It>>
+[[nodiscard]] constexpr It parse_dynamic_spec(It begin, It end, int& value, fmt_arg_ref<Char>& ref,
+                                              MP_UNITS_STD_FMT::basic_format_parse_context<Char>& ctx)
 {
   MP_UNITS_EXPECTS(begin != end);
   if ('0' <= *begin && *begin <= '9') {
@@ -346,9 +346,8 @@ constexpr int code_point_length(It begin)
 }
 
 // Parses fill and alignment.
-template<typename Char, typename Specs>
-[[nodiscard]] constexpr const Char* parse_align(const Char* begin, const Char* end, Specs& specs,
-                                                fmt_align default_align = fmt_align::none)
+template<std::forward_iterator It, typename Specs>
+[[nodiscard]] constexpr It parse_align(It begin, It end, Specs& specs, fmt_align default_align = fmt_align::none)
 {
   MP_UNITS_EXPECTS(begin != end);
   auto align = fmt_align::none;
@@ -370,11 +369,8 @@ template<typename Char, typename Specs>
       if (p != begin) {
         auto c = *begin;
         if (c == '}') return begin;
-        if (c == '{') {
-          MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("invalid fill character '{'"));
-          return begin;
-        }
-        specs.fill = {begin, to_unsigned(p - begin)};
+        if (c == '{') MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("invalid fill character '{'"));
+        specs.fill = {begin, p};
         begin = p + 1;
       } else {
         ++begin;

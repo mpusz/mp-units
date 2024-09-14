@@ -126,19 +126,10 @@ using namespace non_si;
 }  // namespace si
 
 template<>
-inline constexpr bool unit_can_be_prefixed<si::degree_Celsius> = false;
+MP_UNITS_INLINE constexpr bool space_before_unit_symbol<non_si::degree> = false;
 template<>
-inline constexpr bool unit_can_be_prefixed<non_si::minute> = false;
+MP_UNITS_INLINE constexpr bool space_before_unit_symbol<non_si::arcminute> = false;
 template<>
-inline constexpr bool unit_can_be_prefixed<non_si::hour> = false;
-template<>
-inline constexpr bool unit_can_be_prefixed<non_si::day> = false;
-
-template<>
-inline constexpr bool space_before_unit_symbol<non_si::degree> = false;
-template<>
-inline constexpr bool space_before_unit_symbol<non_si::arcminute> = false;
-template<>
-inline constexpr bool space_before_unit_symbol<non_si::arcsecond> = false;
+MP_UNITS_INLINE constexpr bool space_before_unit_symbol<non_si::arcsecond> = false;
 
 }  // namespace mp_units

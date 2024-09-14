@@ -40,10 +40,10 @@ MP_UNITS_DIAGNOSTIC_IGNORE_EXPR_ALWAYS_TF
 namespace mp_units::detail {
 
 template<typename T>
-inline constexpr bool is_type_list = false;
+constexpr bool is_type_list = false;
 
 template<template<typename...> typename T, typename... Types>
-inline constexpr bool is_type_list<T<Types...>> = true;
+constexpr bool is_type_list<T<Types...>> = true;
 
 template<typename T>
 concept TypeList = is_type_list<T>;
@@ -56,7 +56,7 @@ template<template<typename...> typename List, typename... Types>
 struct type_list_size_impl<List<Types...>> : std::integral_constant<std::size_t, sizeof...(Types)> {};
 
 template<TypeList List>
-inline constexpr std::size_t type_list_size = type_list_size_impl<List>::value;
+constexpr std::size_t type_list_size = type_list_size_impl<List>::value;
 
 // map
 template<typename T, template<typename...> typename To>
@@ -68,7 +68,7 @@ struct type_list_map_impl<From<Args...>, To> {
 };
 
 template<TypeList From, template<typename...> typename To>
-using type_list_map = MP_UNITS_TYPENAME type_list_map_impl<From, To>::type;
+using type_list_map = type_list_map_impl<From, To>::type;
 
 
 // element
@@ -105,7 +105,7 @@ struct type_list_front_impl<List<T, Ts...>> {
 };
 
 template<TypeList List>
-using type_list_front = MP_UNITS_TYPENAME type_list_front_impl<List>::type;
+using type_list_front = type_list_front_impl<List>::type;
 
 // back
 template<TypeList List>
@@ -121,7 +121,7 @@ struct type_list_push_front_impl<List<OldTypes...>, NewTypes...> {
 };
 
 template<TypeList List, typename... Types>
-using type_list_push_front = MP_UNITS_TYPENAME type_list_push_front_impl<List, Types...>::type;
+using type_list_push_front = type_list_push_front_impl<List, Types...>::type;
 
 // push_back
 template<typename List, typename... Types>
@@ -133,7 +133,7 @@ struct type_list_push_back_impl<List<OldTypes...>, NewTypes...> {
 };
 
 template<TypeList List, typename... Types>
-using type_list_push_back = MP_UNITS_TYPENAME type_list_push_back_impl<List, Types...>::type;
+using type_list_push_back = type_list_push_back_impl<List, Types...>::type;
 
 // join
 template<typename List, typename... Rest>
@@ -143,11 +143,11 @@ struct type_list_join_impl {
 
 template<template<typename...> typename List, typename... First, typename... Second, typename... Rest>
 struct type_list_join_impl<List<First...>, List<Second...>, Rest...> {
-  using type = MP_UNITS_TYPENAME type_list_join_impl<List<First..., Second...>, Rest...>::type;
+  using type = type_list_join_impl<List<First..., Second...>, Rest...>::type;
 };
 
 template<TypeList... Lists>
-using type_list_join = MP_UNITS_TYPENAME type_list_join_impl<Lists...>::type;
+using type_list_join = type_list_join_impl<Lists...>::type;
 
 // split
 template<typename List, typename First, typename Second>
@@ -195,19 +195,19 @@ template<template<typename...> typename List, typename Lhs1, typename... LhsRest
          template<typename, typename> typename Pred>
   requires Pred<Lhs1, Rhs1>::value
 struct type_list_merge_sorted_impl<List<Lhs1, LhsRest...>, List<Rhs1, RhsRest...>, Pred> {
-  using type = MP_UNITS_TYPENAME type_list_push_front_impl<
+  using type = type_list_push_front_impl<
     typename type_list_merge_sorted_impl<List<LhsRest...>, List<Rhs1, RhsRest...>, Pred>::type, Lhs1>::type;
 };
 
 template<template<typename...> typename List, typename Lhs1, typename... LhsRest, typename Rhs1, typename... RhsRest,
          template<typename, typename> typename Pred>
 struct type_list_merge_sorted_impl<List<Lhs1, LhsRest...>, List<Rhs1, RhsRest...>, Pred> {
-  using type = MP_UNITS_TYPENAME type_list_push_front_impl<
+  using type = type_list_push_front_impl<
     typename type_list_merge_sorted_impl<List<Lhs1, LhsRest...>, List<RhsRest...>, Pred>::type, Rhs1>::type;
 };
 
 template<TypeList SortedList1, TypeList SortedList2, template<typename, typename> typename Pred>
-using type_list_merge_sorted = MP_UNITS_TYPENAME type_list_merge_sorted_impl<SortedList1, SortedList2, Pred>::type;
+using type_list_merge_sorted = type_list_merge_sorted_impl<SortedList1, SortedList2, Pred>::type;
 
 // sort
 template<typename List, template<typename, typename> typename Pred>
@@ -227,13 +227,13 @@ template<template<typename...> typename List, typename... Types, template<typena
 struct type_list_sort_impl<List<Types...>, Pred> {
   using types = List<Types...>;
   using split = type_list_split_half<List<Types...>>;
-  using sorted_left = MP_UNITS_TYPENAME type_list_sort_impl<typename split::first_list, Pred>::type;
-  using sorted_right = MP_UNITS_TYPENAME type_list_sort_impl<typename split::second_list, Pred>::type;
-  using type = MP_UNITS_TYPENAME type_list_merge_sorted_impl<sorted_left, sorted_right, Pred>::type;
+  using sorted_left = type_list_sort_impl<typename split::first_list, Pred>::type;
+  using sorted_right = type_list_sort_impl<typename split::second_list, Pred>::type;
+  using type = type_list_merge_sorted_impl<sorted_left, sorted_right, Pred>::type;
 };
 
 template<TypeList List, template<typename, typename> typename Pred>
-using type_list_sort = MP_UNITS_TYPENAME type_list_sort_impl<List, Pred>::type;
+using type_list_sort = type_list_sort_impl<List, Pred>::type;
 
 }  // namespace mp_units::detail
 

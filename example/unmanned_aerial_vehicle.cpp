@@ -53,7 +53,7 @@ struct height_above_ellipsoid_t final : absolute_point_origin<isq::altitude> {
   static constexpr earth_gravity_model egm = M;
 };
 template<earth_gravity_model M>
-inline constexpr height_above_ellipsoid_t<M> height_above_ellipsoid;  // NOLINT(google-readability-casting)
+constexpr height_above_ellipsoid_t<M> height_above_ellipsoid;  // NOLINT(google-readability-casting)
 
 template<earth_gravity_model M>
 using hae_altitude = quantity_point<isq::altitude[si::metre], height_above_ellipsoid<M>>;

@@ -31,7 +31,7 @@ import std;
 #endif
 
 template<auto V, typename T>
-inline constexpr bool is_of_type = std::is_same_v<MP_UNITS_REMOVE_CONST(decltype(V)), T>;
+constexpr bool is_of_type = std::is_same_v<MP_UNITS_REMOVE_CONST(decltype(V)), T>;
 
 // NOLINTBEGIN(cppcoreguidelines-macro-usage)
 #if MP_UNITS_API_NO_CRTP

@@ -57,37 +57,37 @@ struct per {};
 namespace detail {
 
 template<typename T>
-inline constexpr bool is_specialization_of_per = false;
+constexpr bool is_specialization_of_per = false;
 
 template<typename... Ts>
-inline constexpr bool is_specialization_of_per<per<Ts...>> = true;
+constexpr bool is_specialization_of_per<per<Ts...>> = true;
 
 template<int Num, int... Den>
-inline constexpr bool valid_ratio = true;
+constexpr bool valid_ratio = true;
 
 template<int... Den>
-inline constexpr bool valid_ratio<0, Den...> = false;
+constexpr bool valid_ratio<0, Den...> = false;
 
 template<int Num>
-inline constexpr bool valid_ratio<Num, 0> = false;
+constexpr bool valid_ratio<Num, 0> = false;
 
 template<>
-inline constexpr bool valid_ratio<0, 0> = false;
+MP_UNITS_INLINE constexpr bool valid_ratio<0, 0> = false;
 
 template<int Num, int... Den>
-inline constexpr bool positive_ratio = gt_zero<Num>;
+constexpr bool positive_ratio = gt_zero<Num>;
 
 template<int Num, int Den>
-inline constexpr bool positive_ratio<Num, Den> = gt_zero<Num * Den>;
+constexpr bool positive_ratio<Num, Den> = gt_zero<Num * Den>;
 
 template<int Num, int... Den>
-inline constexpr bool ratio_one = false;
+constexpr bool ratio_one = false;
 
 template<>
-inline constexpr bool ratio_one<1> = true;
+MP_UNITS_INLINE constexpr bool ratio_one<1> = true;
 
 template<int N>
-inline constexpr bool ratio_one<N, N> = true;
+constexpr bool ratio_one<N, N> = true;
 
 }  // namespace detail
 
@@ -122,15 +122,15 @@ struct expr_type_impl<power<T, Ints...>> : std::type_identity<T> {};
 }  // namespace detail
 
 template<typename T>
-using expr_type = MP_UNITS_TYPENAME detail::expr_type_impl<T>::type;
+using expr_type = detail::expr_type_impl<T>::type;
 
 namespace detail {
 
 template<typename T>
-inline constexpr bool is_specialization_of_power = false;
+constexpr bool is_specialization_of_power = false;
 
 template<typename F, int... Ints>
-inline constexpr bool is_specialization_of_power<power<F, Ints...>> = true;
+constexpr bool is_specialization_of_power<power<F, Ints...>> = true;
 
 template<typename T, ratio R>
 consteval auto power_or_T_impl()
@@ -182,25 +182,24 @@ struct expr_consolidate_impl<type_list<T, Rest...>> {
 template<typename T, typename... Rest>
   requires(!is_specialization_of_power<T>)
 struct expr_consolidate_impl<type_list<T, T, Rest...>> {
-  using type = MP_UNITS_TYPENAME expr_consolidate_impl<type_list<power<T, 2>, Rest...>>::type;
+  using type = expr_consolidate_impl<type_list<power<T, 2>, Rest...>>::type;
 };
 
 // replaces the instance of a type and a power of it with one with incremented power
 template<typename T, int... Ints, typename... Rest>
 struct expr_consolidate_impl<type_list<T, power<T, Ints...>, Rest...>> {
-  using type =
-    MP_UNITS_TYPENAME expr_consolidate_impl<type_list<power_or_T<T, power<T, Ints...>::exponent + 1>, Rest...>>::type;
+  using type = expr_consolidate_impl<type_list<power_or_T<T, power<T, Ints...>::exponent + 1>, Rest...>>::type;
 };
 
 // accumulates the powers of instances of the same type (removes the element in case the accumulation result is `0`)
 template<typename T, int... Ints1, int... Ints2, typename... Rest>
 struct expr_consolidate_impl<type_list<power<T, Ints1...>, power<T, Ints2...>, Rest...>> {
   static constexpr ratio r = power<T, Ints1...>::exponent + power<T, Ints2...>::exponent;
-  using type = MP_UNITS_TYPENAME expr_consolidate_impl<type_list<power_or_T<T, r>, Rest...>>::type;
+  using type = expr_consolidate_impl<type_list<power_or_T<T, r>, Rest...>>::type;
 };
 
 template<typename List>
-using expr_consolidate = MP_UNITS_TYPENAME expr_consolidate_impl<List>::type;
+using expr_consolidate = expr_consolidate_impl<List>::type;
 
 
 /**
@@ -334,7 +333,7 @@ struct expr_fractions : decltype(expr_fractions_impl<OneType, type_list<Ts...>>(
 
 // expr_make_spec
 template<typename NumList, typename DenList, typename OneType, template<typename...> typename To>
-[[nodiscard]] consteval auto expr_make_spec_impl()
+[[nodiscard]] MP_UNITS_CONSTEVAL auto expr_make_spec_impl()
 {
   constexpr std::size_t num = type_list_size<NumList>;
   constexpr std::size_t den = type_list_size<DenList>;
@@ -359,7 +358,7 @@ template<typename NumList, typename DenList, typename OneType, template<typename
  */
 template<typename NumList, typename DenList, typename OneType, template<typename, typename> typename Pred,
          template<typename...> typename To>
-[[nodiscard]] consteval auto get_optimized_expression()
+[[nodiscard]] MP_UNITS_CONSTEVAL auto get_optimized_expression()
 {
   using num_list = expr_consolidate<NumList>;
   using den_list = expr_consolidate<DenList>;
@@ -380,7 +379,7 @@ template<typename NumList, typename DenList, typename OneType, template<typename
  */
 template<template<typename...> typename To, typename OneType, template<typename, typename> typename Pred, typename Lhs,
          typename Rhs>
-[[nodiscard]] consteval auto expr_multiply(Lhs, Rhs)
+[[nodiscard]] MP_UNITS_CONSTEVAL auto expr_multiply(Lhs, Rhs)
 {
   if constexpr (is_same_v<Lhs, OneType>) {
     return Rhs{};
@@ -509,10 +508,10 @@ concept expr_type_projectable = (requires { typename Proj<T>; } ||
                                  (is_specialization_of_power<T> && requires { typename Proj<typename T::factor>; }));
 
 template<typename T, template<typename> typename Proj>
-inline constexpr bool expr_projectable_impl = false;
+constexpr bool expr_projectable_impl = false;
 
 template<typename... Ts, template<typename> typename Proj>
-inline constexpr bool expr_projectable_impl<type_list<Ts...>, Proj> = (... && expr_type_projectable<Ts, Proj>);
+constexpr bool expr_projectable_impl<type_list<Ts...>, Proj> = (... && expr_type_projectable<Ts, Proj>);
 
 template<typename T, template<typename> typename Proj>
 concept expr_projectable = requires {

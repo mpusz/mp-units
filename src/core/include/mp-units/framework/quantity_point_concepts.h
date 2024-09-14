@@ -38,14 +38,14 @@ struct absolute_point_origin;
 namespace detail {
 
 template<typename T>
-inline constexpr bool is_quantity_point = false;
+constexpr bool is_quantity_point = false;
 
 template<auto Q>
 void to_base_specialization_of_absolute_point_origin(const volatile absolute_point_origin<Q>*);
 
 template<typename T>
-inline constexpr bool is_derived_from_specialization_of_absolute_point_origin =
-  requires(T* t) { to_base_specialization_of_absolute_point_origin(t); };
+constexpr bool is_derived_from_specialization_of_absolute_point_origin =
+  requires(T* type) { to_base_specialization_of_absolute_point_origin(type); };
 
 }  // namespace detail
 
@@ -66,8 +66,8 @@ template<auto QP>
 void to_base_specialization_of_relative_point_origin(const volatile relative_point_origin<QP>*);
 
 template<typename T>
-inline constexpr bool is_derived_from_specialization_of_relative_point_origin =
-  requires(T* t) { to_base_specialization_of_relative_point_origin(t); };
+constexpr bool is_derived_from_specialization_of_relative_point_origin =
+  requires(T* type) { to_base_specialization_of_relative_point_origin(type); };
 
 struct point_origin_interface;
 
@@ -99,12 +99,12 @@ template<auto R, auto PO, typename Rep>
 void to_base_specialization_of_quantity_point(const volatile quantity_point<R, PO, Rep>*);
 
 template<typename T>
-inline constexpr bool is_derived_from_specialization_of_quantity_point =
-  requires(T* t) { to_base_specialization_of_quantity_point(t); };
+constexpr bool is_derived_from_specialization_of_quantity_point =
+  requires(T* type) { to_base_specialization_of_quantity_point(type); };
 
 template<typename T>
   requires is_derived_from_specialization_of_quantity_point<T>
-inline constexpr bool is_quantity_point<T> = true;
+constexpr bool is_quantity_point<T> = true;
 
 template<PointOrigin PO1, PointOrigin PO2>
 [[nodiscard]] consteval bool same_absolute_point_origins(PO1 po1, PO2 po2)

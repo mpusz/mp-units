@@ -318,6 +318,11 @@ inline constexpr auto YN = yotta<newton>;
 inline constexpr auto RN = ronna<newton>;
 inline constexpr auto QN = quetta<newton>;
 
+#ifdef pascal
+#pragma push_macro("pascal")
+#undef pascal
+#define MP_UNITS_REDEFINE_PASCAL
+#endif
 inline constexpr auto qPa = quecto<pascal>;
 inline constexpr auto rPa = ronto<pascal>;
 inline constexpr auto yPa = yocto<pascal>;
@@ -343,6 +348,10 @@ inline constexpr auto ZPa = zetta<pascal>;
 inline constexpr auto YPa = yotta<pascal>;
 inline constexpr auto RPa = ronna<pascal>;
 inline constexpr auto QPa = quetta<pascal>;
+#ifdef MP_UNITS_REDEFINE_PASCAL
+#pragma pop_macro("pascal")
+#undef MP_UNITS_REDEFINE_PASCAL
+#endif
 
 inline constexpr auto qJ = quecto<joule>;
 inline constexpr auto rJ = ronto<joule>;

@@ -106,18 +106,18 @@ static_assert(Unit<decltype(metre / second)>);
 static_assert(Unit<decltype(nu_second / nu_second)>);
 static_assert(Unit<decltype(kilometre)>);
 
-static_assert(detail::NamedUnit<metre_>);
-static_assert(detail::NamedUnit<hertz_>);
-static_assert(detail::NamedUnit<newton_>);
-static_assert(detail::NamedUnit<minute_>);
-static_assert(detail::NamedUnit<radian_>);
-static_assert(!detail::NamedUnit<decltype(kilogram)>);
-static_assert(!detail::NamedUnit<decltype(kilojoule)>);
-static_assert(!detail::NamedUnit<decltype(si::kilo<gram>)>);
-static_assert(!detail::NamedUnit<decltype(square(metre))>);
-static_assert(!detail::NamedUnit<decltype(cubic(metre))>);
-static_assert(!detail::NamedUnit<decltype(mag<60> * second)>);
-static_assert(!detail::NamedUnit<decltype(kilometre)>);
+static_assert(PrefixableUnit<metre_>);
+static_assert(PrefixableUnit<hertz_>);
+static_assert(PrefixableUnit<newton_>);
+static_assert(PrefixableUnit<minute_>);
+static_assert(PrefixableUnit<radian_>);
+static_assert(!PrefixableUnit<decltype(kilogram)>);
+static_assert(!PrefixableUnit<decltype(kilojoule)>);
+static_assert(!PrefixableUnit<decltype(si::kilo<gram>)>);
+static_assert(!PrefixableUnit<decltype(square(metre))>);
+static_assert(!PrefixableUnit<decltype(cubic(metre))>);
+static_assert(!PrefixableUnit<decltype(mag<60> * second)>);
+static_assert(!PrefixableUnit<decltype(kilometre)>);
 
 // named unit
 static_assert(is_of_type<metre, metre_>);

@@ -1,0 +1,266 @@
+%!TEX root = std.tex
+\rSec0[qties]{Quantities library}
+
+\rSec1[qties.summary]{Summary}
+
+\pnum
+This Clause describes components for dealing with quantities,
+as summarized in \tref{qties.summary}.
+
+\begin{modularlibsumtab}{Quantities library summary}{qties.summary}
+\ref{qty.helpers}       & Helpers                                & \tcode{mp_units.core} \\
+\ref{qty.traits}        & Traits                                 & \\
+\ref{qty.concepts}      & Concepts                               & \\
+\ref{qty.types}         & Types                                  & \\
+\ref{qty.compat}        & Compatibility                          & \\
+\ref{qty.one}           & Dimension one                          & \\ \rowsep
+\ref{qty.systems}       & Systems                                & \tcode{mp_units.systems} \\
+\ref{qty.chrono}        & \tcode{std::chrono} compatibility      & \\
+\end{modularlibsumtab}
+
+\rSec1[mp.units.syn]{Module \tcode{mp_units} synopsis}
+\indexmodule{mp_units}%
+\begin{codeblock}
+export module mp_units;
+
+export import mp_units.core;
+export import mp_units.systems;
+\end{codeblock}
+
+\rSec1[mp.units.core.syn]{Module \tcode{mp_units.core} synopsis}
+\indexmodule{mp_units.core}%
+\begin{codeblock}
+export module mp_units.core;
+
+import std;
+
+export namespace mp_units {
+
+export enum class quantity_character { scalar, vector, tensor };
+
+// \ref{qty.traits}, traits
+
+template<typename Rep>
+constexpr bool treat_as_floating_point = std::is_floating_point_v<Rep>;
+
+template<typename Rep>
+constexpr bool is_scalar =
+  std::is_floating_point_v<Rep> || (std::is_integral_v<Rep> && !is_same_v<Rep, bool>);
+
+template<typename Rep>
+constexpr bool is_vector = false;
+
+template<typename Rep>
+constexpr bool is_tensor = false;
+
+template<typename Rep>
+struct quantity_values;
+
+template<typename T>
+struct quantity_like_traits;
+
+template<typename T>
+struct quantity_point_like_traits;
+
+// \ref{qty.concepts}, concepts
+
+template<typename T>
+concept @\deflibconcept{some_reference}@ = template_of(^std::remove_cvref_t<T>) == ^reference;
+
+template<typename T>
+concept representation = @\seebelownc@;
+
+template<typename T, quantity_character Ch>
+concept representation_of = @\seebelownc@;
+
+template<typename T>
+concept some_quantity_spec = @\seebelownc@;
+
+// \ref{qty.types}, types
+
+template<auto...>
+struct quantity_spec; // \notdef
+
+template<auto Q>
+struct kind_of_; // \notdef
+
+template<@\unspec@... Expr>
+struct derived_quantity_spec;
+
+// \ref{qty.type}, class template \tcode{quantity}
+export template<@\libconcept{some_reference}@ auto R,
+                @\libconcept{representation_of}@<get_quantity_spec(R).character> Rep = double>
+class quantity;
+
+// \ref{qty.point.type}, class template \tcode{quantity_point}
+template<@\unspec@>
+class quantity_point;
+
+}
+\end{codeblock}
+
+\rSec1[mp.units.systems.syn]{Module \tcode{mp_units.systems} synopsis}
+\indexmodule{mp_units.systems}%
+\begin{codeblock}
+export module mp_units.systems;
+
+export import mp_units.core;
+import std;
+
+export namespace mp_units {
+
+}
+\end{codeblock}
+
+\rSec1[qty.helpers]{Helpers}
+
+\begin{itemdecl}
+consteval bool @\exposidnc{converts-to-base-subobject-of}@(std::meta type, std::meta template_name);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\expects
+\tcode{is_type(type) \&\& is_template(template_name)} is \tcode{true}.
+
+\pnum
+\returns
+\tcode{true} if
+\tcode{[:type:]} has an unambiguous and accessible base
+that is a specialization of \tcode{[:template_name:]}, and
+\tcode{false} otherwise.
+\end{itemdescr}
+
+\rSec1[qty.traits]{Traits}
+
+\begin{itemdecl}
+template<typename Rep>
+constexpr bool @\libglobal{is_scalar}@ =
+  std::is_floating_point_v<Rep> || (std::is_integral_v<Rep> && !is_same_v<Rep, bool>);
+
+template<typename Rep>
+constexpr bool @\libglobal{is_vector}@ = false;
+
+template<typename Rep>
+constexpr bool @\libglobal{is_tensor}@ = false;
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\remarks
+Pursuant to \refcpp{namespace.std}\iref{spec.ext},
+users may specialize \tcode{is_scalar}, \tcode{is_vector}, and \tcode{is_tensor} to \tcode{true}
+for cv-unqualified program-defined types
+which respectively represent
+a scalar\irefiev{102-02-18},
+a vector\irefiev{102-03-04}, and
+% FIXME Undefined term.
+a tensor,
+and \tcode{false} for types which respectively do not.
+\end{itemdescr}
+
+\rSec1[qty.concepts]{Concepts}
+
+\begin{itemdecl}
+export template<typename T>
+concept @\deflibconcept{representation}@ =
+  (is_scalar<T> || is_vector<T> || is_tensor<T>)&&std::regular<T> && @\exposidnc{scalable}@<T>;
+\end{itemdecl}
+
+\begin{itemdecl}
+export template<typename T, quantity_character Ch>
+concept @\deflibconcept{representation_of}@ =
+  @\libconcept{representation}@<T> && ((Ch == quantity_character::scalar && is_scalar<T>) ||
+                        (Ch == quantity_character::vector && is_vector<T>) ||
+                        (Ch == quantity_character::tensor && is_tensor<T>));
+\end{itemdecl}
+
+% FIXME Despite the `some_` prefix, it doesn't conform to the convention
+%       `template_of(^std::remove_cvref_t<T>) == ^template_name`.
+\begin{itemdecl}
+template<typename T>
+concept @\defexposconceptnc{named-quantity-spec}@ =
+  (@\exposidnc{converts-to-base-subobject-of}@(^T, ^quantity_spec) && template_of(^T) != ^kind_of_);
+
+template<typename T>
+concept @\deflibconcept{some_quantity_spec}@ =
+  @\exposconceptnc{named-quantity-spec}@<T> ||
+  detail::IntermediateDerivedQuantitySpec<T> ||
+  template_of(^T) == ^kind_of;
+\end{itemdecl}
+
+\rSec1[qty.types]{Types}
+
+\rSec2[qty.types.general]{General}
+
+\pnum
+A \defnadj{quantity}{type}
+is a type \tcode{\placeholder{Q}}
+that is a specialization of \tcode{quantity} or \tcode{quantity_point}.
+\tcode{\placeholder{Q}} represents a quantity\irefiev{112-01-01}
+with \tcode{\placeholder{Q}::rep} as its number
+and \tcode{\placeholder{Q}::reference} as its reference.
+\tcode{\placeholder{Q}} is a structural type\irefcppx{temp.param}{term.structural.type}
+if \tcode{\placeholder{Q}::rep} is a structural type.
+
+\pnum
+Each class template defined in subclause \ref{qty.types}
+has data members and special members specified below, and
+has no base classes or members other than those specified.
+
+\rSec2[qty.type]{Class template \tcode{quantity}}
+
+\begin{codeblock}
+namespace mp_units {
+
+export template<@\libconcept{some_reference}@ auto R,
+                @\libconcept{representation_of}@<get_quantity_spec(R).character> Rep = double>
+class quantity { @\unspec@ };
+
+}
+\end{codeblock}
+
+Let \tcode{\placeholder{Q}} be a specialization of \tcode{quantity}.
+\begin{itemize}
+\item
+If \tcode{Rep} is a scalar,
+\tcode{\placeholder{Q}} represents a scalar quantity\irefiev{102-02-19}.
+\item
+If \tcode{Rep} is a vector,
+\tcode{\placeholder{Q}} represents a vector\irefiev{102-03-04}.
+% FIXME What if `Rep` is a tensor?
+\end{itemize}
+
+\rSec2[qty.point.type]{Class template \tcode{quantity_point}}
+
+\begin{codeblock}
+namespace mp_units {
+
+export template<@\unspec@>
+class quantity_point { @\unspec@ };
+
+}
+\end{codeblock}
+
+A \defnadj{quantity point}{type} is a specialization of \tcode{quantity_point}.
+Let \tcode{\placeholder{Q}} be a quantity point type.
+\tcode{\placeholdernc{Q}::point_origin} represents
+the origin point of a position vector\irefiev{102-03-15}.
+\begin{itemize}
+\item
+If \tcode{Rep} is a scalar,
+\tcode{\placeholder{Q}} represents the scalar quantity\irefiev{102-02-19}
+of a position vector.
+\item
+If \tcode{Rep} is a vector,
+\tcode{\placeholder{Q}} represents a position vector.
+% FIXME What if `Rep` is a tensor?
+\end{itemize}
+
+\rSec1[qty.compat]{Compatibility}
+
+\rSec1[qty.one]{Dimension one}
+
+\rSec1[qty.systems]{Systems}
+
+\rSec1[qty.chrono]{\tcode{std::chrono} compatibility}

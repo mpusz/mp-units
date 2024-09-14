@@ -115,7 +115,16 @@ inline constexpr struct troy_once final : named_unit<"oz t", mag<20> * pennyweig
 inline constexpr struct troy_pound final : named_unit<"lb t", mag<12> * troy_once> {} troy_pound;
 
 // https://en.wikipedia.org/wiki/Inch_of_mercury
+#ifdef pascal
+#pragma push_macro("pascal")
+#undef pascal
+#define MP_UNITS_REDEFINE_PASCAL
+#endif
 inline constexpr struct inch_of_mercury final : named_unit<"inHg", mag_ratio<3'386'389, 1'000> * si::pascal> {} inch_of_mercury;
+#ifdef MP_UNITS_REDEFINE_PASCAL
+#pragma pop_macro("pascal")
+#undef MP_UNITS_REDEFINE_PASCAL
+#endif
 
 // https://en.wikipedia.org/wiki/United_States_customary_units#Temperature
 inline constexpr struct zeroth_degree_Fahrenheit final : relative_point_origin<absolute<mag_ratio<5, 9> * si::degree_Celsius>(-32)> {} zeroth_degree_Fahrenheit;
