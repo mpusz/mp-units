@@ -288,7 +288,7 @@ specialization for a specific unit:
 
 ```cpp
 template<>
-inline constexpr bool space_before_unit_symbol<non_si::degree> = false;
+constexpr bool space_before_unit_symbol<non_si::degree> = false;
 ```
 
 !!! note

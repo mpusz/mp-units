@@ -44,10 +44,10 @@ template<typename Rep = double>
 using vector = STD_LA::fixed_size_column_vector<Rep, 3>;
 
 template<class Rep>
-inline constexpr bool mp_units::treat_as_floating_point<vector<Rep>> = mp_units::treat_as_floating_point<Rep>;
+constexpr bool mp_units::treat_as_floating_point<vector<Rep>> = mp_units::treat_as_floating_point<Rep>;
 
 template<typename Rep>
-inline constexpr bool mp_units::is_vector<vector<Rep>> = true;
+constexpr bool mp_units::is_vector<vector<Rep>> = true;
 
 template<typename Rep>
 std::ostream& operator<<(std::ostream& os, const vector<Rep>& v)
@@ -301,7 +301,7 @@ TEST_CASE("vector quantity", "[la]")
 
 template<class T>
   requires mp_units::is_scalar<T>
-inline constexpr bool mp_units::is_vector<T> = true;
+constexpr bool mp_units::is_vector<T> = true;
 
 TEST_CASE("vector of quantities", "[la]")
 {

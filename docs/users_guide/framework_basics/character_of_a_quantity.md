@@ -179,7 +179,7 @@ For example, here is how it can be done for the [P1385](https://wg21.link/p1385)
 using la_vector = STD_LA::fixed_size_column_vector<double, 3>;
 
 template<>
-inline constexpr bool mp_units::is_vector<la_vector> = true;
+constexpr bool mp_units::is_vector<la_vector> = true;
 ```
 
 With the above, we can use `la_vector` as a representation type for our quantity:
@@ -233,7 +233,7 @@ For example, we can do the following:
 ```cpp
 template<class T>
   requires mp_units::is_scalar<T>
-inline constexpr bool mp_units::is_vector<T> = true;
+constexpr bool mp_units::is_vector<T> = true;
 ```
 
 which says that every type that can be used as a scalar representation is also allowed for vector

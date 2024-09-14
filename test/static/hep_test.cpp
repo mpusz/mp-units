@@ -26,7 +26,7 @@
 
 template<class T>
   requires mp_units::is_scalar<T>
-inline constexpr bool mp_units::is_vector<T> = true;
+constexpr bool mp_units::is_vector<T> = true;
 
 namespace {
 

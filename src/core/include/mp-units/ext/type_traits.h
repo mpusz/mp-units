@@ -56,30 +56,30 @@ struct conditional_impl<true> {
 MP_UNITS_EXPORT_BEGIN
 
 template<bool B, typename T, typename F>
-using conditional = MP_UNITS_TYPENAME detail::conditional_impl<B>::template type<T, F>;
+using conditional = detail::conditional_impl<B>::template type<T, F>;
 
 // is_same
 template<class T, class U>
-inline constexpr bool is_same_v = false;
+constexpr bool is_same_v = false;
 
 template<class T>
-inline constexpr bool is_same_v<T, T> = true;
+constexpr bool is_same_v<T, T> = true;
 
 template<class T, class U>
 using is_same = std::bool_constant<is_same_v<T, U>>;
 
 // is_specialization_of
 template<typename T, template<typename...> typename Type>
-inline constexpr bool is_specialization_of = false;
+constexpr bool is_specialization_of = false;
 
 template<typename... Params, template<typename...> typename Type>
-inline constexpr bool is_specialization_of<Type<Params...>, Type> = true;
+constexpr bool is_specialization_of<Type<Params...>, Type> = true;
 
 template<typename T, template<auto...> typename Type>
-inline constexpr bool is_specialization_of_v = false;
+constexpr bool is_specialization_of_v = false;
 
 template<auto... Params, template<auto...> typename Type>
-inline constexpr bool is_specialization_of_v<Type<Params...>, Type> = true;
+constexpr bool is_specialization_of_v<Type<Params...>, Type> = true;
 
 MP_UNITS_EXPORT_END
 
@@ -92,14 +92,13 @@ void to_base_specialization_of(const volatile Type<Params...>*);
 }  // namespace detail
 
 template<typename T, template<typename...> typename Type>
-inline constexpr bool is_derived_from_specialization_of =
-  requires(T* t) { detail::to_base_specialization_of<Type>(t); };
+constexpr bool is_derived_from_specialization_of = requires(T* t) { detail::to_base_specialization_of<Type>(t); };
 
 namespace detail {
 
 template<typename T>
 struct get_value_type {
-  using type = MP_UNITS_TYPENAME T::value_type;
+  using type = T::value_type;
 };
 
 template<typename T>
@@ -112,13 +111,13 @@ struct get_element_type {
 template<typename T>
   requires requires { typename T::value_type; } || requires { typename T::element_type; }
 struct wrapped_type {
-  using type = MP_UNITS_TYPENAME
+  using type =
     conditional<requires { typename T::value_type; }, detail::get_value_type<T>, detail::get_element_type<T>>::type;
 };
 
 template<typename T>
   requires requires { typename T::value_type; } || requires { typename T::element_type; }
-using wrapped_type_t = MP_UNITS_TYPENAME wrapped_type<T>::type;
+using wrapped_type_t = wrapped_type<T>::type;
 
 template<typename T>
 struct value_type {
@@ -128,11 +127,11 @@ struct value_type {
 template<typename T>
   requires requires { typename wrapped_type_t<T>; }
 struct value_type<T> {
-  using type = MP_UNITS_TYPENAME wrapped_type_t<T>;
+  using type = wrapped_type_t<T>;
 };
 
 template<typename T>
-using value_type_t = MP_UNITS_TYPENAME value_type<T>::type;
+using value_type_t = value_type<T>::type;
 
 template<typename T, typename... Ts>
 concept one_of = (false || ... || std::same_as<T, Ts>);

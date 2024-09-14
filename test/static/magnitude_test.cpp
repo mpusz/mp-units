@@ -32,7 +32,7 @@ using namespace units;
 using namespace units::detail;
 
 template<>
-inline constexpr std::optional<std::intmax_t> units::known_first_factor<9223372036854775783> = 9223372036854775783;
+constexpr std::optional<std::intmax_t> units::known_first_factor<9223372036854775783> = 9223372036854775783;
 
 namespace {
 

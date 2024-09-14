@@ -132,12 +132,12 @@ private:
 }  // namespace
 
 template<class T>
-inline constexpr bool mp_units::treat_as_floating_point<measurement<T>> = mp_units::treat_as_floating_point<T>;
+constexpr bool mp_units::treat_as_floating_point<measurement<T>> = mp_units::treat_as_floating_point<T>;
 
 template<class T>
-inline constexpr bool mp_units::is_scalar<measurement<T>> = true;
+constexpr bool mp_units::is_scalar<measurement<T>> = true;
 template<class T>
-inline constexpr bool mp_units::is_vector<measurement<T>> = true;
+constexpr bool mp_units::is_vector<measurement<T>> = true;
 
 static_assert(mp_units::RepresentationOf<measurement<double>, mp_units::quantity_character::scalar>);
 
@@ -151,7 +151,7 @@ void example()
   const auto acceleration = isq::acceleration(measurement{9.8, 0.1} * m / s2);
   const auto time = measurement{1.2, 0.1} * s;
 
-  const MP_UNITS_CONSTRAINED_AUTO_WORKAROUND(QuantityOf<isq::velocity>) auto velocity = acceleration * time;
+  const QuantityOf<isq::velocity> auto velocity = acceleration * time;
   std::cout << acceleration << " * " << time << " = " << velocity << " = " << velocity.in(km / h) << '\n';
 
   const auto length = measurement{123., 1.} * m;

@@ -64,6 +64,9 @@ theme:
 # Plugins
 plugins:
   - blog
+  - exclude:
+      glob:
+        - api_reference/src/*
   - rss:
       match_path: blog/posts/.*
       date_from_meta:
@@ -130,8 +133,10 @@ nav:
       - Introduction: getting_started/introduction.md
       - Quick Start: getting_started/quick_start.md
       - Look and Feel: getting_started/look_and_feel.md
+      - Project Structure: getting_started/project_structure.md
       - C++ compiler support (API/ABI): getting_started/cpp_compiler_support.md
       - Installation and Usage: getting_started/installation_and_usage.md
+      - Contributing: getting_started/contributing.md
       - FAQ: getting_started/faq.md
   - User's Guide:
       - Terms and Definitions: users_guide/terms_and_definitions.md
@@ -173,6 +178,7 @@ nav:
       - Appendix:
           - Glossary: appendix/glossary.md
           - References: appendix/references.md
+  - API Reference: api_reference.md
   - Blog:
       - blog/index.md
   - Release Notes: release_notes.md

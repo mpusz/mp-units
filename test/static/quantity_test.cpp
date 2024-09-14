@@ -41,7 +41,7 @@ import std;
 #endif
 
 template<>
-inline constexpr bool mp_units::is_vector<int> = true;
+constexpr bool mp_units::is_vector<int> = true;
 
 namespace {
 
@@ -114,6 +114,10 @@ static_assert(quantity<isq::length[m]>::unit == si::metre);
 
 static_assert(is_same_v<quantity<isq::length[m]>::rep, double>);
 static_assert(is_same_v<quantity<isq::length[m], int>::rep, int>);
+
+[[maybe_unused]] volatile std::int16_t vint = 123;
+static_assert(is_same_v<decltype(quantity(vint * m))::rep, std::int16_t>);
+static_assert(is_same_v<decltype(quantity(vint, m))::rep, std::int16_t>);
 
 
 ////////////////////////////
@@ -199,7 +203,6 @@ static_assert(std::convertible_to<quantity<isq::length[km], int>, quantity<isq::
 static_assert(std::constructible_from<quantity<isq::length[km]>, quantity<isq::length[m], int>>);
 static_assert(std::convertible_to<quantity<isq::length[m], int>, quantity<isq::length[km]>>);
 
-
 ///////////////////////
 // obtaining a number
 ///////////////////////
@@ -260,6 +263,9 @@ static_assert(quantity<isq::length[m]>(2000. * m).force_in(km).numerical_value_i
 static_assert(quantity<isq::length[km], int>(2 * km).force_in(km).numerical_value_in(km) == 2);
 static_assert(quantity<isq::length[km], int>(2 * km).force_in(m).numerical_value_in(m) == 2000);
 static_assert(quantity<isq::length[m], int>(2000 * m).force_in(km).numerical_value_in(km) == 2);
+
+static_assert((15. * m).in(nm).numerical_value_in(m) == 15.);
+static_assert((15'000. * nm).in(m).numerical_value_in(nm) == 15'000.);
 
 template<template<auto, typename> typename Q>
 concept invalid_unit_conversion = requires {
@@ -902,7 +908,7 @@ static_assert(1 * si::si2019::speed_of_light_in_vacuum == 299'792'458 * isq::spe
 
 // Different named dimensions
 template<Reference auto R1, Reference auto R2>
-inline constexpr bool invalid_comparison = !requires { 2 * R1 == 2 * R2; } && !requires { 2 * R2 == 2 * R1; };
+constexpr bool invalid_comparison = !requires { 2 * R1 == 2 * R2; } && !requires { 2 * R2 == 2 * R1; };
 static_assert(invalid_comparison<isq::activity[Bq], isq::frequency[Hz]>);
 
 

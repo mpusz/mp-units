@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include <mp-units/bits/hacks.h>
 #include <mp-units/format.h>
 #include <mp-units/ostream.h>
 #include <mp-units/systems/isq.h>
@@ -28,7 +29,8 @@
 
 using namespace mp_units;
 
-constexpr QuantityOf<isq::speed> auto avg_speed(QuantityOf<isq::distance> auto d, QuantityOf<isq::duration> auto t)
+constexpr QuantityOf<isq::speed> auto avg_speed(QuantityOf<MP_UNITS_IS_VALUE_WORKAROUND(isq::distance)> auto d,
+                                                QuantityOf<MP_UNITS_IS_VALUE_WORKAROUND(isq::duration)> auto t)
 {
   return d / t;
 }

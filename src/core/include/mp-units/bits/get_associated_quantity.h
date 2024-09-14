@@ -76,9 +76,9 @@ template<AssociatedUnit U>
 template<AssociatedUnit U>
 [[nodiscard]] consteval auto get_associated_quantity(U u)
 {
-  constexpr bool all_kinds = all_are_kinds(u);
+  constexpr bool all_kinds = all_are_kinds(U{});
   if constexpr (all_kinds)
-    return kind_of<get_associated_quantity_impl(u)>;
+    return kind_of<get_associated_quantity_impl(U{})>;
   else
     return get_associated_quantity_impl(u);
 }

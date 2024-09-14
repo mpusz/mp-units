@@ -138,7 +138,7 @@ Each prefix is implemented similarly to the following:
 
 ```cpp
 template<PrefixableUnit U> struct quecto_ : prefixed_unit<"q", mag_power<10, -30>, U{}> {};
-template<PrefixableUnit auto U> inline constexpr quecto_<decltype(U)> quecto;
+template<PrefixableUnit auto U> constexpr quecto_<decltype(U)> quecto;
 ```
 
 and then a [PrefixableUnit](concepts.md#PrefixableUnit) can be prefixed in the following
@@ -154,7 +154,7 @@ IT industry can be implemented as:
 
 ```cpp
 template<PrefixableUnit U> struct yobi_ : prefixed_unit<"Yi", mag_power<2, 80>, U{}> {};
-template<PrefixableUnit auto U> inline constexpr yobi_<decltype(U)> yobi;
+template<PrefixableUnit auto U> constexpr yobi_<decltype(U)> yobi;
 ```
 
 ## Scaled units
@@ -190,3 +190,70 @@ inline constexpr struct mag_pi final : magnitude<std::numbers::pi_v<long double>
 ```cpp
 inline constexpr struct degree final : named_unit<{u8"°", "deg"}, mag_pi / mag<180> * si::radian> {} degree;
 ```
+
+
+## Unit symbols
+
+Units are available via their full names or through their short symbols.
+To use a long version, it is enough to type:
+
+```cpp
+quantity q1 = 42 * si::metre / si::second;
+quantity q2 = 42 * si::kilo<si::metre> / si::hour;
+```
+
+To simplify how we spell it a short, user-friendly symbols are provided in a dedicated
+subnamespace in systems definitions:
+
+```cpp
+namespace si::unit_symbols {
+
+constexpr auto m = si::metre;
+constexpr auto km = si::kilo<si::metre>;
+constexpr auto s = si::second;
+constexpr auto h = si::hour;
+
+}
+```
+
+Unit symbols introduce a lot of short identifiers into the current namespace. This is why they
+are opt-in. A user has to explicitly "import" them from a dedicated `unit_symbols` namespace:
+
+=== "using-declaration"
+
+    ```cpp
+    using namespace si::unit_symbols;
+
+    quantity q1 = 42 * m / s;
+    quantity q2 = 42 * km / h;
+    ```
+
+=== "using-directive"
+
+    ```cpp
+    using si::unit_symbols::m;
+    using si::unit_symbols::km;
+    using si::unit_symbols::s;
+    using si::unit_symbols::h;
+
+    quantity q1 = 42 * m / s;
+    quantity q2 = 42 * km / h;
+    ```
+
+We also provide alternative object identifiers using Unicode characters in their names for most
+unit symbols. The code using Unicode looks nicer, but it is harder to type on the keyboard.
+This is why we provide both versions of identifiers for such units.
+
+=== "ASCII only"
+
+    ```cpp
+    quantity resistance = 60 * kohm;
+    quantity capacitance = 100 * uF;
+    ```
+
+=== "With Unicode glyphs"
+
+    ```cpp
+    quantity resistance = 60 * kΩ;
+    quantity capacitance = 100 * µF;
+    ```
