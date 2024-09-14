@@ -161,8 +161,8 @@ template<QuantityPoint ToQP, typename FwdFromQP, QuantityPoint FromQP = std::rem
   using multiplier_type = typename type_traits::multiplier_type;
   using value_traits = conversion_value_traits<c_mag, multiplier_type>;
 
-  static constexpr auto output_unit_ref = make_reference(FromQP::quantity_spec, ToQP::unit);
-  static constexpr auto offset_represented_as = [](auto quantity) {
+  constexpr auto output_unit_ref = make_reference(FromQP::quantity_spec, ToQP::unit);
+  constexpr auto offset_represented_as = [](auto quantity) {
     using Q = decltype(quantity);
     // in the following, we take the detour through `quantity_point` to determine the offset between the two
     // point_origins; there seem to be cases where we have two `zeroeth_point_origins` of different units (i.e. m vs.
@@ -181,7 +181,7 @@ template<QuantityPoint ToQP, typename FwdFromQP, QuantityPoint FromQP = std::rem
     // no scaling of the unit is needed; thus we can perform all computation in a single unit without any runtime
     // scaling anywhere
     // we statically convert the offset to unit of the quantities, to avoid runtime rescaling.
-    static constexpr auto offset = offset_represented_as(quantity<FromQP::reference, c_rep_type>{});
+    constexpr auto offset = offset_represented_as(quantity<FromQP::reference, c_rep_type>{});
     return quantity_point{
       sudo_cast<typename ToQP::quantity_type>(std::forward<FromQP>(qp).quantity_from(FromQP::point_origin) + offset),
       ToQP::point_origin};
@@ -190,7 +190,7 @@ template<QuantityPoint ToQP, typename FwdFromQP, QuantityPoint FromQP = std::rem
     // (typically, when at least one of input or output representations is floating-point).
     // with those, the choice of unit has almost no impact on the conversion accuracy, and thus we can choose
     // the larger unit of the two (input/output) to ensure there is no risk of overflow.
-    static constexpr auto intermediate_reference = []() {
+    constexpr auto intermediate_reference = []() {
       if constexpr (value_traits::num_mult * value_traits::irr_mult >= value_traits::den_mult) {
         // the input unit is larger
         return FromQP::reference;
@@ -200,7 +200,7 @@ template<QuantityPoint ToQP, typename FwdFromQP, QuantityPoint FromQP = std::rem
     }();
     using intermediate_rep_type = typename type_traits::c_type;
     using intermediate_quantity_type = quantity<intermediate_reference, intermediate_rep_type>;
-    static constexpr auto offset = offset_represented_as(intermediate_quantity_type{});
+    constexpr auto offset = offset_represented_as(intermediate_quantity_type{});
     return quantity_point{
       sudo_cast<typename ToQP::quantity_type>(
         sudo_cast<intermediate_quantity_type>(std::forward<FromQP>(qp).quantity_from(FromQP::point_origin)) + offset),
@@ -212,7 +212,7 @@ template<QuantityPoint ToQP, typename FwdFromQP, QuantityPoint FromQP = std::rem
     // that the offset is specified in terms of a larger unit (because otherwise, the offset would overflow too).
     // Therefore, we use the offset's unit as intermediate unit if the offset falls outside of the range of the
     // smaller unit.
-    static constexpr auto intermediate_reference = []() {
+    constexpr auto intermediate_reference = []() {
       if constexpr (value_traits::num_mult * value_traits::irr_mult >= value_traits::den_mult) {
         // the output unit is smaller; check if we can represent the offset faithfully in the output unit without
         // overflow
@@ -234,7 +234,7 @@ template<QuantityPoint ToQP, typename FwdFromQP, QuantityPoint FromQP = std::rem
     }();
     using intermediate_rep_type = typename type_traits::c_type;
     using intermediate_quantity_type = quantity<intermediate_reference, intermediate_rep_type>;
-    static constexpr auto offset = offset_represented_as(intermediate_quantity_type{});
+    constexpr auto offset = offset_represented_as(intermediate_quantity_type{});
     return quantity_point{
       sudo_cast<typename ToQP::quantity_type>(
         sudo_cast<intermediate_quantity_type>(std::forward<FromQP>(qp).quantity_from(FromQP::point_origin)) + offset),
