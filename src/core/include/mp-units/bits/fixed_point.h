@@ -56,7 +56,7 @@ struct double_width_int {
 
   constexpr double_width_int& operator=(const double_width_int&) = default;
 
-  constexpr double_width_int(Th hi, Tl lo) : hi(hi), lo(lo) {}
+  constexpr double_width_int(Th hi_, Tl lo_) : hi(hi_), lo(lo_) {}
 
   explicit(true) constexpr double_width_int(long double v)
   {
@@ -84,8 +84,8 @@ struct double_width_int {
   // calculates the double-width product of two base-size integers
   static constexpr double_width_int wide_product_of(Th lhs, Tl rhs)
   {
-    static constexpr std::size_t half_width = base_width / 2;
-    static constexpr Tl msk = Tl(1) << half_width;
+    constexpr std::size_t half_width = base_width / 2;
+    constexpr Tl msk = Tl(1) << half_width;
     Th l1 = lhs >> half_width;
     Tl l0 = static_cast<Tl>(lhs) & msk;
     Tl r1 = rhs >> half_width;
@@ -137,7 +137,7 @@ struct double_width_int {
   Tl lo;
 };
 
-#ifdef __SIZEOF_INT128__
+#if false && defined(__SIZEOF_INT128__)
 using int128_t = __int128;
 using uint128_t = unsigned __int128;
 inline constexpr std::size_t max_native_width = 128;
@@ -162,9 +162,13 @@ using make_signed_t = std::make_signed_t<T>;
 
 template<std::size_t N>
 using min_width_uint_t =
-  std::tuple_element_t<std::bit_width(N) - 4 + (N > (1u << (std::bit_width(N) - 1)) ? 1 : 0),
+  std::tuple_element_t<std::max<std::size_t>(4u, std::bit_width(N) + (std::has_single_bit(N) ? 0u : 1u)) - 4u,
                        std::tuple<std::uint8_t, std::uint16_t, std::uint32_t, std::uint64_t, uint128_t>>;
 
+static_assert(std::is_same_v<min_width_uint_t<1>, std::uint8_t>);
+static_assert(std::is_same_v<min_width_uint_t<7>, std::uint8_t>);
+static_assert(std::is_same_v<min_width_uint_t<8>, std::uint8_t>);
+static_assert(std::is_same_v<min_width_uint_t<9>, std::uint16_t>);
 static_assert(std::is_same_v<min_width_uint_t<31>, std::uint32_t>);
 static_assert(std::is_same_v<min_width_uint_t<32>, std::uint32_t>);
 static_assert(std::is_same_v<min_width_uint_t<33>, std::uint64_t>);
