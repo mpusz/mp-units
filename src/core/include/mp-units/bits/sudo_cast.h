@@ -162,7 +162,7 @@ template<QuantityPoint ToQP, typename FwdFromQP, QuantityPoint FromQP = std::rem
   using value_traits = conversion_value_traits<c_mag, multiplier_type>;
 
   constexpr auto output_unit_ref = make_reference(FromQP::quantity_spec, ToQP::unit);
-  constexpr auto offset_represented_as = [](auto quantity) {
+  constexpr auto offset_represented_as = [&](auto quantity) {
     using Q = decltype(quantity);
     // in the following, we take the detour through `quantity_point` to determine the offset between the two
     // point_origins; there seem to be cases where we have two `zeroeth_point_origins` of different units (i.e. m vs.
@@ -190,7 +190,7 @@ template<QuantityPoint ToQP, typename FwdFromQP, QuantityPoint FromQP = std::rem
     // (typically, when at least one of input or output representations is floating-point).
     // with those, the choice of unit has almost no impact on the conversion accuracy, and thus we can choose
     // the larger unit of the two (input/output) to ensure there is no risk of overflow.
-    constexpr auto intermediate_reference = []() {
+    constexpr auto intermediate_reference = [&]() {
       if constexpr (value_traits::num_mult * value_traits::irr_mult >= value_traits::den_mult) {
         // the input unit is larger
         return FromQP::reference;
@@ -212,14 +212,14 @@ template<QuantityPoint ToQP, typename FwdFromQP, QuantityPoint FromQP = std::rem
     // that the offset is specified in terms of a larger unit (because otherwise, the offset would overflow too).
     // Therefore, we use the offset's unit as intermediate unit if the offset falls outside of the range of the
     // smaller unit.
-    constexpr auto intermediate_reference = []() {
+    constexpr auto intermediate_reference = [&]() {
       if constexpr (value_traits::num_mult * value_traits::irr_mult >= value_traits::den_mult) {
         // the output unit is smaller; check if we can represent the offset faithfully in the output unit without
         // overflow
         using candidate_offset_type = quantity<output_unit_ref, c_rep_type>;
         constexpr auto min_representable_offset = value_cast<long double>(candidate_offset_type::min());
         constexpr auto max_representable_offset = value_cast<long double>(candidate_offset_type::max());
-        constexpr auto offset_value = offset_represented_at<quantity<ToQP::reference, long double>>();
+        constexpr auto offset_value = offset_represented_as(quantity<ToQP::reference, long double>{});
         if constexpr ((min_representable_offset <= offset_value) && (offset_value <= max_representable_offset)) {
           // the offset can reasonably be represented by the output unit, so we use that one
           return output_unit_ref;
