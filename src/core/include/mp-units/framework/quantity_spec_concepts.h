@@ -86,21 +86,20 @@ template<typename T>
 struct is_dimensionless : std::false_type {};
 
 template<typename T>
-constexpr bool is_power_of_quantity_spec = requires {
-  requires is_specialization_of_power<T> &&
-             (NamedQuantitySpec<typename T::factor> || is_dimensionless<typename T::factor>::value);
-};
+concept IsPowerOfQuantitySpec = is_specialization_of_power<T> && (NamedQuantitySpec<typename T::factor> ||
+                                                                      is_dimensionless<typename T::factor>::value);
+
 
 template<typename T>
 constexpr bool is_per_of_quantity_specs = false;
 
 template<typename... Ts>
 constexpr bool is_per_of_quantity_specs<per<Ts...>> =
-  (... && (NamedQuantitySpec<Ts> || is_dimensionless<Ts>::value || is_power_of_quantity_spec<Ts>));
+  (... && (NamedQuantitySpec<Ts> || is_dimensionless<Ts>::value || IsPowerOfQuantitySpec<Ts>));
 
 template<typename T>
 concept DerivedQuantitySpecExpr = detail::NamedQuantitySpec<T> || detail::is_dimensionless<T>::value ||
-                                  detail::is_power_of_quantity_spec<T> || detail::is_per_of_quantity_specs<T>;
+                                  detail::IsPowerOfQuantitySpec<T> || detail::is_per_of_quantity_specs<T>;
 
 }  // namespace detail
 
