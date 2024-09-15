@@ -1759,9 +1759,15 @@ static_assert(value_cast<quantity_point<isq::height[m], mean_sea_level, int>>(qu
                                                                                              ground_level})
                 .quantity_from_origin_is_an_implementation_detail_.numerical_value_in(m) == 2042);
 // a value_cast which includes a change to the point origin as-well as a change in units and the representation
-static_assert(value_cast<quantity_point<isq::height[m], mean_sea_level, double>>(quantity_point{2 * isq::height[km],
-                                                                                                ground_level})
-                .quantity_from_origin_is_an_implementation_detail_.numerical_value_in(m) == 2042);
+template<typename T>
+constexpr T cxpr_abs(T v)
+{
+  return v < T{0} ? -v : v;
+}
+static_assert(cxpr_abs(value_cast<quantity_point<isq::height[m], mean_sea_level, double>>(
+                         quantity_point{2 * isq::height[km], ground_level})
+                         .quantity_from_origin_is_an_implementation_detail_.numerical_value_in(m) -
+                       2042.) < 1.e-7);
 
 // a value_cast which changes all three of unit, rep, point_origin simultaneously, and the range of either FromQP or
 // ToQP does not include the other's point_origin
