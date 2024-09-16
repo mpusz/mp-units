@@ -109,7 +109,7 @@ struct double_width_int {
     auto ret = ret_t::wide_product_of(rhs, lhs.lo);
     ret.hi += lhs.hi * rhs;
     return ret;
-  };
+  }
   template<std::integral Lhs>
   friend constexpr auto operator*(Lhs lhs, const double_width_int& rhs)
   {
@@ -154,7 +154,7 @@ struct double_width_int {
       }
       return ret_t{res_hi, res_lo};
     }
-  };
+  }
 
   template<std::integral Rhs>
     requires(std::numeric_limits<Rhs>::digits <= base_width)
