@@ -100,20 +100,52 @@ struct double_width_int {
     return {o1, o0};
   }
 
+  template<std::integral Rhs>
+  friend constexpr auto operator*(const double_width_int& lhs, Rhs rhs)
+  {
+    using ret_t = double_width_int<std::common_type_t<Th, Rhs>>;
+    auto ret = ret_t::wide_product_of(lhs.lo, rhs);
+    ret.hi += lhs.hi * rhs;
+    return ret;
+  };
   template<std::integral Lhs>
   friend constexpr auto operator*(Lhs lhs, const double_width_int& rhs)
   {
-    using ret_t = double_width_int<std::common_type_t<Lhs, Th>>;
-    auto ret = ret_t::wide_product_of(lhs, rhs.lo);
-    ret.hi += lhs * rhs.hi;
-    return ret;
-  };
-
-
-  constexpr double_width_int operator+(Tl rhs) const
+    return rhs * lhs;
+  }
+  template<std::integral Rhs>
+    requires(std::numeric_limits<Rhs>::digits <= base_width)
+  friend constexpr double_width_int operator+(const double_width_int& lhs, Rhs rhs)
   {
-    auto ret = lo + rhs;
-    return {hi + (ret < lo ? 1 : 0), ret};
+    // this follows the usual (but somewhat dangerous) rules in C++; we "win", as we are the larger type.
+    // -> signed computation only of both types are signed
+    if constexpr (is_signed, std::is_signed_v<Rhs>) {
+      if (rhs < 0) return lhs - static_cast<std::make_unsigned_t<Rhs>>(-rhs);
+    }
+    Tl ret = lhs.lo + static_cast<Tl>(rhs);
+    return {lhs.hi + Th{ret < lhs.lo ? 1 : 0}, ret};
+  }
+  template<std::integral Lhs>
+  friend constexpr double_width_int operator+(Lhs lhs, const double_width_int& rhs)
+  {
+    return rhs + lhs;
+  }
+  template<std::integral Rhs>
+    requires(std::numeric_limits<Rhs>::digits <= base_width)
+  friend constexpr double_width_int operator-(const double_width_int& lhs, Rhs rhs)
+  {
+    // this follows the usual (but somewhat dangerous) rules in C++; we "win", as we are the larger type.
+    // -> signed computation only of both types are signed
+    if constexpr (is_signed, std::is_signed_v<Rhs>) {
+      if (rhs < 0) return lhs + static_cast<std::make_unsigned_t<Rhs>>(-rhs);
+    }
+    Tl ret = lhs.lo - static_cast<Tl>(rhs);
+    return {lhs.hi - Th{ret > lhs.lo ? 1 : 0}, ret};
+  }
+  template<std::integral Lhs>
+  friend constexpr double_width_int operator-(Lhs lhs, const double_width_int& rhs)
+  {
+    return rhs + lhs;
   }
 
   constexpr double_width_int operator>>(unsigned n) const
@@ -144,18 +176,18 @@ inline constexpr std::size_t max_native_width = 128;
 #else
 using int128_t = double_width_int<std::int64_t>;
 using uint128_t = double_width_int<std::uint64_t>;
-inline constexpr std::size_t max_native_width = 64;
+constexpr std::size_t max_native_width = 64;
 #endif
 
 template<typename T>
-inline constexpr std::size_t integer_rep_width_v = std::numeric_limits<std::make_unsigned_t<T>>::digits;
+constexpr std::size_t integer_rep_width_v = std::numeric_limits<std::make_unsigned_t<T>>::digits;
 template<typename T>
-inline constexpr std::size_t integer_rep_width_v<double_width_int<T>> = double_width_int<T>::width;
+constexpr std::size_t integer_rep_width_v<double_width_int<T>> = double_width_int<T>::width;
 
 template<typename T>
-inline constexpr bool is_signed_v = std::is_signed_v<T>;
+constexpr bool is_signed_v = std::is_signed_v<T>;
 template<typename T>
-inline constexpr bool is_signed_v<double_width_int<T>> = double_width_int<T>::is_signed;
+constexpr bool is_signed_v<double_width_int<T>> = double_width_int<T>::is_signed;
 
 template<typename T>
 using make_signed_t = std::make_signed_t<T>;
@@ -214,7 +246,7 @@ struct fixed_point {
 
   template<std::integral U>
     requires(integer_rep_width_v<U> <= integer_rep_width_v<T>)
-  auto scale(U v) const
+  constexpr auto scale(U v) const
   {
     auto res = v * int_repr_is_an_implementation_detail_;
     return static_cast<std::conditional_t<is_signed_v<decltype((res))>, std::make_signed_t<U>, U>>(res >>

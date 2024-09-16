@@ -54,13 +54,6 @@ template<Magnitude auto M, typename Rep1, typename Rep2>
 struct conversion_type_traits {
   using c_rep_type = maybe_common_type<Rep1, Rep2>;
   using c_mag_type = common_magnitude_type<M>;
-  /*  using multiplier_type = conditional<
-      treat_as_floating_point<c_rep_type>,
-      // ensure that the multiplier is also floating-point
-      conditional<std::is_arithmetic_v<value_type_t<c_rep_type>>,
-                  // reuse user's type if possible
-                  std::common_type_t<c_mag_type, value_type_t<c_rep_type>>, std::common_type_t<c_mag_type, double>>,
-      c_mag_type>;*/
   using c_type = conditional<std::is_arithmetic_v<value_type_t<c_rep_type>>, value_type_t<c_rep_type>,
                              std::common_type_t<c_mag_type, double>>;
 };
@@ -108,9 +101,6 @@ struct conversion_value_traits<M, T> {
   static constexpr Magnitude auto num = numerator(M);
   static constexpr T num_mult = get_value<T>(num);
   static constexpr bool value_increases = true;
-
-  static_assert(get_value<T>(denominator(M)) == 1);
-  static_assert(is_integral(M));
 
   template<typename V>
   static constexpr auto scale(V value)
