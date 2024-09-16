@@ -93,7 +93,7 @@ template<Representation ToRep, Unit auto ToU, typename FwdQ, Quantity Q = std::r
           std::constructible_from<ToRep, typename Q::rep>
 [[nodiscard]] constexpr Quantity auto value_cast(FwdQ&& q)
 {
-  return detail::sudo_cast<quantity<detail::make_reference(Q::quantity_spec, ToU), ToRep>>(std::forward<FwdQ>(q));
+  return value_cast<ToU, ToRep>(std::forward<FwdQ>(q));
 }
 
 
@@ -181,9 +181,7 @@ template<Representation ToRep, Unit auto ToU, typename FwdQP, QuantityPoint QP =
           std::constructible_from<ToRep, typename QP::rep>
 [[nodiscard]] constexpr QuantityPoint auto value_cast(FwdQP&& qp)
 {
-  return quantity_point{
-    value_cast<ToU, ToRep>(std::forward<FwdQP>(qp).quantity_from_origin_is_an_implementation_detail_),
-    QP::point_origin};
+  return value_cast<ToU, ToRep>(std::forward<FwdQP>(qp));
 }
 
 /**
