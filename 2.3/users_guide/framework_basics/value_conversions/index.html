@@ -2353,7 +2353,7 @@ instance of either <code>quantity</code> or <code>quantity_point</code>:</p>
 <th style="text-align: center;">Representation</th>
 <th style="text-align: center;">Unit</th>
 <th>Member function</th>
-<th>Conversion function</th>
+<th>Non-member function</th>
 </tr>
 </thead>
 <tbody>
@@ -2397,7 +2397,7 @@ instance of either <code>quantity</code> or <code>quantity_point</code>:</p>
 <td style="text-align: center;"><code>T</code></td>
 <td style="text-align: center;"><code>u</code></td>
 <td><code>x.force_in&lt;T&gt;(u)</code></td>
-<td><code>value_cast&lt;u, T&gt;(x)</code></td>
+<td><code>value_cast&lt;u, T&gt;(x)</code> or <code>value_cast&lt;T, u&gt;(x)</code></td>
 </tr>
 </tbody>
 </table>
