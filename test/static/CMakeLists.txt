@@ -36,6 +36,7 @@ add_library(
     custom_rep_test_min_impl.cpp
     dimension_test.cpp
     dimension_symbol_test.cpp
+    fixed_point.cpp
     fixed_string_test.cpp
     hep_test.cpp
     iau_test.cpp
