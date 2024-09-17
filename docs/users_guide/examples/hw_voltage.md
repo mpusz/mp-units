@@ -21,46 +21,46 @@ of an offset.
 First we include all the dependencies:
 
 ```cpp title="hw_voltage.cpp" linenums="1"
---8<-- "example/hw_voltage.cpp:28:43"
+--8<-- "example/hw_voltage.cpp:28:44"
 ```
 
 Next, we specify the real measurement voltage range to be in the range of [-10, 10]:
 
-```cpp title="hw_voltage.cpp" linenums="17"
---8<-- "example/hw_voltage.cpp:45:48"
+```cpp title="hw_voltage.cpp" linenums="18"
+--8<-- "example/hw_voltage.cpp:46:49"
 ```
 
 and provide a storage type and special values for the hardware representation:
 
-```cpp title="hw_voltage.cpp" linenums="21"
---8<-- "example/hw_voltage.cpp:50:56"
+```cpp title="hw_voltage.cpp" linenums="22"
+--8<-- "example/hw_voltage.cpp:51:57"
 ```
 
 Finally, we define a quantity point origin, an offset unit that scales the value and uses this
 origin to offset the zero of the sale, and a dedicated quantity point alias using those:
 
-```cpp title="hw_voltage.cpp" linenums="28"
---8<-- "example/hw_voltage.cpp:60:66"
+```cpp title="hw_voltage.cpp" linenums="29"
+--8<-- "example/hw_voltage.cpp:61:67"
 ```
 
 Now, when everything is ready, we can simulate mapping of our hardware register, and provide
 a helper function that will read the value and construct a quantity point from the obtained copy:
 
-```cpp title="hw_voltage.cpp" linenums="35"
---8<-- "example/hw_voltage.cpp:69:77"
+```cpp title="hw_voltage.cpp" linenums="36"
+--8<-- "example/hw_voltage.cpp:70:78"
 ```
 
 We also provide a simple print helper for our quantity points:
 
-```cpp title="hw_voltage.cpp" linenums="44"
---8<-- "example/hw_voltage.cpp:79:82"
+```cpp title="hw_voltage.cpp" linenums="45"
+--8<-- "example/hw_voltage.cpp:80:84"
 ```
 
 In the main function we simulate setting of 3 values by our hardware. Each of them is read
 and printed in the voltage unit used on the hardware as well as in the standard SI unit:
 
-```cpp title="hw_voltage.cpp" linenums="48"
---8<-- "example/hw_voltage.cpp:84:"
+```cpp title="hw_voltage.cpp" linenums="50"
+--8<-- "example/hw_voltage.cpp:86:"
 ```
 
 The above program results with the following text output:

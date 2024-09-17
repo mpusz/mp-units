@@ -26,11 +26,12 @@
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 #include <mp-units/compat_macros.h>
+#include <mp-units/ext/format.h>
 #ifdef MP_UNITS_IMPORT_STD
 import std;
 #else
+#include <iostream>
 #include <optional>
-#include <print>
 #endif
 #ifdef MP_UNITS_MODULES
 import mp_units;
@@ -78,7 +79,8 @@ std::optional<hw_voltage_quantity_point> read_hw_voltage()
 
 void print(QuantityPoint auto qp)
 {
-  std::println("{:10} ({:5})", qp.quantity_from_zero(), value_cast<double, si::volt>(qp).quantity_from_zero());
+  std::cout << MP_UNITS_STD_FMT::format("{:10} ({:5})", qp.quantity_from_zero(),
+                                        value_cast<double, si::volt>(qp).quantity_from_zero());
 }
 
 int main()
