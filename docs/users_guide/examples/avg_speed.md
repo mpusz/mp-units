@@ -2,7 +2,6 @@
 tags:
   - CGS System
   - International System
-  - Text Formatting
 ---
 
 # `avg_speed`
