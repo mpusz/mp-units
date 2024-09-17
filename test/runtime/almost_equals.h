@@ -35,7 +35,7 @@ namespace mp_units {
 
 template<Quantity T>
 struct AlmostEqualsMatcher : Catch::Matchers::MatcherGenericBase {
-  explicit AlmostEqualsMatcher(const T& target) : target_{target} {}
+  explicit AlmostEqualsMatcher(const T& target, int n_eps) : target_{target}, n_eps_{n_eps} {}
 
   template<std::convertible_to<T> U>
     requires std::same_as<typename T::rep, typename U::rep>
@@ -48,7 +48,7 @@ struct AlmostEqualsMatcher : Catch::Matchers::MatcherGenericBase {
     const auto y = common(other).numerical_value_in(common::unit);
     if constexpr (treat_as_floating_point<rep>) {
       const auto maxXYOne = std::max({rep{1}, abs(x), abs(y)});
-      return abs(x - y) <= std::numeric_limits<rep>::epsilon() * maxXYOne;
+      return abs(x - y) <= (n_eps_ * std::numeric_limits<rep>::epsilon()) * maxXYOne;
     } else {
       if (x >= 0) {
         return x - 1 <= y && y - 1 <= x;
@@ -71,12 +71,13 @@ struct AlmostEqualsMatcher : Catch::Matchers::MatcherGenericBase {
 
 private:
   const T& target_;
+  int n_eps_;
 };
 
 template<Quantity T>
-AlmostEqualsMatcher<T> AlmostEquals(const T& target)
+AlmostEqualsMatcher<T> AlmostEquals(const T& target, int n_eps = 1)
 {
-  return AlmostEqualsMatcher<T>{target};
+  return AlmostEqualsMatcher<T>{target, n_eps};
 }
 
 

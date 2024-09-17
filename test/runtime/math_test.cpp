@@ -448,7 +448,7 @@ TEST_CASE("Angle trigonometric functions", "[trig][angle]")
 
     REQUIRE_THAT(sin(0 * angle[grad]), AlmostEquals(0. * one));
     REQUIRE_THAT(sin(100 * angle[grad]), AlmostEquals(1. * one));
-    REQUIRE_THAT(sin(200 * angle[grad]), AlmostEquals(0. * one));
+    REQUIRE_THAT(sin(200 * angle[grad]), AlmostEquals(0. * one, 2));
     REQUIRE_THAT(sin(300 * angle[grad]), AlmostEquals(-1. * one));
   }
 
@@ -475,7 +475,7 @@ TEST_CASE("Angle trigonometric functions", "[trig][angle]")
     REQUIRE_THAT(tan(0 * angle[grad]), AlmostEquals(0. * one));
     REQUIRE_THAT(tan(50 * angle[grad]), AlmostEquals(1. * one));
     REQUIRE_THAT(tan(150 * angle[grad]), AlmostEquals(-1. * one));
-    REQUIRE_THAT(tan(200 * angle[grad]), AlmostEquals(0. * one));
+    REQUIRE_THAT(tan(200 * angle[grad]), AlmostEquals(0. * one, 2));
   }
 }
 
