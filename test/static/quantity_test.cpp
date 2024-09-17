@@ -37,7 +37,13 @@ import std;
 #include <utility>
 #if MP_UNITS_HOSTED
 #include <chrono>
+#include <complex>
 #endif
+#endif
+
+#if MP_UNITS_HOSTED
+template<typename T>
+constexpr bool mp_units::is_scalar<std::complex<T>> = true;
 #endif
 
 template<>
@@ -266,6 +272,12 @@ static_assert(quantity<isq::length[m], int>(2000 * m).force_in(km).numerical_val
 
 static_assert((15. * m).in(nm).numerical_value_in(m) == 15.);
 static_assert((15'000. * nm).in(m).numerical_value_in(nm) == 15'000.);
+
+#if MP_UNITS_HOSTED
+using namespace std::complex_literals;
+static_assert(((2. + 1i) * V).in(mV).numerical_value_in(mV) == 2000. + 1000i);
+static_assert(((2. + 1i) * V).in(mV).numerical_value_in(V) == 2. + 1i);
+#endif
 
 template<template<auto, typename> typename Q>
 concept invalid_unit_conversion = requires {
