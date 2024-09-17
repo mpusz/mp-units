@@ -6,7 +6,7 @@ tags:
 
 # `si_constants`
 
-!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/MevcK8vYT)"
+!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/eGqbW5d8K)"
 
 The next example presents all the seven defining constants of the SI system. We can observe
 how [Faster-than-lightspeed Constants](../framework_basics/faster_than_lightspeed_constants.md)
@@ -22,15 +22,20 @@ the simplicity of this example, we
 to be able to express vector quantities with simple scalar types.
 
 ```cpp title="si_constants.cpp" linenums="14"
---8<-- "example/si_constants.cpp:42:"
+--8<-- "example/si_constants.cpp:42:44"
 ```
 
-The main part of the example prints all of the SI-defining constants. While analyzing the output of
-this program (provided below), we can easily notice that a direct printing of the quantity provides
-just a value `1` with a proper constant symbol. This is the main power of the
-[Faster-than-lightspeed Constants](../framework_basics/faster_than_lightspeed_constants.md) feature.
-Only after we explicitly convert the unit of a quantity to proper SI units we get an actual numeric
-value of the constant.
+The main part of the example prints all of the SI-defining constants:
+
+```cpp title="si_constants.cpp" linenums="17"
+--8<-- "example/si_constants.cpp:45:"
+```
+
+While analyzing the output of this program (provided below), we can easily notice that a direct
+printing of the quantity provides just a value `1` with a proper constant symbol. This is the main
+power of the [Faster-than-lightspeed Constants](../framework_basics/faster_than_lightspeed_constants.md)
+feature. Only after we explicitly convert the unit of a quantity to proper SI units we get an
+actual numeric value of the constant.
 
 ```text
 The seven defining constants of the SI and the seven corresponding units they define:
