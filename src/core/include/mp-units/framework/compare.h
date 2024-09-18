@@ -38,9 +38,7 @@ namespace mp_units {
 
 template<typename T>
   requires requires {
-    {
-      T::zero()
-    } -> std::equality_comparable_with<T>;
+    { T::zero() } -> std::equality_comparable_with<T>;
   }
 [[nodiscard]] constexpr bool is_eq_zero(T v)
 {
@@ -49,9 +47,7 @@ template<typename T>
 
 template<typename T>
   requires requires {
-    {
-      T::zero()
-    } -> std::equality_comparable_with<T>;
+    { T::zero() } -> std::equality_comparable_with<T>;
   }
 [[nodiscard]] constexpr bool is_neq_zero(T v)
 {
@@ -60,9 +56,7 @@ template<typename T>
 
 template<typename T>
   requires requires {
-    {
-      T::zero()
-    } -> std::three_way_comparable_with<T>;
+    { T::zero() } -> std::three_way_comparable_with<T>;
   }
 [[nodiscard]] constexpr bool is_lt_zero(T v)
 {
@@ -71,9 +65,7 @@ template<typename T>
 
 template<typename T>
   requires requires {
-    {
-      T::zero()
-    } -> std::three_way_comparable_with<T>;
+    { T::zero() } -> std::three_way_comparable_with<T>;
   }
 [[nodiscard]] constexpr bool is_gt_zero(T v)
 {
@@ -82,9 +74,7 @@ template<typename T>
 
 template<typename T>
   requires requires {
-    {
-      T::zero()
-    } -> std::three_way_comparable_with<T>;
+    { T::zero() } -> std::three_way_comparable_with<T>;
   }
 [[nodiscard]] constexpr bool is_lteq_zero(T v)
 {
@@ -93,9 +83,7 @@ template<typename T>
 
 template<typename T>
   requires requires {
-    {
-      T::zero()
-    } -> std::three_way_comparable_with<T>;
+    { T::zero() } -> std::three_way_comparable_with<T>;
   }
 [[nodiscard]] constexpr bool is_gteq_zero(T v)
 {

@@ -161,9 +161,7 @@ concept QuantityPointLike = requires {
   {
     quantity_point_like_traits<T>::to_numerical_value(qp)
   } -> detail::ConversionSpecOf<typename quantity_point_like_traits<T>::rep>;
-  {
-    quantity_point_like_traits<T>::from_numerical_value(v)
-  } -> detail::ConversionSpecOf<T>;
+  { quantity_point_like_traits<T>::from_numerical_value(v) } -> detail::ConversionSpecOf<T>;
 };
 
 }  // namespace mp_units

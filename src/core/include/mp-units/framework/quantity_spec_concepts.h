@@ -86,8 +86,8 @@ template<typename T>
 struct is_dimensionless : std::false_type {};
 
 template<typename T>
-concept IsPowerOfQuantitySpec = is_specialization_of_power<T> && (NamedQuantitySpec<typename T::factor> ||
-                                                                      is_dimensionless<typename T::factor>::value);
+concept IsPowerOfQuantitySpec = is_specialization_of_power<T> &&
+                                (NamedQuantitySpec<typename T::factor> || is_dimensionless<typename T::factor>::value);
 
 
 template<typename T>
@@ -142,8 +142,8 @@ concept ChildQuantitySpecOf = (is_child_of(Child, Parent));
 
 template<auto To, auto From>
 concept NestedQuantityKindSpecOf =
-  QuantitySpec<decltype(From)> && QuantitySpec<decltype(To)> &&
-  (!SameQuantitySpec<get_kind(From), get_kind(To)>)&&ChildQuantitySpecOf<To, get_kind(From)._quantity_spec_>;
+  QuantitySpec<decltype(From)> && QuantitySpec<decltype(To)> && (!SameQuantitySpec<get_kind(From), get_kind(To)>) &&
+  ChildQuantitySpecOf<To, get_kind(From)._quantity_spec_>;
 
 template<auto From, auto To>
 concept QuantitySpecConvertibleTo =

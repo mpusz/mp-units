@@ -79,8 +79,7 @@ constexpr bool is_per_of_dims<per<Ts...>> =
   (... && (BaseDimension<Ts> || is_dimension_one<Ts>::value || IsPowerOfDim<Ts>));
 
 template<typename T>
-concept DerivedDimensionExpr =
-  BaseDimension<T> || is_dimension_one<T>::value || IsPowerOfDim<T> || is_per_of_dims<T>;
+concept DerivedDimensionExpr = BaseDimension<T> || is_dimension_one<T>::value || IsPowerOfDim<T> || is_per_of_dims<T>;
 
 template<auto D1, auto D2>
 concept SameDimension =

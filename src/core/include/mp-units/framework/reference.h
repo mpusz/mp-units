@@ -271,12 +271,8 @@ constexpr auto operator/(R, Q&& q) = delete;
 [[nodiscard]] consteval AssociatedUnit auto common_reference(AssociatedUnit auto u1, AssociatedUnit auto u2,
                                                              AssociatedUnit auto... rest)
   requires requires {
-    {
-      common_quantity_spec(get_quantity_spec(u1), get_quantity_spec(u2), get_quantity_spec(rest)...)
-    } -> QuantitySpec;
-    {
-      common_unit(u1, u2, rest...)
-    } -> AssociatedUnit;
+    { common_quantity_spec(get_quantity_spec(u1), get_quantity_spec(u2), get_quantity_spec(rest)...) } -> QuantitySpec;
+    { common_unit(u1, u2, rest...) } -> AssociatedUnit;
   }
 {
   return common_unit(u1, u2, rest...);
@@ -285,12 +281,8 @@ constexpr auto operator/(R, Q&& q) = delete;
 template<Reference R1, Reference R2, Reference... Rest>
 [[nodiscard]] consteval Reference auto common_reference(R1 r1, R2 r2, Rest... rest)
   requires(!(AssociatedUnit<R1> && AssociatedUnit<R2> && (... && AssociatedUnit<Rest>))) && requires {
-    {
-      common_quantity_spec(get_quantity_spec(r1), get_quantity_spec(r2), get_quantity_spec(rest)...)
-    } -> QuantitySpec;
-    {
-      common_unit(get_unit(r1), get_unit(r2), get_unit(rest)...)
-    } -> Unit;
+    { common_quantity_spec(get_quantity_spec(r1), get_quantity_spec(r2), get_quantity_spec(rest)...) } -> QuantitySpec;
+    { common_unit(get_unit(r1), get_unit(r2), get_unit(rest)...) } -> Unit;
   }
 {
   return detail::reference_t<common_quantity_spec(get_quantity_spec(R1{}), get_quantity_spec(R2{}),

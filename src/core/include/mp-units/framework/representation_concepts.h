@@ -86,7 +86,7 @@ concept WeaklyRegular = std::copyable<T> && std::equality_comparable<T>;
 
 MP_UNITS_EXPORT template<typename T>
 concept Representation =
-  (is_scalar<T> || is_vector<T> || is_tensor<T>)&&detail::WeaklyRegular<T> && detail::Scalable<T>;
+  (is_scalar<T> || is_vector<T> || is_tensor<T>) && detail::WeaklyRegular<T> && detail::Scalable<T>;
 
 MP_UNITS_EXPORT template<typename T, quantity_character Ch>
 concept RepresentationOf = Representation<T> && ((Ch == quantity_character::scalar && is_scalar<T>) ||

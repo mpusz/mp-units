@@ -78,12 +78,8 @@ concept QuantityLike = requires {
   requires RepresentationOf<typename quantity_like_traits<T>::rep,
                             get_quantity_spec(quantity_like_traits<T>::reference).character>;
 } && requires(T q, typename quantity_like_traits<T>::rep v) {
-  {
-    quantity_like_traits<T>::to_numerical_value(q)
-  } -> detail::ConversionSpecOf<typename quantity_like_traits<T>::rep>;
-  {
-    quantity_like_traits<T>::from_numerical_value(v)
-  } -> detail::ConversionSpecOf<T>;
+  { quantity_like_traits<T>::to_numerical_value(q) } -> detail::ConversionSpecOf<typename quantity_like_traits<T>::rep>;
+  { quantity_like_traits<T>::from_numerical_value(v) } -> detail::ConversionSpecOf<T>;
 };
 
 MP_UNITS_EXPORT_END

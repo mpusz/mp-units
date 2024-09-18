@@ -684,7 +684,7 @@ struct ingredients_less :
     std::bool_constant<(lhs_compl > rhs_compl) ||
                        (lhs_compl == rhs_compl && ingredients_dimension_less(Lhs::dimension, Rhs::dimension)) ||
                        (lhs_compl == rhs_compl && Lhs::dimension == Rhs::dimension &&
-                        detail::type_name<Lhs>() < detail::type_name<Rhs>())> {};
+                        detail::type_name<Lhs>() < detail::type_name<Rhs>())>{};
 
 template<typename T1, typename T2>
 using type_list_of_ingredients_less = expr_less<T1, T2, ingredients_less>;

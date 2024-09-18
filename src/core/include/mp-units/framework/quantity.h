@@ -64,9 +64,7 @@ concept IsFloatingPoint = treat_as_floating_point<T>;
 
 template<typename FromRep, typename ToRep, auto FromUnit = one, auto ToUnit = one>
 concept ValuePreservingTo = requires(FromRep&& from, ToRep to) {
-  {
-    to = std::forward<FromRep>(from)
-  } -> std::same_as<ToRep&>;
+  { to = std::forward<FromRep>(from) } -> std::same_as<ToRep&>;
 } && (IsFloatingPoint<ToRep> || (!IsFloatingPoint<FromRep> && (integral_conversion_factor(FromUnit, ToUnit))));
 
 template<typename QFrom, typename QTo>
@@ -325,9 +323,7 @@ public:
   // member unary operators
   [[nodiscard]] constexpr QuantityOf<quantity_spec> auto operator+() const
     requires requires(rep v) {
-      {
-        +v
-      } -> std::common_with<rep>;
+      { +v } -> std::common_with<rep>;
     }
   {
     return ::mp_units::quantity{+numerical_value_is_an_implementation_detail_, reference};
@@ -335,9 +331,7 @@ public:
 
   [[nodiscard]] constexpr QuantityOf<quantity_spec> auto operator-() const
     requires requires(rep v) {
-      {
-        -v
-      } -> std::common_with<rep>;
+      { -v } -> std::common_with<rep>;
     }
   {
     return ::mp_units::quantity{-numerical_value_is_an_implementation_detail_, reference};
@@ -346,9 +340,7 @@ public:
   template<typename FwdQ, std::derived_from<quantity> Q = std::remove_cvref_t<FwdQ>>
   friend constexpr decltype(auto) operator++(FwdQ&& q)
     requires requires(rep v) {
-      {
-        ++v
-      } -> std::same_as<rep&>;
+      { ++v } -> std::same_as<rep&>;
     }
   {
     ++q.numerical_value_is_an_implementation_detail_;
@@ -357,9 +349,7 @@ public:
 
   [[nodiscard]] constexpr QuantityOf<quantity_spec> auto operator++(int)
     requires requires(rep v) {
-      {
-        v++
-      } -> std::common_with<rep>;
+      { v++ } -> std::common_with<rep>;
     }
   {
     return ::mp_units::quantity{numerical_value_is_an_implementation_detail_++, reference};
@@ -368,9 +358,7 @@ public:
   template<typename FwdQ, std::derived_from<quantity> Q = std::remove_cvref_t<FwdQ>>
   friend constexpr decltype(auto) operator--(FwdQ&& q)
     requires requires(rep v) {
-      {
-        --v
-      } -> std::same_as<rep&>;
+      { --v } -> std::same_as<rep&>;
     }
   {
     --q.numerical_value_is_an_implementation_detail_;
@@ -379,9 +367,7 @@ public:
 
   [[nodiscard]] constexpr QuantityOf<quantity_spec> auto operator--(int)
     requires requires(rep v) {
-      {
-        v--
-      } -> std::common_with<rep>;
+      { v-- } -> std::common_with<rep>;
     }
   {
     return ::mp_units::quantity{numerical_value_is_an_implementation_detail_--, reference};
@@ -390,9 +376,7 @@ public:
   // compound assignment operators
   template<typename FwdQ, std::derived_from<quantity> Q = std::remove_cvref_t<FwdQ>>
     requires requires(rep a, rep b) {
-      {
-        a += b
-      } -> std::same_as<rep&>;
+      { a += b } -> std::same_as<rep&>;
     }
   friend constexpr decltype(auto) operator+=(FwdQ&& lhs, const quantity& rhs)
   {
@@ -402,9 +386,7 @@ public:
 
   template<typename FwdQ, std::derived_from<quantity> Q = std::remove_cvref_t<FwdQ>>
     requires requires(rep a, rep b) {
-      {
-        a -= b
-      } -> std::same_as<rep&>;
+      { a -= b } -> std::same_as<rep&>;
     }
   friend constexpr decltype(auto) operator-=(FwdQ&& lhs, const quantity& rhs)
   {
@@ -414,9 +396,7 @@ public:
 
   template<typename FwdQ, std::derived_from<quantity> Q = std::remove_cvref_t<FwdQ>>
     requires(!treat_as_floating_point<rep>) && requires(rep a, rep b) {
-      {
-        a %= b
-      } -> std::same_as<rep&>;
+      { a %= b } -> std::same_as<rep&>;
     }
   friend constexpr decltype(auto) operator%=(FwdQ&& lhs, const quantity& rhs)
 
@@ -428,9 +408,7 @@ public:
 
   template<typename FwdQ, typename Value, std::derived_from<quantity> Q = std::remove_cvref_t<FwdQ>>
     requires(!Quantity<Value>) && requires(rep a, const Value b) {
-      {
-        a *= b
-      } -> std::same_as<rep&>;
+      { a *= b } -> std::same_as<rep&>;
     }
   friend constexpr decltype(auto) operator*=(FwdQ&& lhs, const Value& v)
   {
@@ -442,9 +420,7 @@ public:
 
   template<typename FwdQ1, QuantityOf<dimensionless> Q2, std::derived_from<quantity> Q1 = std::remove_cvref_t<FwdQ1>>
     requires(Q2::unit == ::mp_units::one) && requires(rep a, const typename Q2::rep b) {
-      {
-        a *= b
-      } -> std::same_as<rep&>;
+      { a *= b } -> std::same_as<rep&>;
     }
   friend constexpr decltype(auto) operator*=(FwdQ1&& lhs, const Q2& rhs)
   {
@@ -457,9 +433,7 @@ public:
 
   template<typename FwdQ, typename Value, std::derived_from<quantity> Q = std::remove_cvref_t<FwdQ>>
     requires(!Quantity<Value>) && requires(rep a, const Value b) {
-      {
-        a /= b
-      } -> std::same_as<rep&>;
+      { a /= b } -> std::same_as<rep&>;
     }
   friend constexpr decltype(auto) operator/=(FwdQ&& lhs, const Value& v)
   {
@@ -472,9 +446,7 @@ public:
 
   template<typename FwdQ1, QuantityOf<dimensionless> Q2, std::derived_from<quantity> Q1 = std::remove_cvref_t<FwdQ1>>
     requires(Q2::unit == ::mp_units::one) && requires(rep a, const typename Q2::rep b) {
-      {
-        a /= b
-      } -> std::same_as<rep&>;
+      { a /= b } -> std::same_as<rep&>;
     }
   friend constexpr decltype(auto) operator/=(FwdQ1&& lhs, const Q2& rhs)
   {
@@ -673,9 +645,7 @@ MP_UNITS_EXPORT_END
 
 template<mp_units::Quantity Q1, mp_units::Quantity Q2>
   requires requires {
-    {
-      mp_units::common_reference(Q1::reference, Q2::reference)
-    } -> mp_units::Reference;
+    { mp_units::common_reference(Q1::reference, Q2::reference) } -> mp_units::Reference;
     typename std::common_type_t<typename Q1::rep, typename Q2::rep>;
   }
 struct std::common_type<Q1, Q2> {

@@ -161,7 +161,7 @@ concept UnitConvertibleTo =
 MP_UNITS_EXPORT template<typename U, auto FromU, auto QS>
 concept UnitCompatibleWith =
   Unit<U> && Unit<MP_UNITS_REMOVE_CONST(decltype(FromU))> && QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS))> &&
-  (!AssociatedUnit<U> || UnitOf<U, QS>)&&detail::UnitConvertibleTo<FromU, U{}>;
+  (!AssociatedUnit<U> || UnitOf<U, QS>) && detail::UnitConvertibleTo<FromU, U{}>;
 
 template<typename T>
 concept OffsetUnit = Unit<T> && requires { T::point_origin; };
