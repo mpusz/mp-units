@@ -103,7 +103,7 @@ class MPUnitsConan(ConanFile):
                     "gcc": "13",
                     "clang": "17",
                     "apple-clang": "",
-                    "msvc": "",
+                    "msvc": "194",
                 },
             },
             "cxx_modules": {
