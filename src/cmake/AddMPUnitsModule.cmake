@@ -72,10 +72,6 @@ function(add_mp_units_module name target_name)
         target_sources(
             ${target_name} PUBLIC FILE_SET HEADERS BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include FILES ${ARG_HEADERS}
         )
-        target_include_directories(
-            ${target_name} ${${projectPrefix}_AS_SYSTEM} ${${projectPrefix}TARGET_SCOPE}
-            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> $<INSTALL_INTERFACE:include>
-        )
     endif()
 
     if(${projectPrefix}BUILD_CXX_MODULES)
