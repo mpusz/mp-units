@@ -32,6 +32,7 @@ endfunction()
 add_mp_units_module(
     core mp-units-core
     HEADERS include/mp-units/bits/core_gmf.h
+            include/mp-units/bits/fixed_point.h
             include/mp-units/bits/get_associated_quantity.h
             include/mp-units/bits/hacks.h
             include/mp-units/bits/math_concepts.h
