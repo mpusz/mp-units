@@ -45,7 +45,9 @@ if(MP_UNITS_BUILD_CXX_MODULES)
     add_executable(test_package test_package.cpp)
     target_compile_features(test_package PRIVATE cxx_std_20)
     target_link_libraries(test_package PRIVATE mp-units::mp-units)
-    target_compile_definitions(test_package PRIVATE MP_UNITS_MODULES MP_UNITS_API_STD_FORMAT=$<BOOL:${MP_UNITS_API_STD_FORMAT}>)
+    target_compile_definitions(
+        test_package PRIVATE MP_UNITS_MODULES MP_UNITS_API_STD_FORMAT=$<BOOL:${MP_UNITS_API_STD_FORMAT}>
+    )
 
     if(MP_UNITS_API_CONTRACTS STREQUAL "NONE")
         target_compile_definitions(test_package PRIVATE MP_UNITS_API_CONTRACTS=0)
