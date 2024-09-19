@@ -82,7 +82,6 @@ class MPUnitsConan(ConanFile):
         "example/*",
         "CMakeLists.txt",
     )
-    package_type = "header-library"
     no_copy_source = True
 
     @property
@@ -204,6 +203,10 @@ class MPUnitsConan(ConanFile):
             self._set_default_option(key)
 
     def configure(self):
+        if self.options.cxx_modules:
+            self.package_type = "static-library"
+        else:
+            self.package_type = "header-library"
         if self.options.freestanding:
             self.options.rm_safe("std_format")
 
