@@ -47,9 +47,9 @@ class TestPackageConan(ConanFile):
             tc.cache_variables["CMAKE_CXX_MODULE_STD"] = True
             tc.cache_variables["MP_UNITS_BUILD_IMPORT_STD"] = True
             # Current experimental support according to `Help/dev/experimental.rst`
-            tc.cache_variables["CMAKE_EXPERIMENTAL_CXX_IMPORT_STD"] = (
-                "0e5b6991-d74f-4b3d-a41c-cf096e0b2508"
-            )
+            tc.cache_variables[
+                "CMAKE_EXPERIMENTAL_CXX_IMPORT_STD"
+            ] = "0e5b6991-d74f-4b3d-a41c-cf096e0b2508"
         if opt.freestanding:
             tc.cache_variables["MP_UNITS_API_FREESTANDING"] = True
         else:
