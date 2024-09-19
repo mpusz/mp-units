@@ -20,7 +20,16 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <mp-units/bits/hacks.h>
+#include <mp-units/compat_macros.h>
+#include <mp-units/ext/format.h>
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
+#include <iostream>
+#endif
+#ifdef MP_UNITS_MODULES
+import mp_units;
+#else
 #include <mp-units/format.h>
 #include <mp-units/ostream.h>
 #include <mp-units/systems/isq.h>
