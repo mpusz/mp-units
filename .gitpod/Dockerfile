@@ -20,6 +20,12 @@ RUN sudo install-packages \
 
 # Install API reference dependencies
 RUN sudo install-packages \
+  latexmk \
+  texlive-latex-recommended \
+  texlive-latex-extra \
+  texlive-fonts-recommended \
+  lmodern
+RUN sudo install-packages \
   haskell-stack \
   graphviz \
   nodejs \
