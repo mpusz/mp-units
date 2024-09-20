@@ -182,11 +182,13 @@ mkdocs build
 We need to take a few steps to set up our environment so that we are ready to generate API reference
 documents.
 
-First, we need to satisfy the requirements described in <https://github.com/Eelis/cxxdraft-htmlgen>.
+First, we need to satisfy the requirements described in <https://github.com/cplusplus/draft> and
+<https://github.com/Eelis/cxxdraft-htmlgen>.
 On the Ubuntu platform, this is equivalent to the following instructions run from the user's home
 directory:
 
 ```bash
+sudo apt install latexmk texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended lmodern
 sudo apt install haskell-stack graphviz nodejs npm ghc cabal-install
 npm install split mathjax-full mathjax-node-sre
 cabal update
