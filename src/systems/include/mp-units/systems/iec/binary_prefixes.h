@@ -28,7 +28,7 @@
 #include <mp-units/framework/unit.h>
 #endif
 
-namespace mp_units::iec80000 {
+namespace mp_units::iec {
 
 // clang-format off
 template<PrefixableUnit U> struct kibi_ final : prefixed_unit<"Ki", mag_power<2, 10>, U{}> {};
@@ -54,4 +54,4 @@ template<PrefixableUnit auto U> constexpr yobi_<MP_UNITS_REMOVE_CONST(decltype(U
 
 MP_UNITS_EXPORT_END
 
-}  // namespace mp_units::iec80000
+}  // namespace mp_units::iec

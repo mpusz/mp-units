@@ -22,23 +22,13 @@
 
 #pragma once
 
-#include <mp-units/bits/module_macros.h>
-#include <mp-units/systems/iec80000/quantities.h>
-#include <mp-units/systems/si/units.h>
+// IWYU pragma: begin_exports
+#include <mp-units/systems/iec/binary_prefixes.h>
+#include <mp-units/systems/iec/quantities.h>
+#include <mp-units/systems/iec/unit_symbols.h>
+#include <mp-units/systems/iec/units.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
-#include <mp-units/framework/unit.h>
+#include <mp-units/framework.h>
 #endif
-
-MP_UNITS_EXPORT
-namespace mp_units::iec80000 {
-
-// clang-format off
-inline constexpr struct erlang final : named_unit<"E", kind_of<traffic_intensity>> {} erlang;
-inline constexpr struct bit final : named_unit<"bit", one, kind_of<storage_capacity>> {} bit;
-inline constexpr struct octet final : named_unit<"o", mag<8> * bit> {} octet;
-inline constexpr struct byte final : named_unit<"B", mag<8> * bit> {} byte;
-inline constexpr struct baud final : named_unit<"Bd", one / si::second, kind_of<modulation_rate>> {} baud;
-// clang-format on
-
-}  // namespace mp_units::iec80000
+// IWYU pragma: end_exports

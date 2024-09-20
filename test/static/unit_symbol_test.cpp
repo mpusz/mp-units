@@ -21,7 +21,7 @@
 // SOFTWARE.
 
 #include <mp-units/systems/iau.h>
-#include <mp-units/systems/iec80000.h>
+#include <mp-units/systems/iec.h>
 #include <mp-units/systems/si.h>
 #ifdef MP_UNITS_IMPORT_STD
 import std;
@@ -33,7 +33,7 @@ namespace {
 
 using namespace mp_units;
 using namespace mp_units::si;
-using namespace mp_units::iec80000;
+using namespace mp_units::iec;
 
 using enum text_encoding;
 using enum unit_symbol_solidus;

@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <mp-units/systems/iec80000.h>
+#include <mp-units/systems/iec.h>
 #include <mp-units/systems/isq/base_quantities.h>
 #include <mp-units/systems/si.h>
 
@@ -29,8 +29,8 @@
 namespace {
 
 using namespace mp_units;
-using namespace mp_units::iec80000;
-using namespace mp_units::iec80000::unit_symbols;
+using namespace mp_units::iec;
+using namespace mp_units::iec::unit_symbols;
 using namespace mp_units::si::unit_symbols;
 using enum mp_units::quantity_character;
 

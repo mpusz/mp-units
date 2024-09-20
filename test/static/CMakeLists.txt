@@ -39,7 +39,7 @@ add_library(
     fixed_string_test.cpp
     hep_test.cpp
     iau_test.cpp
-    iec80000_test.cpp
+    iec_test.cpp
     imperial_test.cpp
     international_test.cpp
     isq_test.cpp
