@@ -2452,12 +2452,14 @@ Material for MkDocs. Please follow the
 <h3 id="generating-api-reference">Generating API reference<a class="headerlink" href="#generating-api-reference" title="Permanent link">&para;</a></h3>
 <p>We need to take a few steps to set up our environment so that we are ready to generate API reference
 documents.</p>
-<p>First, we need to satisfy the requirements described in <a href="https://github.com/Eelis/cxxdraft-htmlgen">https://github.com/Eelis/cxxdraft-htmlgen</a>.
+<p>First, we need to satisfy the requirements described in <a href="https://github.com/cplusplus/draft">https://github.com/cplusplus/draft</a> and
+<a href="https://github.com/Eelis/cxxdraft-htmlgen">https://github.com/Eelis/cxxdraft-htmlgen</a>.
 On the Ubuntu platform, this is equivalent to the following instructions run from the user's home
 directory:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>haskell-stack<span class="w"> </span>graphviz<span class="w"> </span>nodejs<span class="w"> </span>npm<span class="w"> </span>ghc<span class="w"> </span>cabal-install
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>npm<span class="w"> </span>install<span class="w"> </span>split<span class="w"> </span>mathjax-full<span class="w"> </span>mathjax-node-sre
-</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>cabal<span class="w"> </span>update
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>latexmk<span class="w"> </span>texlive-latex-recommended<span class="w"> </span>texlive-latex-extra<span class="w"> </span>texlive-fonts-recommended<span class="w"> </span>lmodern
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>haskell-stack<span class="w"> </span>graphviz<span class="w"> </span>nodejs<span class="w"> </span>npm<span class="w"> </span>ghc<span class="w"> </span>cabal-install
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>npm<span class="w"> </span>install<span class="w"> </span>split<span class="w"> </span>mathjax-full<span class="w"> </span>mathjax-node-sre
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>cabal<span class="w"> </span>update
 </span></code></pre></div>
 <p>Also, installing <code>mathjax-node-cli</code> through npm does not help because <code>tex2html</code> is not called within
 node.js. This is why we need to download <code>mathjax-node-cli</code> and add its <code>bin</code> folder to the <code>PATH</code>
