@@ -2357,8 +2357,8 @@ form a hierarchy of quantities of the same kind.</p>
     path_length --- distance
     distance --- radial_distance
     length --- wavelength
-    length --- position_vector["position_vector\n{vector}"]
-    length --- displacement["displacement\n{vector}"]
+    length --- position_vector["position_vector&lt;br&gt;{vector}"]
+    length --- displacement["displacement&lt;br&gt;{vector}"]
     radius --- radius_of_curvature</code></pre>
 <p>Each of the above quantities expresses some kind of <em>length</em>, and each can be measured with <code>si::metre</code>.
 However, each of them has different properties, usage, and sometimes even requires a different
@@ -2524,12 +2524,12 @@ sometimes not obvious what such a tree should look like. Also, ISO explicitly st
 </div>
 <p>The below presents some arbitrary hierarchy of derived quantities of kind energy:</p>
 <pre class="mermaid"><code>flowchart TD
-    energy["energy\n(mass * length&lt;sup&gt;2&lt;/sup&gt; / time&lt;sup&gt;2&lt;/sup&gt;)"]
+    energy["energy&lt;br&gt;(mass * length&lt;sup&gt;2&lt;/sup&gt; / time&lt;sup&gt;2&lt;/sup&gt;)"]
     energy --- mechanical_energy
     mechanical_energy --- potential_energy
-    potential_energy --- gravitational_potential_energy["gravitational_potential_energy\n(mass * acceleration_of_free_fall * height)"]
-    potential_energy --- elastic_potential_energy["elastic_potential_energy\n(spring_constant * amount_of_compression&lt;sup&gt;2&lt;/sup&gt;)"]
-    mechanical_energy --- kinetic_energy["kinetic_energy\n(mass * speed&lt;sup&gt;2&lt;/sup&gt;)"]
+    potential_energy --- gravitational_potential_energy["gravitational_potential_energy&lt;br&gt;(mass * acceleration_of_free_fall * height)"]
+    potential_energy --- elastic_potential_energy["elastic_potential_energy&lt;br&gt;(spring_constant * amount_of_compression&lt;sup&gt;2&lt;/sup&gt;)"]
+    mechanical_energy --- kinetic_energy["kinetic_energy&lt;br&gt;(mass * speed&lt;sup&gt;2&lt;/sup&gt;)"]
     energy --- enthalpy
     enthalpy --- internal_energy[internal_energy, thermodynamic_energy]
     internal_energy --- Helmholtz_energy[Helmholtz_energy, Helmholtz_function]

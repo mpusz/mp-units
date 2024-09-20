@@ -2488,15 +2488,15 @@ is a <em>storage capacity</em> quantity specified in IEC-80000-13 that again all
 <a href="../../../appendix/glossary/#quantity-hierarchy">quantity hierarchy</a> that contains more than one
 <a href="../../../appendix/glossary/#kind">quantity kind</a> in its tree:</p>
 <pre class="mermaid"><code>flowchart TD
-    dimensionless["dimensionless\n[one]"]
+    dimensionless["dimensionless&lt;br&gt;[one]"]
     dimensionless --- rotation
     dimensionless --- efficiency
-    dimensionless --- angular_measure["angular_measure\n[rad]"]
+    dimensionless --- angular_measure["angular_measure&lt;br&gt;[rad]"]
     angular_measure --- rotational_displacement
     angular_measure --- phase_angle
-    dimensionless --- solid_angular_measure["solid_angular_measure\n[sr]"]
+    dimensionless --- solid_angular_measure["solid_angular_measure&lt;br&gt;[sr]"]
     dimensionless --- drag_factor
-    dimensionless --- storage_capacity["storage_capacity\n[bit]"] --- equivalent_binary_storage_capacity
+    dimensionless --- storage_capacity["storage_capacity&lt;br&gt;[bit]"] --- equivalent_binary_storage_capacity
     dimensionless --- ...</code></pre>
 <p>To provide such support in the library, we provided an <code>is_kind</code> specifier that can be appended
 to the quantity specification:</p>
