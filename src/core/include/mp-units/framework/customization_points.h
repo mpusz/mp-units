@@ -65,6 +65,14 @@ template<typename Rep>
 constexpr bool is_scalar = std::is_floating_point_v<Rep> || (std::is_integral_v<Rep> && !is_same_v<Rep, bool>);
 
 /**
+ * @brief Specifies a type to have a complex character
+ *
+ * A complex is a physical quantity that has a complex representation type.
+ */
+template<typename Rep>
+constexpr bool is_complex = false;
+
+/**
  * @brief Specifies a type to have a vector character
  *
  * Vectors are physical quantities that possess both magnitude and direction
