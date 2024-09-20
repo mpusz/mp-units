@@ -108,8 +108,8 @@ flowchart TD
     path_length --- distance
     distance --- radial_distance
     length --- wavelength
-    length --- position_vector["position_vector\n{vector}"]
-    length --- displacement["displacement\n{vector}"]
+    length --- position_vector["position_vector<br>{vector}"]
+    length --- displacement["displacement<br>{vector}"]
     radius --- radius_of_curvature
 ```
 
@@ -299,12 +299,12 @@ The below presents some arbitrary hierarchy of derived quantities of kind energy
 
 ```mermaid
 flowchart TD
-    energy["energy\n(mass * length<sup>2</sup> / time<sup>2</sup>)"]
+    energy["energy<br>(mass * length<sup>2</sup> / time<sup>2</sup>)"]
     energy --- mechanical_energy
     mechanical_energy --- potential_energy
-    potential_energy --- gravitational_potential_energy["gravitational_potential_energy\n(mass * acceleration_of_free_fall * height)"]
-    potential_energy --- elastic_potential_energy["elastic_potential_energy\n(spring_constant * amount_of_compression<sup>2</sup>)"]
-    mechanical_energy --- kinetic_energy["kinetic_energy\n(mass * speed<sup>2</sup>)"]
+    potential_energy --- gravitational_potential_energy["gravitational_potential_energy<br>(mass * acceleration_of_free_fall * height)"]
+    potential_energy --- elastic_potential_energy["elastic_potential_energy<br>(spring_constant * amount_of_compression<sup>2</sup>)"]
+    mechanical_energy --- kinetic_energy["kinetic_energy<br>(mass * speed<sup>2</sup>)"]
     energy --- enthalpy
     enthalpy --- internal_energy[internal_energy, thermodynamic_energy]
     internal_energy --- Helmholtz_energy[Helmholtz_energy, Helmholtz_function]
