@@ -186,14 +186,6 @@ dependencies by other means, some modifications to the library's CMake files mig
 
         [cmake build cxx modules support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 
-    [`MP_UNITS_BUILD_IMPORT_STD`](#MP_UNITS_BUILD_IMPORT_STD){ #MP_UNITS_BUILD_IMPORT_STD }
-
-    :   [:octicons-tag-24: 2.3.0][cmake import std support] · :octicons-milestone-24: `ON`/`OFF` (Default: `OFF`)
-
-        Enables `import std;` usage.
-
-        [cmake import std support]: https://github.com/mpusz/mp-units/releases/tag/v2.3.0
-
     [`MP_UNITS_API_STD_FORMAT`](#MP_UNITS_API_STD_FORMAT){ #MP_UNITS_API_STD_FORMAT }
 
     :   [:octicons-tag-24: 2.2.0][cmake std::format support] · :octicons-milestone-24: `ON`/`OFF` (Default: automatically determined)

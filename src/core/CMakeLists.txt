@@ -125,7 +125,7 @@ if(${projectPrefix}BUILD_CXX_MODULES)
     endif()
 endif()
 
-if(${projectPrefix}BUILD_IMPORT_STD)
+if(CMAKE_CXX_MODULE_STD)
     target_compile_definitions(mp-units-core ${${projectPrefix}TARGET_SCOPE} ${projectPrefix}IMPORT_STD)
     # https://github.com/llvm/llvm-project/issues/75057
     if(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 19)

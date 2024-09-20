@@ -84,7 +84,7 @@ C++ feature:
   `import std;` instead of the "old-style" header includes.
 - Related build options:
     - Conan: [import_std](installation_and_usage.md#import_std)
-    - CMake: [MP_UNITS_BUILD_IMPORT_STD](installation_and_usage.md#MP_UNITS_BUILD_IMPORT_STD)
+    - CMake: [CMAKE_CXX_MODULE_STD](https://cmake.org/cmake/help/latest/variable/CMAKE_CXX_MODULE_STD.html)
 
 
 ## Static `constexpr` variables in `constexpr` functions

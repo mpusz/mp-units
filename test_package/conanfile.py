@@ -45,7 +45,6 @@ class TestPackageConan(ConanFile):
             tc.cache_variables["MP_UNITS_BUILD_CXX_MODULES"] = True
         if opt.import_std:
             tc.cache_variables["CMAKE_CXX_MODULE_STD"] = True
-            tc.cache_variables["MP_UNITS_BUILD_IMPORT_STD"] = True
             # Current experimental support according to `Help/dev/experimental.rst`
             tc.cache_variables[
                 "CMAKE_EXPERIMENTAL_CXX_IMPORT_STD"
