@@ -24,6 +24,7 @@
 
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/systems/iec/quantities.h>
+#include <mp-units/systems/isq/electromagnetism.h>
 #include <mp-units/systems/si/units.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
@@ -34,6 +35,10 @@ MP_UNITS_EXPORT
 namespace mp_units::iec {
 
 // clang-format off
+// Electromagnetism
+inline constexpr struct volt_ampere_reactive_power final : named_unit<"var", si::volt * si::ampere, kind_of<isq::reactive_power>> {} volt_ampere_reactive_power;
+
+// Information science and technology
 inline constexpr struct erlang final : named_unit<"E", kind_of<traffic_intensity>> {} erlang;
 inline constexpr struct bit final : named_unit<"bit", one, kind_of<storage_capacity>> {} bit;
 inline constexpr struct octet final : named_unit<"o", mag<8> * bit> {} octet;

@@ -30,6 +30,10 @@
 MP_UNITS_EXPORT
 namespace mp_units::iec::unit_symbols {
 
+// Electromagnetism
+inline constexpr auto var = volt_ampere_reactive_power;
+
+// Information science and technology
 // bit
 inline constexpr auto kbit = si::kilo<bit>;
 inline constexpr auto Mbit = si::mega<bit>;
