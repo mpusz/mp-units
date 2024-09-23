@@ -76,13 +76,13 @@ struct point_origin_interface {
 
   template<PointOrigin PO1, detail::SameAbsolutePointOriginAs<PO1{}> PO2>
     requires QuantitySpecOf<std::remove_const_t<decltype(PO1::quantity_spec)>, PO2::quantity_spec> &&
-             (detail::is_derived_from_specialization_of_relative_point_origin<PO1> ||
-              detail::is_derived_from_specialization_of_relative_point_origin<PO2>)
+             (is_derived_from_specialization_of_v<PO1, relative_point_origin> ||
+              is_derived_from_specialization_of_v<PO2, relative_point_origin>)
   [[nodiscard]] friend constexpr Quantity auto operator-(PO1 po1, PO2 po2)
   {
-    if constexpr (detail::is_derived_from_specialization_of_absolute_point_origin<PO1>) {
+    if constexpr (is_derived_from_specialization_of_v<PO1, absolute_point_origin>) {
       return -(po2.quantity_point - po2.quantity_point.absolute_point_origin);
-    } else if constexpr (detail::is_derived_from_specialization_of_absolute_point_origin<PO2>) {
+    } else if constexpr (is_derived_from_specialization_of_v<PO2, absolute_point_origin>) {
       return po1.quantity_point - po1.quantity_point.absolute_point_origin;
     } else {
       return po1.quantity_point - po2.quantity_point;
@@ -92,16 +92,16 @@ struct point_origin_interface {
   template<PointOrigin PO1, PointOrigin PO2>
   [[nodiscard]] friend consteval bool operator==(PO1 po1, PO2 po2)
   {
-    if constexpr (detail::is_derived_from_specialization_of_absolute_point_origin<PO1> &&
-                  detail::is_derived_from_specialization_of_absolute_point_origin<PO2>)
+    if constexpr (is_derived_from_specialization_of_v<PO1, absolute_point_origin> &&
+                  is_derived_from_specialization_of_v<PO2, absolute_point_origin>)
       return is_same_v<PO1, PO2> || (detail::is_zeroth_point_origin(po1) && detail::is_zeroth_point_origin(po2) &&
                                      interconvertible(po1.quantity_spec, po2.quantity_spec));
-    else if constexpr (detail::is_derived_from_specialization_of_relative_point_origin<PO1> &&
-                       detail::is_derived_from_specialization_of_relative_point_origin<PO2>)
+    else if constexpr (is_derived_from_specialization_of_v<PO1, relative_point_origin> &&
+                       is_derived_from_specialization_of_v<PO2, relative_point_origin>)
       return PO1::quantity_point == PO2::quantity_point;
-    else if constexpr (detail::is_derived_from_specialization_of_relative_point_origin<PO1>)
+    else if constexpr (is_derived_from_specialization_of_v<PO1, relative_point_origin>)
       return detail::same_absolute_point_origins(po1, po2) && is_eq_zero(PO1::quantity_point.quantity_from_zero());
-    else if constexpr (detail::is_derived_from_specialization_of_relative_point_origin<PO2>)
+    else if constexpr (is_derived_from_specialization_of_v<PO2, relative_point_origin>)
       return detail::same_absolute_point_origins(po1, po2) && is_eq_zero(PO2::quantity_point.quantity_from_zero());
   }
 };
@@ -154,7 +154,7 @@ namespace detail {
 template<PointOrigin PO>
 [[nodiscard]] consteval PointOrigin auto get_absolute_point_origin(PO po)
 {
-  if constexpr (is_derived_from_specialization_of_absolute_point_origin<PO>)
+  if constexpr (is_derived_from_specialization_of_v<PO, absolute_point_origin>)
     return po;
   else
     return po.quantity_point.absolute_point_origin;
@@ -509,7 +509,7 @@ public:
   {
     if constexpr (point_origin == po)
       return qp.quantity_ref_from(point_origin);
-    else if constexpr (detail::is_derived_from_specialization_of_absolute_point_origin<PO2>) {
+    else if constexpr (is_derived_from_specialization_of_v<PO2, ::mp_units::absolute_point_origin>) {
       if constexpr (point_origin == absolute_point_origin)
         return qp.quantity_ref_from(point_origin);
       else

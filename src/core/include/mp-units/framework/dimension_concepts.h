@@ -49,20 +49,13 @@ struct base_dimension;
 
 namespace detail {
 
-template<symbol_text Symbol>
-void to_base_specialization_of_base_dimension(const volatile base_dimension<Symbol>*);
-
-template<typename T>
-constexpr bool is_derived_from_specialization_of_base_dimension =
-  requires(T* type) { to_base_specialization_of_base_dimension(type); };
-
 /**
  * @brief A concept matching all named base dimensions in the library.
  *
  * Satisfied by all dimension types derived from a specialization of `base_dimension`.
  */
 template<typename T>
-concept BaseDimension = Dimension<T> && is_derived_from_specialization_of_base_dimension<T>;
+concept BaseDimension = Dimension<T> && is_derived_from_specialization_of_v<T, base_dimension>;
 
 template<typename T>
 struct is_dimension_one : std::false_type {};

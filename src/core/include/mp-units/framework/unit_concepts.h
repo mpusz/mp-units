@@ -53,22 +53,11 @@ struct named_unit;
 
 MP_UNITS_EXPORT struct one;
 
-namespace detail {
-
-template<symbol_text Symbol, auto... Args>
-void to_base_specialization_of_named_unit(const volatile named_unit<Symbol, Args...>*);
-
-template<typename T>
-constexpr bool is_derived_from_specialization_of_named_unit =
-  requires(T* t) { to_base_specialization_of_named_unit(t); };
-
-}  // namespace detail
-
 /**
  * @brief A concept to be used to define prefixes for a unit
  */
 MP_UNITS_EXPORT template<typename T>
-concept PrefixableUnit = Unit<T> && detail::is_derived_from_specialization_of_named_unit<T>;
+concept PrefixableUnit = Unit<T> && is_derived_from_specialization_of_v<T, named_unit>;
 
 namespace detail {
 

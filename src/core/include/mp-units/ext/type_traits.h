@@ -89,10 +89,16 @@ namespace detail {
 template<template<typename...> typename Type, typename... Params>
 void to_base_specialization_of(const volatile Type<Params...>*);
 
+template<template<auto...> typename Type, auto... Params>
+void to_base_specialization_of_v(const volatile Type<Params...>*);
+
 }  // namespace detail
 
 template<typename T, template<typename...> typename Type>
 constexpr bool is_derived_from_specialization_of = requires(T* t) { detail::to_base_specialization_of<Type>(t); };
+
+template<typename T, template<auto...> typename Type>
+constexpr bool is_derived_from_specialization_of_v = requires(T* t) { detail::to_base_specialization_of_v<Type>(t); };
 
 namespace detail {
 
