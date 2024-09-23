@@ -53,13 +53,7 @@ struct kind_of_;
 namespace detail {
 
 template<typename T>
-constexpr bool is_specialization_of_kind_of = false;
-
-template<typename Q>
-constexpr bool is_specialization_of_kind_of<kind_of_<Q>> = true;
-
-template<typename T>
-concept QuantityKindSpec = is_specialization_of_kind_of<T>;
+concept QuantityKindSpec = is_specialization_of<T, kind_of_>;
 
 #if MP_UNITS_API_NO_CRTP
 template<auto... Args>

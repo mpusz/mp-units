@@ -56,12 +56,6 @@ struct per {};
 
 namespace detail {
 
-template<typename T>
-constexpr bool is_specialization_of_per = false;
-
-template<typename... Ts>
-constexpr bool is_specialization_of_per<per<Ts...>> = true;
-
 template<int Num, int... Den>
 constexpr bool valid_ratio = true;
 
@@ -312,7 +306,7 @@ template<template<typename> typename OneType, typename List>
   else {
     using last_element = type_list_back<List>;
 
-    if constexpr (is_specialization_of_per<last_element>) {
+    if constexpr (is_specialization_of<last_element, per>) {
       if constexpr (size == 2 && OneType<type_list_front<List>>::value)
         return expr_fractions_result<type_list<>, type_list_map<last_element, type_list>>{};
       else {

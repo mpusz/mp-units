@@ -533,12 +533,6 @@ template<Unit T, typename... Expr>
   return canonical_unit{num.mag / den.mag, num.reference_unit / den.reference_unit};
 }
 
-template<typename T>
-constexpr bool is_specialization_of_derived_unit = false;
-
-template<typename... Expr>
-constexpr bool is_specialization_of_derived_unit<derived_unit<Expr...>> = true;
-
 }  // namespace detail
 
 MP_UNITS_EXPORT_BEGIN
@@ -564,7 +558,7 @@ template<std::intmax_t Num, std::intmax_t Den = 1, Unit U>
     return u;
   else if constexpr (detail::is_specialization_of_scaled_unit<U>)
     return scaled_unit<pow<Num, Den>(U::mag), decltype(pow<Num, Den>(U::reference_unit))>{};
-  else if constexpr (detail::is_specialization_of_derived_unit<U>)
+  else if constexpr (is_specialization_of<U, derived_unit>)
     return detail::expr_pow<Num, Den, derived_unit, struct one, detail::type_list_of_unit_less>(u);
   else if constexpr (Den == 1)
     return derived_unit<power<U, Num>>{};

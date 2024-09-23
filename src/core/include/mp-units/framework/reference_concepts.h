@@ -32,17 +32,6 @@ namespace mp_units {
 MP_UNITS_EXPORT template<QuantitySpec Q, Unit U>
 struct reference;
 
-namespace detail {
-
-// do not refactor below to a variable template - GCC-11 does not like it
-template<typename T>
-struct is_specialization_of_reference : std::false_type {};
-
-template<typename Q, typename U>
-struct is_specialization_of_reference<reference<Q, U>> : std::true_type {};
-
-}  // namespace detail
-
 MP_UNITS_EXPORT_BEGIN
 
 [[nodiscard]] consteval QuantitySpec auto get_quantity_spec(AssociatedUnit auto u);
@@ -67,7 +56,7 @@ template<typename Q, typename U>
  * Satisfied by all specializations of @c reference.
  */
 template<typename T>
-concept Reference = AssociatedUnit<T> || detail::is_specialization_of_reference<T>::value;
+concept Reference = AssociatedUnit<T> || is_specialization_of<T, reference>;
 
 /**
  * @brief A concept matching all references with provided quantity spec
