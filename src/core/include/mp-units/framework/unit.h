@@ -654,7 +654,7 @@ template<Unit U1, Unit U2>
     else if constexpr (is_integral(canonical_rhs.mag / canonical_lhs.mag))
       return u1;
     else {
-      constexpr auto common_magnitude = detail::common_magnitude(canonical_lhs.mag, canonical_rhs.mag);
+      constexpr auto common_magnitude = _common_magnitude(canonical_lhs.mag, canonical_rhs.mag);
       return scaled_unit<common_magnitude, decltype(canonical_lhs.reference_unit)>{};
     }
   }
@@ -741,7 +741,7 @@ constexpr Out unit_symbol_impl(Out out, const scaled_unit_impl<M, U>& u, const u
     // no ratio/prefix
     return unit_symbol_impl<CharT>(out, u.reference_unit, fmt, negative_power);
   } else {
-    constexpr auto mag_txt = magnitude_text<M>();
+    constexpr auto mag_txt = _magnitude_text(M);
     out = copy<CharT>(mag_txt, fmt.encoding, out);
 
     if constexpr (space_before_unit_symbol<scaled_unit<M, U>::reference_unit>) *out++ = ' ';

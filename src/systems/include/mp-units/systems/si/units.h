@@ -100,7 +100,7 @@ inline constexpr struct minute final : named_unit<"min", mag<60> * si::second> {
 inline constexpr struct hour final : named_unit<"h", mag<60> * minute> {} hour;
 inline constexpr struct day final : named_unit<"d", mag<24> * hour> {} day;
 inline constexpr struct astronomical_unit final : named_unit<"au", mag<149'597'870'700> * si::metre> {} astronomical_unit;
-inline constexpr struct degree final : named_unit<symbol_text{u8"°", "deg"}, mag_pi / mag<180> * si::radian> {} degree;
+inline constexpr struct degree final : named_unit<symbol_text{u8"°", "deg"}, mag<pi> / mag<180> * si::radian> {} degree;
 inline constexpr struct arcminute final : named_unit<symbol_text{u8"′", "'"}, mag_ratio<1, 60> * degree> {} arcminute;
 inline constexpr struct arcsecond final : named_unit<symbol_text{u8"″", "''"}, mag_ratio<1, 60> * arcminute> {} arcsecond;
 inline constexpr struct are final : named_unit<"a", square(si::deca<si::metre>)> {} are;

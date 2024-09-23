@@ -216,9 +216,9 @@ static_assert(std::is_same_v<decltype(get_base(power_v<mag_2, 5, 8>{})), mag_2_>
 
 //   SECTION("pi to the 1 supplies correct values")
 //   {
-//     check_same_type_and_value(get_value<float>(mag_pi), std::numbers::pi_v<float>);
-//     check_same_type_and_value(get_value<double>(mag_pi), std::numbers::pi_v<double>);
-//     check_same_type_and_value(get_value<long double>(mag_pi), std::numbers::pi_v<long double>);
+//     check_same_type_and_value(get_value<float>(mag<pi>), std::numbers::pi_v<float>);
+//     check_same_type_and_value(get_value<double>(mag<pi>), std::numbers::pi_v<double>);
+//     check_same_type_and_value(get_value<long double>(mag<pi>), std::numbers::pi_v<long double>);
 //   }
 
 //   SECTION("pi to arbitrary power performs computations in most accurate type at compile time")

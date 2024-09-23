@@ -122,7 +122,7 @@ namespace detail {
 [[nodiscard]] constexpr auto as_ratio(Magnitude auto m)
   requires(is_rational(m))
 {
-  return std::ratio<get_value<std::intmax_t>(numerator(m)), get_value<std::intmax_t>(denominator(m))>{};
+  return std::ratio<get_value<std::intmax_t>(_numerator(m)), get_value<std::intmax_t>(_denominator(m))>{};
 }
 
 }  // namespace detail

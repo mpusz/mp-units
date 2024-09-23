@@ -76,8 +76,8 @@ struct conversion_type_traits {
  */
 template<Magnitude auto M, typename T>
 struct conversion_value_traits {
-  static constexpr Magnitude auto num = numerator(M);
-  static constexpr Magnitude auto den = denominator(M);
+  static constexpr Magnitude auto num = _numerator(M);
+  static constexpr Magnitude auto den = _denominator(M);
   static constexpr Magnitude auto irr = M * (den / num);
   static constexpr T num_mult = get_value<T>(num);
   static constexpr T den_mult = get_value<T>(den);
@@ -121,9 +121,9 @@ template<Quantity To, typename FwdFrom, Quantity From = std::remove_cvref_t<FwdF
 
     // scale the number
     if constexpr (is_integral(c_mag))
-      return scale([&](auto value) { return value * get_value<multiplier_type>(numerator(c_mag)); });
+      return scale([&](auto value) { return value * get_value<multiplier_type>(_numerator(c_mag)); });
     else if constexpr (is_integral(pow<-1>(c_mag)))
-      return scale([&](auto value) { return value / get_value<multiplier_type>(denominator(c_mag)); });
+      return scale([&](auto value) { return value / get_value<multiplier_type>(_denominator(c_mag)); });
     else {
       using value_traits = conversion_value_traits<c_mag, multiplier_type>;
       if constexpr (std::is_floating_point_v<multiplier_type>)

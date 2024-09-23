@@ -74,7 +74,7 @@ inline constexpr struct degree_Celsius_ final : named_unit<symbol_text{u8"℃", 
 
 inline constexpr struct minute_ final : named_unit<"min", mag<60> * second> {} minute;
 inline constexpr struct hour_ final : named_unit<"h", mag<60> * minute> {} hour;
-inline constexpr struct degree_ final : named_unit<symbol_text{u8"°", "deg"}, mag_pi / mag<180> * radian> {} degree;
+inline constexpr struct degree_ final : named_unit<symbol_text{u8"°", "deg"}, mag<pi> / mag<180> * radian> {} degree;
 
 inline constexpr struct yard_ final : named_unit<"yd", mag_ratio<9'144, 10'000> * metre> {} yard;
 inline constexpr struct mile_ final : named_unit<"mi", mag<1760> * yard> {} mile;
@@ -140,7 +140,7 @@ static_assert(get_canonical_unit(radian).mag == mag<1>);
 
 static_assert(is_of_type<degree, degree_>);
 static_assert(is_of_type<get_canonical_unit(degree).reference_unit, one_>);
-static_assert(get_canonical_unit(degree).mag == mag_pi / mag<180>);
+static_assert(get_canonical_unit(degree).mag == mag<pi> / mag<180>);
 static_assert(convertible(radian, degree));
 static_assert(radian != degree);
 
