@@ -228,11 +228,11 @@ template<auto R, auto PO, typename Rep>
  * @return Quantity: The nearest floating point representable to ax+b
  */
 template<auto R, auto S, auto T, typename Rep1, typename Rep2, typename Rep3>
-  requires requires { common_quantity_spec(get_quantity_spec(R) * get_quantity_spec(S), get_quantity_spec(T)); } &&
+  requires requires { get_common_quantity_spec(get_quantity_spec(R) * get_quantity_spec(S), get_quantity_spec(T)); } &&
            (get_unit(R) * get_unit(S) == get_unit(T)) && requires(Rep1 v1, Rep2 v2, Rep3 v3) {
              requires requires { fma(v1, v2, v3); } || requires { std::fma(v1, v2, v3); };
            }
-[[nodiscard]] constexpr QuantityOf<common_quantity_spec(
+[[nodiscard]] constexpr QuantityOf<get_common_quantity_spec(
   get_quantity_spec(R) * get_quantity_spec(S), get_quantity_spec(T))> auto fma(const quantity<R, Rep1>& a,
                                                                                const quantity<S, Rep2>& x,
                                                                                const quantity<T, Rep3>& b) noexcept
@@ -240,7 +240,7 @@ template<auto R, auto S, auto T, typename Rep1, typename Rep2, typename Rep3>
   using std::fma;
   return quantity{
     fma(a.numerical_value_ref_in(a.unit), x.numerical_value_ref_in(x.unit), b.numerical_value_ref_in(b.unit)),
-    common_reference(R * S, T)};
+    get_common_reference(R * S, T)};
 }
 
 /**
@@ -252,19 +252,19 @@ template<auto R, auto S, auto T, typename Rep1, typename Rep2, typename Rep3>
  * @return QuantityPoint: The nearest floating point representable to ax+b
  */
 template<auto R, auto S, auto T, auto Origin, typename Rep1, typename Rep2, typename Rep3>
-  requires requires { common_quantity_spec(get_quantity_spec(R) * get_quantity_spec(S), get_quantity_spec(T)); } &&
+  requires requires { get_common_quantity_spec(get_quantity_spec(R) * get_quantity_spec(S), get_quantity_spec(T)); } &&
            (get_unit(R) * get_unit(S) == get_unit(T)) && requires(Rep1 v1, Rep2 v2, Rep3 v3) {
              requires requires { fma(v1, v2, v3); } || requires { std::fma(v1, v2, v3); };
            }
 [[nodiscard]] constexpr QuantityPointOf<
-  common_quantity_spec(get_quantity_spec(R) * get_quantity_spec(S),
-                       get_quantity_spec(T))> auto fma(const quantity<R, Rep1>& a, const quantity<S, Rep2>& x,
-                                                       const quantity_point<T, Origin, Rep3>& b) noexcept
+  get_common_quantity_spec(get_quantity_spec(R) * get_quantity_spec(S),
+                           get_quantity_spec(T))> auto fma(const quantity<R, Rep1>& a, const quantity<S, Rep2>& x,
+                                                           const quantity_point<T, Origin, Rep3>& b) noexcept
 {
   using std::fma;
   return Origin + quantity{fma(a.numerical_value_ref_in(a.unit), x.numerical_value_ref_in(x.unit),
                                b.quantity_ref_from(b.point_origin).numerical_value_ref_in(b.unit)),
-                           common_reference(R * S, T)};
+                           get_common_reference(R * S, T)};
 }
 
 /**
@@ -272,13 +272,13 @@ template<auto R, auto S, auto T, auto Origin, typename Rep1, typename Rep2, type
  */
 template<auto R1, typename Rep1, auto R2, typename Rep2>
   requires requires(Rep1 v1, Rep2 v2) {
-    common_reference(R1, R2);
+    get_common_reference(R1, R2);
     requires requires { fmod(v1, v2); } || requires { std::fmod(v1, v2); };
   }
 [[nodiscard]] constexpr QuantityOf<get_quantity_spec(R1)> auto fmod(const quantity<R1, Rep1>& x,
                                                                     const quantity<R2, Rep2>& y) noexcept
 {
-  constexpr auto ref = common_reference(R1, R2);
+  constexpr auto ref = get_common_reference(R1, R2);
   constexpr auto unit = get_unit(ref);
   using std::fmod;
   return quantity{fmod(x.numerical_value_in(unit), y.numerical_value_in(unit)), ref};
@@ -289,13 +289,13 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
  */
 template<auto R1, typename Rep1, auto R2, typename Rep2>
   requires requires(Rep1 v1, Rep2 v2) {
-    common_reference(R1, R2);
+    get_common_reference(R1, R2);
     requires requires { remainder(v1, v2); } || requires { std::remainder(v1, v2); };
   }
 [[nodiscard]] constexpr QuantityOf<get_quantity_spec(R1)> auto remainder(const quantity<R1, Rep1>& x,
                                                                          const quantity<R2, Rep2>& y) noexcept
 {
-  constexpr auto ref = common_reference(R1, R2);
+  constexpr auto ref = get_common_reference(R1, R2);
   constexpr auto unit = get_unit(ref);
   using std::remainder;
   return quantity{remainder(x.numerical_value_in(unit), y.numerical_value_in(unit)), ref};
@@ -451,13 +451,13 @@ template<Unit auto To, auto R, typename Rep>
  */
 template<auto R1, typename Rep1, auto R2, typename Rep2>
   requires requires(Rep1 v1, Rep2 v2) {
-    common_reference(R1, R2);
+    get_common_reference(R1, R2);
     requires requires { hypot(v1, v2); } || requires { std::hypot(v1, v2); };
   }
-[[nodiscard]] constexpr QuantityOf<get_quantity_spec(common_reference(R1, R2))> auto hypot(
+[[nodiscard]] constexpr QuantityOf<get_quantity_spec(get_common_reference(R1, R2))> auto hypot(
   const quantity<R1, Rep1>& x, const quantity<R2, Rep2>& y) noexcept
 {
-  constexpr auto ref = common_reference(R1, R2);
+  constexpr auto ref = get_common_reference(R1, R2);
   constexpr auto unit = get_unit(ref);
   using std::hypot;
   return quantity{hypot(x.numerical_value_in(unit), y.numerical_value_in(unit)), ref};
@@ -469,13 +469,13 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
  */
 template<auto R1, typename Rep1, auto R2, typename Rep2, auto R3, typename Rep3>
   requires requires(Rep1 v1, Rep2 v2, Rep3 v3) {
-    common_reference(R1, R2, R3);
+    get_common_reference(R1, R2, R3);
     requires requires { hypot(v1, v2, v3); } || requires { std::hypot(v1, v2, v3); };
   }
-[[nodiscard]] constexpr QuantityOf<get_quantity_spec(common_reference(R1, R2, R3))> auto hypot(
+[[nodiscard]] constexpr QuantityOf<get_quantity_spec(get_common_reference(R1, R2, R3))> auto hypot(
   const quantity<R1, Rep1>& x, const quantity<R2, Rep2>& y, const quantity<R3, Rep3>& z) noexcept
 {
-  constexpr auto ref = common_reference(R1, R2);
+  constexpr auto ref = get_common_reference(R1, R2);
   constexpr auto unit = get_unit(ref);
   using std::hypot;
   return quantity{hypot(x.numerical_value_in(unit), y.numerical_value_in(unit), z.numerical_value_in(unit)), ref};

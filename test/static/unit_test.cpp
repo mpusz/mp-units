@@ -511,32 +511,33 @@ static_assert(is_of_type<pow<2>(hour), derived_unit<power<hour_, 2>>>);
 static_assert(
   is_of_type<pow<2>(mag<3600>* second), scaled_unit<mag<3600> * mag<3600>, derived_unit<power<second_, 2>>>>);
 
-// common_unit
-static_assert(is_of_type<common_unit(gram, gram), gram_>);
-static_assert(is_of_type<common_unit(kilogram, kilogram), si::kilo_<gram_>>);
-static_assert(is_of_type<common_unit(si::kilo<gram>, kilogram), si::kilo_<gram_>>);
-static_assert(is_of_type<common_unit(kilogram, si::kilo<gram>), si::kilo_<gram_>>);
-static_assert(is_of_type<common_unit(mag<1000>* gram, kilogram), si::kilo_<gram_>>);
-static_assert(is_of_type<common_unit(kilogram, mag<1000>* gram), si::kilo_<gram_>>);
-static_assert(is_of_type<common_unit(one / second, hertz), hertz_>);
-static_assert(is_of_type<common_unit(hertz, one / second), hertz_>);
-static_assert(is_of_type<common_unit(gram, kilogram), gram_>);
-static_assert(is_of_type<common_unit(kilogram, gram), gram_>);
-static_assert(is_of_type<common_unit(second, hour), second_>);
-static_assert(is_of_type<common_unit(hour, second), second_>);
-static_assert(is_of_type<common_unit(minute, hour), minute_>);
-static_assert(is_of_type<common_unit(hour, minute), minute_>);
-static_assert(is_of_type<common_unit(si::kilo<metre>, si::milli<metre>), si::milli_<metre_>>);
-static_assert(is_of_type<common_unit(si::milli<metre>, si::kilo<metre>), si::milli_<metre_>>);
-static_assert(is_of_type<common_unit(yard, mile), yard_>);
-static_assert(is_of_type<common_unit(mile, yard), yard_>);
+// get_common_unit
+static_assert(is_of_type<get_common_unit(gram, gram), gram_>);
+static_assert(is_of_type<get_common_unit(kilogram, kilogram), si::kilo_<gram_>>);
+static_assert(is_of_type<get_common_unit(si::kilo<gram>, kilogram), si::kilo_<gram_>>);
+static_assert(is_of_type<get_common_unit(kilogram, si::kilo<gram>), si::kilo_<gram_>>);
+static_assert(is_of_type<get_common_unit(mag<1000>* gram, kilogram), si::kilo_<gram_>>);
+static_assert(is_of_type<get_common_unit(kilogram, mag<1000>* gram), si::kilo_<gram_>>);
+static_assert(is_of_type<get_common_unit(one / second, hertz), hertz_>);
+static_assert(is_of_type<get_common_unit(hertz, one / second), hertz_>);
+static_assert(is_of_type<get_common_unit(gram, kilogram), gram_>);
+static_assert(is_of_type<get_common_unit(kilogram, gram), gram_>);
+static_assert(is_of_type<get_common_unit(second, hour), second_>);
+static_assert(is_of_type<get_common_unit(hour, second), second_>);
+static_assert(is_of_type<get_common_unit(minute, hour), minute_>);
+static_assert(is_of_type<get_common_unit(hour, minute), minute_>);
+static_assert(is_of_type<get_common_unit(si::kilo<metre>, si::milli<metre>), si::milli_<metre_>>);
+static_assert(is_of_type<get_common_unit(si::milli<metre>, si::kilo<metre>), si::milli_<metre_>>);
+static_assert(is_of_type<get_common_unit(yard, mile), yard_>);
+static_assert(is_of_type<get_common_unit(mile, yard), yard_>);
 // TODO The below have long/unreadable magnitude types
-static_assert(is_of_type<common_unit(kilometre / hour, metre / second),
+static_assert(is_of_type<get_common_unit(kilometre / hour, metre / second),
                          scaled_unit<mag_ratio<1, 18>, derived_unit<metre_, per<second_>>>>);
-static_assert(is_of_type<common_unit(metre / second, kilometre / hour),
+static_assert(is_of_type<get_common_unit(metre / second, kilometre / hour),
                          scaled_unit<mag_ratio<1, 18>, derived_unit<metre_, per<second_>>>>);
-static_assert(is_of_type<common_unit(kilometre, mile), scaled_unit<mag_ratio<8, 125>, metre_>>);
-static_assert(is_of_type<common_unit(mile, kilometre), scaled_unit<mag_ratio<8, 125>, metre_>>);
-static_assert(is_of_type<common_unit(speed_of_light_in_vacuum, metre / second), derived_unit<metre_, per<second_>>>);
+static_assert(is_of_type<get_common_unit(kilometre, mile), scaled_unit<mag_ratio<8, 125>, metre_>>);
+static_assert(is_of_type<get_common_unit(mile, kilometre), scaled_unit<mag_ratio<8, 125>, metre_>>);
+static_assert(
+  is_of_type<get_common_unit(speed_of_light_in_vacuum, metre / second), derived_unit<metre_, per<second_>>>);
 
 }  // namespace

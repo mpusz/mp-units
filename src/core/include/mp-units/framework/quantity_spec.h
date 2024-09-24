@@ -1497,12 +1497,12 @@ template<QuantitySpec Q>
   return kind_of<detail::get_kind_tree_root(Q{})>;
 }
 
-[[nodiscard]] consteval QuantitySpec auto common_quantity_spec(QuantitySpec auto q) { return q; }
+[[nodiscard]] consteval QuantitySpec auto get_common_quantity_spec(QuantitySpec auto q) { return q; }
 
 template<QuantitySpec Q1, QuantitySpec Q2>
   requires detail::QuantitySpecConvertibleTo<detail::get_kind_tree_root(Q1{}), detail::get_kind_tree_root(Q2{})> ||
            detail::QuantitySpecConvertibleTo<detail::get_kind_tree_root(Q2{}), detail::get_kind_tree_root(Q1{})>
-[[nodiscard]] consteval QuantitySpec auto common_quantity_spec(Q1 q1, Q2 q2)
+[[nodiscard]] consteval QuantitySpec auto get_common_quantity_spec(Q1 q1, Q2 q2)
 {
   using QQ1 = decltype(detail::remove_kind(q1));
   using QQ2 = decltype(detail::remove_kind(q2));
@@ -1535,11 +1535,11 @@ template<QuantitySpec Q1, QuantitySpec Q2>
   // NOLINTEND(bugprone-branch-clone)
 }
 
-[[nodiscard]] consteval QuantitySpec auto common_quantity_spec(QuantitySpec auto q1, QuantitySpec auto q2,
-                                                               QuantitySpec auto q3, QuantitySpec auto... rest)
-  requires requires { common_quantity_spec(common_quantity_spec(q1, q2), q3, rest...); }
+[[nodiscard]] consteval QuantitySpec auto get_common_quantity_spec(QuantitySpec auto q1, QuantitySpec auto q2,
+                                                                   QuantitySpec auto q3, QuantitySpec auto... rest)
+  requires requires { get_common_quantity_spec(get_common_quantity_spec(q1, q2), q3, rest...); }
 {
-  return common_quantity_spec(common_quantity_spec(q1, q2), q3, rest...);
+  return get_common_quantity_spec(get_common_quantity_spec(q1, q2), q3, rest...);
 }
 
 MP_UNITS_EXPORT_END

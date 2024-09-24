@@ -623,11 +623,11 @@ template<Unit From, Unit To>
 }
 
 // Common unit
-[[nodiscard]] consteval Unit auto common_unit(Unit auto u) { return u; }
+[[nodiscard]] consteval Unit auto get_common_unit(Unit auto u) { return u; }
 
 template<Unit U1, Unit U2>
   requires(convertible(U1{}, U2{}))
-[[nodiscard]] consteval Unit auto common_unit(U1 u1, U2 u2)
+[[nodiscard]] consteval Unit auto get_common_unit(U1 u1, U2 u2)
 {
   if constexpr (is_same_v<U1, U2>)
     return u1;
@@ -654,10 +654,10 @@ template<Unit U1, Unit U2>
   }
 }
 
-[[nodiscard]] consteval Unit auto common_unit(Unit auto u1, Unit auto u2, Unit auto u3, Unit auto... rest)
-  requires requires { common_unit(common_unit(u1, u2), u3, rest...); }
+[[nodiscard]] consteval Unit auto get_common_unit(Unit auto u1, Unit auto u2, Unit auto u3, Unit auto... rest)
+  requires requires { get_common_unit(get_common_unit(u1, u2), u3, rest...); }
 {
-  return common_unit(common_unit(u1, u2), u3, rest...);
+  return get_common_unit(get_common_unit(u1, u2), u3, rest...);
 }
 
 

@@ -108,7 +108,7 @@ public:
 
 // kalman gain
 template<mp_units::Quantity Q1, mp_units::Quantity Q2>
-  requires requires { mp_units::common_reference(Q1::reference, Q2::reference); }
+  requires requires { mp_units::get_common_reference(Q1::reference, Q2::reference); }
 [[nodiscard]] constexpr mp_units::quantity<mp_units::dimensionless[mp_units::one]> kalman_gain(
   Q1 variance_in_estimate, Q2 variance_in_measurement)
 {
@@ -185,7 +185,7 @@ template<typename QP1, typename QP2, typename QP3, mp_units::QuantityOf<mp_units
 
 // covariance extrapolation
 template<mp_units::Quantity Q1, mp_units::Quantity Q2>
-  requires requires { mp_units::common_reference(Q1::reference, Q2::reference); }
+  requires requires { mp_units::get_common_reference(Q1::reference, Q2::reference); }
 [[nodiscard]] constexpr mp_units::Quantity auto covariance_extrapolation(Q1 uncertainty, Q2 process_noise_variance)
 {
   return uncertainty + process_noise_variance;

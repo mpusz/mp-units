@@ -229,9 +229,9 @@ where the result of `length` is known as a **common quantity** type. A result of
 the first common node in a hierarchy tree of the same kind. For example:
 
 ```cpp
-static_assert(common_quantity_spec(isq::width, isq::height) == isq::length);
-static_assert(common_quantity_spec(isq::thickness, isq::radius) == isq::width);
-static_assert(common_quantity_spec(isq::distance, isq::path_length) == isq::path_length);
+static_assert(get_common_quantity_spec(isq::width, isq::height) == isq::length);
+static_assert(get_common_quantity_spec(isq::thickness, isq::radius) == isq::width);
+static_assert(get_common_quantity_spec(isq::distance, isq::path_length) == isq::path_length);
 ```
 
 

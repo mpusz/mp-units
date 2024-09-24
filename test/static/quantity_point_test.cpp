@@ -437,7 +437,7 @@ static_assert(!std::convertible_to<quantity<isq::height[m]>, quantity_point<isq:
 static_assert(std::constructible_from<quantity_point<isq::height[m]>, quantity<special_height[m]>>);
 static_assert(!std::convertible_to<quantity<special_height[m]>, quantity_point<isq::height[m]>>);
 
-// quantity_specs with common_quantity_spec
+// quantity_specs with get_common_quantity_spec
 static_assert(!std::constructible_from<quantity_point<isq::width[m]>, quantity<isq::height[m]>>);
 static_assert(!std::convertible_to<quantity<isq::height[m]>, quantity_point<isq::width[m]>>);
 
@@ -485,7 +485,7 @@ static_assert(!std::convertible_to<quantity<special_height[m]>, quantity_point<i
 static_assert(!std::constructible_from<quantity_point<dimensionless[one], zero>, quantity<dimensionless[one]>>);
 static_assert(!std::convertible_to<quantity<dimensionless[one]>, quantity_point<dimensionless[one], zero>>);
 
-// quantity_specs with common_quantity_spec
+// quantity_specs with get_common_quantity_spec
 static_assert(!std::constructible_from<quantity_point<isq::width[m], zeroth_length>, quantity<isq::height[m]>>);
 static_assert(!std::convertible_to<quantity<isq::height[m]>, quantity_point<isq::width[m], zeroth_length>>);
 
@@ -560,7 +560,7 @@ static_assert(!std::convertible_to<quantity_point<isq::height[m]>, quantity_poin
 static_assert(!std::constructible_from<quantity_point<isq::height[m]>, quantity_point<special_height[m]>>);
 static_assert(!std::convertible_to<quantity_point<special_height[m]>, quantity_point<isq::height[m]>>);
 
-// quantity_specs with common_quantity_spec
+// quantity_specs with get_common_quantity_spec
 static_assert(!std::constructible_from<quantity_point<isq::width[m]>, quantity_point<isq::height[m]>>);
 static_assert(!std::convertible_to<quantity_point<isq::height[m]>, quantity_point<isq::width[m]>>);
 
@@ -687,7 +687,7 @@ static_assert(std::constructible_from<quantity_point<isq::length[m], zeroth_leng
 static_assert(
   std::convertible_to<quantity_point<isq::height[m], zeroth_length>, quantity_point<isq::length[m], zeroth_length>>);
 
-// quantity_specs with common_quantity_spec
+// quantity_specs with get_common_quantity_spec
 static_assert(!std::constructible_from<quantity_point<isq::width[m], zeroth_length>,
                                        quantity_point<isq::height[m], zeroth_length>>);
 static_assert(
