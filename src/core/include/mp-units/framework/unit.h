@@ -654,12 +654,6 @@ template<Unit U1, Unit U2>
   }
 }
 
-[[nodiscard]] consteval Unit auto get_common_unit(Unit auto u1, Unit auto u2, Unit auto u3, Unit auto... rest)
-  requires requires { get_common_unit(get_common_unit(u1, u2), u3, rest...); }
-{
-  return get_common_unit(get_common_unit(u1, u2), u3, rest...);
-}
-
 
 /**
  * @brief Puts a space ' ' sign before a unit symbol

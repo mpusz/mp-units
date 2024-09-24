@@ -268,30 +268,24 @@ template<Reference R, typename Q>
 // NOLINTNEXTLINE(cppcoreguidelines-missing-std-forward)
 constexpr auto operator/(R, Q&& q) = delete;
 
-[[nodiscard]] consteval AssociatedUnit auto get_common_reference(AssociatedUnit auto u1, AssociatedUnit auto u2,
-                                                                 AssociatedUnit auto... rest)
+[[nodiscard]] consteval AssociatedUnit auto get_common_reference(AssociatedUnit auto u1, AssociatedUnit auto u2)
   requires requires {
-    {
-      get_common_quantity_spec(get_quantity_spec(u1), get_quantity_spec(u2), get_quantity_spec(rest)...)
-    } -> QuantitySpec;
-    { get_common_unit(u1, u2, rest...) } -> AssociatedUnit;
+    { get_common_quantity_spec(get_quantity_spec(u1), get_quantity_spec(u2)) } -> QuantitySpec;
+    { get_common_unit(u1, u2) } -> AssociatedUnit;
   }
 {
-  return get_common_unit(u1, u2, rest...);
+  return get_common_unit(u1, u2);
 }
 
-template<Reference R1, Reference R2, Reference... Rest>
-[[nodiscard]] consteval Reference auto get_common_reference(R1 r1, R2 r2, Rest... rest)
-  requires(!(AssociatedUnit<R1> && AssociatedUnit<R2> && (... && AssociatedUnit<Rest>))) && requires {
-    {
-      get_common_quantity_spec(get_quantity_spec(r1), get_quantity_spec(r2), get_quantity_spec(rest)...)
-    } -> QuantitySpec;
-    { get_common_unit(get_unit(r1), get_unit(r2), get_unit(rest)...) } -> Unit;
+template<Reference R1, Reference R2>
+[[nodiscard]] consteval Reference auto get_common_reference(R1 r1, R2 r2)
+  requires(!(AssociatedUnit<R1> && AssociatedUnit<R2>)) && requires {
+    { get_common_quantity_spec(get_quantity_spec(r1), get_quantity_spec(r2)) } -> QuantitySpec;
+    { get_common_unit(get_unit(r1), get_unit(r2)) } -> Unit;
   }
 {
-  return detail::reference_t<get_common_quantity_spec(get_quantity_spec(R1{}), get_quantity_spec(R2{}),
-                                                      get_quantity_spec(rest)...),
-                             get_common_unit(get_unit(R1{}), get_unit(R2{}), get_unit(rest)...)>{};
+  return detail::reference_t<get_common_quantity_spec(get_quantity_spec(R1{}), get_quantity_spec(R2{})),
+                             get_common_unit(get_unit(R1{}), get_unit(R2{}))>{};
 }
 
 MP_UNITS_EXPORT_END

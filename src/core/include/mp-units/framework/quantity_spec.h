@@ -1535,13 +1535,6 @@ template<QuantitySpec Q1, QuantitySpec Q2>
   // NOLINTEND(bugprone-branch-clone)
 }
 
-[[nodiscard]] consteval QuantitySpec auto get_common_quantity_spec(QuantitySpec auto q1, QuantitySpec auto q2,
-                                                                   QuantitySpec auto q3, QuantitySpec auto... rest)
-  requires requires { get_common_quantity_spec(get_common_quantity_spec(q1, q2), q3, rest...); }
-{
-  return get_common_quantity_spec(get_common_quantity_spec(q1, q2), q3, rest...);
-}
-
 MP_UNITS_EXPORT_END
 
 }  // namespace mp_units
