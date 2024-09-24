@@ -105,7 +105,7 @@ dependencies by other means, some modifications to the library's CMake files mig
 
     [conan C++ modules support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 
-[`import_std`](#import_std){ #import_std }
+[`import_std`](#import_std){ #import_std } :test_tube:{ title="Experimental" }
 
 :   [:octicons-tag-24: 2.3.0][conan import std support] · :octicons-milestone-24: `True`/`False` (Default: automatically determined from settings)
 
