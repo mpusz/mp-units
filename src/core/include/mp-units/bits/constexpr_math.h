@@ -22,6 +22,8 @@
 
 #pragma once
 
+#include <mp-units/bits/hacks.h>  // IWYU pragma: keep
+
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #ifdef MP_UNITS_IMPORT_STD
 import std;
@@ -31,6 +33,7 @@ import std;
 #include <cstdlib>
 #include <limits>
 #include <optional>
+#include <utility>
 #endif
 #endif
 
