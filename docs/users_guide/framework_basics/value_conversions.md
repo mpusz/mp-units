@@ -179,7 +179,7 @@ which may well be outside the range of one or both quantity types.
 
 ## Value conversions summary
 
-The table below provides all the value conversions functions that may be run on `x` being the
+The table below provides all the value conversion functions that may be run on `x` being the
 instance of either `quantity` or `quantity_point`:
 
 | Forcing | Representation | Unit | Member function    | Non-member function                            |
