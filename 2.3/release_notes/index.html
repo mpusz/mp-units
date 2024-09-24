@@ -2341,6 +2341,80 @@ You're not viewing the latest version.
 <h3 id="2.3.0">2.3.0 <small>WIP</small><a class="headerlink" href="#2.3.0" title="Permanent link">&para;</a></h3>
 <ul>
 <li>(!) feat: <code>delta</code> and <code>absolute</code> construction helpers</li>
+<li>(!) feat: Conan and CMake options changed as requested at ConanCenter code review</li>
+<li>(!) feat: <code>unit_can_be_prefixed</code> removed - from now on all named units can be prefixed</li>
+<li>feat: formatting functions for units and dimensions marked as <code>constexpr</code> to enable compile-time text formatting</li>
+<li>feat: <code>qp1.quantity_from(qp2)</code> added</li>
+<li>feat: non-member <code>swap</code> added for <code>fixed_string</code></li>
+<li>feat: simplified <code>inplace_vector</code> added</li>
+<li>feat: text output for angular units improved (space before symbol removed)</li>
+<li>feat: representation type template parameter added to value conversion functions</li>
+<li>feat: all tags in the expression templates are now ordered by the type names</li>
+<li>feat: convertibility of a quantity with a unit <code>one</code> with the raw value added</li>
+<li>feat: <code>import std;</code> support added</li>
+<li>feat: compute values for rational magnitude powers (thanks <a href="https://github.com/chiphogg">@chiphogg</a>)</li>
+<li>feat: <code>value_cast&lt;Representation, Unit&gt;()</code> complementary conversion function added</li>
+<li>feat: <code>hw_voltage</code> example added</li>
+<li>feat: <code>MP_UNITS_IMPORT_STD</code> and <code>MP_UNITS_MODULES</code> handled properly in <code>test_package.cpp</code></li>
+<li>feat: <code>complex</code> quantity character added</li>
+<li>feat: <code>iec::var</code> unit added</li>
+<li>(!) refactor: <code>quantity_point_like_traits</code> now use numerical value instead of the quantity</li>
+<li>(!) refactor: <code>iec80000</code> system renamed to <code>iec</code></li>
+<li>(!) refactor: <code>mag_pi</code> is now <code>mag&lt;pi&gt;</code></li>
+<li>refactor: error messages-related improvements</li>
+<li>refactor: <code>[[nodiscard]]</code> and <code>consteval</code> set for some magnitude-related functions</li>
+<li>refactor: degree Celsius and Fahrenheit symbols text now use Unicode codepoints</li>
+<li>refactor: <code>dimension_symbol</code> and <code>units_symbol</code> refactored to use <code>inplace_vector</code></li>
+<li>refactor: <code>unit_symbol</code> and <code>dimension_symbol</code> refactored for readability and <code>consteval</code></li>
+<li>refactor: binary operators of <code>quantity</code> and <code>quantity_point</code> are now hidden friends</li>
+<li>refactor: tag types-related operators are now hidden friends as well</li>
+<li>refactor: <code>ValuePreservingTo</code> concept added</li>
+<li>refactor: perfect forwarding interfaces improved</li>
+<li>refactor: <code>Representation</code> concepts now requires <code>WeaklyRegular</code> instead of <code>std::regular</code></li>
+<li>refactor: <code>quantity_point</code> default-constructibility removed from the <code>quantity_from</code> constraints</li>
+<li>refactor: <code>has_common_type_v</code> simplified</li>
+<li>refactor: <code>is_power_of_quantity_spec</code> and <code>is_power_of_dim</code> variable templates converted to concepts</li>
+<li>refactor: unnecessary custom versions of <code>is_specialization_of</code> removed</li>
+<li>refactor: <code>is_derived_from_specialization_of_v</code> added and applied to remove custom traits</li>
+<li>fix: signatures of capacity functions of <code>fixed_string</code> fixed</li>
+<li>fix: <code>MP_UNITS_API_NO_CRTP</code> handling fixed</li>
+<li>fix: <code>MP_UNITS_HOSTED</code> branch added to <code>core.h</code></li>
+<li>fix: mkdocs dependencies fixed in the gitpod dockerfile</li>
+<li>fix: <code>MP_UNITS_API_CONTRACTS</code> should have a priority over headers availability</li>
+<li>fix: <code>si.h</code> and <code>angular.h</code> now properly include <code>hacks.h</code> to define <code>MP_UNITS_HOSTED</code> before its usage</li>
+<li>fix: quantity scaling between different prefixes improved</li>
+<li>fix: conversion operator to <code>std::chrono</code> types fixed</li>
+<li>fix: <code>std::format</code> does not always use <code>Char*</code> as iterators</li>
+<li>fix: <code>complex_power</code> &amp; co fixed</li>
+<li>test: conversion to chrono unit tests added</li>
+<li>test: unit tests for creating a quantity from a <code>volatile</code> variable</li>
+<li>test: increase tolerance for certain math tests to two epsilon by <a href="https://github.com/burnpanck">@burnpanck</a></li>
+<li>test: <code>std::complex</code>-based quantities tests added</li>
+<li>build: conanfile bumped to use <code>catch2/3.6.0</code></li>
+<li>build: conanfile bumped to use <code>fmt/11.0.1</code></li>
+<li>build: minimum required CMake version bumped to 3.25</li>
+<li>build: duplicated <code>cmake_minimum_required</code> commands removed</li>
+<li>build: minimum conan version set to 2.0.15</li>
+<li>build: MSVC compilation enabled for the library part by <a href="https://github.com/czjhoppe">@czjhoppe</a></li>
+<li>build: Dockerfile updated for gitpod</li>
+<li>build: <code>generate()</code> in <code>test_package</code> now correctly propagates project's options</li>
+<li>build: <code>target_include_directories</code> is not needed anymore</li>
+<li>build: <code>target_compile_features</code> now uses <code>CMAKE_CXX_STANDARD</code></li>
+<li>ci: added test for upstream clang on macos-14, as an example for an arm64 platform by <a href="https://github.com/burnpanck">@burnpanck</a></li>
+<li>style: pre-commit updated to clang-format-18.1.8</li>
+<li>docs: "Strong Angular System" chapter added</li>
+<li>docs: docs updated to use new spelling for Conan options</li>
+<li>docs: "Interface Introduction" chapter updated</li>
+<li>docs: St. Louis 2024 report added</li>
+<li>docs: "Radians and degrees support" added</li>
+<li>docs: Rework of "Getting Started" section</li>
+<li>docs: "API Reference" support added (thanks <a href="https://github.com/JohelEGP">@JohelEGP</a>)</li>
+<li>docs: "Generating API reference" chapter added</li>
+<li>docs: minor formatting and spelling improvements to the "CONTRIBUTING.md"</li>
+<li>docs: "Unit symbols" chapter added</li>
+<li>docs: examples line numbers fixed</li>
+<li>docs: "Text Formatting" tag removed from avg_speed example</li>
+<li>docs: line breaks in mermaid graphs fixed</li>
 </ul>
 <h3 id="2.2.1">2.2.1 <small>July 3, 2024</small><a class="headerlink" href="#2.2.1" title="Permanent link">&para;</a></h3>
 <ul>
