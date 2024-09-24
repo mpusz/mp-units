@@ -5,6 +5,80 @@
 ### 2.3.0 <small>WIP</small> { id="2.3.0" }
 
 - (!) feat: `delta` and `absolute` construction helpers
+- (!) feat: Conan and CMake options changed as requested at ConanCenter code review
+- (!) feat: `unit_can_be_prefixed` removed - from now on all named units can be prefixed
+- feat: formatting functions for units and dimensions marked as `constexpr` to enable compile-time text formatting
+- feat: `qp1.quantity_from(qp2)` added
+- feat: non-member `swap` added for `fixed_string`
+- feat: simplified `inplace_vector` added
+- feat: text output for angular units improved (space before symbol removed)
+- feat: representation type template parameter added to value conversion functions
+- feat: all tags in the expression templates are now ordered by the type names
+- feat: convertibility of a quantity with a unit `one` with the raw value added
+- feat: `import std;` support added
+- feat: compute values for rational magnitude powers (thanks [@chiphogg](https://github.com/chiphogg))
+- feat: `value_cast<Representation, Unit>()` complementary conversion function added
+- feat: `hw_voltage` example added
+- feat: `MP_UNITS_IMPORT_STD` and `MP_UNITS_MODULES` handled properly in `test_package.cpp`
+- feat: `complex` quantity character added
+- feat: `iec::var` unit added
+- (!) refactor: `quantity_point_like_traits` now use numerical value instead of the quantity
+- (!) refactor: `iec80000` system renamed to `iec`
+- (!) refactor: `mag_pi` is now `mag<pi>`
+- refactor: error messages-related improvements
+- refactor: `[[nodiscard]]` and `consteval` set for some magnitude-related functions
+- refactor: degree Celsius and Fahrenheit symbols text now use Unicode codepoints
+- refactor: `dimension_symbol` and `units_symbol` refactored to use `inplace_vector`
+- refactor: `unit_symbol` and `dimension_symbol` refactored for readability and `consteval`
+- refactor: binary operators of `quantity` and `quantity_point` are now hidden friends
+- refactor: tag types-related operators are now hidden friends as well
+- refactor: `ValuePreservingTo` concept added
+- refactor: perfect forwarding interfaces improved
+- refactor: `Representation` concepts now requires `WeaklyRegular` instead of `std::regular`
+- refactor: `quantity_point` default-constructibility removed from the `quantity_from` constraints
+- refactor: `has_common_type_v` simplified
+- refactor: `is_power_of_quantity_spec` and `is_power_of_dim` variable templates converted to concepts
+- refactor: unnecessary custom versions of `is_specialization_of` removed
+- refactor: `is_derived_from_specialization_of_v` added and applied to remove custom traits
+- fix: signatures of capacity functions of `fixed_string` fixed
+- fix: `MP_UNITS_API_NO_CRTP` handling fixed
+- fix: `MP_UNITS_HOSTED` branch added to `core.h`
+- fix: mkdocs dependencies fixed in the gitpod dockerfile
+- fix: `MP_UNITS_API_CONTRACTS` should have a priority over headers availability
+- fix: `si.h` and `angular.h` now properly include `hacks.h` to define `MP_UNITS_HOSTED` before its usage
+- fix: quantity scaling between different prefixes improved
+- fix: conversion operator to `std::chrono` types fixed
+- fix: `std::format` does not always use `Char*` as iterators
+- fix: `complex_power` & co fixed
+- test: conversion to chrono unit tests added
+- test: unit tests for creating a quantity from a `volatile` variable
+- test: increase tolerance for certain math tests to two epsilon by [@burnpanck](https://github.com/burnpanck)
+- test: `std::complex`-based quantities tests added
+- build: conanfile bumped to use `catch2/3.6.0`
+- build: conanfile bumped to use `fmt/11.0.1`
+- build: minimum required CMake version bumped to 3.25
+- build: duplicated `cmake_minimum_required` commands removed
+- build: minimum conan version set to 2.0.15
+- build: MSVC compilation enabled for the library part by [@czjhoppe](https://github.com/czjhoppe)
+- build: Dockerfile updated for gitpod
+- build: `generate()` in `test_package` now correctly propagates project's options
+- build: `target_include_directories` is not needed anymore
+- build: `target_compile_features` now uses `CMAKE_CXX_STANDARD`
+- ci: added test for upstream clang on macos-14, as an example for an arm64 platform by [@burnpanck](https://github.com/burnpanck)
+- style: pre-commit updated to clang-format-18.1.8
+- docs: "Strong Angular System" chapter added
+- docs: docs updated to use new spelling for Conan options
+- docs: "Interface Introduction" chapter updated
+- docs: St. Louis 2024 report added
+- docs: "Radians and degrees support" added
+- docs: Rework of "Getting Started" section
+- docs: "API Reference" support added (thanks [@JohelEGP](https://github.com/JohelEGP))
+- docs: "Generating API reference" chapter added
+- docs: minor formatting and spelling improvements to the "CONTRIBUTING.md"
+- docs: "Unit symbols" chapter added
+- docs: examples line numbers fixed
+- docs: "Text Formatting" tag removed from avg_speed example
+- docs: line breaks in mermaid graphs fixed
 
 ### 2.2.1 <small>July 3, 2024</small> { id="2.2.1" }
 
