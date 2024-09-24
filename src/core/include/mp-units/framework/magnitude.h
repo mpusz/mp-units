@@ -565,7 +565,9 @@ template<MagArg auto V>
 MP_UNITS_EXPORT_BEGIN
 
 template<MagArg auto V>
+#if !(defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 18)
   requires detail::gt_zero<detail::get_base_value(V)>
+#endif
 constexpr Magnitude auto mag = detail::make_magnitude<V>();
 
 template<std::intmax_t N, std::intmax_t D>
