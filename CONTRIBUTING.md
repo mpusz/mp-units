@@ -190,17 +190,16 @@ directory:
 ```bash
 sudo apt install latexmk texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended lmodern
 sudo apt install haskell-stack graphviz nodejs npm ghc cabal-install
-npm install split mathjax-full mathjax-node-sre
+npm install split mathjax-full mathjax-node-sre mathjax-node-cli
 cabal update
 ```
 
-Also, installing `mathjax-node-cli` through npm does not help because `tex2html` is not called within
-node.js. This is why we need to download `mathjax-node-cli` and add its `bin` folder to the `PATH`
-environment variable:
+On some platforms, installing `mathjax-node-cli` through `npm` does update the system's `PATH`
+environment variable resulting in `tex2html` not found errors. In such cases we need to add
+the `.bin` folder to the `PATH` environment variable manually:
 
 ```bash
-git clone https://github.com/mathjax/mathjax-node-cli
-echo "export PATH=\"$PWD/mathjax-node-cli/bin:\$PATH\"" >> ~/.bashrc && source ~/.bashrc
+echo "export PATH=\"~/node_modules/.bin:\$PATH\"" >> ~/.bashrc && source ~/.bashrc
 ```
 
 Next, we need to clone the following git repositories:

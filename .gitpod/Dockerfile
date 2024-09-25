@@ -32,9 +32,6 @@ RUN sudo install-packages \
   npm \
   ghc \
   cabal-install
-RUN npm install split mathjax-full mathjax-node-sre
+RUN npm install split mathjax-full mathjax-node-sre mathjax-node-cli
 RUN cabal update
-
-# Install MathJax-Node-CLI
-RUN git clone https://github.com/mathjax/mathjax-node-cli --depth=1
-RUN echo "export PATH=\"$PWD/mathjax-node-cli/bin:\$PATH\"" >> ~/.bashrc
+RUN echo "export PATH=\"~/node_modules/.bin:\$PATH\"" >> ~/.bashrc

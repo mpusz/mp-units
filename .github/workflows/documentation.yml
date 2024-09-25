@@ -55,12 +55,9 @@ jobs:
         run: |
           sudo apt install latexmk texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended lmodern
           sudo apt install haskell-stack graphviz nodejs npm ghc cabal-install
-          npm install split mathjax-full mathjax-node-sre
+          npm install split mathjax-full mathjax-node-sre mathjax-node-cli
           cabal update
-      - name: Installing MathJax-Node-CLI
-        run: |
-          git clone https://github.com/mathjax/mathjax-node-cli --depth=1
-          echo "${{ github.workspace }}/mathjax-node-cli/bin" >> $GITHUB_PATH
+          echo "~/node_modules/.bin" >> $GITHUB_PATH
       - name: Get git repos with API reference tools
         run: |
           git clone https://github.com/JohelEGP/jegp.cmake_modules.git --depth=1
