@@ -589,6 +589,8 @@ struct pi : mag_constant {
 };
 inline constexpr pi pi;
 
+[[deprecated("Use `mag<pi>` instead")]] inline constexpr Magnitude auto mag_pi = mag<pi>;
+
 MP_UNITS_EXPORT_END
 
 namespace detail {
