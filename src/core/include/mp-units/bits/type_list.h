@@ -235,6 +235,28 @@ struct type_list_sort_impl<List<Types...>, Pred> {
 template<TypeList List, template<typename, typename> typename Pred>
 using type_list_sort = type_list_sort_impl<List, Pred>::type;
 
+// sort
+template<typename List>
+struct type_list_unique_impl;
+
+template<template<typename...> typename List>
+struct type_list_unique_impl<List<>> {
+  using type = List<>;
+};
+
+template<template<typename...> typename List, typename T, typename... Rest>
+struct type_list_unique_impl<List<T, Rest...>> {
+  using type = type_list_push_front<typename type_list_unique_impl<List<Rest...>>::type, T>;
+};
+
+template<template<typename...> typename List, typename T, typename... Rest>
+struct type_list_unique_impl<List<T, T, Rest...>> {
+  using type = type_list_unique_impl<List<T, Rest...>>::type;
+};
+
+template<TypeList List>
+using type_list_unique = type_list_unique_impl<List>::type;
+
 }  // namespace mp_units::detail
 
 MP_UNITS_DIAGNOSTIC_POP

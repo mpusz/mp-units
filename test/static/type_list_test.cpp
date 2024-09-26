@@ -189,4 +189,16 @@ static_assert(is_same_v<type_list_sort<type_list<v2, v1>, constant_less>, type_l
 static_assert(is_same_v<type_list_sort<type_list<v2, v1, v3>, constant_less>, type_list<v1, v2, v3>>);
 static_assert(is_same_v<type_list_sort<type_list<v4, v3, v2, v1>, constant_less>, type_list<v1, v2, v3, v4>>);
 
+// type_list_unique
+
+static_assert(is_same_v<type_list_unique<type_list<v1>>, type_list<v1>>);
+static_assert(is_same_v<type_list_unique<type_list<v1, v1>>, type_list<v1>>);
+static_assert(is_same_v<type_list_unique<type_list<v1, v1, v1>>, type_list<v1>>);
+static_assert(is_same_v<type_list_unique<type_list<v1, v2>>, type_list<v1, v2>>);
+static_assert(is_same_v<type_list_unique<type_list<v1, v1, v2>>, type_list<v1, v2>>);
+static_assert(is_same_v<type_list_unique<type_list<v1, v2, v2>>, type_list<v1, v2>>);
+static_assert(is_same_v<type_list_unique<type_list<v1, v2, v3>>, type_list<v1, v2, v3>>);
+static_assert(is_same_v<type_list_unique<type_list<v1, v2, v2, v3>>, type_list<v1, v2, v3>>);
+static_assert(is_same_v<type_list_unique<type_list<v1, v1, v2, v3, v3>>, type_list<v1, v2, v3>>);
+
 }  // namespace
