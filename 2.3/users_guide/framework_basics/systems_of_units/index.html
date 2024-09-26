@@ -1015,6 +1015,15 @@ You're not viewing the latest version.
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#common-units" class="md-nav__link">
+    <span class="md-ellipsis">
+      Common units
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2444,6 +2453,26 @@ This is why we provide both versions of identifiers for such units.</p>
 </span></code></pre></div>
 </div>
 </div>
+</div>
+<h2 id="common-units">Common units<a class="headerlink" href="#common-units" title="Permanent link">&para;</a></h2>
+<p>Adding or subtracting two quantities of different units will force the library to find a common
+unit for those. This is to prevent data truncation. For the cases when one of the units is an
+integral multiple of the another, the resulting quantity will use a "smaller" one in its result.
+For example:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="k">static_assert</span><span class="p">((</span><span class="mi">1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">g</span><span class="p">).</span><span class="n">unit</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">g</span><span class="p">);</span>
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="k">static_assert</span><span class="p">((</span><span class="mi">1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">km</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">mm</span><span class="p">).</span><span class="n">unit</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">mm</span><span class="p">);</span>
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="k">static_assert</span><span class="p">((</span><span class="mi">1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">yd</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">mi</span><span class="p">).</span><span class="n">unit</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">yd</span><span class="p">);</span>
+</span></code></pre></div>
+<p>However, in many cases an arithmetic on quantities of different units will result in a yet another
+unit. This happens when none of the source units is an integral multiple of another. In such cases,
+the library returns a special type that denotes that we are dealing with a common unit of such
+an equation:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">q</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">km</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">mi</span><span class="p">;</span><span class="w">  </span><span class="c1">// quantity&lt;common_unit&lt;international::mile, si::kilo_&lt;si::metre&gt;&gt;{}, int&gt;</span>
+</span></code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A user should never explicitly instantiate a <code>common_unit</code> class template. The library's
+framework will do it based on the provided quantity equation.</p>
 </div>
 
 

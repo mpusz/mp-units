@@ -2160,7 +2160,7 @@ You're not viewing the latest version.
           <li class="md-nav__item">
   <a href="#2.3.0" class="md-nav__link">
     <span class="md-ellipsis">
-      2.3.0 WIP
+      2.3.0 September 27, 2024
     </span>
   </a>
   
@@ -2338,7 +2338,7 @@ You're not viewing the latest version.
 
 <h1 id="release-notes">Release Notes<a class="headerlink" href="#release-notes" title="Permanent link">&para;</a></h1>
 <h2 id="mp-units">mp-units<a class="headerlink" href="#mp-units" title="Permanent link">&para;</a></h2>
-<h3 id="2.3.0">2.3.0 <small>WIP</small><a class="headerlink" href="#2.3.0" title="Permanent link">&para;</a></h3>
+<h3 id="2.3.0">2.3.0 <small>September 27, 2024</small><a class="headerlink" href="#2.3.0" title="Permanent link">&para;</a></h3>
 <ul>
 <li>(!) feat: <code>delta</code> and <code>absolute</code> construction helpers</li>
 <li>(!) feat: Conan and CMake options changed as requested at ConanCenter code review</li>
@@ -2358,9 +2358,13 @@ You're not viewing the latest version.
 <li>feat: <code>MP_UNITS_IMPORT_STD</code> and <code>MP_UNITS_MODULES</code> handled properly in <code>test_package.cpp</code></li>
 <li>feat: <code>complex</code> quantity character added</li>
 <li>feat: <code>iec::var</code> unit added</li>
+<li>feat: <code>type_list_unique</code> added</li>
+<li>feat: <code>for_each</code> on <code>std::tuple</code> added</li>
+<li>feat: <code>common_unit</code> support added</li>
 <li>(!) refactor: <code>quantity_point_like_traits</code> now use numerical value instead of the quantity</li>
 <li>(!) refactor: <code>iec80000</code> system renamed to <code>iec</code></li>
 <li>(!) refactor: <code>mag_pi</code> is now <code>mag&lt;pi&gt;</code></li>
+<li>(!) refactor: <code>common_XXX()</code> functions renamed to <code>get_common_XXX()</code></li>
 <li>refactor: error messages-related improvements</li>
 <li>refactor: <code>[[nodiscard]]</code> and <code>consteval</code> set for some magnitude-related functions</li>
 <li>refactor: degree Celsius and Fahrenheit symbols text now use Unicode codepoints</li>
@@ -2390,7 +2394,7 @@ You're not viewing the latest version.
 <li>test: unit tests for creating a quantity from a <code>volatile</code> variable</li>
 <li>test: increase tolerance for certain math tests to two epsilon by <a href="https://github.com/burnpanck">@burnpanck</a></li>
 <li>test: <code>std::complex</code>-based quantities tests added</li>
-<li>build: conanfile bumped to use <code>catch2/3.6.0</code></li>
+<li>build: conanfile bumped to use <code>catch2/3.7.0</code></li>
 <li>build: conanfile bumped to use <code>fmt/11.0.1</code></li>
 <li>build: minimum required CMake version bumped to 3.25</li>
 <li>build: duplicated <code>cmake_minimum_required</code> commands removed</li>
