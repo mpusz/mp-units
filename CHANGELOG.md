@@ -2,7 +2,7 @@
 
 ## mp-units
 
-### 2.3.0 <small>WIP</small> { id="2.3.0" }
+### 2.3.0 <small>September 27, 2024</small> { id="2.3.0" }
 
 - (!) feat: `delta` and `absolute` construction helpers
 - (!) feat: Conan and CMake options changed as requested at ConanCenter code review
@@ -22,9 +22,13 @@
 - feat: `MP_UNITS_IMPORT_STD` and `MP_UNITS_MODULES` handled properly in `test_package.cpp`
 - feat: `complex` quantity character added
 - feat: `iec::var` unit added
+- feat: `type_list_unique` added
+- feat: `for_each` on `std::tuple` added
+- feat: `common_unit` support added
 - (!) refactor: `quantity_point_like_traits` now use numerical value instead of the quantity
 - (!) refactor: `iec80000` system renamed to `iec`
 - (!) refactor: `mag_pi` is now `mag<pi>`
+- (!) refactor: `common_XXX()` functions renamed to `get_common_XXX()`
 - refactor: error messages-related improvements
 - refactor: `[[nodiscard]]` and `consteval` set for some magnitude-related functions
 - refactor: degree Celsius and Fahrenheit symbols text now use Unicode codepoints
@@ -54,7 +58,7 @@
 - test: unit tests for creating a quantity from a `volatile` variable
 - test: increase tolerance for certain math tests to two epsilon by [@burnpanck](https://github.com/burnpanck)
 - test: `std::complex`-based quantities tests added
-- build: conanfile bumped to use `catch2/3.6.0`
+- build: conanfile bumped to use `catch2/3.7.0`
 - build: conanfile bumped to use `fmt/11.0.1`
 - build: minimum required CMake version bumped to 3.25
 - build: duplicated `cmake_minimum_required` commands removed
