@@ -20,31 +20,25 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-module;
+#pragma once
 
-#include <mp-units/bits/core_gmf.h>
-#include <chrono>
-
-export module mp_units.systems;
-
-export import mp_units.core;
-#ifdef MP_UNITS_IMPORT_STD
-import std;
-#endif
-
-#define MP_UNITS_IN_MODULE_INTERFACE
-
-#include <mp-units/systems/angular.h>
-#include <mp-units/systems/cgs.h>
-#include <mp-units/systems/hep.h>
-#include <mp-units/systems/iau.h>
+// IWYU pragma: begin_exports
 #include <mp-units/systems/iec.h>
-#include <mp-units/systems/iec80000.h>
-#include <mp-units/systems/imperial.h>
-#include <mp-units/systems/international.h>
-#include <mp-units/systems/isq.h>
-#include <mp-units/systems/isq_angle.h>
-#include <mp-units/systems/natural.h>
-#include <mp-units/systems/si.h>
-#include <mp-units/systems/typographic.h>
-#include <mp-units/systems/usc.h>
+// IWYU pragma: end_exports
+
+namespace mp_units {
+
+MP_UNITS_EXPORT
+namespace [[deprecated("Use `mp_units::iec` namespace from iec.h instead")]] iec80000 {
+
+namespace [[deprecated("Use `mp_units::iec::unit_symbols` namespace from iec.h instead")]] unit_symbols {
+
+using namespace iec::unit_symbols;
+
+}
+
+using namespace iec;
+
+}  // namespace iec80000
+
+}  // namespace mp_units
