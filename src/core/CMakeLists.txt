@@ -128,6 +128,10 @@ endif()
 
 if(CMAKE_CXX_MODULE_STD)
     target_compile_definitions(mp-units-core ${${projectPrefix}TARGET_SCOPE} ${projectPrefix}IMPORT_STD)
+    # https://github.com/llvm/llvm-project/issues/75057
+    if(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 19)
+        target_compile_options(mp-units-core ${${projectPrefix}TARGET_SCOPE} "-Wno-deprecated-declarations")
+    endif()
 endif()
 
 # UTF-8 source and execution character set
