@@ -22,6 +22,7 @@
 
 #include <mp-units/systems/iau.h>
 #include <mp-units/systems/iec.h>
+#include <mp-units/systems/international.h>
 #include <mp-units/systems/si.h>
 #ifdef MP_UNITS_IMPORT_STD
 import std;
@@ -34,6 +35,7 @@ namespace {
 using namespace mp_units;
 using namespace mp_units::si;
 using namespace mp_units::iec;
+using namespace mp_units::international;
 
 using enum text_encoding;
 using enum unit_symbol_solidus;
@@ -113,6 +115,14 @@ static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii}>(mag<100> * 
 static_assert(unit_symbol(mag<60> * second) == "[6 × 10¹] s");
 static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii}>(mag<60> * second) == "[6 x 10^1] s");
 static_assert(unit_symbol(mag_ratio<1, 18> * metre / second) == "[1/18] m/s");
+
+// common units
+static_assert(unit_symbol(get_common_unit(kilo<metre>, mile)) == "([1/25146] mi = [1/15625] km)");
+static_assert(unit_symbol(get_common_unit(kilo<metre> / hour, metre / second)) == "([1/5] km/h = [1/18] m/s)");
+static_assert(unit_symbol(get_common_unit(kilo<metre> / hour, metre / second) / second) ==
+              "([1/5] km/h = [1/18] m/s)/s");
+static_assert(unit_symbol(get_common_unit(kilo<metre> / hour, metre / second) * second) ==
+              "([1/5] km/h = [1/18] m/s) s");
 
 // derived units
 static_assert(unit_symbol(one) == "");  // NOLINT(readability-container-size-empty)

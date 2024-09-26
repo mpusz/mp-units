@@ -50,6 +50,7 @@ import std;
 #include <cstdint>
 #include <iterator>
 #include <string_view>
+#include <tuple>
 #if MP_UNITS_HOSTED
 #include <string>
 #endif
@@ -404,6 +405,46 @@ struct prefixed_unit : decltype(M * U)::_base_type_ {
 
 namespace detail {
 
+template<Unit U1, Unit U2>
+  requires(convertible(U1{}, U2{}))
+[[nodiscard]] consteval Unit auto get_common_scaled_unit(U1, U2)
+{
+  constexpr auto canonical_lhs = get_canonical_unit(U1{});
+  constexpr auto canonical_rhs = get_canonical_unit(U2{});
+  constexpr auto common_magnitude = _common_magnitude(canonical_lhs.mag, canonical_rhs.mag);
+  return scaled_unit<common_magnitude, decltype(canonical_lhs.reference_unit)>{};
+}
+
+[[nodiscard]] consteval Unit auto get_common_scaled_unit(Unit auto u1, Unit auto u2, Unit auto u3, Unit auto... rest)
+  requires requires { get_common_scaled_unit(get_common_scaled_unit(u1, u2), u3, rest...); }
+{
+  return get_common_scaled_unit(get_common_scaled_unit(u1, u2), u3, rest...);
+}
+
+}  // namespace detail
+
+/**
+ * @brief Measurement unit for an accumulation of two quantities of different units
+ *
+ * While adding two quantities of different units we can often identify which of those unit should be used
+ * to prevent data truncation. For example, adding `1 * m + 1 * mm` will end up in a quantity expressed in
+ * millimeters. However, for some cases this is not possible. Choosing any of the units from the arguments
+ * of the addition would result in a data truncation. For example, a common unit for `1 * km + 1 * mi` is
+ * `[8/125] m`. Instead of returning such a complex unit type the library will return a `common_unit<mi, km>`.
+ * This type is convertible to both `mi` and `km` without risking data truncation, but is not equal to any
+ * of them.
+ *
+ * @note User should not instantiate this type! It is not exported from the C++ module. The library will
+ *       instantiate this type automatically based on the unit arithmetic equation provided by the user.
+ */
+template<Unit U1, Unit U2, Unit... Rest>
+struct common_unit final : decltype(detail::get_common_scaled_unit(U1{}, U2{}, Rest{}...))::_base_type_
+{
+  using _base_type_ = common_unit;  // exposition only
+};
+
+namespace detail {
+
 template<typename T>
 struct is_one : std::false_type {};
 
@@ -648,10 +689,60 @@ template<Unit U1, Unit U2>
     else if constexpr (is_integral(canonical_rhs.mag / canonical_lhs.mag))
       return u1;
     else {
-      constexpr auto common_magnitude = _common_magnitude(canonical_lhs.mag, canonical_rhs.mag);
-      return scaled_unit<common_magnitude, decltype(canonical_lhs.reference_unit)>{};
+      if constexpr (detail::unit_less<U1, U2>::value)
+        return common_unit<U1, U2>{};
+      else
+        return common_unit<U2, U1>{};
     }
   }
+}
+
+namespace detail {
+
+template<TypeList List, Unit NewUnit, bool Included, Unit... Us>
+struct collapse_common_unit_impl;
+
+template<TypeList List, Unit NewUnit, bool Included, Unit Front, Unit... Rest>
+struct collapse_common_unit_impl<List, NewUnit, Included, Front, Rest...> {
+  using cu = decltype(get_common_unit(NewUnit{}, Front{}));
+  using type =
+    conditional<is_specialization_of<cu, common_unit>,
+                typename collapse_common_unit_impl<type_list_push_back<List, Front>, NewUnit, Included, Rest...>::type,
+                typename collapse_common_unit_impl<type_list_push_back<List, cu>, NewUnit, true, Rest...>::type>;
+};
+
+template<TypeList List, Unit NewUnit>
+struct collapse_common_unit_impl<List, NewUnit, false> {
+  using type = type_list_push_back<List, NewUnit>;
+};
+
+template<TypeList List, Unit NewUnit>
+struct collapse_common_unit_impl<List, NewUnit, true> {
+  using type = List;
+};
+
+template<Unit NewUnit, Unit... Us>
+using collapse_common_unit = type_list_unique<
+  type_list_sort<typename collapse_common_unit_impl<type_list<>, NewUnit, false, Us...>::type, type_list_of_unit_less>>;
+
+}  // namespace detail
+
+template<Unit... Us, Unit NewUnit>
+  requires(convertible(common_unit<Us...>{}, NewUnit{}))
+[[nodiscard]] consteval Unit auto get_common_unit(common_unit<Us...>, NewUnit)
+{
+  using type = detail::collapse_common_unit<NewUnit, Us...>;
+  if constexpr (detail::type_list_size<type> == 1)
+    return detail::type_list_front<type>{};
+  else
+    return detail::type_list_map<type, common_unit>{};
+}
+
+template<Unit... Us, Unit NewUnit>
+  requires(convertible(common_unit<Us...>{}, NewUnit{}))
+[[nodiscard]] consteval Unit auto get_common_unit(NewUnit nu, common_unit<Us...> cu)
+{
+  return get_common_unit(cu, nu);
 }
 
 [[nodiscard]] consteval Unit auto get_common_unit(Unit auto u1, Unit auto u2, Unit auto u3, Unit auto... rest)
@@ -741,6 +832,33 @@ constexpr Out unit_symbol_impl(Out out, const scaled_unit_impl<M, U>& u, const u
     if constexpr (space_before_unit_symbol<scaled_unit<M, U>::reference_unit>) *out++ = ' ';
     return unit_symbol_impl<CharT>(out, u.reference_unit, fmt, negative_power);
   }
+}
+
+template<typename... Us, Unit U>
+[[nodiscard]] consteval Unit auto get_common_unit_in(common_unit<Us...>, U u)
+{
+  constexpr auto canonical_u = get_canonical_unit(u);
+  constexpr Magnitude auto mag = common_unit<Us...>::mag / canonical_u.mag;
+  return scaled_unit<mag, U>{};
+}
+
+template<typename CharT, std::output_iterator<CharT> Out, typename U, typename... Rest>
+constexpr Out unit_symbol_impl(Out out, const common_unit<U, Rest...>&, const unit_symbol_formatting& fmt,
+                               bool negative_power)
+{
+  constexpr std::string_view separator(" = ");
+  auto print_unit = [&]<Unit Arg>(Arg) {
+    constexpr auto u = get_common_unit_in(common_unit<U, Rest...>{}, Arg{});
+    unit_symbol_impl<CharT>(out, u, fmt, negative_power);
+  };
+  *out++ = '(';
+  print_unit(U{});
+  for_each(std::tuple<Rest...>{}, [&]<Unit Arg>(Arg) {
+    detail::copy(std::begin(separator), std::end(separator), out);
+    print_unit(Arg{});
+  });
+  *out++ = ')';
+  return out;
 }
 
 template<typename CharT, std::output_iterator<CharT> Out, typename F, int Num, int... Den>
