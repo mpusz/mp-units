@@ -35,6 +35,8 @@ import std;
 #include <compare>
 #include <initializer_list>
 #include <iterator>
+#include <tuple>
+#include <utility>
 #endif
 #endif
 
@@ -148,6 +150,18 @@ constexpr ForwardIt2 swap_ranges(ForwardIt1 first1, ForwardIt1 last1, ForwardIt2
 {
   for (; first1 != last1; ++first1, ++first2) iter_swap(first1, first2);
   return first2;
+}
+
+template<typename... Ts, typename F, std::size_t... Is>
+constexpr void for_each_impl(const std::tuple<Ts...>& t, F&& func, std::index_sequence<Is...>)
+{
+  (..., func(std::get<Is>(t)));
+}
+
+template<typename... Ts, typename F>
+constexpr void for_each(const std::tuple<Ts...>& t, F&& func)
+{
+  for_each_impl(t, std::forward<F>(func), std::index_sequence_for<Ts...>{});
 }
 
 }  // namespace mp_units::detail
