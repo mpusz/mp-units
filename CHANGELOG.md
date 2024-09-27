@@ -54,6 +54,7 @@
 - fix: conversion operator to `std::chrono` types fixed
 - fix: `std::format` does not always use `Char*` as iterators
 - fix: `complex_power` & co fixed
+- fix: `__cpp_deleted_function` workaround for clang-19 added
 - test: conversion to chrono unit tests added
 - test: unit tests for creating a quantity from a `volatile` variable
 - test: increase tolerance for certain math tests to two epsilon by [@burnpanck](https://github.com/burnpanck)
@@ -69,6 +70,7 @@
 - build: `target_include_directories` is not needed anymore
 - build: `target_compile_features` now uses `CMAKE_CXX_STANDARD`
 - build: `package_type` is dynamically set in conanfile.py depending if we build modules or not
+- build(conan): packaging improved
 - ci: added test for upstream clang on macos-14, as an example for an arm64 platform by [@burnpanck](https://github.com/burnpanck)
 - style: pre-commit updated to clang-format-18.1.8
 - docs: "Strong Angular System" chapter added
@@ -84,6 +86,7 @@
 - docs: examples line numbers fixed
 - docs: "Text Formatting" tag removed from avg_speed example
 - docs: line breaks in mermaid graphs fixed
+- docs: 2.3.0 release added
 
 ### 2.2.1 <small>July 3, 2024</small> { id="2.2.1" }
 
