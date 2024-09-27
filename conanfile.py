@@ -201,6 +201,9 @@ class MPUnitsConan(ConanFile):
     def config_options(self):
         for key in self._option_feature_map.keys():
             self._set_default_option(key)
+        # TODO mixing of `import std;` and regular header files includes does not work for now
+        if self.options.import_std:
+            self.options.contracts = "none"
 
     def configure(self):
         if self.options.cxx_modules:
@@ -236,7 +239,7 @@ class MPUnitsConan(ConanFile):
             raise ConanInvalidConfiguration(
                 "'contracts' should be set to 'none' for a freestanding build"
             )
-        # mixing of `import std;` and regular header files includes does not work for now
+        # TODO mixing of `import std;` and regular header files includes does not work for now
         if self.options.import_std:
             if self.options.contracts != "none":
                 raise ConanInvalidConfiguration(
@@ -251,36 +254,36 @@ class MPUnitsConan(ConanFile):
         cmake_layout(self)
 
     def generate(self):
+        opt = self.options
         tc = CMakeToolchain(self)
         tc.absolute_paths = True  # only needed for CMake CI
         if self._build_all:
             tc.cache_variables["CMAKE_EXPORT_COMPILE_COMMANDS"] = True
             tc.cache_variables[
                 "CMAKE_VERIFY_INTERFACE_HEADER_SETS"
-            ] = not self.options.import_std
+            ] = not opt.import_std
             tc.cache_variables["MP_UNITS_DEV_BUILD_LA"] = not self._skip_la
             if self._run_clang_tidy:
                 tc.cache_variables["MP_UNITS_DEV_CLANG_TIDY"] = True
-        if self.options.cxx_modules:
+        if opt.cxx_modules:
             tc.cache_variables["CMAKE_CXX_SCAN_FOR_MODULES"] = True
             tc.cache_variables["MP_UNITS_BUILD_CXX_MODULES"] = True
-        if self.options.import_std:
+        if opt.import_std:
             tc.cache_variables["CMAKE_CXX_MODULE_STD"] = True
             # Current experimental support according to `Help/dev/experimental.rst`
             tc.cache_variables[
                 "CMAKE_EXPERIMENTAL_CXX_IMPORT_STD"
             ] = "0e5b6991-d74f-4b3d-a41c-cf096e0b2508"
-        if self.options.freestanding:
+
+        # TODO remove the below when Conan will learn to handle C++ modules
+        if opt.freestanding:
             tc.cache_variables["MP_UNITS_API_FREESTANDING"] = True
         else:
-            tc.cache_variables["MP_UNITS_API_STD_FORMAT"] = self.options.std_format
-        tc.cache_variables[
-            "MP_UNITS_API_STRING_VIEW_RET"
-        ] = self.options.string_view_ret
-        tc.cache_variables["MP_UNITS_API_NO_CRTP"] = self.options.no_crtp
-        tc.cache_variables["MP_UNITS_API_CONTRACTS"] = str(
-            self.options.contracts
-        ).upper()
+            tc.cache_variables["MP_UNITS_API_STD_FORMAT"] = opt.std_format
+        tc.cache_variables["MP_UNITS_API_STRING_VIEW_RET"] = opt.string_view_ret
+        tc.cache_variables["MP_UNITS_API_NO_CRTP"] = opt.no_crtp
+        tc.cache_variables["MP_UNITS_API_CONTRACTS"] = str(opt.contracts).upper()
+
         tc.generate()
         deps = CMakeDeps(self)
         deps.generate()
@@ -305,6 +308,7 @@ class MPUnitsConan(ConanFile):
         )
         cmake = CMake(self)
         cmake.install()
+        # TODO remove the below when Conan will learn to handle C++ modules
         if not self.options.cxx_modules:
             # We have to preserve those files for C++ modules build as Conan
             # can't generate such CMake targets for now
@@ -312,6 +316,7 @@ class MPUnitsConan(ConanFile):
 
     def package_info(self):
         compiler = self.settings.compiler
+        # TODO remove the branch when Conan will learn to handle C++ modules
         if self.options.cxx_modules:
             # CMakeDeps does not generate C++ modules definitions for now
             # Skip the Conan-generated files and use the mp-unitsConfig.cmake bundled with mp-units
