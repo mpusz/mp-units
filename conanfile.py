@@ -72,7 +72,7 @@ class MPUnitsConan(ConanFile):
         "contracts": "gsl-lite",
         "freestanding": False,
     }
-    implements = "auto_header_only"
+    implements = ["auto_header_only"]
     exports = "LICENSE.md"
     exports_sources = (
         "docs/*",
@@ -305,40 +305,62 @@ class MPUnitsConan(ConanFile):
         )
         cmake = CMake(self)
         cmake.install()
-        rmdir(self, os.path.join(self.package_folder, "lib", "cmake"))
+        if not self.options.cxx_modules:
+            # We have to preserve those files for C++ modules build as Conan
+            # can't generate such CMake targets for now
+            rmdir(self, os.path.join(self.package_folder, "lib", "cmake"))
 
     def package_info(self):
         compiler = self.settings.compiler
+        if self.options.cxx_modules:
+            # CMakeDeps does not generate C++ modules definitions for now
+            # Skip the Conan-generated files and use the mp-unitsConfig.cmake bundled with mp-units
+            self.cpp_info.set_property("cmake_find_mode", "none")
+            self.cpp_info.builddirs = ["."]
+        else:
+            # handle contracts
+            if self.options.contracts == "none":
+                self.cpp_info.components["core"].defines.append(
+                    "MP_UNITS_API_CONTRACTS=0"
+                )
+            elif self.options.contracts == "gsl-lite":
+                self.cpp_info.components["core"].requires.append("gsl-lite::gsl-lite")
+                self.cpp_info.components["core"].defines.append(
+                    "MP_UNITS_API_CONTRACTS=2"
+                )
+            elif self.options.contracts == "ms-gsl":
+                self.cpp_info.components["core"].requires.append("ms-gsl::ms-gsl")
+                self.cpp_info.components["core"].defines.append(
+                    "MP_UNITS_API_CONTRACTS=3"
+                )
 
-        # handle contracts
-        if self.options.contracts == "none":
-            self.cpp_info.components["core"].defines.append("MP_UNITS_API_CONTRACTS=0")
-        elif self.options.contracts == "gsl-lite":
-            self.cpp_info.components["core"].requires.append("gsl-lite::gsl-lite")
-            self.cpp_info.components["core"].defines.append("MP_UNITS_API_CONTRACTS=2")
-        elif self.options.contracts == "ms-gsl":
-            self.cpp_info.components["core"].requires.append("ms-gsl::ms-gsl")
-            self.cpp_info.components["core"].defines.append("MP_UNITS_API_CONTRACTS=3")
+            # handle API options
+            self.cpp_info.components["core"].defines.append(
+                "MP_UNITS_API_STRING_VIEW_RET="
+                + str(int(self.options.string_view_ret == True))
+            )
+            self.cpp_info.components["core"].defines.append(
+                "MP_UNITS_API_NO_CRTP=" + str(int(self.options.no_crtp == True))
+            )
+            self.cpp_info.components["core"].defines.append(
+                "MP_UNITS_API_STD_FORMAT=" + str(int(self.options.std_format == True))
+            )
+            if not self.options.std_format:
+                self.cpp_info.components["core"].requires.append("fmt::fmt")
 
-        # handle API options
-        self.cpp_info.components["core"].defines.append(
-            "MP_UNITS_API_STRING_VIEW_RET="
-            + str(int(self.options.string_view_ret == True))
-        )
-        self.cpp_info.components["core"].defines.append(
-            "MP_UNITS_API_NO_CRTP=" + str(int(self.options.no_crtp == True))
-        )
-        self.cpp_info.components["core"].defines.append(
-            "MP_UNITS_API_STD_FORMAT=" + str(int(self.options.std_format == True))
-        )
-        if not self.options.std_format:
-            self.cpp_info.components["core"].requires.append("fmt::fmt")
+            # handle hosted configuration
+            if not self.options.freestanding:
+                self.cpp_info.components["core"].defines.append("MP_UNITS_HOSTED=1")
 
-        # handle hosted configuration
-        if not self.options.freestanding:
-            self.cpp_info.components["core"].defines.append("MP_UNITS_HOSTED=1")
+            # handle import std
+            if self.options.import_std:
+                self.cpp_info.components["core"].defines.append("MP_UNITS_IMPORT_STD")
+                if compiler == "clang" and Version(compiler.version) < 19:
+                    self.cpp_info.components["core"].cxxflags.append(
+                        "-Wno-deprecated-declarations"
+                    )
 
-        if compiler == "msvc":
-            self.cpp_info.components["core"].cxxflags = ["/utf-8"]
+            if compiler == "msvc":
+                self.cpp_info.components["core"].cxxflags.append("/utf-8")
 
-        self.cpp_info.components["systems"].requires = ["core"]
+            self.cpp_info.components["systems"].requires = ["core"]
