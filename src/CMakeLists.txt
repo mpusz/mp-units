@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 cmake_minimum_required(VERSION 3.25)
-project(mp-units VERSION 2.3.0 LANGUAGES CXX)
+project(mp-units VERSION 2.4.0 LANGUAGES CXX)
 
 set(projectPrefix MP_UNITS_)
 
