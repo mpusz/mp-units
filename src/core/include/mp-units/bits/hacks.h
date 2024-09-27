@@ -57,6 +57,7 @@
 #define MP_UNITS_DIAGNOSTIC_IGNORE_ZERO_AS_NULLPOINTER_CONSTANT \
   MP_UNITS_DIAGNOSTIC_IGNORE("-Wzero-as-nullpointer-constant")
 #define MP_UNITS_DIAGNOSTIC_IGNORE_DEPRECATED MP_UNITS_DIAGNOSTIC_IGNORE("-Wdeprecated-declarations")
+#define MP_UNITS_DIAGNOSTIC_IGNORE_BUILTIN_MACRO_REDEFINED MP_UNITS_DIAGNOSTIC_IGNORE("-Wbuiltin-macro-redefined")
 #else
 #define MP_UNITS_DIAGNOSTIC_PUSH MP_UNITS_PRAGMA(warning(push))
 #define MP_UNITS_DIAGNOSTIC_POP MP_UNITS_PRAGMA(warning(pop))
@@ -100,6 +101,18 @@ struct from_range_t {
 inline constexpr from_range_t from_range{};
 
 }  // namespace std
+
+#endif
+
+// TODO https://github.com/llvm/llvm-project/issues/110224
+#if MP_UNITS_COMP_CLANG == 19 && __cplusplus <= 202302
+
+MP_UNITS_DIAGNOSTIC_PUSH
+MP_UNITS_DIAGNOSTIC_IGNORE_BUILTIN_MACRO_REDEFINED
+
+#undef __cpp_deleted_function
+
+MP_UNITS_DIAGNOSTIC_POP
 
 #endif
 
