@@ -2,6 +2,9 @@
 
 ## mp-units
 
+### 2.4.0 <small>WIP</small> { id="2.4.0" }
+
+
 ### 2.3.0 <small>September 27, 2024</small> { id="2.3.0" }
 
 - (!) feat: `delta` and `absolute` construction helpers
