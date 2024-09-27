@@ -68,6 +68,7 @@
 - build: `generate()` in `test_package` now correctly propagates project's options
 - build: `target_include_directories` is not needed anymore
 - build: `target_compile_features` now uses `CMAKE_CXX_STANDARD`
+- build: `package_type` is dynamically set in conanfile.py depending if we build modules or not
 - ci: added test for upstream clang on macos-14, as an example for an arm64 platform by [@burnpanck](https://github.com/burnpanck)
 - style: pre-commit updated to clang-format-18.1.8
 - docs: "Strong Angular System" chapter added

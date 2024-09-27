@@ -82,7 +82,6 @@ class MPUnitsConan(ConanFile):
         "example/*",
         "CMakeLists.txt",
     )
-    package_type = "header-library"
     no_copy_source = True
 
     @property
@@ -204,17 +203,21 @@ class MPUnitsConan(ConanFile):
             self._set_default_option(key)
 
     def configure(self):
+        if self.options.cxx_modules:
+            self.package_type = "static-library"
+        else:
+            self.package_type = "header-library"
         if self.options.freestanding:
             self.options.rm_safe("std_format")
 
     def requirements(self):
         if not self.options.freestanding:
             if self.options.contracts == "gsl-lite":
-                self.requires("gsl-lite/0.41.0")
+                self.requires("gsl-lite/0.41.0", transitive_headers=True)
             elif self.options.contracts == "ms-gsl":
-                self.requires("ms-gsl/4.0.0")
+                self.requires("ms-gsl/4.0.0", transitive_headers=True)
             if not self.options.std_format:
-                self.requires("fmt/11.0.1")
+                self.requires("fmt/11.0.1", transitive_headers=True)
 
     def build_requirements(self):
         self.tool_requires("cmake/[>=3.30 <4]")
