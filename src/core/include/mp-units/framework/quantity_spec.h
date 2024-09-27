@@ -411,16 +411,12 @@ struct quantity_spec<Self, QS, Args...> : detail::propagate_equation<QS>, detail
 #if MP_UNITS_API_NO_CRTP
 template<detail::NamedQuantitySpec auto QS, detail::DerivedQuantitySpec auto Eq,
          one_of<quantity_character, struct is_kind> auto... Args>
-  requires(!requires { QS._equation_; } ||
-           ((requires { QS._equation_; }) && detail::QuantitySpecExplicitlyConvertibleTo<Eq, QS._equation_>)) &&
-          (... && !QuantitySpec<decltype(Args)>)
+  requires(detail::QuantitySpecExplicitlyConvertibleTo<Eq, QS>) && (... && !QuantitySpec<decltype(Args)>)
 struct quantity_spec<QS, Eq, Args...> : detail::quantity_spec_interface {
 #else
 template<typename Self, detail::NamedQuantitySpec auto QS, detail::DerivedQuantitySpec auto Eq,
          one_of<quantity_character, struct is_kind> auto... Args>
-  requires(!requires { QS._equation_; } ||
-           ((requires { QS._equation_; }) && detail::QuantitySpecExplicitlyConvertibleTo<Eq, QS._equation_>)) &&
-          (... && !QuantitySpec<decltype(Args)>)
+  requires(detail::QuantitySpecExplicitlyConvertibleTo<Eq, QS>) && (... && !QuantitySpec<decltype(Args)>)
 struct quantity_spec<Self, QS, Eq, Args...> : detail::quantity_spec_interface<Self> {
 #endif
   using _base_type_ = quantity_spec;
@@ -1255,6 +1251,48 @@ template<typename DenFrom, typename... DensFrom, typename DenTo, typename... Den
         return min(res.result, convertible_impl(dimensionless / (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
                                                 dimensionless / (res.equation * ... * map_power(DensTo{}))));
       }
+    }
+  }
+}
+
+template<typename NumFrom, typename... NumsFrom, typename DenTo, typename... DensTo>
+[[nodiscard]] consteval specs_convertible_result are_ingredients_convertible(type_list<NumFrom, NumsFrom...>,
+                                                                             type_list<>, type_list<>,
+                                                                             type_list<DenTo, DensTo...>)
+{
+  constexpr auto num_from_compl = get_complexity(NumFrom{});
+  constexpr auto den_to_compl = get_complexity(DenTo{});
+  constexpr auto max_compl = max(num_from_compl, den_to_compl);
+  if constexpr (max_compl > 1) {
+    if constexpr (num_from_compl == max_compl) {
+      constexpr auto res = explode_to_equation(NumFrom{});
+      return convertible_impl((res.equation * ... * map_power(NumsFrom{})),
+                              dimensionless / (map_power(DenTo{}) * ... * map_power(DensTo{})));
+    } else {
+      constexpr auto res = explode_to_equation(DenTo{});
+      return min(res.result, convertible_impl((map_power(NumFrom{}) * ... * map_power(NumsFrom{})),
+                                              dimensionless / (res.equation * ... * map_power(DensTo{}))));
+    }
+  }
+}
+
+template<typename DenFrom, typename... DensFrom, typename NumTo, typename... NumsTo>
+[[nodiscard]] consteval specs_convertible_result are_ingredients_convertible(type_list<>,
+                                                                             type_list<DenFrom, DensFrom...>,
+                                                                             type_list<NumTo, NumsTo...>, type_list<>)
+{
+  constexpr auto den_from_compl = get_complexity(DenFrom{});
+  constexpr auto num_to_compl = get_complexity(NumTo{});
+  constexpr auto max_compl = max(den_from_compl, num_to_compl);
+  if constexpr (max_compl > 1) {
+    if constexpr (den_from_compl == max_compl) {
+      constexpr auto res = explode_to_equation(DenFrom{});
+      return convertible_impl(dimensionless / (res.equation * ... * map_power(DensFrom{})),
+                              (map_power(NumTo{}) * ... * map_power(NumsTo{})));
+    } else {
+      constexpr auto res = explode_to_equation(NumTo{});
+      return min(res.result, convertible_impl(dimensionless / (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
+                                              (res.equation * ... * map_power(NumsTo{}))));
     }
   }
 }
