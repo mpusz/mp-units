@@ -31,6 +31,7 @@ add_mp_units_module(
             include/mp-units/systems/isq/atomic_and_nuclear_physics.h
             include/mp-units/systems/isq/base_quantities.h
             include/mp-units/systems/isq/electromagnetism.h
+            include/mp-units/systems/isq/information_science_and_technology.h
             include/mp-units/systems/isq/light_and_radiation.h
             include/mp-units/systems/isq/mechanics.h
             include/mp-units/systems/isq/si_quantities.h
