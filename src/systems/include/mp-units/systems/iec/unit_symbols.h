@@ -35,6 +35,8 @@ inline constexpr auto var = volt_ampere_reactive_power;
 
 // Information science and technology
 // bit
+using iec::bit;
+
 inline constexpr auto kbit = si::kilo<bit>;
 inline constexpr auto Mbit = si::mega<bit>;
 inline constexpr auto Gbit = si::giga<bit>;
