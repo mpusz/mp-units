@@ -111,6 +111,8 @@ The systems definitions can be found in the `mp-units/systems/...` subdirectory:
 - `mp-units/systems/isq.h` provides
   [International System of Quantities (ISQ)](https://en.wikipedia.org/wiki/International_System_of_Quantities)
   definitions,
+- `mp-units/systems/isq_angle.h` provides a modification of the ISQ based on
+  [the proposals to make an angle a base quantity in the ISQ](../users_guide/systems/strong_angular_system.md),
 
 ??? tip "Tip: Improving compile times"
 
@@ -123,7 +125,10 @@ The systems definitions can be found in the `mp-units/systems/...` subdirectory:
 - `mp-units/systems/si.h` provides
   [International System of Units (SI)](https://en.wikipedia.org/wiki/International_System_of_Units)
   definitions and associated math functions,
-- `mp-units/systems/angular.h` provides strong angular units and associated math functions,
+- `mp-units/systems/iec.h` provides units and prefixes defined by IEC (e.g., in the series of
+  IEC 80000 standards),
+- `mp-units/systems/angular.h` provides [strong angular units](../users_guide/systems/strong_angular_system.md)
+  and associated math functions,
 - `mp-units/systems/international.h` provides
   [international yard and pound](https://en.wikipedia.org/wiki/International_yard_and_pound) units,
 - `mp-units/systems/imperial.h` includes `international.h` and extends it with
