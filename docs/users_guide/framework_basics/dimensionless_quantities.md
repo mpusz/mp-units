@@ -262,15 +262,15 @@ Those cases make dimensionless quantities an exceptional tree in the library. Th
 
 ```mermaid
 flowchart TD
-    dimensionless["dimensionless<br>[one]"]
-    dimensionless --- rotation
-    dimensionless --- efficiency
-    dimensionless --- angular_measure["angular_measure<br>[rad]"]
-    angular_measure --- rotational_displacement
-    angular_measure --- phase_angle
-    dimensionless --- solid_angular_measure["solid_angular_measure<br>[sr]"]
-    dimensionless --- drag_factor
-    dimensionless --- storage_capacity["storage_capacity<br>[bit]"] --- equivalent_binary_storage_capacity
+    dimensionless["<b>dimensionless</b><br>[one]"]
+    dimensionless --- rotation["<b>rotation</b>"]
+    dimensionless --- efficiency["<b>efficiency</b>"]
+    dimensionless --- angular_measure["<b>angular_measure</b><br>[rad]"]
+    angular_measure --- rotational_displacement["<b>rotational_displacement</b>"]
+    angular_measure --- phase_angle["<b>phase_angle</b>"]
+    dimensionless --- solid_angular_measure["<b>solid_angular_measure</b><br>[sr]"]
+    dimensionless --- drag_factor["<b>drag_factor</b>"]
+    dimensionless --- storage_capacity["<b>storage_capacity</b><br>[bit]"] --- equivalent_binary_storage_capacity["<b>equivalent_binary_storage_capacity</b>"]
     dimensionless --- ...
 ```
 

@@ -99,18 +99,19 @@ For example, here are all quantities of the kind length provided in the ISO 8000
 
 ```mermaid
 flowchart TD
-    length --- width[width, breadth]
-    length --- height[height, depth, altitude]
-    width --- thickness
-    width --- diameter
-    width --- radius
-    length --- path_length
-    path_length --- distance
-    distance --- radial_distance
-    length --- wavelength
-    length --- position_vector["position_vector<br>{vector}"]
-    length --- displacement["displacement<br>{vector}"]
-    radius --- radius_of_curvature
+    length["<b>length</b><br>[m]"]
+    length --- width["<b>width</b> / <b>breadth</b>"]
+    length --- height["<b>height</b> / <b>depth</b> / <b>altitude</b>"]
+    width --- thickness["<b>thickness</b>"]
+    width --- diameter["<b>diameter</b>"]
+    width --- radius["<b>radius</b>"]
+    length --- path_length["<b>path_length</b>"]
+    path_length --- distance["<b>distance</b>"]
+    distance --- radial_distance["<b>radial_distance</b>"]
+    length --- wavelength["<b>wavelength</b>"]
+    length --- position_vector["<b>position_vector</b><br>{vector}"]
+    length --- displacement["<b>displacement</b><br>{vector}"]
+    radius --- radius_of_curvature["<b>radius_of_curvature</b>"]
 ```
 
 Each of the above quantities expresses some kind of _length_, and each can be measured with `si::metre`.
@@ -299,17 +300,17 @@ The below presents some arbitrary hierarchy of derived quantities of kind energy
 
 ```mermaid
 flowchart TD
-    energy["energy<br>(mass * length<sup>2</sup> / time<sup>2</sup>)"]
-    energy --- mechanical_energy
-    mechanical_energy --- potential_energy
-    potential_energy --- gravitational_potential_energy["gravitational_potential_energy<br>(mass * acceleration_of_free_fall * height)"]
-    potential_energy --- elastic_potential_energy["elastic_potential_energy<br>(spring_constant * amount_of_compression<sup>2</sup>)"]
-    mechanical_energy --- kinetic_energy["kinetic_energy<br>(mass * speed<sup>2</sup>)"]
-    energy --- enthalpy
-    enthalpy --- internal_energy[internal_energy, thermodynamic_energy]
-    internal_energy --- Helmholtz_energy[Helmholtz_energy, Helmholtz_function]
-    enthalpy --- Gibbs_energy[Gibbs_energy, Gibbs_function]
-    energy --- active_energy
+    energy["<b>energy</b><br><i>(mass * length<sup>2</sup> / time<sup>2</sup>)</i><br>[J]"]
+    energy --- mechanical_energy["<b>mechanical_energy</b>"]
+    mechanical_energy --- potential_energy["<b>potential_energy</b>"]
+    potential_energy --- gravitational_potential_energy["<b>gravitational_potential_energy</b><br><i>(mass * acceleration_of_free_fall * height)</i>"]
+    potential_energy --- elastic_potential_energy["<b>elastic_potential_energy</b><br><i>(spring_constant * amount_of_compression<sup>2</sup>)</i>"]
+    mechanical_energy --- kinetic_energy["<b>kinetic_energy</b><br><i>(mass * speed<sup>2</sup>)</i>"]
+    energy --- enthalpy["<b>enthalpy</b>"]
+    enthalpy --- internal_energy["<b>internal_energy</b> / <b>thermodynamic_energy</b>"]
+    internal_energy --- Helmholtz_energy["<b>Helmholtz_energy</b> / <b>Helmholtz_function</b>"]
+    enthalpy --- Gibbs_energy["<b>Gibbs_energy</b> / <b>Gibbs_function</b>"]
+    energy --- active_energy["<b>active_energy</b>"]
 ```
 
 Notice, that even though all of those quantities have the same dimension and can be expressed
