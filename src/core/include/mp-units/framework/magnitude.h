@@ -584,10 +584,9 @@ constexpr Magnitude auto mag_power = pow<Pow>(mag<Base>);
 /**
  * @brief  A convenient Magnitude constant for pi, which we can manipulate like a regular number.
  */
-struct pi : mag_constant {
+inline constexpr struct pi : mag_constant {
   static constexpr auto value = std::numbers::pi_v<long double>;
-};
-inline constexpr pi pi;
+} pi;
 
 [[deprecated("Use `mag<pi>` instead")]] inline constexpr Magnitude auto mag_pi = mag<pi>;
 

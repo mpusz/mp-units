@@ -184,10 +184,9 @@ For some units, a magnitude might also be irrational. The best example here is a
 is defined using a floating-point magnitude having a factor of the number π (Pi):
 
 ```cpp
-struct pi : mag_constant {
+inline constexpr struct pi : mag_constant {
   static constexpr auto value = std::numbers::pi_v<long double>;
-};
-inline constexpr pi pi;
+} pi;
 ```
 
 ```cpp
