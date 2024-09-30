@@ -23,8 +23,7 @@ In this series, we will describe:
 
 From our experience, many people, including experts in the domain, often tend to name things
 differently, or sometimes they use the same term while having a different meaning in mind.
-This is why it is essential to stick to one well-defined glossary of terms 
-for metrology.
+This is why it is essential to stick to one well-defined glossary of terms for metrology.
 
 The **mp-units** project consistently uses the official metrology vocabulary defined by the ISO
 and BIPM:

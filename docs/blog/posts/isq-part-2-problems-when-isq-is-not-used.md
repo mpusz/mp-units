@@ -97,7 +97,7 @@ To prevent the above issues, most of the libraries on the market introduce dimen
 Thanks to that, we could solve the first issue of the previous chapter with:
 
 ```cpp
-QuantityOf<dim_speed> auto avg_speed(QuantityOf<dim_length> auto distance, 
+QuantityOf<dim_speed> auto avg_speed(QuantityOf<dim_length> auto distance,
                                      QuantityOf<dim_time> auto time)
 {
   return distance / time;
@@ -117,7 +117,7 @@ vector product of those. For example, a quantity of _speed_ has a dimension of $
 So, to be physically correct, the above code should be rewritten as:
 
 ```cpp
-QuantityOf<dim_length / dim_time> auto avg_speed(QuantityOf<dim_length> auto distance, 
+QuantityOf<dim_length / dim_time> auto avg_speed(QuantityOf<dim_length> auto distance,
                                                  QuantityOf<dim_time> auto time)
 {
   return distance / time;
