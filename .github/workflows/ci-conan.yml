@@ -44,18 +44,14 @@ jobs:
         contracts: ["none", "gsl-lite", "ms-gsl"]
         std: [20, 23]
         config:
-          # - {
-          #     name: "MSVC 14.2",
-          #     os: windows-2019,
-          #     compiler: { type: VISUAL, version: 16, cc: "", cxx: "" },
-          #     conan-config: "-c user.mp-units.build:skip_la=True",
-          #   }
-          # - {
-          #     name: "MSVC 14.3",
-          #     os: windows-2022,
-          #     compiler: { type: MSVC, version: 193, cc: "", cxx: "" },
-          #     conan-config: "",
-          #   }
+          - {
+              name: "MSVC 14.4",
+              os: windows-2022,
+              compiler: { type: MSVC, version: 194, cc: "", cxx: "" },
+              cxx_modules: "False",
+              std_format_support: "True",
+              conan-config: "",
+            }
           - {
               name: "GCC-12",
               os: ubuntu-24.04,
@@ -259,10 +255,18 @@ jobs:
       - run: echo "std_format=$([ "${{ matrix.formatting }}" == "std::format" ] && echo "True" || echo "False")" >> $GITHUB_ENV
       - run: echo "import_std=$([ "${{ matrix.config.cxx_modules }}" == "True" ] && [ "${{ matrix.config.contracts }}" == "none" ] && [ "${{ matrix.formatting }}" == "std::format" ] && echo "True" || echo "False")" >> $GITHUB_ENV
       - name: Create Conan package
+        if: matrix.config.compiler.type != 'MSVC'
         shell: bash
         run: |
           conan create . --user mpusz --channel ${CHANNEL} --lockfile-out=package.lock \
                          -b mp-units/* -b missing -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" -c user.mp-units.build:all=True \
+                         -o '&:cxx_modules=${{ matrix.config.cxx_modules }}' -o '&:import_std=${{ env.import_std }}' -o '&:std_format=${{ env.std_format }}' -o '&:contracts=${{ matrix.contracts }}' ${{ matrix.config.conan-config }}
+      - name: Create Conan package
+        if: matrix.config.compiler.type == 'MSVC'
+        shell: bash
+        run: |
+          conan create . --user mpusz --channel ${CHANNEL} --lockfile-out=package.lock \
+                         -b mp-units/* -b missing -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" -c user.mp-units.build:all=False \
                          -o '&:cxx_modules=${{ matrix.config.cxx_modules }}' -o '&:import_std=${{ env.import_std }}' -o '&:std_format=${{ env.std_format }}' -o '&:contracts=${{ matrix.contracts }}' ${{ matrix.config.conan-config }}
       - name: Obtain package reference
         id: get-package-ref
