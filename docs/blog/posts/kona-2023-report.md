@@ -3,7 +3,7 @@ date: 2023-11-12
 authors:
   - mpusz
 categories:
-  - WG21
+  - WG21 Updates
 ---
 
 # Report from the Kona 2023 ISO C++ Committee meeting

@@ -3,7 +3,7 @@ date: 2024-07-02
 authors:
  - mpusz
 categories:
- - WG21
+ - WG21 Updates
 ---
 
 # Report from the St. Louis 2024 ISO C++ Committee meeting
