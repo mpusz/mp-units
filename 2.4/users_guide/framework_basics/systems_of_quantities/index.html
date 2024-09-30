@@ -25,7 +25,7 @@
         <link rel="alternate" type="application/rss+xml" title="RSS feed of updated content" href="../../../feed_rss_updated.xml">
       
       <link rel="icon" href="../../../assets/images/mp-units-color.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.38">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.39">
     
     
       
@@ -2187,11 +2187,11 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../../blog/category/wg21/" class="md-nav__link">
+      <a href="../../../blog/category/wg21-updates/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    WG21
+    WG21 Updates
   </span>
   
 
@@ -2348,18 +2348,19 @@ and often each kind contains more than one quantity. In fact, it turns out that 
 form a hierarchy of quantities of the same kind.</p>
 <p>For example, here are all quantities of the kind length provided in the ISO 80000:</p>
 <pre class="mermaid"><code>flowchart TD
-    length --- width[width, breadth]
-    length --- height[height, depth, altitude]
-    width --- thickness
-    width --- diameter
-    width --- radius
-    length --- path_length
-    path_length --- distance
-    distance --- radial_distance
-    length --- wavelength
-    length --- position_vector["position_vector&lt;br&gt;{vector}"]
-    length --- displacement["displacement&lt;br&gt;{vector}"]
-    radius --- radius_of_curvature</code></pre>
+    length["&lt;b&gt;length&lt;/b&gt;&lt;br&gt;[m]"]
+    length --- width["&lt;b&gt;width&lt;/b&gt; / &lt;b&gt;breadth&lt;/b&gt;"]
+    length --- height["&lt;b&gt;height&lt;/b&gt; / &lt;b&gt;depth&lt;/b&gt; / &lt;b&gt;altitude&lt;/b&gt;"]
+    width --- thickness["&lt;b&gt;thickness&lt;/b&gt;"]
+    width --- diameter["&lt;b&gt;diameter&lt;/b&gt;"]
+    width --- radius["&lt;b&gt;radius&lt;/b&gt;"]
+    length --- path_length["&lt;b&gt;path_length&lt;/b&gt;"]
+    path_length --- distance["&lt;b&gt;distance&lt;/b&gt;"]
+    distance --- radial_distance["&lt;b&gt;radial_distance&lt;/b&gt;"]
+    length --- wavelength["&lt;b&gt;wavelength&lt;/b&gt;"]
+    length --- position_vector["&lt;b&gt;position_vector&lt;/b&gt;&lt;br&gt;{vector}"]
+    length --- displacement["&lt;b&gt;displacement&lt;/b&gt;&lt;br&gt;{vector}"]
+    radius --- radius_of_curvature["&lt;b&gt;radius_of_curvature&lt;/b&gt;"]</code></pre>
 <p>Each of the above quantities expresses some kind of <em>length</em>, and each can be measured with <code>si::metre</code>.
 However, each of them has different properties, usage, and sometimes even requires a different
 representation type (notice that <code>position_vector</code> and <code>displacement</code> are vector quantities).</p>
@@ -2524,17 +2525,17 @@ sometimes not obvious what such a tree should look like. Also, ISO explicitly st
 </div>
 <p>The below presents some arbitrary hierarchy of derived quantities of kind energy:</p>
 <pre class="mermaid"><code>flowchart TD
-    energy["energy&lt;br&gt;(mass * length&lt;sup&gt;2&lt;/sup&gt; / time&lt;sup&gt;2&lt;/sup&gt;)"]
-    energy --- mechanical_energy
-    mechanical_energy --- potential_energy
-    potential_energy --- gravitational_potential_energy["gravitational_potential_energy&lt;br&gt;(mass * acceleration_of_free_fall * height)"]
-    potential_energy --- elastic_potential_energy["elastic_potential_energy&lt;br&gt;(spring_constant * amount_of_compression&lt;sup&gt;2&lt;/sup&gt;)"]
-    mechanical_energy --- kinetic_energy["kinetic_energy&lt;br&gt;(mass * speed&lt;sup&gt;2&lt;/sup&gt;)"]
-    energy --- enthalpy
-    enthalpy --- internal_energy[internal_energy, thermodynamic_energy]
-    internal_energy --- Helmholtz_energy[Helmholtz_energy, Helmholtz_function]
-    enthalpy --- Gibbs_energy[Gibbs_energy, Gibbs_function]
-    energy --- active_energy</code></pre>
+    energy["&lt;b&gt;energy&lt;/b&gt;&lt;br&gt;&lt;i&gt;(mass * length&lt;sup&gt;2&lt;/sup&gt; / time&lt;sup&gt;2&lt;/sup&gt;)&lt;/i&gt;&lt;br&gt;[J]"]
+    energy --- mechanical_energy["&lt;b&gt;mechanical_energy&lt;/b&gt;"]
+    mechanical_energy --- potential_energy["&lt;b&gt;potential_energy&lt;/b&gt;"]
+    potential_energy --- gravitational_potential_energy["&lt;b&gt;gravitational_potential_energy&lt;/b&gt;&lt;br&gt;&lt;i&gt;(mass * acceleration_of_free_fall * height)&lt;/i&gt;"]
+    potential_energy --- elastic_potential_energy["&lt;b&gt;elastic_potential_energy&lt;/b&gt;&lt;br&gt;&lt;i&gt;(spring_constant * amount_of_compression&lt;sup&gt;2&lt;/sup&gt;)&lt;/i&gt;"]
+    mechanical_energy --- kinetic_energy["&lt;b&gt;kinetic_energy&lt;/b&gt;&lt;br&gt;&lt;i&gt;(mass * speed&lt;sup&gt;2&lt;/sup&gt;)&lt;/i&gt;"]
+    energy --- enthalpy["&lt;b&gt;enthalpy&lt;/b&gt;"]
+    enthalpy --- internal_energy["&lt;b&gt;internal_energy&lt;/b&gt; / &lt;b&gt;thermodynamic_energy&lt;/b&gt;"]
+    internal_energy --- Helmholtz_energy["&lt;b&gt;Helmholtz_energy&lt;/b&gt; / &lt;b&gt;Helmholtz_function&lt;/b&gt;"]
+    enthalpy --- Gibbs_energy["&lt;b&gt;Gibbs_energy&lt;/b&gt; / &lt;b&gt;Gibbs_function&lt;/b&gt;"]
+    energy --- active_energy["&lt;b&gt;active_energy&lt;/b&gt;"]</code></pre>
 <p>Notice, that even though all of those quantities have the same dimension and can be expressed
 in the same units, they have different <a href="../../../appendix/glossary/#quantity-equation">quantity equations</a>
 that can be used to create them implicitly:</p>
@@ -2712,7 +2713,7 @@ specifier. For example, <code>kind_of&lt;isq::width&gt;</code> will fail to comp
     <script id="__config" type="application/json">{"base": "../../..", "features": ["content.action.edit", "content.action.view", "content.code.annotate", "content.code.copy", "navigation.indexes", "navigation.tabs", "navigation.footer", "navigation.top", "search.highlight", "search.share", "search.suggest", "toc.follow", "toc.integrate"], "search": "../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.d6f25eb3.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.525ec568.min.js"></script>
       
         <script src="../../../javascripts/mathjax.js"></script>
       

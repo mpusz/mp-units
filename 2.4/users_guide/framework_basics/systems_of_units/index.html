@@ -25,7 +25,7 @@
         <link rel="alternate" type="application/rss+xml" title="RSS feed of updated content" href="../../../feed_rss_updated.xml">
       
       <link rel="icon" href="../../../assets/images/mp-units-color.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.38">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.39">
     
     
       
@@ -2187,11 +2187,11 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../../blog/category/wg21/" class="md-nav__link">
+      <a href="../../../blog/category/wg21-updates/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    WG21
+    WG21 Updates
   </span>
   
 
@@ -2390,10 +2390,9 @@ in terms of scaled versions of the SI units. For example, the international yard
 </span></code></pre></div>
 <p>For some units, a magnitude might also be irrational. The best example here is a <code>degree</code> which
 is defined using a floating-point magnitude having a factor of the number π (Pi):</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="k">struct</span><span class="w"> </span><span class="nc">pi</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">mag_constant</span><span class="w"> </span><span class="p">{</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">pi</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">mag_constant</span><span class="w"> </span><span class="p">{</span>
 </span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">numbers</span><span class="o">::</span><span class="n">pi_v</span><span class="o">&lt;</span><span class="kt">long</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span><span class="p">;</span>
-</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="p">};</span>
-</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">pi</span><span class="w"> </span><span class="n">pi</span><span class="p">;</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="p">}</span><span class="w"> </span><span class="n">pi</span><span class="p">;</span>
 </span></code></pre></div>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">degree</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">named_unit</span><span class="o">&lt;</span><span class="p">{</span><span class="sa">u8</span><span class="s">&quot;°&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;deg&quot;</span><span class="p">},</span><span class="w"> </span><span class="n">mag</span><span class="o">&lt;</span><span class="n">pi</span><span class="o">&gt;</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">mag</span><span class="o">&lt;</span><span class="mi">180</span><span class="o">&gt;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">radian</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">degree</span><span class="p">;</span>
 </span></code></pre></div>
@@ -2576,7 +2575,7 @@ framework will do it based on the provided quantity equation.</p>
     <script id="__config" type="application/json">{"base": "../../..", "features": ["content.action.edit", "content.action.view", "content.code.annotate", "content.code.copy", "navigation.indexes", "navigation.tabs", "navigation.footer", "navigation.top", "search.highlight", "search.share", "search.suggest", "toc.follow", "toc.integrate"], "search": "../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.d6f25eb3.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.525ec568.min.js"></script>
       
         <script src="../../../javascripts/mathjax.js"></script>
       
