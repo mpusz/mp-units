@@ -178,7 +178,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - run: echo "cache_id=$(/bin/date -u "+%Y%m%d")" >> $GITHUB_ENV
+      - name: Generate unique cache id
+        shell: bash
+        run: echo "cache_id=$(/bin/date -u "+%Y%m%d")" >> $GITHUB_ENV
       - name: Cache Conan data
         uses: actions/cache@v4
         if: always()
@@ -252,8 +254,11 @@ jobs:
           sed -i.backup '/^\[settings\]$/,/^\[/ s/^compiler.cppstd=.*/compiler.cppstd=${{ matrix.std }}/' ~/.conan2/profiles/default
           sed -i.backup '/^\[settings\]$/,/^\[/ s/^build_type=.*/build_type=${{ matrix.build_type }}/' ~/.conan2/profiles/default
           conan profile show -pr default
-      - run: echo "std_format=$([ "${{ matrix.formatting }}" == "std::format" ] && echo "True" || echo "False")" >> $GITHUB_ENV
-      - run: echo "import_std=$([ "${{ matrix.config.cxx_modules }}" == "True" ] && [ "${{ matrix.config.contracts }}" == "none" ] && [ "${{ matrix.formatting }}" == "std::format" ] && echo "True" || echo "False")" >> $GITHUB_ENV
+      - name: Set 'std_format' and 'import_std' environment variables
+        shell: bash
+        run: |
+          echo "std_format=$([ "${{ matrix.formatting }}" == "std::format" ] && echo "True" || echo "False")" >> $GITHUB_ENV
+          echo "import_std=$([ "${{ matrix.config.cxx_modules }}" == "True" ] && [ "${{ matrix.config.contracts }}" == "none" ] && [ "${{ matrix.formatting }}" == "std::format" ] && echo "True" || echo "False")" >> $GITHUB_ENV
       - name: Create Conan package
         if: matrix.config.compiler.type != 'MSVC'
         shell: bash
