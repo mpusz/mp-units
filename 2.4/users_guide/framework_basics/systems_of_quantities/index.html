@@ -2340,8 +2340,8 @@ a <a href="../../../appendix/glossary/#system-of-quantities">system of quantitie
 </div>
 <p>The above quotes from ISO 80000 provide answers to all the issues above. Two quantities can't be
 added, subtracted, or compared unless they belong to the same <a href="../../../appendix/glossary/#kind">kind</a>.
-As frequency, activity, and modulation rate are different kinds, the expression provided above should
-not compile.</p>
+As <em>frequency</em>, <em>activity</em>, and <em>modulation rate</em> are of different kinds, the expression provided
+above should not compile.</p>
 <h2 id="system-of-quantities-is-not-only-about-kinds">System of quantities is not only about kinds<a class="headerlink" href="#system-of-quantities-is-not-only-about-kinds" title="Permanent link">&para;</a></h2>
 <p>ISO 80000 specify hundreds of different quantities. There are plenty of different kinds provided
 and often each kind contains more than one quantity. In fact, it turns out that such quantities
@@ -2364,8 +2364,8 @@ form a hierarchy of quantities of the same kind.</p>
 <p>Each of the above quantities expresses some kind of <em>length</em>, and each can be measured with <code>si::metre</code>.
 However, each of them has different properties, usage, and sometimes even requires a different
 representation type (notice that <code>position_vector</code> and <code>displacement</code> are vector quantities).</p>
-<p>Such a hierarchy helps us in defining arithmetics and conversion rules for various quantities of
-the same kind.</p>
+<p>Forming such a hierarchy helps us in defining arithmetics and conversion rules for various
+quantities of the same kind.</p>
 <h2 id="defining-quantities">Defining quantities<a class="headerlink" href="#defining-quantities" title="Permanent link">&para;</a></h2>
 <p>In the <strong>mp-units</strong> library all the information about the quantity is provided with the <code>quantity_spec</code>
 class template. In order to define a specific quantity a user should inherit a strong type
