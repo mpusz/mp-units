@@ -2778,8 +2778,9 @@ name “degree Celsius.” For example, 12 mºC (12 millidegrees Celsius) is acc
 <p>As we mentioned IEC already, in this release, we decided to rename the name of the system and its
 corresponding namespace from <code>iec80000</code> to <code>iec</code> (<img alt="💥" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/1f4a5.svg" title=":boom:" /> <strong>breaking change</strong> <img alt="💥" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/1f4a5.svg" title=":boom:" />). This involves
 renaming of a defining header file and of the namespace it provides.</p>
-<p>Wit this change it should be easier to type and is more correct for some quantities and units that
-are introduced by IEC but not necessarily in the ISO/IEC 80000 series of documents (e.g., <code>iec::var</code>).</p>
+<p>With this change it should be easier to type the namespace name. This name is also more correct
+for some quantities and units that are introduced by IEC but not necessarily in the ISO/IEC 80000
+series of documents (e.g., <code>iec::var</code>).</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The old <code>iec80000</code> namespace in <em>iec8000.h</em> is marked as deprecated and will be removed in
