@@ -4,6 +4,7 @@ authors:
  - mpusz
 categories:
  - WG21 Updates
+comments: true
 ---
 
 # Report from the St. Louis 2024 ISO C++ Committee meeting

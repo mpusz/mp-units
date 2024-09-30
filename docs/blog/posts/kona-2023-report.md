@@ -4,6 +4,7 @@ authors:
   - mpusz
 categories:
   - WG21 Updates
+comments: true
 ---
 
 # Report from the Kona 2023 ISO C++ Committee meeting
