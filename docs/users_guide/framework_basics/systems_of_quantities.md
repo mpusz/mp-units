@@ -85,8 +85,8 @@ a [system of quantities](../../appendix/glossary.md#system-of-quantities).
 
 The above quotes from ISO 80000 provide answers to all the issues above. Two quantities can't be
 added, subtracted, or compared unless they belong to the same [kind](../../appendix/glossary.md#kind).
-As frequency, activity, and modulation rate are different kinds, the expression provided above should
-not compile.
+As _frequency_, _activity_, and _modulation rate_ are of different kinds, the expression provided
+above should not compile.
 
 
 ## System of quantities is not only about kinds
@@ -118,8 +118,8 @@ Each of the above quantities expresses some kind of _length_, and each can be me
 However, each of them has different properties, usage, and sometimes even requires a different
 representation type (notice that `position_vector` and `displacement` are vector quantities).
 
-Such a hierarchy helps us in defining arithmetics and conversion rules for various quantities of
-the same kind.
+Forming such a hierarchy helps us in defining arithmetics and conversion rules for various
+quantities of the same kind.
 
 
 ## Defining quantities
