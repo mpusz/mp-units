@@ -2200,7 +2200,7 @@ You're not viewing the latest version.
                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 20a8 8 0 0 0 8-8 8 8 0 0 0-8-8 8 8 0 0 0-8 8 8 8 0 0 0 8 8m0-18a10 10 0 0 1 10 10 10 10 0 0 1-10 10C6.47 22 2 17.5 2 12A10 10 0 0 1 12 2m.5 5v5.25l4.5 2.67-.75 1.23L11 13V7z"/></svg>
                           <span class="md-ellipsis">
                             
-                              12 min read
+                              13 min read
                             
                           </span>
                         </div>
@@ -2231,6 +2231,15 @@ You're not viewing the latest version.
   <a href="#cmake-and-conan-options-changed" class="md-nav__link">
     <span class="md-ellipsis">
       CMake and Conan options changed
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#msvc-compiler-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      MSVC compiler support
     </span>
   </a>
   
@@ -2379,6 +2388,12 @@ you. However, some changes are needed if you explicitly used <code>auto</code> l
 <p>or set it explicitly to <code>True</code> or <code>False</code> to force a specific configuration:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>conan<span class="w"> </span>install<span class="w"> </span>.<span class="w"> </span>-o<span class="w"> </span><span class="s1">&#39;mp-units:std_format=True&#39;</span><span class="w"> </span>-s<span class="w"> </span>compiler.cppstd<span class="o">=</span><span class="m">23</span><span class="w"> </span>-b<span class="w"> </span>missing
 </span></code></pre></div>
+<h2 id="msvc-compiler-support">MSVC compiler support<a class="headerlink" href="#msvc-compiler-support" title="Permanent link">&para;</a></h2>
+<p>The MSVC compiler has the most bugs in the C++20 support from all our compilers. However,
+with this release, we could apply many workarounds to the library's code to make it work. 🎉</p>
+<p>Please note those workarounds were only applied to the library's code and not to our unit tests
+and examples. Trying to build the entire project on MSVC will inevitably fail to compile unless
+the MSVC bugs are resolved. MSVC developers still have some work to do.</p>
 <h2 id="representation-type-template-parameter-added-to-value-conversion-functions">Representation type template parameter added to value conversion functions<a class="headerlink" href="#representation-type-template-parameter-added-to-value-conversion-functions" title="Permanent link">&para;</a></h2>
 <p>Previously, changing a representation type was only possible with a <code>value_cast&lt;NewRep&gt;(q)</code>
 non-member function while a change of unit was supported by all <code>value_cast&lt;NewU&gt;(q)</code>,
