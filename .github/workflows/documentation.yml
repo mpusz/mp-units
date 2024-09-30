@@ -53,6 +53,7 @@ jobs:
           git fetch origin gh-pages --depth=1
       - name: Installing API reference dependencies
         run: |
+          sudo apt update
           sudo apt install latexmk texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended lmodern
           sudo apt install haskell-stack graphviz nodejs npm ghc cabal-install
           npm install split mathjax-full mathjax-node-sre mathjax-node-cli
