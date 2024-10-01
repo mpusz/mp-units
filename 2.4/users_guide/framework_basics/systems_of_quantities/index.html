@@ -2523,7 +2523,7 @@ sometimes not obvious what such a tree should look like. Also, ISO explicitly st
 <p class="admonition-title">ISO/IEC Guide 99</p>
 <p>The division of ‘quantity’ according to ‘kind of quantity’ is, to some extent, arbitrary.</p>
 </div>
-<p>The below presents some arbitrary hierarchy of derived quantities of kind energy:</p>
+<p>The below presents some arbitrary hierarchy of derived quantities of kind <em>energy</em>:</p>
 <pre class="mermaid"><code>flowchart TD
     energy["&lt;b&gt;energy&lt;/b&gt;&lt;br&gt;&lt;i&gt;(mass * length&lt;sup&gt;2&lt;/sup&gt; / time&lt;sup&gt;2&lt;/sup&gt;)&lt;/i&gt;&lt;br&gt;[J]"]
     energy --- mechanical_energy["&lt;b&gt;mechanical_energy&lt;/b&gt;"]
@@ -2583,7 +2583,7 @@ that can be used to create them implicitly:</p>
 quantities of the same kind. Such quantities have not only the same dimension but also
 can be expressed in the same units.</p>
 <p>To annotate a quantity to represent its kind (and not just a hierarchy tree's root quantity)
-we introduced a <code>kind_of&lt;&gt;</code> specifier. For example, to express any quantity of length, we need
+we introduced a <code>kind_of&lt;&gt;</code> specifier. For example, to express any quantity of <em>length</em>, we need
 to type <code>kind_of&lt;isq::length&gt;</code>.</p>
 <div class="admonition important">
 <p class="admonition-title">Important</p>

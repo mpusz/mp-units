@@ -2494,18 +2494,18 @@ modelled as <a href="../systems_of_quantities/#system-of-quantities-is-not-only-
 <p>Angular quantities are not the only ones with such a "strange" behavior. Another but a similar case
 is a <em>storage capacity</em> quantity specified in IEC-80000-13 that again allows expressing it in both
 <code>one</code> and <code>bit</code> units.</p>
-<p>Those cases make dimensionless quantities an exceptional tree in the library. This is the only
-<a href="../../../appendix/glossary/#quantity-hierarchy">quantity hierarchy</a> that contains more than one
-<a href="../../../appendix/glossary/#kind">quantity kind</a> in its tree:</p>
+<p>Those cases make dimensionless quantities an exceptional tree in the library. This
+<a href="../../../appendix/glossary/#quantity-hierarchy">quantity hierarchy</a> contains more than one
+<a href="../../../appendix/glossary/#kind">quantity kind</a> and more than one unit in its tree:</p>
 <pre class="mermaid"><code>flowchart TD
     dimensionless["&lt;b&gt;dimensionless&lt;/b&gt;&lt;br&gt;[one]"]
     dimensionless --- rotation["&lt;b&gt;rotation&lt;/b&gt;"]
-    dimensionless --- efficiency["&lt;b&gt;efficiency&lt;/b&gt;"]
-    dimensionless --- angular_measure["&lt;b&gt;angular_measure&lt;/b&gt;&lt;br&gt;[rad]"]
-    angular_measure --- rotational_displacement["&lt;b&gt;rotational_displacement&lt;/b&gt;"]
+    dimensionless --- thermodynamic_efficiency["&lt;b&gt;thermodynamic_efficiency&lt;/b&gt;&lt;br&gt;&lt;i&gt;(work / heat)&lt;/i&gt;"]
+    dimensionless --- angular_measure["&lt;b&gt;angular_measure&lt;/b&gt;&lt;br&gt;&lt;i&gt;(arc_length / radius)&lt;/i&gt;&lt;br&gt;[rad]"]
+    angular_measure --- rotational_displacement["&lt;b&gt;rotational_displacement&lt;/b&gt;&lt;br&gt;&lt;i&gt;(path_length / radius)&lt;/i&gt;"]
     angular_measure --- phase_angle["&lt;b&gt;phase_angle&lt;/b&gt;"]
-    dimensionless --- solid_angular_measure["&lt;b&gt;solid_angular_measure&lt;/b&gt;&lt;br&gt;[sr]"]
-    dimensionless --- drag_factor["&lt;b&gt;drag_factor&lt;/b&gt;"]
+    dimensionless --- solid_angular_measure["&lt;b&gt;solid_angular_measure&lt;/b&gt;&lt;br&gt;&lt;i&gt;(area / pow&lt;2&gt;(radius))&lt;/i&gt;&lt;br&gt;[sr]"]
+    dimensionless --- drag_factor["&lt;b&gt;drag_factor&lt;/b&gt;&lt;br&gt;&lt;i&gt;(drag_force / (mass_density * pow&lt;2&gt;(speed) * area))&lt;/i&gt;"]
     dimensionless --- storage_capacity["&lt;b&gt;storage_capacity&lt;/b&gt;&lt;br&gt;[bit]"] --- equivalent_binary_storage_capacity["&lt;b&gt;equivalent_binary_storage_capacity&lt;/b&gt;"]
     dimensionless --- ...</code></pre>
 <p>To provide such support in the library, we provided an <code>is_kind</code> specifier that can be appended
