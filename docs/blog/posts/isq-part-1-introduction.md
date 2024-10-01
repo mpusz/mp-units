@@ -73,8 +73,8 @@ with other such systems. For example:
 Both **systems of units** above agree on the unit of _time_, but chose different units for other
 quantities. In the above example, SI chose a non-prefixed unit of metre for a base quantity of _length_
 while CGS chose a scaled centimetre. On the other hand, SI chose a scaled kilogram over the gram used
-in the CGS. Those decisions also result in a need for different units for derived quantities.
-For example:
+in the CGS. Those decisions also result in a need for different [coherent units](https://jcgm.bipm.org/vim/en/1.12.html)
+for derived quantities. For example:
 
 | Quantity   | SI            | CGS             |
 |------------|---------------|-----------------|
@@ -87,7 +87,7 @@ For example:
 
 Often, there is no way to state which one is correct or which one is wrong. Each
 **system of units** has the freedom to choose whichever unit suits its engineering requirements
-and constraints the best.
+and constraints the best for a specific quantity.
 
 ## ISQ vs SI
 

@@ -23,16 +23,16 @@ language.
 
 ## Articles from this series
 
-Previous:
-
 - [Part 1 - Introduction](isq-part-1-introduction.md)
 - [Part 2 - Problems when ISQ is not used](isq-part-2-problems-when-isq-is-not-used.md)
+- Part 3 - Modelling ISQ
 
 
 ## Dimension is not enough to describe a quantity
 
 Most of the products on the market are aware of physical dimensions. However, a dimension is not
-enough to describe a quantity. For example, let's see the following implementation:
+enough to describe a quantity. Let's repeat briefly some of the problems described in more detail
+in the previous article. For example, let's see the following implementation:
 
 ```cpp
 class Box {
@@ -47,10 +47,10 @@ Box my_box(2 * m, 3 * m, 1 * m);
 ```
 
 How do you like such an interface? It turns out that in most existing strongly-typed libraries
-this is often the best we can do :woozy_face:
+this is often the best we can do. :woozy_face:
 
 Another typical question many users ask is how to deal with _work_ and _torque_.
-Both of those have the same dimension but are different quantities.
+Both of those have the same dimension but are distinct quantities.
 
 A similar issue is related to figuring out what should be the result of:
 
@@ -68,19 +68,15 @@ All of those quantities have the same dimension, namely $\mathsf{T}^{-1}$, but p
 is not wise to allow adding, subtracting, or comparing them, as they describe vastly different
 physical properties.
 
-If the above example seems too abstract, let's consider _fuel consumption_ (fuel _volume_
-divided by _distance_, e.g., `6.7 l/km`) and an _area_. Again, both have the same dimension
-$\mathsf{L}^{2}$, but probably it wouldn't be wise to allow adding, subtracting, or comparing
-a _fuel consumption_ of a car and the _area_ of a football field. Such an operation does not
-have any physical sense and should fail to compile.
+If the above example seems too abstract, let's consider Gy (gray - unit of _absorbed dose_)
+and Sv (sievert - unit of _dose equivalent_), or radian and steradian. All of them have the
+same dimensions.
 
-!!! important
-
-    More than one quantity may be defined for the same dimension:
-
-    - quantities of **different kinds** (e.g. _frequency_, _modulation rate_, _activity_, ...)
-    - quantities of **the same kind** (e.g. _length_, _width_, _altitude_, _distance_, _radius_,
-      _wavelength_, _position vector_, ...)
+Another example here is _fuel consumption_ (fuel _volume_ divided by _distance_, e.g.,
+`6.7 l/100km`) and an _area_. Again, both have the same dimension $\mathsf{L}^{2}$, but probably
+it wouldn't be wise to allow adding, subtracting, or comparing a _fuel consumption_ of a car
+and the _area_ of a football field. Such an operation does not have any physical sense and should
+fail to compile.
 
 It turns out that the above issues can't be solved correctly without proper modeling of
 a [system of quantities](../../appendix/glossary.md#system-of-quantities).
@@ -89,9 +85,8 @@ a [system of quantities](../../appendix/glossary.md#system-of-quantities).
 ## Quantities of the same kind
 
 As it was described in the previous article, dimension is not enough to describe a quantity.
-We need a better abstraction to ensure the safety of our calculations.
-
-The ISO 80000-1:2009 says:
+We need a better abstraction to ensure the safety of our calculations. It turns out that
+ISO/IEC 80000 comes with the answer:
 
 !!! quote "ISO 80000-1:2009"
 
@@ -125,9 +120,9 @@ article.
 
 More than one quantity may be defined for the same dimension:
 
-- quantities of different kinds (e.g., _frequency_, _modulation rate_, _activity_)
+- quantities of different kinds (e.g., _frequency_, _modulation rate_, _activity_).
 - quantities of the same kind (e.g., _length_, _width_, _altitude_, _distance_, _radius_,
-  _wavelength_, _position vector_)
+  _wavelength_, _position vector_).
 
 Two quantities can't be added, subtracted, or compared unless they belong to
 the same [kind](../../appendix/glossary.md#kind). As _frequency_, _activity_, and _modulation rate_
@@ -140,7 +135,7 @@ ISO/IEC 80000 specifies hundreds of different quantities. Plenty of various kind
 and often, each kind contains more than one quantity. It turns out that such quantities form
 a hierarchy of quantities of the same kind.
 
-For example, here are all quantities of the kind length provided in the ISO 80000-1:
+For example, here are all quantities of the kind length provided in the ISO 80000-3:
 
 ```mermaid
 flowchart TD
@@ -186,12 +181,12 @@ Based on the hierarchy above, we can define the following quantity conversion ru
     Implicit conversions are allowed on copy-initialization:
 
     ```cpp
-    void foo(quantity<isq::length<m>> q);
+    void foo(quantity<isq::length[m]> q);
     ```
 
     ```cpp
-    quantity<isq::width<m>> q1 = 42 * m;
-    quantity<isq::length<m>> q2 = q1;  // implicit quantity conversion
+    quantity<isq::width[m]> q1 = 42 * m;
+    quantity<isq::length[m]> q2 = q1;  // implicit quantity conversion
     foo(q1);                           // implicit quantity conversion
     ```
 
@@ -213,12 +208,12 @@ Based on the hierarchy above, we can define the following quantity conversion ru
     type:
 
     ```cpp
-    void foo(quantity<isq::height<m>> q);
+    void foo(quantity<isq::height[m]> q);
     ```
 
     ```cpp
-    quantity<isq::length<m>> q1 = 42 * m;
-    quantity<isq::height<m>> q2 = isq::height(q1);  // explicit quantity conversion
+    quantity<isq::length[m]> q1 = 42 * m;
+    quantity<isq::height[m]> q2 = isq::height(q1);  // explicit quantity conversion
     foo(isq::height(q1));                           // explicit quantity conversion
     ```
 
@@ -236,12 +231,12 @@ Based on the hierarchy above, we can define the following quantity conversion ru
     Explicit casts are forced with a dedicated `quantity_cast` function:
 
     ```cpp
-    void foo(quantity<isq::height<m>> q);
+    void foo(quantity<isq::height[m]> q);
     ```
 
     ```cpp
-    quantity<isq::width<m>> q1 = 42 * m;
-    quantity<isq::height<m>> q2 = quantity_cast<isq::height>(q1);  // explicit quantity cast
+    quantity<isq::width[m]> q1 = 42 * m;
+    quantity<isq::height[m]> q2 = quantity_cast<isq::height>(q1);  // explicit quantity cast
     foo(quantity_cast<isq::height>(q1));                           // explicit quantity cast
     ```
 
@@ -262,7 +257,7 @@ Based on the hierarchy above, we can define the following quantity conversion ru
     ```
 
     ```cpp
-    quantity<isq::length<m>> q1 = 42 * s;    // Compile-time error
+    quantity<isq::length[m]> q1 = 42 * s;    // Compile-time error
     foo(quantity_cast<isq::length>(42 * s)); // Compile-time error
     ```
 
@@ -272,7 +267,7 @@ Based on the hierarchy above, we can define the following quantity conversion ru
 ISO/IEC 80000 explicitly states that _width_ and _height_ are quantities of the same kind,
 and as such they:
 
-- are mutually comparable, and
+- are mutually comparable,
 - can be added and subtracted.
 
 This means that we should be allowed to compare any quantities from the same tree (as long as
@@ -301,7 +296,7 @@ quantities of the same kind. Such quantities have not only the same dimension bu
 can be expressed in the same units.
 
 To annotate a quantity to represent its kind (and not just a hierarchy tree's root quantity)
-we introduced a `kind_of<>` specifier. For example, to express any quantity of length, we need
+we introduced a `kind_of<>` specifier. For example, to express any quantity of _length_, we need
 to type `kind_of<isq::length>`.
 
 !!! important
@@ -344,11 +339,12 @@ static_assert(same_type<kind_of<isq::length> / isq::time, isq::length / isq::tim
 
 ## How do systems of units benefit from the ISQ and quantity kinds?
 
-Modeling a system of units is the most essential feature and a selling point of every
-physical units library. Thanks to that, the library can protect users from performing invalid
-operations on quantities and provide automated conversion factors between various compatible units.
+Modeling a system of units is the most essential feature and a selling point of every physical
+units library. Thanks to that, the library can protect users from assigning, adding, subtracting,
+or comparing incompatible units and provide automated conversion factors between various compatible
+units.
 
-Probably all the libraries in the wild model the SI, or at least most of it, and many of them
+Probably all the libraries in the wild model the SI (or at least most of it), and many of them
 provide support for additional units belonging to various other systems (e.g., imperial).
 
 ### Systems of units are based on systems of quantities
@@ -377,9 +373,9 @@ the amount of any quantity of kind _length_.
     where both _length_ and _time_ will be measured in seconds, and _speed_ will be a quantity
     measured with the unit `one`. In such case, the definition will look as follows:
 
-```cpp
-inline constexpr struct second final : named_unit<"s"> {} second;
-```
+    ```cpp
+    inline constexpr struct second final : named_unit<"s"> {} second;
+    ```
 
 ### Constraining a derived unit to work only with a specific derived quantity
 
@@ -406,7 +402,7 @@ for quantities of _activity_:
 ```cpp
 quantity<isq::frequency[Hz]> q1 = 60 * Bq;   // Compile-time error
 quantity<isq::activity[Hz]> q2;              // Compile-time error
-quantity<isq::frequency[Hz]> q3 = 60 * Hz;
+quantity<isq::frequency[Hz]> q3 = 60 * Hz;   // OK
 std::cout << q3.in(Bq) << "\n";              // Compile-time error
 ```
 
@@ -418,10 +414,10 @@ specific kinds only:
 auto q = 1 * Hz + 1 * Bq;   // Fails to compile
 ```
 
-All of the above features improve the safety of our library and the products that use it.
+All of the above features improve the safety of our library and the products that are using it.
 
 
 ## To be continued...
 
-In the next part of this series, we will discuss the challenges and issues related to the modelling
-of the ISQ with a programming language.
+In the next part of this series, we will present how our ISQ model helps to address the remaining
+issues described in the [Part 2](isq-part-2-problems-when-isq-is-not-used.md) of our series.
