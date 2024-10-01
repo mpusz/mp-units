@@ -419,5 +419,5 @@ All of the above features improve the safety of our library and the products tha
 
 ## To be continued...
 
-In the next part of this series, we will present how our ISQ model helps to address the remaining
-issues described in the [Part 2](isq-part-2-problems-when-isq-is-not-used.md) of our series.
+In the next part of this series, we will present how we can implement our ISQ model in a C++
+programming language and we will point out some of the first issues that stand in our way.

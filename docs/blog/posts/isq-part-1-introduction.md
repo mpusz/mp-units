@@ -15,6 +15,7 @@ In this series, we will describe:
 
 - What is ISQ?
 - Which engineering problems does ISQ help to solve and how?
+- How to model and implement it in the programming language?
 - What is missing in the ISQ, and why is that a problem?
 
 <!-- more -->
