@@ -130,17 +130,18 @@ using type_list_of_unit_less = expr_less<T1, T2, unit_less>;
 // Even though it is not exported, it is visible to the other module via ADL
 [[nodiscard]] consteval auto get_canonical_unit(Unit auto u) { return detail::get_canonical_unit_impl(u, u); }
 
-namespace detail {
-
-template<Unit U1, Unit U2>
-[[nodiscard]] consteval bool have_same_canonical_reference_unit(U1 u1, U2 u2)
+// convertible
+template<Unit From, Unit To>
+[[nodiscard]] consteval bool convertible(From from, To to)
 {
-  if constexpr (is_same_v<U1, U2>)
+  if constexpr (is_same_v<From, To>)
     return true;
   else
-    return is_same_v<decltype(get_canonical_unit(u1).reference_unit), decltype(get_canonical_unit(u2).reference_unit)>;
+    return is_same_v<decltype(get_canonical_unit(from).reference_unit),
+                     decltype(get_canonical_unit(to).reference_unit)>;
 }
 
+namespace detail {
 
 struct unit_interface {
   /**
@@ -669,16 +670,6 @@ inline constexpr struct parts_per_million final : named_unit<"ppm", mag_ratio<1,
 inline constexpr auto ppm = parts_per_million;
 // clang-format on
 
-
-// convertible
-template<Unit From, Unit To>
-[[nodiscard]] consteval bool convertible(From from, To to)
-{
-  if constexpr (is_same_v<From, To>)
-    return true;
-  else
-    return detail::have_same_canonical_reference_unit(from, to);
-}
 
 // Common unit
 [[nodiscard]] consteval Unit auto get_common_unit(Unit auto u) { return u; }
