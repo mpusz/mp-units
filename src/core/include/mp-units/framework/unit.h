@@ -59,6 +59,9 @@ import std;
 
 namespace mp_units {
 
+template<Unit U1, Unit U2, Unit... Rest>
+struct common_unit;
+
 namespace detail {
 
 template<Magnitude auto M, Unit U>
@@ -111,6 +114,9 @@ template<Unit T, typename... Expr>
 
 template<Unit T, auto M, typename U>
 [[nodiscard]] consteval auto get_canonical_unit_impl(T, const scaled_unit_impl<M, U>&);
+
+template<Unit T, typename... Us>
+[[nodiscard]] consteval auto get_canonical_unit_impl(T, const common_unit<Us...>&);
 
 template<Unit Lhs, Unit Rhs>
 struct unit_less : std::bool_constant<type_name<Lhs>() < type_name<Rhs>()> {};
@@ -237,6 +243,7 @@ struct scaled_unit_impl : detail::unit_interface, detail::propagate_point_origin
  *       instantiate this type automatically based on the unit arithmetic equation provided by the user.
  */
 template<Magnitude auto M, Unit U>
+  requires(M != magnitude<>{} && M != mag<1>)
 struct scaled_unit final : detail::scaled_unit_impl<M, U> {};
 
 namespace detail {
@@ -412,7 +419,10 @@ template<Unit U1, Unit U2>
   constexpr auto canonical_lhs = get_canonical_unit(U1{});
   constexpr auto canonical_rhs = get_canonical_unit(U2{});
   constexpr auto common_magnitude = _common_magnitude(canonical_lhs.mag, canonical_rhs.mag);
-  return scaled_unit<common_magnitude, decltype(canonical_lhs.reference_unit)>{};
+  if constexpr (common_magnitude == mag<1>)
+    return canonical_lhs.reference_unit;
+  else
+    return scaled_unit<common_magnitude, std::remove_const_t<decltype(canonical_lhs.reference_unit)>>{};
 }
 
 [[nodiscard]] consteval Unit auto get_common_scaled_unit(Unit auto u1, Unit auto u2, Unit auto u3, Unit auto... rest)
@@ -441,6 +451,7 @@ template<Unit U1, Unit U2, Unit... Rest>
 struct common_unit final : decltype(detail::get_common_scaled_unit(U1{}, U2{}, Rest{}...))::_base_type_
 {
   using _base_type_ = common_unit;  // exposition only
+  static constexpr auto _common_unit_ = detail::get_common_scaled_unit(U1{}, U2{}, Rest{}...);
 };
 
 namespace detail {
@@ -522,6 +533,12 @@ template<Unit T, auto M, typename U>
 {
   auto base = get_canonical_unit_impl(U{}, U{});
   return canonical_unit{M * base.mag, base.reference_unit};
+}
+
+template<Unit T, typename... Us>
+[[nodiscard]] consteval auto get_canonical_unit_impl(T, const common_unit<Us...>& u)
+{
+  return get_canonical_unit_impl(u._common_unit_, u._common_unit_);
 }
 
 template<Unit T, symbol_text Symbol, auto... Args>
