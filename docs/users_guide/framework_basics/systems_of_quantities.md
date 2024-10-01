@@ -296,7 +296,7 @@ sometimes not obvious what such a tree should look like. Also, ISO explicitly st
 
     The division of ‘quantity’ according to ‘kind of quantity’ is, to some extent, arbitrary.
 
-The below presents some arbitrary hierarchy of derived quantities of kind energy:
+The below presents some arbitrary hierarchy of derived quantities of kind _energy_:
 
 ```mermaid
 flowchart TD
@@ -365,7 +365,7 @@ quantities of the same kind. Such quantities have not only the same dimension bu
 can be expressed in the same units.
 
 To annotate a quantity to represent its kind (and not just a hierarchy tree's root quantity)
-we introduced a `kind_of<>` specifier. For example, to express any quantity of length, we need
+we introduced a `kind_of<>` specifier. For example, to express any quantity of _length_, we need
 to type `kind_of<isq::length>`.
 
 !!! important
