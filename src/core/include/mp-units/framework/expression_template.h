@@ -408,7 +408,7 @@ template<template<typename...> typename To, typename OneType, template<typename,
  */
 template<template<typename...> typename To, typename OneType, template<typename, typename> typename Pred, typename Lhs,
          typename Rhs>
-[[nodiscard]] consteval auto expr_divide(Lhs lhs, Rhs rhs)
+[[nodiscard]] MP_UNITS_CONSTEVAL auto expr_divide(Lhs lhs, Rhs rhs)
 {
   if constexpr (is_same_v<Lhs, Rhs>) {
     return OneType{};
