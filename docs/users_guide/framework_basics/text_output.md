@@ -272,8 +272,8 @@ kg⋅m⋅s⁻²
 
 Some [common units](systems_of_units.md#common-units) expressed with a specialization of the
 `common_unit` class template need special printing rules for their symbols. As they represent
-a minimum set of common units resulting from the addition or subtraction of multiple quantities,
-we print all of them as a scaled version of the source unit. For example the following:
+a minimum set of equivalent common units resulting from the addition or subtraction of multiple
+quantities, we print all of them as a scaled version of the source unit. For example the following:
 
 ```cpp
 std::cout << 1 * km + 1 * mi << "\n";
@@ -284,9 +284,9 @@ std::cout << 1 * km / h + 1 * m / s << "\n";
 will print:
 
 ```text
-40771 ([1/25146] mi = [1/15625] km)
-108167 ([1/50292] mi = [1/57875] nmi)
-23 ([1/5] km/h = [1/18] m/s)
+40771 EQUIV{[1/25146] mi, [1/15625] km}
+108167 EQUIV{[1/50292] mi, [1/57875] nmi}
+23 EQUIV{[1/5] km/h, [1/18] m/s}
 ```
 
 Thanks to the above, it might be easier for the user to reason about the magnitude of the resulting

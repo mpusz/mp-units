@@ -854,18 +854,19 @@ template<typename CharT, std::output_iterator<CharT> Out, typename U, typename..
 constexpr Out unit_symbol_impl(Out out, const common_unit<U, Rest...>&, const unit_symbol_formatting& fmt,
                                bool negative_power)
 {
-  constexpr std::string_view separator(" = ");
+  constexpr std::string_view prefix("EQUIV{");
+  constexpr std::string_view separator(", ");
   auto print_unit = [&]<Unit Arg>(Arg) {
     constexpr auto u = get_common_unit_in(common_unit<U, Rest...>{}, Arg{});
     unit_symbol_impl<CharT>(out, u, fmt, negative_power);
   };
-  *out++ = '(';
+  detail::copy(std::begin(prefix), std::end(prefix), out);
   print_unit(U{});
   for_each(std::tuple<Rest...>{}, [&]<Unit Arg>(Arg) {
     detail::copy(std::begin(separator), std::end(separator), out);
     print_unit(Arg{});
   });
-  *out++ = ')';
+  *out++ = '}';
   return out;
 }
 
