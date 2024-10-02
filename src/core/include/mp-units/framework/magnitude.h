@@ -56,12 +56,26 @@ using factorizer = wheel_factorizer<4>;
 
 }  // namespace detail
 
-MP_UNITS_EXPORT struct mag_constant {};
+#if defined MP_UNITS_COMP_CLANG || MP_UNITS_COMP_CLANG < 18
 
-template<typename T>
-concept MagConstant = std::derived_from<T, mag_constant> && std::is_empty_v<T> && requires {
-  { +T::value } -> std::same_as<long double>;
+MP_UNITS_EXPORT template<symbol_text Symbol>
+struct mag_constant {};
+
+#else
+
+MP_UNITS_EXPORT template<symbol_text Symbol, auto Value>
+struct mag_constant {
+  static constexpr auto value = Value;
 };
+
+#endif
+
+MP_UNITS_EXPORT template<typename T>
+concept MagConstant =
+  is_derived_from_specialization_of_v<T, mag_constant> && std::is_empty_v<T> && std::is_final_v<T> && requires {
+    { +T::value } -> std::same_as<long double>;
+  };
+
 
 /**
  * @brief  Any type which can be used as a basis vector in a PowerV.
@@ -598,8 +612,12 @@ constexpr Magnitude auto mag_power = pow<Pow>(mag<Base>);
 /**
  * @brief  A convenient Magnitude constant for pi, which we can manipulate like a regular number.
  */
-inline constexpr struct pi : mag_constant {
+#if defined MP_UNITS_COMP_CLANG || MP_UNITS_COMP_CLANG < 18
+inline constexpr struct pi final : mag_constant<symbol_text{u8"𝜋", "pi"}> {
   static constexpr auto value = std::numbers::pi_v<long double>;
+#else
+inline constexpr struct pi final : mag_constant<symbol_text{u8"𝜋", "pi"}, std::numbers::pi_v<long double>> {
+#endif
 } pi;
 
 [[deprecated("Use `mag<pi>` instead")]] inline constexpr Magnitude auto mag_pi = mag<pi>;
