@@ -120,10 +120,15 @@ static_assert(unit_symbol(mag<6> * mag_power<10, 3> * metre) == "[6 × 10³ m]")
 static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii}>(mag<6000> * metre) == "[6 x 10^3 m]");
 static_assert(unit_symbol(mag<10600> * metre) == "[10600 m]");
 static_assert(unit_symbol(mag<60> * second) == "[60 s]");
-static_assert(unit_symbol(mag_ratio<1, 18> * metre / second) == "[1/18 m/s]");
-static_assert(unit_symbol(mag_ratio<1, 1800> * metre / second) == "[1/1800 m/s]");
-static_assert(unit_symbol(mag_ratio<1, 18000> * metre / second) == "[1/18 × 10⁻³ m/s]");
+static_assert(unit_symbol(mag_ratio<1, 18> * metre / second) == "[1/18 m]/s");
+static_assert(unit_symbol(mag_ratio<1, 18> * (metre / second)) == "[1/18 m/s]");
+static_assert(unit_symbol(mag_ratio<1, 1800> * metre / second) == "[1/1800 m]/s");
+static_assert(unit_symbol(mag_ratio<1, 1800> * (metre / second)) == "[1/1800 m/s]");
+static_assert(unit_symbol(mag_ratio<1, 18000> * metre / second) == "[1/18 × 10⁻³ m]/s");
+static_assert(unit_symbol(mag_ratio<1, 18000> * (metre / second)) == "[1/18 × 10⁻³ m/s]");
 static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii}>(mag_ratio<1, 18000> * metre / second) ==
+              "[1/18 x 10^-3 m]/s");
+static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii}>(mag_ratio<1, 18000> * (metre / second)) ==
               "[1/18 x 10^-3 m/s]");
 
 // common units
@@ -202,6 +207,9 @@ static_assert(unit_symbol(pow<1, 2>(metre)) == "m^(1/2)");
 static_assert(unit_symbol(pow<3, 5>(metre)) == "m^(3/5)");
 static_assert(unit_symbol(pow<1, 2>(metre / second)) == "m^(1/2)/s^(1/2)");
 static_assert(unit_symbol<unit_symbol_formatting{.solidus = never}>(pow<1, 2>(metre / second)) == "m^(1/2) s^-(1/2)");
+static_assert(unit_symbol(litre / (mag<100> * kilo<metre>)) == "l/[100 km]");
+static_assert(unit_symbol((mag<10> * metre) / (mag<20> * second)) == "[10 m]/[20 s]");
+static_assert(unit_symbol(pow<2>(mag<3600> * second)) == "[3600 s]²");
 
 // dimensionless unit
 static_assert(unit_symbol(radian) == "rad");

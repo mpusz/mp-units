@@ -180,14 +180,7 @@ struct unit_interface {
   template<Unit Lhs, Unit Rhs>
   [[nodiscard]] friend MP_UNITS_CONSTEVAL Unit auto operator*(Lhs lhs, Rhs rhs)
   {
-    if constexpr (is_specialization_of_scaled_unit<Lhs> && is_specialization_of_scaled_unit<Rhs>)
-      return (Lhs::mag * Rhs::mag) * (Lhs::reference_unit * Rhs::reference_unit);
-    else if constexpr (is_specialization_of_scaled_unit<Lhs>)
-      return Lhs::mag * (Lhs::reference_unit * rhs);
-    else if constexpr (is_specialization_of_scaled_unit<Rhs>)
-      return Rhs::mag * (lhs * Rhs::reference_unit);
-    else
-      return expr_multiply<derived_unit, struct one, type_list_of_unit_less>(lhs, rhs);
+    return expr_multiply<derived_unit, struct one, type_list_of_unit_less>(lhs, rhs);
   }
 
   /**
@@ -198,14 +191,7 @@ struct unit_interface {
   template<Unit Lhs, Unit Rhs>
   [[nodiscard]] friend MP_UNITS_CONSTEVAL Unit auto operator/(Lhs lhs, Rhs rhs)
   {
-    if constexpr (is_specialization_of_scaled_unit<Lhs> && is_specialization_of_scaled_unit<Rhs>)
-      return (Lhs::mag / Rhs::mag) * (Lhs::reference_unit / Rhs::reference_unit);
-    else if constexpr (is_specialization_of_scaled_unit<Lhs>)
-      return Lhs::mag * (Lhs::reference_unit / rhs);
-    else if constexpr (is_specialization_of_scaled_unit<Rhs>)
-      return mag<1> / Rhs::mag * (lhs / Rhs::reference_unit);
-    else
-      return expr_divide<derived_unit, struct one, type_list_of_unit_less>(lhs, rhs);
+    return expr_divide<derived_unit, struct one, type_list_of_unit_less>(lhs, rhs);
   }
 
   [[nodiscard]] friend consteval bool operator==(Unit auto lhs, Unit auto rhs)
@@ -615,8 +601,6 @@ template<std::intmax_t Num, std::intmax_t Den = 1, Unit U>
     return one;
   else if constexpr (detail::ratio{Num, Den} == 1)
     return u;
-  else if constexpr (detail::is_specialization_of_scaled_unit<U>)
-    return scaled_unit<pow<Num, Den>(U::mag), decltype(pow<Num, Den>(U::reference_unit))>{};
   else if constexpr (is_specialization_of<U, derived_unit>)
     return detail::expr_pow<Num, Den, derived_unit, struct one, detail::type_list_of_unit_less>(u);
   else if constexpr (Den == 1)

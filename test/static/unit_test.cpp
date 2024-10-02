@@ -384,7 +384,7 @@ static_assert(is_of_type<get_canonical_unit(standard_gravity / speed_of_light_in
 
 // operations commutativity
 constexpr auto u1 = mag<1000> * kilometre / hour;
-static_assert(is_of_type<u1, scaled_unit<mag<1000>, derived_unit<kilo_<metre_>, per<hour_>>>>);
+static_assert(is_of_type<u1, derived_unit<scaled_unit<mag<1000>, kilo_<metre_>>, per<hour_>>>);
 static_assert(is_of_type<get_canonical_unit(u1).reference_unit, derived_unit<metre_, per<second_>>>);
 static_assert(get_canonical_unit(u1).mag == mag_ratio<1'000'000, 3'600>);
 
@@ -394,7 +394,7 @@ static_assert(is_of_type<get_canonical_unit(u2).reference_unit, derived_unit<met
 static_assert(get_canonical_unit(u2).mag == mag_ratio<1'000'000, 3'600>);
 
 constexpr auto u3 = one / hour * (mag<1000> * kilometre);
-static_assert(is_of_type<u3, scaled_unit<mag<1000>, derived_unit<kilo_<metre_>, per<hour_>>>>);
+static_assert(is_of_type<u3, derived_unit<scaled_unit<mag<1000>, kilo_<metre_>>, per<hour_>>>);
 static_assert(is_of_type<get_canonical_unit(u3).reference_unit, derived_unit<metre_, per<second_>>>);
 static_assert(get_canonical_unit(u3).mag == mag_ratio<1'000'000, 3'600>);
 
@@ -515,8 +515,7 @@ static_assert(is_of_type<kilometre * kilometre, derived_unit<power<kilo_<metre_>
 static_assert(is_of_type<pow<2>(kilometre), derived_unit<power<kilo_<metre_>, 2>>>);
 static_assert(is_of_type<pow<2>(kilo<metre>), derived_unit<power<kilo_<metre_>, 2>>>);
 static_assert(is_of_type<pow<2>(hour), derived_unit<power<hour_, 2>>>);
-static_assert(
-  is_of_type<pow<2>(mag<3600>* second), scaled_unit<mag<3600> * mag<3600>, derived_unit<power<second_, 2>>>>);
+static_assert(is_of_type<pow<2>(mag<3600>* second), derived_unit<power<scaled_unit<mag<3600>, second_>, 2>>>);
 
 // get_common_unit
 static_assert(is_of_type<get_common_unit(gram, gram), gram_>);
