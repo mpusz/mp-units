@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <mp-units/bits/constexpr_math.h>
 #include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/compat_macros.h>
@@ -38,12 +39,6 @@ import std;
 #endif
 
 namespace mp_units::detail {
-
-template<typename T>
-[[nodiscard]] MP_UNITS_CONSTEVAL T abs(T v) noexcept
-{
-  return v < 0 ? -v : v;
-}
 
 [[nodiscard]] consteval std::intmax_t safe_multiply(std::intmax_t lhs, std::intmax_t rhs)
 {

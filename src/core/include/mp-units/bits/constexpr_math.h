@@ -39,6 +39,12 @@ import std;
 
 namespace mp_units::detail {
 
+template<typename T>
+[[nodiscard]] MP_UNITS_CONSTEVAL T abs(T v) noexcept
+{
+  return v < 0 ? -v : v;
+}
+
 // Raise an arbitrary arithmetic type to a positive integer power at compile time.
 template<typename T>
 [[nodiscard]] consteval T int_power(T base, std::integral auto exp)
