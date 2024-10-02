@@ -110,19 +110,29 @@ static_assert(unit_symbol(zebi<bit>) == "Zibit");
 static_assert(unit_symbol(yobi<bit>) == "Yibit");
 
 // scaled units
-static_assert(unit_symbol(mag<100> * metre) == "× 10² m");
-static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii}>(mag<100> * metre) == "x 10^2 m");
-static_assert(unit_symbol(mag<60> * second) == "[6 × 10¹] s");
-static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii}>(mag<60> * second) == "[6 x 10^1] s");
-static_assert(unit_symbol(mag_ratio<1, 18> * metre / second) == "[1/18] m/s");
+static_assert(unit_symbol(mag<100> * metre) == "[100 m]");
+static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii}>(mag<100> * metre) == "[100 m]");
+static_assert(unit_symbol(mag<1000> * metre) == "[10³ m]");
+static_assert(unit_symbol(mag_power<10, 3> * metre) == "[10³ m]");
+static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii}>(mag<1000> * metre) == "[10^3 m]");
+static_assert(unit_symbol(mag<6000> * metre) == "[6 × 10³ m]");
+static_assert(unit_symbol(mag<6> * mag_power<10, 3> * metre) == "[6 × 10³ m]");
+static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii}>(mag<6000> * metre) == "[6 x 10^3 m]");
+static_assert(unit_symbol(mag<10600> * metre) == "[10600 m]");
+static_assert(unit_symbol(mag<60> * second) == "[60 s]");
+static_assert(unit_symbol(mag_ratio<1, 18> * metre / second) == "[1/18 m/s]");
+static_assert(unit_symbol(mag_ratio<1, 1800> * metre / second) == "[1/1800 m/s]");
+static_assert(unit_symbol(mag_ratio<1, 18000> * metre / second) == "[1/18 × 10⁻³ m/s]");
+static_assert(unit_symbol<unit_symbol_formatting{.encoding = ascii}>(mag_ratio<1, 18000> * metre / second) ==
+              "[1/18 x 10^-3 m/s]");
 
 // common units
-static_assert(unit_symbol(get_common_unit(kilo<metre>, mile)) == "EQUIV{[1/25146] mi, [1/15625] km}");
-static_assert(unit_symbol(get_common_unit(kilo<metre> / hour, metre / second)) == "EQUIV{[1/5] km/h, [1/18] m/s}");
+static_assert(unit_symbol(get_common_unit(kilo<metre>, mile)) == "EQUIV{[1/25146 mi], [1/15625 km]}");
+static_assert(unit_symbol(get_common_unit(kilo<metre> / hour, metre / second)) == "EQUIV{[1/5 km/h], [1/18 m/s]}");
 static_assert(unit_symbol(get_common_unit(kilo<metre> / hour, metre / second) / second) ==
-              "EQUIV{[1/5] km/h, [1/18] m/s}/s");
+              "EQUIV{[1/5 km/h], [1/18 m/s]}/s");
 static_assert(unit_symbol(get_common_unit(kilo<metre> / hour, metre / second) * second) ==
-              "EQUIV{[1/5] km/h, [1/18] m/s} s");
+              "EQUIV{[1/5 km/h], [1/18 m/s]} s");
 
 // derived units
 static_assert(unit_symbol(one) == "");  // NOLINT(readability-container-size-empty)

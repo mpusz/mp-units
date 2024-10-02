@@ -830,16 +830,13 @@ template<typename CharT, std::output_iterator<CharT> Out, auto M, typename U>
 constexpr Out unit_symbol_impl(Out out, const scaled_unit_impl<M, U>& u, const unit_symbol_formatting& fmt,
                                bool negative_power)
 {
-  if constexpr (M == mag<1>) {
-    // no ratio/prefix
-    return unit_symbol_impl<CharT>(out, u.reference_unit, fmt, negative_power);
-  } else {
-    constexpr auto mag_txt = _magnitude_text(M);
-    out = copy<CharT>(mag_txt, fmt.encoding, out);
-
-    if constexpr (space_before_unit_symbol<scaled_unit<M, U>::reference_unit>) *out++ = ' ';
-    return unit_symbol_impl<CharT>(out, u.reference_unit, fmt, negative_power);
-  }
+  *out++ = '[';
+  constexpr auto mag_txt = _magnitude_text(M);
+  out = copy<CharT>(mag_txt, fmt.encoding, out);
+  if constexpr (space_before_unit_symbol<scaled_unit<M, U>::reference_unit>) *out++ = ' ';
+  unit_symbol_impl<CharT>(out, u.reference_unit, fmt, negative_power);
+  *out++ = ']';
+  return out;
 }
 
 template<typename... Us, Unit U>

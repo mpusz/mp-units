@@ -234,8 +234,6 @@ template<auto M>
 template<auto M>
 [[nodiscard]] consteval auto remove_positive_power(magnitude<M> m);
 
-inline constexpr symbol_text base_multiplier(u8"× 10", "x 10");
-
 template<std::intmax_t Base, std::intmax_t Pow>
   requires detail::gt_zero<Base>
 [[nodiscard]] consteval Magnitude auto mag_power_lazy();
@@ -315,6 +313,31 @@ struct magnitude_base<magnitude<H, T...>> {
     }
   }
 };
+
+template<auto num_value, auto den_value>
+[[nodiscard]] consteval auto ratio_txt()
+{
+  if constexpr (den_value == 1)
+    return detail::regular<num_value>();
+  else
+    return detail::regular<num_value>() + symbol_text("/") + detail::regular<den_value>();
+};
+
+template<auto num, auto den, auto exp10>
+[[nodiscard]] consteval auto magnitude_text_impl()
+{
+  constexpr auto num_value = get_value<std::intmax_t>(num);
+  constexpr auto den_value = get_value<std::intmax_t>(den);
+
+  if constexpr (num_value == 1 && den_value == 1 && exp10 != 0) {
+    return symbol_text("10") + detail::superscript<exp10>();
+  } else {
+    if constexpr (exp10 == 0)
+      return ratio_txt<num_value, den_value>();
+    else
+      return ratio_txt<num_value, den_value>() + symbol_text(u8" × 10", " x 10") + detail::superscript<exp10>();
+  }
+}
 
 }  // namespace detail
 
@@ -426,37 +449,28 @@ private:
 
   [[nodiscard]] friend consteval auto _magnitude_text(magnitude)
   {
-    constexpr auto exp10 = _extract_power_of_10(magnitude{});
-
-    constexpr Magnitude auto base = magnitude{} / detail::mag_power_lazy<10, exp10>();
-    constexpr Magnitude auto num = _numerator(base);
-    constexpr Magnitude auto den = _denominator(base);
-    // TODO address the below
-    static_assert(base == num / den, "Printing rational powers, or irrational bases, not yet supported");
-
-    constexpr auto num_value = get_value<std::intmax_t>(num);
-    constexpr auto den_value = get_value<std::intmax_t>(den);
-
-    if constexpr (num_value == 1 && den_value == 1 && exp10 != 0) {
-      return detail::base_multiplier + detail::superscript<exp10>();
-    } else if constexpr (num_value != 1 || den_value != 1 || exp10 != 0) {
-      auto txt = symbol_text("[") + detail::regular<num_value>();
-      if constexpr (den_value == 1) {
-        if constexpr (exp10 == 0) {
-          return txt + symbol_text("]");
-        } else {
-          return txt + symbol_text(" ") + detail::base_multiplier + detail::superscript<exp10>() + symbol_text("]");
-        }
-      } else {
-        if constexpr (exp10 == 0) {
-          return txt + symbol_text("/") + detail::regular<den_value>() + symbol_text("]");
-        } else {
-          return txt + symbol_text("/") + detail::regular<den_value>() + symbol_text(" ") + detail::base_multiplier +
-                 detail::superscript<exp10>() + symbol_text("]");
-        }
-      }
-    } else {
+    if constexpr (magnitude{} == magnitude<1>{}) {
       return symbol_text("");
+    } else {
+      constexpr auto exp10 = _extract_power_of_10(magnitude{});
+      if constexpr (detail::abs(exp10) < 3) {
+        // print the value as a regular number (without exponent)
+        constexpr Magnitude auto num = _numerator(magnitude{});
+        constexpr Magnitude auto den = _denominator(magnitude{});
+        // TODO address the below
+        static_assert(magnitude{} == num / den, "Printing rational powers, or irrational bases, not yet supported");
+        return detail::magnitude_text_impl<num, den, 0>();
+      } else {
+        // print the value as a number with exponent
+        // if user wanted a regular number for this magnitude then probably a better scaled unit should be used
+        constexpr Magnitude auto base = magnitude{} / detail::mag_power_lazy<10, exp10>();
+        constexpr Magnitude auto num = _numerator(base);
+        constexpr Magnitude auto den = _denominator(base);
+
+        // TODO address the below
+        static_assert(base == num / den, "Printing rational powers, or irrational bases, not yet supported");
+        return detail::magnitude_text_impl<num, den, exp10>();
+      }
     }
   }
 };
