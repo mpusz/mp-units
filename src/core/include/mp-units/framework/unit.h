@@ -855,18 +855,18 @@ constexpr auto unit_symbol_impl(Out out, const power<F, Num, Den...>&, const uni
   return copy_symbol_exponent<CharT, Num, Den...>(fmt.encoding, negative_power, out);
 }
 
-template<typename CharT, std::output_iterator<CharT> Out, DerivedUnitExpr M>
-constexpr Out unit_symbol_impl(Out out, M m, std::size_t Idx, const unit_symbol_formatting& fmt, bool negative_power)
+template<typename CharT, std::output_iterator<CharT> Out, DerivedUnitExpr... Us>
+constexpr Out unit_symbol_impl(Out out, const type_list<>&, const unit_symbol_formatting&, bool)
 {
-  if (Idx > 0) out = print_separator<CharT>(out, fmt);
-  return unit_symbol_impl<CharT>(out, m, fmt, negative_power);
+  return out;
 }
 
-template<typename CharT, std::output_iterator<CharT> Out, DerivedUnitExpr... Ms, std::size_t... Idxs>
-constexpr Out unit_symbol_impl(Out out, const type_list<Ms...>&, std::index_sequence<Idxs...>,
-                               const unit_symbol_formatting& fmt, bool negative_power)
+template<typename CharT, std::output_iterator<CharT> Out, DerivedUnitExpr U, DerivedUnitExpr... Rest>
+constexpr Out unit_symbol_impl(Out out, const type_list<U, Rest...>&, const unit_symbol_formatting& fmt,
+                               bool negative_power)
 {
-  return (..., (out = unit_symbol_impl<CharT>(out, Ms{}, Idxs, fmt, negative_power)));
+  return ((out = unit_symbol_impl<CharT>(out, U{}, fmt, negative_power)), ...,
+          (print_separator<CharT>(out, fmt), out = unit_symbol_impl<CharT>(out, Rest{}, fmt, negative_power)));
 }
 
 template<typename CharT, std::output_iterator<CharT> Out, DerivedUnitExpr... Nums, DerivedUnitExpr... Dens>
@@ -878,11 +878,11 @@ constexpr Out unit_symbol_impl(Out out, const type_list<Nums...>& nums, const ty
     return out;
   } else if constexpr (sizeof...(Dens) == 0) {
     // no denominator
-    return unit_symbol_impl<CharT>(out, nums, std::index_sequence_for<Nums...>(), fmt, false);
+    return unit_symbol_impl<CharT>(out, nums, fmt, false);
   } else {
     using enum unit_symbol_solidus;
     if constexpr (sizeof...(Nums) > 0) {
-      out = unit_symbol_impl<CharT>(out, nums, std::index_sequence_for<Nums...>(), fmt, false);
+      out = unit_symbol_impl<CharT>(out, nums, fmt, false);
     }
 
     if (fmt.solidus == always || (fmt.solidus == one_denominator && sizeof...(Dens) == 1)) {
@@ -894,7 +894,7 @@ constexpr Out unit_symbol_impl(Out out, const type_list<Nums...>& nums, const ty
 
     if (fmt.solidus == always && sizeof...(Dens) > 1) *out++ = '(';
     const bool negative_power = fmt.solidus == never || (fmt.solidus == one_denominator && sizeof...(Dens) > 1);
-    out = unit_symbol_impl<CharT>(out, dens, std::index_sequence_for<Dens...>(), fmt, negative_power);
+    out = unit_symbol_impl<CharT>(out, dens, fmt, negative_power);
     if (fmt.solidus == always && sizeof...(Dens) > 1) *out++ = ')';
     return out;
   }
