@@ -43,7 +43,7 @@ struct unit_interface;
  * Satisfied by all unit types provided by the library.
  */
 MP_UNITS_EXPORT template<typename T>
-concept Unit = std::derived_from<T, detail::unit_interface> && std::is_final_v<T>;
+concept Unit = std::derived_from<T, detail::unit_interface> && std::is_empty_v<T> && std::is_final_v<T>;
 
 template<Magnitude auto M, Unit U>
   requires(M != magnitude<>{} && M != mag<1>)

@@ -37,7 +37,8 @@ struct quantity_spec_interface_base;
 }
 
 MP_UNITS_EXPORT template<typename T>
-concept QuantitySpec = std::derived_from<T, detail::quantity_spec_interface_base> && std::is_final_v<T>;
+concept QuantitySpec =
+  std::derived_from<T, detail::quantity_spec_interface_base> && std::is_empty_v<T> && std::is_final_v<T>;
 
 MP_UNITS_EXPORT
 #if MP_UNITS_API_NO_CRTP
