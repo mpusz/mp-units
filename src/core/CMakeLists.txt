@@ -70,6 +70,7 @@ add_mp_units_module(
             include/mp-units/framework/system_reference.h
             include/mp-units/framework/unit.h
             include/mp-units/framework/unit_concepts.h
+            include/mp-units/framework/unit_symbol_formatting.h
             include/mp-units/framework/value_cast.h
             include/mp-units/compat_macros.h
             include/mp-units/concepts.h

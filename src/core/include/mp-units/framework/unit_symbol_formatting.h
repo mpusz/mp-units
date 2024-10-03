@@ -22,27 +22,40 @@
 
 #pragma once
 
-// IWYU pragma: begin_exports
-#include <mp-units/framework/compare.h>
-#include <mp-units/framework/construction_helpers.h>
-#include <mp-units/framework/customization_points.h>
-#include <mp-units/framework/dimension.h>
-#include <mp-units/framework/dimension_concepts.h>
-#include <mp-units/framework/expression_template.h>
-#include <mp-units/framework/magnitude.h>
-#include <mp-units/framework/quantity.h>
-#include <mp-units/framework/quantity_cast.h>
-#include <mp-units/framework/quantity_concepts.h>
-#include <mp-units/framework/quantity_point.h>
-#include <mp-units/framework/quantity_point_concepts.h>
-#include <mp-units/framework/quantity_spec.h>
-#include <mp-units/framework/quantity_spec_concepts.h>
-#include <mp-units/framework/reference.h>
-#include <mp-units/framework/representation_concepts.h>
+// IWYU pragma: private, include <mp-units/framework.h>
+#include <mp-units/bits/module_macros.h>
 #include <mp-units/framework/symbol_text.h>
-#include <mp-units/framework/system_reference.h>
-#include <mp-units/framework/unit.h>
-#include <mp-units/framework/unit_concepts.h>
-#include <mp-units/framework/unit_symbol_formatting.h>
-#include <mp-units/framework/value_cast.h>
-// IWYU pragma: end_exports
+
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
+#include <cstdint>
+#endif
+#endif
+
+MP_UNITS_EXPORT
+namespace mp_units {
+
+// NOLINTNEXTLINE(readability-enum-initial-value)
+enum class unit_symbol_solidus : std::int8_t {
+  one_denominator,  // m/s;   kg m⁻¹ s⁻¹
+  always,           // m/s;   kg/(m s)
+  never,            // m s⁻¹; kg m⁻¹ s⁻¹
+  default_denominator = one_denominator
+};
+
+// NOLINTNEXTLINE(readability-enum-initial-value)
+enum class unit_symbol_separator : std::int8_t {
+  space,          // kg m²/s²
+  half_high_dot,  // kg⋅m²/s²  (valid only for unicode encoding)
+  default_separator = space
+};
+
+struct unit_symbol_formatting {
+  text_encoding encoding = text_encoding::default_encoding;
+  unit_symbol_solidus solidus = unit_symbol_solidus::default_denominator;
+  unit_symbol_separator separator = unit_symbol_separator::default_separator;
+};
+
+}  // namespace mp_units

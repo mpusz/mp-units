@@ -40,6 +40,7 @@
 #include <mp-units/framework/quantity_spec_concepts.h>
 #include <mp-units/framework/symbol_text.h>
 #include <mp-units/framework/unit_concepts.h>
+#include <mp-units/framework/unit_symbol_formatting.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <mp-units/ext/contracts.h>
@@ -756,29 +757,6 @@ constexpr bool space_before_unit_symbol = true;
 
 template<>
 MP_UNITS_INLINE constexpr bool space_before_unit_symbol<one> = false;
-
-// get_unit_symbol
-
-// NOLINTNEXTLINE(readability-enum-initial-value)
-enum class unit_symbol_solidus : std::int8_t {
-  one_denominator,  // m/s;   kg m⁻¹ s⁻¹
-  always,           // m/s;   kg/(m s)
-  never,            // m s⁻¹; kg m⁻¹ s⁻¹
-  default_denominator = one_denominator
-};
-
-// NOLINTNEXTLINE(readability-enum-initial-value)
-enum class unit_symbol_separator : std::int8_t {
-  space,          // kg m²/s²
-  half_high_dot,  // kg⋅m²/s²  (valid only for unicode encoding)
-  default_separator = space
-};
-
-struct unit_symbol_formatting {
-  text_encoding encoding = text_encoding::default_encoding;
-  unit_symbol_solidus solidus = unit_symbol_solidus::default_denominator;
-  unit_symbol_separator separator = unit_symbol_separator::default_separator;
-};
 
 MP_UNITS_EXPORT_END
 
