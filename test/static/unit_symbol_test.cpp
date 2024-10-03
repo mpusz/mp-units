@@ -168,6 +168,10 @@ static_assert(unit_symbol<usf{.encoding = ascii, .solidus = always}>(mag_ratio<1
               "[1/(2 pi) m]");
 static_assert(unit_symbol(mag_ratio<1, 2> * mag<pi> * metre) == "[𝜋/2 m]");
 
+static_assert(unit_symbol(mag_power<pi, 2> * one) == "[𝜋²]");
+static_assert(unit_symbol<usf{.encoding = ascii}>(mag_power<pi, 2> * one) == "[pi^2]");
+static_assert(unit_symbol(mag_power<pi, 1, 2> * metre) == "[𝜋^(1/2) m]");
+static_assert(unit_symbol<usf{.encoding = ascii}>(mag_power<pi, 1, 2> * metre) == "[pi^(1/2) m]");
 
 static_assert(unit_symbol(mag<pi> * mag<e> * one) == "[e 𝜋]");
 static_assert(unit_symbol(mag<e> * mag<pi> * one) == "[e 𝜋]");

@@ -353,9 +353,12 @@ template<typename CharT, std::output_iterator<CharT> Out, auto M, auto... Rest>
 [[nodiscard]] consteval auto mag_constants_text(Out out, magnitude<M, Rest...>, const unit_symbol_formatting& fmt,
                                                 bool negative_power)
 {
-  return ((out = copy_symbol<CharT>(get_base(M).symbol, fmt.encoding, negative_power, out)), ...,
-          (print_separator<CharT>(out, fmt),
-           out = copy_symbol<CharT>(get_base(Rest).symbol, fmt.encoding, negative_power, out)));
+  auto to_symbol = [&]<typename T>(T v) {
+    out = copy_symbol<CharT>(get_base(v).symbol, fmt.encoding, negative_power, out);
+    constexpr ratio r = get_exponent(T{});
+    return copy_symbol_exponent<CharT, abs(r.num), r.den>(fmt.encoding, negative_power, out);
+  };
+  return (to_symbol(M), ..., (print_separator<CharT>(out, fmt), to_symbol(Rest)));
 }
 
 template<typename CharT, Magnitude auto Num, Magnitude auto Den, Magnitude auto NumConstants,
@@ -500,7 +503,6 @@ private:
   }
 
   [[nodiscard]] friend consteval auto _denominator(magnitude) { return _numerator(pow<-1>(magnitude{})); }
-
 
   [[nodiscard]] friend consteval auto _remove_positive_powers(magnitude)
   {
@@ -717,8 +719,8 @@ constexpr Magnitude auto mag_ratio = detail::prime_factorization_v<N> / detail::
 /**
  * @brief  Create a Magnitude which is some rational number raised to a rational power.
  */
-template<std::intmax_t Base, int Num, int Den = 1>
-  requires detail::gt_zero<Base>
+template<MagArg auto Base, int Num, int Den = 1>
+  requires detail::gt_zero<detail::get_base_value(Base)>
 constexpr Magnitude auto mag_power = pow<Num, Den>(mag<Base>);
 
 /**

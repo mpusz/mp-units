@@ -146,6 +146,8 @@ constexpr Out copy_symbol_exponent(text_encoding encoding, bool negative_power, 
     }
     constexpr auto txt = superscript<r.num>();
     return copy<CharT>(txt, encoding, out);
+  } else {
+    return out;
   }
 }
 
