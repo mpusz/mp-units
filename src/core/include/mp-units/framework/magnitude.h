@@ -226,7 +226,9 @@ template<typename T>
 // Magnitude product implementation.
 [[nodiscard]] consteval bool less(MagnitudeSpec auto lhs, MagnitudeSpec auto rhs)
 {
-  return get_base_value(lhs) < get_base_value(rhs);
+  // clang-arm64 raises "error: implicit conversion from 'long' to 'long double' may lose precision" so we need an explicit cast
+  using ct = std::common_type_t<decltype(get_base_value(lhs)), decltype(get_base_value(rhs))>;
+  return static_cast<ct>(get_base_value(lhs)) < static_cast<ct>(get_base_value(rhs));
 }
 
 // The largest integer which can be extracted from any magnitude with only a single basis vector.
