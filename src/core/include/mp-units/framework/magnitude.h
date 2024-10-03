@@ -145,33 +145,16 @@ template<MagnitudeSpec Element>
     return ratio{1};
 }
 
-// We do not want magnitude type to have the `l` literal after a value for a small integral number.
-// For example this modifies `magnitude<3l>` to be `magnitude<3>`
-template<auto V>
-[[nodiscard]] consteval auto shorten_T()
-{
-  if constexpr (std::integral<decltype(V)>) {
-    if constexpr (V <= std::numeric_limits<int>::max())
-      return static_cast<int>(V);
-    else
-      return static_cast<std::intmax_t>(V);
-  } else if constexpr (std::floating_point<decltype(V)>) {
-    return static_cast<long double>(V);
-  } else {
-    return V;
-  }
-}
-
 template<PowerVBase auto V, ratio R>
 [[nodiscard]] consteval auto power_v_or_T()
 {
   if constexpr (R.den == 1) {
     if constexpr (R.num == 1)
-      return shorten_T<V>();
+      return V;
     else
-      return power_v<shorten_T<V>(), R.num>{};
+      return power_v<V, R.num>{};
   } else {
-    return power_v<shorten_T<V>(), R.num, R.den>{};
+    return power_v<V, R.num, R.den>{};
   }
 }
 
