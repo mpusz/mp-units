@@ -175,6 +175,8 @@ static_assert(unit_symbol<usf{.solidus = never}>(kilogram * metre / square(secon
 static_assert(unit_symbol<usf{.encoding = ascii, .solidus = never}>(kilogram * metre / square(second)) == "kg m s^-2");
 static_assert(unit_symbol<usf{.solidus = never, .separator = half_high_dot}>(kilogram * metre / square(second)) ==
               "kg⋅m⋅s⁻²");
+static_assert(unit_symbol(one / metre / square(second)) == "m⁻¹ s⁻²");
+static_assert(unit_symbol<usf{.solidus = always}>(one / metre / square(second)) == "1/(m s²)");
 static_assert(unit_symbol(kilogram / metre / square(second)) == "kg m⁻¹ s⁻²");
 static_assert(unit_symbol<usf{.separator = half_high_dot}>(kilogram / metre / square(second)) == "kg⋅m⁻¹⋅s⁻²");
 static_assert(unit_symbol<usf{.encoding = ascii}>(kilogram / metre / square(second)) == "kg m^-1 s^-2");

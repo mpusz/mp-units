@@ -859,18 +859,16 @@ constexpr Out unit_symbol_impl(Out out, const type_list<Nums...>& nums, const ty
     return unit_symbol_impl<CharT>(out, nums, fmt, false);
   } else {
     using enum unit_symbol_solidus;
-    if constexpr (sizeof...(Nums) > 0) {
-      out = unit_symbol_impl<CharT>(out, nums, fmt, false);
-    }
+    if constexpr (sizeof...(Nums) > 0) out = unit_symbol_impl<CharT>(out, nums, fmt, false);
 
     if (fmt.solidus == always || (fmt.solidus == one_denominator && sizeof...(Dens) == 1)) {
       if constexpr (sizeof...(Nums) == 0) *out++ = '1';
       *out++ = '/';
-    } else {
+      if (sizeof...(Dens) > 1) *out++ = '(';
+    } else if constexpr (sizeof...(Nums) > 0) {
       out = print_separator<CharT>(out, fmt);
     }
 
-    if (fmt.solidus == always && sizeof...(Dens) > 1) *out++ = '(';
     const bool negative_power = fmt.solidus == never || (fmt.solidus == one_denominator && sizeof...(Dens) > 1);
     out = unit_symbol_impl<CharT>(out, dens, fmt, negative_power);
     if (fmt.solidus == always && sizeof...(Dens) > 1) *out++ = ')';
