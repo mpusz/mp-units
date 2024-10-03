@@ -80,6 +80,8 @@ concept MagConstant =
     { +T::value } -> std::same_as<long double>;
   };
 
+template<typename T>
+concept MagArg = std::integral<T> || MagConstant<T>;
 
 /**
  * @brief  Any type which can be used as a basis vector in a PowerV.
@@ -241,8 +243,8 @@ template<auto M>
 template<auto M>
 [[nodiscard]] consteval auto only_negative_mag_constants(magnitude<M> m);
 
-template<std::intmax_t Base, int Num, int Den = 1>
-  requires detail::gt_zero<Base>
+template<MagArg auto Base, int Num, int Den = 1>
+  requires(detail::get_base_value(Base) > 0)
 [[nodiscard]] consteval Magnitude auto mag_power_lazy();
 
 template<typename T>
@@ -344,13 +346,13 @@ constexpr Out print_separator(Out out, const unit_symbol_formatting& fmt)
 
 template<typename CharT, std::output_iterator<CharT> Out, auto... Ms>
   requires(sizeof...(Ms) == 0)
-[[nodiscard]] consteval auto mag_constants_text(Out out, magnitude<Ms...>, const unit_symbol_formatting&, bool)
+[[nodiscard]] constexpr auto mag_constants_text(Out out, magnitude<Ms...>, const unit_symbol_formatting&, bool)
 {
   return out;
 }
 
 template<typename CharT, std::output_iterator<CharT> Out, auto M, auto... Rest>
-[[nodiscard]] consteval auto mag_constants_text(Out out, magnitude<M, Rest...>, const unit_symbol_formatting& fmt,
+[[nodiscard]] constexpr auto mag_constants_text(Out out, magnitude<M, Rest...>, const unit_symbol_formatting& fmt,
                                                 bool negative_power)
 {
   auto to_symbol = [&]<typename T>(T v) {
@@ -527,7 +529,7 @@ private:
   }
 
   template<typename T>
-  [[nodiscard]] friend consteval detail::ratio _get_power(T base, magnitude)
+  [[nodiscard]] friend consteval detail::ratio _get_power([[maybe_unused]] T base, magnitude)
   {
     return ((detail::get_base_value(Ms) == base ? detail::get_exponent(Ms) : detail::ratio{0}) + ... +
             detail::ratio{0});
@@ -688,9 +690,6 @@ constexpr auto prime_factorization_v = prime_factorization<N>::value;
 
 }  // namespace detail
 
-template<typename T>
-concept MagArg = std::integral<T> || MagConstant<T>;
-
 namespace detail {
 
 template<MagArg auto V>
@@ -707,9 +706,7 @@ template<MagArg auto V>
 MP_UNITS_EXPORT_BEGIN
 
 template<MagArg auto V>
-#if !(defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 18)
-  requires detail::gt_zero<detail::get_base_value(V)>
-#endif
+  requires(detail::get_base_value(V) > 0)
 constexpr Magnitude auto mag = detail::make_magnitude<V>();
 
 template<std::intmax_t N, std::intmax_t D>
@@ -720,7 +717,7 @@ constexpr Magnitude auto mag_ratio = detail::prime_factorization_v<N> / detail::
  * @brief  Create a Magnitude which is some rational number raised to a rational power.
  */
 template<MagArg auto Base, int Num, int Den = 1>
-  requires detail::gt_zero<detail::get_base_value(Base)>
+  requires(detail::get_base_value(Base) > 0)
 constexpr Magnitude auto mag_power = pow<Num, Den>(mag<Base>);
 
 /**
@@ -741,8 +738,8 @@ MP_UNITS_EXPORT_END
 namespace detail {
 
 // This is introduced to break the dependency cycle between `magnitude::_magnitude_text` and `prime_factorization`
-template<std::intmax_t Base, int Num, int Den>
-  requires detail::gt_zero<Base>
+template<MagArg auto Base, int Num, int Den>
+  requires(detail::get_base_value(Base) > 0)
 [[nodiscard]] consteval Magnitude auto mag_power_lazy()
 {
   return pow<Num, Den>(mag<Base>);
