@@ -762,21 +762,6 @@ MP_UNITS_EXPORT_END
 
 namespace detail {
 
-template<typename CharT, std::output_iterator<CharT> Out>
-constexpr Out print_separator(Out out, const unit_symbol_formatting& fmt)
-{
-  if (fmt.separator == unit_symbol_separator::half_high_dot) {
-    if (fmt.encoding != text_encoding::unicode)
-      MP_UNITS_THROW(
-        std::invalid_argument("'unit_symbol_separator::half_high_dot' can be only used with 'text_encoding::unicode'"));
-    const std::string_view dot = "⋅";
-    out = detail::copy(dot.begin(), dot.end(), out);
-  } else {
-    *out++ = ' ';
-  }
-  return out;
-}
-
 template<typename CharT, std::output_iterator<CharT> Out, Unit U>
   requires requires { U::symbol; }
 constexpr Out unit_symbol_impl(Out out, U, const unit_symbol_formatting& fmt, bool negative_power)
@@ -789,8 +774,7 @@ constexpr Out unit_symbol_impl(Out out, const scaled_unit_impl<M, U>& u, const u
                                bool negative_power)
 {
   *out++ = '[';
-  constexpr auto mag_txt = _magnitude_text(M);
-  out = copy<CharT>(mag_txt, fmt.encoding, out);
+  _magnitude_symbol<CharT>(out, M, fmt);
   if constexpr (space_before_unit_symbol<scaled_unit<M, U>::reference_unit>) *out++ = ' ';
   unit_symbol_impl<CharT>(out, u.reference_unit, fmt, negative_power);
   *out++ = ']';

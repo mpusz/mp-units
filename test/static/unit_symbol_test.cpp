@@ -130,6 +130,59 @@ static_assert(unit_symbol(mag_ratio<1, 18000> * (metre / second)) == "[1/18 × 1
 static_assert(unit_symbol<usf{.encoding = ascii}>(mag_ratio<1, 18000> * metre / second) == "[1/18 x 10^-3 m]/s");
 static_assert(unit_symbol<usf{.encoding = ascii}>(mag_ratio<1, 18000> * (metre / second)) == "[1/18 x 10^-3 m/s]");
 
+// magnitude constants
+#if defined MP_UNITS_COMP_CLANG || MP_UNITS_COMP_CLANG < 18
+inline constexpr struct e final : mag_constant<"e"> {
+  static constexpr long double value = std::numbers::e_v<long double>;
+#else
+inline constexpr struct e final : mag_constant<"e", std::numbers::e_v<long double> > {
+#endif
+} e;
+
+static_assert(unit_symbol(mag<pi> * one) == "[𝜋]");
+static_assert(unit_symbol<usf{.encoding = ascii}>(mag<pi> * one) == "[pi]");
+static_assert(unit_symbol(mag<pi> * metre) == "[𝜋 m]");
+static_assert(unit_symbol<usf{.encoding = ascii}>(mag<pi> * metre) == "[pi m]");
+static_assert(unit_symbol(mag<2> * mag<pi> * metre) == "[2 𝜋 m]");
+static_assert(unit_symbol<usf{.encoding = ascii}>(mag<2> * mag<pi> * metre) == "[2 pi m]");
+static_assert(unit_symbol<usf{.separator = half_high_dot}>(mag<2> * mag<pi> * metre) == "[2⋅𝜋 m]");
+
+static_assert(unit_symbol(mag<1> / mag<pi> * metre) == "[1/𝜋 m]");
+static_assert(unit_symbol<usf{.encoding = ascii}>(mag<1> / mag<pi> * metre) == "[1/pi m]");
+static_assert(unit_symbol<usf{.solidus = never}>(mag<1> / mag<pi> * metre) == "[𝜋⁻¹ m]");
+static_assert(unit_symbol<usf{.encoding = ascii, .solidus = never}>(mag<1> / mag<pi> * metre) == "[pi^-1 m]");
+
+static_assert(unit_symbol(mag<2> / mag<pi> * metre) == "[2/𝜋 m]");
+static_assert(unit_symbol<usf{.encoding = ascii}>(mag<2> / mag<pi> * metre) == "[2/pi m]");
+static_assert(unit_symbol<usf{.solidus = never}>(mag<2> / mag<pi> * metre) == "[2 𝜋⁻¹ m]");
+static_assert(unit_symbol<usf{.encoding = ascii, .solidus = never}>(mag<2> / mag<pi> * metre) == "[2 pi^-1 m]");
+static_assert(unit_symbol<usf{.solidus = never, .separator = half_high_dot}>(mag<2> / mag<pi> * metre) == "[2⋅𝜋⁻¹ m]");
+
+static_assert(unit_symbol(mag<1> / (mag<2> * mag<pi>)*metre) == "[2⁻¹ 𝜋⁻¹ m]");
+static_assert(unit_symbol<usf{.solidus = always}>(mag<1> / (mag<2> * mag<pi>)*metre) == "[1/(2 𝜋) m]");
+static_assert(unit_symbol<usf{.encoding = ascii, .solidus = always}>(mag<1> / (mag<2> * mag<pi>)*metre) ==
+              "[1/(2 pi) m]");
+static_assert(unit_symbol(mag_ratio<1, 2> / mag<pi> * metre) == "[2⁻¹ 𝜋⁻¹ m]");
+static_assert(unit_symbol<usf{.solidus = always}>(mag_ratio<1, 2> / mag<pi> * metre) == "[1/(2 𝜋) m]");
+static_assert(unit_symbol<usf{.encoding = ascii, .solidus = always}>(mag_ratio<1, 2> / mag<pi> * metre) ==
+              "[1/(2 pi) m]");
+static_assert(unit_symbol(mag_ratio<1, 2> * mag<pi> * metre) == "[𝜋/2 m]");
+
+
+static_assert(unit_symbol(mag<pi> * mag<e> * one) == "[e 𝜋]");
+static_assert(unit_symbol(mag<e> * mag<pi> * one) == "[e 𝜋]");
+static_assert(unit_symbol<usf{.encoding = ascii}>(mag<pi> * mag<e> * one) == "[e pi]");
+static_assert(unit_symbol(mag<pi> / mag<e> * one) == "[𝜋/e]");
+static_assert(unit_symbol(mag<1> / mag<e> * mag<pi> * one) == "[𝜋/e]");
+static_assert(unit_symbol<usf{.solidus = never}>(mag<pi> / mag<e> * one) == "[𝜋 e⁻¹]");
+static_assert(unit_symbol(mag<e> / mag<pi> * one) == "[e/𝜋]");
+static_assert(unit_symbol(mag<1> / mag<pi> * mag<e> * one) == "[e/𝜋]");
+static_assert(unit_symbol<usf{.solidus = never}>(mag<e> / mag<pi> * one) == "[e 𝜋⁻¹]");
+static_assert(unit_symbol(mag<1> / (mag<pi> * mag<e>)*one) == "[e⁻¹ 𝜋⁻¹]");
+static_assert(unit_symbol<usf{.solidus = always}>(mag<1> / (mag<pi> * mag<e>)*one) == "[1/(e 𝜋)]");
+static_assert(unit_symbol(mag<2> / (mag<pi> * mag<e>)*one) == "[2 e⁻¹ 𝜋⁻¹]");
+static_assert(unit_symbol<usf{.solidus = always}>(mag<2> / (mag<pi> * mag<e>)*one) == "[2/(e 𝜋)]");
+
 // common units
 static_assert(unit_symbol(get_common_unit(kilo<metre>, mile)) == "EQUIV{[1/25146 mi], [1/15625 km]}");
 static_assert(unit_symbol(get_common_unit(kilo<metre> / hour, metre / second)) == "EQUIV{[1/5 km/h], [1/18 m/s]}");

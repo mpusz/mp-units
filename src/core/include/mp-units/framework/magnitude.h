@@ -33,6 +33,7 @@
 #include <mp-units/framework/customization_points.h>
 #include <mp-units/framework/expression_template.h>
 #include <mp-units/framework/symbol_text.h>
+#include <mp-units/framework/unit_symbol_formatting.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #ifdef MP_UNITS_IMPORT_STD
@@ -59,12 +60,15 @@ using factorizer = wheel_factorizer<4>;
 #if defined MP_UNITS_COMP_CLANG || MP_UNITS_COMP_CLANG < 18
 
 MP_UNITS_EXPORT template<symbol_text Symbol>
-struct mag_constant {};
+struct mag_constant {
+  static constexpr auto symbol = Symbol;
+};
 
 #else
 
 MP_UNITS_EXPORT template<symbol_text Symbol, auto Value>
 struct mag_constant {
+  static constexpr auto symbol = Symbol;
   static constexpr auto value = Value;
 };
 
@@ -230,6 +234,12 @@ template<auto M>
 
 template<auto M>
 [[nodiscard]] consteval auto remove_positive_power(magnitude<M> m);
+template<auto M>
+[[nodiscard]] consteval auto remove_mag_constants(magnitude<M> m);
+template<auto M>
+[[nodiscard]] consteval auto only_positive_mag_constants(magnitude<M> m);
+template<auto M>
+[[nodiscard]] consteval auto only_negative_mag_constants(magnitude<M> m);
 
 template<std::intmax_t Base, int Num, int Den = 1>
   requires detail::gt_zero<Base>
@@ -311,29 +321,104 @@ struct magnitude_base<magnitude<H, T...>> {
   }
 };
 
-template<auto num_value, auto den_value>
-[[nodiscard]] consteval auto ratio_txt()
+template<auto... Ms>
+[[nodiscard]] consteval std::size_t magnitude_list_size(magnitude<Ms...>)
 {
-  if constexpr (den_value == 1)
-    return detail::regular<num_value>();
-  else
-    return detail::regular<num_value>() + symbol_text("/") + detail::regular<den_value>();
-};
+  return sizeof...(Ms);
+}
 
-template<auto num, auto den, auto exp10>
-[[nodiscard]] consteval auto magnitude_text_impl()
+template<typename CharT, std::output_iterator<CharT> Out>
+constexpr Out print_separator(Out out, const unit_symbol_formatting& fmt)
 {
-  constexpr auto num_value = get_value<std::intmax_t>(num);
-  constexpr auto den_value = get_value<std::intmax_t>(den);
-
-  if constexpr (num_value == 1 && den_value == 1 && exp10 != 0) {
-    return symbol_text("10") + detail::superscript<exp10>();
+  if (fmt.separator == unit_symbol_separator::half_high_dot) {
+    if (fmt.encoding != text_encoding::unicode)
+      MP_UNITS_THROW(
+        std::invalid_argument("'unit_symbol_separator::half_high_dot' can be only used with 'text_encoding::unicode'"));
+    const std::string_view dot = "⋅";
+    out = detail::copy(dot.begin(), dot.end(), out);
   } else {
-    if constexpr (exp10 == 0)
-      return ratio_txt<num_value, den_value>();
-    else
-      return ratio_txt<num_value, den_value>() + symbol_text(u8" × 10", " x 10") + detail::superscript<exp10>();
+    *out++ = ' ';
   }
+  return out;
+}
+
+template<typename CharT, std::output_iterator<CharT> Out, auto... Ms>
+  requires(sizeof...(Ms) == 0)
+[[nodiscard]] consteval auto mag_constants_text(Out out, magnitude<Ms...>, const unit_symbol_formatting&, bool)
+{
+  return out;
+}
+
+template<typename CharT, std::output_iterator<CharT> Out, auto M, auto... Rest>
+[[nodiscard]] consteval auto mag_constants_text(Out out, magnitude<M, Rest...>, const unit_symbol_formatting& fmt,
+                                                bool negative_power)
+{
+  return ((out = copy_symbol<CharT>(get_base(M).symbol, fmt.encoding, negative_power, out)), ...,
+          (print_separator<CharT>(out, fmt),
+           out = copy_symbol<CharT>(get_base(Rest).symbol, fmt.encoding, negative_power, out)));
+}
+
+template<typename CharT, Magnitude auto Num, Magnitude auto Den, Magnitude auto NumConstants,
+         Magnitude auto DenConstants, std::intmax_t Exp10, std::output_iterator<CharT> Out>
+constexpr Out magnitude_symbol_impl(Out out, const unit_symbol_formatting& fmt)
+{
+  bool numerator = false;
+  constexpr auto num_value = get_value<std::intmax_t>(Num);
+  if constexpr (num_value != 1) {
+    constexpr auto num = detail::regular<num_value>();
+    out = copy_symbol<CharT>(num, fmt.encoding, false, out);
+    numerator = true;
+  }
+
+  constexpr auto num_constants_size = magnitude_list_size(NumConstants);
+  if constexpr (num_constants_size) {
+    if (numerator) out = print_separator<CharT>(out, fmt);
+    out = mag_constants_text<CharT>(out, NumConstants, fmt, false);
+    numerator = true;
+  }
+
+  using enum unit_symbol_solidus;
+  bool denominator = false;
+  constexpr auto den_value = get_value<std::intmax_t>(Den);
+  constexpr auto den_constants_size = magnitude_list_size(DenConstants);
+  constexpr auto den_size = (den_value != 1) + den_constants_size;
+  auto start_denominator = [&]() {
+    if (fmt.solidus == always || (fmt.solidus == one_denominator && den_size == 1)) {
+      if (!numerator) *out++ = '1';
+      *out++ = '/';
+      if (den_size > 1) *out++ = '(';
+    } else if (numerator) {
+      out = print_separator<CharT>(out, fmt);
+    }
+  };
+  const bool negative_power = fmt.solidus == never || (fmt.solidus == one_denominator && den_size > 1);
+  if constexpr (den_value != 1) {
+    constexpr auto den = detail::regular<den_value>();
+    start_denominator();
+    out = copy_symbol<CharT>(den, fmt.encoding, negative_power, out);
+    denominator = true;
+  }
+
+  if constexpr (den_constants_size) {
+    if (denominator)
+      out = print_separator<CharT>(out, fmt);
+    else
+      start_denominator();
+    out = mag_constants_text<CharT>(out, DenConstants, fmt, negative_power);
+    if (fmt.solidus == always && den_size > 1) *out++ = ')';
+    denominator = true;
+  }
+
+  if constexpr (Exp10 != 0) {
+    if (numerator || denominator) {
+      constexpr auto mag_multiplier = symbol_text(u8" × ", " x ");
+      out = copy_symbol<CharT>(mag_multiplier, fmt.encoding, negative_power, out);
+    }
+    constexpr auto exp = symbol_text("10") + detail::superscript<Exp10>();
+    out = copy_symbol<CharT>(exp, fmt.encoding, negative_power, out);
+  }
+
+  return out;
 }
 
 }  // namespace detail
@@ -427,6 +512,18 @@ private:
     return (std::intmax_t{} * ... * decltype(detail::get_base_value(Ms)){});
   }
 
+  [[nodiscard]] friend consteval auto _extract_components(magnitude)
+  {
+    constexpr auto ratio = (magnitude<>{} * ... * detail::remove_mag_constants(magnitude<Ms>{}));
+    if constexpr (ratio == magnitude{})
+      return std::tuple{ratio, magnitude<>{}, magnitude<>{}};
+    else {
+      constexpr auto num_constants = (magnitude<>{} * ... * detail::only_positive_mag_constants(magnitude<Ms>{}));
+      constexpr auto den_constants = (magnitude<>{} * ... * detail::only_negative_mag_constants(magnitude<Ms>{}));
+      return std::tuple{ratio, num_constants, den_constants};
+    }
+  }
+
   template<typename T>
   [[nodiscard]] friend consteval detail::ratio _get_power(T base, magnitude)
   {
@@ -444,29 +541,34 @@ private:
     return detail::integer_part((detail::abs(power_of_2) < detail::abs(power_of_5)) ? power_of_2 : power_of_5);
   }
 
-  [[nodiscard]] friend consteval auto _magnitude_text(magnitude)
+  template<typename CharT, std::output_iterator<CharT> Out>
+  friend constexpr Out _magnitude_symbol(Out out, magnitude, const unit_symbol_formatting& fmt)
   {
     if constexpr (magnitude{} == magnitude<1>{}) {
-      return symbol_text("");
+      return out;
     } else {
-      constexpr auto exp10 = _extract_power_of_10(magnitude{});
+      constexpr auto extract_res = _extract_components(magnitude{});
+      constexpr Magnitude auto ratio = std::get<0>(extract_res);
+      constexpr Magnitude auto num_constants = std::get<1>(extract_res);
+      constexpr Magnitude auto den_constants = std::get<2>(extract_res);
+      constexpr std::intmax_t exp10 = _extract_power_of_10(ratio);
       if constexpr (detail::abs(exp10) < 3) {
         // print the value as a regular number (without exponent)
         constexpr Magnitude auto num = _numerator(magnitude{});
         constexpr Magnitude auto den = _denominator(magnitude{});
         // TODO address the below
-        static_assert(magnitude{} == num / den, "Printing rational powers, or irrational bases, not yet supported");
-        return detail::magnitude_text_impl<num, den, 0>();
+        static_assert(ratio == num / den, "Printing rational powers not yet supported");
+        return detail::magnitude_symbol_impl<CharT, num, den, num_constants, den_constants, 0>(out, fmt);
       } else {
         // print the value as a number with exponent
         // if user wanted a regular number for this magnitude then probably a better scaled unit should be used
-        constexpr Magnitude auto base = magnitude{} / detail::mag_power_lazy<10, exp10>();
+        constexpr Magnitude auto base = ratio / detail::mag_power_lazy<10, exp10>();
         constexpr Magnitude auto num = _numerator(base);
         constexpr Magnitude auto den = _denominator(base);
 
         // TODO address the below
-        static_assert(base == num / den, "Printing rational powers, or irrational bases, not yet supported");
-        return detail::magnitude_text_impl<num, den, exp10>();
+        static_assert(base == num / den, "Printing rational powers not yet supported");
+        return detail::magnitude_symbol_impl<CharT, num, den, num_constants, den_constants, exp10>(out, fmt);
       }
     }
   }
@@ -502,6 +604,33 @@ template<auto M>
   } else {
     return magnitude<>{};
   }
+}
+
+template<auto M>
+[[nodiscard]] consteval auto remove_mag_constants(magnitude<M> m)
+{
+  if constexpr (MagConstant<decltype(get_base(M))>)
+    return magnitude<>{};
+  else
+    return m;
+}
+
+template<auto M>
+[[nodiscard]] consteval auto only_positive_mag_constants(magnitude<M> m)
+{
+  if constexpr (MagConstant<decltype(get_base(M))> && get_exponent(M) >= 0)
+    return m;
+  else
+    return magnitude<>{};
+}
+
+template<auto M>
+[[nodiscard]] consteval auto only_negative_mag_constants(magnitude<M> m)
+{
+  if constexpr (MagConstant<decltype(get_base(M))> && get_exponent(M) < 0)
+    return m;
+  else
+    return magnitude<>{};
 }
 
 // Returns the most precise type to express the magnitude factor
