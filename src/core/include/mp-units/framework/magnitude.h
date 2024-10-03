@@ -248,7 +248,7 @@ template<auto M>
 template<auto M>
 [[nodiscard]] consteval auto remove_positive_power(magnitude<M> m);
 
-template<std::intmax_t Base, std::intmax_t Pow>
+template<std::intmax_t Base, int Num, int Den = 1>
   requires detail::gt_zero<Base>
 [[nodiscard]] consteval Magnitude auto mag_power_lazy();
 
@@ -409,7 +409,7 @@ struct magnitude : detail::magnitude_base<magnitude<Ms...>> {
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Magnitude rational powers implementation.
-  template<std::intmax_t Num, std::intmax_t Den = 1>
+  template<int Num, int Den = 1>
   [[nodiscard]] friend consteval auto pow(magnitude)
   {
     if constexpr (Num == 0) {
@@ -605,9 +605,9 @@ constexpr Magnitude auto mag_ratio = detail::prime_factorization_v<N> / detail::
 /**
  * @brief  Create a Magnitude which is some rational number raised to a rational power.
  */
-template<std::intmax_t Base, std::intmax_t Pow>
+template<std::intmax_t Base, int Num, int Den = 1>
   requires detail::gt_zero<Base>
-constexpr Magnitude auto mag_power = pow<Pow>(mag<Base>);
+constexpr Magnitude auto mag_power = pow<Num, Den>(mag<Base>);
 
 /**
  * @brief  A convenient Magnitude constant for pi, which we can manipulate like a regular number.
@@ -627,11 +627,11 @@ MP_UNITS_EXPORT_END
 namespace detail {
 
 // This is introduced to break the dependency cycle between `magnitude::_magnitude_text` and `prime_factorization`
-template<std::intmax_t Base, std::intmax_t Pow>
+template<std::intmax_t Base, int Num, int Den>
   requires detail::gt_zero<Base>
 [[nodiscard]] consteval Magnitude auto mag_power_lazy()
 {
-  return pow<Pow>(mag<Base>);
+  return pow<Num, Den>(mag<Base>);
 }
 
 }  // namespace detail
