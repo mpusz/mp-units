@@ -252,9 +252,7 @@ TEST_CASE("operator<< on a quantity", "[text][ostream][fmt]")
       constexpr auto q = value_cast<percent>(15. * isq::length[m] / (100. * isq::length[m]));
       os << q;
 
-      static_assert(!space_before_unit_symbol<get_unit(q.reference)>);
-
-      SECTION("iostream") { CHECK(os.str() == "15%"); }
+      SECTION("iostream") { CHECK(os.str() == "15 %"); }
 
       SECTION("fmt with default format {} on a quantity") { CHECK(MP_UNITS_STD_FMT::format("{}", q) == os.str()); }
 

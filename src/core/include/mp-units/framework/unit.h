@@ -756,10 +756,6 @@ constexpr bool space_before_unit_symbol = true;
 
 template<>
 MP_UNITS_INLINE constexpr bool space_before_unit_symbol<one> = false;
-template<>
-MP_UNITS_INLINE constexpr bool space_before_unit_symbol<percent> = false;
-template<>
-MP_UNITS_INLINE constexpr bool space_before_unit_symbol<per_mille> = false;
 
 // get_unit_symbol
 
