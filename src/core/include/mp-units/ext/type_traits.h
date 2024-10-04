@@ -207,4 +207,11 @@ template<template<auto...> typename T, typename T1, typename T2, typename... Ts>
     return get<T, T2, Ts...>();
 }
 
+namespace detail {
+
+template<typename T>
+concept TagType = std::is_empty_v<T> && std::is_final_v<T>;
+
+}
+
 }  // namespace mp_units

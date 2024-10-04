@@ -42,7 +42,7 @@ struct dimension_interface;
  * Satisfied by all dimension types in the library.
  */
 MP_UNITS_EXPORT template<typename T>
-concept Dimension = std::derived_from<T, detail::dimension_interface> && std::is_empty_v<T> && std::is_final_v<T>;
+concept Dimension = detail::TagType<T> && std::derived_from<T, detail::dimension_interface>;
 
 MP_UNITS_EXPORT template<symbol_text Symbol>
 struct base_dimension;
