@@ -143,7 +143,7 @@ static_assert(unit_symbol<usf{.encoding = ascii}>(mag_ratio<1, 18000> * (metre /
 // magnitude constants
 #if defined MP_UNITS_COMP_CLANG || MP_UNITS_COMP_CLANG < 18
 inline constexpr struct e final : mag_constant<"e"> {
-  static constexpr long double value = std::numbers::e_v<long double>;
+  static constexpr long double _value_ = std::numbers::e_v<long double>;
 #else
 inline constexpr struct e final : mag_constant<"e", std::numbers::e_v<long double> > {
 #endif

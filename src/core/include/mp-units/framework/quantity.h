@@ -56,7 +56,7 @@ template<Unit UFrom, Unit UTo>
   if constexpr (is_same_v<UFrom, UTo>)
     return true;
   else
-    return is_integral(get_canonical_unit(from).mag / get_canonical_unit(to).mag);
+    return _is_integral(get_canonical_unit(from).mag / get_canonical_unit(to).mag);
 }
 
 template<typename T>

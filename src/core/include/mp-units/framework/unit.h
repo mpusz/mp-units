@@ -544,7 +544,7 @@ template<Unit T, symbol_text Symbol, Unit auto U, auto... Args>
 template<typename F, int Num, int... Den, typename... Us>
 [[nodiscard]] consteval auto get_canonical_unit_impl(const power<F, Num, Den...>&, const type_list<Us...>&)
 {
-  auto mag = (mp_units::mag<1> * ... * pow<Num, Den...>(get_canonical_unit_impl(Us{}, Us{}).mag));
+  auto mag = (mp_units::mag<1> * ... * _pow<Num, Den...>(get_canonical_unit_impl(Us{}, Us{}).mag));
   auto u = (one * ... * pow<Num, Den...>(get_canonical_unit_impl(Us{}, Us{}).reference_unit));
   return canonical_unit{mag, u};
 }
@@ -556,9 +556,9 @@ template<typename T, typename F, int Num, int... Den>
   if constexpr (requires { typename decltype(base.reference_unit)::_num_; }) {
     auto num = get_canonical_unit_impl(power<F, Num, Den...>{}, typename decltype(base.reference_unit)::_num_{});
     auto den = get_canonical_unit_impl(power<F, Num, Den...>{}, typename decltype(base.reference_unit)::_den_{});
-    return canonical_unit{pow<Num, Den...>(base.mag) * num.mag / den.mag, num.reference_unit / den.reference_unit};
+    return canonical_unit{_pow<Num, Den...>(base.mag) * num.mag / den.mag, num.reference_unit / den.reference_unit};
   } else {
-    return canonical_unit{pow<Num, Den...>(base.mag),
+    return canonical_unit{_pow<Num, Den...>(base.mag),
                           derived_unit<power<decltype(base.reference_unit), Num, Den...>>{}};
   }
 }
@@ -677,9 +677,9 @@ template<Unit U1, Unit U2>
     constexpr auto canonical_lhs = get_canonical_unit(U1{});
     constexpr auto canonical_rhs = get_canonical_unit(U2{});
 
-    if constexpr (is_integral(canonical_lhs.mag / canonical_rhs.mag))
+    if constexpr (_is_integral(canonical_lhs.mag / canonical_rhs.mag))
       return u2;
-    else if constexpr (is_integral(canonical_rhs.mag / canonical_lhs.mag))
+    else if constexpr (_is_integral(canonical_rhs.mag / canonical_lhs.mag))
       return u1;
     else {
       if constexpr (detail::unit_less<U1, U2>::value)

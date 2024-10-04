@@ -32,6 +32,7 @@
 #include <mp-units/ext/type_traits.h>
 #include <mp-units/framework/customization_points.h>
 #include <mp-units/framework/expression_template.h>
+#include <mp-units/framework/magnitude_concepts.h>
 #include <mp-units/framework/symbol_text.h>
 #include <mp-units/framework/unit_symbol_formatting.h>
 
@@ -61,68 +62,37 @@ using factorizer = wheel_factorizer<4>;
 
 MP_UNITS_EXPORT template<symbol_text Symbol>
 struct mag_constant {
-  static constexpr auto symbol = Symbol;
+  static constexpr auto _symbol_ = Symbol;
 };
 
 #else
 
-MP_UNITS_EXPORT template<symbol_text Symbol, auto Value>
+MP_UNITS_EXPORT template<symbol_text Symbol, long double Value>
+  requires(Value > 0)
 struct mag_constant {
-  static constexpr auto symbol = Symbol;
-  static constexpr auto value = Value;
+  static constexpr auto _symbol_ = Symbol;
+  static constexpr long double _value_ = Value;
 };
 
 #endif
-
-MP_UNITS_EXPORT template<typename T>
-concept MagConstant =
-  is_derived_from_specialization_of_v<T, mag_constant> && std::is_empty_v<T> && std::is_final_v<T> && requires {
-    { +T::value } -> std::same_as<long double>;
-  };
+namespace detail {
 
 template<typename T>
 concept MagArg = std::integral<T> || MagConstant<T>;
 
-/**
- * @brief  Any type which can be used as a basis vector in a PowerV.
- *
- * We have two categories.
- *
- * The first is just an integral type (either `int` or `std::intmax_t`). This is for prime number bases.
- * These can always be used directly as NTTPs.
- *
- * The second category is a _custom tag type_, which inherits from `mag_constant` and has a static member variable
- * `value` of type `long double` that holds its value. We choose `long double` to get the greatest degree of precision;
- * users who need a different type can convert from this at compile time.  This category is for any irrational base
- * we admit into our representation (on which, more details below).
- */
-template<typename T>
-concept PowerVBase = one_of<T, int, std::intmax_t> || MagConstant<T>;
+}
 
 // TODO Unify with `power` if UTPs (P1985) are accepted by the Committee
-template<PowerVBase auto V, int Num, int... Den>
+template<detail::PowerVBase auto V, int Num, int... Den>
   requires(detail::valid_ratio<Num, Den...> && !detail::ratio_one<Num, Den...>)
 struct power_v {
   static constexpr auto base = V;
   static constexpr detail::ratio exponent{Num, Den...};
 };
 
-template<typename T>
-concept MagnitudeSpec = PowerVBase<T> || is_specialization_of_v<T, power_v>;
-
-// TODO refactor to typenames?
-template<MagnitudeSpec auto... Ms>
-struct magnitude;
-
-/**
- * @brief  Concept to detect whether T is a valid Magnitude.
- */
-MP_UNITS_EXPORT template<typename T>
-concept Magnitude = is_specialization_of_v<T, magnitude>;
-
 namespace detail {
 
-template<MagnitudeSpec Element>
+template<MagnitudeSpecExpr Element>
 [[nodiscard]] consteval auto get_base(Element element)
 {
   if constexpr (is_specialization_of_v<Element, power_v>)
@@ -131,18 +101,18 @@ template<MagnitudeSpec Element>
     return element;
 }
 
-template<MagnitudeSpec Element>
+template<MagnitudeSpecExpr Element>
 [[nodiscard]] consteval auto get_base_value(Element element)
 {
   if constexpr (is_specialization_of_v<Element, power_v>)
     return get_base_value(Element::base);
   else if constexpr (MagConstant<Element>)
-    return element.value;
+    return element._value_;
   else
     return element;
 }
 
-template<MagnitudeSpec Element>
+template<MagnitudeSpecExpr Element>
 [[nodiscard]] MP_UNITS_CONSTEVAL ratio get_exponent(Element)
 {
   if constexpr (is_specialization_of_v<Element, power_v>)
@@ -164,7 +134,7 @@ template<PowerVBase auto V, ratio R>
   }
 }
 
-template<MagnitudeSpec M>
+template<MagnitudeSpecExpr M>
 [[nodiscard]] consteval auto inverse(M)
 {
   return power_v_or_T<get_base(M{}), -1 * get_exponent(M{})>();
@@ -178,7 +148,7 @@ using widen_t = conditional<std::is_arithmetic_v<T>,
                             T>;
 
 template<typename T>
-[[nodiscard]] consteval widen_t<T> compute_base_power(MagnitudeSpec auto el)
+[[nodiscard]] consteval widen_t<T> compute_base_power(MagnitudeSpecExpr auto el)
 {
   // This utility can only handle integer powers.  To compute rational powers at compile time, we'll
   // need to write a custom function.
@@ -210,23 +180,22 @@ template<typename T>
   }
 }
 
-[[nodiscard]] consteval bool is_rational(MagnitudeSpec auto element)
+[[nodiscard]] consteval bool is_rational(MagnitudeSpecExpr auto element)
 {
-  static_assert(!Magnitude<decltype(element)>);  // magnitudes are handles by another overload
-  return std::is_integral_v<decltype(get_base(element))> && (get_exponent(element).den == 1);
+  return std::is_integral_v<decltype(get_base(element))> && get_exponent(element).den == 1;
 }
 
-[[nodiscard]] consteval bool is_integral(MagnitudeSpec auto element)
+[[nodiscard]] consteval bool is_integral(MagnitudeSpecExpr auto element)
 {
-  static_assert(!Magnitude<decltype(element)>);  // magnitudes are handles by another overload
   return is_rational(element) && get_exponent(element).num > 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Magnitude product implementation.
-[[nodiscard]] consteval bool less(MagnitudeSpec auto lhs, MagnitudeSpec auto rhs)
+[[nodiscard]] consteval bool less(MagnitudeSpecExpr auto lhs, MagnitudeSpecExpr auto rhs)
 {
-  // clang-arm64 raises "error: implicit conversion from 'long' to 'long double' may lose precision" so we need an explicit cast
+  // clang-arm64 raises "error: implicit conversion from 'long' to 'long double' may lose precision" so we need an
+  // explicit cast
   using ct = std::common_type_t<decltype(get_base_value(lhs)), decltype(get_base_value(rhs))>;
   return static_cast<ct>(get_base_value(lhs)) < static_cast<ct>(get_base_value(rhs));
 }
@@ -358,7 +327,7 @@ template<typename CharT, std::output_iterator<CharT> Out, auto M, auto... Rest>
                                                 bool negative_power)
 {
   auto to_symbol = [&]<typename T>(T v) {
-    out = copy_symbol<CharT>(get_base(v).symbol, fmt.encoding, negative_power, out);
+    out = copy_symbol<CharT>(get_base(v)._symbol_, fmt.encoding, negative_power, out);
     constexpr ratio r = get_exponent(T{});
     return copy_symbol_exponent<CharT, abs(r.num), r.den>(fmt.encoding, negative_power, out);
   };
@@ -370,7 +339,7 @@ template<typename CharT, Magnitude auto Num, Magnitude auto Den, Magnitude auto 
 constexpr Out magnitude_symbol_impl(Out out, const unit_symbol_formatting& fmt)
 {
   bool numerator = false;
-  constexpr auto num_value = get_value<std::intmax_t>(Num);
+  constexpr auto num_value = _get_value<std::intmax_t>(Num);
   if constexpr (num_value != 1) {
     constexpr auto num = detail::regular<num_value>();
     out = copy_symbol<CharT>(num, fmt.encoding, false, out);
@@ -386,7 +355,7 @@ constexpr Out magnitude_symbol_impl(Out out, const unit_symbol_formatting& fmt)
 
   using enum unit_symbol_solidus;
   bool denominator = false;
-  constexpr auto den_value = get_value<std::intmax_t>(Den);
+  constexpr auto den_value = _get_value<std::intmax_t>(Den);
   constexpr auto den_constants_size = magnitude_list_size(DenConstants);
   constexpr auto den_size = (den_value != 1) + den_constants_size;
   auto start_denominator = [&]() {
@@ -437,20 +406,8 @@ constexpr Out magnitude_symbol_impl(Out out, const unit_symbol_formatting& fmt)
  * Magnitudes can be treated as values.  Each type encodes exactly one value.  Users can multiply, divide, raise to
  * rational powers, and compare for equality.
  */
-template<MagnitudeSpec auto... Ms>
+template<detail::MagnitudeSpecExpr auto... Ms>
 struct magnitude : detail::magnitude_base<magnitude<Ms...>> {
-  [[nodiscard]] friend consteval bool is_integral(const magnitude&)
-  {
-    using namespace detail;  // needed for recursive case when magnitudes are in the MagnitudeSpec
-    return (is_integral(Ms) && ...);
-  }
-
-  [[nodiscard]] friend consteval bool is_rational(const magnitude&)
-  {
-    using namespace detail;  // needed for recursive case when magnitudes are in the MagnitudeSpec
-    return (is_rational(Ms) && ...);
-  }
-
   template<Magnitude M>
   [[nodiscard]] friend consteval Magnitude auto operator*(magnitude m1, M m2)
   {
@@ -462,7 +419,7 @@ struct magnitude : detail::magnitude_base<magnitude<Ms...>> {
       return _multiply_impl(m1, m2);
   }
 
-  [[nodiscard]] friend consteval auto operator/(magnitude l, Magnitude auto r) { return l * pow<-1>(r); }
+  [[nodiscard]] friend consteval auto operator/(magnitude l, Magnitude auto r) { return l * _pow<-1>(r); }
 
   template<Magnitude M2>
   [[nodiscard]] friend consteval bool operator==(magnitude, M2)
@@ -470,12 +427,17 @@ struct magnitude : detail::magnitude_base<magnitude<Ms...>> {
     return std::is_same_v<magnitude, M2>;
   }
 
+private:
+  // all below functions should in fact be in a `detail` namespace but are placed here to benefit from the ADL
+  [[nodiscard]] friend consteval bool _is_integral(const magnitude&) { return (detail::is_integral(Ms) && ...); }
+  [[nodiscard]] friend consteval bool _is_rational(const magnitude&) { return (detail::is_rational(Ms) && ...); }
+
   /**
    * @brief  The value of a Magnitude in a desired type T.
    */
   template<typename T>
     requires((detail::is_integral(Ms) && ...)) || treat_as_floating_point<T>
-  [[nodiscard]] friend consteval T get_value(const magnitude&)
+  [[nodiscard]] friend consteval T _get_value(const magnitude&)
   {
     // Force the expression to be evaluated in a constexpr context, to catch, e.g., overflow.
     constexpr T result = detail::checked_static_cast<T>((detail::compute_base_power<T>(Ms) * ... * T{1}));
@@ -485,7 +447,7 @@ struct magnitude : detail::magnitude_base<magnitude<Ms...>> {
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Magnitude rational powers implementation.
   template<int Num, int Den = 1>
-  [[nodiscard]] friend consteval auto pow(magnitude)
+  [[nodiscard]] friend consteval auto _pow(magnitude)
   {
     if constexpr (Num == 0) {
       return magnitude<>{};
@@ -495,10 +457,6 @@ struct magnitude : detail::magnitude_base<magnitude<Ms...>> {
     }
   }
 
-  [[nodiscard]] friend consteval auto sqrt(magnitude m) { return pow<1, 2>(m); }
-  [[nodiscard]] friend consteval auto cbrt(magnitude m) { return pow<1, 3>(m); }
-
-private:
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Magnitude numerator and denominator implementation.
   [[nodiscard]] friend consteval auto _numerator(magnitude)
@@ -506,7 +464,7 @@ private:
     return (detail::integer_part(magnitude<Ms>{}) * ... * magnitude<>{});
   }
 
-  [[nodiscard]] friend consteval auto _denominator(magnitude) { return _numerator(pow<-1>(magnitude{})); }
+  [[nodiscard]] friend consteval auto _denominator(magnitude) { return _numerator(_pow<-1>(magnitude{})); }
 
   [[nodiscard]] friend consteval auto _remove_positive_powers(magnitude)
   {
@@ -690,10 +648,6 @@ struct prime_factorization<1> {
 template<std::intmax_t N>
 constexpr auto prime_factorization_v = prime_factorization<N>::value;
 
-}  // namespace detail
-
-namespace detail {
-
 template<MagArg auto V>
 [[nodiscard]] consteval Magnitude auto make_magnitude()
 {
@@ -707,7 +661,7 @@ template<MagArg auto V>
 
 MP_UNITS_EXPORT_BEGIN
 
-template<MagArg auto V>
+template<detail::MagArg auto V>
   requires(detail::get_base_value(V) > 0)
 constexpr Magnitude auto mag = detail::make_magnitude<V>();
 
@@ -718,16 +672,16 @@ constexpr Magnitude auto mag_ratio = detail::prime_factorization_v<N> / detail::
 /**
  * @brief  Create a Magnitude which is some rational number raised to a rational power.
  */
-template<MagArg auto Base, int Num, int Den = 1>
+template<detail::MagArg auto Base, int Num, int Den = 1>
   requires(detail::get_base_value(Base) > 0)
-constexpr Magnitude auto mag_power = pow<Num, Den>(mag<Base>);
+constexpr Magnitude auto mag_power = _pow<Num, Den>(mag<Base>);
 
 /**
  * @brief  A convenient Magnitude constant for pi, which we can manipulate like a regular number.
  */
 #if defined MP_UNITS_COMP_CLANG || MP_UNITS_COMP_CLANG < 18
 inline constexpr struct pi final : mag_constant<symbol_text{u8"𝜋", "pi"}> {
-  static constexpr auto value = std::numbers::pi_v<long double>;
+  static constexpr auto _value_ = std::numbers::pi_v<long double>;
 #else
 inline constexpr struct pi final : mag_constant<symbol_text{u8"𝜋", "pi"}, std::numbers::pi_v<long double>> {
 #endif
@@ -744,7 +698,7 @@ template<MagArg auto Base, int Num, int Den>
   requires(detail::get_base_value(Base) > 0)
 [[nodiscard]] consteval Magnitude auto mag_power_lazy()
 {
-  return pow<Num, Den>(mag<Base>);
+  return _pow<Num, Den>(mag<Base>);
 }
 
 }  // namespace detail
