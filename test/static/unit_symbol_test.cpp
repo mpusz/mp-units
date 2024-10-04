@@ -157,6 +157,11 @@ static_assert(unit_symbol(mag<2> * mag<pi> * metre) == "[2 𝜋 m]");
 static_assert(unit_symbol<usf{.encoding = ascii}>(mag<2> * mag<pi> * metre) == "[2 pi m]");
 static_assert(unit_symbol<usf{.separator = half_high_dot}>(mag<2> * mag<pi> * metre) == "[2⋅𝜋 m]");
 
+static_assert(unit_symbol(mag<1> / mag<pi> * one) == "[1/𝜋]");
+static_assert(unit_symbol<usf{.encoding = ascii}>(mag<1> / mag<pi> * one) == "[1/pi]");
+static_assert(unit_symbol<usf{.solidus = never}>(mag<1> / mag<pi> * one) == "[𝜋⁻¹]");
+static_assert(unit_symbol<usf{.encoding = ascii, .solidus = never}>(mag<1> / mag<pi> * one) == "[pi^-1]");
+
 static_assert(unit_symbol(mag<1> / mag<pi> * metre) == "[1/𝜋 m]");
 static_assert(unit_symbol<usf{.encoding = ascii}>(mag<1> / mag<pi> * metre) == "[1/pi m]");
 static_assert(unit_symbol<usf{.solidus = never}>(mag<1> / mag<pi> * metre) == "[𝜋⁻¹ m]");
