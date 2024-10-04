@@ -130,6 +130,16 @@ static_assert(unit_symbol(mag_ratio<1, 18000> * (metre / second)) == "[1/18 × 1
 static_assert(unit_symbol<usf{.encoding = ascii}>(mag_ratio<1, 18000> * metre / second) == "[1/18 x 10^-3 m]/s");
 static_assert(unit_symbol<usf{.encoding = ascii}>(mag_ratio<1, 18000> * (metre / second)) == "[1/18 x 10^-3 m/s]");
 
+// TODO implement all the below
+// static_assert(unit_symbol(mag_power<2, 1, 2> * one) == "[2^(1/2)]");
+// static_assert(unit_symbol<usf{.encoding = ascii}>(mag_power<2, 1, 2> * one) == "[2^(1/2)]");
+// static_assert(unit_symbol(mag_power<2, 1, 2> * m) == "[2^(1/2) m]");
+// static_assert(unit_symbol<usf{.encoding = ascii}>(mag_power<2, 1, 2> * m) == "[2^(1/2) m]");
+// static_assert(unit_symbol(mag<1> / mag_power<2, 1, 2> * one) == "[1/2^(1/2)]");
+// static_assert(unit_symbol<usf{.encoding = ascii}>(mag<1> / mag_power<2, 1, 2> * one) == "[1/2^(1/2)]");
+// static_assert(unit_symbol(mag<1> / mag_power<2, 1, 2> * m) == "[1/2^(1/2) m]");
+// static_assert(unit_symbol<usf{.encoding = ascii}>(mag<1> / mag_power<2, 1, 2> * m) == "[1/2^(1/2) m]");
+
 // magnitude constants
 #if defined MP_UNITS_COMP_CLANG || MP_UNITS_COMP_CLANG < 18
 inline constexpr struct e final : mag_constant<"e"> {
