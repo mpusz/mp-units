@@ -540,8 +540,7 @@ static_assert(is_of_type<get_common_unit(mile, yard), yard_>);
 static_assert(
   is_of_type<get_common_unit(speed_of_light_in_vacuum, metre / second), derived_unit<metre_, per<second_>>>);
 
-static_assert(is_of_type<get_common_unit(radian, revolution), common_unit<radian_, revolution_>>);
-static_assert(is_of_type<get_common_unit(radian, degree), common_unit<degree_, radian_>>);
+static_assert(is_of_type<get_common_unit(radian, revolution), radian_>);
 
 // those should return instantiations of the `common_unit` class template
 static_assert(is_of_type<get_common_unit(kilometre, mile), common_unit<kilo_<metre_>, mile_>>);
@@ -550,6 +549,7 @@ static_assert(is_of_type<get_common_unit(kilometre / hour, metre / second),
                          common_unit<decltype(kilometre / hour), decltype(metre / second)>>);
 static_assert(is_of_type<get_common_unit(metre / second, kilometre / hour),
                          common_unit<decltype(kilometre / hour), decltype(metre / second)>>);
+static_assert(is_of_type<get_common_unit(radian, degree), common_unit<degree_, radian_>>);
 
 static_assert(
   is_of_type<get_common_unit(mile, kilometre) / second, derived_unit<common_unit<kilo_<metre_>, mile_>, per<second_>>>);

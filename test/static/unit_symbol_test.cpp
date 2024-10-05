@@ -211,9 +211,6 @@ static_assert(unit_symbol(get_common_unit(kilo<metre> / hour, metre / second) / 
 static_assert(unit_symbol(get_common_unit(kilo<metre> / hour, metre / second) * second) ==
               "EQUIV{[1/5 km/h], [1/18 m/s]} s");
 static_assert(unit_symbol(get_common_unit(radian, degree)) == "EQUIV{[1/𝜋°], [1/180 rad]}");
-static_assert(unit_symbol(get_common_unit(angular::radian, angular::revolution)) == "EQUIV{rad, [2⁻¹ 𝜋⁻¹ rev]}");
-static_assert(unit_symbol<usf{.solidus = always}>(get_common_unit(angular::radian, angular::revolution)) ==
-              "EQUIV{rad, [1/(2 𝜋) rev]}");
 
 // derived units
 static_assert(unit_symbol(one) == "");  // NOLINT(readability-container-size-empty)

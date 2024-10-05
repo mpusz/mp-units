@@ -674,9 +674,9 @@ template<Unit U1, Unit U2>
     constexpr auto canonical_lhs = get_canonical_unit(U1{});
     constexpr auto canonical_rhs = get_canonical_unit(U2{});
 
-    if constexpr (_is_integral(canonical_lhs.mag / canonical_rhs.mag))
+    if constexpr (_is_positive_integral_power(canonical_lhs.mag / canonical_rhs.mag))
       return u2;
-    else if constexpr (_is_integral(canonical_rhs.mag / canonical_lhs.mag))
+    else if constexpr (_is_positive_integral_power(canonical_rhs.mag / canonical_lhs.mag))
       return u1;
     else {
       if constexpr (detail::unit_less<U1, U2>::value)

@@ -190,6 +190,12 @@ template<typename T>
   return is_rational(element) && get_exponent(element).num > 0;
 }
 
+[[nodiscard]] consteval bool is_positive_integral_power(MagnitudeSpecExpr auto element)
+{
+  auto exp = get_exponent(element);
+  return exp.den == 1 && exp.num > 0;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Magnitude product implementation.
 [[nodiscard]] consteval bool less(MagnitudeSpecExpr auto lhs, MagnitudeSpecExpr auto rhs)
@@ -431,6 +437,10 @@ private:
   // all below functions should in fact be in a `detail` namespace but are placed here to benefit from the ADL
   [[nodiscard]] friend consteval bool _is_integral(const magnitude&) { return (detail::is_integral(Ms) && ...); }
   [[nodiscard]] friend consteval bool _is_rational(const magnitude&) { return (detail::is_rational(Ms) && ...); }
+  [[nodiscard]] friend consteval bool _is_positive_integral_power(const magnitude&)
+  {
+    return (detail::is_positive_integral_power(Ms) && ...);
+  }
 
   /**
    * @brief  The value of a Magnitude in a desired type T.
