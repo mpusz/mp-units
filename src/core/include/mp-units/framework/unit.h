@@ -60,9 +60,6 @@ import std;
 
 namespace mp_units {
 
-template<Unit U1, Unit U2, Unit... Rest>
-struct common_unit;
-
 namespace detail {
 
 template<Magnitude auto M, Unit U>
@@ -784,9 +781,18 @@ constexpr Out unit_symbol_impl(Out out, const scaled_unit_impl<M, U>& u, const u
 template<typename... Us, Unit U>
 [[nodiscard]] consteval Unit auto get_common_unit_in(common_unit<Us...>, U u)
 {
+  auto get_magnitude = [&]() {
+    if constexpr (requires { common_unit<Us...>::mag; })
+      return common_unit<Us...>::mag;
+    else
+      return mag<1>;
+  };
   constexpr auto canonical_u = get_canonical_unit(u);
-  constexpr Magnitude auto mag = common_unit<Us...>::mag / canonical_u.mag;
-  return scaled_unit<mag, U>{};
+  constexpr Magnitude auto cmag = get_magnitude() / canonical_u.mag;
+  if constexpr (cmag == mag<1>)
+    return u;
+  else
+    return scaled_unit<cmag, U>{};
 }
 
 template<typename CharT, std::output_iterator<CharT> Out, typename U, typename... Rest>

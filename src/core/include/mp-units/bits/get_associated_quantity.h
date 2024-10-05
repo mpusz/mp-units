@@ -26,7 +26,12 @@
 #include <mp-units/framework/quantity_spec.h>
 #include <mp-units/framework/unit_concepts.h>
 
-namespace mp_units::detail {
+namespace mp_units {
+
+template<Unit U1, Unit U2, Unit... Rest>
+struct common_unit;
+
+namespace detail {
 
 template<AssociatedUnit U>
 [[nodiscard]] consteval auto all_are_kinds(U);
@@ -61,6 +66,12 @@ template<AssociatedUnit U>
 template<AssociatedUnit U>
 using to_quantity_spec = decltype(get_associated_quantity_impl(U{}));
 
+template<typename... Us>
+[[nodiscard]] consteval auto get_associated_quantity_impl(common_unit<Us...>)
+{
+  return get_common_quantity_spec(get_associated_quantity_impl(Us{})...);
+}
+
 template<AssociatedUnit U>
 [[nodiscard]] consteval auto get_associated_quantity_impl(U u)
 {
@@ -83,4 +94,6 @@ template<AssociatedUnit U>
     return get_associated_quantity_impl(u);
 }
 
-}  // namespace mp_units::detail
+}  // namespace detail
+
+}  // namespace mp_units

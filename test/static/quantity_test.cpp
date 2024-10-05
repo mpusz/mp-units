@@ -273,6 +273,10 @@ static_assert(quantity<isq::length[m], int>(2000 * m).force_in(km).numerical_val
 static_assert((15. * m).in(nm).numerical_value_in(m) == 15.);
 static_assert((15'000. * nm).in(m).numerical_value_in(nm) == 15'000.);
 
+// check if unit conversion works - don't bother about the actual result
+static_assert((1. * rad + 1. * deg).in(rad) != 0 * rad);
+static_assert((1. * rad + 1. * deg).in(deg) != 0 * deg);
+
 #if MP_UNITS_HOSTED
 using namespace std::complex_literals;
 static_assert(((2. + 1i) * V).in(mV).numerical_value_in(mV) == 2000. + 1000i);
@@ -787,6 +791,12 @@ consteval bool invalid_arithmetic(Ts... ts)
 }
 static_assert(invalid_arithmetic(5 * isq::activity[Bq], 5 * isq::frequency[Hz]));
 static_assert(invalid_arithmetic(5 * isq::activity[Bq], 10 / (2 * isq::time[s]), 5 * isq::frequency[Hz]));
+
+// irrational conversion factors require floating point representation
+static_assert(invalid_arithmetic(1 * rad, 1 * deg));
+static_assert(is_of_type<1. * rad + 1 * deg, quantity<common_unit<struct si::degree, struct si::radian>{}, double>>);
+static_assert(is_of_type<1 * rad + 1. * deg, quantity<common_unit<struct si::degree, struct si::radian>{}, double>>);
+static_assert(is_of_type<1. * rad + 1. * deg, quantity<common_unit<struct si::degree, struct si::radian>{}, double>>);
 
 // Physical constants
 static_assert(1 * si::si2019::speed_of_light_in_vacuum + 10 * isq::speed[m / s] == 299'792'468 * isq::speed[m / s]);

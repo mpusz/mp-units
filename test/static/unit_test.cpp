@@ -69,6 +69,7 @@ inline constexpr struct nu_second_ final : named_unit<"s"> {} nu_second;
 
 // derived named units
 inline constexpr struct radian_ final : named_unit<"rad", metre / metre> {} radian;
+inline constexpr struct revolution_ final : named_unit<"rev", mag<2> * mag<pi> * radian> {} revolution;
 inline constexpr struct steradian_ final : named_unit<"sr", square(metre) / square(metre)> {} steradian;
 inline constexpr struct hertz_ final : named_unit<"Hz", inverse(second)> {} hertz;
 inline constexpr struct becquerel_ final : named_unit<"Bq", inverse(second)> {} becquerel;
@@ -538,6 +539,9 @@ static_assert(is_of_type<get_common_unit(yard, mile), yard_>);
 static_assert(is_of_type<get_common_unit(mile, yard), yard_>);
 static_assert(
   is_of_type<get_common_unit(speed_of_light_in_vacuum, metre / second), derived_unit<metre_, per<second_>>>);
+
+static_assert(is_of_type<get_common_unit(radian, revolution), common_unit<radian_, revolution_>>);
+static_assert(is_of_type<get_common_unit(radian, degree), common_unit<degree_, radian_>>);
 
 // those should return instantiations of the `common_unit` class template
 static_assert(is_of_type<get_common_unit(kilometre, mile), common_unit<kilo_<metre_>, mile_>>);

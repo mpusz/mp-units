@@ -93,15 +93,16 @@ concept HaveCommonReferenceImpl = requires { get_common_reference(R1, R2); };
 template<auto R1, auto R2>
 concept HaveCommonReference = HaveCommonReferenceImpl<R1, R2>;
 
+template<typename Func, Quantity Q1, Quantity Q2>
+using common_quantity_for = quantity<get_common_reference(Q1::reference, Q2::reference),
+                                     std::invoke_result_t<Func, typename Q1::rep, typename Q2::rep>>;
+
 template<typename Func, typename Q1, typename Q2>
 concept CommonlyInvocableQuantities =
   Quantity<Q1> && Quantity<Q2> && HaveCommonReference<Q1::reference, Q2::reference> &&
+  std::convertible_to<Q1, common_quantity_for<Func, Q1, Q2>> &&
+  std::convertible_to<Q2, common_quantity_for<Func, Q1, Q2>> &&
   InvocableQuantities<Func, Q1, Q2, get_common_quantity_spec(Q1::quantity_spec, Q2::quantity_spec).character>;
-
-template<typename Func, Quantity Q1, Quantity Q2>
-  requires CommonlyInvocableQuantities<Func, Q1, Q2>
-using common_quantity_for = quantity<get_common_reference(Q1::reference, Q2::reference),
-                                     std::invoke_result_t<Func, typename Q1::rep, typename Q2::rep>>;
 
 template<auto R1, auto R2, typename Rep1, typename Rep2>
 concept SameValueAs = SameReference<R1, R2> && std::same_as<Rep1, Rep2>;
