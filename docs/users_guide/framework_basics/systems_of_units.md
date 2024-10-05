@@ -278,7 +278,8 @@ the library returns a special type that denotes that we are dealing with a commo
 an equation:
 
 ```cpp
-quantity q = 1 * km + 1 * mi;  // quantity<common_unit<international::mile, si::kilo_<si::metre>>{}, int>
+quantity q1 = 1 * km + 1 * mi;     // quantity<common_unit<international::mile, si::kilo_<si::metre>>{}, int>
+quantity q2 = 1. * rad + 1. * deg; // quantity<common_unit<si::degree, si::radian>, double>{}>
 ```
 
 !!! note

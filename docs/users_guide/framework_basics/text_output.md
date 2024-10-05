@@ -268,25 +268,53 @@ The above prints:
 kg⋅m⋅s⁻²
 ```
 
+
+## Symbols of scaled units
+
+In most cases [scaled units are hidden behind named units](systems_of_units.md#scaled-units).
+However, there are a few real-life where a user directly faces a scaled unit. For example:
+
+```cpp
+constexpr Unit auto l_per_100km = l / (mag<100> * km);
+```
+
+The above is a derived unit of litre divided by a scaled unit of 100 kilometers. As we can
+see a scaled unit has a magnitude and a reference unit. To denote the scope of such
+a unit, we enclose it in `[...]`. For example, the following:
+
+```cpp
+std::cout << 6.7 * l_per_100km << "\n";
+```
+
+prints:
+
+```text
+6.7 l/[100 km]
+```
+
+
 ## Symbols of common units
 
 Some [common units](systems_of_units.md#common-units) expressed with a specialization of the
 `common_unit` class template need special printing rules for their symbols. As they represent
 a minimum set of equivalent common units resulting from the addition or subtraction of multiple
-quantities, we print all of them as a scaled version of the source unit. For example the following:
+quantities, we print all of them as a scaled version of the source unit. For example,
+the following:
 
 ```cpp
 std::cout << 1 * km + 1 * mi << "\n";
 std::cout << 1 * nmi + 1 * mi << "\n";
 std::cout << 1 * km / h + 1 * m / s << "\n";
+std::cout << 1 * rad + 1 * deg << "\n";
 ```
 
-will print:
+prints:
 
 ```text
-40771 EQUIV{[1/25146] mi, [1/15625] km}
-108167 EQUIV{[1/50292] mi, [1/57875] nmi}
-23 EQUIV{[1/5] km/h, [1/18] m/s}
+40771 EQUIV{[1/25146 mi], [1/15625 km]}
+108167 EQUIV{[1/50292 mi], [1/57875 nmi]}
+23 EQUIV{[1/5 km/h], [1/18 m/s]}
+183.142 EQUIV{[1/𝜋°], [1/180 rad]}
 ```
 
 Thanks to the above, it might be easier for the user to reason about the magnitude of the resulting
