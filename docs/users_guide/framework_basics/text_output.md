@@ -289,7 +289,7 @@ std::cout << 6.7 * l_per_100km << "\n";
 prints:
 
 ```text
-6.7 l/[100 km]
+6.7 L/[100 km]
 ```
 
 

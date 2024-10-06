@@ -267,7 +267,7 @@ static_assert(unit_symbol(pow<1, 2>(metre)) == "m^(1/2)");
 static_assert(unit_symbol(pow<3, 5>(metre)) == "m^(3/5)");
 static_assert(unit_symbol(pow<1, 2>(metre / second)) == "m^(1/2)/s^(1/2)");
 static_assert(unit_symbol<usf{.solidus = never}>(pow<1, 2>(metre / second)) == "m^(1/2) s^-(1/2)");
-static_assert(unit_symbol(litre / (mag<100> * kilo<metre>)) == "l/[100 km]");
+static_assert(unit_symbol(litre / (mag<100> * kilo<metre>)) == "L/[100 km]");
 static_assert(unit_symbol((mag<10> * metre) / (mag<20> * second)) == "[10 m]/[20 s]");
 static_assert(unit_symbol(pow<2>(mag<3600> * second)) == "[3600 s]²");
 

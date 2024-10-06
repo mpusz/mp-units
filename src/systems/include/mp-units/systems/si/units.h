@@ -105,7 +105,7 @@ inline constexpr struct arcminute final : named_unit<symbol_text{u8"′", "'"}, 
 inline constexpr struct arcsecond final : named_unit<symbol_text{u8"″", "''"}, mag_ratio<1, 60> * arcminute> {} arcsecond;
 inline constexpr struct are final : named_unit<"a", square(si::deca<si::metre>)> {} are;
 inline constexpr auto hectare = si::hecto<are>;
-inline constexpr struct litre final : named_unit<"l", cubic(si::deci<si::metre>)> {} litre;
+inline constexpr struct litre final : named_unit<"L", cubic(si::deci<si::metre>)> {} litre;
 inline constexpr struct tonne final : named_unit<"t", mag<1000> * si::kilogram> {} tonne;
 inline constexpr struct dalton final : named_unit<"Da", mag_ratio<16'605'390'666'050, 10'000'000'000'000> * mag_power<10, -27> * si::kilogram> {} dalton;
 // TODO A different value is provided in the SI Brochure and different in the ISO 80000
