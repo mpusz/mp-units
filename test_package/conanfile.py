@@ -49,11 +49,12 @@ class TestPackageConan(ConanFile):
                 "CMAKE_EXPERIMENTAL_CXX_IMPORT_STD"
             ] = "0e5b6991-d74f-4b3d-a41c-cf096e0b2508"
         # TODO remove the below when Conan will learn to handle C++ modules
-        if opt.freestanding:
-            tc.cache_variables["MP_UNITS_API_FREESTANDING"] = True
-        else:
-            tc.cache_variables["MP_UNITS_API_STD_FORMAT"] = opt.std_format
-        tc.cache_variables["MP_UNITS_API_CONTRACTS"] = str(opt.contracts).upper()
+        if opt.cxx_modules:
+            if opt.freestanding:
+                tc.cache_variables["MP_UNITS_API_FREESTANDING"] = True
+            else:
+                tc.cache_variables["MP_UNITS_API_STD_FORMAT"] = opt.std_format
+            tc.cache_variables["MP_UNITS_API_CONTRACTS"] = str(opt.contracts).upper()
         tc.generate()
 
     def build(self):
