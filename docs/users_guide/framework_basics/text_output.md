@@ -275,7 +275,7 @@ In most cases [scaled units are hidden behind named units](systems_of_units.md#s
 However, there are a few real-life where a user directly faces a scaled unit. For example:
 
 ```cpp
-constexpr Unit auto l_per_100km = l / (mag<100> * km);
+constexpr Unit auto L_per_100km = L / (mag<100> * km);
 ```
 
 The above is a derived unit of litre divided by a scaled unit of 100 kilometers. As we can
@@ -283,7 +283,7 @@ see a scaled unit has a magnitude and a reference unit. To denote the scope of s
 a unit, we enclose it in `[...]`. For example, the following:
 
 ```cpp
-std::cout << 6.7 * l_per_100km << "\n";
+std::cout << 6.7 * L_per_100km << "\n";
 ```
 
 prints:

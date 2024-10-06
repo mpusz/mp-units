@@ -791,6 +791,7 @@ inline constexpr auto arcsec = arcsecond;
 inline constexpr auto a = are;
 inline constexpr auto ha = hectare;
 inline constexpr auto l = litre;
+inline constexpr auto L = litre;  // both versions of litre are allowed
 inline constexpr auto t = tonne;
 inline constexpr auto Da = dalton;
 inline constexpr auto eV = electronvolt;
