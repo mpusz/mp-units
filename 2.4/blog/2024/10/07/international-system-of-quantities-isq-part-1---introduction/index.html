@@ -12,31 +12,29 @@
         <meta name="author" content="mp-units Team">
       
       
-        <link rel="canonical" href="https://mpusz.github.io/mp-units/2.4/users_guide/use_cases/pure_dimensional_analysis/">
+        <link rel="canonical" href="https://mpusz.github.io/mp-units/2.4/blog/2024/10/07/international-system-of-quantities-isq-part-1---introduction/">
       
       
-        <link rel="prev" href="../../systems/natural_units/">
+        <link rel="prev" href="../../../09/27/mp-units-230-released/">
       
       
-        <link rel="next" href="../working_with_legacy_interfaces/">
       
+        <link rel="alternate" type="application/rss+xml" title="RSS feed" href="../../../../../feed_rss_created.xml">
+        <link rel="alternate" type="application/rss+xml" title="RSS feed of updated content" href="../../../../../feed_rss_updated.xml">
       
-        <link rel="alternate" type="application/rss+xml" title="RSS feed" href="../../../feed_rss_created.xml">
-        <link rel="alternate" type="application/rss+xml" title="RSS feed of updated content" href="../../../feed_rss_updated.xml">
-      
-      <link rel="icon" href="../../../assets/images/mp-units-color.svg">
+      <link rel="icon" href="../../../../../assets/images/mp-units-color.svg">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.39">
     
     
       
-        <title>Pure Dimensional Analysis - mp-units</title>
+        <title>International System of Quantities (ISQ): Part 1 - Introduction - mp-units</title>
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.8c3ca2c6.min.css">
+      <link rel="stylesheet" href="../../../../../assets/stylesheets/main.8c3ca2c6.min.css">
       
         
-        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../../../../../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -55,9 +53,9 @@
       
     
     
-      <link rel="stylesheet" href="../../../stylesheets/extra.css">
+      <link rel="stylesheet" href="../../../../../stylesheets/extra.css">
     
-    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -66,11 +64,11 @@
       
         <meta  property="og:type"  content="website" >
       
-        <meta  property="og:title"  content="Pure Dimensional Analysis - mp-units" >
+        <meta  property="og:title"  content="International System of Quantities (ISQ): Part 1 - Introduction - mp-units" >
       
         <meta  property="og:description"  content="The quantities and units library for C++" >
       
-        <meta  property="og:image"  content="https://mpusz.github.io/mp-units/2.4/assets/images/social/users_guide/use_cases/pure_dimensional_analysis.png" >
+        <meta  property="og:image"  content="https://mpusz.github.io/mp-units/2.4/assets/images/social/blog/posts/isq-part-1-introduction.png" >
       
         <meta  property="og:image:type"  content="image/png" >
       
@@ -78,15 +76,15 @@
       
         <meta  property="og:image:height"  content="630" >
       
-        <meta  property="og:url"  content="https://mpusz.github.io/mp-units/2.4/users_guide/use_cases/pure_dimensional_analysis/" >
+        <meta  property="og:url"  content="https://mpusz.github.io/mp-units/2.4/blog/2024/10/07/international-system-of-quantities-isq-part-1---introduction/" >
       
         <meta  name="twitter:card"  content="summary_large_image" >
       
-        <meta  name="twitter:title"  content="Pure Dimensional Analysis - mp-units" >
+        <meta  name="twitter:title"  content="International System of Quantities (ISQ): Part 1 - Introduction - mp-units" >
       
         <meta  name="twitter:description"  content="The quantities and units library for C++" >
       
-        <meta  name="twitter:image"  content="https://mpusz.github.io/mp-units/2.4/assets/images/social/users_guide/use_cases/pure_dimensional_analysis.png" >
+        <meta  name="twitter:image"  content="https://mpusz.github.io/mp-units/2.4/assets/images/social/blog/posts/isq-part-1-introduction.png" >
       
     
     
@@ -108,6 +106,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#international-system-of-quantities-isq-part-1-introduction" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -119,7 +122,7 @@
             <div class="md-banner__inner md-grid md-typeset">
               
 You're not viewing the latest version.
-<a href="../../../..">
+<a href="../../../../../..">
   <strong>Click here to go to latest.</strong>
 </a>
 
@@ -134,9 +137,9 @@ You're not viewing the latest version.
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../../.." title="mp-units" class="md-header__button md-logo" aria-label="mp-units" data-md-component="logo">
+    <a href="../../../../.." title="mp-units" class="md-header__button md-logo" aria-label="mp-units" data-md-component="logo">
       
-  <img src="../../../assets/images/mp-units-transparent-white.svg" alt="logo">
+  <img src="../../../../../assets/images/mp-units-transparent-white.svg" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -153,7 +156,7 @@ You're not viewing the latest version.
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Pure Dimensional Analysis
+              International System of Quantities (ISQ): Part 1 - Introduction
             
           </span>
         </div>
@@ -277,7 +280,7 @@ You're not viewing the latest version.
   
   
     <li class="md-tabs__item">
-      <a href="../../.." class="md-tabs__link">
+      <a href="../../../../.." class="md-tabs__link">
         
   
     
@@ -296,7 +299,7 @@ You're not viewing the latest version.
     
     
       <li class="md-tabs__item">
-        <a href="../../../getting_started/introduction/" class="md-tabs__link">
+        <a href="../../../../../getting_started/introduction/" class="md-tabs__link">
           
   
     
@@ -312,13 +315,11 @@ You're not viewing the latest version.
         
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../../terms_and_definitions/" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../../../../users_guide/terms_and_definitions/" class="md-tabs__link">
           
   
     
@@ -336,7 +337,7 @@ You're not viewing the latest version.
   
   
     <li class="md-tabs__item">
-      <a href="../../../api_reference/" class="md-tabs__link">
+      <a href="../../../../../api_reference/" class="md-tabs__link">
         
   
     
@@ -351,11 +352,13 @@ You're not viewing the latest version.
         
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../../blog/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../../../" class="md-tabs__link">
           
   
     
@@ -373,7 +376,7 @@ You're not viewing the latest version.
   
   
     <li class="md-tabs__item">
-      <a href="../../../release_notes/" class="md-tabs__link">
+      <a href="../../../../../release_notes/" class="md-tabs__link">
         
   
     
@@ -396,7 +399,9 @@ You're not viewing the latest version.
           
             
               
-              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
                 <div class="md-sidebar__scrollwrap">
                   <div class="md-sidebar__inner">
                     
@@ -409,9 +414,9 @@ You're not viewing the latest version.
 
 <nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../../.." title="mp-units" class="md-nav__button md-logo" aria-label="mp-units" data-md-component="logo">
+    <a href="../../../../.." title="mp-units" class="md-nav__button md-logo" aria-label="mp-units" data-md-component="logo">
       
-  <img src="../../../assets/images/mp-units-transparent-white.svg" alt="logo">
+  <img src="../../../../../assets/images/mp-units-transparent-white.svg" alt="logo">
 
     </a>
     mp-units
@@ -438,7 +443,7 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../.." class="md-nav__link">
+      <a href="../../../../.." class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -514,7 +519,7 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../../getting_started/introduction/" class="md-nav__link">
+      <a href="../../../../../getting_started/introduction/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -535,7 +540,7 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../../getting_started/quick_start/" class="md-nav__link">
+      <a href="../../../../../getting_started/quick_start/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -556,7 +561,7 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../../getting_started/look_and_feel/" class="md-nav__link">
+      <a href="../../../../../getting_started/look_and_feel/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -577,7 +582,7 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../../getting_started/project_structure/" class="md-nav__link">
+      <a href="../../../../../getting_started/project_structure/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -598,7 +603,7 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../../getting_started/cpp_compiler_support/" class="md-nav__link">
+      <a href="../../../../../getting_started/cpp_compiler_support/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -619,7 +624,7 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../../getting_started/installation_and_usage/" class="md-nav__link">
+      <a href="../../../../../getting_started/installation_and_usage/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -640,7 +645,7 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../../getting_started/contributing/" class="md-nav__link">
+      <a href="../../../../../getting_started/contributing/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -661,7 +666,7 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../../getting_started/faq/" class="md-nav__link">
+      <a href="../../../../../getting_started/faq/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -686,10 +691,8 @@ You're not viewing the latest version.
       
   
   
-    
   
   
-  
     
     
       
@@ -708,20 +711,17 @@ You're not viewing the latest version.
     
     
       
-        
-        
-      
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -732,7 +732,7 @@ You're not viewing the latest version.
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             User's Guide
@@ -746,7 +746,7 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../terms_and_definitions/" class="md-nav__link">
+      <a href="../../../../../users_guide/terms_and_definitions/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -837,7 +837,7 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../framework_basics/interface_introduction/" class="md-nav__link">
+      <a href="../../../../../users_guide/framework_basics/interface_introduction/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -858,7 +858,7 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../framework_basics/design_overview/" class="md-nav__link">
+      <a href="../../../../../users_guide/framework_basics/design_overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -879,7 +879,7 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../framework_basics/systems_of_quantities/" class="md-nav__link">
+      <a href="../../../../../users_guide/framework_basics/systems_of_quantities/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -900,7 +900,7 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../framework_basics/systems_of_units/" class="md-nav__link">
+      <a href="../../../../../users_guide/framework_basics/systems_of_units/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -921,7 +921,7 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../framework_basics/simple_and_typed_quantities/" class="md-nav__link">
+      <a href="../../../../../users_guide/framework_basics/simple_and_typed_quantities/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -942,7 +942,7 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../framework_basics/value_conversions/" class="md-nav__link">
+      <a href="../../../../../users_guide/framework_basics/value_conversions/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -963,7 +963,7 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../framework_basics/character_of_a_quantity/" class="md-nav__link">
+      <a href="../../../../../users_guide/framework_basics/character_of_a_quantity/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -984,7 +984,7 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../framework_basics/dimensionless_quantities/" class="md-nav__link">
+      <a href="../../../../../users_guide/framework_basics/dimensionless_quantities/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1005,7 +1005,7 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../framework_basics/quantity_arithmetics/" class="md-nav__link">
+      <a href="../../../../../users_guide/framework_basics/quantity_arithmetics/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1026,7 +1026,7 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../framework_basics/generic_interfaces/" class="md-nav__link">
+      <a href="../../../../../users_guide/framework_basics/generic_interfaces/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1047,7 +1047,7 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../framework_basics/faster_than_lightspeed_constants/" class="md-nav__link">
+      <a href="../../../../../users_guide/framework_basics/faster_than_lightspeed_constants/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1068,7 +1068,7 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../framework_basics/the_affine_space/" class="md-nav__link">
+      <a href="../../../../../users_guide/framework_basics/the_affine_space/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1089,7 +1089,7 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../framework_basics/obtaining_metadata/" class="md-nav__link">
+      <a href="../../../../../users_guide/framework_basics/obtaining_metadata/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1110,7 +1110,7 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../framework_basics/concepts/" class="md-nav__link">
+      <a href="../../../../../users_guide/framework_basics/concepts/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1131,7 +1131,7 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../framework_basics/text_output/" class="md-nav__link">
+      <a href="../../../../../users_guide/framework_basics/text_output/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1210,7 +1210,7 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../systems/introduction/" class="md-nav__link">
+      <a href="../../../../../users_guide/systems/introduction/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1231,7 +1231,7 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../systems/isq/" class="md-nav__link">
+      <a href="../../../../../users_guide/systems/isq/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1252,7 +1252,7 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../systems/si/" class="md-nav__link">
+      <a href="../../../../../users_guide/systems/si/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1273,7 +1273,7 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../systems/strong_angular_system/" class="md-nav__link">
+      <a href="../../../../../users_guide/systems/strong_angular_system/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1294,7 +1294,7 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../systems/natural_units/" class="md-nav__link">
+      <a href="../../../../../users_guide/systems/natural_units/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1320,10 +1320,8 @@ You're not viewing the latest version.
                 
   
   
-    
   
   
-  
     
     
       
@@ -1345,11 +1343,11 @@ You're not viewing the latest version.
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
         
           
           <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="0">
@@ -1363,7 +1361,7 @@ You're not viewing the latest version.
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_3_4">
             <span class="md-nav__icon md-icon"></span>
             Use Cases
@@ -1374,17 +1372,10 @@ You're not viewing the latest version.
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../../../../users_guide/use_cases/pure_dimensional_analysis/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1393,7 +1384,6 @@ You're not viewing the latest version.
   
 
       </a>
-      
     </li>
   
 
@@ -1406,7 +1396,7 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../working_with_legacy_interfaces/" class="md-nav__link">
+      <a href="../../../../../users_guide/use_cases/working_with_legacy_interfaces/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1427,7 +1417,7 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../using_custom_representation_types/" class="md-nav__link">
+      <a href="../../../../../users_guide/use_cases/using_custom_representation_types/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1448,7 +1438,7 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../interoperability_with_other_libraries/" class="md-nav__link">
+      <a href="../../../../../users_guide/use_cases/interoperability_with_other_libraries/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1469,7 +1459,7 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../extending_the_library/" class="md-nav__link">
+      <a href="../../../../../users_guide/use_cases/extending_the_library/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1490,7 +1480,7 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../wide_compatibility/" class="md-nav__link">
+      <a href="../../../../../users_guide/use_cases/wide_compatibility/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1563,7 +1553,7 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../examples/tags_index/" class="md-nav__link">
+      <a href="../../../../../users_guide/examples/tags_index/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1632,7 +1622,7 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../examples/hello_units/" class="md-nav__link">
+      <a href="../../../../../users_guide/examples/hello_units/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1653,7 +1643,7 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../examples/avg_speed/" class="md-nav__link">
+      <a href="../../../../../users_guide/examples/avg_speed/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1674,7 +1664,7 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../examples/si_constants/" class="md-nav__link">
+      <a href="../../../../../users_guide/examples/si_constants/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1695,7 +1685,7 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../examples/hw_voltage/" class="md-nav__link">
+      <a href="../../../../../users_guide/examples/hw_voltage/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1776,7 +1766,7 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../../appendix/glossary/" class="md-nav__link">
+      <a href="../../../../../appendix/glossary/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1797,7 +1787,7 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../../appendix/references/" class="md-nav__link">
+      <a href="../../../../../appendix/references/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1833,7 +1823,7 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../../api_reference/" class="md-nav__link">
+      <a href="../../../../../api_reference/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1850,6 +1840,8 @@ You're not viewing the latest version.
       
   
   
+    
+  
   
   
     
@@ -1866,19 +1858,22 @@ You're not viewing the latest version.
     
     
       
+        
+        
+      
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
         
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../../blog/" class="md-nav__link ">
+            <a href="../../../../" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -1889,13 +1884,13 @@ You're not viewing the latest version.
             </a>
             
               
-              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             Blog
@@ -1957,7 +1952,7 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../../blog/archive/2024/" class="md-nav__link">
+      <a href="../../../../archive/2024/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1980,7 +1975,7 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../../blog/archive/2023/" class="md-nav__link">
+      <a href="../../../../archive/2023/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2057,7 +2052,7 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../../blog/category/metrology/" class="md-nav__link">
+      <a href="../../../../category/metrology/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2080,7 +2075,7 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../../blog/category/releases/" class="md-nav__link">
+      <a href="../../../../category/releases/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2103,7 +2098,7 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../../blog/category/wg21-updates/" class="md-nav__link">
+      <a href="../../../../category/wg21-updates/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2139,7 +2134,7 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../../release_notes/" class="md-nav__link">
+      <a href="../../../../../release_notes/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2161,13 +2156,160 @@ You're not viewing the latest version.
             
           
           
-            <div class="md-content" data-md-component="content">
-              <article class="md-content__inner md-typeset">
+  <div class="md-content md-content--post" data-md-component="content">
+    <div class="md-sidebar md-sidebar--post" data-md-component="sidebar" data-md-type="navigation">
+      <div class="md-sidebar__scrollwrap">
+        <div class="md-sidebar__inner md-post">
+          <nav class="md-nav md-nav--primary">
+            <div class="md-post__back">
+              <div class="md-nav__title md-nav__container">
+                <a href="../../../../" class="md-nav__link">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+                  <span class="md-ellipsis">
+                    Back to index
+                  </span>
+                </a>
+              </div>
+            </div>
+            
+              <div class="md-post__authors md-typeset">
                 
-                  
+                  <div class="md-profile md-post__profile">
+                    <span class="md-author md-author--long">
+                      <img src="https://avatars.githubusercontent.com/u/506260" alt="Mateusz Pusz">
+                    </span>
+                    <span class="md-profile__description">
+                      <strong>
+                        
+                          <a href="https://github.com/mpusz">Mateusz Pusz</a>
+                        
+                      </strong>
+                      <br>
+                      Creator
+                    </span>
+                  </div>
+                
+              </div>
+            
+            <ul class="md-post__meta md-nav__list">
+              <li class="md-nav__item md-nav__item--section">
+                <div class="md-post__title">
+                  <span class="md-ellipsis">
+                    Metadata
+                  </span>
+                </div>
+                <nav class="md-nav">
+                  <ul class="md-nav__list">
+                    <li class="md-nav__item">
+                      <div class="md-nav__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 19H5V8h14m-3-7v2H8V1H6v2H5c-1.11 0-2 .89-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-1V1m-1 11h-5v5h5z"/></svg>
+                        <time datetime="2024-10-07 00:00:00" class="md-ellipsis">October 7, 2024</time>
+                      </div>
+                    </li>
+                    
+                    
+                      <li class="md-nav__item">
+                        <div class="md-nav__link">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 3v15h3V3zm3 2 4 13 3-1-4-13zM5 5v13h3V5zM3 19v2h18v-2z"/></svg>
+                          <span class="md-ellipsis">
+                            in
+                            
+                              <a href="../../../../category/metrology/">Metrology</a></span>
+                        </div>
+                      </li>
+                    
+                    
+                      
+                      <li class="md-nav__item">
+                        <div class="md-nav__link">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 20a8 8 0 0 0 8-8 8 8 0 0 0-8-8 8 8 0 0 0-8 8 8 8 0 0 0 8 8m0-18a10 10 0 0 1 10 10 10 10 0 0 1-10 10C6.47 22 2 17.5 2 12A10 10 0 0 1 12 2m.5 5v5.25l4.5 2.67-.75 1.23L11 13V7z"/></svg>
+                          <span class="md-ellipsis">
+                            
+                              4 min read
+                            
+                          </span>
+                        </div>
+                      </li>
+                    
+                  </ul>
+                </nav>
+              </li>
+            </ul>
+          </nav>
+          
+            
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#terms-and-definitions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Terms and Definitions
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#systems-of-quantities-vs-systems-of-units" class="md-nav__link">
+    <span class="md-ellipsis">
+      Systems of Quantities vs Systems of Units
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#isq-vs-si" class="md-nav__link">
+    <span class="md-ellipsis">
+      ISQ vs SI
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-international-system-of-quantities-isq-standardization" class="md-nav__link">
+    <span class="md-ellipsis">
+      The International System of Quantities (ISQ) standardization
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#to-be-continued" class="md-nav__link">
+    <span class="md-ellipsis">
+      To be continued...
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+          
+        </div>
+      </div>
+    </div>
+    <article class="md-content__inner md-typeset">
+      
+        
 
   
-    <a href="https://github.com/mpusz/mp-units/edit/master/docs/users_guide/use_cases/pure_dimensional_analysis.md" title="Edit this page" class="md-content__button md-icon">
+    <a href="https://github.com/mpusz/mp-units/edit/master/docs/blog/posts/isq-part-1-introduction.md" title="Edit this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -2176,16 +2318,159 @@ You're not viewing the latest version.
     
       
     
-    <a href="https://github.com/mpusz/mp-units/raw/master/docs/users_guide/use_cases/pure_dimensional_analysis.md" title="View source of this page" class="md-content__button md-icon">
+    <a href="https://github.com/mpusz/mp-units/raw/master/docs/blog/posts/isq-part-1-introduction.md" title="View source of this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 18c.56 0 1 .44 1 1s-.44 1-1 1-1-.44-1-1 .44-1 1-1m0-3c-2.73 0-5.06 1.66-6 4 .94 2.34 3.27 4 6 4s5.06-1.66 6-4c-.94-2.34-3.27-4-6-4m0 6.5a2.5 2.5 0 0 1-2.5-2.5 2.5 2.5 0 0 1 2.5-2.5 2.5 2.5 0 0 1 2.5 2.5 2.5 2.5 0 0 1-2.5 2.5M9.27 20H6V4h7v5h5v4.07c.7.08 1.36.25 2 .49V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h4.5a8.2 8.2 0 0 1-1.23-2"/></svg>
     </a>
   
 
 
-  <h1>Pure Dimensional Analysis</h1>
+<h1 id="international-system-of-quantities-isq-part-1-introduction">International System of Quantities (ISQ): Part 1 - Introduction<a class="headerlink" href="#international-system-of-quantities-isq-part-1-introduction" title="Permanent link">&para;</a></h1>
+<p>This post starts a series of articles about the International System of Quantities (ISQ).
+In this series, we will describe:</p>
+<ul>
+<li>What is ISQ?</li>
+<li>Which engineering problems does ISQ help to solve and how?</li>
+<li>How to model and implement it in the programming language?</li>
+<li>What is missing in the ISQ, and why is that a problem?</li>
+</ul>
+<!-- more -->
 
-
+<h2 id="terms-and-definitions">Terms and Definitions<a class="headerlink" href="#terms-and-definitions" title="Permanent link">&para;</a></h2>
+<p>From our experience, many people, including experts in the domain, often tend to name things
+differently, or sometimes they use the same term while having a different meaning in mind.
+This is why it is essential to stick to one well-defined glossary of terms for metrology.</p>
+<p>The <strong>mp-units</strong> project consistently uses the official metrology vocabulary defined by the ISO
+and BIPM:</p>
+<ul>
+<li><a href="https://www.iso.org/obp/ui#iso:std:iso-iec:guide:99:ed-1:v2:en">International Organization for Standardization (ISO)</a>,</li>
+<li><a href="https://jcgm.bipm.org/vim/en">International Bureau of Weights and Measures (BIPM)</a>.</li>
+</ul>
+<p>The above are identical and contain the same set of definitions. We provide both to point out that
+the biggest institutions in standardizing metrology agree on the same vocabulary.</p>
+<h2 id="systems-of-quantities-vs-systems-of-units">Systems of Quantities vs Systems of Units<a class="headerlink" href="#systems-of-quantities-vs-systems-of-units" title="Permanent link">&para;</a></h2>
+<p>Here are the official definitions from our vocabulary:</p>
+<div class="admonition quote">
+<p class="admonition-title"><a href="https://jcgm.bipm.org/vim/en/1.3.html">System of quantities</a></p>
+<p>A <strong>system of quantities</strong> is a set of quantities together with a set of noncontradictory
+equations relating those quantities.</p>
+</div>
+<div class="admonition quote">
+<p class="admonition-title"><a href="https://jcgm.bipm.org/vim/en/1.13.html">System of units</a></p>
+<p>A <strong>system of units</strong> is a set of base units and derived units, together with their multiples
+and submultiples, defined in accordance with given rules, for a given <strong>system of quantities</strong>.</p>
+</div>
+<p>From the definition above, we can find out that the systems of quantities and units form a hierarchy:</p>
+<pre class="mermaid"><code>flowchart TD
+    system_of_quantities["System of Quantities"]
+    system_of_quantities --- system_of_units1[System of Units #1]
+    system_of_quantities --- system_of_units2[System of Units #2]
+    system_of_quantities --- system_of_units3[System of Units #3]</code></pre>
+<p><strong>System of quantities</strong> defines quantities commonly used in engineering (e.g., <em>length</em>, <em>time</em>,
+<em>mass</em>, <em>speed</em>, <em>energy</em>, <em>power</em>, etc.) and relations between them. It does not assign any
+specific units to those quantities, though.</p>
+<p><strong>Systems of units</strong> are the ones that assign units of measurement to quantities from a specific
+<strong>system of quantities</strong> they chose to model. Different <strong>systems of units</strong> are free to chose
+whatever they find suitable for specific quantities and do not have to be consistent/compatible
+with other such systems. For example:</p>
+<ul>
+<li>SI decided to measure <em>length</em> in meters, <em>mass</em> in kilograms, and <em>time</em> in seconds,</li>
+<li>CGS decided to measure <em>length</em> in centimeters, <em>mass</em> in grams, and <em>time</em> in seconds.</li>
+</ul>
+<p>Both <strong>systems of units</strong> above agree on the unit of <em>time</em>, but chose different units for other
+quantities. In the above example, SI chose a non-prefixed unit of metre for a base quantity of <em>length</em>
+while CGS chose a scaled centimetre. On the other hand, SI chose a scaled kilogram over the gram used
+in the CGS. Those decisions also result in a need for different <a href="https://jcgm.bipm.org/vim/en/1.12.html">coherent units</a>
+for derived quantities. For example:</p>
+<table>
+<thead>
+<tr>
+<th>Quantity</th>
+<th>SI</th>
+<th>CGS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>length</em></td>
+<td>metre (m)</td>
+<td>centimetre (cm)</td>
+</tr>
+<tr>
+<td><em>mass</em></td>
+<td>kilogram (kg)</td>
+<td>gram (g)</td>
+</tr>
+<tr>
+<td><em>time</em></td>
+<td>second (s)</td>
+<td>second (s)</td>
+</tr>
+<tr>
+<td><em>force</em></td>
+<td>newton (N)</td>
+<td>dyne</td>
+</tr>
+<tr>
+<td><em>energy</em></td>
+<td>joule (J)</td>
+<td>erg</td>
+</tr>
+<tr>
+<td><em>pressure</em></td>
+<td>pascal (Pa)</td>
+<td>barye</td>
+</tr>
+</tbody>
+</table>
+<p>Often, there is no way to state which one is correct or which one is wrong. Each
+<strong>system of units</strong> has the freedom to choose whichever unit suits its engineering requirements
+and constraints the best for a specific quantity.</p>
+<h2 id="isq-vs-si">ISQ vs SI<a class="headerlink" href="#isq-vs-si" title="Permanent link">&para;</a></h2>
+<p>Some of the systems of quantities and units have been used more over the years and have become more popular
+than others. Here are the official descriptions of the most popular systems used in engineering
+today:</p>
+<div class="admonition quote">
+<p class="admonition-title"><a href="https://jcgm.bipm.org/vim/en/1.6.html">International System of Quantities (ISQ)</a></p>
+<p>The <strong>International System of Quantities (ISQ)</strong> is a system of quantities based on the seven base
+quantities: <em>length</em>, <em>mass</em>, <em>time</em>, <em>electric current</em>, <em>thermodynamic temperature</em>,
+<em>amount of substance</em>, and <em>luminous intensity</em>.</p>
+</div>
+<div class="admonition quote">
+<p class="admonition-title"><a href="https://jcgm.bipm.org/vim/en/1.16.html">International System of Units (SI)</a></p>
+<p>The <strong>International System of Units (SI)</strong> is a system of units, based on the <strong>International
+System of Quantities</strong>, their names and symbols, including a series of prefixes and their names
+and symbols, together with rules for their use, adopted by the General Conference on Weights
+and Measures (CGPM).</p>
+</div>
+<h2 id="the-international-system-of-quantities-isq-standardization">The International System of Quantities (ISQ) standardization<a class="headerlink" href="#the-international-system-of-quantities-isq-standardization" title="Permanent link">&para;</a></h2>
+<p>The set of quantities constituting the ISQ is defined in the series of ISO 80000 and IEC 80000
+standards under the general title "Quantities and units".</p>
+<p>ISO 80000:</p>
+<ul>
+<li>Part 1: General</li>
+<li>Part 2: Mathematical signs and symbols to be used in the natural sciences and technology</li>
+<li>Part 3: Space and time</li>
+<li>Part 4: Mechanics</li>
+<li>Part 5: Thermodynamics</li>
+<li>Part 7: Light</li>
+<li>Part 8: Acoustics</li>
+<li>Part 9: Physical chemistry and molecular physics</li>
+<li>Part 10: Atomic and nuclear physics</li>
+<li>Part 11: Characteristic numbers</li>
+<li>Part 12: Condensed matter physics</li>
+</ul>
+<p>IEC 80000:</p>
+<ul>
+<li>Part 6: Electromagnetism</li>
+<li>Part 13: Information science and technology</li>
+<li>Part 15: Logarithmic and related quantities, and their units</li>
+<li>Part 16: Printing and writing rules</li>
+<li>Part 17: Time dependency</li>
+</ul>
+<h2 id="to-be-continued">To be continued...<a class="headerlink" href="#to-be-continued" title="Permanent link">&para;</a></h2>
+<p>In the next part of this series, we will describe typical issues with libraries that do not
+model systems of quantities.</p>
 
 
 
@@ -2199,12 +2484,57 @@ You're not viewing the latest version.
 
 
 
+  
 
 
-                
-              </article>
-            </div>
-          
+
+<h2 id="__comments">Comments</h2>
+<script src="https://giscus.app/client.js" data-repo="mpusz/mp-units" data-repo-id="MDEwOlJlcG9zaXRvcnkxNDU2OTIwNDY="
+  data-category="Blog comments" data-category-id="DIC_kwDOCK8Vjs4Ci6_o" data-mapping="pathname" data-strict="0"
+  data-reactions-enabled="1" data-emit-metadata="1" data-input-position="bottom" data-theme="preferred_color_scheme"
+  data-lang="en" crossorigin="anonymous" async>
+  </script>
+
+<!-- Synchronize Giscus theme with palette -->
+<script>
+  var giscus = document.querySelector("script[src*=giscus]")
+
+  // Set palette on initial load
+  var palette = __md_get("__palette")
+  if (palette && typeof palette.color === "object") {
+    var theme = palette.color.scheme === "slate"
+      ? "transparent_dark"
+      : "light"
+
+    // Instruct Giscus to set theme
+    giscus.setAttribute("data-theme", theme)
+  }
+
+  // Register event handlers after documented loaded
+  document.addEventListener("DOMContentLoaded", function () {
+    var ref = document.querySelector("[data-md-component=palette]")
+    ref.addEventListener("change", function () {
+      var palette = __md_get("__palette")
+      if (palette && typeof palette.color === "object") {
+        var theme = palette.color.scheme === "slate"
+          ? "transparent_dark"
+          : "light"
+
+        // Instruct Giscus to change theme
+        var frame = document.querySelector(".giscus-frame")
+        frame.contentWindow.postMessage(
+          { giscus: { setConfig: { theme } } },
+          "https://giscus.app"
+        )
+      }
+    })
+  })
+</script>
+
+      
+    </article>
+  </div>
+
           
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
@@ -2221,10 +2551,12 @@ You're not viewing the latest version.
   
     
       
+        
+      
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../../systems/natural_units/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Natural Units">
+          <a href="../../../09/27/mp-units-230-released/" class="md-footer__link md-footer__link--prev" aria-label="Previous: mp-units 2.3.0 released!">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -2234,27 +2566,11 @@ You're not viewing the latest version.
                 Previous
               </span>
               <div class="md-ellipsis">
-                Natural Units
+                mp-units 2.3.0 released!
               </div>
             </div>
           </a>
         
-        
-          
-          <a href="../working_with_legacy_interfaces/" class="md-footer__link md-footer__link--next" aria-label="Next: Working with Legacy Interfaces">
-            <div class="md-footer__title">
-              <span class="md-footer__direction">
-                Next
-              </span>
-              <div class="md-ellipsis">
-                Working with Legacy Interfaces
-              </div>
-            </div>
-            <div class="md-footer__button md-icon">
-              
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
-            </div>
-          </a>
         
       </nav>
     
@@ -2285,12 +2601,12 @@ You're not viewing the latest version.
     </div>
     
     
-    <script id="__config" type="application/json">{"base": "../../..", "features": ["content.action.edit", "content.action.view", "content.code.annotate", "content.code.copy", "navigation.indexes", "navigation.tabs", "navigation.footer", "navigation.top", "search.highlight", "search.share", "search.suggest", "toc.follow", "toc.integrate"], "search": "../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    <script id="__config" type="application/json">{"base": "../../../../..", "features": ["content.action.edit", "content.action.view", "content.code.annotate", "content.code.copy", "navigation.indexes", "navigation.tabs", "navigation.footer", "navigation.top", "search.highlight", "search.share", "search.suggest", "toc.follow", "toc.integrate"], "search": "../../../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.525ec568.min.js"></script>
+      <script src="../../../../../assets/javascripts/bundle.525ec568.min.js"></script>
       
-        <script src="../../../javascripts/mathjax.js"></script>
+        <script src="../../../../../javascripts/mathjax.js"></script>
       
         <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
       

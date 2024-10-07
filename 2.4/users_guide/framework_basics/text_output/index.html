@@ -2304,6 +2304,8 @@ You're not viewing the latest version.
       
         
       
+        
+      
     
     
       
@@ -2334,6 +2336,29 @@ You're not viewing the latest version.
             Categories
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../blog/category/metrology/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Metrology
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -2652,15 +2677,15 @@ chapter.</p>
 <h2 id="symbols-of-scaled-units">Symbols of scaled units<a class="headerlink" href="#symbols-of-scaled-units" title="Permanent link">&para;</a></h2>
 <p>In most cases <a href="../systems_of_units/#scaled-units">scaled units are hidden behind named units</a>.
 However, there are a few real-life where a user directly faces a scaled unit. For example:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="k">constexpr</span><span class="w"> </span><span class="n">Unit</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">l_per_100km</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">l</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">mag</span><span class="o">&lt;</span><span class="mi">100</span><span class="o">&gt;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">km</span><span class="p">);</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="k">constexpr</span><span class="w"> </span><span class="n">Unit</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">L_per_100km</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">L</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">mag</span><span class="o">&lt;</span><span class="mi">100</span><span class="o">&gt;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">km</span><span class="p">);</span>
 </span></code></pre></div>
 <p>The above is a derived unit of litre divided by a scaled unit of 100 kilometers. As we can
 see a scaled unit has a magnitude and a reference unit. To denote the scope of such
 a unit, we enclose it in <code>[...]</code>. For example, the following:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mf">6.7</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">l_per_100km</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mf">6.7</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">L_per_100km</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
 </span></code></pre></div>
 <p>prints:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>6.7 l/[100 km]
+<div class="language-text highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>6.7 L/[100 km]
 </span></code></pre></div>
 <h2 id="symbols-of-common-units">Symbols of common units<a class="headerlink" href="#symbols-of-common-units" title="Permanent link">&para;</a></h2>
 <p>Some <a href="../systems_of_units/#common-units">common units</a> expressed with a specialization of the
