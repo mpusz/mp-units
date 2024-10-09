@@ -206,6 +206,7 @@ public:
   quantity_point(quantity_point&&) = default;
   ~quantity_point() = default;
 
+  // explicit converting constructor from a quantity - only for quantity_points of `default_point_origin`
   template<typename FwdQ, QuantityOf<quantity_spec> Q = std::remove_cvref_t<FwdQ>>
     requires std::constructible_from<quantity_type, FwdQ> && (point_origin == default_point_origin(R)) &&
              (implicitly_convertible(Q::quantity_spec, quantity_spec))
@@ -213,6 +214,7 @@ public:
   {
   }
 
+  // construction from a quantity and matching origin
   template<typename FwdQ, QuantityOf<quantity_spec> Q = std::remove_cvref_t<FwdQ>>
     requires std::constructible_from<quantity_type, FwdQ>
   constexpr quantity_point(FwdQ&& q, decltype(PO)) :
@@ -220,6 +222,7 @@ public:
   {
   }
 
+  // construction from a quantity and a related origin
   template<typename FwdQ, PointOrigin PO2, QuantityOf<PO2::quantity_spec> Q = std::remove_cvref_t<FwdQ>>
     requires std::constructible_from<quantity_type, FwdQ> && detail::SameAbsolutePointOriginAs<PO2, PO>
   constexpr quantity_point(FwdQ&& q, PO2) :
@@ -229,6 +232,7 @@ public:
   {
   }
 
+  // converting constructor from a quantity_point of related origin
   template<QuantityPointOf<absolute_point_origin> QP>
     requires std::constructible_from<quantity_type, typename QP::quantity_type>
   // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
@@ -242,6 +246,7 @@ public:
   {
   }
 
+  // converting constructor from a quantity_point of matching origin
   template<QuantityPointLike QP>
     requires(quantity_point_like_traits<QP>::point_origin == point_origin) &&
             std::convertible_to<
