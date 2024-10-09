@@ -229,7 +229,7 @@ template<auto R, auto PO, typename Rep>
  */
 template<auto R, auto S, auto T, typename Rep1, typename Rep2, typename Rep3>
   requires requires { get_common_quantity_spec(get_quantity_spec(R) * get_quantity_spec(S), get_quantity_spec(T)); } &&
-           (get_unit(R) * get_unit(S) == get_unit(T)) && requires(Rep1 v1, Rep2 v2, Rep3 v3) {
+           (equivalent(get_unit(R) * get_unit(S), get_unit(T))) && requires(Rep1 v1, Rep2 v2, Rep3 v3) {
              requires requires { fma(v1, v2, v3); } || requires { std::fma(v1, v2, v3); };
            }
 [[nodiscard]] constexpr QuantityOf<get_common_quantity_spec(
@@ -253,7 +253,7 @@ template<auto R, auto S, auto T, typename Rep1, typename Rep2, typename Rep3>
  */
 template<auto R, auto S, auto T, auto Origin, typename Rep1, typename Rep2, typename Rep3>
   requires requires { get_common_quantity_spec(get_quantity_spec(R) * get_quantity_spec(S), get_quantity_spec(T)); } &&
-           (get_unit(R) * get_unit(S) == get_unit(T)) && requires(Rep1 v1, Rep2 v2, Rep3 v3) {
+           (equivalent(get_unit(R) * get_unit(S), get_unit(T))) && requires(Rep1 v1, Rep2 v2, Rep3 v3) {
              requires requires { fma(v1, v2, v3); } || requires { std::fma(v1, v2, v3); };
            }
 [[nodiscard]] constexpr QuantityPointOf<
@@ -326,7 +326,7 @@ template<Representation Rep, Reference R>
 template<Unit auto To, auto R, typename Rep>
 [[nodiscard]] constexpr quantity<detail::clone_reference_with<To>(R), Rep> floor(const quantity<R, Rep>& q) noexcept
   requires((!treat_as_floating_point<Rep>) || requires(Rep v) { floor(v); } || requires(Rep v) { std::floor(v); }) &&
-          (To == get_unit(R) || requires {
+          (equivalent(To, get_unit(R)) || requires {
             q.force_in(To);
             quantity_values<Rep>::one();
           })
@@ -339,14 +339,14 @@ template<Unit auto To, auto R, typename Rep>
   };
   if constexpr (treat_as_floating_point<Rep>) {
     using std::floor;
-    if constexpr (To == get_unit(R)) {
+    if constexpr (equivalent(To, get_unit(R))) {
       return {static_cast<Rep>(floor(q.numerical_value_ref_in(q.unit))), detail::clone_reference_with<To>(R)};
     } else {
       return handle_signed_results(
         quantity{static_cast<Rep>(floor(q.force_numerical_value_in(To))), detail::clone_reference_with<To>(R)});
     }
   } else {
-    if constexpr (To == get_unit(R)) {
+    if constexpr (equivalent(To, get_unit(R))) {
       return q.force_in(To);
     } else {
       return handle_signed_results(q.force_in(To));
@@ -363,7 +363,7 @@ template<Unit auto To, auto R, typename Rep>
 template<Unit auto To, auto R, typename Rep>
 [[nodiscard]] constexpr quantity<detail::clone_reference_with<To>(R), Rep> ceil(const quantity<R, Rep>& q) noexcept
   requires((!treat_as_floating_point<Rep>) || requires(Rep v) { ceil(v); } || requires(Rep v) { std::ceil(v); }) &&
-          (To == get_unit(R) || requires {
+          (equivalent(To, get_unit(R)) || requires {
             q.force_in(To);
             quantity_values<Rep>::one();
           })
@@ -376,14 +376,14 @@ template<Unit auto To, auto R, typename Rep>
   };
   if constexpr (treat_as_floating_point<Rep>) {
     using std::ceil;
-    if constexpr (To == get_unit(R)) {
+    if constexpr (equivalent(To, get_unit(R))) {
       return {static_cast<Rep>(ceil(q.numerical_value_ref_in(q.unit))), detail::clone_reference_with<To>(R)};
     } else {
       return handle_signed_results(
         quantity{static_cast<Rep>(ceil(q.force_numerical_value_in(To))), detail::clone_reference_with<To>(R)});
     }
   } else {
-    if constexpr (To == get_unit(R)) {
+    if constexpr (equivalent(To, get_unit(R))) {
       return q.force_in(To);
     } else {
       return handle_signed_results(q.force_in(To));
@@ -402,12 +402,12 @@ template<Unit auto To, auto R, typename Rep>
 template<Unit auto To, auto R, typename Rep>
 [[nodiscard]] constexpr quantity<detail::clone_reference_with<To>(R), Rep> round(const quantity<R, Rep>& q) noexcept
   requires((!treat_as_floating_point<Rep>) || requires(Rep v) { round(v); } || requires(Rep v) { std::round(v); }) &&
-          (To == get_unit(R) || requires {
+          (equivalent(To, get_unit(R)) || requires {
             ::mp_units::floor<To>(q);
             quantity_values<Rep>::one();
           })
 {
-  if constexpr (To == get_unit(R)) {
+  if constexpr (equivalent(To, get_unit(R))) {
     if constexpr (treat_as_floating_point<Rep>) {
       using std::round;
       return {static_cast<Rep>(round(q.numerical_value_ref_in(q.unit))), detail::clone_reference_with<To>(R)};
