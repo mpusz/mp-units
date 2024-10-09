@@ -430,7 +430,7 @@ struct magnitude : detail::magnitude_base<magnitude<Ms...>> {
   template<Magnitude M2>
   [[nodiscard]] friend consteval bool operator==(magnitude, M2)
   {
-    return std::is_same_v<magnitude, M2>;
+    return is_same_v<magnitude, M2>;
   }
 
 private:
