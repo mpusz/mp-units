@@ -105,7 +105,7 @@ concept CommonlyInvocableQuantities =
   InvocableQuantities<Func, Q1, Q2, get_common_quantity_spec(Q1::quantity_spec, Q2::quantity_spec).character>;
 
 template<auto R1, auto R2, typename Rep1, typename Rep2>
-concept SameValueAs = SameReference<R1, R2> && std::same_as<Rep1, Rep2>;
+concept SameValueAs = (equivalent(get_unit(R1), get_unit(R2))) && std::convertible_to<Rep1, Rep2>;
 
 template<typename T>
 using quantity_like_type = quantity<quantity_like_traits<T>::reference, typename quantity_like_traits<T>::rep>;
@@ -261,21 +261,21 @@ public:
 
   // data access
   template<Unit U>
-    requires(U{} == unit)
+    requires(equivalent(U{}, unit))
   [[nodiscard]] constexpr rep& numerical_value_ref_in(U) & noexcept
   {
     return numerical_value_is_an_implementation_detail_;
   }
 
   template<Unit U>
-    requires(U{} == unit)
+    requires(equivalent(U{}, unit))
   [[nodiscard]] constexpr const rep& numerical_value_ref_in(U) const& noexcept
   {
     return numerical_value_is_an_implementation_detail_;
   }
 
   template<Unit U>
-    requires(U{} == unit)
+    requires(equivalent(U{}, unit))
   constexpr const rep&& numerical_value_ref_in(U) const&& noexcept
 #if __cpp_deleted_function
     = delete("Can't form a reference to a temporary");

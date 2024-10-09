@@ -96,13 +96,13 @@ struct conversion_value_traits {
  */
 template<Quantity To, typename FwdFrom, Quantity From = std::remove_cvref_t<FwdFrom>>
   requires(castable(From::quantity_spec, To::quantity_spec)) &&
-          ((From::unit == To::unit && std::constructible_from<typename To::rep, typename From::rep>) ||
-           (From::unit != To::unit))  // && scalable_with_<typename To::rep>))
+          (((equivalent(From::unit, To::unit)) && std::constructible_from<typename To::rep, typename From::rep>) ||
+           (!equivalent(From::unit, To::unit)))  // && scalable_with_<typename To::rep>))
 // TODO how to constrain the second part here?
 [[nodiscard]] constexpr To sudo_cast(FwdFrom&& q)
 {
   constexpr auto q_unit = From::unit;
-  if constexpr (q_unit == To::unit) {
+  if constexpr (equivalent(q_unit, To::unit)) {
     // no scaling of the number needed
     return {static_cast<To::rep>(std::forward<FwdFrom>(q).numerical_value_is_an_implementation_detail_),
             To::reference};  // this is the only (and recommended) way to do a truncating conversion on a number, so we
@@ -149,8 +149,9 @@ template<Quantity To, typename FwdFrom, Quantity From = std::remove_cvref_t<FwdF
 template<QuantityPoint ToQP, typename FwdFromQP, QuantityPoint FromQP = std::remove_cvref_t<FwdFromQP>>
   requires(castable(FromQP::quantity_spec, ToQP::quantity_spec)) &&
           (detail::same_absolute_point_origins(ToQP::point_origin, FromQP::point_origin)) &&
-          ((FromQP::unit == ToQP::unit && std::constructible_from<typename ToQP::rep, typename FromQP::rep>) ||
-           (FromQP::unit != ToQP::unit))
+          (((equivalent(FromQP::unit, ToQP::unit)) &&
+            std::constructible_from<typename ToQP::rep, typename FromQP::rep>) ||
+           (!equivalent(FromQP::unit, ToQP::unit)))
 [[nodiscard]] constexpr QuantityPoint auto sudo_cast(FwdFromQP&& qp)
 {
   if constexpr (is_same_v<std::remove_const_t<decltype(ToQP::point_origin)>,

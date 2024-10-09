@@ -23,6 +23,7 @@
 #include "test_tools.h"
 #include <mp-units/ext/type_traits.h>
 #include <mp-units/framework.h>
+#include <mp-units/systems/isq.h>
 #include <mp-units/systems/si/prefixes.h>
 #ifdef MP_UNITS_IMPORT_STD
 import std;
@@ -38,19 +39,7 @@ using namespace mp_units::detail;
 using one_ = struct one;
 using percent_ = struct percent;
 
-// base dimensions
 // clang-format off
-inline constexpr struct dim_length_ final : base_dimension<"L"> {} dim_length;
-inline constexpr struct dim_mass_ final : base_dimension<"M"> {} dim_mass;
-inline constexpr struct dim_time_ final : base_dimension<"T"> {} dim_time;
-inline constexpr struct dim_thermodynamic_temperature_ final : base_dimension<symbol_text{u8"Θ", "O"}> {} dim_thermodynamic_temperature;
-
-// quantities specification
-QUANTITY_SPEC_(length, dim_length);
-QUANTITY_SPEC_(mass, dim_mass);
-QUANTITY_SPEC_(time, dim_time);
-QUANTITY_SPEC_(thermodynamic_temperature, dim_thermodynamic_temperature);
-
 // prefixes
 template<PrefixableUnit U> struct milli_  final : prefixed_unit<"m", mag_power<10, -3>, U{}> {};
 template<PrefixableUnit U> struct kilo_   final : prefixed_unit<"k", mag_power<10, 3>, U{}> {};
@@ -58,21 +47,21 @@ template<PrefixableUnit auto U> constexpr milli_<MP_UNITS_REMOVE_CONST(decltype(
 template<PrefixableUnit auto U> constexpr kilo_<MP_UNITS_REMOVE_CONST(decltype(U))> kilo;
 
 // base units
-inline constexpr struct second_ final : named_unit<"s", kind_of<time>> {} second;
-inline constexpr struct metre_ final : named_unit<"m", kind_of<length>> {} metre;
-inline constexpr struct gram_ final : named_unit<"g", kind_of<mass>> {} gram;
+inline constexpr struct second_ final : named_unit<"s", kind_of<isq::time>> {} second;
+inline constexpr struct metre_ final : named_unit<"m", kind_of<isq::length>> {} metre;
+inline constexpr struct gram_ final : named_unit<"g", kind_of<isq::mass>> {} gram;
 inline constexpr auto kilogram = kilo<gram>;
-inline constexpr struct kelvin_ final : named_unit<"K", kind_of<thermodynamic_temperature>> {} kelvin;
+inline constexpr struct kelvin_ final : named_unit<"K", kind_of<isq::thermodynamic_temperature>> {} kelvin;
 
 // hypothetical natural units for c=1
 inline constexpr struct nu_second_ final : named_unit<"s"> {} nu_second;
 
 // derived named units
-inline constexpr struct radian_ final : named_unit<"rad", metre / metre> {} radian;
+inline constexpr struct radian_ final : named_unit<"rad", metre / metre, kind_of<isq::angular_measure>> {} radian;
 inline constexpr struct revolution_ final : named_unit<"rev", mag<2> * mag<pi> * radian> {} revolution;
-inline constexpr struct steradian_ final : named_unit<"sr", square(metre) / square(metre)> {} steradian;
-inline constexpr struct hertz_ final : named_unit<"Hz", inverse(second)> {} hertz;
-inline constexpr struct becquerel_ final : named_unit<"Bq", inverse(second)> {} becquerel;
+inline constexpr struct steradian_ final : named_unit<"sr", square(metre) / square(metre), kind_of<isq::solid_angular_measure>> {} steradian;
+inline constexpr struct hertz_ final : named_unit<"Hz", inverse(second), kind_of<isq::frequency>> {} hertz;
+inline constexpr struct becquerel_ final : named_unit<"Bq", inverse(second), kind_of<isq::activity>> {} becquerel;
 inline constexpr struct newton_ final : named_unit<"N", kilogram * metre / square(second)> {} newton;
 inline constexpr struct pascal_ final : named_unit<"Pa", newton / square(metre)> {} pascal;
 inline constexpr struct joule_ final : named_unit<"J", newton * metre> {} joule;
@@ -140,7 +129,8 @@ static_assert(is_of_type<degree_Celsius, degree_Celsius_>);
 static_assert(is_of_type<get_canonical_unit(degree_Celsius).reference_unit, kelvin_>);
 static_assert(get_canonical_unit(degree_Celsius).mag == mag<1>);
 static_assert(convertible(degree_Celsius, kelvin));
-static_assert(degree_Celsius == kelvin);
+static_assert(degree_Celsius != kelvin);
+static_assert(equivalent(degree_Celsius, kelvin));
 
 static_assert(is_of_type<radian, radian_>);
 static_assert(is_of_type<get_canonical_unit(radian).reference_unit, one_>);
@@ -155,8 +145,8 @@ static_assert(radian != degree);
 static_assert(is_of_type<steradian, steradian_>);
 static_assert(is_of_type<get_canonical_unit(steradian).reference_unit, one_>);
 static_assert(get_canonical_unit(steradian).mag == mag<1>);
-static_assert(convertible(radian, steradian));  // !!!
-static_assert(radian == steradian);             // !!!
+static_assert(!convertible(radian, steradian));
+static_assert(radian != steradian);
 
 static_assert(is_of_type<minute, minute_>);
 static_assert(is_of_type<get_canonical_unit(minute).reference_unit, second_>);
@@ -414,50 +404,59 @@ concept invalid_operations = requires {
   requires !requires { 2 == s; };
   requires !requires { s < 2; };
   requires !requires { 2 < s; };
-  requires !requires { s + time[second]; };
-  requires !requires { s - time[second]; };
-  requires !requires { s < time[second]; };
-  requires !requires { time[second] + s; };
-  requires !requires { time[second] - s; };
-  requires !requires { s + 1 * time[second]; };
-  requires !requires { s - 1 * time[second]; };
-  requires !requires { s * 1 * time[second]; };
-  requires !requires { s / 1 * time[second]; };
-  requires !requires { s == 1 * time[second]; };
-  requires !requires { s == 1 * time[second]; };
-  requires !requires { 1 * time[second] + s; };
-  requires !requires { 1 * time[second] - s; };
-  requires !requires { 1 * time[second] == s; };
-  requires !requires { 1 * time[second] < s; };
+  requires !requires { s + isq::time[second]; };
+  requires !requires { s - isq::time[second]; };
+  requires !requires { s < isq::time[second]; };
+  requires !requires { isq::time[second] + s; };
+  requires !requires { isq::time[second] - s; };
+  requires !requires { s + 1 * isq::time[second]; };
+  requires !requires { s - 1 * isq::time[second]; };
+  requires !requires { s * 1 * isq::time[second]; };
+  requires !requires { s / 1 * isq::time[second]; };
+  requires !requires { s == 1 * isq::time[second]; };
+  requires !requires { s == 1 * isq::time[second]; };
+  requires !requires { 1 * isq::time[second] + s; };
+  requires !requires { 1 * isq::time[second] - s; };
+  requires !requires { 1 * isq::time[second] == s; };
+  requires !requires { 1 * isq::time[second] < s; };
 };
 static_assert(invalid_operations<second>);
 
 // comparisons of the same units
 static_assert(second == second);
 static_assert(metre / second == metre / second);
-static_assert(milli<metre> / milli<second> == si::micro<metre> / si::micro<second>);
-static_assert(milli<metre> / si::micro<second> == si::micro<metre> / si::nano<second>);
-static_assert(si::micro<metre> / milli<second> == si::nano<metre> / si::micro<second>);
-static_assert(milli<metre> * kilo<metre> == si::deci<metre> * si::deca<metre>);
-static_assert(kilo<metre> * milli<metre> == si::deca<metre> * si::deci<metre>);
+static_assert(milli<metre> / milli<second> != si::micro<metre> / si::micro<second>);
+static_assert(equivalent(milli<metre> / milli<second>, si::micro<metre> / si::micro<second>));
+static_assert(milli<metre> / si::micro<second> != si::micro<metre> / si::nano<second>);
+static_assert(equivalent(milli<metre> / si::micro<second>, si::micro<metre> / si::nano<second>));
+static_assert(si::micro<metre> / milli<second> != si::nano<metre> / si::micro<second>);
+static_assert(equivalent(si::micro<metre> / milli<second>, si::nano<metre> / si::micro<second>));
+static_assert(milli<metre> * kilo<metre> != si::deci<metre> * si::deca<metre>);
+static_assert(equivalent(milli<metre> * kilo<metre>, si::deci<metre>* si::deca<metre>));
+static_assert(kilo<metre> * milli<metre> != si::deca<metre> * si::deci<metre>);
+static_assert(equivalent(kilo<metre> * milli<metre>, si::deca<metre>* si::deci<metre>));
 
 // comparisons of equivalent units (named vs unnamed/derived)
-static_assert(one / second == hertz);
+static_assert(one / second != hertz);
+static_assert(equivalent(one / second, hertz));
 static_assert(convertible(one / second, hertz));
 
 // comparisons of equivalent units of different quantities
-static_assert(hertz == becquerel);
-static_assert(convertible(hertz, becquerel));
+static_assert(hertz != becquerel);
+static_assert(!convertible(hertz, becquerel));
 
 // comparisons of scaled units
 static_assert(kilo<metre> == kilometre);
-static_assert(mag<1000> * metre == kilo<metre>);
-static_assert(mag<1000> * metre == kilometre);
+static_assert(mag<1000> * metre != kilo<metre>);
+static_assert(equivalent(mag<1000> * metre, kilo<metre>));
+static_assert(mag<1000> * metre != kilometre);
+static_assert(equivalent(mag<1000> * metre, kilometre));
 static_assert(convertible(kilo<metre>, kilometre));
 static_assert(convertible(mag<1000> * metre, kilo<metre>));
 static_assert(convertible(mag<1000> * metre, kilometre));
 
-static_assert(mag<60> * metre / second == metre / (mag_ratio<1, 60> * second));
+static_assert(mag<60> * metre / second != metre / (mag_ratio<1, 60> * second));
+static_assert(equivalent(mag<60> * metre / second, metre / (mag_ratio<1, 60> * second)));
 
 static_assert(metre != kilometre);
 static_assert(convertible(metre, kilometre));
@@ -474,7 +473,8 @@ static_assert(!convertible(metre, metre* metre));
 static_assert(is_of_type<metre / metre, one_>);
 static_assert(is_of_type<kilo<metre> / metre, derived_unit<kilo_<metre_>, per<metre_>>>);
 static_assert(metre / metre == one);
-static_assert(hertz * second == one);
+static_assert(hertz * second != one);
+static_assert(equivalent(hertz * second, one));
 static_assert(one * one == one);
 static_assert(is_of_type<one * one, one_>);
 static_assert(one * percent == percent);
@@ -482,12 +482,18 @@ static_assert(percent * one == percent);
 static_assert(is_of_type<one * percent, percent_>);
 static_assert(is_of_type<percent * one, percent_>);
 
-static_assert(hertz == one / second);
-static_assert(newton == kilogram * metre / square(second));
-static_assert(joule == kilogram * square(metre) / square(second));
-static_assert(joule == newton * metre);
-static_assert(watt == joule / second);
-static_assert(watt == kilogram * square(metre) / cubic(second));
+static_assert(hertz != one / second);
+static_assert(equivalent(hertz, one / second));
+static_assert(newton != kilogram * metre / square(second));
+static_assert(equivalent(newton, kilogram* metre / square(second)));
+static_assert(joule != kilogram * square(metre) / square(second));
+static_assert(equivalent(joule, kilogram* square(metre) / square(second)));
+static_assert(joule != newton * metre);
+static_assert(equivalent(joule, newton* metre));
+static_assert(watt != joule / second);
+static_assert(equivalent(watt, joule / second));
+static_assert(watt != kilogram * square(metre) / cubic(second));
+static_assert(equivalent(watt, kilogram* square(metre) / cubic(second)));
 
 // power
 static_assert(is_same_v<decltype(pow<2>(metre)), decltype(metre * metre)>);

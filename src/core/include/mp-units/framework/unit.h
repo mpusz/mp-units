@@ -122,6 +122,12 @@ struct unit_less : std::bool_constant<type_name<Lhs>() < type_name<Rhs>()> {};
 template<typename T1, typename T2>
 using type_list_of_unit_less = expr_less<T1, T2, unit_less>;
 
+template<typename From, typename To>
+concept PotentiallyConvertibleTo = Unit<From> && Unit<To> &&
+                                   ((AssociatedUnit<From> && AssociatedUnit<To> &&
+                                     implicitly_convertible(get_quantity_spec(From{}), get_quantity_spec(To{}))) ||
+                                    (!AssociatedUnit<From> && !AssociatedUnit<To>));
+
 }  // namespace detail
 
 // TODO this should really be in the `details` namespace but is used in `chrono.h` (a part of mp_units.systems)
@@ -134,9 +140,11 @@ template<Unit From, Unit To>
 {
   if constexpr (is_same_v<From, To>)
     return true;
-  else
+  else if constexpr (detail::PotentiallyConvertibleTo<From, To>)
     return is_same_v<decltype(get_canonical_unit(from).reference_unit),
                      decltype(get_canonical_unit(to).reference_unit)>;
+  else
+    return false;
 }
 
 namespace detail {
@@ -192,12 +200,16 @@ struct unit_interface {
     return expr_divide<derived_unit, struct one, type_list_of_unit_less>(lhs, rhs);
   }
 
-  [[nodiscard]] friend consteval bool operator==(Unit auto lhs, Unit auto rhs)
+  template<Unit Lhs, Unit Rhs>
+  [[nodiscard]] friend consteval bool operator==(Lhs, Rhs)
   {
-    auto canonical_lhs = get_canonical_unit(lhs);
-    auto canonical_rhs = get_canonical_unit(rhs);
-    return convertible(canonical_lhs.reference_unit, canonical_rhs.reference_unit) &&
-           canonical_lhs.mag == canonical_rhs.mag;
+    return is_same_v<Lhs, Rhs>;
+  }
+
+  [[nodiscard]] friend consteval bool equivalent(Unit auto lhs, Unit auto rhs)
+    requires(convertible(lhs, rhs))
+  {
+    return get_canonical_unit(lhs).mag == get_canonical_unit(rhs).mag;
   }
 };
 
@@ -662,7 +674,7 @@ template<Unit U1, Unit U2>
 {
   if constexpr (is_same_v<U1, U2>)
     return u1;
-  else if constexpr (U1{} == U2{}) {
+  else if constexpr (equivalent(U1{}, U2{})) {
     if constexpr (std::derived_from<U1, typename U2::_base_type_>)
       return u1;
     else if constexpr (std::derived_from<U2, typename U1::_base_type_>)
