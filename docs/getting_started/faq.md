@@ -164,11 +164,11 @@ code.
     please let us know in the associated [GitHub Issue](https://github.com/mpusz/mp-units/issues/93).
 
 
-## Why Unicode quantity symbols are used by default instead of ASCII-only characters?
+## Why UTF-8 quantity symbols are used by default instead of portable characters?
 
 Both C++ and [ISO 80000](../appendix/references.md#ISO80000) are standardized by the ISO.
 [ISO 80000](../appendix/references.md#ISO80000) and the [SI](../appendix/references.md#SIBrochure)
-standards specify Unicode symbols as the official unit names for some quantities
+standards specify UTF-8 symbols as the official unit names for some quantities
 (e.g. `Ω` symbol for the resistance quantity).
 As the **mp-units** library will be proposed for standardization as a part of the C++ Standard Library
 we have to obey the rules and be consistent with ISO specifications.
@@ -176,7 +176,7 @@ we have to obey the rules and be consistent with ISO specifications.
 !!! note
 
     We do understand engineering reality and the constraints of some environments. This is why the library
-    has the option of [ASCII-only Quantity Symbols](../users_guide/framework_basics/text_output.md#unit_symbol_formatting).
+    has the option of [Portable Quantity Symbols](../users_guide/framework_basics/text_output.md#unit_symbol_formatting).
 
 
 ## Why don't we have CMake options to disable the building of tests and examples?

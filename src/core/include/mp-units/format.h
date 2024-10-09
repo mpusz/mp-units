@@ -112,7 +112,7 @@ MP_UNITS_EXPORT_END
 //
 // dimension-format-spec = [fill-and-align], [width], [dimension-spec];
 // dimension-spec        = [text-encoding];
-// text-encoding         = 'U' | 'A';
+// text-encoding         = 'U' | 'P';
 //
 template<mp_units::Dimension D, typename Char>
 class MP_UNITS_STD_FMT::formatter<D, Char> {
@@ -126,15 +126,16 @@ class MP_UNITS_STD_FMT::formatter<D, Char> {
     auto it = begin;
     if (it == end || *it == '}') return begin;
 
-    constexpr auto valid_modifiers = std::string_view{"UA"};
+    constexpr auto valid_modifiers = std::string_view{"UP"};
     for (; it != end && *it != '}'; ++it) {
       if (valid_modifiers.find(*it) == std::string_view::npos)
         throw MP_UNITS_STD_FMT::format_error("invalid dimension modifier specified");
     }
     end = it;
 
-    if (it = mp_units::detail::at_most_one_of(begin, end, "UA"); it != end)
-      specs_.encoding = (*it == 'U') ? mp_units::text_encoding::unicode : mp_units::text_encoding::ascii;
+    if (it = mp_units::detail::at_most_one_of(begin, end, "UAP"); it != end)
+      // TODO 'A' stands for an old and deprecated ASCII encoding
+      specs_.encoding = (*it == 'U') ? mp_units::text_encoding::utf8 : mp_units::text_encoding::portable;
 
     return end;
   }
@@ -198,15 +199,16 @@ class MP_UNITS_STD_FMT::formatter<U, Char> {
     auto it = begin;
     if (it == end || *it == '}') return begin;
 
-    constexpr auto valid_modifiers = std::string_view{"UA1ansd"};
+    constexpr auto valid_modifiers = std::string_view{"UAP1ansd"};
     for (; it != end && *it != '}'; ++it) {
       if (valid_modifiers.find(*it) == std::string_view::npos)
         throw MP_UNITS_STD_FMT::format_error("invalid unit modifier specified");
     }
     end = it;
 
-    if (it = mp_units::detail::at_most_one_of(begin, end, "UA"); it != end)
-      specs_.encoding = (*it == 'U') ? mp_units::text_encoding::unicode : mp_units::text_encoding::ascii;
+    if (it = mp_units::detail::at_most_one_of(begin, end, "UAP"); it != end)
+      // TODO 'A' stands for an old and deprecated ASCII encoding
+      specs_.encoding = (*it == 'U') ? mp_units::text_encoding::utf8 : mp_units::text_encoding::portable;
     if (it = mp_units::detail::at_most_one_of(begin, end, "1an"); it != end) {
       switch (*it) {
         case '1':
@@ -221,8 +223,8 @@ class MP_UNITS_STD_FMT::formatter<U, Char> {
       }
     }
     if (it = mp_units::detail::at_most_one_of(begin, end, "sd"); it != end) {
-      if (*it == 'd' && specs_.encoding == mp_units::text_encoding::ascii)
-        throw MP_UNITS_STD_FMT::format_error("half_high_dot unit separator allowed only for Unicode encoding");
+      if (*it == 'd' && specs_.encoding == mp_units::text_encoding::portable)
+        throw MP_UNITS_STD_FMT::format_error("half_high_dot unit separator allowed only for UTF-8 encoding");
       specs_.separator =
         (*it == 's') ? mp_units::unit_symbol_separator::space : mp_units::unit_symbol_separator::half_high_dot;
     }

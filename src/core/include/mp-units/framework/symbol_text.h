@@ -56,9 +56,11 @@ namespace mp_units {
 
 // NOLINTNEXTLINE(readability-enum-initial-value)
 MP_UNITS_EXPORT enum class text_encoding : std::int8_t {
-  unicode,  // µs; m³;  L²MT⁻³
-  ascii,    // us; m^3; L^2MT^-3
-  default_encoding = unicode
+  utf8,  // µs; m³;  L²MT⁻³
+  unicode [[deprecated("Use `utf8` instead")]] = utf8,
+  portable,  // us; m^3; L^2MT^-3
+  ascii [[deprecated("Use `portable` instead")]] = portable,
+  default_encoding = utf8
 };
 
 namespace detail {
@@ -89,65 +91,67 @@ constexpr fixed_u8string<N> to_u8string(fixed_string<N> txt)
  *
  * This class template is responsible for definition and handling of a symbol text
  * representation. In the libary it is used to define symbols of units and prefixes.
- * Each symbol can have two versions: Unicode and ASCI-only.
+ * Each symbol can have two versions: UTF-8 and portable.
  *
- * @tparam N The size of a Unicode symbol
- * @tparam M The size of the ASCII-only symbol
+ * @tparam N The size of a UTF-8 symbol
+ * @tparam M The size of the portable symbol
  */
 MP_UNITS_EXPORT template<std::size_t N, std::size_t M>
 class symbol_text {
 public:
-  fixed_u8string<N> unicode_;
-  fixed_string<M> ascii_;
+  fixed_u8string<N> utf8_;
+  fixed_string<M> portable_;
 
   // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
-  constexpr explicit(false) symbol_text(char ch) : unicode_(static_cast<char8_t>(ch)), ascii_(ch)
+  constexpr explicit(false) symbol_text(char ch) : utf8_(static_cast<char8_t>(ch)), portable_(ch)
   {
     MP_UNITS_EXPECTS(detail::is_basic_literal_character_set_char(ch));
   }
 
   // NOLINTNEXTLINE(*-avoid-c-arrays, google-explicit-constructor, hicpp-explicit-conversions)
   consteval explicit(false) symbol_text(const char (&txt)[N + 1]) :
-      unicode_(detail::to_u8string(basic_fixed_string{txt})), ascii_(txt)
+      utf8_(detail::to_u8string(basic_fixed_string{txt})), portable_(txt)
   {
     MP_UNITS_EXPECTS(txt[N] == char{});
     MP_UNITS_EXPECTS(detail::is_basic_literal_character_set(txt));
   }
 
   // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
-  constexpr explicit(false) symbol_text(const fixed_string<N>& txt) : unicode_(detail::to_u8string(txt)), ascii_(txt)
+  constexpr explicit(false) symbol_text(const fixed_string<N>& txt) : utf8_(detail::to_u8string(txt)), portable_(txt)
   {
     MP_UNITS_EXPECTS(detail::is_basic_literal_character_set(txt.data_));
   }
 
   // NOLINTNEXTLINE(*-avoid-c-arrays)
-  consteval symbol_text(const char8_t (&u)[N + 1], const char (&a)[M + 1]) : unicode_(u), ascii_(a)
+  consteval symbol_text(const char8_t (&u)[N + 1], const char (&a)[M + 1]) : utf8_(u), portable_(a)
   {
     MP_UNITS_EXPECTS(u[N] == char8_t{});
     MP_UNITS_EXPECTS(a[M] == char{});
     MP_UNITS_EXPECTS(detail::is_basic_literal_character_set(a));
   }
 
-  constexpr symbol_text(const fixed_u8string<N>& unicode, const fixed_string<M>& ascii) :
-      unicode_(unicode), ascii_(ascii)
+  constexpr symbol_text(const fixed_u8string<N>& utf8, const fixed_string<M>& portable) :
+      utf8_(utf8), portable_(portable)
   {
-    MP_UNITS_EXPECTS(detail::is_basic_literal_character_set(ascii.data_));
+    MP_UNITS_EXPECTS(detail::is_basic_literal_character_set(portable.data_));
   }
 
-  [[nodiscard]] constexpr const auto& unicode() const { return unicode_; }
-  [[nodiscard]] constexpr const auto& ascii() const { return ascii_; }
+  [[nodiscard]] constexpr const auto& utf8() const { return utf8_; }
+  [[nodiscard]] constexpr const auto& portable() const { return portable_; }
+  [[deprecated("Use `utf8()` instead")]] constexpr const auto& unicode() const { return utf8(); }
+  [[deprecated("Use `portable()` instead")]] constexpr const auto& ascii() const { return portable(); }
 
   [[nodiscard]] constexpr bool empty() const
   {
-    MP_UNITS_ASSERT_DEBUG(unicode().empty() == ascii().empty());
-    return unicode().empty();
+    MP_UNITS_ASSERT_DEBUG(utf8().empty() == portable().empty());
+    return utf8().empty();
   }
 
   template<std::size_t N2, std::size_t M2>
   [[nodiscard]] constexpr friend symbol_text<N + N2, M + M2> operator+(const symbol_text& lhs,
                                                                        const symbol_text<N2, M2>& rhs)
   {
-    return symbol_text<N + N2, M + M2>(lhs.unicode() + rhs.unicode(), lhs.ascii() + rhs.ascii());
+    return symbol_text<N + N2, M + M2>(lhs.utf8() + rhs.utf8(), lhs.portable() + rhs.portable());
   }
 
   template<std::size_t N2, std::size_t M2>
@@ -155,15 +159,15 @@ public:
   {
     MP_UNITS_DIAGNOSTIC_PUSH
     MP_UNITS_DIAGNOSTIC_IGNORE_ZERO_AS_NULLPOINTER_CONSTANT
-    if (const auto cmp = lhs.unicode() <=> rhs.unicode(); cmp != 0) return cmp;
+    if (const auto cmp = lhs.utf8() <=> rhs.utf8(); cmp != 0) return cmp;
     MP_UNITS_DIAGNOSTIC_POP
-    return lhs.ascii() <=> rhs.ascii();
+    return lhs.portable() <=> rhs.portable();
   }
 
   template<std::size_t N2, std::size_t M2>
   [[nodiscard]] friend constexpr bool operator==(const symbol_text& lhs, const symbol_text<N2, M2>& rhs) noexcept
   {
-    return lhs.unicode() == rhs.unicode() && lhs.ascii() == rhs.ascii();
+    return lhs.utf8() == rhs.utf8() && lhs.portable() == rhs.portable();
   }
 };
 

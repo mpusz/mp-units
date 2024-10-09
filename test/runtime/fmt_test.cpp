@@ -443,7 +443,7 @@ TEST_CASE("Unit formatting should use proper text encoding")
     CHECK(MP_UNITS_STD_FMT::format("{}", m / s2) == "m/s²");
   }
 
-  SECTION("ASCII text output")
+  SECTION("Portable text output")
   {
     CHECK(MP_UNITS_STD_FMT::format("{:A}", km / h) == "km/h");
     CHECK(MP_UNITS_STD_FMT::format("{:A}", si::kilo<si::ohm>) == "kohm");
@@ -618,7 +618,7 @@ TEST_CASE("more then one modifier of the same kind should throw", "[text][fmt][e
   }
 }
 
-TEST_CASE("half_high_dot separator requested for ASCII encoding should throw", "[text][fmt][exception]")
+TEST_CASE("half_high_dot separator requested for portable encoding should throw", "[text][fmt][exception]")
 {
   REQUIRE_THROWS_MATCHES(MP_UNITS_STD_FMT::vformat("{:dAa}", MP_UNITS_STD_FMT::make_format_args(m)),
                          MP_UNITS_STD_FMT::format_error,
@@ -1037,9 +1037,9 @@ TEST_CASE("unit_symbol", "[text]")
     CHECK(os.str() == "m/s²");
   }
 
-  SECTION("ASCII mode")
+  SECTION("Portable mode")
   {
-    os << unit_symbol<unit_symbol_formatting{.encoding = ascii}>(m / s2);
+    os << unit_symbol<unit_symbol_formatting{.encoding = portable}>(m / s2);
     CHECK(os.str() == "m/s^2");
   }
 
@@ -1068,9 +1068,9 @@ TEST_CASE("dimension_symbol", "[text]")
     CHECK(os.str() == "L²MT⁻³");
   }
 
-  SECTION("ASCII mode")
+  SECTION("Portable mode")
   {
-    os << dimension_symbol<dimension_symbol_formatting{.encoding = ascii}>(isq::power.dimension);
+    os << dimension_symbol<dimension_symbol_formatting{.encoding = portable}>(isq::power.dimension);
     CHECK(os.str() == "L^2MT^-3");
   }
 }

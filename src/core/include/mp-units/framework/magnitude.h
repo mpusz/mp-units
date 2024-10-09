@@ -310,9 +310,9 @@ template<typename CharT, std::output_iterator<CharT> Out>
 constexpr Out print_separator(Out out, const unit_symbol_formatting& fmt)
 {
   if (fmt.separator == unit_symbol_separator::half_high_dot) {
-    if (fmt.encoding != text_encoding::unicode)
+    if (fmt.encoding != text_encoding::utf8)
       MP_UNITS_THROW(
-        std::invalid_argument("'unit_symbol_separator::half_high_dot' can be only used with 'text_encoding::unicode'"));
+        std::invalid_argument("'unit_symbol_separator::half_high_dot' can be only used with 'text_encoding::utf8'"));
     const std::string_view dot = "⋅";
     out = detail::copy(dot.begin(), dot.end(), out);
   } else {

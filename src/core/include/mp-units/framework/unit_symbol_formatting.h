@@ -48,7 +48,7 @@ enum class unit_symbol_solidus : std::int8_t {
 // NOLINTNEXTLINE(readability-enum-initial-value)
 enum class unit_symbol_separator : std::int8_t {
   space,          // kg m²/s²
-  half_high_dot,  // kg⋅m²/s²  (valid only for unicode encoding)
+  half_high_dot,  // kg⋅m²/s²  (valid only for utf8 encoding)
   default_separator = space
 };
 

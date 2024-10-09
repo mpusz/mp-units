@@ -77,7 +77,7 @@ template<Unit auto From, Unit auto To>
 
 #else
 
-[[nodiscard]] std::string_view to_string_view(Unit auto u) { return u.symbol.ascii().c_str(); }
+[[nodiscard]] std::string_view to_string_view(Unit auto u) { return u.symbol.portable().c_str(); }
 
 template<Unit auto From, Unit auto To>
 [[nodiscard]] double exchange_rate(std::chrono::sys_seconds timestamp)

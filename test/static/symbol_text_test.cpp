@@ -37,26 +37,26 @@ static_assert(sym1 <= 'b');
 static_assert(sym1 <= 'c');
 static_assert(sym1 >= 'b');
 static_assert(sym1 >= 'a');
-static_assert(sym1.unicode() == u8"b");
-static_assert(sym1.ascii() == "b");
+static_assert(sym1.utf8() == u8"b");
+static_assert(sym1.portable() == "b");
 
 constexpr symbol_text sym3("ab");
-static_assert(sym3.unicode() == u8"ab");
-static_assert(sym3.ascii() == "ab");
+static_assert(sym3.utf8() == u8"ab");
+static_assert(sym3.portable() == "ab");
 
 constexpr basic_fixed_string txt1("bc");
 constexpr symbol_text sym4(txt1);
-static_assert(sym4.unicode() == u8"bc");
-static_assert(sym4.ascii() == "bc");
+static_assert(sym4.utf8() == u8"bc");
+static_assert(sym4.portable() == "bc");
 
 constexpr symbol_text sym5(u8"bc", "de");
-static_assert(sym5.unicode() == u8"bc");
-static_assert(sym5.ascii() == "de");
+static_assert(sym5.utf8() == u8"bc");
+static_assert(sym5.portable() == "de");
 
 constexpr basic_fixed_string txt2("de");
-constexpr symbol_text sym6(sym4.unicode(), txt2);
-static_assert(sym6.unicode() == u8"bc");
-static_assert(sym6.ascii() == "de");
+constexpr symbol_text sym6(sym4.utf8(), txt2);
+static_assert(sym6.utf8() == u8"bc");
+static_assert(sym6.portable() == "de");
 
 static_assert(sym6 == symbol_text(u8"bc", "de"));
 static_assert(sym6 != symbol_text(u8"fg", "hi"));

@@ -114,18 +114,18 @@ and units of derived quantities.
 ### `text_encoding`
 
 [ISQ](../../appendix/glossary.md#isq) and [SI](../../appendix/glossary.md#si) standards always
-specify symbols using Unicode encoding. This is why it is a default and primary target for
-text output. However, in some applications or environments, a standard ASCII-like text output
+specify symbols using UTF-8 encoding. This is why it is a default and primary target for
+text output. However, in some applications or environments, a standard portable text output
 using only the characters from the [basic literal character set](https://en.cppreference.com/w/cpp/language/charset)
 can be preferred by users.
 
-This is why the library provides an option to change the default encoding to the ASCII one with:
+This is why the library provides an option to change the default encoding to the portable one with:
 
 ```cpp
 enum class text_encoding : std::int8_t {
-  unicode,  // µs; m³;  L²MT⁻³
-  ascii,    // us; m^3; L^2MT^-3
-  default_encoding = unicode
+  utf8,       // µs; m³;  L²MT⁻³
+  portable,   // us; m^3; L^2MT^-3
+  default_encoding = utf8
 };
 ```
 
@@ -154,7 +154,7 @@ template<dimension_symbol_formatting fmt = dimension_symbol_formatting{}, typena
 For example:
 
 ```cpp
-static_assert(dimension_symbol<{.encoding = text_encoding::ascii}>(isq::power.dimension) == "L^2MT^-3");
+static_assert(dimension_symbol<{.encoding = text_encoding::portable}>(isq::power.dimension) == "L^2MT^-3");
 ```
 
 !!! note
@@ -175,7 +175,7 @@ For example:
 
 ```cpp
 std::string txt;
-dimension_symbol_to(std::back_inserter(txt), isq::power.dimension, {.encoding = text_encoding::ascii});
+dimension_symbol_to(std::back_inserter(txt), isq::power.dimension, {.encoding = text_encoding::portable});
 std::cout << txt << "\n";
 ```
 
@@ -203,7 +203,7 @@ enum class unit_symbol_solidus : std::int8_t {
 
 enum class unit_symbol_separator : std::int8_t {
   space,          // kg m²/s²
-  half_high_dot,  // kg⋅m²/s²  (valid only for unicode encoding)
+  half_high_dot,  // kg⋅m²/s²  (valid only for utf8 encoding)
   default_separator = space
 };
 
@@ -455,7 +455,7 @@ as text and, thus, are aligned to the left by default.
 ```ebnf
 dimension-format-spec = [fill-and-align], [width], [dimension-spec];
 dimension-spec        = [text-encoding];
-text-encoding         = 'U' | 'A';
+text-encoding         = 'U' | 'P';
 ```
 
 In the above grammar:
@@ -463,8 +463,8 @@ In the above grammar:
 - `fill-and-align` and `width` tokens are defined in the [format.string.std](https://wg21.link/format.string.std)
   chapter of the C++ standard specification,
 - `text-encoding` token specifies the symbol text encoding:
-    - `U` (default) uses the **Unicode** symbols defined by [@ISO80000] (e.g., `LT⁻²`),
-    - `A` forces non-standard **ASCII**-only output (e.g., `LT^-2`).
+    - `U` (default) uses the **UTF-8** symbols defined by [@ISO80000] (e.g., `LT⁻²`),
+    - `P` forces non-standard **portable** output (e.g., `LT^-2`).
 
 Dimension symbols of some quantities are specified to use Unicode signs by the
 [ISQ](../../appendix/glossary.md#isq) (e.g., `Θ` symbol for the _thermodynamic temperature_
@@ -475,9 +475,9 @@ symbol can be forced to be printed using such characters thanks to `text-encodin
 
 ```cpp
 std::println("{}", isq::dim_thermodynamic_temperature);   // Θ
-std::println("{:A}", isq::dim_thermodynamic_temperature); // O
+std::println("{:P}", isq::dim_thermodynamic_temperature); // O
 std::println("{}", isq::power.dimension);                 // L²MT⁻³
-std::println("{:A}", isq::power.dimension);               // L^2MT^-3
+std::println("{:P}", isq::power.dimension);               // L^2MT^-3
 ```
 
 ### Unit formatting
@@ -506,7 +506,7 @@ In the above grammar:
       (e.g., `m s⁻¹`, `kg m⁻¹ s⁻¹`)
 - `unit-symbol-separator` token specifies how multiplied unit symbols should be separated:
     - 's' (default) uses **space** as a separator (e.g., `kg m²/s²`)
-    - 'd' uses half-high **dot** (`⋅`) as a separator (e.g., `kg⋅m²/s²`) (requires the Unicode encoding)
+    - 'd' uses half-high **dot** (`⋅`) as a separator (e.g., `kg⋅m²/s²`) (requires the UTF-8 encoding)
 - 'L' is reserved for possible future localization use in case the C++ standard library gets access to
   the ICU-like database.
 
@@ -525,11 +525,11 @@ In such a case, the unit symbol can be forced to be printed using such character
 
 ```cpp
 std::println("{}", si::ohm);      // Ω
-std::println("{:A}", si::ohm);    // ohm
+std::println("{:P}", si::ohm);    // ohm
 std::println("{}", us);           // µs
-std::println("{:A}", us);         // us
+std::println("{:P}", us);         // us
 std::println("{}", m / s2);       // m/s²
-std::println("{:A}", m / s2);     // m/s^2
+std::println("{:P}", m / s2);     // m/s^2
 ```
 
 Additionally, both ISO 80000 and [SI](../../appendix/glossary.md#si) leave some freedom on how to
@@ -576,7 +576,7 @@ std::println("{:d}", kg * m2 / s2);  // kg⋅m²/s²
 
 !!! note
 
-    'd' requires the Unicode encoding to be set.
+    'd' requires the UTF-8 encoding to be set.
 
 
 ### Quantity formatting

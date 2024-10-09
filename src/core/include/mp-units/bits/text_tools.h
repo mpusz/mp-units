@@ -98,19 +98,19 @@ template<std::intmax_t Value>
 template<typename CharT, std::size_t N, std::size_t M, std::output_iterator<CharT> Out>
 constexpr Out copy(const symbol_text<N, M>& txt, text_encoding encoding, Out out)
 {
-  if (encoding == text_encoding::unicode) {
+  if (encoding == text_encoding::utf8) {
     if constexpr (is_same_v<CharT, char8_t>)
-      return ::mp_units::detail::copy(txt.unicode().begin(), txt.unicode().end(), out);
+      return ::mp_units::detail::copy(txt.utf8().begin(), txt.utf8().end(), out);
     else if constexpr (is_same_v<CharT, char>) {
-      for (const char8_t ch : txt.unicode()) *out++ = static_cast<char>(ch);
+      for (const char8_t ch : txt.utf8()) *out++ = static_cast<char>(ch);
       return out;
     } else
-      MP_UNITS_THROW(std::invalid_argument("Unicode text can't be copied to CharT output"));
+      MP_UNITS_THROW(std::invalid_argument("UTF-8 text can't be copied to CharT output"));
   } else {
     if constexpr (is_same_v<CharT, char>)
-      return ::mp_units::detail::copy(txt.ascii().begin(), txt.ascii().end(), out);
+      return ::mp_units::detail::copy(txt.portable().begin(), txt.portable().end(), out);
     else
-      MP_UNITS_THROW(std::invalid_argument("ASCII text can't be copied to CharT output"));
+      MP_UNITS_THROW(std::invalid_argument("Portable text can't be copied to CharT output"));
   }
 }
 

@@ -240,18 +240,18 @@ are opt-in. A user has to explicitly "import" them from a dedicated `unit_symbol
     quantity q2 = 42 * km / h;
     ```
 
-We also provide alternative object identifiers using Unicode characters in their names for most
-unit symbols. The code using Unicode looks nicer, but it is harder to type on the keyboard.
+We also provide alternative object identifiers using UTF-8 characters in their names for most
+unit symbols. The code using UTF-8 looks nicer, but it is harder to type on the keyboard.
 This is why we provide both versions of identifiers for such units.
 
-=== "ASCII only"
+=== "Portable"
 
     ```cpp
     quantity resistance = 60 * kohm;
     quantity capacitance = 100 * uF;
     ```
 
-=== "With Unicode glyphs"
+=== "With UTF-8 glyphs"
 
     ```cpp
     quantity resistance = 60 * kΩ;
