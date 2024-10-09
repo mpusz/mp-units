@@ -762,9 +762,9 @@ You're not viewing the latest version.
 </li>
       
         <li class="md-nav__item">
-  <a href="#why-unicode-quantity-symbols-are-used-by-default-instead-of-ascii-only-characters" class="md-nav__link">
+  <a href="#why-utf-8-quantity-symbols-are-used-by-default-instead-of-portable-characters" class="md-nav__link">
     <span class="md-ellipsis">
-      Why Unicode quantity symbols are used by default instead of ASCII-only characters?
+      Why UTF-8 quantity symbols are used by default instead of portable characters?
     </span>
   </a>
   
@@ -2418,17 +2418,17 @@ code.</p>
 <a href="../../users_guide/framework_basics/concepts/">existing concepts</a> to the <code>standard_case</code>,
 please let us know in the associated <a href="https://github.com/mpusz/mp-units/issues/93">GitHub Issue</a>.</p>
 </div>
-<h2 id="why-unicode-quantity-symbols-are-used-by-default-instead-of-ascii-only-characters">Why Unicode quantity symbols are used by default instead of ASCII-only characters?<a class="headerlink" href="#why-unicode-quantity-symbols-are-used-by-default-instead-of-ascii-only-characters" title="Permanent link">&para;</a></h2>
+<h2 id="why-utf-8-quantity-symbols-are-used-by-default-instead-of-portable-characters">Why UTF-8 quantity symbols are used by default instead of portable characters?<a class="headerlink" href="#why-utf-8-quantity-symbols-are-used-by-default-instead-of-portable-characters" title="Permanent link">&para;</a></h2>
 <p>Both C++ and <a href="../../appendix/references/#ISO80000">ISO 80000</a> are standardized by the ISO.
 <a href="../../appendix/references/#ISO80000">ISO 80000</a> and the <a href="../../appendix/references/#SIBrochure">SI</a>
-standards specify Unicode symbols as the official unit names for some quantities
+standards specify UTF-8 symbols as the official unit names for some quantities
 (e.g. <code>Ω</code> symbol for the resistance quantity).
 As the <strong>mp-units</strong> library will be proposed for standardization as a part of the C++ Standard Library
 we have to obey the rules and be consistent with ISO specifications.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>We do understand engineering reality and the constraints of some environments. This is why the library
-has the option of <a href="../../users_guide/framework_basics/text_output/#unit_symbol_formatting">ASCII-only Quantity Symbols</a>.</p>
+has the option of <a href="../../users_guide/framework_basics/text_output/#unit_symbol_formatting">Portable Quantity Symbols</a>.</p>
 </div>
 <h2 id="why-dont-we-have-cmake-options-to-disable-the-building-of-tests-and-examples">Why don't we have CMake options to disable the building of tests and examples?<a class="headerlink" href="#why-dont-we-have-cmake-options-to-disable-the-building-of-tests-and-examples" title="Permanent link">&para;</a></h2>
 <p>Over time, many people provided PRs proposing adding options to build tests and examples conditionally.
