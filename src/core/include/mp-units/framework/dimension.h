@@ -68,15 +68,6 @@ using type_list_of_base_dimension_less = expr_less<T1, T2, base_dimension_less>;
 template<DerivedDimensionExpr... Expr>
 struct derived_dimension_impl : expr_fractions<is_dimension_one, Expr...> {};
 
-template<auto Symbol>
-[[nodiscard]] consteval std::true_type derived_from_the_same_base_dimension(const base_dimension<Symbol>&,
-                                                                            const base_dimension<Symbol>&)
-{
-  return {};
-}
-
-[[nodiscard]] consteval std::false_type derived_from_the_same_base_dimension(...) { return {}; }
-
 struct dimension_interface {
   template<Dimension Lhs, Dimension Rhs>
   [[nodiscard]] friend consteval Dimension auto operator*(Lhs, Rhs)
@@ -91,9 +82,9 @@ struct dimension_interface {
   }
 
   template<Dimension Lhs, Dimension Rhs>
-  [[nodiscard]] friend consteval bool operator==(Lhs lhs, Rhs rhs)
+  [[nodiscard]] friend consteval bool operator==(Lhs, Rhs)
   {
-    return is_same_v<Lhs, Rhs> || derived_from_the_same_base_dimension(lhs, rhs);
+    return is_same_v<Lhs, Rhs>;
   }
 };
 
