@@ -445,10 +445,10 @@ TEST_CASE("Unit formatting should use proper text encoding")
 
   SECTION("Portable text output")
   {
-    CHECK(MP_UNITS_STD_FMT::format("{:A}", km / h) == "km/h");
-    CHECK(MP_UNITS_STD_FMT::format("{:A}", si::kilo<si::ohm>) == "kohm");
-    CHECK(MP_UNITS_STD_FMT::format("{:A}", us) == "us");
-    CHECK(MP_UNITS_STD_FMT::format("{:A}", m / s2) == "m/s^2");
+    CHECK(MP_UNITS_STD_FMT::format("{:P}", km / h) == "km/h");
+    CHECK(MP_UNITS_STD_FMT::format("{:P}", si::kilo<si::ohm>) == "kohm");
+    CHECK(MP_UNITS_STD_FMT::format("{:P}", us) == "us");
+    CHECK(MP_UNITS_STD_FMT::format("{:P}", m / s2) == "m/s^2");
   }
 }
 
@@ -540,13 +540,13 @@ TEST_CASE("repeated unit modifiers should throw", "[text][fmt][exception]")
   {
     REQUIRE_THROWS_MATCHES(MP_UNITS_STD_FMT::vformat("{:UdaU}", MP_UNITS_STD_FMT::make_format_args(m)),
                            MP_UNITS_STD_FMT::format_error,
-                           Catch::Matchers::Message("only one of 'UA' unit modifiers may be used in the format spec"));
+                           Catch::Matchers::Message("only one of 'UAP' unit modifiers may be used in the format spec"));
     REQUIRE_THROWS_MATCHES(MP_UNITS_STD_FMT::vformat("{:dUaU}", MP_UNITS_STD_FMT::make_format_args(m)),
                            MP_UNITS_STD_FMT::format_error,
-                           Catch::Matchers::Message("only one of 'UA' unit modifiers may be used in the format spec"));
+                           Catch::Matchers::Message("only one of 'UAP' unit modifiers may be used in the format spec"));
     REQUIRE_THROWS_MATCHES(MP_UNITS_STD_FMT::vformat("{:dUUa}", MP_UNITS_STD_FMT::make_format_args(m)),
                            MP_UNITS_STD_FMT::format_error,
-                           Catch::Matchers::Message("only one of 'UA' unit modifiers may be used in the format spec"));
+                           Catch::Matchers::Message("only one of 'UAP' unit modifiers may be used in the format spec"));
   }
 
   SECTION("solidus")
@@ -580,15 +580,15 @@ TEST_CASE("more then one modifier of the same kind should throw", "[text][fmt][e
 {
   SECTION("text encoding")
   {
-    REQUIRE_THROWS_MATCHES(MP_UNITS_STD_FMT::vformat("{:UdaA}", MP_UNITS_STD_FMT::make_format_args(m)),
+    REQUIRE_THROWS_MATCHES(MP_UNITS_STD_FMT::vformat("{:UdaP}", MP_UNITS_STD_FMT::make_format_args(m)),
                            MP_UNITS_STD_FMT::format_error,
-                           Catch::Matchers::Message("only one of 'UA' unit modifiers may be used in the format spec"));
-    REQUIRE_THROWS_MATCHES(MP_UNITS_STD_FMT::vformat("{:dAaU}", MP_UNITS_STD_FMT::make_format_args(m)),
+                           Catch::Matchers::Message("only one of 'UAP' unit modifiers may be used in the format spec"));
+    REQUIRE_THROWS_MATCHES(MP_UNITS_STD_FMT::vformat("{:dPaU}", MP_UNITS_STD_FMT::make_format_args(m)),
                            MP_UNITS_STD_FMT::format_error,
-                           Catch::Matchers::Message("only one of 'UA' unit modifiers may be used in the format spec"));
-    REQUIRE_THROWS_MATCHES(MP_UNITS_STD_FMT::vformat("{:dAUa}", MP_UNITS_STD_FMT::make_format_args(m)),
+                           Catch::Matchers::Message("only one of 'UAP' unit modifiers may be used in the format spec"));
+    REQUIRE_THROWS_MATCHES(MP_UNITS_STD_FMT::vformat("{:dPUa}", MP_UNITS_STD_FMT::make_format_args(m)),
                            MP_UNITS_STD_FMT::format_error,
-                           Catch::Matchers::Message("only one of 'UA' unit modifiers may be used in the format spec"));
+                           Catch::Matchers::Message("only one of 'UAP' unit modifiers may be used in the format spec"));
   }
 
   SECTION("solidus")
@@ -620,9 +620,9 @@ TEST_CASE("more then one modifier of the same kind should throw", "[text][fmt][e
 
 TEST_CASE("half_high_dot separator requested for portable encoding should throw", "[text][fmt][exception]")
 {
-  REQUIRE_THROWS_MATCHES(MP_UNITS_STD_FMT::vformat("{:dAa}", MP_UNITS_STD_FMT::make_format_args(m)),
+  REQUIRE_THROWS_MATCHES(MP_UNITS_STD_FMT::vformat("{:dPa}", MP_UNITS_STD_FMT::make_format_args(m)),
                          MP_UNITS_STD_FMT::format_error,
-                         Catch::Matchers::Message("half_high_dot unit separator allowed only for Unicode encoding"));
+                         Catch::Matchers::Message("half_high_dot unit separator allowed only for UTF-8 encoding"));
 }
 
 TEST_CASE("%U and %N can be put anywhere in a format string", "[text][fmt]")
