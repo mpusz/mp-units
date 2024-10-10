@@ -206,8 +206,9 @@ struct unit_interface {
     return is_same_v<Lhs, Rhs>;
   }
 
-  [[nodiscard]] friend consteval bool equivalent(Unit auto lhs, Unit auto rhs)
-    requires(convertible(lhs, rhs))
+  template<Unit Lhs, Unit Rhs>
+    requires(convertible(Lhs{}, Rhs{}))
+  [[nodiscard]] friend consteval bool equivalent(Lhs lhs, Rhs rhs)
   {
     return get_canonical_unit(lhs).mag == get_canonical_unit(rhs).mag;
   }
