@@ -29,11 +29,11 @@ dependencies by other means, some modifications to the library's CMake files mig
     compiler=gcc
     compiler.cppstd=20
     compiler.libcxx=libstdc++11
-    compiler.version=12
+    compiler.version=14
     os=Linux
 
     [conf]
-    tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
+    tools.build:compiler_executables={"c": "gcc-14", "cpp": "g++-14"}
     ```
 
     !!! tip "Setting the language version"
