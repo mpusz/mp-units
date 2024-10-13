@@ -5,8 +5,8 @@ include(JEGPAddStandardeseSources)
 
 set(pdf_title "mp-units Library")
 set(page_license "MIT License")
-set(first_library_chapter "qties")
-set(last_library_chapter "qties")
+set(first_library_chapter "quantities")
+set(last_library_chapter "quantities")
 set(cover_title "mp-units Library Reference Documentations")
 set(reply_to "\\href{${PROJECT_HOMEPAGE_URL}/discussions}{Discussions}, \\href{${PROJECT_HOMEPAGE_URL}/issues}{issues}")
 jegp_add_standardese_sources(
@@ -21,6 +21,7 @@ jegp_add_standardese_sources(
              # Latex commands.
              [[\\href{([^}]+)}{([^}]+)};HREF(\1)(\2)]]
              # Macros extensions.
+             [[\\txtrm;\\textrm]]
              [[\\refcpp{([^}]+)};REFCPP(\1)]]
              [[\\irefcpp{([^}]+)};~(REFCPP(\1))]]
              [[\\refcppx{([^}]+)}{([^}]+)};REFCPPX(\1)(\2)]]
