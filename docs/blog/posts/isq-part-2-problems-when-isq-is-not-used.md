@@ -10,8 +10,8 @@ comments: true
 # International System of Quantities (ISQ): Part 2 - Problems when ISQ is not used
 
 This article is the next one in our series about the ISQ. After introducing the basic terms and
-systems, in this article, we will talk about the issues we face when we base the quantities and
-units library on just units or dimensions.
+systems, this article will talk about the issues we face when we base the quantities and units
+library on just units or dimensions.
 
 <!-- more -->
 
