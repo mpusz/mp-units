@@ -696,6 +696,7 @@ inline constexpr struct pi final : mag_constant<symbol_text{u8"𝜋", "pi"}> {
 inline constexpr struct pi final : mag_constant<symbol_text{u8"𝜋", "pi"}, std::numbers::pi_v<long double>> {
 #endif
 } pi;
+inline constexpr auto 𝜋 = pi;
 
 [[deprecated("Use `mag<pi>` instead")]] inline constexpr Magnitude auto mag_pi = mag<pi>;
 

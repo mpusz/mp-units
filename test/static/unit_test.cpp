@@ -58,7 +58,7 @@ inline constexpr struct nu_second_ final : named_unit<"s"> {} nu_second;
 
 // derived named units
 inline constexpr struct radian_ final : named_unit<"rad", metre / metre, kind_of<isq::angular_measure>> {} radian;
-inline constexpr struct revolution_ final : named_unit<"rev", mag<2> * mag<pi> * radian> {} revolution;
+inline constexpr struct revolution_ final : named_unit<"rev", mag<2> * mag<𝜋> * radian> {} revolution;
 inline constexpr struct steradian_ final : named_unit<"sr", square(metre) / square(metre), kind_of<isq::solid_angular_measure>> {} steradian;
 inline constexpr struct hertz_ final : named_unit<"Hz", inverse(second), kind_of<isq::frequency>> {} hertz;
 inline constexpr struct becquerel_ final : named_unit<"Bq", inverse(second), kind_of<isq::activity>> {} becquerel;
@@ -70,7 +70,7 @@ inline constexpr struct degree_Celsius_ final : named_unit<symbol_text{u8"℃", 
 
 inline constexpr struct minute_ final : named_unit<"min", mag<60> * second> {} minute;
 inline constexpr struct hour_ final : named_unit<"h", mag<60> * minute> {} hour;
-inline constexpr struct degree_ final : named_unit<symbol_text{u8"°", "deg"}, mag<pi> / mag<180> * radian> {} degree;
+inline constexpr struct degree_ final : named_unit<symbol_text{u8"°", "deg"}, mag<𝜋> / mag<180> * radian> {} degree;
 
 inline constexpr struct yard_ final : named_unit<"yd", mag_ratio<9'144, 10'000> * metre> {} yard;
 inline constexpr struct mile_ final : named_unit<"mi", mag<1760> * yard> {} mile;
@@ -138,7 +138,7 @@ static_assert(get_canonical_unit(radian).mag == mag<1>);
 
 static_assert(is_of_type<degree, degree_>);
 static_assert(is_of_type<get_canonical_unit(degree).reference_unit, one_>);
-static_assert(get_canonical_unit(degree).mag == mag<pi> / mag<180>);
+static_assert(get_canonical_unit(degree).mag == mag<𝜋> / mag<180>);
 static_assert(convertible(radian, degree));
 static_assert(radian != degree);
 

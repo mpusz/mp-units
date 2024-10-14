@@ -185,10 +185,11 @@ is defined using a floating-point magnitude having a factor of the number π (Pi
 
 ```cpp
 inline constexpr struct pi final : mag_constant<symbol_text{u8"𝜋", "pi"}, std::numbers::pi_v<long double>> {} pi;
+inline constexpr auto 𝜋 = pi;
 ```
 
 ```cpp
-inline constexpr struct degree final : named_unit<{u8"°", "deg"}, mag<pi> / mag<180> * si::radian> {} degree;
+inline constexpr struct degree final : named_unit<{u8"°", "deg"}, mag<𝜋> / mag<180> * si::radian> {} degree;
 ```
 
 

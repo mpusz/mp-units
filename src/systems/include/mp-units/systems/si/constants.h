@@ -57,7 +57,7 @@ inline constexpr struct luminous_efficacy final :
 inline constexpr struct standard_gravity final :
   named_unit<symbol_text{u8"g₀", "g_0"}, mag_ratio<980'665, 100'000> * metre / square(second)> {} standard_gravity;
 inline constexpr struct magnetic_constant final :
-  named_unit<symbol_text{u8"μ₀", "u_0"}, mag<4> * mag<pi> * mag_power<10, -7> * henry / metre> {} magnetic_constant;
+  named_unit<symbol_text{u8"μ₀", "u_0"}, mag<4> * mag<𝜋> * mag_power<10, -7> * henry / metre> {} magnetic_constant;
 // clang-format on
 
 }  // namespace mp_units::si
