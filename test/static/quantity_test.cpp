@@ -24,6 +24,7 @@
 #include <mp-units/bits/hacks.h>
 #include <mp-units/ext/fixed_string.h>
 #include <mp-units/ext/type_traits.h>
+#include <mp-units/math.h>
 #include <mp-units/systems/isq/mechanics.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si.h>
@@ -782,6 +783,28 @@ static_assert(
   is_of_type<10 / (2 * isq::period_duration[s]) - 5 * isq::frequency[Hz], quantity<isq::frequency[Hz], int>>);
 static_assert(
   is_of_type<5 * isq::frequency[Hz] - 10 / (2 * isq::period_duration[s]), quantity<isq::frequency[Hz], int>>);
+
+static_assert(
+  is_of_type<isq::speed(1 * m / s) + isq::length(1. * m) / isq::time(1. * s), quantity<isq::speed[m / s], double>>);
+static_assert(
+  is_of_type<isq::length(1. * m) / isq::time(1. * s) + isq::speed(1 * m / s), quantity<isq::speed[m / s], double>>);
+static_assert(
+  is_of_type<isq::speed(1 * m / s) - isq::length(1. * m) / isq::time(1. * s), quantity<isq::speed[m / s], double>>);
+static_assert(
+  is_of_type<isq::length(1. * m) / isq::time(1. * s) - isq::speed(1 * m / s), quantity<isq::speed[m / s], double>>);
+
+static_assert(is_same_v<decltype((isq::mass(1 * kg) * pow<2>(isq::length(1 * m) / isq::time(1 * s))).in(J) +
+                                 isq::energy(1 * kg * m2 / s2)),
+                        quantity<isq::energy[J], int>>);
+static_assert(is_same_v<decltype(isq::energy(1 * kg * m2 / s2) +
+                                 (isq::mass(1 * kg) * pow<2>(isq::length(1 * m) / isq::time(1 * s))).in(J)),
+                        quantity<isq::energy[J], int>>);
+static_assert(is_same_v<decltype((isq::mass(1 * kg) * pow<2>(isq::length(1 * m) / isq::time(1 * s)))
+                                   .in(J)-isq::energy(1 * kg * m2 / s2)),
+                        quantity<isq::energy[J], int>>);
+static_assert(is_same_v<decltype(isq::energy(1 * kg * m2 / s2) -
+                                 (isq::mass(1 * kg) * pow<2>(isq::length(1 * m) / isq::time(1 * s))).in(J)),
+                        quantity<isq::energy[J], int>>);
 
 // Different named dimensions
 template<typename... Ts>
