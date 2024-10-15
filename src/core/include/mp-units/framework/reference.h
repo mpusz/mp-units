@@ -233,7 +233,7 @@ template<Reference R, typename Rep>
 // NOLINTNEXTLINE(cppcoreguidelines-missing-std-forward)
 constexpr auto operator*(R, Rep&&)
 #if __cpp_deleted_function
-  = delete("To create a `quantity` or `quantity_point` use `Rep * R`");
+  = delete("To create a `quantity` use `Rep * R`");
 #else
   = delete;
 #endif
@@ -243,7 +243,7 @@ template<Reference R, typename Rep>
 // NOLINTNEXTLINE(cppcoreguidelines-missing-std-forward)
 constexpr auto operator/(R, Rep&&)
 #if __cpp_deleted_function
-  = delete("To create a `quantity` or `quantity_point` use `Rep / R`");
+  = delete("To create a `quantity` use `Rep / R`");
 #else
   = delete;
 #endif
