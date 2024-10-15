@@ -256,6 +256,7 @@ static_assert(metre / second != length[metre] / time[second]);
 static_assert(metre / time[second] == length[metre] / second);
 static_assert(is_of_type<metre / time[second], decltype(length[metre] / second)>);
 static_assert(is_of_type<metre / time[second], decltype(length[metre] / time[second])>);
+static_assert(kind_of<length>[metre] == metre);
 
 template<auto QS, auto U>
 concept invalid_unit = !requires { QS[U]; };
