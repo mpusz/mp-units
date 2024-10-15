@@ -315,50 +315,51 @@ static_assert(invalid_getter_with_unit_conversion<quantity>);
 // derived quantities
 ///////////////////////////////////////
 
-template<Representation Rep, Quantity Q, const basic_fixed_string additional_nttp_argument>
-struct derived_quantity : quantity<Q::reference, Rep> {
-  static constexpr auto reference = Q::reference;
-  static constexpr auto quantity_spec = Q::quantity_spec;
-  static constexpr auto dimension = Q::dimension;
-  static constexpr auto unit = Q::unit;
+template<Reference auto R, basic_fixed_string additional_nttp_argument,
+         RepresentationOf<get_quantity_spec(R).character> Rep = double>
+struct child_quantity : quantity<R, Rep> {
+  using quantity_type = quantity<R, Rep>;
+  static constexpr auto reference = R;
+  static constexpr auto quantity_spec = quantity_type::quantity_spec;
+  static constexpr auto dimension = quantity_type::dimension;
+  static constexpr auto unit = quantity_type::unit;
   using rep = Rep;
-  using R = quantity<reference, Rep>;
 
-  derived_quantity() = default;
+  child_quantity() = default;
   // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
-  constexpr explicit(!std::is_trivial_v<Rep>) derived_quantity(const R& t) : R(t) {}
+  constexpr explicit(false) child_quantity(const quantity_type& t) : quantity_type(t) {}
   // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
-  constexpr explicit(!std::is_trivial_v<Rep>) derived_quantity(R&& t) : R(std::move(t)) {}
+  constexpr explicit(false) child_quantity(quantity_type&& t) : quantity_type(std::move(t)) {}
 
-  constexpr derived_quantity& operator=(const R& t)
+  constexpr child_quantity& operator=(const quantity_type& q)
   {
-    R::operator=(t);
+    quantity_type::operator=(q);
     return *this;
   }
-  constexpr derived_quantity& operator=(R&& t)
+  constexpr child_quantity& operator=(quantity_type&& q)
   {
-    R::operator=(std::move(t));
+    quantity_type::operator=(std::move(q));
     return *this;
   }
   // NOLINTBEGIN(google-explicit-constructor, hicpp-explicit-conversions)
-  constexpr explicit(false) operator R&() & noexcept { return *this; }
-  constexpr explicit(false) operator const R&() const& noexcept { return *this; }
-  constexpr explicit(false) operator R&&() && noexcept { return *this; }
-  constexpr explicit(false) operator const R&&() const&& noexcept { return *this; }
+  constexpr explicit(false) operator quantity_type&() & noexcept { return *this; }
+  constexpr explicit(false) operator const quantity_type&() const& noexcept { return *this; }
+  constexpr explicit(false) operator quantity_type&&() && noexcept { return *this; }
+  constexpr explicit(false) operator const quantity_type&&() const&& noexcept { return *this; }
   // NOLINTEND(google-explicit-constructor, hicpp-explicit-conversions)
 };
 
-static_assert(Quantity<derived_quantity<double, quantity<isq::length[m]>, "NTTP type description">>);
+static_assert(Quantity<child_quantity<isq::length[m], "NTTP type description">>);
 
-constexpr QuantityOf<isq::length> auto get_length_derived_quantity() noexcept
+constexpr QuantityOf<isq::length> auto get_length_child_quantity() noexcept
 {
-  derived_quantity<double, quantity<isq::length[m]>, "NTTP type description"> dist{};
+  child_quantity<isq::length[m], "NTTP type description"> dist{};
   dist += 1 * m;
   dist = dist + 1 * m;
   dist *= 0.5;
   return dist;
 }
-static_assert(get_length_derived_quantity() == 1 * m);
+static_assert(get_length_child_quantity() == 1 * m);
 
 
 /////////
@@ -805,6 +806,11 @@ static_assert(is_same_v<decltype((isq::mass(1 * kg) * pow<2>(isq::length(1 * m) 
 static_assert(is_same_v<decltype(isq::energy(1 * kg * m2 / s2) -
                                  (isq::mass(1 * kg) * pow<2>(isq::length(1 * m) / isq::time(1 * s))).in(J)),
                         quantity<isq::energy[J], int>>);
+
+static_assert(is_of_type<child_quantity<si::metre, "L">(1. * m) + 1 * m, quantity<si::metre>>);
+static_assert(is_of_type<1 * m + child_quantity<si::metre, "L">(1. * m), quantity<si::metre>>);
+static_assert(is_of_type<child_quantity<si::metre, "L">(1. * m) - 1 * m, quantity<si::metre>>);
+static_assert(is_of_type<1 * m - child_quantity<si::metre, "L">(1. * m), quantity<si::metre>>);
 
 // Different named dimensions
 template<typename... Ts>
