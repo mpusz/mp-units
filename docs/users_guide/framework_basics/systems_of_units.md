@@ -262,9 +262,9 @@ This is why we provide both versions of identifiers for such units.
 
 ## Common units
 
-Adding or subtracting two quantities of different units will force the library to find a common
-unit for those. This is to prevent data truncation. For the cases when one of the units is an
-integral multiple of the another, the resulting quantity will use a "smaller" one in its result.
+Adding, subtracting, or comparing two quantities of different units will force the library to find
+a common unit for those. This is to prevent data truncation. For the cases when one of the units is
+an integral multiple of the another, the resulting quantity will use a "smaller" one in its result.
 For example:
 
 ```cpp
@@ -273,14 +273,14 @@ static_assert((1 * km + 1 * mm).unit == mm);
 static_assert((1 * yd + 1 * mi).unit == yd);
 ```
 
-However, in many cases an arithmetic on quantities of different units will result in a yet another
-unit. This happens when none of the source units is an integral multiple of another. In such cases,
-the library returns a special type that denotes that we are dealing with a common unit of such
-an equation:
+However, in many cases an arithmetic operation on quantities of different units will result in
+a yet another unit. This happens when none of the source units is an integral multiple of another.
+In such cases, the library returns a special type that denotes that we are dealing with a common
+unit of such an equation:
 
 ```cpp
 quantity q1 = 1 * km + 1 * mi;     // quantity<common_unit<international::mile, si::kilo_<si::metre>>{}, int>
-quantity q2 = 1. * rad + 1. * deg; // quantity<common_unit<si::degree, si::radian>, double>{}>
+quantity q2 = 1. * rad + 1. * deg; // quantity<common_unit<si::degree, si::radian>{}, double>
 ```
 
 !!! note
