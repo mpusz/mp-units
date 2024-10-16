@@ -24,10 +24,12 @@
 #include <mp-units/bits/hacks.h>
 #include <mp-units/ext/fixed_string.h>
 #include <mp-units/ext/type_traits.h>
-#include <mp-units/math.h>
 #include <mp-units/systems/isq/mechanics.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si.h>
+#if MP_UNITS_HOSTED
+#include <mp-units/math.h>
+#endif
 #ifdef MP_UNITS_IMPORT_STD
 import std;
 #else
@@ -794,6 +796,7 @@ static_assert(
 static_assert(
   is_of_type<isq::length(1. * m) / isq::time(1. * s) - isq::speed(1 * m / s), quantity<isq::speed[m / s], double>>);
 
+#if MP_UNITS_HOSTED
 static_assert(is_same_v<decltype((isq::mass(1 * kg) * pow<2>(isq::length(1 * m) / isq::time(1 * s))).in(J) +
                                  isq::energy(1 * kg * m2 / s2)),
                         quantity<isq::energy[J], int>>);
@@ -806,6 +809,7 @@ static_assert(is_same_v<decltype((isq::mass(1 * kg) * pow<2>(isq::length(1 * m) 
 static_assert(is_same_v<decltype(isq::energy(1 * kg * m2 / s2) -
                                  (isq::mass(1 * kg) * pow<2>(isq::length(1 * m) / isq::time(1 * s))).in(J)),
                         quantity<isq::energy[J], int>>);
+#endif
 
 static_assert(is_of_type<child_quantity<si::metre, "L">(1. * m) + 1 * m, quantity<si::metre>>);
 static_assert(is_of_type<1 * m + child_quantity<si::metre, "L">(1. * m), quantity<si::metre>>);
