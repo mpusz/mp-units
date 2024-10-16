@@ -98,7 +98,7 @@ All of the above quantities are equivalent and mean exactly the same.
     unit is determined by the multiplication order. This is not the case. As stated in
     [Simplifying the resulting expression templates](interface_introduction.md#simplifying-the-resulting-expression-templates),
     to be able to reason about and simplify units, the library needs to order them in an
-    appropriate order. This will affect the order of components in a resulting type and 
+    appropriate order. This will affect the order of components in a resulting type and
     text output.
 
     Please refer to [our FAQ](../../getting_started/faq.md#why-derived-units-order-is-not-preserved-from-the-multiplication)
