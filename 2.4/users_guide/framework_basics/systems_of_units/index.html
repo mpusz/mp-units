@@ -2357,6 +2357,17 @@ the following:</p>
 </span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>42 kg m²/s³
 </span></code></pre></div>
 <p>All of the above quantities are equivalent and mean exactly the same.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The above code example may give the impression that the order of components in a derived
+unit is determined by the multiplication order. This is not the case. As stated in
+<a href="../interface_introduction/#simplifying-the-resulting-expression-templates">Simplifying the resulting expression templates</a>,
+to be able to reason about and simplify units, the library needs to order them in an
+appropriate order. This will affect the order of components in a resulting type and 
+text output.</p>
+<p>Please refer to <a href="../../../getting_started/faq/#why-derived-units-order-is-not-preserved-from-the-multiplication">our FAQ</a>
+for more information.</p>
+</div>
 <h2 id="constraining-a-derived-unit-to-work-only-with-a-specific-derived-quantity">Constraining a derived unit to work only with a specific derived quantity<a class="headerlink" href="#constraining-a-derived-unit-to-work-only-with-a-specific-derived-quantity" title="Permanent link">&para;</a></h2>
 <p>Some derived units are valid only for specific derived quantities. For example,
 <a href="../../../appendix/glossary/#si">SI</a> specifies both <code>hertz</code> and <code>becquerel</code> derived units

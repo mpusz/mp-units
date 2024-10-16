@@ -753,6 +753,15 @@ You're not viewing the latest version.
 </li>
       
         <li class="md-nav__item">
+  <a href="#why-derived-units-order-is-not-preserved-from-the-multiplication" class="md-nav__link">
+    <span class="md-ellipsis">
+      Why derived units order is not preserved from the multiplication?
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#why-do-the-identifiers-for-concepts-in-the-library-use-camelcase" class="md-nav__link">
     <span class="md-ellipsis">
       Why do the identifiers for concepts in the library use CamelCase?
@@ -2397,6 +2406,71 @@ all the properties of scaled units and is consistent with the rest of the librar
 <p class="admonition-title">Note</p>
 <p>More information on the current design can be found in
 <a href="../../users_guide/framework_basics/dimensionless_quantities/">the Dimensionless Quantities chapter</a>.</p>
+</div>
+<h2 id="why-derived-units-order-is-not-preserved-from-the-multiplication">Why derived units order is not preserved from the multiplication?<a class="headerlink" href="#why-derived-units-order-is-not-preserved-from-the-multiplication" title="Permanent link">&para;</a></h2>
+<p>It might be surprising, but the quantities and units multiplication order does not impact the order
+of components in the derived unit. Let's try the following example:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">std</span><span class="o">::</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;{}&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">42</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kW</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">h</span><span class="p">);</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">kWh</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kW</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">h</span><span class="p">;</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="n">std</span><span class="o">::</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;{}&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">42</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kWh</span><span class="p">);</span>
+</span></code></pre></div>
+<p>The above prints:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>42 h kW
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>42 h kW
+</span></code></pre></div>
+<p>Some users could expect to see <code>42 kWh</code> or <code>42 kW h</code> in the output. It is not the case and for
+a very good reason. As stated in
+<a href="../../users_guide/framework_basics/interface_introduction/#simplifying-the-resulting-expression-templates">Simplifying the resulting expression templates</a>,
+to be able to reason about and simplify units, the library needs to order them in an appropriate
+order.</p>
+<p>Maybe this default order could be improved a bit, but according to international standards,
+there is no generic ordering rule. Various quantities use different, often domain-specific,
+ordering of derived unit components.</p>
+<p>Let's see what <a href="../../appendix/references/#SIBrochure">SI</a> says here:</p>
+<table>
+<thead>
+<tr>
+<th>Derived quantity</th>
+<th style="text-align: center;">Symbol</th>
+<th style="text-align: center;">Derived unit expressed in terms of base units</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>electric field strength</em></td>
+<td style="text-align: center;">V m⁻¹</td>
+<td style="text-align: center;">kg m s⁻³ A⁻¹</td>
+</tr>
+<tr>
+<td><em>electric charge density</em></td>
+<td style="text-align: center;">C m⁻³</td>
+<td style="text-align: center;">A s m⁻³</td>
+</tr>
+<tr>
+<td><em>exposure (x- and γ-rays)</em></td>
+<td style="text-align: center;">C kg⁻¹</td>
+<td style="text-align: center;">A s kg⁻¹</td>
+</tr>
+</tbody>
+</table>
+<p>However, there is a workaround. A user can define its own named unit for a derived unit and provide
+the custom symbol text that suits the project's requirements. For example, the above case could be
+addressed with:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">kilowatt_hour</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">named_unit</span><span class="o">&lt;</span><span class="s">&quot;kWh&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">kW</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">h</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">kilowatt_hour</span><span class="p">;</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">kWh</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kilowatt_hour</span><span class="p">;</span>
+</span></code></pre></div>
+<p>With the above, we can refactor the above code to:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">std</span><span class="o">::</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;{}&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">42</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kWh</span><span class="p">);</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="n">std</span><span class="o">::</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;{}&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="mi">42</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kW</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">h</span><span class="p">).</span><span class="n">in</span><span class="p">(</span><span class="n">kWh</span><span class="p">));</span>
+</span></code></pre></div>
+<p>Both lines will produce an expected "42 kWh" unit in the output.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Please note that this makes the entire "kWh" a single, indivisible entity that is not subject
+to simplification rules. This means that <code>42 * kWh / (2 * h)</code> will result with <code>21 kWh/h</code>
+rather than <code>21 kW</code>. To get the latter, the user needs to explicitly provide a new derived unit:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">std</span><span class="o">::</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;{}&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="mi">42</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kWh</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">h</span><span class="p">)).</span><span class="n">in</span><span class="p">(</span><span class="n">kW</span><span class="p">));</span>
+</span></code></pre></div>
 </div>
 <h2 id="why-do-the-identifiers-for-concepts-in-the-library-use-camelcase">Why do the identifiers for concepts in the library use <code>CamelCase</code>?<a class="headerlink" href="#why-do-the-identifiers-for-concepts-in-the-library-use-camelcase" title="Permanent link">&para;</a></h2>
 <p>Initially, C++20 was meant to use <code>CamelCase</code> for all the concept identifiers. All the concepts
