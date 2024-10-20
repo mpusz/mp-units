@@ -74,10 +74,6 @@ constexpr bool is_per_of_dims<per<Ts...>> =
 template<typename T>
 concept DerivedDimensionExpr = BaseDimension<T> || is_dimension_one<T>::value || IsPowerOfDim<T> || is_per_of_dims<T>;
 
-template<auto D1, auto D2>
-concept SameDimension =
-  Dimension<MP_UNITS_REMOVE_CONST(decltype(D1))> && Dimension<MP_UNITS_REMOVE_CONST(decltype(D2))> && (D1 == D2);
-
 }  // namespace detail
 
 /**
@@ -86,6 +82,6 @@ concept SameDimension =
  * Satisfied when both argument satisfy a `Dimension` concept and when they compare equal.
  */
 MP_UNITS_EXPORT template<typename T, auto D>
-concept DimensionOf = Dimension<T> && Dimension<MP_UNITS_REMOVE_CONST(decltype(D))> && detail::SameDimension<T{}, D>;
+concept DimensionOf = Dimension<T> && Dimension<MP_UNITS_REMOVE_CONST(decltype(D))> && (T{} == D);
 
 }  // namespace mp_units
