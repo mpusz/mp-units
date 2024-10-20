@@ -475,9 +475,18 @@ template<std::intmax_t Num, std::intmax_t Den, template<typename...> typename To
 template<std::intmax_t Num, std::intmax_t Den, template<typename...> typename To, typename OneType,
          template<typename, typename> typename Pred, typename T>
   requires detail::non_zero<Den>
-[[nodiscard]] consteval auto expr_pow(T)
+[[nodiscard]] consteval auto expr_pow(T v)
 {
-  return expr_pow_impl<Num, Den, To, OneType, Pred>(typename T::_num_{}, typename T::_den_{});
+  if constexpr (Num == 0 || is_same_v<T, OneType>)
+    return OneType{};
+  else if constexpr (detail::ratio{Num, Den} == 1)
+    return v;
+  else if constexpr (is_specialization_of<T, To>)
+    return expr_pow_impl<Num, Den, To, OneType, Pred>(typename T::_num_{}, typename T::_den_{});
+  else if constexpr (Den == 1)
+    return To<power<T, Num>>{};
+  else
+    return To<power<T, Num, Den>>{};
 }
 
 

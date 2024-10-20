@@ -204,14 +204,8 @@ template<std::intmax_t Num, std::intmax_t Den = 1, Dimension D>
   requires detail::non_zero<Den>
 [[nodiscard]] consteval Dimension auto pow(D d)
 {
-  if constexpr (detail::BaseDimension<D>) {
-    if constexpr (Den == 1)
-      return derived_dimension<power<D, Num>>{};
-    else
-      return derived_dimension<power<D, Num, Den>>{};
-  } else
-    return detail::expr_pow<Num, Den, derived_dimension, struct dimension_one,
-                            detail::type_list_of_base_dimension_less>(d);
+  return detail::expr_pow<Num, Den, derived_dimension, struct dimension_one, detail::type_list_of_base_dimension_less>(
+    d);
 }
 
 /**

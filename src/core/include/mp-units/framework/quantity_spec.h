@@ -590,18 +590,9 @@ template<std::intmax_t Num, std::intmax_t Den = 1, QuantitySpec Q>
   requires detail::non_zero<Den>
 [[nodiscard]] consteval QuantitySpec auto pow(Q q)
 {
-  if constexpr (Num == 0 || Q{} == dimensionless)
-    return dimensionless;
-  else if constexpr (detail::ratio{Num, Den} == 1)
-    return q;
-  else if constexpr (detail::DerivedQuantitySpec<Q>)
-    return detail::clone_kind_of<Q{}>(
-      detail::expr_pow<Num, Den, derived_quantity_spec, struct dimensionless, detail::type_list_of_quantity_spec_less>(
-        detail::remove_kind(q)));
-  else if constexpr (Den == 1)
-    return detail::clone_kind_of<Q{}>(derived_quantity_spec<power<decltype(detail::remove_kind(Q{})), Num>>{});
-  else
-    return detail::clone_kind_of<Q{}>(derived_quantity_spec<power<decltype(detail::remove_kind(Q{})), Num, Den>>{});
+  return detail::clone_kind_of<Q{}>(
+    detail::expr_pow<Num, Den, derived_quantity_spec, struct dimensionless, detail::type_list_of_quantity_spec_less>(
+      detail::remove_kind(q)));
 }
 
 

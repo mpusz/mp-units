@@ -26,7 +26,6 @@
 #include <mp-units/bits/get_associated_quantity.h>
 #include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
-#include <mp-units/bits/ratio.h>
 #include <mp-units/bits/text_tools.h>
 #include <mp-units/compat_macros.h>
 #include <mp-units/ext/algorithm.h>
@@ -608,16 +607,7 @@ template<std::intmax_t Num, std::intmax_t Den = 1, Unit U>
   requires detail::non_zero<Den>
 [[nodiscard]] consteval Unit auto pow(U u)
 {
-  if constexpr (Num == 0 || is_same_v<U, struct one>)
-    return one;
-  else if constexpr (detail::ratio{Num, Den} == 1)
-    return u;
-  else if constexpr (is_specialization_of<U, derived_unit>)
-    return detail::expr_pow<Num, Den, derived_unit, struct one, detail::type_list_of_unit_less>(u);
-  else if constexpr (Den == 1)
-    return derived_unit<power<U, Num>>{};
-  else
-    return derived_unit<power<U, Num, Den>>{};
+  return detail::expr_pow<Num, Den, derived_unit, struct one, detail::type_list_of_unit_less>(u);
 }
 
 /**
