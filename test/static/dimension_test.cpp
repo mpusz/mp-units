@@ -234,6 +234,10 @@ static_assert(length != time);
 static_assert(acceleration != speed);
 
 // power
+static_assert(is_of_type<pow<0>(length), dimension_one_>);
+static_assert(is_of_type<pow<1>(length), length_>);
+static_assert(is_of_type<pow<2, 2>(length), length_>);
+static_assert(is_of_type<pow<2>(dimension_one), dimension_one_>);
 static_assert(is_of_type<pow<2>(length), derived_dimension<mp_units::power<length_, 2>>>);
 static_assert(is_of_type<pow<1, 2>(length), derived_dimension<mp_units::power<length_, 1, 2>>>);
 static_assert(is_of_type<pow<1, 2>(length* length), length_>);
