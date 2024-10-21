@@ -1,5 +1,4 @@
 ---
-draft: true
 date: 2024-10-21
 authors:
  - mpusz
@@ -69,10 +68,10 @@ is not wise to allow adding, subtracting, or comparing them, as they describe va
 physical properties.
 
 If the above example seems too abstract, let's consider Gy (gray - unit of _absorbed dose_)
-and Sv (sievert - unit of _dose equivalent_), or radian and steradian. All of them have the
-same dimensions.
+and Sv (sievert - unit of _dose equivalent_), or radian and steradian. All of those quantities
+have the same dimensions.
 
-Another example here is _fuel consumption_ (fuel _volume_ divided by _distance_, e.g.,
+Another example here is _fuel consumption_ (_fuel volume_ divided by _distance_, e.g.,
 `6.7 l/100km`) and an _area_. Again, both have the same dimension $\mathsf{L}^{2}$, but probably
 it wouldn't be wise to allow adding, subtracting, or comparing a _fuel consumption_ of a car
 and the _area_ of a football field. Such an operation does not have any physical sense and should
