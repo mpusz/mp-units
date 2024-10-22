@@ -25,6 +25,7 @@ library on just units or dimensions.
 
 - [Part 1 - Introduction](isq-part-1-introduction.md)
 - Part 2 - Problems when ISQ is not used
+- [Part 3 - Modelling ISQ](isq-part-3-modelling-isq.md)
 
 
 ## Limitations of units-only solutions
