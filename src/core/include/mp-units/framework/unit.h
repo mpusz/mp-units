@@ -650,7 +650,7 @@ template<std::intmax_t Num, std::intmax_t Den = 1, Unit U>
 // common dimensionless units
 // clang-format off
 inline constexpr struct percent final : named_unit<"%", mag_ratio<1, 100> * one> {} percent;
-inline constexpr struct per_mille final : named_unit<symbol_text{u8"‰", "%o"}, mag_ratio<1, 1000> * one> {} per_mille;
+inline constexpr struct per_mille final : named_unit<symbol_text{u8"\u2030", "%o"}, mag_ratio<1, 1000> * one> {} per_mille;
 inline constexpr struct parts_per_million final : named_unit<"ppm", mag_ratio<1, 1'000'000> * one> {} parts_per_million;
 inline constexpr auto ppm = parts_per_million;
 // clang-format on

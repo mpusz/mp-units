@@ -313,7 +313,7 @@ constexpr Out print_separator(Out out, const unit_symbol_formatting& fmt)
     if (fmt.encoding != text_encoding::utf8)
       MP_UNITS_THROW(
         std::invalid_argument("'unit_symbol_separator::half_high_dot' can be only used with 'text_encoding::utf8'"));
-    const std::string_view dot = "⋅";
+    const std::string_view dot = "\u22C5";
     out = detail::copy(dot.begin(), dot.end(), out);
   } else {
     *out++ = ' ';
@@ -393,7 +393,7 @@ constexpr Out magnitude_symbol_impl(Out out, const unit_symbol_formatting& fmt)
 
   if constexpr (Exp10 != 0) {
     if (numerator || denominator) {
-      constexpr auto mag_multiplier = symbol_text(u8" × ", " x ");
+      constexpr auto mag_multiplier = symbol_text(u8" \u00D7 ", " x ");
       out = copy_symbol<CharT>(mag_multiplier, fmt.encoding, negative_power, out);
     }
     constexpr auto exp = symbol_text("10") + detail::superscript<Exp10>();
@@ -690,10 +690,10 @@ constexpr Magnitude auto mag_power = _pow<Num, Den>(mag<Base>);
  * @brief  A convenient Magnitude constant for pi, which we can manipulate like a regular number.
  */
 #if defined MP_UNITS_COMP_CLANG || MP_UNITS_COMP_CLANG < 18
-inline constexpr struct pi final : mag_constant<symbol_text{u8"𝜋", "pi"}> {
+inline constexpr struct pi final : mag_constant<symbol_text{u8"\U0001D70B", "pi"}> {
   static constexpr auto _value_ = std::numbers::pi_v<long double>;
 #else
-inline constexpr struct pi final : mag_constant<symbol_text{u8"𝜋", "pi"}, std::numbers::pi_v<long double>> {
+inline constexpr struct pi final : mag_constant<symbol_text{u8"\U0001D70B", "pi"}, std::numbers::pi_v<long double>> {
 #endif
 } pi;
 inline constexpr auto 𝜋 = pi;
