@@ -690,13 +690,13 @@ constexpr Magnitude auto mag_power = _pow<Num, Den>(mag<Base>);
  * @brief  A convenient Magnitude constant for pi, which we can manipulate like a regular number.
  */
 #if defined MP_UNITS_COMP_CLANG || MP_UNITS_COMP_CLANG < 18
-inline constexpr struct pi final : mag_constant<symbol_text{u8"\U0001D70B", "pi"}> {
+inline constexpr struct pi final : mag_constant<symbol_text{u8"\u03c0", "pi"}> {
   static constexpr auto _value_ = std::numbers::pi_v<long double>;
 #else
-inline constexpr struct pi final : mag_constant<symbol_text{u8"\U0001D70B", "pi"}, std::numbers::pi_v<long double>> {
+inline constexpr struct pi final : mag_constant<symbol_text{u8"\u03c0", "pi"}, std::numbers::pi_v<long double>> {
 #endif
 } pi;
-inline constexpr auto 𝜋 = pi;
+inline constexpr auto π = pi;
 
 [[deprecated("Use `mag<pi>` instead")]] inline constexpr Magnitude auto mag_pi = mag<pi>;
 

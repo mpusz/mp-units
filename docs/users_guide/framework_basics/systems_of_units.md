@@ -196,12 +196,12 @@ For some units, a magnitude might also be irrational. The best example here is a
 is defined using a floating-point magnitude having a factor of the number π (Pi):
 
 ```cpp
-inline constexpr struct pi final : mag_constant<symbol_text{u8"𝜋", "pi"}, std::numbers::pi_v<long double>> {} pi;
-inline constexpr auto 𝜋 = pi;
+inline constexpr struct pi final : mag_constant<symbol_text{u8"\u03c0", "pi"}, std::numbers::pi_v<long double>> {} pi;
+inline constexpr auto π = pi;
 ```
 
 ```cpp
-inline constexpr struct degree final : named_unit<{u8"°", "deg"}, mag<𝜋> / mag<180> * si::radian> {} degree;
+inline constexpr struct degree final : named_unit<{u8"°", "deg"}, mag<π> / mag<180> * si::radian> {} degree;
 ```
 
 

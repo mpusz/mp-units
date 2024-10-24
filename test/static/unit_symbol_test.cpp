@@ -150,58 +150,58 @@ inline constexpr struct e final : mag_constant<"e", std::numbers::e_v<long doubl
 #endif
 } e;
 
-static_assert(unit_symbol(mag<𝜋> * one) == "[𝜋]");
-static_assert(unit_symbol<usf{.encoding = portable}>(mag<𝜋> * one) == "[pi]");
-static_assert(unit_symbol(mag<𝜋> * metre) == "[𝜋 m]");
-static_assert(unit_symbol<usf{.encoding = portable}>(mag<𝜋> * metre) == "[pi m]");
-static_assert(unit_symbol(mag<2> * mag<𝜋> * metre) == "[2 𝜋 m]");
-static_assert(unit_symbol<usf{.encoding = portable}>(mag<2> * mag<𝜋> * metre) == "[2 pi m]");
-static_assert(unit_symbol<usf{.separator = half_high_dot}>(mag<2> * mag<𝜋> * metre) == "[2⋅𝜋 m]");
+static_assert(unit_symbol(mag<π> * one) == "[π]");
+static_assert(unit_symbol<usf{.encoding = portable}>(mag<π> * one) == "[pi]");
+static_assert(unit_symbol(mag<π> * metre) == "[π m]");
+static_assert(unit_symbol<usf{.encoding = portable}>(mag<π> * metre) == "[pi m]");
+static_assert(unit_symbol(mag<2> * mag<π> * metre) == "[2 π m]");
+static_assert(unit_symbol<usf{.encoding = portable}>(mag<2> * mag<π> * metre) == "[2 pi m]");
+static_assert(unit_symbol<usf{.separator = half_high_dot}>(mag<2> * mag<π> * metre) == "[2⋅π m]");
 
-static_assert(unit_symbol(mag<1> / mag<𝜋> * one) == "[1/𝜋]");
-static_assert(unit_symbol<usf{.encoding = portable}>(mag<1> / mag<𝜋> * one) == "[1/pi]");
-static_assert(unit_symbol<usf{.solidus = never}>(mag<1> / mag<𝜋> * one) == "[𝜋⁻¹]");
-static_assert(unit_symbol<usf{.encoding = portable, .solidus = never}>(mag<1> / mag<𝜋> * one) == "[pi^-1]");
+static_assert(unit_symbol(mag<1> / mag<π> * one) == "[1/π]");
+static_assert(unit_symbol<usf{.encoding = portable}>(mag<1> / mag<π> * one) == "[1/pi]");
+static_assert(unit_symbol<usf{.solidus = never}>(mag<1> / mag<π> * one) == "[π⁻¹]");
+static_assert(unit_symbol<usf{.encoding = portable, .solidus = never}>(mag<1> / mag<π> * one) == "[pi^-1]");
 
-static_assert(unit_symbol(mag<1> / mag<𝜋> * metre) == "[1/𝜋 m]");
-static_assert(unit_symbol<usf{.encoding = portable}>(mag<1> / mag<𝜋> * metre) == "[1/pi m]");
-static_assert(unit_symbol<usf{.solidus = never}>(mag<1> / mag<𝜋> * metre) == "[𝜋⁻¹ m]");
-static_assert(unit_symbol<usf{.encoding = portable, .solidus = never}>(mag<1> / mag<𝜋> * metre) == "[pi^-1 m]");
+static_assert(unit_symbol(mag<1> / mag<π> * metre) == "[1/π m]");
+static_assert(unit_symbol<usf{.encoding = portable}>(mag<1> / mag<π> * metre) == "[1/pi m]");
+static_assert(unit_symbol<usf{.solidus = never}>(mag<1> / mag<π> * metre) == "[π⁻¹ m]");
+static_assert(unit_symbol<usf{.encoding = portable, .solidus = never}>(mag<1> / mag<π> * metre) == "[pi^-1 m]");
 
-static_assert(unit_symbol(mag<2> / mag<𝜋> * metre) == "[2/𝜋 m]");
-static_assert(unit_symbol<usf{.encoding = portable}>(mag<2> / mag<𝜋> * metre) == "[2/pi m]");
-static_assert(unit_symbol<usf{.solidus = never}>(mag<2> / mag<𝜋> * metre) == "[2 𝜋⁻¹ m]");
-static_assert(unit_symbol<usf{.encoding = portable, .solidus = never}>(mag<2> / mag<𝜋> * metre) == "[2 pi^-1 m]");
-static_assert(unit_symbol<usf{.solidus = never, .separator = half_high_dot}>(mag<2> / mag<𝜋> * metre) == "[2⋅𝜋⁻¹ m]");
+static_assert(unit_symbol(mag<2> / mag<π> * metre) == "[2/π m]");
+static_assert(unit_symbol<usf{.encoding = portable}>(mag<2> / mag<π> * metre) == "[2/pi m]");
+static_assert(unit_symbol<usf{.solidus = never}>(mag<2> / mag<π> * metre) == "[2 π⁻¹ m]");
+static_assert(unit_symbol<usf{.encoding = portable, .solidus = never}>(mag<2> / mag<π> * metre) == "[2 pi^-1 m]");
+static_assert(unit_symbol<usf{.solidus = never, .separator = half_high_dot}>(mag<2> / mag<π> * metre) == "[2⋅π⁻¹ m]");
 
-static_assert(unit_symbol(mag<1> / (mag<2> * mag<𝜋>)*metre) == "[2⁻¹ 𝜋⁻¹ m]");
-static_assert(unit_symbol<usf{.solidus = always}>(mag<1> / (mag<2> * mag<𝜋>)*metre) == "[1/(2 𝜋) m]");
-static_assert(unit_symbol<usf{.encoding = portable, .solidus = always}>(mag<1> / (mag<2> * mag<𝜋>)*metre) ==
+static_assert(unit_symbol(mag<1> / (mag<2> * mag<π>)*metre) == "[2⁻¹ π⁻¹ m]");
+static_assert(unit_symbol<usf{.solidus = always}>(mag<1> / (mag<2> * mag<π>)*metre) == "[1/(2 π) m]");
+static_assert(unit_symbol<usf{.encoding = portable, .solidus = always}>(mag<1> / (mag<2> * mag<π>)*metre) ==
               "[1/(2 pi) m]");
-static_assert(unit_symbol(mag_ratio<1, 2> / mag<𝜋> * metre) == "[2⁻¹ 𝜋⁻¹ m]");
-static_assert(unit_symbol<usf{.solidus = always}>(mag_ratio<1, 2> / mag<𝜋> * metre) == "[1/(2 𝜋) m]");
-static_assert(unit_symbol<usf{.encoding = portable, .solidus = always}>(mag_ratio<1, 2> / mag<𝜋> * metre) ==
+static_assert(unit_symbol(mag_ratio<1, 2> / mag<π> * metre) == "[2⁻¹ π⁻¹ m]");
+static_assert(unit_symbol<usf{.solidus = always}>(mag_ratio<1, 2> / mag<π> * metre) == "[1/(2 π) m]");
+static_assert(unit_symbol<usf{.encoding = portable, .solidus = always}>(mag_ratio<1, 2> / mag<π> * metre) ==
               "[1/(2 pi) m]");
-static_assert(unit_symbol(mag_ratio<1, 2> * mag<𝜋> * metre) == "[𝜋/2 m]");
+static_assert(unit_symbol(mag_ratio<1, 2> * mag<π> * metre) == "[π/2 m]");
 
-static_assert(unit_symbol(mag_power<pi, 2> * one) == "[𝜋²]");
+static_assert(unit_symbol(mag_power<pi, 2> * one) == "[π²]");
 static_assert(unit_symbol<usf{.encoding = portable}>(mag_power<pi, 2> * one) == "[pi^2]");
-static_assert(unit_symbol(mag_power<pi, 1, 2> * metre) == "[𝜋^(1/2) m]");
+static_assert(unit_symbol(mag_power<pi, 1, 2> * metre) == "[π^(1/2) m]");
 static_assert(unit_symbol<usf{.encoding = portable}>(mag_power<pi, 1, 2> * metre) == "[pi^(1/2) m]");
 
-static_assert(unit_symbol(mag<𝜋> * mag<e> * one) == "[e 𝜋]");
-static_assert(unit_symbol(mag<e> * mag<𝜋> * one) == "[e 𝜋]");
-static_assert(unit_symbol<usf{.encoding = portable}>(mag<𝜋> * mag<e> * one) == "[e pi]");
-static_assert(unit_symbol(mag<𝜋> / mag<e> * one) == "[𝜋/e]");
-static_assert(unit_symbol(mag<1> / mag<e> * mag<𝜋> * one) == "[𝜋/e]");
-static_assert(unit_symbol<usf{.solidus = never}>(mag<𝜋> / mag<e> * one) == "[𝜋 e⁻¹]");
-static_assert(unit_symbol(mag<e> / mag<𝜋> * one) == "[e/𝜋]");
-static_assert(unit_symbol(mag<1> / mag<𝜋> * mag<e> * one) == "[e/𝜋]");
-static_assert(unit_symbol<usf{.solidus = never}>(mag<e> / mag<𝜋> * one) == "[e 𝜋⁻¹]");
-static_assert(unit_symbol(mag<1> / (mag<𝜋> * mag<e>)*one) == "[e⁻¹ 𝜋⁻¹]");
-static_assert(unit_symbol<usf{.solidus = always}>(mag<1> / (mag<𝜋> * mag<e>)*one) == "[1/(e 𝜋)]");
-static_assert(unit_symbol(mag<2> / (mag<𝜋> * mag<e>)*one) == "[2 e⁻¹ 𝜋⁻¹]");
-static_assert(unit_symbol<usf{.solidus = always}>(mag<2> / (mag<𝜋> * mag<e>)*one) == "[2/(e 𝜋)]");
+static_assert(unit_symbol(mag<π> * mag<e> * one) == "[e π]");
+static_assert(unit_symbol(mag<e> * mag<π> * one) == "[e π]");
+static_assert(unit_symbol<usf{.encoding = portable}>(mag<π> * mag<e> * one) == "[e pi]");
+static_assert(unit_symbol(mag<π> / mag<e> * one) == "[π/e]");
+static_assert(unit_symbol(mag<1> / mag<e> * mag<π> * one) == "[π/e]");
+static_assert(unit_symbol<usf{.solidus = never}>(mag<π> / mag<e> * one) == "[π e⁻¹]");
+static_assert(unit_symbol(mag<e> / mag<π> * one) == "[e/π]");
+static_assert(unit_symbol(mag<1> / mag<π> * mag<e> * one) == "[e/π]");
+static_assert(unit_symbol<usf{.solidus = never}>(mag<e> / mag<π> * one) == "[e π⁻¹]");
+static_assert(unit_symbol(mag<1> / (mag<π> * mag<e>)*one) == "[e⁻¹ π⁻¹]");
+static_assert(unit_symbol<usf{.solidus = always}>(mag<1> / (mag<π> * mag<e>)*one) == "[1/(e π)]");
+static_assert(unit_symbol(mag<2> / (mag<π> * mag<e>)*one) == "[2 e⁻¹ π⁻¹]");
+static_assert(unit_symbol<usf{.solidus = always}>(mag<2> / (mag<π> * mag<e>)*one) == "[2/(e π)]");
 
 // common units
 static_assert(unit_symbol(get_common_unit(kilo<metre>, mile)) == "EQUIV{[1/25146 mi], [1/15625 km]}");
@@ -210,7 +210,7 @@ static_assert(unit_symbol(get_common_unit(kilo<metre> / hour, metre / second) / 
               "EQUIV{[1/5 km/h], [1/18 m/s]}/s");
 static_assert(unit_symbol(get_common_unit(kilo<metre> / hour, metre / second) * second) ==
               "EQUIV{[1/5 km/h], [1/18 m/s]} s");
-static_assert(unit_symbol(get_common_unit(radian, degree)) == "EQUIV{[1/𝜋°], [1/180 rad]}");
+static_assert(unit_symbol(get_common_unit(radian, degree)) == "EQUIV{[1/π°], [1/180 rad]}");
 
 // derived units
 static_assert(unit_symbol(one) == "");  // NOLINT(readability-container-size-empty)
