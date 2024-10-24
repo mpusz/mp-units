@@ -21,6 +21,7 @@ jegp_add_standardese_sources(
              # Latex commands.
              [[\\href{([^}]+)}{([^}]+)};HREF(\1)(\2)]]
              # Macros extensions.
+             [[\\txtrm;\\textrm]]
              [[\\refcpp{([^}]+)};REFCPP(\1)]]
              [[\\irefcpp{([^}]+)};~(REFCPP(\1))]]
              [[\\refcppx{([^}]+)}{([^}]+)};REFCPPX(\1)(\2)]]

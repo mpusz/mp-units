@@ -9,11 +9,14 @@ as summarized in \tref{qties.summary}.
 
 \begin{modularlibsumtab}{Quantities library summary}{qties.summary}
 \ref{qty.helpers}       & Helpers                                & \tcode{mp_units.core} \\
-\ref{qty.traits}        & Traits                                 & \\
-\ref{qty.concepts}      & Concepts                               & \\
-\ref{qty.types}         & Types                                  & \\
-\ref{qty.compat}        & Compatibility                          & \\
-\ref{qty.one}           & Dimension one                          & \\ \rowsep
+\ref{qty.expr.temp}     & Expression template                    & \\
+\ref{qty.dim}           & Dimension                              & \\
+\ref{qty.spec}          & Quantity specification                 & \\
+\ref{qty.mag}           & Magnitude                              & \\
+\ref{qty.unit}          & Unit                                   & \\
+\ref{qty.ref}           & Reference                              & \\
+\ref{qty.rep}           & Representation                         & \\
+\ref{qty.types}         & Quantity types                         & \\ \rowsep
 \ref{qty.systems}       & Systems                                & \tcode{mp_units.systems} \\
 \ref{qty.chrono}        & \tcode{std::chrono} compatibility      & \\
 \end{modularlibsumtab}
@@ -36,16 +39,383 @@ import std;
 
 export namespace mp_units {
 
-export enum class quantity_character { scalar, vector, tensor };
+enum class @\libglobal{text_encoding}@ : std::int8_t { utf8, portable, default_encoding = utf8 };
 
-// \ref{qty.traits}, traits
+enum class @\libglobal{quantity_character}@ { scalar, complex, vector, tensor };
+
+// \ref{qty.helpers}, helpers
+
+// \ref{qty.symbol.text}, class template \tcode{symbol_text}
+
+// \ref{qty.expr.temp}, expression template
+
+// \ref{qty.expr.temp.types}, types
+
+template<typename T, typename... Ts>
+struct per;
+
+template<typename F, int Num, int... Den>
+  requires @\seebelownc@
+struct power;
+
+// \ref{qty.dim}, dimension
+
+// \ref{qty.dim.concepts}, concepts
+
+template<typename T>
+concept Dimension = @\seebelownc@;
+
+template<typename T, auto D>
+concept DimensionOf = @\seebelownc@;
+
+// \ref{qty.dim.types}, types
+
+template<symbol_text Symbol>
+struct base_dimension;
+
+template<@\seebelownc@>
+struct derived_dimension;
+
+struct dimension_one;
+inline constexpr dimension_one dimension_one = @\seebelownc@;
+
+consteval @\libconcept{Dimension}@ auto @\liboverload{inverse}{\cname{Dimension}}@(@\libconcept{Dimension}@ auto d) { return dimension_one / d; }
+
+template<std::intmax_t Num, std::intmax_t Den = 1, @\libconcept{Dimension}@ D>
+  requires(Den != 0)
+consteval @\libconcept{Dimension}@ auto pow(D d);
+consteval @\libconcept{Dimension}@ auto @\liboverload{sqrt}{\cname{Dimension}}@(@\libconcept{Dimension}@ auto d) { return pow<1, 2>(d); }
+consteval @\libconcept{Dimension}@ auto @\liboverload{cbrt}{\cname{Dimension}}@(@\libconcept{Dimension}@ auto d) { return pow<1, 3>(d); }
+
+// \ref{qty.dim.sym.fmt}, symbol formatting
+
+struct @\libglobal{dimension_symbol_formatting}@ {
+  text_encoding encoding = text_encoding::default_encoding;
+};
+
+template<typename CharT = char, std::@\stdconcept{output_iterator}@<CharT> Out, @\libconcept{Dimension}@ D>
+constexpr Out dimension_symbol_to(Out out, D d, const dimension_symbol_formatting& fmt = {});
+
+template<dimension_symbol_formatting fmt = {}, typename CharT = char, @\libconcept{Dimension}@ D>
+constexpr auto dimension_symbol(D);
+
+// \ref{qty.spec}, quantity specification
+
+// \ref{qty.spec.concepts}, concepts
+
+template<typename T>
+concept QuantitySpec = @\seebelownc@;
+
+template<typename T, auto QS>
+concept QuantitySpecOf = @\seebelownc@;
+
+// \ref{qty.spec.types}, types
+
+struct is_kind;
+inline constexpr is_kind is_kind = @\seebelownc@;
+
+template<auto...>
+struct quantity_spec;  // \notdef
+
+template<@\exposconceptnc{BaseDimension}@ auto Dim, auto... Args>
+  requires @\seebelownc@
+struct quantity_spec<Dim, Args...>;
+
+template<@\exposconceptnc{DerivedQuantitySpec}@ auto Eq, auto... Args>
+  requires @\seebelownc@
+struct quantity_spec<Eq, Args...>;
+
+template<@\exposconceptnc{NamedQuantitySpec}@ auto QS, auto... Args>
+  requires @\seebelownc@
+struct quantity_spec<QS, Args...>;
+
+template<@\exposconceptnc{NamedQuantitySpec}@ auto QS, @\exposconceptnc{DerivedQuantitySpec}@ auto Eq, auto... Args>
+  requires @\seebelownc@
+struct quantity_spec<QS, Eq, Args...>;
+
+template<@\exposconceptnc{DerivedQuantitySpecExpr}@... Expr>
+struct derived_quantity_spec;
+
+struct dimensionless;
+inline constexpr dimensionless dimensionless = @\seebelownc@;
+
+template<typename Q>
+  requires @\seebelownc@
+struct kind_of_;
+template<auto Q>
+  requires requires { typename kind_of_<decltype(Q)>; }
+inline constexpr kind_of_<Q> @\libglobal{kind_of}@{};
+
+consteval @\libconcept{QuantitySpec}@ auto @\liboverload{inverse}{\cname{QuantitySpec}}@(@\libconcept{QuantitySpec}@ auto q) { return dimensionless / q; }
+
+template<std::intmax_t Num, std::intmax_t Den = 1, @\libconcept{QuantitySpec}@ Q>
+  requires(Den != 0)
+consteval @\libconcept{QuantitySpec}@ auto pow(Q q);
+consteval @\libconcept{QuantitySpec}@ auto @\liboverload{sqrt}{\cname{QuantitySpec}}@(@\libconcept{QuantitySpec}@ auto q) { return pow<1, 2>(q); }
+consteval @\libconcept{QuantitySpec}@ auto @\liboverload{cbrt}{\cname{QuantitySpec}}@(@\libconcept{QuantitySpec}@ auto q) { return pow<1, 3>(q); }
+
+consteval bool implicitly_convertible(@\libconcept{QuantitySpec}@ auto from, @\libconcept{QuantitySpec}@ auto to);
+consteval bool explicitly_convertible(@\libconcept{QuantitySpec}@ auto from, @\libconcept{QuantitySpec}@ auto to);
+consteval bool castable(@\libconcept{QuantitySpec}@ auto from, @\libconcept{QuantitySpec}@ auto to);
+consteval bool interconvertible(@\libconcept{QuantitySpec}@ auto qs1, @\libconcept{QuantitySpec}@ auto qs2);
+
+template<@\libconcept{QuantitySpec}@ Q>
+consteval @\seebelownc@ get_kind(Q q);
+
+consteval @\libconcept{QuantitySpec}@ auto get_common_quantity_spec(@\libconcept{QuantitySpec}@ auto... qs)
+  requires @\seebelownc@;
+
+// \ref{qty.mag}, magnitude
+
+// \ref{qty.mag.concepts}, concepts
+
+template<typename T>
+concept MagConstant = @\seebelownc@;
+
+template<typename T>
+concept Magnitude = @\seebelownc@;
+
+// \ref{qty.mag.types}, types
+
+template<symbol_text Symbol, long double Value>
+  requires(Value > 0)
+struct mag_constant;
+
+template<@\exposconceptnc{MagnitudeSpecExpr}@ auto... Ms>
+struct magnitude;
+
+template<@\exposconceptnc{MagArg}@ auto V>
+  requires @\seebelownc@
+constexpr @\libconcept{Magnitude}@ auto mag = @\seebelownc@;
+
+template<std::intmax_t N, std::intmax_t D>
+  requires(N > 0)
+constexpr @\libconcept{Magnitude}@ auto mag_ratio = @\seebelownc@;
+
+template<@\exposconceptnc{MagArg}@ auto Base, int Num, int Den = 1>
+  requires @\seebelownc@
+constexpr @\libconcept{Magnitude}@ auto mag_power = @\seebelownc@;
+
+inline constexpr struct @\libglobal{pi}@ final :
+    mag_constant<{u8"\U0001D70B", "pi"}, std::numbers::pi_v<long double>> {
+} @\libglobal{pi}@;
+
+// \ref{qty.unit}, unit
+
+// \ref{qty.unit.traits}, traits
+
+template<@\libconcept{Unit}@ auto U>
+constexpr bool space_before_unit_symbol = true;
+
+template<>
+inline constexpr bool @\libspec{space_before_unit_symbol}{one}@<one> = false;
+
+// \ref{qty.unit.concepts}, concepts
+
+template<typename T>
+concept Unit = @\seebelownc@;
+
+template<typename T>
+concept PrefixableUnit = @\seebelownc@;
+
+template<typename T>
+concept AssociatedUnit = @\seebelownc@;
+
+template<typename U, auto QS>
+concept UnitOf = @\seebelownc@;
+
+// \ref{qty.unit.types}, types
+
+template<@\libconcept{Unit}@ From, @\libconcept{Unit}@ To>
+consteval bool @\liboverload{convertible}{\cname{Unit}}@(From from, To to);
+
+template<@\libconcept{Magnitude}@ auto M, @\libconcept{Unit}@ U>
+  requires @\seebelownc@
+struct scaled_unit;
+
+template<symbol_text Symbol, auto...>
+struct named_unit;  // \notdef
+
+template<symbol_text Symbol, @\exposconceptnc{QuantityKindSpec}@ auto QS>
+  requires @\seebelownc@
+struct named_unit<Symbol, QS>;
+
+template<symbol_text Symbol, @\exposconceptnc{QuantityKindSpec}@ auto QS, @\libconcept{PointOrigin}@ auto PO>
+  requires @\seebelownc@
+struct named_unit<Symbol, QS, PO>;
+
+template<symbol_text Symbol>
+  requires @\seebelownc@
+struct named_unit<Symbol>;
+
+template<symbol_text Symbol, @\libconcept{Unit}@ auto U>
+  requires @\seebelownc@
+struct named_unit<Symbol, U>;
+
+template<symbol_text Symbol, @\libconcept{Unit}@ auto U, @\libconcept{PointOrigin}@ auto PO>
+  requires @\seebelownc@
+struct named_unit<Symbol, U, PO>;
+
+template<symbol_text Symbol, @\libconcept{AssociatedUnit}@ auto U, @\exposconceptnc{QuantityKindSpec}@ auto QS>
+  requires @\seebelownc@
+struct named_unit<Symbol, U, QS>;
+
+template<symbol_text Symbol, @\libconcept{AssociatedUnit}@ auto U, @\exposconceptnc{QuantityKindSpec}@ auto QS,
+         @\libconcept{PointOrigin}@ auto PO>
+  requires @\seebelownc@
+struct named_unit<Symbol, U, QS, PO>;
+
+template<symbol_text Symbol, @\libconcept{Magnitude}@ auto M, @\libconcept{PrefixableUnit}@ auto U>
+  requires @\seebelownc@
+struct prefixed_unit;
+
+template<@\libconcept{Unit}@ U1, @\libconcept{Unit}@ U2, @\libconcept{Unit}@... Rest>
+struct common_unit;
+
+template<@\exposconceptnc{DerivedUnitExpr}@... Expr>
+struct derived_unit;
+
+struct one;
+inline constexpr one one = @\seebelownc@;
+
+consteval @\libconcept{Unit}@ auto @\liboverload{inverse}{\cname{Unit}}@(@\libconcept{Unit}@ auto u) { return one / u; }
+
+template<std::intmax_t Num, std::intmax_t Den = 1, @\libconcept{Unit}@ U>
+  requires @\seebelownc@
+consteval @\libconcept{Unit}@ auto pow(U u);
+
+consteval @\libconcept{Unit}@ auto @\liboverload{sqrt}{\cname{Unit}}@(@\libconcept{Unit}@ auto u) { return pow<1, 2>(u); }
+consteval @\libconcept{Unit}@ auto @\liboverload{cbrt}{\cname{Unit}}@(@\libconcept{Unit}@ auto u) { return pow<1, 3>(u); }
+consteval @\libconcept{Unit}@ auto @\libglobal{square}@(@\libconcept{Unit}@ auto u) { return pow<2>(u); }
+consteval @\libconcept{Unit}@ auto @\libglobal{cubic}@(@\libconcept{Unit}@ auto u) { return pow<3>(u); }
+
+inline constexpr struct @\libglobal{percent}@ final : named_unit<"%", mag_ratio<1, 100> * one> {
+} @\libglobal{percent}@;
+
+inline constexpr struct @\libglobal{per_mille}@ final :
+    named_unit<symbol_text{u8"\u2030", "%o"}, mag_ratio<1, 1000> * one> {
+} @\libglobal{per_mille}@;
+
+inline constexpr struct @\libglobal{parts_per_million}@ final :
+    named_unit<"ppm", mag_ratio<1, 1'000'000> * one> {
+} @\libglobal{parts_per_million}@;
+
+inline constexpr auto @\libglobal{ppm}@ = parts_per_million;
+
+consteval @\libconcept{QuantitySpec}@ auto get_quantity_spec(@\libconcept{AssociatedUnit}@ auto u);
+consteval @\libconcept{Unit}@ auto @\liboverload{get_unit}{\cname{AssociatedUnit}}@(@\libconcept{AssociatedUnit}@ auto u) { return u; }
+
+consteval @\libconcept{Unit}@ auto get_common_unit(@\libconcept{Unit}@ auto... us)
+  requires @\seebelownc@;
+
+// \ref{qty.unit.sym.fmt}, symbol formatting
+
+enum class @\libglobal{unit_symbol_solidus}@ : std::int8_t {
+  one_denominator,
+  always,
+  never,
+  default_denominator = one_denominator
+};
+
+enum class @\libglobal{unit_symbol_separator}@ : std::int8_t {
+  space,
+  half_high_dot,
+  default_separator = space
+};
+
+struct @\libglobal{unit_symbol_formatting}@ {
+  text_encoding encoding = text_encoding::default_encoding;
+  unit_symbol_solidus solidus = unit_symbol_solidus::default_denominator;
+  unit_symbol_separator separator = unit_symbol_separator::default_separator;
+};
+
+template<typename CharT = char, std::@\stdconcept{output_iterator}@<CharT> Out, @\libconcept{Unit}@ U>
+constexpr Out unit_symbol_to(Out out, U u,
+                             const unit_symbol_formatting& fmt = unit_symbol_formatting{});
+
+template<unit_symbol_formatting fmt = {}, typename CharT = char, @\libconcept{Unit}@ U>
+constexpr auto unit_symbol(U);
+
+// \ref{qty.ref}, reference
+
+template<typename T>
+concept @\deflibconcept{Reference}@ = @\seebelownc@;
+
+template<typename T, auto QS>
+concept @\deflibconcept{ReferenceOf}@ = @\seebelownc@;
+
+template<@\libconcept{QuantitySpec}@ Q, @\libconcept{Unit}@ U>
+struct reference;
+
+template<typename Q, typename U>
+consteval @\libconcept{QuantitySpec}@ auto @\liboverload{get_quantity_spec}{reference}@(reference<Q, U>)
+{
+  return Q{};
+}
+
+template<typename Q, typename U>
+consteval @\libconcept{Unit}@ auto @\liboverload{get_unit}{reference}@(reference<Q, U>)
+{
+  return U{};
+}
+
+template<typename FwdRep, @\libconcept{Reference}@ R,
+         @\libconcept{RepresentationOf}@<get_quantity_spec(R{}).character> Rep = std::remove_cvref_t<FwdRep>>
+  requires(!@\exposconceptnc{OffsetUnit}@<decltype(get_unit(R{}))>)
+constexpr quantity<R{}, Rep> operator*(FwdRep&& lhs, R r);
+
+template<typename FwdRep, @\libconcept{Reference}@ R,
+         @\libconcept{RepresentationOf}@<get_quantity_spec(R{}).character> Rep = std::remove_cvref_t<FwdRep>>
+  requires(!@\exposconceptnc{OffsetUnit}@<decltype(get_unit(R{}))>)
+constexpr quantity<inverse(R{}), Rep> operator/(FwdRep&& lhs, R);
+
+template<typename FwdQ, @\libconcept{Reference}@ R, @\libconcept{Quantity}@ Q = std::remove_cvref_t<FwdQ>>
+constexpr @\libconcept{Quantity}@ auto operator*(FwdQ&& q, R);
+
+template<typename FwdQ, @\libconcept{Reference}@ R, @\libconcept{Quantity}@ Q = std::remove_cvref_t<FwdQ>>
+constexpr @\libconcept{Quantity}@ auto operator/(FwdQ&& q, R);
+
+template<@\libconcept{Reference}@ R, typename Rep>
+  requires @\libconcept{RepresentationOf}@<std::remove_cvref_t<Rep>, get_quantity_spec(R{}).character>
+constexpr auto operator*(R, Rep&&) = delete;
+
+template<@\libconcept{Reference}@ R, typename Rep>
+  requires @\libconcept{RepresentationOf}@<std::remove_cvref_t<Rep>, get_quantity_spec(R{}).character>
+constexpr auto operator/(R, Rep&&) = delete;
+
+template<@\libconcept{Reference}@ R, typename Q>
+  requires @\libconcept{Quantity}@<std::remove_cvref_t<Q>>
+constexpr auto operator*(R, Q&&) = delete;
+
+template<@\libconcept{Reference}@ R, typename Q>
+  requires @\libconcept{Quantity}@<std::remove_cvref_t<Q>>
+constexpr auto operator/(R, Q&&) = delete;
+
+consteval @\libconcept{AssociatedUnit}@ auto get_common_reference(@\libconcept{AssociatedUnit}@ auto u1,
+                                                   @\libconcept{AssociatedUnit}@ auto u2,
+                                                   @\libconcept{AssociatedUnit}@ auto... rest)
+  requires @\seebelownc@;
+
+template<@\libconcept{Reference}@ R1, @\libconcept{Reference}@ R2, @\libconcept{Reference}@... Rest>
+consteval @\libconcept{Reference}@ auto get_common_reference(R1 r1, R2 r2, Rest... rest)
+  requires @\seebelownc@;
+
+// \ref{qty.rep}, representation
+
+// \ref{qty.rep.traits}, traits
+
+// \ref{qty.fp.traits}, floating-point
 
 template<typename Rep>
-constexpr bool treat_as_floating_point = std::is_floating_point_v<Rep>;
+constexpr bool treat_as_floating_point = @\seebelownc@;
+
+// \ref{qty.set.traits}, set
 
 template<typename Rep>
-constexpr bool is_scalar =
-  std::is_floating_point_v<Rep> || (std::is_integral_v<Rep> && !is_same_v<Rep, bool>);
+constexpr bool is_scalar = @\seebelownc@;
+
+template<typename Rep>
+constexpr bool is_complex = false;
 
 template<typename Rep>
 constexpr bool is_vector = false;
@@ -53,46 +423,46 @@ constexpr bool is_vector = false;
 template<typename Rep>
 constexpr bool is_tensor = false;
 
+// \ref{qty.rep.concepts}, concepts
+
+template<typename T>
+concept Representation = @\seebelownc@;
+
+template<typename T, quantity_character Ch>
+concept RepresentationOf = @\seebelownc@;
+
+// \ref{qty.types}, quantity types
+
+// \ref{qty.traits}, traits
+
+// \ref{qty.val.traits}, values
+
 template<typename Rep>
 struct quantity_values;
 
-template<typename T>
-struct quantity_like_traits;
+// \ref{qty.compat.traits}, compatibility
 
 template<typename T>
-struct quantity_point_like_traits;
-
-// \ref{qty.concepts}, concepts
+struct quantity_like_traits; // \notdef
 
 template<typename T>
-concept @\deflibconcept{some_reference}@ = template_of(^std::remove_cvref_t<T>) == ^reference;
+struct quantity_point_like_traits; // \notdef
 
 template<typename T>
-concept representation = @\seebelownc@;
-
-template<typename T, quantity_character Ch>
-concept representation_of = @\seebelownc@;
+concept quantity_like = @\seebelownc@;
 
 template<typename T>
-concept some_quantity_spec = @\seebelownc@;
+concept quantity_point_like = @\seebelownc@;
 
-// \ref{qty.types}, types
+// \ref{qty.concepts}, quantity concepts
 
-template<auto...>
-struct quantity_spec; // \notdef
-
-template<auto Q>
-struct kind_of_; // \notdef
-
-template<@\unspec@... Expr>
-struct derived_quantity_spec;
-
-// \ref{qty.type}, class template \tcode{quantity}
-export template<@\libconcept{some_reference}@ auto R,
-                @\libconcept{representation_of}@<get_quantity_spec(R).character> Rep = double>
+// \ref{qty}, class template \tcode{quantity}
+template<@\libconcept{Reference}@ auto R, @\libconcept{RepresentationOf}@<get_quantity_spec(R).character> Rep = double>
 class quantity;
 
-// \ref{qty.point.type}, class template \tcode{quantity_point}
+// \ref{qty.pt.concepts}, quantity point concepts
+
+// \ref{qty.pt}, class template \tcode{quantity_point}
 template<@\unspec@>
 class quantity_point;
 
@@ -109,19 +479,56 @@ import std;
 
 export namespace mp_units {
 
+// \ref{qty.chrono}, \tcode{std::chrono} compatibility
+
+template<typename Rep, typename Period>
+struct quantity_like_traits<std::chrono::duration<Rep, Period>>;
+
+template<typename Clock>
+struct chrono_point_origin_;
+template<typename Clock>
+constexpr chrono_point_origin_<Clock> @\libglobal{chrono_point_origin}@{};
+
+template<typename Clock, typename Rep, typename Period>
+struct quantity_point_like_traits<
+  std::chrono::time_point<Clock, std::chrono::duration<Rep, Period>>>;
+
 }
 \end{codeblock}
 
 \rSec1[qty.helpers]{Helpers}
 
+\rSec2[qty.helpers.non.types]{Non-types}
+
 \begin{itemdecl}
-consteval bool @\exposidnc{converts-to-base-subobject-of}@(std::meta type, std::meta template_name);
+template<typename T>
+concept @\defexposconceptnc{tag-type}@ = type_is_empty(^T) && type_is_final(^T);  // \expos
+\end{itemdecl}
+
+\begin{itemdecl}
+consteval bool @\exposidnc{is-specialization-of}@(  // \expos
+  std::meta::info type, std::meta::info template_name);
 \end{itemdecl}
 
 \begin{itemdescr}
 \pnum
 \expects
-\tcode{is_type(type) \&\& is_template(template_name)} is \tcode{true}.
+\tcode{is_type(type) \&\& is_class_template(template_name)} is \tcode{true}.
+
+\pnum
+\returns
+\tcode{has_template_arguments(type) \&\& template_of(type) == template_name}.
+\end{itemdescr}
+
+\begin{itemdecl}
+consteval bool @\exposidnc{is-convertible-to-base-subobject-of}@(  // \expos
+  std::meta::info type, std::meta::info template_name);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\expects
+\tcode{is_type(type) \&\& is_class_template(template_name)} is \tcode{true}.
 
 \pnum
 \returns
@@ -131,12 +538,2045 @@ that is a specialization of \tcode{[:template_name:]}, and
 \tcode{false} otherwise.
 \end{itemdescr}
 
-\rSec1[qty.traits]{Traits}
+\rSec2[qty.ratio]{Struct \exposid{ratio}}
+
+\begin{codeblock}
+namespace mp_units {
+
+struct @\exposidnc{ratio}@ {  // \expos
+  std::intmax_t num;
+  std::intmax_t den;
+
+  consteval @\exposidnc{ratio}@(std::intmax_t n, std::intmax_t d = 1);
+
+  friend consteval bool operator==(@\exposidnc{ratio}@, @\exposidnc{ratio}@) = default;
+  friend consteval auto operator<=>(@\exposidnc{ratio}@ lhs, @\exposidnc{ratio}@ rhs) { return (lhs - rhs).num <=> 0; }
+
+  friend consteval @\exposidnc{ratio}@ operator-(@\exposidnc{ratio}@ r) { return @\exposidnc{ratio}@{-r.num, r.den}; }
+
+  friend consteval @\exposidnc{ratio}@ operator+(@\exposidnc{ratio}@ lhs, @\exposidnc{ratio}@ rhs)
+  {
+    return @\exposidnc{ratio}@{lhs.num * rhs.den + lhs.den * rhs.num, lhs.den * rhs.den};
+  }
+
+  friend consteval @\exposidnc{ratio}@ operator-(@\exposidnc{ratio}@ lhs, @\exposidnc{ratio}@ rhs) { return lhs + (-rhs); }
+
+  friend consteval @\exposidnc{ratio}@ operator*(@\exposidnc{ratio}@ lhs, @\exposidnc{ratio}@ rhs);
+
+  friend consteval @\exposidnc{ratio}@ operator/(@\exposidnc{ratio}@ lhs, @\exposidnc{ratio}@ rhs) { return lhs* @\exposidnc{ratio}@{rhs.den, rhs.num}; }
+};
+
+consteval bool is_integral(@\exposidnc{ratio}@ r) { return r.num % r.den == 0; }
+
+consteval @\exposidnc{ratio}@ common_ratio(@\exposidnc{ratio}@ r1, @\exposidnc{ratio}@ r2)
+{
+  if (r1.num == r2.num && r1.den == r2.den) return r1;
+
+  // $\operatorname{gcd}(a/b, c/d) = \operatorname{gcd}(ad, cb) / bd$
+  contract_assert(std::numeric_limits<std::intmax_t>::max() / r1.num > r2.den);
+  contract_assert(std::numeric_limits<std::intmax_t>::max() / r2.num > r1.den);
+  contract_assert(std::numeric_limits<std::intmax_t>::max() / r1.den > r2.den);
+
+  const std::intmax_t num = std::gcd(r1.num * r2.den, r2.num * r1.den);
+  const std::intmax_t den = r1.den * r2.den;
+  const std::intmax_t gcd = std::gcd(num, den);
+  return @\exposidnc{ratio}@{num / gcd, den / gcd};
+}
+
+}
+\end{codeblock}
+
+\begin{itemdecl}
+consteval @\exposidnc{ratio}@(std::intmax_t n, std::intmax_t d = 1);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+Let \tcode{N} and \tcode{D} be the values of \tcode{n} and \tcode{d}.
+Let \tcode{R} be \tcode{std::ratio<N, D>}.
+
+\pnum
+\effects
+Equivalent to: \tcode{R}.
+
+\pnum
+\ensures
+\tcode{num == R::num \&\& den == R::den} is \tcode{true}.
+\end{itemdescr}
+
+\begin{itemdecl}
+friend consteval @\exposidnc{ratio}@ operator*(@\exposidnc{ratio}@ lhs, @\exposidnc{ratio}@ rhs);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+Let \tcode{R(r)} be \tcode{std::ratio<N, D>},
+where \tcode{N} and \tcode{D} are the values of \tcode{r.num} and \tcode{r.den}.
+Let \tcode{Res} be \tcode{std::ratio_multiply<R(lhs), R(rhs)>}.
+
+\pnum
+\effects
+Equivalent to: \tcode{return \exposidnc{ratio}\{Res::num, Res::den\}}.
+\end{itemdescr}
+
+\rSec2[qty.fixed.string]{Class template \exposidnc{basic-fixed-string}}
+
+\rSec2[qty.symbol.text]{Class template \tcode{symbol_text}}
+
+\rSec1[qty.expr.temp]{Expression template}
+
+\rSec2[qty.expr.temp.general]{General}
+
+\pnum
+Subclause \ref{qty.expr.temp} specifies the components
+used to maintain an ordered, simplified, and readable
+argument lists in the names of specializations.
+\begin{example}
+The framework ensures the following assertion holds.
+\begin{codeblock}
+using namespace si::unit_symbols;
+static_assert(^decltype(km / square(h)) ==
+              ^derived_unit<si::kilo_<si::metre>, per<power<non_si::hour, 2>>>);
+\end{codeblock}
+\end{example}
+
+\rSec2[qty.expr.temp.types]{Types}
+
+\begin{codeblock}
+namespace mp_units {
+
+template<typename T, typename... Ts>
+struct @\libglobal{per}@ {};
+
+}
+\end{codeblock}
+
+\pnum
+\tcode{per} stores the arguments with negative exponents.
+
+\begin{codeblock}
+namespace mp_units {
+
+template<typename F, int Num, int... Den>
+  requires(sizeof...(Den) <= 1 && @\exposidnc{valid-ratio}@(Num, Den...) && @\exposidnc{positive-ratio}@(Num, Den...) &&
+           !@\exposidnc{ratio-one}@(Num, Den...))
+struct @\libglobal{power}@ {
+  using factor = F;
+  static constexpr @\exposidnc{ratio}@ exponent{Num, Den...};
+};
+
+}
+\end{codeblock}
+
+\pnum
+\tcode{power} represents a power\irefiev{102-02-08}
+of the form $\tcode{F}^{\tcode{Num}/\tcode{Den}}$.
+\begin{note}
+\tcode{Den} is optional to shorten the type name when \tcode{Den} is \tcode{1}.
+\end{note}
+
+\rSec2[qty.expr.temp.algo]{Algorithms}
+
+\pnum
+Unless otherwise specified, in the following descriptions, let
+\begin{itemize}
+\item
+\tcode{To} be the template of the resulting type list, and
+\item
+\tcode{OneType} be the neutral element\irefiev{102-01-19} of the operation.
+\end{itemize}
+
+\begin{codeblock}
+consteval std::meta::info @\exposidnc{expr-type}@(std::meta::info t)
+{
+  return @\exposidnc{is-specialization-of}@(t, ^power) ? template_arguments_of(t)[0] : t;
+}
+
+template<typename Lhs, typename Rhs>
+struct @\exposidnc{type-less}@ :
+    std::bool_constant<@\exposidnc{is-specialization-of}@(^Rhs, ^power) ||
+                       display_string_of(@\exposidnc{expr-type}@(^Lhs)) <
+                         display_string_of(@\exposidnc{expr-type}@(^Rhs))> {
+};
+\end{codeblock}
+
+\begin{codeblock}
+template<typename... Ts>
+struct @\exposidnc{type-list}@ {};
+
+template<typename OneType, typename... Ts>
+struct @\exposidnc{expr-fractions}@ {
+  using @\exposidnc{num}@ = @\seebelownc@;
+  using @\exposidnc{den}@ = @\seebelownc@;
+}
+\end{codeblock}
+
+\pnum
+\exposidnc{expr-fractions} divides an expression template to numerator and denominator parts.
+Unless otherwise specified, let \exposidnc{num} and \exposidnc{den} be \tcode{\exposidnc{type-list}<>}.
+\begin{itemize}
+\item
+If \tcode{sizeof...(Ts) == 1} is \tcode{true}, then \exposidnc{num} is \tcode{\exposidnc{type-list}<Ts...>}.
+\item
+If \tcode{sizeof...(Ts) >= 2} is \tcode{true}, then:
+\begin{itemize}
+\item
+If the last element of \tcode{Ts} does not match \tcode{per<Us...>},
+then \exposidnc{num} is \tcode{\exposidnc{type-list}<Ts...>}.
+\item
+Otherwise, \exposidnc{den} is \tcode{\exposidnc{type-list}<Us...>}, and if
+\begin{codeblock}
+sizeof...(Ts) != 2 || ^Ts...[0] != ^OneType
+\end{codeblock}
+is \tcode{true}, then
+\exposidnc{num} is \tcode{\exposidnc{type-list}<Ts...[0], Ts...[1], \ldots, Ts...[sizeof...(Ts) - 2]>}.
+\end{itemize}
+\end{itemize}
+
+\begin{itemdecl}
+template<template<typename...> typename To, typename OneType,
+         template<typename, typename> typename Pred = @\exposidnc{type-less}@, typename Lhs, typename Rhs>
+consteval auto @\exposidnc{expr-multiply}@(Lhs, Rhs);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\exposidnc{expr-multiply} multiplies two sorted expression templates.
+
+\pnum
+\returns
+\begin{itemize}
+\item
+If the type of a parameter is \tcode{OneType}, returns the other parameter.
+\item
+Otherwise,
+TBD.
+\end{itemize}
+\end{itemdescr}
+
+\begin{itemdecl}
+template<template<typename...> typename To, typename OneType,
+         template<typename, typename> typename Pred = @\exposidnc{type-less}@, typename Lhs, typename Rhs>
+consteval auto @\exposidnc{expr-divide}@(Lhs lhs, Rhs rhs);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\exposidnc{expr-divide} divides two sorted expression templates.
+
+\pnum
+\returns
+TBD.
+\end{itemdescr}
+
+\begin{itemdecl}
+template<template<typename...> typename To, typename OneType, typename T>
+consteval auto @\exposidnc{expr-invert}@(T);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\exposidnc{expr-invert} inverts the expression template \tcode{T}.
+
+\pnum
+\returns
+TBD.
+\end{itemdescr}
+
+\begin{itemdecl}
+template<std::intmax_t Num, std::intmax_t Den, template<typename...> typename To,
+         typename OneType, template<typename, typename> typename Pred = @\exposidnc{type-less}@, typename T>
+  requires(Den != 0)
+consteval auto @\exposidnc{expr-pow}@(T);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\exposidnc{expr-pow} computes the power\irefiev{102-02-08} $\tcode{T}^{\tcode{Num}/\tcode{Den}}$.
+
+\pnum
+\returns
+TBD.
+\end{itemdescr}
+
+\begin{itemdecl}
+template<template<typename> typename Proj, template<typename...> typename To, typename OneType,
+         template<typename, typename> typename Pred = @\exposidnc{type-less}@, @\exposidnc{expr-projectable}@<Proj> T>
+consteval auto @\exposidnc{expr-map}@(T);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\exposidnc{expr-map} maps contents of one expression template to another resulting in a different type list.
+
+\pnum
+Let \tcode{Proj} be projection used for mapping, and
+let \tcode{T} be the expression template to map from.
+
+\pnum
+\returns
+TBD.
+\end{itemdescr}
+
+\rSec1[qty.dim]{Dimension}
+
+\rSec2[qty.dim.general]{General}
+
+\pnum
+Subclause \ref{qty.dim} specifies the components
+for defining the dimension of a quantity\irefiev{112-01-11}.
+
+\rSec2[qty.dim.concepts]{Concepts}
+
+\begin{itemdecl}
+template<typename T>
+concept @\deflibconcept{Dimension}@ = @\exposconceptnc{tag-type}@<T> && std::@\stdconcept{derived_from}@<T, @\exposidnc{dimension-interface}@>;
+
+template<typename T>
+concept @\defexposconceptnc{BaseDimension}@ = @\libconcept{Dimension}@<T> && std::@\stdconcept{derived_from}@<T, base_dimension>;
+
+consteval bool @\exposidnc{is-dimension-one}@(std::meta::info type_alias) {
+  return dealias(type_alias) == ^dimension_one;
+}
+
+template<typename T>
+concept @\defexposconceptnc{IsPowerOfDim}@ =
+  (@\exposidnc{is-specialization-of}@(^T, ^power) &&
+   (@\exposconceptnc{BaseDimension}@<typename T::factor> || @\exposidnc{is-dimension-one}@(^typename T::factor)));
+
+template<typename T>
+constexpr bool @\exposidnc{is-per-of-dims}@ = false;
+
+template<typename... Ts>
+constexpr bool @\exposidnc{is-per-of-dims}@<per<Ts...>> =
+  (... && (@\exposconceptnc{BaseDimension}@<Ts> || @\exposidnc{is-dimension-one}@(^Ts) || @\exposconceptnc{IsPowerOfDim}@<Ts>));
+
+template<typename T>
+concept @\defexposconceptnc{DerivedDimensionExpr}@ =
+  @\exposconceptnc{BaseDimension}@<T> || @\exposidnc{is-dimension-one}@(^T) || @\exposconceptnc{IsPowerOfDim}@<T> || @\exposidnc{is-per-of-dims}@<T>;
+
+template<typename T, auto D>
+concept @\deflibconcept{DimensionOf}@ = @\libconcept{Dimension}@<T> && @\libconcept{Dimension}@<decltype(D)> && T{} == D;
+\end{itemdecl}
+
+\rSec2[qty.dim.types]{Types}
+
+\begin{codeblock}
+namespace mp_units {
+
+struct @\exposidnc{dimension-interface}@ {
+  friend consteval @\libconcept{Dimension}@ auto operator*(@\libconcept{Dimension}@ auto lhs, @\libconcept{Dimension}@ auto rhs)
+  {
+    return @\exposidnc{expr-multiply}@<derived_dimension, struct dimension_one>(lhs, rhs);
+  }
+
+  friend consteval @\libconcept{Dimension}@ auto operator/(@\libconcept{Dimension}@ auto lhs, @\libconcept{Dimension}@ auto rhs)
+  {
+    return @\exposidnc{expr-divide}@<derived_dimension, struct dimension_one>(lhs, rhs);
+  }
+
+  friend consteval bool operator==(@\libconcept{Dimension}@ auto lhs, @\libconcept{Dimension}@ auto rhs)
+  {
+    return ^decltype(lhs) == ^decltype(rhs);
+  }
+};
+
+template<symbol_text Symbol>
+struct @\libglobal{base_dimension}@ : @\exposidnc{dimension-interface}@ {
+  static constexpr auto symbol = Symbol;
+};
+
+}
+\end{codeblock}
+
+\pnum
+\tcode{base_dimension} is used by the program
+to define the dimension of a base quantity\irefiev{112-01-08}.
+\begin{example}
+\begin{codeblock}
+inline constexpr struct dim_length final : base_dimension<"L"> {} dim_length;
+\end{codeblock}
+\end{example}
+
+\begin{codeblock}
+namespace mp_units {
+
+template<@\exposconceptnc{DerivedDimensionExpr}@... Expr>
+struct @\exposidnc{derived-dimension-impl}@ : @\exposidnc{expr-fractions}@<struct dimension_one, Expr...> {};
+
+template<@\exposconceptnc{DerivedDimensionExpr}@... Expr>
+struct @\libglobal{derived_dimension}@ final : @\exposidnc{dimension-interface}@, @\exposidnc{derived-dimension-impl}@<Expr...> {};
+
+}
+\end{codeblock}
+
+\pnum
+\tcode{derived_dimension} is used by the library
+to represent the dimension of a derived quantity\irefiev{112-01-10}.
+\begin{example}
+\begin{codeblock}
+constexpr auto acceleration = isq::dim_speed / isq::dim_time;
+static_assert(dealias(^decltype(acceleration)) ==
+              ^derived_dimension<isq::dim_length, per<power<isq::dim_time, 2>>>);
+\end{codeblock}
+\end{example}
+
+\begin{codeblock}
+namespace mp_units {
+
+inline constexpr struct @\libglobal{dimension_one}@ final : @\exposidnc{dimension-interface}@, @\exposidnc{derived-dimension-impl}@<> {
+} @\libglobal{dimension_one}@;
+
+}
+\end{codeblock}
+
+\pnum
+\tcode{dimension_one} represents the dimension of a quantity of dimension one\irefiev{112-01-13}.
+
+\begin{itemdecl}
+template<std::intmax_t Num, std::intmax_t Den = 1, @\libconcept{Dimension}@ D>
+  requires(Den != 0)
+consteval @\libconcept{Dimension}@ auto @\liboverload{pow}{\cname{Dimension}}@(D d);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\returns
+\tcode{\exposidnc{expr-pow}<Num, Den, derived_dimension, struct dimension_one>(d)}.
+\end{itemdescr}
+
+\rSec2[qty.dim.sym.fmt]{Symbol formatting}
+
+\begin{itemdecl}
+template<typename CharT = char, std::@\stdconcept{output_iterator}@<CharT> Out, @\libconcept{Dimension}@ D>
+constexpr Out @\libglobal{dimension_symbol_to}@(Out out, D d, const dimension_symbol_formatting& fmt = {});
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+TBD.
+
+\pnum
+\returns
+TBD.
+\end{itemdescr}
+
+\begin{itemdecl}
+template<dimension_symbol_formatting fmt = {}, typename CharT = char, @\libconcept{Dimension}@ D>
+constexpr auto @\libglobal{dimension_symbol}@(D);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+TBD.
+\end{codeblock}
+\end{itemdescr}
+
+\rSec1[qty.spec]{Quantity specification}
+
+\rSec2[qty.spec.general]{General}
+
+\pnum
+Subclause \ref{qty.spec} specifies the components
+for defining a quantity\irefiev{112-01-01}.
+
+\rSec2[qty.spec.concepts]{Concepts}
+
+\begin{itemdecl}
+template<typename T>
+concept @\deflibconcept{QuantitySpec}@ = @\exposconceptnc{tag-type}@<T> && std::@\stdconcept{derived_from}@<T, @\exposidnc{quantity-spec-interface-base}@>;
+
+template<typename T>
+concept @\defexposconceptnc{QuantityKindSpec}@ = @\exposidnc{is-specialization-of}@(^T, ^kind_of_);
+
+template<typename T>
+concept @\defexposconceptnc{NamedQuantitySpec}@ =
+  @\libconcept{QuantitySpec}@<T> && std::@\stdconcept{derived_from}@<T, quantity_spec> && !@\exposconceptnc{QuantityKindSpec}@<T>;
+
+consteval bool @\exposidnc{is-dimensionless}@(std::meta::info type_alias) {
+  return dealias(type_alias) == ^dimensionless;
+}
+
+template<typename T>
+concept @\defexposconceptnc{IsPowerOfQuantitySpec}@ =
+  (@\exposidnc{is-specialization-of}@(^T, ^power) &&
+   (@\exposconceptnc{NamedQuantitySpec}@<typename T::factor> || @\exposidnc{is-dimensionless}@(^typename T::factor)));
+
+template<typename T>
+constexpr bool @\exposidnc{is-per-of-quantity-specs}@ = false;
+
+template<typename... Ts>
+constexpr bool @\exposidnc{is-per-of-quantity-specs}@<per<Ts...>> =
+  (... && (@\exposconceptnc{NamedQuantitySpec}@<Ts> || @\exposidnc{is-dimensionless}@(^Ts) || @\exposconceptnc{IsPowerOfQuantitySpec}@<Ts>));
+
+template<typename T>
+concept @\defexposconceptnc{DerivedQuantitySpecExpr}@ = @\exposconceptnc{NamedQuantitySpec}@<T> || @\exposidnc{is-dimensionless}@(^T) ||
+                                  @\exposconceptnc{IsPowerOfQuantitySpec}@<T> || @\exposidnc{is-per-of-quantity-specs}@<T>;
+
+template<typename T>
+concept @\defexposconceptnc{DerivedQuantitySpec}@ =
+  @\libconcept{QuantitySpec}@<T> &&
+  (@\exposidnc{is-specialization-of}@(^T, ^derived_quantity_spec) ||
+   (@\exposconceptnc{QuantityKindSpec}@<T> && @\exposidnc{is-specialization-of}@(type_remove_const(type_of(^T::@\exposidnc{quantity-spec}@)),
+                                                ^derived_quantity_spec)));
+
+template<auto QS1, auto QS2>
+concept @\defexposconceptnc{SameQuantitySpec}@ =
+  @\libconcept{QuantitySpec}@<decltype(QS1)> && @\libconcept{QuantitySpec}@<decltype(QS2)> && (QS1 == QS2);
+
+template<auto Child, auto Parent>
+concept @\defexposconceptnc{ChildQuantitySpecOf}@ = (@\exposidnc{is-child-of}@(Child, Parent));
+
+template<auto To, auto From>
+concept @\defexposconceptnc{NestedQuantityKindSpecOf}@ = @\libconcept{QuantitySpec}@<decltype(From)> && @\libconcept{QuantitySpec}@<decltype(To)> &&
+                                   !@\exposconceptnc{SameQuantitySpec}@<get_kind(From), get_kind(To)> &&
+                                   @\exposconceptnc{ChildQuantitySpecOf}@<To, get_kind(From).@\exposidnc{quantity-spec}@>;
+
+template<auto From, auto To>
+concept @\defexposconceptnc{QuantitySpecConvertibleTo}@ =
+  @\libconcept{QuantitySpec}@<decltype(From)> && @\libconcept{QuantitySpec}@<decltype(To)> && implicitly_convertible(From, To);
+
+template<auto From, auto To>
+concept @\defexposconceptnc{QuantitySpecExplicitlyConvertibleTo}@ =
+  @\libconcept{QuantitySpec}@<decltype(From)> && @\libconcept{QuantitySpec}@<decltype(To)> && explicitly_convertible(From, To);
+
+template<auto From, auto To>
+concept @\defexposconceptnc{QuantitySpecCastableTo}@ =
+  @\libconcept{QuantitySpec}@<decltype(From)> && @\libconcept{QuantitySpec}@<decltype(To)> && castable(From, To);
+
+template<typename T, auto QS>
+concept @\deflibconcept{QuantitySpecOf}@ =
+  @\libconcept{QuantitySpec}@<T> && @\libconcept{QuantitySpec}@<decltype(QS)> && @\exposconceptnc{QuantitySpecConvertibleTo}@<T{}, QS> &&
+  !@\exposconceptnc{NestedQuantityKindSpecOf}@<T{}, QS> &&
+  (@\exposconceptnc{QuantityKindSpec}@<T> || !@\exposconceptnc{NestedQuantityKindSpecOf}@<QS, T{}>);
+\end{itemdecl}
+
+\rSec2[qty.spec.types]{Types}
+
+\begin{codeblock}
+namespace mp_units {
+
+template<@\libconcept{QuantitySpec}@ QS, @\libconcept{Unit}@ U>
+  requires(!@\libconcept{AssociatedUnit}@<U>) || @\libconcept{UnitOf}@<U, QS{}>
+consteval @\libconcept{Reference}@ auto @\exposidnc{make-reference}@(QS, U u)
+{
+  if constexpr (@\exposconceptnc{QuantityKindSpec}@<QS>)
+    return u;
+  else
+    return reference<QS, U>{};
+}
+
+consteval quantity_character @\exposidnc{common-quantity-character}@(
+  std::initializer_list<quantity_character> args)
+{
+  return max(args);
+}
+
+template<typename... Qs1, typename... Qs2>
+consteval quantity_character @\exposidnc{derived-quantity-character}@(@\exposidnc{type-list}@<Qs1...>, @\exposidnc{type-list}@<Qs2...>)
+{
+  constexpr quantity_character num =
+    @\exposidnc{common-quantity-character}@({quantity_character::scalar, [:@\exposidnc{expr-type}@(^Qs1):]::character...});
+  constexpr quantity_character den =
+    @\exposidnc{common-quantity-character}@({quantity_character::scalar, [:@\exposidnc{expr-type}@(^Qs2):]::character...});
+  if constexpr (num == den)
+    return quantity_character::scalar;
+  else
+    return @\exposidnc{common-quantity-character}@({num, den});
+}
+
+consteval quantity_character @\exposidnc{quantity-character-init}@(quantity_character ch,
+                                                     std::initializer_list<std::meta::info> args)
+{
+  auto it =
+    std::ranges::find_if(args, [](auto arg) { return type_of(arg) == ^quantity_character; });
+  if (it != args.end()) return extract<quantity_character>(*it);
+  return ch;
+}
+
+template<@\defexposconceptnc{NamedQuantitySpec}@ Q>
+  requires requires { Q::dimension; }
+using @\exposidnc{to-dimension}@ = [:type_remove_const(type_of(^Q::dimension)):];
+
+struct @\exposidnc{quantity-spec-interface-base}@ {
+  friend consteval @\libconcept{QuantitySpec}@ auto operator*(@\libconcept{QuantitySpec}@ auto lhs, @\libconcept{QuantitySpec}@ auto rhs)
+  {
+    return @\exposidnc{clone-kind-of}@<lhs, rhs>(@\exposidnc{expr-multiply}@<derived_quantity_spec, struct dimensionless>(
+      @\exposidnc{remove-kind}@(lhs), @\exposidnc{remove-kind}@(rhs)));
+  }
+
+  friend consteval @\libconcept{QuantitySpec}@ auto operator/(@\libconcept{QuantitySpec}@ auto lhs, @\libconcept{QuantitySpec}@ auto rhs)
+  {
+    return @\exposidnc{clone-kind-of}@<lhs, rhs>(@\exposidnc{expr-divide}@<derived_quantity_spec, struct dimensionless>(
+      @\exposidnc{remove-kind}@(lhs), @\exposidnc{remove-kind}@(rhs)));
+  }
+
+  friend consteval bool operator==(@\libconcept{QuantitySpec}@ auto lhs, @\libconcept{QuantitySpec}@ auto rhs)
+  {
+    return ^decltype(lhs) == ^decltype(rhs);
+  }
+};
+
+struct @\exposidnc{quantity-spec-interface}@ : @\exposidnc{quantity-spec-interface-base}@ {
+  template<typename Self, @\libconcept{UnitOf}@<Self{}> U>
+  consteval @\libconcept{Reference}@ auto operator[](this Self self, U u)
+  {
+    return @\exposidnc{make-reference}@(self, u);
+  }
+
+  template<typename Self, typename FwdQ, @\libconcept{Quantity}@ Q = [:type_remove_cvref(^FwdQ):]>
+    requires @\exposconceptnc{QuantitySpecExplicitlyConvertibleTo}@<Q::quantity_spec, Self{}>
+  constexpr @\libconcept{Quantity}@ auto operator()(this Self self, FwdQ&& q)
+  {
+    return quantity{std::forward<FwdQ>(q).@\exposidnc{numerical-value}@, @\exposidnc{make-reference}@(self, Q::unit)};
+  }
+};
+
+inline constexpr struct @\libglobal{is_kind}@ {
+} @\libglobal{is_kind}@;
+
+template<auto Arg>
+concept @\defexposconceptnc{quantity-spec-1-arg}@ =
+  (type_of(^Arg) == ^quantity_character) &&
+  std::ranges::contains(enumerators_of(^quantity_character), value_of(^Arg));
+
+template<auto Lhs, auto Rhs>
+concept @\defexposconceptnc{quantity-spec-2-args}@ = (@\exposconceptnc{quantity-spec-1-arg}@<Lhs> && value_of(^Rhs) == is_kind) ||
+                               (@\exposconceptnc{quantity-spec-1-arg}@<Rhs> && value_of(^Lhs) == is_kind);
+
+template<int MaxArgs, auto... Args>
+concept @\defexposconceptnc{quantity-spec-args}@ =
+  (... && !@\libconcept{QuantitySpec}@<decltype(Args)>) &&
+  ((sizeof...(Args) == 0) ||  //
+   (sizeof...(Args) == 1 && @\exposconceptnc{quantity-spec-1-arg}@<Args...>) ||
+   (sizeof...(Args) == 2 && @\exposconceptnc{quantity-spec-2-args}@<Args...> && MaxArgs == 2));
+
+template<@\exposconceptnc{BaseDimension}@ auto Dim, auto... Args>
+  requires @\exposconceptnc{quantity-spec-args}@<1, Args...>
+struct @\libglobal{quantity_spec}@<Dim, Args...> : @\exposidnc{quantity-spec-interface}@ {
+  using @\exposidnc{base-type}@ = quantity_spec;
+  static constexpr @\exposconceptnc{BaseDimension}@ auto dimension = Dim;
+  static constexpr quantity_character character =
+    @\exposidnc{quantity-character-init}@(quantity_character::scalar, {^Args...});
+};
+
+template<@\exposconceptnc{DerivedQuantitySpec}@ auto Eq, auto... Args>
+  requires @\exposconceptnc{quantity-spec-args}@<1, Args...>
+struct quantity_spec<Eq, Args...> : @\exposidnc{quantity-spec-interface}@ {
+  using @\exposidnc{base-type}@ = quantity_spec;
+  static constexpr auto @\exposidnc{equation}@ = Eq;
+  static constexpr @\libconcept{Dimension}@ auto dimension = Eq.dimension;
+  static constexpr quantity_character character =
+    @\exposidnc{quantity-character-init}@(Eq.character, {^Args...});
+};
+
+template<@\exposconceptnc{NamedQuantitySpec}@ auto QS, auto... Args>
+  requires @\exposconceptnc{quantity-spec-args}@<2, Args...>
+struct quantity_spec<QS, Args...> : @\exposidnc{quantity-spec-interface}@ {
+  using @\exposidnc{base-type}@ = quantity_spec;
+  static constexpr auto @\exposidnc{parent}@ = QS;
+  static constexpr auto @\exposidnc{equation}@ = @\exposidnc{parent}@.@\exposidnc{equation}@;  // \expos, present only
+    // if the \fakegrammarterm{qualified-id} \tcode{\exposidnc{parent}.\exposidnc{equation}} is valid and denotes an object
+  static constexpr @\libconcept{Dimension}@ auto dimension = @\exposidnc{parent}@.dimension;
+  static constexpr quantity_character character =
+    @\exposidnc{quantity-character-init}@(QS.character, {^Args...});
+};
+
+template<@\exposconceptnc{NamedQuantitySpec}@ auto QS, @\exposconceptnc{DerivedQuantitySpec}@ auto Eq, auto... Args>
+  requires @\exposconceptnc{quantity-spec-args}@<2, Args...> && @\exposconceptnc{QuantitySpecExplicitlyConvertibleTo}@<Eq, QS>
+struct quantity_spec<QS, Eq, Args...> : @\exposidnc{quantity-spec-interface}@ {
+  using @\exposidnc{base-type}@ = quantity_spec;
+  static constexpr auto @\exposidnc{parent}@ = QS;
+  static constexpr auto @\exposidnc{equation}@ = Eq;
+  static constexpr @\libconcept{Dimension}@ auto dimension = @\exposidnc{parent}@.dimension;
+  static constexpr quantity_character character =
+    @\exposidnc{quantity-character-init}@(Eq.character, {^Args...});
+};
+
+}
+\end{codeblock}
+
+\pnum
+A \defnadj{named}{quantity} is a type that models \exposconceptnc{NamedQuantitySpec}.
+A specialization of \tcode{quantity_spec} is used as a base type when defining a named quantity.
+
+\pnum
+In the following descriptions, let \tcode{Q} be a named quantity defined with an alluded signature.
+The identifier of \tcode{Q} represents its quantity name\irefiev{112-01-02}.
+
+\pnum
+Let \tcode{set} be an enumerator of \tcode{quantity_character}.
+The possible arguments to \tcode{quantity_spec} are
+\begin{itemize}
+\item
+$(\text{A base quantity dimension}, \opt{\tcode{set}})$,
+\item
+$(\text{A quantity calculus}, \opt{\tcode{set}})$,
+\item
+$(\text{A named quantity}, \opt{\tcode{set}}, \opt{\tcode{is_kind}})$, and
+\item
+$(\text{A named quantity}, \text{a quantity calculus}, \opt{\tcode{set}}, \opt{\tcode{is_kind}})$.
+\end{itemize}
+
+\pnum
+If the first argument is a base quantity dimension,
+then \tcode{Q} is that base quantity\irefiev{112-01-08}.
+If an argument is a quantity calculus\irefiev{112-01-30} \placeholder{C},
+then $\tcode{Q} = \placeholder{C}$ (a quantity equation\irefiev{112-01-31}).
+If the first argument is a named quantity,
+then \tcode{Q} is of its kind\irefiev{112-01-04}.
+
+\pnum
+\tcode{set} is the set of the numerical value of \tcode{Q}.
+If not specified, then it defaults to \tcode{scalar} for the first signature,
+and to that of the quantity argument that comes before the \tcode{set} otherwise.
+\tcode{is_kind} specifies \tcode{Q} to start a new hierarchy tree of a kind.
+
+\pnum
+\begin{example}
+\begin{codeblock}
+// The first signature defines a base quantity.
+inline constexpr struct length final : quantity_spec<dim_length> {
+} length;  // Length is a base quantity.
+
+// The second signature defines a derived quantity.
+inline constexpr struct area final : quantity_spec<pow<2>(length)> {
+} area;  // An area equals length by length.
+
+// The third and fourth signatures add a leaf to a hierarchy of kinds.
+inline constexpr struct width final : quantity_spec<length> {
+} width;  // Width is a kind of length.
+
+// The fourth signature also refines the calculus required for implicit conversions.
+inline constexpr struct angular_measure final :
+    quantity_spec<dimensionless, arc_length / radius, is_kind> {
+} angular_measure;  // Requires an arc length per radius, not just any quantity of dimension one.
+\end{codeblock}
+\end{example}
+
+\begin{codeblock}
+namespace mp_units {
+
+template<@\exposconceptnc{DerivedQuantitySpecExpr}@... Expr>
+struct @\exposidnc{derived-quantity-spec-impl}@ :
+    @\exposidnc{quantity-spec-interface}@,
+    @\exposidnc{expr-fractions}@<struct dimensionless, Expr...> {
+  using @\exposidnc{base-type}@ = @\exposidnc{derived-quantity-spec-impl}@;
+  using @\exposidnc{base}@ = @\exposidnc{expr-fractions}@<struct dimensionless, Expr...>;
+
+  static constexpr @\libconcept{Dimension}@ auto dimension =
+    @\exposidnc{expr-map}@<@\exposidnc{to-dimension}@, derived_dimension, struct dimension_one>(@\exposidnc{base}@{});
+  static constexpr quantity_character character =
+    @\exposidnc{derived-quantity-character}@(typename @\exposidnc{base}@::@\exposidnc{num}@{}, typename @\exposidnc{base}@::@\exposidnc{den}@{});
+};
+
+template<@\exposconceptnc{DerivedQuantitySpecExpr}@... Expr>
+struct @\libglobal{derived_quantity_spec}@ final : @\exposidnc{derived-quantity-spec-impl}@<Expr...> {};
+
+}
+\end{codeblock}
+
+\pnum
+\tcode{derived_quantity_spec} is used by the library
+to represent the result of a quantity calculus not equal to a named quantity.
+\begin{example}
+\begin{codeblock}
+auto area = pow<2>(length);
+static_assert(decltype(area) == ^derived_quantity_spec<power<length, 2>>);
+\end{codeblock}
+\end{example}
+
+\begin{codeblock}
+namespace mp_units {
+
+inline constexpr struct @\libglobal{dimensionless}@ final : quantity_spec<derived_quantity_spec<>> {
+} @\libglobal{dimensionless}@;
+
+}
+\end{codeblock}
+
+\pnum
+\tcode{dimensionless} represents the base quantity of dimension one\irefiev{112-01-13}.
+
+\begin{codeblock}
+namespace mp_units {
+
+template<typename T>
+concept @\defexposconceptnc{QuantitySpecWithNoSpecifiers}@ = @\exposconceptnc{NamedQuantitySpec}@<T> || @\exposconceptnc{DerivedQuantitySpec}@<T>;
+
+template<typename Q>
+  requires @\exposconceptnc{QuantitySpecWithNoSpecifiers}@<Q> && @\exposconceptnc{SameQuantitySpec}@<@\exposidnc{get-kind-tree-root}@(Q{}), Q{}>
+struct @\libglobal{kind_of_}@ final : Q::@\exposidnc{base-type}@ {
+  using @\exposidnc{base-type}@ = kind_of_;
+  static constexpr auto @\exposidnc{quantity-spec}@ = Q{};
+};
+
+}
+\end{codeblock}
+
+\pnum
+\tcode{kind_of<Q>} specifies \tcode{Q} to be treated as a quantity kind.
+
+\begin{codeblock}
+namespace mp_units {
+
+template<@\libconcept{QuantitySpec}@ auto... From, @\libconcept{QuantitySpec}@ Q>
+consteval @\libconcept{QuantitySpec}@ auto @\exposidnc{clone-kind-of}@(Q q)
+{
+  if constexpr ((... && @\exposconceptnc{QuantityKindSpec}@<decltype(From)>))
+    return kind_of<Q{}>;
+  else
+    return q;
+}
+
+template<@\libconcept{QuantitySpec}@ Q>
+consteval auto @\exposidnc{remove-kind}@(Q q)
+{
+  if constexpr (@\exposconceptnc{QuantityKindSpec}@<Q>)
+    return Q::@\exposidnc{quantity-spec}@;
+  else
+    return q;
+}
+
+}
+\end{codeblock}
+
+\begin{itemdecl}
+template<std::intmax_t Num, std::intmax_t Den = 1, @\libconcept{QuantitySpec}@ Q>
+  requires(Den != 0)
+consteval @\libconcept{QuantitySpec}@ auto @\liboverload{pow}{\cname{QuantitySpec}}@(Q q);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\returns
+\begin{codeblock}
+@\exposidnc{clone-kind-of}@<q>(
+  @\exposidnc{expr-pow}@<Num, Den, derived_quantity_spec, struct dimensionless>(@\exposidnc{remove-kind}@(q)));
+\end{codeblock}
+\end{itemdescr}
+
+\begin{itemdecl}
+consteval bool @\libglobal{implicitly_convertible}@(QuantitySpec auto from, QuantitySpec auto to);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\returns
+TBD.
+\end{itemdescr}
+
+\begin{itemdecl}
+consteval bool @\libglobal{explicitly_convertible}@(QuantitySpec auto from, QuantitySpec auto to);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\returns
+TBD.
+\end{itemdescr}
+
+\begin{itemdecl}
+consteval bool @\libglobal{castable}@(QuantitySpec auto from, QuantitySpec auto to);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\returns
+TBD.
+\end{itemdescr}
+
+\begin{itemdecl}
+consteval bool @\libglobal{interconvertible}@(QuantitySpec auto qs1, QuantitySpec auto qs2);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\returns
+\tcode{implicitly_convertible(qs1, qs2) \&\& implicitly_convertible(qs2, qs1)}.
+\end{itemdescr}
+
+\begin{codeblock}
+namespace mp_units {
+
+template<@\libconcept{QuantitySpec}@ Q>
+  requires requires(Q q) { @\exposidnc{get-kind-tree-root}@(q); }
+using @\exposidnc{to-kind}@ = decltype(@\exposidnc{get-kind-tree-root}@(Q{}));
+
+template<@\libconcept{QuantitySpec}@ Q>
+consteval @\libconcept{QuantitySpec}@ auto @\exposidnc{get-kind-tree-root}@(Q q)
+{
+  auto defined_as_kind = []<auto... Args>(quantity_spec<Args...>) {
+    return (... || type_of(^Args) == ^struct is_kind);
+  };
+
+  if constexpr (@\exposconceptnc{QuantityKindSpec}@<Q>) {
+    return @\exposidnc{remove-kind}@(q);
+  } else if constexpr (defined_as_kind(q)) {
+    return q;
+  } else if constexpr (requires { Q::@\exposidnc{parent}@; }) {
+    return @\exposidnc{get-kind-tree-root}@(Q::@\exposidnc{parent}@);
+  } else if constexpr (@\exposconceptnc{DerivedQuantitySpec}@<Q>) {
+    return @\exposidnc{expr-map}@<@\exposidnc{to-kind}@, derived_quantity_spec, struct dimensionless>(q);
+  } else {
+    return q;
+  }
+}
+
+}
+\end{codeblock}
+
+\begin{itemdecl}
+template<@\libconcept{QuantitySpec}@ Q>
+consteval @\exposconceptnc{QuantityKindSpec}@ auto @\libglobal{get_kind}@(Q q);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\returns
+\tcode{kind_of<\exposidnc{get-kind-tree-root}(q)>}.
+\end{itemdescr}
+
+\begin{itemdecl}
+consteval @\libconcept{QuantitySpec}@ auto @\libglobal{get_common_quantity_spec}@(@\libconcept{QuantitySpec}@ auto... qs)
+  requires @\seebelownc@;
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+Let
+\begin{itemize}
+\item
+\tcode{q1} be \tcode{qs...[0]},
+\item
+\tcode{q2} be \tcode{qs...[1]},
+\item
+\tcode{Q1} be \tcode{decltype(q1)},
+\item
+\tcode{Q2} be \tcode{decltype(q2)}, and
+\item
+\tcode{rest} be a pack denoting the elements of \tcode{qs} without \tcode{q1} and \tcode{q2}.
+\end{itemize}
+
+\pnum
+The expression in the \fakegrammarterm{requires-clause} is equivalent to:
+\begin{codeblock}
+(sizeof...(qs) != 0 &&
+ (sizeof...(qs) == 1 ||
+  (sizeof...(qs) == 2 &&
+   (@\exposconceptnc{QuantitySpecConvertibleTo}@<@\exposidnc{get-kind-tree-root}@(Q1{}), @\exposidnc{get-kind-tree-root}@(Q2{})> ||
+    @\exposconceptnc{QuantitySpecConvertibleTo}@<@\exposidnc{get-kind-tree-root}@(Q2{}), @\exposidnc{get-kind-tree-root}@(Q1{})>)) ||
+  requires { get_common_quantity_spec(get_common_quantity_spec(q1, q2), rest...); }))
+\end{codeblock}
+
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+if constexpr (sizeof...(qs) == 1)
+  return q1;
+else if constexpr (sizeof...(qs) == 2) {
+  using QQ1 = decltype(@\exposidnc{remove-kind}@(q1));
+  using QQ2 = decltype(@\exposidnc{remove-kind}@(q2));
+
+  if constexpr (^Q1 == ^Q2)
+    return q1;
+  else if constexpr (@\exposconceptnc{NestedQuantityKindSpecOf}@<q1, q2>)
+    return QQ1{};
+  else if constexpr (@\exposconceptnc{NestedQuantityKindSpecOf}@<q2, q1>)
+    return QQ2{};
+  else if constexpr ((@\exposconceptnc{QuantityKindSpec}@<Q1> && !@\exposconceptnc{QuantityKindSpec}@<Q2>) ||
+                     (@\exposconceptnc{DerivedQuantitySpec}@<QQ1> && @\exposconceptnc{NamedQuantitySpec}@<QQ2> &&
+                      implicitly_convertible(q1, q2)))
+    return q2;
+  else if constexpr ((!@\exposconceptnc{QuantityKindSpec}@<Q1> && @\exposconceptnc{QuantityKindSpec}@<Q2>) ||
+                     (@\exposconceptnc{NamedQuantitySpec}@<QQ1> && @\exposconceptnc{DerivedQuantitySpec}@<QQ2> &&
+                      implicitly_convertible(q2, q1)))
+    return q1;
+  else if constexpr (constexpr auto common_base = @\exposidnc{get-common-base}@(q1, q2))
+    return [:*common_base:];
+  else if constexpr (implicitly_convertible(q1, q2))
+    return q2;
+  else if constexpr (implicitly_convertible(q2, q1))
+    return q1;
+  else if constexpr (implicitly_convertible(@\exposidnc{get-kind-tree-root}@(q1), @\exposidnc{get-kind-tree-root}@(q2)))
+    return @\exposidnc{get-kind-tree-root}@(q2);
+  else
+    return @\exposidnc{get-kind-tree-root}@(q1);
+} else
+  return get_common_quantity_spec(get_common_quantity_spec(q1, q2), rest...);
+\end{codeblock}
+\end{itemdescr}
+
+\pnum
+Let the quantity kind hierarchy of \tcode{q} be the tuple
+$H(\tcode{q}) = ( \tcode{q}, \tcode{q.\exposidnc{parent}}, \tcode{q.\exposidnc{parent}.\exposidnc{parent}}, \ldots )$.
+
+\begin{itemdecl}
+consteval std::optional<std::meta::info> @\exposidnc{get-common-base}@(@\libconcept{QuantitySpec}@ auto a,
+                                                         @\libconcept{QuantitySpec}@ auto b);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+Let
+\begin{itemize}
+\item
+$a_s$ be the number of elements in $H(\tcode{a})$,
+\item
+$b_s$ be the number of elements in $H(\tcode{b})$,
+\item
+$s$ be $\operatorname{min}(a_s, b_s)$,
+\item
+$A$ be a tuple of the last $s$ elements of $H(\tcode{a})$, and
+\item
+$B$ be a tuple of the last $s$ elements of $H(\tcode{b})$.
+\end{itemize}
+
+\pnum
+\effects
+Looks for $x$, the first pair-wise equal element in $A$ and $B$.
+
+\pnum
+\returns
+A reflection of $x$, if found, and \tcode{std::nullopt} otherwise.
+\end{itemdescr}
+
+\begin{itemdecl}
+template<@\libconcept{QuantitySpec}@ Child, @\libconcept{QuantitySpec}@ Parent>
+consteval bool @\exposidnc{is-child-of}@(Child ch, Parent p);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\returns
+If $H(\tcode{p})$ has more elements than $H(\tcode{ch})$, returns \tcode{false}.
+Otherwise, let $C$ be a tuple of the last $s$ elements of $H(\tcode{ch})$,
+where $s$ is the number of elements in $H(\tcode{p})$.
+Returns \tcode{$C_0$ == p}.
+\end{itemdescr}
+
+\rSec1[qty.mag]{Magnitude}
+
+\rSec2[qty.mag.general]{General}
+
+Subclause \ref{qty.mag} specifies the components
+used to represent the numerical value\irefiev{112-01-29} of a unit\irefiev{112-01-14}
+with support for real numbers\irefiev{102-02-05}.
+
+\rSec2[qty.mag.concepts]{Concepts}
+
+\begin{itemdecl}
+template<typename T>
+concept @\deflibconcept{MagConstant}@ = @\exposidnc{tag-type}@<T> && @\exposidnc{is-convertible-to-base-subobject-of}@(^T, ^mag_constant);
+
+template<typename T>
+concept @\defexposconceptnc{PowerVBase}@ = (^T == ^int) || ^T == ^std::intmax_t || @\libconcept{MagConstant}@<T>;
+
+template<typename T>
+concept @\defexposconceptnc{MagnitudeSpecExpr}@ = @\exposconceptnc{PowerVBase}@<T> || @\unspecnc@;
+
+template<typename T>
+concept @\deflibconcept{Magnitude}@ = @\exposidnc{is-specialization-of}@(^T, ^magnitude);
+
+template<typename T>
+concept @\defexposconceptnc{MagArg}@ = std::@\stdconcept{integral}@<T> || @\libconcept{MagConstant}@<T>;
+\end{itemdecl}
+
+\rSec2[qty.mag.types]{Types}
+
+\begin{codeblock}
+namespace mp_units {
+
+template<symbol_text Symbol, long double Value>
+  requires(Value > 0)
+struct @\libglobal{mag_constant}@ {
+  static constexpr auto @\exposidnc{symbol}@ = Symbol;
+  static constexpr long double @\exposidnc{value}@ = Value;
+};
+
+}
+\end{codeblock}
+
+A specialization of \tcode{mag_constant} represents a real number\irefiev{102-02-05}.
+\exposidnc{symbol} represents its symbol, and
+\exposidnc{value} is (an approximation of) its value.
+
+\begin{codeblock}
+namespace mp_units {
+
+template<@\exposconceptnc{MagnitudeSpecExpr}@ auto... Ms>
+struct @\libglobal{magnitude}@ {
+  friend consteval @\libconcept{Magnitude}@ auto operator*(magnitude m1, @\libconcept{Magnitude}@ auto m2);
+
+  friend consteval auto operator/(magnitude l, @\libconcept{Magnitude}@ auto r) { return l * @\exposidnc{pow}@<-1>(r); }
+
+  template<int Num, int Den = 1>
+  friend consteval auto @\exposidnc{pow}@(magnitude);
+
+  template<@\libconcept{Magnitude}@ M2>
+  friend consteval bool operator==(magnitude, M2)
+  {
+    return ^magnitude == ^M2;
+  }
+
+  friend consteval bool @\exposidnc{is-positive-integral-power}@(magnitude);
+};
+
+}
+\end{codeblock}
+
+\pnum
+A specialization of \tcode{magnitude}
+represents the product of its template arguments.
+
+\begin{itemdecl}
+friend consteval @\libconcept{Magnitude}@ auto operator*(magnitude m1, @\libconcept{Magnitude}@ auto m2);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\returns
+\begin{itemize}
+\item
+If the type of a parameter is \tcode{magnitude<>}, returns the other parameter.
+\item
+Otherwise, returns an unspecified model of \libconcept{Magnitude} equal to $\tcode{m1} \times \tcode{m2}$.
+\end{itemize}
+\end{itemdescr}
+
+\begin{itemdecl}
+template<int Num, int Den = 1>
+friend consteval auto @\exposidnc{pow}@(magnitude base);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\returns
+\begin{itemize}
+\item
+If \tcode{Num == 0} is \tcode{true}, returns \tcode{magnitude<>\{\}}.
+\item
+Otherwise, returns an unspecified model of \libconcept{Magnitude} equal to $\tcode{base}^{\tcode{Num}/\tcode{Den}}$.
+\end{itemize}
+\end{itemdescr}
+
+\begin{itemdecl}
+friend consteval bool @\exposidnc{is-positive-integral-power}@(magnitude);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\returns
+TBD.
+\end{itemdescr}
+
+\begin{codeblock}
+template<@\exposconceptnc{MagArg}@ auto V>
+  requires(@\exposidnc{get-base-value}@(V) > 0)
+constexpr @\libconcept{Magnitude}@ auto @\libglobal{mag}@ = @\seebelownc@;
+\end{codeblock}
+
+\pnum
+If \tcode{\libconcept{MagConstant}<decltype(V)>} is satisfied,
+\tcode{mag<V>} is initialized with \tcode{magnitude<V>\{\}}.
+Otherwise, \tcode{mag<V>} is initialized with
+an unspecified model of \libconcept{Magnitude} equal to \tcode{V}.
+
+\begin{codeblock}
+template<std::intmax_t N, std::intmax_t D>
+  requires(N > 0)
+constexpr @\libconcept{Magnitude}@ auto @\libglobal{mag_ratio}@ = @\seebelownc@;
+\end{codeblock}
+
+\pnum
+\tcode{mag_ratio<N, D>} is initialized with
+an unspecified model of \libconcept{Magnitude} equal to $\tcode{N}/\tcode{D}$.
+
+\begin{codeblock}
+template<@\exposconceptnc{MagArg}@ auto Base, int Num, int Den = 1>
+  requires(@\exposidnc{get-base-value}@(Base) > 0)
+constexpr @\libconcept{Magnitude}@ auto @\libglobal{mag_power}@ = @\exposidnc{pow}@<Num, Den>(mag<Base>);
+\end{codeblock}
+
+\rSec1[qty.unit]{Unit}
+
+\rSec2[qty.unit.general]{General}
+
+\pnum
+Subclause \ref{qty.unit} specifies the components
+for defining a unit of measurement\irefiev{112-01-14}.
+
+\rSec2[qty.unit.traits]{Traits}
+
+\begin{itemdecl}
+template<@\libconcept{Unit}@ auto U>
+constexpr bool @\libglobal{space_before_unit_symbol}@ = true;
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+The formatting functions\iref{qty.unit.sym.fmt} use \tcode{space_before_unit_symbol}
+to determine whether there is a space
+between the numerical value and the unit symbol.
+
+\pnum
+\remarks
+Pursuant to \refcpp{namespace.std}\iref{spec.ext},
+users may specialize \tcode{space_before_unit_symbol}
+for cv-unqualified program-defined types.
+Such specializations shall be usable in constant expressions\irefcpp{expr.const}
+and have type \tcode{const bool}.
+\end{itemdescr}
+
+\rSec2[qty.unit.concepts]{Concepts}
+
+\begin{itemdecl}
+template<typename T>
+concept @\deflibconcept{Unit}@ = @\exposconceptnc{tag-type}@<T> && std::@\stdconcept{derived_from}@<T, @\exposidnc{unit-interface}@>;
+
+template<typename T>
+concept @\deflibconcept{PrefixableUnit}@ = @\libconcept{Unit}@<T> && @\exposidnc{is-convertible-to-base-subobject-of}@(^T, ^named_unit);
+
+template<typename T>
+constexpr bool @\exposidnc{is-power-of-unit}@ = requires {
+  requires @\exposidnc{is-convertible-to-base-subobject-of}@(^T, ^power) && @\libconcept{Unit}@<typename T::factor>;
+};
+
+template<typename T>
+constexpr bool @\exposidnc{is-per-of-units}@ = false;
+
+template<typename... Ts>
+constexpr bool @\exposidnc{is-per-of-units}@<per<Ts...>> = (... && (@\libconcept{Unit}@<Ts> || @\exposidnc{is-power-of-unit}@<Ts>));
+
+template<typename T>
+concept @\defexposconceptnc{DerivedUnitExpr}@ = @\libconcept{Unit}@<T> || @\exposidnc{is-power-of-unit}@<T> || @\exposidnc{is-per-of-units}@<T>;
+
+template<typename U, auto... Vs>
+consteval bool @\exposidnc{has-associated-quantity}@(power<U, Vs...>)
+{
+  return @\exposidnc{has-associated-quantity}@(U{});
+}
+
+template<typename... Us>
+consteval bool @\exposidnc{has-associated-quantity}@(@\exposidnc{type-list}@<Us...>)
+{
+  return (... && @\exposidnc{has-associated-quantity}@(Us{}));
+}
+
+template<Unit U>
+consteval bool @\exposidnc{has-associated-quantity}@(U)
+{
+  if constexpr (requires { U::quantity_spec; })
+    return true;
+  else if constexpr (requires { U::reference_unit; })
+    return @\exposidnc{has-associated-quantity}@(U::reference_unit);
+  else if constexpr (requires { typename U::@\exposidnc{num}@; })
+    return @\exposidnc{has-associated-quantity}@(typename U::@\exposidnc{num}@{}) &&
+           @\exposidnc{has-associated-quantity}@(typename U::@\exposidnc{den}@{});
+  else
+    return false;
+}
+
+template<typename T>
+concept @\deflibconcept{AssociatedUnit}@ = @\libconcept{Unit}@<U> && @\exposidnc{has-associated-quantity}@(U{});
+
+template<typename U, auto QS>
+concept @\deflibconcept{UnitOf}@ = @\libconcept{AssociatedUnit}@<U> && @\libconcept{QuantitySpec}@<decltype(QS)> &&
+                 @\exposconceptnc{QuantitySpecConvertibleTo}@<get_quantity_spec(U{}), QS> &&
+                 (@\exposconceptnc{SameQuantitySpec}@<get_kind(QS), get_kind(get_quantity_spec(U{}))> ||
+                  !@\exposconceptnc{NestedQuantityKindSpecOf}@<get_quantity_spec(U{}), QS>);
+
+template<auto From, auto To>
+concept @\defexposconceptnc{UnitConvertibleTo}@ =
+  @\libconcept{Unit}@<decltype(From)> && @\libconcept{Unit}@<decltype(To)> && (convertible(From, To));
+
+template<typename U, auto FromU, auto QS>
+concept @\defexposconceptnc{UnitCompatibleWith}@ =
+  @\libconcept{Unit}@<U> && @\libconcept{Unit}@<decltype(FromU)> && @\libconcept{QuantitySpec}@<decltype(QS)> &&
+  (!@\libconcept{AssociatedUnit}@<U> || @\libconcept{UnitOf}@<U, QS>) && @\exposconceptnc{UnitConvertibleTo}@<FromU, U{}>;
+
+template<typename T>
+concept @\defexposconceptnc{OffsetUnit}@ = @\libconcept{Unit}@<T> && requires { T::point_origin; };
+
+template<typename From, typename To>
+concept @\defexposconceptnc{PotentiallyConvertibleTo}@ =
+  @\libconcept{Unit}@<From> && @\libconcept{Unit}@<To> &&
+  ((@\libconcept{AssociatedUnit}@<From> && @\libconcept{AssociatedUnit}@<To> &&
+    implicitly_convertible(get_quantity_spec(From{}), get_quantity_spec(To{}))) ||
+   (!@\libconcept{AssociatedUnit}@<From> && !@\libconcept{AssociatedUnit}@<To>));
+\end{itemdecl}
+
+\rSec2[qty.unit.types]{Types}
+
+\begin{codeblock}
+namespace mp_units {
+
+template<@\libconcept{Magnitude}@ M, @\libconcept{Unit}@ U>
+struct @\exposidnc{canonical-unit}@ {
+  M mag;
+  U reference_unit;
+};
+
+}
+\end{codeblock}
+
+\pnum
+\tcode{\exposidnc{canonical-unit}<M, U>} represents a canonical representation of a unit.
+\tcode{U} is a reference unit being the result of extraction of all the intermediate derived units.
+\tcode{M} is a magnitude being a product of all the prefixes and magnitudes of extracted scaled units.
+
+\pnum
+All units having the same canonical unit are deemed equal.
+All units having the same reference unit are convertible
+(their magnitude may differ and is used during conversion).
+
+\begin{itemdecl}
+consteval auto @\exposidnc{get-canonical-unit}@(@\libconcept{Unit}@ auto u)
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\returns
+TBD.
+\end{itemdescr}
+
+\begin{itemdecl}
+template<@\libconcept{Unit}@ From, @\libconcept{Unit}@ To>
+consteval bool @\libglobal{convertible}@(From from, To to);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+if constexpr (^From == ^To)
+  return true;
+else if constexpr (@\exposconceptnc{PotentiallyConvertibleTo}@<From, To>)
+  return ^decltype(@\exposidnc{get-canonical-unit}@(from).reference_unit) ==
+         ^decltype(@\exposidnc{get-canonical-unit}@(to).reference_unit);
+else
+  return false;
+\end{codeblock}
+\end{itemdescr}
+
+\begin{codeblock}
+namespace mp_units {
+
+struct @\exposidnc{unit-interface}@ {
+  template<@\libconcept{Magnitude}@ M, @\libconcept{Unit}@ U>
+  friend consteval @\libconcept{Unit}@ auto operator*(M, U u)
+  {
+    if constexpr (^const M == ^decltype(mag<1>))
+      return u;
+    else
+      return scaled_unit<M{}, U>{};
+  }
+
+  friend consteval @\libconcept{Unit}@ auto operator*(@\libconcept{Unit}@ auto, @\libconcept{Magnitude}@ auto) = delete;
+
+  template<@\libconcept{Magnitude}@ M, @\libconcept{Unit}@ U>
+  friend consteval @\libconcept{Unit}@ auto operator/(M mag, U u)
+  {
+    return mag * inverse(u);
+  }
+
+  template<@\libconcept{Unit}@ Lhs, @\libconcept{Unit}@ Rhs>
+  friend consteval @\libconcept{Unit}@ auto operator*(Lhs lhs, Rhs rhs)
+  {
+    return @\exposidnc{expr-multiply}@<derived_unit, struct one>(lhs, rhs);
+  }
+
+  template<@\libconcept{Unit}@ Lhs, @\libconcept{Unit}@ Rhs>
+  friend consteval @\libconcept{Unit}@ auto operator/(Lhs lhs, Rhs rhs)
+  {
+    return @\exposidnc{expr-divide}@<derived_unit, struct one>(lhs, rhs);
+  }
+
+  template<@\libconcept{Unit}@ Lhs, @\libconcept{Unit}@ Rhs>
+  friend consteval bool operator==(Lhs, Rhs)
+  {
+    return ^Lhs == ^Rhs;
+  }
+
+  template<@\libconcept{Unit}@ Lhs, @\libconcept{Unit}@ Rhs>
+    requires(convertible(Lhs{}, Rhs{}))
+  friend consteval bool equivalent(Lhs lhs, Rhs rhs)
+  {
+    return @\exposidnc{get-canonical-unit}@(lhs).mag == @\exposidnc{get-canonical-unit}@(rhs).mag;
+  }
+};
+
+}
+\end{codeblock}
+
+\begin{itemdecl}
+friend consteval Unit auto operator*(@\libconcept{Unit}@ auto, @\libconcept{Magnitude}@ auto) = delete;
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\recommended
+Suggest swapping the operands.
+\end{itemdescr}
+
+\begin{codeblock}
+namespace mp_units {
+
+template<@\libconcept{Magnitude}@ auto M, @\libconcept{Unit}@ U>
+  requires(M != magnitude<>{} && M != mag<1>)
+struct @\libglobal{scaled_unit}@ final : @\exposidnc{unit-interface}@ {
+  using @\exposidnc{base-type}@ = scaled_unit;
+  static constexpr @\libconcept{Magnitude}@ auto mag = M;
+  static constexpr U reference_unit{};
+  static constexpr auto point_origin = U::point_origin;  // present only
+    // if the \fakegrammarterm{qualified-id} \tcode{U::point_origin} is valid and denotes an object
+};
+
+}
+\end{codeblock}
+
+\pnum
+\tcode{scaled_unit<M, U>} is used by the library
+to represent the unit $\tcode{M} \times \tcode{U}$.
+
+\begin{codeblock}
+namespace mp_units {
+
+template<symbol_text Symbol, @\exposconceptnc{QuantityKindSpec}@ auto QS>
+  requires(!Symbol.empty()) && @\exposconceptnc{BaseDimension}@<std::remove_const_t<decltype(QS.dimension)>>
+struct @\libglobal{named_unit}@<Symbol, QS> : @\exposidnc{unit-interface}@ {
+  using @\exposidnc{base-type}@ = named_unit;
+  static constexpr auto symbol = Symbol;
+  static constexpr auto quantity_spec = QS;
+};
+
+template<symbol_text Symbol, @\exposconceptnc{QuantityKindSpec}@ auto QS, @\libconcept{PointOrigin}@ auto PO>
+  requires(!Symbol.empty()) && @\exposconceptnc{BaseDimension}@<std::remove_const_t<decltype(QS.dimension)>>
+struct named_unit<Symbol, QS, PO> : @\exposidnc{unit-interface}@ {
+  using @\exposidnc{base-type}@ = named_unit;
+  static constexpr auto symbol = Symbol;
+  static constexpr auto quantity_spec = QS;
+  static constexpr auto point_origin = PO;
+};
+
+template<symbol_text Symbol>
+  requires(!Symbol.empty())
+struct named_unit<Symbol> : @\exposidnc{unit-interface}@ {
+  using @\exposidnc{base-type}@ = named_unit;
+  static constexpr auto symbol = Symbol;
+};
+
+template<symbol_text Symbol, @\libconcept{Unit}@ auto U>
+  requires(!Symbol.empty())
+struct named_unit<Symbol, U> : decltype(U)::@\exposidnc{base-type}@ {
+  using @\exposidnc{base-type}@ = named_unit;
+  static constexpr auto symbol = Symbol;
+};
+
+template<symbol_text Symbol, @\libconcept{Unit}@ auto U, @\libconcept{PointOrigin}@ auto PO>
+  requires(!Symbol.empty())
+struct named_unit<Symbol, U, PO> : decltype(U)::@\exposidnc{base-type}@ {
+  using @\exposidnc{base-type}@ = named_unit;
+  static constexpr auto symbol = Symbol;
+  static constexpr auto point_origin = PO;
+};
+
+template<symbol_text Symbol, @\libconcept{AssociatedUnit}@ auto U, @\exposconceptnc{QuantityKindSpec}@ auto QS>
+  requires(!Symbol.empty()) && (QS.dimension == @\exposidnc{get-associated-quantity}@(U).dimension)
+struct named_unit<Symbol, U, QS> : decltype(U)::@\exposidnc{base-type}@ {
+  using @\exposidnc{base-type}@ = named_unit;
+  static constexpr auto symbol = Symbol;
+  static constexpr auto quantity_spec = QS;
+};
+
+template<symbol_text Symbol, @\libconcept{AssociatedUnit}@ auto U, @\exposconceptnc{QuantityKindSpec}@ auto QS,
+         @\libconcept{PointOrigin}@ auto PO>
+  requires(!Symbol.empty()) && (QS.dimension == @\exposidnc{get-associated-quantity}@(U).dimension)
+struct named_unit<Symbol, U, QS, PO> : decltype(U)::@\exposidnc{base-type}@ {
+  using @\exposidnc{base-type}@ = named_unit;
+  static constexpr auto symbol = Symbol;
+  static constexpr auto quantity_spec = QS;
+  static constexpr auto point_origin = PO;
+};
+
+}
+\end{codeblock}
+
+\pnum
+A \defnadj{named}{unit} is a type that models \libconcept{PrefixableUnit}.
+A specialization of \tcode{named_unit} is used as a base type when defining a named unit.
+
+\pnum
+In the following descriptions, let \tcode{U} be a named unit defined with an alluded signature.
+The identifier of \tcode{U} represents
+its unit name\irefiev{112-01-15}
+or special unit name\irefiev{112-01-16}.
+\tcode{U::symbol} represents its unit symbol\irefiev{112-01-17}.
+
+\pnum
+The possible arguments to \tcode{named_unit} are
+\begin{itemize}
+\item
+$(\text{The unit symbol}, \text{a base quantity}, \opt{\text{a point origin}})$,
+\item
+$(\text{The unit symbol})$,
+\item
+$(\text{The unit symbol}, \text{a unit expression}, \opt{\text{a point origin}})$, and
+\item
+$(\text{The unit symbol}, \text{a unit expression}, \text{a quantity calculus}, \opt{\text{a point origin}})$.
+\end{itemize}
+
+\pnum
+The first signature defines the unit of a base quantity
+without a unit prefix\irefiev{112-01-26}.
+The second signature defines a unit
+that can be reused by several base quantities.
+The third and fourth signatures with a unit expression argument \placeholder{E}
+define the unit equation\irefiev{112-01-32} $\tcode{U} = \placeholder{E}$.
+The fourth signature with a quantity calculus\irefiev{112-01-30} \placeholder{Q}
+also restricts \tcode{U} to a kind of \placeholder{Q}.
+
+\pnum
+\begin{example}
+\begin{codeblock}
+// The first signature defines a base unit.
+inline constexpr struct second final : named_unit<"s", kind_of<time>> {
+} second;
+
+// The third and fourth signatures give a name to the unit argument.
+inline constexpr struct minute final : named_unit<"min", mag<60> * second> {
+} minute;  // $\txtrm{min} = 60 \txtrm{ s}$.
+
+// The fourth signature also restricts the unit to a kind of quantity.
+inline constexpr struct hertz final : named_unit<"Hz", inverse(second), kind_of<frequency>> {
+} hertz;  // $\txtrm{Hz}$ can't measure becquerel, activity,
+          // or any other quantity with dimension $\txtrm{T}^{-1}$
+          // that isn't a kind of frequency.
+\end{codeblock}
+\end{example}
+
+\begin{codeblock}
+namespace mp_units {
+
+template<symbol_text Symbol, @\libconcept{Magnitude}@ auto M, @\libconcept{PrefixableUnit}@ auto U>
+  requires(!Symbol.empty())
+struct prefixed_unit : decltype(M * U)::@\exposidnc{base-type}@ {
+  using @\exposidnc{base-type}@ = prefixed_unit;
+  static constexpr auto symbol = Symbol + U.symbol;
+};
+
+}
+\end{codeblock}
+
+\pnum
+\tcode{prefixed_unit<Symbol, M, U>} represents a unit with a unit prefix\irefiev{112-01-26}.
+\tcode{Symbol} is the symbol of the unit prefix.
+\tcode{M} is the factor of the unit prefix.
+A specialization of \tcode{prefixed_unit} is used as a base type when defining a unit prefix.
+\begin{example}
+\begin{codeblock}
+template<@\libconcept{PrefixableUnit}@ auto U>
+struct kilo_ : prefixed_unit<"k", mag_power<10, 3>, U> {};
+
+template<@\libconcept{PrefixableUnit}@ auto U>
+constexpr kilo_<U> kilo;
+
+inline constexpr auto kilogram = kilo<si::gram>;
+\end{codeblock}
+\end{example}
+
+\begin{codeblock}
+namespace mp_units {
+
+template<@\libconcept{Unit}@ U1, @\libconcept{Unit}@ U2, @\libconcept{Unit}@... Rest>
+struct @\libglobal{common_unit}@ final : decltype(@\exposidnc{get-common-scaled-unit}@(U1{}, U2{}, Rest{}...))::@\exposidnc{base-type}@
+{
+  using @\exposidnc{base-type}@ = common_unit;
+  static constexpr auto @\exposidnc{common-unit}@ = @\exposidnc{get-common-scaled-unit}@(U1{}, U2{}, Rest{}...);
+};
+
+}
+\end{codeblock}
+
+\pnum
+\tcode{common_unit} is used by the library
+to encapsulate a conversion factor between units\irefiev{112-01-33}
+common to the operands of quantity addition.
+\begin{example}
+The result of \tcode{1 * km + 1 * mi}
+has a common unit $[8/125] \txtrm{ m}$
+encapsulated by \tcode{common_unit<mi, km>}.
+\end{example}
+
+\begin{itemdecl}
+template<@\libconcept{Unit}@ U1, @\libconcept{Unit}@ U2, @\libconcept{Unit}@... Rest>
+  requires @\seebelownc@
+consteval @\libconcept{Unit}@ auto @\exposidnc{get-common-scaled-unit}@(U1 u1, U2 u2, Rest... rest);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+The expression in the \fakegrammarterm{requires-clause} is equivalent to:
+\begin{codeblock}
+(convertible(U1{}, U2{}) && (sizeof...(Rest) == 0 || requires {
+   @\exposidnc{get-common-scaled-unit}@(@\exposidnc{get-common-scaled-unit}@(u1, u2), rest...);
+ }))
+\end{codeblock}
+
+\pnum
+\returns
+TBD.
+\end{itemdescr}
+
+\begin{codeblock}
+namespace mp_units {
+
+template<@\exposconceptnc{DerivedUnitExpr}@... Expr>
+struct @\libglobal{derived_unit}@ : @\exposidnc{unit-interface}@, @\exposidnc{expr-fractions}@<struct one, Expr...> {
+  using @\exposidnc{base-type}@ = derived_unit;  // \expos
+};
+
+}
+\end{codeblock}
+
+\pnum
+\tcode{derived_unit} is used by the library
+to represent a derived unit\irefiev{112-01-19}.
+\begin{example}
+\begin{codeblock}
+static_assert(^decltype(metre * metre) == ^derived_unit<power<metre, 2>>);
+static_assert(^decltype(metre * second) == ^derived_unit<metre, second>);
+static_assert(^decltype(metre / second) == ^derived_unit<metre, per<second>>);
+\end{codeblock}
+\end{example}
+
+\begin{codeblock}
+namespace mp_units {
+
+inline constexpr struct @\libglobal{one}@ final : derived_unit<> {} @\libglobal{one}@;
+
+}
+\end{codeblock}
+
+\pnum
+\tcode{one} represents the base unit\irefiev{112-01-18} of a quantity of dimension one\irefiev{112-01-13}.
+
+\begin{itemdecl}
+template<std::intmax_t Num, std::intmax_t Den = 1, @\libconcept{Unit}@ U>
+  requires(Den != 0)
+consteval @\libconcept{Unit}@ auto @\liboverload{pow}{\cname{Unit}}@(U u);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\returns
+\tcode{\exposidnc{expr-pow}<Num, Den, derived_unit, struct one>(u)}.
+\end{itemdescr}
+
+\begin{itemdecl}
+consteval @\libconcept{QuantitySpec}@ auto @\liboverload{get_quantity_spec}{\cname{AssociatedUnit}}@(@\libconcept{AssociatedUnit}@ auto u);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\returns
+TBD.
+\end{itemdescr}
+
+\begin{itemdecl}
+consteval @\libconcept{Unit}@ auto @\libglobal{get_common_unit}@(@\libconcept{Unit}@ auto... us)
+  requires @\seebelownc@;
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+Let
+\begin{itemize}
+\item
+\tcode{u1} be \tcode{us...[0]},
+\item
+\tcode{u2} be \tcode{us...[1]},
+\item
+\tcode{U1} be \tcode{decltype(u1)},
+\item
+\tcode{U2} be \tcode{decltype(u2)}, and
+\item
+\tcode{rest} be a pack denoting the elements of \tcode{us} without \tcode{u1} and \tcode{u2}.
+\end{itemize}
+
+\pnum
+The expression in the \fakegrammarterm{requires-clause} is equivalent to:
+\begin{codeblock}
+(sizeof...(us) != 0 && (sizeof...(us) == 1 ||  //
+                        (sizeof...(us) == 2 && convertible(U1{}, U2{})) ||
+                        requires { get_common_unit(get_common_unit(u1, u2), rest...); }))
+\end{codeblock}
+
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+if constexpr (sizeof...(us) == 1)
+  return u1;
+else if constexpr (sizeof...(us) == 2) {
+  if constexpr (@\exposidnc{is-convertible-to-base-subobject-of}@(^U1, ^common_unit)) {
+    return @\textit{TBD.}@;
+  } else if constexpr (@\exposidnc{is-convertible-to-base-subobject-of}@(^U2, ^common_unit))
+    return get_common_unit(u2, u1);
+  else if constexpr (^U1 == ^U2)
+    return u1;
+  else if constexpr (equivalent(u1, u2)) {
+    if constexpr (std::@\stdconcept{derived_from}@<U1, typename U2::@\exposidnc{base-type}@>)
+      return u1;
+    else if constexpr (std::@\stdconcept{derived_from}@<U2, typename U1::@\exposidnc{base-type}@>)
+      return u2;
+    else
+      return [:@\exposidnc{type-less}@<U1, U2>{} ? ^u1 : ^u2:];
+  } else {
+    constexpr auto canonical_lhs = @\exposidnc{get-canonical-unit}@(u1);
+    constexpr auto canonical_rhs = @\exposidnc{get-canonical-unit}@(u2);
+
+    if constexpr (@\exposidnc{is-positive-integral-power}@(canonical_lhs.mag / canonical_rhs.mag))
+      return u2;
+    else if constexpr (@\exposidnc{is-positive-integral-power}@(canonical_rhs.mag / canonical_lhs.mag))
+      return u1;
+    else {
+      if constexpr (@\exposidnc{type-less}@<U1, U2>{})
+        return common_unit<U1, U2>{};
+      else
+        return common_unit<U2, U1>{};
+    }
+  }
+} else
+  return get_common_unit(get_common_unit(u1, u2), rest...);
+\end{codeblock}
+\end{itemdescr}
+
+\rSec2[qty.unit.sym.fmt]{Symbol formatting}
+
+\begin{itemdecl}
+template<typename CharT = char, std::@\stdconcept{output_iterator}@<CharT> Out, @\libconcept{Unit}@ U>
+constexpr Out @\libglobal{unit_symbol_to}@(Out out, U u,
+                             const unit_symbol_formatting& fmt = unit_symbol_formatting{});
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+TBD.
+
+\pnum
+\returns
+TBD.
+\end{itemdescr}
+
+\begin{itemdecl}
+template<unit_symbol_formatting fmt = {}, typename CharT = char, @\libconcept{Unit}@ U>
+constexpr auto @\libglobal{unit_symbol}@(U);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+TBD.
+\end{codeblock}
+\end{itemdescr}
+
+\rSec1[qty.ref]{Reference}
+
+\begin{itemdecl}
+template<typename T>
+concept @\deflibconcept{Reference}@ = @\libconcept{AssociatedUnit}@<T> || @\exposidnc{is-specialization-of}@(^T, ^reference);
+
+template<typename T, auto QS>
+concept @\deflibconcept{ReferenceOf}@ = @\libconcept{Reference}@<T> && @\libconcept{QuantitySpecOf}@<decltype(get_quantity_spec(T{})), QS>;
+\end{itemdecl}
+
+\begin{codeblock}
+namespace mp_units {
+
+template<@\libconcept{QuantitySpec}@ auto Q, @\libconcept{Unit}@ auto U>
+using @\exposidnc{reference-t}@ = reference<decltype(Q), decltype(U)>;
+
+template<@\libconcept{QuantitySpec}@ Q, @\libconcept{Unit}@ U>
+struct @\libglobal{reference}@ {
+  template<typename Q2, typename U2>
+  friend consteval bool operator==(reference, reference<Q2, U2>)
+  {
+    return Q{} == Q2{}&& U{} == U2{};
+  }
+
+  template<@\libconcept{AssociatedUnit}@ U2>
+  friend consteval bool operator==(reference, U2 u2)
+  {
+    return Q{} == get_quantity_spec(u2)&& U{} == u2;
+  }
+
+  template<typename Q2, typename U2>
+  friend consteval auto operator*(reference, reference<Q2, U2>)
+    -> @\exposidnc{reference-t}@<Q{}* Q2{}, U{}* U2{}>
+  {
+    return {};
+  }
+
+  template<@\libconcept{AssociatedUnit}@ U2>
+  friend consteval auto operator*(reference, U2)
+    -> @\exposidnc{reference-t}@<Q{} * get_quantity_spec(U2{}), U{}* U2{}>
+  {
+    return {};
+  }
+
+  template<@\libconcept{AssociatedUnit}@ U1>
+  friend consteval auto operator*(U1, reference)
+    -> @\exposidnc{reference-t}@<get_quantity_spec(U1{}) * Q{}, U1{}* U{}>
+  {
+    return {};
+  }
+
+  template<typename Q2, typename U2>
+  friend consteval auto operator/(reference, reference<Q2, U2>)
+    -> @\exposidnc{reference-t}@<Q{} / Q2{}, U{} / U2{}>
+  {
+    return {};
+  }
+
+  template<@\libconcept{AssociatedUnit}@ U2>
+  friend consteval auto operator/(reference, U2)
+    -> @\exposidnc{reference-t}@<Q{} / get_quantity_spec(U2{}), U{} / U2{}>
+  {
+    return {};
+  }
+
+  template<@\libconcept{AssociatedUnit}@ U1>
+  friend consteval auto operator/(U1, reference)
+    -> @\exposidnc{reference-t}@<get_quantity_spec(U1{}) / Q{}, U1{} / U{}>
+  {
+    return {};
+  }
+
+  friend consteval auto @\liboverload{inverse}{reference}@(reference) { return @\exposidnc{reference-t}@<inverse(Q{}), inverse(U{})>{}; }
+
+  template<std::intmax_t Num, std::intmax_t Den = 1>
+    requires(Den != 0)
+  friend consteval auto @\liboverload{pow}{reference}@(reference)
+  {
+    return @\exposidnc{reference-t}@<pow<Num, Den>(Q{}), pow<Num, Den>(U{})>{};
+  }
+
+  friend consteval auto @\liboverload{sqrt}{reference}@(reference) { return @\exposidnc{reference-t}@<sqrt(Q{}), sqrt(U{})>{}; }
+  friend consteval auto @\liboverload{cbrt}{reference}@(reference) { return @\exposidnc{reference-t}@<cbrt(Q{}), cbrt(U{})>{}; }
+
+  template<typename Q2, typename U2>
+  friend consteval bool @\liboverload{convertible}{reference}@(reference, reference<Q2, U2>)
+  {
+    return implicitly_convertible(Q{}, Q2{}) && convertible(U{}, U2{});
+  }
+
+  template<@\libconcept{AssociatedUnit}@ U2>
+  friend consteval bool convertible(reference, U2 u2)
+  {
+    return implicitly_convertible(Q{}, get_quantity_spec(u2)) && convertible(U{}, u2);
+  }
+
+  template<@\libconcept{AssociatedUnit}@ U1>
+  friend consteval bool convertible(U1 u1, reference)
+  {
+    return implicitly_convertible(get_quantity_spec(u1), Q{}) && convertible(u1, U{});
+  }
+};
+
+}
+\end{codeblock}
+
+\pnum
+\tcode{reference<Q, U>} represents the reference of a quantity\irefiev{112-01-01}.
+The reference is the unit of measurement \tcode{U}\irefiev{112-01-14}
+used to measure a value of the quantity \tcode{Q}\irefiev{112-01-28}.
+
+\begin{itemdecl}
+template<typename FwdRep, @\libconcept{Reference}@ R,
+         @\libconcept{RepresentationOf}@<get_quantity_spec(R{}).character> Rep = std::remove_cvref_t<FwdRep>>
+  requires(!@\exposconceptnc{OffsetUnit}@<decltype(get_unit(R{}))>)
+constexpr quantity<R{}, Rep> @\libmember{operator*}{reference}@(FwdRep&& lhs, R r);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\tcode{return quantity{std::forward<FwdRep>(lhs), r};}
+\end{itemdescr}
+
+\begin{itemdecl}
+template<typename FwdRep, @\libconcept{Reference}@ R,
+         @\libconcept{RepresentationOf}@<get_quantity_spec(R{}).character> Rep = std::remove_cvref_t<FwdRep>>
+  requires(!@\exposconceptnc{OffsetUnit}@<decltype(get_unit(R{}))>)
+constexpr quantity<inverse(R{}), Rep> @\libmember{operator/}{reference}@(FwdRep&& lhs, R);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\tcode{return quantity{std::forward<FwdRep>(lhs), inverse(R{})};}
+\end{itemdescr}
+
+\begin{itemdecl}
+template<typename FwdQ, @\libconcept{Reference}@ R, @\libconcept{Quantity}@ Q = std::remove_cvref_t<FwdQ>>
+constexpr @\libconcept{Quantity}@ auto @\libmember{operator*}{reference}@(FwdQ&& q, R);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+return quantity{std::forward<FwdQ>(q).@\exposidnc{numerical-value}@, Q::reference* R{}};
+\end{codeblock}
+\end{itemdescr}
+
+\begin{itemdecl}
+template<typename FwdQ, @\libconcept{Reference}@ R, @\libconcept{Quantity}@ Q = std::remove_cvref_t<FwdQ>>
+constexpr @\libconcept{Quantity}@ auto @\libmember{operator/}{reference}@(FwdQ&& q, R);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+return quantity{std::forward<FwdQ>(q).@\exposidnc{numerical-value}@, Q::reference / R{}};
+\end{codeblock}
+\end{itemdescr}
+
+\begin{itemdecl}
+template<@\libconcept{Reference}@ R, typename Rep>
+  requires @\libconcept{RepresentationOf}@<std::remove_cvref_t<Rep>, get_quantity_spec(R{}).character>
+constexpr auto operator*(R, Rep&&) = delete;
+
+template<@\libconcept{Reference}@ R, typename Rep>
+  requires @\libconcept{RepresentationOf}@<std::remove_cvref_t<Rep>, get_quantity_spec(R{}).character>
+constexpr auto operator/(R, Rep&&) = delete;
+
+template<@\libconcept{Reference}@ R, typename Q>
+  requires @\libconcept{Quantity}@<std::remove_cvref_t<Q>>
+constexpr auto operator*(R, Q&&) = delete;
+
+template<@\libconcept{Reference}@ R, typename Q>
+  requires @\libconcept{Quantity}@<std::remove_cvref_t<Q>>
+constexpr auto operator/(R, Q&&) = delete;
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\recommended
+Suggest swapping the operands.
+\end{itemdescr}
+
+\begin{itemdecl}
+consteval @\libconcept{AssociatedUnit}@ auto @\libglobal{get_common_reference}@(@\libconcept{AssociatedUnit}@ auto u1,
+                                                   @\libconcept{AssociatedUnit}@ auto u2,
+                                                   @\libconcept{AssociatedUnit}@ auto... rest)
+  requires @\seebelownc@;
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+The expression in the \fakegrammarterm{requires-clause} is equivalent to:
+\begin{codeblock}
+requires {
+  get_common_quantity_spec(get_quantity_spec(u1), get_quantity_spec(u2),
+                           get_quantity_spec(rest)...);
+  { get_common_unit(u1, u2, rest...) } -> AssociatedUnit;
+}
+\end{codeblock}
+
+\pnum
+\returns
+\tcode{get_common_unit(u1, u2, rest...)}.
+\end{itemdescr}
+
+\begin{itemdecl}
+template<@\libconcept{Reference}@ R1, @\libconcept{Reference}@ R2, @\libconcept{Reference}@... Rest>
+consteval @\libconcept{Reference}@ auto @\libglobal{get_common_reference}@(R1 r1, R2 r2, Rest... rest)
+  requires @\seebelownc@;
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+The expression in the \fakegrammarterm{requires-clause} is equivalent to:
+\begin{codeblock}
+requires {
+  get_common_quantity_spec(get_quantity_spec(r1), get_quantity_spec(r2),
+                           get_quantity_spec(rest)...);
+  get_common_unit(get_unit(r1), get_unit(r2), get_unit(rest)...);
+}
+\end{codeblock}
+
+\pnum
+\returns
+\begin{codeblock}
+@\exposidnc{reference-t}@<get_common_quantity_spec(get_quantity_spec(R1{}), get_quantity_spec(R2{}),
+                                     get_quantity_spec(rest)...),
+            get_common_unit(get_unit(R1{}), get_unit(R2{}), get_unit(rest)...)>{};
+\end{codeblock}
+\end{itemdescr}
+
+\rSec1[qty.rep]{Representation}
+
+\rSec2[qty.rep.traits]{Traits}
+
+\rSec3[qty.fp.traits]{Floating-point}
+
+\begin{itemdecl}
+template<typename T>
+struct @\exposidnc{actual-value-type}@ : @\exposidnc{cond-value-type}@<T> {}; // see \refcpp{readable.traits}
+
+template<typename T>
+  requires(!type_is_pointer(^T) && !type_is_array(^T)) &&
+          requires { typename std::indirectly_readable_traits<T>::value_type; }
+struct @\exposidnc{actual-value-type}@<T> : std::indirectly_readable_traits<T> {};
+
+template<typename T>
+using @\exposidnc{actual-value-type-t}@ = @\exposidnc{actual-value-type}@<T>::value_type;
+
+template<typename Rep>
+constexpr bool @\libglobal{treat_as_floating_point}@ =
+  std::chrono::treat_as_floating_point_v<Rep> ||
+  std::chrono::treat_as_floating_point_v<@\exposidnc{actual-value-type-t}@<Rep>>;
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+The quantity types\iref{term.quantity.type} use \tcode{treat_as_floating_point}
+to help determine whether implicit conversions are allowed among them.
+
+\pnum
+\remarks
+Pursuant to \refcpp{namespace.std}\iref{spec.ext},
+users may specialize \tcode{treat_as_floating_point}
+for cv-unqualified program-defined types.
+Such specializations shall be usable in constant expressions\irefcpp{expr.const}
+and have type \tcode{const bool}.
+\end{itemdescr}
+
+\rSec3[qty.set.traits]{Set}
 
 \begin{itemdecl}
 template<typename Rep>
 constexpr bool @\libglobal{is_scalar}@ =
-  std::is_floating_point_v<Rep> || (std::is_integral_v<Rep> && !is_same_v<Rep, bool>);
+  type_is_floating_point(^Rep) || (type_is_integral(^Rep) && ^Rep != ^bool);
+
+template<typename Rep>
+constexpr bool @\libglobal{is_complex}@ = false;
 
 template<typename Rep>
 constexpr bool @\libglobal{is_vector}@ = false;
@@ -147,120 +2587,396 @@ constexpr bool @\libglobal{is_tensor}@ = false;
 
 \begin{itemdescr}
 \pnum
+Some quantities are defined as having a numerical value\irefiev{112-01-29} of a specific set\irefiev{102-01-02}.
+A quantity type\iref{term.quantity.type} \tcode{Q} uses these traits
+to determine the set \tcode{Q::rep} should represent.
+
+\pnum
 \remarks
 Pursuant to \refcpp{namespace.std}\iref{spec.ext},
-users may specialize \tcode{is_scalar}, \tcode{is_vector}, and \tcode{is_tensor} to \tcode{true}
+users may specialize \tcode{is_scalar}, \tcode{is_complex}, \tcode{is_vector}, and \tcode{is_tensor} to \tcode{true}
 for cv-unqualified program-defined types
 which respectively represent
 a scalar\irefiev{102-02-18},
+a complex number\irefiev{102-02-09},
 a vector\irefiev{102-03-04}, and
 % FIXME Undefined term.
 a tensor,
 and \tcode{false} for types which respectively do not.
+Such specializations shall be usable in constant expressions\irefcpp{expr.const}
+and have type \tcode{const bool}.
 \end{itemdescr}
 
-\rSec1[qty.concepts]{Concepts}
+\rSec2[qty.rep.concepts]{Concepts}
 
 \begin{itemdecl}
-export template<typename T>
-concept @\deflibconcept{representation}@ =
-  (is_scalar<T> || is_vector<T> || is_tensor<T>)&&std::regular<T> && @\exposidnc{scalable}@<T>;
-\end{itemdecl}
+template<typename T, typename U>
+concept @\defexposconceptnc{CommonTypeWith}@ = std::@\stdconcept{same_as}@<std::common_type_t<T, U>, std::common_type_t<U, T>> &&
+                         std::@\stdconcept{constructible_from}@<std::common_type_t<T, U>, T> &&
+                         std::@\stdconcept{constructible_from}@<std::common_type_t<T, U>, U>;
 
-\begin{itemdecl}
-export template<typename T, quantity_character Ch>
-concept @\deflibconcept{representation_of}@ =
-  @\libconcept{representation}@<T> && ((Ch == quantity_character::scalar && is_scalar<T>) ||
+template<typename T, typename U = T>
+concept @\defexposconceptnc{ScalableNumber}@ = std::@\stdconcept{regular_invocable}@<std::multiplies<>, T, U> &&
+                         std::@\stdconcept{regular_invocable}@<std::divides<>, T, U>;
+
+template<typename T>
+concept @\defexposconceptnc{CastableNumber}@ =
+  @\exposconceptnc{CommonTypeWith}@<T, std::intmax_t> && @\exposconceptnc{ScalableNumber}@<std::common_type_t<T, std::intmax_t>>;
+
+template<typename T>
+concept @\defexposconceptnc{Scalable}@ =
+  @\exposconceptnc{CastableNumber}@<T> ||
+  (@\exposconceptnc{CastableNumber}@<@\exposidnc{actual-value-type-t}@<T>> &&
+   @\exposconceptnc{ScalableNumber}@<T, std::common_type_t<@\exposidnc{actual-value-type-t}@<T>, std::intmax_t>>);
+
+template<typename T>
+concept @\defexposconceptnc{WeaklyRegular}@ = std::@\stdconcept{copyable}@<T> && std::@\stdconcept{equality_comparable}@<T>;
+
+template<typename T>
+concept @\deflibconcept{Representation}@ = (is_scalar<T> || is_complex<T> || is_vector<T> || is_tensor<T>) &&
+                         @\exposconceptnc{WeaklyRegular}@<T> && @\exposconceptnc{Scalable}@<T>;
+
+template<typename T, quantity_character Ch>
+concept @\deflibconcept{RepresentationOf}@ =
+  @\libconcept{Representation}@<T> && ((Ch == quantity_character::scalar && is_scalar<T>) ||
+                        (Ch == quantity_character::complex && is_complex<T>) ||
                         (Ch == quantity_character::vector && is_vector<T>) ||
                         (Ch == quantity_character::tensor && is_tensor<T>));
 \end{itemdecl}
 
-% FIXME Despite the `some_` prefix, it doesn't conform to the convention
-%       `template_of(^std::remove_cvref_t<T>) == ^template_name`.
-\begin{itemdecl}
-template<typename T>
-concept @\defexposconceptnc{named-quantity-spec}@ =
-  (@\exposidnc{converts-to-base-subobject-of}@(^T, ^quantity_spec) && template_of(^T) != ^kind_of_);
+\rSec1[qty.types]{Quantity types}
 
-template<typename T>
-concept @\deflibconcept{some_quantity_spec}@ =
-  @\exposconceptnc{named-quantity-spec}@<T> ||
-  detail::IntermediateDerivedQuantitySpec<T> ||
-  template_of(^T) == ^kind_of;
+\rSec2[qty.traits]{Traits}
+
+\rSec3[qty.val.traits]{Values}
+
+\begin{codeblock}
+namespace mp_units {
+
+template<typename Rep>
+struct @\libglobal{quantity_values}@ : std::chrono::duration_values<Rep> {
+  static constexpr Rep one() noexcept;
+};
+
+}
+\end{codeblock}
+
+\pnum
+The requirements on \tcode{std::chrono::duration_values<Rep>}\irefcpp{time.traits.duration.values}
+also apply to \tcode{quantity_values<Rep>}.
+
+\begin{itemdecl}
+static constexpr Rep one() noexcept;
 \end{itemdecl}
 
-\rSec1[qty.types]{Types}
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+if constexpr (requires {
+                { std::chrono::duration_values<Rep>::one() } -> std::@\stdconcept{same_as}@<Rep>;
+              })
+  return std::chrono::duration_values<Rep>::one();
+else
+  return Rep(1);
+\end{codeblock}
+
+\pnum
+\remarks
+The value returned shall be the neutral element for multiplication\irefiev{102-01-19}.
+\end{itemdescr}
+
+\rSec3[qty.compat.traits]{Compatibility}
+
+\pnum
+The interfaces specified in this subclause
+are used by the quantity types\iref{term.quantity.type}
+to specify conversions with other types representing quantities.
+\ref{qty.chrono} implements them for \tcode{std::chrono::duration} and \tcode{std::chrono::time_point}.
+
+\begin{itemdecl}
+template<typename T, template<typename> typename Traits>
+concept @\defexposconceptnc{qty-like}@ = requires(const T& qty, const Traits<T>::rep& num) {
+  requires !@\exposidnc{is-specialization-of}@(^T, ^quantity);
+  requires !@\exposidnc{is-specialization-of}@(^T, ^quantity_point);
+  { Traits<T>::to_numerical_value(qty) } -> std::@\stdconcept{same_as}@<typename Traits<T>::rep>;
+  { Traits<T>::from_numerical_value(num) } -> std::@\stdconcept{same_as}@<T>;
+  { Traits<T>::explicit_import } -> std::same_as<const bool>;
+  { Traits<T>::explicit_export } -> std::same_as<const bool>;
+  typename std::bool_constant<Traits<T>::explicit_import>;
+  typename std::bool_constant<Traits<T>::explicit_export>;
+};
+
+template<typename T>
+concept @\deflibconcept{quantity_like}@ =                 //
+  @\exposconceptnc{qty-like}@<T, quantity_like_traits> &&  //
+  requires {
+    typename quantity<quantity_like_traits<T>::reference, typename quantity_like_traits<T>::rep>;
+  };
+
+template<typename T>
+concept @\deflibconcept{quantity_point_like}@ =
+  @\exposconceptnc{qty-like}@<T, quantity_point_like_traits> &&  //
+  requires {
+    typename quantity_point<quantity_point_like_traits<T>::reference,
+                            typename quantity_point_like_traits<T>::point_origin,
+                            typename quantity_point_like_traits<T>::rep>;
+  };
+\end{itemdecl}
+
+\pnum
+In the following descriptions, let
+\begin{itemize}
+\item
+\tcode{Traits} be \tcode{quantity_like_traits} or \tcode{quantity_point_like_traits},
+\item
+\tcode{Q} be a type for which \tcode{Traits<Q>} is specialized,
+\item
+\tcode{qty} be an lvalue of type \tcode{const Q}, and
+\item
+\tcode{num} be an lvalue of type \tcode{const Tratis<Q>::rep}.
+\end{itemize}
+
+\pnum
+\tcode{Q} models \tcode{\exposconceptnc{qty-like}<Traits>} if and only if:
+\begin{itemize}
+\item
+\tcode{Traits<Q>::to_numerical_value(qty)} returns the numerical value\irefiev{112-01-29} of \tcode{qty}.
+\item
+\tcode{Traits<Q>::from_numerical_value(num)} returns a \tcode{Q} with numerical value \tcode{num}.
+\item
+If \tcode{Traits} is \tcode{quantity_point_like_traits},
+both numerical values are offset from \tcode{Traits<Q>::point_origin}.
+\end{itemize}
+
+\pnum
+If the following expression is \tcode{true}, the specified conversion will be explicit.
+\begin{itemize}
+\item
+\tcode{Traits<Q>::explicit_import} for the conversion from \tcode{Q} to a quantity type.
+\item
+\tcode{Traits<Q>::explicit_export} for the conversion from a quantity type to \tcode{Q}.
+\end{itemize}
 
 \rSec2[qty.types.general]{General}
 
 \pnum
+\label{term.quantity.type}
 A \defnadj{quantity}{type}
 is a type \tcode{\placeholder{Q}}
 that is a specialization of \tcode{quantity} or \tcode{quantity_point}.
-\tcode{\placeholder{Q}} represents a quantity\irefiev{112-01-01}
-with \tcode{\placeholder{Q}::rep} as its number
-and \tcode{\placeholder{Q}::reference} as its reference.
+\tcode{\placeholder{Q}} represents the value of a quantity\irefiev{112-01-28}
+with \tcode{\placeholdernc{Q}::rep} as its number
+and \tcode{\placeholdernc{Q}::reference} as its reference.
 \tcode{\placeholder{Q}} is a structural type\irefcppx{temp.param}{term.structural.type}
-if \tcode{\placeholder{Q}::rep} is a structural type.
+if \tcode{\placeholdernc{Q}::rep} is a structural type.
 
 \pnum
-Each class template defined in subclause \ref{qty.types}
-has data members and special members specified below, and
-has no base classes or members other than those specified.
+Each class template defined in subclauses \ref{qty} and \ref{qty.pt}
+have data members and special members specified below, and
+have no base classes or members other than those specified.
 
-\rSec2[qty.type]{Class template \tcode{quantity}}
+\rSec2[qty.concepts]{Quantity concepts}
+
+\begin{itemdecl}
+template<typename T>
+concept @\deflibconcept{Quantity}@ = @\unspecnc@;
+\end{itemdecl}
+
+\rSec2[qty]{Class template \tcode{quantity}}
 
 \begin{codeblock}
 namespace mp_units {
 
-export template<@\libconcept{some_reference}@ auto R,
-                @\libconcept{representation_of}@<get_quantity_spec(R).character> Rep = double>
-class quantity { @\unspec@ };
+template<auto R1, auto R2, typename Rep1, typename Rep2>
+concept @\defexposconceptnc{same-value-as}@ =
+  equivalent(get_unit(R1), get_unit(R2)) && std::@\stdconcept{convertible_to}@<Rep1, Rep2>;
+
+template<@\libconcept{Reference}@ auto R, @\libconcept{RepresentationOf}@<get_quantity_spec(R).character> Rep = double>
+class @\libglobal{quantity}@ {
+public:
+  Rep @\exposidnc{numerical-value}@;
+
+  // member types and values
+  static constexpr @\libconcept{Reference}@ auto reference = R;
+  static constexpr @\libconcept{QuantitySpec}@ auto quantity_spec = get_quantity_spec(reference);
+  static constexpr @\libconcept{Dimension}@ auto dimension = quantity_spec.dimension;
+  static constexpr @\libconcept{Unit}@ auto unit = get_unit(reference);
+  using rep = Rep;
+
+  // static member functions
+
+  static constexpr quantity zero() noexcept
+    requires requires { quantity_values<rep>::zero(); }
+  {
+    return {quantity_values<rep>::zero(), R};
+  }
+
+  static constexpr quantity one() noexcept
+    requires requires { quantity_values<rep>::one(); }
+  {
+    return {quantity_values<rep>::one(), R};
+  }
+
+  static constexpr quantity min() noexcept
+    requires requires { quantity_values<rep>::min(); }
+  {
+    return {quantity_values<rep>::min(), R};
+  }
+
+  static constexpr quantity max() noexcept
+    requires requires { quantity_values<rep>::max(); }
+  {
+    return {quantity_values<rep>::max(), R};
+  }
+
+  // construction, assignment, destruction
+
+  quantity() = default;
+  quantity(const quantity&) = default;
+  quantity(quantity&&) = default;
+  ~quantity() = default;
+
+  template<typename FwdValue, @\libconcept{Reference}@ R2>
+    requires @\exposconceptnc{same-value-as}@<R2{}, R, [:type_remove_cvref(^FwdValue):], Rep>
+  constexpr quantity(FwdValue&& v, R2) : @\exposidnc{numerical-value}@(std::forward<FwdValue>(v))
+  {
+  }
+};
 
 }
 \end{codeblock}
 
+\pnum
 Let \tcode{\placeholder{Q}} be a specialization of \tcode{quantity}.
 \begin{itemize}
 \item
-If \tcode{Rep} is a scalar,
+If \tcode{Rep} is a scalar\iref{qty.set.traits},
 \tcode{\placeholder{Q}} represents a scalar quantity\irefiev{102-02-19}.
+% FIXME What if `Rep` is a complex number?
 \item
-If \tcode{Rep} is a vector,
+If \tcode{Rep} is a vector\iref{qty.set.traits},
 \tcode{\placeholder{Q}} represents a vector\irefiev{102-03-04}.
 % FIXME What if `Rep` is a tensor?
 \end{itemize}
 
-\rSec2[qty.point.type]{Class template \tcode{quantity_point}}
+\rSec2[qty.pt.concepts]{Quantity point concepts}
+
+\begin{itemdecl}
+template<typename T>
+concept @\deflibconcept{PointOrigin}@ = @\unspecnc@;
+\end{itemdecl}
+
+\rSec2[qty.pt]{Class template \tcode{quantity_point}}
 
 \begin{codeblock}
 namespace mp_units {
 
-export template<@\unspec@>
-class quantity_point { @\unspec@ };
+template<@\unspec@>
+class @\libglobal{quantity_point}@ { @\unspec@ };
 
 }
 \end{codeblock}
 
+\pnum
+\label{term.quantity.point.type}
 A \defnadj{quantity point}{type} is a specialization of \tcode{quantity_point}.
 Let \tcode{\placeholder{Q}} be a quantity point type.
 \tcode{\placeholdernc{Q}::point_origin} represents
-the origin point of a position vector\irefiev{102-03-15}.
+the origin point of a position vector\irefiev{102-03-15}
+or of a component\irefiev{102-03-10} thereof.
 \begin{itemize}
 \item
-If \tcode{Rep} is a scalar,
+If \tcode{Rep} is a scalar\iref{qty.set.traits},
 \tcode{\placeholder{Q}} represents the scalar quantity\irefiev{102-02-19}
 of a position vector.
+% FIXME What if `Rep` is a complex number?
 \item
-If \tcode{Rep} is a vector,
+If \tcode{Rep} is a vector\iref{qty.set.traits},
 \tcode{\placeholder{Q}} represents a position vector.
 % FIXME What if `Rep` is a tensor?
 \end{itemize}
 
-\rSec1[qty.compat]{Compatibility}
-
-\rSec1[qty.one]{Dimension one}
-
 \rSec1[qty.systems]{Systems}
 
 \rSec1[qty.chrono]{\tcode{std::chrono} compatibility}
+
+\begin{codeblock}
+namespace mp_units {
+
+template<typename Period>
+consteval auto @\exposidnc{time-unit-from-chrono-period}@()
+{
+  using namespace si;
+
+  if constexpr (is_same_v<Period, std::chrono::nanoseconds::period>)
+    return nano<second>;
+  else if constexpr (is_same_v<Period, std::chrono::microseconds::period>)
+    return micro<second>;
+  else if constexpr (is_same_v<Period, std::chrono::milliseconds::period>)
+    return milli<second>;
+  else if constexpr (is_same_v<Period, std::chrono::seconds::period>)
+    return second;
+  else if constexpr (is_same_v<Period, std::chrono::minutes::period>)
+    return minute;
+  else if constexpr (is_same_v<Period, std::chrono::hours::period>)
+    return hour;
+  else if constexpr (is_same_v<Period, std::chrono::days::period>)
+    return day;
+  else if constexpr (is_same_v<Period, std::chrono::weeks::period>)
+    return mag<7> * day;
+  else
+    return mag_ratio<Period::num, Period::den> * second;
+}
+
+template<typename Rep, typename Period>
+struct @\libspec{quantity_like_traits}{std::chrono::duration}@<std::chrono::duration<Rep, Period>> {
+  static constexpr auto reference = @\exposidnc{time-unit-from-chrono-period}@<Period>();
+  using rep = Rep;
+
+  static constexpr bool explicit_import = false;
+  static constexpr rep to_numerical_value(const std::chrono::duration<Rep, Period>& q) noexcept(
+    std::is_nothrow_copy_constructible_v<rep>)
+  {
+    return q.count();
+  }
+
+  static constexpr bool explicit_export = false;
+  static constexpr std::chrono::duration<Rep, Period> from_numerical_value(
+    const rep& v) noexcept(std::is_nothrow_copy_constructible_v<rep>)
+  {
+    return std::chrono::duration<Rep, Period>(v);
+  }
+};
+
+template<typename Clock>
+struct @\libglobal{chrono_point_origin_}@ final : absolute_point_origin<isq::time> {
+  using clock = Clock;
+};
+
+template<typename Clock, typename Rep, typename Period>
+struct @\libspec{quantity_point_like_traits}{std::chrono::time_point}@<
+  std::chrono::time_point<Clock, std::chrono::duration<Rep, Period>>> {
+  using @\exposidnc{Tp}@ = std::chrono::time_point<Clock, std::chrono::duration<Rep, Period>>;
+  static constexpr auto reference = @\exposidnc{time-unit-from-chrono-period}@<Period>();
+  static constexpr auto point_origin = chrono_point_origin<Clock>;
+  using rep = Rep;
+
+  static constexpr bool explicit_import = false;
+  static constexpr rep to_numerical_value(const @\exposid{Tp}@& tp) noexcept(
+    std::is_nothrow_copy_constructible_v<rep>)
+  {
+    return tp.time_since_epoch().count();
+  }
+
+  static constexpr bool explicit_export = false;
+  static constexpr @\exposidnc{Tp}@ from_numerical_value(const rep& v) noexcept(
+    std::is_nothrow_copy_constructible_v<rep>)
+  {
+    return @\exposidnc{Tp}@(std::chrono::duration<Rep, Period>(v));
+  }
+};
+
+}
+\end{codeblock}
