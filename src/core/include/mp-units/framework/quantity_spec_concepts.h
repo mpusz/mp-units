@@ -53,7 +53,7 @@ struct kind_of_;
 namespace detail {
 
 template<typename T>
-concept QuantityKindSpec = is_specialization_of<T, kind_of_>;
+concept QuantityKindSpec = QuantitySpec<T> && is_specialization_of<T, kind_of_>;
 
 #if MP_UNITS_API_NO_CRTP
 template<auto... Args>
