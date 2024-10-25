@@ -76,28 +76,9 @@ template<typename T>
 concept NamedQuantitySpec =
   QuantitySpec<T> && is_derived_from_specialization_of_quantity_spec<T> && (!QuantityKindSpec<T>);
 
-template<typename T>
-struct is_dimensionless : std::false_type {};
-
-template<typename T>
-concept IsPowerOfQuantitySpec = is_specialization_of_power<T> &&
-                                (NamedQuantitySpec<typename T::factor> || is_dimensionless<typename T::factor>::value);
-
-
-template<typename T>
-constexpr bool is_per_of_quantity_specs = false;
-
-template<typename... Ts>
-constexpr bool is_per_of_quantity_specs<per<Ts...>> =
-  (... && (NamedQuantitySpec<Ts> || is_dimensionless<Ts>::value || IsPowerOfQuantitySpec<Ts>));
-
-template<typename T>
-concept DerivedQuantitySpecExpr = detail::NamedQuantitySpec<T> || detail::is_dimensionless<T>::value ||
-                                  detail::IsPowerOfQuantitySpec<T> || detail::is_per_of_quantity_specs<T>;
-
 }  // namespace detail
 
-template<detail::DerivedQuantitySpecExpr... Expr>
+template<typename... Expr>
 struct derived_quantity_spec;
 
 namespace detail {

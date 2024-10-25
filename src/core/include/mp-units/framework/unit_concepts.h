@@ -60,23 +60,7 @@ MP_UNITS_EXPORT struct one;
 MP_UNITS_EXPORT template<typename T>
 concept PrefixableUnit = Unit<T> && is_derived_from_specialization_of_v<T, named_unit>;
 
-namespace detail {
-
-template<typename T>
-constexpr bool is_power_of_unit = requires { requires is_specialization_of_power<T> && Unit<typename T::factor>; };
-
-template<typename T>
-constexpr bool is_per_of_units = false;
-
-template<typename... Ts>
-constexpr bool is_per_of_units<per<Ts...>> = (... && (Unit<Ts> || is_power_of_unit<Ts>));
-
-template<typename T>
-concept DerivedUnitExpr = Unit<T> || detail::is_power_of_unit<T> || detail::is_per_of_units<T>;
-
-}  // namespace detail
-
-template<detail::DerivedUnitExpr... Expr>
+template<typename... Expr>
 struct derived_unit;
 
 MP_UNITS_EXPORT template<symbol_text Symbol, Magnitude auto M, PrefixableUnit auto U>

@@ -429,7 +429,10 @@ struct quantity_spec<Self, QS, Eq, Args...> : detail::quantity_spec_interface<Se
 
 namespace detail {
 
-template<detail::DerivedQuantitySpecExpr... Expr>
+template<typename T>
+struct is_dimensionless : std::false_type {};
+
+template<typename... Expr>
 struct derived_quantity_spec_impl :
 #if MP_UNITS_API_NO_CRTP
     detail::quantity_spec_interface,
@@ -492,7 +495,7 @@ struct derived_quantity_spec_impl :
  * @note User should not instantiate this type! It is not exported from the C++ module. The library will
  *       instantiate this type automatically based on the dimensional arithmetic equation provided by the user.
  */
-template<detail::DerivedQuantitySpecExpr... Expr>
+template<typename... Expr>
 struct derived_quantity_spec final : detail::derived_quantity_spec_impl<Expr...> {};
 
 /**

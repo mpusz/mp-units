@@ -67,7 +67,7 @@ struct scaled_unit_impl;
 template<typename T>
 constexpr bool is_specialization_of_scaled_unit = false;
 
-template<DerivedUnitExpr... Expr>
+template<typename... Expr>
 struct derived_unit_impl;
 
 /**
@@ -461,7 +461,7 @@ namespace detail {
 template<typename T>
 struct is_one : std::false_type {};
 
-template<DerivedUnitExpr... Expr>
+template<typename... Expr>
 struct derived_unit_impl : detail::unit_interface, detail::expr_fractions<detail::is_one, Expr...> {
   using _base_type_ = derived_unit_impl;  // exposition only
 };
@@ -513,7 +513,7 @@ struct derived_unit_impl : detail::unit_interface, detail::expr_fractions<detail
  * @note User should not instantiate this type! It is not exported from the C++ module. The library will
  *       instantiate this type automatically based on the unit arithmetic equation provided by the user.
  */
-template<detail::DerivedUnitExpr... Expr>
+template<typename... Expr>
 struct derived_unit final : detail::derived_unit_impl<Expr...> {};
 
 /**
@@ -831,13 +831,13 @@ constexpr auto unit_symbol_impl(Out out, const power<F, Num, Den...>&, const uni
   return copy_symbol_exponent<CharT, Num, Den...>(fmt.encoding, negative_power, out);
 }
 
-template<typename CharT, std::output_iterator<CharT> Out, DerivedUnitExpr... Us>
+template<typename CharT, std::output_iterator<CharT> Out, typename... Us>
 constexpr Out unit_symbol_impl(Out out, const type_list<>&, const unit_symbol_formatting&, bool)
 {
   return out;
 }
 
-template<typename CharT, std::output_iterator<CharT> Out, DerivedUnitExpr U, DerivedUnitExpr... Rest>
+template<typename CharT, std::output_iterator<CharT> Out, typename U, typename... Rest>
 constexpr Out unit_symbol_impl(Out out, const type_list<U, Rest...>&, const unit_symbol_formatting& fmt,
                                bool negative_power)
 {
@@ -845,7 +845,7 @@ constexpr Out unit_symbol_impl(Out out, const type_list<U, Rest...>&, const unit
           (print_separator<CharT>(out, fmt), out = unit_symbol_impl<CharT>(out, Rest{}, fmt, negative_power)));
 }
 
-template<typename CharT, std::output_iterator<CharT> Out, DerivedUnitExpr... Nums, DerivedUnitExpr... Dens>
+template<typename CharT, std::output_iterator<CharT> Out, typename... Nums, typename... Dens>
 constexpr Out unit_symbol_impl(Out out, const type_list<Nums...>& nums, const type_list<Dens...>& dens,
                                const unit_symbol_formatting& fmt)
 {
