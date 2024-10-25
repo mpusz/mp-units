@@ -157,7 +157,12 @@ struct unit_interface {
   {
     if constexpr (std::is_same_v<M, std::remove_const_t<decltype(mp_units::mag<1>)>>)
       return u;
-    else
+    else if constexpr (is_specialization_of_scaled_unit<U>) {
+      if constexpr (M{} * U::mag == mag<1>)
+        return U::reference_unit;
+      else
+        return scaled_unit<M{} * U::mag, std::remove_const_t<decltype(U::reference_unit)>>{};
+    } else
       return scaled_unit<M{}, U>{};
   }
 

@@ -253,6 +253,16 @@ static_assert(is_of_type<m_2, scaled_unit<mag<2>, metre_>>);
 static_assert(is_of_type<get_canonical_unit(m_2).reference_unit, metre_>);
 static_assert(get_canonical_unit(m_2).mag == mag<2>);
 
+constexpr auto m_3 = mag_ratio<1, 2> * m_2;
+static_assert(is_of_type<m_3, metre_>);
+static_assert(is_of_type<get_canonical_unit(m_3).reference_unit, metre_>);
+static_assert(get_canonical_unit(m_3).mag == mag<1>);
+
+constexpr auto m_4 = mag_ratio<1, 2> * (mag<4> * metre);
+static_assert(is_of_type<m_4, scaled_unit<mag<2>, metre_>>);
+static_assert(is_of_type<get_canonical_unit(m_4).reference_unit, metre_>);
+static_assert(get_canonical_unit(m_4).mag == mag<2>);
+
 constexpr auto km_2 = mag<2> * kilometre;
 static_assert(is_of_type<km_2, scaled_unit<mag<2>, kilo_<metre_>>>);
 static_assert(is_of_type<get_canonical_unit(km_2).reference_unit, metre_>);
