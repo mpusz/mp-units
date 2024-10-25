@@ -146,6 +146,9 @@ template<Unit From, Unit To>
     return false;
 }
 
+template<typename... Expr>
+struct derived_unit;
+
 namespace detail {
 
 struct unit_interface {

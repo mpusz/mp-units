@@ -60,13 +60,6 @@ MP_UNITS_EXPORT struct one;
 MP_UNITS_EXPORT template<typename T>
 concept PrefixableUnit = Unit<T> && is_derived_from_specialization_of_v<T, named_unit>;
 
-template<typename... Expr>
-struct derived_unit;
-
-MP_UNITS_EXPORT template<symbol_text Symbol, Magnitude auto M, PrefixableUnit auto U>
-  requires(!Symbol.empty())
-struct prefixed_unit;
-
 namespace detail {
 
 template<Unit U>
