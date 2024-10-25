@@ -49,38 +49,7 @@ struct mag_constant;
 MP_UNITS_EXPORT template<typename T>
 concept MagConstant = detail::TagType<T> && is_derived_from_specialization_of_v<T, mag_constant>;
 
-namespace detail {
-
-/**
- * @brief  Any type which can be used as a basis vector in a PowerV.
- *
- * We have two categories.
- *
- * The first is just an integral type (either `int` or `std::intmax_t`). This is for prime number bases.
- * These can always be used directly as NTTPs.
- *
- * The second category is a _custom tag type_, which inherits from `mag_constant` and has a static member variable
- * `value` of type `long double` that holds its value. We choose `long double` to get the greatest degree of precision;
- * users who need a different type can convert from this at compile time.  This category is for any irrational base
- * we admit into our representation (on which, more details below).
- */
-template<typename T>
-concept PowerVBase = one_of<T, int, std::intmax_t> || MagConstant<T>;
-
-}  // namespace detail
-
-template<detail::PowerVBase auto V, int Num, int... Den>
-  requires(detail::valid_ratio<Num, Den...> && !detail::ratio_one<Num, Den...>)
-struct power_v;
-
-namespace detail {
-
-template<typename T>
-concept MagnitudeSpecExpr = PowerVBase<T> || is_specialization_of_v<T, power_v>;
-
-}
-
-template<detail::MagnitudeSpecExpr auto... Ms>
+template<auto... Ms>
 struct magnitude;
 
 /**
