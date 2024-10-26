@@ -520,38 +520,24 @@ struct is_dimensionless<struct dimensionless> : std::true_type {};
  */
 namespace detail {
 
-template<typename T>
-concept QuantitySpecWithNoSpecifiers = detail::NamedQuantitySpec<T> || detail::DerivedQuantitySpec<T>;
-
 template<QuantitySpec Q>
 [[nodiscard]] consteval QuantitySpec auto get_kind_tree_root(Q q);
 
 }  // namespace detail
 
+template<typename Q>
+  requires(!detail::QuantityKindSpec<Q>) && detail::SameQuantitySpec<detail::get_kind_tree_root(Q{}), Q{}>
 #if MP_UNITS_API_NO_CRTP
-template<typename Q>
-  requires detail::QuantitySpecWithNoSpecifiers<Q> && detail::SameQuantitySpec<detail::get_kind_tree_root(Q{}), Q{}>
 struct kind_of_<Q> final : Q::_base_type_ {
-  using _base_type_ = kind_of_;
-  static constexpr auto _quantity_spec_ = Q{};
-};
 #else
-
-#if MP_UNITS_COMP_CLANG
-template<typename Q>
-  requires detail::QuantitySpecWithNoSpecifiers<Q> && detail::SameQuantitySpec<detail::get_kind_tree_root(Q{}), Q{}>
-#else
-template<detail::QuantitySpecWithNoSpecifiers Q>
-  requires detail::SameQuantitySpec<detail::get_kind_tree_root(Q{}), Q{}>
-#endif
 struct kind_of_<Q> final : quantity_spec<kind_of_<Q>, Q{}>::_base_type_ {
+#endif
   using _base_type_ = kind_of_;
   static constexpr auto _quantity_spec_ = Q{};
 };
-#endif
 
-MP_UNITS_EXPORT template<detail::QuantitySpecWithNoSpecifiers auto Q>
-  requires detail::SameQuantitySpec<detail::get_kind_tree_root(Q), Q>
+MP_UNITS_EXPORT template<auto Q>
+  requires requires { typename kind_of_<decltype(Q)>; }
 constexpr kind_of_<MP_UNITS_REMOVE_CONST(decltype(Q))> kind_of;
 
 namespace detail {
