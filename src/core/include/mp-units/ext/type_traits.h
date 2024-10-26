@@ -29,6 +29,7 @@
 #ifdef MP_UNITS_IMPORT_STD
 import std;
 #else
+#include <iterator>
 #include <type_traits>
 #include <utility>
 #endif
@@ -100,30 +101,10 @@ constexpr bool is_derived_from_specialization_of = requires(T* t) { detail::to_b
 template<typename T, template<auto...> typename Type>
 constexpr bool is_derived_from_specialization_of_v = requires(T* t) { detail::to_base_specialization_of_v<Type>(t); };
 
-namespace detail {
-
 template<typename T>
-struct get_value_type {
-  using type = T::value_type;
-};
-
-template<typename T>
-struct get_element_type {
-  using type = std::remove_reference_t<typename T::element_type>;
-};
-
-}  // namespace detail
-
-template<typename T>
-  requires requires { typename T::value_type; } || requires { typename T::element_type; }
-struct wrapped_type {
-  using type =
-    conditional<requires { typename T::value_type; }, detail::get_value_type<T>, detail::get_element_type<T>>::type;
-};
-
-template<typename T>
-  requires requires { typename T::value_type; } || requires { typename T::element_type; }
-using wrapped_type_t = wrapped_type<T>::type;
+  requires(!std::is_pointer_v<T> && !std::is_array_v<T>) &&
+            requires { typename std::indirectly_readable_traits<T>::value_type; }
+using wrapped_type_t = std::indirectly_readable_traits<T>::value_type;
 
 template<typename T>
 struct value_type {
