@@ -106,19 +106,24 @@ template<typename T>
             requires { typename std::indirectly_readable_traits<T>::value_type; }
 using wrapped_type_t = std::indirectly_readable_traits<T>::value_type;
 
+namespace detail {
+
 template<typename T>
-struct value_type {
+struct value_type_impl {
   using type = T;
 };
 
 template<typename T>
   requires requires { typename wrapped_type_t<T>; }
-struct value_type<T> {
+struct value_type_impl<T> {
   using type = wrapped_type_t<T>;
 };
 
+}  // namespace detail
+
 template<typename T>
-using value_type_t = value_type<T>::type;
+  requires std::is_object_v<T>
+using value_type_t = detail::value_type_impl<T>::type;
 
 template<typename T, typename... Ts>
 concept one_of = (false || ... || std::same_as<T, Ts>);
