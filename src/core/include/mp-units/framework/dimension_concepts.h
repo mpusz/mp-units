@@ -57,23 +57,6 @@ namespace detail {
 template<typename T>
 concept BaseDimension = Dimension<T> && is_derived_from_specialization_of_v<T, base_dimension>;
 
-template<typename T>
-struct is_dimension_one : std::false_type {};
-
-template<typename T>
-concept IsPowerOfDim =
-  is_specialization_of_power<T> && (BaseDimension<typename T::factor> || is_dimension_one<typename T::factor>::value);
-
-template<typename T>
-constexpr bool is_per_of_dims = false;
-
-template<typename... Ts>
-constexpr bool is_per_of_dims<per<Ts...>> =
-  (... && (BaseDimension<Ts> || is_dimension_one<Ts>::value || IsPowerOfDim<Ts>));
-
-template<typename T>
-concept DerivedDimensionExpr = BaseDimension<T> || is_dimension_one<T>::value || IsPowerOfDim<T> || is_per_of_dims<T>;
-
 }  // namespace detail
 
 /**

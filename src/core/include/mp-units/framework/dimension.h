@@ -52,12 +52,15 @@ import std;
 
 namespace mp_units {
 
-template<detail::DerivedDimensionExpr... Expr>
+template<typename... Expr>
 struct derived_dimension;
 
 MP_UNITS_EXPORT struct dimension_one;
 
 namespace detail {
+
+template<typename T>
+struct is_dimension_one : std::false_type {};
 
 template<typename Lhs, typename Rhs>
 struct base_dimension_less : std::bool_constant<type_name<Lhs>() < type_name<Rhs>()> {};
@@ -65,7 +68,7 @@ struct base_dimension_less : std::bool_constant<type_name<Lhs>() < type_name<Rhs
 template<typename T1, typename T2>
 using type_list_of_base_dimension_less = expr_less<T1, T2, base_dimension_less>;
 
-template<DerivedDimensionExpr... Expr>
+template<typename... Expr>
 struct derived_dimension_impl : expr_fractions<is_dimension_one, Expr...> {};
 
 struct dimension_interface {
@@ -165,7 +168,7 @@ struct base_dimension : detail::dimension_interface {
  * @note User should not instantiate this type! It is not exported from the C++ module. The library will
  *       instantiate this type automatically based on the dimensional arithmetic equation provided by the user.
  */
-template<detail::DerivedDimensionExpr... Expr>
+template<typename... Expr>
 struct derived_dimension final : detail::dimension_interface, detail::derived_dimension_impl<Expr...> {};
 
 /**
@@ -250,14 +253,14 @@ constexpr auto dimension_symbol_impl(Out out, const power<F, Num, Den...>&, cons
   return copy_symbol_exponent<CharT, Num, Den...>(fmt.encoding, negative_power, out);
 }
 
-template<typename CharT, std::output_iterator<CharT> Out, DerivedDimensionExpr... Ms>
+template<typename CharT, std::output_iterator<CharT> Out, typename... Ms>
 constexpr Out dimension_symbol_impl(Out out, const type_list<Ms...>&, const dimension_symbol_formatting& fmt,
                                     bool negative_power)
 {
   return (..., (out = dimension_symbol_impl<CharT>(out, Ms{}, fmt, negative_power)));
 }
 
-template<typename CharT, std::output_iterator<CharT> Out, DerivedDimensionExpr... Nums, DerivedDimensionExpr... Dens>
+template<typename CharT, std::output_iterator<CharT> Out, typename... Nums, typename... Dens>
 constexpr Out dimension_symbol_impl(Out out, const type_list<Nums...>& nums, const type_list<Dens...>& dens,
                                     const dimension_symbol_formatting& fmt)
 {
