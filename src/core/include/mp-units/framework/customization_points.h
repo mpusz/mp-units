@@ -33,6 +33,9 @@ import std;
 #include <concepts>
 #include <limits>
 #include <type_traits>
+#if MP_UNITS_HOSTED
+#include <chrono>
+#endif
 #endif
 #endif
 
@@ -50,11 +53,12 @@ MP_UNITS_EXPORT_BEGIN
  * @tparam Rep a representation type for which a type trait is defined
  */
 template<typename Rep>
-constexpr bool treat_as_floating_point = std::is_floating_point_v<Rep>;
-
-template<typename Rep>
-  requires requires { typename wrapped_type_t<Rep>; }
-constexpr bool treat_as_floating_point<Rep> = treat_as_floating_point<wrapped_type_t<Rep>>;
+constexpr bool treat_as_floating_point =
+#if MP_UNITS_HOSTED
+  std::chrono::treat_as_floating_point_v<value_type_t<Rep>>;
+#else
+  std::is_floating_point_v<value_type_t<Rep>>;
+#endif
 
 /**
  * @brief Specifies a type to have a scalar character

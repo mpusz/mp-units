@@ -55,6 +55,7 @@
 #if MP_UNITS_HOSTED
 #include <mp-units/ext/format.h>
 #ifndef MP_UNITS_IMPORT_STD
+#include <chrono>
 #include <cmath>
 #include <locale>
 #include <ostream>
