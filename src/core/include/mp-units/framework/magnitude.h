@@ -428,22 +428,22 @@ constexpr Out magnitude_symbol_impl(Out out, const unit_symbol_formatting& fmt)
 template<auto... Ms>
 struct magnitude : detail::magnitude_base<magnitude<Ms...>> {
   template<Magnitude M>
-  [[nodiscard]] friend consteval Magnitude auto operator*(magnitude m1, M m2)
+  [[nodiscard]] friend consteval Magnitude auto operator*(magnitude lhs, M rhs)
   {
     if constexpr (sizeof...(Ms) == 0)
-      return m2;
+      return rhs;
     else if constexpr (is_same_v<M, magnitude<>>)
-      return m1;
+      return lhs;
     else
-      return _multiply_impl(m1, m2);
+      return _multiply_impl(lhs, rhs);
   }
 
-  [[nodiscard]] friend consteval auto operator/(magnitude l, Magnitude auto r) { return l * _pow<-1>(r); }
+  [[nodiscard]] friend consteval auto operator/(magnitude lhs, Magnitude auto rhs) { return lhs * _pow<-1>(rhs); }
 
-  template<Magnitude M2>
-  [[nodiscard]] friend consteval bool operator==(magnitude, M2)
+  template<Magnitude Rhs>
+  [[nodiscard]] friend consteval bool operator==(magnitude, Rhs)
   {
-    return is_same_v<magnitude, M2>;
+    return is_same_v<magnitude, Rhs>;
   }
 
 private:
