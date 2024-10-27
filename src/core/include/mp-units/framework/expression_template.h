@@ -294,7 +294,7 @@ struct expr_fractions_result {
   using _den_ = Den;  // exposition only
 };
 
-template<template<typename> typename OneType, typename List>
+template<typename OneType, typename List>
 [[nodiscard]] consteval auto expr_fractions_impl()
 {
   constexpr std::size_t size = type_list_size<List>;
@@ -307,7 +307,7 @@ template<template<typename> typename OneType, typename List>
     using last_element = type_list_back<List>;
 
     if constexpr (is_specialization_of<last_element, per>) {
-      if constexpr (size == 2 && OneType<type_list_front<List>>::value)
+      if constexpr (size == 2 && is_same_v<type_list_front<List>, OneType>)
         return expr_fractions_result<type_list<>, type_list_map<last_element, type_list>>{};
       else {
         using split = type_list_split<List, size - 1>;
@@ -322,7 +322,7 @@ template<template<typename> typename OneType, typename List>
 /**
  * @brief Divides expression template spec to numerator and denominator parts
  */
-template<template<typename> typename OneType, typename... Ts>
+template<typename OneType, typename... Ts>
 struct expr_fractions : decltype(expr_fractions_impl<OneType, type_list<Ts...>>()) {};
 
 // expr_make_spec

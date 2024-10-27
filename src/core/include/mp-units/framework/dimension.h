@@ -59,9 +59,6 @@ MP_UNITS_EXPORT struct dimension_one;
 
 namespace detail {
 
-template<typename T>
-struct is_dimension_one : std::false_type {};
-
 template<typename Lhs, typename Rhs>
 struct base_dimension_less : std::bool_constant<type_name<Lhs>() < type_name<Rhs>()> {};
 
@@ -69,7 +66,7 @@ template<typename T1, typename T2>
 using type_list_of_base_dimension_less = expr_less<T1, T2, base_dimension_less>;
 
 template<typename... Expr>
-struct derived_dimension_impl : expr_fractions<is_dimension_one, Expr...> {};
+struct derived_dimension_impl : expr_fractions<dimension_one, Expr...> {};
 
 struct dimension_interface {
   template<Dimension Lhs, Dimension Rhs>
@@ -182,13 +179,6 @@ MP_UNITS_EXPORT inline constexpr struct dimension_one final :
     detail::dimension_interface,
     detail::derived_dimension_impl<> {
 } dimension_one;
-
-namespace detail {
-
-template<>
-struct is_dimension_one<struct dimension_one> : std::true_type {};
-
-}  // namespace detail
 
 MP_UNITS_EXPORT_BEGIN
 

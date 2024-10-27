@@ -461,11 +461,8 @@ struct common_unit final : decltype(detail::get_common_scaled_unit(U1{}, U2{}, R
 
 namespace detail {
 
-template<typename T>
-struct is_one : std::false_type {};
-
 template<typename... Expr>
-struct derived_unit_impl : detail::unit_interface, detail::expr_fractions<detail::is_one, Expr...> {
+struct derived_unit_impl : detail::unit_interface, detail::expr_fractions<one, Expr...> {
   using _base_type_ = derived_unit_impl;  // exposition only
 };
 
@@ -529,9 +526,6 @@ MP_UNITS_EXPORT inline constexpr struct one final : detail::derived_unit_impl<> 
 // clang-format on
 
 namespace detail {
-
-template<>
-struct is_one<struct one> : std::true_type {};
 
 template<Unit T, auto M, typename U>
 [[nodiscard]] consteval auto get_canonical_unit_impl(T, const scaled_unit_impl<M, U>&)

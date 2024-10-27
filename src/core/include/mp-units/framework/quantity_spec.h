@@ -429,9 +429,6 @@ struct quantity_spec<Self, QS, Eq, Args...> : detail::quantity_spec_interface<Se
 
 namespace detail {
 
-template<typename T>
-struct is_dimensionless : std::false_type {};
-
 template<typename... Expr>
 struct derived_quantity_spec_impl :
 #if MP_UNITS_API_NO_CRTP
@@ -439,9 +436,9 @@ struct derived_quantity_spec_impl :
 #else
     detail::quantity_spec_interface<derived_quantity_spec<Expr...>>,
 #endif
-    detail::expr_fractions<detail::is_dimensionless, Expr...> {
+    detail::expr_fractions<dimensionless, Expr...> {
   using _base_type_ = derived_quantity_spec_impl;
-  using _base_ = detail::expr_fractions<detail::is_dimensionless, Expr...>;
+  using _base_ = detail::expr_fractions<dimensionless, Expr...>;
 
   static constexpr Dimension auto dimension =
     detail::expr_map<detail::to_dimension, derived_dimension, struct dimension_one,
@@ -505,13 +502,6 @@ struct derived_quantity_spec final : detail::derived_quantity_spec_impl<Expr...>
  * for which all the exponents of the factors corresponding to the base dimensions are zero.
  */
 MP_UNITS_EXPORT QUANTITY_SPEC(dimensionless, derived_quantity_spec<>{});
-
-namespace detail {
-
-template<>
-struct is_dimensionless<struct dimensionless> : std::true_type {};
-
-}  // namespace detail
 
 /**
  * @brief Quantity kind specifier
