@@ -4,6 +4,77 @@
 
 ### 2.4.0 <small>WIP</small> { id="2.4.0" }
 
+- (!) feat: `phase_velocity` and `group_velocity` aliases removed from ISQ by ISO
+- feat: `iec::bit` using-declared in `iec::unit_symbols`
+- feat: common unit symbols now use `EQUIV{u1, u2, ...}` syntax
+- feat: `scaled_unit` symbol printing improved (`[]` around the entire unit, small magnitude values do not use a power of `10` anymore)
+- feat: `scaled_unit` does not have a priority over `derived_unit` anymore
+- feat: fractional exponents support added to `mag_power`
+- feat: tag types are now required to be empty
+- feat: magnitude text now obeys formatting parameters and knows how to print constants
+- feat: added support for printing powers of magnitude constants
+- feat: `TagType` concept added
+- feat: `common_unit` selection algorithm improved to make `rev + rad` return `rad`
+- feat: litre text symbol changed from `l` to `L` to avoid ambiguity with `1`
+- feat: alternative litre unit symbol `L` added to prevent ambiguities with `1`
+- feat: Unicode unit symbols
+- feat: `π` added as an alias for `pi`
+- feat: `expr_pow` extended to remove redundancy in callers
+- feat: `DerivedDimensionExpr`, `DerivedQuantitySpecExpr` and `DerivedUnitExpr` removed
+- feat: `MagnitudeSpecExpr` and `PowerVBase` removed and some functions renamed to limit possible ambiguity in overload resolution
+- feat: `std::is_object` constraint applied to `value_type_t`
+- feat(example): currency example now uses `chrono::time_point` and has better interfaces
+- feat(example): `treat_as_floating_point` specializations for examples' types removed
+- (!) refactor: all `iec` quantity specifications are now deprecated and moved to `isq`
+- (!) refactor: `mag_constant` now takes a symbol and a value and the class deriving from it must be final
+- (!) refactor: `op==(U1, U2)` now checks for the same type (old behavior available as `equivalent(U1, U2)`) + `convertible` now verifies associated `quantity_spec` as well
+- (!) refactor: `ascii` -> `portable`, `unicode` -> `utf8`, 'A' -> 'P'
+- (!) refactor: :boom: `char_traits` removed from `fixed_string`
+- refactor: `convertible(U1, U2)` implementation simplified
+- refactor: `abs` moved to `constexpr_math.h`
+- refactor: `unit_symbol_impl` simplified
+- refactor: `unit_symbol_formatting` moved to a dedicated header file
+- refactor: `shorten_T` removed
+- refactor: magnitude interface cleanup
+- refactor: `derived_from_the_same_base_dimension` no longer needed
+- refactor: `one_of` usage removed from the `fixed_string` deduction guides
+- refactor: `quantity.h` is not needed in `constants.h` (`unit.h` is enough)
+- refactor: `SameDimension` concept is not needed and can be inlined in `DimensionOf`
+- refactor: framework Unicode symbols are now spelled using their codes
+- refactor: `QuantitySpecWithNoSpecifiers` removed and `kind_of` definition simplified
+- refactor: `treat_as_floating_point` simplified and extended to use `std::chrono::treat_as_floating_point_v`
+- refactor: `wrapped_type_t` reuses `std::indirectly_readable_traits`
+- refactor: `expr_fractions` takes direct `OneType` type now instead of a trait
+- refactor(test): `derived_quantity` refactored to `child_quantity`
+- fix: missing `are_ingredients_convertible` overloads added
+- fix: constraints for magnitude added for `scaled_unit` and fixed `common_unit` instantiating it incorrectly
+- fix: according to ISO 80000-16 `%` should always be prefixed with space
+- fix: extraneous space in unit symbol having only denominators removed
+- fix: explicit cast added to `less` for magnitudes to fix clang-arm64 conversion error
+- fix: `common_unit` handling fixed for some corner cases
+- fix: math functions constraints fixed
+- fix: `operator*(M, U u)` fixed for `U` being `scaled_unit`
+- fix: subsumption of `QuantityKindSpec` fixed
+- fix: `ValuePreservingTo` fixed to apply `std::remove_cvref_t` on `FromRep`
+- fix(tests): freestanding build fixed
+- test: unit tests for the inverse of `mag_constant` added
+- test: Unicode symbols used in unit tests
+- test: more `std::chrono` tests added
+- test: commutativity tests added to ISQ
+- test: one `kind_of` test added to reference tests
+- test: `pow<0>` and `pow<1>` tests added for dimensions
+- build: setting of some test_package CMake options enabled only for a `cxx_modules` build
+- ci: `sudo apt update` added for documentation.yml in hope that it will resolve missing system packages issue
+- ci: MSVC added to the CI
+- docs: missing systems added to the "Project Structure" chapter
+- docs: graphs of ISQ kind hierarchies improved
+- docs: category of the ISO meeting reports changed to "WG21 Updates"
+- docs: blog comments support added
+- docs: articles of the ISQ series added
+- docs: "Symbols of scaled units" chapter added + minor updates to scaled and common units chapters
+- docs: conan profile updated to present gcc-14 instead of gcc-12 which is no longer supported
+- docs: "Why derived units order is not preserved from the multiplication?" chapter added to FAQ
+- docs: "Many shades of the same unit" extended with a note about the derived units order
 
 ### 2.3.0 <small>September 27, 2024</small> { id="2.3.0" }
 
