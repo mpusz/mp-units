@@ -1,5 +1,4 @@
 ---
-draft: true
 date: 2024-10-28
 authors:
  - mpusz
@@ -189,12 +188,16 @@ inline constexpr auto Gibbs_function = Gibbs_energy;
 Again, the first parameter of `quantity_spec` determines the position in the tree. If a second
 argument is provided, it denotes a recipe for this quantity.
 
+With the above simple definitions we've automatically addressed our _energy_-related issues from
+the [Various quantities of the same dimension and kinds](isq-part-2-problems-when-isq-is-not-used.md#various-quantities-of-the-same-dimension-and-kinds)
+chapter of the "Part 2" article.
+
 
 ## Modeling a hierarchy of kind _dimensionless_
 
 As the last example for this article, let's try to model and implement quantities of dimension one,
 often also called dimensionless quantities. This [quantity hierarchy](../../appendix/glossary.md#quantity-hierarchy)
-that contains more than one [quantity kind](../../appendix/glossary.md#kind) and more than one unit in its tree:
+contains more than one [quantity kind](../../appendix/glossary.md#kind) and more than one unit in its tree:
 
 ```mermaid
 flowchart TD
@@ -238,8 +241,9 @@ but still allow the usage of `one` and its scaled versions for such quantities.
 
 !!! note
 
-    `dimensionless` is a special quantity, and it is predefined in the library's framework
-    (there is no way for the user to define it).
+    `dimensionless` is a special quantity which serves as an identity element in quantity
+    equations. It is predefined in the library's framework and there is no way for the user to
+    define it or something similar to it.
 
 
 ## To be continued...
