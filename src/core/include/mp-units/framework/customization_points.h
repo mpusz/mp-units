@@ -115,17 +115,14 @@ constexpr bool is_tensor = false;
  * @tparam Rep a representation type for which a type trait is defined
  */
 template<typename Rep>
+#if MP_UNITS_HOSTED
+struct quantity_values : std::chrono::duration_values<Rep> {
+#else
 struct quantity_values {
   static constexpr Rep zero() noexcept
     requires std::constructible_from<Rep, int>
   {
     return Rep(0);
-  }
-
-  static constexpr Rep one() noexcept
-    requires std::constructible_from<Rep, int>
-  {
-    return Rep(1);
   }
 
   static constexpr Rep min() noexcept
@@ -142,6 +139,13 @@ struct quantity_values {
     }
   {
     return std::numeric_limits<Rep>::max();
+  }
+#endif
+
+  static constexpr Rep one() noexcept
+    requires std::constructible_from<Rep, int>
+  {
+    return Rep(1);
   }
 };
 
