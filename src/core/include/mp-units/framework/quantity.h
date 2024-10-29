@@ -377,40 +377,50 @@ public:
   }
 
   // compound assignment operators
-  template<typename FwdQ, std::derived_from<quantity> Q = std::remove_cvref_t<FwdQ>>
-    requires requires(rep a, rep b) {
+  template<typename FwdQ, auto R2, typename Rep2, std::derived_from<quantity> Q = std::remove_cvref_t<FwdQ>>
+    requires detail::QuantityConvertibleTo<quantity<R2, rep>, quantity> && requires(rep a, Rep2 b) {
       { a += b } -> std::same_as<rep&>;
     }
-  friend constexpr decltype(auto) operator+=(FwdQ&& lhs, const quantity& rhs)
+  friend constexpr decltype(auto) operator+=(FwdQ&& lhs, const quantity<R2, Rep2>& rhs)
   {
-    lhs.numerical_value_is_an_implementation_detail_ += rhs.numerical_value_is_an_implementation_detail_;
+    if constexpr (equivalent(unit, get_unit(R2)))
+      lhs.numerical_value_is_an_implementation_detail_ += rhs.numerical_value_is_an_implementation_detail_;
+    else
+      lhs.numerical_value_is_an_implementation_detail_ += rhs.in(lhs.unit).numerical_value_is_an_implementation_detail_;
     return std::forward<FwdQ>(lhs);
   }
 
-  template<typename FwdQ, std::derived_from<quantity> Q = std::remove_cvref_t<FwdQ>>
-    requires requires(rep a, rep b) {
+  template<typename FwdQ, auto R2, typename Rep2, std::derived_from<quantity> Q = std::remove_cvref_t<FwdQ>>
+    requires detail::QuantityConvertibleTo<quantity<R2, rep>, quantity> && requires(rep a, Rep2 b) {
       { a -= b } -> std::same_as<rep&>;
     }
-  friend constexpr decltype(auto) operator-=(FwdQ&& lhs, const quantity& rhs)
+  friend constexpr decltype(auto) operator-=(FwdQ&& lhs, const quantity<R2, Rep2>& rhs)
   {
-    lhs.numerical_value_is_an_implementation_detail_ -= rhs.numerical_value_is_an_implementation_detail_;
+    if constexpr (equivalent(unit, get_unit(R2)))
+      lhs.numerical_value_is_an_implementation_detail_ -= rhs.numerical_value_is_an_implementation_detail_;
+    else
+      lhs.numerical_value_is_an_implementation_detail_ -= rhs.in(lhs.unit).numerical_value_is_an_implementation_detail_;
     return std::forward<FwdQ>(lhs);
   }
 
-  template<typename FwdQ, std::derived_from<quantity> Q = std::remove_cvref_t<FwdQ>>
-    requires(!treat_as_floating_point<rep>) && requires(rep a, rep b) {
-      { a %= b } -> std::same_as<rep&>;
-    }
-  friend constexpr decltype(auto) operator%=(FwdQ&& lhs, const quantity& rhs)
+  template<typename FwdQ, auto R2, typename Rep2, std::derived_from<quantity> Q = std::remove_cvref_t<FwdQ>>
+    requires detail::QuantityConvertibleTo<quantity<R2, rep>, quantity> && (!treat_as_floating_point<rep>) &&
+             requires(rep a, Rep2 b) {
+               { a %= b } -> std::same_as<rep&>;
+             }
+  friend constexpr decltype(auto) operator%=(FwdQ&& lhs, const quantity<R2, Rep2>& rhs)
 
   {
     MP_UNITS_EXPECTS_DEBUG(rhs != zero());
-    lhs.numerical_value_is_an_implementation_detail_ %= rhs.numerical_value_is_an_implementation_detail_;
+    if constexpr (equivalent(unit, get_unit(R2)))
+      lhs.numerical_value_is_an_implementation_detail_ %= rhs.numerical_value_is_an_implementation_detail_;
+    else
+      lhs.numerical_value_is_an_implementation_detail_ %= rhs.in(lhs.unit).numerical_value_is_an_implementation_detail_;
     return std::forward<FwdQ>(lhs);
   }
 
   template<typename FwdQ, typename Value, std::derived_from<quantity> Q = std::remove_cvref_t<FwdQ>>
-    requires(!Quantity<Value>) && requires(rep a, const Value b) {
+    requires(!Quantity<Value>) && requires(rep a, Value b) {
       { a *= b } -> std::same_as<rep&>;
     }
   friend constexpr decltype(auto) operator*=(FwdQ&& lhs, const Value& v)

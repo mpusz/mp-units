@@ -137,8 +137,8 @@ static_assert(std::chrono::nanoseconds(quantity{1 * ns}) == 1ns);
 static_assert(std::chrono::nanoseconds(quantity{1 * s}) == 1s);
 
 // operators
-static_assert((1 * s += 1s) == 2 * s);
-static_assert((2 * s -= 1s) == 1 * s);
+static_assert((1 * s += quantity{1s}) == 2 * s);
+static_assert((2 * s -= quantity{1s}) == 1 * s);
 static_assert(quantity{1s} + 1 * s == 2 * s);
 static_assert(quantity{1s} + 1 * min == 61 * s);
 static_assert(1 * s + quantity{1s} == 2 * s);

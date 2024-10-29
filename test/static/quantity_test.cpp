@@ -456,7 +456,7 @@ static_assert((1 * m *= 2 * one).numerical_value_in(m) == 2);
 static_assert((2 * m /= 2 * one).numerical_value_in(m) == 1);
 static_assert((7 * m %= 2 * m).numerical_value_in(m) == 1);
 
-// different types
+// different representation types
 static_assert((2.5 * m += 3 * m).numerical_value_in(m) == 5.5);
 static_assert((123 * m += 1 * km).numerical_value_in(m) == 1123);
 static_assert((5.5 * m -= 3 * m).numerical_value_in(m) == 2.5);
@@ -467,12 +467,26 @@ static_assert((2.5 * m *= 3 * one).numerical_value_in(m) == 7.5);
 static_assert((7.5 * m /= 3 * one).numerical_value_in(m) == 2.5);
 static_assert((3500 * m %= 1 * km).numerical_value_in(m) == 500);
 
+// convertible quantity types
+static_assert((isq::length(1 * m) += isq::height(1 * m)).numerical_value_in(m) == 2);
+static_assert((isq::length(2 * m) -= isq::height(1 * m)).numerical_value_in(m) == 1);
+static_assert((isq::length(7 * m) %= isq::height(2 * m)).numerical_value_in(m) == 1);
+
+// different representation types with truncation
+// clang-format off
+static_assert((3 * m += 2.5 * m).numerical_value_in(m) == []{ auto v = 3; v += 2.5; return v; }());
+static_assert((3 * m -= 1.5 * m).numerical_value_in(m) == []{ auto v = 3; v -= 1.5; return v; }());
+static_assert((2 * m *= 2.5).numerical_value_in(m) == []{ auto v = 2; v *= 2.5; return v; }());
+static_assert((10 * m /= 2.5).numerical_value_in(m) == []{ auto v = 10; v /= 2.5; return v; }());
+static_assert((2 * m *= 2.5 * one).numerical_value_in(m) == []{ auto v = 2; v *= 2.5; return v; }());
+static_assert((10 * m /= 2.5 * one).numerical_value_in(m) == []{ auto v = 10; v /= 2.5; return v; }());
+// clang-format on
+
 // static_assert((std::uint8_t{255} * m %= 256 * m).numerical_value_in(m) == [] {
 //   std::uint8_t ui(255);
 //   return ui %= 256;
 // }());  // UB
-// TODO: Fix
-static_assert((std::uint8_t{255}* m %= 257 * m).numerical_value_in(m) != [] {
+static_assert((std::uint8_t{255}* m %= 257 * m).numerical_value_in(m) == [] {
   std::uint8_t ui(255);
   return ui %= 257;
 }());
@@ -490,15 +504,18 @@ static_assert((22 * m /= 3.33 * one).numerical_value_in(m) == 6);
 template<template<auto, typename> typename Q>
 concept invalid_compound_assignments = requires() {
   // truncating not allowed
-  requires !requires(Q<isq::length[m], int> l) { l += 2.5 * m; };
-  requires !requires(Q<isq::length[m], int> l) { l -= 2.5 * m; };
   requires !requires(Q<isq::length[km], int> l) { l += 2 * isq::length[m]; };
   requires !requires(Q<isq::length[km], int> l) { l -= 2 * isq::length[m]; };
   requires !requires(Q<isq::length[km], int> l) { l %= 2 * isq::length[m]; };
   requires !requires(Q<isq::length[km], int> l) { l %= 2 * percent; };
   requires !requires(Q<isq::length[km], int> l) { l %= 2. * percent; };
 
-  // TODO: accept non-truncating argument
+  // compound assignment with a non-convertible quantity not allowed
+  requires !requires(Q<isq::height[m], int> l) { l += 2 * isq::length[m]; };
+  requires !requires(Q<isq::height[m], int> l) { l -= 2 * isq::length[m]; };
+  requires !requires(Q<isq::height[m], int> l) { l %= 2 * isq::length[m]; };
+
+  // dimensionless quantities with a unit different than `one`
   requires !requires(Q<isq::length[km], int> l) { l *= 1 * (km / m); };
   requires !requires(Q<isq::length[km], int> l) { l /= 1 * (km / m); };
   requires !requires(Q<isq::length[km], int> l) { l %= 1 * (km / m); };
