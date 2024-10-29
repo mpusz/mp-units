@@ -640,7 +640,7 @@ public:
 
 // CTAD
 template<Representation Value, Reference R>
-explicit(false) quantity(Value v, R) -> quantity<R{}, Value>;
+quantity(Value v, R) -> quantity<R{}, Value>;
 
 template<Representation Value>
 explicit(false) quantity(Value) -> quantity<one, Value>;

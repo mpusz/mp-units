@@ -546,7 +546,7 @@ public:
 
 // CTAD
 template<Quantity Q>
-quantity_point(Q q) -> quantity_point<Q::reference, default_point_origin(Q::reference), typename Q::rep>;
+explicit quantity_point(Q q) -> quantity_point<Q::reference, default_point_origin(Q::reference), typename Q::rep>;
 
 template<Quantity Q, PointOriginFor<Q::quantity_spec> PO>
 quantity_point(Q q, PO) -> quantity_point<Q::reference, PO{}, typename Q::rep>;
