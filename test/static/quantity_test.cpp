@@ -458,13 +458,15 @@ static_assert((7 * m %= 2 * m).numerical_value_in(m) == 1);
 
 // different representation types
 static_assert((2.5 * m += 3 * m).numerical_value_in(m) == 5.5);
-static_assert((123 * m += 1 * km).numerical_value_in(m) == 1123);
 static_assert((5.5 * m -= 3 * m).numerical_value_in(m) == 2.5);
-static_assert((1123 * m -= 1 * km).numerical_value_in(m) == 123);
 static_assert((2.5 * m *= 3).numerical_value_in(m) == 7.5);
 static_assert((7.5 * m /= 3).numerical_value_in(m) == 2.5);
 static_assert((2.5 * m *= 3 * one).numerical_value_in(m) == 7.5);
 static_assert((7.5 * m /= 3 * one).numerical_value_in(m) == 2.5);
+
+// different units
+static_assert((1 * m += 1.5 * km).numerical_value_in(m) == 1501);
+static_assert((1000 * m -= 0.5 * km).numerical_value_in(m) == 500);
 static_assert((3500 * m %= 1 * km).numerical_value_in(m) == 500);
 
 // convertible quantity types
@@ -481,6 +483,8 @@ static_assert((10 * m /= 2.5).numerical_value_in(m) == []{ auto v = 10; v /= 2.5
 static_assert((2 * m *= 2.5 * one).numerical_value_in(m) == []{ auto v = 2; v *= 2.5; return v; }());
 static_assert((10 * m /= 2.5 * one).numerical_value_in(m) == []{ auto v = 10; v /= 2.5; return v; }());
 // clang-format on
+
+static_assert((isq::height(3 * m) *= 0.5) == isq::height(1 * m));
 
 // static_assert((std::uint8_t{255} * m %= 256 * m).numerical_value_in(m) == [] {
 //   std::uint8_t ui(255);
