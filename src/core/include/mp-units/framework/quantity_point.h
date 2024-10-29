@@ -402,12 +402,12 @@ public:
   }
 
   // member unary operators
-  template<typename FwdQP, std::derived_from<quantity_point> QP = std::remove_cvref_t<FwdQP>>
-  friend constexpr decltype(auto) operator++(FwdQP&& qp)
+  template<detail::Forwarding<quantity_point> QP>
+  friend constexpr decltype(auto) operator++(QP&& qp)
     requires requires { ++qp.quantity_from_origin_is_an_implementation_detail_; }
   {
     ++qp.quantity_from_origin_is_an_implementation_detail_;
-    return std::forward<FwdQP>(qp);
+    return std::forward<QP>(qp);
   }
 
   [[nodiscard]] constexpr quantity_point operator++(int)
@@ -416,12 +416,12 @@ public:
     return {quantity_from_origin_is_an_implementation_detail_++, PO};
   }
 
-  template<typename FwdQP, std::derived_from<quantity_point> QP = std::remove_cvref_t<FwdQP>>
-  friend constexpr decltype(auto) operator--(FwdQP&& qp)
+  template<detail::Forwarding<quantity_point> QP>
+  friend constexpr decltype(auto) operator--(QP&& qp)
     requires requires { --qp.quantity_from_origin_is_an_implementation_detail_; }
   {
     --qp.quantity_from_origin_is_an_implementation_detail_;
-    return std::forward<FwdQP>(qp);
+    return std::forward<QP>(qp);
   }
 
   [[nodiscard]] constexpr quantity_point operator--(int)
@@ -431,20 +431,20 @@ public:
   }
 
   // compound assignment operators
-  template<typename FwdQP, std::derived_from<quantity_point> QP = std::remove_cvref_t<FwdQP>>
+  template<detail::Forwarding<quantity_point> QP>
     requires requires(quantity_type q) { quantity_from_origin_is_an_implementation_detail_ += q; }
-  friend constexpr decltype(auto) operator+=(FwdQP&& qp, const quantity_type& q)
+  friend constexpr decltype(auto) operator+=(QP&& qp, const quantity_type& q)
   {
     qp.quantity_from_origin_is_an_implementation_detail_ += q;
-    return std::forward<FwdQP>(qp);
+    return std::forward<QP>(qp);
   }
 
-  template<typename FwdQP, std::derived_from<quantity_point> QP = std::remove_cvref_t<FwdQP>>
+  template<detail::Forwarding<quantity_point> QP>
     requires requires(quantity_type q) { quantity_from_origin_is_an_implementation_detail_ -= q; }
-  friend constexpr decltype(auto) operator-=(FwdQP&& qp, const quantity_type& q)
+  friend constexpr decltype(auto) operator-=(QP&& qp, const quantity_type& q)
   {
     qp.quantity_from_origin_is_an_implementation_detail_ -= q;
-    return std::forward<FwdQP>(qp);
+    return std::forward<QP>(qp);
   }
 
   // binary operators on quantity points
