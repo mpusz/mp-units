@@ -1485,7 +1485,7 @@ template<QuantitySpec Q>
     return q;
   } else if constexpr (requires { Q::_parent_; }) {
     return get_kind_tree_root(Q::_parent_);
-  } else if constexpr (DerivedQuantitySpecSpecialization<Q>) {
+  } else if constexpr (DerivedQuantitySpec<Q>) {
     return expr_map<to_kind, derived_quantity_spec, struct dimensionless, type_list_of_quantity_spec_less>(q);
   } else {
     // root quantity
