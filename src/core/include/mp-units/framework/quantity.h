@@ -646,8 +646,8 @@ template<Representation Value>
 explicit(false) quantity(Value) -> quantity<one, Value>;
 
 template<QuantityLike Q>
-explicit(quantity_like_traits<Q>::explicit_import)
-  quantity(Q) -> quantity<quantity_like_traits<Q>::reference, typename quantity_like_traits<Q>::rep>;
+explicit(quantity_like_traits<Q>::explicit_import) quantity(Q)
+  -> quantity<quantity_like_traits<Q>::reference, typename quantity_like_traits<Q>::rep>;
 
 MP_UNITS_EXPORT_END
 

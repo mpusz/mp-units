@@ -78,8 +78,7 @@ struct quantity_like_traits<std::chrono::duration<Rep, Period>> {
   using rep = Rep;
   using T = std::chrono::duration<Rep, Period>;
 
-  [[nodiscard]] static constexpr rep to_numerical_value(const T& q) noexcept(
-    std::is_nothrow_copy_constructible_v<rep>)
+  [[nodiscard]] static constexpr rep to_numerical_value(const T& q) noexcept(std::is_nothrow_copy_constructible_v<rep>)
   {
     return q.count();
   }
