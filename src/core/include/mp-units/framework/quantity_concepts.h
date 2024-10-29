@@ -45,15 +45,25 @@ constexpr bool is_derived_from_specialization_of_quantity =
 
 }  // namespace detail
 
-MP_UNITS_EXPORT_BEGIN
-
 /**
  * @brief A concept matching all quantities in the library
  *
  * Satisfied by all types being a either specialization or derived from `quantity`
  */
-template<typename T>
+MP_UNITS_EXPORT template<typename T>
 concept Quantity = detail::is_derived_from_specialization_of_quantity<T>;
+
+namespace detail {
+
+template<typename T, template<typename> typename Traits>
+concept QuantityLikeImpl = requires(const T& qty, const Traits<T>::rep& num) {
+  { Traits<T>::to_numerical_value(qty) } -> std::same_as<typename Traits<T>::rep>;
+  { Traits<T>::from_numerical_value(num) } -> std::same_as<T>;
+  { Traits<T>::explicit_import } -> std::convertible_to<bool>;
+  { Traits<T>::explicit_export } -> std::convertible_to<bool>;
+};
+
+}  // namespace detail
 
 /**
  * @brief A concept matching all quantities with provided quantity spec
@@ -61,7 +71,7 @@ concept Quantity = detail::is_derived_from_specialization_of_quantity<T>;
  * Satisfied by all quantities with a quantity_spec being the instantiation derived from
  * the provided quantity_spec type.
  */
-template<typename Q, auto QS>
+MP_UNITS_EXPORT template<typename Q, auto QS>
 concept QuantityOf = Quantity<Q> && QuantitySpecOf<std::remove_const_t<decltype(Q::quantity_spec)>, QS>;
 
 /**
@@ -70,18 +80,9 @@ concept QuantityOf = Quantity<Q> && QuantitySpecOf<std::remove_const_t<decltype(
  * Satisfied by all external types (not-defined in mp-units) that via a `quantity_like_traits` provide
  * all quantity-specific information.
  */
-template<typename T>
-concept QuantityLike = requires {
-  quantity_like_traits<T>::reference;
-  requires Reference<std::remove_const_t<decltype(quantity_like_traits<T>::reference)>>;
-  typename quantity_like_traits<T>::rep;
-  requires RepresentationOf<typename quantity_like_traits<T>::rep,
-                            get_quantity_spec(quantity_like_traits<T>::reference).character>;
-} && requires(T q, typename quantity_like_traits<T>::rep v) {
-  { quantity_like_traits<T>::to_numerical_value(q) } -> detail::ConversionSpecOf<typename quantity_like_traits<T>::rep>;
-  { quantity_like_traits<T>::from_numerical_value(v) } -> detail::ConversionSpecOf<T>;
+MP_UNITS_EXPORT template<typename T>
+concept QuantityLike = !Quantity<T> && detail::QuantityLikeImpl<T, quantity_like_traits> && requires {
+  typename quantity<quantity_like_traits<T>::reference, typename quantity_like_traits<T>::rep>;
 };
-
-MP_UNITS_EXPORT_END
 
 }  // namespace mp_units

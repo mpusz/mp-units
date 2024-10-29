@@ -198,12 +198,10 @@ public:
 
   template<QuantityLike Q>
     requires detail::QuantityConvertibleTo<detail::quantity_like_type<Q>, quantity>
-  constexpr explicit(is_specialization_of<decltype(quantity_like_traits<Q>::to_numerical_value(std::declval<Q>())),
-                                          convert_explicitly> ||
+  constexpr explicit(quantity_like_traits<Q>::explicit_import ||
                      // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
                      !std::convertible_to<typename quantity_like_traits<Q>::rep, Rep>) quantity(const Q& q) :
-      quantity(
-        ::mp_units::quantity{quantity_like_traits<Q>::to_numerical_value(q).value, quantity_like_traits<Q>::reference})
+      quantity(::mp_units::quantity{quantity_like_traits<Q>::to_numerical_value(q), quantity_like_traits<Q>::reference})
   {
   }
 
@@ -309,9 +307,7 @@ public:
 
   template<typename Q_, QuantityLike Q = std::remove_cvref_t<Q_>>
     requires detail::QuantityConvertibleTo<quantity, detail::quantity_like_type<Q>>
-  [[nodiscard]] explicit(is_specialization_of<decltype(quantity_like_traits<Q>::from_numerical_value(
-                                                numerical_value_is_an_implementation_detail_)),
-                                              convert_explicitly> ||
+  [[nodiscard]] explicit(quantity_like_traits<Q>::explicit_export ||
                          !std::convertible_to<Rep, typename quantity_like_traits<Q>::rep>) constexpr
   // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
   operator Q_() const
@@ -319,8 +315,7 @@ public:
              std::is_nothrow_copy_constructible_v<rep>)
   {
     return quantity_like_traits<Q>::from_numerical_value(
-             numerical_value_in(get_unit(quantity_like_traits<Q>::reference)))
-      .value;
+      numerical_value_in(get_unit(quantity_like_traits<Q>::reference)));
   }
 
   // member unary operators
@@ -648,8 +643,7 @@ template<Representation Value>
 explicit(false) quantity(Value) -> quantity<one, Value>;
 
 template<QuantityLike Q>
-explicit(
-  is_specialization_of<decltype(quantity_like_traits<Q>::to_numerical_value(std::declval<Q>())), convert_explicitly>)
+explicit(quantity_like_traits<Q>::explicit_import)
   quantity(Q) -> quantity<quantity_like_traits<Q>::reference, typename quantity_like_traits<Q>::rep>;
 
 MP_UNITS_EXPORT_END

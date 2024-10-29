@@ -31,9 +31,15 @@ Typically, the implicit conversions are allowed in cases where:
 In all other scenarios, we should probably enforce explicit conversions.
 
 The kinds of inter-library conversions can be easily configured in partial specializations
-of conversion traits in the **mp-units** library. To require an explicit conversion, the return
-type of the conversion function should be wrapped in `convert_explicitly<T>`. Otherwise,
-`convert_implicitly<T>` should be used.
+of conversion traits in the **mp-units** library. Conversion traits should provide
+a static data member convertible to `bool`. If the value is `true`, then the conversion is
+`explicit`. Otherwise, if the value is `false`, implicit conversions will be allowed.
+The names of the flags are as follows:
+
+- `explicit_import` to describe conversion from the external entity to the one in this
+  library (import case),
+- `explicit_export` to describe conversion from the entity in this library to the external one
+  (export case).
 
 
 ## Quantities conversions
@@ -56,12 +62,14 @@ to see the opposite conversions stated explicitly in our code.
 To enable such interoperability, we must define a partial specialization of
 the `quantity_like_traits<T>` type trait. Such specialization should provide:
 
-- static data member `reference` that provides the quantity reference (e.g., unit),
+- `reference` static data member that provides the quantity reference (e.g., unit),
 - `rep` type that specifies the underlying storage type,
-- `to_numerical_value(T)` static member function returning a quantity's raw value of `rep` type
-  packed in either `convert_explicitly` or `convert_implicitly` wrapper.
-- `from_numerical_value(rep)` static member function returning `T` packed in either `convert_explicitly`
-  or `convert_implicitly` wrapper.
+- `explicit_import` static data member convertible to `bool` that specifies that the conversion
+  from `T` to a `quantity` type should happen explicitly (if `true`),
+- `explicit_export` static data member convertible to `bool` that specifies that the conversion
+  from a `quantity` type to `T` should happen explicitly (if `true`),
+- `to_numerical_value(T)` static member function returning a quantity's raw value of `rep` type,
+- `from_numerical_value(rep)` static member function returning `T`.
 
 For example, for our `Meter` type, we could provide the following:
 
@@ -69,9 +77,11 @@ For example, for our `Meter` type, we could provide the following:
 template<>
 struct mp_units::quantity_like_traits<Meter> {
   static constexpr auto reference = si::metre;
+  static constexpr bool explicit_import = false;
+  static constexpr bool explicit_export = true;
   using rep = decltype(Meter::value);
-  static constexpr convert_implicitly<rep> to_numerical_value(Meter m) { return m.value; }
-  static constexpr convert_explicitly<Meter> from_numerical_value(rep v) { return Meter{v}; }
+  static constexpr rep to_numerical_value(Meter m) { return m.value; }
+  static constexpr Meter from_numerical_value(rep v) { return Meter{v}; }
 };
 ```
 
@@ -170,15 +180,17 @@ To allow the conversion between our custom `Timestamp` type and the `quantity_po
 we need to provide the following in the partial specialization of the `quantity_point_like_traits<T>`
 type trait:
 
-- static data member `reference` that provides the quantity point reference (e.g., unit),
-- static data member `point_origin` that specifies the absolute point, which is the beginning of
+- `reference` static data member that provides the quantity point reference (e.g., unit),
+- `point_origin` static data member that specifies the absolute point, which is the beginning of
   our measurement scale for our points,
 - `rep` type that specifies the underlying storage type,
+- `explicit_import` static data member convertible to `bool` that specifies that the conversion
+  from `T` to a `quantity` type should happen explicitly (if `true`),
+- `explicit_export` static data member convertible to `bool` that specifies that the conversion
+  from a `quantity` type to `T` should happen explicitly (if `true`),
 - `to_numerical_value(T)` static member function returning a raw value of the `quantity` being
-  the offset of the point from the origin packed in either `convert_explicitly` or `convert_implicitly`
-  wrapper.
-- `from_numerical_value(rep)` static member function returning `T` packed in either `convert_explicitly`
-  or `convert_implicitly` wrapper.
+  the offset of the point from the origin,
+- `from_numerical_value(rep)` static member function returning `T`.
 
 For example, for our `Timestamp` type, we could provide the following:
 
@@ -187,9 +199,11 @@ template<>
 struct mp_units::quantity_point_like_traits<Timestamp> {
   static constexpr auto reference = si::second;
   static constexpr auto point_origin = default_point_origin(reference);
+  static constexpr bool explicit_import = false;
+  static constexpr bool explicit_export = true;
   using rep = decltype(Timestamp::seconds);
-  static constexpr convert_implicitly<rep> to_numerical_value(Timestamp ts) { return ts.seconds; }
-  static constexpr convert_explicitly<Timestamp> from_numerical_value(rep v) { return Timestamp(v); }
+  static constexpr rep to_numerical_value(Timestamp ts) { return ts.seconds; }
+  static constexpr Timestamp from_numerical_value(rep v) { return Timestamp(v); }
 };
 ```
 

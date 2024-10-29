@@ -149,35 +149,16 @@ struct quantity_values {
   }
 };
 
-template<typename T>
-struct convert_explicitly {
-  using value_type = T;
-  T value;
-  // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
-  constexpr explicit(false) convert_explicitly(T v) noexcept(std::is_nothrow_constructible_v<T>) : value(std::move(v))
-  {
-  }
-};
-
-template<typename T>
-struct convert_implicitly {
-  using value_type = T;
-  T value;
-  // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
-  constexpr explicit(false) convert_implicitly(T v) noexcept(std::is_nothrow_constructible_v<T>) : value(std::move(v))
-  {
-  }
-};
-
-
 /**
  * @brief Provides support for external quantity-like types
  *
  * The type trait should provide the @c reference object, a type alias @c rep,
  * and static member functions @c to_numerical_value(T) that returns the raw value
  * of the quantity and @c from_numerical_value(rep) that returns @c T from @c rep.
- * Both return types should be encapsulated in either @c convert_explicitly or
- * @c convert_implicitly to specify if the conversion is allowed to happen implicitly.
+ *
+ * If the following expression is @c true, the specified conversion will be explicit:
+ * - @c explicit_import for the conversion from @c T to a @c quantity type,
+ * - @c explicit_export for the conversion from a @c quantity type to @c T.
  *
  * Usage example can be found in @c mp-units/systems/si/chrono.h header file.
  *
@@ -193,8 +174,10 @@ struct quantity_like_traits;
  * a type alias @c rep, and static member functions @c to_numerical_value(T) that
  * returns the raw value of the the quantity being the offset of the point from the
  * origin and @c from_numerical_value(rep) that returns @c T formed this raw value.
- * Both return types should be encapsulated in either @c convert_explicitly or
- * @c convert_implicitly to specify if the conversion is allowed to happen implicitly.
+ *
+ * If the following expression is @c true, the specified conversion will be explicit:
+ * - @c explicit_import for the conversion from @c T to a @c quantity_point type,
+ * - @c explicit_export for the conversion from a @c quantity_point type to @c T.
  *
  * Usage example can be found in @c mp-units/systems/si/chrono.h header file.
  *
@@ -204,15 +187,5 @@ template<typename T>
 struct quantity_point_like_traits;
 
 MP_UNITS_EXPORT_END
-
-namespace detail {
-
-template<typename T>
-concept ConversionSpec = is_specialization_of<T, convert_explicitly> || is_specialization_of<T, convert_implicitly>;
-
-template<typename T, typename U>
-concept ConversionSpecOf = ConversionSpec<T> && std::same_as<typename T::value_type, U>;
-
-}  // namespace detail
 
 }  // namespace mp_units
