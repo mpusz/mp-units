@@ -432,19 +432,18 @@ namespace detail {
 template<typename... Expr>
 struct derived_quantity_spec_impl :
 #if MP_UNITS_API_NO_CRTP
-    detail::quantity_spec_interface,
+    quantity_spec_interface,
 #else
-    detail::quantity_spec_interface<derived_quantity_spec<Expr...>>,
+    quantity_spec_interface<derived_quantity_spec<Expr...>>,
 #endif
-    detail::expr_fractions<dimensionless, Expr...> {
+    expr_fractions<dimensionless, Expr...> {
   using _base_type_ = derived_quantity_spec_impl;
-  using _base_ = detail::expr_fractions<dimensionless, Expr...>;
+  using _base_ = expr_fractions<dimensionless, Expr...>;
 
   static constexpr Dimension auto dimension =
-    detail::expr_map<detail::to_dimension, derived_dimension, struct dimension_one,
-                     detail::type_list_of_base_dimension_less>(_base_{});
+    expr_map<to_dimension, derived_dimension, struct dimension_one, type_list_of_base_dimension_less>(_base_{});
   static constexpr quantity_character character =
-    detail::derived_quantity_character(typename _base_::_num_{}, typename _base_::_den_{});
+    derived_quantity_character(typename _base_::_num_{}, typename _base_::_den_{});
 };
 
 }  // namespace detail
@@ -544,7 +543,7 @@ template<QuantitySpec auto... From, QuantitySpec Q>
 template<QuantitySpec Q>
 [[nodiscard]] consteval auto remove_kind(Q q)
 {
-  if constexpr (detail::QuantityKindSpec<Q>)
+  if constexpr (QuantityKindSpec<Q>)
     return Q::_quantity_spec_;
   else
     return q;
@@ -623,7 +622,7 @@ template<typename Q>
 template<QuantitySpec Q>
 [[nodiscard]] consteval int get_complexity(Q)
 {
-  if constexpr (detail::DerivedQuantitySpec<Q>)
+  if constexpr (DerivedQuantitySpec<Q>)
     return get_complexity(typename Q::_num_{}) + get_complexity(typename Q::_den_{});
   else if constexpr (requires { Q::_equation_; })
     return 1 + get_complexity(Q::_equation_);
@@ -641,7 +640,7 @@ template<Dimension D1, Dimension D2>
   else if constexpr (D2{} == dimension_one)
     return true;
   else
-    return detail::type_name<D1>() < detail::type_name<D2>();
+    return type_name<D1>() < type_name<D2>();
 }
 
 template<QuantitySpec Lhs, QuantitySpec Rhs, bool lhs_eq = requires { Lhs::_equation_; },
@@ -651,7 +650,7 @@ struct ingredients_less :
     std::bool_constant<(lhs_compl > rhs_compl) ||
                        (lhs_compl == rhs_compl && ingredients_dimension_less(Lhs::dimension, Rhs::dimension)) ||
                        (lhs_compl == rhs_compl && Lhs::dimension == Rhs::dimension &&
-                        detail::type_name<Lhs>() < detail::type_name<Rhs>())>{};
+                        type_name<Lhs>() < type_name<Rhs>())>{};
 
 template<typename T1, typename T2>
 using type_list_of_ingredients_less = expr_less<T1, T2, ingredients_less>;
@@ -1460,10 +1459,10 @@ using to_kind = decltype(get_kind_tree_root(Q{}));
 
 #if MP_UNITS_API_NO_CRTP
 template<NamedQuantitySpec auto QS, auto... Args>
-[[nodiscard]] consteval bool defined_as_kind(quantity_spec<QS, Args...>)
+[[nodiscard]] consteval bool defined_as_kind_impl(quantity_spec<QS, Args...>)
 #else
 template<typename Self, NamedQuantitySpec auto QS, auto... Args>
-[[nodiscard]] consteval bool defined_as_kind(quantity_spec<Self, QS, Args...>)
+[[nodiscard]] consteval bool defined_as_kind_impl(quantity_spec<Self, QS, Args...>)
 #endif
 {
   return contains<struct is_kind, Args...>();
@@ -1473,22 +1472,21 @@ template<QuantitySpec Q>
 [[nodiscard]] consteval QuantitySpec auto get_kind_tree_root(Q q)
 {
   auto defined_as_kind = []<typename QQ>(QQ qq) {
-    if constexpr (requires { detail::defined_as_kind(qq); })
-      return detail::defined_as_kind(QQ{});
+    if constexpr (requires { defined_as_kind_impl(qq); })
+      return defined_as_kind_impl(QQ{});
     else
       return false;
   };
 
   // NOLINTBEGIN(bugprone-branch-clone)
-  if constexpr (detail::QuantityKindSpec<Q>) {
+  if constexpr (QuantityKindSpec<Q>) {
     return remove_kind(q);
   } else if constexpr (defined_as_kind(Q{})) {
     return q;
   } else if constexpr (requires { Q::_parent_; }) {
     return get_kind_tree_root(Q::_parent_);
-  } else if constexpr (detail::DerivedQuantitySpec<Q>) {
-    return detail::expr_map<detail::to_kind, derived_quantity_spec, struct dimensionless,
-                            detail::type_list_of_quantity_spec_less>(q);
+  } else if constexpr (DerivedQuantitySpecSpecialization<Q>) {
+    return expr_map<to_kind, derived_quantity_spec, struct dimensionless, type_list_of_quantity_spec_less>(q);
   } else {
     // root quantity
     return q;
