@@ -415,19 +415,19 @@ public:
     }
   friend constexpr decltype(auto) operator*=(FwdQ&& lhs, const Value& v)
   {
-    // TODO use *= when compiiler bug is resolved:
+    // TODO use *= when compiler bug is resolved:
     // https://developercommunity.visualstudio.com/t/Discrepancy-in-Behavior-of-operator-an/10732445
     lhs.numerical_value_is_an_implementation_detail_ = lhs.numerical_value_is_an_implementation_detail_ * v;
     return std::forward<FwdQ>(lhs);
   }
 
   template<typename FwdQ1, QuantityOf<dimensionless> Q2, std::derived_from<quantity> Q1 = std::remove_cvref_t<FwdQ1>>
-    requires(Q2::unit == ::mp_units::one) && requires(rep a, const typename Q2::rep b) {
+    requires(Q2::unit == ::mp_units::one) && requires(rep a, Q2::rep b) {
       { a *= b } -> std::same_as<rep&>;
     }
   friend constexpr decltype(auto) operator*=(FwdQ1&& lhs, const Q2& rhs)
   {
-    // TODO use *= when compiiler bug is resolved:
+    // TODO use *= when compiler bug is resolved:
     // https://developercommunity.visualstudio.com/t/Discrepancy-in-Behavior-of-operator-an/10732445
     lhs.numerical_value_is_an_implementation_detail_ =
       lhs.numerical_value_is_an_implementation_detail_ * rhs.numerical_value_is_an_implementation_detail_;
@@ -435,26 +435,26 @@ public:
   }
 
   template<typename FwdQ, typename Value, std::derived_from<quantity> Q = std::remove_cvref_t<FwdQ>>
-    requires(!Quantity<Value>) && requires(rep a, const Value b) {
+    requires(!Quantity<Value>) && requires(rep a, Value b) {
       { a /= b } -> std::same_as<rep&>;
     }
   friend constexpr decltype(auto) operator/=(FwdQ&& lhs, const Value& v)
   {
     MP_UNITS_EXPECTS_DEBUG(v != quantity_values<Value>::zero());
-    // TODO use /= when compiiler bug is resolved:
+    // TODO use /= when compiler bug is resolved:
     // https://developercommunity.visualstudio.com/t/Discrepancy-in-Behavior-of-operator-an/10732445
     lhs.numerical_value_is_an_implementation_detail_ = lhs.numerical_value_is_an_implementation_detail_ / v;
     return std::forward<FwdQ>(lhs);
   }
 
   template<typename FwdQ1, QuantityOf<dimensionless> Q2, std::derived_from<quantity> Q1 = std::remove_cvref_t<FwdQ1>>
-    requires(Q2::unit == ::mp_units::one) && requires(rep a, const typename Q2::rep b) {
+    requires(Q2::unit == ::mp_units::one) && requires(rep a, Q2::rep b) {
       { a /= b } -> std::same_as<rep&>;
     }
   friend constexpr decltype(auto) operator/=(FwdQ1&& lhs, const Q2& rhs)
   {
     MP_UNITS_EXPECTS_DEBUG(rhs != rhs.zero());
-    // TODO use /= when compiiler bug is resolved:
+    // TODO use /= when compiler bug is resolved:
     // https://developercommunity.visualstudio.com/t/Discrepancy-in-Behavior-of-operator-an/10732445
     lhs.numerical_value_is_an_implementation_detail_ =
       lhs.numerical_value_is_an_implementation_detail_ / rhs.numerical_value_is_an_implementation_detail_;
