@@ -128,7 +128,7 @@ static_assert(isq::height(3 * m) * 0.5 == isq::height(1.5 * m));
     Unless we use a compound assignment operator, in which case we always have to result with
     the type of the left-hand-side argument. This, together with the fact that this library
     tries to prevent truncation of a quantity value means, that the following does not compile:
-    
+
     ```cpp
     quantity q = isq::height(3 * m) *= 0.5; // Compile-time error
     ```
