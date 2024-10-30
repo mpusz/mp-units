@@ -37,17 +37,12 @@ apiIframe = document.getElementById('apiIframe');
 hash = window.location.hash;
 if (hash.length == 0) {
   // sets default hash for the API Reference
-  hash = "#full";
+  hash = "#index.html";
   history.pushState(null, "", hash);
 }
 
 // set the iframe source based on the hash in the URL
-if (hash.startsWith("#wg21.link/")) {
-  apiIframe.src = "https://" +  hash.slice(1);
-  apiIframe.height = 900;
-}
-else
-  apiIframe.src = "gen/" +  hash.slice(1) + ".html";
+apiIframe.src = "gen/" +  hash.slice(1);
 
 // receives content height from the subpage displayed in the iframe
 // works only for the pages in the same domain as the main docs
@@ -57,18 +52,15 @@ iFrameResize({
   // obtains the link URL clicked in the subpage
   onMessage: function(messageData) {
     url = messageData.message;
-    if (url.startsWith("https://wg21.link/")) {
-      hash = '#' + messageData.message.replace("https://", "");
+    if (url.search("api_reference/gen") == -1) {
+      window.open(url);
     }
     else {
-      pos = messageData.message.indexOf('#');
-      if(pos == -1) {
-        pos = messageData.message.lastIndexOf('/');
-      }
-      hash = '#' + messageData.message.slice(pos + 1);
+      pos_start = messageData.message.lastIndexOf('/');
+      hash = '#' + messageData.message.slice(pos_start + 1)
+      history.pushState(null, "", hash);
+      window.location.reload();
     }
-    history.pushState(null, "", hash);
-    window.location.reload();
   }
 },'#apiIframe')
 </script>
