@@ -20,6 +20,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+add_library(unit_tests_static_truncating quantity_test.cpp)
+if(NOT ${projectPrefix}API_FREESTANDING)
+    target_sources(unit_tests_static_truncating PRIVATE chrono_test.cpp)
+endif()
+target_link_libraries(unit_tests_static_truncating PRIVATE mp-units::mp-units)
+target_compile_options(
+    unit_tests_static_truncating PRIVATE $<IF:$<CXX_COMPILER_ID:MSVC>,/wd4242 /wd4244,-Wno-conversion>
+)
+
 add_library(
     unit_tests_static
     angular_test.cpp
@@ -41,7 +50,6 @@ add_library(
     # magnitude_test.cpp
     natural_test.cpp
     prime_test.cpp
-    quantity_test.cpp
     quantity_point_test.cpp
     quantity_spec_test.cpp
     ratio_test.cpp
@@ -56,8 +64,9 @@ add_library(
 )
 
 if(NOT ${projectPrefix}API_FREESTANDING)
-    target_sources(unit_tests_static PRIVATE chrono_test.cpp fractional_exponent_quantity.cpp math_test.cpp)
+    target_sources(unit_tests_static PRIVATE fractional_exponent_quantity.cpp math_test.cpp)
 endif()
 
 target_compile_options(unit_tests_static PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Wno-subobject-linkage>)
 target_link_libraries(unit_tests_static PRIVATE mp-units::mp-units)
+target_link_libraries(unit_tests_static PRIVATE unit_tests_static_truncating)
