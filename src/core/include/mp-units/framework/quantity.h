@@ -376,7 +376,7 @@ public:
 
   // compound assignment operators
   template<detail::Forwarding<quantity> Q, auto R2, typename Rep2>
-    requires detail::QuantityConvertibleTo<quantity<R2, rep>, quantity> && requires(rep a, Rep2 b) {
+    requires detail::QuantityConvertibleTo<quantity<R2, Rep2>, quantity> && requires(rep a, Rep2 b) {
       { a += b } -> std::same_as<rep&>;
     }
   friend constexpr decltype(auto) operator+=(Q&& lhs, const quantity<R2, Rep2>& rhs)
@@ -389,7 +389,7 @@ public:
   }
 
   template<detail::Forwarding<quantity> Q, auto R2, typename Rep2>
-    requires detail::QuantityConvertibleTo<quantity<R2, rep>, quantity> && requires(rep a, Rep2 b) {
+    requires detail::QuantityConvertibleTo<quantity<R2, Rep2>, quantity> && requires(rep a, Rep2 b) {
       { a -= b } -> std::same_as<rep&>;
     }
   friend constexpr decltype(auto) operator-=(Q&& lhs, const quantity<R2, Rep2>& rhs)
@@ -402,7 +402,7 @@ public:
   }
 
   template<detail::Forwarding<quantity> Q, auto R2, typename Rep2>
-    requires detail::QuantityConvertibleTo<quantity<R2, rep>, quantity> && (!treat_as_floating_point<rep>) &&
+    requires detail::QuantityConvertibleTo<quantity<R2, Rep2>, quantity> && (!treat_as_floating_point<rep>) &&
              requires(rep a, Rep2 b) {
                { a %= b } -> std::same_as<rep&>;
              }
@@ -417,7 +417,7 @@ public:
     return std::forward<Q>(lhs);
   }
 
-  template<detail::Forwarding<quantity> Q, typename Value>
+  template<detail::Forwarding<quantity> Q, detail::ValuePreservingTo<Rep> Value>
     requires(!Quantity<Value>) && requires(rep a, Value b) {
       { a *= b } -> std::same_as<rep&>;
     }
@@ -430,19 +430,16 @@ public:
   }
 
   template<detail::Forwarding<quantity> Q1, QuantityOf<dimensionless> Q2>
-    requires(Q2::unit == ::mp_units::one) && requires(rep a, Q2::rep b) {
-      { a *= b } -> std::same_as<rep&>;
-    }
+    requires(Q2::unit == ::mp_units::one) && detail::ValuePreservingTo<typename Q2::rep, Rep> &&
+            requires(rep a, Q2::rep b) {
+              { a *= b } -> std::same_as<rep&>;
+            }
   friend constexpr decltype(auto) operator*=(Q1&& lhs, const Q2& rhs)
   {
-    // TODO use *= when compiler bug is resolved:
-    // https://developercommunity.visualstudio.com/t/Discrepancy-in-Behavior-of-operator-an/10732445
-    lhs.numerical_value_is_an_implementation_detail_ =
-      lhs.numerical_value_is_an_implementation_detail_ * rhs.numerical_value_is_an_implementation_detail_;
-    return std::forward<Q1>(lhs);
+    return std::forward<Q1>(lhs) *= rhs.numerical_value_is_an_implementation_detail_;
   }
 
-  template<detail::Forwarding<quantity> Q, typename Value>
+  template<detail::Forwarding<quantity> Q, detail::ValuePreservingTo<Rep> Value>
     requires(!Quantity<Value>) && requires(rep a, Value b) {
       { a /= b } -> std::same_as<rep&>;
     }
@@ -456,17 +453,13 @@ public:
   }
 
   template<detail::Forwarding<quantity> Q1, QuantityOf<dimensionless> Q2>
-    requires(Q2::unit == ::mp_units::one) && requires(rep a, Q2::rep b) {
-      { a /= b } -> std::same_as<rep&>;
-    }
+    requires(Q2::unit == ::mp_units::one) && detail::ValuePreservingTo<typename Q2::rep, Rep> &&
+            requires(rep a, Q2::rep b) {
+              { a /= b } -> std::same_as<rep&>;
+            }
   friend constexpr decltype(auto) operator/=(Q1&& lhs, const Q2& rhs)
   {
-    MP_UNITS_EXPECTS_DEBUG(rhs != rhs.zero());
-    // TODO use /= when compiler bug is resolved:
-    // https://developercommunity.visualstudio.com/t/Discrepancy-in-Behavior-of-operator-an/10732445
-    lhs.numerical_value_is_an_implementation_detail_ =
-      lhs.numerical_value_is_an_implementation_detail_ / rhs.numerical_value_is_an_implementation_detail_;
-    return std::forward<Q1>(lhs);
+    return std::forward<Q1>(lhs) /= rhs.numerical_value_is_an_implementation_detail_;
   }
 
   // binary operators on quantities

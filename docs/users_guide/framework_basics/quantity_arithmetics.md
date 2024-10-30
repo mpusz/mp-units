@@ -93,8 +93,7 @@ static_assert(isq::radius(1 * m) - 0.5 * m == isq::radius(0.5 * m));
     left-hand-side argument type:
 
     ```cpp
-    static_assert((1 * m += 1.5 * m) == 2 * m);
-    static_assert((1 * m += 1.5 * km) == 1501 * m);
+    static_assert((1 * m += 1 * km) == 1001 * m);
     static_assert((isq::length(1 * m) += isq::height(1 * m)) == isq::length(1 * m));
     static_assert((isq::height(1.5 * m) -= 1 * m) == isq::height(0.5 * m));
     ```
@@ -102,9 +101,17 @@ static_assert(isq::radius(1 * m) - 0.5 * m == isq::radius(0.5 * m));
     If we will break typical library's convertibility rules, the following code will not compile:
 
     ```cpp
-    quantity q1 = 1 * km += 1 * m;                         // Compile-time error
-    quantity q2 = isq::height(1 * m) += isq::length(1 * m) // Compile-time error
+    quantity q1 = 1 * m -= 0.5 * m;                         // Compile-time error(1)
+    quantity q2 = 1 * km += 1 * m;                          // Compile-time error(2)
+    quantity q3 = isq::height(1 * m) += isq::length(1 * m); // Compile-time error(3)
     ```
+
+    1. Conversion of the floating-point to integral representation type is
+       [considered narrowing](value_conversions.md).
+    2. Conversion of quantity with integral representation type from a unit of a higher resolution
+       to the one with a lower resolution is [considered narrowing](value_conversions.md).
+    3. Conversion from a more generic quantity type to a more specific one is
+       [considered unsafe](simple_and_typed_quantities.md#quantity_cast-to-force-unsafe-conversions).
 
 
 ## Multiplication and division
@@ -118,12 +125,12 @@ static_assert(isq::height(3 * m) * 0.5 == isq::height(1.5 * m));
 
 !!! note
 
-    Unless we use a compound assignment operator, in which case we will always result with the type
-    of the left-hand-side argument and the value consistent to the behavior of the underlying
-    representation types:
-
+    Unless we use a compound assignment operator, in which case we always have to result with
+    the type of the left-hand-side argument. This, together with the fact that this library
+    tries to prevent truncation of a quantity value means, that the following does not compile:
+    
     ```cpp
-    static_assert((isq::height(3 * m) *= 0.5) == isq::height(1 * m));
+    quantity q = isq::height(3 * m) *= 0.5; // Compile-time error
     ```
 
 However, suppose we multiply or divide quantities of the same or different types or we divide a raw
