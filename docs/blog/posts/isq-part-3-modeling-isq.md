@@ -7,7 +7,7 @@ categories:
 comments: true
 ---
 
-# International System of Quantities (ISQ): Part 3 - Modelling ISQ
+# International System of Quantities (ISQ): Part 3 - Modeling ISQ
 
 The physical units libraries on the market typically only focus on modeling one or more systems
 of units. However, as we have learned, this is not the only system kind to model. Another,
@@ -24,7 +24,7 @@ language.
 
 - [Part 1 - Introduction](isq-part-1-introduction.md)
 - [Part 2 - Problems when ISQ is not used](isq-part-2-problems-when-isq-is-not-used.md)
-- Part 3 - Modelling ISQ
+- Part 3 - Modeling ISQ
 - [Part 4 - Implementing ISQ](isq-part-4-implemeting-isq.md)
 
 

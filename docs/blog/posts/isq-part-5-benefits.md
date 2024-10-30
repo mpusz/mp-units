@@ -16,7 +16,7 @@ that does not use such abstraction to implement a units library.
 
 In this article we will present how our ISQ model elegantly addresses the issues from the
 [Part 2](isq-part-2-problems-when-isq-is-not-used.md) of our series that were not covered already
-in [Part 3](isq-part-3-modelling-isq.md).
+in [Part 3](isq-part-3-modeling-isq.md).
 
 <!-- more -->
 
@@ -24,7 +24,7 @@ in [Part 3](isq-part-3-modelling-isq.md).
 
 - [Part 1 - Introduction](isq-part-1-introduction.md)
 - [Part 2 - Problems when ISQ is not used](isq-part-2-problems-when-isq-is-not-used.md)
-- [Part 3 - Modelling ISQ](isq-part-3-modelling-isq.md)
+- [Part 3 - Modeling ISQ](isq-part-3-modeling-isq.md)
 - [Part 4 - Implementing ISQ](isq-part-4-implemeting-isq.md)
 - Part 5 - Benefits
 
@@ -121,7 +121,7 @@ std::cout << price_usd << " -> " << price_euro << "\n";
 
 ## Derived quantities of the same dimension but different kinds
 
-Up until now, the discussed issues did not actually require modelling of the ISQ. Introduction
+Up until now, the discussed issues did not actually require modeling of the ISQ. Introduction
 of physical dimensions would be enough, and indeed, this is what most of the libraries on the
 market do. However, we have more interesting challenges to solve as well.
 
@@ -236,7 +236,7 @@ Box my_box3(horizontal_length(2 * m), isq::width(3 * m), isq::height(1 * m));
 ## Various kinds of dimensionless quantities
 
 Most of the quantities hierarchies describe only one kind. There are some exceptions, though.
-One of them is a [hierarchy of _dimensionless_ quantities](#modeling-a-hierarchy-of-kind-dimensionless).
+One of them is a [hierarchy of _dimensionless_ quantities](isq-part-4-implemeting-isq.md#modeling-a-hierarchy-of-kind-dimensionless).
 This tree defines quantities that denote:
 
 - counts (_storage capacity_),
@@ -425,5 +425,5 @@ Transport Time is: 8.997726 s
 
 ## To be continued...
 
-In the next part of this series, we will discuss the challenges and issues related to the modelling
+In the next part of this series, we will discuss the challenges and issues related to the modeling
 of the ISQ with a programming language.

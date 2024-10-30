@@ -16,7 +16,7 @@ language, and we will point out some of the first issues that stand in our way.
 <!-- more -->
 
 In the previous article, we have already introduced a notion of quantity kind, provided `kind_of<>`
-specifier, and described how it helps in the modelling of the system of units (e.g., SI).
+specifier, and described how it helps in the modeling of the system of units (e.g., SI).
 
 Now, it is time to see how we can implement hierarchies of quantities of the same kind.
 
@@ -25,7 +25,7 @@ Now, it is time to see how we can implement hierarchies of quantities of the sam
 
 - [Part 1 - Introduction](isq-part-1-introduction.md)
 - [Part 2 - Problems when ISQ is not used](isq-part-2-problems-when-isq-is-not-used.md)
-- [Part 3 - Modelling ISQ](isq-part-3-modelling-isq.md)
+- [Part 3 - Modeling ISQ](isq-part-3-modeling-isq.md)
 - Part 4 - Implementing ISQ
 
 
