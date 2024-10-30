@@ -82,4 +82,4 @@ jobs:
       - name: Building docs for a development version
         if: ${{!startsWith(github.event.ref, 'refs/tags/v')}}
         run: |
-          mike deploy --push --update-aliases dev latest
+          mike deploy --push --update-aliases head latest
