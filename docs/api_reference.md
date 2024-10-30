@@ -4,6 +4,12 @@ hide:
   - toc
 ---
 
+<style>
+  .md-content .md-typeset h1 {
+      display: none;
+  }
+</style>
+
 <script src="../javascripts/jquery.min.js"></script>
 <script src="../javascripts/iframeResizer.min.js"></script>
 
