@@ -402,7 +402,7 @@ public:
   }
 
   // member unary operators
-  template<detail::Forwarding<quantity_point> QP>
+  template<detail::Mutable<quantity_point> QP>
   friend constexpr decltype(auto) operator++(QP&& qp)
     requires requires { ++qp.quantity_from_origin_is_an_implementation_detail_; }
   {
@@ -416,7 +416,7 @@ public:
     return {quantity_from_origin_is_an_implementation_detail_++, PO};
   }
 
-  template<detail::Forwarding<quantity_point> QP>
+  template<detail::Mutable<quantity_point> QP>
   friend constexpr decltype(auto) operator--(QP&& qp)
     requires requires { --qp.quantity_from_origin_is_an_implementation_detail_; }
   {
@@ -431,7 +431,7 @@ public:
   }
 
   // compound assignment operators
-  template<detail::Forwarding<quantity_point> QP>
+  template<detail::Mutable<quantity_point> QP>
     requires requires(quantity_type q) { quantity_from_origin_is_an_implementation_detail_ += q; }
   friend constexpr decltype(auto) operator+=(QP&& qp, const quantity_type& q)
   {
@@ -439,7 +439,7 @@ public:
     return std::forward<QP>(qp);
   }
 
-  template<detail::Forwarding<quantity_point> QP>
+  template<detail::Mutable<quantity_point> QP>
     requires requires(quantity_type q) { quantity_from_origin_is_an_implementation_detail_ -= q; }
   friend constexpr decltype(auto) operator-=(QP&& qp, const quantity_type& q)
   {
