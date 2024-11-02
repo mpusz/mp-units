@@ -81,9 +81,9 @@ struct point_origin_interface {
   [[nodiscard]] friend constexpr Quantity auto operator-(PO1 po1, PO2 po2)
   {
     if constexpr (is_derived_from_specialization_of_v<PO1, absolute_point_origin>) {
-      return -(po2.quantity_point - po2.quantity_point.absolute_point_origin);
+      return po1 - po2.quantity_point;
     } else if constexpr (is_derived_from_specialization_of_v<PO2, absolute_point_origin>) {
-      return po1.quantity_point - po1.quantity_point.absolute_point_origin;
+      return po1.quantity_point - po2;
     } else {
       return po1.quantity_point - po2.quantity_point;
     }
