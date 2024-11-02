@@ -59,8 +59,10 @@ template<typename T, template<typename> typename Traits>
 concept QuantityLikeImpl = requires(const T& qty, const Traits<T>::rep& num) {
   { Traits<T>::to_numerical_value(qty) } -> std::same_as<typename Traits<T>::rep>;
   { Traits<T>::from_numerical_value(num) } -> std::same_as<T>;
-  { Traits<T>::explicit_import } -> std::convertible_to<bool>;
-  { Traits<T>::explicit_export } -> std::convertible_to<bool>;
+  requires std::same_as<decltype(Traits<T>::explicit_import), const bool>;
+  requires std::same_as<decltype(Traits<T>::explicit_export), const bool>;
+  typename std::bool_constant<Traits<T>::explicit_import>;
+  typename std::bool_constant<Traits<T>::explicit_export>;
 };
 
 }  // namespace detail
