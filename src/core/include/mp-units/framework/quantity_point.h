@@ -431,17 +431,19 @@ public:
   }
 
   // compound assignment operators
-  template<detail::Mutable<quantity_point> QP>
-    requires requires(quantity_type q) { quantity_from_origin_is_an_implementation_detail_ += q; }
-  friend constexpr decltype(auto) operator+=(QP&& qp, const quantity_type& q)
+  template<detail::Mutable<quantity_point> QP, auto R2, typename Rep2>
+    requires detail::QuantityConvertibleTo<quantity<R2, Rep2>, quantity_type> &&
+             requires(quantity_type q) { quantity_from_origin_is_an_implementation_detail_ += q; }
+  friend constexpr decltype(auto) operator+=(QP&& qp, const quantity<R2, Rep2>& q)
   {
     qp.quantity_from_origin_is_an_implementation_detail_ += q;
     return std::forward<QP>(qp);
   }
 
-  template<detail::Mutable<quantity_point> QP>
-    requires requires(quantity_type q) { quantity_from_origin_is_an_implementation_detail_ -= q; }
-  friend constexpr decltype(auto) operator-=(QP&& qp, const quantity_type& q)
+  template<detail::Mutable<quantity_point> QP, auto R2, typename Rep2>
+    requires detail::QuantityConvertibleTo<quantity<R2, Rep2>, quantity_type> &&
+             requires(quantity_type q) { quantity_from_origin_is_an_implementation_detail_ -= q; }
+  friend constexpr decltype(auto) operator-=(QP&& qp, const quantity<R2, Rep2>& q)
   {
     qp.quantity_from_origin_is_an_implementation_detail_ -= q;
     return std::forward<QP>(qp);
