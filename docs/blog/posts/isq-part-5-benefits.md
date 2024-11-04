@@ -9,12 +9,12 @@ comments: true
 
 # International System of Quantities (ISQ): Part 5 - Benefits
 
-In the previous articles we have introduced the International System of Quantities, described how
-we can model and implement it in a programming language, and presented the issues of the software
-that does not use such abstraction to implement a units library.
+In the previous articles, we introduced the International System of Quantities, described how we
+can model and implement it in a programming language, and presented the issues of software that
+does not use such abstraction to implement a units library.
 
 Some of the issues raised in [Part 2](isq-part-2-problems-when-isq-is-not-used.md) of our series
-were addressed in [Part 3](isq-part-3-modeling-isq.md) already. In this article we will present
+were addressed in [Part 3](isq-part-3-modeling-isq.md) already. This article will present
 how our ISQ model elegantly addresses the remaining problems.
 
 <!-- more -->
@@ -35,7 +35,7 @@ Let's start with the implementation of a
 The resulting quantity should use a derived unit of the provided arguments (e.g., `km/h` for
 `km` and `h`, `m/s` for `m` and `s`, ...).
 
-With C++ concepts backed up with ISQ quantities we can simply type it as:
+With C++ concepts backed up with ISQ quantities, we can simply type it as:
 
 ```cpp
 constexpr QuantityOf<isq::speed> auto avg_speed(QuantityOf<isq::length> auto d,
@@ -46,9 +46,9 @@ constexpr QuantityOf<isq::speed> auto avg_speed(QuantityOf<isq::length> auto d,
 ```
 
 The above constrains the algorithm to proper quantity types and ensures that a quantity of speed
-is returned. The latter is not only important for the users to better understand what the function
-does, but also serves as a unit test for our implementation. It ensures that our quantity equations
-are correct in the implementation part of the function and we indeed return a quantity of _speed_.
+is returned. The latter is essential not only for the users to better understand what the function
+does but also serves as a unit test for our implementation. It ensures that our quantity equations
+are correct in the implementation part of the function, and we indeed return a quantity of _speed_.
 
 
 ## Non-convertible units of currency
@@ -80,7 +80,7 @@ inline constexpr auto USD = us_dollar;
 static_assert(!std::equality_comparable_with<quantity<euro, int>, quantity<us_dollar, int>>);
 ```
 
-Next, we can provide custom currency exchange facility that accounts for a specific point in time:
+Next, we can provide a custom currency exchange facility that accounts for a specific point in time:
 
 ```cpp
 template<Unit auto From, Unit auto To>
@@ -115,16 +115,16 @@ std::cout << price_usd << " -> " << price_euro << "\n";
 !!! note
 
     It would be better to model the above prices as quantity points, but this is a subject
-    for a totally different article :wink:.
+    for a different article :wink:.
 
 
 ## Derived quantities of the same dimension but different kinds
 
-Up until now, the discussed issues did not actually require modeling of the ISQ. Introduction
+Until now, the issues discussed have not actually required modeling of the ISQ. The introduction
 of physical dimensions would be enough, and indeed, this is what most of the libraries on the
-market do. However, we have more interesting challenges to solve as well.
+market do. However, we have more exciting challenges to solve as well.
 
-The next issue was related to different quantities having the same dimension. In many cases we
+The next issue was related to different quantities having the same dimension. In many cases, we
 want to prevent conversions and any other compatibility between such distinct quantities.
 
 Let's try to implement
@@ -154,14 +154,14 @@ static_assert(!castable(q2.quantity_spec, isq::area));
 ```
 
 As we can see, with just units (especially derived ones) and dimensions, we often can't achieve
-the same level of safety as with properly modelled hierarchies of quantities. Only in case of `q2`
-we can prevent incorrect conversions to a totally different quantity of the same dimension.
+the same level of safety as with adequately modeled hierarchies of quantities. Only in case of `q2`
+we can prevent incorrect conversions to a different quantity of the same dimension.
 
 
 ## Various quantities of the same dimension and kinds
 
-In the previous example _area_ and _fuel consumption_ were quantities of the same dimension but
-different kinds. In the engineering there are also many cases where we need to model distinct
+In the previous example, _area_ and _fuel consumption_ were quantities of the same dimension but
+of different kinds. In engineering, there are also many cases where we need to model distinct
 quantities of the same kind.
 
 Let's try to improve the safety of
@@ -193,12 +193,11 @@ static_assert(implicitly_convertible(horizontal_length * isq::width, isq::area))
 static_assert(implicitly_convertible(horizontal_length * isq::width, horizontal_area));
 ```
 
-With simple 2 lines of definitions we made all of the above logic automatically work without
-any need for additional customization for special cases. The proposed model based on
-hierarchies of derived quantities and their recipes, automatically inherits the properties
-of base quantities involved in the recipe. This makes the composition of derived quantities
-very easy which is not the case for alternative solutions based on tag types that do not
-compose their properties.
+With simple two lines of definition, we made the above logic automatically work without needing
+additional customization for special cases. Based on hierarchies of derived quantities and their
+recipes, the proposed model automatically inherits the properties of base quantities involved in
+the recipe. This makes the composition of derived quantities very easy, which is not true for
+alternative solutions based on tag types that do not compose their properties.
 
 Now we can refactor our `Box` to benefit from the introduced safe abstractions:
 
@@ -249,9 +248,9 @@ dedicated unit (e.g., `bit`, `rad`, `sr`), should also be able to be measured in
 
 We've seen how to model such a hierarchy in a
 [previous article in our series](isq-part-4-implemeting-isq.md#modeling-a-hierarchy-of-kind-dimensionless).
-This time, we will see a simplified part of a concrete real-life example for this use cases.
+This time, we will see a simplified part of a concrete, real-life example for this use case.
 
-In the digital signal processing domain we need to provide strong types for different counts.
+We often need to provide strong types for different counts in the digital signal processing domain.
 Abstractions like _samples_, _beats_, _MIDI clock_, and others should not be possible to be
 intermixed with each other:
 
@@ -324,7 +323,7 @@ inline constexpr auto n_16th = SixteenthNote;
 }  // namespace ni
 ```
 
-With the above we can work with each quantity in a safe way and use SI or domain-specific units
+With the above, we can safely work with each quantity and use SI or domain-specific units
 as needed:
 
 ```cpp
