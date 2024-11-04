@@ -1350,13 +1350,11 @@ template<QuantitySpec From, QuantitySpec To>
   };
   if constexpr ((NamedQuantitySpec<decltype(From{})> && NamedQuantitySpec<decltype(To{})>) ||
                 get_complexity(From{}) == get_complexity(To{}))
-    return convertible_impl(from_kind, to_kind);
+    return exploded_kind_result(convertible_impl(from_kind, to_kind));
   else if constexpr (get_complexity(From{}) > get_complexity(To{}))
-    return exploded_kind_result(
-      convertible_impl(get_kind_tree_root(explode<get_complexity(To{})>(from_kind).quantity), to_kind));
+    return exploded_kind_result(convertible_impl(explode<get_complexity(To{})>(from_kind).quantity, to_kind));
   else
-    return exploded_kind_result(
-      convertible_impl(from_kind, get_kind_tree_root(explode<get_complexity(From{})>(to_kind).quantity)));
+    return exploded_kind_result(convertible_impl(from_kind, explode<get_complexity(From{})>(to_kind).quantity));
 }
 
 template<NamedQuantitySpec From, NamedQuantitySpec To>
