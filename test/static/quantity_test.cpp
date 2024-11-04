@@ -483,6 +483,12 @@ static_assert((std::uint8_t{255}* m %= 257 * m).numerical_value_in(m) == [] {
   return ui %= 257;
 }());
 
+// lack of consistency with binary operator
+static_assert(
+  is_of_type<1 * (isq::length / isq::time)[m / s] + 1 * isq::speed[m / s], quantity<isq::speed[m / s], int>>);
+static_assert(is_of_type<(1 * (isq::length / isq::time)[m / s] += 1 * isq::speed[m / s]),
+                         quantity<(isq::length / isq::time)[m / s], int>>);
+
 template<template<auto, typename> typename Q>
 concept invalid_compound_assignments = requires() {
   // truncating not allowed
