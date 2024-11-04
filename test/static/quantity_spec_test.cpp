@@ -442,21 +442,25 @@ static_assert(!defines_equation(mechanical_energy));
 static_assert(!defines_equation(potential_energy));
 
 // get_complexity
-static_assert(get_complexity(dimensionless) == 1);
-static_assert(get_complexity(length) == 1);
-static_assert(get_complexity(frequency) == 2);
-static_assert(get_complexity(area) == 2);
-static_assert(get_complexity(volume) == 2);
-static_assert(get_complexity(speed) == 3);
-static_assert(get_complexity(velocity) == 3);
-static_assert(get_complexity(acceleration) == 5);
-static_assert(get_complexity(force) == 7);
+static_assert(get_complexity(length) == 0);
+static_assert(get_complexity(pow<4>(length)) == 0);
+static_assert(get_complexity(dimensionless) == 0);
+static_assert(get_complexity(length / time) == 0);
+static_assert(get_complexity(mass * length / time) == 0);
+static_assert(get_complexity(frequency) == 1);
+static_assert(get_complexity(area) == 1);
+static_assert(get_complexity(pow<2>(area)) == 1);
+static_assert(get_complexity(volume) == 1);
+static_assert(get_complexity(speed) == 1);
+static_assert(get_complexity(velocity) == 1);
+static_assert(get_complexity(acceleration) == 2);
+static_assert(get_complexity(force) == 3);
 
-static_assert(get_complexity(acceleration * time) == 6);
-static_assert(get_complexity(acceleration / time) == 6);
-
-static_assert(get_complexity(pow<4>(length)) == 1);
-static_assert(get_complexity(pow<2>(area)) == 2);
+static_assert(get_complexity(acceleration * time) == 2);
+static_assert(get_complexity(acceleration / time) == 2);
+static_assert(get_complexity(speed * area) == 2);
+static_assert(get_complexity(speed / frequency) == 2);
+static_assert(get_complexity(speed * area / frequency) == 3);
 
 // explode
 static_assert(explode<get_complexity(inverse(time))>(frequency).quantity == inverse(period_duration));

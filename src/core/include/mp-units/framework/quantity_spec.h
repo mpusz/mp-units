@@ -598,8 +598,14 @@ MP_UNITS_EXPORT_END
 
 namespace detail {
 
+/**
+ * @brief @c get_complexity specifies how many type explosions can be done on a quantity
+ */
 template<QuantitySpec Q>
 [[nodiscard]] consteval int get_complexity(Q);
+
+// dimensionless should not be exploded to an empty derived quantity
+[[nodiscard]] consteval int get_complexity(struct dimensionless) { return 0; }
 
 template<typename... Ts>
 [[nodiscard]] consteval int get_complexity(type_list<Ts...>)
@@ -627,7 +633,7 @@ template<QuantitySpec Q>
   else if constexpr (requires { Q::_equation_; })
     return 1 + get_complexity(Q::_equation_);
   else
-    return 1;
+    return 0;
 }
 
 // dimension_one is always the last one
@@ -989,7 +995,7 @@ template<typename NumFrom, typename... NumsFrom, typename DenFrom, typename... D
     constexpr auto num_to_compl = get_complexity(NumTo{});
     constexpr auto den_to_compl = get_complexity(DenTo{});
     constexpr auto max_compl = max({num_from_compl, num_to_compl, den_from_compl, den_to_compl});
-    if constexpr (max_compl > 1) {
+    if constexpr (max_compl > 0) {
       if constexpr (num_from_compl == max_compl) {
         constexpr auto res = explode_to_equation(NumFrom{});
         return convertible_impl(
@@ -1034,7 +1040,7 @@ template<typename DenFrom, typename... DensFrom, typename NumTo, typename... Num
     constexpr auto num_to_compl = get_complexity(NumTo{});
     constexpr auto den_to_compl = get_complexity(DenTo{});
     constexpr auto max_compl = max({num_to_compl, den_from_compl, den_to_compl});
-    if constexpr (max_compl > 1) {
+    if constexpr (max_compl > 0) {
       if constexpr (den_from_compl == max_compl) {
         constexpr auto res = explode_to_equation(DenFrom{});
         return convertible_impl(
@@ -1072,7 +1078,7 @@ template<typename NumFrom, typename... NumsFrom, typename NumTo, typename... Num
     constexpr auto num_to_compl = get_complexity(NumTo{});
     constexpr auto den_to_compl = get_complexity(DenTo{});
     constexpr auto max_compl = max({num_from_compl, num_to_compl, den_to_compl});
-    if constexpr (max_compl > 1) {
+    if constexpr (max_compl > 0) {
       if constexpr (num_from_compl == max_compl) {
         constexpr auto res = explode_to_equation(NumFrom{});
         return convertible_impl(
@@ -1111,7 +1117,7 @@ template<typename NumFrom, typename... NumsFrom, typename DenFrom, typename... D
     constexpr auto den_from_compl = get_complexity(DenFrom{});
     constexpr auto den_to_compl = get_complexity(DenTo{});
     constexpr auto max_compl = max({num_from_compl, den_from_compl, den_to_compl});
-    if constexpr (max_compl > 1) {
+    if constexpr (max_compl > 0) {
       if constexpr (num_from_compl == max_compl) {
         constexpr auto res = explode_to_equation(NumFrom{});
         return convertible_impl(
@@ -1150,7 +1156,7 @@ template<typename NumFrom, typename... NumsFrom, typename DenFrom, typename... D
     constexpr auto den_from_compl = get_complexity(DenFrom{});
     constexpr auto num_to_compl = get_complexity(NumTo{});
     constexpr auto max_compl = max({num_from_compl, num_to_compl, den_from_compl});
-    if constexpr (max_compl > 1) {
+    if constexpr (max_compl > 0) {
       if constexpr (num_from_compl == max_compl) {
         constexpr auto res = explode_to_equation(NumFrom{});
         return convertible_impl(
@@ -1184,7 +1190,7 @@ template<typename NumFrom, typename... NumsFrom, typename NumTo, typename... Num
     constexpr auto num_from_compl = get_complexity(NumFrom{});
     constexpr auto num_to_compl = get_complexity(NumTo{});
     constexpr auto max_compl = max(num_from_compl, num_to_compl);
-    if constexpr (max_compl > 1) {
+    if constexpr (max_compl > 0) {
       if constexpr (num_from_compl == max_compl) {
         constexpr auto res = explode_to_equation(NumFrom{});
         return convertible_impl((res.equation * ... * map_power(NumsFrom{})),
@@ -1211,7 +1217,7 @@ template<typename DenFrom, typename... DensFrom, typename DenTo, typename... Den
     constexpr auto den_from_compl = get_complexity(DenFrom{});
     constexpr auto den_to_compl = get_complexity(DenTo{});
     constexpr auto max_compl = max(den_from_compl, den_to_compl);
-    if constexpr (max_compl > 1) {
+    if constexpr (max_compl > 0) {
       if constexpr (den_from_compl == max_compl) {
         constexpr auto res = explode_to_equation(DenFrom{});
         return convertible_impl(dimensionless / (res.equation * ... * map_power(DensFrom{})),
@@ -1233,7 +1239,7 @@ template<typename NumFrom, typename... NumsFrom, typename DenTo, typename... Den
   constexpr auto num_from_compl = get_complexity(NumFrom{});
   constexpr auto den_to_compl = get_complexity(DenTo{});
   constexpr auto max_compl = max(num_from_compl, den_to_compl);
-  if constexpr (max_compl > 1) {
+  if constexpr (max_compl > 0) {
     if constexpr (num_from_compl == max_compl) {
       constexpr auto res = explode_to_equation(NumFrom{});
       return convertible_impl((res.equation * ... * map_power(NumsFrom{})),
@@ -1254,7 +1260,7 @@ template<typename DenFrom, typename... DensFrom, typename NumTo, typename... Num
   constexpr auto den_from_compl = get_complexity(DenFrom{});
   constexpr auto num_to_compl = get_complexity(NumTo{});
   constexpr auto max_compl = max(den_from_compl, num_to_compl);
-  if constexpr (max_compl > 1) {
+  if constexpr (max_compl > 0) {
     if constexpr (den_from_compl == max_compl) {
       constexpr auto res = explode_to_equation(DenFrom{});
       return convertible_impl(dimensionless / (res.equation * ... * map_power(DensFrom{})),
