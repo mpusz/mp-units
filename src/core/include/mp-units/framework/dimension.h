@@ -120,7 +120,7 @@ struct dimension_interface {
  */
 MP_UNITS_EXPORT template<symbol_text Symbol>
 struct base_dimension : detail::dimension_interface {
-  static constexpr auto symbol = Symbol;  ///< Unique base dimension identifier
+  static constexpr auto _symbol_ = Symbol;  ///< Unique base dimension identifier
 };
 
 /**
@@ -229,10 +229,10 @@ MP_UNITS_EXPORT_END
 namespace detail {
 
 template<typename CharT, std::output_iterator<CharT> Out, Dimension D>
-  requires requires { D::symbol; }
+  requires requires { D::_symbol_; }
 constexpr Out dimension_symbol_impl(Out out, D, const dimension_symbol_formatting& fmt, bool negative_power)
 {
-  return copy_symbol<CharT>(D::symbol, fmt.encoding, negative_power, out);
+  return copy_symbol<CharT>(D::_symbol_, fmt.encoding, negative_power, out);
 }
 
 template<typename CharT, std::output_iterator<CharT> Out, typename F, int Num, int... Den>

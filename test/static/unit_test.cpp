@@ -191,7 +191,7 @@ static_assert(convertible(standard_gravity, standard_gravity));
 static_assert(convertible(standard_gravity, metre / square(second)));
 static_assert(standard_gravity == standard_gravity);
 static_assert(standard_gravity != metre / square(second));  // magnitude is different
-static_assert(standard_gravity.symbol == symbol_text{u8"g₀", "g_0"});
+static_assert(standard_gravity._symbol_ == symbol_text{u8"g₀", "g_0"});
 
 // prefixed_unit
 static_assert(is_of_type<kilometre, std::remove_const_t<decltype(kilo<metre>)>>);
@@ -199,7 +199,7 @@ static_assert(is_of_type<get_canonical_unit(kilometre).reference_unit, metre_>);
 static_assert(get_canonical_unit(kilometre).mag == mag<1000>);
 static_assert(convertible(kilometre, metre));
 static_assert(kilometre != metre);
-static_assert(kilometre.symbol == "km");
+static_assert(kilometre._symbol_ == "km");
 
 static_assert(is_of_type<kilojoule, std::remove_const_t<decltype(kilo<joule>)>>);
 static_assert(is_of_type<get_canonical_unit(kilojoule).reference_unit,
@@ -207,7 +207,7 @@ static_assert(is_of_type<get_canonical_unit(kilojoule).reference_unit,
 static_assert(get_canonical_unit(kilojoule).mag == mag<1'000'000>);
 static_assert(convertible(kilojoule, joule));
 static_assert(kilojoule != joule);
-static_assert(kilojoule.symbol == "kJ");
+static_assert(kilojoule._symbol_ == "kJ");
 
 static_assert(is_of_type<kilo<metre>, kilo_<metre_>>);
 static_assert(is_of_type<kilo<joule>, kilo_<joule_>>);
@@ -217,30 +217,30 @@ static_assert(
 
 
 // prefixes
-static_assert(si::quecto<metre>.symbol == "qm");
-static_assert(si::ronto<metre>.symbol == "rm");
-static_assert(si::yocto<metre>.symbol == "ym");
-static_assert(si::zepto<metre>.symbol == "zm");
-static_assert(si::atto<metre>.symbol == "am");
-static_assert(si::femto<metre>.symbol == "fm");
-static_assert(si::pico<metre>.symbol == "pm");
-static_assert(si::nano<metre>.symbol == "nm");
-static_assert(si::micro<metre>.symbol == symbol_text{u8"µm", "um"});
-static_assert(si::milli<metre>.symbol == "mm");
-static_assert(si::centi<metre>.symbol == "cm");
-static_assert(si::deci<metre>.symbol == "dm");
-static_assert(si::deca<metre>.symbol == "dam");
-static_assert(si::hecto<metre>.symbol == "hm");
-static_assert(si::kilo<metre>.symbol == "km");
-static_assert(si::mega<metre>.symbol == "Mm");
-static_assert(si::giga<metre>.symbol == "Gm");
-static_assert(si::tera<metre>.symbol == "Tm");
-static_assert(si::peta<metre>.symbol == "Pm");
-static_assert(si::exa<metre>.symbol == "Em");
-static_assert(si::zetta<metre>.symbol == "Zm");
-static_assert(si::yotta<metre>.symbol == "Ym");
-static_assert(si::ronna<metre>.symbol == "Rm");
-static_assert(si::quetta<metre>.symbol == "Qm");
+static_assert(si::quecto<metre>._symbol_ == "qm");
+static_assert(si::ronto<metre>._symbol_ == "rm");
+static_assert(si::yocto<metre>._symbol_ == "ym");
+static_assert(si::zepto<metre>._symbol_ == "zm");
+static_assert(si::atto<metre>._symbol_ == "am");
+static_assert(si::femto<metre>._symbol_ == "fm");
+static_assert(si::pico<metre>._symbol_ == "pm");
+static_assert(si::nano<metre>._symbol_ == "nm");
+static_assert(si::micro<metre>._symbol_ == symbol_text{u8"µm", "um"});
+static_assert(si::milli<metre>._symbol_ == "mm");
+static_assert(si::centi<metre>._symbol_ == "cm");
+static_assert(si::deci<metre>._symbol_ == "dm");
+static_assert(si::deca<metre>._symbol_ == "dam");
+static_assert(si::hecto<metre>._symbol_ == "hm");
+static_assert(si::kilo<metre>._symbol_ == "km");
+static_assert(si::mega<metre>._symbol_ == "Mm");
+static_assert(si::giga<metre>._symbol_ == "Gm");
+static_assert(si::tera<metre>._symbol_ == "Tm");
+static_assert(si::peta<metre>._symbol_ == "Pm");
+static_assert(si::exa<metre>._symbol_ == "Em");
+static_assert(si::zetta<metre>._symbol_ == "Zm");
+static_assert(si::yotta<metre>._symbol_ == "Ym");
+static_assert(si::ronna<metre>._symbol_ == "Rm");
+static_assert(si::quetta<metre>._symbol_ == "Qm");
 
 // scaled_unit
 constexpr auto m_1 = mag<1> * metre;

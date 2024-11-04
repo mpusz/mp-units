@@ -73,7 +73,7 @@ concept PointOrigin = detail::TagType<T> && std::derived_from<T, detail::point_o
  * Satisfied by all quantity point origins that are defined using a provided quantity specification.
  */
 MP_UNITS_EXPORT template<typename T, auto QS>
-concept PointOriginFor = PointOrigin<T> && QuantitySpecOf<MP_UNITS_REMOVE_CONST(decltype(QS)), T::quantity_spec>;
+concept PointOriginFor = PointOrigin<T> && QuantitySpecOf<MP_UNITS_REMOVE_CONST(decltype(QS)), T::_quantity_spec_>;
 
 MP_UNITS_EXPORT template<Reference auto R, PointOriginFor<get_quantity_spec(R)> auto PO,
                          RepresentationOf<get_quantity_spec(R).character> Rep>
@@ -100,11 +100,11 @@ template<PointOrigin PO1, PointOrigin PO2>
     return po1 == po2;
   else if constexpr (is_derived_from_specialization_of_v<PO1, relative_point_origin> &&
                      is_derived_from_specialization_of_v<PO2, relative_point_origin>)
-    return po1.absolute_point_origin == po2.absolute_point_origin;
+    return po1._absolute_point_origin_ == po2._absolute_point_origin_;
   else if constexpr (is_derived_from_specialization_of_v<PO1, relative_point_origin>)
-    return po1.absolute_point_origin == po2;
+    return po1._absolute_point_origin_ == po2;
   else if constexpr (is_derived_from_specialization_of_v<PO2, relative_point_origin>)
-    return po1 == po2.absolute_point_origin;
+    return po1 == po2._absolute_point_origin_;
   else
     return false;
 }

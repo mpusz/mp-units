@@ -161,10 +161,10 @@ struct unit_interface {
     if constexpr (std::is_same_v<M, std::remove_const_t<decltype(mp_units::mag<1>)>>)
       return u;
     else if constexpr (is_specialization_of_scaled_unit<U>) {
-      if constexpr (M{} * U::mag == mag<1>)
-        return U::reference_unit;
+      if constexpr (M{} * U::_mag_ == mag<1>)
+        return U::_reference_unit_;
       else
-        return scaled_unit<M{} * U::mag, std::remove_const_t<decltype(U::reference_unit)>>{};
+        return scaled_unit<M{} * U::_mag_, std::remove_const_t<decltype(U::_reference_unit_)>>{};
     } else
       return scaled_unit<M{}, U>{};
   }
@@ -221,19 +221,19 @@ struct unit_interface {
   }
 };
 
-template<Unit U, bool = requires { U::point_origin; }>
+template<Unit U, bool = requires { U::_point_origin_; }>
 struct propagate_point_origin {};
 
 template<Unit U>
 struct propagate_point_origin<U, true> {
-  static constexpr auto point_origin = U::point_origin;
+  static constexpr auto _point_origin_ = U::_point_origin_;
 };
 
 template<Magnitude auto M, Unit U>
 struct scaled_unit_impl : detail::unit_interface, detail::propagate_point_origin<U> {
   using _base_type_ = scaled_unit_impl;  // exposition only
-  static constexpr Magnitude auto mag = M;
-  static constexpr U reference_unit{};
+  static constexpr Magnitude auto _mag_ = M;
+  static constexpr U _reference_unit_{};
 };
 
 }  // namespace detail
@@ -306,18 +306,18 @@ struct named_unit;
 template<symbol_text Symbol, detail::QuantityKindSpec auto QS>
   requires(!Symbol.empty()) && detail::BaseDimension<std::remove_const_t<decltype(QS.dimension)>>
 struct named_unit<Symbol, QS> : detail::unit_interface {
-  using _base_type_ = named_unit;         // exposition only
-  static constexpr auto symbol = Symbol;  ///< Unique base unit identifier
-  static constexpr auto quantity_spec = QS;
+  using _base_type_ = named_unit;           // exposition only
+  static constexpr auto _symbol_ = Symbol;  ///< Unique base unit identifier
+  static constexpr auto _quantity_spec_ = QS;
 };
 
 template<symbol_text Symbol, detail::QuantityKindSpec auto QS, PointOrigin auto PO>
   requires(!Symbol.empty()) && detail::BaseDimension<std::remove_const_t<decltype(QS.dimension)>>
 struct named_unit<Symbol, QS, PO> : detail::unit_interface {
-  using _base_type_ = named_unit;         // exposition only
-  static constexpr auto symbol = Symbol;  ///< Unique base unit identifier
-  static constexpr auto quantity_spec = QS;
-  static constexpr auto point_origin = PO;
+  using _base_type_ = named_unit;           // exposition only
+  static constexpr auto _symbol_ = Symbol;  ///< Unique base unit identifier
+  static constexpr auto _quantity_spec_ = QS;
+  static constexpr auto _point_origin_ = PO;
 };
 
 /**
@@ -333,8 +333,8 @@ struct named_unit<Symbol, QS, PO> : detail::unit_interface {
 template<symbol_text Symbol>
   requires(!Symbol.empty())
 struct named_unit<Symbol> : detail::unit_interface {
-  using _base_type_ = named_unit;         // exposition only
-  static constexpr auto symbol = Symbol;  ///< Unique base unit identifier
+  using _base_type_ = named_unit;           // exposition only
+  static constexpr auto _symbol_ = Symbol;  ///< Unique base unit identifier
 };
 
 /**
@@ -348,16 +348,16 @@ struct named_unit<Symbol> : detail::unit_interface {
 template<symbol_text Symbol, Unit auto U>
   requires(!Symbol.empty())
 struct named_unit<Symbol, U> : decltype(U)::_base_type_ {
-  using _base_type_ = named_unit;         // exposition only
-  static constexpr auto symbol = Symbol;  ///< Unique unit identifier
+  using _base_type_ = named_unit;           // exposition only
+  static constexpr auto _symbol_ = Symbol;  ///< Unique unit identifier
 };
 
 template<symbol_text Symbol, Unit auto U, PointOrigin auto PO>
   requires(!Symbol.empty())
 struct named_unit<Symbol, U, PO> : decltype(U)::_base_type_ {
-  using _base_type_ = named_unit;         // exposition only
-  static constexpr auto symbol = Symbol;  ///< Unique unit identifier
-  static constexpr auto point_origin = PO;
+  using _base_type_ = named_unit;           // exposition only
+  static constexpr auto _symbol_ = Symbol;  ///< Unique unit identifier
+  static constexpr auto _point_origin_ = PO;
 };
 
 /**
@@ -372,18 +372,18 @@ struct named_unit<Symbol, U, PO> : decltype(U)::_base_type_ {
 template<symbol_text Symbol, AssociatedUnit auto U, detail::QuantityKindSpec auto QS>
   requires(!Symbol.empty()) && (QS.dimension == detail::get_associated_quantity(U).dimension)
 struct named_unit<Symbol, U, QS> : decltype(U)::_base_type_ {
-  using _base_type_ = named_unit;         // exposition only
-  static constexpr auto symbol = Symbol;  ///< Unique unit identifier
-  static constexpr auto quantity_spec = QS;
+  using _base_type_ = named_unit;           // exposition only
+  static constexpr auto _symbol_ = Symbol;  ///< Unique unit identifier
+  static constexpr auto _quantity_spec_ = QS;
 };
 
 template<symbol_text Symbol, AssociatedUnit auto U, detail::QuantityKindSpec auto QS, PointOrigin auto PO>
   requires(!Symbol.empty()) && (QS.dimension == detail::get_associated_quantity(U).dimension)
 struct named_unit<Symbol, U, QS, PO> : decltype(U)::_base_type_ {
-  using _base_type_ = named_unit;         // exposition only
-  static constexpr auto symbol = Symbol;  ///< Unique unit identifier
-  static constexpr auto quantity_spec = QS;
-  static constexpr auto point_origin = PO;
+  using _base_type_ = named_unit;           // exposition only
+  static constexpr auto _symbol_ = Symbol;  ///< Unique unit identifier
+  static constexpr auto _quantity_spec_ = QS;
+  static constexpr auto _point_origin_ = PO;
 };
 
 /**
@@ -412,7 +412,7 @@ MP_UNITS_EXPORT template<symbol_text Symbol, Magnitude auto M, PrefixableUnit au
   requires(!Symbol.empty())
 struct prefixed_unit : decltype(M * U)::_base_type_ {
   using _base_type_ = prefixed_unit;  // exposition only
-  static constexpr auto symbol = Symbol + U.symbol;
+  static constexpr auto _symbol_ = Symbol + U._symbol_;
 };
 
 namespace detail {
@@ -765,10 +765,10 @@ MP_UNITS_EXPORT_END
 namespace detail {
 
 template<typename CharT, std::output_iterator<CharT> Out, Unit U>
-  requires requires { U::symbol; }
+  requires requires { U::_symbol_; }
 constexpr Out unit_symbol_impl(Out out, U, const unit_symbol_formatting& fmt, bool negative_power)
 {
-  return copy_symbol<CharT>(U::symbol, fmt.encoding, negative_power, out);
+  return copy_symbol<CharT>(U::_symbol_, fmt.encoding, negative_power, out);
 }
 
 template<typename CharT, std::output_iterator<CharT> Out, auto M, typename U>
@@ -777,8 +777,8 @@ constexpr Out unit_symbol_impl(Out out, const scaled_unit_impl<M, U>& u, const u
 {
   *out++ = '[';
   _magnitude_symbol<CharT>(out, M, fmt);
-  if constexpr (space_before_unit_symbol<scaled_unit<M, U>::reference_unit>) *out++ = ' ';
-  unit_symbol_impl<CharT>(out, u.reference_unit, fmt, negative_power);
+  if constexpr (space_before_unit_symbol<scaled_unit<M, U>::_reference_unit_>) *out++ = ' ';
+  unit_symbol_impl<CharT>(out, u._reference_unit_, fmt, negative_power);
   *out++ = ']';
   return out;
 }
@@ -787,8 +787,8 @@ template<typename... Us, Unit U>
 [[nodiscard]] consteval Unit auto get_common_unit_in(common_unit<Us...>, U u)
 {
   auto get_magnitude = [&]() {
-    if constexpr (requires { common_unit<Us...>::mag; })
-      return common_unit<Us...>::mag;
+    if constexpr (requires { common_unit<Us...>::_mag_; })
+      return common_unit<Us...>::_mag_;
     else
       return mag<1>;
   };

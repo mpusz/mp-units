@@ -80,9 +80,9 @@ template<typename... Us>
 template<Unit U>
 [[nodiscard]] consteval bool has_associated_quantity(U)
 {
-  if constexpr (requires { U::quantity_spec; }) return true;
-  if constexpr (requires { U::reference_unit; })
-    return has_associated_quantity(U::reference_unit);
+  if constexpr (requires { U::_quantity_spec_; }) return true;
+  if constexpr (requires { U::_reference_unit_; })
+    return has_associated_quantity(U::_reference_unit_);
   else if constexpr (requires { typename U::_num_; })
     return has_associated_quantity(typename U::_num_{}) && has_associated_quantity(typename U::_den_{});
   else
@@ -131,7 +131,7 @@ concept UnitCompatibleWith =
   (!AssociatedUnit<U> || UnitOf<U, QS>) && detail::UnitConvertibleTo<FromU, U{}>;
 
 template<typename T>
-concept OffsetUnit = Unit<T> && requires { T::point_origin; };
+concept OffsetUnit = Unit<T> && requires { T::_point_origin_; };
 
 }  // namespace detail
 

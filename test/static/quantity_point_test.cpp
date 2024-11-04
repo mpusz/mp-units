@@ -118,9 +118,9 @@ struct relative_po_ final : relative_point_origin<QP> {};
 template<auto QP>
 constexpr relative_po_<QP> relative_po;
 
-static_assert(relative_po<absolute_po<isq::length> + isq::height(42 * m)>.quantity_spec == isq::height);
-static_assert(relative_po<absolute_po<kind_of<isq::length>> + isq::height(42 * m)>.quantity_spec == isq::height);
-static_assert(relative_po<absolute_po<isq::height> + 42 * m>.quantity_spec == isq::height);
+static_assert(relative_po<absolute_po<isq::length> + isq::height(42 * m)>._quantity_spec_ == isq::height);
+static_assert(relative_po<absolute_po<kind_of<isq::length>> + isq::height(42 * m)>._quantity_spec_ == isq::height);
+static_assert(relative_po<absolute_po<isq::height> + 42 * m>._quantity_spec_ == isq::height);
 
 inline constexpr struct my_kelvin final : named_unit<"my_K", mag<10> * si::kelvin> {
 } my_kelvin;
