@@ -458,9 +458,15 @@ static_assert(get_complexity(force) == 3);
 
 static_assert(get_complexity(acceleration * time) == 2);
 static_assert(get_complexity(acceleration / time) == 2);
-static_assert(get_complexity(speed * area) == 2);
-static_assert(get_complexity(speed / frequency) == 2);
-static_assert(get_complexity(speed * area / frequency) == 3);
+static_assert(get_complexity(speed * area) == 1);
+static_assert(get_complexity(acceleration * area) == 2);
+static_assert(get_complexity(acceleration * force) == 3);
+static_assert(get_complexity(speed / frequency) == 1);
+static_assert(get_complexity(acceleration / frequency) == 2);
+static_assert(get_complexity(force / frequency) == 3);
+static_assert(get_complexity(area / acceleration) == 2);
+static_assert(get_complexity(area / force) == 3);
+static_assert(get_complexity(speed * area / frequency) == 1);
 
 // explode
 static_assert(explode<get_complexity(inverse(time))>(frequency).quantity == inverse(period_duration));

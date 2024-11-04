@@ -610,7 +610,10 @@ template<QuantitySpec Q>
 template<typename... Ts>
 [[nodiscard]] consteval int get_complexity(type_list<Ts...>)
 {
-  return (0 + ... + get_complexity(Ts{}));
+  if constexpr (sizeof...(Ts) == 0)
+    return 0;
+  else
+    return max({get_complexity(Ts{})...});
 }
 
 template<QuantitySpec Q, int... Ints>
@@ -629,7 +632,7 @@ template<QuantitySpec Q>
 [[nodiscard]] consteval int get_complexity(Q)
 {
   if constexpr (DerivedQuantitySpec<Q>)
-    return get_complexity(typename Q::_num_{}) + get_complexity(typename Q::_den_{});
+    return max(get_complexity(typename Q::_num_{}), get_complexity(typename Q::_den_{}));
   else if constexpr (requires { Q::_equation_; })
     return 1 + get_complexity(Q::_equation_);
   else
