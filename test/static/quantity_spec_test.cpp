@@ -54,9 +54,11 @@ QUANTITY_SPEC_(radius, width);
 QUANTITY_SPEC_(path_length, length);
 inline constexpr auto arc_length = path_length;
 QUANTITY_SPEC_(distance, path_length);
+QUANTITY_SPEC_(wavelength, length);
 QUANTITY_SPEC_(position_vector, length, quantity_character::vector);
 QUANTITY_SPEC_(period_duration, time);
 QUANTITY_SPEC_(rotation, dimensionless);
+QUANTITY_SPEC_(repetency, inverse(wavelength));
 QUANTITY_SPEC_(frequency, inverse(period_duration));
 QUANTITY_SPEC_(activity, inverse(time));
 QUANTITY_SPEC_(area, pow<2>(length));
@@ -721,6 +723,7 @@ static_assert(convertible_impl(kind_of<inverse(time)>, frequency) == yes);
 static_assert(convertible_impl(kind_of<inverse(time)>, activity) == yes);
 static_assert(convertible_impl(kind_of<mass * pow<2>(length) / pow<2>(time)>, energy) == yes);
 static_assert(convertible_impl(kind_of<mass * pow<2>(length) / pow<2>(time)>, moment_of_force) == yes);
+static_assert(convertible_impl(kind_of<frequency * time / length>, repetency) == yes);
 
 // type to a kind of a different kind
 static_assert(convertible_impl(mass, kind_of<length>) == no);
