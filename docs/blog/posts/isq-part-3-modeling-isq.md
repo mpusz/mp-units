@@ -26,6 +26,7 @@ language.
 - [Part 2 - Problems when ISQ is not used](isq-part-2-problems-when-isq-is-not-used.md)
 - Part 3 - Modeling ISQ
 - [Part 4 - Implementing ISQ](isq-part-4-implemeting-isq.md)
+- [Part 5 - Benefits](isq-part-5-benefits.md)
 
 
 ## Dimension is not enough to describe a quantity

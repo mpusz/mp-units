@@ -25,6 +25,8 @@ In this series, we will describe:
 - [Part 2 - Problems when ISQ is not used](isq-part-2-problems-when-isq-is-not-used.md)
 - [Part 3 - Modeling ISQ](isq-part-3-modeling-isq.md)
 - [Part 4 - Implementing ISQ](isq-part-4-implemeting-isq.md)
+- [Part 5 - Benefits](isq-part-5-benefits.md)
+
 
 ## Terms and Definitions
 
@@ -40,6 +42,7 @@ and BIPM:
 
 The above are identical and contain the same set of definitions. We provide both to point out that
 the biggest institutions in standardizing metrology agree on the same vocabulary.
+
 
 ## Systems of Quantities vs Systems of Units
 

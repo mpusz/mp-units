@@ -1,5 +1,4 @@
 ---
-draft: true
 date: 2024-11-04
 authors:
  - mpusz
@@ -14,9 +13,9 @@ In the previous articles we have introduced the International System of Quantiti
 we can model and implement it in a programming language, and presented the issues of the software
 that does not use such abstraction to implement a units library.
 
-In this article we will present how our ISQ model elegantly addresses the issues from the
-[Part 2](isq-part-2-problems-when-isq-is-not-used.md) of our series that were not covered already
-in [Part 3](isq-part-3-modeling-isq.md).
+Some of the issues raised in [Part 2](isq-part-2-problems-when-isq-is-not-used.md) of our series
+were addressed in [Part 3](isq-part-3-modeling-isq.md) already. In this article we will present
+how our ISQ model elegantly addresses the remaining problems.
 
 <!-- more -->
 
@@ -61,7 +60,7 @@ factors between those as such ratios are only known at runtime.
 
 First, we define:
 
-- a new dimension for _currency_ and quantity type based on it,
+- a new dimension for _currency_ and a quantity type based on it,
 - set of disjoint units of _currency_ for its quantity kind.
 
 ```cpp
@@ -161,9 +160,9 @@ we can prevent incorrect conversions to a totally different quantity of the same
 
 ## Various quantities of the same dimension and kinds
 
-In the previous example _area_ and _fuel consumption_ were different quantities of the same
-dimension but different kinds. In the engineering there are also many cases where we want to model
-distinct quantities of the same kind.
+In the previous example _area_ and _fuel consumption_ were quantities of the same dimension but
+different kinds. In the engineering there are also many cases where we need to model distinct
+quantities of the same kind.
 
 Let's try to improve the safety of
 [our `Box` example](isq-part-2-problems-when-isq-is-not-used.md#various-quantities-of-the-same-dimension-and-kinds).
@@ -239,17 +238,18 @@ Most of the quantities hierarchies describe only one kind. There are some except
 One of them is a [hierarchy of _dimensionless_ quantities](isq-part-4-implemeting-isq.md#modeling-a-hierarchy-of-kind-dimensionless).
 This tree defines quantities that denote:
 
-- counts (_storage capacity_),
-- ratios (_efficiency_),
-- angles (_angular measure_, _solid angular measure_),
+- counts (e.g., _storage capacity_),
+- ratios (e.g., _efficiency_),
+- angles (e.g., _angular measure_, _solid angular measure_),
 - scaled numbers.
 
 Each of the above could form a separate tree of mutually comparable quantities. However, all of
 them have a common property. Every quantity from this tree, despite often being measured in a
 dedicated unit (e.g., `bit`, `rad`, `sr`), should also be able to be measured in a unit `one`.
 
-We've seen how to model such a hierarchy in a previous article in our series. This time, we will
-see a simplified part of a concrete real-life example for this use cases.
+We've seen how to model such a hierarchy in a
+[previous article in our series](isq-part-4-implemeting-isq.md#modeling-a-hierarchy-of-kind-dimensionless).
+This time, we will see a simplified part of a concrete real-life example for this use cases.
 
 In the digital signal processing domain we need to provide strong types for different counts.
 Abstractions like _samples_, _beats_, _MIDI clock_, and others should not be possible to be
@@ -265,7 +265,7 @@ inline constexpr struct BeatCount final : quantity_spec<dimensionless, is_kind> 
 ```
 
 We should also be able to create derived quantities from those. For example, when we divide such
-a quantity by time we should get a new strong quantity that can be measured in both a dedicated
+a quantity by _time_ we should get a new strong quantity that can be measured in both a dedicated
 unit (e.g., `Smpl/s` for _sample rate_) and hertz:
 
 ```cpp
