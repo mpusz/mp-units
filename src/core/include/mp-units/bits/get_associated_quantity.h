@@ -51,10 +51,10 @@ template<typename... Nums, typename... Dens>
 template<AssociatedUnit U>
 [[nodiscard]] consteval auto all_are_kinds(U)
 {
-  if constexpr (requires { U::quantity_spec; })
-    return QuantityKindSpec<std::remove_const_t<decltype(U::quantity_spec)>>;
-  else if constexpr (requires { U::reference_unit; })
-    return all_are_kinds(U::reference_unit);
+  if constexpr (requires { U::_quantity_spec_; })
+    return QuantityKindSpec<std::remove_const_t<decltype(U::_quantity_spec_)>>;
+  else if constexpr (requires { U::_reference_unit_; })
+    return all_are_kinds(U::_reference_unit_);
   else if constexpr (requires { typename U::_num_; }) {
     return all_are_kinds(typename U::_num_{}, typename U::_den_{});
   }
@@ -75,10 +75,10 @@ template<typename... Us>
 template<AssociatedUnit U>
 [[nodiscard]] consteval auto get_associated_quantity_impl(U u)
 {
-  if constexpr (requires { U::quantity_spec; })
-    return remove_kind(U::quantity_spec);
-  else if constexpr (requires { U::reference_unit; })
-    return get_associated_quantity_impl(U::reference_unit);
+  if constexpr (requires { U::_quantity_spec_; })
+    return remove_kind(U::_quantity_spec_);
+  else if constexpr (requires { U::_reference_unit_; })
+    return get_associated_quantity_impl(U::_reference_unit_);
   else if constexpr (requires { typename U::_num_; }) {
     return expr_map<to_quantity_spec, derived_quantity_spec, struct dimensionless, type_list_of_quantity_spec_less>(u);
   }

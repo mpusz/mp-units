@@ -112,8 +112,8 @@ concept SameValueAs = (equivalent(get_unit(R1), get_unit(R2))) && std::convertib
 template<typename T>
 using quantity_like_type = quantity<quantity_like_traits<T>::reference, typename quantity_like_traits<T>::rep>;
 
-template<typename T, typename U>
-concept Forwarding = std::derived_from<std::remove_cvref_t<T>, U>;
+template<typename T, typename U, typename TT = std::remove_reference_t<T>>
+concept Mutable = (!std::is_const_v<TT>) && std::derived_from<TT, U>;
 
 }  // namespace detail
 
@@ -338,7 +338,7 @@ public:
     return ::mp_units::quantity{-numerical_value_is_an_implementation_detail_, reference};
   }
 
-  template<detail::Forwarding<quantity> Q>
+  template<detail::Mutable<quantity> Q>
   friend constexpr decltype(auto) operator++(Q&& q)
     requires requires(rep v) {
       { ++v } -> std::same_as<rep&>;
@@ -356,7 +356,7 @@ public:
     return ::mp_units::quantity{numerical_value_is_an_implementation_detail_++, reference};
   }
 
-  template<detail::Forwarding<quantity> Q>
+  template<detail::Mutable<quantity> Q>
   friend constexpr decltype(auto) operator--(Q&& q)
     requires requires(rep v) {
       { --v } -> std::same_as<rep&>;
@@ -375,7 +375,7 @@ public:
   }
 
   // compound assignment operators
-  template<detail::Forwarding<quantity> Q, auto R2, typename Rep2>
+  template<detail::Mutable<quantity> Q, auto R2, typename Rep2>
     requires detail::QuantityConvertibleTo<quantity<R2, Rep2>, quantity> && requires(rep a, Rep2 b) {
       { a += b } -> std::same_as<rep&>;
     }
@@ -388,7 +388,7 @@ public:
     return std::forward<Q>(lhs);
   }
 
-  template<detail::Forwarding<quantity> Q, auto R2, typename Rep2>
+  template<detail::Mutable<quantity> Q, auto R2, typename Rep2>
     requires detail::QuantityConvertibleTo<quantity<R2, Rep2>, quantity> && requires(rep a, Rep2 b) {
       { a -= b } -> std::same_as<rep&>;
     }
@@ -401,7 +401,7 @@ public:
     return std::forward<Q>(lhs);
   }
 
-  template<detail::Forwarding<quantity> Q, auto R2, typename Rep2>
+  template<detail::Mutable<quantity> Q, auto R2, typename Rep2>
     requires detail::QuantityConvertibleTo<quantity<R2, Rep2>, quantity> && (!treat_as_floating_point<rep>) &&
              requires(rep a, Rep2 b) {
                { a %= b } -> std::same_as<rep&>;
@@ -417,7 +417,7 @@ public:
     return std::forward<Q>(lhs);
   }
 
-  template<detail::Forwarding<quantity> Q, detail::ValuePreservingTo<Rep> Value>
+  template<detail::Mutable<quantity> Q, detail::ValuePreservingTo<Rep> Value>
     requires(!Quantity<Value>) && requires(rep a, Value b) {
       { a *= b } -> std::same_as<rep&>;
     }
@@ -429,7 +429,7 @@ public:
     return std::forward<Q>(lhs);
   }
 
-  template<detail::Forwarding<quantity> Q1, QuantityOf<dimensionless> Q2>
+  template<detail::Mutable<quantity> Q1, QuantityOf<dimensionless> Q2>
     requires(Q2::unit == ::mp_units::one) && detail::ValuePreservingTo<typename Q2::rep, Rep> &&
             requires(rep a, Q2::rep b) {
               { a *= b } -> std::same_as<rep&>;
@@ -439,7 +439,7 @@ public:
     return std::forward<Q1>(lhs) *= rhs.numerical_value_is_an_implementation_detail_;
   }
 
-  template<detail::Forwarding<quantity> Q, detail::ValuePreservingTo<Rep> Value>
+  template<detail::Mutable<quantity> Q, detail::ValuePreservingTo<Rep> Value>
     requires(!Quantity<Value>) && requires(rep a, Value b) {
       { a /= b } -> std::same_as<rep&>;
     }
@@ -452,7 +452,7 @@ public:
     return std::forward<Q>(lhs);
   }
 
-  template<detail::Forwarding<quantity> Q1, QuantityOf<dimensionless> Q2>
+  template<detail::Mutable<quantity> Q1, QuantityOf<dimensionless> Q2>
     requires(Q2::unit == ::mp_units::one) && detail::ValuePreservingTo<typename Q2::rep, Rep> &&
             requires(rep a, Q2::rep b) {
               { a /= b } -> std::same_as<rep&>;
