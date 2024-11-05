@@ -1,0 +1,758 @@
+body {
+	font-family: 'Noto Serif';
+	hyphens: auto;
+	line-height: 1.5;
+	margin-left: 20mm;
+	margin-right: 16mm;
+	margin-top: 12mm;
+	margin-bottom: 12mm;
+	font-size: 10pt;
+}
+
+div {
+	background: inherit;
+}
+
+div.wrapper {
+	max-width: 20cm;
+	margin: auto;
+}
+
+div.texpara {
+	margin-top: 3pt;
+	margin-bottom: 3pt;
+}
+
+table div.texpara {
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
+table.enumerate div.texpara {
+	margin-top: 3pt;
+	margin-bottom: 3pt;
+}
+
+ul {
+	list-style-type: none;
+	padding-left: 9mm;
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
+ol {
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
+a { text-decoration: none; }
+
+a.hidden_link {
+	text-decoration: none;
+	color: inherit;
+}
+
+li {
+	margin-top: 3pt;
+	margin-bottom: 3pt;
+}
+
+h1 {
+	line-height: 1;
+	margin-top: 10pt;
+	margin-bottom: 10pt;
+}
+
+h2 {
+	line-height: 1;
+	font-size: 14pt;
+	margin-top: 10pt;
+	margin-bottom: 10pt;
+}
+
+h2::after {
+    content: "";
+    clear: both;
+    display: table;
+}
+
+h3 {
+	line-height: 1;
+	margin-top: 10pt;
+	margin-bottom: 10pt;
+}
+
+h3::after {
+    content: "";
+    clear: both;
+    display: table;
+}
+
+h4 {
+	line-height: 1;
+	margin-top: 10pt;
+	margin-bottom: 10pt;
+}
+
+h4::after {
+    content: "";
+    clear: both;
+    display: table;
+}
+
+ul > li:before {
+	content: "\2014";
+	position: absolute;
+	margin-left: -1.5em; 
+}
+
+.shy:before {
+	content: "\00ad";
+	/* This is U+00AD SOFT HYPHEN, same as &shy, but we put it in :before
+	to stop it from being included when the text is copied to the clipboard
+	with Firefox, which is especially annoying when copying to a terminal,
+	where the hyphen characters will show up. */
+}
+
+:target { background-color: #C9FBC9; }
+:target .codeblock { background-color: #C9FBC9; }
+:target ul { background-color: #C9FBC9; }
+
+.abbr_ref { float: right; }
+
+.folded_abbr_ref { float: right; }
+:target .folded_abbr_ref { display: none; }
+
+:target .unfolded_abbr_ref { float: right; display: inherit; }
+.unfolded_abbr_ref { display: none; }
+
+.secnum { display: inline-block; min-width: 35pt; }
+.annexnum { display: block; }
+
+div.sourceLinkParent {
+	float: right;
+}
+
+a.sourceLink {
+	position: absolute;
+	opacity: 0;
+	margin-left: 10pt;
+}
+
+a.sourceLink:hover {
+	opacity: 1;
+}
+
+a.itemDeclLink {
+	position: absolute;
+	font-size: 75%;
+	text-align: right;
+	width: 5em;
+	opacity: 0;
+}
+a.itemDeclLink:hover { opacity: 1; }
+
+div.marginalizedparent {
+	position: relative;
+	left: -18mm;
+}
+
+a.marginalized {
+	width: 15mm;
+	position: absolute;
+	font-size: 7pt;
+	text-align: right;
+}
+
+a.enumerated_item_num {
+	display: block;
+	margin-top: 3pt;
+	margin-bottom: 3pt;
+	margin-right: 6pt;
+}
+
+div.para {
+	margin-bottom: 6pt;
+	margin-top: 6pt;
+	text-align: justify;
+	min-height: 1.2em;
+}
+
+div.section { text-align: justify; }
+div.sentence { display: inline; }
+
+a.index {
+	position: relative;
+	float: right;
+	right: -1em;
+	display: none;
+}
+
+a.index:before {
+	position: absolute;
+	content: "⟵";
+	background-color: #C9FBC9;
+}
+
+a.index:target {
+	display: inline;
+}
+
+.indexitems {
+	margin-left: 2em;
+	text-indent: -2em;
+}
+
+div.itemdescr {
+	margin-left: 12mm;
+}
+
+.bnf {
+	font-family: 'Noto Sans';
+	font-size: 10pt;
+	font-style: italic;
+	margin-left: 25pt;
+	margin-right: -15mm;
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+	text-indent: -3em;
+	padding-left: 3em;
+	line-height: 1.5;
+}
+
+div.bnf span.texttt { font-family: 'Noto Sans Mono'; font-style: normal; }
+
+.rebnf {
+	font-family: 'Noto Serif';
+	font-style: italic;
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+	margin-left: 30pt;
+	text-indent: -3em;
+	padding-left: 3em;
+	line-height: 1.5;
+}
+
+.simplebnf {
+	font-family: 'Noto Serif';
+	font-style: italic;
+	font-size: 10pt;
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+	margin-left: 30pt;
+	line-height: 1.5;
+}
+
+span.textnormal {
+	font-style: normal;
+	font-family: 'Noto Serif';
+	font-size: 10pt;
+	white-space: normal;
+}
+
+.bnf span.textnormal {
+	font-style: normal;
+	font-family: 'Noto Serif';
+	font-size: 10pt;
+	white-space: normal;
+}
+
+p {
+	margin-top: 4pt;
+	margin-bottom: 4pt;
+}
+
+span.rlap {
+    display: inline-block;
+    width: 0px;
+    text-indent: 0;
+}
+
+span.terminal {
+	font-family: 'Noto Sans Mono';
+	font-style: normal;
+	font-size: 9pt;
+	white-space: pre-wrap;
+}
+
+span.noncxxterminal {
+	font-family: 'Noto Sans Mono';
+	font-style: normal;
+	font-size: 9pt;
+}
+
+span.term { font-style: italic; }
+span.tcode { font-family: 'Noto Sans Mono'; font-style: normal; }
+span.textbf { font-weight: bold; }
+span.textsf { font-family: 'Noto Sans'; font-size: 10pt; }
+div.footnote span.textsf { font-family: 'Noto Sans'; font-size: 8pt; }
+.bnf span.textsf { font-family: 'Noto Sans'; font-size: 10pt; }
+.simplebnf span.textsf { font-family: 'Noto Sans'; font-size: 10pt; }
+.example span.textsf { font-family: 'Noto Sans'; font-size: 10pt; }
+span.textsc { font-variant: small-caps; }
+span.nontermdef { font-style: italic; font-family: 'Noto Sans'; font-size: 10pt; }
+.rebnf a.nontermdef { font-style: italic; font-family: 'Noto Serif'; }
+span.emph { font-style: italic; }
+span.techterm { font-style: italic; }
+span.mathit { font-style: italic; }
+span.mathsf { font-family: 'Noto Sans'; }
+span.mathrm { font-family: 'Noto Serif'; font-style: normal; }
+span.textrm { font-family: 'Noto Serif'; font-size: 10pt; }
+span.textsl { font-style: italic; }
+span.mathtt { font-family: 'Noto Sans Mono'; font-style: normal; }
+span.mbox { font-family: 'Noto Serif'; font-style: normal; }
+span.ungap { display: inline-block; width: 2pt; }
+span.texttt { font-family: 'Noto Sans Mono'; }
+div.footnote span.texttt { font-family: 'Noto Sans Mono'; }
+span.tcode_in_codeblock { font-family: 'Noto Sans Mono'; font-style: normal; font-size: 9pt; }
+
+span.phantom { color: white; }
+	/* Unfortunately, this way the text is still selectable. Another
+	option is display:none, but then we lose the nice layout.
+	Todo: find proper solution. */
+
+span.math {
+	font-style: normal;
+	font-family: 'Noto Serif';
+	font-size: 10pt;
+}
+
+span.mathblock {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 1.2em;
+	margin-bottom: 1.2em;
+	text-align: center;
+}
+
+span.mathalpha {
+	font-style: italic;
+}
+
+span.synopsis {
+	font-weight: bold;
+	margin-top: 0.5em;
+	display: block;
+}
+
+span.definition {
+	font-weight: bold;
+	display: block;
+}
+
+.codeblock {
+	font-family: 'Noto Sans Mono';
+	margin-left: 1.2em;
+	line-height: 1.5;
+	font-size: 9pt;
+	white-space: pre;
+	display: block;
+	margin-top: 3pt;
+	margin-bottom: 3pt;
+	overflow: auto;
+	margin-right: -15mm;
+}
+
+table .codeblock { margin-right: 0; }
+
+.outputblock {
+	margin-left: 1.2em;
+	line-height: 1.5;
+	font-family: 'Noto Sans Mono';
+	font-size: 9pt;
+}
+
+code {
+	font-family: 'Noto Sans Mono';
+	font-style: normal;
+}
+
+div.itemdecl {
+	margin-top: 2ex;
+}
+
+code.itemdeclcode {
+	white-space: pre;
+	font-family: 'Noto Sans Mono';
+	font-size: 9pt;
+	display: block;
+	overflow: auto;
+	margin-right: -15mm;
+}
+
+.comment { color: green; font-style: italic; font-family: 'Noto Serif'; font-size: 10pt; }
+.footnote .comment { color: green; font-style: italic; font-family: 'Noto Serif'; font-size: 8pt; }
+.example .comment { color: green; font-style: italic; font-family: 'Noto Serif'; font-size: 9pt; }
+.note .comment { color: green; font-style: italic; font-family: 'Noto Serif'; font-size: 9pt; }
+
+span.keyword { color: #00607c; font-style: normal; }
+span.parenthesis { color: #af1915; }
+span.curlybracket { color: #af1915; }
+span.squarebracket { color: #af1915; }
+span.literal { color: #9F6807; }
+span.literalterminal { color: #9F6807; font-family: 'Noto Sans Mono'; font-style: normal; }
+span.operator { color: #570057; }
+span.anglebracket { color: #570057; }
+span.preprocessordirective { color: #6F4E37; }
+
+span.textsuperscript {
+	vertical-align: super;
+	font-size: smaller;
+	line-height: 0;
+}
+
+.footnoteref {
+	vertical-align: super;
+	font-size: smaller;
+	line-height: 0;
+}
+
+.footnote {
+	font-size: 8pt;
+}
+
+.footnote .math {
+	font-size: 8pt;
+}
+
+.footnotenum {
+	display: inline-block;
+	text-align: right;
+	margin-right: 1mm;
+	width: 4ch;
+}
+
+.footnoteBacklink {
+	display: none;
+}
+
+:target .footnoteBacklink {
+	display: inline-block;
+	text-align: right;
+	margin-right: 1mm;
+	width: 4ch;
+}
+
+:target .footnotenum {
+	display: none;
+}
+
+.footnoteSeparator {
+	background: black;
+	margin-top: 5mm;
+	height: 1px;
+	width: 6cm;
+}
+
+div.minipage {
+	display: inline-block;
+	margin-right: 3em;
+}
+
+div.numberedTable {
+	text-align: center;
+	margin-left: 1em;
+	margin-right: 1em;
+	margin-bottom: 12pt;
+	margin-top: 8pt;
+}
+
+div.figure {
+	text-align: center;
+	margin-left: 2em;
+	margin-right: 2em;
+	margin-bottom: 12pt;
+	margin-top: 3pt;
+}
+
+table {
+	border: 1px solid black;
+	border-collapse: collapse;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 7pt;
+	text-align: left;
+}
+
+td, th {
+	padding-left: 8pt;
+	padding-right: 8pt;
+	vertical-align: top;
+}
+
+td.empty {
+    padding: 0px;
+    padding-left: 1px;
+}
+
+td.left {
+	text-align: left;
+}
+
+td.hidden {
+	padding: 0;
+	width: 0;
+}
+
+td.right {
+	text-align: right;
+}
+
+td.center {
+	text-align: center;
+}
+
+td.justify {
+	text-align: justify;
+}
+
+td.border {
+	border-left: 1px solid black;
+}
+
+tr.rowsep, td.cline {
+	border-top: 1px solid black;
+}
+
+tr.capsep {
+	border-top: 3px solid black;
+	border-top-style: double;
+}
+
+th {
+	border-bottom: 1px solid black;
+}
+
+span.centry {
+	font-weight: bold;
+}
+
+div.table {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+	width: 90%;
+}
+
+span.indented {
+	background: inherit;
+	display: block;
+	margin-left: 2em;
+	margin-bottom: 1em;
+	margin-top: 1em;
+}
+
+span.uppercase {
+	text-transform: uppercase;
+}
+
+span.ucode {
+	font-variant: small-caps;
+	text-transform: uppercase;
+	font-size: 90%;
+}
+
+span.uname {
+	font-variant: small-caps;
+	text-transform: uppercase;
+	font-size: 90%;
+}
+
+table.enumerate {
+	border: 0;
+	margin: 0;
+}
+
+table.enumerate td {
+	padding: 0;
+}
+
+table.enumerate td:first-child {
+	width: 1cm;
+	text-align: right;
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #171717;
+        color: #b0b0b0;
+    }
+
+    span.mjx-mstyle { color: #b0b0b0 !important }
+
+    a:link { color: #549df2; }
+    a:visited { color: #a36ae6; }
+
+    a.hidden_link {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    span.phantom { color: #171717; }
+
+    :target { background-color: #3b4343; }
+    :target .codeblock { background-color: #3b4343; }
+    :target ul { background-color: #3b4343; }
+    a.index:before { color: #b0b0b0; background-color: #3b4343; }
+
+    .comment { color: #35ba00; }
+    .footnote .comment { color: #35ba00; }
+    .example .comment { color: #35ba00; }
+    .note .comment { color: #35ba00; }
+
+    span.keyword { color: #12cabe; }
+    span.parenthesis { color: #cf1915; }
+    span.curlybracket { color: #cf1915; }
+    span.squarebracket { color: #cf1915; }
+    span.literal { color: #bF8827; }
+    span.literalterminal { color: #bF8827; }
+    span.operator { color: #baa6b9; }
+    span.anglebracket { color: #baa6b9; }
+    span.preprocessordirective { color: #b27c58; }
+
+    table { border-color: #b0b0b0; }
+    td.border { border-color: #b0b0b0; }
+    td.border { border-left-color: #b0b0b0; }
+    tr.rowsep, td.cline { border-top-color: #b0b0b0; }
+    tr.capsep { border-top-color: #b0b0b0; }
+    th { border-bottom-color: #b0b0b0; }
+
+    .footnoteSeparator { background-color: #b0b0b0; }
+
+    text { fill: #b0b0b0; }
+    path { stroke: #b0b0b0; }
+    polygon { stroke: #b0b0b0; fill: #b0b0b0; }
+    ellipse { stroke: #b0b0b0; }
+}
+.mjx-chtml {display: inline-block; line-height: 0; text-indent: 0; text-align: left; text-transform: none; font-style: normal; font-weight: normal; font-size: 100%; font-size-adjust: none; letter-spacing: normal; word-wrap: normal; word-spacing: normal; white-space: nowrap; float: none; direction: ltr; max-width: none; max-height: none; min-width: 0; min-height: 0; border: 0; margin: 0; padding: 1px 0}
+.MJXc-display {display: block;background:inherit; text-align: center; margin: 1em 0; padding: 0}
+.mjx-chtml[tabindex]:focus, body :focus .mjx-chtml[tabindex] {display: inline-table}
+.mjx-full-width {text-align: center; display: table-cell!important; width: 10000em}
+.mjx-math {display: inline-block; border-collapse: separate; border-spacing: 0}
+.mjx-math * {display: inline-block; -webkit-box-sizing: content-box!important; -moz-box-sizing: content-box!important; box-sizing: content-box!important; text-align: left}
+.mjx-numerator {display: block;background:inherit; text-align: center}
+.mjx-denominator {display: block;background:inherit; text-align: center}
+.MJXc-stacked {height: 0; position: relative}
+.MJXc-stacked > * {position: absolute}
+.MJXc-bevelled > * {display: inline-block}
+.mjx-stack {display: inline-block}
+.mjx-op {display: block;background:inherit}
+.mjx-under {display: table-cell}
+.mjx-over {display: block;background:inherit}
+.mjx-over > * {padding-left: 0px!important; padding-right: 0px!important}
+.mjx-under > * {padding-left: 0px!important; padding-right: 0px!important}
+.mjx-stack > .mjx-sup {display: block;background:inherit}
+.mjx-stack > .mjx-sub {display: block;background:inherit}
+.mjx-prestack > .mjx-presup {display: block;background:inherit}
+.mjx-prestack > .mjx-presub {display: block;background:inherit}
+.mjx-delim-h > .mjx-char {display: inline-block}
+.mjx-surd {vertical-align: top}
+.mjx-surd + .mjx-box {display: inline-flex}
+.mjx-mphantom * {visibility: hidden}
+.mjx-merror {background-color: #FFFF88; color: #CC0000; border: 1px solid #CC0000; padding: 2px 3px; font-style: normal; font-size: 90%}
+.mjx-annotation-xml {line-height: normal}
+.mjx-menclose > svg {fill: none; stroke: currentColor; overflow: visible}
+.mjx-mtr {display: table-row}
+.mjx-mlabeledtr {display: table-row}
+.mjx-mtd {display: table-cell; text-align: center}
+.mjx-label {display: table-row}
+.mjx-box {display: inline-block}
+.mjx-block {display: block;background:inherit}
+.mjx-span {display: inline}
+.mjx-char {display: block;background:inherit; white-space: pre}
+.mjx-itable {display: inline-table; width: auto}
+.mjx-row {display: table-row}
+.mjx-cell {display: table-cell}
+.mjx-table {display: table; width: 100%}
+.mjx-line {display: block;background:inherit; height: 0}
+.mjx-strut {width: 0; padding-top: 1em}
+.mjx-vsize {width: 0}
+.MJXc-space1 {margin-left: .167em}
+.MJXc-space2 {margin-left: .222em}
+.MJXc-space3 {margin-left: .278em}
+.mjx-test.mjx-test-display {display: table!important}
+.mjx-test.mjx-test-inline {display: inline!important; margin-right: -1px}
+.mjx-test.mjx-test-default {display: block;background:inherit!important; clear: both}
+.mjx-ex-box {display: inline-block!important; position: absolute; overflow: hidden; min-height: 0; max-height: none; padding: 0; border: 0; margin: 0; width: 1px; height: 60ex}
+.mjx-test-inline .mjx-left-box {display: inline-block; width: 0; float: left}
+.mjx-test-inline .mjx-right-box {display: inline-block; width: 0; float: right}
+.mjx-test-display .mjx-right-box {display: table-cell!important; width: 10000em!important; min-width: 0; max-width: none; padding: 0; border: 0; margin: 0}
+.MJXc-TeX-unknown-R {font-family: monospace; font-style: normal; font-weight: normal}
+.MJXc-TeX-unknown-I {font-family: monospace; font-style: italic; font-weight: normal}
+.MJXc-TeX-unknown-B {font-family: monospace; font-style: normal; font-weight: bold}
+.MJXc-TeX-unknown-BI {font-family: monospace; font-style: italic; font-weight: bold}
+.MJXc-TeX-ams-R {font-family: MJXc-TeX-ams-R,MJXc-TeX-ams-Rw}
+.MJXc-TeX-cal-B {font-family: MJXc-TeX-cal-B,MJXc-TeX-cal-Bx,MJXc-TeX-cal-Bw}
+.MJXc-TeX-frak-R {font-family: MJXc-TeX-frak-R,MJXc-TeX-frak-Rw}
+.MJXc-TeX-frak-B {font-family: MJXc-TeX-frak-B,MJXc-TeX-frak-Bx,MJXc-TeX-frak-Bw}
+.MJXc-TeX-math-BI {font-family: MJXc-TeX-math-BI,MJXc-TeX-math-BIx,MJXc-TeX-math-BIw}
+.MJXc-TeX-sans-R {font-family: 'Noto Sans'; font-size: 10pt; }
+.MJXc-TeX-sans-B {font-family: MJXc-TeX-sans-B,MJXc-TeX-sans-Bx,MJXc-TeX-sans-Bw}
+.MJXc-TeX-sans-I {font-family: MJXc-TeX-sans-I,MJXc-TeX-sans-Ix,MJXc-TeX-sans-Iw}
+.MJXc-TeX-script-R {font-family: MJXc-TeX-script-R,MJXc-TeX-script-Rw}
+.MJXc-TeX-type-R {font-family: 'Noto Sans Mono'; font-size: 10pt; }
+.MJXc-TeX-cal-R {font-family: MJXc-TeX-cal-R,MJXc-TeX-cal-Rw}
+.MJXc-TeX-main-B {font-family: MJXc-TeX-main-B,MJXc-TeX-main-Bx,MJXc-TeX-main-Bw}
+.MJXc-TeX-main-I {font-style: italic}
+.MJXc-TeX-main-R {}
+.MJXc-TeX-math-I {font-style: italic}
+.MJXc-TeX-size1-R {font-family: MJXc-TeX-size1-R,MJXc-TeX-size1-Rw}
+.MJXc-TeX-size2-R {font-family: MJXc-TeX-size2-R,MJXc-TeX-size2-Rw}
+.MJXc-TeX-size3-R {font-family: MJXc-TeX-size3-R,MJXc-TeX-size3-Rw}
+.MJXc-TeX-size4-R {font-family: MJXc-TeX-size4-R,MJXc-TeX-size4-Rw}
+.MJXc-TeX-vec-R {font-family: MJXc-TeX-vec-R,MJXc-TeX-vec-Rw}
+.MJXc-TeX-vec-B {font-family: MJXc-TeX-vec-B,MJXc-TeX-vec-Bx,MJXc-TeX-vec-Bw}
+@font-face {font-family: MJXc-TeX-ams-R; src: local('MathJax_AMS'), local('MathJax_AMS-Regular')}
+@font-face {font-family: MJXc-TeX-ams-Rw; src /*1*/: url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/eot/MathJax_AMS-Regular.eot'); src /*2*/: url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/woff/MathJax_AMS-Regular.woff') format('woff'), url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/otf/MathJax_AMS-Regular.otf') format('opentype')}
+@font-face {font-family: MJXc-TeX-cal-B; src: local('MathJax_Caligraphic Bold'), local('MathJax_Caligraphic-Bold')}
+@font-face {font-family: MJXc-TeX-cal-Bx; src: local('MathJax_Caligraphic'); font-weight: bold}
+@font-face {font-family: MJXc-TeX-cal-Bw; src /*1*/: url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/eot/MathJax_Caligraphic-Bold.eot'); src /*2*/: url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/woff/MathJax_Caligraphic-Bold.woff') format('woff'), url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/otf/MathJax_Caligraphic-Bold.otf') format('opentype')}
+@font-face {font-family: MJXc-TeX-frak-R; src: local('MathJax_Fraktur'), local('MathJax_Fraktur-Regular')}
+@font-face {font-family: MJXc-TeX-frak-Rw; src /*1*/: url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/eot/MathJax_Fraktur-Regular.eot'); src /*2*/: url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/woff/MathJax_Fraktur-Regular.woff') format('woff'), url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/otf/MathJax_Fraktur-Regular.otf') format('opentype')}
+@font-face {font-family: MJXc-TeX-frak-B; src: local('MathJax_Fraktur Bold'), local('MathJax_Fraktur-Bold')}
+@font-face {font-family: MJXc-TeX-frak-Bx; src: local('MathJax_Fraktur'); font-weight: bold}
+@font-face {font-family: MJXc-TeX-frak-Bw; src /*1*/: url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/eot/MathJax_Fraktur-Bold.eot'); src /*2*/: url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/woff/MathJax_Fraktur-Bold.woff') format('woff'), url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/otf/MathJax_Fraktur-Bold.otf') format('opentype')}
+@font-face {font-family: MJXc-TeX-math-BI; src: local('MathJax_Math BoldItalic'), local('MathJax_Math-BoldItalic')}
+@font-face {font-family: MJXc-TeX-math-BIx; src: local('MathJax_Math'); font-weight: bold; font-style: italic}
+@font-face {font-family: MJXc-TeX-math-BIw; src /*1*/: url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/eot/MathJax_Math-BoldItalic.eot'); src /*2*/: url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/woff/MathJax_Math-BoldItalic.woff') format('woff'), url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/otf/MathJax_Math-BoldItalic.otf') format('opentype')}
+@font-face {font-family: MJXc-TeX-sans-R; src: local('MathJax_SansSerif'), local('MathJax_SansSerif-Regular')}
+@font-face {font-family: MJXc-TeX-sans-Rw; src /*1*/: url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/eot/MathJax_SansSerif-Regular.eot'); src /*2*/: url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/woff/MathJax_SansSerif-Regular.woff') format('woff'), url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/otf/MathJax_SansSerif-Regular.otf') format('opentype')}
+@font-face {font-family: MJXc-TeX-sans-B; src: local('MathJax_SansSerif Bold'), local('MathJax_SansSerif-Bold')}
+@font-face {font-family: MJXc-TeX-sans-Bx; src: local('MathJax_SansSerif'); font-weight: bold}
+@font-face {font-family: MJXc-TeX-sans-Bw; src /*1*/: url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/eot/MathJax_SansSerif-Bold.eot'); src /*2*/: url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/woff/MathJax_SansSerif-Bold.woff') format('woff'), url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/otf/MathJax_SansSerif-Bold.otf') format('opentype')}
+@font-face {font-family: MJXc-TeX-sans-I; src: local('MathJax_SansSerif Italic'), local('MathJax_SansSerif-Italic')}
+@font-face {font-family: MJXc-TeX-sans-Ix; src: local('MathJax_SansSerif'); font-style: italic}
+@font-face {font-family: MJXc-TeX-sans-Iw; src /*1*/: url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/eot/MathJax_SansSerif-Italic.eot'); src /*2*/: url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/woff/MathJax_SansSerif-Italic.woff') format('woff'), url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/otf/MathJax_SansSerif-Italic.otf') format('opentype')}
+@font-face {font-family: MJXc-TeX-script-R; src: local('MathJax_Script'), local('MathJax_Script-Regular')}
+@font-face {font-family: MJXc-TeX-script-Rw; src /*1*/: url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/eot/MathJax_Script-Regular.eot'); src /*2*/: url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/woff/MathJax_Script-Regular.woff') format('woff'), url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/otf/MathJax_Script-Regular.otf') format('opentype')}
+@font-face {font-family: MJXc-TeX-type-R; src: local('MathJax_Typewriter'), local('MathJax_Typewriter-Regular')}
+@font-face {font-family: MJXc-TeX-type-Rw; src /*1*/: url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/eot/MathJax_Typewriter-Regular.eot'); src /*2*/: url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/woff/MathJax_Typewriter-Regular.woff') format('woff'), url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/otf/MathJax_Typewriter-Regular.otf') format('opentype')}
+@font-face {font-family: MJXc-TeX-cal-R; src: local('MathJax_Caligraphic'), local('MathJax_Caligraphic-Regular')}
+@font-face {font-family: MJXc-TeX-cal-Rw; src /*1*/: url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/eot/MathJax_Caligraphic-Regular.eot'); src /*2*/: url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/woff/MathJax_Caligraphic-Regular.woff') format('woff'), url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/otf/MathJax_Caligraphic-Regular.otf') format('opentype')}
+@font-face {font-family: MJXc-TeX-main-B; src: local('MathJax_Main Bold'), local('MathJax_Main-Bold')}
+@font-face {font-family: MJXc-TeX-main-Bx; src: local('MathJax_Main'); font-weight: bold}
+@font-face {font-family: MJXc-TeX-main-Bw; src /*1*/: url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/eot/MathJax_Main-Bold.eot'); src /*2*/: url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/woff/MathJax_Main-Bold.woff') format('woff'), url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/otf/MathJax_Main-Bold.otf') format('opentype')}
+@font-face {font-family: MJXc-TeX-main-I; src: local('MathJax_Main Italic'), local('MathJax_Main-Italic')}
+@font-face {font-family: MJXc-TeX-main-Ix; src: local('MathJax_Main'); font-style: italic}
+@font-face {font-family: MJXc-TeX-main-Iw; src /*1*/: url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/eot/MathJax_Main-Italic.eot'); src /*2*/: url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/woff/MathJax_Main-Italic.woff') format('woff'), url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/otf/MathJax_Main-Italic.otf') format('opentype')}
+@font-face {font-family: MJXc-TeX-main-R; src: local('MathJax_Main'), local('MathJax_Main-Regular')}
+@font-face {font-family: MJXc-TeX-main-Rw; src /*1*/: url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/eot/MathJax_Main-Regular.eot'); src /*2*/: url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/woff/MathJax_Main-Regular.woff') format('woff'), url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/otf/MathJax_Main-Regular.otf') format('opentype')}
+@font-face {font-family: MJXc-TeX-math-I; src: local('MathJax_Math Italic'), local('MathJax_Math-Italic')}
+@font-face {font-family: MJXc-TeX-math-Ix; src: local('MathJax_Math'); font-style: italic}
+@font-face {font-family: MJXc-TeX-math-Iw; src /*1*/: url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/eot/MathJax_Math-Italic.eot'); src /*2*/: url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/woff/MathJax_Math-Italic.woff') format('woff'), url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/otf/MathJax_Math-Italic.otf') format('opentype')}
+@font-face {font-family: MJXc-TeX-size1-R; src: local('MathJax_Size1'), local('MathJax_Size1-Regular')}
+@font-face {font-family: MJXc-TeX-size1-Rw; src /*1*/: url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/eot/MathJax_Size1-Regular.eot'); src /*2*/: url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/woff/MathJax_Size1-Regular.woff') format('woff'), url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/otf/MathJax_Size1-Regular.otf') format('opentype')}
+@font-face {font-family: MJXc-TeX-size2-R; src: local('MathJax_Size2'), local('MathJax_Size2-Regular')}
+@font-face {font-family: MJXc-TeX-size2-Rw; src /*1*/: url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/eot/MathJax_Size2-Regular.eot'); src /*2*/: url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/woff/MathJax_Size2-Regular.woff') format('woff'), url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/otf/MathJax_Size2-Regular.otf') format('opentype')}
+@font-face {font-family: MJXc-TeX-size3-R; src: local('MathJax_Size3'), local('MathJax_Size3-Regular')}
+@font-face {font-family: MJXc-TeX-size3-Rw; src /*1*/: url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/eot/MathJax_Size3-Regular.eot'); src /*2*/: url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/woff/MathJax_Size3-Regular.woff') format('woff'), url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/otf/MathJax_Size3-Regular.otf') format('opentype')}
+@font-face {font-family: MJXc-TeX-size4-R; src: local('MathJax_Size4'), local('MathJax_Size4-Regular')}
+@font-face {font-family: MJXc-TeX-size4-Rw; src /*1*/: url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/eot/MathJax_Size4-Regular.eot'); src /*2*/: url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/woff/MathJax_Size4-Regular.woff') format('woff'), url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/otf/MathJax_Size4-Regular.otf') format('opentype')}
+@font-face {font-family: MJXc-TeX-vec-R; src: local('MathJax_Vector'), local('MathJax_Vector-Regular')}
+@font-face {font-family: MJXc-TeX-vec-Rw; src /*1*/: url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/eot/MathJax_Vector-Regular.eot'); src /*2*/: url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/woff/MathJax_Vector-Regular.woff') format('woff'), url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/otf/MathJax_Vector-Regular.otf') format('opentype')}
+@font-face {font-family: MJXc-TeX-vec-B; src: local('MathJax_Vector Bold'), local('MathJax_Vector-Bold')}
+@font-face {font-family: MJXc-TeX-vec-Bx; src: local('MathJax_Vector'); font-weight: bold}
+@font-face {font-family: MJXc-TeX-vec-Bw; src /*1*/: url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/eot/MathJax_Vector-Bold.eot'); src /*2*/: url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/woff/MathJax_Vector-Bold.woff') format('woff'), url('https://cdn.mathjax.org/mathjax/latest/fonts/HTML-CSS/TeX/otf/MathJax_Vector-Bold.otf') format('opentype')}
+

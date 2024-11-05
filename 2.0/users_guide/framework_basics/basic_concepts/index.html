@@ -1,0 +1,2296 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A Physical Quantities and Units library for C++">
+      
+      
+        <meta name="author" content="mp-units Team">
+      
+      
+        <link rel="canonical" href="https://mpusz.github.io/mp-units/2.0/users_guide/framework_basics/basic_concepts/">
+      
+      
+        <link rel="prev" href="../../terms_and_definitions/">
+      
+      
+        <link rel="next" href="../interface_introduction/">
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.1">
+    
+    
+      
+        <title>Basic Concepts - The mp-units library</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.72749a73.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.a5377069.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var key of Object.keys(palette.color))document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#basic-concepts" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+          <aside class="md-banner md-banner--warning">
+            <div class="md-banner__inner md-grid md-typeset">
+              
+You're not viewing the latest version.
+<a href="../../../..">
+  <strong>Click here to go to latest.</strong>
+</a>
+
+            </div>
+            <script>var el=document.querySelector("[data-md-component=outdated]"),outdated=__md_get("__outdated",sessionStorage);!0===outdated&&el&&(el.hidden=!1)</script>
+          </aside>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="The mp-units library" class="md-header__button md-logo" aria-label="The mp-units library" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            The mp-units library
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Basic Concepts
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3 3.19.09m3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95 2.06.05m-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31Z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5c-.84 0-1.65.15-2.39.42L12 2M3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29L3.34 7m.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14L3.36 17M20.65 7l-1.77 3.79a7.023 7.023 0 0 0-2.38-4.15l4.15.36m-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29L20.64 17M12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44L12 22Z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7 0-.24-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91 1.61 0 2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08Z"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/mpusz/mp-units" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    mpusz/mp-units
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="The mp-units library" class="md-nav__button md-logo" aria-label="The mp-units library" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    The mp-units library
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/mpusz/mp-units" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    mpusz/mp-units
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Getting Started
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Getting Started
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting_started/introduction/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Introduction
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting_started/code_example/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Code Example
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting_started/quick_start/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Quick Start
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting_started/installation_and_usage/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Installation and Usage
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting_started/faq/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    FAQ
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    User's Guide
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            User's Guide
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../terms_and_definitions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Terms and Definitions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" checked>
+        
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Framework Basics
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            Framework Basics
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Basic Concepts
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Basic Concepts
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#Dimension" class="md-nav__link">
+    Dimension&lt;T&gt;
+  </a>
+  
+    <nav class="md-nav" aria-label="Dimension<T>">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#DimensionOf" class="md-nav__link">
+    DimensionOf&lt;T, V&gt;
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#QuantitySpec" class="md-nav__link">
+    QuantitySpec&lt;T&gt;
+  </a>
+  
+    <nav class="md-nav" aria-label="QuantitySpec<T>">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#QuantitySpecOf" class="md-nav__link">
+    QuantitySpecOf&lt;T, V&gt;
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#Unit" class="md-nav__link">
+    Unit&lt;T&gt;
+  </a>
+  
+    <nav class="md-nav" aria-label="Unit<T>">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#AssociatedUnit" class="md-nav__link">
+    AssociatedUnit&lt;T&gt;
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#PrefixableUnit" class="md-nav__link">
+    PrefixableUnit&lt;T&gt;
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#UnitOf" class="md-nav__link">
+    UnitOf&lt;T, V&gt;
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#Reference" class="md-nav__link">
+    Reference&lt;T&gt;
+  </a>
+  
+    <nav class="md-nav" aria-label="Reference<T>">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ReferenceOf" class="md-nav__link">
+    ReferenceOf&lt;T, V&gt;
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#Representation" class="md-nav__link">
+    Representation&lt;T&gt;
+  </a>
+  
+    <nav class="md-nav" aria-label="Representation<T>">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#RepresentationOf" class="md-nav__link">
+    RepresentationOf&lt;T, Ch&gt;
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#Quantity" class="md-nav__link">
+    Quantity&lt;T&gt;
+  </a>
+  
+    <nav class="md-nav" aria-label="Quantity<T>">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#QuantityOf" class="md-nav__link">
+    QuantityOf&lt;T, V&gt;
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#PointOrigin" class="md-nav__link">
+    PointOrigin&lt;T&gt;
+  </a>
+  
+    <nav class="md-nav" aria-label="PointOrigin<T>">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#PointOriginFor" class="md-nav__link">
+    PointOriginFor&lt;T, V&gt;
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#QuantityPoint" class="md-nav__link">
+    QuantityPoint&lt;T&gt;
+  </a>
+  
+    <nav class="md-nav" aria-label="QuantityPoint<T>">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#QuantityPointOf" class="md-nav__link">
+    QuantityPointOf&lt;T, V&gt;
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#QuantityLike" class="md-nav__link">
+    QuantityLike&lt;T&gt;
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#QuantityPointLike" class="md-nav__link">
+    QuantityPointLike&lt;T&gt;
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interface_introduction/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Interface Introduction
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../systems_of_quantities/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Systems of Quantities
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../systems_of_units/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Systems of Units
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../simple_and_typed_quantities/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Simple and Typed Quantities
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../value_conversions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Value Conversions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../character_of_a_quantity/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Character of a Quantity
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dimensionless_quantities/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Dimensionless Quantities
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../quantity_arithmetics/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Quantity Arithmetics
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../generic_interfaces/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Generic Interfaces
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../faster_than_lightspeed_constants/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Faster-than-lightspeed Constants
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../the_affine_space/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    The Affine Space
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../obtaining_metadata/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Obtaining Metadata
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../text_output/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Text Output
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Defining Systems
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            Defining Systems
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../defining_systems/introduction/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Introduction
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../defining_systems/isq/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    International System of Quantities (ISQ)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../defining_systems/si/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    International System of Units (SI)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../defining_systems/strong_angular_system/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Strong Angular System
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../defining_systems/natural_units/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Natural Units
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Use Cases
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            Use Cases
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../use_cases/pure_dimensional_analysis/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Pure Dimensional Analysis
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../use_cases/working_with_legacy_interfaces/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Working with Legacy Interfaces
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../use_cases/using_custom_representation_types/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Using Custom Representation Types
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../use_cases/interoperability_with_other_units_libraries/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Interoperability with Other Units Libraries
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../use_cases/extending_the_library/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Extending the Library
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_5" >
+        
+          <label class="md-nav__link" for="__nav_3_5" id="__nav_3_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Examples
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_5">
+            <span class="md-nav__icon md-icon"></span>
+            Examples
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/tags_index/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Tags Index
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/hello_units/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    hello_units
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/avg_speed/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    avg_speed
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/si_constants/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    si_constants
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Library Reference
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Library Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../library_reference/core_library/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Core Library
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../library_reference/magnitudes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Magnitudes
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Appendix
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Appendix
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../appendix/glossary/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Glossary
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../appendix/mismeasure_for_measure/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Mismeasure for Measure
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../appendix/release_notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Release Notes
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../appendix/references/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    References
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+    <a href="https://github.com/mpusz/mp-units/edit/master/docs/users_guide/framework_basics/basic_concepts.md" title="Edit this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4v-2m10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1 2.1 2.1Z"/></svg>
+    </a>
+  
+  
+    
+      
+    
+    <a href="https://github.com/mpusz/mp-units/raw/master/docs/users_guide/framework_basics/basic_concepts.md" title="View source of this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 18c.56 0 1 .44 1 1s-.44 1-1 1-1-.44-1-1 .44-1 1-1m0-3c-2.73 0-5.06 1.66-6 4 .94 2.34 3.27 4 6 4s5.06-1.66 6-4c-.94-2.34-3.27-4-6-4m0 6.5a2.5 2.5 0 0 1-2.5-2.5 2.5 2.5 0 0 1 2.5-2.5 2.5 2.5 0 0 1 2.5 2.5 2.5 2.5 0 0 1-2.5 2.5M9.27 20H6V4h7v5h5v4.07c.7.08 1.36.25 2 .49V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h4.5a8.15 8.15 0 0 1-1.23-2Z"/></svg>
+    </a>
+  
+
+
+<h1 id="basic-concepts">Basic Concepts<a class="headerlink" href="#basic-concepts" title="Permanent link">&para;</a></h1>
+<p>The most important concepts in the <strong>mp-units</strong> library are <code>Dimension</code>, <code>QuantitySpec</code>, <code>Unit</code>,
+<code>Reference</code>, <code>Representation</code>, <code>Quantity</code>, and <code>QuantityPoint</code>:</p>
+<pre class="mermaid"><code>flowchart TD
+    Dimension --- QuantitySpec
+    QuantitySpec --- Reference
+    Unit --- Reference
+    Reference --- Quantity
+    Representation --- Quantity
+    Quantity --- QuantityPoint
+    PointOrigin --- QuantityPoint
+
+    click Dimension "#Dimension"
+    click QuantitySpec "#QuantitySpec"
+    click Unit "#Unit"
+    click Reference "#Reference"
+    click Representation "#Representation"
+    click Quantity "#Quantity"
+    click PointOrigin "#PointOrigin"
+    click QuantityPoint "#QuantityPoint"</code></pre>
+<h2 id="Dimension"><code>Dimension&lt;T&gt;</code><a class="headerlink" href="#Dimension" title="Permanent link">&para;</a></h2>
+<p><code>Dimension</code> concept matches a <a href="../../../appendix/glossary/#dimension">dimension</a> of either a base
+or derived <a href="../../../appendix/glossary/#quantity">quantity</a>:</p>
+<ul>
+<li><a href="../../../appendix/glossary/#base-dimension">Base dimensions</a> are explicitly defined by a user
+  by inheriting from the instantiation of a <code>base_dimension</code> class template. It should be instantiated with
+  a unique symbol identifier describing this dimension in a specific
+  <a href="../../../appendix/glossary/#system-of-quantities">system of quantities</a>.</li>
+<li><a href="../../../appendix/glossary/#derived-dimension">Derived dimensions</a> are implicitly created
+  by the library's framework based on the <a href="../../../appendix/glossary/#quantity-equation">quantity equation</a>
+  provided in the <a href="../../../appendix/glossary/#quantity_spec">quantity specification</a>.</li>
+</ul>
+<details class="abstract">
+<summary>Examples</summary>
+<p><code>isq::dim_length</code>, <code>isq::dim_mass</code>, <code>isq::dim_time</code>, <code>isq::dim_electric_current</code>,
+<code>isq::dim_thermodynamic_temperature</code>, <code>isq::dim_amount_of_substance</code>, and
+<code>isq::dim_luminous_intensity</code> are the dimensions of base quantities in the
+<a href="../../../appendix/glossary/#isq">ISQ</a>.</p>
+<p>IEC 80000 provides <code>iec80000::dim_traffic_intensity</code> base dimension to extend ISQ
+with information technology quantities.</p>
+<p>A <code>Dimension</code> can be defined by the user in the following way:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">dim_length</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">base_dimension</span><span class="o">&lt;</span><span class="s">&quot;L&quot;</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">dim_length</span><span class="p">;</span>
+</span></code></pre></div>
+<p>The division on quantity specifications also divides their dimensions:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">static_assert</span><span class="p">((</span><span class="n">isq</span><span class="o">::</span><span class="n">length</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">time</span><span class="p">).</span><span class="n">dimension</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">dim_length</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">dim_time</span><span class="p">);</span>
+</span></code></pre></div>
+<p>The <a href="../../../appendix/glossary/#dimension-equation">dimension equation</a> of <code>isq::dim_length / isq::dim_time</code>
+results in the <code>derived_dimension&lt;isq::dim_length, per&lt;isq::dim_time&gt;&gt;</code> type.</p>
+</details>
+<h3 id="DimensionOf"><code>DimensionOf&lt;T, V&gt;</code><a class="headerlink" href="#DimensionOf" title="Permanent link">&para;</a></h3>
+<p><code>DimensionOf</code> concept is satisfied when both arguments satisfy a <a href="#Dimension"><code>Dimension</code></a> concept and
+when they compare equal.</p>
+<h2 id="QuantitySpec"><code>QuantitySpec&lt;T&gt;</code><a class="headerlink" href="#QuantitySpec" title="Permanent link">&para;</a></h2>
+<p><code>QuantitySpec</code> concept matches all the <a href="../../../appendix/glossary/#quantity_spec">quantity specifications</a>
+including:</p>
+<ul>
+<li><a href="../../../appendix/glossary/#base-quantity">Base quantities</a> defined by a user by inheriting from
+  the <code>quantity_spec</code> class template instantiated with a <a href="../../../appendix/glossary/#base-dimension">base dimension</a>
+  argument.</li>
+<li><a href="../../../appendix/glossary/#derived-quantity">Derived named quantities</a> defined by a user by
+  inheriting from the <code>quantity_spec</code> class template instantiated with a result of a
+  <a href="../../../appendix/glossary/#quantity-equation">quantity equation</a> passed as an argument.</li>
+<li>Other named quantities forming a <a href="../../../appendix/glossary/#quantity-hierarchy">hierarchy of quantities</a>
+  of the same <a href="../../../appendix/glossary/#kind">kind</a> defined by a user by inheriting from the
+  <code>quantity_spec</code> class template instantiated with another "parent" quantity specification passed as an
+  argument.</li>
+<li><a href="../../../appendix/glossary/#kind">Quantity kinds</a> describing a family of mutually comparable quantities.</li>
+<li>Intermediate <a href="../../../appendix/glossary/#derived-quantity">derived quantity</a> specifications being
+  a result of a <a href="../../../appendix/glossary/#quantity-equation">quantity equations</a> on other specifications.</li>
+</ul>
+<details class="abstract">
+<summary>Examples</summary>
+<p><code>isq::length</code>, <code>isq::mass</code>, <code>isq::time</code>, <code>isq::electric_current</code>, <code>isq::thermodynamic_temperature</code>,
+<code>isq::amount_of_substance</code>, and <code>isq::luminous_intensity</code> are the specifications of base quantities
+in the <a href="../../../appendix/glossary/#isq">ISQ</a>.</p>
+<p><code>isq::width</code>, <code>isq::height</code>, <code>isq::radius</code>, and <code>isq::position_vector</code> are only a few of many
+quantities of a kind length specified in the <a href="../../../appendix/glossary/#isq">ISQ</a>.</p>
+<p><code>kind_of&lt;isq::length&gt;</code> behaves as any of the quantities of a kind length.</p>
+<p><code>isq::area</code>, <code>isq::speed</code>, <code>isq::moment_of_force</code> are only a few of many derived quantities provided
+in the <a href="../../../appendix/glossary/#isq">ISQ</a>.</p>
+<p><code>QuantitySpec</code> can be defined by the user in one of the following ways:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:3"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">C++23</label><label for="__tabbed_1_2">C++20</label><label for="__tabbed_1_3">Portable</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">length</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">dim_length</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">length</span><span class="p">;</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">height</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">length</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">height</span><span class="p">;</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">speed</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">length</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">time</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">speed</span><span class="p">;</span>
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">length</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">length</span><span class="p">,</span><span class="w"> </span><span class="n">dim_length</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">length</span><span class="p">;</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">height</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">height</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">height</span><span class="p">;</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">speed</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">speed</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">time</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">speed</span><span class="p">;</span>
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">QUANTITY_SPEC</span><span class="p">(</span><span class="n">length</span><span class="p">,</span><span class="w"> </span><span class="n">dim_length</span><span class="p">);</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">QUANTITY_SPEC</span><span class="p">(</span><span class="n">height</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="p">);</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">QUANTITY_SPEC</span><span class="p">(</span><span class="n">speed</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">time</span><span class="p">);</span>
+</span></code></pre></div>
+</div>
+</div>
+</div>
+<p>The <a href="../../../appendix/glossary/#quantity-equation">quantity equation</a> of <code>isq::length / isq::time</code> results
+in the <code>derived_quantity_spec&lt;isq::length, per&lt;isq::time&gt;&gt;</code> type.</p>
+</details>
+<h3 id="QuantitySpecOf"><code>QuantitySpecOf&lt;T, V&gt;</code><a class="headerlink" href="#QuantitySpecOf" title="Permanent link">&para;</a></h3>
+<p><code>QuantitySpecOf</code> concept is satisfied when both arguments satisfy a <a href="#QuantitySpec"><code>QuantitySpec</code></a> concept
+and when <code>T</code> is implicitly convertible to <code>V</code>.</p>
+<details class="info">
+<summary>More details</summary>
+<p>Additionally:</p>
+<ul>
+<li><code>T</code> should not be a <a href="../dimensionless_quantities/#nested-quantity-kinds">nested quantity specification of <code>V</code></a></li>
+<li>either <code>T</code> is quantity kind or <code>V</code> should not be a
+  <a href="../dimensionless_quantities/#nested-quantity-kinds">nested quantity specification of <code>T</code></a></li>
+</ul>
+<p>Those additional conditions are required to make the following work:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">ReferenceOf</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">radian</span><span class="p">,</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">angular_measure</span><span class="o">&gt;</span><span class="p">);</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="k">static_assert</span><span class="p">(</span><span class="o">!</span><span class="n">ReferenceOf</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">radian</span><span class="p">,</span><span class="w"> </span><span class="n">dimensionless</span><span class="o">&gt;</span><span class="p">);</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="k">static_assert</span><span class="p">(</span><span class="o">!</span><span class="n">ReferenceOf</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">angular_measure</span><span class="p">[</span><span class="n">si</span><span class="o">::</span><span class="n">radian</span><span class="p">],</span><span class="w"> </span><span class="n">dimensionless</span><span class="o">&gt;</span><span class="p">);</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">ReferenceOf</span><span class="o">&lt;</span><span class="n">one</span><span class="p">,</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">angular_measure</span><span class="o">&gt;</span><span class="p">);</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="k">static_assert</span><span class="p">(</span><span class="o">!</span><span class="n">ReferenceOf</span><span class="o">&lt;</span><span class="n">dimensionless</span><span class="p">[</span><span class="n">one</span><span class="p">],</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">angular_measure</span><span class="o">&gt;</span><span class="p">);</span>
+</span></code></pre></div>
+</details>
+<h2 id="Unit"><code>Unit&lt;T&gt;</code><a class="headerlink" href="#Unit" title="Permanent link">&para;</a></h2>
+<p><code>Unit</code> concept matches all the <a href="../../../appendix/glossary/#unit">units</a> in the library including:</p>
+<ul>
+<li><a href="../../../appendix/glossary/#base-unit">Base units</a> defined by a user by inheriting from the <code>named_unit</code>
+  class template instantiated with a unique symbol identifier describing this unit in a specific
+  <a href="../../../appendix/glossary/#system-of-units">system of units</a>.</li>
+<li>Named scaled units defined by a user by inheriting from the <code>named_unit</code> class template instantiated
+  with a unique symbol identifier and a product of multiplying another unit with some magnitude.</li>
+<li>Prefixed units defined by a user by inheriting from the <code>prefixed_unit</code> class template instantiated
+  with a prefix symbol, a magnitude, and a unit to be prefixed.</li>
+<li><a href="../../../appendix/glossary/#derived-unit">Derived named units</a> defined by a user by inheriting from the
+  <code>named_unit</code> class template instantiated with a unique symbol identifier and a result of
+  <a href="../../../appendix/glossary/#unit-equation">unit equation</a> passed as an argument.</li>
+<li><a href="../../../appendix/glossary/#derived-unit">Derived unnamed units</a> being a result of a
+  <a href="../../../appendix/glossary/#unit-equation">unit equations</a> on other units.</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In the <strong>mp-units</strong> library, <a href="../faster_than_lightspeed_constants/">physical constants are also implemented as units</a>.</p>
+</div>
+<details class="abstract">
+<summary>Examples</summary>
+<p><code>si::second</code>, <code>si::metre</code>, <code>si::kilogram</code>, <code>si::ampere</code>, <code>si::kelvin</code>, <code>si::mole</code>, and <code>si::candela</code>
+are the base units of <a href="../../../appendix/glossary/#si">SI</a>.</p>
+<p><code>si::kilo&lt;si::metre&gt;</code> is a prefixed unit on length.</p>
+<p><code>si::radian</code>, <code>si::newton</code>, and <code>si::watt</code> are examples of named derived quantities within
+<a href="../../../appendix/glossary/#si">SI</a>.</p>
+<p><code>non_si::minute</code> is an example of a scaled unit of time.</p>
+<p><code>si::si2019::speed_of_light_in_vacuum</code> is a physical constant standardized by the SI in 2019.</p>
+<p><code>Unit</code> can be defined by the user in one of the following ways:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="n">PrefixableUnit</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">U</span><span class="o">&gt;</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">kilo_</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">prefixed_unit</span><span class="o">&lt;</span><span class="s">&quot;k&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">mag_power</span><span class="o">&lt;</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">U</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{};</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="k">template</span><span class="o">&lt;</span><span class="n">PrefixableUnit</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">U</span><span class="o">&gt;</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">kilo_</span><span class="o">&lt;</span><span class="n">U</span><span class="o">&gt;</span><span class="w"> </span><span class="n">kilo</span><span class="p">;</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">second</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">named_unit</span><span class="o">&lt;</span><span class="s">&quot;s&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">kind_of</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">time</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">second</span><span class="p">;</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">gram</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">named_unit</span><span class="o">&lt;</span><span class="s">&quot;g&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">kind_of</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">mass</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">gram</span><span class="p">;</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">minute</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">named_unit</span><span class="o">&lt;</span><span class="s">&quot;min&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">mag</span><span class="o">&lt;</span><span class="mi">60</span><span class="o">&gt;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">second</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">minute</span><span class="p">;</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">kilogram</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">decltype</span><span class="p">(</span><span class="n">kilo</span><span class="o">&lt;</span><span class="n">gram</span><span class="o">&gt;</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">kilogram</span><span class="p">;</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">newton</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">named_unit</span><span class="o">&lt;</span><span class="s">&quot;N&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">kilogram</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">metre</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">square</span><span class="p">(</span><span class="n">second</span><span class="p">)</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">newton</span><span class="p">;</span>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">speed_of_light_in_vacuum</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">named_unit</span><span class="o">&lt;</span><span class="s">&quot;c&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">mag</span><span class="o">&lt;</span><span class="mi">299&#39;792&#39;458</span><span class="o">&gt;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">metre</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">second</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">speed_of_light_in_vacuum</span><span class="p">;</span>
+</span></code></pre></div>
+<p>The <a href="../../../appendix/glossary/#unit-equation">unit equation</a> of <code>si::metre / si::second</code> results
+in the <code>derived_unit&lt;si::metre, per&lt;si::second&gt;&gt;</code> type.</p>
+</details>
+<h3 id="AssociatedUnit"><code>AssociatedUnit&lt;T&gt;</code><a class="headerlink" href="#AssociatedUnit" title="Permanent link">&para;</a></h3>
+<p><code>AssociatedUnit</code> concept describes a <a href="../../../appendix/glossary/#associated-unit">unit with an associated quantity</a>
+and is satisfied by:</p>
+<ul>
+<li>All units derived from a <code>named_unit</code> class template instantiated with a unique symbol identifier
+  and a <a href="#quantityspec"><code>QuantitySpec</code></a>.</li>
+<li>All units being a result of a <a href="../../../appendix/glossary/#unit-equation">unit equations</a> on other
+  associated units.</li>
+</ul>
+<details class="abstract">
+<summary>Examples</summary>
+<p>All units in the <a href="../../../appendix/glossary/#si">SI</a> have associated quantities. For example,
+<code>si::second</code> is specified to measure <code>isq::time</code>.</p>
+<p>Natural units typically do not have an associated quantity. For example, if we assume <code>c = 1</code>,
+a <code>natural::second</code> unit can be used to measure both <code>time</code> and <code>length</code>. In such case <code>speed</code>
+would be a <a href="../../../appendix/glossary/#dimensionless-quantity">dimensionless quantity</a>.</p>
+</details>
+<h3 id="PrefixableUnit"><code>PrefixableUnit&lt;T&gt;</code><a class="headerlink" href="#PrefixableUnit" title="Permanent link">&para;</a></h3>
+<p><code>PrefixableUnit</code> concept is satisfied by all units derived from a <code>named_unit</code> class template for
+which a customization point <code>unit_can_be_prefixed&lt;T{}&gt;</code> was not explicitly set to <code>false</code>. Such
+units can be passed as an argument to a <code>prefixed_unit</code> class template.</p>
+<details class="abstract">
+<summary>Examples</summary>
+<p>All units in the <a href="../../../appendix/glossary/#si">SI</a> can be prefixed with SI-defined prefixes.</p>
+<p>Some <a href="../../../appendix/glossary/#off-system-unit">off-system units</a> like <code>non_si::day</code>
+can't be prefixed. To enforce that the following has to be provided:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="k">template</span><span class="o">&lt;&gt;</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">unit_can_be_prefixed</span><span class="o">&lt;</span><span class="n">non_si</span><span class="o">::</span><span class="n">day</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+</span></code></pre></div>
+</details>
+<h3 id="UnitOf"><code>UnitOf&lt;T, V&gt;</code><a class="headerlink" href="#UnitOf" title="Permanent link">&para;</a></h3>
+<p><code>UnitOf</code> concept is satisfied for all units <code>T</code> matching an <a href="#AssociatedUnit"><code>AssociatedUnit</code></a>
+concept with an associated quantity type implicitly convertible to <code>V</code>.</p>
+<details class="info">
+<summary>More details</summary>
+<p>Additionally, the kind of <code>V</code> and the kind of quantity type associated with <code>T</code> must be the same,
+or the quantity type associated with <code>T</code> may not be derived from the kind of <code>V</code>.</p>
+<p>This condition is required to make <code>dimensionless[si::radian]</code> invalid as <code>si::radian</code> should
+be only used for <code>isq::angular_measure</code> which is a
+<a href="../dimensionless_quantities/#nested-quantity-kinds">nested quantity kind within the dimensionless quantities tree</a>.</p>
+</details>
+<h2 id="Reference"><code>Reference&lt;T&gt;</code><a class="headerlink" href="#Reference" title="Permanent link">&para;</a></h2>
+<p><code>Reference</code> concept is satisfied by all <a href="../../../appendix/glossary/#reference">quantity reference</a>
+types. Such types provide all the meta-information required to create a <a href="#Quantity"><code>Quantity</code></a>.
+A <code>Reference</code> can either be:</p>
+<ul>
+<li>An <a href="#AssociatedUnit">AssociatedUnit</a>.</li>
+<li>The instantiation of a <code>reference</code> class template with a <a href="#QuantitySpec"><code>QuantitySpec</code></a> passed as
+  the first template argument and a <a href="#Unit"><code>Unit</code></a> passed as the second one.</li>
+</ul>
+<details class="abstract">
+<summary>Examples</summary>
+<p><code>si::metre</code> is defined in the <a href="../../../appendix/glossary/#si">SI</a> as a unit of <code>isq::length</code>
+and thus can be used as a reference to instantiate a quantity of length.</p>
+<p>The expression <code>isq::height[m]</code> results with <code>reference&lt;isq::height, si::metre&gt;</code> which can be used to
+instantiate a quantity of <code>isq::height</code> with a unit of <code>si::metre</code>.</p>
+</details>
+<h3 id="ReferenceOf"><code>ReferenceOf&lt;T, V&gt;</code><a class="headerlink" href="#ReferenceOf" title="Permanent link">&para;</a></h3>
+<p><code>ReferenceOf</code> concept is satisfied by references <code>T</code> that match the following value <code>V</code>:</p>
+<table>
+<thead>
+<tr>
+<th><code>V</code></th>
+<th>Condition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Dimension</code></td>
+<td>The dimension of a quantity specification satisfies <a href="#DimensionOf"><code>DimensionOf&lt;V&gt;</code></a> concept.</td>
+</tr>
+<tr>
+<td><code>QuantitySpec</code></td>
+<td>The quantity specification satisfies <a href="#QuantitySpecOf"><code>QuantitySpecOf&lt;V&gt;</code></a> concept.</td>
+</tr>
+<tr>
+<td><code>quantity_character</code></td>
+<td>The quantity specification has a character of <code>V</code>.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="Representation"><code>Representation&lt;T&gt;</code><a class="headerlink" href="#Representation" title="Permanent link">&para;</a></h2>
+<p><code>Representation</code> concept constraints a type of a number that stores the
+<a href="../../../appendix/glossary/#quantity-value">value of a quantity</a>.</p>
+<h3 id="RepresentationOf"><code>RepresentationOf&lt;T, Ch&gt;</code><a class="headerlink" href="#RepresentationOf" title="Permanent link">&para;</a></h3>
+<p><code>RepresentationOf</code> concept is satisfied by all <code>Representation</code> types that are of a specified
+<a href="../../../appendix/glossary/#character">quantity character</a> <code>Ch</code>.</p>
+<p>A user can declare a custom representation type to be of a specific character by providing the specialization
+with <code>true</code> for one or more of the following variable templates:</p>
+<ul>
+<li><code>is_scalar&lt;T&gt;</code></li>
+<li><code>is_vector&lt;T&gt;</code></li>
+<li><code>is_tensor&lt;T&gt;</code></li>
+</ul>
+<details class="abstract">
+<summary>Examples</summary>
+<p>If we want to use scalar types to express <a href="../character_of_a_quantity/#defining-vector-and-tensor-quantities">vector quantities</a>
+(e.g. ignoring the "direction" of the vector) the following definition can be provided to enable such a behavior:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">class</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">  </span><span class="k">requires</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">is_scalar</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">is_vector</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+</span></code></pre></div>
+</details>
+<h2 id="Quantity"><code>Quantity&lt;T&gt;</code><a class="headerlink" href="#Quantity" title="Permanent link">&para;</a></h2>
+<p><code>Quantity</code> concept matches every <a href="../../../appendix/glossary/#quantity">quantity</a> in the library and is
+satisfied by all types being or deriving from and instantiation of a <code>quantity</code> class template.</p>
+<details class="abstract">
+<summary>Examples</summary>
+<p>All of <code>42 * m</code>, <code>42 * si::metre</code>, <code>42 * isq::height[m]</code>, and <code>isq::height(42 * m)</code> create a quantity
+and thus satisfy a <code>Quantity</code> concept.</p>
+<p>A quantity type can also be specified explicitly (i.e. <code>quantity&lt;si::metre, int&gt;</code>,
+<code>quantity&lt;isq::height[m]&gt;</code>).</p>
+</details>
+<h3 id="QuantityOf"><code>QuantityOf&lt;T, V&gt;</code><a class="headerlink" href="#QuantityOf" title="Permanent link">&para;</a></h3>
+<p><code>QuantityOf</code> concept is satisfied by all the quantities for which a <a href="#ReferenceOf"><code>ReferenceOf&lt;V&gt;</code></a>
+is <code>true</code>.</p>
+<h2 id="PointOrigin"><code>PointOrigin&lt;T&gt;</code><a class="headerlink" href="#PointOrigin" title="Permanent link">&para;</a></h2>
+<p><code>PointOrigin</code> concept matches all <a href="../../../appendix/glossary/#point-origin">quantity point origins</a> in
+the library. It is satisfied by either:</p>
+<ul>
+<li>All types derived from an <code>absolute_point_origin</code> class template.</li>
+<li>All types derived from an <code>relative_point_origin</code> class template.</li>
+</ul>
+<details class="abstract">
+<summary>Examples</summary>
+<p>The types of both definitions below satisfy a <code>PointOrigin</code> concept:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">absolute_zero</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">absolute_point_origin</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">thermodynamic_temperature</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">absolute_zero</span><span class="p">;</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">ice_point</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">relative_point_origin</span><span class="o">&lt;</span><span class="n">absolute_zero</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">273.15</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kelvin</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">ice_point</span><span class="p">;</span>
+</span></code></pre></div>
+</details>
+<h3 id="PointOriginFor"><code>PointOriginFor&lt;T, V&gt;</code><a class="headerlink" href="#PointOriginFor" title="Permanent link">&para;</a></h3>
+<p><code>PointOriginFor</code> concept is satisfied by all <a href="#PointOrigin"><code>PointOrigin</code></a> types that have quantity type
+implicitly convertible from quantity specification <code>V</code>, which means that <code>V</code> must satisfy
+<a href="#QuantitySpecOf"><code>QuantitySpecOf&lt;T::quantity_spec&gt;</code></a>.</p>
+<details class="abstract">
+<summary>Examples</summary>
+<p><code>ice_point</code> can serve as a point origin for <em>points</em> of <code>isq::Celsius_temperature</code> because this quantity
+type implicitly converts to <code>isq::thermodynamic_temperature</code>.</p>
+<p>However, if we define <code>mean_sea_level</code> in the following way:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">mean_sea_level</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">absolute_point_origin</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">altitude</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">mean_sea_level</span><span class="p">;</span>
+</span></code></pre></div>
+<p>then it can't be used as a point origin for <em>points</em> of <code>isq::length</code> or <code>isq::width</code> as none of them
+is implicitly convertible to <code>isq::altitude</code>:</p>
+<ul>
+<li>not every "length" is an "altitude",</li>
+<li>"width" is not compatible with "altitude".</li>
+</ul>
+</details>
+<h2 id="QuantityPoint"><code>QuantityPoint&lt;T&gt;</code><a class="headerlink" href="#QuantityPoint" title="Permanent link">&para;</a></h2>
+<p><code>QuantityPoint</code> concept is satisfied by all types being either a specialization or derived from <code>quantity_point</code>
+class template.</p>
+<details class="abstract">
+<summary>Examples</summary>
+<p>The following specifies a quantity point defined in terms of an <code>ice_point</code> quantity point origin
+provided in the previous example:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">room_reference_temperature</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ice_point</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">Celsius_temperature</span><span class="p">(</span><span class="mi">21</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">deg_C</span><span class="p">);</span>
+</span></code></pre></div>
+</details>
+<h3 id="QuantityPointOf"><code>QuantityPointOf&lt;T, V&gt;</code><a class="headerlink" href="#QuantityPointOf" title="Permanent link">&para;</a></h3>
+<p><code>QuantityPointOf</code> concept is satisfied by all the quantity points <code>T</code> that match the following value <code>V</code>:</p>
+<table>
+<thead>
+<tr>
+<th><code>V</code></th>
+<th>Condition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Reference</code></td>
+<td>The quantity point reference satisfies <a href="#ReferenceOf"><code>ReferenceOf&lt;V&gt;</code></a> concept.</td>
+</tr>
+<tr>
+<td><code>PointOrigin</code></td>
+<td>The <em>point</em> and <code>V</code> have the same absolute point origin.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="QuantityLike"><code>QuantityLike&lt;T&gt;</code><a class="headerlink" href="#QuantityLike" title="Permanent link">&para;</a></h2>
+<p><code>QuantityLike</code> concept provides interoperability with other libraries and is satisfied by a type <code>T</code>
+for which an instantiation of <code>quantity_like_traits</code> type trait yields a valid type that provides:</p>
+<ul>
+<li>Static data member <code>reference</code> that matches the <a href="#Reference"><code>Reference</code></a> concept,</li>
+<li><code>rep</code> type that matches <a href="#RepresentationOf"><code>RepresentationOf</code></a> concept with the character provided
+  in <code>reference</code>,</li>
+<li><code>value(T)</code> static member function returning a raw value of the quantity.</li>
+</ul>
+<details class="abstract">
+<summary>Examples</summary>
+<p>This is how support for <code>std::chrono::seconds</code> can be provided:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="k">template</span><span class="o">&lt;&gt;</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="k">struct</span><span class="w"> </span><span class="nc">mp_units</span><span class="o">::</span><span class="n">quantity_like_traits</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">seconds</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">reference</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">second</span><span class="p">;</span>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">rep</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">seconds</span><span class="o">::</span><span class="n">rep</span><span class="p">;</span>
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="w">  </span><span class="p">[[</span><span class="n">nodiscard</span><span class="p">]]</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">rep</span><span class="w"> </span><span class="n">value</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">seconds</span><span class="o">&amp;</span><span class="w"> </span><span class="n">q</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">q</span><span class="p">.</span><span class="n">count</span><span class="p">();</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="p">};</span>
+</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>
+</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="n">quantity</span><span class="w"> </span><span class="nf">q</span><span class="p">(</span><span class="mi">42</span><span class="n">s</span><span class="p">);</span>
+</span></code></pre></div>
+</details>
+<h2 id="QuantityPointLike"><code>QuantityPointLike&lt;T&gt;</code><a class="headerlink" href="#QuantityPointLike" title="Permanent link">&para;</a></h2>
+<p><code>QuantityPointLike</code> concept provides interoperability with other libraries and is satisfied by a type <code>T</code>
+for which an instantiation of <code>quantity_point_like_traits</code> type trait yields a valid type that provides:</p>
+<ul>
+<li>Static data member <code>reference</code> that matches the <a href="#Reference"><code>Reference</code></a> concept</li>
+<li>Static data member <code>point_origin</code> that matches the <a href="#PointOrigin"><code>PointOrigin</code></a> concept</li>
+<li><code>rep</code> type that matches <a href="#RepresentationOf"><code>RepresentationOf</code></a> concept with the character provided
+  in <code>reference</code></li>
+<li><code>quantity_from_origin(T)</code> static member function returning the <code>quantity</code> being the offset of the point
+  from the origin</li>
+</ul>
+<details class="abstract">
+<summary>Examples</summary>
+<p>This is how support for a <code>std::chrono::time_point</code> of <code>std::chrono::seconds</code> can be provided:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">C</span><span class="o">&gt;</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="k">struct</span><span class="w"> </span><span class="nc">mp_units</span><span class="o">::</span><span class="n">quantity_point_like_traits</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">time_point</span><span class="o">&lt;</span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">seconds</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">reference</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">second</span><span class="p">;</span>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">point_origin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">chrono_point_origin</span><span class="p">;</span>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">rep</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">seconds</span><span class="o">::</span><span class="n">rep</span><span class="p">;</span>
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="w">  </span><span class="p">[[</span><span class="n">nodiscard</span><span class="p">]]</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">quantity_from_origin</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">time_point</span><span class="o">&lt;</span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">seconds</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">qp</span><span class="p">)</span>
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="w">  </span><span class="p">{</span>
+</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">quantity</span><span class="p">{</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">duration_cast</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">seconds</span><span class="o">&gt;</span><span class="p">(</span><span class="n">qp</span><span class="p">.</span><span class="n">time_since_epoch</span><span class="p">())};</span>
+</span><span id="__span-13-9"><a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-13-10"><a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a><span class="p">};</span>
+</span><span id="__span-13-11"><a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a>
+</span><span id="__span-13-12"><a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a><span class="n">quantity_point</span><span class="w"> </span><span class="nf">qp</span><span class="p">(</span><span class="n">time_point_cast</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">seconds</span><span class="o">&gt;</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">system_clock</span><span class="o">::</span><span class="n">now</span><span class="p">()));</span>
+</span></code></pre></div>
+</details>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../../terms_and_definitions/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Terms and Definitions" rel="prev">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Terms and Definitions
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../interface_introduction/" class="md-footer__link md-footer__link--next" aria-label="Next: Interface Introduction" rel="next">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Interface Introduction
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2018-2023 Mateusz Pusz
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["content.action.edit", "content.action.view", "content.code.annotate", "content.code.copy", "navigation.indexes", "navigation.sections", "navigation.footer", "search.highlight", "search.share", "search.suggest", "toc.follow", "toc.integrate"], "search": "../../../assets/javascripts/workers/search.a264c092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.4e0fa4ba.min.js"></script>
+      
+        <script src="../../../javascripts/mathjax.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

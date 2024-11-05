@@ -1,0 +1,2334 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A Physical Quantities and Units library for C++">
+      
+      
+        <meta name="author" content="mp-units Team">
+      
+      
+        <link rel="canonical" href="https://mpusz.github.io/mp-units/2.1/appendix/glossary/">
+      
+      
+        <link rel="prev" href="../../library_reference/magnitudes/">
+      
+      
+        <link rel="next" href="../mismeasure_for_measure/">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.21">
+    
+    
+      
+        <title>Glossary - The mp-units library</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.66ac8b77.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#glossary" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+          <aside class="md-banner md-banner--warning">
+            <div class="md-banner__inner md-grid md-typeset">
+              
+You're not viewing the latest version.
+<a href="../../..">
+  <strong>Click here to go to latest.</strong>
+</a>
+
+            </div>
+            <script>var el=document.querySelector("[data-md-component=outdated]"),outdated=__md_get("__outdated",sessionStorage);!0===outdated&&el&&(el.hidden=!1)</script>
+          </aside>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="The mp-units library" class="md-header__button md-logo" aria-label="The mp-units library" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            The mp-units library
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Glossary
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3 3.19.09m3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95 2.06.05m-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31Z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5c-.84 0-1.65.15-2.39.42L12 2M3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29L3.34 7m.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14L3.36 17M20.65 7l-1.77 3.79a7.023 7.023 0 0 0-2.38-4.15l4.15.36m-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29L20.64 17M12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44L12 22Z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7 0-.24-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91 1.61 0 2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08Z"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/mpusz/mp-units" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    mpusz/mp-units
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="The mp-units library" class="md-nav__button md-logo" aria-label="The mp-units library" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    The mp-units library
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/mpusz/mp-units" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    mpusz/mp-units
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Getting Started
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Getting Started
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting_started/introduction/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Introduction
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting_started/code_example/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Code Example
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting_started/quick_start/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Quick Start
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting_started/installation_and_usage/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Installation and Usage
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting_started/faq/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    FAQ
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    User's Guide
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            User's Guide
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/terms_and_definitions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Terms and Definitions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Framework Basics
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            Framework Basics
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/framework_basics/interface_introduction/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Interface Introduction
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/framework_basics/design_overview/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Design Overview
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/framework_basics/systems_of_quantities/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Systems of Quantities
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/framework_basics/systems_of_units/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Systems of Units
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/framework_basics/simple_and_typed_quantities/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Simple and Typed Quantities
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/framework_basics/value_conversions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Value Conversions
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/framework_basics/character_of_a_quantity/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Character of a Quantity
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/framework_basics/dimensionless_quantities/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Dimensionless Quantities
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/framework_basics/quantity_arithmetics/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Quantity Arithmetics
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/framework_basics/generic_interfaces/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Generic Interfaces
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/framework_basics/faster_than_lightspeed_constants/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Faster-than-lightspeed Constants
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/framework_basics/the_affine_space/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    The Affine Space
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/framework_basics/obtaining_metadata/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Obtaining Metadata
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/framework_basics/concepts/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Concepts
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/framework_basics/text_output/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Text Output
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Defining Systems
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            Defining Systems
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/defining_systems/introduction/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Introduction
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/defining_systems/isq/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    International System of Quantities (ISQ)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/defining_systems/si/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    International System of Units (SI)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/defining_systems/strong_angular_system/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Strong Angular System
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/defining_systems/natural_units/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Natural Units
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Use Cases
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            Use Cases
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/use_cases/pure_dimensional_analysis/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Pure Dimensional Analysis
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/use_cases/working_with_legacy_interfaces/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Working with Legacy Interfaces
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/use_cases/using_custom_representation_types/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Using Custom Representation Types
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/use_cases/interoperability_with_other_units_libraries/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Interoperability with Other Units Libraries
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/use_cases/extending_the_library/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Extending the Library
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_5" id="__nav_3_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Examples
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_5">
+            <span class="md-nav__icon md-icon"></span>
+            Examples
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/examples/tags_index/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Tags Index
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/examples/hello_units/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    hello_units
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/examples/avg_speed/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    avg_speed
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/examples/si_constants/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    si_constants
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Library Reference
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Library Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../library_reference/core_library/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Core Library
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../library_reference/magnitudes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Magnitudes
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Appendix
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Appendix
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Glossary
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Glossary
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#iso-definitions" class="md-nav__link">
+    <span class="md-ellipsis">
+      ISO definitions
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#other-definitions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Other definitions
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mismeasure_for_measure/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Mismeasure for Measure
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../release_notes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Release Notes
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../references/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    References
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+    <a href="https://github.com/mpusz/mp-units/edit/master/docs/appendix/glossary.md" title="Edit this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4v-2m10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1 2.1 2.1Z"/></svg>
+    </a>
+  
+  
+    
+      
+    
+    <a href="https://github.com/mpusz/mp-units/raw/master/docs/appendix/glossary.md" title="View source of this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 18c.56 0 1 .44 1 1s-.44 1-1 1-1-.44-1-1 .44-1 1-1m0-3c-2.73 0-5.06 1.66-6 4 .94 2.34 3.27 4 6 4s5.06-1.66 6-4c-.94-2.34-3.27-4-6-4m0 6.5a2.5 2.5 0 0 1-2.5-2.5 2.5 2.5 0 0 1 2.5-2.5 2.5 2.5 0 0 1 2.5 2.5 2.5 2.5 0 0 1-2.5 2.5M9.27 20H6V4h7v5h5v4.07c.7.08 1.36.25 2 .49V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h4.5a8.15 8.15 0 0 1-1.23-2Z"/></svg>
+    </a>
+  
+
+
+<h1 id="glossary">Glossary<a class="headerlink" href="#glossary" title="Permanent link">&para;</a></h1>
+<h2 id="iso-definitions">ISO definitions<a class="headerlink" href="#iso-definitions" title="Permanent link">&para;</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The ISO terms provided below are only a few of many defined in
+the <a href="https://www.iso.org/obp/ui#iso:std:iso-iec:guide:99:ed-1:v2:en">ISO/IEC Guide 99</a>.</p>
+</div>
+<dl>
+<dt><a href="#quantity" id="quantity"><code>quantity</code></a></dt>
+<dd>
+<ul>
+<li>Property of a phenomenon, body, or substance, where the property has a magnitude that can
+  be expressed by means of a number and a reference.</li>
+<li>A reference can be a <a href="#unit">measurement unit</a>, a measurement procedure, a reference material,
+  or a combination of such.</li>
+<li>A quantity as defined here is a scalar. However, a vector or a tensor, the components of
+  which are quantities, is also considered to be a quantity.</li>
+<li>The concept ’quantity’ may be generically divided into, e.g. ‘physical quantity’,
+  ‘chemical quantity’, and ‘biological quantity’, or <a href="#base-quantity">‘base quantity’</a>
+  and <a href="#derived-quantity">‘derived quantity’</a>.</li>
+<li>Examples of quantities are: length, radius, wavelength, energy, electric charge, etc.</li>
+</ul>
+</dd>
+<dt><a href="#kind" id="kind"><code>kind of quantity, kind</code></a></dt>
+<dd>
+<ul>
+<li>Aspect common to mutually comparable <a href="#quantity">quantities</a>.</li>
+<li>The division of the concept ‘quantity’ into several kinds is to some extent arbitrary, for example:<ul>
+<li>the quantities diameter, circumference, and wavelength are generally considered
+  to be quantities of the same kind, namely, of the kind of quantity called length,</li>
+<li>the quantities heat, kinetic energy, and potential energy are generally considered
+  to be quantities of the same kind, namely of the kind of quantity called energy.</li>
+</ul>
+</li>
+<li>Quantities of the same kind within a given <a href="#system-of-quantities">system of quantities</a>
+  have the same <a href="#dimension">quantity dimension</a>. However, <a href="#quantity">quantities</a>
+  of the same <a href="#dimension">dimension</a> are not necessarily of the same kind.<ul>
+<li>For example, the quantities moment of force and energy are, by convention, not regarded
+  as being of the same kind, although they have the same dimension. Similarly for
+  heat capacity and entropy, as well as for number of entities, relative permeability,
+  and mass fraction.</li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt><a href="#system-of-quantities" id="system-of-quantities"><code>system of quantities</code></a></dt>
+<dd>
+<ul>
+<li>Set of <a href="#quantity">quantities</a> together with a set of non-contradictory equations
+  relating those <a href="#quantity">quantities</a>.</li>
+<li>Examples of systems of quantities are: <a href="#isq">the International System of Quantities</a>,
+  the Imperial System, etc.</li>
+</ul>
+</dd>
+<dt><a href="#base-quantity" id="base-quantity"><code>base quantity</code></a></dt>
+<dd>
+<ul>
+<li><a href="#quantity">Quantity</a> in a conventionally chosen subset of a given
+  <a href="#system-of-quantities">system of quantities</a>, where no <a href="#quantity">quantity</a> in the
+  subset can be expressed in terms of the others.</li>
+<li>Base quantities are referred to as being mutually independent since a base quantity
+  cannot be expressed as a product of powers of the other base quantities.</li>
+<li>‘Number of entities’ can be regarded as a base quantity in any
+  <a href="#system-of-quantities">system of quantities</a>.</li>
+</ul>
+</dd>
+<dt><a href="#derived-quantity" id="derived-quantity"><code>derived quantity</code></a></dt>
+<dd>
+<ul>
+<li><a href="#quantity">Quantity</a>, in a <a href="#system-of-quantities">system of quantities</a>, defined in
+  terms of the <a href="#base-quantity">base quantities</a> of that system.</li>
+</ul>
+</dd>
+<dt><a href="#isq" id="isq"><code>International System of Quantities, ISQ</code></a></dt>
+<dd>
+<ul>
+<li><a href="#system-of-quantities">System of quantities</a> based on the seven <a href="#base-quantity">base quantities</a>:
+  length, mass, time, electric current, thermodynamic temperature, amount of substance,
+  and luminous intensity.</li>
+<li>This system of quantities is published in the ISO 80000 and IEC 80000 series <em>Quantities and units</em>.</li>
+<li><a href="#si">The International System of Units (SI)</a> is based on the ISQ.</li>
+</ul>
+</dd>
+<dt><a href="#dimension" id="dimension"><code>quantity dimension, dimension of a quantity, dimension</code></a></dt>
+<dd>
+<ul>
+<li>Expression of the dependence of a <a href="#quantity">quantity</a> on the <a href="#base-quantity">base quantities</a>
+  of a <a href="#system-of-quantities">system of quantities</a> as a product of powers of factors corresponding
+  to the <a href="#base-quantity">base quantities</a>, omitting any numerical factor.<ul>
+<li>e.g. in the <a href="#isq">ISQ</a>, the quantity dimension of force is denoted by <span class="arithmatex">\(\textsf{dim }F = \mathsf{LMT}^{–2}\)</span>.</li>
+</ul>
+</li>
+<li>A power of a factor is the factor raised to an exponent. Each factor is the dimension
+  of a <a href="#base-quantity">base quantity</a>.</li>
+<li>In deriving the dimension of a quantity, no account is taken of its scalar, vector, or
+  tensor character.</li>
+<li>In a given <a href="#system-of-quantities">system of quantities</a>:<ul>
+<li><a href="#quantity">quantities</a> of the same <a href="#kind">kind</a> have the same quantity dimension,</li>
+<li><a href="#quantity">quantities</a> of different quantity dimensions are always of different <a href="#kind">kinds</a>,</li>
+<li><a href="#quantity">quantities</a> having the same quantity dimension are not necessarily of the same
+  <a href="#kind">kind</a>.</li>
+</ul>
+</li>
+<li>
+<p>Symbols representing the dimensions of the <a href="#base-quantity">base quantities</a> in the <a href="#isq">ISQ</a> are:</p>
+<table>
+<thead>
+<tr>
+<th>Base quantity</th>
+<th style="text-align: center;">Symbol for dimension</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>length</td>
+<td style="text-align: center;"><span class="arithmatex">\(\mathsf{L}\)</span></td>
+</tr>
+<tr>
+<td>mass</td>
+<td style="text-align: center;"><span class="arithmatex">\(\mathsf{M}\)</span></td>
+</tr>
+<tr>
+<td>time</td>
+<td style="text-align: center;"><span class="arithmatex">\(\mathsf{T}\)</span></td>
+</tr>
+<tr>
+<td>electric current</td>
+<td style="text-align: center;"><span class="arithmatex">\(\mathsf{I}\)</span></td>
+</tr>
+<tr>
+<td>thermodynamic temperature</td>
+<td style="text-align: center;"><span class="arithmatex">\(\mathsf{Θ}\)</span></td>
+</tr>
+<tr>
+<td>amount of substance</td>
+<td style="text-align: center;"><span class="arithmatex">\(\mathsf{N}\)</span></td>
+</tr>
+<tr>
+<td>luminous intensity</td>
+<td style="text-align: center;"><span class="arithmatex">\(\mathsf{J}\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>Thus, the dimension of a quantity <span class="arithmatex">\(Q\)</span> is denoted by
+<span class="arithmatex">\(\textsf{dim }Q = \mathsf{L}^α\mathsf{M}^β\mathsf{T}^γ\mathsf{I}^δ\mathsf{Θ}^ε\mathsf{N}^ζ\mathsf{J}^η\)</span>
+where the exponents, named dimensional exponents, are positive, negative, or zero.</p>
+</li>
+</ul>
+</dd>
+<dt><a href="#dimensionless-quantity" id="dimensionless-quantity"><code>quantity of dimension one, dimensionless quantity</code></a></dt>
+<dd>
+<ul>
+<li><a href="#quantity">quantity</a> for which all the exponents of the factors corresponding to the
+    <a href="#base-quantity">base quantities</a> in its <a href="#dimension">quantity dimension</a> are zero.</li>
+<li>The term “dimensionless quantity” is commonly used and is kept here for historical
+    reasons. It stems from the fact that all exponents are zero in the symbolic
+    representation of the <a href="#dimension">dimension</a> for such <a href="#quantity">quantities</a>.
+    The term “quantity of dimension one” reflects the convention in which the symbolic
+    representation of the <a href="#dimension">dimension</a> for such <a href="#quantity">quantities</a> is
+    the symbol <span class="arithmatex">\(1\)</span>.</li>
+<li>The <a href="#unit">measurement units</a> and <a href="#quantity-value">values</a> of quantities of
+    dimension one are numbers, but such quantities convey more information than a number.</li>
+<li>Some quantities of dimension one are defined as the ratios of two
+    <a href="#kind">quantities of the same kind</a>.</li>
+<li>Numbers of entities are quantities of dimension one.</li>
+</ul>
+</dd>
+<dt><a href="#unit" id="unit"><code>measurement unit, unit of measurement, unit</code></a></dt>
+<dd>
+<ul>
+<li>Real scalar <a href="#quantity">quantity</a>, defined and adopted by convention, with which any other
+  <a href="#kind">quantity of the same kind</a> can be compared to express the ratio of the two
+  <a href="#quantity">quantities</a> as a number.</li>
+<li>Measurement units are designated by conventionally assigned names and symbols.</li>
+<li>Measurement units of <a href="#quantity">quantities</a> of the same <a href="#dimension">quantity dimension</a>
+  may be designated by the same name and symbol even when the <a href="#quantity">quantities</a> are
+  not of the same <a href="#kind">kind</a>.<ul>
+<li>For example, joule per kelvin and J/K are respectively the name and symbol of both a
+  measurement unit of heat capacity and a measurement unit of entropy, which are generally
+  not considered to be <a href="#kind">quantities of the same kind</a>.</li>
+</ul>
+</li>
+<li>However, in some cases special measurement unit names are restricted to be used with
+  <a href="#quantity">quantities</a> of specific <a href="#kind">kind</a> only.<ul>
+<li>For example, the measurement unit ‘second to the power minus one’
+  (<span class="arithmatex">\(\mathsf{1/s}\)</span>) is called hertz (<span class="arithmatex">\(\mathsf{Hz}\)</span>) when used for frequencies and
+  becquerel (<span class="arithmatex">\(\mathsf{Bq}\)</span>) when used for activities of radionuclides. As another example,
+  the joule (<span class="arithmatex">\(\mathsf{J}\)</span>) is used as a unit of energy, but never as a unit of moment of
+  force, e.g. the newton metre (<span class="arithmatex">\(\mathsf{N·m}\)</span>).</li>
+</ul>
+</li>
+<li>Measurement units of <a href="#dimensionless-quantity">quantities of dimension one</a> are
+  numbers. In some cases, these measurement units are given special names, e.g. radian,
+  steradian, and decibel, or are expressed by quotients such as millimole per mole equal
+  to <span class="arithmatex">\(10^{−3}\)</span> and microgram per kilogram equal to <span class="arithmatex">\(10^{−9}\)</span>.</li>
+</ul>
+</dd>
+<dt><a href="#base-unit" id="base-unit"><code>base unit</code></a></dt>
+<dd>
+<ul>
+<li><a href="#unit">Measurement unit</a> that is adopted by convention for a <a href="#base-quantity">base quantity</a>.</li>
+<li>In each <a href="#coherent-system-of-units">coherent system of units</a>, there is only one base unit
+  for each <a href="#base-quantity">base quantity</a>.<ul>
+<li>e.g. in the <a href="#si">SI</a>, the metre is the base unit of length. In the CGS systems,
+  the centimetre is the base unit of length.</li>
+</ul>
+</li>
+<li>A base unit may also serve for a <a href="#derived-quantity">derived quantity</a> of the same
+  <a href="#dimension">quantity dimension</a>.</li>
+<li>For number of entities, the number one, symbol <span class="arithmatex">\(1\)</span>, can be regarded as a base unit in
+  any system of units.</li>
+</ul>
+</dd>
+<dt><a href="#derived-unit" id="derived-unit"><code>derived unit</code></a></dt>
+<dd>
+<ul>
+<li><a href="#unit">Measurement unit</a> for a <a href="#derived-quantity">derived quantity</a>.</li>
+<li>For example, the metre per second, symbol m/s, and the centimetre per second, symbol cm/s,
+  are derived units of speed in the <a href="#si">SI</a>. The kilometre per hour, symbol km/h, is a
+  <a href="#unit">measurement unit</a> of speed outside the <a href="#si">SI</a> but accepted for use with
+  the <a href="#si">SI</a>. The knot, equal to one nautical mile per hour, is a measurement unit of speed
+  outside the <a href="#si">SI</a>.</li>
+</ul>
+</dd>
+<dt><a href="#coherent-derived-unit" id="coherent-derived-unit"><code>coherent derived unit</code></a></dt>
+<dd>
+<ul>
+<li><a href="#derived-unit">Derived unit</a> that, for a given <a href="#system-of-quantities">system of quantities</a>
+  and for a chosen set of <a href="#base-unit">base units</a>, is a product of powers of
+  <a href="#base-unit">base units</a> with no other proportionality factor than one.</li>
+<li>A power of a <a href="#base-unit">base unit</a> is the <a href="#base-unit">base unit</a> raised to an exponent.</li>
+<li>Coherence can be determined only with respect to a particular
+  <a href="#system-of-quantities">system of quantities</a> and a given set of <a href="#base-unit">base units</a>.<ul>
+<li>For example, if the metre, the second, and the mole are base units, the metre per second is
+  the coherent derived unit of velocity when velocity is defined by the
+  <a href="#quantity-equation">quantity equation</a> <span class="arithmatex">\(v = \mathsf{d}r/\mathsf{d}t\)</span>, and the mole per
+  cubic metre is the coherent derived unit of amount-of-substance concentration when
+  amount-of-substance concentration is defined by the <a href="#quantity-equation">quantity equation</a>
+  <span class="arithmatex">\(c = n/V\)</span>. The kilometre per hour and the knot, given as examples of <a href="#derived-unit">derived units</a>,
+  are not coherent derived units in such a <a href="#system-of-quantities">system of quantities</a>.</li>
+</ul>
+</li>
+<li>A <a href="#derived-unit">derived unit</a> can be coherent with respect to one
+  <a href="#system-of-quantities">system of quantities</a> but not to another.<ul>
+<li>For example, the centimetre per second is the coherent derived unit of speed in a CGS system
+  of units but is not a coherent derived unit in the <a href="#si">SI</a>.</li>
+</ul>
+</li>
+<li>The coherent derived unit for every <a href="#dimensionless-quantity">derived quantity of dimension one</a>
+  in a given <a href="#system-of-units">system of units</a> is the number one, symbol <span class="arithmatex">\(1\)</span>. The name and
+  symbol of the <a href="#unit">measurement unit</a> one are generally not indicated.</li>
+</ul>
+</dd>
+<dt><a href="#system-of-units" id="system-of-units"><code>system of units</code></a></dt>
+<dd>
+<ul>
+<li>Set of <a href="#base-unit">base units</a> and <a href="#derived-unit">derived units</a>, together with
+  their multiples and submultiples, defined in accordance with given rules, for a given
+  <a href="#system-of-quantities">system of quantities</a>.</li>
+</ul>
+</dd>
+<dt><a href="#coherent-system-of-units" id="coherent-system-of-units"><code>coherent system of units</code></a></dt>
+<dd>
+<ul>
+<li><a href="#system-of-units">System of units</a>, based on a given <a href="#system-of-quantities">system of quantities</a>,
+  in which the <a href="#unit">measurement unit</a> for each <a href="#derived-quantity">derived quantity</a> is
+  a <a href="#coherent-derived-unit">coherent derived unit</a>.</li>
+<li>A <a href="#system-of-units">system of units</a> can be coherent only with respect to a
+  <a href="#system-of-quantities">system of quantities</a> and the adopted <a href="#base-unit">base units</a>.</li>
+<li>For a coherent system of units, <a href="#numerical-value-equation">numerical value equations</a> have
+  the same form, including numerical factors, as the corresponding
+  <a href="#quantity-equation">quantity equations</a>.</li>
+</ul>
+</dd>
+<dt><a href="#off-system-unit" id="off-system-unit"><code>off-system measurement unit, off-system unit</code></a></dt>
+<dd>
+<ul>
+<li><a href="#unit">Measurement unit</a> that does not belong to a given <a href="#system-of-units">system of units</a>.</li>
+<li>For example, the electronvolt (about <span class="arithmatex">\(1.602\;18 × 10^{–19}\;\mathsf{J}\)</span>) is an
+  off-system measurement unit of energy with respect to the <a href="#si">SI</a>. Day, hour, minute
+  are off-system measurement units of time with respect to the <a href="#si">SI</a>.</li>
+</ul>
+</dd>
+<dt><a href="#si" id="si"><code>International System of Units, SI</code></a></dt>
+<dd>
+<ul>
+<li><a href="#system-of-units">System of units</a>, based on the <a href="#isq">International System of Quantities</a>,
+  their names and symbols, including a series of prefixes and their names and symbols,
+  together with rules for their use, adopted by the General Conference on Weights and
+  Measures (CGPM).</li>
+</ul>
+</dd>
+<dt><a href="#quantity-value" id="quantity-value"><code>quantity value, value of a quantity, value</code></a></dt>
+<dd>
+<ul>
+<li>Number and reference together expressing magnitude of a <a href="#quantity">quantity</a>.<ul>
+<li>For example, length of a given rod: <span class="arithmatex">\(5.34\;\mathsf{m}\)</span> or <span class="arithmatex">\(534\;\mathsf{cm}\)</span>.</li>
+</ul>
+</li>
+<li>The number can be complex.</li>
+<li>A quantity value can be presented in more than one way.</li>
+<li>In the case of vector or tensor quantities, each component has a quantity value.<ul>
+<li>For example, force acting on a given particle, e.g. in Cartesian components
+  <span class="arithmatex">\((F_x; F_y; F_z) = (−31.5; 43.2; 17.0)\;\mathsf{N}\)</span>.</li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt><a href="#numerical-value" id="numerical-value"><code>numerical quantity value, numerical value of a quantity, numerical value</code></a></dt>
+<dd>
+<ul>
+<li>Number in the expression of a <a href="#quantity-value">quantity value</a>, other than any number serving
+  as the reference<ul>
+<li>For example, in an amount-of-substance fraction equal to <span class="arithmatex">\(3\;\mathsf{mmol/mol}\)</span>, the numerical
+  quantity value is <span class="arithmatex">\(3\)</span> and the <a href="#unit">unit</a> is <span class="arithmatex">\(\mathsf{mmol/mol}\)</span>. The <a href="#unit">unit</a>
+  <span class="arithmatex">\(\mathsf{mmol/mol}\)</span> is numerically equal to <span class="arithmatex">\(0.001\)</span>, but this number <span class="arithmatex">\(0.001\)</span> is not part
+  of the numerical quantity value, which remains <span class="arithmatex">\(3\)</span>.</li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt><a href="#quantity-equation" id="quantity-equation"><code>quantity equation</code></a></dt>
+<dd>
+<ul>
+<li>Mathematical relation between <a href="#quantity">quantities</a> in a given <a href="#system-of-quantities">system of quantities</a>,
+  independent of <a href="#unit">measure­ment units</a>.</li>
+<li>For example, <span class="arithmatex">\(T = (1/2) mv^2\)</span> where <span class="arithmatex">\(T\)</span> is the kinetic energy and <span class="arithmatex">\(v\)</span> the speed
+  of a specified particle of mass <span class="arithmatex">\(m\)</span>.</li>
+</ul>
+</dd>
+<dt><a href="#unit-equation" id="unit-equation"><code>unit equation</code></a></dt>
+<dd>
+<ul>
+<li>Mathematical relation between <a href="#base-unit">base units</a>,
+  <a href="#coherent-derived-unit">coher­ent derived units</a> or other <a href="#unit">measurement units</a>.</li>
+<li>For example, <span class="arithmatex">\(\mathsf{J} := \mathsf{kg}\:\mathsf{m}^2/\mathsf{s}^2\)</span>, where, <span class="arithmatex">\(\mathsf{J}\)</span>,
+  <span class="arithmatex">\(\mathsf{kg}\)</span>, <span class="arithmatex">\(\mathsf{m}\)</span>, and <span class="arithmatex">\(\mathsf{s}\)</span> are the symbols for the joule, kilogram,
+  metre, and second, respectively. (The symbol <span class="arithmatex">\(:=\)</span> denotes “is by definition equal to”
+  as given in the ISO 80000 and IEC 80000 series.). <span class="arithmatex">\(1\;\mathsf{km/h} = (1/3.6)\;\mathsf{m/s}\)</span>.</li>
+</ul>
+</dd>
+<dt><a href="#numerical-value-equation" id="numerical-value-equation"><code>numerical value equation, numerical quantity value equation</code></a></dt>
+<dd>
+<ul>
+<li>Mathematical relation between numerical <a href="#quantity-value">quantity values</a>, based on
+  a given <a href="#quantity-equation">quantity equation</a> and specified <a href="#unit">measurement units</a>.</li>
+<li>For example, in the <a href="#quantity-equation">quantity equation</a> for kinetic energy of a particle,
+  <span class="arithmatex">\(T = (1/2) mv^2\)</span>, if <span class="arithmatex">\(m = 2\;\mathsf{kg}\)</span> and <span class="arithmatex">\(v = 3\;\mathsf{m/s}\)</span>,
+  then <span class="arithmatex">\({T} = (1/2)\:×\:2\:×\:3^2\)</span> is a numerical value equation giving the numerical value
+  <span class="arithmatex">\(9\)</span> of <span class="arithmatex">\(T\)</span> in joules.</li>
+</ul>
+</dd>
+</dl>
+<h2 id="other-definitions">Other definitions<a class="headerlink" href="#other-definitions" title="Permanent link">&para;</a></h2>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>The below terms extend the official ISO glossary and are commonly referred to by the
+<strong>mp-units</strong> library.</p>
+</div>
+<dl>
+<dt><a href="#base-dimension" id="base-dimension"><code>base dimension</code></a></dt>
+<dd>
+<ul>
+<li>A <a href="#dimension">dimension</a> of a <a href="#base-quantity">base quantity</a>.</li>
+</ul>
+</dd>
+<dt><a href="#derived-dimension" id="derived-dimension"><code>derived dimension</code></a></dt>
+<dd>
+<ul>
+<li>A <a href="#dimension">dimension</a> of a <a href="#derived-quantity">derived quantity</a>.</li>
+<li>Implemented as an expression template being the result of the
+  <a href="#dimension-equation">dimension equation</a> on <a href="#base-dimension">base dimensions</a>.</li>
+</ul>
+</dd>
+<dt><a href="#dimension-equation" id="dimension-equation"><code>dimension equation</code></a></dt>
+<dd>
+<ul>
+<li>Mathematical relation between <a href="#dimension">dimensions</a> in a given
+  <a href="#system-of-quantities">system of quantities</a>, independent of <a href="#unit">measure­ment units</a>.</li>
+</ul>
+</dd>
+<dt><a href="#quantity-hierarchy" id="quantity-hierarchy"><code>quantity kind hierarchy, quantity hierarchy</code></a></dt>
+<dd>
+<ul>
+<li><a href="#kind">Quantities of the same kind</a> form a hierarchy that determines their:<ul>
+<li>convertibility (e.g. every width is a length, but width should not be
+  convertible to height)</li>
+<li>common quantity type (e.g. width + height -&gt; length)</li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt><a href="#character" id="character"><code>quantity character, character of a quantity, character</code></a></dt>
+<dd>
+<ul>
+<li>Scalars, vectors and tensors are mathematical objects that can be used to denote
+  certain <a href="#quantity">physical quantities</a> and their <a href="#quantity-value">values</a>.
+  They are as such independent of the particular choice of a coordinate system,
+  whereas each scalar component of a vector or a tensor and each component vector
+  and component tensor depend on that choice.</li>
+<li>A vector is a tensor of the first order and a scalar is a tensor of order zero.</li>
+<li>For vectors and tensors, the components are <a href="#quantity">quantities</a> that can be
+  expressed as a product of a number and a <a href="#unit">unit</a>.</li>
+<li>Vectors and tensors can also be expressed as a numerical value vector or tensor,
+  respectively, multiplied by a <a href="#unit">unit</a>.</li>
+<li><a href="#quantity">Quantities</a> of different characters support different set of operations.<ul>
+<li>For example, a <a href="#quantity">quantity</a> can be multiplied by another one only if any
+  of them has scalar character. Vectors and tensors can't be multiplied or divided,
+  but they support additional operations like dot and cross products, which
+  are not available for scalars.</li>
+</ul>
+</li>
+<li>The term ’character’ was borrowed from the below quote:</li>
+</ul>
+<div class="admonition quote">
+<p class="admonition-title">ISO 80000-1_2009</p>
+<p>In deriving the dimension of a quantity, no account is taken of its scalar,
+vector, or tensor <strong>character</strong>.</p>
+</div>
+</dd>
+<dt><a href="#quantity_spec" id="quantity_spec"><code>quantity specification, quantity_spec</code></a></dt>
+<dd>
+<ul>
+<li>An entity storing all the information about a specific <a href="#quantity">quantity</a>:<ul>
+<li>location in a <a href="#quantity-hierarchy">quantity hierarchy</a></li>
+<li><a href="#quantity-equation">quantity equation</a></li>
+<li><a href="#dimension">dimension of a quantity</a></li>
+<li><a href="#kind">quantity kind</a></li>
+<li><a href="#character">quantity character</a></li>
+<li>additional constraints (e.g. non-negative)</li>
+</ul>
+</li>
+<li><a href="#dimension">Dimension of a quantity</a> is not enough to specify all the properties of
+  a <a href="#quantity">quantity</a>.</li>
+</ul>
+</dd>
+<dt><a href="#associated-unit" id="associated-unit"><code>unit with an associated quantity, associated unit</code></a></dt>
+<dd>
+<ul>
+<li><a href="#unit">Unit</a> that is used to measure <a href="#kind">quantities of a specific kind</a> in a given
+  <a href="#system-of-units">system of units</a>.</li>
+</ul>
+</dd>
+<dt><a href="#reference" id="reference"><code>quantity reference, reference</code></a></dt>
+<dd>
+<ul>
+<li>According to its definition, <a href="#quantity">quantity</a> can be expressed by means of
+  a number and a reference</li>
+<li>In the <strong>mp-units</strong> library, a reference describes all the required meta-information
+  associated with a specific quantity (<a href="#quantity_spec">quantity specification</a> and
+  <a href="#unit">unit</a>).</li>
+</ul>
+</dd>
+<dt><a href="#canonical-unit" id="canonical-unit"><code>canonical representation of a unit, canonical unit</code></a></dt>
+<dd>
+<ul>
+<li>A canonical representation of a unit consists of:<ul>
+<li>a reference unit being the result of extraction of all the intermediate
+  <a href="#derived-unit">derived units</a>,</li>
+<li>a magnitude being a product of all the prefixes and magnitudes of extracted scaled units.</li>
+</ul>
+</li>
+<li>All units having the same canonical unit are deemed equal.</li>
+<li>All units having the same reference unit are convertible
+  (their magnitude may differ and is used during conversion).</li>
+</ul>
+</dd>
+<dt><a href="#reference-unit" id="reference-unit"><code>reference unit</code></a></dt>
+<dd>
+<p>See <a href="#canonical-unit">canonical representation of a unit</a></p>
+</dd>
+<dt><a href="#absolute-point-origin" id="absolute-point-origin"><code>absolute quantity point origin</code>, <code>absolute point origin</code></a></dt>
+<dd>
+<ul>
+<li>An explicit point on an axis of values of a specific <a href="#quantity">quantity</a> type that serves
+  as an absolute reference point for all <a href="#quantity-point">quantity points</a> which definitions
+  are (explicitly or implicitly) based on it.</li>
+<li>For example, mean sea level is commonly used as an absolute reference point to measure altitudes.</li>
+</ul>
+</dd>
+<dt><a href="#relative-point-origin" id="relative-point-origin"><code>relative quantity point origin</code>, <code>relative point origin</code></a></dt>
+<dd>
+<ul>
+<li>An explicit, known at compile-time, point on an axis of values of a specific <a href="#quantity">quantity</a>
+  type serving as a reference for other <a href="#quantity">quantities</a>.</li>
+<li>For example, an ice point is a quantity point with a value of <span class="arithmatex">\(273.15\;\mathsf{K}\)</span> that
+  is used as the zero point of a degree Celsius scale.</li>
+</ul>
+</dd>
+<dt><a href="#point-origin" id="point-origin"><code>quantity point origin</code>, <code>point origin</code></a></dt>
+<dd>
+<ul>
+<li>Either an <a href="#absolute-point-origin">absolute point origin</a> or
+  a <a href="#relative-point-origin">relative point origin</a>.</li>
+</ul>
+</dd>
+<dt><a href="#quantity-point" id="quantity-point"><code>quantity point</code>, <code>absolute quantity</code></a></dt>
+<dd>
+<ul>
+<li>An absolute <a href="#quantity">quantity</a> with respect to an <a href="#point-origin">origin</a>.</li>
+<li>For example, timestamp (as opposed to duration), altitude (as opposed to height),
+  absolute temperature (as opposed to temperature difference).</li>
+</ul>
+</dd>
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../../library_reference/magnitudes/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Magnitudes">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Magnitudes
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../mismeasure_for_measure/" class="md-footer__link md-footer__link--next" aria-label="Next: Mismeasure for Measure">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Mismeasure for Measure
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2018-2023 Mateusz Pusz
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.action.edit", "content.action.view", "content.code.annotate", "content.code.copy", "navigation.indexes", "navigation.sections", "navigation.footer", "search.highlight", "search.share", "search.suggest", "toc.follow", "toc.integrate"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.a7c05c9e.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
