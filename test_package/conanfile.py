@@ -39,9 +39,22 @@ class TestPackageConan(ConanFile):
 
     def generate(self):
         tc = CMakeToolchain(self)
-        tc.variables["MP_UNITS_API_STD_FORMAT"] = bool(
-            self.dependencies["mp-units"].options.std_format
-        )
+        opt = self.dependencies["mp-units"].options
+        if opt.cxx_modules:
+            tc.cache_variables["CMAKE_CXX_SCAN_FOR_MODULES"] = True
+        if opt.import_std:
+            tc.cache_variables["CMAKE_CXX_MODULE_STD"] = True
+            # Current experimental support according to `Help/dev/experimental.rst`
+            tc.cache_variables[
+                "CMAKE_EXPERIMENTAL_CXX_IMPORT_STD"
+            ] = "0e5b6991-d74f-4b3d-a41c-cf096e0b2508"
+        # TODO remove the below when Conan will learn to handle C++ modules
+        if opt.cxx_modules:
+            if opt.freestanding:
+                tc.cache_variables["MP_UNITS_API_FREESTANDING"] = True
+            else:
+                tc.cache_variables["MP_UNITS_API_STD_FORMAT"] = opt.std_format
+            tc.cache_variables["MP_UNITS_API_CONTRACTS"] = str(opt.contracts).upper()
         tc.generate()
 
     def build(self):

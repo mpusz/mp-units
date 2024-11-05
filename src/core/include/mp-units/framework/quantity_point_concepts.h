@@ -40,13 +40,6 @@ namespace detail {
 template<typename T>
 constexpr bool is_quantity_point = false;
 
-template<auto Q>
-void to_base_specialization_of_absolute_point_origin(const volatile absolute_point_origin<Q>*);
-
-template<typename T>
-constexpr bool is_derived_from_specialization_of_absolute_point_origin =
-  requires(T* type) { to_base_specialization_of_absolute_point_origin(type); };
-
 }  // namespace detail
 
 /**
@@ -62,13 +55,6 @@ struct relative_point_origin;
 
 namespace detail {
 
-template<auto QP>
-void to_base_specialization_of_relative_point_origin(const volatile relative_point_origin<QP>*);
-
-template<typename T>
-constexpr bool is_derived_from_specialization_of_relative_point_origin =
-  requires(T* type) { to_base_specialization_of_relative_point_origin(type); };
-
 struct point_origin_interface;
 
 }  // namespace detail
@@ -79,7 +65,7 @@ struct point_origin_interface;
  * Satisfied by either quantity points or by all types derived from `absolute_point_origin` class template.
  */
 MP_UNITS_EXPORT template<typename T>
-concept PointOrigin = std::derived_from<T, detail::point_origin_interface> && std::is_final_v<T>;
+concept PointOrigin = detail::TagType<T> && std::derived_from<T, detail::point_origin_interface>;
 
 /**
  * @brief A concept matching all quantity point origins for a specified quantity type in the library
@@ -87,7 +73,7 @@ concept PointOrigin = std::derived_from<T, detail::point_origin_interface> && st
  * Satisfied by all quantity point origins that are defined using a provided quantity specification.
  */
 MP_UNITS_EXPORT template<typename T, auto QS>
-concept PointOriginFor = PointOrigin<T> && QuantitySpecOf<MP_UNITS_REMOVE_CONST(decltype(QS)), T::quantity_spec>;
+concept PointOriginFor = PointOrigin<T> && QuantitySpecOf<MP_UNITS_REMOVE_CONST(decltype(QS)), T::_quantity_spec_>;
 
 MP_UNITS_EXPORT template<Reference auto R, PointOriginFor<get_quantity_spec(R)> auto PO,
                          RepresentationOf<get_quantity_spec(R).character> Rep>
@@ -109,16 +95,16 @@ constexpr bool is_quantity_point<T> = true;
 template<PointOrigin PO1, PointOrigin PO2>
 [[nodiscard]] consteval bool same_absolute_point_origins(PO1 po1, PO2 po2)
 {
-  if constexpr (is_derived_from_specialization_of_absolute_point_origin<PO1> &&
-                is_derived_from_specialization_of_absolute_point_origin<PO2>)
+  if constexpr (is_derived_from_specialization_of_v<PO1, absolute_point_origin> &&
+                is_derived_from_specialization_of_v<PO2, absolute_point_origin>)
     return po1 == po2;
-  else if constexpr (is_derived_from_specialization_of_relative_point_origin<PO1> &&
-                     is_derived_from_specialization_of_relative_point_origin<PO2>)
-    return po1.absolute_point_origin == po2.absolute_point_origin;
-  else if constexpr (is_derived_from_specialization_of_relative_point_origin<PO1>)
-    return po1.absolute_point_origin == po2;
-  else if constexpr (is_derived_from_specialization_of_relative_point_origin<PO2>)
-    return po1 == po2.absolute_point_origin;
+  else if constexpr (is_derived_from_specialization_of_v<PO1, relative_point_origin> &&
+                     is_derived_from_specialization_of_v<PO2, relative_point_origin>)
+    return po1._absolute_point_origin_ == po2._absolute_point_origin_;
+  else if constexpr (is_derived_from_specialization_of_v<PO1, relative_point_origin>)
+    return po1._absolute_point_origin_ == po2;
+  else if constexpr (is_derived_from_specialization_of_v<PO2, relative_point_origin>)
+    return po1 == po2._absolute_point_origin_;
   else
     return false;
 }
@@ -149,21 +135,9 @@ concept QuantityPointOf =
  * all quantity_point-specific information.
  */
 MP_UNITS_EXPORT template<typename T>
-concept QuantityPointLike = requires {
-  quantity_point_like_traits<T>::reference;
-  requires Reference<std::remove_const_t<decltype(quantity_point_like_traits<T>::reference)>>;
-  quantity_point_like_traits<T>::point_origin;
-  requires PointOrigin<std::remove_const_t<decltype(quantity_point_like_traits<T>::point_origin)>>;
-  typename quantity_point_like_traits<T>::rep;
-  requires RepresentationOf<typename quantity_point_like_traits<T>::rep,
-                            get_quantity_spec(quantity_point_like_traits<T>::reference).character>;
-} && requires(T qp, typename quantity_point_like_traits<T>::rep v) {
-  {
-    quantity_point_like_traits<T>::to_numerical_value(qp)
-  } -> detail::ConversionSpecOf<typename quantity_point_like_traits<T>::rep>;
-  {
-    quantity_point_like_traits<T>::from_numerical_value(v)
-  } -> detail::ConversionSpecOf<T>;
+concept QuantityPointLike = !QuantityPoint<T> && detail::QuantityLikeImpl<T, quantity_point_like_traits> && requires {
+  typename quantity_point<quantity_point_like_traits<T>::reference, quantity_point_like_traits<T>::point_origin,
+                          typename quantity_point_like_traits<T>::rep>;
 };
 
 }  // namespace mp_units

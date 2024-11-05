@@ -37,6 +37,10 @@ template<typename T>
   return name;
 }
 
+
+// This is typically used to deterministically chose one of the alternatives
+// to guarantee the commutation of the operation (e.g., `a + b` should return
+// the same type as `b + a`).
 template<typename T1, typename T2>
 [[nodiscard]] consteval auto better_type_name(T1 v1, T2 v2)
 {

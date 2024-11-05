@@ -22,23 +22,40 @@
 
 #pragma once
 
+// IWYU pragma: private, include <mp-units/framework.h>
 #include <mp-units/bits/module_macros.h>
-#include <mp-units/systems/iec80000/quantities.h>
-#include <mp-units/systems/si/units.h>
+#include <mp-units/ext/type_traits.h>
+#include <mp-units/framework/expression_template.h>
+#include <mp-units/framework/symbol_text.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
-#include <mp-units/framework/unit.h>
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
+#include <concepts>
+#endif
 #endif
 
-MP_UNITS_EXPORT
-namespace mp_units::iec80000 {
+namespace mp_units {
 
-// clang-format off
-inline constexpr struct erlang final : named_unit<"E", kind_of<traffic_intensity>> {} erlang;
-inline constexpr struct bit final : named_unit<"bit", one, kind_of<storage_capacity>> {} bit;
-inline constexpr struct octet final : named_unit<"o", mag<8> * bit> {} octet;
-inline constexpr struct byte final : named_unit<"B", mag<8> * bit> {} byte;
-inline constexpr struct baud final : named_unit<"Bd", one / si::second, kind_of<modulation_rate>> {} baud;
-// clang-format on
+#if defined MP_UNITS_COMP_CLANG || MP_UNITS_COMP_CLANG < 18
+MP_UNITS_EXPORT template<symbol_text Symbol>
+#else
+MP_UNITS_EXPORT template<symbol_text Symbol, long double Value>
+  requires(Value > 0)
+#endif
+struct mag_constant;
 
-}  // namespace mp_units::iec80000
+MP_UNITS_EXPORT template<typename T>
+concept MagConstant = detail::TagType<T> && is_derived_from_specialization_of_v<T, mag_constant>;
+
+template<auto... Ms>
+struct magnitude;
+
+/**
+ * @brief  Concept to detect whether T is a valid Magnitude.
+ */
+MP_UNITS_EXPORT template<typename T>
+concept Magnitude = is_specialization_of_v<T, magnitude>;
+
+}  // namespace mp_units

@@ -20,15 +20,18 @@ RUN sudo install-packages \
 
 # Install API reference dependencies
 RUN sudo install-packages \
+  latexmk \
+  texlive-latex-recommended \
+  texlive-latex-extra \
+  texlive-fonts-recommended \
+  lmodern
+RUN sudo install-packages \
   haskell-stack \
   graphviz \
   nodejs \
   npm \
   ghc \
   cabal-install
-RUN npm install split mathjax-full mathjax-node-sre
+RUN npm install split mathjax-full mathjax-node-sre mathjax-node-cli
 RUN cabal update
-
-# Install MathJax-Node-CLI
-git clone https://github.com/mathjax/mathjax-node-cli --depth=1
-echo "export PATH=\"$PWD/mathjax-node-cli/bin:\$PATH\"" >> ~/.bashrc
+RUN echo "export PATH=\"~/node_modules/.bin:\$PATH\"" >> ~/.bashrc

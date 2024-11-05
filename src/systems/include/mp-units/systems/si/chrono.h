@@ -73,18 +73,20 @@ template<typename Period>
 MP_UNITS_EXPORT template<typename Rep, typename Period>
 struct quantity_like_traits<std::chrono::duration<Rep, Period>> {
   static constexpr auto reference = detail::time_unit_from_chrono_period<Period>();
+  static constexpr bool explicit_import = false;
+  static constexpr bool explicit_export = false;
   using rep = Rep;
+  using T = std::chrono::duration<Rep, Period>;
 
-  [[nodiscard]] static constexpr convert_implicitly<rep> to_numerical_value(
-    const std::chrono::duration<Rep, Period>& q) noexcept(std::is_nothrow_copy_constructible_v<rep>)
+  [[nodiscard]] static constexpr rep to_numerical_value(const T& q) noexcept(std::is_nothrow_copy_constructible_v<rep>)
   {
     return q.count();
   }
 
-  [[nodiscard]] static constexpr convert_implicitly<std::chrono::duration<Rep, Period>> from_numerical_value(
-    const rep& v) noexcept(std::is_nothrow_copy_constructible_v<rep>)
+  [[nodiscard]] static constexpr T from_numerical_value(const rep& v) noexcept(
+    std::is_nothrow_copy_constructible_v<rep>)
   {
-    return std::chrono::duration<Rep, Period>(v);
+    return T(v);
   }
 };
 
@@ -99,18 +101,19 @@ MP_UNITS_EXPORT_BEGIN
 
 template<typename C, typename Rep, typename Period>
 struct quantity_point_like_traits<std::chrono::time_point<C, std::chrono::duration<Rep, Period>>> {
-  using T = std::chrono::time_point<C, std::chrono::duration<Rep, Period>>;
   static constexpr auto reference = detail::time_unit_from_chrono_period<Period>();
   static constexpr auto point_origin = chrono_point_origin<C>;
+  static constexpr bool explicit_import = false;
+  static constexpr bool explicit_export = false;
   using rep = Rep;
+  using T = std::chrono::time_point<C, std::chrono::duration<Rep, Period>>;
 
-  [[nodiscard]] static constexpr convert_implicitly<rep> to_numerical_value(const T& tp) noexcept(
-    std::is_nothrow_copy_constructible_v<rep>)
+  [[nodiscard]] static constexpr rep to_numerical_value(const T& tp) noexcept(std::is_nothrow_copy_constructible_v<rep>)
   {
     return tp.time_since_epoch().count();
   }
 
-  [[nodiscard]] static constexpr convert_implicitly<T> from_numerical_value(const rep& v) noexcept(
+  [[nodiscard]] static constexpr T from_numerical_value(const rep& v) noexcept(
     std::is_nothrow_copy_constructible_v<rep>)
   {
     return T(std::chrono::duration<Rep, Period>(v));
@@ -120,9 +123,9 @@ struct quantity_point_like_traits<std::chrono::time_point<C, std::chrono::durati
 namespace detail {
 
 [[nodiscard]] constexpr auto as_ratio(Magnitude auto m)
-  requires(is_rational(m))
+  requires(_is_rational(m))
 {
-  return std::ratio<get_value<std::intmax_t>(numerator(m)), get_value<std::intmax_t>(denominator(m))>{};
+  return std::ratio<_get_value<std::intmax_t>(_numerator(m)), _get_value<std::intmax_t>(_denominator(m))>{};
 }
 
 }  // namespace detail

@@ -71,15 +71,15 @@ struct conversion_type_traits {
  */
 template<Magnitude auto M, typename T>
 struct conversion_value_traits {
-  static constexpr Magnitude auto num = numerator(M);
-  static constexpr Magnitude auto den = denominator(M);
+  static constexpr Magnitude auto num = _numerator(M);
+  static constexpr Magnitude auto den = _denominator(M);
   static constexpr Magnitude auto irr = M * (den / num);
   static constexpr auto ratio = [] {
     if constexpr (std::is_integral_v<T>) {
       using U = long double;
-      return detail::fixed_point<T>{get_value<U>(num) / get_value<U>(den) * get_value<U>(irr)};
+      return detail::fixed_point<T>{_get_value<U>(num) / _get_value<U>(den) * _get_value<U>(irr)};
     } else {
-      return get_value<T>(num) / get_value<T>(den) * get_value<T>(irr);
+      return _get_value<T>(num) / _get_value<T>(den) * _get_value<T>(irr);
     }
   }();
   static constexpr bool value_increases = ratio >= T{1};
@@ -96,10 +96,10 @@ struct conversion_value_traits {
 };
 
 template<Magnitude auto M, typename T>
-  requires(is_integral(M))
+  requires(_is_integral(M))
 struct conversion_value_traits<M, T> {
-  static constexpr Magnitude auto num = numerator(M);
-  static constexpr T num_mult = get_value<T>(num);
+  static constexpr Magnitude auto num = _numerator(M);
+  static constexpr T num_mult = _get_value<T>(num);
   static constexpr bool value_increases = true;
 
   template<typename V>
@@ -110,10 +110,10 @@ struct conversion_value_traits<M, T> {
 };
 
 template<Magnitude auto M, typename T>
-  requires(is_integral(pow<-1>(M)) && !is_integral(M))
+  requires(_is_integral(_pow<-1>(M)) && !_is_integral(M))
 struct conversion_value_traits<M, T> {
-  static constexpr Magnitude auto den = denominator(M);
-  static constexpr T den_div = get_value<T>(den);
+  static constexpr Magnitude auto den = _denominator(M);
+  static constexpr T den_div = _get_value<T>(den);
   static constexpr bool value_increases = false;
 
   template<typename V>
@@ -134,13 +134,13 @@ struct conversion_value_traits<M, T> {
  */
 template<Quantity To, typename FwdFrom, Quantity From = std::remove_cvref_t<FwdFrom>>
   requires(castable(From::quantity_spec, To::quantity_spec)) &&
-          ((From::unit == To::unit && std::constructible_from<typename To::rep, typename From::rep>) ||
-           (From::unit != To::unit))  // && scalable_with_<typename To::rep>))
+          ((equivalent(From::unit, To::unit) && std::constructible_from<typename To::rep, typename From::rep>) ||
+           (!equivalent(From::unit, To::unit)))  // && scalable_with_<typename To::rep>))
 // TODO how to constrain the second part here?
 [[nodiscard]] constexpr To sudo_cast(FwdFrom&& q)
 {
   constexpr auto q_unit = From::unit;
-  if constexpr (q_unit == To::unit) {
+  if constexpr (equivalent(q_unit, To::unit)) {
     // no scaling of the number needed
     return {static_cast<To::rep>(std::forward<FwdFrom>(q).numerical_value_is_an_implementation_detail_),
             To::reference};  // this is the only (and recommended) way to do a truncating conversion on a number, so we
@@ -168,8 +168,8 @@ template<Quantity To, typename FwdFrom, Quantity From = std::remove_cvref_t<FwdF
 template<QuantityPoint ToQP, typename FwdFromQP, QuantityPoint FromQP = std::remove_cvref_t<FwdFromQP>>
   requires(castable(FromQP::quantity_spec, ToQP::quantity_spec)) &&
           (detail::same_absolute_point_origins(ToQP::point_origin, FromQP::point_origin)) &&
-          ((FromQP::unit == ToQP::unit && std::constructible_from<typename ToQP::rep, typename FromQP::rep>) ||
-           (FromQP::unit != ToQP::unit))
+          ((equivalent(FromQP::unit, ToQP::unit) && std::constructible_from<typename ToQP::rep, typename FromQP::rep>) ||
+           (!equivalent(FromQP::unit, ToQP::unit)))
 [[nodiscard]] constexpr QuantityPoint auto sudo_cast(FwdFromQP&& qp)
 {
   if constexpr (is_same_v<std::remove_const_t<decltype(ToQP::point_origin)>,

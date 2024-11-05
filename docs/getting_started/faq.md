@@ -139,6 +139,71 @@ all the properties of scaled units and is consistent with the rest of the librar
     [the Dimensionless Quantities chapter](../users_guide/framework_basics/dimensionless_quantities.md).
 
 
+## Why derived units order is not preserved from the multiplication?
+
+It might be surprising, but the quantities and units multiplication order does not impact the order
+of components in the derived unit. Let's try the following example:
+
+```cpp
+std::println("{}", 42 * kW * h);
+constexpr auto kWh = kW * h;
+std::println("{}", 42 * kWh);
+```
+
+The above prints:
+
+```text
+42 h kW
+42 h kW
+```
+
+Some users could expect to see `42 kWh` or `42 kW h` in the output. It is not the case and for
+a very good reason. As stated in
+[Simplifying the resulting expression templates](../users_guide/framework_basics/interface_introduction.md#simplifying-the-resulting-expression-templates),
+to be able to reason about and simplify units, the library needs to order them in an appropriate
+order.
+
+Maybe this default order could be improved a bit, but according to international standards,
+there is no generic ordering rule. Various quantities use different, often domain-specific,
+ordering of derived unit components.
+
+Let's see what [SI](../appendix/references.md#SIBrochure) says here:
+
+| Derived quantity           | Symbol | Derived unit expressed in terms of base units |
+|----------------------------|:------:|:---------------------------------------------:|
+| _electric field strength_  | V m⁻¹  |                 kg m s⁻³ A⁻¹                  |
+| _electric charge density_  | C m⁻³  |                    A s m⁻³                    |
+| _exposure (x- and γ-rays)_ | C kg⁻¹ |                   A s kg⁻¹                    |
+
+However, there is a workaround. A user can define its own named unit for a derived unit and provide
+the custom symbol text that suits the project's requirements. For example, the above case could be
+addressed with:
+
+```cpp
+inline constexpr struct kilowatt_hour final : named_unit<"kWh", kW * h> {} kilowatt_hour;
+inline constexpr auto kWh = kilowatt_hour;
+```
+
+With the above, we can refactor the above code to:
+
+```cpp
+std::println("{}", 42 * kWh);
+std::println("{}", (42 * kW * h).in(kWh));
+```
+
+Both lines will produce an expected "42 kWh" unit in the output.
+
+!!! important
+
+    Please note that this makes the entire "kWh" a single, indivisible entity that is not subject
+    to simplification rules. This means that `42 * kWh / (2 * h)` will result with `21 kWh/h`
+    rather than `21 kW`. To get the latter, the user needs to explicitly provide a new derived unit:
+
+    ```cpp
+    std::println("{}", (42 * kWh / (2 * h)).in(kW));
+    ```
+
+
 ## Why do the identifiers for concepts in the library use `CamelCase`?
 
 Initially, C++20 was meant to use `CamelCase` for all the concept identifiers. All the concepts
@@ -164,11 +229,11 @@ code.
     please let us know in the associated [GitHub Issue](https://github.com/mpusz/mp-units/issues/93).
 
 
-## Why Unicode quantity symbols are used by default instead of ASCII-only characters?
+## Why UTF-8 quantity symbols are used by default instead of portable characters?
 
 Both C++ and [ISO 80000](../appendix/references.md#ISO80000) are standardized by the ISO.
 [ISO 80000](../appendix/references.md#ISO80000) and the [SI](../appendix/references.md#SIBrochure)
-standards specify Unicode symbols as the official unit names for some quantities
+standards specify UTF-8 symbols as the official unit names for some quantities
 (e.g. `Ω` symbol for the resistance quantity).
 As the **mp-units** library will be proposed for standardization as a part of the C++ Standard Library
 we have to obey the rules and be consistent with ISO specifications.
@@ -176,7 +241,7 @@ we have to obey the rules and be consistent with ISO specifications.
 !!! note
 
     We do understand engineering reality and the constraints of some environments. This is why the library
-    has the option of [ASCII-only Quantity Symbols](../users_guide/framework_basics/text_output.md#unit_symbol_formatting).
+    has the option of [Portable Quantity Symbols](../users_guide/framework_basics/text_output.md#unit_symbol_formatting).
 
 
 ## Why don't we have CMake options to disable the building of tests and examples?

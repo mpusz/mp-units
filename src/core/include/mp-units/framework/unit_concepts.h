@@ -43,9 +43,10 @@ struct unit_interface;
  * Satisfied by all unit types provided by the library.
  */
 MP_UNITS_EXPORT template<typename T>
-concept Unit = std::derived_from<T, detail::unit_interface> && std::is_final_v<T>;
+concept Unit = detail::TagType<T> && std::derived_from<T, detail::unit_interface>;
 
 template<Magnitude auto M, Unit U>
+  requires(M != magnitude<>{} && M != mag<1>)
 struct scaled_unit;
 
 MP_UNITS_EXPORT template<symbol_text Symbol, auto...>
@@ -53,45 +54,11 @@ struct named_unit;
 
 MP_UNITS_EXPORT struct one;
 
-namespace detail {
-
-template<symbol_text Symbol, auto... Args>
-void to_base_specialization_of_named_unit(const volatile named_unit<Symbol, Args...>*);
-
-template<typename T>
-constexpr bool is_derived_from_specialization_of_named_unit =
-  requires(T* t) { to_base_specialization_of_named_unit(t); };
-
-}  // namespace detail
-
 /**
  * @brief A concept to be used to define prefixes for a unit
  */
 MP_UNITS_EXPORT template<typename T>
-concept PrefixableUnit = Unit<T> && detail::is_derived_from_specialization_of_named_unit<T>;
-
-namespace detail {
-
-template<typename T>
-constexpr bool is_power_of_unit = requires { requires is_specialization_of_power<T> && Unit<typename T::factor>; };
-
-template<typename T>
-constexpr bool is_per_of_units = false;
-
-template<typename... Ts>
-constexpr bool is_per_of_units<per<Ts...>> = (... && (Unit<Ts> || is_power_of_unit<Ts>));
-
-template<typename T>
-concept DerivedUnitExpr = Unit<T> || detail::is_power_of_unit<T> || detail::is_per_of_units<T>;
-
-}  // namespace detail
-
-template<detail::DerivedUnitExpr... Expr>
-struct derived_unit;
-
-MP_UNITS_EXPORT template<symbol_text Symbol, Magnitude auto M, PrefixableUnit auto U>
-  requires(!Symbol.empty())
-struct prefixed_unit;
+concept PrefixableUnit = Unit<T> && is_derived_from_specialization_of_v<T, named_unit>;
 
 namespace detail {
 
@@ -113,9 +80,9 @@ template<typename... Us>
 template<Unit U>
 [[nodiscard]] consteval bool has_associated_quantity(U)
 {
-  if constexpr (requires { U::quantity_spec; }) return true;
-  if constexpr (requires { U::reference_unit; })
-    return has_associated_quantity(U::reference_unit);
+  if constexpr (requires { U::_quantity_spec_; }) return true;
+  if constexpr (requires { U::_reference_unit_; })
+    return has_associated_quantity(U::_reference_unit_);
   else if constexpr (requires { typename U::_num_; })
     return has_associated_quantity(typename U::_num_{}) && has_associated_quantity(typename U::_den_{});
   else
@@ -161,10 +128,10 @@ concept UnitConvertibleTo =
 MP_UNITS_EXPORT template<typename U, auto FromU, auto QS>
 concept UnitCompatibleWith =
   Unit<U> && Unit<MP_UNITS_REMOVE_CONST(decltype(FromU))> && QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS))> &&
-  (!AssociatedUnit<U> || UnitOf<U, QS>)&&detail::UnitConvertibleTo<FromU, U{}>;
+  (!AssociatedUnit<U> || UnitOf<U, QS>) && detail::UnitConvertibleTo<FromU, U{}>;
 
 template<typename T>
-concept OffsetUnit = Unit<T> && requires { T::point_origin; };
+concept OffsetUnit = Unit<T> && requires { T::_point_origin_; };
 
 }  // namespace detail
 

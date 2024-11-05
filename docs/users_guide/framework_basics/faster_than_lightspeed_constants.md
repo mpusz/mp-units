@@ -45,7 +45,7 @@ inline constexpr struct speed_of_light_in_vacuum final :
 }  // namespace si2019
 
 inline constexpr struct magnetic_constant final :
-  named_unit<{u8"μ₀", "u_0"}, mag<4> * mag_pi * mag_power<10, -7> * henry / metre> {} magnetic_constant;
+  named_unit<{u8"μ₀", "u_0"}, mag<4> * mag<π> * mag_power<10, -7> * henry / metre> {} magnetic_constant;
 
 }  // namespace mp_units::si
 ```

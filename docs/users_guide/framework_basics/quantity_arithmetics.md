@@ -89,26 +89,27 @@ static_assert(isq::radius(1 * m) - 0.5 * m == isq::radius(0.5 * m));
 
 !!! note
 
-    Please note that for the compound assignment operators, both arguments have to either be of
-    the same type or the RHS has to be implicitly convertible to the LHS, as the type of
-    LHS is always the result of such an operation:
+    Please note that for the compound assignment operators, we always need to end up with the
+    left-hand-side argument type:
 
     ```cpp
     static_assert((1 * m += 1 * km) == 1001 * m);
+    static_assert((isq::length(1 * m) += isq::height(1 * m)) == isq::length(1 * m));
     static_assert((isq::height(1.5 * m) -= 1 * m) == isq::height(0.5 * m));
     ```
 
-    If we break those rules, the following code will not compile:
+    If we will break typical library's convertibility rules, the following code will not compile:
 
     ```cpp
-    static_assert((1 * m -= 0.5 * m) == 0.5 * m);                       // Compile-time error(1)
-    static_assert((1 * km += 1 * m) == 1001 * m);                       // Compile-time error(2)
-    static_assert((isq::height(1 * m) += isq::length(1 * m)) == 2 * m); // Compile-time error(3)
+    quantity q1 = 1 * m -= 0.5 * m;                         // Compile-time error(1)
+    quantity q2 = 1 * km += 1 * m;                          // Compile-time error(2)
+    quantity q3 = isq::height(1 * m) += isq::length(1 * m); // Compile-time error(3)
     ```
 
-    1. The floating-point to integral representation type is [considered narrowing](value_conversions.md).
-    2. Conversion of quantity with integral representation type from a unit of a higher resolution to the one
-       with a lower resolution is [considered narrowing](value_conversions.md).
+    1. Conversion of the floating-point to integral representation type is
+       [considered narrowing](value_conversions.md).
+    2. Conversion of quantity with integral representation type from a unit of a higher resolution
+       to the one with a lower resolution is [considered narrowing](value_conversions.md).
     3. Conversion from a more generic quantity type to a more specific one is
        [considered unsafe](simple_and_typed_quantities.md#quantity_cast-to-force-unsafe-conversions).
 
@@ -124,13 +125,13 @@ static_assert(isq::height(3 * m) * 0.5 == isq::height(1.5 * m));
 
 !!! note
 
-    Unless we use a compound assignment operator, in which case truncating operations are again not allowed:
+    Unless we use a compound assignment operator, in which case we always have to result with
+    the type of the left-hand-side argument. This, together with the fact that this library
+    tries to prevent truncation of a quantity value means, that the following does not compile:
 
     ```cpp
-    static_assert((isq::height(3 * m) *= 0.5) == isq::height(1.5 * m)); // Compile-time error(1)
+    quantity q = isq::height(3 * m) *= 0.5; // Compile-time error
     ```
-
-    1. The floating-point to integral representation type is [considered narrowing](value_conversions.md).
 
 However, suppose we multiply or divide quantities of the same or different types or we divide a raw
 number by a quantity. In that case, we most probably will end up in a quantity of yet another type:

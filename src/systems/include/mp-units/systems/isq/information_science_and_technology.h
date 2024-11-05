@@ -32,7 +32,7 @@
 #endif
 
 MP_UNITS_EXPORT
-namespace mp_units::iec80000 {
+namespace mp_units::isq {
 
 // dimensions of base quantities
 // clang-format off
@@ -75,4 +75,4 @@ QUANTITY_SPEC(decision_content, dimensionless);
 // TODO how to model information_content and the following quantities???
 // QUANTITY_SPEC(information_content, ...);
 
-}  // namespace mp_units::iec80000
+}  // namespace mp_units::isq

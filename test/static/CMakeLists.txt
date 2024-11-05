@@ -21,6 +21,9 @@
 # SOFTWARE.
 
 add_library(unit_tests_static_truncating quantity_test.cpp)
+if(NOT ${projectPrefix}API_FREESTANDING)
+    target_sources(unit_tests_static_truncating PRIVATE chrono_test.cpp)
+endif()
 target_link_libraries(unit_tests_static_truncating PRIVATE mp-units::mp-units)
 target_compile_options(
     unit_tests_static_truncating PRIVATE $<IF:$<CXX_COMPILER_ID:MSVC>,/wd4242 /wd4244,-Wno-conversion>
@@ -40,7 +43,7 @@ add_library(
     fixed_string_test.cpp
     hep_test.cpp
     iau_test.cpp
-    iec80000_test.cpp
+    iec_test.cpp
     imperial_test.cpp
     international_test.cpp
     isq_test.cpp
@@ -62,7 +65,7 @@ add_library(
 )
 
 if(NOT ${projectPrefix}API_FREESTANDING)
-    target_sources(unit_tests_static PRIVATE chrono_test.cpp fractional_exponent_quantity.cpp math_test.cpp)
+    target_sources(unit_tests_static PRIVATE fractional_exponent_quantity.cpp math_test.cpp)
 endif()
 
 target_compile_options(unit_tests_static PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Wno-subobject-linkage>)

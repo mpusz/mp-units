@@ -85,8 +85,8 @@ a [system of quantities](../../appendix/glossary.md#system-of-quantities).
 
 The above quotes from ISO 80000 provide answers to all the issues above. Two quantities can't be
 added, subtracted, or compared unless they belong to the same [kind](../../appendix/glossary.md#kind).
-As frequency, activity, and modulation rate are different kinds, the expression provided above should
-not compile.
+As _frequency_, _activity_, and _modulation rate_ are of different kinds, the expression provided
+above should not compile.
 
 
 ## System of quantities is not only about kinds
@@ -99,26 +99,27 @@ For example, here are all quantities of the kind length provided in the ISO 8000
 
 ```mermaid
 flowchart TD
-    length --- width[width, breadth]
-    length --- height[height, depth, altitude]
-    width --- thickness
-    width --- diameter
-    width --- radius
-    length --- path_length
-    path_length --- distance
-    distance --- radial_distance
-    length --- wavelength
-    length --- position_vector["position_vector\n{vector}"]
-    length --- displacement["displacement\n{vector}"]
-    radius --- radius_of_curvature
+    length["<b>length</b><br>[m]"]
+    length --- width["<b>width</b> / <b>breadth</b>"]
+    length --- height["<b>height</b> / <b>depth</b> / <b>altitude</b>"]
+    width --- thickness["<b>thickness</b>"]
+    width --- diameter["<b>diameter</b>"]
+    width --- radius["<b>radius</b>"]
+    length --- path_length["<b>path_length</b>"]
+    path_length --- distance["<b>distance</b>"]
+    distance --- radial_distance["<b>radial_distance</b>"]
+    length --- wavelength["<b>wavelength</b>"]
+    length --- position_vector["<b>position_vector</b><br>{vector}"]
+    length --- displacement["<b>displacement</b><br>{vector}"]
+    radius --- radius_of_curvature["<b>radius_of_curvature</b>"]
 ```
 
 Each of the above quantities expresses some kind of _length_, and each can be measured with `si::metre`.
 However, each of them has different properties, usage, and sometimes even requires a different
 representation type (notice that `position_vector` and `displacement` are vector quantities).
 
-Such a hierarchy helps us in defining arithmetics and conversion rules for various quantities of
-the same kind.
+Forming such a hierarchy helps us in defining arithmetics and conversion rules for various
+quantities of the same kind.
 
 
 ## Defining quantities
@@ -229,9 +230,9 @@ where the result of `length` is known as a **common quantity** type. A result of
 the first common node in a hierarchy tree of the same kind. For example:
 
 ```cpp
-static_assert(common_quantity_spec(isq::width, isq::height) == isq::length);
-static_assert(common_quantity_spec(isq::thickness, isq::radius) == isq::width);
-static_assert(common_quantity_spec(isq::distance, isq::path_length) == isq::path_length);
+static_assert(get_common_quantity_spec(isq::width, isq::height) == isq::length);
+static_assert(get_common_quantity_spec(isq::thickness, isq::radius) == isq::width);
+static_assert(get_common_quantity_spec(isq::distance, isq::path_length) == isq::path_length);
 ```
 
 
@@ -295,21 +296,21 @@ sometimes not obvious what such a tree should look like. Also, ISO explicitly st
 
     The division of ‘quantity’ according to ‘kind of quantity’ is, to some extent, arbitrary.
 
-The below presents some arbitrary hierarchy of derived quantities of kind energy:
+The below presents some arbitrary hierarchy of derived quantities of kind _energy_:
 
 ```mermaid
 flowchart TD
-    energy["energy\n(mass * length<sup>2</sup> / time<sup>2</sup>)"]
-    energy --- mechanical_energy
-    mechanical_energy --- potential_energy
-    potential_energy --- gravitational_potential_energy["gravitational_potential_energy\n(mass * acceleration_of_free_fall * height)"]
-    potential_energy --- elastic_potential_energy["elastic_potential_energy\n(spring_constant * amount_of_compression<sup>2</sup>)"]
-    mechanical_energy --- kinetic_energy["kinetic_energy\n(mass * speed<sup>2</sup>)"]
-    energy --- enthalpy
-    enthalpy --- internal_energy[internal_energy, thermodynamic_energy]
-    internal_energy --- Helmholtz_energy[Helmholtz_energy, Helmholtz_function]
-    enthalpy --- Gibbs_energy[Gibbs_energy, Gibbs_function]
-    energy --- active_energy
+    energy["<b>energy</b><br><i>(mass * length<sup>2</sup> / time<sup>2</sup>)</i><br>[J]"]
+    energy --- mechanical_energy["<b>mechanical_energy</b>"]
+    mechanical_energy --- potential_energy["<b>potential_energy</b>"]
+    potential_energy --- gravitational_potential_energy["<b>gravitational_potential_energy</b><br><i>(mass * acceleration_of_free_fall * height)</i>"]
+    potential_energy --- elastic_potential_energy["<b>elastic_potential_energy</b><br><i>(spring_constant * amount_of_compression<sup>2</sup>)</i>"]
+    mechanical_energy --- kinetic_energy["<b>kinetic_energy</b><br><i>(mass * speed<sup>2</sup>)</i>"]
+    energy --- enthalpy["<b>enthalpy</b>"]
+    enthalpy --- internal_energy["<b>internal_energy</b> / <b>thermodynamic_energy</b>"]
+    internal_energy --- Helmholtz_energy["<b>Helmholtz_energy</b> / <b>Helmholtz_function</b>"]
+    enthalpy --- Gibbs_energy["<b>Gibbs_energy</b> / <b>Gibbs_function</b>"]
+    energy --- active_energy["<b>active_energy</b>"]
 ```
 
 Notice, that even though all of those quantities have the same dimension and can be expressed
@@ -364,7 +365,7 @@ quantities of the same kind. Such quantities have not only the same dimension bu
 can be expressed in the same units.
 
 To annotate a quantity to represent its kind (and not just a hierarchy tree's root quantity)
-we introduced a `kind_of<>` specifier. For example, to express any quantity of length, we need
+we introduced a `kind_of<>` specifier. For example, to express any quantity of _length_, we need
 to type `kind_of<isq::length>`.
 
 !!! important

@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 #include <mp-units/framework.h>
+#include <mp-units/systems/iec.h>
 #include <mp-units/systems/isq.h>
 #include <mp-units/systems/si.h>
 
@@ -28,6 +29,7 @@ namespace {
 
 using namespace mp_units;
 using namespace mp_units::si::unit_symbols;
+using namespace mp_units::iec::unit_symbols;
 using enum mp_units::quantity_character;
 
 [[nodiscard]] consteval bool verify(QuantitySpec auto q, quantity_character ch, Unit auto... units)
@@ -79,9 +81,7 @@ static_assert(verify(isq::wavenumber, scalar, one / m));
 static_assert(verify(isq::wave_vector, vector, one / m));
 static_assert(verify(isq::angular_repetency, scalar, one / m));
 static_assert(verify(isq::angular_wavenumber, scalar, one / m));
-static_assert(verify(isq::phase_velocity, scalar, m / s));
 static_assert(verify(isq::phase_speed, scalar, m / s));
-static_assert(verify(isq::group_velocity, scalar, m / s));
 static_assert(verify(isq::group_speed, scalar, m / s));
 static_assert(verify(isq::damping_coefficient, scalar, one / s));
 static_assert(verify(isq::logarithmic_decrement, scalar, one));
@@ -297,19 +297,19 @@ static_assert(verify(isq::mutual_inductance, scalar, H));
 static_assert(verify(isq::coupling_factor, scalar, one));
 static_assert(verify(isq::leakage_factor, scalar, one));
 static_assert(verify(isq::conductivity, scalar, S / m));
-static_assert(verify(isq::resistivity, scalar, si::ohm* m));
+static_assert(verify(isq::resistivity, scalar, Ω* m));
 static_assert(verify(isq::electromagnetism_power, scalar, W));
 static_assert(verify(isq::instantaneous_power, scalar, W));
-static_assert(verify(isq::resistance, scalar, si::ohm));
+static_assert(verify(isq::resistance, scalar, Ω));
 static_assert(verify(isq::conductance, scalar, S));
 static_assert(verify(isq::phase_difference, scalar, rad));
 static_assert(verify(isq::electric_current_phasor, scalar, A));
 static_assert(verify(isq::voltage_phasor, scalar, V));
-static_assert(verify(isq::impedance, scalar, si::ohm));
-static_assert(verify(isq::complex_impedance, scalar, si::ohm));
-static_assert(verify(isq::resistance_to_alternating_current, scalar, si::ohm));
-static_assert(verify(isq::reactance, scalar, si::ohm));
-static_assert(verify(isq::modulus_of_impedance, scalar, si::ohm));
+static_assert(verify(isq::impedance, scalar, Ω));
+static_assert(verify(isq::complex_impedance, scalar, Ω));
+static_assert(verify(isq::resistance_to_alternating_current, scalar, Ω));
+static_assert(verify(isq::reactance, scalar, Ω));
+static_assert(verify(isq::modulus_of_impedance, scalar, Ω));
 static_assert(verify(isq::admittance, scalar, S));
 static_assert(verify(isq::complex_admittance, scalar, S));
 static_assert(verify(isq::conductance_for_alternating_current, scalar, S));
@@ -354,5 +354,38 @@ static_assert(verify(isq::activity, scalar, Bq, one / s));
 static_assert(verify(isq::absorbed_dose, scalar, Gy, J / kg, m2 / s2));
 static_assert(verify(isq::quality_factor, scalar, one));
 static_assert(verify(isq::dose_equivalent, scalar, Sv, J / kg, m2 / s2));
+
+// information science and technology
+static_assert(verify(isq::traffic_intensity, scalar, E));
+static_assert(verify(isq::traffic_offered_intensity, scalar, E));
+static_assert(verify(isq::traffic_carried_intensity, scalar, E));
+static_assert(verify(isq::traffic_load, scalar, E));
+static_assert(verify(isq::mean_queue_length, scalar, one));
+static_assert(verify(isq::loss_probability, scalar, one));
+static_assert(verify(isq::waiting_probability, scalar, one));
+static_assert(verify(isq::call_intensity, scalar, one / s));
+static_assert(verify(isq::calling_rate, scalar, one / s));
+static_assert(verify(isq::completed_call_intensity, scalar, one / s));
+static_assert(verify(isq::storage_capacity, scalar, one, bit, o, B));
+static_assert(verify(isq::storage_size, scalar, one, bit, o, B));
+static_assert(verify(isq::equivalent_binary_storage_capacity, scalar, one, bit));
+static_assert(verify(isq::transfer_rate, scalar, one / s, o / s, B / s));
+static_assert(verify(isq::period_of_data_elements, scalar, s));
+static_assert(verify(isq::binary_digit_rate, scalar, one / s, bit / s));
+static_assert(verify(isq::bit_rate, scalar, one / s, bit / s));
+static_assert(verify(isq::period_of_binary_digits, scalar, s));
+static_assert(verify(isq::bit_period, scalar, s));
+static_assert(verify(isq::equivalent_binary_digit_rate, scalar, one / s, bit / s));
+static_assert(verify(isq::equivalent_bit_rate, scalar, one / s, bit / s));
+static_assert(verify(isq::modulation_rate, scalar, one / s, Bd));
+static_assert(verify(isq::line_digit_rate, scalar, one / s, Bd));
+static_assert(verify(isq::quantizing_distortion_power, scalar, W));
+static_assert(verify(isq::carrier_power, scalar, W));
+static_assert(verify(isq::signal_energy_per_binary_digit, scalar, J));
+static_assert(verify(isq::error_probability, scalar, one));
+static_assert(verify(isq::Hamming_distance, scalar, one));
+static_assert(verify(isq::clock_frequency, scalar, Hz));
+static_assert(verify(isq::clock_rate, scalar, Hz));
+static_assert(verify(isq::decision_content, scalar, one));
 
 }  // namespace

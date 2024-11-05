@@ -40,9 +40,9 @@ repository-code: "https://github.com/mpusz/mp-units"
 url: "https://mpusz.github.io/mp-units"
 repository-artifact: "https://conan.io/center/mp-units"
 
-version: 2.2.0
-date-released: "2024-06-14"
+version: 2.3.0
+date-released: "2024-09-27"
 identifiers:
-  - description: "The GitHub release URL of tag 2.2.0"
+  - description: "The GitHub release URL of tag 2.3.0"
     type: url
-    value: "https://github.com/mpusz/mp-units/releases/tag/v2.2.0"
+    value: "https://github.com/mpusz/mp-units/releases/tag/v2.3.0"

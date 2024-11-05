@@ -53,7 +53,7 @@ For example:
   _luminous intensity_ ($\mathsf{J}$) are the base dimensions of the [ISQ](../../appendix/glossary.md#isq).
 - A derived dimension of _force_ in the [ISQ](../../appendix/glossary.md#isq) is denoted by
   $\textsf{dim }F = \mathsf{LMT}^{–2}$.
-- The implementation of IEC 80000 in this library provides `iec80000::dim_traffic_intensity`
+- The implementation of IEC 80000 in this library provides `iec::dim_traffic_intensity`
   base dimension to extend ISQ with strong information technology quantities.
 
 [Base dimensions](../../appendix/glossary.md#base-dimension) can be defined by the user in

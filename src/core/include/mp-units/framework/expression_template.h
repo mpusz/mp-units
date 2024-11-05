@@ -56,12 +56,6 @@ struct per {};
 
 namespace detail {
 
-template<typename T>
-constexpr bool is_specialization_of_per = false;
-
-template<typename... Ts>
-constexpr bool is_specialization_of_per<per<Ts...>> = true;
-
 template<int Num, int... Den>
 constexpr bool valid_ratio = true;
 
@@ -300,7 +294,7 @@ struct expr_fractions_result {
   using _den_ = Den;  // exposition only
 };
 
-template<template<typename> typename OneType, typename List>
+template<typename OneType, typename List>
 [[nodiscard]] consteval auto expr_fractions_impl()
 {
   constexpr std::size_t size = type_list_size<List>;
@@ -312,8 +306,8 @@ template<template<typename> typename OneType, typename List>
   else {
     using last_element = type_list_back<List>;
 
-    if constexpr (is_specialization_of_per<last_element>) {
-      if constexpr (size == 2 && OneType<type_list_front<List>>::value)
+    if constexpr (is_specialization_of<last_element, per>) {
+      if constexpr (size == 2 && is_same_v<type_list_front<List>, OneType>)
         return expr_fractions_result<type_list<>, type_list_map<last_element, type_list>>{};
       else {
         using split = type_list_split<List, size - 1>;
@@ -328,7 +322,7 @@ template<template<typename> typename OneType, typename List>
 /**
  * @brief Divides expression template spec to numerator and denominator parts
  */
-template<template<typename> typename OneType, typename... Ts>
+template<typename OneType, typename... Ts>
 struct expr_fractions : decltype(expr_fractions_impl<OneType, type_list<Ts...>>()) {};
 
 // expr_make_spec
@@ -414,7 +408,7 @@ template<template<typename...> typename To, typename OneType, template<typename,
  */
 template<template<typename...> typename To, typename OneType, template<typename, typename> typename Pred, typename Lhs,
          typename Rhs>
-[[nodiscard]] consteval auto expr_divide(Lhs lhs, Rhs rhs)
+[[nodiscard]] MP_UNITS_CONSTEVAL auto expr_divide(Lhs lhs, Rhs rhs)
 {
   if constexpr (is_same_v<Lhs, Rhs>) {
     return OneType{};
@@ -481,9 +475,18 @@ template<std::intmax_t Num, std::intmax_t Den, template<typename...> typename To
 template<std::intmax_t Num, std::intmax_t Den, template<typename...> typename To, typename OneType,
          template<typename, typename> typename Pred, typename T>
   requires detail::non_zero<Den>
-[[nodiscard]] consteval auto expr_pow(T)
+[[nodiscard]] consteval auto expr_pow(T v)
 {
-  return expr_pow_impl<Num, Den, To, OneType, Pred>(typename T::_num_{}, typename T::_den_{});
+  if constexpr (Num == 0 || is_same_v<T, OneType>)
+    return OneType{};
+  else if constexpr (detail::ratio{Num, Den} == 1)
+    return v;
+  else if constexpr (is_specialization_of<T, To>)
+    return expr_pow_impl<Num, Den, To, OneType, Pred>(typename T::_num_{}, typename T::_den_{});
+  else if constexpr (Den == 1)
+    return To<power<T, Num>>{};
+  else
+    return To<power<T, Num, Den>>{};
 }
 
 

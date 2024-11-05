@@ -250,15 +250,15 @@ class template.
 `QuantityLike` concept provides interoperability with other libraries and is satisfied by a type `T`
 for which an instantiation of `quantity_like_traits` type trait yields a valid type that provides:
 
-- Static data member `reference` that matches the [`Reference`](#Reference) concept,
+- `reference` static data member that matches the [`Reference`](#Reference) concept,
 - `rep` type that matches [`RepresentationOf`](#RepresentationOf) concept with the character provided
-  in `reference`.
-- `to_numerical_value(T)` static member function returning a raw value of the quantity packed in
-  either `convert_explicitly` or `convert_implicitly` wrapper that enables implicit conversion in
-  the latter case.
-- `from_numerical_value(rep)` static member function returning `T` packed in either `convert_explicitly`
-  or `convert_implicitly` wrapper that enables implicit conversion in the latter case.
-
+  in `reference`,
+- `explicit_import` static data member convertible to `bool` that specifies that the conversion
+  from `T` to a `quantity` type should happen explicitly (if `true`),
+- `explicit_export` static data member convertible to `bool` that specifies that the conversion
+  from a `quantity` type to `T` should happen explicitly (if `true`),
+- `to_numerical_value(T)` static member function returning a raw value of the quantity,
+- `from_numerical_value(rep)` static member function returning `T`.
 
 ??? abstract "Examples"
 
@@ -268,14 +268,16 @@ for which an instantiation of `quantity_like_traits` type trait yields a valid t
     template<>
     struct mp_units::quantity_like_traits<std::chrono::seconds> {
       static constexpr auto reference = si::second;
+      static constexpr bool explicit_import = false;
+      static constexpr bool explicit_export = false;
       using rep = std::chrono::seconds::rep;
 
-      [[nodiscard]] static constexpr convert_implicitly<rep> to_numerical_value(const std::chrono::seconds& d)
+      [[nodiscard]] static constexpr rep to_numerical_value(const std::chrono::seconds& d)
       {
         return d.count();
       }
 
-      [[nodiscard]] static constexpr convert_implicitly<std::chrono::seconds> from_numerical_value(const rep& v)
+      [[nodiscard]] static constexpr std::chrono::seconds from_numerical_value(const rep& v)
       {
         return std::chrono::seconds(v);
       }
@@ -291,15 +293,17 @@ for which an instantiation of `quantity_like_traits` type trait yields a valid t
 `QuantityPointLike` concept provides interoperability with other libraries and is satisfied by a type `T`
 for which an instantiation of `quantity_point_like_traits` type trait yields a valid type that provides:
 
-- Static data member `reference` that matches the [`Reference`](#Reference) concept.
-- Static data member `point_origin` that matches the [`PointOrigin`](#PointOrigin) concept.
+- `reference` static data member that matches the [`Reference`](#Reference) concept.
+- `point_origin` static data member that matches the [`PointOrigin`](#PointOrigin) concept.
 - `rep` type that matches [`RepresentationOf`](#RepresentationOf) concept with the character provided
   in `reference`.
+- `explicit_import` static data member convertible to `bool` that specifies that the conversion
+  from `T` to a `quantity_point` type should happen explicitly (if `true`),
+- `explicit_export` static data member convertible to `bool` that specifies that the conversion
+  from a `quantity_point` type to `T` should happen explicitly (if `true`),
 - `to_numerical_value(T)` static member function returning a raw value of the quantity being the offset
-  of the point from the origin packed in either `convert_explicitly` or `convert_implicitly` wrapper that
-  enables implicit conversion in the latter case.
-- `from_numerical_value(rep)` static member function returning `T` packed in either `convert_explicitly`
-  or `convert_implicitly` wrapper that enables implicit conversion in the latter case.
+  of the point from the origin,
+- `from_numerical_value(rep)` static member function returning `T`.
 
 
 ??? abstract "Examples"
@@ -309,17 +313,19 @@ for which an instantiation of `quantity_point_like_traits` type trait yields a v
     ```cpp
     template<typename C>
     struct mp_units::quantity_point_like_traits<std::chrono::time_point<C, std::chrono::seconds>> {
-      using T = std::chrono::time_point<C, std::chrono::seconds>;
       static constexpr auto reference = si::second;
       static constexpr struct point_origin_ final : absolute_point_origin<isq::time> {} point_origin{};
+      static constexpr bool explicit_import = false;
+      static constexpr bool explicit_export = false;
       using rep = std::chrono::seconds::rep;
+      using T = std::chrono::time_point<C, std::chrono::seconds>;
 
-      [[nodiscard]] static constexpr convert_implicitly<rep> to_numerical_value(const T& tp)
+      [[nodiscard]] static constexpr rep to_numerical_value(const T& tp)
       {
         return tp.time_since_epoch().count();
       }
 
-      [[nodiscard]] static constexpr convert_implicitly<T> from_numerical_value(const rep& v)
+      [[nodiscard]] static constexpr T from_numerical_value(const rep& v)
       {
         return T(std::chrono::seconds(v));
       }

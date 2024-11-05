@@ -92,6 +92,18 @@ prints:
 
 All of the above quantities are equivalent and mean exactly the same.
 
+!!! note
+
+    The above code example may give the impression that the order of components in a derived
+    unit is determined by the multiplication order. This is not the case. As stated in
+    [Simplifying the resulting expression templates](interface_introduction.md#simplifying-the-resulting-expression-templates),
+    to be able to reason about and simplify units, the library needs to order them in an
+    appropriate order. This will affect the order of components in a resulting type and
+    text output.
+
+    Please refer to [our FAQ](../../getting_started/faq.md#why-derived-units-order-is-not-preserved-from-the-multiplication)
+    for more information.
+
 
 ## Constraining a derived unit to work only with a specific derived quantity
 
@@ -184,11 +196,12 @@ For some units, a magnitude might also be irrational. The best example here is a
 is defined using a floating-point magnitude having a factor of the number π (Pi):
 
 ```cpp
-inline constexpr struct mag_pi final : magnitude<std::numbers::pi_v<long double>> {} mag_pi;
+inline constexpr struct pi final : mag_constant<symbol_text{u8"π", "pi"}, std::numbers::pi_v<long double>> {} pi;
+inline constexpr auto π = pi;
 ```
 
 ```cpp
-inline constexpr struct degree final : named_unit<{u8"°", "deg"}, mag_pi / mag<180> * si::radian> {} degree;
+inline constexpr struct degree final : named_unit<{u8"°", "deg"}, mag<π> / mag<180> * si::radian> {} degree;
 ```
 
 
@@ -240,20 +253,49 @@ are opt-in. A user has to explicitly "import" them from a dedicated `unit_symbol
     quantity q2 = 42 * km / h;
     ```
 
-We also provide alternative object identifiers using Unicode characters in their names for most
-unit symbols. The code using Unicode looks nicer, but it is harder to type on the keyboard.
+We also provide alternative object identifiers using UTF-8 characters in their names for most
+unit symbols. The code using UTF-8 looks nicer, but it is harder to type on the keyboard.
 This is why we provide both versions of identifiers for such units.
 
-=== "ASCII only"
+=== "Portable"
 
     ```cpp
     quantity resistance = 60 * kohm;
     quantity capacitance = 100 * uF;
     ```
 
-=== "With Unicode glyphs"
+=== "With UTF-8 glyphs"
 
     ```cpp
     quantity resistance = 60 * kΩ;
     quantity capacitance = 100 * µF;
     ```
+
+
+## Common units
+
+Adding, subtracting, or comparing two quantities of different units will force the library to find
+a common unit for those. This is to prevent data truncation. For the cases when one of the units is
+an integral multiple of the another, the resulting quantity will use a "smaller" one in its result.
+For example:
+
+```cpp
+static_assert((1 * kg + 1 * g).unit == g);
+static_assert((1 * km + 1 * mm).unit == mm);
+static_assert((1 * yd + 1 * mi).unit == yd);
+```
+
+However, in many cases an arithmetic operation on quantities of different units will result in
+a yet another unit. This happens when none of the source units is an integral multiple of another.
+In such cases, the library returns a special type that denotes that we are dealing with a common
+unit of such an equation:
+
+```cpp
+quantity q1 = 1 * km + 1 * mi;     // quantity<common_unit<international::mile, si::kilo_<si::metre>>{}, int>
+quantity q2 = 1. * rad + 1. * deg; // quantity<common_unit<si::degree, si::radian>{}, double>
+```
+
+!!! note
+
+    A user should never explicitly instantiate a `common_unit` class template. The library's
+    framework will do it based on the provided quantity equation.

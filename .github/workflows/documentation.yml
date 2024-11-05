@@ -53,13 +53,12 @@ jobs:
           git fetch origin gh-pages --depth=1
       - name: Installing API reference dependencies
         run: |
+          sudo apt update
+          sudo apt install latexmk texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended lmodern
           sudo apt install haskell-stack graphviz nodejs npm ghc cabal-install
-          npm install split mathjax-full mathjax-node-sre
+          npm install split mathjax-full mathjax-node-sre mathjax-node-cli
           cabal update
-      - name: Installing MathJax-Node-CLI
-        run: |
-          git clone https://github.com/mathjax/mathjax-node-cli --depth=1
-          echo "${{ github.workspace }}/mathjax-node-cli/bin" >> $GITHUB_PATH
+          echo "${{ github.workspace }}/node_modules/.bin" >> $GITHUB_PATH
       - name: Get git repos with API reference tools
         run: |
           git clone https://github.com/JohelEGP/jegp.cmake_modules.git --depth=1
@@ -76,6 +75,11 @@ jobs:
       - name: Installing pip dependencies
         run: |
           pip install conan mkdocs-material mkdocs-rss-plugin mkdocs-material[imaging] mkdocs-exclude mike
-      - name: Building docs
+      - name: Building docs for a released version
+        if: startsWith(github.event.ref, 'refs/tags/v')
         run: |
-          mike deploy --push --update-aliases `conan inspect .  | sed -n -r 's/version: ([0-9]+.[0-9]+).[0-9]+/\1/p'` latest
+          mike deploy --push --update-aliases `conan inspect .  | sed -n -r 's/version: ([0-9]+.[0-9]+).[0-9]+/\1/p'`
+      - name: Building docs for a development version
+        if: ${{!startsWith(github.event.ref, 'refs/tags/v')}}
+        run: |
+          mike deploy --push --update-aliases HEAD latest

@@ -62,8 +62,14 @@ struct double_width_int {
   {
     constexpr auto scale = int_power<long double>(2, base_width);
     constexpr auto iscale = 1.l / scale;
-    hi = static_cast<Th>(v * iscale);
-    lo = static_cast<Tl>(v - (hi * scale));
+    auto scaled = v * iscale;
+    hi = static_cast<Th>(scaled);
+    auto resid = (scaled - static_cast<long double>(hi));
+    if(resid<0) {
+      --hi;
+      resid += 1;
+    }
+    lo = static_cast<Tl>(resid * scale);
   }
   template<std::integral U>
     requires(is_signed || !std::is_signed_v<U>)
@@ -235,7 +241,7 @@ template<typename T>
 constexpr bool is_signed_v<double_width_int<T>> = double_width_int<T>::is_signed;
 
 template<typename T>
-using make_signed_t = std::make_signed_t<T>;
+using make_signed_t = std::conditional_t<!std::is_same_v<T,uint128_t>,std::make_signed<T>,std::type_identity<int128_t>>::type;
 
 #if defined(__cpp_lib_int_pow2) && __cpp_lib_int_pow2 >= 202002L && false
 template<std::size_t N>

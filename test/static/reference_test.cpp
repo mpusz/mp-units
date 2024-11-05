@@ -256,6 +256,7 @@ static_assert(metre / second != length[metre] / time[second]);
 static_assert(metre / time[second] == length[metre] / second);
 static_assert(is_of_type<metre / time[second], decltype(length[metre] / second)>);
 static_assert(is_of_type<metre / time[second], decltype(length[metre] / time[second])>);
+static_assert(kind_of<length>[metre] == metre);
 
 template<auto QS, auto U>
 concept invalid_unit = !requires { QS[U]; };
@@ -273,22 +274,22 @@ static_assert(invalid_unit<solid_angular_measure, bit>);
 static_assert(invalid_unit<storage_capacity, radian>);
 static_assert(invalid_unit<storage_capacity, steradian>);
 
-static_assert(is_of_type<common_reference(dimensionless[one], one), reference<dimensionless_, one_>>);
-static_assert(is_of_type<common_reference(radian, one), radian_>);
-static_assert(is_of_type<common_reference(one, radian), radian_>);
-static_assert(is_of_type<common_reference(radian, dimensionless[one]), reference<angular_measure_, radian_>>);
-static_assert(is_of_type<common_reference(dimensionless[one], radian), reference<angular_measure_, radian_>>);
-static_assert(is_of_type<common_reference(angular_measure[radian], one), reference<angular_measure_, radian_>>);
-static_assert(is_of_type<common_reference(one, angular_measure[radian]), reference<angular_measure_, radian_>>);
+static_assert(is_of_type<get_common_reference(dimensionless[one], one), reference<dimensionless_, one_>>);
+static_assert(is_of_type<get_common_reference(radian, one), radian_>);
+static_assert(is_of_type<get_common_reference(one, radian), radian_>);
+static_assert(is_of_type<get_common_reference(radian, dimensionless[one]), reference<angular_measure_, radian_>>);
+static_assert(is_of_type<get_common_reference(dimensionless[one], radian), reference<angular_measure_, radian_>>);
+static_assert(is_of_type<get_common_reference(angular_measure[radian], one), reference<angular_measure_, radian_>>);
+static_assert(is_of_type<get_common_reference(one, angular_measure[radian]), reference<angular_measure_, radian_>>);
 static_assert(
-  is_of_type<common_reference(angular_measure[radian], dimensionless[one]), reference<angular_measure_, radian_>>);
+  is_of_type<get_common_reference(angular_measure[radian], dimensionless[one]), reference<angular_measure_, radian_>>);
 static_assert(
-  is_of_type<common_reference(dimensionless[one], angular_measure[radian]), reference<angular_measure_, radian_>>);
+  is_of_type<get_common_reference(dimensionless[one], angular_measure[radian]), reference<angular_measure_, radian_>>);
 
 template<auto R1, auto R2>
 concept no_common_reference = requires {
-  requires !requires { common_reference(R1, R2); };
-  requires !requires { common_reference(R2, R1); };
+  requires !requires { get_common_reference(R1, R2); };
+  requires !requires { get_common_reference(R2, R1); };
 };
 
 static_assert(no_common_reference<hertz, becquerel>);

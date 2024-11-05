@@ -52,7 +52,7 @@ import std;
 
 namespace mp_units {
 
-template<detail::DerivedDimensionExpr... Expr>
+template<typename... Expr>
 struct derived_dimension;
 
 MP_UNITS_EXPORT struct dimension_one;
@@ -65,17 +65,8 @@ struct base_dimension_less : std::bool_constant<type_name<Lhs>() < type_name<Rhs
 template<typename T1, typename T2>
 using type_list_of_base_dimension_less = expr_less<T1, T2, base_dimension_less>;
 
-template<DerivedDimensionExpr... Expr>
-struct derived_dimension_impl : expr_fractions<is_dimension_one, Expr...> {};
-
-template<auto Symbol>
-[[nodiscard]] consteval std::true_type derived_from_the_same_base_dimension(const base_dimension<Symbol>&,
-                                                                            const base_dimension<Symbol>&)
-{
-  return {};
-}
-
-[[nodiscard]] consteval std::false_type derived_from_the_same_base_dimension(...) { return {}; }
+template<typename... Expr>
+struct derived_dimension_impl : expr_fractions<dimension_one, Expr...> {};
 
 struct dimension_interface {
   template<Dimension Lhs, Dimension Rhs>
@@ -91,9 +82,9 @@ struct dimension_interface {
   }
 
   template<Dimension Lhs, Dimension Rhs>
-  [[nodiscard]] friend consteval bool operator==(Lhs lhs, Rhs rhs)
+  [[nodiscard]] friend consteval bool operator==(Lhs, Rhs)
   {
-    return is_same_v<Lhs, Rhs> || derived_from_the_same_base_dimension(lhs, rhs);
+    return is_same_v<Lhs, Rhs>;
   }
 };
 
@@ -129,7 +120,7 @@ struct dimension_interface {
  */
 MP_UNITS_EXPORT template<symbol_text Symbol>
 struct base_dimension : detail::dimension_interface {
-  static constexpr auto symbol = Symbol;  ///< Unique base dimension identifier
+  static constexpr auto _symbol_ = Symbol;  ///< Unique base dimension identifier
 };
 
 /**
@@ -174,7 +165,7 @@ struct base_dimension : detail::dimension_interface {
  * @note User should not instantiate this type! It is not exported from the C++ module. The library will
  *       instantiate this type automatically based on the dimensional arithmetic equation provided by the user.
  */
-template<detail::DerivedDimensionExpr... Expr>
+template<typename... Expr>
 struct derived_dimension final : detail::dimension_interface, detail::derived_dimension_impl<Expr...> {};
 
 /**
@@ -188,13 +179,6 @@ MP_UNITS_EXPORT inline constexpr struct dimension_one final :
     detail::dimension_interface,
     detail::derived_dimension_impl<> {
 } dimension_one;
-
-namespace detail {
-
-template<>
-struct is_dimension_one<struct dimension_one> : std::true_type {};
-
-}  // namespace detail
 
 MP_UNITS_EXPORT_BEGIN
 
@@ -213,14 +197,8 @@ template<std::intmax_t Num, std::intmax_t Den = 1, Dimension D>
   requires detail::non_zero<Den>
 [[nodiscard]] consteval Dimension auto pow(D d)
 {
-  if constexpr (detail::BaseDimension<D>) {
-    if constexpr (Den == 1)
-      return derived_dimension<power<D, Num>>{};
-    else
-      return derived_dimension<power<D, Num, Den>>{};
-  } else
-    return detail::expr_pow<Num, Den, derived_dimension, struct dimension_one,
-                            detail::type_list_of_base_dimension_less>(d);
+  return detail::expr_pow<Num, Den, derived_dimension, struct dimension_one, detail::type_list_of_base_dimension_less>(
+    d);
 }
 
 /**
@@ -251,10 +229,10 @@ MP_UNITS_EXPORT_END
 namespace detail {
 
 template<typename CharT, std::output_iterator<CharT> Out, Dimension D>
-  requires requires { D::symbol; }
+  requires requires { D::_symbol_; }
 constexpr Out dimension_symbol_impl(Out out, D, const dimension_symbol_formatting& fmt, bool negative_power)
 {
-  return copy_symbol<CharT>(D::symbol, fmt.encoding, negative_power, out);
+  return copy_symbol<CharT>(D::_symbol_, fmt.encoding, negative_power, out);
 }
 
 template<typename CharT, std::output_iterator<CharT> Out, typename F, int Num, int... Den>
@@ -265,14 +243,14 @@ constexpr auto dimension_symbol_impl(Out out, const power<F, Num, Den...>&, cons
   return copy_symbol_exponent<CharT, Num, Den...>(fmt.encoding, negative_power, out);
 }
 
-template<typename CharT, std::output_iterator<CharT> Out, DerivedDimensionExpr... Ms>
+template<typename CharT, std::output_iterator<CharT> Out, typename... Ms>
 constexpr Out dimension_symbol_impl(Out out, const type_list<Ms...>&, const dimension_symbol_formatting& fmt,
                                     bool negative_power)
 {
   return (..., (out = dimension_symbol_impl<CharT>(out, Ms{}, fmt, negative_power)));
 }
 
-template<typename CharT, std::output_iterator<CharT> Out, DerivedDimensionExpr... Nums, DerivedDimensionExpr... Dens>
+template<typename CharT, std::output_iterator<CharT> Out, typename... Nums, typename... Dens>
 constexpr Out dimension_symbol_impl(Out out, const type_list<Nums...>& nums, const type_list<Dens...>& dens,
                                     const dimension_symbol_formatting& fmt)
 {

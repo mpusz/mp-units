@@ -31,7 +31,8 @@ endfunction()
 # core library definition
 add_mp_units_module(
     core mp-units-core
-    HEADERS include/mp-units/bits/core_gmf.h
+    HEADERS include/mp-units/bits/constexpr_math.h
+            include/mp-units/bits/core_gmf.h
             include/mp-units/bits/fixed_point.h
             include/mp-units/bits/get_associated_quantity.h
             include/mp-units/bits/hacks.h
@@ -56,6 +57,7 @@ add_mp_units_module(
             include/mp-units/framework/dimension_concepts.h
             include/mp-units/framework/expression_template.h
             include/mp-units/framework/magnitude.h
+            include/mp-units/framework/magnitude_concepts.h
             include/mp-units/framework/quantity.h
             include/mp-units/framework/quantity_cast.h
             include/mp-units/framework/quantity_concepts.h
@@ -70,6 +72,7 @@ add_mp_units_module(
             include/mp-units/framework/system_reference.h
             include/mp-units/framework/unit.h
             include/mp-units/framework/unit_concepts.h
+            include/mp-units/framework/unit_symbol_formatting.h
             include/mp-units/framework/value_cast.h
             include/mp-units/compat_macros.h
             include/mp-units/concepts.h
@@ -126,7 +129,7 @@ if(${projectPrefix}BUILD_CXX_MODULES)
     endif()
 endif()
 
-if(${projectPrefix}BUILD_IMPORT_STD)
+if(CMAKE_CXX_MODULE_STD)
     target_compile_definitions(mp-units-core ${${projectPrefix}TARGET_SCOPE} ${projectPrefix}IMPORT_STD)
     # https://github.com/llvm/llvm-project/issues/75057
     if(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 19)

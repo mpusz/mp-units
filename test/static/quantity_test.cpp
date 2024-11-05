@@ -27,6 +27,9 @@
 #include <mp-units/systems/isq/mechanics.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si.h>
+#if MP_UNITS_HOSTED
+#include <mp-units/math.h>
+#endif
 #ifdef MP_UNITS_IMPORT_STD
 import std;
 #else
@@ -37,7 +40,13 @@ import std;
 #include <utility>
 #if MP_UNITS_HOSTED
 #include <chrono>
+#include <complex>
 #endif
+#endif
+
+#if MP_UNITS_HOSTED
+template<typename T>
+constexpr bool mp_units::is_scalar<std::complex<T>> = true;
 #endif
 
 template<>
@@ -267,6 +276,16 @@ static_assert(quantity<isq::length[m], int>(2000 * m).force_in(km).numerical_val
 static_assert((15. * m).in(nm).numerical_value_in(m) == 15.);
 static_assert((15'000. * nm).in(m).numerical_value_in(nm) == 15'000.);
 
+// check if unit conversion works - don't bother about the actual result
+static_assert((1. * rad + 1. * deg).in(rad) != 0 * rad);
+static_assert((1. * rad + 1. * deg).in(deg) != 0 * deg);
+
+#if MP_UNITS_HOSTED
+using namespace std::complex_literals;
+static_assert(((2. + 1i) * V).in(mV).numerical_value_in(mV) == 2000. + 1000i);
+static_assert(((2. + 1i) * V).in(mV).numerical_value_in(V) == 2. + 1i);
+#endif
+
 template<template<auto, typename> typename Q>
 concept invalid_unit_conversion = requires {
   requires !requires { Q<isq::length[m], int>(2000 * m).in(km); };     // truncating conversion
@@ -298,50 +317,51 @@ static_assert(invalid_getter_with_unit_conversion<quantity>);
 // derived quantities
 ///////////////////////////////////////
 
-template<Representation Rep, Quantity Q, const basic_fixed_string additional_nttp_argument>
-struct derived_quantity : quantity<Q::reference, Rep> {
-  static constexpr auto reference = Q::reference;
-  static constexpr auto quantity_spec = Q::quantity_spec;
-  static constexpr auto dimension = Q::dimension;
-  static constexpr auto unit = Q::unit;
+template<Reference auto R, basic_fixed_string additional_nttp_argument,
+         RepresentationOf<get_quantity_spec(R).character> Rep = double>
+struct child_quantity : quantity<R, Rep> {
+  using quantity_type = quantity<R, Rep>;
+  static constexpr auto reference = R;
+  static constexpr auto quantity_spec = quantity_type::quantity_spec;
+  static constexpr auto dimension = quantity_type::dimension;
+  static constexpr auto unit = quantity_type::unit;
   using rep = Rep;
-  using R = quantity<reference, Rep>;
 
-  derived_quantity() = default;
+  child_quantity() = default;
   // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
-  constexpr explicit(!std::is_trivial_v<Rep>) derived_quantity(const R& t) : R(t) {}
+  constexpr explicit(false) child_quantity(const quantity_type& t) : quantity_type(t) {}
   // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
-  constexpr explicit(!std::is_trivial_v<Rep>) derived_quantity(R&& t) : R(std::move(t)) {}
+  constexpr explicit(false) child_quantity(quantity_type&& t) : quantity_type(std::move(t)) {}
 
-  constexpr derived_quantity& operator=(const R& t)
+  constexpr child_quantity& operator=(const quantity_type& q)
   {
-    R::operator=(t);
+    quantity_type::operator=(q);
     return *this;
   }
-  constexpr derived_quantity& operator=(R&& t)
+  constexpr child_quantity& operator=(quantity_type&& q)
   {
-    R::operator=(std::move(t));
+    quantity_type::operator=(std::move(q));
     return *this;
   }
   // NOLINTBEGIN(google-explicit-constructor, hicpp-explicit-conversions)
-  constexpr explicit(false) operator R&() & noexcept { return *this; }
-  constexpr explicit(false) operator const R&() const& noexcept { return *this; }
-  constexpr explicit(false) operator R&&() && noexcept { return *this; }
-  constexpr explicit(false) operator const R&&() const&& noexcept { return *this; }
+  constexpr explicit(false) operator quantity_type&() & noexcept { return *this; }
+  constexpr explicit(false) operator const quantity_type&() const& noexcept { return *this; }
+  constexpr explicit(false) operator quantity_type&&() && noexcept { return *this; }
+  constexpr explicit(false) operator const quantity_type&&() const&& noexcept { return *this; }
   // NOLINTEND(google-explicit-constructor, hicpp-explicit-conversions)
 };
 
-static_assert(Quantity<derived_quantity<double, quantity<isq::length[m]>, "NTTP type description">>);
+static_assert(Quantity<child_quantity<isq::length[m], "NTTP type description">>);
 
-constexpr QuantityOf<isq::length> auto get_length_derived_quantity() noexcept
+constexpr QuantityOf<isq::length> auto get_length_child_quantity() noexcept
 {
-  derived_quantity<double, quantity<isq::length[m]>, "NTTP type description"> dist{};
+  child_quantity<isq::length[m], "NTTP type description"> dist{};
   dist += 1 * m;
   dist = dist + 1 * m;
   dist *= 0.5;
   return dist;
 }
-static_assert(get_length_derived_quantity() == 1 * m);
+static_assert(get_length_child_quantity() == 1 * m);
 
 
 /////////
@@ -436,36 +456,38 @@ static_assert((1 * m *= 2 * one).numerical_value_in(m) == 2);
 static_assert((2 * m /= 2 * one).numerical_value_in(m) == 1);
 static_assert((7 * m %= 2 * m).numerical_value_in(m) == 1);
 
-// different types
+// different representation types
 static_assert((2.5 * m += 3 * m).numerical_value_in(m) == 5.5);
-static_assert((123 * m += 1 * km).numerical_value_in(m) == 1123);
 static_assert((5.5 * m -= 3 * m).numerical_value_in(m) == 2.5);
-static_assert((1123 * m -= 1 * km).numerical_value_in(m) == 123);
 static_assert((2.5 * m *= 3).numerical_value_in(m) == 7.5);
 static_assert((7.5 * m /= 3).numerical_value_in(m) == 2.5);
 static_assert((2.5 * m *= 3 * one).numerical_value_in(m) == 7.5);
 static_assert((7.5 * m /= 3 * one).numerical_value_in(m) == 2.5);
+
+// different units
+static_assert((1 * m += 1 * km).numerical_value_in(m) == 1001);
+static_assert((2000 * m -= 1 * km).numerical_value_in(m) == 1000);
 static_assert((3500 * m %= 1 * km).numerical_value_in(m) == 500);
+
+// convertible quantity types
+static_assert((isq::length(1 * m) += isq::height(1 * m)).numerical_value_in(m) == 2);
+static_assert((isq::length(2 * m) -= isq::height(1 * m)).numerical_value_in(m) == 1);
+static_assert((isq::length(7 * m) %= isq::height(2 * m)).numerical_value_in(m) == 1);
 
 // static_assert((std::uint8_t{255} * m %= 256 * m).numerical_value_in(m) == [] {
 //   std::uint8_t ui(255);
 //   return ui %= 256;
 // }());  // UB
-// TODO: Fix
-static_assert((std::uint8_t{255}* m %= 257 * m).numerical_value_in(m) != [] {
+static_assert((std::uint8_t{255}* m %= 257 * m).numerical_value_in(m) == [] {
   std::uint8_t ui(255);
   return ui %= 257;
 }());
 
-// clang-17 with modules build on ignores disabling conversion warnings
-#if !(defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 18 && defined MP_UNITS_MODULES)
-// next two lines trigger conversions warnings
-// (warning disabled in CMake for this file)
-static_assert((22 * m *= 33.33).numerical_value_in(m) == 733);
-static_assert((22 * m /= 3.33).numerical_value_in(m) == 6);
-static_assert((22 * m *= 33.33 * one).numerical_value_in(m) == 733);
-static_assert((22 * m /= 3.33 * one).numerical_value_in(m) == 6);
-#endif
+// lack of consistency with binary operator
+static_assert(
+  is_of_type<1 * (isq::length / isq::time)[m / s] + 1 * isq::speed[m / s], quantity<isq::speed[m / s], int>>);
+static_assert(is_of_type<(1 * (isq::length / isq::time)[m / s] += 1 * isq::speed[m / s]),
+                         quantity<(isq::length / isq::time)[m / s], int>>);
 
 template<template<auto, typename> typename Q>
 concept invalid_compound_assignments = requires() {
@@ -477,8 +499,17 @@ concept invalid_compound_assignments = requires() {
   requires !requires(Q<isq::length[km], int> l) { l %= 2 * isq::length[m]; };
   requires !requires(Q<isq::length[km], int> l) { l %= 2 * percent; };
   requires !requires(Q<isq::length[km], int> l) { l %= 2. * percent; };
+  requires !requires(Q<isq::length[m], int> l) { l *= 2.5; };
+  requires !requires(Q<isq::length[m], int> l) { l /= 2.5; };
+  requires !requires(Q<isq::length[m], int> l) { l *= 2.5 * one; };
+  requires !requires(Q<isq::length[m], int> l) { l /= 2.5 * one; };
 
-  // TODO: accept non-truncating argument
+  // compound assignment with a non-convertible quantity not allowed
+  requires !requires(Q<isq::height[m], int> l) { l += 2 * isq::length[m]; };
+  requires !requires(Q<isq::height[m], int> l) { l -= 2 * isq::length[m]; };
+  requires !requires(Q<isq::height[m], int> l) { l %= 2 * isq::length[m]; };
+
+  // dimensionless quantities with a unit different than `one`
   requires !requires(Q<isq::length[km], int> l) { l *= 1 * (km / m); };
   requires !requires(Q<isq::length[km], int> l) { l /= 1 * (km / m); };
   requires !requires(Q<isq::length[km], int> l) { l %= 1 * (km / m); };
@@ -767,6 +798,35 @@ static_assert(
 static_assert(
   is_of_type<5 * isq::frequency[Hz] - 10 / (2 * isq::period_duration[s]), quantity<isq::frequency[Hz], int>>);
 
+static_assert(
+  is_of_type<isq::speed(1 * m / s) + isq::length(1. * m) / isq::time(1. * s), quantity<isq::speed[m / s], double>>);
+static_assert(
+  is_of_type<isq::length(1. * m) / isq::time(1. * s) + isq::speed(1 * m / s), quantity<isq::speed[m / s], double>>);
+static_assert(
+  is_of_type<isq::speed(1 * m / s) - isq::length(1. * m) / isq::time(1. * s), quantity<isq::speed[m / s], double>>);
+static_assert(
+  is_of_type<isq::length(1. * m) / isq::time(1. * s) - isq::speed(1 * m / s), quantity<isq::speed[m / s], double>>);
+
+#if MP_UNITS_HOSTED
+static_assert(is_same_v<decltype((isq::mass(1 * kg) * pow<2>(isq::length(1 * m) / isq::time(1 * s))).in(J) +
+                                 isq::energy(1 * kg * m2 / s2)),
+                        quantity<isq::energy[J], int>>);
+static_assert(is_same_v<decltype(isq::energy(1 * kg * m2 / s2) +
+                                 (isq::mass(1 * kg) * pow<2>(isq::length(1 * m) / isq::time(1 * s))).in(J)),
+                        quantity<isq::energy[J], int>>);
+static_assert(is_same_v<decltype((isq::mass(1 * kg) * pow<2>(isq::length(1 * m) / isq::time(1 * s)))
+                                   .in(J)-isq::energy(1 * kg * m2 / s2)),
+                        quantity<isq::energy[J], int>>);
+static_assert(is_same_v<decltype(isq::energy(1 * kg * m2 / s2) -
+                                 (isq::mass(1 * kg) * pow<2>(isq::length(1 * m) / isq::time(1 * s))).in(J)),
+                        quantity<isq::energy[J], int>>);
+#endif
+
+static_assert(is_of_type<child_quantity<si::metre, "L">(1. * m) + 1 * m, quantity<si::metre>>);
+static_assert(is_of_type<1 * m + child_quantity<si::metre, "L">(1. * m), quantity<si::metre>>);
+static_assert(is_of_type<child_quantity<si::metre, "L">(1. * m) - 1 * m, quantity<si::metre>>);
+static_assert(is_of_type<1 * m - child_quantity<si::metre, "L">(1. * m), quantity<si::metre>>);
+
 // Different named dimensions
 template<typename... Ts>
 consteval bool invalid_arithmetic(Ts... ts)
@@ -775,6 +835,12 @@ consteval bool invalid_arithmetic(Ts... ts)
 }
 static_assert(invalid_arithmetic(5 * isq::activity[Bq], 5 * isq::frequency[Hz]));
 static_assert(invalid_arithmetic(5 * isq::activity[Bq], 10 / (2 * isq::time[s]), 5 * isq::frequency[Hz]));
+
+// irrational conversion factors require floating point representation
+static_assert(invalid_arithmetic(1 * rad, 1 * deg));
+static_assert(is_of_type<1. * rad + 1 * deg, quantity<common_unit<struct si::degree, struct si::radian>{}, double>>);
+static_assert(is_of_type<1 * rad + 1. * deg, quantity<common_unit<struct si::degree, struct si::radian>{}, double>>);
+static_assert(is_of_type<1. * rad + 1. * deg, quantity<common_unit<struct si::degree, struct si::radian>{}, double>>);
 
 // Physical constants
 static_assert(1 * si::si2019::speed_of_light_in_vacuum + 10 * isq::speed[m / s] == 299'792'468 * isq::speed[m / s]);
@@ -1014,6 +1080,7 @@ static_assert(value_cast<km / h>(2000.0 * m / (3600.0 * s)).numerical_value_in(k
 
 static_assert(value_cast<int>(1.23 * m).numerical_value_in(m) == 1);
 static_assert(value_cast<km, int>(1.23 * m).numerical_value_in(km) == 0);
+static_assert(value_cast<int, km>(1.23 * m).numerical_value_in(km) == 0);
 
 static_assert((2 * km).force_in(m).numerical_value_in(m) == 2000);
 static_assert((2000 * m).force_in(km).numerical_value_in(km) == 2);

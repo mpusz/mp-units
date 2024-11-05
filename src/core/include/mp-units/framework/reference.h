@@ -193,9 +193,9 @@ struct reference {
 template<typename FwdRep, Reference R,
          RepresentationOf<get_quantity_spec(R{}).character> Rep = std::remove_cvref_t<FwdRep>>
   requires(!detail::OffsetUnit<decltype(get_unit(R{}))>)
-[[nodiscard]] constexpr quantity<R{}, Rep> operator*(FwdRep&& lhs, R)
+[[nodiscard]] constexpr quantity<R{}, Rep> operator*(FwdRep&& lhs, R r)
 {
-  return quantity{std::forward<FwdRep>(lhs), R{}};
+  return quantity{std::forward<FwdRep>(lhs), r};
 }
 
 template<typename FwdRep, Reference R,
@@ -209,21 +209,23 @@ template<typename FwdRep, Reference R,
 template<typename FwdRep, Reference R,
          RepresentationOf<get_quantity_spec(R{}).character> Rep = std::remove_cvref_t<FwdRep>>
   requires detail::OffsetUnit<decltype(get_unit(R{}))>
-[[noreturn]] constexpr auto operator*(FwdRep&&, R)
+[[deprecated(
+  "References using offset units (e.g., temperatures) should be constructed with the `delta` or `absolute` "
+  "helpers")]] constexpr auto
+operator*(FwdRep&& lhs, R r)
 {
-  static_assert(!detail::OffsetUnit<decltype(get_unit(R{}))>,
-                "References using offset units (e.g., temperatures) may be constructed only with the `delta` or "
-                "`absolute` helpers");
+  return quantity{std::forward<FwdRep>(lhs), r};
 }
 
 template<typename FwdRep, Reference R,
          RepresentationOf<get_quantity_spec(R{}).character> Rep = std::remove_cvref_t<FwdRep>>
   requires detail::OffsetUnit<decltype(get_unit(R{}))>
-[[noreturn]] constexpr auto operator/(FwdRep&&, R)
+[[deprecated(
+  "References using offset units (e.g., temperatures) should be constructed with the `delta` or `absolute` "
+  "helpers")]] constexpr auto
+operator/(FwdRep&& lhs, R)
 {
-  static_assert(!detail::OffsetUnit<decltype(get_unit(R{}))>,
-                "References using offset units (e.g., temperatures) may be constructed only with the `delta` or "
-                "`absolute` helpers");
+  return quantity{std::forward<FwdRep>(lhs), inverse(R{})};
 }
 
 template<Reference R, typename Rep>
@@ -231,7 +233,7 @@ template<Reference R, typename Rep>
 // NOLINTNEXTLINE(cppcoreguidelines-missing-std-forward)
 constexpr auto operator*(R, Rep&&)
 #if __cpp_deleted_function
-  = delete("To create a `quantity` or `quantity_point` use `Rep * R`");
+  = delete("To create a `quantity` use `Rep * R`");
 #else
   = delete;
 #endif
@@ -241,7 +243,7 @@ template<Reference R, typename Rep>
 // NOLINTNEXTLINE(cppcoreguidelines-missing-std-forward)
 constexpr auto operator/(R, Rep&&)
 #if __cpp_deleted_function
-  = delete("To create a `quantity` or `quantity_point` use `Rep / R`");
+  = delete("To create a `quantity` use `Rep / R`");
 #else
   = delete;
 #endif
@@ -268,34 +270,30 @@ template<Reference R, typename Q>
 // NOLINTNEXTLINE(cppcoreguidelines-missing-std-forward)
 constexpr auto operator/(R, Q&& q) = delete;
 
-[[nodiscard]] consteval AssociatedUnit auto common_reference(AssociatedUnit auto u1, AssociatedUnit auto u2,
-                                                             AssociatedUnit auto... rest)
+[[nodiscard]] consteval AssociatedUnit auto get_common_reference(AssociatedUnit auto u1, AssociatedUnit auto u2,
+                                                                 AssociatedUnit auto... rest)
   requires requires {
     {
-      common_quantity_spec(get_quantity_spec(u1), get_quantity_spec(u2), get_quantity_spec(rest)...)
+      get_common_quantity_spec(get_quantity_spec(u1), get_quantity_spec(u2), get_quantity_spec(rest)...)
     } -> QuantitySpec;
-    {
-      common_unit(u1, u2, rest...)
-    } -> AssociatedUnit;
+    { get_common_unit(u1, u2, rest...) } -> AssociatedUnit;
   }
 {
-  return common_unit(u1, u2, rest...);
+  return get_common_unit(u1, u2, rest...);
 }
 
 template<Reference R1, Reference R2, Reference... Rest>
-[[nodiscard]] consteval Reference auto common_reference(R1 r1, R2 r2, Rest... rest)
+[[nodiscard]] consteval Reference auto get_common_reference(R1 r1, R2 r2, Rest... rest)
   requires(!(AssociatedUnit<R1> && AssociatedUnit<R2> && (... && AssociatedUnit<Rest>))) && requires {
     {
-      common_quantity_spec(get_quantity_spec(r1), get_quantity_spec(r2), get_quantity_spec(rest)...)
+      get_common_quantity_spec(get_quantity_spec(r1), get_quantity_spec(r2), get_quantity_spec(rest)...)
     } -> QuantitySpec;
-    {
-      common_unit(get_unit(r1), get_unit(r2), get_unit(rest)...)
-    } -> Unit;
+    { get_common_unit(get_unit(r1), get_unit(r2), get_unit(rest)...) } -> Unit;
   }
 {
-  return detail::reference_t<common_quantity_spec(get_quantity_spec(R1{}), get_quantity_spec(R2{}),
-                                                  get_quantity_spec(rest)...),
-                             common_unit(get_unit(R1{}), get_unit(R2{}), get_unit(rest)...)>{};
+  return detail::reference_t<get_common_quantity_spec(get_quantity_spec(R1{}), get_quantity_spec(R2{}),
+                                                      get_quantity_spec(rest)...),
+                             get_common_unit(get_unit(R1{}), get_unit(R2{}), get_unit(rest)...)>{};
 }
 
 MP_UNITS_EXPORT_END

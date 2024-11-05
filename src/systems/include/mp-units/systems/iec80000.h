@@ -23,12 +23,22 @@
 #pragma once
 
 // IWYU pragma: begin_exports
-#include <mp-units/systems/iec80000/binary_prefixes.h>
-#include <mp-units/systems/iec80000/quantities.h>
-#include <mp-units/systems/iec80000/unit_symbols.h>
-#include <mp-units/systems/iec80000/units.h>
-
-#ifndef MP_UNITS_IN_MODULE_INTERFACE
-#include <mp-units/framework.h>
-#endif
+#include <mp-units/systems/iec.h>
 // IWYU pragma: end_exports
+
+namespace mp_units {
+
+MP_UNITS_EXPORT
+namespace [[deprecated("Use `mp_units::iec` namespace from iec.h instead")]] iec80000 {
+
+namespace [[deprecated("Use `mp_units::iec::unit_symbols` namespace from iec.h instead")]] unit_symbols {
+
+using namespace iec::unit_symbols;
+
+}
+
+using namespace iec;
+
+}  // namespace iec80000
+
+}  // namespace mp_units

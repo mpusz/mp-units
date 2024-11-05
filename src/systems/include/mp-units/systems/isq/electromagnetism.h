@@ -137,12 +137,12 @@ QUANTITY_SPEC(modulus_of_admittance, admittance);
 QUANTITY_SPEC(quality_factor, dimensionless, reactance / resistance);
 QUANTITY_SPEC(loss_factor, dimensionless, inverse(quality_factor));
 QUANTITY_SPEC(loss_angle, angular_measure);
-QUANTITY_SPEC(active_power, inverse(period) * (instantaneous_power * time));
-QUANTITY_SPEC(apparent_power, voltage* electric_current);
+QUANTITY_SPEC(active_power, isq::power, inverse(period) * (instantaneous_power * time));
+QUANTITY_SPEC(complex_power, voltage_phasor* electric_current_phasor);  // separate kind
+QUANTITY_SPEC(apparent_power, complex_power);
 QUANTITY_SPEC(power_factor, dimensionless, active_power / apparent_power);
-QUANTITY_SPEC(complex_power, voltage_phasor* electric_current_phasor);
-QUANTITY_SPEC(reactive_power, complex_power);
-QUANTITY_SPEC(non_active_power, pow<1, 2>(pow<2>(apparent_power)));
+QUANTITY_SPEC(reactive_power, isq::mass* pow<2>(isq::length) / pow<3>(isq::time));  // separate kind
+QUANTITY_SPEC(non_active_power, pow<1, 2>(pow<2>(apparent_power)));                 // separate kind
 QUANTITY_SPEC(active_energy, instantaneous_power* time);
 
 }  // namespace mp_units::isq

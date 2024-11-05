@@ -166,10 +166,11 @@ inline constexpr auto ppm = parts_per_million;
 
 ### Superpowers of the unit `one`
 
-Quantities of the unit `one` are the only ones that are implicitly convertible from a raw value
-and explicitly convertible to it. This property also expands to usual arithmetic operators.
+Quantities of the unit `one` are the only ones that are:
 
-Thanks to the above, we can type:
+- implicitly constructible from the raw value,
+- explicitly convertible to a raw value,
+- comparable to a raw value.
 
 ```cpp
 quantity<one> inc(quantity<one> q) { return q + 1; }
@@ -178,6 +179,14 @@ void legacy(double) { /* ... */ }
 if (auto q = inc(42); q != 0)
   legacy(static_cast<int>(q));
 ```
+
+This property also expands to usual arithmetic operators.
+
+!!! note
+
+    Those rules do not apply to all the dimensionless quantities. It would be unsafe and misleading
+    to allow such operations on units with a magnitude different than `1` (e.g., `percent` or
+    `radian`).
 
 
 ## Angular quantities
@@ -247,21 +256,21 @@ Angular quantities are not the only ones with such a "strange" behavior. Another
 is a _storage capacity_ quantity specified in IEC-80000-13 that again allows expressing it in both
 `one` and `bit` units.
 
-Those cases make dimensionless quantities an exceptional tree in the library. This is the only
-[quantity hierarchy](../../appendix/glossary.md#quantity-hierarchy) that contains more than one
-[quantity kind](../../appendix/glossary.md#kind) in its tree:
+Those cases make dimensionless quantities an exceptional tree in the library. This
+[quantity hierarchy](../../appendix/glossary.md#quantity-hierarchy) contains more than one
+[quantity kind](../../appendix/glossary.md#kind) and more than one unit in its tree:
 
 ```mermaid
 flowchart TD
-    dimensionless["dimensionless\n[one]"]
-    dimensionless --- rotation
-    dimensionless --- efficiency
-    dimensionless --- angular_measure["angular_measure\n[rad]"]
-    angular_measure --- rotational_displacement
-    angular_measure --- phase_angle
-    dimensionless --- solid_angular_measure["solid_angular_measure\n[sr]"]
-    dimensionless --- drag_factor
-    dimensionless --- storage_capacity["storage_capacity\n[bit]"] --- equivalent_binary_storage_capacity
+    dimensionless["<b>dimensionless</b><br>[one]"]
+    dimensionless --- rotation["<b>rotation</b>"]
+    dimensionless --- thermodynamic_efficiency["<b>thermodynamic_efficiency</b><br><i>(work / heat)</i>"]
+    dimensionless --- angular_measure["<b>angular_measure</b><br><i>(arc_length / radius)</i><br>[rad]"]
+    angular_measure --- rotational_displacement["<b>rotational_displacement</b><br><i>(path_length / radius)</i>"]
+    angular_measure --- phase_angle["<b>phase_angle</b>"]
+    dimensionless --- solid_angular_measure["<b>solid_angular_measure</b><br><i>(area / pow<2>(radius))</i><br>[sr]"]
+    dimensionless --- drag_factor["<b>drag_factor</b><br><i>(drag_force / (mass_density * pow<2>(speed) * area))</i>"]
+    dimensionless --- storage_capacity["<b>storage_capacity</b><br>[bit]"] --- equivalent_binary_storage_capacity["<b>equivalent_binary_storage_capacity</b>"]
     dimensionless --- ...
 ```
 

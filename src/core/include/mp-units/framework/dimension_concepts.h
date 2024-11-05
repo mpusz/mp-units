@@ -42,19 +42,12 @@ struct dimension_interface;
  * Satisfied by all dimension types in the library.
  */
 MP_UNITS_EXPORT template<typename T>
-concept Dimension = std::derived_from<T, detail::dimension_interface> && std::is_final_v<T>;
+concept Dimension = detail::TagType<T> && std::derived_from<T, detail::dimension_interface>;
 
 MP_UNITS_EXPORT template<symbol_text Symbol>
 struct base_dimension;
 
 namespace detail {
-
-template<symbol_text Symbol>
-void to_base_specialization_of_base_dimension(const volatile base_dimension<Symbol>*);
-
-template<typename T>
-constexpr bool is_derived_from_specialization_of_base_dimension =
-  requires(T* type) { to_base_specialization_of_base_dimension(type); };
 
 /**
  * @brief A concept matching all named base dimensions in the library.
@@ -62,31 +55,7 @@ constexpr bool is_derived_from_specialization_of_base_dimension =
  * Satisfied by all dimension types derived from a specialization of `base_dimension`.
  */
 template<typename T>
-concept BaseDimension = Dimension<T> && is_derived_from_specialization_of_base_dimension<T>;
-
-template<typename T>
-struct is_dimension_one : std::false_type {};
-
-template<typename T>
-constexpr bool is_power_of_dim = requires {
-  requires is_specialization_of_power<T> &&
-             (BaseDimension<typename T::factor> || is_dimension_one<typename T::factor>::value);
-};
-
-template<typename T>
-constexpr bool is_per_of_dims = false;
-
-template<typename... Ts>
-constexpr bool is_per_of_dims<per<Ts...>> =
-  (... && (BaseDimension<Ts> || is_dimension_one<Ts>::value || is_power_of_dim<Ts>));
-
-template<typename T>
-concept DerivedDimensionExpr =
-  BaseDimension<T> || is_dimension_one<T>::value || is_power_of_dim<T> || is_per_of_dims<T>;
-
-template<auto D1, auto D2>
-concept SameDimension =
-  Dimension<MP_UNITS_REMOVE_CONST(decltype(D1))> && Dimension<MP_UNITS_REMOVE_CONST(decltype(D2))> && (D1 == D2);
+concept BaseDimension = Dimension<T> && is_derived_from_specialization_of_v<T, base_dimension>;
 
 }  // namespace detail
 
@@ -96,6 +65,6 @@ concept SameDimension =
  * Satisfied when both argument satisfy a `Dimension` concept and when they compare equal.
  */
 MP_UNITS_EXPORT template<typename T, auto D>
-concept DimensionOf = Dimension<T> && Dimension<MP_UNITS_REMOVE_CONST(decltype(D))> && detail::SameDimension<T{}, D>;
+concept DimensionOf = Dimension<T> && Dimension<MP_UNITS_REMOVE_CONST(decltype(D))> && (T{} == D);
 
 }  // namespace mp_units

@@ -1,4 +1,3 @@
-
 // The MIT License (MIT)
 //
 // Copyright (c) 2018 Mateusz Pusz
@@ -57,18 +56,18 @@ template<Unit UFrom, Unit UTo>
   if constexpr (is_same_v<UFrom, UTo>)
     return true;
   else
-    return is_integral(get_canonical_unit(from).mag / get_canonical_unit(to).mag);
+    return _is_integral(get_canonical_unit(from).mag / get_canonical_unit(to).mag);
 }
 
 template<typename T>
 concept IsFloatingPoint = treat_as_floating_point<T>;
 
 template<typename FromRep, typename ToRep, auto FromUnit = one, auto ToUnit = one>
-concept ValuePreservingTo = requires(FromRep&& from, ToRep to) {
-  {
-    to = std::forward<FromRep>(from)
-  } -> std::same_as<ToRep&>;
-} && (IsFloatingPoint<ToRep> || (!IsFloatingPoint<FromRep> && (integral_conversion_factor(FromUnit, ToUnit))));
+concept ValuePreservingTo =
+  requires(FromRep&& from, ToRep to) {
+    { to = std::forward<FromRep>(from) } -> std::same_as<ToRep&>;
+  } && (IsFloatingPoint<ToRep> ||
+        (!IsFloatingPoint<std::remove_cvref_t<FromRep>> && (integral_conversion_factor(FromUnit, ToUnit))));
 
 template<typename QFrom, typename QTo>
 concept QuantityConvertibleTo =
@@ -91,26 +90,30 @@ concept InvocableQuantities =
 // TODO remove the following when clang diagnostics improve
 // https://github.com/llvm/llvm-project/issues/96660
 template<auto R1, auto R2>
-concept HaveCommonReferenceImpl = requires { common_reference(R1, R2); };
+concept HaveCommonReferenceImpl = requires { get_common_reference(R1, R2); };
 
 template<auto R1, auto R2>
 concept HaveCommonReference = HaveCommonReferenceImpl<R1, R2>;
 
+template<typename Func, Quantity Q1, Quantity Q2>
+using common_quantity_for = quantity<get_common_reference(Q1::reference, Q2::reference),
+                                     std::invoke_result_t<Func, typename Q1::rep, typename Q2::rep>>;
+
 template<typename Func, typename Q1, typename Q2>
 concept CommonlyInvocableQuantities =
   Quantity<Q1> && Quantity<Q2> && HaveCommonReference<Q1::reference, Q2::reference> &&
-  InvocableQuantities<Func, Q1, Q2, common_quantity_spec(Q1::quantity_spec, Q2::quantity_spec).character>;
-
-template<typename Func, Quantity Q1, Quantity Q2>
-  requires CommonlyInvocableQuantities<Func, Q1, Q2>
-using common_quantity_for = quantity<common_reference(Q1::reference, Q2::reference),
-                                     std::invoke_result_t<Func, typename Q1::rep, typename Q2::rep>>;
+  std::convertible_to<Q1, common_quantity_for<Func, Q1, Q2>> &&
+  std::convertible_to<Q2, common_quantity_for<Func, Q1, Q2>> &&
+  InvocableQuantities<Func, Q1, Q2, get_common_quantity_spec(Q1::quantity_spec, Q2::quantity_spec).character>;
 
 template<auto R1, auto R2, typename Rep1, typename Rep2>
-concept SameValueAs = SameReference<R1, R2> && std::same_as<Rep1, Rep2>;
+concept SameValueAs = (equivalent(get_unit(R1), get_unit(R2))) && std::convertible_to<Rep1, Rep2>;
 
 template<typename T>
 using quantity_like_type = quantity<quantity_like_traits<T>::reference, typename quantity_like_traits<T>::rep>;
+
+template<typename T, typename U, typename TT = std::remove_reference_t<T>>
+concept Mutable = (!std::is_const_v<TT>) && std::derived_from<TT, U>;
 
 }  // namespace detail
 
@@ -198,12 +201,10 @@ public:
 
   template<QuantityLike Q>
     requires detail::QuantityConvertibleTo<detail::quantity_like_type<Q>, quantity>
-  constexpr explicit(is_specialization_of<decltype(quantity_like_traits<Q>::to_numerical_value(std::declval<Q>())),
-                                          convert_explicitly> ||
+  constexpr explicit(quantity_like_traits<Q>::explicit_import ||
                      // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
                      !std::convertible_to<typename quantity_like_traits<Q>::rep, Rep>) quantity(const Q& q) :
-      quantity(
-        ::mp_units::quantity{quantity_like_traits<Q>::to_numerical_value(q).value, quantity_like_traits<Q>::reference})
+      quantity(::mp_units::quantity{quantity_like_traits<Q>::to_numerical_value(q), quantity_like_traits<Q>::reference})
   {
   }
 
@@ -263,21 +264,21 @@ public:
 
   // data access
   template<Unit U>
-    requires(U{} == unit)
+    requires(equivalent(U{}, unit))
   [[nodiscard]] constexpr rep& numerical_value_ref_in(U) & noexcept
   {
     return numerical_value_is_an_implementation_detail_;
   }
 
   template<Unit U>
-    requires(U{} == unit)
+    requires(equivalent(U{}, unit))
   [[nodiscard]] constexpr const rep& numerical_value_ref_in(U) const& noexcept
   {
     return numerical_value_is_an_implementation_detail_;
   }
 
   template<Unit U>
-    requires(U{} == unit)
+    requires(equivalent(U{}, unit))
   constexpr const rep&& numerical_value_ref_in(U) const&& noexcept
 #if __cpp_deleted_function
     = delete("Can't form a reference to a temporary");
@@ -309,9 +310,7 @@ public:
 
   template<typename Q_, QuantityLike Q = std::remove_cvref_t<Q_>>
     requires detail::QuantityConvertibleTo<quantity, detail::quantity_like_type<Q>>
-  [[nodiscard]] explicit(is_specialization_of<decltype(quantity_like_traits<Q>::from_numerical_value(
-                                                numerical_value_is_an_implementation_detail_)),
-                                              convert_explicitly> ||
+  [[nodiscard]] explicit(quantity_like_traits<Q>::explicit_export ||
                          !std::convertible_to<Rep, typename quantity_like_traits<Q>::rep>) constexpr
   // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
   operator Q_() const
@@ -319,16 +318,13 @@ public:
              std::is_nothrow_copy_constructible_v<rep>)
   {
     return quantity_like_traits<Q>::from_numerical_value(
-             numerical_value_in(get_unit(quantity_like_traits<Q>::reference)))
-      .value;
+      numerical_value_in(get_unit(quantity_like_traits<Q>::reference)));
   }
 
   // member unary operators
   [[nodiscard]] constexpr QuantityOf<quantity_spec> auto operator+() const
     requires requires(rep v) {
-      {
-        +v
-      } -> std::common_with<rep>;
+      { +v } -> std::common_with<rep>;
     }
   {
     return ::mp_units::quantity{+numerical_value_is_an_implementation_detail_, reference};
@@ -336,155 +332,134 @@ public:
 
   [[nodiscard]] constexpr QuantityOf<quantity_spec> auto operator-() const
     requires requires(rep v) {
-      {
-        -v
-      } -> std::common_with<rep>;
+      { -v } -> std::common_with<rep>;
     }
   {
     return ::mp_units::quantity{-numerical_value_is_an_implementation_detail_, reference};
   }
 
-  template<typename FwdQ, std::derived_from<quantity> Q = std::remove_cvref_t<FwdQ>>
-  friend constexpr decltype(auto) operator++(FwdQ&& q)
+  template<detail::Mutable<quantity> Q>
+  friend constexpr decltype(auto) operator++(Q&& q)
     requires requires(rep v) {
-      {
-        ++v
-      } -> std::same_as<rep&>;
+      { ++v } -> std::same_as<rep&>;
     }
   {
     ++q.numerical_value_is_an_implementation_detail_;
-    return std::forward<FwdQ>(q);
+    return std::forward<Q>(q);
   }
 
   [[nodiscard]] constexpr QuantityOf<quantity_spec> auto operator++(int)
     requires requires(rep v) {
-      {
-        v++
-      } -> std::common_with<rep>;
+      { v++ } -> std::common_with<rep>;
     }
   {
     return ::mp_units::quantity{numerical_value_is_an_implementation_detail_++, reference};
   }
 
-  template<typename FwdQ, std::derived_from<quantity> Q = std::remove_cvref_t<FwdQ>>
-  friend constexpr decltype(auto) operator--(FwdQ&& q)
+  template<detail::Mutable<quantity> Q>
+  friend constexpr decltype(auto) operator--(Q&& q)
     requires requires(rep v) {
-      {
-        --v
-      } -> std::same_as<rep&>;
+      { --v } -> std::same_as<rep&>;
     }
   {
     --q.numerical_value_is_an_implementation_detail_;
-    return std::forward<FwdQ>(q);
+    return std::forward<Q>(q);
   }
 
   [[nodiscard]] constexpr QuantityOf<quantity_spec> auto operator--(int)
     requires requires(rep v) {
-      {
-        v--
-      } -> std::common_with<rep>;
+      { v-- } -> std::common_with<rep>;
     }
   {
     return ::mp_units::quantity{numerical_value_is_an_implementation_detail_--, reference};
   }
 
   // compound assignment operators
-  template<typename FwdQ, std::derived_from<quantity> Q = std::remove_cvref_t<FwdQ>>
-    requires requires(rep a, rep b) {
-      {
-        a += b
-      } -> std::same_as<rep&>;
+  template<detail::Mutable<quantity> Q, auto R2, typename Rep2>
+    requires detail::QuantityConvertibleTo<quantity<R2, Rep2>, quantity> && requires(rep a, Rep2 b) {
+      { a += b } -> std::same_as<rep&>;
     }
-  friend constexpr decltype(auto) operator+=(FwdQ&& lhs, const quantity& rhs)
+  friend constexpr decltype(auto) operator+=(Q&& lhs, const quantity<R2, Rep2>& rhs)
   {
-    lhs.numerical_value_is_an_implementation_detail_ += rhs.numerical_value_is_an_implementation_detail_;
-    return std::forward<FwdQ>(lhs);
+    if constexpr (equivalent(unit, get_unit(R2)))
+      lhs.numerical_value_is_an_implementation_detail_ += rhs.numerical_value_is_an_implementation_detail_;
+    else
+      lhs.numerical_value_is_an_implementation_detail_ += rhs.in(lhs.unit).numerical_value_is_an_implementation_detail_;
+    return std::forward<Q>(lhs);
   }
 
-  template<typename FwdQ, std::derived_from<quantity> Q = std::remove_cvref_t<FwdQ>>
-    requires requires(rep a, rep b) {
-      {
-        a -= b
-      } -> std::same_as<rep&>;
+  template<detail::Mutable<quantity> Q, auto R2, typename Rep2>
+    requires detail::QuantityConvertibleTo<quantity<R2, Rep2>, quantity> && requires(rep a, Rep2 b) {
+      { a -= b } -> std::same_as<rep&>;
     }
-  friend constexpr decltype(auto) operator-=(FwdQ&& lhs, const quantity& rhs)
+  friend constexpr decltype(auto) operator-=(Q&& lhs, const quantity<R2, Rep2>& rhs)
   {
-    lhs.numerical_value_is_an_implementation_detail_ -= rhs.numerical_value_is_an_implementation_detail_;
-    return std::forward<FwdQ>(lhs);
+    if constexpr (equivalent(unit, get_unit(R2)))
+      lhs.numerical_value_is_an_implementation_detail_ -= rhs.numerical_value_is_an_implementation_detail_;
+    else
+      lhs.numerical_value_is_an_implementation_detail_ -= rhs.in(lhs.unit).numerical_value_is_an_implementation_detail_;
+    return std::forward<Q>(lhs);
   }
 
-  template<typename FwdQ, std::derived_from<quantity> Q = std::remove_cvref_t<FwdQ>>
-    requires(!treat_as_floating_point<rep>) && requires(rep a, rep b) {
-      {
-        a %= b
-      } -> std::same_as<rep&>;
-    }
-  friend constexpr decltype(auto) operator%=(FwdQ&& lhs, const quantity& rhs)
+  template<detail::Mutable<quantity> Q, auto R2, typename Rep2>
+    requires detail::QuantityConvertibleTo<quantity<R2, Rep2>, quantity> && (!treat_as_floating_point<rep>) &&
+             requires(rep a, Rep2 b) {
+               { a %= b } -> std::same_as<rep&>;
+             }
+  friend constexpr decltype(auto) operator%=(Q&& lhs, const quantity<R2, Rep2>& rhs)
 
   {
     MP_UNITS_EXPECTS_DEBUG(rhs != zero());
-    lhs.numerical_value_is_an_implementation_detail_ %= rhs.numerical_value_is_an_implementation_detail_;
-    return std::forward<FwdQ>(lhs);
+    if constexpr (equivalent(unit, get_unit(R2)))
+      lhs.numerical_value_is_an_implementation_detail_ %= rhs.numerical_value_is_an_implementation_detail_;
+    else
+      lhs.numerical_value_is_an_implementation_detail_ %= rhs.in(lhs.unit).numerical_value_is_an_implementation_detail_;
+    return std::forward<Q>(lhs);
   }
 
-  template<typename FwdQ, typename Value, std::derived_from<quantity> Q = std::remove_cvref_t<FwdQ>>
-    requires(!Quantity<Value>) && requires(rep a, const Value b) {
-      {
-        a *= b
-      } -> std::same_as<rep&>;
+  template<detail::Mutable<quantity> Q, detail::ValuePreservingTo<Rep> Value>
+    requires(!Quantity<Value>) && requires(rep a, Value b) {
+      { a *= b } -> std::same_as<rep&>;
     }
-  friend constexpr decltype(auto) operator*=(FwdQ&& lhs, const Value& v)
+  friend constexpr decltype(auto) operator*=(Q&& lhs, const Value& v)
   {
-    // TODO use *= when compiiler bug is resolved:
+    // TODO use *= when compiler bug is resolved:
     // https://developercommunity.visualstudio.com/t/Discrepancy-in-Behavior-of-operator-an/10732445
     lhs.numerical_value_is_an_implementation_detail_ = lhs.numerical_value_is_an_implementation_detail_ * v;
-    return std::forward<FwdQ>(lhs);
+    return std::forward<Q>(lhs);
   }
 
-  template<typename FwdQ1, QuantityOf<dimensionless> Q2, std::derived_from<quantity> Q1 = std::remove_cvref_t<FwdQ1>>
-    requires(Q2::unit == ::mp_units::one) && requires(rep a, const typename Q2::rep b) {
-      {
-        a *= b
-      } -> std::same_as<rep&>;
-    }
-  friend constexpr decltype(auto) operator*=(FwdQ1&& lhs, const Q2& rhs)
+  template<detail::Mutable<quantity> Q1, QuantityOf<dimensionless> Q2>
+    requires(Q2::unit == ::mp_units::one) && detail::ValuePreservingTo<typename Q2::rep, Rep> &&
+            requires(rep a, Q2::rep b) {
+              { a *= b } -> std::same_as<rep&>;
+            }
+  friend constexpr decltype(auto) operator*=(Q1&& lhs, const Q2& rhs)
   {
-    // TODO use *= when compiiler bug is resolved:
-    // https://developercommunity.visualstudio.com/t/Discrepancy-in-Behavior-of-operator-an/10732445
-    lhs.numerical_value_is_an_implementation_detail_ =
-      lhs.numerical_value_is_an_implementation_detail_ * rhs.numerical_value_is_an_implementation_detail_;
-    return std::forward<FwdQ1>(lhs);
+    return std::forward<Q1>(lhs) *= rhs.numerical_value_is_an_implementation_detail_;
   }
 
-  template<typename FwdQ, typename Value, std::derived_from<quantity> Q = std::remove_cvref_t<FwdQ>>
-    requires(!Quantity<Value>) && requires(rep a, const Value b) {
-      {
-        a /= b
-      } -> std::same_as<rep&>;
+  template<detail::Mutable<quantity> Q, detail::ValuePreservingTo<Rep> Value>
+    requires(!Quantity<Value>) && requires(rep a, Value b) {
+      { a /= b } -> std::same_as<rep&>;
     }
-  friend constexpr decltype(auto) operator/=(FwdQ&& lhs, const Value& v)
+  friend constexpr decltype(auto) operator/=(Q&& lhs, const Value& v)
   {
     MP_UNITS_EXPECTS_DEBUG(v != quantity_values<Value>::zero());
-    // TODO use /= when compiiler bug is resolved:
+    // TODO use /= when compiler bug is resolved:
     // https://developercommunity.visualstudio.com/t/Discrepancy-in-Behavior-of-operator-an/10732445
     lhs.numerical_value_is_an_implementation_detail_ = lhs.numerical_value_is_an_implementation_detail_ / v;
-    return std::forward<FwdQ>(lhs);
+    return std::forward<Q>(lhs);
   }
 
-  template<typename FwdQ1, QuantityOf<dimensionless> Q2, std::derived_from<quantity> Q1 = std::remove_cvref_t<FwdQ1>>
-    requires(Q2::unit == ::mp_units::one) && requires(rep a, const typename Q2::rep b) {
-      {
-        a /= b
-      } -> std::same_as<rep&>;
-    }
-  friend constexpr decltype(auto) operator/=(FwdQ1&& lhs, const Q2& rhs)
+  template<detail::Mutable<quantity> Q1, QuantityOf<dimensionless> Q2>
+    requires(Q2::unit == ::mp_units::one) && detail::ValuePreservingTo<typename Q2::rep, Rep> &&
+            requires(rep a, Q2::rep b) {
+              { a /= b } -> std::same_as<rep&>;
+            }
+  friend constexpr decltype(auto) operator/=(Q1&& lhs, const Q2& rhs)
   {
-    MP_UNITS_EXPECTS_DEBUG(rhs != rhs.zero());
-    // TODO use /= when compiiler bug is resolved:
-    // https://developercommunity.visualstudio.com/t/Discrepancy-in-Behavior-of-operator-an/10732445
-    lhs.numerical_value_is_an_implementation_detail_ =
-      lhs.numerical_value_is_an_implementation_detail_ / rhs.numerical_value_is_an_implementation_detail_;
-    return std::forward<FwdQ1>(lhs);
+    return std::forward<Q1>(lhs) /= rhs.numerical_value_is_an_implementation_detail_;
   }
 
   // binary operators on quantities
@@ -658,15 +633,14 @@ public:
 
 // CTAD
 template<Representation Value, Reference R>
-explicit(false) quantity(Value v, R) -> quantity<R{}, Value>;
+quantity(Value v, R) -> quantity<R{}, Value>;
 
 template<Representation Value>
 explicit(false) quantity(Value) -> quantity<one, Value>;
 
 template<QuantityLike Q>
-explicit(
-  is_specialization_of<decltype(quantity_like_traits<Q>::to_numerical_value(std::declval<Q>())), convert_explicitly>)
-  quantity(Q) -> quantity<quantity_like_traits<Q>::reference, typename quantity_like_traits<Q>::rep>;
+explicit(quantity_like_traits<Q>::explicit_import) quantity(Q)
+  -> quantity<quantity_like_traits<Q>::reference, typename quantity_like_traits<Q>::rep>;
 
 MP_UNITS_EXPORT_END
 
@@ -674,13 +648,11 @@ MP_UNITS_EXPORT_END
 
 template<mp_units::Quantity Q1, mp_units::Quantity Q2>
   requires requires {
-    {
-      mp_units::common_reference(Q1::reference, Q2::reference)
-    } -> mp_units::Reference;
+    { mp_units::get_common_reference(Q1::reference, Q2::reference) } -> mp_units::Reference;
     typename std::common_type_t<typename Q1::rep, typename Q2::rep>;
   }
 struct std::common_type<Q1, Q2> {
-  using type = mp_units::quantity<mp_units::common_reference(Q1::reference, Q2::reference),
+  using type = mp_units::quantity<mp_units::get_common_reference(Q1::reference, Q2::reference),
                                   std::common_type_t<typename Q1::rep, typename Q2::rep>>;
 };
 

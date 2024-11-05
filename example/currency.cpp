@@ -24,6 +24,7 @@
 #ifdef MP_UNITS_IMPORT_STD
 import std;
 #else
+#include <chrono>
 #include <concepts>
 #include <iostream>
 #include <map>
@@ -62,12 +63,13 @@ inline constexpr auto JPY = japanese_jen;
 static_assert(!std::equality_comparable_with<quantity<euro, int>, quantity<us_dollar, int>>);
 
 
-#if 0  // NOLINT(readability-avoid-unconditional-preprocessor-if)
+#if 0 || !MP_UNITS_API_STRING_VIEW_RET  // NOLINT(readability-avoid-unconditional-preprocessor-if)
 
 // if you have only a few currencies to handle
 template<Unit auto From, Unit auto To>
-[[nodiscard]] double exchange_rate()
+[[nodiscard]] double exchange_rate(std::chrono::sys_seconds timestamp)
 {
+  (void)timestamp;  // get conversion ratios for this timestamp
   if constexpr (From == us_dollar && To == euro) return 0.9215;
   else if constexpr (From == euro && To == us_dollar) return 1.0848;
   // ...
@@ -75,40 +77,43 @@ template<Unit auto From, Unit auto To>
 
 #else
 
-[[nodiscard]] std::string_view to_string_view(Unit auto u) { return u.symbol.ascii().c_str(); }
-
 template<Unit auto From, Unit auto To>
-[[nodiscard]] double exchange_rate()
+[[nodiscard]] double exchange_rate(std::chrono::sys_seconds timestamp)
 {
+  (void)timestamp;  // get conversion ratios for this timestamp
   static const std::map<std::pair<std::string_view, std::string_view>, double> rates = {
     {{"USD", "EUR"}, 0.9215}, {{"EUR", "USD"}, 1.0848},
     // ...
   };
 
-  return rates.at(std::make_pair(to_string_view(From), to_string_view(To)));
+  return rates.at(std::make_pair(unit_symbol(From), unit_symbol(To)));
 }
 
 #endif
 
-template<ReferenceOf<currency> auto To, ReferenceOf<currency> auto From, typename Rep>
-quantity<To, Rep> exchange_to(quantity<From, Rep> q)
+template<UnitOf<currency> auto To, QuantityOf<currency> From>
+QuantityOf<currency> auto exchange_to(From q, std::chrono::sys_seconds timestamp)
 {
-  return static_cast<Rep>(exchange_rate<q.unit, get_unit(To)>() * q.numerical_value()) * To;
+  const auto rate = static_cast<From::rep>(exchange_rate<From::unit, To>(timestamp) * q.numerical_value_in(q.unit));
+  return rate * From::quantity_spec[To];
 }
 
-template<ReferenceOf<currency> auto To, ReferenceOf<currency> auto From, auto PO, typename Rep>
-quantity_point<To, PO, Rep> exchange_to(quantity_point<From, PO, Rep> q)
+template<UnitOf<currency> auto To, QuantityPointOf<currency> From>
+QuantityPointOf<currency> auto exchange_to(From qp, std::chrono::sys_seconds timestamp)
 {
-  return quantity_point{
-    static_cast<Rep>(exchange_rate<q.unit, get_unit(To)>() * q.quantity_from_zero().numerical_value_in(q.unit)) * To};
+  const auto rate = static_cast<From::rep>(exchange_rate<From::unit, To>(timestamp) *
+                                           qp.quantity_from_zero().numerical_value_in(qp.unit));
+  return quantity_point{rate * From::quantity_spec[To], From::point_origin};
 }
 
 int main()
 {
   using namespace unit_symbols;
+  using namespace std::chrono;
 
+  const auto timestamp = time_point_cast<seconds>(system_clock::now() - hours{24});
   const quantity_point price_usd{100 * USD};
-  const quantity_point price_euro = exchange_to<euro>(price_usd);
+  const quantity_point price_euro = exchange_to<euro>(price_usd, timestamp);
 
   std::cout << price_usd.quantity_from_zero() << " -> " << price_euro.quantity_from_zero() << "\n";
   // std::cout << price_usd.quantity_from_zero() + price_euro.quantity_from_zero() << "\n";  // does

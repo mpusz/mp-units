@@ -29,6 +29,7 @@
 #ifdef MP_UNITS_IMPORT_STD
 import std;
 #else
+#include <iterator>
 #include <type_traits>
 #include <utility>
 #endif
@@ -89,49 +90,40 @@ namespace detail {
 template<template<typename...> typename Type, typename... Params>
 void to_base_specialization_of(const volatile Type<Params...>*);
 
+template<template<auto...> typename Type, auto... Params>
+void to_base_specialization_of_v(const volatile Type<Params...>*);
+
 }  // namespace detail
 
 template<typename T, template<typename...> typename Type>
 constexpr bool is_derived_from_specialization_of = requires(T* t) { detail::to_base_specialization_of<Type>(t); };
 
+template<typename T, template<auto...> typename Type>
+constexpr bool is_derived_from_specialization_of_v = requires(T* t) { detail::to_base_specialization_of_v<Type>(t); };
+
+template<typename T>
+  requires(!std::is_pointer_v<T> && !std::is_array_v<T>) &&
+            requires { typename std::indirectly_readable_traits<T>::value_type; }
+using wrapped_type_t = std::indirectly_readable_traits<T>::value_type;
+
 namespace detail {
 
 template<typename T>
-struct get_value_type {
-  using type = T::value_type;
-};
-
-template<typename T>
-struct get_element_type {
-  using type = std::remove_reference_t<typename T::element_type>;
-};
-
-}  // namespace detail
-
-template<typename T>
-  requires requires { typename T::value_type; } || requires { typename T::element_type; }
-struct wrapped_type {
-  using type =
-    conditional<requires { typename T::value_type; }, detail::get_value_type<T>, detail::get_element_type<T>>::type;
-};
-
-template<typename T>
-  requires requires { typename T::value_type; } || requires { typename T::element_type; }
-using wrapped_type_t = wrapped_type<T>::type;
-
-template<typename T>
-struct value_type {
+struct value_type_impl {
   using type = T;
 };
 
 template<typename T>
   requires requires { typename wrapped_type_t<T>; }
-struct value_type<T> {
+struct value_type_impl<T> {
   using type = wrapped_type_t<T>;
 };
 
+}  // namespace detail
+
 template<typename T>
-using value_type_t = value_type<T>::type;
+  requires std::is_object_v<T>
+using value_type_t = detail::value_type_impl<T>::type;
 
 template<typename T, typename... Ts>
 concept one_of = (false || ... || std::same_as<T, Ts>);
@@ -199,6 +191,13 @@ template<template<auto...> typename T, typename T1, typename T2, typename... Ts>
     return T1{};
   else
     return get<T, T2, Ts...>();
+}
+
+namespace detail {
+
+template<typename T>
+concept TagType = std::is_empty_v<T> && std::is_final_v<T>;
+
 }
 
 }  // namespace mp_units

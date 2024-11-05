@@ -23,14 +23,20 @@
 #pragma once
 
 #include <mp-units/bits/module_macros.h>
-#include <mp-units/systems/iec80000/binary_prefixes.h>
-#include <mp-units/systems/iec80000/units.h>
+#include <mp-units/systems/iec/binary_prefixes.h>
+#include <mp-units/systems/iec/units.h>
 #include <mp-units/systems/si/prefixes.h>
 
 MP_UNITS_EXPORT
-namespace mp_units::iec80000::unit_symbols {
+namespace mp_units::iec::unit_symbols {
 
+// Electromagnetism
+inline constexpr auto var = volt_ampere_reactive_power;
+
+// Information science and technology
 // bit
+using iec::bit;
+
 inline constexpr auto kbit = si::kilo<bit>;
 inline constexpr auto Mbit = si::mega<bit>;
 inline constexpr auto Gbit = si::giga<bit>;
@@ -108,4 +114,4 @@ inline constexpr auto QBd = si::quetta<baud>;
 // TODO do we need prefixed versions of Erlang?
 inline constexpr auto E = erlang;
 
-}  // namespace mp_units::iec80000::unit_symbols
+}  // namespace mp_units::iec::unit_symbols

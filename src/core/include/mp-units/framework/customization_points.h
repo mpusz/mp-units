@@ -33,6 +33,9 @@ import std;
 #include <concepts>
 #include <limits>
 #include <type_traits>
+#if MP_UNITS_HOSTED
+#include <chrono>
+#endif
 #endif
 #endif
 
@@ -50,11 +53,12 @@ MP_UNITS_EXPORT_BEGIN
  * @tparam Rep a representation type for which a type trait is defined
  */
 template<typename Rep>
-constexpr bool treat_as_floating_point = std::is_floating_point_v<Rep>;
-
-template<typename Rep>
-  requires requires { typename wrapped_type_t<Rep>; }
-constexpr bool treat_as_floating_point<Rep> = treat_as_floating_point<wrapped_type_t<Rep>>;
+constexpr bool treat_as_floating_point =
+#if MP_UNITS_HOSTED
+  std::chrono::treat_as_floating_point_v<value_type_t<Rep>>;
+#else
+  std::is_floating_point_v<value_type_t<Rep>>;
+#endif
 
 /**
  * @brief Specifies a type to have a scalar character
@@ -63,6 +67,14 @@ constexpr bool treat_as_floating_point<Rep> = treat_as_floating_point<wrapped_ty
  */
 template<typename Rep>
 constexpr bool is_scalar = std::is_floating_point_v<Rep> || (std::is_integral_v<Rep> && !is_same_v<Rep, bool>);
+
+/**
+ * @brief Specifies a type to have a complex character
+ *
+ * A complex is a physical quantity that has a complex representation type.
+ */
+template<typename Rep>
+constexpr bool is_complex = false;
 
 /**
  * @brief Specifies a type to have a vector character
@@ -103,6 +115,9 @@ constexpr bool is_tensor = false;
  * @tparam Rep a representation type for which a type trait is defined
  */
 template<typename Rep>
+#if MP_UNITS_HOSTED
+struct quantity_values : std::chrono::duration_values<Rep> {
+#else
 struct quantity_values {
   static constexpr Rep zero() noexcept
     requires std::constructible_from<Rep, int>
@@ -110,17 +125,9 @@ struct quantity_values {
     return Rep(0);
   }
 
-  static constexpr Rep one() noexcept
-    requires std::constructible_from<Rep, int>
-  {
-    return Rep(1);
-  }
-
   static constexpr Rep min() noexcept
     requires requires {
-      {
-        std::numeric_limits<Rep>::lowest()
-      } -> std::same_as<Rep>;
+      { std::numeric_limits<Rep>::lowest() } -> std::same_as<Rep>;
     }
   {
     return std::numeric_limits<Rep>::lowest();
@@ -128,35 +135,19 @@ struct quantity_values {
 
   static constexpr Rep max() noexcept
     requires requires {
-      {
-        std::numeric_limits<Rep>::max()
-      } -> std::same_as<Rep>;
+      { std::numeric_limits<Rep>::max() } -> std::same_as<Rep>;
     }
   {
     return std::numeric_limits<Rep>::max();
   }
-};
+#endif
 
-template<typename T>
-struct convert_explicitly {
-  using value_type = T;
-  T value;
-  // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
-  constexpr explicit(false) convert_explicitly(T v) noexcept(std::is_nothrow_constructible_v<T>) : value(std::move(v))
+  static constexpr Rep one() noexcept
+    requires std::constructible_from<Rep, int>
   {
+    return Rep(1);
   }
 };
-
-template<typename T>
-struct convert_implicitly {
-  using value_type = T;
-  T value;
-  // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
-  constexpr explicit(false) convert_implicitly(T v) noexcept(std::is_nothrow_constructible_v<T>) : value(std::move(v))
-  {
-  }
-};
-
 
 /**
  * @brief Provides support for external quantity-like types
@@ -164,8 +155,10 @@ struct convert_implicitly {
  * The type trait should provide the @c reference object, a type alias @c rep,
  * and static member functions @c to_numerical_value(T) that returns the raw value
  * of the quantity and @c from_numerical_value(rep) that returns @c T from @c rep.
- * Both return types should be encapsulated in either @c convert_explicitly or
- * @c convert_implicitly to specify if the conversion is allowed to happen implicitly.
+ *
+ * If the following expression is @c true, the specified conversion will be explicit:
+ * - @c explicit_import for the conversion from @c T to a @c quantity type,
+ * - @c explicit_export for the conversion from a @c quantity type to @c T.
  *
  * Usage example can be found in @c mp-units/systems/si/chrono.h header file.
  *
@@ -181,8 +174,10 @@ struct quantity_like_traits;
  * a type alias @c rep, and static member functions @c to_numerical_value(T) that
  * returns the raw value of the the quantity being the offset of the point from the
  * origin and @c from_numerical_value(rep) that returns @c T formed this raw value.
- * Both return types should be encapsulated in either @c convert_explicitly or
- * @c convert_implicitly to specify if the conversion is allowed to happen implicitly.
+ *
+ * If the following expression is @c true, the specified conversion will be explicit:
+ * - @c explicit_import for the conversion from @c T to a @c quantity_point type,
+ * - @c explicit_export for the conversion from a @c quantity_point type to @c T.
  *
  * Usage example can be found in @c mp-units/systems/si/chrono.h header file.
  *
@@ -192,15 +187,5 @@ template<typename T>
 struct quantity_point_like_traits;
 
 MP_UNITS_EXPORT_END
-
-namespace detail {
-
-template<typename T>
-concept ConversionSpec = is_specialization_of<T, convert_explicitly> || is_specialization_of<T, convert_implicitly>;
-
-template<typename T, typename U>
-concept ConversionSpecOf = ConversionSpec<T> && std::same_as<typename T::value_type, U>;
-
-}  // namespace detail
 
 }  // namespace mp_units

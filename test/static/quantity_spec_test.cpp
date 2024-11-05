@@ -54,9 +54,11 @@ QUANTITY_SPEC_(radius, width);
 QUANTITY_SPEC_(path_length, length);
 inline constexpr auto arc_length = path_length;
 QUANTITY_SPEC_(distance, path_length);
+QUANTITY_SPEC_(wavelength, length);
 QUANTITY_SPEC_(position_vector, length, quantity_character::vector);
 QUANTITY_SPEC_(period_duration, time);
 QUANTITY_SPEC_(rotation, dimensionless);
+QUANTITY_SPEC_(repetency, inverse(wavelength));
 QUANTITY_SPEC_(frequency, inverse(period_duration));
 QUANTITY_SPEC_(activity, inverse(time));
 QUANTITY_SPEC_(area, pow<2>(length));
@@ -440,21 +442,31 @@ static_assert(!defines_equation(mechanical_energy));
 static_assert(!defines_equation(potential_energy));
 
 // get_complexity
-static_assert(get_complexity(dimensionless) == 1);
-static_assert(get_complexity(length) == 1);
-static_assert(get_complexity(frequency) == 2);
-static_assert(get_complexity(area) == 2);
-static_assert(get_complexity(volume) == 2);
-static_assert(get_complexity(speed) == 3);
-static_assert(get_complexity(velocity) == 3);
-static_assert(get_complexity(acceleration) == 5);
-static_assert(get_complexity(force) == 7);
+static_assert(get_complexity(length) == 0);
+static_assert(get_complexity(pow<4>(length)) == 0);
+static_assert(get_complexity(dimensionless) == 0);
+static_assert(get_complexity(length / time) == 0);
+static_assert(get_complexity(mass * length / time) == 0);
+static_assert(get_complexity(frequency) == 1);
+static_assert(get_complexity(area) == 1);
+static_assert(get_complexity(pow<2>(area)) == 1);
+static_assert(get_complexity(volume) == 1);
+static_assert(get_complexity(speed) == 1);
+static_assert(get_complexity(velocity) == 1);
+static_assert(get_complexity(acceleration) == 2);
+static_assert(get_complexity(force) == 3);
 
-static_assert(get_complexity(acceleration * time) == 6);
-static_assert(get_complexity(acceleration / time) == 6);
-
-static_assert(get_complexity(pow<4>(length)) == 1);
-static_assert(get_complexity(pow<2>(area)) == 2);
+static_assert(get_complexity(acceleration * time) == 2);
+static_assert(get_complexity(acceleration / time) == 2);
+static_assert(get_complexity(speed * area) == 1);
+static_assert(get_complexity(acceleration * area) == 2);
+static_assert(get_complexity(acceleration * force) == 3);
+static_assert(get_complexity(speed / frequency) == 1);
+static_assert(get_complexity(acceleration / frequency) == 2);
+static_assert(get_complexity(force / frequency) == 3);
+static_assert(get_complexity(area / acceleration) == 2);
+static_assert(get_complexity(area / force) == 3);
+static_assert(get_complexity(speed * area / frequency) == 1);
 
 // explode
 static_assert(explode<get_complexity(inverse(time))>(frequency).quantity == inverse(period_duration));
@@ -721,6 +733,7 @@ static_assert(convertible_impl(kind_of<inverse(time)>, frequency) == yes);
 static_assert(convertible_impl(kind_of<inverse(time)>, activity) == yes);
 static_assert(convertible_impl(kind_of<mass * pow<2>(length) / pow<2>(time)>, energy) == yes);
 static_assert(convertible_impl(kind_of<mass * pow<2>(length) / pow<2>(time)>, moment_of_force) == yes);
+static_assert(convertible_impl(kind_of<frequency * time / length>, repetency) == yes);
 
 // type to a kind of a different kind
 static_assert(convertible_impl(mass, kind_of<length>) == no);
@@ -783,35 +796,35 @@ static_assert((position_vector / time).character == quantity_character::vector);
 static_assert((position_vector / position_vector * time).character == quantity_character::scalar);
 static_assert((velocity / acceleration).character == quantity_character::scalar);
 
-// common_quantity_spec
-static_assert(common_quantity_spec(length, length) == length);
-static_assert(common_quantity_spec(kind_of<length>, kind_of<length>) == kind_of<length>);
-static_assert(common_quantity_spec(kind_of<length>, length) == length);
-static_assert(common_quantity_spec(length, kind_of<length>) == length);
-static_assert(common_quantity_spec(width, kind_of<length>) == width);
-static_assert(common_quantity_spec(kind_of<length>, width) == width);
+// get_common_quantity_spec
+static_assert(get_common_quantity_spec(length, length) == length);
+static_assert(get_common_quantity_spec(kind_of<length>, kind_of<length>) == kind_of<length>);
+static_assert(get_common_quantity_spec(kind_of<length>, length) == length);
+static_assert(get_common_quantity_spec(length, kind_of<length>) == length);
+static_assert(get_common_quantity_spec(width, kind_of<length>) == width);
+static_assert(get_common_quantity_spec(kind_of<length>, width) == width);
 
-static_assert(common_quantity_spec(width, height) == length);
-static_assert(common_quantity_spec(distance, path_length) == path_length);
-static_assert(common_quantity_spec(potential_energy, kinetic_energy) == mechanical_energy);
+static_assert(get_common_quantity_spec(width, height) == length);
+static_assert(get_common_quantity_spec(distance, path_length) == path_length);
+static_assert(get_common_quantity_spec(potential_energy, kinetic_energy) == mechanical_energy);
 
-static_assert(common_quantity_spec(length / time, length / time) == length / time);
-static_assert(common_quantity_spec(length / time, inverse(time / length)) == length / time);
+static_assert(get_common_quantity_spec(length / time, length / time) == length / time);
+static_assert(get_common_quantity_spec(length / time, inverse(time / length)) == length / time);
 
-static_assert(common_quantity_spec(speed, length / time) == speed);
-static_assert(common_quantity_spec(length / time, speed) == speed);
-static_assert(common_quantity_spec(area, length* length) == area);
-static_assert(common_quantity_spec(length * length, area) == area);
-static_assert(common_quantity_spec(kinetic_energy, mass* pow<2>(length) / pow<2>(time)) == kinetic_energy);
-static_assert(common_quantity_spec(mass * pow<2>(length) / pow<2>(time), kinetic_energy) == kinetic_energy);
-static_assert(common_quantity_spec(gravitational_potential_energy, mass* acceleration_of_free_fall* height) ==
+static_assert(get_common_quantity_spec(speed, length / time) == speed);
+static_assert(get_common_quantity_spec(length / time, speed) == speed);
+static_assert(get_common_quantity_spec(area, length* length) == area);
+static_assert(get_common_quantity_spec(length * length, area) == area);
+static_assert(get_common_quantity_spec(kinetic_energy, mass* pow<2>(length) / pow<2>(time)) == kinetic_energy);
+static_assert(get_common_quantity_spec(mass * pow<2>(length) / pow<2>(time), kinetic_energy) == kinetic_energy);
+static_assert(get_common_quantity_spec(gravitational_potential_energy, mass* acceleration_of_free_fall* height) ==
               gravitational_potential_energy);
-static_assert(common_quantity_spec(mass * acceleration_of_free_fall * height, gravitational_potential_energy) ==
+static_assert(get_common_quantity_spec(mass * acceleration_of_free_fall * height, gravitational_potential_energy) ==
               gravitational_potential_energy);
 
-static_assert(common_quantity_spec(gravitational_potential_energy, mass* acceleration* length) ==
+static_assert(get_common_quantity_spec(gravitational_potential_energy, mass* acceleration* length) ==
               mass * acceleration * length);
-static_assert(common_quantity_spec(mass * acceleration * length, gravitational_potential_energy) ==
+static_assert(get_common_quantity_spec(mass * acceleration * length, gravitational_potential_energy) ==
               mass * acceleration * length);
 
 template<auto T1, auto T2>

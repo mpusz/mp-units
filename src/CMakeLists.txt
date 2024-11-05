@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 cmake_minimum_required(VERSION 3.25)
-project(mp-units VERSION 2.3.0 LANGUAGES CXX)
+project(mp-units VERSION 2.4.0 LANGUAGES CXX)
 
 set(projectPrefix MP_UNITS_)
 
@@ -38,11 +38,9 @@ check_libcxx_in_use(${projectPrefix}LIBCXX)
 # project build options
 option(${projectPrefix}BUILD_AS_SYSTEM_HEADERS "Export library as system headers" OFF)
 option(${projectPrefix}BUILD_CXX_MODULES "Add C++ modules to the list of default targets" OFF)
-option(${projectPrefix}BUILD_IMPORT_STD "Enable `import std;` usage" OFF)
 
 message(STATUS "${projectPrefix}BUILD_AS_SYSTEM_HEADERS: ${${projectPrefix}BUILD_AS_SYSTEM_HEADERS}")
 message(STATUS "${projectPrefix}BUILD_CXX_MODULES: ${${projectPrefix}BUILD_CXX_MODULES}")
-message(STATUS "${projectPrefix}BUILD_IMPORT_STD: ${${projectPrefix}BUILD_IMPORT_STD}")
 
 if(${projectPrefix}BUILD_AS_SYSTEM_HEADERS)
     set(${projectPrefix}_AS_SYSTEM SYSTEM)
@@ -126,7 +124,7 @@ else()
     set(${projectPrefix}TARGET_SCOPE "INTERFACE")
 endif()
 
-if(${projectPrefix}BUILD_IMPORT_STD)
+if(CMAKE_CXX_MODULE_STD)
     if(CMAKE_VERSION VERSION_LESS "3.30")
         message(FATAL_ERROR "CMake versions before 3.30 do not support `import std;` properly")
     endif()

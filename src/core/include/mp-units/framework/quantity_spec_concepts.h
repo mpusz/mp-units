@@ -37,7 +37,7 @@ struct quantity_spec_interface_base;
 }
 
 MP_UNITS_EXPORT template<typename T>
-concept QuantitySpec = std::derived_from<T, detail::quantity_spec_interface_base> && std::is_final_v<T>;
+concept QuantitySpec = detail::TagType<T> && std::derived_from<T, detail::quantity_spec_interface_base>;
 
 MP_UNITS_EXPORT
 #if MP_UNITS_API_NO_CRTP
@@ -53,13 +53,7 @@ struct kind_of_;
 namespace detail {
 
 template<typename T>
-constexpr bool is_specialization_of_kind_of = false;
-
-template<typename Q>
-constexpr bool is_specialization_of_kind_of<kind_of_<Q>> = true;
-
-template<typename T>
-concept QuantityKindSpec = is_specialization_of_kind_of<T>;
+concept QuantityKindSpec = QuantitySpec<T> && is_specialization_of<T, kind_of_>;
 
 #if MP_UNITS_API_NO_CRTP
 template<auto... Args>
@@ -82,29 +76,9 @@ template<typename T>
 concept NamedQuantitySpec =
   QuantitySpec<T> && is_derived_from_specialization_of_quantity_spec<T> && (!QuantityKindSpec<T>);
 
-template<typename T>
-struct is_dimensionless : std::false_type {};
-
-template<typename T>
-constexpr bool is_power_of_quantity_spec = requires {
-  requires is_specialization_of_power<T> &&
-             (NamedQuantitySpec<typename T::factor> || is_dimensionless<typename T::factor>::value);
-};
-
-template<typename T>
-constexpr bool is_per_of_quantity_specs = false;
-
-template<typename... Ts>
-constexpr bool is_per_of_quantity_specs<per<Ts...>> =
-  (... && (NamedQuantitySpec<Ts> || is_dimensionless<Ts>::value || is_power_of_quantity_spec<Ts>));
-
-template<typename T>
-concept DerivedQuantitySpecExpr = detail::NamedQuantitySpec<T> || detail::is_dimensionless<T>::value ||
-                                  detail::is_power_of_quantity_spec<T> || detail::is_per_of_quantity_specs<T>;
-
 }  // namespace detail
 
-template<detail::DerivedQuantitySpecExpr... Expr>
+template<typename... Expr>
 struct derived_quantity_spec;
 
 namespace detail {
@@ -143,8 +117,8 @@ concept ChildQuantitySpecOf = (is_child_of(Child, Parent));
 
 template<auto To, auto From>
 concept NestedQuantityKindSpecOf =
-  QuantitySpec<decltype(From)> && QuantitySpec<decltype(To)> &&
-  (!SameQuantitySpec<get_kind(From), get_kind(To)>)&&ChildQuantitySpecOf<To, get_kind(From)._quantity_spec_>;
+  QuantitySpec<decltype(From)> && QuantitySpec<decltype(To)> && (!SameQuantitySpec<get_kind(From), get_kind(To)>) &&
+  ChildQuantitySpecOf<To, get_kind(From)._quantity_spec_>;
 
 template<auto From, auto To>
 concept QuantitySpecConvertibleTo =

@@ -50,6 +50,8 @@ namespace mp_units {
  *
  * A scalar is a physical quantity that has magnitude but no direction.
  *
+ * A complex is a physical quantity that is represented with a complex number.
+ *
  * Vectors are physical quantities that possess both magnitude and direction
  * and whose operations obey the axioms of a vector space.
  *
@@ -57,7 +59,7 @@ namespace mp_units {
  * For example, the Cauchy stress tensor possess magnitude, direction,
  * and orientation qualities.
  */
-MP_UNITS_EXPORT enum class quantity_character : std::int8_t { scalar, vector, tensor };
+MP_UNITS_EXPORT enum class quantity_character : std::int8_t { scalar, complex, vector, tensor };
 
 namespace detail {
 
@@ -86,11 +88,12 @@ concept WeaklyRegular = std::copyable<T> && std::equality_comparable<T>;
 
 MP_UNITS_EXPORT template<typename T>
 concept Representation =
-  (is_scalar<T> || is_vector<T> || is_tensor<T>)&&detail::WeaklyRegular<T> && detail::Scalable<T>;
+  (is_scalar<T> || is_complex<T> || is_vector<T> || is_tensor<T>) && detail::WeaklyRegular<T> && detail::Scalable<T>;
 
 MP_UNITS_EXPORT template<typename T, quantity_character Ch>
-concept RepresentationOf = Representation<T> && ((Ch == quantity_character::scalar && is_scalar<T>) ||
-                                                 (Ch == quantity_character::vector && is_vector<T>) ||
-                                                 (Ch == quantity_character::tensor && is_tensor<T>));
+concept RepresentationOf =
+  Representation<T> &&
+  ((Ch == quantity_character::scalar && is_scalar<T>) || (Ch == quantity_character::complex && is_complex<T>) ||
+   (Ch == quantity_character::vector && is_vector<T>) || (Ch == quantity_character::tensor && is_tensor<T>));
 
 }  // namespace mp_units

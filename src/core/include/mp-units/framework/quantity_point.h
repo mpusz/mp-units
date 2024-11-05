@@ -52,14 +52,14 @@ template<PointOrigin PO>
 }
 
 struct point_origin_interface {
-  template<PointOrigin PO, typename FwdQ, QuantityOf<PO::quantity_spec> Q = std::remove_cvref_t<FwdQ>>
+  template<PointOrigin PO, typename FwdQ, QuantityOf<PO::_quantity_spec_> Q = std::remove_cvref_t<FwdQ>>
   [[nodiscard]] friend constexpr quantity_point<Q::reference, MP_UNITS_EXPRESSION_WORKAROUND(PO{}), typename Q::rep>
   operator+(PO, FwdQ&& q)
   {
     return quantity_point{std::forward<FwdQ>(q), PO{}};
   }
 
-  template<Quantity FwdQ, PointOrigin PO, QuantityOf<PO::quantity_spec> Q = std::remove_cvref_t<FwdQ>>
+  template<Quantity FwdQ, PointOrigin PO, QuantityOf<PO::_quantity_spec_> Q = std::remove_cvref_t<FwdQ>>
   [[nodiscard]] friend constexpr quantity_point<Q::reference, MP_UNITS_EXPRESSION_WORKAROUND(PO{}), typename Q::rep>
   operator+(FwdQ&& q, PO po)
   {
@@ -67,7 +67,7 @@ struct point_origin_interface {
   }
 
   template<PointOrigin PO, Quantity Q>
-    requires ReferenceOf<std::remove_const_t<decltype(Q::reference)>, PO::quantity_spec>
+    requires ReferenceOf<std::remove_const_t<decltype(Q::reference)>, PO::_quantity_spec_>
   [[nodiscard]] friend constexpr QuantityPoint auto operator-(PO po, const Q& q)
     requires requires { -q; }
   {
@@ -75,34 +75,34 @@ struct point_origin_interface {
   }
 
   template<PointOrigin PO1, detail::SameAbsolutePointOriginAs<PO1{}> PO2>
-    requires QuantitySpecOf<std::remove_const_t<decltype(PO1::quantity_spec)>, PO2::quantity_spec> &&
-             (detail::is_derived_from_specialization_of_relative_point_origin<PO1> ||
-              detail::is_derived_from_specialization_of_relative_point_origin<PO2>)
+    requires QuantitySpecOf<std::remove_const_t<decltype(PO1::_quantity_spec_)>, PO2::_quantity_spec_> &&
+             (is_derived_from_specialization_of_v<PO1, relative_point_origin> ||
+              is_derived_from_specialization_of_v<PO2, relative_point_origin>)
   [[nodiscard]] friend constexpr Quantity auto operator-(PO1 po1, PO2 po2)
   {
-    if constexpr (detail::is_derived_from_specialization_of_absolute_point_origin<PO1>) {
-      return -(po2.quantity_point - po2.quantity_point.absolute_point_origin);
-    } else if constexpr (detail::is_derived_from_specialization_of_absolute_point_origin<PO2>) {
-      return po1.quantity_point - po1.quantity_point.absolute_point_origin;
+    if constexpr (is_derived_from_specialization_of_v<PO1, absolute_point_origin>) {
+      return po1 - po2._quantity_point_;
+    } else if constexpr (is_derived_from_specialization_of_v<PO2, absolute_point_origin>) {
+      return po1._quantity_point_ - po2;
     } else {
-      return po1.quantity_point - po2.quantity_point;
+      return po1._quantity_point_ - po2._quantity_point_;
     }
   }
 
   template<PointOrigin PO1, PointOrigin PO2>
   [[nodiscard]] friend consteval bool operator==(PO1 po1, PO2 po2)
   {
-    if constexpr (detail::is_derived_from_specialization_of_absolute_point_origin<PO1> &&
-                  detail::is_derived_from_specialization_of_absolute_point_origin<PO2>)
+    if constexpr (is_derived_from_specialization_of_v<PO1, absolute_point_origin> &&
+                  is_derived_from_specialization_of_v<PO2, absolute_point_origin>)
       return is_same_v<PO1, PO2> || (detail::is_zeroth_point_origin(po1) && detail::is_zeroth_point_origin(po2) &&
-                                     interconvertible(po1.quantity_spec, po2.quantity_spec));
-    else if constexpr (detail::is_derived_from_specialization_of_relative_point_origin<PO1> &&
-                       detail::is_derived_from_specialization_of_relative_point_origin<PO2>)
-      return PO1::quantity_point == PO2::quantity_point;
-    else if constexpr (detail::is_derived_from_specialization_of_relative_point_origin<PO1>)
-      return detail::same_absolute_point_origins(po1, po2) && is_eq_zero(PO1::quantity_point.quantity_from_zero());
-    else if constexpr (detail::is_derived_from_specialization_of_relative_point_origin<PO2>)
-      return detail::same_absolute_point_origins(po1, po2) && is_eq_zero(PO2::quantity_point.quantity_from_zero());
+                                     interconvertible(po1._quantity_spec_, po2._quantity_spec_));
+    else if constexpr (is_derived_from_specialization_of_v<PO1, relative_point_origin> &&
+                       is_derived_from_specialization_of_v<PO2, relative_point_origin>)
+      return PO1::_quantity_point_ == PO2::_quantity_point_;
+    else if constexpr (is_derived_from_specialization_of_v<PO1, relative_point_origin>)
+      return detail::same_absolute_point_origins(po1, po2) && is_eq_zero(PO1::_quantity_point_.quantity_from_zero());
+    else if constexpr (is_derived_from_specialization_of_v<PO2, relative_point_origin>)
+      return detail::same_absolute_point_origins(po1, po2) && is_eq_zero(PO2::_quantity_point_.quantity_from_zero());
   }
 };
 
@@ -110,20 +110,20 @@ struct point_origin_interface {
 
 MP_UNITS_EXPORT template<QuantitySpec auto QS>
 struct absolute_point_origin : detail::point_origin_interface {
-  static constexpr QuantitySpec auto quantity_spec = QS;
+  static constexpr QuantitySpec auto _quantity_spec_ = QS;
 };
 
 MP_UNITS_EXPORT template<QuantityPoint auto QP>
 struct relative_point_origin : detail::point_origin_interface {
-  static constexpr QuantityPoint auto quantity_point = QP;
-  static constexpr QuantitySpec auto quantity_spec = []() {
+  static constexpr QuantityPoint auto _quantity_point_ = QP;
+  static constexpr QuantitySpec auto _quantity_spec_ = []() {
     // select the strongest of specs
     if constexpr (detail::QuantityKindSpec<std::remove_const_t<decltype(QP.quantity_spec)>>)
-      return QP.point_origin.quantity_spec;
+      return QP.point_origin._quantity_spec_;
     else
       return QP.quantity_spec;
   }();
-  static constexpr PointOrigin auto absolute_point_origin = QP.absolute_point_origin;
+  static constexpr PointOrigin auto _absolute_point_origin_ = QP.absolute_point_origin;
 };
 
 template<QuantitySpec auto QS>
@@ -143,8 +143,8 @@ constexpr bool is_specialization_of_zeroth_point_origin<zeroth_point_origin_<QS>
 MP_UNITS_EXPORT template<Reference R>
 [[nodiscard]] consteval PointOriginFor<get_quantity_spec(R{})> auto default_point_origin(R)
 {
-  if constexpr (requires { get_unit(R{}).point_origin; })
-    return get_unit(R{}).point_origin;
+  if constexpr (requires { get_unit(R{})._point_origin_; })
+    return get_unit(R{})._point_origin_;
   else
     return zeroth_point_origin<get_quantity_spec(R{})>;
 }
@@ -154,10 +154,10 @@ namespace detail {
 template<PointOrigin PO>
 [[nodiscard]] consteval PointOrigin auto get_absolute_point_origin(PO po)
 {
-  if constexpr (is_derived_from_specialization_of_absolute_point_origin<PO>)
+  if constexpr (is_derived_from_specialization_of_v<PO, absolute_point_origin>)
     return po;
   else
-    return po.quantity_point.absolute_point_origin;
+    return po._quantity_point_.absolute_point_origin;
 }
 
 }  // namespace detail
@@ -220,7 +220,7 @@ public:
   {
   }
 
-  template<typename FwdQ, PointOrigin PO2, QuantityOf<PO2::quantity_spec> Q = std::remove_cvref_t<FwdQ>>
+  template<typename FwdQ, PointOrigin PO2, QuantityOf<PO2::_quantity_spec_> Q = std::remove_cvref_t<FwdQ>>
     requires std::constructible_from<quantity_type, FwdQ> && detail::SameAbsolutePointOriginAs<PO2, PO>
   constexpr quantity_point(FwdQ&& q, PO2) :
       quantity_point(
@@ -248,13 +248,12 @@ public:
               quantity<quantity_point_like_traits<QP>::reference, typename quantity_point_like_traits<QP>::rep>,
               quantity_type>
   constexpr explicit(
-    is_specialization_of<decltype(quantity_point_like_traits<QP>::to_numerical_value(std::declval<QP>())),
-                         convert_explicitly> ||
+    quantity_point_like_traits<QP>::explicit_import ||
     !std::convertible_to<
       quantity<quantity_point_like_traits<QP>::reference, typename quantity_point_like_traits<QP>::rep>, quantity_type>)
     // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
     quantity_point(const QP& qp) :
-      quantity_from_origin_is_an_implementation_detail_(quantity_point_like_traits<QP>::to_numerical_value(qp).value,
+      quantity_from_origin_is_an_implementation_detail_(quantity_point_like_traits<QP>::to_numerical_value(qp),
                                                         get_unit(quantity_point_like_traits<QP>::reference))
   {
   }
@@ -310,9 +309,9 @@ public:
 
   [[nodiscard]] constexpr Quantity auto quantity_from_zero() const
   {
-    if constexpr (requires { unit.point_origin; }) {
+    if constexpr (requires { unit._point_origin_; }) {
       // original quantity point unit can be lost in the below operation
-      const auto q = quantity_from(unit.point_origin);
+      const auto q = quantity_from(unit._point_origin_);
       if constexpr (requires { q.in(unit); })
         // restore the unit if possible (non-truncating)
         return q.in(unit);
@@ -371,10 +370,7 @@ public:
             std::convertible_to<quantity_type, quantity<quantity_point_like_traits<QP>::reference,
                                                         typename quantity_point_like_traits<QP>::rep>>
   [[nodiscard]] explicit(
-    is_specialization_of<
-      decltype(quantity_point_like_traits<QP>::from_numerical_value(
-        quantity_from_origin_is_an_implementation_detail_.numerical_value_is_an_implementation_detail_)),
-      convert_explicitly> ||
+    quantity_point_like_traits<QP>::explicit_export ||
     !std::convertible_to<quantity_type, quantity<quantity_point_like_traits<QP>::reference,
                                                  typename quantity_point_like_traits<QP>::rep>>) constexpr
   // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
@@ -384,8 +380,7 @@ public:
     std::is_nothrow_copy_constructible_v<rep>)
   {
     return quantity_point_like_traits<QP>::from_numerical_value(
-             quantity_from_origin_is_an_implementation_detail_.numerical_value_is_an_implementation_detail_)
-      .value;
+      quantity_from_origin_is_an_implementation_detail_.numerical_value_is_an_implementation_detail_);
   }
 
   template<typename QP_, QuantityPointLike QP = std::remove_cvref_t<QP_>>
@@ -393,10 +388,7 @@ public:
             std::convertible_to<quantity_type, quantity<quantity_point_like_traits<QP>::reference,
                                                         typename quantity_point_like_traits<QP>::rep>>
   [[nodiscard]] explicit(
-    is_specialization_of<
-      decltype(quantity_point_like_traits<QP>::from_numerical_value(
-        quantity_from_origin_is_an_implementation_detail_.numerical_value_is_an_implementation_detail_)),
-      convert_explicitly> ||
+    quantity_point_like_traits<QP>::explicit_export ||
     !std::convertible_to<quantity_type, quantity<quantity_point_like_traits<QP>::reference,
                                                  typename quantity_point_like_traits<QP>::rep>>) constexpr
   // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
@@ -406,17 +398,16 @@ public:
     std::is_nothrow_move_constructible_v<rep>)
   {
     return quantity_point_like_traits<QP>::from_numerical_value(
-             std::move(quantity_from_origin_is_an_implementation_detail_).numerical_value_is_an_implementation_detail_)
-      .value;
+      std::move(quantity_from_origin_is_an_implementation_detail_).numerical_value_is_an_implementation_detail_);
   }
 
   // member unary operators
-  template<typename FwdQP, std::derived_from<quantity_point> QP = std::remove_cvref_t<FwdQP>>
-  friend constexpr decltype(auto) operator++(FwdQP&& qp)
+  template<detail::Mutable<quantity_point> QP>
+  friend constexpr decltype(auto) operator++(QP&& qp)
     requires requires { ++qp.quantity_from_origin_is_an_implementation_detail_; }
   {
     ++qp.quantity_from_origin_is_an_implementation_detail_;
-    return std::forward<FwdQP>(qp);
+    return std::forward<QP>(qp);
   }
 
   [[nodiscard]] constexpr quantity_point operator++(int)
@@ -425,12 +416,12 @@ public:
     return {quantity_from_origin_is_an_implementation_detail_++, PO};
   }
 
-  template<typename FwdQP, std::derived_from<quantity_point> QP = std::remove_cvref_t<FwdQP>>
-  friend constexpr decltype(auto) operator--(FwdQP&& qp)
+  template<detail::Mutable<quantity_point> QP>
+  friend constexpr decltype(auto) operator--(QP&& qp)
     requires requires { --qp.quantity_from_origin_is_an_implementation_detail_; }
   {
     --qp.quantity_from_origin_is_an_implementation_detail_;
-    return std::forward<FwdQP>(qp);
+    return std::forward<QP>(qp);
   }
 
   [[nodiscard]] constexpr quantity_point operator--(int)
@@ -440,26 +431,28 @@ public:
   }
 
   // compound assignment operators
-  template<typename FwdQP, std::derived_from<quantity_point> QP = std::remove_cvref_t<FwdQP>>
-    requires requires(quantity_type q) { quantity_from_origin_is_an_implementation_detail_ += q; }
-  friend constexpr decltype(auto) operator+=(FwdQP&& qp, const quantity_type& q)
+  template<detail::Mutable<quantity_point> QP, auto R2, typename Rep2>
+    requires detail::QuantityConvertibleTo<quantity<R2, Rep2>, quantity_type> &&
+             requires(quantity_type q) { quantity_from_origin_is_an_implementation_detail_ += q; }
+  friend constexpr decltype(auto) operator+=(QP&& qp, const quantity<R2, Rep2>& q)
   {
     qp.quantity_from_origin_is_an_implementation_detail_ += q;
-    return std::forward<FwdQP>(qp);
+    return std::forward<QP>(qp);
   }
 
-  template<typename FwdQP, std::derived_from<quantity_point> QP = std::remove_cvref_t<FwdQP>>
-    requires requires(quantity_type q) { quantity_from_origin_is_an_implementation_detail_ -= q; }
-  friend constexpr decltype(auto) operator-=(FwdQP&& qp, const quantity_type& q)
+  template<detail::Mutable<quantity_point> QP, auto R2, typename Rep2>
+    requires detail::QuantityConvertibleTo<quantity<R2, Rep2>, quantity_type> &&
+             requires(quantity_type q) { quantity_from_origin_is_an_implementation_detail_ -= q; }
+  friend constexpr decltype(auto) operator-=(QP&& qp, const quantity<R2, Rep2>& q)
   {
     qp.quantity_from_origin_is_an_implementation_detail_ -= q;
-    return std::forward<FwdQP>(qp);
+    return std::forward<QP>(qp);
   }
 
   // binary operators on quantity points
   template<std::derived_from<quantity_point> QP, auto R2, typename Rep2>
   // TODO simplify when gcc catches up
-    requires ReferenceOf<MP_UNITS_REMOVE_CONST(decltype(R2)), PO.quantity_spec>
+    requires ReferenceOf<MP_UNITS_REMOVE_CONST(decltype(R2)), PO._quantity_spec_>
   [[nodiscard]] friend constexpr QuantityPoint auto operator+(const QP& qp, const quantity<R2, Rep2>& q)
     requires requires { qp.quantity_ref_from(PO) + q; }
   {
@@ -471,7 +464,7 @@ public:
 
   template<auto R1, typename Rep1, std::derived_from<quantity_point> QP>
   // TODO simplify when gcc catches up
-    requires ReferenceOf<MP_UNITS_REMOVE_CONST(decltype(R1)), PO.quantity_spec>
+    requires ReferenceOf<MP_UNITS_REMOVE_CONST(decltype(R1)), PO._quantity_spec_>
   [[nodiscard]] friend constexpr QuantityPoint auto operator+(const quantity<R1, Rep1>& q, const QP& qp)
     requires requires { q + qp.quantity_ref_from(PO); }
   {
@@ -480,7 +473,7 @@ public:
 
   template<std::derived_from<quantity_point> QP, auto R2, typename Rep2>
   // TODO simplify when gcc catches up
-    requires ReferenceOf<MP_UNITS_REMOVE_CONST(decltype(R2)), PO.quantity_spec>
+    requires ReferenceOf<MP_UNITS_REMOVE_CONST(decltype(R2)), PO._quantity_spec_>
   [[nodiscard]] friend constexpr QuantityPoint auto operator-(const QP& qp, const quantity<R2, Rep2>& q)
     requires requires { qp.quantity_ref_from(PO) - q; }
   {
@@ -504,29 +497,30 @@ public:
 
   template<std::derived_from<quantity_point> QP, PointOrigin PO2>
     requires QuantityPointOf<quantity_point, PO2{}> &&
-             ReferenceOf<std::remove_const_t<decltype(reference)>, PO2::quantity_spec>
+             ReferenceOf<std::remove_const_t<decltype(reference)>, PO2::_quantity_spec_>
   [[nodiscard]] friend constexpr Quantity auto operator-(const QP& qp, PO2 po)
   {
     if constexpr (point_origin == po)
       return qp.quantity_ref_from(point_origin);
-    else if constexpr (detail::is_derived_from_specialization_of_absolute_point_origin<PO2>) {
+    else if constexpr (is_derived_from_specialization_of_v<PO2, ::mp_units::absolute_point_origin>) {
       if constexpr (point_origin == absolute_point_origin)
         return qp.quantity_ref_from(point_origin);
       else
         return qp.quantity_ref_from(point_origin) + (qp.point_origin - qp.absolute_point_origin);
     } else {
-      if constexpr (point_origin == po.quantity_point.point_origin)
-        return qp.quantity_ref_from(point_origin) - po.quantity_point.quantity_ref_from(po.quantity_point.point_origin);
+      if constexpr (point_origin == po._quantity_point_.point_origin)
+        return qp.quantity_ref_from(point_origin) -
+               po._quantity_point_.quantity_ref_from(po._quantity_point_.point_origin);
       else
         return qp.quantity_ref_from(point_origin) -
-               po.quantity_point.quantity_ref_from(po.quantity_point.point_origin) +
-               (qp.point_origin - po.quantity_point.point_origin);
+               po._quantity_point_.quantity_ref_from(po._quantity_point_.point_origin) +
+               (qp.point_origin - po._quantity_point_.point_origin);
     }
   }
 
   template<PointOrigin PO1, std::derived_from<quantity_point> QP>
     requires QuantityPointOf<quantity_point, PO1{}> &&
-             ReferenceOf<std::remove_const_t<decltype(reference)>, PO1::quantity_spec>
+             ReferenceOf<std::remove_const_t<decltype(reference)>, PO1::_quantity_spec_>
   [[nodiscard]] friend constexpr Quantity auto operator-(PO1 po, const QP& qp)
   {
     return -(qp - po);
@@ -555,14 +549,13 @@ public:
 
 // CTAD
 template<Quantity Q>
-quantity_point(Q q) -> quantity_point<Q::reference, default_point_origin(Q::reference), typename Q::rep>;
+explicit quantity_point(Q q) -> quantity_point<Q::reference, default_point_origin(Q::reference), typename Q::rep>;
 
 template<Quantity Q, PointOriginFor<Q::quantity_spec> PO>
 quantity_point(Q q, PO) -> quantity_point<Q::reference, PO{}, typename Q::rep>;
 
 template<QuantityPointLike QP>
-explicit(is_specialization_of<decltype(quantity_point_like_traits<QP>::to_numerical_value(std::declval<QP>())),
-                              convert_explicitly>) quantity_point(QP)
+explicit(quantity_point_like_traits<QP>::explicit_import) quantity_point(QP)
   -> quantity_point<quantity_point_like_traits<QP>::reference, quantity_point_like_traits<QP>::point_origin,
                     typename quantity_point_like_traits<QP>::rep>;
 

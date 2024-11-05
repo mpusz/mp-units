@@ -29,11 +29,11 @@ dependencies by other means, some modifications to the library's CMake files mig
     compiler=gcc
     compiler.cppstd=20
     compiler.libcxx=libstdc++11
-    compiler.version=12
+    compiler.version=14
     os=Linux
 
     [conf]
-    tools.build:compiler_executables={"c": "gcc-12", "cpp": "g++-12"}
+    tools.build:compiler_executables={"c": "gcc-14", "cpp": "g++-14"}
     ```
 
     !!! tip "Setting the language version"
@@ -105,7 +105,7 @@ dependencies by other means, some modifications to the library's CMake files mig
 
     [conan C++ modules support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 
-[`import_std`](#import_std){ #import_std }
+[`import_std`](#import_std){ #import_std } :test_tube:{ title="Experimental" }
 
 :   [:octicons-tag-24: 2.3.0][conan import std support] · :octicons-milestone-24: `True`/`False` (Default: automatically determined from settings)
 
@@ -186,14 +186,6 @@ dependencies by other means, some modifications to the library's CMake files mig
 
         [cmake build cxx modules support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 
-    [`MP_UNITS_BUILD_IMPORT_STD`](#MP_UNITS_BUILD_IMPORT_STD){ #MP_UNITS_BUILD_IMPORT_STD }
-
-    :   [:octicons-tag-24: 2.3.0][cmake import std support] · :octicons-milestone-24: `ON`/`OFF` (Default: `OFF`)
-
-        Enables `import std;` usage.
-
-        [cmake import std support]: https://github.com/mpusz/mp-units/releases/tag/v2.3.0
-
     [`MP_UNITS_API_STD_FORMAT`](#MP_UNITS_API_STD_FORMAT){ #MP_UNITS_API_STD_FORMAT }
 
     :   [:octicons-tag-24: 2.2.0][cmake std::format support] · :octicons-milestone-24: `ON`/`OFF` (Default: automatically determined)
@@ -273,7 +265,7 @@ The following steps may be performed to obtain an official library release:
 
     ```ini title="conanfile.txt"
     [requires]
-    mp-units/2.2.0
+    mp-units/2.3.0
 
     [options]
 
@@ -331,7 +323,7 @@ with the following differences:
 
     ```ini title="conanfile.txt" hl_lines="2"
     [requires]
-    mp-units/2.3.0@mpusz/testing
+    mp-units/2.4.0@mpusz/testing
 
     [options]
 

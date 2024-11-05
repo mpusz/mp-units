@@ -100,12 +100,12 @@ inline constexpr struct minute final : named_unit<"min", mag<60> * si::second> {
 inline constexpr struct hour final : named_unit<"h", mag<60> * minute> {} hour;
 inline constexpr struct day final : named_unit<"d", mag<24> * hour> {} day;
 inline constexpr struct astronomical_unit final : named_unit<"au", mag<149'597'870'700> * si::metre> {} astronomical_unit;
-inline constexpr struct degree final : named_unit<symbol_text{u8"°", "deg"}, mag_pi / mag<180> * si::radian> {} degree;
+inline constexpr struct degree final : named_unit<symbol_text{u8"°", "deg"}, mag<π> / mag<180> * si::radian> {} degree;
 inline constexpr struct arcminute final : named_unit<symbol_text{u8"′", "'"}, mag_ratio<1, 60> * degree> {} arcminute;
 inline constexpr struct arcsecond final : named_unit<symbol_text{u8"″", "''"}, mag_ratio<1, 60> * arcminute> {} arcsecond;
 inline constexpr struct are final : named_unit<"a", square(si::deca<si::metre>)> {} are;
 inline constexpr auto hectare = si::hecto<are>;
-inline constexpr struct litre final : named_unit<"l", cubic(si::deci<si::metre>)> {} litre;
+inline constexpr struct litre final : named_unit<"L", cubic(si::deci<si::metre>)> {} litre;
 inline constexpr struct tonne final : named_unit<"t", mag<1000> * si::kilogram> {} tonne;
 inline constexpr struct dalton final : named_unit<"Da", mag_ratio<16'605'390'666'050, 10'000'000'000'000> * mag_power<10, -27> * si::kilogram> {} dalton;
 // TODO A different value is provided in the SI Brochure and different in the ISO 80000

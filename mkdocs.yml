@@ -175,6 +175,7 @@ nav:
               - hello_units: users_guide/examples/hello_units.md
               - avg_speed: users_guide/examples/avg_speed.md
               - si_constants: users_guide/examples/si_constants.md
+              - hw_voltage: users_guide/examples/hw_voltage.md
       - Appendix:
           - Glossary: appendix/glossary.md
           - References: appendix/references.md

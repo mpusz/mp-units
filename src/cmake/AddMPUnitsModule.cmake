@@ -64,17 +64,19 @@ function(add_mp_units_module name target_name)
 
     # define the target for a module
     add_library(${target_name} ${SCOPE})
-    target_compile_features(${target_name} ${${projectPrefix}TARGET_SCOPE} cxx_std_20)
+
+    if(DEFINED CMAKE_CXX_STANDARD AND CMAKE_CXX_STANDARD GREATER 20)
+        # TODO revise when a fixed version of CMake is released
+        target_compile_features(${target_name} ${${projectPrefix}TARGET_SCOPE} cxx_std_${CMAKE_CXX_STANDARD})
+    else()
+        target_compile_features(${target_name} ${${projectPrefix}TARGET_SCOPE} cxx_std_20)
+    endif()
     target_link_libraries(${target_name} ${${projectPrefix}TARGET_SCOPE} ${ARG_DEPENDENCIES})
     set_target_properties(${target_name} PROPERTIES EXPORT_NAME ${name})
 
     if(ARG_HEADERS)
         target_sources(
             ${target_name} PUBLIC FILE_SET HEADERS BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include FILES ${ARG_HEADERS}
-        )
-        target_include_directories(
-            ${target_name} ${${projectPrefix}_AS_SYSTEM} ${${projectPrefix}TARGET_SCOPE}
-            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> $<INSTALL_INTERFACE:include>
         )
     endif()
 

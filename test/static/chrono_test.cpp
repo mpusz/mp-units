@@ -137,11 +137,23 @@ static_assert(std::chrono::nanoseconds(quantity{1 * ns}) == 1ns);
 static_assert(std::chrono::nanoseconds(quantity{1 * s}) == 1s);
 
 // operators
+static_assert((1 * s += quantity{1s}) == 2 * s);
+static_assert((2 * s -= quantity{1s}) == 1 * s);
 static_assert(quantity{1s} + 1 * s == 2 * s);
 static_assert(quantity{1s} + 1 * min == 61 * s);
+static_assert(1 * s + quantity{1s} == 2 * s);
+static_assert(1 * min + quantity{1s} == 61 * s);
 static_assert(10 * m / quantity{2s} == 5 * m / s);
 static_assert(quantity_point{sys_seconds{1s}} + 1 * s == chrono_point_origin<std::chrono::system_clock> + 2 * s);
 static_assert(quantity_point{sys_seconds{1s}} + 1 * min == chrono_point_origin<std::chrono::system_clock> + 61 * s);
+
+template<typename... Ts>
+consteval bool invalid_arithmetic(Ts... ts)
+{
+  return !requires { (... + ts); } && !requires { (... - ts); };
+}
+static_assert(invalid_arithmetic(1s, 1 * s));
+static_assert(invalid_arithmetic(1 * s, 1s));
 
 // to_chrono_duration
 static_assert(to_chrono_duration(1 * s) == 1s);
