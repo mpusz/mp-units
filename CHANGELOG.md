@@ -2,6 +2,8 @@
 
 ## mp-units
 
+### 2.5.0 <small>WIP</small> { id="2.5.0" }
+
 ### 2.4.0 <small>November 5, 2024</small> { id="2.4.0" }
 
 - (!) feat: `phase_velocity` and `group_velocity` aliases removed from ISQ by ISO
