@@ -27,6 +27,10 @@ on:
     branches:
       - master
       - main
+  label:
+    types:
+      - created
+      - edited
 permissions:
   contents: write
 jobs:
