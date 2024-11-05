@@ -221,8 +221,16 @@ struct double_width_int {
 };
 
 #if defined(__SIZEOF_INT128__)
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
 using int128_t = __int128;
 using uint128_t = unsigned __int128;
+#pragma GCC diagnostic pop
+#else
+using int128_t = __int128;
+using uint128_t = unsigned __int128;
+#endif
 inline constexpr std::size_t max_native_width = 128;
 #else
 using int128_t = double_width_int<std::int64_t>;
