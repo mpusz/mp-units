@@ -24,9 +24,13 @@ name: Conan CI
 
 on:
   push:
+    branches:
+      - '**'
     paths-ignore:
       - "docs/**"
   pull_request:
+    branches:
+      - '**'
     paths-ignore:
       - "docs/**"
 
