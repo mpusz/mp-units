@@ -82,6 +82,9 @@
 - ci: `sudo apt update` added for documentation.yml in hope that it will resolve missing system packages issue
 - ci: MSVC added to the CI
 - ci: the latest not-released docs will use "HEAD" as a version from now on
+- ci: documentation action should run on a new tag as well
+- ci: documentation action limited only to commits that change documentation files
+- ci: non-documentation actions should not run on tags
 - docs: missing systems added to the "Project Structure" chapter
 - docs: graphs of ISQ kind hierarchies improved
 - docs: category of the ISO meeting reports changed to "WG21 Updates"
