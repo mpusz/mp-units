@@ -30,6 +30,7 @@
 
 #ifndef MP_UNITS_IMPORT_STD
 #include <array>
+#include <bit>
 #include <compare>
 #include <concepts>
 #include <cstddef>
