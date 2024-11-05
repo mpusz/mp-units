@@ -265,7 +265,7 @@ The following steps may be performed to obtain an official library release:
 
     ```ini title="conanfile.txt"
     [requires]
-    mp-units/2.3.0
+    mp-units/2.4.0
 
     [options]
 
@@ -323,7 +323,7 @@ with the following differences:
 
     ```ini title="conanfile.txt" hl_lines="2"
     [requires]
-    mp-units/2.4.0@mpusz/testing
+    mp-units/2.5.0@mpusz/testing
 
     [options]
 

@@ -2,7 +2,7 @@
 
 ## mp-units
 
-### 2.4.0 <small>WIP</small> { id="2.4.0" }
+### 2.4.0 <small>November 5, 2024</small> { id="2.4.0" }
 
 - (!) feat: `phase_velocity` and `group_velocity` aliases removed from ISQ by ISO
 - feat: `iec::bit` using-declared in `iec::unit_symbols`
