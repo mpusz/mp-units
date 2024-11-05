@@ -65,7 +65,7 @@ struct double_width_int {
     auto scaled = v * iscale;
     hi = static_cast<Th>(scaled);
     auto resid = (scaled - static_cast<long double>(hi));
-    if(resid<0) {
+    if (resid < 0) {
       --hi;
       resid += 1;
     }
@@ -241,9 +241,10 @@ template<typename T>
 constexpr bool is_signed_v<double_width_int<T>> = double_width_int<T>::is_signed;
 
 template<typename T>
-using make_signed_t = std::conditional_t<!std::is_same_v<T,uint128_t>,std::make_signed<T>,std::type_identity<int128_t>>::type;
+using make_signed_t =
+  std::conditional_t<!std::is_same_v<T, uint128_t>, std::make_signed<T>, std::type_identity<int128_t>>::type;
 
-#if defined(__cpp_lib_int_pow2) && __cpp_lib_int_pow2 >= 202002L && false
+#if defined(__cpp_lib_int_pow2) && __cpp_lib_int_pow2 >= 202002L /*&& false*/
 template<std::size_t N>
 using min_width_uint_t =
   std::tuple_element_t<std::max<std::size_t>(4u, std::bit_width(N) + (std::has_single_bit(N) ? 0u : 1u)) - 4u,

@@ -168,7 +168,8 @@ template<Quantity To, typename FwdFrom, Quantity From = std::remove_cvref_t<FwdF
 template<QuantityPoint ToQP, typename FwdFromQP, QuantityPoint FromQP = std::remove_cvref_t<FwdFromQP>>
   requires(castable(FromQP::quantity_spec, ToQP::quantity_spec)) &&
           (detail::same_absolute_point_origins(ToQP::point_origin, FromQP::point_origin)) &&
-          ((equivalent(FromQP::unit, ToQP::unit) && std::constructible_from<typename ToQP::rep, typename FromQP::rep>) ||
+          ((equivalent(FromQP::unit, ToQP::unit) &&
+            std::constructible_from<typename ToQP::rep, typename FromQP::rep>) ||
            (!equivalent(FromQP::unit, ToQP::unit)))
 [[nodiscard]] constexpr QuantityPoint auto sudo_cast(FwdFromQP&& qp)
 {
