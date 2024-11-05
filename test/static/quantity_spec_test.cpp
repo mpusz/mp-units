@@ -815,6 +815,10 @@ static_assert(get_common_quantity_spec(speed, length / time) == speed);
 static_assert(get_common_quantity_spec(length / time, speed) == speed);
 static_assert(get_common_quantity_spec(area, length* length) == area);
 static_assert(get_common_quantity_spec(length * length, area) == area);
+static_assert(get_common_quantity_spec(frequency, inverse(time)) == inverse(time));
+static_assert(get_common_quantity_spec(inverse(time), frequency) == inverse(time));
+static_assert(get_common_quantity_spec(frequency, inverse(period_duration)) == frequency);
+static_assert(get_common_quantity_spec(inverse(period_duration), frequency) == frequency);
 static_assert(get_common_quantity_spec(kinetic_energy, mass* pow<2>(length) / pow<2>(time)) == kinetic_energy);
 static_assert(get_common_quantity_spec(mass * pow<2>(length) / pow<2>(time), kinetic_energy) == kinetic_energy);
 static_assert(get_common_quantity_spec(gravitational_potential_energy, mass* acceleration_of_free_fall* height) ==
