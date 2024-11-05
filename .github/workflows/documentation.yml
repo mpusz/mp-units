@@ -27,10 +27,8 @@ on:
     branches:
       - master
       - main
-  label:
-    types:
-      - created
-      - edited
+    tags:
+      - v*
 permissions:
   contents: write
 jobs:
