@@ -23,7 +23,7 @@
         <link rel="alternate" type="application/rss+xml" title="RSS feed of updated content" href="../feed_rss_updated.xml">
       
       <link rel="icon" href="../assets/images/mp-units-color.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.43">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.44">
     
     
       
@@ -2183,6 +2183,15 @@ You're not viewing the latest version.
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#2.5.0" class="md-nav__link">
+    <span class="md-ellipsis">
+      2.5.0 WIP
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#2.4.0" class="md-nav__link">
     <span class="md-ellipsis">
       2.4.0 November 5, 2024
@@ -2372,6 +2381,7 @@ You're not viewing the latest version.
 
 <h1 id="release-notes">Release Notes<a class="headerlink" href="#release-notes" title="Permanent link">&para;</a></h1>
 <h2 id="mp-units">mp-units<a class="headerlink" href="#mp-units" title="Permanent link">&para;</a></h2>
+<h3 id="2.5.0">2.5.0 <small>WIP</small><a class="headerlink" href="#2.5.0" title="Permanent link">&para;</a></h3>
 <h3 id="2.4.0">2.4.0 <small>November 5, 2024</small><a class="headerlink" href="#2.4.0" title="Permanent link">&para;</a></h3>
 <ul>
 <li>(!) feat: <code>phase_velocity</code> and <code>group_velocity</code> aliases removed from ISQ by ISO</li>
@@ -2452,6 +2462,9 @@ You're not viewing the latest version.
 <li>ci: <code>sudo apt update</code> added for documentation.yml in hope that it will resolve missing system packages issue</li>
 <li>ci: MSVC added to the CI</li>
 <li>ci: the latest not-released docs will use "HEAD" as a version from now on</li>
+<li>ci: documentation action should run on a new tag as well</li>
+<li>ci: documentation action limited only to commits that change documentation files</li>
+<li>ci: non-documentation actions should not run on tags</li>
 <li>docs: missing systems added to the "Project Structure" chapter</li>
 <li>docs: graphs of ISQ kind hierarchies improved</li>
 <li>docs: category of the ISO meeting reports changed to "WG21 Updates"</li>
