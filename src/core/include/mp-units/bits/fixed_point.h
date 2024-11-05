@@ -220,7 +220,7 @@ struct double_width_int {
   Tl lo;
 };
 
-#if false && defined(__SIZEOF_INT128__)
+#if defined(__SIZEOF_INT128__)
 using int128_t = __int128;
 using uint128_t = unsigned __int128;
 inline constexpr std::size_t max_native_width = 128;
@@ -244,7 +244,7 @@ template<typename T>
 using make_signed_t =
   std::conditional_t<!std::is_same_v<T, uint128_t>, std::make_signed<T>, std::type_identity<int128_t>>::type;
 
-#if defined(__cpp_lib_int_pow2) && __cpp_lib_int_pow2 >= 202002L /*&& false*/
+#if true /* defined(__cpp_lib_int_pow2) && __cpp_lib_int_pow2 >= 202002L */
 template<std::size_t N>
 using min_width_uint_t =
   std::tuple_element_t<std::max<std::size_t>(4u, std::bit_width(N) + (std::has_single_bit(N) ? 0u : 1u)) - 4u,
