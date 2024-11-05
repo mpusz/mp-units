@@ -47,7 +47,7 @@ MP_UNITS_EXPORT template<symbol_text Symbol, long double Value>
 struct mag_constant;
 
 MP_UNITS_EXPORT template<typename T>
-concept MagConstant = detail::TagType<T> && is_derived_from_specialization_of_v<T, mag_constant>;
+concept MagConstant = detail::SymbolicConstant<T> && is_derived_from_specialization_of_v<T, mag_constant>;
 
 template<auto... Ms>
 struct magnitude;

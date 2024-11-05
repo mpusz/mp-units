@@ -65,7 +65,7 @@ struct point_origin_interface;
  * Satisfied by either quantity points or by all types derived from `absolute_point_origin` class template.
  */
 MP_UNITS_EXPORT template<typename T>
-concept PointOrigin = detail::TagType<T> && std::derived_from<T, detail::point_origin_interface>;
+concept PointOrigin = detail::SymbolicConstant<T> && std::derived_from<T, detail::point_origin_interface>;
 
 /**
  * @brief A concept matching all quantity point origins for a specified quantity type in the library

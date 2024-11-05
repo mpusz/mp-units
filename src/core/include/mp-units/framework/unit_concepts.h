@@ -43,7 +43,7 @@ struct unit_interface;
  * Satisfied by all unit types provided by the library.
  */
 MP_UNITS_EXPORT template<typename T>
-concept Unit = detail::TagType<T> && std::derived_from<T, detail::unit_interface>;
+concept Unit = detail::SymbolicConstant<T> && std::derived_from<T, detail::unit_interface>;
 
 template<Magnitude auto M, Unit U>
   requires(M != magnitude<>{} && M != mag<1>)
