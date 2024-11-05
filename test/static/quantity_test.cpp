@@ -24,6 +24,7 @@
 #include <mp-units/bits/hacks.h>
 #include <mp-units/ext/fixed_string.h>
 #include <mp-units/ext/type_traits.h>
+#include <mp-units/systems/isq/electromagnetism.h>
 #include <mp-units/systems/isq/mechanics.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si.h>
@@ -46,7 +47,7 @@ import std;
 
 #if MP_UNITS_HOSTED
 template<typename T>
-constexpr bool mp_units::is_scalar<std::complex<T>> = true;
+constexpr bool mp_units::is_complex<std::complex<T>> = true;
 #endif
 
 template<>
@@ -282,8 +283,12 @@ static_assert((1. * rad + 1. * deg).in(deg) != 0 * deg);
 
 #if MP_UNITS_HOSTED
 using namespace std::complex_literals;
-static_assert(((2. + 1i) * V).in(mV).numerical_value_in(mV) == 2000. + 1000i);
-static_assert(((2. + 1i) * V).in(mV).numerical_value_in(V) == 2. + 1i);
+static_assert(((2.f + 1if) * isq::voltage_phasor[V]).in(mV).numerical_value_in(mV) == 2000.f + 1000if);
+static_assert(((2.f + 1if) * isq::voltage_phasor[V]).in(mV).numerical_value_in(V) == 2.f + 1if);
+static_assert(((2. + 1i) * isq::voltage_phasor[V]).in(mV).numerical_value_in(mV) == 2000. + 1000i);
+static_assert(((2. + 1i) * isq::voltage_phasor[V]).in(mV).numerical_value_in(V) == 2. + 1i);
+static_assert(((2.L + 1il) * isq::voltage_phasor[V]).in(mV).numerical_value_in(mV) == 2000.L + 1000il);
+static_assert(((2.L + 1il) * isq::voltage_phasor[V]).in(mV).numerical_value_in(V) == 2.L + 1il);
 #endif
 
 template<template<auto, typename> typename Q>
