@@ -51,9 +51,6 @@ struct double_width_int {
   using Tl = std::make_unsigned_t<T>;
 
   constexpr double_width_int() = default;
-  constexpr double_width_int(const double_width_int&) = default;
-
-  constexpr double_width_int& operator=(const double_width_int&) = default;
 
   constexpr double_width_int(Th hi_, Tl lo_) : hi(hi_), lo(lo_) {}
 
@@ -107,21 +104,24 @@ struct double_width_int {
   }
 
   template<std::integral Rhs>
-  friend constexpr auto operator*(const double_width_int& lhs, Rhs rhs)
+    requires(std::numeric_limits<Rhs>::digits <= base_width)
+  [[nodiscard]] friend constexpr auto operator*(const double_width_int& lhs, Rhs rhs)
   {
-    // Normal C++ rules; with respect to signedness, the bigger type always wins.
-    using ret_t = double_width_int;
-    auto ret = ret_t::wide_product_of(rhs, lhs.lo);
-    ret.hi += lhs.hi * rhs;
-    return ret;
+    using RT = std::conditional_t<std::is_signed_v<Rhs>, std::make_signed_t<Tl>, Tl>;
+    auto lo_prod = double_width_int<RT>::wide_product_of(rhs, lhs.lo);
+    // Normal C++ rules; with respect to signedness, the wider type always wins.
+    using ret_t = double_width_int<Th>;
+    return ret_t{static_cast<Th>(lo_prod.hi) + lhs.hi * static_cast<Th>(rhs), lo_prod.lo};
   }
   template<std::integral Lhs>
-  friend constexpr auto operator*(Lhs lhs, const double_width_int& rhs)
+    requires(std::numeric_limits<Lhs>::digits <= base_width)
+  [[nodiscard]] friend constexpr auto operator*(Lhs lhs, const double_width_int& rhs)
   {
     return rhs * lhs;
   }
   template<std::integral Rhs>
-  friend constexpr double_width_int operator/(const double_width_int& lhs, Rhs rhs)
+    requires(std::numeric_limits<Rhs>::digits <= base_width)
+  [[nodiscard]] friend constexpr double_width_int operator/(const double_width_int& lhs, Rhs rhs)
   {
     // Normal C++ rules; with respect to signedness, the bigger type always wins.
     using ret_t = double_width_int;
@@ -163,49 +163,75 @@ struct double_width_int {
 
   template<std::integral Rhs>
     requires(std::numeric_limits<Rhs>::digits <= base_width)
-  friend constexpr double_width_int operator+(const double_width_int& lhs, Rhs rhs)
+  [[nodiscard]] friend constexpr double_width_int operator+(const double_width_int& lhs, Rhs rhs)
   {
-    // this follows the usual (but somewhat dangerous) rules in C++; we "win", as we are the larger type.
-    // -> signed computation only of both types are signed
-    if constexpr (is_signed, std::is_signed_v<Rhs>) {
-      if (rhs < 0) return lhs - static_cast<std::make_unsigned_t<Rhs>>(-rhs);
+    Th rhi = lhs.hi;
+    Tl rlo = lhs.lo;
+    if constexpr (std::is_signed_v<Rhs>) {
+      // sign extension; no matter if lhs is signed, negative rhs sign extend
+      if (rhs < 0) --rhi;
     }
-    Tl ret = lhs.lo + static_cast<Tl>(rhs);
-    return {lhs.hi + Th{ret < lhs.lo ? 1 : 0}, ret};
+    rlo += static_cast<Tl>(rhs);
+    if (rlo < lhs.lo) {
+      // carry bit
+      ++rhi;
+    }
+    return {rhi, rlo};
   }
   template<std::integral Lhs>
-  friend constexpr double_width_int operator+(Lhs lhs, const double_width_int& rhs)
+  [[nodiscard]] friend constexpr double_width_int operator+(Lhs lhs, const double_width_int& rhs)
   {
     return rhs + lhs;
   }
   template<std::integral Rhs>
     requires(std::numeric_limits<Rhs>::digits <= base_width)
-  friend constexpr double_width_int operator-(const double_width_int& lhs, Rhs rhs)
+  [[nodiscard]] friend constexpr double_width_int operator-(const double_width_int& lhs, Rhs rhs)
   {
-    // this follows the usual (but somewhat dangerous) rules in C++; we "win", as we are the larger type.
-    // -> signed computation only of both types are signed
-    if constexpr (is_signed, std::is_signed_v<Rhs>) {
-      if (rhs < 0) return lhs + static_cast<std::make_unsigned_t<Rhs>>(-rhs);
+    Th rhi = lhs.hi;
+    Tl rlo = lhs.lo;
+    if constexpr (std::is_signed_v<Rhs>) {
+      // sign extension; no matter if lhs is signed, negative rhs sign extend
+      if (rhs < 0) ++rhi;
     }
-    Tl ret = lhs.lo - static_cast<Tl>(rhs);
-    return {lhs.hi - Th{ret > lhs.lo ? 1 : 0}, ret};
+    rlo -= static_cast<Tl>(rhs);
+    if (rlo > lhs.lo) {
+      // carry bit
+      --rhi;
+    }
+    return {rhi, rlo};
   }
+
   template<std::integral Lhs>
-  friend constexpr double_width_int operator-(Lhs lhs, const double_width_int& rhs)
+  [[nodiscard]] friend constexpr double_width_int operator-(Lhs lhs, const double_width_int& rhs)
   {
-    return rhs + lhs;
+    Th rhi = 0;
+    Tl rlo = static_cast<Tl>(lhs);
+    if constexpr (std::is_signed_v<Lhs>) {
+      // sign extension; no matter if rhs is signed, negative lhs sign extend
+      if (lhs < 0) --rhi;
+    }
+    rhi -= rhs.hi;
+    if (rhs.lo > rlo) {
+      // carry bit
+      --rhi;
+    }
+    rlo -= rhs.lo;
+    return {rhi, rlo};
   }
 
-  constexpr double_width_int operator-() const { return {(lo > 0 ? -1 : 0) - hi, -lo}; }
+  [[nodiscard]] constexpr double_width_int operator-() const
+  {
+    return {(lo > 0 ? static_cast<Th>(-1) : Th{0}) - hi, -lo};
+  }
 
-  constexpr double_width_int operator>>(unsigned n) const
+  [[nodiscard]] constexpr double_width_int operator>>(unsigned n) const
   {
     if (n >= base_width) {
       return {static_cast<Th>(hi < 0 ? -1 : 0), static_cast<Tl>(hi >> (n - base_width))};
     }
     return {hi >> n, (static_cast<Tl>(hi) << (base_width - n)) | (lo >> n)};
   }
-  constexpr double_width_int operator<<(unsigned n) const
+  [[nodiscard]] constexpr double_width_int operator<<(unsigned n) const
   {
     if (n >= base_width) {
       return {static_cast<Th>(lo << (n - base_width)), 0};
@@ -221,7 +247,7 @@ struct double_width_int {
 
 #if defined(__SIZEOF_INT128__)
 MP_UNITS_DIAGNOSTIC_PUSH
-MP_UNITS_DIAGNOSTIC_IGNORE("-Wpedantic")
+MP_UNITS_DIAGNOSTIC_IGNORE_PEDANTIC
 using int128_t = __int128;
 using uint128_t = unsigned __int128;
 MP_UNITS_DIAGNOSTIC_POP
@@ -277,32 +303,36 @@ constexpr auto wide_product_of(Lhs lhs, Rhs rhs)
 // and neither always cause underflow or overflow.
 template<std::integral T>
 struct fixed_point {
-  using repr_t = double_width_int_for_t<T>;
+  using value_type = double_width_int_for_t<T>;
   static constexpr std::size_t fractional_bits = integer_rep_width_v<T>;
 
   constexpr fixed_point() = default;
-  constexpr fixed_point(const fixed_point&) = default;
 
-  constexpr fixed_point& operator=(const fixed_point&) = default;
+  explicit constexpr fixed_point(value_type v) : int_repr_(v) {}
 
-  explicit constexpr fixed_point(repr_t v) : int_repr_is_an_implementation_detail_(v) {}
-
-  explicit constexpr fixed_point(long double v) :
-      int_repr_is_an_implementation_detail_(static_cast<repr_t>(v * int_power<long double>(2, fractional_bits)))
+  explicit constexpr fixed_point(long double v)
   {
+    long double scaled = v * int_power<long double>(2, fractional_bits);
+    int_repr_ = static_cast<value_type>(scaled);
+    // round away from zero; scaling will truncate towards zero, so we need to do the opposite to prevent
+    // double rounding.
+    if (int_repr_ >= 0) {
+      if (scaled > static_cast<long double>(int_repr_)) int_repr_++;
+    } else {
+      if (scaled < static_cast<long double>(int_repr_)) int_repr_--;
+    }
   }
 
   template<std::integral U>
     requires(integer_rep_width_v<U> <= integer_rep_width_v<T>)
-  constexpr auto scale(U v) const
+  [[nodiscard]] constexpr auto scale(U v) const
   {
-    auto res = v * int_repr_is_an_implementation_detail_;
+    auto res = v * int_repr_;
     return static_cast<std::conditional_t<is_signed_v<decltype((res))>, std::make_signed_t<U>, U>>(res >>
                                                                                                    fractional_bits);
   }
-
-  repr_t int_repr_is_an_implementation_detail_;
+private:
+  value_type int_repr_;
 };
 
-}  // namespace detail
-}  // namespace mp_units
+}  // namespace mp_units::detail
