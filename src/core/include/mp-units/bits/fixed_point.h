@@ -38,8 +38,7 @@ import std;
 #endif
 #endif
 
-namespace mp_units {
-namespace detail {
+namespace mp_units::detail {
 
 // this class synthesizes a double-width integer from two base-width integers.
 template<std::integral T>
@@ -58,7 +57,7 @@ struct double_width_int {
 
   constexpr double_width_int(Th hi_, Tl lo_) : hi(hi_), lo(lo_) {}
 
-  explicit(true) constexpr double_width_int(long double v)
+  explicit constexpr double_width_int(long double v)
   {
     constexpr auto scale = int_power<long double>(2, base_width);
     constexpr auto iscale = 1.l / scale;
@@ -83,9 +82,9 @@ struct double_width_int {
     lo = static_cast<Tl>(v);
   }
 
-  explicit(true) constexpr operator Th() const { return static_cast<Th>(lo); }
+  explicit constexpr operator Th() const { return static_cast<Th>(lo); }
 
-  constexpr auto operator<=>(const double_width_int&) const = default;
+  [[nodiscard]] constexpr auto operator<=>(const double_width_int&) const = default;
 
   // calculates the double-width product of two base-size integers; this implementation requires at least one of them to
   // be unsigned
