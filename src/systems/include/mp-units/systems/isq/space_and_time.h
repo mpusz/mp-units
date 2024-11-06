@@ -50,10 +50,10 @@ QUANTITY_SPEC(volume, pow<3>(length));
 QUANTITY_SPEC(rotational_displacement, angular_measure, path_length / radius);
 inline constexpr auto angular_displacement = rotational_displacement;
 QUANTITY_SPEC(phase_angle, angular_measure);
-QUANTITY_SPEC(speed, length / time);                         // differs from ISO 80000
-QUANTITY_SPEC(velocity, speed, position_vector / duration);  // vector  // differs from ISO 80000
-QUANTITY_SPEC(acceleration, velocity / duration);            // vector
-QUANTITY_SPEC(acceleration_of_free_fall, acceleration);      // not in ISO 80000
+QUANTITY_SPEC(speed, length / time);                      // differs from ISO 80000
+QUANTITY_SPEC(velocity, speed, displacement / duration);  // vector  // differs from ISO 80000
+QUANTITY_SPEC(acceleration, velocity / duration);         // vector
+QUANTITY_SPEC(acceleration_of_free_fall, acceleration);   // not in ISO 80000
 QUANTITY_SPEC(angular_velocity, angular_displacement / duration, quantity_character::vector);
 QUANTITY_SPEC(angular_acceleration, angular_velocity / duration);
 QUANTITY_SPEC(time_constant, duration);

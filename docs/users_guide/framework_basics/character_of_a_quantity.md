@@ -126,19 +126,19 @@ character override is needed):
 === "C++23"
 
     ```cpp
-    inline constexpr struct velocity final : quantity_spec<speed, position_vector / duration> {} velocity;
+    inline constexpr struct velocity final : quantity_spec<speed, displacement / duration> {} velocity;
     ```
 
 === "C++20"
 
     ```cpp
-    inline constexpr struct velocity final : quantity_spec<velocity, speed, position_vector / duration> {} velocity;
+    inline constexpr struct velocity final : quantity_spec<velocity, speed, displacement / duration> {} velocity;
     ```
 
 === "Portable"
 
     ```cpp
-    QUANTITY_SPEC(velocity, speed, position_vector / duration);
+    QUANTITY_SPEC(velocity, speed, displacement / duration);
     ```
 
 

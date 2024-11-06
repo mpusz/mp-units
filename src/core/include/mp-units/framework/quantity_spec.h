@@ -280,7 +280,7 @@ struct quantity_spec<Self, Dim, Args...> : detail::quantity_spec_interface<Self>
  * @code{.cpp}
  * inline constexpr struct area final : quantity_spec<pow<2>(length)> {} area;
  * inline constexpr struct volume final : quantity_spec<pow<3>(length)> {} volume;
- * inline constexpr struct velocity final : quantity_spec<position_vector / duration> {} velocity;
+ * inline constexpr struct velocity final : quantity_spec<displacement / duration> {} velocity;
  * inline constexpr struct speed final : quantity_spec<length / time> {} speed;
  * inline constexpr struct force final : quantity_spec<mass * acceleration, quantity_character::vector> {} force;
  * inline constexpr struct power final : quantity_spec<force * velocity, quantity_character::scalar> {} power;
@@ -336,7 +336,7 @@ struct propagate_equation<Q, true> {
  * inline constexpr struct width final : quantity_spec<length> {} width;
  * inline constexpr struct height final : quantity_spec<length> {} height;
  * inline constexpr struct diameter final : quantity_spec<width> {} diameter;
- * inline constexpr struct position_vector final : quantity_spec<length, quantity_character::vector> {} position_vector;
+ * inline constexpr struct displacement final : quantity_spec<length, quantity_character::vector> {} displacement;
  * @endcode
  *
  * @note A common convention in this library is to assign the same name for a type and an object of this type.
@@ -394,7 +394,7 @@ struct quantity_spec<Self, QS, Args...> : detail::propagate_equation<QS>, detail
  *
  * @code{.cpp}
  * inline constexpr struct angular_measure final : quantity_spec<dimensionless, arc_length / radius, is_kind> {} angular_measure;
- * inline constexpr struct velocity final : quantity_spec<speed, position_vector / duration> {} velocity;
+ * inline constexpr struct velocity final : quantity_spec<speed, displacement / duration> {} velocity;
  * inline constexpr struct weight final : quantity_spec<force, mass * acceleration_of_free_fall> {} weight;
  * inline constexpr struct kinetic_energy final : quantity_spec<mechanical_energy, mass * pow<2>(speed)> {} kinetic_energy;
  * @endcode
@@ -470,7 +470,7 @@ struct derived_quantity_spec_impl :
  * auto frequency = inverse(period_duration);
  * auto area = pow<2>(length);
  * auto speed = distance / duration;
- * auto velocity = position_vector / duration;
+ * auto velocity = displacement / duration;
  * auto acceleration = velocity / duration;
  * @endcode
  *
@@ -480,7 +480,7 @@ struct derived_quantity_spec_impl :
  * - the dimension type of `area` is `derived_dimension<power<dim_length, 2>>`
  * - the type of `speed` is `derived_quantity_spec<distance, per<duration>>`
  * - the dimension type of `speed` is `derived_dimension<dim_length, per<dim_time>>`
- * - the type of `velocity` is `derived_quantity_spec<position_vector, per<duration>>`
+ * - the type of `velocity` is `derived_quantity_spec<displacement, per<duration>>`
  * - the dimension type of `velocity` is `derived_dimension<dim_length, per<dim_time>>`
  * - the type of `acceleration` is `derived_quantity_spec<velocity, per<duration>>`
  * - the dimension type of `acceleration` is `derived_dimension<dim_length, per<power<dim_time, 2>>>`

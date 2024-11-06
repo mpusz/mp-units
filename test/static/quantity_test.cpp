@@ -1127,10 +1127,10 @@ static_assert(!QuantityOf<quantity<isq::speed[m / s]>, isq::distance / isq::dura
 static_assert(!QuantityOf<quantity<isq::speed[m / s]>, isq::width / isq::duration>);
 static_assert(QuantityOf<quantity<m / s>, isq::width / isq::duration>);
 static_assert(QuantityOf<quantity<kind_of<isq::speed>[m / s]>, isq::width / isq::duration>);
-static_assert(!QuantityOf<quantity<isq::speed[m / s]>, isq::position_vector / isq::duration>);
-static_assert(QuantityOf<quantity<m / s>, isq::position_vector / isq::duration>);
-static_assert(QuantityOf<quantity<kind_of<isq::speed>[m / s]>, isq::position_vector / isq::duration>);
-static_assert(QuantityOf<quantity<isq::velocity[m / s], int>, isq::position_vector / isq::duration>);
+static_assert(!QuantityOf<quantity<isq::speed[m / s]>, isq::displacement / isq::duration>);
+static_assert(QuantityOf<quantity<m / s>, isq::displacement / isq::duration>);
+static_assert(QuantityOf<quantity<kind_of<isq::speed>[m / s]>, isq::displacement / isq::duration>);
+static_assert(QuantityOf<quantity<isq::velocity[m / s], int>, isq::displacement / isq::duration>);
 
 static_assert(QuantityOf<decltype(10 * m), isq::height>);                        // kind of
 static_assert(QuantityOf<decltype(10 * kind_of<isq::length>[m]), isq::height>);  // kind of
