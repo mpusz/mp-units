@@ -97,22 +97,22 @@ enumeration can be appended to the `quantity_spec` describing such a quantity ty
 === "C++23"
 
     ```cpp
-    inline constexpr struct position_vector final : quantity_spec<length, quantity_character::vector> {} position_vector;
     inline constexpr struct displacement final : quantity_spec<length, quantity_character::vector> {} displacement;
+    inline constexpr struct position_vector final : quantity_spec<displacement> {} position_vector;
     ```
 
 === "C++20"
 
     ```cpp
-    inline constexpr struct position_vector final : quantity_spec<position_vector, length, quantity_character::vector> {} position_vector;
     inline constexpr struct displacement final : quantity_spec<displacement, length, quantity_character::vector> {} displacement;
+    inline constexpr struct position_vector final : quantity_spec<position_vector, displacement> {} position_vector;
     ```
 
 === "Portable"
 
     ```cpp
-    QUANTITY_SPEC(position_vector, length, quantity_character::vector);
     QUANTITY_SPEC(displacement, length, quantity_character::vector);
+    QUANTITY_SPEC(position_vector, displacement);
     ```
 
 With the above, all the quantities derived from `position_vector` or `displacement` will have a correct
