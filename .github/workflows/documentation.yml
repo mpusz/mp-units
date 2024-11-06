@@ -27,6 +27,13 @@ on:
     branches:
       - master
       - main
+    tags:
+      - v*
+    paths:
+      - "docs/**"
+      - "CHANGELOG.md"
+      - "CONTRIBUTING.md"
+      - "mkdocs.yml"
 permissions:
   contents: write
 jobs:

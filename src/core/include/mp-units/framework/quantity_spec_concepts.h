@@ -37,7 +37,7 @@ struct quantity_spec_interface_base;
 }
 
 MP_UNITS_EXPORT template<typename T>
-concept QuantitySpec = detail::TagType<T> && std::derived_from<T, detail::quantity_spec_interface_base>;
+concept QuantitySpec = detail::SymbolicConstant<T> && std::derived_from<T, detail::quantity_spec_interface_base>;
 
 MP_UNITS_EXPORT
 #if MP_UNITS_API_NO_CRTP

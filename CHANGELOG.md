@@ -2,7 +2,9 @@
 
 ## mp-units
 
-### 2.4.0 <small>WIP</small> { id="2.4.0" }
+### 2.5.0 <small>WIP</small> { id="2.5.0" }
+
+### 2.4.0 <small>November 5, 2024</small> { id="2.4.0" }
 
 - (!) feat: `phase_velocity` and `group_velocity` aliases removed from ISQ by ISO
 - feat: `iec::bit` using-declared in `iec::unit_symbols`
@@ -13,7 +15,7 @@
 - feat: tag types are now required to be empty
 - feat: magnitude text now obeys formatting parameters and knows how to print constants
 - feat: added support for printing powers of magnitude constants
-- feat: `TagType` concept added
+- feat: `SymbolicConstant` concept added
 - feat: `common_unit` selection algorithm improved to make `rev + rad` return `rad`
 - feat: litre text symbol changed from `l` to `L` to avoid ambiguity with `1`
 - feat: alternative litre unit symbol `L` added to prevent ambiguities with `1`
@@ -23,13 +25,17 @@
 - feat: `DerivedDimensionExpr`, `DerivedQuantitySpecExpr` and `DerivedUnitExpr` removed
 - feat: `MagnitudeSpecExpr` and `PowerVBase` removed and some functions renamed to limit possible ambiguity in overload resolution
 - feat: `std::is_object` constraint applied to `value_type_t`
+- feat: `quantity_values` are now defined on top of `std::chrono::duration_values`
+- feat: from now on truncation is not allowed in compound assignment
 - feat(example): currency example now uses `chrono::time_point` and has better interfaces
 - feat(example): `treat_as_floating_point` specializations for examples' types removed
 - (!) refactor: all `iec` quantity specifications are now deprecated and moved to `isq`
 - (!) refactor: `mag_constant` now takes a symbol and a value and the class deriving from it must be final
 - (!) refactor: `op==(U1, U2)` now checks for the same type (old behavior available as `equivalent(U1, U2)`) + `convertible` now verifies associated `quantity_spec` as well
 - (!) refactor: `ascii` -> `portable`, `unicode` -> `utf8`, 'A' -> 'P'
-- (!) refactor: :boom: `char_traits` removed from `fixed_string`
+- (!) refactor: `char_traits` removed from `fixed_string`
+- (!) refactor: convertibility traits and concepts refactored to use `bool` flags instead of wrappers
+- (!) refactor: tag types should not expose their members
 - refactor: `convertible(U1, U2)` implementation simplified
 - refactor: `abs` moved to `constexpr_math.h`
 - refactor: `unit_symbol_impl` simplified
@@ -45,6 +51,13 @@
 - refactor: `treat_as_floating_point` simplified and extended to use `std::chrono::treat_as_floating_point_v`
 - refactor: `wrapped_type_t` reuses `std::indirectly_readable_traits`
 - refactor: `expr_fractions` takes direct `OneType` type now instead of a trait
+- refactor: Unicode symbols description reworked based on the latest SG16 recommendations
+- refactor: `Mutable` concept applied to `quantity` and `quantity_point`
+- refactor: `explicit` cleanup for deduction guides of `quantity` and `quantity_point`
+- refactor: `point_origin_interface::op-` cleanup
+- refactor: `QuantityLikeImpl` refactored to conform to API Reference by @JohelEGP
+- refactor: `get_complexity` refactored to be 0-based and not account for a number of arguments in a list
+- refactor: `get_complexity` refactored to returned maximum complexity of an element (instead of the sum of elements)
 - refactor(test): `derived_quantity` refactored to `child_quantity`
 - fix: missing `are_ingredients_convertible` overloads added
 - fix: constraints for magnitude added for `scaled_unit` and fixed `common_unit` instantiating it incorrectly
@@ -56,6 +69,9 @@
 - fix: `operator*(M, U u)` fixed for `U` being `scaled_unit`
 - fix: subsumption of `QuantityKindSpec` fixed
 - fix: `ValuePreservingTo` fixed to apply `std::remove_cvref_t` on `FromRep`
+- fix: compound assignment operations on quantities now behave the same as on the underlying representation types
+- fix: `QuantityConvertibleTo` used in `quantity_point` compound assignment
+- fix: `convertible_kinds` implementation fixed
 - fix(tests): freestanding build fixed
 - test: unit tests for the inverse of `mag_constant` added
 - test: Unicode symbols used in unit tests
@@ -63,18 +79,24 @@
 - test: commutativity tests added to ISQ
 - test: one `kind_of` test added to reference tests
 - test: `pow<0>` and `pow<1>` tests added for dimensions
+- test: more `get_common_quantity_spec` tests added
 - build: setting of some test_package CMake options enabled only for a `cxx_modules` build
 - ci: `sudo apt update` added for documentation.yml in hope that it will resolve missing system packages issue
 - ci: MSVC added to the CI
+- ci: the latest not-released docs will use "HEAD" as a version from now on
+- ci: documentation action should run on a new tag as well
+- ci: documentation action limited only to commits that change documentation files
+- ci: non-documentation actions should not run on tags
 - docs: missing systems added to the "Project Structure" chapter
 - docs: graphs of ISQ kind hierarchies improved
 - docs: category of the ISO meeting reports changed to "WG21 Updates"
 - docs: blog comments support added
-- docs: articles of the ISQ series added
+- docs: Part 1-5 articles of the ISQ series added
 - docs: "Symbols of scaled units" chapter added + minor updates to scaled and common units chapters
 - docs: conan profile updated to present gcc-14 instead of gcc-12 which is no longer supported
 - docs: "Why derived units order is not preserved from the multiplication?" chapter added to FAQ
 - docs: "Many shades of the same unit" extended with a note about the derived units order
+- docs: API Reference now presents _index.html_ instead of _full.hml_
 
 ### 2.3.0 <small>September 27, 2024</small> { id="2.3.0" }
 

@@ -63,37 +63,106 @@ MP_UNITS_EXPORT enum class quantity_character : std::int8_t { scalar, complex, v
 
 namespace detail {
 
-template<typename T, typename U>
-concept CommonTypeWith =
-  std::same_as<std::common_type_t<T, U>, std::common_type_t<U, T>> &&
-  std::constructible_from<std::common_type_t<T, U>, T> && std::constructible_from<std::common_type_t<T, U>, U>;
-
-template<typename T, typename U = T>
-concept ScalableNumber =
-  std::regular_invocable<std::multiplies<>, T, U> && std::regular_invocable<std::divides<>, T, U>;
-
-template<typename T>
-concept CastableNumber = CommonTypeWith<T, std::intmax_t> && ScalableNumber<std::common_type_t<T, std::intmax_t>>;
-
-// TODO Fix it according to sudo_cast implementation
-template<typename T>
-concept Scalable =
-  CastableNumber<T> || (requires { typename wrapped_type_t<T>; } && CastableNumber<wrapped_type_t<T>> &&
-                        ScalableNumber<T, std::common_type_t<wrapped_type_t<T>, std::intmax_t>>);
-
 template<typename T>
 concept WeaklyRegular = std::copyable<T> && std::equality_comparable<T>;
+
+template<typename T>
+concept Scalar = is_scalar<T>;
+
+template<typename T>
+concept Complex = is_complex<T>;
+
+template<typename T>
+concept Vector = is_vector<T>;
+
+template<typename T>
+concept Tensor = is_tensor<T>;
+
+template<typename T, quantity_character Ch>
+concept IsOfCharacter =
+  (Ch == quantity_character::scalar && is_scalar<T>) || (Ch == quantity_character::complex && is_complex<T>) ||
+  (Ch == quantity_character::vector && is_vector<T>) || (Ch == quantity_character::tensor && is_tensor<T>);
+;
+
+template<typename T>
+using scaling_factor_type_t = conditional<treat_as_floating_point<T>, long double, std::intmax_t>;
+
+template<typename T>
+concept ScalarRepresentation = Scalar<T> && WeaklyRegular<T> && requires(T a, T b, scaling_factor_type_t<T> f) {
+  // scaling
+  { a* f } -> Scalar;
+  { f* a } -> Scalar;
+  { a / f } -> Scalar;
+
+  // scalar operations
+  { a + b } -> Scalar;
+  { a - b } -> Scalar;
+  { a* b } -> Scalar;
+  { a / b } -> Scalar;
+};
+
+template<typename T>
+concept ComplexRepresentation = Complex<T> && WeaklyRegular<T> && requires(T a, T b, scaling_factor_type_t<T> f) {
+  // scaling
+  // TODO The below conversion to `T` is an exception compared to other representation types
+  // `std::complex<T>` * `U` do not work, but `std::complex<T>` is convertible from `U`
+  // Maybe expose this as a customization point?
+  { a* T(f) } -> Complex;
+  { T(f) * a } -> Complex;
+  { a / T(f) } -> Complex;
+
+  // complex operations
+  { a + b } -> Complex;
+  { a - b } -> Complex;
+  { a* b } -> Complex;
+  { a / b } -> Complex;
+  // TBD
+  // { re(a) } -> Scalar;
+  // { im(a) } -> Scalar;
+  // { mod(a) } -> Scalar;
+  // { arg(a) } -> Scalar;
+  // { conj(a) } -> Complex;
+};
+
+// TODO how to check for a complex(Scalar, Scalar) -> Complex?
+
+template<typename T>
+concept VectorRepresentation = Vector<T> && WeaklyRegular<T> && requires(T a, T b, scaling_factor_type_t<T> f) {
+  // scaling
+  { a* f } -> Vector;
+  { f* a } -> Vector;
+  { a / f } -> Vector;
+
+  // vector operations
+  { a + b } -> Vector;
+  { a - b } -> Vector;
+  // TBD
+  // { norm(a) } -> Scalar;
+  // { zero_vector<T>() } -> Vector;
+  // { unit_vector(a) } -> Vector;
+  // { scalar_product(a, b) } -> Scalar;
+  // { vector_product(a, b) } -> Vector;
+  // { tensor_product(a, b) } -> Tensor2;
+  // divergence(a)
+  // rotation(a)
+};
+
+template<typename T>
+concept TensorRepresentation = Tensor<T> && WeaklyRegular<T>;  // && requires(T a, T b) {
+                                                               // TBD
+                                                               // tensor operations
+                                                               // { tensor_product(a, b) } -> Tensor4;
+                                                               // { inner_product(a, b) } -> Tensor2;
+                                                               // { scalar_product(a, b) } -> Scalar;
+//};
 
 }  // namespace detail
 
 MP_UNITS_EXPORT template<typename T>
-concept Representation =
-  (is_scalar<T> || is_complex<T> || is_vector<T> || is_tensor<T>) && detail::WeaklyRegular<T> && detail::Scalable<T>;
+concept Representation = detail::ScalarRepresentation<T> || detail::ComplexRepresentation<T> ||
+                         detail::VectorRepresentation<T> || detail::TensorRepresentation<T>;
 
 MP_UNITS_EXPORT template<typename T, quantity_character Ch>
-concept RepresentationOf =
-  Representation<T> &&
-  ((Ch == quantity_character::scalar && is_scalar<T>) || (Ch == quantity_character::complex && is_complex<T>) ||
-   (Ch == quantity_character::vector && is_vector<T>) || (Ch == quantity_character::tensor && is_tensor<T>));
+concept RepresentationOf = detail::IsOfCharacter<T, Ch> && Representation<T>;
 
 }  // namespace mp_units

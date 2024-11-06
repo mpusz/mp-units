@@ -24,11 +24,15 @@ name: CMake Test Package CI
 
 on:
   push:
+    branches:
+      - '**'
     paths-ignore:
       - "docs/**"
       - "example/**"
       - "test/**"
   pull_request:
+    branches:
+      - '**'
     paths-ignore:
       - "docs/**"
       - "example/**"

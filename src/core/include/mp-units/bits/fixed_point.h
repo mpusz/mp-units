@@ -247,19 +247,10 @@ template<typename T>
 using make_signed_t =
   std::conditional_t<!std::is_same_v<T, uint128_t>, std::make_signed<T>, std::type_identity<int128_t>>::type;
 
-#if true /* defined(__cpp_lib_int_pow2) && __cpp_lib_int_pow2 >= 202002L */
 template<std::size_t N>
 using min_width_uint_t =
   std::tuple_element_t<std::max<std::size_t>(4u, std::bit_width(N) + (std::has_single_bit(N) ? 0u : 1u)) - 4u,
                        std::tuple<std::uint8_t, std::uint16_t, std::uint32_t, std::uint64_t, uint128_t>>;
-#else
-template<std::size_t N>
-using min_width_uint_t =
-  std::tuple_element_t<std::max<std::size_t>(
-                         4u, std::numeric_limits<std::size_t>::digits - std::countl_zero(N) + (N & (N - 1) ? 1u : 0u)) -
-                         4u,
-                       std::tuple<std::uint8_t, std::uint16_t, std::uint32_t, std::uint64_t, uint128_t>>;
-#endif
 
 template<std::size_t N>
 using min_width_int_t = make_signed_t<min_width_uint_t<N>>;

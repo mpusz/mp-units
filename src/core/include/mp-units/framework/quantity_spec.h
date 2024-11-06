@@ -737,7 +737,7 @@ template<int Complexity, QuantitySpec Q, typename Num, typename... Nums, typenam
 {
   constexpr auto num = get_complexity(Num{});
   constexpr auto den = get_complexity(Den{});
-  constexpr auto max_compl = num > den ? num : den;
+  constexpr auto max_compl = max(num, den);
 
   if constexpr (max_compl == Complexity || ((num >= den && !requires { explode_to_equation(Num{}); }) ||
                                             (num < den && !requires { explode_to_equation(Den{}); })))
