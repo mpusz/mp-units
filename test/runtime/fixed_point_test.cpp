@@ -135,9 +135,9 @@ TEST_CASE("double_width_int addition and subtraction", "[double_width_int]")
     for (auto [lhi, llo, rhs] : cartesian_product(test_values<u32>(), test_values<u32>(), test_values<u32>())) {
       CAPTURE(lhi, llo, rhs);
       auto lhs = double_width_int<u32>::from_hi_lo(lhi, llo);
-      check(lhs, [&](auto v) { return v + rhs; });
-      check(lhs, [&](auto v) { return v - rhs; });
-      check(lhs, [&](auto v) { return rhs - v; });
+      check(lhs, [r = rhs](auto v) { return v + r; });
+      check(lhs, [r = rhs](auto v) { return v - r; });
+      check(lhs, [r = rhs](auto v) { return r - v; });
     }
   }
   SECTION("u32x2 +/- i32")
@@ -145,9 +145,9 @@ TEST_CASE("double_width_int addition and subtraction", "[double_width_int]")
     for (auto [lhi, llo, rhs] : cartesian_product(test_values<u32>(), test_values<u32>(), test_values<i32>())) {
       CAPTURE(lhi, llo, rhs);
       auto lhs = double_width_int<u32>::from_hi_lo(lhi, llo);
-      check(lhs, [&](auto v) { return v + rhs; });
-      check(lhs, [&](auto v) { return v - rhs; });
-      check(lhs, [&](auto v) { return rhs - v; });
+      check(lhs, [r = rhs](auto v) { return v + r; });
+      check(lhs, [r = rhs](auto v) { return v - r; });
+      check(lhs, [r = rhs](auto v) { return r - v; });
     }
   }
   SECTION("i32x2 +/- u32")
@@ -155,9 +155,9 @@ TEST_CASE("double_width_int addition and subtraction", "[double_width_int]")
     for (auto [lhi, llo, rhs] : cartesian_product(test_values<i32>(), test_values<u32>(), test_values<u32>())) {
       CAPTURE(lhi, llo, rhs);
       auto lhs = double_width_int<i32>::from_hi_lo(lhi, llo);
-      check(lhs, [&](auto v) { return v + rhs; });
-      check(lhs, [&](auto v) { return v - rhs; });
-      check(lhs, [&](auto v) { return rhs - v; });
+      check(lhs, [r = rhs](auto v) { return v + r; });
+      check(lhs, [r = rhs](auto v) { return v - r; });
+      check(lhs, [r = rhs](auto v) { return r - v; });
     }
   }
   SECTION("i32x2 +/- i32")
@@ -165,9 +165,9 @@ TEST_CASE("double_width_int addition and subtraction", "[double_width_int]")
     for (auto [lhi, llo, rhs] : cartesian_product(test_values<i32>(), test_values<u32>(), test_values<i32>())) {
       CAPTURE(lhi, llo, rhs);
       auto lhs = double_width_int<i32>::from_hi_lo(lhi, llo);
-      check(lhs, [&](auto v) { return v + rhs; });
-      check(lhs, [&](auto v) { return v - rhs; });
-      check(lhs, [&](auto v) { return rhs - v; });
+      check(lhs, [r = rhs](auto v) { return v + r; });
+      check(lhs, [r = rhs](auto v) { return v - r; });
+      check(lhs, [r = rhs](auto v) { return r - v; });
     }
   }
 }
@@ -199,7 +199,7 @@ TEST_CASE("double_width_int multiplication", "[double_width_int]")
     for (auto [lhi, llo, rhs] : cartesian_product(test_values<u32>(), test_values<u32>(), test_values<u32>())) {
       CAPTURE(lhi, llo, rhs);
       auto lhs = double_width_int<u32>::from_hi_lo(lhi, llo);
-      check(lhs, [&](auto v) { return v * rhs; });
+      check(lhs, [r = rhs](auto v) { return v * r; });
     }
   }
   SECTION("u32x2 * i32")
@@ -207,7 +207,7 @@ TEST_CASE("double_width_int multiplication", "[double_width_int]")
     for (auto [lhi, llo, rhs] : cartesian_product(test_values<u32>(), test_values<u32>(), test_values<i32>())) {
       CAPTURE(lhi, llo, rhs);
       auto lhs = double_width_int<u32>::from_hi_lo(lhi, llo);
-      check(lhs, [&](auto v) { return v * rhs; });
+      check(lhs, [r = rhs](auto v) { return v * r; });
     }
   }
   SECTION("i32x2 * u32")
@@ -215,7 +215,7 @@ TEST_CASE("double_width_int multiplication", "[double_width_int]")
     for (auto [lhi, llo, rhs] : cartesian_product(test_values<i32>(), test_values<u32>(), test_values<u32>())) {
       CAPTURE(lhi, llo, rhs);
       auto lhs = double_width_int<i32>::from_hi_lo(lhi, llo);
-      check(lhs, [&](auto v) { return v * rhs; });
+      check(lhs, [r = rhs](auto v) { return v * r; });
     }
   }
   SECTION("i32x2 * i32")
@@ -223,7 +223,7 @@ TEST_CASE("double_width_int multiplication", "[double_width_int]")
     for (auto [lhi, llo, rhs] : cartesian_product(test_values<i32>(), test_values<u32>(), test_values<i32>())) {
       CAPTURE(lhi, llo, rhs);
       auto lhs = double_width_int<i32>::from_hi_lo(lhi, llo);
-      check(lhs, [&](auto v) { return v * rhs; });
+      check(lhs, [r = rhs](auto v) { return v * r; });
     }
   }
 }
