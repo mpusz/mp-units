@@ -93,10 +93,11 @@ auto combine_bits(Hi hi, Lo lo)
 template<std::integral T, typename V>
 void check(double_width_int<T> value, V&& visitor)
 {
-  auto as_standard_int = combine_bits(value.hi, value.lo);
+  using DT = double_width_int_t<T>;
+  auto as_standard_int = static_cast<DT>(value);
   auto expected = visitor(as_standard_int);
   auto actual = visitor(value);
-  auto actual_as_standard = combine_bits(actual.hi, actual.lo);
+  auto actual_as_standard = static_cast<DT>(actual);
   REQUIRE(actual_as_standard == expected);
 }
 
@@ -133,7 +134,7 @@ TEST_CASE("double_width_int addition and subtraction", "[double_width_int]")
   {
     for (auto [lhi, llo, rhs] : cartesian_product(test_values<u32>(), test_values<u32>(), test_values<u32>())) {
       CAPTURE(lhi, llo, rhs);
-      double_width_int lhs{lhi, llo};
+      auto lhs = double_width_int<u32>::from_hi_lo(lhi, llo);
       check(lhs, [&](auto v) { return v + rhs; });
       check(lhs, [&](auto v) { return v - rhs; });
       check(lhs, [&](auto v) { return rhs - v; });
@@ -143,7 +144,7 @@ TEST_CASE("double_width_int addition and subtraction", "[double_width_int]")
   {
     for (auto [lhi, llo, rhs] : cartesian_product(test_values<u32>(), test_values<u32>(), test_values<i32>())) {
       CAPTURE(lhi, llo, rhs);
-      double_width_int lhs{lhi, llo};
+      auto lhs = double_width_int<u32>::from_hi_lo(lhi, llo);
       check(lhs, [&](auto v) { return v + rhs; });
       check(lhs, [&](auto v) { return v - rhs; });
       check(lhs, [&](auto v) { return rhs - v; });
@@ -153,7 +154,7 @@ TEST_CASE("double_width_int addition and subtraction", "[double_width_int]")
   {
     for (auto [lhi, llo, rhs] : cartesian_product(test_values<i32>(), test_values<u32>(), test_values<u32>())) {
       CAPTURE(lhi, llo, rhs);
-      double_width_int lhs{lhi, llo};
+      auto lhs = double_width_int<i32>::from_hi_lo(lhi, llo);
       check(lhs, [&](auto v) { return v + rhs; });
       check(lhs, [&](auto v) { return v - rhs; });
       check(lhs, [&](auto v) { return rhs - v; });
@@ -163,7 +164,7 @@ TEST_CASE("double_width_int addition and subtraction", "[double_width_int]")
   {
     for (auto [lhi, llo, rhs] : cartesian_product(test_values<i32>(), test_values<u32>(), test_values<i32>())) {
       CAPTURE(lhi, llo, rhs);
-      double_width_int lhs{lhi, llo};
+      auto lhs = double_width_int<i32>::from_hi_lo(lhi, llo);
       check(lhs, [&](auto v) { return v + rhs; });
       check(lhs, [&](auto v) { return v - rhs; });
       check(lhs, [&](auto v) { return rhs - v; });
@@ -179,7 +180,7 @@ TEST_CASE("double_width_int multiplication", "[double_width_int]")
       CAPTURE(lhs, rhs);
       u64 expected = u64{lhs} * u64{rhs};
       auto actual = double_width_int<u32>::wide_product_of(lhs, rhs);
-      u64 actual_as_std = combine_bits(actual.hi, actual.lo);
+      auto actual_as_std = static_cast<u64>(actual);
       REQUIRE(actual_as_std == expected);
     }
   }
@@ -189,7 +190,7 @@ TEST_CASE("double_width_int multiplication", "[double_width_int]")
       CAPTURE(lhs, rhs);
       i64 expected = i64{lhs} * i64{rhs};
       auto actual = double_width_int<i32>::wide_product_of(lhs, rhs);
-      i64 actual_as_std = combine_bits(actual.hi, actual.lo);
+      auto actual_as_std = static_cast<i64>(actual);
       REQUIRE(actual_as_std == expected);
     }
   }
@@ -197,7 +198,7 @@ TEST_CASE("double_width_int multiplication", "[double_width_int]")
   {
     for (auto [lhi, llo, rhs] : cartesian_product(test_values<u32>(), test_values<u32>(), test_values<u32>())) {
       CAPTURE(lhi, llo, rhs);
-      double_width_int lhs{lhi, llo};
+      auto lhs = double_width_int<u32>::from_hi_lo(lhi, llo);
       check(lhs, [&](auto v) { return v * rhs; });
     }
   }
@@ -205,7 +206,7 @@ TEST_CASE("double_width_int multiplication", "[double_width_int]")
   {
     for (auto [lhi, llo, rhs] : cartesian_product(test_values<u32>(), test_values<u32>(), test_values<i32>())) {
       CAPTURE(lhi, llo, rhs);
-      double_width_int lhs{lhi, llo};
+      auto lhs = double_width_int<u32>::from_hi_lo(lhi, llo);
       check(lhs, [&](auto v) { return v * rhs; });
     }
   }
@@ -213,7 +214,7 @@ TEST_CASE("double_width_int multiplication", "[double_width_int]")
   {
     for (auto [lhi, llo, rhs] : cartesian_product(test_values<i32>(), test_values<u32>(), test_values<u32>())) {
       CAPTURE(lhi, llo, rhs);
-      double_width_int lhs{lhi, llo};
+      auto lhs = double_width_int<i32>::from_hi_lo(lhi, llo);
       check(lhs, [&](auto v) { return v * rhs; });
     }
   }
@@ -221,7 +222,7 @@ TEST_CASE("double_width_int multiplication", "[double_width_int]")
   {
     for (auto [lhi, llo, rhs] : cartesian_product(test_values<i32>(), test_values<u32>(), test_values<i32>())) {
       CAPTURE(lhi, llo, rhs);
-      double_width_int lhs{lhi, llo};
+      auto lhs = double_width_int<i32>::from_hi_lo(lhi, llo);
       check(lhs, [&](auto v) { return v * rhs; });
     }
   }

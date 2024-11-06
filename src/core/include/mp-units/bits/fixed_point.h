@@ -40,11 +40,15 @@ import std;
 
 namespace mp_units::detail {
 
+template<typename T>
+constexpr std::size_t integer_rep_width_v = std::numeric_limits<std::make_unsigned_t<T>>::digits;
+
+
 // this class synthesizes a double-width integer from two base-width integers.
 template<std::integral T>
 struct double_width_int {
   static constexpr bool is_signed = std::is_signed_v<T>;
-  static constexpr std::size_t base_width = std::numeric_limits<std::make_unsigned_t<T>>::digits;
+  static constexpr std::size_t base_width = integer_rep_width_v<T>;
   static constexpr std::size_t width = 2 * base_width;
 
   using Th = T;
@@ -52,34 +56,49 @@ struct double_width_int {
 
   constexpr double_width_int() = default;
 
-  constexpr double_width_int(Th hi_, Tl lo_) : hi(hi_), lo(lo_) {}
+private:
+  constexpr double_width_int(Th hi, Tl lo) : hi_(hi), lo_(lo) {}
+
+  template<std::integral>
+  friend struct double_width_int;
+
+public:
+  static constexpr double_width_int from_hi_lo(Th hi, Tl lo) { return {hi, lo}; }
 
   explicit constexpr double_width_int(long double v)
   {
     constexpr auto scale = int_power<long double>(2, base_width);
     constexpr auto iscale = 1.l / scale;
     auto scaled = v * iscale;
-    hi = static_cast<Th>(scaled);
-    auto resid = (scaled - static_cast<long double>(hi));
+    hi_ = static_cast<Th>(scaled);
+    auto resid = (scaled - static_cast<long double>(hi_));
     if (resid < 0) {
-      --hi;
+      --hi_;
       resid += 1;
     }
-    lo = static_cast<Tl>(resid * scale);
+    lo_ = static_cast<Tl>(resid * scale);
   }
   template<std::integral U>
     requires(is_signed || !std::is_signed_v<U>)
   explicit(false) constexpr double_width_int(U v)
   {
     if constexpr (is_signed) {
-      hi = v < 0 ? Th{-1} : Th{0};
+      hi_ = v < 0 ? Th{-1} : Th{0};
     } else {
-      hi = 0;
+      hi_ = 0;
     }
-    lo = static_cast<Tl>(v);
+    lo_ = static_cast<Tl>(v);
   }
 
-  explicit constexpr operator Th() const { return static_cast<Th>(lo); }
+  template<std::integral U>
+  explicit constexpr operator U() const
+  {
+    if constexpr (integer_rep_width_v<U> > base_width) {
+      return (static_cast<U>(hi_) << base_width) + static_cast<U>(lo_);
+    } else {
+      return static_cast<U>(lo_);
+    }
+  }
 
   [[nodiscard]] constexpr auto operator<=>(const double_width_int&) const = default;
 
@@ -108,10 +127,10 @@ struct double_width_int {
   [[nodiscard]] friend constexpr auto operator*(const double_width_int& lhs, Rhs rhs)
   {
     using RT = std::conditional_t<std::is_signed_v<Rhs>, std::make_signed_t<Tl>, Tl>;
-    auto lo_prod = double_width_int<RT>::wide_product_of(rhs, lhs.lo);
+    auto lo_prod = double_width_int<RT>::wide_product_of(rhs, lhs.lo_);
     // Normal C++ rules; with respect to signedness, the wider type always wins.
     using ret_t = double_width_int<Th>;
-    return ret_t{static_cast<Th>(lo_prod.hi) + lhs.hi * static_cast<Th>(rhs), lo_prod.lo};
+    return ret_t{static_cast<Th>(lo_prod.hi_) + lhs.hi_ * static_cast<Th>(rhs), lo_prod.lo_};
   }
   template<std::integral Lhs>
     requires(std::numeric_limits<Lhs>::digits <= base_width)
@@ -132,19 +151,19 @@ struct double_width_int {
         return lhs / static_cast<Tl>(rhs);
       }
     } else if constexpr (is_signed) {
-      if (lhs.hi < 0) {
+      if (lhs.hi_ < 0) {
         return -((-lhs) / rhs);
       } else {
         using unsigned_t = double_width_int<Tl>;
-        auto tmp = unsigned_t{static_cast<Tl>(lhs.hi), lhs.lo} / rhs;
-        return ret_t{static_cast<Th>(tmp.hi), tmp.lo};
+        auto tmp = unsigned_t{static_cast<Tl>(lhs.hi_), lhs.lo_} / rhs;
+        return ret_t{static_cast<Th>(tmp.hi_), tmp.lo_};
       }
     } else {
-      Th res_hi = lhs.hi / rhs;
+      Th res_hi = lhs.hi_ / rhs;
       // unfortunately, wide division is hard: https://en.wikipedia.org/wiki/Division_algorithm.
       // Here, we just provide a somewhat naive implementation of long division.
-      Tl rem_hi = lhs.hi % rhs;
-      Tl rem_lo = lhs.lo;
+      Tl rem_hi = lhs.hi_ % rhs;
+      Tl rem_lo = lhs.lo_;
       Tl res_lo = 0;
       for (std::size_t i = 0; i < base_width; ++i) {
         // shift in one bit
@@ -165,14 +184,14 @@ struct double_width_int {
     requires(std::numeric_limits<Rhs>::digits <= base_width)
   [[nodiscard]] friend constexpr double_width_int operator+(const double_width_int& lhs, Rhs rhs)
   {
-    Th rhi = lhs.hi;
-    Tl rlo = lhs.lo;
+    Th rhi = lhs.hi_;
+    Tl rlo = lhs.lo_;
     if constexpr (std::is_signed_v<Rhs>) {
       // sign extension; no matter if lhs is signed, negative rhs sign extend
       if (rhs < 0) --rhi;
     }
     rlo += static_cast<Tl>(rhs);
-    if (rlo < lhs.lo) {
+    if (rlo < lhs.lo_) {
       // carry bit
       ++rhi;
     }
@@ -187,14 +206,14 @@ struct double_width_int {
     requires(std::numeric_limits<Rhs>::digits <= base_width)
   [[nodiscard]] friend constexpr double_width_int operator-(const double_width_int& lhs, Rhs rhs)
   {
-    Th rhi = lhs.hi;
-    Tl rlo = lhs.lo;
+    Th rhi = lhs.hi_;
+    Tl rlo = lhs.lo_;
     if constexpr (std::is_signed_v<Rhs>) {
       // sign extension; no matter if lhs is signed, negative rhs sign extend
       if (rhs < 0) ++rhi;
     }
     rlo -= static_cast<Tl>(rhs);
-    if (rlo > lhs.lo) {
+    if (rlo > lhs.lo_) {
       // carry bit
       --rhi;
     }
@@ -210,39 +229,40 @@ struct double_width_int {
       // sign extension; no matter if rhs is signed, negative lhs sign extend
       if (lhs < 0) --rhi;
     }
-    rhi -= rhs.hi;
-    if (rhs.lo > rlo) {
+    rhi -= rhs.hi_;
+    if (rhs.lo_ > rlo) {
       // carry bit
       --rhi;
     }
-    rlo -= rhs.lo;
+    rlo -= rhs.lo_;
     return {rhi, rlo};
   }
 
   [[nodiscard]] constexpr double_width_int operator-() const
   {
-    return {(lo > 0 ? static_cast<Th>(-1) : Th{0}) - hi, -lo};
+    return {(lo_ > 0 ? static_cast<Th>(-1) : Th{0}) - hi_, -lo_};
   }
 
   [[nodiscard]] constexpr double_width_int operator>>(unsigned n) const
   {
     if (n >= base_width) {
-      return {static_cast<Th>(hi < 0 ? -1 : 0), static_cast<Tl>(hi >> (n - base_width))};
+      return {static_cast<Th>(hi_ < 0 ? -1 : 0), static_cast<Tl>(hi_ >> (n - base_width))};
     }
-    return {hi >> n, (static_cast<Tl>(hi) << (base_width - n)) | (lo >> n)};
+    return {hi_ >> n, (static_cast<Tl>(hi_) << (base_width - n)) | (lo_ >> n)};
   }
   [[nodiscard]] constexpr double_width_int operator<<(unsigned n) const
   {
     if (n >= base_width) {
-      return {static_cast<Th>(lo << (n - base_width)), 0};
+      return {static_cast<Th>(lo_ << (n - base_width)), 0};
     }
-    return {(hi << n) + static_cast<Th>(lo >> (base_width - n)), lo << n};
+    return {(hi_ << n) + static_cast<Th>(lo_ >> (base_width - n)), lo_ << n};
   }
 
   static constexpr double_width_int max() { return {std::numeric_limits<Th>::max(), std::numeric_limits<Tl>::max()}; }
 
-  Th hi;
-  Tl lo;
+private:
+  Th hi_;
+  Tl lo_;
 };
 
 #if defined(__SIZEOF_INT128__)
@@ -258,8 +278,6 @@ using uint128_t = double_width_int<std::uint64_t>;
 constexpr std::size_t max_native_width = 64;
 #endif
 
-template<typename T>
-constexpr std::size_t integer_rep_width_v = std::numeric_limits<std::make_unsigned_t<T>>::digits;
 template<typename T>
 constexpr std::size_t integer_rep_width_v<double_width_int<T>> = double_width_int<T>::width;
 
