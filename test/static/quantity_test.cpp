@@ -319,7 +319,7 @@ static_assert(invalid_getter_with_unit_conversion<quantity>);
 ///////////////////////////////////////
 
 template<Reference auto R, basic_fixed_string additional_nttp_argument,
-         RepresentationOf<get_quantity_spec(R).character> Rep = double>
+         RepresentationOf<get_quantity_spec(R)> Rep = double>
 struct child_quantity : quantity<R, Rep> {
   using quantity_type = quantity<R, Rep>;
   static constexpr auto reference = R;

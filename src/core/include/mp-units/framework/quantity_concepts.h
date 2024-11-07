@@ -31,7 +31,7 @@
 
 namespace mp_units {
 
-MP_UNITS_EXPORT template<Reference auto R, RepresentationOf<get_quantity_spec(R).character> Rep>
+MP_UNITS_EXPORT template<Reference auto R, RepresentationOf<get_quantity_spec(R)> Rep>
 class quantity;
 
 namespace detail {

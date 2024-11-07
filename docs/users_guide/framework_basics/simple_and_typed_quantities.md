@@ -20,7 +20,7 @@ In the **mp-units** library, a quantity is represented with the following class 
 
 ```cpp
 template<Reference auto R,
-         RepresentationOf<get_quantity_spec(R).character> Rep = double>
+         RepresentationOf<get_quantity_spec(R)> Rep = double>
 class quantity;
 ```
 

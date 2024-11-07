@@ -25,6 +25,7 @@
 // IWYU pragma: private, include <mp-units/framework.h>
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/framework/customization_points.h>
+#include <mp-units/framework/quantity_spec_concepts.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #ifdef MP_UNITS_IMPORT_STD
@@ -165,7 +166,11 @@ MP_UNITS_EXPORT template<typename T>
 concept Representation = detail::ScalarRepresentation<T> || detail::ComplexRepresentation<T> ||
                          detail::VectorRepresentation<T> || detail::TensorRepresentation<T>;
 
-MP_UNITS_EXPORT template<typename T, quantity_character Ch>
-concept RepresentationOf = detail::IsOfCharacter<T, Ch> && Representation<T>;
+MP_UNITS_EXPORT template<typename T, auto V>
+concept RepresentationOf =
+  Representation<T> &&
+  ((QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(V))> &&
+    (detail::QuantityKindSpec<MP_UNITS_REMOVE_CONST(decltype(V))> || detail::IsOfCharacter<T, V.character>)) ||
+   (std::same_as<quantity_character, decltype(V)> && detail::IsOfCharacter<T, V>));
 
 }  // namespace mp_units

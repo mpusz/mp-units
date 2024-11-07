@@ -148,7 +148,7 @@ As we remember, the `quantity` class template is defined as follows:
 
 ```cpp
 template<Reference auto R,
-         RepresentationOf<get_quantity_spec(R).character> Rep = double>
+         RepresentationOf<get_quantity_spec(R)> Rep = double>
 class quantity;
 ```
 

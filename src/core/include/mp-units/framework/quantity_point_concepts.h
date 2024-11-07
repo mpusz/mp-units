@@ -76,7 +76,7 @@ MP_UNITS_EXPORT template<typename T, auto QS>
 concept PointOriginFor = PointOrigin<T> && QuantitySpecOf<MP_UNITS_REMOVE_CONST(decltype(QS)), T::_quantity_spec_>;
 
 MP_UNITS_EXPORT template<Reference auto R, PointOriginFor<get_quantity_spec(R)> auto PO,
-                         RepresentationOf<get_quantity_spec(R).character> Rep>
+                         RepresentationOf<get_quantity_spec(R)> Rep>
 class quantity_point;
 
 namespace detail {

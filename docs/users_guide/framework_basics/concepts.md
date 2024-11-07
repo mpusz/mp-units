@@ -159,15 +159,28 @@ A `Reference` can either be:
 [value of a quantity](../../appendix/glossary.md#quantity-value).
 
 
-### `RepresentationOf<T, Ch>` { #RepresentationOf }
+### `RepresentationOf<T, V>` { #RepresentationOf }
 
-`RepresentationOf` concept is satisfied by all `Representation` types that are of a specified
-[quantity character](../../appendix/glossary.md#character) `Ch`.
+`RepresentationOf` concept is satisfied:
+
+- if the type of `V` satisfies [`QuantitySpec`](#QuantitySpec):
+
+    - by all [`Representation`](#Representation) types when `V` describes
+      a [quantity kind](../../appendix/glossary.md#kind),
+    - otherwise, by [`Representation`](#Representation) types that are of
+      a [quantity character](../../appendix/glossary.md#character) associated with a provided
+      quantity specification `V`.
+
+- if `V` is of `quantity_character` type:
+
+    - by [`Representation`](#Representation) types that are of a provided
+      [quantity character](../../appendix/glossary.md#character).
 
 A user can declare a custom representation type to be of a specific character by providing the specialization
 with `true` for one or more of the following variable templates:
 
 - `is_scalar<T>`
+- `is_complex<T>`
 - `is_vector<T>`
 - `is_tensor<T>`
 
