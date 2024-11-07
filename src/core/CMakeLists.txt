@@ -75,6 +75,7 @@ add_mp_units_module(
             include/mp-units/framework/value_cast.h
             include/mp-units/compat_macros.h
             include/mp-units/concepts.h
+            include/mp-units/core.h
             include/mp-units/framework.h
     MODULE_INTERFACE_UNIT mp-units-core.cpp
 )
