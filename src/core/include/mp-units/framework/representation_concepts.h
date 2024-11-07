@@ -95,6 +95,7 @@ concept ScalarRepresentation = Scalar<T> && WeaklyRegular<T> && requires(T a, T 
   { a / f } -> Scalar;
 
   // scalar operations
+  { -a } -> Scalar;
   { a + b } -> Scalar;
   { a - b } -> Scalar;
   { a* b } -> Scalar;
@@ -112,6 +113,7 @@ concept ComplexRepresentation = Complex<T> && WeaklyRegular<T> && requires(T a, 
   { a / T(f) } -> Complex;
 
   // complex operations
+  { -a } -> Complex;
   { a + b } -> Complex;
   { a - b } -> Complex;
   { a* b } -> Complex;
@@ -134,6 +136,7 @@ concept VectorRepresentation = Vector<T> && WeaklyRegular<T> && requires(T a, T 
   { a / f } -> Vector;
 
   // vector operations
+  { -a } -> Vector;
   { a + b } -> Vector;
   { a - b } -> Vector;
   // TBD
