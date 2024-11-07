@@ -1289,7 +1289,7 @@ You're not viewing the latest version.
           <li class="md-nav__item">
   <a href="#RepresentationOf" class="md-nav__link">
     <span class="md-ellipsis">
-      RepresentationOf&lt;T, Ch&gt;
+      RepresentationOf&lt;T, V&gt;
     </span>
   </a>
   
@@ -2571,13 +2571,32 @@ A <code>Reference</code> can either be:</p>
 <h2 id="Representation"><code>Representation&lt;T&gt;</code><a class="headerlink" href="#Representation" title="Permanent link">&para;</a></h2>
 <p><code>Representation</code> concept constraints a type of a number that stores the
 <a href="../../../appendix/glossary/#quantity-value">value of a quantity</a>.</p>
-<h3 id="RepresentationOf"><code>RepresentationOf&lt;T, Ch&gt;</code><a class="headerlink" href="#RepresentationOf" title="Permanent link">&para;</a></h3>
-<p><code>RepresentationOf</code> concept is satisfied by all <code>Representation</code> types that are of a specified
-<a href="../../../appendix/glossary/#character">quantity character</a> <code>Ch</code>.</p>
+<h3 id="RepresentationOf"><code>RepresentationOf&lt;T, V&gt;</code><a class="headerlink" href="#RepresentationOf" title="Permanent link">&para;</a></h3>
+<p><code>RepresentationOf</code> concept is satisfied:</p>
+<ul>
+<li>
+<p>if the type of <code>V</code> satisfies <a href="#QuantitySpec"><code>QuantitySpec</code></a>:</p>
+<ul>
+<li>by all <a href="#Representation"><code>Representation</code></a> types when <code>V</code> describes
+  a <a href="../../../appendix/glossary/#kind">quantity kind</a>,</li>
+<li>otherwise, by <a href="#Representation"><code>Representation</code></a> types that are of
+  a <a href="../../../appendix/glossary/#character">quantity character</a> associated with a provided
+  quantity specification <code>V</code>.</li>
+</ul>
+</li>
+<li>
+<p>if <code>V</code> is of <code>quantity_character</code> type:</p>
+<ul>
+<li>by <a href="#Representation"><code>Representation</code></a> types that are of a provided
+  <a href="../../../appendix/glossary/#character">quantity character</a>.</li>
+</ul>
+</li>
+</ul>
 <p>A user can declare a custom representation type to be of a specific character by providing the specialization
 with <code>true</code> for one or more of the following variable templates:</p>
 <ul>
 <li><code>is_scalar&lt;T&gt;</code></li>
+<li><code>is_complex&lt;T&gt;</code></li>
 <li><code>is_vector&lt;T&gt;</code></li>
 <li><code>is_tensor&lt;T&gt;</code></li>
 </ul>
