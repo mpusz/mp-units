@@ -22,16 +22,22 @@
 
 #pragma once
 
-// IWYU pragma: begin_exports
-#include <mp-units/compat_macros.h>
-#include <mp-units/concepts.h>
-#include <mp-units/framework.h>
+#include <mp-units/bits/requires_hosted.h>
+//
+#include <mp-units/bits/module_macros.h>
+#include <mp-units/framework/customization_points.h>
 
-#if MP_UNITS_HOSTED
-#include <mp-units/complex.h>
-#include <mp-units/format.h>
-#include <mp-units/math.h>
-#include <mp-units/ostream.h>
-#include <mp-units/random.h>
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
+#include <complex>
 #endif
-// IWYU pragma: end_exports
+#endif
+
+namespace mp_units {
+
+template<typename T>
+constexpr bool is_complex<std::complex<T>> = true;
+
+}

@@ -23,6 +23,9 @@
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/natural.h>
 #include <mp-units/systems/si.h>
+#if MP_UNITS_HOSTED
+#include <mp-units/complex.h>
+#endif
 #ifdef MP_UNITS_IMPORT_STD
 import std;
 #else
@@ -34,12 +37,6 @@ import std;
 #include <string>
 #endif
 #endif
-
-#if MP_UNITS_HOSTED
-template<typename T>
-constexpr bool mp_units::is_complex<std::complex<T>> = true;
-#endif
-
 
 namespace {
 
