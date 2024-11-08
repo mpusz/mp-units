@@ -83,7 +83,6 @@ template<typename T, quantity_character Ch>
 concept IsOfCharacter =
   (Ch == quantity_character::scalar && is_scalar<T>) || (Ch == quantity_character::complex && is_complex<T>) ||
   (Ch == quantity_character::vector && is_vector<T>) || (Ch == quantity_character::tensor && is_tensor<T>);
-;
 
 template<typename T>
 using scaling_factor_type_t = conditional<treat_as_floating_point<T>, long double, std::intmax_t>;
