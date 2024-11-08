@@ -925,10 +925,10 @@ template<typename From, typename To>
       return extract_results{false};
     else if constexpr (from_exp > to_exp)
       return extract_results{true, from_factor, to_factor, prepend_rest::first,
-                             power_or_T<decltype(from_factor), from_exp - to_exp>{}};
+                             power_or_T<std::remove_const_t<decltype(from_factor)>, from_exp - to_exp>{}};
     else
       return extract_results{true, from_factor, to_factor, prepend_rest::second,
-                             power_or_T<decltype(to_factor), to_exp - from_exp>{}};
+                             power_or_T<std::remove_const_t<decltype(to_factor)>, to_exp - from_exp>{}};
   }
 }
 

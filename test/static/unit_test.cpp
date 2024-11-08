@@ -89,11 +89,11 @@ inline constexpr struct speed_of_light_in_vacuum_ final : named_unit<"c", mag<29
 static_assert(Unit<metre_>);
 static_assert(Unit<second_>);
 static_assert(Unit<nu_second_>);
-static_assert(Unit<decltype(kilogram)>);
+static_assert(Unit<std::remove_const_t<decltype(kilogram)>>);
 static_assert(Unit<hertz_>);
 static_assert(Unit<newton_>);
 static_assert(Unit<minute_>);
-static_assert(Unit<decltype(kilo<gram>)>);
+static_assert(Unit<si::kilo_<struct gram_>>);
 static_assert(Unit<decltype(square(metre))>);
 static_assert(Unit<decltype(cubic(metre))>);
 static_assert(Unit<decltype(mag<60> * second)>);
@@ -101,20 +101,20 @@ static_assert(Unit<decltype(second * second)>);
 static_assert(Unit<decltype(nu_second * nu_second)>);
 static_assert(Unit<decltype(metre / second)>);
 static_assert(Unit<decltype(nu_second / nu_second)>);
-static_assert(Unit<decltype(kilometre)>);
+static_assert(Unit<std::remove_const_t<decltype(kilometre)>>);
 
 static_assert(PrefixableUnit<metre_>);
 static_assert(PrefixableUnit<hertz_>);
 static_assert(PrefixableUnit<newton_>);
 static_assert(PrefixableUnit<minute_>);
 static_assert(PrefixableUnit<radian_>);
-static_assert(!PrefixableUnit<decltype(kilogram)>);
+static_assert(!PrefixableUnit<std::remove_const_t<decltype(kilogram)>>);
 static_assert(!PrefixableUnit<decltype(kilojoule)>);
-static_assert(!PrefixableUnit<decltype(kilo<gram>)>);
+static_assert(!PrefixableUnit<si::kilo_<struct gram_>>);
 static_assert(!PrefixableUnit<decltype(square(metre))>);
 static_assert(!PrefixableUnit<decltype(cubic(metre))>);
 static_assert(!PrefixableUnit<decltype(mag<60> * second)>);
-static_assert(!PrefixableUnit<decltype(kilometre)>);
+static_assert(!PrefixableUnit<std::remove_const_t<decltype(kilometre)>>);
 
 // named unit
 static_assert(is_of_type<metre, metre_>);
