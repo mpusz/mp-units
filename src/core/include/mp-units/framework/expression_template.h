@@ -51,15 +51,16 @@ template<typename T>
 concept SymbolicConstant =
   SymbolicArg<T> && std::is_empty_v<T> && std::is_trivial_v<T> && std::semiregular<T> && std::is_final_v<T>;
 
-}  // namespace detail
 
 /**
  * @brief Type list type used by the expression template framework
  *
  * @tparam Ts The list of types
  */
-template<detail::SymbolicArg... Ts>
+template<SymbolicArg... Ts>
 struct type_list {};
+
+}  // namespace detail
 
 /**
  * @brief Type list type storing the list of components with negative exponents
