@@ -31,12 +31,27 @@
 #ifdef MP_UNITS_IMPORT_STD
 import std;
 #else
+#include <concepts>
 #include <cstdint>
 #include <functional>
+#include <type_traits>
 #endif
 #endif
 
 namespace mp_units {
+
+namespace detail {
+
+// `SymbolicArg` is provided because `SymbolicConstant` requires a complete type which is not the case
+// for `OneType` below.
+template<typename T>
+concept SymbolicArg = (!std::is_const_v<T>) && (!std::is_reference_v<T>);
+
+template<typename T>
+concept SymbolicConstant =
+  SymbolicArg<T> && std::is_empty_v<T> && std::is_trivial_v<T> && std::semiregular<T> && std::is_final_v<T>;
+
+}  // namespace detail
 
 /**
  * @brief Type list type used by the expression template framework
