@@ -56,7 +56,9 @@ struct double_width_int {
 
   constexpr double_width_int() = default;
 
+#if !MP_UNITS_COMP_GCC || MP_UNITS_COMP_GCC > 12
 private:
+#endif
   constexpr double_width_int(Th hi, Tl lo) : hi_(hi), lo_(lo) {}
 
   friend struct double_width_int<std::conditional_t<is_signed, std::make_unsigned_t<T>, std::make_signed_t<T>>>;
@@ -259,7 +261,9 @@ public:
 
   static constexpr double_width_int max() { return {std::numeric_limits<Th>::max(), std::numeric_limits<Tl>::max()}; }
 
+#if !MP_UNITS_COMP_GCC || MP_UNITS_COMP_GCC > 12
 private:
+#endif
   Th hi_;
   Tl lo_;
 };
