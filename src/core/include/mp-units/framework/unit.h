@@ -146,7 +146,7 @@ template<Unit From, Unit To>
     return false;
 }
 
-template<typename... Expr>
+template<detail::SymbolicConstant... Expr>
 struct derived_unit;
 
 namespace detail {
@@ -513,7 +513,7 @@ struct derived_unit_impl : detail::unit_interface, detail::expr_fractions<one, E
  * @note User should not instantiate this type! It is not exported from the C++ module. The library will
  *       instantiate this type automatically based on the unit arithmetic equation provided by the user.
  */
-template<typename... Expr>
+template<detail::SymbolicConstant... Expr>
 struct derived_unit final : detail::derived_unit_impl<Expr...> {};
 
 /**

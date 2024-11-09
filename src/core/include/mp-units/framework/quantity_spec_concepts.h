@@ -78,7 +78,7 @@ concept NamedQuantitySpec =
 
 }  // namespace detail
 
-template<typename... Expr>
+template<detail::SymbolicConstant... Expr>
 struct derived_quantity_spec;
 
 namespace detail {

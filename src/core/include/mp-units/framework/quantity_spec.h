@@ -491,7 +491,7 @@ struct derived_quantity_spec_impl :
  * @note User should not instantiate this type! It is not exported from the C++ module. The library will
  *       instantiate this type automatically based on the dimensional arithmetic equation provided by the user.
  */
-template<typename... Expr>
+template<detail::SymbolicConstant... Expr>
 struct derived_quantity_spec final : detail::derived_quantity_spec_impl<Expr...> {};
 
 /**
