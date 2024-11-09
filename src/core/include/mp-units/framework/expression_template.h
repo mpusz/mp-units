@@ -70,7 +70,7 @@ struct type_list {};
  * @note Can't be empty
  */
 template<detail::SymbolicArg T, detail::SymbolicArg... Ts>
-struct per {};
+struct per final {};
 
 namespace detail {
 
@@ -118,7 +118,7 @@ constexpr bool ratio_one<N, N> = true;
  */
 template<detail::SymbolicArg F, int Num, int... Den>
   requires(detail::valid_ratio<Num, Den...> && detail::positive_ratio<Num, Den...> && !detail::ratio_one<Num, Den...>)
-struct power {
+struct power final {
   using factor = F;
   static constexpr detail::ratio exponent{Num, Den...};
 };
