@@ -48,9 +48,11 @@ template<typename T>
 concept SymbolicArg = (!std::is_const_v<T>) && (!std::is_reference_v<T>);
 
 template<typename T>
-concept SymbolicConstant =
-  SymbolicArg<T> && std::is_empty_v<T> && std::is_trivial_v<T> && std::semiregular<T> && std::is_final_v<T>;
-
+concept SymbolicConstant = SymbolicArg<T> && std::is_empty_v<T> && std::is_trivial_v<T> &&
+#if !MP_UNITS_COMP_GCC || MP_UNITS_COMP_GCC > 12
+                           std::semiregular<T> &&
+#endif
+                           std::is_final_v<T>;
 
 /**
  * @brief Type list type used by the expression template framework
