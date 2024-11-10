@@ -40,6 +40,7 @@ add_mp_units_module(
             include/mp-units/bits/module_macros.h
             include/mp-units/bits/quantity_spec_hierarchy.h
             include/mp-units/bits/ratio.h
+            include/mp-units/bits/scaling.h
             include/mp-units/bits/sudo_cast.h
             include/mp-units/bits/text_tools.h
             include/mp-units/bits/type_list.h

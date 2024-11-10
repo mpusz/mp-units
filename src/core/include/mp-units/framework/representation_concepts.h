@@ -24,7 +24,9 @@
 
 // IWYU pragma: private, include <mp-units/framework.h>
 #include <mp-units/bits/module_macros.h>
+#include <mp-units/bits/scaling.h>
 #include <mp-units/framework/customization_points.h>
+#include <mp-units/framework/magnitude.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #ifdef MP_UNITS_IMPORT_STD
@@ -38,6 +40,7 @@ import std;
 #endif
 
 namespace mp_units {
+
 
 /**
  * @brief Quantity character
@@ -66,6 +69,26 @@ namespace detail {
 template<typename T>
 concept WeaklyRegular = std::copyable<T> && std::equality_comparable<T>;
 
+/**
+ * @brief MagnitudeScalable
+ *
+ * Physical quantities can be represented as a product of a "number" $n$ times a unit $u$.
+ * Because the units $u$ of each physical dimension form a (mathematical) vector space over
+ * the field of the real numbers, and each such unit admits an equivalent representation
+ * of the same physical quantitiy, the "number" will have to embed the structure of the
+ * same (mathematical) vector space over the real numbers. That is,
+ * for some scaled unit $u' = f \cdot u$ ($f \in \mathcal{R}$), the two representations
+ * $(n \cdot f) \times u$ and $n \times u'$ are equivalent, and thus the mathematical space
+ * embedding $n$ must admit scaling by a real number. Same for addition.
+ *
+ */
+
+template<typename T>
+concept MagnitudeScalable = detail::WeaklyRegular<T> && requires(T a, T b, std::type_identity<T> to_type) {
+  { mp_units::scale(mag<1>, a) };
+  { mp_units::scale(to_type, mag<1>, a) } -> std::convertible_to<T>;
+};
+
 template<typename T>
 concept Scalar = is_scalar<T>;
 
@@ -88,13 +111,9 @@ template<typename T>
 using scaling_factor_type_t = conditional<treat_as_floating_point<T>, long double, std::intmax_t>;
 
 template<typename T>
-concept ScalarRepresentation = Scalar<T> && WeaklyRegular<T> && requires(T a, T b, scaling_factor_type_t<T> f) {
-  // scaling
-  { a* f } -> Scalar;
-  { f* a } -> Scalar;
-  { a / f } -> Scalar;
-
+concept ScalarRepresentation = Scalar<T> && MagnitudeScalable<T> && requires(T a, T b, scaling_factor_type_t<T> f) {
   // scalar operations
+  { -a } -> Scalar;
   { a + b } -> Scalar;
   { a - b } -> Scalar;
   { a* b } -> Scalar;
@@ -102,16 +121,9 @@ concept ScalarRepresentation = Scalar<T> && WeaklyRegular<T> && requires(T a, T 
 };
 
 template<typename T>
-concept ComplexRepresentation = Complex<T> && WeaklyRegular<T> && requires(T a, T b, scaling_factor_type_t<T> f) {
-  // scaling
-  // TODO The below conversion to `T` is an exception compared to other representation types
-  // `std::complex<T>` * `U` do not work, but `std::complex<T>` is convertible from `U`
-  // Maybe expose this as a customization point?
-  { a* T(f) } -> Complex;
-  { T(f) * a } -> Complex;
-  { a / T(f) } -> Complex;
-
+concept ComplexRepresentation = Complex<T> && MagnitudeScalable<T> && requires(T a, T b, scaling_factor_type_t<T> f) {
   // complex operations
+  { -a } -> Complex;
   { a + b } -> Complex;
   { a - b } -> Complex;
   { a* b } -> Complex;
@@ -127,13 +139,9 @@ concept ComplexRepresentation = Complex<T> && WeaklyRegular<T> && requires(T a, 
 // TODO how to check for a complex(Scalar, Scalar) -> Complex?
 
 template<typename T>
-concept VectorRepresentation = Vector<T> && WeaklyRegular<T> && requires(T a, T b, scaling_factor_type_t<T> f) {
-  // scaling
-  { a* f } -> Vector;
-  { f* a } -> Vector;
-  { a / f } -> Vector;
-
+concept VectorRepresentation = Vector<T> && MagnitudeScalable<T> && requires(T a, T b, scaling_factor_type_t<T> f) {
   // vector operations
+  { -a } -> Vector;
   { a + b } -> Vector;
   { a - b } -> Vector;
   // TBD
@@ -148,12 +156,12 @@ concept VectorRepresentation = Vector<T> && WeaklyRegular<T> && requires(T a, T 
 };
 
 template<typename T>
-concept TensorRepresentation = Tensor<T> && WeaklyRegular<T>;  // && requires(T a, T b) {
-                                                               // TBD
-                                                               // tensor operations
-                                                               // { tensor_product(a, b) } -> Tensor4;
-                                                               // { inner_product(a, b) } -> Tensor2;
-                                                               // { scalar_product(a, b) } -> Scalar;
+concept TensorRepresentation = Tensor<T> && MagnitudeScalable<T>;  // && requires(T a, T b) {
+                                                                   // TBD
+                                                                   // tensor operations
+                                                                   // { tensor_product(a, b) } -> Tensor4;
+                                                                   // { inner_product(a, b) } -> Tensor2;
+                                                                   // { scalar_product(a, b) } -> Scalar;
 //};
 
 }  // namespace detail

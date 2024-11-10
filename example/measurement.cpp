@@ -70,14 +70,36 @@ public:
   [[nodiscard]] friend constexpr measurement operator+(const measurement& lhs, const measurement& rhs)
   {
     using namespace std;
-    return measurement(lhs.value() + rhs.value(), hypot(lhs.uncertainty(), rhs.uncertainty()));
+    return measurement{std::in_place, lhs.value() + rhs.value(), hypot(lhs.uncertainty(), rhs.uncertainty())};
   }
 
   [[nodiscard]] friend constexpr measurement operator-(const measurement& lhs, const measurement& rhs)
   {
     using namespace std;
-    return measurement(lhs.value() - rhs.value(), hypot(lhs.uncertainty(), rhs.uncertainty()));
+    return measurement{std::in_place, lhs.value() - rhs.value(), hypot(lhs.uncertainty(), rhs.uncertainty())};
   }
+
+  template<typename To, mp_units::Magnitude M>
+  [[nodiscard]] constexpr measurement<To> scale(std::type_identity<measurement<To>>, M scaling_factor) const
+  {
+    constexpr std::type_identity<To> to_value_type;
+    return measurement<To>{
+      std::in_place,
+      mp_units::scale(to_value_type, scaling_factor, value()),
+      mp_units::scale(to_value_type, scaling_factor, value()),
+    };
+  }
+
+  template<mp_units::Magnitude M>
+  [[nodiscard]] constexpr auto scale(M scaling_factor) const
+  {
+    return measurement{
+      std::in_place,
+      mp_units::scale(scaling_factor, value()),
+      mp_units::scale(scaling_factor, value()),
+    };
+  }
+
 
   [[nodiscard]] friend constexpr measurement operator*(const measurement& lhs, const measurement& rhs)
   {
@@ -127,15 +149,23 @@ public:
 private:
   value_type value_{};
   value_type uncertainty_{};
+
+  // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
+  constexpr measurement(std::in_place_t, value_type val, value_type err) :
+      value_(std::move(val)), uncertainty_(std::move(err))
+  {
+  }
 };
 
 }  // namespace
+
 
 template<typename T>
 constexpr bool mp_units::is_scalar<measurement<T>> = true;
 template<typename T>
 constexpr bool mp_units::is_vector<measurement<T>> = true;
 
+static_assert(mp_units::RepresentationOf<measurement<int>, mp_units::quantity_character::scalar>);
 static_assert(mp_units::RepresentationOf<measurement<double>, mp_units::quantity_character::scalar>);
 
 namespace {

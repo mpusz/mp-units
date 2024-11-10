@@ -53,76 +53,8 @@ using maybe_common_type =
 template<Magnitude auto M, typename Rep1, typename Rep2>
 struct conversion_type_traits {
   using c_rep_type = maybe_common_type<Rep1, Rep2>;
-  using c_mag_type = common_magnitude_type<M>;
-  using c_type = conditional<std::is_arithmetic_v<value_type_t<c_rep_type>>, value_type_t<c_rep_type>,
-                             std::common_type_t<c_mag_type, double>>;
+  using c_type = conditional<std::is_arithmetic_v<value_type_t<c_rep_type>>, value_type_t<c_rep_type>, double>;
 };
-
-/**
- * @brief Value-related details about the conversion from one quantity to another
- *
- * This trait provide ingredients to calculate the conversion factor that needs to be applied
- * to a number, in order to convert from one quantity to another.
- *
- * @note This is a low-level facility.
- *
- * @tparam M common magnitude between the two quantities
- * @tparam T common multiplier representation type
- */
-template<Magnitude auto M, typename T>
-struct conversion_value_traits {
-  static constexpr Magnitude auto num = _numerator(M);
-  static constexpr Magnitude auto den = _denominator(M);
-  static constexpr Magnitude auto irr = M * (den / num);
-  static constexpr auto ratio = [] {
-    if constexpr (std::is_integral_v<T>) {
-      using U = long double;
-      return detail::fixed_point<T>{_get_value<U>(num) / _get_value<U>(den) * _get_value<U>(irr)};
-    } else {
-      return _get_value<T>(num) / _get_value<T>(den) * _get_value<T>(irr);
-    }
-  }();
-  static constexpr bool value_increases = ratio >= T{1};
-
-  template<typename V>
-  static constexpr auto scale(V value)
-  {
-    if constexpr (std::is_integral_v<T>) {
-      return ratio.scale(value);
-    } else {
-      return value * ratio;
-    }
-  }
-};
-
-template<Magnitude auto M, typename T>
-  requires(_is_integral(M))
-struct conversion_value_traits<M, T> {
-  static constexpr Magnitude auto num = _numerator(M);
-  static constexpr T num_mult = _get_value<T>(num);
-  static constexpr bool value_increases = true;
-
-  template<typename V>
-  static constexpr auto scale(V value)
-  {
-    return value * num_mult;
-  }
-};
-
-template<Magnitude auto M, typename T>
-  requires(_is_integral(_pow<-1>(M)) && !_is_integral(M))
-struct conversion_value_traits<M, T> {
-  static constexpr Magnitude auto den = _denominator(M);
-  static constexpr T den_div = _get_value<T>(den);
-  static constexpr bool value_increases = false;
-
-  template<typename V>
-  static constexpr auto scale(V value)
-  {
-    return value / den_div;
-  }
-};
-
 
 /**
  * @brief Explicit cast between different quantity types
@@ -147,11 +79,9 @@ template<Quantity To, typename FwdFrom, Quantity From = std::remove_cvref_t<FwdF
                              // are using static_cast to suppress all the compiler warnings on conversions
   } else {
     constexpr Magnitude auto c_mag = get_canonical_unit(From::unit).mag / get_canonical_unit(To::unit).mag;
-    using type_traits = conversion_type_traits<c_mag, typename From::rep, typename To::rep>;
-    using value_traits = conversion_value_traits<c_mag, typename type_traits::c_type>;
 
-    auto res = static_cast<To::rep>(
-      value_traits::scale(static_cast<type_traits::c_rep_type>(q.numerical_value_is_an_implementation_detail_)));
+    typename To::rep res =
+      scale(std::type_identity<typename To::rep>{}, c_mag, q.numerical_value_is_an_implementation_detail_);
     return To{res, To::reference};
   }
 }
@@ -193,8 +123,7 @@ template<QuantityPoint ToQP, typename FwdFromQP, QuantityPoint FromQP = std::rem
     constexpr Magnitude auto c_mag = get_canonical_unit(FromQP::unit).mag / get_canonical_unit(ToQP::unit).mag;
     using type_traits = conversion_type_traits<c_mag, typename FromQP::rep, typename ToQP::rep>;
     using c_type = type_traits::c_type;
-    using value_traits = conversion_value_traits<c_mag, c_type>;
-    if constexpr (value_traits::value_increases) {
+    if constexpr (_get_value<long double>(c_mag) > 1.) {
       // original unit had a larger unit magnitude; if we first convert to the common representation but retain the
       // unit, we obtain the largest possible range while not causing truncation of fractional values. This is optimal
       // for the offset computation.

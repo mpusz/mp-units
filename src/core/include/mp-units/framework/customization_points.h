@@ -149,6 +149,42 @@ struct quantity_values {
   }
 };
 
+
+/**
+ * @brief A type trait that defines the behavior of scaling a value using a magnitude
+ *
+ * Whereas C++ numeric types usually represent a (fixed) subset of the real numbers
+ * (or another vector-space over the field of the real numbers),
+ * the magnitude concept fundamentally can represent any real number.
+ * Thus, in general, the result of a scaling operation is not exactly representable,
+ * and some form of approximation may be needed. That approximation is not
+ * part of the semantics of a physical quantitiy, but of its representation
+ * in C++. Therefore, the approximation semantics are dictatet by the
+ * representation type, which can be customised for user-types through
+ * this type-trait.
+ *
+ * In the following, $\mathcal{V}$ shall denote the vector-space represented by all representation
+ * types involved in the following discussion.
+ *
+ * A specialisation @c scaling_traits for a type @c Rep shall provide the following
+ * template static method members:
+ *  - `template <Magnitude M, typename From> static constexpr Rep scale_from(M scaling_factor, const From &value)`:
+ *    Given an element of $\mathcal{V}$ represented by @c value and, a real number represented by  @c scaling_factor,
+ *    return an instance of @c Rep that approximates `scaling_factor * value`, another element of $\mathcal{V}$.
+ *    This needs to be defined at least for `From = Rep`, as well as any other representation
+ *    types for which interoperability is desired.
+ *  - `template <typename To, Magnitude M> static constexpr auto scale(M scaling_factor, const Rep &value)`:
+ *    Given an element of $\mathcal{V}$ represented by @c value and, a real number represented by  @c scaling_factor,
+ *    return an approximation of `scaling_factor * value`, another element of $\mathcal{V}$.
+ *    Contrary to the `scale_from` case, here, the result representation is unspecified.
+ *    Because the @c scaling_factor encodes the represented real value in the type,
+ *    a representation may even depend on the actual scaling factor.
+ *
+ * @tparam Rep a representation type for which a type trait is defined
+ */
+template<typename Rep>
+struct scaling_traits;
+
 /**
  * @brief Provides support for external quantity-like types
  *
