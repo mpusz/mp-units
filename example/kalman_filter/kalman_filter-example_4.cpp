@@ -62,7 +62,7 @@ void print(auto iteration, QuantityPoint auto measured, const kalman::SystemStat
 int main()
 {
   using namespace mp_units::si::unit_symbols;
-  using qp = quantity_point<isq::position_vector[m]>;
+  using qp = quantity_point<isq::displacement[m]>;
   using state =
     kalman::system_state<qp, quantity_point<isq::velocity[m / s]>, quantity_point<isq::acceleration[m / s2]>>;
 

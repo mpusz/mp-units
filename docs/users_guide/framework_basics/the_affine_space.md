@@ -96,7 +96,7 @@ origin:
 ```cpp
 template<Reference auto R,
          PointOriginFor<get_quantity_spec(R)> auto PO = default_point_origin(R),
-         RepresentationOf<get_quantity_spec(R).character> Rep = double>
+         RepresentationOf<get_quantity_spec(R)> Rep = double>
 class quantity_point;
 ```
 

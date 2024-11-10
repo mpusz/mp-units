@@ -674,7 +674,7 @@ constexpr auto prime_factorization_v = prime_factorization<N>::value;
 template<MagArg auto V>
 [[nodiscard]] consteval Magnitude auto make_magnitude()
 {
-  if constexpr (MagConstant<decltype(V)>)
+  if constexpr (MagConstant<MP_UNITS_REMOVE_CONST(decltype(V))>)
     return magnitude<V>{};
   else
     return prime_factorization_v<V>;

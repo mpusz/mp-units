@@ -63,7 +63,7 @@ template<Unit auto ToU, typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>>
  * @tparam ToRep a representation type to use for a target quantity
  */
 template<Representation ToRep, typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>>
-  requires RepresentationOf<ToRep, Q::quantity_spec.character> && std::constructible_from<ToRep, typename Q::rep>
+  requires RepresentationOf<ToRep, Q::quantity_spec> && std::constructible_from<ToRep, typename Q::rep>
 [[nodiscard]] constexpr quantity<Q::reference, ToRep> value_cast(FwdQ&& q)
 {
   return detail::sudo_cast<quantity<Q::reference, ToRep>>(std::forward<FwdQ>(q));
@@ -81,7 +81,7 @@ template<Representation ToRep, typename FwdQ, Quantity Q = std::remove_cvref_t<F
  * @tparam ToRep a representation type to use for the target quantity
  */
 template<Unit auto ToU, Representation ToRep, typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>>
-  requires(convertible(Q::reference, ToU)) && RepresentationOf<ToRep, Q::quantity_spec.character> &&
+  requires(convertible(Q::reference, ToU)) && RepresentationOf<ToRep, Q::quantity_spec> &&
           std::constructible_from<ToRep, typename Q::rep>
 [[nodiscard]] constexpr Quantity auto value_cast(FwdQ&& q)
 {
@@ -89,7 +89,7 @@ template<Unit auto ToU, Representation ToRep, typename FwdQ, Quantity Q = std::r
 }
 
 template<Representation ToRep, Unit auto ToU, typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>>
-  requires(convertible(Q::reference, ToU)) && RepresentationOf<ToRep, Q::quantity_spec.character> &&
+  requires(convertible(Q::reference, ToU)) && RepresentationOf<ToRep, Q::quantity_spec> &&
           std::constructible_from<ToRep, typename Q::rep>
 [[nodiscard]] constexpr Quantity auto value_cast(FwdQ&& q)
 {
@@ -148,7 +148,7 @@ template<Unit auto ToU, typename FwdQP, QuantityPoint QP = std::remove_cvref_t<F
  * @tparam ToRep a representation type to use for a target quantity point
  */
 template<Representation ToRep, typename FwdQP, QuantityPoint QP = std::remove_cvref_t<FwdQP>>
-  requires RepresentationOf<ToRep, QP::quantity_spec.character> && std::constructible_from<ToRep, typename QP::rep>
+  requires RepresentationOf<ToRep, QP::quantity_spec> && std::constructible_from<ToRep, typename QP::rep>
 [[nodiscard]] constexpr quantity_point<QP::reference, QP::point_origin, ToRep> value_cast(FwdQP&& qp)
 {
   return {value_cast<ToRep>(std::forward<FwdQP>(qp).quantity_from_origin_is_an_implementation_detail_),
@@ -167,7 +167,7 @@ template<Representation ToRep, typename FwdQP, QuantityPoint QP = std::remove_cv
  * @tparam ToRep a representation type to use for the target quantity
  */
 template<Unit auto ToU, Representation ToRep, typename FwdQP, QuantityPoint QP = std::remove_cvref_t<FwdQP>>
-  requires(convertible(QP::reference, ToU)) && RepresentationOf<ToRep, QP::quantity_spec.character> &&
+  requires(convertible(QP::reference, ToU)) && RepresentationOf<ToRep, QP::quantity_spec> &&
           std::constructible_from<ToRep, typename QP::rep>
 [[nodiscard]] constexpr QuantityPoint auto value_cast(FwdQP&& qp)
 {
@@ -177,7 +177,7 @@ template<Unit auto ToU, Representation ToRep, typename FwdQP, QuantityPoint QP =
 }
 
 template<Representation ToRep, Unit auto ToU, typename FwdQP, QuantityPoint QP = std::remove_cvref_t<FwdQP>>
-  requires(convertible(QP::reference, ToU)) && RepresentationOf<ToRep, QP::quantity_spec.character> &&
+  requires(convertible(QP::reference, ToU)) && RepresentationOf<ToRep, QP::quantity_spec> &&
           std::constructible_from<ToRep, typename QP::rep>
 [[nodiscard]] constexpr QuantityPoint auto value_cast(FwdQP&& qp)
 {

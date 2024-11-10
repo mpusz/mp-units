@@ -316,7 +316,7 @@ This is why a `quantity` class template is defined in the library as:
 
 ```cpp
 template<Reference auto R,
-         RepresentationOf<get_quantity_spec(R).character> Rep = double>
+         RepresentationOf<get_quantity_spec(R)> Rep = double>
 class quantity;
 ```
 
@@ -365,7 +365,7 @@ In the **mp-units** library, the quantity point is implemented as:
 ```cpp
 template<Reference auto R,
          PointOriginFor<get_quantity_spec(R)> auto PO,
-         RepresentationOf<get_quantity_spec(R).character> Rep = double>
+         RepresentationOf<get_quantity_spec(R)> Rep = double>
 class quantity_point;
 ```
 

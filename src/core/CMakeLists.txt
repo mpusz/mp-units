@@ -77,6 +77,7 @@ add_mp_units_module(
             include/mp-units/framework/value_cast.h
             include/mp-units/compat_macros.h
             include/mp-units/concepts.h
+            include/mp-units/core.h
             include/mp-units/framework.h
     MODULE_INTERFACE_UNIT mp-units-core.cpp
 )
@@ -92,9 +93,10 @@ if(NOT ${projectPrefix}API_FREESTANDING)
                include/mp-units/bits/fmt.h
                include/mp-units/bits/requires_hosted.h
                include/mp-units/ext/format.h
+               include/mp-units/complex.h
+               include/mp-units/format.h
                include/mp-units/math.h
                include/mp-units/ostream.h
-               include/mp-units/format.h
                include/mp-units/random.h
     )
 endif()

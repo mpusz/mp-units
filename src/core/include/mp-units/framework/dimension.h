@@ -52,7 +52,7 @@ import std;
 
 namespace mp_units {
 
-template<typename... Expr>
+template<detail::SymbolicConstant... Expr>
 struct derived_dimension;
 
 MP_UNITS_EXPORT struct dimension_one;
@@ -165,7 +165,7 @@ struct base_dimension : detail::dimension_interface {
  * @note User should not instantiate this type! It is not exported from the C++ module. The library will
  *       instantiate this type automatically based on the dimensional arithmetic equation provided by the user.
  */
-template<typename... Expr>
+template<detail::SymbolicConstant... Expr>
 struct derived_dimension final : detail::dimension_interface, detail::derived_dimension_impl<Expr...> {};
 
 /**

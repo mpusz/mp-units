@@ -190,24 +190,21 @@ struct reference {
 };
 
 
-template<typename FwdRep, Reference R,
-         RepresentationOf<get_quantity_spec(R{}).character> Rep = std::remove_cvref_t<FwdRep>>
+template<typename FwdRep, Reference R, RepresentationOf<get_quantity_spec(R{})> Rep = std::remove_cvref_t<FwdRep>>
   requires(!detail::OffsetUnit<decltype(get_unit(R{}))>)
 [[nodiscard]] constexpr quantity<R{}, Rep> operator*(FwdRep&& lhs, R r)
 {
   return quantity{std::forward<FwdRep>(lhs), r};
 }
 
-template<typename FwdRep, Reference R,
-         RepresentationOf<get_quantity_spec(R{}).character> Rep = std::remove_cvref_t<FwdRep>>
+template<typename FwdRep, Reference R, RepresentationOf<get_quantity_spec(R{})> Rep = std::remove_cvref_t<FwdRep>>
   requires(!detail::OffsetUnit<decltype(get_unit(R{}))>)
 [[nodiscard]] constexpr quantity<inverse(R{}), Rep> operator/(FwdRep&& lhs, R)
 {
   return quantity{std::forward<FwdRep>(lhs), inverse(R{})};
 }
 
-template<typename FwdRep, Reference R,
-         RepresentationOf<get_quantity_spec(R{}).character> Rep = std::remove_cvref_t<FwdRep>>
+template<typename FwdRep, Reference R, RepresentationOf<get_quantity_spec(R{})> Rep = std::remove_cvref_t<FwdRep>>
   requires detail::OffsetUnit<decltype(get_unit(R{}))>
 [[deprecated(
   "References using offset units (e.g., temperatures) should be constructed with the `delta` or `absolute` "
@@ -217,8 +214,7 @@ operator*(FwdRep&& lhs, R r)
   return quantity{std::forward<FwdRep>(lhs), r};
 }
 
-template<typename FwdRep, Reference R,
-         RepresentationOf<get_quantity_spec(R{}).character> Rep = std::remove_cvref_t<FwdRep>>
+template<typename FwdRep, Reference R, RepresentationOf<get_quantity_spec(R{})> Rep = std::remove_cvref_t<FwdRep>>
   requires detail::OffsetUnit<decltype(get_unit(R{}))>
 [[deprecated(
   "References using offset units (e.g., temperatures) should be constructed with the `delta` or `absolute` "
@@ -229,7 +225,7 @@ operator/(FwdRep&& lhs, R)
 }
 
 template<Reference R, typename Rep>
-  requires RepresentationOf<std::remove_cvref_t<Rep>, get_quantity_spec(R{}).character>
+  requires RepresentationOf<std::remove_cvref_t<Rep>, get_quantity_spec(R{})>
 // NOLINTNEXTLINE(cppcoreguidelines-missing-std-forward)
 constexpr auto operator*(R, Rep&&)
 #if __cpp_deleted_function
@@ -239,7 +235,7 @@ constexpr auto operator*(R, Rep&&)
 #endif
 
 template<Reference R, typename Rep>
-  requires RepresentationOf<std::remove_cvref_t<Rep>, get_quantity_spec(R{}).character>
+  requires RepresentationOf<std::remove_cvref_t<Rep>, get_quantity_spec(R{})>
 // NOLINTNEXTLINE(cppcoreguidelines-missing-std-forward)
 constexpr auto operator/(R, Rep&&)
 #if __cpp_deleted_function

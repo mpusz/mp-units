@@ -27,6 +27,7 @@
 #include <mp-units/bits/scaling.h>
 #include <mp-units/framework/customization_points.h>
 #include <mp-units/framework/magnitude.h>
+#include <mp-units/framework/quantity_spec_concepts.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #ifdef MP_UNITS_IMPORT_STD
@@ -105,13 +106,9 @@ template<typename T, quantity_character Ch>
 concept IsOfCharacter =
   (Ch == quantity_character::scalar && is_scalar<T>) || (Ch == quantity_character::complex && is_complex<T>) ||
   (Ch == quantity_character::vector && is_vector<T>) || (Ch == quantity_character::tensor && is_tensor<T>);
-;
 
 template<typename T>
-using scaling_factor_type_t = conditional<treat_as_floating_point<T>, long double, std::intmax_t>;
-
-template<typename T>
-concept ScalarRepresentation = Scalar<T> && MagnitudeScalable<T> && requires(T a, T b, scaling_factor_type_t<T> f) {
+concept ScalarRepresentation = Scalar<T> && MagnitudeScalable<T> && requires(T a, T b) {
   // scalar operations
   { -a } -> Scalar;
   { a + b } -> Scalar;
@@ -121,7 +118,7 @@ concept ScalarRepresentation = Scalar<T> && MagnitudeScalable<T> && requires(T a
 };
 
 template<typename T>
-concept ComplexRepresentation = Complex<T> && MagnitudeScalable<T> && requires(T a, T b, scaling_factor_type_t<T> f) {
+concept ComplexRepresentation = Complex<T> && MagnitudeScalable<T> && requires(T a, T b) {
   // complex operations
   { -a } -> Complex;
   { a + b } -> Complex;
@@ -139,7 +136,7 @@ concept ComplexRepresentation = Complex<T> && MagnitudeScalable<T> && requires(T
 // TODO how to check for a complex(Scalar, Scalar) -> Complex?
 
 template<typename T>
-concept VectorRepresentation = Vector<T> && MagnitudeScalable<T> && requires(T a, T b, scaling_factor_type_t<T> f) {
+concept VectorRepresentation = Vector<T> && MagnitudeScalable<T> && requires(T a, T b) {
   // vector operations
   { -a } -> Vector;
   { a + b } -> Vector;
@@ -170,7 +167,11 @@ MP_UNITS_EXPORT template<typename T>
 concept Representation = detail::ScalarRepresentation<T> || detail::ComplexRepresentation<T> ||
                          detail::VectorRepresentation<T> || detail::TensorRepresentation<T>;
 
-MP_UNITS_EXPORT template<typename T, quantity_character Ch>
-concept RepresentationOf = detail::IsOfCharacter<T, Ch> && Representation<T>;
+MP_UNITS_EXPORT template<typename T, auto V>
+concept RepresentationOf =
+  Representation<T> &&
+  ((QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(V))> &&
+    (detail::QuantityKindSpec<MP_UNITS_REMOVE_CONST(decltype(V))> || detail::IsOfCharacter<T, V.character>)) ||
+   (std::same_as<quantity_character, decltype(V)> && detail::IsOfCharacter<T, V>));
 
 }  // namespace mp_units

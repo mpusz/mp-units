@@ -29,6 +29,7 @@
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si.h>
 #if MP_UNITS_HOSTED
+#include <mp-units/complex.h>
 #include <mp-units/math.h>
 #endif
 #ifdef MP_UNITS_IMPORT_STD
@@ -45,11 +46,6 @@ import std;
 #endif
 #endif
 
-#if MP_UNITS_HOSTED
-template<typename T>
-constexpr bool mp_units::is_complex<std::complex<T>> = true;
-#endif
-
 template<>
 constexpr bool mp_units::is_vector<int> = true;
 
@@ -57,6 +53,9 @@ namespace {
 
 using namespace mp_units;
 using namespace mp_units::si::unit_symbols;
+#if MP_UNITS_HOSTED
+using namespace std::complex_literals;
+#endif
 
 //////////////////////////////
 // quantity class invariants
@@ -74,6 +73,10 @@ concept invalid_types = requires {
   requires !requires { typename Q<isq::length[m], bool>; };     // bool is not a valid representation type
   requires !requires { typename Q<isq::length[m], quantity<isq::length[m]>>; };  // quantity used as Rep
   requires !requires { typename Q<isq::position_vector[si::metre], double>; };   // vector representation expected
+#if MP_UNITS_HOSTED
+  requires !requires { typename Q<isq::voltage[V], std::complex<double>>; };  // incompatible character
+  requires !requires { typename Q<isq::voltage_phasor[V], double>; };         // incompatible character
+#endif
 };
 static_assert(invalid_types<quantity>);
 
@@ -180,6 +183,17 @@ static_assert(std::convertible_to<quantity<isq::distance[m]>, quantity<isq::leng
 static_assert(std::constructible_from<quantity<isq::length[m]>, quantity<isq::length[km]>>);
 static_assert(std::convertible_to<quantity<isq::length[km]>, quantity<isq::length[m]>>);
 
+#if MP_UNITS_HOSTED
+static_assert(std::constructible_from<quantity<si::volt, std::complex<double>>,
+                                      quantity<isq::voltage_phasor[V], std::complex<double>>>);
+static_assert(std::convertible_to<quantity<isq::voltage_phasor[V], std::complex<double>>,
+                                  quantity<si::volt, std::complex<double>>>);
+static_assert(std::constructible_from<quantity<isq::voltage_phasor[V], std::complex<double>>,
+                                      quantity<si::volt, std::complex<double>>>);
+static_assert(std::convertible_to<quantity<si::volt, std::complex<double>>,
+                                  quantity<isq::voltage_phasor[V], std::complex<double>>>);
+#endif
+
 // conversion between different quantities not allowed
 static_assert(!std::constructible_from<quantity<isq::length[m]>, quantity<isq::time[s]>>);
 static_assert(!std::convertible_to<quantity<isq::time[s]>, quantity<isq::length[m]>>);
@@ -239,6 +253,12 @@ static_assert(!std::convertible_to<quantity<one, int>, double>);
 static_assert(std::constructible_from<double, quantity<one, int>>);
 static_assert(!std::convertible_to<quantity<isq::angular_measure[one], int>, double>);
 static_assert(std::constructible_from<double, quantity<isq::angular_measure[one], int>>);
+#if MP_UNITS_HOSTED
+static_assert(!std::convertible_to<quantity<one, std::complex<double>>, std::complex<double>>);
+static_assert(std::constructible_from<std::complex<double>, quantity<one, std::complex<double>>>);
+static_assert(!std::convertible_to<quantity<one, double>, std::complex<double>>);
+static_assert(std::constructible_from<std::complex<double>, quantity<one, double>>);
+#endif
 
 
 ///////////////////////////////////
@@ -282,7 +302,6 @@ static_assert((1. * rad + 1. * deg).in(rad) != 0 * rad);
 static_assert((1. * rad + 1. * deg).in(deg) != 0 * deg);
 
 #if MP_UNITS_HOSTED
-using namespace std::complex_literals;
 static_assert(((2.f + 1if) * isq::voltage_phasor[V]).in(mV).numerical_value_in(mV) == 2000.f + 1000if);
 static_assert(((2.f + 1if) * isq::voltage_phasor[V]).in(mV).numerical_value_in(V) == 2.f + 1if);
 static_assert(((2. + 1i) * isq::voltage_phasor[V]).in(mV).numerical_value_in(mV) == 2000. + 1000i);
@@ -323,7 +342,7 @@ static_assert(invalid_getter_with_unit_conversion<quantity>);
 ///////////////////////////////////////
 
 template<Reference auto R, basic_fixed_string additional_nttp_argument,
-         RepresentationOf<get_quantity_spec(R).character> Rep = double>
+         RepresentationOf<get_quantity_spec(R)> Rep = double>
 struct child_quantity : quantity<R, Rep> {
   using quantity_type = quantity<R, Rep>;
   static constexpr auto reference = R;
@@ -385,6 +404,9 @@ static_assert(quantity{123}.unit == one);
 static_assert(quantity{123}.quantity_spec == kind_of<dimensionless>);
 
 #if MP_UNITS_HOSTED
+static_assert(quantity{123. + 1i}.unit == one);
+static_assert(quantity{123. + 1i}.quantity_spec == kind_of<dimensionless>);
+
 using namespace std::chrono_literals;
 static_assert(std::is_same_v<decltype(quantity{123s})::rep, std::chrono::seconds::rep>);
 static_assert(std::is_same_v<decltype(quantity{123.s})::rep, long double>);
@@ -461,6 +483,21 @@ static_assert((1 * m *= 2 * one).numerical_value_in(m) == 2);
 static_assert((2 * m /= 2 * one).numerical_value_in(m) == 1);
 static_assert((7 * m %= 2 * m).numerical_value_in(m) == 1);
 
+#if MP_UNITS_HOSTED
+static_assert(((1. + 1i) * V += (1. + 1i) * V).numerical_value_in(V) == 2. + 2i);
+static_assert(((2. + 2i) * V -= (1. + 1i) * V).numerical_value_in(V) == 1. + 1i);
+static_assert(((1. + 1i) * V += 1. * V).numerical_value_in(V) == 2. + 1i);
+static_assert(((2. + 2i) * V -= 1. * V).numerical_value_in(V) == 1. + 2i);
+static_assert(((1. + 1i) * V *= 2.).numerical_value_in(V) == 2. + 2i);
+static_assert(((2. + 2i) * V /= 2.).numerical_value_in(V) == 1. + 1i);
+static_assert(((1. + 1i) * V *= 2. * one).numerical_value_in(V) == 2. + 2i);
+static_assert(((2. + 2i) * V /= 2. * one).numerical_value_in(V) == 1. + 1i);
+static_assert(((1. + 1i) * V *= 2. + 1i).numerical_value_in(V) == (1. + 1i) * (2. + 1i));
+static_assert(((2. + 2i) * V /= 2. + 1i).numerical_value_in(V) == (2. + 2i) / (2. + 1i));
+static_assert(((1. + 1i) * V *= (2. + 1i) * one).numerical_value_in(V) == (1. + 1i) * (2. + 1i));
+static_assert(((2. + 2i) * V /= (2. + 1i) * one).numerical_value_in(V) == (2. + 2i) / (2. + 1i));
+#endif
+
 // different representation types
 static_assert((2.5 * m += 3 * m).numerical_value_in(m) == 5.5);
 static_assert((5.5 * m -= 3 * m).numerical_value_in(m) == 2.5);
@@ -473,6 +510,10 @@ static_assert((7.5 * m /= 3 * one).numerical_value_in(m) == 2.5);
 static_assert((1 * m += 1 * km).numerical_value_in(m) == 1001);
 static_assert((2000 * m -= 1 * km).numerical_value_in(m) == 1000);
 static_assert((3500 * m %= 1 * km).numerical_value_in(m) == 500);
+#if MP_UNITS_HOSTED
+static_assert(((1000. + 1000i) * V += (1. + 1i) * kV).numerical_value_in(V) == 2000. + 2000i);
+static_assert(((2000. + 2000i) * V -= (1. + 1i) * kV).numerical_value_in(V) == 1000. + 1000i);
+#endif
 
 // convertible quantity types
 static_assert((isq::length(1 * m) += isq::height(1 * m)).numerical_value_in(m) == 2);
@@ -534,6 +575,11 @@ concept invalid_compound_assignments = requires() {
   requires !requires(Q<isq::length[m], double> l) { l %= 2 * m; };
   requires !requires(Q<isq::length[m], int> l) { l %= 2. * m; };
 
+#if MP_UNITS_HOSTED
+  // modulo operations on a complex representation type not allowed
+  requires !requires(Q<V, std::complex<double>> l) { l %= (2. + 2i) * V; };
+#endif
+
   // no unit constants
   requires !requires(Q<isq::length[m], int> l) { l += m; };
   requires !requires(Q<isq::length[m], int> l) { l -= m; };
@@ -561,6 +607,11 @@ concept invalid_binary_operations = requires {
   requires !requires(Q<isq::length[m], double> a, Q<isq::length[m], double> b) { a % b; };
   requires !requires(Q<isq::length[m], double> a, Q<isq::length[m], int> b) { a % b; };
   requires !requires(Q<isq::length[m], double> a, Q<isq::length[m], int> b) { b % a; };
+
+#if MP_UNITS_HOSTED
+  // no complex modulo
+  requires !requires(Q<V, std::complex<double>> a) { a % (2. + 2i) * V; };
+#endif
 
   // unit constants
   requires !requires { Q<isq::length[m], int>(1) + m; };
@@ -866,6 +917,19 @@ static_assert(4 / (2 * one) == 2 * one);
 static_assert(4 * one / 2 == 2 * one);
 static_assert(4 * one % (2 * one) == 0 * one);
 
+#if MP_UNITS_HOSTED
+static_assert(((3. + 3i) * one *= (2. + 2i) * one) == (3. + 3i) * (2. + 2i) * one);
+static_assert(((6. + 6i) * one /= (2. + 2i) * one) == (6. + 6i) / (2. + 2i) * one);
+static_assert((1. + 1i) * one + (1. + 1i) * one == (2. + 2i) * one);
+static_assert((2. + 2i) * one - (1. + 1i) * one == (1. + 1i) * one);
+static_assert((2. + 2i) * one * (2. * one) == (4. + 4i) * one);
+static_assert((2. + 2i) * ((2. + 2i) * one) == (2. + 2i) * (2. + 2i) * one);
+static_assert((2. + 2i) * one * (2. + 2i) == (2. + 2i) * (2. + 2i) * one);
+static_assert((4. + 4i) * one / ((2. + 2i) * one) == (4. + 4i) / (2. + 2i) * one);
+static_assert((4. + 4i) / ((2. + 2i) * one) == (4. + 4i) / (2. + 2i) * one);
+static_assert((4. + 4i) * one / (2. + 2i) == (4. + 4i) / (2. + 2i) * one);
+#endif
+
 static_assert(1 * one + 1 == 2);
 static_assert(1 + 1 * one == 2);
 static_assert(2 * one - 1 == 1);
@@ -876,6 +940,13 @@ static_assert(2.23 * one - 1 == 1.23);
 static_assert(2.23 - 1 * one == 1.23);
 static_assert(4 * one % (2) == 0);
 static_assert(4 % (2 * one) == 0);
+
+#if MP_UNITS_HOSTED
+static_assert((1. + 1i) * one + (1. + 1i) == 2. + 2i);
+static_assert((1. + 1i) + (1. + 1i) * one == 2. + 2i);
+static_assert(2. * one - (1. + 1i) == (1. - 1i));
+static_assert(2. - (1. + 1i) * one == (1. - 1i));
+#endif
 
 static_assert(2 * rad * (2 * rad) == 4 * pow<2>(rad));
 
@@ -915,6 +986,36 @@ static_assert(is_same_v<decltype(std::uint8_t{0} * one % (std::uint8_t{0} * one)
 
 static_assert(2 * one * (1 * m) == 2 * m);
 static_assert(2 * one / (1 * m) == 2 / (1 * m));
+
+///////////////////////
+// complex quantities
+///////////////////////
+
+#if MP_UNITS_HOSTED
+static_assert((1. + 1i) * V + (1. + 1i) * V == (2. + 2i) * V);
+static_assert((1. + 1i) * V + 1. * V == (2. + 1i) * V);
+static_assert((1000. + 1000i) * V + (1. + 1i) * kV == (2000. + 2000i) * V);
+static_assert((1000. + 1000i) * V + 1. * kV == (2000. + 1000i) * V);
+static_assert((2. + 2i) * V - (1. + 1i) * V == (1. + 1i) * V);
+static_assert((2. + 2i) * V - 1. * V == (1. + 2i) * V);
+static_assert((2000. + 2000i) * V - (1. + 1i) * kV == (1000. + 1000i) * V);
+static_assert((2000. + 2000i) * V - 1. * kV == (1000. + 2000i) * V);
+static_assert((1. + 1i) * V + isq::voltage_phasor((1. + 1i) * V) == (2. + 2i) * V);
+static_assert(isq::voltage_phasor((1. + 1i) * V) + 1. * V == (2. + 1i) * V);
+static_assert((2. + 2i) * V - isq::voltage_phasor((1. + 1i) * V) == (1. + 1i) * V);
+static_assert(isq::voltage_phasor((2. + 2i) * V) - 1. * V == (1. + 2i) * V);
+
+static_assert((1. + 1i) * V * 2. == (2. + 2i) * V);
+static_assert((1. + 1i) * V * (2. * one) == (2. + 2i) * V);
+static_assert((2. + 2i) * V / 2. == (1. + 1i) * V);
+static_assert((2. + 2i) * V / (2. * one) == (1. + 1i) * V);
+static_assert((1. + 1i) * V * (2. + 1i) == (1. + 1i) * (2. + 1i) * V);
+static_assert((2. + 2i) * V / (2. + 1i) == (2. + 2i) / (2. + 1i) * V);
+static_assert((1. + 1i) * V * (2. + 1i) * one == (1. + 1i) * (2. + 1i) * V);
+static_assert((2. + 2i) * V / (2. + 1i) * one == (2. + 2i) / (2. + 1i) * V);
+static_assert((1. + 1i) * V * (2. + 1i) * A == (1. + 1i) * (2. + 1i) * V * A);
+static_assert((2. + 2i) * V / ((2. + 1i) * A) == (2. + 2i) / (2. + 1i) * V / A);
+#endif
 
 
 ///////////////////////
@@ -982,6 +1083,10 @@ template<Reference auto R1, Reference auto R2>
 constexpr bool invalid_comparison = !requires { 2 * R1 == 2 * R2; } && !requires { 2 * R2 == 2 * R1; };
 static_assert(invalid_comparison<isq::activity[Bq], isq::frequency[Hz]>);
 
+#if MP_UNITS_HOSTED
+static_assert((1. + 1i) * one == 1. + 1i);
+static_assert(1. + 1i != (2. + 2i) * one);
+#endif
 
 ///////////////////////
 // ordering operators
@@ -1127,10 +1232,10 @@ static_assert(!QuantityOf<quantity<isq::speed[m / s]>, isq::distance / isq::dura
 static_assert(!QuantityOf<quantity<isq::speed[m / s]>, isq::width / isq::duration>);
 static_assert(QuantityOf<quantity<m / s>, isq::width / isq::duration>);
 static_assert(QuantityOf<quantity<kind_of<isq::speed>[m / s]>, isq::width / isq::duration>);
-static_assert(!QuantityOf<quantity<isq::speed[m / s]>, isq::position_vector / isq::duration>);
-static_assert(QuantityOf<quantity<m / s>, isq::position_vector / isq::duration>);
-static_assert(QuantityOf<quantity<kind_of<isq::speed>[m / s]>, isq::position_vector / isq::duration>);
-static_assert(QuantityOf<quantity<isq::velocity[m / s], int>, isq::position_vector / isq::duration>);
+static_assert(!QuantityOf<quantity<isq::speed[m / s]>, isq::displacement / isq::duration>);
+static_assert(QuantityOf<quantity<m / s>, isq::displacement / isq::duration>);
+static_assert(QuantityOf<quantity<kind_of<isq::speed>[m / s]>, isq::displacement / isq::duration>);
+static_assert(QuantityOf<quantity<isq::velocity[m / s], int>, isq::displacement / isq::duration>);
 
 static_assert(QuantityOf<decltype(10 * m), isq::height>);                        // kind of
 static_assert(QuantityOf<decltype(10 * kind_of<isq::length>[m]), isq::height>);  // kind of
