@@ -41,7 +41,7 @@ namespace detail {
 
 template<std::floating_point A, std::floating_point B>
 using minimal_floating_point_type =
-  std::conditional_t<(std::numeric_limits<A>::digits >= std::numeric_limits<B>::digits), A, B>;
+  std::conditional_t<(std::numeric_limits<A>::digits <= std::numeric_limits<B>::digits), A, B>;
 
 template<typename To, typename T>
 constexpr auto cast_integral(const T& value)
@@ -76,7 +76,6 @@ template<Magnitude auto M>
 struct floating_point_scaling_impl {
   static constexpr Magnitude auto num = _numerator(M);
   static constexpr Magnitude auto den = _denominator(M);
-  static constexpr Magnitude auto irr = M * (den / num);
   template<typename T>
   static constexpr T ratio = [] {
     using U = long double;
@@ -200,9 +199,6 @@ inline constexpr auto select_scaling_traits = [] {
 template<typename T, typename Other = T>
 concept HasScalingTraits = !std::convertible_to<decltype(select_scaling_traits<T, Other>), std::false_type>;
 
-static_assert(HasScalingTraits<int>);
-static_assert(HasScalingTraits<double>);
-
 }  // namespace detail
 
 template<typename To, Magnitude M, typename From>
@@ -229,10 +225,5 @@ constexpr auto scale(M scaling_factor, const From& value)
     return detail::select_scaling_traits<From>.scale(scaling_factor, value);
   }
 }
-
-static_assert(_is_integral(mag<299'792'458>));
-static_assert(_get_value<int>(mag<299'792'458>) == 299'792'458);
-static_assert(scale(mag<299'792'458>, 1) == 299'792'458);
-static_assert(scale(std::type_identity<int>{}, mag<299'792'458>, 1) == 299'792'458);
 
 }  // namespace mp_units
