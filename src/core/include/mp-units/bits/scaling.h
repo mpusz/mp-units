@@ -76,8 +76,6 @@ struct floating_point_scaling_factor_type<T> :
 
 template<Magnitude auto M>
 struct floating_point_scaling_impl {
-  static constexpr Magnitude auto num = _numerator(M);
-  static constexpr Magnitude auto den = _denominator(M);
   template<typename T>
   static constexpr T ratio = [] {
     using U = long double;
@@ -90,9 +88,9 @@ struct floating_point_scaling_impl {
     using U = minimal_floating_point_type<typename floating_point_scaling_factor_type<To>::type,
                                           typename floating_point_scaling_factor_type<From>::type>;
     if constexpr (_is_integral(M)) {
-      return static_cast<To>(cast_integral<U>(value) * _get_value<U>(num));
+      return static_cast<To>(cast_integral<U>(value) * _get_value<U>(M));
     } else if constexpr (_is_integral(_pow<-1>(M))) {
-      return static_cast<To>(cast_integral<U>(value) / _get_value<U>(den));
+      return static_cast<To>(cast_integral<U>(value) / _get_value<U>(_pow<-1>(M)));
     } else {
       return static_cast<To>(cast_integral<U>(value) * ratio<U>);
     }
@@ -133,8 +131,6 @@ struct floating_point_scaling_traits {
 
 template<Magnitude auto M>
 struct fixed_point_scaling_impl {
-  static constexpr Magnitude auto num = _numerator(M);
-  static constexpr Magnitude auto den = _denominator(M);
   template<std::integral T>
   static constexpr auto ratio = [] {
     using U = long double;
@@ -147,9 +143,9 @@ struct fixed_point_scaling_impl {
   {
     using U = std::common_type_t<value_type_t<From>, value_type_t<To>>;
     if constexpr (_is_integral(M)) {
-      return static_cast<To>(static_cast<value_type_t<From>>(value) * _get_value<U>(num));
+      return static_cast<To>(static_cast<value_type_t<From>>(value) * _get_value<U>(M));
     } else if constexpr (_is_integral(_pow<-1>(M))) {
-      return static_cast<To>(static_cast<value_type_t<From>>(value) / _get_value<U>(den));
+      return static_cast<To>(static_cast<value_type_t<From>>(value) / _get_value<U>(_pow<-1>(M)));
     } else {
       return static_cast<To>(ratio<U>.scale(static_cast<value_type_t<From>>(value)));
     }
@@ -203,6 +199,8 @@ concept HasScalingTraits = !std::convertible_to<decltype(select_scaling_traits<T
 
 }  // namespace detail
 
+MP_UNITS_EXPORT_BEGIN
+
 template<typename To, Magnitude M, typename From>
   requires detail::HasScalingTraits<To, From> ||
            requires(const From& value) { value.scale(std::type_identity<To>{}, M{}); }
@@ -227,5 +225,8 @@ constexpr auto scale(M scaling_factor, const From& value)
     return detail::select_scaling_traits<From>.scale(scaling_factor, value);
   }
 }
+
+
+MP_UNITS_EXPORT_END
 
 }  // namespace mp_units

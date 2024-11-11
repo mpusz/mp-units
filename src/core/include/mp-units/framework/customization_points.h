@@ -173,7 +173,7 @@ struct quantity_values {
  *    return an instance of @c Rep that approximates `scaling_factor * value`, another element of $\mathcal{V}$.
  *    This needs to be defined at least for `From = Rep`, as well as any other representation
  *    types for which interoperability is desired.
- *  - `template <typename To, Magnitude M> static constexpr auto scale(M scaling_factor, const Rep &value)`:
+ *  - `template <Magnitude M> static constexpr auto scale(M scaling_factor, const Rep &value)`:
  *    Given an element of $\mathcal{V}$ represented by @c value and, a real number represented by  @c scaling_factor,
  *    return an approximation of `scaling_factor * value`, another element of $\mathcal{V}$.
  *    Contrary to the `scale_from` case, here, the result representation is unspecified.
