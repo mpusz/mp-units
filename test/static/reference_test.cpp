@@ -378,4 +378,14 @@ static_assert(invalid_comparison<frequency(1 * hertz), activity(1 * becquerel)>)
 static_assert(invalid_comparison<angular_measure(1 * radian), solid_angular_measure(1 * steradian)>);
 static_assert(invalid_comparison<angular_measure(1 * radian), storage_capacity(1 * bit)>);
 
+// make_reference
+static_assert(is_of_type<make_reference(length, metre), reference<length_, metre_>>);
+static_assert(is_of_type<make_reference(width, metre), reference<width_, metre_>>);
+static_assert(is_of_type<make_reference(kind_of<length>, metre), metre_>);
+static_assert(is_of_type<make_reference(get_quantity_spec(metre), metre), metre_>);
+static_assert(is_of_type<make_reference(get_quantity_spec(hertz), hertz), hertz_>);
+static_assert(is_of_type<make_reference(kind_of<frequency>, hertz), hertz_>);
+static_assert(is_of_type<make_reference(get_quantity_spec(watt), watt), watt_>);
+static_assert(is_of_type<make_reference(kind_of<power>, watt), reference<kind_of_<power_>, watt_>>);
+
 }  // namespace
