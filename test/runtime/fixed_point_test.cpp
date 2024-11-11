@@ -76,24 +76,21 @@ std::vector<std::tuple<T...>> cartesian_product(const std::vector<T>&... src)
 
 
 template<std::integral T>
-using half_width_int_t = std::conditional_t<std::is_signed_v<T>, min_width_int_t<integer_rep_width_v<T> / 2>,
+using half_width_int_for_t = std::conditional_t<std::is_signed_v<T>, min_width_int_t<integer_rep_width_v<T> / 2>,
                                             min_width_uint_t<integer_rep_width_v<T> / 2>>;
-template<std::integral T>
-using double_width_int_t = std::conditional_t<std::is_signed_v<T>, min_width_int_t<integer_rep_width_v<T> * 2>,
-                                              min_width_uint_t<integer_rep_width_v<T> * 2>>;
 
 template<std::integral Hi, std::unsigned_integral Lo>
   requires(integer_rep_width_v<Hi> == integer_rep_width_v<Lo>)
 auto combine_bits(Hi hi, Lo lo)
 {
-  using ret_t = double_width_int_t<Hi>;
+  using ret_t = double_width_int_for_t<Hi>;
   return (static_cast<ret_t>(hi) << integer_rep_width_v<Lo>)+static_cast<ret_t>(lo);
 }
 
 template<std::integral T, typename V>
 void check(double_width_int<T> value, V&& visitor)
 {
-  using DT = double_width_int_t<T>;
+  using DT = double_width_int_for_t<T>;
   auto as_standard_int = static_cast<DT>(value);
   auto expected = visitor(as_standard_int);
   auto actual = visitor(value);

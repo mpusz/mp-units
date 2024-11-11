@@ -46,7 +46,7 @@ using minimal_floating_point_type =
 template<typename To, typename T>
 constexpr auto cast_integral(const T& value)
 {
-  if constexpr (std::is_integral_v<T>) {
+  if constexpr (std::is_integral_v<value_type_t<T>>) {
     return static_cast<To>(value);
   } else {
     return value;
@@ -63,8 +63,9 @@ struct floating_point_scaling_factor_type {
 template<std::floating_point T>
 struct floating_point_scaling_factor_type<T> : std::type_identity<T> {};
 
+// try to choose the smallest standard floating-point type which can represent the integer exactly (has at least as many mantiassa bits as the integer is wide)
 template<std::integral T>
-struct floating_point_scaling_factor_type<T> : std::common_type<T, float> {};
+struct floating_point_scaling_factor_type<T> : std::type_identity<min_digit_float_t<std::numeric_limits<T>::digits>> {};
 
 template<typename T>
   requires requires { typename scaling_traits<T>::floating_point_scaling_factor_type; }
