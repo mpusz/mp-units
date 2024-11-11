@@ -42,6 +42,86 @@ import std;
 
 namespace mp_units::detail {
 
+// (a + b) % n.
+//
+// Precondition: (a < n).
+// Precondition: (b < n).
+// Precondition: (n > 0).
+[[nodiscard]] consteval uint64_t add_mod(uint64_t a, uint64_t b, uint64_t n)
+{
+  if (a >= n - b) {
+    return a - (n - b);
+  } else {
+    return a + b;
+  }
+}
+
+// (a - b) % n.
+//
+// Precondition: (a < n).
+// Precondition: (b < n).
+// Precondition: (n > 0).
+[[nodiscard]] consteval uint64_t sub_mod(uint64_t a, uint64_t b, uint64_t n)
+{
+  if (a >= b) {
+    return a - b;
+  } else {
+    return n - (b - a);
+  }
+}
+
+// (a * b) % n.
+//
+// Precondition: (a < n).
+// Precondition: (b < n).
+// Precondition: (n > 0).
+[[nodiscard]] consteval uint64_t mul_mod(uint64_t a, uint64_t b, uint64_t n)
+{
+  if (b == 0u || a < std::numeric_limits<uint64_t>::max() / b) {
+    return (a * b) % n;
+  }
+
+  const uint64_t batch_size = n / a;
+  const uint64_t num_batches = b / batch_size;
+
+  return add_mod(
+    // Transform into "negative space" to make the first parameter as small as possible;
+    // then, transform back.
+    n - mul_mod(n % a, num_batches, n),
+
+    // Handle the leftover product (which is guaranteed to fit in the integer type).
+    (a * (b % batch_size)) % n,
+
+    n);
+}
+
+// (a / 2) % n.
+//
+// Precondition: (a < n).
+// Precondition: (n % 2 == 1).
+[[nodiscard]] consteval uint64_t half_mod_odd(uint64_t a, uint64_t n)
+{
+  return (a / 2u) + ((a % 2u == 0u) ? 0u : (n / 2u + 1u));
+}
+
+// (base ^ exp) % n.
+[[nodiscard]] consteval uint64_t pow_mod(uint64_t base, uint64_t exp, uint64_t n)
+{
+  uint64_t result = 1u;
+  base %= n;
+
+  while (exp > 0u) {
+    if (exp % 2u == 1u) {
+      result = mul_mod(result, base, n);
+    }
+
+    exp /= 2u;
+    base = mul_mod(base, base, n);
+  }
+
+  return result;
+}
+
 [[nodiscard]] consteval bool is_prime_by_trial_division(std::uintmax_t n)
 {
   for (std::uintmax_t f = 2; f * f <= n; f += 1 + (f % 2)) {
