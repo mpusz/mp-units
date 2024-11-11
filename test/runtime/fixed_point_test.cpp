@@ -77,7 +77,7 @@ std::vector<std::tuple<T...>> cartesian_product(const std::vector<T>&... src)
 
 template<std::integral T>
 using half_width_int_for_t = std::conditional_t<std::is_signed_v<T>, min_width_int_t<integer_rep_width_v<T> / 2>,
-                                            min_width_uint_t<integer_rep_width_v<T> / 2>>;
+                                                min_width_uint_t<integer_rep_width_v<T> / 2>>;
 
 template<std::integral Hi, std::unsigned_integral Lo>
   requires(integer_rep_width_v<Hi> == integer_rep_width_v<Lo>)

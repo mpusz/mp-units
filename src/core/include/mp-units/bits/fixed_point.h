@@ -303,7 +303,9 @@ using min_width_int_t = make_signed_t<min_width_uint_t<N>>;
 
 // TODO: other standard floating point types (half-width floats?)
 template<std::size_t N>
-using min_digit_float_t = std::conditional_t<(N<=std::numeric_limits<float>::digits),float, std::conditional_t<(N<=std::numeric_limits<double>::digits),double,long double>>;
+using min_digit_float_t =
+  std::conditional_t<(N <= std::numeric_limits<float>::digits), float,
+                     std::conditional_t<(N <= std::numeric_limits<double>::digits), double, long double>>;
 
 template<typename T>
 using double_width_int_for_t = std::conditional_t<is_signed_v<T>, min_width_int_t<integer_rep_width_v<T> * 2>,

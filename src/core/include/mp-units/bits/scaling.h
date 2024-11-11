@@ -63,7 +63,8 @@ struct floating_point_scaling_factor_type {
 template<std::floating_point T>
 struct floating_point_scaling_factor_type<T> : std::type_identity<T> {};
 
-// try to choose the smallest standard floating-point type which can represent the integer exactly (has at least as many mantiassa bits as the integer is wide)
+// try to choose the smallest standard floating-point type which can represent the integer exactly (has at least as many
+// mantiassa bits as the integer is wide)
 template<std::integral T>
 struct floating_point_scaling_factor_type<T> : std::type_identity<min_digit_float_t<std::numeric_limits<T>::digits>> {};
 
@@ -119,7 +120,7 @@ struct floating_point_scaling_traits {
   static constexpr Rep scale_from(M, const From& value)
   {
     return floating_point_scaling_impl<M{}>::template scale<Rep>(value);
-  };
+  }
 
   template<Magnitude M>
   static constexpr auto scale(M, const Rep& value)
@@ -162,7 +163,7 @@ struct fixed_point_scaling_traits {
   static constexpr Rep scale_from(M, const From& value)
   {
     return fixed_point_scaling_impl<M{}>::template scale<Rep>(value);
-  };
+  }
 
   template<Magnitude M>
   static constexpr auto scale(M, const Rep& value)
