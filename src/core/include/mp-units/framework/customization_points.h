@@ -151,6 +151,11 @@ struct quantity_values {
 
 
 /**
+ * @brief A type used in @c scaling_traits to indicate an unspecified @c To type.
+ */
+struct unspecified_rep {};
+
+/**
  * @brief A type trait that defines the behavior of scaling a value using a magnitude
  *
  * Whereas C++ numeric types usually represent a (fixed) subset of the real numbers
@@ -166,23 +171,23 @@ struct quantity_values {
  * In the following, $\mathcal{V}$ shall denote the vector-space represented by all representation
  * types involved in the following discussion.
  *
- * A specialisation @c scaling_traits for a type @c Rep shall provide the following
- * template static method members:
- *  - `template <Magnitude M, typename From> static constexpr Rep scale_from(M scaling_factor, const From &value)`:
- *    Given an element of $\mathcal{V}$ represented by @c value and, a real number represented by  @c scaling_factor,
- *    return an instance of @c Rep that approximates `scaling_factor * value`, another element of $\mathcal{V}$.
- *    This needs to be defined at least for `From = Rep`, as well as any other representation
- *    types for which interoperability is desired.
- *  - `template <Magnitude M> static constexpr auto scale(M scaling_factor, const Rep &value)`:
- *    Given an element of $\mathcal{V}$ represented by @c value and, a real number represented by  @c scaling_factor,
- *    return an approximation of `scaling_factor * value`, another element of $\mathcal{V}$.
- *    Contrary to the `scale_from` case, here, the result representation is unspecified.
- *    Because the @c scaling_factor encodes the represented real value in the type,
- *    a representation may even depend on the actual scaling factor.
+ * A specialisation @c scaling_traits<From,ToSpec> shall provide the following members:
+ *  - `template <Magnitude auto M> static constexpr auto scale(const From &value)`:
+ *    Given an element of $\mathcal{V}$ represented by @c value and, a real number represented by @c M,
+ *    return a value representing `M * value`, another element of $\mathcal{V}$.
+ *    Unless @c ToSpec is the type @c unspecified_rep, the result type is required to be convetrible to @c ToSpec.
+ *    When @c ToSpec is the type @c unspecified_rep, the implemenation may choose the best
+ *    representation availabe.
+ *    Because the scaling factor @c M encodes the represented real value in its type,
+ *    that representation may even depend on the actual scaling factor.
+ *  - `template <Magnitude auto M> static constexpr bool implicitly_scalable = ...`:
+ *    When true, the scaling is to be considered "safe", and may be used in implicit conversions.
  *
- * @tparam Rep a representation type for which a type trait is defined
+ * @tparam From a representation type whose value is being scaled
+ * @tparam To a representation type in which the result shall be represented, or @c unspecified_rep, indicating
+ *    the implementation is free to chose a representation.
  */
-template<typename Rep>
+template<typename From, typename To>
 struct scaling_traits;
 
 /**

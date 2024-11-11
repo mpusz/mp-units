@@ -79,28 +79,6 @@ public:
     return measurement{std::in_place, lhs.value() - rhs.value(), hypot(lhs.uncertainty(), rhs.uncertainty())};
   }
 
-  template<typename To, mp_units::Magnitude M>
-  [[nodiscard]] constexpr measurement<To> scale(std::type_identity<measurement<To>>, M scaling_factor) const
-  {
-    constexpr std::type_identity<To> to_value_type;
-    return measurement<To>{
-      std::in_place,
-      mp_units::scale(to_value_type, scaling_factor, value()),
-      mp_units::scale(to_value_type, scaling_factor, value()),
-    };
-  }
-
-  template<mp_units::Magnitude M>
-  [[nodiscard]] constexpr auto scale(M scaling_factor) const
-  {
-    return measurement{
-      std::in_place,
-      mp_units::scale(scaling_factor, value()),
-      mp_units::scale(scaling_factor, value()),
-    };
-  }
-
-
   [[nodiscard]] friend constexpr measurement operator*(const measurement& lhs, const measurement& rhs)
   {
     const auto val = lhs.value() * rhs.value();
@@ -158,6 +136,32 @@ private:
 };
 
 }  // namespace
+
+
+template<typename T>
+struct mp_units::scaling_traits<measurement<T>, mp_units::unspecified_rep> {
+  template<mp_units::Magnitude auto M>
+  [[nodiscard]] static constexpr auto scale(const measurement<T>& value)
+  {
+    return measurement{
+      mp_units::scale(M, value.value()),
+      mp_units::scale(M, value.uncertainty()),
+    };
+  }
+};
+
+template<typename From, typename To>
+struct mp_units::scaling_traits<measurement<From>, measurement<To>> {
+  template<mp_units::Magnitude auto M>
+  [[nodiscard]] static constexpr measurement<To> scale(const measurement<From>& value)
+  {
+    constexpr std::type_identity<To> to_type;
+    return measurement<To>{
+      mp_units::scale(to_type, M, value.value()),
+      mp_units::scale(to_type, M, value.uncertainty()),
+    };
+  }
+};
 
 
 template<typename T>
