@@ -32,7 +32,6 @@
 import std;
 #else
 #include <array>
-#include <bits/types.h>
 #include <cstddef>
 #include <cstdint>
 #include <numeric>
