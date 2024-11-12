@@ -25,24 +25,28 @@
 #include <mp-units/systems/isq/mechanics.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si/units.h>
-
-template<class T>
-  requires mp_units::is_scalar<T>
-constexpr bool mp_units::is_vector<T> = true;
+#if MP_UNITS_HOSTED
+#include <mp-units/cartesian_vector.h>
+#endif
 
 namespace {
 
 using namespace mp_units;
 using namespace mp_units::cgs;
 using namespace mp_units::cgs::unit_symbols;
+#if MP_UNITS_HOSTED
+using v = cartesian_vector<double>;
+#endif
 
 // https://en.wikipedia.org/wiki/Centimetre%E2%80%93gram%E2%80%93second_system_of_units#Definitions_and_conversion_factors_of_CGS_units_in_mechanics
 static_assert(isq::length(100 * cm) == isq::length(1 * si::metre));
 static_assert(isq::mass(1000 * g) == isq::mass(1 * si::kilogram));
 static_assert(isq::time(1 * s) == isq::time(1 * si::second));
 static_assert(isq::speed(100 * cm / s) == isq::speed(1 * si::metre / si::second));
-static_assert(isq::acceleration(100 * Gal) == isq::acceleration(1 * si::metre / square(si::second)));
-static_assert(isq::force(100'000 * dyn) == isq::force(1 * si::newton));
+#if MP_UNITS_HOSTED
+static_assert(isq::acceleration(v{100} * Gal) == isq::acceleration(v{1} * si::metre / square(si::second)));
+static_assert(isq::force(v{100'000} * dyn) == isq::force(v{1} * si::newton));
+#endif
 static_assert(isq::energy(10'000'000 * erg) == isq::energy(1 * si::joule));
 static_assert(isq::power(10'000'000 * erg / s) == isq::power(1 * si::watt));
 static_assert(isq::pressure(10 * Ba) == isq::pressure(1 * si::pascal));
