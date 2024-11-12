@@ -70,51 +70,51 @@ public:
   [[nodiscard]] friend constexpr measurement operator+(const measurement& lhs, const measurement& rhs)
   {
     using namespace std;
-    return measurement{std::in_place, lhs.value() + rhs.value(), hypot(lhs.uncertainty(), rhs.uncertainty())};
+    return measurement{lhs.value() + rhs.value(), hypot(lhs.uncertainty(), rhs.uncertainty())};
   }
 
   [[nodiscard]] friend constexpr measurement operator-(const measurement& lhs, const measurement& rhs)
   {
     using namespace std;
-    return measurement{std::in_place, lhs.value() - rhs.value(), hypot(lhs.uncertainty(), rhs.uncertainty())};
+    return measurement{lhs.value() - rhs.value(), hypot(lhs.uncertainty(), rhs.uncertainty())};
   }
 
   [[nodiscard]] friend constexpr measurement operator*(const measurement& lhs, const measurement& rhs)
   {
     const auto val = lhs.value() * rhs.value();
     using namespace std;
-    return measurement(val, val * hypot(lhs.relative_uncertainty(), rhs.relative_uncertainty()));
+    return measurement{val, val * hypot(lhs.relative_uncertainty(), rhs.relative_uncertainty())};
   }
 
   [[nodiscard]] friend constexpr measurement operator*(const measurement& lhs, const value_type& value)
   {
     const auto val = lhs.value() * value;
-    return measurement(val, val * lhs.relative_uncertainty());
+    return measurement{val, val * lhs.relative_uncertainty()};
   }
 
   [[nodiscard]] friend constexpr measurement operator*(const value_type& value, const measurement& rhs)
   {
     const auto val = rhs.value() * value;
-    return measurement(val, val * rhs.relative_uncertainty());
+    return measurement{val, val * rhs.relative_uncertainty()};
   }
 
   [[nodiscard]] friend constexpr measurement operator/(const measurement& lhs, const measurement& rhs)
   {
     const auto val = lhs.value() / rhs.value();
     using namespace std;
-    return measurement(val, val * hypot(lhs.relative_uncertainty(), rhs.relative_uncertainty()));
+    return measurement{val, val * hypot(lhs.relative_uncertainty(), rhs.relative_uncertainty())};
   }
 
   [[nodiscard]] friend constexpr measurement operator/(const measurement& lhs, const value_type& value)
   {
     const auto val = lhs.value() / value;
-    return measurement(val, val * lhs.relative_uncertainty());
+    return measurement{val, val * lhs.relative_uncertainty()};
   }
 
   [[nodiscard]] friend constexpr measurement operator/(const value_type& value, const measurement& rhs)
   {
     const auto val = value / rhs.value();
-    return measurement(val, val * rhs.relative_uncertainty());
+    return measurement{val, val * rhs.relative_uncertainty()};
   }
 
   [[nodiscard]] constexpr auto operator<=>(const measurement&) const = default;
@@ -127,12 +127,6 @@ public:
 private:
   value_type value_{};
   value_type uncertainty_{};
-
-  // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-  constexpr measurement(std::in_place_t, value_type val, value_type err) :
-      value_(std::move(val)), uncertainty_(std::move(err))
-  {
-  }
 };
 
 }  // namespace
