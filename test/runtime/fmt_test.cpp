@@ -39,6 +39,7 @@ import std;
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else
+#include <mp-units/cartesian_vector.h>
 #include <mp-units/format.h>
 #include <mp-units/ostream.h>  // IWYU pragma: keep
 #include <mp-units/systems/cgs.h>
@@ -48,12 +49,9 @@ import mp_units;
 #include <mp-units/systems/si.h>
 #endif
 
-template<class T>
-  requires mp_units::is_scalar<T>
-constexpr bool mp_units::is_vector<T> = true;
-
 using namespace mp_units;
 using namespace mp_units::si::unit_symbols;
+using v = cartesian_vector<double>;
 
 TEST_CASE("dimension_symbol", "[dimension][symbol]")
 {
@@ -437,10 +435,10 @@ TEST_CASE("default quantity formatting", "[quantity][ostream][fmt]")
 
       SECTION("angular impulse")
       {
-        const auto q = 123 * isq::angular_impulse[N * m * s];
+        const auto q = v{1, 2, 3} * isq::angular_impulse[N * m * s];
         os << q;
 
-        SECTION("iostream") { CHECK(os.str() == "123 m N s"); }
+        SECTION("iostream") { CHECK(os.str() == "[1, 2, 3] m N s"); }
 
         SECTION("fmt with default format {} on a quantity") { CHECK(MP_UNITS_STD_FMT::format("{}", q) == os.str()); }
 
@@ -467,10 +465,10 @@ TEST_CASE("default quantity formatting", "[quantity][ostream][fmt]")
 
       SECTION("angular acceleration")
       {
-        const auto q = 123 * isq::angular_acceleration[rad / s2];
+        const auto q = v{1, 2, 3} * isq::angular_acceleration[rad / s2];
         os << q;
 
-        SECTION("iostream") { CHECK(os.str() == "123 rad/s²"); }
+        SECTION("iostream") { CHECK(os.str() == "[1, 2, 3] rad/s²"); }
 
         SECTION("fmt with default format {} on a quantity") { CHECK(MP_UNITS_STD_FMT::format("{}", q) == os.str()); }
 
@@ -779,7 +777,7 @@ TEST_CASE("quantity subentities selection", "[quantity][fmt]")
     CHECK(MP_UNITS_STD_FMT::format("{:%U}", 123 * isq::speed[km / h]) == "km/h");
     CHECK(MP_UNITS_STD_FMT::format("{:%U}", 123 * isq::resistance[si::kilo<si::ohm>]) == "kΩ");
     CHECK(MP_UNITS_STD_FMT::format("{:%U}", 123 * isq::time[us]) == "µs");
-    CHECK(MP_UNITS_STD_FMT::format("{:%U}", 123 * isq::acceleration[m / s2]) == "m/s²");
+    CHECK(MP_UNITS_STD_FMT::format("{:%U}", v{1, 2, 3} * isq::acceleration[m / s2]) == "m/s²");
     CHECK(MP_UNITS_STD_FMT::format("{:%U}", 123 * percent) == "%");
   }
 
