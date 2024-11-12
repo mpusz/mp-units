@@ -119,7 +119,12 @@ def main():
 
     rgen = random.Random(args.seed)
 
-    collector = CombinationCollector(full_matrix)
+    collector = CombinationCollector(
+        full_matrix,
+        hard_excludes=lambda e: (
+            e.formatting == "std::format" and not e.config.std_format_support
+        ),
+    )
     match args.preset:
         case None:
             pass
@@ -143,7 +148,11 @@ def main():
         case "clang-tidy":
             collector.all_combinations(config=configs["Clang-18 (x86-64)"])
         case "freestanding":
+            # TODO For some reason Clang-18 Debug with -ffreestanding does not pass CMakeTestCXXCompiler
             collector.all_combinations(
+                filter=lambda e: not (
+                    e.config.name.startswith("Clang-18") and e.build_type == "Debug"
+                ),
                 config=[configs[c] for c in ["GCC-14", "Clang-18 (x86-64)"]],
                 contracts="none",
                 std=23,

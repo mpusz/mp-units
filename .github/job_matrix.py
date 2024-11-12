@@ -55,8 +55,14 @@ class MatrixElement:
 class CombinationCollector:
     """Incremental builder of MatrixElements, allowing successive selection of entries."""
 
-    def __init__(self, full_matrix: dict[str, list[typing.Any]]):
+    def __init__(
+        self,
+        full_matrix: dict[str, list[typing.Any]],
+        *,
+        hard_excludes: typing.Callable[[MatrixElement], bool] | None = None,
+    ):
         self.full_matrix = full_matrix
+        self.hard_excludes = hard_excludes
         self.combinations: set[MatrixElement] = set()
         self.per_value_counts: dict[tuple[str, typing.Any], int] = {
             (k, v): 0 for k, options in full_matrix.items() for v in options
@@ -72,7 +78,7 @@ class CombinationCollector:
 
     def _add_combination(self, e: MatrixElement):
         if e in self.combinations or (
-            e.formatting == "std::format" and not e.config.std_format_support
+            self.hard_excludes is not None and self.hard_excludes(e)
         ):
             return
         self.combinations.add(e)
