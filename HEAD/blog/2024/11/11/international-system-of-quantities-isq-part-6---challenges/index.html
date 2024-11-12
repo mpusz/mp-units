@@ -2225,7 +2225,7 @@ You're not viewing the latest version.
                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 20a8 8 0 0 0 8-8 8 8 0 0 0-8-8 8 8 0 0 0-8 8 8 8 0 0 0 8 8m0-18a10 10 0 0 1 10 10 10 10 0 0 1-10 10C6.47 22 2 17.5 2 12A10 10 0 0 1 12 2m.5 5v5.25l4.5 2.67-.75 1.23L11 13V7z"/></svg>
                           <span class="md-ellipsis">
                             
-                              12 min read
+                              13 min read
                             
                           </span>
                         </div>
@@ -2728,20 +2728,45 @@ and then verify that everything works as expected.</p>
 </li>
 <li>complex quantities expressed in VA (volt-ampere) (e.g., <em>complex power</em>).</li>
 </ul>
-<p>How should we model this? Maybe those should be two independent trees of quantities, each having
-a different unit?</p>
+<p>How should we model this? Maybe those should be two or three independent trees of quantities, each
+having its own unit?</p>
 <pre class="mermaid"><code>flowchart TD
     power["&lt;b&gt;power&lt;/b&gt;&lt;br&gt;&lt;i&gt;(mass * length&lt;sup&gt;2&lt;/sup&gt; / time&lt;sup&gt;3&lt;/sup&gt;)&lt;/i&gt;&lt;br&gt;[W]"]
     power --- mechanical_power["&lt;b&gt;mechanical_power&lt;/b&gt;&lt;br&gt;&lt;i&gt;(scalar_product(force, velocity))&lt;/i&gt;"]
     power --- electromagnetism_power["&lt;b&gt;electromagnetism_power&lt;/b&gt; | &lt;b&gt;instantaneous_power&lt;/b&gt;&lt;br&gt;&lt;i&gt;(instantaneous_voltage * instantaneous_electric_current)&lt;/i&gt;"]
     power --- active_power["&lt;b&gt;active_power&lt;/b&gt;&lt;br&gt;&lt;i&gt;(1 / period * instantaneous_power * time)&lt;br&gt;(re(complex_power))&lt;/i&gt;"]
 
-    apparent_power["&lt;b&gt;apparent_power&lt;/b&gt;&lt;br&gt;&lt;i&gt;(voltage * electric_current)&lt;br&gt;(mod(complex_power))&lt;/i&gt;&lt;br&gt;[VA]"]
+    nonactive_power["&lt;b&gt;nonactive_power&lt;/b&gt;&lt;br&gt;&lt;i&gt;(mass * length&lt;sup&gt;2&lt;/sup&gt; / time&lt;sup&gt;3&lt;/sup&gt;)&lt;/i&gt;&lt;br&gt;[VA]"]
+    nonactive_power --- reactive_power["&lt;b&gt;reactive_power&lt;/b&gt;&lt;br&gt;&lt;i&gt;(im(complex_power))&lt;/i&gt;&lt;br&gt;[var]"]
+
+    complex_power["&lt;b&gt;complex_power&lt;/b&gt;&lt;br&gt;{complex}&lt;br&gt;&lt;i&gt;(voltage_phasor * electric_current_phasor)&lt;br&gt;(active_power + j * reactive_power)&lt;/i&gt;&lt;br&gt;[VA]"]
+    complex_power --- apparent_power["&lt;b&gt;apparent_power&lt;/b&gt;&lt;br&gt;&lt;i&gt;(voltage * electric_current)&lt;br&gt;(mod(complex_power))&lt;/i&gt;"]</code></pre>
+<p>This will mean that we will not be able to add or compare <em>active power</em>, <em>reactive power</em>, and
+<em>apparent power</em>, which probably makes a lot of sense. However, it also means that the following
+will fail to compile:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">apparent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">apparent_power</span><span class="p">(</span><span class="mi">100</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">VA</span><span class="p">);</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="n">quantity</span><span class="w"> </span><span class="n">active</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">active_power</span><span class="p">(</span><span class="mi">60</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">W</span><span class="p">);</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">nonactive_power</span><span class="p">[</span><span class="n">VA</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">q</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sqrt</span><span class="p">(</span><span class="n">pow</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="p">(</span><span class="n">apparent</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">pow</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="p">(</span><span class="n">active</span><span class="p">));</span><span class="w"> </span><span class="c1">// Compile-time error</span>
+</span></code></pre></div>
+<p>Also the following will not work:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">active</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">active_power</span><span class="p">(</span><span class="mi">60</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">W</span><span class="p">);</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="n">quantity</span><span class="w"> </span><span class="n">reactive</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">reactive_power</span><span class="p">(</span><span class="mi">40</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">var</span><span class="p">);</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">apparent_power</span><span class="p">[</span><span class="n">VA</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">q</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sqrt</span><span class="p">(</span><span class="n">pow</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="p">(</span><span class="n">active</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">pow</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="p">(</span><span class="n">reactive</span><span class="p">));</span><span class="w"> </span><span class="c1">// Compile-time error</span>
+</span></code></pre></div>
+<p>If we want the above to work maybe we need to implement the tree as follows?</p>
+<pre class="mermaid"><code>flowchart TD
+    power["&lt;b&gt;power&lt;/b&gt;&lt;br&gt;&lt;i&gt;(mass * length&lt;sup&gt;2&lt;/sup&gt; / time&lt;sup&gt;3&lt;/sup&gt;)&lt;/i&gt;&lt;br&gt;[W]"]
+    power --- mechanical_power["&lt;b&gt;mechanical_power&lt;/b&gt;&lt;br&gt;&lt;i&gt;(scalar_product(force, velocity))&lt;/i&gt;"]
+    power --- electromagnetism_power["&lt;b&gt;electromagnetism_power&lt;/b&gt; | &lt;b&gt;instantaneous_power&lt;/b&gt;&lt;br&gt;&lt;i&gt;(instantaneous_voltage * instantaneous_electric_current)&lt;/i&gt;"]
+    power --- apparent_power["&lt;b&gt;apparent_power&lt;/b&gt;&lt;br&gt;&lt;i&gt;(voltage * electric_current)&lt;br&gt;(mod(complex_power))&lt;/i&gt;&lt;br&gt;[VA]"]
+    apparent_power --- active_power["&lt;b&gt;active_power&lt;/b&gt;&lt;br&gt;&lt;i&gt;(1 / period * instantaneous_power * time)&lt;br&gt;(re(complex_power))&lt;/i&gt;"]
     apparent_power --- nonactive_power["&lt;b&gt;nonactive_power&lt;/b&gt;&lt;br&gt;&lt;i&gt;(sqrt(apparent_power&lt;sup&gt;2&lt;/sup&gt; - active_power&lt;sup&gt;2&lt;/sup&gt;))&lt;/i&gt;&lt;br&gt;"]
     nonactive_power --- reactive_power["&lt;b&gt;reactive_power&lt;/b&gt;&lt;br&gt;&lt;i&gt;(im(complex_power))&lt;/i&gt;&lt;br&gt;[var]"]
     apparent_power --- complex_power["&lt;b&gt;complex_power&lt;/b&gt;&lt;br&gt;{complex}&lt;br&gt;&lt;i&gt;(voltage_phasor * electric_current_phasor)&lt;br&gt;(active_power + j * reactive_power)&lt;/i&gt;"]</code></pre>
-<p>This will mean that we will not be able to add or compare <em>active power</em> with <em>apparent power</em>,
-which probably makes a lot of sense. Again, ISQ does not provide a direct answer here.</p>
+<p>However, the above allows direct addition and comparison of <em>active power</em> and <em>nonactive power</em>,
+and also will not complain if someone will try to use watt (W) as a unit of <em>apparent power</em> or
+<em>reactive power</em>.</p>
+<p>Again, ISQ does not provide a direct answer here.</p>
 <h2 id="more-base-quantities">More base quantities?<a class="headerlink" href="#more-base-quantities" title="Permanent link">&para;</a></h2>
 <p>Is ISQ really based on only seven base quantities? Let's look at the definition of
 <em>traffic intensity</em> in IEC 80000-13 "Information science and technology":</p>
@@ -2799,7 +2824,7 @@ important problems to solve to allow this:</p>
 a daily basis.</p>
 <p>I hope you enjoyed following this series and learned more about the International System
 of Quantities. Please try it out in your domain and share feedback with us. We always love to
-hear about the projects in which our library is being used and about use cases it helps 
+hear about the projects in which our library is being used and about use cases it helps
 address.</p>
 
 
