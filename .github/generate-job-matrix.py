@@ -26,14 +26,11 @@ def make_gcc_config(version: int) -> Configuration:
 def make_clang_config(
     version: int, platform: typing.Literal["x86-64", "arm64"] = "x86-64"
 ) -> Configuration:
-    ret = SimpleNamespace(
+    cfg = SimpleNamespace(
         name=f"Clang-{version} ({platform})",
-        os=None,  # replaced below
         compiler=SimpleNamespace(
             type="CLANG",
             version=version,
-            cc=f"clang-{version}",
-            cxx=f"clang++-{version}",
         ),
         lib="libc++",
         cxx_modules=version >= 17,
@@ -41,15 +38,18 @@ def make_clang_config(
     )
     match platform:
         case "x86-64":
-            ret.os = "ubuntu-22.04" if version < 17 else "ubuntu-24.04"
+            cfg.os = "ubuntu-22.04" if version < 17 else "ubuntu-24.04"
+            cfg.compiler.cc = f"clang-{version}"
+            cfg.compiler.cxx = f"clang++-{version}"
         case "arm64":
-            ret.os = "macos-14"
-            pfx = f"/opt/homebrew/opt/llvm@{version}/bin/"
-            ret.compiler.cc = pfx + ret.compiler.cc
-            ret.compiler.cxx = pfx + ret.compiler.cxx
+            cfg.os = "macos-14"
+            pfx = f"/opt/homebrew/opt/llvm@{version}/bin"
+            cfg.compiler.cc = f"{pfx}/clang"
+            cfg.compiler.cxx = f"{pfx}/clang++"
         case _:
             raise KeyError(f"Unsupported platform {platform!r} for Clang")
-    ret.compiler = Compiler(**vars(ret.compiler))
+    ret = cfg
+    ret.compiler = Compiler(**vars(cfg.compiler))
     return Configuration(**vars(ret))
 
 
@@ -92,6 +92,8 @@ configs = {
         make_clang_config(ver, platform)
         for ver in [16, 17, 18]
         for platform in ["x86-64", "arm64"]
+        # arm64 runners are expensive; only consider one version
+        if ver == 18 or platform != "arm64"
     ]
     + [make_apple_clang_config(ver) for ver in [15]]
     + [make_msvc_config(release="14.4", version=194)]
