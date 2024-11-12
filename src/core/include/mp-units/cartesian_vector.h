@@ -163,16 +163,16 @@ public:
            lhs._coordinates_[2] == rhs._coordinates_[2];
   }
 
-  [[nodiscard]] friend constexpr T norm(const cartesian_vector& v)
+  [[nodiscard]] friend constexpr T norm(const cartesian_vector& vec)
     requires treat_as_floating_point<T>
   {
-    return v.magnitude();
+    return vec.magnitude();
   }
 
-  [[nodiscard]] friend constexpr cartesian_vector unit_vector(const cartesian_vector& v)
+  [[nodiscard]] friend constexpr cartesian_vector unit_vector(const cartesian_vector& vec)
     requires treat_as_floating_point<T>
   {
-    return v.unit();
+    return vec.unit();
   }
 
   template<std::same_as<T> U, typename V>
@@ -200,9 +200,9 @@ public:
   }
 
 #if MP_UNITS_HOSTED
-  friend constexpr std::ostream& operator<<(std::ostream& os, const cartesian_vector& v)
+  friend constexpr std::ostream& operator<<(std::ostream& os, const cartesian_vector& vec)
   {
-    return os << '[' << v[0] << ", " << v[1] << ", " << v[2] << ']';
+    return os << '[' << vec[0] << ", " << vec[1] << ", " << vec[2] << ']';
   }
 #endif
 };
@@ -222,9 +222,9 @@ template<typename T, typename Char>
 struct MP_UNITS_STD_FMT::formatter<mp_units::cartesian_vector<T>, Char> :
     formatter<std::basic_string_view<Char>, Char> {
   template<typename FormatContext>
-  auto format(const mp_units::cartesian_vector<T>& v, FormatContext& ctx) const
+  auto format(const mp_units::cartesian_vector<T>& vec, FormatContext& ctx) const
   {
-    return format_to(ctx.out(), "[{}, {}, {}]", v[0], v[1], v[2]);
+    return format_to(ctx.out(), "[{}, {}, {}]", vec[0], vec[1], vec[2]);
   }
 };
 #endif

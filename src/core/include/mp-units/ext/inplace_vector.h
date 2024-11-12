@@ -90,16 +90,16 @@ public:
   constexpr T* data() noexcept { return data_; }
   constexpr const T* data() const noexcept { return data_; }
 
-  constexpr reference push_back(const T& v)
+  constexpr reference push_back(const T& val)
     requires std::constructible_from<T, const T&>
   {
-    return emplace_back(v);
+    return emplace_back(val);
   }
 
-  constexpr reference push_back(T&& v)
+  constexpr reference push_back(T&& val)
     requires std::constructible_from<T, T&&>
   {
-    return emplace_back(std::forward<T&&>(v));
+    return emplace_back(std::forward<T&&>(val));
   }
 
   template<typename... Args>

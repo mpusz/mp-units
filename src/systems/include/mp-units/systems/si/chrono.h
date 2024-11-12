@@ -83,10 +83,10 @@ struct quantity_like_traits<std::chrono::duration<Rep, Period>> {
     return q.count();
   }
 
-  [[nodiscard]] static constexpr T from_numerical_value(const rep& v) noexcept(
+  [[nodiscard]] static constexpr T from_numerical_value(const rep& val) noexcept(
     std::is_nothrow_copy_constructible_v<rep>)
   {
-    return T(v);
+    return T(val);
   }
 };
 
@@ -113,10 +113,10 @@ struct quantity_point_like_traits<std::chrono::time_point<C, std::chrono::durati
     return tp.time_since_epoch().count();
   }
 
-  [[nodiscard]] static constexpr T from_numerical_value(const rep& v) noexcept(
+  [[nodiscard]] static constexpr T from_numerical_value(const rep& val) noexcept(
     std::is_nothrow_copy_constructible_v<rep>)
   {
-    return T(std::chrono::duration<Rep, Period>(v));
+    return T(std::chrono::duration<Rep, Period>(val));
   }
 };
 
