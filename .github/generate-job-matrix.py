@@ -41,7 +41,7 @@ def make_clang_config(
     )
     match platform:
         case "x86-64":
-            ret.os = "ubuntu-24.04"
+            ret.os = "ubuntu-22.04" if version < 17 else "ubuntu-24.04"
         case "arm64":
             ret.os = "macos-14"
             pfx = f"/opt/homebrew/opt/llvm@{version}/bin/"
