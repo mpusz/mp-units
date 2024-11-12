@@ -401,8 +401,8 @@ Some quantities are more complicated than others. For example, _power_ has:
     - var (e.g., _reactive power_),
 - complex quantities expressed in VA (volt-ampere) (e.g., _complex power_).
 
-How should we model this? Maybe those should be two independent trees of quantities, each having
-a different unit?
+How should we model this? Maybe those should be two or three independent trees of quantities, each
+having its own unit?
 
 ```mermaid
 flowchart TD
@@ -411,14 +411,50 @@ flowchart TD
     power --- electromagnetism_power["<b>electromagnetism_power</b> | <b>instantaneous_power</b><br><i>(instantaneous_voltage * instantaneous_electric_current)</i>"]
     power --- active_power["<b>active_power</b><br><i>(1 / period * instantaneous_power * time)<br>(re(complex_power))</i>"]
 
-    apparent_power["<b>apparent_power</b><br><i>(voltage * electric_current)<br>(mod(complex_power))</i><br>[VA]"]
+    nonactive_power["<b>nonactive_power</b><br><i>(mass * length<sup>2</sup> / time<sup>3</sup>)</i><br>[VA]"]
+    nonactive_power --- reactive_power["<b>reactive_power</b><br><i>(im(complex_power))</i><br>[var]"]
+
+    complex_power["<b>complex_power</b><br>{complex}<br><i>(voltage_phasor * electric_current_phasor)<br>(active_power + j * reactive_power)</i><br>[VA]"]
+    complex_power --- apparent_power["<b>apparent_power</b><br><i>(voltage * electric_current)<br>(mod(complex_power))</i>"]
+```
+
+This will mean that we will not be able to add or compare _active power_, _reactive power_, and
+_apparent power_, which probably makes a lot of sense. However, it also means that the following
+will fail to compile:
+
+```cpp
+quantity apparent = isq::apparent_power(100 * VA);
+quantity active = isq::active_power(60 * W);
+quantity<isq::nonactive_power[VA]> q = sqrt(pow<2>(apparent) - pow<2>(active)); // Compile-time error
+```
+
+Also the following will not work:
+
+```cpp
+quantity active = isq::active_power(60 * W);
+quantity reactive = isq::reactive_power(40 * var);
+quantity<isq::apparent_power[VA]> q = sqrt(pow<2>(active) + pow<2>(reactive)); // Compile-time error
+```
+
+If we want the above to work maybe we need to implement the tree as follows?
+
+```mermaid
+flowchart TD
+    power["<b>power</b><br><i>(mass * length<sup>2</sup> / time<sup>3</sup>)</i><br>[W]"]
+    power --- mechanical_power["<b>mechanical_power</b><br><i>(scalar_product(force, velocity))</i>"]
+    power --- electromagnetism_power["<b>electromagnetism_power</b> | <b>instantaneous_power</b><br><i>(instantaneous_voltage * instantaneous_electric_current)</i>"]
+    power --- apparent_power["<b>apparent_power</b><br><i>(voltage * electric_current)<br>(mod(complex_power))</i><br>[VA]"]
+    apparent_power --- active_power["<b>active_power</b><br><i>(1 / period * instantaneous_power * time)<br>(re(complex_power))</i>"]
     apparent_power --- nonactive_power["<b>nonactive_power</b><br><i>(sqrt(apparent_power<sup>2</sup> - active_power<sup>2</sup>))</i><br>"]
     nonactive_power --- reactive_power["<b>reactive_power</b><br><i>(im(complex_power))</i><br>[var]"]
     apparent_power --- complex_power["<b>complex_power</b><br>{complex}<br><i>(voltage_phasor * electric_current_phasor)<br>(active_power + j * reactive_power)</i>"]
 ```
 
-This will mean that we will not be able to add or compare _active power_ with _apparent power_,
-which probably makes a lot of sense. Again, ISQ does not provide a direct answer here.
+However, the above allows direct addition and comparison of _active power_ and _nonactive power_,
+and also will not complain if someone will try to use watt (W) as a unit of _apparent power_ or
+_reactive power_.
+
+Again, ISQ does not provide a direct answer here.
 
 
 ## More base quantities?
