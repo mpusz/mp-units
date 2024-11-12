@@ -1,10 +1,7 @@
-import argparse
-import json
-import typing
+import dataclasses
 import itertools
 import random
-import dataclasses
-from types import SimpleNamespace
+import typing
 from dataclasses import dataclass
 
 
@@ -29,6 +26,7 @@ class Configuration:
     def __str__(self):
         return self.name
 
+
 @dataclass(frozen=True, order=True)
 class MatrixElement:
     config: Configuration
@@ -39,21 +37,21 @@ class MatrixElement:
 
 
 def dataclass_to_json(obj):
-    """ Convert dataclasses to something json-serialisable """
+    """Convert dataclasses to something json-serialisable"""
     if dataclasses.is_dataclass(obj):
         return dataclasses.asdict(obj)
     raise TypeError(f"Unknown object of type {type(obj).__name__}")
 
 
 class CombinationCollector:
-    """ Incremental builder of MatrixElements, allowing successive selection of entries.
-    """
+    """Incremental builder of MatrixElements, allowing successive selection of entries."""
 
     def __init__(self, full_matrix: dict[str, list[typing.Any]]):
         self.full_matrix = full_matrix
         self.combinations: set[MatrixElement] = set()
-        self.per_value_counts: dict[tuple[str, typing.Any], int] = {(k, v): 0 for k, options in full_matrix.items() for
-                                                                    v in options}
+        self.per_value_counts: dict[tuple[str, typing.Any], int] = {
+            (k, v): 0 for k, options in full_matrix.items() for v in options
+        }
 
     def _make_submatrix(self, **overrides):
         new_matrix = dict(self.full_matrix)
@@ -64,7 +62,9 @@ class CombinationCollector:
         return new_matrix
 
     def _add_combination(self, e: MatrixElement):
-        if e in self.combinations or (e.formatting == "std::format" and not e.config.std_format_support):
+        if e in self.combinations or (
+            e.formatting == "std::format" and not e.config.std_format_support
+        ):
             return
         self.combinations.add(e)
         # update per_value_counts
@@ -72,8 +72,13 @@ class CombinationCollector:
             idx = (k, v)
             self.per_value_counts[idx] = self.per_value_counts.get(idx, 0) + 1
 
-    def all_combinations(self, *, filter: typing.Callable[[MatrixElement], bool] | None = None, **overrides):
-        """ Adds all combinations in the submatrix defined by `overrides`. """
+    def all_combinations(
+        self,
+        *,
+        filter: typing.Callable[[MatrixElement], bool] | None = None,
+        **overrides,
+    ):
+        """Adds all combinations in the submatrix defined by `overrides`."""
         matrix = self._make_submatrix(**overrides)
         keys = tuple(matrix.keys())
         for combination in itertools.product(*matrix.values()):
@@ -82,9 +87,17 @@ class CombinationCollector:
                 continue
             self._add_combination(cand)
 
-    def sample_combinations(self, *, rgen: random.Random, min_samples_per_value: int = 1,
-                            filter: typing.Callable[[MatrixElement], bool] | None = None, **overrides):
-        """ Adds samples from the submatrix defined by `overrides`, ensuring each individual value appears at least n times. """
+    def sample_combinations(
+        self,
+        *,
+        rgen: random.Random,
+        min_samples_per_value: int = 1,
+        filter: typing.Callable[[MatrixElement], bool] | None = None,
+        **overrides,
+    ):
+        """Adds samples from the submatrix defined by `overrides`,
+        ensuring each individual value appears at least n times.
+        """
         matrix = self._make_submatrix(**overrides)
         missing: dict[tuple[str, typing.Any], int] = {}
         for key, options in matrix.items():
@@ -109,5 +122,3 @@ class CombinationCollector:
                 remaining = min_samples_per_value - self.per_value_counts.get(idx, 0)
                 if remaining > 0:
                     missing[idx] = remaining
-
-

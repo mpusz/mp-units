@@ -1,13 +1,11 @@
 import argparse
 import json
-import typing
-import itertools
 import random
-import dataclasses
+import typing
 from types import SimpleNamespace
-from dataclasses import dataclass
 
-from job_matrix import Configuration, Compiler, MatrixElement, CombinationCollector, dataclass_to_json
+from job_matrix import CombinationCollector, Compiler, Configuration, dataclass_to_json
+
 
 def make_gcc_config(version: int) -> Configuration:
     return Configuration(
@@ -24,7 +22,9 @@ def make_gcc_config(version: int) -> Configuration:
     )
 
 
-def make_clang_config(version: int, platform: typing.Literal["x86-64", "arm64"] = "x86-64") -> Configuration:
+def make_clang_config(
+    version: int, platform: typing.Literal["x86-64", "arm64"] = "x86-64"
+) -> Configuration:
     ret = SimpleNamespace(
         name=f"Clang-{version} ({platform})",
         os=None,  # replaced below
@@ -84,10 +84,17 @@ def make_msvc_config(release: str, version: int) -> Configuration:
     return ret
 
 
-configs = {c.name: c for c in [make_gcc_config(ver) for ver in [12, 13, 14]]
-           + [make_clang_config(ver, platform) for ver in [16, 17, 18, 19] for platform in ["x86-64", "arm64"]]
-           + [make_apple_clang_config(ver) for ver in [15]]
-           + [make_msvc_config(release="14.4", version=194)]}
+configs = {
+    c.name: c
+    for c in [make_gcc_config(ver) for ver in [12, 13, 14]]
+    + [
+        make_clang_config(ver, platform)
+        for ver in [16, 17, 18, 19]
+        for platform in ["x86-64", "arm64"]
+    ]
+    + [make_apple_clang_config(ver) for ver in [15]]
+    + [make_msvc_config(release="14.4", version=194)]
+}
 
 full_matrix = dict(
     config=list(configs.values()),
@@ -118,10 +125,18 @@ def main():
         case "all":
             collector.all_combinations()
         case "conan" | "cmake":
-            collector.all_combinations(formatting="std::format", contracts="gsl-lite", build_type="Debug", std=20)
+            collector.all_combinations(
+                formatting="std::format",
+                contracts="gsl-lite",
+                build_type="Debug",
+                std=20,
+            )
             collector.all_combinations(
                 filter=lambda me: not me.config.std_format_support,
-                formatting="fmtlib", contracts="gsl-lite", build_type="Debug", std=20,
+                formatting="fmtlib",
+                contracts="gsl-lite",
+                build_type="Debug",
+                std=20,
             )
             collector.sample_combinations(rgen=rgen, min_samples_per_value=2)
         case "clang-tidy":
@@ -136,24 +151,29 @@ def main():
             raise KeyError(f"Unsupported preset {args.preset!r}")
 
     if not collector.combinations:
-        raise ValueError(f"No combination has been produced")
+        raise ValueError("No combination has been produced")
 
     data = sorted(collector.combinations)
 
     if not args.suppress_output:
-        print(f"::set-output name=matrix::{json.dumps(data, default=dataclass_to_json)}")
+        print(
+            f"::set-output name=matrix::{json.dumps(data, default=dataclass_to_json)}"
+        )
 
     for dbg in args.debug:
         match dbg:
             case "yaml":
                 import yaml
+
                 json_data = json.loads(json.dumps(data, default=dataclass_to_json))
                 print(yaml.safe_dump(json_data))
             case "json":
                 print(json.dumps(data, default=dataclass_to_json, indent=4))
             case "combinations":
                 for e in data:
-                    print(f"{e.config!s:17s}  c++{e.std:2d}  {e.formatting:11s}  {e.contracts:8s}  {e.build_type:8s}")
+                    print(
+                        f"{e.config!s:17s}  c++{e.std:2d}  {e.formatting:11s}  {e.contracts:8s}  {e.build_type:8s}"
+                    )
             case "counts":
                 print(f"Total combinations {len(data)}")
                 for (k, v), n in sorted(collector.per_value_counts.items()):
