@@ -386,7 +386,7 @@ the same kind.
 
     We can try to do this by ourselves, but it is tough. Probably no one, for sure we are
     not, is an expert in all the fields of ISO/IEC 80000 applicability.
-    
+
     We need the help of subject matter experts who will help us build those trees for their domains
     and then verify that everything works as expected.
 
@@ -490,5 +490,5 @@ a daily basis.
 
 I hope you enjoyed following this series and learned more about the International System
 of Quantities. Please try it out in your domain and share feedback with us. We always love to
-hear about the projects in which our library is being used and about use cases it helps 
+hear about the projects in which our library is being used and about use cases it helps
 address.
