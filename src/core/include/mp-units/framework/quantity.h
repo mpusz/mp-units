@@ -174,21 +174,21 @@ public:
 
   template<typename FwdValue, Reference R2>
     requires detail::SameValueAs<R2{}, R, std::remove_cvref_t<FwdValue>, Rep>
-  constexpr quantity(FwdValue&& v, R2) : numerical_value_is_an_implementation_detail_(std::forward<FwdValue>(v))
+  constexpr quantity(FwdValue&& val, R2) : numerical_value_is_an_implementation_detail_(std::forward<FwdValue>(val))
   {
   }
 
   template<typename FwdValue, Reference R2, typename Value = std::remove_cvref_t<FwdValue>>
     requires(!detail::SameValueAs<R2{}, R, Value, Rep>) &&
             detail::QuantityConvertibleTo<quantity<R2{}, Value>, quantity>
-  constexpr quantity(FwdValue&& v, R2) : quantity(quantity<R2{}, Value>{std::forward<FwdValue>(v), R2{}})
+  constexpr quantity(FwdValue&& val, R2) : quantity(quantity<R2{}, Value>{std::forward<FwdValue>(val), R2{}})
   {
   }
 
   template<detail::ValuePreservingTo<Rep> FwdValue>
     requires(unit == ::mp_units::one)
-  constexpr explicit(false) quantity(FwdValue&& v) :
-      numerical_value_is_an_implementation_detail_(std::forward<FwdValue>(v))
+  constexpr explicit(false) quantity(FwdValue&& val) :
+      numerical_value_is_an_implementation_detail_(std::forward<FwdValue>(val))
   {
   }
 
@@ -214,9 +214,9 @@ public:
 
   template<detail::ValuePreservingTo<Rep> FwdValue>
     requires(unit == ::mp_units::one)
-  constexpr quantity& operator=(FwdValue&& v)
+  constexpr quantity& operator=(FwdValue&& val)
   {
-    numerical_value_is_an_implementation_detail_ = std::forward<FwdValue>(v);
+    numerical_value_is_an_implementation_detail_ = std::forward<FwdValue>(val);
     return *this;
   }
 
@@ -422,11 +422,11 @@ public:
     requires(!Quantity<Value>) && requires(rep a, Value b) {
       { a *= b } -> std::same_as<rep&>;
     }
-  friend constexpr decltype(auto) operator*=(Q&& lhs, const Value& v)
+  friend constexpr decltype(auto) operator*=(Q&& lhs, const Value& val)
   {
     // TODO use *= when compiler bug is resolved:
     // https://developercommunity.visualstudio.com/t/Discrepancy-in-Behavior-of-operator-an/10732445
-    lhs.numerical_value_is_an_implementation_detail_ = lhs.numerical_value_is_an_implementation_detail_ * v;
+    lhs.numerical_value_is_an_implementation_detail_ = lhs.numerical_value_is_an_implementation_detail_ * val;
     return std::forward<Q>(lhs);
   }
 
@@ -444,12 +444,12 @@ public:
     requires(!Quantity<Value>) && requires(rep a, Value b) {
       { a /= b } -> std::same_as<rep&>;
     }
-  friend constexpr decltype(auto) operator/=(Q&& lhs, const Value& v)
+  friend constexpr decltype(auto) operator/=(Q&& lhs, const Value& val)
   {
-    MP_UNITS_EXPECTS_DEBUG(v != quantity_values<Value>::zero());
+    MP_UNITS_EXPECTS_DEBUG(val != quantity_values<Value>::zero());
     // TODO use /= when compiler bug is resolved:
     // https://developercommunity.visualstudio.com/t/Discrepancy-in-Behavior-of-operator-an/10732445
-    lhs.numerical_value_is_an_implementation_detail_ = lhs.numerical_value_is_an_implementation_detail_ / v;
+    lhs.numerical_value_is_an_implementation_detail_ = lhs.numerical_value_is_an_implementation_detail_ / val;
     return std::forward<Q>(lhs);
   }
 
@@ -551,17 +551,17 @@ public:
   template<std::derived_from<quantity> Q, typename Value>
     requires(!Quantity<Value>) &&
             (!Reference<Value>) && detail::InvokeResultOf<quantity_spec, std::multiplies<>, Rep, const Value&>
-  [[nodiscard]] friend constexpr QuantityOf<quantity_spec> auto operator*(const Q& q, const Value& v)
+  [[nodiscard]] friend constexpr QuantityOf<quantity_spec> auto operator*(const Q& q, const Value& val)
   {
-    return ::mp_units::quantity{q.numerical_value_ref_in(unit) * v, R};
+    return ::mp_units::quantity{q.numerical_value_ref_in(unit) * val, R};
   }
 
   template<typename Value, std::derived_from<quantity> Q>
     requires(!Quantity<Value>) &&
             (!Reference<Value>) && detail::InvokeResultOf<quantity_spec, std::multiplies<>, const Value&, Rep>
-  [[nodiscard]] friend constexpr QuantityOf<quantity_spec> auto operator*(const Value& v, const Q& q)
+  [[nodiscard]] friend constexpr QuantityOf<quantity_spec> auto operator*(const Value& val, const Q& q)
   {
-    return ::mp_units::quantity{v * q.numerical_value_ref_in(unit), R};
+    return ::mp_units::quantity{val * q.numerical_value_ref_in(unit), R};
   }
 
   template<std::derived_from<quantity> Q, auto R2, typename Rep2>
@@ -575,18 +575,18 @@ public:
   template<std::derived_from<quantity> Q, typename Value>
     requires(!Quantity<Value>) &&
             (!Reference<Value>) && detail::InvokeResultOf<quantity_spec, std::divides<>, Rep, const Value&>
-  [[nodiscard]] friend constexpr QuantityOf<quantity_spec> auto operator/(const Q& q, const Value& v)
+  [[nodiscard]] friend constexpr QuantityOf<quantity_spec> auto operator/(const Q& q, const Value& val)
   {
-    MP_UNITS_EXPECTS_DEBUG(v != quantity_values<Value>::zero());
-    return ::mp_units::quantity{q.numerical_value_ref_in(unit) / v, R};
+    MP_UNITS_EXPECTS_DEBUG(val != quantity_values<Value>::zero());
+    return ::mp_units::quantity{q.numerical_value_ref_in(unit) / val, R};
   }
 
   template<typename Value, std::derived_from<quantity> Q>
     requires(!Quantity<Value>) &&
             (!Reference<Value>) && detail::InvokeResultOf<quantity_spec, std::divides<>, const Value&, Rep>
-  [[nodiscard]] friend constexpr QuantityOf<inverse(quantity_spec)> auto operator/(const Value& v, const Q& q)
+  [[nodiscard]] friend constexpr QuantityOf<inverse(quantity_spec)> auto operator/(const Value& val, const Q& q)
   {
-    return ::mp_units::quantity{v / q.numerical_value_ref_in(unit), ::mp_units::one / R};
+    return ::mp_units::quantity{val / q.numerical_value_ref_in(unit), ::mp_units::one / R};
   }
 
   template<std::derived_from<quantity> Q, auto R2, typename Rep2>
