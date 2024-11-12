@@ -402,7 +402,7 @@ TEST_CASE("default quantity formatting", "[quantity][ostream][fmt]")
 
       SECTION("entropy")
       {
-        const auto q = 20 * isq::kinetic_energy[J] / (2 * isq::thermodynamic_temperature[K]);
+        const auto q = 20 * isq::kinetic_energy[J] / (delta<isq::thermodynamic_temperature[K]>(2));
         os << q;
 
         SECTION("iostream") { CHECK(os.str() == "10 J/K"); }
