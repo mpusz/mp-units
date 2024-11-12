@@ -23,6 +23,13 @@
 #include "almost_equals.h"
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/matchers/catch_matchers_floating_point.hpp>
+#include <mp-units/compat_macros.h>
+#include <mp-units/ext/format.h>
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
+#include <sstream>
+#endif
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else
