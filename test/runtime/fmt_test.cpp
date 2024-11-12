@@ -402,12 +402,12 @@ TEST_CASE("default quantity formatting", "[quantity][ostream][fmt]")
         }
       }
 
-      SECTION("surface tension")
+      SECTION("entropy")
       {
-        const auto q = 20 * isq::force[N] / (2 * isq::length[m]);
+        const auto q = 20 * isq::kinetic_energy[J] / (2 * isq::thermodynamic_temperature[K]);
         os << q;
 
-        SECTION("iostream") { CHECK(os.str() == "10 N/m"); }
+        SECTION("iostream") { CHECK(os.str() == "10 J/K"); }
 
         SECTION("fmt with default format {} on a quantity") { CHECK(MP_UNITS_STD_FMT::format("{}", q) == os.str()); }
 
