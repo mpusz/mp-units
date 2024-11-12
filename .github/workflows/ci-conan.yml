@@ -33,20 +33,16 @@ on:
 env:
   CHANNEL: ${{ fromJSON('["testing", "stable"]')[github.ref_type == 'tag' && startsWith(github.ref_name, 'v')] }}
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  cancel-previous:
-    concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}
-      cancel-in-progress: true
-    runs-on: ubuntu-24.04
-    steps:
-      - run: echo "Cancelling all previous runs of ${{ github.workflow }}-${{ github.ref }}"
   generate-matrix:
     name: "Generate build matrix for ${{ github.workflow }}"
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     runs-on: ubuntu-24.04
-    needs: cancel-previous
     steps:
       - name: Set up Python
         uses: actions/setup-python@v5
