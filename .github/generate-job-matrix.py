@@ -1,5 +1,6 @@
 import argparse
 import json
+import os
 import random
 import typing
 from types import SimpleNamespace
@@ -157,8 +158,14 @@ def main():
 
     json_data = [e.as_json() for e in data]
 
+    output_file = os.environ.get("GITHUB_OUTPUT")
     if not args.suppress_output:
-        print(f"::set-output name=matrix::{json.dumps(json_data)}")
+        if output_file:
+            print(f"Writing outputs to {output_file}")
+            with open(output_file, "wt") as fh:
+                fh.write(f"matrix={json.dumps(json_data)}")
+        else:
+            print("No output file received!")
 
     for dbg in args.debug:
         match dbg:
