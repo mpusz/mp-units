@@ -39,10 +39,6 @@ import mp_units;
 #include <mp-units/systems/si.h>
 #endif
 
-template<class T>
-  requires mp_units::is_scalar<T>
-constexpr bool mp_units::is_vector<T> = true;
-
 int main()
 {
   using namespace mp_units;
