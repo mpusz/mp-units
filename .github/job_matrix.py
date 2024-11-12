@@ -35,12 +35,21 @@ class MatrixElement:
     contracts: typing.Literal["none", "gsl-lite", "ms-gsl"]
     build_type: typing.Literal["Release", "Debug"]
 
+    def as_json(self):
+        def dataclass_to_json(obj):
+            """Convert dataclasses to something json-serialisable"""
+            if dataclasses.is_dataclass(obj):
+                return {
+                    k: dataclass_to_json(v) for k, v in dataclasses.asdict(obj).items()
+                }
+            return obj
 
-def dataclass_to_json(obj):
-    """Convert dataclasses to something json-serialisable"""
-    if dataclasses.is_dataclass(obj):
-        return dataclasses.asdict(obj)
-    raise TypeError(f"Unknown object of type {type(obj).__name__}")
+        ret = dataclass_to_json(self)
+        # patch boolean conan configuration options
+        config = ret["config"]
+        for k in ["cxx_modules"]:
+            config[k] = "True" if config[k] else "False"
+        return ret
 
 
 class CombinationCollector:

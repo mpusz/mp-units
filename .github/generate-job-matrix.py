@@ -4,7 +4,7 @@ import random
 import typing
 from types import SimpleNamespace
 
-from job_matrix import CombinationCollector, Compiler, Configuration, dataclass_to_json
+from job_matrix import CombinationCollector, Compiler, Configuration
 
 
 def make_gcc_config(version: int) -> Configuration:
@@ -155,20 +155,20 @@ def main():
 
     data = sorted(collector.combinations)
 
+    json_data = [e.as_json() for e in data]
+
     if not args.suppress_output:
-        print(
-            f"::set-output name=matrix::{json.dumps(data, default=dataclass_to_json)}"
-        )
+        print(f"::set-output name=matrix::{json.dumps(json_data)}")
 
     for dbg in args.debug:
         match dbg:
             case "yaml":
                 import yaml
 
-                json_data = json.loads(json.dumps(data, default=dataclass_to_json))
+                json_data = json.loads(json.dumps(json_data))
                 print(yaml.safe_dump(json_data))
             case "json":
-                print(json.dumps(data, default=dataclass_to_json, indent=4))
+                print(json.dumps(json_data, indent=4))
             case "combinations":
                 for e in data:
                     print(
