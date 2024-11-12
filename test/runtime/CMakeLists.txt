@@ -24,13 +24,14 @@ find_package(Catch2 3 REQUIRED)
 
 add_executable(
     unit_tests_runtime
+    atomic_test.cpp
+    cartesian_vector_test.cpp
     distribution_test.cpp
     fixed_string_test.cpp
     fmt_test.cpp
     math_test.cpp
-    atomic_test.cpp
-    truncation_test.cpp
     quantity_test.cpp
+    truncation_test.cpp
 )
 if(${projectPrefix}BUILD_CXX_MODULES)
     target_compile_definitions(unit_tests_runtime PUBLIC ${projectPrefix}MODULES)
