@@ -83,8 +83,8 @@ concept InvokeResultOf = QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS))> && st
                          RepresentationOf<std::invoke_result_t<Func, T, U>, QS>;
 
 template<typename Func, typename Q1, typename Q2,
-         auto QS = std::invoke_result_t<Func, std::remove_const_t<decltype(Q1::quantity_spec)>,
-                                        std::remove_const_t<decltype(Q2::quantity_spec)>>{}>
+         auto QS = std::invoke_result_t<Func, MP_UNITS_NONCONST_TYPE(Q1::quantity_spec),
+                                        MP_UNITS_NONCONST_TYPE(Q2::quantity_spec)>{}>
 concept InvocableQuantities = QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS))> && Quantity<Q1> && Quantity<Q2> &&
                               InvokeResultOf<QS, Func, typename Q1::rep, typename Q2::rep>;
 

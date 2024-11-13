@@ -158,13 +158,13 @@ struct unit_interface {
   template<Magnitude M, Unit U>
   [[nodiscard]] friend MP_UNITS_CONSTEVAL Unit auto operator*(M, U u)
   {
-    if constexpr (std::is_same_v<M, std::remove_const_t<decltype(mp_units::mag<1>)>>)
+    if constexpr (std::is_same_v<M, MP_UNITS_NONCONST_TYPE(mp_units::mag<1>)>)
       return u;
     else if constexpr (is_specialization_of_scaled_unit<U>) {
       if constexpr (M{} * U::_mag_ == mag<1>)
         return U::_reference_unit_;
       else
-        return scaled_unit<M{} * U::_mag_, std::remove_const_t<decltype(U::_reference_unit_)>>{};
+        return scaled_unit<M{} * U::_mag_, MP_UNITS_NONCONST_TYPE(U::_reference_unit_)>{};
     } else
       return scaled_unit<M{}, U>{};
   }
@@ -304,7 +304,7 @@ struct named_unit;
  * @tparam QuantitySpec a specification of a base quantity to be measured with this unit
  */
 template<symbol_text Symbol, detail::QuantityKindSpec auto QS>
-  requires(!Symbol.empty()) && detail::BaseDimension<std::remove_const_t<decltype(QS.dimension)>>
+  requires(!Symbol.empty()) && detail::BaseDimension<MP_UNITS_NONCONST_TYPE(QS.dimension)>
 struct named_unit<Symbol, QS> : detail::unit_interface {
   using _base_type_ = named_unit;           // exposition only
   static constexpr auto _symbol_ = Symbol;  ///< Unique base unit identifier
@@ -312,7 +312,7 @@ struct named_unit<Symbol, QS> : detail::unit_interface {
 };
 
 template<symbol_text Symbol, detail::QuantityKindSpec auto QS, PointOrigin auto PO>
-  requires(!Symbol.empty()) && detail::BaseDimension<std::remove_const_t<decltype(QS.dimension)>>
+  requires(!Symbol.empty()) && detail::BaseDimension<MP_UNITS_NONCONST_TYPE(QS.dimension)>
 struct named_unit<Symbol, QS, PO> : detail::unit_interface {
   using _base_type_ = named_unit;           // exposition only
   static constexpr auto _symbol_ = Symbol;  ///< Unique base unit identifier
@@ -427,7 +427,7 @@ template<Unit U1, Unit U2>
   if constexpr (common_magnitude == mag<1>)
     return canonical_lhs.reference_unit;
   else
-    return scaled_unit<common_magnitude, std::remove_const_t<decltype(canonical_lhs.reference_unit)>>{};
+    return scaled_unit<common_magnitude, MP_UNITS_NONCONST_TYPE(canonical_lhs.reference_unit)>{};
 }
 
 [[nodiscard]] consteval Unit auto get_common_scaled_unit(Unit auto u1, Unit auto u2, Unit auto u3, Unit auto... rest)

@@ -125,8 +125,8 @@ concept SameAbsolutePointOriginAs =
  */
 MP_UNITS_EXPORT template<typename QP, auto V>
 concept QuantityPointOf =
-  QuantityPoint<QP> && (QuantitySpecOf<std::remove_const_t<decltype(QP::quantity_spec)>, V> ||
-                        detail::SameAbsolutePointOriginAs<std::remove_const_t<decltype(QP::absolute_point_origin)>, V>);
+  QuantityPoint<QP> && (QuantitySpecOf<MP_UNITS_NONCONST_TYPE(QP::quantity_spec), V> ||
+                        detail::SameAbsolutePointOriginAs<MP_UNITS_NONCONST_TYPE(QP::absolute_point_origin), V>);
 
 /**
  * @brief A concept matching all external quantity point like types

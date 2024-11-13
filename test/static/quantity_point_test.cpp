@@ -888,9 +888,9 @@ static_assert(invalid_unit_conversion<quantity_point>);
 /////////
 
 static_assert(std::is_same_v<decltype(quantity_point{123 * m})::rep, int>);
-static_assert(std::is_same_v<std::remove_const_t<decltype(quantity_point{123 * m}.point_origin)>,
+static_assert(std::is_same_v<MP_UNITS_NONCONST_TYPE(quantity_point{123 * m}.point_origin),
                              zeroth_point_origin_<kind_of<isq::length>>>);
-static_assert(std::is_same_v<std::remove_const_t<decltype(quantity_point{123 * m}.absolute_point_origin)>,
+static_assert(std::is_same_v<MP_UNITS_NONCONST_TYPE(quantity_point{123 * m}.absolute_point_origin),
                              zeroth_point_origin_<kind_of<isq::length>>>);
 static_assert(quantity_point{123 * m}.unit == si::metre);
 static_assert(quantity_point{123 * m}.quantity_spec == kind_of<isq::length>);
@@ -914,9 +914,9 @@ static_assert(quantity_point{delta<deg_C>(20)}.quantity_spec == kind_of<isq::the
 #if MP_UNITS_HOSTED
 using namespace std::chrono_literals;
 static_assert(std::is_same_v<decltype(quantity_point{sys_seconds{123s}})::rep, std::chrono::seconds::rep>);
-static_assert(std::is_same_v<std::remove_const_t<decltype(quantity_point{sys_seconds{123s}}.point_origin)>,
+static_assert(std::is_same_v<MP_UNITS_NONCONST_TYPE(quantity_point{sys_seconds{123s}}.point_origin),
                              chrono_point_origin_<std::chrono::system_clock>>);
-static_assert(std::is_same_v<std::remove_const_t<decltype(quantity_point{sys_seconds{123s}}.absolute_point_origin)>,
+static_assert(std::is_same_v<MP_UNITS_NONCONST_TYPE(quantity_point{sys_seconds{123s}}.absolute_point_origin),
                              chrono_point_origin_<std::chrono::system_clock>>);
 static_assert(quantity_point{sys_seconds{24h}}.unit == si::second);
 static_assert(quantity_point{sys_seconds{24h}}.quantity_spec == kind_of<isq::time>);

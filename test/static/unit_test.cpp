@@ -89,7 +89,7 @@ inline constexpr struct speed_of_light_in_vacuum_ final : named_unit<"c", mag<29
 static_assert(Unit<metre_>);
 static_assert(Unit<second_>);
 static_assert(Unit<nu_second_>);
-static_assert(Unit<std::remove_const_t<decltype(kilogram)>>);
+static_assert(Unit<MP_UNITS_NONCONST_TYPE(kilogram)>);
 static_assert(Unit<hertz_>);
 static_assert(Unit<newton_>);
 static_assert(Unit<minute_>);
@@ -101,20 +101,20 @@ static_assert(Unit<decltype(second * second)>);
 static_assert(Unit<decltype(nu_second * nu_second)>);
 static_assert(Unit<decltype(metre / second)>);
 static_assert(Unit<decltype(nu_second / nu_second)>);
-static_assert(Unit<std::remove_const_t<decltype(kilometre)>>);
+static_assert(Unit<MP_UNITS_NONCONST_TYPE(kilometre)>);
 
 static_assert(PrefixableUnit<metre_>);
 static_assert(PrefixableUnit<hertz_>);
 static_assert(PrefixableUnit<newton_>);
 static_assert(PrefixableUnit<minute_>);
 static_assert(PrefixableUnit<radian_>);
-static_assert(!PrefixableUnit<std::remove_const_t<decltype(kilogram)>>);
+static_assert(!PrefixableUnit<MP_UNITS_NONCONST_TYPE(kilogram)>);
 static_assert(!PrefixableUnit<decltype(kilojoule)>);
 static_assert(!PrefixableUnit<si::kilo_<struct gram_>>);
 static_assert(!PrefixableUnit<decltype(square(metre))>);
 static_assert(!PrefixableUnit<decltype(cubic(metre))>);
 static_assert(!PrefixableUnit<decltype(mag<60> * second)>);
-static_assert(!PrefixableUnit<std::remove_const_t<decltype(kilometre)>>);
+static_assert(!PrefixableUnit<MP_UNITS_NONCONST_TYPE(kilometre)>);
 
 // named unit
 static_assert(is_of_type<metre, metre_>);
@@ -194,14 +194,14 @@ static_assert(standard_gravity != metre / square(second));  // magnitude is diff
 static_assert(standard_gravity._symbol_ == symbol_text{u8"g₀", "g_0"});
 
 // prefixed_unit
-static_assert(is_of_type<kilometre, std::remove_const_t<decltype(kilo<metre>)>>);
+static_assert(is_of_type<kilometre, MP_UNITS_NONCONST_TYPE(kilo<metre>)>);
 static_assert(is_of_type<get_canonical_unit(kilometre).reference_unit, metre_>);
 static_assert(get_canonical_unit(kilometre).mag == mag<1000>);
 static_assert(convertible(kilometre, metre));
 static_assert(kilometre != metre);
 static_assert(kilometre._symbol_ == "km");
 
-static_assert(is_of_type<kilojoule, std::remove_const_t<decltype(kilo<joule>)>>);
+static_assert(is_of_type<kilojoule, MP_UNITS_NONCONST_TYPE(kilo<joule>)>);
 static_assert(is_of_type<get_canonical_unit(kilojoule).reference_unit,
                          derived_unit<gram_, power<metre_, 2>, per<power<second_, 2>>>>);
 static_assert(get_canonical_unit(kilojoule).mag == mag<1'000'000>);
@@ -212,8 +212,7 @@ static_assert(kilojoule._symbol_ == "kJ");
 static_assert(is_of_type<kilo<metre>, kilo_<metre_>>);
 static_assert(is_of_type<kilo<joule>, kilo_<joule_>>);
 
-static_assert(
-  is_of_type<kilometre / metre, derived_unit<std::remove_const_t<decltype(kilo<metre>)>, per<metre_>>>);  // !!!
+static_assert(is_of_type<kilometre / metre, derived_unit<MP_UNITS_NONCONST_TYPE(kilo<metre>), per<metre_>>>);  // !!!
 
 
 // prefixes

@@ -67,7 +67,7 @@ struct point_origin_interface {
   }
 
   template<PointOrigin PO, Quantity Q>
-    requires ReferenceOf<std::remove_const_t<decltype(Q::reference)>, PO::_quantity_spec_>
+    requires ReferenceOf<MP_UNITS_NONCONST_TYPE(Q::reference), PO::_quantity_spec_>
   [[nodiscard]] friend constexpr QuantityPoint auto operator-(PO po, const Q& q)
     requires requires { -q; }
   {
@@ -75,7 +75,7 @@ struct point_origin_interface {
   }
 
   template<PointOrigin PO1, detail::SameAbsolutePointOriginAs<PO1{}> PO2>
-    requires QuantitySpecOf<std::remove_const_t<decltype(PO1::_quantity_spec_)>, PO2::_quantity_spec_> &&
+    requires QuantitySpecOf<MP_UNITS_NONCONST_TYPE(PO1::_quantity_spec_), PO2::_quantity_spec_> &&
              (is_derived_from_specialization_of_v<PO1, relative_point_origin> ||
               is_derived_from_specialization_of_v<PO2, relative_point_origin>)
   [[nodiscard]] friend constexpr Quantity auto operator-(PO1 po1, PO2 po2)
@@ -118,7 +118,7 @@ struct relative_point_origin : detail::point_origin_interface {
   static constexpr QuantityPoint auto _quantity_point_ = QP;
   static constexpr QuantitySpec auto _quantity_spec_ = []() {
     // select the strongest of specs
-    if constexpr (detail::QuantityKindSpec<std::remove_const_t<decltype(QP.quantity_spec)>>)
+    if constexpr (detail::QuantityKindSpec<MP_UNITS_NONCONST_TYPE(QP.quantity_spec)>)
       return QP.point_origin._quantity_spec_;
     else
       return QP.quantity_spec;
@@ -497,7 +497,7 @@ public:
 
   template<std::derived_from<quantity_point> QP, PointOrigin PO2>
     requires QuantityPointOf<quantity_point, PO2{}> &&
-             ReferenceOf<std::remove_const_t<decltype(reference)>, PO2::_quantity_spec_>
+             ReferenceOf<MP_UNITS_NONCONST_TYPE(reference), PO2::_quantity_spec_>
   [[nodiscard]] friend constexpr Quantity auto operator-(const QP& qp, PO2 po)
   {
     if constexpr (point_origin == po)
@@ -520,7 +520,7 @@ public:
 
   template<PointOrigin PO1, std::derived_from<quantity_point> QP>
     requires QuantityPointOf<quantity_point, PO1{}> &&
-             ReferenceOf<std::remove_const_t<decltype(reference)>, PO1::_quantity_spec_>
+             ReferenceOf<MP_UNITS_NONCONST_TYPE(reference), PO1::_quantity_spec_>
   [[nodiscard]] friend constexpr Quantity auto operator-(PO1 po, const QP& qp)
   {
     return -(qp - po);

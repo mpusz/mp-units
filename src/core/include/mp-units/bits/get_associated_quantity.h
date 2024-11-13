@@ -52,7 +52,7 @@ template<AssociatedUnit U>
 [[nodiscard]] consteval auto all_are_kinds(U)
 {
   if constexpr (requires { U::_quantity_spec_; })
-    return QuantityKindSpec<std::remove_const_t<decltype(U::_quantity_spec_)>>;
+    return QuantityKindSpec<MP_UNITS_NONCONST_TYPE(U::_quantity_spec_)>;
   else if constexpr (requires { U::_reference_unit_; })
     return all_are_kinds(U::_reference_unit_);
   else if constexpr (requires { typename U::_num_; }) {

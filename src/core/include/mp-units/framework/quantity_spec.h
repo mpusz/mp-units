@@ -114,7 +114,7 @@ using type_list_of_quantity_spec_less = expr_less<T1, T2, quantity_spec_less>;
 
 template<NamedQuantitySpec Q>
   requires requires { Q::dimension; }
-using to_dimension = std::remove_const_t<decltype(Q::dimension)>;
+using to_dimension = MP_UNITS_NONCONST_TYPE(Q::dimension);
 
 template<AssociatedUnit U>
 [[nodiscard]] consteval auto get_associated_quantity(U);
@@ -925,10 +925,10 @@ template<typename From, typename To>
       return extract_results{false};
     else if constexpr (from_exp > to_exp)
       return extract_results{true, from_factor, to_factor, prepend_rest::first,
-                             power_or_T<std::remove_const_t<decltype(from_factor)>, from_exp - to_exp>{}};
+                             power_or_T<MP_UNITS_NONCONST_TYPE(from_factor), from_exp - to_exp>{}};
     else
       return extract_results{true, from_factor, to_factor, prepend_rest::second,
-                             power_or_T<std::remove_const_t<decltype(to_factor)>, to_exp - from_exp>{}};
+                             power_or_T<MP_UNITS_NONCONST_TYPE(to_factor), to_exp - from_exp>{}};
   }
 }
 
