@@ -34,51 +34,32 @@ on:
     paths-ignore:
       - "docs/**"
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
+  generate-matrix:
+    name: "Generate build matrix for ${{ github.workflow }}"
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.x
+      - id: set-matrix
+        run: python .github/generate-job-matrix.py --preset freestanding --seed 42 --debug combinations counts
   build:
     name: "${{ matrix.formatting }} ${{ matrix.contracts }} C++${{ matrix.std }} ${{ matrix.config.name }} ${{ matrix.build_type }}"
     runs-on: ${{ matrix.config.os }}
+    needs: generate-matrix
     strategy:
       fail-fast: false
       matrix:
-        formatting: ["std::format", "fmtlib"]
-        contracts: ["none"]
-        std: [23]
-        config:
-          - {
-              name: "GCC-14",
-              os: ubuntu-24.04,
-              compiler:
-                {
-                  type: GCC,
-                  version: 14,
-                  cc: "gcc-14",
-                  cxx: "g++-14",
-                },
-              cxx_modules: "False",
-              std_format_support: "True",
-              conan-config: "",
-            }
-          - {
-              name: "Clang-18",
-              os: ubuntu-24.04,
-              compiler:
-                {
-                  type: CLANG,
-                  version: 18,
-                  cc: "clang-18",
-                  cxx: "clang++-18",
-                },
-              lib: "libc++",
-              cxx_modules: "True",
-              std_format_support: "True",
-              conan-config: "",
-            }
-        build_type: ["Release", "Debug"]
-        # TODO For some reason Clang-18 Debug with -ffreestanding does not pass CMakeTestCXXCompiler
-        exclude:
-          - build_type: "Debug"
-            config: { name: "Clang-18" }
+        include: ${{fromJson(needs.generate-matrix.outputs.matrix)}}
 
     env:
       CC: ${{ matrix.config.compiler.cc }}
