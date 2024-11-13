@@ -28,6 +28,7 @@ Now, it is time to see how we can implement hierarchies of quantities of the sam
 - [Part 3 - Modeling ISQ](isq-part-3-modeling-isq.md)
 - Part 4 - Implementing ISQ
 - [Part 5 - Benefits](isq-part-5-benefits.md)
+- [Part 6 - Challenges](isq-part-6-challenges.md)
 
 
 ## Modeling a hierarchy of kind _length_

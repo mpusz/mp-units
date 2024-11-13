@@ -60,22 +60,25 @@ constexpr bool within_4_ulps(T a, T b)
 
 }  // namespace
 
-// conversion requiring radical magnitudes
-TEST_CASE("unit conversions support radical magnitudes", "[conversion][radical]")
+TEST_CASE("quantity operations", "[quantity]")
 {
-  REQUIRE(within_4_ulps(sqrt((1.0 * m) * (1.0 * km)).numerical_value_in(m), sqrt(1000.0)));
-}
+  // conversion requiring radical magnitudes
+  SECTION("unit conversions support radical magnitudes")
+  {
+    REQUIRE(within_4_ulps(sqrt((1.0 * m) * (1.0 * km)).numerical_value_in(m), sqrt(1000.0)));
+  }
 
-// Reproducing issue #474 exactly:
-TEST_CASE("Issue 474 is fixed", "[conversion][radical]")
-{
-  constexpr auto val_issue_474 = 8.0 * si::si2019::boltzmann_constant * 1000.0 * K / (std::numbers::pi * 10 * Da);
-  REQUIRE(within_4_ulps(sqrt(val_issue_474).numerical_value_in(m / s),
-                        sqrt(val_issue_474.numerical_value_in(m * m / s / s))));
-}
+  // Reproducing issue #474 exactly:
+  SECTION("Issue 474 is fixed")
+  {
+    constexpr auto val_issue_474 = 8.0 * si::si2019::boltzmann_constant * 1000.0 * K / (std::numbers::pi * 10 * Da);
+    REQUIRE(within_4_ulps(sqrt(val_issue_474).numerical_value_in(m / s),
+                          sqrt(val_issue_474.numerical_value_in(m * m / s / s))));
+  }
 
-TEST_CASE("Volatile representation type", "[volatile]")
-{
-  volatile std::int16_t vint = 123;
-  REQUIRE(quantity(vint * m).numerical_value_in(m) == 123);
+  SECTION("Volatile representation type")
+  {
+    volatile std::int16_t vint = 123;
+    REQUIRE(quantity(vint * m).numerical_value_in(m) == 123);
+  }
 }

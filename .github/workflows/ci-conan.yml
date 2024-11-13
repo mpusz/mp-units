@@ -33,149 +33,35 @@ on:
 env:
   CHANNEL: ${{ fromJSON('["testing", "stable"]')[github.ref_type == 'tag' && startsWith(github.ref_name, 'v')] }}
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
+  generate-matrix:
+    name: "Generate build matrix for ${{ github.workflow }}"
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.x
+      - id: set-matrix
+        run: python .github/generate-job-matrix.py --preset conan --seed 42 --debug combinations counts
   build:
     name: "${{ matrix.formatting }} ${{ matrix.contracts }} C++${{ matrix.std }} ${{ matrix.config.name }} ${{ matrix.build_type }}"
     runs-on: ${{ matrix.config.os }}
+    needs: generate-matrix
     strategy:
       fail-fast: false
       matrix:
-        formatting: ["std::format", "fmtlib"]
-        contracts: ["none", "gsl-lite", "ms-gsl"]
-        std: [20, 23]
-        config:
-          - {
-              name: "MSVC 14.4",
-              os: windows-2022,
-              compiler: { type: MSVC, version: 194, cc: "", cxx: "" },
-              cxx_modules: "False",
-              std_format_support: "True",
-              conan-config: "",
-            }
-          - {
-              name: "GCC-12",
-              os: ubuntu-24.04,
-              compiler:
-                {
-                  type: GCC,
-                  version: 12,
-                  cc: "gcc-12",
-                  cxx: "g++-12",
-                },
-              cxx_modules: "False",
-              std_format_support: "False",
-              conan-config: "",
-            }
-          - {
-              name: "GCC-13",
-              os: ubuntu-24.04,
-              compiler:
-                {
-                  type: GCC,
-                  version: 13,
-                  cc: "gcc-13",
-                  cxx: "g++-13",
-                },
-              cxx_modules: "False",
-              std_format_support: "True",
-              conan-config: "",
-            }
-          - {
-              name: "GCC-14",
-              os: ubuntu-24.04,
-              compiler:
-                {
-                  type: GCC,
-                  version: 14,
-                  cc: "gcc-14",
-                  cxx: "g++-14",
-                },
-              cxx_modules: "False",
-              std_format_support: "True",
-              conan-config: "",
-            }
-          - {
-              name: "Clang-16",
-              os: ubuntu-22.04,
-              compiler:
-                {
-                  type: CLANG,
-                  version: 16,
-                  cc: "clang-16",
-                  cxx: "clang++-16",
-                },
-              lib: "libc++",
-              cxx_modules: "False",
-              std_format_support: "False",
-              conan-config: "",
-            }
-          - {
-              name: "Clang-17",
-              os: ubuntu-24.04,
-              compiler:
-                {
-                  type: CLANG,
-                  version: 17,
-                  cc: "clang-17",
-                  cxx: "clang++-17",
-                },
-              lib: "libc++",
-              cxx_modules: "True",
-              std_format_support: "True",
-              conan-config: "",
-            }
-          - {
-              name: "Clang-18",
-              os: ubuntu-24.04,
-              compiler:
-                {
-                  type: CLANG,
-                  version: 18,
-                  cc: "clang-18",
-                  cxx: "clang++-18",
-                },
-              lib: "libc++",
-              cxx_modules: "True",
-              std_format_support: "True",
-              conan-config: "",
-            }
-          - {
-              name: "Clang-18 on Apple M1 (arm64)",
-              os: macos-14,
-              compiler:
-                {
-                  type: CLANG,
-                  version: 18,
-                  cc: "/opt/homebrew/opt/llvm@18/bin/clang-18",
-                  cxx: "/opt/homebrew/opt/llvm@18/bin/clang++",
-                },
-              lib: "libc++",
-              cxx_modules: "False",
-              std_format_support: "True"
-            }
-          - {
-              name: "Apple Clang 15",
-              os: macos-13,
-              compiler:
-                {
-                  type: APPLE_CLANG,
-                  version: "15.0",
-                  cc: "clang",
-                  cxx: "clang++",
-                },
-              cxx_modules: "False",
-              std_format_support: "False",
-              conan-config: "",
-            }
-        build_type: ["Release", "Debug"]
-        exclude:
-          - formatting: "std::format"
-            config: { std_format_support: "False" }
-
+        include: ${{fromJson(needs.generate-matrix.outputs.matrix)}}
     env:
       CC: ${{ matrix.config.compiler.cc }}
       CXX: ${{ matrix.config.compiler.cxx }}
-
     steps:
       - uses: actions/checkout@v4
       - name: Generate unique cache id
@@ -258,21 +144,21 @@ jobs:
         shell: bash
         run: |
           echo "std_format=$([ "${{ matrix.formatting }}" == "std::format" ] && echo "True" || echo "False")" >> $GITHUB_ENV
-          echo "import_std=$([ "${{ matrix.config.cxx_modules }}" == "True" ] && [ "${{ matrix.config.contracts }}" == "none" ] && [ "${{ matrix.formatting }}" == "std::format" ] && echo "True" || echo "False")" >> $GITHUB_ENV
+          echo "import_std=$([ "${{ matrix.std }}" -ge "23" ] && [ "${{ matrix.config.cxx_modules }}" == "True" ] && [ "${{ matrix.config.contracts }}" == "none" ] && [ "${{ matrix.formatting }}" == "std::format" ] && echo "True" || echo "False")" >> $GITHUB_ENV
       - name: Create Conan package
         if: matrix.config.compiler.type != 'MSVC'
         shell: bash
         run: |
           conan create . --user mpusz --channel ${CHANNEL} --lockfile-out=package.lock \
                          -b mp-units/* -b missing -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" -c user.mp-units.build:all=True \
-                         -o '&:cxx_modules=${{ matrix.config.cxx_modules }}' -o '&:import_std=${{ env.import_std }}' -o '&:std_format=${{ env.std_format }}' -o '&:contracts=${{ matrix.contracts }}' ${{ matrix.config.conan-config }}
+                         -o '&:cxx_modules=${{ matrix.config.cxx_modules }}' -o '&:import_std=${{ env.import_std }}' -o '&:std_format=${{ env.std_format }}' -o '&:contracts=${{ matrix.contracts }}' ${{ matrix.config.conan_config }}
       - name: Create Conan package
         if: matrix.config.compiler.type == 'MSVC'
         shell: bash
         run: |
           conan create . --user mpusz --channel ${CHANNEL} --lockfile-out=package.lock \
                          -b mp-units/* -b missing -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" -c user.mp-units.build:all=False \
-                         -o '&:cxx_modules=${{ matrix.config.cxx_modules }}' -o '&:import_std=${{ env.import_std }}' -o '&:std_format=${{ env.std_format }}' -o '&:contracts=${{ matrix.contracts }}' ${{ matrix.config.conan-config }}
+                         -o '&:cxx_modules=${{ matrix.config.cxx_modules }}' -o '&:import_std=${{ env.import_std }}' -o '&:std_format=${{ env.std_format }}' -o '&:contracts=${{ matrix.contracts }}' ${{ matrix.config.conan_config }}
       - name: Obtain package reference
         id: get-package-ref
         shell: bash

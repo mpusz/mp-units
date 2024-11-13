@@ -38,19 +38,22 @@ import mp_units;
 
 using namespace mp_units;
 
-TEST_CASE("fixed_string::at", "[fixed_string]")
+TEST_CASE("fixed_string operations", "[fixed_string]")
 {
-  basic_fixed_string txt = "abc";
-  SECTION("in range")
+  SECTION("fixed_string::at")
   {
-    CHECK(txt.at(0) == 'a');
-    CHECK(txt.at(1) == 'b');
-    CHECK(txt.at(2) == 'c');
-  }
-  SECTION("out of range")
-  {
-    REQUIRE_THROWS_MATCHES(txt.at(3), std::out_of_range, Catch::Matchers::Message("basic_fixed_string::at"));
-    REQUIRE_THROWS_MATCHES(txt.at(1024), std::out_of_range, Catch::Matchers::Message("basic_fixed_string::at"));
+    basic_fixed_string txt = "abc";
+    SECTION("in range")
+    {
+      CHECK(txt.at(0) == 'a');
+      CHECK(txt.at(1) == 'b');
+      CHECK(txt.at(2) == 'c');
+    }
+    SECTION("out of range")
+    {
+      REQUIRE_THROWS_MATCHES(txt.at(3), std::out_of_range, Catch::Matchers::Message("basic_fixed_string::at"));
+      REQUIRE_THROWS_MATCHES(txt.at(1024), std::out_of_range, Catch::Matchers::Message("basic_fixed_string::at"));
+    }
   }
 }
 
