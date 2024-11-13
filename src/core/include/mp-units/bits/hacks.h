@@ -81,7 +81,7 @@
 // workarounds for https://cplusplus.github.io/CWG/issues/2387.html
 #define MP_UNITS_INLINE inline
 
-#if __cpp_auto_cast >= 202110L
+#if __cpp_auto_cast >= 202110L && MP_UNITS_COMP_GCC != 12
 #define MP_UNITS_NONCONST_TYPE(expr) decltype(auto(expr))
 #else
 #define MP_UNITS_NONCONST_TYPE(expr) std::remove_const_t<decltype(expr)>
