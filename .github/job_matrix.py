@@ -64,9 +64,6 @@ class CombinationCollector:
         self.full_matrix = full_matrix
         self.hard_excludes = hard_excludes
         self.combinations: set[MatrixElement] = set()
-        self.per_value_counts: dict[tuple[str, typing.Any], int] = {
-            (k, v): 0 for k, options in full_matrix.items() for v in options
-        }
 
     def _make_submatrix(self, **overrides):
         new_matrix = dict(self.full_matrix)
@@ -80,12 +77,9 @@ class CombinationCollector:
         if e in self.combinations or (
             self.hard_excludes is not None and self.hard_excludes(e)
         ):
-            return
+            return False
         self.combinations.add(e)
-        # update per_value_counts
-        for k, v in vars(e).items():
-            idx = (k, v)
-            self.per_value_counts[idx] = self.per_value_counts.get(idx, 0) + 1
+        return True
 
     def all_combinations(
         self,
@@ -118,7 +112,17 @@ class CombinationCollector:
         for key, options in matrix.items():
             for value in options:
                 idx = (key, value)
-                missing[idx] = min_samples_per_value - self.per_value_counts.get(idx, 0)
+                missing[idx] = min_samples_per_value
+        for e in self.combinations:
+            for k, v in vars(e).items():
+                if v not in matrix[k]:
+                    break
+            else:
+                # this combination is in the submatrix
+                for k, v in vars(e).items():
+                    if v in matrix[k]:
+                        missing[k, v] -= 1
+        n_failed_tries = 0
         while missing:
             (force_key, force_option), remaining = next(iter(missing.items()))
             if remaining <= 0:
@@ -128,12 +132,22 @@ class CombinationCollector:
             for key, options in matrix.items():
                 choice[key] = force_option if key == force_key else rgen.choice(options)
             cand = MatrixElement(**choice)
-            if filter and not filter(cand):
+            if filter is None or filter(cand):
+                added = self._add_combination(cand)
+            else:
+                added = False
+            if added:
+                n_failed_tries = 0
+            else:
+                n_failed_tries += 1
+                if n_failed_tries > 100:
+                    raise RuntimeError(
+                        "Unable to reach the requested minimum number of samples,"
+                        f" still missing the following\n{missing}"
+                    )
                 continue
-            self._add_combination(cand)
             for idx in choice.items():
-                if missing.pop(idx, 0) <= 0:
+                remaining = missing.pop(idx, 0) - 1
+                if remaining <= 0:
                     continue
-                remaining = min_samples_per_value - self.per_value_counts.get(idx, 0)
-                if remaining > 0:
-                    missing[idx] = remaining
+                missing[idx] = remaining

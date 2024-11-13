@@ -127,6 +127,16 @@ def main():
             e.formatting == "std::format" and not e.config.std_format_support
         ),
     )
+    if args.preset:
+        # whatever the preset; we always want to have a test that does import_std;
+        # that requires a very specific configuration
+        collector.sample_combinations(
+            rgen=rgen,
+            min_samples_per_value=1,
+            formatting="std::format",
+            contracts="none",
+            config=configs["Clang-18 (x86-64)"],
+        )
     match args.preset:
         case None:
             pass
@@ -194,8 +204,6 @@ def main():
                     )
             case "counts":
                 print(f"Total combinations {len(data)}")
-                for (k, v), n in sorted(collector.per_value_counts.items()):
-                    print(f"  {k}={v}: {n}")
             case "none":
                 pass
             case _:
