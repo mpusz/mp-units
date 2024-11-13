@@ -28,6 +28,7 @@
 #include <mp-units/ext/algorithm.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
+#include <mp-units/ext/contracts.h>
 #ifdef MP_UNITS_IMPORT_STD
 import std;
 #else
@@ -41,6 +42,101 @@ import std;
 #endif
 
 namespace mp_units::detail {
+
+// (a + b) % n.
+//
+// Precondition: (a < n).
+// Precondition: (b < n).
+// Precondition: (n > 0).
+[[nodiscard]] consteval std::uint64_t add_mod(std::uint64_t a, std::uint64_t b, std::uint64_t n)
+{
+  MP_UNITS_EXPECTS_DEBUG(a < n);
+  MP_UNITS_EXPECTS_DEBUG(b < n);
+  MP_UNITS_EXPECTS_DEBUG(n > 0u);
+
+  if (a >= n - b) {
+    return a - (n - b);
+  } else {
+    return a + b;
+  }
+}
+
+// (a - b) % n.
+//
+// Precondition: (a < n).
+// Precondition: (b < n).
+// Precondition: (n > 0).
+[[nodiscard]] consteval std::uint64_t sub_mod(std::uint64_t a, std::uint64_t b, std::uint64_t n)
+{
+  MP_UNITS_EXPECTS_DEBUG(a < n);
+  MP_UNITS_EXPECTS_DEBUG(b < n);
+  MP_UNITS_EXPECTS_DEBUG(n > 0u);
+
+  if (a >= b) {
+    return a - b;
+  } else {
+    return n - (b - a);
+  }
+}
+
+// (a * b) % n.
+//
+// Precondition: (a < n).
+// Precondition: (b < n).
+// Precondition: (n > 0).
+[[nodiscard]] consteval std::uint64_t mul_mod(std::uint64_t a, std::uint64_t b, std::uint64_t n)
+{
+  MP_UNITS_EXPECTS_DEBUG(a < n);
+  MP_UNITS_EXPECTS_DEBUG(b < n);
+  MP_UNITS_EXPECTS_DEBUG(n > 0u);
+
+  if (b == 0u || a < std::numeric_limits<std::uint64_t>::max() / b) {
+    return (a * b) % n;
+  }
+
+  const std::uint64_t batch_size = n / a;
+  const std::uint64_t num_batches = b / batch_size;
+
+  return add_mod(
+    // Transform into "negative space" to make the first parameter as small as possible;
+    // then, transform back.
+    n - mul_mod(n % a, num_batches, n),
+
+    // Handle the leftover product (which is guaranteed to fit in the integer type).
+    (a * (b % batch_size)) % n,
+
+    n);
+}
+
+// (a / 2) % n.
+//
+// Precondition: (a < n).
+// Precondition: (n % 2 == 1).
+[[nodiscard]] consteval std::uint64_t half_mod_odd(std::uint64_t a, std::uint64_t n)
+{
+  MP_UNITS_EXPECTS_DEBUG(a < n);
+  MP_UNITS_EXPECTS_DEBUG(n % 2 == 1);
+
+  return (a / 2u) + ((a % 2u == 0u) ? 0u : (n / 2u + 1u));
+}
+
+// (base ^ exp) % n.
+[[nodiscard]] consteval std::uint64_t pow_mod(std::uint64_t base, std::uint64_t exp, std::uint64_t n)
+{
+  std::uint64_t result = 1u;
+  base %= n;
+
+  while (exp > 0u) {
+    if (exp % 2u == 1u) {
+      result = mul_mod(result, base, n);
+    }
+
+    exp /= 2u;
+    base = mul_mod(base, base, n);
+  }
+
+  return result;
+}
 
 [[nodiscard]] consteval bool is_prime_by_trial_division(std::uintmax_t n)
 {

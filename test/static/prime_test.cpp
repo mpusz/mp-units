@@ -33,6 +33,8 @@ using namespace mp_units::detail;
 
 namespace {
 
+inline constexpr auto MAX_U64 = std::numeric_limits<std::uint64_t>::max();
+
 template<std::size_t BasisSize, std::size_t... Is>
 constexpr bool check_primes(std::index_sequence<Is...>)
 {
@@ -77,5 +79,29 @@ static_assert(wheel_factorizer<2>::is_prime(2));
 static_assert(!wheel_factorizer<3>::is_prime(0));
 static_assert(!wheel_factorizer<3>::is_prime(1));
 static_assert(wheel_factorizer<3>::is_prime(2));
+
+// Modular arithmetic.
+static_assert(add_mod(1u, 2u, 5u) == 3u);
+static_assert(add_mod(4u, 4u, 5u) == 3u);
+static_assert(add_mod(MAX_U64 - 1u, MAX_U64 - 2u, MAX_U64) == MAX_U64 - 3u);
+
+static_assert(sub_mod(2u, 1u, 5u) == 1u);
+static_assert(sub_mod(1u, 2u, 5u) == 4u);
+static_assert(sub_mod(MAX_U64 - 2u, MAX_U64 - 1u, MAX_U64) == MAX_U64 - 1u);
+static_assert(sub_mod(1u, MAX_U64 - 1u, MAX_U64) == 2u);
+
+static_assert(mul_mod(6u, 7u, 10u) == 2u);
+static_assert(mul_mod(13u, 11u, 50u) == 43u);
+static_assert(mul_mod(MAX_U64 / 2u, 10u, MAX_U64) == MAX_U64 - 5u);
+
+static_assert(half_mod_odd(0u, 11u) == 0u);
+static_assert(half_mod_odd(10u, 11u) == 5u);
+static_assert(half_mod_odd(1u, 11u) == 6u);
+static_assert(half_mod_odd(9u, 11u) == 10u);
+static_assert(half_mod_odd(MAX_U64 - 1u, MAX_U64) == (MAX_U64 - 1u) / 2u);
+static_assert(half_mod_odd(MAX_U64 - 2u, MAX_U64) == MAX_U64 - 1u);
+
+static_assert(pow_mod(5u, 8u, 9u) == ((5u * 5u * 5u * 5u) * (5u * 5u * 5u * 5u)) % 9u);
+static_assert(pow_mod(2u, 64u, MAX_U64) == 1u);
 
 }  // namespace
