@@ -57,7 +57,7 @@ jobs:
       - id: set-matrix
         run: python .github/generate-job-matrix.py --preset conan --seed 42 --debug combinations counts
   test_package:
-    name: "${{ matrix.formatting }} ${{ matrix.contracts }} C++${{ matrix.std }} ${{ matrix.config.name }} ${{ matrix.build_type }}"
+    name: "${{ matrix.config.name }} C++${{ matrix.std }} ${{ matrix.formatting }} ${{ matrix.contracts }} ${{ matrix.build_type }}"
     runs-on: ${{ matrix.config.os }}
     needs: generate-matrix
     strategy:
