@@ -93,6 +93,7 @@ if(NOT ${projectPrefix}API_FREESTANDING)
                include/mp-units/bits/fmt.h
                include/mp-units/bits/requires_hosted.h
                include/mp-units/ext/format.h
+               include/mp-units/cartesian_vector.h
                include/mp-units/complex.h
                include/mp-units/format.h
                include/mp-units/math.h

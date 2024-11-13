@@ -34,33 +34,33 @@ on:
     paths-ignore:
       - "docs/**"
 
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
+  generate-matrix:
+    name: "Generate build matrix for ${{ github.workflow }}"
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.x
+      - id: set-matrix
+        run: python .github/generate-job-matrix.py --preset clang-tidy --seed 42 --debug combinations counts
   build:
     name: "${{ matrix.formatting }} ${{ matrix.contracts }} C++${{ matrix.std }} ${{ matrix.config.name }} ${{ matrix.build_type }}"
     runs-on: ${{ matrix.config.os }}
+    needs: generate-matrix
     strategy:
       fail-fast: false
       matrix:
-        formatting: ["std::format", "fmtlib"]
-        contracts: ["none", "gsl-lite", "ms-gsl"]
-        std: [20, 23]
-        config:
-          - {
-              name: "Clang-18",
-              os: ubuntu-24.04,
-              compiler:
-                {
-                  type: CLANG,
-                  version: 18,
-                  cc: "clang-18",
-                  cxx: "clang++-18",
-                },
-              lib: "libc++",
-              cxx_modules: "False",
-              std_format_support: "True",
-              conan-config: "",
-            }
-        build_type: ["Release", "Debug"]
+        include: ${{fromJson(needs.generate-matrix.outputs.matrix)}}
 
     env:
       CC: ${{ matrix.config.compiler.cc }}

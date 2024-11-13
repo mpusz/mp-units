@@ -59,7 +59,7 @@ template<QuantitySpec QS, Unit U>
   requires(!AssociatedUnit<U>) || UnitOf<U, QS{}>
 [[nodiscard]] consteval Reference auto make_reference(QS, U u)
 {
-  if constexpr (QuantityKindSpec<QS>)
+  if constexpr (requires { requires(get_quantity_spec(U{}) == QS{}); })
     return u;
   else
     return reference<QS, U>{};

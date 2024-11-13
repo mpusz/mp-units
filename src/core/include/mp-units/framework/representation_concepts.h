@@ -125,12 +125,11 @@ concept ComplexRepresentation = Complex<T> && MagnitudeScalable<T> && requires(T
   { a - b } -> Complex;
   { a* b } -> Complex;
   { a / b } -> Complex;
-  // TBD
-  // { re(a) } -> Scalar;
-  // { im(a) } -> Scalar;
-  // { mod(a) } -> Scalar;
-  // { arg(a) } -> Scalar;
-  // { conj(a) } -> Complex;
+  { real(a) } -> Scalar;
+  { imag(a) } -> Scalar;
+  { abs(a) } -> Scalar;
+  { arg(a) } -> Scalar;
+  { conj(a) } -> Complex;
 };
 
 // TODO how to check for a complex(Scalar, Scalar) -> Complex?

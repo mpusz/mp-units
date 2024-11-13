@@ -26,6 +26,7 @@ how our ISQ model elegantly addresses the remaining problems.
 - [Part 3 - Modeling ISQ](isq-part-3-modeling-isq.md)
 - [Part 4 - Implementing ISQ](isq-part-4-implemeting-isq.md)
 - Part 5 - Benefits
+- [Part 6 - Challenges](isq-part-6-challenges.md)
 
 
 ## Generic but safe interfaces
