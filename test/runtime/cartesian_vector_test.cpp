@@ -43,6 +43,22 @@ TEST_CASE("cartesian_vector operations", "[vector]")
 {
   SECTION("cartesian_vector initialization and access")
   {
+    SECTION("no arguments")
+    {
+      cartesian_vector<double> v;
+      REQUIRE(v[0] == 0);
+      REQUIRE(v[1] == 0);
+      REQUIRE(v[2] == 0);
+    }
+
+    SECTION("zero arguments")
+    {
+      cartesian_vector<double> v{};
+      REQUIRE(v[0] == 0);
+      REQUIRE(v[1] == 0);
+      REQUIRE(v[2] == 0);
+    }
+
     SECTION("one argument")
     {
       cartesian_vector v{1.0};
@@ -62,6 +78,14 @@ TEST_CASE("cartesian_vector operations", "[vector]")
     SECTION("all arguments")
     {
       cartesian_vector v{1.0, 2.0, 3.0};
+      REQUIRE(v[0] == 1.0);
+      REQUIRE(v[1] == 2.0);
+      REQUIRE(v[2] == 3.0);
+    }
+
+    SECTION("convertible arguments")
+    {
+      cartesian_vector<double> v{1, 2, 3};
       REQUIRE(v[0] == 1.0);
       REQUIRE(v[1] == 2.0);
       REQUIRE(v[2] == 3.0);
