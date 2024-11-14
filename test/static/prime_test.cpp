@@ -104,4 +104,22 @@ static_assert(half_mod_odd(MAX_U64 - 2u, MAX_U64) == MAX_U64 - 1u);
 static_assert(pow_mod(5u, 8u, 9u) == ((5u * 5u * 5u * 5u) * (5u * 5u * 5u * 5u)) % 9u);
 static_assert(pow_mod(2u, 64u, MAX_U64) == 1u);
 
+// Miller-Rabin primality testing.
+static_assert(miller_rabin_probable_prime(2u, 5u));
+static_assert(miller_rabin_probable_prime(2u, 7u));
+static_assert(!miller_rabin_probable_prime(2u, 9u));
+static_assert(miller_rabin_probable_prime(2u, 11u));
+
+static_assert(miller_rabin_probable_prime(2u, 2047u), "Known base 2 pseudoprime");
+static_assert(miller_rabin_probable_prime(2u, 3277u), "Known base 2 pseudoprime");
+
+static_assert(miller_rabin_probable_prime(3u, 121u), "Known base 3 pseudoprime");
+static_assert(miller_rabin_probable_prime(3u, 703u), "Known base 3 pseudoprime");
+
+static_assert(miller_rabin_probable_prime(2u, 225'653'407'801u), "Large known prime");
+static_assert(miller_rabin_probable_prime(2u, 334'524'384'739u), "Large known prime");
+static_assert(miller_rabin_probable_prime(2u, 9'007'199'254'740'881u), "Large known prime");
+
+static_assert(miller_rabin_probable_prime(2u, 18'446'744'073'709'551'557u), "Largest 64-bit prime");
+
 }  // namespace

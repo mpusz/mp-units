@@ -138,6 +138,51 @@ namespace mp_units::detail {
   return result;
 }
 
+// Decompose a positive integer by factoring out all powers of 2.
+struct NumberDecomposition {
+  std::uint64_t power_of_two;
+  std::uint64_t odd_remainder;
+};
+
+// Express any positive `n` as `(2^s * d)`, where `d` is odd.
+[[nodiscard]] consteval NumberDecomposition decompose(std::uint64_t n)
+{
+  NumberDecomposition result{0u, n};
+  while (result.odd_remainder % 2u == 0u) {
+    result.odd_remainder /= 2u;
+    ++result.power_of_two;
+  }
+  return result;
+}
+
+// Perform a Miller-Rabin primality test on `n` using base `a`.
+//
+// Precondition: (a >= 2).
+// Precondition: (n >= a + 2).
+// Precondition: (n % 2 == 1).
+[[nodiscard]] consteval bool miller_rabin_probable_prime(std::uint64_t a, std::uint64_t n)
+{
+  MP_UNITS_EXPECTS_DEBUG(a >= 2u);
+  MP_UNITS_EXPECTS_DEBUG(n >= a + 2u);
+  MP_UNITS_EXPECTS_DEBUG(n % 2u == 1u);
+
+  const auto [s, d] = decompose(n - 1u);
+  auto x = pow_mod(a, d, n);
+  if (x == 1u) {
+    return true;
+  }
+
+  const auto minus_one = n - 1u;
+  for (auto r = 0u; r < s; ++r) {
+    if (x == minus_one) {
+      return true;
+    }
+    x = mul_mod(x, x, n);
+  }
+
+  return false;
+}
+
 [[nodiscard]] consteval bool is_prime_by_trial_division(std::uintmax_t n)
 {
   for (std::uintmax_t f = 2; f * f <= n; f += 1 + (f % 2)) {
