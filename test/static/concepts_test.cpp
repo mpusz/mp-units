@@ -24,6 +24,7 @@
 #include <mp-units/systems/natural.h>
 #include <mp-units/systems/si.h>
 #if MP_UNITS_HOSTED
+#include <mp-units/cartesian_vector.h>
 #include <mp-units/complex.h>
 #endif
 #ifdef MP_UNITS_IMPORT_STD
@@ -269,17 +270,31 @@ static_assert(!Representation<std::optional<int>>);
 static_assert(Representation<std::complex<float>>);
 static_assert(Representation<std::complex<double>>);
 static_assert(Representation<std::complex<long double>>);
+static_assert(Representation<cartesian_vector<double>>);
 static_assert(!Representation<std::string>);
 static_assert(!Representation<std::chrono::seconds>);
 #endif
 
 // RepresentationOf
 static_assert(RepresentationOf<int, quantity_character::scalar>);
+static_assert(!RepresentationOf<int, quantity_character::complex>);
+static_assert(!RepresentationOf<int, quantity_character::vector>);
+static_assert(!RepresentationOf<int, quantity_character::tensor>);
 static_assert(RepresentationOf<double, quantity_character::scalar>);
+static_assert(!RepresentationOf<double, quantity_character::complex>);
+static_assert(!RepresentationOf<double, quantity_character::vector>);
+static_assert(!RepresentationOf<double, quantity_character::tensor>);
 static_assert(!RepresentationOf<bool, quantity_character::scalar>);
 static_assert(!RepresentationOf<std::optional<int>, quantity_character::scalar>);
 #if MP_UNITS_HOSTED
 static_assert(RepresentationOf<std::complex<double>, quantity_character::complex>);
+static_assert(!RepresentationOf<std::complex<double>, quantity_character::scalar>);
+static_assert(!RepresentationOf<std::complex<double>, quantity_character::vector>);
+static_assert(!RepresentationOf<std::complex<double>, quantity_character::tensor>);
+static_assert(RepresentationOf<cartesian_vector<double>, quantity_character::vector>);
+static_assert(!RepresentationOf<cartesian_vector<double>, quantity_character::scalar>);
+static_assert(!RepresentationOf<cartesian_vector<double>, quantity_character::complex>);
+static_assert(!RepresentationOf<cartesian_vector<double>, quantity_character::tensor>);
 static_assert(!RepresentationOf<std::chrono::seconds, quantity_character::scalar>);
 static_assert(!RepresentationOf<std::string, quantity_character::scalar>);
 #endif
