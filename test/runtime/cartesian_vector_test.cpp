@@ -114,6 +114,44 @@ TEST_CASE("cartesian_vector operations", "[vector]")
     }
   }
 
+  SECTION("cartesian_vector compound assignment addition")
+  {
+    cartesian_vector v1{1.0, 2.0, 3.0};
+    cartesian_vector v2{4.0, 5.0, 6.0};
+    v1 += v2;
+    REQUIRE(v1[0] == 5.0);
+    REQUIRE(v1[1] == 7.0);
+    REQUIRE(v1[2] == 9.0);
+  }
+
+  SECTION("cartesian_vector compound assignment subtraction")
+  {
+    cartesian_vector v1{4.0, 5.0, 6.0};
+    cartesian_vector v2{1.0, 2.0, 3.0};
+    v1 -= v2;
+    REQUIRE(v1[0] == 3.0);
+    REQUIRE(v1[1] == 3.0);
+    REQUIRE(v1[2] == 3.0);
+  }
+
+  SECTION("cartesian_vector compound assignment scalar multiplication")
+  {
+    cartesian_vector v{1.0, 2.0, 3.0};
+    v *= 2.0;
+    REQUIRE(v[0] == 2.0);
+    REQUIRE(v[1] == 4.0);
+    REQUIRE(v[2] == 6.0);
+  }
+
+  SECTION("cartesian_vector compound assignment scalar division")
+  {
+    cartesian_vector v{2.0, 4.0, 6.0};
+    v /= 2.0;
+    REQUIRE(v[0] == 1.0);
+    REQUIRE(v[1] == 2.0);
+    REQUIRE(v[2] == 3.0);
+  }
+
   SECTION("cartesian_vector addition")
   {
     SECTION("double + double")

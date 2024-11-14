@@ -119,6 +119,54 @@ public:
     return {-_coordinates_[0], -_coordinates_[1], -_coordinates_[2]};
   }
 
+  template<typename U>
+    requires requires(T t, U u) {
+      { t += u } -> std::same_as<T&>;
+    }
+  constexpr cartesian_vector& operator+=(const cartesian_vector<U>& other)
+  {
+    _coordinates_[0] += other[0];
+    _coordinates_[1] += other[1];
+    _coordinates_[2] += other[2];
+    return *this;
+  }
+
+  template<typename U>
+    requires requires(T t, U u) {
+      { t -= u } -> std::same_as<T&>;
+    }
+  constexpr cartesian_vector& operator-=(const cartesian_vector<U>& other)
+  {
+    _coordinates_[0] -= other[0];
+    _coordinates_[1] -= other[1];
+    _coordinates_[2] -= other[2];
+    return *this;
+  }
+
+  template<typename U>
+    requires requires(T t, U u) {
+      { t *= u } -> std::same_as<T&>;
+    }
+  constexpr cartesian_vector& operator*=(const U& value)
+  {
+    _coordinates_[0] *= value;
+    _coordinates_[1] *= value;
+    _coordinates_[2] *= value;
+    return *this;
+  }
+
+  template<typename U>
+    requires requires(T t, U u) {
+      { t /= u } -> std::same_as<T&>;
+    }
+  constexpr cartesian_vector& operator/=(const U& value)
+  {
+    _coordinates_[0] /= value;
+    _coordinates_[1] /= value;
+    _coordinates_[2] /= value;
+    return *this;
+  }
+
   template<std::same_as<T> U, typename V>
     requires requires(U u, V v) { u + v; }
   [[nodiscard]] friend constexpr auto operator+(const cartesian_vector<U>& lhs, const cartesian_vector<V>& rhs)
