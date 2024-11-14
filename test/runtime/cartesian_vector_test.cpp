@@ -92,13 +92,13 @@ TEST_CASE("cartesian_vector operations", "[vector]")
     }
   }
 
-  SECTION("convertibility")
+  SECTION("convertibility from another vector")
   {
     cartesian_vector v1{1, 2, 3};
 
     SECTION("construction")
     {
-      cartesian_vector v2 = v1;
+      cartesian_vector<double> v2 = v1;
       REQUIRE(v2[0] == 1.0);
       REQUIRE(v2[1] == 2.0);
       REQUIRE(v2[2] == 3.0);
@@ -106,7 +106,7 @@ TEST_CASE("cartesian_vector operations", "[vector]")
 
     SECTION("assignment")
     {
-      cartesian_vector v2{3.0, 2.0, 1.0};
+      cartesian_vector<double> v2{3.0, 2.0, 1.0};
       v2 = v1;
       REQUIRE(v2[0] == 1.0);
       REQUIRE(v2[1] == 2.0);
