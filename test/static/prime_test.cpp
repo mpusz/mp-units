@@ -122,4 +122,47 @@ static_assert(miller_rabin_probable_prime(2u, 9'007'199'254'740'881u), "Large kn
 
 static_assert(miller_rabin_probable_prime(2u, 18'446'744'073'709'551'557u), "Largest 64-bit prime");
 
+// Jacobi symbols --- a building block for the Strong Lucas probable prime test, needed for Baillie-PSW.
+static_assert(jacobi_symbol(1, 1u) == 1, "Jacobi symbol always 1 when 'numerator' is 1");
+static_assert(jacobi_symbol(1, 3u) == 1, "Jacobi symbol always 1 when 'numerator' is 1");
+static_assert(jacobi_symbol(1, 5u) == 1, "Jacobi symbol always 1 when 'numerator' is 1");
+static_assert(jacobi_symbol(1, 987654321u) == 1, "Jacobi symbol always 1 when 'numerator' is 1");
+
+static_assert(jacobi_symbol(3, 1u) == 1, "Jacobi symbol always 1 when 'denominator' is 1");
+static_assert(jacobi_symbol(5, 1u) == 1, "Jacobi symbol always 1 when 'denominator' is 1");
+static_assert(jacobi_symbol(-1234567890, 1u) == 1, "Jacobi symbol always 1 when 'denominator' is 1");
+
+static_assert(jacobi_symbol(10, 5u) == 0, "Jacobi symbol always 0 when there's a common factor");
+static_assert(jacobi_symbol(25, 15u) == 0, "Jacobi symbol always 0 when there's a common factor");
+static_assert(jacobi_symbol(-24, 9u) == 0, "Jacobi symbol always 0 when there's a common factor");
+
+static_assert(jacobi_symbol(14, 9u) == +jacobi_symbol(7, 9u),
+              "Divide numerator by 2: positive when (denom % 8) in {1, 7}");
+static_assert(jacobi_symbol(14, 15u) == +jacobi_symbol(7, 15u),
+              "Divide numerator by 2: positive when (denom % 8) in {1, 7}");
+static_assert(jacobi_symbol(14, 11u) == -jacobi_symbol(7, 11u),
+              "Divide numerator by 2: negative when (denom % 8) in {3, 5}");
+static_assert(jacobi_symbol(14, 13u) == -jacobi_symbol(7, 13u),
+              "Divide numerator by 2: negative when (denom % 8) in {3, 5}");
+
+static_assert(jacobi_symbol(19, 9u) == +jacobi_symbol(9, 19u), "Flip is identity when (n % 4) = 1");
+static_assert(jacobi_symbol(17, 7u) == +jacobi_symbol(7, 17u), "Flip is identity when (a % 4) = 1");
+static_assert(jacobi_symbol(19, 7u) == -jacobi_symbol(9, 7u), "Flip changes sign when (n % 4) = 3 and (a % 4) = 3");
+
+static_assert(jacobi_symbol(1001, 9907u) == -1, "Example from Wikipedia page");
+static_assert(jacobi_symbol(19, 45u) == 1, "Example from Wikipedia page");
+static_assert(jacobi_symbol(8, 21u) == -1, "Example from Wikipedia page");
+static_assert(jacobi_symbol(5, 21u) == 1, "Example from Wikipedia page");
+
+// Tests for perfect square finder
+static_assert(is_perfect_square(0u));
+static_assert(is_perfect_square(1u));
+static_assert(!is_perfect_square(2u));
+static_assert(is_perfect_square(4u));
+
+constexpr uint64_t BIG_SQUARE = [](auto x) { return x * x; }((uint64_t{1u} << 32) - 1u);
+static_assert(!is_perfect_square(BIG_SQUARE - 1u));
+static_assert(is_perfect_square(BIG_SQUARE));
+static_assert(!is_perfect_square(BIG_SQUARE + 1u));
+
 }  // namespace
