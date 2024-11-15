@@ -382,7 +382,7 @@ struct LucasSequenceElement {
 // The Baillie-PSW test is technically a "probable prime" test.  However, it is known to be correct for all
 // 64-bit integers, and no counterexample of any size has ever been found.  Thus, for this library's purposes,
 // we can treat it as deterministic... probably.
-[[nodiscard]] consteval bool baillie_psw_probable_prime(uint64_t n)
+[[nodiscard]] consteval bool baillie_psw_probable_prime(std::uint64_t n)
 {
   if (n < 2u) {
     return false;
