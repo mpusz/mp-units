@@ -51,13 +51,6 @@ import std;
 
 namespace mp_units {
 
-namespace detail {
-
-// Higher numbers use fewer trial divisions, at the price of more storage space.
-using factorizer = wheel_factorizer<4>;
-
-}  // namespace detail
-
 #if defined MP_UNITS_COMP_CLANG || MP_UNITS_COMP_CLANG < 18
 
 MP_UNITS_EXPORT template<symbol_text Symbol>
@@ -629,14 +622,10 @@ using common_magnitude_type = decltype(_common_magnitude_type_impl(M));
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // `mag()` implementation.
 
-// Sometimes we need to give the compiler a "shortcut" when factorizing large numbers (specifically, numbers whose
-// _first factor_ is very large).  If we don't, we can run into limits on the number of constexpr steps or iterations.
-//
-// To provide the first factor for a given number, specialize this variable template.
-//
-// WARNING:  The program behaviour will be undefined if you provide a wrong answer, so check your math!
 MP_UNITS_EXPORT template<std::intmax_t N>
-constexpr std::optional<std::intmax_t> known_first_factor = std::nullopt;
+[[deprecated("`known_first_factor` is no longer necessary and can simply be removed")]]
+constexpr std::optional<std::intmax_t>
+  known_first_factor = std::nullopt;
 
 namespace detail {
 
@@ -646,12 +635,7 @@ template<std::intmax_t N>
 struct prime_factorization {
   [[nodiscard]] static consteval std::intmax_t get_or_compute_first_factor()
   {
-    constexpr auto opt = known_first_factor<N>;
-    if constexpr (opt.has_value()) {
-      return opt.value();  // NOLINT(bugprone-unchecked-optional-access)
-    } else {
-      return static_cast<std::intmax_t>(factorizer::find_first_factor(N));
-    }
+    return static_cast<std::intmax_t>(find_first_factor(N));
   }
 
   static constexpr std::intmax_t first_base = get_or_compute_first_factor();
