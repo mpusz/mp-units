@@ -200,7 +200,7 @@ struct NumberDecomposition {
 //     or (n % 4) = 1, and -1 otherwise.
 //
 //  6. (-1/n) = 1 if n % 4 = 1, and -1 if n % 4 = 3.
-[[nodiscard]] consteval int jacobi_symbol(int64_t raw_a, uint64_t n)
+[[nodiscard]] consteval int jacobi_symbol(std::int64_t raw_a, std::uint64_t n)
 {
   // Rule 1: n=1 case.
   if (n == 1u) {
@@ -210,7 +210,7 @@ struct NumberDecomposition {
   // Starting conditions: transform `a` to strictly non-negative values, setting `result` to the sign that we
   // pick up (if any) from following these rules (i.e., rules 3 and 6).
   int result = ((raw_a >= 0) || (n % 4u == 1u)) ? 1 : -1;
-  auto a = static_cast<uint64_t>(raw_a < 0 ? -raw_a : raw_a) % n;
+  auto a = static_cast<std::uint64_t>(raw_a < 0 ? -raw_a : raw_a) % n;
 
   while (a != 0u) {
     // Rule 4.
@@ -233,7 +233,7 @@ struct NumberDecomposition {
     // Note that at this point, we know that `a` and `n` are coprime, and are both odd and positive.
     // Therefore, we meet the preconditions for rule 5 (the "flip-and-reduce" rule).
     result *= (n % 4u == 1u || a % 4u == 1u) ? 1 : -1;
-    const uint64_t new_a = n % a;
+    const std::uint64_t new_a = n % a;
     n = a;
     a = new_a;
   }
@@ -241,15 +241,15 @@ struct NumberDecomposition {
   return 0;
 }
 
-[[nodiscard]] consteval bool is_perfect_square(uint64_t n)
+[[nodiscard]] consteval bool is_perfect_square(std::uint64_t n)
 {
   if (n < 2u) {
     return true;
   }
 
-  uint64_t prev = n / 2u;
+  std::uint64_t prev = n / 2u;
   while (true) {
-    const uint64_t curr = (prev + n / prev) / 2u;
+    const std::uint64_t curr = (prev + n / prev) / 2u;
     if (curr * curr == n) {
       return true;
     }
