@@ -35,9 +35,6 @@
 MP_UNITS_EXPORT
 namespace mp_units {
 
-template<>
-constexpr std::optional<std::intmax_t> known_first_factor<334'524'384'739> = 334'524'384'739;
-
 namespace hep {
 
 // energy
