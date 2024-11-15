@@ -100,7 +100,7 @@ namespace mp_units::detail {
   return add_mod(
     // Transform into "negative space" to make the first parameter as small as possible;
     // then, transform back.
-    n - mul_mod(n % a, num_batches, n),
+    (n - mul_mod(n % a, num_batches, n)) % n,
 
     // Handle the leftover product (which is guaranteed to fit in the integer type).
     (a * (b % batch_size)) % n,
@@ -258,6 +258,125 @@ struct NumberDecomposition {
     }
     prev = curr;
   }
+}
+
+// The "D" parameter in the Strong Lucas Probable Prime test.
+//
+// Default construction produces the first value to try, according to Selfridge's parameter selection.
+// Calling `successor()` on this repeatedly will produce the sequence of values to try.
+struct LucasDParameter {
+  std::uint64_t mag = 5u;
+  bool pos = true;
+
+  friend constexpr int as_int(LucasDParameter p)
+  {
+    int D = static_cast<int>(p.mag);
+    return p.pos ? D : -D;
+  }
+  friend constexpr LucasDParameter successor(LucasDParameter p) { return {.mag = p.mag + 2u, .pos = !p.pos}; }
+};
+
+// The first `D` in the infinite sequence {5, -7, 9, -11, ...} whose Jacobi symbol is -1.  This is the D we
+// want to use for the Strong Lucas Probable Prime test.
+//
+// Precondition: `n` is not a perfect square.
+[[nodiscard]] consteval LucasDParameter find_first_D_with_jacobi_symbol_neg_one(std::uint64_t n)
+{
+  LucasDParameter D{};
+  while (jacobi_symbol(as_int(D), n) != -1) {
+    D = successor(D);
+  }
+  return D;
+}
+
+// An element of the Lucas sequence, with parameters tuned for the Strong Lucas test.
+//
+// The default values give the first element (i.e., k=1) of the sequence.
+struct LucasSequenceElement {
+  std::uint64_t u = 1u;
+  std::uint64_t v = 1u;
+};
+
+// Produce the Lucas element whose index is twice the input element's index.
+[[nodiscard]] consteval LucasSequenceElement double_strong_lucas_index(const LucasSequenceElement& element,
+                                                                       std::uint64_t n, LucasDParameter D)
+{
+  const auto& [u, v] = element;
+
+  std::uint64_t v_squared = mul_mod(v, v, n);
+  std::uint64_t D_u_squared = mul_mod(D.mag % n, mul_mod(u, u, n), n);
+  std::uint64_t new_v = D.pos ? add_mod(v_squared, D_u_squared, n) : sub_mod(v_squared, D_u_squared, n);
+  new_v = half_mod_odd(new_v, n);
+
+  return {.u = mul_mod(u, v, n), .v = new_v};
+}
+
+[[nodiscard]] consteval LucasSequenceElement increment_strong_lucas_index(const LucasSequenceElement& element,
+                                                                          std::uint64_t n, LucasDParameter D)
+{
+  const auto& [u, v] = element;
+
+  const auto new_u = half_mod_odd(add_mod(u, v, n), n);
+
+  const auto D_u = mul_mod(D.mag % n, u, n);
+  auto new_v = D.pos ? add_mod(v, D_u, n) : sub_mod(v, D_u, n);
+  new_v = half_mod_odd(new_v, n);
+
+  return {.u = new_u, .v = new_v};
+}
+
+[[nodiscard]] consteval LucasSequenceElement find_strong_lucas_element(std::uint64_t i, std::uint64_t n,
+                                                                       LucasDParameter D)
+{
+  LucasSequenceElement element{};
+
+  bool bits[64] = {};
+  std::size_t n_bits = 0u;
+  while (i > 1u) {
+    bits[n_bits++] = (i & 1u);
+    i >>= 1u;
+  }
+
+  for (auto j = n_bits; j > 0u; --j) {
+    element = double_strong_lucas_index(element, n, D);
+    if (bits[j - 1u]) {
+      element = increment_strong_lucas_index(element, n, D);
+    }
+  }
+
+  return element;
+}
+
+// Perform a Strong Lucas Probable Prime test on `n`.
+//
+// Precondition: (n >= 2).
+// Precondition: (n is odd).
+[[nodiscard]] consteval bool strong_lucas_probable_prime(std::uint64_t n)
+{
+  MP_UNITS_EXPECTS_DEBUG(n >= 2u);
+  MP_UNITS_EXPECTS_DEBUG(n % 2u == 1u);
+
+  if (is_perfect_square(n)) {
+    return false;
+  }
+
+  const auto D = find_first_D_with_jacobi_symbol_neg_one(n);
+
+  const auto [s, d] = decompose(n + 1u);
+
+  auto element = find_strong_lucas_element(d, n, D);
+  if (element.u == 0u) {
+    return true;
+  }
+
+  for (auto i = 0u; i < s; ++i) {
+    if (element.v == 0u) {
+      return true;
+    }
+    element = double_strong_lucas_index(element, n, D);
+  }
+
+  return false;
 }
 
 [[nodiscard]] consteval bool is_prime_by_trial_division(std::uintmax_t n)
