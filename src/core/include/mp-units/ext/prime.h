@@ -265,7 +265,7 @@ struct NumberDecomposition {
 // Default construction produces the first value to try, according to Selfridge's parameter selection.
 // Calling `successor()` on this repeatedly will produce the sequence of values to try.
 struct LucasDParameter {
-  uint64_t mag = 5u;
+  std::uint64_t mag = 5u;
   bool pos = true;
 
   friend constexpr int as_int(LucasDParameter p)
@@ -280,7 +280,7 @@ struct LucasDParameter {
 // want to use for the Strong Lucas Probable Prime test.
 //
 // Precondition: `n` is not a perfect square.
-[[nodiscard]] consteval LucasDParameter find_first_D_with_jacobi_symbol_neg_one(uint64_t n)
+[[nodiscard]] consteval LucasDParameter find_first_D_with_jacobi_symbol_neg_one(std::uint64_t n)
 {
   LucasDParameter D{};
   while (jacobi_symbol(as_int(D), n) != -1) {
@@ -293,26 +293,26 @@ struct LucasDParameter {
 //
 // The default values give the first element (i.e., k=1) of the sequence.
 struct LucasSequenceElement {
-  uint64_t u = 1u;
-  uint64_t v = 1u;
+  std::uint64_t u = 1u;
+  std::uint64_t v = 1u;
 };
 
 // Produce the Lucas element whose index is twice the input element's index.
-[[nodiscard]] consteval LucasSequenceElement double_strong_lucas_index(const LucasSequenceElement& element, uint64_t n,
-                                                                       LucasDParameter D)
+[[nodiscard]] consteval LucasSequenceElement double_strong_lucas_index(const LucasSequenceElement& element,
+                                                                       std::uint64_t n, LucasDParameter D)
 {
   const auto& [u, v] = element;
 
-  uint64_t v_squared = mul_mod(v, v, n);
-  uint64_t D_u_squared = mul_mod(D.mag, mul_mod(u, u, n), n);
-  uint64_t new_v = D.pos ? add_mod(v_squared, D_u_squared, n) : sub_mod(v_squared, D_u_squared, n);
+  std::uint64_t v_squared = mul_mod(v, v, n);
+  std::uint64_t D_u_squared = mul_mod(D.mag, mul_mod(u, u, n), n);
+  std::uint64_t new_v = D.pos ? add_mod(v_squared, D_u_squared, n) : sub_mod(v_squared, D_u_squared, n);
   new_v = half_mod_odd(new_v, n);
 
   return {.u = mul_mod(u, v, n), .v = new_v};
 }
 
 [[nodiscard]] consteval LucasSequenceElement increment_strong_lucas_index(const LucasSequenceElement& element,
-                                                                          uint64_t n, LucasDParameter D)
+                                                                          std::uint64_t n, LucasDParameter D)
 {
   const auto& [u, v] = element;
 
@@ -325,7 +325,8 @@ struct LucasSequenceElement {
   return {.u = new_u, .v = new_v};
 }
 
-[[nodiscard]] consteval LucasSequenceElement find_strong_lucas_element(uint64_t i, uint64_t n, LucasDParameter D)
+[[nodiscard]] consteval LucasSequenceElement find_strong_lucas_element(std::uint64_t i, std::uint64_t n,
+                                                                       LucasDParameter D)
 {
   LucasSequenceElement element{};
 
@@ -350,7 +351,7 @@ struct LucasSequenceElement {
 //
 // Precondition: (n >= 2).
 // Precondition: (n is odd).
-[[nodiscard]] consteval bool strong_lucas_probable_prime(uint64_t n)
+[[nodiscard]] consteval bool strong_lucas_probable_prime(std::uint64_t n)
 {
   MP_UNITS_EXPECTS_DEBUG(n >= 2u);
   MP_UNITS_EXPECTS_DEBUG(n % 2u == 1u);
