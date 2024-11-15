@@ -165,4 +165,36 @@ static_assert(!is_perfect_square(BIG_SQUARE - 1u));
 static_assert(is_perfect_square(BIG_SQUARE));
 static_assert(!is_perfect_square(BIG_SQUARE + 1u));
 
+// Tests for the Strong Lucas Probable Prime test.
+static_assert(as_int(LucasDParameter{.mag = 5, .pos = true}) == 5);
+static_assert(as_int(LucasDParameter{.mag = 7, .pos = false}) == -7);
+
+static_assert(as_int(LucasDParameter{}) == 5, "First D parameter in the sequence is 5");
+static_assert(as_int(successor(LucasDParameter{})) == -7, "Incrementing adds 2 to the mag, and flips the sign");
+static_assert(as_int(successor(successor(LucasDParameter{}))) == 9);
+static_assert(as_int(successor(successor(successor(LucasDParameter{})))) == -11);
+
+static_assert(strong_lucas_probable_prime(3u), "Known small prime");
+static_assert(strong_lucas_probable_prime(5u), "Known small prime");
+static_assert(strong_lucas_probable_prime(7u), "Known small prime");
+static_assert(!strong_lucas_probable_prime(9u), "Known small composite");
+
+// Test some Miller-Rabin pseudoprimes (https://oeis.org/A001262), which should NOT be marked prime.
+static_assert(!strong_lucas_probable_prime(2047u), "Miller-Rabin pseudoprime");
+static_assert(!strong_lucas_probable_prime(3277u), "Miller-Rabin pseudoprime");
+static_assert(!strong_lucas_probable_prime(486737u), "Miller-Rabin pseudoprime");
+
+// Test some Strong Lucas pseudoprimes (https://oeis.org/A217255).
+static_assert(strong_lucas_probable_prime(5459u), "Strong Lucas pseudoprime");
+static_assert(strong_lucas_probable_prime(5777u), "Strong Lucas pseudoprime");
+static_assert(strong_lucas_probable_prime(10877u), "Strong Lucas pseudoprime");
+static_assert(strong_lucas_probable_prime(324899u), "Strong Lucas pseudoprime");
+
+// Test some actual primes
+static_assert(strong_lucas_probable_prime(225'653'407'801u), "Large known prime");
+static_assert(strong_lucas_probable_prime(334'524'384'739u), "Large known prime");
+static_assert(strong_lucas_probable_prime(9'007'199'254'740'881u), "Large known prime");
+
+static_assert(strong_lucas_probable_prime(18'446'744'073'709'551'557u), "Largest 64-bit prime");
+
 }  // namespace
