@@ -100,7 +100,7 @@ namespace mp_units::detail {
   return add_mod(
     // Transform into "negative space" to make the first parameter as small as possible;
     // then, transform back.
-    n - mul_mod(n % a, num_batches, n),
+    (n - mul_mod(n % a, num_batches, n)) % n,
 
     // Handle the leftover product (which is guaranteed to fit in the integer type).
     (a * (b % batch_size)) % n,
