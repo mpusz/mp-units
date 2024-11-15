@@ -197,4 +197,28 @@ static_assert(strong_lucas_probable_prime(9'007'199'254'740'881u), "Large known 
 
 static_assert(strong_lucas_probable_prime(18'446'744'073'709'551'557u), "Largest 64-bit prime");
 
+// Tests for Baillie-PSW, which is known to be correct for all 64-bit integers.
+static_assert(baillie_psw_probable_prime(3u), "Known small prime");
+static_assert(baillie_psw_probable_prime(5u), "Known small prime");
+static_assert(baillie_psw_probable_prime(7u), "Known small prime");
+static_assert(!baillie_psw_probable_prime(9u), "Known small composite");
+
+// Test some Miller-Rabin pseudoprimes (https://oeis.org/A001262), which should NOT be marked prime.
+static_assert(!baillie_psw_probable_prime(2047u), "Miller-Rabin pseudoprime");
+static_assert(!baillie_psw_probable_prime(3277u), "Miller-Rabin pseudoprime");
+static_assert(!baillie_psw_probable_prime(486737u), "Miller-Rabin pseudoprime");
+
+// Test some Strong Lucas pseudoprimes (https://oeis.org/A217255), which should NOT be marked prime.
+static_assert(!baillie_psw_probable_prime(5459u), "Strong Lucas pseudoprime");
+static_assert(!baillie_psw_probable_prime(5777u), "Strong Lucas pseudoprime");
+static_assert(!baillie_psw_probable_prime(10877u), "Strong Lucas pseudoprime");
+static_assert(!baillie_psw_probable_prime(324899u), "Strong Lucas pseudoprime");
+
+// Test some actual primes
+static_assert(baillie_psw_probable_prime(225'653'407'801u), "Large known prime");
+static_assert(baillie_psw_probable_prime(334'524'384'739u), "Large known prime");
+static_assert(baillie_psw_probable_prime(9'007'199'254'740'881u), "Large known prime");
+
+static_assert(baillie_psw_probable_prime(18'446'744'073'709'551'557u), "Largest 64-bit prime");
+
 }  // namespace
