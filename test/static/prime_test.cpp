@@ -160,7 +160,7 @@ static_assert(is_perfect_square(1u));
 static_assert(!is_perfect_square(2u));
 static_assert(is_perfect_square(4u));
 
-constexpr uint64_t BIG_SQUARE = [](auto x) { return x * x; }((uint64_t{1u} << 32) - 1u);
+constexpr std::uint64_t BIG_SQUARE = [](auto x) { return x * x; }((std::uint64_t{1u} << 32) - 1u);
 static_assert(!is_perfect_square(BIG_SQUARE - 1u));
 static_assert(is_perfect_square(BIG_SQUARE));
 static_assert(!is_perfect_square(BIG_SQUARE + 1u));
