@@ -304,7 +304,7 @@ struct LucasSequenceElement {
   const auto& [u, v] = element;
 
   std::uint64_t v_squared = mul_mod(v, v, n);
-  std::uint64_t D_u_squared = mul_mod(D.mag, mul_mod(u, u, n), n);
+  std::uint64_t D_u_squared = mul_mod(D.mag % n, mul_mod(u, u, n), n);
   std::uint64_t new_v = D.pos ? add_mod(v_squared, D_u_squared, n) : sub_mod(v_squared, D_u_squared, n);
   new_v = half_mod_odd(new_v, n);
 
@@ -318,7 +318,7 @@ struct LucasSequenceElement {
 
   const auto new_u = half_mod_odd(add_mod(u, v, n), n);
 
-  const auto D_u = mul_mod(D.mag, u, n);
+  const auto D_u = mul_mod(D.mag % n, u, n);
   auto new_v = D.pos ? add_mod(v, D_u, n) : sub_mod(v, D_u, n);
   new_v = half_mod_odd(new_v, n);
 
