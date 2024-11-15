@@ -183,6 +183,83 @@ struct NumberDecomposition {
   return false;
 }
 
+// The Jacobi symbol, notated as `(a/n)`, is defined for odd positive `n` and any integer `a`, taking values
+// in the set `{-1, 0, 1}`.  Besides being a completely multiplicative function (so that, for example, both
+// (a*b/n) = (a/n) * (b/n), and (a/n*m) = (a/n) * (a/m)), it obeys the following symmetry rules, which enable
+// its calculation:
+//
+//  1. (a/1) = 1, and (1/n) = 1, for all a and n.
+//
+//  2. (a/n) = 0 whenever a and n have a nontrivial common factor.
+//
+//  3. (a/n) = (b/n) whenever (a % n) = (b % n).
+//
+//  4. (2a/n) = (a/n) if n % 8 = 1 or 7, and -(a/n) if n % 8 = 3 or 5.
+//
+//  5. (a/n) = (n/a) * x if a and n are both odd, positive, and coprime.  Here, x is 1 if either (a % 4) = 1
+//     or (n % 4) = 1, and -1 otherwise.
+//
+//  6. (-1/n) = 1 if n % 4 = 1, and -1 if n % 4 = 3.
+[[nodiscard]] consteval int jacobi_symbol(std::int64_t raw_a, std::uint64_t n)
+{
+  // Rule 1: n=1 case.
+  if (n == 1u) {
+    return 1;
+  }
+
+  // Starting conditions: transform `a` to strictly non-negative values, setting `result` to the sign that we
+  // pick up (if any) from following these rules (i.e., rules 3 and 6).
+  int result = ((raw_a >= 0) || (n % 4u == 1u)) ? 1 : -1;
+  auto a = static_cast<std::uint64_t>(raw_a < 0 ? -raw_a : raw_a) % n;
+
+  while (a != 0u) {
+    // Rule 4.
+    const int sign_for_even = (n % 8u == 1u || n % 8u == 7u) ? 1 : -1;
+    while (a % 2u == 0u) {
+      a /= 2u;
+      result *= sign_for_even;
+    }
+
+    // Rule 1: a=1 case.
+    if (a == 1u) {
+      return result;
+    }
+
+    // Rule 2.
+    if (std::gcd(a, n) != 1u) {
+      return 0;
+    }
+
+    // Note that at this point, we know that `a` and `n` are coprime, and are both odd and positive.
+    // Therefore, we meet the preconditions for rule 5 (the "flip-and-reduce" rule).
+    result *= (n % 4u == 1u || a % 4u == 1u) ? 1 : -1;
+    const std::uint64_t new_a = n % a;
+    n = a;
+    a = new_a;
+  }
+
+  return 0;
+}
+
+[[nodiscard]] consteval bool is_perfect_square(std::uint64_t n)
+{
+  if (n < 2u) {
+    return true;
+  }
+
+  std::uint64_t prev = n / 2u;
+  while (true) {
+    const std::uint64_t curr = (prev + n / prev) / 2u;
+    if (curr * curr == n) {
+      return true;
+    }
+    if (curr >= prev) {
+      return false;
+    }
+    prev = curr;
+  }
+}
+
 [[nodiscard]] consteval bool is_prime_by_trial_division(std::uintmax_t n)
 {
   for (std::uintmax_t f = 2; f * f <= n; f += 1 + (f % 2)) {
