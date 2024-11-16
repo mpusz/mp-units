@@ -116,9 +116,6 @@ template<NamedQuantitySpec Q>
   requires requires { Q::dimension; }
 using to_dimension = MP_UNITS_NONCONST_TYPE(Q::dimension);
 
-template<AssociatedUnit U>
-[[nodiscard]] consteval auto get_associated_quantity(U);
-
 template<QuantitySpec auto... From, QuantitySpec Q>
 [[nodiscard]] consteval QuantitySpec auto clone_kind_of(Q q);
 
