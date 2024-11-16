@@ -163,6 +163,6 @@ concept Representation = detail::ScalarRepresentation<T> || detail::ComplexRepre
                          detail::VectorRepresentation<T> || detail::TensorRepresentation<T>;
 
 MP_UNITS_EXPORT template<typename T, quantity_character Ch>
-concept RepresentationOf = detail::IsOfCharacter<T, Ch> && Representation<T>;
+concept RepresentationOf = Representation<T>;
 
 }  // namespace mp_units
