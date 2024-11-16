@@ -222,10 +222,15 @@ struct unit_interface {
   }
 
   template<Unit Lhs, Unit Rhs>
-    requires(convertible(Lhs{}, Rhs{}))
   [[nodiscard]] friend consteval bool equivalent(Lhs lhs, Rhs rhs)
   {
-    return get_canonical_unit(lhs).mag == get_canonical_unit(rhs).mag;
+    if constexpr (is_same_v<Lhs, Rhs>)
+      return true;
+    else {
+      const auto lhs_canonical = get_canonical_unit(lhs);
+      const auto rhs_canonical = get_canonical_unit(rhs);
+      return lhs_canonical.mag == rhs_canonical.mag && lhs_canonical.reference_unit == rhs_canonical.reference_unit;
+    }
   }
 };
 
