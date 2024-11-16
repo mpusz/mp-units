@@ -1476,7 +1476,7 @@ template<typename Self, NamedQuantitySpec auto QS, auto... Args>
 }
 
 template<QuantitySpec Q>
-[[nodiscard]] consteval QuantitySpec auto get_kind_tree_root(Q q)
+[[nodiscard]] consteval QuantitySpec auto get_kind_tree_root_impl(Q q)
 {
   auto defined_as_kind = []<typename QQ>(QQ qq) {
     if constexpr (requires { defined_as_kind_impl(qq); })
@@ -1499,6 +1499,15 @@ template<QuantitySpec Q>
     return q;
   }
   // NOLINTEND(bugprone-branch-clone)
+}
+
+template<QuantitySpec Q>
+constexpr QuantitySpec auto get_kind_tree_root_result = get_kind_tree_root_impl(Q{});
+
+template<QuantitySpec Q>
+[[nodiscard]] consteval QuantitySpec auto get_kind_tree_root(Q)
+{
+  return get_kind_tree_root_result<Q>;
 }
 
 }  // namespace detail
