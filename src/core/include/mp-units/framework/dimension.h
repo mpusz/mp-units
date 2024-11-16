@@ -301,9 +301,7 @@ MP_UNITS_EXPORT template<dimension_symbol_formatting fmt, typename CharT, Dimens
 }
 
 template<dimension_symbol_formatting fmt, typename CharT, Dimension D>
-struct dimension_symbol_result {
-  static constexpr auto value = dimension_symbol_impl<fmt, CharT>(D{});
-};
+constexpr auto dimension_symbol_result = dimension_symbol_impl<fmt, CharT>(D{});
 
 }  // namespace detail
 
@@ -312,7 +310,7 @@ MP_UNITS_EXPORT template<dimension_symbol_formatting fmt = dimension_symbol_form
                          Dimension D>
 [[nodiscard]] consteval std::string_view dimension_symbol(D)
 {
-  return detail::dimension_symbol_result<fmt, CharT, D>::value.view();
+  return detail::dimension_symbol_result<fmt, CharT, D>.view();
 }
 
 }  // namespace mp_units

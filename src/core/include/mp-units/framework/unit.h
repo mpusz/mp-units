@@ -904,9 +904,7 @@ MP_UNITS_EXPORT template<unit_symbol_formatting fmt, typename CharT, Unit U>
 }
 
 template<unit_symbol_formatting fmt, typename CharT, Unit U>
-struct unit_symbol_result {
-  static constexpr auto value = unit_symbol_impl<fmt, CharT>(U{});
-};
+constexpr auto unit_symbol_result = unit_symbol_impl<fmt, CharT>(U{});
 
 }  // namespace detail
 
@@ -914,7 +912,7 @@ struct unit_symbol_result {
 MP_UNITS_EXPORT template<unit_symbol_formatting fmt = unit_symbol_formatting{}, typename CharT = char, Unit U>
 [[nodiscard]] consteval std::string_view unit_symbol(U)
 {
-  return detail::unit_symbol_result<fmt, CharT, U>::value.view();
+  return detail::unit_symbol_result<fmt, CharT, U>.view();
 }
 
 }  // namespace mp_units
