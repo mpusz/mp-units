@@ -442,20 +442,12 @@ constexpr auto get_first_of(const Rng& rng, UnaryFunction f)
   return get_first_of(begin(rng), end(rng), f);
 }
 
-#if __cpp_constexpr < 202211L
 template<std::size_t N>
-struct first_n_primes_impl {
-  static constexpr auto value = first_n_primes<N>();
-};
-#endif
+constexpr auto first_n_primes_result = first_n_primes<N>();
 
 [[nodiscard]] consteval std::uintmax_t find_first_factor(std::uintmax_t n)
 {
-#if __cpp_constexpr >= 202211L
-  static constexpr auto first_100_primes = first_n_primes<100>();
-#else
-  constexpr auto first_100_primes = first_n_primes_impl<100>::value;
-#endif
+  constexpr auto first_100_primes = first_n_primes_result<100>;
 
   for (const auto& p : first_100_primes) {
     if (n % p == 0u) {
