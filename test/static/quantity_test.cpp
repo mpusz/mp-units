@@ -474,21 +474,21 @@ static_assert((-123 * m).numerical_value_in(m) == -123);
 static_assert((+(-123 * m)).numerical_value_in(m) == -123);
 static_assert((-(-123 * m)).numerical_value_in(m) == 123);
 
-static_assert([](auto v) {
-  const auto vv = v++;  // NOLINT(bugprone-inc-dec-in-conditions)
-  return std::pair(v, vv);
+static_assert([](auto val) {
+  const auto vv = val++;  // NOLINT(bugprone-inc-dec-in-conditions)
+  return std::pair(val, vv);
 }(123 * m) == std::pair(124 * m, 123 * m));
-static_assert([](auto v) {
-  const auto vv = ++v;  // NOLINT(bugprone-inc-dec-in-conditions)
-  return std::pair(v, vv);
+static_assert([](auto val) {
+  const auto vv = ++val;  // NOLINT(bugprone-inc-dec-in-conditions)
+  return std::pair(val, vv);
 }(123 * m) == std::pair(124 * m, 124 * m));
-static_assert([](auto v) {
-  const auto vv = v--;  // NOLINT(bugprone-inc-dec-in-conditions)
-  return std::pair(v, vv);
+static_assert([](auto val) {
+  const auto vv = val--;  // NOLINT(bugprone-inc-dec-in-conditions)
+  return std::pair(val, vv);
 }(123 * m) == std::pair(122 * m, 123 * m));
-static_assert([](auto v) {
-  const auto vv = --v;  // NOLINT(bugprone-inc-dec-in-conditions)
-  return std::pair(v, vv);
+static_assert([](auto val) {
+  const auto vv = --val;  // NOLINT(bugprone-inc-dec-in-conditions)
+  return std::pair(val, vv);
 }(123 * m) == std::pair(122 * m, 122 * m));
 
 static_assert(is_same_v<decltype((+(short{0} * m)).numerical_value_in(m)), int>);
