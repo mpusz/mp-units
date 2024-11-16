@@ -115,6 +115,11 @@ template<Unit T, auto M, typename U>
 template<Unit T, typename... Us>
 [[nodiscard]] consteval auto get_canonical_unit_impl(T, const common_unit<Us...>&);
 
+template<Unit U>
+struct get_canonical_unit_result {
+  inline static constexpr auto value = get_canonical_unit_impl(U{}, U{});
+};
+
 template<Unit Lhs, Unit Rhs>
 struct unit_less : std::bool_constant<type_name<Lhs>() < type_name<Rhs>()> {};
 
@@ -131,7 +136,10 @@ concept PotentiallyConvertibleTo = Unit<From> && Unit<To> &&
 
 // TODO this should really be in the `details` namespace but is used in `chrono.h` (a part of mp_units.systems)
 // Even though it is not exported, it is visible to the other module via ADL
-[[nodiscard]] consteval auto get_canonical_unit(Unit auto u) { return detail::get_canonical_unit_impl(u, u); }
+[[nodiscard]] consteval auto get_canonical_unit(Unit auto u)
+{
+  return detail::get_canonical_unit_result<decltype(u)>::value;
+}
 
 // convertible
 template<Unit From, Unit To>
@@ -530,14 +538,14 @@ namespace detail {
 template<Unit T, auto M, typename U>
 [[nodiscard]] consteval auto get_canonical_unit_impl(T, const scaled_unit_impl<M, U>&)
 {
-  auto base = get_canonical_unit_impl(U{}, U{});
+  auto base = get_canonical_unit(U{});
   return canonical_unit{M * base.mag, base.reference_unit};
 }
 
 template<Unit T, typename... Us>
 [[nodiscard]] consteval auto get_canonical_unit_impl(T, const common_unit<Us...>& u)
 {
-  return get_canonical_unit_impl(u._common_unit_, u._common_unit_);
+  return get_canonical_unit(u._common_unit_);
 }
 
 template<Unit T, symbol_text Symbol, auto... Args>
@@ -549,7 +557,7 @@ template<Unit T, symbol_text Symbol, auto... Args>
 template<Unit T, symbol_text Symbol, Unit auto U, auto... Args>
 [[nodiscard]] consteval auto get_canonical_unit_impl(T, const named_unit<Symbol, U, Args...>&)
 {
-  return get_canonical_unit_impl(U, U);
+  return get_canonical_unit(U);
 }
 
 template<typename F, int Num, int... Den, typename... Us>
@@ -563,7 +571,7 @@ template<typename F, int Num, int... Den, typename... Us>
 template<typename T, typename F, int Num, int... Den>
 [[nodiscard]] consteval auto get_canonical_unit_impl(T, const power<F, Num, Den...>&)
 {
-  auto base = get_canonical_unit_impl(F{}, F{});
+  auto base = get_canonical_unit(F{});
   if constexpr (requires { typename decltype(base.reference_unit)::_num_; }) {
     auto num = get_canonical_unit_impl(power<F, Num, Den...>{}, typename decltype(base.reference_unit)::_num_{});
     auto den = get_canonical_unit_impl(power<F, Num, Den...>{}, typename decltype(base.reference_unit)::_den_{});
