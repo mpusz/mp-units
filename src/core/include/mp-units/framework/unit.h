@@ -889,13 +889,10 @@ constexpr Out unit_symbol_to(Out out, U u, const unit_symbol_formatting& fmt = u
   return detail::unit_symbol_impl<CharT>(out, u, fmt, false);
 }
 
-// TODO Refactor to `unit_symbol(U, fmt)` when P1045: constexpr Function Parameters is available
-MP_UNITS_EXPORT template<unit_symbol_formatting fmt = unit_symbol_formatting{}, typename CharT = char, Unit U>
-#if defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG <= 18
-[[nodiscard]] constexpr auto unit_symbol(U)
-#else
-[[nodiscard]] consteval auto unit_symbol(U)
-#endif
+namespace detail {
+
+MP_UNITS_EXPORT template<unit_symbol_formatting fmt, typename CharT, Unit U>
+[[nodiscard]] consteval auto unit_symbol_impl(U)
 {
   constexpr auto oversized_symbol_text = []() consteval {
     // std::basic_string<CharT> text;  // TODO uncomment when https://wg21.link/P3032 is supported
@@ -903,14 +900,21 @@ MP_UNITS_EXPORT template<unit_symbol_formatting fmt = unit_symbol_formatting{}, 
     unit_symbol_to<CharT>(std::back_inserter(text), U{}, fmt);
     return text;
   }();
-
-#if MP_UNITS_API_STRING_VIEW_RET  // Permitting static constexpr variables in constexpr functions
-  static constexpr basic_fixed_string<CharT, oversized_symbol_text.size()> storage(std::from_range,
-                                                                                   oversized_symbol_text);
-  return storage.view();
-#else
   return basic_fixed_string<CharT, oversized_symbol_text.size()>(std::from_range, oversized_symbol_text);
-#endif
+}
+
+template<unit_symbol_formatting fmt, typename CharT, Unit U>
+struct unit_symbol_result {
+  static constexpr auto value = unit_symbol_impl<fmt, CharT>(U{});
+};
+
+}  // namespace detail
+
+// TODO Refactor to `unit_symbol(U, fmt)` when P1045: constexpr Function Parameters is available
+MP_UNITS_EXPORT template<unit_symbol_formatting fmt = unit_symbol_formatting{}, typename CharT = char, Unit U>
+[[nodiscard]] consteval std::string_view unit_symbol(U)
+{
+  return detail::unit_symbol_result<fmt, CharT, U>::value.view();
 }
 
 }  // namespace mp_units

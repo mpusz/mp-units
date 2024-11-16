@@ -62,21 +62,6 @@ inline constexpr auto JPY = japanese_jen;
 
 static_assert(!std::equality_comparable_with<quantity<euro, int>, quantity<us_dollar, int>>);
 
-
-#if 0 || !MP_UNITS_API_STRING_VIEW_RET  // NOLINT(readability-avoid-unconditional-preprocessor-if)
-
-// if you have only a few currencies to handle
-template<Unit auto From, Unit auto To>
-[[nodiscard]] double exchange_rate(std::chrono::sys_seconds timestamp)
-{
-  (void)timestamp;  // get conversion ratios for this timestamp
-  if constexpr (From == us_dollar && To == euro) return 0.9215;
-  else if constexpr (From == euro && To == us_dollar) return 1.0848;
-  // ...
-}
-
-#else
-
 template<Unit auto From, Unit auto To>
 [[nodiscard]] double exchange_rate(std::chrono::sys_seconds timestamp)
 {
@@ -88,8 +73,6 @@ template<Unit auto From, Unit auto To>
 
   return rates.at(std::make_pair(unit_symbol(From), unit_symbol(To)));
 }
-
-#endif
 
 template<UnitOf<currency> auto To, QuantityOf<currency> From>
 QuantityOf<currency> auto exchange_to(From q, std::chrono::sys_seconds timestamp)
