@@ -109,8 +109,8 @@ flowchart TD
     path_length --- distance["<b>distance</b>"]
     distance --- radial_distance["<b>radial_distance</b>"]
     length --- wavelength["<b>wavelength</b>"]
-    length --- position_vector["<b>position_vector</b><br>{vector}"]
     length --- displacement["<b>displacement</b><br>{vector}"]
+    displacement --- position_vector["<b>position_vector</b>"]
     radius --- radius_of_curvature["<b>radius_of_curvature</b>"]
 ```
 
@@ -164,8 +164,8 @@ For example, here is how the above quantity kind tree can be modeled in the libr
     inline constexpr struct distance final : quantity_spec<path_length> {} distance;
     inline constexpr struct radial_distance final : quantity_spec<distance> {} radial_distance;
     inline constexpr struct wavelength final : quantity_spec<length> {} wavelength;
-    inline constexpr struct position_vector final : quantity_spec<length, quantity_character::vector> {} position_vector;
     inline constexpr struct displacement final : quantity_spec<length, quantity_character::vector> {} displacement;
+    inline constexpr struct position_vector final : quantity_spec<displacement> {} position_vector;
     ```
 
 === "C++20"
@@ -186,8 +186,8 @@ For example, here is how the above quantity kind tree can be modeled in the libr
     inline constexpr struct distance final : quantity_spec<distance, path_length> {} distance;
     inline constexpr struct radial_distance final : quantity_spec<radial_distance, distance> {} radial_distance;
     inline constexpr struct wavelength final : quantity_spec<wavelength, length> {} wavelength;
-    inline constexpr struct position_vector final : quantity_spec<position_vector, length, quantity_character::vector> {} position_vector;
     inline constexpr struct displacement final : quantity_spec<displacement, length, quantity_character::vector> {} displacement;
+    inline constexpr struct position_vector final : quantity_spec<position_vector, displacement> {} position_vector;
     ```
 
 === "Portable"
@@ -208,8 +208,8 @@ For example, here is how the above quantity kind tree can be modeled in the libr
     QUANTITY_SPEC(distance, path_length);
     QUANTITY_SPEC(radial_distance, distance);
     QUANTITY_SPEC(wavelength, length);
-    QUANTITY_SPEC(position_vector, length, quantity_character::vector);
     QUANTITY_SPEC(displacement, length, quantity_character::vector);
+    QUANTITY_SPEC(position_vector, displacement);
     ```
 
 !!! note

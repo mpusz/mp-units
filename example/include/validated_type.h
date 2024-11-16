@@ -129,8 +129,8 @@ std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>&
 template<typename T, typename Validator, typename Char>
 struct MP_UNITS_STD_FMT::formatter<validated_type<T, Validator>, Char> : formatter<T, Char> {
   template<typename FormatContext>
-  auto format(const validated_type<T, Validator>& v, FormatContext& ctx) const -> decltype(ctx.out())
+  auto format(const validated_type<T, Validator>& val, FormatContext& ctx) const -> decltype(ctx.out())
   {
-    return formatter<T, Char>::format(v.value(), ctx);
+    return formatter<T, Char>::format(val.value(), ctx);
   }
 };

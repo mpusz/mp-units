@@ -237,17 +237,17 @@ static_assert(compare(round<si::second>(-1999. * isq::time[ms]), -2. * isq::time
 #endif
 
 // non-truncating
-static_assert(compare(inverse<us>(250 * Hz), 4000 * us));
-static_assert(compare(inverse<us>(250 * kHz), 4 * us));
-static_assert(compare(inverse<ks>(250 * uHz), 4 * ks));
+static_assert(compare(kind_of<isq::time>(inverse<us>(250 * Hz)), 4000 * us));
+static_assert(compare(kind_of<isq::time>(inverse<us>(250 * kHz)), 4 * us));
+static_assert(compare(kind_of<isq::time>(inverse<ks>(250 * uHz)), 4 * ks));
 
 // truncating
-static_assert(compare(inverse<s>(1 * kHz), 0 * s));
+static_assert(compare(kind_of<isq::time>(inverse<s>(1 * kHz)), 0 * s));
 
 // floating-point representation does not truncate
-static_assert(compare(inverse<s>(1. * kHz), 0.001 * s));
+static_assert(compare(kind_of<isq::time>(inverse<s>(1. * kHz)), 0.001 * s));
 
 // check if constraints work properly for a derived unit of a narrowed kind
-static_assert(compare(inverse<Hz>(1 * s), 1 * Hz));
+static_assert(compare(kind_of<isq::frequency>(inverse<Hz>(1 * s)), 1 * Hz));
 
 }  // namespace

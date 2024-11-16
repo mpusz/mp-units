@@ -23,6 +23,10 @@
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/natural.h>
 #include <mp-units/systems/si.h>
+#if MP_UNITS_HOSTED
+#include <mp-units/cartesian_vector.h>
+#include <mp-units/complex.h>
+#endif
 #ifdef MP_UNITS_IMPORT_STD
 import std;
 #else
@@ -34,12 +38,6 @@ import std;
 #include <string>
 #endif
 #endif
-
-#if MP_UNITS_HOSTED
-template<typename T>
-constexpr bool mp_units::is_complex<std::complex<T>> = true;
-#endif
-
 
 namespace {
 
@@ -58,7 +56,7 @@ static_assert(!detail::BaseDimension<decltype(isq::dim_length / isq::dim_time)>)
 static_assert(!detail::BaseDimension<decltype(inverse(isq::dim_time))>);
 static_assert(!detail::BaseDimension<decltype(pow<2>(isq::dim_length))>);
 static_assert(!detail::BaseDimension<derived_dimension<struct isq::dim_length, per<struct isq::dim_time>>>);
-static_assert(!detail::BaseDimension<std::remove_const_t<decltype(dim_speed)>>);
+static_assert(!detail::BaseDimension<MP_UNITS_NONCONST_TYPE(dim_speed)>);
 static_assert(!detail::BaseDimension<base_dimension<"L">>);
 static_assert(!detail::BaseDimension<struct si::metre>);
 static_assert(!detail::BaseDimension<int>);
@@ -70,7 +68,7 @@ static_assert(Dimension<decltype(inverse(isq::dim_time))>);
 static_assert(Dimension<decltype(pow<2>(isq::dim_length))>);
 static_assert(Dimension<derived_dimension<struct isq::dim_length, per<struct isq::dim_time>>>);
 static_assert(Dimension<struct dimension_one>);
-static_assert(Dimension<std::remove_const_t<decltype(dim_speed)>>);
+static_assert(Dimension<MP_UNITS_NONCONST_TYPE(dim_speed)>);
 static_assert(!Dimension<base_dimension<"L">>);
 static_assert(!Dimension<struct si::metre>);
 static_assert(!Dimension<int>);
@@ -84,11 +82,11 @@ inline constexpr auto speed = isq::length / isq::time;
 static_assert(QuantitySpec<struct isq::length>);
 static_assert(QuantitySpec<struct isq::radius>);
 static_assert(QuantitySpec<struct isq::speed>);
-static_assert(QuantitySpec<decltype(kind_of<isq::length>)>);
+static_assert(QuantitySpec<kind_of_<struct isq::length>>);
 static_assert(QuantitySpec<decltype(isq::length / isq::time)>);
 static_assert(QuantitySpec<decltype(pow<2>(isq::length))>);
 static_assert(QuantitySpec<struct dimensionless>);
-static_assert(QuantitySpec<std::remove_const_t<decltype(speed)>>);
+static_assert(QuantitySpec<MP_UNITS_NONCONST_TYPE(speed)>);
 static_assert(!QuantitySpec<struct isq::dim_length>);
 static_assert(!QuantitySpec<int>);
 
@@ -96,35 +94,35 @@ static_assert(!QuantitySpec<int>);
 static_assert(detail::NamedQuantitySpec<struct isq::length>);
 static_assert(detail::NamedQuantitySpec<struct isq::radius>);
 static_assert(detail::NamedQuantitySpec<struct isq::speed>);
-static_assert(!detail::NamedQuantitySpec<std::remove_const_t<decltype(kind_of<isq::length>)>>);
+static_assert(!detail::NamedQuantitySpec<kind_of_<struct isq::length>>);
 static_assert(!detail::NamedQuantitySpec<decltype(isq::length / isq::time)>);
 static_assert(!detail::NamedQuantitySpec<decltype(pow<2>(isq::length))>);
 static_assert(detail::NamedQuantitySpec<struct dimensionless>);
-static_assert(!detail::NamedQuantitySpec<std::remove_const_t<decltype(speed)>>);
+static_assert(!detail::NamedQuantitySpec<MP_UNITS_NONCONST_TYPE(speed)>);
 static_assert(!detail::NamedQuantitySpec<struct isq::dim_length>);
 static_assert(!detail::NamedQuantitySpec<int>);
 
 // DerivedQuantitySpec
 static_assert(!detail::DerivedQuantitySpec<struct isq::length>);
 static_assert(!detail::DerivedQuantitySpec<struct isq::radius>);
-static_assert(!detail::DerivedQuantitySpec<decltype(kind_of<isq::length>)>);
+static_assert(!detail::DerivedQuantitySpec<kind_of_<struct isq::length>>);
 static_assert(!detail::DerivedQuantitySpec<struct isq::speed>);
 static_assert(detail::DerivedQuantitySpec<decltype(isq::length / isq::time)>);
 static_assert(detail::DerivedQuantitySpec<decltype(pow<2>(isq::length))>);
 static_assert(!detail::DerivedQuantitySpec<struct dimensionless>);
-static_assert(detail::DerivedQuantitySpec<std::remove_const_t<decltype(speed)>>);
+static_assert(detail::DerivedQuantitySpec<MP_UNITS_NONCONST_TYPE(speed)>);
 static_assert(!detail::DerivedQuantitySpec<struct isq::dim_length>);
 static_assert(!detail::DerivedQuantitySpec<int>);
 
 // QuantityKindSpec
 static_assert(!detail::QuantityKindSpec<struct isq::length>);
 static_assert(!detail::QuantityKindSpec<struct isq::radius>);
-static_assert(detail::QuantityKindSpec<std::remove_const_t<decltype(kind_of<isq::length>)>>);
+static_assert(detail::QuantityKindSpec<kind_of_<struct isq::length>>);
 static_assert(!detail::QuantityKindSpec<struct isq::speed>);
 static_assert(!detail::QuantityKindSpec<decltype(isq::length / isq::time)>);
 static_assert(!detail::QuantityKindSpec<decltype(pow<2>(isq::length))>);
 static_assert(!detail::QuantityKindSpec<struct dimensionless>);
-static_assert(!detail::QuantityKindSpec<std::remove_const_t<decltype(speed)>>);
+static_assert(!detail::QuantityKindSpec<MP_UNITS_NONCONST_TYPE(speed)>);
 static_assert(!detail::QuantityKindSpec<struct isq::dim_length>);
 static_assert(!detail::QuantityKindSpec<int>);
 
@@ -133,8 +131,8 @@ static_assert(!detail::QuantityKindSpec<int>);
 
 // Unit
 static_assert(Unit<struct si::metre>);
-static_assert(Unit<decltype(si::kilogram)>);
-static_assert(Unit<decltype(si::kilo<si::gram>)>);
+static_assert(Unit<MP_UNITS_NONCONST_TYPE(si::kilogram)>);
+static_assert(Unit<si::kilo_<struct si::gram>>);
 static_assert(Unit<struct natural::electronvolt>);
 static_assert(Unit<decltype(si::metre / si::second)>);
 static_assert(Unit<decltype(inverse(si::second))>);
@@ -159,8 +157,8 @@ static_assert(!Unit<std::chrono::seconds>);
 // PrefixableUnit
 static_assert(PrefixableUnit<struct si::metre>);
 static_assert(PrefixableUnit<struct natural::electronvolt>);
-static_assert(!PrefixableUnit<decltype(si::kilogram)>);
-static_assert(!PrefixableUnit<decltype(si::kilo<si::gram>)>);
+static_assert(!PrefixableUnit<MP_UNITS_NONCONST_TYPE(si::kilogram)>);
+static_assert(!PrefixableUnit<si::kilo_<struct si::gram>>);
 static_assert(!PrefixableUnit<decltype(si::metre / si::second)>);
 static_assert(!PrefixableUnit<decltype(inverse(si::second))>);
 static_assert(!PrefixableUnit<decltype(mag<10> * si::second)>);
@@ -184,8 +182,8 @@ static_assert(!PrefixableUnit<std::chrono::seconds>);
 // AssociatedUnit
 static_assert(AssociatedUnit<struct si::metre>);
 static_assert(!AssociatedUnit<struct natural::electronvolt>);
-static_assert(AssociatedUnit<decltype(si::kilogram)>);
-static_assert(AssociatedUnit<decltype(si::kilo<si::gram>)>);
+static_assert(AssociatedUnit<MP_UNITS_NONCONST_TYPE(si::kilogram)>);
+static_assert(AssociatedUnit<si::kilo_<struct si::gram>>);
 static_assert(AssociatedUnit<decltype(si::metre / si::second)>);
 static_assert(AssociatedUnit<decltype(inverse(si::second))>);
 static_assert(AssociatedUnit<decltype(mag<10> * si::second)>);
@@ -209,7 +207,7 @@ static_assert(!AssociatedUnit<std::chrono::seconds>);
 // UnitOf
 static_assert(UnitOf<struct si::metre, isq::length>);
 static_assert(UnitOf<struct si::metre, isq::radius>);
-static_assert(UnitOf<decltype(si::kilogram), isq::mass>);
+static_assert(UnitOf<MP_UNITS_NONCONST_TYPE(si::kilogram), isq::mass>);
 static_assert(UnitOf<struct si::hertz, isq::frequency>);
 static_assert(UnitOf<struct si::hertz, inverse(isq::time)>);
 static_assert(UnitOf<struct one, dimensionless>);
@@ -230,7 +228,7 @@ static_assert(Reference<decltype(isq::radius[si::metre])>);
 static_assert(Reference<decltype(isq::radius[si::metre] / isq::time[si::second])>);
 static_assert(!Reference<struct natural::electronvolt>);
 static_assert(!Reference<struct isq::length>);
-static_assert(!Reference<decltype(kind_of<isq::length>)>);
+static_assert(!Reference<kind_of_<struct isq::length>>);
 static_assert(!Reference<struct isq::dim_length>);
 static_assert(!Reference<int>);
 
@@ -272,17 +270,31 @@ static_assert(!Representation<std::optional<int>>);
 static_assert(Representation<std::complex<float>>);
 static_assert(Representation<std::complex<double>>);
 static_assert(Representation<std::complex<long double>>);
+static_assert(Representation<cartesian_vector<double>>);
 static_assert(!Representation<std::string>);
 static_assert(!Representation<std::chrono::seconds>);
 #endif
 
 // RepresentationOf
 static_assert(RepresentationOf<int, quantity_character::scalar>);
+static_assert(!RepresentationOf<int, quantity_character::complex>);
+static_assert(!RepresentationOf<int, quantity_character::vector>);
+static_assert(!RepresentationOf<int, quantity_character::tensor>);
 static_assert(RepresentationOf<double, quantity_character::scalar>);
+static_assert(!RepresentationOf<double, quantity_character::complex>);
+static_assert(!RepresentationOf<double, quantity_character::vector>);
+static_assert(!RepresentationOf<double, quantity_character::tensor>);
 static_assert(!RepresentationOf<bool, quantity_character::scalar>);
 static_assert(!RepresentationOf<std::optional<int>, quantity_character::scalar>);
 #if MP_UNITS_HOSTED
 static_assert(RepresentationOf<std::complex<double>, quantity_character::complex>);
+static_assert(!RepresentationOf<std::complex<double>, quantity_character::scalar>);
+static_assert(!RepresentationOf<std::complex<double>, quantity_character::vector>);
+static_assert(!RepresentationOf<std::complex<double>, quantity_character::tensor>);
+static_assert(RepresentationOf<cartesian_vector<double>, quantity_character::vector>);
+static_assert(!RepresentationOf<cartesian_vector<double>, quantity_character::scalar>);
+static_assert(!RepresentationOf<cartesian_vector<double>, quantity_character::complex>);
+static_assert(!RepresentationOf<cartesian_vector<double>, quantity_character::tensor>);
 static_assert(!RepresentationOf<std::chrono::seconds, quantity_character::scalar>);
 static_assert(!RepresentationOf<std::string, quantity_character::scalar>);
 #endif

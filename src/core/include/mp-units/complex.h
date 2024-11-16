@@ -22,48 +22,22 @@
 
 #pragma once
 
-#include <mp-units/framework/quantity.h>
-#include <mp-units/framework/quantity_point.h>
-#include <mp-units/framework/reference_concepts.h>
-#include <mp-units/framework/representation_concepts.h>
+#include <mp-units/bits/requires_hosted.h>
+//
+#include <mp-units/bits/module_macros.h>
+#include <mp-units/framework/customization_points.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #ifdef MP_UNITS_IMPORT_STD
 import std;
 #else
-#include <type_traits>
+#include <complex>
 #endif
 #endif
 
 namespace mp_units {
 
-template<Reference R>
-struct delta_ {
-  template<typename FwdRep, RepresentationOf<get_quantity_spec(R{})> Rep = std::remove_cvref_t<FwdRep>>
-  [[nodiscard]] constexpr quantity<MP_UNITS_EXPRESSION_WORKAROUND(R{}), Rep> operator()(FwdRep&& lhs) const
-  {
-    return quantity{std::forward<FwdRep>(lhs), R{}};
-  }
-};
+template<typename T>
+constexpr bool is_complex<std::complex<T>> = true;
 
-template<Reference R>
-struct absolute_ {
-  template<typename FwdRep, RepresentationOf<get_quantity_spec(R{})> Rep = std::remove_cvref_t<FwdRep>>
-  [[nodiscard]] constexpr quantity_point<MP_UNITS_EXPRESSION_WORKAROUND(R{}), default_point_origin(R{}), Rep>
-  operator()(FwdRep&& lhs) const
-  {
-    return quantity_point{quantity{std::forward<FwdRep>(lhs), R{}}};
-  }
-};
-
-MP_UNITS_EXPORT_BEGIN
-
-template<Reference auto R>
-constexpr delta_<MP_UNITS_REMOVE_CONST(decltype(R))> delta{};
-
-template<Reference auto R>
-constexpr absolute_<MP_UNITS_REMOVE_CONST(decltype(R))> absolute{};
-
-MP_UNITS_EXPORT_END
-
-}  // namespace mp_units
+}

@@ -31,28 +31,43 @@
 #ifdef MP_UNITS_IMPORT_STD
 import std;
 #else
+#include <concepts>
 #include <cstdint>
 #include <functional>
+#include <type_traits>
 #endif
 #endif
 
 namespace mp_units {
+
+namespace detail {
+
+// `SymbolicArg` is provided because `SymbolicConstant` requires a complete type which is not the case
+// for `OneType` below.
+template<typename T>
+concept SymbolicArg = (!std::is_const_v<T>) && (!std::is_reference_v<T>);
+
+template<typename T>
+concept SymbolicConstant = SymbolicArg<T> && std::is_empty_v<T> && std::is_final_v<T> && std::is_trivial_v<T> &&
+                           std::is_trivially_copy_constructible_v<T> && std::is_trivially_move_constructible_v<T>;
 
 /**
  * @brief Type list type used by the expression template framework
  *
  * @tparam Ts The list of types
  */
-template<typename... Ts>
+template<SymbolicArg... Ts>
 struct type_list {};
+
+}  // namespace detail
 
 /**
  * @brief Type list type storing the list of components with negative exponents
  *
  * @note Can't be empty
  */
-template<typename T, typename... Ts>
-struct per {};
+template<detail::SymbolicArg T, detail::SymbolicArg... Ts>
+struct per final {};
 
 namespace detail {
 
@@ -98,9 +113,9 @@ constexpr bool ratio_one<N, N> = true;
  *
  * @note @p Den is an optional parameter to shorten the types presented to the user in the case when  @p Den equals `1`.
  */
-template<typename F, int Num, int... Den>
+template<detail::SymbolicArg F, int Num, int... Den>
   requires(detail::valid_ratio<Num, Den...> && detail::positive_ratio<Num, Den...> && !detail::ratio_one<Num, Den...>)
-struct power {
+struct power final {
   using factor = F;
   static constexpr detail::ratio exponent{Num, Den...};
 };
@@ -126,7 +141,7 @@ constexpr bool is_specialization_of_power = false;
 template<typename F, int... Ints>
 constexpr bool is_specialization_of_power<power<F, Ints...>> = true;
 
-template<typename T, ratio R>
+template<SymbolicArg T, ratio R>
 consteval auto power_or_T_impl()
 {
   if constexpr (is_specialization_of_power<T>) {
@@ -143,7 +158,7 @@ consteval auto power_or_T_impl()
   }
 }
 
-template<typename T, auto R>
+template<SymbolicArg T, auto R>
 // template<typename T, ratio R>  // TODO ICE gcc 12
 using power_or_T = decltype(power_or_T_impl<T, R>());
 
@@ -294,7 +309,7 @@ struct expr_fractions_result {
   using _den_ = Den;  // exposition only
 };
 
-template<typename OneType, typename List>
+template<SymbolicArg OneType, typename List>
 [[nodiscard]] consteval auto expr_fractions_impl()
 {
   constexpr std::size_t size = type_list_size<List>;
@@ -322,11 +337,11 @@ template<typename OneType, typename List>
 /**
  * @brief Divides expression template spec to numerator and denominator parts
  */
-template<typename OneType, typename... Ts>
+template<SymbolicArg OneType, typename... Ts>
 struct expr_fractions : decltype(expr_fractions_impl<OneType, type_list<Ts...>>()) {};
 
 // expr_make_spec
-template<typename NumList, typename DenList, typename OneType, template<typename...> typename To>
+template<typename NumList, typename DenList, SymbolicArg OneType, template<typename...> typename To>
 [[nodiscard]] MP_UNITS_CONSTEVAL auto expr_make_spec_impl()
 {
   constexpr std::size_t num = type_list_size<NumList>;
@@ -350,7 +365,7 @@ template<typename NumList, typename DenList, typename OneType, template<typename
 /**
  * @brief Creates an expression template spec based on provided numerator and denominator parts
  */
-template<typename NumList, typename DenList, typename OneType, template<typename, typename> typename Pred,
+template<typename NumList, typename DenList, SymbolicArg OneType, template<typename, typename> typename Pred,
          template<typename...> typename To>
 [[nodiscard]] MP_UNITS_CONSTEVAL auto get_optimized_expression()
 {
@@ -371,8 +386,8 @@ template<typename NumList, typename DenList, typename OneType, template<typename
  * @tparam Lhs lhs of the operation
  * @tparam Rhs rhs of the operation
  */
-template<template<typename...> typename To, typename OneType, template<typename, typename> typename Pred, typename Lhs,
-         typename Rhs>
+template<template<typename...> typename To, SymbolicArg OneType, template<typename, typename> typename Pred,
+         typename Lhs, typename Rhs>
 [[nodiscard]] MP_UNITS_CONSTEVAL auto expr_multiply(Lhs, Rhs)
 {
   if constexpr (is_same_v<Lhs, OneType>) {
@@ -406,8 +421,8 @@ template<template<typename...> typename To, typename OneType, template<typename,
  * @tparam Lhs lhs of the operation
  * @tparam Rhs rhs of the operation
  */
-template<template<typename...> typename To, typename OneType, template<typename, typename> typename Pred, typename Lhs,
-         typename Rhs>
+template<template<typename...> typename To, SymbolicArg OneType, template<typename, typename> typename Pred,
+         typename Lhs, typename Rhs>
 [[nodiscard]] MP_UNITS_CONSTEVAL auto expr_divide(Lhs lhs, Rhs rhs)
 {
   if constexpr (is_same_v<Lhs, Rhs>) {
@@ -440,7 +455,7 @@ template<template<typename...> typename To, typename OneType, template<typename,
  * @tparam OneType type that represents the value `1`
  * @tparam To destination type list to put the result to
  */
-template<template<typename...> typename To, typename OneType, typename T>
+template<template<typename...> typename To, SymbolicArg OneType, typename T>
 [[nodiscard]] consteval auto expr_invert(T)
 {
   if constexpr (is_specialization_of<T, To>)
@@ -452,7 +467,7 @@ template<template<typename...> typename To, typename OneType, typename T>
 }
 
 
-template<std::intmax_t Num, std::intmax_t Den, template<typename...> typename To, typename OneType,
+template<std::intmax_t Num, std::intmax_t Den, template<typename...> typename To, SymbolicArg OneType,
          template<typename, typename> typename Pred, typename... Nums, typename... Dens>
   requires detail::non_zero<Den>
 [[nodiscard]] consteval auto expr_pow_impl(type_list<Nums...>, type_list<Dens...>)
@@ -472,7 +487,7 @@ template<std::intmax_t Num, std::intmax_t Den, template<typename...> typename To
  * @tparam Pred binary less then predicate
  * @tparam T Expression being the base of the operation
  */
-template<std::intmax_t Num, std::intmax_t Den, template<typename...> typename To, typename OneType,
+template<std::intmax_t Num, std::intmax_t Den, template<typename...> typename To, SymbolicArg OneType,
          template<typename, typename> typename Pred, typename T>
   requires detail::non_zero<Den>
 [[nodiscard]] consteval auto expr_pow(T v)
@@ -536,7 +551,7 @@ template<typename T, auto... Ints>
   return pow<Ints...>(T{});
 }
 
-template<template<typename> typename Proj, template<typename...> typename To, typename OneType,
+template<template<typename> typename Proj, template<typename...> typename To, SymbolicArg OneType,
          template<typename, typename> typename Pred, expr_type_projectable<Proj>... Nums,
          expr_type_projectable<Proj>... Dens>
 [[nodiscard]] consteval auto expr_map_impl(type_list<Nums...>, type_list<Dens...>)
@@ -554,7 +569,7 @@ template<template<typename> typename Proj, template<typename...> typename To, ty
  * @tparam Pred binary less then predicate
  * @tparam T expression template to map from
  */
-template<template<typename> typename Proj, template<typename...> typename To, typename OneType,
+template<template<typename> typename Proj, template<typename...> typename To, SymbolicArg OneType,
          template<typename, typename> typename Pred, expr_projectable<Proj> T>
 [[nodiscard]] consteval auto expr_map(T)
 {

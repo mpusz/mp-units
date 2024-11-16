@@ -103,13 +103,13 @@ TEST_CASE("vector quantity", "[la]")
   {
     SECTION("non-truncating")
     {
-      const auto v = vector<int>{3, 2, 1} * isq::position_vector[km];
+      const auto v = vector<int>{3, 2, 1} * isq::displacement[km];
       CHECK(v.numerical_value_in(m) == vector<int>{3000, 2000, 1000});
     }
 
     SECTION("truncating")
     {
-      const auto v = vector<int>{1001, 1002, 1003} * isq::position_vector[m];
+      const auto v = vector<int>{1001, 1002, 1003} * isq::displacement[m];
       CHECK(v.force_numerical_value_in(km) == vector<int>{1, 1, 1});
     }
   }
@@ -123,7 +123,7 @@ TEST_CASE("vector quantity", "[la]")
 
   SECTION("multiply by scalar value")
   {
-    const auto v = vector<int>{1, 2, 3} * isq::position_vector[m];
+    const auto v = vector<int>{1, 2, 3} * isq::displacement[m];
 
     SECTION("integral")
     {
@@ -140,7 +140,7 @@ TEST_CASE("vector quantity", "[la]")
 
   SECTION("divide by scalar value")
   {
-    const auto v = vector<int>{2, 4, 6} * isq::position_vector[m];
+    const auto v = vector<int>{2, 4, 6} * isq::displacement[m];
 
     SECTION("integral") { CHECK((v / 2).numerical_value_in(m) == vector<int>{1, 2, 3}); }
     SECTION("floating-point") { CHECK((v / 0.5).numerical_value_in(m) == vector<double>{4., 8., 12.}); }
@@ -148,32 +148,32 @@ TEST_CASE("vector quantity", "[la]")
 
   SECTION("add")
   {
-    const auto v = vector<int>{1, 2, 3} * isq::position_vector[m];
+    const auto v = vector<int>{1, 2, 3} * isq::displacement[m];
 
     SECTION("same unit")
     {
-      const auto u = vector<int>{3, 2, 1} * isq::position_vector[m];
+      const auto u = vector<int>{3, 2, 1} * isq::displacement[m];
       CHECK((v + u).numerical_value_in(m) == vector<int>{4, 4, 4});
     }
     SECTION("different units")
     {
-      const auto u = vector<int>{3, 2, 1} * isq::position_vector[km];
+      const auto u = vector<int>{3, 2, 1} * isq::displacement[km];
       CHECK((v + u).numerical_value_in(m) == vector<int>{3001, 2002, 1003});
     }
   }
 
   SECTION("subtract")
   {
-    const auto v = vector<int>{1, 2, 3} * isq::position_vector[m];
+    const auto v = vector<int>{1, 2, 3} * isq::displacement[m];
 
     SECTION("same unit")
     {
-      const auto u = vector<int>{3, 2, 1} * isq::position_vector[m];
+      const auto u = vector<int>{3, 2, 1} * isq::displacement[m];
       CHECK((v - u).numerical_value_in(m) == vector<int>{-2, 0, 2});
     }
     SECTION("different units")
     {
-      const auto u = vector<int>{3, 2, 1} * isq::position_vector[km];
+      const auto u = vector<int>{3, 2, 1} * isq::displacement[km];
       CHECK((v - u).numerical_value_in(m) == vector<int>{-2999, -1998, -997});
     }
   }
@@ -255,7 +255,7 @@ TEST_CASE("vector quantity", "[la]")
 
   SECTION("divide by scalar quantity")
   {
-    const auto pos = vector<int>{30, 20, 10} * isq::position_vector[km];
+    const auto pos = vector<int>{30, 20, 10} * isq::displacement[km];
 
     SECTION("integral")
     {
@@ -292,7 +292,7 @@ TEST_CASE("vector quantity", "[la]")
 
   SECTION("cross product with a vector quantity")
   {
-    const auto r = vector<int>{3, 0, 0} * isq::position_vector[m];
+    const auto r = vector<int>{3, 0, 0} * isq::displacement[m];
     const auto f = vector<int>{0, 10, 0} * isq::force[N];
 
     CHECK(cross_product(r, f) == vector<int>{0, 0, 30} * isq::moment_of_force[N * m]);
@@ -309,10 +309,10 @@ TEST_CASE("vector of quantities", "[la]")
   {
     SECTION("non-truncating")
     {
-      const vector<quantity<isq::position_vector[km], int>> v = {3 * km, 2 * km, 1 * km};
+      const vector<quantity<isq::displacement[km], int>> v = {3 * km, 2 * km, 1 * km};
 
-      CHECK(vector<quantity<isq::position_vector[m], int>>(v) ==
-            vector<quantity<isq::position_vector[m], int>>{3000 * m, 2000 * m, 1000 * m});
+      CHECK(vector<quantity<isq::displacement[m], int>>(v) ==
+            vector<quantity<isq::displacement[m], int>>{3000 * m, 2000 * m, 1000 * m});
     }
 
     // truncating not possible (no way to apply quantity_cast to sub-components of a vector)
@@ -327,11 +327,11 @@ TEST_CASE("vector of quantities", "[la]")
 
   SECTION("multiply by scalar value")
   {
-    const vector<quantity<isq::position_vector[m], int>> v = {1 * m, 2 * m, 3 * m};
+    const vector<quantity<isq::displacement[m], int>> v = {1 * m, 2 * m, 3 * m};
 
     SECTION("integral")
     {
-      const vector<quantity<isq::position_vector[m], int>> result = {2 * m, 4 * m, 6 * m};
+      const vector<quantity<isq::displacement[m], int>> result = {2 * m, 4 * m, 6 * m};
 
       SECTION("scalar on LHS") { CHECK(2 * v == result); }
       SECTION("scalar on RHS") { CHECK(v * 2 == result); }
@@ -339,7 +339,7 @@ TEST_CASE("vector of quantities", "[la]")
 
     SECTION("floating-point")
     {
-      const vector<quantity<isq::position_vector[m], double>> result = {0.5 * m, 1. * m, 1.5 * m};
+      const vector<quantity<isq::displacement[m], double>> result = {0.5 * m, 1. * m, 1.5 * m};
 
       SECTION("scalar on LHS") { CHECK(0.5 * v == result); }
       SECTION("scalar on RHS") { CHECK(v * 0.5 == result); }
@@ -348,46 +348,46 @@ TEST_CASE("vector of quantities", "[la]")
 
   SECTION("divide by scalar value")
   {
-    const vector<quantity<isq::position_vector[m], int>> v = {2 * m, 4 * m, 6 * m};
+    const vector<quantity<isq::displacement[m], int>> v = {2 * m, 4 * m, 6 * m};
 
-    SECTION("integral") { CHECK(v / 2 == vector<quantity<isq::position_vector[m], int>>{1 * m, 2 * m, 3 * m}); }
+    SECTION("integral") { CHECK(v / 2 == vector<quantity<isq::displacement[m], int>>{1 * m, 2 * m, 3 * m}); }
     SECTION("floating-point")
     {
-      CHECK(v / 0.5 == vector<quantity<isq::position_vector[m], double>>{4. * m, 8. * m, 12. * m});
+      CHECK(v / 0.5 == vector<quantity<isq::displacement[m], double>>{4. * m, 8. * m, 12. * m});
     }
   }
 
   SECTION("add")
   {
-    const vector<quantity<isq::position_vector[m], int>> v = {1 * m, 2 * m, 3 * m};
+    const vector<quantity<isq::displacement[m], int>> v = {1 * m, 2 * m, 3 * m};
 
     SECTION("same unit")
     {
-      const vector<quantity<isq::position_vector[m], int>> u = {3 * m, 2 * m, 1 * m};
+      const vector<quantity<isq::displacement[m], int>> u = {3 * m, 2 * m, 1 * m};
 
-      CHECK(v + u == vector<quantity<isq::position_vector[m], int>>{4 * m, 4 * m, 4 * m});
+      CHECK(v + u == vector<quantity<isq::displacement[m], int>>{4 * m, 4 * m, 4 * m});
     }
     SECTION("different units")
     {
-      const vector<quantity<isq::position_vector[km], int>> u = {3 * km, 2 * km, 1 * km};
+      const vector<quantity<isq::displacement[km], int>> u = {3 * km, 2 * km, 1 * km};
 
-      CHECK(v + u == vector<quantity<isq::position_vector[m], int>>{3001 * m, 2002 * m, 1003 * m});
+      CHECK(v + u == vector<quantity<isq::displacement[m], int>>{3001 * m, 2002 * m, 1003 * m});
     }
   }
 
   SECTION("subtract")
   {
-    const vector<quantity<isq::position_vector[m], int>> v = {1 * m, 2 * m, 3 * m};
+    const vector<quantity<isq::displacement[m], int>> v = {1 * m, 2 * m, 3 * m};
 
     SECTION("same unit")
     {
-      const vector<quantity<isq::position_vector[m], int>> u = {3 * m, 2 * m, 1 * m};
-      CHECK(v - u == vector<quantity<isq::position_vector[m], int>>{-2 * m, 0 * m, 2 * m});
+      const vector<quantity<isq::displacement[m], int>> u = {3 * m, 2 * m, 1 * m};
+      CHECK(v - u == vector<quantity<isq::displacement[m], int>>{-2 * m, 0 * m, 2 * m});
     }
     SECTION("different units")
     {
-      const vector<quantity<isq::position_vector[km], int>> u = {3 * km, 2 * km, 1 * km};
-      CHECK(v - u == vector<quantity<isq::position_vector[m], int>>{-2999 * m, -1998 * m, -997 * m});
+      const vector<quantity<isq::displacement[km], int>> u = {3 * km, 2 * km, 1 * km};
+      CHECK(v - u == vector<quantity<isq::displacement[m], int>>{-2999 * m, -1998 * m, -997 * m});
     }
   }
 
@@ -454,7 +454,7 @@ TEST_CASE("vector of quantities", "[la]")
 
   SECTION("divide by scalar quantity")
   {
-    const vector<quantity<isq::position_vector[km], int>> pos = {30 * km, 20 * km, 10 * km};
+    const vector<quantity<isq::displacement[km], int>> pos = {30 * km, 20 * km, 10 * km};
 
     SECTION("integral")
     {
@@ -495,7 +495,7 @@ TEST_CASE("vector of quantities", "[la]")
 
   SECTION("cross product with a vector of quantities")
   {
-    const vector<quantity<isq::position_vector[m], int>> r = {3 * m, 0 * m, 0 * m};
+    const vector<quantity<isq::displacement[m], int>> r = {3 * m, 0 * m, 0 * m};
     const vector<quantity<isq::force[N], int>> f = {0 * N, 10 * N, 0 * N};
 
     CHECK(cross_product(r, f) == vector<quantity<isq::moment_of_force[N * m], int>>{0 * N * m, 0 * N * m, 30 * N * m});

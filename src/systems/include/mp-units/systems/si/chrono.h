@@ -83,10 +83,10 @@ struct quantity_like_traits<std::chrono::duration<Rep, Period>> {
     return q.count();
   }
 
-  [[nodiscard]] static constexpr T from_numerical_value(const rep& v) noexcept(
+  [[nodiscard]] static constexpr T from_numerical_value(const rep& val) noexcept(
     std::is_nothrow_copy_constructible_v<rep>)
   {
-    return T(v);
+    return T(val);
   }
 };
 
@@ -113,10 +113,10 @@ struct quantity_point_like_traits<std::chrono::time_point<C, std::chrono::durati
     return tp.time_since_epoch().count();
   }
 
-  [[nodiscard]] static constexpr T from_numerical_value(const rep& v) noexcept(
+  [[nodiscard]] static constexpr T from_numerical_value(const rep& val) noexcept(
     std::is_nothrow_copy_constructible_v<rep>)
   {
-    return T(std::chrono::duration<Rep, Period>(v));
+    return T(std::chrono::duration<Rep, Period>(val));
   }
 };
 
@@ -137,7 +137,7 @@ template<QuantityOf<MP_UNITS_IS_VALUE_WORKAROUND(isq::time)> Q>
 }
 
 template<QuantityPointOf<MP_UNITS_IS_VALUE_WORKAROUND(isq::time)> QP>
-  requires is_specialization_of<std::remove_const_t<decltype(QP::absolute_point_origin)>, chrono_point_origin_>
+  requires is_specialization_of<MP_UNITS_NONCONST_TYPE(QP::absolute_point_origin), chrono_point_origin_>
 [[nodiscard]] constexpr auto to_chrono_time_point(const QP& qp)
 {
   using clock = decltype(QP::absolute_point_origin)::clock;

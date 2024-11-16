@@ -146,7 +146,7 @@ template<Unit From, Unit To>
     return false;
 }
 
-template<typename... Expr>
+template<detail::SymbolicConstant... Expr>
 struct derived_unit;
 
 namespace detail {
@@ -158,13 +158,13 @@ struct unit_interface {
   template<Magnitude M, Unit U>
   [[nodiscard]] friend MP_UNITS_CONSTEVAL Unit auto operator*(M, U u)
   {
-    if constexpr (std::is_same_v<M, std::remove_const_t<decltype(mp_units::mag<1>)>>)
+    if constexpr (std::is_same_v<M, MP_UNITS_NONCONST_TYPE(mp_units::mag<1>)>)
       return u;
     else if constexpr (is_specialization_of_scaled_unit<U>) {
       if constexpr (M{} * U::_mag_ == mag<1>)
         return U::_reference_unit_;
       else
-        return scaled_unit<M{} * U::_mag_, std::remove_const_t<decltype(U::_reference_unit_)>>{};
+        return scaled_unit<M{} * U::_mag_, MP_UNITS_NONCONST_TYPE(U::_reference_unit_)>{};
     } else
       return scaled_unit<M{}, U>{};
   }
@@ -304,7 +304,7 @@ struct named_unit;
  * @tparam QuantitySpec a specification of a base quantity to be measured with this unit
  */
 template<symbol_text Symbol, detail::QuantityKindSpec auto QS>
-  requires(!Symbol.empty()) && detail::BaseDimension<std::remove_const_t<decltype(QS.dimension)>>
+  requires(!Symbol.empty()) && detail::BaseDimension<MP_UNITS_NONCONST_TYPE(QS.dimension)>
 struct named_unit<Symbol, QS> : detail::unit_interface {
   using _base_type_ = named_unit;           // exposition only
   static constexpr auto _symbol_ = Symbol;  ///< Unique base unit identifier
@@ -312,7 +312,7 @@ struct named_unit<Symbol, QS> : detail::unit_interface {
 };
 
 template<symbol_text Symbol, detail::QuantityKindSpec auto QS, PointOrigin auto PO>
-  requires(!Symbol.empty()) && detail::BaseDimension<std::remove_const_t<decltype(QS.dimension)>>
+  requires(!Symbol.empty()) && detail::BaseDimension<MP_UNITS_NONCONST_TYPE(QS.dimension)>
 struct named_unit<Symbol, QS, PO> : detail::unit_interface {
   using _base_type_ = named_unit;           // exposition only
   static constexpr auto _symbol_ = Symbol;  ///< Unique base unit identifier
@@ -427,7 +427,7 @@ template<Unit U1, Unit U2>
   if constexpr (common_magnitude == mag<1>)
     return canonical_lhs.reference_unit;
   else
-    return scaled_unit<common_magnitude, std::remove_const_t<decltype(canonical_lhs.reference_unit)>>{};
+    return scaled_unit<common_magnitude, MP_UNITS_NONCONST_TYPE(canonical_lhs.reference_unit)>{};
 }
 
 [[nodiscard]] consteval Unit auto get_common_scaled_unit(Unit auto u1, Unit auto u2, Unit auto u3, Unit auto... rest)
@@ -513,7 +513,7 @@ struct derived_unit_impl : detail::unit_interface, detail::expr_fractions<one, E
  * @note User should not instantiate this type! It is not exported from the C++ module. The library will
  *       instantiate this type automatically based on the unit arithmetic equation provided by the user.
  */
-template<typename... Expr>
+template<detail::SymbolicConstant... Expr>
 struct derived_unit final : detail::derived_unit_impl<Expr...> {};
 
 /**
@@ -889,13 +889,10 @@ constexpr Out unit_symbol_to(Out out, U u, const unit_symbol_formatting& fmt = u
   return detail::unit_symbol_impl<CharT>(out, u, fmt, false);
 }
 
-// TODO Refactor to `unit_symbol(U, fmt)` when P1045: constexpr Function Parameters is available
-MP_UNITS_EXPORT template<unit_symbol_formatting fmt = unit_symbol_formatting{}, typename CharT = char, Unit U>
-#if defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG <= 18
-[[nodiscard]] constexpr auto unit_symbol(U)
-#else
-[[nodiscard]] consteval auto unit_symbol(U)
-#endif
+namespace detail {
+
+MP_UNITS_EXPORT template<unit_symbol_formatting fmt, typename CharT, Unit U>
+[[nodiscard]] consteval auto unit_symbol_impl(U)
 {
   constexpr auto oversized_symbol_text = []() consteval {
     // std::basic_string<CharT> text;  // TODO uncomment when https://wg21.link/P3032 is supported
@@ -903,14 +900,21 @@ MP_UNITS_EXPORT template<unit_symbol_formatting fmt = unit_symbol_formatting{}, 
     unit_symbol_to<CharT>(std::back_inserter(text), U{}, fmt);
     return text;
   }();
-
-#if MP_UNITS_API_STRING_VIEW_RET  // Permitting static constexpr variables in constexpr functions
-  static constexpr basic_fixed_string<CharT, oversized_symbol_text.size()> storage(std::from_range,
-                                                                                   oversized_symbol_text);
-  return storage.view();
-#else
   return basic_fixed_string<CharT, oversized_symbol_text.size()>(std::from_range, oversized_symbol_text);
-#endif
+}
+
+template<unit_symbol_formatting fmt, typename CharT, Unit U>
+struct unit_symbol_result {
+  static constexpr auto value = unit_symbol_impl<fmt, CharT>(U{});
+};
+
+}  // namespace detail
+
+// TODO Refactor to `unit_symbol(U, fmt)` when P1045: constexpr Function Parameters is available
+MP_UNITS_EXPORT template<unit_symbol_formatting fmt = unit_symbol_formatting{}, typename CharT = char, Unit U>
+[[nodiscard]] consteval std::string_view unit_symbol(U)
+{
+  return detail::unit_symbol_result<fmt, CharT, U>::value.view();
 }
 
 }  // namespace mp_units

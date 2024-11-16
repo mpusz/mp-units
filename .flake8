@@ -7,3 +7,6 @@ ignore =
     E712,
     # line break before binary operator
     W503
+per-file-ignores =
+    # flake8 is just plain wrong here, contradicting black
+    .github/generate-job-matrix.py:E225,E231

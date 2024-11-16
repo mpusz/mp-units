@@ -26,6 +26,7 @@ In this series, we will describe:
 - [Part 3 - Modeling ISQ](isq-part-3-modeling-isq.md)
 - [Part 4 - Implementing ISQ](isq-part-4-implemeting-isq.md)
 - [Part 5 - Benefits](isq-part-5-benefits.md)
+- [Part 6 - Challenges](isq-part-6-challenges.md)
 
 
 ## Terms and Definitions

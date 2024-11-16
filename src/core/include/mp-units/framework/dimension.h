@@ -52,7 +52,7 @@ import std;
 
 namespace mp_units {
 
-template<typename... Expr>
+template<detail::SymbolicConstant... Expr>
 struct derived_dimension;
 
 MP_UNITS_EXPORT struct dimension_one;
@@ -165,7 +165,7 @@ struct base_dimension : detail::dimension_interface {
  * @note User should not instantiate this type! It is not exported from the C++ module. The library will
  *       instantiate this type automatically based on the dimensional arithmetic equation provided by the user.
  */
-template<typename... Expr>
+template<detail::SymbolicConstant... Expr>
 struct derived_dimension final : detail::dimension_interface, detail::derived_dimension_impl<Expr...> {};
 
 /**
@@ -286,14 +286,10 @@ constexpr Out dimension_symbol_to(Out out, D d, const dimension_symbol_formattin
   return detail::dimension_symbol_impl<CharT>(out, d, fmt, false);
 }
 
-// TODO Refactor to `dimension_symbol(D, fmt)` when P1045: constexpr Function Parameters is available
-MP_UNITS_EXPORT template<dimension_symbol_formatting fmt = dimension_symbol_formatting{}, typename CharT = char,
-                         Dimension D>
-#if defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG <= 18
-[[nodiscard]] constexpr auto dimension_symbol(D)
-#else
-[[nodiscard]] consteval auto dimension_symbol(D)
-#endif
+namespace detail {
+
+MP_UNITS_EXPORT template<dimension_symbol_formatting fmt, typename CharT, Dimension D>
+[[nodiscard]] consteval auto dimension_symbol_impl(D)
 {
   constexpr auto oversized_symbol_text = []() consteval {
     // std::basic_string<CharT> text;  // TODO uncomment when https://wg21.link/P3032 is supported
@@ -301,14 +297,22 @@ MP_UNITS_EXPORT template<dimension_symbol_formatting fmt = dimension_symbol_form
     dimension_symbol_to<CharT>(std::back_inserter(text), D{}, fmt);
     return text;
   }();
-
-#if MP_UNITS_API_STRING_VIEW_RET  // Permitting static constexpr variables in constexpr functions
-  static constexpr basic_fixed_string<CharT, oversized_symbol_text.size()> storage(std::from_range,
-                                                                                   oversized_symbol_text);
-  return storage.view();
-#else
   return basic_fixed_string<CharT, oversized_symbol_text.size()>(std::from_range, oversized_symbol_text);
-#endif
+}
+
+template<dimension_symbol_formatting fmt, typename CharT, Dimension D>
+struct dimension_symbol_result {
+  static constexpr auto value = dimension_symbol_impl<fmt, CharT>(D{});
+};
+
+}  // namespace detail
+
+// TODO Refactor to `dimension_symbol(D, fmt)` when P1045: constexpr Function Parameters is available
+MP_UNITS_EXPORT template<dimension_symbol_formatting fmt = dimension_symbol_formatting{}, typename CharT = char,
+                         Dimension D>
+[[nodiscard]] consteval std::string_view dimension_symbol(D)
+{
+  return detail::dimension_symbol_result<fmt, CharT, D>::value.view();
 }
 
 }  // namespace mp_units

@@ -291,8 +291,8 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
   static constexpr auto dimension = get_quantity_spec(Reference).dimension;
 
   using quantity_t = mp_units::quantity<Reference, Rep>;
-  using unit_t = std::remove_const_t<decltype(unit)>;
-  using dimension_t = std::remove_const_t<decltype(dimension)>;
+  using unit_t = MP_UNITS_NONCONST_TYPE(unit);
+  using dimension_t = MP_UNITS_NONCONST_TYPE(dimension);
   using format_specs = mp_units::detail::fill_align_width_format_specs<Char>;
 
   format_specs specs_{};

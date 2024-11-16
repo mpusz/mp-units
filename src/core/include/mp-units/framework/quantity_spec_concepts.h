@@ -78,7 +78,7 @@ concept NamedQuantitySpec =
 
 }  // namespace detail
 
-template<typename... Expr>
+template<detail::SymbolicConstant... Expr>
 struct derived_quantity_spec;
 
 namespace detail {
@@ -93,9 +93,9 @@ namespace detail {
  */
 template<typename T>
 concept DerivedQuantitySpec =
-  QuantitySpec<T> && (is_specialization_of<T, derived_quantity_spec> ||
-                      (QuantityKindSpec<T> &&
-                       is_specialization_of<std::remove_const_t<decltype(T::_quantity_spec_)>, derived_quantity_spec>));
+  QuantitySpec<T> &&
+  (is_specialization_of<T, derived_quantity_spec> ||
+   (QuantityKindSpec<T> && is_specialization_of<MP_UNITS_NONCONST_TYPE(T::_quantity_spec_), derived_quantity_spec>));
 
 }  // namespace detail
 
@@ -117,8 +117,8 @@ concept ChildQuantitySpecOf = (is_child_of(Child, Parent));
 
 template<auto To, auto From>
 concept NestedQuantityKindSpecOf =
-  QuantitySpec<decltype(From)> && QuantitySpec<decltype(To)> && (!SameQuantitySpec<get_kind(From), get_kind(To)>) &&
-  ChildQuantitySpecOf<To, get_kind(From)._quantity_spec_>;
+  QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(From))> && QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(To))> &&
+  (!SameQuantitySpec<get_kind(From), get_kind(To)>) && ChildQuantitySpecOf<To, get_kind(From)._quantity_spec_>;
 
 template<auto From, auto To>
 concept QuantitySpecConvertibleTo =

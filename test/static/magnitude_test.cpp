@@ -31,9 +31,6 @@ import mp_units;
 using namespace units;
 using namespace units::detail;
 
-template<>
-constexpr std::optional<std::intmax_t> units::known_first_factor<9223372036854775783> = 9223372036854775783;
-
 namespace {
 
 // A set of non-standard bases for testing purposes.
@@ -181,20 +178,6 @@ static_assert(std::is_same_v<decltype(get_base(power_v<mag_2, 5, 8>{})), mag_2_>
 //     // The failure was due to a prime factor which is larger than 2^31.
 //     mag_ratio<16'605'390'666'050, 10'000'000'000'000>();
 //   }
-
-//   SECTION("Can bypass computing primes by providing known_first_factor<N>")
-//   {
-//     // Sometimes, even wheel factorization isn't enough to handle the compilers' limits on constexpr steps and/or
-//     // iterations.  To work around these cases, we can explicitly provide the correct answer directly to the
-//     compiler.
-//     //
-//     // In this case, we test that we can represent the largest prime that fits in a signed 64-bit int.  The reason
-//     this
-//     // test can pass is that we have provided the answer, by specializing the `known_first_factor` variable template
-//     // above in this file.
-//     mag<9'223'372'036'854'775'783>();
-//   }
-// }
 
 // TEST_CASE("magnitude converts to numerical value")
 // {

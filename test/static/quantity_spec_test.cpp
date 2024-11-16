@@ -56,6 +56,7 @@ inline constexpr auto arc_length = path_length;
 QUANTITY_SPEC_(distance, path_length);
 QUANTITY_SPEC_(wavelength, length);
 QUANTITY_SPEC_(position_vector, length, quantity_character::vector);
+QUANTITY_SPEC_(displacement, length, quantity_character::vector);
 QUANTITY_SPEC_(period_duration, time);
 QUANTITY_SPEC_(rotation, dimensionless);
 QUANTITY_SPEC_(repetency, inverse(wavelength));
@@ -68,7 +69,7 @@ QUANTITY_SPEC_(rotational_displacement, angular_measure, path_length / radius);
 QUANTITY_SPEC_(phase_angle, angular_measure);
 QUANTITY_SPEC_(solid_angular_measure, dimensionless, area / pow<2>(radius), is_kind);
 QUANTITY_SPEC_(speed, length / time);
-QUANTITY_SPEC_(velocity, speed, position_vector / time);
+QUANTITY_SPEC_(velocity, speed, displacement / time);
 QUANTITY_SPEC_(special_speed, speed);
 QUANTITY_SPEC_(rate_of_climb, speed, height / time);
 QUANTITY_SPEC_(special_rate_of_climb, rate_of_climb);
@@ -377,9 +378,9 @@ static_assert(force * length != torque);
 static_assert(force * position_vector != energy);
 static_assert(force * position_vector != torque);
 static_assert(length / time != speed);
-static_assert(position_vector / time != speed);
+static_assert(displacement / time != speed);
 static_assert(length / time != velocity);
-static_assert(position_vector / time != velocity);
+static_assert(displacement / time != velocity);
 
 static_assert(length * time / period_duration != time);
 static_assert(length * height / width != length);
@@ -390,12 +391,12 @@ static_assert(length / speed != time);
 static_assert(speed * time != length);
 
 static_assert(length / time / time != acceleration);
-static_assert(position_vector / time / time != acceleration);
-static_assert(position_vector / (time * time) != acceleration);
+static_assert(displacement / time / time != acceleration);
+static_assert(displacement / (time * time) != acceleration);
 static_assert(velocity / time != acceleration);
 static_assert(velocity / acceleration != time);
 static_assert(acceleration * time != velocity);
-static_assert(acceleration * (time * time) != position_vector);
+static_assert(acceleration * (time * time) != displacement);
 static_assert(acceleration / speed != frequency);
 
 // get_kind
@@ -471,7 +472,7 @@ static_assert(get_complexity(speed * area / frequency) == 1);
 // explode
 static_assert(explode<get_complexity(inverse(time))>(frequency).quantity == inverse(period_duration));
 static_assert(explode<get_complexity(kind_of<length / time>)>(speed).quantity == length / time);
-static_assert(explode<get_complexity(kind_of<length / time>)>(velocity).quantity == position_vector / time);
+static_assert(explode<get_complexity(kind_of<length / time>)>(velocity).quantity == displacement / time);
 static_assert(explode<get_complexity(dimensionless)>(angular_measure).quantity == arc_length / radius);
 static_assert(explode<get_complexity(velocity)>(acceleration * time).quantity == velocity);
 static_assert(explode<get_complexity(area)>(area).quantity == area);
@@ -582,8 +583,8 @@ static_assert(convertible_impl(inverse(frequency), time) == yes);
 static_assert(convertible_impl(inverse(period_duration), frequency) == yes);
 static_assert(convertible_impl(length * length, area) == yes);
 static_assert(convertible_impl(length / time, speed) == yes);
-static_assert(convertible_impl(position_vector / time, speed) == yes);
-static_assert(convertible_impl(position_vector / time, velocity) == yes);
+static_assert(convertible_impl(displacement / time, speed) == yes);
+static_assert(convertible_impl(displacement / time, velocity) == yes);
 static_assert(convertible_impl(height / time, speed) == yes);
 static_assert(convertible_impl(height / time, rate_of_climb) == yes);
 static_assert(convertible_impl(area / length, length) == yes);
@@ -597,12 +598,12 @@ static_assert(convertible_impl(area * (area / length), volume) == yes);
 static_assert(convertible_impl(volume / (length * length), length) == yes);
 static_assert(convertible_impl(length / speed, time) == yes);
 static_assert(convertible_impl(speed * time, length) == yes);
-static_assert(convertible_impl(position_vector / time / time, acceleration) == yes);
-static_assert(convertible_impl(position_vector / (time * time), acceleration) == yes);
+static_assert(convertible_impl(displacement / time / time, acceleration) == yes);
+static_assert(convertible_impl(displacement / (time * time), acceleration) == yes);
 static_assert(convertible_impl(velocity / time, acceleration) == yes);
 static_assert(convertible_impl(velocity / acceleration, time) == yes);
 static_assert(convertible_impl(acceleration * time, velocity) == yes);
-static_assert(convertible_impl(acceleration * (time * time), position_vector) == yes);
+static_assert(convertible_impl(acceleration * (time * time), displacement) == yes);
 static_assert(convertible_impl(mass * pow<2>(length) / pow<2>(time), energy) == yes);
 static_assert(convertible_impl(force * length, energy) == yes);
 static_assert(convertible_impl(force * position_vector, moment_of_force) == yes);
@@ -648,18 +649,18 @@ static_assert(convertible_impl(distance / speed, time) == yes);
 
 // derived quantities to incompatible type
 static_assert(convertible_impl(height / time, velocity) == cast);
-static_assert(convertible_impl(position_vector / time, rate_of_climb) == cast);
+static_assert(convertible_impl(displacement / time, rate_of_climb) == cast);
 
 // type to compatible derived
 static_assert(convertible_impl(distance, speed* time) == yes);
 
 // type to more specialized derived quantity
 static_assert(convertible_impl(speed, height / time) == explicit_conversion);
-static_assert(convertible_impl(speed, position_vector / time) == explicit_conversion);
+static_assert(convertible_impl(speed, displacement / time) == explicit_conversion);
 
 // type to a derived quantity on a different branch
 static_assert(convertible_impl(velocity, height / time) == cast);
-static_assert(convertible_impl(rate_of_climb, position_vector / time) == cast);
+static_assert(convertible_impl(rate_of_climb, displacement / time) == cast);
 
 // derived quantities requiring explosion to a type
 static_assert(convertible_impl(acceleration * time, velocity) == yes);
@@ -792,7 +793,7 @@ static_assert(convertible_impl(length / width, dimensionless) == yes);
 static_assert(convertible_impl(efficiency, strain) == cast);
 
 // quantity character checks
-static_assert((position_vector / time).character == quantity_character::vector);
+static_assert((displacement / time).character == quantity_character::vector);
 static_assert((position_vector / position_vector * time).character == quantity_character::scalar);
 static_assert((velocity / acceleration).character == quantity_character::scalar);
 

@@ -97,22 +97,22 @@ enumeration can be appended to the `quantity_spec` describing such a quantity ty
 === "C++23"
 
     ```cpp
-    inline constexpr struct position_vector final : quantity_spec<length, quantity_character::vector> {} position_vector;
     inline constexpr struct displacement final : quantity_spec<length, quantity_character::vector> {} displacement;
+    inline constexpr struct position_vector final : quantity_spec<displacement> {} position_vector;
     ```
 
 === "C++20"
 
     ```cpp
-    inline constexpr struct position_vector final : quantity_spec<position_vector, length, quantity_character::vector> {} position_vector;
     inline constexpr struct displacement final : quantity_spec<displacement, length, quantity_character::vector> {} displacement;
+    inline constexpr struct position_vector final : quantity_spec<position_vector, displacement> {} position_vector;
     ```
 
 === "Portable"
 
     ```cpp
-    QUANTITY_SPEC(position_vector, length, quantity_character::vector);
     QUANTITY_SPEC(displacement, length, quantity_character::vector);
+    QUANTITY_SPEC(position_vector, displacement);
     ```
 
 With the above, all the quantities derived from `position_vector` or `displacement` will have a correct
@@ -126,19 +126,19 @@ character override is needed):
 === "C++23"
 
     ```cpp
-    inline constexpr struct velocity final : quantity_spec<speed, position_vector / duration> {} velocity;
+    inline constexpr struct velocity final : quantity_spec<speed, displacement / duration> {} velocity;
     ```
 
 === "C++20"
 
     ```cpp
-    inline constexpr struct velocity final : quantity_spec<velocity, speed, position_vector / duration> {} velocity;
+    inline constexpr struct velocity final : quantity_spec<velocity, speed, displacement / duration> {} velocity;
     ```
 
 === "Portable"
 
     ```cpp
-    QUANTITY_SPEC(velocity, speed, position_vector / duration);
+    QUANTITY_SPEC(velocity, speed, displacement / duration);
     ```
 
 
@@ -148,7 +148,7 @@ As we remember, the `quantity` class template is defined as follows:
 
 ```cpp
 template<Reference auto R,
-         RepresentationOf<get_quantity_spec(R).character> Rep = double>
+         RepresentationOf<get_quantity_spec(R)> Rep = double>
 class quantity;
 ```
 

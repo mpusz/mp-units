@@ -44,7 +44,7 @@ QUANTITY_SPEC(surface_density_of_electric_charge, electric_charge / area);
 inline constexpr auto areic_electric_charge = surface_density_of_electric_charge;
 QUANTITY_SPEC(linear_density_of_electric_charge, electric_charge / length);
 inline constexpr auto lineic_electric_charge = linear_density_of_electric_charge;
-QUANTITY_SPEC(electric_dipole_moment, electric_charge* position_vector);     // vector
+QUANTITY_SPEC(electric_dipole_moment, electric_charge* displacement);        // vector
 QUANTITY_SPEC(electric_polarization, electric_dipole_moment / volume);       // vector
 QUANTITY_SPEC(electric_current_density, electric_charge_density* velocity);  // vector
 inline constexpr auto areic_electric_current = electric_current_density;

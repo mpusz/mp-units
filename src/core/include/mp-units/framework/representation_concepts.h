@@ -25,6 +25,7 @@
 // IWYU pragma: private, include <mp-units/framework.h>
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/framework/customization_points.h>
+#include <mp-units/framework/quantity_spec_concepts.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #ifdef MP_UNITS_IMPORT_STD
@@ -97,6 +98,7 @@ concept ScalarRepresentation = Scalar<T> && WeaklyRegular<T> && requires(T a, T 
   { a / f } -> Scalar;
 
   // scalar operations
+  { -a } -> Scalar;
   { a + b } -> Scalar;
   { a - b } -> Scalar;
   { a* b } -> Scalar;
@@ -114,16 +116,16 @@ concept ComplexRepresentation = Complex<T> && WeaklyRegular<T> && requires(T a, 
   { a / T(f) } -> Complex;
 
   // complex operations
+  { -a } -> Complex;
   { a + b } -> Complex;
   { a - b } -> Complex;
   { a* b } -> Complex;
   { a / b } -> Complex;
-  // TBD
-  // { re(a) } -> Scalar;
-  // { im(a) } -> Scalar;
-  // { mod(a) } -> Scalar;
-  // { arg(a) } -> Scalar;
-  // { conj(a) } -> Complex;
+  { real(a) } -> Scalar;
+  { imag(a) } -> Scalar;
+  { abs(a) } -> Scalar;
+  { arg(a) } -> Scalar;
+  { conj(a) } -> Complex;
 };
 
 // TODO how to check for a complex(Scalar, Scalar) -> Complex?
@@ -136,6 +138,7 @@ concept VectorRepresentation = Vector<T> && WeaklyRegular<T> && requires(T a, T 
   { a / f } -> Vector;
 
   // vector operations
+  { -a } -> Vector;
   { a + b } -> Vector;
   { a - b } -> Vector;
   // TBD
@@ -164,7 +167,11 @@ MP_UNITS_EXPORT template<typename T>
 concept Representation = detail::ScalarRepresentation<T> || detail::ComplexRepresentation<T> ||
                          detail::VectorRepresentation<T> || detail::TensorRepresentation<T>;
 
-MP_UNITS_EXPORT template<typename T, quantity_character Ch>
-concept RepresentationOf = detail::IsOfCharacter<T, Ch> && Representation<T>;
+MP_UNITS_EXPORT template<typename T, auto V>
+concept RepresentationOf =
+  Representation<T> &&
+  ((QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(V))> &&
+    (detail::QuantityKindSpec<MP_UNITS_REMOVE_CONST(decltype(V))> || detail::IsOfCharacter<T, V.character>)) ||
+   (std::same_as<quantity_character, decltype(V)> && detail::IsOfCharacter<T, V>));
 
 }  // namespace mp_units

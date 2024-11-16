@@ -58,7 +58,6 @@ class MPUnitsConan(ConanFile):
         "cxx_modules": [True, False],
         "import_std": [True, False],
         "std_format": [True, False],
-        "string_view_ret": [True, False],
         "no_crtp": [True, False],
         "contracts": ["none", "gsl-lite", "ms-gsl"],
         "freestanding": [True, False],
@@ -67,7 +66,6 @@ class MPUnitsConan(ConanFile):
         # "cxx_modules" default set in config_options()
         # "import_std" default set in config_options()
         # "std_format" default set in config_options()
-        # "string_view_ret" default set in config_options()
         # "no_crtp" default set in config_options()
         "contracts": "gsl-lite",
         "freestanding": False,
@@ -113,10 +111,6 @@ class MPUnitsConan(ConanFile):
                 "min_cppstd": "23",
                 "compiler": {"gcc": "", "clang": "18", "apple-clang": "", "msvc": ""},
             },
-            "static_constexpr_vars_in_constexpr_func": {
-                "min_cppstd": "23",
-                "compiler": {"gcc": "13", "clang": "17", "apple-clang": "", "msvc": ""},
-            },
             "explicit_this": {
                 "min_cppstd": "23",
                 "compiler": {
@@ -134,7 +128,6 @@ class MPUnitsConan(ConanFile):
             "std_format": "std_format",
             "cxx_modules": "cxx_modules",
             "import_std": "import_std",
-            "string_view_ret": "static_constexpr_vars_in_constexpr_func",
             "no_crtp": "explicit_this",
         }
 
@@ -280,7 +273,6 @@ class MPUnitsConan(ConanFile):
             tc.cache_variables["MP_UNITS_API_FREESTANDING"] = True
         else:
             tc.cache_variables["MP_UNITS_API_STD_FORMAT"] = opt.std_format
-        tc.cache_variables["MP_UNITS_API_STRING_VIEW_RET"] = opt.string_view_ret
         tc.cache_variables["MP_UNITS_API_NO_CRTP"] = opt.no_crtp
         tc.cache_variables["MP_UNITS_API_CONTRACTS"] = str(opt.contracts).upper()
 
@@ -340,10 +332,6 @@ class MPUnitsConan(ConanFile):
                 )
 
             # handle API options
-            self.cpp_info.components["core"].defines.append(
-                "MP_UNITS_API_STRING_VIEW_RET="
-                + str(int(self.options.string_view_ret == True))
-            )
             self.cpp_info.components["core"].defines.append(
                 "MP_UNITS_API_NO_CRTP=" + str(int(self.options.no_crtp == True))
             )

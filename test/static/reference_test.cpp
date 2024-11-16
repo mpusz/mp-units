@@ -195,7 +195,7 @@ static_assert(is_of_type<2 * m_per_s, quantity<reference<speed_, derived_unit<me
 
 static_assert(is_of_type<120 * length[kilometre] / (2 * time[hour]),
                          quantity<reference<derived_quantity_spec<length_, per<time_>>,
-                                            derived_unit<std::remove_const_t<decltype(si::kilo<metre>)>, per<hour_>>>{},
+                                            derived_unit<MP_UNITS_NONCONST_TYPE(si::kilo<metre>), per<hour_>>>{},
                                   int>>);
 static_assert(120 * length[kilometre] / (2 * time[hour]) == 60 * speed[kilometre / hour]);
 static_assert(is_of_type<[] {
@@ -204,15 +204,15 @@ static_assert(is_of_type<[] {
   return distance * length[kilometre] / (duration * time[hour]);
 }(),
                          quantity<reference<derived_quantity_spec<length_, per<time_>>,
-                                            derived_unit<std::remove_const_t<decltype(si::kilo<metre>)>, per<hour_>>>{},
+                                            derived_unit<MP_UNITS_NONCONST_TYPE(si::kilo<metre>), per<hour_>>>{},
                                   int>>);
 static_assert(is_of_type<std::int64_t{120} * length[kilometre] / (2 * time[hour]),
                          quantity<reference<derived_quantity_spec<length_, per<time_>>,
-                                            derived_unit<std::remove_const_t<decltype(si::kilo<metre>)>, per<hour_>>>{},
+                                            derived_unit<MP_UNITS_NONCONST_TYPE(si::kilo<metre>), per<hour_>>>{},
                                   std::int64_t>>);
 static_assert(is_of_type<120.L * length[kilometre] / (2 * time[hour]),
                          quantity<reference<derived_quantity_spec<length_, per<time_>>,
-                                            derived_unit<std::remove_const_t<decltype(si::kilo<metre>)>, per<hour_>>>{},
+                                            derived_unit<MP_UNITS_NONCONST_TYPE(si::kilo<metre>), per<hour_>>>{},
                                   long double>>);
 
 static_assert(is_of_type<1. / 4 * area[square(metre)], decltype(1. * area[square(metre)] / 4)>);
@@ -229,10 +229,11 @@ static_assert(is_of_type<42 * nu::length[nu::second] / (42 * nu::time[nu::second
                          quantity<reference<derived_quantity_spec<length_, per<time_>>, one_>{}, int>>);
 static_assert(is_of_type<42 * nu::speed[nu::second / nu::second], quantity<reference<speed_, one_>{}, int>>);
 static_assert(is_of_type<42 * nu::speed[one], quantity<reference<speed_, one_>{}, int>>);
-static_assert(is_of_type<42 * mass[kilogram] * (1 * nu::length[nu::second]) / (1 * nu::time[nu::second]),
-                         quantity<reference<derived_quantity_spec<length_, mass_, per<time_>>,
-                                            std::remove_const_t<decltype(si::kilo<gram>)>>{},
-                                  int>>);
+static_assert(
+  is_of_type<
+    42 * mass[kilogram] * (1 * nu::length[nu::second]) / (1 * nu::time[nu::second]),
+    quantity<reference<derived_quantity_spec<length_, mass_, per<time_>>, MP_UNITS_NONCONST_TYPE(si::kilo<gram>)>{},
+             int>>);
 
 template<auto dim, auto unit>
 concept invalid_nu_unit = !requires { dim[unit]; };
@@ -377,5 +378,15 @@ static_assert(invalid_comparison<1 * radian, 1 * bit>);
 static_assert(invalid_comparison<frequency(1 * hertz), activity(1 * becquerel)>);
 static_assert(invalid_comparison<angular_measure(1 * radian), solid_angular_measure(1 * steradian)>);
 static_assert(invalid_comparison<angular_measure(1 * radian), storage_capacity(1 * bit)>);
+
+// make_reference
+static_assert(is_of_type<make_reference(length, metre), reference<length_, metre_>>);
+static_assert(is_of_type<make_reference(width, metre), reference<width_, metre_>>);
+static_assert(is_of_type<make_reference(kind_of<length>, metre), metre_>);
+static_assert(is_of_type<make_reference(get_quantity_spec(metre), metre), metre_>);
+static_assert(is_of_type<make_reference(get_quantity_spec(hertz), hertz), hertz_>);
+static_assert(is_of_type<make_reference(kind_of<frequency>, hertz), hertz_>);
+static_assert(is_of_type<make_reference(get_quantity_spec(watt), watt), watt_>);
+static_assert(is_of_type<make_reference(kind_of<power>, watt), reference<kind_of_<power_>, watt_>>);
 
 }  // namespace

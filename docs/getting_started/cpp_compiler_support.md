@@ -19,7 +19,6 @@ C++ feature:
 | **`std::format`**                                         |     20      |  13  |  17   |    None     |                    194                    |
 | **C++ modules**                                           |     20      | None |  17   |    None     |                   None                    |
 | **`import std;`**                                         |     23      | None |  18   |    None     |                   None                    |
-| **Static `constexpr` variables in `constexpr` functions** |     23      |  13  |  17   |    None     |                   None                    |
 | **Explicit `this` parameter**                             |     23      |  14  |  18   |    None     |                   None                    |
 
 ??? note "MSVC bugs"
@@ -86,20 +85,6 @@ C++ feature:
     - Conan: [import_std](installation_and_usage.md#import_std)
     - CMake: [CMAKE_CXX_MODULE_STD](https://cmake.org/cmake/help/latest/variable/CMAKE_CXX_MODULE_STD.html)
 
-
-## Static `constexpr` variables in `constexpr` functions
-
-- Allows returning `std::string_view` from the
-  [`unit_symbol()`](../users_guide/framework_basics/text_output.md#unit_symbol)
-  and [`dimension_symbol()`](../users_guide/framework_basics/text_output.md#dimension_symbol)
-  functions
-    - `std::string_view` type has a reference semantics so it has to point to a storage with
-      a longer lifetime.
-- If this feature is not available, the API returns `mp_units::basic_fixed_string<CharT, N>` instead.
-- Tested as `__cpp_constexpr >= 202211L` [feature test macro](https://en.cppreference.com/w/cpp/feature_test).
-- Related build options:
-    - Conan: [string_view_ret](installation_and_usage.md#string_view_ret)
-    - CMake: [MP_UNITS_API_STRING_VIEW_RET](installation_and_usage.md#MP_UNITS_API_STRING_VIEW_RET)
 
 ## Explicit `this` parameter
 

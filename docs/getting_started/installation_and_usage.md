@@ -123,18 +123,6 @@ dependencies by other means, some modifications to the library's CMake files mig
 
     [conan std::format support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 
-[`string_view_ret`](#string_view_ret){ #string_view_ret }
-
-:   [:octicons-tag-24: 2.2.0][conan returning string_view] · :octicons-milestone-24: `True`/`False` (Default: automatically determined from settings)
-
-    Enables returning `std::string_view` from the
-    [`unit_symbol()`](../users_guide/framework_basics/text_output.md#unit_symbol)
-    and [`dimension_symbol()`](../users_guide/framework_basics/text_output.md#dimension_symbol)
-    functions.  If this feature is not available, those functions will return
-    `mp_units::basic_fixed_string<CharT, N>` instead.
-
-    [conan returning string_view]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
-
 [`no_crtp`](#no_crtp){ #no_crtp }
 
 :   [:octicons-tag-24: 2.2.0][conan no crtp support] · :octicons-milestone-24: `True`/`False` (Default: automatically determined from settings)
@@ -195,18 +183,6 @@ dependencies by other means, some modifications to the library's CMake files mig
         the [{fmt}](https://github.com/fmtlib/fmt) library is used instead.
 
         [cmake std::format support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
-
-    [`MP_UNITS_API_STRING_VIEW_RET`](#MP_UNITS_API_STRING_VIEW_RET){ #MP_UNITS_API_STRING_VIEW_RET }
-
-    :   [:octicons-tag-24: 2.2.0][cmake returning string_view] · :octicons-milestone-24: `ON`/`OFF` (Default: automatically determined)
-
-        Enables returning `std::string_view` from the
-        [`unit_symbol()`](../users_guide/framework_basics/text_output.md#unit_symbol)
-        and [`dimension_symbol()`](../users_guide/framework_basics/text_output.md#dimension_symbol)
-        functions.  If this feature is not available, those functions will return
-        `mp_units::basic_fixed_string<CharT, N>` instead.
-
-        [cmake returning string_view]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 
     [`MP_UNITS_API_NO_CRTP`](#MP_UNITS_API_NO_CRTP){ #MP_UNITS_API_NO_CRTP }
 

@@ -28,6 +28,8 @@
 #include <mp-units/framework.h>
 
 #if MP_UNITS_HOSTED
+#include <mp-units/cartesian_vector.h>
+#include <mp-units/complex.h>
 #include <mp-units/format.h>
 #include <mp-units/math.h>
 #include <mp-units/ostream.h>

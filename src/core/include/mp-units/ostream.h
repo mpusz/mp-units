@@ -68,8 +68,8 @@ void to_stream_impl(std::basic_ostream<CharT, Traits>& os, const quantity<R, Rep
 }
 
 template<typename CharT, class Traits, typename T>
-std::basic_ostream<CharT, Traits>& to_stream(std::basic_ostream<CharT, Traits>& os, const T& v)
-  requires requires { detail::to_stream_impl(os, v); }
+std::basic_ostream<CharT, Traits>& to_stream(std::basic_ostream<CharT, Traits>& os, const T& val)
+  requires requires { detail::to_stream_impl(os, val); }
 {
   if (os.width()) {
     // std::setw() applies to the whole output so it has to be first put into std::string
@@ -77,11 +77,11 @@ std::basic_ostream<CharT, Traits>& to_stream(std::basic_ostream<CharT, Traits>& 
     oss.flags(os.flags());
     oss.imbue(os.getloc());
     oss.precision(os.precision());
-    detail::to_stream_impl(oss, v);
+    detail::to_stream_impl(oss, val);
     return os << std::move(oss).str();
   }
 
-  detail::to_stream_impl(os, v);
+  detail::to_stream_impl(os, val);
   return os;
 }
 
@@ -93,10 +93,10 @@ constexpr bool is_mp_units_stream = requires(OStream os, T v) { detail::to_strea
 MP_UNITS_EXPORT_BEGIN
 
 template<typename CharT, typename Traits, typename T>
-std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const T& v)
+std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const T& val)
   requires detail::is_mp_units_stream<std::basic_ostream<CharT, Traits>, T>
 {
-  return detail::to_stream(os, v);
+  return detail::to_stream(os, val);
 }
 
 MP_UNITS_EXPORT_END
