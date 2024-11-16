@@ -965,7 +965,7 @@ template<extracted_entities Entities, auto Ext, TypeList NumFrom, TypeList DenFr
   }();
 
   if constexpr (Entities == extracted_entities::numerators || Entities == extracted_entities::denominators)
-    return min(res, convertible_impl(Ext.from, Ext.to));
+    return min(res, convertible(Ext.from, Ext.to));
   else
     return res;
 }
@@ -998,26 +998,26 @@ template<typename NumFrom, typename... NumsFrom, typename DenFrom, typename... D
     if constexpr (max_compl > 0) {
       if constexpr (num_from_compl == max_compl) {
         constexpr auto res = explode_to_equation(NumFrom{});
-        return convertible_impl(
+        return convertible(
           (res.equation * ... * map_power(NumsFrom{})) / (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
           (map_power(NumTo{}) * ... * map_power(NumsTo{})) / (map_power(DenTo{}) * ... * map_power(DensTo{})));
       } else if constexpr (den_from_compl == max_compl) {
         constexpr auto res = explode_to_equation(DenFrom{});
-        return convertible_impl(
+        return convertible(
           (map_power(NumFrom{}) * ... * map_power(NumsFrom{})) / (res.equation * ... * map_power(DensFrom{})),
           (map_power(NumTo{}) * ... * map_power(NumsTo{})) / (map_power(DenTo{}) * ... * map_power(DensTo{})));
       } else if constexpr (num_to_compl == max_compl) {
         constexpr auto res = explode_to_equation(NumTo{});
-        return min(res.result, convertible_impl((map_power(NumFrom{}) * ... * map_power(NumsFrom{})) /
-                                                  (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
-                                                (res.equation * ... * map_power(NumsTo{})) /
-                                                  (map_power(DenTo{}) * ... * map_power(DensTo{}))));
+        return min(res.result, convertible((map_power(NumFrom{}) * ... * map_power(NumsFrom{})) /
+                                             (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
+                                           (res.equation * ... * map_power(NumsTo{})) /
+                                             (map_power(DenTo{}) * ... * map_power(DensTo{}))));
       } else {
         constexpr auto res = explode_to_equation(DenTo{});
-        return min(res.result, convertible_impl((map_power(NumFrom{}) * ... * map_power(NumsFrom{})) /
-                                                  (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
-                                                (map_power(NumTo{}) * ... * map_power(NumsTo{})) /
-                                                  (res.equation * ... * map_power(DensTo{}))));
+        return min(res.result, convertible((map_power(NumFrom{}) * ... * map_power(NumsFrom{})) /
+                                             (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
+                                           (map_power(NumTo{}) * ... * map_power(NumsTo{})) /
+                                             (res.equation * ... * map_power(DensTo{}))));
       }
     }
   }
@@ -1043,19 +1043,19 @@ template<typename DenFrom, typename... DensFrom, typename NumTo, typename... Num
     if constexpr (max_compl > 0) {
       if constexpr (den_from_compl == max_compl) {
         constexpr auto res = explode_to_equation(DenFrom{});
-        return convertible_impl(
+        return convertible(
           dimensionless / (res.equation * ... * map_power(DensFrom{})),
           (map_power(NumTo{}) * ... * map_power(NumsTo{})) / (map_power(DenTo{}) * ... * map_power(DensTo{})));
       } else if constexpr (num_to_compl == max_compl) {
         constexpr auto res = explode_to_equation(NumTo{});
-        return min(res.result, convertible_impl(dimensionless / (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
-                                                (res.equation * ... * map_power(NumsTo{})) /
-                                                  (map_power(DenTo{}) * ... * map_power(DensTo{}))));
+        return min(res.result, convertible(dimensionless / (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
+                                           (res.equation * ... * map_power(NumsTo{})) /
+                                             (map_power(DenTo{}) * ... * map_power(DensTo{}))));
       } else {
         constexpr auto res = explode_to_equation(DenTo{});
-        return min(res.result, convertible_impl(dimensionless / (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
-                                                (map_power(NumTo{}) * ... * map_power(NumsTo{})) /
-                                                  (res.equation * ... * map_power(DensTo{}))));
+        return min(res.result, convertible(dimensionless / (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
+                                           (map_power(NumTo{}) * ... * map_power(NumsTo{})) /
+                                             (res.equation * ... * map_power(DensTo{}))));
       }
     }
   }
@@ -1081,19 +1081,19 @@ template<typename NumFrom, typename... NumsFrom, typename NumTo, typename... Num
     if constexpr (max_compl > 0) {
       if constexpr (num_from_compl == max_compl) {
         constexpr auto res = explode_to_equation(NumFrom{});
-        return convertible_impl(
+        return convertible(
           (res.equation * ... * map_power(NumsFrom{})),
           (map_power(NumTo{}) * ... * map_power(NumsTo{})) / (map_power(DenTo{}) * ... * map_power(DensTo{})));
       } else if constexpr (num_to_compl == max_compl) {
         constexpr auto res = explode_to_equation(NumTo{});
-        return min(res.result, convertible_impl((map_power(NumFrom{}) * ... * map_power(NumsFrom{})),
-                                                (res.equation * ... * map_power(NumsTo{})) /
-                                                  (map_power(DenTo{}) * ... * map_power(DensTo{}))));
+        return min(res.result, convertible((map_power(NumFrom{}) * ... * map_power(NumsFrom{})),
+                                           (res.equation * ... * map_power(NumsTo{})) /
+                                             (map_power(DenTo{}) * ... * map_power(DensTo{}))));
       } else {
         constexpr auto res = explode_to_equation(DenTo{});
-        return min(res.result, convertible_impl((map_power(NumFrom{}) * ... * map_power(NumsFrom{})),
-                                                (map_power(NumTo{}) * ... * map_power(NumsTo{})) /
-                                                  (res.equation * ... * map_power(DensTo{}))));
+        return min(res.result, convertible((map_power(NumFrom{}) * ... * map_power(NumsFrom{})),
+                                           (map_power(NumTo{}) * ... * map_power(NumsTo{})) /
+                                             (res.equation * ... * map_power(DensTo{}))));
       }
     }
   }
@@ -1120,19 +1120,19 @@ template<typename NumFrom, typename... NumsFrom, typename DenFrom, typename... D
     if constexpr (max_compl > 0) {
       if constexpr (num_from_compl == max_compl) {
         constexpr auto res = explode_to_equation(NumFrom{});
-        return convertible_impl(
+        return convertible(
           (res.equation * ... * map_power(NumsFrom{})) / (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
           dimensionless / (map_power(DenTo{}) * ... * map_power(DensTo{})));
       } else if constexpr (den_from_compl == max_compl) {
         constexpr auto res = explode_to_equation(DenFrom{});
-        return convertible_impl(
+        return convertible(
           (map_power(NumFrom{}) * ... * map_power(NumsFrom{})) / (res.equation * ... * map_power(DensFrom{})),
           dimensionless / (map_power(DenTo{}) * ... * map_power(DensTo{})));
       } else {
         constexpr auto res = explode_to_equation(DenTo{});
-        return min(res.result, convertible_impl((map_power(NumFrom{}) * ... * map_power(NumsFrom{})) /
-                                                  (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
-                                                dimensionless / (res.equation * ... * map_power(DensTo{}))));
+        return min(res.result, convertible((map_power(NumFrom{}) * ... * map_power(NumsFrom{})) /
+                                             (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
+                                           dimensionless / (res.equation * ... * map_power(DensTo{}))));
       }
     }
   }
@@ -1159,19 +1159,19 @@ template<typename NumFrom, typename... NumsFrom, typename DenFrom, typename... D
     if constexpr (max_compl > 0) {
       if constexpr (num_from_compl == max_compl) {
         constexpr auto res = explode_to_equation(NumFrom{});
-        return convertible_impl(
+        return convertible(
           (res.equation * ... * map_power(NumsFrom{})) / (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
           (map_power(NumTo{}) * ... * map_power(NumsTo{})));
       } else if constexpr (den_from_compl == max_compl) {
         constexpr auto res = explode_to_equation(DenFrom{});
-        return convertible_impl(
+        return convertible(
           (map_power(NumFrom{}) * ... * map_power(NumsFrom{})) / (res.equation * ... * map_power(DensFrom{})),
           (map_power(NumTo{}) * ... * map_power(NumsTo{})));
       } else {
         constexpr auto res = explode_to_equation(NumTo{});
-        return min(res.result, convertible_impl((map_power(NumFrom{}) * ... * map_power(NumsFrom{})) /
-                                                  (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
-                                                (res.equation * ... * map_power(NumsTo{}))));
+        return min(res.result, convertible((map_power(NumFrom{}) * ... * map_power(NumsFrom{})) /
+                                             (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
+                                           (res.equation * ... * map_power(NumsTo{}))));
       }
     }
   }
@@ -1193,12 +1193,12 @@ template<typename NumFrom, typename... NumsFrom, typename NumTo, typename... Num
     if constexpr (max_compl > 0) {
       if constexpr (num_from_compl == max_compl) {
         constexpr auto res = explode_to_equation(NumFrom{});
-        return convertible_impl((res.equation * ... * map_power(NumsFrom{})),
-                                (map_power(NumTo{}) * ... * map_power(NumsTo{})));
+        return convertible((res.equation * ... * map_power(NumsFrom{})),
+                           (map_power(NumTo{}) * ... * map_power(NumsTo{})));
       } else {
         constexpr auto res = explode_to_equation(NumTo{});
-        return min(res.result, convertible_impl((map_power(NumFrom{}) * ... * map_power(NumsFrom{})),
-                                                (res.equation * ... * map_power(NumsTo{}))));
+        return min(res.result, convertible((map_power(NumFrom{}) * ... * map_power(NumsFrom{})),
+                                           (res.equation * ... * map_power(NumsTo{}))));
       }
     }
   }
@@ -1220,12 +1220,12 @@ template<typename DenFrom, typename... DensFrom, typename DenTo, typename... Den
     if constexpr (max_compl > 0) {
       if constexpr (den_from_compl == max_compl) {
         constexpr auto res = explode_to_equation(DenFrom{});
-        return convertible_impl(dimensionless / (res.equation * ... * map_power(DensFrom{})),
-                                dimensionless / (map_power(DenTo{}) * ... * map_power(DensTo{})));
+        return convertible(dimensionless / (res.equation * ... * map_power(DensFrom{})),
+                           dimensionless / (map_power(DenTo{}) * ... * map_power(DensTo{})));
       } else {
         constexpr auto res = explode_to_equation(DenTo{});
-        return min(res.result, convertible_impl(dimensionless / (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
-                                                dimensionless / (res.equation * ... * map_power(DensTo{}))));
+        return min(res.result, convertible(dimensionless / (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
+                                           dimensionless / (res.equation * ... * map_power(DensTo{}))));
       }
     }
   }
@@ -1242,12 +1242,12 @@ template<typename NumFrom, typename... NumsFrom, typename DenTo, typename... Den
   if constexpr (max_compl > 0) {
     if constexpr (num_from_compl == max_compl) {
       constexpr auto res = explode_to_equation(NumFrom{});
-      return convertible_impl((res.equation * ... * map_power(NumsFrom{})),
-                              dimensionless / (map_power(DenTo{}) * ... * map_power(DensTo{})));
+      return convertible((res.equation * ... * map_power(NumsFrom{})),
+                         dimensionless / (map_power(DenTo{}) * ... * map_power(DensTo{})));
     } else {
       constexpr auto res = explode_to_equation(DenTo{});
-      return min(res.result, convertible_impl((map_power(NumFrom{}) * ... * map_power(NumsFrom{})),
-                                              dimensionless / (res.equation * ... * map_power(DensTo{}))));
+      return min(res.result, convertible((map_power(NumFrom{}) * ... * map_power(NumsFrom{})),
+                                         dimensionless / (res.equation * ... * map_power(DensTo{}))));
     }
   }
 }
@@ -1263,12 +1263,12 @@ template<typename DenFrom, typename... DensFrom, typename NumTo, typename... Num
   if constexpr (max_compl > 0) {
     if constexpr (den_from_compl == max_compl) {
       constexpr auto res = explode_to_equation(DenFrom{});
-      return convertible_impl(dimensionless / (res.equation * ... * map_power(DensFrom{})),
-                              (map_power(NumTo{}) * ... * map_power(NumsTo{})));
+      return convertible(dimensionless / (res.equation * ... * map_power(DensFrom{})),
+                         (map_power(NumTo{}) * ... * map_power(NumsTo{})));
     } else {
       constexpr auto res = explode_to_equation(NumTo{});
-      return min(res.result, convertible_impl(dimensionless / (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
-                                              (res.equation * ... * map_power(NumsTo{}))));
+      return min(res.result, convertible(dimensionless / (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
+                                         (res.equation * ... * map_power(NumsTo{}))));
     }
   }
 }
@@ -1356,11 +1356,11 @@ template<QuantitySpec From, QuantitySpec To>
   };
   if constexpr ((NamedQuantitySpec<decltype(From{})> && NamedQuantitySpec<decltype(To{})>) ||
                 get_complexity(From{}) == get_complexity(To{}))
-    return exploded_kind_result(convertible_impl(from_kind, to_kind));
+    return exploded_kind_result(convertible(from_kind, to_kind));
   else if constexpr (get_complexity(From{}) > get_complexity(To{}))
-    return exploded_kind_result(convertible_impl(explode<get_complexity(To{})>(from_kind).quantity, to_kind));
+    return exploded_kind_result(convertible(explode<get_complexity(To{})>(from_kind).quantity, to_kind));
   else
-    return exploded_kind_result(convertible_impl(from_kind, explode<get_complexity(From{})>(to_kind).quantity));
+    return exploded_kind_result(convertible(from_kind, explode<get_complexity(From{})>(to_kind).quantity));
 }
 
 template<NamedQuantitySpec From, NamedQuantitySpec To>
@@ -1377,13 +1377,14 @@ template<NamedQuantitySpec From, NamedQuantitySpec To>
     return no;
   else if constexpr (get_complexity(From{}) != get_complexity(To{})) {
     if constexpr (get_complexity(From{}) > get_complexity(To{}))
-      return convertible_impl(explode<get_complexity(To{})>(from).quantity, to);
+      return convertible(explode<get_complexity(To{})>(from).quantity, to);
     else {
       auto res = explode<get_complexity(From{})>(to);
-      return min(res.result, convertible_impl(from, res.quantity));
+      return min(res.result, convertible(from, res.quantity));
     }
   }
 }
+
 
 template<QuantitySpec From, QuantitySpec To>
 [[nodiscard]] consteval specs_convertible_result convertible_impl(From from, To to)
@@ -1406,23 +1407,32 @@ template<QuantitySpec From, QuantitySpec To>
   else if constexpr (DerivedQuantitySpec<From>) {
     auto res = explode<get_complexity(To{})>(from);
     if constexpr (NamedQuantitySpec<decltype(res.quantity)>)
-      return convertible_impl(res.quantity, to);
+      return convertible(res.quantity, to);
     else if constexpr (requires { to._equation_; }) {
       auto eq = explode_to_equation(to);
-      return min(eq.result, convertible_impl(res.quantity, eq.equation));
+      return min(eq.result, convertible(res.quantity, eq.equation));
     } else
       return are_ingredients_convertible(from, to);
   } else if constexpr (DerivedQuantitySpec<To>) {
     auto res = explode<get_complexity(From{})>(to);
     if constexpr (NamedQuantitySpec<decltype(res.quantity)>)
-      return min(res.result, convertible_impl(from, res.quantity));
+      return min(res.result, convertible(from, res.quantity));
     else if constexpr (requires { from._equation_; })
-      return min(res.result, convertible_impl(from._equation_, res.quantity));
+      return min(res.result, convertible(from._equation_, res.quantity));
     else
       return min(res.result, are_ingredients_convertible(from, to));
   }
   // NOLINTEND(bugprone-branch-clone)
   return no;
+}
+
+template<QuantitySpec From, QuantitySpec To>
+constexpr specs_convertible_result convertible_result = convertible_impl(From{}, To{});
+
+template<QuantitySpec From, QuantitySpec To>
+[[nodiscard]] consteval specs_convertible_result convertible(From, To)
+{
+  return convertible_result<From, To>;
 }
 
 }  // namespace detail
@@ -1432,19 +1442,19 @@ MP_UNITS_EXPORT_BEGIN
 template<QuantitySpec From, QuantitySpec To>
 [[nodiscard]] consteval bool implicitly_convertible(From from, To to)
 {
-  return detail::convertible_impl(from, to) == detail::specs_convertible_result::yes;
+  return detail::convertible(from, to) == detail::specs_convertible_result::yes;
 }
 
 template<QuantitySpec From, QuantitySpec To>
 [[nodiscard]] consteval bool explicitly_convertible(From from, To to)
 {
-  return detail::convertible_impl(from, to) >= detail::specs_convertible_result::explicit_conversion;
+  return detail::convertible(from, to) >= detail::specs_convertible_result::explicit_conversion;
 }
 
 template<QuantitySpec From, QuantitySpec To>
 [[nodiscard]] consteval bool castable(From from, To to)
 {
-  return detail::convertible_impl(from, to) >= detail::specs_convertible_result::cast;
+  return detail::convertible(from, to) >= detail::specs_convertible_result::cast;
 }
 
 template<QuantitySpec QS1, QuantitySpec QS2>
