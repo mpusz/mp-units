@@ -80,12 +80,18 @@ template<typename T>
 concept Tensor = is_tensor<T>;
 
 template<typename T, quantity_character Ch>
-constexpr bool IsOfCharacterImpl =
-  (Ch == quantity_character::scalar && is_scalar<T>) || (Ch == quantity_character::complex && is_complex<T>) ||
-  (Ch == quantity_character::vector && is_vector<T>) || (Ch == quantity_character::tensor && is_tensor<T>);
+constexpr bool is_of_character_impl = false;
+template<typename T>
+constexpr bool is_of_character_impl<T, quantity_character::scalar> = is_scalar<T>;
+template<typename T>
+constexpr bool is_of_character_impl<T, quantity_character::complex> = is_complex<T>;
+template<typename T>
+constexpr bool is_of_character_impl<T, quantity_character::vector> = is_vector<T>;
+template<typename T>
+constexpr bool is_of_character_impl<T, quantity_character::tensor> = is_tensor<T>;
 
 template<typename T, quantity_character Ch>
-concept IsOfCharacter = IsOfCharacterImpl<T, Ch>;
+concept IsOfCharacter = is_of_character_impl<T, Ch>;
 
 template<typename T>
 using scaling_factor_type_t = conditional<treat_as_floating_point<T>, long double, std::intmax_t>;
