@@ -681,15 +681,6 @@ You're not viewing the latest version.
 </li>
       
         <li class="md-nav__item">
-  <a href="#static-constexpr-variables-in-constexpr-functions" class="md-nav__link">
-    <span class="md-ellipsis">
-      Static constexpr variables in constexpr functions
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#explicit-this-parameter" class="md-nav__link">
     <span class="md-ellipsis">
       Explicit this parameter
@@ -2320,14 +2311,6 @@ C++ feature:</p>
 <td style="text-align: center;">None</td>
 </tr>
 <tr>
-<td><strong>Static <code>constexpr</code> variables in <code>constexpr</code> functions</strong></td>
-<td style="text-align: center;">23</td>
-<td style="text-align: center;">13</td>
-<td style="text-align: center;">17</td>
-<td style="text-align: center;">None</td>
-<td style="text-align: center;">None</td>
-</tr>
-<tr>
 <td><strong>Explicit <code>this</code> parameter</strong></td>
 <td style="text-align: center;">23</td>
 <td style="text-align: center;">14</td>
@@ -2404,24 +2387,6 @@ the customers' projects.</p>
 <li>Related build options:<ul>
 <li>Conan: <a href="../installation_and_usage/#import_std">import_std</a></li>
 <li>CMake: <a href="https://cmake.org/cmake/help/latest/variable/CMAKE_CXX_MODULE_STD.html">CMAKE_CXX_MODULE_STD</a></li>
-</ul>
-</li>
-</ul>
-<h2 id="static-constexpr-variables-in-constexpr-functions">Static <code>constexpr</code> variables in <code>constexpr</code> functions<a class="headerlink" href="#static-constexpr-variables-in-constexpr-functions" title="Permanent link">&para;</a></h2>
-<ul>
-<li>Allows returning <code>std::string_view</code> from the
-  <a href="../../users_guide/framework_basics/text_output/#unit_symbol"><code>unit_symbol()</code></a>
-  and <a href="../../users_guide/framework_basics/text_output/#dimension_symbol"><code>dimension_symbol()</code></a>
-  functions<ul>
-<li><code>std::string_view</code> type has a reference semantics so it has to point to a storage with
-  a longer lifetime.</li>
-</ul>
-</li>
-<li>If this feature is not available, the API returns <code>mp_units::basic_fixed_string&lt;CharT, N&gt;</code> instead.</li>
-<li>Tested as <code>__cpp_constexpr &gt;= 202211L</code> <a href="https://en.cppreference.com/w/cpp/feature_test">feature test macro</a>.</li>
-<li>Related build options:<ul>
-<li>Conan: <a href="../installation_and_usage/#string_view_ret">string_view_ret</a></li>
-<li>CMake: <a href="../installation_and_usage/#MP_UNITS_API_STRING_VIEW_RET">MP_UNITS_API_STRING_VIEW_RET</a></li>
 </ul>
 </li>
 </ul>
