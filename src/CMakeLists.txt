@@ -48,7 +48,6 @@ endif()
 
 # check for C++ features
 check_cxx_feature_supported(__cpp_lib_format ${projectPrefix}LIB_FORMAT_SUPPORTED)
-check_cxx_feature_supported("__cpp_constexpr >= 202211L" ${projectPrefix}STATIC_CONSTEXPR_VARS_IN_CONSTEXPR_FUNCTIONS)
 check_cxx_feature_supported(__cpp_explicit_this_parameter ${projectPrefix}EXPLICIT_THIS_PARAMETER_SUPPORTED)
 
 # libc++ has a basic supports for std::format but does not set __cpp_lib_format
@@ -73,9 +72,6 @@ endif()
 
 # project API settings
 option(${projectPrefix}API_STD_FORMAT "Enable `std::format` support" ${${projectPrefix}LIB_FORMAT_SUPPORTED})
-option(${projectPrefix}API_STRING_VIEW_RET "Enable returning `std::string_view` from `constexpr` functions"
-       ${${projectPrefix}STATIC_CONSTEXPR_VARS_IN_CONSTEXPR_FUNCTIONS}
-)
 option(${projectPrefix}API_NO_CRTP "Enable class definitions without CRTP idiom"
        ${${projectPrefix}EXPLICIT_THIS_PARAMETER_SUPPORTED}
 )
@@ -83,7 +79,6 @@ option(${projectPrefix}API_FREESTANDING "Builds only freestanding part of the li
 set(${projectPrefix}API_CONTRACTS GSL-LITE CACHE STRING "Enable contract checking")
 
 message(STATUS "${projectPrefix}API_STD_FORMAT: ${${projectPrefix}API_STD_FORMAT}")
-message(STATUS "${projectPrefix}API_STRING_VIEW_RET: ${${projectPrefix}API_STRING_VIEW_RET}")
 message(STATUS "${projectPrefix}API_NO_CRTP: ${${projectPrefix}API_NO_CRTP}")
 message(STATUS "${projectPrefix}API_FREESTANDING: ${${projectPrefix}API_FREESTANDING}")
 
@@ -105,10 +100,6 @@ endif()
 
 if(NOT ${projectPrefix}API_FREESTANDING AND ${projectPrefix}API_STD_FORMAT AND NOT ${projectPrefix}LIB_FORMAT_SUPPORTED)
     message(FATAL_ERROR "`std::format` enabled but not supported")
-endif()
-
-if(${projectPrefix}API_STRING_VIEW_RET AND NOT ${projectPrefix}STATIC_CONSTEXPR_VARS_IN_CONSTEXPR_FUNCTIONS)
-    message(FATAL_ERROR "`std::string_view` returns enabled but not supported")
 endif()
 
 if(${projectPrefix}API_NO_CRTP AND NOT ${projectPrefix}EXPLICIT_THIS_PARAMETER_SUPPORTED)

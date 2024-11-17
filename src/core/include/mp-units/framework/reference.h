@@ -199,7 +199,7 @@ template<typename FwdRep, Reference R, RepresentationOf<get_quantity_spec(R{})> 
 
 template<typename FwdRep, Reference R, RepresentationOf<get_quantity_spec(R{})> Rep = std::remove_cvref_t<FwdRep>>
   requires(!detail::OffsetUnit<decltype(get_unit(R{}))>)
-[[nodiscard]] constexpr quantity<inverse(R{}), Rep> operator/(FwdRep&& lhs, R)
+[[nodiscard]] constexpr Quantity auto operator/(FwdRep&& lhs, R)
 {
   return quantity{std::forward<FwdRep>(lhs), inverse(R{})};
 }

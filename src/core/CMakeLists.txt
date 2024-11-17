@@ -101,7 +101,6 @@ if(NOT ${projectPrefix}API_FREESTANDING)
 endif()
 
 set_feature_flag(API_STD_FORMAT)
-set_feature_flag(API_STRING_VIEW_RET)
 set_feature_flag(API_NO_CRTP)
 
 # Text formatting

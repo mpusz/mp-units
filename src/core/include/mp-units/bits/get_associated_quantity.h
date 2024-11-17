@@ -52,7 +52,7 @@ template<AssociatedUnit U>
 [[nodiscard]] consteval auto all_are_kinds(U)
 {
   if constexpr (requires { U::_quantity_spec_; })
-    return QuantityKindSpec<std::remove_const_t<decltype(U::_quantity_spec_)>>;
+    return QuantityKindSpec<MP_UNITS_NONCONST_TYPE(U::_quantity_spec_)>;
   else if constexpr (requires { U::_reference_unit_; })
     return all_are_kinds(U::_reference_unit_);
   else if constexpr (requires { typename U::_num_; }) {
@@ -61,37 +61,55 @@ template<AssociatedUnit U>
 }
 
 template<AssociatedUnit U>
-[[nodiscard]] consteval auto get_associated_quantity_impl(U u);
+[[nodiscard]] consteval auto determine_associated_quantity(U u);
 
 template<AssociatedUnit U>
-using to_quantity_spec = decltype(get_associated_quantity_impl(U{}));
+using to_quantity_spec = decltype(determine_associated_quantity(U{}));
 
 template<typename... Us>
-[[nodiscard]] consteval auto get_associated_quantity_impl(common_unit<Us...>)
+[[nodiscard]] consteval auto determine_associated_quantity_impl(common_unit<Us...>)
 {
-  return get_common_quantity_spec(get_associated_quantity_impl(Us{})...);
+  return get_common_quantity_spec(determine_associated_quantity(Us{})...);
 }
 
 template<AssociatedUnit U>
-[[nodiscard]] consteval auto get_associated_quantity_impl(U u)
+[[nodiscard]] consteval auto determine_associated_quantity_impl(U u)
 {
   if constexpr (requires { U::_quantity_spec_; })
     return remove_kind(U::_quantity_spec_);
   else if constexpr (requires { U::_reference_unit_; })
-    return get_associated_quantity_impl(U::_reference_unit_);
+    return determine_associated_quantity(U::_reference_unit_);
   else if constexpr (requires { typename U::_num_; }) {
     return expr_map<to_quantity_spec, derived_quantity_spec, struct dimensionless, type_list_of_quantity_spec_less>(u);
   }
 }
 
 template<AssociatedUnit U>
-[[nodiscard]] consteval auto get_associated_quantity(U u)
+constexpr auto determine_associated_quantity_result = determine_associated_quantity_impl(U{});
+
+template<AssociatedUnit U>
+[[nodiscard]] consteval auto determine_associated_quantity(U)
+{
+  return determine_associated_quantity_result<U>;
+}
+
+template<AssociatedUnit U>
+[[nodiscard]] consteval auto get_associated_quantity_impl(U u)
 {
   constexpr bool all_kinds = all_are_kinds(U{});
   if constexpr (all_kinds)
-    return kind_of<get_associated_quantity_impl(U{})>;
+    return kind_of<determine_associated_quantity(U{})>;
   else
-    return get_associated_quantity_impl(u);
+    return determine_associated_quantity(u);
+}
+
+template<AssociatedUnit U>
+constexpr auto get_associated_quantity_result = get_associated_quantity_impl(U{});
+
+template<AssociatedUnit U>
+[[nodiscard]] consteval auto get_associated_quantity(U)
+{
+  return get_associated_quantity_result<U>;
 }
 
 }  // namespace detail

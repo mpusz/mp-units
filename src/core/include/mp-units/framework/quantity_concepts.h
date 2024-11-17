@@ -74,7 +74,7 @@ concept QuantityLikeImpl = requires(const T& qty, const Traits<T>::rep& num) {
  * the provided quantity_spec type.
  */
 MP_UNITS_EXPORT template<typename Q, auto QS>
-concept QuantityOf = Quantity<Q> && QuantitySpecOf<std::remove_const_t<decltype(Q::quantity_spec)>, QS>;
+concept QuantityOf = Quantity<Q> && QuantitySpecOf<MP_UNITS_NONCONST_TYPE(Q::quantity_spec), QS>;
 
 /**
  * @brief A concept matching all external quantities like types

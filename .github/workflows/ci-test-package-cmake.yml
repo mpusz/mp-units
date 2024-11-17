@@ -57,7 +57,7 @@ jobs:
       - id: set-matrix
         run: python .github/generate-job-matrix.py --preset conan --seed 42 --debug combinations counts
   test_package:
-    name: "${{ matrix.formatting }} ${{ matrix.contracts }} C++${{ matrix.std }} ${{ matrix.config.name }} ${{ matrix.build_type }}"
+    name: "${{ matrix.config.name }} C++${{ matrix.std }} ${{ matrix.formatting }} ${{ matrix.contracts }} ${{ matrix.build_type }}"
     runs-on: ${{ matrix.config.os }}
     needs: generate-matrix
     strategy:
@@ -151,8 +151,8 @@ jobs:
       - name: Set 'std_format' and 'import_std' environment variables
         shell: bash
         run: |
-            echo "std_format=$([ "${{ matrix.formatting }}" == "std::format" ] && echo "True" || echo "False")" >> $GITHUB_ENV
-            echo "import_std=$([ "${{ matrix.config.cxx_modules }}" == "True" ] && [ "${{ matrix.config.contracts }}" == "none" ] && [ "${{ matrix.formatting }}" == "std::format" ] && echo "True" || echo "False")" >> $GITHUB_ENV
+          echo "std_format=$([ "${{ matrix.formatting }}" == "std::format" ] && echo "True" || echo "False")" >> $GITHUB_ENV
+          echo "import_std=$([ "${{ matrix.std }}" -ge "23" ] && [ "${{ matrix.config.cxx_modules }}" == "True" ] && [ "${{ matrix.config.contracts }}" == "none" ] && [ "${{ matrix.formatting }}" == "std::format" ] && echo "True" || echo "False")" >> $GITHUB_ENV
       - name: Install Conan dependencies
         shell: bash
         run: |

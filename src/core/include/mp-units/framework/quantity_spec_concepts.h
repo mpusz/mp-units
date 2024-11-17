@@ -93,9 +93,9 @@ namespace detail {
  */
 template<typename T>
 concept DerivedQuantitySpec =
-  QuantitySpec<T> && (is_specialization_of<T, derived_quantity_spec> ||
-                      (QuantityKindSpec<T> &&
-                       is_specialization_of<std::remove_const_t<decltype(T::_quantity_spec_)>, derived_quantity_spec>));
+  QuantitySpec<T> &&
+  (is_specialization_of<T, derived_quantity_spec> ||
+   (QuantityKindSpec<T> && is_specialization_of<MP_UNITS_NONCONST_TYPE(T::_quantity_spec_), derived_quantity_spec>));
 
 }  // namespace detail
 

@@ -137,7 +137,7 @@ template<QuantityOf<MP_UNITS_IS_VALUE_WORKAROUND(isq::time)> Q>
 }
 
 template<QuantityPointOf<MP_UNITS_IS_VALUE_WORKAROUND(isq::time)> QP>
-  requires is_specialization_of<std::remove_const_t<decltype(QP::absolute_point_origin)>, chrono_point_origin_>
+  requires is_specialization_of<MP_UNITS_NONCONST_TYPE(QP::absolute_point_origin), chrono_point_origin_>
 [[nodiscard]] constexpr auto to_chrono_time_point(const QP& qp)
 {
   using clock = decltype(QP::absolute_point_origin)::clock;

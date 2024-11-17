@@ -53,26 +53,30 @@ public:
   T _coordinates_[3];
   using value_type = T;
 
-  cartesian_vector() = default;
   cartesian_vector(const cartesian_vector&) = default;
   cartesian_vector(cartesian_vector&&) = default;
   cartesian_vector& operator=(const cartesian_vector&) = default;
   cartesian_vector& operator=(cartesian_vector&&) = default;
 
-  template<std::convertible_to<T> Arg1, std::convertible_to<T>... Args>
-  constexpr cartesian_vector(Arg1&& arg1, Args&&... args) :
-      _coordinates_(std::forward<Arg1>(arg1), std::forward<Args>(args)...)
+  template<typename... Args>
+    requires(... && std::constructible_from<T, Args>)
+  constexpr explicit(!(... && std::convertible_to<Args, T>)) cartesian_vector(Args&&... args) :
+      _coordinates_{static_cast<T>(std::forward<Args>(args))...}
   {
   }
 
-  template<std::convertible_to<T> U>
-  constexpr cartesian_vector(const cartesian_vector<U>& other) : _coordinates_{other[0], other[1], other[2]}
+  template<typename U>
+    requires std::constructible_from<T, U>
+  constexpr explicit(!std::convertible_to<U, T>) cartesian_vector(const cartesian_vector<U>& other) :
+      _coordinates_{static_cast<T>(other[0]), static_cast<T>(other[1]), static_cast<T>(other[2])}
   {
   }
 
-  template<std::convertible_to<T> U>
-  constexpr cartesian_vector(cartesian_vector<U>&& other) :
-      _coordinates_{std::move(other[0]), std::move(other[1]), std::move(other[2])}
+  template<typename U>
+    requires std::constructible_from<T, U>
+  constexpr explicit(!std::convertible_to<U, T>) cartesian_vector(cartesian_vector<U>&& other) :
+      _coordinates_{static_cast<T>(std::move(other[0])), static_cast<T>(std::move(other[1])),
+                    static_cast<T>(std::move(other[2]))}
   {
   }
 
@@ -113,6 +117,54 @@ public:
   [[nodiscard]] constexpr cartesian_vector operator-() const
   {
     return {-_coordinates_[0], -_coordinates_[1], -_coordinates_[2]};
+  }
+
+  template<typename U>
+    requires requires(T t, U u) {
+      { t += u } -> std::same_as<T&>;
+    }
+  constexpr cartesian_vector& operator+=(const cartesian_vector<U>& other)
+  {
+    _coordinates_[0] += other[0];
+    _coordinates_[1] += other[1];
+    _coordinates_[2] += other[2];
+    return *this;
+  }
+
+  template<typename U>
+    requires requires(T t, U u) {
+      { t -= u } -> std::same_as<T&>;
+    }
+  constexpr cartesian_vector& operator-=(const cartesian_vector<U>& other)
+  {
+    _coordinates_[0] -= other[0];
+    _coordinates_[1] -= other[1];
+    _coordinates_[2] -= other[2];
+    return *this;
+  }
+
+  template<typename U>
+    requires requires(T t, U u) {
+      { t *= u } -> std::same_as<T&>;
+    }
+  constexpr cartesian_vector& operator*=(const U& value)
+  {
+    _coordinates_[0] *= value;
+    _coordinates_[1] *= value;
+    _coordinates_[2] *= value;
+    return *this;
+  }
+
+  template<typename U>
+    requires requires(T t, U u) {
+      { t /= u } -> std::same_as<T&>;
+    }
+  constexpr cartesian_vector& operator/=(const U& value)
+  {
+    _coordinates_[0] /= value;
+    _coordinates_[1] /= value;
+    _coordinates_[2] /= value;
+    return *this;
   }
 
   template<std::same_as<T> U, typename V>

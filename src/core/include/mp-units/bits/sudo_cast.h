@@ -154,8 +154,7 @@ template<QuantityPoint ToQP, typename FwdFromQP, QuantityPoint FromQP = std::rem
            (!equivalent(FromQP::unit, ToQP::unit)))
 [[nodiscard]] constexpr QuantityPoint auto sudo_cast(FwdFromQP&& qp)
 {
-  if constexpr (is_same_v<std::remove_const_t<decltype(ToQP::point_origin)>,
-                          std::remove_const_t<decltype(FromQP::point_origin)>>) {
+  if constexpr (is_same_v<MP_UNITS_NONCONST_TYPE(ToQP::point_origin), MP_UNITS_NONCONST_TYPE(FromQP::point_origin)>) {
     return quantity_point{
       sudo_cast<typename ToQP::quantity_type>(std::forward<FwdFromQP>(qp).quantity_from(FromQP::point_origin)),
       FromQP::point_origin};
