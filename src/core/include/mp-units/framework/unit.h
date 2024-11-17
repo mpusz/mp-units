@@ -120,18 +120,6 @@ struct get_canonical_unit_result {
   inline static constexpr auto value = get_canonical_unit_impl(U{}, U{});
 };
 
-template<Unit Lhs, Unit Rhs>
-struct unit_less : std::bool_constant<type_name<Lhs>() < type_name<Rhs>()> {};
-
-template<typename T1, typename T2>
-using type_list_of_unit_less = expr_less<T1, T2, unit_less>;
-
-template<typename From, typename To>
-concept PotentiallyConvertibleTo = Unit<From> && Unit<To> &&
-                                   ((AssociatedUnit<From> && AssociatedUnit<To> &&
-                                     implicitly_convertible(get_quantity_spec(From{}), get_quantity_spec(To{}))) ||
-                                    (!AssociatedUnit<From> && !AssociatedUnit<To>));
-
 }  // namespace detail
 
 // TODO this should really be in the `details` namespace but is used in `chrono.h` (a part of mp_units.systems)
@@ -139,6 +127,16 @@ concept PotentiallyConvertibleTo = Unit<From> && Unit<To> &&
 [[nodiscard]] consteval auto get_canonical_unit(Unit auto u)
 {
   return detail::get_canonical_unit_result<decltype(u)>::value;
+}
+
+namespace detail {
+
+template<typename From, typename To>
+concept PotentiallyConvertibleTo = Unit<From> && Unit<To> &&
+                                   ((AssociatedUnit<From> && AssociatedUnit<To> &&
+                                     implicitly_convertible(get_quantity_spec(From{}), get_quantity_spec(To{}))) ||
+                                    (!AssociatedUnit<From> && !AssociatedUnit<To>));
+
 }
 
 // convertible
@@ -158,6 +156,12 @@ template<detail::SymbolicConstant... Expr>
 struct derived_unit;
 
 namespace detail {
+
+template<Unit Lhs, Unit Rhs>
+struct unit_less : std::bool_constant<type_name<Lhs>() < type_name<Rhs>()> {};
+
+template<typename T1, typename T2>
+using type_list_of_unit_less = expr_less<T1, T2, unit_less>;
 
 struct unit_interface {
   /**
