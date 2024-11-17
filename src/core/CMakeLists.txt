@@ -151,3 +151,9 @@ target_compile_definitions(
     mp-units-core ${${projectPrefix}TARGET_SCOPE}
                   ${projectPrefix}HOSTED=$<NOT:$<BOOL:${${projectPrefix}API_FREESTANDING}>>
 )
+
+if(${projectPrefix}DEV_TIME_TRACE STREQUAL "ALL")
+    target_compile_options(mp-units-core ${${projectPrefix}TARGET_SCOPE} "-ftime-trace")
+elseif(${projectPrefix}DEV_TIME_TRACE STREQUAL "MODULES")
+    target_compile_options(mp-units-core PRIVATE "-ftime-trace")
+endif()

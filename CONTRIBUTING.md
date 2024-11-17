@@ -107,6 +107,20 @@ if you want to set up a development environment on your local machine.
 
     [cmake clang-tidy support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 
+[`MP_UNITS_DEV_TIME_TRACE`](#MP_UNITS_DEV_TIME_TRACE){ #MP_UNITS_DEV_TIME_TRACE }
+
+:   [:octicons-tag-24: 2.5.0][cmake time-trace support] · :octicons-milestone-24: `NONE`/`ALL`/`MODULES`/`HEADERS` (Default: `NONE`)
+
+    Enables compilation performance data collection with `-ftime-trace` for clang compilers.
+
+    All our unit tests compile only for headers and never for modules. To allow fair
+    comparison, `MODULES` and `HEADERS` do not enable the data collection for unit tests.
+    This means that they affect only the core, systems, and examples.
+
+    Please use `ALL` to profile unit tests as well.
+
+    [cmake time-trace support]: https://github.com/mpusz/mp-units/releases/tag/v2.5.0
+
 
 ### Building the entire repository
 

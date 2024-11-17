@@ -71,3 +71,7 @@ if(NOT ${projectPrefix}API_FREESTANDING)
                include/mp-units/systems/si/chrono.h
     )
 endif()
+
+if(${projectPrefix}DEV_TIME_TRACE STREQUAL "MODULES")
+    target_compile_options(mp-units-systems PRIVATE "-ftime-trace")
+endif()
