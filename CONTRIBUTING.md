@@ -3,16 +3,27 @@
 👍🎉 First off, thanks for taking the time to contribute! 🎉👍
 
 
+## **mp-units** documentation
+
+Before contributing, it is highly recommended to familiarize yourself with our
+[official documentation](https://mpusz.github.io/mp-units).
+
+This file is also a part of it, and this is why it has non-standard Markdown formatting (which can
+be seen when reading in a regular Markdown renderer). To benefit from full mkdocs rendering, please
+switch to the [Contributing](https://mpusz.github.io/mp-units/latest/getting_started/contributing)
+chapter of our documentation.
+
+
 ## Where to start?
 
 If you are looking for a good issue to start with, please check the following:
 
 - [good first issue](https://github.com/mpusz/mp-units/labels/good%20first%20issue) - issues that
- should be pretty simple to implement,
+  should be pretty simple to implement,
 - [help wanted](https://github.com/mpusz/mp-units/labels/help%20wanted) - issues that typically are
- a bit more involved than beginner issues,
+  a bit more involved than beginner issues,
 - [high priority](https://github.com/mpusz/mp-units/labels/high%20priority) - things to fix ASAP
- but often of higher complexity.
+  but often of higher complexity.
 
 
 ## Gitpod
@@ -46,28 +57,28 @@ if you want to set up a development environment on your local machine.
 
 [`user.mp-units.build:all`](#user.mp-units.build-all){ #user.mp-units.build-all }
 
- Enables compilation of all the source code, including tests and examples. To support this, it requires some additional Conan build dependencies described in
- [Repository directory tree and dependencies](https://mpusz.github.io/mp-units/latest/getting_started/project_structure#cmake-projects-and-dependencies).
- It also runs unit tests during the Conan build (unless
- [`tools.build:skip_test`](https://docs.conan.io/2/reference/commands/config.html?highlight=tools.build:skip_test#conan-config-list)
- configuration property is set to `True`).
+:   Enables compilation of all the source code, including tests and examples. To support this, it requires some additional Conan build dependencies described in
+    [Repository directory tree and dependencies](https://mpusz.github.io/mp-units/latest/getting_started/project_structure#cmake-projects-and-dependencies).
+    It also runs unit tests during the Conan build (unless
+    [`tools.build:skip_test`](https://docs.conan.io/2/reference/commands/config.html?highlight=tools.build:skip_test#conan-config-list)
+    configuration property is set to `True`).
 
- [conan build all support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
+    [conan build all support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 
 [`user.mp-units.build:skip_la`](#user-skip-la){ #user-skip-la }
 
- If `user.mp-units.build:all` is enabled, among others, Conan installs the external
- [wg21-linear_algebra](https://conan.io/center/recipes/wg21-linear_algebra)
- dependency and enables the compilation of linear algebra-based tests and usage examples.
- Such behavior can be disabled with this option.
+:   If `user.mp-units.build:all` is enabled, among others, Conan installs the external
+    [wg21-linear_algebra](https://conan.io/center/recipes/wg21-linear_algebra)
+    dependency and enables the compilation of linear algebra-based tests and usage examples.
+    Such behavior can be disabled with this option.
 
- [conan skip la support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
+    [conan skip la support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 
 [`user.mp-units.analyze:clang-tidy`](#user.mp-units.analyze-clang-tidy){ #user.mp-units.analyze-clang-tidy }
 
- Enables clang-tidy analysis.
+:   Enables clang-tidy analysis.
 
- [conan clang-tidy support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
+    [conan clang-tidy support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 
 
 ### CMake options for mp-units project developers
@@ -76,25 +87,39 @@ if you want to set up a development environment on your local machine.
 
 :   [:octicons-tag-24: 2.2.0][cmake build la support] · :octicons-milestone-24: `ON`/`OFF` (Default: `ON`)
 
- Enables building code depending on the linear algebra library.
+    Enables building code depending on the linear algebra library.
 
- [cmake build la support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
+    [cmake build la support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 
 [`MP_UNITS_DEV_IWYU`](#MP_UNITS_DEV_IWYU){ #MP_UNITS_DEV_IWYU }
 
 :   [:octicons-tag-24: 2.2.0][cmake iwyu support] · :octicons-milestone-24: `ON`/`OFF` (Default: `OFF`)
 
- Enables include-what-you-use analysis.
+    Enables include-what-you-use analysis.
 
- [cmake iwyu support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
+    [cmake iwyu support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 
 [`MP_UNITS_DEV_CLANG_TIDY`](#MP_UNITS_DEV_CLANG_TIDY){ #MP_UNITS_DEV_CLANG_TIDY }
 
 :   [:octicons-tag-24: 2.2.0][cmake clang-tidy support] · :octicons-milestone-24: `ON`/`OFF` (Default: `OFF`)
 
- Enables clang-tidy analysis.
+    Enables clang-tidy analysis.
 
- [cmake clang-tidy support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
+    [cmake clang-tidy support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
+
+[`MP_UNITS_DEV_TIME_TRACE`](#MP_UNITS_DEV_TIME_TRACE){ #MP_UNITS_DEV_TIME_TRACE }
+
+:   [:octicons-tag-24: 2.5.0][cmake time-trace support] · :octicons-milestone-24: `NONE`/`ALL`/`MODULES`/`HEADERS` (Default: `NONE`)
+
+    Enables compilation performance data collection with `-ftime-trace` for clang compilers.
+
+    All our unit tests compile only for headers and never for modules. To allow fair
+    comparison, `MODULES` and `HEADERS` do not enable the data collection for unit tests.
+    This means that they affect only the core, systems, and examples.
+
+    Please use `ALL` to profile unit tests as well.
+
+    [cmake time-trace support]: https://github.com/mpusz/mp-units/releases/tag/v2.5.0
 
 
 ### Building the entire repository
@@ -105,7 +130,7 @@ To build all the **mp-units** source code (with unit tests and examples), you sh
 2. Run Conan with [`user.mp-units.build:all`](#user.mp-units.build-all) = `True`.
 
 ```shell
-git clone https://github.com/mpusz/mp-units.git && cd units
+git clone https://github.com/mpusz/mp-units.git && cd mp-units
 conan build . -pr <your_conan_profile> -s compiler.cppstd=23 -c user.mp-units.build:all=True -b missing
 ```
 
@@ -167,15 +192,15 @@ After that, you can either:
 
 - easily [start a live server to preview the documentation as you write](https://squidfunk.github.io/mkdocs-material/creating-your-site/#previewing-as-you-write)
 
-```shell
-mkdocs serve
-```
+    ```shell
+    mkdocs serve
+    ```
 
 - [build the documentation](https://squidfunk.github.io/mkdocs-material/creating-your-site/#building-your-site)
 
-```shell
-mkdocs build
-```
+    ```shell
+    mkdocs build
+    ```
 
 ### Generating API reference
 

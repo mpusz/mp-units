@@ -20,22 +20,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-add_library(glide_computer_lib-headers STATIC glide_computer_lib.cpp include/glide_computer_lib.h)
-target_compile_features(glide_computer_lib-headers PUBLIC cxx_std_20)
-target_link_libraries(glide_computer_lib-headers PUBLIC mp-units::mp-units example_utils-headers)
-target_include_directories(glide_computer_lib-headers PUBLIC include)
-if(${projectPrefix}DEV_TIME_TRACE STREQUAL "HEADERS")
-    target_compile_options(glide_computer_lib-headers PRIVATE "-ftime-trace")
-endif()
+cmake_minimum_required(VERSION 3.25)
 
-if(${projectPrefix}BUILD_CXX_MODULES)
-    add_library(glide_computer_lib STATIC glide_computer_lib.cpp include/glide_computer_lib.h)
-    target_compile_features(glide_computer_lib PUBLIC cxx_std_20)
-    target_compile_definitions(glide_computer_lib PUBLIC ${projectPrefix}MODULES)
-    target_link_libraries(glide_computer_lib PUBLIC mp-units::mp-units example_utils)
-    target_include_directories(glide_computer_lib PUBLIC include)
-
-    if(${projectPrefix}DEV_TIME_TRACE STREQUAL "MODULES")
-        target_compile_options(glide_computer_lib PRIVATE "-ftime-trace")
+function(check_cache_var_values name)
+    set_property(CACHE ${projectPrefix}${name} PROPERTY STRINGS ${ARGN})
+    if(NOT ${projectPrefix}${name} IN_LIST ARGN)
+        message(FATAL_ERROR
+                    "Invalid value '${${projectPrefix}${name}}' provided for a cache variable ${projectPrefix}${name} (${ARGN} allowed)"
+        )
     endif()
-endif()
+endfunction()

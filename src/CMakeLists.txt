@@ -27,8 +27,9 @@ set(projectPrefix MP_UNITS_)
 
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
-include(CheckCXXFeatureSupported)
 include(AddMPUnitsModule)
+include(CheckCacheVarValues)
+include(CheckCXXFeatureSupported)
 include(GNUInstallDirs)
 
 # check if libc++ is being used
@@ -77,21 +78,12 @@ option(${projectPrefix}API_NO_CRTP "Enable class definitions without CRTP idiom"
 )
 option(${projectPrefix}API_FREESTANDING "Builds only freestanding part of the library" OFF)
 set(${projectPrefix}API_CONTRACTS GSL-LITE CACHE STRING "Enable contract checking")
+check_cache_var_values(API_CONTRACTS NONE GSL-LITE MS-GSL)
 
 message(STATUS "${projectPrefix}API_STD_FORMAT: ${${projectPrefix}API_STD_FORMAT}")
 message(STATUS "${projectPrefix}API_NO_CRTP: ${${projectPrefix}API_NO_CRTP}")
 message(STATUS "${projectPrefix}API_FREESTANDING: ${${projectPrefix}API_FREESTANDING}")
-
-function(cache_var_values name)
-    set_property(CACHE ${projectPrefix}${name} PROPERTY STRINGS ${ARGN})
-    if(NOT ${projectPrefix}${name} IN_LIST ARGN)
-        message(FATAL_ERROR
-                    "Invalid value '${${projectPrefix}${name}}' provided for a cache variable ${projectPrefix}${name} (${ARGN} allowed)"
-        )
-    endif()
-    message(STATUS "${projectPrefix}${name}: ${${projectPrefix}${name}}")
-endfunction()
-cache_var_values(API_CONTRACTS NONE GSL-LITE MS-GSL)
+message(STATUS "${projectPrefix}API_CONTRACTS: ${${projectPrefix}API_CONTRACTS}")
 
 # validate options
 if(${projectPrefix}API_FREESTANDING AND NOT ${projectPrefix}API_CONTRACTS STREQUAL "NONE")

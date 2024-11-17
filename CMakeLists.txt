@@ -24,16 +24,25 @@ cmake_minimum_required(VERSION 3.25)
 project(mp-units-dev LANGUAGES CXX)
 
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
+list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/src/cmake")
+include(CheckCacheVarValues)
 
 set(projectPrefix MP_UNITS_)
 
 option(${projectPrefix}DEV_BUILD_LA "Build code depending on the linear algebra library" OFF)
 option(${projectPrefix}DEV_IWYU "Enables include-what-you-use" OFF)
 option(${projectPrefix}DEV_CLANG_TIDY "Enables clang-tidy" OFF)
+set(${projectPrefix}DEV_TIME_TRACE
+    NONE
+    CACHE STRING
+          "Enables `-ftime-trace` for a selected scope: NONE, ALL, MODULES, HEADERS. MODULES and HEADERS do not affect unit tests."
+)
+check_cache_var_values(DEV_TIME_TRACE NONE ALL MODULES HEADERS)
 
 message(STATUS "${projectPrefix}DEV_BUILD_LA: ${${projectPrefix}DEV_BUILD_LA}")
 message(STATUS "${projectPrefix}DEV_IWYU: ${${projectPrefix}DEV_IWYU}")
 message(STATUS "${projectPrefix}DEV_CLANG_TIDY: ${${projectPrefix}DEV_CLANG_TIDY}")
+message(STATUS "${projectPrefix}DEV_TIME_TRACE: ${${projectPrefix}DEV_TIME_TRACE}")
 
 # make sure that the file is being used as an entry point
 include(modern_project_structure)
@@ -74,5 +83,4 @@ endif()
 
 # add unit tests
 enable_testing()
-
 add_subdirectory(test)
