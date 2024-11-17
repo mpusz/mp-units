@@ -3,6 +3,17 @@
 👍🎉 First off, thanks for taking the time to contribute! 🎉👍
 
 
+## **mp-units** documentation
+
+Before contributing, it is highly recommended to familiarize yourself with our
+[official documentation](https://mpusz.github.io/mp-units).
+
+This file is also a part of it, and this is why it has non-standard Markdown formatting (which can
+be seen when reading in a regular Markdown renderer). To benefit from full mkdocs rendering, please
+switch to the [Contributing](https://mpusz.github.io/mp-units/latest/getting_started/contributing)
+chapter of our documentation.
+
+
 ## Where to start?
 
 If you are looking for a good issue to start with, please check the following:
