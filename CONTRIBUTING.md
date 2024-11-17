@@ -130,7 +130,7 @@ To build all the **mp-units** source code (with unit tests and examples), you sh
 2. Run Conan with [`user.mp-units.build:all`](#user.mp-units.build-all) = `True`.
 
 ```shell
-git clone https://github.com/mpusz/mp-units.git && cd units
+git clone https://github.com/mpusz/mp-units.git && cd mp-units
 conan build . -pr <your_conan_profile> -s compiler.cppstd=23 -c user.mp-units.build:all=True -b missing
 ```
 
