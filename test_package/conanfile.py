@@ -55,7 +55,6 @@ class TestPackageConan(ConanFile):
                 tc.cache_variables["MP_UNITS_API_FREESTANDING"] = True
             else:
                 tc.cache_variables["MP_UNITS_API_STD_FORMAT"] = opt.std_format
-            tc.cache_variables["MP_UNITS_API_NO_CRTP"] = opt.no_crtp
             tc.cache_variables["MP_UNITS_API_CONTRACTS"] = str(opt.contracts).upper()
         tc.generate()
 
