@@ -42,6 +42,7 @@ class TestPackageConan(ConanFile):
         opt = self.dependencies["mp-units"].options
         if opt.cxx_modules:
             tc.cache_variables["CMAKE_CXX_SCAN_FOR_MODULES"] = True
+            tc.cache_variables["MP_UNITS_BUILD_CXX_MODULES"] = True
         if opt.import_std:
             tc.cache_variables["CMAKE_CXX_MODULE_STD"] = True
             # Current experimental support according to `Help/dev/experimental.rst`
@@ -54,6 +55,7 @@ class TestPackageConan(ConanFile):
                 tc.cache_variables["MP_UNITS_API_FREESTANDING"] = True
             else:
                 tc.cache_variables["MP_UNITS_API_STD_FORMAT"] = opt.std_format
+            tc.cache_variables["MP_UNITS_API_NO_CRTP"] = opt.no_crtp
             tc.cache_variables["MP_UNITS_API_CONTRACTS"] = str(opt.contracts).upper()
         tc.generate()
 
