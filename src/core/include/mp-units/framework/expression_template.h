@@ -521,24 +521,6 @@ struct expr_type_map<power<F, Ints...>, Proj> {
   using type = power<Proj<F>, Ints...>;
 };
 
-template<typename T, template<typename> typename Proj>
-concept expr_type_projectable = (requires { typename Proj<T>; } ||
-                                 (is_specialization_of_power<T> && requires { typename Proj<typename T::factor>; }));
-
-template<typename T, template<typename> typename Proj>
-constexpr bool expr_projectable_impl = false;
-
-template<typename... Ts, template<typename> typename Proj>
-constexpr bool expr_projectable_impl<type_list<Ts...>, Proj> = (... && expr_type_projectable<Ts, Proj>);
-
-template<typename T, template<typename> typename Proj>
-concept expr_projectable = requires {
-  typename T::_num_;
-  typename T::_den_;
-  requires expr_projectable_impl<typename T::_num_, Proj>;
-  requires expr_projectable_impl<typename T::_den_, Proj>;
-};
-
 template<typename T>
 [[nodiscard]] consteval auto map_power(T t)
 {
@@ -552,8 +534,7 @@ template<typename T, auto... Ints>
 }
 
 template<template<typename> typename Proj, template<typename...> typename To, SymbolicArg OneType,
-         template<typename, typename> typename Pred, expr_type_projectable<Proj>... Nums,
-         expr_type_projectable<Proj>... Dens>
+         template<typename, typename> typename Pred, typename... Nums, typename... Dens>
 [[nodiscard]] consteval auto expr_map_impl(type_list<Nums...>, type_list<Dens...>)
 {
   return (OneType{} * ... * map_power(typename expr_type_map<Nums, Proj>::type{})) /
@@ -570,7 +551,7 @@ template<template<typename> typename Proj, template<typename...> typename To, Sy
  * @tparam T expression template to map from
  */
 template<template<typename> typename Proj, template<typename...> typename To, SymbolicArg OneType,
-         template<typename, typename> typename Pred, expr_projectable<Proj> T>
+         template<typename, typename> typename Pred, typename T>
 [[nodiscard]] consteval auto expr_map(T)
 {
   if constexpr (type_list_size<typename T::_num_> + type_list_size<typename T::_den_> == 0)
