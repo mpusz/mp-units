@@ -42,6 +42,7 @@ class TestPackageConan(ConanFile):
         opt = self.dependencies["mp-units"].options
         if opt.cxx_modules:
             tc.cache_variables["CMAKE_CXX_SCAN_FOR_MODULES"] = True
+            tc.cache_variables["MP_UNITS_BUILD_CXX_MODULES"] = True
         if opt.import_std:
             tc.cache_variables["CMAKE_CXX_MODULE_STD"] = True
             # Current experimental support according to `Help/dev/experimental.rst`
@@ -64,5 +65,8 @@ class TestPackageConan(ConanFile):
 
     def test(self):
         if can_run(self):
-            bin_path = os.path.join(self.cpp.build.bindirs[0], "test_package")
+            if self.dependencies["mp-units"].options.cxx_modules:
+                bin_path = os.path.join(self.cpp.build.bindirs[0], "test_package")
+                self.run(bin_path, env="conanrun")
+            bin_path = os.path.join(self.cpp.build.bindirs[0], "test_package-headers")
             self.run(bin_path, env="conanrun")
