@@ -23,7 +23,17 @@
 cmake_minimum_required(VERSION 3.25)
 project(test_package LANGUAGES CXX)
 
+message(STATUS "MP_UNITS_BUILD_CXX_MODULES: ${MP_UNITS_BUILD_CXX_MODULES}")
+message(STATUS "MP_UNITS_API_STD_FORMAT: ${MP_UNITS_API_STD_FORMAT}")
+
 find_package(mp-units REQUIRED)
 
-add_executable(test_package test_package.cpp)
-target_link_libraries(test_package PRIVATE mp-units::mp-units)
+add_executable(test_package-headers test_package.cpp)
+target_compile_features(test_package-headers PRIVATE cxx_std_20)
+target_link_libraries(test_package-headers PRIVATE mp-units::mp-units)
+
+if(MP_UNITS_BUILD_CXX_MODULES)
+    add_executable(test_package test_package.cpp)
+    target_compile_features(test_package PRIVATE cxx_std_20)
+    target_link_libraries(test_package PRIVATE mp-units::mp-units)
+endif()
