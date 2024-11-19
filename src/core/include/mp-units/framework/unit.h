@@ -785,7 +785,7 @@ template<typename CharT, std::output_iterator<CharT> Out, Unit U>
   requires requires { U::_symbol_; }
 constexpr Out unit_symbol_impl(Out out, U, const unit_symbol_formatting& fmt, bool negative_power)
 {
-  return copy_symbol<CharT>(U::_symbol_, fmt.encoding, negative_power, out);
+  return copy_symbol<CharT>(U::_symbol_, fmt.char_set, negative_power, out);
 }
 
 template<typename CharT, std::output_iterator<CharT> Out, auto M, typename U>
@@ -842,7 +842,7 @@ constexpr auto unit_symbol_impl(Out out, const power<F, Num, Den...>&, const uni
                                 bool negative_power)
 {
   out = unit_symbol_impl<CharT>(out, F{}, fmt, false);  // negative power component will be added below if needed
-  return copy_symbol_exponent<CharT, Num, Den...>(fmt.encoding, negative_power, out);
+  return copy_symbol_exponent<CharT, Num, Den...>(fmt.char_set, negative_power, out);
 }
 
 template<typename CharT, std::output_iterator<CharT> Out, typename... Us>

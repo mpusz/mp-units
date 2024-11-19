@@ -220,9 +220,13 @@ template<std::intmax_t Num, std::intmax_t Den = 1, Dimension D>
 [[nodiscard]] consteval Dimension auto cbrt(Dimension auto d) { return pow<1, 3>(d); }
 
 
+MP_UNITS_DIAGNOSTIC_PUSH
+MP_UNITS_DIAGNOSTIC_IGNORE_DEPRECATED
 struct dimension_symbol_formatting {
-  text_encoding encoding = text_encoding::default_encoding;
+  [[deprecated("Use `char_set` instead")]] character_set encoding = character_set::default_character_set;
+  character_set char_set = encoding;
 };
+MP_UNITS_DIAGNOSTIC_POP
 
 MP_UNITS_EXPORT_END
 
@@ -232,7 +236,7 @@ template<typename CharT, std::output_iterator<CharT> Out, Dimension D>
   requires requires { D::_symbol_; }
 constexpr Out dimension_symbol_impl(Out out, D, const dimension_symbol_formatting& fmt, bool negative_power)
 {
-  return copy_symbol<CharT>(D::_symbol_, fmt.encoding, negative_power, out);
+  return copy_symbol<CharT>(D::_symbol_, fmt.char_set, negative_power, out);
 }
 
 template<typename CharT, std::output_iterator<CharT> Out, typename F, int Num, int... Den>
@@ -240,7 +244,7 @@ constexpr auto dimension_symbol_impl(Out out, const power<F, Num, Den...>&, cons
                                      bool negative_power)
 {
   out = dimension_symbol_impl<CharT>(out, F{}, fmt, false);  // negative power component will be added below if needed
-  return copy_symbol_exponent<CharT, Num, Den...>(fmt.encoding, negative_power, out);
+  return copy_symbol_exponent<CharT, Num, Den...>(fmt.char_set, negative_power, out);
 }
 
 template<typename CharT, std::output_iterator<CharT> Out, typename... Ms>

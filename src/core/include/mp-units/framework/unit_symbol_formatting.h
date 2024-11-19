@@ -23,6 +23,7 @@
 #pragma once
 
 // IWYU pragma: private, include <mp-units/framework.h>
+#include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/framework/symbol_text.h>
 
@@ -52,10 +53,15 @@ enum class unit_symbol_separator : std::int8_t {
   default_separator = space
 };
 
+MP_UNITS_DIAGNOSTIC_PUSH
+MP_UNITS_DIAGNOSTIC_IGNORE_DEPRECATED
 struct unit_symbol_formatting {
-  text_encoding encoding = text_encoding::default_encoding;
+  [[deprecated("Use `char_set` instead")]] character_set encoding = character_set::default_character_set;
+  character_set char_set = encoding;
+
   unit_symbol_solidus solidus = unit_symbol_solidus::default_denominator;
   unit_symbol_separator separator = unit_symbol_separator::default_separator;
 };
+MP_UNITS_DIAGNOSTIC_POP
 
 }  // namespace mp_units

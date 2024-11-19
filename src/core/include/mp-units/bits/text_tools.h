@@ -96,9 +96,9 @@ template<std::intmax_t Value>
 }
 
 template<typename CharT, std::size_t N, std::size_t M, std::output_iterator<CharT> Out>
-constexpr Out copy(const symbol_text<N, M>& txt, text_encoding encoding, Out out)
+constexpr Out copy(const symbol_text<N, M>& txt, character_set char_set, Out out)
 {
-  if (encoding == text_encoding::utf8) {
+  if (char_set == character_set::utf8) {
     if constexpr (is_same_v<CharT, char8_t>)
       return ::mp_units::detail::copy(txt.utf8().begin(), txt.utf8().end(), out);
     else if constexpr (is_same_v<CharT, char>) {
@@ -115,18 +115,18 @@ constexpr Out copy(const symbol_text<N, M>& txt, text_encoding encoding, Out out
 }
 
 template<typename CharT, std::size_t N, std::size_t M, std::output_iterator<CharT> Out>
-constexpr Out copy_symbol(const symbol_text<N, M>& txt, text_encoding encoding, bool negative_power, Out out)
+constexpr Out copy_symbol(const symbol_text<N, M>& txt, character_set char_set, bool negative_power, Out out)
 {
-  out = copy<CharT>(txt, encoding, out);
+  out = copy<CharT>(txt, char_set, out);
   if (negative_power) {
     constexpr auto exp = superscript<-1>();
-    out = copy<CharT>(exp, encoding, out);
+    out = copy<CharT>(exp, char_set, out);
   }
   return out;
 }
 
 template<typename CharT, int Num, int... Den, std::output_iterator<CharT> Out>
-constexpr Out copy_symbol_exponent(text_encoding encoding, bool negative_power, Out out)
+constexpr Out copy_symbol_exponent(character_set char_set, bool negative_power, Out out)
 {
   constexpr ratio r{Num, Den...};
   if constexpr (r.den != 1) {
@@ -134,18 +134,18 @@ constexpr Out copy_symbol_exponent(text_encoding encoding, bool negative_power, 
     if (negative_power) {
       constexpr auto txt =
         symbol_text("^-(") + regular<r.num>() + symbol_text("/") + regular<r.den>() + symbol_text(")");
-      return copy<CharT>(txt, encoding, out);
+      return copy<CharT>(txt, char_set, out);
     }
     constexpr auto txt = symbol_text("^(") + regular<r.num>() + symbol_text("/") + regular<r.den>() + symbol_text(")");
-    return copy<CharT>(txt, encoding, out);
+    return copy<CharT>(txt, char_set, out);
   } else if constexpr (r.num != 1) {
     // add exponent part
     if (negative_power) {
       constexpr auto txt = superscript<-r.num>();
-      return copy<CharT>(txt, encoding, out);
+      return copy<CharT>(txt, char_set, out);
     }
     constexpr auto txt = superscript<r.num>();
-    return copy<CharT>(txt, encoding, out);
+    return copy<CharT>(txt, char_set, out);
   } else {
     return out;
   }

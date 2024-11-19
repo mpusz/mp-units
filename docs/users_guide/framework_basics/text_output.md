@@ -454,15 +454,15 @@ as text and, thus, are aligned to the left by default.
 
 ```ebnf
 dimension-format-spec = [fill-and-align], [width], [dimension-spec];
-dimension-spec        = [text-encoding];
-text-encoding         = 'U' | 'P';
+dimension-spec        = [character-set];
+character-set         = 'U' | 'P';
 ```
 
 In the above grammar:
 
 - `fill-and-align` and `width` tokens are defined in the [format.string.std](https://wg21.link/format.string.std)
   chapter of the C++ standard specification,
-- `text-encoding` token specifies the symbol text encoding:
+- `character-set` token specifies the symbol text encoding:
     - `U` (default) uses the **UTF-8** symbols defined by [@ISO80000] (e.g., `LT⁻²`),
     - `P` forces non-standard **portable** output (e.g., `LT^-2`).
 
@@ -471,7 +471,7 @@ Dimension symbols of some quantities are specified to use Unicode signs by the
 dimension). The library follows this by default. From the engineering point of view, sometimes
 Unicode text might not be the best solution, as terminals of many (especially embedded) devices
 can output only letters from the basic literal character set. In such a case, the dimension
-symbol can be forced to be printed using such characters thanks to `text-encoding` token:
+symbol can be forced to be printed using such characters thanks to `character-set` token:
 
 ```cpp
 std::println("{}", isq::dim_thermodynamic_temperature);   // Θ
@@ -484,12 +484,12 @@ std::println("{:P}", isq::power.dimension);               // L^2MT^-3
 
 ```ebnf
 unit-format-spec      = [fill-and-align], [width], [unit-spec];
-unit-spec             = [text-encoding], [unit-symbol-solidus], [unit-symbol-separator], [L]
-                      | [text-encoding], [unit-symbol-separator], [unit-symbol-solidus], [L]
-                      | [unit-symbol-solidus], [text-encoding], [unit-symbol-separator], [L]
-                      | [unit-symbol-solidus], [unit-symbol-separator], [text-encoding], [L]
-                      | [unit-symbol-separator], [text-encoding], [unit-symbol-solidus], [L]
-                      | [unit-symbol-separator], [unit-symbol-solidus], [text-encoding], [L];
+unit-spec             = [character-set], [unit-symbol-solidus], [unit-symbol-separator], [L]
+                      | [character-set], [unit-symbol-separator], [unit-symbol-solidus], [L]
+                      | [unit-symbol-solidus], [character-set], [unit-symbol-separator], [L]
+                      | [unit-symbol-solidus], [unit-symbol-separator], [character-set], [L]
+                      | [unit-symbol-separator], [character-set], [unit-symbol-solidus], [L]
+                      | [unit-symbol-separator], [unit-symbol-solidus], [character-set], [L];
 unit-symbol-solidus   = '1' | 'a' | 'n';
 unit-symbol-separator = 's' | 'd';
 ```
@@ -521,7 +521,7 @@ Unit symbols of some quantities are specified to use Unicode signs by the [SI](.
 engineering point of view, Unicode text might not be the best solution sometimes, as terminals
 of many (especially embedded) devices can output only letters from the basic literal character set.
 In such a case, the unit symbol can be forced to be printed using such characters thanks to
-`text-encoding` token:
+`character-set` token:
 
 ```cpp
 std::println("{}", si::ohm);      // Ω

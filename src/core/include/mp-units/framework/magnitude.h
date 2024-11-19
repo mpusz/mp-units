@@ -316,9 +316,9 @@ template<typename CharT, std::output_iterator<CharT> Out>
 constexpr Out print_separator(Out out, const unit_symbol_formatting& fmt)
 {
   if (fmt.separator == unit_symbol_separator::half_high_dot) {
-    if (fmt.encoding != text_encoding::utf8)
+    if (fmt.char_set != character_set::utf8)
       MP_UNITS_THROW(
-        std::invalid_argument("'unit_symbol_separator::half_high_dot' can be only used with 'text_encoding::utf8'"));
+        std::invalid_argument("'unit_symbol_separator::half_high_dot' can be only used with 'character_set::utf8'"));
     const std::string_view dot = "⋅" /* U+22C5 DOT OPERATOR */;
     out = detail::copy(dot.begin(), dot.end(), out);
   } else {
@@ -339,9 +339,9 @@ template<typename CharT, std::output_iterator<CharT> Out, auto M, auto... Rest>
                                                 bool negative_power)
 {
   auto to_symbol = [&]<typename T>(T v) {
-    out = copy_symbol<CharT>(get_base(v)._symbol_, fmt.encoding, negative_power, out);
+    out = copy_symbol<CharT>(get_base(v)._symbol_, fmt.char_set, negative_power, out);
     constexpr ratio r = get_exponent(T{});
-    return copy_symbol_exponent<CharT, abs(r.num), r.den>(fmt.encoding, negative_power, out);
+    return copy_symbol_exponent<CharT, abs(r.num), r.den>(fmt.char_set, negative_power, out);
   };
   return (to_symbol(M), ..., (print_separator<CharT>(out, fmt), to_symbol(Rest)));
 }
@@ -354,7 +354,7 @@ constexpr Out magnitude_symbol_impl(Out out, const unit_symbol_formatting& fmt)
   constexpr auto num_value = _get_value<std::intmax_t>(Num);
   if constexpr (num_value != 1) {
     constexpr auto num = detail::regular<num_value>();
-    out = copy_symbol<CharT>(num, fmt.encoding, false, out);
+    out = copy_symbol<CharT>(num, fmt.char_set, false, out);
     numerator = true;
   }
 
@@ -383,7 +383,7 @@ constexpr Out magnitude_symbol_impl(Out out, const unit_symbol_formatting& fmt)
   if constexpr (den_value != 1) {
     constexpr auto den = detail::regular<den_value>();
     start_denominator();
-    out = copy_symbol<CharT>(den, fmt.encoding, negative_power, out);
+    out = copy_symbol<CharT>(den, fmt.char_set, negative_power, out);
     denominator = true;
   }
 
@@ -400,10 +400,10 @@ constexpr Out magnitude_symbol_impl(Out out, const unit_symbol_formatting& fmt)
   if constexpr (Exp10 != 0) {
     if (numerator || denominator) {
       constexpr auto mag_multiplier = symbol_text(u8" × " /* U+00D7 MULTIPLICATION SIGN */, " x ");
-      out = copy_symbol<CharT>(mag_multiplier, fmt.encoding, negative_power, out);
+      out = copy_symbol<CharT>(mag_multiplier, fmt.char_set, negative_power, out);
     }
     constexpr auto exp = symbol_text("10") + detail::superscript<Exp10>();
-    out = copy_symbol<CharT>(exp, fmt.encoding, negative_power, out);
+    out = copy_symbol<CharT>(exp, fmt.char_set, negative_power, out);
   }
 
   return out;

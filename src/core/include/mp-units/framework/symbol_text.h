@@ -55,13 +55,16 @@ static_assert(std::text_encoding::literal().mib() == std::text_encoding::id::UTF
 namespace mp_units {
 
 // NOLINTNEXTLINE(readability-enum-initial-value)
-MP_UNITS_EXPORT enum class text_encoding : std::int8_t {
+MP_UNITS_EXPORT enum class character_set : std::int8_t {
   utf8,  // µs; m³;  L²MT⁻³
   unicode [[deprecated("Use `utf8` instead")]] = utf8,
   portable,  // us; m^3; L^2MT^-3
   ascii [[deprecated("Use `portable` instead")]] = portable,
-  default_encoding = utf8
+  default_character_set = utf8,
+  default_encoding [[deprecated("Use `default_character_set` instead")]] = default_character_set
 };
+
+using text_encoding [[deprecated("Use `character_set` instead")]] = character_set;
 
 namespace detail {
 
