@@ -244,6 +244,15 @@ The following steps may be performed to obtain an official library release:
     mp-units/2.4.0
 
     [options]
+    # The below mp-units options are automatically deduced based on the current system's settings.
+    # Uncomment and set to an explicit value to override the auto-deduction.
+    #
+    # mp-units*:cxx_modules=True
+    # mp-units*:import_std=False
+    # mp-units*:std_format=True
+    # mp-units*:no_crtp=True
+    # mp-units*:contracts=gsl-lite
+    # mp-units*:freestanding=False
 
     [layout]
     cmake_layout
@@ -302,6 +311,15 @@ with the following differences:
     mp-units/2.5.0@mpusz/testing
 
     [options]
+    # The below mp-units options are automatically deduced based on the current system's settings.
+    # Uncomment and set to an explicit value to override the auto-deduction.
+    #
+    # mp-units*:cxx_modules=True
+    # mp-units*:import_std=False
+    # mp-units*:std_format=True
+    # mp-units*:no_crtp=True
+    # mp-units*:contracts=gsl-lite
+    # mp-units*:freestanding=False
 
     [layout]
     cmake_layout
