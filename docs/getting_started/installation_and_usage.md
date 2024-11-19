@@ -134,9 +134,12 @@ dependencies by other means, some modifications to the library's CMake files mig
 
 [`contracts`](#contracts){ #contracts }
 
-:   [:octicons-tag-24: 2.2.0][conan contracts] · :octicons-milestone-24: `none`/`gsl-lite`/`ms-gsl` (Default: `gsl-lite`)
+:   [:octicons-tag-24: 2.2.0][conan contracts] · :octicons-milestone-24: `none`/`gsl-lite`/`ms-gsl` (Default: _see below_)
 
-    Enables checking of preconditions and additional asserts in the code.
+    Enables checking of preconditions and additional assertions in the code.
+    
+    If the automatically determined default for `import_std` is `True`, then the `contracts` option
+    is set to `none` by default. `gsl-lite` otherwise.
 
     [conan contracts]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 
