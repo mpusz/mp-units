@@ -249,8 +249,8 @@ The following steps may be performed to obtain an official library release:
         mp-units/2.4.0
 
         [options]
-        # The below mp-units options are automatically deduced based on the current settings.
-        # Uncomment and set to an explicit value to override the auto-deduction.
+        # The below mp-units options are set to defaults by Conan.
+        # Uncomment and set to an explicit value to override the defaults.
         #
         # mp-units*:cxx_modules=True
         # mp-units*:import_std=False
@@ -282,8 +282,8 @@ The following steps may be performed to obtain an official library release:
                 self.requires(
                     "mp-units/2.4.0",
                     options={
-                        # The below mp-units options are automatically deduced based on the current settings.
-                        # Uncomment and set to an explicit value to override the auto-deduction.
+                        # The below mp-units options are set to defaults by Conan.
+                        # Uncomment and set to an explicit value to override the defaults.
                         #
                         # "cxx_modules": False,
                         # "import_std": False,
@@ -365,8 +365,8 @@ with the following differences:
         mp-units/2.5.0@mpusz/testing
 
         [options]
-        # The below mp-units options are automatically deduced based on the current settings.
-        # Uncomment and set to an explicit value to override the auto-deduction.
+        # The below mp-units options are set to defaults by Conan.
+        # Uncomment and set to an explicit value to override the defaults.
         #
         # mp-units*:cxx_modules=True
         # mp-units*:import_std=False
@@ -398,8 +398,8 @@ with the following differences:
                 self.requires(
                     "mp-units/2.5.0@mpusz/testing",
                     options={
-                        # The below mp-units options are automatically deduced based on the current settings.
-                        # Uncomment and set to an explicit value to override the auto-deduction.
+                        # The below mp-units options are set to defaults by Conan.
+                        # Uncomment and set to an explicit value to override the defaults.
                         #
                         # "cxx_modules": False,
                         # "import_std": False,
