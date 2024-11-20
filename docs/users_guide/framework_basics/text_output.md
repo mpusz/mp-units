@@ -237,13 +237,6 @@ static_assert(unit_symbol<{.solidus = unit_symbol_solidus::never,
                            .separator = unit_symbol_separator::half_high_dot}>(kg * m / s2) == "kg⋅m⋅s⁻²");
 ```
 
-!!! note
-
-    `std::string_view` is returned only when C++23 is available. Otherwise, an instance of a
-    `basic_fixed_string` is being returned. See more in the
-    [C++ compiler support](../../getting_started/cpp_compiler_support.md#static-constexpr-variables-in-constexpr-functions)
-    chapter.
-
 #### `unit_symbol_to()`
 
 Inserts the generated unit symbol into the output text iterator at runtime.
