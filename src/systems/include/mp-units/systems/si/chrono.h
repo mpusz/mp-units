@@ -123,9 +123,9 @@ struct quantity_point_like_traits<std::chrono::time_point<C, std::chrono::durati
 namespace detail {
 
 [[nodiscard]] constexpr auto as_ratio(UnitMagnitude auto m)
-  requires(_is_rational(m))
+  requires(is_rational(m))
 {
-  return std::ratio<_get_value<std::intmax_t>(_numerator(m)), _get_value<std::intmax_t>(_denominator(m))>{};
+  return std::ratio<get_value<std::intmax_t>(numerator(m)), get_value<std::intmax_t>(denominator(m))>{};
 }
 
 }  // namespace detail

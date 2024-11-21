@@ -440,11 +440,11 @@ template<Unit U1, Unit U2>
 {
   constexpr auto canonical_lhs = get_canonical_unit(U1{});
   constexpr auto canonical_rhs = get_canonical_unit(U2{});
-  constexpr auto common_magnitude = _common_magnitude(canonical_lhs.mag, canonical_rhs.mag);
-  if constexpr (common_magnitude == mag<1>)
+  constexpr auto common_mag = common_magnitude(canonical_lhs.mag, canonical_rhs.mag);
+  if constexpr (common_mag == mag<1>)
     return canonical_lhs.reference_unit;
   else
-    return scaled_unit<common_magnitude, MP_UNITS_NONCONST_TYPE(canonical_lhs.reference_unit)>{};
+    return scaled_unit<common_mag, MP_UNITS_NONCONST_TYPE(canonical_lhs.reference_unit)>{};
 }
 
 [[nodiscard]] consteval Unit auto get_common_scaled_unit(Unit auto u1, Unit auto u2, Unit auto u3, Unit auto... rest)
@@ -572,7 +572,7 @@ template<Unit T, symbol_text Symbol, Unit auto U, auto... Args>
 template<typename F, int Num, int... Den, typename... Us>
 [[nodiscard]] consteval auto get_canonical_unit_impl(const power<F, Num, Den...>&, const type_list<Us...>&)
 {
-  auto mag = (mp_units::mag<1> * ... * _pow<Num, Den...>(get_canonical_unit_impl(Us{}, Us{}).mag));
+  auto mag = (mp_units::mag<1> * ... * pow<Num, Den...>(get_canonical_unit_impl(Us{}, Us{}).mag));
   auto u = (one * ... * pow<Num, Den...>(get_canonical_unit_impl(Us{}, Us{}).reference_unit));
   return canonical_unit{mag, u};
 }
@@ -584,9 +584,9 @@ template<typename T, typename F, int Num, int... Den>
   if constexpr (requires { typename decltype(base.reference_unit)::_num_; }) {
     auto num = get_canonical_unit_impl(power<F, Num, Den...>{}, typename decltype(base.reference_unit)::_num_{});
     auto den = get_canonical_unit_impl(power<F, Num, Den...>{}, typename decltype(base.reference_unit)::_den_{});
-    return canonical_unit{_pow<Num, Den...>(base.mag) * num.mag / den.mag, num.reference_unit / den.reference_unit};
+    return canonical_unit{pow<Num, Den...>(base.mag) * num.mag / den.mag, num.reference_unit / den.reference_unit};
   } else {
-    return canonical_unit{_pow<Num, Den...>(base.mag),
+    return canonical_unit{pow<Num, Den...>(base.mag),
                           derived_unit<power<decltype(base.reference_unit), Num, Den...>>{}};
   }
 }
@@ -696,9 +696,9 @@ template<Unit U1, Unit U2>
     constexpr auto canonical_lhs = get_canonical_unit(U1{});
     constexpr auto canonical_rhs = get_canonical_unit(U2{});
 
-    if constexpr (_is_positive_integral_power(canonical_lhs.mag / canonical_rhs.mag))
+    if constexpr (is_positive_integral_power(canonical_lhs.mag / canonical_rhs.mag))
       return u2;
-    else if constexpr (_is_positive_integral_power(canonical_rhs.mag / canonical_lhs.mag))
+    else if constexpr (is_positive_integral_power(canonical_rhs.mag / canonical_lhs.mag))
       return u1;
     else {
       if constexpr (detail::unit_less<U1, U2>::value)
@@ -793,7 +793,7 @@ constexpr Out unit_symbol_impl(Out out, const scaled_unit_impl<M, U>& u, const u
                                bool negative_power)
 {
   *out++ = '[';
-  _magnitude_symbol<CharT>(out, M, fmt);
+  magnitude_symbol<CharT>(out, M, fmt);
   if constexpr (space_before_unit_symbol<scaled_unit<M, U>::_reference_unit_>) *out++ = ' ';
   unit_symbol_impl<CharT>(out, u._reference_unit_, fmt, negative_power);
   *out++ = ']';

@@ -214,7 +214,7 @@ struct magnitude_base {};
 template<auto H, auto... T>
 struct magnitude_base<unit_magnitude<H, T...>> {
   template<auto H2, auto... T2>
-  [[nodiscard]] friend consteval UnitMagnitude auto _multiply_impl(unit_magnitude<H, T...>, unit_magnitude<H2, T2...>)
+  [[nodiscard]] friend consteval UnitMagnitude auto multiply_impl(unit_magnitude<H, T...>, unit_magnitude<H2, T2...>)
   {
     if constexpr (mag_less(H, H2)) {
       if constexpr (sizeof...(T) == 0) {
@@ -262,19 +262,19 @@ struct magnitude_base<unit_magnitude<H, T...>> {
   // Thus, we make the _simplest_ choice which reproduces the correct convention in the rational case: namely, taking
   // the minimum power for each base (where absent bases implicitly have a power of 0).
   template<auto H2, auto... T2>
-  [[nodiscard]] friend consteval auto _common_magnitude(unit_magnitude<H, T...>, unit_magnitude<H2, T2...>)
+  [[nodiscard]] friend consteval auto common_magnitude(unit_magnitude<H, T...>, unit_magnitude<H2, T2...>)
   {
     if constexpr (get_base_value(H) < get_base_value(H2)) {
       // When H1 has the smaller base, prepend to result from recursion.
       return remove_positive_power(unit_magnitude<H>{}) *
-             _common_magnitude(unit_magnitude<T...>{}, unit_magnitude<H2, T2...>{});
+             common_magnitude(unit_magnitude<T...>{}, unit_magnitude<H2, T2...>{});
     } else if constexpr (get_base_value(H2) < get_base_value(H)) {
       // When H2 has the smaller base, prepend to result from recursion.
       return remove_positive_power(unit_magnitude<H2>{}) *
-             _common_magnitude(unit_magnitude<H, T...>{}, unit_magnitude<T2...>{});
+             common_magnitude(unit_magnitude<H, T...>{}, unit_magnitude<T2...>{});
     } else {
       // When the bases are equal, pick whichever has the lower power.
-      constexpr auto common_tail = _common_magnitude(unit_magnitude<T...>{}, unit_magnitude<T2...>{});
+      constexpr auto common_tail = common_magnitude(unit_magnitude<T...>{}, unit_magnitude<T2...>{});
       if constexpr (get_exponent(H) < get_exponent(H2)) {
         return unit_magnitude<H>{} * common_tail;
       } else {
@@ -329,7 +329,7 @@ template<typename CharT, UnitMagnitude auto Num, UnitMagnitude auto Den, UnitMag
 constexpr Out magnitude_symbol_impl(Out out, const unit_symbol_formatting& fmt)
 {
   bool numerator = false;
-  constexpr auto num_value = _get_value<std::intmax_t>(Num);
+  constexpr auto num_value = get_value<std::intmax_t>(Num);
   if constexpr (num_value != 1) {
     constexpr auto num = regular<num_value>();
     out = copy_symbol<CharT>(num, fmt.char_set, false, out);
@@ -345,7 +345,7 @@ constexpr Out magnitude_symbol_impl(Out out, const unit_symbol_formatting& fmt)
 
   using enum unit_symbol_solidus;
   bool denominator = false;
-  constexpr auto den_value = _get_value<std::intmax_t>(Den);
+  constexpr auto den_value = get_value<std::intmax_t>(Den);
   constexpr auto den_constants_size = magnitude_list_size(DenConstants);
   constexpr auto den_size = (den_value != 1) + den_constants_size;
   auto start_denominator = [&]() {
@@ -403,12 +403,12 @@ struct unit_magnitude : magnitude_base<unit_magnitude<Ms...>> {
     else if constexpr (is_same_v<M, unit_magnitude<>>)
       return lhs;
     else
-      return _multiply_impl(lhs, rhs);
+      return multiply_impl(lhs, rhs);
   }
 
   [[nodiscard]] friend consteval auto operator/(unit_magnitude lhs, UnitMagnitude auto rhs)
   {
-    return lhs * _pow<-1>(rhs);
+    return lhs * pow<-1>(rhs);
   }
 
   template<UnitMagnitude Rhs>
@@ -419,9 +419,9 @@ struct unit_magnitude : magnitude_base<unit_magnitude<Ms...>> {
 
 private:
   // all below functions should in fact be in a `detail` namespace but are placed here to benefit from the ADL
-  [[nodiscard]] friend consteval bool _is_integral(const unit_magnitude&) { return (is_integral_impl(Ms) && ...); }
-  [[nodiscard]] friend consteval bool _is_rational(const unit_magnitude&) { return (is_rational_impl(Ms) && ...); }
-  [[nodiscard]] friend consteval bool _is_positive_integral_power(const unit_magnitude&)
+  [[nodiscard]] friend consteval bool is_integral(const unit_magnitude&) { return (is_integral_impl(Ms) && ...); }
+  [[nodiscard]] friend consteval bool is_rational(const unit_magnitude&) { return (is_rational_impl(Ms) && ...); }
+  [[nodiscard]] friend consteval bool is_positive_integral_power(const unit_magnitude&)
   {
     return (is_positive_integral_power_impl(Ms) && ...);
   }
@@ -431,7 +431,7 @@ private:
    */
   template<typename T>
     requires((is_integral_impl(Ms) && ...)) || treat_as_floating_point<T>
-  [[nodiscard]] friend consteval T _get_value(const unit_magnitude&)
+  [[nodiscard]] friend consteval T get_value(const unit_magnitude&)
   {
     // Force the expression to be evaluated in a constexpr context, to catch, e.g., overflow.
     constexpr T result = checked_static_cast<T>((compute_base_power<T>(Ms) * ... * T{1}));
@@ -441,7 +441,7 @@ private:
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Magnitude rational powers implementation.
   template<int Num, int Den = 1>
-  [[nodiscard]] friend consteval auto _pow(unit_magnitude)
+  [[nodiscard]] friend consteval auto pow(unit_magnitude)
   {
     if constexpr (Num == 0) {
       return unit_magnitude<>{};
@@ -452,24 +452,24 @@ private:
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Magnitude numerator and denominator implementation.
-  [[nodiscard]] friend consteval auto _numerator(unit_magnitude)
+  [[nodiscard]] friend consteval auto numerator(unit_magnitude)
   {
     return (integer_part(unit_magnitude<Ms>{}) * ... * unit_magnitude<>{});
   }
 
-  [[nodiscard]] friend consteval auto _denominator(unit_magnitude) { return _numerator(_pow<-1>(unit_magnitude{})); }
+  [[nodiscard]] friend consteval auto denominator(unit_magnitude) { return numerator(pow<-1>(unit_magnitude{})); }
 
-  [[nodiscard]] friend consteval auto _remove_positive_powers(unit_magnitude)
+  [[nodiscard]] friend consteval auto remove_positive_powers(unit_magnitude)
   {
     return (unit_magnitude<>{} * ... * remove_positive_power(unit_magnitude<Ms>{}));
   }
 
-  [[nodiscard]] friend consteval auto _common_magnitude_type_impl(unit_magnitude)
+  [[nodiscard]] friend consteval auto common_magnitude_type_impl(unit_magnitude)
   {
     return (std::intmax_t{} * ... * decltype(get_base_value(Ms)){});
   }
 
-  [[nodiscard]] friend consteval auto _extract_components(unit_magnitude)
+  [[nodiscard]] friend consteval auto extract_components(unit_magnitude)
   {
     constexpr auto ratio = (unit_magnitude<>{} * ... * remove_mag_constants(unit_magnitude<Ms>{}));
     if constexpr (ratio == unit_magnitude{})
@@ -482,15 +482,15 @@ private:
   }
 
   template<typename T>
-  [[nodiscard]] friend consteval ratio _get_power([[maybe_unused]] T base, unit_magnitude)
+  [[nodiscard]] friend consteval ratio get_power([[maybe_unused]] T base, unit_magnitude)
   {
     return ((get_base_value(Ms) == base ? get_exponent(Ms) : ratio{0}) + ... + ratio{0});
   }
 
-  [[nodiscard]] friend consteval std::intmax_t _extract_power_of_10(unit_magnitude m)
+  [[nodiscard]] friend consteval std::intmax_t extract_power_of_10(unit_magnitude m)
   {
-    const auto power_of_2 = _get_power(2, m);
-    const auto power_of_5 = _get_power(5, m);
+    const auto power_of_2 = get_power(2, m);
+    const auto power_of_5 = get_power(5, m);
 
     if ((power_of_2 * power_of_5).num <= 0) return 0;
 
@@ -498,20 +498,20 @@ private:
   }
 
   template<typename CharT, std::output_iterator<CharT> Out>
-  friend constexpr Out _magnitude_symbol(Out out, unit_magnitude, const unit_symbol_formatting& fmt)
+  friend constexpr Out magnitude_symbol(Out out, unit_magnitude, const unit_symbol_formatting& fmt)
   {
     if constexpr (unit_magnitude{} == unit_magnitude<1>{}) {
       return out;
     } else {
-      constexpr auto extract_res = _extract_components(unit_magnitude{});
+      constexpr auto extract_res = extract_components(unit_magnitude{});
       constexpr UnitMagnitude auto ratio = std::get<0>(extract_res);
       constexpr UnitMagnitude auto num_constants = std::get<1>(extract_res);
       constexpr UnitMagnitude auto den_constants = std::get<2>(extract_res);
-      constexpr std::intmax_t exp10 = _extract_power_of_10(ratio);
+      constexpr std::intmax_t exp10 = extract_power_of_10(ratio);
       if constexpr (abs(exp10) < 3) {
         // print the value as a regular number (without exponent)
-        constexpr UnitMagnitude auto num = _numerator(unit_magnitude{});
-        constexpr UnitMagnitude auto den = _denominator(unit_magnitude{});
+        constexpr UnitMagnitude auto num = numerator(unit_magnitude{});
+        constexpr UnitMagnitude auto den = denominator(unit_magnitude{});
         // TODO address the below
         static_assert(ratio == num / den, "Printing rational powers not yet supported");
         return magnitude_symbol_impl<CharT, num, den, num_constants, den_constants, 0>(out, fmt);
@@ -519,8 +519,8 @@ private:
         // print the value as a number with exponent
         // if user wanted a regular number for this magnitude then probably a better scaled unit should be used
         constexpr UnitMagnitude auto base = ratio / mag_power_lazy<10, exp10>();
-        constexpr UnitMagnitude auto num = _numerator(base);
-        constexpr UnitMagnitude auto den = _denominator(base);
+        constexpr UnitMagnitude auto num = numerator(base);
+        constexpr UnitMagnitude auto den = denominator(base);
 
         // TODO address the below
         static_assert(base == num / den, "Printing rational powers not yet supported");
@@ -530,15 +530,15 @@ private:
   }
 };
 
-[[nodiscard]] consteval auto _common_magnitude(unit_magnitude<>, UnitMagnitude auto m)
+[[nodiscard]] consteval auto common_magnitude(unit_magnitude<>, UnitMagnitude auto m)
 {
-  return _remove_positive_powers(m);
+  return remove_positive_powers(m);
 }
-[[nodiscard]] consteval auto _common_magnitude(UnitMagnitude auto m, unit_magnitude<>)
+[[nodiscard]] consteval auto common_magnitude(UnitMagnitude auto m, unit_magnitude<>)
 {
-  return _remove_positive_powers(m);
+  return remove_positive_powers(m);
 }
-[[nodiscard]] consteval auto _common_magnitude(unit_magnitude<> m, unit_magnitude<>) { return m; }
+[[nodiscard]] consteval auto common_magnitude(unit_magnitude<> m, unit_magnitude<>) { return m; }
 
 
 // The largest integer which can be extracted from any magnitude with only a single basis vector.
@@ -595,7 +595,7 @@ template<auto M>
 
 // Returns the most precise type to express the magnitude factor
 template<UnitMagnitude auto M>
-using common_magnitude_type = decltype(_common_magnitude_type_impl(M));
+using common_magnitude_type = decltype(common_magnitude_type_impl(M));
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // `mag()` implementation.

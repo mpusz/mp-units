@@ -81,7 +81,7 @@ constexpr UnitMagnitude auto mag_ratio = detail::prime_factorization_v<N> / deta
  */
 template<detail::MagArg auto Base, int Num, int Den = 1>
   requires(detail::get_base_value(Base) > 0)
-constexpr UnitMagnitude auto mag_power = _pow<Num, Den>(mag<Base>);
+constexpr UnitMagnitude auto mag_power = pow<Num, Den>(mag<Base>);
 
 /**
  * @brief  A convenient Magnitude constant for pi, which we can manipulate like a regular number.
@@ -107,7 +107,7 @@ template<MagArg auto Base, int Num, int Den>
   requires(get_base_value(Base) > 0)
 [[nodiscard]] consteval UnitMagnitude auto mag_power_lazy()
 {
-  return _pow<Num, Den>(mag<Base>);
+  return pow<Num, Den>(mag<Base>);
 }
 
 }  // namespace detail
