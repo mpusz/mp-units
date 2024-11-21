@@ -34,11 +34,11 @@
 #include <mp-units/ext/type_name.h>
 #include <mp-units/ext/type_traits.h>
 #include <mp-units/framework/expression_template.h>
-#include <mp-units/framework/magnitude.h>
 #include <mp-units/framework/quantity_point_concepts.h>
 #include <mp-units/framework/quantity_spec_concepts.h>
 #include <mp-units/framework/symbol_text.h>
 #include <mp-units/framework/unit_concepts.h>
+#include <mp-units/framework/unit_magnitude.h>
 #include <mp-units/framework/unit_symbol_formatting.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
@@ -61,7 +61,7 @@ namespace mp_units {
 
 namespace detail {
 
-template<Magnitude auto M, Unit U>
+template<UnitMagnitude auto M, Unit U>
 struct scaled_unit_impl;
 
 template<typename T>
@@ -84,7 +84,7 @@ struct derived_unit_impl;
  * @tparam U a unit to use as a `reference_unit`
  * @tparam M a Magnitude representing an absolute scaling factor of this unit
  */
-template<Magnitude M, Unit U>
+template<UnitMagnitude M, Unit U>
 struct canonical_unit {
   M mag;
   U reference_unit;
@@ -92,7 +92,7 @@ struct canonical_unit {
 
 #if MP_UNITS_COMP_CLANG
 
-template<Magnitude M, Unit U>
+template<UnitMagnitude M, Unit U>
 canonical_unit(M, U) -> canonical_unit<M, U>;
 
 #endif
@@ -167,7 +167,7 @@ struct unit_interface {
   /**
    * Multiplication by `1` returns the same unit, otherwise `scaled_unit` is being returned.
    */
-  template<Magnitude M, Unit U>
+  template<UnitMagnitude M, Unit U>
   [[nodiscard]] friend MP_UNITS_CONSTEVAL Unit auto operator*(M, U u)
   {
     if constexpr (std::is_same_v<M, MP_UNITS_NONCONST_TYPE(mp_units::mag<1>)>)
@@ -181,7 +181,7 @@ struct unit_interface {
       return scaled_unit<M{}, U>{};
   }
 
-  [[nodiscard]] friend consteval Unit auto operator*(Unit auto, Magnitude auto)
+  [[nodiscard]] friend consteval Unit auto operator*(Unit auto, UnitMagnitude auto)
 #if __cpp_deleted_function
     = delete("To scale a unit use `mag * unit` syntax");
 #else
@@ -191,7 +191,7 @@ struct unit_interface {
   /**
    * Returns the result of multiplication with an inverse unit.
    */
-  template<Magnitude M, Unit U>
+  template<UnitMagnitude M, Unit U>
   [[nodiscard]] friend MP_UNITS_CONSTEVAL Unit auto operator/(M mag, U u)
   {
     return mag * inverse(u);
@@ -246,10 +246,10 @@ struct propagate_point_origin<U, true> {
   static constexpr auto _point_origin_ = U::_point_origin_;
 };
 
-template<Magnitude auto M, Unit U>
+template<UnitMagnitude auto M, Unit U>
 struct scaled_unit_impl : detail::unit_interface, detail::propagate_point_origin<U> {
   using _base_type_ = scaled_unit_impl;  // exposition only
-  static constexpr Magnitude auto _mag_ = M;
+  static constexpr UnitMagnitude auto _mag_ = M;
   static constexpr U _reference_unit_{};
 };
 
@@ -264,8 +264,8 @@ struct scaled_unit_impl : detail::unit_interface, detail::propagate_point_origin
  * @note User should not instantiate this type! It is not exported from the C++ module. The library will
  *       instantiate this type automatically based on the unit arithmetic equation provided by the user.
  */
-template<Magnitude auto M, Unit U>
-  requires(M != magnitude<>{} && M != mag<1>)
+template<UnitMagnitude auto M, Unit U>
+  requires(M != unit_magnitude<>{} && M != mag<1>)
 struct scaled_unit final : detail::scaled_unit_impl<M, U> {};
 
 namespace detail {
@@ -425,7 +425,7 @@ struct named_unit<Symbol, U, QS, PO> : decltype(U)::_base_type_ {
  * @tparam M scaling factor of the prefix
  * @tparam U a named unit to be prefixed
  */
-MP_UNITS_EXPORT template<symbol_text Symbol, Magnitude auto M, PrefixableUnit auto U>
+MP_UNITS_EXPORT template<symbol_text Symbol, UnitMagnitude auto M, PrefixableUnit auto U>
   requires(!Symbol.empty())
 struct prefixed_unit : decltype(M * U)::_base_type_ {
   using _base_type_ = prefixed_unit;  // exposition only
@@ -594,9 +594,9 @@ template<typename T, typename F, int Num, int... Den>
 template<typename... Us>
 [[nodiscard]] consteval auto get_canonical_unit_impl(const type_list<Us...>&)
 {
-  auto magnitude = (mp_units::mag<1> * ... * get_canonical_unit_impl(Us{}, Us{}).mag);
+  auto unit_magnitude = (mp_units::mag<1> * ... * get_canonical_unit_impl(Us{}, Us{}).mag);
   auto u = (one * ... * get_canonical_unit_impl(Us{}, Us{}).reference_unit);
-  return canonical_unit{magnitude, u};
+  return canonical_unit{unit_magnitude, u};
 }
 
 template<Unit T, typename... Expr>
@@ -810,7 +810,7 @@ template<typename... Us, Unit U>
       return mag<1>;
   };
   constexpr auto canonical_u = get_canonical_unit(u);
-  constexpr Magnitude auto cmag = get_magnitude() / canonical_u.mag;
+  constexpr UnitMagnitude auto cmag = get_magnitude() / canonical_u.mag;
   if constexpr (cmag == mag<1>)
     return u;
   else

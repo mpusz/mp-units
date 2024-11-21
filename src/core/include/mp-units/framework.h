@@ -29,8 +29,8 @@
 #include <mp-units/framework/dimension.h>
 #include <mp-units/framework/dimension_concepts.h>
 #include <mp-units/framework/expression_template.h>
-#include <mp-units/framework/magnitude.h>
-#include <mp-units/framework/magnitude_concepts.h>
+#include <mp-units/framework/unit_magnitude.h>
+#include <mp-units/framework/unit_magnitude_concepts.h>
 #include <mp-units/framework/quantity.h>
 #include <mp-units/framework/quantity_cast.h>
 #include <mp-units/framework/quantity_concepts.h>

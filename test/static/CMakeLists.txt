@@ -47,7 +47,6 @@ add_library(
     international_test.cpp
     isq_test.cpp
     isq_angle_test.cpp
-    # magnitude_test.cpp
     natural_test.cpp
     prime_test.cpp
     quantity_point_test.cpp
@@ -58,8 +57,9 @@ add_library(
     symbol_text_test.cpp
     type_list_test.cpp
     typographic_test.cpp
-    unit_test.cpp
+    # unit_magnitude_test.cpp
     unit_symbol_test.cpp
+    unit_test.cpp
     usc_test.cpp
 )
 

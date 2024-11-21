@@ -23,8 +23,8 @@
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else
-#include <units/bits/magnitude.h>
 #include <units/bits/ratio.h>
+#include <units/bits/unit_magnitude.h>
 #include <type_traits>
 #endif
 
@@ -60,7 +60,7 @@ namespace {
 // template<ratio R>
 // void check_ratio_round_trip_is_identity()
 // {
-//   constexpr Magnitude auto m = mag<R>();
+//   constexpr UnitMagnitude auto m = mag<R>();
 //   constexpr ratio round_trip = ratio{
 //     get_value<std::intmax_t>(numerator(m)),
 //     get_value<std::intmax_t>(denominator(m)),
@@ -68,16 +68,16 @@ namespace {
 //   CHECK(round_trip == R);
 // }
 
-inline constexpr struct mag_2_ : magnitude<2> {
+inline constexpr struct mag_2_ : unit_magnitude<2> {
 } mag_2;
-// inline constexpr struct mag_2_other : magnitude<2> {
+// inline constexpr struct mag_2_other : unit_magnitude<2> {
 // } mag_2_other;
-// inline constexpr struct mag_3 : magnitude<2> {
+// inline constexpr struct mag_3 : unit_magnitude<2> {
 // } mag_3;
 
 // concepts verification
-static_assert(Magnitude<decltype(mag<2>)>);
-static_assert(Magnitude<mag_2_>);
+static_assert(UnitMagnitude<decltype(mag<2>)>);
+static_assert(UnitMagnitude<mag_2_>);
 
 // is_named_magnitude
 static_assert(!is_named_magnitude<decltype(mag<2>)>);
@@ -162,15 +162,15 @@ static_assert(std::is_same_v<decltype(get_base(power_v<mag_2, 5, 8>{})), mag_2_>
 // {
 //   SECTION("Performs prime factorization when denominator is 1")
 //   {
-//     CHECK(mag<1>() == magnitude<>{});
-//     CHECK(mag<2>() == magnitude<base_power{2}>{});
-//     CHECK(mag<3>() == magnitude<base_power{3}>{});
-//     CHECK(mag<4>() == magnitude<base_power{2, 2}>{});
+//     CHECK(mag<1>() == unit_magnitude<>{});
+//     CHECK(mag<2>() == unit_magnitude<base_power{2}>{});
+//     CHECK(mag<3>() == unit_magnitude<base_power{3}>{});
+//     CHECK(mag<4>() == unit_magnitude<base_power{2, 2}>{});
 
-//     CHECK(mag<792>() == magnitude<base_power{2, 3}, base_power{3, 2}, base_power{11}>{});
+//     CHECK(mag<792>() == unit_magnitude<base_power{2, 3}, base_power{3, 2}, base_power{11}>{});
 //   }
 
-//   SECTION("Supports fractions") { CHECK(mag_ratio<5, 8>() == magnitude<base_power{2, -3}, base_power{5}>{}); }
+//   SECTION("Supports fractions") { CHECK(mag_ratio<5, 8>() == unit_magnitude<base_power{2, -3}, base_power{5}>{}); }
 
 //   SECTION("Can handle prime factor which would be large enough to overflow int")
 //   {
@@ -179,7 +179,7 @@ static_assert(std::is_same_v<decltype(get_base(power_v<mag_2, 5, 8>{})), mag_2_>
 //     mag_ratio<16'605'390'666'050, 10'000'000'000'000>();
 //   }
 
-// TEST_CASE("magnitude converts to numerical value")
+// TEST_CASE("unit_magnitude converts to numerical value")
 // {
 //   SECTION("Positive integer powers of integer bases give integer values")
 //   {
@@ -267,14 +267,14 @@ static_assert(std::is_same_v<decltype(get_base(power_v<mag_2, 5, 8>{})), mag_2_>
 
 // TEST_CASE("Multiplication works for magnitudes")
 // {
-//   SECTION("Reciprocals reduce to null magnitude") { CHECK(mag_ratio<3, 4>() * mag_ratio<4, 3>() == mag<1>()); }
+//   SECTION("Reciprocals reduce to null unit_magnitude") { CHECK(mag_ratio<3, 4>() * mag_ratio<4, 3>() == mag<1>()); }
 
 //   SECTION("Products work as expected") { CHECK(mag_ratio<4, 5>() * mag_ratio<4, 3>() == mag_ratio<16, 15>()); }
 
 //   SECTION("Products handle pi correctly")
 //   {
 //     CHECK(pi_to_the<1>() * mag_ratio<2, 3>() * pi_to_the<ratio{-1, 2}>() ==
-//           magnitude<base_power{2}, base_power{3, -1}, base_power<pi_base>{ratio{1, 2}}>{});
+//           unit_magnitude<base_power{2}, base_power{3, -1}, base_power<pi_base>{ratio{1, 2}}>{});
 //   }
 
 //   SECTION("Supports constexpr")
@@ -307,7 +307,7 @@ static_assert(std::is_same_v<decltype(get_base(power_v<mag_2, 5, 8>{})), mag_2_>
 
 // TEST_CASE("Division works for magnitudes")
 // {
-//   SECTION("Dividing anything by itself reduces to null magnitude")
+//   SECTION("Dividing anything by itself reduces to null unit_magnitude")
 //   {
 //     CHECK(mag_ratio<3, 4>() / mag_ratio<3, 4>() == mag<1>());
 //     CHECK(mag<15>() / mag<15>() == mag<1>());
@@ -350,11 +350,11 @@ static_assert(std::is_same_v<decltype(get_base(power_v<mag_2, 5, 8>{})), mag_2_>
 // {
 //   SECTION("Integer magnitudes are integral and rational")
 //   {
-//     auto check_rational_and_integral = [](Magnitude auto m) {
+//     auto check_rational_and_integral = [](UnitMagnitude auto m) {
 //       CHECK(is_integral(m));
 //       CHECK(is_rational(m));
 //     };
-//     check_rational_and_integral(magnitude<>{});
+//     check_rational_and_integral(unit_magnitude<>{});
 //     check_rational_and_integral(mag<1>());
 //     check_rational_and_integral(mag<3>());
 //     check_rational_and_integral(mag<8>());
@@ -364,7 +364,7 @@ static_assert(std::is_same_v<decltype(get_base(power_v<mag_2, 5, 8>{})), mag_2_>
 
 //   SECTION("Fractional magnitudes are rational, but not integral")
 //   {
-//     auto check_rational_but_not_integral = [](Magnitude auto m) {
+//     auto check_rational_but_not_integral = [](UnitMagnitude auto m) {
 //       CHECK(!is_integral(m));
 //       CHECK(is_rational(m));
 //     };
@@ -373,7 +373,7 @@ static_assert(std::is_same_v<decltype(get_base(power_v<mag_2, 5, 8>{})), mag_2_>
 //   }
 // }
 
-// TEST_CASE("Constructing ratio from rational magnitude")
+// TEST_CASE("Constructing ratio from rational unit_magnitude")
 // {
 //   SECTION("Round trip is identity")
 //   {
@@ -427,27 +427,27 @@ static_assert(std::is_same_v<decltype(get_base(power_v<mag_2, 5, 8>{})), mag_2_>
 // {
 //   SECTION("integer_part of non-integer base is identity magnitude")
 //   {
-//     CHECK(integer_part(pi_to_the<1>()) == magnitude<>{});
-//     CHECK(integer_part(pi_to_the<-8>()) == magnitude<>{});
-//     CHECK(integer_part(pi_to_the<ratio{3, 4}>()) == magnitude<>{});
+//     CHECK(integer_part(pi_to_the<1>()) == unit_magnitude<>{});
+//     CHECK(integer_part(pi_to_the<-8>()) == unit_magnitude<>{});
+//     CHECK(integer_part(pi_to_the<ratio{3, 4}>()) == unit_magnitude<>{});
 //   }
 
 //   SECTION("integer_part of integer base to negative power is identity magnitude")
 //   {
-//     CHECK(integer_part(magnitude<base_power{2, -8}>{}) == magnitude<>{});
-//     CHECK(integer_part(magnitude<base_power{11, -1}>{}) == magnitude<>{});
+//     CHECK(integer_part(unit_magnitude<base_power{2, -8}>{}) == unit_magnitude<>{});
+//     CHECK(integer_part(unit_magnitude<base_power{11, -1}>{}) == unit_magnitude<>{});
 //   }
 
 //   SECTION("integer_part of integer base to fractional power is identity magnitude")
 //   {
-//     CHECK(integer_part(magnitude<base_power{2, ratio{1, 2}}>{}) == magnitude<>{});
+//     CHECK(integer_part(unit_magnitude<base_power{2, ratio{1, 2}}>{}) == unit_magnitude<>{});
 //   }
 
 //   SECTION("integer_part of integer base to power at least one takes integer part")
 //   {
-//     CHECK(integer_part(magnitude<base_power{2, 1}>{}) == magnitude<base_power{2, 1}>{});
-//     CHECK(integer_part(magnitude<base_power{2, ratio{19, 10}}>{}) == magnitude<base_power{2, 1}>{});
-//     CHECK(integer_part(magnitude<base_power{11, ratio{97, 9}}>{}) == magnitude<base_power{11, 10}>{});
+//     CHECK(integer_part(unit_magnitude<base_power{2, 1}>{}) == unit_magnitude<base_power{2, 1}>{});
+//     CHECK(integer_part(unit_magnitude<base_power{2, ratio{19, 10}}>{}) == unit_magnitude<base_power{2, 1}>{});
+//     CHECK(integer_part(unit_magnitude<base_power{11, ratio{97, 9}}>{}) == unit_magnitude<base_power{11, 10}>{});
 //   }
 // }
 
@@ -470,22 +470,22 @@ static_assert(std::is_same_v<decltype(get_base(power_v<mag_2, 5, 8>{})), mag_2_>
 
 // TEST_CASE("Prime factorization")
 // {
-//   SECTION("1 factors into the null magnitude") { CHECK(prime_factorization_v<1> == magnitude<>{}); }
+//   SECTION("1 factors into the null unit_magnitude") { CHECK(prime_factorization_v<1> == unit_magnitude<>{}); }
 
 //   SECTION("Prime numbers factor into themselves")
 //   {
-//     CHECK(prime_factorization_v<2> == magnitude<base_power{2}>{});
-//     CHECK(prime_factorization_v<3> == magnitude<base_power{3}>{});
-//     CHECK(prime_factorization_v<5> == magnitude<base_power{5}>{});
-//     CHECK(prime_factorization_v<7> == magnitude<base_power{7}>{});
-//     CHECK(prime_factorization_v<11> == magnitude<base_power{11}>{});
+//     CHECK(prime_factorization_v<2> == unit_magnitude<base_power{2}>{});
+//     CHECK(prime_factorization_v<3> == unit_magnitude<base_power{3}>{});
+//     CHECK(prime_factorization_v<5> == unit_magnitude<base_power{5}>{});
+//     CHECK(prime_factorization_v<7> == unit_magnitude<base_power{7}>{});
+//     CHECK(prime_factorization_v<11> == unit_magnitude<base_power{11}>{});
 
-//     CHECK(prime_factorization_v<41> == magnitude<base_power{41}>{});
+//     CHECK(prime_factorization_v<41> == unit_magnitude<base_power{41}>{});
 //   }
 
 //   SECTION("Prime factorization finds factors and multiplicities")
 //   {
-//     CHECK(prime_factorization_v<792> == magnitude<base_power{2, 3}, base_power{3, 2}, base_power{11}>{});
+//     CHECK(prime_factorization_v<792> == unit_magnitude<base_power{2, 3}, base_power{3, 2}, base_power{11}>{});
 //   }
 // }
 

@@ -25,9 +25,9 @@
 // IWYU pragma: private, include <mp-units/framework.h>
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/framework/expression_template.h>
-#include <mp-units/framework/magnitude.h>
 #include <mp-units/framework/quantity_spec_concepts.h>
 #include <mp-units/framework/symbol_text.h>
+#include <mp-units/framework/unit_magnitude.h>
 
 namespace mp_units {
 
@@ -45,8 +45,8 @@ struct unit_interface;
 MP_UNITS_EXPORT template<typename T>
 concept Unit = detail::SymbolicConstant<T> && std::derived_from<T, detail::unit_interface>;
 
-template<Magnitude auto M, Unit U>
-  requires(M != magnitude<>{} && M != mag<1>)
+template<UnitMagnitude auto M, Unit U>
+  requires(M != unit_magnitude<>{} && M != mag<1>)
 struct scaled_unit;
 
 MP_UNITS_EXPORT template<symbol_text Symbol, auto...>
