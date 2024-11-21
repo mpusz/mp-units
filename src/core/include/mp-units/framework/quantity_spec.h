@@ -180,6 +180,9 @@ struct quantity_spec_interface : quantity_spec_interface_base {
 #endif
 };
 
+template<typename T>
+concept QSProperty = (!QuantitySpec<T>);
+
 }  // namespace detail
 
 MP_UNITS_EXPORT_BEGIN
@@ -248,12 +251,10 @@ MP_UNITS_EXPORT_END
  * @tparam Args optionally a value of a `quantity_character` in case the base quantity should not be scalar
  */
 #if MP_UNITS_API_NO_CRTP
-template<detail::BaseDimension auto Dim, one_of<quantity_character> auto... Args>
-  requires(... && !QuantitySpec<decltype(Args)>)
+template<detail::BaseDimension auto Dim, detail::QSProperty auto... Args>
 struct quantity_spec<Dim, Args...> : detail::quantity_spec_interface {
 #else
-template<typename Self, detail::BaseDimension auto Dim, one_of<quantity_character> auto... Args>
-  requires(... && !QuantitySpec<decltype(Args)>)
+template<typename Self, detail::BaseDimension auto Dim, detail::QSProperty auto... Args>
 struct quantity_spec<Self, Dim, Args...> : detail::quantity_spec_interface<Self> {
 #endif
   using _base_type_ = quantity_spec;
@@ -292,12 +293,10 @@ struct quantity_spec<Self, Dim, Args...> : detail::quantity_spec_interface<Self>
  * @tparam Args optionally a value of a `quantity_character` in case the base quantity should not be scalar
  */
 #if MP_UNITS_API_NO_CRTP
-template<detail::DerivedQuantitySpec auto Eq, one_of<quantity_character> auto... Args>
-  requires(... && !QuantitySpec<decltype(Args)>)
+template<detail::DerivedQuantitySpec auto Eq, detail::QSProperty auto... Args>
 struct quantity_spec<Eq, Args...> : detail::quantity_spec_interface {
 #else
-template<typename Self, detail::DerivedQuantitySpec auto Eq, one_of<quantity_character> auto... Args>
-  requires(... && !QuantitySpec<decltype(Args)>)
+template<typename Self, detail::DerivedQuantitySpec auto Eq, detail::QSProperty auto... Args>
 struct quantity_spec<Self, Eq, Args...> : detail::quantity_spec_interface<Self> {
 #endif
   using _base_type_ = quantity_spec;
@@ -346,12 +345,10 @@ struct propagate_equation<Q, true> {
  *              or `is_kind` in case the quantity starts a new hierarchy tree of a kind
  */
 #if MP_UNITS_API_NO_CRTP
-template<detail::NamedQuantitySpec auto QS, one_of<quantity_character, struct is_kind> auto... Args>
-  requires(... && !QuantitySpec<decltype(Args)>)
+template<detail::NamedQuantitySpec auto QS, detail::QSProperty auto... Args>
 struct quantity_spec<QS, Args...> : detail::propagate_equation<QS>, detail::quantity_spec_interface {
 #else
-template<typename Self, detail::NamedQuantitySpec auto QS, one_of<quantity_character, struct is_kind> auto... Args>
-  requires(... && !QuantitySpec<decltype(Args)>)
+template<typename Self, detail::NamedQuantitySpec auto QS, detail::QSProperty auto... Args>
 struct quantity_spec<Self, QS, Args...> : detail::propagate_equation<QS>, detail::quantity_spec_interface<Self> {
 #endif
   using _base_type_ = quantity_spec;
@@ -407,14 +404,13 @@ struct quantity_spec<Self, QS, Args...> : detail::propagate_equation<QS>, detail
  */
 // clang-format on
 #if MP_UNITS_API_NO_CRTP
-template<detail::NamedQuantitySpec auto QS, detail::DerivedQuantitySpec auto Eq,
-         one_of<quantity_character, struct is_kind> auto... Args>
-  requires(detail::QuantitySpecExplicitlyConvertibleTo<Eq, QS>) && (... && !QuantitySpec<decltype(Args)>)
+template<detail::NamedQuantitySpec auto QS, detail::DerivedQuantitySpec auto Eq, detail::QSProperty auto... Args>
+  requires(detail::QuantitySpecExplicitlyConvertibleTo<Eq, QS>)
 struct quantity_spec<QS, Eq, Args...> : detail::quantity_spec_interface {
 #else
 template<typename Self, detail::NamedQuantitySpec auto QS, detail::DerivedQuantitySpec auto Eq,
-         one_of<quantity_character, struct is_kind> auto... Args>
-  requires(detail::QuantitySpecExplicitlyConvertibleTo<Eq, QS>) && (... && !QuantitySpec<decltype(Args)>)
+         detail::QSProperty auto... Args>
+  requires(detail::QuantitySpecExplicitlyConvertibleTo<Eq, QS>)
 struct quantity_spec<Self, QS, Eq, Args...> : detail::quantity_spec_interface<Self> {
 #endif
   using _base_type_ = quantity_spec;
