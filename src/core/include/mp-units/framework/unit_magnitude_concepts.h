@@ -49,13 +49,17 @@ struct mag_constant;
 MP_UNITS_EXPORT template<typename T>
 concept MagConstant = detail::SymbolicConstant<T> && is_derived_from_specialization_of_v<T, mag_constant>;
 
+namespace detail {
+
 template<auto... Ms>
 struct unit_magnitude;
+
+}
 
 /**
  * @brief  Concept to detect whether T is a valid UnitMagnitude.
  */
 MP_UNITS_EXPORT template<typename T>
-concept UnitMagnitude = is_specialization_of_v<T, unit_magnitude>;
+concept UnitMagnitude = is_specialization_of_v<T, detail::unit_magnitude>;
 
 }  // namespace mp_units

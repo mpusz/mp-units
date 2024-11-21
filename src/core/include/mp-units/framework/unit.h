@@ -265,7 +265,7 @@ struct scaled_unit_impl : detail::unit_interface, detail::propagate_point_origin
  *       instantiate this type automatically based on the unit arithmetic equation provided by the user.
  */
 template<UnitMagnitude auto M, Unit U>
-  requires(M != unit_magnitude<>{} && M != mag<1>)
+  requires(M != detail::unit_magnitude<>{} && M != mag<1>)
 struct scaled_unit final : detail::scaled_unit_impl<M, U> {};
 
 namespace detail {

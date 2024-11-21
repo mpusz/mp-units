@@ -46,7 +46,7 @@ MP_UNITS_EXPORT template<typename T>
 concept Unit = detail::SymbolicConstant<T> && std::derived_from<T, detail::unit_interface>;
 
 template<UnitMagnitude auto M, Unit U>
-  requires(M != unit_magnitude<>{} && M != mag<1>)
+  requires(M != detail::unit_magnitude<>{} && M != mag<1>)
 struct scaled_unit;
 
 MP_UNITS_EXPORT template<symbol_text Symbol, auto...>
