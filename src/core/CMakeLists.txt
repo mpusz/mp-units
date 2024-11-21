@@ -42,6 +42,7 @@ add_mp_units_module(
             include/mp-units/bits/sudo_cast.h
             include/mp-units/bits/text_tools.h
             include/mp-units/bits/type_list.h
+            include/mp-units/bits/unit_magnitude.h
             include/mp-units/ext/algorithm.h
             include/mp-units/ext/contracts.h
             include/mp-units/ext/fixed_string.h
