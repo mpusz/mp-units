@@ -118,11 +118,9 @@ concept ComplexRepresentation = Complex<T> && WeaklyRegular<T> && requires(T a, 
   { a - b } -> Complex;
   { a* b } -> Complex;
   { a / b } -> Complex;
-  { real(a) } -> Scalar;
-  { imag(a) } -> Scalar;
-  { abs(a) } -> Scalar;
-  { arg(a) } -> Scalar;
-  { conj(a) } -> Complex;
+  { ::mp_units::real(a) } -> Scalar;
+  { ::mp_units::imag(a) } -> Scalar;
+  { ::mp_units::modulus(a) } -> Scalar;
 };
 
 // TODO how to check for a complex(Scalar, Scalar) -> Complex?
@@ -138,8 +136,8 @@ concept VectorRepresentation = Vector<T> && WeaklyRegular<T> && requires(T a, T 
   { -a } -> Vector;
   { a + b } -> Vector;
   { a - b } -> Vector;
+  { ::mp_units::norm(a) } -> Scalar;
   // TBD
-  // { norm(a) } -> Scalar;
   // { zero_vector<T>() } -> Vector;
   // { unit_vector(a) } -> Vector;
   // { scalar_product(a, b) } -> Scalar;
