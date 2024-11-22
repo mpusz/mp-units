@@ -543,23 +543,6 @@ std::println("{:n}", m / s);        // m s⁻¹
 std::println("{:n}", kg / m / s2);  // kg m⁻¹ s⁻²
 ```
 
-Also, there are a few options to separate the units being multiplied. ISO 80000 (part 1) says:
-
-!!! quote "ISO 80000-1"
-
-    When symbols for quantities are combined in a product of two or more quantities, this combination
-    is indicated in one of the following ways: `ab`, `a b`, `a · b`, `a × b`
-
-    _NOTE 1_ In some fields, e.g., vector algebra, distinction is made between `a ∙ b` and `a × b`.
-
-The library supports `a b` and `a · b` only. Additionally, we decided that the extraneous space
-in the latter case makes the result too verbose, so we decided just to use the `·` symbol as
-a separator.
-
-!!! note
-
-    Please let us know if you require more formatting options here.
-
 The `unit-symbol-separator` token allows us to obtain the following outputs:
 
 ```cpp
