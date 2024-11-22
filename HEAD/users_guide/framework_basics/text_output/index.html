@@ -2887,20 +2887,6 @@ units.</p>
 </span><span id="__span-33-5"><a id="__codelineno-33-5" name="__codelineno-33-5" href="#__codelineno-33-5"></a><span class="n">std</span><span class="o">::</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;{:n}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">s</span><span class="p">);</span><span class="w">        </span><span class="c1">// m s⁻¹</span>
 </span><span id="__span-33-6"><a id="__codelineno-33-6" name="__codelineno-33-6" href="#__codelineno-33-6"></a><span class="n">std</span><span class="o">::</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;{:n}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">kg</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">s2</span><span class="p">);</span><span class="w">  </span><span class="c1">// kg m⁻¹ s⁻²</span>
 </span></code></pre></div>
-<p>Also, there are a few options to separate the units being multiplied. ISO 80000 (part 1) says:</p>
-<div class="admonition quote">
-<p class="admonition-title">ISO 80000-1</p>
-<p>When symbols for quantities are combined in a product of two or more quantities, this combination
-is indicated in one of the following ways: <code>ab</code>, <code>a b</code>, <code>a · b</code>, <code>a × b</code></p>
-<p><em>NOTE 1</em> In some fields, e.g., vector algebra, distinction is made between <code>a ∙ b</code> and <code>a × b</code>.</p>
-</div>
-<p>The library supports <code>a b</code> and <code>a · b</code> only. Additionally, we decided that the extraneous space
-in the latter case makes the result too verbose, so we decided just to use the <code>·</code> symbol as
-a separator.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Please let us know if you require more formatting options here.</p>
-</div>
 <p>The <code>unit-symbol-separator</code> token allows us to obtain the following outputs:</p>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-34-1"><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a><span class="n">std</span><span class="o">::</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;{}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">kg</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m2</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">s2</span><span class="p">);</span><span class="w">    </span><span class="c1">// kg m²/s²</span>
 </span><span id="__span-34-2"><a id="__codelineno-34-2" name="__codelineno-34-2" href="#__codelineno-34-2"></a><span class="n">std</span><span class="o">::</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;{:d}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">kg</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m2</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">s2</span><span class="p">);</span><span class="w">  </span><span class="c1">// kg⋅m²/s²</span>
