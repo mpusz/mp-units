@@ -107,7 +107,7 @@ constexpr bool is_tensor = false;
 
 MP_UNITS_EXPORT_END
 
-namespace detail::inline norm_impl {
+namespace detail::norm_impl {
 
 void norm() = delete;  // poison pill
 
@@ -129,7 +129,7 @@ struct norm_t {
   }
 };
 
-}  // namespace detail::inline norm_impl
+}  // namespace detail::norm_impl
 
 inline namespace cpo {
 
@@ -137,7 +137,7 @@ MP_UNITS_EXPORT inline constexpr ::mp_units::detail::norm_impl::norm_t norm;
 
 }
 
-namespace detail::inline real_impl {
+namespace detail::real_impl {
 
 void real() = delete;  // poison pill
 
@@ -152,7 +152,7 @@ struct real_t {
   }
 };
 
-}  // namespace detail::inline real_impl
+}  // namespace detail::real_impl
 
 inline namespace cpo {
 
@@ -160,7 +160,7 @@ MP_UNITS_EXPORT inline constexpr ::mp_units::detail::real_impl::real_t real;
 
 }
 
-namespace detail::inline imag_impl {
+namespace detail::imag_impl {
 
 void imag() = delete;  // poison pill
 
@@ -175,7 +175,7 @@ struct imag_t {
   }
 };
 
-}  // namespace detail::inline imag_impl
+}  // namespace detail::imag_impl
 
 inline namespace cpo {
 
@@ -183,7 +183,7 @@ MP_UNITS_EXPORT inline constexpr ::mp_units::detail::imag_impl::imag_t imag;
 
 }
 
-namespace detail::inline modulus_impl {
+namespace detail::modulus_impl {
 
 void modulus() = delete;  // poison pill
 
@@ -201,7 +201,7 @@ struct modulus_t {
   }
 };
 
-}  // namespace detail::inline modulus_impl
+}  // namespace detail::modulus_impl
 
 inline namespace cpo {
 
