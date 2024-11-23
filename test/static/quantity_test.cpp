@@ -126,6 +126,26 @@ static_assert(quantity<isq::length[m]>::quantity_spec == isq::length);
 static_assert(quantity<isq::length[m]>::dimension == isq::dim_length);
 static_assert(quantity<isq::length[m]>::unit == si::metre);
 
+static_assert(quantity<one>::reference == one);
+static_assert(quantity<one>::quantity_spec == kind_of<dimensionless>);
+static_assert(quantity<one>::dimension == dimension_one);
+static_assert(quantity<one>::unit == one);
+
+static_assert(quantity<dimensionless[one]>::reference == dimensionless[one]);
+static_assert(quantity<dimensionless[one]>::quantity_spec == dimensionless);
+static_assert(quantity<dimensionless[one]>::dimension == dimension_one);
+static_assert(quantity<dimensionless[one]>::unit == one);
+
+static_assert(quantity<si::radian>::reference == si::radian);
+static_assert(quantity<si::radian>::quantity_spec == kind_of<isq::angular_measure>);
+static_assert(quantity<si::radian>::dimension == dimension_one);
+static_assert(quantity<si::radian>::unit == si::radian);
+
+static_assert(quantity<isq::angular_measure[rad]>::reference == isq::angular_measure[rad]);
+static_assert(quantity<isq::angular_measure[rad]>::quantity_spec == isq::angular_measure);
+static_assert(quantity<isq::angular_measure[rad]>::dimension == dimension_one);
+static_assert(quantity<isq::angular_measure[rad]>::unit == si::radian);
+
 /////////////////
 // member types
 /////////////////
