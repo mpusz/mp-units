@@ -622,7 +622,7 @@ template<typename Q>
 }
 
 template<QuantitySpec Q>
-[[nodiscard]] consteval int get_complexity(Q)
+[[nodiscard]] consteval int get_complexity_impl(Q)
 {
   if constexpr (DerivedQuantitySpec<Q>)
     return max(get_complexity(typename Q::_num_{}), get_complexity(typename Q::_den_{}));
@@ -630,6 +630,15 @@ template<QuantitySpec Q>
     return 1 + get_complexity(Q::_equation_);
   else
     return 0;
+}
+
+template<QuantitySpec Q>
+constexpr auto get_complexity_result = get_complexity_impl(Q{});
+
+template<QuantitySpec Q>
+[[nodiscard]] consteval int get_complexity(Q)
+{
+  return get_complexity_result<Q>;
 }
 
 // dimension_one is always the last one
@@ -719,14 +728,17 @@ explode_result(Q) -> explode_result<Q>;
 
 #endif
 
-template<int Complexity, DerivedQuantitySpec Q>
+template<int Complexity, QuantitySpec Q>
 [[nodiscard]] consteval auto explode(Q q);
+
+template<int Complexity, DerivedQuantitySpec Q>
+[[nodiscard]] consteval auto explode_impl(Q q);
 
 template<int Complexity, NamedQuantitySpec Q>
-[[nodiscard]] consteval auto explode(Q q);
+[[nodiscard]] consteval auto explode_impl(Q q);
 
 template<int Complexity, QuantitySpec Q, typename Num, typename... Nums, typename Den, typename... Dens>
-[[nodiscard]] consteval auto explode(Q, type_list<Num, Nums...>, type_list<Den, Dens...>)
+[[nodiscard]] consteval auto explode_impl(Q, type_list<Num, Nums...>, type_list<Den, Dens...>)
 {
   constexpr auto num = get_complexity(Num{});
   constexpr auto den = get_complexity(Den{});
@@ -751,7 +763,7 @@ template<int Complexity, QuantitySpec Q, typename Num, typename... Nums, typenam
 }
 
 template<int Complexity, QuantitySpec Q, typename Num, typename... Nums>
-[[nodiscard]] consteval auto explode(Q, type_list<Num, Nums...>, type_list<>)
+[[nodiscard]] consteval auto explode_impl(Q, type_list<Num, Nums...>, type_list<>)
 {
   constexpr auto n = get_complexity(Num{});
   if constexpr (n == Complexity || !requires { explode_to_equation(Num{}); })
@@ -763,7 +775,7 @@ template<int Complexity, QuantitySpec Q, typename Num, typename... Nums>
 }
 
 template<int Complexity, QuantitySpec Q, typename Den, typename... Dens>
-[[nodiscard]] consteval auto explode(Q, type_list<>, type_list<Den, Dens...>)
+[[nodiscard]] consteval auto explode_impl(Q, type_list<>, type_list<Den, Dens...>)
 {
   constexpr auto den = get_complexity(Den{});
   if constexpr (den == Complexity || !requires { explode_to_equation(Den{}); })
@@ -776,24 +788,24 @@ template<int Complexity, QuantitySpec Q, typename Den, typename... Dens>
 }
 
 template<int Complexity, QuantitySpec Q>
-[[nodiscard]] consteval auto explode(Q, type_list<>, type_list<>)
+[[nodiscard]] consteval auto explode_impl(Q, type_list<>, type_list<>)
 {
   return explode_result{dimensionless};
 }
 
 template<int Complexity, DerivedQuantitySpec Q>
-[[nodiscard]] consteval auto explode(Q q)
+[[nodiscard]] consteval auto explode_impl(Q q)
 {
   constexpr auto complexity = get_complexity(Q{});
   if constexpr (complexity > Complexity)
-    return explode<Complexity>(q, type_list_sort<typename Q::_num_, type_list_of_ingredients_less>{},
-                               type_list_sort<typename Q::_den_, type_list_of_ingredients_less>{});
+    return explode_impl<Complexity>(q, type_list_sort<typename Q::_num_, type_list_of_ingredients_less>{},
+                                    type_list_sort<typename Q::_den_, type_list_of_ingredients_less>{});
   else
     return explode_result{q};
 }
 
 template<int Complexity, NamedQuantitySpec Q>
-[[nodiscard]] consteval auto explode(Q q)
+[[nodiscard]] consteval auto explode_impl(Q q)
 {
   constexpr auto complexity = get_complexity(Q{});
   if constexpr (complexity > Complexity && requires { Q::_equation_; }) {
@@ -801,6 +813,15 @@ template<int Complexity, NamedQuantitySpec Q>
     return explode<Complexity>(res.equation).common_convertibility_with(res);
   } else
     return explode_result{q};
+}
+
+template<int Complexity, QuantitySpec Q>
+constexpr auto explode_res = explode_impl<Complexity>(Q{});
+
+template<int Complexity, QuantitySpec Q>
+[[nodiscard]] consteval auto explode(Q)
+{
+  return explode_res<Complexity, Q>;
 }
 
 template<typename NumFrom, typename... NumsFrom, typename DenFrom, typename... DensFrom, typename NumTo,
@@ -889,10 +910,8 @@ extract_results(bool, From = {}, To = {}, prepend_rest = {}, Elem = {}) -> extra
 
 #endif
 
-// tries to find the largest common power of a quantity
-// in case powers have different factors of the same dimension, returns the remainder
 template<typename From, typename To>
-[[nodiscard]] consteval auto extract_convertible_quantities(From, To)
+[[nodiscard]] consteval auto extract_convertible_quantities_impl(From, To)
 {
   constexpr auto qfrom = map_power(From{});
   constexpr auto qto = map_power(To{});
@@ -923,6 +942,17 @@ template<typename From, typename To>
       return extract_results{true, from_factor, to_factor, prepend_rest::second,
                              power_or_T<MP_UNITS_NONCONST_TYPE(to_factor), to_exp - from_exp>{}};
   }
+}
+
+template<typename From, typename To>
+constexpr auto extract_convertible_quantities_result = extract_convertible_quantities_impl(From{}, To{});
+
+// tries to find the largest common power of a quantity
+// in case powers have different factors of the same dimension, returns the remainder
+template<typename From, typename To>
+[[nodiscard]] consteval auto extract_convertible_quantities(From, To)
+{
+  return extract_convertible_quantities_result<From, To>;
 }
 
 enum class extracted_entities : std::int8_t { numerators, denominators, from, to };
