@@ -116,18 +116,13 @@ template<Unit T, typename... Us>
 [[nodiscard]] consteval auto get_canonical_unit_impl(T, const common_unit<Us...>&);
 
 template<Unit U>
-struct get_canonical_unit_result {
-  inline static constexpr auto value = get_canonical_unit_impl(U{}, U{});
-};
+constexpr auto get_canonical_unit_result = get_canonical_unit_impl(U{}, U{});
 
 }  // namespace detail
 
 // TODO this should really be in the `details` namespace but is used in `chrono.h` (a part of mp_units.systems)
 // Even though it is not exported, it is visible to the other module via ADL
-[[nodiscard]] consteval auto get_canonical_unit(Unit auto u)
-{
-  return detail::get_canonical_unit_result<decltype(u)>::value;
-}
+[[nodiscard]] consteval auto get_canonical_unit(Unit auto u) { return detail::get_canonical_unit_result<decltype(u)>; }
 
 namespace detail {
 
