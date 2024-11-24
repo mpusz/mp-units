@@ -207,7 +207,7 @@ template<typename FwdRep, Reference R, RepresentationOf<get_quantity_spec(R{})> 
 template<typename FwdRep, Reference R, RepresentationOf<get_quantity_spec(R{})> Rep = std::remove_cvref_t<FwdRep>>
   requires detail::OffsetUnit<decltype(get_unit(R{}))>
 [[deprecated(
-  "References using offset units (e.g., temperatures) should be constructed with the `delta` or `absolute` "
+  "References using offset units (e.g., temperatures) should be constructed with the `delta` or `point` "
   "helpers")]] constexpr auto
 operator*(FwdRep&& lhs, R r)
 {
@@ -217,7 +217,7 @@ operator*(FwdRep&& lhs, R r)
 template<typename FwdRep, Reference R, RepresentationOf<get_quantity_spec(R{})> Rep = std::remove_cvref_t<FwdRep>>
   requires detail::OffsetUnit<decltype(get_unit(R{}))>
 [[deprecated(
-  "References using offset units (e.g., temperatures) should be constructed with the `delta` or `absolute` "
+  "References using offset units (e.g., temperatures) should be constructed with the `delta` or `point` "
   "helpers")]] constexpr auto
 operator/(FwdRep&& lhs, R)
 {
