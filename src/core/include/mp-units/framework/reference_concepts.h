@@ -69,12 +69,4 @@ concept ReferenceOf = Reference<T> && QuantitySpecOf<decltype(get_quantity_spec(
 
 MP_UNITS_EXPORT_END
 
-namespace detail {
-
-template<auto R1, auto R2>
-concept SameReference =
-  Reference<MP_UNITS_REMOVE_CONST(decltype(R1))> && Reference<MP_UNITS_REMOVE_CONST(decltype(R2))> && (R1 == R2);
-
-}  // namespace detail
-
 }  // namespace mp_units
