@@ -105,10 +105,6 @@ MP_UNITS_EXPORT template<QuantitySpec Q>
 
 namespace detail {
 
-template<auto QS1, auto QS2>
-concept SameQuantitySpec = QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS1))> &&
-                           QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS2))> && (QS1 == QS2);
-
 template<QuantitySpec Child, QuantitySpec Parent>
 [[nodiscard]] consteval bool is_child_of(Child ch, Parent p);
 
@@ -118,7 +114,7 @@ concept ChildQuantitySpecOf = (is_child_of(Child, Parent));
 template<auto To, auto From>
 concept NestedQuantityKindSpecOf =
   QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(From))> && QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(To))> &&
-  (!SameQuantitySpec<get_kind(From), get_kind(To)>) && ChildQuantitySpecOf<To, get_kind(From)._quantity_spec_>;
+  (get_kind(From) != get_kind(To)) && ChildQuantitySpecOf<To, get_kind(From)._quantity_spec_>;
 
 template<auto From, auto To>
 concept QuantitySpecConvertibleTo =

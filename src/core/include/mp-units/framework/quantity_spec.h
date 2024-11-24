@@ -508,7 +508,7 @@ template<QuantitySpec Q>
 }  // namespace detail
 
 template<typename Q>
-  requires(!detail::QuantityKindSpec<Q>) && detail::SameQuantitySpec<detail::get_kind_tree_root(Q{}), Q{}>
+  requires(!detail::QuantityKindSpec<Q>) && (detail::get_kind_tree_root(Q{}) == Q{})
 #if MP_UNITS_API_NO_CRTP
 struct kind_of_<Q> final : Q::_base_type_ {
 #else
