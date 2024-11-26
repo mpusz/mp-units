@@ -64,8 +64,33 @@ MP_UNITS_EXPORT enum class quantity_character : std::int8_t { scalar, complex, v
 
 namespace detail {
 
+template<typename T, quantity_character Ch>
+concept IsOfCharacter =
+  (Ch == quantity_character::scalar && is_scalar<T>) || (Ch == quantity_character::complex && is_complex<T>) ||
+  (Ch == quantity_character::vector && is_vector<T>) || (Ch == quantity_character::tensor && is_tensor<T>);
+
 template<typename T>
 concept WeaklyRegular = std::copyable<T> && std::equality_comparable<T>;
+
+#if defined(__clang__) && defined(__apple_build_version__)
+template<typename T, typename U>
+concept CommonTypeWith =
+  std::same_as<std::common_type_t<T, U>, std::common_type_t<U, T>> &&
+  std::constructible_from<std::common_type_t<T, U>, T> && std::constructible_from<std::common_type_t<T, U>, U>;
+
+template<typename T, typename U = T>
+concept ScalableNumber =
+  std::regular_invocable<std::multiplies<>, T, U> && std::regular_invocable<std::divides<>, T, U>;
+
+template<typename T>
+concept CastableNumber = CommonTypeWith<T, std::intmax_t> && ScalableNumber<std::common_type_t<T, std::intmax_t>>;
+
+template<typename T>
+concept Scalable =
+  CastableNumber<T> || (requires { typename wrapped_type_t<T>; } && CastableNumber<wrapped_type_t<T>> &&
+                        ScalableNumber<T, std::common_type_t<wrapped_type_t<T>, std::intmax_t>>);
+
+#else
 
 template<typename T>
 concept Scalar = is_scalar<T>;
@@ -78,11 +103,6 @@ concept Vector = is_vector<T>;
 
 template<typename T>
 concept Tensor = is_tensor<T>;
-
-template<typename T, quantity_character Ch>
-concept IsOfCharacter =
-  (Ch == quantity_character::scalar && is_scalar<T>) || (Ch == quantity_character::complex && is_complex<T>) ||
-  (Ch == quantity_character::vector && is_vector<T>) || (Ch == quantity_character::tensor && is_tensor<T>);
 
 template<typename T>
 using scaling_factor_type_t = conditional<treat_as_floating_point<T>, long double, std::intmax_t>;
@@ -157,12 +177,24 @@ concept TensorRepresentation = Tensor<T> && WeaklyRegular<T>;  // && requires(T 
                                                                // { inner_product(a, b) } -> Tensor2;
                                                                // { scalar_product(a, b) } -> Scalar;
 //};
-
+#endif
 }  // namespace detail
+
+#if defined(__clang__) && defined(__apple_build_version__)
+
+// The new version of this concept takes two orders of magnitude longer to compile with apple-clang from Xcode 15.x
+// (other versions not yet tested).
+MP_UNITS_EXPORT template<typename T>
+concept Representation =
+  (is_scalar<T> || is_complex<T> || is_vector<T> || is_tensor<T>)&&detail::WeaklyRegular<T> && detail::Scalable<T>;
+
+#else
 
 MP_UNITS_EXPORT template<typename T>
 concept Representation = detail::ScalarRepresentation<T> || detail::ComplexRepresentation<T> ||
                          detail::VectorRepresentation<T> || detail::TensorRepresentation<T>;
+
+#endif
 
 MP_UNITS_EXPORT template<typename T, auto V>
 concept RepresentationOf =
