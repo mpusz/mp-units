@@ -25,7 +25,7 @@
 #include <mp-units/bits/requires_hosted.h>
 //
 #include <mp-units/bits/module_macros.h>
-#include <mp-units/framework/customization_points.h>
+#include <mp-units/framework/representation_concepts.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #ifdef MP_UNITS_IMPORT_STD
