@@ -33,10 +33,11 @@ import std;
 #else
 #include <concepts>
 #include <cstdint>
+#include <cstdlib>
 #include <functional>
 #include <type_traits>
-#endif
-#endif
+#endif  // MP_UNITS_IMPORT_STD
+#endif  // MP_UNITS_IN_MODULE_INTERFACE
 
 namespace mp_units {
 
