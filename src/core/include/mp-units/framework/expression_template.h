@@ -117,8 +117,8 @@ constexpr bool ratio_one<N, N> = true;
 template<detail::SymbolicArg F, int Num, int... Den>
   requires(detail::valid_ratio<Num, Den...> && detail::positive_ratio<Num, Den...> && !detail::ratio_one<Num, Den...>)
 struct power final {
-  using factor = F;
-  static constexpr detail::ratio exponent{Num, Den...};
+  using _factor_ = F;
+  static constexpr detail::ratio _exponent_{Num, Den...};
 };
 
 namespace detail {
@@ -146,7 +146,7 @@ template<SymbolicArg T, ratio R>
 consteval auto power_or_T_impl()
 {
   if constexpr (is_specialization_of_power<T>) {
-    return power_or_T_impl<typename T::factor, T::exponent * R>();
+    return power_or_T_impl<typename T::_factor_, T::_exponent_ * R>();
   } else {
     if constexpr (R.den == 1) {
       if constexpr (R.num == 1)
@@ -198,13 +198,13 @@ struct expr_consolidate_impl<type_list<T, T, Rest...>> {
 // replaces the instance of a type and a power of it with one with incremented power
 template<typename T, int... Ints, typename... Rest>
 struct expr_consolidate_impl<type_list<T, power<T, Ints...>, Rest...>> {
-  using type = expr_consolidate_impl<type_list<power_or_T<T, power<T, Ints...>::exponent + 1>, Rest...>>::type;
+  using type = expr_consolidate_impl<type_list<power_or_T<T, power<T, Ints...>::_exponent_ + 1>, Rest...>>::type;
 };
 
 // accumulates the powers of instances of the same type (removes the element in case the accumulation result is `0`)
 template<typename T, int... Ints1, int... Ints2, typename... Rest>
 struct expr_consolidate_impl<type_list<power<T, Ints1...>, power<T, Ints2...>, Rest...>> {
-  static constexpr ratio r = power<T, Ints1...>::exponent + power<T, Ints2...>::exponent;
+  static constexpr ratio r = power<T, Ints1...>::_exponent_ + power<T, Ints2...>::_exponent_;
   using type = expr_consolidate_impl<type_list<power_or_T<T, r>, Rest...>>::type;
 };
 
@@ -260,7 +260,7 @@ struct expr_simplify_power {
 template<typename T, typename... NRest, int... Ints, typename... DRest, template<typename, typename> typename Pred>
 struct expr_simplify<type_list<power<T, Ints...>, NRest...>, type_list<T, DRest...>, Pred> {
   using impl = expr_simplify<type_list<NRest...>, type_list<DRest...>, Pred>;
-  using type = expr_simplify_power<T, power<T, Ints...>::exponent, ratio{1}>;
+  using type = expr_simplify_power<T, power<T, Ints...>::_exponent_, ratio{1}>;
   using num = type_list_join<typename type::num, typename impl::num>;
   using den = type_list_join<typename type::den, typename impl::den>;
 };
@@ -269,7 +269,7 @@ struct expr_simplify<type_list<power<T, Ints...>, NRest...>, type_list<T, DRest.
 template<typename T, typename... NRest, typename... DRest, int... Ints, template<typename, typename> typename Pred>
 struct expr_simplify<type_list<T, NRest...>, type_list<power<T, Ints...>, DRest...>, Pred> {
   using impl = expr_simplify<type_list<NRest...>, type_list<DRest...>, Pred>;
-  using type = expr_simplify_power<T, ratio{1}, power<T, Ints...>::exponent>;
+  using type = expr_simplify_power<T, ratio{1}, power<T, Ints...>::_exponent_>;
   using num = type_list_join<typename type::num, typename impl::num>;
   using den = type_list_join<typename type::den, typename impl::den>;
 };
@@ -280,7 +280,7 @@ template<typename T, typename... NRest, int... Ints1, typename... DRest, int... 
   requires(!std::same_as<power<T, Ints1...>, power<T, Ints2...>>)
 struct expr_simplify<type_list<power<T, Ints1...>, NRest...>, type_list<power<T, Ints2...>, DRest...>, Pred> {
   using impl = expr_simplify<type_list<NRest...>, type_list<DRest...>, Pred>;
-  using type = expr_simplify_power<T, power<T, Ints1...>::exponent, power<T, Ints2...>::exponent>;
+  using type = expr_simplify_power<T, power<T, Ints1...>::_exponent_, power<T, Ints2...>::_exponent_>;
   using num = type_list_join<typename type::num, typename impl::num>;
   using den = type_list_join<typename type::den, typename impl::den>;
 };

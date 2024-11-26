@@ -703,7 +703,7 @@ template<QuantitySpec Q, int... Ints>
   requires requires { Q::_equation_; }
 [[nodiscard]] consteval auto explode_to_equation(power<Q, Ints...>)
 {
-  constexpr ratio exp = power<Q, Ints...>::exponent;
+  constexpr ratio exp = power<Q, Ints...>::_exponent_;
   return explode_to_equation_result{
     pow<exp.num, exp.den>(Q::_equation_),
     defines_equation(Q{}) ? specs_convertible_result::yes : specs_convertible_result::explicit_conversion};
@@ -917,13 +917,13 @@ template<typename From, typename To>
   constexpr auto qto = map_power(To{});
   if constexpr (get_kind_tree_root(qfrom) == get_kind_tree_root(qto)) {
     if constexpr (is_specialization_of_power<From> && is_specialization_of_power<To>)
-      return extract_results{true, typename From::factor{}, typename To::factor{}, prepend_rest::no};
+      return extract_results{true, typename From::_factor_{}, typename To::_factor_{}, prepend_rest::no};
     else
       return extract_results{true, qfrom, qto, prepend_rest::no};
   } else {
     auto normalize = []<typename Q>(Q) {
       if constexpr (is_specialization_of_power<Q>)
-        return std::tuple{typename Q::factor{}, Q::exponent};
+        return std::tuple{typename Q::_factor_{}, Q::_exponent_};
       else
         return std::tuple{Q{}, ratio{1}};
     };
