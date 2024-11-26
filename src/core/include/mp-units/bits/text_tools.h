@@ -33,8 +33,11 @@
 import std;
 #else
 #include <cstdint>
-#endif
-#endif
+#if __cpp_lib_text_encoding
+#include <text_encoding>
+#endif  // __cpp_lib_text_encoding
+#endif  // MP_UNITS_IMPORT_STD
+#endif  // MP_UNITS_IN_MODULE_INTERFACE
 
 namespace mp_units::detail {
 
@@ -102,6 +105,11 @@ constexpr Out copy(const symbol_text<N, M>& txt, character_set char_set, Out out
     if constexpr (is_same_v<CharT, char8_t>)
       return ::mp_units::detail::copy(txt.utf8().begin(), txt.utf8().end(), out);
     else if constexpr (is_same_v<CharT, char>) {
+#if __cpp_lib_text_encoding
+      if (std::text_encoding::literal().mib() != std::text_encoding::id::UTF8)
+        // fallback to portable mode
+        return ::mp_units::detail::copy(txt.portable().begin(), txt.portable().end(), out);
+#endif
       for (const char8_t ch : txt.utf8()) *out++ = static_cast<char>(ch);
       return out;
     } else

@@ -38,19 +38,8 @@ import std;
 #include <compare>  // IWYU pragma: export
 #include <cstddef>
 #include <cstdint>
-#endif
-#endif
-
-#if __cpp_lib_text_encoding
-#ifndef MP_UNITS_IN_MODULE_INTERFACE
-#ifdef MP_UNITS_IMPORT_STD
-import std;
-#else
-#include <text_encoding>
-#endif
-#endif
-static_assert(std::text_encoding::literal().mib() == std::text_encoding::id::UTF8);
-#endif
+#endif  // MP_UNITS_IMPORT_STD
+#endif  // MP_UNITS_IN_MODULE_INTERFACE
 
 namespace mp_units {
 
