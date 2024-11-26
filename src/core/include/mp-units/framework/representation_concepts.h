@@ -102,6 +102,79 @@ concept ScalarRepresentation = Scalar<T> && WeaklyRegular<T> && requires(T a, T 
   { a / b } -> Scalar;
 };
 
+namespace real_impl {
+
+void real() = delete;  // poison pill
+
+struct real_t {
+  [[nodiscard]] constexpr ScalarRepresentation auto operator()(const WeaklyRegular auto& clx) const
+  {
+    if constexpr (requires { clx.real(); })
+      return clx.real();
+    else if constexpr (requires { real(clx); })
+      return real(clx);
+  }
+};
+
+}  // namespace real_impl
+
+}  // namespace detail
+
+inline namespace cpo {
+
+MP_UNITS_EXPORT inline constexpr ::mp_units::detail::real_impl::real_t real;
+
+}
+
+namespace detail::imag_impl {
+
+void imag() = delete;  // poison pill
+
+struct imag_t {
+  [[nodiscard]] constexpr ScalarRepresentation auto operator()(const WeaklyRegular auto& clx) const
+  {
+    if constexpr (requires { clx.imag(); })
+      return clx.imag();
+    else if constexpr (requires { imag(clx); })
+      return imag(clx);
+  }
+};
+
+}  // namespace detail::imag_impl
+
+inline namespace cpo {
+
+MP_UNITS_EXPORT inline constexpr ::mp_units::detail::imag_impl::imag_t imag;
+
+}
+
+namespace detail::modulus_impl {
+
+void modulus() = delete;  // poison pill
+
+struct modulus_t {
+  [[nodiscard]] constexpr ScalarRepresentation auto operator()(const WeaklyRegular auto& clx) const
+  {
+    if constexpr (requires { clx.modulus(); })
+      return clx.modulus();
+    else if constexpr (requires { modulus(clx); })
+      return modulus(clx);
+    // `std` made a precedence of using `abs` for modulo on `std::complex`
+    else if constexpr (requires { abs(clx); })
+      return abs(clx);
+  }
+};
+
+}  // namespace detail::modulus_impl
+
+inline namespace cpo {
+
+MP_UNITS_EXPORT inline constexpr ::mp_units::detail::modulus_impl::modulus_t modulus;
+
+}
+
+namespace detail {
+
 template<typename T>
 concept ComplexRepresentation = Complex<T> && WeaklyRegular<T> && requires(T a, T b, scaling_factor_type_t<T> f) {
   // scaling
@@ -118,12 +191,45 @@ concept ComplexRepresentation = Complex<T> && WeaklyRegular<T> && requires(T a, 
   { a - b } -> Complex;
   { a* b } -> Complex;
   { a / b } -> Complex;
-  { ::mp_units::real(a) } -> Scalar;
-  { ::mp_units::imag(a) } -> Scalar;
-  { ::mp_units::modulus(a) } -> Scalar;
+  ::mp_units::real(a);
+  ::mp_units::imag(a);
+  ::mp_units::modulus(a);
 };
 
 // TODO how to check for a complex(Scalar, Scalar) -> Complex?
+
+namespace norm_impl {
+
+void norm() = delete;  // poison pill
+
+struct norm_t {
+  [[nodiscard]] constexpr ScalarRepresentation auto operator()(const WeaklyRegular auto& vec) const
+  {
+    if constexpr (requires { vec.norm(); })
+      return vec.norm();
+    else if constexpr (requires { norm(vec); })
+      return norm(vec);
+    else if constexpr (requires { vec.magnitude(); })
+      return vec.magnitude();
+    else if constexpr (requires { magnitude(vec); })
+      return magnitude(vec);
+    // TODO Is it a good idea to enable fundamental types to represent vector quantities?
+    // else if constexpr (is_scalar<T>)
+    //   return std::abs(vec);
+  }
+};
+
+}  // namespace norm_impl
+
+}  // namespace detail
+
+inline namespace cpo {
+
+MP_UNITS_EXPORT inline constexpr ::mp_units::detail::norm_impl::norm_t norm;
+
+}
+
+namespace detail {
 
 template<typename T>
 concept VectorRepresentation = Vector<T> && WeaklyRegular<T> && requires(T a, T b, scaling_factor_type_t<T> f) {
@@ -136,7 +242,7 @@ concept VectorRepresentation = Vector<T> && WeaklyRegular<T> && requires(T a, T 
   { -a } -> Vector;
   { a + b } -> Vector;
   { a - b } -> Vector;
-  { ::mp_units::norm(a) } -> Scalar;
+  ::mp_units::norm(a);
   // TBD
   // { zero_vector<T>() } -> Vector;
   // { unit_vector(a) } -> Vector;
