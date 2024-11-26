@@ -38,6 +38,6 @@ import std;
 namespace mp_units {
 
 template<typename T>
-constexpr bool is_complex<std::complex<T>> = true;
+constexpr bool disable_scalar<std::complex<T>> = true;
 
-}
+}  // namespace mp_units

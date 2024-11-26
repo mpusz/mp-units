@@ -43,6 +43,10 @@ template<typename T>
 constexpr bool is_derived_from_specialization_of_quantity =
   requires(T* type) { to_base_specialization_of_quantity(type); };
 
+template<typename T>
+  requires is_derived_from_specialization_of_quantity<T>
+constexpr bool is_quantity<T> = true;
+
 }  // namespace detail
 
 /**

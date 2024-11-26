@@ -43,12 +43,6 @@ import mp_units;
 template<typename Rep = double>
 using vector = STD_LA::fixed_size_column_vector<Rep, 3>;
 
-template<class Rep>
-constexpr bool mp_units::treat_as_floating_point<vector<Rep>> = mp_units::treat_as_floating_point<Rep>;
-
-template<typename Rep>
-constexpr bool mp_units::is_vector<vector<Rep>> = true;
-
 template<typename Rep>
 std::ostream& operator<<(std::ostream& os, const vector<Rep>& v)
 {
@@ -87,8 +81,6 @@ template<typename T, typename U>
 }
 
 template<Quantity Q1, Quantity Q2>
-  requires is_vector<typename Q1::rep> && is_vector<typename Q2::rep> &&
-           requires(typename Q1::rep v1, typename Q2::rep v2) { cross_product(v1, v2); }
 [[nodiscard]] constexpr QuantityOf<Q1::quantity_spec * Q2::quantity_spec> auto cross_product(const Q1& q1, const Q2& q2)
 {
   return cross_product(q1.numerical_value_ref_in(q1.unit), q2.numerical_value_ref_in(q2.unit)) *
@@ -298,10 +290,6 @@ TEST_CASE("vector quantity", "[la]")
     CHECK(cross_product(r, f) == vector<int>{0, 0, 30} * isq::moment_of_force[N * m]);
   }
 }
-
-template<class T>
-  requires mp_units::is_scalar<T>
-constexpr bool mp_units::is_vector<T> = true;
 
 TEST_CASE("vector of quantities", "[la]")
 {

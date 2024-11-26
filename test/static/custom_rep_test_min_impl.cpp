@@ -60,9 +60,6 @@ public:
 
 }  // namespace
 
-template<typename T>
-constexpr bool mp_units::is_scalar<min_impl<T>> = true;
-
 template<typename T, typename U>
 struct std::common_type<min_impl<T>, min_impl<U>> : std::type_identity<min_impl<std::common_type_t<T, U>>> {};
 template<typename T, typename U>

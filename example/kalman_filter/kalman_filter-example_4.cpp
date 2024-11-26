@@ -38,10 +38,6 @@ import mp_units;
 
 // Based on: https://www.kalmanfilter.net/alphabeta.html#ex4
 
-template<class T>
-  requires mp_units::is_scalar<T>
-constexpr bool mp_units::is_vector<T> = true;
-
 using namespace mp_units;
 
 void print_header(const kalman::SystemState auto& initial)
