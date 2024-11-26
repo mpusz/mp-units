@@ -136,6 +136,7 @@ MP_UNITS_EXPORT inline constexpr ::mp_units::detail::imag_impl::imag_t imag;
 namespace detail::modulus_impl {
 
 void modulus() = delete;  // poison pill
+void abs() = delete;      // poison pill
 
 struct modulus_t {
   [[nodiscard]] constexpr Scalar auto operator()(const WeaklyRegular auto& clx) const
@@ -188,6 +189,7 @@ concept Complex =
 namespace magnitude_impl {
 
 void magnitude() = delete;  // poison pill
+void abs() = delete;        // poison pill
 
 struct magnitude_t {
   template<WeaklyRegular T>
