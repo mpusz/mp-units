@@ -47,9 +47,6 @@ import std;
 #endif
 #endif
 
-template<>
-constexpr bool mp_units::is_vector<int> = true;
-
 namespace {
 
 using namespace mp_units;
@@ -74,8 +71,10 @@ concept invalid_types = requires {
   requires !requires { typename Q<isq::length, double>; };      // quantity_spec instead of reference
   requires !requires { typename Q<isq::length[m], bool>; };     // bool is not a valid representation type
   requires !requires { typename Q<isq::length[m], quantity<isq::length[m]>>; };  // quantity used as Rep
-  requires !requires { typename Q<isq::position_vector[si::metre], double>; };   // vector representation expected
 #if MP_UNITS_HOSTED
+  requires !requires {
+    typename Q<isq::position_vector[si::metre], std::complex<double>>;
+  };  // vector representation expected
   requires !requires {
     typename Q<isq::length[si::metre], cartesian_vector<double>>;
   };  // scalar representation expected

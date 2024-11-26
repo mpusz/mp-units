@@ -113,9 +113,6 @@ public:
   = default;
 };
 
-template<typename T, typename Validator>
-constexpr bool mp_units::is_scalar<validated_type<T, Validator>> = mp_units::is_scalar<T>;
-
 
 template<typename CharT, typename Traits, typename T, typename Validator>
 std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os,

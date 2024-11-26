@@ -215,7 +215,7 @@ public:
            lhs._coordinates_[2] == rhs._coordinates_[2];
   }
 
-  [[nodiscard]] friend constexpr T norm(const cartesian_vector& vec)
+  [[nodiscard]] friend constexpr T magnitude(const cartesian_vector& vec)
     requires treat_as_floating_point<T>
   {
     return vec.magnitude();
@@ -262,9 +262,6 @@ public:
 template<typename Arg, typename... Args>
   requires(sizeof...(Args) <= 2) && requires { typename std::common_type_t<Arg, Args...>; }
 cartesian_vector(Arg, Args...) -> cartesian_vector<std::common_type_t<Arg, Args...>>;
-
-template<class T>
-constexpr bool is_vector<cartesian_vector<T>> = true;
 
 }  // namespace mp_units
 

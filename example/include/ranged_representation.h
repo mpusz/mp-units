@@ -62,9 +62,6 @@ public:
   }
 };
 
-template<typename T, auto Min, auto Max>
-constexpr bool mp_units::is_scalar<ranged_representation<T, Min, Max>> = mp_units::is_scalar<T>;
-
 template<typename T, auto Min, auto Max, typename Char>
 struct MP_UNITS_STD_FMT::formatter<ranged_representation<T, Min, Max>, Char> : formatter<T, Char> {
   template<typename FormatContext>

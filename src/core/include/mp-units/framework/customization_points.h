@@ -60,156 +60,21 @@ constexpr bool treat_as_floating_point =
   std::is_floating_point_v<value_type_t<Rep>>;
 #endif
 
-/**
- * @brief Specifies a type to have a scalar character
- *
- * A scalar is a physical quantity that has magnitude but no direction.
- */
 template<typename Rep>
-constexpr bool is_scalar = std::is_floating_point_v<Rep> || (std::is_integral_v<Rep> && !is_same_v<Rep, bool>);
+[[deprecated("`is_scalar` is no longer necessary and can simply be removed")]]
+constexpr bool is_scalar = false;
 
-/**
- * @brief Specifies a type to have a complex character
- *
- * A complex is a physical quantity that has a complex representation type.
- */
 template<typename Rep>
+[[deprecated("`is_complex` is no longer necessary and can simply be removed")]]
 constexpr bool is_complex = false;
 
-/**
- * @brief Specifies a type to have a vector character
- *
- * Vectors are physical quantities that possess both magnitude and direction
- * and whose operations obey the axioms of a vector space.
- *
- * In specific cases a scalar can represent a vector with the default direction.
- * If that is the intent, a user should provide a partial specialization:
- *
- * @code{.cpp}
- * template<class T>
- *   requires mp_units::is_scalar<T>
- * constexpr bool mp_units::is_vector<T> = true;
- * @endcode
- */
 template<typename Rep>
+[[deprecated("`is_vector` is no longer necessary and can simply be removed")]]
 constexpr bool is_vector = false;
 
-/**
- * @brief Specifies a type to have a tensor character
- *
- * Tensors can be used to describe more general physical quantities.
- *
- * A vector is a tensor of the first order and a scalar is a tensor of order zero.
- * Similarly to `is_vector` a partial specialization is needed in such cases.
- */
 template<typename Rep>
+[[deprecated("`is_tensor` is no longer necessary and can simply be removed")]]
 constexpr bool is_tensor = false;
-
-MP_UNITS_EXPORT_END
-
-namespace detail::norm_impl {
-
-void norm() = delete;  // poison pill
-
-struct norm_t {
-  template<typename T>
-  [[nodiscard]] constexpr auto operator()(const T& vec) const
-  {
-    if constexpr (requires { vec.norm(); })
-      return vec.norm();
-    else if constexpr (requires { norm(vec); })
-      return norm(vec);
-    else if constexpr (requires { vec.magnitude(); })
-      return vec.magnitude();
-    else if constexpr (requires { magnitude(vec); })
-      return magnitude(vec);
-    // TODO Is it a good idea to enable fundamental types to represent vector quantities?
-    // else if constexpr (is_scalar<T>)
-    //   return std::abs(vec);
-  }
-};
-
-}  // namespace detail::norm_impl
-
-inline namespace cpo {
-
-MP_UNITS_EXPORT inline constexpr ::mp_units::detail::norm_impl::norm_t norm;
-
-}
-
-namespace detail::real_impl {
-
-void real() = delete;  // poison pill
-
-struct real_t {
-  template<typename T>
-  [[nodiscard]] constexpr auto operator()(const T& clx) const
-  {
-    if constexpr (requires { clx.real(); })
-      return clx.real();
-    else if constexpr (requires { real(clx); })
-      return real(clx);
-  }
-};
-
-}  // namespace detail::real_impl
-
-inline namespace cpo {
-
-MP_UNITS_EXPORT inline constexpr ::mp_units::detail::real_impl::real_t real;
-
-}
-
-namespace detail::imag_impl {
-
-void imag() = delete;  // poison pill
-
-struct imag_t {
-  template<typename T>
-  [[nodiscard]] constexpr auto operator()(const T& clx) const
-  {
-    if constexpr (requires { clx.imag(); })
-      return clx.imag();
-    else if constexpr (requires { imag(clx); })
-      return imag(clx);
-  }
-};
-
-}  // namespace detail::imag_impl
-
-inline namespace cpo {
-
-MP_UNITS_EXPORT inline constexpr ::mp_units::detail::imag_impl::imag_t imag;
-
-}
-
-namespace detail::modulus_impl {
-
-void modulus() = delete;  // poison pill
-
-struct modulus_t {
-  template<typename T>
-  [[nodiscard]] constexpr auto operator()(const T& clx) const
-  {
-    if constexpr (requires { clx.modulus(); })
-      return clx.modulus();
-    else if constexpr (requires { modulus(clx); })
-      return modulus(clx);
-    // `std` made a precedence of using `abs` for modulo on `std::complex`
-    else if constexpr (requires { abs(clx); })
-      return abs(clx);
-  }
-};
-
-}  // namespace detail::modulus_impl
-
-inline namespace cpo {
-
-MP_UNITS_EXPORT inline constexpr ::mp_units::detail::modulus_impl::modulus_t modulus;
-
-}
-
-MP_UNITS_EXPORT_BEGIN
 
 /**
  * @brief A type trait that defines zero, one, min, and max for a representation type
