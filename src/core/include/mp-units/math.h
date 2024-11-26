@@ -55,7 +55,7 @@ namespace mp_units {
  */
 template<std::intmax_t Num, std::intmax_t Den = 1, auto R, typename Rep>
   requires detail::non_zero<Den> && requires(Rep v) {
-    quantity_values<Rep>::one();
+    representation_values<Rep>::one();
     requires requires { pow(v, 1.0); } || requires { std::pow(v, 1.0); };
   }
 [[nodiscard]] constexpr quantity<pow<Num, Den>(R), Rep> pow(const quantity<R, Rep>& q) noexcept
@@ -328,7 +328,7 @@ template<Unit auto To, auto R, typename Rep>
   requires((!treat_as_floating_point<Rep>) || requires(Rep v) { floor(v); } || requires(Rep v) { std::floor(v); }) &&
           (equivalent(To, get_unit(R)) || requires {
             q.force_in(To);
-            quantity_values<Rep>::one();
+            representation_values<Rep>::one();
           })
 {
   const auto handle_signed_results = [&]<typename T>(const T& res) {
@@ -365,7 +365,7 @@ template<Unit auto To, auto R, typename Rep>
   requires((!treat_as_floating_point<Rep>) || requires(Rep v) { ceil(v); } || requires(Rep v) { std::ceil(v); }) &&
           (equivalent(To, get_unit(R)) || requires {
             q.force_in(To);
-            quantity_values<Rep>::one();
+            representation_values<Rep>::one();
           })
 {
   const auto handle_signed_results = [&]<typename T>(const T& res) {
@@ -404,7 +404,7 @@ template<Unit auto To, auto R, typename Rep>
   requires((!treat_as_floating_point<Rep>) || requires(Rep v) { round(v); } || requires(Rep v) { std::round(v); }) &&
           (equivalent(To, get_unit(R)) || requires {
             ::mp_units::floor<To>(q);
-            quantity_values<Rep>::one();
+            representation_values<Rep>::one();
           })
 {
   if constexpr (equivalent(To, get_unit(R))) {
@@ -438,11 +438,11 @@ template<Unit auto To, auto R, typename Rep>
 template<Unit auto To, auto R, typename Rep>
 [[nodiscard]] constexpr QuantityOf<dimensionless / get_quantity_spec(R)> auto inverse(const quantity<R, Rep>& q)
   requires requires {
-    quantity_values<Rep>::one();
+    representation_values<Rep>::one();
     value_cast<To>(1 / q);
   }
 {
-  return (quantity_values<Rep>::one() * one).force_in(To * quantity<R, Rep>::unit) / q;
+  return (representation_values<Rep>::one() * one).force_in(To * quantity<R, Rep>::unit) / q;
 }
 
 /**

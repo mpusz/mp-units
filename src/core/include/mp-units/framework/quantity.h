@@ -143,27 +143,27 @@ public:
 
   // static member functions
   [[nodiscard]] static constexpr quantity zero() noexcept
-    requires requires { quantity_values<rep>::zero(); }
+    requires requires { representation_values<rep>::zero(); }
   {
-    return {quantity_values<rep>::zero(), R};
+    return {representation_values<rep>::zero(), R};
   }
 
   [[nodiscard]] static constexpr quantity one() noexcept
-    requires requires { quantity_values<rep>::one(); }
+    requires requires { representation_values<rep>::one(); }
   {
-    return {quantity_values<rep>::one(), R};
+    return {representation_values<rep>::one(), R};
   }
 
   [[nodiscard]] static constexpr quantity min() noexcept
-    requires requires { quantity_values<rep>::min(); }
+    requires requires { representation_values<rep>::min(); }
   {
-    return {quantity_values<rep>::min(), R};
+    return {representation_values<rep>::min(), R};
   }
 
   [[nodiscard]] static constexpr quantity max() noexcept
-    requires requires { quantity_values<rep>::max(); }
+    requires requires { representation_values<rep>::max(); }
   {
-    return {quantity_values<rep>::max(), R};
+    return {representation_values<rep>::max(), R};
   }
 
   // construction, assignment, destruction
@@ -446,7 +446,7 @@ public:
     }
   friend constexpr decltype(auto) operator/=(Q&& lhs, const Value& val)
   {
-    MP_UNITS_EXPECTS_DEBUG(val != quantity_values<Value>::zero());
+    MP_UNITS_EXPECTS_DEBUG(val != representation_values<Value>::zero());
     // TODO use /= when compiler bug is resolved:
     // https://developercommunity.visualstudio.com/t/Discrepancy-in-Behavior-of-operator-an/10732445
     lhs.numerical_value_is_an_implementation_detail_ = lhs.numerical_value_is_an_implementation_detail_ / val;
@@ -577,7 +577,7 @@ public:
             (!Reference<Value>) && detail::InvokeResultOf<quantity_spec, std::divides<>, Rep, const Value&>
   [[nodiscard]] friend constexpr QuantityOf<quantity_spec> auto operator/(const Q& q, const Value& val)
   {
-    MP_UNITS_EXPECTS_DEBUG(val != quantity_values<Value>::zero());
+    MP_UNITS_EXPECTS_DEBUG(val != representation_values<Value>::zero());
     return ::mp_units::quantity{q.numerical_value_ref_in(unit) / val, R};
   }
 

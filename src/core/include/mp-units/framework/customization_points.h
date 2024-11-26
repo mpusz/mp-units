@@ -87,9 +87,9 @@ constexpr bool is_tensor = false;
  */
 template<typename Rep>
 #if MP_UNITS_HOSTED
-struct quantity_values : std::chrono::duration_values<Rep> {
+struct representation_values : std::chrono::duration_values<Rep> {
 #else
-struct quantity_values {
+struct representation_values {
   static constexpr Rep zero() noexcept
     requires std::constructible_from<Rep, int>
   {
@@ -119,6 +119,9 @@ struct quantity_values {
     return Rep(1);
   }
 };
+
+template<typename Rep>
+using quantity_values [[deprecated("Use `representation_values` instead")]] = representation_values<Rep>;
 
 /**
  * @brief Provides support for external quantity-like types
