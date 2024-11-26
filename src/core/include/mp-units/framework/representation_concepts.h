@@ -66,9 +66,8 @@ MP_UNITS_EXPORT enum class quantity_character : std::int8_t { scalar, complex, v
 MP_UNITS_EXPORT template<typename T>
 constexpr bool disable_scalar = false;
 
-// TODO clang-18 (and possibly other compilers) complain about the duplicated definition if `inline` is not used
 template<>
-inline constexpr bool disable_scalar<bool> = true;
+MP_UNITS_INLINE constexpr bool disable_scalar<bool> = true;
 
 namespace detail {
 
