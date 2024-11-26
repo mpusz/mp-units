@@ -80,7 +80,7 @@ template<AssociatedUnit U>
   else if constexpr (requires { U::_reference_unit_; })
     return determine_associated_quantity(U::_reference_unit_);
   else if constexpr (requires { typename U::_num_; }) {
-    return expr_map<to_quantity_spec, derived_quantity_spec, struct dimensionless, type_list_of_quantity_spec_less>(u);
+    return expr_map<to_quantity_spec, derived_quantity_spec, struct dimensionless>(u);
   }
 }
 

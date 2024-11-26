@@ -29,7 +29,6 @@
 #include <mp-units/compat_macros.h>
 #include <mp-units/ext/fixed_string.h>
 #include <mp-units/ext/inplace_vector.h>
-#include <mp-units/ext/type_name.h>
 #include <mp-units/ext/type_traits.h>
 #include <mp-units/framework/dimension_concepts.h>
 #include <mp-units/framework/expression_template.h>
@@ -59,12 +58,6 @@ MP_UNITS_EXPORT struct dimension_one;
 
 namespace detail {
 
-template<typename Lhs, typename Rhs>
-struct base_dimension_less : std::bool_constant<type_name<Lhs>() < type_name<Rhs>()> {};
-
-template<typename T1, typename T2>
-using type_list_of_base_dimension_less = expr_less<T1, T2, base_dimension_less>;
-
 template<typename... Expr>
 struct derived_dimension_impl : expr_fractions<dimension_one, Expr...> {};
 
@@ -72,13 +65,13 @@ struct dimension_interface {
   template<Dimension Lhs, Dimension Rhs>
   [[nodiscard]] friend consteval Dimension auto operator*(Lhs, Rhs)
   {
-    return expr_multiply<derived_dimension, struct dimension_one, type_list_of_base_dimension_less>(Lhs{}, Rhs{});
+    return expr_multiply<derived_dimension, struct dimension_one>(Lhs{}, Rhs{});
   }
 
   template<Dimension Lhs, Dimension Rhs>
   [[nodiscard]] friend consteval Dimension auto operator/(Lhs, Rhs)
   {
-    return expr_divide<derived_dimension, struct dimension_one, type_list_of_base_dimension_less>(Lhs{}, Rhs{});
+    return expr_divide<derived_dimension, struct dimension_one>(Lhs{}, Rhs{});
   }
 
   template<Dimension Lhs, Dimension Rhs>
@@ -197,8 +190,7 @@ template<std::intmax_t Num, std::intmax_t Den = 1, Dimension D>
   requires detail::non_zero<Den>
 [[nodiscard]] consteval Dimension auto pow(D d)
 {
-  return detail::expr_pow<Num, Den, derived_dimension, struct dimension_one, detail::type_list_of_base_dimension_less>(
-    d);
+  return detail::expr_pow<Num, Den, derived_dimension, struct dimension_one>(d);
 }
 
 /**

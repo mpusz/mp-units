@@ -10,6 +10,7 @@
 import std;
 #else
 #include <string_view>
+#include <type_traits>
 #endif
 #endif
 
@@ -37,6 +38,8 @@ template<typename T>
   return name;
 }
 
+template<typename Lhs, typename Rhs>
+struct type_name_less : std::bool_constant<type_name<Lhs>() < type_name<Rhs>()> {};
 
 // This is typically used to deterministically chose one of the alternatives
 // to guarantee the commutation of the operation (e.g., `a + b` should return

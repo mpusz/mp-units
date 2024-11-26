@@ -25,6 +25,7 @@
 #include <mp-units/bits/math_concepts.h>
 #include <mp-units/bits/ratio.h>
 #include <mp-units/bits/type_list.h>
+#include <mp-units/ext/type_name.h>
 #include <mp-units/ext/type_traits.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
@@ -302,6 +303,8 @@ struct expr_less_impl<T, power<T, Ints...>, Pred> : std::true_type {};
 template<typename Lhs, typename Rhs, template<typename, typename, auto...> typename Pred>
 using expr_less = expr_less_impl<Lhs, Rhs, Pred>;
 
+template<typename T1, typename T2>
+using type_list_name_less = expr_less<T1, T2, type_name_less>;
 
 // expr_fractions
 template<typename Num = type_list<>, typename Den = type_list<>>
@@ -387,8 +390,8 @@ template<typename NumList, typename DenList, SymbolicArg OneType, template<typen
  * @tparam Lhs lhs of the operation
  * @tparam Rhs rhs of the operation
  */
-template<template<typename...> typename To, SymbolicArg OneType, template<typename, typename> typename Pred,
-         typename Lhs, typename Rhs>
+template<template<typename...> typename To, SymbolicArg OneType,
+         template<typename, typename> typename Pred = type_list_name_less, typename Lhs, typename Rhs>
 [[nodiscard]] MP_UNITS_CONSTEVAL auto expr_multiply(Lhs, Rhs)
 {
   if constexpr (is_same_v<Lhs, OneType>) {
@@ -422,8 +425,8 @@ template<template<typename...> typename To, SymbolicArg OneType, template<typena
  * @tparam Lhs lhs of the operation
  * @tparam Rhs rhs of the operation
  */
-template<template<typename...> typename To, SymbolicArg OneType, template<typename, typename> typename Pred,
-         typename Lhs, typename Rhs>
+template<template<typename...> typename To, SymbolicArg OneType,
+         template<typename, typename> typename Pred = type_list_name_less, typename Lhs, typename Rhs>
 [[nodiscard]] MP_UNITS_CONSTEVAL auto expr_divide(Lhs lhs, Rhs rhs)
 {
   if constexpr (is_same_v<Lhs, Rhs>) {
@@ -489,7 +492,7 @@ template<std::intmax_t Num, std::intmax_t Den, template<typename...> typename To
  * @tparam T Expression being the base of the operation
  */
 template<std::intmax_t Num, std::intmax_t Den, template<typename...> typename To, SymbolicArg OneType,
-         template<typename, typename> typename Pred, typename T>
+         template<typename, typename> typename Pred = type_list_name_less, typename T>
   requires detail::non_zero<Den>
 [[nodiscard]] consteval auto expr_pow(T v)
 {
@@ -552,7 +555,7 @@ template<template<typename> typename Proj, template<typename...> typename To, Sy
  * @tparam T expression template to map from
  */
 template<template<typename> typename Proj, template<typename...> typename To, SymbolicArg OneType,
-         template<typename, typename> typename Pred, typename T>
+         template<typename, typename> typename Pred = type_list_name_less, typename T>
 [[nodiscard]] consteval auto expr_map(T)
 {
   if constexpr (type_list_size<typename T::_num_> + type_list_size<typename T::_den_> == 0)

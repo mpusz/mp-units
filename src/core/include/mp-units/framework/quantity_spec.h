@@ -106,12 +106,6 @@ template<auto... Args>
     return ch;
 }
 
-template<NamedQuantitySpec Lhs, NamedQuantitySpec Rhs>
-struct quantity_spec_less : std::bool_constant<type_name<Lhs>() < type_name<Rhs>()> {};
-
-template<typename T1, typename T2>
-using type_list_of_quantity_spec_less = expr_less<T1, T2, quantity_spec_less>;
-
 template<NamedQuantitySpec Q>
   requires requires { Q::dimension; }
 using to_dimension = MP_UNITS_NONCONST_TYPE(Q::dimension);
@@ -127,16 +121,14 @@ struct quantity_spec_interface_base {
   [[nodiscard]] friend consteval QuantitySpec auto operator*(Lhs lhs, Rhs rhs)
   {
     return clone_kind_of<Lhs{}, Rhs{}>(
-      expr_multiply<derived_quantity_spec, struct dimensionless, type_list_of_quantity_spec_less>(remove_kind(lhs),
-                                                                                                  remove_kind(rhs)));
+      expr_multiply<derived_quantity_spec, struct dimensionless>(remove_kind(lhs), remove_kind(rhs)));
   }
 
   template<QuantitySpec Lhs, QuantitySpec Rhs>
   [[nodiscard]] friend consteval QuantitySpec auto operator/(Lhs lhs, Rhs rhs)
   {
     return clone_kind_of<Lhs{}, Rhs{}>(
-      expr_divide<derived_quantity_spec, struct dimensionless, type_list_of_quantity_spec_less>(remove_kind(lhs),
-                                                                                                remove_kind(rhs)));
+      expr_divide<derived_quantity_spec, struct dimensionless>(remove_kind(lhs), remove_kind(rhs)));
   }
 
   template<QuantitySpec Lhs, QuantitySpec Rhs>
@@ -433,8 +425,7 @@ struct derived_quantity_spec_impl :
   using _base_type_ = derived_quantity_spec_impl;
   using _base_ = expr_fractions<dimensionless, Expr...>;
 
-  static constexpr Dimension auto dimension =
-    expr_map<to_dimension, derived_dimension, struct dimension_one, type_list_of_base_dimension_less>(_base_{});
+  static constexpr Dimension auto dimension = expr_map<to_dimension, derived_dimension, struct dimension_one>(_base_{});
   static constexpr quantity_character character =
     derived_quantity_character(typename _base_::_num_{}, typename _base_::_den_{});
 };
@@ -563,8 +554,7 @@ template<std::intmax_t Num, std::intmax_t Den = 1, QuantitySpec Q>
 [[nodiscard]] consteval QuantitySpec auto pow(Q q)
 {
   return detail::clone_kind_of<Q{}>(
-    detail::expr_pow<Num, Den, derived_quantity_spec, struct dimensionless, detail::type_list_of_quantity_spec_less>(
-      detail::remove_kind(q)));
+    detail::expr_pow<Num, Den, derived_quantity_spec, struct dimensionless>(detail::remove_kind(q)));
 }
 
 
@@ -1526,7 +1516,7 @@ template<QuantitySpec Q>
   } else if constexpr (requires { Q::_parent_; }) {
     return get_kind_tree_root(Q::_parent_);
   } else if constexpr (DerivedQuantitySpec<Q>) {
-    return expr_map<to_kind, derived_quantity_spec, struct dimensionless, type_list_of_quantity_spec_less>(q);
+    return expr_map<to_kind, derived_quantity_spec, struct dimensionless>(q);
   } else {
     // root quantity
     return q;

@@ -152,12 +152,6 @@ struct derived_unit;
 
 namespace detail {
 
-template<Unit Lhs, Unit Rhs>
-struct unit_less : std::bool_constant<type_name<Lhs>() < type_name<Rhs>()> {};
-
-template<typename T1, typename T2>
-using type_list_of_unit_less = expr_less<T1, T2, unit_less>;
-
 struct unit_interface {
   /**
    * Multiplication by `1` returns the same unit, otherwise `scaled_unit` is being returned.
@@ -200,7 +194,7 @@ struct unit_interface {
   template<Unit Lhs, Unit Rhs>
   [[nodiscard]] friend MP_UNITS_CONSTEVAL Unit auto operator*(Lhs lhs, Rhs rhs)
   {
-    return expr_multiply<derived_unit, struct one, type_list_of_unit_less>(lhs, rhs);
+    return expr_multiply<derived_unit, struct one>(lhs, rhs);
   }
 
   /**
@@ -211,7 +205,7 @@ struct unit_interface {
   template<Unit Lhs, Unit Rhs>
   [[nodiscard]] friend MP_UNITS_CONSTEVAL Unit auto operator/(Lhs lhs, Rhs rhs)
   {
-    return expr_divide<derived_unit, struct one, type_list_of_unit_less>(lhs, rhs);
+    return expr_divide<derived_unit, struct one>(lhs, rhs);
   }
 
   template<Unit Lhs, Unit Rhs>
@@ -621,7 +615,7 @@ template<std::intmax_t Num, std::intmax_t Den = 1, Unit U>
   requires detail::non_zero<Den>
 [[nodiscard]] consteval Unit auto pow(U u)
 {
-  return detail::expr_pow<Num, Den, derived_unit, struct one, detail::type_list_of_unit_less>(u);
+  return detail::expr_pow<Num, Den, derived_unit, struct one>(u);
 }
 
 /**
@@ -696,7 +690,7 @@ template<Unit U1, Unit U2>
     else if constexpr (is_positive_integral_power(canonical_rhs.mag / canonical_lhs.mag))
       return u1;
     else {
-      if constexpr (detail::unit_less<U1, U2>::value)
+      if constexpr (detail::type_name_less<U1, U2>::value)
         return common_unit<U1, U2>{};
       else
         return common_unit<U2, U1>{};
@@ -730,7 +724,7 @@ struct collapse_common_unit_impl<List, NewUnit, true> {
 
 template<Unit NewUnit, Unit... Us>
 using collapse_common_unit = type_list_unique<
-  type_list_sort<typename collapse_common_unit_impl<type_list<>, NewUnit, false, Us...>::type, type_list_of_unit_less>>;
+  type_list_sort<typename collapse_common_unit_impl<type_list<>, NewUnit, false, Us...>::type, type_list_name_less>>;
 
 }  // namespace detail
 
