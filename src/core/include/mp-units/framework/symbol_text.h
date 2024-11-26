@@ -63,15 +63,22 @@ constexpr bool is_basic_literal_character_set_char(char ch)
   return ch == 0x00 || (0x07 <= ch && ch <= 0x0D) || (0x20 <= ch && ch <= 0x7E);
 };
 
+template<std::size_t N, typename InputIt>
+constexpr bool is_basic_literal_character_set(InputIt begin, InputIt end) noexcept
+{
+  return detail::all_of(begin, end, is_basic_literal_character_set_char);
+}
+
 template<std::size_t N>
 constexpr bool is_basic_literal_character_set(const char (&txt)[N]) noexcept
 {
-  return detail::all_of(std::begin(txt), std::end(txt), is_basic_literal_character_set_char);
+  return is_basic_literal_character_set(std::begin(txt), std::end(txt));
 }
 
 template<std::size_t N>
 constexpr fixed_u8string<N> to_u8string(fixed_string<N> txt)
 {
+  MP_UNITS_EXPECTS(detail::is_basic_literal_character_set(txt));
   return std::bit_cast<fixed_u8string<N>>(txt);
 }
 
