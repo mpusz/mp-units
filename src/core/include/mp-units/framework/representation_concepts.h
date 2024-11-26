@@ -208,7 +208,11 @@ struct magnitude_t {
       else if constexpr (requires { abs(vec); })
         return abs(vec);
       else if constexpr (std::is_arithmetic_v<T> && (!is_same_v<T, bool>))
+#if MP_UNITS_HOSTED || __cpp_lib_freestanding_cstdlib >= 202306L
         return std::abs(vec);
+#else
+        return vec >= 0 ? vec : -vec;
+#endif
     }
   }
 };
