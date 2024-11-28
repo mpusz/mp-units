@@ -22,8 +22,8 @@
 
 #pragma once
 
-#include <mp-units/framework/expression_template.h>
 #include <mp-units/framework/quantity_spec.h>
+#include <mp-units/framework/symbolic_expression.h>
 #include <mp-units/framework/unit_concepts.h>
 
 namespace mp_units {

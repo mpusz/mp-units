@@ -24,9 +24,9 @@
 
 // IWYU pragma: private, include <mp-units/framework.h>
 #include <mp-units/bits/module_macros.h>
-#include <mp-units/framework/expression_template.h>
 #include <mp-units/framework/quantity_spec_concepts.h>
 #include <mp-units/framework/symbol_text.h>
+#include <mp-units/framework/symbolic_expression.h>
 #include <mp-units/framework/unit_magnitude.h>
 
 namespace mp_units {

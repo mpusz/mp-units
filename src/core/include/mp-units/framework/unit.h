@@ -33,10 +33,10 @@
 #include <mp-units/ext/inplace_vector.h>
 #include <mp-units/ext/type_name.h>
 #include <mp-units/ext/type_traits.h>
-#include <mp-units/framework/expression_template.h>
 #include <mp-units/framework/quantity_point_concepts.h>
 #include <mp-units/framework/quantity_spec_concepts.h>
 #include <mp-units/framework/symbol_text.h>
+#include <mp-units/framework/symbolic_expression.h>
 #include <mp-units/framework/unit_concepts.h>
 #include <mp-units/framework/unit_magnitude.h>
 #include <mp-units/framework/unit_symbol_formatting.h>

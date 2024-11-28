@@ -24,7 +24,7 @@ behind this is that:
 
     Also, to prevent possible issues in compile-time logic, all of the library's entities must be
     marked `final`. This prevents the users to derive own strong types from them, which would
-    prevent expression template simplification of equivalent entities.
+    prevent symbolic expressions simplification of equivalent entities.
 
 ## Strong types instead of aliases
 
@@ -103,14 +103,14 @@ inline constexpr struct joule  final : named_unit<"J", newton * metre> {} joule;
 ```
 
 
-## Expression templates
+## Symbolic expressions
 
 The previous chapter provided a rationale for not having predefined types for derived entities.
 In many libraries, such an approach results in long and unreadable compilation errors, as
 framework-generated types are typically far from being easy to read and understand.
 
 The **mp-units** library greatly improves the user experience by extensively using
-expression templates. Such expressions are used consistently throughout the entire library
+symbolic expressions. Such expressions are used consistently throughout the entire library
 to describe the results of:
 
 - [dimension equation](../../appendix/glossary.md#dimension-equation) - the result is put into
@@ -169,7 +169,7 @@ constexpr auto my_unit = one / second;
     constexpr auto my_unit = inverse(second);
     ```
 
-    Both cases will result in the same expression template being generated and put into the wrapper
+    Both cases will result in the same symbolic expression being generated and put into the wrapper
     class template.
 
 
@@ -195,10 +195,10 @@ its unique representation in the library:
 | `sqrt({identity})` or `pow<1, 2>({identity})` |              `{identity}`               |
 
 
-### Simplifying the resulting expression templates
+### Simplifying the resulting symbolic expressions
 
 To limit the length and improve the readability of generated types, there are many rules to simplify
-the resulting expression template.
+the resulting symbolic expression.
 
 1. **Ordering**
 
@@ -246,7 +246,7 @@ the resulting expression template.
 
     Also, to prevent possible issues in compile-time logic, all of the library's entities must be
     marked `final`. This prevents the users to derive own strong types from them, which would
-    prevent expression template simplification of equivalent entities.
+    prevent symbolic expression simplification of equivalent entities.
 
 4. **Repacking**
 

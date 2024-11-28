@@ -32,11 +32,11 @@
 #include <mp-units/ext/type_name.h>
 #include <mp-units/ext/type_traits.h>
 #include <mp-units/framework/dimension.h>
-#include <mp-units/framework/expression_template.h>
 #include <mp-units/framework/quantity_concepts.h>
 #include <mp-units/framework/quantity_spec_concepts.h>
 #include <mp-units/framework/reference_concepts.h>
 #include <mp-units/framework/representation_concepts.h>
+#include <mp-units/framework/symbolic_expression.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #ifdef MP_UNITS_IMPORT_STD
@@ -439,7 +439,7 @@ struct derived_quantity_spec_impl :
  * Its dimension is an expression of the dependence of a quantity on the base quantities of a system of
  * quantities as a product of powers of factors corresponding to the base quantities, omitting any numerical factors.
  *
- * Instead of using a raw list of exponents this library decided to use expression template syntax to make types
+ * Instead of using a raw list of exponents this library decided to use symbolic expression syntax to make types
  * more digestable for the user both for quantity specification and its dimension. The positive exponents are ordered
  * first and all negative exponents are put as a list into the `per<...>` class template. If a power of exponent
  * is different than `1` the quantity type is enclosed in `power<Q, Num, Den>` class template. Otherwise, it is

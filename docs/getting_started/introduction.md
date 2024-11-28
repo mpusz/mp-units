@@ -35,7 +35,7 @@ To achieve this goal, several techniques are applied:
   compile-times and the readability of error messages when compared to the traditional template
   metaprogramming with [SFINAE](https://en.cppreference.com/w/cpp/language/sfinae),
 - [usage of strong types for framework entities](../users_guide/framework_basics/interface_introduction.md#strong-types-instead-of-aliases) (instead of type aliases),
-- [usage of expression templates](../users_guide/framework_basics/interface_introduction.md#expression-templates) to improve the readability of generated types,
+- [usage of symbolic expressions](../users_guide/framework_basics/interface_introduction.md#symbolic-expressions) to improve the readability of generated types,
 - limiting the number of template arguments to the bare minimum.
 
 !!! important "Important: It is all about errors"
