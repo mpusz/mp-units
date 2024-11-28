@@ -168,22 +168,18 @@ constexpr bool disable_complex = false;
 namespace detail {
 
 template<typename T>
-concept Complex =
-  (!disable_complex<T>) && WeaklyRegular<T> && Scalar<value_type_t<T>> &&
-  std::constructible_from<T, value_type_t<T>, value_type_t<T>> && requires(T a, T b, value_type_t<T> s) {
-    // complex operations
-    { -a } -> std::common_with<T>;
-    { a + b } -> std::common_with<T>;
-    { a - b } -> std::common_with<T>;
-    { a* b } -> std::common_with<T>;
-    { a / b } -> std::common_with<T>;
-    { a* s } -> std::common_with<T>;
-    { s* a } -> std::common_with<T>;
-    { a / s } -> std::common_with<T>;
-    ::mp_units::real(a);
-    ::mp_units::imag(a);
-    ::mp_units::modulus(a);
-  };
+concept Complex = (!disable_complex<T>) && WeaklyRegular<T> && requires(T a, T b) {
+  // complex operations
+  { -a } -> std::common_with<T>;
+  { a + b } -> std::common_with<T>;
+  { a - b } -> std::common_with<T>;
+  { a* b } -> std::common_with<T>;
+  { a / b } -> std::common_with<T>;
+  ::mp_units::real(a);
+  ::mp_units::imag(a);
+  ::mp_units::modulus(a);
+  requires std::constructible_from<T, decltype(::mp_units::real(a)), decltype(::mp_units::imag(a))>;
+};
 
 namespace magnitude_impl {
 
@@ -233,23 +229,19 @@ constexpr bool disable_vector = false;
 namespace detail {
 
 template<typename T>
-concept Vector =
-  (!disable_vector<T>) && WeaklyRegular<T> && Scalar<value_type_t<T>> && requires(T a, T b, value_type_t<T> s) {
-    // vector operations
-    { -a } -> std::common_with<T>;
-    { a + b } -> std::common_with<T>;
-    { a - b } -> std::common_with<T>;
-    { a* s } -> std::common_with<T>;
-    { s* a } -> std::common_with<T>;
-    { a / s } -> std::common_with<T>;
-    ::mp_units::magnitude(a);
-    // TODO should we check for the below as well (e.g., when `size() > 1` or `2`)
-    // { zero_vector<T>() } -> Vector;
-    // { unit_vector(a) } -> Vector;
-    // { scalar_product(a, b) } -> Scalar;
-    // { vector_product(a, b) } -> Vector;
-    // { tensor_product(a, b) } -> Tensor2;
-  };
+concept Vector = (!disable_vector<T>) && WeaklyRegular<T> && requires(T a, T b) {
+  // vector operations
+  { -a } -> std::common_with<T>;
+  { a + b } -> std::common_with<T>;
+  { a - b } -> std::common_with<T>;
+  ::mp_units::magnitude(a);
+  // TODO should we also check for the below (e.g., when `size() > 1` or `2`)
+  // { zero_vector<T>() } -> Vector;
+  // { unit_vector(a) } -> Vector;
+  // { scalar_product(a, b) } -> Scalar;
+  // { vector_product(a, b) } -> Vector;
+  // { tensor_product(a, b) } -> Tensor2;
+};
 
 // TODO provide when some actual operations will be required
 // template<typename T>
@@ -266,27 +258,33 @@ constexpr bool is_quantity = false;
 template<typename T>
 using scaling_factor_type_t = conditional<treat_as_floating_point<T>, long double, std::intmax_t>;
 
+// TODO how can we use `(!Quantity<T>)` below?
 template<typename T>
-concept ScalarRepresentation = (!is_quantity<T>) && Scalar<T> && requires(T a, T b, scaling_factor_type_t<T> f) {
+concept ScalarRepresentation = (!is_quantity<T>) && Scalar<T> && requires(T v, scaling_factor_type_t<T> f) {
   // scaling
-  { a* f } -> std::common_with<T>;
-  { f* a } -> std::common_with<T>;
-  { a / f } -> std::common_with<T>;
+  { v* f } -> std::common_with<T>;
+  { f* v } -> std::common_with<T>;
+  { v / f } -> std::common_with<T>;
 };
 
 template<typename T>
-concept ComplexRepresentation = (!is_quantity<T>) && Complex<T> && requires(T a, T b, scaling_factor_type_t<T> f) {
+concept ComplexRepresentation = (!is_quantity<T>) && Complex<T> && requires(T v, scaling_factor_type_t<T> f) {
   // scaling
   // TODO The below conversion to `T` is an exception compared to other representation types
   // `std::complex<T>` * `U` do not work, but `std::complex<T>` is convertible from `U`
   // Maybe expose this as a customization point?
-  { a* T(f) } -> std::common_with<T>;
-  { T(f) * a } -> std::common_with<T>;
-  { a / T(f) } -> std::common_with<T>;
+  { v* T(f) } -> std::common_with<T>;
+  { T(f) * v } -> std::common_with<T>;
+  { v / T(f) } -> std::common_with<T>;
 };
 
 template<typename T>
-concept VectorRepresentation = (!is_quantity<T>) && Vector<T>;
+concept VectorRepresentation = (!is_quantity<T>) && Vector<T> && requires(T v, scaling_factor_type_t<T> f) {
+  // scaling
+  { v* f } -> std::common_with<T>;
+  { f* v } -> std::common_with<T>;
+  { v / f } -> std::common_with<T>;
+};
 
 // template<typename T>
 // concept TensorRepresentation = (!is_quantity<T>) && Tensor<T>;

@@ -434,4 +434,14 @@ static_assert(!QuantityPointLike<quantity<isq::time[si::second]>>);
 static_assert(!QuantityPointLike<quantity_point<si::metre, my_origin>>);
 static_assert(!QuantityPointLike<int>);
 
+// Quantity Characters
+
+static_assert(detail::Scalar<quantity<one>>);
+static_assert(detail::Scalar<quantity<one, int>>);
+static_assert(!detail::Scalar<quantity_point<one>>);
+static_assert(!detail::Scalar<quantity_point<si::metre>>);
+// TODO it would be make the below work
+static_assert(!detail::Scalar<quantity<si::metre>>);
+static_assert(!detail::Scalar<quantity<isq::speed[si::metre / si::second], int>>);
+
 }  // namespace
