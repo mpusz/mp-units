@@ -53,13 +53,13 @@ def make_clang_config(
     return Configuration(**vars(ret))
 
 
-def make_apple_clang_config(version: int) -> Configuration:
+def make_apple_clang_config(os: str, version: str) -> Configuration:
     ret = Configuration(
         name=f"Apple Clang {version}",
-        os="macos-13",
+        os=os,
         compiler=Compiler(
             type="APPLE_CLANG",
-            version=f"{version}.0",
+            version=version,
             cc="clang",
             cxx="clang++",
         ),
@@ -95,7 +95,8 @@ configs = {
         # arm64 runners are expensive; only consider one version
         if ver == 18 or platform != "arm64"
     ]
-    + [make_apple_clang_config(ver) for ver in [15]]
+    + [make_apple_clang_config("macos-13", ver) for ver in ["15.2"]]
+    + [make_apple_clang_config("macos-14", ver) for ver in ["15.4", "16.1"]]
     + [make_msvc_config(release="14.4", version=194)]
 }
 
