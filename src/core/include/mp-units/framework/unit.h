@@ -781,11 +781,11 @@ template<typename CharT, std::output_iterator<CharT> Out, auto M, typename U>
 constexpr Out unit_symbol_impl(Out out, const scaled_unit_impl<M, U>& u, const unit_symbol_formatting& fmt,
                                bool negative_power)
 {
-  *out++ = '[';
+  *out++ = '(';
   magnitude_symbol<CharT>(out, M, fmt);
   if constexpr (space_before_unit_symbol<scaled_unit<M, U>::_reference_unit_>) *out++ = ' ';
   unit_symbol_impl<CharT>(out, u._reference_unit_, fmt, negative_power);
-  *out++ = ']';
+  *out++ = ')';
   return out;
 }
 
