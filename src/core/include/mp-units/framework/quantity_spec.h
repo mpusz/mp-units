@@ -499,7 +499,7 @@ template<QuantitySpec Q>
 
 }  // namespace detail
 
-template<typename Q>
+template<QuantitySpec Q>
   requires(!detail::QuantityKindSpec<Q>) && (detail::get_kind_tree_root(Q{}) == Q{})
 #if MP_UNITS_API_NO_CRTP
 struct kind_of_<Q> final : Q::_base_type_ {
@@ -510,7 +510,7 @@ struct kind_of_<Q> final : quantity_spec<kind_of_<Q>, Q{}>::_base_type_ {
   static constexpr auto _quantity_spec_ = Q{};
 };
 
-MP_UNITS_EXPORT template<auto Q>
+MP_UNITS_EXPORT template<QuantitySpec auto Q>
   requires requires { typename kind_of_<decltype(Q)>; }
 constexpr kind_of_<MP_UNITS_REMOVE_CONST(decltype(Q))> kind_of;
 
