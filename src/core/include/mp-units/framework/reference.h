@@ -51,7 +51,7 @@ MP_UNITS_EXPORT_BEGIN
 
 [[nodiscard]] consteval QuantitySpec auto get_quantity_spec(AssociatedUnit auto u)
 {
-  return detail::get_associated_quantity(u);
+  return kind_of<detail::get_associated_quantity(u)>;
 }
 
 /**
