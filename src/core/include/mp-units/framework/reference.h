@@ -49,9 +49,10 @@ using reference_t = reference<MP_UNITS_REMOVE_CONST(decltype(Q)), MP_UNITS_REMOV
 
 MP_UNITS_EXPORT_BEGIN
 
-[[nodiscard]] consteval QuantitySpec auto get_quantity_spec(AssociatedUnit auto u)
+template<AssociatedUnit U>
+[[nodiscard]] consteval QuantitySpec auto get_quantity_spec(U)
 {
-  return kind_of<detail::get_associated_quantity(u)>;
+  return kind_of<detail::get_associated_quantity(U{})>;
 }
 
 /**
