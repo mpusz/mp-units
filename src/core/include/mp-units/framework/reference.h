@@ -135,7 +135,12 @@ struct reference {
     return {};
   }
 
-  [[nodiscard]] friend consteval auto inverse(reference) { return detail::reference_t<inverse(Q{}), inverse(U{})>{}; }
+  [[nodiscard]] friend consteval detail::reference_t<MP_UNITS_EXPRESSION_WORKAROUND(inverse(Q{})),
+                                                     MP_UNITS_EXPRESSION_WORKAROUND(inverse(U{}))>
+  inverse(reference)
+  {
+    return {};
+  }
 
   /**
    * @brief Computes the value of a reference raised to the `Num/Den` power
@@ -148,9 +153,11 @@ struct reference {
    */
   template<std::intmax_t Num, std::intmax_t Den = 1>
     requires detail::non_zero<Den>
-  [[nodiscard]] friend consteval auto pow(reference)
+  [[nodiscard]] friend consteval detail::reference_t<MP_UNITS_EXPRESSION_WORKAROUND((pow<Num, Den>(Q{}))),
+                                                     MP_UNITS_EXPRESSION_WORKAROUND((pow<Num, Den>(U{})))>
+  pow(reference)
   {
-    return detail::reference_t<pow<Num, Den>(Q{}), pow<Num, Den>(U{})>{};
+    return {};
   }
 
   /**
@@ -160,7 +167,12 @@ struct reference {
    *
    * @return The result of computation
    */
-  [[nodiscard]] friend consteval auto sqrt(reference) { return detail::reference_t<sqrt(Q{}), sqrt(U{})>{}; }
+  [[nodiscard]] friend consteval detail::reference_t<MP_UNITS_EXPRESSION_WORKAROUND(sqrt(Q{})),
+                                                     MP_UNITS_EXPRESSION_WORKAROUND(sqrt(U{}))>
+  sqrt(reference)
+  {
+    return {};
+  }
 
   /**
    * @brief Computes the cubic root of a reference
@@ -169,7 +181,12 @@ struct reference {
    *
    * @return The result of computation
    */
-  [[nodiscard]] friend consteval auto cbrt(reference) { return detail::reference_t<cbrt(Q{}), cbrt(U{})>{}; }
+  [[nodiscard]] friend consteval detail::reference_t<MP_UNITS_EXPRESSION_WORKAROUND(cbrt(Q{})),
+                                                     MP_UNITS_EXPRESSION_WORKAROUND(cbrt(U{}))>
+  cbrt(reference)
+  {
+    return {};
+  }
 
   template<typename Q2, typename U2>
   [[nodiscard]] friend consteval bool convertible(reference, reference<Q2, U2>)
