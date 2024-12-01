@@ -453,8 +453,13 @@ static_assert(detail::Scalar<quantity<one>>);
 static_assert(detail::Scalar<quantity<one, int>>);
 static_assert(!detail::Scalar<quantity_point<one>>);
 static_assert(!detail::Scalar<quantity_point<si::metre>>);
-// TODO it would be make the below work
-static_assert(!detail::Scalar<quantity<si::metre>>);
-static_assert(!detail::Scalar<quantity<isq::speed[si::metre / si::second], int>>);
+static_assert(detail::Scalar<quantity<si::metre>>);
+static_assert(detail::Scalar<quantity<isq::speed[si::metre / si::second], int>>);
+// TODO provide support for the below when quantity specifications expressions are done
+// static_assert(detail::Vector<quantity<isq::velocity[si::metre / si::second], int>>);
+#if MP_UNITS_HOSTED
+// static_assert(detail::Vector<quantity<isq::velocity[si::metre / si::second], cartesian_vector<double>>>);
+// static_assert(detail::Complex<quantity<si::volt * si::ampere>, std::complex<double>>);
+#endif
 
 }  // namespace
