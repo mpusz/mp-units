@@ -74,14 +74,19 @@ namespace detail {
 template<typename T>
 concept WeaklyRegular = std::copyable<T> && std::equality_comparable<T>;
 
+template<typename T, typename S>
+concept ScalableWith = WeaklyRegular<T> && requires(T v, S s) {
+  { v* s / s } -> std::common_with<T>;
+  { s* v / s } -> std::common_with<T>;
+  { v / s* s } -> std::common_with<T>;
+};
+
 template<typename T>
-concept Scalar = (!disable_scalar<T>) && WeaklyRegular<T> && requires(T a, T b, T c) {
+concept Scalar = (!disable_scalar<T>) && WeaklyRegular<T> && requires(T a, T b) {
   { -a } -> std::common_with<T>;
   { a + b } -> std::common_with<T>;
   { a - b } -> std::common_with<T>;
-  { a* b / c } -> std::common_with<T>;
-  { a / b* c } -> std::common_with<T>;
-};
+} && ScalableWith<T, T>;
 
 namespace real_impl {
 
@@ -177,6 +182,7 @@ concept Complex = (!disable_complex<T>) && WeaklyRegular<T> && requires(T a, T b
   ::mp_units::real(a);
   ::mp_units::imag(a);
   ::mp_units::modulus(a);
+  requires ScalableWith<T, decltype(::mp_units::modulus(a))>;
   requires std::constructible_from<T, decltype(::mp_units::real(a)), decltype(::mp_units::imag(a))>;
 };
 
@@ -234,6 +240,7 @@ concept Vector = (!disable_vector<T>) && WeaklyRegular<T> && requires(T a, T b) 
   { a + b } -> std::common_with<T>;
   { a - b } -> std::common_with<T>;
   ::mp_units::magnitude(a);
+  requires ScalableWith<T, decltype(::mp_units::magnitude(a))>;
   // TODO should we also check for the below (e.g., when `size() > 1` or `2`)
   // { zero_vector<T>() } -> Vector;
   // { unit_vector(a) } -> Vector;
