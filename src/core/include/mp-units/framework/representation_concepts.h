@@ -75,13 +75,12 @@ template<typename T>
 concept WeaklyRegular = std::copyable<T> && std::equality_comparable<T>;
 
 template<typename T>
-concept Scalar = (!disable_scalar<T>) && WeaklyRegular<T> && requires(T a, T b) {
-  // scalar operations
+concept Scalar = (!disable_scalar<T>) && WeaklyRegular<T> && requires(T a, T b, T c) {
   { -a } -> std::common_with<T>;
   { a + b } -> std::common_with<T>;
   { a - b } -> std::common_with<T>;
-  { a* b } -> std::common_with<T>;
-  { a / b } -> std::common_with<T>;
+  { a* b / c } -> std::common_with<T>;
+  { a / b* c } -> std::common_with<T>;
 };
 
 namespace real_impl {
