@@ -75,14 +75,14 @@ template<typename T>
 concept WeaklyRegular = std::copyable<T> && std::equality_comparable<T>;
 
 template<typename T, typename S>
-concept ScalableWith = WeaklyRegular<T> && requires(T v, S s) {
+concept ScalableWith = WeaklyRegular<T> && requires(const T v, const S s) {
   { v* s / s } -> std::common_with<T>;
   { s* v / s } -> std::common_with<T>;
   { v / s* s } -> std::common_with<T>;
 };
 
 template<typename T>
-concept Scalar = (!disable_scalar<T>) && WeaklyRegular<T> && requires(T a, T b) {
+concept Scalar = (!disable_scalar<T>) && WeaklyRegular<T> && requires(const T a, const T b) {
   { -a } -> std::common_with<T>;
   { a + b } -> std::common_with<T>;
   { a - b } -> std::common_with<T>;
@@ -172,8 +172,7 @@ constexpr bool disable_complex = false;
 namespace detail {
 
 template<typename T>
-concept Complex = (!disable_complex<T>) && WeaklyRegular<T> && requires(T a, T b) {
-  // complex operations
+concept Complex = (!disable_complex<T>) && WeaklyRegular<T> && requires(const T a, const T b, const T& c) {
   { -a } -> std::common_with<T>;
   { a + b } -> std::common_with<T>;
   { a - b } -> std::common_with<T>;
@@ -183,7 +182,7 @@ concept Complex = (!disable_complex<T>) && WeaklyRegular<T> && requires(T a, T b
   ::mp_units::imag(a);
   ::mp_units::modulus(a);
   requires ScalableWith<T, decltype(::mp_units::modulus(a))>;
-  requires std::constructible_from<T, decltype(::mp_units::real(a)), decltype(::mp_units::imag(a))>;
+  requires std::constructible_from<T, decltype(::mp_units::real(c)), decltype(::mp_units::imag(c))>;
 };
 
 namespace magnitude_impl {
@@ -234,8 +233,7 @@ constexpr bool disable_vector = false;
 namespace detail {
 
 template<typename T>
-concept Vector = (!disable_vector<T>) && WeaklyRegular<T> && requires(T a, T b) {
-  // vector operations
+concept Vector = (!disable_vector<T>) && WeaklyRegular<T> && requires(const T a, const T b) {
   { -a } -> std::common_with<T>;
   { a + b } -> std::common_with<T>;
   { a - b } -> std::common_with<T>;
@@ -266,7 +264,7 @@ using scaling_factor_type_t = conditional<treat_as_floating_point<T>, long doubl
 
 // TODO how can we use `(!Quantity<T>)` below?
 template<typename T>
-concept ScalarRepresentation = (!is_quantity<T>) && Scalar<T> && requires(T v, scaling_factor_type_t<T> f) {
+concept ScalarRepresentation = (!is_quantity<T>) && Scalar<T> && requires(const T v, const scaling_factor_type_t<T> f) {
   // scaling
   { v* f } -> std::common_with<T>;
   { f* v } -> std::common_with<T>;
@@ -274,18 +272,19 @@ concept ScalarRepresentation = (!is_quantity<T>) && Scalar<T> && requires(T v, s
 };
 
 template<typename T>
-concept ComplexRepresentation = (!is_quantity<T>) && Complex<T> && requires(T v, scaling_factor_type_t<T> f) {
-  // scaling
-  // TODO The below conversion to `T` is an exception compared to other representation types
-  // `std::complex<T>` * `U` do not work, but `std::complex<T>` is convertible from `U`
-  // Maybe expose this as a customization point?
-  { v* T(f) } -> std::common_with<T>;
-  { T(f) * v } -> std::common_with<T>;
-  { v / T(f) } -> std::common_with<T>;
-};
+concept ComplexRepresentation =
+  (!is_quantity<T>) && Complex<T> && requires(const T v, const scaling_factor_type_t<T> f) {
+    // scaling
+    // TODO The below conversion to `T` is an exception compared to other representation types
+    // `std::complex<T>` * `U` do not work, but `std::complex<T>` is convertible from `U`
+    // Maybe expose this as a customization point?
+    { v* T(f) } -> std::common_with<T>;
+    { T(f) * v } -> std::common_with<T>;
+    { v / T(f) } -> std::common_with<T>;
+  };
 
 template<typename T>
-concept VectorRepresentation = (!is_quantity<T>) && Vector<T> && requires(T v, scaling_factor_type_t<T> f) {
+concept VectorRepresentation = (!is_quantity<T>) && Vector<T> && requires(const T v, const scaling_factor_type_t<T> f) {
   // scaling
   { v* f } -> std::common_with<T>;
   { f* v } -> std::common_with<T>;
