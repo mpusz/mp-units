@@ -270,7 +270,7 @@
 [`derived dimension`](#derived-dimension){ #derived-dimension }
 
 :   - A [dimension](#dimension) of a [derived quantity](#derived-quantity).
-    - Implemented as an symbolic expression being the result of the
+    - Implemented as a symbolic expression being the result of the
       [dimension equation](#dimension-equation) on [base dimensions](#base-dimension).
 
 [`dimension equation`](#dimension-equation){ #dimension-equation }
