@@ -240,21 +240,27 @@ concept Vector = (!disable_vector<T>) && WeaklyRegular<T> && requires(const T a,
   ::mp_units::magnitude(a);
   requires ScalableWith<T, decltype(::mp_units::magnitude(a))>;
   // TODO should we also check for the below (e.g., when `size() > 1` or `2`)
-  // { zero_vector<T>() } -> Vector;
-  // { unit_vector(a) } -> Vector;
-  // { scalar_product(a, b) } -> Scalar;
-  // { vector_product(a, b) } -> Vector;
-  // { tensor_product(a, b) } -> Tensor2;
+  // ::mp_units::zero_vector<T>();
+  // ::mp_units::unit_vector(a);
+  // ::mp_units::scalar_product(a, b);
+  // ::mp_units::vector_product(a, b);
+  // ::mp_units::tensor_product(a, b);
 };
+
+}  // namespace detail
+
+// MP_UNITS_EXPORT template<typename T>
+// constexpr bool disable_tensor = false;
+
+namespace detail {
 
 // TODO provide when some actual operations will be required
 // template<typename T>
-// concept Tensor = is_tensor<T> && WeaklyRegular<T>;  // && requires(T a, T b) {
-//                                                     // tensor operations
-//                                                     // { tensor_product(a, b) } -> Tensor4;
-//                                                     // { inner_product(a, b) } -> Tensor2;
-//                                                     // { scalar_product(a, b) } -> Scalar;
-// //};
+// concept Tensor = (!disable_tensor<T>) && WeaklyRegular<T> && requires(const T a, const T b) {
+//   ::mp_units::tensor_product(a, b);
+//   ::mp_units::inner_product(a, b);
+//   ::mp_units::scalar_product(a, b);
+// };
 
 template<typename T>
 constexpr bool is_quantity = false;
@@ -294,16 +300,20 @@ concept VectorRepresentation = (!is_quantity<T>) && Vector<T> && requires(const 
 // template<typename T>
 // concept TensorRepresentation = (!is_quantity<T>) && Tensor<T>;
 
-template<typename T, quantity_character Ch>
-concept IsOfCharacter =
-  (Ch == quantity_character::scalar && Scalar<T>) || (Ch == quantity_character::complex && Complex<T>) ||
-  (Ch == quantity_character::vector && Vector<T>);  // || (Ch == quantity_character::tensor && Tensor<T>);
-
 }  // namespace detail
 
 MP_UNITS_EXPORT template<typename T>
 concept Representation = detail::ScalarRepresentation<T> || detail::ComplexRepresentation<T> ||
                          detail::VectorRepresentation<T>;  // || detail::TensorRepresentation<T>;
+
+namespace detail {
+
+template<typename T, quantity_character Ch>
+concept IsOfCharacter =
+  (Ch == quantity_character::scalar && Scalar<T>) || (Ch == quantity_character::complex && Complex<T>) ||
+  (Ch == quantity_character::vector && Vector<T>);  // || (Ch == quantity_character::tensor && Tensor<T>);
+
+}
 
 MP_UNITS_EXPORT template<typename T, auto V>
 concept RepresentationOf =
