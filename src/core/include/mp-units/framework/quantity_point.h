@@ -295,7 +295,7 @@ public:
 #endif
 
   template<PointOrigin PO2>
-    requires requires(quantity_point qp) { qp - PO2{}; }
+    requires requires(const quantity_point qp) { qp - PO2{}; }
   [[nodiscard]] constexpr Quantity auto quantity_from(PO2) const
   {
     return *this - PO2{};
@@ -344,21 +344,21 @@ public:
   }
 
   template<detail::UnitCompatibleWith<unit, quantity_spec> ToU>
-    requires requires(quantity_type q) { value_cast<ToU{}>(q); }
+    requires requires(const quantity_type q) { value_cast<ToU{}>(q); }
   [[nodiscard]] constexpr QuantityPointOf<quantity_spec> auto force_in(ToU) const
   {
     return ::mp_units::quantity_point{quantity_ref_from(point_origin).force_in(ToU{}), point_origin};
   }
 
   template<RepresentationOf<quantity_spec> ToRep>
-    requires requires(quantity_type q) { value_cast<ToRep>(q); }
+    requires requires(const quantity_type q) { value_cast<ToRep>(q); }
   [[nodiscard]] constexpr QuantityPointOf<quantity_spec> auto force_in() const
   {
     return ::mp_units::quantity_point{quantity_ref_from(point_origin).template force_in<ToRep>(), point_origin};
   }
 
   template<RepresentationOf<quantity_spec> ToRep, detail::UnitCompatibleWith<unit, quantity_spec> ToU>
-    requires requires(quantity_type q) { value_cast<ToU{}, ToRep>(q); }
+    requires requires(const quantity_type q) { value_cast<ToU{}, ToRep>(q); }
   [[nodiscard]] constexpr QuantityPointOf<quantity_spec> auto force_in(ToU) const
   {
     return ::mp_units::quantity_point{quantity_ref_from(point_origin).template force_in<ToRep>(ToU{}), point_origin};
@@ -433,7 +433,7 @@ public:
   // compound assignment operators
   template<detail::Mutable<quantity_point> QP, auto R2, typename Rep2>
     requires detail::QuantityConvertibleTo<quantity<R2, Rep2>, quantity_type> &&
-             requires(quantity_type q) { quantity_from_origin_is_an_implementation_detail_ += q; }
+             requires(const quantity_type q) { quantity_from_origin_is_an_implementation_detail_ += q; }
   friend constexpr decltype(auto) operator+=(QP&& qp, const quantity<R2, Rep2>& q)
   {
     qp.quantity_from_origin_is_an_implementation_detail_ += q;
@@ -442,7 +442,7 @@ public:
 
   template<detail::Mutable<quantity_point> QP, auto R2, typename Rep2>
     requires detail::QuantityConvertibleTo<quantity<R2, Rep2>, quantity_type> &&
-             requires(quantity_type q) { quantity_from_origin_is_an_implementation_detail_ -= q; }
+             requires(const quantity_type q) { quantity_from_origin_is_an_implementation_detail_ -= q; }
   friend constexpr decltype(auto) operator-=(QP&& qp, const quantity<R2, Rep2>& q)
   {
     qp.quantity_from_origin_is_an_implementation_detail_ -= q;
