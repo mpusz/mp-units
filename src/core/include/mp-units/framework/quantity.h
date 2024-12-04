@@ -409,7 +409,7 @@ public:
   friend constexpr decltype(auto) operator%=(Q&& lhs, const quantity<R2, Rep2>& rhs)
 
   {
-    MP_UNITS_EXPECTS_DEBUG(rhs != zero());
+    MP_UNITS_EXPECTS_DEBUG(is_neq_zero(rhs));
     if constexpr (equivalent(unit, get_unit(R2)))
       lhs.numerical_value_is_an_implementation_detail_ %= rhs.numerical_value_is_an_implementation_detail_;
     else
@@ -518,7 +518,7 @@ public:
             detail::CommonlyInvocableQuantities<std::modulus<>, quantity, quantity<R2, Rep2>>
   [[nodiscard]] friend constexpr Quantity auto operator%(const Q& lhs, const quantity<R2, Rep2>& rhs)
   {
-    MP_UNITS_EXPECTS_DEBUG(rhs != rhs.zero());
+    MP_UNITS_EXPECTS_DEBUG(is_neq_zero(rhs));
     using ret = detail::common_quantity_for<std::modulus<>, quantity, quantity<R2, Rep2>>;
     const ret ret_lhs(lhs);
     const ret ret_rhs(rhs);
@@ -567,7 +567,7 @@ public:
     requires detail::InvocableQuantities<std::divides<>, quantity, quantity<R2, Rep2>>
   [[nodiscard]] friend constexpr Quantity auto operator/(const Q& lhs, const quantity<R2, Rep2>& rhs)
   {
-    MP_UNITS_EXPECTS_DEBUG(rhs != rhs.zero());
+    MP_UNITS_EXPECTS_DEBUG(is_neq_zero(rhs));
     return ::mp_units::quantity{lhs.numerical_value_ref_in(unit) / rhs.numerical_value_ref_in(rhs.unit), R / R2};
   }
 
