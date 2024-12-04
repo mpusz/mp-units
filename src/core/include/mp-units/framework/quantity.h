@@ -195,8 +195,7 @@ public:
   template<detail::QuantityConvertibleTo<quantity> Q>
   // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
   constexpr explicit(!std::convertible_to<typename Q::rep, Rep>) quantity(const Q& q) :
-      numerical_value_is_an_implementation_detail_(
-        detail::sudo_cast<quantity>(q).numerical_value_is_an_implementation_detail_)
+      quantity(detail::sudo_cast<quantity>(q))
   {
   }
 
