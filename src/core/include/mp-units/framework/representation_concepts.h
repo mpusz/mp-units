@@ -82,11 +82,16 @@ concept ScalableWith = requires(const T v, const S s) {
 };
 
 template<typename T>
-concept Scalar = (!disable_scalar<T>) && requires(const T a, const T b) {
-  { -a } -> std::common_with<T>;
-  { a + b } -> std::common_with<T>;
-  { a - b } -> std::common_with<T>;
-} && ScalableWith<T, T> && WeaklyRegular<T>;
+concept Scalar = (!disable_scalar<T>) &&
+                 requires(const T a, const T b) {
+                   { -a } -> std::common_with<T>;
+                   { a + b } -> std::common_with<T>;
+                   { a - b } -> std::common_with<T>;
+                 } && ScalableWith<T, T>
+#if MP_UNITS_COMP_GCC != 12
+                 && WeaklyRegular<T>
+#endif
+  ;
 
 namespace real_impl {
 
