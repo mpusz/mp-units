@@ -82,11 +82,11 @@ concept ScalableWith = WeaklyRegular<T> && requires(const T v, const S s) {
 };
 
 template<typename T>
-concept Scalar = (!disable_scalar<T>) && WeaklyRegular<T> && requires(const T a, const T b) {
+concept Scalar = (!disable_scalar<T>) && requires(const T a, const T b) {
   { -a } -> std::common_with<T>;
   { a + b } -> std::common_with<T>;
   { a - b } -> std::common_with<T>;
-} && ScalableWith<T, T>;
+} && ScalableWith<T, T> && WeaklyRegular<T>;
 
 namespace real_impl {
 
@@ -172,7 +172,7 @@ constexpr bool disable_complex = false;
 namespace detail {
 
 template<typename T>
-concept Complex = (!disable_complex<T>) && WeaklyRegular<T> && requires(const T a, const T b, const T& c) {
+concept Complex = (!disable_complex<T>) && requires(const T a, const T b, const T& c) {
   { -a } -> std::common_with<T>;
   { a + b } -> std::common_with<T>;
   { a - b } -> std::common_with<T>;
@@ -183,7 +183,7 @@ concept Complex = (!disable_complex<T>) && WeaklyRegular<T> && requires(const T 
   ::mp_units::modulus(a);
   requires ScalableWith<T, decltype(::mp_units::modulus(a))>;
   requires std::constructible_from<T, decltype(::mp_units::real(c)), decltype(::mp_units::imag(c))>;
-};
+} && WeaklyRegular<T>;
 
 namespace magnitude_impl {
 
@@ -233,7 +233,7 @@ constexpr bool disable_vector = false;
 namespace detail {
 
 template<typename T>
-concept Vector = (!disable_vector<T>) && WeaklyRegular<T> && requires(const T a, const T b) {
+concept Vector = (!disable_vector<T>) && requires(const T a, const T b) {
   { -a } -> std::common_with<T>;
   { a + b } -> std::common_with<T>;
   { a - b } -> std::common_with<T>;
@@ -245,7 +245,7 @@ concept Vector = (!disable_vector<T>) && WeaklyRegular<T> && requires(const T a,
   // ::mp_units::scalar_product(a, b);
   // ::mp_units::vector_product(a, b);
   // ::mp_units::tensor_product(a, b);
-};
+} && WeaklyRegular<T>;
 
 }  // namespace detail
 
