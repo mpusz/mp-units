@@ -585,6 +585,7 @@ public:
             (!Reference<Value>) && detail::InvokeResultOf<quantity_spec, std::divides<>, const Value&, Rep>
   [[nodiscard]] friend constexpr Quantity auto operator/(const Value& val, const Q& q)
   {
+    MP_UNITS_EXPECTS_DEBUG(is_neq_zero(q));
     return ::mp_units::quantity{val / q.numerical_value_ref_in(unit), ::mp_units::one / R};
   }
 
