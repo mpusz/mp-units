@@ -75,7 +75,7 @@ template<typename T>
 concept WeaklyRegular = std::copyable<T> && std::equality_comparable<T>;
 
 template<typename T, typename S>
-concept ScalableWith = WeaklyRegular<T> && requires(const T v, const S s) {
+concept ScalableWith = requires(const T v, const S s) {
   { v* s / s } -> std::common_with<T>;
   { s* v / s } -> std::common_with<T>;
   { v / s* s } -> std::common_with<T>;
