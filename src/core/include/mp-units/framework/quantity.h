@@ -63,11 +63,11 @@ template<typename T>
 concept IsFloatingPoint = treat_as_floating_point<T>;
 
 template<typename FromRep, typename ToRep, auto FromUnit = one, auto ToUnit = one>
-concept ValuePreservingTo =
-  requires(FromRep&& from, ToRep to) {
-    { to = std::forward<FromRep>(from) } -> std::same_as<ToRep&>;
-  } && (IsFloatingPoint<ToRep> ||
-        (!IsFloatingPoint<std::remove_cvref_t<FromRep>> && (integral_conversion_factor(FromUnit, ToUnit))));
+concept ValuePreservingTo = Representation<std::remove_cvref_t<FromRep>> && Representation<ToRep> &&
+                            Unit<MP_UNITS_REMOVE_CONST(decltype(FromUnit))> &&
+                            Unit<MP_UNITS_REMOVE_CONST(decltype(ToUnit))> && std::assignable_from<ToRep&, FromRep> &&
+                            (IsFloatingPoint<ToRep> || (!IsFloatingPoint<std::remove_cvref_t<FromRep>> &&
+                                                        (integral_conversion_factor(FromUnit, ToUnit))));
 
 template<typename QFrom, typename QTo>
 concept QuantityConvertibleTo =
