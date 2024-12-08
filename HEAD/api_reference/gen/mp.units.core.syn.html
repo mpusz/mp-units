@@ -1,68 +1,628 @@
-<!DOCTYPE html><html lang='en'><head><title>[mp.units.core.syn]</title><meta charset='UTF-8'/><link rel='stylesheet' type='text/css' href='14882.css'/><link rel='stylesheet' type='text/css' href='https://fonts.googleapis.com/css2?family=Noto+Serif'/><link rel='stylesheet' type='text/css' href='https://fonts.googleapis.com/css2?family=Noto+Sans'/><link rel='stylesheet' type='text/css' href='https://fonts.googleapis.com/css2?family=Noto+Sans+Mono'/><link rel='icon' href='icon.png'/><link rel='stylesheet' type='text/css' href='expanded.css' title='Normal'/><link rel='alternate stylesheet' type='text/css' href='colored.css' title='Notes and examples colored'/><link rel='alternate stylesheet' type='text/css' href='normative-only.css' title='Notes and examples hidden'/></head><body><div class='wrapper'><h1 ><a class='secnum' style='min-width:50pt'>5</a> Quantities library <a class='abbr_ref' href='index.html#qties'>[qties]</a></h1><h2 ><a class='secnum' style='min-width:65pt'>5.3</a> Module <span class='texttt'>mp_<span class='shy'></span>units.core</span> synopsis <a class='abbr_ref'>[mp.units.core.syn]</a></h2><div class='texpara'><span id='module:mp_units.core'><div class='marginalizedparent'><a class='itemDeclLink' href='#module:mp_units.core'>🔗</a></div><span class='codeblock'><span class='keyword'>export</span> <span class='keyword'>module</span> mp_units<span class='operator'>.</span>core;
+<!DOCTYPE html><html lang='en'><head><title>[mp.units.core.syn]</title><meta charset='UTF-8'/><link rel='stylesheet' type='text/css' href='14882.css'/><link rel='stylesheet' type='text/css' href='https://fonts.googleapis.com/css2?family=Noto+Serif'/><link rel='stylesheet' type='text/css' href='https://fonts.googleapis.com/css2?family=Noto+Sans'/><link rel='stylesheet' type='text/css' href='https://fonts.googleapis.com/css2?family=Noto+Sans+Mono'/><link rel='icon' href='icon.png'/><link rel='stylesheet' type='text/css' href='expanded.css' title='Normal'/><link rel='alternate stylesheet' type='text/css' href='colored.css' title='Notes and examples colored'/><link rel='alternate stylesheet' type='text/css' href='normative-only.css' title='Notes and examples hidden'/></head><body><div class='wrapper'><h1 ><a class='secnum' style='min-width:50pt'>5</a> Quantities and units library <a class='abbr_ref' href='index.html#quantities'>[quantities]</a></h1><h2 ><a class='secnum' style='min-width:65pt'>5.2</a> mp-units module synopses <a class='abbr_ref' href='mp.units.syns.html#mp.units.core.syn'>[mp.units.syns]</a></h2><h3 ><a class='secnum' style='min-width:80pt'>5.2.2</a> Module <span class='texttt'>mp_<span class='shy'></span>units.core</span> synopsis <a class='abbr_ref'>[mp.units.core.syn]</a></h3><div class='texpara'><span id='module:mp_units.core'><div class='marginalizedparent'><a class='itemDeclLink' href='#module:mp_units.core'>🔗</a></div><span class='codeblock'><span class='comment'>// mostly freestanding</span>
+<span class='keyword'>export</span> <span class='keyword'>module</span> mp_units<span class='operator'>.</span>core;
 
 <span class='keyword'>import</span> std;
 
 <span class='keyword'>export</span> <span class='keyword'>namespace</span> mp_units <span class='curlybracket'>{</span>
 
-<span class='keyword'>export</span> <span class='keyword'>enum</span> <span class='keyword'>class</span> quantity_character <span class='curlybracket'>{</span> scalar, vector, tensor <span class='curlybracket'>}</span>;
+<span class='comment'>// <a href='qty.utils.html' title='5.3&emsp;Utilities'>[qty.<span class='shy'></span>utils]</a>, utilities</span>
 
-<span class='comment'>// <a href='qty.traits.html' title='5.6&emsp;Traits'>[qty.<span class='shy'></span>traits]</a>, traits</span>
+<span class='comment'>// <a href='qty.sym.txt.html' title='5.3.3&emsp;Symbol text'>[qty.<span class='shy'></span>sym.<span class='shy'></span>txt]</a>, symbol text</span>
 
-<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><span class='keyword'>typename</span> Rep<span class='anglebracket'>&gt;</span>
-<span class='keyword'>constexpr</span> <span class='keyword'>bool</span> treat_as_floating_point <span class='operator'>=</span> std<span class='operator'>::</span>is_floating_point_v<span class='anglebracket'>&lt;</span>Rep<span class='anglebracket'>&gt;</span>;
+<span class='keyword'>enum</span> <span class='keyword'>class</span> <span id='lib:character_set'><a class='hidden_link' href='#lib:character_set' title='5.2.2&emsp;Module mp_&shy;units.core synopsis&emsp;[mp.units.core.syn]'>character_set</a></span> <span class='operator'>:</span> std<span class='operator'>::</span>int8_t <span class='curlybracket'>{</span> utf8, portable, default_character_set <span class='operator'>=</span> utf8 <span class='curlybracket'>}</span>;
 
-<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><span class='keyword'>typename</span> Rep<span class='anglebracket'>&gt;</span>
-<span class='keyword'>constexpr</span> <span class='keyword'>bool</span> is_scalar <span class='operator'>=</span>
-  std<span class='operator'>::</span>is_floating_point_v<span class='anglebracket'>&lt;</span>Rep<span class='anglebracket'>&gt;</span> <span class='operator'>|</span><span class='operator'>|</span> <span class='parenthesis'>(</span>std<span class='operator'>::</span>is_integral_v<span class='anglebracket'>&lt;</span>Rep<span class='anglebracket'>&gt;</span> <span class='operator'>&amp;</span><span class='operator'>&amp;</span> <span class='operator'>!</span>is_same_v<span class='anglebracket'>&lt;</span>Rep, <span class='keyword'>bool</span><span class='anglebracket'>&gt;</span><span class='parenthesis'>)</span>;
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span>std<span class='operator'>::</span>size_t N, std<span class='operator'>::</span>size_t M<span class='anglebracket'>&gt;</span>
+<span class='keyword'>class</span> symbol_text;
 
-<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><span class='keyword'>typename</span> Rep<span class='anglebracket'>&gt;</span>
-<span class='keyword'>constexpr</span> <span class='keyword'>bool</span> is_vector <span class='operator'>=</span> <span class='literal'>false</span>;
+<span class='comment'>// <a href='qty.sym.expr.html' title='5.3.4&emsp;Symbolic expressions'>[qty.<span class='shy'></span>sym.<span class='shy'></span>expr]</a>, symbolic expressions</span>
 
-<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><span class='keyword'>typename</span> Rep<span class='anglebracket'>&gt;</span>
-<span class='keyword'>constexpr</span> <span class='keyword'>bool</span> is_tensor <span class='operator'>=</span> <span class='literal'>false</span>;
+<span class='comment'>// <a href='qty.sym.expr.types.html' title='5.3.4.3&emsp;Types'>[qty.<span class='shy'></span>sym.<span class='shy'></span>expr.<span class='shy'></span>types]</a>, types</span>
 
-<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><span class='keyword'>typename</span> Rep<span class='anglebracket'>&gt;</span>
-<span class='keyword'>struct</span> quantity_values;
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><span class='keyword'>typename</span> T, <span class='keyword'>typename</span><span class='operator'>.</span><span class='operator'>.</span><span class='operator'>.</span> Ts<span class='anglebracket'>&gt;</span>
+<span class='keyword'>struct</span> per;
 
-<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><span class='keyword'>typename</span> T<span class='anglebracket'>&gt;</span>
-<span class='keyword'>struct</span> quantity_like_traits;
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><span class='keyword'>typename</span> F, <span class='keyword'>int</span> Num, <span class='keyword'>int</span><span class='operator'>.</span><span class='operator'>.</span><span class='operator'>.</span> Den<span class='anglebracket'>&gt;</span>
+  <span class='keyword'>requires</span> <i ><span class='texttt'>see below</span></i>
+<span class='keyword'>struct</span> power;
 
-<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><span class='keyword'>typename</span> T<span class='anglebracket'>&gt;</span>
-<span class='keyword'>struct</span> quantity_point_like_traits;
+<span class='comment'>// <a href='qty.ref.html' title='5.4&emsp;Reference'>[qty.<span class='shy'></span>ref]</a>, reference</span>
 
-<span class='comment'>// <a href='qty.concepts.html' title='5.7&emsp;Concepts'>[qty.<span class='shy'></span>concepts]</a>, concepts</span>
+<span class='comment'>// <a href='qty.dim.html' title='5.4.2&emsp;Dimension'>[qty.<span class='shy'></span>dim]</a>, dimension</span>
+
+<span class='comment'>// <a href='qty.dim.concepts.html' title='5.4.2.2&emsp;Concepts'>[qty.<span class='shy'></span>dim.<span class='shy'></span>concepts]</a>, concepts</span>
 
 <span class='keyword'>template</span><span class='anglebracket'>&lt;</span><span class='keyword'>typename</span> T<span class='anglebracket'>&gt;</span>
-<span class='keyword'>concept</span> <a class='hidden_link' href='#concept:some_reference' title='5.3&emsp;Module mp_&shy;units.core synopsis&emsp;[mp.units.core.syn]'><span id='concept:some_reference'><span id='lib:some_reference'><span class='tcode_in_codeblock'>some_<span class='shy'></span>reference</span></span></span></a> <span class='operator'>=</span> template_of<span class='parenthesis'>(</span><span class='operator'>^</span>std<span class='operator'>::</span>remove_cvref_t<span class='anglebracket'>&lt;</span>T<span class='anglebracket'>&gt;</span><span class='parenthesis'>)</span> <span class='operator'>=</span><span class='operator'>=</span> <span class='operator'>^</span>reference;
+<span class='keyword'>concept</span> Dimension <span class='operator'>=</span> <i ><span class='texttt'>see below</span></i>;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><span class='keyword'>typename</span> T, <span class='keyword'>auto</span> D<span class='anglebracket'>&gt;</span>
+<span class='keyword'>concept</span> DimensionOf <span class='operator'>=</span> <i ><span class='texttt'>see below</span></i>;
+
+<span class='comment'>// <a href='qty.dim.types.html' title='5.4.2.3&emsp;Types'>[qty.<span class='shy'></span>dim.<span class='shy'></span>types]</a>, types</span>
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span>symbol_text Symbol<span class='anglebracket'>&gt;</span>
+<span class='keyword'>struct</span> base_dimension;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><a class='index' id='conceptref:SymbolicConstant'></a><i >SymbolicConstant</i><span class='operator'>.</span><span class='operator'>.</span><span class='operator'>.</span> Expr<span class='anglebracket'>&gt;</span>
+<span class='keyword'>struct</span> derived_dimension;
+
+<span class='keyword'>struct</span> dimension_one;
+<span class='keyword'>inline</span> <span class='keyword'>constexpr</span> dimension_one <span id='lib:dimension_one'><a class='hidden_link' href='qty.dim.types.html#lib:dimension_one' title='5.4.2.3&emsp;Types&emsp;[qty.dim.types]'>dimension_one</a></span><span class='curlybracket'>{</span><span class='curlybracket'>}</span>;
+
+<span class='comment'>// <a href='qty.dim.ops.html' title='5.4.2.4&emsp;Operations'>[qty.<span class='shy'></span>dim.<span class='shy'></span>ops]</a>, operations</span>
+
+<span class='keyword'>consteval</span> <a href='qty.dim.concepts.html#concept:Dimension' title='5.4.2.2&emsp;Concepts&emsp;[qty.dim.concepts]'><span id='conceptref:Dimension'><span class='tcode_in_codeblock'>Dimension</span></span></a> <span class='keyword'>auto</span> inverse<span class='parenthesis'>(</span><a href='qty.dim.concepts.html#concept:Dimension' title='5.4.2.2&emsp;Concepts&emsp;[qty.dim.concepts]'><span id='conceptref:Dimension_'><span class='tcode_in_codeblock'>Dimension</span></span></a> <span class='keyword'>auto</span> d<span class='parenthesis'>)</span>;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span>std<span class='operator'>::</span>intmax_t Num, std<span class='operator'>::</span>intmax_t Den <span class='operator'>=</span> <span class='literal'>1</span>, <a href='qty.dim.concepts.html#concept:Dimension' title='5.4.2.2&emsp;Concepts&emsp;[qty.dim.concepts]'><span id='conceptref:Dimension__'><span class='tcode_in_codeblock'>Dimension</span></span></a> D<span class='anglebracket'>&gt;</span>
+  <span class='keyword'>requires</span><span class='parenthesis'>(</span>Den <span class='operator'>!</span><span class='operator'>=</span> <span class='literal'>0</span><span class='parenthesis'>)</span>
+<span class='keyword'>consteval</span> <a href='qty.dim.concepts.html#concept:Dimension' title='5.4.2.2&emsp;Concepts&emsp;[qty.dim.concepts]'><span id='conceptref:Dimension___'><span class='tcode_in_codeblock'>Dimension</span></span></a> <span class='keyword'>auto</span> pow<span class='parenthesis'>(</span>D d<span class='parenthesis'>)</span>;
+<span class='keyword'>consteval</span> <a href='qty.dim.concepts.html#concept:Dimension' title='5.4.2.2&emsp;Concepts&emsp;[qty.dim.concepts]'><span id='conceptref:Dimension____'><span class='tcode_in_codeblock'>Dimension</span></span></a> <span class='keyword'>auto</span> sqrt<span class='parenthesis'>(</span><a href='qty.dim.concepts.html#concept:Dimension' title='5.4.2.2&emsp;Concepts&emsp;[qty.dim.concepts]'><span id='conceptref:Dimension_____'><span class='tcode_in_codeblock'>Dimension</span></span></a> <span class='keyword'>auto</span> d<span class='parenthesis'>)</span>;
+<span class='keyword'>consteval</span> <a href='qty.dim.concepts.html#concept:Dimension' title='5.4.2.2&emsp;Concepts&emsp;[qty.dim.concepts]'><span id='conceptref:Dimension______'><span class='tcode_in_codeblock'>Dimension</span></span></a> <span class='keyword'>auto</span> cbrt<span class='parenthesis'>(</span><a href='qty.dim.concepts.html#concept:Dimension' title='5.4.2.2&emsp;Concepts&emsp;[qty.dim.concepts]'><span id='conceptref:Dimension_______'><span class='tcode_in_codeblock'>Dimension</span></span></a> <span class='keyword'>auto</span> d<span class='parenthesis'>)</span>;
+
+<span class='comment'>// <a href='qty.dim.sym.fmt.html' title='5.4.2.5&emsp;Symbol formatting'>[qty.<span class='shy'></span>dim.<span class='shy'></span>sym.<span class='shy'></span>fmt]</a>, symbol formatting</span>
+
+<span class='keyword'>struct</span> <span id='lib:dimension_symbol_formatting'><a class='hidden_link' href='#lib:dimension_symbol_formatting' title='5.2.2&emsp;Module mp_&shy;units.core synopsis&emsp;[mp.units.core.syn]'>dimension_symbol_formatting</a></span> <span class='curlybracket'>{</span>
+  character_set char_set <span class='operator'>=</span> character_set<span class='operator'>::</span>default_character_set;
+<span class='curlybracket'>}</span>;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><span class='keyword'>typename</span> CharT <span class='operator'>=</span> <span class='keyword'>char</span>, std<span class='operator'>::</span>output_iterator<span class='anglebracket'>&lt;</span>CharT<span class='anglebracket'>&gt;</span> Out, <a href='qty.dim.concepts.html#concept:Dimension' title='5.4.2.2&emsp;Concepts&emsp;[qty.dim.concepts]'><span id='conceptref:Dimension________'><span class='tcode_in_codeblock'>Dimension</span></span></a> D<span class='anglebracket'>&gt;</span>
+<span class='keyword'>constexpr</span> Out dimension_symbol_to<span class='parenthesis'>(</span>Out out, D d, <span class='keyword'>const</span> dimension_symbol_formatting<span class='operator'>&amp;</span> fmt <span class='operator'>=</span> <span class='curlybracket'>{</span><span class='curlybracket'>}</span><span class='parenthesis'>)</span>;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span>dimension_symbol_formatting fmt <span class='operator'>=</span> <span class='curlybracket'>{</span><span class='curlybracket'>}</span>, <span class='keyword'>typename</span> CharT <span class='operator'>=</span> <span class='keyword'>char</span>, <a href='qty.dim.concepts.html#concept:Dimension' title='5.4.2.2&emsp;Concepts&emsp;[qty.dim.concepts]'><span id='conceptref:Dimension_________'><span class='tcode_in_codeblock'>Dimension</span></span></a> D<span class='anglebracket'>&gt;</span>
+<span class='keyword'>consteval</span> std<span class='operator'>::</span>string_view dimension_symbol<span class='parenthesis'>(</span>D<span class='parenthesis'>)</span>;
+
+<span class='comment'>// <a href='qty.spec.html' title='5.4.3&emsp;Quantity specification'>[qty.<span class='shy'></span>spec]</a>, quantity specification</span>
+
+<span class='comment'>// <a href='qty.spec.concepts.html' title='5.4.3.2&emsp;Concepts'>[qty.<span class='shy'></span>spec.<span class='shy'></span>concepts]</a>, concepts</span>
 
 <span class='keyword'>template</span><span class='anglebracket'>&lt;</span><span class='keyword'>typename</span> T<span class='anglebracket'>&gt;</span>
-<span class='keyword'>concept</span> representation <span class='operator'>=</span> <i ><span class='texttt'>see below</span></i>;
+<span class='keyword'>concept</span> QuantitySpec <span class='operator'>=</span> <i ><span class='texttt'>see below</span></i>;
 
-<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><span class='keyword'>typename</span> T, quantity_character Ch<span class='anglebracket'>&gt;</span>
-<span class='keyword'>concept</span> representation_of <span class='operator'>=</span> <i ><span class='texttt'>see below</span></i>;
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><span class='keyword'>typename</span> T, <span class='keyword'>auto</span> QS<span class='anglebracket'>&gt;</span>
+<span class='keyword'>concept</span> QuantitySpecOf <span class='operator'>=</span> <i ><span class='texttt'>see below</span></i>;
 
-<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><span class='keyword'>typename</span> T<span class='anglebracket'>&gt;</span>
-<span class='keyword'>concept</span> some_quantity_spec <span class='operator'>=</span> <i ><span class='texttt'>see below</span></i>;
+<span class='comment'>// <a href='qty.spec.types.html' title='5.4.3.3&emsp;Types'>[qty.<span class='shy'></span>spec.<span class='shy'></span>types]</a>, types</span>
 
-<span class='comment'>// <a href='qty.types.html' title='5.8&emsp;Types'>[qty.<span class='shy'></span>types]</a>, types</span>
+<span class='comment'>// <a href='named.qty.html' title='5.4.3.3.1&emsp;Named'>[named.<span class='shy'></span>qty]</a>, named</span>
+
+<span class='keyword'>struct</span> is_kind;
+<span class='keyword'>inline</span> <span class='keyword'>constexpr</span> is_kind <span id='lib:is_kind'><a class='hidden_link' href='named.qty.html#lib:is_kind' title='5.4.3.3.1&emsp;Named&emsp;[named.qty]'>is_kind</a></span><span class='curlybracket'>{</span><span class='curlybracket'>}</span>;
 
 <span class='keyword'>template</span><span class='anglebracket'>&lt;</span><span class='keyword'>auto</span><span class='operator'>.</span><span class='operator'>.</span><span class='operator'>.</span><span class='anglebracket'>&gt;</span>
-<span class='keyword'>struct</span> quantity_spec; <span class='comment'>// <i >not defined</i></span>
+<span class='keyword'>struct</span> quantity_spec;  <span class='comment'>// <i >not defined</i></span>
 
-<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><span class='keyword'>auto</span> Q<span class='anglebracket'>&gt;</span>
-<span class='keyword'>struct</span> kind_of_; <span class='comment'>// <i >not defined</i></span>
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><a class='index' id='conceptref:BaseDimension'></a><i >BaseDimension</i> <span class='keyword'>auto</span> Dim, <a class='index' id='conceptref:QSProperty'></a><i >QSProperty</i> <span class='keyword'>auto</span><span class='operator'>.</span><span class='operator'>.</span><span class='operator'>.</span> Args<span class='anglebracket'>&gt;</span>
+<span class='keyword'>struct</span> quantity_spec<span class='anglebracket'>&lt;</span>Dim, Args<span class='operator'>.</span><span class='operator'>.</span><span class='operator'>.</span><span class='anglebracket'>&gt;</span>;
 
-<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><i ><span class='texttt'>unspecified</span></i><span class='operator'>.</span><span class='operator'>.</span><span class='operator'>.</span> Expr<span class='anglebracket'>&gt;</span>
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><a class='index' id='conceptref:DerivedQuantitySpec'></a><i >DerivedQuantitySpec</i> <span class='keyword'>auto</span> Eq, <a class='index' id='conceptref:QSProperty_'></a><i >QSProperty</i> <span class='keyword'>auto</span><span class='operator'>.</span><span class='operator'>.</span><span class='operator'>.</span> Args<span class='anglebracket'>&gt;</span>
+<span class='keyword'>struct</span> quantity_spec<span class='anglebracket'>&lt;</span>Eq, Args<span class='operator'>.</span><span class='operator'>.</span><span class='operator'>.</span><span class='anglebracket'>&gt;</span>;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><a class='index' id='conceptref:NamedQuantitySpec'></a><i >NamedQuantitySpec</i> <span class='keyword'>auto</span> QS, <a class='index' id='conceptref:QSProperty__'></a><i >QSProperty</i> <span class='keyword'>auto</span><span class='operator'>.</span><span class='operator'>.</span><span class='operator'>.</span> Args<span class='anglebracket'>&gt;</span>
+<span class='keyword'>struct</span> quantity_spec<span class='anglebracket'>&lt;</span>QS, Args<span class='operator'>.</span><span class='operator'>.</span><span class='operator'>.</span><span class='anglebracket'>&gt;</span>;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><a class='index' id='conceptref:NamedQuantitySpec_'></a><i >NamedQuantitySpec</i> <span class='keyword'>auto</span> QS, <a class='index' id='conceptref:DerivedQuantitySpec_'></a><i >DerivedQuantitySpec</i> <span class='keyword'>auto</span> Eq, <a class='index' id='conceptref:QSProperty___'></a><i >QSProperty</i> <span class='keyword'>auto</span><span class='operator'>.</span><span class='operator'>.</span><span class='operator'>.</span> Args<span class='anglebracket'>&gt;</span>
+<span class='keyword'>struct</span> quantity_spec<span class='anglebracket'>&lt;</span>QS, Eq, Args<span class='operator'>.</span><span class='operator'>.</span><span class='operator'>.</span><span class='anglebracket'>&gt;</span>;
+
+<span class='comment'>// <a href='derived.qty.html' title='5.4.3.3.2&emsp;Derived'>[derived.<span class='shy'></span>qty]</a>, derived</span>
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><a class='index' id='conceptref:SymbolicConstant_'></a><i >SymbolicConstant</i><span class='operator'>.</span><span class='operator'>.</span><span class='operator'>.</span> Expr<span class='anglebracket'>&gt;</span>
 <span class='keyword'>struct</span> derived_quantity_spec;
 
-<span class='comment'>// <a href='qty.type.html' title='5.8.2&emsp;Class template quantity'>[qty.<span class='shy'></span>type]</a>, class template <span class='tcode_in_codeblock'>quantity</span></span>
-<span class='keyword'>export</span> <span class='keyword'>template</span><span class='anglebracket'>&lt;</span><a href='#concept:some_reference' title='5.3&emsp;Module mp_&shy;units.core synopsis&emsp;[mp.units.core.syn]'><span id='conceptref:some_reference'><span class='tcode_in_codeblock'>some_<span class='shy'></span>reference</span></span></a> <span class='keyword'>auto</span> R,
-                <a href='qty.concepts.html#concept:representation_of' title='5.7&emsp;Concepts&emsp;[qty.concepts]'><span id='conceptref:representation_of'><span class='tcode_in_codeblock'>representation_<span class='shy'></span>of</span></span></a><span class='anglebracket'>&lt;</span>get_quantity_spec<span class='parenthesis'>(</span>R<span class='parenthesis'>)</span><span class='operator'>.</span>character<span class='anglebracket'>&gt;</span> Rep <span class='operator'>=</span> <span class='keyword'>double</span><span class='anglebracket'>&gt;</span>
+<span class='comment'>// <a href='dimless.qty.html' title='5.4.3.3.3&emsp;Base quantity of dimension one'>[dimless.<span class='shy'></span>qty]</a>, base quantity of dimension one</span>
+
+<span class='keyword'>struct</span> dimensionless;
+<span class='keyword'>inline</span> <span class='keyword'>constexpr</span> dimensionless <span id='lib:dimensionless'><a class='hidden_link' href='dimless.qty.html#lib:dimensionless' title='5.4.3.3.3&emsp;Base quantity of dimension one&emsp;[dimless.qty]'>dimensionless</a></span><span class='curlybracket'>{</span><span class='curlybracket'>}</span>;
+
+<span class='comment'>// <a href='kind.of.qty.html' title='5.4.3.3.4&emsp;Kind of'>[kind.<span class='shy'></span>of.<span class='shy'></span>qty]</a>, kind of</span>
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><a href='qty.spec.concepts.html#concept:QuantitySpec' title='5.4.3.2&emsp;Concepts&emsp;[qty.spec.concepts]'><span id='conceptref:QuantitySpec'><span class='tcode_in_codeblock'>QuantitySpec</span></span></a> Q<span class='anglebracket'>&gt;</span>
+  <span class='keyword'>requires</span> <i ><span class='texttt'>see below</span></i>
+<span class='keyword'>struct</span> kind_of_;
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><a href='qty.spec.concepts.html#concept:QuantitySpec' title='5.4.3.2&emsp;Concepts&emsp;[qty.spec.concepts]'><span id='conceptref:QuantitySpec_'><span class='tcode_in_codeblock'>QuantitySpec</span></span></a> <span class='keyword'>auto</span> Q<span class='anglebracket'>&gt;</span>
+  <span class='keyword'>requires</span> <span class='keyword'>requires</span> <span class='curlybracket'>{</span> <span class='keyword'>typename</span> kind_of_<span class='anglebracket'>&lt;</span><span class='keyword'>decltype</span><span class='parenthesis'>(</span>Q<span class='parenthesis'>)</span><span class='anglebracket'>&gt;</span>; <span class='curlybracket'>}</span>
+<span class='keyword'>inline</span> <span class='keyword'>constexpr</span> kind_of_<span class='anglebracket'>&lt;</span><span class='keyword'>decltype</span><span class='parenthesis'>(</span>Q<span class='parenthesis'>)</span><span class='anglebracket'>&gt;</span> <span id='lib:kind_of'><a class='hidden_link' href='#lib:kind_of' title='5.2.2&emsp;Module mp_&shy;units.core synopsis&emsp;[mp.units.core.syn]'>kind_of</a></span><span class='curlybracket'>{</span><span class='curlybracket'>}</span>;
+
+<span class='comment'>// <a href='qty.spec.ops.html' title='5.4.3.5&emsp;Operations'>[qty.<span class='shy'></span>spec.<span class='shy'></span>ops]</a>, operations</span>
+
+<span class='keyword'>consteval</span> <a href='qty.spec.concepts.html#concept:QuantitySpec' title='5.4.3.2&emsp;Concepts&emsp;[qty.spec.concepts]'><span id='conceptref:QuantitySpec__'><span class='tcode_in_codeblock'>QuantitySpec</span></span></a> <span class='keyword'>auto</span> inverse<span class='parenthesis'>(</span><a href='qty.spec.concepts.html#concept:QuantitySpec' title='5.4.3.2&emsp;Concepts&emsp;[qty.spec.concepts]'><span id='conceptref:QuantitySpec___'><span class='tcode_in_codeblock'>QuantitySpec</span></span></a> <span class='keyword'>auto</span> q<span class='parenthesis'>)</span>;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span>std<span class='operator'>::</span>intmax_t Num, std<span class='operator'>::</span>intmax_t Den <span class='operator'>=</span> <span class='literal'>1</span>, <a href='qty.spec.concepts.html#concept:QuantitySpec' title='5.4.3.2&emsp;Concepts&emsp;[qty.spec.concepts]'><span id='conceptref:QuantitySpec____'><span class='tcode_in_codeblock'>QuantitySpec</span></span></a> Q<span class='anglebracket'>&gt;</span>
+  <span class='keyword'>requires</span><span class='parenthesis'>(</span>Den <span class='operator'>!</span><span class='operator'>=</span> <span class='literal'>0</span><span class='parenthesis'>)</span>
+<span class='keyword'>consteval</span> <a href='qty.spec.concepts.html#concept:QuantitySpec' title='5.4.3.2&emsp;Concepts&emsp;[qty.spec.concepts]'><span id='conceptref:QuantitySpec_____'><span class='tcode_in_codeblock'>QuantitySpec</span></span></a> <span class='keyword'>auto</span> pow<span class='parenthesis'>(</span>Q q<span class='parenthesis'>)</span>;
+<span class='keyword'>consteval</span> <a href='qty.spec.concepts.html#concept:QuantitySpec' title='5.4.3.2&emsp;Concepts&emsp;[qty.spec.concepts]'><span id='conceptref:QuantitySpec______'><span class='tcode_in_codeblock'>QuantitySpec</span></span></a> <span class='keyword'>auto</span> sqrt<span class='parenthesis'>(</span><a href='qty.spec.concepts.html#concept:QuantitySpec' title='5.4.3.2&emsp;Concepts&emsp;[qty.spec.concepts]'><span id='conceptref:QuantitySpec_______'><span class='tcode_in_codeblock'>QuantitySpec</span></span></a> <span class='keyword'>auto</span> q<span class='parenthesis'>)</span>;
+<span class='keyword'>consteval</span> <a href='qty.spec.concepts.html#concept:QuantitySpec' title='5.4.3.2&emsp;Concepts&emsp;[qty.spec.concepts]'><span id='conceptref:QuantitySpec________'><span class='tcode_in_codeblock'>QuantitySpec</span></span></a> <span class='keyword'>auto</span> cbrt<span class='parenthesis'>(</span><a href='qty.spec.concepts.html#concept:QuantitySpec' title='5.4.3.2&emsp;Concepts&emsp;[qty.spec.concepts]'><span id='conceptref:QuantitySpec_________'><span class='tcode_in_codeblock'>QuantitySpec</span></span></a> <span class='keyword'>auto</span> q<span class='parenthesis'>)</span>;
+
+<span class='comment'>// <a href='qty.spec.hier.algos.html' title='5.4.3.6&emsp;Hierarchy algorithms'>[qty.<span class='shy'></span>spec.<span class='shy'></span>hier.<span class='shy'></span>algos]</a>, hierarchy algorithms</span>
+
+<span class='comment'>// <a href='qty.spec.conv.html' title='5.4.3.6.1&emsp;Conversion'>[qty.<span class='shy'></span>spec.<span class='shy'></span>conv]</a>, conversion</span>
+
+<span class='keyword'>consteval</span> <span class='keyword'>bool</span> implicitly_convertible<span class='parenthesis'>(</span><a href='qty.spec.concepts.html#concept:QuantitySpec' title='5.4.3.2&emsp;Concepts&emsp;[qty.spec.concepts]'><span id='conceptref:QuantitySpec__________'><span class='tcode_in_codeblock'>QuantitySpec</span></span></a> <span class='keyword'>auto</span> from, <a href='qty.spec.concepts.html#concept:QuantitySpec' title='5.4.3.2&emsp;Concepts&emsp;[qty.spec.concepts]'><span id='conceptref:QuantitySpec___________'><span class='tcode_in_codeblock'>QuantitySpec</span></span></a> <span class='keyword'>auto</span> to<span class='parenthesis'>)</span>;
+<span class='keyword'>consteval</span> <span class='keyword'>bool</span> explicitly_convertible<span class='parenthesis'>(</span><a href='qty.spec.concepts.html#concept:QuantitySpec' title='5.4.3.2&emsp;Concepts&emsp;[qty.spec.concepts]'><span id='conceptref:QuantitySpec____________'><span class='tcode_in_codeblock'>QuantitySpec</span></span></a> <span class='keyword'>auto</span> from, <a href='qty.spec.concepts.html#concept:QuantitySpec' title='5.4.3.2&emsp;Concepts&emsp;[qty.spec.concepts]'><span id='conceptref:QuantitySpec_____________'><span class='tcode_in_codeblock'>QuantitySpec</span></span></a> <span class='keyword'>auto</span> to<span class='parenthesis'>)</span>;
+<span class='keyword'>consteval</span> <span class='keyword'>bool</span> castable<span class='parenthesis'>(</span><a href='qty.spec.concepts.html#concept:QuantitySpec' title='5.4.3.2&emsp;Concepts&emsp;[qty.spec.concepts]'><span id='conceptref:QuantitySpec______________'><span class='tcode_in_codeblock'>QuantitySpec</span></span></a> <span class='keyword'>auto</span> from, <a href='qty.spec.concepts.html#concept:QuantitySpec' title='5.4.3.2&emsp;Concepts&emsp;[qty.spec.concepts]'><span id='conceptref:QuantitySpec_______________'><span class='tcode_in_codeblock'>QuantitySpec</span></span></a> <span class='keyword'>auto</span> to<span class='parenthesis'>)</span>;
+<span class='keyword'>consteval</span> <span class='keyword'>bool</span> interconvertible<span class='parenthesis'>(</span><a href='qty.spec.concepts.html#concept:QuantitySpec' title='5.4.3.2&emsp;Concepts&emsp;[qty.spec.concepts]'><span id='conceptref:QuantitySpec________________'><span class='tcode_in_codeblock'>QuantitySpec</span></span></a> <span class='keyword'>auto</span> qs1, <a href='qty.spec.concepts.html#concept:QuantitySpec' title='5.4.3.2&emsp;Concepts&emsp;[qty.spec.concepts]'><span id='conceptref:QuantitySpec_________________'><span class='tcode_in_codeblock'>QuantitySpec</span></span></a> <span class='keyword'>auto</span> qs2<span class='parenthesis'>)</span>;
+
+<span class='comment'>// <a href='qty.get.kind.html' title='5.4.3.6.2&emsp;Get kind'>[qty.<span class='shy'></span>get.<span class='shy'></span>kind]</a>, <span class='tcode_in_codeblock'>get_<span class='shy'></span>kind</span></span>
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><a href='qty.spec.concepts.html#concept:QuantitySpec' title='5.4.3.2&emsp;Concepts&emsp;[qty.spec.concepts]'><span id='conceptref:QuantitySpec__________________'><span class='tcode_in_codeblock'>QuantitySpec</span></span></a> Q<span class='anglebracket'>&gt;</span>
+<span class='keyword'>consteval</span> <i ><span class='texttt'>see below</span></i> get_kind<span class='parenthesis'>(</span>Q<span class='parenthesis'>)</span>;
+
+<span class='comment'>// <a href='get.common.qty.spec.html' title='5.4.3.6.3&emsp;Get common quantity specification'>[get.<span class='shy'></span>common.<span class='shy'></span>qty.<span class='shy'></span>spec]</a>, <span class='tcode_in_codeblock'>get_<span class='shy'></span>common_<span class='shy'></span>quantity_<span class='shy'></span>spec</span></span>
+
+<span class='keyword'>consteval</span> <a href='qty.spec.concepts.html#concept:QuantitySpec' title='5.4.3.2&emsp;Concepts&emsp;[qty.spec.concepts]'><span id='conceptref:QuantitySpec___________________'><span class='tcode_in_codeblock'>QuantitySpec</span></span></a> <span class='keyword'>auto</span> get_common_quantity_spec<span class='parenthesis'>(</span><a href='qty.spec.concepts.html#concept:QuantitySpec' title='5.4.3.2&emsp;Concepts&emsp;[qty.spec.concepts]'><span id='conceptref:QuantitySpec____________________'><span class='tcode_in_codeblock'>QuantitySpec</span></span></a> <span class='keyword'>auto</span><span class='operator'>.</span><span class='operator'>.</span><span class='operator'>.</span> qs<span class='parenthesis'>)</span>
+  <span class='keyword'>requires</span> <i ><span class='texttt'>see below</span></i>;
+
+<span class='comment'>// <a href='qty.unit.html' title='5.4.4&emsp;Unit'>[qty.<span class='shy'></span>unit]</a>, unit</span>
+
+<span class='comment'>// <a href='qty.unit.mag.html' title='5.4.4.2&emsp;Magnitude'>[qty.<span class='shy'></span>unit.<span class='shy'></span>mag]</a>, magnitude</span>
+
+<span class='comment'>// <a href='qty.unit.mag.concepts.html' title='5.4.4.2.2&emsp;Concepts'>[qty.<span class='shy'></span>unit.<span class='shy'></span>mag.<span class='shy'></span>concepts]</a>, concepts</span>
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><span class='keyword'>typename</span> T<span class='anglebracket'>&gt;</span>
+<span class='keyword'>concept</span> MagConstant <span class='operator'>=</span> <i ><span class='texttt'>see below</span></i>;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><span class='keyword'>typename</span> T<span class='anglebracket'>&gt;</span>
+<span class='keyword'>concept</span> UnitMagnitude <span class='operator'>=</span> <i ><span class='texttt'>see below</span></i>;
+
+<span class='comment'>// <a href='qty.unit.mag.types.html' title='5.4.4.2.3&emsp;Types'>[qty.<span class='shy'></span>unit.<span class='shy'></span>mag.<span class='shy'></span>types]</a>, types</span>
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span>symbol_text Symbol, <span class='keyword'>long</span> <span class='keyword'>double</span> Value<span class='anglebracket'>&gt;</span>
+  <span class='keyword'>requires</span><span class='parenthesis'>(</span>Value <span class='anglebracket'>&gt;</span> <span class='literal'>0</span><span class='parenthesis'>)</span>
+<span class='keyword'>struct</span> mag_constant;
+
+<span class='comment'>// <a href='qty.unit.mag.ops.html' title='5.4.4.2.4&emsp;Operations'>[qty.<span class='shy'></span>unit.<span class='shy'></span>mag.<span class='shy'></span>ops]</a>, operations</span>
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><a class='index' id='conceptref:MagArg'></a><i >MagArg</i> <span class='keyword'>auto</span> V<span class='anglebracket'>&gt;</span>
+<span class='keyword'>constexpr</span> <a href='qty.unit.mag.concepts.html#concept:UnitMagnitude' title='5.4.4.2.2&emsp;Concepts&emsp;[qty.unit.mag.concepts]'><span id='conceptref:UnitMagnitude'><span class='tcode_in_codeblock'>UnitMagnitude</span></span></a> <span class='keyword'>auto</span> mag <span class='operator'>=</span> <i ><span class='texttt'>see below</span></i>;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span>std<span class='operator'>::</span>intmax_t N, std<span class='operator'>::</span>intmax_t D<span class='anglebracket'>&gt;</span>
+  <span class='keyword'>requires</span><span class='parenthesis'>(</span>N <span class='anglebracket'>&gt;</span> <span class='literal'>0</span><span class='parenthesis'>)</span>
+<span class='keyword'>constexpr</span> <a href='qty.unit.mag.concepts.html#concept:UnitMagnitude' title='5.4.4.2.2&emsp;Concepts&emsp;[qty.unit.mag.concepts]'><span id='conceptref:UnitMagnitude_'><span class='tcode_in_codeblock'>UnitMagnitude</span></span></a> <span class='keyword'>auto</span> mag_ratio <span class='operator'>=</span> <i ><span class='texttt'>see below</span></i>;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><a class='index' id='conceptref:MagArg_'></a><i >MagArg</i> <span class='keyword'>auto</span> Base, <span class='keyword'>int</span> Num, <span class='keyword'>int</span> Den <span class='operator'>=</span> <span class='literal'>1</span><span class='anglebracket'>&gt;</span>
+<span class='keyword'>constexpr</span> <a href='qty.unit.mag.concepts.html#concept:UnitMagnitude' title='5.4.4.2.2&emsp;Concepts&emsp;[qty.unit.mag.concepts]'><span id='conceptref:UnitMagnitude__'><span class='tcode_in_codeblock'>UnitMagnitude</span></span></a> <span class='keyword'>auto</span> mag_power <span class='operator'>=</span> <i ><span class='texttt'>see below</span></i>;
+
+<span class='comment'>// constants</span>
+
+<span class='keyword'>inline</span> <span class='keyword'>constexpr</span> <span class='keyword'>struct</span> <span id='lib:pi'><a class='hidden_link' href='#lib:pi' title='5.2.2&emsp;Module mp_&shy;units.core synopsis&emsp;[mp.units.core.syn]'>pi</a></span> <span class='keyword'>final</span> <span class='operator'>:</span>
+    mag_constant<span class='anglebracket'>&lt;</span><span class='curlybracket'>{</span><span class='literal'>u8"\u03C0"</span> <span class='comment'>/* <span class='tcode_in_codeblock'><span class='ucode'>U+03c0</span> <span class='uname'>GREEK SMALL LETTER PI</span></span> */</span>, <span class='literal'>"pi"</span><span class='curlybracket'>}</span>,
+                 std<span class='operator'>::</span>numbers<span class='operator'>::</span>pi_v<span class='anglebracket'>&lt;</span><span class='keyword'>long</span> <span class='keyword'>double</span><span class='anglebracket'>&gt;</span><span class='anglebracket'>&gt;</span> <span class='curlybracket'>{</span>
+<span class='curlybracket'>}</span> <span id='lib:pi_'><a class='hidden_link' href='#lib:pi' title='5.2.2&emsp;Module mp_&shy;units.core synopsis&emsp;[mp.units.core.syn]'>pi</a></span>;
+
+<span class='keyword'>inline</span> <span class='keyword'>constexpr</span> <span class='keyword'>auto</span> \u03C0 <span class='comment'>/* <span class='tcode_in_codeblock'><span class='ucode'>U+03c0</span> <span class='uname'>GREEK SMALL LETTER PI</span></span> */</span> <span class='operator'>=</span> pi;
+
+<span class='comment'>// <a href='qty.unit.traits.html' title='5.4.4.3&emsp;Traits'>[qty.<span class='shy'></span>unit.<span class='shy'></span>traits]</a>, traits</span>
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><a href='qty.unit.concepts.html#concept:Unit' title='5.4.4.4&emsp;Concepts&emsp;[qty.unit.concepts]'><span id='conceptref:Unit'><span class='tcode_in_codeblock'>Unit</span></span></a> <span class='keyword'>auto</span> U<span class='anglebracket'>&gt;</span>
+<span class='keyword'>constexpr</span> <span class='keyword'>bool</span> space_before_unit_symbol <span class='operator'>=</span> <span class='literal'>true</span>;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><span class='anglebracket'>&gt;</span>
+<span class='keyword'>inline</span> <span class='keyword'>constexpr</span> <span class='keyword'>bool</span> <a class='index' id='lib:space_before_unit_symbol,one'></a>space_before_unit_symbol<span class='anglebracket'>&lt;</span>one<span class='anglebracket'>&gt;</span> <span class='operator'>=</span> <span class='literal'>false</span>;
+
+<span class='comment'>// <a href='qty.unit.concepts.html' title='5.4.4.4&emsp;Concepts'>[qty.<span class='shy'></span>unit.<span class='shy'></span>concepts]</a>, concepts</span>
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><span class='keyword'>typename</span> T<span class='anglebracket'>&gt;</span>
+<span class='keyword'>concept</span> Unit <span class='operator'>=</span> <i ><span class='texttt'>see below</span></i>;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><span class='keyword'>typename</span> T<span class='anglebracket'>&gt;</span>
+<span class='keyword'>concept</span> PrefixableUnit <span class='operator'>=</span> <i ><span class='texttt'>see below</span></i>;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><span class='keyword'>typename</span> T<span class='anglebracket'>&gt;</span>
+<span class='keyword'>concept</span> AssociatedUnit <span class='operator'>=</span> <i ><span class='texttt'>see below</span></i>;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><span class='keyword'>typename</span> U, <span class='keyword'>auto</span> QS<span class='anglebracket'>&gt;</span>
+<span class='keyword'>concept</span> UnitOf <span class='operator'>=</span> <i ><span class='texttt'>see below</span></i>;
+
+<span class='comment'>// <a href='qty.unit.types.html' title='5.4.4.5&emsp;Types'>[qty.<span class='shy'></span>unit.<span class='shy'></span>types]</a>, types</span>
+
+<span class='comment'>// <a href='qty.scaled.unit.html' title='5.4.4.5.2&emsp;Scaled'>[qty.<span class='shy'></span>scaled.<span class='shy'></span>unit]</a>, scaled</span>
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><a href='qty.unit.mag.concepts.html#concept:UnitMagnitude' title='5.4.4.2.2&emsp;Concepts&emsp;[qty.unit.mag.concepts]'><span id='conceptref:UnitMagnitude___'><span class='tcode_in_codeblock'>UnitMagnitude</span></span></a> <span class='keyword'>auto</span> M, <a href='qty.unit.concepts.html#concept:Unit' title='5.4.4.4&emsp;Concepts&emsp;[qty.unit.concepts]'><span id='conceptref:Unit_'><span class='tcode_in_codeblock'>Unit</span></span></a> U<span class='anglebracket'>&gt;</span>
+  <span class='keyword'>requires</span> <i ><span class='texttt'>see below</span></i>
+<span class='keyword'>struct</span> scaled_unit;
+
+<span class='comment'>// <a href='qty.named.unit.html' title='5.4.4.5.3&emsp;Named'>[qty.<span class='shy'></span>named.<span class='shy'></span>unit]</a>, named</span>
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span>symbol_text Symbol, <span class='keyword'>auto</span><span class='operator'>.</span><span class='operator'>.</span><span class='operator'>.</span><span class='anglebracket'>&gt;</span>
+<span class='keyword'>struct</span> named_unit;  <span class='comment'>// <i >not defined</i></span>
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span>symbol_text Symbol, <a class='index' id='conceptref:QuantityKindSpec'></a><i >QuantityKindSpec</i> <span class='keyword'>auto</span> QS<span class='anglebracket'>&gt;</span>
+  <span class='keyword'>requires</span> <i ><span class='texttt'>see below</span></i>
+<span class='keyword'>struct</span> named_unit<span class='anglebracket'>&lt;</span>Symbol, QS<span class='anglebracket'>&gt;</span>;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span>symbol_text Symbol, <a class='index' id='conceptref:QuantityKindSpec_'></a><i >QuantityKindSpec</i> <span class='keyword'>auto</span> QS, <a href='qty.pt.orig.concepts.html#concept:PointOrigin' title='5.7.2.2&emsp;Concepts&emsp;[qty.pt.orig.concepts]'><span id='conceptref:PointOrigin'><span class='tcode_in_codeblock'>PointOrigin</span></span></a> <span class='keyword'>auto</span> PO<span class='anglebracket'>&gt;</span>
+  <span class='keyword'>requires</span> <i ><span class='texttt'>see below</span></i>
+<span class='keyword'>struct</span> named_unit<span class='anglebracket'>&lt;</span>Symbol, QS, PO<span class='anglebracket'>&gt;</span>;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span>symbol_text Symbol<span class='anglebracket'>&gt;</span>
+  <span class='keyword'>requires</span> <i ><span class='texttt'>see below</span></i>
+<span class='keyword'>struct</span> named_unit<span class='anglebracket'>&lt;</span>Symbol<span class='anglebracket'>&gt;</span>;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span>symbol_text Symbol, <a href='qty.unit.concepts.html#concept:Unit' title='5.4.4.4&emsp;Concepts&emsp;[qty.unit.concepts]'><span id='conceptref:Unit__'><span class='tcode_in_codeblock'>Unit</span></span></a> <span class='keyword'>auto</span> U<span class='anglebracket'>&gt;</span>
+  <span class='keyword'>requires</span> <i ><span class='texttt'>see below</span></i>
+<span class='keyword'>struct</span> named_unit<span class='anglebracket'>&lt;</span>Symbol, U<span class='anglebracket'>&gt;</span>;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span>symbol_text Symbol, <a href='qty.unit.concepts.html#concept:Unit' title='5.4.4.4&emsp;Concepts&emsp;[qty.unit.concepts]'><span id='conceptref:Unit___'><span class='tcode_in_codeblock'>Unit</span></span></a> <span class='keyword'>auto</span> U, <a href='qty.pt.orig.concepts.html#concept:PointOrigin' title='5.7.2.2&emsp;Concepts&emsp;[qty.pt.orig.concepts]'><span id='conceptref:PointOrigin_'><span class='tcode_in_codeblock'>PointOrigin</span></span></a> <span class='keyword'>auto</span> PO<span class='anglebracket'>&gt;</span>
+  <span class='keyword'>requires</span> <i ><span class='texttt'>see below</span></i>
+<span class='keyword'>struct</span> named_unit<span class='anglebracket'>&lt;</span>Symbol, U, PO<span class='anglebracket'>&gt;</span>;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span>symbol_text Symbol, <a href='qty.unit.concepts.html#concept:AssociatedUnit' title='5.4.4.4&emsp;Concepts&emsp;[qty.unit.concepts]'><span id='conceptref:AssociatedUnit'><span class='tcode_in_codeblock'>AssociatedUnit</span></span></a> <span class='keyword'>auto</span> U, <a class='index' id='conceptref:QuantityKindSpec__'></a><i >QuantityKindSpec</i> <span class='keyword'>auto</span> QS<span class='anglebracket'>&gt;</span>
+  <span class='keyword'>requires</span> <i ><span class='texttt'>see below</span></i>
+<span class='keyword'>struct</span> named_unit<span class='anglebracket'>&lt;</span>Symbol, U, QS<span class='anglebracket'>&gt;</span>;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span>symbol_text Symbol, <a href='qty.unit.concepts.html#concept:AssociatedUnit' title='5.4.4.4&emsp;Concepts&emsp;[qty.unit.concepts]'><span id='conceptref:AssociatedUnit_'><span class='tcode_in_codeblock'>AssociatedUnit</span></span></a> <span class='keyword'>auto</span> U, <a class='index' id='conceptref:QuantityKindSpec___'></a><i >QuantityKindSpec</i> <span class='keyword'>auto</span> QS,
+         <a href='qty.pt.orig.concepts.html#concept:PointOrigin' title='5.7.2.2&emsp;Concepts&emsp;[qty.pt.orig.concepts]'><span id='conceptref:PointOrigin__'><span class='tcode_in_codeblock'>PointOrigin</span></span></a> <span class='keyword'>auto</span> PO<span class='anglebracket'>&gt;</span>
+  <span class='keyword'>requires</span> <i ><span class='texttt'>see below</span></i>
+<span class='keyword'>struct</span> named_unit<span class='anglebracket'>&lt;</span>Symbol, U, QS, PO<span class='anglebracket'>&gt;</span>;
+
+<span class='comment'>// <a href='qty.prefixed.unit.html' title='5.4.4.5.4&emsp;Prefixed'>[qty.<span class='shy'></span>prefixed.<span class='shy'></span>unit]</a>, prefixed</span>
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span>symbol_text Symbol, <a href='qty.unit.mag.concepts.html#concept:UnitMagnitude' title='5.4.4.2.2&emsp;Concepts&emsp;[qty.unit.mag.concepts]'><span id='conceptref:UnitMagnitude____'><span class='tcode_in_codeblock'>UnitMagnitude</span></span></a> <span class='keyword'>auto</span> M, <a href='qty.unit.concepts.html#concept:PrefixableUnit' title='5.4.4.4&emsp;Concepts&emsp;[qty.unit.concepts]'><span id='conceptref:PrefixableUnit'><span class='tcode_in_codeblock'>PrefixableUnit</span></span></a> <span class='keyword'>auto</span> U<span class='anglebracket'>&gt;</span>
+  <span class='keyword'>requires</span> <i ><span class='texttt'>see below</span></i>
+<span class='keyword'>struct</span> prefixed_unit;
+
+<span class='comment'>// <a href='qty.common.unit.html' title='5.4.4.5.5&emsp;Common'>[qty.<span class='shy'></span>common.<span class='shy'></span>unit]</a>, common</span>
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><a href='qty.unit.concepts.html#concept:Unit' title='5.4.4.4&emsp;Concepts&emsp;[qty.unit.concepts]'><span id='conceptref:Unit____'><span class='tcode_in_codeblock'>Unit</span></span></a> U1, <a href='qty.unit.concepts.html#concept:Unit' title='5.4.4.4&emsp;Concepts&emsp;[qty.unit.concepts]'><span id='conceptref:Unit_____'><span class='tcode_in_codeblock'>Unit</span></span></a> U2, <a href='qty.unit.concepts.html#concept:Unit' title='5.4.4.4&emsp;Concepts&emsp;[qty.unit.concepts]'><span id='conceptref:Unit______'><span class='tcode_in_codeblock'>Unit</span></span></a><span class='operator'>.</span><span class='operator'>.</span><span class='operator'>.</span> Rest<span class='anglebracket'>&gt;</span>
+<span class='keyword'>struct</span> common_unit;
+
+<span class='comment'>// <a href='qty.derived.unit.html' title='5.4.4.5.6&emsp;Derived'>[qty.<span class='shy'></span>derived.<span class='shy'></span>unit]</a>, derived</span>
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><a class='index' id='conceptref:SymbolicConstant__'></a><i >SymbolicConstant</i><span class='operator'>.</span><span class='operator'>.</span><span class='operator'>.</span> Expr<span class='anglebracket'>&gt;</span>
+<span class='keyword'>struct</span> derived_unit;
+
+<span class='comment'>// <a href='qty.unit.one.html' title='5.4.4.5.7&emsp;One'>[qty.<span class='shy'></span>unit.<span class='shy'></span>one]</a>, one</span>
+
+<span class='keyword'>struct</span> one;
+<span class='keyword'>inline</span> <span class='keyword'>constexpr</span> one <span id='lib:one'><a class='hidden_link' href='qty.unit.one.html#lib:one' title='5.4.4.5.7&emsp;One&emsp;[qty.unit.one]'>one</a></span><span class='curlybracket'>{</span><span class='curlybracket'>}</span>;
+
+<span class='comment'>// named derived units of a quantity of dimension one</span>
+
+<span class='keyword'>inline</span> <span class='keyword'>constexpr</span> <span class='keyword'>struct</span> <span id='lib:percent'><a class='hidden_link' href='#lib:percent' title='5.2.2&emsp;Module mp_&shy;units.core synopsis&emsp;[mp.units.core.syn]'>percent</a></span> <span class='keyword'>final</span> <span class='operator'>:</span> named_unit<span class='anglebracket'>&lt;</span><span class='literal'>"%"</span>, mag_ratio<span class='anglebracket'>&lt;</span><span class='literal'>1</span>, <span class='literal'>100</span><span class='anglebracket'>&gt;</span> <span class='operator'>*</span> one<span class='anglebracket'>&gt;</span> <span class='curlybracket'>{</span>
+<span class='curlybracket'>}</span> <span id='lib:percent_'><a class='hidden_link' href='#lib:percent' title='5.2.2&emsp;Module mp_&shy;units.core synopsis&emsp;[mp.units.core.syn]'>percent</a></span>;
+
+<span class='keyword'>inline</span> <span class='keyword'>constexpr</span> <span class='keyword'>struct</span> <span id='lib:per_mille'><a class='hidden_link' href='#lib:per_mille' title='5.2.2&emsp;Module mp_&shy;units.core synopsis&emsp;[mp.units.core.syn]'>per_mille</a></span> <span class='keyword'>final</span> <span class='operator'>:</span>
+    named_unit<span class='anglebracket'>&lt;</span>symbol_text<span class='curlybracket'>{</span><span class='literal'>u8"\u2030"</span> <span class='comment'>/* <span class='tcode_in_codeblock'><span class='ucode'>U+2030</span> <span class='uname'>PER MILLE SIGN</span></span> */</span>, <span class='literal'>"%o"</span><span class='curlybracket'>}</span>,
+               mag_ratio<span class='anglebracket'>&lt;</span><span class='literal'>1</span>, <span class='literal'>1000</span><span class='anglebracket'>&gt;</span> <span class='operator'>*</span> one<span class='anglebracket'>&gt;</span> <span class='curlybracket'>{</span>
+<span class='curlybracket'>}</span> <span id='lib:per_mille_'><a class='hidden_link' href='#lib:per_mille' title='5.2.2&emsp;Module mp_&shy;units.core synopsis&emsp;[mp.units.core.syn]'>per_mille</a></span>;
+
+<span class='keyword'>inline</span> <span class='keyword'>constexpr</span> <span class='keyword'>struct</span> <span id='lib:parts_per_million'><a class='hidden_link' href='#lib:parts_per_million' title='5.2.2&emsp;Module mp_&shy;units.core synopsis&emsp;[mp.units.core.syn]'>parts_per_million</a></span> <span class='keyword'>final</span> <span class='operator'>:</span>
+    named_unit<span class='anglebracket'>&lt;</span><span class='literal'>"ppm"</span>, mag_ratio<span class='anglebracket'>&lt;</span><span class='literal'>1</span>, <span class='literal'>1'000'000</span><span class='anglebracket'>&gt;</span> <span class='operator'>*</span> one<span class='anglebracket'>&gt;</span> <span class='curlybracket'>{</span>
+<span class='curlybracket'>}</span> <span id='lib:parts_per_million_'><a class='hidden_link' href='#lib:parts_per_million' title='5.2.2&emsp;Module mp_&shy;units.core synopsis&emsp;[mp.units.core.syn]'>parts_per_million</a></span>;
+
+<span class='keyword'>inline</span> <span class='keyword'>constexpr</span> <span class='keyword'>auto</span> <span id='lib:ppm'><a class='hidden_link' href='#lib:ppm' title='5.2.2&emsp;Module mp_&shy;units.core synopsis&emsp;[mp.units.core.syn]'>ppm</a></span> <span class='operator'>=</span> parts_per_million;
+
+<span class='comment'>// <a href='qty.unit.ops.html' title='5.4.4.6&emsp;Operations'>[qty.<span class='shy'></span>unit.<span class='shy'></span>ops]</a>, operations</span>
+
+<span class='keyword'>consteval</span> <a href='qty.unit.concepts.html#concept:Unit' title='5.4.4.4&emsp;Concepts&emsp;[qty.unit.concepts]'><span id='conceptref:Unit_______'><span class='tcode_in_codeblock'>Unit</span></span></a> <span class='keyword'>auto</span> inverse<span class='parenthesis'>(</span><a href='qty.unit.concepts.html#concept:Unit' title='5.4.4.4&emsp;Concepts&emsp;[qty.unit.concepts]'><span id='conceptref:Unit________'><span class='tcode_in_codeblock'>Unit</span></span></a> <span class='keyword'>auto</span> u<span class='parenthesis'>)</span>;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span>std<span class='operator'>::</span>intmax_t Num, std<span class='operator'>::</span>intmax_t Den <span class='operator'>=</span> <span class='literal'>1</span>, <a href='qty.unit.concepts.html#concept:Unit' title='5.4.4.4&emsp;Concepts&emsp;[qty.unit.concepts]'><span id='conceptref:Unit_________'><span class='tcode_in_codeblock'>Unit</span></span></a> U<span class='anglebracket'>&gt;</span>
+  <span class='keyword'>requires</span> <i ><span class='texttt'>see below</span></i>
+<span class='keyword'>consteval</span> <a href='qty.unit.concepts.html#concept:Unit' title='5.4.4.4&emsp;Concepts&emsp;[qty.unit.concepts]'><span id='conceptref:Unit__________'><span class='tcode_in_codeblock'>Unit</span></span></a> <span class='keyword'>auto</span> pow<span class='parenthesis'>(</span>U u<span class='parenthesis'>)</span>;
+<span class='keyword'>consteval</span> <a href='qty.unit.concepts.html#concept:Unit' title='5.4.4.4&emsp;Concepts&emsp;[qty.unit.concepts]'><span id='conceptref:Unit___________'><span class='tcode_in_codeblock'>Unit</span></span></a> <span class='keyword'>auto</span> sqrt<span class='parenthesis'>(</span><a href='qty.unit.concepts.html#concept:Unit' title='5.4.4.4&emsp;Concepts&emsp;[qty.unit.concepts]'><span id='conceptref:Unit____________'><span class='tcode_in_codeblock'>Unit</span></span></a> <span class='keyword'>auto</span> u<span class='parenthesis'>)</span>;
+<span class='keyword'>consteval</span> <a href='qty.unit.concepts.html#concept:Unit' title='5.4.4.4&emsp;Concepts&emsp;[qty.unit.concepts]'><span id='conceptref:Unit_____________'><span class='tcode_in_codeblock'>Unit</span></span></a> <span class='keyword'>auto</span> cbrt<span class='parenthesis'>(</span><a href='qty.unit.concepts.html#concept:Unit' title='5.4.4.4&emsp;Concepts&emsp;[qty.unit.concepts]'><span id='conceptref:Unit______________'><span class='tcode_in_codeblock'>Unit</span></span></a> <span class='keyword'>auto</span> u<span class='parenthesis'>)</span>;
+<span class='keyword'>consteval</span> <a href='qty.unit.concepts.html#concept:Unit' title='5.4.4.4&emsp;Concepts&emsp;[qty.unit.concepts]'><span id='conceptref:Unit_______________'><span class='tcode_in_codeblock'>Unit</span></span></a> <span class='keyword'>auto</span> square<span class='parenthesis'>(</span><a href='qty.unit.concepts.html#concept:Unit' title='5.4.4.4&emsp;Concepts&emsp;[qty.unit.concepts]'><span id='conceptref:Unit________________'><span class='tcode_in_codeblock'>Unit</span></span></a> <span class='keyword'>auto</span> u<span class='parenthesis'>)</span>;
+<span class='keyword'>consteval</span> <a href='qty.unit.concepts.html#concept:Unit' title='5.4.4.4&emsp;Concepts&emsp;[qty.unit.concepts]'><span id='conceptref:Unit_________________'><span class='tcode_in_codeblock'>Unit</span></span></a> <span class='keyword'>auto</span> cubic<span class='parenthesis'>(</span><a href='qty.unit.concepts.html#concept:Unit' title='5.4.4.4&emsp;Concepts&emsp;[qty.unit.concepts]'><span id='conceptref:Unit__________________'><span class='tcode_in_codeblock'>Unit</span></span></a> <span class='keyword'>auto</span> u<span class='parenthesis'>)</span>;
+
+<span class='comment'>// <a href='qty.unit.cmp.html' title='5.4.4.7&emsp;Comparison'>[qty.<span class='shy'></span>unit.<span class='shy'></span>cmp]</a>, comparison</span>
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><a href='qty.unit.concepts.html#concept:Unit' title='5.4.4.4&emsp;Concepts&emsp;[qty.unit.concepts]'><span id='conceptref:Unit___________________'><span class='tcode_in_codeblock'>Unit</span></span></a> From, <a href='qty.unit.concepts.html#concept:Unit' title='5.4.4.4&emsp;Concepts&emsp;[qty.unit.concepts]'><span id='conceptref:Unit____________________'><span class='tcode_in_codeblock'>Unit</span></span></a> To<span class='anglebracket'>&gt;</span>
+<span class='keyword'>consteval</span> <span class='keyword'>bool</span> convertible<span class='parenthesis'>(</span>From from, To to<span class='parenthesis'>)</span>;
+
+<span class='comment'>// <a href='qty.unit.obs.html' title='5.4.4.8&emsp;Observers'>[qty.<span class='shy'></span>unit.<span class='shy'></span>obs]</a>, observers</span>
+
+<span class='keyword'>consteval</span> <a href='qty.spec.concepts.html#concept:QuantitySpec' title='5.4.3.2&emsp;Concepts&emsp;[qty.spec.concepts]'><span id='conceptref:QuantitySpec_____________________'><span class='tcode_in_codeblock'>QuantitySpec</span></span></a> <span class='keyword'>auto</span> get_quantity_spec<span class='parenthesis'>(</span><a href='qty.unit.concepts.html#concept:AssociatedUnit' title='5.4.4.4&emsp;Concepts&emsp;[qty.unit.concepts]'><span id='conceptref:AssociatedUnit__'><span class='tcode_in_codeblock'>AssociatedUnit</span></span></a> <span class='keyword'>auto</span> u<span class='parenthesis'>)</span>;
+<span class='keyword'>consteval</span> <a href='qty.unit.concepts.html#concept:Unit' title='5.4.4.4&emsp;Concepts&emsp;[qty.unit.concepts]'><span id='conceptref:Unit_____________________'><span class='tcode_in_codeblock'>Unit</span></span></a> <span class='keyword'>auto</span> get_unit<span class='parenthesis'>(</span><a href='qty.unit.concepts.html#concept:AssociatedUnit' title='5.4.4.4&emsp;Concepts&emsp;[qty.unit.concepts]'><span id='conceptref:AssociatedUnit___'><span class='tcode_in_codeblock'>AssociatedUnit</span></span></a> <span class='keyword'>auto</span> u<span class='parenthesis'>)</span>;
+
+<span class='keyword'>consteval</span> <a href='qty.unit.concepts.html#concept:Unit' title='5.4.4.4&emsp;Concepts&emsp;[qty.unit.concepts]'><span id='conceptref:Unit______________________'><span class='tcode_in_codeblock'>Unit</span></span></a> <span class='keyword'>auto</span> get_common_unit<span class='parenthesis'>(</span><a href='qty.unit.concepts.html#concept:Unit' title='5.4.4.4&emsp;Concepts&emsp;[qty.unit.concepts]'><span id='conceptref:Unit_______________________'><span class='tcode_in_codeblock'>Unit</span></span></a> <span class='keyword'>auto</span><span class='operator'>.</span><span class='operator'>.</span><span class='operator'>.</span> us<span class='parenthesis'>)</span>
+  <span class='keyword'>requires</span> <i ><span class='texttt'>see below</span></i>;
+
+<span class='comment'>// <a href='qty.unit.sym.fmt.html' title='5.4.4.10&emsp;Symbol formatting'>[qty.<span class='shy'></span>unit.<span class='shy'></span>sym.<span class='shy'></span>fmt]</a>, symbol formatting</span>
+
+<span class='keyword'>enum</span> <span class='keyword'>class</span> <span id='lib:unit_symbol_solidus'><a class='hidden_link' href='#lib:unit_symbol_solidus' title='5.2.2&emsp;Module mp_&shy;units.core synopsis&emsp;[mp.units.core.syn]'>unit_symbol_solidus</a></span> <span class='operator'>:</span> std<span class='operator'>::</span>int8_t <span class='curlybracket'>{</span>
+  one_denominator,
+  always,
+  never,
+  default_denominator <span class='operator'>=</span> one_denominator
+<span class='curlybracket'>}</span>;
+
+<span class='keyword'>enum</span> <span class='keyword'>class</span> <span id='lib:unit_symbol_separator'><a class='hidden_link' href='#lib:unit_symbol_separator' title='5.2.2&emsp;Module mp_&shy;units.core synopsis&emsp;[mp.units.core.syn]'>unit_symbol_separator</a></span> <span class='operator'>:</span> std<span class='operator'>::</span>int8_t <span class='curlybracket'>{</span>
+  space,
+  half_high_dot,
+  default_separator <span class='operator'>=</span> space
+<span class='curlybracket'>}</span>;
+
+<span class='keyword'>struct</span> <span id='lib:unit_symbol_formatting'><a class='hidden_link' href='#lib:unit_symbol_formatting' title='5.2.2&emsp;Module mp_&shy;units.core synopsis&emsp;[mp.units.core.syn]'>unit_symbol_formatting</a></span> <span class='curlybracket'>{</span>
+  character_set char_set <span class='operator'>=</span> character_set<span class='operator'>::</span>default_character_set;
+  unit_symbol_solidus solidus <span class='operator'>=</span> unit_symbol_solidus<span class='operator'>::</span>default_denominator;
+  unit_symbol_separator separator <span class='operator'>=</span> unit_symbol_separator<span class='operator'>::</span>default_separator;
+<span class='curlybracket'>}</span>;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><span class='keyword'>typename</span> CharT <span class='operator'>=</span> <span class='keyword'>char</span>, std<span class='operator'>::</span>output_iterator<span class='anglebracket'>&lt;</span>CharT<span class='anglebracket'>&gt;</span> Out, <a href='qty.unit.concepts.html#concept:Unit' title='5.4.4.4&emsp;Concepts&emsp;[qty.unit.concepts]'><span id='conceptref:Unit________________________'><span class='tcode_in_codeblock'>Unit</span></span></a> U<span class='anglebracket'>&gt;</span>
+<span class='keyword'>constexpr</span> Out unit_symbol_to<span class='parenthesis'>(</span>Out out, U u, <span class='keyword'>const</span> unit_symbol_formatting<span class='operator'>&amp;</span> fmt <span class='operator'>=</span> <span class='curlybracket'>{</span><span class='curlybracket'>}</span><span class='parenthesis'>)</span>;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span>unit_symbol_formatting fmt <span class='operator'>=</span> <span class='curlybracket'>{</span><span class='curlybracket'>}</span>, <span class='keyword'>typename</span> CharT <span class='operator'>=</span> <span class='keyword'>char</span>, <a href='qty.unit.concepts.html#concept:Unit' title='5.4.4.4&emsp;Concepts&emsp;[qty.unit.concepts]'><span id='conceptref:Unit_________________________'><span class='tcode_in_codeblock'>Unit</span></span></a> U<span class='anglebracket'>&gt;</span>
+<span class='keyword'>consteval</span> std<span class='operator'>::</span>string_view unit_symbol<span class='parenthesis'>(</span>U<span class='parenthesis'>)</span>;
+
+<span class='comment'>// <a href='qty.ref.concepts.html' title='5.4.5&emsp;Concepts'>[qty.<span class='shy'></span>ref.<span class='shy'></span>concepts]</a>, concepts</span>
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><span class='keyword'>typename</span> T<span class='anglebracket'>&gt;</span>
+<span class='keyword'>concept</span> <a class='hidden_link' href='qty.ref.concepts.html#concept:Reference' title='5.4.5&emsp;Concepts&emsp;[qty.ref.concepts]'><span id='concept:Reference'><span id='lib:Reference'><span class='tcode_in_codeblock'>Reference</span></span></span></a> <span class='operator'>=</span> <i ><span class='texttt'>see below</span></i>;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><span class='keyword'>typename</span> T, <span class='keyword'>auto</span> QS<span class='anglebracket'>&gt;</span>
+<span class='keyword'>concept</span> <a class='hidden_link' href='qty.ref.concepts.html#concept:ReferenceOf' title='5.4.5&emsp;Concepts&emsp;[qty.ref.concepts]'><span id='concept:ReferenceOf'><span id='lib:ReferenceOf'><span class='tcode_in_codeblock'>ReferenceOf</span></span></span></a> <span class='operator'>=</span> <i ><span class='texttt'>see below</span></i>;
+
+<span class='comment'>// <a href='qty.ref.syn.html' title='5.4.6&emsp;Class template reference'>[qty.<span class='shy'></span>ref.<span class='shy'></span>syn]</a>, class template <span class='tcode_in_codeblock'>reference</span></span>
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><a href='qty.spec.concepts.html#concept:QuantitySpec' title='5.4.3.2&emsp;Concepts&emsp;[qty.spec.concepts]'><span id='conceptref:QuantitySpec______________________'><span class='tcode_in_codeblock'>QuantitySpec</span></span></a> Q, <a href='qty.unit.concepts.html#concept:Unit' title='5.4.4.4&emsp;Concepts&emsp;[qty.unit.concepts]'><span id='conceptref:Unit__________________________'><span class='tcode_in_codeblock'>Unit</span></span></a> U<span class='anglebracket'>&gt;</span>
+<span class='keyword'>struct</span> reference;
+
+<span class='comment'>// <a href='qty.ref.ops.html' title='5.4.7&emsp;Operations'>[qty.<span class='shy'></span>ref.<span class='shy'></span>ops]</a>, operations</span>
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><span class='keyword'>typename</span> FwdRep, <a href='qty.ref.concepts.html#concept:Reference' title='5.4.5&emsp;Concepts&emsp;[qty.ref.concepts]'><span id='conceptref:Reference'><span class='tcode_in_codeblock'>Reference</span></span></a> R,
+         <a href='qty.rep.concepts.html#concept:RepresentationOf' title='5.5.4&emsp;Concepts&emsp;[qty.rep.concepts]'><span id='conceptref:RepresentationOf'><span class='tcode_in_codeblock'>RepresentationOf</span></span></a><span class='anglebracket'>&lt;</span>get_quantity_spec<span class='parenthesis'>(</span>R<span class='curlybracket'>{</span><span class='curlybracket'>}</span><span class='parenthesis'>)</span><span class='anglebracket'>&gt;</span> Rep <span class='operator'>=</span> std<span class='operator'>::</span>remove_cvref_t<span class='anglebracket'>&lt;</span>FwdRep<span class='anglebracket'>&gt;</span><span class='anglebracket'>&gt;</span>
+  <span class='keyword'>requires</span><span class='parenthesis'>(</span><span class='operator'>!</span><a class='index' id='conceptref:OffsetUnit'></a><i >OffsetUnit</i><span class='anglebracket'>&lt;</span><span class='keyword'>decltype</span><span class='parenthesis'>(</span>get_unit<span class='parenthesis'>(</span>R<span class='curlybracket'>{</span><span class='curlybracket'>}</span><span class='parenthesis'>)</span><span class='parenthesis'>)</span><span class='anglebracket'>&gt;</span><span class='parenthesis'>)</span>
+<span class='keyword'>constexpr</span> quantity<span class='anglebracket'>&lt;</span>R<span class='curlybracket'>{</span><span class='curlybracket'>}</span>, Rep<span class='anglebracket'>&gt;</span> <span class='keyword'>operator</span><span class='operator'>*</span><span class='parenthesis'>(</span>FwdRep<span class='operator'>&amp;</span><span class='operator'>&amp;</span> lhs, R r<span class='parenthesis'>)</span>;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><span class='keyword'>typename</span> FwdRep, <a href='qty.ref.concepts.html#concept:Reference' title='5.4.5&emsp;Concepts&emsp;[qty.ref.concepts]'><span id='conceptref:Reference_'><span class='tcode_in_codeblock'>Reference</span></span></a> R,
+         <a href='qty.rep.concepts.html#concept:RepresentationOf' title='5.5.4&emsp;Concepts&emsp;[qty.rep.concepts]'><span id='conceptref:RepresentationOf_'><span class='tcode_in_codeblock'>RepresentationOf</span></span></a><span class='anglebracket'>&lt;</span>get_quantity_spec<span class='parenthesis'>(</span>R<span class='curlybracket'>{</span><span class='curlybracket'>}</span><span class='parenthesis'>)</span><span class='anglebracket'>&gt;</span> Rep <span class='operator'>=</span> std<span class='operator'>::</span>remove_cvref_t<span class='anglebracket'>&lt;</span>FwdRep<span class='anglebracket'>&gt;</span><span class='anglebracket'>&gt;</span>
+  <span class='keyword'>requires</span><span class='parenthesis'>(</span><span class='operator'>!</span><a class='index' id='conceptref:OffsetUnit_'></a><i >OffsetUnit</i><span class='anglebracket'>&lt;</span><span class='keyword'>decltype</span><span class='parenthesis'>(</span>get_unit<span class='parenthesis'>(</span>R<span class='curlybracket'>{</span><span class='curlybracket'>}</span><span class='parenthesis'>)</span><span class='parenthesis'>)</span><span class='anglebracket'>&gt;</span><span class='parenthesis'>)</span>
+<span class='keyword'>constexpr</span> <a href='qty.syn.html#concept:Quantity' title='5.6.3&emsp;Class template quantity&emsp;[qty.syn]'><span id='conceptref:Quantity'><span class='tcode_in_codeblock'>Quantity</span></span></a> <span class='keyword'>auto</span> <span class='keyword'>operator</span><span class='operator'>/</span><span class='parenthesis'>(</span>FwdRep<span class='operator'>&amp;</span><span class='operator'>&amp;</span> lhs, R<span class='parenthesis'>)</span>;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><span class='keyword'>typename</span> FwdQ, <a href='qty.ref.concepts.html#concept:Reference' title='5.4.5&emsp;Concepts&emsp;[qty.ref.concepts]'><span id='conceptref:Reference__'><span class='tcode_in_codeblock'>Reference</span></span></a> R, <a href='qty.syn.html#concept:Quantity' title='5.6.3&emsp;Class template quantity&emsp;[qty.syn]'><span id='conceptref:Quantity_'><span class='tcode_in_codeblock'>Quantity</span></span></a> Q <span class='operator'>=</span> std<span class='operator'>::</span>remove_cvref_t<span class='anglebracket'>&lt;</span>FwdQ<span class='anglebracket'>&gt;</span><span class='anglebracket'>&gt;</span>
+<span class='keyword'>constexpr</span> <a href='qty.syn.html#concept:Quantity' title='5.6.3&emsp;Class template quantity&emsp;[qty.syn]'><span id='conceptref:Quantity__'><span class='tcode_in_codeblock'>Quantity</span></span></a> <span class='keyword'>auto</span> <span class='keyword'>operator</span><span class='operator'>*</span><span class='parenthesis'>(</span>FwdQ<span class='operator'>&amp;</span><span class='operator'>&amp;</span> q, R<span class='parenthesis'>)</span>;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><span class='keyword'>typename</span> FwdQ, <a href='qty.ref.concepts.html#concept:Reference' title='5.4.5&emsp;Concepts&emsp;[qty.ref.concepts]'><span id='conceptref:Reference___'><span class='tcode_in_codeblock'>Reference</span></span></a> R, <a href='qty.syn.html#concept:Quantity' title='5.6.3&emsp;Class template quantity&emsp;[qty.syn]'><span id='conceptref:Quantity___'><span class='tcode_in_codeblock'>Quantity</span></span></a> Q <span class='operator'>=</span> std<span class='operator'>::</span>remove_cvref_t<span class='anglebracket'>&lt;</span>FwdQ<span class='anglebracket'>&gt;</span><span class='anglebracket'>&gt;</span>
+<span class='keyword'>constexpr</span> <a href='qty.syn.html#concept:Quantity' title='5.6.3&emsp;Class template quantity&emsp;[qty.syn]'><span id='conceptref:Quantity____'><span class='tcode_in_codeblock'>Quantity</span></span></a> <span class='keyword'>auto</span> <span class='keyword'>operator</span><span class='operator'>/</span><span class='parenthesis'>(</span>FwdQ<span class='operator'>&amp;</span><span class='operator'>&amp;</span> q, R<span class='parenthesis'>)</span>;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><a href='qty.ref.concepts.html#concept:Reference' title='5.4.5&emsp;Concepts&emsp;[qty.ref.concepts]'><span id='conceptref:Reference____'><span class='tcode_in_codeblock'>Reference</span></span></a> R, <span class='keyword'>typename</span> Rep<span class='anglebracket'>&gt;</span>
+  <span class='keyword'>requires</span> <a href='qty.rep.concepts.html#concept:RepresentationOf' title='5.5.4&emsp;Concepts&emsp;[qty.rep.concepts]'><span id='conceptref:RepresentationOf__'><span class='tcode_in_codeblock'>RepresentationOf</span></span></a><span class='anglebracket'>&lt;</span>std<span class='operator'>::</span>remove_cvref_t<span class='anglebracket'>&lt;</span>Rep<span class='anglebracket'>&gt;</span>, get_quantity_spec<span class='parenthesis'>(</span>R<span class='curlybracket'>{</span><span class='curlybracket'>}</span><span class='parenthesis'>)</span><span class='anglebracket'>&gt;</span>
+<span class='keyword'>constexpr</span> <span class='keyword'>auto</span> <span class='keyword'>operator</span><span class='operator'>*</span><span class='parenthesis'>(</span>R, Rep<span class='operator'>&amp;</span><span class='operator'>&amp;</span><span class='parenthesis'>)</span> <span class='operator'>=</span> <span class='keyword'>delete</span>;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><a href='qty.ref.concepts.html#concept:Reference' title='5.4.5&emsp;Concepts&emsp;[qty.ref.concepts]'><span id='conceptref:Reference_____'><span class='tcode_in_codeblock'>Reference</span></span></a> R, <span class='keyword'>typename</span> Rep<span class='anglebracket'>&gt;</span>
+  <span class='keyword'>requires</span> <a href='qty.rep.concepts.html#concept:RepresentationOf' title='5.5.4&emsp;Concepts&emsp;[qty.rep.concepts]'><span id='conceptref:RepresentationOf___'><span class='tcode_in_codeblock'>RepresentationOf</span></span></a><span class='anglebracket'>&lt;</span>std<span class='operator'>::</span>remove_cvref_t<span class='anglebracket'>&lt;</span>Rep<span class='anglebracket'>&gt;</span>, get_quantity_spec<span class='parenthesis'>(</span>R<span class='curlybracket'>{</span><span class='curlybracket'>}</span><span class='parenthesis'>)</span><span class='anglebracket'>&gt;</span>
+<span class='keyword'>constexpr</span> <span class='keyword'>auto</span> <span class='keyword'>operator</span><span class='operator'>/</span><span class='parenthesis'>(</span>R, Rep<span class='operator'>&amp;</span><span class='operator'>&amp;</span><span class='parenthesis'>)</span> <span class='operator'>=</span> <span class='keyword'>delete</span>;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><a href='qty.ref.concepts.html#concept:Reference' title='5.4.5&emsp;Concepts&emsp;[qty.ref.concepts]'><span id='conceptref:Reference______'><span class='tcode_in_codeblock'>Reference</span></span></a> R, <span class='keyword'>typename</span> Q<span class='anglebracket'>&gt;</span>
+  <span class='keyword'>requires</span> <a href='qty.syn.html#concept:Quantity' title='5.6.3&emsp;Class template quantity&emsp;[qty.syn]'><span id='conceptref:Quantity_____'><span class='tcode_in_codeblock'>Quantity</span></span></a><span class='anglebracket'>&lt;</span>std<span class='operator'>::</span>remove_cvref_t<span class='anglebracket'>&lt;</span>Q<span class='anglebracket'>&gt;</span><span class='anglebracket'>&gt;</span>
+<span class='keyword'>constexpr</span> <span class='keyword'>auto</span> <span class='keyword'>operator</span><span class='operator'>*</span><span class='parenthesis'>(</span>R, Q<span class='operator'>&amp;</span><span class='operator'>&amp;</span><span class='parenthesis'>)</span> <span class='operator'>=</span> <span class='keyword'>delete</span>;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><a href='qty.ref.concepts.html#concept:Reference' title='5.4.5&emsp;Concepts&emsp;[qty.ref.concepts]'><span id='conceptref:Reference_______'><span class='tcode_in_codeblock'>Reference</span></span></a> R, <span class='keyword'>typename</span> Q<span class='anglebracket'>&gt;</span>
+  <span class='keyword'>requires</span> <a href='qty.syn.html#concept:Quantity' title='5.6.3&emsp;Class template quantity&emsp;[qty.syn]'><span id='conceptref:Quantity______'><span class='tcode_in_codeblock'>Quantity</span></span></a><span class='anglebracket'>&lt;</span>std<span class='operator'>::</span>remove_cvref_t<span class='anglebracket'>&lt;</span>Q<span class='anglebracket'>&gt;</span><span class='anglebracket'>&gt;</span>
+<span class='keyword'>constexpr</span> <span class='keyword'>auto</span> <span class='keyword'>operator</span><span class='operator'>/</span><span class='parenthesis'>(</span>R, Q<span class='operator'>&amp;</span><span class='operator'>&amp;</span><span class='parenthesis'>)</span> <span class='operator'>=</span> <span class='keyword'>delete</span>;
+
+<span class='comment'>// <a href='qty.ref.obs.html' title='5.4.9&emsp;Observers'>[qty.<span class='shy'></span>ref.<span class='shy'></span>obs]</a>, observers</span>
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><span class='keyword'>typename</span> Q, <span class='keyword'>typename</span> U<span class='anglebracket'>&gt;</span>
+<span class='keyword'>consteval</span> <a href='qty.spec.concepts.html#concept:QuantitySpec' title='5.4.3.2&emsp;Concepts&emsp;[qty.spec.concepts]'><span id='conceptref:QuantitySpec_______________________'><span class='tcode_in_codeblock'>QuantitySpec</span></span></a> <span class='keyword'>auto</span> get_quantity_spec<span class='parenthesis'>(</span>reference<span class='anglebracket'>&lt;</span>Q, U<span class='anglebracket'>&gt;</span><span class='parenthesis'>)</span>;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><span class='keyword'>typename</span> Q, <span class='keyword'>typename</span> U<span class='anglebracket'>&gt;</span>
+<span class='keyword'>consteval</span> <a href='qty.unit.concepts.html#concept:Unit' title='5.4.4.4&emsp;Concepts&emsp;[qty.unit.concepts]'><span id='conceptref:Unit___________________________'><span class='tcode_in_codeblock'>Unit</span></span></a> <span class='keyword'>auto</span> get_unit<span class='parenthesis'>(</span>reference<span class='anglebracket'>&lt;</span>Q, U<span class='anglebracket'>&gt;</span><span class='parenthesis'>)</span>;
+
+<span class='keyword'>consteval</span> <a href='qty.unit.concepts.html#concept:AssociatedUnit' title='5.4.4.4&emsp;Concepts&emsp;[qty.unit.concepts]'><span id='conceptref:AssociatedUnit____'><span class='tcode_in_codeblock'>AssociatedUnit</span></span></a> <span class='keyword'>auto</span> get_common_reference<span class='parenthesis'>(</span><a href='qty.unit.concepts.html#concept:AssociatedUnit' title='5.4.4.4&emsp;Concepts&emsp;[qty.unit.concepts]'><span id='conceptref:AssociatedUnit_____'><span class='tcode_in_codeblock'>AssociatedUnit</span></span></a> <span class='keyword'>auto</span> u1,
+                                                   <a href='qty.unit.concepts.html#concept:AssociatedUnit' title='5.4.4.4&emsp;Concepts&emsp;[qty.unit.concepts]'><span id='conceptref:AssociatedUnit______'><span class='tcode_in_codeblock'>AssociatedUnit</span></span></a> <span class='keyword'>auto</span> u2,
+                                                   <a href='qty.unit.concepts.html#concept:AssociatedUnit' title='5.4.4.4&emsp;Concepts&emsp;[qty.unit.concepts]'><span id='conceptref:AssociatedUnit_______'><span class='tcode_in_codeblock'>AssociatedUnit</span></span></a> <span class='keyword'>auto</span><span class='operator'>.</span><span class='operator'>.</span><span class='operator'>.</span> rest<span class='parenthesis'>)</span>
+  <span class='keyword'>requires</span> <i ><span class='texttt'>see below</span></i>;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><a href='qty.ref.concepts.html#concept:Reference' title='5.4.5&emsp;Concepts&emsp;[qty.ref.concepts]'><span id='conceptref:Reference________'><span class='tcode_in_codeblock'>Reference</span></span></a> R1, <a href='qty.ref.concepts.html#concept:Reference' title='5.4.5&emsp;Concepts&emsp;[qty.ref.concepts]'><span id='conceptref:Reference_________'><span class='tcode_in_codeblock'>Reference</span></span></a> R2, <a href='qty.ref.concepts.html#concept:Reference' title='5.4.5&emsp;Concepts&emsp;[qty.ref.concepts]'><span id='conceptref:Reference__________'><span class='tcode_in_codeblock'>Reference</span></span></a><span class='operator'>.</span><span class='operator'>.</span><span class='operator'>.</span> Rest<span class='anglebracket'>&gt;</span>
+<span class='keyword'>consteval</span> <a href='qty.ref.concepts.html#concept:Reference' title='5.4.5&emsp;Concepts&emsp;[qty.ref.concepts]'><span id='conceptref:Reference___________'><span class='tcode_in_codeblock'>Reference</span></span></a> <span class='keyword'>auto</span> get_common_reference<span class='parenthesis'>(</span>R1 r1, R2 r2, Rest<span class='operator'>.</span><span class='operator'>.</span><span class='operator'>.</span> rest<span class='parenthesis'>)</span>
+  <span class='keyword'>requires</span> <i ><span class='texttt'>see below</span></i>;
+
+<span class='comment'>// <a href='qty.rep.html' title='5.5&emsp;Representation'>[qty.<span class='shy'></span>rep]</a>, representation</span>
+
+<span class='keyword'>enum</span> <span class='keyword'>class</span> <span id='lib:quantity_character'><a class='hidden_link' href='#lib:quantity_character' title='5.2.2&emsp;Module mp_&shy;units.core synopsis&emsp;[mp.units.core.syn]'>quantity_character</a></span> <span class='curlybracket'>{</span> scalar, complex, vector, tensor <span class='curlybracket'>}</span>;
+
+<span class='comment'>// <a href='qty.rep.traits.html' title='5.5.2&emsp;Traits'>[qty.<span class='shy'></span>rep.<span class='shy'></span>traits]</a>, traits</span>
+
+<span class='comment'>// <a href='qty.fp.traits.html' title='5.5.2.1&emsp;Floating-point'>[qty.<span class='shy'></span>fp.<span class='shy'></span>traits]</a>, floating-point</span>
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><span class='keyword'>typename</span> Rep<span class='anglebracket'>&gt;</span>
+<span class='keyword'>constexpr</span> <span class='keyword'>bool</span> treat_as_floating_point <span class='operator'>=</span> <i ><span class='texttt'>see below</span></i>;
+
+<span class='comment'>// <a href='qty.char.traits.html' title='5.5.2.2&emsp;Quantity character'>[qty.<span class='shy'></span>char.<span class='shy'></span>traits]</a>, quantity character</span>
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><span class='keyword'>typename</span> T<span class='anglebracket'>&gt;</span>
+<span class='keyword'>constexpr</span> <span class='keyword'>bool</span> disable_scalar <span class='operator'>=</span> <span class='literal'>false</span>;
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><span class='anglebracket'>&gt;</span>
+<span class='keyword'>inline</span> <span class='keyword'>constexpr</span> <span class='keyword'>bool</span> <a class='index' id='lib:disable_scalar,bool'></a>disable_scalar<span class='anglebracket'>&lt;</span><span class='keyword'>bool</span><span class='anglebracket'>&gt;</span> <span class='operator'>=</span> <span class='literal'>true</span>;
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><span class='keyword'>typename</span> T<span class='anglebracket'>&gt;</span>
+<span class='keyword'>constexpr</span> <span class='keyword'>bool</span> <a class='index' id='lib:disable_scalar,std::complex'></a>disable_scalar<span class='anglebracket'>&lt;</span>std<span class='operator'>::</span>complex<span class='anglebracket'>&lt;</span>T<span class='anglebracket'>&gt;</span><span class='anglebracket'>&gt;</span> <span class='operator'>=</span> <span class='literal'>true</span>;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><span class='keyword'>typename</span> T<span class='anglebracket'>&gt;</span>
+<span class='keyword'>constexpr</span> <span class='keyword'>bool</span> disable_complex <span class='operator'>=</span> <span class='literal'>false</span>;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><span class='keyword'>typename</span> T<span class='anglebracket'>&gt;</span>
+<span class='keyword'>constexpr</span> <span class='keyword'>bool</span> disable_vector <span class='operator'>=</span> <span class='literal'>false</span>;
+
+<span class='comment'>// <a href='qty.val.traits.html' title='5.5.2.3&emsp;Values'>[qty.<span class='shy'></span>val.<span class='shy'></span>traits]</a>, values</span>
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><span class='keyword'>typename</span> Rep<span class='anglebracket'>&gt;</span>
+<span class='keyword'>struct</span> representation_values;
+
+<span class='comment'>// <a href='qty.rep.cpos.html' title='5.5.3&emsp;Customization point objects'>[qty.<span class='shy'></span>rep.<span class='shy'></span>cpos]</a>, customization point objects</span>
+
+<span class='keyword'>inline</span> <span class='keyword'>namespace</span> <i ><span class='texttt'>unspecified</span></i> <span class='curlybracket'>{</span>
+
+<span class='keyword'>inline</span> <span class='keyword'>constexpr</span> <i ><span class='texttt'>unspecified</span></i> real <span class='operator'>=</span> <i ><span class='texttt'>unspecified</span></i>;
+<span class='keyword'>inline</span> <span class='keyword'>constexpr</span> <i ><span class='texttt'>unspecified</span></i> imag <span class='operator'>=</span> <i ><span class='texttt'>unspecified</span></i>;
+<span class='keyword'>inline</span> <span class='keyword'>constexpr</span> <i ><span class='texttt'>unspecified</span></i> modulus <span class='operator'>=</span> <i ><span class='texttt'>unspecified</span></i>;
+
+<span class='keyword'>inline</span> <span class='keyword'>constexpr</span> <i ><span class='texttt'>unspecified</span></i> magnitude <span class='operator'>=</span> <i ><span class='texttt'>unspecified</span></i>;
+
+<span class='curlybracket'>}</span>
+
+<span class='comment'>// <a href='qty.rep.concepts.html' title='5.5.4&emsp;Concepts'>[qty.<span class='shy'></span>rep.<span class='shy'></span>concepts]</a>, concepts</span>
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><span class='keyword'>typename</span> T<span class='anglebracket'>&gt;</span>
+<span class='keyword'>concept</span> Representation <span class='operator'>=</span> <i ><span class='texttt'>see below</span></i>;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><span class='keyword'>typename</span> T, quantity_character Ch<span class='anglebracket'>&gt;</span>
+<span class='keyword'>concept</span> RepresentationOf <span class='operator'>=</span> <i ><span class='texttt'>see below</span></i>;
+
+<span class='comment'>// <a href='qty.html' title='5.6&emsp;Quantity'>[qty]</a>, quantity</span>
+
+<span class='comment'>// <a href='qty.like.html' title='5.6.2&emsp;Interoperability'>[qty.<span class='shy'></span>like]</a>, interoperability</span>
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><span class='keyword'>typename</span> T<span class='anglebracket'>&gt;</span>
+<span class='keyword'>struct</span> quantity_like_traits;  <span class='comment'>// <i >not defined</i></span>
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><span class='keyword'>typename</span> T<span class='anglebracket'>&gt;</span>
+<span class='keyword'>concept</span> QuantityLike <span class='operator'>=</span> <i ><span class='texttt'>see below</span></i>;
+
+<span class='comment'>// <a href='qty.syn.html' title='5.6.3&emsp;Class template quantity'>[qty.<span class='shy'></span>syn]</a>, class template <span class='tcode_in_codeblock'>quantity</span></span>
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><span class='keyword'>typename</span> T<span class='anglebracket'>&gt;</span>
+<span class='keyword'>concept</span> Quantity <span class='operator'>=</span> <i ><span class='texttt'>see below</span></i>;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><span class='keyword'>typename</span> Q, <span class='keyword'>auto</span> QS<span class='anglebracket'>&gt;</span>
+<span class='keyword'>concept</span> QuantityOf <span class='operator'>=</span> <i ><span class='texttt'>see below</span></i>;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><a href='qty.ref.concepts.html#concept:Reference' title='5.4.5&emsp;Concepts&emsp;[qty.ref.concepts]'><span id='conceptref:Reference____________'><span class='tcode_in_codeblock'>Reference</span></span></a> <span class='keyword'>auto</span> R, <a href='qty.rep.concepts.html#concept:RepresentationOf' title='5.5.4&emsp;Concepts&emsp;[qty.rep.concepts]'><span id='conceptref:RepresentationOf____'><span class='tcode_in_codeblock'>RepresentationOf</span></span></a><span class='anglebracket'>&lt;</span>get_quantity_spec<span class='parenthesis'>(</span>R<span class='parenthesis'>)</span><span class='anglebracket'>&gt;</span> Rep <span class='operator'>=</span> <span class='keyword'>double</span><span class='anglebracket'>&gt;</span>
 <span class='keyword'>class</span> quantity;
 
-<span class='comment'>// <a href='qty.point.type.html' title='5.8.3&emsp;Class template quantity_&shy;point'>[qty.<span class='shy'></span>point.<span class='shy'></span>type]</a>, class template <span class='tcode_in_codeblock'>quantity_<span class='shy'></span>point</span></span>
-<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><i ><span class='texttt'>unspecified</span></i><span class='anglebracket'>&gt;</span>
+<span class='comment'>// <a href='qty.delta.html' title='5.6.14&emsp;Construction helper delta'>[qty.<span class='shy'></span>delta]</a>, construction helper <span class='tcode_in_codeblock'>delta</span></span>
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><a href='qty.ref.concepts.html#concept:Reference' title='5.4.5&emsp;Concepts&emsp;[qty.ref.concepts]'><span id='conceptref:Reference_____________'><span class='tcode_in_codeblock'>Reference</span></span></a> R<span class='anglebracket'>&gt;</span>
+<span class='keyword'>struct</span> delta_;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><a href='qty.ref.concepts.html#concept:Reference' title='5.4.5&emsp;Concepts&emsp;[qty.ref.concepts]'><span id='conceptref:Reference______________'><span class='tcode_in_codeblock'>Reference</span></span></a> <span class='keyword'>auto</span> R<span class='anglebracket'>&gt;</span>
+<span class='keyword'>constexpr</span> delta_<span class='anglebracket'>&lt;</span><span class='keyword'>decltype</span><span class='parenthesis'>(</span>R<span class='parenthesis'>)</span><span class='anglebracket'>&gt;</span> <span id='lib:delta'><a class='hidden_link' href='#lib:delta' title='5.2.2&emsp;Module mp_&shy;units.core synopsis&emsp;[mp.units.core.syn]'>delta</a></span><span class='curlybracket'>{</span><span class='curlybracket'>}</span>;
+
+<span class='comment'>// <a href='qty.non.mem.conv.html' title='5.6.15&emsp;Non-member conversions'>[qty.<span class='shy'></span>non.<span class='shy'></span>mem.<span class='shy'></span>conv]</a>, non-member conversions</span>
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><a href='qty.unit.concepts.html#concept:Unit' title='5.4.4.4&emsp;Concepts&emsp;[qty.unit.concepts]'><span id='conceptref:Unit____________________________'><span class='tcode_in_codeblock'>Unit</span></span></a> <span class='keyword'>auto</span> ToU, <i ><span class='texttt'>see below</span></i><span class='anglebracket'>&gt;</span>
+  <span class='keyword'>requires</span> <i ><span class='texttt'>see below</span></i>
+<span class='keyword'>constexpr</span> <a href='qty.syn.html#concept:Quantity' title='5.6.3&emsp;Class template quantity&emsp;[qty.syn]'><span id='conceptref:Quantity_______'><span class='tcode_in_codeblock'>Quantity</span></span></a> <span class='keyword'>auto</span> value_cast<span class='parenthesis'>(</span><i ><span class='texttt'>see below</span></i> q<span class='parenthesis'>)</span>;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><a href='qty.rep.concepts.html#concept:Representation' title='5.5.4&emsp;Concepts&emsp;[qty.rep.concepts]'><span id='conceptref:Representation'><span class='tcode_in_codeblock'>Representation</span></span></a> ToRep, <i ><span class='texttt'>see below</span></i><span class='anglebracket'>&gt;</span>
+  <span class='keyword'>requires</span> <i ><span class='texttt'>see below</span></i>
+<span class='keyword'>constexpr</span> quantity<span class='anglebracket'>&lt;</span><i ><span class='texttt'>see below</span></i>, ToRep<span class='anglebracket'>&gt;</span> value_cast<span class='parenthesis'>(</span><i ><span class='texttt'>see below</span></i> q<span class='parenthesis'>)</span>;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><a href='qty.unit.concepts.html#concept:Unit' title='5.4.4.4&emsp;Concepts&emsp;[qty.unit.concepts]'><span id='conceptref:Unit_____________________________'><span class='tcode_in_codeblock'>Unit</span></span></a> <span class='keyword'>auto</span> ToU, <a href='qty.rep.concepts.html#concept:Representation' title='5.5.4&emsp;Concepts&emsp;[qty.rep.concepts]'><span id='conceptref:Representation_'><span class='tcode_in_codeblock'>Representation</span></span></a> ToRep, <i ><span class='texttt'>see below</span></i><span class='anglebracket'>&gt;</span>
+  <span class='keyword'>requires</span> <i ><span class='texttt'>see below</span></i>
+<span class='keyword'>constexpr</span> <a href='qty.syn.html#concept:Quantity' title='5.6.3&emsp;Class template quantity&emsp;[qty.syn]'><span id='conceptref:Quantity________'><span class='tcode_in_codeblock'>Quantity</span></span></a> <span class='keyword'>auto</span> value_cast<span class='parenthesis'>(</span><i ><span class='texttt'>see below</span></i> q<span class='parenthesis'>)</span>;
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><a href='qty.rep.concepts.html#concept:Representation' title='5.5.4&emsp;Concepts&emsp;[qty.rep.concepts]'><span id='conceptref:Representation__'><span class='tcode_in_codeblock'>Representation</span></span></a> ToRep, <a href='qty.unit.concepts.html#concept:Unit' title='5.4.4.4&emsp;Concepts&emsp;[qty.unit.concepts]'><span id='conceptref:Unit______________________________'><span class='tcode_in_codeblock'>Unit</span></span></a> <span class='keyword'>auto</span> ToU, <i ><span class='texttt'>see below</span></i><span class='anglebracket'>&gt;</span>
+  <span class='keyword'>requires</span> <i ><span class='texttt'>see below</span></i>
+<span class='keyword'>constexpr</span> <a href='qty.syn.html#concept:Quantity' title='5.6.3&emsp;Class template quantity&emsp;[qty.syn]'><span id='conceptref:Quantity_________'><span class='tcode_in_codeblock'>Quantity</span></span></a> <span class='keyword'>auto</span> value_cast<span class='parenthesis'>(</span><i ><span class='texttt'>see below</span></i> q<span class='parenthesis'>)</span>;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><a href='qty.syn.html#concept:Quantity' title='5.6.3&emsp;Class template quantity&emsp;[qty.syn]'><span id='conceptref:Quantity__________'><span class='tcode_in_codeblock'>Quantity</span></span></a> ToQ, <i ><span class='texttt'>see below</span></i><span class='anglebracket'>&gt;</span>
+  <span class='keyword'>requires</span> <i ><span class='texttt'>see below</span></i>
+<span class='keyword'>constexpr</span> <a href='qty.syn.html#concept:Quantity' title='5.6.3&emsp;Class template quantity&emsp;[qty.syn]'><span id='conceptref:Quantity___________'><span class='tcode_in_codeblock'>Quantity</span></span></a> <span class='keyword'>auto</span> value_cast<span class='parenthesis'>(</span><i ><span class='texttt'>see below</span></i> q<span class='parenthesis'>)</span>;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><a href='qty.spec.concepts.html#concept:QuantitySpec' title='5.4.3.2&emsp;Concepts&emsp;[qty.spec.concepts]'><span id='conceptref:QuantitySpec________________________'><span class='tcode_in_codeblock'>QuantitySpec</span></span></a> <span class='keyword'>auto</span> ToQS, <i ><span class='texttt'>see below</span></i><span class='anglebracket'>&gt;</span>
+  <span class='keyword'>requires</span> <i ><span class='texttt'>see below</span></i>
+<span class='keyword'>constexpr</span> <a href='qty.syn.html#concept:Quantity' title='5.6.3&emsp;Class template quantity&emsp;[qty.syn]'><span id='conceptref:Quantity____________'><span class='tcode_in_codeblock'>Quantity</span></span></a> <span class='keyword'>auto</span> quantity_cast<span class='parenthesis'>(</span><i ><span class='texttt'>see below</span></i> q<span class='parenthesis'>)</span>;
+
+<span class='curlybracket'>}</span>
+
+<span class='comment'>// <a href='qty.common.type.html' title='5.6.16&emsp;std&#x200b;::&#x200b;common_&shy;type specializations'>[qty.<span class='shy'></span>common.<span class='shy'></span>type]</a>, <span class='tcode_in_codeblock'>std&#x200b;::&#x200b;common_<span class='shy'></span>type</span> specializations</span>
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span>mp_units<span class='operator'>::</span><a href='qty.syn.html#concept:Quantity' title='5.6.3&emsp;Class template quantity&emsp;[qty.syn]'><span id='conceptref:Quantity_____________'><span class='tcode_in_codeblock'>Quantity</span></span></a> Q1, mp_units<span class='operator'>::</span><a href='qty.syn.html#concept:Quantity' title='5.6.3&emsp;Class template quantity&emsp;[qty.syn]'><span id='conceptref:Quantity______________'><span class='tcode_in_codeblock'>Quantity</span></span></a> Q2<span class='anglebracket'>&gt;</span>
+  <span class='keyword'>requires</span> <i ><span class='texttt'>see below</span></i>
+<span class='keyword'>struct</span> std<span class='operator'>::</span>common_type<span class='anglebracket'>&lt;</span>Q1, Q2<span class='anglebracket'>&gt;</span>;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span>mp_units<span class='operator'>::</span><a href='qty.syn.html#concept:Quantity' title='5.6.3&emsp;Class template quantity&emsp;[qty.syn]'><span id='conceptref:Quantity_______________'><span class='tcode_in_codeblock'>Quantity</span></span></a> Q, mp_units<span class='operator'>::</span><a href='qty.rep.concepts.html#concept:Representation' title='5.5.4&emsp;Concepts&emsp;[qty.rep.concepts]'><span id='conceptref:Representation___'><span class='tcode_in_codeblock'>Representation</span></span></a> Value<span class='anglebracket'>&gt;</span>
+  <span class='keyword'>requires</span> <i ><span class='texttt'>see below</span></i>
+<span class='keyword'>struct</span> std<span class='operator'>::</span>common_type<span class='anglebracket'>&lt;</span>Q, Value<span class='anglebracket'>&gt;</span>;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span>mp_units<span class='operator'>::</span><a href='qty.syn.html#concept:Quantity' title='5.6.3&emsp;Class template quantity&emsp;[qty.syn]'><span id='conceptref:Quantity________________'><span class='tcode_in_codeblock'>Quantity</span></span></a> Q, mp_units<span class='operator'>::</span><a href='qty.rep.concepts.html#concept:Representation' title='5.5.4&emsp;Concepts&emsp;[qty.rep.concepts]'><span id='conceptref:Representation____'><span class='tcode_in_codeblock'>Representation</span></span></a> Value<span class='anglebracket'>&gt;</span>
+  <span class='keyword'>requires</span> <span class='keyword'>requires</span> <span class='curlybracket'>{</span> <span class='keyword'>typename</span> std<span class='operator'>::</span>common_type<span class='anglebracket'>&lt;</span>Q, Value<span class='anglebracket'>&gt;</span>; <span class='curlybracket'>}</span>
+<span class='keyword'>struct</span> <a class='index' id='lib:std::common_type,quantity'></a>std<span class='operator'>::</span>common_type<span class='anglebracket'>&lt;</span>Value, Q<span class='anglebracket'>&gt;</span> <span class='operator'>:</span> std<span class='operator'>::</span>common_type<span class='anglebracket'>&lt;</span>Q, Value<span class='anglebracket'>&gt;</span> <span class='curlybracket'>{</span><span class='curlybracket'>}</span>;
+
+<span class='keyword'>namespace</span> mp_units <span class='curlybracket'>{</span>
+
+<span class='comment'>// <a href='qty.pt.html' title='5.7&emsp;Quantity point'>[qty.<span class='shy'></span>pt]</a>, quantity point</span>
+
+<span class='comment'>// <a href='qty.pt.orig.html' title='5.7.2&emsp;Point origin'>[qty.<span class='shy'></span>pt.<span class='shy'></span>orig]</a>, point origin</span>
+
+<span class='comment'>// <a href='qty.pt.orig.concepts.html' title='5.7.2.2&emsp;Concepts'>[qty.<span class='shy'></span>pt.<span class='shy'></span>orig.<span class='shy'></span>concepts]</a>, concepts</span>
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><span class='keyword'>typename</span> T<span class='anglebracket'>&gt;</span>
+<span class='keyword'>concept</span> PointOrigin <span class='operator'>=</span> <i ><span class='texttt'>see below</span></i>;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><span class='keyword'>typename</span> T, <span class='keyword'>auto</span> QS<span class='anglebracket'>&gt;</span>
+<span class='keyword'>concept</span> PointOriginFor <span class='operator'>=</span> <i ><span class='texttt'>see below</span></i>;
+
+<span class='comment'>// <a href='qty.pt.orig.types.html' title='5.7.2.3&emsp;Types'>[qty.<span class='shy'></span>pt.<span class='shy'></span>orig.<span class='shy'></span>types]</a>, types</span>
+
+<span class='comment'>// <a href='qty.abs.pt.orig.html' title='5.7.2.3.1&emsp;Absolute'>[qty.<span class='shy'></span>abs.<span class='shy'></span>pt.<span class='shy'></span>orig]</a>, absolute</span>
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><a href='qty.spec.concepts.html#concept:QuantitySpec' title='5.4.3.2&emsp;Concepts&emsp;[qty.spec.concepts]'><span id='conceptref:QuantitySpec_________________________'><span class='tcode_in_codeblock'>QuantitySpec</span></span></a> <span class='keyword'>auto</span> QS<span class='anglebracket'>&gt;</span>
+<span class='keyword'>struct</span> absolute_point_origin;
+
+<span class='comment'>// <a href='qty.rel.pt.orig.html' title='5.7.2.3.2&emsp;Relative'>[qty.<span class='shy'></span>rel.<span class='shy'></span>pt.<span class='shy'></span>orig]</a>, relative</span>
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><a href='qty.pt.syn.html#concept:QuantityPoint' title='5.7.4&emsp;Class template quantity_&shy;point&emsp;[qty.pt.syn]'><span id='conceptref:QuantityPoint'><span class='tcode_in_codeblock'>QuantityPoint</span></span></a> <span class='keyword'>auto</span> QP<span class='anglebracket'>&gt;</span>
+<span class='keyword'>struct</span> relative_point_origin;
+
+<span class='comment'>// <a href='qty.zeroth.pt.orig.html' title='5.7.2.3.3&emsp;Zeroth'>[qty.<span class='shy'></span>zeroth.<span class='shy'></span>pt.<span class='shy'></span>orig]</a>, zeroth</span>
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><a href='qty.spec.concepts.html#concept:QuantitySpec' title='5.4.3.2&emsp;Concepts&emsp;[qty.spec.concepts]'><span id='conceptref:QuantitySpec__________________________'><span class='tcode_in_codeblock'>QuantitySpec</span></span></a> <span class='keyword'>auto</span> QS<span class='anglebracket'>&gt;</span>
+<span class='keyword'>struct</span> zeroth_point_origin_;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><a href='qty.spec.concepts.html#concept:QuantitySpec' title='5.4.3.2&emsp;Concepts&emsp;[qty.spec.concepts]'><span id='conceptref:QuantitySpec___________________________'><span class='tcode_in_codeblock'>QuantitySpec</span></span></a> <span class='keyword'>auto</span> QS<span class='anglebracket'>&gt;</span>
+<span class='keyword'>constexpr</span> zeroth_point_origin_<span class='anglebracket'>&lt;</span>QS<span class='anglebracket'>&gt;</span> <span id='lib:zeroth_point_origin'><a class='hidden_link' href='#lib:zeroth_point_origin' title='5.2.2&emsp;Module mp_&shy;units.core synopsis&emsp;[mp.units.core.syn]'>zeroth_point_origin</a></span><span class='curlybracket'>{</span><span class='curlybracket'>}</span>;
+
+<span class='comment'>// <a href='qty.def.pt.orig.html' title='5.7.2.5.2&emsp;Default'>[qty.<span class='shy'></span>def.<span class='shy'></span>pt.<span class='shy'></span>orig]</a>, default</span>
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><a href='qty.ref.concepts.html#concept:Reference' title='5.4.5&emsp;Concepts&emsp;[qty.ref.concepts]'><span id='conceptref:Reference_______________'><span class='tcode_in_codeblock'>Reference</span></span></a> R<span class='anglebracket'>&gt;</span>
+<span class='keyword'>consteval</span> <a href='qty.pt.orig.concepts.html#concept:PointOriginFor' title='5.7.2.2&emsp;Concepts&emsp;[qty.pt.orig.concepts]'><span id='conceptref:PointOriginFor'><span class='tcode_in_codeblock'>PointOriginFor</span></span></a><span class='anglebracket'>&lt;</span>get_quantity_spec<span class='parenthesis'>(</span>R<span class='curlybracket'>{</span><span class='curlybracket'>}</span><span class='parenthesis'>)</span><span class='anglebracket'>&gt;</span> <span class='keyword'>auto</span> default_point_origin<span class='parenthesis'>(</span>R<span class='parenthesis'>)</span>;
+
+<span class='comment'>// <a href='qty.pt.like.html' title='5.7.3&emsp;Interoperability'>[qty.<span class='shy'></span>pt.<span class='shy'></span>like]</a>, interoperability</span>
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><span class='keyword'>typename</span> T<span class='anglebracket'>&gt;</span>
+<span class='keyword'>struct</span> quantity_point_like_traits;  <span class='comment'>// <i >not defined</i></span>
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><span class='keyword'>typename</span> T<span class='anglebracket'>&gt;</span>
+<span class='keyword'>concept</span> QuantityPointLike <span class='operator'>=</span> <i ><span class='texttt'>see below</span></i>;
+
+<span class='comment'>// <a href='qty.pt.syn.html' title='5.7.4&emsp;Class template quantity_&shy;point'>[qty.<span class='shy'></span>pt.<span class='shy'></span>syn]</a>, class template <span class='tcode_in_codeblock'>quantity_<span class='shy'></span>point</span></span>
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><span class='keyword'>typename</span> T<span class='anglebracket'>&gt;</span>
+<span class='keyword'>concept</span> QuantityPoint <span class='operator'>=</span> <i ><span class='texttt'>see below</span></i>;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><span class='keyword'>typename</span> QP, <span class='keyword'>auto</span> V<span class='anglebracket'>&gt;</span>
+<span class='keyword'>concept</span> QuantityPointOf <span class='operator'>=</span> <i ><span class='texttt'>see below</span></i>;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><a href='qty.ref.concepts.html#concept:Reference' title='5.4.5&emsp;Concepts&emsp;[qty.ref.concepts]'><span id='conceptref:Reference________________'><span class='tcode_in_codeblock'>Reference</span></span></a> <span class='keyword'>auto</span> R,
+         <a href='qty.pt.orig.concepts.html#concept:PointOriginFor' title='5.7.2.2&emsp;Concepts&emsp;[qty.pt.orig.concepts]'><span id='conceptref:PointOriginFor_'><span class='tcode_in_codeblock'>PointOriginFor</span></span></a><span class='anglebracket'>&lt;</span>get_quantity_spec<span class='parenthesis'>(</span>R<span class='parenthesis'>)</span><span class='anglebracket'>&gt;</span> <span class='keyword'>auto</span> PO <span class='operator'>=</span> default_point_origin<span class='parenthesis'>(</span>R<span class='parenthesis'>)</span>,
+         <a href='qty.rep.concepts.html#concept:RepresentationOf' title='5.5.4&emsp;Concepts&emsp;[qty.rep.concepts]'><span id='conceptref:RepresentationOf_____'><span class='tcode_in_codeblock'>RepresentationOf</span></span></a><span class='anglebracket'>&lt;</span>get_quantity_spec<span class='parenthesis'>(</span>R<span class='parenthesis'>)</span><span class='anglebracket'>&gt;</span> Rep <span class='operator'>=</span> <span class='keyword'>double</span><span class='anglebracket'>&gt;</span>
 <span class='keyword'>class</span> quantity_point;
+
+<span class='comment'>// <a href='qty.point.html' title='5.7.14&emsp;Construction helper point'>[qty.<span class='shy'></span>point]</a>, construction helper <span class='tcode_in_codeblock'>point</span></span>
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><a href='qty.ref.concepts.html#concept:Reference' title='5.4.5&emsp;Concepts&emsp;[qty.ref.concepts]'><span id='conceptref:Reference_________________'><span class='tcode_in_codeblock'>Reference</span></span></a> R<span class='anglebracket'>&gt;</span>
+<span class='keyword'>struct</span> point_;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><a href='qty.ref.concepts.html#concept:Reference' title='5.4.5&emsp;Concepts&emsp;[qty.ref.concepts]'><span id='conceptref:Reference__________________'><span class='tcode_in_codeblock'>Reference</span></span></a> <span class='keyword'>auto</span> R<span class='anglebracket'>&gt;</span>
+<span class='keyword'>constexpr</span> point_<span class='anglebracket'>&lt;</span><span class='keyword'>decltype</span><span class='parenthesis'>(</span>R<span class='parenthesis'>)</span><span class='anglebracket'>&gt;</span> <span id='lib:point'><a class='hidden_link' href='qty.point.html#lib:point' title='5.7.14&emsp;Construction helper point&emsp;[qty.point]'>point</a></span><span class='curlybracket'>{</span><span class='curlybracket'>}</span>;
+
+<span class='comment'>// <a href='qty.pt.non.mem.conv.html' title='5.7.15&emsp;Non-member conversions'>[qty.<span class='shy'></span>pt.<span class='shy'></span>non.<span class='shy'></span>mem.<span class='shy'></span>conv]</a>, non-member conversions</span>
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><a href='qty.unit.concepts.html#concept:Unit' title='5.4.4.4&emsp;Concepts&emsp;[qty.unit.concepts]'><span id='conceptref:Unit_______________________________'><span class='tcode_in_codeblock'>Unit</span></span></a> <span class='keyword'>auto</span> ToU, <i ><span class='texttt'>see below</span></i><span class='anglebracket'>&gt;</span>
+  <span class='keyword'>requires</span> <i ><span class='texttt'>see below</span></i>
+<span class='keyword'>constexpr</span> <a href='qty.pt.syn.html#concept:QuantityPoint' title='5.7.4&emsp;Class template quantity_&shy;point&emsp;[qty.pt.syn]'><span id='conceptref:QuantityPoint_'><span class='tcode_in_codeblock'>QuantityPoint</span></span></a> <span class='keyword'>auto</span> value_cast<span class='parenthesis'>(</span><i ><span class='texttt'>see below</span></i> qp<span class='parenthesis'>)</span>;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><a href='qty.rep.concepts.html#concept:Representation' title='5.5.4&emsp;Concepts&emsp;[qty.rep.concepts]'><span id='conceptref:Representation_____'><span class='tcode_in_codeblock'>Representation</span></span></a> ToRep, <i ><span class='texttt'>see below</span></i><span class='anglebracket'>&gt;</span>
+  <span class='keyword'>requires</span> <i ><span class='texttt'>see below</span></i>
+<span class='keyword'>constexpr</span> quantity_point<span class='anglebracket'>&lt;</span><i ><span class='texttt'>see below</span></i>, <i ><span class='texttt'>see below</span></i>, ToRep<span class='anglebracket'>&gt;</span> value_cast<span class='parenthesis'>(</span><i ><span class='texttt'>see below</span></i> qp<span class='parenthesis'>)</span>;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><a href='qty.unit.concepts.html#concept:Unit' title='5.4.4.4&emsp;Concepts&emsp;[qty.unit.concepts]'><span id='conceptref:Unit________________________________'><span class='tcode_in_codeblock'>Unit</span></span></a> <span class='keyword'>auto</span> ToU, <a href='qty.rep.concepts.html#concept:Representation' title='5.5.4&emsp;Concepts&emsp;[qty.rep.concepts]'><span id='conceptref:Representation______'><span class='tcode_in_codeblock'>Representation</span></span></a> ToRep, <i ><span class='texttt'>see below</span></i><span class='anglebracket'>&gt;</span>
+  <span class='keyword'>requires</span> <i ><span class='texttt'>see below</span></i>
+<span class='keyword'>constexpr</span> <a href='qty.pt.syn.html#concept:QuantityPoint' title='5.7.4&emsp;Class template quantity_&shy;point&emsp;[qty.pt.syn]'><span id='conceptref:QuantityPoint__'><span class='tcode_in_codeblock'>QuantityPoint</span></span></a> <span class='keyword'>auto</span> value_cast<span class='parenthesis'>(</span><i ><span class='texttt'>see below</span></i> qp<span class='parenthesis'>)</span>;
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><a href='qty.rep.concepts.html#concept:Representation' title='5.5.4&emsp;Concepts&emsp;[qty.rep.concepts]'><span id='conceptref:Representation_______'><span class='tcode_in_codeblock'>Representation</span></span></a> ToRep, <a href='qty.unit.concepts.html#concept:Unit' title='5.4.4.4&emsp;Concepts&emsp;[qty.unit.concepts]'><span id='conceptref:Unit_________________________________'><span class='tcode_in_codeblock'>Unit</span></span></a> <span class='keyword'>auto</span> ToU, <i ><span class='texttt'>see below</span></i><span class='anglebracket'>&gt;</span>
+  <span class='keyword'>requires</span> <i ><span class='texttt'>see below</span></i>
+<span class='keyword'>constexpr</span> <a href='qty.pt.syn.html#concept:QuantityPoint' title='5.7.4&emsp;Class template quantity_&shy;point&emsp;[qty.pt.syn]'><span id='conceptref:QuantityPoint___'><span class='tcode_in_codeblock'>QuantityPoint</span></span></a> <span class='keyword'>auto</span> value_cast<span class='parenthesis'>(</span><i ><span class='texttt'>see below</span></i> qp<span class='parenthesis'>)</span>;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><a href='qty.syn.html#concept:Quantity' title='5.6.3&emsp;Class template quantity&emsp;[qty.syn]'><span id='conceptref:Quantity_________________'><span class='tcode_in_codeblock'>Quantity</span></span></a> ToQ, <i ><span class='texttt'>see below</span></i><span class='anglebracket'>&gt;</span>
+  <span class='keyword'>requires</span> <i ><span class='texttt'>see below</span></i>
+<span class='keyword'>constexpr</span> <a href='qty.pt.syn.html#concept:QuantityPoint' title='5.7.4&emsp;Class template quantity_&shy;point&emsp;[qty.pt.syn]'><span id='conceptref:QuantityPoint____'><span class='tcode_in_codeblock'>QuantityPoint</span></span></a> <span class='keyword'>auto</span> value_cast<span class='parenthesis'>(</span><i ><span class='texttt'>see below</span></i> qp<span class='parenthesis'>)</span>;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><a href='qty.pt.syn.html#concept:QuantityPoint' title='5.7.4&emsp;Class template quantity_&shy;point&emsp;[qty.pt.syn]'><span id='conceptref:QuantityPoint_____'><span class='tcode_in_codeblock'>QuantityPoint</span></span></a> ToQP, <i ><span class='texttt'>see below</span></i><span class='anglebracket'>&gt;</span>
+  <span class='keyword'>requires</span> <i ><span class='texttt'>see below</span></i>
+<span class='keyword'>constexpr</span> <a href='qty.pt.syn.html#concept:QuantityPoint' title='5.7.4&emsp;Class template quantity_&shy;point&emsp;[qty.pt.syn]'><span id='conceptref:QuantityPoint______'><span class='tcode_in_codeblock'>QuantityPoint</span></span></a> <span class='keyword'>auto</span> value_cast<span class='parenthesis'>(</span><i ><span class='texttt'>see below</span></i> qp<span class='parenthesis'>)</span>;
+
+<span class='keyword'>template</span><span class='anglebracket'>&lt;</span><a href='qty.spec.concepts.html#concept:QuantitySpec' title='5.4.3.2&emsp;Concepts&emsp;[qty.spec.concepts]'><span id='conceptref:QuantitySpec____________________________'><span class='tcode_in_codeblock'>QuantitySpec</span></span></a> <span class='keyword'>auto</span> ToQS, <i ><span class='texttt'>see below</span></i><span class='anglebracket'>&gt;</span>
+  <span class='keyword'>requires</span> <i ><span class='texttt'>see below</span></i>
+<span class='keyword'>constexpr</span> <a href='qty.pt.syn.html#concept:QuantityPoint' title='5.7.4&emsp;Class template quantity_&shy;point&emsp;[qty.pt.syn]'><span id='conceptref:QuantityPoint_______'><span class='tcode_in_codeblock'>QuantityPoint</span></span></a> <span class='keyword'>auto</span> quantity_cast<span class='parenthesis'>(</span><i ><span class='texttt'>see below</span></i> qp<span class='parenthesis'>)</span>;
 
 <span class='curlybracket'>}</span>
 </span></span></div></div></body></html>
