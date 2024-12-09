@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include <mp-units/bits/hacks.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/natural.h>
 #include <mp-units/systems/si.h>
@@ -308,7 +309,9 @@ static_assert(!RepresentationOf<std::complex<double>, quantity_character::scalar
 static_assert(!RepresentationOf<std::complex<double>, quantity_character::vector>);
 static_assert(!RepresentationOf<std::complex<double>, quantity_character::tensor>);
 static_assert(RepresentationOf<cartesian_vector<double>, quantity_character::vector>);
+#ifndef MP_UNITS_APPLE_CLANG_HACKS
 static_assert(!RepresentationOf<cartesian_vector<double>, quantity_character::scalar>);
+#endif
 static_assert(!RepresentationOf<cartesian_vector<double>, quantity_character::complex>);
 static_assert(!RepresentationOf<cartesian_vector<double>, quantity_character::tensor>);
 static_assert(!RepresentationOf<std::chrono::seconds, quantity_character::scalar>);

@@ -313,12 +313,42 @@ concept Representation = detail::ScalarRepresentation<T> || detail::ComplexRepre
 
 namespace detail {
 
+#ifdef MP_UNITS_APPLE_CLANG_HACKS
+template<typename T>
+constexpr bool is_weakly_regular = std::copyable<T> && std::equality_comparable<T>;
+
+template<typename T>
+constexpr bool is_scalar = !disable_scalar<T> && is_weakly_regular<T>;
+
+template<typename T>
+constexpr bool is_complex = !disable_complex<T> && is_weakly_regular<T> && is_scalar<value_type_t<T>> &&
+                            std::constructible_from<T, value_type_t<T>, value_type_t<T>>;
+
+template<typename T>
+concept ComplexFunctionsAvailable = requires(T a) {
+  ::mp_units::real(a);
+  ::mp_units::imag(a);
+  ::mp_units::modulus(a);
+};
+
+template<typename T>
+constexpr bool is_vector = !disable_vector<T> && is_weakly_regular<T> && is_scalar<value_type_t<T>>;
+
+template<typename T>
+concept VectorFunctionsAvailable = requires(T a) { ::mp_units::magnitude(a); };
+
+
+template<typename T, quantity_character Ch>
+concept IsOfCharacter = ((Ch == quantity_character::scalar && is_scalar<T>) ||
+                         (Ch == quantity_character::complex && is_complex<T> && ComplexFunctionsAvailable<T>) ||
+                         (Ch == quantity_character::vector && is_vector<T> && VectorFunctionsAvailable<T>));
+#else
 template<typename T, quantity_character Ch>
 concept IsOfCharacter =
   (Ch == quantity_character::scalar && Scalar<T>) || (Ch == quantity_character::complex && Complex<T>) ||
   (Ch == quantity_character::vector && Vector<T>);  // || (Ch == quantity_character::tensor && Tensor<T>);
-
-}
+#endif
+}  // namespace detail
 
 MP_UNITS_EXPORT template<typename T, auto V>
 concept RepresentationOf =
