@@ -349,7 +349,7 @@ concept IsOfCharacter =
   (Ch == quantity_character::scalar && Scalar<T>) || (Ch == quantity_character::complex && Complex<T>) ||
   (Ch == quantity_character::vector && Vector<T>);  // || (Ch == quantity_character::tensor && Tensor<T>);
 #endif
-}
+}  // namespace detail
 
 MP_UNITS_EXPORT template<typename T, auto V>
 concept RepresentationOf =

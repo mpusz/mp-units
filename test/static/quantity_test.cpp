@@ -79,7 +79,7 @@ concept invalid_types = requires {
   };  // vector representation expected
   requires !requires {
     typename Q<isq::length[si::metre], cartesian_vector<double>>;
-  };                                                                          // scalar representation expected
+  };  // scalar representation expected
   requires !requires { typename Q<isq::voltage[V], std::complex<double>>; };  // incompatible character
   requires !requires { typename Q<isq::voltage_phasor[V], double>; };         // incompatible character
 #endif
