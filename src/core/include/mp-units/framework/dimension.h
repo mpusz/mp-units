@@ -31,8 +31,8 @@
 #include <mp-units/ext/inplace_vector.h>
 #include <mp-units/ext/type_traits.h>
 #include <mp-units/framework/dimension_concepts.h>
-#include <mp-units/framework/expression_template.h>
 #include <mp-units/framework/symbol_text.h>
+#include <mp-units/framework/symbolic_expression.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <mp-units/ext/contracts.h>
@@ -122,7 +122,7 @@ struct base_dimension : detail::dimension_interface {
  * Derived dimension is an expression of the dependence of a quantity on the base quantities of a system of quantities
  * as a product of powers of factors corresponding to the base quantities, omitting any numerical factors.
  *
- * Instead of using a raw list of exponents this library decided to use expression template syntax to make types
+ * Instead of using a raw list of exponents this library decided to use symbolic expression syntax to make types
  * more digestable for the user. The positive exponents are ordered first and all negative exponents are put as a list
  * into the `per<...>` class template. If a power of exponent is different than `1` the dimension type is enclosed in
  * `power<Dim, Num, Den>` class template. Otherwise, it is just put directly in the list without any wrapper. There

@@ -32,8 +32,8 @@
 #include <mp-units/ext/prime.h>
 #include <mp-units/ext/type_traits.h>
 #include <mp-units/framework/customization_points.h>
-#include <mp-units/framework/expression_template.h>
 #include <mp-units/framework/symbol_text.h>
+#include <mp-units/framework/symbolic_expression.h>
 #include <mp-units/framework/unit_magnitude_concepts.h>
 #include <mp-units/framework/unit_symbol_formatting.h>
 

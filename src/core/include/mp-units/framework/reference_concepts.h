@@ -34,7 +34,8 @@ struct reference;
 
 MP_UNITS_EXPORT_BEGIN
 
-[[nodiscard]] consteval QuantitySpec auto get_quantity_spec(AssociatedUnit auto u);
+template<AssociatedUnit U>
+[[nodiscard]] consteval QuantitySpec auto get_quantity_spec(U);
 
 template<typename Q, typename U>
 [[nodiscard]] consteval QuantitySpec auto get_quantity_spec(reference<Q, U>)

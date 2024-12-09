@@ -50,6 +50,14 @@ inline constexpr struct my_relative_origin final : relative_point_origin<my_orig
 
 inline constexpr auto dim_speed = isq::dim_length / isq::dim_time;
 
+namespace nu {
+inline constexpr struct second final : named_unit<"s"> {
+} second;
+inline constexpr struct hour final : named_unit<"h", mag<3600> * second> {
+} hour;
+
+}  // namespace nu
+
 // BaseDimension
 static_assert(detail::BaseDimension<struct isq::dim_length>);
 static_assert(!detail::BaseDimension<decltype(isq::dim_length / isq::dim_time)>);
@@ -143,6 +151,8 @@ static_assert(Unit<struct si::standard_gravity>);
 static_assert(Unit<scaled_unit<mag<10>, struct si::second>>);
 static_assert(Unit<derived_unit<struct si::metre, per<struct si::second>>>);
 static_assert(Unit<struct one>);
+static_assert(Unit<struct nu::second>);
+static_assert(Unit<decltype(si::metre / nu::second)>);
 static_assert(!Unit<named_unit<"?", kind_of<isq::length>>>);
 static_assert(!Unit<named_unit<"?">>);
 static_assert(!Unit<named_unit<"?", si::metre / si::second>>);
@@ -193,6 +203,9 @@ static_assert(AssociatedUnit<struct si::standard_gravity>);
 static_assert(AssociatedUnit<scaled_unit<mag<10>, struct si::second>>);
 static_assert(AssociatedUnit<derived_unit<struct si::metre, per<struct si::second>>>);
 static_assert(AssociatedUnit<struct one>);
+static_assert(AssociatedUnit<decltype(get_common_unit(si::kilo<si::metre> / si::hour, si::metre / si::second))>);
+static_assert(!AssociatedUnit<decltype(si::metre / nu::second)>);
+static_assert(!AssociatedUnit<decltype(get_common_unit(si::kilo<si::metre> / nu::hour, si::metre / nu::second))>);
 static_assert(!AssociatedUnit<named_unit<"?", kind_of<isq::length>>>);
 static_assert(!AssociatedUnit<named_unit<"?">>);
 static_assert(!AssociatedUnit<named_unit<"?", si::metre / si::second>>);
@@ -433,5 +446,20 @@ static_assert(!QuantityPointLike<std::chrono::seconds>);
 static_assert(!QuantityPointLike<quantity<isq::time[si::second]>>);
 static_assert(!QuantityPointLike<quantity_point<si::metre, my_origin>>);
 static_assert(!QuantityPointLike<int>);
+
+// Quantity Characters
+
+static_assert(detail::Scalar<quantity<one>>);
+static_assert(detail::Scalar<quantity<one, int>>);
+static_assert(!detail::Scalar<quantity_point<one>>);
+static_assert(!detail::Scalar<quantity_point<si::metre>>);
+static_assert(detail::Scalar<quantity<si::metre>>);
+static_assert(detail::Scalar<quantity<isq::speed[si::metre / si::second], int>>);
+// TODO provide support for the below when quantity specifications expressions are done
+// static_assert(detail::Vector<quantity<isq::velocity[si::metre / si::second], int>>);
+#if MP_UNITS_HOSTED
+// static_assert(detail::Vector<quantity<isq::velocity[si::metre / si::second], cartesian_vector<double>>>);
+// static_assert(detail::Complex<quantity<si::volt * si::ampere>, std::complex<double>>);
+#endif
 
 }  // namespace

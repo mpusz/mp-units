@@ -55,7 +55,6 @@ add_mp_units_module(
             include/mp-units/framework/customization_points.h
             include/mp-units/framework/dimension.h
             include/mp-units/framework/dimension_concepts.h
-            include/mp-units/framework/expression_template.h
             include/mp-units/framework/quantity.h
             include/mp-units/framework/quantity_cast.h
             include/mp-units/framework/quantity_concepts.h
@@ -67,6 +66,7 @@ add_mp_units_module(
             include/mp-units/framework/reference_concepts.h
             include/mp-units/framework/representation_concepts.h
             include/mp-units/framework/symbol_text.h
+            include/mp-units/framework/symbolic_expression.h
             include/mp-units/framework/system_reference.h
             include/mp-units/framework/unit.h
             include/mp-units/framework/unit_concepts.h

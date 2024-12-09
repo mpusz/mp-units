@@ -96,7 +96,7 @@ All of the above quantities are equivalent and mean exactly the same.
 
     The above code example may give the impression that the order of components in a derived
     unit is determined by the multiplication order. This is not the case. As stated in
-    [Simplifying the resulting expression templates](interface_introduction.md#simplifying-the-resulting-expression-templates),
+    [Simplifying the resulting symbolic expressions](interface_introduction.md#simplifying-the-resulting-symbolic-expressions),
     to be able to reason about and simplify units, the library needs to order them in an
     appropriate order. This will affect the order of components in a resulting type and
     text output.

@@ -49,9 +49,10 @@ using reference_t = reference<MP_UNITS_REMOVE_CONST(decltype(Q)), MP_UNITS_REMOV
 
 MP_UNITS_EXPORT_BEGIN
 
-[[nodiscard]] consteval QuantitySpec auto get_quantity_spec(AssociatedUnit auto u)
+template<AssociatedUnit U>
+[[nodiscard]] consteval QuantitySpec auto get_quantity_spec(U)
 {
-  return detail::get_associated_quantity(u);
+  return kind_of<detail::get_associated_quantity(U{})>;
 }
 
 /**
@@ -134,7 +135,12 @@ struct reference {
     return {};
   }
 
-  [[nodiscard]] friend consteval auto inverse(reference) { return detail::reference_t<inverse(Q{}), inverse(U{})>{}; }
+  [[nodiscard]] friend consteval detail::reference_t<MP_UNITS_EXPRESSION_WORKAROUND(inverse(Q{})),
+                                                     MP_UNITS_EXPRESSION_WORKAROUND(inverse(U{}))>
+  inverse(reference)
+  {
+    return {};
+  }
 
   /**
    * @brief Computes the value of a reference raised to the `Num/Den` power
@@ -147,9 +153,11 @@ struct reference {
    */
   template<std::intmax_t Num, std::intmax_t Den = 1>
     requires detail::non_zero<Den>
-  [[nodiscard]] friend consteval auto pow(reference)
+  [[nodiscard]] friend consteval detail::reference_t<MP_UNITS_EXPRESSION_WORKAROUND((pow<Num, Den>(Q{}))),
+                                                     MP_UNITS_EXPRESSION_WORKAROUND((pow<Num, Den>(U{})))>
+  pow(reference)
   {
-    return detail::reference_t<pow<Num, Den>(Q{}), pow<Num, Den>(U{})>{};
+    return {};
   }
 
   /**
@@ -159,7 +167,12 @@ struct reference {
    *
    * @return The result of computation
    */
-  [[nodiscard]] friend consteval auto sqrt(reference) { return detail::reference_t<sqrt(Q{}), sqrt(U{})>{}; }
+  [[nodiscard]] friend consteval detail::reference_t<MP_UNITS_EXPRESSION_WORKAROUND(sqrt(Q{})),
+                                                     MP_UNITS_EXPRESSION_WORKAROUND(sqrt(U{}))>
+  sqrt(reference)
+  {
+    return {};
+  }
 
   /**
    * @brief Computes the cubic root of a reference
@@ -168,7 +181,12 @@ struct reference {
    *
    * @return The result of computation
    */
-  [[nodiscard]] friend consteval auto cbrt(reference) { return detail::reference_t<cbrt(Q{}), cbrt(U{})>{}; }
+  [[nodiscard]] friend consteval detail::reference_t<MP_UNITS_EXPRESSION_WORKAROUND(cbrt(Q{})),
+                                                     MP_UNITS_EXPRESSION_WORKAROUND(cbrt(U{}))>
+  cbrt(reference)
+  {
+    return {};
+  }
 
   template<typename Q2, typename U2>
   [[nodiscard]] friend consteval bool convertible(reference, reference<Q2, U2>)
@@ -269,10 +287,8 @@ constexpr auto operator/(R, Q&& q) = delete;
 [[nodiscard]] consteval AssociatedUnit auto get_common_reference(AssociatedUnit auto u1, AssociatedUnit auto u2,
                                                                  AssociatedUnit auto... rest)
   requires requires {
-    {
-      get_common_quantity_spec(get_quantity_spec(u1), get_quantity_spec(u2), get_quantity_spec(rest)...)
-    } -> QuantitySpec;
-    { get_common_unit(u1, u2, rest...) } -> AssociatedUnit;
+    get_common_quantity_spec(get_quantity_spec(u1), get_quantity_spec(u2), get_quantity_spec(rest)...);
+    get_common_unit(u1, u2, rest...);
   }
 {
   return get_common_unit(u1, u2, rest...);
@@ -281,10 +297,8 @@ constexpr auto operator/(R, Q&& q) = delete;
 template<Reference R1, Reference R2, Reference... Rest>
 [[nodiscard]] consteval Reference auto get_common_reference(R1 r1, R2 r2, Rest... rest)
   requires(!(AssociatedUnit<R1> && AssociatedUnit<R2> && (... && AssociatedUnit<Rest>))) && requires {
-    {
-      get_common_quantity_spec(get_quantity_spec(r1), get_quantity_spec(r2), get_quantity_spec(rest)...)
-    } -> QuantitySpec;
-    { get_common_unit(get_unit(r1), get_unit(r2), get_unit(rest)...) } -> Unit;
+    get_common_quantity_spec(get_quantity_spec(r1), get_quantity_spec(r2), get_quantity_spec(rest)...);
+    get_common_unit(get_unit(r1), get_unit(r2), get_unit(rest)...);
   }
 {
   return detail::reference_t<get_common_quantity_spec(get_quantity_spec(R1{}), get_quantity_spec(R2{}),

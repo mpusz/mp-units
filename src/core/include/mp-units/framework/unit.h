@@ -33,10 +33,10 @@
 #include <mp-units/ext/inplace_vector.h>
 #include <mp-units/ext/type_name.h>
 #include <mp-units/ext/type_traits.h>
-#include <mp-units/framework/expression_template.h>
 #include <mp-units/framework/quantity_point_concepts.h>
 #include <mp-units/framework/quantity_spec_concepts.h>
 #include <mp-units/framework/symbol_text.h>
+#include <mp-units/framework/symbolic_expression.h>
 #include <mp-units/framework/unit_concepts.h>
 #include <mp-units/framework/unit_magnitude.h>
 #include <mp-units/framework/unit_symbol_formatting.h>
@@ -781,11 +781,11 @@ template<typename CharT, std::output_iterator<CharT> Out, auto M, typename U>
 constexpr Out unit_symbol_impl(Out out, const scaled_unit_impl<M, U>& u, const unit_symbol_formatting& fmt,
                                bool negative_power)
 {
-  *out++ = '[';
+  *out++ = '(';
   magnitude_symbol<CharT>(out, M, fmt);
   if constexpr (space_before_unit_symbol<scaled_unit<M, U>::_reference_unit_>) *out++ = ' ';
   unit_symbol_impl<CharT>(out, u._reference_unit_, fmt, negative_power);
-  *out++ = ']';
+  *out++ = ')';
   return out;
 }
 

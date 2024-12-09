@@ -26,7 +26,7 @@
 #include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/framework/dimension_concepts.h>
-#include <mp-units/framework/expression_template.h>
+#include <mp-units/framework/symbolic_expression.h>
 
 namespace mp_units {
 

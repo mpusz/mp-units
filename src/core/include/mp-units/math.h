@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include <mp-units/bits/requires_hosted.h>
-//
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/framework/customization_points.h>
 #include <mp-units/framework/quantity.h>
@@ -35,14 +33,38 @@
 #ifdef MP_UNITS_IMPORT_STD
 import std;
 #else
-#include <cmath>
 #include <cstdint>
+#include <cstdlib>
 #include <limits>
-#endif
-#endif
+#if MP_UNITS_HOSTED
+#include <cmath>
+#endif  // MP_UNITS_HOSTED
+#endif  // MP_UNITS_IMPORT_STD
+#endif  // MP_UNITS_IN_MODULE_INTERFACE
 
 MP_UNITS_EXPORT
 namespace mp_units {
+
+#if MP_UNITS_HOSTED || __cpp_lib_freestanding_cstdlib >= 202306L
+
+/**
+ * @brief Computes the absolute value of a quantity
+ *
+ * @param q Quantity being the base of the operation
+ * @return Quantity The absolute value of a provided quantity
+ */
+template<auto R, typename Rep>
+  requires requires(Rep v) { abs(v); } || requires(Rep v) { std::abs(v); }
+[[nodiscard]] constexpr quantity<R, Rep> abs(const quantity<R, Rep>& q) noexcept
+{
+  using std::abs;
+  return {static_cast<Rep>(abs(q.numerical_value_ref_in(q.unit))), R};
+}
+
+#endif
+
+#if MP_UNITS_HOSTED
+
 /**
  * @brief Computes the value of a quantity raised to the `Num/Den` power
  *
@@ -120,20 +142,6 @@ template<ReferenceOf<dimensionless> auto R, typename Rep>
   using std::exp;
   return value_cast<get_unit(R)>(
     quantity{static_cast<Rep>(exp(q.force_numerical_value_in(q.unit))), detail::clone_reference_with<one>(R)});
-}
-
-/**
- * @brief Computes the absolute value of a quantity
- *
- * @param q Quantity being the base of the operation
- * @return Quantity The absolute value of a provided quantity
- */
-template<auto R, typename Rep>
-  requires requires(Rep v) { abs(v); } || requires(Rep v) { std::abs(v); }
-[[nodiscard]] constexpr quantity<R, Rep> abs(const quantity<R, Rep>& q) noexcept
-{
-  using std::abs;
-  return {static_cast<Rep>(abs(q.numerical_value_ref_in(q.unit))), R};
 }
 
 /**
@@ -480,5 +488,7 @@ template<auto R1, typename Rep1, auto R2, typename Rep2, auto R3, typename Rep3>
   using std::hypot;
   return quantity{hypot(x.numerical_value_in(unit), y.numerical_value_in(unit), z.numerical_value_in(unit)), ref};
 }
+
+#endif  // MP_UNITS_HOSTED
 
 }  // namespace mp_units

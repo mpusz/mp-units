@@ -235,6 +235,12 @@ static_assert(
     quantity<reference<derived_quantity_spec<length_, mass_, per<time_>>, MP_UNITS_NONCONST_TYPE(si::kilo<gram>)>{},
              int>>);
 
+// Mixed-systems quantities
+static_assert(
+  is_of_type<
+    42 * metre / nu::time[nu::second],
+    quantity<reference<derived_quantity_spec<length_, per<time_>>, derived_unit<metre_, per<nu::second_>>>{}, int>>);
+
 template<auto dim, auto unit>
 concept invalid_nu_unit = !requires { dim[unit]; };
 
