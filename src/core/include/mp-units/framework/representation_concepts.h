@@ -190,7 +190,6 @@ concept Complex = (!disable_complex<T>) && requires(const T a, const T b, const 
   requires std::constructible_from<T, decltype(::mp_units::real(c)), decltype(::mp_units::imag(c))>;
 } && WeaklyRegular<T>;
 
-
 namespace magnitude_impl {
 
 void magnitude() = delete;  // poison pill
