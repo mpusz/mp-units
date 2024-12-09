@@ -310,7 +310,7 @@ concept VectorRepresentation = (!is_quantity<T>) && Vector<T> && requires(const 
 
 MP_UNITS_EXPORT template<typename T>
 concept Representation = detail::ScalarRepresentation<T> || detail::ComplexRepresentation<T> ||
-                         detail::VectorRepresentation<T>;  // || detail::TensorRepresentation<T>; */
+                         detail::VectorRepresentation<T>;  // || detail::TensorRepresentation<T>;
 
 namespace detail {
 
