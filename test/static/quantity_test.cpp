@@ -65,6 +65,8 @@ static_assert(sizeof(quantity<isq::length[m]>) == sizeof(double));
 static_assert(sizeof(quantity<si::metre, short>) == sizeof(short));
 static_assert(sizeof(quantity<isq::length[m], short>) == sizeof(short));
 
+#ifndef MP_UNITS_APPLE_CLANG_HACKS
+
 template<template<auto, typename> typename Q>
 concept invalid_types = requires {
   requires !requires { typename Q<isq::dim_length, double>; };  // dimension instead of reference
@@ -77,12 +79,14 @@ concept invalid_types = requires {
   };  // vector representation expected
   requires !requires {
     typename Q<isq::length[si::metre], cartesian_vector<double>>;
-  };  // scalar representation expected
+  };                                                                          // scalar representation expected
   requires !requires { typename Q<isq::voltage[V], std::complex<double>>; };  // incompatible character
   requires !requires { typename Q<isq::voltage_phasor[V], double>; };         // incompatible character
 #endif
 };
 static_assert(invalid_types<quantity>);
+
+#endif
 
 static_assert(std::is_trivially_default_constructible_v<quantity<isq::length[m]>>);
 static_assert(std::is_trivially_copy_constructible_v<quantity<isq::length[m]>>);
