@@ -88,7 +88,7 @@ concept Scalar = (!disable_scalar<T>) &&
                    { a + b } -> std::common_with<T>;
                    { a - b } -> std::common_with<T>;
                  } && ScalableWith<T, T>
-#if MP_UNITS_COMP_GCC != 12
+#if MP_UNITS_COMP_GCC != 12 && !defined(MP_UNITS_XCODE15_HACKS)
                  && WeaklyRegular<T>
 #endif
   ;
@@ -177,19 +177,23 @@ constexpr bool disable_complex = false;
 namespace detail {
 
 template<typename T>
-concept Complex = (!disable_complex<T>) && requires(const T a, const T b, const T& c) {
-  { -a } -> std::common_with<T>;
-  { a + b } -> std::common_with<T>;
-  { a - b } -> std::common_with<T>;
-  { a* b } -> std::common_with<T>;
-  { a / b } -> std::common_with<T>;
-  ::mp_units::real(a);
-  ::mp_units::imag(a);
-  ::mp_units::modulus(a);
-  requires ScalableWith<T, decltype(::mp_units::modulus(a))>;
-  requires std::constructible_from<T, decltype(::mp_units::real(c)), decltype(::mp_units::imag(c))>;
-} && WeaklyRegular<T>;
-
+concept Complex = (!disable_complex<T>) &&
+                  requires(const T a, const T b, const T& c) {
+                    { -a } -> std::common_with<T>;
+                    { a + b } -> std::common_with<T>;
+                    { a - b } -> std::common_with<T>;
+                    { a* b } -> std::common_with<T>;
+                    { a / b } -> std::common_with<T>;
+                    ::mp_units::real(a);
+                    ::mp_units::imag(a);
+                    ::mp_units::modulus(a);
+                    requires ScalableWith<T, decltype(::mp_units::modulus(a))>;
+                    requires std::constructible_from<T, decltype(::mp_units::real(c)), decltype(::mp_units::imag(c))>;
+                  }
+#ifndef MP_UNITS_XCODE15_HACKS
+                  && WeaklyRegular<T>
+#endif
+  ;
 namespace magnitude_impl {
 
 void magnitude() = delete;  // poison pill
@@ -238,19 +242,24 @@ constexpr bool disable_vector = false;
 namespace detail {
 
 template<typename T>
-concept Vector = (!disable_vector<T>) && requires(const T a, const T b) {
-  { -a } -> std::common_with<T>;
-  { a + b } -> std::common_with<T>;
-  { a - b } -> std::common_with<T>;
-  ::mp_units::magnitude(a);
-  requires ScalableWith<T, decltype(::mp_units::magnitude(a))>;
-  // TODO should we also check for the below (e.g., when `size() > 1` or `2`)
-  // ::mp_units::zero_vector<T>();
-  // ::mp_units::unit_vector(a);
-  // ::mp_units::scalar_product(a, b);
-  // ::mp_units::vector_product(a, b);
-  // ::mp_units::tensor_product(a, b);
-} && WeaklyRegular<T>;
+concept Vector = (!disable_vector<T>) &&
+                 requires(const T a, const T b) {
+                   { -a } -> std::common_with<T>;
+                   { a + b } -> std::common_with<T>;
+                   { a - b } -> std::common_with<T>;
+                   ::mp_units::magnitude(a);
+                   requires ScalableWith<T, decltype(::mp_units::magnitude(a))>;
+                   // TODO should we also check for the below (e.g., when `size() > 1` or `2`)
+                   // ::mp_units::zero_vector<T>();
+                   // ::mp_units::unit_vector(a);
+                   // ::mp_units::scalar_product(a, b);
+                   // ::mp_units::vector_product(a, b);
+                   // ::mp_units::tensor_product(a, b);
+                 }
+#ifndef MP_UNITS_XCODE15_HACKS
+                 && WeaklyRegular<T>
+#endif
+  ;
 
 }  // namespace detail
 

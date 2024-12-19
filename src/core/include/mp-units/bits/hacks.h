@@ -151,4 +151,8 @@ MP_UNITS_DIAGNOSTIC_POP
 #define MP_UNITS_API_NO_CRTP 1
 
 #endif
+
+#if defined(__clang__) && defined(__apple_build_version__) && __apple_build_version__ < 16000026
+#define MP_UNITS_XCODE15_HACKS
+#endif
 // NOLINTEND(bugprone-reserved-identifier, cppcoreguidelines-macro-usage)
