@@ -194,7 +194,6 @@ concept Complex = (!disable_complex<T>) &&
                   && WeaklyRegular<T>
 #endif
   ;
-
 namespace magnitude_impl {
 
 void magnitude() = delete;  // poison pill
