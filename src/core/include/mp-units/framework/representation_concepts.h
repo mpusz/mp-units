@@ -88,7 +88,7 @@ concept Scalar = (!disable_scalar<T>) &&
                    { a + b } -> std::common_with<T>;
                    { a - b } -> std::common_with<T>;
                  } && ScalableWith<T, T>
-#if MP_UNITS_COMP_GCC != 12
+#if MP_UNITS_COMP_GCC != 12 && !defined(MP_UNITS_XCODE15_HACKS)
                  && WeaklyRegular<T>
 #endif
   ;
@@ -177,18 +177,23 @@ constexpr bool disable_complex = false;
 namespace detail {
 
 template<typename T>
-concept Complex = (!disable_complex<T>) && requires(const T a, const T b, const T& c) {
-  { -a } -> std::common_with<T>;
-  { a + b } -> std::common_with<T>;
-  { a - b } -> std::common_with<T>;
-  { a* b } -> std::common_with<T>;
-  { a / b } -> std::common_with<T>;
-  ::mp_units::real(a);
-  ::mp_units::imag(a);
-  ::mp_units::modulus(a);
-  requires ScalableWith<T, decltype(::mp_units::modulus(a))>;
-  requires std::constructible_from<T, decltype(::mp_units::real(c)), decltype(::mp_units::imag(c))>;
-} && WeaklyRegular<T>;
+concept Complex = (!disable_complex<T>) &&
+                  requires(const T a, const T b, const T& c) {
+                    { -a } -> std::common_with<T>;
+                    { a + b } -> std::common_with<T>;
+                    { a - b } -> std::common_with<T>;
+                    { a* b } -> std::common_with<T>;
+                    { a / b } -> std::common_with<T>;
+                    ::mp_units::real(a);
+                    ::mp_units::imag(a);
+                    ::mp_units::modulus(a);
+                    requires ScalableWith<T, decltype(::mp_units::modulus(a))>;
+                    requires std::constructible_from<T, decltype(::mp_units::real(c)), decltype(::mp_units::imag(c))>;
+                  }
+#ifndef MP_UNITS_XCODE15_HACKS
+                  && WeaklyRegular<T>
+#endif
+  ;
 
 namespace magnitude_impl {
 
@@ -238,19 +243,24 @@ constexpr bool disable_vector = false;
 namespace detail {
 
 template<typename T>
-concept Vector = (!disable_vector<T>) && requires(const T a, const T b) {
-  { -a } -> std::common_with<T>;
-  { a + b } -> std::common_with<T>;
-  { a - b } -> std::common_with<T>;
-  ::mp_units::magnitude(a);
-  requires ScalableWith<T, decltype(::mp_units::magnitude(a))>;
-  // TODO should we also check for the below (e.g., when `size() > 1` or `2`)
-  // ::mp_units::zero_vector<T>();
-  // ::mp_units::unit_vector(a);
-  // ::mp_units::scalar_product(a, b);
-  // ::mp_units::vector_product(a, b);
-  // ::mp_units::tensor_product(a, b);
-} && WeaklyRegular<T>;
+concept Vector = (!disable_vector<T>) &&
+                 requires(const T a, const T b) {
+                   { -a } -> std::common_with<T>;
+                   { a + b } -> std::common_with<T>;
+                   { a - b } -> std::common_with<T>;
+                   ::mp_units::magnitude(a);
+                   requires ScalableWith<T, decltype(::mp_units::magnitude(a))>;
+                   // TODO should we also check for the below (e.g., when `size() > 1` or `2`)
+                   // ::mp_units::zero_vector<T>();
+                   // ::mp_units::unit_vector(a);
+                   // ::mp_units::scalar_product(a, b);
+                   // ::mp_units::vector_product(a, b);
+                   // ::mp_units::tensor_product(a, b);
+                 }
+#ifndef MP_UNITS_XCODE15_HACKS
+                 && WeaklyRegular<T>
+#endif
+  ;
 
 }  // namespace detail
 
@@ -313,42 +323,12 @@ concept Representation = detail::ScalarRepresentation<T> || detail::ComplexRepre
 
 namespace detail {
 
-#ifdef MP_UNITS_APPLE_CLANG_HACKS
-template<typename T>
-constexpr bool is_weakly_regular = std::copyable<T> && std::equality_comparable<T>;
-
-template<typename T>
-constexpr bool is_scalar = !disable_scalar<T> && is_weakly_regular<T>;
-
-template<typename T>
-constexpr bool is_complex = !disable_complex<T> && is_weakly_regular<T> && is_scalar<value_type_t<T>> &&
-                            std::constructible_from<T, value_type_t<T>, value_type_t<T>>;
-
-template<typename T>
-concept ComplexFunctionsAvailable = requires(T a) {
-  ::mp_units::real(a);
-  ::mp_units::imag(a);
-  ::mp_units::modulus(a);
-};
-
-template<typename T>
-constexpr bool is_vector = !disable_vector<T> && is_weakly_regular<T> && is_scalar<value_type_t<T>>;
-
-template<typename T>
-concept VectorFunctionsAvailable = requires(T a) { ::mp_units::magnitude(a); };
-
-
-template<typename T, quantity_character Ch>
-concept IsOfCharacter = ((Ch == quantity_character::scalar && is_scalar<T>) ||
-                         (Ch == quantity_character::complex && is_complex<T> && ComplexFunctionsAvailable<T>) ||
-                         (Ch == quantity_character::vector && is_vector<T> && VectorFunctionsAvailable<T>));
-#else
 template<typename T, quantity_character Ch>
 concept IsOfCharacter =
   (Ch == quantity_character::scalar && Scalar<T>) || (Ch == quantity_character::complex && Complex<T>) ||
   (Ch == quantity_character::vector && Vector<T>);  // || (Ch == quantity_character::tensor && Tensor<T>);
-#endif
-}  // namespace detail
+
+}
 
 MP_UNITS_EXPORT template<typename T, auto V>
 concept RepresentationOf =
