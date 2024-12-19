@@ -20,4 +20,5 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+add_example(0-wrapping_unsafe_apis)
 add_example(1-lfo)
