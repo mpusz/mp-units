@@ -121,7 +121,7 @@ int main()
   // duration equal to 2 measures of 4/4 music (i.e. 2 whole notes at
   // the current tempo):
   const auto beats = 2 * audio::whole_note;
-  const auto buffer_duration = beats / context.tempo;
+  const auto buffer_duration = value_cast<float>(beats) / context.tempo;
   const auto buffer_size = (buffer_duration * context.sample_rate).in(audio::sample);
 
   std::cout << MP_UNITS_STD_FMT::format("\nCreating buffer with size:\n\t{}\n\t{}\n\t{}\n\n", beats, buffer_duration,
