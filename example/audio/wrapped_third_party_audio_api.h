@@ -29,16 +29,16 @@ namespace audio {
 
 //! Typesafe version of music application playback engine state
 struct musical_context {
-  mp_units::quantity<sample_rate[mp_units::si::hertz], float> sample_rate;
-  mp_units::quantity<beats_per_minute, float> tempo;
+  mp_units::quantity<sample_rate[mp_units::si::hertz], float> current_sample_rate;
+  mp_units::quantity<beats_per_minute, float> current_tempo;
 };
 
 //! Typesafe wrapper around API for host application musical context
 musical_context get_musical_context()
 {
   auto context = audio_third_party::get_musical_context();
-  return musical_context{.sample_rate = context.sample_rate * mp_units::si::hertz,
-                         .tempo = context.tempo * beats_per_minute};
+  return musical_context{.current_sample_rate = context.current_sample_rate * mp_units::si::hertz,
+                         .current_tempo = context.current_tempo * beats_per_minute};
 }
 
 }  // namespace audio

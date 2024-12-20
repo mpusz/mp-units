@@ -51,7 +51,7 @@ public:
   {
     std::cout << MP_UNITS_STD_FMT::format(
       "Created oscillator with starting frequency {} ({}) for sample rate {} at tempo {}\n", freq, m_frequency,
-      context.sample_rate, context.tempo);
+      context.current_sample_rate, context.current_tempo);
   }
 
   quantity<si::hertz, float> get_frequency() const { return m_frequency; }
@@ -71,7 +71,7 @@ public:
   void set_period(QuantityOf<audio::beat_count> auto period)
   {
     std::cout << MP_UNITS_STD_FMT::format("Setting period to {} -- ", period);
-    set_period(period / m_context.tempo);
+    set_period(period / m_context.current_tempo);
   }
 
   quantity<audio::sample_value, float> operator()()
@@ -86,7 +86,7 @@ public:
 private:
   using phase_t = quantity_point<angular::radian, mp_units::default_point_origin(angular::radian), float>;
 
-  void update_step() { m_step = (m_frequency / m_context.sample_rate) * angular::revolution; }
+  void update_step() { m_step = (m_frequency / m_context.current_sample_rate) * angular::revolution; }
 
   audio::musical_context m_context;
   quantity<si::hertz, float> m_frequency;
@@ -121,8 +121,8 @@ int main()
   // duration equal to 2 measures of 4/4 music (i.e. 2 whole notes at
   // the current tempo):
   const auto beats = 2 * audio::whole_note;
-  const auto buffer_duration = value_cast<float>(beats) / context.tempo;
-  const auto buffer_size = (buffer_duration * context.sample_rate).in(audio::sample);
+  const auto buffer_duration = value_cast<float>(beats) / context.current_tempo;
+  const auto buffer_size = (buffer_duration * context.current_sample_rate).in(audio::sample);
 
   std::cout << MP_UNITS_STD_FMT::format("\nCreating buffer with size:\n\t{}\n\t{}\n\t{}\n\n", beats, buffer_duration,
                                         buffer_size);

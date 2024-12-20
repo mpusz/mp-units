@@ -41,12 +41,12 @@ int main()
   // sample rate, but these APIs are not type safe using float or double values; e.g.:
   const auto unsafe_context = audio_third_party::get_musical_context();
 
-  std::cout << MP_UNITS_STD_FMT::format("Musical context:\n\tTempo: {}\n\tSample Rate: {}\n\n", unsafe_context.tempo,
-                                        unsafe_context.sample_rate);
+  std::cout << MP_UNITS_STD_FMT::format("Musical context:\n\tTempo: {}\n\tSample Rate: {}\n\n",
+                                        unsafe_context.current_tempo, unsafe_context.current_sample_rate);
 
   // These unsafe APIs can be wrapped a new API returning type-safe quantities for tempo and sample rate; e.g.:
   const auto safe_context = audio::get_musical_context();
 
-  std::cout << MP_UNITS_STD_FMT::format("Musical context:\n\tTempo: {}\n\tSample Rate: {}\n", safe_context.tempo,
-                                        safe_context.sample_rate);
+  std::cout << MP_UNITS_STD_FMT::format("Musical context:\n\tTempo: {}\n\tSample Rate: {}\n",
+                                        safe_context.current_tempo, safe_context.current_sample_rate);
 }

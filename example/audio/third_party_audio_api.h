@@ -26,8 +26,8 @@ namespace audio_third_party {
 
 //! State of a playback engine for music host application.
 struct musical_context {
-  float sample_rate;  //!< samples per second
-  float tempo;        //!< beats per minute (quarter note == one beat)
+  float current_sample_rate;  //!< samples per second
+  float current_tempo;        //!< beats per minute (quarter note == one beat)
 };
 
 //! API provided by music host application to provide global info
@@ -35,6 +35,6 @@ struct musical_context {
 musical_context get_musical_context()
 {
   // Example data, this would be variable in a real-world context
-  return musical_context{.sample_rate = 8000.f, .tempo = 130.f};
+  return musical_context{.current_sample_rate = 8000.f, .current_tempo = 130.f};
 }
 }  // namespace audio_third_party
