@@ -78,17 +78,17 @@ inline constexpr auto smpl = sample;
 
 inline constexpr auto pcm = sample_value;
 
-// inline constexpr auto n_wd = 3 * half_note;
+inline constexpr auto n_wd = 3 * half_note;
 inline constexpr auto n_w = whole_note;
-// inline constexpr auto n_hd = dotted_half_note;
-// inline constexpr auto n_h = half_note;
-// inline constexpr auto n_qd = dotted_quarter_note;
-// inline constexpr auto n_q = quarter_note;
-// inline constexpr auto n_qt = quarter_note_triplet;
-// inline constexpr auto n_8thd = dotted_eigth_note;
-// inline constexpr auto n_8th = eigth_note;
-// inline constexpr auto n_16th = sixteenth_note;
+inline constexpr auto n_hd = dotted_half_note;
+inline constexpr auto n_h = half_note;
+inline constexpr auto n_qd = dotted_quarter_note;
+inline constexpr auto n_q = quarter_note;
+inline constexpr auto n_qt = quarter_note_triplet;
+inline constexpr auto n_8thd = dotted_eigth_note;
+inline constexpr auto n_8th = eigth_note;
+inline constexpr auto n_16th = sixteenth_note;
 
-// inline constexpr auto bpm = beats_per_minute;
+inline constexpr auto bpm = beats_per_minute;
 }  // namespace unit_symbols
 }  // namespace audio
