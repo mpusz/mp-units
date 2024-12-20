@@ -24,6 +24,7 @@
 #ifdef MP_UNITS_IMPORT_STD
 import std;
 #else
+#include <cassert>
 #include <iostream>
 #endif
 #ifdef MP_UNITS_MODULES
@@ -41,6 +42,7 @@ import mp_units;
 namespace {
 using namespace mp_units;
 
+//! A DSP generator class that generates sample values for a sine wave oscillator.
 class sine_wave_osc {
 public:
   sine_wave_osc(const audio::musical_context& context, QuantityOf<isq::frequency> auto freq) :
@@ -65,12 +67,20 @@ public:
     std::cout << MP_UNITS_STD_FMT::format("Setting period to {} (i.e. frequency to {})\n", period, m_frequency);
   }
 
+  void set_period(QuantityOf<audio::beat_count> auto period)
+  {
+    std::cout << MP_UNITS_STD_FMT::format("Setting period to {} -- ", period);
+    set_period(period / m_context.tempo);
+  }
+
   quantity<audio::sample_value, float> operator()()
   {
     auto out = angular::sin(m_phase.quantity_from_zero());
     m_phase += m_step;
     return out;
   }
+
+  void reset() { m_phase = phase_t{0.f * angular::radian}; }
 
 private:
   using phase_t = quantity_point<angular::radian, mp_units::default_point_origin(angular::radian), float>;
@@ -90,11 +100,50 @@ int main()
 
   const auto context = audio::get_musical_context();
 
-
+  // Sine oscillators are sometimes used as a "low-frequency oscillator"
+  // (LFO) that runs at a frequency below the range of human hearing and
+  // is used a source of modulation for other paramters in an audio
+  // algorithm.
   auto sin_gen = sine_wave_osc{context, 1 * Hz};
 
-  // TODO set_frequency and set_period calls for demonstrating use of different units
+  // Depending on the use-case sometimes an LFO will be set with a frequency in Hz
+  sin_gen.set_frequency(13 * Hz);
 
+  // for some use-cases it is more convient for a user to set the period
+  sin_gen.set_period(42 * s);
 
-  // auto buffer = std::vector<quantity<audio::sample_value, float>>(2 * audio::whole_note)
+  // and in some other use-cases setting the period in musical note duration is more intuitive
+  sin_gen.set_period(1 * audio::half_note);
+
+  // Our oscillator can be used to generate sample values for a buffer
+  // of audio samples.  In this example we will create a buffer with
+  // duration equal to 2 measures of 4/4 music (i.e. 2 whole notes at
+  // the current tempo):
+  const auto beats = 2 * audio::whole_note;
+  const auto buffer_duration = beats / context.tempo;
+  const auto buffer_size = (buffer_duration * context.sample_rate).in(audio::sample);
+
+  std::cout << MP_UNITS_STD_FMT::format("\nCreating buffer with size:\n\t{}\n\t{}\n\t{}\n\n", beats, buffer_duration,
+                                        buffer_size);
+
+  using buffer_t = std::vector<quantity<audio::sample_value, float>>;
+
+  auto buffer_1 = buffer_t(std::size_t(buffer_size.numerical_value_in(audio::sample)));
+
+  std::cout << MP_UNITS_STD_FMT::format("Filling buffer with values from LFO @ {}", sin_gen.get_frequency());
+  std::generate(begin(buffer_1), end(buffer_1), sin_gen);
+
+  assert(buffer_1.size() > 0u);
+  std::cout << MP_UNITS_STD_FMT::format("\nLFO Values:\n[{}", buffer_1[0u]);
+  for (std::size_t i = 1u; i < buffer_1.size(); ++i) {
+    std::cout << MP_UNITS_STD_FMT::format(", {}", buffer_1[i]);
+  }
+  std::cout << "]\n\n";
+
+  // generated values should be the same after resetting oscillator
+  sin_gen.reset();
+  auto buffer_2 = buffer_t(buffer_1.size());
+  std::generate(begin(buffer_2), end(buffer_2), sin_gen);
+
+  return buffer_1 == buffer_2;
 }
