@@ -21,4 +21,4 @@
 # SOFTWARE.
 
 add_example(0-wrapping_unsafe_apis)
-add_example(1-lfo)
+add_example(1-oscillator)
