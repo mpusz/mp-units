@@ -24,6 +24,7 @@
 #ifdef MP_UNITS_IMPORT_STD
 import std;
 #else
+#include <algorithm>
 #include <cassert>
 #include <iostream>
 #endif
