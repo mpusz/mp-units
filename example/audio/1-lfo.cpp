@@ -64,14 +64,14 @@ public:
 
   void set_period(QuantityOf<isq::time> auto period)
   {
-    m_frequency = 1.f / period;
+    m_frequency = 1.f / value_cast<float>(period);
     std::cout << MP_UNITS_STD_FMT::format("Setting period to {} (i.e. frequency to {})\n", period, m_frequency);
   }
 
   void set_period(QuantityOf<audio::beat_count> auto period)
   {
     std::cout << MP_UNITS_STD_FMT::format("Setting period to {} -- ", period);
-    set_period(period / m_context.current_tempo);
+    set_period(value_cast<float>(period) / m_context.current_tempo);
   }
 
   quantity<audio::sample_value, float> operator()()
