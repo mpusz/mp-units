@@ -32,7 +32,7 @@ struct musical_context {
 
 //! API provided by music host application to provide global info
 //! about the playback engine.
-musical_context get_musical_context()
+inline musical_context get_musical_context()
 {
   // Example data, this would be variable in a real-world context
   return musical_context{.current_sample_rate = 8000.f, .current_tempo = 130.f};
