@@ -445,6 +445,12 @@ template<@\libconcept{Reference}@ R1, @\libconcept{Reference}@ R2, @\libconcept{
 consteval @\libconcept{Reference}@ auto get_common_reference(R1 r1, R2 r2, Rest... rest)
   requires @\seebelownc@;
 
+// \ref{qty.ref.math}, math
+
+template<@\libconcept{Representation}@ Rep, @\libconcept{Reference}@ R>
+  requires requires { std::numeric_limits<Rep>::epsilon(); }
+constexpr quantity<R{}, Rep> epsilon(R r) noexcept;                                     // hosted
+
 // \ref{qty.rep}, representation
 
 enum class @\libglobal{quantity_character}@ { scalar, complex, vector, tensor };
@@ -549,6 +555,86 @@ constexpr @\libconcept{Quantity}@ auto value_cast(@\seebelownc@ q);
 template<@\libconcept{QuantitySpec}@ auto ToQS, @\seebelownc@>
   requires @\seebelownc@
 constexpr @\libconcept{Quantity}@ auto quantity_cast(@\seebelownc@ q);
+
+// \ref{qty.math}, math
+
+template<auto R, typename Rep>
+  requires @\seebelownc@
+constexpr quantity<R, Rep> abs(const quantity<R, Rep>& q) noexcept;
+
+template<std::intmax_t Num, std::intmax_t Den = 1, auto R, typename Rep>
+  requires @\seebelownc@
+constexpr quantity<pow<Num, Den>(R), Rep> pow(const quantity<R, Rep>& q) noexcept;      // hosted
+
+template<auto R, typename Rep>
+  requires @\seebelownc@
+constexpr quantity<sqrt(R), Rep> sqrt(const quantity<R, Rep>& q) noexcept;              // hosted
+
+template<auto R, typename Rep>
+  requires @\seebelownc@
+constexpr quantity<cbrt(R), Rep> cbrt(const quantity<R, Rep>& q) noexcept;              // hosted
+
+template<@\libconcept{ReferenceOf}@<dimensionless> auto R, typename Rep>
+  requires @\seebelownc@
+constexpr quantity<R, Rep> exp(const quantity<R, Rep>& q);                              // hosted
+
+template<auto R, typename Rep>
+  requires @\seebelownc@
+constexpr bool isfinite(const quantity<R, Rep>& a) noexcept;                            // hosted
+
+template<auto R, typename Rep>
+  requires @\seebelownc@
+constexpr bool isinf(const quantity<R, Rep>& a) noexcept;                               // hosted
+
+template<auto R, typename Rep>
+  requires @\seebelownc@
+constexpr bool isnan(const quantity<R, Rep>& a) noexcept;                               // hosted
+
+template<auto R, auto S, auto T, typename Rep1, typename Rep2, typename Rep3>
+  requires @\seebelownc@
+constexpr @\seebelownc@ fma(const quantity<R, Rep1>& a, const quantity<S, Rep2>& x,         // hosted
+                        const quantity<T, Rep3>& b) noexcept;
+
+template<auto R1, typename Rep1, auto R2, typename Rep2>
+  requires @\seebelownc@
+constexpr @\libconcept{QuantityOf}@<get_quantity_spec(R1)> auto fmod(const quantity<R1, Rep1>& x,      // hosted
+                                                      const quantity<R2, Rep2>& y) noexcept;
+
+template<auto R1, typename Rep1, auto R2, typename Rep2>
+  requires @\seebelownc@
+constexpr @\libconcept{QuantityOf}@<get_quantity_spec(R1)> auto remainder(const quantity<R1, Rep1>& x, // hosted
+                                                           const quantity<R2, Rep2>& y) noexcept;
+
+template<@\libconcept{Unit}@ auto To, auto R, typename Rep>
+constexpr quantity<@\exposidnc{clone-reference-with}@<To>(R), Rep> floor(                             // hosted
+  const quantity<R, Rep>& q) noexcept
+  requires @\seebelownc@;
+
+template<@\libconcept{Unit}@ auto To, auto R, typename Rep>
+constexpr quantity<@\exposidnc{clone-reference-with}@<To>(R), Rep> ceil(                              // hosted
+  const quantity<R, Rep>& q) noexcept
+  requires @\seebelownc@;
+
+template<@\libconcept{Unit}@ auto To, auto R, typename Rep>
+constexpr quantity<@\exposidnc{clone-reference-with}@<To>(R), Rep> round(                             // hosted
+  const quantity<R, Rep>& q) noexcept
+  requires @\seebelownc@;
+
+template<Unit auto To, auto R, typename Rep>
+constexpr @\libconcept{QuantityOf}@<dimensionless / get_quantity_spec(R)> auto inverse(                // hosted
+  const quantity<R, Rep>& q)
+  requires @\seebelownc@;
+
+template<auto R1, typename Rep1, auto R2, typename Rep2>
+  requires @\seebelownc@
+constexpr @\libconcept{QuantityOf}@<get_quantity_spec(get_common_reference(R1, R2))> auto hypot(       // hosted
+  const quantity<R1, Rep1>& x, const quantity<R2, Rep2>& y) noexcept;
+
+template<auto R1, typename Rep1, auto R2, typename Rep2, auto R3, typename Rep3>
+  requires @\seebelownc@
+constexpr @\libconcept{QuantityOf}@<get_quantity_spec(get_common_reference(R1, R2, R3))> auto hypot(   // hosted
+  const quantity<R1, Rep1>& x, const quantity<R2, Rep2>& y,
+  const quantity<R3, Rep3>& z) noexcept;
 
 }
 
@@ -662,6 +748,25 @@ constexpr @\libconcept{QuantityPoint}@ auto value_cast(@\seebelownc@ qp);
 template<@\libconcept{QuantitySpec}@ auto ToQS, @\seebelownc@>
   requires @\seebelownc@
 constexpr @\libconcept{QuantityPoint}@ auto quantity_cast(@\seebelownc@ qp);
+
+// \ref{qty.pt.math}, math
+
+template<auto R, auto PO, typename Rep>
+  requires requires(quantity<R, Rep> q) { isfinite(q); }
+constexpr bool isfinite(const quantity_point<R, PO, Rep>& a) noexcept;                  // hosted
+
+template<auto R, auto PO, typename Rep>
+  requires requires(quantity<R, Rep> q) { isinf(q); }
+constexpr bool isinf(const quantity_point<R, PO, Rep>& a) noexcept;                     // hosted
+
+template<auto R, auto PO, typename Rep>
+  requires requires(quantity<R, Rep> q) { isnan(q); }
+constexpr bool isnan(const quantity_point<R, PO, Rep>& a) noexcept;                     // hosted
+
+template<auto R, auto S, auto T, auto Origin, typename Rep1, typename Rep2, typename Rep3>
+  requires @\seebelownc@
+constexpr @\seebelownc@ fma(const quantity<R, Rep1>& a, const quantity<S, Rep2>& x,         // hosted
+                        const quantity_point<T, Origin, Rep3>& b) noexcept;
 
 }
 \end{codeblock}
@@ -3675,6 +3780,22 @@ requires {
 \end{codeblock}
 \end{itemdescr}
 
+\rSec2[qty.ref.math]{Math}
+
+\indexlibrarymember{epsilon}{Reference}
+\begin{itemdecl}
+template<@\libconcept{Representation}@ Rep, @\libconcept{Reference}@ R>
+  requires requires { std::numeric_limits<Rep>::epsilon(); }
+constexpr quantity<R{}, Rep> epsilon(R r) noexcept;                                     // hosted
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\tcode{return \{static_cast<Rep>(std::numeric_limits<Rep>::epsilon()), r\};}
+\end{itemdescr}
+
 \rSec1[qty.rep]{Representation}
 
 \rSec2[qty.rep.general]{General}
@@ -5416,6 +5537,433 @@ return quantity{std::forward<FwdQ>(q).@\exposidnc{numerical-value}@, @\exposidnc
 \end{codeblock}
 \end{itemdescr}
 
+\rSec2[qty.math]{Math}
+
+\indexlibrarymember{abs}{quantity}
+\begin{itemdecl}
+template<auto R, typename Rep>
+  requires requires(Rep v) { abs(v); } || requires(Rep v) { std::abs(v); }
+constexpr quantity<R, Rep> abs(const quantity<R, Rep>& q) noexcept;
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+using std::abs;
+return {static_cast<Rep>(abs(q.numerical_value_ref_in(q.unit))), R};
+\end{codeblock}
+\end{itemdescr}
+
+\indexlibrarymember{pow}{quantity}
+\begin{itemdecl}
+template<std::intmax_t Num, std::intmax_t Den = 1, auto R, typename Rep>
+  requires (Den != 0) && requires(Rep v) {
+    representation_values<Rep>::one();
+    requires requires { pow(v, 1.0); } || requires { std::pow(v, 1.0); };
+  }
+constexpr quantity<pow<Num, Den>(R), Rep> pow(const quantity<R, Rep>& q) noexcept;      // hosted
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+if constexpr (Num == 0) {
+  return quantity<pow<Num, Den>(R), Rep>::one();
+} else if constexpr (Num == Den) {
+  return q;
+} else {
+  using std::pow;
+  return {static_cast<Rep>(pow(q.numerical_value_ref_in(q.unit),
+                               static_cast<double>(Num) / static_cast<double>(Den))),
+          pow<Num, Den>(R)};
+}
+\end{codeblock}
+\end{itemdescr}
+
+\indexlibrarymember{sqrt}{quantity}
+\begin{itemdecl}
+template<auto R, typename Rep>
+  requires requires(Rep v) { sqrt(v); } || requires(Rep v) { std::sqrt(v); }
+constexpr quantity<sqrt(R), Rep> sqrt(const quantity<R, Rep>& q) noexcept;              // hosted
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+using std::sqrt;
+return {static_cast<Rep>(sqrt(q.numerical_value_ref_in(q.unit))), sqrt(R)};
+\end{codeblock}
+\end{itemdescr}
+
+\indexlibrarymember{cbrt}{quantity}
+\begin{itemdecl}
+template<auto R, typename Rep>
+  requires requires(Rep v) { cbrt(v); } || requires(Rep v) { std::cbrt(v); }
+constexpr quantity<cbrt(R), Rep> cbrt(const quantity<R, Rep>& q) noexcept;              // hosted
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+using std::cbrt;
+return {static_cast<Rep>(cbrt(q.numerical_value_ref_in(q.unit))), cbrt(R)};
+\end{codeblock}
+\end{itemdescr}
+
+\indexlibrarymember{exp}{quantity}
+\begin{itemdecl}
+template<@\libconcept{ReferenceOf}@<dimensionless> auto R, typename Rep>
+  requires requires(Rep v) { exp(v); } || requires(Rep v) { std::exp(v); }
+constexpr quantity<R, Rep> exp(const quantity<R, Rep>& q);                              // hosted
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+using std::exp;
+return value_cast<get_unit(R)>(
+  quantity{static_cast<Rep>(exp(q.force_numerical_value_in(q.unit))),
+           @\exposidnc{clone-reference-with}@<one>(R)});
+\end{codeblock}
+\end{itemdescr}
+
+\indexlibrarymember{isfinite}{quantity}
+\begin{itemdecl}
+template<auto R, typename Rep>
+  requires requires(Rep v) { isfinite(v); } || requires(Rep v) { std::isfinite(v); }
+constexpr bool isfinite(const quantity<R, Rep>& a) noexcept;                            // hosted
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+using std::isfinite;
+return isfinite(a.numerical_value_ref_in(a.unit));
+\end{codeblock}
+\end{itemdescr}
+
+\indexlibrarymember{isinf}{quantity}
+\begin{itemdecl}
+template<auto R, typename Rep>
+  requires requires(Rep v) { isinf(v); } || requires(Rep v) { std::isinf(v); }
+constexpr bool isinf(const quantity<R, Rep>& a) noexcept;                               // hosted
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+using std::isinf;
+return isinf(a.numerical_value_ref_in(a.unit));
+\end{codeblock}
+\end{itemdescr}
+
+\indexlibrarymember{isnan}{quantity}
+\begin{itemdecl}
+template<auto R, typename Rep>
+  requires requires(Rep v) { isnan(v); } || requires(Rep v) { std::isnan(v); }
+constexpr bool isnan(const quantity<R, Rep>& a) noexcept;                               // hosted
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+using std::isnan;
+return isnan(a.numerical_value_ref_in(a.unit));
+\end{codeblock}
+\end{itemdescr}
+
+\indexlibrarymember{fma}{quantity}
+\begin{itemdecl}
+template<auto R, auto S, auto T, typename Rep1, typename Rep2, typename Rep3>
+  requires
+    requires {
+      get_common_quantity_spec(get_quantity_spec(R) * get_quantity_spec(S),
+                               get_quantity_spec(T));
+    } && (equivalent(get_unit(R) * get_unit(S), get_unit(T))) &&
+    requires(Rep1 v1, Rep2 v2, Rep3 v3) {
+      requires requires { fma(v1, v2, v3); } || requires { std::fma(v1, v2, v3); };
+    }
+constexpr @\libconcept{QuantityOf}@<get_common_quantity_spec(get_quantity_spec(R) * get_quantity_spec(S),
+                                              get_quantity_spec(T))> auto
+fma(const quantity<R, Rep1>& a, const quantity<S, Rep2>& x,                             // hosted
+    const quantity<T, Rep3>& b) noexcept;
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+using std::fma;
+return quantity{fma(a.numerical_value_ref_in(a.unit), x.numerical_value_ref_in(x.unit),
+                    b.numerical_value_ref_in(b.unit)),
+                get_common_reference(R * S, T)};
+\end{codeblock}
+\end{itemdescr}
+
+\indexlibrarymember{fmod}{quantity}
+\begin{itemdecl}
+template<auto R1, typename Rep1, auto R2, typename Rep2>
+  requires requires(Rep1 v1, Rep2 v2) {
+    get_common_reference(R1, R2);
+    requires requires { fmod(v1, v2); } || requires { std::fmod(v1, v2); };
+  }
+constexpr @\libconcept{QuantityOf}@<get_quantity_spec(R1)> auto fmod(const quantity<R1, Rep1>& x,      // hosted
+                                                      const quantity<R2, Rep2>& y) noexcept;
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+constexpr auto ref = get_common_reference(R1, R2);
+constexpr auto unit = get_unit(ref);
+using std::fmod;
+return quantity{fmod(x.numerical_value_in(unit), y.numerical_value_in(unit)), ref};
+\end{codeblock}
+\end{itemdescr}
+
+\indexlibrarymember{remainder}{quantity}
+\begin{itemdecl}
+template<auto R1, typename Rep1, auto R2, typename Rep2>
+  requires requires(Rep1 v1, Rep2 v2) {
+    get_common_reference(R1, R2);
+    requires requires { remainder(v1, v2); } || requires { std::remainder(v1, v2); };
+  }
+constexpr @\libconcept{QuantityOf}@<get_quantity_spec(R1)> auto remainder(const quantity<R1, Rep1>& x, // hosted
+                                                           const quantity<R2, Rep2>& y) noexcept;
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+constexpr auto ref = get_common_reference(R1, R2);
+constexpr auto unit = get_unit(ref);
+using std::remainder;
+return quantity{remainder(x.numerical_value_in(unit), y.numerical_value_in(unit)), ref};
+\end{codeblock}
+\end{itemdescr}
+
+\indexlibrarymember{floor}{quantity}
+\begin{itemdecl}
+template<@\libconcept{Unit}@ auto To, auto R, typename Rep>
+constexpr quantity<@\exposidnc{clone-reference-with}@<To>(R), Rep> floor(                             // hosted
+  const quantity<R, Rep>& q) noexcept
+  requires((!treat_as_floating_point<Rep>) || requires(Rep v) { floor(v); } ||
+           requires(Rep v) { std::floor(v); }) &&
+            (equivalent(To, get_unit(R)) || requires {
+              q.force_in(To);
+              representation_values<Rep>::one();
+            });
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+const auto handle_signed_results = [&]<typename T>(const T& res) {
+  if (res > q) {
+    return res - T::one();
+  }
+  return res;
+};
+if constexpr (treat_as_floating_point<Rep>) {
+  using std::floor;
+  if constexpr (equivalent(To, get_unit(R))) {
+    return {static_cast<Rep>(floor(q.numerical_value_ref_in(q.unit))),
+            @\exposidnc{clone-reference-with}@<To>(R)};
+  } else {
+    return handle_signed_results(
+      quantity{static_cast<Rep>(floor(q.force_numerical_value_in(To))),
+               @\exposidnc{clone-reference-with}@<To>(R)});
+  }
+} else {
+  if constexpr (equivalent(To, get_unit(R))) {
+    return q.force_in(To);
+  } else {
+    return handle_signed_results(q.force_in(To));
+  }
+}
+\end{codeblock}
+\end{itemdescr}
+
+\indexlibrarymember{ceil}{quantity}
+\begin{itemdecl}
+template<@\libconcept{Unit}@ auto To, auto R, typename Rep>
+constexpr quantity<@\exposidnc{clone-reference-with}@<To>(R), Rep> ceil(                              // hosted
+  const quantity<R, Rep>& q) noexcept
+  requires((!treat_as_floating_point<Rep>) || requires(Rep v) { ceil(v); } ||
+           requires(Rep v) { std::ceil(v); }) &&
+            (equivalent(To, get_unit(R)) || requires {
+              q.force_in(To);
+              representation_values<Rep>::one();
+            });
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+const auto handle_signed_results = [&]<typename T>(const T& res) {
+  if (res < q) {
+    return res + T::one();
+  }
+  return res;
+};
+if constexpr (treat_as_floating_point<Rep>) {
+  using std::ceil;
+  if constexpr (equivalent(To, get_unit(R))) {
+    return {static_cast<Rep>(ceil(q.numerical_value_ref_in(q.unit))),
+            @\exposidnc{clone-reference-with}@<To>(R)};
+  } else {
+    return handle_signed_results(quantity{
+      static_cast<Rep>(ceil(q.force_numerical_value_in(To))), @\exposidnc{clone-reference-with}@<To>(R)});
+  }
+} else {
+  if constexpr (equivalent(To, get_unit(R))) {
+    return q.force_in(To);
+  } else {
+    return handle_signed_results(q.force_in(To));
+  }
+}
+\end{codeblock}
+\end{itemdescr}
+
+\indexlibrarymember{round}{quantity}
+\begin{itemdecl}
+template<@\libconcept{Unit}@ auto To, auto R, typename Rep>
+constexpr quantity<@\exposidnc{clone-reference-with}@<To>(R), Rep> round(                             // hosted
+  const quantity<R, Rep>& q) noexcept
+  requires((!treat_as_floating_point<Rep>) || requires(Rep v) { round(v); } ||
+           requires(Rep v) { std::round(v); }) &&
+            (equivalent(To, get_unit(R)) || requires {
+              ::mp_units::floor<To>(q);
+              representation_values<Rep>::one();
+            });
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+if constexpr (equivalent(To, get_unit(R))) {
+  if constexpr (treat_as_floating_point<Rep>) {
+    using std::round;
+    return {static_cast<Rep>(round(q.numerical_value_ref_in(q.unit))),
+            @\exposidnc{clone-reference-with}@<To>(R)};
+  } else {
+    return q.force_in(To);
+  }
+} else {
+  const auto res_low = mp_units::floor<To>(q);
+  const auto res_high = res_low + res_low.one();
+  const auto diff0 = q - res_low;
+  const auto diff1 = res_high - q;
+  if (diff0 == diff1) {
+    if (static_cast<int>(res_low.numerical_value_ref_in(To)) & 1) {
+      return res_high;
+    }
+    return res_low;
+  }
+  if (diff0 < diff1) {
+    return res_low;
+  }
+  return res_high;
+}
+\end{codeblock}
+\end{itemdescr}
+
+\indexlibrarymember{inverse}{quantity}
+\begin{itemdecl}
+template<Unit auto To, auto R, typename Rep>
+constexpr @\libconcept{QuantityOf}@<dimensionless / get_quantity_spec(R)> auto inverse(                // hosted
+  const quantity<R, Rep>& q)
+  requires requires {
+    representation_values<Rep>::one();
+    value_cast<To>(1 / q);
+  };
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+return (representation_values<Rep>::one() * one).force_in(To * quantity<R, Rep>::unit) / q;
+\end{codeblock}
+\end{itemdescr}
+
+\indexlibrarymember{hypot}{quantity}
+\begin{itemdecl}
+template<auto R1, typename Rep1, auto R2, typename Rep2>
+  requires requires(Rep1 v1, Rep2 v2) {
+    get_common_reference(R1, R2);
+    requires requires { hypot(v1, v2); } || requires { std::hypot(v1, v2); };
+  }
+constexpr @\libconcept{QuantityOf}@<get_quantity_spec(get_common_reference(R1, R2))> auto hypot(       // hosted
+  const quantity<R1, Rep1>& x, const quantity<R2, Rep2>& y) noexcept;
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+constexpr auto ref = get_common_reference(R1, R2);
+constexpr auto unit = get_unit(ref);
+using std::hypot;
+return quantity{hypot(x.numerical_value_in(unit), y.numerical_value_in(unit)), ref};
+\end{codeblock}
+\end{itemdescr}
+
+\indexlibrarymember{hypot}{quantity}
+\begin{itemdecl}
+template<auto R1, typename Rep1, auto R2, typename Rep2, auto R3, typename Rep3>
+  requires requires(Rep1 v1, Rep2 v2, Rep3 v3) {
+    get_common_reference(R1, R2, R3);
+    requires requires { hypot(v1, v2, v3); } || requires { std::hypot(v1, v2, v3); };
+  }
+constexpr @\libconcept{QuantityOf}@<get_quantity_spec(get_common_reference(R1, R2, R3))> auto hypot(   // hosted
+  const quantity<R1, Rep1>& x, const quantity<R2, Rep2>& y,
+  const quantity<R3, Rep3>& z) noexcept;
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+constexpr auto ref = get_common_reference(R1, R2);
+constexpr auto unit = get_unit(ref);
+using std::hypot;
+return quantity{
+  hypot(x.numerical_value_in(unit), y.numerical_value_in(unit), z.numerical_value_in(unit)),
+  ref};
+\end{codeblock}
+\end{itemdescr}
+
 \rSec2[qty.common.type]{\tcode{std::common_type} specializations}
 
 \begin{codeblock}
@@ -6641,6 +7189,79 @@ Equivalent to:
 \begin{codeblock}
 return QP{quantity_cast<ToQS>(std::forward<FwdQP>(qp).@\exposidnc{quantity_from_origin}@),
           QP::point_origin};
+\end{codeblock}
+\end{itemdescr}
+
+\rSec2[qty.pt.math]{Math}
+
+\indexlibrarymember{isfinite}{quantity_point}
+\begin{itemdecl}
+template<auto R, auto PO, typename Rep>
+  requires requires(quantity<R, Rep> q) { isfinite(q); }
+constexpr bool isfinite(const quantity_point<R, PO, Rep>& a) noexcept;                  // hosted
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\tcode{return isfinite(a.quantity_ref_from(a.point_origin));}
+\end{itemdescr}
+
+\indexlibrarymember{isinf}{quantity_point}
+\begin{itemdecl}
+template<auto R, auto PO, typename Rep>
+  requires requires(quantity<R, Rep> q) { isinf(q); }
+constexpr bool isinf(const quantity_point<R, PO, Rep>& a) noexcept;                     // hosted
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\tcode{return isinf(a.quantity_ref_from(a.point_origin));}
+\end{itemdescr}
+
+\indexlibrarymember{isnan}{quantity_point}
+\begin{itemdecl}
+template<auto R, auto PO, typename Rep>
+  requires requires(quantity<R, Rep> q) { isnan(q); }
+constexpr bool isnan(const quantity_point<R, PO, Rep>& a) noexcept;                     // hosted
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\tcode{return isnan(a.quantity_ref_from(a.point_origin));}
+\end{itemdescr}
+
+\indexlibrarymember{fma}{quantity}
+\indexlibrarymember{fma}{quantity_point}
+\begin{itemdecl}
+template<auto R, auto S, auto T, auto Origin, typename Rep1, typename Rep2, typename Rep3>
+  requires requires {
+    get_common_quantity_spec(get_quantity_spec(R) * get_quantity_spec(S), get_quantity_spec(T));
+  } && (equivalent(get_unit(R) * get_unit(S), get_unit(T))) &&
+             requires(Rep1 v1, Rep2 v2, Rep3 v3) {
+               requires requires { fma(v1, v2, v3); } || requires { std::fma(v1, v2, v3); };
+             }
+constexpr QuantityPointOf<get_common_quantity_spec(get_quantity_spec(R) * get_quantity_spec(S),
+                                                   get_quantity_spec(T))> auto
+fma(const quantity<R, Rep1>& a, const quantity<S, Rep2>& x,                             // hosted
+    const quantity_point<T, Origin, Rep3>& b) noexcept;
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+using std::fma;
+return Origin +
+       quantity{fma(a.numerical_value_ref_in(a.unit), x.numerical_value_ref_in(x.unit),
+                    b.quantity_ref_from(b.point_origin).numerical_value_ref_in(b.unit)),
+                get_common_reference(R* S, T)};
 \end{codeblock}
 \end{itemdescr}
 
