@@ -3780,6 +3780,23 @@ requires {
 \end{codeblock}
 \end{itemdescr}
 
+\rSec2[qty.ref.utils]{Utilities}
+
+\indexlibrarymemberexpos{Reference}{clone-reference-with}
+\indexlibrarymemberexpos{AssociatedUnit}{clone-reference-with}
+\begin{itemdecl}
+template<AssociatedUnit auto To, AssociatedUnit From>
+consteval decltype(To) @\exposidnc{clone-reference-with}@(From);
+template<Unit auto To, QuantitySpec QS, Unit U>
+consteval reference<QS, decltype(To)> @\exposidnc{clone-reference-with}@(reference<QS, U>);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\returns
+\tcode{\{\}}.
+\end{itemdescr}
+
 \rSec2[qty.ref.math]{Math}
 
 \indexlibrarymember{epsilon}{Reference}
