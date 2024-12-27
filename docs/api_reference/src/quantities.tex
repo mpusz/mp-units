@@ -654,6 +654,103 @@ struct @\libspec{std::common_type}{quantity}@<Value, Q> : std::common_type<Q, Va
 
 namespace mp_units {
 
+// \ref{qty.rand}, random
+
+// \ref{qty.rand.uni.int}, class template \tcode{uniform_int_distribution}
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{integral}@<typename Q::rep>
+struct uniform_int_distribution;                                                        // hosted
+
+// \ref{qty.rand.uni.real}, class template \tcode{uniform_real_distribution}
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{floating_point}@<typename Q::rep>
+struct uniform_real_distribution;                                                       // hosted
+
+// \ref{qty.rand.bern.bin}, class template \tcode{binomial_distribution}
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{integral}@<typename Q::rep>
+struct binomial_distribution;                                                           // hosted
+
+// \ref{qty.rand.bern.negbin}, class template \tcode{negative_binomial_distribution}
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{integral}@<typename Q::rep>
+struct negative_binomial_distribution;                                                  // hosted
+
+// \ref{qty.rand.bern.geo}, class template \tcode{geometric_distribution}
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{integral}@<typename Q::rep>
+struct geometric_distribution;                                                          // hosted
+
+// \ref{qty.rand.pois.poisson}, class template \tcode{poisson_distribution}
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{integral}@<typename Q::rep>
+struct poisson_distribution;                                                            // hosted
+
+// \ref{qty.rand.pois.exp}, class template \tcode{exponential_distribution}
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{floating_point}@<typename Q::rep>
+struct exponential_distribution;                                                        // hosted
+
+// \ref{qty.rand.pois.gamma}, class template \tcode{gamma_distribution}
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{floating_point}@<typename Q::rep>
+struct gamma_distribution;                                                              // hosted
+
+// \ref{qty.rand.pois.weibull}, class template \tcode{weibull_distribution}
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{floating_point}@<typename Q::rep>
+struct weibull_distribution;                                                            // hosted
+
+// \ref{qty.rand.pois.extreme}, class template \tcode{extreme_value_distribution}
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{floating_point}@<typename Q::rep>
+struct extreme_value_distribution;                                                      // hosted
+
+// \ref{qty.rand.norm.normal}, class template \tcode{normal_distribution}
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{floating_point}@<typename Q::rep>
+struct normal_distribution;                                                             // hosted
+
+// \ref{qty.rand.norm.lognormal}, class template \tcode{lognormal_distribution}
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{floating_point}@<typename Q::rep>
+struct lognormal_distribution;                                                          // hosted
+
+// \ref{qty.rand.norm.chisq}, class template \tcode{chi_squared_distribution}
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{floating_point}@<typename Q::rep>
+struct chi_squared_distribution;                                                        // hosted
+
+// \ref{qty.rand.norm.cauchy}, class template \tcode{cauchy_distribution}
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{floating_point}@<typename Q::rep>
+struct cauchy_distribution;                                                             // hosted
+
+// \ref{qty.rand.norm.f}, class template \tcode{fisher_f_distribution}
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{floating_point}@<typename Q::rep>
+struct fisher_f_distribution;                                                           // hosted
+
+// \ref{qty.rand.norm.t}, class template \tcode{student_t_distribution}
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{floating_point}@<typename Q::rep>
+struct student_t_distribution;                                                          // hosted
+
+// \ref{qty.rand.samp.discrite}, class template \tcode{discrete_distribution}
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{integral}@<typename Q::rep>
+struct discrete_distribution;                                                           // hosted
+
+// \ref{qty.rand.samp.pconst}, class template \tcode{piecewise_constant_distribution}
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{floating_point}@<typename Q::rep>
+class piecewise_constant_distribution;                                                  // hosted
+
+// \ref{qty.rand.samp.plinear}, class template \tcode{piecewise_linear_distribution}
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{floating_point}@<typename Q::rep>
+class piecewise_linear_distribution;                                                    // hosted
+
 // \ref{qty.pt}, quantity point
 
 // \ref{qty.pt.orig}, point origin
@@ -6005,6 +6102,945 @@ struct @\libspec{std::common_type}{quantity}@<Q, Value> {
   using type = mp_units::quantity<Q::reference, std::common_type_t<typename Q::rep, Value>>;
 };
 \end{codeblock}
+
+\rSec2[qty.rand]{Random}
+
+\rSec3[qty.rand.req]{Requirements}
+
+% Local command to index names as members of all random number distribution types.
+\newcommand{\indexrand}[1]{%
+\indexlibrarymemberx{uniform_int_distribution}{#1}%
+\indexlibrarymemberx{uniform_real_distribution}{#1}%
+\indexlibrarymemberx{binomial_distribution}{#1}%
+\indexlibrarymemberx{negative_binomial_distribution}{#1}%
+\indexlibrarymemberx{geometric_distribution}{#1}%
+\indexlibrarymemberx{poisson_distribution}{#1}%
+\indexlibrarymemberx{exponential_distribution}{#1}%
+\indexlibrarymemberx{gamma_distribution}{#1}%
+\indexlibrarymemberx{weibull_distribution}{#1}%
+\indexlibrarymemberx{extreme_value_distribution}{#1}%
+\indexlibrarymemberx{normal_distribution}{#1}%
+\indexlibrarymemberx{lognormal_distribution}{#1}%
+\indexlibrarymemberx{chi_squared_distribution}{#1}%
+\indexlibrarymemberx{cauchy_distribution}{#1}%
+\indexlibrarymemberx{fisher_f_distribution}{#1}%
+\indexlibrarymemberx{student_t_distribution}{#1}%
+\indexlibrarymemberx{discrete_distribution}{#1}%
+\indexlibrarymemberx{piecewise_constant_distribution}{#1}%
+\indexlibrarymemberx{piecewise_linear_distribution}{#1}%
+}
+
+\pnum
+A class \tcode{D}
+instantiated from a class template described in subclause \ref{qty.rand}
+meets the following requirements.
+In this subclase,
+\begin{itemize}
+\item
+\tcode{d} is a value of \tcode{D}, and \tcode{x} is a (possibly const) value of \tcode{D},
+\item
+\tcode{args} denotes an \fakegrammarterm{expression-list},
+\item
+$\tcode{param}_i$ denotes the $i_{th}$ function parameter, and
+\item
+$\tcode{unwrapped_param}_i$ denotes \tcode{$\tcode{param}_i$.numerical_value_ref_in(Q::unit)}
+if $\tcode{param}_i$ is an lvalue reference to \tcode{const Q}, and
+$\tcode{param}_i$ otherwise.
+\end{itemize}
+
+\begin{itemdecl}
+D u;
+D u = D();
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Default-initializes the \tcode{base} subobject.
+\end{itemdescr}
+
+\begin{itemdecl}
+D(args)
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Initializes the \tcode{base} subobject with
+$\tcode{unwrapped_param}_0, \ldots, \tcode{unwrapped_param}_n$.
+\end{itemdescr}
+
+\indexrand{operator()}%
+\begin{itemdecl}
+d(g)
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\tcode{return base::operator()(g) * Q::reference;}
+\end{itemdescr}
+
+\indexrand{min}%
+\indexrand{max}%
+\indexlibrarymemberx{uniform_int_distribution}{a}
+\indexlibrarymemberx{uniform_int_distribution}{b}
+\indexlibrarymemberx{uniform_real_distribution}{a}
+\indexlibrarymemberx{uniform_real_distribution}{b}
+\indexlibrarymemberx{binomial_distribution}{t}
+\indexlibrarymemberx{negative_binomial_distribution}{k}
+\indexlibrarymemberx{extreme_value_distribution}{a}
+\indexlibrarymemberx{normal_distribution}{mean}
+\indexlibrarymemberx{normal_distribution}{stddev}
+\indexlibrarymemberx{lognormal_distribution}{m}
+\indexlibrarymemberx{lognormal_distribution}{s}
+\indexlibrarymemberx{cauchy_distribution}{a}
+\indexlibrarymemberx{cauchy_distribution}{b}
+\begin{itemdecl}
+x.@\placeholdernc{f}@()
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+For all other \placeholder{f},
+unless otherwise specified,
+equivalent to:
+\tcode{return base::\placeholdernc{f}() * Q::reference;}
+\end{itemdescr}
+
+\rSec3[qty.rand.uni]{Uniform distributions}
+
+\rSec4[qty.rand.uni.int]{Class template \tcode{uniform_int_distribution}}
+
+\indexlibraryglobal{uniform_int_distribution}
+\begin{codeblock}
+namespace mp_units {
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{integral}@<typename Q::rep>
+struct uniform_int_distribution                                                         // hosted
+    : public std::uniform_int_distribution<typename Q::rep> {
+  using rep = Q::rep;
+  using base = std::uniform_int_distribution<rep>;
+
+  uniform_int_distribution();
+  uniform_int_distribution(const Q& a, const Q& b);
+
+  template<typename Generator>
+  Q operator()(Generator& g);
+
+  Q a() const;
+  Q b() const;
+
+  Q min() const;
+  Q max() const;
+};
+}
+\end{codeblock}
+
+\rSec4[qty.rand.uni.real]{Class template \tcode{uniform_real_distribution}}
+
+\indexlibraryglobal{uniform_real_distribution}
+\begin{codeblock}
+namespace mp_units {
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{floating_point}@<typename Q::rep>
+struct uniform_real_distribution                                                        // hosted
+    : public std::uniform_real_distribution<typename Q::rep> {
+  using rep = Q::rep;
+  using base = std::uniform_real_distribution<rep>;
+
+  uniform_real_distribution();
+  uniform_real_distribution(const Q& a, const Q& b);
+
+  template<typename Generator>
+  Q operator()(Generator& g);
+
+  Q a() const;
+  Q b() const;
+
+  Q min() const;
+  Q max() const;
+};
+}
+\end{codeblock}
+
+\rSec3[qty.rand.bern]{Bernoulli distributions}
+
+\rSec4[qty.rand.bern.bin]{Class template \tcode{binomial_distribution}}
+
+\indexlibraryglobal{binomial_distribution}
+\begin{codeblock}
+namespace mp_units {
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{integral}@<typename Q::rep>
+struct binomial_distribution                                                            // hosted
+    : public std::binomial_distribution<typename Q::rep> {
+  using rep = Q::rep;
+  using base = std::binomial_distribution<rep>;
+
+  binomial_distribution();
+  binomial_distribution(const Q& t, double p);
+
+  template<typename Generator>
+  Q operator()(Generator& g);
+
+  Q t() const;
+
+  Q min() const;
+  Q max() const;
+};
+}
+\end{codeblock}
+
+\rSec4[qty.rand.bern.negbin]{Class template \tcode{negative_binomial_distribution}}
+
+\indexlibraryglobal{negative_binomial_distribution}
+\begin{codeblock}
+namespace mp_units {
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{integral}@<typename Q::rep>
+struct negative_binomial_distribution                                                   // hosted
+    : public std::negative_binomial_distribution<typename Q::rep> {
+  using rep = Q::rep;
+  using base = std::negative_binomial_distribution<rep>;
+
+  negative_binomial_distribution();
+  negative_binomial_distribution(const Q& k, double p);
+
+  template<typename Generator>
+  Q operator()(Generator& g);
+
+  Q k() const;
+
+  Q min() const;
+  Q max() const;
+};
+}
+\end{codeblock}
+
+% Should this come before the above, like in the C++ standard?
+\rSec4[qty.rand.bern.geo]{Class template \tcode{geometric_distribution}}
+
+\indexlibraryglobal{geometric_distribution}
+\begin{codeblock}
+namespace mp_units {
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{integral}@<typename Q::rep>
+struct geometric_distribution                                                           // hosted
+    : public std::geometric_distribution<typename Q::rep> {
+  using rep = Q::rep;
+  using base = std::geometric_distribution<rep>;
+
+  geometric_distribution();
+  explicit geometric_distribution(double p);
+
+  template<typename Generator>
+  Q operator()(Generator& g);
+
+  Q min() const;
+  Q max() const;
+};
+}
+\end{codeblock}
+
+\rSec3[qty.rand.pois]{Poisson distrubutions}
+
+\rSec4[qty.rand.pois.poisson]{Class template \tcode{poisson_distribution}}
+
+\indexlibraryglobal{poisson_distribution}
+\begin{codeblock}
+namespace mp_units {
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{integral}@<typename Q::rep>
+struct poisson_distribution                                                             // hosted
+    : public std::poisson_distribution<typename Q::rep> {
+  using rep = Q::rep;
+  using base = std::poisson_distribution<rep>;
+
+  poisson_distribution();
+  explicit poisson_distribution(double p);
+
+  template<typename Generator>
+  Q operator()(Generator& g);
+
+  Q min() const;
+  Q max() const;
+};
+}
+\end{codeblock}
+
+\rSec4[qty.rand.pois.exp]{Class template \tcode{exponential_distribution}}
+
+\indexlibraryglobal{exponential_distribution}
+\begin{codeblock}
+namespace mp_units {
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{floating_point}@<typename Q::rep>
+struct exponential_distribution                                                         // hosted
+    : public std::exponential_distribution<typename Q::rep> {
+  using rep = Q::rep;
+  using base = std::exponential_distribution<rep>;
+
+  exponential_distribution();
+  explicit exponential_distribution(const rep& lambda);
+
+  template<typename Generator>
+  Q operator()(Generator& g);
+
+  Q min() const;
+  Q max() const;
+};
+}
+\end{codeblock}
+
+\rSec4[qty.rand.pois.gamma]{Class template \tcode{gamma_distribution}}
+
+\indexlibraryglobal{gamma_distribution}
+\begin{codeblock}
+namespace mp_units {
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{floating_point}@<typename Q::rep>
+struct gamma_distribution                                                               // hosted
+    : public std::gamma_distribution<typename Q::rep> {
+  using rep = Q::rep;
+  using base = std::gamma_distribution<rep>;
+
+  gamma_distribution();
+  gamma_distribution(const rep& alpha, const rep& beta);
+
+  template<typename Generator>
+  Q operator()(Generator& g);
+
+  Q min() const;
+  Q max() const;
+};
+}
+\end{codeblock}
+
+\rSec4[qty.rand.pois.weibull]{Class template \tcode{weibull_distribution}}
+
+\indexlibraryglobal{weibull_distribution}
+\begin{codeblock}
+namespace mp_units {
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{floating_point}@<typename Q::rep>
+struct weibull_distribution                                                             // hosted
+    : public std::weibull_distribution<typename Q::rep> {
+  using rep = Q::rep;
+  using base = std::weibull_distribution<rep>;
+
+  weibull_distribution();
+  weibull_distribution(const rep& a, const rep& b);
+
+  template<typename Generator>
+  Q operator()(Generator& g);
+
+  Q min() const;
+  Q max() const;
+};
+}
+\end{codeblock}
+
+\rSec4[qty.rand.pois.extreme]{Class template \tcode{extreme_value_distribution}}
+
+\indexlibraryglobal{extreme_value_distribution}
+\begin{codeblock}
+namespace mp_units {
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{floating_point}@<typename Q::rep>
+struct extreme_value_distribution                                                       // hosted
+    : public std::extreme_value_distribution<typename Q::rep> {
+  using rep = Q::rep;
+  using base = std::extreme_value_distribution<rep>;
+
+  extreme_value_distribution();
+  extreme_value_distribution(const Q& a, const rep& b);
+
+  template<typename Generator>
+  Q operator()(Generator& g);
+
+  Q a() const;
+
+  Q min() const;
+  Q max() const;
+};
+}
+\end{codeblock}
+
+\indexlibrarymemberx{extreme_value_distribution}{operator()}
+\begin{itemdecl}
+template<typename Generator>
+Q operator()(Generator& g);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\tcode{return Q(base::operator()(g));}
+\end{itemdescr}
+
+\rSec3[qty.rand.norm]{Normal distributions}
+
+\rSec4[qty.rand.norm.normal]{Class template \tcode{normal_distribution}}
+
+\indexlibraryglobal{normal_distribution}
+\begin{codeblock}
+namespace mp_units {
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{floating_point}@<typename Q::rep>
+struct normal_distribution                                                              // hosted
+    : public std::normal_distribution<typename Q::rep> {
+  using rep = Q::rep;
+  using base = std::normal_distribution<rep>;
+
+  normal_distribution();
+  normal_distribution(const Q& mean, const Q& stddev);
+
+  template<typename Generator>
+  Q operator()(Generator& g);
+
+  Q mean() const;
+  Q stddev() const;
+
+  Q min() const;
+  Q max() const;
+};
+}
+\end{codeblock}
+
+\indexlibrarymemberx{normal_distribution}{operator()}
+\begin{itemdecl}
+template<typename Generator>
+Q operator()(Generator& g);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\tcode{return Q(base::operator()(g));}
+\end{itemdescr}
+
+\rSec4[qty.rand.norm.lognormal]{Class template \tcode{lognormal_distribution}}
+
+\indexlibraryglobal{lognormal_distribution}
+\begin{codeblock}
+namespace mp_units {
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{floating_point}@<typename Q::rep>
+struct lognormal_distribution                                                           // hosted
+    : public std::lognormal_distribution<typename Q::rep> {
+  using rep = Q::rep;
+  using base = std::lognormal_distribution<rep>;
+
+  lognormal_distribution();
+  lognormal_distribution(const Q& m, const Q& s);
+
+  template<typename Generator>
+  Q operator()(Generator& g);
+
+  Q m() const;
+  Q s() const;
+
+  Q min() const;
+  Q max() const;
+};
+}
+\end{codeblock}
+
+\rSec4[qty.rand.norm.chisq]{Class template \tcode{chi_squared_distribution}}
+
+\indexlibraryglobal{chi_squared_distribution}
+\begin{codeblock}
+namespace mp_units {
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{floating_point}@<typename Q::rep>
+struct chi_squared_distribution                                                         // hosted
+    : public std::chi_squared_distribution<typename Q::rep> {
+  using rep = Q::rep;
+  using base = std::chi_squared_distribution<rep>;
+
+  chi_squared_distribution();
+  explicit chi_squared_distribution(const rep& n);
+
+  template<typename Generator>
+  Q operator()(Generator& g);
+
+  Q min() const;
+  Q max() const;
+};
+}
+\end{codeblock}
+
+\rSec4[qty.rand.norm.cauchy]{Class template \tcode{cauchy_distribution}}
+
+\indexlibraryglobal{cauchy_distribution}
+\begin{codeblock}
+namespace mp_units {
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{floating_point}@<typename Q::rep>
+struct cauchy_distribution                                                              // hosted
+    : public std::cauchy_distribution<typename Q::rep> {
+  using rep = Q::rep;
+  using base = std::cauchy_distribution<rep>;
+
+  cauchy_distribution();
+  cauchy_distribution(const Q& a, const Q& b);
+
+  template<typename Generator>
+  Q operator()(Generator& g);
+
+  Q a() const;
+  Q b() const;
+
+  Q min() const;
+  Q max() const;
+};
+}
+\end{codeblock}
+
+\rSec4[qty.rand.norm.f]{Class template \tcode{fisher_f_distribution}}
+
+\indexlibraryglobal{fisher_f_distribution}
+\begin{codeblock}
+namespace mp_units {
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{floating_point}@<typename Q::rep>
+struct fisher_f_distribution                                                            // hosted
+    : public std::fisher_f_distribution<typename Q::rep> {
+  using rep = Q::rep;
+  using base = std::fisher_f_distribution<rep>;
+
+  fisher_f_distribution();
+  fisher_f_distribution(const rep& m, const rep& n);
+
+  template<typename Generator>
+  Q operator()(Generator& g);
+
+  Q min() const;
+  Q max() const;
+};
+}
+\end{codeblock}
+
+\rSec4[qty.rand.norm.t]{Class template \tcode{student_t_distribution}}
+
+\indexlibraryglobal{student_t_distribution}
+\begin{codeblock}
+namespace mp_units {
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{floating_point}@<typename Q::rep>
+struct student_t_distribution                                                           // hosted
+    : public std::student_t_distribution<typename Q::rep> {
+  using rep = Q::rep;
+  using base = std::student_t_distribution<rep>;
+
+  student_t_distribution();
+  explicit student_t_distribution(const rep& n);
+
+  template<typename Generator>
+  Q operator()(Generator& g);
+
+  Q min() const;
+  Q max() const;
+};
+}
+\end{codeblock}
+
+\rSec3[qty.rand.samp]{Sampling distributions}
+
+\rSec4[qty.rand.samp.discrite]{Class template \tcode{discrete_distribution}}
+
+\indexlibraryglobal{discrete_distribution}
+\begin{codeblock}
+namespace mp_units {
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{integral}@<typename Q::rep>
+struct discrete_distribution                                                            // hosted
+    : public std::discrete_distribution<typename Q::rep> {
+  using rep = Q::rep;
+  using base = std::discrete_distribution<rep>;
+
+  discrete_distribution();
+
+  template<typename InputIt>
+  discrete_distribution(InputIt first, InputIt last);
+
+  discrete_distribution(std::initializer_list<double> weights);
+
+  template<typename UnaryOperation>
+  discrete_distribution(std::size_t count, double xmin, double xmax, UnaryOperation unary_op);
+
+  template<typename Generator>
+  Q operator()(Generator& g);
+
+  Q min() const;
+  Q max() const;
+};
+}
+\end{codeblock}
+
+\rSec4[qty.rand.samp.utils]{Utilities}
+
+\pnum
+The following exposition-only function templates are used in the following subclauses.
+
+\begin{itemdecl}
+template<Quantity Q, typename InputIt>
+std::vector<typename Q::rep> @\exposidnc{i-qty-to-rep}@(InputIt first, InputIt last);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+std::vector<typename Q::rep> intervals_rep;
+intervals_rep.reserve(static_cast<std::size_t>(std::distance(first, last)));
+for (InputIt itr = first; itr != last; ++itr) {
+  intervals_rep.push_back(itr->numerical_value_ref_in(Q::unit));
+}
+return intervals_rep;
+\end{codeblock}
+\end{itemdescr}
+
+\begin{itemdecl}
+template<Quantity Q>
+std::vector<typename Q::rep> @\exposidnc{bl-qty-to-rep}@(std::initializer_list<Q>& bl);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+std::vector<typename Q::rep> bl_rep;
+bl_rep.reserve(bl.size());
+for (const Q& qty : bl) {
+  bl_rep.push_back(qty.numerical_value_ref_in(Q::unit));
+}
+return bl_rep;
+\end{codeblock}
+\end{itemdescr}
+
+\begin{itemdecl}
+template<Quantity Q, typename UnaryOperation>
+std::vector<typename Q::rep> @\exposidnc{fw-bl-pwc}@(std::initializer_list<Q>& bl, UnaryOperation fw);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+using rep = Q::rep;
+std::vector<rep> w_bl;
+w_bl.reserve(bl.size());
+for (const Q& qty : bl) {
+  w_bl.push_back(fw(qty));
+}
+std::vector<rep> weights;
+weights.reserve(bl.size());
+for (std::size_t i = 0; i < bl.size() - 1; ++i) {
+  weights.push_back(w_bl[i] + w_bl[i + 1]);
+}
+weights.push_back(0);
+return weights;
+\end{codeblock}
+\end{itemdescr}
+
+\begin{itemdecl}
+template<Quantity Q, typename UnaryOperation>
+std::vector<typename Q::rep> @\exposidnc{fw-bl-pwl}@(std::initializer_list<Q>& bl, UnaryOperation fw);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+std::vector<typename Q::rep> weights;
+weights.reserve(bl.size());
+for (const Q& qty : bl) {
+  weights.push_back(fw(qty));
+}
+return weights;
+\end{codeblock}
+\end{itemdescr}
+
+\rSec4[qty.rand.samp.pconst]{Class template \tcode{piecewise_constant_distribution}}
+
+\indexlibraryglobal{piecewise_constant_distribution}
+\begin{codeblock}
+namespace mp_units {
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{floating_point}@<typename Q::rep>
+class piecewise_constant_distribution                                                   // hosted
+    : public std::piecewise_constant_distribution<typename Q::rep> {
+  using rep = Q::rep;
+  using base = std::piecewise_constant_distribution<rep>;
+
+  template<typename InputIt>
+  piecewise_constant_distribution(const std::vector<rep>& i, InputIt first_w);
+
+  piecewise_constant_distribution(const std::vector<rep>& bl, const std::vector<rep>& weights);
+
+public:
+  piecewise_constant_distribution();
+
+  template<typename InputIt1, typename InputIt2>
+  piecewise_constant_distribution(InputIt1 first_i, InputIt1 last_i, InputIt2 first_w);
+
+  template<typename UnaryOperation>
+  piecewise_constant_distribution(std::initializer_list<Q> bl, UnaryOperation fw);
+
+  template<typename UnaryOperation>
+  piecewise_constant_distribution(std::size_t nw, const Q& xmin, const Q& xmax,
+                                  UnaryOperation fw);
+
+  template<typename Generator>
+  Q operator()(Generator& g);
+
+  std::vector<Q> intervals() const;
+
+  Q min() const;
+  Q max() const;
+};
+}
+\end{codeblock}
+
+\indexlibraryctor{piecewise_constant_distribution}
+\begin{itemdecl}
+template<typename InputIt>
+piecewise_constant_distribution(const std::vector<rep>& i, InputIt first_w);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Initializes the \tcode{base} subobject with
+\begin{codeblock}
+base(i.cbegin(), i.cend(), first_w)
+\end{codeblock}
+\end{itemdescr}
+
+\indexlibraryctor{piecewise_constant_distribution}
+\begin{itemdecl}
+piecewise_constant_distribution(const std::vector<rep>& bl, const std::vector<rep>& weights);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Initializes the \tcode{base} subobject with
+\begin{codeblock}
+base(bl.cbegin(), bl.cend(), weights.cbegin())
+\end{codeblock}
+\end{itemdescr}
+
+\indexlibraryctor{piecewise_constant_distribution}
+\begin{itemdecl}
+template<typename InputIt1, typename InputIt2>
+piecewise_constant_distribution(InputIt1 first_i, InputIt1 last_i, InputIt2 first_w);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+piecewise_constant_distribution(@\exposidnc{i-qty-to-rep}@<Q>(first_i, last_i), first_w)
+\end{codeblock}
+\end{itemdescr}
+
+\indexlibraryctor{piecewise_constant_distribution}
+\begin{itemdecl}
+template<typename UnaryOperation>
+piecewise_constant_distribution(std::initializer_list<Q> bl, UnaryOperation fw);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+piecewise_constant_distribution(@\exposidnc{bl-qty-to-rep}@(bl), @\exposidnc{fw-bl-pwc}@(bl, fw))
+\end{codeblock}
+\end{itemdescr}
+
+\indexlibraryctor{piecewise_constant_distribution}
+\begin{itemdecl}
+template<typename UnaryOperation>
+piecewise_constant_distribution(std::size_t nw, const Q& xmin, const Q& xmax, UnaryOperation fw);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Initializes the \tcode{base} subobject with
+\begin{codeblock}
+base(nw, xmin.numerical_value_ref_in(Q::unit), xmax.numerical_value_ref_in(Q::unit),
+     [fw](rep val) { return fw(val * Q::reference); })
+\end{codeblock}
+\end{itemdescr}
+
+\indexlibrarymemberx{piecewise_constant_distribution}{intervals}
+\begin{itemdecl}
+std::vector<Q> intervals() const;
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+const std::vector<rep> intervals_rep = base::intervals();
+std::vector<Q> intervals_qty;
+intervals_qty.reserve(intervals_rep.size());
+for (const rep& val : intervals_rep) {
+  intervals_qty.push_back(val * Q::reference);
+}
+return intervals_qty;
+\end{codeblock}
+\end{itemdescr}
+
+\rSec4[qty.rand.samp.plinear]{Class template \tcode{piecewise_linear_distribution}}
+
+\indexlibraryglobal{piecewise_linear_distribution}
+\begin{codeblock}
+namespace mp_units {
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{floating_point}@<typename Q::rep>
+class piecewise_linear_distribution                                                     // hosted
+    : public std::piecewise_linear_distribution<typename Q::rep> {
+  using rep = Q::rep;
+  using base = std::piecewise_linear_distribution<rep>;
+
+  template<typename InputIt>
+  piecewise_linear_distribution(const std::vector<rep>& i, InputIt first_w);
+
+  piecewise_linear_distribution(const std::vector<rep>& bl, const std::vector<rep>& weights);
+
+public:
+  piecewise_linear_distribution() : base() {}
+
+  template<typename InputIt1, typename InputIt2>
+  piecewise_linear_distribution(InputIt1 first_i, InputIt1 last_i, InputIt2 first_w);
+
+  template<typename UnaryOperation>
+  piecewise_linear_distribution(std::initializer_list<Q> bl, UnaryOperation fw);
+
+  template<typename UnaryOperation>
+  piecewise_linear_distribution(std::size_t nw, const Q& xmin, const Q& xmax, UnaryOperation fw);
+
+  template<typename Generator>
+  Q operator()(Generator& g);
+
+  std::vector<Q> intervals() const;
+
+  Q min() const;
+  Q max() const;
+};
+}
+\end{codeblock}
+
+\indexlibraryctor{piecewise_linear_distribution}
+\begin{itemdecl}
+template<typename InputIt>
+piecewise_linear_distribution(const std::vector<rep>& i, InputIt first_w);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Initializes the \tcode{base} subobject with
+\begin{codeblock}
+base(i.cbegin(), i.cend(), first_w)
+\end{codeblock}
+\end{itemdescr}
+
+\indexlibraryctor{piecewise_linear_distribution}
+\begin{itemdecl}
+piecewise_linear_distribution(const std::vector<rep>& bl, const std::vector<rep>& weights);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Initializes the \tcode{base} subobject with
+\begin{codeblock}
+base(bl.cbegin(), bl.cend(), weights.cbegin())
+\end{codeblock}
+\end{itemdescr}
+
+\indexlibraryctor{piecewise_linear_distribution}
+\begin{itemdecl}
+template<typename InputIt1, typename InputIt2>
+piecewise_linear_distribution(InputIt1 first_i, InputIt1 last_i, InputIt2 first_w);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+piecewise_linear_distribution(@\exposidnc{i-qty-to-rep}@<Q>(first_i, last_i), first_w)
+\end{codeblock}
+\end{itemdescr}
+
+\indexlibraryctor{piecewise_linear_distribution}
+\begin{itemdecl}
+template<typename UnaryOperation>
+piecewise_linear_distribution(std::initializer_list<Q> bl, UnaryOperation fw);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+piecewise_linear_distribution(@\exposidnc{bl-qty-to-rep}@(bl), @\exposidnc{fw-bl-pwl}@(bl, fw))
+\end{codeblock}
+\end{itemdescr}
+
+\indexlibraryctor{piecewise_linear_distribution}
+\begin{itemdecl}
+template<typename UnaryOperation>
+piecewise_linear_distribution(std::size_t nw, const Q& xmin, const Q& xmax, UnaryOperation fw);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Initializes the \tcode{base} subobject with
+\begin{codeblock}
+base(nw, xmin.numerical_value_ref_in(Q::unit), xmax.numerical_value_ref_in(Q::unit),
+     [fw](rep val) { return fw(val * Q::reference); })
+\end{codeblock}
+\end{itemdescr}
+
+\indexlibrarymemberx{piecewise_linear_distribution}{intervals}
+\begin{itemdecl}
+std::vector<Q> intervals() const;
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+const std::vector<rep> intervals_rep = base::intervals();
+std::vector<Q> intervals_qty;
+intervals_qty.reserve(intervals_rep.size());
+for (const rep& val : intervals_rep) {
+  intervals_qty.push_back(val * Q::reference);
+}
+return intervals_qty;
+\end{codeblock}
+\end{itemdescr}
 
 \rSec1[qty.pt]{Quantity point}
 
