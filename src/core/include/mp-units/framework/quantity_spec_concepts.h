@@ -134,7 +134,7 @@ concept QuantitySpecCastableTo = QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(Fro
 
 MP_UNITS_EXPORT template<typename T, auto QS>
 concept QuantitySpecOf =
-  QuantitySpec<T> && QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS))> && (implicitly_convertible(T{}, QS)) &&
+  QuantitySpec<T> && QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS))> && detail::QuantitySpecConvertibleTo<T{}, QS> &&
   // the below is to make the following work
   // static_assert(ReferenceOf<si::radian, isq::angular_measure>);
   // static_assert(!ReferenceOf<si::radian, dimensionless>);

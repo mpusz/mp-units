@@ -151,7 +151,7 @@ struct quantity_spec_interface : quantity_spec_interface_base {
   }
 
   template<typename Self, typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>>
-    requires(explicitly_convertible(Q::quantity_spec, Self{}))
+    requires QuantitySpecExplicitlyConvertibleTo<Q::quantity_spec, Self{}>
   [[nodiscard]] constexpr Quantity auto operator()(this Self self, FwdQ&& q)
   {
     return quantity{std::forward<FwdQ>(q).numerical_value_is_an_implementation_detail_, make_reference(self, Q::unit)};
@@ -164,7 +164,7 @@ struct quantity_spec_interface : quantity_spec_interface_base {
   }
 
   template<typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>, typename Self_ = Self>
-    requires(explicitly_convertible(Q::quantity_spec, Self_{}))
+    requires QuantitySpecExplicitlyConvertibleTo<Q::quantity_spec, Self_{}>
   [[nodiscard]] constexpr Quantity auto operator()(FwdQ&& q) const
   {
     return quantity{std::forward<FwdQ>(q).numerical_value_is_an_implementation_detail_,
@@ -357,7 +357,7 @@ struct quantity_spec<Self, QS, Args...> : detail::propagate_equation<QS>, detail
   }
 
   template<typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>, typename Self_ = Self>
-    requires(explicitly_convertible(Q::quantity_spec, Self_{}))
+    requires detail::QuantitySpecExplicitlyConvertibleTo<Q::quantity_spec, Self_{}>
   [[nodiscard]] constexpr Quantity auto operator()(FwdQ&& q) const
   {
     return quantity{std::forward<FwdQ>(q).numerical_value_is_an_implementation_detail_,
@@ -398,12 +398,12 @@ struct quantity_spec<Self, QS, Args...> : detail::propagate_equation<QS>, detail
 // clang-format on
 #if MP_UNITS_API_NO_CRTP
 template<detail::NamedQuantitySpec auto QS, detail::DerivedQuantitySpec auto Eq, detail::QSProperty auto... Args>
-  requires(explicitly_convertible(Eq, QS))
+  requires(detail::QuantitySpecExplicitlyConvertibleTo<Eq, QS>)
 struct quantity_spec<QS, Eq, Args...> : detail::quantity_spec_interface {
 #else
 template<typename Self, detail::NamedQuantitySpec auto QS, detail::DerivedQuantitySpec auto Eq,
          detail::QSProperty auto... Args>
-  requires(explicitly_convertible(Eq, QS))
+  requires(detail::QuantitySpecExplicitlyConvertibleTo<Eq, QS>)
 struct quantity_spec<Self, QS, Eq, Args...> : detail::quantity_spec_interface<Self> {
 #endif
   using _base_type_ = quantity_spec;
@@ -1547,8 +1547,8 @@ template<QuantitySpec Q>
 [[nodiscard]] consteval QuantitySpec auto get_common_quantity_spec(QuantitySpec auto q) { return q; }
 
 template<QuantitySpec Q1, QuantitySpec Q2>
-  requires(implicitly_convertible(detail::get_kind_tree_root(Q1{}), detail::get_kind_tree_root(Q2{}))) ||
-          (implicitly_convertible(detail::get_kind_tree_root(Q2{}), detail::get_kind_tree_root(Q1{})))
+  requires detail::QuantitySpecConvertibleTo<detail::get_kind_tree_root(Q1{}), detail::get_kind_tree_root(Q2{})> ||
+           detail::QuantitySpecConvertibleTo<detail::get_kind_tree_root(Q2{}), detail::get_kind_tree_root(Q1{})>
 [[nodiscard]] consteval QuantitySpec auto get_common_quantity_spec(Q1 q1, Q2 q2)
 {
   using QQ1 = decltype(detail::remove_kind(q1));
