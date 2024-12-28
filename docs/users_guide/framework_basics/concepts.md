@@ -52,24 +52,6 @@ All of the above quantity specifications have to be marked as `final`.
 `QuantitySpecOf` concept is satisfied when both arguments satisfy a [`QuantitySpec`](#QuantitySpec) concept
 and when `T` is implicitly convertible to `V`.
 
-??? info "More details"
-
-    Additionally:
-
-    - `T` should not be a [nested quantity specification of `V`](dimensionless_quantities.md/#nested-quantity-kinds)
-    - either `T` is quantity kind or `V` should not be a
-      [nested quantity specification of `T`](dimensionless_quantities.md/#nested-quantity-kinds)
-
-    Those additional conditions are required to make the following work:
-
-    ```cpp
-    static_assert(ReferenceOf<si::radian, isq::angular_measure>);
-    static_assert(!ReferenceOf<si::radian, dimensionless>);
-    static_assert(!ReferenceOf<isq::angular_measure[si::radian], dimensionless>);
-    static_assert(ReferenceOf<one, isq::angular_measure>);
-    static_assert(!ReferenceOf<dimensionless[one], isq::angular_measure>);
-    ```
-
 
 ## `Unit<T>` { #Unit }
 
@@ -123,17 +105,8 @@ Such units can be passed as an argument to a `prefixed_unit` class template.
 
 ### `UnitOf<T, V>` { #UnitOf }
 
-`UnitOf` concept is satisfied for all units `T` matching an [`AssociatedUnit`](#AssociatedUnit)
-concept with an associated quantity type implicitly convertible to `V`.
-
-??? info "More details"
-
-    Additionally, the kind of `V` and the kind of quantity type associated with `T` must be the same,
-    or the quantity type associated with `T` may not be derived from the kind of `V`.
-
-    This condition is required to make `dimensionless[si::radian]` invalid as `si::radian` should
-    be only used for `isq::angular_measure`, which is a
-    [nested quantity kind within the dimensionless quantities tree](dimensionless_quantities.md/#nested-quantity-kinds).
+`UnitOf` concept is satisfied for all units `T` for which an associated quantity spec is implicitly
+convertible to the provided [`QuantitySpec`](#QuantitySpec) value.
 
 
 ## `Reference<T>` { #Reference }
@@ -150,7 +123,7 @@ A `Reference` can either be:
 ### `ReferenceOf<T, V>` { #ReferenceOf }
 
 `ReferenceOf` concept is satisfied by references `T` which have a quantity specification that satisfies
-[`QuantitySpecOf<V>`](#QuantitySpecOf) concept.          |
+[`QuantitySpecOf<V>`](#QuantitySpecOf) concept.
 
 
 ## `Representation<T>` { #Representation }
@@ -205,7 +178,7 @@ satisfied by all types being or deriving from an instantiation of a `quantity` c
 
 ### `QuantityOf<T, V>` { #QuantityOf }
 
-`QuantityOf` concept is satisfied by all the quantities for which a [`QuantitySpecOf<V>`](#QuantitySpecOf)
+`QuantityOf` concept is satisfied by all the quantities for which a [`ReferenceOf<V>`](#ReferenceOf)
 is `true`.
 
 
@@ -252,10 +225,10 @@ class template.
 
 `QuantityPointOf` concept is satisfied by all the quantity points `T` that match the following value `V`:
 
-| `V`            | Condition                                                                                           |
-|----------------|-----------------------------------------------------------------------------------------------------|
-| `QuantitySpec` | The quantity point quantity specification satisfies [`QuantitySpecOf<V>`](#QuantitySpecOf) concept. |
-| `PointOrigin`  | The _point_ and `V` have the same absolute point origin.                                            |
+| `V`            | Condition                                                                                     |
+|----------------|-----------------------------------------------------------------------------------------------|
+| `QuantitySpec` | The quantity point quantity specification satisfies [`ReferenceOf<V>`](#ReferenceOf) concept. |
+| `PointOrigin`  | The _point_ and `V` have the same absolute point origin.                                      |
 
 
 ## `QuantityLike<T>` { #QuantityLike }

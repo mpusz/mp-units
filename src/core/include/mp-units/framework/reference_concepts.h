@@ -60,13 +60,13 @@ template<typename T>
 concept Reference = AssociatedUnit<T> || is_specialization_of<T, reference>;
 
 /**
- * @brief A concept matching all references with provided quantity spec
+ * @brief A concept matching all references of the provided quantity spec
  *
- * Satisfied by all references with a quantity_spec being the instantiation derived from
- * the provided quantity_spec type.
+ * Satisfied by all references for which @c QuantitySpecOf<QS> is true.
  */
 template<typename T, auto QS>
-concept ReferenceOf = Reference<T> && QuantitySpecOf<decltype(get_quantity_spec(T{})), QS>;
+concept ReferenceOf = Reference<T> && QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS))> &&
+                      QuantitySpecOf<decltype(get_quantity_spec(T{})), QS>;
 
 MP_UNITS_EXPORT_END
 

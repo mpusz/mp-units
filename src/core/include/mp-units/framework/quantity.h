@@ -71,8 +71,8 @@ concept ValuePreservingTo = Representation<std::remove_cvref_t<FromRep>> && Repr
 
 template<typename QFrom, typename QTo>
 concept QuantityConvertibleTo =
-  Quantity<QFrom> && Quantity<QTo> && QuantitySpecConvertibleTo<QFrom::quantity_spec, QTo::quantity_spec> &&
-  UnitConvertibleTo<QFrom::unit, QTo::unit> &&
+  Quantity<QFrom> && Quantity<QTo> && implicitly_convertible(QFrom::quantity_spec, QTo::quantity_spec) &&
+  (interconvertible(QFrom::unit, QTo::unit)) &&
   ValuePreservingTo<typename QFrom::rep, typename QTo::rep, QFrom::unit, QTo::unit> &&
   // TODO consider providing constraints of sudo_cast here rather than testing if it can be called (its return type is
   // deduced thus the function is evaluated here and may emit truncating conversion or other warnings)
@@ -640,6 +640,10 @@ explicit(quantity_like_traits<Q>::explicit_import) quantity(Q)
 MP_UNITS_EXPORT_END
 
 }  // namespace mp_units
+
+// This specialization overrides `std` defaults for quantities
+template<mp_units::Quantity Q1, mp_units::Quantity Q2>
+struct std::common_type<Q1, Q2> {};
 
 template<mp_units::Quantity Q1, mp_units::Quantity Q2>
   requires requires {

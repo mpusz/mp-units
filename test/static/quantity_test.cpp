@@ -260,6 +260,12 @@ static_assert(std::convertible_to<quantity<isq::length[km], int>, quantity<isq::
 static_assert(std::constructible_from<quantity<isq::length[km]>, quantity<isq::length[m], int>>);
 static_assert(std::convertible_to<quantity<isq::length[m], int>, quantity<isq::length[km]>>);
 
+static_assert(!std::convertible_to<quantity<isq::angular_measure[rad]>, quantity<dimensionless[one]>>);
+static_assert(!std::convertible_to<quantity<isq::angular_measure[rad]>, quantity<one>>);
+static_assert(!std::convertible_to<quantity<rad>, quantity<one>>);
+static_assert(!std::convertible_to<quantity<isq::angular_measure[one]>, quantity<dimensionless[one]>>);
+static_assert(!std::convertible_to<quantity<isq::angular_measure[one]>, quantity<one>>);
+
 ///////////////////////
 // obtaining a number
 ///////////////////////
@@ -337,6 +343,7 @@ static_assert((15'000. * nm).in(m).numerical_value_in(nm) == 15'000.);
 // check if unit conversion works - don't bother about the actual result
 static_assert((1. * rad + 1. * deg).in(rad) != 0 * rad);
 static_assert((1. * rad + 1. * deg).in(deg) != 0 * deg);
+static_assert((1. * rad + 1. * deg).in(one) != 0 * one);
 
 #if MP_UNITS_HOSTED
 static_assert(((2.f + 1if) * isq::voltage_phasor[V]).in(mV).numerical_value_in(mV) == 2000.f + 1000if);
@@ -1309,11 +1316,24 @@ static_assert(is_of_type<quantity_cast<isq::distance>(1 * m), quantity<isq::dist
 static_assert(is_of_type<quantity_cast<isq::distance>(isq::length(1 * m)), quantity<isq::distance[m], int>>);
 static_assert(is_of_type<quantity_cast<kind_of<isq::length>>(isq::length(1 * m)), quantity<si::metre, int>>);
 static_assert(is_of_type<quantity_cast<kind_of<isq::length>>(isq::distance(1 * m)), quantity<si::metre, int>>);
+
+static_assert(is_of_type<quantity_cast<dimensionless>(1. * isq::angular_measure[one]), quantity<dimensionless[one]>>);
+static_assert(
+  is_of_type<quantity_cast<dimensionless>((1. * isq::angular_measure[rad]).in(one)), quantity<dimensionless[one]>>);
+static_assert(is_of_type<quantity_cast<dimensionless>((1. * rad).in(one)), quantity<dimensionless[one]>>);
+
 // lvalue references in quantity_cast
 namespace lvalue_tests {
 constexpr quantity<m, int> lvalue_q = 1 * m;
 static_assert(is_of_type<quantity_cast<isq::distance>(lvalue_q), quantity<isq::distance[m], int>>);
 }  // namespace lvalue_tests
+
+template<template<auto, typename> typename Q>
+concept invalid_quantity_cast = requires {
+  requires !requires { quantity_cast<dimensionless>(Q<rad, double>(42. * rad)); };
+  requires !requires { quantity_cast<dimensionless>(Q<isq::angular_measure[rad], double>(42. * rad)); };
+};
+static_assert(invalid_quantity_cast<quantity>);
 
 // QuantityOf
 static_assert(QuantityOf<quantity<isq::length[m]>, isq::length>);
