@@ -1033,8 +1033,8 @@ template<QuantitySpec From, QuantitySpec To>
 template<QuantitySpec From, QuantitySpec To>
 [[nodiscard]] consteval specs_convertible_result convertible_kinds(From from, To to)
 {
-  constexpr auto from_root = detail::get_kind_tree_root(from);
-  constexpr auto to_root = detail::get_kind_tree_root(to);
+  constexpr auto from_root = detail::get_kind_tree_root(From{});
+  constexpr auto to_root = detail::get_kind_tree_root(To{});
   using enum specs_convertible_result;
 
   if constexpr (QuantityKindSpec<From>) {
