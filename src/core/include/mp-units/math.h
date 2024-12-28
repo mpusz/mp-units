@@ -447,7 +447,7 @@ template<Unit auto To, auto R, typename Rep>
 [[nodiscard]] constexpr QuantityOf<dimensionless / get_quantity_spec(R)> auto inverse(const quantity<R, Rep>& q)
   requires requires {
     representation_values<Rep>::one();
-    value_cast<To>(1 / q);
+    value_cast<To>(representation_values<Rep>::one() / q);
   }
 {
   return (representation_values<Rep>::one() * one).force_in(To * quantity<R, Rep>::unit) / q;
