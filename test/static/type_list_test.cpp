@@ -156,6 +156,17 @@ static_assert(is_same_v<type_list_split_half<type_list<int, long, double, float>
 static_assert(
   is_same_v<type_list_split_half<type_list<int, long, double, float>>::second_list, type_list<double, float>>);
 
+// type_list_extract
+
+static_assert(is_same_v<type_list_extract<type_list<int>, 0>::element, int>);
+static_assert(is_same_v<type_list_extract<type_list<int>, 0>::rest, type_list<>>);
+static_assert(is_same_v<type_list_extract<type_list<int, long>, 0>::element, int>);
+static_assert(is_same_v<type_list_extract<type_list<int, long>, 0>::rest, type_list<long>>);
+static_assert(is_same_v<type_list_extract<type_list<int, long>, 1>::element, long>);
+static_assert(is_same_v<type_list_extract<type_list<int, long>, 1>::rest, type_list<int>>);
+static_assert(is_same_v<type_list_extract<type_list<int, long, double>, 1>::element, long>);
+static_assert(is_same_v<type_list_extract<type_list<int, long, double>, 1>::rest, type_list<int, double>>);
+
 template<auto V>
 struct constant {
   static constexpr auto value = V;

@@ -98,6 +98,32 @@ static_assert(QuantitySpec<MP_UNITS_NONCONST_TYPE(speed)>);
 static_assert(!QuantitySpec<struct isq::dim_length>);
 static_assert(!QuantitySpec<int>);
 
+// QuantitySpecOf
+static_assert(QuantitySpecOf<struct isq::length, isq::length>);
+static_assert(QuantitySpecOf<struct isq::height, isq::length>);
+static_assert(!QuantitySpecOf<struct isq::length, isq::height>);
+static_assert(QuantitySpecOf<struct isq::displacement, isq::length>);
+static_assert(!QuantitySpecOf<struct isq::length, isq::displacement>);
+static_assert(QuantitySpecOf<struct isq::thickness, isq::width>);
+static_assert(!QuantitySpecOf<struct isq::width, isq::thickness>);
+static_assert(QuantitySpecOf<kind_of_<struct isq::length>, isq::height>);
+static_assert(QuantitySpecOf<kind_of_<struct isq::length>, isq::displacement>);
+
+static_assert(!QuantitySpecOf<struct isq::angular_measure, dimensionless>);
+static_assert(!QuantitySpecOf<struct isq::angular_measure, kind_of<dimensionless>>);
+static_assert(!QuantitySpecOf<kind_of_<struct isq::angular_measure>, dimensionless>);
+static_assert(!QuantitySpecOf<kind_of_<struct isq::angular_measure>, kind_of<dimensionless>>);
+
+static_assert(!QuantitySpecOf<struct dimensionless, isq::angular_measure>);
+static_assert(!QuantitySpecOf<struct dimensionless, kind_of<isq::angular_measure>>);
+static_assert(QuantitySpecOf<kind_of_<struct dimensionless>, isq::angular_measure>);
+static_assert(QuantitySpecOf<kind_of_<struct dimensionless>, kind_of<isq::angular_measure>>);
+
+static_assert(!QuantitySpecOf<struct isq::solid_angular_measure, isq::angular_measure>);
+static_assert(!QuantitySpecOf<struct isq::solid_angular_measure, kind_of<isq::angular_measure>>);
+static_assert(!QuantitySpecOf<kind_of_<struct isq::solid_angular_measure>, isq::angular_measure>);
+static_assert(!QuantitySpecOf<kind_of_<struct isq::solid_angular_measure>, kind_of<isq::angular_measure>>);
+
 // NamedQuantitySpec
 static_assert(detail::NamedQuantitySpec<struct isq::length>);
 static_assert(detail::NamedQuantitySpec<struct isq::radius>);
@@ -133,9 +159,6 @@ static_assert(!detail::QuantityKindSpec<struct dimensionless>);
 static_assert(!detail::QuantityKindSpec<MP_UNITS_NONCONST_TYPE(speed)>);
 static_assert(!detail::QuantityKindSpec<struct isq::dim_length>);
 static_assert(!detail::QuantityKindSpec<int>);
-
-// QuantitySpecOf
-// TODO add tests
 
 // Unit
 static_assert(Unit<struct si::metre>);
@@ -229,6 +252,8 @@ static_assert(UnitOf<struct si::radian, isq::angular_measure>);
 static_assert(UnitOf<struct si::degree, isq::angular_measure>);
 static_assert(UnitOf<struct one, isq::angular_measure>);
 static_assert(UnitOf<struct percent, isq::angular_measure>);
+static_assert(UnitOf<MP_UNITS_NONCONST_TYPE(si::radian / si::second), isq::angular_velocity>);
+static_assert(UnitOf<MP_UNITS_NONCONST_TYPE(one / si::second), isq::angular_velocity>);
 static_assert(!UnitOf<struct si::radian, dimensionless>);
 static_assert(!UnitOf<struct si::metre, isq::time>);
 static_assert(!UnitOf<struct natural::electronvolt, isq::energy>);

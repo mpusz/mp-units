@@ -311,3 +311,24 @@ inline constexpr struct bit final : named_unit<"bit", one, kind_of<storage_capac
 ```
 
 but still allow the usage of `one` and its scaled versions for such quantities.
+
+!!! info
+
+    It is worth mentioning here that converting up the hierarchy beyond a subkind requires an
+    explicit conversion. For example:
+
+    ```cpp
+    static_assert(implicitly_convertible(isq::rotation, dimensionless));
+    static_assert(!implicitly_convertible(isq::angular_measure, dimensionless));
+    static_assert(explicitly_convertible(isq::angular_measure, dimensionless));
+    ```
+
+    This increases type safety and prevents accidental quantities with invalid units. For example,
+    a result of a conversion from `isq::angular_measure[rad]` to `dimensionless` would be
+    a reference of `dimensionless[rad]`, which contains an incorrect unit for a `dimensionless`
+    quantity. Such a conversion must be explicit and be preceded by an explicit unit conversion:
+
+    ```cpp
+    quantity q1 = isq::angular_measure(42. * rad);
+    quantity<dimensionless[one]> q2 = dimensionless(q1.in(one));
+    ```

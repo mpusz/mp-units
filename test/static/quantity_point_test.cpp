@@ -1697,7 +1697,8 @@ static_assert(invalid_subtraction(zero_Bq + 5 * isq::activity[Bq], 5 * isq::freq
 static_assert(invalid_subtraction(zero_Bq + 5 * isq::activity[Bq], zero_Hz + 5 * isq::frequency[Hz]));
 
 static_assert(invalid_addition(zero_Bq + 5 * isq::activity[Bq], 10 / (2 * isq::time[s]), 5 * isq::frequency[Hz]));
-static_assert(invalid_addition(5 * isq::activity[Bq], zero_Hz + 10 / (2 * isq::time[s]), 5 * isq::frequency[Hz]));
+static_assert(invalid_addition(5 * isq::activity[Bq], zero_Hz + 10 / (2 * isq::period_duration[s]),
+                               5 * isq::frequency[Hz]));
 static_assert(invalid_addition(5 * isq::activity[Bq], 10 / (2 * isq::time[s]), zero_Hz + 5 * isq::frequency[Hz]));
 static_assert(invalid_subtraction(zero_Bq + 5 * isq::activity[Bq], 10 / (2 * isq::time[s]), 5 * isq::frequency[Hz]));
 

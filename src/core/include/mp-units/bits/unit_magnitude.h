@@ -76,33 +76,24 @@ struct power_v {
   static constexpr ratio exponent{Num, Den...};
 };
 
-template<typename Element>
-[[nodiscard]] consteval auto get_base(Element element)
+template<typename T>
+[[nodiscard]] consteval auto get_base(T element)
 {
-  if constexpr (is_specialization_of_v<Element, power_v>)
-    return Element::base;
+  if constexpr (is_specialization_of_v<T, power_v>)
+    return T::base;
   else
     return element;
 }
 
-template<typename Element>
-[[nodiscard]] consteval auto get_base_value(Element element)
+template<typename T>
+[[nodiscard]] consteval auto get_base_value(T element)
 {
-  if constexpr (is_specialization_of_v<Element, power_v>)
-    return get_base_value(Element::base);
-  else if constexpr (MagConstant<Element>)
+  if constexpr (is_specialization_of_v<T, power_v>)
+    return get_base_value(T::base);
+  else if constexpr (MagConstant<T>)
     return element._value_;
   else
     return element;
-}
-
-template<typename Element>
-[[nodiscard]] MP_UNITS_CONSTEVAL ratio get_exponent(Element)
-{
-  if constexpr (is_specialization_of_v<Element, power_v>)
-    return Element::exponent;
-  else
-    return ratio{1};
 }
 
 template<auto V, ratio R>

@@ -143,8 +143,29 @@ constexpr bool is_specialization_of_power = false;
 template<typename F, int... Ints>
 constexpr bool is_specialization_of_power<power<F, Ints...>> = true;
 
+template<typename T>
+[[nodiscard]] consteval auto get_factor(T element)
+{
+  if constexpr (is_specialization_of_power<T>)
+    return typename T::_factor_{};
+  else
+    return element;
+}
+
+template<typename T>
+[[nodiscard]] MP_UNITS_CONSTEVAL ratio get_exponent(T)
+{
+  // this covers both `power` and `power_v`
+  if constexpr (requires { T::_exponent_; })
+    return T::_exponent_;
+  else if constexpr (requires { T::exponent; })
+    return T::exponent;
+  else
+    return ratio{1};
+};
+
 template<SymbolicArg T, ratio R>
-consteval auto power_or_T_impl()
+[[nodiscard]] consteval auto power_or_T_impl()
 {
   if constexpr (is_specialization_of_power<T>) {
     return power_or_T_impl<typename T::_factor_, T::_exponent_ * R>();

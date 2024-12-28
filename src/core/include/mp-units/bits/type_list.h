@@ -172,6 +172,22 @@ struct type_list_split_half;
 template<template<typename...> typename List, typename... Types>
 struct type_list_split_half<List<Types...>> : type_list_split<List<Types...>, (sizeof...(Types) + 1) / 2> {};
 
+// extract
+template<TypeList, TypeList>
+struct type_list_extract_impl;
+
+template<template<typename...> typename List, typename... Pre, typename Element, typename... Post>
+struct type_list_extract_impl<List<Pre...>, List<Element, Post...>> {
+  using element = Element;
+  using rest = List<Pre..., Post...>;
+};
+
+template<TypeList List, std::size_t N>
+  requires(N >= 0) && (type_list_size<List> > N)
+struct type_list_extract :
+    type_list_extract_impl<typename type_list_split<List, N>::first_list,
+                           typename type_list_split<List, N>::second_list> {};
+
 // merge_sorted
 template<typename SortedList1, typename SortedList2, template<typename, typename> typename Pred>
 struct type_list_merge_sorted_impl;
