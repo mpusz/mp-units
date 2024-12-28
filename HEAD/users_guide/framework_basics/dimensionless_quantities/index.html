@@ -2564,6 +2564,22 @@ specific quantity kinds only:</p>
 </span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">bit</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">named_unit</span><span class="o">&lt;</span><span class="s">&quot;bit&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">one</span><span class="p">,</span><span class="w"> </span><span class="n">kind_of</span><span class="o">&lt;</span><span class="n">storage_capacity</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">bit</span><span class="p">;</span>
 </span></code></pre></div>
 <p>but still allow the usage of <code>one</code> and its scaled versions for such quantities.</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>It is worth mentioning here that converting up the hierarchy beyond a subkind requires an
+explicit conversion. For example:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">implicitly_convertible</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">rotation</span><span class="p">,</span><span class="w"> </span><span class="n">dimensionless</span><span class="p">));</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="k">static_assert</span><span class="p">(</span><span class="o">!</span><span class="n">implicitly_convertible</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">angular_measure</span><span class="p">,</span><span class="w"> </span><span class="n">dimensionless</span><span class="p">));</span>
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">explicitly_convertible</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">angular_measure</span><span class="p">,</span><span class="w"> </span><span class="n">dimensionless</span><span class="p">));</span>
+</span></code></pre></div>
+<p>This increases type safety and prevents accidental quantities with invalid units. For example,
+a result of a conversion from <code>isq::angular_measure[rad]</code> to <code>dimensionless</code> would be
+a reference of <code>dimensionless[rad]</code>, which contains an incorrect unit for a <code>dimensionless</code>
+quantity. Such a conversion must be explicit and be preceded by an explicit unit conversion:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">q1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">angular_measure</span><span class="p">(</span><span class="mf">42.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">rad</span><span class="p">);</span>
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">dimensionless</span><span class="p">[</span><span class="n">one</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">q2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dimensionless</span><span class="p">(</span><span class="n">q1</span><span class="p">.</span><span class="n">in</span><span class="p">(</span><span class="n">one</span><span class="p">));</span>
+</span></code></pre></div>
+</div>
 
 
 
