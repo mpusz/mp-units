@@ -428,7 +428,7 @@ struct quantity_spec<Self, QS, Args...> : detail::propagate_equation<QS>, detail
   }
 
   template<typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>, typename Self_ = Self>
-    requires detail::QuantitySpecExplicitlyConvertibleTo<Q::quantity_spec, Self_{}>
+    requires(explicitly_convertible(Q::quantity_spec, Self_{}))
   [[nodiscard]] constexpr Quantity auto operator()(FwdQ&& q) const
   {
     return quantity{std::forward<FwdQ>(q).numerical_value_is_an_implementation_detail_,
@@ -469,12 +469,12 @@ struct quantity_spec<Self, QS, Args...> : detail::propagate_equation<QS>, detail
 // clang-format on
 #if MP_UNITS_API_NO_CRTP
 template<detail::NamedQuantitySpec auto QS, detail::DerivedQuantitySpec auto Eq, detail::QSProperty auto... Args>
-  requires(detail::QuantitySpecExplicitlyConvertibleTo<Eq, QS>)
+  requires(explicitly_convertible(Eq, QS))
 struct quantity_spec<QS, Eq, Args...> : detail::quantity_spec_interface {
 #else
 template<typename Self, detail::NamedQuantitySpec auto QS, detail::DerivedQuantitySpec auto Eq,
          detail::QSProperty auto... Args>
-  requires(detail::QuantitySpecExplicitlyConvertibleTo<Eq, QS>)
+  requires(explicitly_convertible(Eq, QS))
 struct quantity_spec<Self, QS, Eq, Args...> : detail::quantity_spec_interface<Self> {
 #endif
   using _base_type_ = quantity_spec;
