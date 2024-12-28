@@ -867,31 +867,39 @@ template<TypeList From, TypeList To>
   return detail::try_extract_common_base(type_list<>{}, from, type_list<>{}, to);
 }
 
+struct get_max_complexity_result_base {
+  int complexity;
+  int index;
+};
+
 template<typename... Elems>
-[[nodiscard]] consteval std::tuple<int, int> get_max_complexity(type_list<Elems...>)
+[[nodiscard]] consteval get_max_complexity_result_base get_max_complexity(type_list<Elems...>)
 {
   if constexpr (sizeof...(Elems) == 0)
     return {-1, -1};
   else {
     const std::initializer_list<int> list{detail::get_complexity_impl(Elems{})...};
-    const auto it = max_element(list.begin(), list.end());
-    return {*it, it - list.begin()};
+    const auto it = detail::max_element(list.begin(), list.end());
+    return {*it, static_cast<int>(it - list.begin())};
   }
 }
 
 enum class ingredient_type : std::int8_t { numerator_from, denominator_from, numerator_to, denominator_to };
 
+struct get_max_complexity_result : get_max_complexity_result_base {
+  ingredient_type type;
+};
+
 template<TypeList NumFrom, TypeList DenFrom, TypeList NumTo, TypeList DenTo>
-[[nodiscard]] consteval std::tuple<int, std::size_t, ingredient_type> get_max_complexity(NumFrom num_from,
-                                                                                         DenFrom den_from, NumTo num_to,
-                                                                                         DenTo den_to)
+[[nodiscard]] consteval get_max_complexity_result get_max_complexity(NumFrom num_from, DenFrom den_from, NumTo num_to,
+                                                                     DenTo den_to)
 {
-  const std::initializer_list<std::tuple<int, int>> list{
+  const std::initializer_list<get_max_complexity_result_base> list{
     detail::get_max_complexity(num_from), detail::get_max_complexity(den_from), detail::get_max_complexity(num_to),
     detail::get_max_complexity(den_to)};
   const auto it =
-    max_element(list.begin(), list.end(), [](auto lhs, auto rhs) { return std::get<0>(lhs) < std::get<0>(rhs); });
-  return std::tuple_cat(*it, std::tuple{static_cast<ingredient_type>(it - list.begin())});
+    detail::max_element(list.begin(), list.end(), [](auto lhs, auto rhs) { return lhs.complexity < rhs.complexity; });
+  return {*it, static_cast<ingredient_type>(it - list.begin())};
 }
 
 template<QuantitySpec Equation, TypeList Num, TypeList Den>
@@ -945,30 +953,27 @@ template<TypeList NumFrom, TypeList DenFrom, TypeList NumTo, TypeList DenTo>
     } else {
       // otherwise, get the ingredient with the highest complexity
       constexpr auto max_compl_res = detail::get_max_complexity(NumFrom{}, DenFrom{}, NumTo{}, DenTo{});
-      constexpr int max_compl = std::get<0>(max_compl_res);
-      constexpr std::size_t idx = std::get<1>(max_compl_res);
-      constexpr ingredient_type type = std::get<2>(max_compl_res);
 
       constexpr auto list = [&] {
-        if constexpr (type == ingredient_type::numerator_from)
+        if constexpr (max_compl_res.type == ingredient_type::numerator_from)
           return NumFrom{};
-        else if constexpr (type == ingredient_type::denominator_from)
+        else if constexpr (max_compl_res.type == ingredient_type::denominator_from)
           return DenFrom{};
-        else if constexpr (type == ingredient_type::numerator_to)
+        else if constexpr (max_compl_res.type == ingredient_type::numerator_to)
           return NumTo{};
         else
           return DenTo{};
       }();
-      using extracted = type_list_extract<MP_UNITS_NONCONST_TYPE(list), idx>;
+      using extracted = type_list_extract<MP_UNITS_NONCONST_TYPE(list), static_cast<std::size_t>(max_compl_res.index)>;
 
       // before exploding check if the ingredient is convertible with dimensionless
-      if constexpr (type == ingredient_type::numerator_from && num_to_size + den_to_size == 0) {
+      if constexpr (max_compl_res.type == ingredient_type::numerator_from && num_to_size + den_to_size == 0) {
         constexpr specs_convertible_result res =
           detail::convertible(detail::get_factor(typename extracted::element{}), dimensionless);
         if constexpr (res != specs_convertible_result::no)
           return detail::min(res,
                              detail::are_ingredients_convertible(typename extracted::rest{}, den_from, num_to, den_to));
-      } else if constexpr (type == ingredient_type::numerator_to && num_from_size + den_from_size == 0) {
+      } else if constexpr (max_compl_res.type == ingredient_type::numerator_to && num_from_size + den_from_size == 0) {
         constexpr specs_convertible_result res =
           detail::convertible(dimensionless, detail::get_factor(typename extracted::element{}));
         if constexpr (res != specs_convertible_result::no)
@@ -976,18 +981,18 @@ template<TypeList NumFrom, TypeList DenFrom, TypeList NumTo, TypeList DenTo>
             res, detail::are_ingredients_convertible(num_from, den_from, typename extracted::rest{}, den_to));
       }
 
-      if constexpr (max_compl > 0) {
+      if constexpr (max_compl_res.complexity > 0) {
         // explode the ingredient to the underlying equation
         constexpr auto explode_res = detail::explode(typename extracted::element{});
-        if constexpr (type == ingredient_type::numerator_from) {
+        if constexpr (max_compl_res.type == ingredient_type::numerator_from) {
           const auto [num, den] =
             detail::merge_with_equation(explode_res.equation, typename extracted::rest{}, den_from);
           return detail::are_ingredients_convertible(num, den, num_to, den_to);
-        } else if constexpr (type == ingredient_type::denominator_from) {
+        } else if constexpr (max_compl_res.type == ingredient_type::denominator_from) {
           const auto [num, den] =
             detail::merge_with_equation(dimensionless / explode_res.equation, num_from, typename extracted::rest{});
           return detail::min(explode_res.result, detail::are_ingredients_convertible(num, den, num_to, den_to));
-        } else if constexpr (type == ingredient_type::numerator_to) {
+        } else if constexpr (max_compl_res.type == ingredient_type::numerator_to) {
           const auto [num, den] = detail::merge_with_equation(explode_res.equation, typename extracted::rest{}, den_to);
           return detail::min(explode_res.result, detail::are_ingredients_convertible(num_from, den_from, num, den));
         } else {
