@@ -1180,15 +1180,70 @@ MP_UNITS_EXPORT template<QuantitySpec Q>
 
 namespace detail {
 
-template<QuantitySpec QS1, QuantitySpec QS2>
-[[nodiscard]] consteval bool have_common_quantity_spec(QS1, QS2)
+struct no_common_quantity_spec {};
+
+template<QuantitySpec Q1, QuantitySpec Q2>
+[[nodiscard]] consteval auto get_common_quantity_spec_impl(Q1 q1, Q2 q2)
 {
-  constexpr auto qs1 = detail::get_kind_tree_root(QS1{});
-  constexpr auto qs2 = detail::get_kind_tree_root(QS2{});
-  return (!detail::have_common_base(qs1, qs2) &&
-          (mp_units::implicitly_convertible(qs1, qs2) || mp_units::implicitly_convertible(qs2, qs1))) ||
-         (qs1 == qs2 || (detail::is_child_of(qs2, qs1) && QuantityKindSpec<QS1>) ||
-          (detail::is_child_of(qs1, qs2) && QuantityKindSpec<QS2>));
+  if constexpr (is_same_v<Q1, Q2>)
+    return q1;
+  else {
+    constexpr bool q1q2 = mp_units::implicitly_convertible(Q1{}, Q2{});
+    constexpr bool q2q1 = mp_units::implicitly_convertible(Q2{}, Q1{});
+
+    // in case of interconvertible quantities we try to figure out which one is a better choice
+    if constexpr (q1q2 && q2q1) {
+      // quantity kinds have lower priority
+      if constexpr (detail::QuantityKindSpec<Q1> && !detail::QuantityKindSpec<Q2>)
+        return q2;
+      else if constexpr (!detail::QuantityKindSpec<Q1> && detail::QuantityKindSpec<Q2>)
+        return q1;
+      else {
+        using q1_type = decltype(detail::remove_kind(q1));
+        using q2_type = decltype(detail::remove_kind(q2));
+        // derived quantities have a lower priority
+        if constexpr (detail::NamedQuantitySpec<q1_type> && detail::DerivedQuantitySpec<q2_type>)
+          return q1;
+        else if constexpr (detail::DerivedQuantitySpec<q1_type> && detail::NamedQuantitySpec<q2_type>)
+          return q2;
+        else
+          // TODO Check if there is a better choice here
+          return detail::better_type_name(q1, q2);
+      }
+    }
+    // we prefer a quantity to which we can convert the other quantity
+    else if constexpr (q1q2)
+      return q2;
+    else if constexpr (q2q1)
+      return q1;
+    // if quantities can't be converted in any direction check if they have a common base in the tree
+    else if constexpr (detail::have_common_base(Q1{}, Q2{})) {
+      constexpr auto base = detail::get_common_base(Q1{}, Q2{});
+      if constexpr (mp_units::implicitly_convertible(q1, base) && mp_units::implicitly_convertible(q2, base))
+        return base;
+      else
+        return no_common_quantity_spec{};
+    } else {
+      // verify kind tree roots as the last resort check
+      constexpr auto q1_root = detail::get_kind_tree_root(Q1{});
+      constexpr auto q2_root = detail::get_kind_tree_root(Q2{});
+      if constexpr (mp_units::implicitly_convertible(q1_root, q2_root))
+        return q2_root;
+      else if constexpr (mp_units::implicitly_convertible(q2_root, q1_root))
+        return q1_root;
+      else
+        return no_common_quantity_spec{};
+    }
+  }
+}
+
+template<QuantitySpec Q1, QuantitySpec Q2>
+constexpr auto get_common_quantity_spec_result = detail::get_common_quantity_spec_impl(Q1{}, Q2{});
+
+template<QuantitySpec Q1, QuantitySpec Q2>
+[[nodiscard]] consteval bool have_common_quantity_spec(Q1, Q2)
+{
+  return !is_same_v<decltype(detail::get_common_quantity_spec_result<Q1, Q2>), const no_common_quantity_spec>;
 }
 
 }  // namespace detail
@@ -1199,45 +1254,9 @@ MP_UNITS_EXPORT_BEGIN
 
 template<QuantitySpec Q1, QuantitySpec Q2>
   requires(detail::have_common_quantity_spec(Q1{}, Q2{}))
-[[nodiscard]] consteval QuantitySpec auto get_common_quantity_spec(Q1 q1, Q2 q2)
+[[nodiscard]] consteval QuantitySpec auto get_common_quantity_spec(Q1, Q2)
 {
-  // NOLINTBEGIN(bugprone-branch-clone)
-  if constexpr (is_same_v<Q1, Q2>) return q1;
-  // quantity kinds have lower priority
-  else if constexpr (detail::QuantityKindSpec<Q1> && !detail::QuantityKindSpec<Q2>)
-    return q2;
-  else if constexpr (!detail::QuantityKindSpec<Q1> && detail::QuantityKindSpec<Q2>)
-    return q1;
-  else {
-    constexpr bool q1q2 = mp_units::implicitly_convertible(Q1{}, Q2{});
-    constexpr bool q2q1 = mp_units::implicitly_convertible(Q2{}, Q1{});
-
-    // in case of interconvertible quantities we treat derived quantities with a lower priority
-    if constexpr (q1q2 && q2q1) {
-      if constexpr (detail::DerivedQuantitySpec<decltype(detail::remove_kind(q1))>)
-        return q2;
-      else
-        return q1;
-    }
-    // we prefer a quantity to which we can convert the other quantity
-    else if constexpr (q1q2)
-      return q2;
-    else if constexpr (q2q1)
-      return q1;
-    // if quantities can't be converted in any direction check if they have a common base in the tree
-    else if constexpr (detail::have_common_base(Q1{}, Q2{}))
-      return detail::get_common_base(q1, q2);
-    else {
-      // verify kind tree roots as the last resort check
-      constexpr auto q1_root = detail::get_kind_tree_root(Q1{});
-      constexpr auto q2_root = detail::get_kind_tree_root(Q2{});
-      if constexpr (mp_units::implicitly_convertible(q1_root, q2_root))
-        return q2_root;
-      else if constexpr (mp_units::implicitly_convertible(q2_root, q1_root))
-        return q1_root;
-    }
-  }
-  // NOLINTEND(bugprone-branch-clone)
+  return detail::get_common_quantity_spec_result<Q1, Q2>;
 }
 
 [[nodiscard]] consteval QuantitySpec auto get_common_quantity_spec(QuantitySpec auto q1, QuantitySpec auto q2,

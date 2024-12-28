@@ -641,10 +641,6 @@ MP_UNITS_EXPORT_END
 
 }  // namespace mp_units
 
-// This specialization overrides `std` defaults for quantities
-template<mp_units::Quantity Q1, mp_units::Quantity Q2>
-struct std::common_type<Q1, Q2> {};
-
 template<mp_units::Quantity Q1, mp_units::Quantity Q2>
   requires requires {
     { mp_units::get_common_reference(Q1::reference, Q2::reference) } -> mp_units::Reference;
