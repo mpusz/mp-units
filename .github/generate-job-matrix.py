@@ -53,18 +53,20 @@ def make_clang_config(
     return Configuration(**vars(ret))
 
 
-def make_apple_clang_config(version: int) -> Configuration:
+def make_apple_clang_config(
+    os: str, version: str, std_format_support: bool
+) -> Configuration:
     ret = Configuration(
         name=f"Apple Clang {version}",
-        os="macos-13",
+        os=os,
         compiler=Compiler(
             type="APPLE_CLANG",
-            version=f"{version}.0",
+            version=version,
             cc="clang",
             cxx="clang++",
         ),
         cxx_modules=False,
-        std_format_support=False,
+        std_format_support=std_format_support,
     )
     return ret
 
@@ -95,7 +97,15 @@ configs = {
         # arm64 runners are expensive; only consider one version
         if ver == 18 or platform != "arm64"
     ]
-    + [make_apple_clang_config(ver) for ver in [15]]
+    + [
+        make_apple_clang_config("macos-13", ver, std_format_support=False)
+        for ver in ["15.2"]
+    ]
+    # std::format is available in Xcode 16.1 or later
+    + [
+        make_apple_clang_config("macos-14", ver, std_format_support=True)
+        for ver in ["16.1"]
+    ]
     + [make_msvc_config(release="14.4", version=194)]
 }
 

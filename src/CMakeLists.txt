@@ -53,13 +53,15 @@ check_cxx_feature_supported(__cpp_explicit_this_parameter ${projectPrefix}EXPLIC
 
 # libc++ has a basic supports for std::format but does not set __cpp_lib_format
 # https://github.com/llvm/llvm-project/issues/77773
-if(NOT ${projectPrefix}LIB_FORMAT_SUPPORTED
-   AND CMAKE_CXX_COMPILER_ID STREQUAL "Clang"
-   AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "17"
-   AND ${projectPrefix}LIBCXX
-)
-    message(STATUS "Clang 17+ with libc++ detected, overriding `std::format` support")
-    set(${projectPrefix}LIB_FORMAT_SUPPORTED ON)
+if(NOT ${projectPrefix}LIB_FORMAT_SUPPORTED AND ${projectPrefix}LIBCXX)
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "17")
+        message(STATUS "Clang 17+ with libc++ detected, overriding `std::format` support")
+        set(${projectPrefix}LIB_FORMAT_SUPPORTED ON)
+    endif()
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "16")
+        message(STATUS "AppleClang 16+ with libc++ detected, overriding `std::format` support")
+        set(${projectPrefix}LIB_FORMAT_SUPPORTED ON)
+    endif()
 endif()
 
 # clang++-18 supports explicit `this` parameter
