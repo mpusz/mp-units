@@ -920,7 +920,7 @@ constexpr auto unit_symbol_result = unit_symbol_impl<fmt, CharT>(U{});
 
 // TODO Refactor to `unit_symbol(U, fmt)` when P1045: constexpr Function Parameters is available
 MP_UNITS_EXPORT template<unit_symbol_formatting fmt = unit_symbol_formatting{}, typename CharT = char, Unit U>
-[[nodiscard]] consteval std::string_view unit_symbol(U)
+[[nodiscard]] consteval std::basic_string_view<CharT> unit_symbol(U)
 {
   return detail::unit_symbol_result<fmt, CharT, U>.view();
 }

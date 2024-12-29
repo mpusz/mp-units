@@ -309,7 +309,7 @@ constexpr auto dimension_symbol_result = dimension_symbol_impl<fmt, CharT>(D{});
 // TODO Refactor to `dimension_symbol(D, fmt)` when P1045: constexpr Function Parameters is available
 MP_UNITS_EXPORT template<dimension_symbol_formatting fmt = dimension_symbol_formatting{}, typename CharT = char,
                          Dimension D>
-[[nodiscard]] consteval std::string_view dimension_symbol(D)
+[[nodiscard]] consteval std::basic_string_view<CharT> dimension_symbol(D)
 {
   return detail::dimension_symbol_result<fmt, CharT, D>.view();
 }
