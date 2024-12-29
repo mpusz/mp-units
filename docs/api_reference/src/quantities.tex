@@ -1736,12 +1736,132 @@ constexpr Out dimension_symbol_to(Out out, D d, const dimension_symbol_formattin
 
 \begin{itemdescr}
 \pnum
+Let \tcode{E} be the type of the dimension whose symbol text is being written.
+
+\pnum
+Let \tcode{\exposidnc{num-to-txt}(x)} be an expression equal to
+an instantiation of \tcode{symbo_text} with the symbol text of \tcode{x} in base 10.
+
+\pnum
 \effects
-TBD.
+Writes the symbol text of the dimension \tcode{D} to \tcode{out} according to \tcode{fmt} as follows:
+\begin{itemize}
+\item
+If
+\tcode{\exposidnc{is-derived-from-specialization-of}<D, \exposidnc{expr-fractions}>()}
+is \tcode{true},
+let \tcode{Nums} and \tcode{Dens}
+be packs denoting the template arguments of
+\tcode{D::\exposidnc{nums}} and \tcode{D::\exposidnc{dens}}, respectively.
+\begin{itemize}
+\item
+If \tcode{sizeof...(Nums) == 0 \&\& sizeof...(Dens) == 0} is \tcode{true},
+equivalent to \tcode{*out++ = '1'}.
+\item
+Otherwise, writes the symbol text of the numerators \tcode{(..., void(Nums))}, in that order, as follows.
+Then, writes the symbol text of the denominators \tcode{(..., void(Dens))}, in that order, as follows.
+\end{itemize}
+\item
+If \tcode{E} is of the form \tcode{power<F, Num, Den>},
+writes the symbol text of \tcode{F}, as follows.
+Then, determines the symbol text of the exponent $\tcode{Num}/\tcode{Den} \neq 1$, as follows:
+\begin{itemize}
+\item
+If \tcode{E} is a denominator, let \tcode{sign} be \tcode{"-"}.
+Otherwise, let \tcode{sign} be \tcode{""}.
+\item
+If \tcode{Den != 1} is \tcode{true}, let \tcode{txt} be
+\begin{codeblock}
+symbol_text("^" sign "(") + @\exposidnc{num-to-txt}@(r.num) + symbol_text("/") +
+  @\exposidnc{num-to-txt}@(r.den) + symbol_text(")")
+\end{codeblock}
+\item
+Otherwise, let \tcode{txt} be an instantiation of \tcode{symbol_text} such that:
+\begin{itemize}
+\item
+\tcode{txt.portable()} equals
+\begin{codeblock}
+basic_fixed_string("^") + sign + @\exposidnc{num-to-txt}@(Num).portable()
+\end{codeblock}
+\item
+\tcode{txt.utf8()} equals the \tcode{char} values of \tcode{txt.portable()} replaced according to \tref{qty.exp.portable.to.utf8}.
+\end{itemize}
+\end{itemize}
+\item
+Otherwise, let \tcode{txt} be \tcode{E::\exposid{symbol}} if that a valid expression.
+\item
+Copies \tcode{txt} to \tcode{out} according to \tcode{fmt.char_set} as follows:
+\begin{itemize}
+\item
+If \tcode{fmt.char_set == character_set::utf8} is \tcode{true}, then:
+\begin{itemize}
+\item
+If \tcode{std::is_same_v<CharT, char8_t>} is \tcode{true}, equivalent to:
+\begin{codeblock}
+out = std::ranges::copy(txt.utf8(), out)
+\end{codeblock}
+\item
+Otherwise, if \tcode{std::is_same_v<CharT, char>} is \tcode{true}, then:
+\begin{itemize}
+\item
+If \tcode{std::text_encoding::literal().mib() != std::text_encoding::id::UTF8} is \tcode{true}, equivalent to:
+\begin{codeblock}
+out = std::ranges::copy(txt.portable(), out)
+\end{codeblock}
+\item
+Otherwise, equivalent to:
+\begin{codeblock}
+for (const char8_t ch : txt.utf8()) *out++ = static_cast<char>(ch);
+\end{codeblock}
+\end{itemize}
+% The following item can be turned into a compile-time error.
+\item
+Otherwise, no effect.
+\begin{note}
+UTF-8 text can't be copied to \tcode{CharT} output.
+\end{note}
+\end{itemize}
+\item
+Otherwise, if \tcode{std::is_same_v<CharT, char>} is \tcode{true}, equivalent to:
+\begin{codeblock}
+out = std::ranges::copy(txt.portable(), out)
+\end{codeblock}
+% The following item can be turned into a compile-time error.
+\item
+Otherwise, no effect.
+\begin{note}
+Portable text can't be copied to \tcode{CharT} output.
+\end{note}
+\end{itemize}
+\end{itemize}
 
 \pnum
 \returns
-TBD.
+\tcode{out}.
+
+\pnum
+\throws
+\tcode{std::invalid_argument} if there is no effect.
+
+\begin{simpletypetable}
+{UTF-8 exponent transformation}
+{qty.exp.portable.to.utf8}
+{lr}
+\topline
+\lhdr{Input value} & \rhdr{Replacement value} \\ \capsep
+\tcode{'\caret'} & None (erased) \\
+\tcode{'-'} & \unicode{207b}{SUPERSCRIPT MINUS} \\
+\tcode{'0'} & \unicode{2070}{SUPERSCRIPT ZERO} \\
+\tcode{'1'} & \unicode{00b9}{SUPERSCRIPT ONE} \\
+\tcode{'2'} & \unicode{00b2}{SUPERSCRIPT TWO} \\
+\tcode{'3'} & \unicode{00b3}{SUPERSCRIPT THREE} \\
+\tcode{'4'} & \unicode{2074}{SUPERSCRIPT FOUR} \\
+\tcode{'5'} & \unicode{2075}{SUPERSCRIPT FIVE} \\
+\tcode{'6'} & \unicode{2076}{SUPERSCRIPT SIX} \\
+\tcode{'7'} & \unicode{2077}{SUPERSCRIPT SEVEN} \\
+\tcode{'8'} & \unicode{2078}{SUPERSCRIPT EIGHT} \\
+\tcode{'9'} & \unicode{2079}{SUPERSCRIPT NINE} \\
+\end{simpletypetable}
 \end{itemdescr}
 
 \indexlibrarymember{dimension_symbol}{Dimension}
@@ -1752,11 +1872,33 @@ consteval std::string_view dimension_symbol(D);
 
 \begin{itemdescr}
 \pnum
-\effects
-Equivalent to:
+\returns
+A value \tcode{sv} such that
+\range{sv.data()}{sv.data() + sv.size()} has static storage duration and
+the following assertion holds:
 \begin{codeblock}
-TBD.
+std::basic_string<CharT> s;
+dimension_symbol_to<CharT>(std::back_inserter(s), D{}, fmt);
+assert(sv == s);
 \end{codeblock}
+
+\pnum
+\begin{example}
+\begin{codeblock}
+import mp_units;
+
+using namespace mp_units;
+
+static_assert(dimension_symbol(dimension_one) == "1");
+static_assert(dimension_symbol(isq::dim_length) == "L");
+static_assert(dimension_symbol(isq::dim_thermodynamic_temperature) == "\u0398");
+static_assert(
+  dimension_symbol<{character_set::portable}>(isq::dim_thermodynamic_temperature) == "O");
+static_assert(dimension_symbol(isq::speed.dimension) == "LT\u207B\u00B9");
+static_assert(dimension_symbol<{character_set::portable}>(isq::speed.dimension) == "LT^-1");
+static_assert(dimension_symbol(pow<1, 2>(isq::dim_length)) == "L^(1/2)");
+\end{codeblock}
+\end{example}
 \end{itemdescr}
 
 \rSec2[qty.spec]{Quantity specification}
