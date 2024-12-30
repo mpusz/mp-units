@@ -1814,7 +1814,6 @@ Otherwise, equivalent to:
 for (const char8_t ch : txt.utf8()) *out++ = static_cast<char>(ch);
 \end{codeblock}
 \end{itemize}
-% The following item can be turned into a compile-time error.
 \item
 Otherwise, no effect.
 \begin{note}
@@ -1826,7 +1825,6 @@ Otherwise, if \tcode{std::is_same_v<CharT, char>} is \tcode{true}, equivalent to
 \begin{codeblock}
 out = std::ranges::copy(txt.portable(), out)
 \end{codeblock}
-% The following item can be turned into a compile-time error.
 \item
 Otherwise, no effect.
 \begin{note}
