@@ -1081,6 +1081,7 @@ template<QuantitySpec From, QuantitySpec To>
     return detail::convertible_named(from, to);
   else
     return detail::are_ingredients_convertible(from, to);
+  // NOLINTEND(bugprone-branch-clone)
 }
 
 template<QuantitySpec From, QuantitySpec To>
