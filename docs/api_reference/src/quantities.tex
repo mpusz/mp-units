@@ -1728,52 +1728,25 @@ consteval @\libconcept{Dimension}@ auto cbrt(@\libconcept{Dimension}@ auto d);
 
 \rSec3[qty.dim.sym.fmt]{Symbol formatting}
 
-\indexlibrarymember{dimension_symbol_to}{Dimension}
 \begin{itemdecl}
-template<typename CharT = char, std::@\stdconcept{output_iterator}@<CharT> Out, @\libconcept{Dimension}@ D>
-constexpr Out dimension_symbol_to(Out out, D d, const dimension_symbol_formatting& fmt = {});
+template<std::size_t N>
+constexpr auto @\exposidnc{get-symbol-exponent}@(const fixed_string<N>& sign, @\exposidnc{ratio}@ r);  // \expos
 \end{itemdecl}
 
 \begin{itemdescr}
-\pnum
-Let \tcode{E} be the type of the dimension whose symbol text is being written.
-
 \pnum
 Let \tcode{\exposidnc{num-to-txt}(x)} be an expression equal to
 an instantiation of \tcode{symbo_text} with the symbol text of \tcode{x} in base 10.
 
 \pnum
 \effects
-Writes the symbol text of the dimension \tcode{D} to \tcode{out} according to \tcode{fmt} as follows:
+Determines \tcode{txt} as follows:
 \begin{itemize}
 \item
-If
-\tcode{\exposidnc{is-derived-from-specialization-of}<D, \exposidnc{expr-fractions}>()}
-is \tcode{true},
-let \tcode{Nums} and \tcode{Dens}
-be packs denoting the template arguments of
-\tcode{D::\exposidnc{nums}} and \tcode{D::\exposidnc{dens}}, respectively.
-\begin{itemize}
-\item
-If \tcode{sizeof...(Nums) == 0 \&\& sizeof...(Dens) == 0} is \tcode{true},
-equivalent to \tcode{*out++ = '1'}.
-\item
-Otherwise, writes the symbol text of the numerators \tcode{(..., void(Nums))}, in that order, as follows.
-Then, writes the symbol text of the denominators \tcode{(..., void(Dens))}, in that order, as follows.
-\end{itemize}
-\item
-If \tcode{E} is of the form \tcode{power<F, Num, Den>},
-writes the symbol text of \tcode{F}, as follows.
-Then, determines the symbol text of the exponent $\tcode{Num}/\tcode{Den} \neq 1$, as follows:
-\begin{itemize}
-\item
-If \tcode{E} is a denominator, let \tcode{sign} be \tcode{"-"}.
-Otherwise, let \tcode{sign} be \tcode{""}.
-\item
-If \tcode{Den != 1} is \tcode{true}, let \tcode{txt} be
+If \tcode{r.den != 1} is \tcode{true}, let \tcode{txt} be
 \begin{codeblock}
-symbol_text("^" sign "(") + @\exposidnc{num-to-txt}@(r.num) + symbol_text("/") +
-  @\exposidnc{num-to-txt}@(r.den) + symbol_text(")")
+symbol_text("^") + symbol_text(sign) + symbol_text("(") + @\exposidnc{num-to-txt}@(r.num) +
+  symbol_text("/") + @\exposidnc{num-to-txt}@(r.den) + symbol_text(")")
 \end{codeblock}
 \item
 Otherwise, let \tcode{txt} be an instantiation of \tcode{symbol_text} such that:
@@ -1781,19 +1754,51 @@ Otherwise, let \tcode{txt} be an instantiation of \tcode{symbol_text} such that:
 \item
 \tcode{txt.portable()} equals
 \begin{codeblock}
-basic_fixed_string("^") + sign + @\exposidnc{num-to-txt}@(Num).portable()
+"^" + sign + @\exposidnc{num-to-txt}@(Num).portable()
 \end{codeblock}
 \item
-\tcode{txt.utf8()} equals the \tcode{char} values of \tcode{txt.portable()} replaced according to \tref{qty.exp.portable.to.utf8}.
+\tcode{txt.utf8()} equals \tcode{txt.portable()} after replacing its elements according to \tref{qty.exp.portable.to.utf8}.
 \end{itemize}
 \end{itemize}
-\item
-Otherwise, let \tcode{txt} be \tcode{E::\exposid{symbol}} if that a valid expression.
-\item
-Copies \tcode{txt} to \tcode{out} according to \tcode{fmt.char_set} as follows:
+
+\pnum
+\returns
+\tcode{txt}.
+
+\begin{simpletypetable}
+{UTF-8 exponent transformation}
+{qty.exp.portable.to.utf8}
+{lr}
+\topline
+\lhdr{Input value} & \rhdr{Replacement value} \\ \capsep
+\tcode{'\caret'} & None (erased) \\
+\tcode{'-'} & \unicode{207b}{SUPERSCRIPT MINUS} \\
+\tcode{'0'} & \unicode{2070}{SUPERSCRIPT ZERO} \\
+\tcode{'1'} & \unicode{00b9}{SUPERSCRIPT ONE} \\
+\tcode{'2'} & \unicode{00b2}{SUPERSCRIPT TWO} \\
+\tcode{'3'} & \unicode{00b3}{SUPERSCRIPT THREE} \\
+\tcode{'4'} & \unicode{2074}{SUPERSCRIPT FOUR} \\
+\tcode{'5'} & \unicode{2075}{SUPERSCRIPT FIVE} \\
+\tcode{'6'} & \unicode{2076}{SUPERSCRIPT SIX} \\
+\tcode{'7'} & \unicode{2077}{SUPERSCRIPT SEVEN} \\
+\tcode{'8'} & \unicode{2078}{SUPERSCRIPT EIGHT} \\
+\tcode{'9'} & \unicode{2079}{SUPERSCRIPT NINE} \\
+\end{simpletypetable}
+\end{itemdescr}
+
+\begin{itemdecl}
+template<typename CharT, std::size_t N, std::size_t M, std::@\stdconcept{output_iterator}@<CharT> Out>
+constexpr Out @\exposidnc{copy-symbol-text}@(const symbol_text<N, M>& txt,  // \expos
+                               character_set char_set, Out out);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Copies \tcode{txt} to \tcode{out} according to \tcode{char_set} as follows:
 \begin{itemize}
 \item
-If \tcode{fmt.char_set == character_set::utf8} is \tcode{true}, then:
+If \tcode{char_set == character_set::utf8} is \tcode{true}, then:
 \begin{itemize}
 \item
 If \tcode{std::is_same_v<CharT, char8_t>} is \tcode{true}, equivalent to:
@@ -1804,7 +1809,11 @@ out = std::ranges::copy(txt.utf8(), out)
 Otherwise, if \tcode{std::is_same_v<CharT, char>} is \tcode{true}, then:
 \begin{itemize}
 \item
-If \tcode{std::text_encoding::literal().mib() != std::text_encoding::id::UTF8} is \tcode{true}, equivalent to:
+If
+\begin{codeblock}
+std::text_encoding::literal().mib() != std::text_encoding::id::UTF8
+\end{codeblock}
+is \tcode{true}, equivalent to:
 \begin{codeblock}
 out = std::ranges::copy(txt.portable(), out)
 \end{codeblock}
@@ -1831,7 +1840,6 @@ Otherwise, no effect.
 Portable text can't be copied to \tcode{CharT} output.
 \end{note}
 \end{itemize}
-\end{itemize}
 
 \pnum
 \returns
@@ -1840,26 +1848,60 @@ Portable text can't be copied to \tcode{CharT} output.
 \pnum
 \throws
 \tcode{std::invalid_argument} if there is no effect.
+\end{itemdescr}
 
-\begin{simpletypetable}
-{UTF-8 exponent transformation}
-{qty.exp.portable.to.utf8}
-{lr}
-\topline
-\lhdr{Input value} & \rhdr{Replacement value} \\ \capsep
-\tcode{'\caret'} & None (erased) \\
-\tcode{'-'} & \unicode{207b}{SUPERSCRIPT MINUS} \\
-\tcode{'0'} & \unicode{2070}{SUPERSCRIPT ZERO} \\
-\tcode{'1'} & \unicode{00b9}{SUPERSCRIPT ONE} \\
-\tcode{'2'} & \unicode{00b2}{SUPERSCRIPT TWO} \\
-\tcode{'3'} & \unicode{00b3}{SUPERSCRIPT THREE} \\
-\tcode{'4'} & \unicode{2074}{SUPERSCRIPT FOUR} \\
-\tcode{'5'} & \unicode{2075}{SUPERSCRIPT FIVE} \\
-\tcode{'6'} & \unicode{2076}{SUPERSCRIPT SIX} \\
-\tcode{'7'} & \unicode{2077}{SUPERSCRIPT SEVEN} \\
-\tcode{'8'} & \unicode{2078}{SUPERSCRIPT EIGHT} \\
-\tcode{'9'} & \unicode{2079}{SUPERSCRIPT NINE} \\
-\end{simpletypetable}
+\indexlibrarymember{dimension_symbol_to}{Dimension}
+\begin{itemdecl}
+template<typename CharT = char, std::@\stdconcept{output_iterator}@<CharT> Out, @\libconcept{Dimension}@ D>
+constexpr Out dimension_symbol_to(Out out, D d, const dimension_symbol_formatting& fmt = {});
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+Let \tcode{E} be the type of the dimension whose symbol text is being copied.
+
+\pnum
+\effects
+Copies the symbol text of the dimension \tcode{D} to \tcode{out} according to \tcode{fmt} as follows:
+\begin{itemize}
+\item
+If
+\tcode{\exposidnc{is-derived-from-specialization-of}<D, \exposidnc{expr-fractions}>()}
+is \tcode{true},
+let \tcode{Nums} and \tcode{Dens}
+be packs denoting the template arguments of
+\tcode{D::\exposidnc{nums}} and \tcode{D::\exposidnc{dens}}, respectively.
+\begin{itemize}
+\item
+If \tcode{sizeof...(Nums) == 0 \&\& sizeof...(Dens) == 0} is \tcode{true},
+equivalent to \tcode{*out++ = '1'}.
+\item
+Otherwise, copies the symbol text of the numerators \tcode{(..., void(Nums))}, in that order, as follows.
+Then, copies the symbol text of the denominators \tcode{(..., void(Dens))}, in that order, as follows.
+\end{itemize}
+\item
+If \tcode{E} is a specialization of \tcode{power},
+copies the symbol text of \tcode{E::\exposidnc{factor}}, as follows.
+Then, copies the symbol text of $\tcode{E::\exposidnc{exponent}} \neq 1$, determined as follows:
+\begin{itemize}
+\item
+If \tcode{E} is a denominator, let \tcode{sign} be \tcode{"-"}.
+Otherwise, let \tcode{sign} be \tcode{""}.
+\item
+Let \tcode{txt} be equivalent to \tcode{\exposidnc{get-symbol-exponent}(sign, E::\exposidnc{exponent})}.
+\end{itemize}
+\item
+If \tcode{E::\exposid{symbol}} is a valid expression, let \tcode{txt} be that.
+\item
+Each time \tcode{txt} is determined, equivalent to:
+\begin{codeblock}
+out = @\exposidnc{copy-symbol-text}@(txt, fmt.char_set, out)
+\end{codeblock}
+\end{itemize}
+
+\pnum
+\returns
+\tcode{out}.
 \end{itemdescr}
 
 \indexlibrarymember{dimension_symbol}{Dimension}
@@ -2685,6 +2727,10 @@ struct @\exposidnc{unit-magnitude}@ {  // \expos
   template<auto... Ms2>
   friend consteval auto @\exposidnc{common-magnitude}@(@\exposidnc{unit-magnitude}@,             // \expos
                                          @\exposidnc{unit-magnitude}@<Ms2...>);
+
+  template<typename CharT, std::@\stdconcept{output_iterator}@<CharT> Out>
+  friend constexpr Out @\exposidnc{magnitude-symbol}@(Out out, @\exposidnc{unit-magnitude}@,     // \expos
+                                        const unit_symbol_formatting& fmt);
 };
 
 }
@@ -2856,6 +2902,23 @@ friend consteval auto @\exposidnc{common-magnitude}@(@\exposidnc{unit-magnitude}
 The largest magnitude \tcode{C}
 such that each input magnitude is expressible
 by only positive powers relative to \tcode{C}.
+\end{itemdescr}
+
+\indexlibrarymemberexpos{UnitMagnitude}{magnitude-symbol}
+\begin{itemdecl}
+template<typename CharT, std::@\stdconcept{output_iterator}@<CharT> Out>
+friend constexpr Out @\exposidnc{magnitude-symbol}@(Out out, @\exposidnc{unit-magnitude}@,                   // \expos
+                                      const unit_symbol_formatting& fmt);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+TBD.
+
+\pnum
+\returns
+\tcode{out}.
 \end{itemdescr}
 
 \rSec3[qty.unit.traits]{Traits}
@@ -3651,6 +3714,60 @@ using @\exposidnc{to-quantity-spec}@ = decltype(@\exposidnc{get-associated-quant
 
 \rSec3[qty.unit.sym.fmt]{Symbol formatting}
 
+\begin{itemdecl}
+template<typename CharT, std::@\stdconcept{output_iterator}@<CharT> Out>
+constexpr Out @\exposidnc{copy-separator}@(Out out, const unit_symbol_formatting& fmt);  // \expos
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+if (fmt.separator == unit_symbol_separator::half_high_dot) {
+  const std::string_view dot = "\u22C5" /* @\unicode{22c5}{DOT OPERATOR}@ */;
+  out = std::ranges::copy(dot, out);
+} else {
+  *out++ = ' ';
+}
+return out;
+\end{codeblock}
+
+\pnum
+\throws
+\tcode{std::invalid_argument} if
+\tcode{fmt.separator == unit_symbol_separator::half_high_dot \&\& fmt.char_set != character_set::utf8}
+is \tcode{true}.
+\begin{note}
+\tcode{unit_symbol_separator::half_high_dot} can be only used with \tcode{character_set::utf8}.
+\end{note}
+\end{itemdescr}
+
+\begin{itemdecl}
+template<typename... Us, Unit U>
+consteval @\libconcept{Unit}@ auto @\exposidnc{get-common-unit-in}@(common_unit<Us...>, U u);  // \expos
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+auto get_magnitude = [&]() {
+  if constexpr (requires { common_unit<Us...>::@\exposidnc{mag}@; })
+    return common_unit<Us...>::@\exposidnc{mag}@;
+  else
+    return mag<1>;
+};
+constexpr auto canonical_u = get_canonical_unit(u);
+constexpr @\libconcept{UnitMagnitude}@ auto cmag = get_magnitude() / canonical_u.mag;
+if constexpr (cmag == mag<1>)
+  return u;
+else
+  return scaled_unit<cmag, U>{};
+\end{codeblock}
+\end{itemdescr}
+
 \indexlibrarymember{unit_symbol_to}{Unit}
 \begin{itemdecl}
 template<typename CharT = char, std::@\stdconcept{output_iterator}@<CharT> Out, @\libconcept{Unit}@ U>
@@ -3659,12 +3776,107 @@ constexpr Out unit_symbol_to(Out out, U u, const unit_symbol_formatting& fmt = {
 
 \begin{itemdescr}
 \pnum
+Let \tcode{E} be the type of the unit whose symbol text is being copied.
+
+\pnum
 \effects
-TBD.
+Copies the symbol text of the unit \tcode{U} to \tcode{out} according to \tcode{fmt} as follows:
+\begin{itemize}
+\item
+If \tcode{E} is of the form \tcode{common_unit<First, Tail...>}, then:
+\begin{itemize}
+\item
+Let \tcode{copy_unit(x)} be equivalent to
+copying the symbol text of
+\begin{codeblock}
+@\exposidnc{get-common-unit-in}@(common_unit<First, Tail...>{}, x)
+\end{codeblock}
+as follows.
+\item
+Equivalent to:
+\begin{codeblock}
+out = std::ranges::copy(std::string_view("EQUIV{"), out);
+copy_unit(First{});
+(...,
+  (out = std::ranges::copy(std::string_view(", "), out), copy_unit(Tail{})));
+*out++ = '}';
+\end{codeblock}
+\end{itemize}
+\item
+If \tcode{E} is of the form \tcode{scaled_unit<M, V>}, then:
+\begin{itemize}
+\item
+First, equivalent to:
+\begin{codeblock}
+*out++ = '(';
+out = @\exposidnc{magnitude-symbol}@<CharT>(out, M, fmt);  // see \ref{qty.unit.mag.utils}
+if constexpr (space_before_unit_symbol<scaled_unit<M, V>::@\exposidnc{reference-unit}@>)
+  *out++ = ' ';
+\end{codeblock}
+\item
+Then, copies the symbol text of \tcode{E::\exposidnc{reference-unit}} as follows.
+\item
+Then, equivalent to \tcode{*out++ = ')'}.
+\end{itemize}
+\item
+If
+\tcode{\exposidnc{is-derived-from-specialization-of}<U, \exposidnc{expr-fractions}>()}
+is \tcode{true},
+let \tcode{Nums} and \tcode{Dens}
+be packs denoting the template arguments of
+\tcode{U::\exposidnc{nums}} and \tcode{U::\exposidnc{dens}}, respectively.
+\begin{itemize}
+\item
+If \tcode{sizeof...(Nums) == 0 \&\& sizeof...(Dens) == 0} is \tcode{true},
+no effect.
+\item
+Otherwise, performs the following algorithm.
+To intersperse separators between steps
+is to evaluate an expression equivalent to
+\tcode{\exposidnc{copy-separator}<CharT>(out, fmt)}.
+First, copies the symbol text of the numerators \tcode{(..., void(Nums))}, in that order, as follows, with separators interspersed in-between.
+Then, equivalent to:
+\begin{codeblock}
+using enum unit_symbol_solidus;
+if (fmt.solidus == always ||
+    (fmt.solidus == one_denominator && sizeof...(Dens) == 1)) {
+  if constexpr (sizeof...(Nums) == 0) *out++ = '1';
+  *out++ = '/';
+  if (sizeof...(Dens) > 1) *out++ = '(';
+} else if constexpr (sizeof...(Nums) > 0) {
+  out = @\exposidnc{copy-separator}@<CharT>(out, fmt);
+}
+\end{codeblock}
+Then, copies the symbol text of the denominators \tcode{(..., void(Dens))}, in that order, as follows, with separators interspersed in-between.
+Then, equivalent to:
+\begin{codeblock}
+using enum unit_symbol_solidus;
+if (fmt.solidus == always && sizeof...(Dens) > 1) *out++ = ')';
+\end{codeblock}
+\end{itemize}
+\item
+If \tcode{E} is a specialization of \tcode{power},
+copies the symbol text of \tcode{E::\exposidnc{factor}}, as follows.
+Then, copies the symbol text of $\tcode{E::\exposidnc{exponent}} \neq 1$, determined as follows:
+\begin{itemize}
+\item
+If \tcode{E} is part of a denominator, let \tcode{sign} be \tcode{"-"}.
+Otherwise, let \tcode{sign} be \tcode{""}.
+\item
+Let \tcode{txt} be equivalent to \tcode{\exposidnc{get-symbol-exponent}(sign, E::\exposidnc{exponent})} (see \ref{qty.dim.sym.fmt}).
+\end{itemize}
+\item
+If \tcode{E::\exposid{symbol}} is a valid expression, let \tcode{txt} be that.
+\item
+Each time \tcode{txt} is determined, equivalent to:
+\begin{codeblock}
+out = @\exposidnc{copy-symbol-text}@(txt, fmt.char_set, out)  // see \ref{qty.dim.sym.fmt}
+\end{codeblock}
+\end{itemize}
 
 \pnum
 \returns
-TBD.
+\tcode{out}.
 \end{itemdescr}
 
 \indexlibrarymember{unit_symbol}{Unit}
@@ -3675,11 +3887,88 @@ consteval std::string_view unit_symbol(U);
 
 \begin{itemdescr}
 \pnum
-\effects
-Equivalent to:
+\returns
+A value \tcode{sv} such that
+\range{sv.data()}{sv.data() + sv.size()} has static storage duration and
+the following assertion holds:
 \begin{codeblock}
-TBD.
+std::basic_string<CharT> s;
+unit_symbol_to<CharT>(std::back_inserter(s), U{}, fmt);
+assert(sv == s);
 \end{codeblock}
+
+\pnum
+\begin{example}
+\begin{codeblock}
+import mp_units;
+
+using namespace mp_units;
+using enum character_set;
+using enum unit_symbol_solidus;
+using enum unit_symbol_separator;
+
+static_assert(unit_symbol(metre) == "m");
+static_assert(unit_symbol(degree_Celsius) == "\u2103");
+static_assert(unit_symbol<{.char_set = portable}>(degree_Celsius) == "`C");
+static_assert(unit_symbol(kilogram) == "kg");
+
+static_assert(unit_symbol(mag<100> * metre) == "(100 m)");
+static_assert(unit_symbol(mag<1000> * metre) == "(10\u00B3 m)");
+static_assert(unit_symbol<{.char_set = portable}>(mag<1000> * metre) == "(10^3 m)");
+static_assert(unit_symbol(mag<6000> * metre) == "(6 \u00D7 10\u00B3 m)");
+static_assert(unit_symbol(mag<10600> * metre) == "(10600 m)");
+static_assert(unit_symbol(mag_ratio<1, 18> * metre / second) == "(1/18 m)/s");
+static_assert(unit_symbol(mag_ratio<1, 18> * (metre / second)) == "(1/18 m/s)");
+
+static_assert(unit_symbol(mag<\u03C0> * one) == "(\u03C0)");
+static_assert(unit_symbol(mag<\u03C0> * metre) == "(\u03C0 m)");
+static_assert(unit_symbol(mag<2> * mag<\u03C0> * metre) == "(2 \u03C0 m)");
+static_assert(unit_symbol<{.separator = half_high_dot}>(mag<2> * mag<\u03C0> * metre) ==
+              "(2\u22C5\u03C0 m)");
+static_assert(unit_symbol(mag<1> / mag<\u03C0> * one) == "(1/\u03C0)");
+static_assert(unit_symbol<usf{.solidus = never}>(mag<1> / mag<\u03C0> * one) ==
+              "(\u03C0\u207B\u00B9)");
+static_assert(unit_symbol<usf{.char_set = portable, .solidus = never}>(
+                mag<1> / mag<\u03C0> * one) == "(pi^-1)");
+
+static_assert(unit_symbol(mag<1> / (mag<2> * mag<\u03C0>)*metre) ==
+              "(2\u207B\u00B9 \u03C0\u207B\u00B9 m)");
+static_assert(unit_symbol<usf{.solidus = always}>(mag<1> / (mag<2> * mag<\u03C0>)*metre) ==
+              "(1/(2 \u03C0) m)");
+static_assert(unit_symbol(mag_ratio<1, 2> * mag<\u03C0> * metre) == "(\u03C0/2 m)");
+static_assert(unit_symbol(mag_power<\u03C0, 2> * one) == "(\u03C0\u00B2)");
+static_assert(unit_symbol(mag_power<\u03C0, 1, 2> * one) == "(\u03C0^(1/2))");
+
+static_assert(unit_symbol(get_common_unit(kilo<metre>, mile)) ==
+              "EQUIV{(1/25146 mi), (1/15625 km)}");
+
+static_assert(unit_symbol(kilo<metre> * metre) == "km m");
+static_assert(unit_symbol<usf{.separator = half_high_dot}>(kilo<metre> * metre) ==
+              "km\u22C5m");
+static_assert(unit_symbol(metre / metre) == "");
+static_assert(unit_symbol(kilo<metre> / metre) == "km/m");
+static_assert(unit_symbol<usf{.solidus = never}>(kilo<metre> / metre) ==
+              "km m\u207B\u00B9");
+static_assert(unit_symbol<usf{.char_set = portable, .solidus = never}>(kilo<metre> /
+                                                                       metre) == "km m^-1");
+static_assert(unit_symbol(metre / second) == "m/s");
+static_assert(unit_symbol<usf{.solidus = never}>(metre / second) == "m s\u207B\u00B9");
+static_assert(unit_symbol<usf{.solidus = never, .separator = half_high_dot}>(metre /
+                                                                             second) ==
+              "m\u22C5s\u207B\u00B9");
+static_assert(unit_symbol<usf{.solidus = never, .separator = half_high_dot}>(
+                kilogram * metre / square(second)) == "kg\u22C5m\u22C5s\u207B\u00B2");
+static_assert(unit_symbol<usf{.solidus = always}>(one / metre / square(second)) ==
+              "1/(m s\u00B2)");
+static_assert(unit_symbol(pow<1, 2>(metre / second)) == "m^(1/2)/s^(1/2)");
+static_assert(unit_symbol<usf{.solidus = never}>(pow<1, 2>(metre / second)) ==
+              "m^(1/2) s^-(1/2)");
+static_assert(unit_symbol(litre / (mag<100> * kilo<metre>)) == "L/(100 km)");
+static_assert(unit_symbol((mag<10> * metre) / (mag<20> * second)) == "(10 m)/(20 s)");
+static_assert(unit_symbol(pow<2>(mag<3600> * second)) == "(3600 s)\u00B2");
+\end{codeblock}
+Some of the assertions depend on the implementation-defined total order of types.
+\end{example}
 \end{itemdescr}
 
 \rSec2[qty.ref.concepts]{Concepts}
