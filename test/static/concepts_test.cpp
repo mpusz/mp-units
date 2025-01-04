@@ -82,7 +82,22 @@ static_assert(!Dimension<struct si::metre>);
 static_assert(!Dimension<int>);
 
 // DimensionOf
-// TODO add tests
+inline constexpr struct isq::dim_length tdimlength;
+inline constexpr struct isq::dim_time tdimtime;
+inline constexpr struct isq::length tlength;
+inline constexpr struct isq::time ttime;
+static_assert(DimensionOf<struct isq::dim_length, tdimlength>);
+static_assert(!DimensionOf<struct isq::dim_length, tdimtime>);
+static_assert(!DimensionOf<struct isq::dim_length, tlength>);
+static_assert(!DimensionOf<struct isq::dim_length, ttime>);
+static_assert(!DimensionOf<struct isq::dim_time, tdimlength>);
+static_assert(!DimensionOf<struct isq::dim_time, tlength>);
+static_assert(!DimensionOf<struct isq::length, tdimlength>);
+static_assert(!DimensionOf<struct isq::length, tdimtime>);
+static_assert(!DimensionOf<struct isq::length, tlength>);
+static_assert(!DimensionOf<struct isq::length, ttime>);
+static_assert(!DimensionOf<struct isq::time, tdimlength>);
+static_assert(!DimensionOf<struct isq::time, tlength>);
 
 // QuantitySpec
 inline constexpr auto speed = isq::length / isq::time;
