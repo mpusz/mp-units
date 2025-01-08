@@ -117,7 +117,7 @@ concept SameAbsolutePointOriginAs =
 
 
 /**
- * @brief A concept matching all quantity points with provided quantity spec
+ * @brief A concept matching all quantity points of the provided property
  *
  * Satisfied by all quantity points with a quantity_spec being the instantiation derived from
  * the provided quantity_spec type, or quantity points having the origin with the same
@@ -125,7 +125,7 @@ concept SameAbsolutePointOriginAs =
  */
 MP_UNITS_EXPORT template<typename QP, auto V>
 concept QuantityPointOf =
-  QuantityPoint<QP> && (QuantitySpecOf<MP_UNITS_NONCONST_TYPE(QP::quantity_spec), V> ||
+  QuantityPoint<QP> && (ReferenceOf<MP_UNITS_NONCONST_TYPE(QP::reference), V> ||
                         detail::SameAbsolutePointOriginAs<MP_UNITS_NONCONST_TYPE(QP::absolute_point_origin), V>);
 
 /**

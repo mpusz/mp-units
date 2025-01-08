@@ -284,14 +284,8 @@ static_assert(invalid_unit<storage_capacity, steradian>);
 static_assert(is_of_type<get_common_reference(dimensionless[one], one), reference<dimensionless_, one_>>);
 static_assert(is_of_type<get_common_reference(radian, one), radian_>);
 static_assert(is_of_type<get_common_reference(one, radian), radian_>);
-static_assert(is_of_type<get_common_reference(radian, dimensionless[one]), reference<angular_measure_, radian_>>);
-static_assert(is_of_type<get_common_reference(dimensionless[one], radian), reference<angular_measure_, radian_>>);
 static_assert(is_of_type<get_common_reference(angular_measure[radian], one), reference<angular_measure_, radian_>>);
 static_assert(is_of_type<get_common_reference(one, angular_measure[radian]), reference<angular_measure_, radian_>>);
-static_assert(
-  is_of_type<get_common_reference(angular_measure[radian], dimensionless[one]), reference<angular_measure_, radian_>>);
-static_assert(
-  is_of_type<get_common_reference(dimensionless[one], angular_measure[radian]), reference<angular_measure_, radian_>>);
 
 template<auto R1, auto R2>
 concept no_common_reference = requires {
@@ -307,43 +301,29 @@ static_assert(no_common_reference<radian, steradian>);
 static_assert(no_common_reference<angular_measure[radian], steradian>);
 static_assert(no_common_reference<radian, solid_angular_measure[steradian]>);
 static_assert(no_common_reference<angular_measure[radian], solid_angular_measure[steradian]>);
+static_assert(no_common_reference<radian, dimensionless[one]>);
+static_assert(no_common_reference<angular_measure[radian], dimensionless[one]>);
 
 // addition of various dimensionless quantities
 static_assert(is_of_type<1 * radian + 1 * one, quantity<radian, int>>);
-static_assert(is_of_type<1 * radian + dimensionless(1 * one), quantity<angular_measure[radian], int>>);
 static_assert(is_of_type<angular_measure(1 * radian) + 1 * one, quantity<angular_measure[radian], int>>);
-static_assert(is_of_type<angular_measure(1 * radian) + dimensionless(1 * one), quantity<angular_measure[radian], int>>);
-
 static_assert(is_of_type<1 * steradian + 1 * one, quantity<steradian, int>>);
-static_assert(is_of_type<1 * steradian + dimensionless(1 * one), quantity<solid_angular_measure[steradian], int>>);
 static_assert(
   is_of_type<solid_angular_measure(1 * steradian) + 1 * one, quantity<solid_angular_measure[steradian], int>>);
-static_assert(is_of_type<solid_angular_measure(1 * steradian) + dimensionless(1 * one),
-                         quantity<solid_angular_measure[steradian], int>>);
 
 // subtraction of various dimensionless quantities
 static_assert(is_of_type<1 * radian - 1 * one, quantity<radian, int>>);
-static_assert(is_of_type<1 * radian - dimensionless(1 * one), quantity<angular_measure[radian], int>>);
 static_assert(is_of_type<angular_measure(1 * radian) - 1 * one, quantity<angular_measure[radian], int>>);
-static_assert(is_of_type<angular_measure(1 * radian) - dimensionless(1 * one), quantity<angular_measure[radian], int>>);
-
 static_assert(is_of_type<1 * steradian - 1 * one, quantity<steradian, int>>);
-static_assert(is_of_type<1 * steradian - dimensionless(1 * one), quantity<solid_angular_measure[steradian], int>>);
 static_assert(
   is_of_type<solid_angular_measure(1 * steradian) - 1 * one, quantity<solid_angular_measure[steradian], int>>);
-static_assert(is_of_type<solid_angular_measure(1 * steradian) - dimensionless(1 * one),
-                         quantity<solid_angular_measure[steradian], int>>);
 
 // comparison of various dimensionless quantities
 static_assert(1 * radian == 1 * one);
-static_assert(1 * radian == dimensionless(1 * one));
 static_assert(angular_measure(1 * radian) == 1 * one);
-static_assert(angular_measure(1 * radian) == dimensionless(1 * one));
 
 static_assert(1 * steradian == 1 * one);
-static_assert(1 * steradian == dimensionless(1 * one));
 static_assert(solid_angular_measure(1 * steradian) == 1 * one);
-static_assert(solid_angular_measure(1 * steradian) == dimensionless(1 * one));
 
 // invalid operations on dimensionless quantities
 template<auto Q1, auto Q2>
@@ -358,6 +338,8 @@ static_assert(invalid_addition<1 * radian, 1 * bit>);
 static_assert(invalid_addition<frequency(1 * hertz), activity(1 * becquerel)>);
 static_assert(invalid_addition<angular_measure(1 * radian), solid_angular_measure(1 * steradian)>);
 static_assert(invalid_addition<angular_measure(1 * radian), storage_capacity(1 * bit)>);
+static_assert(invalid_addition<1 * radian, dimensionless(1 * one)>);
+static_assert(invalid_addition<angular_measure(1 * radian), dimensionless(1 * one)>);
 
 template<auto Q1, auto Q2>
 concept invalid_subtraction = requires {
@@ -371,6 +353,8 @@ static_assert(invalid_subtraction<1 * radian, 1 * bit>);
 static_assert(invalid_subtraction<frequency(1 * hertz), activity(1 * becquerel)>);
 static_assert(invalid_subtraction<angular_measure(1 * radian), solid_angular_measure(1 * steradian)>);
 static_assert(invalid_subtraction<angular_measure(1 * radian), storage_capacity(1 * bit)>);
+static_assert(invalid_subtraction<1 * radian, dimensionless(1 * one)>);
+static_assert(invalid_subtraction<angular_measure(1 * radian), dimensionless(1 * one)>);
 
 template<auto Q1, auto Q2>
 concept invalid_comparison = requires {
@@ -384,6 +368,8 @@ static_assert(invalid_comparison<1 * radian, 1 * bit>);
 static_assert(invalid_comparison<frequency(1 * hertz), activity(1 * becquerel)>);
 static_assert(invalid_comparison<angular_measure(1 * radian), solid_angular_measure(1 * steradian)>);
 static_assert(invalid_comparison<angular_measure(1 * radian), storage_capacity(1 * bit)>);
+static_assert(invalid_comparison<1 * radian, dimensionless(1 * one)>);
+static_assert(invalid_comparison<angular_measure(1 * radian), dimensionless(1 * one)>);
 
 // make_reference
 static_assert(is_of_type<make_reference(length, metre), reference<length_, metre_>>);

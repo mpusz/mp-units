@@ -45,6 +45,7 @@ import std;
 #else
 #include <concepts>
 #include <cstdint>
+#include <optional>
 #include <tuple>
 #include <type_traits>
 #endif
@@ -54,13 +55,62 @@ namespace mp_units {
 
 MP_UNITS_EXPORT struct dimensionless;
 
+MP_UNITS_EXPORT
+#if MP_UNITS_API_NO_CRTP
+template<auto...>
+#else
+template<typename, auto...>
+#endif
+struct quantity_spec;
+
+template<detail::SymbolicConstant... Expr>
+struct derived_quantity_spec;
+
+MP_UNITS_EXPORT template<QuantitySpec From, QuantitySpec To>
+[[nodiscard]] consteval bool explicitly_convertible(From from, To to);
+
 namespace detail {
 
-template<QuantitySpec QS, Unit U>
-  requires(!AssociatedUnit<U>) || UnitOf<U, QS{}>
+#if MP_UNITS_API_NO_CRTP
+template<auto... Args>
+void to_base_specialization_of_quantity_spec(const volatile quantity_spec<Args...>*);
+#else
+template<typename T, auto... Args>
+void to_base_specialization_of_quantity_spec(const volatile quantity_spec<T, Args...>*);
+#endif
+
+template<typename T>
+constexpr bool is_derived_from_specialization_of_quantity_spec =
+  requires(T* type) { detail::to_base_specialization_of_quantity_spec(type); };
+
+/**
+ * @brief Concept matching all named quantity specification types
+ *
+ * Satisfied by all types that derive from `quantity_spec`.
+ */
+template<typename T>
+concept NamedQuantitySpec =
+  QuantitySpec<T> && is_derived_from_specialization_of_quantity_spec<T> && (!QuantityKindSpec<T>);
+
+/**
+ * @brief Concept matching all derived quantity specification types
+ *
+ * Satisfied by all `derived_quantity_spec` specializations.
+ *
+ * @note Deriving a strong type from it is considered a logic error and thus is
+ * explicitly not supported here.
+ */
+template<typename T>
+concept DerivedQuantitySpec =
+  QuantitySpec<T> &&
+  (is_specialization_of<T, derived_quantity_spec> ||
+   (QuantityKindSpec<T> && is_specialization_of<MP_UNITS_NONCONST_TYPE(T::_quantity_spec_), derived_quantity_spec>));
+
+
+template<QuantitySpec QS, detail::WeakUnitOf<QS{}> U>
 [[nodiscard]] consteval Reference auto make_reference(QS, U u)
 {
-  if constexpr (requires { requires(get_quantity_spec(U{}) == QS{}); })
+  if constexpr (requires { requires(mp_units::get_quantity_spec(U{}) == QS{}); })
     return u;
   else
     return reference<QS, U>{};
@@ -75,7 +125,7 @@ template<QuantitySpec QS, Unit U>
 template<std::same_as<quantity_character>... Ts>
 [[nodiscard]] consteval quantity_character common_quantity_character(Ts... args)
 {
-  return max({args...});
+  return detail::max({args...});
 }
 
 template<typename... Qs1, typename... Qs2>
@@ -83,13 +133,13 @@ template<typename... Qs1, typename... Qs2>
                                                                       const type_list<Qs2...>&)
 {
   constexpr quantity_character num =
-    common_quantity_character(quantity_character::scalar, expr_type<Qs1>::character...);
+    detail::common_quantity_character(quantity_character::scalar, expr_type<Qs1>::character...);
   constexpr quantity_character den =
-    common_quantity_character(quantity_character::scalar, expr_type<Qs2>::character...);
+    detail::common_quantity_character(quantity_character::scalar, expr_type<Qs2>::character...);
   if constexpr (num == den)
     return quantity_character::scalar;
   else
-    return common_quantity_character(num, den);
+    return detail::common_quantity_character(num, den);
 }
 
 /**
@@ -101,15 +151,11 @@ template<typename... Qs1, typename... Qs2>
 template<auto... Args>
 [[nodiscard]] consteval quantity_character quantity_character_init(quantity_character ch)
 {
-  if constexpr (contains<quantity_character, Args...>())
-    return get<quantity_character, Args...>();
+  if constexpr (mp_units::contains<quantity_character, Args...>())
+    return mp_units::get<quantity_character, Args...>();
   else
     return ch;
 }
-
-template<NamedQuantitySpec Q>
-  requires requires { Q::dimension; }
-using to_dimension = MP_UNITS_NONCONST_TYPE(Q::dimension);
 
 template<QuantitySpec auto... From, QuantitySpec Q>
 [[nodiscard]] consteval QuantitySpec auto clone_kind_of(Q q);
@@ -117,19 +163,43 @@ template<QuantitySpec auto... From, QuantitySpec Q>
 template<QuantitySpec Q>
 [[nodiscard]] consteval auto remove_kind(Q q);
 
+template<QuantitySpec Q>
+[[nodiscard]] consteval QuantitySpec auto get_kind_tree_root(Q);
+
+template<NamedQuantitySpec Lhs, NamedQuantitySpec Rhs, NamedQuantitySpec LhsRoot, NamedQuantitySpec RhsRoot,
+         NamedQuantitySpec LhsKindRoot, NamedQuantitySpec RhsKindRoot>
+struct quantity_spec_less_impl :
+    std::bool_constant<(detail::type_name<LhsRoot>() < detail::type_name<RhsRoot>()) ||
+                       (detail::type_name<LhsRoot>() == detail::type_name<RhsRoot>() &&
+                        detail::type_name<LhsKindRoot>() < detail::type_name<RhsKindRoot>()) ||
+                       (detail::type_name<LhsRoot>() == detail::type_name<RhsRoot>() &&
+                        detail::type_name<LhsKindRoot>() == detail::type_name<RhsKindRoot>() &&
+                        detail::type_name<Lhs>() < detail::type_name<Rhs>())> {};
+
+template<NamedQuantitySpec Lhs, NamedQuantitySpec Rhs>
+struct quantity_spec_less :
+    quantity_spec_less_impl<Lhs, Rhs, decltype(detail::get_hierarchy_root(Lhs{})),
+                            decltype(detail::get_hierarchy_root(Rhs{})), decltype(detail::get_kind_tree_root(Lhs{})),
+                            decltype(detail::get_kind_tree_root(Rhs{}))> {};
+
+template<typename T1, typename T2>
+using type_list_of_quantity_spec_less = expr_less<T1, T2, quantity_spec_less>;
+
 struct quantity_spec_interface_base {
   template<QuantitySpec Lhs, QuantitySpec Rhs>
   [[nodiscard]] friend consteval QuantitySpec auto operator*(Lhs lhs, Rhs rhs)
   {
-    return clone_kind_of<Lhs{}, Rhs{}>(
-      expr_multiply<derived_quantity_spec, struct dimensionless>(remove_kind(lhs), remove_kind(rhs)));
+    return detail::clone_kind_of<Lhs{}, Rhs{}>(
+      detail::expr_multiply<derived_quantity_spec, struct dimensionless, type_list_of_quantity_spec_less>(
+        detail::remove_kind(lhs), detail::remove_kind(rhs)));
   }
 
   template<QuantitySpec Lhs, QuantitySpec Rhs>
   [[nodiscard]] friend consteval QuantitySpec auto operator/(Lhs lhs, Rhs rhs)
   {
-    return clone_kind_of<Lhs{}, Rhs{}>(
-      expr_divide<derived_quantity_spec, struct dimensionless>(remove_kind(lhs), remove_kind(rhs)));
+    return detail::clone_kind_of<Lhs{}, Rhs{}>(
+      detail::expr_divide<derived_quantity_spec, struct dimensionless, type_list_of_quantity_spec_less>(
+        detail::remove_kind(lhs), detail::remove_kind(rhs)));
   }
 
   template<QuantitySpec Lhs, QuantitySpec Rhs>
@@ -147,28 +217,29 @@ struct quantity_spec_interface : quantity_spec_interface_base {
   template<typename Self, UnitOf<Self{}> U>
   [[nodiscard]] consteval Reference auto operator[](this Self self, U u)
   {
-    return make_reference(self, u);
+    return detail::make_reference(self, u);
   }
 
   template<typename Self, typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>>
-    requires QuantitySpecExplicitlyConvertibleTo<Q::quantity_spec, Self{}>
+    requires(mp_units::explicitly_convertible(Q::quantity_spec, Self{}))
   [[nodiscard]] constexpr Quantity auto operator()(this Self self, FwdQ&& q)
   {
-    return quantity{std::forward<FwdQ>(q).numerical_value_is_an_implementation_detail_, make_reference(self, Q::unit)};
+    return quantity{std::forward<FwdQ>(q).numerical_value_is_an_implementation_detail_,
+                    detail::make_reference(self, Q::unit)};
   }
 #else
   template<typename Self_ = Self, UnitOf<Self_{}> U>
   [[nodiscard]] MP_UNITS_CONSTEVAL Reference auto operator[](U u) const
   {
-    return make_reference(Self{}, u);
+    return detail::make_reference(Self{}, u);
   }
 
   template<typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>, typename Self_ = Self>
-    requires QuantitySpecExplicitlyConvertibleTo<Q::quantity_spec, Self_{}>
+    requires(mp_units::explicitly_convertible(Q::quantity_spec, Self_{}))
   [[nodiscard]] constexpr Quantity auto operator()(FwdQ&& q) const
   {
     return quantity{std::forward<FwdQ>(q).numerical_value_is_an_implementation_detail_,
-                    make_reference(Self{}, Q::unit)};
+                    detail::make_reference(Self{}, Q::unit)};
   }
 #endif
 };
@@ -357,7 +428,7 @@ struct quantity_spec<Self, QS, Args...> : detail::propagate_equation<QS>, detail
   }
 
   template<typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>, typename Self_ = Self>
-    requires detail::QuantitySpecExplicitlyConvertibleTo<Q::quantity_spec, Self_{}>
+    requires(explicitly_convertible(Q::quantity_spec, Self_{}))
   [[nodiscard]] constexpr Quantity auto operator()(FwdQ&& q) const
   {
     return quantity{std::forward<FwdQ>(q).numerical_value_is_an_implementation_detail_,
@@ -398,12 +469,12 @@ struct quantity_spec<Self, QS, Args...> : detail::propagate_equation<QS>, detail
 // clang-format on
 #if MP_UNITS_API_NO_CRTP
 template<detail::NamedQuantitySpec auto QS, detail::DerivedQuantitySpec auto Eq, detail::QSProperty auto... Args>
-  requires(detail::QuantitySpecExplicitlyConvertibleTo<Eq, QS>)
+  requires(explicitly_convertible(Eq, QS))
 struct quantity_spec<QS, Eq, Args...> : detail::quantity_spec_interface {
 #else
 template<typename Self, detail::NamedQuantitySpec auto QS, detail::DerivedQuantitySpec auto Eq,
          detail::QSProperty auto... Args>
-  requires(detail::QuantitySpecExplicitlyConvertibleTo<Eq, QS>)
+  requires(explicitly_convertible(Eq, QS))
 struct quantity_spec<Self, QS, Eq, Args...> : detail::quantity_spec_interface<Self> {
 #endif
   using _base_type_ = quantity_spec;
@@ -414,6 +485,10 @@ struct quantity_spec<Self, QS, Eq, Args...> : detail::quantity_spec_interface<Se
 };
 
 namespace detail {
+
+template<NamedQuantitySpec Q>
+  requires requires { Q::dimension; }
+using to_dimension = MP_UNITS_NONCONST_TYPE(Q::dimension);
 
 template<typename... Expr>
 struct derived_quantity_spec_impl :
@@ -426,9 +501,10 @@ struct derived_quantity_spec_impl :
   using _base_type_ = derived_quantity_spec_impl;
   using _base_ = expr_fractions<dimensionless, Expr...>;
 
-  static constexpr Dimension auto dimension = expr_map<to_dimension, derived_dimension, struct dimension_one>(_base_{});
+  static constexpr Dimension auto dimension =
+    detail::expr_map<to_dimension, derived_dimension, struct dimension_one>(_base_{});
   static constexpr quantity_character character =
-    derived_quantity_character(typename _base_::_num_{}, typename _base_::_den_{});
+    detail::derived_quantity_character(typename _base_::_num_{}, typename _base_::_den_{});
 };
 
 }  // namespace detail
@@ -555,7 +631,8 @@ template<std::intmax_t Num, std::intmax_t Den = 1, QuantitySpec Q>
 [[nodiscard]] consteval QuantitySpec auto pow(Q q)
 {
   return detail::clone_kind_of<Q{}>(
-    detail::expr_pow<Num, Den, derived_quantity_spec, struct dimensionless>(detail::remove_kind(q)));
+    detail::expr_pow<Num, Den, derived_quantity_spec, struct dimensionless, detail::type_list_of_quantity_spec_less>(
+      detail::remove_kind(q)));
 }
 
 
@@ -566,7 +643,7 @@ template<std::intmax_t Num, std::intmax_t Den = 1, QuantitySpec Q>
  *
  * @return QuantitySpec The result of computation
  */
-[[nodiscard]] consteval QuantitySpec auto sqrt(QuantitySpec auto q) { return pow<1, 2>(q); }
+[[nodiscard]] consteval QuantitySpec auto sqrt(QuantitySpec auto q) { return mp_units::pow<1, 2>(q); }
 
 
 /**
@@ -576,7 +653,7 @@ template<std::intmax_t Num, std::intmax_t Den = 1, QuantitySpec Q>
  *
  * @return QuantitySpec The result of computation
  */
-[[nodiscard]] consteval QuantitySpec auto cbrt(QuantitySpec auto q) { return pow<1, 3>(q); }
+[[nodiscard]] consteval QuantitySpec auto cbrt(QuantitySpec auto q) { return mp_units::pow<1, 3>(q); }
 
 MP_UNITS_EXPORT_END
 
@@ -588,74 +665,65 @@ namespace detail {
 template<QuantitySpec Q>
 [[nodiscard]] consteval int get_complexity(Q);
 
-// dimensionless should not be exploded to an empty derived quantity
-[[nodiscard]] consteval int get_complexity(struct dimensionless) { return 0; }
+template<QuantitySpec Q, int... Ints>
+[[nodiscard]] consteval int get_complexity_impl(power<Q, Ints...>);
+
+template<typename Q>
+[[nodiscard]] consteval int get_complexity_impl(kind_of_<Q>);
+
+template<QuantitySpec Q>
+[[nodiscard]] consteval int get_complexity_impl(Q);
 
 template<typename... Ts>
-[[nodiscard]] consteval int get_complexity(type_list<Ts...>)
+[[nodiscard]] consteval int get_complexity_impl(type_list<Ts...>)
 {
   if constexpr (sizeof...(Ts) == 0)
     return 0;
   else
-    return max({get_complexity(Ts{})...});
+    return max({detail::get_complexity_impl(Ts{})...});
 }
 
 template<QuantitySpec Q, int... Ints>
-[[nodiscard]] consteval int get_complexity(power<Q, Ints...>)
+[[nodiscard]] consteval int get_complexity_impl(power<Q, Ints...>)
 {
-  return get_complexity(Q{});
+  return detail::get_complexity(Q{});
 }
 
 template<typename Q>
-[[nodiscard]] consteval int get_complexity(kind_of_<Q>)
+[[nodiscard]] consteval int get_complexity_impl(kind_of_<Q>)
 {
-  return get_complexity(Q{});
+  return detail::get_complexity(Q{});
 }
 
 template<QuantitySpec Q>
 [[nodiscard]] consteval int get_complexity_impl(Q)
 {
   if constexpr (DerivedQuantitySpec<Q>)
-    return max(get_complexity(typename Q::_num_{}), get_complexity(typename Q::_den_{}));
-  else if constexpr (requires { Q::_equation_; })
-    return 1 + get_complexity(Q::_equation_);
+    return max(detail::get_complexity_impl(typename Q::_num_{}), detail::get_complexity_impl(typename Q::_den_{}));
+  else if constexpr (requires { Q::_equation_; } && Q{} != dimensionless)
+    return 1 + detail::get_complexity(Q::_equation_);
   else
     return 0;
 }
 
 template<QuantitySpec Q>
-constexpr auto get_complexity_result = get_complexity_impl(Q{});
+constexpr auto get_complexity_result = detail::get_complexity_impl(Q{});
 
+/**
+ * @brief Get the complexity of a quantity spec
+ *
+ * Complexity of the quantity spec specifies how many times a given quantity can be exploded
+ * to the underlying equation. For the derived quantities, the largest complexity of the
+ * ingredients is returned.
+ *
+ * @tparam Q Quantity specification to be analyzed
+ * @return int Complexity of the quantity spec
+ */
 template<QuantitySpec Q>
 [[nodiscard]] consteval int get_complexity(Q)
 {
   return get_complexity_result<Q>;
 }
-
-// dimension_one is always the last one
-// otherwise, sort by typename
-template<Dimension D1, Dimension D2>
-[[nodiscard]] consteval bool ingredients_dimension_less(D1, D2)
-{
-  if constexpr (D1{} == D2{} || D1{} == dimension_one)
-    return false;
-  else if constexpr (D2{} == dimension_one)
-    return true;
-  else
-    return type_name<D1>() < type_name<D2>();
-}
-
-template<QuantitySpec Lhs, QuantitySpec Rhs, bool lhs_eq = requires { Lhs::_equation_; },
-         bool rhs_eq = requires { Rhs::_equation_; }, ratio lhs_compl = get_complexity(Lhs{}),
-         ratio rhs_compl = get_complexity(Rhs{})>
-struct ingredients_less :
-    std::bool_constant<(lhs_compl > rhs_compl) ||
-                       (lhs_compl == rhs_compl && ingredients_dimension_less(Lhs::dimension, Rhs::dimension)) ||
-                       (lhs_compl == rhs_compl && Lhs::dimension == Rhs::dimension &&
-                        type_name<Lhs>() < type_name<Rhs>())>{};
-
-template<typename T1, typename T2>
-using type_list_of_ingredients_less = expr_less<T1, T2, ingredients_less>;
 
 template<QuantitySpec Q>
   requires requires { Q::_equation_; }
@@ -667,717 +735,314 @@ template<QuantitySpec Q>
     return true;
 }
 
-enum class specs_convertible_result : std::int8_t { no, cast, explicit_conversion, yes };
+enum class [[nodiscard]] specs_convertible_result : std::int8_t {
+  no,
+  cast,
+  explicit_conversion_beyond_kind,
+  explicit_conversion,
+  yes
+};
 
 template<QuantitySpec Q>
-struct explode_to_equation_result {
+struct [[nodiscard]] explode_result {
   Q equation;
   specs_convertible_result result;
 };
 
-#if MP_UNITS_COMP_CLANG
+#if MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 17
 
 template<QuantitySpec Q>
-explode_to_equation_result(Q, specs_convertible_result) -> explode_to_equation_result<Q>;
+explode_result(Q, specs_convertible_result) -> explode_result<Q>;
 
 #endif
 
 template<QuantitySpec Q>
   requires requires { Q::_equation_; }
-[[nodiscard]] consteval auto explode_to_equation(Q q)
+[[nodiscard]] consteval auto explode(Q q)
 {
-  return explode_to_equation_result{
-    Q::_equation_, defines_equation(q) ? specs_convertible_result::yes : specs_convertible_result::explicit_conversion};
+  return explode_result{Q::_equation_, detail::defines_equation(q) ? specs_convertible_result::yes
+                                                                   : specs_convertible_result::explicit_conversion};
 }
 
 template<QuantitySpec Q, int... Ints>
   requires requires { Q::_equation_; }
-[[nodiscard]] consteval auto explode_to_equation(power<Q, Ints...>)
+[[nodiscard]] consteval auto explode(power<Q, Ints...>)
 {
   constexpr ratio exp = power<Q, Ints...>::_exponent_;
-  return explode_to_equation_result{
-    pow<exp.num, exp.den>(Q::_equation_),
-    defines_equation(Q{}) ? specs_convertible_result::yes : specs_convertible_result::explicit_conversion};
+  return explode_result{pow<exp.num, exp.den>(Q::_equation_), defines_equation(Q{})
+                                                                ? specs_convertible_result::yes
+                                                                : specs_convertible_result::explicit_conversion};
 }
 
-template<QuantitySpec Q>
-struct explode_result {
-  Q quantity;
-  specs_convertible_result result = specs_convertible_result::yes;
+template<TypeList NumFrom, TypeList DenFrom, TypeList NumTo, TypeList DenTo>
+[[nodiscard]] constexpr specs_convertible_result are_ingredients_convertible(NumFrom num_from, DenFrom den_from,
+                                                                             NumTo num_to, DenTo den_to);
 
-  template<typename T>
-  [[nodiscard]] consteval explode_result common_convertibility_with(explode_to_equation_result<T> res) const
-  {
-    return {quantity, min(result, res.result)};
-  }
+
+template<NamedQuantitySpec From, NamedQuantitySpec To>
+[[nodiscard]] consteval specs_convertible_result convertible_common_base(From from, To to)
+{
+  using enum specs_convertible_result;
+  if constexpr (is_same_v<From, To>) return yes;
+  if constexpr (detail::is_child_of(From{}, To{}))
+    return (detail::get_kind_tree_root(from) == detail::get_kind_tree_root(to)) ? yes : explicit_conversion_beyond_kind;
+  if constexpr (detail::is_child_of(To{}, From{})) return explicit_conversion;
+  if constexpr (detail::get_kind_tree_root(From{}) == detail::get_kind_tree_root(To{})) return cast;
+  return no;
+}
+
+template<TypeList RestFrom = type_list<>, TypeList RestTo = type_list<>>
+struct [[nodiscard]] extract_common_base_result {
+  specs_convertible_result result;
+  RestFrom rest_from{};
+  RestTo rest_to{};
 };
 
-#if MP_UNITS_COMP_CLANG
+#if MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 17
 
-template<QuantitySpec Q>
-explode_result(Q) -> explode_result<Q>;
+extract_common_base_result(specs_convertible_result) -> extract_common_base_result<type_list<>, type_list<>>;
+
+template<TypeList RestFrom, TypeList RestTo>
+extract_common_base_result(specs_convertible_result, RestFrom, RestTo) -> extract_common_base_result<RestFrom, RestTo>;
 
 #endif
 
-template<int Complexity, QuantitySpec Q>
-[[nodiscard]] consteval auto explode(Q q);
-
-template<int Complexity, DerivedQuantitySpec Q>
-[[nodiscard]] consteval auto explode_impl(Q q);
-
-template<int Complexity, NamedQuantitySpec Q>
-[[nodiscard]] consteval auto explode_impl(Q q);
-
-template<int Complexity, QuantitySpec Q, typename Num, typename... Nums, typename Den, typename... Dens>
-[[nodiscard]] consteval auto explode_impl(Q, type_list<Num, Nums...>, type_list<Den, Dens...>)
+template<TypeList ProcessedFrom, TypeList RemainingFrom, TypeList ProcessedTo, TypeList RemainingTo>
+[[nodiscard]] consteval auto try_extract_common_base(ProcessedFrom, RemainingFrom, ProcessedTo, RemainingTo)
 {
-  constexpr auto num = get_complexity(Num{});
-  constexpr auto den = get_complexity(Den{});
-  constexpr auto max_compl = max(num, den);
+  return std::optional<extract_common_base_result<>>(std::nullopt);
+}
 
-  if constexpr (max_compl == Complexity || ((num >= den && !requires { explode_to_equation(Num{}); }) ||
-                                            (num < den && !requires { explode_to_equation(Den{}); })))
-    return explode_result{(map_power(Num{}) * ... * map_power(Nums{})) / (map_power(Den{}) * ... * map_power(Dens{}))};
+template<typename... ProcessedFrom, typename From, typename... RemainingFrom, typename... ProcessedTo, typename To,
+         typename... RemainingTo>
+[[nodiscard]] consteval auto try_extract_common_base(type_list<ProcessedFrom...>, type_list<From, RemainingFrom...>,
+                                                     type_list<ProcessedTo...>, type_list<To, RemainingTo...>)
+{
+  constexpr QuantitySpec auto from_factor = detail::get_factor(From{});
+  constexpr QuantitySpec auto to_factor = detail::get_factor(To{});
+  constexpr QuantitySpec auto from_root = get_hierarchy_root(from_factor);
+  constexpr QuantitySpec auto to_root = get_hierarchy_root(to_factor);
+  constexpr std::string_view from_root_name = detail::type_name<MP_UNITS_NONCONST_TYPE(from_root)>();
+  constexpr std::string_view to_root_name = detail::type_name<MP_UNITS_NONCONST_TYPE(to_root)>();
+
+  // Type lists are sorted by the root name. This allows us to easily progress through both lists to find the quantities
+  // belonging to the same hierarchy tree.
+  if constexpr (from_root_name < to_root_name)
+    return detail::try_extract_common_base(type_list<ProcessedFrom..., From>{}, type_list<RemainingFrom...>{},
+                                           type_list<ProcessedTo...>{}, type_list<To, RemainingTo...>{});
+  else if constexpr (from_root_name > to_root_name)
+    return detail::try_extract_common_base(type_list<ProcessedFrom...>{}, type_list<From, RemainingFrom...>{},
+                                           type_list<ProcessedTo..., To>{}, type_list<RemainingTo...>{});
   else {
-    if constexpr (num >= den) {
-      constexpr auto res = explode_to_equation(Num{});
-      return explode<Complexity>((res.equation * ... * map_power(Nums{})) /
-                                 (map_power(Den{}) * ... * map_power(Dens{})))
-        .common_convertibility_with(res);
-    } else {
-      constexpr auto res = explode_to_equation(Den{});
-      return explode<Complexity>((map_power(Num{}) * ... * map_power(Nums{})) /
-                                 (res.equation * ... * map_power(Dens{})))
-        .common_convertibility_with(res);
-    }
-  }
-}
-
-template<int Complexity, QuantitySpec Q, typename Num, typename... Nums>
-[[nodiscard]] consteval auto explode_impl(Q, type_list<Num, Nums...>, type_list<>)
-{
-  constexpr auto n = get_complexity(Num{});
-  if constexpr (n == Complexity || !requires { explode_to_equation(Num{}); })
-    return explode_result{(map_power(Num{}) * ... * map_power(Nums{}))};
-  else {
-    constexpr auto res = explode_to_equation(Num{});
-    return explode<Complexity>((res.equation * ... * map_power(Nums{}))).common_convertibility_with(res);
-  }
-}
-
-template<int Complexity, QuantitySpec Q, typename Den, typename... Dens>
-[[nodiscard]] consteval auto explode_impl(Q, type_list<>, type_list<Den, Dens...>)
-{
-  constexpr auto den = get_complexity(Den{});
-  if constexpr (den == Complexity || !requires { explode_to_equation(Den{}); })
-    return explode_result{dimensionless / (map_power(Den{}) * ... * map_power(Dens{}))};
-  else {
-    constexpr auto res = explode_to_equation(Den{});
-    return explode<Complexity>(dimensionless / (res.equation * ... * map_power(Dens{})))
-      .common_convertibility_with(res);
-  }
-}
-
-template<int Complexity, QuantitySpec Q>
-[[nodiscard]] consteval auto explode_impl(Q, type_list<>, type_list<>)
-{
-  return explode_result{dimensionless};
-}
-
-template<int Complexity, DerivedQuantitySpec Q>
-[[nodiscard]] consteval auto explode_impl(Q q)
-{
-  constexpr auto complexity = get_complexity(Q{});
-  if constexpr (complexity > Complexity)
-    return explode_impl<Complexity>(q, type_list_sort<typename Q::_num_, type_list_of_ingredients_less>{},
-                                    type_list_sort<typename Q::_den_, type_list_of_ingredients_less>{});
-  else
-    return explode_result{q};
-}
-
-template<int Complexity, NamedQuantitySpec Q>
-[[nodiscard]] consteval auto explode_impl(Q q)
-{
-  constexpr auto complexity = get_complexity(Q{});
-  if constexpr (complexity > Complexity && requires { Q::_equation_; }) {
-    constexpr auto res = explode_to_equation(Q{});
-    return explode<Complexity>(res.equation).common_convertibility_with(res);
-  } else
-    return explode_result{q};
-}
-
-template<int Complexity, QuantitySpec Q>
-constexpr auto explode_res = explode_impl<Complexity>(Q{});
-
-template<int Complexity, QuantitySpec Q>
-[[nodiscard]] consteval auto explode(Q)
-{
-  return explode_res<Complexity, Q>;
-}
-
-template<typename NumFrom, typename... NumsFrom, typename DenFrom, typename... DensFrom, typename NumTo,
-         typename... NumsTo, typename DenTo, typename... DensTo>
-[[nodiscard]] consteval specs_convertible_result are_ingredients_convertible(type_list<NumFrom, NumsFrom...> num_from,
-                                                                             type_list<DenFrom, DensFrom...> den_from,
-                                                                             type_list<NumTo, NumsTo...> num_to,
-                                                                             type_list<DenTo, DensTo...> den_to);
-
-template<typename DenFrom, typename... DensFrom, typename NumTo, typename... NumsTo, typename DenTo, typename... DensTo>
-[[nodiscard]] consteval specs_convertible_result are_ingredients_convertible(type_list<>,
-                                                                             type_list<DenFrom, DensFrom...>,
-                                                                             type_list<NumTo, NumsTo...>,
-                                                                             type_list<DenTo, DensTo...>);
-
-template<typename NumFrom, typename... NumsFrom, typename NumTo, typename... NumsTo, typename DenTo, typename... DensTo>
-[[nodiscard]] consteval specs_convertible_result are_ingredients_convertible(type_list<NumFrom, NumsFrom...>,
-                                                                             type_list<>, type_list<NumTo, NumsTo...>,
-                                                                             type_list<DenTo, DensTo...>);
-
-template<typename NumFrom, typename... NumsFrom, typename DenFrom, typename... DensFrom, typename DenTo,
-         typename... DensTo>
-[[nodiscard]] consteval specs_convertible_result are_ingredients_convertible(type_list<NumFrom, NumsFrom...>,
-                                                                             type_list<DenFrom, DensFrom...>,
-                                                                             type_list<>, type_list<DenTo, DensTo...>);
-
-template<typename NumFrom, typename... NumsFrom, typename DenFrom, typename... DensFrom, typename NumTo,
-         typename... NumsTo>
-[[nodiscard]] consteval specs_convertible_result are_ingredients_convertible(type_list<NumFrom, NumsFrom...>,
-                                                                             type_list<DenFrom, DensFrom...>,
-                                                                             type_list<NumTo, NumsTo...>, type_list<>);
-
-template<typename NumFrom, typename... NumsFrom, typename NumTo, typename... NumsTo>
-[[nodiscard]] consteval specs_convertible_result are_ingredients_convertible(type_list<NumFrom, NumsFrom...>,
-                                                                             type_list<>, type_list<NumTo, NumsTo...>,
-                                                                             type_list<>);
-
-template<typename DenFrom, typename... DensFrom, typename DenTo, typename... DensTo>
-[[nodiscard]] consteval specs_convertible_result are_ingredients_convertible(type_list<>,
-                                                                             type_list<DenFrom, DensFrom...>,
-                                                                             type_list<>, type_list<DenTo, DensTo...>);
-
-template<typename... NumsFrom, typename... DensFrom>
-[[nodiscard]] consteval specs_convertible_result are_ingredients_convertible(type_list<NumsFrom...>,
-                                                                             type_list<DensFrom...>, type_list<>,
-                                                                             type_list<>);
-
-template<typename... NumsTo, typename... DensTo>
-[[nodiscard]] consteval specs_convertible_result are_ingredients_convertible(type_list<>, type_list<>,
-                                                                             type_list<NumsTo...>,
-                                                                             type_list<DensTo...>);
-
-template<typename... NumsFrom>
-[[nodiscard]] consteval specs_convertible_result are_ingredients_convertible(type_list<NumsFrom...>, type_list<>,
-                                                                             type_list<>, type_list<>);
-template<typename... DensFrom>
-[[nodiscard]] consteval specs_convertible_result are_ingredients_convertible(type_list<>, type_list<DensFrom...>,
-                                                                             type_list<>, type_list<>);
-
-template<typename... NumsTo>
-[[nodiscard]] consteval specs_convertible_result are_ingredients_convertible(type_list<>, type_list<>,
-                                                                             type_list<NumsTo...>, type_list<>);
-
-template<typename... DensFrom>
-[[nodiscard]] consteval specs_convertible_result are_ingredients_convertible(type_list<>, type_list<>, type_list<>,
-                                                                             type_list<DensFrom...>);
-
-[[nodiscard]] consteval specs_convertible_result are_ingredients_convertible(type_list<>, type_list<>, type_list<>,
-                                                                             type_list<>);
-
-enum class prepend_rest : std::int8_t { no, first, second };
-
-template<QuantitySpec From = struct dimensionless, QuantitySpec To = struct dimensionless, typename Elem = int>
-struct extract_results {
-  bool same_kind{};
-  From from{};
-  To to{};
-  prepend_rest prepend{};
-  Elem elem{};
-};
-
-#if MP_UNITS_COMP_CLANG
-
-template<QuantitySpec From = struct dimensionless, QuantitySpec To = struct dimensionless, typename Elem = int>
-extract_results(bool, From = {}, To = {}, prepend_rest = {}, Elem = {}) -> extract_results<From, To, Elem>;
-
-#endif
-
-template<typename From, typename To>
-[[nodiscard]] consteval auto extract_convertible_quantities_impl(From, To)
-{
-  constexpr auto qfrom = map_power(From{});
-  constexpr auto qto = map_power(To{});
-  if constexpr (get_kind_tree_root(qfrom) == get_kind_tree_root(qto)) {
-    if constexpr (is_specialization_of_power<From> && is_specialization_of_power<To>)
-      return extract_results{true, typename From::_factor_{}, typename To::_factor_{}, prepend_rest::no};
-    else
-      return extract_results{true, qfrom, qto, prepend_rest::no};
-  } else {
-    auto normalize = []<typename Q>(Q) {
-      if constexpr (is_specialization_of_power<Q>)
-        return std::tuple{typename Q::_factor_{}, Q::_exponent_};
-      else
-        return std::tuple{Q{}, ratio{1}};
-    };
-    constexpr auto from_norm = normalize(From{});
-    constexpr auto to_norm = normalize(To{});
-    constexpr auto from_factor = std::get<0>(from_norm);
-    constexpr auto from_exp = std::get<1>(from_norm);
-    constexpr auto to_factor = std::get<0>(to_norm);
-    constexpr auto to_exp = std::get<1>(to_norm);
-    if constexpr (get_kind_tree_root(from_factor) != get_kind_tree_root(to_factor))
-      return extract_results{false};
-    else if constexpr (from_exp > to_exp)
-      return extract_results{true, from_factor, to_factor, prepend_rest::first,
-                             power_or_T<MP_UNITS_NONCONST_TYPE(from_factor), from_exp - to_exp>{}};
-    else
-      return extract_results{true, from_factor, to_factor, prepend_rest::second,
-                             power_or_T<MP_UNITS_NONCONST_TYPE(to_factor), to_exp - from_exp>{}};
-  }
-}
-
-template<typename From, typename To>
-constexpr auto extract_convertible_quantities_result = extract_convertible_quantities_impl(From{}, To{});
-
-// tries to find the largest common power of a quantity
-// in case powers have different factors of the same dimension, returns the remainder
-template<typename From, typename To>
-[[nodiscard]] consteval auto extract_convertible_quantities(From, To)
-{
-  return extract_convertible_quantities_result<From, To>;
-}
-
-enum class extracted_entities : std::int8_t { numerators, denominators, from, to };
-
-template<extracted_entities Entities, auto Ext, TypeList NumFrom, TypeList DenFrom, TypeList NumTo, TypeList DenTo>
-[[nodiscard]] consteval specs_convertible_result prepend_and_process_rest(NumFrom num_from, DenFrom den_from,
-                                                                          NumTo num_to, DenTo den_to)
-{
-  constexpr auto res = [&]() consteval {
-    if constexpr (Ext.prepend == prepend_rest::no)
-      return are_ingredients_convertible(num_from, den_from, num_to, den_to);
+    // We are dealing with quantities from the same hierarchy tree.
+    constexpr specs_convertible_result res = detail::convertible_common_base(from_factor, to_factor);
+    if constexpr (res == specs_convertible_result::no)
+      // We do not need to analyze the rest of the lists as the quantities are not convertible when at least one element
+      // is not convertible.
+      return std::optional(extract_common_base_result{specs_convertible_result::no});
     else {
-      using elem = decltype(Ext.elem);
-      if constexpr (Entities == extracted_entities::numerators) {
-        if constexpr (Ext.prepend == prepend_rest::first)
-          return are_ingredients_convertible(type_list_push_front<NumFrom, elem>{}, den_from, num_to, den_to);
-        else
-          return are_ingredients_convertible(num_from, den_from, type_list_push_front<NumTo, elem>{}, den_to);
-      } else if constexpr (Entities == extracted_entities::denominators) {
-        if constexpr (Ext.prepend == prepend_rest::first)
-          return are_ingredients_convertible(num_from, type_list_push_front<DenFrom, elem>{}, num_to, den_to);
-        else
-          return are_ingredients_convertible(num_from, den_from, num_to, type_list_push_front<DenTo, elem>{});
-      } else if constexpr (Entities == extracted_entities::from) {
-        if constexpr (Ext.prepend == prepend_rest::first)
-          return are_ingredients_convertible(type_list_push_front<NumFrom, elem>{}, den_from, num_to, den_to);
-        else
-          return are_ingredients_convertible(num_from, type_list_push_front<DenFrom, elem>{}, num_to, den_to);
-      } else if constexpr (Entities == extracted_entities::to) {
-        if constexpr (Ext.prepend == prepend_rest::first)
-          return are_ingredients_convertible(num_from, den_from, type_list_push_front<NumTo, elem>{}, den_to);
-        else
-          return are_ingredients_convertible(num_from, den_from, num_to, type_list_push_front<DenTo, elem>{});
+      // We might deal with different powers of quantities. Let's find the biggest common exponent and extract it.
+      // The rest of the quantities must be reinserted into the list.
+      constexpr ratio from_exp = detail::get_exponent(From{});
+      constexpr ratio to_exp = detail::get_exponent(To{});
+      if constexpr (from_exp == to_exp)
+        return std::optional(extract_common_base_result{res, type_list<ProcessedFrom..., RemainingFrom...>{},
+                                                        type_list<ProcessedTo..., RemainingTo...>{}});
+      else if constexpr (from_exp > to_exp) {
+        using rest = power_or_T<MP_UNITS_NONCONST_TYPE(from_factor), from_exp - to_exp>;
+        return std::optional(extract_common_base_result{res, type_list<ProcessedFrom..., rest, RemainingFrom...>{},
+                                                        type_list<ProcessedTo..., RemainingTo...>{}});
+      } else {
+        using rest = power_or_T<MP_UNITS_NONCONST_TYPE(to_factor), to_exp - from_exp>;
+        return std::optional(extract_common_base_result{res, type_list<ProcessedFrom..., RemainingFrom...>{},
+                                                        type_list<ProcessedTo..., rest, RemainingTo...>{}});
       }
     }
+  }
+}
+
+template<TypeList From, TypeList To>
+[[nodiscard]] consteval auto try_extract_common_base(From from, To to)
+{
+  return detail::try_extract_common_base(type_list<>{}, from, type_list<>{}, to);
+}
+
+struct get_max_complexity_result_base {
+  int complexity;
+  int index;
+};
+
+template<typename... Elems>
+[[nodiscard]] consteval get_max_complexity_result_base get_max_complexity(type_list<Elems...>)
+{
+  if constexpr (sizeof...(Elems) == 0)
+    return {-1, -1};
+  else {
+    const std::initializer_list<int> list{detail::get_complexity_impl(Elems{})...};
+    const auto it = detail::max_element(list.begin(), list.end());
+    return {*it, static_cast<int>(it - list.begin())};
+  }
+}
+
+enum class ingredient_type : std::int8_t { numerator_from, denominator_from, numerator_to, denominator_to };
+
+struct get_max_complexity_result : get_max_complexity_result_base {
+  ingredient_type type;
+};
+
+template<TypeList NumFrom, TypeList DenFrom, TypeList NumTo, TypeList DenTo>
+[[nodiscard]] consteval get_max_complexity_result get_max_complexity(NumFrom num_from, DenFrom den_from, NumTo num_to,
+                                                                     DenTo den_to)
+{
+  const std::initializer_list<get_max_complexity_result_base> list{
+    detail::get_max_complexity(num_from), detail::get_max_complexity(den_from), detail::get_max_complexity(num_to),
+    detail::get_max_complexity(den_to)};
+  const auto it =
+    detail::max_element(list.begin(), list.end(), [](auto lhs, auto rhs) { return lhs.complexity < rhs.complexity; });
+  return {*it, static_cast<ingredient_type>(it - list.begin())};
+}
+
+template<QuantitySpec Equation, TypeList Num, TypeList Den>
+[[nodiscard]] consteval auto merge_with_equation(Equation, Num, Den)
+{
+  constexpr QuantitySpec auto merged_qs = [&]() {
+    if constexpr (DerivedQuantitySpec<Equation>)
+      return detail::get_optimized_expression<
+        type_list_merge_sorted<typename Equation::_num_, Num, type_list_of_quantity_spec_less>,
+        type_list_merge_sorted<typename Equation::_den_, Den, type_list_of_quantity_spec_less>, struct dimensionless,
+        type_list_of_quantity_spec_less, derived_quantity_spec>();
+    else
+      return detail::get_optimized_expression<
+        type_list_merge_sorted<Num, type_list<Equation>, type_list_of_quantity_spec_less>, Den, struct dimensionless,
+        type_list_of_quantity_spec_less, derived_quantity_spec>();
   }();
-
-  if constexpr (Entities == extracted_entities::numerators || Entities == extracted_entities::denominators)
-    return min(res, convertible(Ext.from, Ext.to));
+  using qs_type = MP_UNITS_NONCONST_TYPE(merged_qs);
+  if constexpr (DerivedQuantitySpec<qs_type>)
+    return std::pair(typename qs_type::_num_{}, typename qs_type::_den_{});
   else
-    return res;
-}
-
-template<typename NumFrom, typename... NumsFrom, typename DenFrom, typename... DensFrom, typename NumTo,
-         typename... NumsTo, typename DenTo, typename... DensTo>
-[[nodiscard]] consteval specs_convertible_result are_ingredients_convertible(type_list<NumFrom, NumsFrom...> num_from,
-                                                                             type_list<DenFrom, DensFrom...> den_from,
-                                                                             type_list<NumTo, NumsTo...> num_to,
-                                                                             type_list<DenTo, DensTo...> den_to)
-{
-  if constexpr (constexpr auto extN = extract_convertible_quantities(NumFrom{}, NumTo{}); extN.same_kind)
-    return prepend_and_process_rest<extracted_entities::numerators, extN>(type_list<NumsFrom...>{}, den_from,
-                                                                          type_list<NumsTo...>{}, den_to);
-  else if constexpr (constexpr auto extD = extract_convertible_quantities(DenFrom{}, DenTo{}); extD.same_kind)
-    return prepend_and_process_rest<extracted_entities::denominators, extD>(num_from, type_list<DensFrom...>{}, num_to,
-                                                                            type_list<DensTo...>{});
-  else if constexpr (constexpr auto extF = extract_convertible_quantities(NumFrom{}, DenFrom{}); extF.same_kind)
-    return prepend_and_process_rest<extracted_entities::from, extF>(type_list<NumsFrom...>{}, type_list<DensFrom...>{},
-                                                                    num_to, den_to);
-  else if constexpr (constexpr auto extT = extract_convertible_quantities(NumTo{}, DenTo{}); extT.same_kind)
-    return prepend_and_process_rest<extracted_entities::to, extT>(num_from, den_from, type_list<NumsTo...>{},
-                                                                  type_list<DensTo...>{});
-  else {
-    constexpr auto num_from_compl = get_complexity(NumFrom{});
-    constexpr auto den_from_compl = get_complexity(DenFrom{});
-    constexpr auto num_to_compl = get_complexity(NumTo{});
-    constexpr auto den_to_compl = get_complexity(DenTo{});
-    constexpr auto max_compl = max({num_from_compl, num_to_compl, den_from_compl, den_to_compl});
-    if constexpr (max_compl > 0) {
-      if constexpr (num_from_compl == max_compl) {
-        constexpr auto res = explode_to_equation(NumFrom{});
-        return convertible(
-          (res.equation * ... * map_power(NumsFrom{})) / (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
-          (map_power(NumTo{}) * ... * map_power(NumsTo{})) / (map_power(DenTo{}) * ... * map_power(DensTo{})));
-      } else if constexpr (den_from_compl == max_compl) {
-        constexpr auto res = explode_to_equation(DenFrom{});
-        return convertible(
-          (map_power(NumFrom{}) * ... * map_power(NumsFrom{})) / (res.equation * ... * map_power(DensFrom{})),
-          (map_power(NumTo{}) * ... * map_power(NumsTo{})) / (map_power(DenTo{}) * ... * map_power(DensTo{})));
-      } else if constexpr (num_to_compl == max_compl) {
-        constexpr auto res = explode_to_equation(NumTo{});
-        return min(res.result, convertible((map_power(NumFrom{}) * ... * map_power(NumsFrom{})) /
-                                             (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
-                                           (res.equation * ... * map_power(NumsTo{})) /
-                                             (map_power(DenTo{}) * ... * map_power(DensTo{}))));
-      } else {
-        constexpr auto res = explode_to_equation(DenTo{});
-        return min(res.result, convertible((map_power(NumFrom{}) * ... * map_power(NumsFrom{})) /
-                                             (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
-                                           (map_power(NumTo{}) * ... * map_power(NumsTo{})) /
-                                             (res.equation * ... * map_power(DensTo{}))));
-      }
-    }
-  }
-}
-
-template<typename DenFrom, typename... DensFrom, typename NumTo, typename... NumsTo, typename DenTo, typename... DensTo>
-[[nodiscard]] consteval specs_convertible_result are_ingredients_convertible(type_list<> num_from,
-                                                                             type_list<DenFrom, DensFrom...> den_from,
-                                                                             type_list<NumTo, NumsTo...> num_to,
-                                                                             type_list<DenTo, DensTo...>)
-{
-  if constexpr (constexpr auto extD = extract_convertible_quantities(DenFrom{}, DenTo{}); extD.same_kind)
-    return prepend_and_process_rest<extracted_entities::denominators, extD>(num_from, type_list<DensFrom...>{}, num_to,
-                                                                            type_list<DensTo...>{});
-  else if constexpr (constexpr auto extT = extract_convertible_quantities(NumTo{}, DenTo{}); extT.same_kind)
-    return prepend_and_process_rest<extracted_entities::to, extT>(num_from, den_from, type_list<NumsTo...>{},
-                                                                  type_list<DensTo...>{});
-  else {
-    constexpr auto den_from_compl = get_complexity(DenFrom{});
-    constexpr auto num_to_compl = get_complexity(NumTo{});
-    constexpr auto den_to_compl = get_complexity(DenTo{});
-    constexpr auto max_compl = max({num_to_compl, den_from_compl, den_to_compl});
-    if constexpr (max_compl > 0) {
-      if constexpr (den_from_compl == max_compl) {
-        constexpr auto res = explode_to_equation(DenFrom{});
-        return convertible(
-          dimensionless / (res.equation * ... * map_power(DensFrom{})),
-          (map_power(NumTo{}) * ... * map_power(NumsTo{})) / (map_power(DenTo{}) * ... * map_power(DensTo{})));
-      } else if constexpr (num_to_compl == max_compl) {
-        constexpr auto res = explode_to_equation(NumTo{});
-        return min(res.result, convertible(dimensionless / (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
-                                           (res.equation * ... * map_power(NumsTo{})) /
-                                             (map_power(DenTo{}) * ... * map_power(DensTo{}))));
-      } else {
-        constexpr auto res = explode_to_equation(DenTo{});
-        return min(res.result, convertible(dimensionless / (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
-                                           (map_power(NumTo{}) * ... * map_power(NumsTo{})) /
-                                             (res.equation * ... * map_power(DensTo{}))));
-      }
-    }
-  }
-}
-
-template<typename NumFrom, typename... NumsFrom, typename NumTo, typename... NumsTo, typename DenTo, typename... DensTo>
-[[nodiscard]] consteval specs_convertible_result are_ingredients_convertible(type_list<NumFrom, NumsFrom...> num_from,
-                                                                             type_list<> den_from,
-                                                                             type_list<NumTo, NumsTo...>,
-                                                                             type_list<DenTo, DensTo...> den_to)
-{
-  if constexpr (constexpr auto extN = extract_convertible_quantities(NumFrom{}, NumTo{}); extN.same_kind)
-    return prepend_and_process_rest<extracted_entities::numerators, extN>(type_list<NumsFrom...>{}, den_from,
-                                                                          type_list<NumsTo...>{}, den_to);
-  else if constexpr (constexpr auto extT = extract_convertible_quantities(NumTo{}, DenTo{}); extT.same_kind)
-    return prepend_and_process_rest<extracted_entities::to, extT>(num_from, den_from, type_list<NumsTo...>{},
-                                                                  type_list<DensTo...>{});
-  else {
-    constexpr auto num_from_compl = get_complexity(NumFrom{});
-    constexpr auto num_to_compl = get_complexity(NumTo{});
-    constexpr auto den_to_compl = get_complexity(DenTo{});
-    constexpr auto max_compl = max({num_from_compl, num_to_compl, den_to_compl});
-    if constexpr (max_compl > 0) {
-      if constexpr (num_from_compl == max_compl) {
-        constexpr auto res = explode_to_equation(NumFrom{});
-        return convertible(
-          (res.equation * ... * map_power(NumsFrom{})),
-          (map_power(NumTo{}) * ... * map_power(NumsTo{})) / (map_power(DenTo{}) * ... * map_power(DensTo{})));
-      } else if constexpr (num_to_compl == max_compl) {
-        constexpr auto res = explode_to_equation(NumTo{});
-        return min(res.result, convertible((map_power(NumFrom{}) * ... * map_power(NumsFrom{})),
-                                           (res.equation * ... * map_power(NumsTo{})) /
-                                             (map_power(DenTo{}) * ... * map_power(DensTo{}))));
-      } else {
-        constexpr auto res = explode_to_equation(DenTo{});
-        return min(res.result, convertible((map_power(NumFrom{}) * ... * map_power(NumsFrom{})),
-                                           (map_power(NumTo{}) * ... * map_power(NumsTo{})) /
-                                             (res.equation * ... * map_power(DensTo{}))));
-      }
-    }
-  }
-}
-
-template<typename NumFrom, typename... NumsFrom, typename DenFrom, typename... DensFrom, typename DenTo,
-         typename... DensTo>
-[[nodiscard]] consteval specs_convertible_result are_ingredients_convertible(type_list<NumFrom, NumsFrom...> num_from,
-                                                                             type_list<DenFrom, DensFrom...>,
-                                                                             type_list<> num_to,
-                                                                             type_list<DenTo, DensTo...> den_to)
-{
-  if constexpr (constexpr auto extD = extract_convertible_quantities(DenFrom{}, DenTo{}); extD.same_kind)
-    return prepend_and_process_rest<extracted_entities::denominators, extD>(num_from, type_list<DensFrom...>{}, num_to,
-                                                                            type_list<DensTo...>{});
-  else if constexpr (constexpr auto extF = extract_convertible_quantities(NumFrom{}, DenFrom{}); extF.same_kind)
-    return prepend_and_process_rest<extracted_entities::from, extF>(type_list<NumsFrom...>{}, type_list<DensFrom...>{},
-                                                                    num_to, den_to);
-  else {
-    constexpr auto num_from_compl = get_complexity(NumFrom{});
-    constexpr auto den_from_compl = get_complexity(DenFrom{});
-    constexpr auto den_to_compl = get_complexity(DenTo{});
-    constexpr auto max_compl = max({num_from_compl, den_from_compl, den_to_compl});
-    if constexpr (max_compl > 0) {
-      if constexpr (num_from_compl == max_compl) {
-        constexpr auto res = explode_to_equation(NumFrom{});
-        return convertible(
-          (res.equation * ... * map_power(NumsFrom{})) / (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
-          dimensionless / (map_power(DenTo{}) * ... * map_power(DensTo{})));
-      } else if constexpr (den_from_compl == max_compl) {
-        constexpr auto res = explode_to_equation(DenFrom{});
-        return convertible(
-          (map_power(NumFrom{}) * ... * map_power(NumsFrom{})) / (res.equation * ... * map_power(DensFrom{})),
-          dimensionless / (map_power(DenTo{}) * ... * map_power(DensTo{})));
-      } else {
-        constexpr auto res = explode_to_equation(DenTo{});
-        return min(res.result, convertible((map_power(NumFrom{}) * ... * map_power(NumsFrom{})) /
-                                             (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
-                                           dimensionless / (res.equation * ... * map_power(DensTo{}))));
-      }
-    }
-  }
-}
-
-template<typename NumFrom, typename... NumsFrom, typename DenFrom, typename... DensFrom, typename NumTo,
-         typename... NumsTo>
-[[nodiscard]] consteval specs_convertible_result are_ingredients_convertible(type_list<NumFrom, NumsFrom...>,
-                                                                             type_list<DenFrom, DensFrom...> den_from,
-                                                                             type_list<NumTo, NumsTo...> num_to,
-                                                                             type_list<> den_to)
-{
-  if constexpr (constexpr auto extN = extract_convertible_quantities(NumFrom{}, NumTo{}); extN.same_kind)
-    return prepend_and_process_rest<extracted_entities::numerators, extN>(type_list<NumsFrom...>{}, den_from,
-                                                                          type_list<NumsTo...>{}, den_to);
-  else if constexpr (constexpr auto extF = extract_convertible_quantities(NumFrom{}, DenFrom{}); extF.same_kind)
-    return prepend_and_process_rest<extracted_entities::from, extF>(type_list<NumsFrom...>{}, type_list<DensFrom...>{},
-                                                                    num_to, den_to);
-  else {
-    constexpr auto num_from_compl = get_complexity(NumFrom{});
-    constexpr auto den_from_compl = get_complexity(DenFrom{});
-    constexpr auto num_to_compl = get_complexity(NumTo{});
-    constexpr auto max_compl = max({num_from_compl, num_to_compl, den_from_compl});
-    if constexpr (max_compl > 0) {
-      if constexpr (num_from_compl == max_compl) {
-        constexpr auto res = explode_to_equation(NumFrom{});
-        return convertible(
-          (res.equation * ... * map_power(NumsFrom{})) / (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
-          (map_power(NumTo{}) * ... * map_power(NumsTo{})));
-      } else if constexpr (den_from_compl == max_compl) {
-        constexpr auto res = explode_to_equation(DenFrom{});
-        return convertible(
-          (map_power(NumFrom{}) * ... * map_power(NumsFrom{})) / (res.equation * ... * map_power(DensFrom{})),
-          (map_power(NumTo{}) * ... * map_power(NumsTo{})));
-      } else {
-        constexpr auto res = explode_to_equation(NumTo{});
-        return min(res.result, convertible((map_power(NumFrom{}) * ... * map_power(NumsFrom{})) /
-                                             (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
-                                           (res.equation * ... * map_power(NumsTo{}))));
-      }
-    }
-  }
-}
-
-template<typename NumFrom, typename... NumsFrom, typename NumTo, typename... NumsTo>
-[[nodiscard]] consteval specs_convertible_result are_ingredients_convertible(type_list<NumFrom, NumsFrom...>,
-                                                                             type_list<> den_from,
-                                                                             type_list<NumTo, NumsTo...>,
-                                                                             type_list<> den_to)
-{
-  if constexpr (constexpr auto ext = extract_convertible_quantities(NumFrom{}, NumTo{}); ext.same_kind) {
-    return prepend_and_process_rest<extracted_entities::numerators, ext>(type_list<NumsFrom...>{}, den_from,
-                                                                         type_list<NumsTo...>{}, den_to);
-  } else {
-    constexpr auto num_from_compl = get_complexity(NumFrom{});
-    constexpr auto num_to_compl = get_complexity(NumTo{});
-    constexpr auto max_compl = max(num_from_compl, num_to_compl);
-    if constexpr (max_compl > 0) {
-      if constexpr (num_from_compl == max_compl) {
-        constexpr auto res = explode_to_equation(NumFrom{});
-        return convertible((res.equation * ... * map_power(NumsFrom{})),
-                           (map_power(NumTo{}) * ... * map_power(NumsTo{})));
-      } else {
-        constexpr auto res = explode_to_equation(NumTo{});
-        return min(res.result, convertible((map_power(NumFrom{}) * ... * map_power(NumsFrom{})),
-                                           (res.equation * ... * map_power(NumsTo{}))));
-      }
-    }
-  }
-}
-
-template<typename DenFrom, typename... DensFrom, typename DenTo, typename... DensTo>
-[[nodiscard]] consteval specs_convertible_result are_ingredients_convertible(type_list<> num_from,
-                                                                             type_list<DenFrom, DensFrom...>,
-                                                                             type_list<> num_to,
-                                                                             type_list<DenTo, DensTo...>)
-{
-  if constexpr (constexpr auto ext = extract_convertible_quantities(DenFrom{}, DenTo{}); ext.same_kind)
-    return prepend_and_process_rest<extracted_entities::denominators, ext>(num_from, type_list<DensFrom...>{}, num_to,
-                                                                           type_list<DensTo...>{});
-  else {
-    constexpr auto den_from_compl = get_complexity(DenFrom{});
-    constexpr auto den_to_compl = get_complexity(DenTo{});
-    constexpr auto max_compl = max(den_from_compl, den_to_compl);
-    if constexpr (max_compl > 0) {
-      if constexpr (den_from_compl == max_compl) {
-        constexpr auto res = explode_to_equation(DenFrom{});
-        return convertible(dimensionless / (res.equation * ... * map_power(DensFrom{})),
-                           dimensionless / (map_power(DenTo{}) * ... * map_power(DensTo{})));
-      } else {
-        constexpr auto res = explode_to_equation(DenTo{});
-        return min(res.result, convertible(dimensionless / (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
-                                           dimensionless / (res.equation * ... * map_power(DensTo{}))));
-      }
-    }
-  }
-}
-
-template<typename NumFrom, typename... NumsFrom, typename DenTo, typename... DensTo>
-[[nodiscard]] consteval specs_convertible_result are_ingredients_convertible(type_list<NumFrom, NumsFrom...>,
-                                                                             type_list<>, type_list<>,
-                                                                             type_list<DenTo, DensTo...>)
-{
-  constexpr auto num_from_compl = get_complexity(NumFrom{});
-  constexpr auto den_to_compl = get_complexity(DenTo{});
-  constexpr auto max_compl = max(num_from_compl, den_to_compl);
-  if constexpr (max_compl > 0) {
-    if constexpr (num_from_compl == max_compl) {
-      constexpr auto res = explode_to_equation(NumFrom{});
-      return convertible((res.equation * ... * map_power(NumsFrom{})),
-                         dimensionless / (map_power(DenTo{}) * ... * map_power(DensTo{})));
-    } else {
-      constexpr auto res = explode_to_equation(DenTo{});
-      return min(res.result, convertible((map_power(NumFrom{}) * ... * map_power(NumsFrom{})),
-                                         dimensionless / (res.equation * ... * map_power(DensTo{}))));
-    }
-  }
-}
-
-template<typename DenFrom, typename... DensFrom, typename NumTo, typename... NumsTo>
-[[nodiscard]] consteval specs_convertible_result are_ingredients_convertible(type_list<>,
-                                                                             type_list<DenFrom, DensFrom...>,
-                                                                             type_list<NumTo, NumsTo...>, type_list<>)
-{
-  constexpr auto den_from_compl = get_complexity(DenFrom{});
-  constexpr auto num_to_compl = get_complexity(NumTo{});
-  constexpr auto max_compl = max(den_from_compl, num_to_compl);
-  if constexpr (max_compl > 0) {
-    if constexpr (den_from_compl == max_compl) {
-      constexpr auto res = explode_to_equation(DenFrom{});
-      return convertible(dimensionless / (res.equation * ... * map_power(DensFrom{})),
-                         (map_power(NumTo{}) * ... * map_power(NumsTo{})));
-    } else {
-      constexpr auto res = explode_to_equation(NumTo{});
-      return min(res.result, convertible(dimensionless / (map_power(DenFrom{}) * ... * map_power(DensFrom{})),
-                                         (res.equation * ... * map_power(NumsTo{}))));
-    }
-  }
-}
-
-template<typename... NumsFrom, typename... DensFrom>
-[[nodiscard]] consteval specs_convertible_result are_ingredients_convertible(type_list<NumsFrom...>,
-                                                                             type_list<DensFrom...>, type_list<>,
-                                                                             type_list<>)
-{
-  return specs_convertible_result::yes;
-}
-
-template<typename... NumsTo, typename... DensTo>
-[[nodiscard]] consteval specs_convertible_result are_ingredients_convertible(type_list<>, type_list<>,
-                                                                             type_list<NumsTo...>, type_list<DensTo...>)
-{
-  return specs_convertible_result::explicit_conversion;
-}
-
-template<typename... NumsFrom>
-[[nodiscard]] consteval specs_convertible_result are_ingredients_convertible(type_list<NumsFrom...>, type_list<>,
-                                                                             type_list<>, type_list<>)
-{
-  return specs_convertible_result::yes;
-}
-
-template<typename... DensFrom>
-[[nodiscard]] consteval specs_convertible_result are_ingredients_convertible(type_list<>, type_list<DensFrom...>,
-                                                                             type_list<>, type_list<>)
-{
-  return specs_convertible_result::yes;
-}
-
-template<typename... NumsTo>
-[[nodiscard]] consteval specs_convertible_result are_ingredients_convertible(type_list<>, type_list<>,
-                                                                             type_list<NumsTo...>, type_list<>)
-{
-  return specs_convertible_result::explicit_conversion;
-}
-
-template<typename... DensTo>
-[[nodiscard]] consteval specs_convertible_result are_ingredients_convertible(type_list<>, type_list<>, type_list<>,
-                                                                             type_list<DensTo...>)
-{
-  return specs_convertible_result::explicit_conversion;
-}
-
-[[nodiscard]] consteval specs_convertible_result are_ingredients_convertible(type_list<>, type_list<>, type_list<>,
-                                                                             type_list<>)
-{
-  return specs_convertible_result::yes;
-}
-
-template<DerivedQuantitySpec From, DerivedQuantitySpec To>
-[[nodiscard]] consteval specs_convertible_result are_ingredients_convertible(From, To)
-{
-  return are_ingredients_convertible(type_list_sort<typename From::_num_, type_list_of_ingredients_less>{},
-                                     type_list_sort<typename From::_den_, type_list_of_ingredients_less>{},
-                                     type_list_sort<typename To::_num_, type_list_of_ingredients_less>{},
-                                     type_list_sort<typename To::_den_, type_list_of_ingredients_less>{});
-}
-
-template<DerivedQuantitySpec From, NamedQuantitySpec To>
-[[nodiscard]] consteval specs_convertible_result are_ingredients_convertible(From, To)
-{
-  return are_ingredients_convertible(type_list_sort<typename From::_num_, type_list_of_ingredients_less>{},
-                                     type_list_sort<typename From::_den_, type_list_of_ingredients_less>{},
-                                     type_list<To>{}, type_list<>{});
-}
-
-template<NamedQuantitySpec From, DerivedQuantitySpec To>
-[[nodiscard]] consteval specs_convertible_result are_ingredients_convertible(From, To)
-{
-  return are_ingredients_convertible(type_list<From>{}, type_list<>{},
-                                     type_list_sort<typename To::_num_, type_list_of_ingredients_less>{},
-                                     type_list_sort<typename To::_den_, type_list_of_ingredients_less>{});
+    return std::pair(type_list<qs_type>{}, type_list<>{});
 }
 
 template<QuantitySpec From, QuantitySpec To>
-[[nodiscard]] consteval specs_convertible_result convertible_kinds(From from_kind, To to_kind)
+[[nodiscard]] consteval specs_convertible_result convertible(From, To);
+
+template<TypeList NumFrom, TypeList DenFrom, TypeList NumTo, TypeList DenTo>
+[[nodiscard]] constexpr specs_convertible_result are_ingredients_convertible(NumFrom num_from, DenFrom den_from,
+                                                                             NumTo num_to, DenTo den_to)
 {
-  constexpr auto exploded_kind_result = [](specs_convertible_result res) {
-    using enum specs_convertible_result;
-    return res == no ? no : yes;
-  };
-  if constexpr ((NamedQuantitySpec<decltype(From{})> && NamedQuantitySpec<decltype(To{})>) ||
-                get_complexity(From{}) == get_complexity(To{}))
-    return exploded_kind_result(convertible(from_kind, to_kind));
-  else if constexpr (get_complexity(From{}) > get_complexity(To{}))
-    return exploded_kind_result(convertible(explode<get_complexity(To{})>(from_kind).quantity, to_kind));
-  else
-    return exploded_kind_result(convertible(from_kind, explode<get_complexity(From{})>(to_kind).quantity));
+  constexpr std::size_t num_from_size = type_list_size<NumFrom>;
+  constexpr std::size_t den_from_size = type_list_size<DenFrom>;
+  constexpr std::size_t num_to_size = type_list_size<NumTo>;
+  constexpr std::size_t den_to_size = type_list_size<DenTo>;
+
+  // if at least one of the sides is empty then we compare with dimensionless
+  if constexpr (num_from_size == den_from_size && num_to_size + den_to_size == 0)
+    return specs_convertible_result::yes;
+  else if constexpr (num_from_size + den_from_size == 0 && num_to_size == den_to_size && num_to_size >= 1)
+    return specs_convertible_result::explicit_conversion;
+  else {
+    // otherwise, check if the pairwise ingredients are convertible
+    if constexpr (constexpr auto nums = detail::try_extract_common_base(NumFrom{}, NumTo{})) {
+      if (nums->result == specs_convertible_result::no) return specs_convertible_result::no;
+      return detail::min(nums->result,
+                         detail::are_ingredients_convertible(nums->rest_from, den_from, nums->rest_to, den_to));
+    } else if constexpr (constexpr auto dens = detail::try_extract_common_base(DenFrom{}, DenTo{})) {
+      if (dens->result == specs_convertible_result::no) return specs_convertible_result::no;
+      return detail::min(dens->result,
+                         detail::are_ingredients_convertible(num_from, dens->rest_from, num_to, dens->rest_to));
+    } else {
+      // otherwise, get the ingredient with the highest complexity
+      constexpr auto max_compl_res = detail::get_max_complexity(NumFrom{}, DenFrom{}, NumTo{}, DenTo{});
+
+      constexpr auto list = [&] {
+        if constexpr (max_compl_res.type == ingredient_type::numerator_from)
+          return NumFrom{};
+        else if constexpr (max_compl_res.type == ingredient_type::denominator_from)
+          return DenFrom{};
+        else if constexpr (max_compl_res.type == ingredient_type::numerator_to)
+          return NumTo{};
+        else
+          return DenTo{};
+      }();
+      using extracted = type_list_extract<MP_UNITS_NONCONST_TYPE(list), static_cast<std::size_t>(max_compl_res.index)>;
+
+      // before exploding check if the ingredient is convertible with dimensionless
+      if constexpr (max_compl_res.type == ingredient_type::numerator_from && num_to_size + den_to_size == 0) {
+        constexpr specs_convertible_result res =
+          detail::convertible(detail::get_factor(typename extracted::element{}), dimensionless);
+        if constexpr (res != specs_convertible_result::no)
+          return detail::min(res,
+                             detail::are_ingredients_convertible(typename extracted::rest{}, den_from, num_to, den_to));
+      } else if constexpr (max_compl_res.type == ingredient_type::numerator_to && num_from_size + den_from_size == 0) {
+        constexpr specs_convertible_result res =
+          detail::convertible(dimensionless, detail::get_factor(typename extracted::element{}));
+        if constexpr (res != specs_convertible_result::no)
+          return detail::min(
+            res, detail::are_ingredients_convertible(num_from, den_from, typename extracted::rest{}, den_to));
+      }
+
+      if constexpr (max_compl_res.complexity > 0) {
+        // explode the ingredient to the underlying equation
+        constexpr auto explode_res = detail::explode(typename extracted::element{});
+        if constexpr (max_compl_res.type == ingredient_type::numerator_from) {
+          const auto [num, den] =
+            detail::merge_with_equation(explode_res.equation, typename extracted::rest{}, den_from);
+          return detail::are_ingredients_convertible(num, den, num_to, den_to);
+        } else if constexpr (max_compl_res.type == ingredient_type::denominator_from) {
+          const auto [num, den] =
+            detail::merge_with_equation(dimensionless / explode_res.equation, num_from, typename extracted::rest{});
+          return detail::min(explode_res.result, detail::are_ingredients_convertible(num, den, num_to, den_to));
+        } else if constexpr (max_compl_res.type == ingredient_type::numerator_to) {
+          const auto [num, den] = detail::merge_with_equation(explode_res.equation, typename extracted::rest{}, den_to);
+          return detail::min(explode_res.result, detail::are_ingredients_convertible(num_from, den_from, num, den));
+        } else {
+          const auto [num, den] =
+            detail::merge_with_equation(dimensionless / explode_res.equation, num_to, typename extracted::rest{});
+          return detail::min(explode_res.result, detail::are_ingredients_convertible(num_from, den_from, num, den));
+        }
+      } else
+        // this should never happen
+        return specs_convertible_result::no;
+    }
+  }
+}
+
+template<QuantitySpec From, QuantitySpec To>
+[[nodiscard]] consteval specs_convertible_result are_ingredients_convertible(From, To)
+{
+  if constexpr (DerivedQuantitySpec<From> && DerivedQuantitySpec<To>)
+    return detail::are_ingredients_convertible(typename From::_num_{}, typename From::_den_{}, typename To::_num_{},
+                                               typename To::_den_{});
+  else if constexpr (DerivedQuantitySpec<From> && NamedQuantitySpec<To>) {
+    if constexpr (To{} == dimensionless)
+      return detail::are_ingredients_convertible(typename From::_num_{}, typename From::_den_{}, type_list<>{},
+                                                 type_list<>{});
+    else
+      return detail::are_ingredients_convertible(typename From::_num_{}, typename From::_den_{}, type_list<To>{},
+                                                 type_list<>{});
+  } else {
+    if constexpr (From{} == dimensionless)
+      return detail::are_ingredients_convertible(type_list<>{}, type_list<>{}, typename To::_num_{},
+                                                 typename To::_den_{});
+    else
+      return detail::are_ingredients_convertible(type_list<From>{}, type_list<>{}, typename To::_num_{},
+                                                 typename To::_den_{});
+  }
+}
+
+template<QuantitySpec From, QuantitySpec To>
+[[nodiscard]] consteval specs_convertible_result convertible_kinds(From from, To)
+{
+  constexpr auto from_root = detail::get_kind_tree_root(From{});
+  constexpr auto to_root = detail::get_kind_tree_root(To{});
+  using enum specs_convertible_result;
+
+  if constexpr (QuantityKindSpec<From>) {
+    auto res = detail::convertible(from_root, to_root);
+    // the below does not account for `explicit_conversion_beyond_kind`
+    return (res == explicit_conversion) ? yes : res;
+  } else
+    return detail::convertible(from, to_root);
 }
 
 template<NamedQuantitySpec From, NamedQuantitySpec To>
@@ -1385,19 +1050,16 @@ template<NamedQuantitySpec From, NamedQuantitySpec To>
 {
   using enum specs_convertible_result;
 
-  if constexpr (have_common_base(From{}, To{})) {
-    if constexpr (is_child_of(From{}, To{})) return yes;
-    if constexpr (is_child_of(To{}, From{})) return explicit_conversion;
-    if constexpr (get_kind(From{}) == get_kind(To{})) return cast;
+  if constexpr (detail::have_common_base(From{}, To{}))
+    return detail::convertible_common_base(From{}, To{});
+  else if constexpr (detail::get_kind_tree_root(From{}) != detail::get_kind_tree_root(To{}))
     return no;
-  } else if constexpr (get_kind(From{}) != get_kind(To{}))
-    return no;
-  else if constexpr (get_complexity(From{}) != get_complexity(To{})) {
-    if constexpr (get_complexity(From{}) > get_complexity(To{}))
-      return convertible(explode<get_complexity(To{})>(from).quantity, to);
+  else if constexpr (detail::get_complexity(From{}) != detail::get_complexity(To{})) {
+    if constexpr (detail::get_complexity(From{}) > detail::get_complexity(To{}))
+      return detail::convertible(explode<get_complexity(To{})>(from).quantity, to);
     else {
-      auto res = explode<get_complexity(From{})>(to);
-      return min(res.result, convertible(from, res.quantity));
+      auto res = detail::explode<get_complexity(From{})>(to);
+      return detail::min(res.result, detail::convertible(from, res.quantity));
     }
   }
 }
@@ -1414,37 +1076,16 @@ template<QuantitySpec From, QuantitySpec To>
   else if constexpr (From::dimension != To::dimension)
     return no;
   else if constexpr (QuantityKindSpec<From> || QuantityKindSpec<To>)
-    return convertible_kinds(get_kind_tree_root(from), get_kind_tree_root(to));
-  else if constexpr (NestedQuantityKindSpecOf<get_kind_tree_root(To{}), from> && get_kind_tree_root(To{}) == To{})
-    return yes;
+    return detail::convertible_kinds(from, to);
   else if constexpr (NamedQuantitySpec<From> && NamedQuantitySpec<To>)
-    return convertible_named(from, to);
-  else if constexpr (DerivedQuantitySpec<From> && DerivedQuantitySpec<To>)
-    return are_ingredients_convertible(from, to);
-  else if constexpr (DerivedQuantitySpec<From>) {
-    auto res = explode<get_complexity(To{})>(from);
-    if constexpr (NamedQuantitySpec<decltype(res.quantity)>)
-      return convertible(res.quantity, to);
-    else if constexpr (requires { to._equation_; }) {
-      auto eq = explode_to_equation(to);
-      return min(eq.result, convertible(res.quantity, eq.equation));
-    } else
-      return are_ingredients_convertible(from, to);
-  } else if constexpr (DerivedQuantitySpec<To>) {
-    auto res = explode<get_complexity(From{})>(to);
-    if constexpr (NamedQuantitySpec<decltype(res.quantity)>)
-      return min(res.result, convertible(from, res.quantity));
-    else if constexpr (requires { from._equation_; })
-      return min(res.result, convertible(from._equation_, res.quantity));
-    else
-      return min(res.result, are_ingredients_convertible(from, to));
-  }
+    return detail::convertible_named(from, to);
+  else
+    return detail::are_ingredients_convertible(from, to);
   // NOLINTEND(bugprone-branch-clone)
-  return no;
 }
 
 template<QuantitySpec From, QuantitySpec To>
-constexpr specs_convertible_result convertible_result = convertible_impl(From{}, To{});
+constexpr specs_convertible_result convertible_result = detail::convertible_impl(From{}, To{});
 
 template<QuantitySpec From, QuantitySpec To>
 [[nodiscard]] consteval specs_convertible_result convertible(From, To)
@@ -1465,7 +1106,7 @@ template<QuantitySpec From, QuantitySpec To>
 template<QuantitySpec From, QuantitySpec To>
 [[nodiscard]] consteval bool explicitly_convertible(From from, To to)
 {
-  return detail::convertible(from, to) >= detail::specs_convertible_result::explicit_conversion;
+  return detail::convertible(from, to) >= detail::specs_convertible_result::explicit_conversion_beyond_kind;
 }
 
 template<QuantitySpec From, QuantitySpec To>
@@ -1477,7 +1118,7 @@ template<QuantitySpec From, QuantitySpec To>
 template<QuantitySpec QS1, QuantitySpec QS2>
 [[nodiscard]] consteval bool interconvertible(QS1 qs1, QS2 qs2)
 {
-  return implicitly_convertible(qs1, qs2) && implicitly_convertible(qs2, qs1);
+  return mp_units::implicitly_convertible(qs1, qs2) && mp_units::implicitly_convertible(qs2, qs1);
 }
 
 MP_UNITS_EXPORT_END
@@ -1485,8 +1126,8 @@ MP_UNITS_EXPORT_END
 namespace detail {
 
 template<QuantitySpec Q>
-  requires requires(Q q) { get_kind_tree_root(q); }
-using to_kind = decltype(get_kind_tree_root(Q{}));
+  requires requires(Q q) { detail::get_kind_tree_root(q); }
+using to_kind = decltype(detail::get_kind_tree_root(Q{}));
 
 #if MP_UNITS_API_NO_CRTP
 template<NamedQuantitySpec auto QS, auto... Args>
@@ -1496,28 +1137,28 @@ template<typename Self, NamedQuantitySpec auto QS, auto... Args>
 [[nodiscard]] consteval bool defined_as_kind_impl(quantity_spec<Self, QS, Args...>)
 #endif
 {
-  return contains<struct is_kind, Args...>();
+  return mp_units::contains<struct is_kind, Args...>();
 }
 
 template<QuantitySpec Q>
 [[nodiscard]] consteval QuantitySpec auto get_kind_tree_root_impl(Q q)
 {
   auto defined_as_kind = []<typename QQ>(QQ qq) {
-    if constexpr (requires { defined_as_kind_impl(qq); })
-      return defined_as_kind_impl(QQ{});
+    if constexpr (requires { detail::defined_as_kind_impl(qq); })
+      return detail::defined_as_kind_impl(QQ{});
     else
       return false;
   };
 
   // NOLINTBEGIN(bugprone-branch-clone)
   if constexpr (QuantityKindSpec<Q>) {
-    return remove_kind(q);
+    return detail::remove_kind(q);
   } else if constexpr (defined_as_kind(Q{})) {
     return q;
   } else if constexpr (requires { Q::_parent_; }) {
-    return get_kind_tree_root(Q::_parent_);
+    return detail::get_kind_tree_root(Q::_parent_);
   } else if constexpr (DerivedQuantitySpec<Q>) {
-    return expr_map<to_kind, derived_quantity_spec, struct dimensionless>(q);
+    return detail::expr_map<to_kind, derived_quantity_spec, struct dimensionless, type_list_of_quantity_spec_less>(q);
   } else {
     // root quantity
     return q;
@@ -1526,7 +1167,7 @@ template<QuantitySpec Q>
 }
 
 template<QuantitySpec Q>
-constexpr QuantitySpec auto get_kind_tree_root_result = get_kind_tree_root_impl(Q{});
+constexpr QuantitySpec auto get_kind_tree_root_result = detail::get_kind_tree_root_impl(Q{});
 
 template<QuantitySpec Q>
 [[nodiscard]] consteval QuantitySpec auto get_kind_tree_root(Q)
@@ -1536,57 +1177,99 @@ template<QuantitySpec Q>
 
 }  // namespace detail
 
-MP_UNITS_EXPORT_BEGIN
 
-template<QuantitySpec Q>
+MP_UNITS_EXPORT template<QuantitySpec Q>
 [[nodiscard]] consteval detail::QuantityKindSpec auto get_kind(Q)
 {
   return kind_of<detail::get_kind_tree_root(Q{})>;
 }
 
+namespace detail {
+
+struct no_common_quantity_spec {};
+
+template<QuantitySpec Q1, QuantitySpec Q2>
+[[nodiscard]] consteval auto get_common_quantity_spec_impl(Q1 q1, Q2 q2)
+{
+  if constexpr (is_same_v<Q1, Q2>)
+    return q1;
+  else {
+    constexpr bool q1q2 = mp_units::implicitly_convertible(Q1{}, Q2{});
+    constexpr bool q2q1 = mp_units::implicitly_convertible(Q2{}, Q1{});
+
+    // in case of interconvertible quantities we try to figure out which one is a better choice
+    if constexpr (q1q2 && q2q1) {
+      // quantity kinds have lower priority
+      if constexpr (detail::QuantityKindSpec<Q1> && !detail::QuantityKindSpec<Q2>)
+        return q2;
+      else if constexpr (!detail::QuantityKindSpec<Q1> && detail::QuantityKindSpec<Q2>)
+        return q1;
+      else {
+        using q1_type = decltype(detail::remove_kind(q1));
+        using q2_type = decltype(detail::remove_kind(q2));
+        // derived quantities have a lower priority
+        if constexpr (detail::NamedQuantitySpec<q1_type> && detail::DerivedQuantitySpec<q2_type>)
+          return q1;
+        else if constexpr (detail::DerivedQuantitySpec<q1_type> && detail::NamedQuantitySpec<q2_type>)
+          return q2;
+        else
+          // TODO Check if there is a better choice here
+          return detail::better_type_name(q1, q2);
+      }
+    }
+    // we prefer a quantity to which we can convert the other quantity
+    else if constexpr (q1q2)
+      return q2;
+    else if constexpr (q2q1)
+      return q1;
+    // if quantities can't be converted in any direction check if they have a common base in the tree
+    else if constexpr (detail::have_common_base(Q1{}, Q2{})) {
+      constexpr auto base = detail::get_common_base(Q1{}, Q2{});
+      if constexpr (mp_units::implicitly_convertible(q1, base) && mp_units::implicitly_convertible(q2, base))
+        return base;
+      else
+        return no_common_quantity_spec{};
+    } else {
+      // verify kind tree roots as the last resort check
+      constexpr auto q1_root = detail::get_kind_tree_root(Q1{});
+      constexpr auto q2_root = detail::get_kind_tree_root(Q2{});
+      if constexpr (mp_units::implicitly_convertible(q1_root, q2_root))
+        return q2_root;
+      else if constexpr (mp_units::implicitly_convertible(q2_root, q1_root))
+        return q1_root;
+      else
+        return no_common_quantity_spec{};
+    }
+  }
+}
+
+template<QuantitySpec Q1, QuantitySpec Q2>
+constexpr auto get_common_quantity_spec_result = detail::get_common_quantity_spec_impl(Q1{}, Q2{});
+
+template<QuantitySpec Q1, QuantitySpec Q2>
+[[nodiscard]] consteval bool have_common_quantity_spec(Q1, Q2)
+{
+  return !is_same_v<decltype(detail::get_common_quantity_spec_result<Q1, Q2>), const no_common_quantity_spec>;
+}
+
+}  // namespace detail
+
+MP_UNITS_EXPORT_BEGIN
+
 [[nodiscard]] consteval QuantitySpec auto get_common_quantity_spec(QuantitySpec auto q) { return q; }
 
 template<QuantitySpec Q1, QuantitySpec Q2>
-  requires detail::QuantitySpecConvertibleTo<detail::get_kind_tree_root(Q1{}), detail::get_kind_tree_root(Q2{})> ||
-           detail::QuantitySpecConvertibleTo<detail::get_kind_tree_root(Q2{}), detail::get_kind_tree_root(Q1{})>
-[[nodiscard]] consteval QuantitySpec auto get_common_quantity_spec(Q1 q1, Q2 q2)
+  requires(detail::have_common_quantity_spec(Q1{}, Q2{}))
+[[nodiscard]] consteval QuantitySpec auto get_common_quantity_spec(Q1, Q2)
 {
-  using QQ1 = decltype(detail::remove_kind(q1));
-  using QQ2 = decltype(detail::remove_kind(q2));
-
-  // NOLINTBEGIN(bugprone-branch-clone)
-  if constexpr (is_same_v<Q1, Q2>)
-    return q1;
-  else if constexpr (detail::NestedQuantityKindSpecOf<Q1{}, Q2{}>)
-    return detail::remove_kind(q1);
-  else if constexpr (detail::NestedQuantityKindSpecOf<Q2{}, Q1{}>)
-    return detail::remove_kind(q2);
-  else if constexpr ((detail::QuantityKindSpec<Q1> && !detail::QuantityKindSpec<Q2>) ||
-                     (detail::DerivedQuantitySpec<QQ1> && detail::NamedQuantitySpec<QQ2> &&
-                      implicitly_convertible(Q1{}, Q2{})))
-    return q2;
-  else if constexpr ((!detail::QuantityKindSpec<Q1> && detail::QuantityKindSpec<Q2>) ||
-                     (detail::NamedQuantitySpec<QQ1> && detail::DerivedQuantitySpec<QQ2> &&
-                      implicitly_convertible(Q2{}, Q1{})))
-    return q1;
-  else if constexpr (detail::have_common_base(Q1{}, Q2{}))
-    return detail::get_common_base(q1, q2);
-  else if constexpr (implicitly_convertible(Q1{}, Q2{}))
-    return q2;
-  else if constexpr (implicitly_convertible(Q2{}, Q1{}))
-    return q1;
-  else if constexpr (implicitly_convertible(detail::get_kind_tree_root(Q1{}), detail::get_kind_tree_root(Q2{})))
-    return detail::get_kind_tree_root(q2);
-  else
-    return detail::get_kind_tree_root(q1);
-  // NOLINTEND(bugprone-branch-clone)
+  return detail::get_common_quantity_spec_result<Q1, Q2>;
 }
 
 [[nodiscard]] consteval QuantitySpec auto get_common_quantity_spec(QuantitySpec auto q1, QuantitySpec auto q2,
                                                                    QuantitySpec auto q3, QuantitySpec auto... rest)
-  requires requires { get_common_quantity_spec(get_common_quantity_spec(q1, q2), q3, rest...); }
+  requires requires { mp_units::get_common_quantity_spec(mp_units::get_common_quantity_spec(q1, q2), q3, rest...); }
 {
-  return get_common_quantity_spec(get_common_quantity_spec(q1, q2), q3, rest...);
+  return mp_units::get_common_quantity_spec(mp_units::get_common_quantity_spec(q1, q2), q3, rest...);
 }
 
 MP_UNITS_EXPORT_END

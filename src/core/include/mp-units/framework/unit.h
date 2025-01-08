@@ -126,29 +126,33 @@ constexpr auto get_canonical_unit_result = get_canonical_unit_impl(U{}, U{});
 
 namespace detail {
 
-template<typename From, typename To>
-concept PotentiallyConvertibleTo = Unit<From> && Unit<To> &&
-                                   ((AssociatedUnit<From> && AssociatedUnit<To> &&
-                                     implicitly_convertible(get_quantity_spec(From{}), get_quantity_spec(To{}))) ||
-                                    (!AssociatedUnit<From> && !AssociatedUnit<To>));
+// We are using a helper concept to benefit from short-circuiting
+template<typename U1, typename U2>
+concept PotentiallyInterConvertibleTo = Unit<U1> && Unit<U2> &&
+                                        (!AssociatedUnit<U1> || !AssociatedUnit<U2> ||
+                                         explicitly_convertible(get_quantity_spec(U1{}), get_quantity_spec(U2{})));
+}  // namespace detail
 
-}
-
-// convertible
-template<Unit From, Unit To>
-[[nodiscard]] consteval bool convertible(From from, To to)
+// interconvertible
+template<Unit U1, Unit U2>
+[[nodiscard]] consteval bool interconvertible(U1 u1, U2 u2)
 {
-  if constexpr (is_same_v<From, To>)
+  if constexpr (is_same_v<U1, U2>)
     return true;
-  else if constexpr (detail::PotentiallyConvertibleTo<From, To>)
-    return is_same_v<decltype(get_canonical_unit(from).reference_unit),
-                     decltype(get_canonical_unit(to).reference_unit)>;
+  else if constexpr (detail::PotentiallyInterConvertibleTo<U1, U2>)
+    return is_same_v<decltype(get_canonical_unit(u1).reference_unit), decltype(get_canonical_unit(u2).reference_unit)>;
   else
     return false;
 }
 
+template<UnitMagnitude auto M, Unit U>
+  requires(M != detail::unit_magnitude<>{} && M != mag<1>)
+struct scaled_unit;
+
 template<detail::SymbolicConstant... Expr>
 struct derived_unit;
+
+MP_UNITS_EXPORT struct one;
 
 namespace detail {
 
@@ -424,7 +428,7 @@ struct prefixed_unit : decltype(M * U)::_base_type_ {
 namespace detail {
 
 template<Unit U1, Unit U2>
-  requires(convertible(U1{}, U2{}))
+  requires(interconvertible(U1{}, U2{}))
 [[nodiscard]] consteval Unit auto get_common_scaled_unit(U1, U2)
 {
   constexpr auto canonical_lhs = get_canonical_unit(U1{});
@@ -668,7 +672,7 @@ inline constexpr auto ppm = parts_per_million;
 [[nodiscard]] consteval Unit auto get_common_unit(Unit auto u) { return u; }
 
 template<Unit U1, Unit U2>
-  requires(convertible(U1{}, U2{}))
+  requires(interconvertible(U1{}, U2{}))
 [[nodiscard]] consteval Unit auto get_common_unit(U1 u1, U2 u2)
 {
   if constexpr (is_same_v<U1, U2>)
@@ -729,7 +733,7 @@ using collapse_common_unit = type_list_unique<
 }  // namespace detail
 
 template<Unit... Us, Unit NewUnit>
-  requires(convertible(common_unit<Us...>{}, NewUnit{}))
+  requires(interconvertible(common_unit<Us...>{}, NewUnit{}))
 [[nodiscard]] consteval Unit auto get_common_unit(common_unit<Us...>, NewUnit)
 {
   using type = detail::collapse_common_unit<NewUnit, Us...>;
@@ -740,7 +744,7 @@ template<Unit... Us, Unit NewUnit>
 }
 
 template<Unit... Us, Unit NewUnit>
-  requires(convertible(common_unit<Us...>{}, NewUnit{}))
+  requires(interconvertible(common_unit<Us...>{}, NewUnit{}))
 [[nodiscard]] consteval Unit auto get_common_unit(NewUnit nu, common_unit<Us...> cu)
 {
   return get_common_unit(cu, nu);
@@ -916,7 +920,7 @@ constexpr auto unit_symbol_result = unit_symbol_impl<fmt, CharT>(U{});
 
 // TODO Refactor to `unit_symbol(U, fmt)` when P1045: constexpr Function Parameters is available
 MP_UNITS_EXPORT template<unit_symbol_formatting fmt = unit_symbol_formatting{}, typename CharT = char, Unit U>
-[[nodiscard]] consteval std::string_view unit_symbol(U)
+[[nodiscard]] consteval std::basic_string_view<CharT> unit_symbol(U)
 {
   return detail::unit_symbol_result<fmt, CharT, U>.view();
 }
