@@ -27,11 +27,14 @@ import std;
 #include <algorithm>
 #include <cassert>
 #include <iostream>
+#include <ranges>
+#include <vector>
 #endif
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else
 #include <mp-units/format.h>
+#include <mp-units/math.h>
 #include <mp-units/systems/angular.h>
 #include <mp-units/systems/isq.h>
 #include <mp-units/systems/si.h>
@@ -64,7 +67,7 @@ public:
 
   void set_period(QuantityOf<isq::time> auto period)
   {
-    m_frequency = 1.f / value_cast<float>(period);
+    m_frequency = inverse<si::hertz>(period);
     std::cout << MP_UNITS_STD_FMT::format("Setting period to {} (i.e. frequency to {})\n", period, m_frequency);
   }
 
@@ -120,9 +123,9 @@ int main()
   // of audio samples.  In this example we will create a buffer with
   // duration equal to 2 measures of 4/4 music (i.e. 2 whole notes at
   // the current tempo):
-  const auto beats = 2 * audio::whole_note;
-  const auto buffer_duration = value_cast<float>(beats) / context.current_tempo;
-  const auto buffer_size = (buffer_duration * context.current_sample_rate).in(audio::sample);
+  const quantity beats = 2 * audio::whole_note;
+  const quantity buffer_duration = value_cast<float>(beats) / context.current_tempo;
+  const quantity buffer_size = (buffer_duration * context.current_sample_rate).in(audio::sample);
 
   std::cout << MP_UNITS_STD_FMT::format("\nCreating buffer with size:\n\t{}\n\t{}\n\t{}\n\n", beats, buffer_duration,
                                         buffer_size);
@@ -134,10 +137,9 @@ int main()
   std::cout << MP_UNITS_STD_FMT::format("Filling buffer with values from LFO @ {}", sin_gen.get_frequency());
   std::generate(begin(buffer_1), end(buffer_1), sin_gen);
 
-  assert(buffer_1.size() > 0u);
   std::cout << MP_UNITS_STD_FMT::format("\nLFO Values:\n[{}", buffer_1[0u]);
-  for (std::size_t i = 1u; i < buffer_1.size(); ++i) {
-    std::cout << MP_UNITS_STD_FMT::format(", {}", buffer_1[i]);
+  for (const auto sampleValue : std::ranges::subrange(begin(buffer_1) + 1, end(buffer_1))) {
+    std::cout << MP_UNITS_STD_FMT::format(", {}", sampleValue);
   }
   std::cout << "]\n\n";
 
