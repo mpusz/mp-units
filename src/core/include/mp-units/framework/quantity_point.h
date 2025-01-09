@@ -264,7 +264,7 @@ public:
   template<detail::SameAbsolutePointOriginAs<absolute_point_origin> NewPO>
   [[nodiscard]] constexpr QuantityPointOf<(NewPO{})> auto point_for(NewPO new_origin) const
   {
-    if constexpr (is_same_v<NewPO, decltype(point_origin)>)
+    if constexpr (is_same_v<NewPO, MP_UNITS_NONCONST_TYPE(point_origin)>)
       return *this;
     else
       return ::mp_units::quantity_point{*this - new_origin, new_origin};
