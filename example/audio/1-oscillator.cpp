@@ -125,7 +125,8 @@ int main()
   // the current tempo):
   const quantity beats = 2 * audio::whole_note;
   const quantity buffer_duration = value_cast<float>(beats) / context.current_tempo;
-  const quantity buffer_size = (buffer_duration * context.current_sample_rate).in(audio::sample);
+  const quantity buffer_size =
+    quantity_cast<audio::sample_count>((buffer_duration * context.current_sample_rate).in(one));
 
   std::cout << MP_UNITS_STD_FMT::format("\nCreating buffer with size:\n\t{}\n\t{}\n\t{}\n\n", beats, buffer_duration,
                                         buffer_size);
