@@ -59,25 +59,25 @@ public:
 
   quantity<si::hertz, float> get_frequency() const { return m_frequency; }
 
-  void set_frequency(QuantityOf<isq::frequency> auto freq)
+  void set_rate(QuantityOf<isq::frequency> auto freq)
   {
     m_frequency = freq;
     update_step();
     std::cout << MP_UNITS_STD_FMT::format("Setting frequency to {} ({})\n", freq, m_frequency);
   }
 
-  void set_period(QuantityOf<isq::time> auto period)
+  void set_rate(QuantityOf<isq::time> auto period)
   {
     m_frequency = inverse<si::hertz>(period);
     update_step();
     std::cout << MP_UNITS_STD_FMT::format("Setting period to {} (i.e. frequency to {})\n", period, m_frequency);
   }
 
-  void set_period(QuantityOf<audio::beat_count> auto period)
+  void set_rate(QuantityOf<audio::beat_count> auto period)
   {
     update_step();
     std::cout << MP_UNITS_STD_FMT::format("Setting period to {} -- ", period);
-    set_period(value_cast<float>(period) / m_context.current_tempo);
+    set_rate(value_cast<float>(period) / m_context.current_tempo);
   }
 
   quantity<audio::sample_value, float> operator()()
@@ -114,13 +114,13 @@ int main()
   auto sin_gen = sine_wave_osc{context, 1 * Hz};
 
   // Depending on the use-case sometimes an LFO will be set with a frequency in Hz
-  sin_gen.set_frequency(13 * Hz);
+  sin_gen.set_rate(13 * Hz);
 
   // for some use-cases it is more convient for a user to set the period
-  sin_gen.set_period(42 * s);
+  sin_gen.set_rate(42 * s);
 
   // and in some other use-cases setting the period in musical note duration is more intuitive
-  sin_gen.set_period(1 * audio::half_note);
+  sin_gen.set_rate(1 * audio::half_note);
 
   // Our oscillator can be used to generate sample values for a buffer
   // of audio samples.  In this example we will create a buffer with
