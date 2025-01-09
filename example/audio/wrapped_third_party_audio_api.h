@@ -34,7 +34,7 @@ struct musical_context {
 };
 
 //! Typesafe wrapper around API for host application musical context
-musical_context get_musical_context()
+inline musical_context get_musical_context()
 {
   auto context = audio_third_party::get_musical_context();
   return musical_context{.current_sample_rate = context.current_sample_rate * mp_units::si::hertz,
