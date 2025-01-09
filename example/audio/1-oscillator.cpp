@@ -51,6 +51,7 @@ public:
   sine_wave_osc(const audio::musical_context& context, QuantityOf<isq::frequency> auto freq) :
       m_context{context}, m_frequency{freq}
   {
+    update_step();
     std::cout << MP_UNITS_STD_FMT::format(
       "Created oscillator with starting frequency {} ({}) for sample rate {} at tempo {}\n", freq, m_frequency,
       context.current_sample_rate, context.current_tempo);
@@ -61,17 +62,20 @@ public:
   void set_frequency(QuantityOf<isq::frequency> auto freq)
   {
     m_frequency = freq;
+    update_step();
     std::cout << MP_UNITS_STD_FMT::format("Setting frequency to {} ({})\n", freq, m_frequency);
   }
 
   void set_period(QuantityOf<isq::time> auto period)
   {
     m_frequency = inverse<si::hertz>(period);
+    update_step();
     std::cout << MP_UNITS_STD_FMT::format("Setting period to {} (i.e. frequency to {})\n", period, m_frequency);
   }
 
   void set_period(QuantityOf<audio::beat_count> auto period)
   {
+    update_step();
     std::cout << MP_UNITS_STD_FMT::format("Setting period to {} -- ", period);
     set_period(value_cast<float>(period) / m_context.current_tempo);
   }
