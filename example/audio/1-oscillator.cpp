@@ -25,7 +25,6 @@
 import std;
 #else
 #include <algorithm>
-#include <cassert>
 #include <iostream>
 #include <ranges>
 #include <vector>
