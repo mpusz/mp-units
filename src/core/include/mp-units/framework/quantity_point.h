@@ -68,8 +68,7 @@ struct point_origin_interface {
     return quantity_point{std::forward<FwdQ>(q), po};
   }
 
-  template<Quantity FwdQ, PointOrigin PO,
-           QuantityOf<detail::get_delta_quantity_spec(PO::_quantity_spec_)> Q = std::remove_cvref_t<FwdQ>>
+  template<Quantity FwdQ, PointOrigin PO, QuantityOf<PO::_quantity_spec_> Q = std::remove_cvref_t<FwdQ>>
   [[nodiscard]] friend constexpr QuantityPoint auto operator+(FwdQ&& q, PO po)
   {
     return po + std::forward<FwdQ>(q);
