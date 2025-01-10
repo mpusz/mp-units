@@ -51,8 +51,7 @@ template<PointOrigin PO>
   return is_specialization_of_zeroth_point_origin<PO>;
 }
 
-template<typename FwdQ, PointOrigin PO,
-         QuantityOf<detail::get_delta_quantity_spec(PO::_quantity_spec_)> Q = std::remove_cvref_t<FwdQ>>
+template<typename FwdQ, PointOrigin PO, QuantityOf<PO::_quantity_spec_> Q = std::remove_cvref_t<FwdQ>>
 [[nodiscard]] constexpr QuantityPoint auto make_quantity_point(FwdQ&& q, PO po)
 {
   if constexpr (detail::is_zeroth_point_origin(PO{}))
