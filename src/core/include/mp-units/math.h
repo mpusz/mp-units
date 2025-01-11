@@ -444,13 +444,17 @@ template<Unit auto To, auto R, typename Rep>
  * @brief Computes the inverse of a quantity in a provided unit
  */
 template<Unit auto To, auto R, typename Rep>
-[[nodiscard]] constexpr QuantityOf<dimensionless / get_quantity_spec(R)> auto inverse(const quantity<R, Rep>& q)
+[[nodiscard]] constexpr Quantity auto inverse(const quantity<R, Rep>& q)
   requires requires {
     representation_values<Rep>::one();
     value_cast<To>(representation_values<Rep>::one() / q);
   }
 {
-  return (representation_values<Rep>::one() * one).force_in(To * quantity<R, Rep>::unit) / q;
+  if constexpr (AssociatedUnit<MP_UNITS_REMOVE_CONST(decltype(To))>) {
+    constexpr QuantitySpec auto qs = get_quantity_spec(To) * quantity<R, Rep>::quantity_spec;
+    return qs(representation_values<Rep>::one() * one).force_in(To * quantity<R, Rep>::unit) / q;
+  } else
+    return (representation_values<Rep>::one() * one).force_in(To * quantity<R, Rep>::unit) / q;
 }
 
 /**

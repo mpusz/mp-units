@@ -51,17 +51,24 @@ template<PointOrigin PO>
   return is_specialization_of_zeroth_point_origin<PO>;
 }
 
+template<typename FwdQ, PointOrigin PO, QuantityOf<PO::_quantity_spec_> Q = std::remove_cvref_t<FwdQ>>
+[[nodiscard]] constexpr QuantityPoint auto make_quantity_point(FwdQ&& q, PO po)
+{
+  if constexpr (detail::is_zeroth_point_origin(PO{}))
+    return quantity_point{std::forward<FwdQ>(q)};
+  else
+    return quantity_point{std::forward<FwdQ>(q), po};
+}
+
 struct point_origin_interface {
   template<PointOrigin PO, typename FwdQ, QuantityOf<PO::_quantity_spec_> Q = std::remove_cvref_t<FwdQ>>
-  [[nodiscard]] friend constexpr quantity_point<Q::reference, MP_UNITS_EXPRESSION_WORKAROUND(PO{}), typename Q::rep>
-  operator+(PO, FwdQ&& q)
+  [[nodiscard]] friend constexpr QuantityPoint auto operator+(PO po, FwdQ&& q)
   {
-    return quantity_point{std::forward<FwdQ>(q), PO{}};
+    return quantity_point{std::forward<FwdQ>(q), po};
   }
 
   template<Quantity FwdQ, PointOrigin PO, QuantityOf<PO::_quantity_spec_> Q = std::remove_cvref_t<FwdQ>>
-  [[nodiscard]] friend constexpr quantity_point<Q::reference, MP_UNITS_EXPRESSION_WORKAROUND(PO{}), typename Q::rep>
-  operator+(FwdQ&& q, PO po)
+  [[nodiscard]] friend constexpr QuantityPoint auto operator+(FwdQ&& q, PO po)
   {
     return po + std::forward<FwdQ>(q);
   }
@@ -264,7 +271,7 @@ public:
   template<detail::SameAbsolutePointOriginAs<absolute_point_origin> NewPO>
   [[nodiscard]] constexpr QuantityPointOf<(NewPO{})> auto point_for(NewPO new_origin) const
   {
-    if constexpr (is_same_v<NewPO, decltype(point_origin)>)
+    if constexpr (is_same_v<NewPO, MP_UNITS_NONCONST_TYPE(point_origin)>)
       return *this;
     else
       return ::mp_units::quantity_point{*this - new_origin, new_origin};
@@ -456,10 +463,7 @@ public:
   [[nodiscard]] friend constexpr QuantityPoint auto operator+(const QP& qp, const quantity<R2, Rep2>& q)
     requires requires { qp.quantity_ref_from(PO) + q; }
   {
-    if constexpr (detail::is_zeroth_point_origin(PO))
-      return ::mp_units::quantity_point{qp.quantity_ref_from(PO) + q};
-    else
-      return ::mp_units::quantity_point{qp.quantity_ref_from(PO) + q, PO};
+    return detail::make_quantity_point(qp.quantity_ref_from(PO) + q, PO);
   }
 
   template<auto R1, typename Rep1, std::derived_from<quantity_point> QP>
@@ -477,10 +481,7 @@ public:
   [[nodiscard]] friend constexpr QuantityPoint auto operator-(const QP& qp, const quantity<R2, Rep2>& q)
     requires requires { qp.quantity_ref_from(PO) - q; }
   {
-    if constexpr (detail::is_zeroth_point_origin(PO))
-      return ::mp_units::quantity_point{qp.quantity_ref_from(PO) - q};
-    else
-      return ::mp_units::quantity_point{qp.quantity_ref_from(PO) - q, PO};
+    return detail::make_quantity_point(qp.quantity_ref_from(PO) - q, PO);
   }
 
   template<std::derived_from<quantity_point> QP, QuantityPointOf<absolute_point_origin> QP2>
