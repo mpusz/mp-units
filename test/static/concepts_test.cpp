@@ -98,7 +98,8 @@ static_assert(!DimensionOf<struct isq::time, isq::dim_length>);
 static_assert(!DimensionOf<struct isq::time, isq::length>);
 static_assert(DimensionOf<decltype(isq::dim_length / isq::dim_time), isq::speed.dimension>);
 static_assert(DimensionOf<decltype(isq::force.dimension * isq::time.dimension), isq::impulse.dimension>);
-static_assert(DimensionOf<decltype(isq::angular_momentum.dimension / isq::angular_velocity.dimension), isq::moment_of_inertia.dimension>);
+static_assert(DimensionOf<decltype(isq::angular_momentum.dimension / isq::angular_velocity.dimension),
+                          isq::moment_of_inertia.dimension>);
 
 // QuantitySpec
 inline constexpr auto speed = isq::length / isq::time;
