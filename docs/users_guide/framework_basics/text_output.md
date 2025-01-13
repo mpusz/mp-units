@@ -313,6 +313,21 @@ prints:
 Thanks to the above, it might be easier for the user to reason about the magnitude of the resulting
 unit and its impact on the value stored in the quantity.
 
+!!! note
+
+    It is important to note that this output is provided only for intermediate results of the
+    equations, as shown above. A user usually knows which unit should be used, and explicit
+    conversion can be made to achieve that. For example:
+
+    ```cpp
+    std::cout << (1 * km + 1 * mi).in<double>(km) << "\n";
+    ```
+
+    prints:
+
+    ```text
+    2.60934 km
+    ```
 
 ## `space_before_unit_symbol` customization point
 
