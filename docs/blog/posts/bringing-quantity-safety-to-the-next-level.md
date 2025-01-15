@@ -223,7 +223,7 @@ quantity work = isq::work(q2).in[J];
 
 !!! important
 
-    It is essential to realize that whatever multiplication and division are for scalars,
+    It is essential to realize that just like multiplication and division are for scalars,
     vector and scalar products are for vectors. We never want to accept a quantity that
     accidentally was created with multiplication instead of division of its arguments or
     with the scalar product instead of a vector product, right?
@@ -501,7 +501,7 @@ hidden within the quantities hierarchy tree. This also means that adding a _posi
 and a _displacement_ should result in a _position vector_. Let's try to do it:
 
 ```cpp
-// quantity q8 = pos1 + displacement;                       // Compile-time error
+quantity q8 = pos1 + displacement;                       // Often a compile-time error
 ```
 
 Unfortunately, this often fails on the very first step, even before assigning the result to
@@ -622,7 +622,7 @@ We might be tempted to say "NO" to questions #4 and #5 as `isq::altitude` is def
 while `isq::length` is not specified as such. However, I've just realized that it is not the case.
 
 The proper answer to questions #4 and #5 is "It depends". If we are dealing with a `quantity_point`
-than converting from `isq::altitude` to `isq::length` or the other way around should work. However,
+then converting from `isq::altitude` to `isq::length` or the other way around should work. However,
 it would probably be a bad idea for a `quantity` type.
 
 It turns out that `common_quantity_spec()` is similar. It is probably safe to state that it should
