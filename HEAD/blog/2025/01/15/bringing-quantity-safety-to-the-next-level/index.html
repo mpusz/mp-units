@@ -2624,7 +2624,7 @@ results to our required quantities:</p>
 </span></code></pre></div>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>It is essential to realize that whatever multiplication and division are for scalars,
+<p>It is essential to realize that just like multiplication and division are for scalars,
 vector and scalar products are for vectors. We never want to accept a quantity that
 accidentally was created with multiplication instead of division of its arguments or
 with the scalar product instead of a vector product, right?</p>
@@ -2834,7 +2834,7 @@ when we do it for <em>position vectors</em>. We will see the same resulting type
 the <a href="../../../../../users_guide/framework_basics/the_affine_space/">affine space</a>. This time, it is
 hidden within the quantities hierarchy tree. This also means that adding a <em>position vector</em>
 and a <em>displacement</em> should result in a <em>position vector</em>. Let's try to do it:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="c1">// quantity q8 = pos1 + displacement;                       // Compile-time error</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">q8</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pos1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">displacement</span><span class="p">;</span><span class="w">                       </span><span class="c1">// Often a compile-time error</span>
 </span></code></pre></div>
 <p>Unfortunately, this often fails on the very first step, even before assigning the result to
 the <em>position vector</em> quantity. The reason for this is that in the hierarchy tree, the first common
@@ -2927,7 +2927,7 @@ allow casting between branches of one tree.</p>
 <p>We might be tempted to say "NO" to questions #4 and #5 as <code>isq::altitude</code> is defined as "point"
 while <code>isq::length</code> is not specified as such. However, I've just realized that it is not the case.</p>
 <p>The proper answer to questions #4 and #5 is "It depends". If we are dealing with a <code>quantity_point</code>
-than converting from <code>isq::altitude</code> to <code>isq::length</code> or the other way around should work. However,
+then converting from <code>isq::altitude</code> to <code>isq::length</code> or the other way around should work. However,
 it would probably be a bad idea for a <code>quantity</code> type.</p>
 <p>It turns out that <code>common_quantity_spec()</code> is similar. It is probably safe to state that it should
 not compile for <code>isq::altitude</code> and <code>isq::height</code> arguments. This means that we will not be able
