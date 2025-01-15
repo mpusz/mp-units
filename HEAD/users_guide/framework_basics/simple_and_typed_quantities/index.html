@@ -1026,9 +1026,9 @@ You're not viewing the latest version.
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#additional-type-safety-with-typed-quantities" class="md-nav__link">
+  <a href="#quantity-safety-with-typed-quantities" class="md-nav__link">
     <span class="md-ellipsis">
-      Additional type safety with typed quantities
+      Quantity-safety with typed quantities
     </span>
   </a>
   
@@ -2038,6 +2038,8 @@ You're not viewing the latest version.
       
         
       
+        
+      
     
     
       
@@ -2068,6 +2070,29 @@ You're not viewing the latest version.
             Archive
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../blog/archive/2025/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    2025
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -2436,10 +2461,9 @@ compile-time.</p>
 </span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>      |          ^~~~~~~~~~~
 </span></code></pre></div>
 <h2 id="typed-quantities">Typed quantities<a class="headerlink" href="#typed-quantities" title="Permanent link">&para;</a></h2>
-<p>Simple mode is all about and just about units. In case we care about a specific quantity type,
-<strong>typed quantities</strong> should be preferred. With this mode, for example, we can specify if we
-deal with <em>width</em>, <em>height</em>, or <em>radius</em> and ensure we will not assign one to another by
-accident.</p>
+<p>Simple mode is all about and just about units. <strong>Typed quantities</strong> should be preferred if we also
+want to be <strong>quantity-safe</strong>. This, for example, allows us to specify if we deal with <em>width</em>,
+<em>height</em>, or <em>radius</em> and ensure we will not assign one to another by accident.</p>
 <p>The previous example can be re-typed using typed quantities in the following way:</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">C++ modules</label><label for="__tabbed_2_2">Header files</label></div>
 <div class="tabbed-content">
@@ -2512,7 +2536,7 @@ get a bit longer error message, this time also containing information about the 
 </span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>      |          ^~~~~~~~~~~
 </span></code></pre></div>
 <p>As we can see above, the compilation error is longer but still relatively easy to understand.</p>
-<h3 id="additional-type-safety-with-typed-quantities">Additional type safety with typed quantities<a class="headerlink" href="#additional-type-safety-with-typed-quantities" title="Permanent link">&para;</a></h3>
+<h3 id="quantity-safety-with-typed-quantities">Quantity-safety with typed quantities<a class="headerlink" href="#quantity-safety-with-typed-quantities" title="Permanent link">&para;</a></h3>
 <p>Based on the previous example, it might seem that typed quantities are not that useful,
 more to type and provide harder-to-understand error messages. It might be true in some cases,
 but there are scenarios where they offer additional level of safety.</p>
