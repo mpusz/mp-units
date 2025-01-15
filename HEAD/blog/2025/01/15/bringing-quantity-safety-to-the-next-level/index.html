@@ -2538,7 +2538,8 @@ a specific domain.</p>
 the direction of the vector. For example, in many cases, we use <code>double</code> to express <em>velocity</em>
 or <em>acceleration</em>. In such cases, negative values mean moving backward or decelerating. This
 is why we also decided to allow such use cases in the library. A scalar representation type
-that provides <code>abs()</code> member or non-member function is considered a one-dimensional vector type:</p>
+that provides <code>abs()</code> member or non-member function or works with <code>std::abs()</code> is considered
+a one-dimensional vector type:</p>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">speed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">speed</span><span class="p">(</span><span class="mi">60</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">km</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">h</span><span class="p">);</span>
 </span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">quantity</span><span class="w"> </span><span class="n">velocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">velocity</span><span class="p">(</span><span class="mi">60</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">km</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">h</span><span class="p">);</span>
 </span></code></pre></div>
