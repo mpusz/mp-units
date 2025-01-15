@@ -100,7 +100,8 @@ a specific domain.
     the direction of the vector. For example, in many cases, we use `double` to express _velocity_
     or _acceleration_. In such cases, negative values mean moving backward or decelerating. This
     is why we also decided to allow such use cases in the library. A scalar representation type
-    that provides `abs()` member or non-member function is considered a one-dimensional vector type:
+    that provides `abs()` member or non-member function or works with `std::abs()` is considered
+    a one-dimensional vector type:
 
     ```cpp
     quantity speed = isq::speed(60 * km / h);
