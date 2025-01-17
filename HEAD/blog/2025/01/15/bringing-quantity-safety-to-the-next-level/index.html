@@ -2250,7 +2250,7 @@ You're not viewing the latest version.
                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 20a8 8 0 0 0 8-8 8 8 0 0 0-8-8 8 8 0 0 0-8 8 8 8 0 0 0 8 8m0-18a10 10 0 0 1 10 10 10 10 0 0 1-10 10C6.47 22 2 17.5 2 12A10 10 0 0 1 12 2m.5 5v5.25l4.5 2.67-.75 1.23L11 13V7z"/></svg>
                           <span class="md-ellipsis">
                             
-                              17 min read
+                              18 min read
                             
                           </span>
                         </div>
@@ -2938,12 +2938,20 @@ an excellent idea.</p>
 <p>The above means that to determine the conversion rules and common quantity specifications, we need
 to know the context in which the <code>quantity_spec</code> is being used. This sucks!</p>
 <h3 id="should-we-get-rid-of-a-quantity_point">Should we get rid of a <code>quantity_point</code>?<a class="headerlink" href="#should-we-get-rid-of-a-quantity_point" title="Permanent link">&para;</a></h3>
-<p>A solution to the above might be removing a dedicated <code>quantity_point</code> abstraction and providing both
-functionalities through the <code>quantity</code> class template. In order to determine if we are dealing with
-a "delta" or "point", we would need a special wrapper around the <code>QuantityReference</code> and
-<code>quantity_spec</code>.</p>
-<p>I still haven't figured out the best syntax. Please let me know if you have good ideas in the
-comments below. Here are some rough ideas:</p>
+<p>There are at least two ways of solving the above issue. In any case, we need to introduce a wrapper
+over the <code>quantity_spec</code> to denote it is being used in a "point" abstraction.</p>
+<p>A simpler solution could be implicitly amending the <code>Reference</code> provided to the <code>quantity_point</code>
+class template with <code>point&lt;...&gt;</code>. So, for example, we would have the following members in
+<code>quantity_point&lt;isq::altitude[m]&gt;</code>:</p>
+<ul>
+<li><code>qp::quantity_spec == point&lt;isq::altitude&gt;</code>,</li>
+<li><code>qp::reference</code> of a type <code>reference&lt;point&lt;isq::altitude&gt;, si::metre&gt;</code>.</li>
+</ul>
+<p>This should work but might be a bit confusing as members of the class template would not exactly
+contain the types of template parameters.</p>
+<p>A better solution might be removing a dedicated <code>quantity_point</code> abstraction and providing both
+functionalities through the <code>quantity</code> class template. I still haven't figured out the best syntax.
+Please let me know if you have good ideas in the comments below. Here are some rough ideas:</p>
 <table>
 <thead>
 <tr>
