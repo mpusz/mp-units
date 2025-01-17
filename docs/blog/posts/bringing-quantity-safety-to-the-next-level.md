@@ -9,9 +9,9 @@ comments: true
 
 # Bringing Quantity-Safety To The Next Level
 
-It is really important for any quantities and units library to be unit-safe. Most of the libraries
-on the market do it correctly. Some of them are also dimension-safe, which adds another level
-of protection for their users.
+All quantities and units libraries need to be unit-safe. Most of the libraries on the market do
+this correctly. Some of them are also dimension-safe, which adds another level of protection for
+their users.
 
 **mp-units** is probably the only library on the market that additionally is quantity-safe. This
 gives a new quality and possibilities. I've described the major idea behind it, implementation
