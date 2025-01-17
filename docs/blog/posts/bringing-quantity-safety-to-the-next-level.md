@@ -639,13 +639,22 @@ to know the context in which the `quantity_spec` is being used. This sucks!
 
 ### Should we get rid of a `quantity_point`?
 
-A solution to the above might be removing a dedicated `quantity_point` abstraction and providing both
-functionalities through the `quantity` class template. In order to determine if we are dealing with
-a "delta" or "point", we would need a special wrapper around the `QuantityReference` and
-`quantity_spec`.
+There are at least two ways of solving the above issue. In any case, we need to introduce a wrapper
+over the `quantity_spec` to denote it is being used in a "point" abstraction.
 
-I still haven't figured out the best syntax. Please let me know if you have good ideas in the
-comments below. Here are some rough ideas:
+A simpler solution could be implicitly amending the `Reference` provided to the `quantity_point`
+class template with `point<...>`. So, for example, we would have the following members in
+`quantity_point<isq::altitude[m]>`:
+
+- `qp::quantity_spec == point<isq::altitude>`,
+- `qp::reference` of a type `reference<point<isq::altitude>, si::metre>`.
+
+This should work but might be a bit confusing as members of the class template would not exactly
+contain the types of template parameters.
+
+A better solution might be removing a dedicated `quantity_point` abstraction and providing both
+functionalities through the `quantity` class template. I still haven't figured out the best syntax.
+Please let me know if you have good ideas in the comments below. Here are some rough ideas:
 
 | Before                                             | After                                               | `quantity_spec`               |
 |----------------------------------------------------|-----------------------------------------------------|-------------------------------|
