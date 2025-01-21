@@ -573,7 +573,7 @@ static_assert(
   is_of_type<get_common_unit(degree_Celsius, degree_Fahrenheit), common_unit<degree_Celsius_, degree_Fahrenheit_>>);
 static_assert(is_of_type<get_common_unit(get_common_unit(degree_Celsius, degree_Fahrenheit),
                                          get_common_unit(mag_ratio<5, 9>* degree_Celsius, si::milli<kelvin>)),
-                         common_unit<degree_Fahrenheit_, si::milli_<kelvin_>>>);
+                         decltype(get_common_unit(degree_Fahrenheit, si::milli<kelvin>))>);
 
 static_assert(
   is_of_type<get_common_unit(mile, kilometre) / second, derived_unit<common_unit<kilo_<metre_>, mile_>, per<second_>>>);
