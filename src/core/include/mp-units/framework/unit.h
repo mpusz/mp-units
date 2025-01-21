@@ -750,6 +750,16 @@ template<Unit... Us, Unit NewUnit>
   return get_common_unit(cu, nu);
 }
 
+template<Unit Front, Unit... Rest, Unit... Us>
+  requires(interconvertible(common_unit<Front, Rest...>{}, common_unit<Us...>{}))
+[[nodiscard]] consteval Unit auto get_common_unit(common_unit<Front, Rest...>, common_unit<Us...>)
+{
+  if constexpr (sizeof...(Rest) == 1)
+    return get_common_unit(Front{}, get_common_unit(Rest{}..., common_unit<Us...>{}));
+  else
+    return get_common_unit(Front{}, get_common_unit(common_unit<Rest...>{}, common_unit<Us...>{}));
+}
+
 [[nodiscard]] consteval Unit auto get_common_unit(Unit auto u1, Unit auto u2, Unit auto u3, Unit auto... rest)
   requires requires { get_common_unit(get_common_unit(u1, u2), u3, rest...); }
 {

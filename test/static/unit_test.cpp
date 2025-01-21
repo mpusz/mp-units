@@ -67,6 +67,7 @@ inline constexpr struct pascal_ final : named_unit<"Pa", newton / square(metre)>
 inline constexpr struct joule_ final : named_unit<"J", newton * metre> {} joule;
 inline constexpr struct watt_ final : named_unit<"W", joule / second> {} watt;
 inline constexpr struct degree_Celsius_ final : named_unit<symbol_text{u8"℃", "`C"}, kelvin> {} degree_Celsius;
+inline constexpr struct degree_Fahrenheit_ final : named_unit<symbol_text{u8"℉", "`F"}, mag_ratio<5, 9> * degree_Celsius> {} degree_Fahrenheit;
 
 inline constexpr struct minute_ final : named_unit<"min", mag<60> * second> {} minute;
 inline constexpr struct hour_ final : named_unit<"h", mag<60> * minute> {} hour;
@@ -568,6 +569,11 @@ static_assert(is_of_type<get_common_unit(kilometre / hour, metre / second),
 static_assert(is_of_type<get_common_unit(metre / second, kilometre / hour),
                          common_unit<decltype(kilometre / hour), decltype(metre / second)>>);
 static_assert(is_of_type<get_common_unit(radian, degree), common_unit<degree_, radian_>>);
+static_assert(
+  is_of_type<get_common_unit(degree_Celsius, degree_Fahrenheit), common_unit<degree_Celsius_, degree_Fahrenheit_>>);
+static_assert(is_of_type<get_common_unit(get_common_unit(degree_Celsius, degree_Fahrenheit),
+                                         get_common_unit(mag_ratio<5, 9>* degree_Celsius, si::milli<kelvin>)),
+                         common_unit<degree_Fahrenheit_, si::milli_<kelvin_>>>);
 
 static_assert(
   is_of_type<get_common_unit(mile, kilometre) / second, derived_unit<common_unit<kilo_<metre_>, mile_>, per<second_>>>);
