@@ -120,13 +120,14 @@ results in the `derived_dimension<isq::dim_length, per<isq::dim_time>>` type.
 different [characters](../../appendix/glossary.md#character):
 
 - scalar,
+- complex,
 - vector,
 - tensor.
 
 The quantity character in the **mp-units** library is implemented with the `quantity_character` enumeration:
 
 ```cpp
-enum class quantity_character { scalar, vector, tensor };
+enum class quantity_character { scalar, complex, vector, tensor };
 ```
 
 !!! info
