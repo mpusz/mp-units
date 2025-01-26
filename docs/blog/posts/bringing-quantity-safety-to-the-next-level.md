@@ -367,7 +367,7 @@ Please also remember that the quantity characters are not only about linear alge
 in the case of complex quantities, we want to ensure that only:
 
 - the real part of a _complex power_ is assigned to an _active power_,
-- the imaginary part of a _complex power_ is assigned to an _active power_,
+- the imaginary part of a _complex power_ is assigned to an _reactive power_,
 - the modulus of a _complex power_ is assigned to an _apparent power_.
 
 Mixing the above is a fatal error in power systems engineering.
