@@ -334,8 +334,8 @@ template<Representation Rep, Reference R>
 template<Unit auto To, auto R, typename Rep>
 [[nodiscard]] constexpr quantity<detail::clone_reference_with<To>(R), Rep> floor(const quantity<R, Rep>& q) noexcept
   requires requires { q.force_in(To); } &&
-           (treat_as_floating_point<Rep> && (requires(Rep v) { floor(v); } || requires(Rep v) { std::floor(v); })) ||
-           (!treat_as_floating_point<Rep> && requires { representation_values<Rep>::one(); })
+           ((treat_as_floating_point<Rep> && (requires(Rep v) { floor(v); } || requires(Rep v) { std::floor(v); })) ||
+            (!treat_as_floating_point<Rep> && requires { representation_values<Rep>::one(); }))
 {
   const quantity res = q.force_in(To);
   if constexpr (treat_as_floating_point<Rep>) {
@@ -356,8 +356,8 @@ template<Unit auto To, auto R, typename Rep>
 template<Unit auto To, auto R, typename Rep>
 [[nodiscard]] constexpr quantity<detail::clone_reference_with<To>(R), Rep> ceil(const quantity<R, Rep>& q) noexcept
   requires requires { q.force_in(To); } &&
-           (treat_as_floating_point<Rep> && (requires(Rep v) { ceil(v); } || requires(Rep v) { std::ceil(v); })) ||
-           (!treat_as_floating_point<Rep> && requires { representation_values<Rep>::one(); })
+           ((treat_as_floating_point<Rep> && (requires(Rep v) { ceil(v); } || requires(Rep v) { std::ceil(v); })) ||
+            (!treat_as_floating_point<Rep> && requires { representation_values<Rep>::one(); }))
 {
   const quantity res = q.force_in(To);
   if constexpr (treat_as_floating_point<Rep>) {
