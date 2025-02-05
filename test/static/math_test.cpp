@@ -189,11 +189,15 @@ static_assert(compare(round<si::second>(1001 * ms), 1 * s));
 static_assert(compare(round<si::second>(1499 * ms), 1 * s));
 static_assert(compare(round<si::second>(1500 * ms), 2 * s));
 static_assert(compare(round<si::second>(1999 * ms), 2 * s));
+static_assert(compare(round<si::second>(2500 * ms), 2 * s));
+static_assert(compare(round<si::second>(3500 * ms), 4 * s));
 static_assert(compare(round<si::second>(-1000 * ms), -1 * s));
 static_assert(compare(round<si::second>(-1001 * ms), -1 * s));
 static_assert(compare(round<si::second>(-1499 * ms), -1 * s));
 static_assert(compare(round<si::second>(-1500 * ms), -2 * s));
 static_assert(compare(round<si::second>(-1999 * ms), -2 * s));
+static_assert(compare(round<si::second>(-2500 * ms), -2 * s));
+static_assert(compare(round<si::second>(-3500 * ms), -4 * s));
 
 static_assert(compare(round<si::second>(1 * isq::time[s]), 1 * isq::time[s]));
 static_assert(compare(round<si::second>(1000 * isq::time[ms]), 1 * isq::time[s]));
@@ -201,38 +205,62 @@ static_assert(compare(round<si::second>(1001 * isq::time[ms]), 1 * isq::time[s])
 static_assert(compare(round<si::second>(1499 * isq::time[ms]), 1 * isq::time[s]));
 static_assert(compare(round<si::second>(1500 * isq::time[ms]), 2 * isq::time[s]));
 static_assert(compare(round<si::second>(1999 * isq::time[ms]), 2 * isq::time[s]));
+static_assert(compare(round<si::second>(2500 * isq::time[ms]), 2 * isq::time[s]));
+static_assert(compare(round<si::second>(3500 * isq::time[ms]), 4 * isq::time[s]));
 static_assert(compare(round<si::second>(-1000 * isq::time[ms]), -1 * isq::time[s]));
 static_assert(compare(round<si::second>(-1001 * isq::time[ms]), -1 * isq::time[s]));
 static_assert(compare(round<si::second>(-1499 * isq::time[ms]), -1 * isq::time[s]));
 static_assert(compare(round<si::second>(-1500 * isq::time[ms]), -2 * isq::time[s]));
 static_assert(compare(round<si::second>(-1999 * isq::time[ms]), -2 * isq::time[s]));
+static_assert(compare(round<si::second>(-2500 * isq::time[ms]), -2 * isq::time[s]));
+static_assert(compare(round<si::second>(-3500 * isq::time[ms]), -4 * isq::time[s]));
 
 // floating-point
 static_assert(compare(round<si::second>(1.3 * s), 1. * s));
+static_assert(compare(round<si::second>(1.5 * s), 2. * s));
+static_assert(compare(round<si::second>(2.5 * s), 2. * s));
+static_assert(compare(round<si::second>(3.5 * s), 4. * s));
 static_assert(compare(round<si::second>(-1.3 * s), -1. * s));
+static_assert(compare(round<si::second>(-1.5 * s), -2. * s));
+static_assert(compare(round<si::second>(-2.5 * s), -2. * s));
+static_assert(compare(round<si::second>(-3.5 * s), -4. * s));
 static_assert(compare(round<si::second>(1000. * ms), 1. * s));
 static_assert(compare(round<si::second>(1001. * ms), 1. * s));
 static_assert(compare(round<si::second>(1499. * ms), 1. * s));
 static_assert(compare(round<si::second>(1500. * ms), 2. * s));
 static_assert(compare(round<si::second>(1999. * ms), 2. * s));
+static_assert(compare(round<si::second>(2500. * ms), 2. * s));
+static_assert(compare(round<si::second>(3500. * ms), 4. * s));
 static_assert(compare(round<si::second>(-1000. * ms), -1. * s));
 static_assert(compare(round<si::second>(-1001. * ms), -1. * s));
 static_assert(compare(round<si::second>(-1499. * ms), -1. * s));
 static_assert(compare(round<si::second>(-1500. * ms), -2. * s));
 static_assert(compare(round<si::second>(-1999. * ms), -2. * s));
+static_assert(compare(round<si::second>(-2500. * ms), -2. * s));
+static_assert(compare(round<si::second>(-3500. * ms), -4. * s));
 
 static_assert(compare(round<si::second>(1.3 * isq::time[s]), 1. * isq::time[s]));
+static_assert(compare(round<si::second>(1.5 * isq::time[s]), 2. * isq::time[s]));
+static_assert(compare(round<si::second>(2.5 * isq::time[s]), 2. * isq::time[s]));
+static_assert(compare(round<si::second>(3.5 * isq::time[s]), 4. * isq::time[s]));
 static_assert(compare(round<si::second>(-1.3 * isq::time[s]), -1. * isq::time[s]));
+static_assert(compare(round<si::second>(-1.5 * isq::time[s]), -2. * isq::time[s]));
+static_assert(compare(round<si::second>(-2.5 * isq::time[s]), -2. * isq::time[s]));
+static_assert(compare(round<si::second>(-3.5 * isq::time[s]), -4. * isq::time[s]));
 static_assert(compare(round<si::second>(1000. * isq::time[ms]), 1. * isq::time[s]));
 static_assert(compare(round<si::second>(1001. * isq::time[ms]), 1. * isq::time[s]));
 static_assert(compare(round<si::second>(1499. * isq::time[ms]), 1. * isq::time[s]));
 static_assert(compare(round<si::second>(1500. * isq::time[ms]), 2. * isq::time[s]));
 static_assert(compare(round<si::second>(1999. * isq::time[ms]), 2. * isq::time[s]));
+static_assert(compare(round<si::second>(2500. * isq::time[ms]), 2. * isq::time[s]));
+static_assert(compare(round<si::second>(3500. * isq::time[ms]), 4. * isq::time[s]));
 static_assert(compare(round<si::second>(-1000. * isq::time[ms]), -1. * isq::time[s]));
 static_assert(compare(round<si::second>(-1001. * isq::time[ms]), -1. * isq::time[s]));
 static_assert(compare(round<si::second>(-1499. * isq::time[ms]), -1. * isq::time[s]));
 static_assert(compare(round<si::second>(-1500. * isq::time[ms]), -2. * isq::time[s]));
 static_assert(compare(round<si::second>(-1999. * isq::time[ms]), -2. * isq::time[s]));
+static_assert(compare(round<si::second>(-2500. * isq::time[ms]), -2. * isq::time[s]));
+static_assert(compare(round<si::second>(-3500. * isq::time[ms]), -4. * isq::time[s]));
 
 #endif
 

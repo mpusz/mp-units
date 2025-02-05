@@ -333,32 +333,17 @@ template<Representation Rep, Reference R>
  */
 template<Unit auto To, auto R, typename Rep>
 [[nodiscard]] constexpr quantity<detail::clone_reference_with<To>(R), Rep> floor(const quantity<R, Rep>& q) noexcept
-  requires((!treat_as_floating_point<Rep>) || requires(Rep v) { floor(v); } || requires(Rep v) { std::floor(v); }) &&
-          (equivalent(To, get_unit(R)) || requires {
-            q.force_in(To);
-            representation_values<Rep>::one();
-          })
+  requires requires { q.force_in(To); } &&
+           (treat_as_floating_point<Rep> && (requires(Rep v) { floor(v); } || requires(Rep v) { std::floor(v); })) ||
+           (!treat_as_floating_point<Rep> && requires { representation_values<Rep>::one(); })
 {
-  const auto handle_signed_results = [&]<typename T>(const T& res) {
-    if (res > q) {
-      return res - representation_values<Rep>::one() * T::reference;
-    }
-    return res;
-  };
+  const quantity res = q.force_in(To);
   if constexpr (treat_as_floating_point<Rep>) {
     using std::floor;
-    if constexpr (equivalent(To, get_unit(R))) {
-      return {static_cast<Rep>(floor(q.numerical_value_ref_in(q.unit))), detail::clone_reference_with<To>(R)};
-    } else {
-      return handle_signed_results(
-        quantity{static_cast<Rep>(floor(q.force_numerical_value_in(To))), detail::clone_reference_with<To>(R)});
-    }
+    return {static_cast<Rep>(floor(res.numerical_value_ref_in(res.unit))), res.reference};
   } else {
-    if constexpr (equivalent(To, get_unit(R))) {
-      return q.force_in(To);
-    } else {
-      return handle_signed_results(q.force_in(To));
-    }
+    if (res > q) return res - representation_values<Rep>::one() * res.reference;
+    return res;
   }
 }
 
@@ -370,74 +355,48 @@ template<Unit auto To, auto R, typename Rep>
  */
 template<Unit auto To, auto R, typename Rep>
 [[nodiscard]] constexpr quantity<detail::clone_reference_with<To>(R), Rep> ceil(const quantity<R, Rep>& q) noexcept
-  requires((!treat_as_floating_point<Rep>) || requires(Rep v) { ceil(v); } || requires(Rep v) { std::ceil(v); }) &&
-          (equivalent(To, get_unit(R)) || requires {
-            q.force_in(To);
-            representation_values<Rep>::one();
-          })
+  requires requires { q.force_in(To); } &&
+           (treat_as_floating_point<Rep> && (requires(Rep v) { ceil(v); } || requires(Rep v) { std::ceil(v); })) ||
+           (!treat_as_floating_point<Rep> && requires { representation_values<Rep>::one(); })
 {
-  const auto handle_signed_results = [&]<typename T>(const T& res) {
-    if (res < q) {
-      return res + representation_values<Rep>::one() * T::reference;
-    }
-    return res;
-  };
+  const quantity res = q.force_in(To);
   if constexpr (treat_as_floating_point<Rep>) {
     using std::ceil;
-    if constexpr (equivalent(To, get_unit(R))) {
-      return {static_cast<Rep>(ceil(q.numerical_value_ref_in(q.unit))), detail::clone_reference_with<To>(R)};
-    } else {
-      return handle_signed_results(
-        quantity{static_cast<Rep>(ceil(q.force_numerical_value_in(To))), detail::clone_reference_with<To>(R)});
-    }
+    return {static_cast<Rep>(ceil(res.numerical_value_ref_in(res.unit))), res.reference};
   } else {
-    if constexpr (equivalent(To, get_unit(R))) {
-      return q.force_in(To);
-    } else {
-      return handle_signed_results(q.force_in(To));
-    }
+    if (res < q) return res + representation_values<Rep>::one() * res.reference;
+    return res;
   }
 }
 
 /**
- * @brief Computes the nearest quantity with integer representation and unit type To to q
+ * @brief Computes the nearest quantity with integer representation and unit type `To` to `q`
  *
- * Rounding halfway cases away from zero, regardless of the current rounding mode.
+ * Returns the value `res` representable in `To` unit that is the closest to `q`. If there are two
+ * such values, returns the even value (that is, the value `res` such that `res % 2 == 0`).
  *
  * @tparam q Quantity being the base of the operation
- * @return Quantity The rounded quantity with unit type To
+ * @return Quantity The quantity rounded to the nearest unit `To`, rounding to even in halfway
+ *                  cases.
  */
 template<Unit auto To, auto R, typename Rep>
 [[nodiscard]] constexpr quantity<detail::clone_reference_with<To>(R), Rep> round(const quantity<R, Rep>& q) noexcept
-  requires((!treat_as_floating_point<Rep>) || requires(Rep v) { round(v); } || requires(Rep v) { std::round(v); }) &&
-          (equivalent(To, get_unit(R)) || requires {
-            ::mp_units::floor<To>(q);
-            representation_values<Rep>::one();
-          })
+  requires requires {
+    mp_units::floor<To>(q);
+    representation_values<Rep>::one();
+  } && std::constructible_from<std::int64_t, Rep>
 {
-  if constexpr (equivalent(To, get_unit(R))) {
-    if constexpr (treat_as_floating_point<Rep>) {
-      using std::round;
-      return {static_cast<Rep>(round(q.numerical_value_ref_in(q.unit))), detail::clone_reference_with<To>(R)};
-    } else {
-      return q.force_in(To);
-    }
-  } else {
-    const auto res_low = mp_units::floor<To>(q);
-    const auto res_high = res_low + representation_values<Rep>::one() * res_low.reference;
-    const auto diff0 = q - res_low;
-    const auto diff1 = res_high - q;
-    if (diff0 == diff1) {
-      if (static_cast<int>(res_low.numerical_value_ref_in(To)) & 1) {
-        return res_high;
-      }
-      return res_low;
-    }
-    if (diff0 < diff1) {
-      return res_low;
-    }
-    return res_high;
-  }
+  const auto res_low = mp_units::floor<To>(q);
+  const auto res_high = res_low + representation_values<Rep>::one() * res_low.reference;
+  const auto diff0 = q - res_low;
+  const auto diff1 = res_high - q;
+  if (diff0 == diff1) {
+    // TODO How to extend this to custom representation types?
+    if (static_cast<std::int64_t>(res_low.numerical_value_ref_in(To)) & 1) return res_high;
+    return res_low;
+  } else if (diff0 < diff1)
+    return res_low;
+  return res_high;
 }
 
 /**
