@@ -26,6 +26,9 @@
 import std;
 #else
 #include <limits>
+#if MP_UNITS_HOSTED
+#include <cmath>
+#endif  // MP_UNITS_HOSTED
 #endif
 
 namespace {
@@ -94,11 +97,15 @@ static_assert(std::numeric_limits<q_double>::infinity().numerical_value_in(mp_un
 static_assert(std::numeric_limits<q_int>::infinity().numerical_value_in(mp_units::si::metre) ==
               std::numeric_limits<int>::infinity());
 
+#if MP_UNITS_HOSTED && (__cpp_lib_constexpr_cmath || MP_UNITS_COMP_GCC)
+
 // quiet_NaN
 static_assert(std::isnan(std::numeric_limits<q_double>::quiet_NaN().numerical_value_in(mp_units::si::metre)));
 
 // signaling_NaN
 static_assert(std::isnan(std::numeric_limits<q_double>::signaling_NaN().numerical_value_in(mp_units::si::metre)));
+
+#endif
 
 // denorm_min
 static_assert(std::numeric_limits<q_double>::denorm_min().numerical_value_in(mp_units::si::metre) ==
@@ -171,6 +178,8 @@ static_assert(std::numeric_limits<qp_double>::infinity().quantity_from_zero().nu
 static_assert(std::numeric_limits<qp_int>::infinity().quantity_from_zero().numerical_value_in(mp_units::si::metre) ==
               std::numeric_limits<int>::infinity());
 
+#if MP_UNITS_HOSTED && (__cpp_lib_constexpr_cmath || MP_UNITS_COMP_GCC)
+
 // quiet_NaN
 static_assert(
   std::isnan(std::numeric_limits<qp_double>::quiet_NaN().quantity_from_zero().numerical_value_in(mp_units::si::metre)));
@@ -178,6 +187,8 @@ static_assert(
 // signaling_NaN
 static_assert(std::isnan(
   std::numeric_limits<qp_double>::signaling_NaN().quantity_from_zero().numerical_value_in(mp_units::si::metre)));
+
+#endif
 
 // denorm_min
 static_assert(std::numeric_limits<qp_double>::denorm_min().quantity_from_zero().numerical_value_in(
