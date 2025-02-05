@@ -320,7 +320,8 @@ template<auto R1, typename Rep1, auto R2, typename Rep2>
  */
 template<Representation Rep, Reference R>
   requires requires { std::numeric_limits<Rep>::epsilon(); }
-[[nodiscard]] constexpr quantity<R{}, Rep> epsilon(R r) noexcept
+[[deprecated("Use `std::numeric_limits<Quantity>::epsilon()` instead")]] [[nodiscard]] constexpr quantity<R{}, Rep>
+epsilon(R r) noexcept
 {
   return {static_cast<Rep>(std::numeric_limits<Rep>::epsilon()), r};
 }

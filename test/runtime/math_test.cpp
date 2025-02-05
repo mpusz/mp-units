@@ -145,20 +145,6 @@ TEST_CASE("math operations", "[math]")
     }
   }
 
-  SECTION("numeric_limits functions")
-  {
-    SECTION("'epsilon' works as expected using default floating type")
-    {
-      REQUIRE(epsilon<double>(isq::length[m]).numerical_value_in(m) ==
-              std::numeric_limits<decltype(1. * isq::length[m])::rep>::epsilon());
-    }
-    SECTION("'epsilon' works as expected using integers")
-    {
-      REQUIRE(epsilon<int>(isq::length[m]).numerical_value_in(m) ==
-              std::numeric_limits<decltype(1 * isq::length[m])::rep>::epsilon());
-    }
-  }
-
   SECTION("floor functions")
   {
     SECTION("floor 1 second with target unit second should be 1 second")
