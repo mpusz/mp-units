@@ -148,12 +148,6 @@ public:
     return {representation_values<rep>::zero(), R};
   }
 
-  [[nodiscard]] static constexpr quantity one() noexcept
-    requires requires { representation_values<rep>::one(); }
-  {
-    return {representation_values<rep>::one(), R};
-  }
-
   [[nodiscard]] static constexpr quantity min() noexcept
     requires requires { representation_values<rep>::min(); }
   {

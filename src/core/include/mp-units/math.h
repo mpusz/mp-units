@@ -84,7 +84,7 @@ template<std::intmax_t Num, std::intmax_t Den = 1, auto R, typename Rep>
 
 {
   if constexpr (Num == 0) {
-    return quantity<pow<Num, Den>(R), Rep>::one();
+    return {representation_values<Rep>::one(), pow<0>(R)};
   } else if constexpr (Num == Den) {
     return q;
   } else {
@@ -341,7 +341,7 @@ template<Unit auto To, auto R, typename Rep>
 {
   const auto handle_signed_results = [&]<typename T>(const T& res) {
     if (res > q) {
-      return res - T::one();
+      return res - representation_values<Rep>::one() * T::reference;
     }
     return res;
   };
@@ -378,7 +378,7 @@ template<Unit auto To, auto R, typename Rep>
 {
   const auto handle_signed_results = [&]<typename T>(const T& res) {
     if (res < q) {
-      return res + T::one();
+      return res + representation_values<Rep>::one() * T::reference;
     }
     return res;
   };
@@ -424,7 +424,7 @@ template<Unit auto To, auto R, typename Rep>
     }
   } else {
     const auto res_low = mp_units::floor<To>(q);
-    const auto res_high = res_low + res_low.one();
+    const auto res_high = res_low + representation_values<Rep>::one() * res_low.reference;
     const auto diff0 = q - res_low;
     const auto diff1 = res_high - q;
     if (diff0 == diff1) {

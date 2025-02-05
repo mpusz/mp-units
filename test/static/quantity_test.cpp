@@ -162,11 +162,9 @@ static_assert(is_same_v<decltype(quantity(vint, m))::rep, std::int16_t>);
 ////////////////////////////
 
 static_assert(quantity<isq::length[m], int>::zero().numerical_value_in(m) == 0);
-static_assert(quantity<isq::length[m], int>::one().numerical_value_in(m) == 1);
 static_assert(quantity<isq::length[m], int>::min().numerical_value_in(m) == std::numeric_limits<int>::lowest());
 static_assert(quantity<isq::length[m], int>::max().numerical_value_in(m) == std::numeric_limits<int>::max());
 static_assert(quantity<isq::length[m], double>::zero().numerical_value_in(m) == 0.0);
-static_assert(quantity<isq::length[m], double>::one().numerical_value_in(m) == 1.0);
 static_assert(quantity<isq::length[m], double>::min().numerical_value_in(m) == std::numeric_limits<double>::lowest());
 static_assert(quantity<isq::length[m], double>::max().numerical_value_in(m) == std::numeric_limits<double>::max());
 
