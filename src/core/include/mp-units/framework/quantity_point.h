@@ -35,6 +35,7 @@
 import std;
 #else
 #include <compare>  // IWYU pragma: export
+#include <limits>
 #endif
 #endif
 
@@ -561,3 +562,62 @@ explicit(quantity_point_like_traits<QP>::explicit_import) quantity_point(QP)
                     typename quantity_point_like_traits<QP>::rep>;
 
 }  // namespace mp_units
+
+template<auto R, auto PO, typename Rep>
+  requires requires { typename std::numeric_limits<Rep>; }
+class std::numeric_limits<mp_units::quantity_point<R, PO, Rep>> : public std::numeric_limits<Rep> {
+public:
+  static constexpr mp_units::quantity_point<R, PO, Rep> min() noexcept
+    requires requires { mp_units::quantity_point<R, PO, Rep>::min(); }
+  {
+    return mp_units::quantity_point<R, PO, Rep>::min();
+  }
+
+  static constexpr mp_units::quantity_point<R, PO, Rep> max() noexcept
+    requires requires { mp_units::quantity_point<R, PO, Rep>::max(); }
+  {
+    return mp_units::quantity_point<R, PO, Rep>::max();
+  }
+
+  static constexpr mp_units::quantity_point<R, PO, Rep> lowest() noexcept
+    requires requires { std::numeric_limits<mp_units::quantity<R, Rep>>::lowest(); }
+  {
+    return {std::numeric_limits<mp_units::quantity<R, Rep>>::lowest(), PO};
+  }
+
+  static constexpr mp_units::quantity_point<R, PO, Rep> epsilon() noexcept
+    requires requires { std::numeric_limits<mp_units::quantity<R, Rep>>::epsilon(); }
+  {
+    return {std::numeric_limits<mp_units::quantity<R, Rep>>::epsilon(), PO};
+  }
+
+  static constexpr mp_units::quantity_point<R, PO, Rep> round_error() noexcept
+    requires requires { std::numeric_limits<mp_units::quantity<R, Rep>>::round_error(); }
+  {
+    return {std::numeric_limits<mp_units::quantity<R, Rep>>::round_error(), PO};
+  }
+
+  static constexpr mp_units::quantity_point<R, PO, Rep> infinity() noexcept
+    requires requires { std::numeric_limits<mp_units::quantity<R, Rep>>::infinity(); }
+  {
+    return {std::numeric_limits<mp_units::quantity<R, Rep>>::infinity(), PO};
+  }
+
+  static constexpr mp_units::quantity_point<R, PO, Rep> quiet_NaN() noexcept
+    requires requires { std::numeric_limits<mp_units::quantity<R, Rep>>::quiet_NaN(); }
+  {
+    return {std::numeric_limits<mp_units::quantity<R, Rep>>::quiet_NaN(), PO};
+  }
+
+  static constexpr mp_units::quantity_point<R, PO, Rep> signaling_NaN() noexcept
+    requires requires { std::numeric_limits<mp_units::quantity<R, Rep>>::signaling_NaN(); }
+  {
+    return {std::numeric_limits<mp_units::quantity<R, Rep>>::signaling_NaN(), PO};
+  }
+
+  static constexpr mp_units::quantity_point<R, PO, Rep> denorm_min() noexcept
+    requires requires { std::numeric_limits<mp_units::quantity<R, Rep>>::denorm_min(); }
+  {
+    return {std::numeric_limits<mp_units::quantity<R, Rep>>::denorm_min(), PO};
+  }
+};

@@ -26,7 +26,6 @@
 #include <mp-units/compat_macros.h>
 #include <mp-units/concepts.h>
 #include <mp-units/framework.h>
-#include <mp-units/limits.h>
 
 #if MP_UNITS_HOSTED
 #include <mp-units/cartesian_vector.h>

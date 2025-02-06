@@ -20,7 +20,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <mp-units/limits.h>
 #include <mp-units/systems/si.h>
 #ifdef MP_UNITS_IMPORT_STD
 import std;

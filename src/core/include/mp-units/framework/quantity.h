@@ -43,6 +43,7 @@
 import std;
 #else
 #include <compare>  // IWYU pragma: export
+#include <limits>
 #include <utility>
 #endif
 #endif
@@ -670,3 +671,62 @@ struct std::common_type<Q, Value> {
 template<mp_units::Quantity Q, mp_units::Representation Value>
   requires requires { typename std::common_type<Q, Value>; }
 struct std::common_type<Value, Q> : std::common_type<Q, Value> {};
+
+template<auto R, typename Rep>
+  requires requires { typename std::numeric_limits<Rep>; }
+class std::numeric_limits<mp_units::quantity<R, Rep>> : public std::numeric_limits<Rep> {
+public:
+  static constexpr mp_units::quantity<R, Rep> min() noexcept
+    requires requires { mp_units::quantity<R, Rep>::min(); }
+  {
+    return mp_units::quantity<R, Rep>::min();
+  }
+
+  static constexpr mp_units::quantity<R, Rep> max() noexcept
+    requires requires { mp_units::quantity<R, Rep>::max(); }
+  {
+    return mp_units::quantity<R, Rep>::max();
+  }
+
+  static constexpr mp_units::quantity<R, Rep> lowest() noexcept
+    requires requires { std::numeric_limits<Rep>::lowest(); }
+  {
+    return {std::numeric_limits<Rep>::lowest(), R};
+  }
+
+  static constexpr mp_units::quantity<R, Rep> epsilon() noexcept
+    requires requires { std::numeric_limits<Rep>::epsilon(); }
+  {
+    return {std::numeric_limits<Rep>::epsilon(), R};
+  }
+
+  static constexpr mp_units::quantity<R, Rep> round_error() noexcept
+    requires requires { std::numeric_limits<Rep>::round_error(); }
+  {
+    return {std::numeric_limits<Rep>::round_error(), R};
+  }
+
+  static constexpr mp_units::quantity<R, Rep> infinity() noexcept
+    requires requires { std::numeric_limits<Rep>::infinity(); }
+  {
+    return {std::numeric_limits<Rep>::infinity(), R};
+  }
+
+  static constexpr mp_units::quantity<R, Rep> quiet_NaN() noexcept
+    requires requires { std::numeric_limits<Rep>::quiet_NaN(); }
+  {
+    return {std::numeric_limits<Rep>::quiet_NaN(), R};
+  }
+
+  static constexpr mp_units::quantity<R, Rep> signaling_NaN() noexcept
+    requires requires { std::numeric_limits<Rep>::signaling_NaN(); }
+  {
+    return {std::numeric_limits<Rep>::signaling_NaN(), R};
+  }
+
+  static constexpr mp_units::quantity<R, Rep> denorm_min() noexcept
+    requires requires { std::numeric_limits<Rep>::denorm_min(); }
+  {
+    return {std::numeric_limits<Rep>::denorm_min(), R};
+  }
+};
