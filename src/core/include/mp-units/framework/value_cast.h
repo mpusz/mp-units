@@ -25,6 +25,7 @@
 // IWYU pragma: private, include <mp-units/framework.h>
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/bits/sudo_cast.h>
+#include <mp-units/framework/customization_points.h>
 #include <mp-units/framework/quantity_concepts.h>
 #include <mp-units/framework/quantity_point_concepts.h>
 #include <mp-units/framework/reference.h>
@@ -33,6 +34,29 @@
 
 MP_UNITS_EXPORT
 namespace mp_units {
+
+namespace detail {
+
+template<Representation Rep, Unit UFrom, Unit UTo>
+[[nodiscard]] consteval bool might_store_converted_value(UFrom from, UTo to)
+{
+  if constexpr (is_same_v<UFrom, UTo> || treat_as_floating_point<Rep>)
+    return true;
+  else if constexpr (std::totally_ordered_with<Rep, std::uintmax_t> &&
+                     requires(Rep v) { representation_values<Rep>::max(); }) {
+    constexpr auto factor =
+      get_value<std::uintmax_t>(numerator(get_canonical_unit(from).mag / get_canonical_unit(to).mag));
+    if constexpr (std::is_integral_v<Rep>)
+      return std::in_range<Rep>(factor);
+    else
+      return factor <= representation_values<Rep>::max();
+  } else
+    // if the representation is not totally ordered with std::uintmax_t or does not have max() defined
+    // then we assume that it might store any value
+    return true;
+}
+
+}  // namespace detail
 
 /**
  * @brief Explicit cast of a quantity's unit
@@ -45,7 +69,8 @@ namespace mp_units {
  * @tparam ToU a unit to use for a target quantity
  */
 template<auto ToU, typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>>
-  requires detail::UnitCompatibleWith<MP_UNITS_REMOVE_CONST(decltype(ToU)), Q::unit, Q::quantity_spec>
+  requires detail::UnitCompatibleWith<MP_UNITS_REMOVE_CONST(decltype(ToU)), Q::unit, Q::quantity_spec> &&
+           (detail::might_store_converted_value<typename Q::rep>(Q::unit, ToU))
 [[nodiscard]] constexpr Quantity auto value_cast(FwdQ&& q)
 {
   return detail::sudo_cast<quantity<detail::make_reference(Q::quantity_spec, ToU), typename Q::rep>>(
@@ -82,6 +107,7 @@ template<Representation ToRep, typename FwdQ, Quantity Q = std::remove_cvref_t<F
  */
 template<Unit auto ToU, Representation ToRep, typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>>
   requires detail::UnitCompatibleWith<MP_UNITS_REMOVE_CONST(decltype(ToU)), Q::unit, Q::quantity_spec> &&
+           (detail::might_store_converted_value<ToRep>(Q::unit, ToU)) &&
            RepresentationOf<ToRep, Q::quantity_spec> && std::constructible_from<ToRep, typename Q::rep>
 [[nodiscard]] constexpr Quantity auto value_cast(FwdQ&& q)
 {
@@ -90,6 +116,7 @@ template<Unit auto ToU, Representation ToRep, typename FwdQ, Quantity Q = std::r
 
 template<Representation ToRep, Unit auto ToU, typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>>
   requires detail::UnitCompatibleWith<MP_UNITS_REMOVE_CONST(decltype(ToU)), Q::unit, Q::quantity_spec> &&
+           (detail::might_store_converted_value<ToRep>(Q::unit, ToU)) &&
            RepresentationOf<ToRep, Q::quantity_spec> && std::constructible_from<ToRep, typename Q::rep>
 [[nodiscard]] constexpr Quantity auto value_cast(FwdQ&& q)
 {
@@ -113,6 +140,7 @@ template<Representation ToRep, Unit auto ToU, typename FwdQ, Quantity Q = std::r
  */
 template<Quantity ToQ, typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>>
   requires detail::UnitCompatibleWith<MP_UNITS_NONCONST_TYPE(ToQ::unit), Q::unit, Q::quantity_spec> &&
+           (detail::might_store_converted_value<typename ToQ::rep>(Q::unit, ToQ::unit)) &&
            (ToQ::quantity_spec == Q::quantity_spec) && std::constructible_from<typename ToQ::rep, typename Q::rep>
 [[nodiscard]] constexpr Quantity auto value_cast(FwdQ&& q)
 {
@@ -130,7 +158,8 @@ template<Quantity ToQ, typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>>
  * @tparam ToU a unit to use for a target quantity point
  */
 template<Unit auto ToU, typename FwdQP, QuantityPoint QP = std::remove_cvref_t<FwdQP>>
-  requires detail::UnitCompatibleWith<MP_UNITS_REMOVE_CONST(decltype(ToU)), QP::unit, QP::quantity_spec>
+  requires detail::UnitCompatibleWith<MP_UNITS_REMOVE_CONST(decltype(ToU)), QP::unit, QP::quantity_spec> &&
+           (detail::might_store_converted_value<typename QP::rep>(QP::unit, ToU))
 [[nodiscard]] constexpr QuantityPoint auto value_cast(FwdQP&& qp)
 {
   return quantity_point{value_cast<ToU>(std::forward<FwdQP>(qp).quantity_from_origin_is_an_implementation_detail_),
@@ -168,6 +197,7 @@ template<Representation ToRep, typename FwdQP, QuantityPoint QP = std::remove_cv
  */
 template<Unit auto ToU, Representation ToRep, typename FwdQP, QuantityPoint QP = std::remove_cvref_t<FwdQP>>
   requires detail::UnitCompatibleWith<MP_UNITS_REMOVE_CONST(decltype(ToU)), QP::unit, QP::quantity_spec> &&
+           (detail::might_store_converted_value<ToRep>(QP::unit, ToU)) &&
            RepresentationOf<ToRep, QP::quantity_spec> && std::constructible_from<ToRep, typename QP::rep>
 [[nodiscard]] constexpr QuantityPoint auto value_cast(FwdQP&& qp)
 {
@@ -178,6 +208,7 @@ template<Unit auto ToU, Representation ToRep, typename FwdQP, QuantityPoint QP =
 
 template<Representation ToRep, Unit auto ToU, typename FwdQP, QuantityPoint QP = std::remove_cvref_t<FwdQP>>
   requires detail::UnitCompatibleWith<MP_UNITS_REMOVE_CONST(decltype(ToU)), QP::unit, QP::quantity_spec> &&
+           (detail::might_store_converted_value<ToRep>(QP::unit, ToU)) &&
            RepresentationOf<ToRep, QP::quantity_spec> && std::constructible_from<ToRep, typename QP::rep>
 [[nodiscard]] constexpr QuantityPoint auto value_cast(FwdQP&& qp)
 {
@@ -202,6 +233,7 @@ template<Representation ToRep, Unit auto ToU, typename FwdQP, QuantityPoint QP =
  */
 template<Quantity ToQ, typename FwdQP, QuantityPoint QP = std::remove_cvref_t<FwdQP>>
   requires detail::UnitCompatibleWith<MP_UNITS_NONCONST_TYPE(ToQ::unit), QP::unit, QP::quantity_spec> &&
+           (detail::might_store_converted_value<typename ToQ::rep>(QP::unit, ToQ::unit)) &&
            (ToQ::quantity_spec == QP::quantity_spec) && std::constructible_from<typename ToQ::rep, typename QP::rep>
 [[nodiscard]] constexpr QuantityPoint auto value_cast(FwdQP&& qp)
 {
@@ -239,6 +271,7 @@ template<Quantity ToQ, typename FwdQP, QuantityPoint QP = std::remove_cvref_t<Fw
  */
 template<QuantityPoint ToQP, typename FwdQP, QuantityPoint QP = std::remove_cvref_t<FwdQP>>
   requires detail::UnitCompatibleWith<MP_UNITS_NONCONST_TYPE(ToQP::unit), QP::unit, QP::quantity_spec> &&
+           (detail::might_store_converted_value<typename ToQP::rep>(QP::unit, ToQP::unit)) &&
            (ToQP::quantity_spec == QP::quantity_spec) &&
            (detail::same_absolute_point_origins(ToQP::point_origin, QP::point_origin)) &&
            std::constructible_from<typename ToQP::rep, typename QP::rep>

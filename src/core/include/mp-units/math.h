@@ -405,16 +405,16 @@ template<Unit auto To, auto R, typename Rep>
  */
 template<Unit auto To, auto R, typename Rep>
 [[nodiscard]] constexpr Quantity auto inverse(const quantity<R, Rep>& q)
-  requires requires {
+  requires(detail::might_store_converted_value<Rep>(one / get_unit(R), To)) && requires {
     representation_values<Rep>::one();
     value_cast<To>(representation_values<Rep>::one() / q);
   }
 {
   if constexpr (AssociatedUnit<MP_UNITS_REMOVE_CONST(decltype(To))>) {
     constexpr QuantitySpec auto qs = get_quantity_spec(To) * quantity<R, Rep>::quantity_spec;
-    return qs(representation_values<Rep>::one() * one).force_in(To * quantity<R, Rep>::unit) / q;
+    return qs(representation_values<Rep>::one() * one).force_in(To * q.unit) / q;
   } else
-    return (representation_values<Rep>::one() * one).force_in(To * quantity<R, Rep>::unit) / q;
+    return (representation_values<Rep>::one() * one).force_in(To * q.unit) / q;
 }
 
 /**

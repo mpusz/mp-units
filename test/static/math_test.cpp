@@ -278,4 +278,9 @@ static_assert(compare(kind_of<isq::time>(inverse<s>(1. * kHz)), 0.001 * s));
 // check if constraints work properly for a derived unit of a narrowed kind
 static_assert(compare(kind_of<isq::frequency>(inverse<Hz>(1 * s)), 1 * Hz));
 
+// overflow in conversion
+template<auto Q>
+concept overflowing_inverse = requires { requires !requires { inverse<si::hertz>(Q); }; };
+static_assert(overflowing_inverse<10'000'000 * si::femto<si::second>>);
+
 }  // namespace

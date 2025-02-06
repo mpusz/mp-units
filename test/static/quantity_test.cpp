@@ -1364,4 +1364,20 @@ static_assert(!QuantityOf<decltype(10 * isq::width[m]), isq::height>);          
 static_assert(QuantityOf<decltype(10 * isq::speed[m / s]), isq::speed>);
 static_assert(QuantityOf<decltype(20 * isq::length[m] / (2 * isq::time[s])), isq::speed>);  // derived unnamed quantity
 
+// overflowing unit conversions
+template<auto Q>
+concept overflowing_unit_conversion = requires {
+  requires !requires { quantity<si::metre, std::int8_t>(Q); };
+  requires !requires { quantity<si::milli<si::metre>, std::int16_t>(Q); };
+  requires !requires { Q.in(si::metre); };
+  requires !requires { Q.force_in(si::metre); };
+  requires !requires { Q + std::int8_t(1) * nm; };  // promotion to int
+  requires !requires { Q - std::int8_t(1) * nm; };  // promotion to int
+  requires !requires { Q % std::int8_t(1) * m; };
+  requires !requires { Q == std::int8_t(1) * m; };
+  requires !requires { Q < std::int8_t(1) * m; };
+  requires !requires { typename std::common_type_t<decltype(Q), quantity<si::metre, std::int8_t>>; };
+};
+static_assert(overflowing_unit_conversion<std::int8_t(1) * km>);
+
 }  // namespace

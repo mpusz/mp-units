@@ -35,6 +35,7 @@
 #include <mp-units/framework/reference_concepts.h>
 #include <mp-units/framework/representation_concepts.h>
 #include <mp-units/framework/unit_concepts.h>
+#include <mp-units/framework/value_cast.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <mp-units/ext/contracts.h>
@@ -67,7 +68,8 @@ concept ValuePreservingTo = Representation<std::remove_cvref_t<FromRep>> && Repr
                             Unit<MP_UNITS_REMOVE_CONST(decltype(FromUnit))> &&
                             Unit<MP_UNITS_REMOVE_CONST(decltype(ToUnit))> && std::assignable_from<ToRep&, FromRep> &&
                             (IsFloatingPoint<ToRep> || (!IsFloatingPoint<std::remove_cvref_t<FromRep>> &&
-                                                        (integral_conversion_factor(FromUnit, ToUnit))));
+                                                        integral_conversion_factor(FromUnit, ToUnit) &&
+                                                        might_store_converted_value<ToRep>(FromUnit, ToUnit)));
 
 template<typename QFrom, typename QTo>
 concept QuantityConvertibleTo =
@@ -100,12 +102,21 @@ template<typename Func, Quantity Q1, Quantity Q2>
 using common_quantity_for = quantity<get_common_reference(Q1::reference, Q2::reference),
                                      std::invoke_result_t<Func, typename Q1::rep, typename Q2::rep>>;
 
+template<Representation Rep, Unit U1, Unit U2>
+[[nodiscard]] consteval bool might_store_converted_common_value(U1 u1, U2 u2)
+{
+  constexpr Unit auto cu = get_common_unit(u1, u2);
+  return might_store_converted_value<Rep>(u1, cu) && might_store_converted_value<Rep>(u2, cu);
+}
+
 template<typename Func, typename Q1, typename Q2>
 concept CommonlyInvocableQuantities =
   Quantity<Q1> && Quantity<Q2> && HaveCommonReference<Q1::reference, Q2::reference> &&
   std::convertible_to<Q1, common_quantity_for<Func, Q1, Q2>> &&
   std::convertible_to<Q2, common_quantity_for<Func, Q1, Q2>> &&
-  InvocableQuantities<Func, Q1, Q2, get_common_quantity_spec(Q1::quantity_spec, Q2::quantity_spec)>;
+  InvocableQuantities<Func, Q1, Q2, get_common_quantity_spec(Q1::quantity_spec, Q2::quantity_spec)> &&
+  might_store_converted_common_value<std::invoke_result_t<Func, typename Q1::rep, typename Q2::rep>>(Q1::unit,
+                                                                                                     Q2::unit);
 
 template<auto R1, auto R2, typename Rep1, typename Rep2>
 concept SameValueAs = (equivalent(get_unit(R1), get_unit(R2))) && std::convertible_to<Rep1, Rep2>;
@@ -639,6 +650,8 @@ template<mp_units::Quantity Q1, mp_units::Quantity Q2>
   requires requires {
     { mp_units::get_common_reference(Q1::reference, Q2::reference) } -> mp_units::Reference;
     typename std::common_type_t<typename Q1::rep, typename Q2::rep>;
+    requires(
+      might_store_converted_common_value<std::common_type_t<typename Q1::rep, typename Q2::rep>>(Q1::unit, Q2::unit));
     requires mp_units::RepresentationOf<std::common_type_t<typename Q1::rep, typename Q2::rep>,
                                         mp_units::get_common_quantity_spec(Q1::quantity_spec, Q2::quantity_spec)>;
   }
