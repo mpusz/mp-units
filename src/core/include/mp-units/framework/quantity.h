@@ -105,7 +105,7 @@ using common_quantity_for = quantity<get_common_reference(Q1::reference, Q2::ref
 template<Representation Rep, Unit U1, Unit U2>
 [[nodiscard]] consteval bool might_store_converted_common_value(U1 u1, U2 u2)
 {
-  constexpr Unit auto cu = get_common_unit(u1, u2);
+  constexpr Unit auto cu = get_common_unit(U1{}, U2{});
   return might_store_converted_value<Rep>(u1, cu) && might_store_converted_value<Rep>(u2, cu);
 }
 
