@@ -1,5 +1,18 @@
 # Value Conversions
 
+One of the most important features of every unit library is to provide support for
+compile-time-enabled conversions of a [numerical value of a quantity](../../appendix/glossary.md#numerical-value).
+
+A [numerical value of a quantity](../../appendix/glossary.md#numerical-value) depends on two
+elements:
+
+- quantity representation type (e.g., `int`, `double`) that stores the number expressing the amount
+  of quantity,
+- [unit](../../appendix/glossary.md#unit) in which the quantity is being measured.
+
+Changing any of the above may require changing the value stored in a quantity.
+
+
 ## Value-preserving conversions
 
 ```cpp
