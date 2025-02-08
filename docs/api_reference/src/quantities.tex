@@ -445,6 +445,12 @@ template<@\libconcept{Reference}@ R1, @\libconcept{Reference}@ R2, @\libconcept{
 consteval @\libconcept{Reference}@ auto get_common_reference(R1 r1, R2 r2, Rest... rest)
   requires @\seebelownc@;
 
+// \ref{qty.ref.math}, math
+
+template<@\libconcept{Representation}@ Rep, @\libconcept{Reference}@ R>
+  requires requires { std::numeric_limits<Rep>::epsilon(); }
+constexpr quantity<R{}, Rep> epsilon(R r) noexcept;                                     // hosted
+
 // \ref{qty.rep}, representation
 
 enum class @\libglobal{quantity_character}@ { scalar, complex, vector, tensor };
@@ -550,6 +556,86 @@ template<@\libconcept{QuantitySpec}@ auto ToQS, @\seebelownc@>
   requires @\seebelownc@
 constexpr @\libconcept{Quantity}@ auto quantity_cast(@\seebelownc@ q);
 
+// \ref{qty.math}, math
+
+template<auto R, typename Rep>
+  requires @\seebelownc@
+constexpr quantity<R, Rep> abs(const quantity<R, Rep>& q) noexcept;
+
+template<std::intmax_t Num, std::intmax_t Den = 1, auto R, typename Rep>
+  requires @\seebelownc@
+constexpr quantity<pow<Num, Den>(R), Rep> pow(const quantity<R, Rep>& q) noexcept;      // hosted
+
+template<auto R, typename Rep>
+  requires @\seebelownc@
+constexpr quantity<sqrt(R), Rep> sqrt(const quantity<R, Rep>& q) noexcept;              // hosted
+
+template<auto R, typename Rep>
+  requires @\seebelownc@
+constexpr quantity<cbrt(R), Rep> cbrt(const quantity<R, Rep>& q) noexcept;              // hosted
+
+template<@\libconcept{ReferenceOf}@<dimensionless> auto R, typename Rep>
+  requires @\seebelownc@
+constexpr quantity<R, Rep> exp(const quantity<R, Rep>& q);                              // hosted
+
+template<auto R, typename Rep>
+  requires @\seebelownc@
+constexpr bool isfinite(const quantity<R, Rep>& a) noexcept;                            // hosted
+
+template<auto R, typename Rep>
+  requires @\seebelownc@
+constexpr bool isinf(const quantity<R, Rep>& a) noexcept;                               // hosted
+
+template<auto R, typename Rep>
+  requires @\seebelownc@
+constexpr bool isnan(const quantity<R, Rep>& a) noexcept;                               // hosted
+
+template<auto R, auto S, auto T, typename Rep1, typename Rep2, typename Rep3>
+  requires @\seebelownc@
+constexpr @\seebelownc@ fma(const quantity<R, Rep1>& a, const quantity<S, Rep2>& x,         // hosted
+                        const quantity<T, Rep3>& b) noexcept;
+
+template<auto R1, typename Rep1, auto R2, typename Rep2>
+  requires @\seebelownc@
+constexpr @\libconcept{QuantityOf}@<get_quantity_spec(R1)> auto fmod(const quantity<R1, Rep1>& x,      // hosted
+                                                      const quantity<R2, Rep2>& y) noexcept;
+
+template<auto R1, typename Rep1, auto R2, typename Rep2>
+  requires @\seebelownc@
+constexpr @\libconcept{QuantityOf}@<get_quantity_spec(R1)> auto remainder(const quantity<R1, Rep1>& x, // hosted
+                                                           const quantity<R2, Rep2>& y) noexcept;
+
+template<@\libconcept{Unit}@ auto To, auto R, typename Rep>
+constexpr quantity<@\exposidnc{clone-reference-with}@<To>(R), Rep> floor(                             // hosted
+  const quantity<R, Rep>& q) noexcept
+  requires @\seebelownc@;
+
+template<@\libconcept{Unit}@ auto To, auto R, typename Rep>
+constexpr quantity<@\exposidnc{clone-reference-with}@<To>(R), Rep> ceil(                              // hosted
+  const quantity<R, Rep>& q) noexcept
+  requires @\seebelownc@;
+
+template<@\libconcept{Unit}@ auto To, auto R, typename Rep>
+constexpr quantity<@\exposidnc{clone-reference-with}@<To>(R), Rep> round(                             // hosted
+  const quantity<R, Rep>& q) noexcept
+  requires @\seebelownc@;
+
+template<Unit auto To, auto R, typename Rep>
+constexpr @\libconcept{QuantityOf}@<dimensionless / get_quantity_spec(R)> auto inverse(                // hosted
+  const quantity<R, Rep>& q)
+  requires @\seebelownc@;
+
+template<auto R1, typename Rep1, auto R2, typename Rep2>
+  requires @\seebelownc@
+constexpr @\libconcept{QuantityOf}@<get_quantity_spec(get_common_reference(R1, R2))> auto hypot(       // hosted
+  const quantity<R1, Rep1>& x, const quantity<R2, Rep2>& y) noexcept;
+
+template<auto R1, typename Rep1, auto R2, typename Rep2, auto R3, typename Rep3>
+  requires @\seebelownc@
+constexpr @\libconcept{QuantityOf}@<get_quantity_spec(get_common_reference(R1, R2, R3))> auto hypot(   // hosted
+  const quantity<R1, Rep1>& x, const quantity<R2, Rep2>& y,
+  const quantity<R3, Rep3>& z) noexcept;
+
 }
 
 // \ref{qty.common.type}, \tcode{std::common_type} specializations
@@ -567,6 +653,103 @@ template<mp_units::@\libconcept{Quantity}@ Q, mp_units::@\libconcept{Representat
 struct @\libspec{std::common_type}{quantity}@<Value, Q> : std::common_type<Q, Value> {};
 
 namespace mp_units {
+
+// \ref{qty.rand}, random
+
+// \ref{qty.rand.uni.int}, class template \tcode{uniform_int_distribution}
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{integral}@<typename Q::rep>
+struct uniform_int_distribution;                                                        // hosted
+
+// \ref{qty.rand.uni.real}, class template \tcode{uniform_real_distribution}
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{floating_point}@<typename Q::rep>
+struct uniform_real_distribution;                                                       // hosted
+
+// \ref{qty.rand.bern.bin}, class template \tcode{binomial_distribution}
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{integral}@<typename Q::rep>
+struct binomial_distribution;                                                           // hosted
+
+// \ref{qty.rand.bern.negbin}, class template \tcode{negative_binomial_distribution}
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{integral}@<typename Q::rep>
+struct negative_binomial_distribution;                                                  // hosted
+
+// \ref{qty.rand.bern.geo}, class template \tcode{geometric_distribution}
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{integral}@<typename Q::rep>
+struct geometric_distribution;                                                          // hosted
+
+// \ref{qty.rand.pois.poisson}, class template \tcode{poisson_distribution}
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{integral}@<typename Q::rep>
+struct poisson_distribution;                                                            // hosted
+
+// \ref{qty.rand.pois.exp}, class template \tcode{exponential_distribution}
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{floating_point}@<typename Q::rep>
+struct exponential_distribution;                                                        // hosted
+
+// \ref{qty.rand.pois.gamma}, class template \tcode{gamma_distribution}
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{floating_point}@<typename Q::rep>
+struct gamma_distribution;                                                              // hosted
+
+// \ref{qty.rand.pois.weibull}, class template \tcode{weibull_distribution}
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{floating_point}@<typename Q::rep>
+struct weibull_distribution;                                                            // hosted
+
+// \ref{qty.rand.pois.extreme}, class template \tcode{extreme_value_distribution}
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{floating_point}@<typename Q::rep>
+struct extreme_value_distribution;                                                      // hosted
+
+// \ref{qty.rand.norm.normal}, class template \tcode{normal_distribution}
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{floating_point}@<typename Q::rep>
+struct normal_distribution;                                                             // hosted
+
+// \ref{qty.rand.norm.lognormal}, class template \tcode{lognormal_distribution}
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{floating_point}@<typename Q::rep>
+struct lognormal_distribution;                                                          // hosted
+
+// \ref{qty.rand.norm.chisq}, class template \tcode{chi_squared_distribution}
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{floating_point}@<typename Q::rep>
+struct chi_squared_distribution;                                                        // hosted
+
+// \ref{qty.rand.norm.cauchy}, class template \tcode{cauchy_distribution}
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{floating_point}@<typename Q::rep>
+struct cauchy_distribution;                                                             // hosted
+
+// \ref{qty.rand.norm.f}, class template \tcode{fisher_f_distribution}
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{floating_point}@<typename Q::rep>
+struct fisher_f_distribution;                                                           // hosted
+
+// \ref{qty.rand.norm.t}, class template \tcode{student_t_distribution}
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{floating_point}@<typename Q::rep>
+struct student_t_distribution;                                                          // hosted
+
+// \ref{qty.rand.samp.discrite}, class template \tcode{discrete_distribution}
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{integral}@<typename Q::rep>
+struct discrete_distribution;                                                           // hosted
+
+// \ref{qty.rand.samp.pconst}, class template \tcode{piecewise_constant_distribution}
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{floating_point}@<typename Q::rep>
+class piecewise_constant_distribution;                                                  // hosted
+
+// \ref{qty.rand.samp.plinear}, class template \tcode{piecewise_linear_distribution}
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{floating_point}@<typename Q::rep>
+class piecewise_linear_distribution;                                                    // hosted
 
 // \ref{qty.pt}, quantity point
 
@@ -662,6 +845,25 @@ constexpr @\libconcept{QuantityPoint}@ auto value_cast(@\seebelownc@ qp);
 template<@\libconcept{QuantitySpec}@ auto ToQS, @\seebelownc@>
   requires @\seebelownc@
 constexpr @\libconcept{QuantityPoint}@ auto quantity_cast(@\seebelownc@ qp);
+
+// \ref{qty.pt.math}, math
+
+template<auto R, auto PO, typename Rep>
+  requires requires(quantity<R, Rep> q) { isfinite(q); }
+constexpr bool isfinite(const quantity_point<R, PO, Rep>& a) noexcept;                  // hosted
+
+template<auto R, auto PO, typename Rep>
+  requires requires(quantity<R, Rep> q) { isinf(q); }
+constexpr bool isinf(const quantity_point<R, PO, Rep>& a) noexcept;                     // hosted
+
+template<auto R, auto PO, typename Rep>
+  requires requires(quantity<R, Rep> q) { isnan(q); }
+constexpr bool isnan(const quantity_point<R, PO, Rep>& a) noexcept;                     // hosted
+
+template<auto R, auto S, auto T, auto Origin, typename Rep1, typename Rep2, typename Rep3>
+  requires @\seebelownc@
+constexpr @\seebelownc@ fma(const quantity<R, Rep1>& a, const quantity<S, Rep2>& x,         // hosted
+                        const quantity_point<T, Origin, Rep3>& b) noexcept;
 
 }
 \end{codeblock}
@@ -1526,6 +1728,128 @@ consteval @\libconcept{Dimension}@ auto cbrt(@\libconcept{Dimension}@ auto d);
 
 \rSec3[qty.dim.sym.fmt]{Symbol formatting}
 
+\begin{itemdecl}
+template<std::size_t N>
+constexpr auto @\exposidnc{get-symbol-exponent}@(const fixed_string<N>& sign, @\exposidnc{ratio}@ r);  // \expos
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+Let \tcode{\exposidnc{num-to-txt}(x)} be an expression equal to
+an instantiation of \tcode{symbo_text} with the symbol text of \tcode{x} in base 10.
+
+\pnum
+\effects
+Determines \tcode{txt} as follows:
+\begin{itemize}
+\item
+If \tcode{r.den != 1} is \tcode{true}, let \tcode{txt} be
+\begin{codeblock}
+symbol_text("^") + symbol_text(sign) + symbol_text("(") + @\exposidnc{num-to-txt}@(r.num) +
+  symbol_text("/") + @\exposidnc{num-to-txt}@(r.den) + symbol_text(")")
+\end{codeblock}
+\item
+Otherwise, let \tcode{txt} be an instantiation of \tcode{symbol_text} such that:
+\begin{itemize}
+\item
+\tcode{txt.portable()} equals
+\begin{codeblock}
+"^" + sign + @\exposidnc{num-to-txt}@(Num).portable()
+\end{codeblock}
+\item
+\tcode{txt.utf8()} equals \tcode{txt.portable()} after replacing its elements according to \tref{qty.exp.portable.to.utf8}.
+\end{itemize}
+\end{itemize}
+
+\pnum
+\returns
+\tcode{txt}.
+
+\begin{simpletypetable}
+{UTF-8 exponent transformation}
+{qty.exp.portable.to.utf8}
+{lr}
+\topline
+\lhdr{Input value} & \rhdr{Replacement value} \\ \capsep
+\tcode{'\caret'} & None (erased) \\
+\tcode{'-'} & \unicode{207b}{SUPERSCRIPT MINUS} \\
+\tcode{'0'} & \unicode{2070}{SUPERSCRIPT ZERO} \\
+\tcode{'1'} & \unicode{00b9}{SUPERSCRIPT ONE} \\
+\tcode{'2'} & \unicode{00b2}{SUPERSCRIPT TWO} \\
+\tcode{'3'} & \unicode{00b3}{SUPERSCRIPT THREE} \\
+\tcode{'4'} & \unicode{2074}{SUPERSCRIPT FOUR} \\
+\tcode{'5'} & \unicode{2075}{SUPERSCRIPT FIVE} \\
+\tcode{'6'} & \unicode{2076}{SUPERSCRIPT SIX} \\
+\tcode{'7'} & \unicode{2077}{SUPERSCRIPT SEVEN} \\
+\tcode{'8'} & \unicode{2078}{SUPERSCRIPT EIGHT} \\
+\tcode{'9'} & \unicode{2079}{SUPERSCRIPT NINE} \\
+\end{simpletypetable}
+\end{itemdescr}
+
+\begin{itemdecl}
+template<typename CharT, std::size_t N, std::size_t M, std::@\stdconcept{output_iterator}@<CharT> Out>
+constexpr Out @\exposidnc{copy-symbol-text}@(const symbol_text<N, M>& txt,  // \expos
+                               character_set char_set, Out out);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Copies \tcode{txt} to \tcode{out} according to \tcode{char_set} as follows:
+\begin{itemize}
+\item
+If \tcode{char_set == character_set::utf8} is \tcode{true}, then:
+\begin{itemize}
+\item
+If \tcode{std::is_same_v<CharT, char8_t>} is \tcode{true}, equivalent to:
+\begin{codeblock}
+out = std::ranges::copy(txt.utf8(), out)
+\end{codeblock}
+\item
+Otherwise, if \tcode{std::is_same_v<CharT, char>} is \tcode{true}, then:
+\begin{itemize}
+\item
+If
+\begin{codeblock}
+std::text_encoding::literal().mib() != std::text_encoding::id::UTF8
+\end{codeblock}
+is \tcode{true}, equivalent to:
+\begin{codeblock}
+out = std::ranges::copy(txt.portable(), out)
+\end{codeblock}
+\item
+Otherwise, equivalent to:
+\begin{codeblock}
+for (const char8_t ch : txt.utf8()) *out++ = static_cast<char>(ch);
+\end{codeblock}
+\end{itemize}
+\item
+Otherwise, no effect.
+\begin{note}
+UTF-8 text can't be copied to \tcode{CharT} output.
+\end{note}
+\end{itemize}
+\item
+Otherwise, if \tcode{std::is_same_v<CharT, char>} is \tcode{true}, equivalent to:
+\begin{codeblock}
+out = std::ranges::copy(txt.portable(), out)
+\end{codeblock}
+\item
+Otherwise, no effect.
+\begin{note}
+Portable text can't be copied to \tcode{CharT} output.
+\end{note}
+\end{itemize}
+
+\pnum
+\returns
+\tcode{out}.
+
+\pnum
+\throws
+\tcode{std::invalid_argument} if there is no effect.
+\end{itemdescr}
+
 \indexlibrarymember{dimension_symbol_to}{Dimension}
 \begin{itemdecl}
 template<typename CharT = char, std::@\stdconcept{output_iterator}@<CharT> Out, @\libconcept{Dimension}@ D>
@@ -1534,12 +1858,50 @@ constexpr Out dimension_symbol_to(Out out, D d, const dimension_symbol_formattin
 
 \begin{itemdescr}
 \pnum
+Let \tcode{E} be the type of the dimension whose symbol text is being copied.
+
+\pnum
 \effects
-TBD.
+Copies the symbol text of the dimension \tcode{D} to \tcode{out} according to \tcode{fmt} as follows:
+\begin{itemize}
+\item
+If
+\tcode{\exposidnc{is-derived-from-specialization-of}<D, \exposidnc{expr-fractions}>()}
+is \tcode{true},
+let \tcode{Nums} and \tcode{Dens}
+be packs denoting the template arguments of
+\tcode{D::\exposidnc{nums}} and \tcode{D::\exposidnc{dens}}, respectively.
+\begin{itemize}
+\item
+If \tcode{sizeof...(Nums) == 0 \&\& sizeof...(Dens) == 0} is \tcode{true},
+equivalent to \tcode{*out++ = '1'}.
+\item
+Otherwise, copies the symbol text of the numerators \tcode{(..., void(Nums))}, in that order, as follows.
+Then, copies the symbol text of the denominators \tcode{(..., void(Dens))}, in that order, as follows.
+\end{itemize}
+\item
+If \tcode{E} is a specialization of \tcode{power},
+copies the symbol text of \tcode{E::\exposidnc{factor}}, as follows.
+Then, copies the symbol text of $\tcode{E::\exposidnc{exponent}} \neq 1$, determined as follows:
+\begin{itemize}
+\item
+If \tcode{E} is a denominator, let \tcode{sign} be \tcode{"-"}.
+Otherwise, let \tcode{sign} be \tcode{""}.
+\item
+Let \tcode{txt} be equivalent to \tcode{\exposidnc{get-symbol-exponent}(sign, E::\exposidnc{exponent})}.
+\end{itemize}
+\item
+If \tcode{E::\exposid{symbol}} is a valid expression, let \tcode{txt} be that.
+\item
+Each time \tcode{txt} is determined, equivalent to:
+\begin{codeblock}
+out = @\exposidnc{copy-symbol-text}@(txt, fmt.char_set, out)
+\end{codeblock}
+\end{itemize}
 
 \pnum
 \returns
-TBD.
+\tcode{out}.
 \end{itemdescr}
 
 \indexlibrarymember{dimension_symbol}{Dimension}
@@ -1550,11 +1912,33 @@ consteval std::string_view dimension_symbol(D);
 
 \begin{itemdescr}
 \pnum
-\effects
-Equivalent to:
+\returns
+A value \tcode{sv} such that
+\range{sv.data()}{sv.data() + sv.size()} has static storage duration and
+the following assertion holds:
 \begin{codeblock}
-TBD.
+std::basic_string<CharT> s;
+dimension_symbol_to<CharT>(std::back_inserter(s), D{}, fmt);
+assert(sv == s);
 \end{codeblock}
+
+\pnum
+\begin{example}
+\begin{codeblock}
+import mp_units;
+
+using namespace mp_units;
+
+static_assert(dimension_symbol(dimension_one) == "1");
+static_assert(dimension_symbol(isq::dim_length) == "L");
+static_assert(dimension_symbol(isq::dim_thermodynamic_temperature) == "\u0398");
+static_assert(
+  dimension_symbol<{character_set::portable}>(isq::dim_thermodynamic_temperature) == "O");
+static_assert(dimension_symbol(isq::speed.dimension) == "LT\u207B\u00B9");
+static_assert(dimension_symbol<{character_set::portable}>(isq::speed.dimension) == "LT^-1");
+static_assert(dimension_symbol(pow<1, 2>(isq::dim_length)) == "L^(1/2)");
+\end{codeblock}
+\end{example}
 \end{itemdescr}
 
 \rSec2[qty.spec]{Quantity specification}
@@ -2343,6 +2727,10 @@ struct @\exposidnc{unit-magnitude}@ {  // \expos
   template<auto... Ms2>
   friend consteval auto @\exposidnc{common-magnitude}@(@\exposidnc{unit-magnitude}@,             // \expos
                                          @\exposidnc{unit-magnitude}@<Ms2...>);
+
+  template<typename CharT, std::@\stdconcept{output_iterator}@<CharT> Out>
+  friend constexpr Out @\exposidnc{magnitude-symbol}@(Out out, @\exposidnc{unit-magnitude}@,     // \expos
+                                        const unit_symbol_formatting& fmt);
 };
 
 }
@@ -2514,6 +2902,23 @@ friend consteval auto @\exposidnc{common-magnitude}@(@\exposidnc{unit-magnitude}
 The largest magnitude \tcode{C}
 such that each input magnitude is expressible
 by only positive powers relative to \tcode{C}.
+\end{itemdescr}
+
+\indexlibrarymemberexpos{UnitMagnitude}{magnitude-symbol}
+\begin{itemdecl}
+template<typename CharT, std::@\stdconcept{output_iterator}@<CharT> Out>
+friend constexpr Out @\exposidnc{magnitude-symbol}@(Out out, @\exposidnc{unit-magnitude}@,                   // \expos
+                                      const unit_symbol_formatting& fmt);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+TBD.
+
+\pnum
+\returns
+\tcode{out}.
 \end{itemdescr}
 
 \rSec3[qty.unit.traits]{Traits}
@@ -3309,6 +3714,60 @@ using @\exposidnc{to-quantity-spec}@ = decltype(@\exposidnc{get-associated-quant
 
 \rSec3[qty.unit.sym.fmt]{Symbol formatting}
 
+\begin{itemdecl}
+template<typename CharT, std::@\stdconcept{output_iterator}@<CharT> Out>
+constexpr Out @\exposidnc{copy-separator}@(Out out, const unit_symbol_formatting& fmt);  // \expos
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+if (fmt.separator == unit_symbol_separator::half_high_dot) {
+  const std::string_view dot = "\u22C5" /* @\unicode{22c5}{DOT OPERATOR}@ */;
+  out = std::ranges::copy(dot, out);
+} else {
+  *out++ = ' ';
+}
+return out;
+\end{codeblock}
+
+\pnum
+\throws
+\tcode{std::invalid_argument} if
+\tcode{fmt.separator == unit_symbol_separator::half_high_dot \&\& fmt.char_set != character_set::utf8}
+is \tcode{true}.
+\begin{note}
+\tcode{unit_symbol_separator::half_high_dot} can be only used with \tcode{character_set::utf8}.
+\end{note}
+\end{itemdescr}
+
+\begin{itemdecl}
+template<typename... Us, Unit U>
+consteval @\libconcept{Unit}@ auto @\exposidnc{get-common-unit-in}@(common_unit<Us...>, U u);  // \expos
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+auto get_magnitude = [&]() {
+  if constexpr (requires { common_unit<Us...>::@\exposidnc{mag}@; })
+    return common_unit<Us...>::@\exposidnc{mag}@;
+  else
+    return mag<1>;
+};
+constexpr auto canonical_u = get_canonical_unit(u);
+constexpr @\libconcept{UnitMagnitude}@ auto cmag = get_magnitude() / canonical_u.mag;
+if constexpr (cmag == mag<1>)
+  return u;
+else
+  return scaled_unit<cmag, U>{};
+\end{codeblock}
+\end{itemdescr}
+
 \indexlibrarymember{unit_symbol_to}{Unit}
 \begin{itemdecl}
 template<typename CharT = char, std::@\stdconcept{output_iterator}@<CharT> Out, @\libconcept{Unit}@ U>
@@ -3317,12 +3776,107 @@ constexpr Out unit_symbol_to(Out out, U u, const unit_symbol_formatting& fmt = {
 
 \begin{itemdescr}
 \pnum
+Let \tcode{E} be the type of the unit whose symbol text is being copied.
+
+\pnum
 \effects
-TBD.
+Copies the symbol text of the unit \tcode{U} to \tcode{out} according to \tcode{fmt} as follows:
+\begin{itemize}
+\item
+If \tcode{E} is of the form \tcode{common_unit<First, Tail...>}, then:
+\begin{itemize}
+\item
+Let \tcode{copy_unit(x)} be equivalent to
+copying the symbol text of
+\begin{codeblock}
+@\exposidnc{get-common-unit-in}@(common_unit<First, Tail...>{}, x)
+\end{codeblock}
+as follows.
+\item
+Equivalent to:
+\begin{codeblock}
+out = std::ranges::copy(std::string_view("EQUIV{"), out);
+copy_unit(First{});
+(...,
+  (out = std::ranges::copy(std::string_view(", "), out), copy_unit(Tail{})));
+*out++ = '}';
+\end{codeblock}
+\end{itemize}
+\item
+If \tcode{E} is of the form \tcode{scaled_unit<M, V>}, then:
+\begin{itemize}
+\item
+First, equivalent to:
+\begin{codeblock}
+*out++ = '(';
+out = @\exposidnc{magnitude-symbol}@<CharT>(out, M, fmt);  // see \ref{qty.unit.mag.utils}
+if constexpr (space_before_unit_symbol<scaled_unit<M, V>::@\exposidnc{reference-unit}@>)
+  *out++ = ' ';
+\end{codeblock}
+\item
+Then, copies the symbol text of \tcode{E::\exposidnc{reference-unit}} as follows.
+\item
+Then, equivalent to \tcode{*out++ = ')'}.
+\end{itemize}
+\item
+If
+\tcode{\exposidnc{is-derived-from-specialization-of}<U, \exposidnc{expr-fractions}>()}
+is \tcode{true},
+let \tcode{Nums} and \tcode{Dens}
+be packs denoting the template arguments of
+\tcode{U::\exposidnc{nums}} and \tcode{U::\exposidnc{dens}}, respectively.
+\begin{itemize}
+\item
+If \tcode{sizeof...(Nums) == 0 \&\& sizeof...(Dens) == 0} is \tcode{true},
+no effect.
+\item
+Otherwise, performs the following algorithm.
+To intersperse separators between steps
+is to evaluate an expression equivalent to
+\tcode{\exposidnc{copy-separator}<CharT>(out, fmt)}.
+First, copies the symbol text of the numerators \tcode{(..., void(Nums))}, in that order, as follows, with separators interspersed in-between.
+Then, equivalent to:
+\begin{codeblock}
+using enum unit_symbol_solidus;
+if (fmt.solidus == always ||
+    (fmt.solidus == one_denominator && sizeof...(Dens) == 1)) {
+  if constexpr (sizeof...(Nums) == 0) *out++ = '1';
+  *out++ = '/';
+  if (sizeof...(Dens) > 1) *out++ = '(';
+} else if constexpr (sizeof...(Nums) > 0) {
+  out = @\exposidnc{copy-separator}@<CharT>(out, fmt);
+}
+\end{codeblock}
+Then, copies the symbol text of the denominators \tcode{(..., void(Dens))}, in that order, as follows, with separators interspersed in-between.
+Then, equivalent to:
+\begin{codeblock}
+using enum unit_symbol_solidus;
+if (fmt.solidus == always && sizeof...(Dens) > 1) *out++ = ')';
+\end{codeblock}
+\end{itemize}
+\item
+If \tcode{E} is a specialization of \tcode{power},
+copies the symbol text of \tcode{E::\exposidnc{factor}}, as follows.
+Then, copies the symbol text of $\tcode{E::\exposidnc{exponent}} \neq 1$, determined as follows:
+\begin{itemize}
+\item
+If \tcode{E} is part of a denominator, let \tcode{sign} be \tcode{"-"}.
+Otherwise, let \tcode{sign} be \tcode{""}.
+\item
+Let \tcode{txt} be equivalent to \tcode{\exposidnc{get-symbol-exponent}(sign, E::\exposidnc{exponent})} (see \ref{qty.dim.sym.fmt}).
+\end{itemize}
+\item
+If \tcode{E::\exposid{symbol}} is a valid expression, let \tcode{txt} be that.
+\item
+Each time \tcode{txt} is determined, equivalent to:
+\begin{codeblock}
+out = @\exposidnc{copy-symbol-text}@(txt, fmt.char_set, out)  // see \ref{qty.dim.sym.fmt}
+\end{codeblock}
+\end{itemize}
 
 \pnum
 \returns
-TBD.
+\tcode{out}.
 \end{itemdescr}
 
 \indexlibrarymember{unit_symbol}{Unit}
@@ -3333,11 +3887,88 @@ consteval std::string_view unit_symbol(U);
 
 \begin{itemdescr}
 \pnum
-\effects
-Equivalent to:
+\returns
+A value \tcode{sv} such that
+\range{sv.data()}{sv.data() + sv.size()} has static storage duration and
+the following assertion holds:
 \begin{codeblock}
-TBD.
+std::basic_string<CharT> s;
+unit_symbol_to<CharT>(std::back_inserter(s), U{}, fmt);
+assert(sv == s);
 \end{codeblock}
+
+\pnum
+\begin{example}
+\begin{codeblock}
+import mp_units;
+
+using namespace mp_units;
+using enum character_set;
+using enum unit_symbol_solidus;
+using enum unit_symbol_separator;
+
+static_assert(unit_symbol(metre) == "m");
+static_assert(unit_symbol(degree_Celsius) == "\u2103");
+static_assert(unit_symbol<{.char_set = portable}>(degree_Celsius) == "`C");
+static_assert(unit_symbol(kilogram) == "kg");
+
+static_assert(unit_symbol(mag<100> * metre) == "(100 m)");
+static_assert(unit_symbol(mag<1000> * metre) == "(10\u00B3 m)");
+static_assert(unit_symbol<{.char_set = portable}>(mag<1000> * metre) == "(10^3 m)");
+static_assert(unit_symbol(mag<6000> * metre) == "(6 \u00D7 10\u00B3 m)");
+static_assert(unit_symbol(mag<10600> * metre) == "(10600 m)");
+static_assert(unit_symbol(mag_ratio<1, 18> * metre / second) == "(1/18 m)/s");
+static_assert(unit_symbol(mag_ratio<1, 18> * (metre / second)) == "(1/18 m/s)");
+
+static_assert(unit_symbol(mag<\u03C0> * one) == "(\u03C0)");
+static_assert(unit_symbol(mag<\u03C0> * metre) == "(\u03C0 m)");
+static_assert(unit_symbol(mag<2> * mag<\u03C0> * metre) == "(2 \u03C0 m)");
+static_assert(unit_symbol<{.separator = half_high_dot}>(mag<2> * mag<\u03C0> * metre) ==
+              "(2\u22C5\u03C0 m)");
+static_assert(unit_symbol(mag<1> / mag<\u03C0> * one) == "(1/\u03C0)");
+static_assert(unit_symbol<usf{.solidus = never}>(mag<1> / mag<\u03C0> * one) ==
+              "(\u03C0\u207B\u00B9)");
+static_assert(unit_symbol<usf{.char_set = portable, .solidus = never}>(
+                mag<1> / mag<\u03C0> * one) == "(pi^-1)");
+
+static_assert(unit_symbol(mag<1> / (mag<2> * mag<\u03C0>)*metre) ==
+              "(2\u207B\u00B9 \u03C0\u207B\u00B9 m)");
+static_assert(unit_symbol<usf{.solidus = always}>(mag<1> / (mag<2> * mag<\u03C0>)*metre) ==
+              "(1/(2 \u03C0) m)");
+static_assert(unit_symbol(mag_ratio<1, 2> * mag<\u03C0> * metre) == "(\u03C0/2 m)");
+static_assert(unit_symbol(mag_power<\u03C0, 2> * one) == "(\u03C0\u00B2)");
+static_assert(unit_symbol(mag_power<\u03C0, 1, 2> * one) == "(\u03C0^(1/2))");
+
+static_assert(unit_symbol(get_common_unit(kilo<metre>, mile)) ==
+              "EQUIV{(1/25146 mi), (1/15625 km)}");
+
+static_assert(unit_symbol(kilo<metre> * metre) == "km m");
+static_assert(unit_symbol<usf{.separator = half_high_dot}>(kilo<metre> * metre) ==
+              "km\u22C5m");
+static_assert(unit_symbol(metre / metre) == "");
+static_assert(unit_symbol(kilo<metre> / metre) == "km/m");
+static_assert(unit_symbol<usf{.solidus = never}>(kilo<metre> / metre) ==
+              "km m\u207B\u00B9");
+static_assert(unit_symbol<usf{.char_set = portable, .solidus = never}>(kilo<metre> /
+                                                                       metre) == "km m^-1");
+static_assert(unit_symbol(metre / second) == "m/s");
+static_assert(unit_symbol<usf{.solidus = never}>(metre / second) == "m s\u207B\u00B9");
+static_assert(unit_symbol<usf{.solidus = never, .separator = half_high_dot}>(metre /
+                                                                             second) ==
+              "m\u22C5s\u207B\u00B9");
+static_assert(unit_symbol<usf{.solidus = never, .separator = half_high_dot}>(
+                kilogram * metre / square(second)) == "kg\u22C5m\u22C5s\u207B\u00B2");
+static_assert(unit_symbol<usf{.solidus = always}>(one / metre / square(second)) ==
+              "1/(m s\u00B2)");
+static_assert(unit_symbol(pow<1, 2>(metre / second)) == "m^(1/2)/s^(1/2)");
+static_assert(unit_symbol<usf{.solidus = never}>(pow<1, 2>(metre / second)) ==
+              "m^(1/2) s^-(1/2)");
+static_assert(unit_symbol(litre / (mag<100> * kilo<metre>)) == "L/(100 km)");
+static_assert(unit_symbol((mag<10> * metre) / (mag<20> * second)) == "(10 m)/(20 s)");
+static_assert(unit_symbol(pow<2>(mag<3600> * second)) == "(3600 s)\u00B2");
+\end{codeblock}
+Some of the assertions depend on the implementation-defined total order of types.
+\end{example}
 \end{itemdescr}
 
 \rSec2[qty.ref.concepts]{Concepts}
@@ -3673,6 +4304,39 @@ requires {
   get_common_unit(get_unit(r1), get_unit(r2), get_unit(rest)...);
 }
 \end{codeblock}
+\end{itemdescr}
+
+\rSec2[qty.ref.utils]{Utilities}
+
+\indexlibrarymemberexpos{Reference}{clone-reference-with}
+\indexlibrarymemberexpos{AssociatedUnit}{clone-reference-with}
+\begin{itemdecl}
+template<AssociatedUnit auto To, AssociatedUnit From>
+consteval decltype(To) @\exposidnc{clone-reference-with}@(From);
+template<Unit auto To, QuantitySpec QS, Unit U>
+consteval reference<QS, decltype(To)> @\exposidnc{clone-reference-with}@(reference<QS, U>);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\returns
+\tcode{\{\}}.
+\end{itemdescr}
+
+\rSec2[qty.ref.math]{Math}
+
+\indexlibrarymember{epsilon}{Reference}
+\begin{itemdecl}
+template<@\libconcept{Representation}@ Rep, @\libconcept{Reference}@ R>
+  requires requires { std::numeric_limits<Rep>::epsilon(); }
+constexpr quantity<R{}, Rep> epsilon(R r) noexcept;                                     // hosted
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\tcode{return \{static_cast<Rep>(std::numeric_limits<Rep>::epsilon()), r\};}
 \end{itemdescr}
 
 \rSec1[qty.rep]{Representation}
@@ -5416,6 +6080,433 @@ return quantity{std::forward<FwdQ>(q).@\exposidnc{numerical-value}@, @\exposidnc
 \end{codeblock}
 \end{itemdescr}
 
+\rSec2[qty.math]{Math}
+
+\indexlibrarymember{abs}{quantity}
+\begin{itemdecl}
+template<auto R, typename Rep>
+  requires requires(Rep v) { abs(v); } || requires(Rep v) { std::abs(v); }
+constexpr quantity<R, Rep> abs(const quantity<R, Rep>& q) noexcept;
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+using std::abs;
+return {static_cast<Rep>(abs(q.numerical_value_ref_in(q.unit))), R};
+\end{codeblock}
+\end{itemdescr}
+
+\indexlibrarymember{pow}{quantity}
+\begin{itemdecl}
+template<std::intmax_t Num, std::intmax_t Den = 1, auto R, typename Rep>
+  requires (Den != 0) && requires(Rep v) {
+    representation_values<Rep>::one();
+    requires requires { pow(v, 1.0); } || requires { std::pow(v, 1.0); };
+  }
+constexpr quantity<pow<Num, Den>(R), Rep> pow(const quantity<R, Rep>& q) noexcept;      // hosted
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+if constexpr (Num == 0) {
+  return quantity<pow<Num, Den>(R), Rep>::one();
+} else if constexpr (Num == Den) {
+  return q;
+} else {
+  using std::pow;
+  return {static_cast<Rep>(pow(q.numerical_value_ref_in(q.unit),
+                               static_cast<double>(Num) / static_cast<double>(Den))),
+          pow<Num, Den>(R)};
+}
+\end{codeblock}
+\end{itemdescr}
+
+\indexlibrarymember{sqrt}{quantity}
+\begin{itemdecl}
+template<auto R, typename Rep>
+  requires requires(Rep v) { sqrt(v); } || requires(Rep v) { std::sqrt(v); }
+constexpr quantity<sqrt(R), Rep> sqrt(const quantity<R, Rep>& q) noexcept;              // hosted
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+using std::sqrt;
+return {static_cast<Rep>(sqrt(q.numerical_value_ref_in(q.unit))), sqrt(R)};
+\end{codeblock}
+\end{itemdescr}
+
+\indexlibrarymember{cbrt}{quantity}
+\begin{itemdecl}
+template<auto R, typename Rep>
+  requires requires(Rep v) { cbrt(v); } || requires(Rep v) { std::cbrt(v); }
+constexpr quantity<cbrt(R), Rep> cbrt(const quantity<R, Rep>& q) noexcept;              // hosted
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+using std::cbrt;
+return {static_cast<Rep>(cbrt(q.numerical_value_ref_in(q.unit))), cbrt(R)};
+\end{codeblock}
+\end{itemdescr}
+
+\indexlibrarymember{exp}{quantity}
+\begin{itemdecl}
+template<@\libconcept{ReferenceOf}@<dimensionless> auto R, typename Rep>
+  requires requires(Rep v) { exp(v); } || requires(Rep v) { std::exp(v); }
+constexpr quantity<R, Rep> exp(const quantity<R, Rep>& q);                              // hosted
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+using std::exp;
+return value_cast<get_unit(R)>(
+  quantity{static_cast<Rep>(exp(q.force_numerical_value_in(q.unit))),
+           @\exposidnc{clone-reference-with}@<one>(R)});
+\end{codeblock}
+\end{itemdescr}
+
+\indexlibrarymember{isfinite}{quantity}
+\begin{itemdecl}
+template<auto R, typename Rep>
+  requires requires(Rep v) { isfinite(v); } || requires(Rep v) { std::isfinite(v); }
+constexpr bool isfinite(const quantity<R, Rep>& a) noexcept;                            // hosted
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+using std::isfinite;
+return isfinite(a.numerical_value_ref_in(a.unit));
+\end{codeblock}
+\end{itemdescr}
+
+\indexlibrarymember{isinf}{quantity}
+\begin{itemdecl}
+template<auto R, typename Rep>
+  requires requires(Rep v) { isinf(v); } || requires(Rep v) { std::isinf(v); }
+constexpr bool isinf(const quantity<R, Rep>& a) noexcept;                               // hosted
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+using std::isinf;
+return isinf(a.numerical_value_ref_in(a.unit));
+\end{codeblock}
+\end{itemdescr}
+
+\indexlibrarymember{isnan}{quantity}
+\begin{itemdecl}
+template<auto R, typename Rep>
+  requires requires(Rep v) { isnan(v); } || requires(Rep v) { std::isnan(v); }
+constexpr bool isnan(const quantity<R, Rep>& a) noexcept;                               // hosted
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+using std::isnan;
+return isnan(a.numerical_value_ref_in(a.unit));
+\end{codeblock}
+\end{itemdescr}
+
+\indexlibrarymember{fma}{quantity}
+\begin{itemdecl}
+template<auto R, auto S, auto T, typename Rep1, typename Rep2, typename Rep3>
+  requires
+    requires {
+      get_common_quantity_spec(get_quantity_spec(R) * get_quantity_spec(S),
+                               get_quantity_spec(T));
+    } && (equivalent(get_unit(R) * get_unit(S), get_unit(T))) &&
+    requires(Rep1 v1, Rep2 v2, Rep3 v3) {
+      requires requires { fma(v1, v2, v3); } || requires { std::fma(v1, v2, v3); };
+    }
+constexpr @\libconcept{QuantityOf}@<get_common_quantity_spec(get_quantity_spec(R) * get_quantity_spec(S),
+                                              get_quantity_spec(T))> auto
+fma(const quantity<R, Rep1>& a, const quantity<S, Rep2>& x,                             // hosted
+    const quantity<T, Rep3>& b) noexcept;
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+using std::fma;
+return quantity{fma(a.numerical_value_ref_in(a.unit), x.numerical_value_ref_in(x.unit),
+                    b.numerical_value_ref_in(b.unit)),
+                get_common_reference(R * S, T)};
+\end{codeblock}
+\end{itemdescr}
+
+\indexlibrarymember{fmod}{quantity}
+\begin{itemdecl}
+template<auto R1, typename Rep1, auto R2, typename Rep2>
+  requires requires(Rep1 v1, Rep2 v2) {
+    get_common_reference(R1, R2);
+    requires requires { fmod(v1, v2); } || requires { std::fmod(v1, v2); };
+  }
+constexpr @\libconcept{QuantityOf}@<get_quantity_spec(R1)> auto fmod(const quantity<R1, Rep1>& x,      // hosted
+                                                      const quantity<R2, Rep2>& y) noexcept;
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+constexpr auto ref = get_common_reference(R1, R2);
+constexpr auto unit = get_unit(ref);
+using std::fmod;
+return quantity{fmod(x.numerical_value_in(unit), y.numerical_value_in(unit)), ref};
+\end{codeblock}
+\end{itemdescr}
+
+\indexlibrarymember{remainder}{quantity}
+\begin{itemdecl}
+template<auto R1, typename Rep1, auto R2, typename Rep2>
+  requires requires(Rep1 v1, Rep2 v2) {
+    get_common_reference(R1, R2);
+    requires requires { remainder(v1, v2); } || requires { std::remainder(v1, v2); };
+  }
+constexpr @\libconcept{QuantityOf}@<get_quantity_spec(R1)> auto remainder(const quantity<R1, Rep1>& x, // hosted
+                                                           const quantity<R2, Rep2>& y) noexcept;
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+constexpr auto ref = get_common_reference(R1, R2);
+constexpr auto unit = get_unit(ref);
+using std::remainder;
+return quantity{remainder(x.numerical_value_in(unit), y.numerical_value_in(unit)), ref};
+\end{codeblock}
+\end{itemdescr}
+
+\indexlibrarymember{floor}{quantity}
+\begin{itemdecl}
+template<@\libconcept{Unit}@ auto To, auto R, typename Rep>
+constexpr quantity<@\exposidnc{clone-reference-with}@<To>(R), Rep> floor(                             // hosted
+  const quantity<R, Rep>& q) noexcept
+  requires((!treat_as_floating_point<Rep>) || requires(Rep v) { floor(v); } ||
+           requires(Rep v) { std::floor(v); }) &&
+            (equivalent(To, get_unit(R)) || requires {
+              q.force_in(To);
+              representation_values<Rep>::one();
+            });
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+const auto handle_signed_results = [&]<typename T>(const T& res) {
+  if (res > q) {
+    return res - T::one();
+  }
+  return res;
+};
+if constexpr (treat_as_floating_point<Rep>) {
+  using std::floor;
+  if constexpr (equivalent(To, get_unit(R))) {
+    return {static_cast<Rep>(floor(q.numerical_value_ref_in(q.unit))),
+            @\exposidnc{clone-reference-with}@<To>(R)};
+  } else {
+    return handle_signed_results(
+      quantity{static_cast<Rep>(floor(q.force_numerical_value_in(To))),
+               @\exposidnc{clone-reference-with}@<To>(R)});
+  }
+} else {
+  if constexpr (equivalent(To, get_unit(R))) {
+    return q.force_in(To);
+  } else {
+    return handle_signed_results(q.force_in(To));
+  }
+}
+\end{codeblock}
+\end{itemdescr}
+
+\indexlibrarymember{ceil}{quantity}
+\begin{itemdecl}
+template<@\libconcept{Unit}@ auto To, auto R, typename Rep>
+constexpr quantity<@\exposidnc{clone-reference-with}@<To>(R), Rep> ceil(                              // hosted
+  const quantity<R, Rep>& q) noexcept
+  requires((!treat_as_floating_point<Rep>) || requires(Rep v) { ceil(v); } ||
+           requires(Rep v) { std::ceil(v); }) &&
+            (equivalent(To, get_unit(R)) || requires {
+              q.force_in(To);
+              representation_values<Rep>::one();
+            });
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+const auto handle_signed_results = [&]<typename T>(const T& res) {
+  if (res < q) {
+    return res + T::one();
+  }
+  return res;
+};
+if constexpr (treat_as_floating_point<Rep>) {
+  using std::ceil;
+  if constexpr (equivalent(To, get_unit(R))) {
+    return {static_cast<Rep>(ceil(q.numerical_value_ref_in(q.unit))),
+            @\exposidnc{clone-reference-with}@<To>(R)};
+  } else {
+    return handle_signed_results(quantity{
+      static_cast<Rep>(ceil(q.force_numerical_value_in(To))), @\exposidnc{clone-reference-with}@<To>(R)});
+  }
+} else {
+  if constexpr (equivalent(To, get_unit(R))) {
+    return q.force_in(To);
+  } else {
+    return handle_signed_results(q.force_in(To));
+  }
+}
+\end{codeblock}
+\end{itemdescr}
+
+\indexlibrarymember{round}{quantity}
+\begin{itemdecl}
+template<@\libconcept{Unit}@ auto To, auto R, typename Rep>
+constexpr quantity<@\exposidnc{clone-reference-with}@<To>(R), Rep> round(                             // hosted
+  const quantity<R, Rep>& q) noexcept
+  requires((!treat_as_floating_point<Rep>) || requires(Rep v) { round(v); } ||
+           requires(Rep v) { std::round(v); }) &&
+            (equivalent(To, get_unit(R)) || requires {
+              ::mp_units::floor<To>(q);
+              representation_values<Rep>::one();
+            });
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+if constexpr (equivalent(To, get_unit(R))) {
+  if constexpr (treat_as_floating_point<Rep>) {
+    using std::round;
+    return {static_cast<Rep>(round(q.numerical_value_ref_in(q.unit))),
+            @\exposidnc{clone-reference-with}@<To>(R)};
+  } else {
+    return q.force_in(To);
+  }
+} else {
+  const auto res_low = mp_units::floor<To>(q);
+  const auto res_high = res_low + res_low.one();
+  const auto diff0 = q - res_low;
+  const auto diff1 = res_high - q;
+  if (diff0 == diff1) {
+    if (static_cast<int>(res_low.numerical_value_ref_in(To)) & 1) {
+      return res_high;
+    }
+    return res_low;
+  }
+  if (diff0 < diff1) {
+    return res_low;
+  }
+  return res_high;
+}
+\end{codeblock}
+\end{itemdescr}
+
+\indexlibrarymember{inverse}{quantity}
+\begin{itemdecl}
+template<Unit auto To, auto R, typename Rep>
+constexpr @\libconcept{QuantityOf}@<dimensionless / get_quantity_spec(R)> auto inverse(                // hosted
+  const quantity<R, Rep>& q)
+  requires requires {
+    representation_values<Rep>::one();
+    value_cast<To>(1 / q);
+  };
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+return (representation_values<Rep>::one() * one).force_in(To * quantity<R, Rep>::unit) / q;
+\end{codeblock}
+\end{itemdescr}
+
+\indexlibrarymember{hypot}{quantity}
+\begin{itemdecl}
+template<auto R1, typename Rep1, auto R2, typename Rep2>
+  requires requires(Rep1 v1, Rep2 v2) {
+    get_common_reference(R1, R2);
+    requires requires { hypot(v1, v2); } || requires { std::hypot(v1, v2); };
+  }
+constexpr @\libconcept{QuantityOf}@<get_quantity_spec(get_common_reference(R1, R2))> auto hypot(       // hosted
+  const quantity<R1, Rep1>& x, const quantity<R2, Rep2>& y) noexcept;
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+constexpr auto ref = get_common_reference(R1, R2);
+constexpr auto unit = get_unit(ref);
+using std::hypot;
+return quantity{hypot(x.numerical_value_in(unit), y.numerical_value_in(unit)), ref};
+\end{codeblock}
+\end{itemdescr}
+
+\indexlibrarymember{hypot}{quantity}
+\begin{itemdecl}
+template<auto R1, typename Rep1, auto R2, typename Rep2, auto R3, typename Rep3>
+  requires requires(Rep1 v1, Rep2 v2, Rep3 v3) {
+    get_common_reference(R1, R2, R3);
+    requires requires { hypot(v1, v2, v3); } || requires { std::hypot(v1, v2, v3); };
+  }
+constexpr @\libconcept{QuantityOf}@<get_quantity_spec(get_common_reference(R1, R2, R3))> auto hypot(   // hosted
+  const quantity<R1, Rep1>& x, const quantity<R2, Rep2>& y,
+  const quantity<R3, Rep3>& z) noexcept;
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+constexpr auto ref = get_common_reference(R1, R2);
+constexpr auto unit = get_unit(ref);
+using std::hypot;
+return quantity{
+  hypot(x.numerical_value_in(unit), y.numerical_value_in(unit), z.numerical_value_in(unit)),
+  ref};
+\end{codeblock}
+\end{itemdescr}
+
 \rSec2[qty.common.type]{\tcode{std::common_type} specializations}
 
 \begin{codeblock}
@@ -5440,6 +6531,945 @@ struct @\libspec{std::common_type}{quantity}@<Q, Value> {
   using type = mp_units::quantity<Q::reference, std::common_type_t<typename Q::rep, Value>>;
 };
 \end{codeblock}
+
+\rSec2[qty.rand]{Random}
+
+\rSec3[qty.rand.req]{Requirements}
+
+% Local command to index names as members of all random number distribution types.
+\newcommand{\indexrand}[1]{%
+\indexlibrarymemberx{uniform_int_distribution}{#1}%
+\indexlibrarymemberx{uniform_real_distribution}{#1}%
+\indexlibrarymemberx{binomial_distribution}{#1}%
+\indexlibrarymemberx{negative_binomial_distribution}{#1}%
+\indexlibrarymemberx{geometric_distribution}{#1}%
+\indexlibrarymemberx{poisson_distribution}{#1}%
+\indexlibrarymemberx{exponential_distribution}{#1}%
+\indexlibrarymemberx{gamma_distribution}{#1}%
+\indexlibrarymemberx{weibull_distribution}{#1}%
+\indexlibrarymemberx{extreme_value_distribution}{#1}%
+\indexlibrarymemberx{normal_distribution}{#1}%
+\indexlibrarymemberx{lognormal_distribution}{#1}%
+\indexlibrarymemberx{chi_squared_distribution}{#1}%
+\indexlibrarymemberx{cauchy_distribution}{#1}%
+\indexlibrarymemberx{fisher_f_distribution}{#1}%
+\indexlibrarymemberx{student_t_distribution}{#1}%
+\indexlibrarymemberx{discrete_distribution}{#1}%
+\indexlibrarymemberx{piecewise_constant_distribution}{#1}%
+\indexlibrarymemberx{piecewise_linear_distribution}{#1}%
+}
+
+\pnum
+A class \tcode{D}
+instantiated from a class template described in subclause \ref{qty.rand}
+meets the following requirements.
+In this subclase,
+\begin{itemize}
+\item
+\tcode{d} is a value of \tcode{D}, and \tcode{x} is a (possibly const) value of \tcode{D},
+\item
+\tcode{args} denotes an \fakegrammarterm{expression-list},
+\item
+$\tcode{param}_i$ denotes the $i_{th}$ function parameter, and
+\item
+$\tcode{unwrapped_param}_i$ denotes \tcode{$\tcode{param}_i$.numerical_value_ref_in(Q::unit)}
+if $\tcode{param}_i$ is an lvalue reference to \tcode{const Q}, and
+$\tcode{param}_i$ otherwise.
+\end{itemize}
+
+\begin{itemdecl}
+D u;
+D u = D();
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Default-initializes the \tcode{base} subobject.
+\end{itemdescr}
+
+\begin{itemdecl}
+D(args)
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Initializes the \tcode{base} subobject with
+$\tcode{unwrapped_param}_0, \ldots, \tcode{unwrapped_param}_n$.
+\end{itemdescr}
+
+\indexrand{operator()}%
+\begin{itemdecl}
+d(g)
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\tcode{return base::operator()(g) * Q::reference;}
+\end{itemdescr}
+
+\indexrand{min}%
+\indexrand{max}%
+\indexlibrarymemberx{uniform_int_distribution}{a}
+\indexlibrarymemberx{uniform_int_distribution}{b}
+\indexlibrarymemberx{uniform_real_distribution}{a}
+\indexlibrarymemberx{uniform_real_distribution}{b}
+\indexlibrarymemberx{binomial_distribution}{t}
+\indexlibrarymemberx{negative_binomial_distribution}{k}
+\indexlibrarymemberx{extreme_value_distribution}{a}
+\indexlibrarymemberx{normal_distribution}{mean}
+\indexlibrarymemberx{normal_distribution}{stddev}
+\indexlibrarymemberx{lognormal_distribution}{m}
+\indexlibrarymemberx{lognormal_distribution}{s}
+\indexlibrarymemberx{cauchy_distribution}{a}
+\indexlibrarymemberx{cauchy_distribution}{b}
+\begin{itemdecl}
+x.@\placeholdernc{f}@()
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+For all other \placeholder{f},
+unless otherwise specified,
+equivalent to:
+\tcode{return base::\placeholdernc{f}() * Q::reference;}
+\end{itemdescr}
+
+\rSec3[qty.rand.uni]{Uniform distributions}
+
+\rSec4[qty.rand.uni.int]{Class template \tcode{uniform_int_distribution}}
+
+\indexlibraryglobal{uniform_int_distribution}
+\begin{codeblock}
+namespace mp_units {
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{integral}@<typename Q::rep>
+struct uniform_int_distribution                                                         // hosted
+    : public std::uniform_int_distribution<typename Q::rep> {
+  using rep = Q::rep;
+  using base = std::uniform_int_distribution<rep>;
+
+  uniform_int_distribution();
+  uniform_int_distribution(const Q& a, const Q& b);
+
+  template<typename Generator>
+  Q operator()(Generator& g);
+
+  Q a() const;
+  Q b() const;
+
+  Q min() const;
+  Q max() const;
+};
+}
+\end{codeblock}
+
+\rSec4[qty.rand.uni.real]{Class template \tcode{uniform_real_distribution}}
+
+\indexlibraryglobal{uniform_real_distribution}
+\begin{codeblock}
+namespace mp_units {
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{floating_point}@<typename Q::rep>
+struct uniform_real_distribution                                                        // hosted
+    : public std::uniform_real_distribution<typename Q::rep> {
+  using rep = Q::rep;
+  using base = std::uniform_real_distribution<rep>;
+
+  uniform_real_distribution();
+  uniform_real_distribution(const Q& a, const Q& b);
+
+  template<typename Generator>
+  Q operator()(Generator& g);
+
+  Q a() const;
+  Q b() const;
+
+  Q min() const;
+  Q max() const;
+};
+}
+\end{codeblock}
+
+\rSec3[qty.rand.bern]{Bernoulli distributions}
+
+\rSec4[qty.rand.bern.bin]{Class template \tcode{binomial_distribution}}
+
+\indexlibraryglobal{binomial_distribution}
+\begin{codeblock}
+namespace mp_units {
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{integral}@<typename Q::rep>
+struct binomial_distribution                                                            // hosted
+    : public std::binomial_distribution<typename Q::rep> {
+  using rep = Q::rep;
+  using base = std::binomial_distribution<rep>;
+
+  binomial_distribution();
+  binomial_distribution(const Q& t, double p);
+
+  template<typename Generator>
+  Q operator()(Generator& g);
+
+  Q t() const;
+
+  Q min() const;
+  Q max() const;
+};
+}
+\end{codeblock}
+
+\rSec4[qty.rand.bern.negbin]{Class template \tcode{negative_binomial_distribution}}
+
+\indexlibraryglobal{negative_binomial_distribution}
+\begin{codeblock}
+namespace mp_units {
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{integral}@<typename Q::rep>
+struct negative_binomial_distribution                                                   // hosted
+    : public std::negative_binomial_distribution<typename Q::rep> {
+  using rep = Q::rep;
+  using base = std::negative_binomial_distribution<rep>;
+
+  negative_binomial_distribution();
+  negative_binomial_distribution(const Q& k, double p);
+
+  template<typename Generator>
+  Q operator()(Generator& g);
+
+  Q k() const;
+
+  Q min() const;
+  Q max() const;
+};
+}
+\end{codeblock}
+
+% Should this come before the above, like in the C++ standard?
+\rSec4[qty.rand.bern.geo]{Class template \tcode{geometric_distribution}}
+
+\indexlibraryglobal{geometric_distribution}
+\begin{codeblock}
+namespace mp_units {
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{integral}@<typename Q::rep>
+struct geometric_distribution                                                           // hosted
+    : public std::geometric_distribution<typename Q::rep> {
+  using rep = Q::rep;
+  using base = std::geometric_distribution<rep>;
+
+  geometric_distribution();
+  explicit geometric_distribution(double p);
+
+  template<typename Generator>
+  Q operator()(Generator& g);
+
+  Q min() const;
+  Q max() const;
+};
+}
+\end{codeblock}
+
+\rSec3[qty.rand.pois]{Poisson distrubutions}
+
+\rSec4[qty.rand.pois.poisson]{Class template \tcode{poisson_distribution}}
+
+\indexlibraryglobal{poisson_distribution}
+\begin{codeblock}
+namespace mp_units {
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{integral}@<typename Q::rep>
+struct poisson_distribution                                                             // hosted
+    : public std::poisson_distribution<typename Q::rep> {
+  using rep = Q::rep;
+  using base = std::poisson_distribution<rep>;
+
+  poisson_distribution();
+  explicit poisson_distribution(double p);
+
+  template<typename Generator>
+  Q operator()(Generator& g);
+
+  Q min() const;
+  Q max() const;
+};
+}
+\end{codeblock}
+
+\rSec4[qty.rand.pois.exp]{Class template \tcode{exponential_distribution}}
+
+\indexlibraryglobal{exponential_distribution}
+\begin{codeblock}
+namespace mp_units {
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{floating_point}@<typename Q::rep>
+struct exponential_distribution                                                         // hosted
+    : public std::exponential_distribution<typename Q::rep> {
+  using rep = Q::rep;
+  using base = std::exponential_distribution<rep>;
+
+  exponential_distribution();
+  explicit exponential_distribution(const rep& lambda);
+
+  template<typename Generator>
+  Q operator()(Generator& g);
+
+  Q min() const;
+  Q max() const;
+};
+}
+\end{codeblock}
+
+\rSec4[qty.rand.pois.gamma]{Class template \tcode{gamma_distribution}}
+
+\indexlibraryglobal{gamma_distribution}
+\begin{codeblock}
+namespace mp_units {
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{floating_point}@<typename Q::rep>
+struct gamma_distribution                                                               // hosted
+    : public std::gamma_distribution<typename Q::rep> {
+  using rep = Q::rep;
+  using base = std::gamma_distribution<rep>;
+
+  gamma_distribution();
+  gamma_distribution(const rep& alpha, const rep& beta);
+
+  template<typename Generator>
+  Q operator()(Generator& g);
+
+  Q min() const;
+  Q max() const;
+};
+}
+\end{codeblock}
+
+\rSec4[qty.rand.pois.weibull]{Class template \tcode{weibull_distribution}}
+
+\indexlibraryglobal{weibull_distribution}
+\begin{codeblock}
+namespace mp_units {
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{floating_point}@<typename Q::rep>
+struct weibull_distribution                                                             // hosted
+    : public std::weibull_distribution<typename Q::rep> {
+  using rep = Q::rep;
+  using base = std::weibull_distribution<rep>;
+
+  weibull_distribution();
+  weibull_distribution(const rep& a, const rep& b);
+
+  template<typename Generator>
+  Q operator()(Generator& g);
+
+  Q min() const;
+  Q max() const;
+};
+}
+\end{codeblock}
+
+\rSec4[qty.rand.pois.extreme]{Class template \tcode{extreme_value_distribution}}
+
+\indexlibraryglobal{extreme_value_distribution}
+\begin{codeblock}
+namespace mp_units {
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{floating_point}@<typename Q::rep>
+struct extreme_value_distribution                                                       // hosted
+    : public std::extreme_value_distribution<typename Q::rep> {
+  using rep = Q::rep;
+  using base = std::extreme_value_distribution<rep>;
+
+  extreme_value_distribution();
+  extreme_value_distribution(const Q& a, const rep& b);
+
+  template<typename Generator>
+  Q operator()(Generator& g);
+
+  Q a() const;
+
+  Q min() const;
+  Q max() const;
+};
+}
+\end{codeblock}
+
+\indexlibrarymemberx{extreme_value_distribution}{operator()}
+\begin{itemdecl}
+template<typename Generator>
+Q operator()(Generator& g);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\tcode{return Q(base::operator()(g));}
+\end{itemdescr}
+
+\rSec3[qty.rand.norm]{Normal distributions}
+
+\rSec4[qty.rand.norm.normal]{Class template \tcode{normal_distribution}}
+
+\indexlibraryglobal{normal_distribution}
+\begin{codeblock}
+namespace mp_units {
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{floating_point}@<typename Q::rep>
+struct normal_distribution                                                              // hosted
+    : public std::normal_distribution<typename Q::rep> {
+  using rep = Q::rep;
+  using base = std::normal_distribution<rep>;
+
+  normal_distribution();
+  normal_distribution(const Q& mean, const Q& stddev);
+
+  template<typename Generator>
+  Q operator()(Generator& g);
+
+  Q mean() const;
+  Q stddev() const;
+
+  Q min() const;
+  Q max() const;
+};
+}
+\end{codeblock}
+
+\indexlibrarymemberx{normal_distribution}{operator()}
+\begin{itemdecl}
+template<typename Generator>
+Q operator()(Generator& g);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\tcode{return Q(base::operator()(g));}
+\end{itemdescr}
+
+\rSec4[qty.rand.norm.lognormal]{Class template \tcode{lognormal_distribution}}
+
+\indexlibraryglobal{lognormal_distribution}
+\begin{codeblock}
+namespace mp_units {
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{floating_point}@<typename Q::rep>
+struct lognormal_distribution                                                           // hosted
+    : public std::lognormal_distribution<typename Q::rep> {
+  using rep = Q::rep;
+  using base = std::lognormal_distribution<rep>;
+
+  lognormal_distribution();
+  lognormal_distribution(const Q& m, const Q& s);
+
+  template<typename Generator>
+  Q operator()(Generator& g);
+
+  Q m() const;
+  Q s() const;
+
+  Q min() const;
+  Q max() const;
+};
+}
+\end{codeblock}
+
+\rSec4[qty.rand.norm.chisq]{Class template \tcode{chi_squared_distribution}}
+
+\indexlibraryglobal{chi_squared_distribution}
+\begin{codeblock}
+namespace mp_units {
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{floating_point}@<typename Q::rep>
+struct chi_squared_distribution                                                         // hosted
+    : public std::chi_squared_distribution<typename Q::rep> {
+  using rep = Q::rep;
+  using base = std::chi_squared_distribution<rep>;
+
+  chi_squared_distribution();
+  explicit chi_squared_distribution(const rep& n);
+
+  template<typename Generator>
+  Q operator()(Generator& g);
+
+  Q min() const;
+  Q max() const;
+};
+}
+\end{codeblock}
+
+\rSec4[qty.rand.norm.cauchy]{Class template \tcode{cauchy_distribution}}
+
+\indexlibraryglobal{cauchy_distribution}
+\begin{codeblock}
+namespace mp_units {
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{floating_point}@<typename Q::rep>
+struct cauchy_distribution                                                              // hosted
+    : public std::cauchy_distribution<typename Q::rep> {
+  using rep = Q::rep;
+  using base = std::cauchy_distribution<rep>;
+
+  cauchy_distribution();
+  cauchy_distribution(const Q& a, const Q& b);
+
+  template<typename Generator>
+  Q operator()(Generator& g);
+
+  Q a() const;
+  Q b() const;
+
+  Q min() const;
+  Q max() const;
+};
+}
+\end{codeblock}
+
+\rSec4[qty.rand.norm.f]{Class template \tcode{fisher_f_distribution}}
+
+\indexlibraryglobal{fisher_f_distribution}
+\begin{codeblock}
+namespace mp_units {
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{floating_point}@<typename Q::rep>
+struct fisher_f_distribution                                                            // hosted
+    : public std::fisher_f_distribution<typename Q::rep> {
+  using rep = Q::rep;
+  using base = std::fisher_f_distribution<rep>;
+
+  fisher_f_distribution();
+  fisher_f_distribution(const rep& m, const rep& n);
+
+  template<typename Generator>
+  Q operator()(Generator& g);
+
+  Q min() const;
+  Q max() const;
+};
+}
+\end{codeblock}
+
+\rSec4[qty.rand.norm.t]{Class template \tcode{student_t_distribution}}
+
+\indexlibraryglobal{student_t_distribution}
+\begin{codeblock}
+namespace mp_units {
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{floating_point}@<typename Q::rep>
+struct student_t_distribution                                                           // hosted
+    : public std::student_t_distribution<typename Q::rep> {
+  using rep = Q::rep;
+  using base = std::student_t_distribution<rep>;
+
+  student_t_distribution();
+  explicit student_t_distribution(const rep& n);
+
+  template<typename Generator>
+  Q operator()(Generator& g);
+
+  Q min() const;
+  Q max() const;
+};
+}
+\end{codeblock}
+
+\rSec3[qty.rand.samp]{Sampling distributions}
+
+\rSec4[qty.rand.samp.discrite]{Class template \tcode{discrete_distribution}}
+
+\indexlibraryglobal{discrete_distribution}
+\begin{codeblock}
+namespace mp_units {
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{integral}@<typename Q::rep>
+struct discrete_distribution                                                            // hosted
+    : public std::discrete_distribution<typename Q::rep> {
+  using rep = Q::rep;
+  using base = std::discrete_distribution<rep>;
+
+  discrete_distribution();
+
+  template<typename InputIt>
+  discrete_distribution(InputIt first, InputIt last);
+
+  discrete_distribution(std::initializer_list<double> weights);
+
+  template<typename UnaryOperation>
+  discrete_distribution(std::size_t count, double xmin, double xmax, UnaryOperation unary_op);
+
+  template<typename Generator>
+  Q operator()(Generator& g);
+
+  Q min() const;
+  Q max() const;
+};
+}
+\end{codeblock}
+
+\rSec4[qty.rand.samp.utils]{Utilities}
+
+\pnum
+The following exposition-only function templates are used in the following subclauses.
+
+\begin{itemdecl}
+template<Quantity Q, typename InputIt>
+std::vector<typename Q::rep> @\exposidnc{i-qty-to-rep}@(InputIt first, InputIt last);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+std::vector<typename Q::rep> intervals_rep;
+intervals_rep.reserve(static_cast<std::size_t>(std::distance(first, last)));
+for (InputIt itr = first; itr != last; ++itr) {
+  intervals_rep.push_back(itr->numerical_value_ref_in(Q::unit));
+}
+return intervals_rep;
+\end{codeblock}
+\end{itemdescr}
+
+\begin{itemdecl}
+template<Quantity Q>
+std::vector<typename Q::rep> @\exposidnc{bl-qty-to-rep}@(std::initializer_list<Q>& bl);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+std::vector<typename Q::rep> bl_rep;
+bl_rep.reserve(bl.size());
+for (const Q& qty : bl) {
+  bl_rep.push_back(qty.numerical_value_ref_in(Q::unit));
+}
+return bl_rep;
+\end{codeblock}
+\end{itemdescr}
+
+\begin{itemdecl}
+template<Quantity Q, typename UnaryOperation>
+std::vector<typename Q::rep> @\exposidnc{fw-bl-pwc}@(std::initializer_list<Q>& bl, UnaryOperation fw);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+using rep = Q::rep;
+std::vector<rep> w_bl;
+w_bl.reserve(bl.size());
+for (const Q& qty : bl) {
+  w_bl.push_back(fw(qty));
+}
+std::vector<rep> weights;
+weights.reserve(bl.size());
+for (std::size_t i = 0; i < bl.size() - 1; ++i) {
+  weights.push_back(w_bl[i] + w_bl[i + 1]);
+}
+weights.push_back(0);
+return weights;
+\end{codeblock}
+\end{itemdescr}
+
+\begin{itemdecl}
+template<Quantity Q, typename UnaryOperation>
+std::vector<typename Q::rep> @\exposidnc{fw-bl-pwl}@(std::initializer_list<Q>& bl, UnaryOperation fw);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+std::vector<typename Q::rep> weights;
+weights.reserve(bl.size());
+for (const Q& qty : bl) {
+  weights.push_back(fw(qty));
+}
+return weights;
+\end{codeblock}
+\end{itemdescr}
+
+\rSec4[qty.rand.samp.pconst]{Class template \tcode{piecewise_constant_distribution}}
+
+\indexlibraryglobal{piecewise_constant_distribution}
+\begin{codeblock}
+namespace mp_units {
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{floating_point}@<typename Q::rep>
+class piecewise_constant_distribution                                                   // hosted
+    : public std::piecewise_constant_distribution<typename Q::rep> {
+  using rep = Q::rep;
+  using base = std::piecewise_constant_distribution<rep>;
+
+  template<typename InputIt>
+  piecewise_constant_distribution(const std::vector<rep>& i, InputIt first_w);
+
+  piecewise_constant_distribution(const std::vector<rep>& bl, const std::vector<rep>& weights);
+
+public:
+  piecewise_constant_distribution();
+
+  template<typename InputIt1, typename InputIt2>
+  piecewise_constant_distribution(InputIt1 first_i, InputIt1 last_i, InputIt2 first_w);
+
+  template<typename UnaryOperation>
+  piecewise_constant_distribution(std::initializer_list<Q> bl, UnaryOperation fw);
+
+  template<typename UnaryOperation>
+  piecewise_constant_distribution(std::size_t nw, const Q& xmin, const Q& xmax,
+                                  UnaryOperation fw);
+
+  template<typename Generator>
+  Q operator()(Generator& g);
+
+  std::vector<Q> intervals() const;
+
+  Q min() const;
+  Q max() const;
+};
+}
+\end{codeblock}
+
+\indexlibraryctor{piecewise_constant_distribution}
+\begin{itemdecl}
+template<typename InputIt>
+piecewise_constant_distribution(const std::vector<rep>& i, InputIt first_w);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Initializes the \tcode{base} subobject with
+\begin{codeblock}
+base(i.cbegin(), i.cend(), first_w)
+\end{codeblock}
+\end{itemdescr}
+
+\indexlibraryctor{piecewise_constant_distribution}
+\begin{itemdecl}
+piecewise_constant_distribution(const std::vector<rep>& bl, const std::vector<rep>& weights);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Initializes the \tcode{base} subobject with
+\begin{codeblock}
+base(bl.cbegin(), bl.cend(), weights.cbegin())
+\end{codeblock}
+\end{itemdescr}
+
+\indexlibraryctor{piecewise_constant_distribution}
+\begin{itemdecl}
+template<typename InputIt1, typename InputIt2>
+piecewise_constant_distribution(InputIt1 first_i, InputIt1 last_i, InputIt2 first_w);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+piecewise_constant_distribution(@\exposidnc{i-qty-to-rep}@<Q>(first_i, last_i), first_w)
+\end{codeblock}
+\end{itemdescr}
+
+\indexlibraryctor{piecewise_constant_distribution}
+\begin{itemdecl}
+template<typename UnaryOperation>
+piecewise_constant_distribution(std::initializer_list<Q> bl, UnaryOperation fw);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+piecewise_constant_distribution(@\exposidnc{bl-qty-to-rep}@(bl), @\exposidnc{fw-bl-pwc}@(bl, fw))
+\end{codeblock}
+\end{itemdescr}
+
+\indexlibraryctor{piecewise_constant_distribution}
+\begin{itemdecl}
+template<typename UnaryOperation>
+piecewise_constant_distribution(std::size_t nw, const Q& xmin, const Q& xmax, UnaryOperation fw);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Initializes the \tcode{base} subobject with
+\begin{codeblock}
+base(nw, xmin.numerical_value_ref_in(Q::unit), xmax.numerical_value_ref_in(Q::unit),
+     [fw](rep val) { return fw(val * Q::reference); })
+\end{codeblock}
+\end{itemdescr}
+
+\indexlibrarymemberx{piecewise_constant_distribution}{intervals}
+\begin{itemdecl}
+std::vector<Q> intervals() const;
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+const std::vector<rep> intervals_rep = base::intervals();
+std::vector<Q> intervals_qty;
+intervals_qty.reserve(intervals_rep.size());
+for (const rep& val : intervals_rep) {
+  intervals_qty.push_back(val * Q::reference);
+}
+return intervals_qty;
+\end{codeblock}
+\end{itemdescr}
+
+\rSec4[qty.rand.samp.plinear]{Class template \tcode{piecewise_linear_distribution}}
+
+\indexlibraryglobal{piecewise_linear_distribution}
+\begin{codeblock}
+namespace mp_units {
+template<@\libconcept{Quantity}@ Q>
+  requires std::@\stdconcept{floating_point}@<typename Q::rep>
+class piecewise_linear_distribution                                                     // hosted
+    : public std::piecewise_linear_distribution<typename Q::rep> {
+  using rep = Q::rep;
+  using base = std::piecewise_linear_distribution<rep>;
+
+  template<typename InputIt>
+  piecewise_linear_distribution(const std::vector<rep>& i, InputIt first_w);
+
+  piecewise_linear_distribution(const std::vector<rep>& bl, const std::vector<rep>& weights);
+
+public:
+  piecewise_linear_distribution() : base() {}
+
+  template<typename InputIt1, typename InputIt2>
+  piecewise_linear_distribution(InputIt1 first_i, InputIt1 last_i, InputIt2 first_w);
+
+  template<typename UnaryOperation>
+  piecewise_linear_distribution(std::initializer_list<Q> bl, UnaryOperation fw);
+
+  template<typename UnaryOperation>
+  piecewise_linear_distribution(std::size_t nw, const Q& xmin, const Q& xmax, UnaryOperation fw);
+
+  template<typename Generator>
+  Q operator()(Generator& g);
+
+  std::vector<Q> intervals() const;
+
+  Q min() const;
+  Q max() const;
+};
+}
+\end{codeblock}
+
+\indexlibraryctor{piecewise_linear_distribution}
+\begin{itemdecl}
+template<typename InputIt>
+piecewise_linear_distribution(const std::vector<rep>& i, InputIt first_w);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Initializes the \tcode{base} subobject with
+\begin{codeblock}
+base(i.cbegin(), i.cend(), first_w)
+\end{codeblock}
+\end{itemdescr}
+
+\indexlibraryctor{piecewise_linear_distribution}
+\begin{itemdecl}
+piecewise_linear_distribution(const std::vector<rep>& bl, const std::vector<rep>& weights);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Initializes the \tcode{base} subobject with
+\begin{codeblock}
+base(bl.cbegin(), bl.cend(), weights.cbegin())
+\end{codeblock}
+\end{itemdescr}
+
+\indexlibraryctor{piecewise_linear_distribution}
+\begin{itemdecl}
+template<typename InputIt1, typename InputIt2>
+piecewise_linear_distribution(InputIt1 first_i, InputIt1 last_i, InputIt2 first_w);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+piecewise_linear_distribution(@\exposidnc{i-qty-to-rep}@<Q>(first_i, last_i), first_w)
+\end{codeblock}
+\end{itemdescr}
+
+\indexlibraryctor{piecewise_linear_distribution}
+\begin{itemdecl}
+template<typename UnaryOperation>
+piecewise_linear_distribution(std::initializer_list<Q> bl, UnaryOperation fw);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+piecewise_linear_distribution(@\exposidnc{bl-qty-to-rep}@(bl), @\exposidnc{fw-bl-pwl}@(bl, fw))
+\end{codeblock}
+\end{itemdescr}
+
+\indexlibraryctor{piecewise_linear_distribution}
+\begin{itemdecl}
+template<typename UnaryOperation>
+piecewise_linear_distribution(std::size_t nw, const Q& xmin, const Q& xmax, UnaryOperation fw);
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Initializes the \tcode{base} subobject with
+\begin{codeblock}
+base(nw, xmin.numerical_value_ref_in(Q::unit), xmax.numerical_value_ref_in(Q::unit),
+     [fw](rep val) { return fw(val * Q::reference); })
+\end{codeblock}
+\end{itemdescr}
+
+\indexlibrarymemberx{piecewise_linear_distribution}{intervals}
+\begin{itemdecl}
+std::vector<Q> intervals() const;
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+const std::vector<rep> intervals_rep = base::intervals();
+std::vector<Q> intervals_qty;
+intervals_qty.reserve(intervals_rep.size());
+for (const rep& val : intervals_rep) {
+  intervals_qty.push_back(val * Q::reference);
+}
+return intervals_qty;
+\end{codeblock}
+\end{itemdescr}
 
 \rSec1[qty.pt]{Quantity point}
 
@@ -6641,6 +8671,79 @@ Equivalent to:
 \begin{codeblock}
 return QP{quantity_cast<ToQS>(std::forward<FwdQP>(qp).@\exposidnc{quantity_from_origin}@),
           QP::point_origin};
+\end{codeblock}
+\end{itemdescr}
+
+\rSec2[qty.pt.math]{Math}
+
+\indexlibrarymember{isfinite}{quantity_point}
+\begin{itemdecl}
+template<auto R, auto PO, typename Rep>
+  requires requires(quantity<R, Rep> q) { isfinite(q); }
+constexpr bool isfinite(const quantity_point<R, PO, Rep>& a) noexcept;                  // hosted
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\tcode{return isfinite(a.quantity_ref_from(a.point_origin));}
+\end{itemdescr}
+
+\indexlibrarymember{isinf}{quantity_point}
+\begin{itemdecl}
+template<auto R, auto PO, typename Rep>
+  requires requires(quantity<R, Rep> q) { isinf(q); }
+constexpr bool isinf(const quantity_point<R, PO, Rep>& a) noexcept;                     // hosted
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\tcode{return isinf(a.quantity_ref_from(a.point_origin));}
+\end{itemdescr}
+
+\indexlibrarymember{isnan}{quantity_point}
+\begin{itemdecl}
+template<auto R, auto PO, typename Rep>
+  requires requires(quantity<R, Rep> q) { isnan(q); }
+constexpr bool isnan(const quantity_point<R, PO, Rep>& a) noexcept;                     // hosted
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\tcode{return isnan(a.quantity_ref_from(a.point_origin));}
+\end{itemdescr}
+
+\indexlibrarymember{fma}{quantity}
+\indexlibrarymember{fma}{quantity_point}
+\begin{itemdecl}
+template<auto R, auto S, auto T, auto Origin, typename Rep1, typename Rep2, typename Rep3>
+  requires requires {
+    get_common_quantity_spec(get_quantity_spec(R) * get_quantity_spec(S), get_quantity_spec(T));
+  } && (equivalent(get_unit(R) * get_unit(S), get_unit(T))) &&
+             requires(Rep1 v1, Rep2 v2, Rep3 v3) {
+               requires requires { fma(v1, v2, v3); } || requires { std::fma(v1, v2, v3); };
+             }
+constexpr QuantityPointOf<get_common_quantity_spec(get_quantity_spec(R) * get_quantity_spec(S),
+                                                   get_quantity_spec(T))> auto
+fma(const quantity<R, Rep1>& a, const quantity<S, Rep2>& x,                             // hosted
+    const quantity_point<T, Origin, Rep3>& b) noexcept;
+\end{itemdecl}
+
+\begin{itemdescr}
+\pnum
+\effects
+Equivalent to:
+\begin{codeblock}
+using std::fma;
+return Origin +
+       quantity{fma(a.numerical_value_ref_in(a.unit), x.numerical_value_ref_in(x.unit),
+                    b.quantity_ref_from(b.point_origin).numerical_value_ref_in(b.unit)),
+                get_common_reference(R* S, T)};
 \end{codeblock}
 \end{itemdescr}
 
