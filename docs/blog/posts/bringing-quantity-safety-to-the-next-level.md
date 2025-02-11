@@ -34,8 +34,8 @@ A quantity character determines the properties and operations that can be perfor
 
 Quantities defined by the ISQ may be of the following characters:
 
-- scalar (e.g., _time_, _width_, _speed_, _apparent power_),
-- complex (e.g., _complex power_, _voltage phasor_, _electric current phasor_),
+- real scalar (e.g., _time_, _width_, _speed_, _apparent power_),
+- complex scalar (e.g., _voltage phasor_, _complex power_, _impedance_),
 - vector (e.g., _displacement_, _velocity_, _force_),
 - tensor (e.g., _moment of inertia_, _stress_, _strain_).
 

@@ -116,12 +116,6 @@ template<QuantitySpec QS, detail::WeakUnitOf<QS{}> U>
     return reference<QS, U>{};
 }
 
-// TODO revise the note in the below comment
-/**
- * @brief Returns the most restrictive character from the list
- *
- * @note `vector * vector` returns vector (not tensor)
- */
 template<std::same_as<quantity_character>... Ts>
 [[nodiscard]] consteval quantity_character common_quantity_character(Ts... args)
 {
@@ -133,13 +127,10 @@ template<typename... Qs1, typename... Qs2>
                                                                       const type_list<Qs2...>&)
 {
   constexpr quantity_character num =
-    detail::common_quantity_character(quantity_character::scalar, expr_type<Qs1>::character...);
+    detail::common_quantity_character(quantity_character::real_scalar, expr_type<Qs1>::character...);
   constexpr quantity_character den =
-    detail::common_quantity_character(quantity_character::scalar, expr_type<Qs2>::character...);
-  if constexpr (num == den)
-    return quantity_character::scalar;
-  else
-    return detail::common_quantity_character(num, den);
+    detail::common_quantity_character(quantity_character::real_scalar, expr_type<Qs2>::character...);
+  return detail::max(num, den);
 }
 
 /**
@@ -291,7 +282,7 @@ MP_UNITS_EXPORT_END
  *
  * This quantity serves as a root/kind for a new hierarchy of quantities of the same kind.
  *
- * Base quantities have scalar character by default.
+ * Base quantities have real scalar character by default.
  *
  * User should derive a strong type from this class template rather than use it directly in the source code.
  * For example:
@@ -312,7 +303,7 @@ MP_UNITS_EXPORT_END
  *       errors. Having them of the same names improves user experience and somehow blurs those separate domains.
  *
  * @tparam BaseDimension base dimension for which a base quantity is being defined
- * @tparam Args optionally a value of a `quantity_character` in case the base quantity should not be scalar
+ * @tparam Args optionally a value of a `quantity_character` in case the base quantity should not be real scalar
  */
 #if MP_UNITS_API_NO_CRTP
 template<detail::BaseDimension auto Dim, detail::QSProperty auto... Args>
@@ -323,7 +314,8 @@ struct quantity_spec<Self, Dim, Args...> : detail::quantity_spec_interface<Self>
 #endif
   using _base_type_ = quantity_spec;
   static constexpr detail::BaseDimension auto dimension = Dim;
-  static constexpr quantity_character character = detail::quantity_character_init<Args...>(quantity_character::scalar);
+  static constexpr quantity_character character =
+    detail::quantity_character_init<Args...>(quantity_character::real_scalar);
 };
 
 /**
@@ -334,7 +326,7 @@ struct quantity_spec<Self, Dim, Args...> : detail::quantity_spec_interface<Self>
  *
  * This quantity serves as a root/kind for a new hierarchy of quantities of the same kind.
  *
- * Such quantities by default derive the character from the derived quantity definition.
+ * Such quantities obtain the character from the derived quantity equation.
  *
  * User should derive a strong type from this class template rather than use it directly in the source code.
  * For example:
@@ -342,10 +334,8 @@ struct quantity_spec<Self, Dim, Args...> : detail::quantity_spec_interface<Self>
  * @code{.cpp}
  * inline constexpr struct area final : quantity_spec<pow<2>(length)> {} area;
  * inline constexpr struct volume final : quantity_spec<pow<3>(length)> {} volume;
- * inline constexpr struct velocity final : quantity_spec<displacement / duration> {} velocity;
- * inline constexpr struct speed final : quantity_spec<length / time> {} speed;
- * inline constexpr struct force final : quantity_spec<mass * acceleration, quantity_character::vector> {} force;
- * inline constexpr struct power final : quantity_spec<force * velocity, quantity_character::scalar> {} power;
+ * inline constexpr struct velocity final : quantity_spec<displacement / duration> {} velocity;  // vector
+ * inline constexpr struct force final : quantity_spec<mass * acceleration> {} force;  // vector
  * @endcode
  *
  * @note A common convention in this library is to assign the same name for a type and an object of this type.
@@ -354,7 +344,7 @@ struct quantity_spec<Self, Dim, Args...> : detail::quantity_spec_interface<Self>
  *       errors. Having them of the same names improves user experience and somehow blurs those separate domains.
  *
  * @tparam Eq quantity equation specification of a derived quantity
- * @tparam Args optionally a value of a `quantity_character` in case the base quantity should not be scalar
+ * @tparam Args optionally a value of a `quantity_character` in case the base quantity should not be real scalar
  */
 #if MP_UNITS_API_NO_CRTP
 template<detail::DerivedQuantitySpec auto Eq, detail::QSProperty auto... Args>
@@ -366,6 +356,9 @@ struct quantity_spec<Self, Eq, Args...> : detail::quantity_spec_interface<Self> 
   using _base_type_ = quantity_spec;
   static constexpr auto _equation_ = Eq;
   static constexpr Dimension auto dimension = Eq.dimension;
+
+  // TODO static_assert that character property is not passed in Args
+
   static constexpr quantity_character character = detail::quantity_character_init<Args...>(Eq.character);
 };
 
@@ -387,7 +380,8 @@ struct propagate_equation<Q, true> {
  * Quantities of the same kind form a hierarchy. This specialization adds new leaf to such a tree which
  * can later be used as a parent by other quantities.
  *
- * The character of those quantities by default is derived from the parent quantity.
+ * The character of those quantities by default is derived from the parent quantity but can be overriden
+ * by explicitly passing a property.
  *
  * User should derive a strong type from this class template rather than use it directly in the source code.
  * For example:
@@ -397,6 +391,8 @@ struct propagate_equation<Q, true> {
  * inline constexpr struct height final : quantity_spec<length> {} height;
  * inline constexpr struct diameter final : quantity_spec<width> {} diameter;
  * inline constexpr struct displacement final : quantity_spec<length, quantity_character::vector> {} displacement;
+ * inline constexpr struct voltage_phasor final : quantity_spec<voltage, quantity_character::complex_scalar) {}
+ * voltage_phasor;
  * @endcode
  *
  * @note A common convention in this library is to assign the same name for a type and an object of this type.
@@ -405,7 +401,7 @@ struct propagate_equation<Q, true> {
  *       errors. Having them of the same names improves user experience and somehow blurs those separate domains.
  *
  * @tparam Q quantity specification of a parent quantity
- * @tparam Args optionally a value of a `quantity_character` in case the base quantity should not be scalar
+ * @tparam Args optionally a value of a `quantity_character` in case the base quantity should not be real scalar
  *              or `is_kind` in case the quantity starts a new hierarchy tree of a kind
  */
 #if MP_UNITS_API_NO_CRTP
@@ -445,7 +441,7 @@ struct quantity_spec<Self, QS, Args...> : detail::propagate_equation<QS>, detail
  * can later be used as a parent by other quantities. Additionally, this defintion adds additional
  * constraints on the derived quantity's equation.
  *
- * The character of those quantities by default is derived from the parent quantity.
+ * Such quantities obtain the character from the derived quantity equation.
  *
  * User should derive a strong type from this class template rather than use it directly in the source code.
  * For example:
@@ -463,8 +459,8 @@ struct quantity_spec<Self, QS, Args...> : detail::propagate_equation<QS>, detail
  *       errors. Having them of the same names improves user experience and somehow blurs those separate domains.
  *
  * @tparam Q quantity specification of a parent quantity
- * @tparam Args optionally a value of a `quantity_character` in case the base quantity should not be scalar
- *              or `is_kind` in case the quantity starts a new hierarchy tree of a kind
+ * @tparam Args optionally a value of `quantity_character` in case the base quantity should not
+ *              be real scalar or `is_kind` in case the quantity starts a new hierarchy tree of a kind
  */
 // clang-format on
 #if MP_UNITS_API_NO_CRTP
@@ -481,6 +477,9 @@ struct quantity_spec<Self, QS, Eq, Args...> : detail::quantity_spec_interface<Se
   static constexpr auto _parent_ = QS;
   static constexpr auto _equation_ = Eq;
   static constexpr Dimension auto dimension = _parent_.dimension;
+
+  // TODO static_assert that character property is not passed in Args
+
   static constexpr quantity_character character = detail::quantity_character_init<Args...>(Eq.character);
 };
 

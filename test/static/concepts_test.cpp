@@ -25,7 +25,6 @@
 #include <mp-units/systems/si.h>
 #if MP_UNITS_HOSTED
 #include <mp-units/cartesian_vector.h>
-#include <mp-units/complex.h>
 #endif
 #ifdef MP_UNITS_IMPORT_STD
 import std;
@@ -331,30 +330,46 @@ static_assert(!Representation<std::chrono::seconds>);
 #endif
 
 // RepresentationOf
-static_assert(RepresentationOf<int, quantity_character::scalar>);
-static_assert(!RepresentationOf<int, quantity_character::complex>);
+static_assert(RepresentationOf<int, quantity_character::real_scalar>);
+static_assert(!RepresentationOf<int, quantity_character::complex_scalar>);
+static_assert(!RepresentationOf<int, quantity_character::complex_scalar>);
 static_assert(RepresentationOf<int, quantity_character::vector>);
 static_assert(!RepresentationOf<int, quantity_character::tensor>);
-static_assert(RepresentationOf<double, quantity_character::scalar>);
-static_assert(!RepresentationOf<double, quantity_character::complex>);
+
+static_assert(RepresentationOf<double, quantity_character::real_scalar>);
+static_assert(!RepresentationOf<double, quantity_character::complex_scalar>);
+static_assert(!RepresentationOf<double, quantity_character::complex_scalar>);
 static_assert(RepresentationOf<double, quantity_character::vector>);
 static_assert(!RepresentationOf<double, quantity_character::tensor>);
-static_assert(!RepresentationOf<bool, quantity_character::scalar>);
-static_assert(!RepresentationOf<bool, quantity_character::complex>);
+
+static_assert(!RepresentationOf<bool, quantity_character::real_scalar>);
+static_assert(!RepresentationOf<bool, quantity_character::complex_scalar>);
+static_assert(!RepresentationOf<bool, quantity_character::complex_scalar>);
 static_assert(!RepresentationOf<bool, quantity_character::vector>);
 static_assert(!RepresentationOf<bool, quantity_character::tensor>);
-static_assert(!RepresentationOf<std::optional<int>, quantity_character::scalar>);
+
+static_assert(!RepresentationOf<std::optional<int>, quantity_character::real_scalar>);
+
 #if MP_UNITS_HOSTED
-static_assert(RepresentationOf<std::complex<double>, quantity_character::complex>);
-static_assert(!RepresentationOf<std::complex<double>, quantity_character::scalar>);
+static_assert(!RepresentationOf<std::complex<double>, quantity_character::real_scalar>);
+static_assert(RepresentationOf<std::complex<double>, quantity_character::complex_scalar>);
 static_assert(!RepresentationOf<std::complex<double>, quantity_character::vector>);
 static_assert(!RepresentationOf<std::complex<double>, quantity_character::tensor>);
+
+static_assert(!RepresentationOf<cartesian_vector<double>, quantity_character::real_scalar>);
+static_assert(!RepresentationOf<cartesian_vector<double>, quantity_character::complex_scalar>);
 static_assert(RepresentationOf<cartesian_vector<double>, quantity_character::vector>);
-static_assert(!RepresentationOf<cartesian_vector<double>, quantity_character::scalar>);
-static_assert(!RepresentationOf<cartesian_vector<double>, quantity_character::complex>);
+static_assert(!RepresentationOf<cartesian_vector<double>, quantity_character::complex_scalar>);
 static_assert(!RepresentationOf<cartesian_vector<double>, quantity_character::tensor>);
-static_assert(!RepresentationOf<std::chrono::seconds, quantity_character::scalar>);
-static_assert(!RepresentationOf<std::string, quantity_character::scalar>);
+
+static_assert(!RepresentationOf<cartesian_vector<std::complex<double>>, quantity_character::real_scalar>);
+static_assert(!RepresentationOf<cartesian_vector<std::complex<double>>, quantity_character::complex_scalar>);
+static_assert(RepresentationOf<cartesian_vector<std::complex<double>>, quantity_character::vector>);
+static_assert(!RepresentationOf<cartesian_vector<std::complex<double>>, quantity_character::complex_scalar>);
+static_assert(!RepresentationOf<cartesian_vector<std::complex<double>>, quantity_character::tensor>);
+
+static_assert(!RepresentationOf<std::chrono::seconds, quantity_character::real_scalar>);
+static_assert(!RepresentationOf<std::string, quantity_character::real_scalar>);
 #endif
 
 // Quantity

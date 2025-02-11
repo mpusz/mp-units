@@ -60,7 +60,8 @@ using namespace mp_units;
 using namespace mp_units::si::unit_symbols;
 
 template<QuantitySpec auto QS, QuantityOf<QS> Q>
-  requires(Q::quantity_spec.character == quantity_character::vector) && (QS.character == quantity_character::scalar)
+  requires(Q::quantity_spec.character == quantity_character::vector) &&
+          (QS.character == quantity_character::real_scalar)
 [[nodiscard]] constexpr QuantityOf<QS> auto get_magnitude(const Q& q)
 {
   const auto& v = q.numerical_value_ref_in(q.unit);
@@ -68,7 +69,8 @@ template<QuantitySpec auto QS, QuantityOf<QS> Q>
 }
 
 template<QuantitySpec auto QS, QuantityOf<QS> T>
-  requires(T::quantity_spec.character == quantity_character::vector) && (QS.character == quantity_character::scalar)
+  requires(T::quantity_spec.character == quantity_character::vector) &&
+          (QS.character == quantity_character::real_scalar)
 [[nodiscard]] constexpr QuantityOf<QS> auto get_magnitude(const vector<T>& v)
 {
   return hypot(QS(v(0)), QS(v(1)), QS(v(2)));

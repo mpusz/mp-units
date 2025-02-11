@@ -30,7 +30,6 @@
 #include <mp-units/systems/si.h>
 #if MP_UNITS_HOSTED
 #include <mp-units/cartesian_vector.h>
-#include <mp-units/complex.h>
 #include <mp-units/math.h>
 #endif
 #ifdef MP_UNITS_IMPORT_STD

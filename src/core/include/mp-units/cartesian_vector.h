@@ -26,6 +26,7 @@
 //
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/framework/customization_points.h>
+#include <mp-units/framework/representation_concepts.h>
 
 #if MP_UNITS_HOSTED
 #include <mp-units/bits/fmt.h>
@@ -46,7 +47,7 @@ import std;
 
 namespace mp_units {
 
-MP_UNITS_EXPORT template<typename T = double>
+MP_UNITS_EXPORT template<detail::Scalar T = double>
 class cartesian_vector {
 public:
   // public members required to satisfy structural type requirements :-(
@@ -101,7 +102,12 @@ public:
   [[nodiscard]] constexpr T magnitude() const
     requires treat_as_floating_point<T>
   {
-    return std::hypot(_coordinates_[0], _coordinates_[1], _coordinates_[2]);
+    using namespace std;
+    if constexpr (detail::ComplexScalar<T>)
+      return hypot(mp_units::modulus(_coordinates_[0]), mp_units::modulus(_coordinates_[1]),
+                   mp_units::modulus(_coordinates_[2]));
+    else
+      return hypot(_coordinates_[0], _coordinates_[1], _coordinates_[2]);
   }
 
   [[nodiscard]] constexpr cartesian_vector unit() const

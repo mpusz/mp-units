@@ -1704,7 +1704,7 @@ and is equal to
 \item
 \tcode{Ch} if specified,
 \item
-otherwise, \tcode{quantity_character::scalar} for the first signature, and
+otherwise, \tcode{quantity_character::real_scalar} for the first signature, and
 \item
 otherwise, \tcode{(BC).character},
 where \tcode{BC} is the argument preceding \tcode{Ch} in the signatures above.
@@ -1788,7 +1788,7 @@ be packs denoting the template arguments of
 \item
 \tcode{\placeholdernc{QUANTITY-CHARACTER-OF}(Pack)} be
 \begin{codeblock}
-std::max({quantity_character::scalar, @\exposidnc{expr-type}@<Pack>::character...})
+std::max({quantity_character::real_scalar, @\exposidnc{expr-type}@<Pack>::character...})
 \end{codeblock}
 and
 \item
@@ -1796,7 +1796,7 @@ and
 \tcode{den_char} be \tcode{\placeholdernc{QUANTITY-CHARACTER-OF}(Dens)}.
 \end{itemize}
 The member \tcode{character} is equal to
-\tcode{quantity_character::scalar} if \tcode{num_char == den_char} is \tcode{true}, and
+\tcode{quantity_character::real_scalar} if \tcode{num_char == den_char} is \tcode{true}, and
 \tcode{std::max(num_char, den_char)} otherwise.
 
 \rSec4[dimless.qty]{Base quantity of dimension one}
@@ -4033,8 +4033,8 @@ it represents the numerical value of a quantity\irefiev{112-01-29}.
 
 \begin{itemdecl}
 template<typename T, quantity_character Ch>
-concept @\defexposconceptnc{IsOfCharacter}@ = (Ch == quantity_character::scalar && @\exposconceptnc{Scalar}@<T>) ||  // \expos
-                        (Ch == quantity_character::complex && @\exposconceptnc{Complex}@<T>) ||
+concept @\defexposconceptnc{IsOfCharacter}@ = (Ch == quantity_character::real_scalar && @\exposconceptnc{Scalar}@<T>) ||  // \expos
+                        (Ch == quantity_character::complex_scalar && @\exposconceptnc{Complex}@<T>) ||
                         (Ch == quantity_character::vector && @\exposconceptnc{Vector}@<T>);
 
 template<typename T, auto V>
