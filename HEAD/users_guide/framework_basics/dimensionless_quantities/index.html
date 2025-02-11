@@ -2534,7 +2534,8 @@ with dimensionless quantities:</p>
 </span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">ppm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">parts_per_million</span><span class="p">;</span>
 </span></code></pre></div>
 <h3 id="superpowers-of-the-unit-one">Superpowers of the unit <code>one</code><a class="headerlink" href="#superpowers-of-the-unit-one" title="Permanent link">&para;</a></h3>
-<p>Quantities of the unit <code>one</code> are the only ones that are:</p>
+<p>Quantities implicitly convertible to <code>dimensionless</code> with the unit equivalent to <code>one</code> are the only
+ones that are:</p>
 <ul>
 <li>implicitly constructible from the raw value,</li>
 <li>explicitly convertible to a raw value,</li>
@@ -2550,8 +2551,8 @@ with dimensionless quantities:</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Those rules do not apply to all the dimensionless quantities. It would be unsafe and misleading
-to allow such operations on units with a magnitude different than <code>1</code> (e.g., <code>percent</code> or
-<code>radian</code>).</p>
+to allow such operations on units with a magnitude different than <code>1</code> (e.g., <code>percent</code>) or
+for quantities that are not implicitly convertible to <code>dimensionless</code> (e.g., <code>angular_measure</code>).</p>
 </div>
 <h2 id="angular-quantities">Angular quantities<a class="headerlink" href="#angular-quantities" title="Permanent link">&para;</a></h2>
 <p>Special, often controversial, examples of dimensionless quantities are an <em>angular measure</em>
