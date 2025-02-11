@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <mp-units/systems/isq/space_and_time.h>
+#include <mp-units/systems/isq.h>
 #include <mp-units/systems/natural.h>
 #include <mp-units/systems/si.h>
 #if MP_UNITS_HOSTED
@@ -504,19 +504,47 @@ static_assert(!QuantityPointLike<quantity<isq::time[si::second]>>);
 static_assert(!QuantityPointLike<quantity_point<si::metre, my_origin>>);
 static_assert(!QuantityPointLike<int>);
 
-// Quantity Characters
+// Quantity Character Concepts
 
+#if MP_UNITS_HOSTED
+// TODO provide support for the below when quantity specifications expressions are done
 static_assert(detail::Scalar<quantity<one>>);
 static_assert(detail::Scalar<quantity<one, int>>);
-static_assert(!detail::Scalar<quantity_point<one>>);
-static_assert(!detail::Scalar<quantity_point<si::metre>>);
 static_assert(detail::Scalar<quantity<si::metre>>);
 static_assert(detail::Scalar<quantity<isq::speed[si::metre / si::second], int>>);
-// TODO provide support for the below when quantity specifications expressions are done
+// static_assert(detail::Scalar<quantity<isq::complex_power[si::volt * si::ampere], std::complex<double>>>);
+
+static_assert(!detail::Scalar<quantity<one, cartesian_vector<double>>>);
+static_assert(!detail::Scalar<quantity<si::metre, cartesian_vector<double>>>);
+static_assert(!detail::Scalar<quantity<isq::velocity[si::metre / si::second], cartesian_vector<double>>>);
+static_assert(!detail::Scalar<quantity_point<one>>);
+static_assert(!detail::Scalar<quantity_point<si::metre>>);
+
+static_assert(detail::RealScalar<quantity<one>>);
+static_assert(detail::RealScalar<quantity<one, int>>);
+static_assert(detail::RealScalar<quantity<si::metre>>);
+static_assert(detail::RealScalar<quantity<isq::speed[si::metre / si::second], int>>);
+// static_assert(!detail::RealScalar<quantity<isq::velocity[si::metre / si::second], int>>);
+static_assert(!detail::RealScalar<quantity<isq::complex_power[si::volt * si::ampere], std::complex<double>>>);
+
+static_assert(!detail::ComplexScalar<quantity<one>>);
+static_assert(!detail::ComplexScalar<quantity<one, int>>);
+static_assert(!detail::ComplexScalar<quantity<si::metre>>);
+static_assert(!detail::ComplexScalar<quantity<isq::speed[si::metre / si::second], int>>);
+static_assert(!detail::ComplexScalar<quantity<isq::velocity[si::metre / si::second], int>>);
+// static_assert(detail::ComplexScalar<quantity<isq::complex_power[si::volt * si::ampere], std::complex<double>>>);
+
+// static_assert(detail::Vector<quantity<one>>);
+// static_assert(detail::Vector<quantity<one, int>>);
+// static_assert(detail::Vector<quantity<si::metre>>);
+static_assert(!detail::Vector<quantity<isq::speed[si::metre / si::second], int>>);
 // static_assert(detail::Vector<quantity<isq::velocity[si::metre / si::second], int>>);
-#if MP_UNITS_HOSTED
-// static_assert(detail::Vector<quantity<isq::velocity[si::metre / si::second], cartesian_vector<double>>>);
-// static_assert(detail::Complex<quantity<si::volt * si::ampere>, std::complex<double>>);
+static_assert(!detail::Vector<quantity<isq::complex_power[si::volt * si::ampere], std::complex<double>>>);
+// static_assert(detail::Vector<quantity<one>, cartesian_vector<double>>);
+// static_assert(detail::Vector<quantity<one, cartesian_vector<int>>>);
+// static_assert(detail::Vector<quantity<si::metre>, cartesian_vector<double>>);
+// static_assert(detail::Vector<quantity<isq::velocity[si::metre / si::second], cartesian_vector<int>>>);
+
 #endif
 
 }  // namespace
