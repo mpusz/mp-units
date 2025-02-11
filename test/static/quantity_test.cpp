@@ -279,16 +279,16 @@ static_assert(quantity<isq::length[km]>(1500 * m).numerical_value_in(km) == 1.5)
 
 static_assert(!std::convertible_to<quantity<one>, double>);
 static_assert(std::constructible_from<double, quantity<one>>);
-static_assert(!std::convertible_to<quantity<isq::angular_measure[one]>, double>);
-static_assert(std::constructible_from<double, quantity<isq::angular_measure[one]>>);
 static_assert(!std::convertible_to<quantity<one>, int>);
 static_assert(std::constructible_from<int, quantity<one>>);
-static_assert(!std::convertible_to<quantity<isq::angular_measure[one]>, int>);
-static_assert(std::constructible_from<int, quantity<isq::angular_measure[one]>>);
 static_assert(!std::convertible_to<quantity<one, int>, double>);
 static_assert(std::constructible_from<double, quantity<one, int>>);
-static_assert(!std::convertible_to<quantity<isq::angular_measure[one], int>, double>);
-static_assert(std::constructible_from<double, quantity<isq::angular_measure[one], int>>);
+static_assert(!std::convertible_to<quantity<isq::rotation[one]>, double>);
+static_assert(std::constructible_from<double, quantity<isq::rotation[one]>>);
+static_assert(!std::convertible_to<quantity<isq::rotation[one]>, int>);
+static_assert(std::constructible_from<int, quantity<isq::rotation[one]>>);
+static_assert(!std::convertible_to<quantity<isq::rotation[one], int>, double>);
+static_assert(std::constructible_from<double, quantity<isq::rotation[one], int>>);
 #if MP_UNITS_HOSTED
 static_assert(!std::convertible_to<quantity<one, std::complex<double>>, std::complex<double>>);
 static_assert(std::constructible_from<std::complex<double>, quantity<one, std::complex<double>>>);
@@ -300,6 +300,18 @@ static_assert(!std::convertible_to<quantity<one, double>, cartesian_vector<doubl
 static_assert(std::constructible_from<cartesian_vector<double>, quantity<one, double>>);
 #endif
 
+static_assert(!std::convertible_to<quantity<rad>, double>);
+static_assert(!std::constructible_from<double, quantity<rad>>);
+static_assert(!std::convertible_to<quantity<rad>, int>);
+static_assert(!std::constructible_from<int, quantity<rad>>);
+static_assert(!std::convertible_to<quantity<rad, int>, double>);
+static_assert(!std::constructible_from<double, quantity<rad, int>>);
+static_assert(!std::convertible_to<quantity<isq::angular_measure[one]>, double>);
+static_assert(!std::constructible_from<double, quantity<isq::angular_measure[one]>>);
+static_assert(!std::convertible_to<quantity<isq::angular_measure[one]>, int>);
+static_assert(!std::constructible_from<int, quantity<isq::angular_measure[one]>>);
+static_assert(!std::convertible_to<quantity<isq::angular_measure[one], int>, double>);
+static_assert(!std::constructible_from<double, quantity<isq::angular_measure[one], int>>);
 
 ///////////////////////////////////
 // converting to a different unit
