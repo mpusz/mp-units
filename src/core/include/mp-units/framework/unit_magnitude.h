@@ -64,7 +64,7 @@ struct mag_constant {
 // `mag()` implementation.
 
 template<std::intmax_t N>
-[[deprecated("`known_first_factor` is no longer necessary and can simply be removed")]]
+[[deprecated("2.5.0: `known_first_factor` is no longer necessary and can simply be removed")]]
 constexpr std::optional<std::intmax_t>
   known_first_factor = std::nullopt;
 
@@ -96,7 +96,7 @@ inline constexpr struct pi final :
 } pi;
 inline constexpr auto π /* U+03C0 GREEK SMALL LETTER PI */ = pi;
 
-[[deprecated("Use `mag<pi>` instead")]] inline constexpr UnitMagnitude auto mag_pi = mag<pi>;
+[[deprecated("2.3.0: Use `mag<pi>` instead")]] inline constexpr UnitMagnitude auto mag_pi = mag<pi>;
 
 MP_UNITS_EXPORT_END
 

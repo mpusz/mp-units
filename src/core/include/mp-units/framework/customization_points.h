@@ -61,19 +61,19 @@ constexpr bool treat_as_floating_point =
 #endif
 
 template<typename Rep>
-[[deprecated("`is_scalar` is no longer necessary and can simply be removed")]]
+[[deprecated("2.5.0: `is_scalar` is no longer necessary and can simply be removed")]]
 constexpr bool is_scalar = false;
 
 template<typename Rep>
-[[deprecated("`is_complex` is no longer necessary and can simply be removed")]]
+[[deprecated("2.5.0: `is_complex` is no longer necessary and can simply be removed")]]
 constexpr bool is_complex = false;
 
 template<typename Rep>
-[[deprecated("`is_vector` is no longer necessary and can simply be removed")]]
+[[deprecated("2.5.0: `is_vector` is no longer necessary and can simply be removed")]]
 constexpr bool is_vector = false;
 
 template<typename Rep>
-[[deprecated("`is_tensor` is no longer necessary and can simply be removed")]]
+[[deprecated("2.5.0: `is_tensor` is no longer necessary and can simply be removed")]]
 constexpr bool is_tensor = false;
 
 /**
@@ -121,7 +121,7 @@ struct representation_values {
 };
 
 template<typename Rep>
-using quantity_values [[deprecated("Use `representation_values` instead")]] = representation_values<Rep>;
+using quantity_values [[deprecated("2.5.0: Use `representation_values` instead")]] = representation_values<Rep>;
 
 /**
  * @brief Provides support for external quantity-like types
