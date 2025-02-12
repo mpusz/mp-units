@@ -2471,6 +2471,116 @@ You're not viewing the latest version.
 <h1 id="release-notes">Release Notes<a class="headerlink" href="#release-notes" title="Permanent link">&para;</a></h1>
 <h2 id="mp-units">mp-units<a class="headerlink" href="#mp-units" title="Permanent link">&para;</a></h2>
 <h3 id="2.5.0">2.5.0 <small>WIP</small><a class="headerlink" href="#2.5.0" title="Permanent link">&para;</a></h3>
+<ul>
+<li>(!) feat: representation concepts improved</li>
+<li>(!) feat: <code>representation_of</code> concept now also accepts a <code>quantity_spec</code> and accepts any representation character for quantity kinds</li>
+<li>(!) feat: <code>quantity::one()</code> removed</li>
+<li>(!) feat: <code>Representation</code> concept removed</li>
+<li>feat: <code>SymbolicArg</code> applied to expression templates</li>
+<li>feat: <code>per</code> and <code>power</code> made <code>final</code></li>
+<li>feat: <code>derived_XXX</code> are now constrained with <code>SymbolicConstant</code></li>
+<li>feat: prime factorization extended to any magnitude (thanks <a href="https://github.com/chiphogg">@chiphogg</a>)</li>
+<li>feat: <code>cartesian_vector</code> added</li>
+<li>feat: <code>equivalent</code> now accept any units (even non-convertible)</li>
+<li>feat: text output should fallback to the portable mode when UTF-8 is not used for <code>text_encoding</code></li>
+<li>feat: precondition added to <code>to_u8string</code></li>
+<li>feat: text output of scaled units is now enclosed in parenthesis <code>(...)</code> instead of brackets <code>[...]</code></li>
+<li>feat: <code>abs(quantity)</code> exposed for conforming freestanding implementations</li>
+<li>feat: proper constraints for <code>kind_of</code></li>
+<li>feat: missing precondition added for <code>quantity::op/</code></li>
+<li>feat: <code>quantity_spec</code> conversions improved</li>
+<li>feat: <code>rankine</code> unit added</li>
+<li>feat: <code>std::numeric_limits</code> support added</li>
+<li>feat: <code>overflows_non_zero_values</code> added to detect conversions overflowing <code>rep</code></li>
+<li>feat: deprecation messages now provide the release version where the deprecation happened</li>
+<li>feat: electromagnetism.h updated to IEC80000-6-2022</li>
+<li>feat: <code>ConvertibleWithNumber</code> introduced to improve convertibility of unit <code>one</code> with raw numbers</li>
+<li>feat(example): <code>is_vector</code> specialization no longer needed for <code>si_constants</code></li>
+<li>(!) refactor: <code>type_list</code> moved to implementation details</li>
+<li>(!) refactor: from now <code>unit_symbol</code> and <code>dimension_symbol</code> always returns <code>std::string_view</code></li>
+<li>(!) refactor: <code>text_encoding</code> renamed to <code>character_set</code></li>
+<li>(!) refactor: <code>Magnitude</code> renamed to <code>UnitMagnitude</code> and <code>magnitude</code> to <code>unit_magnitude</code></li>
+<li>(!) refactor: <code>unit_magnitude</code> moved to <code>detail</code> namespace</li>
+<li>(!) refactor: <code>absolute</code> renamed to <code>point</code></li>
+<li>(!) refactor: <code>power</code> members refactored to be explicitly exposition only</li>
+<li>(!) refactor: <code>is_XXX</code> customization points for representation types removed</li>
+<li>(!) refactor: <code>quantity_values</code> renamed to representation values</li>
+<li>(!) refactor: <code>scalar</code> and <code>complex</code> characters renamed to <code>real_scalar</code> and <code>complex_scalar</code> respectively + concepts refactoring</li>
+<li>(!) refactor: <code>MagConstant</code> concept renamed to <code>detail::is_mag_constant</code> variable trait</li>
+<li>refactor: mp_units.core defined in terms of <code>core.h</code></li>
+<li>refactor: <code>MP_UNITS_NONCONST_TYPE</code> introduced to benefit from the C++23 feature</li>
+<li>refactor: <code>SymbolicConstant</code> concept refactored</li>
+<li>refactor: explicit type of <code>op/</code> for <code>quantity</code> and <code>reference</code> replaced with constrained placeholder</li>
+<li>refactor: private <code>unit_magnitude</code> interface renamed to not use leading <code>_</code></li>
+<li>refactor: <code>one_of</code> concept removed and replaced with <code>QSProperty</code> in <code>quantity_spec</code></li>
+<li>refactor: <code>std::is_trivial</code> will be deprecated in C++26</li>
+<li>refactor: <code>SameQuantitySpec</code> concept removed and replaced with direct comparison</li>
+<li>refactor: unused <code>SameReference</code> concept removed</li>
+<li>refactor: <code>type_name_less</code> introduced and used as a default predicate for expression templates</li>
+<li>refactor: "expression templates" renamed to "symbolic expressions"</li>
+<li>refactor: <code>all_are_kinds</code> removed and <code>get_associated_quantity</code> simplified</li>
+<li>refactor: <code>reference</code> now returns explicit types for <code>inverse</code>, <code>pow</code>, <code>sqrt</code>, and <code>cbrt</code></li>
+<li>refactor: repeated concept checks removed from <code>get_common_reference</code></li>
+<li>refactor: <code>std::assignable_from</code> used in <code>ValuePreservingTo</code> concept</li>
+<li>refactor: <code>quantity</code> constructor refactored to use another constructor with the result of <code>sudo_cast</code></li>
+<li>refactor: preconditions for quantity operations now use <code>is_neq_zero</code></li>
+<li>refactor: implicit expression variations used in <code>quantity</code> and <code>quantity_point</code> constraints</li>
+<li>refactor: <code>inverse()</code> constraints improved</li>
+<li>refactor: <code>make_quantity_point</code> introduced</li>
+<li>refactor: <code>point_origin_interface::op+</code> return type unified with the rest of the interfaces</li>
+<li>refactor: <code>std::convertible_to</code> replaced with <code>std::same_as</code> in <code>basic_fixed_string</code></li>
+<li>refactor: <code>less</code>, <code>ceil</code>, and <code>round</code> refactored and improved + more unit tests for <code>round</code></li>
+<li>refactor: <code>math_concepts.h</code> removed and concepts replaced with explicit expression in constraints</li>
+<li>(!) fix: <code>electric_current_phasor</code>, <code>voltage_phasor</code>, <code>apparent_power</code> switched to complex character</li>
+<li>(!) fix: <code>position_vector</code> and <code>displacement</code> moved to a different place in a tree</li>
+<li>(!) fix: <code>velocity</code> is now defined in terms of <code>displacement</code> instead of <code>position_vector</code></li>
+<li>fix: missing <code>core.h</code> added to CMake</li>
+<li>fix: <code>const</code> was leaking to some <code>SymbolicConstant</code>s</li>
+<li>fix: <code>make_reference</code> should skip only the exact kinds deduced from a unit</li>
+<li>fix: inconsistencies in <code>get_common_quantity_spec()</code> fixed</li>
+<li>fix: unused <code>convertible_kinds()</code> argument removed</li>
+<li>fix: compile-time branch condition fixed in <code>quantity_point::point_for</code></li>
+<li>fix: <code>inverse(Quantity)</code> fixed for subkinds of <code>dimensionless</code></li>
+<li>fix: <code>point_origin_interface::op+</code> constraints fixed</li>
+<li>fix: missing <code>get_common_unit()</code> overload added</li>
+<li>fix: <code>floor</code> and <code>ceil</code> constraints fixed</li>
+<li>fix: quantity characters fixed in electromagnetism quantities</li>
+<li>test: lots of tests for complex quantities</li>
+<li>test: runtime unit tests refactored to have a bigger granularity (less top level tests)</li>
+<li>test: <em>surface tension</em> replaced with <em>entropy</em> in an fmt test</li>
+<li>test: test_package now is tested also with C++20 modules</li>
+<li>test: tests for dimensionless quantities static data members</li>
+<li>test: a few more natural units tests added</li>
+<li>test: tests to check if <code>quantity</code> satisfies <code>Scalar</code></li>
+<li>test: add static tests for concept <code>DimensionOf</code> (thanks <a href="https://github.com/jvocht">@jvocht</a>)</li>
+<li>test: quantity character concepts tests for quantities added</li>
+<li>docs: ISQ part 6 released</li>
+<li>docs: new chapter about our documentation added to the contributing guide</li>
+<li>docs: directory name updated in the contributing guide</li>
+<li>docs: mp-units Conan options added to conanfile.txt examples</li>
+<li>docs: <code>contracts</code> Conan option default value description improved</li>
+<li>docs: outdated note removed from the "Text Output" chapter</li>
+<li>docs: a paragraph about additional formatting options removed (applicable only to quantity symbols which we do not support)</li>
+<li>docs: Wrocław 2024 meeting report</li>
+<li>docs: explicit unit conversion example added to the "Symbols of common units" chapter</li>
+<li>docs: "Bringing Quantity-Safety To The Next Level" blog post added</li>
+<li>docs: quantity-safety mentioned in the docs</li>
+<li>docs: <code>complex</code> character added to the "Quantity character" chapter</li>
+<li>docs: intro to "Value Conversions" chapter added</li>
+<li>docs: "Scaling overflow prevention" chapter added</li>
+<li>docs: "Concepts" chapter updated</li>
+<li>docs: old customization points removed from the "Character of a Quantity" chapter</li>
+<li>docs(ref): document most of <code>mp_units.core</code> (thanks <a href="https://github.com/JohelEGP">@JohelEGP</a>)</li>
+<li>build: <code>CheckCacheVarValues</code> CMake module file added</li>
+<li>build: <code>MP_UNITS_DEV_TIME_TRACE</code> CMake option added</li>
+<li>build: <code>MP_UNITS_API_NO_CRTP</code> removed from <code>test_package</code> CMake</li>
+<li>build: require at least CMake 3.31 with Conan</li>
+<li>build: fmt/11.1.1</li>
+<li>ci: CI matrix generation added (thanks <a href="https://github.com/burnpanck">@burnpanck</a>)</li>
+<li>ci: <code>import_std</code> now checks if at least C++23 is being used</li>
+<li>perf: caching of the results of heavy <code>consteval</code> functions execution added</li>
+<li>perf: <code>expr_projectable</code> concept removed to improve compilation performance</li>
+</ul>
 <h3 id="2.4.0">2.4.0 <small>November 5, 2024</small><a class="headerlink" href="#2.4.0" title="Permanent link">&para;</a></h3>
 <ul>
 <li>(!) feat: <code>phase_velocity</code> and <code>group_velocity</code> aliases removed from ISQ by ISO</li>
@@ -2671,7 +2781,7 @@ You're not viewing the latest version.
 <li>feat: <code>quantity_point</code> support added for <code>quantity_cast</code> and <code>value_cast</code></li>
 <li>feat: <code>value_cast&lt;Unit, Representation&gt;</code> added</li>
 <li>feat: <code>value_cast&lt;Quantity&gt;(q)</code>, <code>value_cast&lt;Quantity&gt;(qp)</code> and <code>value_cast&lt;QuantityPoint&gt;(qp)</code> added by <a href="https://github.com/burnpanck">@burnpanck</a></li>
-<li>feat: <code>interconvertible(QuantitySpec, QuantitySpec)</code> added</li>
+<li>feat: <code>interconvertible(quantity_spec, quantity_spec)</code> added</li>
 <li>feat: <code>qp.quantity_from_zero()</code> added</li>
 <li>feat: <code>value_type</code> type trait added</li>
 <li>feat: do not print space between a number and <code>percent</code> or <code>per_mille</code></li>
@@ -2715,7 +2825,7 @@ You're not viewing the latest version.
 <li>refactor: not needed <code>remove_reference_t</code> and <code>remove_cvref_t</code> removed</li>
 <li>refactor: binary operators of <code>quantity</code> and <code>quantity_point</code> are now hidden friends</li>
 <li>fix: <code>QuantityLike</code> conversions required <code>Q::rep</code> instead of using one provided by <code>quantity_like_traits</code></li>
-<li>fix: <code>QuantitySpec[Unit]</code> replaced with <code>make_reference</code> in <code>value_cast</code></li>
+<li>fix: <code>quantity_spec[Unit]</code> replaced with <code>make_reference</code> in <code>value_cast</code></li>
 <li>fix: <code>ice_point</code> is now defined with the integral offset from <code>absolute_zero</code></li>
 <li>fix: performance regression in <code>sudo_cast</code> fixed</li>
 <li>fix: explicit object parameter support fixed</li>
