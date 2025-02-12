@@ -54,7 +54,7 @@ struct unit_magnitude;
 template<typename T>
 constexpr bool is_mag_constant = detail::SymbolicConstant<T> && is_derived_from_specialization_of_v<T, mag_constant>;
 
-}
+}  // namespace detail
 
 /**
  * @brief  Concept to detect whether T is a valid UnitMagnitude.
