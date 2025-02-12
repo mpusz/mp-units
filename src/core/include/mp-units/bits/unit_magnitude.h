@@ -52,7 +52,7 @@ import std;
 namespace mp_units::detail {
 
 template<typename T>
-concept MagArg = std::integral<T> || MagConstant<T>;
+concept MagArg = std::integral<T> || is_mag_constant<T>;
 
 /**
  * @brief  Any type which can be used as a basis vector in a power_v.
@@ -89,7 +89,7 @@ template<typename T>
 {
   if constexpr (is_specialization_of_v<T, power_v>)
     return get_base_value(T::base);
-  else if constexpr (MagConstant<T>)
+  else if constexpr (is_mag_constant<T>)
     return element._value_;
   else
     return element;
@@ -559,7 +559,7 @@ template<auto M>
 template<auto M>
 [[nodiscard]] consteval auto remove_mag_constants(unit_magnitude<M> m)
 {
-  if constexpr (MagConstant<decltype(get_base(M))>)
+  if constexpr (is_mag_constant<decltype(get_base(M))>)
     return unit_magnitude<>{};
   else
     return m;
@@ -568,7 +568,7 @@ template<auto M>
 template<auto M>
 [[nodiscard]] consteval auto only_positive_mag_constants(unit_magnitude<M> m)
 {
-  if constexpr (MagConstant<decltype(get_base(M))> && get_exponent(M) >= 0)
+  if constexpr (is_mag_constant<decltype(get_base(M))> && get_exponent(M) >= 0)
     return m;
   else
     return unit_magnitude<>{};
@@ -577,7 +577,7 @@ template<auto M>
 template<auto M>
 [[nodiscard]] consteval auto only_negative_mag_constants(unit_magnitude<M> m)
 {
-  if constexpr (MagConstant<decltype(get_base(M))> && get_exponent(M) < 0)
+  if constexpr (is_mag_constant<decltype(get_base(M))> && get_exponent(M) < 0)
     return m;
   else
     return unit_magnitude<>{};
@@ -619,7 +619,7 @@ constexpr auto prime_factorization_v = prime_factorization<N>::value;
 template<MagArg auto V>
 [[nodiscard]] consteval UnitMagnitude auto make_magnitude()
 {
-  if constexpr (MagConstant<MP_UNITS_REMOVE_CONST(decltype(V))>)
+  if constexpr (is_mag_constant<MP_UNITS_REMOVE_CONST(decltype(V))>)
     return unit_magnitude<V>{};
   else
     return prime_factorization_v<V>;
