@@ -25,7 +25,7 @@
         <link rel="alternate" type="application/rss+xml" title="RSS feed of updated content" href="../../../feed_rss_updated.xml">
       
       <link rel="icon" href="../../../assets/images/mp-units-color.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.3">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.4">
     
     
       
@@ -33,7 +33,7 @@
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.d7758b05.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.8608ea7d.min.css">
       
         
         <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
@@ -1239,6 +1239,15 @@ You're not viewing the latest version.
 </li>
       
         <li class="md-nav__item">
+  <a href="#UnitMagnitude" class="md-nav__link">
+    <span class="md-ellipsis">
+      UnitMagnitude&lt;T&gt;
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#Unit" class="md-nav__link">
     <span class="md-ellipsis">
       Unit&lt;T&gt;
@@ -1299,21 +1308,6 @@ You're not viewing the latest version.
   
 </li>
         
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#Representation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Representation&lt;T&gt;
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Representation<T>">
-      <ul class="md-nav__list">
-        
           <li class="md-nav__item">
   <a href="#RepresentationOf" class="md-nav__link">
     <span class="md-ellipsis">
@@ -1342,6 +1336,15 @@ You're not viewing the latest version.
   <a href="#QuantityOf" class="md-nav__link">
     <span class="md-ellipsis">
       QuantityOf&lt;T, V&gt;
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#QuantityLike" class="md-nav__link">
+    <span class="md-ellipsis">
+      QuantityLike&lt;T&gt;
     </span>
   </a>
   
@@ -1395,26 +1398,17 @@ You're not viewing the latest version.
   
 </li>
         
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#QuantityLike" class="md-nav__link">
-    <span class="md-ellipsis">
-      QuantityLike&lt;T&gt;
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
+          <li class="md-nav__item">
   <a href="#QuantityPointLike" class="md-nav__link">
     <span class="md-ellipsis">
       QuantityPointLike&lt;T&gt;
     </span>
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -2577,6 +2571,12 @@ including:</p>
 <h3 id="QuantitySpecOf"><code>QuantitySpecOf&lt;T, V&gt;</code><a class="headerlink" href="#QuantitySpecOf" title="Permanent link">&para;</a></h3>
 <p><code>QuantitySpecOf</code> concept is satisfied when both arguments satisfy a <a href="#QuantitySpec"><code>QuantitySpec</code></a> concept
 and when <code>T</code> is implicitly convertible to <code>V</code>.</p>
+<h2 id="UnitMagnitude"><code>UnitMagnitude&lt;T&gt;</code><a class="headerlink" href="#UnitMagnitude" title="Permanent link">&para;</a></h2>
+<p><code>UnitMagnitude</code> concept is satisfied by all types defining a unit magnitude.</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>Unit magnitude implementation is a private implementation detail of the library.</p>
+</div>
 <h2 id="Unit"><code>Unit&lt;T&gt;</code><a class="headerlink" href="#Unit" title="Permanent link">&para;</a></h2>
 <p><code>Unit</code> concept matches all the <a href="../../../appendix/glossary/#unit">units</a> in the library including:</p>
 <ul>
@@ -2633,18 +2633,16 @@ A <code>Reference</code> can either be:</p>
 <h3 id="ReferenceOf"><code>ReferenceOf&lt;T, V&gt;</code><a class="headerlink" href="#ReferenceOf" title="Permanent link">&para;</a></h3>
 <p><code>ReferenceOf</code> concept is satisfied by references <code>T</code> which have a quantity specification that satisfies
 <a href="#QuantitySpecOf"><code>QuantitySpecOf&lt;V&gt;</code></a> concept.</p>
-<h2 id="Representation"><code>Representation&lt;T&gt;</code><a class="headerlink" href="#Representation" title="Permanent link">&para;</a></h2>
-<p><code>Representation</code> concept constraints a type of a number that stores the
-<a href="../../../appendix/glossary/#quantity-value">value of a quantity</a>.</p>
 <h3 id="RepresentationOf"><code>RepresentationOf&lt;T, V&gt;</code><a class="headerlink" href="#RepresentationOf" title="Permanent link">&para;</a></h3>
-<p><code>RepresentationOf</code> concept is satisfied:</p>
+<p><code>RepresentationOf</code> concept constraints a type of a number that stores the
+<a href="../../../appendix/glossary/#quantity-value">value of a quantity</a> and is satisfied:</p>
 <ul>
 <li>
 <p>if the type of <code>V</code> satisfies <a href="#QuantitySpec"><code>QuantitySpec</code></a>:</p>
 <ul>
-<li>by all <a href="#Representation"><code>Representation</code></a> types when <code>V</code> describes
+<li>by all representation types when <code>V</code> describes
   a <a href="../../../appendix/glossary/#kind">quantity kind</a>,</li>
-<li>otherwise, by <a href="#Representation"><code>Representation</code></a> types that are of
+<li>otherwise, by representation types that are of
   a <a href="../../../appendix/glossary/#character">quantity character</a> associated with a provided
   quantity specification <code>V</code>.</li>
 </ul>
@@ -2652,34 +2650,56 @@ A <code>Reference</code> can either be:</p>
 <li>
 <p>if <code>V</code> is of <code>quantity_character</code> type:</p>
 <ul>
-<li>by <a href="#Representation"><code>Representation</code></a> types that are of a provided
+<li>by representation types that are of a provided
   <a href="../../../appendix/glossary/#character">quantity character</a>.</li>
 </ul>
 </li>
 </ul>
-<p>A user can declare a custom representation type to be of a specific character by providing the specialization
-with <code>true</code> for one or more of the following variable templates:</p>
-<ul>
-<li><code>is_scalar&lt;T&gt;</code></li>
-<li><code>is_complex&lt;T&gt;</code></li>
-<li><code>is_vector&lt;T&gt;</code></li>
-<li><code>is_tensor&lt;T&gt;</code></li>
-</ul>
-<details class="tip">
-<summary>Tip</summary>
-<p>If we want to use scalar types to also express <a href="../character_of_a_quantity/#defining-vector-and-tensor-quantities">vector quantities</a>
-(e.g., ignoring the "direction" of the vector) the following definition can be provided to enable such a behavior:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">class</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="k">requires</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">is_scalar</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="k">constexpr</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">is_vector</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
-</span></code></pre></div>
-</details>
 <h2 id="Quantity"><code>Quantity&lt;T&gt;</code><a class="headerlink" href="#Quantity" title="Permanent link">&para;</a></h2>
 <p><code>Quantity</code> concept matches every <a href="../../../appendix/glossary/#quantity">quantity</a> in the library and is
 satisfied by all types being or deriving from an instantiation of a <code>quantity</code> class template.</p>
 <h3 id="QuantityOf"><code>QuantityOf&lt;T, V&gt;</code><a class="headerlink" href="#QuantityOf" title="Permanent link">&para;</a></h3>
 <p><code>QuantityOf</code> concept is satisfied by all the quantities for which a <a href="#ReferenceOf"><code>ReferenceOf&lt;V&gt;</code></a>
 is <code>true</code>.</p>
+<h3 id="QuantityLike"><code>QuantityLike&lt;T&gt;</code><a class="headerlink" href="#QuantityLike" title="Permanent link">&para;</a></h3>
+<p><code>QuantityLike</code> concept provides interoperability with other libraries and is satisfied by a type <code>T</code>
+for which an instantiation of <code>quantity_like_traits</code> type trait yields a valid type that provides:</p>
+<ul>
+<li><code>reference</code> static data member that matches the <a href="#Reference"><code>Reference</code></a> concept,</li>
+<li><code>rep</code> type that matches <a href="#RepresentationOf"><code>RepresentationOf</code></a> concept with the character provided
+  in <code>reference</code>,</li>
+<li><code>explicit_import</code> static data member convertible to <code>bool</code> that specifies that the conversion
+  from <code>T</code> to a <code>quantity</code> type should happen explicitly (if <code>true</code>),</li>
+<li><code>explicit_export</code> static data member convertible to <code>bool</code> that specifies that the conversion
+  from a <code>quantity</code> type to <code>T</code> should happen explicitly (if <code>true</code>),</li>
+<li><code>to_numerical_value(T)</code> static member function returning a raw value of the quantity,</li>
+<li><code>from_numerical_value(rep)</code> static member function returning <code>T</code>.</li>
+</ul>
+<details class="abstract">
+<summary>Examples</summary>
+<p>This is how support for <code>std::chrono::seconds</code> can be provided:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">template</span><span class="o">&lt;&gt;</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="k">struct</span><span class="w"> </span><span class="nc">mp_units</span><span class="o">::</span><span class="n">quantity_like_traits</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">seconds</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">reference</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">second</span><span class="p">;</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">explicit_import</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">explicit_export</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">rep</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">seconds</span><span class="o">::</span><span class="n">rep</span><span class="p">;</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">  </span><span class="p">[[</span><span class="n">nodiscard</span><span class="p">]]</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">rep</span><span class="w"> </span><span class="n">to_numerical_value</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">seconds</span><span class="o">&amp;</span><span class="w"> </span><span class="n">d</span><span class="p">)</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">  </span><span class="p">{</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">d</span><span class="p">.</span><span class="n">count</span><span class="p">();</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">  </span><span class="p">[[</span><span class="n">nodiscard</span><span class="p">]]</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">seconds</span><span class="w"> </span><span class="n">from_numerical_value</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">rep</span><span class="o">&amp;</span><span class="w"> </span><span class="n">v</span><span class="p">)</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">  </span><span class="p">{</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">seconds</span><span class="p">(</span><span class="n">v</span><span class="p">);</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="p">};</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="n">quantity</span><span class="w"> </span><span class="n">q</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">42</span><span class="n">s</span><span class="p">;</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">seconds</span><span class="w"> </span><span class="n">dur</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">42</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">s</span><span class="p">;</span>
+</span></code></pre></div>
+</details>
 <h2 id="PointOrigin"><code>PointOrigin&lt;T&gt;</code><a class="headerlink" href="#PointOrigin" title="Permanent link">&para;</a></h2>
 <p><code>PointOrigin</code> concept matches all <a href="../../../appendix/glossary/#point-origin">quantity point origins</a> in
 the library. It is satisfied by either:</p>
@@ -2728,46 +2748,7 @@ class template.</p>
 </tr>
 </tbody>
 </table>
-<h2 id="QuantityLike"><code>QuantityLike&lt;T&gt;</code><a class="headerlink" href="#QuantityLike" title="Permanent link">&para;</a></h2>
-<p><code>QuantityLike</code> concept provides interoperability with other libraries and is satisfied by a type <code>T</code>
-for which an instantiation of <code>quantity_like_traits</code> type trait yields a valid type that provides:</p>
-<ul>
-<li><code>reference</code> static data member that matches the <a href="#Reference"><code>Reference</code></a> concept,</li>
-<li><code>rep</code> type that matches <a href="#RepresentationOf"><code>RepresentationOf</code></a> concept with the character provided
-  in <code>reference</code>,</li>
-<li><code>explicit_import</code> static data member convertible to <code>bool</code> that specifies that the conversion
-  from <code>T</code> to a <code>quantity</code> type should happen explicitly (if <code>true</code>),</li>
-<li><code>explicit_export</code> static data member convertible to <code>bool</code> that specifies that the conversion
-  from a <code>quantity</code> type to <code>T</code> should happen explicitly (if <code>true</code>),</li>
-<li><code>to_numerical_value(T)</code> static member function returning a raw value of the quantity,</li>
-<li><code>from_numerical_value(rep)</code> static member function returning <code>T</code>.</li>
-</ul>
-<details class="abstract">
-<summary>Examples</summary>
-<p>This is how support for <code>std::chrono::seconds</code> can be provided:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">template</span><span class="o">&lt;&gt;</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="k">struct</span><span class="w"> </span><span class="nc">mp_units</span><span class="o">::</span><span class="n">quantity_like_traits</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">seconds</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">reference</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">second</span><span class="p">;</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">explicit_import</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">explicit_export</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">rep</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">seconds</span><span class="o">::</span><span class="n">rep</span><span class="p">;</span>
-</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>
-</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">  </span><span class="p">[[</span><span class="n">nodiscard</span><span class="p">]]</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">rep</span><span class="w"> </span><span class="n">to_numerical_value</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">seconds</span><span class="o">&amp;</span><span class="w"> </span><span class="n">d</span><span class="p">)</span>
-</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">  </span><span class="p">{</span>
-</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">d</span><span class="p">.</span><span class="n">count</span><span class="p">();</span>
-</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">  </span><span class="p">}</span>
-</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>
-</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="w">  </span><span class="p">[[</span><span class="n">nodiscard</span><span class="p">]]</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">seconds</span><span class="w"> </span><span class="n">from_numerical_value</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">rep</span><span class="o">&amp;</span><span class="w"> </span><span class="n">v</span><span class="p">)</span>
-</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="w">  </span><span class="p">{</span>
-</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">seconds</span><span class="p">(</span><span class="n">v</span><span class="p">);</span>
-</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="w">  </span><span class="p">}</span>
-</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="p">};</span>
-</span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>
-</span><span id="__span-2-19"><a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a><span class="n">quantity</span><span class="w"> </span><span class="n">q</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">42</span><span class="n">s</span><span class="p">;</span>
-</span><span id="__span-2-20"><a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">seconds</span><span class="w"> </span><span class="n">dur</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">42</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">s</span><span class="p">;</span>
-</span></code></pre></div>
-</details>
-<h2 id="QuantityPointLike"><code>QuantityPointLike&lt;T&gt;</code><a class="headerlink" href="#QuantityPointLike" title="Permanent link">&para;</a></h2>
+<h3 id="QuantityPointLike"><code>QuantityPointLike&lt;T&gt;</code><a class="headerlink" href="#QuantityPointLike" title="Permanent link">&para;</a></h3>
 <p><code>QuantityPointLike</code> concept provides interoperability with other libraries and is satisfied by a type <code>T</code>
 for which an instantiation of <code>quantity_point_like_traits</code> type trait yields a valid type that provides:</p>
 <ul>
@@ -2786,28 +2767,28 @@ for which an instantiation of <code>quantity_point_like_traits</code> type trait
 <details class="abstract">
 <summary>Examples</summary>
 <p>This is how support for a <code>std::chrono::time_point</code> of <code>std::chrono::seconds</code> can be provided:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">C</span><span class="o">&gt;</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">struct</span><span class="w"> </span><span class="nc">mp_units</span><span class="o">::</span><span class="n">quantity_point_like_traits</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">time_point</span><span class="o">&lt;</span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">seconds</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">reference</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">second</span><span class="p">;</span>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">point_origin_</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">absolute_point_origin</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">time</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">point_origin</span><span class="p">{};</span>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">explicit_import</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">explicit_export</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
-</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">rep</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">seconds</span><span class="o">::</span><span class="n">rep</span><span class="p">;</span>
-</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">time_point</span><span class="o">&lt;</span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">seconds</span><span class="o">&gt;</span><span class="p">;</span>
-</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>
-</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">  </span><span class="p">[[</span><span class="n">nodiscard</span><span class="p">]]</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">rep</span><span class="w"> </span><span class="n">to_numerical_value</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">&amp;</span><span class="w"> </span><span class="n">tp</span><span class="p">)</span>
-</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="w">  </span><span class="p">{</span>
-</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">tp</span><span class="p">.</span><span class="n">time_since_epoch</span><span class="p">().</span><span class="n">count</span><span class="p">();</span>
-</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="w">  </span><span class="p">}</span>
-</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>
-</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="w">  </span><span class="p">[[</span><span class="n">nodiscard</span><span class="p">]]</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="n">from_numerical_value</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">rep</span><span class="o">&amp;</span><span class="w"> </span><span class="n">v</span><span class="p">)</span>
-</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="w">  </span><span class="p">{</span>
-</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">T</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">seconds</span><span class="p">(</span><span class="n">v</span><span class="p">));</span>
-</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="w">  </span><span class="p">}</span>
-</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="p">};</span>
-</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a>
-</span><span id="__span-3-21"><a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a><span class="n">quantity_point</span><span class="w"> </span><span class="n">qp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">time_point_cast</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">seconds</span><span class="o">&gt;</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">system_clock</span><span class="o">::</span><span class="n">now</span><span class="p">());</span>
-</span><span id="__span-3-22"><a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">sys_seconds</span><span class="w"> </span><span class="n">q</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">qp</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">42</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">s</span><span class="p">;</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">C</span><span class="o">&gt;</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="k">struct</span><span class="w"> </span><span class="nc">mp_units</span><span class="o">::</span><span class="n">quantity_point_like_traits</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">time_point</span><span class="o">&lt;</span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">seconds</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">reference</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">second</span><span class="p">;</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">point_origin_</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">absolute_point_origin</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">time</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">point_origin</span><span class="p">{};</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">explicit_import</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">explicit_export</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">rep</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">seconds</span><span class="o">::</span><span class="n">rep</span><span class="p">;</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">time_point</span><span class="o">&lt;</span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">seconds</span><span class="o">&gt;</span><span class="p">;</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">  </span><span class="p">[[</span><span class="n">nodiscard</span><span class="p">]]</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">rep</span><span class="w"> </span><span class="n">to_numerical_value</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">&amp;</span><span class="w"> </span><span class="n">tp</span><span class="p">)</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">  </span><span class="p">{</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">tp</span><span class="p">.</span><span class="n">time_since_epoch</span><span class="p">().</span><span class="n">count</span><span class="p">();</span>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="w">  </span><span class="p">[[</span><span class="n">nodiscard</span><span class="p">]]</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="n">from_numerical_value</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">rep</span><span class="o">&amp;</span><span class="w"> </span><span class="n">v</span><span class="p">)</span>
+</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="w">  </span><span class="p">{</span>
+</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">T</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">seconds</span><span class="p">(</span><span class="n">v</span><span class="p">));</span>
+</span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-2-19"><a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a><span class="p">};</span>
+</span><span id="__span-2-20"><a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>
+</span><span id="__span-2-21"><a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a><span class="n">quantity_point</span><span class="w"> </span><span class="n">qp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">time_point_cast</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">seconds</span><span class="o">&gt;</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">system_clock</span><span class="o">::</span><span class="n">now</span><span class="p">());</span>
+</span><span id="__span-2-22"><a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">sys_seconds</span><span class="w"> </span><span class="n">q</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">qp</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">42</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">s</span><span class="p">;</span>
 </span></code></pre></div>
 </details>
 
