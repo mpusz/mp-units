@@ -37,7 +37,7 @@ namespace mp_units {
 
 namespace detail {
 
-template<Representation Rep, Unit UFrom, Unit UTo>
+template<typename Rep, Unit UFrom, Unit UTo>
 [[nodiscard]] consteval bool overflows_non_zero_values(UFrom from, UTo to)
 {
   if constexpr (is_same_v<UFrom, UTo> || treat_as_floating_point<Rep>)
@@ -87,7 +87,7 @@ template<auto ToU, typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>>
  *
  * @tparam ToRep a representation type to use for a target quantity
  */
-template<Representation ToRep, typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>>
+template<typename ToRep, typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>>
   requires RepresentationOf<ToRep, Q::quantity_spec> && std::constructible_from<ToRep, typename Q::rep>
 [[nodiscard]] constexpr quantity<Q::reference, ToRep> value_cast(FwdQ&& q)
 {
@@ -105,7 +105,7 @@ template<Representation ToRep, typename FwdQ, Quantity Q = std::remove_cvref_t<F
  * @tparam ToU a unit to use for the target quantity
  * @tparam ToRep a representation type to use for the target quantity
  */
-template<Unit auto ToU, Representation ToRep, typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>>
+template<Unit auto ToU, typename ToRep, typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>>
   requires detail::UnitCompatibleWith<MP_UNITS_REMOVE_CONST(decltype(ToU)), Q::unit, Q::quantity_spec> &&
            (!detail::overflows_non_zero_values<ToRep>(Q::unit, ToU)) &&
            RepresentationOf<ToRep, Q::quantity_spec> && std::constructible_from<ToRep, typename Q::rep>
@@ -114,7 +114,7 @@ template<Unit auto ToU, Representation ToRep, typename FwdQ, Quantity Q = std::r
   return detail::sudo_cast<quantity<detail::make_reference(Q::quantity_spec, ToU), ToRep>>(std::forward<FwdQ>(q));
 }
 
-template<Representation ToRep, Unit auto ToU, typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>>
+template<typename ToRep, Unit auto ToU, typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>>
   requires detail::UnitCompatibleWith<MP_UNITS_REMOVE_CONST(decltype(ToU)), Q::unit, Q::quantity_spec> &&
            (!detail::overflows_non_zero_values<ToRep>(Q::unit, ToU)) &&
            RepresentationOf<ToRep, Q::quantity_spec> && std::constructible_from<ToRep, typename Q::rep>
@@ -176,7 +176,7 @@ template<Unit auto ToU, typename FwdQP, QuantityPoint QP = std::remove_cvref_t<F
  *
  * @tparam ToRep a representation type to use for a target quantity point
  */
-template<Representation ToRep, typename FwdQP, QuantityPoint QP = std::remove_cvref_t<FwdQP>>
+template<typename ToRep, typename FwdQP, QuantityPoint QP = std::remove_cvref_t<FwdQP>>
   requires RepresentationOf<ToRep, QP::quantity_spec> && std::constructible_from<ToRep, typename QP::rep>
 [[nodiscard]] constexpr quantity_point<QP::reference, QP::point_origin, ToRep> value_cast(FwdQP&& qp)
 {
@@ -195,7 +195,7 @@ template<Representation ToRep, typename FwdQP, QuantityPoint QP = std::remove_cv
  * @tparam ToU a unit to use for the target quantity
  * @tparam ToRep a representation type to use for the target quantity
  */
-template<Unit auto ToU, Representation ToRep, typename FwdQP, QuantityPoint QP = std::remove_cvref_t<FwdQP>>
+template<Unit auto ToU, typename ToRep, typename FwdQP, QuantityPoint QP = std::remove_cvref_t<FwdQP>>
   requires detail::UnitCompatibleWith<MP_UNITS_REMOVE_CONST(decltype(ToU)), QP::unit, QP::quantity_spec> &&
            (!detail::overflows_non_zero_values<ToRep>(QP::unit, ToU)) &&
            RepresentationOf<ToRep, QP::quantity_spec> && std::constructible_from<ToRep, typename QP::rep>
@@ -206,7 +206,7 @@ template<Unit auto ToU, Representation ToRep, typename FwdQP, QuantityPoint QP =
     QP::point_origin};
 }
 
-template<Representation ToRep, Unit auto ToU, typename FwdQP, QuantityPoint QP = std::remove_cvref_t<FwdQP>>
+template<typename ToRep, Unit auto ToU, typename FwdQP, QuantityPoint QP = std::remove_cvref_t<FwdQP>>
   requires detail::UnitCompatibleWith<MP_UNITS_REMOVE_CONST(decltype(ToU)), QP::unit, QP::quantity_spec> &&
            (!detail::overflows_non_zero_values<ToRep>(QP::unit, ToU)) &&
            RepresentationOf<ToRep, QP::quantity_spec> && std::constructible_from<ToRep, typename QP::rep>

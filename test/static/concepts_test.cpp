@@ -315,20 +315,6 @@ static_assert(ReferenceOf<struct one, isq::angular_measure>);
 static_assert(!ReferenceOf<decltype(dimensionless[one]), isq::rotation>);
 static_assert(!ReferenceOf<decltype(dimensionless[one]), isq::angular_measure>);
 
-// Representation
-static_assert(Representation<int>);
-static_assert(Representation<double>);
-static_assert(!Representation<bool>);
-static_assert(!Representation<std::optional<int>>);
-#if MP_UNITS_HOSTED
-static_assert(Representation<std::complex<float>>);
-static_assert(Representation<std::complex<double>>);
-static_assert(Representation<std::complex<long double>>);
-static_assert(Representation<cartesian_vector<double>>);
-static_assert(!Representation<std::string>);
-static_assert(!Representation<std::chrono::seconds>);
-#endif
-
 // RepresentationOf
 static_assert(RepresentationOf<int, quantity_character::real_scalar>);
 static_assert(!RepresentationOf<int, quantity_character::complex_scalar>);

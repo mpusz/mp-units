@@ -328,27 +328,23 @@ concept VectorRepresentation = NotQuantity<T> && Vector<T> && ScalableByFactor<T
 // template<typename T>
 // concept TensorRepresentation = NotQuantity<T> && Tensor<T>;
 
-}  // namespace detail
-
-MP_UNITS_EXPORT template<typename T>
-concept Representation =
-  detail::ScalarRepresentation<T> || detail::VectorRepresentation<T>;  // || detail::TensorRepresentation<T>;
-
-namespace detail {
-
 template<typename T, quantity_character Ch>
-concept IsOfCharacter =
-  (Ch == quantity_character::real_scalar && RealScalar<T>) ||
-  (Ch == quantity_character::complex_scalar && ComplexScalar<T>) ||
-  (Ch == quantity_character::vector && Vector<T>);  // || (Ch == quantity_character::tensor && Tensor<T>);
+concept IsOfCharacter = (Ch == quantity_character::real_scalar && RealScalarRepresentation<T>) ||
+                        (Ch == quantity_character::complex_scalar && ComplexScalarRepresentation<T>) ||
+                        (Ch == quantity_character::vector && VectorRepresentation<T>);
+// || (Ch == quantity_character::tensor && TensorRepresentation<T>);
+
+template<typename T>
+concept SomeRepresentation =
+  detail::ScalarRepresentation<T> || detail::VectorRepresentation<T>;  // || detail::TensorRepresentation<T>;
 
 }  // namespace detail
 
 MP_UNITS_EXPORT template<typename T, auto V>
 concept RepresentationOf =
-  Representation<T> &&
   ((QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(V))> &&
-    (detail::QuantityKindSpec<MP_UNITS_REMOVE_CONST(decltype(V))> || detail::IsOfCharacter<T, V.character>)) ||
+    ((detail::QuantityKindSpec<MP_UNITS_REMOVE_CONST(decltype(V))> && detail::SomeRepresentation<T>) ||
+     detail::IsOfCharacter<T, V.character>)) ||
    (std::same_as<quantity_character, decltype(V)> && detail::IsOfCharacter<T, V>));
 
 }  // namespace mp_units
