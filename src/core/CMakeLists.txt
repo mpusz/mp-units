@@ -35,7 +35,6 @@ add_mp_units_module(
             include/mp-units/bits/core_gmf.h
             include/mp-units/bits/get_associated_quantity.h
             include/mp-units/bits/hacks.h
-            include/mp-units/bits/math_concepts.h
             include/mp-units/bits/module_macros.h
             include/mp-units/bits/quantity_spec_hierarchy.h
             include/mp-units/bits/ratio.h

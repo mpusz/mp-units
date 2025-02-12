@@ -25,7 +25,6 @@
 // IWYU pragma: private, include <mp-units/framework.h>
 #include <mp-units/bits/constexpr_math.h>
 #include <mp-units/bits/hacks.h>
-#include <mp-units/bits/math_concepts.h>
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/bits/ratio.h>
 #include <mp-units/bits/text_tools.h>
@@ -593,7 +592,7 @@ using common_magnitude_type = decltype(common_magnitude_type_impl(M));
 
 // Helper to perform prime factorization at compile time.
 template<std::intmax_t N>
-  requires gt_zero<N>
+  requires(N > 0)
 struct prime_factorization {
   [[nodiscard]] static consteval std::intmax_t get_or_compute_first_factor()
   {

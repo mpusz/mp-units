@@ -22,7 +22,6 @@
 
 #pragma once
 
-#include <mp-units/bits/math_concepts.h>
 #include <mp-units/bits/ratio.h>
 #include <mp-units/bits/type_list.h>
 #include <mp-units/ext/type_name.h>
@@ -86,10 +85,10 @@ template<>
 MP_UNITS_INLINE constexpr bool valid_ratio<0, 0> = false;
 
 template<int Num, int... Den>
-constexpr bool positive_ratio = gt_zero<Num>;
+constexpr bool positive_ratio = Num > 0;
 
 template<int Num, int Den>
-constexpr bool positive_ratio<Num, Den> = gt_zero<Num * Den>;
+constexpr bool positive_ratio<Num, Den> = Num * Den > 0;
 
 template<int Num, int... Den>
 constexpr bool ratio_one = false;
@@ -494,7 +493,7 @@ template<template<typename...> typename To, SymbolicArg OneType, typename T>
 
 template<std::intmax_t Num, std::intmax_t Den, template<typename...> typename To, SymbolicArg OneType,
          template<typename, typename> typename Pred, typename... Nums, typename... Dens>
-  requires detail::non_zero<Den>
+  requires(Den != 0)
 [[nodiscard]] consteval auto expr_pow_impl(type_list<Nums...>, type_list<Dens...>)
 {
   return detail::get_optimized_expression<type_list<power_or_T<Nums, ratio{Num, Den}>...>,
@@ -514,7 +513,7 @@ template<std::intmax_t Num, std::intmax_t Den, template<typename...> typename To
  */
 template<std::intmax_t Num, std::intmax_t Den, template<typename...> typename To, SymbolicArg OneType,
          template<typename, typename> typename Pred = type_list_name_less, typename T>
-  requires detail::non_zero<Den>
+  requires(Den != 0)
 [[nodiscard]] consteval auto expr_pow(T v)
 {
   if constexpr (Num == 0 || is_same_v<T, OneType>)

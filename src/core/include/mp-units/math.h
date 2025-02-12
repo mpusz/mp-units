@@ -76,7 +76,7 @@ template<auto R, typename Rep>
  * @return Quantity The result of computation
  */
 template<std::intmax_t Num, std::intmax_t Den = 1, auto R, typename Rep>
-  requires detail::non_zero<Den> && requires(Rep v) {
+  requires(Den != 0) && requires(Rep v) {
     representation_values<Rep>::one();
     requires requires { pow(v, 1.0); } || requires { std::pow(v, 1.0); };
   }

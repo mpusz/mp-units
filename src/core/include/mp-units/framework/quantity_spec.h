@@ -626,7 +626,7 @@ MP_UNITS_EXPORT_BEGIN
  * @return QuantitySpec The result of computation
  */
 template<std::intmax_t Num, std::intmax_t Den = 1, QuantitySpec Q>
-  requires detail::non_zero<Den>
+  requires(Den != 0)
 [[nodiscard]] consteval QuantitySpec auto pow(Q q)
 {
   return detail::clone_kind_of<Q{}>(

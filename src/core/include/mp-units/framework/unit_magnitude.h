@@ -73,7 +73,7 @@ template<detail::MagArg auto V>
 constexpr UnitMagnitude auto mag = detail::make_magnitude<V>();
 
 template<std::intmax_t N, std::intmax_t D>
-  requires detail::gt_zero<N>
+  requires(N > 0)
 constexpr UnitMagnitude auto mag_ratio = detail::prime_factorization_v<N> / detail::prime_factorization_v<D>;
 
 /**

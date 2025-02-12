@@ -616,7 +616,7 @@ MP_UNITS_EXPORT_BEGIN
  * @return Unit The result of computation
  */
 template<std::intmax_t Num, std::intmax_t Den = 1, Unit U>
-  requires detail::non_zero<Den>
+  requires(Den != 0)
 [[nodiscard]] consteval Unit auto pow(U u)
 {
   return detail::expr_pow<Num, Den, derived_unit, struct one>(u);

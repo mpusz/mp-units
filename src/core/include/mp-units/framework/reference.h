@@ -152,7 +152,7 @@ struct reference {
    * @return The result of computation
    */
   template<std::intmax_t Num, std::intmax_t Den = 1>
-    requires detail::non_zero<Den>
+    requires(Den != 0)
   [[nodiscard]] friend consteval detail::reference_t<MP_UNITS_EXPRESSION_WORKAROUND((pow<Num, Den>(Q{}))),
                                                      MP_UNITS_EXPRESSION_WORKAROUND((pow<Num, Den>(U{})))>
   pow(reference)
