@@ -44,7 +44,12 @@ namespace mp_units {
 namespace detail {
 
 template<typename T>
-concept WeaklyRegular = std::copyable<T> && std::equality_comparable<T>;
+concept WeaklyRegular =
+#ifndef MP_UNITS_XCODE15_HACKS
+  true;
+#else
+  std::copyable<T> && std::equality_comparable<T>;
+#endif
 
 template<typename T, typename S>
 concept ScalableWith = requires(const T v, const S s) {
@@ -170,18 +175,13 @@ template<typename T>
 concept ComplexScalar =
   // TODO should the below be provided?
   // (!disable_complex<T>) &&
-  Addable<T> && ScalableWith<T, T> &&
-  requires(const T v, const T& ref) {
+  Addable<T> && ScalableWith<T, T> && requires(const T v, const T& ref) {
     ::mp_units::real(v);
     ::mp_units::imag(v);
     ::mp_units::modulus(v);
     requires ScalableWith<T, decltype(::mp_units::modulus(v))>;
     requires std::constructible_from<T, decltype(::mp_units::real(ref)), decltype(::mp_units::imag(ref))>;
-  }
-#ifndef MP_UNITS_XCODE15_HACKS
-  && WeaklyRegular<T>
-#endif
-  ;
+  } && WeaklyRegular<T>;
 
 }  // namespace detail
 
@@ -197,12 +197,8 @@ MP_UNITS_INLINE constexpr bool disable_real<bool> = true;
 namespace detail {
 
 template<typename T>
-concept RealScalar =
-  (!disable_real<T>) && Addable<T> && ScalableWith<T, T> && std::totally_ordered<T> && (!ComplexScalar<T>)
-#if MP_UNITS_COMP_GCC != 12 && !defined(MP_UNITS_XCODE15_HACKS)
-  && WeaklyRegular<T>
-#endif
-  ;
+concept RealScalar = (!disable_real<T>) && Addable<T> && ScalableWith<T, T> && std::totally_ordered<T> &&
+                     (!ComplexScalar<T>) && WeaklyRegular<T>;
 
 template<typename T>
 concept Scalar = RealScalar<T> || ComplexScalar<T>;
@@ -254,20 +250,15 @@ MP_UNITS_EXPORT inline constexpr ::mp_units::detail::magnitude_impl::magnitude_t
 namespace detail {
 
 template<typename T>
-concept Vector = Addable<T> &&
-                 requires(const T v) {
-                   ::mp_units::magnitude(v);
-                   requires ScalableWith<T, decltype(::mp_units::magnitude(v))>;
-                   // TODO should we also check for the below (e.g., when `size() > 1` or `2`)
-                   // ::mp_units::zero_vector<T>();
-                   // ::mp_units::scalar_product(a, b);
-                   // ::mp_units::vector_product(a, b);
-                   // ::mp_units::tensor_product(a, b);
-                 }
-#ifndef MP_UNITS_XCODE15_HACKS
-                 && WeaklyRegular<T>
-#endif
-  ;
+concept Vector = Addable<T> && requires(const T v) {
+  ::mp_units::magnitude(v);
+  requires ScalableWith<T, decltype(::mp_units::magnitude(v))>;
+  // TODO should we also check for the below (e.g., when `size() > 1` or `2`)
+  // ::mp_units::zero_vector<T>();
+  // ::mp_units::scalar_product(a, b);
+  // ::mp_units::vector_product(a, b);
+  // ::mp_units::tensor_product(a, b);
+} && WeaklyRegular<T>;
 
 }  // namespace detail
 
