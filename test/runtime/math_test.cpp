@@ -41,6 +41,9 @@ import mp_units;
 using namespace mp_units;
 using namespace mp_units::si::unit_symbols;
 
+inline constexpr struct mean_sea_level final : mp_units::absolute_point_origin<mp_units::isq::altitude> {
+} mean_sea_level;
+
 // classical
 
 TEST_CASE("math operations", "[math]")
@@ -350,6 +353,80 @@ TEST_CASE("math operations", "[math]")
     {
       REQUIRE(hypot(3. * isq::length[km], 4000. * isq::length[m]) == 5. * isq::length[km]);
       REQUIRE(hypot(2. * isq::length[km], 3000. * isq::length[m], 6. * isq::length[km]) == 7. * isq::length[km]);
+    }
+  }
+
+  SECTION("lerp functions")
+  {
+    SECTION("lerp should work on the same quantity points")
+    {
+      SECTION("default origins")
+      {
+        REQUIRE(lerp(point<isq::altitude[m]>(99.), point<isq::altitude[m]>(100.), 0.0) == point<isq::altitude[m]>(99.));
+        REQUIRE(lerp(point<isq::altitude[m]>(99.), point<isq::altitude[m]>(100.), 0.5) ==
+                point<isq::altitude[m]>(99.5));
+        REQUIRE(lerp(point<isq::altitude[m]>(99.), point<isq::altitude[m]>(100.), 1.0) ==
+                point<isq::altitude[m]>(100.));
+        REQUIRE(lerp(point<isq::altitude[m]>(99.), point<isq::altitude[m]>(100.), 2.0) ==
+                point<isq::altitude[m]>(101.));
+      }
+
+      SECTION("custom origins")
+      {
+        REQUIRE(lerp(mean_sea_level + isq::height(99. * m), mean_sea_level + isq::height(100. * m), 0.0) ==
+                mean_sea_level + isq::height(99. * m));
+        REQUIRE(lerp(mean_sea_level + isq::height(99. * m), mean_sea_level + isq::height(100. * m), 0.5) ==
+                mean_sea_level + isq::height(99.5 * m));
+        REQUIRE(lerp(mean_sea_level + isq::height(99. * m), mean_sea_level + isq::height(100. * m), 1.0) ==
+                mean_sea_level + isq::height(100. * m));
+        REQUIRE(lerp(mean_sea_level + isq::height(99. * m), mean_sea_level + isq::height(100. * m), 2.0) ==
+                mean_sea_level + isq::height(101. * m));
+      }
+    }
+
+    SECTION("lerp should work with different units of the same dimension")
+    {
+      SECTION("default origins")
+      {
+        REQUIRE(lerp(point<isq::altitude[m]>(99.), point<isq::altitude[cm]>(10'000.), 0.0) ==
+                point<isq::altitude[m]>(99.));
+        REQUIRE(lerp(point<isq::altitude[m]>(99.), point<isq::altitude[cm]>(10'000.), 0.5) ==
+                point<isq::altitude[m]>(99.5));
+        REQUIRE(lerp(point<isq::altitude[m]>(99.), point<isq::altitude[cm]>(10'000.), 1.0) ==
+                point<isq::altitude[m]>(100.));
+        REQUIRE(lerp(point<isq::altitude[m]>(99.), point<isq::altitude[cm]>(10'000.), 2.0) ==
+                point<isq::altitude[m]>(101.));
+      }
+
+      SECTION("custom origins")
+      {
+        REQUIRE(lerp(mean_sea_level + isq::height(99. * m), mean_sea_level + isq::height(10'000. * cm), 0.0) ==
+                mean_sea_level + isq::height(99. * m));
+        REQUIRE(lerp(mean_sea_level + isq::height(99. * m), mean_sea_level + isq::height(10'000. * cm), 0.5) ==
+                mean_sea_level + isq::height(99.5 * m));
+        REQUIRE(lerp(mean_sea_level + isq::height(99. * m), mean_sea_level + isq::height(10'000. * cm), 1.0) ==
+                mean_sea_level + isq::height(100. * m));
+        REQUIRE(lerp(mean_sea_level + isq::height(99. * m), mean_sea_level + isq::height(10'000. * cm), 2.0) ==
+                mean_sea_level + isq::height(101. * m));
+      }
+    }
+  }
+
+  SECTION("midpoint functions")
+  {
+    SECTION("midpoint should work on the same quantity points")
+    {
+      REQUIRE(midpoint(point<isq::altitude[m]>(99.), point<isq::altitude[m]>(100.)) == point<isq::altitude[m]>(99.5));
+      REQUIRE(midpoint(mean_sea_level + isq::height(99. * m), mean_sea_level + isq::height(100. * m)) ==
+              mean_sea_level + isq::height(99.5 * m));
+    }
+
+    SECTION("midpoint should work with different units of the same dimension")
+    {
+      REQUIRE(midpoint(point<isq::altitude[m]>(99.), point<isq::altitude[cm]>(10'000.)) ==
+              point<isq::altitude[m]>(99.5));
+      REQUIRE(midpoint(mean_sea_level + isq::height(99. * m), mean_sea_level + isq::height(10'000. * cm)) ==
+              mean_sea_level + isq::height(99.5 * m));
     }
   }
 

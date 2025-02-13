@@ -454,6 +454,48 @@ template<auto R1, typename Rep1, auto R2, typename Rep2, auto R3, typename Rep3>
   return quantity{hypot(x.numerical_value_in(unit), y.numerical_value_in(unit), z.numerical_value_in(unit)), ref};
 }
 
+/**
+ * @brief Linear interpolation or extrapolation
+ *
+ * Computes the linear interpolation between `a` and `b`, if the parameter `t` is inside `[​0​, 1)`
+ * (the linear extrapolation otherwise), i.e. the result of `a + t(b − a)` with accounting for
+ * floating-point calculation imprecision.
+ */
+template<auto R1, auto Origin, typename Rep1, auto R2, typename Rep2, typename Factor>
+  requires requires(Rep1 a, Rep2 b, Factor t) {
+    get_common_reference(R1, R2);
+    requires requires { lerp(a, b, t); } || requires { std::lerp(a, b, t); };
+  }
+[[nodiscard]] constexpr QuantityPointOf<get_quantity_spec(get_common_reference(R1, R2))> auto lerp(
+  const quantity_point<R1, Origin, Rep1>& a, const quantity_point<R2, Origin, Rep2>& b, const Factor& t) noexcept
+{
+  constexpr auto ref = get_common_reference(R1, R2);
+  constexpr auto unit = get_unit(ref);
+  using std::lerp;
+  return Origin + quantity{lerp(a.quantity_ref_from(Origin).numerical_value_in(unit),
+                                b.quantity_ref_from(Origin).numerical_value_in(unit), t),
+                           ref};
+}
+
+/**
+ * @brief Computes the midpoint of two points
+ */
+template<auto R1, auto Origin, typename Rep1, auto R2, typename Rep2>
+  requires requires(Rep1 a, Rep2 b) {
+    get_common_reference(R1, R2);
+    requires requires { midpoint(a, b); } || requires { std::midpoint(a, b); };
+  }
+[[nodiscard]] constexpr QuantityPointOf<get_quantity_spec(get_common_reference(R1, R2))> auto midpoint(
+  const quantity_point<R1, Origin, Rep1>& a, const quantity_point<R2, Origin, Rep2>& b) noexcept
+{
+  constexpr auto ref = get_common_reference(R1, R2);
+  constexpr auto unit = get_unit(ref);
+  using std::midpoint;
+  return Origin + quantity{midpoint(a.quantity_ref_from(Origin).numerical_value_in(unit),
+                                    b.quantity_ref_from(Origin).numerical_value_in(unit)),
+                           ref};
+}
+
 #endif  // MP_UNITS_HOSTED
 
 }  // namespace mp_units
