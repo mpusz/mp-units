@@ -696,7 +696,7 @@ template<mp_units::Quantity Q, mp_units::RepresentationOf<Q::quantity_spec> Valu
 struct std::common_type<Value, Q> : std::common_type<Q, Value> {};
 
 template<auto R, typename Rep>
-  requires requires { typename std::numeric_limits<Rep>; }
+  requires std::numeric_limits<Rep>::is_specialized
 class std::numeric_limits<mp_units::quantity<R, Rep>> : public std::numeric_limits<Rep> {
 public:
   static constexpr mp_units::quantity<R, Rep> min() noexcept

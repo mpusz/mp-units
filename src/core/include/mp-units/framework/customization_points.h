@@ -97,7 +97,7 @@ struct representation_values {
   }
 
   static constexpr Rep min() noexcept
-    requires requires {
+    requires std::numeric_limits<Rep>::is_specialized && requires {
       { std::numeric_limits<Rep>::lowest() } -> std::same_as<Rep>;
     }
   {
@@ -105,7 +105,7 @@ struct representation_values {
   }
 
   static constexpr Rep max() noexcept
-    requires requires {
+    requires std::numeric_limits<Rep>::is_specialized && requires {
       { std::numeric_limits<Rep>::max() } -> std::same_as<Rep>;
     }
   {

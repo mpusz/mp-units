@@ -564,7 +564,7 @@ explicit(quantity_point_like_traits<QP>::explicit_import) quantity_point(QP)
 }  // namespace mp_units
 
 template<auto R, auto PO, typename Rep>
-  requires requires { typename std::numeric_limits<Rep>; }
+  requires std::numeric_limits<Rep>::is_specialized
 class std::numeric_limits<mp_units::quantity_point<R, PO, Rep>> : public std::numeric_limits<Rep> {
 public:
   static constexpr mp_units::quantity_point<R, PO, Rep> min() noexcept
