@@ -13,13 +13,13 @@
 The table below provides the minimum compiler version required to compile the code using a specific
 C++ feature:
 
-| C++ Feature                                               | C++ version | gcc  | clang | apple-clang |                   MSVC                    |
-|-----------------------------------------------------------|:-----------:|:----:|:-----:|:-----------:|:-----------------------------------------:|
-| **Minimum support**                                       |     20      |  12  |  16   |     15      | 194 :bug:{ title="BEWARE of MSVC Bugs!" } |
-| **`std::format`**                                         |     20      |  13  |  17   |     16      |                    194                    |
-| **C++ modules**                                           |     20      | None |  17   |    None     |                   None                    |
-| **`import std;`**                                         |     23      | None |  18   |    None     |                   None                    |
-| **Explicit `this` parameter**                             |     23      |  14  |  18   |    None     |                   None                    |
+| C++ Feature                   | C++ version | gcc  | clang | apple-clang |                   MSVC                    |
+|-------------------------------|:-----------:|:----:|:-----:|:-----------:|:-----------------------------------------:|
+| **Minimum support**           |     20      |  12  |  16   |     15      | 194 :bug:{ title="BEWARE of MSVC Bugs!" } |
+| **`std::format`**             |     20      |  13  |  17   |     16      |                    194                    |
+| **C++ modules**               |     20      | None |  17   |    None     |                   None                    |
+| **`import std;`**             |     23      | None |  18   |    None     |                   None                    |
+| **Explicit `this` parameter** |     23      |  14  |  18   |    None     |                   None                    |
 
 ??? note "MSVC bugs"
 
@@ -30,7 +30,6 @@ C++ feature:
 
     Here is a list of the most important MSVC bugs:
 
-    - [Discrepancy in Behavior of operator*= and operator* for Multiplying int and double at compile time](https://developercommunity.visualstudio.com/t/Discrepancy-in-Behavior-of-operator-an/10732445)
     - [Syntax error when using non-type template parameters in templated class member function](https://developercommunity.visualstudio.com/t/Syntax-error-when-using-non-type-templat/10729428)
     - [Type always preferred over value when using qualified identifiers](https://developercommunity.visualstudio.com/t/Type-always-prefered-over-value-when-usi/10729382)
 

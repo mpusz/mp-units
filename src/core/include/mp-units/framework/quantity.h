@@ -442,9 +442,7 @@ public:
     }
   friend constexpr decltype(auto) operator*=(Q&& lhs, const Value& val)
   {
-    // TODO use *= when compiler bug is resolved:
-    // https://developercommunity.visualstudio.com/t/Discrepancy-in-Behavior-of-operator-an/10732445
-    lhs.numerical_value_is_an_implementation_detail_ = lhs.numerical_value_is_an_implementation_detail_ * val;
+    lhs.numerical_value_is_an_implementation_detail_ *= val;
     return std::forward<Q>(lhs);
   }
 
@@ -465,9 +463,7 @@ public:
   friend constexpr decltype(auto) operator/=(Q&& lhs, const Value& val)
   {
     MP_UNITS_EXPECTS_DEBUG(val != representation_values<Value>::zero());
-    // TODO use /= when compiler bug is resolved:
-    // https://developercommunity.visualstudio.com/t/Discrepancy-in-Behavior-of-operator-an/10732445
-    lhs.numerical_value_is_an_implementation_detail_ = lhs.numerical_value_is_an_implementation_detail_ / val;
+    lhs.numerical_value_is_an_implementation_detail_ /= val;
     return std::forward<Q>(lhs);
   }
 
