@@ -126,6 +126,11 @@ if(${projectPrefix}BUILD_CXX_MODULES)
         if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 18)
             target_compile_options(mp-units-core PUBLIC "-Wno-include-angled-in-module-purview")
         endif()
+
+        if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+            # '#include <filename>' in the purview of module 'module-name-1' appears erroneous
+            target_compile_options(mp-units-core PUBLIC "/wd5244")
+        endif()
     endif()
 endif()
 
