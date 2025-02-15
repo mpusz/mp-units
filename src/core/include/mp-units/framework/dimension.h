@@ -213,7 +213,7 @@ template<std::intmax_t Num, std::intmax_t Den = 1, Dimension D>
 
 
 struct dimension_symbol_formatting {
-#if MP_UNITS_COMP_CLANG
+#if MP_UNITS_COMP_CLANG || MP_UNITS_COMP_MSVC
   // TODO prevents the deprecated usage in implicit copy constructor warning
   character_set char_set = character_set::default_character_set;
 #else
