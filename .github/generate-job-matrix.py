@@ -118,7 +118,7 @@ def make_clang_platform(
         feature_support=Features(
             cxx_modules=version >= 17,
             std_format=version >= 17,
-            import_std=version >= 17,
+            import_std=version >= 18,
             freestanding=True,
         ),
     )
