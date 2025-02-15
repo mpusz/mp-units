@@ -879,7 +879,7 @@ constexpr Out unit_symbol_impl(Out out, const type_list<Nums...>& nums, const ty
     if (fmt.solidus == always || (fmt.solidus == one_denominator && sizeof...(Dens) == 1)) {
       if constexpr (sizeof...(Nums) == 0) *out++ = '1';
       *out++ = '/';
-      if (sizeof...(Dens) > 1) *out++ = '(';
+      if constexpr (sizeof...(Dens) > 1) *out++ = '(';
     } else if constexpr (sizeof...(Nums) > 0) {
       out = print_separator<CharT>(out, fmt);
     }
