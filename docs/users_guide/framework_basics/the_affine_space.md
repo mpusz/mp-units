@@ -118,7 +118,7 @@ scale zeroth point using the following rules:
 - otherwise, an instantiation of `zeroth_point_origin<QuantitySpec>` is being used which
   provides a well-established zeroth point for a specific quantity type.
 
-Quantity points with default point origins may be constructed with the `absolute` construction
+Quantity points with default point origins may be constructed with the `point` construction
 helper or forcing an explicit conversion from the `quantity`:
 
 ```cpp
@@ -128,9 +128,9 @@ helper or forcing an explicit conversion from the `quantity`:
 quantity_point qp4(42 * m);
 quantity_point qp5(42 * K);
 quantity_point qp6(delta<deg_C>(42));
-quantity_point qp7 = absolute<m>(42);
-quantity_point qp8 = absolute<K>(42);
-quantity_point qp9 = absolute<deg_C>(42);
+quantity_point qp7 = point<m>(42);
+quantity_point qp8 = point<K>(42);
+quantity_point qp9 = point<deg_C>(42);
 ```
 
 !!! tip
@@ -149,7 +149,7 @@ for this domain.
 
 ```cpp
 quantity_point<isq::distance[si::metre]> qp1(100 * m);
-quantity_point<isq::distance[si::metre]> qp2 = absolute<m>(120);
+quantity_point<isq::distance[si::metre]> qp2 = point<m>(120);
 
 assert(qp1.quantity_from_zero() == 100 * m);
 assert(qp2.quantity_from_zero() == 120 * m);
@@ -178,7 +178,7 @@ compatible:
 
 ```cpp
 quantity_point<si::metre> qp1{isq::distance(100 * m)};
-quantity_point<si::metre> qp2 = absolute<isq::height[m]>(120);
+quantity_point<si::metre> qp2 = point<isq::height[m]>(120);
 
 assert(qp2.quantity_from(qp1) == 20 * m);
 assert(qp1.quantity_from(qp2) == -20 * m);
@@ -411,7 +411,7 @@ namespace si {
 inline constexpr struct absolute_zero final : absolute_point_origin<isq::thermodynamic_temperature> {} absolute_zero;
 inline constexpr auto zeroth_kelvin = absolute_zero;
 
-inline constexpr struct ice_point final : relative_point_origin<absolute<milli<kelvin>>(273'150)}> {} ice_point;
+inline constexpr struct ice_point final : relative_point_origin<point<milli<kelvin>>(273'150)}> {} ice_point;
 inline constexpr auto zeroth_degree_Celsius = ice_point;
 
 }
@@ -419,7 +419,7 @@ inline constexpr auto zeroth_degree_Celsius = ice_point;
 namespace usc {
 
 inline constexpr struct zeroth_degree_Fahrenheit final :
-  relative_point_origin<absolute<mag_ratio<5, 9> * si::degree_Celsius>(-32)> {} zeroth_degree_Fahrenheit;
+  relative_point_origin<point<mag_ratio<5, 9> * si::degree_Celsius>(-32)> {} zeroth_degree_Fahrenheit;
 
 }
 ```
@@ -471,7 +471,7 @@ choose from here. Depending on our needs or tastes, we can:
     quantity_point<si::degree_Celsius, si::zeroth_degree_Celsius> q1 = si::zeroth_degree_Celsius + delta<deg_C>(20.5);
     quantity_point<si::degree_Celsius, si::zeroth_degree_Celsius> q2{delta<deg_C>(20.5), si::zeroth_degree_Celsius};
     quantity_point<si::degree_Celsius, si::zeroth_degree_Celsius> q3{delta<deg_C>(20.5)};
-    quantity_point<si::degree_Celsius, si::zeroth_degree_Celsius> q4 = absolute<deg_C>(20.5);
+    quantity_point<si::degree_Celsius, si::zeroth_degree_Celsius> q4 = point<deg_C>(20.5);
     ```
 
 - specify a unit and use its zeroth point origin implicitly:
@@ -480,7 +480,7 @@ choose from here. Depending on our needs or tastes, we can:
     quantity_point<si::degree_Celsius> q5 = si::zeroth_degree_Celsius + delta<deg_C>(20.5);
     quantity_point<si::degree_Celsius> q6{delta<deg_C>(20.5), si::zeroth_degree_Celsius};
     quantity_point<si::degree_Celsius> q7{delta<deg_C>(20.5)};
-    quantity_point<si::degree_Celsius> q8 = absolute<deg_C>(20.5);
+    quantity_point<si::degree_Celsius> q8 = point<deg_C>(20.5);
     ```
 
 - benefit from CTAD:
@@ -489,7 +489,7 @@ choose from here. Depending on our needs or tastes, we can:
     quantity_point q9 = si::zeroth_degree_Celsius + delta<deg_C>(20.5);
     quantity_point q10{delta<deg_C>(20.5), si::zeroth_degree_Celsius};
     quantity_point q11{delta<deg_C>(20.5)};
-    quantity_point q12 = absolute<deg_C>(20.5);
+    quantity_point q12 = point<deg_C>(20.5);
     ```
 
 In all of the above cases, we end up with the `quantity_point` of the same type and value.
@@ -500,7 +500,7 @@ the following way:
 ![affine_space_6](affine_space_6.svg){style="width:80%;display: block;margin: 0 auto;"}
 
 ```cpp
-constexpr struct room_reference_temp final : relative_point_origin<absolute<deg_C>(21)> {} room_reference_temp;
+constexpr struct room_reference_temp final : relative_point_origin<point<deg_C>(21)> {} room_reference_temp;
 using room_temp = quantity_point<isq::Celsius_temperature[deg_C], room_reference_temp>;
 
 constexpr auto step_delta = delta<isq::Celsius_temperature<deg_C>>(0.5);

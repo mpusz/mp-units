@@ -124,6 +124,13 @@ public:
     return os << v.value() << " ± " << v.uncertainty();
   }
 
+  [[nodiscard]] friend constexpr measurement abs(const measurement& v)
+    requires requires { abs(v.value()); } || requires { std::abs(v.value()); }
+  {
+    using std::abs;
+    return measurement(abs(v.value()), v.uncertainty());
+  }
+
 private:
   value_type value_{};
   value_type uncertainty_{};
@@ -131,12 +138,8 @@ private:
 
 }  // namespace
 
-template<typename T>
-constexpr bool mp_units::is_scalar<measurement<T>> = true;
-template<typename T>
-constexpr bool mp_units::is_vector<measurement<T>> = true;
-
-static_assert(mp_units::RepresentationOf<measurement<double>, mp_units::quantity_character::scalar>);
+static_assert(mp_units::RepresentationOf<measurement<double>, mp_units::quantity_character::real_scalar>);
+static_assert(mp_units::RepresentationOf<measurement<double>, mp_units::quantity_character::vector>);
 
 namespace {
 

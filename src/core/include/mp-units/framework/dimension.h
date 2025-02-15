@@ -29,11 +29,10 @@
 #include <mp-units/compat_macros.h>
 #include <mp-units/ext/fixed_string.h>
 #include <mp-units/ext/inplace_vector.h>
-#include <mp-units/ext/type_name.h>
 #include <mp-units/ext/type_traits.h>
 #include <mp-units/framework/dimension_concepts.h>
-#include <mp-units/framework/expression_template.h>
 #include <mp-units/framework/symbol_text.h>
+#include <mp-units/framework/symbolic_expression.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <mp-units/ext/contracts.h>
@@ -59,12 +58,6 @@ MP_UNITS_EXPORT struct dimension_one;
 
 namespace detail {
 
-template<typename Lhs, typename Rhs>
-struct base_dimension_less : std::bool_constant<type_name<Lhs>() < type_name<Rhs>()> {};
-
-template<typename T1, typename T2>
-using type_list_of_base_dimension_less = expr_less<T1, T2, base_dimension_less>;
-
 template<typename... Expr>
 struct derived_dimension_impl : expr_fractions<dimension_one, Expr...> {};
 
@@ -72,13 +65,13 @@ struct dimension_interface {
   template<Dimension Lhs, Dimension Rhs>
   [[nodiscard]] friend consteval Dimension auto operator*(Lhs, Rhs)
   {
-    return expr_multiply<derived_dimension, struct dimension_one, type_list_of_base_dimension_less>(Lhs{}, Rhs{});
+    return expr_multiply<derived_dimension, struct dimension_one>(Lhs{}, Rhs{});
   }
 
   template<Dimension Lhs, Dimension Rhs>
   [[nodiscard]] friend consteval Dimension auto operator/(Lhs, Rhs)
   {
-    return expr_divide<derived_dimension, struct dimension_one, type_list_of_base_dimension_less>(Lhs{}, Rhs{});
+    return expr_divide<derived_dimension, struct dimension_one>(Lhs{}, Rhs{});
   }
 
   template<Dimension Lhs, Dimension Rhs>
@@ -129,7 +122,7 @@ struct base_dimension : detail::dimension_interface {
  * Derived dimension is an expression of the dependence of a quantity on the base quantities of a system of quantities
  * as a product of powers of factors corresponding to the base quantities, omitting any numerical factors.
  *
- * Instead of using a raw list of exponents this library decided to use expression template syntax to make types
+ * Instead of using a raw list of exponents this library decided to use symbolic expression syntax to make types
  * more digestable for the user. The positive exponents are ordered first and all negative exponents are put as a list
  * into the `per<...>` class template. If a power of exponent is different than `1` the dimension type is enclosed in
  * `power<Dim, Num, Den>` class template. Otherwise, it is just put directly in the list without any wrapper. There
@@ -194,11 +187,10 @@ MP_UNITS_EXPORT_BEGIN
  * @return Dimension The result of computation
  */
 template<std::intmax_t Num, std::intmax_t Den = 1, Dimension D>
-  requires detail::non_zero<Den>
+  requires(Den != 0)
 [[nodiscard]] consteval Dimension auto pow(D d)
 {
-  return detail::expr_pow<Num, Den, derived_dimension, struct dimension_one, detail::type_list_of_base_dimension_less>(
-    d);
+  return detail::expr_pow<Num, Den, derived_dimension, struct dimension_one>(d);
 }
 
 /**
@@ -221,7 +213,16 @@ template<std::intmax_t Num, std::intmax_t Den = 1, Dimension D>
 
 
 struct dimension_symbol_formatting {
-  text_encoding encoding = text_encoding::default_encoding;
+#if MP_UNITS_COMP_CLANG
+  // TODO prevents the deprecated usage in implicit copy constructor warning
+  character_set char_set = character_set::default_character_set;
+#else
+  [[deprecated("2.5.0: Use `char_set` instead")]] character_set encoding = character_set::default_character_set;
+  MP_UNITS_DIAGNOSTIC_PUSH
+  MP_UNITS_DIAGNOSTIC_IGNORE_DEPRECATED
+  character_set char_set = encoding;
+  MP_UNITS_DIAGNOSTIC_POP
+#endif
 };
 
 MP_UNITS_EXPORT_END
@@ -232,7 +233,7 @@ template<typename CharT, std::output_iterator<CharT> Out, Dimension D>
   requires requires { D::_symbol_; }
 constexpr Out dimension_symbol_impl(Out out, D, const dimension_symbol_formatting& fmt, bool negative_power)
 {
-  return copy_symbol<CharT>(D::_symbol_, fmt.encoding, negative_power, out);
+  return copy_symbol<CharT>(D::_symbol_, fmt.char_set, negative_power, out);
 }
 
 template<typename CharT, std::output_iterator<CharT> Out, typename F, int Num, int... Den>
@@ -240,7 +241,7 @@ constexpr auto dimension_symbol_impl(Out out, const power<F, Num, Den...>&, cons
                                      bool negative_power)
 {
   out = dimension_symbol_impl<CharT>(out, F{}, fmt, false);  // negative power component will be added below if needed
-  return copy_symbol_exponent<CharT, Num, Den...>(fmt.encoding, negative_power, out);
+  return copy_symbol_exponent<CharT, Num, Den...>(fmt.char_set, negative_power, out);
 }
 
 template<typename CharT, std::output_iterator<CharT> Out, typename... Ms>
@@ -308,7 +309,7 @@ constexpr auto dimension_symbol_result = dimension_symbol_impl<fmt, CharT>(D{});
 // TODO Refactor to `dimension_symbol(D, fmt)` when P1045: constexpr Function Parameters is available
 MP_UNITS_EXPORT template<dimension_symbol_formatting fmt = dimension_symbol_formatting{}, typename CharT = char,
                          Dimension D>
-[[nodiscard]] consteval std::string_view dimension_symbol(D)
+[[nodiscard]] consteval std::basic_string_view<CharT> dimension_symbol(D)
 {
   return detail::dimension_symbol_result<fmt, CharT, D>.view();
 }

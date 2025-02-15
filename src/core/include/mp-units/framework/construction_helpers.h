@@ -47,7 +47,7 @@ struct delta_ {
 };
 
 template<Reference R>
-struct absolute_ {
+struct point_ {
   template<typename FwdRep, RepresentationOf<get_quantity_spec(R{})> Rep = std::remove_cvref_t<FwdRep>>
   [[nodiscard]] constexpr quantity_point<MP_UNITS_EXPRESSION_WORKAROUND(R{}), default_point_origin(R{}), Rep>
   operator()(FwdRep&& lhs) const
@@ -62,7 +62,10 @@ template<Reference auto R>
 constexpr delta_<MP_UNITS_REMOVE_CONST(decltype(R))> delta{};
 
 template<Reference auto R>
-constexpr absolute_<MP_UNITS_REMOVE_CONST(decltype(R))> absolute{};
+constexpr point_<MP_UNITS_REMOVE_CONST(decltype(R))> point{};
+
+template<Reference auto R>
+[[deprecated("2.5.0: Use `point` instead")]] constexpr point_<MP_UNITS_REMOVE_CONST(decltype(R))> absolute{};
 
 MP_UNITS_EXPORT_END
 

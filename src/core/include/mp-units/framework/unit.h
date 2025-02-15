@@ -33,12 +33,12 @@
 #include <mp-units/ext/inplace_vector.h>
 #include <mp-units/ext/type_name.h>
 #include <mp-units/ext/type_traits.h>
-#include <mp-units/framework/expression_template.h>
-#include <mp-units/framework/magnitude.h>
 #include <mp-units/framework/quantity_point_concepts.h>
 #include <mp-units/framework/quantity_spec_concepts.h>
 #include <mp-units/framework/symbol_text.h>
+#include <mp-units/framework/symbolic_expression.h>
 #include <mp-units/framework/unit_concepts.h>
+#include <mp-units/framework/unit_magnitude.h>
 #include <mp-units/framework/unit_symbol_formatting.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
@@ -61,7 +61,7 @@ namespace mp_units {
 
 namespace detail {
 
-template<Magnitude auto M, Unit U>
+template<UnitMagnitude auto M, Unit U>
 struct scaled_unit_impl;
 
 template<typename T>
@@ -84,7 +84,7 @@ struct derived_unit_impl;
  * @tparam U a unit to use as a `reference_unit`
  * @tparam M a Magnitude representing an absolute scaling factor of this unit
  */
-template<Magnitude M, Unit U>
+template<UnitMagnitude M, Unit U>
 struct canonical_unit {
   M mag;
   U reference_unit;
@@ -92,7 +92,7 @@ struct canonical_unit {
 
 #if MP_UNITS_COMP_CLANG
 
-template<Magnitude M, Unit U>
+template<UnitMagnitude M, Unit U>
 canonical_unit(M, U) -> canonical_unit<M, U>;
 
 #endif
@@ -116,58 +116,51 @@ template<Unit T, typename... Us>
 [[nodiscard]] consteval auto get_canonical_unit_impl(T, const common_unit<Us...>&);
 
 template<Unit U>
-struct get_canonical_unit_result {
-  inline static constexpr auto value = get_canonical_unit_impl(U{}, U{});
-};
+constexpr auto get_canonical_unit_result = get_canonical_unit_impl(U{}, U{});
 
 }  // namespace detail
 
 // TODO this should really be in the `details` namespace but is used in `chrono.h` (a part of mp_units.systems)
 // Even though it is not exported, it is visible to the other module via ADL
-[[nodiscard]] consteval auto get_canonical_unit(Unit auto u)
-{
-  return detail::get_canonical_unit_result<decltype(u)>::value;
-}
+[[nodiscard]] consteval auto get_canonical_unit(Unit auto u) { return detail::get_canonical_unit_result<decltype(u)>; }
 
 namespace detail {
 
-template<typename From, typename To>
-concept PotentiallyConvertibleTo = Unit<From> && Unit<To> &&
-                                   ((AssociatedUnit<From> && AssociatedUnit<To> &&
-                                     implicitly_convertible(get_quantity_spec(From{}), get_quantity_spec(To{}))) ||
-                                    (!AssociatedUnit<From> && !AssociatedUnit<To>));
+// We are using a helper concept to benefit from short-circuiting
+template<typename U1, typename U2>
+concept PotentiallyInterConvertibleTo = Unit<U1> && Unit<U2> &&
+                                        (!AssociatedUnit<U1> || !AssociatedUnit<U2> ||
+                                         explicitly_convertible(get_quantity_spec(U1{}), get_quantity_spec(U2{})));
+}  // namespace detail
 
-}
-
-// convertible
-template<Unit From, Unit To>
-[[nodiscard]] consteval bool convertible(From from, To to)
+// interconvertible
+template<Unit U1, Unit U2>
+[[nodiscard]] consteval bool interconvertible(U1 u1, U2 u2)
 {
-  if constexpr (is_same_v<From, To>)
+  if constexpr (is_same_v<U1, U2>)
     return true;
-  else if constexpr (detail::PotentiallyConvertibleTo<From, To>)
-    return is_same_v<decltype(get_canonical_unit(from).reference_unit),
-                     decltype(get_canonical_unit(to).reference_unit)>;
+  else if constexpr (detail::PotentiallyInterConvertibleTo<U1, U2>)
+    return is_same_v<decltype(get_canonical_unit(u1).reference_unit), decltype(get_canonical_unit(u2).reference_unit)>;
   else
     return false;
 }
 
+template<UnitMagnitude auto M, Unit U>
+  requires(M != detail::unit_magnitude<>{} && M != mag<1>)
+struct scaled_unit;
+
 template<detail::SymbolicConstant... Expr>
 struct derived_unit;
 
+MP_UNITS_EXPORT struct one;
+
 namespace detail {
-
-template<Unit Lhs, Unit Rhs>
-struct unit_less : std::bool_constant<type_name<Lhs>() < type_name<Rhs>()> {};
-
-template<typename T1, typename T2>
-using type_list_of_unit_less = expr_less<T1, T2, unit_less>;
 
 struct unit_interface {
   /**
    * Multiplication by `1` returns the same unit, otherwise `scaled_unit` is being returned.
    */
-  template<Magnitude M, Unit U>
+  template<UnitMagnitude M, Unit U>
   [[nodiscard]] friend MP_UNITS_CONSTEVAL Unit auto operator*(M, U u)
   {
     if constexpr (std::is_same_v<M, MP_UNITS_NONCONST_TYPE(mp_units::mag<1>)>)
@@ -181,7 +174,7 @@ struct unit_interface {
       return scaled_unit<M{}, U>{};
   }
 
-  [[nodiscard]] friend consteval Unit auto operator*(Unit auto, Magnitude auto)
+  [[nodiscard]] friend consteval Unit auto operator*(Unit auto, UnitMagnitude auto)
 #if __cpp_deleted_function
     = delete("To scale a unit use `mag * unit` syntax");
 #else
@@ -191,7 +184,7 @@ struct unit_interface {
   /**
    * Returns the result of multiplication with an inverse unit.
    */
-  template<Magnitude M, Unit U>
+  template<UnitMagnitude M, Unit U>
   [[nodiscard]] friend MP_UNITS_CONSTEVAL Unit auto operator/(M mag, U u)
   {
     return mag * inverse(u);
@@ -205,7 +198,7 @@ struct unit_interface {
   template<Unit Lhs, Unit Rhs>
   [[nodiscard]] friend MP_UNITS_CONSTEVAL Unit auto operator*(Lhs lhs, Rhs rhs)
   {
-    return expr_multiply<derived_unit, struct one, type_list_of_unit_less>(lhs, rhs);
+    return expr_multiply<derived_unit, struct one>(lhs, rhs);
   }
 
   /**
@@ -216,7 +209,7 @@ struct unit_interface {
   template<Unit Lhs, Unit Rhs>
   [[nodiscard]] friend MP_UNITS_CONSTEVAL Unit auto operator/(Lhs lhs, Rhs rhs)
   {
-    return expr_divide<derived_unit, struct one, type_list_of_unit_less>(lhs, rhs);
+    return expr_divide<derived_unit, struct one>(lhs, rhs);
   }
 
   template<Unit Lhs, Unit Rhs>
@@ -246,10 +239,10 @@ struct propagate_point_origin<U, true> {
   static constexpr auto _point_origin_ = U::_point_origin_;
 };
 
-template<Magnitude auto M, Unit U>
+template<UnitMagnitude auto M, Unit U>
 struct scaled_unit_impl : detail::unit_interface, detail::propagate_point_origin<U> {
   using _base_type_ = scaled_unit_impl;  // exposition only
-  static constexpr Magnitude auto _mag_ = M;
+  static constexpr UnitMagnitude auto _mag_ = M;
   static constexpr U _reference_unit_{};
 };
 
@@ -264,8 +257,8 @@ struct scaled_unit_impl : detail::unit_interface, detail::propagate_point_origin
  * @note User should not instantiate this type! It is not exported from the C++ module. The library will
  *       instantiate this type automatically based on the unit arithmetic equation provided by the user.
  */
-template<Magnitude auto M, Unit U>
-  requires(M != magnitude<>{} && M != mag<1>)
+template<UnitMagnitude auto M, Unit U>
+  requires(M != detail::unit_magnitude<>{} && M != mag<1>)
 struct scaled_unit final : detail::scaled_unit_impl<M, U> {};
 
 namespace detail {
@@ -425,7 +418,7 @@ struct named_unit<Symbol, U, QS, PO> : decltype(U)::_base_type_ {
  * @tparam M scaling factor of the prefix
  * @tparam U a named unit to be prefixed
  */
-MP_UNITS_EXPORT template<symbol_text Symbol, Magnitude auto M, PrefixableUnit auto U>
+MP_UNITS_EXPORT template<symbol_text Symbol, UnitMagnitude auto M, PrefixableUnit auto U>
   requires(!Symbol.empty())
 struct prefixed_unit : decltype(M * U)::_base_type_ {
   using _base_type_ = prefixed_unit;  // exposition only
@@ -435,16 +428,16 @@ struct prefixed_unit : decltype(M * U)::_base_type_ {
 namespace detail {
 
 template<Unit U1, Unit U2>
-  requires(convertible(U1{}, U2{}))
+  requires(interconvertible(U1{}, U2{}))
 [[nodiscard]] consteval Unit auto get_common_scaled_unit(U1, U2)
 {
   constexpr auto canonical_lhs = get_canonical_unit(U1{});
   constexpr auto canonical_rhs = get_canonical_unit(U2{});
-  constexpr auto common_magnitude = _common_magnitude(canonical_lhs.mag, canonical_rhs.mag);
-  if constexpr (common_magnitude == mag<1>)
+  constexpr auto common_mag = common_magnitude(canonical_lhs.mag, canonical_rhs.mag);
+  if constexpr (common_mag == mag<1>)
     return canonical_lhs.reference_unit;
   else
-    return scaled_unit<common_magnitude, MP_UNITS_NONCONST_TYPE(canonical_lhs.reference_unit)>{};
+    return scaled_unit<common_mag, MP_UNITS_NONCONST_TYPE(canonical_lhs.reference_unit)>{};
 }
 
 [[nodiscard]] consteval Unit auto get_common_scaled_unit(Unit auto u1, Unit auto u2, Unit auto u3, Unit auto... rest)
@@ -572,7 +565,7 @@ template<Unit T, symbol_text Symbol, Unit auto U, auto... Args>
 template<typename F, int Num, int... Den, typename... Us>
 [[nodiscard]] consteval auto get_canonical_unit_impl(const power<F, Num, Den...>&, const type_list<Us...>&)
 {
-  auto mag = (mp_units::mag<1> * ... * _pow<Num, Den...>(get_canonical_unit_impl(Us{}, Us{}).mag));
+  auto mag = (mp_units::mag<1> * ... * pow<Num, Den...>(get_canonical_unit_impl(Us{}, Us{}).mag));
   auto u = (one * ... * pow<Num, Den...>(get_canonical_unit_impl(Us{}, Us{}).reference_unit));
   return canonical_unit{mag, u};
 }
@@ -584,9 +577,9 @@ template<typename T, typename F, int Num, int... Den>
   if constexpr (requires { typename decltype(base.reference_unit)::_num_; }) {
     auto num = get_canonical_unit_impl(power<F, Num, Den...>{}, typename decltype(base.reference_unit)::_num_{});
     auto den = get_canonical_unit_impl(power<F, Num, Den...>{}, typename decltype(base.reference_unit)::_den_{});
-    return canonical_unit{_pow<Num, Den...>(base.mag) * num.mag / den.mag, num.reference_unit / den.reference_unit};
+    return canonical_unit{pow<Num, Den...>(base.mag) * num.mag / den.mag, num.reference_unit / den.reference_unit};
   } else {
-    return canonical_unit{_pow<Num, Den...>(base.mag),
+    return canonical_unit{pow<Num, Den...>(base.mag),
                           derived_unit<power<decltype(base.reference_unit), Num, Den...>>{}};
   }
 }
@@ -594,9 +587,9 @@ template<typename T, typename F, int Num, int... Den>
 template<typename... Us>
 [[nodiscard]] consteval auto get_canonical_unit_impl(const type_list<Us...>&)
 {
-  auto magnitude = (mp_units::mag<1> * ... * get_canonical_unit_impl(Us{}, Us{}).mag);
+  auto unit_magnitude = (mp_units::mag<1> * ... * get_canonical_unit_impl(Us{}, Us{}).mag);
   auto u = (one * ... * get_canonical_unit_impl(Us{}, Us{}).reference_unit);
-  return canonical_unit{magnitude, u};
+  return canonical_unit{unit_magnitude, u};
 }
 
 template<Unit T, typename... Expr>
@@ -623,10 +616,10 @@ MP_UNITS_EXPORT_BEGIN
  * @return Unit The result of computation
  */
 template<std::intmax_t Num, std::intmax_t Den = 1, Unit U>
-  requires detail::non_zero<Den>
+  requires(Den != 0)
 [[nodiscard]] consteval Unit auto pow(U u)
 {
-  return detail::expr_pow<Num, Den, derived_unit, struct one, detail::type_list_of_unit_less>(u);
+  return detail::expr_pow<Num, Den, derived_unit, struct one>(u);
 }
 
 /**
@@ -679,7 +672,7 @@ inline constexpr auto ppm = parts_per_million;
 [[nodiscard]] consteval Unit auto get_common_unit(Unit auto u) { return u; }
 
 template<Unit U1, Unit U2>
-  requires(convertible(U1{}, U2{}))
+  requires(interconvertible(U1{}, U2{}))
 [[nodiscard]] consteval Unit auto get_common_unit(U1 u1, U2 u2)
 {
   if constexpr (is_same_v<U1, U2>)
@@ -696,12 +689,12 @@ template<Unit U1, Unit U2>
     constexpr auto canonical_lhs = get_canonical_unit(U1{});
     constexpr auto canonical_rhs = get_canonical_unit(U2{});
 
-    if constexpr (_is_positive_integral_power(canonical_lhs.mag / canonical_rhs.mag))
+    if constexpr (is_positive_integral_power(canonical_lhs.mag / canonical_rhs.mag))
       return u2;
-    else if constexpr (_is_positive_integral_power(canonical_rhs.mag / canonical_lhs.mag))
+    else if constexpr (is_positive_integral_power(canonical_rhs.mag / canonical_lhs.mag))
       return u1;
     else {
-      if constexpr (detail::unit_less<U1, U2>::value)
+      if constexpr (detail::type_name_less<U1, U2>::value)
         return common_unit<U1, U2>{};
       else
         return common_unit<U2, U1>{};
@@ -735,12 +728,12 @@ struct collapse_common_unit_impl<List, NewUnit, true> {
 
 template<Unit NewUnit, Unit... Us>
 using collapse_common_unit = type_list_unique<
-  type_list_sort<typename collapse_common_unit_impl<type_list<>, NewUnit, false, Us...>::type, type_list_of_unit_less>>;
+  type_list_sort<typename collapse_common_unit_impl<type_list<>, NewUnit, false, Us...>::type, type_list_name_less>>;
 
 }  // namespace detail
 
 template<Unit... Us, Unit NewUnit>
-  requires(convertible(common_unit<Us...>{}, NewUnit{}))
+  requires(interconvertible(common_unit<Us...>{}, NewUnit{}))
 [[nodiscard]] consteval Unit auto get_common_unit(common_unit<Us...>, NewUnit)
 {
   using type = detail::collapse_common_unit<NewUnit, Us...>;
@@ -751,10 +744,20 @@ template<Unit... Us, Unit NewUnit>
 }
 
 template<Unit... Us, Unit NewUnit>
-  requires(convertible(common_unit<Us...>{}, NewUnit{}))
+  requires(interconvertible(common_unit<Us...>{}, NewUnit{}))
 [[nodiscard]] consteval Unit auto get_common_unit(NewUnit nu, common_unit<Us...> cu)
 {
   return get_common_unit(cu, nu);
+}
+
+template<Unit Front, Unit... Rest, Unit... Us>
+  requires(interconvertible(common_unit<Front, Rest...>{}, common_unit<Us...>{}))
+[[nodiscard]] consteval Unit auto get_common_unit(common_unit<Front, Rest...>, common_unit<Us...>)
+{
+  if constexpr (sizeof...(Rest) == 1)
+    return get_common_unit(Front{}, get_common_unit(Rest{}..., common_unit<Us...>{}));
+  else
+    return get_common_unit(Front{}, get_common_unit(common_unit<Rest...>{}, common_unit<Us...>{}));
 }
 
 [[nodiscard]] consteval Unit auto get_common_unit(Unit auto u1, Unit auto u2, Unit auto u3, Unit auto... rest)
@@ -785,18 +788,18 @@ template<typename CharT, std::output_iterator<CharT> Out, Unit U>
   requires requires { U::_symbol_; }
 constexpr Out unit_symbol_impl(Out out, U, const unit_symbol_formatting& fmt, bool negative_power)
 {
-  return copy_symbol<CharT>(U::_symbol_, fmt.encoding, negative_power, out);
+  return copy_symbol<CharT>(U::_symbol_, fmt.char_set, negative_power, out);
 }
 
 template<typename CharT, std::output_iterator<CharT> Out, auto M, typename U>
 constexpr Out unit_symbol_impl(Out out, const scaled_unit_impl<M, U>& u, const unit_symbol_formatting& fmt,
                                bool negative_power)
 {
-  *out++ = '[';
-  _magnitude_symbol<CharT>(out, M, fmt);
+  *out++ = '(';
+  magnitude_symbol<CharT>(out, M, fmt);
   if constexpr (space_before_unit_symbol<scaled_unit<M, U>::_reference_unit_>) *out++ = ' ';
   unit_symbol_impl<CharT>(out, u._reference_unit_, fmt, negative_power);
-  *out++ = ']';
+  *out++ = ')';
   return out;
 }
 
@@ -810,7 +813,7 @@ template<typename... Us, Unit U>
       return mag<1>;
   };
   constexpr auto canonical_u = get_canonical_unit(u);
-  constexpr Magnitude auto cmag = get_magnitude() / canonical_u.mag;
+  constexpr UnitMagnitude auto cmag = get_magnitude() / canonical_u.mag;
   if constexpr (cmag == mag<1>)
     return u;
   else
@@ -842,7 +845,7 @@ constexpr auto unit_symbol_impl(Out out, const power<F, Num, Den...>&, const uni
                                 bool negative_power)
 {
   out = unit_symbol_impl<CharT>(out, F{}, fmt, false);  // negative power component will be added below if needed
-  return copy_symbol_exponent<CharT, Num, Den...>(fmt.encoding, negative_power, out);
+  return copy_symbol_exponent<CharT, Num, Den...>(fmt.char_set, negative_power, out);
 }
 
 template<typename CharT, std::output_iterator<CharT> Out, typename... Us>
@@ -927,7 +930,7 @@ constexpr auto unit_symbol_result = unit_symbol_impl<fmt, CharT>(U{});
 
 // TODO Refactor to `unit_symbol(U, fmt)` when P1045: constexpr Function Parameters is available
 MP_UNITS_EXPORT template<unit_symbol_formatting fmt = unit_symbol_formatting{}, typename CharT = char, Unit U>
-[[nodiscard]] consteval std::string_view unit_symbol(U)
+[[nodiscard]] consteval std::basic_string_view<CharT> unit_symbol(U)
 {
   return detail::unit_symbol_result<fmt, CharT, U>.view();
 }

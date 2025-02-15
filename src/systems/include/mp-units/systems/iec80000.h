@@ -29,9 +29,9 @@
 namespace mp_units {
 
 MP_UNITS_EXPORT
-namespace [[deprecated("Use `mp_units::iec` namespace from iec.h instead")]] iec80000 {
+namespace [[deprecated("2.3.0: Use `mp_units::iec` namespace from iec.h instead")]] iec80000 {
 
-namespace [[deprecated("Use `mp_units::iec::unit_symbols` namespace from iec.h instead")]] unit_symbols {
+namespace [[deprecated("2.3.0: Use `mp_units::iec::unit_symbols` namespace from iec.h instead")]] unit_symbols {
 
 using namespace iec::unit_symbols;
 

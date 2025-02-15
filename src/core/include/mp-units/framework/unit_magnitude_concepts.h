@@ -22,12 +22,44 @@
 
 #pragma once
 
-namespace mp_units::detail {
+// IWYU pragma: private, include <mp-units/framework.h>
+#include <mp-units/bits/module_macros.h>
+#include <mp-units/ext/type_traits.h>
+#include <mp-units/framework/symbol_text.h>
+#include <mp-units/framework/symbolic_expression.h>
 
-template<auto N>
-concept gt_zero = (N > 0);
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
+#include <concepts>
+#endif
+#endif
 
-template<auto N>
-concept non_zero = (N != 0);
+namespace mp_units {
 
-}  // namespace mp_units::detail
+#if defined MP_UNITS_COMP_CLANG || MP_UNITS_COMP_CLANG < 18
+MP_UNITS_EXPORT template<symbol_text Symbol>
+#else
+MP_UNITS_EXPORT template<symbol_text Symbol, long double Value>
+  requires(Value > 0)
+#endif
+struct mag_constant;
+
+namespace detail {
+
+template<auto... Ms>
+struct unit_magnitude;
+
+template<typename T>
+constexpr bool is_mag_constant = detail::SymbolicConstant<T> && is_derived_from_specialization_of_v<T, mag_constant>;
+
+}  // namespace detail
+
+/**
+ * @brief  Concept to detect whether T is a valid UnitMagnitude.
+ */
+MP_UNITS_EXPORT template<typename T>
+concept UnitMagnitude = is_specialization_of_v<T, detail::unit_magnitude>;
+
+}  // namespace mp_units

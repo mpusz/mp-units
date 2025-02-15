@@ -1,5 +1,18 @@
 # Value Conversions
 
+One of the most important features of every unit library is to provide support for
+compile-time-enabled conversions of a [numerical value of a quantity](../../appendix/glossary.md#numerical-value).
+
+A [numerical value of a quantity](../../appendix/glossary.md#numerical-value) depends on two
+elements:
+
+- quantity representation type (e.g., `int`, `double`) that stores the number expressing the amount
+  of quantity,
+- [unit](../../appendix/glossary.md#unit) in which the quantity is being measured.
+
+Changing any of the above may require changing the value stored in a quantity.
+
+
 ## Value-preserving conversions
 
 ```cpp
@@ -175,6 +188,28 @@ In contrast to a separate `value_cast` followed by `point_for` (or vice-versa), 
 overflow and unnecessary loss of precision. Overflow is a risk because the change of origin point
 may require an addition of a potentially large offset (the difference between the origin points),
 which may well be outside the range of one or both quantity types.
+
+
+## Scaling overflow prevention
+
+In the case of small integral types, it is easy to overflow the representation type for every value
+besides `0` while performing simple and popular unit conversions. This is why the library prevents
+such invalid conversions at compile-time both for explicit and implicit conversions:
+
+```cpp
+quantity q1 = std::int8_t(1) * km;
+quantity q2 = q1.force_in(m);   // Compile-time error (1)
+if(q1 != 1 * m) { /* ... */ }   // Compile-time error (2)
+```
+
+1. Forced conversion would overflow on scaling.
+2. Implicit conversion that brings arguments to a common unit before comparison would overflow on
+   scaling.
+
+In the above example, the conversion factor between `km` and `m` is `1'000`, which is larger than
+the maximum value that can be stored in `std::int8_t`. Even if we want to convert the
+smallest possible integral amount (e.g., `1 km`), we will overflow the quantity representation type.
+We decided not to allow such conversions for safety reasons despite the value of `0 km` would work.
 
 
 ## Value conversions summary

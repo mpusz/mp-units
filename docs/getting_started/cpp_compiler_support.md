@@ -16,7 +16,7 @@ C++ feature:
 | C++ Feature                                               | C++ version | gcc  | clang | apple-clang |                   MSVC                    |
 |-----------------------------------------------------------|:-----------:|:----:|:-----:|:-----------:|:-----------------------------------------:|
 | **Minimum support**                                       |     20      |  12  |  16   |     15      | 194 :bug:{ title="BEWARE of MSVC Bugs!" } |
-| **`std::format`**                                         |     20      |  13  |  17   |    None     |                    194                    |
+| **`std::format`**                                         |     20      |  13  |  17   |     16      |                    194                    |
 | **C++ modules**                                           |     20      | None |  17   |    None     |                   None                    |
 | **`import std;`**                                         |     23      | None |  18   |    None     |                   None                    |
 | **Explicit `this` parameter**                             |     23      |  14  |  18   |    None     |                   None                    |

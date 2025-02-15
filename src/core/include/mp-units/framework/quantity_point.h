@@ -35,6 +35,7 @@
 import std;
 #else
 #include <compare>  // IWYU pragma: export
+#include <limits>
 #endif
 #endif
 
@@ -51,17 +52,24 @@ template<PointOrigin PO>
   return is_specialization_of_zeroth_point_origin<PO>;
 }
 
+template<typename FwdQ, PointOrigin PO, QuantityOf<PO::_quantity_spec_> Q = std::remove_cvref_t<FwdQ>>
+[[nodiscard]] constexpr QuantityPoint auto make_quantity_point(FwdQ&& q, PO po)
+{
+  if constexpr (detail::is_zeroth_point_origin(PO{}))
+    return quantity_point{std::forward<FwdQ>(q)};
+  else
+    return quantity_point{std::forward<FwdQ>(q), po};
+}
+
 struct point_origin_interface {
   template<PointOrigin PO, typename FwdQ, QuantityOf<PO::_quantity_spec_> Q = std::remove_cvref_t<FwdQ>>
-  [[nodiscard]] friend constexpr quantity_point<Q::reference, MP_UNITS_EXPRESSION_WORKAROUND(PO{}), typename Q::rep>
-  operator+(PO, FwdQ&& q)
+  [[nodiscard]] friend constexpr QuantityPoint auto operator+(PO po, FwdQ&& q)
   {
-    return quantity_point{std::forward<FwdQ>(q), PO{}};
+    return quantity_point{std::forward<FwdQ>(q), po};
   }
 
   template<Quantity FwdQ, PointOrigin PO, QuantityOf<PO::_quantity_spec_> Q = std::remove_cvref_t<FwdQ>>
-  [[nodiscard]] friend constexpr quantity_point<Q::reference, MP_UNITS_EXPRESSION_WORKAROUND(PO{}), typename Q::rep>
-  operator+(FwdQ&& q, PO po)
+  [[nodiscard]] friend constexpr QuantityPoint auto operator+(FwdQ&& q, PO po)
   {
     return po + std::forward<FwdQ>(q);
   }
@@ -264,7 +272,7 @@ public:
   template<detail::SameAbsolutePointOriginAs<absolute_point_origin> NewPO>
   [[nodiscard]] constexpr QuantityPointOf<(NewPO{})> auto point_for(NewPO new_origin) const
   {
-    if constexpr (is_same_v<NewPO, decltype(point_origin)>)
+    if constexpr (is_same_v<NewPO, MP_UNITS_NONCONST_TYPE(point_origin)>)
       return *this;
     else
       return ::mp_units::quantity_point{*this - new_origin, new_origin};
@@ -295,7 +303,7 @@ public:
 #endif
 
   template<PointOrigin PO2>
-    requires requires(quantity_point qp) { qp - PO2{}; }
+    requires requires(const quantity_point qp) { qp - PO2{}; }
   [[nodiscard]] constexpr Quantity auto quantity_from(PO2) const
   {
     return *this - PO2{};
@@ -344,21 +352,21 @@ public:
   }
 
   template<detail::UnitCompatibleWith<unit, quantity_spec> ToU>
-    requires requires(quantity_type q) { value_cast<ToU{}>(q); }
+    requires requires(const quantity_type q) { value_cast<ToU{}>(q); }
   [[nodiscard]] constexpr QuantityPointOf<quantity_spec> auto force_in(ToU) const
   {
     return ::mp_units::quantity_point{quantity_ref_from(point_origin).force_in(ToU{}), point_origin};
   }
 
   template<RepresentationOf<quantity_spec> ToRep>
-    requires requires(quantity_type q) { value_cast<ToRep>(q); }
+    requires requires(const quantity_type q) { value_cast<ToRep>(q); }
   [[nodiscard]] constexpr QuantityPointOf<quantity_spec> auto force_in() const
   {
     return ::mp_units::quantity_point{quantity_ref_from(point_origin).template force_in<ToRep>(), point_origin};
   }
 
   template<RepresentationOf<quantity_spec> ToRep, detail::UnitCompatibleWith<unit, quantity_spec> ToU>
-    requires requires(quantity_type q) { value_cast<ToU{}, ToRep>(q); }
+    requires requires(const quantity_type q) { value_cast<ToU{}, ToRep>(q); }
   [[nodiscard]] constexpr QuantityPointOf<quantity_spec> auto force_in(ToU) const
   {
     return ::mp_units::quantity_point{quantity_ref_from(point_origin).template force_in<ToRep>(ToU{}), point_origin};
@@ -433,7 +441,7 @@ public:
   // compound assignment operators
   template<detail::Mutable<quantity_point> QP, auto R2, typename Rep2>
     requires detail::QuantityConvertibleTo<quantity<R2, Rep2>, quantity_type> &&
-             requires(quantity_type q) { quantity_from_origin_is_an_implementation_detail_ += q; }
+             requires(const quantity_type q) { quantity_from_origin_is_an_implementation_detail_ += q; }
   friend constexpr decltype(auto) operator+=(QP&& qp, const quantity<R2, Rep2>& q)
   {
     qp.quantity_from_origin_is_an_implementation_detail_ += q;
@@ -442,7 +450,7 @@ public:
 
   template<detail::Mutable<quantity_point> QP, auto R2, typename Rep2>
     requires detail::QuantityConvertibleTo<quantity<R2, Rep2>, quantity_type> &&
-             requires(quantity_type q) { quantity_from_origin_is_an_implementation_detail_ -= q; }
+             requires(const quantity_type q) { quantity_from_origin_is_an_implementation_detail_ -= q; }
   friend constexpr decltype(auto) operator-=(QP&& qp, const quantity<R2, Rep2>& q)
   {
     qp.quantity_from_origin_is_an_implementation_detail_ -= q;
@@ -456,10 +464,7 @@ public:
   [[nodiscard]] friend constexpr QuantityPoint auto operator+(const QP& qp, const quantity<R2, Rep2>& q)
     requires requires { qp.quantity_ref_from(PO) + q; }
   {
-    if constexpr (detail::is_zeroth_point_origin(PO))
-      return ::mp_units::quantity_point{qp.quantity_ref_from(PO) + q};
-    else
-      return ::mp_units::quantity_point{qp.quantity_ref_from(PO) + q, PO};
+    return detail::make_quantity_point(qp.quantity_ref_from(PO) + q, PO);
   }
 
   template<auto R1, typename Rep1, std::derived_from<quantity_point> QP>
@@ -477,10 +482,7 @@ public:
   [[nodiscard]] friend constexpr QuantityPoint auto operator-(const QP& qp, const quantity<R2, Rep2>& q)
     requires requires { qp.quantity_ref_from(PO) - q; }
   {
-    if constexpr (detail::is_zeroth_point_origin(PO))
-      return ::mp_units::quantity_point{qp.quantity_ref_from(PO) - q};
-    else
-      return ::mp_units::quantity_point{qp.quantity_ref_from(PO) - q, PO};
+    return detail::make_quantity_point(qp.quantity_ref_from(PO) - q, PO);
   }
 
   template<std::derived_from<quantity_point> QP, QuantityPointOf<absolute_point_origin> QP2>
@@ -560,3 +562,62 @@ explicit(quantity_point_like_traits<QP>::explicit_import) quantity_point(QP)
                     typename quantity_point_like_traits<QP>::rep>;
 
 }  // namespace mp_units
+
+template<auto R, auto PO, typename Rep>
+  requires std::numeric_limits<Rep>::is_specialized
+class std::numeric_limits<mp_units::quantity_point<R, PO, Rep>> : public std::numeric_limits<Rep> {
+public:
+  static constexpr mp_units::quantity_point<R, PO, Rep> min() noexcept
+    requires requires { mp_units::quantity_point<R, PO, Rep>::min(); }
+  {
+    return mp_units::quantity_point<R, PO, Rep>::min();
+  }
+
+  static constexpr mp_units::quantity_point<R, PO, Rep> max() noexcept
+    requires requires { mp_units::quantity_point<R, PO, Rep>::max(); }
+  {
+    return mp_units::quantity_point<R, PO, Rep>::max();
+  }
+
+  static constexpr mp_units::quantity_point<R, PO, Rep> lowest() noexcept
+    requires requires { std::numeric_limits<mp_units::quantity<R, Rep>>::lowest(); }
+  {
+    return {std::numeric_limits<mp_units::quantity<R, Rep>>::lowest(), PO};
+  }
+
+  static constexpr mp_units::quantity_point<R, PO, Rep> epsilon() noexcept
+    requires requires { std::numeric_limits<mp_units::quantity<R, Rep>>::epsilon(); }
+  {
+    return {std::numeric_limits<mp_units::quantity<R, Rep>>::epsilon(), PO};
+  }
+
+  static constexpr mp_units::quantity_point<R, PO, Rep> round_error() noexcept
+    requires requires { std::numeric_limits<mp_units::quantity<R, Rep>>::round_error(); }
+  {
+    return {std::numeric_limits<mp_units::quantity<R, Rep>>::round_error(), PO};
+  }
+
+  static constexpr mp_units::quantity_point<R, PO, Rep> infinity() noexcept
+    requires requires { std::numeric_limits<mp_units::quantity<R, Rep>>::infinity(); }
+  {
+    return {std::numeric_limits<mp_units::quantity<R, Rep>>::infinity(), PO};
+  }
+
+  static constexpr mp_units::quantity_point<R, PO, Rep> quiet_NaN() noexcept
+    requires requires { std::numeric_limits<mp_units::quantity<R, Rep>>::quiet_NaN(); }
+  {
+    return {std::numeric_limits<mp_units::quantity<R, Rep>>::quiet_NaN(), PO};
+  }
+
+  static constexpr mp_units::quantity_point<R, PO, Rep> signaling_NaN() noexcept
+    requires requires { std::numeric_limits<mp_units::quantity<R, Rep>>::signaling_NaN(); }
+  {
+    return {std::numeric_limits<mp_units::quantity<R, Rep>>::signaling_NaN(), PO};
+  }
+
+  static constexpr mp_units::quantity_point<R, PO, Rep> denorm_min() noexcept
+    requires requires { std::numeric_limits<mp_units::quantity<R, Rep>>::denorm_min(); }
+  {
+    return {std::numeric_limits<mp_units::quantity<R, Rep>>::denorm_min(), PO};
+  }
+};

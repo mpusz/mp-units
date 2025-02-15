@@ -111,8 +111,8 @@ MP_UNITS_EXPORT_END
 // Grammar
 //
 // dimension-format-spec = [fill-and-align], [width], [dimension-spec];
-// dimension-spec        = [text-encoding];
-// text-encoding         = 'U' | 'P';
+// dimension-spec        = [character-set];
+// character-set         = 'U' | 'P';
 //
 template<mp_units::Dimension D, typename Char>
 class MP_UNITS_STD_FMT::formatter<D, Char> {
@@ -135,7 +135,7 @@ class MP_UNITS_STD_FMT::formatter<D, Char> {
 
     if (it = mp_units::detail::at_most_one_of(begin, end, "UAP"); it != end)
       // TODO 'A' stands for an old and deprecated ASCII encoding
-      specs_.encoding = (*it == 'U') ? mp_units::text_encoding::utf8 : mp_units::text_encoding::portable;
+      specs_.char_set = (*it == 'U') ? mp_units::character_set::utf8 : mp_units::character_set::portable;
 
     return end;
   }
@@ -177,12 +177,12 @@ public:
 // Grammar
 //
 // unit-format-spec      = [fill-and-align], [width], [unit-spec];
-// unit-spec             = [text-encoding], [unit-symbol-solidus], [unit-symbol-separator], [L]
-//                       | [text-encoding], [unit-symbol-separator], [unit-symbol-solidus], [L]
-//                       | [unit-symbol-solidus], [text-encoding], [unit-symbol-separator], [L]
-//                       | [unit-symbol-solidus], [unit-symbol-separator], [text-encoding], [L]
-//                       | [unit-symbol-separator], [text-encoding], [unit-symbol-solidus], [L]
-//                       | [unit-symbol-separator], [unit-symbol-solidus], [text-encoding], [L];
+// unit-spec             = [character-set], [unit-symbol-solidus], [unit-symbol-separator], [L]
+//                       | [character-set], [unit-symbol-separator], [unit-symbol-solidus], [L]
+//                       | [unit-symbol-solidus], [character-set], [unit-symbol-separator], [L]
+//                       | [unit-symbol-solidus], [unit-symbol-separator], [character-set], [L]
+//                       | [unit-symbol-separator], [character-set], [unit-symbol-solidus], [L]
+//                       | [unit-symbol-separator], [unit-symbol-solidus], [character-set], [L];
 // unit-symbol-solidus   = '1' | 'a' | 'n';
 // unit-symbol-separator = 's' | 'd';
 //
@@ -208,7 +208,7 @@ class MP_UNITS_STD_FMT::formatter<U, Char> {
 
     if (it = mp_units::detail::at_most_one_of(begin, end, "UAP"); it != end)
       // TODO 'A' stands for an old and deprecated ASCII encoding
-      specs_.encoding = (*it == 'U') ? mp_units::text_encoding::utf8 : mp_units::text_encoding::portable;
+      specs_.char_set = (*it == 'U') ? mp_units::character_set::utf8 : mp_units::character_set::portable;
     if (it = mp_units::detail::at_most_one_of(begin, end, "1an"); it != end) {
       switch (*it) {
         case '1':
@@ -223,7 +223,7 @@ class MP_UNITS_STD_FMT::formatter<U, Char> {
       }
     }
     if (it = mp_units::detail::at_most_one_of(begin, end, "sd"); it != end) {
-      if (*it == 'd' && specs_.encoding == mp_units::text_encoding::portable)
+      if (*it == 'd' && specs_.char_set == mp_units::character_set::portable)
         throw MP_UNITS_STD_FMT::format_error("half_high_dot unit separator allowed only for UTF-8 encoding");
       specs_.separator =
         (*it == 's') ? mp_units::unit_symbol_separator::space : mp_units::unit_symbol_separator::half_high_dot;

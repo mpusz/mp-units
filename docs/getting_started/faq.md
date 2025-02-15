@@ -159,7 +159,7 @@ The above prints:
 
 Some users could expect to see `42 kWh` or `42 kW h` in the output. It is not the case and for
 a very good reason. As stated in
-[Simplifying the resulting expression templates](../users_guide/framework_basics/interface_introduction.md#simplifying-the-resulting-expression-templates),
+[Simplifying the resulting symbolic expressions](../users_guide/framework_basics/interface_introduction.md#simplifying-the-resulting-symbolic-expressions),
 to be able to reason about and simplify units, the library needs to order them in an appropriate
 order.
 

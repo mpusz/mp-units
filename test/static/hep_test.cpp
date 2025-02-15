@@ -24,10 +24,6 @@
 #include <mp-units/systems/isq/mechanics.h>
 #include <mp-units/systems/si.h>
 
-template<class T>
-  requires mp_units::is_scalar<T>
-constexpr bool mp_units::is_vector<T> = true;
-
 namespace {
 
 using namespace mp_units;

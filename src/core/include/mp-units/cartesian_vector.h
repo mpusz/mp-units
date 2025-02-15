@@ -26,6 +26,7 @@
 //
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/framework/customization_points.h>
+#include <mp-units/framework/representation_concepts.h>
 
 #if MP_UNITS_HOSTED
 #include <mp-units/bits/fmt.h>
@@ -46,7 +47,7 @@ import std;
 
 namespace mp_units {
 
-MP_UNITS_EXPORT template<typename T = double>
+MP_UNITS_EXPORT template<detail::Scalar T = double>
 class cartesian_vector {
 public:
   // public members required to satisfy structural type requirements :-(
@@ -101,7 +102,12 @@ public:
   [[nodiscard]] constexpr T magnitude() const
     requires treat_as_floating_point<T>
   {
-    return std::hypot(_coordinates_[0], _coordinates_[1], _coordinates_[2]);
+    using namespace std;
+    if constexpr (detail::ComplexScalar<T>)
+      return hypot(mp_units::modulus(_coordinates_[0]), mp_units::modulus(_coordinates_[1]),
+                   mp_units::modulus(_coordinates_[2]));
+    else
+      return hypot(_coordinates_[0], _coordinates_[1], _coordinates_[2]);
   }
 
   [[nodiscard]] constexpr cartesian_vector unit() const
@@ -215,7 +221,7 @@ public:
            lhs._coordinates_[2] == rhs._coordinates_[2];
   }
 
-  [[nodiscard]] friend constexpr T norm(const cartesian_vector& vec)
+  [[nodiscard]] friend constexpr T magnitude(const cartesian_vector& vec)
     requires treat_as_floating_point<T>
   {
     return vec.magnitude();
@@ -262,9 +268,6 @@ public:
 template<typename Arg, typename... Args>
   requires(sizeof...(Args) <= 2) && requires { typename std::common_type_t<Arg, Args...>; }
 cartesian_vector(Arg, Args...) -> cartesian_vector<std::common_type_t<Arg, Args...>>;
-
-template<class T>
-constexpr bool is_vector<cartesian_vector<T>> = true;
 
 }  // namespace mp_units
 

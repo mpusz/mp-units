@@ -141,7 +141,7 @@ ratio of `1` and does not output any textual symbol.
 !!! important "Important: `one` is an identity"
 
     A unit `one` is special in the entire type system of units as it is considered to be
-    [an identity operand in the unit expression templates](interface_introduction.md#identities).
+    [an identity operand in the unit symbolic expressions](interface_introduction.md#identities).
     This means that, for example:
 
     ```cpp
@@ -166,7 +166,8 @@ inline constexpr auto ppm = parts_per_million;
 
 ### Superpowers of the unit `one`
 
-Quantities of the unit `one` are the only ones that are:
+Quantities implicitly convertible to `dimensionless` with the unit equivalent to `one` are the only
+ones that are:
 
 - implicitly constructible from the raw value,
 - explicitly convertible to a raw value,
@@ -185,8 +186,8 @@ This property also expands to usual arithmetic operators.
 !!! note
 
     Those rules do not apply to all the dimensionless quantities. It would be unsafe and misleading
-    to allow such operations on units with a magnitude different than `1` (e.g., `percent` or
-    `radian`).
+    to allow such operations on units with a magnitude different than `1` (e.g., `percent`) or
+    for quantities that are not implicitly convertible to `dimensionless` (e.g., `angular_measure`).
 
 
 ## Angular quantities
@@ -311,3 +312,24 @@ inline constexpr struct bit final : named_unit<"bit", one, kind_of<storage_capac
 ```
 
 but still allow the usage of `one` and its scaled versions for such quantities.
+
+!!! info
+
+    It is worth mentioning here that converting up the hierarchy beyond a subkind requires an
+    explicit conversion. For example:
+
+    ```cpp
+    static_assert(implicitly_convertible(isq::rotation, dimensionless));
+    static_assert(!implicitly_convertible(isq::angular_measure, dimensionless));
+    static_assert(explicitly_convertible(isq::angular_measure, dimensionless));
+    ```
+
+    This increases type safety and prevents accidental quantities with invalid units. For example,
+    a result of a conversion from `isq::angular_measure[rad]` to `dimensionless` would be
+    a reference of `dimensionless[rad]`, which contains an incorrect unit for a `dimensionless`
+    quantity. Such a conversion must be explicit and be preceded by an explicit unit conversion:
+
+    ```cpp
+    quantity q1 = isq::angular_measure(42. * rad);
+    quantity<dimensionless[one]> q2 = dimensionless(q1.in(one));
+    ```

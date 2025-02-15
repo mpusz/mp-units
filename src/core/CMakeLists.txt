@@ -35,13 +35,13 @@ add_mp_units_module(
             include/mp-units/bits/core_gmf.h
             include/mp-units/bits/get_associated_quantity.h
             include/mp-units/bits/hacks.h
-            include/mp-units/bits/math_concepts.h
             include/mp-units/bits/module_macros.h
             include/mp-units/bits/quantity_spec_hierarchy.h
             include/mp-units/bits/ratio.h
             include/mp-units/bits/sudo_cast.h
             include/mp-units/bits/text_tools.h
             include/mp-units/bits/type_list.h
+            include/mp-units/bits/unit_magnitude.h
             include/mp-units/ext/algorithm.h
             include/mp-units/ext/contracts.h
             include/mp-units/ext/fixed_string.h
@@ -54,9 +54,6 @@ add_mp_units_module(
             include/mp-units/framework/customization_points.h
             include/mp-units/framework/dimension.h
             include/mp-units/framework/dimension_concepts.h
-            include/mp-units/framework/expression_template.h
-            include/mp-units/framework/magnitude.h
-            include/mp-units/framework/magnitude_concepts.h
             include/mp-units/framework/quantity.h
             include/mp-units/framework/quantity_cast.h
             include/mp-units/framework/quantity_concepts.h
@@ -68,9 +65,12 @@ add_mp_units_module(
             include/mp-units/framework/reference_concepts.h
             include/mp-units/framework/representation_concepts.h
             include/mp-units/framework/symbol_text.h
+            include/mp-units/framework/symbolic_expression.h
             include/mp-units/framework/system_reference.h
             include/mp-units/framework/unit.h
             include/mp-units/framework/unit_concepts.h
+            include/mp-units/framework/unit_magnitude.h
+            include/mp-units/framework/unit_magnitude_concepts.h
             include/mp-units/framework/unit_symbol_formatting.h
             include/mp-units/framework/value_cast.h
             include/mp-units/compat_macros.h
@@ -92,7 +92,6 @@ if(NOT ${projectPrefix}API_FREESTANDING)
                include/mp-units/bits/requires_hosted.h
                include/mp-units/ext/format.h
                include/mp-units/cartesian_vector.h
-               include/mp-units/complex.h
                include/mp-units/format.h
                include/mp-units/math.h
                include/mp-units/ostream.h

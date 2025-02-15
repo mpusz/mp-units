@@ -23,10 +23,10 @@
 #pragma once
 
 #include <mp-units/ext/type_traits.h>
-#include <mp-units/framework/magnitude.h>
 #include <mp-units/framework/quantity_concepts.h>
 #include <mp-units/framework/reference_concepts.h>
 #include <mp-units/framework/unit.h>
+#include <mp-units/framework/unit_magnitude.h>
 
 namespace mp_units::detail {
 
@@ -49,7 +49,7 @@ using maybe_common_type =
  * @tparam Rep1 first quantity representation type
  * @tparam Rep2 second quantity representation type
  */
-template<Magnitude auto M, typename Rep1, typename Rep2>
+template<UnitMagnitude auto M, typename Rep1, typename Rep2>
 struct conversion_type_traits {
   using c_rep_type = maybe_common_type<Rep1, Rep2>;
   using c_mag_type = common_magnitude_type<M>;
@@ -74,14 +74,14 @@ struct conversion_type_traits {
  * @tparam M common magnitude between the two quantities
  * @tparam T common multiplier representation type
  */
-template<Magnitude auto M, typename T>
+template<UnitMagnitude auto M, typename T>
 struct conversion_value_traits {
-  static constexpr Magnitude auto num = _numerator(M);
-  static constexpr Magnitude auto den = _denominator(M);
-  static constexpr Magnitude auto irr = M * (den / num);
-  static constexpr T num_mult = _get_value<T>(num);
-  static constexpr T den_mult = _get_value<T>(den);
-  static constexpr T irr_mult = _get_value<T>(irr);
+  static constexpr UnitMagnitude auto num = numerator(M);
+  static constexpr UnitMagnitude auto den = denominator(M);
+  static constexpr UnitMagnitude auto irr = M * (den / num);
+  static constexpr T num_mult = get_value<T>(num);
+  static constexpr T den_mult = get_value<T>(den);
+  static constexpr T irr_mult = get_value<T>(irr);
   static constexpr T ratio = num_mult / den_mult * irr_mult;
 };
 
@@ -108,7 +108,7 @@ template<Quantity To, typename FwdFrom, Quantity From = std::remove_cvref_t<FwdF
             To::reference};  // this is the only (and recommended) way to do a truncating conversion on a number, so we
                              // are using static_cast to suppress all the compiler warnings on conversions
   } else {
-    constexpr Magnitude auto c_mag = get_canonical_unit(From::unit).mag / get_canonical_unit(To::unit).mag;
+    constexpr UnitMagnitude auto c_mag = get_canonical_unit(From::unit).mag / get_canonical_unit(To::unit).mag;
     using type_traits = conversion_type_traits<c_mag, typename From::rep, typename To::rep>;
     using multiplier_type = typename type_traits::multiplier_type;
     // TODO the below crashed nearly every compiler I tried it on
@@ -120,10 +120,10 @@ template<Quantity To, typename FwdFrom, Quantity From = std::remove_cvref_t<FwdF
     };
 
     // scale the number
-    if constexpr (_is_integral(c_mag))
-      return scale([&](auto value) { return value * _get_value<multiplier_type>(_numerator(c_mag)); });
-    else if constexpr (_is_integral(_pow<-1>(c_mag)))
-      return scale([&](auto value) { return value / _get_value<multiplier_type>(_denominator(c_mag)); });
+    if constexpr (is_integral(c_mag))
+      return scale([&](auto value) { return value * get_value<multiplier_type>(numerator(c_mag)); });
+    else if constexpr (is_integral(pow<-1>(c_mag)))
+      return scale([&](auto value) { return value / get_value<multiplier_type>(denominator(c_mag)); });
     else {
       using value_traits = conversion_value_traits<c_mag, multiplier_type>;
       if constexpr (std::is_floating_point_v<multiplier_type>)
@@ -170,7 +170,7 @@ template<QuantityPoint ToQP, typename FwdFromQP, QuantityPoint FromQP = std::rem
     // In the following, we carefully select the order of these three operations: each of (a) and (b) is scheduled
     // either before or after (c), such that (c) acts on the largest range possible among all combination of source
     // and target unit and representation.
-    constexpr Magnitude auto c_mag = get_canonical_unit(FromQP::unit).mag / get_canonical_unit(ToQP::unit).mag;
+    constexpr UnitMagnitude auto c_mag = get_canonical_unit(FromQP::unit).mag / get_canonical_unit(ToQP::unit).mag;
     using type_traits = conversion_type_traits<c_mag, typename FromQP::rep, typename ToQP::rep>;
     using value_traits = conversion_value_traits<c_mag, typename type_traits::multiplier_type>;
     using c_rep_type = typename type_traits::c_rep_type;

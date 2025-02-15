@@ -81,7 +81,7 @@
 // workarounds for https://cplusplus.github.io/CWG/issues/2387.html
 #define MP_UNITS_INLINE inline
 
-#if __cpp_auto_cast >= 202110L && MP_UNITS_COMP_GCC != 12
+#if __cpp_auto_cast >= 202110L && MP_UNITS_COMP_GCC > 13
 #define MP_UNITS_NONCONST_TYPE(expr) decltype(auto(expr))
 #else
 #define MP_UNITS_NONCONST_TYPE(expr) std::remove_const_t<decltype(expr)>
@@ -150,5 +150,9 @@ MP_UNITS_DIAGNOSTIC_POP
 
 #define MP_UNITS_API_NO_CRTP 1
 
+#endif
+
+#if defined(__clang__) && defined(__apple_build_version__) && __apple_build_version__ < 16000026
+#define MP_UNITS_XCODE15_HACKS
 #endif
 // NOLINTEND(bugprone-reserved-identifier, cppcoreguidelines-macro-usage)

@@ -193,14 +193,14 @@ distance spherical_distance(position<T> from, position<T> to)
     // const auto central_angle = 2 * asin(sqrt(0.5 - cos(to_lat - from_lat) / 2 + cos(from_lat) * cos(to_lat) * (1
     // - cos(lon2_rad - from_lon)) / 2));
 
-    return quantity_cast<isq::distance>(earth_radius * central_angle);
+    return quantity_cast<isq::distance>((earth_radius * central_angle).in(earth_radius.unit));
   } else {
     // the haversine formula
     const quantity sin_lat = sin((to_lat - from_lat) / 2);
     const quantity sin_lon = sin((to_lon - from_lon) / 2);
     const quantity central_angle = 2 * asin(sqrt(sin_lat * sin_lat + cos(from_lat) * cos(to_lat) * sin_lon * sin_lon));
 
-    return quantity_cast<isq::distance>(earth_radius * central_angle);
+    return quantity_cast<isq::distance>((earth_radius * central_angle).in(earth_radius.unit));
   }
 }
 

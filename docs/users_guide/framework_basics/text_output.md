@@ -237,13 +237,6 @@ static_assert(unit_symbol<{.solidus = unit_symbol_solidus::never,
                            .separator = unit_symbol_separator::half_high_dot}>(kg * m / s2) == "kg⋅m⋅s⁻²");
 ```
 
-!!! note
-
-    `std::string_view` is returned only when C++23 is available. Otherwise, an instance of a
-    `basic_fixed_string` is being returned. See more in the
-    [C++ compiler support](../../getting_started/cpp_compiler_support.md#static-constexpr-variables-in-constexpr-functions)
-    chapter.
-
 #### `unit_symbol_to()`
 
 Inserts the generated unit symbol into the output text iterator at runtime.
@@ -320,6 +313,21 @@ prints:
 Thanks to the above, it might be easier for the user to reason about the magnitude of the resulting
 unit and its impact on the value stored in the quantity.
 
+!!! note
+
+    It is important to note that this output is provided only for intermediate results of the
+    equations, as shown above. A user usually knows which unit should be used, and explicit
+    conversion can be made to achieve that. For example:
+
+    ```cpp
+    std::cout << (1 * km + 1 * mi).in<double>(km) << "\n";
+    ```
+
+    prints:
+
+    ```text
+    2.60934 km
+    ```
 
 ## `space_before_unit_symbol` customization point
 
@@ -454,15 +462,15 @@ as text and, thus, are aligned to the left by default.
 
 ```ebnf
 dimension-format-spec = [fill-and-align], [width], [dimension-spec];
-dimension-spec        = [text-encoding];
-text-encoding         = 'U' | 'P';
+dimension-spec        = [character-set];
+character-set         = 'U' | 'P';
 ```
 
 In the above grammar:
 
 - `fill-and-align` and `width` tokens are defined in the [format.string.std](https://wg21.link/format.string.std)
   chapter of the C++ standard specification,
-- `text-encoding` token specifies the symbol text encoding:
+- `character-set` token specifies the symbol text encoding:
     - `U` (default) uses the **UTF-8** symbols defined by [@ISO80000] (e.g., `LT⁻²`),
     - `P` forces non-standard **portable** output (e.g., `LT^-2`).
 
@@ -471,7 +479,7 @@ Dimension symbols of some quantities are specified to use Unicode signs by the
 dimension). The library follows this by default. From the engineering point of view, sometimes
 Unicode text might not be the best solution, as terminals of many (especially embedded) devices
 can output only letters from the basic literal character set. In such a case, the dimension
-symbol can be forced to be printed using such characters thanks to `text-encoding` token:
+symbol can be forced to be printed using such characters thanks to `character-set` token:
 
 ```cpp
 std::println("{}", isq::dim_thermodynamic_temperature);   // Θ
@@ -484,12 +492,12 @@ std::println("{:P}", isq::power.dimension);               // L^2MT^-3
 
 ```ebnf
 unit-format-spec      = [fill-and-align], [width], [unit-spec];
-unit-spec             = [text-encoding], [unit-symbol-solidus], [unit-symbol-separator], [L]
-                      | [text-encoding], [unit-symbol-separator], [unit-symbol-solidus], [L]
-                      | [unit-symbol-solidus], [text-encoding], [unit-symbol-separator], [L]
-                      | [unit-symbol-solidus], [unit-symbol-separator], [text-encoding], [L]
-                      | [unit-symbol-separator], [text-encoding], [unit-symbol-solidus], [L]
-                      | [unit-symbol-separator], [unit-symbol-solidus], [text-encoding], [L];
+unit-spec             = [character-set], [unit-symbol-solidus], [unit-symbol-separator], [L]
+                      | [character-set], [unit-symbol-separator], [unit-symbol-solidus], [L]
+                      | [unit-symbol-solidus], [character-set], [unit-symbol-separator], [L]
+                      | [unit-symbol-solidus], [unit-symbol-separator], [character-set], [L]
+                      | [unit-symbol-separator], [character-set], [unit-symbol-solidus], [L]
+                      | [unit-symbol-separator], [unit-symbol-solidus], [character-set], [L];
 unit-symbol-solidus   = '1' | 'a' | 'n';
 unit-symbol-separator = 's' | 'd';
 ```
@@ -521,7 +529,7 @@ Unit symbols of some quantities are specified to use Unicode signs by the [SI](.
 engineering point of view, Unicode text might not be the best solution sometimes, as terminals
 of many (especially embedded) devices can output only letters from the basic literal character set.
 In such a case, the unit symbol can be forced to be printed using such characters thanks to
-`text-encoding` token:
+`character-set` token:
 
 ```cpp
 std::println("{}", si::ohm);      // Ω
@@ -549,23 +557,6 @@ std::println("{:a}", kg / m / s2);  // kg/(m s²)
 std::println("{:n}", m / s);        // m s⁻¹
 std::println("{:n}", kg / m / s2);  // kg m⁻¹ s⁻²
 ```
-
-Also, there are a few options to separate the units being multiplied. ISO 80000 (part 1) says:
-
-!!! quote "ISO 80000-1"
-
-    When symbols for quantities are combined in a product of two or more quantities, this combination
-    is indicated in one of the following ways: `ab`, `a b`, `a · b`, `a × b`
-
-    _NOTE 1_ In some fields, e.g., vector algebra, distinction is made between `a ∙ b` and `a × b`.
-
-The library supports `a b` and `a · b` only. Additionally, we decided that the extraneous space
-in the latter case makes the result too verbose, so we decided just to use the `·` symbol as
-a separator.
-
-!!! note
-
-    Please let us know if you require more formatting options here.
 
 The `unit-symbol-separator` token allows us to obtain the following outputs:
 

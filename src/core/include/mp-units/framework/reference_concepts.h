@@ -34,7 +34,8 @@ struct reference;
 
 MP_UNITS_EXPORT_BEGIN
 
-[[nodiscard]] consteval QuantitySpec auto get_quantity_spec(AssociatedUnit auto u);
+template<AssociatedUnit U>
+[[nodiscard]] consteval QuantitySpec auto get_quantity_spec(U);
 
 template<typename Q, typename U>
 [[nodiscard]] consteval QuantitySpec auto get_quantity_spec(reference<Q, U>)
@@ -59,22 +60,14 @@ template<typename T>
 concept Reference = AssociatedUnit<T> || is_specialization_of<T, reference>;
 
 /**
- * @brief A concept matching all references with provided quantity spec
+ * @brief A concept matching all references of the provided quantity spec
  *
- * Satisfied by all references with a quantity_spec being the instantiation derived from
- * the provided quantity_spec type.
+ * Satisfied by all references for which @c QuantitySpecOf<QS> is true.
  */
 template<typename T, auto QS>
-concept ReferenceOf = Reference<T> && QuantitySpecOf<decltype(get_quantity_spec(T{})), QS>;
+concept ReferenceOf = Reference<T> && QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS))> &&
+                      QuantitySpecOf<decltype(get_quantity_spec(T{})), QS>;
 
 MP_UNITS_EXPORT_END
-
-namespace detail {
-
-template<auto R1, auto R2>
-concept SameReference =
-  Reference<MP_UNITS_REMOVE_CONST(decltype(R1))> && Reference<MP_UNITS_REMOVE_CONST(decltype(R2))> && (R1 == R2);
-
-}  // namespace detail
 
 }  // namespace mp_units

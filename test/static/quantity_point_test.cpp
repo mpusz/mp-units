@@ -808,8 +808,8 @@ static_assert(quantity_point{42 * m}.quantity_from_zero() == 42 * m);
 static_assert(quantity_point{isq::height(42 * m)}.quantity_from_zero() == 42 * m);
 static_assert(quantity_point{delta<deg_C>(20)}.quantity_from_zero() == delta<deg_C>(20));
 static_assert(quantity_point{delta<deg_C>(20.)}.in(deg_F).quantity_from_zero() == delta<deg_F>(68));
-static_assert(absolute<deg_C>(20).quantity_from_zero() == delta<deg_C>(20));
-static_assert(absolute<deg_C>(20.).in(deg_F).quantity_from_zero() == delta<deg_F>(68));
+static_assert(point<deg_C>(20).quantity_from_zero() == delta<deg_C>(20));
+static_assert(point<deg_C>(20.).in(deg_F).quantity_from_zero() == delta<deg_F>(68));
 
 static_assert((mean_sea_level + 42 * m).quantity_from_zero() == 42 * m);
 static_assert((ground_level + 42 * m).quantity_from_zero() == 84 * m);
@@ -1697,7 +1697,8 @@ static_assert(invalid_subtraction(zero_Bq + 5 * isq::activity[Bq], 5 * isq::freq
 static_assert(invalid_subtraction(zero_Bq + 5 * isq::activity[Bq], zero_Hz + 5 * isq::frequency[Hz]));
 
 static_assert(invalid_addition(zero_Bq + 5 * isq::activity[Bq], 10 / (2 * isq::time[s]), 5 * isq::frequency[Hz]));
-static_assert(invalid_addition(5 * isq::activity[Bq], zero_Hz + 10 / (2 * isq::time[s]), 5 * isq::frequency[Hz]));
+static_assert(invalid_addition(5 * isq::activity[Bq], zero_Hz + 10 / (2 * isq::period_duration[s]),
+                               5 * isq::frequency[Hz]));
 static_assert(invalid_addition(5 * isq::activity[Bq], 10 / (2 * isq::time[s]), zero_Hz + 5 * isq::frequency[Hz]));
 static_assert(invalid_subtraction(zero_Bq + 5 * isq::activity[Bq], 10 / (2 * isq::time[s]), 5 * isq::frequency[Hz]));
 

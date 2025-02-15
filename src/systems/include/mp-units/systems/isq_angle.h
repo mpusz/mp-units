@@ -57,7 +57,7 @@ QUANTITY_SPEC(propagation_coefficient, cotes_angle_constant / length);
 QUANTITY_SPEC(angular_momentum, position_vector* momentum / cotes_angle_constant);  // vector
 QUANTITY_SPEC(moment_of_inertia, angular_momentum / angular_velocity, quantity_character::tensor);
 QUANTITY_SPEC(moment_of_force, position_vector* force / cotes_angle_constant);  // vector
-QUANTITY_SPEC(torque, moment_of_force, quantity_character::scalar);
+QUANTITY_SPEC(torque, moment_of_force, quantity_character::real_scalar);
 QUANTITY_SPEC(angular_impulse, moment_of_force* time);  // vector
 QUANTITY_SPEC(loss_angle, angular_measure);
 

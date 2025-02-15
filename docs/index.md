@@ -10,6 +10,9 @@ hide:
 provides compile-time dimensional analysis and unit/quantity manipulation. Its key strengths
 include safety, performance, and developer experience.
 
+It is the first library on the market that, besides being **unit-safe** and **dimension-safe**,
+is also **quantity-safe**.
+
 The library source code is hosted on [GitHub](https://github.com/mpusz/mp-units) with a permissive
 [MIT license](https://github.com/mpusz/units/blob/master/LICENSE.md).
 

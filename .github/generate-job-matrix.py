@@ -88,7 +88,7 @@ class Configuration(Features):
         return ret
 
 
-def make_gcc_config(version: int) -> Platform:
+def make_gcc_platform(version: int) -> Platform:
     return Platform(
         name=f"GCC-{version}",
         os="ubuntu-24.04",
@@ -105,7 +105,7 @@ def make_gcc_config(version: int) -> Platform:
     )
 
 
-def make_clang_config(
+def make_clang_platform(
     version: int, architecture: typing.Literal["x86-64", "arm64"] = "x86-64"
 ) -> Platform:
     cfg = SimpleNamespace(
@@ -139,22 +139,24 @@ def make_clang_config(
     return Platform(**vars(ret))
 
 
-def make_apple_clang_config(version: int) -> Platform:
+def make_apple_clang_platform(
+    os: str, version: str, std_format_support: bool
+) -> Platform:
     ret = Platform(
         name=f"Apple Clang {version}",
-        os="macos-13",
+        os=os,
         compiler=Compiler(
             type="APPLE_CLANG",
-            version=f"{version}.0",
+            version=version,
             cc="clang",
             cxx="clang++",
         ),
-        feature_support=Features(),
+        feature_support=Features(std_format=std_format_support),
     )
     return ret
 
 
-def make_msvc_config(release: str, version: int) -> Platform:
+def make_msvc_platform(release: str, version: int) -> Platform:
     ret = Platform(
         name=f"MSVC {release}",
         os="windows-2022",
@@ -173,16 +175,24 @@ def make_msvc_config(release: str, version: int) -> Platform:
 
 platforms = {
     p.name: p
-    for p in [make_gcc_config(ver) for ver in [12, 13, 14]]
+    for p in [make_gcc_platform(ver) for ver in [12, 13, 14]]
     + [
-        make_clang_config(ver, arch)
+        make_clang_platform(ver, arch)
         for ver in [16, 17, 18]
         for arch in ["x86-64", "arm64"]
         # arm64 runners are expensive; only consider one version
         if ver == 18 or arch != "arm64"
     ]
-    + [make_apple_clang_config(ver) for ver in [15]]
-    + [make_msvc_config(release="14.4", version=194)]
+    + [
+        make_apple_clang_platform("macos-13", ver, std_format_support=False)
+        for ver in ["15.2"]
+    ]
+    # std::format is available in Xcode 16.1 or later
+    + [
+        make_apple_clang_platform("macos-14", ver, std_format_support=True)
+        for ver in ["16.1"]
+    ]
+    + [make_msvc_platform(release="14.4", version=194)]
 }
 
 full_matrix = dict(

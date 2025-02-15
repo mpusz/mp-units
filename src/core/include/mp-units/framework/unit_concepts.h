@@ -24,10 +24,9 @@
 
 // IWYU pragma: private, include <mp-units/framework.h>
 #include <mp-units/bits/module_macros.h>
-#include <mp-units/framework/expression_template.h>
-#include <mp-units/framework/magnitude.h>
 #include <mp-units/framework/quantity_spec_concepts.h>
-#include <mp-units/framework/symbol_text.h>
+#include <mp-units/framework/symbolic_expression.h>
+#include <mp-units/framework/unit_magnitude.h>
 
 namespace mp_units {
 
@@ -45,14 +44,8 @@ struct unit_interface;
 MP_UNITS_EXPORT template<typename T>
 concept Unit = detail::SymbolicConstant<T> && std::derived_from<T, detail::unit_interface>;
 
-template<Magnitude auto M, Unit U>
-  requires(M != magnitude<>{} && M != mag<1>)
-struct scaled_unit;
-
 MP_UNITS_EXPORT template<symbol_text Symbol, auto...>
 struct named_unit;
-
-MP_UNITS_EXPORT struct one;
 
 /**
  * @brief A concept to be used to define prefixes for a unit
@@ -100,24 +93,21 @@ concept AssociatedUnit = Unit<U> && detail::has_associated_quantity(U{});
 /**
  * @brief A concept matching all units associated with the provided quantity spec
  *
- * Satisfied by all units associated with the quantity_spec being the instantiation derived from
- * the provided quantity_spec type.
+ * Satisfied by all units for which an associated quantity spec is implicitly convertible to
+ * the provided @c QS value.
  */
 MP_UNITS_EXPORT template<typename U, auto QS>
 concept UnitOf = AssociatedUnit<U> && QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS))> &&
-                 detail::QuantitySpecConvertibleTo<get_quantity_spec(U{}), QS> &&
-                 // the below is to make `dimensionless[radian]` invalid
-                 (detail::SameQuantitySpec<get_kind(QS), get_kind(get_quantity_spec(U{}))> ||
-                  !detail::NestedQuantityKindSpecOf<get_quantity_spec(U{}), QS>);
+                 (implicitly_convertible(get_quantity_spec(U{}), QS));
 
-MP_UNITS_EXPORT template<Unit From, Unit To>
-[[nodiscard]] consteval bool convertible(From from, To to);
+MP_UNITS_EXPORT template<Unit U1, Unit U2>
+[[nodiscard]] consteval bool interconvertible(U1 u1, U2 u2);
 
 namespace detail {
 
-template<auto From, auto To>
-concept UnitConvertibleTo =
-  Unit<MP_UNITS_REMOVE_CONST(decltype(From))> && Unit<MP_UNITS_REMOVE_CONST(decltype(To))> && (convertible(From, To));
+template<typename U, auto QS>
+concept WeakUnitOf =
+  Unit<U> && QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS))> && ((!AssociatedUnit<U>) || UnitOf<U, QS>);
 
 /**
  * @brief A concept matching all units compatible with the provided unit and quantity spec
@@ -125,10 +115,10 @@ concept UnitConvertibleTo =
  * Satisfied by all units that have the same canonical reference as `U2` and in case they
  * have associated quantity specification it should satisfy `UnitOf<QS>`.
  */
-MP_UNITS_EXPORT template<typename U, auto FromU, auto QS>
+template<typename U, auto FromU, auto QS>
 concept UnitCompatibleWith =
   Unit<U> && Unit<MP_UNITS_REMOVE_CONST(decltype(FromU))> && QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS))> &&
-  (!AssociatedUnit<U> || UnitOf<U, QS>) && detail::UnitConvertibleTo<FromU, U{}>;
+  WeakUnitOf<U, QS> && (interconvertible(FromU, U{}));
 
 template<typename T>
 concept OffsetUnit = Unit<T> && requires { T::_point_origin_; };

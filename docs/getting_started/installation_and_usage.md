@@ -134,9 +134,12 @@ dependencies by other means, some modifications to the library's CMake files mig
 
 [`contracts`](#contracts){ #contracts }
 
-:   [:octicons-tag-24: 2.2.0][conan contracts] · :octicons-milestone-24: `none`/`gsl-lite`/`ms-gsl` (Default: `gsl-lite`)
+:   [:octicons-tag-24: 2.2.0][conan contracts] · :octicons-milestone-24: `none`/`gsl-lite`/`ms-gsl` (Default: _see below_)
 
-    Enables checking of preconditions and additional asserts in the code.
+    Enables checking of preconditions and additional assertions in the code.
+
+    If the automatically determined default for `import_std` is `True`, then the `contracts` option
+    is set to `none` by default. `gsl-lite` otherwise.
 
     [conan contracts]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 
@@ -239,19 +242,68 @@ The following steps may be performed to obtain an official library release:
    project's top-level directory and add **mp-units** as a dependency of your project.
    For example, the simplest file may look as follows:
 
-    ```ini title="conanfile.txt"
-    [requires]
-    mp-units/2.4.0
+    === "_conanfile.txt_"
 
-    [options]
+        ```ini
+        [requires]
+        mp-units/2.4.0
 
-    [layout]
-    cmake_layout
+        [options]
+        # The below mp-units options are set to defaults by Conan.
+        # Uncomment and set to an explicit value to override the defaults.
+        #
+        # mp-units*:cxx_modules=True
+        # mp-units*:import_std=False
+        # mp-units*:std_format=True
+        # mp-units*:no_crtp=True
+        # mp-units*:contracts=gsl-lite
+        # mp-units*:freestanding=False
 
-    [generators]
-    CMakeToolchain
-    CMakeDeps
-    ```
+        [layout]
+        cmake_layout
+
+        [generators]
+        CMakeToolchain
+        CMakeDeps
+        ```
+
+    === "_conanfile.py_"
+
+        ```python
+        from conan import ConanFile
+        from conan.tools.build import can_run
+        from conan.tools.cmake import CMake, cmake_layout
+
+        class MPUnitsTestConan(ConanFile):
+            settings = "os", "arch", "compiler", "build_type"
+            generators = "CMakeDeps", "CMakeToolchain"
+
+            def requirements(self):
+                self.requires(
+                    "mp-units/2.4.0",
+                    options={
+                        # The below mp-units options are set to defaults by Conan.
+                        # Uncomment and set to an explicit value to override the defaults.
+                        #
+                        # "cxx_modules": False,
+                        # "import_std": False,
+                        # "std_format": True,
+                        # "no_crtp": True,
+                        # "contracts": "gsl-lite",
+                        # "freestanding": False,
+                    },
+                )
+
+            def layout(self):
+                cmake_layout(self)
+
+            def build(self):
+                cmake = CMake(self)
+                cmake.configure()
+                cmake.build()
+                if can_run(self):
+                    cmake.ctest(cli_args=["--output-on-failure"])
+        ```
 
 2. Import **mp-units** and its dependencies definitions with `find_package`:
 
@@ -267,11 +319,20 @@ The following steps may be performed to obtain an official library release:
 
 4. Download, build, and install Conan dependencies before running the CMake configuration step:
 
-    ```shell
-    conan install . -pr <your_conan_profile> -s compiler.cppstd=20 -b=missing
-    cmake --preset conan-default
-    cmake --build --preset conan-release
-    ```
+    === "_conanfile.txt_ or _conanfile.py_"
+
+        ```shell
+        conan install . -pr <your_conan_profile> -s compiler.cppstd=20 -b=missing
+        cmake --preset conan-default
+        cmake --build --preset conan-release
+        cmake --build --preset conan-release --target test
+        ```
+
+    === "_conanfile.py_ only"
+
+        ```shell
+        conan build . -pr <your_conan_profile> -s compiler.cppstd=20 -b=missing
+        ```
 
 ### Conan + CMake (Live At Head)
 
@@ -297,19 +358,68 @@ with the following differences:
 
 2. In your Conan configuration file, provide the package identifier of the `mpusz/testing` stream:
 
-    ```ini title="conanfile.txt" hl_lines="2"
-    [requires]
-    mp-units/2.5.0@mpusz/testing
+    === "_conanfile.txt_"
 
-    [options]
+        ```ini hl_lines="2"
+        [requires]
+        mp-units/2.5.0@mpusz/testing
 
-    [layout]
-    cmake_layout
+        [options]
+        # The below mp-units options are set to defaults by Conan.
+        # Uncomment and set to an explicit value to override the defaults.
+        #
+        # mp-units*:cxx_modules=True
+        # mp-units*:import_std=False
+        # mp-units*:std_format=True
+        # mp-units*:no_crtp=True
+        # mp-units*:contracts=gsl-lite
+        # mp-units*:freestanding=False
 
-    [generators]
-    CMakeToolchain
-    CMakeDeps
-    ```
+        [layout]
+        cmake_layout
+
+        [generators]
+        CMakeToolchain
+        CMakeDeps
+        ```
+
+    === "_conanfile.py_"
+
+        ```python hl_lines="11"
+        from conan import ConanFile
+        from conan.tools.build import can_run
+        from conan.tools.cmake import CMake, cmake_layout
+
+        class MPUnitsTestConan(ConanFile):
+            settings = "os", "arch", "compiler", "build_type"
+            generators = "CMakeDeps", "CMakeToolchain"
+
+            def requirements(self):
+                self.requires(
+                    "mp-units/2.5.0@mpusz/testing",
+                    options={
+                        # The below mp-units options are set to defaults by Conan.
+                        # Uncomment and set to an explicit value to override the defaults.
+                        #
+                        # "cxx_modules": False,
+                        # "import_std": False,
+                        # "std_format": True,
+                        # "no_crtp": True,
+                        # "contracts": "gsl-lite",
+                        # "freestanding": False,
+                    },
+                )
+
+            def layout(self):
+                cmake_layout(self)
+
+            def build(self):
+                cmake = CMake(self)
+                cmake.configure()
+                cmake.build()
+                if can_run(self):
+                    cmake.ctest(cli_args=["--output-on-failure"])
+        ```
 
     !!! tip
 

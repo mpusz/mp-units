@@ -168,9 +168,6 @@ associated with this quantity type.
     However, thanks to the provided customization points, any linear algebra library types can be used
     as a vector or tensor quantity representation type.
 
-To enable the usage of a user-defined type as a representation type for vector or tensor quantities,
-we need to provide a partial specialization of `is_vector` or `is_tensor` customization points.
-
 For example, here is how it can be done for the [P1385](https://wg21.link/p1385) types:
 
 ```cpp
@@ -178,13 +175,6 @@ For example, here is how it can be done for the [P1385](https://wg21.link/p1385)
 
 using la_vector = STD_LA::fixed_size_column_vector<double, 3>;
 
-template<>
-constexpr bool mp_units::is_vector<la_vector> = true;
-```
-
-With the above, we can use `la_vector` as a representation type for our quantity:
-
-```cpp
 Quantity auto q = la_vector{1, 2, 3} * isq::velocity[m / s];
 ```
 
@@ -219,32 +209,3 @@ either:
 
     In all the cases above, the SI unit `m / s` has an associated scalar quantity of `isq::length / isq::time`.
     `la_vector` is not a correct representation type for a scalar quantity so the construction fails.
-
-
-## Hacking the character
-
-Sometimes we want to use a vector quantity, but we don't care about its direction. For example,
-the standard gravity acceleration constant always points down, so we might not care about this
-in a particular scenario. In such a case, we may want to "hack" the library to allow scalar types
-to be used as a representation type for scalar quantities.
-
-For example, we can do the following:
-
-```cpp
-template<class T>
-  requires mp_units::is_scalar<T>
-constexpr bool mp_units::is_vector<T> = true;
-```
-
-which says that every type that can be used as a scalar representation is also allowed for vector
-quantities.
-
-Doing the above is actually not such a big "hack" as the ISO 80000 explicitly allows it:
-
-
-!!! quote "ISO 80000-2"
-
-    A vector is a tensor of the first order and a scalar is a tensor of order zero.
-
-Despite it being allowed by ISO 80000, for type-safety reasons, we do not allow such a behavior
-by default, and a user has to opt into such scenarios explicitly.
