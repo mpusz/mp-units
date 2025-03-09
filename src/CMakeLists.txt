@@ -66,7 +66,9 @@ endif()
 
 # clang++-18 supports explicit `this` parameter
 # https://github.com/llvm/llvm-project/issues/82780
-if(NOT ${projectPrefix}EXPLICIT_THIS_PARAMETER_SUPPORTED AND CMAKE_CXX_COMPILER_ID STREQUAL "Clang"
+if(NOT ${projectPrefix}EXPLICIT_THIS_PARAMETER_SUPPORTED
+   AND CMAKE_CXX_STANDARD GREATER_EQUAL 23
+   AND CMAKE_CXX_COMPILER_ID STREQUAL "Clang"
    AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "18"
 )
     message(STATUS "Clang 18+ detected, overriding `no CRTP` support")
