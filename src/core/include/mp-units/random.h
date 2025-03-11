@@ -289,7 +289,7 @@ struct extreme_value_distribution : public std::extreme_value_distribution<typen
   template<typename Generator>
   Q operator()(Generator& g)
   {
-    return Q(base::operator()(g));
+    return base::operator()(g) * Q::reference;
   }
 
   [[nodiscard]] Q a() const { return base::a() * Q::reference; }
@@ -313,7 +313,7 @@ struct normal_distribution : public std::normal_distribution<typename Q::rep> {
   template<typename Generator>
   Q operator()(Generator& g)
   {
-    return Q(base::operator()(g));
+    return base::operator()(g) * Q::reference;
   }
 
   [[nodiscard]] Q mean() const { return base::mean() * Q::reference; }
