@@ -1,0 +1,182 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2018 Mateusz Pusz
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+name: sonarqube-cloud CI
+
+on:
+  push:
+    branches:
+      - '**'
+    paths-ignore:
+      - "docs/**"
+  pull_request:
+    branches:
+      - '**'
+    paths-ignore:
+      - "docs/**"
+
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: "SonarQube Cloud C++${{ matrix.std }} ${{ matrix.formatting }} ${{ matrix.contracts }} ${{ matrix.build_type }}"
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      fail-fast: false
+      # Note that SonarQube Cloud can only analyze one variant. Nevertheless, for consistency with other CI jobs, we keep the matrix.
+      matrix:
+          config:
+          - os: ubuntu-24.04
+            compiler:
+              type: CLANG
+              version: 18
+              cc: clang-18
+              cxx: clang++-18
+            lib: libc++
+            cxx_modules: "True"
+            conan_config: ""
+          std: [23]
+          formatting: [std::format]
+          contracts: [gsl-lite]
+          build_type: [Release]
+
+    env:
+      BUILD_WRAPPER_OUT_DIR: build_wrapper_output
+      CC: ${{ matrix.config.compiler.cc }}
+      CXX: ${{ matrix.config.compiler.cxx }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - run: echo "cache_id=$(/bin/date -u "+%Y%m%d")" >> $GITHUB_ENV
+      - name: Cache Conan data
+        uses: actions/cache@v4
+        if: always()
+        env:
+          cache-name: cache-conan-data
+        with:
+          path: ~/.conan2/p
+          key: sonarqube-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-${{ matrix.std }}-${{ env.cache_id }}
+          restore-keys: |
+            sonarqube-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-${{ matrix.std }}-
+            sonarqube-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-
+            sonarqube-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-
+            sonarqube-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-
+            sonarqube-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.config.compiler.type }}-
+            sonarqube-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-
+            sonarqube-${{ matrix.config.os }}-${{ matrix.formatting }}-
+            sonarqube-${{ matrix.config.os }}-
+      - uses: hendrikmuhs/ccache-action@v1.2
+        if: runner.os == 'Linux'
+        with:
+          key: ${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-${{ matrix.std }}
+          max-size: 50M
+      - name: Install Clang
+        if: matrix.config.compiler.type == 'CLANG'
+        shell: bash
+        working-directory: ${{ env.HOME }}
+        run: |
+          wget https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh ${{ matrix.config.compiler.version }}
+          sudo apt install -y clang-tools-${{ matrix.config.compiler.version }}
+      - name: Install Libc++
+        if: matrix.config.compiler.type == 'CLANG' && matrix.config.lib == 'libc++'
+        shell: bash
+        run: |
+          sudo apt install -y libc++-${{ matrix.config.compiler.version }}-dev libc++abi-${{ matrix.config.compiler.version }}-dev libunwind-${{ matrix.config.compiler.version }}-dev
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.x
+      - name: Install Ninja
+        shell: bash
+        run: |
+          pip install -U ninja
+      - name: Install Conan
+        shell: bash
+        run: |
+          pip install -U conan
+      - name: Install gcovr
+        shell: bash
+        run: |
+          pip install -U gcovr
+      - name: Install Build Wrapper
+        uses: SonarSource/sonarqube-scan-action/install-build-wrapper@v4
+        env:
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      - name: Configure Conan
+        shell: bash
+        run: |
+          conan profile detect --force
+          if [[ "${{ matrix.config.compiler.type }}" == "CLANG" ]]; then
+            sed -i.backup '/^\[settings\]$/,/^\[/ s/^compiler.libcxx=.*/compiler.libcxx=${{ matrix.config.lib }}/' ~/.conan2/profiles/default
+          fi
+          sed -i.backup '/^\[settings\]$/,/^\[/ s/^compiler.cppstd=.*/compiler.cppstd=${{ matrix.std }}/' ~/.conan2/profiles/default
+          sed -i.backup '/^\[settings\]$/,/^\[/ s/^build_type=.*/build_type=${{ matrix.build_type }}/' ~/.conan2/profiles/default
+          conan profile show -pr default
+      - name: Set 'std_format' and 'import_std' environment variables
+        shell: bash
+        run: |
+          echo "std_format=$([ "${{ matrix.formatting }}" == "std::format" ] && echo "True" || echo "False")" >> $GITHUB_ENV
+          echo "import_std=$([ "${{ matrix.std }}" -ge "23" ] && [ "${{ matrix.config.cxx_modules }}" == "True" ] && [ "${{ matrix.contracts }}" == "none" ] && [ "${{ matrix.formatting }}" == "std::format" ] && echo "True" || echo "False")" >> $GITHUB_ENV
+      - name: Build with Conan
+        shell: bash
+        run: |
+          build-wrapper-linux-x86-64 --out-dir ${{env.BUILD_WRAPPER_OUT_DIR}} \
+                conan build . -b missing -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" \
+                        -c user.mp-units.build:all=True -c user.mp-units.analyze:clang-tidy=False -c tools.build:skip_test=False \
+                        '-o &:cxx_modules=${{ matrix.config.cxx_modules }}' -o '&:import_std=${{ env.import_std }}' -o '&:std_format=${{ env.std_format }}' -o '&:contracts=${{ matrix.contracts }}' ${{ matrix.config.conan-config }} \
+                        -c 'tools.build:cxxflags=["-coverage"]'
+      - name: Collect coverage information
+        run: |
+          GCOVEXE=$([ "${{ matrix.config.compiler.type }}" == "CLANG" ] && echo "llvm-cov-${{ matrix.config.compiler.version }} gcov" || echo "gcov${{ matrix.config.compiler.version }}")
+          gcovr --gcov-executable "${GCOVEXE}" --sonarqube > coverage.xml
+      - name: Get versions
+        run: |
+          echo "mp_units_version=$(sed -nr 's/project\([^\)]*VERSION ([0-9]+(\.[0-9]+)+) [^\)]*\)/\1/p' src/CMakeLists.txt)" >> $GITHUB_ENV
+          echo "python_version=$(python3 -c 'import platform; print(platform.python_version())')" >> $GITHUB_ENV
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v4
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        with:
+          args: >
+            --define sonar.cfamily.compile-commands="${{ env.BUILD_WRAPPER_OUT_DIR }}/compile_commands.json"
+            --define sonar.organization="${{ github.repository_owner }}"
+            --define sonar.projectKey="${{ github.repository_owner }}_mp-units"
+            --define sonar.projectVersion="${{ env.mp_units_version }}"
+            --define sonar.cfamily.enableModules=true
+            --define sonar.coverageReportPaths=coverage.xml
+            --define sonar.coverage.exclusions="**docs/**/*,**/example/**/*,**/test_package/**/*,conanfile.py"
+            --define sonar.python.version="${{ env.python_version }}"
+      - name: Clean Conan cache before backup
+        shell: bash
+        run: |
+          conan remove *#~latest --confirm
+          conan remove *:*#~latest --confirm
+          conan cache clean "*" -s -b -d
