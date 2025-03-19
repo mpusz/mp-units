@@ -86,6 +86,8 @@ enable_testing()
 add_subdirectory(test)
 
 # TODO remove this hack when clang-20.2 is released
-if(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 20 AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 20.2)
+if(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 20
+   AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 20.2
+)
     target_compile_options(mp-units-core PUBLIC "-Wno-unused-result")
 endif()
