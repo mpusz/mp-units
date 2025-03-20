@@ -156,6 +156,15 @@ target_compile_definitions(
                   ${projectPrefix}HOSTED=$<NOT:$<BOOL:${${projectPrefix}API_FREESTANDING}>>
 )
 
+
+# TODO remove this hack when clang-20.2 is released
+if(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 20
+   AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 20.2
+)
+    target_compile_options(mp-units-core ${${projectPrefix}TARGET_SCOPE} "-Wno-unused-result")
+endif()
+
+# time-trace
 if(${projectPrefix}DEV_TIME_TRACE STREQUAL "ALL")
     target_compile_options(mp-units-core ${${projectPrefix}TARGET_SCOPE} "-ftime-trace")
 elseif(${projectPrefix}DEV_TIME_TRACE STREQUAL "MODULES")
