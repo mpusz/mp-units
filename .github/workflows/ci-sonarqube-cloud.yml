@@ -25,12 +25,8 @@ name: sonarqube-cloud CI
 on:
   push:
     branches:
-      - '**'
-    paths-ignore:
-      - "docs/**"
-  pull_request:
-    branches:
-      - '**'
+      - master
+      - main
     paths-ignore:
       - "docs/**"
 
