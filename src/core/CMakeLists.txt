@@ -118,7 +118,7 @@ target_link_libraries(mp-units-core ${${projectPrefix}TARGET_SCOPE} mp-units-con
 
 # C++20 modules
 if(${projectPrefix}BUILD_CXX_MODULES)
-    if(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
         if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 18)
             target_compile_definitions(mp-units-core PUBLIC _LIBCPP_NO_ABI_TAG)
         endif()
@@ -137,7 +137,7 @@ endif()
 if(CMAKE_CXX_MODULE_STD)
     target_compile_definitions(mp-units-core ${${projectPrefix}TARGET_SCOPE} ${projectPrefix}IMPORT_STD)
     # https://github.com/llvm/llvm-project/issues/75057
-    if(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 19)
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 19)
         target_compile_options(mp-units-core ${${projectPrefix}TARGET_SCOPE} "-Wno-deprecated-declarations")
     endif()
 endif()
@@ -158,7 +158,7 @@ target_compile_definitions(
 
 
 # TODO remove this hack when clang-20.2 is released
-if(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 20
+if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 20
    AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 20.2
 )
     target_compile_options(mp-units-core ${${projectPrefix}TARGET_SCOPE} "-Wno-unused-result")
