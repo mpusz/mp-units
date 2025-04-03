@@ -38,7 +38,7 @@ import std;
 
 namespace mp_units {
 
-#if defined MP_UNITS_COMP_CLANG || MP_UNITS_COMP_CLANG < 18
+#if defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 18
 MP_UNITS_EXPORT template<symbol_text Symbol>
 #else
 MP_UNITS_EXPORT template<symbol_text Symbol, long double Value>
