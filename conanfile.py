@@ -363,3 +363,11 @@ class MPUnitsConan(ConanFile):
                 self.cpp_info.components["core"].cxxflags.append("/utf-8")
 
             self.cpp_info.components["systems"].requires = ["core"]
+
+            # https://github.com/llvm/llvm-project/issues/131410
+            if (
+                compiler == "clang"
+                and Version(compiler.version).major == 20
+                and Version(compiler.version).minor == 1
+            ):
+                self.cpp_info.components["core"].cxxflags.append("-Wno-unused-result")
