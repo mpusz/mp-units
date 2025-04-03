@@ -61,15 +61,13 @@ template<Unit UFrom, Unit UTo>
     return is_integral(get_canonical_unit(from).mag / get_canonical_unit(to).mag);
 }
 
-template<typename T>
-concept IsFloatingPoint = treat_as_floating_point<T>;
-
 template<typename FromRep, typename ToRep, auto FromUnit, auto ToUnit>
-concept ValuePreservingTo = Unit<MP_UNITS_REMOVE_CONST(decltype(FromUnit))> &&
-                            Unit<MP_UNITS_REMOVE_CONST(decltype(ToUnit))> && std::assignable_from<ToRep&, FromRep> &&
-                            (IsFloatingPoint<ToRep> || (!IsFloatingPoint<std::remove_cvref_t<FromRep>> &&
-                                                        integral_conversion_factor(FromUnit, ToUnit) &&
-                                                        !overflows_non_zero_values<ToRep>(FromUnit, ToUnit)));
+concept ValuePreservingTo =
+  Unit<MP_UNITS_REMOVE_CONST(decltype(FromUnit))> && Unit<MP_UNITS_REMOVE_CONST(decltype(ToUnit))> &&
+  std::assignable_from<ToRep&, FromRep> &&
+  (treat_as_floating_point<ToRep> ||
+   (!treat_as_floating_point<std::remove_cvref_t<FromRep>> && integral_conversion_factor(FromUnit, ToUnit) &&
+    !overflows_non_zero_values<ToRep>(FromUnit, ToUnit)));
 
 template<typename FromRep, typename ToRep, auto QS>
 concept RepresentationValuePreservingTo =
