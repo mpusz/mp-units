@@ -224,6 +224,12 @@ class MPUnitsConan(ConanFile):
                 self.test_requires("wg21-linear_algebra/0.7.3")
 
     def validate(self):
+        compiler = self.settings.compiler
+        if compiler == "clang" and Version(compiler.version).major == 19:
+            raise ConanInvalidConfiguration(
+                "clang-19 does not build mp-units because of an unfixable bug in the compiler."
+            )
+
         self._check_feature_supported("mp-units", "minimum_support")
         for key, value in self._option_feature_map.items():
             if self.options.get_safe(key) == True:
