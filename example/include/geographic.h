@@ -79,10 +79,11 @@ inline constexpr struct prime_meridian final : mp_units::absolute_point_origin<m
 
 
 template<typename T = double>
-using latitude = mp_units::quantity_point<mp_units::si::degree, equator, ranged_representation<T, -90, 90>>;
+using latitude = mp_units::quantity_point<mp_units::si::degree, equator, ranged_representation<T, T{-90}, T{90}>>;
 
 template<typename T = double>
-using longitude = mp_units::quantity_point<mp_units::si::degree, prime_meridian, ranged_representation<T, -180, 180>>;
+using longitude =
+  mp_units::quantity_point<mp_units::si::degree, prime_meridian, ranged_representation<T, T{-180}, T{180}>>;
 
 template<class CharT, class Traits, typename T>
 std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const latitude<T>& lat)
