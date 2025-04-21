@@ -340,11 +340,22 @@ concept SomeRepresentation =
 
 }  // namespace detail
 
+#ifdef MP_UNITS_XCODE15_HACKS
+MP_UNITS_EXPORT template<typename T, auto V>
+concept RepresentationOf =
+  detail::SomeRepresentation<T> &&
+  ((QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(V))> &&
+    (detail::QuantityKindSpec<MP_UNITS_REMOVE_CONST(decltype(V))> || detail::IsOfCharacter<T, V.character>)) ||
+   (std::same_as<quantity_character, decltype(V)> && detail::IsOfCharacter<T, V>));
+
+#else
+
 MP_UNITS_EXPORT template<typename T, auto V>
 concept RepresentationOf =
   ((QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(V))> &&
     ((detail::QuantityKindSpec<MP_UNITS_REMOVE_CONST(decltype(V))> && detail::SomeRepresentation<T>) ||
      detail::IsOfCharacter<T, V.character>)) ||
    (std::same_as<quantity_character, decltype(V)> && detail::IsOfCharacter<T, V>));
+#endif
 
 }  // namespace mp_units
