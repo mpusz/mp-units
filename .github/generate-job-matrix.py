@@ -97,11 +97,10 @@ configs = {
         # arm64 runners are expensive; only consider one version
         if ver == 18 or platform != "arm64"
     ]
-    # TODO uncomment the below when apple-clang-15 crash is fixed
-    # + [
-    #     make_apple_clang_config("macos-13", ver, std_format_support=False)
-    #     for ver in ["15.2"]
-    # ]
+    + [
+        make_apple_clang_config("macos-13", ver, std_format_support=False)
+        for ver in ["15.2"]
+    ]
     # std::format is available in Xcode 16.1 or later
     + [
         make_apple_clang_config("macos-14", ver, std_format_support=True)
