@@ -41,6 +41,12 @@ template<typename T>
 template<typename Lhs, typename Rhs>
 struct type_name_less : std::bool_constant<type_name<Lhs>() < type_name<Rhs>()> {};
 
+template<typename T>
+[[nodiscard]] consteval std::string_view type_name(T)
+{
+  return type_name<T>();
+}
+
 // This is typically used to deterministically chose one of the alternatives
 // to guarantee the commutation of the operation (e.g., `a + b` should return
 // the same type as `b + a`).
