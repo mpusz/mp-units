@@ -60,6 +60,19 @@ constexpr bool treat_as_floating_point =
   std::is_floating_point_v<value_type_t<Rep>>;
 #endif
 
+/**
+ * @brief Specifies if a specific conversion between two types preserves the value
+ *
+ * This type trait should be specialized for a custom representation types to specify
+ * weather the conversion from the source type to the destination type preserves the value
+ * or not. Value-truncating conversions should be forced by the user with explicit casts.
+ *
+ * @tparam From a source representation type
+ * @tparam To a destination representation type
+ */
+template<typename From, typename To>
+constexpr bool is_value_preserving = treat_as_floating_point<To> || !treat_as_floating_point<From>;
+
 template<typename Rep>
 [[deprecated("2.5.0: `is_scalar` is no longer necessary and can simply be removed")]]
 constexpr bool is_scalar = false;
