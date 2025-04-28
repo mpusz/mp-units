@@ -47,7 +47,7 @@ MP_UNITS_EXPORT_BEGIN
  * @brief Specifies if a value of a type should be treated as a floating-point value
  *
  * This type trait should be specialized for a custom representation type to specify
- * that values fo this type should be treated by the library as a floating-point ones
+ * that values of this type should be treated by the library as a floating-point ones
  * which will enable implicit conversions between quantities.
  *
  * @tparam Rep a representation type for which a type trait is defined
