@@ -100,25 +100,27 @@ MP_UNITS_EXPORT template<typename U, auto QS>
 concept UnitOf = AssociatedUnit<U> && QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS))> &&
                  (implicitly_convertible(get_quantity_spec(U{}), QS));
 
-MP_UNITS_EXPORT template<Unit U1, Unit U2>
-[[nodiscard]] consteval bool interconvertible(U1 u1, U2 u2);
-
 namespace detail {
+
+template<typename U, auto QS>
+concept UnitOf = UnitOf<U, QS>;
 
 template<typename U, auto QS>
 concept WeakUnitOf =
   Unit<U> && QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS))> && ((!AssociatedUnit<U>) || UnitOf<U, QS>);
 
-/**
- * @brief A concept matching all units compatible with the provided unit and quantity spec
- *
- * Satisfied by all units that have the same canonical reference as `U2` and in case they
- * have associated quantity specification it should satisfy `UnitOf<QS>`.
- */
-template<typename U, auto FromU, auto QS>
-concept UnitCompatibleWith =
-  Unit<U> && Unit<MP_UNITS_REMOVE_CONST(decltype(FromU))> && QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS))> &&
-  WeakUnitOf<U, QS> && (interconvertible(FromU, U{}));
+template<auto U1, auto U2>
+concept UnitsOfCompatibleQuantities = explicitly_convertible(get_quantity_spec(U1), get_quantity_spec(U2));
+
+template<auto U1, auto U2>
+concept ConvertibleUnits = (get_canonical_unit(U1).reference_unit == get_canonical_unit(U2).reference_unit);
+
+template<typename U1, auto U2>
+concept UnitConvertibleTo =
+  Unit<U1> && Unit<MP_UNITS_REMOVE_CONST(decltype(U2))> &&
+  ((U1{} == U2) || ((!AssociatedUnit<U1> || !AssociatedUnit<MP_UNITS_REMOVE_CONST(decltype(U2))> ||
+                     UnitsOfCompatibleQuantities<U1{}, U2>) &&
+                    ConvertibleUnits<U1{}, U2>));
 
 template<typename T>
 concept OffsetUnit = Unit<T> && requires { T::_point_origin_; };
