@@ -103,9 +103,6 @@ concept UnitOf = AssociatedUnit<U> && QuantitySpec<MP_UNITS_REMOVE_CONST(decltyp
 namespace detail {
 
 template<typename U, auto QS>
-concept UnitOf = UnitOf<U, QS>;
-
-template<typename U, auto QS>
 concept WeakUnitOf =
   Unit<U> && QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS))> && ((!AssociatedUnit<U>) || UnitOf<U, QS>);
 
