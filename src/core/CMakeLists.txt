@@ -156,7 +156,7 @@ target_compile_definitions(
                   ${projectPrefix}HOSTED=$<NOT:$<BOOL:${${projectPrefix}API_FREESTANDING}>>
 )
 
-# TODO remove this hack when clang-20.2 is released
+# https://github.com/llvm/llvm-project/issues/131410
 if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 20
    AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 20.2
 )
