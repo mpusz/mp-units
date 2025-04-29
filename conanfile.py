@@ -209,17 +209,17 @@ class MPUnitsConan(ConanFile):
     def requirements(self):
         if not self.options.freestanding:
             if self.options.contracts == "gsl-lite":
-                self.requires("gsl-lite/0.41.0", transitive_headers=True)
+                self.requires("gsl-lite/0.42.0", transitive_headers=True)
             elif self.options.contracts == "ms-gsl":
-                self.requires("ms-gsl/4.0.0", transitive_headers=True)
+                self.requires("ms-gsl/4.1.0", transitive_headers=True)
             if not self.options.std_format:
-                self.requires("fmt/11.1.1", transitive_headers=True)
+                self.requires("fmt/11.1.4", transitive_headers=True)
 
     def build_requirements(self):
         self.tool_requires("cmake/[>=3.31 <4]")
         if self._build_all:
             if not self.options.freestanding:
-                self.test_requires("catch2/3.7.0")
+                self.test_requires("catch2/3.8.0")
             if not self._skip_la:
                 self.test_requires("wg21-linear_algebra/0.7.3")
 

@@ -163,6 +163,11 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION
     target_compile_options(mp-units-core ${${projectPrefix}TARGET_SCOPE} "-Wno-unused-result")
 endif()
 
+# usage of uninitialized variable in c++/12/bits/char_traits.h
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 13)
+    target_compile_options(mp-units-core ${${projectPrefix}TARGET_SCOPE} "-Wno-maybe-uninitialized")
+endif()
+
 # time-trace
 if(${projectPrefix}DEV_TIME_TRACE STREQUAL "ALL")
     target_compile_options(mp-units-core ${${projectPrefix}TARGET_SCOPE} "-ftime-trace")
