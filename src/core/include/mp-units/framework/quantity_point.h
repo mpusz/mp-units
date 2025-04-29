@@ -461,21 +461,36 @@ public:
   }
 
   // binary operators on quantity points
+#if defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 17
+  template<std::derived_from<quantity_point> QP, auto R2, typename Rep2>
+    requires ReferenceOf<MP_UNITS_REMOVE_CONST(decltype(R2)), PO._quantity_spec_>
+#else
   template<std::derived_from<quantity_point> QP, ReferenceOf<PO._quantity_spec_> auto R2, typename Rep2>
+#endif
   [[nodiscard]] friend constexpr QuantityPoint auto operator+(const QP& qp, const quantity<R2, Rep2>& q)
     requires requires { qp.quantity_ref_from(PO) + q; }
   {
     return detail::make_quantity_point(qp.quantity_ref_from(PO) + q, PO);
   }
 
+#if defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 17
+  template<auto R1, typename Rep1, std::derived_from<quantity_point> QP>
+    requires ReferenceOf<MP_UNITS_REMOVE_CONST(decltype(R1)), PO._quantity_spec_>
+#else
   template<ReferenceOf<PO._quantity_spec_> auto R1, typename Rep1, std::derived_from<quantity_point> QP>
+#endif
   [[nodiscard]] friend constexpr QuantityPoint auto operator+(const quantity<R1, Rep1>& q, const QP& qp)
     requires requires { q + qp.quantity_ref_from(PO); }
   {
     return qp + q;
   }
 
+#if defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 17
+  template<std::derived_from<quantity_point> QP, auto R2, typename Rep2>
+    requires ReferenceOf<MP_UNITS_REMOVE_CONST(decltype(R2)), PO._quantity_spec_>
+#else
   template<std::derived_from<quantity_point> QP, ReferenceOf<PO._quantity_spec_> auto R2, typename Rep2>
+#endif
   [[nodiscard]] friend constexpr QuantityPoint auto operator-(const QP& qp, const quantity<R2, Rep2>& q)
     requires requires { qp.quantity_ref_from(PO) - q; }
   {
