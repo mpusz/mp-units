@@ -30,7 +30,6 @@
 #include <mp-units/systems/si.h>
 #if MP_UNITS_HOSTED
 #include <mp-units/cartesian_vector.h>
-#include <mp-units/complex.h>
 #include <mp-units/math.h>
 #endif
 #ifdef MP_UNITS_IMPORT_STD
@@ -162,11 +161,9 @@ static_assert(is_same_v<decltype(quantity(vint, m))::rep, std::int16_t>);
 ////////////////////////////
 
 static_assert(quantity<isq::length[m], int>::zero().numerical_value_in(m) == 0);
-static_assert(quantity<isq::length[m], int>::one().numerical_value_in(m) == 1);
 static_assert(quantity<isq::length[m], int>::min().numerical_value_in(m) == std::numeric_limits<int>::lowest());
 static_assert(quantity<isq::length[m], int>::max().numerical_value_in(m) == std::numeric_limits<int>::max());
 static_assert(quantity<isq::length[m], double>::zero().numerical_value_in(m) == 0.0);
-static_assert(quantity<isq::length[m], double>::one().numerical_value_in(m) == 1.0);
 static_assert(quantity<isq::length[m], double>::min().numerical_value_in(m) == std::numeric_limits<double>::lowest());
 static_assert(quantity<isq::length[m], double>::max().numerical_value_in(m) == std::numeric_limits<double>::max());
 
@@ -282,16 +279,16 @@ static_assert(quantity<isq::length[km]>(1500 * m).numerical_value_in(km) == 1.5)
 
 static_assert(!std::convertible_to<quantity<one>, double>);
 static_assert(std::constructible_from<double, quantity<one>>);
-static_assert(!std::convertible_to<quantity<isq::angular_measure[one]>, double>);
-static_assert(std::constructible_from<double, quantity<isq::angular_measure[one]>>);
 static_assert(!std::convertible_to<quantity<one>, int>);
 static_assert(std::constructible_from<int, quantity<one>>);
-static_assert(!std::convertible_to<quantity<isq::angular_measure[one]>, int>);
-static_assert(std::constructible_from<int, quantity<isq::angular_measure[one]>>);
 static_assert(!std::convertible_to<quantity<one, int>, double>);
 static_assert(std::constructible_from<double, quantity<one, int>>);
-static_assert(!std::convertible_to<quantity<isq::angular_measure[one], int>, double>);
-static_assert(std::constructible_from<double, quantity<isq::angular_measure[one], int>>);
+static_assert(!std::convertible_to<quantity<isq::rotation[one]>, double>);
+static_assert(std::constructible_from<double, quantity<isq::rotation[one]>>);
+static_assert(!std::convertible_to<quantity<isq::rotation[one]>, int>);
+static_assert(std::constructible_from<int, quantity<isq::rotation[one]>>);
+static_assert(!std::convertible_to<quantity<isq::rotation[one], int>, double>);
+static_assert(std::constructible_from<double, quantity<isq::rotation[one], int>>);
 #if MP_UNITS_HOSTED
 static_assert(!std::convertible_to<quantity<one, std::complex<double>>, std::complex<double>>);
 static_assert(std::constructible_from<std::complex<double>, quantity<one, std::complex<double>>>);
@@ -303,6 +300,18 @@ static_assert(!std::convertible_to<quantity<one, double>, cartesian_vector<doubl
 static_assert(std::constructible_from<cartesian_vector<double>, quantity<one, double>>);
 #endif
 
+static_assert(!std::convertible_to<quantity<rad>, double>);
+static_assert(!std::constructible_from<double, quantity<rad>>);
+static_assert(!std::convertible_to<quantity<rad>, int>);
+static_assert(!std::constructible_from<int, quantity<rad>>);
+static_assert(!std::convertible_to<quantity<rad, int>, double>);
+static_assert(!std::constructible_from<double, quantity<rad, int>>);
+static_assert(!std::convertible_to<quantity<isq::angular_measure[one]>, double>);
+static_assert(!std::constructible_from<double, quantity<isq::angular_measure[one]>>);
+static_assert(!std::convertible_to<quantity<isq::angular_measure[one]>, int>);
+static_assert(!std::constructible_from<int, quantity<isq::angular_measure[one]>>);
+static_assert(!std::convertible_to<quantity<isq::angular_measure[one], int>, double>);
+static_assert(!std::constructible_from<double, quantity<isq::angular_measure[one], int>>);
 
 ///////////////////////////////////
 // converting to a different unit
@@ -1365,5 +1374,21 @@ static_assert(!QuantityOf<decltype(10 * isq::length[m]), isq::height>);         
 static_assert(!QuantityOf<decltype(10 * isq::width[m]), isq::height>);           // different kinds
 static_assert(QuantityOf<decltype(10 * isq::speed[m / s]), isq::speed>);
 static_assert(QuantityOf<decltype(20 * isq::length[m] / (2 * isq::time[s])), isq::speed>);  // derived unnamed quantity
+
+// overflowing unit conversions
+template<auto Q>
+concept overflowing_unit_conversion = requires {
+  requires !requires { quantity<si::metre, std::int8_t>(Q); };
+  requires !requires { quantity<si::milli<si::metre>, std::int16_t>(Q); };
+  requires !requires { Q.in(si::metre); };
+  requires !requires { Q.force_in(si::metre); };
+  requires !requires { Q + std::int8_t(1) * nm; };  // promotion to int
+  requires !requires { Q - std::int8_t(1) * nm; };  // promotion to int
+  requires !requires { Q % std::int8_t(1) * m; };
+  requires !requires { Q == std::int8_t(1) * m; };
+  requires !requires { Q < std::int8_t(1) * m; };
+  requires !requires { typename std::common_type_t<decltype(Q), quantity<si::metre, std::int8_t>>; };
+};
+static_assert(overflowing_unit_conversion<std::int8_t(1) * km>);
 
 }  // namespace

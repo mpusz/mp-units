@@ -86,11 +86,11 @@ QUANTITY_SPEC_(mass_density, mass / volume);
 QUANTITY_SPEC_(force, mass * acceleration);
 QUANTITY_SPEC_(weight, force, mass * acceleration_of_free_fall);
 QUANTITY_SPEC_(moment_of_force, position_vector* force);
-QUANTITY_SPEC_(torque, moment_of_force, quantity_character::scalar);
-QUANTITY_SPEC_(pressure, force / area, quantity_character::scalar);
+QUANTITY_SPEC_(torque, moment_of_force, quantity_character::real_scalar);
+QUANTITY_SPEC_(pressure, force / area, quantity_character::real_scalar);
 QUANTITY_SPEC_(stress, pressure, quantity_character::tensor);
 QUANTITY_SPEC_(strain, dimensionless, quantity_character::tensor);
-QUANTITY_SPEC_(power, force* velocity, quantity_character::scalar);
+QUANTITY_SPEC_(power, force* velocity, quantity_character::real_scalar);
 QUANTITY_SPEC_(efficiency, power / power);
 QUANTITY_SPEC_(energy, mass * pow<2>(length) / pow<2>(time));
 QUANTITY_SPEC_(mechanical_energy, energy);
@@ -100,14 +100,14 @@ QUANTITY_SPEC_(kinetic_energy, mechanical_energy, mass* pow<2>(speed));
 QUANTITY_SPEC_(electric_current, dim_electric_current);
 QUANTITY_SPEC_(electric_charge, electric_current* time);
 QUANTITY_SPEC_(electric_field_strength, force / electric_charge);  // vector
-QUANTITY_SPEC_(electric_potential, electric_field_strength* length, quantity_character::scalar);
+QUANTITY_SPEC_(electric_potential, electric_field_strength* length, quantity_character::real_scalar);
 QUANTITY_SPEC_(voltage, electric_potential);
 QUANTITY_SPEC_(electromagnetism_power, power, voltage* electric_current);
-QUANTITY_SPEC_(electric_current_phasor, electric_current, quantity_character::complex);
-QUANTITY_SPEC_(voltage_phasor, voltage, quantity_character::complex);
+QUANTITY_SPEC_(electric_current_phasor, electric_current, quantity_character::complex_scalar);
+QUANTITY_SPEC_(voltage_phasor, voltage, quantity_character::complex_scalar);
 QUANTITY_SPEC_(active_power, power, inverse(period_duration) * (electromagnetism_power * time));
 QUANTITY_SPEC_(complex_power, voltage_phasor* electric_current_phasor);  // separate kind
-QUANTITY_SPEC_(apparent_power, complex_power, quantity_character::scalar);
+QUANTITY_SPEC_(apparent_power, complex_power, quantity_character::real_scalar);
 
 // clang-format on
 
@@ -1011,12 +1011,6 @@ static_assert(convertible(kind_of<dimensionless / time>, solid_angular_measure_r
 
 static_assert(convertible(kind_of<dimensionless / time>, kind_of<angular_measure_rate>) == yes);
 static_assert(convertible(kind_of<dimensionless / time>, kind_of<solid_angular_measure_rate>) == yes);
-
-
-// quantity character checks
-static_assert((displacement / time).character == quantity_character::vector);
-static_assert((position_vector / position_vector * time).character == quantity_character::scalar);
-static_assert((velocity / acceleration).character == quantity_character::scalar);
 
 // get_common_quantity_spec
 static_assert(get_common_quantity_spec(length, length) == length);

@@ -124,27 +124,6 @@ constexpr auto get_canonical_unit_result = get_canonical_unit_impl(U{}, U{});
 // Even though it is not exported, it is visible to the other module via ADL
 [[nodiscard]] consteval auto get_canonical_unit(Unit auto u) { return detail::get_canonical_unit_result<decltype(u)>; }
 
-namespace detail {
-
-// We are using a helper concept to benefit from short-circuiting
-template<typename U1, typename U2>
-concept PotentiallyInterConvertibleTo = Unit<U1> && Unit<U2> &&
-                                        (!AssociatedUnit<U1> || !AssociatedUnit<U2> ||
-                                         explicitly_convertible(get_quantity_spec(U1{}), get_quantity_spec(U2{})));
-}  // namespace detail
-
-// interconvertible
-template<Unit U1, Unit U2>
-[[nodiscard]] consteval bool interconvertible(U1 u1, U2 u2)
-{
-  if constexpr (is_same_v<U1, U2>)
-    return true;
-  else if constexpr (detail::PotentiallyInterConvertibleTo<U1, U2>)
-    return is_same_v<decltype(get_canonical_unit(u1).reference_unit), decltype(get_canonical_unit(u2).reference_unit)>;
-  else
-    return false;
-}
-
 template<UnitMagnitude auto M, Unit U>
   requires(M != detail::unit_magnitude<>{} && M != mag<1>)
 struct scaled_unit;
@@ -427,8 +406,7 @@ struct prefixed_unit : decltype(M * U)::_base_type_ {
 
 namespace detail {
 
-template<Unit U1, Unit U2>
-  requires(interconvertible(U1{}, U2{}))
+template<Unit U1, UnitConvertibleTo<U1{}> U2>
 [[nodiscard]] consteval Unit auto get_common_scaled_unit(U1, U2)
 {
   constexpr auto canonical_lhs = get_canonical_unit(U1{});
@@ -616,7 +594,7 @@ MP_UNITS_EXPORT_BEGIN
  * @return Unit The result of computation
  */
 template<std::intmax_t Num, std::intmax_t Den = 1, Unit U>
-  requires detail::non_zero<Den>
+  requires(Den != 0)
 [[nodiscard]] consteval Unit auto pow(U u)
 {
   return detail::expr_pow<Num, Den, derived_unit, struct one>(u);
@@ -671,8 +649,7 @@ inline constexpr auto ppm = parts_per_million;
 // Common unit
 [[nodiscard]] consteval Unit auto get_common_unit(Unit auto u) { return u; }
 
-template<Unit U1, Unit U2>
-  requires(interconvertible(U1{}, U2{}))
+template<Unit U1, detail::UnitConvertibleTo<U1{}> U2>
 [[nodiscard]] consteval Unit auto get_common_unit(U1 u1, U2 u2)
 {
   if constexpr (is_same_v<U1, U2>)
@@ -732,8 +709,7 @@ using collapse_common_unit = type_list_unique<
 
 }  // namespace detail
 
-template<Unit... Us, Unit NewUnit>
-  requires(interconvertible(common_unit<Us...>{}, NewUnit{}))
+template<Unit... Us, detail::UnitConvertibleTo<common_unit<Us...>{}> NewUnit>
 [[nodiscard]] consteval Unit auto get_common_unit(common_unit<Us...>, NewUnit)
 {
   using type = detail::collapse_common_unit<NewUnit, Us...>;
@@ -743,11 +719,20 @@ template<Unit... Us, Unit NewUnit>
     return detail::type_list_map<type, common_unit>{};
 }
 
-template<Unit... Us, Unit NewUnit>
-  requires(interconvertible(common_unit<Us...>{}, NewUnit{}))
+template<Unit... Us, detail::UnitConvertibleTo<common_unit<Us...>{}> NewUnit>
 [[nodiscard]] consteval Unit auto get_common_unit(NewUnit nu, common_unit<Us...> cu)
 {
   return get_common_unit(cu, nu);
+}
+
+template<Unit Front, Unit... Rest, Unit... Us>
+  requires(detail::UnitConvertibleTo<common_unit<Front, Rest...>, common_unit<Us...>{}>)
+[[nodiscard]] consteval Unit auto get_common_unit(common_unit<Front, Rest...>, common_unit<Us...>)
+{
+  if constexpr (sizeof...(Rest) == 1)
+    return get_common_unit(Front{}, get_common_unit(Rest{}..., common_unit<Us...>{}));
+  else
+    return get_common_unit(Front{}, get_common_unit(common_unit<Rest...>{}, common_unit<Us...>{}));
 }
 
 [[nodiscard]] consteval Unit auto get_common_unit(Unit auto u1, Unit auto u2, Unit auto u3, Unit auto... rest)
@@ -869,7 +854,7 @@ constexpr Out unit_symbol_impl(Out out, const type_list<Nums...>& nums, const ty
     if (fmt.solidus == always || (fmt.solidus == one_denominator && sizeof...(Dens) == 1)) {
       if constexpr (sizeof...(Nums) == 0) *out++ = '1';
       *out++ = '/';
-      if (sizeof...(Dens) > 1) *out++ = '(';
+      if constexpr (sizeof...(Dens) > 1) *out++ = '(';
     } else if constexpr (sizeof...(Nums) > 0) {
       out = print_separator<CharT>(out, fmt);
     }

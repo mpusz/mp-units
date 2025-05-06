@@ -38,32 +38,32 @@ MP_UNITS_EXPORT
 namespace mp_units::isq {
 
 QUANTITY_SPEC(electric_charge, electric_current* time);
+QUANTITY_SPEC(elementary_charge, electric_charge);
 QUANTITY_SPEC(electric_charge_density, electric_charge / volume);
 inline constexpr auto volume_electric_charge = electric_charge_density;
+inline constexpr auto volumic_charge = electric_charge_density;
 QUANTITY_SPEC(surface_density_of_electric_charge, electric_charge / area);
 inline constexpr auto areic_electric_charge = surface_density_of_electric_charge;
+inline constexpr auto areic_charge = surface_density_of_electric_charge;
 QUANTITY_SPEC(linear_density_of_electric_charge, electric_charge / length);
 inline constexpr auto lineic_electric_charge = linear_density_of_electric_charge;
-QUANTITY_SPEC(electric_dipole_moment, electric_charge* displacement);        // vector
-QUANTITY_SPEC(electric_polarization, electric_dipole_moment / volume);       // vector
-QUANTITY_SPEC(electric_current_density, electric_charge_density* velocity);  // vector
-inline constexpr auto areic_electric_current = electric_current_density;
+inline constexpr auto lineic_charge = linear_density_of_electric_charge;
+QUANTITY_SPEC(electric_dipole_moment, electric_charge* displacement);                          // vector
+QUANTITY_SPEC(electric_polarization, electric_dipole_moment / volume);                         // vector
+QUANTITY_SPEC(electric_current_density, electric_charge_density* velocity);                    // vector
 QUANTITY_SPEC(linear_electric_current_density, surface_density_of_electric_charge* velocity);  // vector
-inline constexpr auto lineic_electric_current = linear_electric_current_density;
-QUANTITY_SPEC(electric_field_strength, force / electric_charge);  // vector
+QUANTITY_SPEC(electric_field_strength, force / electric_charge);                               // vector
 QUANTITY_SPEC(electric_potential, electric_field_strength* length,
-              quantity_character::scalar);  // TODO what is a correct equation here?
-QUANTITY_SPEC(electric_potential_difference, electric_potential, quantity_character::scalar);
+              quantity_character::real_scalar);  // TODO what is a correct equation here?
+QUANTITY_SPEC(electric_potential_difference, electric_potential, quantity_character::real_scalar);
 QUANTITY_SPEC(voltage, electric_potential);
 inline constexpr auto electric_tension = voltage;
+QUANTITY_SPEC(induced_voltage, voltage);                      // TODO what is a correct equation here?
 QUANTITY_SPEC(electric_flux_density, electric_polarization);  // vector
 inline constexpr auto electric_displacement = electric_flux_density;
 QUANTITY_SPEC(capacitance, electric_charge / voltage);
-// TODO how to calculate an argument of a vector product?
-QUANTITY_SPEC(magnetic_flux_density, force / (electric_charge * velocity), quantity_character::vector);
-QUANTITY_SPEC(magnetic_vector_potential,
-              magnetic_flux_density* length);  // vector // TODO what is a correct equation here?
-QUANTITY_SPEC(linked_flux, magnetic_vector_potential* displacement, quantity_character::scalar);
+QUANTITY_SPEC(magnetic_flux_density, force / (electric_charge * velocity),
+              quantity_character::vector);  // TODO how to calculate an argument of a vector product?
 QUANTITY_SPEC(magnetic_constant,
               electric_potential* time / (electric_current * length));  // TODO what is a correct equation here?
 inline constexpr auto permeability_of_vacuum = magnetic_constant;
@@ -73,73 +73,86 @@ inline constexpr auto light_speed_in_vacuum = speed_of_light_in_vacuum;
 inline constexpr auto luminal_speed = speed_of_light_in_vacuum;
 QUANTITY_SPEC(electric_constant, inverse(magnetic_constant* pow<2>(speed_of_light_in_vacuum)));
 inline constexpr auto permittivity_of_vacuum = electric_constant;
-QUANTITY_SPEC(permittivity, electric_flux_density / electric_field_strength, quantity_character::scalar);
+QUANTITY_SPEC(permittivity, electric_flux_density / electric_field_strength, quantity_character::real_scalar);
 QUANTITY_SPEC(relative_permittivity, dimensionless, permittivity / electric_constant);
 QUANTITY_SPEC(electric_susceptibility, dimensionless,
-              electric_polarization / electric_constant / electric_field_strength, quantity_character::scalar);
-QUANTITY_SPEC(electric_flux, electric_flux_density* area, quantity_character::scalar);
+              electric_polarization / electric_constant / electric_field_strength, quantity_character::real_scalar);
+QUANTITY_SPEC(electric_flux, electric_flux_density* area, quantity_character::real_scalar);
 QUANTITY_SPEC(displacement_current_density, electric_flux_density / time);  // vector
-QUANTITY_SPEC(displacement_current, electric_current, displacement_current_density* area, quantity_character::scalar);
+QUANTITY_SPEC(displacement_current, electric_current, displacement_current_density* area,
+              quantity_character::real_scalar);
 QUANTITY_SPEC(total_current, electric_current);
 QUANTITY_SPEC(total_current_density, electric_current_density);  // vector
-QUANTITY_SPEC(magnetic_flux, magnetic_flux_density* area, quantity_character::scalar);
+QUANTITY_SPEC(magnetic_flux, magnetic_flux_density* area, quantity_character::real_scalar);
+QUANTITY_SPEC(magnetic_vector_potential,
+              magnetic_flux_density* length);  // vector // TODO what is a correct equation here?
+QUANTITY_SPEC(protoflux, magnetic_vector_potential* displacement, quantity_character::real_scalar);
+QUANTITY_SPEC(linked_magnetic_flux, magnetic_flux);
+QUANTITY_SPEC(total_magnetic_flux, magnetic_flux);
 QUANTITY_SPEC(magnetic_moment, electric_current* area, quantity_character::vector);
 inline constexpr auto magnetic_area_moment = magnetic_moment;
 QUANTITY_SPEC(magnetization, magnetic_moment / volume);  // vector
 QUANTITY_SPEC(magnetic_field_strength, magnetization);   // vector
 inline constexpr auto magnetizing_field = magnetic_field_strength;
-QUANTITY_SPEC(permeability, magnetic_flux_density / magnetic_field_strength, quantity_character::scalar);
+QUANTITY_SPEC(permeability, magnetic_flux_density / magnetic_field_strength, quantity_character::real_scalar);
 QUANTITY_SPEC(relative_permeability, dimensionless, permeability / magnetic_constant);
 QUANTITY_SPEC(magnetic_susceptibility, dimensionless, magnetization / magnetic_field_strength,
-              quantity_character::scalar);
+              quantity_character::real_scalar);
 QUANTITY_SPEC(magnetic_polarization, magnetic_constant* magnetization);     // vector
 QUANTITY_SPEC(magnetic_dipole_moment, magnetic_constant* magnetic_moment);  // vector
-QUANTITY_SPEC(coercivity, magnetic_field_strength, quantity_character::scalar);
+QUANTITY_SPEC(coercivity, magnetic_field_strength, quantity_character::real_scalar);
+inline constexpr auto coercive_field_strength = coercivity;
 QUANTITY_SPEC(electromagnetic_energy_density, electric_field_strength* electric_flux_density,
-              quantity_character::scalar);
-inline constexpr auto volumic_electromagnetic_energy = electromagnetic_energy_density;
+              quantity_character::real_scalar);
 QUANTITY_SPEC(Poynting_vector, electric_field_strength* magnetic_field_strength);  // vector
 QUANTITY_SPEC(source_voltage, voltage);
 inline constexpr auto source_tension = source_voltage;
-QUANTITY_SPEC(scalar_magnetic_potential, electric_current, magnetic_field_strength* length,
-              quantity_character::scalar);  // TODO what is a correct equation here?
-QUANTITY_SPEC(magnetic_tension, electric_current, magnetic_field_strength* position_vector, quantity_character::scalar);
+QUANTITY_SPEC(magnetic_potential, electric_current);  // TODO what is a correct equation here?
+QUANTITY_SPEC(magnetic_tension, electric_current, magnetic_field_strength* position_vector,
+              quantity_character::real_scalar);
 QUANTITY_SPEC(magnetomotive_force, electric_current, magnetic_field_strength* position_vector,
-              quantity_character::scalar);
-QUANTITY_SPEC(current_linkage, electric_current);
+              quantity_character::real_scalar);
 QUANTITY_SPEC(number_of_turns_in_a_winding, dimensionless);
 QUANTITY_SPEC(reluctance, magnetic_tension / magnetic_flux);
 QUANTITY_SPEC(permeance, inverse(reluctance));
-QUANTITY_SPEC(inductance, linked_flux / electric_current);
+QUANTITY_SPEC(inductance, protoflux / electric_current);
 inline constexpr auto self_inductance = inductance;
-QUANTITY_SPEC(mutual_inductance, linked_flux / electric_current);
+QUANTITY_SPEC(mutual_inductance, protoflux / electric_current);
 QUANTITY_SPEC(coupling_factor, dimensionless, mutual_inductance / pow<1, 2>(pow<2>(self_inductance)));
 QUANTITY_SPEC(leakage_factor, dimensionless, pow<2>(coupling_factor));
-QUANTITY_SPEC(conductivity, electric_current_density / electric_field_strength, quantity_character::scalar);
+QUANTITY_SPEC(conductivity, electric_current_density / electric_field_strength, quantity_character::real_scalar);
 QUANTITY_SPEC(resistivity, inverse(conductivity));
-QUANTITY_SPEC(electromagnetism_power, power, voltage* electric_current);
+QUANTITY_SPEC(electromagnetism_power, power, voltage* electric_current);  // different name than in ISQ
 inline constexpr auto instantaneous_power = electromagnetism_power;
 QUANTITY_SPEC(resistance, voltage / electric_current);
 QUANTITY_SPEC(conductance, inverse(resistance));
 QUANTITY_SPEC(phase_difference, phase_angle);
-QUANTITY_SPEC(electric_current_phasor, electric_current, quantity_character::complex);
-QUANTITY_SPEC(voltage_phasor, voltage, quantity_character::complex);
-QUANTITY_SPEC(impedance, voltage_phasor / electric_current_phasor);
-inline constexpr auto complex_impedance = impedance;
-QUANTITY_SPEC(resistance_to_alternating_current, impedance);
-QUANTITY_SPEC(reactance, impedance);
-QUANTITY_SPEC(modulus_of_impedance, impedance);
-QUANTITY_SPEC(admittance, inverse(impedance));
-inline constexpr auto complex_admittance = admittance;
-QUANTITY_SPEC(conductance_for_alternating_current, admittance);
-QUANTITY_SPEC(susceptance, admittance);
-QUANTITY_SPEC(modulus_of_admittance, admittance);
+QUANTITY_SPEC(electric_current_phasor, electric_current, quantity_character::complex_scalar);
+QUANTITY_SPEC(voltage_phasor, voltage, quantity_character::complex_scalar);
+inline constexpr auto electric_tension_phasor = voltage_phasor;
+QUANTITY_SPEC(impedance, voltage_phasor / electric_current_phasor);    // complex
+inline constexpr auto complex_impedance = impedance;                   // complex
+QUANTITY_SPEC(impedance_of_vacuum, impedance);                         // complex
+inline constexpr auto wave_impedance_in_vacuum = impedance_of_vacuum;  // complex
+QUANTITY_SPEC(
+  resistance_to_alternating_current, impedance,
+  quantity_character::real_scalar);  // called resistance in the latest ISQ (we use the old name to avoid ambiguity)
+QUANTITY_SPEC(reactance, impedance, quantity_character::real_scalar);
+QUANTITY_SPEC(apparent_impedance, impedance, quantity_character::real_scalar);
+QUANTITY_SPEC(admittance, inverse(impedance));                                  // complex
+inline constexpr auto complex_admittance = admittance;                          // complex
+QUANTITY_SPEC(admittance_of_vacuum, admittance, inverse(impedance_of_vacuum));  // complex
+QUANTITY_SPEC(
+  conductance_for_alternating_current, conductance,
+  quantity_character::real_scalar);  // called resistance in the latest ISQ (we use the old name to avoid ambiguity)
+QUANTITY_SPEC(susceptance, admittance, quantity_character::real_scalar);
+QUANTITY_SPEC(apparent_admittance, admittance, quantity_character::real_scalar);
 QUANTITY_SPEC(quality_factor, dimensionless, reactance / resistance);
 QUANTITY_SPEC(loss_factor, dimensionless, inverse(quality_factor));
 QUANTITY_SPEC(loss_angle, angular_measure);
 QUANTITY_SPEC(active_power, isq::power, inverse(period) * (instantaneous_power * time));
-QUANTITY_SPEC(complex_power, voltage_phasor* electric_current_phasor);  // separate kind
-QUANTITY_SPEC(apparent_power, complex_power, quantity_character::scalar);
+QUANTITY_SPEC(complex_power, voltage_phasor* electric_current_phasor);  // complex // separate kind
+QUANTITY_SPEC(apparent_power, complex_power, quantity_character::real_scalar);
 QUANTITY_SPEC(power_factor, dimensionless, active_power / apparent_power);
 QUANTITY_SPEC(reactive_power, isq::mass* pow<2>(isq::length) / pow<3>(isq::time));  // separate kind
 QUANTITY_SPEC(non_active_power, pow<1, 2>(pow<2>(apparent_power)));                 // separate kind

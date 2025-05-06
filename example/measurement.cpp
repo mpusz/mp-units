@@ -138,7 +138,7 @@ private:
 
 }  // namespace
 
-static_assert(mp_units::RepresentationOf<measurement<double>, mp_units::quantity_character::scalar>);
+static_assert(mp_units::RepresentationOf<measurement<double>, mp_units::quantity_character::real_scalar>);
 static_assert(mp_units::RepresentationOf<measurement<double>, mp_units::quantity_character::vector>);
 
 namespace {

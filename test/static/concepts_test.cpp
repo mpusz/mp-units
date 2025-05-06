@@ -20,12 +20,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <mp-units/systems/isq/space_and_time.h>
+#include <mp-units/systems/isq.h>
 #include <mp-units/systems/natural.h>
 #include <mp-units/systems/si.h>
 #if MP_UNITS_HOSTED
 #include <mp-units/cartesian_vector.h>
-#include <mp-units/complex.h>
 #endif
 #ifdef MP_UNITS_IMPORT_STD
 import std;
@@ -82,7 +81,24 @@ static_assert(!Dimension<struct si::metre>);
 static_assert(!Dimension<int>);
 
 // DimensionOf
-// TODO add tests
+static_assert(DimensionOf<struct isq::dim_length, isq::dim_length>);
+static_assert(DimensionOf<struct isq::dim_length, isq::height.dimension>);
+static_assert(DimensionOf<struct isq::dim_length, isq::radius.dimension>);
+static_assert(!DimensionOf<struct isq::dim_length, isq::length>);
+static_assert(!DimensionOf<struct isq::length, isq::dim_length>);
+static_assert(!DimensionOf<struct isq::length, isq::length>);
+static_assert(!DimensionOf<struct isq::dim_length, isq::dim_time>);
+static_assert(!DimensionOf<struct isq::dim_length, isq::time>);
+static_assert(!DimensionOf<struct isq::dim_time, isq::dim_length>);
+static_assert(!DimensionOf<struct isq::dim_time, isq::length>);
+static_assert(!DimensionOf<struct isq::length, isq::dim_time>);
+static_assert(!DimensionOf<struct isq::length, isq::time>);
+static_assert(!DimensionOf<struct isq::time, isq::dim_length>);
+static_assert(!DimensionOf<struct isq::time, isq::length>);
+static_assert(DimensionOf<decltype(isq::dim_length / isq::dim_time), isq::speed.dimension>);
+static_assert(DimensionOf<decltype(isq::force.dimension * isq::time.dimension), isq::impulse.dimension>);
+static_assert(DimensionOf<decltype(isq::angular_momentum.dimension / isq::angular_velocity.dimension),
+                          isq::moment_of_inertia.dimension>);
 
 // QuantitySpec
 inline constexpr auto speed = isq::length / isq::time;
@@ -299,45 +315,47 @@ static_assert(ReferenceOf<struct one, isq::angular_measure>);
 static_assert(!ReferenceOf<decltype(dimensionless[one]), isq::rotation>);
 static_assert(!ReferenceOf<decltype(dimensionless[one]), isq::angular_measure>);
 
-// Representation
-static_assert(Representation<int>);
-static_assert(Representation<double>);
-static_assert(!Representation<bool>);
-static_assert(!Representation<std::optional<int>>);
-#if MP_UNITS_HOSTED
-static_assert(Representation<std::complex<float>>);
-static_assert(Representation<std::complex<double>>);
-static_assert(Representation<std::complex<long double>>);
-static_assert(Representation<cartesian_vector<double>>);
-static_assert(!Representation<std::string>);
-static_assert(!Representation<std::chrono::seconds>);
-#endif
-
 // RepresentationOf
-static_assert(RepresentationOf<int, quantity_character::scalar>);
-static_assert(!RepresentationOf<int, quantity_character::complex>);
+static_assert(RepresentationOf<int, quantity_character::real_scalar>);
+static_assert(!RepresentationOf<int, quantity_character::complex_scalar>);
+static_assert(!RepresentationOf<int, quantity_character::complex_scalar>);
 static_assert(RepresentationOf<int, quantity_character::vector>);
 static_assert(!RepresentationOf<int, quantity_character::tensor>);
-static_assert(RepresentationOf<double, quantity_character::scalar>);
-static_assert(!RepresentationOf<double, quantity_character::complex>);
+
+static_assert(RepresentationOf<double, quantity_character::real_scalar>);
+static_assert(!RepresentationOf<double, quantity_character::complex_scalar>);
+static_assert(!RepresentationOf<double, quantity_character::complex_scalar>);
 static_assert(RepresentationOf<double, quantity_character::vector>);
 static_assert(!RepresentationOf<double, quantity_character::tensor>);
-static_assert(!RepresentationOf<bool, quantity_character::scalar>);
-static_assert(!RepresentationOf<bool, quantity_character::complex>);
+
+static_assert(!RepresentationOf<bool, quantity_character::real_scalar>);
+static_assert(!RepresentationOf<bool, quantity_character::complex_scalar>);
+static_assert(!RepresentationOf<bool, quantity_character::complex_scalar>);
 static_assert(!RepresentationOf<bool, quantity_character::vector>);
 static_assert(!RepresentationOf<bool, quantity_character::tensor>);
-static_assert(!RepresentationOf<std::optional<int>, quantity_character::scalar>);
+
+static_assert(!RepresentationOf<std::optional<int>, quantity_character::real_scalar>);
+
 #if MP_UNITS_HOSTED
-static_assert(RepresentationOf<std::complex<double>, quantity_character::complex>);
-static_assert(!RepresentationOf<std::complex<double>, quantity_character::scalar>);
+static_assert(!RepresentationOf<std::complex<double>, quantity_character::real_scalar>);
+static_assert(RepresentationOf<std::complex<double>, quantity_character::complex_scalar>);
 static_assert(!RepresentationOf<std::complex<double>, quantity_character::vector>);
 static_assert(!RepresentationOf<std::complex<double>, quantity_character::tensor>);
+
+static_assert(!RepresentationOf<cartesian_vector<double>, quantity_character::real_scalar>);
+static_assert(!RepresentationOf<cartesian_vector<double>, quantity_character::complex_scalar>);
 static_assert(RepresentationOf<cartesian_vector<double>, quantity_character::vector>);
-static_assert(!RepresentationOf<cartesian_vector<double>, quantity_character::scalar>);
-static_assert(!RepresentationOf<cartesian_vector<double>, quantity_character::complex>);
+static_assert(!RepresentationOf<cartesian_vector<double>, quantity_character::complex_scalar>);
 static_assert(!RepresentationOf<cartesian_vector<double>, quantity_character::tensor>);
-static_assert(!RepresentationOf<std::chrono::seconds, quantity_character::scalar>);
-static_assert(!RepresentationOf<std::string, quantity_character::scalar>);
+
+static_assert(!RepresentationOf<cartesian_vector<std::complex<double>>, quantity_character::real_scalar>);
+static_assert(!RepresentationOf<cartesian_vector<std::complex<double>>, quantity_character::complex_scalar>);
+static_assert(RepresentationOf<cartesian_vector<std::complex<double>>, quantity_character::vector>);
+static_assert(!RepresentationOf<cartesian_vector<std::complex<double>>, quantity_character::complex_scalar>);
+static_assert(!RepresentationOf<cartesian_vector<std::complex<double>>, quantity_character::tensor>);
+
+static_assert(!RepresentationOf<std::chrono::seconds, quantity_character::real_scalar>);
+static_assert(!RepresentationOf<std::string, quantity_character::real_scalar>);
 #endif
 
 // Quantity
@@ -472,19 +490,47 @@ static_assert(!QuantityPointLike<quantity<isq::time[si::second]>>);
 static_assert(!QuantityPointLike<quantity_point<si::metre, my_origin>>);
 static_assert(!QuantityPointLike<int>);
 
-// Quantity Characters
+// Quantity Character Concepts
 
+#if MP_UNITS_HOSTED
+// TODO provide support for the below when quantity specifications expressions are done
 static_assert(detail::Scalar<quantity<one>>);
 static_assert(detail::Scalar<quantity<one, int>>);
-static_assert(!detail::Scalar<quantity_point<one>>);
-static_assert(!detail::Scalar<quantity_point<si::metre>>);
 static_assert(detail::Scalar<quantity<si::metre>>);
 static_assert(detail::Scalar<quantity<isq::speed[si::metre / si::second], int>>);
-// TODO provide support for the below when quantity specifications expressions are done
+// static_assert(detail::Scalar<quantity<isq::complex_power[si::volt * si::ampere], std::complex<double>>>);
+
+static_assert(!detail::Scalar<quantity<one, cartesian_vector<double>>>);
+static_assert(!detail::Scalar<quantity<si::metre, cartesian_vector<double>>>);
+static_assert(!detail::Scalar<quantity<isq::velocity[si::metre / si::second], cartesian_vector<double>>>);
+static_assert(!detail::Scalar<quantity_point<one>>);
+static_assert(!detail::Scalar<quantity_point<si::metre>>);
+
+static_assert(detail::RealScalar<quantity<one>>);
+static_assert(detail::RealScalar<quantity<one, int>>);
+static_assert(detail::RealScalar<quantity<si::metre>>);
+static_assert(detail::RealScalar<quantity<isq::speed[si::metre / si::second], int>>);
+// static_assert(!detail::RealScalar<quantity<isq::velocity[si::metre / si::second], int>>);
+static_assert(!detail::RealScalar<quantity<isq::complex_power[si::volt * si::ampere], std::complex<double>>>);
+
+static_assert(!detail::ComplexScalar<quantity<one>>);
+static_assert(!detail::ComplexScalar<quantity<one, int>>);
+static_assert(!detail::ComplexScalar<quantity<si::metre>>);
+static_assert(!detail::ComplexScalar<quantity<isq::speed[si::metre / si::second], int>>);
+static_assert(!detail::ComplexScalar<quantity<isq::velocity[si::metre / si::second], int>>);
+// static_assert(detail::ComplexScalar<quantity<isq::complex_power[si::volt * si::ampere], std::complex<double>>>);
+
+// static_assert(detail::Vector<quantity<one>>);
+// static_assert(detail::Vector<quantity<one, int>>);
+// static_assert(detail::Vector<quantity<si::metre>>);
+static_assert(!detail::Vector<quantity<isq::speed[si::metre / si::second], int>>);
 // static_assert(detail::Vector<quantity<isq::velocity[si::metre / si::second], int>>);
-#if MP_UNITS_HOSTED
-// static_assert(detail::Vector<quantity<isq::velocity[si::metre / si::second], cartesian_vector<double>>>);
-// static_assert(detail::Complex<quantity<si::volt * si::ampere>, std::complex<double>>);
+static_assert(!detail::Vector<quantity<isq::complex_power[si::volt * si::ampere], std::complex<double>>>);
+// static_assert(detail::Vector<quantity<one>, cartesian_vector<double>>);
+// static_assert(detail::Vector<quantity<one, cartesian_vector<int>>>);
+// static_assert(detail::Vector<quantity<si::metre>, cartesian_vector<double>>);
+// static_assert(detail::Vector<quantity<isq::velocity[si::metre / si::second], cartesian_vector<int>>>);
+
 #endif
 
 }  // namespace

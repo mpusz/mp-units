@@ -37,24 +37,24 @@ using enum mp_units::quantity_character;
   return q.character == ch && (... && requires { q[units]; });
 }
 
-static_assert(verify(isq_angle::cotes_angle_constant, scalar, rad));
-static_assert(verify(isq_angle::angular_measure, scalar, rad));
-static_assert(verify(isq_angle::rotational_displacement, scalar, rad));
-static_assert(verify(isq_angle::angular_displacement, scalar, rad));
-static_assert(verify(isq_angle::solid_angular_measure, scalar, sr));
+static_assert(verify(isq_angle::cotes_angle_constant, real_scalar, rad));
+static_assert(verify(isq_angle::angular_measure, real_scalar, rad));
+static_assert(verify(isq_angle::rotational_displacement, real_scalar, rad));
+static_assert(verify(isq_angle::angular_displacement, real_scalar, rad));
+static_assert(verify(isq_angle::solid_angular_measure, real_scalar, sr));
 static_assert(verify(isq_angle::angular_velocity, vector, rad / s));
 static_assert(verify(isq_angle::angular_acceleration, vector, rad / s2));
-static_assert(verify(isq_angle::rotation, scalar, rad));
-static_assert(verify(isq_angle::angular_frequency, scalar, rad / s));
-static_assert(verify(isq_angle::angular_repetency, scalar, rad / m));
-static_assert(verify(isq_angle::angular_wavenumber, scalar, rad / m));
-static_assert(verify(isq_angle::phase_coefficient, scalar, rad / m));
-static_assert(verify(isq_angle::propagation_coefficient, scalar, rad / m));
+static_assert(verify(isq_angle::rotation, real_scalar, rad));
+static_assert(verify(isq_angle::angular_frequency, real_scalar, rad / s));
+static_assert(verify(isq_angle::angular_repetency, real_scalar, rad / m));
+static_assert(verify(isq_angle::angular_wavenumber, real_scalar, rad / m));
+static_assert(verify(isq_angle::phase_coefficient, real_scalar, rad / m));
+static_assert(verify(isq_angle::propagation_coefficient, real_scalar, rad / m));
 static_assert(verify(isq_angle::moment_of_inertia, tensor, kg* m2 / rad2));
 static_assert(verify(isq_angle::angular_momentum, vector, J* s / rad));
 static_assert(verify(isq_angle::moment_of_force, vector, J / rad));
-static_assert(verify(isq_angle::torque, scalar, J / rad));
+static_assert(verify(isq_angle::torque, real_scalar, J / rad));
 static_assert(verify(isq_angle::angular_impulse, vector, J* s / rad));
-static_assert(verify(isq_angle::loss_angle, scalar, rad));
+static_assert(verify(isq_angle::loss_angle, real_scalar, rad));
 
 }  // namespace

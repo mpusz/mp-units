@@ -126,10 +126,12 @@ inline constexpr struct inch_of_mercury final : named_unit<"inHg", mag_ratio<3'3
 #undef MP_UNITS_REDEFINE_PASCAL
 #endif
 
-// https://en.wikipedia.org/wiki/United_States_customary_units#Temperature
-inline constexpr struct zeroth_degree_Fahrenheit final : relative_point_origin<::mp_units::point<mag_ratio<5, 9> * si::degree_Celsius>(-32)> {} zeroth_degree_Fahrenheit;
-inline constexpr struct degree_Fahrenheit final : named_unit<symbol_text{u8"℉", "`F"}, mag_ratio<5, 9> * si::degree_Celsius, zeroth_degree_Fahrenheit> {} degree_Fahrenheit;
+// https://en.wikipedia.org/wiki/Fahrenheit
+inline constexpr auto zeroth_rankine = si::zeroth_kelvin;
+inline constexpr struct rankine final : named_unit<symbol_text{u8"°R", "`R"}, mag_ratio<5, 9> * si::kelvin, zeroth_rankine> {} rankine;
 
+inline constexpr struct zeroth_degree_Fahrenheit final : relative_point_origin<::mp_units::point<si::milli<rankine>>(459'670)> {} zeroth_degree_Fahrenheit;
+inline constexpr struct degree_Fahrenheit final : named_unit<symbol_text{u8"℉", "`F"}, rankine, zeroth_degree_Fahrenheit> {} degree_Fahrenheit;
 // clang-format on
 
 namespace unit_symbols {

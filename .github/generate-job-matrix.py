@@ -92,7 +92,7 @@ configs = {
     for c in [make_gcc_config(ver) for ver in [12, 13, 14]]
     + [
         make_clang_config(ver, platform)
-        for ver in [16, 17, 18]
+        for ver in [16, 17, 18, 20]
         for platform in ["x86-64", "arm64"]
         # arm64 runners are expensive; only consider one version
         if ver == 18 or platform != "arm64"

@@ -166,7 +166,8 @@ inline constexpr auto ppm = parts_per_million;
 
 ### Superpowers of the unit `one`
 
-Quantities of the unit `one` are the only ones that are:
+Quantities implicitly convertible to `dimensionless` with the unit equivalent to `one` are the only
+ones that are:
 
 - implicitly constructible from the raw value,
 - explicitly convertible to a raw value,
@@ -185,8 +186,8 @@ This property also expands to usual arithmetic operators.
 !!! note
 
     Those rules do not apply to all the dimensionless quantities. It would be unsafe and misleading
-    to allow such operations on units with a magnitude different than `1` (e.g., `percent` or
-    `radian`).
+    to allow such operations on units with a magnitude different than `1` (e.g., `percent`) or
+    for quantities that are not implicitly convertible to `dimensionless` (e.g., `angular_measure`).
 
 
 ## Angular quantities

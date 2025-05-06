@@ -42,7 +42,7 @@ namespace mp_units {
 
 MP_UNITS_EXPORT_BEGIN
 
-#if defined MP_UNITS_COMP_CLANG || MP_UNITS_COMP_CLANG < 18
+#if defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 18
 
 template<symbol_text Symbol>
 struct mag_constant {
@@ -64,7 +64,7 @@ struct mag_constant {
 // `mag()` implementation.
 
 template<std::intmax_t N>
-[[deprecated("`known_first_factor` is no longer necessary and can simply be removed")]]
+[[deprecated("2.5.0: `known_first_factor` is no longer necessary and can simply be removed")]]
 constexpr std::optional<std::intmax_t>
   known_first_factor = std::nullopt;
 
@@ -73,7 +73,7 @@ template<detail::MagArg auto V>
 constexpr UnitMagnitude auto mag = detail::make_magnitude<V>();
 
 template<std::intmax_t N, std::intmax_t D>
-  requires detail::gt_zero<N>
+  requires(N > 0)
 constexpr UnitMagnitude auto mag_ratio = detail::prime_factorization_v<N> / detail::prime_factorization_v<D>;
 
 /**
@@ -86,7 +86,7 @@ constexpr UnitMagnitude auto mag_power = pow<Num, Den>(mag<Base>);
 /**
  * @brief  A convenient Magnitude constant for pi, which we can manipulate like a regular number.
  */
-#if defined MP_UNITS_COMP_CLANG || MP_UNITS_COMP_CLANG < 18
+#if defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 18
 inline constexpr struct pi final : mag_constant<symbol_text{u8"π" /* U+03C0 GREEK SMALL LETTER PI */, "pi"}> {
   static constexpr auto _value_ = std::numbers::pi_v<long double>;
 #else
@@ -96,7 +96,7 @@ inline constexpr struct pi final :
 } pi;
 inline constexpr auto π /* U+03C0 GREEK SMALL LETTER PI */ = pi;
 
-[[deprecated("Use `mag<pi>` instead")]] inline constexpr UnitMagnitude auto mag_pi = mag<pi>;
+[[deprecated("2.3.0: Use `mag<pi>` instead")]] inline constexpr UnitMagnitude auto mag_pi = mag<pi>;
 
 MP_UNITS_EXPORT_END
 

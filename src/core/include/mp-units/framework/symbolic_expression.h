@@ -22,7 +22,6 @@
 
 #pragma once
 
-#include <mp-units/bits/math_concepts.h>
 #include <mp-units/bits/ratio.h>
 #include <mp-units/bits/type_list.h>
 #include <mp-units/ext/type_name.h>
@@ -86,10 +85,10 @@ template<>
 MP_UNITS_INLINE constexpr bool valid_ratio<0, 0> = false;
 
 template<int Num, int... Den>
-constexpr bool positive_ratio = gt_zero<Num>;
+constexpr bool positive_ratio = Num > 0;
 
 template<int Num, int Den>
-constexpr bool positive_ratio<Num, Den> = gt_zero<Num * Den>;
+constexpr bool positive_ratio<Num, Den> = Num * Den > 0;
 
 template<int Num, int... Den>
 constexpr bool ratio_one = false;
@@ -309,11 +308,15 @@ struct expr_simplify<type_list<power<T, Ints1...>, NRest...>, type_list<power<T,
 
 
 // expr_less
-template<typename Lhs, typename Rhs, template<typename, typename, auto...> typename Pred>
+template<typename Lhs, typename Rhs, template<typename, typename> typename Pred>
 struct expr_less_impl : Pred<expr_type<Lhs>, expr_type<Rhs>> {};
 
-template<typename T, int... Ints, template<typename, typename, auto...> typename Pred>
+template<typename T, int... Ints, template<typename, typename> typename Pred>
 struct expr_less_impl<T, power<T, Ints...>, Pred> : std::true_type {};
+
+template<typename T, int... Ints1, int... Ints2, template<typename, typename> typename Pred>
+struct expr_less_impl<power<T, Ints1...>, power<T, Ints2...>, Pred> :
+    std::bool_constant<ratio{Ints1...} < ratio{Ints2...}> {};
 
 /**
  * @brief Compares two types with a given predicate
@@ -321,7 +324,7 @@ struct expr_less_impl<T, power<T, Ints...>, Pred> : std::true_type {};
  * Algorithm accounts not only for explicit types but also for the case when they
  * are wrapped within `power<T, Num, Den>`.
  */
-template<typename Lhs, typename Rhs, template<typename, typename, auto...> typename Pred>
+template<typename Lhs, typename Rhs, template<typename, typename> typename Pred>
 using expr_less = expr_less_impl<Lhs, Rhs, Pred>;
 
 template<typename T1, typename T2>
@@ -494,7 +497,7 @@ template<template<typename...> typename To, SymbolicArg OneType, typename T>
 
 template<std::intmax_t Num, std::intmax_t Den, template<typename...> typename To, SymbolicArg OneType,
          template<typename, typename> typename Pred, typename... Nums, typename... Dens>
-  requires detail::non_zero<Den>
+  requires(Den != 0)
 [[nodiscard]] consteval auto expr_pow_impl(type_list<Nums...>, type_list<Dens...>)
 {
   return detail::get_optimized_expression<type_list<power_or_T<Nums, ratio{Num, Den}>...>,
@@ -514,7 +517,7 @@ template<std::intmax_t Num, std::intmax_t Den, template<typename...> typename To
  */
 template<std::intmax_t Num, std::intmax_t Den, template<typename...> typename To, SymbolicArg OneType,
          template<typename, typename> typename Pred = type_list_name_less, typename T>
-  requires detail::non_zero<Den>
+  requires(Den != 0)
 [[nodiscard]] consteval auto expr_pow(T v)
 {
   if constexpr (Num == 0 || is_same_v<T, OneType>)

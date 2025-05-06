@@ -60,16 +60,16 @@ QUANTITY_SPEC(impulse, force* time);                         // vector
 QUANTITY_SPEC(angular_momentum, position_vector* momentum);  // vector
 QUANTITY_SPEC(moment_of_inertia, angular_momentum / angular_velocity, quantity_character::tensor);
 QUANTITY_SPEC(moment_of_force, position_vector* force);  // vector
-QUANTITY_SPEC(torque, moment_of_force, quantity_character::scalar);
+QUANTITY_SPEC(torque, moment_of_force, quantity_character::real_scalar);
 QUANTITY_SPEC(angular_impulse, moment_of_force* time);  // vector
-QUANTITY_SPEC(pressure, force / area, quantity_character::scalar);
+QUANTITY_SPEC(pressure, force / area, quantity_character::real_scalar);
 QUANTITY_SPEC(gauge_pressure, pressure);
 QUANTITY_SPEC(stress, pressure, quantity_character::tensor);
-QUANTITY_SPEC(normal_stress, pressure, quantity_character::scalar);
-QUANTITY_SPEC(shear_stress, pressure, quantity_character::scalar);
+QUANTITY_SPEC(normal_stress, pressure, quantity_character::real_scalar);
+QUANTITY_SPEC(shear_stress, pressure, quantity_character::real_scalar);
 QUANTITY_SPEC(strain, dimensionless, quantity_character::tensor);
 QUANTITY_SPEC(relative_linear_strain, length / length);
-QUANTITY_SPEC(shear_strain, dimensionless, displacement / thickness, quantity_character::scalar);
+QUANTITY_SPEC(shear_strain, dimensionless, displacement / thickness, quantity_character::real_scalar);
 QUANTITY_SPEC(relative_volume_strain, volume / volume);
 QUANTITY_SPEC(Poisson_number, dimensionless, width / length);
 QUANTITY_SPEC(modulus_of_elasticity, normal_stress / relative_linear_strain);
@@ -82,30 +82,32 @@ QUANTITY_SPEC(compressibility, inverse(volume) * (volume / pressure));
 QUANTITY_SPEC(second_axial_moment_of_area, pow<2>(radial_distance) * area);
 QUANTITY_SPEC(second_polar_moment_of_area, pow<2>(radial_distance) * area);
 QUANTITY_SPEC(section_modulus, second_axial_moment_of_area / radial_distance);
-QUANTITY_SPEC(static_friction_coefficient, dimensionless, static_friction_force / force, quantity_character::scalar);
+QUANTITY_SPEC(static_friction_coefficient, dimensionless, static_friction_force / force,
+              quantity_character::real_scalar);
 inline constexpr auto static_friction_factor = static_friction_coefficient;
 inline constexpr auto coefficient_of_static_friction = static_friction_coefficient;
-QUANTITY_SPEC(kinetic_friction_factor, dimensionless, kinetic_friction_force / force, quantity_character::scalar);
+QUANTITY_SPEC(kinetic_friction_factor, dimensionless, kinetic_friction_force / force, quantity_character::real_scalar);
 inline constexpr auto dynamic_friction_factor = kinetic_friction_factor;
-QUANTITY_SPEC(rolling_resistance_factor, force / force, quantity_character::scalar);
+QUANTITY_SPEC(rolling_resistance_factor, force / force, quantity_character::real_scalar);
 QUANTITY_SPEC(drag_coefficient, dimensionless, drag_force / (mass_density * pow<2>(speed) * area),
-              quantity_character::scalar);
+              quantity_character::real_scalar);
 inline constexpr auto drag_factor = drag_coefficient;
-QUANTITY_SPEC(dynamic_viscosity, shear_stress* length / velocity, quantity_character::scalar);
+QUANTITY_SPEC(dynamic_viscosity, shear_stress* length / velocity, quantity_character::real_scalar);
 QUANTITY_SPEC(kinematic_viscosity, dynamic_viscosity / mass_density);
-QUANTITY_SPEC(surface_tension, force / length, quantity_character::scalar);  // TODO what is a correct equation here?
-QUANTITY_SPEC(power, mass* pow<2>(length) / pow<3>(time));                   // not in ISO 80000
-QUANTITY_SPEC(mechanical_power, power, force* velocity, quantity_character::scalar);
+QUANTITY_SPEC(surface_tension, force / length,
+              quantity_character::real_scalar);             // TODO what is a correct equation here?
+QUANTITY_SPEC(power, mass* pow<2>(length) / pow<3>(time));  // not in ISO 80000
+QUANTITY_SPEC(mechanical_power, power, force* velocity, quantity_character::real_scalar);
 QUANTITY_SPEC(mechanical_energy, energy);                               // differs from ISO 80000
 QUANTITY_SPEC(potential_energy, mechanical_energy);                     // differs from ISO 80000
 QUANTITY_SPEC(kinetic_energy, mechanical_energy, mass* pow<2>(speed));  // differs from ISO 80000
-QUANTITY_SPEC(mechanical_work, force* displacement, quantity_character::scalar);
+QUANTITY_SPEC(mechanical_work, force* displacement, quantity_character::real_scalar);
 inline constexpr auto work = mechanical_work;
 QUANTITY_SPEC(mechanical_efficiency, mechanical_power / mechanical_power);
 QUANTITY_SPEC(mass_flow, mass_density* velocity);  // vector
-QUANTITY_SPEC(mass_flow_rate, mass_flow* area, quantity_character::scalar);
+QUANTITY_SPEC(mass_flow_rate, mass_flow* area, quantity_character::real_scalar);
 QUANTITY_SPEC(mass_change_rate, mass / time);
-QUANTITY_SPEC(volume_flow_rate, velocity* area, quantity_character::scalar);
+QUANTITY_SPEC(volume_flow_rate, velocity* area, quantity_character::real_scalar);
 QUANTITY_SPEC(action, energy* time);
 
 }  // namespace mp_units::isq

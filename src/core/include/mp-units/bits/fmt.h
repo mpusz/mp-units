@@ -150,7 +150,7 @@ template<typename Int>
 template<class Handler, typename FormatArg>
 [[nodiscard]] constexpr int get_dynamic_spec(FormatArg arg)
 {
-#if defined MP_UNITS_USE_FMTLIB && FMT_VERSION >= 110000
+#if (defined MP_UNITS_USE_FMTLIB && FMT_VERSION >= 110000) || __cpp_lib_format > 202306L
   const unsigned long long value = arg.visit(Handler{});
 #else
   const unsigned long long value = MP_UNITS_STD_FMT::visit_format_arg(Handler{}, arg);

@@ -119,14 +119,15 @@ results in the `derived_dimension<isq::dim_length, per<isq::dim_time>>` type.
 [ISO 80000](../../appendix/references.md#ISO80000) explicitly states that quantities (even of the same kind) may have
 different [characters](../../appendix/glossary.md#character):
 
-- scalar,
-- vector,
-- tensor.
+- real scalar (e.g., _time_, _width_, _speed_, _apparent power_),
+- complex scalar (e.g., _voltage phasor_, _complex power_, _impedance_),
+- vector (e.g., _displacement_, _velocity_, _force_),
+- tensor (e.g., _moment of inertia_, _stress_, _strain_).
 
 The quantity character in the **mp-units** library is implemented with the `quantity_character` enumeration:
 
 ```cpp
-enum class quantity_character { scalar, vector, tensor };
+enum class quantity_character { real_scalar, complex_scalar, vector, tensor };
 ```
 
 !!! info

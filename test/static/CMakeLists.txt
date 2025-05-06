@@ -45,8 +45,9 @@ add_library(
     iec_test.cpp
     imperial_test.cpp
     international_test.cpp
-    isq_test.cpp
     isq_angle_test.cpp
+    isq_test.cpp
+    limits_test.cpp
     natural_test.cpp
     prime_test.cpp
     quantity_point_test.cpp

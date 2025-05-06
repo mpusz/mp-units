@@ -54,11 +54,11 @@ enum class unit_symbol_separator : std::int8_t {
 };
 
 struct unit_symbol_formatting {
-#if MP_UNITS_COMP_CLANG
+#if MP_UNITS_COMP_CLANG || MP_UNITS_COMP_MSVC
   // TODO prevents the deprecated usage in implicit copy constructor warning
   character_set char_set = character_set::default_character_set;
 #else
-  [[deprecated("Use `char_set` instead")]] character_set encoding = character_set::default_character_set;
+  [[deprecated("2.5.0: Use `char_set` instead")]] character_set encoding = character_set::default_character_set;
   MP_UNITS_DIAGNOSTIC_PUSH
   MP_UNITS_DIAGNOSTIC_IGNORE_DEPRECATED
   character_set char_set = encoding;

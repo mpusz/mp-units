@@ -38,7 +38,7 @@ import std;
 
 namespace mp_units {
 
-#if defined MP_UNITS_COMP_CLANG || MP_UNITS_COMP_CLANG < 18
+#if defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 18
 MP_UNITS_EXPORT template<symbol_text Symbol>
 #else
 MP_UNITS_EXPORT template<symbol_text Symbol, long double Value>
@@ -46,15 +46,15 @@ MP_UNITS_EXPORT template<symbol_text Symbol, long double Value>
 #endif
 struct mag_constant;
 
-MP_UNITS_EXPORT template<typename T>
-concept MagConstant = detail::SymbolicConstant<T> && is_derived_from_specialization_of_v<T, mag_constant>;
-
 namespace detail {
 
 template<auto... Ms>
 struct unit_magnitude;
 
-}
+template<typename T>
+constexpr bool is_mag_constant = detail::SymbolicConstant<T> && is_derived_from_specialization_of_v<T, mag_constant>;
+
+}  // namespace detail
 
 /**
  * @brief  Concept to detect whether T is a valid UnitMagnitude.

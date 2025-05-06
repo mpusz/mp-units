@@ -65,7 +65,7 @@ template<Reference auto R>
 constexpr point_<MP_UNITS_REMOVE_CONST(decltype(R))> point{};
 
 template<Reference auto R>
-[[deprecated("Use `point` instead")]] constexpr point_<MP_UNITS_REMOVE_CONST(decltype(R))> absolute{};
+[[deprecated("2.5.0: Use `point` instead")]] constexpr point_<MP_UNITS_REMOVE_CONST(decltype(R))> absolute{};
 
 MP_UNITS_EXPORT_END
 

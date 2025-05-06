@@ -111,7 +111,7 @@ inline constexpr from_range_t from_range{};
 #endif
 
 // TODO https://github.com/llvm/llvm-project/issues/110224
-#if MP_UNITS_COMP_CLANG == 19 && __cplusplus <= 202302
+#if MP_UNITS_COMP_CLANG >= 19 && __cplusplus <= 202302
 
 MP_UNITS_DIAGNOSTIC_PUSH
 MP_UNITS_DIAGNOSTIC_IGNORE_BUILTIN_MACRO_REDEFINED

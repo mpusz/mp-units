@@ -35,7 +35,6 @@ add_mp_units_module(
             include/mp-units/bits/core_gmf.h
             include/mp-units/bits/get_associated_quantity.h
             include/mp-units/bits/hacks.h
-            include/mp-units/bits/math_concepts.h
             include/mp-units/bits/module_macros.h
             include/mp-units/bits/quantity_spec_hierarchy.h
             include/mp-units/bits/ratio.h
@@ -93,7 +92,6 @@ if(NOT ${projectPrefix}API_FREESTANDING)
                include/mp-units/bits/requires_hosted.h
                include/mp-units/ext/format.h
                include/mp-units/cartesian_vector.h
-               include/mp-units/complex.h
                include/mp-units/format.h
                include/mp-units/math.h
                include/mp-units/ostream.h
@@ -120,7 +118,7 @@ target_link_libraries(mp-units-core ${${projectPrefix}TARGET_SCOPE} mp-units-con
 
 # C++20 modules
 if(${projectPrefix}BUILD_CXX_MODULES)
-    if(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
         if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 18)
             target_compile_definitions(mp-units-core PUBLIC _LIBCPP_NO_ABI_TAG)
         endif()
@@ -129,12 +127,17 @@ if(${projectPrefix}BUILD_CXX_MODULES)
             target_compile_options(mp-units-core PUBLIC "-Wno-include-angled-in-module-purview")
         endif()
     endif()
+
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+        # '#include <filename>' in the purview of module 'module-name-1' appears erroneous
+        target_compile_options(mp-units-core PUBLIC "/wd5244")
+    endif()
 endif()
 
 if(CMAKE_CXX_MODULE_STD)
     target_compile_definitions(mp-units-core ${${projectPrefix}TARGET_SCOPE} ${projectPrefix}IMPORT_STD)
     # https://github.com/llvm/llvm-project/issues/75057
-    if(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 19)
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 19)
         target_compile_options(mp-units-core ${${projectPrefix}TARGET_SCOPE} "-Wno-deprecated-declarations")
     endif()
 endif()
@@ -153,6 +156,19 @@ target_compile_definitions(
                   ${projectPrefix}HOSTED=$<NOT:$<BOOL:${${projectPrefix}API_FREESTANDING}>>
 )
 
+# https://github.com/llvm/llvm-project/issues/131410
+if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 20
+   AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 20.2
+)
+    target_compile_options(mp-units-core ${${projectPrefix}TARGET_SCOPE} "-Wno-unused-result")
+endif()
+
+# usage of uninitialized variable in c++/12/bits/char_traits.h
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 13)
+    target_compile_options(mp-units-core ${${projectPrefix}TARGET_SCOPE} "-Wno-maybe-uninitialized")
+endif()
+
+# time-trace
 if(${projectPrefix}DEV_TIME_TRACE STREQUAL "ALL")
     target_compile_options(mp-units-core ${${projectPrefix}TARGET_SCOPE} "-ftime-trace")
 elseif(${projectPrefix}DEV_TIME_TRACE STREQUAL "MODULES")

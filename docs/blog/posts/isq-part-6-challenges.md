@@ -395,11 +395,11 @@ the same kind.
 
 Some quantities are more complicated than others. For example, _power_ has:
 
-- scalar quantities expressed in:
+- real scalar quantities expressed in:
     - W (watts) (e.g., _mechanical power_, _active power_),
     - VA (volt-ampere) (e.g., _apparent power_),
     - var (e.g., _reactive power_),
-- complex quantities expressed in VA (volt-ampere) (e.g., _complex power_).
+- complex scalar quantities expressed in VA (volt-ampere) (e.g., _complex power_).
 
 How should we model this? Maybe those should be two or three independent trees of quantities, each
 having its own unit?

@@ -4,6 +4,115 @@
 
 ### 2.5.0 <small>WIP</small> { id="2.5.0" }
 
+- (!) feat: representation concepts improved
+- (!) feat: `representation_of` concept now also accepts a `quantity_spec` and accepts any representation character for quantity kinds
+- (!) feat: `quantity::one()` removed
+- (!) feat: `Representation` concept removed
+- feat: `SymbolicArg` applied to expression templates
+- feat: `per` and `power` made `final`
+- feat: `derived_XXX` are now constrained with `SymbolicConstant`
+- feat: prime factorization extended to any magnitude (thanks [@chiphogg](https://github.com/chiphogg))
+- feat: `cartesian_vector` added
+- feat: `equivalent` now accept any units (even non-convertible)
+- feat: text output should fallback to the portable mode when UTF-8 is not used for `text_encoding`
+- feat: precondition added to `to_u8string`
+- feat: text output of scaled units is now enclosed in parenthesis `(...)` instead of brackets `[...]`
+- feat: `abs(quantity)` exposed for conforming freestanding implementations
+- feat: proper constraints for `kind_of`
+- feat: missing precondition added for `quantity::op/`
+- feat: `quantity_spec` conversions improved
+- feat: `rankine` unit added
+- feat: `std::numeric_limits` support added
+- feat: `overflows_non_zero_values` added to detect conversions overflowing `rep`
+- feat: deprecation messages now provide the release version where the deprecation happened
+- feat: electromagnetism.h updated to IEC80000-6-2022
+- feat: `ConvertibleWithNumber` introduced to improve convertibility of unit `one` with raw numbers
+- feat(example): `is_vector` specialization no longer needed for `si_constants`
+- (!) refactor: `type_list` moved to implementation details
+- (!) refactor: from now `unit_symbol` and `dimension_symbol` always returns `std::string_view`
+- (!) refactor: `text_encoding` renamed to `character_set`
+- (!) refactor: `Magnitude` renamed to `UnitMagnitude` and `magnitude` to `unit_magnitude`
+- (!) refactor: `unit_magnitude` moved to `detail` namespace
+- (!) refactor: `absolute` renamed to `point`
+- (!) refactor: `power` members refactored to be explicitly exposition only
+- (!) refactor: `is_XXX` customization points for representation types removed
+- (!) refactor: `quantity_values` renamed to representation values
+- (!) refactor: `scalar` and `complex` characters renamed to `real_scalar` and `complex_scalar` respectively + concepts refactoring
+- (!) refactor: `MagConstant` concept renamed to `detail::is_mag_constant` variable trait
+- refactor: mp_units.core defined in terms of `core.h`
+- refactor: `MP_UNITS_NONCONST_TYPE` introduced to benefit from the C++23 feature
+- refactor: `SymbolicConstant` concept refactored
+- refactor: explicit type of `op/` for `quantity` and `reference` replaced with constrained placeholder
+- refactor: private `unit_magnitude` interface renamed to not use leading `_`
+- refactor: `one_of` concept removed and replaced with `QSProperty` in `quantity_spec`
+- refactor: `std::is_trivial` will be deprecated in C++26
+- refactor: `SameQuantitySpec` concept removed and replaced with direct comparison
+- refactor: unused `SameReference` concept removed
+- refactor: `type_name_less` introduced and used as a default predicate for expression templates
+- refactor: "expression templates" renamed to "symbolic expressions"
+- refactor: `all_are_kinds` removed and `get_associated_quantity` simplified
+- refactor: `reference` now returns explicit types for `inverse`, `pow`, `sqrt`, and `cbrt`
+- refactor: repeated concept checks removed from `get_common_reference`
+- refactor: `std::assignable_from` used in `ValuePreservingTo` concept
+- refactor: `quantity` constructor refactored to use another constructor with the result of `sudo_cast`
+- refactor: preconditions for quantity operations now use `is_neq_zero`
+- refactor: implicit expression variations used in `quantity` and `quantity_point` constraints
+- refactor: `inverse()` constraints improved
+- refactor: `make_quantity_point` introduced
+- refactor: `point_origin_interface::op+` return type unified with the rest of the interfaces
+- refactor: `std::convertible_to` replaced with `std::same_as` in `basic_fixed_string`
+- refactor: `less`, `ceil`, and `round` refactored and improved + more unit tests for `round`
+- refactor: `math_concepts.h` removed and concepts replaced with explicit expression in constraints
+- (!) fix: `electric_current_phasor`, `voltage_phasor`, `apparent_power` switched to complex character
+- (!) fix: `position_vector` and `displacement` moved to a different place in a tree
+- (!) fix: `velocity` is now defined in terms of `displacement` instead of `position_vector`
+- fix: missing `core.h` added to CMake
+- fix: `const` was leaking to some `SymbolicConstant`s
+- fix: `make_reference` should skip only the exact kinds deduced from a unit
+- fix: inconsistencies in `get_common_quantity_spec()` fixed
+- fix: unused `convertible_kinds()` argument removed
+- fix: compile-time branch condition fixed in `quantity_point::point_for`
+- fix: `inverse(Quantity)` fixed for subkinds of `dimensionless`
+- fix: `point_origin_interface::op+` constraints fixed
+- fix: missing `get_common_unit()` overload added
+- fix: `floor` and `ceil` constraints fixed
+- fix: quantity characters fixed in electromagnetism quantities
+- test: lots of tests for complex quantities
+- test: runtime unit tests refactored to have a bigger granularity (less top level tests)
+- test: _surface tension_ replaced with _entropy_ in an fmt test
+- test: test_package now is tested also with C++20 modules
+- test: tests for dimensionless quantities static data members
+- test: a few more natural units tests added
+- test: tests to check if `quantity` satisfies `Scalar`
+- test: add static tests for concept `DimensionOf` (thanks [@jvocht](https://github.com/jvocht))
+- test: quantity character concepts tests for quantities added
+- docs: ISQ part 6 released
+- docs: new chapter about our documentation added to the contributing guide
+- docs: directory name updated in the contributing guide
+- docs: mp-units Conan options added to conanfile.txt examples
+- docs: `contracts` Conan option default value description improved
+- docs: outdated note removed from the "Text Output" chapter
+- docs: a paragraph about additional formatting options removed (applicable only to quantity symbols which we do not support)
+- docs: Wrocław 2024 meeting report
+- docs: explicit unit conversion example added to the "Symbols of common units" chapter
+- docs: "Bringing Quantity-Safety To The Next Level" blog post added
+- docs: quantity-safety mentioned in the docs
+- docs: `complex` character added to the "Quantity character" chapter
+- docs: intro to "Value Conversions" chapter added
+- docs: "Scaling overflow prevention" chapter added
+- docs: "Concepts" chapter updated
+- docs: old customization points removed from the "Character of a Quantity" chapter
+- docs(ref): document most of `mp_units.core` (thanks [@JohelEGP](https://github.com/JohelEGP))
+- build: `CheckCacheVarValues` CMake module file added
+- build: `MP_UNITS_DEV_TIME_TRACE` CMake option added
+- build: `MP_UNITS_API_NO_CRTP` removed from `test_package` CMake
+- build: require at least CMake 3.31 with Conan
+- build: fmt/11.1.1
+- ci: CI matrix generation added (thanks [@burnpanck](https://github.com/burnpanck))
+- ci: `import_std` now checks if at least C++23 is being used
+- perf: caching of the results of heavy `consteval` functions execution added
+- perf: `expr_projectable` concept removed to improve compilation performance
+
 ### 2.4.0 <small>November 5, 2024</small> { id="2.4.0" }
 
 - (!) feat: `phase_velocity` and `group_velocity` aliases removed from ISQ by ISO
@@ -204,7 +313,7 @@
 - feat: `quantity_point` support added for `quantity_cast` and `value_cast`
 - feat: `value_cast<Unit, Representation>` added
 - feat: `value_cast<Quantity>(q)`, `value_cast<Quantity>(qp)` and `value_cast<QuantityPoint>(qp)` added by [@burnpanck](https://github.com/burnpanck)
-- feat: `interconvertible(QuantitySpec, QuantitySpec)` added
+- feat: `interconvertible(quantity_spec, quantity_spec)` added
 - feat: `qp.quantity_from_zero()` added
 - feat: `value_type` type trait added
 - feat: do not print space between a number and `percent` or `per_mille`
@@ -248,7 +357,7 @@
 - refactor: not needed `remove_reference_t` and `remove_cvref_t` removed
 - refactor: binary operators of `quantity` and `quantity_point` are now hidden friends
 - fix: `QuantityLike` conversions required `Q::rep` instead of using one provided by `quantity_like_traits`
-- fix: `QuantitySpec[Unit]` replaced with `make_reference` in `value_cast`
+- fix: `quantity_spec[Unit]` replaced with `make_reference` in `value_cast`
 - fix: `ice_point` is now defined with the integral offset from `absolute_zero`
 - fix: performance regression in `sudo_cast` fixed
 - fix: explicit object parameter support fixed

@@ -71,8 +71,8 @@ namespace {
 
 using namespace mp_units;
 
-static_assert(Representation<min_impl<int>>);
-static_assert(Representation<min_impl<double>>);
+static_assert(RepresentationOf<min_impl<int>, quantity_character::real_scalar>);
+static_assert(RepresentationOf<min_impl<double>, quantity_character::real_scalar>);
 
 // construction from a value is not allowed
 static_assert(!std::constructible_from<quantity<si::metre, min_impl<int>>, min_impl<int>>);

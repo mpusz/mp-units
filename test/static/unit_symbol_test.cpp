@@ -142,7 +142,7 @@ static_assert(unit_symbol<usf{.char_set = portable}>(mag_ratio<1, 18000> * (metr
 // static_assert(unit_symbol<usf{.char_set = portable}>(mag<1> / mag_power<2, 1, 2> * m) == "(1/2^(1/2) m)");
 
 // magnitude constants
-#if defined MP_UNITS_COMP_CLANG || MP_UNITS_COMP_CLANG < 18
+#if defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 18
 inline constexpr struct e final : mag_constant<"e"> {
   static constexpr long double _value_ = std::numbers::e_v<long double>;
 #else

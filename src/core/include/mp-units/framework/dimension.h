@@ -187,7 +187,7 @@ MP_UNITS_EXPORT_BEGIN
  * @return Dimension The result of computation
  */
 template<std::intmax_t Num, std::intmax_t Den = 1, Dimension D>
-  requires detail::non_zero<Den>
+  requires(Den != 0)
 [[nodiscard]] consteval Dimension auto pow(D d)
 {
   return detail::expr_pow<Num, Den, derived_dimension, struct dimension_one>(d);
@@ -213,11 +213,11 @@ template<std::intmax_t Num, std::intmax_t Den = 1, Dimension D>
 
 
 struct dimension_symbol_formatting {
-#if MP_UNITS_COMP_CLANG
+#if MP_UNITS_COMP_CLANG || MP_UNITS_COMP_MSVC
   // TODO prevents the deprecated usage in implicit copy constructor warning
   character_set char_set = character_set::default_character_set;
 #else
-  [[deprecated("Use `char_set` instead")]] character_set encoding = character_set::default_character_set;
+  [[deprecated("2.5.0: Use `char_set` instead")]] character_set encoding = character_set::default_character_set;
   MP_UNITS_DIAGNOSTIC_PUSH
   MP_UNITS_DIAGNOSTIC_IGNORE_DEPRECATED
   character_set char_set = encoding;

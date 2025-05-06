@@ -152,7 +152,7 @@ struct reference {
    * @return The result of computation
    */
   template<std::intmax_t Num, std::intmax_t Den = 1>
-    requires detail::non_zero<Den>
+    requires(Den != 0)
   [[nodiscard]] friend consteval detail::reference_t<MP_UNITS_EXPRESSION_WORKAROUND((pow<Num, Den>(Q{}))),
                                                      MP_UNITS_EXPRESSION_WORKAROUND((pow<Num, Den>(U{})))>
   pow(reference)
@@ -207,7 +207,7 @@ template<typename FwdRep, Reference R, RepresentationOf<get_quantity_spec(R{})> 
 template<typename FwdRep, Reference R, RepresentationOf<get_quantity_spec(R{})> Rep = std::remove_cvref_t<FwdRep>>
   requires detail::OffsetUnit<decltype(get_unit(R{}))>
 [[deprecated(
-  "References using offset units (e.g., temperatures) should be constructed with the `delta` or `point` "
+  "2.3.0: References using offset units (e.g., temperatures) should be constructed with the `delta` or `point` "
   "helpers")]] constexpr auto
 operator*(FwdRep&& lhs, R r)
 {
@@ -217,7 +217,7 @@ operator*(FwdRep&& lhs, R r)
 template<typename FwdRep, Reference R, RepresentationOf<get_quantity_spec(R{})> Rep = std::remove_cvref_t<FwdRep>>
   requires detail::OffsetUnit<decltype(get_unit(R{}))>
 [[deprecated(
-  "References using offset units (e.g., temperatures) should be constructed with the `delta` or `point` "
+  "2.3.0: References using offset units (e.g., temperatures) should be constructed with the `delta` or `point` "
   "helpers")]] constexpr auto
 operator/(FwdRep&& lhs, R)
 {

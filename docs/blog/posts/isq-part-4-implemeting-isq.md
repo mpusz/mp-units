@@ -90,7 +90,7 @@ in one line of code. In the above code:
 
 !!! note
 
-    Some quantities may be specified to have complex, vector, or tensor character
+    Some quantities may be specified to have complex scalar, vector, or tensor character
     (e.g., `displacement`). The quantity character can be set with the last parameter of
     `quantity_spec`.
 

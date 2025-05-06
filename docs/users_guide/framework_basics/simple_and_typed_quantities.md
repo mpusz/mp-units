@@ -165,10 +165,9 @@ error: no viable conversion from returned value of type
 
 ## Typed quantities
 
-Simple mode is all about and just about units. In case we care about a specific quantity type,
-**typed quantities** should be preferred. With this mode, for example, we can specify if we
-deal with _width_, _height_, or _radius_ and ensure we will not assign one to another by
-accident.
+Simple mode is all about and just about units. **Typed quantities** should be preferred if we also
+want to be **quantity-safe**. This, for example, allows us to specify if we deal with _width_,
+_height_, or _radius_ and ensure we will not assign one to another by accident.
 
 The previous example can be re-typed using typed quantities in the following way:
 
@@ -249,7 +248,7 @@ error: no viable conversion from returned value of type
 As we can see above, the compilation error is longer but still relatively easy to understand.
 
 
-### Additional type safety with typed quantities
+### Quantity-safety with typed quantities
 
 Based on the previous example, it might seem that typed quantities are not that useful,
 more to type and provide harder-to-understand error messages. It might be true in some cases,

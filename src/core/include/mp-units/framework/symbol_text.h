@@ -46,14 +46,14 @@ namespace mp_units {
 // NOLINTNEXTLINE(readability-enum-initial-value)
 MP_UNITS_EXPORT enum class character_set : std::int8_t {
   utf8,  // µs; m³;  L²MT⁻³
-  unicode [[deprecated("Use `utf8` instead")]] = utf8,
+  unicode [[deprecated("2.4.0: Use `utf8` instead")]] = utf8,
   portable,  // us; m^3; L^2MT^-3
-  ascii [[deprecated("Use `portable` instead")]] = portable,
+  ascii [[deprecated("2.4.0: Use `portable` instead")]] = portable,
   default_character_set = utf8,
-  default_encoding [[deprecated("Use `default_character_set` instead")]] = default_character_set
+  default_encoding [[deprecated("2.5.0: Use `default_character_set` instead")]] = default_character_set
 };
 
-using text_encoding [[deprecated("Use `character_set` instead")]] = character_set;
+using text_encoding [[deprecated("2.5.0: Use `character_set` instead")]] = character_set;
 
 namespace detail {
 
@@ -137,8 +137,8 @@ public:
 
   [[nodiscard]] constexpr const auto& utf8() const { return utf8_; }
   [[nodiscard]] constexpr const auto& portable() const { return portable_; }
-  [[deprecated("Use `utf8()` instead")]] constexpr const auto& unicode() const { return utf8(); }
-  [[deprecated("Use `portable()` instead")]] constexpr const auto& ascii() const { return portable(); }
+  [[deprecated("2.4.0: Use `utf8()` instead")]] constexpr const auto& unicode() const { return utf8(); }
+  [[deprecated("2.4.0: Use `portable()` instead")]] constexpr const auto& ascii() const { return portable(); }
 
   [[nodiscard]] constexpr bool empty() const
   {
