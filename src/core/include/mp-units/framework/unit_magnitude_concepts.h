@@ -52,7 +52,7 @@ template<auto... Ms>
 struct unit_magnitude;
 
 template<typename T>
-constexpr bool is_mag_constant = detail::SymbolicConstant<T> && is_derived_from_specialization_of_v<T, mag_constant>;
+constexpr bool is_mag_constant = is_derived_from_specialization_of_v<T, mag_constant> && detail::SymbolicConstant<T>;
 
 }  // namespace detail
 

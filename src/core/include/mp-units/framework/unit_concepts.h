@@ -42,7 +42,7 @@ struct unit_interface;
  * Satisfied by all unit types provided by the library.
  */
 MP_UNITS_EXPORT template<typename T>
-concept Unit = detail::SymbolicConstant<T> && std::derived_from<T, detail::unit_interface>;
+concept Unit = std::derived_from<T, detail::unit_interface> && detail::SymbolicConstant<T>;
 
 MP_UNITS_EXPORT template<symbol_text Symbol, auto...>
 struct named_unit;
