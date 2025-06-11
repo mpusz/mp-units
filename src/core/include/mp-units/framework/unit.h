@@ -120,9 +120,12 @@ constexpr auto get_canonical_unit_result = get_canonical_unit_impl(U{}, U{});
 
 }  // namespace detail
 
-// TODO this should really be in the `details` namespace but is used in `chrono.h` (a part of mp_units.systems)
-// Even though it is not exported, it is visible to the other module via ADL
-[[nodiscard]] consteval auto get_canonical_unit(Unit auto u) { return detail::get_canonical_unit_result<decltype(u)>; }
+// TODO this should really be in the `details` namespace and not exported but is used in `chrono.h`
+// (a part of mp_units.systems)
+MP_UNITS_EXPORT [[nodiscard]] consteval auto get_canonical_unit(Unit auto u)
+{
+  return detail::get_canonical_unit_result<decltype(u)>;
+}
 
 template<UnitMagnitude auto M, Unit U>
   requires(M != detail::unit_magnitude<>{} && M != mag<1>)
