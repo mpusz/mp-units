@@ -105,6 +105,10 @@ constexpr It format_global_buffer(It out, const fill_align_width_format_specs<Ch
 
 MP_UNITS_EXPORT_END
 
+// https://gcc.gnu.org/bugzilla/show_bug.cgi?id=120625
+template<typename T>
+inline constexpr bool GCC_120625_is_complete = requires { sizeof(T) > 0; };
+
 }  // namespace mp_units::detail
 
 //
@@ -114,7 +118,8 @@ MP_UNITS_EXPORT_END
 // dimension-spec        = [character-set];
 // character-set         = 'U' | 'P';
 //
-template<mp_units::Dimension D, typename Char>
+template<typename D, typename Char>
+  requires mp_units::detail::GCC_120625_is_complete<D> && mp_units::Dimension<D>
 class MP_UNITS_STD_FMT::formatter<D, Char> {
   struct format_specs : mp_units::detail::fill_align_width_format_specs<Char>, mp_units::dimension_symbol_formatting {};
   format_specs specs_{};
@@ -186,7 +191,8 @@ public:
 // unit-symbol-solidus   = '1' | 'a' | 'n';
 // unit-symbol-separator = 's' | 'd';
 //
-template<mp_units::Unit U, typename Char>
+template<typename U, typename Char>
+  requires mp_units::detail::GCC_120625_is_complete<U> && mp_units::Unit<U>
 class MP_UNITS_STD_FMT::formatter<U, Char> {
   struct format_specs : mp_units::detail::fill_align_width_format_specs<Char>, mp_units::unit_symbol_formatting {};
   format_specs specs_{};
