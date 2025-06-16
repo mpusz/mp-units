@@ -23,7 +23,7 @@
         <link rel="alternate" type="application/rss+xml" title="RSS feed of updated content" href="../feed_rss_updated.xml">
       
       <link rel="icon" href="../assets/images/mp-units-color.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.11">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.14">
     
     
       
@@ -31,7 +31,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.4af4bdda.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.342714a4.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
@@ -2579,10 +2579,12 @@ You're not viewing the latest version.
 <li>feat: <code>quantity_spec</code> conversions improved</li>
 <li>feat: <code>rankine</code> unit added</li>
 <li>feat: <code>std::numeric_limits</code> support added</li>
-<li>feat: <code>overflows_non_zero_values</code> added to detect conversions overflowing <code>rep</code></li>
+<li>feat: <code>scaling_overflows_non_zero_values</code> added to detect conversions overflowing <code>rep</code></li>
 <li>feat: deprecation messages now provide the release version where the deprecation happened</li>
 <li>feat: electromagnetism.h updated to IEC80000-6-2022</li>
 <li>feat: <code>ConvertibleWithNumber</code> introduced to improve convertibility of unit <code>one</code> with raw numbers</li>
+<li>feat: <code>lerp</code> and <code>midpoint</code> for points added</li>
+<li>feat: <code>is_value_preserving</code> customization point added</li>
 <li>feat(example): <code>is_vector</code> specialization no longer needed for <code>si_constants</code></li>
 <li>(!) refactor: <code>type_list</code> moved to implementation details</li>
 <li>(!) refactor: from now <code>unit_symbol</code> and <code>dimension_symbol</code> always returns <code>std::string_view</code></li>
@@ -2619,6 +2621,9 @@ You're not viewing the latest version.
 <li>refactor: <code>std::convertible_to</code> replaced with <code>std::same_as</code> in <code>basic_fixed_string</code></li>
 <li>refactor: <code>less</code>, <code>ceil</code>, and <code>round</code> refactored and improved + more unit tests for <code>round</code></li>
 <li>refactor: <code>math_concepts.h</code> removed and concepts replaced with explicit expression in constraints</li>
+<li>refactor: <code>visit_format_arg</code> is deprecated in C++26</li>
+<li>refactor: deprecated literal operators</li>
+<li>refactor: constraints refactoring</li>
 <li>(!) fix: <code>electric_current_phasor</code>, <code>voltage_phasor</code>, <code>apparent_power</code> switched to complex character</li>
 <li>(!) fix: <code>position_vector</code> and <code>displacement</code> moved to a different place in a tree</li>
 <li>(!) fix: <code>velocity</code> is now defined in terms of <code>displacement</code> instead of <code>position_vector</code></li>
@@ -2633,6 +2638,11 @@ You're not viewing the latest version.
 <li>fix: missing <code>get_common_unit()</code> overload added</li>
 <li>fix: <code>floor</code> and <code>ceil</code> constraints fixed</li>
 <li>fix: quantity characters fixed in electromagnetism quantities</li>
+<li>fix: <code>arg.visit</code> support fixed</li>
+<li>fix: <code>expr_less</code> now also sorts powers</li>
+<li>fix: <code>mag_constant</code> workarounds branches for clang fixed</li>
+<li>fix: checking for clang versions fixed in CMake scripts</li>
+<li>fix: text stripping in <code>type_name</code> fixed</li>
 <li>test: lots of tests for complex quantities</li>
 <li>test: runtime unit tests refactored to have a bigger granularity (less top level tests)</li>
 <li>test: <em>surface tension</em> replaced with <em>entropy</em> in an fmt test</li>
@@ -2658,12 +2668,17 @@ You're not viewing the latest version.
 <li>docs: "Scaling overflow prevention" chapter added</li>
 <li>docs: "Concepts" chapter updated</li>
 <li>docs: old customization points removed from the "Character of a Quantity" chapter</li>
+<li>docs: clang-19 issues mentioned in a compiler support table</li>
 <li>docs(ref): document most of <code>mp_units.core</code> (thanks <a href="https://github.com/JohelEGP">@JohelEGP</a>)</li>
 <li>build: <code>CheckCacheVarValues</code> CMake module file added</li>
 <li>build: <code>MP_UNITS_DEV_TIME_TRACE</code> CMake option added</li>
 <li>build: <code>MP_UNITS_API_NO_CRTP</code> removed from <code>test_package</code> CMake</li>
 <li>build: require at least CMake 3.31 with Conan</li>
-<li>build: fmt/11.1.1</li>
+<li>build: clang-20 enabled in CI</li>
+<li>build: clang-19 support removed from conanfile.py</li>
+<li>build: clang-20.1 workaround added to <code>package_info</code></li>
+<li>build: update dependencies to gsl-lite/0.42.0, ms-gsl/4.1.0, fmt/11.1.4, and catch2/3.8.0</li>
+<li>build: suppress warnings for gcc-12 in conanfile</li>
 <li>ci: CI matrix generation added (thanks <a href="https://github.com/burnpanck">@burnpanck</a>)</li>
 <li>ci: <code>import_std</code> now checks if at least C++23 is being used</li>
 <li>perf: caching of the results of heavy <code>consteval</code> functions execution added</li>
@@ -3357,10 +3372,10 @@ in drafting a new library design.</p>
     
     
       
-      <script id="__config" type="application/json">{"base": "..", "features": ["content.action.edit", "content.action.view", "content.code.annotate", "content.code.copy", "navigation.indexes", "navigation.tabs", "navigation.footer", "navigation.top", "search.highlight", "search.share", "search.suggest", "toc.follow", "toc.integrate"], "search": "../assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"base": "..", "features": ["content.action.edit", "content.action.view", "content.code.annotate", "content.code.copy", "navigation.indexes", "navigation.tabs", "navigation.footer", "navigation.top", "search.highlight", "search.share", "search.suggest", "toc.follow", "toc.integrate"], "search": "../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.c8b220af.min.js"></script>
+      <script src="../assets/javascripts/bundle.13a4f30d.min.js"></script>
       
         <script src="../javascripts/mathjax.js"></script>
       
