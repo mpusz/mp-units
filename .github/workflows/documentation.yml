@@ -31,6 +31,7 @@ on:
       - v*
     paths:
       - "docs/**"
+      - "./github/workflows/documentation.yml"
       - "CHANGELOG.md"
       - "CONTRIBUTING.md"
       - "mkdocs.yml"
