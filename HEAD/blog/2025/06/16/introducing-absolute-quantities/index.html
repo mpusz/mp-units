@@ -2399,7 +2399,7 @@ You're not viewing the latest version.
                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 20a8 8 0 0 0 8-8 8 8 0 0 0-8-8 8 8 0 0 0-8 8 8 8 0 0 0 8 8m0-18a10 10 0 0 1 10 10 10 10 0 0 1-10 10C6.47 22 2 17.5 2 12A10 10 0 0 1 12 2m.5 5v5.25l4.5 2.67-.75 1.23L11 13V7z"/></svg>
                           <span class="md-ellipsis">
                             
-                              5 min read
+                              6 min read
                             
                           </span>
                         </div>
@@ -2458,6 +2458,24 @@ You're not viewing the latest version.
   <a href="#interfaces-refactoring" class="md-nav__link">
     <span class="md-ellipsis">
       Interfaces refactoring
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#new-opportunities" class="md-nav__link">
+    <span class="md-ellipsis">
+      New opportunities
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      Summary
     </span>
   </a>
   
@@ -2673,8 +2691,30 @@ will not need any specifier to denote them.</p>
 </span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Velocity: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">d_v</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
 </span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Kinetic energy: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">E_k</span><span class="p">.</span><span class="n">in</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span><span class="n">J</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
 </span></code></pre></div>
-<p>We believe it will be a major improvement in the library. We plan to deliver the above
-features as a part of <strong>mp-units</strong> V3.</p>
+<h2 id="new-opportunities">New opportunities<a class="headerlink" href="#new-opportunities" title="Permanent link">&para;</a></h2>
+<p>The new syntax simplifies API as one <code>quantity</code> class template will now serve all quantity
+variations (possibly even more in the future). It also allows us to model quantities that
+were impossible to express before without some workarounds.</p>
+<p>For example, we can now correctly calculate Carnot engine efficiency with any of the following:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">temp_cold</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">300.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">K</span><span class="p">;</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">quantity</span><span class="w"> </span><span class="n">temp_hot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">500.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">K</span><span class="p">;</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">quantity</span><span class="w"> </span><span class="n">carnot_eff_1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">temp_cold</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">temp_hot</span><span class="p">;</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="n">quantity</span><span class="w"> </span><span class="n">carnot_eff_2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">temp_hot</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">temp_cold</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">temp_hot</span><span class="p">;</span>
+</span></code></pre></div>
+<p>In the above code, we can easily create absolute or delta values of temperatures and do
+arithmetics on them. Previously, we had to create deltas from both points artificially
+with:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">temp_cold</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">point</span><span class="o">&lt;</span><span class="n">K</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">300.</span><span class="p">);</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">quantity</span><span class="w"> </span><span class="n">temp_hot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">point</span><span class="o">&lt;</span><span class="n">K</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">500.</span><span class="p">);</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">quantity</span><span class="w"> </span><span class="n">carnot_eff_1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">temp_cold</span><span class="p">.</span><span class="n">quantity_from_zero</span><span class="p">()</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">temp_hot</span><span class="p">.</span><span class="n">quantity_from_zero</span><span class="p">();</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="n">quantity</span><span class="w"> </span><span class="n">carnot_eff_2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">temp_hot</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">temp_cold</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">temp_hot</span><span class="p">.</span><span class="n">quantity_from_zero</span><span class="p">();</span>
+</span></code></pre></div>
+<p>It worked but was far from being physically pure and pretty.</p>
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">&para;</a></h2>
+<p>We believe that adding absolute quantities will be a major improvement in the library that
+will allow us to more correctly model physical equations making them terser and easier to
+understand at the same time.</p>
+<p>We plan to deliver the features mentioned in this post as a part of <strong>mp-units</strong> V3.</p>
 <p>Please share your feedback.</p>
 
 
