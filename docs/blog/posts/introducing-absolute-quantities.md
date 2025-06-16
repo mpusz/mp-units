@@ -154,7 +154,42 @@ std::cout << "Velocity: " << d_v << "\n";
 std::cout << "Kinetic energy: " << E_k.in<double>(J) << "\n";
 ```
 
-We believe it will be a major improvement in the library. We plan to deliver the above
-features as a part of **mp-units** V3.
+
+## New opportunities
+
+The new syntax simplifies API as one `quantity` class template will now serve all quantity
+variations (possibly even more in the future). It also allows us to model quantities that
+were impossible to express before without some workarounds.
+
+For example, we can now correctly calculate Carnot engine efficiency with any of the following:
+
+```cpp
+quantity temp_cold = 300. * K;
+quantity temp_hot = 500. * K;
+quantity carnot_eff_1 = 1. - temp_cold / temp_hot;
+quantity carnot_eff_2 = (temp_hot - temp_cold) / temp_hot;
+```
+
+In the above code, we can easily create absolute or delta values of temperatures and do
+arithmetics on them. Previously, we had to create deltas from both points artificially
+with:
+
+```cpp
+quantity temp_cold = point<K>(300.);
+quantity temp_hot = point<K>(500.);
+quantity carnot_eff_1 = 1. - temp_cold.quantity_from_zero() / temp_hot.quantity_from_zero();
+quantity carnot_eff_2 = (temp_hot - temp_cold) / temp_hot.quantity_from_zero();
+```
+
+It worked but was far from being physically pure and pretty.
+
+
+## Summary
+
+We believe that adding absolute quantities will be a major improvement in the library that
+will allow us to more correctly model physical equations making them terser and easier to
+understand at the same time.
+
+We plan to deliver the features mentioned in this post as a part of **mp-units** V3.
 
 Please share your feedback.
