@@ -144,7 +144,7 @@ quantity<delta<isq::mass>> m13 = m1 - m3;        // delta quantity (e.g., may be
 quantity<delta<isq::mass>> m23 = m2 - m3;        // delta quantity (e.g., may be negative)
 ```
 
-With the above, the previous examples may be refactored to:
+With the above, the initial example may be refactored to:
 
 ```cpp
 quantity m1 = 2 * kg;
