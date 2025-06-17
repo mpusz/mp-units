@@ -2399,7 +2399,7 @@ You're not viewing the latest version.
                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 20a8 8 0 0 0 8-8 8 8 0 0 0-8-8 8 8 0 0 0-8 8 8 8 0 0 0 8 8m0-18a10 10 0 0 1 10 10 10 10 0 0 1-10 10C6.47 22 2 17.5 2 12A10 10 0 0 1 12 2m.5 5v5.25l4.5 2.67-.75 1.23L11 13V7z"/></svg>
                           <span class="md-ellipsis">
                             
-                              6 min read
+                              7 min read
                             
                           </span>
                         </div>
@@ -2460,6 +2460,39 @@ You're not viewing the latest version.
       Interfaces refactoring
     </span>
   </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#arithmetic" class="md-nav__link">
+    <span class="md-ellipsis">
+      Arithmetic
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Arithmetic">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#addition" class="md-nav__link">
+    <span class="md-ellipsis">
+      Addition
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#subtraction" class="md-nav__link">
+    <span class="md-ellipsis">
+      Subtraction
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -2678,11 +2711,11 @@ will not need any specifier to denote them.</p>
 <p>For example:</p>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">tare</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">relative_point_origin</span><span class="o">&lt;</span><span class="n">quantity_point</span><span class="p">{</span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="p">}</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">tare</span><span class="p">;</span>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">point</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">mass</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">m1</span><span class="p">(</span><span class="mi">10</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="p">);</span><span class="w">          </span><span class="c1">// point quantity with an implicit point origin</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">point</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">mass</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">m2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tare</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">8</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="p">;</span><span class="w">   </span><span class="c1">// point quantity with an explicit relative point origin</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">mass</span><span class="o">&gt;</span><span class="w">        </span><span class="n">m3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">15</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="p">;</span><span class="w">         </span><span class="c1">// absolute quantity (e.g., non-negative)</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">delta</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">mass</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">m13</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">m3</span><span class="p">;</span><span class="w">        </span><span class="c1">// delta quantity (e.g., may be negative)</span>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">delta</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">mass</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">m23</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m2</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">m3</span><span class="p">;</span><span class="w">        </span><span class="c1">// delta quantity (e.g., may be negative)</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">point</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">mass</span><span class="o">&gt;&gt;</span><span class="w">       </span><span class="n">m1</span><span class="p">(</span><span class="mi">10</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="p">);</span><span class="w">         </span><span class="c1">// point quantity with an implicit point origin</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">point</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">mass</span><span class="p">,</span><span class="w"> </span><span class="n">tare</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">m2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tare</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">8</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="p">;</span><span class="w">  </span><span class="c1">// point quantity with an explicit relative point origin</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">mass</span><span class="o">&gt;</span><span class="w">              </span><span class="n">m3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">15</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="p">;</span><span class="w">        </span><span class="c1">// absolute quantity (e.g., non-negative)</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">delta</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">mass</span><span class="o">&gt;&gt;</span><span class="w">       </span><span class="n">m13</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">m3</span><span class="p">;</span><span class="w">       </span><span class="c1">// delta quantity (e.g., may be negative)</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">delta</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">mass</span><span class="o">&gt;&gt;</span><span class="w">       </span><span class="n">m23</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m2</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">m3</span><span class="p">;</span><span class="w">       </span><span class="c1">// delta quantity (e.g., may be negative)</span>
 </span></code></pre></div>
 <p>With the above, the initial example may be refactored to:</p>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">m1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="p">;</span>
@@ -2695,6 +2728,84 @@ will not need any specifier to denote them.</p>
 </span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Velocity: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">d_v</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
 </span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Kinetic energy: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">E_k</span><span class="p">.</span><span class="n">in</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span><span class="n">J</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
 </span></code></pre></div>
+<h2 id="arithmetic">Arithmetic<a class="headerlink" href="#arithmetic" title="Permanent link">&para;</a></h2>
+<p>Affine space arithmetic is well-defined. However, we are adding a new type to the library
+that lands between points and deltas. This is why we must agree on the arithmetic for all
+possible combinations.</p>
+<p>Let's try to define them here, assuming that points and absolute values share
+a common origin.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If points and absolute values do not share a common absolute point origin
+the operation should fail to compile.</p>
+</div>
+<h3 id="addition">Addition<a class="headerlink" href="#addition" title="Permanent link">&para;</a></h3>
+<p>In case of addition, a more constrained type is preserved (except for adding two points,
+which is undefined):</p>
+<table>
+<thead>
+<tr>
+<th>Lhs \ Rhs</th>
+<th style="text-align: center;">Point</th>
+<th style="text-align: center;">Absolute</th>
+<th style="text-align: center;">Delta</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Point</strong></td>
+<td style="text-align: center;"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 6.91 17.09 4 12 9.09 6.91 4 4 6.91 9.09 12 4 17.09 6.91 20 12 14.91 17.09 20 20 17.09 14.91 12z"/></svg></span></td>
+<td style="text-align: center;">Point</td>
+<td style="text-align: center;">Point</td>
+</tr>
+<tr>
+<td><strong>Absolute</strong></td>
+<td style="text-align: center;">Point</td>
+<td style="text-align: center;">Absolute</td>
+<td style="text-align: center;">Absolute</td>
+</tr>
+<tr>
+<td><strong>Delta</strong></td>
+<td style="text-align: center;">Point</td>
+<td style="text-align: center;">Absolute</td>
+<td style="text-align: center;">Delta</td>
+</tr>
+</tbody>
+</table>
+<h3 id="subtraction">Subtraction<a class="headerlink" href="#subtraction" title="Permanent link">&para;</a></h3>
+<p>Subtraction is more tricky. To verify the logic below, it might be helpful to ask whether
+a result may be negative when two arguments are non-negative. If the answer is true,
+the result should be a delta quantity.</p>
+<table>
+<thead>
+<tr>
+<th>Lhs \ Rhs</th>
+<th style="text-align: center;">Point</th>
+<th style="text-align: center;">Absolute</th>
+<th style="text-align: center;">Delta</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Point</strong></td>
+<td style="text-align: center;">Delta</td>
+<td style="text-align: center;">Point</td>
+<td style="text-align: center;">Point</td>
+</tr>
+<tr>
+<td><strong>Absolute</strong></td>
+<td style="text-align: center;">Delta</td>
+<td style="text-align: center;">Delta</td>
+<td style="text-align: center;">Absolute</td>
+</tr>
+<tr>
+<td><strong>Delta</strong></td>
+<td style="text-align: center;"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 6.91 17.09 4 12 9.09 6.91 4 4 6.91 9.09 12 4 17.09 6.91 20 12 14.91 17.09 20 20 17.09 14.91 12z"/></svg></span></td>
+<td style="text-align: center;">Delta</td>
+<td style="text-align: center;">Delta</td>
+</tr>
+</tbody>
+</table>
 <h2 id="new-opportunities">New opportunities<a class="headerlink" href="#new-opportunities" title="Permanent link">&para;</a></h2>
 <p>The new syntax simplifies API as one <code>quantity</code> class template will now serve all quantity
 variations (possibly even more in the future). It also allows us to model quantities that
