@@ -2399,7 +2399,7 @@ You're not viewing the latest version.
                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 20a8 8 0 0 0 8-8 8 8 0 0 0-8-8 8 8 0 0 0-8 8 8 8 0 0 0 8 8m0-18a10 10 0 0 1 10 10 10 10 0 0 1-10 10C6.47 22 2 17.5 2 12A10 10 0 0 1 12 2m.5 5v5.25l4.5 2.67-.75 1.23L11 13V7z"/></svg>
                           <span class="md-ellipsis">
                             
-                              8 min read
+                              9 min read
                             
                           </span>
                         </div>
@@ -2502,6 +2502,15 @@ You're not viewing the latest version.
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-about-time" class="md-nav__link">
+    <span class="md-ellipsis">
+      What about time?
+    </span>
+  </a>
   
 </li>
       
@@ -2857,6 +2866,24 @@ we observe.</p>
 </span><span id="__span-4-24"><a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a><span class="n">assert</span><span class="p">(</span><span class="n">point1</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">table_top</span><span class="p">);</span>
 </span><span id="__span-4-25"><a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a><span class="c1">// quantity point2 = glass1_height - glass1_top;               // no sense - does not compile</span>
 </span></code></pre></div>
+<h2 id="what-about-time">What about time?<a class="headerlink" href="#what-about-time" title="Permanent link">&para;</a></h2>
+<p>Everything looks promising and nice for now. But let's look closer into the quantity of time.
+There is no way to measure its absolute value as we don't even know where (when?) the time
+axis starts... Only time points and time deltas (durations) make sense.</p>
+<p>The above raises a few questions:</p>
+<ol>
+<li>Does it mean that <code>quantity&lt;si::seconds&gt;</code> or <code>quantity&lt;isq::time[s]&gt;</code> should not compile?</li>
+<li>Should we require the user to always state <code>quantity&lt;delta&lt;si::seconds&gt;&gt;</code> or
+   <code>quantity&lt;delta&lt;si::seconds&gt;&gt;</code>? This would be consistent with physical equations but more
+   verbose in the source code.</li>
+<li>Should the syntax <code>40 * s</code> be disallowed or should it implicitly create<code>quantity&lt;delta&lt;si::seconds&gt;&gt;</code>
+   instead of <code>quantity&lt;si::seconds&gt;</code>?</li>
+<li>A somehow similar case might be the length quantity as there is no one well-established
+   zero origin that serves for all length measurements. However, asking the users always
+   to provide a <code>delta</code> specifier for length would probably be an overkill.</li>
+</ol>
+<p>As you can see, I do not yet have good answers to the above problems yet. Please feel welcome
+to share some feedback on this.</p>
 <h2 id="new-opportunities">New opportunities<a class="headerlink" href="#new-opportunities" title="Permanent link">&para;</a></h2>
 <p>The new syntax simplifies API as one <code>quantity</code> class template will now serve all quantity
 variations (possibly even more in the future). It also allows us to model quantities that
