@@ -248,6 +248,29 @@ assert(point1 == table_top);
 // quantity point2 = glass1_height - glass1_top;               // no sense - does not compile
 ```
 
+
+## What about time?
+
+Everything looks promising and nice for now. But let's look closer into the quantity of time.
+There is no way to measure its absolute value as we don't even know where (when?) the time
+axis starts... Only time points and time deltas (durations) make sense.
+
+The above raises a few questions:
+
+1. Does it mean that `quantity<si::seconds>` or `quantity<isq::time[s]>` should not compile?
+2. Should we require the user to always state `quantity<delta<si::seconds>>` or
+   `quantity<delta<si::seconds>>`? This would be consistent with physical equations but more
+   verbose in the source code.
+3. Should the syntax `40 * s` be disallowed or should it implicitly create`quantity<delta<si::seconds>>`
+   instead of `quantity<si::seconds>`?
+4. A somehow similar case might be the length quantity as there is no one well-established
+   zero origin that serves for all length measurements. However, asking the users always
+   to provide a `delta` specifier for length would probably be an overkill.
+
+As you can see, I do not yet have good answers to the above problems yet. Please feel welcome
+to share some feedback on this.
+
+
 ## New opportunities
 
 The new syntax simplifies API as one `quantity` class template will now serve all quantity
