@@ -137,11 +137,11 @@ For example:
 ```cpp
 inline constexpr struct tare final : relative_point_origin<quantity_point{2 * kg}> {} tare;
 
-quantity<point<isq::mass>> m1(10 * kg);          // point quantity with an implicit point origin
-quantity<point<isq::mass>> m2 = tare + 8 * kg;   // point quantity with an explicit relative point origin
-quantity<isq::mass>        m3 = 15 * kg;         // absolute quantity (e.g., non-negative)
-quantity<delta<isq::mass>> m13 = m1 - m3;        // delta quantity (e.g., may be negative)
-quantity<delta<isq::mass>> m23 = m2 - m3;        // delta quantity (e.g., may be negative)
+quantity<point<isq::mass>>       m1(10 * kg);         // point quantity with an implicit point origin
+quantity<point<isq::mass, tare>> m2 = tare + 8 * kg;  // point quantity with an explicit relative point origin
+quantity<isq::mass>              m3 = 15 * kg;        // absolute quantity (e.g., non-negative)
+quantity<delta<isq::mass>>       m13 = m1 - m3;       // delta quantity (e.g., may be negative)
+quantity<delta<isq::mass>>       m23 = m2 - m3;       // delta quantity (e.g., may be negative)
 ```
 
 With the above, the initial example may be refactored to:
