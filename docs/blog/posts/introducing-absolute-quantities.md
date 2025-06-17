@@ -205,7 +205,7 @@ may be obtained by subtracting a delta from absolute quantity or absolute quanti
 
     ```cpp
     quantity temp1 = 270 * K;
-    quantity temp2 = point<K>(300); 
+    quantity temp2 = point<K>(300);
     quantity temp3 = temp2 - temp1;             // Point
     // quantity temp4 = temp1 - temp2;          // Compile-time error
     quantity temp5 = temp1 - temp2.absolute();  // Delta
