@@ -82,37 +82,36 @@ Despite the above drawbacks, affine space points are necessary to model some abs
 (e.g., temperatures in degrees Celsius, tared mass measurements, altitudes above some
 reference point, etc.) and do it really well. Constrained affine space arithmetic
 (e.g., preventing accidental addition of points) also improves the safety of our programs.
-This is why it is a very valuable abstraction and should be used even more often than now.
+This is why it is a valuable abstraction and should be used more even often than now.
 
 To improve the user experience and open the doors for new features in the future, we are
 considering adding a third abstraction for absolute quantities. In terms of properties,
 an absolute quantity will lie between points and deltas.
 
-| Feature                        |         Point          |         Absolute         |         Delta          |
-|--------------------------------|:----------------------:|:------------------------:|:----------------------:|
-| **Interpolation**              |   :white_check_mark:   |    :white_check_mark:    |   :white_check_mark:   |
-| **Subtraction**                |   :white_check_mark:   |    :white_check_mark:    |   :white_check_mark:   |
-| **Addition**                   | :material-close-thick: |    :white_check_mark:    |   :white_check_mark:   |
-| **Multiply/Divide**            | :material-close-thick: |    :white_check_mark:    |   :white_check_mark:   |
-| **May be non-negative**        |   :white_check_mark:   |    :white_check_mark:    | :material-close-thick: |
-| **Relative to origin**         |  Absolute & relative   | Absolute (implicit only) | :material-close-thick: |
-| **Can use offset units**       |   :white_check_mark:   |  :material-close-thick:  |   :white_check_mark:   |
-| **Conversion to offset units** |      With offset       |  :material-close-thick:  |       No offset        |
-| **Text output**                | :material-close-thick: |    :white_check_mark:    |   :white_check_mark:   |
+| Feature                        |         Point          |           Absolute            |         Delta          |
+|--------------------------------|:----------------------:|:-----------------------------:|:----------------------:|
+| **Interpolation**              |   :white_check_mark:   |      :white_check_mark:       |   :white_check_mark:   |
+| **Subtraction**                |   :white_check_mark:   |      :white_check_mark:       |   :white_check_mark:   |
+| **Addition**                   | :material-close-thick: |      :white_check_mark:       |   :white_check_mark:   |
+| **Multiply/Divide**            | :material-close-thick: |      :white_check_mark:       |   :white_check_mark:   |
+| **May be non-negative**        |   :white_check_mark:   |      :white_check_mark:       | :material-close-thick: |
+| **Relative to origin**         |  Absolute & relative   | Measured against nothing/void | :material-close-thick: |
+| **Can use offset units**       |   :white_check_mark:   |    :material-close-thick:     |   :white_check_mark:   |
+| **Conversion to offset units** |      With offset       |    :material-close-thick:     |       No offset        |
+| **Text output**                | :material-close-thick: |      :white_check_mark:       |   :white_check_mark:   |
 
 As we can see above, absolute quantities have only two limitations, and both are connected
 to the offset units' usage. They can't use those because they must remain absolute
 instead of being measured relative to some custom origin.
 
-It is also vital to notice that there will be no way to provide a custom origin for
-absolute quantities, even if it is defined in terms of `absolute_point_origin`. Those
-quantities are meant to model abstractions with well-established and unambiguous zero
-origins. If we allow passing absolute point origins, we could define two quantities
-of the same type measured according to different not-related origins, which would be
-too confusing.
+Absolute quantities could be considered delta quantities that represent a whole
+-- the entire entity being measured. This is why we can represent a system mass by adding
+absolute masses of all system elements or a system energy by adding absolute
+temperatures of all the system elements.
 
-The above also allows us to print them, as we do not need any special text to describe
-their origin.
+As those are more related to deltas than points, it is impossible to specify their origin
+points. This also allows us to print them, as we do not need any special text to describe
+their origin as they are always measured against nothing/void.
 
 
 ## Interfaces refactoring
@@ -123,9 +122,9 @@ a `quantity_spec` point wrapper. For example, `quantity_point<isq::altitude[m]>`
 `quantity<point<isq::altitude[m]>>`.
 
 I initially planned `quantity<isq::mass>` to be the same as `quantity<delta<isq::mass>>`,
-but it turns out that deltas probably should not be the default. It is consistent with how we
-write physical expressions on paper, right? Delta symbol (∆) is always "verbose"
-in our equations, it would be nice for the C++ code to do the same. So, deltas will always
+but it turns out that deltas probably should not be the default. It is consistent with how
+we write physical expressions on paper, right? Delta symbol (∆) is always "verbose"
+in physical equations, it would be nice for the C++ code to do the same. So, deltas will always
 need to be explicit.
 
 And this brings us to absolute quantities. They should actually be the default we are looking
@@ -165,37 +164,90 @@ Affine space arithmetic is well-defined. However, we are adding a new type to th
 that lands between points and deltas. This is why we must agree on the arithmetic for all
 possible combinations.
 
-Let's try to define them here, assuming that points and absolute values share
-a common origin.
-
-!!! note
-
-    If points and absolute values do not share a common absolute point origin
-    the operation should fail to compile.
-
 ### Addition
 
-In case of addition, a more constrained type is preserved (except for adding two points,
-which is undefined):
+Absolute quantities are deltas against nothing so adding them to a point yields another point.
 
-| Lhs \ Rhs    |         Point          | Absolute |  Delta   |
-|--------------|:----------------------:|:--------:|:--------:|
-| **Point**    | :material-close-thick: |  Point   |  Point   |
-| **Absolute** |         Point          | Absolute | Absolute |
-| **Delta**    |         Point          | Absolute |  Delta   |
+Adding a delta to them yields a delta, as a delta may represent only a part of something and
+a whole, and a part is not a whole. The delta may also be negative and greater
+than the absolute quantity, which may yield a negative value. This is why delta is a good
+result here.
+
+Only adding whole non-negative entities of the system yields a system being expressed as
+an entire non-negative entity. This is why adding absolute quantities results in an absolute
+quantity.
+
+| Lhs \ Rhs    |         Point          | Absolute | Delta |
+|--------------|:----------------------:|:--------:|:-----:|
+| **Point**    | :material-close-thick: |  Point   | Point |
+| **Absolute** |         Point          | Absolute | Delta |
+| **Delta**    |         Point          |  Delta   | Delta |
 
 ### Subtraction
 
-Subtraction is more tricky. To verify the logic below, it might be helpful to ask whether
-a result may be negative when two arguments are non-negative. If the answer is true,
-the result should be a delta quantity.
+Similarly, during subtraction, regular affine space arithmetics for deltas apply.
+Subtracting an absolute quantity from a point yields a point, and trying to do the opposite
+does not make physical sense.
 
-| Lhs \ Rhs    |         Point          | Absolute |  Delta   |
-|--------------|:----------------------:|:--------:|:--------:|
-| **Point**    |         Delta          |  Point   |  Point   |
-| **Absolute** |         Delta          |  Delta   | Absolute |
-| **Delta**    | :material-close-thick: |  Delta   |  Delta   |
+Subtracting two non-negative absolute quantities may yield a negative value if we subtract
+a larger one from the smaller one, so the result should be a delta. A similar result
+may be obtained by subtracting a delta from absolute quantity or absolute quantity from a delta.
 
+| Lhs \ Rhs    |         Point          | Absolute | Delta |
+|--------------|:----------------------:|:--------:|:-----:|
+| **Point**    |         Delta          |  Point   | Point |
+| **Absolute** | :material-close-thick: |  Delta   | Delta |
+| **Delta**    | :material-close-thick: |  Delta   | Delta |
+
+!!! info
+
+    Based on the above assumptions, one of the lines of the below code can't compile:
+
+    ```cpp
+    quantity temp1 = 270 * K;
+    quantity temp2 = point<K>(300); 
+    quantity temp3 = temp2 - temp1;             // Point
+    // quantity temp4 = temp1 - temp2;          // Compile-time error
+    quantity temp5 = temp1 - temp2.absolute();  // Delta
+    ```
+
+
+### Motivating example
+
+Let's consider a room with a table and two glasses filled with fluid on top of it.
+Let's also assume that we want to stack one on top of the other and treat them as a system
+we observe.
+
+![Absolute quantities](absolute-quantities.jpeg){ width="500" }
+
+```cpp
+// absolute quantities
+quantity<isq::height[cm]> glass1_height = 20 * cm;
+quantity<isq::height[cm]> glass2_height = 15 * cm;
+
+// delta quantities
+quantity<delta<isq::height>[cm]> fluid_level = 16 * cm;
+
+// point quantities
+inline constexpr struct floor_level final : absolute_point_origin<isq::height> floor_level;
+quantity<point<isq::height[cm], floor_level>> table_top = floor_level + 1 * m;
+// quantity<point<isq::height[cm]>> glass1_top(glass1_height); // point against nothing (no length)
+
+// absolute results
+quantity system_height = glass1_height + glass2_height;
+
+// delta results
+quantity empty_height_res = glass1_height - fluid_level;
+quantity glass2_height_res = system_height - glass1_height;    // could result in an absolute quantity
+assert(glass2_height_res == glass2_height);
+quantity height_diff_res = glass2_height - glass1_height;      // but this one should definitely return delta
+
+// point results
+quantity<point<isq::height[cm], floor_level>> glass1_top = table_top + glass1_height;
+quantity point1 = glass1_top - glass1_height;
+assert(point1 == table_top);
+// quantity point2 = glass1_height - glass1_top;               // no sense - does not compile
+```
 
 ## New opportunities
 
@@ -228,9 +280,9 @@ It worked but was far from being physically pure and pretty.
 
 ## Summary
 
-We believe that adding absolute quantities will be a major improvement in the library that
-will allow us to more correctly model physical equations making them terser and easier to
-understand at the same time.
+We believe that adding absolute quantities will be a significant improvement in the library
+that will allow us to model physical equations in a terser, more correct, easier to
+write, understand, and maintain way.
 
 We plan to deliver the features mentioned in this post as a part of **mp-units** V3.
 
