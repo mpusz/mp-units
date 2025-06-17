@@ -159,6 +159,44 @@ std::cout << "Kinetic energy: " << E_k.in<double>(J) << "\n";
 ```
 
 
+## Arithmetic
+
+Affine space arithmetic is well-defined. However, we are adding a new type to the library
+that lands between points and deltas. This is why we must agree on the arithmetic for all
+possible combinations.
+
+Let's try to define them here, assuming that points and absolute values share
+a common origin.
+
+!!! note
+
+    If points and absolute values do not share a common absolute point origin
+    the operation should fail to compile.
+
+### Addition
+
+In case of addition, a more constrained type is preserved (except for adding two points,
+which is undefined):
+
+| Lhs \ Rhs    |         Point          | Absolute |  Delta   |
+|--------------|:----------------------:|:--------:|:--------:|
+| **Point**    | :material-close-thick: |  Point   |  Point   |
+| **Absolute** |         Point          | Absolute | Absolute |
+| **Delta**    |         Point          | Absolute |  Delta   |
+
+### Subtraction
+
+Subtraction is more tricky. To verify the logic below, it might be helpful to ask whether
+a result may be negative when two arguments are non-negative. If the answer is true,
+the result should be a delta quantity.
+
+| Lhs \ Rhs    |         Point          | Absolute |  Delta   |
+|--------------|:----------------------:|:--------:|:--------:|
+| **Point**    |         Delta          |  Point   |  Point   |
+| **Absolute** |         Delta          |  Delta   | Absolute |
+| **Delta**    | :material-close-thick: |  Delta   |  Delta   |
+
+
 ## New opportunities
 
 The new syntax simplifies API as one `quantity` class template will now serve all quantity
