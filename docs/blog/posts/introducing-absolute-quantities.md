@@ -231,7 +231,6 @@ quantity<delta<isq::height>[cm]> fluid_level = 16 * cm;
 // point quantities
 inline constexpr struct floor_level final : absolute_point_origin<isq::height> floor_level;
 quantity<point<isq::height[cm], floor_level>> table_top = floor_level + 1 * m;
-// quantity<point<isq::height[cm]>> glass1_top(glass1_height); // point against nothing (no length)
 
 // absolute results
 quantity system_height = glass1_height + glass2_height;
