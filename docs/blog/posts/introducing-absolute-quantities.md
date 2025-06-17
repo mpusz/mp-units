@@ -38,7 +38,7 @@ abstractions:
     - can be multiplied and divided by another quantity and scalar,
     - may be negative as there is always a chance that we will subtract a larger value
       from a smaller one,
-    - not specified relative to any origin,
+    - don't use point origins in its definition,
     - conversion to offset units (e.g., degree Celsius) ignores the offset (just the conversion
       factor is used).
 
