@@ -259,7 +259,7 @@ The above raises a few questions:
 
 1. Does it mean that `quantity<si::seconds>` or `quantity<isq::time[s]>` should not compile?
 2. Should we require the user to always state `quantity<delta<si::seconds>>` or
-   `quantity<delta<si::seconds>>`? This would be consistent with physical equations but more
+   `quantity<delta<isq::time[s]>>`? This would be consistent with physical equations but more
    verbose in the source code.
 3. Should the syntax `40 * s` be disallowed or should it implicitly create`quantity<delta<si::seconds>>`
    instead of `quantity<si::seconds>`?
