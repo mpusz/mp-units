@@ -2874,7 +2874,7 @@ axis starts... Only time points and time deltas (durations) make sense.</p>
 <ol>
 <li>Does it mean that <code>quantity&lt;si::seconds&gt;</code> or <code>quantity&lt;isq::time[s]&gt;</code> should not compile?</li>
 <li>Should we require the user to always state <code>quantity&lt;delta&lt;si::seconds&gt;&gt;</code> or
-   <code>quantity&lt;delta&lt;si::seconds&gt;&gt;</code>? This would be consistent with physical equations but more
+   <code>quantity&lt;delta&lt;isq::time[s]&gt;&gt;</code>? This would be consistent with physical equations but more
    verbose in the source code.</li>
 <li>Should the syntax <code>40 * s</code> be disallowed or should it implicitly create<code>quantity&lt;delta&lt;si::seconds&gt;&gt;</code>
    instead of <code>quantity&lt;si::seconds&gt;</code>?</li>
