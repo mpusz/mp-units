@@ -31,6 +31,7 @@
 #include <mp-units/compat_macros.h>
 #include <mp-units/ext/algorithm.h>
 #include <mp-units/framework/customization_points.h>
+#include <mp-units/framework/dimension.h>
 #include <mp-units/framework/quantity.h>
 #include <mp-units/framework/unit.h>
 
