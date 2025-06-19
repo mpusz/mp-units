@@ -132,9 +132,6 @@ concept CommonlyInvocableQuantities =
 template<typename T>
 using quantity_like_type = quantity<quantity_like_traits<T>::reference, typename quantity_like_traits<T>::rep>;
 
-template<typename T, typename U, typename TT = std::remove_reference_t<T>>
-concept Mutable = (!std::is_const_v<TT>) && std::derived_from<TT, U>;
-
 }  // namespace detail
 
 MP_UNITS_EXPORT_BEGIN
@@ -352,14 +349,13 @@ public:
     return ::mp_units::quantity{-numerical_value_is_an_implementation_detail_, reference};
   }
 
-  template<detail::Mutable<quantity> Q>
-  friend constexpr decltype(auto) operator++(Q&& q)
+  constexpr quantity& operator++() &
     requires requires(rep& v) {
       { ++v } -> std::same_as<rep&>;
     }
   {
-    ++q.numerical_value_is_an_implementation_detail_;
-    return std::forward<Q>(q);
+    ++numerical_value_is_an_implementation_detail_;
+    return *this;
   }
 
   [[nodiscard]] constexpr QuantityOf<quantity_spec> auto operator++(int)
@@ -370,14 +366,13 @@ public:
     return ::mp_units::quantity{numerical_value_is_an_implementation_detail_++, reference};
   }
 
-  template<detail::Mutable<quantity> Q>
-  friend constexpr decltype(auto) operator--(Q&& q)
+  constexpr quantity& operator--() &
     requires requires(rep& v) {
       { --v } -> std::same_as<rep&>;
     }
   {
-    --q.numerical_value_is_an_implementation_detail_;
-    return std::forward<Q>(q);
+    --numerical_value_is_an_implementation_detail_;
+    return *this;
   }
 
   [[nodiscard]] constexpr QuantityOf<quantity_spec> auto operator--(int)
@@ -389,87 +384,86 @@ public:
   }
 
   // compound assignment operators
-  template<detail::Mutable<quantity> Q, auto R2, typename Rep2>
+  template<auto R2, typename Rep2>
     requires(implicitly_convertible(get_quantity_spec(R2), quantity_spec)) &&
             detail::ValuePreservingScaling2Reps<get_unit(R2), Rep2, unit, rep> && requires(rep& a, const Rep2 b) {
               { a += b } -> std::same_as<rep&>;
             }
-  friend constexpr decltype(auto) operator+=(Q&& lhs, const quantity<R2, Rep2>& rhs)
+  constexpr quantity& operator+=(const quantity<R2, Rep2>& other) &
   {
     if constexpr (equivalent(unit, get_unit(R2)))
-      lhs.numerical_value_is_an_implementation_detail_ += rhs.numerical_value_is_an_implementation_detail_;
+      numerical_value_is_an_implementation_detail_ += other.numerical_value_is_an_implementation_detail_;
     else
-      lhs.numerical_value_is_an_implementation_detail_ += rhs.in(lhs.unit).numerical_value_is_an_implementation_detail_;
-    return std::forward<Q>(lhs);
+      numerical_value_is_an_implementation_detail_ += other.in(unit).numerical_value_is_an_implementation_detail_;
+    return *this;
   }
 
-  template<detail::Mutable<quantity> Q, auto R2, typename Rep2>
+  template<auto R2, typename Rep2>
     requires(implicitly_convertible(get_quantity_spec(R2), quantity_spec)) &&
             detail::ValuePreservingScaling2Reps<get_unit(R2), Rep2, unit, rep> && requires(rep& a, const Rep2 b) {
               { a -= b } -> std::same_as<rep&>;
             }
-  friend constexpr decltype(auto) operator-=(Q&& lhs, const quantity<R2, Rep2>& rhs)
+  constexpr quantity& operator-=(const quantity<R2, Rep2>& other) &
   {
     if constexpr (equivalent(unit, get_unit(R2)))
-      lhs.numerical_value_is_an_implementation_detail_ -= rhs.numerical_value_is_an_implementation_detail_;
+      numerical_value_is_an_implementation_detail_ -= other.numerical_value_is_an_implementation_detail_;
     else
-      lhs.numerical_value_is_an_implementation_detail_ -= rhs.in(lhs.unit).numerical_value_is_an_implementation_detail_;
-    return std::forward<Q>(lhs);
+      numerical_value_is_an_implementation_detail_ -= other.in(unit).numerical_value_is_an_implementation_detail_;
+    return *this;
   }
 
-  template<detail::Mutable<quantity> Q, auto R2, typename Rep2>
+  template<auto R2, typename Rep2>
     requires(!treat_as_floating_point<rep>) && (implicitly_convertible(get_quantity_spec(R2), quantity_spec)) &&
             detail::ValuePreservingScaling2Reps<get_unit(R2), Rep2, unit, rep> && requires(rep& a, const Rep2 b) {
               { a %= b } -> std::same_as<rep&>;
             }
-  friend constexpr decltype(auto) operator%=(Q&& lhs, const quantity<R2, Rep2>& rhs)
-
+  constexpr quantity& operator%=(const quantity<R2, Rep2>& other) &
   {
-    MP_UNITS_EXPECTS_DEBUG(is_neq_zero(rhs));
+    MP_UNITS_EXPECTS_DEBUG(is_neq_zero(other));
     if constexpr (equivalent(unit, get_unit(R2)))
-      lhs.numerical_value_is_an_implementation_detail_ %= rhs.numerical_value_is_an_implementation_detail_;
+      numerical_value_is_an_implementation_detail_ %= other.numerical_value_is_an_implementation_detail_;
     else
-      lhs.numerical_value_is_an_implementation_detail_ %= rhs.in(lhs.unit).numerical_value_is_an_implementation_detail_;
-    return std::forward<Q>(lhs);
+      numerical_value_is_an_implementation_detail_ %= other.in(unit).numerical_value_is_an_implementation_detail_;
+    return *this;
   }
 
-  template<detail::Mutable<quantity> Q, detail::ScalarValuePreservingTo<rep> Value>
+  template<detail::ScalarValuePreservingTo<rep> Value>
     requires requires(rep& a, const Value b) {
       { a *= b } -> std::same_as<rep&>;
     }
-  friend constexpr decltype(auto) operator*=(Q&& lhs, const Value& val)
+  constexpr quantity& operator*=(const Value& val) &
   {
-    lhs.numerical_value_is_an_implementation_detail_ *= val;
-    return std::forward<Q>(lhs);
+    numerical_value_is_an_implementation_detail_ *= val;
+    return *this;
   }
 
-  template<detail::Mutable<quantity> Q1, detail::NumberLikeQuantity Q2>
+  template<detail::NumberLikeQuantity Q2>
     requires detail::ScalarValuePreservingTo<typename Q2::rep, rep> && requires(rep& a, const Q2::rep b) {
       { a *= b } -> std::same_as<rep&>;
     }
-  friend constexpr decltype(auto) operator*=(Q1&& lhs, const Q2& rhs)
+  constexpr quantity& operator*=(const Q2& other) &
   {
-    return std::forward<Q1>(lhs) *= rhs.numerical_value_is_an_implementation_detail_;
+    return *this *= other.numerical_value_is_an_implementation_detail_;
   }
 
-  template<detail::Mutable<quantity> Q, detail::ScalarValuePreservingTo<rep> Value>
+  template<detail::ScalarValuePreservingTo<rep> Value>
     requires requires(rep& a, const Value b) {
       { a /= b } -> std::same_as<rep&>;
     }
-  friend constexpr decltype(auto) operator/=(Q&& lhs, const Value& val)
+  constexpr quantity& operator/=(const Value& val) &
   {
     MP_UNITS_EXPECTS_DEBUG(val != representation_values<Value>::zero());
-    lhs.numerical_value_is_an_implementation_detail_ /= val;
-    return std::forward<Q>(lhs);
+    numerical_value_is_an_implementation_detail_ /= val;
+    return *this;
   }
 
-  template<detail::Mutable<quantity> Q1, detail::NumberLikeQuantity Q2>
+  template<detail::NumberLikeQuantity Q2>
     requires detail::ScalarValuePreservingTo<typename Q2::rep, rep> && requires(rep& a, const Q2::rep b) {
       { a /= b } -> std::same_as<rep&>;
     }
-  friend constexpr decltype(auto) operator/=(Q1&& lhs, const Q2& rhs)
+  constexpr quantity& operator/=(const Q2& rhs) &
   {
-    return std::forward<Q1>(lhs) /= rhs.numerical_value_is_an_implementation_detail_;
+    return *this /= rhs.numerical_value_is_an_implementation_detail_;
   }
 
   // binary operators on quantities

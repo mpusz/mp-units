@@ -411,12 +411,11 @@ public:
   }
 
   // member unary operators
-  template<detail::Mutable<quantity_point> QP>
-  friend constexpr decltype(auto) operator++(QP&& qp)
-    requires requires { ++qp.quantity_from_origin_is_an_implementation_detail_; }
+  constexpr quantity_point& operator++() &
+    requires requires { ++quantity_from_origin_is_an_implementation_detail_; }
   {
-    ++qp.quantity_from_origin_is_an_implementation_detail_;
-    return std::forward<QP>(qp);
+    ++quantity_from_origin_is_an_implementation_detail_;
+    return *this;
   }
 
   [[nodiscard]] constexpr quantity_point operator++(int)
@@ -425,12 +424,11 @@ public:
     return {quantity_from_origin_is_an_implementation_detail_++, PO};
   }
 
-  template<detail::Mutable<quantity_point> QP>
-  friend constexpr decltype(auto) operator--(QP&& qp)
-    requires requires { --qp.quantity_from_origin_is_an_implementation_detail_; }
+  constexpr quantity_point& operator--() &
+    requires requires { --quantity_from_origin_is_an_implementation_detail_; }
   {
-    --qp.quantity_from_origin_is_an_implementation_detail_;
-    return std::forward<QP>(qp);
+    --quantity_from_origin_is_an_implementation_detail_;
+    return *this;
   }
 
   [[nodiscard]] constexpr quantity_point operator--(int)
@@ -440,24 +438,24 @@ public:
   }
 
   // compound assignment operators
-  template<detail::Mutable<quantity_point> QP, auto R2, typename Rep2>
+  template<auto R2, typename Rep2>
     requires(implicitly_convertible(get_quantity_spec(R2), quantity_spec)) &&
             detail::ValuePreservingScaling2Reps<get_unit(R2), Rep2, unit, rep> &&
             requires(const quantity_type q) { quantity_from_origin_is_an_implementation_detail_ += q; }
-  friend constexpr decltype(auto) operator+=(QP&& qp, const quantity<R2, Rep2>& q)
+  constexpr quantity_point& operator+=(const quantity<R2, Rep2>& q) &
   {
-    qp.quantity_from_origin_is_an_implementation_detail_ += q;
-    return std::forward<QP>(qp);
+    quantity_from_origin_is_an_implementation_detail_ += q;
+    return *this;
   }
 
-  template<detail::Mutable<quantity_point> QP, auto R2, typename Rep2>
+  template<auto R2, typename Rep2>
     requires(implicitly_convertible(get_quantity_spec(R2), quantity_spec)) &&
             detail::ValuePreservingScaling2Reps<get_unit(R2), Rep2, unit, rep> &&
             requires(const quantity_type q) { quantity_from_origin_is_an_implementation_detail_ -= q; }
-  friend constexpr decltype(auto) operator-=(QP&& qp, const quantity<R2, Rep2>& q)
+  constexpr quantity_point& operator-=(const quantity<R2, Rep2>& q) &
   {
-    qp.quantity_from_origin_is_an_implementation_detail_ -= q;
-    return std::forward<QP>(qp);
+    quantity_from_origin_is_an_implementation_detail_ -= q;
+    return *this;
   }
 
   // binary operators on quantity points

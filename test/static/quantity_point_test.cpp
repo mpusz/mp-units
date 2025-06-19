@@ -1007,14 +1007,24 @@ static_assert([](auto v) {
 ////////////////////////
 
 // same type
-static_assert((mean_sea_level + 1 * m += 1 * m).quantity_from_zero().numerical_value_in(m) == 2);
-static_assert((mean_sea_level + 2 * m -= 1 * m).quantity_from_zero().numerical_value_in(m) == 1);
+static_assert(
+  [qp = mean_sea_level + 1 * m]() mutable { return qp += 1 * m; }().quantity_from_zero().numerical_value_in(m) == 2);
+static_assert(
+  [qp = mean_sea_level + 2 * m]() mutable { return qp -= 1 * m; }().quantity_from_zero().numerical_value_in(m) == 1);
 
 // different types
-static_assert((mean_sea_level + 2.5 * m += 3 * m).quantity_from_zero().numerical_value_in(m) == 5.5);
-static_assert((mean_sea_level + 123 * m += 1 * km).quantity_from_zero().numerical_value_in(m) == 1123);
-static_assert((mean_sea_level + 5.5 * m -= 3 * m).quantity_from_zero().numerical_value_in(m) == 2.5);
-static_assert((mean_sea_level + 1123 * m -= 1 * km).quantity_from_zero().numerical_value_in(m) == 123);
+static_assert(
+  [qp = mean_sea_level + 2.5 * m]() mutable { return qp += 3 * m; }().quantity_from_zero().numerical_value_in(m) ==
+  5.5);
+static_assert(
+  [qp = mean_sea_level + 123 * m]() mutable { return qp += 1 * km; }().quantity_from_zero().numerical_value_in(m) ==
+  1123);
+static_assert(
+  [qp = mean_sea_level + 5.5 * m]() mutable { return qp -= 3 * m; }().quantity_from_zero().numerical_value_in(m) ==
+  2.5);
+static_assert(
+  [qp = mean_sea_level + 1123 * m]() mutable { return qp -= 1 * km; }().quantity_from_zero().numerical_value_in(m) ==
+  123);
 
 
 template<template<auto, auto, typename> typename QP>
