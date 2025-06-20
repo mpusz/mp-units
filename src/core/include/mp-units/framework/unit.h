@@ -40,6 +40,10 @@
 #include <mp-units/framework/unit_concepts.h>
 #include <mp-units/framework/unit_magnitude.h>
 #include <mp-units/framework/unit_symbol_formatting.h>
+#if MP_UNITS_HOSTED
+#include <mp-units/bits/format.h>
+#include <mp-units/bits/ostream.h>
+#endif
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <mp-units/ext/contracts.h>
@@ -913,11 +917,20 @@ MP_UNITS_EXPORT template<unit_symbol_formatting fmt = unit_symbol_formatting{}, 
   return detail::unit_symbol_result<fmt, CharT, U>.view();
 }
 
+#if MP_UNITS_HOSTED
+
+MP_UNITS_EXPORT template<typename CharT, typename Traits, Unit U>
+std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, U u)
+{
+  return detail::to_stream(
+    os, [&](std::basic_ostream<CharT, Traits>& oss) { unit_symbol_to<CharT>(std::ostream_iterator<CharT>(oss), u); });
+}
+
+#endif  // MP_UNITS_HOSTED
+
 }  // namespace mp_units
 
 #if MP_UNITS_HOSTED
-
-#include <mp-units/bits/format.h>
 
 //
 // Grammar

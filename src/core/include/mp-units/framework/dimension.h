@@ -33,6 +33,10 @@
 #include <mp-units/framework/dimension_concepts.h>
 #include <mp-units/framework/symbol_text.h>
 #include <mp-units/framework/symbolic_expression.h>
+#if MP_UNITS_HOSTED
+#include <mp-units/bits/format.h>
+#include <mp-units/bits/ostream.h>
+#endif
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <mp-units/ext/contracts.h>
@@ -314,11 +318,21 @@ MP_UNITS_EXPORT template<dimension_symbol_formatting fmt = dimension_symbol_form
   return detail::dimension_symbol_result<fmt, CharT, D>.view();
 }
 
+#if MP_UNITS_HOSTED
+
+MP_UNITS_EXPORT template<typename CharT, typename Traits, Dimension D>
+std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, D d)
+{
+  return detail::to_stream(os, [&](std::basic_ostream<CharT, Traits>& oss) {
+    dimension_symbol_to<CharT>(std::ostream_iterator<CharT>(oss), d);
+  });
+}
+
+#endif  // MP_UNITS_HOSTED
+
 }  // namespace mp_units
 
 #if MP_UNITS_HOSTED
-
-#include <mp-units/bits/format.h>
 
 //
 // Grammar

@@ -33,7 +33,6 @@ import std;
 import mp_units;
 #else
 #include <mp-units/math.h>
-#include <mp-units/ostream.h>  // IWYU pragma: keep
 #include <mp-units/systems/isq/mechanics.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si.h>

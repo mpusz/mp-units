@@ -29,7 +29,6 @@ import std;
 import mp_units;
 #else
 #include <mp-units/math.h>
-#include <mp-units/ostream.h>
 #include <mp-units/systems/isq/electromagnetism.h>
 #include <mp-units/systems/si.h>
 #endif

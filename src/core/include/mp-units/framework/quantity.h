@@ -36,6 +36,10 @@
 #include <mp-units/framework/representation_concepts.h>
 #include <mp-units/framework/unit_concepts.h>
 #include <mp-units/framework/value_cast.h>
+#if MP_UNITS_HOSTED
+#include <mp-units/bits/format.h>
+#include <mp-units/bits/ostream.h>
+#endif
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <mp-units/ext/contracts.h>
@@ -45,6 +49,9 @@ import std;
 #include <compare>  // IWYU pragma: export
 #include <limits>
 #include <utility>
+#if MP_UNITS_HOSTED
+#include <locale>
+#endif
 #endif
 #endif
 
@@ -647,6 +654,25 @@ template<QuantityLike Q>
 explicit(quantity_like_traits<Q>::explicit_import) quantity(Q)
   -> quantity<quantity_like_traits<Q>::reference, typename quantity_like_traits<Q>::rep>;
 
+#if MP_UNITS_HOSTED
+
+template<typename CharT, typename Traits, auto R, typename Rep>
+std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const quantity<R, Rep>& q)
+  requires requires { os << q.numerical_value_ref_in(q.unit); }
+{
+  return detail::to_stream(os, [&](std::basic_ostream<CharT, Traits>& oss) {
+    if constexpr (is_same_v<Rep, std::uint8_t> || is_same_v<Rep, std::int8_t>)
+      // promote the value to int
+      oss << +q.numerical_value_ref_in(q.unit);
+    else
+      oss << q.numerical_value_ref_in(q.unit);
+    if constexpr (space_before_unit_symbol<get_unit(R)>) oss << " ";
+    oss << q.unit;
+  });
+}
+
+#endif  // MP_UNITS_HOSTED
+
 MP_UNITS_EXPORT_END
 
 }  // namespace mp_units
@@ -736,9 +762,6 @@ public:
 };
 
 #if MP_UNITS_HOSTED
-
-#include <mp-units/bits/format.h>
-#include <locale>
 
 //
 // Grammar

@@ -34,7 +34,6 @@ import std;
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else
-#include <mp-units/ostream.h>  // IWYU pragma: keep
 #include <mp-units/random.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si.h>
