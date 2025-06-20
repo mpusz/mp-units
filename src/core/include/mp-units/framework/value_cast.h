@@ -58,7 +58,9 @@ template<typename Rep, Unit UFrom, Unit UTo>
 
 template<auto FromU, auto ToU, typename Rep>
 concept SaneScaling = UnitConvertibleTo<MP_UNITS_REMOVE_CONST(decltype(FromU)), ToU> &&
-                      (!detail::scaling_overflows_non_zero_values<Rep>(FromU, ToU));
+                      ((!detail::scaling_overflows_non_zero_values<Rep>(FromU, ToU)) ||
+                       unsatisfied<"The result of scaling '{}' to '{}' overflows the '{}' representation type">(
+                         FromU, ToU, type_name<Rep>()));
 
 }  // namespace detail
 

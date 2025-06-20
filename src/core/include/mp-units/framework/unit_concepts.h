@@ -24,6 +24,7 @@
 
 // IWYU pragma: private, include <mp-units/framework.h>
 #include <mp-units/bits/module_macros.h>
+#include <mp-units/bits/unsatisfied.h>
 #include <mp-units/framework/quantity_spec_concepts.h>
 #include <mp-units/framework/symbolic_expression.h>
 #include <mp-units/framework/unit_magnitude.h>
@@ -97,8 +98,11 @@ concept AssociatedUnit = Unit<U> && detail::has_associated_quantity(U{});
  * the provided @c QS value.
  */
 MP_UNITS_EXPORT template<typename U, auto QS>
-concept UnitOf = AssociatedUnit<U> && QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS))> &&
-                 (implicitly_convertible(get_quantity_spec(U{}), QS));
+concept UnitOf =
+  AssociatedUnit<U> && QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS))> &&
+  (implicitly_convertible(get_quantity_spec(U{}), QS) ||
+   (unsatisfied<"Unit '{}' is associated with quantity of kind '{}' which is not convertible to the '{}' quantity">(
+     U{}, type_name(get_quantity_spec(U{})._quantity_spec_), type_name(QS))));
 
 namespace detail {
 
@@ -107,10 +111,17 @@ concept WeakUnitOf =
   Unit<U> && QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS))> && ((!AssociatedUnit<U>) || UnitOf<U, QS>);
 
 template<auto U1, auto U2>
-concept UnitsOfCompatibleQuantities = explicitly_convertible(get_quantity_spec(U1), get_quantity_spec(U2));
+concept UnitsOfCompatibleQuantities =
+  explicitly_convertible(get_quantity_spec(U1), get_quantity_spec(U2)) ||
+  unsatisfied<"'{}' and '{}' units are of quantities of incompatible kinds ('{}' and '{}')">(
+    U1, U2, type_name(get_quantity_spec(U1)._quantity_spec_), type_name(get_quantity_spec(U2)._quantity_spec_));
 
 template<auto U1, auto U2>
-concept ConvertibleUnits = (get_canonical_unit(U1).reference_unit == get_canonical_unit(U2).reference_unit);
+concept ConvertibleUnits = (get_canonical_unit(U1).reference_unit == get_canonical_unit(U2).reference_unit) ||
+                           unsatisfied<
+                             "Units '{}' and '{}' are not convertible because they are defined in terms of "
+                             "different reference units ('{}' and '{}')">(U1, U2, get_canonical_unit(U1).reference_unit,
+                                                                          get_canonical_unit(U2).reference_unit);
 
 template<typename U1, auto U2>
 concept UnitConvertibleTo =

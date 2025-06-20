@@ -26,6 +26,7 @@
 #include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/bits/sudo_cast.h>
+#include <mp-units/bits/unsatisfied.h>
 #include <mp-units/compat_macros.h>
 #include <mp-units/framework/customization_points.h>
 #include <mp-units/framework/dimension_concepts.h>
@@ -76,8 +77,11 @@ template<typename T, typename Arg>
 concept ValuePreservingAssignment = std::assignable_from<T&, Arg> && is_value_preserving<std::remove_cvref_t<Arg>, T>;
 
 template<auto FromUnit, auto ToUnit, typename Rep>
-concept ValuePreservingScaling1Rep = SaneScaling<FromUnit, ToUnit, Rep> &&
-                                     (treat_as_floating_point<Rep> || (integral_conversion_factor(FromUnit, ToUnit)));
+concept ValuePreservingScaling1Rep =
+  SaneScaling<FromUnit, ToUnit, Rep> &&
+  (treat_as_floating_point<Rep> || (integral_conversion_factor(FromUnit, ToUnit)) ||
+   unsatisfied<"Scaling from '{}' to '{}' is not value-preserving for '{}' representation type">(
+     unit_symbol(FromUnit), unit_symbol(ToUnit), type_name<Rep>()));
 
 template<auto FromUnit, typename FromRep, auto ToUnit, typename ToRep>
 concept ValuePreservingScaling2Reps =
@@ -85,7 +89,9 @@ concept ValuePreservingScaling2Reps =
   //  CastableReps<FromRep, ToRep, FromUnit, ToUnit> &&
   SaneScaling<FromUnit, ToUnit, ToRep> &&
   (treat_as_floating_point<ToRep> ||
-   (!treat_as_floating_point<FromRep> && integral_conversion_factor(FromUnit, ToUnit)));
+   (!treat_as_floating_point<FromRep> && integral_conversion_factor(FromUnit, ToUnit)) ||
+   unsatisfied<"Scaling from '{}' as '{}' to '{}' as '{}' is not value-preserving">(
+     unit_symbol(FromUnit), type_name<FromRep>(), unit_symbol(ToUnit), type_name<ToRep>()));
 
 template<typename QTo, typename QFrom>
 concept QuantityConstructibleFrom =
