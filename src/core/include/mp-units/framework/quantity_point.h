@@ -215,8 +215,7 @@ public:
   ~quantity_point() = default;
 
   template<typename FwdQ, QuantityOf<quantity_spec> Q = std::remove_cvref_t<FwdQ>>
-    requires std::constructible_from<quantity_type, FwdQ> && (point_origin == default_point_origin(R)) &&
-             (implicitly_convertible(Q::quantity_spec, quantity_spec))
+    requires std::constructible_from<quantity_type, FwdQ> && (point_origin == default_point_origin(R))
   constexpr explicit quantity_point(FwdQ&& q) : quantity_from_origin_is_an_implementation_detail_(std::forward<FwdQ>(q))
   {
   }
@@ -252,9 +251,8 @@ public:
 
   template<QuantityPointLike QP>
     requires(quantity_point_like_traits<QP>::point_origin == point_origin) &&
-            std::convertible_to<
-              quantity<quantity_point_like_traits<QP>::reference, typename quantity_point_like_traits<QP>::rep>,
-              quantity_type>
+            std::constructible_from<quantity_type, quantity<quantity_point_like_traits<QP>::reference,
+                                                            typename quantity_point_like_traits<QP>::rep>>
   constexpr explicit(
     quantity_point_like_traits<QP>::explicit_import ||
     !std::convertible_to<

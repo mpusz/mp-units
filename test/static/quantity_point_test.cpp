@@ -705,8 +705,8 @@ static_assert(
   !std::convertible_to<quantity_point<si::kelvin, si::ice_point>, quantity_point<isq::height[m], mean_sea_level>>);
 
 // non-convertible quantity_specs
-static_assert(!std::constructible_from<quantity_point<special_height[m], mean_sea_level>,
-                                       quantity_point<isq::height[m], mean_sea_level>>);
+static_assert(std::constructible_from<quantity_point<special_height[m], mean_sea_level>,
+                                      quantity_point<isq::height[m], mean_sea_level>>);
 static_assert(!std::convertible_to<quantity_point<isq::height[m], mean_sea_level>,
                                    quantity_point<special_height[m], mean_sea_level>>);
 
@@ -766,8 +766,8 @@ static_assert(std::constructible_from<quantity_point<isq::height[m], mean_sea_le
 static_assert(std::convertible_to<quantity_point<special_height[m], mean_sea_level>,
                                   quantity_point<isq::height[m], mean_sea_level>>);
 
-static_assert(!std::constructible_from<quantity_point<special_height[m], mean_sea_level>,
-                                       quantity_point<isq::height[m], mean_sea_level>>);
+static_assert(std::constructible_from<quantity_point<special_height[m], mean_sea_level>,
+                                      quantity_point<isq::height[m], mean_sea_level>>);
 static_assert(!std::convertible_to<quantity_point<isq::height[m], mean_sea_level>,
                                    quantity_point<special_height[m], mean_sea_level>>);
 

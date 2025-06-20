@@ -224,6 +224,7 @@ static_assert(std::convertible_to<quantity<si::metre, cartesian_vector<double>>,
                                   quantity<isq::position_vector[m], cartesian_vector<double>>>);
 #endif
 
+
 // conversion between different quantities not allowed
 static_assert(!std::constructible_from<quantity<isq::length[m]>, quantity<isq::time[s]>>);
 static_assert(!std::convertible_to<quantity<isq::time[s]>, quantity<isq::length[m]>>);
@@ -262,6 +263,11 @@ static_assert(!std::convertible_to<quantity<isq::angular_measure[rad]>, quantity
 static_assert(!std::convertible_to<quantity<rad>, quantity<one>>);
 static_assert(!std::convertible_to<quantity<isq::angular_measure[one]>, quantity<dimensionless[one]>>);
 static_assert(!std::convertible_to<quantity<isq::angular_measure[one]>, quantity<one>>);
+
+// explicit-construction only
+static_assert(std::constructible_from<quantity<isq::distance[m]>, quantity<isq::length[m]>>);
+static_assert(!std::convertible_to<quantity<isq::length[m]>, quantity<isq::distance[m]>>);
+
 
 ///////////////////////
 // obtaining a number

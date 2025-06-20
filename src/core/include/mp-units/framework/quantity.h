@@ -95,7 +95,7 @@ concept ValuePreservingScaling2Reps =
 
 template<typename QTo, typename QFrom>
 concept QuantityConstructibleFrom =
-  Quantity<QTo> && Quantity<QFrom> && implicitly_convertible(QFrom::quantity_spec, QTo::quantity_spec) &&
+  Quantity<QTo> && Quantity<QFrom> && explicitly_convertible(QFrom::quantity_spec, QTo::quantity_spec) &&
   ValuePreservingConstruction<typename QTo::rep, typename QFrom::rep> &&
   ValuePreservingScaling2Reps<QFrom::unit, typename QFrom::rep, QTo::unit, typename QTo::rep>;
 
@@ -218,7 +218,8 @@ public:
   template<auto R2, typename Rep2>
     requires detail::QuantityConstructibleFrom<quantity, quantity<R2, Rep2>>
   // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
-  constexpr explicit(!std::convertible_to<Rep2, rep>) quantity(const quantity<R2, Rep2>& q) :
+  constexpr explicit(!implicitly_convertible(get_quantity_spec(R2), quantity_spec) || !std::convertible_to<Rep2, rep>)
+    quantity(const quantity<R2, Rep2>& q) :
       quantity(detail::sudo_cast<quantity>(q))
   {
   }
@@ -227,7 +228,7 @@ public:
     requires detail::QuantityConstructibleFrom<quantity, detail::quantity_like_type<Q>>
   constexpr explicit(quantity_like_traits<Q>::explicit_import ||
                      // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
-                     !std::convertible_to<typename quantity_like_traits<Q>::rep, Rep>) quantity(const Q& q) :
+                     !std::convertible_to<detail::quantity_like_type<Q>, quantity>) quantity(const Q& q) :
       quantity(::mp_units::quantity{quantity_like_traits<Q>::to_numerical_value(q), quantity_like_traits<Q>::reference})
   {
   }
@@ -335,7 +336,7 @@ public:
   template<typename Q_, QuantityLike Q = std::remove_cvref_t<Q_>>
     requires detail::QuantityConstructibleFrom<detail::quantity_like_type<Q>, quantity>
   [[nodiscard]] explicit(quantity_like_traits<Q>::explicit_export ||
-                         !std::convertible_to<rep, typename quantity_like_traits<Q>::rep>) constexpr
+                         !std::convertible_to<quantity, detail::quantity_like_type<Q>>) constexpr
   // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
   operator Q_() const
     noexcept(noexcept(quantity_like_traits<Q>::from_numerical_value(numerical_value_is_an_implementation_detail_)) &&
