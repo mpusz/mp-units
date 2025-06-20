@@ -101,6 +101,9 @@ if(NOT ${projectPrefix}API_FREESTANDING)
     )
 endif()
 
+# Disable VERIFY_INTERFACE_HEADER_SETS
+set_source_files_properties(include/mp-units/format.h include/mp-units/ostream.h PROPERTIES SKIP_LINTING ON)
+
 set_feature_flag(API_STD_FORMAT)
 set_feature_flag(API_NO_CRTP)
 
