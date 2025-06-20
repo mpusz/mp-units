@@ -152,6 +152,12 @@ MP_UNITS_DIAGNOSTIC_POP
 
 #endif
 
+#if !defined MP_UNITS_API_THROWING_CONSTRAINTS && __cpp_constexpr_exceptions >= 202411L
+
+#define MP_UNITS_API_THROWING_CONSTRAINTS 1
+
+#endif
+
 #if defined(__clang__) && defined(__apple_build_version__) && __apple_build_version__ < 16000026
 #define MP_UNITS_XCODE15_HACKS
 #endif
