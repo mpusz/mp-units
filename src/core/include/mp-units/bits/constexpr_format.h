@@ -22,28 +22,28 @@
 
 #pragma once
 
+#include <mp-units/bits/hacks.h>  // IWYU pragma: keep
+
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
-
-#include <mp-units/bits/requires_hosted.h>
-//
-#include <mp-units/bits/hacks.h>
-#include <mp-units/compat_macros.h>
-
-#if MP_UNITS_USE_FMTLIB
-MP_UNITS_DIAGNOSTIC_PUSH
-MP_UNITS_DIAGNOSTIC_IGNORE_UNREACHABLE
-MP_UNITS_DIAGNOSTIC_IGNORE_SHADOW
-#include <fmt/compile.h>
-#include <fmt/format.h>
-MP_UNITS_DIAGNOSTIC_POP
-#else  // MP_UNITS_USE_FMTLIB
+#include <mp-units/ext/format.h>
 #ifdef MP_UNITS_IMPORT_STD
-#ifndef MP_UNITS_IN_GMF
 import std;
+#else
+#include <string>
 #endif
-#else  // MP_UNITS_IMPORT_STD
-#include <format>
-#endif  // MP_UNITS_IMPORT_STD
-#endif  // MP_UNITS_USE_FMTLIB
+#endif
 
+namespace mp_units::detail {
+
+[[nodiscard]] consteval std::string constexpr_format([[maybe_unused]] auto fmt, [[maybe_unused]] auto&&... args)
+{
+  std::string text;
+#if MP_UNITS_USE_FMTLIB
+  fmt::format_to(std::back_inserter(text), fmt, std::forward<decltype(args)>(args)...);
+#else
+  static_assert(false, "`std::format` is not `constexpr` yet");
 #endif
+  return text;
+};
+
+}  // namespace mp_units::detail

@@ -88,6 +88,7 @@ if(NOT ${projectPrefix}API_FREESTANDING)
                BASE_DIRS
                ${CMAKE_CURRENT_SOURCE_DIR}/include
                FILES
+               include/mp-units/bits/constexpr_format.h
                include/mp-units/bits/fmt.h
                include/mp-units/bits/format.h
                include/mp-units/bits/ostream.h
