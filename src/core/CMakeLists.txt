@@ -42,6 +42,7 @@ add_mp_units_module(
             include/mp-units/bits/text_tools.h
             include/mp-units/bits/type_list.h
             include/mp-units/bits/unit_magnitude.h
+            include/mp-units/bits/unsatisfied.h
             include/mp-units/ext/algorithm.h
             include/mp-units/ext/contracts.h
             include/mp-units/ext/fixed_string.h
@@ -161,6 +162,14 @@ target_compile_definitions(
     mp-units-core ${${projectPrefix}TARGET_SCOPE}
                   ${projectPrefix}HOSTED=$<NOT:$<BOOL:${${projectPrefix}API_FREESTANDING}>>
 )
+
+# Throwing constraints
+if(${projectPrefix}API_THROWING_CONSTRAINTS)
+    target_compile_definitions(
+        mp-units-core ${${projectPrefix}TARGET_SCOPE}
+                      ${projectPrefix}API_THROWING_CONSTRAINTS=$<BOOL:${${projectPrefix}API_THROWING_CONSTRAINTS}>
+    )
+endif()
 
 # https://github.com/llvm/llvm-project/issues/131410
 if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 20
