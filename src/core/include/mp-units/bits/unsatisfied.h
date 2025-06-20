@@ -22,11 +22,11 @@
 
 #pragma once
 
-#include <mp-units/bits/constexpr_format.h>
 #include <mp-units/bits/hacks.h>  // IWYU pragma: keep
 #include <mp-units/ext/fixed_string.h>
 
 #if MP_UNITS_API_THROWING_CONSTRAINTS
+#include <mp-units/bits/constexpr_format.h>
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #ifdef MP_UNITS_IMPORT_STD
 import std;
