@@ -31,7 +31,6 @@ import std;
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else
-#include <mp-units/format.h>
 #include <mp-units/framework/quantity_point.h>
 #include <mp-units/math.h>
 #include <mp-units/systems/isq/thermodynamics.h>

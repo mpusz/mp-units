@@ -36,7 +36,6 @@ import std;
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else
-#include <mp-units/format.h>
 #include <mp-units/framework.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si.h>

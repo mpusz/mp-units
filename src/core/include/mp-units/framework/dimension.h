@@ -315,3 +315,75 @@ MP_UNITS_EXPORT template<dimension_symbol_formatting fmt = dimension_symbol_form
 }
 
 }  // namespace mp_units
+
+#if MP_UNITS_HOSTED
+
+#include <mp-units/bits/format.h>
+
+//
+// Grammar
+//
+// dimension-format-spec = [fill-and-align], [width], [dimension-spec];
+// dimension-spec        = [character-set];
+// character-set         = 'U' | 'P';
+//
+template<typename D, typename Char>
+  requires mp_units::detail::GCC_120625_is_complete<D> && mp_units::Dimension<D>
+class MP_UNITS_STD_FMT::formatter<D, Char> {
+  struct format_specs : mp_units::detail::fill_align_width_format_specs<Char>, mp_units::dimension_symbol_formatting {};
+  format_specs specs_{};
+  std::basic_string_view<Char> fill_align_width_format_str_;
+
+  template<std::forward_iterator It>
+  constexpr It parse_dimension_specs(It begin, It end)
+  {
+    auto it = begin;
+    if (it == end || *it == '}') return begin;
+
+    constexpr auto valid_modifiers = std::string_view{"UP"};
+    for (; it != end && *it != '}'; ++it) {
+      if (valid_modifiers.find(*it) == std::string_view::npos)
+        throw MP_UNITS_STD_FMT::format_error("invalid dimension modifier specified");
+    }
+    end = it;
+
+    if (it = mp_units::detail::at_most_one_of(begin, end, "UAP"); it != end)
+      // TODO 'A' stands for an old and deprecated ASCII encoding
+      specs_.char_set = (*it == 'U') ? mp_units::character_set::utf8 : mp_units::character_set::portable;
+
+    return end;
+  }
+
+public:
+  constexpr auto parse(MP_UNITS_STD_FMT::basic_format_parse_context<Char>& ctx) -> decltype(ctx.begin())
+  {
+    const auto begin = ctx.begin();
+    auto end = ctx.end();
+
+    auto it = parse_fill_align_width(ctx, begin, end, specs_);
+    fill_align_width_format_str_ = {begin, it};
+    if (it == end) return it;
+
+    return parse_dimension_specs(it, end);
+  }
+
+  template<typename FormatContext>
+  constexpr auto format(const D& d, FormatContext& ctx) const -> decltype(ctx.out())
+  {
+    auto specs = specs_;
+    mp_units::detail::handle_dynamic_spec<mp_units::detail::width_checker>(specs.width, specs.width_ref, ctx);
+
+    if (specs.width == 0)
+      // Avoid extra copying if width is not specified
+      return mp_units::dimension_symbol_to<Char>(ctx.out(), d, specs);
+    std::basic_string<Char> unit_buffer;
+    mp_units::dimension_symbol_to<Char>(std::back_inserter(unit_buffer), d, specs);
+
+    const std::basic_string<Char> global_format_buffer =
+      "{:" + std::basic_string<Char>{fill_align_width_format_str_} + "}";
+    return MP_UNITS_STD_FMT::vformat_to(ctx.out(), global_format_buffer,
+                                        MP_UNITS_STD_FMT::make_format_args(unit_buffer));
+  }
+};
+
+#endif  // MP_UNITS_HOSTED

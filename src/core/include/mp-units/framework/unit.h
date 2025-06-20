@@ -914,3 +914,100 @@ MP_UNITS_EXPORT template<unit_symbol_formatting fmt = unit_symbol_formatting{}, 
 }
 
 }  // namespace mp_units
+
+#if MP_UNITS_HOSTED
+
+#include <mp-units/bits/format.h>
+
+//
+// Grammar
+//
+// unit-format-spec      = [fill-and-align], [width], [unit-spec];
+// unit-spec             = [character-set], [unit-symbol-solidus], [unit-symbol-separator], [L]
+//                       | [character-set], [unit-symbol-separator], [unit-symbol-solidus], [L]
+//                       | [unit-symbol-solidus], [character-set], [unit-symbol-separator], [L]
+//                       | [unit-symbol-solidus], [unit-symbol-separator], [character-set], [L]
+//                       | [unit-symbol-separator], [character-set], [unit-symbol-solidus], [L]
+//                       | [unit-symbol-separator], [unit-symbol-solidus], [character-set], [L];
+// unit-symbol-solidus   = '1' | 'a' | 'n';
+// unit-symbol-separator = 's' | 'd';
+//
+template<typename U, typename Char>
+  requires mp_units::detail::GCC_120625_is_complete<U> && mp_units::Unit<U>
+class MP_UNITS_STD_FMT::formatter<U, Char> {
+  struct format_specs : mp_units::detail::fill_align_width_format_specs<Char>, mp_units::unit_symbol_formatting {};
+  format_specs specs_{};
+
+  std::basic_string_view<Char> fill_align_width_format_str_;
+
+  template<std::forward_iterator It>
+  constexpr It parse_unit_specs(It begin, It end)
+  {
+    auto it = begin;
+    if (it == end || *it == '}') return begin;
+
+    constexpr auto valid_modifiers = std::string_view{"UAP1ansd"};
+    for (; it != end && *it != '}'; ++it) {
+      if (valid_modifiers.find(*it) == std::string_view::npos)
+        throw MP_UNITS_STD_FMT::format_error("invalid unit modifier specified");
+    }
+    end = it;
+
+    if (it = mp_units::detail::at_most_one_of(begin, end, "UAP"); it != end)
+      // TODO 'A' stands for an old and deprecated ASCII encoding
+      specs_.char_set = (*it == 'U') ? mp_units::character_set::utf8 : mp_units::character_set::portable;
+    if (it = mp_units::detail::at_most_one_of(begin, end, "1an"); it != end) {
+      switch (*it) {
+        case '1':
+          specs_.solidus = mp_units::unit_symbol_solidus::one_denominator;
+          break;
+        case 'a':
+          specs_.solidus = mp_units::unit_symbol_solidus::always;
+          break;
+        case 'n':
+          specs_.solidus = mp_units::unit_symbol_solidus::never;
+          break;
+      }
+    }
+    if (it = mp_units::detail::at_most_one_of(begin, end, "sd"); it != end) {
+      if (*it == 'd' && specs_.char_set == mp_units::character_set::portable)
+        throw MP_UNITS_STD_FMT::format_error("half_high_dot unit separator allowed only for UTF-8 encoding");
+      specs_.separator =
+        (*it == 's') ? mp_units::unit_symbol_separator::space : mp_units::unit_symbol_separator::half_high_dot;
+    }
+    return end;
+  }
+
+public:
+  constexpr auto parse(MP_UNITS_STD_FMT::basic_format_parse_context<Char>& ctx) -> decltype(ctx.begin())
+  {
+    const auto begin = ctx.begin();
+    auto end = ctx.end();
+
+    auto it = parse_fill_align_width(ctx, begin, end, specs_);
+    fill_align_width_format_str_ = {begin, it};
+    if (it == end) return it;
+
+    return parse_unit_specs(it, end);
+  }
+
+  template<typename FormatContext>
+  constexpr auto format(const U& u, FormatContext& ctx) const -> decltype(ctx.out())
+  {
+    auto specs = specs_;
+    mp_units::detail::handle_dynamic_spec<mp_units::detail::width_checker>(specs.width, specs.width_ref, ctx);
+
+    if (specs.width == 0)
+      // Avoid extra copying if width is not specified
+      return mp_units::unit_symbol_to<Char>(ctx.out(), u, specs);
+    std::basic_string<Char> unit_buffer;
+    mp_units::unit_symbol_to<Char>(std::back_inserter(unit_buffer), u, specs);
+
+    const std::basic_string<Char> global_format_buffer =
+      "{:" + std::basic_string<Char>{fill_align_width_format_str_} + "}";
+    return MP_UNITS_STD_FMT::vformat_to(ctx.out(), global_format_buffer,
+                                        MP_UNITS_STD_FMT::make_format_args(unit_buffer));
+  }
+};
+
+#endif  // MP_UNITS_HOSTED

@@ -40,7 +40,6 @@ import std;
 import mp_units;
 #else
 #include <mp-units/cartesian_vector.h>
-#include <mp-units/format.h>
 #include <mp-units/ostream.h>  // IWYU pragma: keep
 #include <mp-units/systems/cgs.h>
 #include <mp-units/systems/isq/electromagnetism.h>

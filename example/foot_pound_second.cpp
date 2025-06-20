@@ -32,7 +32,6 @@ import std;
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else
-#include <mp-units/format.h>
 #include <mp-units/systems/imperial.h>
 #include <mp-units/systems/international.h>  // IWYU pragma: keep
 #include <mp-units/systems/isq/mechanics.h>

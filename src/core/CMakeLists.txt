@@ -89,6 +89,7 @@ if(NOT ${projectPrefix}API_FREESTANDING)
                ${CMAKE_CURRENT_SOURCE_DIR}/include
                FILES
                include/mp-units/bits/fmt.h
+               include/mp-units/bits/format.h
                include/mp-units/bits/requires_hosted.h
                include/mp-units/ext/format.h
                include/mp-units/cartesian_vector.h

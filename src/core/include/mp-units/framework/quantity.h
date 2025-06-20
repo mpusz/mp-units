@@ -734,3 +734,250 @@ public:
     return {std::numeric_limits<Rep>::denorm_min(), R};
   }
 };
+
+#if MP_UNITS_HOSTED
+
+#include <mp-units/bits/format.h>
+#include <locale>
+
+//
+// Grammar
+//
+// quantity-format-spec        = [fill-and-align], [width], [quantity-specs], [defaults-specs];
+// quantity-specs              = conversion-spec;
+//                             | quantity-specs, conversion-spec;
+//                             | quantity-specs, literal-char;
+// literal-char                = ? any character other than '{', '}', or '%' ?;
+// conversion-spec             = '%', placement-type;
+// placement-type              = subentity-id | '?' | '%';
+// defaults-specs              = ':', default-spec-list;
+// default-spec-list           = default-spec;
+//                             | default-spec-list, default-spec;
+// default-spec                = subentity-id, '[' format-spec ']';
+// subentity-id                = 'N' | 'U' | 'D';
+// format-spec                 = ? as specified by the formatter for the argument type ?;
+//
+#if __cpp_lib_format_ranges && !MP_UNITS_USE_FMTLIB
+template<auto Reference, typename Char, std::formattable<Char> Rep>
+#else
+template<auto Reference, typename Rep, typename Char>
+#endif
+class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
+  static constexpr auto unit = get_unit(Reference);
+  static constexpr auto dimension = get_quantity_spec(Reference).dimension;
+
+  using quantity_t = mp_units::quantity<Reference, Rep>;
+  using unit_t = MP_UNITS_NONCONST_TYPE(unit);
+  using dimension_t = MP_UNITS_NONCONST_TYPE(dimension);
+  using format_specs = mp_units::detail::fill_align_width_format_specs<Char>;
+
+  format_specs specs_{};
+
+  std::basic_string_view<Char> modifiers_format_str_;
+  std::basic_string<Char> rep_format_str_ = "{}";
+  std::basic_string<Char> unit_format_str_ = "{}";
+  std::basic_string<Char> dimension_format_str_ = "{}";
+
+  MP_UNITS_STD_FMT::formatter<Rep> rep_formatter_;
+  MP_UNITS_STD_FMT::formatter<unit_t> unit_formatter_;
+  MP_UNITS_STD_FMT::formatter<dimension_t> dimension_formatter_;
+
+  struct format_checker {
+    constexpr void on_number() const {}
+    constexpr void on_maybe_space() const {}
+    constexpr void on_unit() const {}
+    constexpr void on_dimension() const {}
+    template<std::forward_iterator It>
+    constexpr void on_text(It, It) const
+    {
+    }
+  };
+
+  template<typename OutputIt>
+  struct quantity_formatter {
+    const formatter& f;
+    OutputIt out;
+    const quantity_t& q;
+    std::locale locale;
+
+    void on_number()
+    {
+      out = MP_UNITS_STD_FMT::vformat_to(out, locale, f.rep_format_str_,
+                                         MP_UNITS_STD_FMT::make_format_args(q.numerical_value_ref_in(q.unit)));
+    }
+    void on_maybe_space()
+    {
+      if constexpr (mp_units::space_before_unit_symbol<unit>) *out++ = ' ';
+    }
+    void on_unit()
+    {
+      out = MP_UNITS_STD_FMT::vformat_to(out, locale, f.unit_format_str_, MP_UNITS_STD_FMT::make_format_args(q.unit));
+    }
+    void on_dimension()
+    {
+      out = MP_UNITS_STD_FMT::vformat_to(out, locale, f.dimension_format_str_,
+                                         MP_UNITS_STD_FMT::make_format_args(q.dimension));
+    }
+    template<std::forward_iterator It>
+    void on_text(It begin, It end) const
+    {
+      mp_units::detail::copy(begin, end, out);
+    }
+  };
+  template<typename OutputIt, typename... Args>
+  quantity_formatter(const formatter&, OutputIt, Args...) -> quantity_formatter<OutputIt>;
+
+  template<std::forward_iterator It, typename Handler>
+  constexpr const It parse_quantity_specs(It begin, It end, Handler& handler) const
+  {
+    if (begin == end || *begin == ':' || *begin == '}') return begin;
+    if (*begin != '%')
+      throw MP_UNITS_STD_FMT::format_error(
+        "`quantity-specs` should start with a `conversion-spec` ('%' characters expected)");
+    auto ptr = begin;
+    while (ptr != end) {
+      auto c = *ptr;
+      if (c == '}') break;
+      if (c == ':') {
+        if (ptr + 1 != end && *(ptr + 1) == ':') {
+          handler.on_text(begin, ++ptr);  // account for ':'
+          ++ptr;                          // consume the second ':'
+          continue;
+        }
+        // default specs started
+        break;
+      }
+      if (c != '%') {
+        ++ptr;
+        continue;
+      }
+      if (begin != ptr) handler.on_text(begin, ptr);
+      ++ptr;  // consume '%'
+      if (ptr == end) throw MP_UNITS_STD_FMT::format_error("invalid `conversion-spec` format");
+
+      c = *ptr++;
+      switch (c) {
+        case 'N':
+          handler.on_number();
+          break;
+        case 'U':
+          handler.on_unit();
+          break;
+        case 'D':
+          handler.on_dimension();
+          break;
+        case '?':
+          handler.on_maybe_space();
+          break;
+        case '%':
+          handler.on_text(ptr - 1, ptr);
+          break;
+        default:
+          throw MP_UNITS_STD_FMT::format_error(std::string("unknown `placement-type` token '") + c + "'");
+      }
+      begin = ptr;
+    }
+    if (begin != ptr) handler.on_text(begin, ptr);
+    return ptr;
+  }
+
+  template<std::forward_iterator It, typename Formatter>
+  constexpr It parse_default_spec(It begin, It end, Formatter& f, std::string& format_str)
+  {
+    if (begin == end || *begin != '[')
+      throw MP_UNITS_STD_FMT::format_error("`default-spec` should contain a `[` character");
+    auto it = ++begin;
+    for (int nested_brackets = 0; it != end && !(*it == ']' && nested_brackets == 0); it++) {
+      if (*it == '[') ++nested_brackets;
+      if (*it == ']') {
+        if (nested_brackets == 0) throw MP_UNITS_STD_FMT::format_error("unmatched ']' in format string");
+        --nested_brackets;
+      }
+    }
+    format_str = "{:" + std::string(begin, it) + '}';
+    if (it == end) throw MP_UNITS_STD_FMT::format_error("unmatched '[' in format string");
+    MP_UNITS_STD_FMT::basic_format_parse_context<Char> ctx(std::string_view(begin, it));
+    auto ptr = f.parse(ctx);
+    if (ptr != it) throw MP_UNITS_STD_FMT::format_error("invalid subentity format '" + std::string(begin, it) + "'");
+    return ++it;  // skip `]`
+  }
+
+  template<std::forward_iterator It>
+  [[nodiscard]] constexpr It parse_defaults_specs(It begin, It end)
+  {
+    if (begin == end || *begin == '}') return begin;
+    if (*begin++ != ':') throw MP_UNITS_STD_FMT::format_error("`defaults-specs` should start with a `:`");
+    do {
+      auto c = *begin++;
+      // TODO check if not repeated
+      switch (c) {
+        case 'N':
+          begin = parse_default_spec(begin, end, rep_formatter_, rep_format_str_);
+          break;
+        case 'U':
+          begin = parse_default_spec(begin, end, unit_formatter_, unit_format_str_);
+          break;
+        case 'D':
+          begin = parse_default_spec(begin, end, dimension_formatter_, dimension_format_str_);
+          break;
+        default:
+          throw MP_UNITS_STD_FMT::format_error(std::string("unknown `subentity-id` token '") + c + "'");
+      }
+    } while (begin != end && *begin != '}');
+    return begin;
+  }
+
+  template<typename OutputIt, typename FormatContext>
+  OutputIt format_quantity(OutputIt out, const quantity_t& q, FormatContext& ctx) const
+  {
+    const std::locale locale = MP_UNITS_FMT_LOCALE(ctx.locale());
+    if (modifiers_format_str_.empty()) {
+      // default
+      out = MP_UNITS_STD_FMT::vformat_to(out, locale, rep_format_str_,
+                                         MP_UNITS_STD_FMT::make_format_args(q.numerical_value_ref_in(q.unit)));
+      if constexpr (mp_units::space_before_unit_symbol<unit>) *out++ = ' ';
+      return MP_UNITS_STD_FMT::vformat_to(out, locale, unit_format_str_, MP_UNITS_STD_FMT::make_format_args(q.unit));
+    }
+    // user provided format
+    quantity_formatter f{*this, out, q, locale};
+    parse_quantity_specs(modifiers_format_str_.data(), modifiers_format_str_.data() + modifiers_format_str_.size(), f);
+    return f.out;
+  }
+
+public:
+  constexpr auto parse(MP_UNITS_STD_FMT::basic_format_parse_context<Char>& ctx) -> decltype(ctx.begin())
+  {
+    auto begin = ctx.begin(), end = ctx.end();
+
+    begin = parse_fill_align_width(ctx, begin, end, specs_, mp_units::detail::fmt_align::right);
+    if (begin == end) return begin;
+
+    const format_checker checker{};
+    auto it = parse_quantity_specs(begin, end, checker);
+    modifiers_format_str_ = {begin, it};
+
+    return parse_defaults_specs(it, end);
+  }
+
+  template<typename FormatContext>
+  auto format(const quantity_t& q, FormatContext& ctx) const
+  {
+    auto specs = specs_;
+    mp_units::detail::handle_dynamic_spec<mp_units::detail::width_checker>(specs.width, specs.width_ref, ctx);
+
+    if (specs.width == 0) {
+      // Avoid extra copying if width is not specified
+      format_quantity(ctx.out(), q, ctx);
+      return ctx.out();
+    }
+    std::basic_string<Char> quantity_buffer;
+    format_quantity(std::back_inserter(quantity_buffer), q, ctx);
+
+    std::basic_string<Char> fill_align_width_format_str;
+    mp_units::detail::format_global_buffer(std::back_inserter(fill_align_width_format_str), specs);
+    return MP_UNITS_STD_FMT::vformat_to(ctx.out(), fill_align_width_format_str,
+                                        MP_UNITS_STD_FMT::make_format_args(quantity_buffer));
+  }
+};
+
+#endif  // MP_UNITS_HOSTED
