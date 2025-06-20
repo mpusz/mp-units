@@ -83,7 +83,6 @@ Here is a simple example showing how to deal with such quantities:
 === "Header files"
 
     ```cpp
-    #include <mp-units/format.h>
     #include <mp-units/systems/si.h>
     #include <print>
 
@@ -114,7 +113,7 @@ The code above prints:
 A car driving 110 km in 2 h has an average speed of 15.28 m/s (55 km/h)
 ```
 
-!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/W93ovssda)"
+!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/8EPTh8YrE)"
 
 
 ### User-provided unit wrappers
@@ -201,7 +200,6 @@ The previous example can be re-typed using typed quantities in the following way
 === "Header files"
 
     ```cpp
-    #include <mp-units/format.h>
     #include <mp-units/systems/isq.h>
     #include <mp-units/systems/si.h>
     #include <print>
@@ -231,7 +229,7 @@ The previous example can be re-typed using typed quantities in the following way
 A car driving 110 km in 2 h has an average speed of 15.28 m/s (55 km/h)
 ```
 
-!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/MEK1ooEjo)"
+!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/joc4Yn9Mz)"
 
 In case we will accidentally make the same calculation error as before, this time, we will
 get a bit longer error message, this time also containing information about the quantity type:

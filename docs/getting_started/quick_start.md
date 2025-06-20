@@ -271,7 +271,6 @@ This introduces an additional type-safety.
 === "Header files"
 
     ```cpp
-    #include <mp-units/format.h>
     #include <mp-units/systems/si.h>
     #include <mp-units/systems/usc.h>
     #include <print>

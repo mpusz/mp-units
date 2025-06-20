@@ -91,8 +91,6 @@ and dimensional analysis can be performed without sacrificing on runtime perform
 accuracy. Please see the below example for a quick preview of basic library features:
 
 ```cpp
-#include <mp-units/format.h>
-#include <mp-units/ostream.h>
 #include <mp-units/systems/international.h>
 #include <mp-units/systems/isq.h>
 #include <mp-units/systems/si.h>
@@ -132,4 +130,4 @@ int main()
 }
 ```
 
-_Try it on the [Compiler Explorer](https://godbolt.org/z/nhqhT8Mzb)._
+_Try it on the [Compiler Explorer](https://godbolt.org/z/fxcjs19ah)._
