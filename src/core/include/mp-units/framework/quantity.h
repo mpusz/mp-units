@@ -79,7 +79,7 @@ concept ValuePreservingAssignment = std::assignable_from<T&, Arg> && is_value_pr
 template<auto FromUnit, auto ToUnit, typename Rep>
 concept ValuePreservingScaling =
   SaneScaling<FromUnit, ToUnit, Rep> &&
-  (treat_as_floating_point<Rep> || (integral_conversion_factor(FromUnit, ToUnit)) ||
+  (treat_as_floating_point<Rep> || integral_conversion_factor(FromUnit, ToUnit) ||
    unsatisfied<"Scaling from '{}' to '{}' is not value-preserving for '{}' representation type">(
      unit_symbol(FromUnit), unit_symbol(ToUnit), type_name<Rep>()));
 
