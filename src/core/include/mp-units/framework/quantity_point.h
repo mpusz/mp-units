@@ -329,7 +329,7 @@ public:
 
   // unit conversions
   template<detail::WeakUnitOf<quantity_spec> ToU>
-    requires detail::ValuePreservingScaling1Rep<unit, ToU{}, rep>
+    requires detail::ValuePreservingScaling<unit, ToU{}, rep>
   [[nodiscard]] constexpr QuantityPointOf<quantity_spec> auto in(ToU) const
   {
     return ::mp_units::quantity_point{quantity_ref_from(point_origin).in(ToU{}), point_origin};
@@ -344,7 +344,7 @@ public:
 
   template<RepresentationOf<quantity_spec> ToRep, detail::WeakUnitOf<quantity_spec> ToU>
     requires detail::ValuePreservingConstruction<ToRep, rep> &&
-             detail::ValuePreservingScaling2Reps<unit, rep, ToU{}, ToRep>
+             detail::ValuePreservingConversion<unit, rep, ToU{}, ToRep>
   [[nodiscard]] constexpr QuantityPointOf<quantity_spec> auto in(ToU) const
   {
     return ::mp_units::quantity_point{quantity_ref_from(point_origin).template in<ToRep>(ToU{}), point_origin};
@@ -438,7 +438,7 @@ public:
   // compound assignment operators
   template<auto R2, typename Rep2>
     requires(implicitly_convertible(get_quantity_spec(R2), quantity_spec)) &&
-            detail::ValuePreservingScaling2Reps<get_unit(R2), Rep2, unit, rep> &&
+            detail::ValuePreservingConversion<get_unit(R2), Rep2, unit, rep> &&
             requires(const quantity_type q) { quantity_from_origin_is_an_implementation_detail_ += q; }
   constexpr quantity_point& operator+=(const quantity<R2, Rep2>& q) &
   {
@@ -448,7 +448,7 @@ public:
 
   template<auto R2, typename Rep2>
     requires(implicitly_convertible(get_quantity_spec(R2), quantity_spec)) &&
-            detail::ValuePreservingScaling2Reps<get_unit(R2), Rep2, unit, rep> &&
+            detail::ValuePreservingConversion<get_unit(R2), Rep2, unit, rep> &&
             requires(const quantity_type q) { quantity_from_origin_is_an_implementation_detail_ -= q; }
   constexpr quantity_point& operator-=(const quantity<R2, Rep2>& q) &
   {

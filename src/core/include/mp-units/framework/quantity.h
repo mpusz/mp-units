@@ -77,14 +77,14 @@ template<typename T, typename Arg>
 concept ValuePreservingAssignment = std::assignable_from<T&, Arg> && is_value_preserving<std::remove_cvref_t<Arg>, T>;
 
 template<auto FromUnit, auto ToUnit, typename Rep>
-concept ValuePreservingScaling1Rep =
+concept ValuePreservingScaling =
   SaneScaling<FromUnit, ToUnit, Rep> &&
   (treat_as_floating_point<Rep> || (integral_conversion_factor(FromUnit, ToUnit)) ||
    unsatisfied<"Scaling from '{}' to '{}' is not value-preserving for '{}' representation type">(
      unit_symbol(FromUnit), unit_symbol(ToUnit), type_name<Rep>()));
 
 template<auto FromUnit, typename FromRep, auto ToUnit, typename ToRep>
-concept ValuePreservingScaling2Reps =
+concept ValuePreservingConversion =
   // TODO consider providing constraints of sudo_cast to check if representation types can be scaled between each other
   //  CastableReps<FromRep, ToRep, FromUnit, ToUnit> &&
   SaneScaling<FromUnit, ToUnit, ToRep> &&
@@ -97,7 +97,7 @@ template<typename QTo, typename QFrom>
 concept QuantityConstructibleFrom =
   Quantity<QTo> && Quantity<QFrom> && explicitly_convertible(QFrom::quantity_spec, QTo::quantity_spec) &&
   ValuePreservingConstruction<typename QTo::rep, typename QFrom::rep> &&
-  ValuePreservingScaling2Reps<QFrom::unit, typename QFrom::rep, QTo::unit, typename QTo::rep>;
+  ValuePreservingConversion<QFrom::unit, typename QFrom::rep, QTo::unit, typename QTo::rep>;
 
 template<typename T, typename Rep>
 concept ScalarValuePreservingTo = (!Quantity<T>) && Scalar<T> && is_value_preserving<T, Rep>;
@@ -245,7 +245,7 @@ public:
   }
 
   template<detail::WeakUnitOf<quantity_spec> ToU>
-    requires detail::ValuePreservingScaling1Rep<unit, ToU{}, rep>
+    requires detail::ValuePreservingScaling<unit, ToU{}, rep>
   [[nodiscard]] constexpr QuantityOf<quantity_spec> auto in(ToU) const
   {
     return quantity<detail::make_reference(quantity_spec, ToU{}), Rep>{*this};
@@ -260,7 +260,7 @@ public:
 
   template<RepresentationOf<quantity_spec> ToRep, detail::WeakUnitOf<quantity_spec> ToU>
     requires detail::ValuePreservingConstruction<ToRep, rep> &&
-             detail::ValuePreservingScaling2Reps<unit, rep, ToU{}, ToRep>
+             detail::ValuePreservingConversion<unit, rep, ToU{}, ToRep>
   [[nodiscard]] constexpr QuantityOf<quantity_spec> auto in(ToU) const
   {
     return quantity<detail::make_reference(quantity_spec, ToU{}), ToRep>{*this};
@@ -312,7 +312,7 @@ public:
 #endif
 
   template<detail::WeakUnitOf<quantity_spec> U>
-    requires detail::ValuePreservingScaling1Rep<unit, U{}, rep>
+    requires detail::ValuePreservingScaling<unit, U{}, rep>
   [[nodiscard]] constexpr rep numerical_value_in(U) const noexcept
   {
     return in(U{}).numerical_value_is_an_implementation_detail_;
@@ -400,7 +400,7 @@ public:
   // compound assignment operators
   template<auto R2, typename Rep2>
     requires(implicitly_convertible(get_quantity_spec(R2), quantity_spec)) &&
-            detail::ValuePreservingScaling2Reps<get_unit(R2), Rep2, unit, rep> && requires(rep& a, const Rep2 b) {
+            detail::ValuePreservingConversion<get_unit(R2), Rep2, unit, rep> && requires(rep& a, const Rep2 b) {
               { a += b } -> std::same_as<rep&>;
             }
   constexpr quantity& operator+=(const quantity<R2, Rep2>& other) &
@@ -414,7 +414,7 @@ public:
 
   template<auto R2, typename Rep2>
     requires(implicitly_convertible(get_quantity_spec(R2), quantity_spec)) &&
-            detail::ValuePreservingScaling2Reps<get_unit(R2), Rep2, unit, rep> && requires(rep& a, const Rep2 b) {
+            detail::ValuePreservingConversion<get_unit(R2), Rep2, unit, rep> && requires(rep& a, const Rep2 b) {
               { a -= b } -> std::same_as<rep&>;
             }
   constexpr quantity& operator-=(const quantity<R2, Rep2>& other) &
@@ -428,7 +428,7 @@ public:
 
   template<auto R2, typename Rep2>
     requires(!treat_as_floating_point<rep>) && (implicitly_convertible(get_quantity_spec(R2), quantity_spec)) &&
-            detail::ValuePreservingScaling2Reps<get_unit(R2), Rep2, unit, rep> && requires(rep& a, const Rep2 b) {
+            detail::ValuePreservingConversion<get_unit(R2), Rep2, unit, rep> && requires(rep& a, const Rep2 b) {
               { a %= b } -> std::same_as<rep&>;
             }
   constexpr quantity& operator%=(const quantity<R2, Rep2>& other) &
