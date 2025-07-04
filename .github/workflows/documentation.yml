@@ -69,7 +69,7 @@ jobs:
           sudo apt update
           sudo apt install latexmk texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended lmodern
           sudo apt install haskell-stack graphviz nodejs npm ghc cabal-install
-          npm install split mathjax-full mathjax-node-sre mathjax-node-cli
+          npm install split mathjax-full mathjax-node-sre mathjax-node-cli yargs@16.2.0
           cabal update
           echo "${{ github.workspace }}/node_modules/.bin" >> $GITHUB_PATH
       - name: Get git repos with API reference tools
@@ -77,14 +77,14 @@ jobs:
           git clone https://github.com/JohelEGP/jegp.cmake_modules.git --depth=1
           git clone https://github.com/JohelEGP/draft.git --branch=standardese_sources_base --depth=1
           git clone https://github.com/JohelEGP/cxxdraft-htmlgen.git --branch=standardese_sources_base --depth=1
-      # - name: Generate API reference
-      #   run: |
-      #     cmake -S docs/api_reference/src -B build \
-      #           -DCMAKE_MODULE_PATH="${{ github.workspace }}/jegp.cmake_modules/modules" \
-      #           -DJEGP_STANDARDESE_SOURCES_GIT_REPOSITORY="${{ github.workspace }}/draft" \
-      #           -DJEGP_CXXDRAFT_HTMLGEN_GIT_REPOSITORY="${{ github.workspace }}/cxxdraft-htmlgen"
-      #     cmake --build build
-      #     mv build/mp-units.html docs/api_reference/gen
+      - name: Generate API reference
+        run: |
+          cmake -S docs/api_reference/src -B build \
+                -DCMAKE_MODULE_PATH="${{ github.workspace }}/jegp.cmake_modules/modules" \
+                -DJEGP_STANDARDESE_SOURCES_GIT_REPOSITORY="${{ github.workspace }}/draft" \
+                -DJEGP_CXXDRAFT_HTMLGEN_GIT_REPOSITORY="${{ github.workspace }}/cxxdraft-htmlgen"
+          cmake --build build
+          mv build/mp-units.html docs/api_reference/gen
       - name: Installing pip dependencies
         run: |
           pip install conan mkdocs-material mkdocs-rss-plugin mkdocs-material[imaging] mkdocs-exclude mike
