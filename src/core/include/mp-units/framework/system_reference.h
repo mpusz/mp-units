@@ -23,11 +23,14 @@
 #pragma once
 
 // IWYU pragma: private, include <mp-units/framework.h>
+#include <mp-units/compat_macros.h>
 #include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/framework/quantity_spec.h>
 #include <mp-units/framework/reference.h>
 #include <mp-units/framework/unit.h>
+
+#if MP_UNITS_API_NATURAL_UNITS
 
 MP_UNITS_EXPORT
 namespace mp_units {
@@ -60,7 +63,7 @@ namespace mp_units {
  * @tparam CoU coherent unit for a quantity in this system
  */
 template<QuantitySpec auto Q, Unit auto CoU>
-  requires(!AssociatedUnit<decltype(CoU)>) || (CoU == one)
+  requires(!MP_UNITS_ASSOCIATED_UNIT_T(decltype(CoU))) || (CoU == one)
 struct system_reference {
   static constexpr auto quantity_spec = Q;
   static constexpr auto coherent_unit = CoU;
@@ -77,3 +80,5 @@ struct system_reference {
 };
 
 }  // namespace mp_units
+
+#endif  // MP_UNITS_API_NATURAL_UNITS

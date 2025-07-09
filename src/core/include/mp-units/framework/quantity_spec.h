@@ -23,6 +23,7 @@
 #pragma once
 
 // IWYU pragma: private, include <mp-units/framework.h>
+#include <mp-units/compat_macros.h>
 #include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/bits/quantity_spec_hierarchy.h>
@@ -107,7 +108,7 @@ concept DerivedQuantitySpec =
    (QuantityKindSpec<T> && is_specialization_of<MP_UNITS_NONCONST_TYPE(T::_quantity_spec_), derived_quantity_spec>));
 
 
-template<QuantitySpec QS, detail::WeakUnitOf<QS{}> U>
+template<QuantitySpec QS, MP_UNITS_WEAK_UNIT_OF(QS{}) U>
 [[nodiscard]] consteval Reference auto make_reference(QS, U u)
 {
   if constexpr (requires { requires(mp_units::get_quantity_spec(U{}) == QS{}); })

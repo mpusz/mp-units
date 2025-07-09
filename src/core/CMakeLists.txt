@@ -67,7 +67,6 @@ add_mp_units_module(
             include/mp-units/framework/representation_concepts.h
             include/mp-units/framework/symbol_text.h
             include/mp-units/framework/symbolic_expression.h
-            include/mp-units/framework/system_reference.h
             include/mp-units/framework/unit.h
             include/mp-units/framework/unit_concepts.h
             include/mp-units/framework/unit_magnitude.h
@@ -80,6 +79,13 @@ add_mp_units_module(
             include/mp-units/framework.h
     MODULE_INTERFACE_UNIT mp-units-core.cpp
 )
+
+if(${${projectPrefix}API_NATURAL_UNITS})
+    target_sources(
+        mp-units-core PUBLIC FILE_SET HEADERS BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include FILES
+                             include/mp-units/framework/system_reference.h
+    )
+endif()
 
 if(NOT ${projectPrefix}API_FREESTANDING)
     target_sources(
@@ -168,6 +174,14 @@ if(${projectPrefix}API_THROWING_CONSTRAINTS)
     target_compile_definitions(
         mp-units-core ${${projectPrefix}TARGET_SCOPE}
                       ${projectPrefix}API_THROWING_CONSTRAINTS=$<BOOL:${${projectPrefix}API_THROWING_CONSTRAINTS}>
+    )
+endif()
+
+# Natural units support
+if(${${projectPrefix}API_NATURAL_UNITS})
+    target_compile_definitions(
+        mp-units-core ${${projectPrefix}TARGET_SCOPE}
+                      ${projectPrefix}API_NATURAL_UNITS=$<BOOL:${${projectPrefix}API_NATURAL_UNITS}>
     )
 endif()
 

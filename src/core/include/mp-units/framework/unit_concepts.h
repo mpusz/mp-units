@@ -25,6 +25,7 @@
 // IWYU pragma: private, include <mp-units/framework.h>
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/bits/unsatisfied.h>
+#include <mp-units/compat_macros.h>
 #include <mp-units/framework/quantity_spec_concepts.h>
 #include <mp-units/framework/symbolic_expression.h>
 #include <mp-units/framework/unit_magnitude.h>
@@ -53,6 +54,8 @@ struct named_unit;
  */
 MP_UNITS_EXPORT template<typename T>
 concept PrefixableUnit = Unit<T> && is_derived_from_specialization_of_v<T, named_unit>;
+
+#if MP_UNITS_API_NATURAL_UNITS
 
 namespace detail {
 
@@ -91,6 +94,8 @@ template<Unit U>
 MP_UNITS_EXPORT template<typename U>
 concept AssociatedUnit = Unit<U> && detail::has_associated_quantity(U{});
 
+#endif
+
 /**
  * @brief A concept matching all units associated with the provided quantity spec
  *
@@ -99,16 +104,20 @@ concept AssociatedUnit = Unit<U> && detail::has_associated_quantity(U{});
  */
 MP_UNITS_EXPORT template<typename U, auto QS>
 concept UnitOf =
-  AssociatedUnit<U> && QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS))> &&
+  MP_UNITS_ASSOCIATED_UNIT<U> && QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS))> &&
   (implicitly_convertible(get_quantity_spec(U{}), QS) ||
    (unsatisfied<"Unit '{}' is associated with quantity of kind '{}' which is not convertible to the '{}' quantity">(
      U{}, type_name(get_quantity_spec(U{})._quantity_spec_), type_name(QS))));
 
 namespace detail {
 
+#if MP_UNITS_API_NATURAL_UNITS
+
 template<typename U, auto QS>
 concept WeakUnitOf =
   Unit<U> && QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS))> && ((!AssociatedUnit<U>) || UnitOf<U, QS>);
+
+#endif
 
 template<auto U1, auto U2>
 concept UnitsOfCompatibleQuantities =
@@ -126,9 +135,10 @@ concept ConvertibleUnits = (get_canonical_unit(U1).reference_unit == get_canonic
 template<typename U1, auto U2>
 concept UnitConvertibleTo =
   Unit<U1> && Unit<MP_UNITS_REMOVE_CONST(decltype(U2))> &&
-  ((U1{} == U2) || ((!AssociatedUnit<U1> || !AssociatedUnit<MP_UNITS_REMOVE_CONST(decltype(U2))> ||
-                     UnitsOfCompatibleQuantities<U1{}, U2>) &&
-                    ConvertibleUnits<U1{}, U2>));
+  ((U1{} == U2) ||
+   ((!MP_UNITS_ASSOCIATED_UNIT_T(U1) || !MP_UNITS_ASSOCIATED_UNIT_T(MP_UNITS_REMOVE_CONST(decltype(U2))) ||
+     UnitsOfCompatibleQuantities<U1{}, U2>) &&
+    ConvertibleUnits<U1{}, U2>));
 
 template<typename T>
 concept OffsetUnit = Unit<T> && requires { T::_point_origin_; };

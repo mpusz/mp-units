@@ -23,6 +23,7 @@
 #pragma once
 
 // IWYU pragma: private, include <mp-units/framework.h>
+#include <mp-units/compat_macros.h>
 #include <mp-units/bits/get_associated_quantity.h>
 #include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
@@ -316,6 +317,8 @@ struct named_unit<Symbol, QS, PO> : detail::unit_interface {
   static constexpr auto _point_origin_ = PO;
 };
 
+#if MP_UNITS_API_NATURAL_UNITS
+
 /**
  * @brief Specialization for a unit that can be reused by several base quantities
  *
@@ -332,6 +335,8 @@ struct named_unit<Symbol> : detail::unit_interface {
   using _base_type_ = named_unit;           // exposition only
   static constexpr auto _symbol_ = Symbol;  ///< Unique base unit identifier
 };
+
+#endif  // MP_UNITS_API_NATURAL_UNITS
 
 /**
  * @brief Specialization for a unit with special name
@@ -365,7 +370,7 @@ struct named_unit<Symbol, U, PO> : decltype(U)::_base_type_ {
  * @tparam Unit a unit for which we provide a special name
  * @tparam QuantitySpec a specification of a quantity to be measured with this unit
  */
-template<symbol_text Symbol, AssociatedUnit auto U, detail::QuantityKindSpec auto QS>
+template<symbol_text Symbol, MP_UNITS_ASSOCIATED_UNIT auto U, detail::QuantityKindSpec auto QS>
   requires(!Symbol.empty()) && (QS.dimension == detail::get_associated_quantity(U).dimension)
 struct named_unit<Symbol, U, QS> : decltype(U)::_base_type_ {
   using _base_type_ = named_unit;           // exposition only
@@ -373,7 +378,7 @@ struct named_unit<Symbol, U, QS> : decltype(U)::_base_type_ {
   static constexpr auto _quantity_spec_ = QS;
 };
 
-template<symbol_text Symbol, AssociatedUnit auto U, detail::QuantityKindSpec auto QS, PointOrigin auto PO>
+template<symbol_text Symbol, MP_UNITS_ASSOCIATED_UNIT auto U, detail::QuantityKindSpec auto QS, PointOrigin auto PO>
   requires(!Symbol.empty()) && (QS.dimension == detail::get_associated_quantity(U).dimension)
 struct named_unit<Symbol, U, QS, PO> : decltype(U)::_base_type_ {
   using _base_type_ = named_unit;           // exposition only

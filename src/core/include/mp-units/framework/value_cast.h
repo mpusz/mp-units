@@ -25,6 +25,7 @@
 // IWYU pragma: private, include <mp-units/framework.h>
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/bits/sudo_cast.h>
+#include <mp-units/compat_macros.h>
 #include <mp-units/framework/customization_points.h>
 #include <mp-units/framework/quantity_concepts.h>
 #include <mp-units/framework/quantity_point_concepts.h>
@@ -75,8 +76,8 @@ concept SaneScaling = UnitConvertibleTo<MP_UNITS_REMOVE_CONST(decltype(FromU)), 
  * @tparam ToU a unit to use for a target quantity
  */
 template<auto ToU, typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>>
-  requires detail::WeakUnitOf<MP_UNITS_REMOVE_CONST(decltype(ToU)), Q::quantity_spec> &&
-           detail::SaneScaling<Q::unit, ToU, typename Q::rep>
+  requires(MP_UNITS_WEAK_UNIT_OF(MP_UNITS_REMOVE_CONST(decltype(ToU)), Q::quantity_spec)) &&
+          detail::SaneScaling<Q::unit, ToU, typename Q::rep>
 [[nodiscard]] constexpr Quantity auto value_cast(FwdQ&& q)
 {
   return detail::sudo_cast<quantity<detail::make_reference(Q::quantity_spec, ToU), typename Q::rep>>(
@@ -112,18 +113,18 @@ template<typename ToRep, typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>>
  * @tparam ToRep a representation type to use for the target quantity
  */
 template<Unit auto ToU, typename ToRep, typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>>
-  requires detail::WeakUnitOf<MP_UNITS_REMOVE_CONST(decltype(ToU)), Q::quantity_spec> &&
-           RepresentationOf<ToRep, Q::quantity_spec> && std::constructible_from<ToRep, typename Q::rep> &&
-           detail::SaneScaling<Q::unit, ToU, ToRep>
+  requires(MP_UNITS_WEAK_UNIT_OF(MP_UNITS_REMOVE_CONST(decltype(ToU)), Q::quantity_spec)) &&
+          RepresentationOf<ToRep, Q::quantity_spec> && std::constructible_from<ToRep, typename Q::rep> &&
+          detail::SaneScaling<Q::unit, ToU, ToRep>
 [[nodiscard]] constexpr Quantity auto value_cast(FwdQ&& q)
 {
   return detail::sudo_cast<quantity<detail::make_reference(Q::quantity_spec, ToU), ToRep>>(std::forward<FwdQ>(q));
 }
 
 template<typename ToRep, Unit auto ToU, typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>>
-  requires detail::WeakUnitOf<MP_UNITS_REMOVE_CONST(decltype(ToU)), Q::quantity_spec> &&
-           RepresentationOf<ToRep, Q::quantity_spec> && std::constructible_from<ToRep, typename Q::rep> &&
-           detail::SaneScaling<Q::unit, ToU, ToRep>
+  requires(MP_UNITS_WEAK_UNIT_OF(MP_UNITS_REMOVE_CONST(decltype(ToU)), Q::quantity_spec)) &&
+          RepresentationOf<ToRep, Q::quantity_spec> && std::constructible_from<ToRep, typename Q::rep> &&
+          detail::SaneScaling<Q::unit, ToU, ToRep>
 [[nodiscard]] constexpr Quantity auto value_cast(FwdQ&& q)
 {
   return value_cast<ToU, ToRep>(std::forward<FwdQ>(q));
@@ -146,7 +147,7 @@ template<typename ToRep, Unit auto ToU, typename FwdQ, Quantity Q = std::remove_
  */
 template<Quantity ToQ, typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>>
   requires(ToQ::quantity_spec == Q::quantity_spec) &&
-          detail::WeakUnitOf<MP_UNITS_NONCONST_TYPE(ToQ::unit), Q::quantity_spec> &&
+          (MP_UNITS_WEAK_UNIT_OF(MP_UNITS_NONCONST_TYPE(ToQ::unit), Q::quantity_spec)) &&
           std::constructible_from<typename ToQ::rep, typename Q::rep> &&
           detail::SaneScaling<Q::unit, ToQ::unit, typename ToQ::rep>
 [[nodiscard]] constexpr Quantity auto value_cast(FwdQ&& q)
@@ -165,8 +166,8 @@ template<Quantity ToQ, typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>>
  * @tparam ToU a unit to use for a target quantity point
  */
 template<Unit auto ToU, typename FwdQP, QuantityPoint QP = std::remove_cvref_t<FwdQP>>
-  requires detail::WeakUnitOf<MP_UNITS_REMOVE_CONST(decltype(ToU)), QP::quantity_spec> &&
-           detail::SaneScaling<QP::unit, ToU, typename QP::rep>
+  requires(MP_UNITS_WEAK_UNIT_OF(MP_UNITS_REMOVE_CONST(decltype(ToU)), QP::quantity_spec)) &&
+          detail::SaneScaling<QP::unit, ToU, typename QP::rep>
 [[nodiscard]] constexpr QuantityPoint auto value_cast(FwdQP&& qp)
 {
   return quantity_point{value_cast<ToU>(std::forward<FwdQP>(qp).quantity_from_origin_is_an_implementation_detail_),
@@ -203,9 +204,9 @@ template<typename ToRep, typename FwdQP, QuantityPoint QP = std::remove_cvref_t<
  * @tparam ToRep a representation type to use for the target quantity
  */
 template<Unit auto ToU, typename ToRep, typename FwdQP, QuantityPoint QP = std::remove_cvref_t<FwdQP>>
-  requires detail::WeakUnitOf<MP_UNITS_REMOVE_CONST(decltype(ToU)), QP::quantity_spec> &&
-           RepresentationOf<ToRep, QP::quantity_spec> && std::constructible_from<ToRep, typename QP::rep> &&
-           detail::SaneScaling<QP::unit, ToU, ToRep>
+  requires(MP_UNITS_WEAK_UNIT_OF(MP_UNITS_REMOVE_CONST(decltype(ToU)), QP::quantity_spec)) &&
+          RepresentationOf<ToRep, QP::quantity_spec> && std::constructible_from<ToRep, typename QP::rep> &&
+          detail::SaneScaling<QP::unit, ToU, ToRep>
 [[nodiscard]] constexpr QuantityPoint auto value_cast(FwdQP&& qp)
 {
   return quantity_point{
@@ -214,9 +215,9 @@ template<Unit auto ToU, typename ToRep, typename FwdQP, QuantityPoint QP = std::
 }
 
 template<typename ToRep, Unit auto ToU, typename FwdQP, QuantityPoint QP = std::remove_cvref_t<FwdQP>>
-  requires detail::WeakUnitOf<MP_UNITS_REMOVE_CONST(decltype(ToU)), QP::quantity_spec> &&
-           RepresentationOf<ToRep, QP::quantity_spec> && std::constructible_from<ToRep, typename QP::rep> &&
-           detail::SaneScaling<QP::unit, ToU, ToRep>
+  requires(MP_UNITS_WEAK_UNIT_OF(MP_UNITS_REMOVE_CONST(decltype(ToU)), QP::quantity_spec)) &&
+          RepresentationOf<ToRep, QP::quantity_spec> && std::constructible_from<ToRep, typename QP::rep> &&
+          detail::SaneScaling<QP::unit, ToU, ToRep>
 [[nodiscard]] constexpr QuantityPoint auto value_cast(FwdQP&& qp)
 {
   return value_cast<ToU, ToRep>(std::forward<FwdQP>(qp));
@@ -240,7 +241,7 @@ template<typename ToRep, Unit auto ToU, typename FwdQP, QuantityPoint QP = std::
  */
 template<Quantity ToQ, typename FwdQP, QuantityPoint QP = std::remove_cvref_t<FwdQP>>
   requires(ToQ::quantity_spec == QP::quantity_spec) &&
-          detail::WeakUnitOf<MP_UNITS_NONCONST_TYPE(ToQ::unit), QP::quantity_spec> &&
+          (MP_UNITS_WEAK_UNIT_OF(MP_UNITS_NONCONST_TYPE(ToQ::unit), QP::quantity_spec)) &&
           std::constructible_from<typename ToQ::rep, typename QP::rep> &&
           detail::SaneScaling<QP::unit, ToQ::unit, typename ToQ::rep>
 [[nodiscard]] constexpr QuantityPoint auto value_cast(FwdQP&& qp)
@@ -279,7 +280,7 @@ template<Quantity ToQ, typename FwdQP, QuantityPoint QP = std::remove_cvref_t<Fw
  */
 template<QuantityPoint ToQP, typename FwdQP, QuantityPoint QP = std::remove_cvref_t<FwdQP>>
   requires(ToQP::quantity_spec == QP::quantity_spec) &&
-          detail::WeakUnitOf<MP_UNITS_NONCONST_TYPE(ToQP::unit), QP::quantity_spec> &&
+          (MP_UNITS_WEAK_UNIT_OF(MP_UNITS_NONCONST_TYPE(ToQP::unit), QP::quantity_spec)) &&
           (detail::same_absolute_point_origins(ToQP::point_origin, QP::point_origin)) &&
           std::constructible_from<typename ToQP::rep, typename QP::rep> &&
           detail::SaneScaling<QP::unit, ToQP::unit, typename ToQP::rep>

@@ -69,6 +69,7 @@ inline constexpr struct metre_ final : named_unit<"m", kind_of<length>> {} metre
 inline constexpr struct gram_ final : named_unit<"g", kind_of<mass>> {} gram;
 inline constexpr auto kilogram = si::kilo<gram>;
 
+#if MP_UNITS_API_NATURAL_UNITS
 namespace nu {
 // hypothetical natural system of units for c=1
 
@@ -80,6 +81,7 @@ inline constexpr struct length : system_reference<length_{}, second> {} length;
 inline constexpr struct speed : system_reference<speed_{}, second / second> {} speed;
 
 }
+#endif
 
 // derived named units
 inline constexpr struct radian_ final : named_unit<"rad", metre / metre, kind_of<angular_measure>> {} radian;
@@ -218,6 +220,7 @@ static_assert(is_of_type<120.L * length[kilometre] / (2 * time[hour]),
 static_assert(is_of_type<1. / 4 * area[square(metre)], decltype(1. * area[square(metre)] / 4)>);
 static_assert(1. / 4 * area[square(metre)] == 1. * area[square(metre)] / 4);
 
+#if MP_UNITS_API_NATURAL_UNITS
 // Natural Units
 static_assert(is_of_type<42 * nu::time[nu::second], quantity<reference<time_, nu::second_>{}, int>>);
 static_assert(is_of_type<42 * nu::time[nu::minute], quantity<reference<time_, nu::minute_>{}, int>>);
@@ -251,6 +254,7 @@ static_assert(invalid_nu_unit<speed, nu::second / nu::second>);
 static_assert(invalid_nu_unit<speed, nu::second / second>);
 static_assert(invalid_nu_unit<mass * length / time, kilogram * nu::second / nu::second>);
 static_assert(invalid_nu_unit<force, kilogram * nu::second / nu::second>);
+#endif
 
 // mixing associated units and references
 static_assert(second != time[second]);

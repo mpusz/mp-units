@@ -87,12 +87,14 @@ option(${projectPrefix}API_THROWING_CONSTRAINTS "Enable throwing constraints"
 option(${projectPrefix}API_FREESTANDING "Builds only freestanding part of the library" OFF)
 set(${projectPrefix}API_CONTRACTS GSL-LITE CACHE STRING "Enable contract checking")
 check_cache_var_values(API_CONTRACTS NONE GSL-LITE MS-GSL)
+option(${projectPrefix}API_NATURAL_UNITS "Enables natural units support" ON)
 
 message(STATUS "${projectPrefix}API_STD_FORMAT: ${${projectPrefix}API_STD_FORMAT}")
 message(STATUS "${projectPrefix}API_NO_CRTP: ${${projectPrefix}API_NO_CRTP}")
 message(STATUS "${projectPrefix}API_THROWING_CONSTRAINTS: ${${projectPrefix}API_THROWING_CONSTRAINTS}")
 message(STATUS "${projectPrefix}API_FREESTANDING: ${${projectPrefix}API_FREESTANDING}")
 message(STATUS "${projectPrefix}API_CONTRACTS: ${${projectPrefix}API_CONTRACTS}")
+message(STATUS "${projectPrefix}API_NATURAL_UNITS: ${${projectPrefix}API_NATURAL_UNITS}")
 
 # validate options
 if(${projectPrefix}API_FREESTANDING AND NOT ${projectPrefix}API_CONTRACTS STREQUAL "NONE")

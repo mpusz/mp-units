@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <mp-units/compat_macros.h>
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/framework/customization_points.h>
 #include <mp-units/framework/quantity.h>
@@ -411,11 +412,15 @@ template<Unit auto To, auto R, typename Rep>
     value_cast<To>(representation_values<Rep>::one() / q);
   }
 {
-  if constexpr (AssociatedUnit<MP_UNITS_REMOVE_CONST(decltype(To))>) {
+#if MP_UNITS_API_NATURAL_UNITS
+  if constexpr (!MP_UNITS_ASSOCIATED_UNIT<MP_UNITS_REMOVE_CONST(decltype(To))>)
+    return (representation_values<Rep>::one() * one).force_in(To * q.unit) / q;
+  else
+#endif
+  {
     constexpr QuantitySpec auto qs = get_quantity_spec(To) * quantity<R, Rep>::quantity_spec;
     return qs(representation_values<Rep>::one() * one).force_in(To * q.unit) / q;
-  } else
-    return (representation_values<Rep>::one() * one).force_in(To * q.unit) / q;
+  }
 }
 
 /**

@@ -23,6 +23,7 @@
 #pragma once
 
 // IWYU pragma: private, include <mp-units/framework.h>
+#include <mp-units/compat_macros.h>
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/framework/quantity_spec_concepts.h>
 #include <mp-units/framework/unit_concepts.h>
@@ -34,7 +35,7 @@ struct reference;
 
 MP_UNITS_EXPORT_BEGIN
 
-template<AssociatedUnit U>
+template<MP_UNITS_ASSOCIATED_UNIT U>
 [[nodiscard]] consteval QuantitySpec auto get_quantity_spec(U);
 
 template<typename Q, typename U>
@@ -43,7 +44,7 @@ template<typename Q, typename U>
   return Q{};
 }
 
-[[nodiscard]] consteval Unit auto get_unit(AssociatedUnit auto u) { return u; }
+[[nodiscard]] consteval Unit auto get_unit(MP_UNITS_ASSOCIATED_UNIT auto u) { return u; }
 
 template<typename Q, typename U>
 [[nodiscard]] consteval Unit auto get_unit(reference<Q, U>)
@@ -57,7 +58,7 @@ template<typename Q, typename U>
  * Satisfied by all specializations of @c reference.
  */
 template<typename T>
-concept Reference = AssociatedUnit<T> || is_specialization_of<T, reference>;
+concept Reference = MP_UNITS_ASSOCIATED_UNIT_T(T) || is_specialization_of<T, reference>;
 
 /**
  * @brief A concept matching all references of the provided quantity spec

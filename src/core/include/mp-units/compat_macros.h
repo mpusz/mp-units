@@ -40,6 +40,20 @@
 
 #endif
 
+#if MP_UNITS_API_NATURAL_UNITS
+
+#define MP_UNITS_ASSOCIATED_UNIT AssociatedUnit
+#define MP_UNITS_ASSOCIATED_UNIT_T(U) AssociatedUnit<U>
+#define MP_UNITS_WEAK_UNIT_OF(...) detail::WeakUnitOf<__VA_ARGS__>
+
+#else
+
+#define MP_UNITS_ASSOCIATED_UNIT Unit
+#define MP_UNITS_ASSOCIATED_UNIT_T(U) Unit<U>
+#define MP_UNITS_WEAK_UNIT_OF(...) UnitOf<__VA_ARGS__>
+
+#endif
+
 #if MP_UNITS_HOSTED
 #define MP_UNITS_THROW(expr) throw expr
 #else
