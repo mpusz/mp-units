@@ -47,7 +47,7 @@ MP_UNITS_EXPORT_BEGIN
  * @brief Specifies if a value of a type should be treated as a floating-point value
  *
  * This type trait should be specialized for a custom representation type to specify
- * that values fo this type should be treated by the library as a floating-point ones
+ * that values of this type should be treated by the library as a floating-point ones
  * which will enable implicit conversions between quantities.
  *
  * @tparam Rep a representation type for which a type trait is defined
@@ -59,6 +59,19 @@ constexpr bool treat_as_floating_point =
 #else
   std::is_floating_point_v<value_type_t<Rep>>;
 #endif
+
+/**
+ * @brief Specifies if a specific conversion between two types preserves the value
+ *
+ * This type trait should be specialized for a custom representation types to specify
+ * weather the conversion from the source type to the destination type preserves the value
+ * or not. Value-truncating conversions should be forced by the user with explicit casts.
+ *
+ * @tparam From a source representation type
+ * @tparam To a destination representation type
+ */
+template<typename From, typename To>
+constexpr bool is_value_preserving = treat_as_floating_point<To> || !treat_as_floating_point<From>;
 
 template<typename Rep>
 [[deprecated("2.5.0: `is_scalar` is no longer necessary and can simply be removed")]]

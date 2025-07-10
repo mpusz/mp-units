@@ -224,6 +224,7 @@ static_assert(std::convertible_to<quantity<si::metre, cartesian_vector<double>>,
                                   quantity<isq::position_vector[m], cartesian_vector<double>>>);
 #endif
 
+
 // conversion between different quantities not allowed
 static_assert(!std::constructible_from<quantity<isq::length[m]>, quantity<isq::time[s]>>);
 static_assert(!std::convertible_to<quantity<isq::time[s]>, quantity<isq::length[m]>>);
@@ -262,6 +263,11 @@ static_assert(!std::convertible_to<quantity<isq::angular_measure[rad]>, quantity
 static_assert(!std::convertible_to<quantity<rad>, quantity<one>>);
 static_assert(!std::convertible_to<quantity<isq::angular_measure[one]>, quantity<dimensionless[one]>>);
 static_assert(!std::convertible_to<quantity<isq::angular_measure[one]>, quantity<one>>);
+
+// explicit-construction only
+static_assert(std::constructible_from<quantity<isq::distance[m]>, quantity<isq::length[m]>>);
+static_assert(!std::convertible_to<quantity<isq::length[m]>, quantity<isq::distance[m]>>);
+
 
 ///////////////////////
 // obtaining a number
@@ -534,73 +540,81 @@ static_assert(is_same_v<decltype((+(short{0} * m)).numerical_value_in(m)), int>)
 ////////////////////////
 
 // same type
-static_assert((1 * m += 1 * m).numerical_value_in(m) == 2);
-static_assert((2 * m -= 1 * m).numerical_value_in(m) == 1);
-static_assert((1 * m *= 2).numerical_value_in(m) == 2);
-static_assert((2 * m /= 2).numerical_value_in(m) == 1);
-static_assert((1 * m *= 2 * one).numerical_value_in(m) == 2);
-static_assert((2 * m /= 2 * one).numerical_value_in(m) == 1);
-static_assert((7 * m %= 2 * m).numerical_value_in(m) == 1);
+static_assert([q = 1 * m]() mutable { return q += 1 * m; }().numerical_value_in(m) == 2);
+static_assert([q = 2 * m]() mutable { return q -= 1 * m; }().numerical_value_in(m) == 1);
+static_assert([q = 1 * m]() mutable { return q *= 2; }().numerical_value_in(m) == 2);
+static_assert([q = 2 * m]() mutable { return q /= 2; }().numerical_value_in(m) == 1);
+static_assert([q = 1 * m]() mutable { return q *= 2 * one; }().numerical_value_in(m) == 2);
+static_assert([q = 2 * m]() mutable { return q /= 2 * one; }().numerical_value_in(m) == 1);
+static_assert([q = 7 * m]() mutable { return q %= 2 * m; }().numerical_value_in(m) == 1);
 
 #if MP_UNITS_HOSTED
-static_assert(((1. + 1i) * V += (1. + 1i) * V).numerical_value_in(V) == 2. + 2i);
-static_assert(((2. + 2i) * V -= (1. + 1i) * V).numerical_value_in(V) == 1. + 1i);
-static_assert(((1. + 1i) * V += 1. * V).numerical_value_in(V) == 2. + 1i);
-static_assert(((2. + 2i) * V -= 1. * V).numerical_value_in(V) == 1. + 2i);
-static_assert(((1. + 1i) * V *= 2.).numerical_value_in(V) == 2. + 2i);
-static_assert(((2. + 2i) * V /= 2.).numerical_value_in(V) == 1. + 1i);
-static_assert(((1. + 1i) * V *= 2. * one).numerical_value_in(V) == 2. + 2i);
-static_assert(((2. + 2i) * V /= 2. * one).numerical_value_in(V) == 1. + 1i);
-static_assert(((1. + 1i) * V *= 2. + 1i).numerical_value_in(V) == (1. + 1i) * (2. + 1i));
-static_assert(((2. + 2i) * V /= 2. + 1i).numerical_value_in(V) == (2. + 2i) / (2. + 1i));
-static_assert(((1. + 1i) * V *= (2. + 1i) * one).numerical_value_in(V) == (1. + 1i) * (2. + 1i));
-static_assert(((2. + 2i) * V /= (2. + 1i) * one).numerical_value_in(V) == (2. + 2i) / (2. + 1i));
+static_assert([q = (1. + 1i) * V]() mutable { return q += (1. + 1i) * V; }().numerical_value_in(V) == 2. + 2i);
+static_assert([q = (2. + 2i) * V]() mutable { return q -= (1. + 1i) * V; }().numerical_value_in(V) == 1. + 1i);
+static_assert([q = (1. + 1i) * V]() mutable { return q += 1. * V; }().numerical_value_in(V) == 2. + 1i);
+static_assert([q = (2. + 2i) * V]() mutable { return q -= 1. * V; }().numerical_value_in(V) == 1. + 2i);
+static_assert([q = (1. + 1i) * V]() mutable { return q *= 2.; }().numerical_value_in(V) == 2. + 2i);
+static_assert([q = (2. + 2i) * V]() mutable { return q /= 2.; }().numerical_value_in(V) == 1. + 1i);
+static_assert([q = (1. + 1i) * V]() mutable { return q *= 2. * one; }().numerical_value_in(V) == 2. + 2i);
+static_assert([q = (2. + 2i) * V]() mutable { return q /= 2. * one; }().numerical_value_in(V) == 1. + 1i);
+static_assert([q = (1. + 1i) * V]() mutable { return q *= (2. + 1i) * one; }().numerical_value_in(V) ==
+              (1. + 1i) * (2. + 1i));
+static_assert([q = (2. + 2i) * V]() mutable { return q /= (2. + 1i) * one; }().numerical_value_in(V) ==
+              (2. + 2i) / (2. + 1i));
 
-static_assert((v{1., 2., 3.}* m += v{1., 2., 3.} * m).numerical_value_in(m) == v{2., 4., 6.});
-static_assert((v{2., 4., 6.}* m -= v{1., 2., 3.} * m).numerical_value_in(m) == v{1., 2., 3.});
-static_assert((v{1., 2., 3.}* m *= 2.).numerical_value_in(m) == v{2., 4., 6.});
-static_assert((v{2., 4., 6.}* m /= 2.).numerical_value_in(m) == v{1., 2., 3.});
-static_assert((v{1., 2., 3.}* m *= 2. * one).numerical_value_in(m) == v{2., 4., 6.});
-static_assert((v{2., 4., 6.}* m /= 2. * one).numerical_value_in(m) == v{1., 2., 3.});
+static_assert([q = v{1., 2., 3.} * m]() mutable { return q += v{1., 2., 3.} * m; }().numerical_value_in(m) ==
+              v{2., 4., 6.});
+static_assert([q = v{2., 4., 6.} * m]() mutable { return q -= v{1., 2., 3.} * m; }().numerical_value_in(m) ==
+              v{1., 2., 3.});
+static_assert([q = v{1., 2., 3.} * m]() mutable { return q *= 2.; }().numerical_value_in(m) == v{2., 4., 6.});
+static_assert([q = v{2., 4., 6.} * m]() mutable { return q /= 2.; }().numerical_value_in(m) == v{1., 2., 3.});
+static_assert([q = v{1., 2., 3.} * m]() mutable { return q *= 2. * one; }().numerical_value_in(m) == v{2., 4., 6.});
+static_assert([q = v{2., 4., 6.} * m]() mutable { return q /= 2. * one; }().numerical_value_in(m) == v{1., 2., 3.});
 #endif
 
 // different representation types
-static_assert((2.5 * m += 3 * m).numerical_value_in(m) == 5.5);
-static_assert((5.5 * m -= 3 * m).numerical_value_in(m) == 2.5);
-static_assert((2.5 * m *= 3).numerical_value_in(m) == 7.5);
-static_assert((7.5 * m /= 3).numerical_value_in(m) == 2.5);
-static_assert((2.5 * m *= 3 * one).numerical_value_in(m) == 7.5);
-static_assert((7.5 * m /= 3 * one).numerical_value_in(m) == 2.5);
+static_assert([q = 2.5 * m]() mutable { return q += 3 * m; }().numerical_value_in(m) == 5.5);
+static_assert([q = 5.5 * m]() mutable { return q -= 3 * m; }().numerical_value_in(m) == 2.5);
+static_assert([q = 2.5 * m]() mutable { return q *= 3; }().numerical_value_in(m) == 7.5);
+static_assert([q = 7.5 * m]() mutable { return q /= 3; }().numerical_value_in(m) == 2.5);
+static_assert([q = 2.5 * m]() mutable { return q *= 3 * one; }().numerical_value_in(m) == 7.5);
+static_assert([q = 7.5 * m]() mutable { return q /= 3 * one; }().numerical_value_in(m) == 2.5);
 
 // different units
-static_assert((1 * m += 1 * km).numerical_value_in(m) == 1001);
-static_assert((2000 * m -= 1 * km).numerical_value_in(m) == 1000);
-static_assert((3500 * m %= 1 * km).numerical_value_in(m) == 500);
+static_assert([q = 1 * m]() mutable { return q += 1 * km; }().numerical_value_in(m) == 1001);
+static_assert([q = 2000 * m]() mutable { return q -= 1 * km; }().numerical_value_in(m) == 1000);
+static_assert([q = 3500 * m]() mutable { return q %= 1 * km; }().numerical_value_in(m) == 500);
 #if MP_UNITS_HOSTED
-static_assert(((1000. + 1000i) * V += (1. + 1i) * kV).numerical_value_in(V) == 2000. + 2000i);
-static_assert(((2000. + 2000i) * V -= (1. + 1i) * kV).numerical_value_in(V) == 1000. + 1000i);
-static_assert((v{1000., 2000., 3000.}* m += v{1., 2., 3.} * km).numerical_value_in(m) == v{2000., 4000., 6000.});
-static_assert((v{2000., 4000., 6000.}* m -= v{1., 2., 3.} * km).numerical_value_in(m) == v{1000., 2000., 3000.});
+static_assert([q = (1000. + 1000i) * V]() mutable { return q += (1. + 1i) * kV; }().numerical_value_in(V) ==
+              2000. + 2000i);
+static_assert([q = (2000. + 2000i) * V]() mutable { return q -= (1. + 1i) * kV; }().numerical_value_in(V) ==
+              1000. + 1000i);
+static_assert([q = (v{1000., 2000., 3000.} * m)]() mutable { return q += v{1., 2., 3.} * km; }().numerical_value_in(
+                m) == v{2000., 4000., 6000.});
+static_assert([q = (v{2000., 4000., 6000.} * m)]() mutable { return q -= v{1., 2., 3.} * km; }().numerical_value_in(
+                m) == v{1000., 2000., 3000.});
 #endif
 
 // convertible quantity types
-static_assert((isq::length(1 * m) += isq::height(1 * m)).numerical_value_in(m) == 2);
-static_assert((isq::length(2 * m) -= isq::height(1 * m)).numerical_value_in(m) == 1);
-static_assert((isq::length(7 * m) %= isq::height(2 * m)).numerical_value_in(m) == 1);
+static_assert([q = isq::length(1 * m)]() mutable { return q += isq::height(1 * m); }().numerical_value_in(m) == 2);
+static_assert([q = isq::length(2 * m)]() mutable { return q -= isq::height(1 * m); }().numerical_value_in(m) == 1);
+static_assert([q = isq::length(7 * m)]() mutable { return q %= isq::height(2 * m); }().numerical_value_in(m) == 1);
 
-// static_assert((std::uint8_t{255} * m %= 256 * m).numerical_value_in(m) == [] {
-//   std::uint8_t ui(255);
-//   return ui %= 256;
-// }());  // UB
-static_assert((std::uint8_t{255}* m %= 257 * m).numerical_value_in(m) == [] {
-  std::uint8_t ui(255);
-  return ui %= 257;
-}());
+static_assert([q = std::uint8_t{255} * m]() mutable { return q %= 256 * m; }().numerical_value_in(m) ==
+              [] {
+                std::uint8_t ui(255);
+                return ui %= 256;
+              }());
+static_assert([q = std::uint8_t{255} * m]() mutable { return q %= 257 * m; }().numerical_value_in(m) ==
+              [] {
+                std::uint8_t ui(255);
+                return ui %= 257;
+              }());
 
 // lack of consistency with binary operator
 static_assert(
   is_of_type<1 * (isq::length / isq::time)[m / s] + 1 * isq::speed[m / s], quantity<isq::speed[m / s], int>>);
-static_assert(is_of_type<(1 * (isq::length / isq::time)[m / s] += 1 * isq::speed[m / s]),
+static_assert(is_of_type<[q = 1 * (isq::length / isq::time)[m / s]]() mutable { return q += 1 * isq::speed[m / s]; }(),
                          quantity<(isq::length / isq::time)[m / s], int>>);
 
 template<template<auto, typename> typename Q>
@@ -990,8 +1004,8 @@ static_assert(1 * si::si2019::speed_of_light_in_vacuum + 10 * isq::speed[m / s] 
 [[maybe_unused]] constexpr quantity<isq::speed[km / h]> speed = 120 * isq::length[km] / (2 * isq::time[h]);
 
 // dimensionless
-static_assert((3 * one *= 2 * one) == 6 * one);
-static_assert((6 * one /= 2 * one) == 3 * one);
+static_assert([q = 3 * one]() mutable { return q *= 2 * one; }() == 6 * one);
+static_assert([q = 6 * one]() mutable { return q /= 2 * one; }() == 3 * one);
 static_assert(1 * one + 1 * one == 2 * one);
 static_assert(2 * one - 1 * one == 1 * one);
 static_assert(2 * one * (2 * one) == 4 * one);
@@ -1003,8 +1017,8 @@ static_assert(4 * one / 2 == 2 * one);
 static_assert(4 * one % (2 * one) == 0 * one);
 
 #if MP_UNITS_HOSTED
-static_assert(((3. + 3i) * one *= (2. + 2i) * one) == (3. + 3i) * (2. + 2i) * one);
-static_assert(((6. + 6i) * one /= (2. + 2i) * one) == (6. + 6i) / (2. + 2i) * one);
+static_assert([q = (3. + 3i) * one]() mutable { return q *= (2. + 2i) * one; }() == (3. + 3i) * (2. + 2i) * one);
+static_assert([q = (6. + 6i) * one]() mutable { return q /= (2. + 2i) * one; }() == (6. + 6i) / (2. + 2i) * one);
 static_assert((1. + 1i) * one + (1. + 1i) * one == (2. + 2i) * one);
 static_assert((2. + 2i) * one - (1. + 1i) * one == (1. + 1i) * one);
 static_assert((2. + 2i) * one * (2. * one) == (4. + 4i) * one);

@@ -1,3 +1,4 @@
+
 // The MIT License (MIT)
 //
 // Copyright (c) 2018 Mateusz Pusz
@@ -22,14 +23,36 @@
 
 #pragma once
 
-// IWYU pragma: begin_exports
-#include <mp-units/compat_macros.h>
-#include <mp-units/concepts.h>
-#include <mp-units/framework.h>
+#include <mp-units/bits/requires_hosted.h>
+//
+#include <mp-units/bits/module_macros.h>
 
-#if MP_UNITS_HOSTED
-#include <mp-units/cartesian_vector.h>
-#include <mp-units/math.h>
-#include <mp-units/random.h>
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
+#include <cstdint>
+#include <sstream>
 #endif
-// IWYU pragma: end_exports
+#endif
+
+namespace mp_units::detail {
+
+template<typename CharT, class Traits, std::invocable<std::basic_ostream<CharT, Traits>&> F>
+std::basic_ostream<CharT, Traits>& to_stream(std::basic_ostream<CharT, Traits>& os, const F& func)
+{
+  if (os.width()) {
+    // std::setw() applies to the whole output so it has to be first put into std::string
+    std::basic_ostringstream<CharT, Traits> oss;
+    oss.flags(os.flags());
+    oss.imbue(os.getloc());
+    oss.precision(os.precision());
+    func(oss);
+    return os << std::move(oss).str();
+  }
+
+  func(os);
+  return os;
+}
+
+}  // namespace mp_units::detail

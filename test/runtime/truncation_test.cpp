@@ -34,7 +34,6 @@ import std;
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else
-#include <mp-units/ostream.h>  // IWYU pragma: keep
 #include <mp-units/systems/angular.h>
 #endif
 

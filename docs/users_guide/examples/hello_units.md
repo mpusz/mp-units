@@ -18,20 +18,20 @@ First, we either import the `mp_units` module or include the headers for:
 - text formatting and stream output support.
 
 ```cpp title="hello_units.cpp" linenums="1"
---8<-- "example/hello_units.cpp:28:45"
+--8<-- "example/hello_units.cpp:28:43"
 ```
 
 Also, to shorten the definitions, we "import" all the symbols from the `mp_units` namespace.
 
-```cpp title="hello_units.cpp" linenums="18"
---8<-- "example/hello_units.cpp:46:47"
+```cpp title="hello_units.cpp" linenums="16"
+--8<-- "example/hello_units.cpp:44:45"
 ```
 
 Next, we define a simple function that calculates the average speed based on the provided
 arguments of length and time:
 
-```cpp title="hello_units.cpp" linenums="19"
---8<-- "example/hello_units.cpp:48:51"
+```cpp title="hello_units.cpp" linenums="17"
+--8<-- "example/hello_units.cpp:46:49"
 ```
 
 The above function template takes any quantities implicitly convertible to `isq::length`
@@ -45,16 +45,16 @@ that its quantity type is implicitly convertible to `isq::speed`.
     type is beneficial for users of such a function as it provides more information
     of what to expect from a function than just using `auto`.
 
-```cpp title="hello_units.cpp" linenums="23"
---8<-- "example/hello_units.cpp:53:56"
+```cpp title="hello_units.cpp" linenums="21"
+--8<-- "example/hello_units.cpp:51:54"
 ```
 
 The above lines explicitly opt into using unit symbols from two systems of units.
 As this introduces a lot of short identifiers into the current scope, it is not done
 implicitly while including a header file.
 
-```cpp title="hello_units.cpp" linenums="27"
---8<-- "example/hello_units.cpp:58:64"
+```cpp title="hello_units.cpp" linenums="25"
+--8<-- "example/hello_units.cpp:56:62"
 ```
 
 - Lines `27` & `28` create a quantity of kind `isq::length / isq::time` with the numbers
@@ -74,8 +74,8 @@ implicitly while including a header file.
 - Line `33` does a [value-truncating conversion](../framework_basics/value_conversions.md#value-truncating-conversions)
   of changing the underlying representation type from `double` to `int`.
 
-```cpp title="hello_units.cpp" linenums="34"
---8<-- "example/hello_units.cpp:66"
+```cpp title="hello_units.cpp" linenums="32"
+--8<-- "example/hello_units.cpp:64"
 ```
 
 The above presents [various ways to print a quantity](../framework_basics/text_output.md).

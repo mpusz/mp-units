@@ -33,7 +33,7 @@ import std;
 #ifdef MP_UNITS_MODULES
 import mp_units.core;
 #else
-#include <mp-units/format.h>
+#include <mp-units/framework.h>
 #endif
 
 namespace glide_computer {

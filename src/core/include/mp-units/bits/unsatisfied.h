@@ -22,28 +22,50 @@
 
 #pragma once
 
+#include <mp-units/bits/hacks.h>  // IWYU pragma: keep
+#include <mp-units/ext/fixed_string.h>
+
+#if MP_UNITS_API_THROWING_CONSTRAINTS
+#include <mp-units/bits/constexpr_format.h>
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
-
-#include <mp-units/bits/requires_hosted.h>
-//
-#include <mp-units/bits/hacks.h>
-#include <mp-units/compat_macros.h>
-
-#if MP_UNITS_USE_FMTLIB
-MP_UNITS_DIAGNOSTIC_PUSH
-MP_UNITS_DIAGNOSTIC_IGNORE_UNREACHABLE
-MP_UNITS_DIAGNOSTIC_IGNORE_SHADOW
-#include <fmt/compile.h>
-#include <fmt/format.h>
-MP_UNITS_DIAGNOSTIC_POP
-#else  // MP_UNITS_USE_FMTLIB
 #ifdef MP_UNITS_IMPORT_STD
-#ifndef MP_UNITS_IN_GMF
 import std;
+#else
+#include <stdexcept>
+#include <string>
 #endif
-#else  // MP_UNITS_IMPORT_STD
-#include <format>
-#endif  // MP_UNITS_IMPORT_STD
-#endif  // MP_UNITS_USE_FMTLIB
+#endif
+#endif
+
+namespace mp_units::detail {
+
+#if MP_UNITS_API_THROWING_CONSTRAINTS
+
+#if __cpp_lib_constexpr_exceptions
+
+struct unsatisfied_constraints : std::logic_error {
+  consteval explicit unsatisfied_constraints(const std::string& msg) : std::logic_error(msg) {}
+  [[nodiscard]] constexpr const char* what() const noexcept override { return std::logic_error::what(); }
+};
+
+#else
+
+struct unsatisfied_constraints {
+  std::string msg;
+  [[nodiscard]] consteval const char* what() const noexcept { return msg.c_str(); }
+};
 
 #endif
+
+#endif
+
+template<mp_units::fixed_string Fmt, typename... Args>
+[[nodiscard]] consteval bool unsatisfied([[maybe_unused]] Args&&... args)
+{
+#if MP_UNITS_API_THROWING_CONSTRAINTS
+  throw unsatisfied_constraints{constexpr_format(FMT_COMPILE(Fmt.c_str()), std::forward<Args>(args)...)};
+#endif
+  return false;
+}
+
+}  // namespace mp_units::detail

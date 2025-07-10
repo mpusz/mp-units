@@ -61,6 +61,7 @@ class MPUnitsConan(ConanFile):
         "no_crtp": [True, False],
         "contracts": ["none", "gsl-lite", "ms-gsl"],
         "freestanding": [True, False],
+        "natural_units": [True, False],
     }
     default_options = {
         # "cxx_modules" default set in config_options()
@@ -69,6 +70,7 @@ class MPUnitsConan(ConanFile):
         # "no_crtp" default set in config_options()
         "contracts": "gsl-lite",
         "freestanding": False,
+        "natural_units": True,
     }
     implements = ["auto_header_only"]
     exports = "LICENSE.md"
@@ -209,21 +211,27 @@ class MPUnitsConan(ConanFile):
     def requirements(self):
         if not self.options.freestanding:
             if self.options.contracts == "gsl-lite":
-                self.requires("gsl-lite/0.41.0", transitive_headers=True)
+                self.requires("gsl-lite/0.42.0", transitive_headers=True)
             elif self.options.contracts == "ms-gsl":
-                self.requires("ms-gsl/4.0.0", transitive_headers=True)
+                self.requires("ms-gsl/4.1.0", transitive_headers=True)
             if not self.options.std_format:
-                self.requires("fmt/11.1.1", transitive_headers=True)
+                self.requires("fmt/11.1.4", transitive_headers=True)
 
     def build_requirements(self):
         self.tool_requires("cmake/[>=3.31 <4]")
         if self._build_all:
             if not self.options.freestanding:
-                self.test_requires("catch2/3.7.0")
+                self.test_requires("catch2/3.8.0")
             if not self._skip_la:
                 self.test_requires("wg21-linear_algebra/0.7.3")
 
     def validate(self):
+        compiler = self.settings.compiler
+        if compiler == "clang" and Version(compiler.version).major == 19:
+            raise ConanInvalidConfiguration(
+                "clang-19 does not build mp-units because of an unfixable bug in the compiler."
+            )
+
         self._check_feature_supported("mp-units", "minimum_support")
         for key, value in self._option_feature_map.items():
             if self.options.get_safe(key) == True:
@@ -275,6 +283,7 @@ class MPUnitsConan(ConanFile):
             tc.cache_variables["MP_UNITS_API_STD_FORMAT"] = opt.std_format
         tc.cache_variables["MP_UNITS_API_NO_CRTP"] = opt.no_crtp
         tc.cache_variables["MP_UNITS_API_CONTRACTS"] = str(opt.contracts).upper()
+        tc.cache_variables["MP_UNITS_API_NATURAL_UNITS"] = opt.natural_units
 
         tc.generate()
         deps = CMakeDeps(self)
@@ -357,3 +366,11 @@ class MPUnitsConan(ConanFile):
                 self.cpp_info.components["core"].cxxflags.append("/utf-8")
 
             self.cpp_info.components["systems"].requires = ["core"]
+
+            # https://github.com/llvm/llvm-project/issues/131410
+            if (
+                compiler == "clang"
+                and Version(compiler.version).major == 20
+                and Version(compiler.version).minor == 1
+            ):
+                self.cpp_info.components["core"].cxxflags.append("-Wno-unused-result")

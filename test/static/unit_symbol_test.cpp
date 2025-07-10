@@ -142,7 +142,7 @@ static_assert(unit_symbol<usf{.char_set = portable}>(mag_ratio<1, 18000> * (metr
 // static_assert(unit_symbol<usf{.char_set = portable}>(mag<1> / mag_power<2, 1, 2> * m) == "(1/2^(1/2) m)");
 
 // magnitude constants
-#if defined MP_UNITS_COMP_CLANG || MP_UNITS_COMP_CLANG < 18
+#if defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 18
 inline constexpr struct e final : mag_constant<"e"> {
   static constexpr long double _value_ = std::numbers::e_v<long double>;
 #else
@@ -204,13 +204,13 @@ static_assert(unit_symbol(mag<2> / (mag<π> * mag<e>)*one) == "(2 e⁻¹ π⁻¹
 static_assert(unit_symbol<usf{.solidus = always}>(mag<2> / (mag<π> * mag<e>)*one) == "(2/(e π))");
 
 // common units
-static_assert(unit_symbol(get_common_unit(kilo<metre>, mile)) == "EQUIV{(1/25146 mi), (1/15625 km)}");
-static_assert(unit_symbol(get_common_unit(kilo<metre> / hour, metre / second)) == "EQUIV{(1/5 km/h), (1/18 m/s)}");
+static_assert(unit_symbol(get_common_unit(kilo<metre>, mile)) == "[(1/25146 mi), (1/15625 km)]");
+static_assert(unit_symbol(get_common_unit(kilo<metre> / hour, metre / second)) == "[(1/5 km/h), (1/18 m/s)]");
 static_assert(unit_symbol(get_common_unit(kilo<metre> / hour, metre / second) / second) ==
-              "EQUIV{(1/5 km/h), (1/18 m/s)}/s");
+              "[(1/5 km/h), (1/18 m/s)]/s");
 static_assert(unit_symbol(get_common_unit(kilo<metre> / hour, metre / second) * second) ==
-              "EQUIV{(1/5 km/h), (1/18 m/s)} s");
-static_assert(unit_symbol(get_common_unit(radian, degree)) == "EQUIV{(1/π°), (1/180 rad)}");
+              "[(1/5 km/h), (1/18 m/s)] s");
+static_assert(unit_symbol(get_common_unit(radian, degree)) == "[(1/π°), (1/180 rad)]");
 
 // derived units
 static_assert(unit_symbol(one) == "");  // NOLINT(readability-container-size-empty)

@@ -35,7 +35,6 @@ import std;
 import mp_units;
 #else
 #include <mp-units/ext/algorithm.h>
-#include <mp-units/format.h>
 #include <mp-units/framework/quantity.h>
 #include <mp-units/framework/quantity_point.h>
 #include <mp-units/math.h>

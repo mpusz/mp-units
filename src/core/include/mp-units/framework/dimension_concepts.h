@@ -42,7 +42,7 @@ struct dimension_interface;
  * Satisfied by all dimension types in the library.
  */
 MP_UNITS_EXPORT template<typename T>
-concept Dimension = detail::SymbolicConstant<T> && std::derived_from<T, detail::dimension_interface>;
+concept Dimension = std::derived_from<T, detail::dimension_interface> && detail::SymbolicConstant<T>;
 
 MP_UNITS_EXPORT template<symbol_text Symbol>
 struct base_dimension;

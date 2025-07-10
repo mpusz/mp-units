@@ -40,6 +40,10 @@
 #include <mp-units/framework/unit_concepts.h>
 #include <mp-units/framework/unit_magnitude.h>
 #include <mp-units/framework/unit_symbol_formatting.h>
+#if MP_UNITS_HOSTED
+#include <mp-units/bits/format.h>
+#include <mp-units/bits/ostream.h>
+#endif
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <mp-units/ext/contracts.h>
@@ -120,29 +124,11 @@ constexpr auto get_canonical_unit_result = get_canonical_unit_impl(U{}, U{});
 
 }  // namespace detail
 
-// TODO this should really be in the `details` namespace but is used in `chrono.h` (a part of mp_units.systems)
-// Even though it is not exported, it is visible to the other module via ADL
-[[nodiscard]] consteval auto get_canonical_unit(Unit auto u) { return detail::get_canonical_unit_result<decltype(u)>; }
-
-namespace detail {
-
-// We are using a helper concept to benefit from short-circuiting
-template<typename U1, typename U2>
-concept PotentiallyInterConvertibleTo = Unit<U1> && Unit<U2> &&
-                                        (!AssociatedUnit<U1> || !AssociatedUnit<U2> ||
-                                         explicitly_convertible(get_quantity_spec(U1{}), get_quantity_spec(U2{})));
-}  // namespace detail
-
-// interconvertible
-template<Unit U1, Unit U2>
-[[nodiscard]] consteval bool interconvertible(U1 u1, U2 u2)
+// TODO this should really be in the `details` namespace and not exported but is used in `chrono.h`
+// (a part of mp_units.systems)
+MP_UNITS_EXPORT [[nodiscard]] consteval auto get_canonical_unit(Unit auto u)
 {
-  if constexpr (is_same_v<U1, U2>)
-    return true;
-  else if constexpr (detail::PotentiallyInterConvertibleTo<U1, U2>)
-    return is_same_v<decltype(get_canonical_unit(u1).reference_unit), decltype(get_canonical_unit(u2).reference_unit)>;
-  else
-    return false;
+  return detail::get_canonical_unit_result<decltype(u)>;
 }
 
 template<UnitMagnitude auto M, Unit U>
@@ -330,6 +316,8 @@ struct named_unit<Symbol, QS, PO> : detail::unit_interface {
   static constexpr auto _point_origin_ = PO;
 };
 
+#if MP_UNITS_API_NATURAL_UNITS
+
 /**
  * @brief Specialization for a unit that can be reused by several base quantities
  *
@@ -346,6 +334,8 @@ struct named_unit<Symbol> : detail::unit_interface {
   using _base_type_ = named_unit;           // exposition only
   static constexpr auto _symbol_ = Symbol;  ///< Unique base unit identifier
 };
+
+#endif  // MP_UNITS_API_NATURAL_UNITS
 
 /**
  * @brief Specialization for a unit with special name
@@ -379,7 +369,7 @@ struct named_unit<Symbol, U, PO> : decltype(U)::_base_type_ {
  * @tparam Unit a unit for which we provide a special name
  * @tparam QuantitySpec a specification of a quantity to be measured with this unit
  */
-template<symbol_text Symbol, AssociatedUnit auto U, detail::QuantityKindSpec auto QS>
+template<symbol_text Symbol, MP_UNITS_ASSOCIATED_UNIT auto U, detail::QuantityKindSpec auto QS>
   requires(!Symbol.empty()) && (QS.dimension == detail::get_associated_quantity(U).dimension)
 struct named_unit<Symbol, U, QS> : decltype(U)::_base_type_ {
   using _base_type_ = named_unit;           // exposition only
@@ -387,7 +377,7 @@ struct named_unit<Symbol, U, QS> : decltype(U)::_base_type_ {
   static constexpr auto _quantity_spec_ = QS;
 };
 
-template<symbol_text Symbol, AssociatedUnit auto U, detail::QuantityKindSpec auto QS, PointOrigin auto PO>
+template<symbol_text Symbol, MP_UNITS_ASSOCIATED_UNIT auto U, detail::QuantityKindSpec auto QS, PointOrigin auto PO>
   requires(!Symbol.empty()) && (QS.dimension == detail::get_associated_quantity(U).dimension)
 struct named_unit<Symbol, U, QS, PO> : decltype(U)::_base_type_ {
   using _base_type_ = named_unit;           // exposition only
@@ -427,8 +417,7 @@ struct prefixed_unit : decltype(M * U)::_base_type_ {
 
 namespace detail {
 
-template<Unit U1, Unit U2>
-  requires(interconvertible(U1{}, U2{}))
+template<Unit U1, UnitConvertibleTo<U1{}> U2>
 [[nodiscard]] consteval Unit auto get_common_scaled_unit(U1, U2)
 {
   constexpr auto canonical_lhs = get_canonical_unit(U1{});
@@ -671,8 +660,7 @@ inline constexpr auto ppm = parts_per_million;
 // Common unit
 [[nodiscard]] consteval Unit auto get_common_unit(Unit auto u) { return u; }
 
-template<Unit U1, Unit U2>
-  requires(interconvertible(U1{}, U2{}))
+template<Unit U1, detail::UnitConvertibleTo<U1{}> U2>
 [[nodiscard]] consteval Unit auto get_common_unit(U1 u1, U2 u2)
 {
   if constexpr (is_same_v<U1, U2>)
@@ -732,8 +720,7 @@ using collapse_common_unit = type_list_unique<
 
 }  // namespace detail
 
-template<Unit... Us, Unit NewUnit>
-  requires(interconvertible(common_unit<Us...>{}, NewUnit{}))
+template<Unit... Us, detail::UnitConvertibleTo<common_unit<Us...>{}> NewUnit>
 [[nodiscard]] consteval Unit auto get_common_unit(common_unit<Us...>, NewUnit)
 {
   using type = detail::collapse_common_unit<NewUnit, Us...>;
@@ -743,15 +730,14 @@ template<Unit... Us, Unit NewUnit>
     return detail::type_list_map<type, common_unit>{};
 }
 
-template<Unit... Us, Unit NewUnit>
-  requires(interconvertible(common_unit<Us...>{}, NewUnit{}))
+template<Unit... Us, detail::UnitConvertibleTo<common_unit<Us...>{}> NewUnit>
 [[nodiscard]] consteval Unit auto get_common_unit(NewUnit nu, common_unit<Us...> cu)
 {
   return get_common_unit(cu, nu);
 }
 
 template<Unit Front, Unit... Rest, Unit... Us>
-  requires(interconvertible(common_unit<Front, Rest...>{}, common_unit<Us...>{}))
+  requires(detail::UnitConvertibleTo<common_unit<Front, Rest...>, common_unit<Us...>{}>)
 [[nodiscard]] consteval Unit auto get_common_unit(common_unit<Front, Rest...>, common_unit<Us...>)
 {
   if constexpr (sizeof...(Rest) == 1)
@@ -824,7 +810,7 @@ template<typename CharT, std::output_iterator<CharT> Out, typename U, typename..
 constexpr Out unit_symbol_impl(Out out, const common_unit<U, Rest...>&, const unit_symbol_formatting& fmt,
                                bool negative_power)
 {
-  constexpr std::string_view prefix("EQUIV{");
+  constexpr std::string_view prefix("[");
   constexpr std::string_view separator(", ");
   auto print_unit = [&]<Unit Arg>(Arg) {
     constexpr auto u = get_common_unit_in(common_unit<U, Rest...>{}, Arg{});
@@ -836,7 +822,7 @@ constexpr Out unit_symbol_impl(Out out, const common_unit<U, Rest...>&, const un
     detail::copy(std::begin(separator), std::end(separator), out);
     print_unit(Arg{});
   });
-  *out++ = '}';
+  *out++ = ']';
   return out;
 }
 
@@ -879,7 +865,7 @@ constexpr Out unit_symbol_impl(Out out, const type_list<Nums...>& nums, const ty
     if (fmt.solidus == always || (fmt.solidus == one_denominator && sizeof...(Dens) == 1)) {
       if constexpr (sizeof...(Nums) == 0) *out++ = '1';
       *out++ = '/';
-      if (sizeof...(Dens) > 1) *out++ = '(';
+      if constexpr (sizeof...(Dens) > 1) *out++ = '(';
     } else if constexpr (sizeof...(Nums) > 0) {
       out = print_separator<CharT>(out, fmt);
     }
@@ -935,4 +921,110 @@ MP_UNITS_EXPORT template<unit_symbol_formatting fmt = unit_symbol_formatting{}, 
   return detail::unit_symbol_result<fmt, CharT, U>.view();
 }
 
+#if MP_UNITS_HOSTED
+
+MP_UNITS_EXPORT template<typename CharT, typename Traits, Unit U>
+std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, U u)
+{
+  return detail::to_stream(
+    os, [&](std::basic_ostream<CharT, Traits>& oss) { unit_symbol_to<CharT>(std::ostream_iterator<CharT>(oss), u); });
+}
+
+#endif  // MP_UNITS_HOSTED
+
 }  // namespace mp_units
+
+#if MP_UNITS_HOSTED
+
+//
+// Grammar
+//
+// unit-format-spec      = [fill-and-align], [width], [unit-spec];
+// unit-spec             = [character-set], [unit-symbol-solidus], [unit-symbol-separator], [L]
+//                       | [character-set], [unit-symbol-separator], [unit-symbol-solidus], [L]
+//                       | [unit-symbol-solidus], [character-set], [unit-symbol-separator], [L]
+//                       | [unit-symbol-solidus], [unit-symbol-separator], [character-set], [L]
+//                       | [unit-symbol-separator], [character-set], [unit-symbol-solidus], [L]
+//                       | [unit-symbol-separator], [unit-symbol-solidus], [character-set], [L];
+// unit-symbol-solidus   = '1' | 'a' | 'n';
+// unit-symbol-separator = 's' | 'd';
+//
+template<typename U, typename Char>
+  requires mp_units::detail::GCC_120625_is_complete<U> && mp_units::Unit<U>
+class MP_UNITS_STD_FMT::formatter<U, Char> {
+  struct format_specs : mp_units::detail::fill_align_width_format_specs<Char>, mp_units::unit_symbol_formatting {};
+  format_specs specs_{};
+
+  std::basic_string_view<Char> fill_align_width_format_str_;
+
+  template<std::forward_iterator It>
+  constexpr It parse_unit_specs(It begin, It end)
+  {
+    auto it = begin;
+    if (it == end || *it == '}') return begin;
+
+    constexpr auto valid_modifiers = std::string_view{"UAP1ansd"};
+    for (; it != end && *it != '}'; ++it) {
+      if (valid_modifiers.find(*it) == std::string_view::npos)
+        throw MP_UNITS_STD_FMT::format_error("invalid unit modifier specified");
+    }
+    end = it;
+
+    if (it = mp_units::detail::at_most_one_of(begin, end, "UAP"); it != end)
+      // TODO 'A' stands for an old and deprecated ASCII encoding
+      specs_.char_set = (*it == 'U') ? mp_units::character_set::utf8 : mp_units::character_set::portable;
+    if (it = mp_units::detail::at_most_one_of(begin, end, "1an"); it != end) {
+      switch (*it) {
+        case '1':
+          specs_.solidus = mp_units::unit_symbol_solidus::one_denominator;
+          break;
+        case 'a':
+          specs_.solidus = mp_units::unit_symbol_solidus::always;
+          break;
+        case 'n':
+          specs_.solidus = mp_units::unit_symbol_solidus::never;
+          break;
+      }
+    }
+    if (it = mp_units::detail::at_most_one_of(begin, end, "sd"); it != end) {
+      if (*it == 'd' && specs_.char_set == mp_units::character_set::portable)
+        throw MP_UNITS_STD_FMT::format_error("half_high_dot unit separator allowed only for UTF-8 encoding");
+      specs_.separator =
+        (*it == 's') ? mp_units::unit_symbol_separator::space : mp_units::unit_symbol_separator::half_high_dot;
+    }
+    return end;
+  }
+
+public:
+  constexpr auto parse(MP_UNITS_STD_FMT::basic_format_parse_context<Char>& ctx) -> decltype(ctx.begin())
+  {
+    const auto begin = ctx.begin();
+    auto end = ctx.end();
+
+    auto it = parse_fill_align_width(ctx, begin, end, specs_);
+    fill_align_width_format_str_ = {begin, it};
+    if (it == end) return it;
+
+    return parse_unit_specs(it, end);
+  }
+
+  template<typename FormatContext>
+  constexpr auto format(const U& u, FormatContext& ctx) const -> decltype(ctx.out())
+  {
+    auto specs = specs_;
+    mp_units::detail::handle_dynamic_spec<mp_units::detail::width_checker>(specs.width, specs.width_ref, ctx);
+
+    if (specs.width == 0)
+      // Avoid extra copying if width is not specified
+      return mp_units::unit_symbol_to<Char>(ctx.out(), u, specs);
+    std::basic_string<Char> unit_buffer;
+    mp_units::unit_symbol_to<Char>(std::back_inserter(unit_buffer), u, specs);
+
+    const std::basic_string<Char> global_format_buffer =
+      "{:" + std::basic_string<Char>{fill_align_width_format_str_} + "}";
+    return MP_UNITS_STD_FMT::vformat_to(ctx.out(), global_format_buffer,
+                                        MP_UNITS_STD_FMT::make_format_args(unit_buffer));
+  }
+};
+
+#endif  // MP_UNITS_HOSTED

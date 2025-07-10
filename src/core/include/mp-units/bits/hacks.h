@@ -111,7 +111,7 @@ inline constexpr from_range_t from_range{};
 #endif
 
 // TODO https://github.com/llvm/llvm-project/issues/110224
-#if MP_UNITS_COMP_CLANG == 19 && __cplusplus <= 202302
+#if MP_UNITS_COMP_CLANG >= 19 && __cplusplus <= 202302
 
 MP_UNITS_DIAGNOSTIC_PUSH
 MP_UNITS_DIAGNOSTIC_IGNORE_BUILTIN_MACRO_REDEFINED
@@ -151,6 +151,19 @@ MP_UNITS_DIAGNOSTIC_POP
 #define MP_UNITS_API_NO_CRTP 1
 
 #endif
+
+#if !defined MP_UNITS_API_THROWING_CONSTRAINTS && __cpp_constexpr_exceptions >= 202411L
+
+#define MP_UNITS_API_THROWING_CONSTRAINTS 1
+
+#endif
+
+#if !defined MP_UNITS_API_NATURAL_UNITS
+
+#define MP_UNITS_API_NATURAL_UNITS 1
+
+#endif
+
 
 #if defined(__clang__) && defined(__apple_build_version__) && __apple_build_version__ < 16000026
 #define MP_UNITS_XCODE15_HACKS

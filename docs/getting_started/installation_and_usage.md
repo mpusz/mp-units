@@ -154,6 +154,14 @@ dependencies by other means, some modifications to the library's CMake files mig
 
     [conan freestanding]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 
+[`natural_units`](#natural_units){ #natural_units }
+
+:   [:octicons-tag-24: 2.5.0][conan natural units] · :octicons-milestone-24: `ON`/`OFF` (Default: `ON`)
+
+    Enables experimental natural units systems support.
+
+    [conan natural units]: https://github.com/mpusz/mp-units/releases/tag/v2.5.0
+
 ??? info "CMake options to set when Conan is not being used"
 
     ### CMake options
@@ -214,6 +222,14 @@ dependencies by other means, some modifications to the library's CMake files mig
         without any issues.
 
         [cmake freestanding]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
+
+    [`MP_UNITS_API_NATURAL_UNITS`](#MP_UNITS_API_NATURAL_UNITS){ #MP_UNITS_API_NATURAL_UNITS }
+
+    :   [:octicons-tag-24: 2.5.0][cmake natural units] · :octicons-milestone-24: `ON`/`OFF` (Default: `ON`)
+
+        Enables experimental natural units systems support.
+
+        [cmake natural units]: https://github.com/mpusz/mp-units/releases/tag/v2.5.0
 
 
 ## Installation and reuse

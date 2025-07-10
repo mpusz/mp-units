@@ -42,6 +42,7 @@ add_mp_units_module(
             include/mp-units/bits/text_tools.h
             include/mp-units/bits/type_list.h
             include/mp-units/bits/unit_magnitude.h
+            include/mp-units/bits/unsatisfied.h
             include/mp-units/ext/algorithm.h
             include/mp-units/ext/contracts.h
             include/mp-units/ext/fixed_string.h
@@ -66,7 +67,6 @@ add_mp_units_module(
             include/mp-units/framework/representation_concepts.h
             include/mp-units/framework/symbol_text.h
             include/mp-units/framework/symbolic_expression.h
-            include/mp-units/framework/system_reference.h
             include/mp-units/framework/unit.h
             include/mp-units/framework/unit_concepts.h
             include/mp-units/framework/unit_magnitude.h
@@ -80,6 +80,13 @@ add_mp_units_module(
     MODULE_INTERFACE_UNIT mp-units-core.cpp
 )
 
+if(${${projectPrefix}API_NATURAL_UNITS})
+    target_sources(
+        mp-units-core PUBLIC FILE_SET HEADERS BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include FILES
+                             include/mp-units/framework/system_reference.h
+    )
+endif()
+
 if(NOT ${projectPrefix}API_FREESTANDING)
     target_sources(
         mp-units-core
@@ -88,7 +95,10 @@ if(NOT ${projectPrefix}API_FREESTANDING)
                BASE_DIRS
                ${CMAKE_CURRENT_SOURCE_DIR}/include
                FILES
+               include/mp-units/bits/constexpr_format.h
                include/mp-units/bits/fmt.h
+               include/mp-units/bits/format.h
+               include/mp-units/bits/ostream.h
                include/mp-units/bits/requires_hosted.h
                include/mp-units/ext/format.h
                include/mp-units/cartesian_vector.h
@@ -98,6 +108,9 @@ if(NOT ${projectPrefix}API_FREESTANDING)
                include/mp-units/random.h
     )
 endif()
+
+# Disable VERIFY_INTERFACE_HEADER_SETS
+set_source_files_properties(include/mp-units/format.h include/mp-units/ostream.h PROPERTIES SKIP_LINTING ON)
 
 set_feature_flag(API_STD_FORMAT)
 set_feature_flag(API_NO_CRTP)
@@ -118,7 +131,7 @@ target_link_libraries(mp-units-core ${${projectPrefix}TARGET_SCOPE} mp-units-con
 
 # C++20 modules
 if(${projectPrefix}BUILD_CXX_MODULES)
-    if(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
         if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 18)
             target_compile_definitions(mp-units-core PUBLIC _LIBCPP_NO_ABI_TAG)
         endif()
@@ -127,12 +140,17 @@ if(${projectPrefix}BUILD_CXX_MODULES)
             target_compile_options(mp-units-core PUBLIC "-Wno-include-angled-in-module-purview")
         endif()
     endif()
+
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+        # '#include <filename>' in the purview of module 'module-name-1' appears erroneous
+        target_compile_options(mp-units-core PUBLIC "/wd5244")
+    endif()
 endif()
 
 if(CMAKE_CXX_MODULE_STD)
     target_compile_definitions(mp-units-core ${${projectPrefix}TARGET_SCOPE} ${projectPrefix}IMPORT_STD)
     # https://github.com/llvm/llvm-project/issues/75057
-    if(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 19)
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 19)
         target_compile_options(mp-units-core ${${projectPrefix}TARGET_SCOPE} "-Wno-deprecated-declarations")
     endif()
 endif()
@@ -151,6 +169,35 @@ target_compile_definitions(
                   ${projectPrefix}HOSTED=$<NOT:$<BOOL:${${projectPrefix}API_FREESTANDING}>>
 )
 
+# Throwing constraints
+if(${projectPrefix}API_THROWING_CONSTRAINTS)
+    target_compile_definitions(
+        mp-units-core ${${projectPrefix}TARGET_SCOPE}
+                      ${projectPrefix}API_THROWING_CONSTRAINTS=$<BOOL:${${projectPrefix}API_THROWING_CONSTRAINTS}>
+    )
+endif()
+
+# Natural units support
+if(${${projectPrefix}API_NATURAL_UNITS})
+    target_compile_definitions(
+        mp-units-core ${${projectPrefix}TARGET_SCOPE}
+                      ${projectPrefix}API_NATURAL_UNITS=$<BOOL:${${projectPrefix}API_NATURAL_UNITS}>
+    )
+endif()
+
+# https://github.com/llvm/llvm-project/issues/131410
+if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 20
+   AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 20.2
+)
+    target_compile_options(mp-units-core ${${projectPrefix}TARGET_SCOPE} "-Wno-unused-result")
+endif()
+
+# usage of uninitialized variable in c++/12/bits/char_traits.h
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 13)
+    target_compile_options(mp-units-core ${${projectPrefix}TARGET_SCOPE} "-Wno-maybe-uninitialized")
+endif()
+
+# time-trace
 if(${projectPrefix}DEV_TIME_TRACE STREQUAL "ALL")
     target_compile_options(mp-units-core ${${projectPrefix}TARGET_SCOPE} "-ftime-trace")
 elseif(${projectPrefix}DEV_TIME_TRACE STREQUAL "MODULES")

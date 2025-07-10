@@ -31,6 +31,7 @@ on:
       - v*
     paths:
       - "docs/**"
+      - ".github/workflows/documentation.yml"
       - "CHANGELOG.md"
       - "CONTRIBUTING.md"
       - "mkdocs.yml"
@@ -68,7 +69,7 @@ jobs:
           sudo apt update
           sudo apt install latexmk texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended lmodern
           sudo apt install haskell-stack graphviz nodejs npm ghc cabal-install
-          npm install split mathjax-full mathjax-node-sre mathjax-node-cli
+          npm install split mathjax-full mathjax-node-sre mathjax-node-cli yargs@16.2.0
           cabal update
           echo "${{ github.workspace }}/node_modules/.bin" >> $GITHUB_PATH
       - name: Get git repos with API reference tools

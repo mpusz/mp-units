@@ -42,7 +42,7 @@ namespace mp_units {
 
 MP_UNITS_EXPORT_BEGIN
 
-#if defined MP_UNITS_COMP_CLANG || MP_UNITS_COMP_CLANG < 18
+#if defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 18
 
 template<symbol_text Symbol>
 struct mag_constant {
@@ -86,7 +86,7 @@ constexpr UnitMagnitude auto mag_power = pow<Num, Den>(mag<Base>);
 /**
  * @brief  A convenient Magnitude constant for pi, which we can manipulate like a regular number.
  */
-#if defined MP_UNITS_COMP_CLANG || MP_UNITS_COMP_CLANG < 18
+#if defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 18
 inline constexpr struct pi final : mag_constant<symbol_text{u8"π" /* U+03C0 GREEK SMALL LETTER PI */, "pi"}> {
   static constexpr auto _value_ = std::numbers::pi_v<long double>;
 #else

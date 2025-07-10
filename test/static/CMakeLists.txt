@@ -48,7 +48,6 @@ add_library(
     isq_angle_test.cpp
     isq_test.cpp
     limits_test.cpp
-    natural_test.cpp
     prime_test.cpp
     quantity_point_test.cpp
     quantity_spec_test.cpp
@@ -63,6 +62,10 @@ add_library(
     unit_test.cpp
     usc_test.cpp
 )
+
+if(${projectPrefix}API_NATURAL_UNITS)
+    target_sources(unit_tests_static PRIVATE natural_test.cpp)
+endif()
 
 if(NOT ${projectPrefix}API_FREESTANDING)
     target_sources(unit_tests_static PRIVATE fractional_exponent_quantity.cpp math_test.cpp)

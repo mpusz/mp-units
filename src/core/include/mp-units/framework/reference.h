@@ -25,6 +25,7 @@
 // IWYU pragma: private, include <mp-units/framework.h>
 #include <mp-units/bits/get_associated_quantity.h>
 #include <mp-units/bits/module_macros.h>
+#include <mp-units/compat_macros.h>
 #include <mp-units/framework/quantity_concepts.h>
 #include <mp-units/framework/quantity_point_concepts.h>
 #include <mp-units/framework/reference_concepts.h>
@@ -49,7 +50,7 @@ using reference_t = reference<MP_UNITS_REMOVE_CONST(decltype(Q)), MP_UNITS_REMOV
 
 MP_UNITS_EXPORT_BEGIN
 
-template<AssociatedUnit U>
+template<MP_UNITS_ASSOCIATED_UNIT U>
 [[nodiscard]] consteval QuantitySpec auto get_quantity_spec(U)
 {
   return kind_of<detail::get_associated_quantity(U{})>;
@@ -81,7 +82,7 @@ struct reference {
     return Q{} == Q2{} && U{} == U2{};
   }
 
-  template<AssociatedUnit U2>
+  template<MP_UNITS_ASSOCIATED_UNIT U2>
   [[nodiscard]] friend consteval bool operator==(reference, U2 u2)
   {
     return Q{} == get_quantity_spec(u2) && U{} == u2;
@@ -95,7 +96,7 @@ struct reference {
     return {};
   }
 
-  template<AssociatedUnit U2>
+  template<MP_UNITS_ASSOCIATED_UNIT U2>
   [[nodiscard]] friend consteval detail::reference_t<(MP_UNITS_EXPRESSION_WORKAROUND(Q{} * get_quantity_spec(U2{}))),
                                                      MP_UNITS_EXPRESSION_WORKAROUND(U{} * U2{})>
   operator*(reference, U2)
@@ -103,7 +104,7 @@ struct reference {
     return {};
   }
 
-  template<AssociatedUnit U1>
+  template<MP_UNITS_ASSOCIATED_UNIT U1>
   [[nodiscard]] friend consteval detail::reference_t<MP_UNITS_EXPRESSION_WORKAROUND(get_quantity_spec(U1{}) * Q{}),
                                                      MP_UNITS_EXPRESSION_WORKAROUND(U1{} * U{})>
   operator*(U1, reference)
@@ -119,7 +120,7 @@ struct reference {
     return {};
   }
 
-  template<AssociatedUnit U2>
+  template<MP_UNITS_ASSOCIATED_UNIT U2>
   [[nodiscard]] friend consteval detail::reference_t<MP_UNITS_EXPRESSION_WORKAROUND(Q{} / get_quantity_spec(U2{})),
                                                      MP_UNITS_EXPRESSION_WORKAROUND(U{} / U2{})>
   operator/(reference, U2)
@@ -127,7 +128,7 @@ struct reference {
     return {};
   }
 
-  template<AssociatedUnit U1>
+  template<MP_UNITS_ASSOCIATED_UNIT U1>
   [[nodiscard]] friend consteval detail::reference_t<MP_UNITS_EXPRESSION_WORKAROUND(get_quantity_spec(U1{}) / Q{}),
                                                      MP_UNITS_EXPRESSION_WORKAROUND(U1{} / U{})>
   operator/(U1, reference)
@@ -266,8 +267,9 @@ template<Reference R, typename Q>
 // NOLINTNEXTLINE(cppcoreguidelines-missing-std-forward)
 constexpr auto operator/(R, Q&& q) = delete;
 
-[[nodiscard]] consteval AssociatedUnit auto get_common_reference(AssociatedUnit auto u1, AssociatedUnit auto u2,
-                                                                 AssociatedUnit auto... rest)
+[[nodiscard]] consteval MP_UNITS_ASSOCIATED_UNIT auto get_common_reference(MP_UNITS_ASSOCIATED_UNIT auto u1,
+                                                                           MP_UNITS_ASSOCIATED_UNIT auto u2,
+                                                                           MP_UNITS_ASSOCIATED_UNIT auto... rest)
   requires requires {
     get_common_quantity_spec(get_quantity_spec(u1), get_quantity_spec(u2), get_quantity_spec(rest)...);
     get_common_unit(u1, u2, rest...);
@@ -278,10 +280,12 @@ constexpr auto operator/(R, Q&& q) = delete;
 
 template<Reference R1, Reference R2, Reference... Rest>
 [[nodiscard]] consteval Reference auto get_common_reference(R1 r1, R2 r2, Rest... rest)
-  requires(!(AssociatedUnit<R1> && AssociatedUnit<R2> && (... && AssociatedUnit<Rest>))) && requires {
-    get_common_quantity_spec(get_quantity_spec(r1), get_quantity_spec(r2), get_quantity_spec(rest)...);
-    get_common_unit(get_unit(r1), get_unit(r2), get_unit(rest)...);
-  }
+  requires(!(MP_UNITS_ASSOCIATED_UNIT_T(R1) && MP_UNITS_ASSOCIATED_UNIT_T(R2) &&
+             (... && MP_UNITS_ASSOCIATED_UNIT_T(Rest)))) &&
+          requires {
+            get_common_quantity_spec(get_quantity_spec(r1), get_quantity_spec(r2), get_quantity_spec(rest)...);
+            get_common_unit(get_unit(r1), get_unit(r2), get_unit(rest)...);
+          }
 {
   return detail::reference_t<get_common_quantity_spec(get_quantity_spec(R1{}), get_quantity_spec(R2{}),
                                                       get_quantity_spec(rest)...),
@@ -292,7 +296,7 @@ MP_UNITS_EXPORT_END
 
 namespace detail {
 
-template<AssociatedUnit auto To, AssociatedUnit From>
+template<MP_UNITS_ASSOCIATED_UNIT auto To, MP_UNITS_ASSOCIATED_UNIT From>
 [[nodiscard]] consteval MP_UNITS_REMOVE_CONST(decltype(To)) clone_reference_with(From)
 {
   return {};

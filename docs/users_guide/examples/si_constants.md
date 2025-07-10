@@ -13,14 +13,14 @@ how [Faster-than-lightspeed Constants](../framework_basics/faster_than_lightspee
 work in practice.
 
 ```cpp title="si_constants.cpp" linenums="1"
---8<-- "example/si_constants.cpp:28:40"
+--8<-- "example/si_constants.cpp:28:39"
 ```
 
 As always, we start with the inclusion of all the needed header files.
 The main part of the example prints all of the SI-defining constants:
 
-```cpp title="si_constants.cpp" linenums="14"
---8<-- "example/si_constants.cpp:42:"
+```cpp title="si_constants.cpp" linenums="13"
+--8<-- "example/si_constants.cpp:41:"
 ```
 
 While analyzing the output of this program (provided below), we can easily notice that a direct

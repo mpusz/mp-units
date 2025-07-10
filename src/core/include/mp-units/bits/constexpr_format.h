@@ -22,14 +22,28 @@
 
 #pragma once
 
-// IWYU pragma: begin_exports
-#include <mp-units/compat_macros.h>
-#include <mp-units/concepts.h>
-#include <mp-units/framework.h>
+#include <mp-units/bits/hacks.h>  // IWYU pragma: keep
 
-#if MP_UNITS_HOSTED
-#include <mp-units/cartesian_vector.h>
-#include <mp-units/math.h>
-#include <mp-units/random.h>
+#ifndef MP_UNITS_IN_MODULE_INTERFACE
+#include <mp-units/ext/format.h>
+#ifdef MP_UNITS_IMPORT_STD
+import std;
+#else
+#include <string>
 #endif
-// IWYU pragma: end_exports
+#endif
+
+namespace mp_units::detail {
+
+[[nodiscard]] consteval std::string constexpr_format([[maybe_unused]] auto fmt, [[maybe_unused]] auto&&... args)
+{
+  std::string text;
+#if MP_UNITS_USE_FMTLIB
+  fmt::format_to(std::back_inserter(text), fmt, std::forward<decltype(args)>(args)...);
+#else
+  static_assert(false, "`std::format` is not `constexpr` yet");
+#endif
+  return text;
+};
+
+}  // namespace mp_units::detail

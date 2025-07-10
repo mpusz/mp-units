@@ -178,7 +178,7 @@ platforms = {
     for p in [make_gcc_platform(ver) for ver in [12, 13, 14]]
     + [
         make_clang_platform(ver, arch)
-        for ver in [16, 17, 18]
+        for ver in [16, 17, 18, 20]
         for arch in ["x86-64", "arm64"]
         # arm64 runners are expensive; only consider one version
         if ver == 18 or arch != "arm64"
@@ -293,7 +293,7 @@ def main():
             )
         case "freestanding":
             collector.all_combinations(
-                platform=[platforms[c] for c in ["GCC-14", "Clang-18 (x86-64)"]],
+                platform=[platforms[c] for c in ["GCC-14", "Clang-20 (x86-64)"]],
                 contracts="none",
                 freestanding=True,
                 std=23,

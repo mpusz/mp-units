@@ -36,7 +36,6 @@ import std;
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else
-#include <mp-units/format.h>
 #include <mp-units/framework.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si.h>
@@ -100,19 +99,19 @@ std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>&
 
 inline namespace literals {
 
-constexpr latitude<long double> operator"" _N(long double v)
+constexpr latitude<long double> operator""_N(long double v)
 {
   return equator + ranged_representation<long double, -90, 90>{v} * mp_units::si::degree;
 }
-constexpr latitude<long double> operator"" _S(long double v)
+constexpr latitude<long double> operator""_S(long double v)
 {
   return equator - ranged_representation<long double, -90, 90>{v} * mp_units::si::degree;
 }
-constexpr longitude<long double> operator"" _E(long double v)
+constexpr longitude<long double> operator""_E(long double v)
 {
   return prime_meridian + ranged_representation<long double, -180, 180>{v} * mp_units::si::degree;
 }
-constexpr longitude<long double> operator"" _W(long double v)
+constexpr longitude<long double> operator""_W(long double v)
 {
   return prime_meridian - ranged_representation<long double, -180, 180>{v} * mp_units::si::degree;
 }

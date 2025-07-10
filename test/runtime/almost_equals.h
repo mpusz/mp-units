@@ -27,7 +27,6 @@
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else
-#include <mp-units/format.h>
 #include <mp-units/framework/quantity.h>
 #endif
 
