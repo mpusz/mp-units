@@ -89,8 +89,8 @@ jobs:
         with:
           key: ${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-${{ matrix.std }}
           max-size: 50M
-      - name: Install gcc-13
-        if: matrix.config.compiler.type == 'GCC' && matrix.config.compiler.version == '13'
+      - name: Install gcc-${{ matrix.config.compiler.version }}
+        if: matrix.config.compiler.type == 'GCC'
         shell: bash
         run: |
           sudo apt install -y g++-${{ matrix.config.compiler.version }}
