@@ -23,8 +23,8 @@
 #pragma once
 
 // IWYU pragma: private, include <mp-units/framework.h>
-#include <mp-units/compat_macros.h>
 #include <mp-units/bits/module_macros.h>
+#include <mp-units/compat_macros.h>
 #include <mp-units/framework/quantity_spec_concepts.h>
 #include <mp-units/framework/unit_concepts.h>
 

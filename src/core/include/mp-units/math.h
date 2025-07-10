@@ -22,8 +22,8 @@
 
 #pragma once
 
-#include <mp-units/compat_macros.h>
 #include <mp-units/bits/module_macros.h>
+#include <mp-units/compat_macros.h>
 #include <mp-units/framework/customization_points.h>
 #include <mp-units/framework/quantity.h>
 #include <mp-units/framework/quantity_point.h>

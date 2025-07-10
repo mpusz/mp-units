@@ -23,9 +23,9 @@
 #pragma once
 
 // IWYU pragma: private, include <mp-units/framework.h>
-#include <mp-units/compat_macros.h>
 #include <mp-units/bits/get_associated_quantity.h>
 #include <mp-units/bits/module_macros.h>
+#include <mp-units/compat_macros.h>
 #include <mp-units/framework/quantity_concepts.h>
 #include <mp-units/framework/quantity_point_concepts.h>
 #include <mp-units/framework/reference_concepts.h>
