@@ -89,7 +89,7 @@ def make_msvc_config(release: str, version: int) -> Configuration:
 
 configs = {
     c.name: c
-    for c in [make_gcc_config(ver) for ver in [12, 13, 14, 15]]
+    for c in [make_gcc_config(ver) for ver in [12, 13, 14]]
     + [
         make_clang_config(ver, platform)
         for ver in [16, 17, 18, 20]
