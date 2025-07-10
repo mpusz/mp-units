@@ -68,6 +68,7 @@ class MPUnitsConan(ConanFile):
         # "import_std" default set in config_options()
         # "std_format" default set in config_options()
         # "no_crtp" default set in config_options()
+        "import_std": False,  # still experimental in CMake
         "contracts": "gsl-lite",
         "freestanding": False,
         "natural_units": True,
@@ -129,7 +130,7 @@ class MPUnitsConan(ConanFile):
         return {
             "std_format": "std_format",
             "cxx_modules": "cxx_modules",
-            "import_std": "import_std",
+            # "import_std": "import_std",  # still experimental in CMake
             "no_crtp": "explicit_this",
         }
 

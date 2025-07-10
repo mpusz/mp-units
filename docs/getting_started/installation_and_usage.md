@@ -107,7 +107,7 @@ dependencies by other means, some modifications to the library's CMake files mig
 
 [`import_std`](#import_std){ #import_std } :test_tube:{ title="Experimental" }
 
-:   [:octicons-tag-24: 2.3.0][conan import std support] · :octicons-milestone-24: `True`/`False` (Default: automatically determined from settings)
+:   [:octicons-tag-24: 2.3.0][conan import std support] · :octicons-milestone-24: `True`/`False` (Default: `False`)
 
     Enables `import std;` usage.
 
