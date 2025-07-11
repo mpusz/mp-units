@@ -83,14 +83,6 @@ if you want to set up a development environment on your local machine.
 
 ### CMake options for mp-units project developers
 
-[`MP_UNITS_DEV_BUILD_LA`](#MP_UNITS_DEV_BUILD_LA){ #MP_UNITS_DEV_BUILD_LA }
-
-:   [:octicons-tag-24: 2.2.0][cmake build la support] · :octicons-milestone-24: `ON`/`OFF` (Default: `ON`)
-
-    Enables building code depending on the linear algebra library.
-
-    [cmake build la support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
-
 [`MP_UNITS_DEV_IWYU`](#MP_UNITS_DEV_IWYU){ #MP_UNITS_DEV_IWYU }
 
 :   [:octicons-tag-24: 2.2.0][cmake iwyu support] · :octicons-milestone-24: `ON`/`OFF` (Default: `OFF`)

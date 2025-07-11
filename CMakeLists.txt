@@ -29,7 +29,6 @@ include(CheckCacheVarValues)
 
 set(projectPrefix MP_UNITS_)
 
-option(${projectPrefix}DEV_BUILD_LA "Build code depending on the linear algebra library" OFF)
 option(${projectPrefix}DEV_IWYU "Enables include-what-you-use" OFF)
 option(${projectPrefix}DEV_CLANG_TIDY "Enables clang-tidy" OFF)
 set(${projectPrefix}DEV_TIME_TRACE
@@ -39,7 +38,6 @@ set(${projectPrefix}DEV_TIME_TRACE
 )
 check_cache_var_values(DEV_TIME_TRACE NONE ALL MODULES HEADERS)
 
-message(STATUS "${projectPrefix}DEV_BUILD_LA: ${${projectPrefix}DEV_BUILD_LA}")
 message(STATUS "${projectPrefix}DEV_IWYU: ${${projectPrefix}DEV_IWYU}")
 message(STATUS "${projectPrefix}DEV_CLANG_TIDY: ${${projectPrefix}DEV_CLANG_TIDY}")
 message(STATUS "${projectPrefix}DEV_TIME_TRACE: ${${projectPrefix}DEV_TIME_TRACE}")

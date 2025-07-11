@@ -179,11 +179,6 @@ class MPUnitsConan(ConanFile):
         return bool(self.conf.get("user.mp-units.build:all", default=False))
 
     @property
-    def _skip_la(self):
-        # broken until https://github.com/BobSteagall/wg21/issues/77 is fixed
-        return bool(self.conf.get("user.mp-units.build:skip_la", default=True))
-
-    @property
     def _run_clang_tidy(self):
         return bool(self.conf.get("user.mp-units.analyze:clang-tidy", default=False))
 
@@ -223,8 +218,6 @@ class MPUnitsConan(ConanFile):
         if self._build_all:
             if not self.options.freestanding:
                 self.test_requires("catch2/3.8.0")
-            if not self._skip_la:
-                self.test_requires("wg21-linear_algebra/0.7.3")
 
     def validate(self):
         compiler = self.settings.compiler
@@ -264,7 +257,6 @@ class MPUnitsConan(ConanFile):
             tc.cache_variables["CMAKE_VERIFY_INTERFACE_HEADER_SETS"] = (
                 not opt.import_std
             )
-            tc.cache_variables["MP_UNITS_DEV_BUILD_LA"] = not self._skip_la
             if self._run_clang_tidy:
                 tc.cache_variables["MP_UNITS_DEV_CLANG_TIDY"] = True
         if opt.cxx_modules:
