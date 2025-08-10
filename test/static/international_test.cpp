@@ -34,6 +34,11 @@ using namespace mp_units::international::unit_symbols;
 
 // Mass
 static_assert(100'000'000 * isq::mass[lb] == 45'359'237 * isq::mass[si::kilogram]);
+// 47 *  45'359'237 = 2'131'884'139 =  0x7F11'F86B; the largest value that fits a signed int32 in this comparison
+// 47 * 100'000'000 = 4'700'000'000 = 0x1'1824'4F00 will be truncated to 0x1824'4F00.
+static_assert(47 * isq::mass[lb] < 47 * isq::mass[si::kilogram]);
+// 10^14 easily fits into int64 (which has about a range 10^19); but converted to the gcd, it doesn't!
+static_assert(100'000'000'000'000 * isq::mass[lb] == 45'359'237'000'000 * isq::mass[si::kilogram]);
 static_assert(1 * isq::mass[lb] == 16 * isq::mass[oz]);
 static_assert(1 * isq::mass[oz] == 16 * isq::mass[dr]);
 static_assert(7'000 * isq::mass[gr] == 1 * isq::mass[lb]);
