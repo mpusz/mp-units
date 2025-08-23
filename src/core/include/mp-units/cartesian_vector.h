@@ -192,7 +192,7 @@ public:
   }
 
   template<std::same_as<T> U>
-    requires requires(U u, T t) { u* t; }
+    requires requires(U u, T t) { u * t; }
   [[nodiscard]] friend constexpr auto operator*(const cartesian_vector<U>& lhs, const T& rhs)
   {
     return ::mp_units::cartesian_vector{lhs._coordinates_[0] * rhs, lhs._coordinates_[1] * rhs,
@@ -200,7 +200,7 @@ public:
   }
 
   template<std::same_as<T> U>
-    requires requires(T t, U u) { t* u; }
+    requires requires(T t, U u) { t * u; }
   [[nodiscard]] friend constexpr auto operator*(const T& lhs, const cartesian_vector<U>& rhs)
   {
     return rhs * lhs;
@@ -235,7 +235,7 @@ public:
 
   template<std::same_as<T> U, typename V>
     requires requires(U u, V v, decltype(u * v) t) {
-      u* v;
+      u * v;
       t + t;
     }
   [[nodiscard]] friend constexpr auto scalar_product(const cartesian_vector<U>& lhs, const cartesian_vector<V>& rhs)
@@ -246,7 +246,7 @@ public:
 
   template<std::same_as<T> U, typename V>
     requires requires(U u, V v, decltype(u * v) t) {
-      u* v;
+      u * v;
       t - t;
     }
   [[nodiscard]] friend constexpr auto vector_product(const cartesian_vector<U>& lhs, const cartesian_vector<V>& rhs)

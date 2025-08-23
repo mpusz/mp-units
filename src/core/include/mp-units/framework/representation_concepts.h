@@ -48,9 +48,9 @@ concept WeaklyRegular = std::copyable<T> && std::equality_comparable<T>;
 
 template<typename T, typename S>
 concept ScalableWith = requires(const T v, const S s) {
-  { v* s / s } -> std::common_with<T>;
-  { s* v / s } -> std::common_with<T>;
-  { v / s* s } -> std::common_with<T>;
+  { v * s / s } -> std::common_with<T>;
+  { s * v / s } -> std::common_with<T>;
+  { v / s * s } -> std::common_with<T>;
 };
 
 template<typename T>
@@ -295,8 +295,8 @@ using scaling_factor_type_t = conditional<std::is_arithmetic_v<value_type_t<T>>,
 // TODO replace the below and above with the logic from #615 when available
 template<typename T>
 concept ScalableByFactor = requires(const T v, const scaling_factor_type_t<T> f) {
-  { v* f } -> std::common_with<T>;
-  { f* v } -> std::common_with<T>;
+  { v * f } -> std::common_with<T>;
+  { f * v } -> std::common_with<T>;
   { v / f } -> std::common_with<T>;
 };
 
