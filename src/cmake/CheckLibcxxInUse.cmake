@@ -28,8 +28,14 @@ function(check_libcxx_in_use variable)
         list(APPEND CMAKE_MESSAGE_INDENT "  ")
 
         include(CheckCXXSymbolExists)
-        check_cxx_symbol_exists(_LIBCPP_VERSION "ciso646" ${variable})
+
+        # Ensure CMAKE_REQUIRED_FLAGS includes the current compiler flags
+        set(CMAKE_REQUIRED_FLAGS "${CMAKE_CXX_FLAGS}")
+
+        check_cxx_symbol_exists(_LIBCPP_VERSION "version" ${variable})
         set(${variable} ${${variable}} PARENT_SCOPE)
+
+        unset(CMAKE_REQUIRED_FLAGS)
 
         list(POP_BACK CMAKE_MESSAGE_INDENT)
         if(${variable})
