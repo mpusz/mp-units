@@ -82,7 +82,7 @@ clone_if_missing() {
     local target_dir="$3"
     local repo_name=$(basename "$repo_url" .git)
     local full_path="$target_dir/$repo_name"
-    
+
     if [[ ! -d "$full_path" ]]; then
         echo "Cloning $repo_name..."
         if [[ "$branch" == "default" ]]; then
@@ -137,18 +137,18 @@ fi
 # Build documentation if requested
 if [[ "$BUILD_DOCS" == true ]]; then
     echo "Building API reference documentation..."
-    
+
     # Set proper locale environment for the build
     export LC_ALL=C.UTF-8
     export LANG=C.UTF-8
-    
+
     # Create log file with timestamp
     LOG_FILE="$BUILD_DIR/api_reference_build_$(date +%Y%m%d_%H%M%S).log"
     echo "Build output will be logged to: $LOG_FILE"
-    
+
     # Use tee to show output on console and save to log file
     cmake --build "$BUILD_DIR" 2>&1 | tee "$LOG_FILE"
-    
+
     # Check if build was successful
     if [[ ${PIPESTATUS[0]} -eq 0 ]]; then
         echo "API reference documentation build completed successfully."

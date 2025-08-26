@@ -144,7 +144,7 @@ jobs:
           conan remove *#~latest --confirm
           conan remove *:*#~latest --confirm
           conan cache clean "*" -s -b -d
-      
+
       - name: Generate clang-tidy summary
         if: always()
         shell: bash

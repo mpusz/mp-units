@@ -99,7 +99,7 @@ jobs:
         if: ${{!startsWith(github.event.ref, 'refs/tags/v')}}
         run: |
           mike deploy --push --update-aliases HEAD latest
-      
+
       - name: Generate documentation summary
         if: always()
         run: |

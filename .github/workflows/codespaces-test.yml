@@ -39,11 +39,11 @@ jobs:
   test-devcontainer:
     runs-on: ubuntu-latest
     timeout-minutes: 60
-    
+
     steps:
     - name: Checkout
       uses: actions/checkout@v4
-      
+
     - name: Test Dev Container Build and mp-units Development Workflow
       uses: devcontainers/ci@v0.3.1900000417
       with:
@@ -52,10 +52,10 @@ jobs:
         push: never
         runCmd: |
           set -e  # Exit on any error
-          
+
           echo "🧪 Testing mp-units development environment..."
           echo "📋 Verifying base tools and compilers:"
-          
+
           # Check essential tools are available
           tools=(gcc g++ clang clang++ cmake ninja conan python3 git pre-commit)
           for tool in "${tools[@]}"; do
@@ -66,16 +66,16 @@ jobs:
               exit 1
             fi
           done
-          
+
           echo ""
           echo "📋 Compiler matrix verification:"
           echo "Available GCC versions: $(ls /usr/bin/gcc-* | grep -E 'gcc-[0-9]+$' | sort -V | tr '\n' ' ')"
           echo "Available Clang versions: $(ls /usr/bin/clang++-* /usr/local/bin/clang++-* 2>/dev/null | grep -E 'clang\+\+-[0-9]+$' | sort -V | tr '\n' ' ')"
-          
+
           # Test specific compiler versions expected for mp-units
           echo ""
           echo "🧪 Testing specific compiler versions:"
-          
+
           # Expected GCC versions (12, 13, 14, 15)
           expected_gcc=(12 13 14 15)
           for version in "${expected_gcc[@]}"; do
@@ -87,7 +87,7 @@ jobs:
               exit 1
             fi
           done
-          
+
           # Expected Clang versions (16, 17, 18, 19, 20)
           expected_clang=(16 17 18 19 20)
           for version in "${expected_clang[@]}"; do
@@ -99,7 +99,7 @@ jobs:
               exit 1
             fi
           done
-          
+
           echo ""
           echo "🔧 Default tool versions:"
           gcc --version | head -1
@@ -108,11 +108,11 @@ jobs:
           ninja --version
           python3 --version
           conan --version
-          
+
           echo ""
           echo "📦 Conan configuration validation:"
           conan profile list
-          
+
           # Verify expected Conan profiles exist
           expected_profiles=(gcc12 gcc13 gcc14 clang16 clang17 clang18 clang20)
           for profile in "${expected_profiles[@]}"; do
@@ -123,10 +123,10 @@ jobs:
               exit 1
             fi
           done
-          
+
           echo ""
           echo "🏗️ Testing mp-units comprehensive setup with check_all.sh:"
-          
+
           # Run the comprehensive installation and validation script
           echo "Running check_all.sh install to validate all compiler configurations..."
           if .devcontainer/check_all.sh install; then
@@ -136,7 +136,7 @@ jobs:
             echo "❌ check_all.sh install failed"
             exit 1
           fi
-          
+
           echo ""
           echo "🎯 Testing quick build validation:"
           # Test one quick build to ensure the environment actually works
@@ -147,7 +147,7 @@ jobs:
             echo "❌ Quick build test failed"
             exit 1
           fi
-          
+
           echo ""
           echo "📖 Testing documentation tools:"
           if command -v mkdocs >/dev/null 2>&1; then
@@ -163,7 +163,7 @@ jobs:
             echo "❌ MkDocs: NOT FOUND"
             exit 1
           fi
-          
+
           echo ""
           echo "🎯 Testing API reference setup:"
           if [ -f ".devcontainer/api_reference.sh" ]; then
@@ -179,7 +179,7 @@ jobs:
             echo "❌ API reference script missing"
             exit 1
           fi
-          
+
           echo ""
           echo "🧹 Testing code quality tools:"
           if pre-commit --version >/dev/null 2>&1; then
@@ -188,6 +188,6 @@ jobs:
             echo "❌ pre-commit: NOT FOUND"
             exit 1
           fi
-          
+
           echo ""
           echo "🎉 All tests passed! Development environment is ready for mp-units development."

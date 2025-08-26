@@ -47,7 +47,7 @@ jobs:
       - name: Check
         run: |
           pre-commit run --all-files
-      
+
       - name: Generate formatting summary
         if: always()
         run: |

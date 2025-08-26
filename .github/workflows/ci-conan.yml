@@ -182,7 +182,7 @@ jobs:
           conan remove *#~latest --confirm
           conan remove *:*#~latest --confirm
           conan cache clean "*" -s -b -d
-      
+
       - name: Generate job summary
         if: always()
         shell: bash
@@ -205,7 +205,7 @@ jobs:
           echo "- Standard Library: ${{ matrix.config.lib }}" >> $GITHUB_STEP_SUMMARY
           echo "- C++ Modules: ${{ matrix.config.cxx_modules }}" >> $GITHUB_STEP_SUMMARY
           echo "- OS: ${{ matrix.config.os }}" >> $GITHUB_STEP_SUMMARY
-    
+
     outputs:
       package_ref: ${{ steps.get-package-ref.outputs.PACKAGE_REF }}
 

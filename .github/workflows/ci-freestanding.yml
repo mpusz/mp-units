@@ -139,7 +139,7 @@ jobs:
           conan remove *#~latest --confirm
           conan remove *:*#~latest --confirm
           conan cache clean "*" -s -b -d
-      
+
       - name: Generate freestanding summary
         if: always()
         shell: bash

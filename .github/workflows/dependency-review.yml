@@ -37,7 +37,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        
+
       - name: 'Dependency Review'
         uses: actions/dependency-review-action@v4
         with:
@@ -45,7 +45,7 @@ jobs:
           fail-on-severity: moderate
           # Permissive licenses commonly used by mp-units dependencies
           allow-licenses: >
-            Apache-2.0, MIT, BSD-2-Clause, BSD-3-Clause, ISC, CC0-1.0, 
+            Apache-2.0, MIT, BSD-2-Clause, BSD-3-Clause, ISC, CC0-1.0,
             Unlicense, BSL-1.0, 0BSD, WTFPL, MPL-2.0
           # Restrictive licenses that could affect mp-units distribution
           deny-licenses: >
@@ -55,7 +55,7 @@ jobs:
           allow-dependencies-licenses: >
             conan, pre-commit, identify, mkdocs-material, mkdocs-rss-plugin,
             mkdocs-exclude, mike, pip, setuptools, wheel, cmake
-          
+
       - name: Generate dependency summary
         if: always()
         run: |

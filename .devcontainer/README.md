@@ -1,6 +1,6 @@
 # GitHub Codespaces Integration for mp-units
 
-This repository is configured to work seamlessly with GitHub Codespaces, providing a 
+This repository is configured to work seamlessly with GitHub Codespaces, providing a
 complete development environment with all compilers and tools pre-installed. The environment
 is built on [custom `trainiteu/mp-units` Docker image](https://github.com/train-it-eu/docker-images/blob/main/mp-units/Dockerfile)
 which extends the build tool ecosystem with **mp-units**-specific requirements.
@@ -10,7 +10,7 @@ which extends the build tool ecosystem with **mp-units**-specific requirements.
 The development environment is built on a layered Docker image stack:
 
 1. **[`trainiteu/ubuntu`](https://github.com/train-it-eu/docker-images/blob/main/ubuntu/Dockerfile)**: Ubuntu 25.04 (Plucky Puffin) base with essential development tools
-2. **[`trainiteu/cpp`](https://github.com/train-it-eu/docker-images/blob/main/cpp/Dockerfile)**: Adds CMake, Ninja, Python with pipx for tool management  
+2. **[`trainiteu/cpp`](https://github.com/train-it-eu/docker-images/blob/main/cpp/Dockerfile)**: Adds CMake, Ninja, Python with pipx for tool management
 3. **[`trainiteu/cpp-conan`](https://github.com/train-it-eu/docker-images/blob/main/cpp-conan/Dockerfile)**: Adds Conan 2.x and base compiler profiles
 4. **[`trainiteu/mp-units`](https://github.com/train-it-eu/docker-images/blob/main/mp-units/Dockerfile)**: **mp-units-specific extensions** including:
    - Extended compiler matrix (GCC 12-15, Clang 16-20)
@@ -30,7 +30,7 @@ The development environment is built on a layered Docker image stack:
 
 ### Option 2: Create Codespace from VS Code
 
-1. Install the [GitHub Codespaces extension](https://marketplace.visualstudio.com/items?itemName=GitHub.codespaces) 
+1. Install the [GitHub Codespaces extension](https://marketplace.visualstudio.com/items?itemName=GitHub.codespaces)
    in VS Code
 2. Open the Command Palette (`Ctrl+Shift+P` / `Cmd+Shift+P`)
 3. Type "Codespaces: Create New Codespace"
@@ -66,7 +66,7 @@ The development environment includes all compilers and tools used for comprehens
 - **GCC**: 12, 13, 14, 15
 - **Clang**: 16, 17, 18, 19, 20
 - **Standard Library**: libc++-18 for maximum compatibility
-- **Build Tools**: CMake, Ninja, Conan package manager  
+- **Build Tools**: CMake, Ninja, Conan package manager
 - **Code Quality**: clang-format, clang-tidy, include-what-you-use
 - **Documentation**: MkDocs with Material theme
 - **VS Code Extensions**: C++ IntelliSense, CMake Tools, Python support
@@ -106,7 +106,7 @@ The `.devcontainer/api_reference.sh` script automates the generation of API docu
 # Generate API reference documentation
 .devcontainer/api_reference.sh
 
-# Generate API reference documentation (setup only, no build)  
+# Generate API reference documentation (setup only, no build)
 .devcontainer/api_reference.sh -s
 
 # Use custom directory for dependencies
@@ -152,7 +152,7 @@ performance and costs. The free tier provides **120 core-hours per month** for p
 | **16-core**  | 16    | 64GB  | 7.5 hours         | Large-scale development, heavy parallel workloads |
 | **32-core**  | 32    | 128GB | 3.75 hours        | Maximum performance for complex builds            |
 
-\* *Based on 120 free core-hours per month for GitHub Free accounts on public repositories*  
+\* *Based on 120 free core-hours per month for GitHub Free accounts on public repositories*
 
 For current machine specifications and pricing, see:
 - [GitHub Codespaces billing](https://docs.github.com/en/billing/concepts/product-billing/github-codespaces)
