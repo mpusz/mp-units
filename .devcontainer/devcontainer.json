@@ -43,7 +43,6 @@
         "VisualStudioExptTeam.vscodeintellicode",
         "VisualStudioExptTeam.intellicode-api-usage-examples",
         "ms-vscode.cmake-tools",
-        "twxs.cmake",
         "fredericbonnet.cmake-test-adapter",
         "matepek.vscode-catch2-test-adapter",
         "xaver.clang-format",
