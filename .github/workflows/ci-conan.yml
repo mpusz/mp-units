@@ -33,6 +33,9 @@ on:
 env:
   CHANNEL: ${{ fromJSON('["testing", "stable"]')[github.ref_type == 'tag' && startsWith(github.ref_name, 'v')] }}
 
+permissions:
+  contents: read
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -54,9 +57,10 @@ jobs:
   build:
     name: "${{ matrix.config.name }} C++${{ matrix.std }} ${{ matrix.formatting }} ${{ matrix.contracts }} ${{ matrix.build_type }}"
     runs-on: ${{ matrix.config.os }}
+    timeout-minutes: 120
     needs: generate-matrix
     strategy:
-      fail-fast: false
+      fail-fast: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
       matrix:
         include: ${{fromJson(needs.generate-matrix.outputs.matrix)}}
     env:
@@ -89,6 +93,7 @@ jobs:
         with:
           key: ${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-${{ matrix.std }}
           max-size: 50M
+          verbose: 1
       - name: Install gcc-${{ matrix.config.compiler.version }}
         if: matrix.config.compiler.type == 'GCC'
         shell: bash
@@ -97,7 +102,6 @@ jobs:
       - name: Install Clang with apt
         if: matrix.config.compiler.type == 'CLANG' && matrix.config.os != 'macos-14'
         shell: bash
-        working-directory: ${{ env.HOME }}
         run: |
           wget https://apt.llvm.org/llvm.sh
           chmod +x llvm.sh
@@ -178,6 +182,30 @@ jobs:
           conan remove *#~latest --confirm
           conan remove *:*#~latest --confirm
           conan cache clean "*" -s -b -d
+      
+      - name: Generate job summary
+        if: always()
+        shell: bash
+        run: |
+          echo "## 🏗️ Build Summary" >> $GITHUB_STEP_SUMMARY
+          echo "| Configuration | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|---------------|--------|" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ job.status }}" = "success" ]; then
+            echo "| ${{ matrix.config.name }} C++${{ matrix.std }} ${{ matrix.formatting }} ${{ matrix.contracts }} ${{ matrix.build_type }} | ✅ Success |" >> $GITHUB_STEP_SUMMARY
+          elif [ "${{ job.status }}" = "failure" ]; then
+            echo "| ${{ matrix.config.name }} C++${{ matrix.std }} ${{ matrix.formatting }} ${{ matrix.contracts }} ${{ matrix.build_type }} | ❌ Failed |" >> $GITHUB_STEP_SUMMARY
+          elif [ "${{ job.status }}" = "cancelled" ]; then
+            echo "| ${{ matrix.config.name }} C++${{ matrix.std }} ${{ matrix.formatting }} ${{ matrix.contracts }} ${{ matrix.build_type }} | ⏹️ Cancelled |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| ${{ matrix.config.name }} C++${{ matrix.std }} ${{ matrix.formatting }} ${{ matrix.contracts }} ${{ matrix.build_type }} | ⚠️ ${{ job.status }} |" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Build Details:**" >> $GITHUB_STEP_SUMMARY
+          echo "- Compiler: ${{ matrix.config.compiler.type }} ${{ matrix.config.compiler.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Standard Library: ${{ matrix.config.lib }}" >> $GITHUB_STEP_SUMMARY
+          echo "- C++ Modules: ${{ matrix.config.cxx_modules }}" >> $GITHUB_STEP_SUMMARY
+          echo "- OS: ${{ matrix.config.os }}" >> $GITHUB_STEP_SUMMARY
+    
     outputs:
       package_ref: ${{ steps.get-package-ref.outputs.PACKAGE_REF }}
 

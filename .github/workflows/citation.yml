@@ -4,14 +4,21 @@ on:
   push:
     paths:
       - CITATION.cff
+  pull_request:
+    paths:
+      - CITATION.cff
+
+permissions:
+  contents: read
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  Validate-CITATION-cff:
+  validate-citation-cff:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     name: Validate CITATION.cff
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -31,7 +38,7 @@ jobs:
         uses: dieghernan/cff-validator@main
 
       # Upload artifact
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: citation-cff-errors
