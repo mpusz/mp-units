@@ -167,9 +167,9 @@ MP_UNITS_EXPORT inline constexpr ::mp_units::detail::modulus_impl::modulus_t mod
 namespace detail {
 
 template<typename T>
-concept NumberLike = Addable<T> &&
+concept NumberLike = Addable<T>
 #if MP_UNITS_COMP_GCC != 12 && !defined(MP_UNITS_XCODE15_HACKS)
-                     WeaklyRegular<T>
+                     && WeaklyRegular<T>
 #endif
   ;
 
