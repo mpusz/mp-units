@@ -34,7 +34,7 @@ The easiest way to start coding is to use our containerized development environm
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/mpusz/mp-units)
 
 or navigate to the main page of the repository and click "Code" button -> "Codespaces" tab ->
-"Create codespace on main".
+"Create codespace on master".
 
 You can also use the pre-configured devcontainer and Docker image manually within your IDE.
 
