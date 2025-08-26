@@ -3,6 +3,7 @@
   // Docker image with all required compilers and tools for mp-units development
   // Dockerfile: https://github.com/train-it-eu/docker-images/blob/main/mp-units/Dockerfile
   "image": "trainiteu/mp-units:latest",
+  "remoteUser": "ubuntu",
   "features": {},
   "customizations": {
     "vscode": {
