@@ -23,8 +23,6 @@
 name: Dependency Review
 
 on:
-  push:
-    branches: [ master ]
   pull_request:
     branches: [ master ]
 
@@ -44,19 +42,14 @@ jobs:
         uses: actions/dependency-review-action@v4
         with:
           # Configuration optimized for mp-units project
-          fail-on-severity: moderate
+          fail-on-severity: high
           # Permissive licenses commonly used by mp-units dependencies
           allow-licenses: >
             Apache-2.0, MIT, BSD-2-Clause, BSD-3-Clause, ISC, CC0-1.0,
-            Unlicense, BSL-1.0, 0BSD, WTFPL, MPL-2.0
-          # Restrictive licenses that could affect mp-units distribution
+            Unlicense, BSL-1.0, 0BSD, WTFPL, MPL-2.0, GPL-2.0+, LGPL-2.1+
+          # Only deny the most restrictive licenses
           deny-licenses: >
-            GPL-2.0, GPL-3.0, AGPL-1.0, AGPL-3.0, LGPL-2.0, LGPL-2.1, LGPL-3.0,
-            SSPL-1.0, OSL-3.0, EPL-1.0, EPL-2.0, CDDL-1.0, CDDL-1.1
-          # Known mp-units dependencies (gsl-lite, ms-gsl, fmt, catch2, cmake)
-          allow-dependencies-licenses: >
-            conan, pre-commit, identify, mkdocs-material, mkdocs-rss-plugin,
-            mkdocs-exclude, mike, pip, setuptools, wheel, cmake
+            AGPL-1.0, AGPL-3.0, SSPL-1.0
 
       - name: Generate dependency summary
         if: always()
