@@ -89,8 +89,7 @@ mkdocs serve
 pre-commit run --all-files
 ```
 
-For detailed environment documentation and troubleshooting, see
-[`.devcontainer/README.md`](.devcontainer/README.md).
+For detailed environment documentation and troubleshooting, see _.devcontainer/README.md_.
 
 
 ## Building, testing, and packaging
