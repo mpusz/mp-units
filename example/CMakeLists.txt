@@ -74,5 +74,6 @@ if(${projectPrefix}API_NATURAL_UNITS)
 endif()
 add_example(unmanned_aerial_vehicle example_utils)
 
+add_subdirectory(audio)
 add_subdirectory(glide_computer_lib)
 add_subdirectory(kalman_filter)
