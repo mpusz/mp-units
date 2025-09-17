@@ -151,10 +151,15 @@ template<class Handler, typename FormatArg>
 [[nodiscard]] constexpr int get_dynamic_spec(FormatArg arg)
 {
   unsigned long long value = 0;
+#if (defined MP_UNITS_USE_FMTLIB && FMT_VERSION >= 110000)
+  // for some reason the requires expression below does not work with fmt
+  value = arg.visit(Handler{});
+#else
   if constexpr (requires { arg.visit(Handler{}); })
     value = arg.visit(Handler{});
   else
     value = MP_UNITS_STD_FMT::visit_format_arg(Handler{}, arg);
+#endif
   if (value > ::mp_units::detail::to_unsigned(std::numeric_limits<int>::max())) {
     MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("number is too big"));
   }
