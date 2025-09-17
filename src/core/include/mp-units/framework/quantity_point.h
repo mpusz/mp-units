@@ -559,6 +559,11 @@ public:
 };
 
 // CTAD
+#ifdef MP_UNITS_COMP_MSVC
+template<QuantityPoint QP>
+quantity_point(QP qp) -> quantity_point<QP::reference, QP::point_origin, typename QP::rep>;
+#endif
+
 template<Quantity Q>
 explicit quantity_point(Q q) -> quantity_point<Q::reference, default_point_origin(Q::reference), typename Q::rep>;
 
