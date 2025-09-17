@@ -25,7 +25,6 @@
 #include <mp-units/bits/hacks.h>  // IWYU pragma: keep
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
-#include <mp-units/ext/contracts.h>
 #ifdef MP_UNITS_IMPORT_STD
 import std;
 #else
@@ -103,8 +102,6 @@ template<typename T>
 template<typename T>
 [[nodiscard]] consteval std::optional<T> root(T x, std::uintmax_t n)
 {
-  MP_UNITS_EXPECTS(n >= 0);
-
   // The "zeroth root" would be mathematically undefined.
   if (n == 0) {
     return std::nullopt;
