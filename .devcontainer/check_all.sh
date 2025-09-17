@@ -57,8 +57,7 @@ echo "⚙️  Testing GCC configurations..."
 conan $1 . -pr gcc12   -c user.mp-units.build:all=True -o '&:cxx_modules=False' -o '&:import_std=False' -o '&:std_format=False' -o '&:contracts=gsl-lite' -s compiler.cppstd=20 -b missing
 conan $1 . -pr gcc13   -c user.mp-units.build:all=True -o '&:cxx_modules=False' -o '&:import_std=False' -o '&:std_format=True'  -o '&:contracts=none'     -s compiler.cppstd=23 -b missing
 conan $1 . -pr gcc14   -c user.mp-units.build:all=True -o '&:cxx_modules=False' -o '&:import_std=False' -o '&:std_format=False' -o '&:contracts=ms-gsl'   -s compiler.cppstd=23 -b missing
-# gcc-15.0.1 has bugs preventing mp-units from compiling
-# conan $1 . -pr gcc15   -c user.mp-units.build:all=True -o '&:cxx_modules=False' -o '&:import_std=False' -o '&:std_format=True'  -o '&:contracts=gsl-lite' -s compiler.cppstd=26 -b missing
+conan $1 . -pr gcc15   -c user.mp-units.build:all=True -o '&:cxx_modules=False' -o '&:import_std=False' -o '&:std_format=True'  -o '&:contracts=gsl-lite' -s compiler.cppstd=26 -b missing
 
 echo "⚙️  Testing Clang configurations..."
 conan $1 . -pr clang16 -c user.mp-units.build:all=True -o '&:cxx_modules=False' -o '&:import_std=False' -o '&:std_format=False' -o '&:contracts=gsl-lite' -s compiler.cppstd=20 -b missing
@@ -74,8 +73,7 @@ if [[ $run_debug ]]; then
   conan $1 . -pr gcc12   -c user.mp-units.build:all=True -o '&:cxx_modules=False' -o '&:import_std=False' -o '&:std_format=False' -o '&:contracts=gsl-lite' -s compiler.cppstd=20 -b missing -s build_type=Debug
   conan $1 . -pr gcc13   -c user.mp-units.build:all=True -o '&:cxx_modules=False' -o '&:import_std=False' -o '&:std_format=True'  -o '&:contracts=none'     -s compiler.cppstd=23 -b missing -s build_type=Debug
   conan $1 . -pr gcc14   -c user.mp-units.build:all=True -o '&:cxx_modules=False' -o '&:import_std=False' -o '&:std_format=False' -o '&:contracts=ms-gsl'   -s compiler.cppstd=23 -b missing -s build_type=Debug
-  # gcc-15.0.1 has bugs preventing mp-units from compiling
-  # conan $1 . -pr gcc15   -c user.mp-units.build:all=True -o '&:cxx_modules=False' -o '&:import_std=False' -o '&:std_format=True'  -o '&:contracts=gsl-lite' -s compiler.cppstd=26 -b missing -s build_type=Debug
+  conan $1 . -pr gcc15   -c user.mp-units.build:all=True -o '&:cxx_modules=False' -o '&:import_std=False' -o '&:std_format=True'  -o '&:contracts=gsl-lite' -s compiler.cppstd=26 -b missing -s build_type=Debug
 
   echo "⚙️  Testing Clang debug configurations..."
   conan $1 . -pr clang16 -c user.mp-units.build:all=True -o '&:cxx_modules=False' -o '&:import_std=False' -o '&:std_format=False' -o '&:contracts=gsl-lite' -s compiler.cppstd=20 -b missing -s build_type=Debug
