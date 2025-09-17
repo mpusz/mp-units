@@ -655,7 +655,7 @@ public:
 template<Reference R, RepresentationOf<get_quantity_spec(R{})> Value>
 quantity(Value v, R) -> quantity<R{}, Value>;
 
-#if MP_UNITS_COMP_GCC == 14
+#if MP_UNITS_COMP_GCC >= 14
 template<detail::SomeRepresentation Value>
 #else
 template<RepresentationOf<get_quantity_spec(one)> Value>
