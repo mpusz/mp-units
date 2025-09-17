@@ -66,6 +66,7 @@ conan $1 . -pr clang17 -c user.mp-units.build:all=True -o '&:cxx_modules=True'  
 conan $1 . -pr clang18 -c user.mp-units.build:all=True -o '&:cxx_modules=True'  -o '&:import_std=True'  -o '&:std_format=True'  -o '&:contracts=none'     -s compiler.cppstd=26 -b missing
 # clang-19 will never compile mp-units due to https://github.com/llvm/llvm-project/pull/118288
 conan $1 . -pr clang20 -c user.mp-units.build:all=True -o '&:cxx_modules=True'  -o '&:import_std=True'  -o '&:std_format=True'  -o '&:contracts=none'     -s compiler.cppstd=26 -b missing
+conan $1 . -pr clang21 -c user.mp-units.build:all=True -o '&:cxx_modules=True'  -o '&:import_std=True'  -o '&:std_format=True'  -o '&:contracts=none'     -s compiler.cppstd=26 -b missing
 
 if [[ $run_debug ]]; then
   echo "🐛 Starting debug build configurations..."
@@ -82,6 +83,7 @@ if [[ $run_debug ]]; then
   conan $1 . -pr clang18 -c user.mp-units.build:all=True -o '&:cxx_modules=True'  -o '&:import_std=True'  -o '&:std_format=True'  -o '&:contracts=none'     -s compiler.cppstd=26 -b missing -s build_type=Debug
   # clang-19 will never compile mp-units due to https://github.com/llvm/llvm-project/pull/118288
   conan $1 . -pr clang20 -c user.mp-units.build:all=True -o '&:cxx_modules=True'  -o '&:import_std=True'  -o '&:std_format=True'  -o '&:contracts=none'     -s compiler.cppstd=26 -b missing -s build_type=Debug
+  conan $1 . -pr clang21 -c user.mp-units.build:all=True -o '&:cxx_modules=True'  -o '&:import_std=True'  -o '&:std_format=True'  -o '&:contracts=none'     -s compiler.cppstd=26 -b missing -s build_type=Debug
   echo "✅ Debug builds completed!"
 fi
 
