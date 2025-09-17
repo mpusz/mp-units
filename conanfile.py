@@ -209,15 +209,15 @@ class MPUnitsConan(ConanFile):
             if self.options.contracts == "gsl-lite":
                 self.requires("gsl-lite/0.42.0", transitive_headers=True)
             elif self.options.contracts == "ms-gsl":
-                self.requires("ms-gsl/4.1.0", transitive_headers=True)
+                self.requires("ms-gsl/4.2.0", transitive_headers=True)
             if not self.options.std_format:
-                self.requires("fmt/11.1.4", transitive_headers=True)
+                self.requires("fmt/11.2.0", transitive_headers=True)
 
     def build_requirements(self):
         self.tool_requires("cmake/[>=4.0.2 <5]")
         if self._build_all:
             if not self.options.freestanding:
-                self.test_requires("catch2/3.8.0")
+                self.test_requires("catch2/3.10.0")
 
     def validate(self):
         compiler = self.settings.compiler
