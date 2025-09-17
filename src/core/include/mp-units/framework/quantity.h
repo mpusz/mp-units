@@ -663,8 +663,7 @@ template<RepresentationOf<get_quantity_spec(one)> Value>
 quantity(Value) -> quantity<one, Value>;
 
 template<QuantityLike Q>
-quantity(Q)
-  -> quantity<quantity_like_traits<Q>::reference, typename quantity_like_traits<Q>::rep>;
+quantity(Q) -> quantity<quantity_like_traits<Q>::reference, typename quantity_like_traits<Q>::rep>;
 
 #if MP_UNITS_HOSTED
 
