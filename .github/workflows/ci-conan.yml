@@ -60,7 +60,7 @@ jobs:
     timeout-minutes: 120
     needs: generate-matrix
     strategy:
-      fail-fast: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+      fail-fast: false
       matrix:
         include: ${{fromJson(needs.generate-matrix.outputs.matrix)}}
     env:
