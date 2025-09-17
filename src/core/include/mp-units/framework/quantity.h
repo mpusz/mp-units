@@ -660,10 +660,10 @@ template<detail::SomeRepresentation Value>
 #else
 template<RepresentationOf<get_quantity_spec(one)> Value>
 #endif
-explicit(false) quantity(Value) -> quantity<one, Value>;
+quantity(Value) -> quantity<one, Value>;
 
 template<QuantityLike Q>
-explicit(quantity_like_traits<Q>::explicit_import) quantity(Q)
+quantity(Q)
   -> quantity<quantity_like_traits<Q>::reference, typename quantity_like_traits<Q>::rep>;
 
 #if MP_UNITS_HOSTED

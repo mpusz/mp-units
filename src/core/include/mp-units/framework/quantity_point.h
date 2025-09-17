@@ -565,13 +565,13 @@ quantity_point(QP qp) -> quantity_point<QP::reference, QP::point_origin, typenam
 #endif
 
 template<Quantity Q>
-explicit quantity_point(Q q) -> quantity_point<Q::reference, default_point_origin(Q::reference), typename Q::rep>;
+quantity_point(Q q) -> quantity_point<Q::reference, default_point_origin(Q::reference), typename Q::rep>;
 
 template<Quantity Q, PointOriginFor<Q::quantity_spec> PO>
 quantity_point(Q q, PO) -> quantity_point<Q::reference, PO{}, typename Q::rep>;
 
 template<QuantityPointLike QP>
-explicit(quantity_point_like_traits<QP>::explicit_import) quantity_point(QP)
+quantity_point(QP)
   -> quantity_point<quantity_point_like_traits<QP>::reference, quantity_point_like_traits<QP>::point_origin,
                     typename quantity_point_like_traits<QP>::rep>;
 
