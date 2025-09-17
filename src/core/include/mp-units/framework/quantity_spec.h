@@ -1224,7 +1224,7 @@ template<QuantitySpec Q1, QuantitySpec Q2>
     // if quantities can't be converted in any direction check if they have a common base in the tree
     else if constexpr (detail::have_common_base(Q1{}, Q2{})) {
       constexpr auto base = detail::get_common_base(Q1{}, Q2{});
-      if constexpr (mp_units::implicitly_convertible(q1, base) && mp_units::implicitly_convertible(q2, base))
+      if constexpr (mp_units::implicitly_convertible(Q1{}, base) && mp_units::implicitly_convertible(Q2{}, base))
         return base;
       else
         return no_common_quantity_spec{};

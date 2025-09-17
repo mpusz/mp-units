@@ -870,9 +870,9 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
         "`quantity-specs` should start with a `conversion-spec` ('%' characters expected)");
     auto ptr = begin;
     while (ptr != end) {
-      auto c = *ptr;
-      if (c == '}') break;
-      if (c == ':') {
+      auto ch = *ptr;
+      if (ch == '}') break;
+      if (ch == ':') {
         if (ptr + 1 != end && *(ptr + 1) == ':') {
           handler.on_text(begin, ++ptr);  // account for ':'
           ++ptr;                          // consume the second ':'
@@ -881,7 +881,7 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
         // default specs started
         break;
       }
-      if (c != '%') {
+      if (ch != '%') {
         ++ptr;
         continue;
       }
@@ -889,8 +889,8 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
       ++ptr;  // consume '%'
       if (ptr == end) throw MP_UNITS_STD_FMT::format_error("invalid `conversion-spec` format");
 
-      c = *ptr++;
-      switch (c) {
+      ch = *ptr++;
+      switch (ch) {
         case 'N':
           handler.on_number();
           break;
@@ -907,7 +907,7 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
           handler.on_text(ptr - 1, ptr);
           break;
         default:
-          throw MP_UNITS_STD_FMT::format_error(std::string("unknown `placement-type` token '") + c + "'");
+          throw MP_UNITS_STD_FMT::format_error(std::string("unknown `placement-type` token '") + ch + "'");
       }
       begin = ptr;
     }
@@ -942,9 +942,9 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
     if (begin == end || *begin == '}') return begin;
     if (*begin++ != ':') throw MP_UNITS_STD_FMT::format_error("`defaults-specs` should start with a `:`");
     do {
-      auto c = *begin++;
+      auto ch = *begin++;
       // TODO check if not repeated
-      switch (c) {
+      switch (ch) {
         case 'N':
           begin = parse_default_spec(begin, end, rep_formatter_, rep_format_str_);
           break;
@@ -955,7 +955,7 @@ class MP_UNITS_STD_FMT::formatter<mp_units::quantity<Reference, Rep>, Char> {
           begin = parse_default_spec(begin, end, dimension_formatter_, dimension_format_str_);
           break;
         default:
-          throw MP_UNITS_STD_FMT::format_error(std::string("unknown `subentity-id` token '") + c + "'");
+          throw MP_UNITS_STD_FMT::format_error(std::string("unknown `subentity-id` token '") + ch + "'");
       }
     } while (begin != end && *begin != '}');
     return begin;

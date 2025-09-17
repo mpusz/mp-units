@@ -214,18 +214,18 @@ template<std::forward_iterator It>
 {
   MP_UNITS_EXPECTS(begin != end && '0' <= *begin && *begin <= '9');
   unsigned value = 0, prev = 0;
-  auto p = begin;
+  auto pos = begin;
   do {
     prev = value;
-    value = value * 10 + unsigned(*p - '0');
-    ++p;
-  } while (p != end && '0' <= *p && *p <= '9');
-  auto num_digits = p - begin;
-  begin = p;
+    value = value * 10 + unsigned(*pos - '0');
+    ++pos;
+  } while (pos != end && '0' <= *pos && *pos <= '9');
+  auto num_digits = pos - begin;
+  begin = pos;
   if (num_digits <= std::numeric_limits<int>::digits10) return static_cast<int>(value);
   // Check for overflow.
   const unsigned max = ::mp_units::detail::to_unsigned((std::numeric_limits<int>::max)());
-  return num_digits == std::numeric_limits<int>::digits10 + 1 && prev * 10ull + unsigned(p[-1] - '0') <= max
+  return num_digits == std::numeric_limits<int>::digits10 + 1 && prev * 10ull + unsigned(pos[-1] - '0') <= max
            ? static_cast<int>(value)
            : error_value;
 }
@@ -239,11 +239,11 @@ template<typename Char>
 template<std::forward_iterator It, typename Handler>
 [[nodiscard]] constexpr const It do_parse_arg_id(It begin, It end, Handler& handler)
 {
-  auto c = *begin;
-  if (c >= '0' && c <= '9') {
+  auto ch = *begin;
+  if (ch >= '0' && ch <= '9') {
     int index = 0;
     constexpr int max = (std::numeric_limits<int>::max)();
-    if (c != '0')
+    if (ch != '0')
       index = ::mp_units::detail::parse_nonnegative_int(begin, end, max);
     else
       ++begin;
@@ -252,8 +252,8 @@ template<std::forward_iterator It, typename Handler>
     handler.on_index(index);
     return begin;
   }
-  if (c == '%') return begin;  // mp-units extension
-  if (!::mp_units::detail::is_name_start(c)) {
+  if (ch == '%') return begin;  // mp-units extension
+  if (!::mp_units::detail::is_name_start(ch)) {
     MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("invalid format string"));
   }
   auto it = begin;
@@ -273,8 +273,8 @@ template<std::forward_iterator It, typename Handler>
 [[nodiscard]] constexpr It parse_arg_id(It begin, It end, Handler& handler)
 {
   MP_UNITS_EXPECTS(begin != end);
-  auto c = *begin;
-  if (c != '}' && c != ':') return ::mp_units::detail::do_parse_arg_id(begin, end, handler);
+  auto ch = *begin;
+  if (ch != '}' && ch != ':') return ::mp_units::detail::do_parse_arg_id(begin, end, handler);
   handler.on_auto();
   return begin;
 }
@@ -351,10 +351,10 @@ template<std::forward_iterator It, typename Specs>
 {
   MP_UNITS_EXPECTS(begin != end);
   auto align = fmt_align::none;
-  auto p = begin + code_point_length(begin);
-  if (end - p <= 0) p = begin;
+  auto pos = begin + code_point_length(begin);
+  if (end - pos <= 0) pos = begin;
   for (;;) {
-    switch (to_ascii(*p)) {
+    switch (to_ascii(*pos)) {
       case '<':
         align = fmt_align::left;
         break;
@@ -366,19 +366,19 @@ template<std::forward_iterator It, typename Specs>
         break;
     }
     if (align != fmt_align::none) {
-      if (p != begin) {
-        auto c = *begin;
-        if (c == '}') return begin;
-        if (c == '{') MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("invalid fill character '{'"));
-        specs.fill = {begin, p};
-        begin = p + 1;
+      if (pos != begin) {
+        auto ch = *begin;
+        if (ch == '}') return begin;
+        if (ch == '{') MP_UNITS_THROW(MP_UNITS_STD_FMT::format_error("invalid fill character '{'"));
+        specs.fill = {begin, pos};
+        begin = pos + 1;
       } else {
         ++begin;
       }
       break;
     }
-    if (p == begin) break;
-    p = begin;
+    if (pos == begin) break;
+    pos = begin;
   }
   if (align == fmt_align::none) align = default_align;  // mp-units extension
   specs.align = align;
