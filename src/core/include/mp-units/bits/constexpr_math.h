@@ -25,6 +25,7 @@
 #include <mp-units/bits/hacks.h>  // IWYU pragma: keep
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
+#include <mp-units/ext/contracts.h>
 #ifdef MP_UNITS_IMPORT_STD
 import std;
 #else
@@ -98,6 +99,8 @@ template<typename T>
 template<typename T>
 [[nodiscard]] consteval std::optional<T> root(T x, std::uintmax_t n)
 {
+  MP_UNITS_EXPECTS(n >= 0);
+
   // The "zeroth root" would be mathematically undefined.
   if (n == 0) {
     return std::nullopt;
@@ -111,19 +114,6 @@ template<typename T>
   // We only support nontrivial roots of floating point types.
   if (!std::is_floating_point<T>::value) {
     return std::nullopt;
-  }
-
-  // Handle negative numbers: only odd roots are allowed.
-  if (x < 0) {
-    if (n % 2 == 0) {
-      return std::nullopt;
-    } else {
-      const auto negative_result = root(-x, n);
-      if (!negative_result.has_value()) {
-        return std::nullopt;
-      }
-      return static_cast<T>(-negative_result.value());
-    }
   }
 
   // Handle special cases of zero and one.
