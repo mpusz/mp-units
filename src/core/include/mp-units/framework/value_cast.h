@@ -39,7 +39,7 @@ namespace mp_units {
 namespace detail {
 
 template<typename Rep, Unit UFrom, Unit UTo>
-[[nodiscard]] consteval bool scaling_overflows_non_zero_values(UFrom from, UTo to)
+[[nodiscard]] consteval bool scaling_overflows_non_zero_values(UFrom, UTo)
 {
   if constexpr (is_same_v<UFrom, UTo> || treat_as_floating_point<Rep>)
     return false;
