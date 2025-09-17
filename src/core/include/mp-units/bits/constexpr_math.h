@@ -42,8 +42,12 @@ namespace mp_units::detail {
 
 template<typename T>
 [[nodiscard]] MP_UNITS_CONSTEVAL T abs(T v) noexcept
+  requires requires {
+    v < T{0};
+    -v;
+  }
 {
-  return v < 0 ? -v : v;
+  return v < T{0} ? -v : v;
 }
 
 // Raise an arbitrary arithmetic type to a positive integer power at compile time.
