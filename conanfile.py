@@ -207,7 +207,7 @@ class MPUnitsConan(ConanFile):
     def requirements(self):
         if not self.options.freestanding:
             if self.options.contracts == "gsl-lite":
-                self.requires("gsl-lite/0.42.0", transitive_headers=True)
+                self.requires("gsl-lite/1.0.1", transitive_headers=True)
             elif self.options.contracts == "ms-gsl":
                 self.requires("ms-gsl/4.2.0", transitive_headers=True)
             if not self.options.std_format:

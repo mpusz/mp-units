@@ -101,7 +101,7 @@
 
 #endif  // MP_UNITS_HOSTED
 
-#if MP_UNITS_API_CONTRACTS == 2 || (!defined MP_UNITS_API_CONTRACTS && __has_include(<gsl/gsl-lite.hpp>))
+#if MP_UNITS_API_CONTRACTS == 2 || (!defined MP_UNITS_API_CONTRACTS && __has_include(<gsl-lite/gsl-lite.hpp>))
 
 #define MP_UNITS_EXPECTS(expr) gsl_Expects(expr)
 #define MP_UNITS_EXPECTS_DEBUG(expr) gsl_ExpectsDebug(expr)
