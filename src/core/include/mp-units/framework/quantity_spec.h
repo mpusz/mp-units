@@ -107,7 +107,7 @@ concept DerivedQuantitySpec =
    (QuantityKindSpec<T> && is_specialization_of<MP_UNITS_NONCONST_TYPE(T::_quantity_spec_), derived_quantity_spec>));
 
 
-template<QuantitySpec QS, detail::WeakUnitOf<QS{}> U>
+template<QuantitySpec QS, MP_UNITS_WEAK_UNIT_OF(QS{}) U>
 [[nodiscard]] consteval Reference auto make_reference(QS, U u)
 {
   if constexpr (requires { requires(mp_units::get_quantity_spec(U{}) == QS{}); })
@@ -1224,7 +1224,7 @@ template<QuantitySpec Q1, QuantitySpec Q2>
     // if quantities can't be converted in any direction check if they have a common base in the tree
     else if constexpr (detail::have_common_base(Q1{}, Q2{})) {
       constexpr auto base = detail::get_common_base(Q1{}, Q2{});
-      if constexpr (mp_units::implicitly_convertible(q1, base) && mp_units::implicitly_convertible(q2, base))
+      if constexpr (mp_units::implicitly_convertible(Q1{}, base) && mp_units::implicitly_convertible(Q2{}, base))
         return base;
       else
         return no_common_quantity_spec{};

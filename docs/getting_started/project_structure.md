@@ -27,10 +27,7 @@ projects:
     - it wraps _./src_ project together with usage examples and tests
     - additionally to the dependencies of _./src_ project, it uses:
 
-        - [Catch2](https://github.com/catchorg/Catch2) library as a unit tests framework,
-        - [linear algebra](https://github.com/BobSteagall/wg21/tree/master/include)
-          library based on proposal [P1385](https://wg21.link/P1385) used in some examples
-          and tests.
+        - [Catch2](https://github.com/catchorg/Catch2) library as a unit tests framework.
 
 - **_./test_package_**
 

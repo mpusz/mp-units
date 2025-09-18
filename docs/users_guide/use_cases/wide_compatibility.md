@@ -55,8 +55,6 @@ your code using **mp-units**:
 === "C++20 with header files"
 
     ```cpp
-    #include <mp-units/format.h>
-    #include <mp-units/ostream.h>
     #include <mp-units/systems/international.h>
     #include <mp-units/systems/isq.h>
     #include <mp-units/systems/si.h>
@@ -75,8 +73,6 @@ your code using **mp-units**:
 === "C++20 with header files + libfmt"
 
     ```cpp
-    #include <mp-units/format.h>
-    #include <mp-units/ostream.h>
     #include <mp-units/systems/international.h>
     #include <mp-units/systems/isq.h>
     #include <mp-units/systems/si.h>
@@ -101,8 +97,6 @@ your code using **mp-units**:
     #include <mp-units/compat_macros.h>
     import mp_units;
     #else
-    #include <mp-units/format.h>
-    #include <mp-units/ostream.h>
     #include <mp-units/systems/international.h>
     #include <mp-units/systems/isq.h>
     #include <mp-units/systems/si.h>

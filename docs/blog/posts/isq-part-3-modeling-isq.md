@@ -207,7 +207,7 @@ Based on the hierarchy above, we can define the following quantity conversion ru
     ```
 
     Explicit conversions are forced by passing the quantity to a call operator of a `quantity_spec`
-    type:
+    type or by calling `quantity`'s explicit constructor:
 
     ```cpp
     void foo(quantity<isq::height[m]> q);
@@ -216,6 +216,7 @@ Based on the hierarchy above, we can define the following quantity conversion ru
     ```cpp
     quantity<isq::length[m]> q1 = 42 * m;
     quantity<isq::height[m]> q2 = isq::height(q1);  // explicit quantity conversion
+    quantity<isq::height[m]> q3(q1);                // direct initialization
     foo(isq::height(q1));                           // explicit quantity conversion
     ```
 

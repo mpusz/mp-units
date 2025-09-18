@@ -23,10 +23,12 @@
 - feat: `quantity_spec` conversions improved
 - feat: `rankine` unit added
 - feat: `std::numeric_limits` support added
-- feat: `overflows_non_zero_values` added to detect conversions overflowing `rep`
+- feat: `scaling_overflows_non_zero_values` added to detect conversions overflowing `rep`
 - feat: deprecation messages now provide the release version where the deprecation happened
 - feat: electromagnetism.h updated to IEC80000-6-2022
 - feat: `ConvertibleWithNumber` introduced to improve convertibility of unit `one` with raw numbers
+- feat: `lerp` and `midpoint` for points added
+- feat: `is_value_preserving` customization point added
 - feat(example): `is_vector` specialization no longer needed for `si_constants`
 - (!) refactor: `type_list` moved to implementation details
 - (!) refactor: from now `unit_symbol` and `dimension_symbol` always returns `std::string_view`
@@ -63,6 +65,9 @@
 - refactor: `std::convertible_to` replaced with `std::same_as` in `basic_fixed_string`
 - refactor: `less`, `ceil`, and `round` refactored and improved + more unit tests for `round`
 - refactor: `math_concepts.h` removed and concepts replaced with explicit expression in constraints
+- refactor: `visit_format_arg` is deprecated in C++26
+- refactor: deprecated literal operators
+- refactor: constraints refactoring
 - (!) fix: `electric_current_phasor`, `voltage_phasor`, `apparent_power` switched to complex character
 - (!) fix: `position_vector` and `displacement` moved to a different place in a tree
 - (!) fix: `velocity` is now defined in terms of `displacement` instead of `position_vector`
@@ -77,6 +82,11 @@
 - fix: missing `get_common_unit()` overload added
 - fix: `floor` and `ceil` constraints fixed
 - fix: quantity characters fixed in electromagnetism quantities
+- fix: `arg.visit` support fixed
+- fix: `expr_less` now also sorts powers
+- fix: `mag_constant` workarounds branches for clang fixed
+- fix: checking for clang versions fixed in CMake scripts
+- fix: text stripping in `type_name` fixed
 - test: lots of tests for complex quantities
 - test: runtime unit tests refactored to have a bigger granularity (less top level tests)
 - test: _surface tension_ replaced with _entropy_ in an fmt test
@@ -102,12 +112,17 @@
 - docs: "Scaling overflow prevention" chapter added
 - docs: "Concepts" chapter updated
 - docs: old customization points removed from the "Character of a Quantity" chapter
+- docs: clang-19 issues mentioned in a compiler support table
 - docs(ref): document most of `mp_units.core` (thanks [@JohelEGP](https://github.com/JohelEGP))
 - build: `CheckCacheVarValues` CMake module file added
 - build: `MP_UNITS_DEV_TIME_TRACE` CMake option added
 - build: `MP_UNITS_API_NO_CRTP` removed from `test_package` CMake
 - build: require at least CMake 3.31 with Conan
-- build: fmt/11.1.1
+- build: clang-20 enabled in CI
+- build: clang-19 support removed from conanfile.py
+- build: clang-20.1 workaround added to `package_info`
+- build: update dependencies to gsl-lite/0.42.0, ms-gsl/4.1.0, fmt/11.1.4, and catch2/3.8.0
+- build: suppress warnings for gcc-12 in conanfile
 - ci: CI matrix generation added (thanks [@burnpanck](https://github.com/burnpanck))
 - ci: `import_std` now checks if at least C++23 is being used
 - perf: caching of the results of heavy `consteval` functions execution added

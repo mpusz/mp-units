@@ -143,7 +143,7 @@ concept invalid_operations = requires {
   requires !requires { 2 < t; };
   requires !requires { t + q_time[second]; };
   requires !requires { t - q_time[second]; };
-  requires !requires { t* q_time[second]; };
+  requires !requires { t * q_time[second]; };
   requires !requires { t / q_time[second]; };
   requires !requires { t == q_time[second]; };
   requires !requires { t < q_time[second]; };

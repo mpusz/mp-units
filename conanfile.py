@@ -61,14 +61,17 @@ class MPUnitsConan(ConanFile):
         "no_crtp": [True, False],
         "contracts": ["none", "gsl-lite", "ms-gsl"],
         "freestanding": [True, False],
+        "natural_units": [True, False],
     }
     default_options = {
         # "cxx_modules" default set in config_options()
         # "import_std" default set in config_options()
         # "std_format" default set in config_options()
         # "no_crtp" default set in config_options()
+        "import_std": False,  # still experimental in CMake
         "contracts": "gsl-lite",
         "freestanding": False,
+        "natural_units": True,
     }
     implements = ["auto_header_only"]
     exports = "LICENSE.md"
@@ -127,7 +130,7 @@ class MPUnitsConan(ConanFile):
         return {
             "std_format": "std_format",
             "cxx_modules": "cxx_modules",
-            "import_std": "import_std",
+            # "import_std": "import_std",  # still experimental in CMake
             "no_crtp": "explicit_this",
         }
 
@@ -176,11 +179,6 @@ class MPUnitsConan(ConanFile):
         return bool(self.conf.get("user.mp-units.build:all", default=False))
 
     @property
-    def _skip_la(self):
-        # broken until https://github.com/BobSteagall/wg21/issues/77 is fixed
-        return bool(self.conf.get("user.mp-units.build:skip_la", default=True))
-
-    @property
     def _run_clang_tidy(self):
         return bool(self.conf.get("user.mp-units.analyze:clang-tidy", default=False))
 
@@ -209,19 +207,17 @@ class MPUnitsConan(ConanFile):
     def requirements(self):
         if not self.options.freestanding:
             if self.options.contracts == "gsl-lite":
-                self.requires("gsl-lite/0.42.0", transitive_headers=True)
+                self.requires("gsl-lite/1.0.1", transitive_headers=True)
             elif self.options.contracts == "ms-gsl":
-                self.requires("ms-gsl/4.1.0", transitive_headers=True)
+                self.requires("ms-gsl/4.2.0", transitive_headers=True)
             if not self.options.std_format:
-                self.requires("fmt/11.1.4", transitive_headers=True)
+                self.requires("fmt/11.2.0", transitive_headers=True)
 
     def build_requirements(self):
-        self.tool_requires("cmake/[>=3.31 <4]")
+        self.tool_requires("cmake/[>=4.0.2 <5]")
         if self._build_all:
             if not self.options.freestanding:
-                self.test_requires("catch2/3.8.0")
-            if not self._skip_la:
-                self.test_requires("wg21-linear_algebra/0.7.3")
+                self.test_requires("catch2/3.10.0")
 
     def validate(self):
         compiler = self.settings.compiler
@@ -261,7 +257,6 @@ class MPUnitsConan(ConanFile):
             tc.cache_variables["CMAKE_VERIFY_INTERFACE_HEADER_SETS"] = (
                 not opt.import_std
             )
-            tc.cache_variables["MP_UNITS_DEV_BUILD_LA"] = not self._skip_la
             if self._run_clang_tidy:
                 tc.cache_variables["MP_UNITS_DEV_CLANG_TIDY"] = True
         if opt.cxx_modules:
@@ -271,7 +266,7 @@ class MPUnitsConan(ConanFile):
             tc.cache_variables["CMAKE_CXX_MODULE_STD"] = True
             # Current experimental support according to `Help/dev/experimental.rst`
             tc.cache_variables["CMAKE_EXPERIMENTAL_CXX_IMPORT_STD"] = (
-                "0e5b6991-d74f-4b3d-a41c-cf096e0b2508"
+                "d0edc3af-4c50-42ea-a356-e2862fe7a444"
             )
 
         # TODO remove the below when Conan will learn to handle C++ modules
@@ -281,6 +276,7 @@ class MPUnitsConan(ConanFile):
             tc.cache_variables["MP_UNITS_API_STD_FORMAT"] = opt.std_format
         tc.cache_variables["MP_UNITS_API_NO_CRTP"] = opt.no_crtp
         tc.cache_variables["MP_UNITS_API_CONTRACTS"] = str(opt.contracts).upper()
+        tc.cache_variables["MP_UNITS_API_NATURAL_UNITS"] = opt.natural_units
 
         tc.generate()
         deps = CMakeDeps(self)

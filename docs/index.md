@@ -49,7 +49,6 @@ The library source code is hosted on [GitHub](https://github.com/mpusz/mp-units)
 === "Header files"
 
     ```cpp
-    #include <mp-units/format.h>
     #include <mp-units/systems/si.h>
     #include <mp-units/systems/usc.h>
     #include <print>
@@ -72,7 +71,7 @@ Output:
 Harvard Bridge length = 364.4 smoot (2034.6 ft, 620.14 m) ± 1 εar
 ```
 
-!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/f8f4KnKh8)"
+!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/xexMjMsxn)"
 
 ??? question "What is `smoot`?"
 

@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include <mp-units/compat_macros.h>
 #include <mp-units/systems/isq.h>
 #include <mp-units/systems/natural.h>
 #include <mp-units/systems/si.h>
@@ -49,6 +50,7 @@ inline constexpr struct my_relative_origin final : relative_point_origin<my_orig
 
 inline constexpr auto dim_speed = isq::dim_length / isq::dim_time;
 
+#if MP_UNITS_API_NATURAL_UNITS
 namespace nu {
 inline constexpr struct second final : named_unit<"s"> {
 } second;
@@ -56,6 +58,7 @@ inline constexpr struct hour final : named_unit<"h", mag<3600> * second> {
 } hour;
 
 }  // namespace nu
+#endif
 
 // BaseDimension
 static_assert(detail::BaseDimension<struct isq::dim_length>);
@@ -190,8 +193,10 @@ static_assert(Unit<struct si::standard_gravity>);
 static_assert(Unit<scaled_unit<mag<10>, struct si::second>>);
 static_assert(Unit<derived_unit<struct si::metre, per<struct si::second>>>);
 static_assert(Unit<struct one>);
+#if MP_UNITS_API_NATURAL_UNITS
 static_assert(Unit<struct nu::second>);
 static_assert(Unit<decltype(si::metre / nu::second)>);
+#endif
 static_assert(!Unit<named_unit<"?", kind_of<isq::length>>>);
 static_assert(!Unit<named_unit<"?">>);
 static_assert(!Unit<named_unit<"?", si::metre / si::second>>);
@@ -228,32 +233,38 @@ static_assert(!PrefixableUnit<int>);
 static_assert(!PrefixableUnit<std::chrono::seconds>);
 #endif
 
-// AssociatedUnit
-static_assert(AssociatedUnit<struct si::metre>);
-static_assert(!AssociatedUnit<struct natural::electronvolt>);
-static_assert(AssociatedUnit<MP_UNITS_NONCONST_TYPE(si::kilogram)>);
-static_assert(AssociatedUnit<si::kilo_<struct si::gram>>);
-static_assert(AssociatedUnit<decltype(si::metre / si::second)>);
-static_assert(AssociatedUnit<decltype(inverse(si::second))>);
-static_assert(AssociatedUnit<decltype(mag<10> * si::second)>);
-static_assert(AssociatedUnit<decltype(square(si::metre))>);
-static_assert(AssociatedUnit<decltype(pow<2>(si::metre))>);
-static_assert(AssociatedUnit<struct si::standard_gravity>);
-static_assert(AssociatedUnit<scaled_unit<mag<10>, struct si::second>>);
-static_assert(AssociatedUnit<derived_unit<struct si::metre, per<struct si::second>>>);
-static_assert(AssociatedUnit<struct one>);
-static_assert(AssociatedUnit<decltype(get_common_unit(si::kilo<si::metre> / si::hour, si::metre / si::second))>);
-static_assert(!AssociatedUnit<decltype(si::metre / nu::second)>);
-static_assert(!AssociatedUnit<decltype(get_common_unit(si::kilo<si::metre> / nu::hour, si::metre / nu::second))>);
-static_assert(!AssociatedUnit<named_unit<"?", kind_of<isq::length>>>);
-static_assert(!AssociatedUnit<named_unit<"?">>);
-static_assert(!AssociatedUnit<named_unit<"?", si::metre / si::second>>);
-static_assert(!AssociatedUnit<named_unit<"?", si::metre, kind_of<isq::length>>>);
-static_assert(!AssociatedUnit<prefixed_unit<"?", mag<10>, si::second>>);
-static_assert(!AssociatedUnit<struct isq::dim_length>);
-static_assert(!AssociatedUnit<int>);
+// MP_UNITS_ASSOCIATED_UNIT
+static_assert(MP_UNITS_ASSOCIATED_UNIT<struct si::metre>);
+#if MP_UNITS_API_NATURAL_UNITS
+static_assert(!MP_UNITS_ASSOCIATED_UNIT<struct natural::electronvolt>);
+#endif
+static_assert(MP_UNITS_ASSOCIATED_UNIT<MP_UNITS_NONCONST_TYPE(si::kilogram)>);
+static_assert(MP_UNITS_ASSOCIATED_UNIT<si::kilo_<struct si::gram>>);
+static_assert(MP_UNITS_ASSOCIATED_UNIT<decltype(si::metre / si::second)>);
+static_assert(MP_UNITS_ASSOCIATED_UNIT<decltype(inverse(si::second))>);
+static_assert(MP_UNITS_ASSOCIATED_UNIT<decltype(mag<10> * si::second)>);
+static_assert(MP_UNITS_ASSOCIATED_UNIT<decltype(square(si::metre))>);
+static_assert(MP_UNITS_ASSOCIATED_UNIT<decltype(pow<2>(si::metre))>);
+static_assert(MP_UNITS_ASSOCIATED_UNIT<struct si::standard_gravity>);
+static_assert(MP_UNITS_ASSOCIATED_UNIT<scaled_unit<mag<10>, struct si::second>>);
+static_assert(MP_UNITS_ASSOCIATED_UNIT<derived_unit<struct si::metre, per<struct si::second>>>);
+static_assert(MP_UNITS_ASSOCIATED_UNIT<struct one>);
+static_assert(
+  MP_UNITS_ASSOCIATED_UNIT<decltype(get_common_unit(si::kilo<si::metre> / si::hour, si::metre / si::second))>);
+#if MP_UNITS_API_NATURAL_UNITS
+static_assert(!MP_UNITS_ASSOCIATED_UNIT<decltype(si::metre / nu::second)>);
+static_assert(
+  !MP_UNITS_ASSOCIATED_UNIT<decltype(get_common_unit(si::kilo<si::metre> / nu::hour, si::metre / nu::second))>);
+#endif
+static_assert(!MP_UNITS_ASSOCIATED_UNIT<named_unit<"?", kind_of<isq::length>>>);
+static_assert(!MP_UNITS_ASSOCIATED_UNIT<named_unit<"?">>);
+static_assert(!MP_UNITS_ASSOCIATED_UNIT<named_unit<"?", si::metre / si::second>>);
+static_assert(!MP_UNITS_ASSOCIATED_UNIT<named_unit<"?", si::metre, kind_of<isq::length>>>);
+static_assert(!MP_UNITS_ASSOCIATED_UNIT<prefixed_unit<"?", mag<10>, si::second>>);
+static_assert(!MP_UNITS_ASSOCIATED_UNIT<struct isq::dim_length>);
+static_assert(!MP_UNITS_ASSOCIATED_UNIT<int>);
 #if MP_UNITS_HOSTED
-static_assert(!AssociatedUnit<std::chrono::seconds>);
+static_assert(!MP_UNITS_ASSOCIATED_UNIT<std::chrono::seconds>);
 #endif
 
 // UnitOf

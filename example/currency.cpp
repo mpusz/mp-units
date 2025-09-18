@@ -35,7 +35,6 @@ import std;
 import mp_units.core;
 #else
 #include <mp-units/framework.h>
-#include <mp-units/ostream.h>
 #endif
 
 using namespace mp_units;

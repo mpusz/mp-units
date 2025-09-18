@@ -25,8 +25,6 @@ import std;
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else
-#include <mp-units/format.h>
-#include <mp-units/ostream.h>
 #include <mp-units/systems/iau.h>
 #include <mp-units/systems/imperial.h>
 #include <mp-units/systems/international.h>  // IWYU pragma: keep

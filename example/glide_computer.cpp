@@ -163,7 +163,8 @@ void print(const aircraft_tow& tow)
 
 void example()
 {
-  using namespace mp_units::si::unit_symbols;
+  using mp_units::si::unit_symbols::m;
+  using mp_units::si::unit_symbols::s;
 
   const safety sfty = {300 * m};
   const auto gliders = get_gliders();

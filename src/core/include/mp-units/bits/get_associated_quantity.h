@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <mp-units/compat_macros.h>
 #include <mp-units/framework/quantity_spec.h>
 #include <mp-units/framework/symbolic_expression.h>
 #include <mp-units/framework/unit_concepts.h>
@@ -33,7 +34,7 @@ struct common_unit;
 
 namespace detail {
 
-template<AssociatedUnit U>
+template<MP_UNITS_ASSOCIATED_UNIT U>
 [[nodiscard]] consteval auto get_associated_quantity(U u);
 
 template<typename... Us>
@@ -42,10 +43,10 @@ template<typename... Us>
   return get_common_quantity_spec(get_associated_quantity(Us{})...);
 }
 
-template<AssociatedUnit U>
+template<MP_UNITS_ASSOCIATED_UNIT U>
 using to_quantity_spec = decltype(get_associated_quantity(U{}));
 
-template<AssociatedUnit U>
+template<MP_UNITS_ASSOCIATED_UNIT U>
 [[nodiscard]] consteval auto get_associated_quantity_impl(U u)
 {
   if constexpr (requires { U::_quantity_spec_; })
@@ -56,10 +57,10 @@ template<AssociatedUnit U>
     return expr_map<to_quantity_spec, derived_quantity_spec, struct dimensionless>(u);
 }
 
-template<AssociatedUnit U>
+template<MP_UNITS_ASSOCIATED_UNIT U>
 constexpr auto get_associated_quantity_result = get_associated_quantity_impl(U{});
 
-template<AssociatedUnit U>
+template<MP_UNITS_ASSOCIATED_UNIT U>
 [[nodiscard]] consteval auto get_associated_quantity(U)
 {
   return get_associated_quantity_result<U>;

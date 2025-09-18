@@ -27,10 +27,10 @@
 #include <mp-units/bits/hacks.h>
 #include <mp-units/compat_macros.h>
 
-#if MP_UNITS_API_CONTRACTS == 2 || (!defined MP_UNITS_API_CONTRACTS && __has_include(<gsl/gsl-lite.hpp>))
+#if MP_UNITS_API_CONTRACTS == 2 || (!defined MP_UNITS_API_CONTRACTS && __has_include(<gsl-lite/gsl-lite.hpp>))
 
 #if MP_UNITS_HOSTED
-#include <gsl/gsl-lite.hpp>
+#include <gsl-lite/gsl-lite.hpp>
 #else
 #include <mp-units/bits/requires_hosted.h>
 #endif

@@ -96,8 +96,8 @@ jobs:
             cmake-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-
             cmake-${{ matrix.config.os }}-${{ matrix.formatting }}-
             cmake-${{ matrix.config.os }}-
-      - name: Install gcc-13
-        if: matrix.config.compiler.type == 'GCC' && matrix.config.compiler.version == '13'
+      - name: Install gcc-${{ matrix.config.compiler.version }}
+        if: matrix.config.compiler.type == 'GCC'
         shell: bash
         run: |
           sudo apt install -y g++-${{ matrix.config.compiler.version }}
@@ -246,3 +246,25 @@ jobs:
           conan remove *#~latest --confirm
           conan remove *:*#~latest --confirm
           conan cache clean "*" -s -b -d
+
+      - name: Generate test package summary
+        if: always()
+        shell: bash
+        run: |
+          echo "## 🧪 CMake Test Package Summary" >> $GITHUB_STEP_SUMMARY
+          echo "| Configuration | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|---------------|--------|" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ job.status }}" = "success" ]; then
+            echo "| ${{ matrix.config.name }} C++${{ matrix.std }} ${{ matrix.formatting }} ${{ matrix.contracts }} ${{ matrix.build_type }} | ✅ Passed |" >> $GITHUB_STEP_SUMMARY
+          elif [ "${{ job.status }}" = "failure" ]; then
+            echo "| ${{ matrix.config.name }} C++${{ matrix.std }} ${{ matrix.formatting }} ${{ matrix.contracts }} ${{ matrix.build_type }} | ❌ Failed |" >> $GITHUB_STEP_SUMMARY
+          elif [ "${{ job.status }}" = "cancelled" ]; then
+            echo "| ${{ matrix.config.name }} C++${{ matrix.std }} ${{ matrix.formatting }} ${{ matrix.contracts }} ${{ matrix.build_type }} | ⏹️ Cancelled |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| ${{ matrix.config.name }} C++${{ matrix.std }} ${{ matrix.formatting }} ${{ matrix.contracts }} ${{ matrix.build_type }} | ❓ ${{ job.status }} |" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Integration Test Details:**" >> $GITHUB_STEP_SUMMARY
+          echo "- Build System: CMake" >> $GITHUB_STEP_SUMMARY
+          echo "- Package Manager: Conan" >> $GITHUB_STEP_SUMMARY
+          echo "- Test Type: Consumer Integration" >> $GITHUB_STEP_SUMMARY

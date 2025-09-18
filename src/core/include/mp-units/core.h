@@ -29,9 +29,7 @@
 
 #if MP_UNITS_HOSTED
 #include <mp-units/cartesian_vector.h>
-#include <mp-units/format.h>
 #include <mp-units/math.h>
-#include <mp-units/ostream.h>
 #include <mp-units/random.h>
 #endif
 // IWYU pragma: end_exports

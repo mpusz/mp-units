@@ -25,30 +25,10 @@ be found in the following ISO C++ proposals:**
 
 **We are actively looking for parties interested in field-trialing the library.**
 
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/mpusz/mp-units)
-
-
-## Video Introduction
-
-A brief introduction to the library's interfaces and the rationale for changes in the version 2.0
-of **mp-units** were provided in detail by [Mateusz Pusz](https://github.com/mpusz) in the
-["The Power of C++ Templates With mp-units: Lessons Learned & a New Library Design" talk at the C++ on Sea 2023 conference](https://www.youtube.com/watch?v=eUdz0WvOMm0).
-
-
 ## Documentation
 
 An extensive project documentation can be found on [mp-units GitHub Pages](https://mpusz.github.io/mp-units).
 It includes installation instructions and a detailed user's guide.
-
-
-## Terms and Definitions
-
-This project uses the official metrology vocabulary defined by the ISO and BIPM.
-Please familiarize yourself with those terms to better understand the documentation
-and improve domain-related communication and discussions. You can find essential
-project-related definitions in [our documentation's "Glossary" chapter](https://mpusz.github.io/mp-units/latest/appendix/glossary).
-Even more terms are provided in the official vocabulary of the [ISO](https://www.iso.org/obp/ui#iso:std:iso-iec:guide:99:ed-1:v2:en)
-and [BIPM](https://jcgm.bipm.org/vim/en).
 
 
 ## TL;DR
@@ -91,8 +71,6 @@ and dimensional analysis can be performed without sacrificing on runtime perform
 accuracy. Please see the below example for a quick preview of basic library features:
 
 ```cpp
-#include <mp-units/format.h>
-#include <mp-units/ostream.h>
 #include <mp-units/systems/international.h>
 #include <mp-units/systems/isq.h>
 #include <mp-units/systems/si.h>
@@ -132,4 +110,28 @@ int main()
 }
 ```
 
-_Try it on the [Compiler Explorer](https://godbolt.org/z/nhqhT8Mzb)._
+_Try it on the [Compiler Explorer](https://godbolt.org/z/fxcjs19ah)._
+
+
+## Try It Out
+
+### The Compiler Explorer
+
+As can be see in the previous chapter, the **mp-units** library is available in
+the Compiler Explorer. Use it to get a fast hands-on experience or try some ideas.
+
+
+### GitHub Codespaces
+
+For more advanced development or contributions we encourage you to use our pre-configured
+[GitHub Codespaces](https://docs.github.com/en/codespaces) environment. You can either click the
+button below
+
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/mpusz/mp-units)
+
+or navigate to the main page of the repository and click "Code" button -> "Codespaces" tab ->
+"Create codespace on master".
+
+You can also use the pre-configured devcontainer and Docker image manually within your IDE.
+
+For detailed environment documentation, see [`.devcontainer/README.md`](.devcontainer/README.md).

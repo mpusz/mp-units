@@ -20,6 +20,10 @@ namespace mp_units::detail {
 template<typename T>
 [[nodiscard]] consteval std::string_view type_name()
 {
+#ifdef __RESHARPER__
+  return __rscpp_type_name<T>();
+#endif
+
   std::string_view name, prefix, suffix;
 #ifdef __clang__
   name = __PRETTY_FUNCTION__;

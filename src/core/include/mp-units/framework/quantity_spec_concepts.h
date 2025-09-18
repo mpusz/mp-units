@@ -36,7 +36,7 @@ struct quantity_spec_interface_base;
 }
 
 MP_UNITS_EXPORT template<typename T>
-concept QuantitySpec = detail::SymbolicConstant<T> && std::derived_from<T, detail::quantity_spec_interface_base>;
+concept QuantitySpec = std::derived_from<T, detail::quantity_spec_interface_base> && detail::SymbolicConstant<T>;
 
 template<typename Q>
 struct kind_of_;

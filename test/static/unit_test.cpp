@@ -53,8 +53,10 @@ inline constexpr struct gram_ final : named_unit<"g", kind_of<isq::mass>> {} gra
 inline constexpr auto kilogram = kilo<gram>;
 inline constexpr struct kelvin_ final : named_unit<"K", kind_of<isq::thermodynamic_temperature>> {} kelvin;
 
+#if MP_UNITS_API_NATURAL_UNITS
 // hypothetical natural units for c=1
 inline constexpr struct nu_second_ final : named_unit<"s"> {} nu_second;
+#endif
 
 // derived named units
 inline constexpr struct radian_ final : named_unit<"rad", metre / metre, kind_of<isq::angular_measure>> {} radian;
@@ -89,7 +91,6 @@ inline constexpr struct speed_of_light_in_vacuum_ final : named_unit<"c", mag<29
 // concepts verification
 static_assert(Unit<metre_>);
 static_assert(Unit<second_>);
-static_assert(Unit<nu_second_>);
 static_assert(Unit<MP_UNITS_NONCONST_TYPE(kilogram)>);
 static_assert(Unit<hertz_>);
 static_assert(Unit<newton_>);
@@ -99,10 +100,13 @@ static_assert(Unit<decltype(square(metre))>);
 static_assert(Unit<decltype(cubic(metre))>);
 static_assert(Unit<decltype(mag<60> * second)>);
 static_assert(Unit<decltype(second * second)>);
-static_assert(Unit<decltype(nu_second * nu_second)>);
 static_assert(Unit<decltype(metre / second)>);
-static_assert(Unit<decltype(nu_second / nu_second)>);
 static_assert(Unit<MP_UNITS_NONCONST_TYPE(kilometre)>);
+#if MP_UNITS_API_NATURAL_UNITS
+static_assert(Unit<nu_second_>);
+static_assert(Unit<decltype(nu_second * nu_second)>);
+static_assert(Unit<decltype(nu_second / nu_second)>);
+#endif
 
 static_assert(PrefixableUnit<metre_>);
 static_assert(PrefixableUnit<hertz_>);
@@ -171,7 +175,9 @@ static_assert(get_canonical_unit(joule).mag == mag<1000>);  // !!! (because of k
 static_assert(joule == joule);
 static_assert(joule != newton);
 
+#if MP_UNITS_API_NATURAL_UNITS
 static_assert(is_of_type<nu_second / nu_second, one_>);
+#endif
 
 // constant_unit
 static_assert(is_of_type<standard_gravity, standard_gravity_>);

@@ -109,8 +109,6 @@ performed without sacrificing accuracy. Please see the below example for a quick
 === "Header files"
 
     ```cpp
-    #include <mp-units/format.h>
-    #include <mp-units/ostream.h>
     #include <mp-units/systems/international.h>
     #include <mp-units/systems/isq.h>
     #include <mp-units/systems/si.h>
@@ -150,7 +148,7 @@ performed without sacrificing accuracy. Please see the below example for a quick
     }
     ```
 
-!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/nhqhT8Mzb)"
+!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/fxcjs19ah)"
 
 !!! note
 

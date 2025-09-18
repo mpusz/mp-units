@@ -251,6 +251,18 @@ Based on the same hierarchy of quantities of kind length, we can define quantity
     static_assert(implicitly_convertible(isq::radius, isq::length));
     ```
 
+    Implicit conversions are allowed on copy-initialization:
+
+    ```cpp
+    void foo(quantity<isq::length[m]> q);
+    ```
+
+    ```cpp
+    quantity<isq::width[m]> q1 = 42 * m;
+    quantity<isq::length[m]> q2 = q1;  // implicit quantity conversion
+    foo(q1);                           // implicit quantity conversion
+    ```
+
 2. **Explicit conversions**
 
     - not every _length_ is a _width_
@@ -265,6 +277,20 @@ Based on the same hierarchy of quantities of kind length, we can define quantity
     static_assert(explicitly_convertible(isq::length, isq::radius));
     ```
 
+    Explicit conversions are forced by passing the quantity to a call operator of a `quantity_spec`
+    type or by calling `quantity`'s explicit constructor:
+
+    ```cpp
+    void foo(quantity<isq::height[m]> q);
+    ```
+
+    ```cpp
+    quantity<isq::length[m]> q1 = 42 * m;
+    quantity<isq::height[m]> q2 = isq::height(q1);  // explicit quantity conversion
+    quantity<isq::height[m]> q3(q1);                // direct initialization
+    foo(isq::height(q1));                           // explicit quantity conversion
+    ```
+
 3. **Explicit casts**
 
     - _height_ is not a _width_
@@ -276,6 +302,18 @@ Based on the same hierarchy of quantities of kind length, we can define quantity
     static_assert(castable(isq::height, isq::width));
     ```
 
+    Explicit casts are forced with a dedicated `quantity_cast` function:
+
+    ```cpp
+    void foo(quantity<isq::height[m]> q);
+    ```
+
+    ```cpp
+    quantity<isq::width[m]> q1 = 42 * m;
+    quantity<isq::height[m]> q2 = quantity_cast<isq::height>(q1);  // explicit quantity cast
+    foo(quantity_cast<isq::height>(q1));                           // explicit quantity cast
+    ```
+
 4. **No conversion**
 
     - _time_ has nothing in common with _length_
@@ -284,6 +322,17 @@ Based on the same hierarchy of quantities of kind length, we can define quantity
     static_assert(!implicitly_convertible(isq::time, isq::length));
     static_assert(!explicitly_convertible(isq::time, isq::length));
     static_assert(!castable(isq::time, isq::length));
+    ```
+
+    Even the explicit casts will not force such a conversion:
+
+    ```cpp
+    void foo(quantity<isq::length[m]>);
+    ```
+
+    ```cpp
+    quantity<isq::length[m]> q1 = 42 * s;    // Compile-time error
+    foo(quantity_cast<isq::length>(42 * s)); // Compile-time error
     ```
 
 

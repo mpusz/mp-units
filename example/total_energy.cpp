@@ -30,7 +30,6 @@ import std;
 import mp_units;
 #else
 #include <mp-units/math.h>
-#include <mp-units/ostream.h>
 #include <mp-units/systems/isq/mechanics.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/natural.h>
@@ -49,7 +48,10 @@ QuantityOf<isq::mechanical_energy> auto total_energy(QuantityOf<isq::momentum> a
 
 void si_example()
 {
-  using namespace mp_units::si::unit_symbols;
+  using mp_units::si::unit_symbols::kg;
+  using mp_units::si::unit_symbols::m;
+  using mp_units::si::unit_symbols::s;
+  using mp_units::si::unit_symbols::J;
   constexpr Unit auto GeV = si::giga<si::electronvolt>;
   constexpr quantity c = 1. * si::si2019::speed_of_light_in_vacuum;
   const quantity c2 = pow<2>(c);

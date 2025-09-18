@@ -26,24 +26,70 @@ If you are looking for a good issue to start with, please check the following:
   but often of higher complexity.
 
 
-## Gitpod
+## GitHub Codespaces Development Environment
 
-The easiest way to start coding is to jump straight into [Gitpod](https://www.gitpod.io)
-environment. You can either click the button below
+The easiest way to start coding is to use our containerized development environment in
+[GitHub Codespaces](https://docs.github.com/en/codespaces). You can either click the button below
 
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/mpusz/mp-units)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/mpusz/mp-units)
 
-or prefix any `mp-units` URL (main branch, other branches, issues, PRs, ...) in your web browser
-with `gitpod.io/#` (e.g., <https://gitpod.io/#https://github.com/mpusz/mp-units>).
+or navigate to the main page of the repository and click "Code" button -> "Codespaces" tab ->
+"Create codespace on master".
 
-The above environment provides you with:
+You can also use the pre-configured devcontainer and Docker image manually within your IDE.
 
-- all supported compilers for Linux development and the latest version of build tools like `cmake`
-  and `conan`,
-- all Conan dependencies preinstalled on the machine,
-- all documentation generation tools ready to use,
-- completed prebuilds for all targets (Debug and Release builds for each compiler),
-- VSCode preconfigured to benefit from all the above.
+
+### Environment Features
+
+The development environment is built on our [custom `trainiteu/mp-units` Docker image](https://github.com/train-it-eu/docker-images/blob/main/mp-units/Dockerfile)
+and provides:
+
+#### 🔧 **Complete Compiler Matrix**
+
+- **GCC**: 12, 13, 14, 15
+- **Clang**: 16, 17, 18, 19, 20
+- **C++ versions**: C++20/23/26
+- **Standard Libraries**: libstdc++11 and libc++ for thorough testing
+
+#### 🚀 **Automated Build & Testing**
+
+- **Multi-compiler testing script**: `.devcontainer/check_all.sh` tests recommended configurations
+- **Pre-configured Conan profiles**: Ready-to-use compiler configurations
+- **Incremental builds**: Persistent Conan cache across sessions
+- **Fast dependencies**: Dedicated Conan Artifactory with pre-compiled packages
+
+#### 📖 **Documentation Tools**
+
+- **MkDocs with Material theme**: Live documentation server at port 8000
+- **API reference generation**: Standardeese-like API reference built on top of LaTex
+- **Python tooling**: pre-commit, mike, mkdocs-material, and plugins via pipx
+
+#### 🛠️ **Development Tools**
+
+- **Code quality**: clang-format, clang-tidy, include-what-you-use
+- **VS Code extensions**: 20+ pre-installed extensions for C++, Python, Git
+
+
+### Quick Start Commands
+
+```bash
+# Test with a single compiler configuration
+conan build . -pr gcc14 -c user.mp-units.build:all=True -b missing
+
+# Test all compiler configurations
+.devcontainer/check_all.sh create
+
+# Generating API Reference
+.devcontainer/api_reference.sh
+
+# Build documentation locally
+mkdocs serve
+
+# Run pre-commit checks
+pre-commit run --all-files
+```
+
+For detailed environment documentation and troubleshooting, see _.devcontainer/README.md_.
 
 
 ## Building, testing, and packaging
@@ -82,14 +128,6 @@ if you want to set up a development environment on your local machine.
 
 
 ### CMake options for mp-units project developers
-
-[`MP_UNITS_DEV_BUILD_LA`](#MP_UNITS_DEV_BUILD_LA){ #MP_UNITS_DEV_BUILD_LA }
-
-:   [:octicons-tag-24: 2.2.0][cmake build la support] · :octicons-milestone-24: `ON`/`OFF` (Default: `ON`)
-
-    Enables building code depending on the linear algebra library.
-
-    [cmake build la support]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 
 [`MP_UNITS_DEV_IWYU`](#MP_UNITS_DEV_IWYU){ #MP_UNITS_DEV_IWYU }
 
@@ -215,11 +253,11 @@ directory:
 ```bash
 sudo apt install latexmk texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended lmodern
 sudo apt install haskell-stack graphviz nodejs npm ghc cabal-install
-npm install split mathjax-full mathjax-node-sre mathjax-node-cli
+npm install split mathjax-full mathjax-node-sre mathjax-node-cli yargs@16.2.0
 cabal update
 ```
 
-On some platforms, installing `mathjax-node-cli` through `npm` does update the system's `PATH`
+On some platforms, installing `mathjax-node-cli` through `npm` does not update the system's `PATH`
 environment variable resulting in `tex2html` not found errors. In such cases we need to add
 the `.bin` folder to the `PATH` environment variable manually:
 
@@ -227,7 +265,51 @@ the `.bin` folder to the `PATH` environment variable manually:
 echo "export PATH=\"~/node_modules/.bin:\$PATH\"" >> ~/.bashrc && source ~/.bashrc
 ```
 
-Next, we need to clone the following git repositories:
+Now, we are ready to start building our API reference using our automated script:
+
+```bash
+.devcontainer/api_reference.sh
+```
+
+This script will:
+- Configure CMake with the correct module paths
+- Build both PDF and HTML documentation
+- Create a symlink to the generated documentation
+
+If you only want to setup CMake without building the documentation, use:
+
+```bash
+.devcontainer/api_reference.sh -s
+```
+
+#### Custom Dependency Directory
+
+By default, the script downloads dependencies to `../api_reference_deps` relative to the
+project root. You can specify a custom directory using the `-d` parameter:
+
+```bash
+# Use a custom directory for dependencies
+.devcontainer/api_reference.sh -d /path/to/custom/deps
+
+# Combine with setup-only mode
+.devcontainer/api_reference.sh -s -d ./local_deps
+```
+
+The dependency directory will contain:
+- `jegp.cmake_modules`: CMake modules for documentation generation
+- `draft`: C++ standard draft sources for reference formatting
+- `cxxdraft-htmlgen`: HTML generation tools for standardese-style output
+
+This is useful when you want to:
+- Share dependencies across multiple project checkouts
+- Use a specific location with faster disk access
+- Avoid re-downloading dependencies for development containers
+
+#### Manual documentation generation
+
+Alternatively, you can run the individual steps manually.
+
+First, we need to clone the following git repositories:
 
 - <https://github.com/JohelEGP/jegp.cmake_modules>
 - `standardese_sources_base` branch of <https://github.com/JohelEGP/draft>
@@ -241,21 +323,21 @@ git clone https://github.com/JohelEGP/draft.git --branch=standardese_sources_bas
 git clone https://github.com/JohelEGP/cxxdraft-htmlgen.git --branch=standardese_sources_base --depth=1
 ```
 
-Now, we are ready to start building our API reference. First, we need to configure CMake with the
-following:
+Next, configure CMake with the following:
 
 ```bash
-cmake -S docs/api_reference/src -B build/docs/api_reference \
-      -DCMAKE_MODULE_PATH="<path to gh:JohelEGP/jegp.cmake_modules>/modules" \
-      -DJEGP_STANDARDESE_SOURCES_GIT_REPOSITORY="<path to gh:JohelEGP/draft>" \
-      -DJEGP_CXXDRAFT_HTMLGEN_GIT_REPOSITORY="<path to gh:JohelEGP/cxxdraft-htmlgen>"
+cmake -S docs/api_reference/src -B build/docs/api_reference -DCMAKE_MODULE_PATH="/workspaces/api_reference_deps/jegp.cmake_modules/modules" -DJEGP_STANDARDESE_SOURCES_GIT_REPOSITORY="/workspaces/api_reference_deps/draft" -DJEGP_CXXDRAFT_HTMLGEN_GIT_REPOSITORY="/workspaces/api_reference_deps/cxxdraft-htmlgen"
 ```
 
-Then we need to build the docs with CMake:
+Then build the documentation with CMake:
 
 ```bash
 cmake --build build/docs/api_reference
 ```
+
+The generated documentation will be available at:
+- PDF: `build/docs/api_reference/mp-units.pdf`
+- HTML: `build/docs/api_reference/mp-units.html/`
 
 In the end, we need to move the generated documentation to the `docs/api_reference/gen` subdirectory:
 
@@ -313,3 +395,29 @@ Especially older compilers can be tricky as those do not have full C++20 conform
 The official list of supported compilers can always be found in the
 [C++ compiler support (API/ABI)](https://mpusz.github.io/mp-units/latest/getting_started/cpp_compiler_support)
 chapter of our documentation.
+
+#### Multi-Compiler Testing
+
+In GitHub Codespaces, you can use the `.devcontainer/check_all.sh` script to test your changes
+across all supported compiler configurations:
+
+```bash
+# Test with all compilers (release builds only)
+.devcontainer/check_all.sh create
+
+# Include debug builds as well
+.devcontainer/check_all.sh -d create
+
+# Just build without creating packages
+.devcontainer/check_all.sh build
+
+# Install dependencies only
+.devcontainer/check_all.sh install
+```
+
+This script tests a similar compiler matrix to the one used in CI, ensuring your changes
+work across:
+
+- GCC 12, 13, 14 with different C++ standards and feature combinations
+- Clang 16, 17, 18, 20 with libstdc++ and libc++
+- Various build configurations (modules, `import std`, `std::format`, contracts)

@@ -116,7 +116,7 @@ struct value_type_impl {
 template<typename T>
   requires requires { typename wrapped_type_t<T>; }
 struct value_type_impl<T> {
-  using type = wrapped_type_t<T>;
+  using type = value_type_impl<wrapped_type_t<T>>::type;
 };
 
 }  // namespace detail

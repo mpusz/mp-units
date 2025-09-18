@@ -26,9 +26,7 @@
 #ifdef MP_UNITS_IN_MODULE_INTERFACE
 
 #define MP_UNITS_EXPORT export
-#define MP_UNITS_EXPORT_BEGIN \
-  export                      \
-  {
+#define MP_UNITS_EXPORT_BEGIN export {
 #define MP_UNITS_EXPORT_END }
 
 #else

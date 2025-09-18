@@ -144,3 +144,25 @@ jobs:
           conan remove *#~latest --confirm
           conan remove *:*#~latest --confirm
           conan cache clean "*" -s -b -d
+
+      - name: Generate clang-tidy summary
+        if: always()
+        shell: bash
+        run: |
+          echo "## 🔍 Clang-Tidy Analysis Summary" >> $GITHUB_STEP_SUMMARY
+          echo "| Configuration | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|---------------|--------|" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ job.status }}" = "success" ]; then
+            echo "| ${{ matrix.config.name }} C++${{ matrix.std }} ${{ matrix.formatting }} ${{ matrix.contracts }} ${{ matrix.build_type }} | ✅ Clean |" >> $GITHUB_STEP_SUMMARY
+          elif [ "${{ job.status }}" = "failure" ]; then
+            echo "| ${{ matrix.config.name }} C++${{ matrix.std }} ${{ matrix.formatting }} ${{ matrix.contracts }} ${{ matrix.build_type }} | ⚠️ Issues Found |" >> $GITHUB_STEP_SUMMARY
+          elif [ "${{ job.status }}" = "cancelled" ]; then
+            echo "| ${{ matrix.config.name }} C++${{ matrix.std }} ${{ matrix.formatting }} ${{ matrix.contracts }} ${{ matrix.build_type }} | ⏹️ Cancelled |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| ${{ matrix.config.name }} C++${{ matrix.std }} ${{ matrix.formatting }} ${{ matrix.contracts }} ${{ matrix.build_type }} | ❓ ${{ job.status }} |" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Analysis Details:**" >> $GITHUB_STEP_SUMMARY
+          echo "- Compiler: ${{ matrix.config.compiler.type }} ${{ matrix.config.compiler.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Standard Library: ${{ matrix.config.lib }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Analysis Tool: clang-tidy" >> $GITHUB_STEP_SUMMARY
