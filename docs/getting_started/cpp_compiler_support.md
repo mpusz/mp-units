@@ -19,7 +19,7 @@ C++ feature:
 | **`std::format`**             |     20      | 13+  |    17+     |     16+     |                    194+                    |
 | **C++ modules**               |     20      | None |    17+     |    None     |                    None                    |
 | **`import std;`**             |     23      | None |    18+     |    None     |                    None                    |
-| **Explicit `this` parameter** |     23      | 14+  |    18+     |    None     |                    None                    |
+| **Explicit `this` parameter** |     23      | 14+  |    18+     |    None     |                    195+                    |
 
 ??? note "clang-19 unfixable bug"
 

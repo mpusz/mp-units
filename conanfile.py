@@ -120,7 +120,7 @@ class MPUnitsConan(ConanFile):
                     "gcc": "14",
                     "clang": "18",
                     "apple-clang": "",
-                    "msvc": "",
+                    "msvc": "195",
                 },
             },
         }
