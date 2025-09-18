@@ -29,7 +29,8 @@ import std;
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else
-#include <mp-units/format.h>
+#include <mp-units/math.h>
+#include <mp-units/systems/si.h>
 #endif
 
 #include "third_party_audio_api.h"
