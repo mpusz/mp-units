@@ -65,6 +65,22 @@ conan install . -pr <profile> -s compiler.cppstd=20
 - **Run tests**: Tests run automatically during `conan build . -c user.mp-units.build:all=True`
 - **Verification**: Interface header sets are verified automatically (unless using `import std;`)
 
+#### Manual Testing Commands
+After configuring the build with Conan, you can run specific test targets:
+
+```bash
+# Verify all interface header sets (ensures headers are correctly structured)
+cmake --build --preset conan-release --target all_verify_interface_header_sets
+
+# Run all unit tests
+cmake --build --preset conan-release --target test
+```
+
+These commands are useful for:
+- **Interface verification**: Ensures header files are compatible and properly structured
+- **Test execution**: Runs the complete test suite using the configured build preset
+- **Build validation**: Confirms code quality and compatibility after making changes
+
 ### Code Quality Tools
 - **Formatter**: clang-format (with `.clang-format` config)
 - **Linter**: clang-tidy (enable with `-c user.mp-units.analyze:clang-tidy=True`)
