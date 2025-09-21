@@ -1,9 +1,8 @@
 # Dimensionless Quantities
 
-The quantities we discussed so far always had some specific type and physical dimension.
-However, this is not always the case. While performing various computations, we sometimes end up with
-so-called "dimensionless" quantities, which ISO defines as
-[quantities of dimension one](../../appendix/glossary.md#dimensionless-quantity):
+The quantities discussed so far always had specific types and physical dimensions.
+However, this isn't always the case. Some computations produce "dimensionless" quantities,
+which ISO defines as [quantities of dimension one](../../appendix/glossary.md#dimensionless-quantity):
 
 !!! quote "ISO/IEC Guide 99"
 

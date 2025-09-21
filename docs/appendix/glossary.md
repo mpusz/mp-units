@@ -4,8 +4,8 @@
 
 !!! note
 
-    The ISO terms provided below are only a few of many defined in
-    the [ISO/IEC Guide 99](https://www.iso.org/obp/ui#iso:std:iso-iec:guide:99:ed-1:v2:en).
+    The ISO terms provided below are only a few of many defined in the
+    [ISO/IEC Guide 99](https://www.iso.org/obp/ui#iso:std:iso-iec:guide:99:ed-1:v2:en).
 
 [`quantity`](#quantity){ #quantity }
 

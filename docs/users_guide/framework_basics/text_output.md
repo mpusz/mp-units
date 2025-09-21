@@ -1,8 +1,8 @@
 # Text Output
 
-Besides providing dimensional analysis and unit conversions, the library also tries hard to print
-any quantity in the most user-friendly way. We can print the entire quantity or its
-selected parts (numerical value, unit, or dimension).
+Besides dimensional analysis and unit conversions, the library strives to print quantities
+in the most user-friendly way. You can print the entire quantity or selected parts
+(numerical value, unit, or dimension).
 
 !!! note
 
@@ -26,9 +26,8 @@ selected parts (numerical value, unit, or dimension).
 
 ## Predefined symbols
 
-The definitions of dimensions, units, prefixes, and constants require assigning text symbols
-for each entity. Those symbols will be composed by the library's framework to express dimensions
-and units of derived quantities.
+Dimensions, units, prefixes, and constants require text symbols that the framework
+composes to express dimensions and units of derived quantities.
 
 === "Dimensions"
 

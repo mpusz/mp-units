@@ -2,14 +2,13 @@
 
 ## `quantity` is a numeric wrapper
 
-If we think about it, the `quantity` class template is just a "smart" numeric wrapper. It exposes
-properly constrained set of arithmetic operations on one or two operands.
+The `quantity` class template is a "smart" numeric wrapper that exposes a properly constrained
+set of arithmetic operations on one or two operands.
 
 !!! important "Important: `quantity` propagates the underlying interface"
 
-    Every single arithmetic operator is exposed by the `quantity` class template only if
-    the underlying representation type provides it as well, and when its implementation has proper
-    semantics (e.g., returns a reasonable type).
+    `quantity` exposes arithmetic operators only if the underlying representation type provides
+    them with proper semantics (e.g., returns a reasonable type).
 
 For example, in the following code, `-a` will compile only if `MyInt` exposes such an operation
 as well:
@@ -59,9 +58,8 @@ here is the list of all the supported operators:
     - `q == qk`
     - `q <=> qk`
 
-As we can see, there are plenty of operations one can do on a value of a `quantity` type. As most
-of them are obvious, in the following chapters, we will discuss only the most important or non-trivial
-aspects of quantity arithmetics.
+Many operations are possible on `quantity` values. The following sections focus on the most
+important or non-trivial aspects of quantity arithmetics.
 
 
 ## Addition and subtraction

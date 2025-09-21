@@ -1,5 +1,7 @@
 # Release Notes
 
+This page documents the version history and changes for the **mp-units** library.
+
 ## mp-units
 
 ### 2.5.0 <small>WIP</small> { id="2.5.0" }

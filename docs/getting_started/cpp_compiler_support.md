@@ -21,9 +21,9 @@ C++ feature:
 | **`import std;`**             |     23      | None |    18+     |    None     |                    None                    |
 | **Explicit `this` parameter** |     23      | 14+  |    18+     |    None     |                    195+                    |
 
-??? note "clang-19 unfixable bug"
+??? note "Clang-19 unfixable bug"
 
-    Unfortunately, clang-19 does not build **mp-units** because of an
+    Unfortunately, Clang-19 does not build **mp-units** because of an
     [unfixable bug in the compiler](https://github.com/llvm/llvm-project/pull/118288).
 
 ??? note "MSVC bugs"
