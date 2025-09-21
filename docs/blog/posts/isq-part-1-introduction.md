@@ -24,7 +24,7 @@ In this series, we will describe:
 - Part 1 - Introduction
 - [Part 2 - Problems when ISQ is not used](isq-part-2-problems-when-isq-is-not-used.md)
 - [Part 3 - Modeling ISQ](isq-part-3-modeling-isq.md)
-- [Part 4 - Implementing ISQ](isq-part-4-implemeting-isq.md)
+- [Part 4 - Implementing ISQ](isq-part-4-implementing-isq.md)
 - [Part 5 - Benefits](isq-part-5-benefits.md)
 - [Part 6 - Challenges](isq-part-6-challenges.md)
 

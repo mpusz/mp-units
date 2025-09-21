@@ -24,7 +24,7 @@ how our ISQ model elegantly addresses the remaining problems.
 - [Part 1 - Introduction](isq-part-1-introduction.md)
 - [Part 2 - Problems when ISQ is not used](isq-part-2-problems-when-isq-is-not-used.md)
 - [Part 3 - Modeling ISQ](isq-part-3-modeling-isq.md)
-- [Part 4 - Implementing ISQ](isq-part-4-implemeting-isq.md)
+- [Part 4 - Implementing ISQ](isq-part-4-implementing-isq.md)
 - Part 5 - Benefits
 - [Part 6 - Challenges](isq-part-6-challenges.md)
 
@@ -235,7 +235,7 @@ Box my_box3(horizontal_length(2 * m), isq::width(3 * m), isq::height(1 * m));
 ## Various kinds of dimensionless quantities
 
 Most of the quantities hierarchies describe only one kind. There are some exceptions, though.
-One of them is a [hierarchy of _dimensionless_ quantities](isq-part-4-implemeting-isq.md#modeling-a-hierarchy-of-kind-dimensionless).
+One of them is a [hierarchy of _dimensionless_ quantities](isq-part-4-implementing-isq.md#modeling-a-hierarchy-of-kind-dimensionless).
 This tree defines quantities that denote:
 
 - counts (e.g., _storage capacity_),
@@ -248,7 +248,7 @@ them have a common property. Every quantity from this tree, despite often being 
 dedicated unit (e.g., `bit`, `rad`, `sr`), should also be able to be measured in a unit `one`.
 
 We've seen how to model such a hierarchy in a
-[previous article in our series](isq-part-4-implemeting-isq.md#modeling-a-hierarchy-of-kind-dimensionless).
+[previous article in our series](isq-part-4-implementing-isq.md#modeling-a-hierarchy-of-kind-dimensionless).
 This time, we will see a simplified part of a concrete, real-life example for this use case.
 
 We often need to provide strong types for different counts in the digital signal processing domain.

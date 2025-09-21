@@ -19,7 +19,7 @@ issues with modeling of the ISQ in software.
 - [Part 1 - Introduction](isq-part-1-introduction.md)
 - [Part 2 - Problems when ISQ is not used](isq-part-2-problems-when-isq-is-not-used.md)
 - [Part 3 - Modeling ISQ](isq-part-3-modeling-isq.md)
-- [Part 4 - Implementing ISQ](isq-part-4-implemeting-isq.md)
+- [Part 4 - Implementing ISQ](isq-part-4-implementing-isq.md)
 - [Part 5 - Benefits](isq-part-5-benefits.md)
 - Part 6 - Challenges
 
@@ -48,7 +48,7 @@ dimensions of the box, each of which will be a strong quantity that is not conve
 But we've failed.
 
 When we look at the
-[tree of quantities of length](isq-part-4-implemeting-isq.md#modeling-a-hierarchy-of-kind-length)
+[tree of quantities of length](isq-part-4-implementing-isq.md#modeling-a-hierarchy-of-kind-length)
 we immediately see that both _width_ and _height_ are special _lengths_ so they are convertible to
 it.
 
