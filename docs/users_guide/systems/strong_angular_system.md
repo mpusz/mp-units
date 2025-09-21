@@ -132,4 +132,4 @@ Applying a perpendicular force of 500 N to a 20 cm long lever results in 100 N m
     `cotes_angle` is a constant which represents an angle with the value of exactly `1 radian`.
     You can find more information about this constant in [Quincey](../../appendix/references.md#Quincey).
 
-!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/qfxosv9YM)"
+[Try it in Compiler Explorer](https://godbolt.org/z/qfxosv9YM){ .md-button }
