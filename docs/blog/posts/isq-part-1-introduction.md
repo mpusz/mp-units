@@ -74,7 +74,7 @@ _mass_, _speed_, _energy_, _power_, etc.) and relations between them. It does no
 specific units to those quantities, though.
 
 **Systems of units** are the ones that assign units of measurement to quantities from a specific
-**system of quantities** they chose to model. Different **systems of units** are free to chose
+**system of quantities** they chose to model. Different **systems of units** are free to choose
 whatever they find suitable for specific quantities and do not have to be consistent/compatible
 with other such systems. For example:
 

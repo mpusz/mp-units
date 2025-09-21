@@ -14,29 +14,42 @@
 [![Conan testing](https://img.shields.io/badge/mpusz.jfrog.io-2.5.0%3Atesting-blue)](https://mpusz.jfrog.io/ui/packages/conan:%2F%2Fmp-units/2.5.0)
 
 
-# `mp-units` - The quantities and units library for C++
+# `mp-units` – The quantities and units library for C++
 
-**The mp-units library might be the subject of ISO standardization for C++29. More on this can
-be found in the following ISO C++ proposals:**
+**The `mp-units` library is a candidate for ISO standardization for C++29. More context can be
+found in the following ISO C++ proposals:**
 
 - [P1935: A C++ Approach to Physical Units](https://wg21.link/p1935),
 - [P2980: A motivation, scope, and plan for a quantities and units library](https://wg21.link/p2980),
 - [P3045: Quantities and units library](https://wg21.link/p3045).
 
-**We are actively looking for parties interested in field-trialing the library.**
+**We are actively seeking organizations and individuals interested in field‑trialing the library.**
 
 ## Documentation
 
-An extensive project documentation can be found on [mp-units GitHub Pages](https://mpusz.github.io/mp-units).
-It includes installation instructions and a detailed user's guide.
+Extensive project documentation is available on the
+[project site](https://mpusz.github.io/mp-units). It includes installation instructions,
+a detailed user's guide, design rationale, an API reference, tutorials, and examples.
+
+If you're new and just want to experiment, jump to the TL;DR below.
 
 
 ## TL;DR
 
-`mp-units` is a compile-time enabled Modern C++ library that provides compile-time dimensional
-analysis and unit/quantity manipulation.
+`mp-units` is a Modern C++ (C++20 and later) library providing compile‑time dimensional analysis
+and safe manipulation of units, quantities, and quantity points.
 
-Here is a small example of possible operations:
+### Key features
+
+- Strongly typed quantities, units, dimensions, and quantity points (affine space)
+- Compile‑time dimensional analysis and conversion with no runtime overhead
+- Unified model for units, dimensions, quantity specifications, and origins
+- Quantity, unit, and dimension text formatting (portable & UTF‑8 aware)
+- C++ modules support (when available) and header‑only usage
+- Configurable contracts, freestanding mode, and natural units (experimental)
+- Interoperability pathways for legacy and external libraries
+
+Here is a small example of typical operations:
 
 ```cpp
 #include <mp-units/systems/si.h>
@@ -65,10 +78,10 @@ static_assert(1000 / (1 * s) == 1 * kHz);
 
 _Try it on the [Compiler Explorer](https://godbolt.org/z/fT1r4sohs)._
 
-This library heavily uses C++20 features (concepts, classes as NTTPs, ...). Thanks to
-them the user gets a powerful but still easy to use interfaces and all unit conversions
-and dimensional analysis can be performed without sacrificing on runtime performance or
-accuracy. Please see the below example for a quick preview of basic library features:
+The library makes extensive use of C++20 features (concepts, class types as NTTPs, etc.). This
+enables powerful yet easy‑to‑use interfaces while performing all conversions and dimensional
+analysis at compile time—without sacrificing runtime performance or accuracy. The example below
+shows a broader preview of basic capabilities:
 
 ```cpp
 #include <mp-units/systems/international.h>
@@ -115,23 +128,22 @@ _Try it on the [Compiler Explorer](https://godbolt.org/z/fxcjs19ah)._
 
 ## Try It Out
 
-### The Compiler Explorer
+### Compiler Explorer
 
-As can be see in the previous chapter, the **mp-units** library is available in
-the Compiler Explorer. Use it to get a fast hands-on experience or try some ideas.
+As seen in the previous chapter, **mp-units** is available on Compiler Explorer. Use it for a fast,
+zero‑setup trial or to prototype ideas.
 
 
 ### GitHub Codespaces
 
-For more advanced development or contributions we encourage you to use our pre-configured
+For more advanced development or contributions, we encourage you to use our pre‑configured
 [GitHub Codespaces](https://docs.github.com/en/codespaces) environment. You can either click the
 button below
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/mpusz/mp-units)
 
-or navigate to the main page of the repository and click "Code" button -> "Codespaces" tab ->
-"Create codespace on master".
+or navigate to the repository main page and click “Code” → “Codespaces” → “Create codespace on master”.
 
-You can also use the pre-configured devcontainer and Docker image manually within your IDE.
+You can also use the pre‑configured devcontainer and Docker image manually within your IDE.
 
 For detailed environment documentation, see [`.devcontainer/README.md`](.devcontainer/README.md).
