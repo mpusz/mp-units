@@ -1,24 +1,31 @@
 # Quick Start
 
-This chapter provides a quick introduction to get you started with **mp-units**.
-Much more details can be found in our [User's Guide](../users_guide/terms_and_definitions.md).
+This chapter gives a concise tour so you can start using **mp-units** quickly.
+More detail lives in the
+[User's Guide](../users_guide/terms_and_definitions.md).
 
 ## Quantities
 
-A **quantity** is a concrete amount of a unit representing a quantity type of a specified dimension with a
-specific representation. It is represented in the library with a `quantity` class template.
+A **quantity** is a measurable property of something—like length, mass, or temperature—
+that can be described by a number and a reference. Here, a "reference" means not just a unit,
+but also all other compile-time known information about the quantity—such as its dimension,
+quantity type, character, and other properties. In the library this is modeled by the
+`quantity` class template.
 
-The [SI Brochure](../appendix/references.md#SIBrochure) says:
+_**Note:** In this context, "reference" is an official metrology term and is unrelated to
+C++ reference types._
+
+The SI Brochure says:
 
 !!! quote "SI Brochure"
 
-    The value of the quantity is the product of the number and the unit. The space between the number
-    and the unit is regarded as a multiplication sign (just as a space between units implies
-    multiplication).
+    The value of the quantity is the product of the number and the unit. The space between
+    the number and the unit is regarded as a multiplication sign (just as a space between
+    units implies multiplication).
 
 
-Following the above, the value of a quantity in the **mp-units** library is created by multiplying
-a number with a predefined unit:
+Following the above, a quantity value in **mp-units** is created by multiplying a number with
+a predefined unit:
 
 === "C++ modules"
 
@@ -42,8 +49,8 @@ a number with a predefined unit:
 
 !!! info
 
-    In case someone doesn't like the multiply syntax or there is an ambiguity between `operator*`
-    provided by this and other libraries, there are two other ways to create a quantity:
+    If you dislike the multiply syntax or there is an `operator*` ambiguity with another
+    library, two alternative construction styles are available:
 
     1. `delta` construction helper:
 
@@ -90,7 +97,7 @@ a number with a predefined unit:
             ```
 
 The above creates an instance of `quantity<derived_unit<si::metre, per<si::second>>{}, int>`.
-The same can be obtained using optional unit symbols:
+The same can be expressed with (opt‑in) unit symbols:
 
 === "C++ modules"
 
@@ -116,18 +123,16 @@ The same can be obtained using optional unit symbols:
 
 !!! important
 
-    Unit symbols introduce a lot of short identifiers into the current scope, which may cause
-    naming collisions with unrelated but already existing identifiers in the code base.
-    This is why unit symbols are opt-in and typically should be imported only in the context
-    where they are being used (e.g., function scope).
+    Unit symbols introduce many short identifiers into the current scope, which can collide
+    with unrelated existing names. They are therefore opt‑in and are best imported only in
+    narrow scope (e.g., a function body) where needed.
 
-    A user has several options here to choose from depending on the required scenario and possible
-    naming conflicts:
+    A user has several options depending on the scenario and possible naming conflicts:
 
     === "using-directive"
 
-        Explicitly "import" all of the symbols of a specific system of units from a dedicated
-        `unit_symbols` namespace with a
+        Explicitly bring all symbols of a specific system of units from its `unit_symbols`
+        namespace with a
         [using-directive](https://en.cppreference.com/w/cpp/language/namespace#Using-directives):
 
         ```cpp
@@ -144,23 +149,23 @@ The same can be obtained using optional unit symbols:
 
         !!! note
 
-            This solution is perfect for small and isolated scopes but can cause surprising issues
-            when used in larger scopes or when used for the entire program namespace.
+            This works well for small, isolated scopes but may cause surprising issues when
+            used at namespace or project scope.
 
-            There are 29 named units in SI, and each of them has many prefixed variations (e.g.,
-            `ng`, `kcd`, ...). It is pretty easy to introduce a name collision with those.
+            There are 29 named SI units, each with many prefixed variations (e.g., `ng`,
+            `kcd`, ...). It is pretty easy to introduce a name collision with those.
 
     === "using-declaration"
 
-        Selectively bring only the required and not-conflicting symbols with
-        [using-declarations](https://en.cppreference.com/w/cpp/language/using_declaration):
+        Selectively bring only the required, non‑conflicting symbols with
+        using-declarations](https://en.cppreference.com/w/cpp/language/using_declaration):
 
         ```cpp
         using namespace mp_units;
 
         void foo(double N)
         {
-          // 'N' function parameter would collide with the SI symbol for Newton, so we only bring what we need
+          // 'N' would collide with the SI symbol for Newton; only bring what we need
           using si::unit_symbols::m;
           using si::unit_symbols::s;
           quantity speed = N * m / s;
@@ -170,14 +175,14 @@ The same can be obtained using optional unit symbols:
 
     === "custom short identifier"
 
-        Specify a custom not conflicting unit identifier for a unit:
+        Specify a custom, non‑conflicting identifier for a unit:
 
         ```cpp
         using namespace mp_units;
 
         void foo(double speed_m_s)
         {
-          // names of some local variables are conflicting with the symbols we want to use
+          // local variable names conflict with the symbols we want to use
           auto m = ...;
           auto s = ...;
 
@@ -188,7 +193,7 @@ The same can be obtained using optional unit symbols:
 
     === "unit names"
 
-        Full unit names are straightforward to use and often provide the most readable code:
+        Full unit names are straightforward and often the most readable:
 
         ```cpp
         using namespace mp_units;
@@ -200,7 +205,7 @@ The same can be obtained using optional unit symbols:
         }
         ```
 
-Quantities of the same kind can be added, subtracted, and compared to each other:
+Quantities of the same kind can be added, subtracted, and compared:
 
 === "C++ modules"
 
@@ -224,7 +229,7 @@ Quantities of the same kind can be added, subtracted, and compared to each other
     static_assert(1 * km + 50 * m == 1050 * m);
     ```
 
-Various quantities can be multiplied or divided by each other:
+Different quantities can be multiplied or divided to produce derived quantities:
 
 ```cpp
 static_assert(140 * km / (2 * h) == 70 * km / h);
@@ -232,22 +237,22 @@ static_assert(140 * km / (2 * h) == 70 * km / h);
 
 !!! note
 
-    In case you wonder why this library does not use UDLs to create quantities, please check
-    our [FAQ](faq.md#why-dont-we-use-udls-to-create-quantities).
+    Wondering why user‑defined literals (UDLs) are not used?
+    See the [FAQ](faq.md#why-dont-we-use-udls-to-create-quantities).
 
 
 ## Quantity points
 
-The quantity point specifies an absolute quantity with respect to an origin.
-If no origin is provided explicitly, an implicit one will be provided by the library.
+The quantity point specifies an absolute quantity relative to an origin. If no origin is
+provided explicitly, an implicit one is supplied by the library.
 
 Together with quantities, they model [The Affine Space](../users_guide/framework_basics/the_affine_space.md).
 
-Quantity points should be used in all places where adding two values is meaningless
-(e.g., temperature points, timestamps, altitudes, readouts from the car's odometer, etc.).
+Use quantity points where adding two absolute values is meaningless (temperature points,
+timestamps, altitudes, odometer readings, etc.).
 
-The set of operations that can be done on quantity points is limited compared to quantities.
-This introduces an additional type-safety.
+Fewer operations are available on quantity points than on quantities—by design for
+additional type safety.
 
 === "C++ modules"
 
@@ -296,5 +301,5 @@ Temperature: 20 ℃ (68 ℉)
 
 !!! info
 
-    Check [The Affine Space](../users_guide/framework_basics/the_affine_space.md) chapter to learn
-    more about quantity points.
+    See [The Affine Space](../users_guide/framework_basics/the_affine_space.md) for details
+    on quantity points.
