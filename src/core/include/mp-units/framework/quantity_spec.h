@@ -206,23 +206,23 @@ template<typename Self>
 struct quantity_spec_interface : quantity_spec_interface_base {
 #if MP_UNITS_API_NO_CRTP
   template<typename Self, UnitOf<Self{}> U>
-  [[nodiscard]] consteval Reference auto operator[](this Self self, U u)
+  [[nodiscard]] consteval Reference auto operator[](this Self, U)
   {
-    return detail::make_reference(self, u);
+    return detail::make_reference(Self{}, U{});
   }
 
   template<typename Self, typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>>
     requires(mp_units::explicitly_convertible(Q::quantity_spec, Self{}))
-  [[nodiscard]] constexpr Quantity auto operator()(this Self self, FwdQ&& q)
+  [[nodiscard]] constexpr Quantity auto operator()(this Self, FwdQ&& q)
   {
     return quantity{std::forward<FwdQ>(q).numerical_value_is_an_implementation_detail_,
-                    detail::make_reference(self, Q::unit)};
+                    detail::make_reference(Self{}, Q::unit)};
   }
 #else
   template<typename Self_ = Self, UnitOf<Self_{}> U>
-  [[nodiscard]] MP_UNITS_CONSTEVAL Reference auto operator[](U u) const
+  [[nodiscard]] MP_UNITS_CONSTEVAL Reference auto operator[](U) const
   {
-    return detail::make_reference(Self{}, u);
+    return detail::make_reference(Self{}, U{});
   }
 
   template<typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>, typename Self_ = Self>
@@ -418,9 +418,9 @@ struct quantity_spec<Self, QS, Args...> : detail::propagate_equation<QS>, detail
 
 #if !MP_UNITS_API_NO_CRTP
   template<typename Self_ = Self, UnitOf<Self_{}> U>
-  [[nodiscard]] MP_UNITS_CONSTEVAL Reference auto operator[](U u) const
+  [[nodiscard]] MP_UNITS_CONSTEVAL Reference auto operator[](U) const
   {
-    return detail::make_reference(Self{}, u);
+    return detail::make_reference(Self{}, U{});
   }
 
   template<typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>, typename Self_ = Self>
