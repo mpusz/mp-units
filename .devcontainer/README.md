@@ -13,7 +13,7 @@ The development environment is built on a layered Docker image stack:
 2. **[`trainiteu/cpp`](https://github.com/train-it-eu/docker-images/blob/main/cpp/Dockerfile)**: Adds CMake, Ninja, Python with pipx for tool management
 3. **[`trainiteu/cpp-conan`](https://github.com/train-it-eu/docker-images/blob/main/cpp-conan/Dockerfile)**: Adds Conan 2.x and base compiler profiles
 4. **[`trainiteu/mp-units`](https://github.com/train-it-eu/docker-images/blob/main/mp-units/Dockerfile)**: **mp-units-specific extensions** including:
-   - Extended compiler matrix (GCC 12-15, Clang 16-20)
+   - Extended compiler matrix (GCC 12-15, Clang 16-21)
    - Python documentation ecosystem via pipx
    - Pre-configured Conan remotes and profiles for all compiler combinations
    - Development aliases and optimized build configuration
@@ -64,8 +64,8 @@ The development environment includes all compilers and tools used for comprehens
 
 - **Base OS**: Ubuntu 25.04 (Plucky Puffin)
 - **GCC**: 12, 13, 14, 15
-- **Clang**: 16, 17, 18, 19, 20
-- **Standard Library**: libc++-18 for maximum compatibility
+- **Clang**: 16, 17, 18, 19, 20, 21
+- **Standard Library**: libc++-18 for backward compatibility with clang-16
 - **Build Tools**: CMake, Ninja, Conan package manager
 - **Code Quality**: clang-format, clang-tidy, include-what-you-use
 - **Documentation**: MkDocs with Material theme
@@ -79,7 +79,7 @@ The development environment includes all compilers and tools used for comprehens
 The following Conan profiles are pre-configured:
 
 - `gcc12`, `gcc13`, `gcc14`, `gcc15`
-- `clang16`, `clang17`, `clang18`, `clang19`, `clang20`
+- `clang16`, `clang17`, `clang18`, `clang19`, `clang20`, `clang21`
 
 ### Multi-Compiler Testing Script
 
@@ -171,7 +171,7 @@ For current machine specifications and pricing, see:
 1. **Start with single profile**: Test your changes with one compiler first
 
    ```bash
-   conan create . -pr clang20 -c user.mp-units.build:all=True -b missing
+   conan create . -pr clang21 -c user.mp-units.build:all=True -b missing
    ```
 
 2. **Test compatibility**: Check the oldest compilers that may have different C++20 support
