@@ -79,8 +79,7 @@ plugins:
       enabled: !ENV [CI, false]
       cards_layout_options:
         background_color: "#00599c"
-  - tags:
-      tags_file: users_guide/examples/tags_index.md
+  - tags
 
 # Customization
 extra:
@@ -169,17 +168,17 @@ nav:
           - Interoperability with Other Libraries: users_guide/use_cases/interoperability_with_other_libraries.md
           - Extending the Library: users_guide/use_cases/extending_the_library.md
           - Wide Compatibility: users_guide/use_cases/wide_compatibility.md
-      - Examples:
-          - Tags Index: users_guide/examples/tags_index.md
-          - All Examples:
-              - hello_units: users_guide/examples/hello_units.md
-              - avg_speed: users_guide/examples/avg_speed.md
-              - si_constants: users_guide/examples/si_constants.md
-              - hw_voltage: users_guide/examples/hw_voltage.md
       - Appendix:
           - Glossary: appendix/glossary.md
           - References: appendix/references.md
   - API Reference: api_reference.md
+  - Examples:
+      - Tags Index: examples/tags_index.md
+      - All Examples:
+          - hello_units: examples/hello_units.md
+          - avg_speed: examples/avg_speed.md
+          - si_constants: examples/si_constants.md
+          - hw_voltage: examples/hw_voltage.md
   - Blog:
       - blog/index.md
   - Release Notes: release_notes.md
