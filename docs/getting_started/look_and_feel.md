@@ -151,4 +151,4 @@ performed without sacrificing accuracy. Please see the below example for a quick
 
 !!! note
 
-    More code examples can be found in the [Examples](../users_guide/examples/tags_index.md) chapter.
+    More code examples can be found in the [Examples](../examples/tags_index.md) chapter.
