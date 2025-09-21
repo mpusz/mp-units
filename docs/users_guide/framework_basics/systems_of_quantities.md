@@ -1,22 +1,21 @@
 # Systems of Quantities
 
-The physical units libraries on the market typically only scope on modeling one or more
-[systems of units](../../appendix/glossary.md#system-of-units). However, this is not the
-only system kind to model. Another, and maybe even more important, system kind is a
+Most physical units libraries focus on modeling one or more
+[systems of units](../../appendix/glossary.md#system-of-units). However an equally (or more)
+important abstraction is the
 [system of quantities](../../appendix/glossary.md#system-of-quantities).
 
 !!! info
 
-    Please note that the **mp-units** is probably the first library on the Open Source market
-    (in any programming language) that models the [ISQ](../../appendix/glossary.md#isq)
-    with all its definitions provided in ISO 80000. Please provide feedback if something
-    looks odd or could be improved.
+    **mp-units** is likely the first Open Source library (in any language) that models the
+    [ISQ](../../appendix/glossary.md#isq) with the full ISO 80000 definition set. Feedback
+    is welcome.
 
 
 ## Dimension is not enough to describe a quantity
 
-Most of the products on the market are aware of physical dimensions. However, a dimension is not
-enough to describe a quantity. For example, let's see the following implementation:
+Most libraries understand dimensions, yet a dimension alone does not fully describe a
+quantity. Consider:
 
 ```cpp
 class Box {
@@ -30,11 +29,10 @@ public:
 Box my_box(2 * m, 3 * m, 1 * m);
 ```
 
-How do you like such an interface? It turns out that in most existing strongly-typed libraries
-this is often the best we can do :woozy_face:
+This interface is ambiguous. Many strongly typed libraries cannot do better :woozy_face:
 
-Another typical question many users ask is how to deal with _work_ and _torque_.
-Both of those have the same dimension but are different quantities.
+Another common question: how to differentiate _work_ and _torque_? They share a dimension
+yet differ semantically.
 
 A similar issue is related to figuring out what should be the result of:
 
@@ -48,15 +46,10 @@ where:
 - `Bq` (becquerel) - unit of _activity_
 - `Bd` (baud) - unit of _modulation rate_
 
-All of those quantities have the same dimension, namely $\mathsf{T}^{-1}$, but probably it
-is not wise to allow adding, subtracting, or comparing them, as they describe vastly different
-physical properties.
+All have the same dimension $\mathsf{T}^{-1}$, but adding or comparing them is meaningless.
 
-If the above example seems too abstract, let's consider a _fuel consumption_ (fuel _volume_
-divided by _distance_, e.g., `6.7 l/km`) and an _area_. Again, both have the same dimension
-$\mathsf{L}^{2}$, but probably it wouldn't be wise to allow adding, subtracting, or comparing
-a _fuel consumption_ of a car and the _area_ of a football field. Such an operation does not
-have any physical sense and should fail to compile.
+Consider _fuel consumption_ (fuel _volume_ divided by _distance_, e.g. `6.7 l/km`) vs an _area_.
+Both have dimension $\mathsf{L}^{2}$ yet adding them is nonsensical and should fail.
 
 !!! important
 
@@ -66,8 +59,8 @@ have any physical sense and should fail to compile.
     - quantities of **the same kind** (e.g. _length_, _width_, _altitude_, _distance_, _radius_,
       _wavelength_, _position vector_, ...)
 
-It turns out that the above issues can't be solved correctly without proper modeling of
-a [system of quantities](../../appendix/glossary.md#system-of-quantities).
+These issues require proper modeling of a
+[system of quantities](../../appendix/glossary.md#system-of-quantities).
 
 
 ## Quantities of the same kind
@@ -83,17 +76,15 @@ a [system of quantities](../../appendix/glossary.md#system-of-quantities).
       dimension**
     - Quantities of the **same dimension are not necessarily of the same kind**
 
-The above quotes from ISO 80000 provide answers to all the issues above. Two quantities can't be
-added, subtracted, or compared unless they belong to the same [kind](../../appendix/glossary.md#kind).
-As _frequency_, _activity_, and _modulation rate_ are of different kinds, the expression provided
-above should not compile.
+ISO 80000 answers the earlier questions: two quantities cannot be added, subtracted, or
+compared unless they are of the same [kind](../../appendix/glossary.md#kind). Thus
+_frequency_, _activity_, and _modulation rate_ are incompatible.
 
 
 ## System of quantities is not only about kinds
 
-ISO 80000 specify hundreds of different quantities. There are plenty of different kinds provided
-and often each kind contains more than one quantity. In fact, it turns out that such quantities
-form a hierarchy of quantities of the same kind.
+ISO 80000 specifies hundreds of quantities in many kinds; kinds often contain multiple
+quantities forming a hierarchy.
 
 For example, here are all quantities of the kind length provided in the ISO 80000:
 
@@ -114,19 +105,17 @@ flowchart TD
     radius --- radius_of_curvature["<b>radius_of_curvature</b>"]
 ```
 
-Each of the above quantities expresses some kind of _length_, and each can be measured with `si::metre`.
-However, each of them has different properties, usage, and sometimes even requires a different
-representation type (notice that `position_vector` and `displacement` are vector quantities).
+Each quantity above expresses some kind of _length_ and can be measured with `si::metre`.
+Each has different semantics and sometimes a distinct representation (e.g. `position_vector`
+and `displacement` are vector quantities).
 
-Forming such a hierarchy helps us in defining arithmetics and conversion rules for various
-quantities of the same kind.
+The hierarchy guides valid arithmetic and conversion rules for quantities of the same kind.
 
 
 ## Defining quantities
 
-In the **mp-units** library all the information about the quantity is provided with the `quantity_spec`
-class template. In order to define a specific quantity a user should inherit a strong type
-from such an instantiation.
+All quantity information resides in `quantity_spec`. To define a quantity inherit a strong
+type from a suitable instantiation.
 
 !!! tip
 
@@ -220,7 +209,7 @@ For example, here is how the above quantity kind tree can be modeled in the libr
 
 ## Comparing, adding, and subtracting quantities
 
-ISO 80000 explicitly states that _width_ and _height_ are quantities of the same kind, and as such they:
+ISO 80000 states that _width_ and _height_ are quantities of the same kind; therefore they:
 
 - are mutually comparable,
 - can be added and subtracted.
