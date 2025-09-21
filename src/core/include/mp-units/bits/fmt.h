@@ -293,18 +293,24 @@ struct dynamic_spec_id_handler {
   {
     const int id = MP_UNITS_FMT_FROM_ARG_ID(ctx.next_arg_id());
     ref = fmt_arg_ref<Char>(id);
-#if MP_UNITS_USE_FMTLIB || __cpp_lib_format >= 202305L
+#if MP_UNITS_USE_FMTLIB
     ctx.check_dynamic_spec(id);
+#elif __cpp_lib_format >= 202305L
+    ctx.check_dynamic_spec_integral(MP_UNITS_FMT_TO_ARG_ID(id));
 #endif
   }
+
   constexpr void on_index(int id)
   {
     ref = fmt_arg_ref<Char>(id);
     ctx.check_arg_id(MP_UNITS_FMT_TO_ARG_ID(id));
-#if MP_UNITS_USE_FMTLIB || __cpp_lib_format >= 202305L
+#if MP_UNITS_USE_FMTLIB
     ctx.check_dynamic_spec(id);
+#elif __cpp_lib_format >= 202305L
+    ctx.check_dynamic_spec_integral(MP_UNITS_FMT_TO_ARG_ID(id));
 #endif
   }
+
 #if MP_UNITS_USE_FMTLIB
   constexpr void on_name([[maybe_unused]] std::basic_string_view<Char> id)
   {
