@@ -19,7 +19,7 @@ C++ feature:
 | **`std::format`**             |     20      | 13+  |    17+     |     16+     |                    194+                    |
 | **C++ modules**               |     20      | None |    17+     |    None     |                    None                    |
 | **`import std;`**             |     23      | None |    18+     |    None     |                    None                    |
-| **Explicit `this` parameter** |     23      | 14+  |    18+     |    None     |                    195+                    |
+| **Explicit `this` parameter** |     23      | 14+  |    18+     |    17+      |                    194+                    |
 
 ??? note "clang-19 unfixable bug"
 
@@ -97,6 +97,8 @@ C++ feature:
 - To write code with wide compatibility
   a [dedicated macro may be used](../users_guide/use_cases/wide_compatibility.md#QUANTITY_SPEC).
 - Tested with `__cpp_explicit_this_parameter` [feature test macro](https://en.cppreference.com/w/cpp/feature_test).
+    - Note that some compiler versions do not implement this macro even though they do support the
+      feature well enough. In such cases, compilation with explicit `this` is enforced.
 - Related build options:
     - Conan: [no_crtp](installation_and_usage.md#no_crtp)
     - CMake: [MP_UNITS_API_NO_CRTP](installation_and_usage.md#MP_UNITS_API_NO_CRTP)

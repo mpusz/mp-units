@@ -119,8 +119,8 @@ class MPUnitsConan(ConanFile):
                 "compiler": {
                     "gcc": "14",
                     "clang": "18",
-                    "apple-clang": "",
-                    "msvc": "195",
+                    "apple-clang": "17",
+                    "msvc": "194",
                 },
             },
         }
