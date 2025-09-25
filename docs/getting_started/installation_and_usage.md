@@ -231,6 +231,15 @@ dependencies by other means, some modifications to the library's CMake files mig
 
         [cmake natural units]: https://github.com/mpusz/mp-units/releases/tag/v2.5.0
 
+    [`MP_UNITS_INSTALL`](#MP_UNITS_INSTALL){ #MP_UNITS_INSTALL }
+
+    :   [:octicons-tag-24: 2.5.0][cmake install] · :octicons-milestone-24: `ON`/`OFF` (Default: `ON`)
+
+        Creates an installable target. Users may want to turn this off for example when consuming the
+        library via CMake's `add_subdirectory` or similar mechanisms.
+
+        [cmake install]: https://github.com/mpusz/mp-units/releases/tag/v2.5.0
+
 
 ## Installation and reuse
 
@@ -492,6 +501,34 @@ with the following differences:
         To learn more about the rationale, please check our
         [FAQ](faq.md#why-dont-we-have-cmake-options-to-disable-the-building-of-tests-and-examples).
 
+
+    ### CPM or FetchContent (CMake)
+
+    **mp-units** can be consumed via [CPM](https://github.com/cpm-cmake/CPM.cmake) or CMake's built-in
+    [FetchContent](https://cmake.org/cmake/help/latest/module/FetchContent.html) mechanism. An example
+    CPM configuration is shown below.
+
+    ```cmake
+    CPMFindPackage(
+        NAME mp-units
+        VERSION 2.4.0
+        GIT_TAG 6e06eddf205deaf6c2f2f63500c8c70ec220a99f
+        GITHUB_REPOSITORY mpusz/mp-units
+        SOURCE_SUBDIR src
+        SYSTEM YES
+        EXCLUDE_FROM_ALL YES
+        OPTIONS
+            "MP_UNITS_BUILD_AS_SYSTEM_HEADERS ON"
+            "MP_UNITS_INSTALL OFF"
+    )
+    # ...
+    target_link_libraries(<your_target> <PUBLIC|PRIVATE|INTERFACE> mp-units::mp-units)
+    ```
+
+    !!! note
+
+        This is essentially a shortcut way to do what [Copy + CMake](#copy-cmake) mentions above, so the same
+        prerequisites apply.
 
     ### Install
 
