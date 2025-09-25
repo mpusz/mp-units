@@ -797,6 +797,15 @@ You're not viewing the latest version.
 </li>
         
           <li class="md-nav__item">
+  <a href="#cpm-or-fetchcontent-cmake" class="md-nav__link">
+    <span class="md-ellipsis">
+      CPM or FetchContent (CMake)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#install" class="md-nav__link">
     <span class="md-ellipsis">
       Install
@@ -2667,6 +2676,12 @@ without any issues.</p>
 <p><a href="https://github.com/mpusz/mp-units/releases/tag/v2.5.0"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7.75 6.5a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5"/><path d="M2.5 1h8.44a1.5 1.5 0 0 1 1.06.44l10.25 10.25a1.5 1.5 0 0 1 0 2.12l-8.44 8.44a1.5 1.5 0 0 1-2.12 0L1.44 12A1.5 1.5 0 0 1 1 10.94V2.5A1.5 1.5 0 0 1 2.5 1m0 1.5v8.44l10.25 10.25 8.44-8.44L10.94 2.5Z"/></svg></span> 2.5.0</a> · <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11.75 1a.75.75 0 0 1 .75.75V4h6.532c.42 0 .826.15 1.143.425l3.187 2.75a1.75 1.75 0 0 1 0 2.65l-3.187 2.75a1.75 1.75 0 0 1-1.143.425H12.5v9.25a.75.75 0 0 1-1.5 0V13H3.75A1.75 1.75 0 0 1 2 11.25v-5.5C2 4.783 2.784 4 3.75 4H11V1.75a.75.75 0 0 1 .75-.75m7.282 4.5H3.75a.25.25 0 0 0-.25.25v5.5c0 .138.112.25.25.25h15.282c.06 0 .118-.021.163-.06l3.188-2.75a.248.248 0 0 0 0-.38l-3.188-2.75a.25.25 0 0 0-.163-.06"/></svg></span> <code>ON</code>/<code>OFF</code> (Default: <code>ON</code>)</p>
 <p>Enables experimental natural units systems support.</p>
 </dd>
+<dt><a href="#MP_UNITS_INSTALL" id="MP_UNITS_INSTALL"><code>MP_UNITS_INSTALL</code></a></dt>
+<dd>
+<p><a href="https://github.com/mpusz/mp-units/releases/tag/v2.5.0"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7.75 6.5a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5"/><path d="M2.5 1h8.44a1.5 1.5 0 0 1 1.06.44l10.25 10.25a1.5 1.5 0 0 1 0 2.12l-8.44 8.44a1.5 1.5 0 0 1-2.12 0L1.44 12A1.5 1.5 0 0 1 1 10.94V2.5A1.5 1.5 0 0 1 2.5 1m0 1.5v8.44l10.25 10.25 8.44-8.44L10.94 2.5Z"/></svg></span> 2.5.0</a> · <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11.75 1a.75.75 0 0 1 .75.75V4h6.532c.42 0 .826.15 1.143.425l3.187 2.75a1.75 1.75 0 0 1 0 2.65l-3.187 2.75a1.75 1.75 0 0 1-1.143.425H12.5v9.25a.75.75 0 0 1-1.5 0V13H3.75A1.75 1.75 0 0 1 2 11.25v-5.5C2 4.783 2.784 4 3.75 4H11V1.75a.75.75 0 0 1 .75-.75m7.282 4.5H3.75a.25.25 0 0 0-.25.25v5.5c0 .138.112.25.25.25h15.282c.06 0 .118-.021.163-.06l3.188-2.75a.248.248 0 0 0 0-.38l-3.188-2.75a.25.25 0 0 0-.163-.06"/></svg></span> <code>ON</code>/<code>OFF</code> (Default: <code>ON</code>)</p>
+<p>Creates an installable target. Users may want to turn this off for example when consuming the
+library via CMake's <code>add_subdirectory</code> or similar mechanisms.</p>
+</dd>
 </dl>
 </details>
 <h2 id="installation-and-reuse">Installation and reuse<a class="headerlink" href="#installation-and-reuse" title="Permanent link">&para;</a></h2>
@@ -2917,15 +2932,39 @@ handle the dependencies.</p>
 <p>To learn more about the rationale, please check our
 <a href="../faq/#why-dont-we-have-cmake-options-to-disable-the-building-of-tests-and-examples">FAQ</a>.</p>
 </div>
+<h3 id="cpm-or-fetchcontent-cmake">CPM or FetchContent (CMake)<a class="headerlink" href="#cpm-or-fetchcontent-cmake" title="Permanent link">&para;</a></h3>
+<p><strong>mp-units</strong> can be consumed via <a href="https://github.com/cpm-cmake/CPM.cmake">CPM</a> or CMake's built-in
+<a href="https://cmake.org/cmake/help/latest/module/FetchContent.html">FetchContent</a> mechanism. An example
+CPM configuration is shown below.</p>
+<div class="language-cmake highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="nb">CPMFindPackage</span><span class="p">(</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="w">    </span><span class="s">NAME</span><span class="w"> </span><span class="s">mp-units</span>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="w">    </span><span class="s">VERSION</span><span class="w"> </span><span class="s">2.4.0</span>
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="w">    </span><span class="s">GIT_TAG</span><span class="w"> </span><span class="s">6e06eddf205deaf6c2f2f63500c8c70ec220a99f</span>
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="w">    </span><span class="s">GITHUB_REPOSITORY</span><span class="w"> </span><span class="s">mpusz/mp-units</span>
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a><span class="w">    </span><span class="s">SOURCE_SUBDIR</span><span class="w"> </span><span class="s">src</span>
+</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="w">    </span><span class="s">SYSTEM</span><span class="w"> </span><span class="s">YES</span>
+</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a><span class="w">    </span><span class="s">EXCLUDE_FROM_ALL</span><span class="w"> </span><span class="s">YES</span>
+</span><span id="__span-16-9"><a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a><span class="w">    </span><span class="s">OPTIONS</span>
+</span><span id="__span-16-10"><a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a><span class="w">        </span><span class="s2">&quot;MP_UNITS_BUILD_AS_SYSTEM_HEADERS ON&quot;</span>
+</span><span id="__span-16-11"><a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a><span class="w">        </span><span class="s2">&quot;MP_UNITS_INSTALL OFF&quot;</span>
+</span><span id="__span-16-12"><a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a><span class="p">)</span>
+</span><span id="__span-16-13"><a id="__codelineno-16-13" name="__codelineno-16-13" href="#__codelineno-16-13"></a><span class="c"># ...</span>
+</span><span id="__span-16-14"><a id="__codelineno-16-14" name="__codelineno-16-14" href="#__codelineno-16-14"></a><span class="nb">target_link_libraries</span><span class="p">(</span><span class="s">&lt;your_target&gt;</span><span class="w"> </span><span class="s">&lt;PUBLIC|PRIVATE|INTERFACE&gt;</span><span class="w"> </span><span class="s">mp-units::mp-units</span><span class="p">)</span>
+</span></code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is essentially a shortcut way to do what <a href="#copy-cmake">Copy + CMake</a> mentions above, so the same
+prerequisites apply.</p>
+</div>
 <h3 id="install">Install<a class="headerlink" href="#install" title="Permanent link">&para;</a></h3>
 <p>If you don't want to use Conan in your project and just want to install the <strong>mp-units</strong>
 library on your file system, and use <code>find_package(mp-units)</code> from another repository to find it;
 it is enough to perform the following steps:</p>
-<div class="language-shell highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>conan<span class="w"> </span>install<span class="w"> </span>.<span class="w"> </span>-pr<span class="w"> </span>&lt;your_conan_profile&gt;<span class="w"> </span>-s<span class="w"> </span>compiler.cppstd<span class="o">=</span><span class="m">20</span><span class="w"> </span>-b<span class="o">=</span>missing
-</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>mv<span class="w"> </span>CMakeUserPresets.json<span class="w"> </span>src
-</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="nb">cd</span><span class="w"> </span>src
-</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>cmake<span class="w"> </span>--preset<span class="w"> </span>conan-default<span class="w"> </span>-DCMAKE_INSTALL_PREFIX<span class="o">=</span>&lt;your_installation_path&gt;
-</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>cmake<span class="w"> </span>--build<span class="w"> </span>--preset<span class="w"> </span>conan-release<span class="w"> </span>--target<span class="w"> </span>install
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>conan<span class="w"> </span>install<span class="w"> </span>.<span class="w"> </span>-pr<span class="w"> </span>&lt;your_conan_profile&gt;<span class="w"> </span>-s<span class="w"> </span>compiler.cppstd<span class="o">=</span><span class="m">20</span><span class="w"> </span>-b<span class="o">=</span>missing
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>mv<span class="w"> </span>CMakeUserPresets.json<span class="w"> </span>src
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="nb">cd</span><span class="w"> </span>src
+</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a>cmake<span class="w"> </span>--preset<span class="w"> </span>conan-default<span class="w"> </span>-DCMAKE_INSTALL_PREFIX<span class="o">=</span>&lt;your_installation_path&gt;
+</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a>cmake<span class="w"> </span>--build<span class="w"> </span>--preset<span class="w"> </span>conan-release<span class="w"> </span>--target<span class="w"> </span>install
 </span></code></pre></div>
 </details>
 
