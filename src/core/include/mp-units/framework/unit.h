@@ -147,7 +147,7 @@ struct unit_interface {
    * Multiplication by `1` returns the same unit, otherwise `scaled_unit` is being returned.
    */
   template<UnitMagnitude M, Unit U>
-  [[nodiscard]] friend MP_UNITS_CONSTEVAL Unit auto operator*(M, U u)
+  [[nodiscard]] friend constexpr Unit auto operator*(M, U u)
   {
     if constexpr (std::is_same_v<M, MP_UNITS_NONCONST_TYPE(mp_units::mag<1>)>)
       return u;
@@ -171,7 +171,7 @@ struct unit_interface {
    * Returns the result of multiplication with an inverse unit.
    */
   template<UnitMagnitude M, Unit U>
-  [[nodiscard]] friend MP_UNITS_CONSTEVAL Unit auto operator/(M mag, U u)
+  [[nodiscard]] friend constexpr Unit auto operator/(M mag, U u)
   {
     return mag * inverse(u);
   }
@@ -182,7 +182,7 @@ struct unit_interface {
    * to the derived unit and the magnitude remains outside forming another scaled unit as a result of the operation.
    */
   template<Unit Lhs, Unit Rhs>
-  [[nodiscard]] friend MP_UNITS_CONSTEVAL Unit auto operator*(Lhs lhs, Rhs rhs)
+  [[nodiscard]] friend constexpr Unit auto operator*(Lhs lhs, Rhs rhs)
   {
     return expr_multiply<derived_unit, struct one>(lhs, rhs);
   }
@@ -193,7 +193,7 @@ struct unit_interface {
    * to the derived unit and the magnitude remains outside forming another scaled unit as a result of the operation.
    */
   template<Unit Lhs, Unit Rhs>
-  [[nodiscard]] friend MP_UNITS_CONSTEVAL Unit auto operator/(Lhs lhs, Rhs rhs)
+  [[nodiscard]] friend constexpr Unit auto operator/(Lhs lhs, Rhs rhs)
   {
     return expr_divide<derived_unit, struct one>(lhs, rhs);
   }
@@ -593,7 +593,7 @@ template<Unit T, typename... Expr>
 
 MP_UNITS_EXPORT_BEGIN
 
-[[nodiscard]] MP_UNITS_CONSTEVAL Unit auto inverse(Unit auto u) { return one / u; }
+[[nodiscard]] constexpr Unit auto inverse(Unit auto u) { return one / u; }
 
 /**
  * @brief Computes the value of a unit raised to the `Num/Den` power

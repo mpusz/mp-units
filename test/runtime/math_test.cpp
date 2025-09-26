@@ -589,4 +589,31 @@ TEST_CASE("math operations", "[math]")
       REQUIRE_THAT(atan2(1. * isq::length[km], 1000. * isq::length[m]), AlmostEquals(45. * angle[deg]));
     }
   }
+
+  SECTION("inverse functions")
+  {
+    SECTION("inverse of time quantity returns frequency")
+    {
+      auto period = 2.0 * isq::time[s];
+      auto frequency = inverse<si::hertz>(period);
+      REQUIRE(frequency == 0.5 * isq::frequency[Hz]);
+    }
+
+    SECTION("inverse works with runtime values")
+    {
+      // Test the specific case that fails with consteval
+      double runtime_value = 3.0;
+      auto period = runtime_value * isq::time[s];
+      auto frequency = inverse<si::hertz>(period);
+      auto expected = (1.0 / 3.0) * isq::frequency[Hz];
+      REQUIRE_THAT(frequency, AlmostEquals(expected));
+    }
+
+    SECTION("inverse with different input units")
+    {
+      auto period_ms = 500.0 * isq::time[ms];
+      auto frequency = inverse<si::hertz>(period_ms);
+      REQUIRE(frequency == 2.0 * isq::frequency[Hz]);
+    }
+  }
 }
