@@ -414,12 +414,12 @@ template<Unit auto To, auto R, typename Rep>
 {
 #if MP_UNITS_API_NATURAL_UNITS
   if constexpr (!MP_UNITS_ASSOCIATED_UNIT<MP_UNITS_REMOVE_CONST(decltype(To))>)
-    return (representation_values<Rep>::one() * one).force_in(To * q.unit) / q;
+    return (representation_values<Rep>::one() * one).force_in(To * get_unit(R)) / q;
   else
 #endif
   {
     constexpr QuantitySpec auto qs = get_quantity_spec(To) * quantity<R, Rep>::quantity_spec;
-    return qs(representation_values<Rep>::one() * one).force_in(To * q.unit) / q;
+    return qs(representation_values<Rep>::one() * one).force_in(To * get_unit(R)) / q;
   }
 }
 
