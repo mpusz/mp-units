@@ -272,6 +272,9 @@ class MPUnitsConan(ConanFile):
         # TODO remove the below when Conan will learn to handle C++ modules
         if opt.freestanding:
             tc.cache_variables["MP_UNITS_API_FREESTANDING"] = True
+            # Fix for freestanding builds: CMake compiler tests fail when linking with -ffreestanding
+            # Set CMAKE_TRY_COMPILE_TARGET_TYPE to STATIC_LIBRARY to avoid linking during compiler tests
+            tc.cache_variables["CMAKE_TRY_COMPILE_TARGET_TYPE"] = "STATIC_LIBRARY"
         else:
             tc.cache_variables["MP_UNITS_API_STD_FORMAT"] = opt.std_format
         tc.cache_variables["MP_UNITS_API_NO_CRTP"] = opt.no_crtp
