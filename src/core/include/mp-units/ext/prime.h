@@ -35,6 +35,7 @@ import std;
 #include <array>
 #include <cstddef>
 #include <cstdint>
+#include <limits>
 #include <numeric>
 #include <optional>
 #include <tuple>
