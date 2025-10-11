@@ -124,6 +124,17 @@ struct cartesian_vector_iface {
       lhs._coordinates_[2] * rhs._coordinates_[0] - lhs._coordinates_[0] * rhs._coordinates_[2],
       lhs._coordinates_[0] * rhs._coordinates_[1] - lhs._coordinates_[1] * rhs._coordinates_[0]};
   }
+
+  template<typename T, typename U>
+  requires requires(T t, U u) { t % u; }
+  [[nodiscard]] friend constexpr auto operator%(const cartesian_vector<T>& lhs, const cartesian_vector<U>& rhs)
+  {
+    return ::mp_units::cartesian_vector{
+      lhs._coordinates_[0] % rhs._coordinates_[0],
+      lhs._coordinates_[1] % rhs._coordinates_[1],
+      lhs._coordinates_[2] % rhs._coordinates_[2]
+    };
+  }
 };
 
 }  // namespace detail
@@ -279,6 +290,23 @@ template<typename Arg, typename... Args>
 cartesian_vector(Arg, Args...) -> cartesian_vector<std::common_type_t<Arg, Args...>>;
 
 }  // namespace mp_units
+
+//ALIASES 
+template<typename T, typename U>
+[[nodiscard]] constexpr auto dot(const cartesian_vector<T>& lhs, const cartesian_vector<U>& rhs) {
+  return scalar_product(lhs, rhs);
+}
+
+template<typename T, typename U>
+[[nodiscard]] constexpr auto cross(const cartesian_vector<T>& lhs, const cartesian_vector<U>& rhs) {
+  return vector_product(lhs, rhs);
+}
+
+template<typename T>
+  requires treat_as_floating_point<T>
+[[nodiscard]] constexpr auto norm(const cartesian_vector<T>& vec) {
+  return magnitude(vec);
+}
 
 #if MP_UNITS_HOSTED
 // TODO use parse and use formatter for the underlying type
