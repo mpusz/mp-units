@@ -160,6 +160,14 @@ If you obtain them differently you may need to adjust some CMake files.
 
         Adds C++ modules to the list of default targets.
 
+    [`MP_UNITS_BUILD_INSTALL`](#MP_UNITS_BUILD_INSTALL){ #MP_UNITS_BUILD_INSTALL }
+
+    :   [:octicons-tag-24: 2.5.0][release-2-5-0] · :octicons-milestone-24:
+        `ON`/`OFF` (Default: `ON`)
+
+        Creates an installable target. Users may want to turn this off for example when
+        consuming the library via CMake's `add_subdirectory` or similar mechanisms.
+
     [`MP_UNITS_API_STD_FORMAT`](#MP_UNITS_API_STD_FORMAT){ #MP_UNITS_API_STD_FORMAT }
 
     :   [:octicons-tag-24: 2.2.0][release-2-2-0] · :octicons-milestone-24:
@@ -200,14 +208,6 @@ If you obtain them differently you may need to adjust some CMake files.
         `ON`/`OFF` (Default: `ON`)
 
         Enables experimental natural units systems support.
-
-    [`MP_UNITS_INSTALL`](#MP_UNITS_INSTALL){ #MP_UNITS_INSTALL }
-
-    :   [:octicons-tag-24: 2.5.0][release-2-5-0] · :octicons-milestone-24:
-        `ON`/`OFF` (Default: `ON`)
-
-        Creates an installable target. Users may want to turn this off for example when
-        consuming the library via CMake's `add_subdirectory` or similar mechanisms.
 
 [release-2-2-0]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 [release-2-3-0]: https://github.com/mpusz/mp-units/releases/tag/v2.3.0
@@ -491,7 +491,7 @@ with the following differences:
         EXCLUDE_FROM_ALL YES
         OPTIONS
             "MP_UNITS_BUILD_AS_SYSTEM_HEADERS ON"
-            "MP_UNITS_INSTALL OFF"
+            "MP_UNITS_BUILD_INSTALL OFF"
     )
     # ...
     target_link_libraries(<your_target> <PUBLIC|PRIVATE|INTERFACE> mp-units::mp-units)

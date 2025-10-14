@@ -39,11 +39,11 @@ check_libcxx_in_use(${projectPrefix}LIBCXX)
 # project build options
 option(${projectPrefix}BUILD_AS_SYSTEM_HEADERS "Export library as system headers" OFF)
 option(${projectPrefix}BUILD_CXX_MODULES "Add C++ modules to the list of default targets" OFF)
-option(${projectPrefix}INSTALL "Install the library" ON)
+option(${projectPrefix}BUILD_INSTALL "Install the library" ON)
 
 message(STATUS "${projectPrefix}BUILD_AS_SYSTEM_HEADERS: ${${projectPrefix}BUILD_AS_SYSTEM_HEADERS}")
 message(STATUS "${projectPrefix}BUILD_CXX_MODULES: ${${projectPrefix}BUILD_CXX_MODULES}")
-message(STATUS "${projectPrefix}INSTALL: ${${projectPrefix}INSTALL}")
+message(STATUS "${projectPrefix}BUILD_INSTALL: ${${projectPrefix}BUILD_INSTALL}")
 
 if(${projectPrefix}BUILD_AS_SYSTEM_HEADERS)
     set(${projectPrefix}_AS_SYSTEM SYSTEM)
@@ -137,7 +137,7 @@ add_subdirectory(systems)
 # project-wide wrapper
 add_mp_units_module(mp-units mp-units DEPENDENCIES mp-units::core mp-units::systems MODULE_INTERFACE_UNIT mp-units.cpp)
 
-if(${projectPrefix}INSTALL)
+if(${projectPrefix}BUILD_INSTALL)
     # local build
     export(EXPORT mp-unitsTargets NAMESPACE mp-units::)
     configure_file("mp-unitsConfig.cmake" "." COPYONLY)
