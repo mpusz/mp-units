@@ -1,37 +1,44 @@
 # Introduction
 
-**mp-units** is a modern C++ library for compile‑time dimensional analysis and unit/quantity
-manipulation. The earliest versions were inspired by
-[`std::chrono::duration`](https://en.cppreference.com/w/cpp/chrono/duration), but with each
-release the interfaces intentionally diverged to provide a better user experience.
+**mp-units** is a modern C++ library for compile‑time dimensional analysis and
+unit/quantity manipulation. The earliest versions were inspired by
+[`std::chrono::duration`](https://en.cppreference.com/w/cpp/chrono/duration),
+but with each release the interfaces intentionally diverged to provide a better
+user experience.
 
 !!! info
 
-    A brief introduction to the library's interfaces and the rationale for changes in version 2.0
-    of **mp-units** were provided in detail by [Mateusz Pusz](https://github.com/mpusz) in the
-    ["The Power of C++ Templates With mp-units: Lessons Learned & a New Library Design" talk at the C++ on Sea 2023 conference](https://www.youtube.com/watch?v=eUdz0WvOMm0).
+  A brief introduction to the library's interfaces and the rationale for
+  changes in version 2.0 of **mp-units** were provided in detail by
+  [Mateusz Pusz](https://github.com/mpusz) in the
+  ["The Power of C++ Templates With mp-units: Lessons Learned & a New
+  Library Design" talk at the C++ on Sea 2023
+  conference](https://www.youtube.com/watch?v=eUdz0WvOMm0).
 
 
 ## Open Source
 
 **mp-units** is Free and Open Source under the permissive
 [MIT license](https://github.com/mpusz/mp-units/blob/master/LICENSE.md). Browse the source,
-ask questions, report bugs, or suggest improvements at <https://github.com/mpusz/mp-units>.
+ask questions, report bugs, or suggest improvements at
+<https://github.com/mpusz/mp-units>.
 
 
 ## With the User's Experience in Mind
 
 Most key design decisions aim to deliver the best possible user experience. Many other C++
-physical‑units libraries are "famous" for enormous, hard‑to‑digest error messages. **mp-units**
-strives to invert that reputation: making compile‑time errors concise, readable, and actionable.
+physical‑units libraries are "famous" for enormous, hard‑to‑digest error messages.
+**mp-units** strives to invert that reputation: making compile‑time errors concise, readable,
+and actionable.
 
 To achieve this goal, several techniques are applied:
 
 - [Use of C++20 concepts](../users_guide/framework_basics/concepts.md) to improve
-  compile-time performance
-  and error readability vs traditional SFINAE‑based metaprogramming.
-- [Strong types for framework entities](../users_guide/framework_basics/interface_introduction.md#strong-types-instead-of-aliases) instead of type aliases.
-- [Symbolic expressions](../users_guide/framework_basics/interface_introduction.md#symbolic-expressions) for readable generated types.
+  compile-time performance and error readability vs traditional SFINAE‑based metaprogramming.
+- [Strong types for framework entities](../users_guide/framework_basics/interface_introduction.md#strong-types-instead-of-aliases)
+  instead of type aliases.
+- [Symbolic expressions](../users_guide/framework_basics/interface_introduction.md#symbolic-expressions)
+  for readable generated types.
 - Minimizing the number of template parameters.
 
 !!! important "Important: It is all about errors"

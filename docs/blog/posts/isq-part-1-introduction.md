@@ -9,7 +9,8 @@ comments: true
 
 # International System of Quantities (ISQ): Part 1 - Introduction
 
-This post starts a series of articles about the International System of Quantities (ISQ).
+This post starts a series of articles about the International System of
+Quantities (ISQ).
 In this series, we will describe:
 
 - What is ISQ?
@@ -31,18 +32,20 @@ In this series, we will describe:
 
 ## Terms and Definitions
 
-From our experience, many people, including experts in the domain, often tend to name things
-differently, or sometimes they use the same term while having a different meaning in mind.
+From our experience, many people, including experts in the domain, often tend
+to name things differently, or sometimes they use the same term while having a
+different meaning in mind.
 This is why it is essential to stick to one well-defined glossary of terms for metrology.
 
-The **mp-units** project consistently uses the official metrology vocabulary defined by the ISO
-and BIPM:
+The **mp-units** project consistently uses the official metrology vocabulary
+defined by the ISO and BIPM:
 
 - [International Organization for Standardization (ISO)](https://www.iso.org/obp/ui#iso:std:iso-iec:guide:99:ed-1:v2:en),
 - [International Bureau of Weights and Measures (BIPM)](https://jcgm.bipm.org/vim/en).
 
-The above are identical and contain the same set of definitions. We provide both to point out that
-the biggest institutions in standardizing metrology agree on the same vocabulary.
+The above are identical and contain the same set of definitions. We provide
+both to point out that the biggest institutions in standardizing metrology
+agree on the same vocabulary.
 
 
 ## Systems of Quantities vs Systems of Units
@@ -59,7 +62,8 @@ Here are the official definitions from our vocabulary:
     A **system of units** is a set of base units and derived units, together with their multiples
     and submultiples, defined in accordance with given rules, for a given **system of quantities**.
 
-From the definition above, we can find out that the systems of quantities and units form a hierarchy:
+From the definition above, we can find out that the systems of quantities and
+units form a hierarchy:
 
 ```mermaid
 flowchart TD
@@ -69,23 +73,27 @@ flowchart TD
     system_of_quantities --- system_of_units3[System of Units #3]
 ```
 
-**System of quantities** defines quantities commonly used in engineering (e.g., _length_, _time_,
-_mass_, _speed_, _energy_, _power_, etc.) and relations between them. It does not assign any
-specific units to those quantities, though.
+**System of quantities** defines quantities commonly used in engineering (e.g.,
+_length_, _time_, _mass_, _speed_, _energy_, _power_, etc.) and relations
+between them. It does not assign any specific units to those quantities,
+though.
 
-**Systems of units** are the ones that assign units of measurement to quantities from a specific
-**system of quantities** they chose to model. Different **systems of units** are free to choose
-whatever they find suitable for specific quantities and do not have to be consistent/compatible
-with other such systems. For example:
+**Systems of units** are the ones that assign units of measurement to
+quantities from a specific **system of quantities** they chose to model.
+Different **systems of units** are free to choose whatever they find suitable
+for specific quantities and do not have to be consistent/compatible with other
+such systems. For example:
 
 - SI decided to measure _length_ in meters, _mass_ in kilograms, and _time_ in seconds,
 - CGS decided to measure _length_ in centimeters, _mass_ in grams, and _time_ in seconds.
 
-Both **systems of units** above agree on the unit of _time_, but chose different units for other
-quantities. In the above example, SI chose a non-prefixed unit of metre for a base quantity of _length_
-while CGS chose a scaled centimetre. On the other hand, SI chose a scaled kilogram over the gram used
-in the CGS. Those decisions also result in a need for different [coherent units](https://jcgm.bipm.org/vim/en/1.12.html)
-for derived quantities. For example:
+Both **systems of units** above agree on the unit of _time_, but chose
+different units for other quantities. In the above example, SI chose a
+non-prefixed unit of metre for a base quantity of _length_ while CGS chose a
+scaled centimetre. On the other hand, SI chose a scaled kilogram over the gram
+used in the CGS. Those decisions also result in a need for different
+[coherent units](https://jcgm.bipm.org/vim/en/1.12.html) for derived
+quantities. For example:
 
 | Quantity   | SI            | CGS             |
 |------------|---------------|-----------------|
@@ -102,9 +110,9 @@ and constraints the best for a specific quantity.
 
 ## ISQ vs SI
 
-Some of the systems of quantities and units have been used more over the years and have become more popular
-than others. Here are the official descriptions of the most popular systems used in engineering
-today:
+Some of the systems of quantities and units have been used more over the years
+and have become more popular than others. Here are the official descriptions of
+the most popular systems used in engineering today:
 
 !!! quote "[International System of Quantities (ISQ)](https://jcgm.bipm.org/vim/en/1.6.html)"
 
@@ -149,7 +157,7 @@ IEC 80000:
 - Part 17: Time dependency
 
 
-## To be continued...
+## To be continued
 
 In the next part of this series, we will describe typical issues with libraries that do not
 model systems of quantities.

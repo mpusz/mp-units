@@ -1,4 +1,6 @@
-<img align="right" height=135px src="docs/assets/images/mp-units-color.svg">
+<!-- markdownlint-disable MD041 -->
+<!-- markdownlint-disable-next-line MD033 -->
+<img align="right" height=135px src="docs/assets/images/mp-units-color.svg" alt="logo">
 
 [![GitHub license](https://img.shields.io/github/license/mpusz/mp-units?cacheSeconds=3600&color=informational&label=License)](./LICENSE.md)
 [![GitHub license](https://img.shields.io/badge/C%2B%2B-20%2F23-blue)](https://en.cppreference.com/w/cpp/compiler_support#cpp20)
@@ -16,8 +18,8 @@
 
 # `mp-units` – The quantities and units library for C++
 
-**The `mp-units` library is a candidate for ISO standardization for C++29. More context can be
-found in the following ISO C++ proposals:**
+**The `mp-units` library is a candidate for ISO standardization for C++29.
+More context can be found in the following ISO C++ proposals:**
 
 - [P1935: A C++ Approach to Physical Units](https://wg21.link/p1935),
 - [P2980: A motivation, scope, and plan for a quantities and units library](https://wg21.link/p2980),
@@ -27,9 +29,9 @@ found in the following ISO C++ proposals:**
 
 ## Documentation
 
-Extensive project documentation is available on the
-[project site](https://mpusz.github.io/mp-units). It includes installation instructions,
-a detailed user's guide, design rationale, an API reference, tutorials, and examples.
+Extensive project documentation is available on the [project site](https://mpusz.github.io/mp-units).
+It includes installation instructions, a detailed user's guide, design rationale, an API reference,
+tutorials, and examples.
 
 If you're new and just want to experiment, jump to the TL;DR below.
 
@@ -78,10 +80,11 @@ static_assert(1000 / (1 * s) == 1 * kHz);
 
 _Try it on the [Compiler Explorer](https://godbolt.org/z/fT1r4sohs)._
 
-The library makes extensive use of C++20 features (concepts, class types as NTTPs, etc.). This
-enables powerful yet easy‑to‑use interfaces while performing all conversions and dimensional
-analysis at compile time—without sacrificing runtime performance or accuracy. The example below
-shows a broader preview of basic capabilities:
+The library makes extensive use of C++20 features (concepts, class types as NTTPs, etc.).
+This enables powerful yet easy‑to‑use interfaces while performing all conversions and dimensional
+analysis at compile time—without sacrificing runtime performance or accuracy.
+
+The example below shows a broader preview of basic capabilities:
 
 ```cpp
 #include <mp-units/systems/international.h>
@@ -130,19 +133,19 @@ _Try it on the [Compiler Explorer](https://godbolt.org/z/fxcjs19ah)._
 
 ### Compiler Explorer
 
-As seen in the previous chapter, **mp-units** is available on Compiler Explorer. Use it for a fast,
-zero‑setup trial or to prototype ideas.
-
+As seen in the previous chapter, **mp-units** is available on Compiler Explorer.
+Use it for a fast, zero‑setup trial or to prototype ideas.
 
 ### GitHub Codespaces
 
 For more advanced development or contributions, we encourage you to use our pre‑configured
-[GitHub Codespaces](https://docs.github.com/en/codespaces) environment. You can either click the
-button below
+[GitHub Codespaces](https://docs.github.com/en/codespaces) environment.
+You can either click the button below
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/mpusz/mp-units)
 
-or navigate to the repository main page and click “Code” → “Codespaces” → “Create codespace on master”.
+or navigate to the repository main page and click “Code” → “Codespaces”
+→ “Create codespace on master”.
 
 You can also use the pre‑configured devcontainer and Docker image manually within your IDE.
 

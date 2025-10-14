@@ -1,18 +1,22 @@
 # GitHub Codespaces Integration for mp-units
 
-This repository is configured to work seamlessly with GitHub Codespaces, providing a
-complete development environment with all compilers and tools pre-installed. The environment
-is built on [custom `trainiteu/mp-units` Docker image](https://github.com/train-it-eu/docker-images/blob/main/mp-units/Dockerfile)
+This repository is configured to work seamlessly with GitHub Codespaces.
+It provides a complete development environment with all compilers and tools pre-installed.
+The environment is built on a [custom `trainiteu/mp-units` Docker image](https://github.com/train-it-eu/docker-images/blob/main/mp-units/Dockerfile)
 which extends the build tool ecosystem with **mp-units**-specific requirements.
 
 ## Docker Image Hierarchy
 
 The development environment is built on a layered Docker image stack:
 
-1. **[`trainiteu/ubuntu`](https://github.com/train-it-eu/docker-images/blob/main/ubuntu/Dockerfile)**: Ubuntu 25.04 (Plucky Puffin) base with essential development tools
-2. **[`trainiteu/cpp`](https://github.com/train-it-eu/docker-images/blob/main/cpp/Dockerfile)**: Adds CMake, Ninja, Python with pipx for tool management
-3. **[`trainiteu/cpp-conan`](https://github.com/train-it-eu/docker-images/blob/main/cpp-conan/Dockerfile)**: Adds Conan 2.x and base compiler profiles
-4. **[`trainiteu/mp-units`](https://github.com/train-it-eu/docker-images/blob/main/mp-units/Dockerfile)**: **mp-units-specific extensions** including:
+1. **[`trainiteu/ubuntu`](https://github.com/train-it-eu/docker-images/blob/main/ubuntu/Dockerfile)**:
+   Ubuntu 25.04 (Plucky Puffin) base with essential development tools
+2. **[`trainiteu/cpp`](https://github.com/train-it-eu/docker-images/blob/main/cpp/Dockerfile)**:
+   Adds CMake, Ninja, and Python with pipx for tool management
+3. **[`trainiteu/cpp-conan`](https://github.com/train-it-eu/docker-images/blob/main/cpp-conan/Dockerfile)**:
+   Adds Conan 2.x and base compiler profiles
+4. **[`trainiteu/mp-units`](https://github.com/train-it-eu/docker-images/blob/main/mp-units/Dockerfile)**:
+   **mp-units-specific extensions** including:
    - Extended compiler matrix (GCC 12-15, Clang 16-21)
    - Python documentation ecosystem via pipx
    - Pre-configured Conan remotes and profiles for all compiler combinations
@@ -52,7 +56,8 @@ The development environment is built on a layered Docker image stack:
 
 3. **Wait for setup**: The container will build automatically (usually 3-5 minutes)
 
-This option provides the same development environment as Codespaces but runs locally on your machine, offering:
+This option provides the same development environment as Codespaces while running locally on
+your machine. It offers:
 - **Full offline development** (after initial setup)
 - **Better performance** on powerful local machines
 - **Direct file system access** for easier integration with local tools
@@ -83,13 +88,13 @@ The following Conan profiles are pre-configured:
 
 ### Multi-Compiler Testing Script
 
-The Codespace includes a comprehensive testing script at `.devcontainer/check_all.sh`:
+The Codespace includes a comprehensive testing script at `.devcontainer/check_all.sh`.
 
 ```bash
 # Available script options
-./.devcontainer/check_all.sh install   # Install dependencies for all configurations and provide CMake Presets
-./.devcontainer/check_all.sh build     # Build with all compiler configurations
-./.devcontainer/check_all.sh create    # Create Conan packages with all configurations
+./.devcontainer/check_all.sh install   # Install dependencies for all release configurations and provide CMake Presets
+./.devcontainer/check_all.sh build     # Build release with all compiler configurations
+./.devcontainer/check_all.sh create    # Create release Conan packages with all configurations
 ./.devcontainer/check_all.sh -d create # Include debug builds
 ```
 
@@ -114,9 +119,9 @@ The `.devcontainer/api_reference.sh` script automates the generation of API docu
 ```
 
 By default, the script performs both setup and build operations. Use the `-s` flag
-to perform setup only (during development container initialization). The script runs
-automatically during Codespace initialization to ensure the API documentation setup
-is ready.
+to perform setup only (done already during development container initialization).
+The script runs automatically during Codespace initialization to ensure the
+API documentation setup is ready.
 
 The `-d` parameter allows you to specify a custom directory for API documentation
 dependencies. By default, dependencies are stored in `../api_reference_deps` relative
@@ -159,8 +164,9 @@ For current machine specifications and pricing, see:
 - [GitHub Pricing Calculator](https://github.com/pricing/calculator?feature=codespaces)
 
 **Usage Recommendations:**
-- **2-core**: Suitable for documentation, small changes, single compiler testing
-- **4-core**: **Recommended** for most mp-units development - good balance of performance and free usage
+- **2-core**: Suitable for documentation, small changes, and single-profile testing
+- **4-core**: **Recommended** for most mp-units development — good balance of performance
+   and free usage
 - **8-core+**: Best for intensive development sessions or when you need maximum build speed
 
 
@@ -196,7 +202,9 @@ For current machine specifications and pricing, see:
 
 ## Getting Help
 
-- Check the [mp-units documentation](https://mpusz.github.io/mp-units/) for project-specific information
-- Refer to the [GitHub Codespaces documentation](https://docs.github.com/en/codespaces) for platform help
+- Check the [mp-units documentation](https://mpusz.github.io/mp-units/)
+  for project-specific information
+- Refer to the [GitHub Codespaces documentation](https://docs.github.com/en/codespaces)
+  for platform help
 - Use the [discussion forums](https://github.com/mpusz/mp-units/discussions) or
   [issues](https://github.com/mpusz/mp-units/issues) in the repository for development questions

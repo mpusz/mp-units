@@ -214,9 +214,10 @@ ISO 80000 states that _width_ and _height_ are quantities of the same kind; ther
 - are mutually comparable,
 - can be added and subtracted.
 
-If we take the above for granted, the only reasonable result of `1 * width + 1 * height` is `2 * length`,
-where the result of `length` is known as a **common quantity** type. A result of such an equation is always
-the first common node in a hierarchy tree of the same kind. For example:
+If we take the above for granted, the only reasonable result of `1 * width + 1 * height` is
+`2 * length`, where the result of `length` is known as a **common quantity** type.
+A result of such an equation is always the first common node in a hierarchy tree of the same
+kind. For example:
 
 ```cpp
 static_assert(get_common_quantity_spec(isq::width, isq::height) == isq::length);
@@ -227,7 +228,8 @@ static_assert(get_common_quantity_spec(isq::distance, isq::path_length) == isq::
 
 ## Converting between quantities
 
-Based on the same hierarchy of quantities of kind length, we can define quantity conversion rules.
+Based on the same hierarchy of quantities of kind length, we can define quantity conversion
+rules.
 
 1. **Implicit conversions**
 
@@ -327,8 +329,8 @@ Based on the same hierarchy of quantities of kind length, we can define quantity
 
 ## Hierarchies of derived quantities
 
-Derived quantity equations often do not automatically form a hierarchy tree. This is why it is
-sometimes not obvious what such a tree should look like. Also, ISO explicitly states:
+Derived quantity equations often do not automatically form a hierarchy tree. This is why it
+is sometimes not obvious what such a tree should look like. Also, ISO explicitly states:
 
 !!! quote "ISO/IEC Guide 99"
 
@@ -355,10 +357,11 @@ Notice, that even though all of those quantities have the same dimension and can
 in the same units, they have different [quantity equations](../../appendix/glossary.md#quantity-equation)
 that can be used to create them implicitly:
 
-- _energy_ is the most generic one and thus can be created from base quantities of _mass_, _length_,
-  and _time_. As those are also the roots of quantities of their kinds and all other quantities from their
-  trees are implicitly convertible to them (we agreed on that "every _width_ is a _length_" already),
-  it means that an _energy_ can be implicitly constructed from any quantity of _mass_, _length_, and _time_:
+- _energy_ is the most generic one and thus can be created from base quantities of _mass_,
+  _length_, and _time_. As those are also the roots of quantities of their kinds and all other
+  quantities from their trees are implicitly convertible to them (we agreed on that "every
+  _width_ is a _length_" already), it means that an _energy_ can be implicitly constructed
+  from any quantity of _mass_, _length_, and _time_:
 
     ```cpp
     static_assert(implicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::time), isq::energy));
@@ -366,8 +369,8 @@ that can be used to create them implicitly:
     ```
 
 - _mechanical energy_ is a more "specialized" quantity than _energy_ (not every _energy_ is
-  a _mechanical energy_). It is why an explicit cast is needed to convert from either _energy_ or
-  the results of its [quantity equation](../../appendix/glossary.md#quantity-equation):
+  a _mechanical energy_). It is why an explicit cast is needed to convert from either
+  _energy_ or the results of its [quantity equation](../../appendix/glossary.md#quantity-equation):
 
     ```cpp
     static_assert(!implicitly_convertible(isq::energy, isq::mechanical_energy));
@@ -403,8 +406,8 @@ quantities of the same kind. Such quantities have not only the same dimension bu
 can be expressed in the same units.
 
 To annotate a quantity to represent its kind (and not just a hierarchy tree's root quantity)
-we introduced a `kind_of<>` specifier. For example, to express any quantity of _length_, we need
-to type `kind_of<isq::length>`.
+we introduced a `kind_of<>` specifier. For example, to express any quantity of _length_,
+we need to type `kind_of<isq::length>`.
 
 !!! important
 

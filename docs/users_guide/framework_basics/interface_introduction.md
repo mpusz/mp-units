@@ -31,14 +31,14 @@ error analysis.
 
 !!! note
 
-    Such brevity is rare. Other units libraries often generate enormous error messages where
-    even the first line does not fit on a presentation slide.
+    Such brevity is rare. Other units libraries often generate enormous error messages
+    where even the first line does not fit on a presentation slide.
 
 
 ## Entities composability
 
-Many libraries assign strong types to every entity (e.g., each derived unit). `metre_per_second`
-may not look alarming, but units of angular momentum would yield a
+Many libraries assign strong types to every entity (e.g., each derived unit).
+`metre_per_second` may not look alarming, but units of angular momentum would yield a
 `kilogram_metre_sq_per_second` style type. How many scaled versions would you predefine?
 What is the maintenance and standardization cost?
 
@@ -74,7 +74,8 @@ value-based equations.
 
 Entities act as values and compose. Derived entities are defined using these value-based
 equations. This is a huge improvement compared to what we can find in other physical units
-libraries or what we have to deal with when we want to write some equations based on `std::ratio`.
+libraries or what we have to deal with when we want to write some equations based on
+`std::ratio`.
 
 For example, below are a few definitions of the SI derived units showing the power of C++20
 extensions to Non-Type Template Parameters, which allow us to directly pass a result of
@@ -110,7 +111,7 @@ quantity<metre / second> q;
 
 produces the following type in the debugger:
 
-```
+```text
 (gdb) ptype q
 type = class mp_units::quantity<mp_units::derived_unit<metre, mp_units::per<second>>(), double> [with Rep = double] {
 ```
@@ -202,8 +203,8 @@ To keep generated types short and readable, the library applies several simplifi
 
 3. **Simplification**
 
-    In case two of the same identifiers are found in the numerator and denominator argument lists;
-    they are being simplified into one entry:
+    In case two of the same identifiers are found in the numerator and denominator
+    argument lists; they are being simplified into one entry:
 
     |        Before         |        After         |
     |:---------------------:|:--------------------:|
@@ -219,14 +220,14 @@ To keep generated types short and readable, the library applies several simplifi
     such behavior. For example, the Hubble constant is expressed in `km⋅s⁻¹⋅Mpc⁻¹`, where both
     `km` and `Mpc` are units of _length_.
 
-    Also, to prevent possible issues in compile-time logic, all of the library's entities must be
-    marked `final`. This prevents the users to derive own strong types from them, which would
-    prevent symbolic expression simplification of equivalent entities.
+    Also, to prevent possible issues in compile-time logic, all of the library's entities
+    must be marked `final`. This prevents the users to derive own strong types from them,
+    which would prevent symbolic expression simplification of equivalent entities.
 
 4. **Repacking**
 
-    In case an expression uses two results of other operations, the components of its arguments are repacked
-    into one resulting type and simplified there.
+    In case an expression uses two results of other operations, the components of its
+    arguments are repacked into one resulting type and simplified there.
 
     For example, assuming:
 

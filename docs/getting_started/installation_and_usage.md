@@ -352,7 +352,8 @@ with the following differences:
     conan remote add conan-mpusz https://mpusz.jfrog.io/artifactory/api/conan/conan-oss
     ```
 
-2. In your Conan configuration file, provide the package identifier of the `mpusz/testing` stream:
+2. In your Conan configuration file, provide the package identifier of the `mpusz/testing`
+  stream:
 
     === "_conanfile.txt_"
 

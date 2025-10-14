@@ -6,8 +6,8 @@ The affine space has two types of entities:
 - **_Displacement vector_** - the difference between two points (e.g., shift, offset,
   displacement, duration, etc.)
 
-In the following subchapters, we will often refer to _displacement vectors_ simply as _vectors_ for
-brevity.
+In the following subchapters, we will often refer to _displacement vectors_ simply as
+_vectors_ for brevity.
 
 !!! note
 
@@ -44,8 +44,8 @@ Here are the primary operations one can do in the affine space:
 ## _Points_ are more common than most of us imagine
 
 _Point_ abstractions should be used more often in the C++ software.
-They are not only about _temperature_ or _time_. _Points_ are everywhere around us and should become
-more popular in the products we implement. They can be used to implement:
+They are not only about _temperature_ or _time_. _Points_ are everywhere around us and
+should become more popular in the products we implement. They can be used to implement:
 
 - _temperature_ points,
 - timestamps,
@@ -55,7 +55,8 @@ more popular in the products we implement. They can be used to implement:
 - today's _price_ of instruments on the market,
 - and many more.
 
-Improving the affine space's _Points_ intuition will allow us to write better and safer software.
+Improving the affine space's _Points_ intuition will allow us to write better and safer
+software.
 
 
 ## _Displacement vector_ is modeled by `quantity`
@@ -67,8 +68,8 @@ difference between two things:
 - _duration_ between two time points,
 - the difference in _speed_ (even if relative to zero).
 
-As we already know, a `quantity` type provides all operations required for a _displacement vector_
-abstraction in the affine space. It can be constructed with:
+As we already know, a `quantity` type provides all operations required for a
+_displacement vector_ abstraction in the affine space. It can be constructed with:
 
 - the multiply syntax (works for most of the units),
 - `delta<Reference>` construction helper (e.g., `delta<isq::height[m]>(42)`, `delta<deg_C>(3)`),
@@ -85,7 +86,8 @@ abstraction in the affine space. It can be constructed with:
 In the **mp-units** library, the _Point_ abstraction is modelled by:
 
 - [`PointOrigin` concept](concepts.md#PointOrigin) that specifies measurement origin, and
-- `quantity_point` class template that specifies a _Point_ relative to a specific predefined origin.
+- `quantity_point` class template that specifies a _Point_ relative to a specific
+  predefined origin.
 
 
 ### `quantity_point`
@@ -104,14 +106,14 @@ As we can see above, the `quantity_point` class template exposes one additional 
 to `quantity`. The `PO` parameter satisfies a [`PointOriginFor` concept](concepts.md#PointOriginFor)
 and specifies the origin of our measurement scale.
 
-Each `quantity_point` internally stores a `quantity` object, which represents a _displacement vector_
-from the predefined origin. Thanks to this, an instantiation of a `quantity_point` can be considered
-as a model of a vector space from such an origin.
+Each `quantity_point` internally stores a `quantity` object, which represents a
+_displacement vector_ from the predefined origin. Thanks to this, an instantiation of
+a `quantity_point` can be considered as a model of a vector space from such an origin.
 
-Forcing the user to manually predefine an origin for every domain may be cumbersome and discourage
-users from using such abstractions at all. This is why, by default, the `PO` template
-parameter is initialized with the `default_point_origin(R)` that provides the quantity points'
-scale zeroth point using the following rules:
+Forcing the user to manually predefine an origin for every domain may be cumbersome and
+discourage users from using such abstractions at all. This is why, by default, the `PO`
+template parameter is initialized with the `default_point_origin(R)` that provides the
+quantity points' scale zeroth point using the following rules:
 
 - if the measurement unit of a quantity specifies its point origin in its definition
   (e.g., degree Celsius), then this origin is being used,
@@ -140,8 +142,8 @@ quantity_point qp9 = point<deg_C>(42);
 
 #### `zeroth_point_origin<QuantitySpec>`
 
-`zeroth_point_origin<QuantitySpec>` is meant to be used in cases where the specific domain has
-a well-established, non-controversial, and unique zeroth point on the measurement scale.
+`zeroth_point_origin<QuantitySpec>` is meant to be used in cases where the specific domain
+has a well-established, non-controversial, and unique zeroth point on the measurement scale.
 This saves the user from the need to write a boilerplate code that would predefine such a type
 for this domain.
 
@@ -162,19 +164,19 @@ assert(qp1 - qp2 == -20 * m);
 // auto res = qp1 + qp2;   // Compile-time error
 ```
 
-In the above code `100 * m` and `120 * m` still create two quantities that serve as _displacement
-vectors_ here. Quantity point objects can be explicitly constructed from such quantities only when
-their origin is an instantiation of the `zeroth_point_origin<QuantitySpec>`.
+In the above code `100 * m` and `120 * m` still create two quantities that serve as
+_displacement vectors_ here. Quantity point objects can be explicitly constructed from
+such quantities only when their origin is an instantiation of the `zeroth_point_origin<QuantitySpec>`.
 
-It is really important to understand that even though we can use `.quantity_from_zero()` to obtain
-the _displacement vector_ of a point from the origin, the point by itself does not represent or have
-any associated physical value. It is just a point in some space. The same point can be expressed
-with different _displacement vectors_ from different origins.
+It is really important to understand that even though we can use `.quantity_from_zero()`
+to obtain the _displacement vector_ of a point from the origin, the point by itself does
+not represent or have any associated physical value. It is just a point in some space.
+The same point can be expressed with different _displacement vectors_ from different origins.
 
-It is also worth mentioning that simplicity comes with a safety cost here. For some users, it
-might be surprising that the usage of `zeroth_point_origin<QuantitySpec>` makes various quantity
-point objects compatible as long as quantity types used in the origin and reference are
-compatible:
+It is also worth mentioning that simplicity comes with a safety cost here. For some users,
+it might be surprising that the usage of `zeroth_point_origin<QuantitySpec>` makes various
+quantity point objects compatible as long as quantity types used in the origin and reference
+are compatible:
 
 ```cpp
 quantity_point<si::metre> qp1{isq::distance(100 * m)};
@@ -189,9 +191,9 @@ assert(qp1 - qp2 == -20 * m);
 
 ### Absolute _point_ origin
 
-In cases where we want to implement an isolated independent space in which points are not compatible
-with other spaces, even of the same quantity type, we should manually predefine an absolute point
-origin.
+In cases where we want to implement an isolated independent space in which points are not
+compatible with other spaces, even of the same quantity type, we should manually predefine
+an absolute point origin.
 
 ![affine_space_2](affine_space_2.svg){style="width:80%;display: block;margin: 0 auto;"}
 
@@ -221,13 +223,13 @@ assert(origin - qp2 == -120 * m);
 // assert(origin - origin == 0 * m);   // Compile-time error
 ```
 
-We can't construct a quantity point directly from the quantity anymore when a custom, named origin
-is used. To prevent potential safety and maintenance issues, we always need to
-explicitly provide both a compatible origin and a quantity measured from it to construct a quantity
-point.
+We can't construct a quantity point directly from the quantity anymore when a custom,
+named origin is used. To prevent potential safety and maintenance issues, we always need
+to explicitly provide both a compatible origin and a quantity measured from it to construct
+a quantity point.
 
-Said otherwise, a quantity point defined in terms of a specific origin is the result of adding
-the origin and the _displacement vector_ measured from it to the point we create.
+Said otherwise, a quantity point defined in terms of a specific origin is the result of
+adding the origin and the _displacement vector_ measured from it to the point we create.
 
 !!! info
 
@@ -245,22 +247,22 @@ quantity_point qp1{100 * m, origin};
 
 Again, CTAD always helps to use precisely the type we need in a current case.
 
-Additionally, if a quantity point is defined in terms of a custom, named origin, then we can't use
-a `quantity_from_zero()` member function anymore. This is to prevent surprises, as our origin may
-not necessarily be perceived as an absolute zero in the domain we model. Also, as we will learn soon,
-we can define several related origins in one space, and then it gets harder to understand which
-one is the "zero" one. This is why, to be specific and always correct about the points we use,
-a `quantity_from(QP)` member function can be used (where `QP` can either be an origin or another
-quantity point).
+Additionally, if a quantity point is defined in terms of a custom, named origin, then we
+can't use a `quantity_from_zero()` member function anymore. This is to prevent surprises,
+as our origin may not necessarily be perceived as an absolute zero in the domain we model.
+Also, as we will learn soon, we can define several related origins in one space, and then
+it gets harder to understand which one is the "zero" one. This is why, to be specific and
+always correct about the points we use, a `quantity_from(QP)` member function can be used
+(where `QP` can either be an origin or another quantity point).
 
-Finally, please note that it is not allowed to subtract two point origins defined in terms of
-`absolute_point_origin` (e.g., `origin - origin`) as those do not contain information about the
-unit, so we cannot determine a resulting `quantity` type.
+Finally, please note that it is not allowed to subtract two point origins defined in terms
+of `absolute_point_origin` (e.g., `origin - origin`) as those do not contain information
+about the unit, so we cannot determine a resulting `quantity` type.
 
 #### Modeling independent spaces in one domain
 
-Absolute point origins are also perfect for establishing independent spaces even if the same quantity
-type and unit is being used:
+Absolute point origins are also perfect for establishing independent spaces even if the
+same quantity type and unit is being used:
 
 ![affine_space_3](affine_space_3.svg){style="width:80%;display: block;margin: 0 auto;"}
 
@@ -290,8 +292,8 @@ assert(origin2 - qp2 == -120 * m);
 
 ### Relative _Point_ origin
 
-We often do not have only one ultimate "zero" point when we measure things. Often, we have one
-common scale, but we measure various quantities relative to different points and expect
+We often do not have only one ultimate "zero" point when we measure things. Often, we have
+one common scale, but we measure various quantities relative to different points and expect
 those points to be compatible. There are many examples here, but probably the most common are
 temperatures, timestamps, and altitudes.
 
@@ -402,8 +404,8 @@ assert(qp2 == qp2A);
 Support for temperature quantity points is probably one of the most common examples of relative
 point origins in action that we use in daily life.
 
-The [SI](../../appendix/references.md#SIBrochure) definition in the library provides a few predefined
-point origins for this purpose:
+The [SI](../../appendix/references.md#SIBrochure) definition in the library provides a few
+predefined point origins for this purpose:
 
 ```cpp
 namespace si {
@@ -462,8 +464,8 @@ As it was described above, `default_point_origin(R)` returns a `zeroth_point_ori
 when a unit does not provide any origin in its definition. As of today, the units of temperature
 are the only ones in the entire **mp-units** library that provide such origins.
 
-Now, let's see how we can benefit from the above definitions. We have quite a few alternatives to
-choose from here. Depending on our needs or tastes, we can:
+Now, let's see how we can benefit from the above definitions. We have quite a few alternatives
+to choose from here. Depending on our needs or tastes, we can:
 
 - be explicit about the unit and origin:
 
@@ -494,8 +496,8 @@ choose from here. Depending on our needs or tastes, we can:
 
 In all of the above cases, we end up with the `quantity_point` of the same type and value.
 
-To play a bit more with temperatures, we can implement a simple room AC temperature controller in
-the following way:
+To play a bit more with temperatures, we can implement a simple room AC temperature controller
+in the following way:
 
 ![affine_space_6](affine_space_6.svg){style="width:80%;display: block;margin: 0 auto;"}
 
@@ -577,11 +579,11 @@ The following operations are not allowed in the affine space:
 - **mixing** `quantity_points` of different quantity kinds
     - It is physically impossible to subtract time from length.
 - **mixing** `quantity_points` of inconvertible quantities
-    - What does subtracting a distance point to DEN airport from the Mount Everest base camp
-      altitude mean?
+    - What does subtracting a distance point to DEN airport from the Mount Everest base
+      camp altitude mean?
 - **mixing** `quantity_points` of convertible quantities but with unrelated origins
-    - How do we subtract a point on our trip to CppCon measured relatively to our home location from
-      a point measured relative to the center of the Solar System?
+    - How do we subtract a point on our trip to CppCon measured relatively to our home
+      location from a point measured relative to the center of the Solar System?
 
 !!! important "Important: The affine space improves safety"
 
