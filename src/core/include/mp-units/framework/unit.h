@@ -226,7 +226,7 @@ struct propagate_point_origin<U, true> {
 };
 
 template<UnitMagnitude auto M, Unit U>
-struct scaled_unit_impl : detail::unit_interface, detail::propagate_point_origin<U> {
+struct MP_UNITS_EMPTY_BASES_WORKAROUND scaled_unit_impl : detail::unit_interface, detail::propagate_point_origin<U> {
   using _base_type_ = scaled_unit_impl;  // exposition only
   static constexpr UnitMagnitude auto _mag_ = M;
   static constexpr U _reference_unit_{};
@@ -461,7 +461,9 @@ struct common_unit final : decltype(detail::get_common_scaled_unit(U1{}, U2{}, R
 namespace detail {
 
 template<typename... Expr>
-struct derived_unit_impl : detail::unit_interface, detail::expr_fractions<one, Expr...> {
+struct MP_UNITS_EMPTY_BASES_WORKAROUND derived_unit_impl :
+    detail::unit_interface,
+    detail::expr_fractions<one, Expr...> {
   using _base_type_ = derived_unit_impl;  // exposition only
 };
 

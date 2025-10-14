@@ -34,6 +34,9 @@ import std;
 #include <concepts>
 #include <cstddef>
 #include <ranges>
+#if MP_UNITS_HOSTED
+#include <stdexcept>
+#endif
 #endif
 #endif
 

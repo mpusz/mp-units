@@ -211,7 +211,7 @@ class MPUnitsConan(ConanFile):
             elif self.options.contracts == "ms-gsl":
                 self.requires("ms-gsl/4.2.0", transitive_headers=True)
             if not self.options.std_format:
-                self.requires("fmt/11.2.0", transitive_headers=True)
+                self.requires("fmt/12.0.0", transitive_headers=True)
 
     def build_requirements(self):
         self.tool_requires("cmake/[>=4.0.2 <5]")
@@ -272,6 +272,9 @@ class MPUnitsConan(ConanFile):
         # TODO remove the below when Conan will learn to handle C++ modules
         if opt.freestanding:
             tc.cache_variables["MP_UNITS_API_FREESTANDING"] = True
+            # Fix for freestanding builds: CMake compiler tests fail when linking with -ffreestanding
+            # Set CMAKE_TRY_COMPILE_TARGET_TYPE to STATIC_LIBRARY to avoid linking during compiler tests
+            tc.cache_variables["CMAKE_TRY_COMPILE_TARGET_TYPE"] = "STATIC_LIBRARY"
         else:
             tc.cache_variables["MP_UNITS_API_STD_FORMAT"] = opt.std_format
         tc.cache_variables["MP_UNITS_API_NO_CRTP"] = opt.no_crtp
