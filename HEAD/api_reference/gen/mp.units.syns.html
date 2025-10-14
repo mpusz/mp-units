@@ -325,7 +325,7 @@
   one_denominator,
   always,
   never,
-  default_denominator <span class='operator'>=</span> one_denominator
+  default_solidus <span class='operator'>=</span> one_denominator
 <span class='curlybracket'>}</span>;
 
 <span class='keyword'>enum</span> <span class='keyword'>class</span> <span id='lib:unit_symbol_separator'><a class='hidden_link' href='#lib:unit_symbol_separator' title='5.2.2&emsp;Module mp_&shy;units.core synopsis&emsp;[mp.units.core.syn]'>unit_symbol_separator</a></span> <span class='operator'>:</span> std<span class='operator'>::</span>int8_t <span class='curlybracket'>{</span>
@@ -336,7 +336,7 @@
 
 <span class='keyword'>struct</span> <span id='lib:unit_symbol_formatting'><a class='hidden_link' href='#lib:unit_symbol_formatting' title='5.2.2&emsp;Module mp_&shy;units.core synopsis&emsp;[mp.units.core.syn]'>unit_symbol_formatting</a></span> <span class='curlybracket'>{</span>
   character_set char_set <span class='operator'>=</span> character_set<span class='operator'>::</span>default_character_set;
-  unit_symbol_solidus solidus <span class='operator'>=</span> unit_symbol_solidus<span class='operator'>::</span>default_denominator;
+  unit_symbol_solidus solidus <span class='operator'>=</span> unit_symbol_solidus<span class='operator'>::</span>default_solidus;
   unit_symbol_separator separator <span class='operator'>=</span> unit_symbol_separator<span class='operator'>::</span>default_separator;
 <span class='curlybracket'>}</span>;
 
