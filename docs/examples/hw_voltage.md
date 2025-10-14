@@ -44,7 +44,8 @@ origin to offset the zero of the sale, and a dedicated quantity point alias usin
 ```
 
 Now, when everything is ready, we can simulate mapping of our hardware register, and provide
-a helper function that will read the value and construct a quantity point from the obtained copy:
+a helper function that will read the value and construct a quantity point from the obtained
+copy:
 
 ```cpp title="hw_voltage.cpp" linenums="35"
 --8<-- "example/hw_voltage.cpp:69:77"
