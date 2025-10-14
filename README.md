@@ -150,3 +150,10 @@ or navigate to the repository main page and click “Code” → “Codespaces�
 You can also use the pre‑configured devcontainer and Docker image manually within your IDE.
 
 For detailed environment documentation, see [`.devcontainer/README.md`](.devcontainer/README.md).
+
+### Install as a Dependency
+
+We recommend using Conan to integrate **mp-units** with your project. However, there are
+also other ways to make it work. Please refer to our
+[Installation and Usage](https://mpusz.github.io/mp-units/latest/getting_started/installation_and_usage)
+documentation chapter for more details.
