@@ -71,7 +71,7 @@ int main()
 
   // Schedule alert
   // TODO: Predict arrival time at a rest area 5 km ahead (constant speed)
-  // TODO: Schedule alert with the predicted arrival time 
+  // TODO: Schedule alert with the predicted arrival time
 }
 ```
 

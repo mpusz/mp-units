@@ -88,16 +88,16 @@ To achieve this goal, several techniques are applied:
 
 - [Each entity can be defined with a single line of code]
 - [User can easily extend the systems with custom dimensions, quantities, and units]
-  
-  
+
+
 ### Low Standardization Cost
 
 - Few predefined entities due to high composability
 - No external dependencies (with full C++20 support)
 - Macro-free user interface (aside from portability / standard-compliance helpers)
 - Plausible candidate for [freestanding] standardization
-  
-  
+
+
 [The affine space strong types]: ../users_guide/framework_basics/the_affine_space.md
 [Compile-time checked conversions of quantities and units]: ../users_guide/framework_basics/systems_of_quantities.md#converting-between-quantities
 [Unique support for many quantities of the same kind]: ../users_guide/framework_basics/systems_of_quantities.md#quantities-of-the-same-kind

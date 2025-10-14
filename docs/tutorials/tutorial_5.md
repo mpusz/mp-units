@@ -10,8 +10,8 @@ levels in Germany and Switzerland.
 
     **The Hochrheinbrücke Mishap**
 
-    When the Hochrheinbrücke was constructed between Germany and Switzerland in 2003-2004, 
-    engineers had to account for different height reference systems: Germany's NHN 
+    When the Hochrheinbrücke was constructed between Germany and Switzerland in 2003-2004,
+    engineers had to account for different height reference systems: Germany's NHN
     (Normalhöhennull) and Switzerland's "Meter über Meer" system, which differ by 27 cm.
     This was known and planned for – the Swiss abutment was supposed to be built 27 cm
     higher to compensate. However, due to a sign error in the calculations, the Swiss

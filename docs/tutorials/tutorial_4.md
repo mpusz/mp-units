@@ -107,7 +107,7 @@ int main()
 - **Temperature points vs. deltas**: Absolute temperatures and temperature differences
   require different conversion formulas
 - **Type safety**: **mp-units** prevents common temperature conversion errors at
-  compile time  
+  compile time
 - **Automatic conversions**: The `.in()` method handles proper unit conversions automatically
 - **Getting deltas from points**: `.quantity_from_zero()` allows us to get a delta for a
   temperature point from 0 degrees in the current temperature system

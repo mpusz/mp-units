@@ -51,7 +51,7 @@ int main()
   std::cout << energy_J << " J (" << energy_J / 1000 << " kJ)\n";
 
   // do the same as above with strong types
-  // 
+  //
 }
 ```
 
