@@ -181,6 +181,7 @@ nav:
       - "Tutorial 4: Working with Temperatures": tutorials/tutorial_4.md
       - "Tutorial 5: Affine Spaces and Reference Origins": tutorials/tutorial_5.md
       - "Tutorial 6: Interop with std::chrono": tutorials/tutorial_6.md
+      - "Tutorial 7: Typed Quantities of the Same Kind": tutorials/tutorial_7.md
   - Examples:
       - Tags Index: examples/tags_index.md
       - All Examples:
