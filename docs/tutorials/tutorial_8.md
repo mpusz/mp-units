@@ -52,8 +52,7 @@ int main()
   quantity days_per_week = 5;
   quantity truck_capacity = 60 * carton / truck;
 
-  // fix potential floating-point truncation
-  quantity weekly_production = round<one>(production_rate * hours_per_day * days_per_week);
+  quantity weekly_production = production_rate * hours_per_day * days_per_week;
 
   std::cout << "Weekly production:\n"
             // TODO: use correct units below
@@ -68,7 +67,8 @@ int main()
   std::cout << "Trucks needed for shipment: " << trucks_needed << "\n";
 
   // TODO: the below should not compile
-  quantity bad = 1 * unit + 1 * truck;
+  quantity bad1 = 1 * unit + 1;
+  quantity bad2 = 1 * unit + 1 * truck;
 }
 ```
 
@@ -93,13 +93,12 @@ int main()
       using namespace mp_units;
       using namespace mp_units::si::unit_symbols;
 
-      quantity production_rate = 3. * unit / min;
+      quantity production_rate = 3 * unit / min;
       quantity hours_per_day = 14 * h;
       quantity days_per_week = 5;
       quantity truck_capacity = 60 * carton / truck;
 
-      // fix potential floating-point truncation
-      quantity weekly_production = round<unit>(production_rate * hours_per_day * days_per_week);
+      quantity weekly_production = production_rate * hours_per_day * days_per_week;
 
       std::cout << "Weekly production:\n"
                 << "- " << weekly_production.in(unit) << "\n"
