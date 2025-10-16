@@ -58,6 +58,9 @@ inline constexpr struct kelvin_ final : named_unit<"K", kind_of<isq::thermodynam
 inline constexpr struct nu_second_ final : named_unit<"s"> {} nu_second;
 #endif
 
+inline constexpr struct beat_ final : named_unit<"beat", one> {} beat;
+inline constexpr struct cow_ final : named_unit<"cow", kind_of<dimensionless>> {} cow;
+
 // derived named units
 inline constexpr struct radian_ final : named_unit<"rad", metre / metre, kind_of<isq::angular_measure>> {} radian;
 inline constexpr struct revolution_ final : named_unit<"rev", mag<2> * mag<π> * radian> {} revolution;
@@ -540,6 +543,11 @@ static_assert(
   is_of_type<get_common_unit(speed_of_light_in_vacuum, metre / second), derived_unit<metre_, per<second_>>>);
 
 static_assert(is_of_type<get_common_unit(radian, revolution), radian_>);
+static_assert(is_of_type<get_common_unit(beat, one), beat_>);
+
+template<auto u>
+concept no_common_unit = requires { requires !requires { get_common_unit(u, one); }; };
+static_assert(no_common_unit<cow>);
 
 // those should return instantiations of the `common_unit` class template
 static_assert(is_of_type<get_common_unit(kilometre, mile), common_unit<kilo_<metre_>, mile_>>);

@@ -300,7 +300,8 @@ struct named_unit;
  * @tparam QuantitySpec a specification of a base quantity to be measured with this unit
  */
 template<symbol_text Symbol, detail::QuantityKindSpec auto QS>
-  requires(!Symbol.empty()) && detail::BaseDimension<MP_UNITS_NONCONST_TYPE(QS.dimension)>
+  requires(!Symbol.empty()) &&
+          (detail::BaseDimension<MP_UNITS_NONCONST_TYPE(QS.dimension)> || detail::remove_kind(QS) == dimensionless)
 struct named_unit<Symbol, QS> : detail::unit_interface {
   using _base_type_ = named_unit;           // exposition only
   static constexpr auto _symbol_ = Symbol;  ///< Unique base unit identifier
@@ -308,7 +309,8 @@ struct named_unit<Symbol, QS> : detail::unit_interface {
 };
 
 template<symbol_text Symbol, detail::QuantityKindSpec auto QS, PointOrigin auto PO>
-  requires(!Symbol.empty()) && detail::BaseDimension<MP_UNITS_NONCONST_TYPE(QS.dimension)>
+  requires(!Symbol.empty()) &&
+          (detail::BaseDimension<MP_UNITS_NONCONST_TYPE(QS.dimension)> || detail::remove_kind(QS) == dimensionless)
 struct named_unit<Symbol, QS, PO> : detail::unit_interface {
   using _base_type_ = named_unit;           // exposition only
   static constexpr auto _symbol_ = Symbol;  ///< Unique base unit identifier
