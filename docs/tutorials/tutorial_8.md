@@ -81,9 +81,9 @@ int main()
 
     namespace electronics {
 
-    inline constexpr struct unit final : mp_units::named_unit<"unit", kind_of<dimensionless>> {} unit;
+    inline constexpr struct unit final : mp_units::named_unit<"unit", mp_units::kind_of<mp_units::dimensionless>> {} unit;
     inline constexpr struct carton final : mp_units::named_unit<"carton", mp_units::mag<12> * unit> {} carton;
-    inline constexpr struct truck final : mp_units::named_unit<"truck", kind_of<dimensionless>> {} truck;
+    inline constexpr struct truck final : mp_units::named_unit<"truck", mp_units::kind_of<mp_units::dimensionless>> {} truck;
 
     }
 
