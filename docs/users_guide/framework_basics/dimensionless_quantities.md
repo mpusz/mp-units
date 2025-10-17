@@ -164,6 +164,13 @@ inline constexpr struct parts_per_million final : named_unit<"ppm", mag_ratio<1,
 inline constexpr auto ppm = parts_per_million;
 ```
 
+!!! info
+
+    Units defined in terms of `one` will be addable, subtractible, comparable, and
+    convertible with `one`. If that is not your intent, you should instead base your
+    units on `kind_of<dimensionless>`. This will make each such unit "independent" from
+    other units.
+
 ### Superpowers of the unit `one`
 
 Quantities implicitly convertible to `dimensionless` with the unit equivalent to `one` are
