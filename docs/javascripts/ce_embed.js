@@ -70,7 +70,7 @@
     return out;
   }
 
-  function buildSrc(code, compiler, flags) {
+  function buildSrc(code, compiler, flags, mpUnits) {
     // Normalize line endings and trim one trailing newline to match CE share output
     let norm = code.replace(/\r\n/g, '\n');
     if (norm.endsWith('\n')) norm = norm.slice(0, -1);
@@ -80,17 +80,16 @@
       // Prefer unencoded slashes to better match CE's own sharing format
       .replace(/%2F/g, '/');
     const FLAGS = encodeURIComponent(flags).replace(/%20/g, '+');
-    // Layout closely matching a known-good CE embed
     return (
       "https://godbolt.org/e?hideEditorToolbars=true#g:!((g:!((g:!((h:codeEditor,i:(" +
-      "filename:'1',fontScale:15,fontUsePx:'0',j:1,lang:c%2B%2B,selection:(endColumn:1,endLineNumber:1,positionColumn:1,positionLineNumber:1,selectionStartColumn:1,selectionStartLineNumber:1,startColumn:1,startLineNumber:1),source:'" + CODE + "'),l:'5',n:'0',o:'C%2B%2B+source+%231',t:'0')),k:100,l:'4',m:65.44554455445545,n:'0',o:'',s:0,t:'0'),(g:!((h:executor,i:(argsPanelShown:'1',compilationPanelShown:'1',compiler:" + compiler + ",compilerName:'',compilerOutShown:'0',execArgs:'',execStdin:'',fontScale:16,fontUsePx:'0',j:1,lang:c%2B%2B,libs:!((name:mp-units,ver:trunk)),options:'" + FLAGS + "',overrides:!(),runtimeTools:!(),source:1,stdinPanelShown:'1',wrap:'0'),l:'5',n:'0',o:'Executor+x86-64+clang+21.1.0+(C%2B%2B,+Editor+%231)',t:'0')),header:(),l:'4',m:34.554455445544555,n:'0',o:'',s:0,t:'0')),l:'3',n:'0',o:'',t:'0')),version:4"
+      "filename:'1',fontScale:15,fontUsePx:'0',j:1,lang:c%2B%2B,selection:(endColumn:1,endLineNumber:1,positionColumn:1,positionLineNumber:1,selectionStartColumn:1,selectionStartLineNumber:1,startColumn:1,startLineNumber:1),source:'" + CODE + "'),l:'5',n:'0',o:'C%2B%2B+source+%231',t:'0')),k:100,l:'4',m:65.44554455445545,n:'0',o:'',s:0,t:'0'),(g:!((h:executor,i:(argsPanelShown:'1',compilationPanelShown:'1',compiler:" + compiler + ",compilerName:'',compilerOutShown:'0',execArgs:'',execStdin:'',fontScale:16,fontUsePx:'0',j:1,lang:c%2B%2B,libs:!((name:mp-units,ver:" + mpUnits + ")),options:'" + FLAGS + "',overrides:!(),runtimeTools:!(),source:1,stdinPanelShown:'1',wrap:'0'),l:'5',n:'0',o:'Executor+x86-64+clang+21.1.0+(C%2B%2B,+Editor+%231)',t:'0')),header:(),l:'4',m:34.554455445544555,n:'0',o:'',s:0,t:'0')),l:'3',n:'0',o:'',t:'0')),version:4"
     );
   }
 
   function parseInfo(info) {
     // Parse key=value pairs where value may be quoted and contain spaces.
     // Supports: key=value | key="value with spaces" | key='value with spaces'
-    const meta = { height: 650, compiler: 'clang2110', flags: '-std=c++23 -stdlib=libc++ -O3' };
+  const meta = { height: 650, compiler: 'clang2110', flags: '-std=c++23 -stdlib=libc++ -O3', mpUnits: 'trunk' };
     const regex = /(\w+)=((?:"[^"]*")|(?:'[^']*')|[^\s]+)/g;
     let match;
     while ((match = regex.exec(info)) !== null) {
@@ -102,6 +101,7 @@
       if (key === 'height') meta.height = parseInt(val, 10) || meta.height;
       else if (key === 'compiler') meta.compiler = val;
       else if (key === 'flags') meta.flags = val;
+      else if (key === 'mp-units') meta.mpUnits = val;
     }
     return meta;
   }
@@ -123,7 +123,7 @@
       const attr = firstLine.replace(/^\/\/\s*ce-embed\s*/, '');
       const meta = parseInfo('ce-embed ' + attr);
       const code = lines.slice(idx + 1).join('\n');
-      const src = buildSrc(code, meta.compiler, meta.flags);
+      const src = buildSrc(code, meta.compiler, meta.flags, meta.mpUnits);
 
       const iframe = document.createElement('iframe');
       iframe.setAttribute('src', src);

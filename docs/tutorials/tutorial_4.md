@@ -36,7 +36,7 @@ Fahrenheit. Please help him with this task:
 **mp-units** strong types that prevent temperature conversion errors.
 
 ```cpp
-// ce-embed height=650 compiler=clang2110 flags="-std=c++23 -stdlib=libc++ -O3"
+// ce-embed height=650 compiler=clang2110 flags="-std=c++23 -stdlib=libc++ -O3" mp-units=trunk
 #include <mp-units/systems/si.h>
 #include <mp-units/systems/usc.h>
 #include <iostream>

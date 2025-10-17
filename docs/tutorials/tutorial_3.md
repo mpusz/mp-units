@@ -36,7 +36,7 @@ The legacy code below:
 - Do not modify the legacy functions.
 
 ```cpp
-// ce-embed height=650 compiler=clang2110 flags="-std=c++23 -stdlib=libc++ -O3"
+// ce-embed height=650 compiler=clang2110 flags="-std=c++23 -stdlib=libc++ -O3" mp-units=trunk
 #include <mp-units/systems/si.h>
 #include <mp-units/systems/international.h>
 #include <iostream>

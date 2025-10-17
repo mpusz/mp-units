@@ -26,7 +26,7 @@ per second). Print the result in J and kJ.
 When you are done, make a few intentional mistakes and check error messages.
 
 ```cpp
-// ce-embed height=650 compiler=clang2110 flags="-std=c++23 -stdlib=libc++ -O3"
+// ce-embed height=650 compiler=clang2110 flags="-std=c++23 -stdlib=libc++ -O3" mp-units=trunk
 #include <mp-units/systems/si.h>
 #include <mp-units/core.h>
 #include <iostream>

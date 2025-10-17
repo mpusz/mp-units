@@ -27,7 +27,7 @@ minute, operates 14 hours per day, 5 days per week. Products are packed into car
    Show how type safety prevents scaling errors.
 
 ```cpp
-// ce-embed height=650 compiler=clang2110 flags="-std=c++23 -stdlib=libc++ -O3"
+// ce-embed height=650 compiler=clang2110 flags="-std=c++23 -stdlib=libc++ -O3" mp-units=trunk
 #include <mp-units/core.h>
 #include <mp-units/systems/si.h>
 #include <iostream>
