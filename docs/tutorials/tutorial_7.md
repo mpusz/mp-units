@@ -125,6 +125,14 @@ int main()
     }
     ```
 
+
+## References
+
+- [User's Guide: Systems of Quantities](../users_guide/framework_basics/systems_of_quantities.md)
+- [User's Guide: Simple and Typed Quantities](../users_guide/framework_basics/simple_and_typed_quantities.md)
+- [API Reference](../api_reference.md)
+
+
 ## Takeaways
 
 - Typed quantities clarify the semantic role of each argument, even when their units and

@@ -123,6 +123,13 @@ int main()
     }
     ```
 
+
+## References
+
+- [User's Guide: Interoperability with Other Libraries](../users_guide/use_cases/interoperability_with_other_libraries.md)
+- [API Reference](../api_reference.md)
+
+
 ## Takeaways
 
 - **mp-units** and `std::chrono` are complementary

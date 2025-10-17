@@ -107,6 +107,14 @@ int main()
     }
     ```
 
+
+## References
+
+- [User's Guide: Generic Interfaces](../users_guide/framework_basics/generic_interfaces.md)
+- [User's Guide: Concepts](../users_guide/framework_basics/concepts.md)
+- [API Reference](../api_reference.md)
+
+
 ## Takeaways
 
 - Use C++ concepts to enforce that only valid _mass_ and _area_ quantities can be

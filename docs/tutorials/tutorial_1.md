@@ -80,6 +80,13 @@ int main()
     }
     ```
 
+
+## References
+
+- [Getting Started: Quick Start](../getting_started/quick_start.md)
+- [API Reference](../api_reference.md)
+
+
 ## Takeaways
 
 - Function contracts are now self‑documenting and enforced by the type system.

@@ -94,6 +94,13 @@ int main()
     }
     ```
 
+
+## References
+
+- [User's Guide: The Affine Space](../users_guide/framework_basics/the_affine_space.md)
+- [API Reference](../api_reference.md)
+
+
 ## Takeaways
 
 - Affine spaces let you safely handle _absolute_ and _relative_ measurements with

@@ -116,6 +116,13 @@ int main()
     ```
 
 
+## References
+
+- [User's Guide: Systems of Units](../users_guide/framework_basics/systems_of_units.md)
+- [User's Guide: Dimensionless Quantities](../users_guide/framework_basics/dimensionless_quantities.md)
+- [API Reference](../api_reference.md)
+
+
 ## Takeaways
 
 - Strongly-typed wrappers for dimensionless counters prevent scaling and mixing errors.

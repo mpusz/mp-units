@@ -118,6 +118,13 @@ int main()
     }
     ```
 
+
+## References
+
+- [User's Guide: Working with Legacy Interfaces](../users_guide/use_cases/working_with_legacy_interfaces.md)
+- [API Reference](../api_reference.md)
+
+
 ## Takeaways
 
 - Always extract and convert numeric values at API boundaries,
