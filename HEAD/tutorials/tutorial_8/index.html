@@ -2089,6 +2089,15 @@ You're not viewing the latest version.
 </li>
       
         <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">
+      References
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#takeaways" class="md-nav__link">
     <span class="md-ellipsis">
       Takeaways
@@ -2754,7 +2763,7 @@ minute, operates 14 hours per day, 5 days per week. Products are packed into car
 <li>Use strongly-typed quantities and automatic conversions for all calculations.
    Show how type safety prevents scaling errors.</li>
 </ol>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">// ce-embed height=650 compiler=clang2110 flags=&quot;-std=c++23 -stdlib=libc++ -O3&quot;</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">// ce-embed height=650 compiler=clang2110 flags=&quot;-std=c++23 -stdlib=libc++ -O3&quot; mp-units=trunk</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mp-units/core.h&gt;</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mp-units/systems/si.h&gt;</span>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
@@ -2806,9 +2815,9 @@ minute, operates 14 hours per day, 5 days per week. Products are packed into car
 </span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
 </span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="k">namespace</span><span class="w"> </span><span class="nn">electronics</span><span class="w"> </span><span class="p">{</span>
 </span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">unit</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">named_unit</span><span class="o">&lt;</span><span class="s">&quot;unit&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">kind_of</span><span class="o">&lt;</span><span class="n">dimensionless</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">unit</span><span class="p">;</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">unit</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">named_unit</span><span class="o">&lt;</span><span class="s">&quot;unit&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">kind_of</span><span class="o">&lt;</span><span class="n">mp_units</span><span class="o">::</span><span class="n">dimensionless</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">unit</span><span class="p">;</span>
 </span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">carton</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">named_unit</span><span class="o">&lt;</span><span class="s">&quot;carton&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">mag</span><span class="o">&lt;</span><span class="mi">12</span><span class="o">&gt;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">unit</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">carton</span><span class="p">;</span>
-</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">truck</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">named_unit</span><span class="o">&lt;</span><span class="s">&quot;truck&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">kind_of</span><span class="o">&lt;</span><span class="n">dimensionless</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">truck</span><span class="p">;</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">truck</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">named_unit</span><span class="o">&lt;</span><span class="s">&quot;truck&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">kind_of</span><span class="o">&lt;</span><span class="n">mp_units</span><span class="o">::</span><span class="n">dimensionless</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">truck</span><span class="p">;</span>
 </span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>
 </span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="p">}</span>
 </span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>
@@ -2840,6 +2849,12 @@ minute, operates 14 hours per day, 5 days per week. Products are packed into car
 </span><span id="__span-1-38"><a id="__codelineno-1-38" name="__codelineno-1-38" href="#__codelineno-1-38"></a><span class="p">}</span>
 </span></code></pre></div>
 </details>
+<h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="../../users_guide/framework_basics/systems_of_units/">User's Guide: Systems of Units</a></li>
+<li><a href="../../users_guide/framework_basics/dimensionless_quantities/">User's Guide: Dimensionless Quantities</a></li>
+<li><a href="../../api_reference/">API Reference</a></li>
+</ul>
 <h2 id="takeaways">Takeaways<a class="headerlink" href="#takeaways" title="Permanent link">&para;</a></h2>
 <ul>
 <li>Strongly-typed wrappers for dimensionless counters prevent scaling and mixing errors.</li>

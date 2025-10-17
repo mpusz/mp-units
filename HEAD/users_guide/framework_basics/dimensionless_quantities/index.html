@@ -2925,6 +2925,13 @@ with dimensionless quantities:</p>
 </span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">parts_per_million</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">named_unit</span><span class="o">&lt;</span><span class="s">&quot;ppm&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">mag_ratio</span><span class="o">&lt;</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1&#39;000&#39;000</span><span class="o">&gt;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">one</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">parts_per_million</span><span class="p">;</span>
 </span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">ppm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">parts_per_million</span><span class="p">;</span>
 </span></code></pre></div>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>Units defined in terms of <code>one</code> will be addable, subtractible, comparable, and
+convertible with <code>one</code>. If that is not your intent, you should instead base your
+units on <code>kind_of&lt;dimensionless&gt;</code>. This will make each such unit "independent" from
+other units.</p>
+</div>
 <h3 id="superpowers-of-the-unit-one">Superpowers of the unit <code>one</code><a class="headerlink" href="#superpowers-of-the-unit-one" title="Permanent link">&para;</a></h3>
 <p>Quantities implicitly convertible to <code>dimensionless</code> with the unit equivalent to <code>one</code> are
 the only ones that are:</p>

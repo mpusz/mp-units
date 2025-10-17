@@ -2075,6 +2075,15 @@ You're not viewing the latest version.
 </li>
       
         <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">
+      References
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#takeaways" class="md-nav__link">
     <span class="md-ellipsis">
       Takeaways
@@ -2766,7 +2775,7 @@ The route planner must query a road database to find a path where:</p>
 <li>Try to pass <code>turn_radius</code> argument to <code>width</code> function parameter and vice-versa.
    Analyze the difference and propose a solution to prevent this issue.</li>
 </ol>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">// ce-embed height=650 compiler=clang2110 flags=&quot;-std=c++23 -stdlib=libc++ -O3&quot;</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">// ce-embed height=650 compiler=clang2110 flags=&quot;-std=c++23 -stdlib=libc++ -O3&quot; mp-units=trunk</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mp-units/systems/si.h&gt;</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;optional&gt;</span>
@@ -2852,6 +2861,12 @@ The route planner must query a road database to find a path where:</p>
 </span><span id="__span-1-41"><a id="__codelineno-1-41" name="__codelineno-1-41" href="#__codelineno-1-41"></a><span class="p">}</span>
 </span></code></pre></div>
 </details>
+<h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="../../users_guide/framework_basics/systems_of_quantities/">User's Guide: Systems of Quantities</a></li>
+<li><a href="../../users_guide/framework_basics/simple_and_typed_quantities/">User's Guide: Simple and Typed Quantities</a></li>
+<li><a href="../../api_reference/">API Reference</a></li>
+</ul>
 <h2 id="takeaways">Takeaways<a class="headerlink" href="#takeaways" title="Permanent link">&para;</a></h2>
 <ul>
 <li>Typed quantities clarify the semantic role of each argument, even when their units and
