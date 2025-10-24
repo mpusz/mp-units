@@ -82,6 +82,3 @@ endif()
 # add unit tests
 enable_testing()
 add_subdirectory(test)
-find_package(mp-units REQUIRED)
-target_link_libraries(my_units_app PRIVATE mp-units::mp-units)
-
