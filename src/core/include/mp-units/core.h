@@ -28,8 +28,8 @@
 #include <mp-units/framework.h>
 
 #if MP_UNITS_HOSTED
-#include <mp-units/cartesian_vector.h>
 #include <mp-units/cartesian_tensor.h>
+#include <mp-units/cartesian_vector.h>
 #include <mp-units/math.h>
 #include <mp-units/random.h>
 #endif
