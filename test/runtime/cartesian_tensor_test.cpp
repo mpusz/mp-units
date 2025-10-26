@@ -28,7 +28,7 @@ import mp_units;
 #else
 #include <mp-units/cartesian_tensor.h>
 #include <mp-units/cartesian_vector.h>
-#include <mp-units/compat_macros.h> 
+#include <mp-units/compat_macros.h>
 #if MP_UNITS_HOSTED
 #include <mp-units/ext/format.h>
 #include <sstream>
