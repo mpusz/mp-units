@@ -522,7 +522,7 @@ std::println("| {:<18} | {:^18} | {:^18} | {:^18} |",
 std::println("|{0:=^20}|{0:=^20}|{0:=^20}|{0:=^20}|", "");
 
 auto print_temp = [&](std::string_view label, auto v) {
-  std::println("| {:<14} | {:^18} | {:^18} | {:^18:N[.2f]} |", label,
+  std::println("| {:<18} | {:^18} | {:^18} | {:^18:N[.2f]} |", label,
                v - room_reference_temp, (v - si::ice_point).in(deg_C), (v - si::absolute_zero).in(deg_C));
 };
 
