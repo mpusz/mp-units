@@ -2675,9 +2675,15 @@ You're not viewing the latest version.
   </header>
   <div class="md-post__content md-typeset">
     <h2 id="introducing-absolute-quantities"><a class="toclink" href="2025/06/16/introducing-absolute-quantities/">Introducing absolute quantities</a></h2>
-<p>This post introduces a new abstraction called an absolute quantity. It complements affine
-space abstractions (point and delta) and will most probably be a new default in the library
-when we release V3.</p>
+<p>An absolute quantity is a quantity that represents a whole measurement of an entity (for
+example: a <em>mass</em>, a <em>temperature</em> on an absolute scale, or the total <em>height</em> of an object).</p>
+<p>Unlike an affine <code>point</code> (which is defined relative to a named origin) or a <code>delta</code>
+(which represents a difference), an absolute quantity behaves like a delta for arithmetic
+(you can add and multiply it) while conceptually denoting a whole value without a
+user-specified origin. This makes many common physical expressions (summing <em>masses</em>,
+computing <em>energies</em>) more natural and less verbose.</p>
+<p>We are considering making absolute quantities the default quantity abstraction in
+<strong>mp-units</strong> V3.</p>
 
     
       <nav class="md-post__action">

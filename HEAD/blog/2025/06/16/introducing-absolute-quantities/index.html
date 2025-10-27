@@ -2868,17 +2868,23 @@ You're not viewing the latest version.
 
 
 <h1 id="introducing-absolute-quantities">Introducing absolute quantities<a class="headerlink" href="#introducing-absolute-quantities" title="Permanent link">&para;</a></h1>
-<p>This post introduces a new abstraction called an absolute quantity. It complements affine
-space abstractions (point and delta) and will most probably be a new default in the library
-when we release V3.</p>
+<p>An absolute quantity is a quantity that represents a whole measurement of an entity (for
+example: a <em>mass</em>, a <em>temperature</em> on an absolute scale, or the total <em>height</em> of an object).</p>
+<p>Unlike an affine <code>point</code> (which is defined relative to a named origin) or a <code>delta</code>
+(which represents a difference), an absolute quantity behaves like a delta for arithmetic
+(you can add and multiply it) while conceptually denoting a whole value without a
+user-specified origin. This makes many common physical expressions (summing <em>masses</em>,
+computing <em>energies</em>) more natural and less verbose.</p>
+<p>We are considering making absolute quantities the default quantity abstraction in
+<strong>mp-units</strong> V3.</p>
 <!-- more -->
 
 <h2 id="affine-space-in-a-nutshell">Affine space in a nutshell<a class="headerlink" href="#affine-space-in-a-nutshell" title="Permanent link">&para;</a></h2>
-<p>So far <strong>mp-units</strong> and other quantities and units libraries have been modeling two kinds of
-abstractions:</p>
+<p>So far <strong>mp-units</strong> and other quantities and units libraries have been modeling two kinds
+of abstractions:</p>
 <ol>
 <li>
-<p>Points (modeled with <code>quantity_point</code> class template)</p>
+<p>Points (modeled with <code>quantity_point</code> class template in <strong>mp-units</strong> V2)</p>
 <ul>
 <li>can be interpolated,</li>
 <li>can be subtracted,</li>
@@ -2890,7 +2896,7 @@ abstractions:</p>
 </ul>
 </li>
 <li>
-<p>Deltas (modeled with <code>quantity</code> class template)</p>
+<p>Deltas (modeled with <code>quantity</code> class template in <strong>mp-units</strong> V2)</p>
 <ul>
 <li>can be interpolated,</li>
 <li>can be subtracted,</li>
@@ -2914,7 +2920,8 @@ abstractions:</p>
 it also produces some issues.</p>
 <ol>
 <li>We can't print quantity points as, at least for today, we do not have the means to properly
-   describe the user-provided origin in the text output.</li>
+   describe the user-provided origin in the text output. Also, it is often unclear if those
+   should be printed against the current relative origin or the absolute one.</li>
 <li>Quantity points are hard to use in physical equations to denote not-delta values.</li>
 </ol>
 <p>To make both of the above work, a user needs to convert the quantity point to quantity with
@@ -2933,10 +2940,10 @@ either <code>qp.quantity_from_zero()</code> or <code>qp.quantity_from(some_origi
 in many equations in source code where it would be a good fit otherwise.</p>
 <h2 id="absolute-quantities">Absolute quantities<a class="headerlink" href="#absolute-quantities" title="Permanent link">&para;</a></h2>
 <p>Despite the above drawbacks, affine space points are necessary to model some abstractions
-(e.g., temperatures in degrees Celsius, tared mass measurements, altitudes above some
-reference point, etc.) and do it really well. Constrained affine space arithmetic
+(e.g., <em>temperatures</em> in degrees Celsius, tared <em>mass</em> measurements, <em>altitudes</em> above
+some reference point, etc.) and do it really well. Constrained affine space arithmetic
 (e.g., preventing accidental addition of points) also improves the safety of our programs.
-This is why it is a valuable abstraction and should be used more even often than now.</p>
+This is why it is a valuable abstraction and should be used even more often than now.</p>
 <p>To improve the user experience and open the doors for new features in the future, we are
 considering adding a third abstraction for absolute quantities. In terms of properties,
 an absolute quantity will lie between points and deltas.</p>
@@ -2983,7 +2990,7 @@ an absolute quantity will lie between points and deltas.</p>
 <tr>
 <td><strong>Relative to origin</strong></td>
 <td style="text-align: center;">Absolute &amp; relative</td>
-<td style="text-align: center;">Measured against nothing/void</td>
+<td style="text-align: center;">No user-provided origin (implicit global zero)</td>
 <td style="text-align: center;"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 6.91 17.09 4 12 9.09 6.91 4 4 6.91 9.09 12 4 17.09 6.91 20 12 14.91 17.09 20 20 17.09 14.91 12z"/></svg></span></td>
 </tr>
 <tr>
@@ -3007,15 +3014,15 @@ an absolute quantity will lie between points and deltas.</p>
 </tbody>
 </table>
 <p>As we can see above, absolute quantities have only two limitations, and both are connected
-to the offset units' usage. They can't use those because they must remain absolute
+to the use of offset units. They can't use those because they must remain absolute
 instead of being measured relative to some custom origin.</p>
 <p>Absolute quantities could be considered delta quantities that represent a whole
--- the entire entity being measured. This is why we can represent a system mass by adding
-absolute masses of all system elements or a system energy by adding absolute
-temperatures of all the system elements.</p>
+-- the entire entity being measured. This is why we can represent a <em>system mass</em> by
+adding absolute <em>masses</em> of all system elements, or a <em>system energy</em> by adding absolute
+<em>temperatures</em> of all the system elements.</p>
 <p>As those are more related to deltas than points, it is impossible to specify their origin
 points. This also allows us to print them, as we do not need any special text to describe
-their origin as they are always measured against nothing/void.</p>
+their origin, as they are always measured against nothing/void.</p>
 <h2 id="interfaces-refactoring">Interfaces refactoring<a class="headerlink" href="#interfaces-refactoring" title="Permanent link">&para;</a></h2>
 <p>As I mentioned in my <a href="../../../01/15/bringing-quantity-safety-to-the-next-level/#should-we-get-rid-of-a-quantity_point">previous post</a>,
 we are seriously considering removing <code>quantity_point</code> class template and replacing it with
