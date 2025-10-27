@@ -505,7 +505,7 @@ in the following way:
 constexpr struct room_reference_temp final : relative_point_origin<point<deg_C>(21)> {} room_reference_temp;
 using room_temp = quantity_point<isq::Celsius_temperature[deg_C], room_reference_temp>;
 
-constexpr auto step_delta = delta<isq::Celsius_temperature<deg_C>>(0.5);
+constexpr auto step_delta = delta<isq::Celsius_temperature[deg_C]>(0.5);
 constexpr int number_of_steps = 6;
 
 room_temp room_ref{};

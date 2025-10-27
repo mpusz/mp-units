@@ -9,18 +9,26 @@ comments: true
 
 # Introducing absolute quantities
 
-This post introduces a new abstraction called an absolute quantity. It complements affine
-space abstractions (point and delta) and will most probably be a new default in the library
-when we release V3.
+An absolute quantity is a quantity that represents a whole measurement of an entity (for
+example: a _mass_, a _temperature_ on an absolute scale, or the total _height_ of an object).
+
+Unlike an affine `point` (which is defined relative to a named origin) or a `delta`
+(which represents a difference), an absolute quantity behaves like a delta for arithmetic
+(you can add and multiply it) while conceptually denoting a whole value without a
+user-specified origin. This makes many common physical expressions (summing _masses_,
+computing _energies_) more natural and less verbose.
+
+We are considering making absolute quantities the default quantity abstraction in
+**mp-units** V3.
 
 <!-- more -->
 
 ## Affine space in a nutshell
 
-So far **mp-units** and other quantities and units libraries have been modeling two kinds of
-abstractions:
+So far **mp-units** and other quantities and units libraries have been modeling two kinds
+of abstractions:
 
-1. Points (modeled with `quantity_point` class template)
+1. Points (modeled with `quantity_point` class template in **mp-units** V2)
 
     - can be interpolated,
     - can be subtracted,
@@ -30,7 +38,7 @@ abstractions:
     - specified relative to some absolute or relative point origin,
     - conversion to offset units (e.g., degree Celsius) accounts for offset.
 
-2. Deltas (modeled with `quantity` class template)
+2. Deltas (modeled with `quantity` class template in **mp-units** V2)
 
     - can be interpolated,
     - can be subtracted,
@@ -54,7 +62,8 @@ A current affine space implementation works well for many essential use cases. H
 it also produces some issues.
 
 1. We can't print quantity points as, at least for today, we do not have the means to properly
-   describe the user-provided origin in the text output.
+   describe the user-provided origin in the text output. Also, it is often unclear if those
+   should be printed against the current relative origin or the absolute one.
 2. Quantity points are hard to use in physical equations to denote not-delta values.
 
 To make both of the above work, a user needs to convert the quantity point to quantity with
@@ -79,39 +88,39 @@ in many equations in source code where it would be a good fit otherwise.
 ## Absolute quantities
 
 Despite the above drawbacks, affine space points are necessary to model some abstractions
-(e.g., temperatures in degrees Celsius, tared mass measurements, altitudes above some
-reference point, etc.) and do it really well. Constrained affine space arithmetic
+(e.g., _temperatures_ in degrees Celsius, tared _mass_ measurements, _altitudes_ above
+some reference point, etc.) and do it really well. Constrained affine space arithmetic
 (e.g., preventing accidental addition of points) also improves the safety of our programs.
-This is why it is a valuable abstraction and should be used more even often than now.
+This is why it is a valuable abstraction and should be used even more often than now.
 
 To improve the user experience and open the doors for new features in the future, we are
 considering adding a third abstraction for absolute quantities. In terms of properties,
 an absolute quantity will lie between points and deltas.
 
-| Feature                        |         Point          |           Absolute            |         Delta          |
-|--------------------------------|:----------------------:|:-----------------------------:|:----------------------:|
-| **Interpolation**              |   :white_check_mark:   |      :white_check_mark:       |   :white_check_mark:   |
-| **Subtraction**                |   :white_check_mark:   |      :white_check_mark:       |   :white_check_mark:   |
-| **Addition**                   | :material-close-thick: |      :white_check_mark:       |   :white_check_mark:   |
-| **Multiply/Divide**            | :material-close-thick: |      :white_check_mark:       |   :white_check_mark:   |
-| **May be non-negative**        |   :white_check_mark:   |      :white_check_mark:       | :material-close-thick: |
-| **Relative to origin**         |  Absolute & relative   | Measured against nothing/void | :material-close-thick: |
-| **Can use offset units**       |   :white_check_mark:   |    :material-close-thick:     |   :white_check_mark:   |
-| **Conversion to offset units** |      With offset       |    :material-close-thick:     |       No offset        |
-| **Text output**                | :material-close-thick: |      :white_check_mark:       |   :white_check_mark:   |
+| Feature                        |         Point          |                    Absolute                    |         Delta          |
+|--------------------------------|:----------------------:|:----------------------------------------------:|:----------------------:|
+| **Interpolation**              |   :white_check_mark:   |               :white_check_mark:               |   :white_check_mark:   |
+| **Subtraction**                |   :white_check_mark:   |               :white_check_mark:               |   :white_check_mark:   |
+| **Addition**                   | :material-close-thick: |               :white_check_mark:               |   :white_check_mark:   |
+| **Multiply/Divide**            | :material-close-thick: |               :white_check_mark:               |   :white_check_mark:   |
+| **May be non-negative**        |   :white_check_mark:   |               :white_check_mark:               | :material-close-thick: |
+| **Relative to origin**         |  Absolute & relative   | No user-provided origin (implicit global zero) | :material-close-thick: |
+| **Can use offset units**       |   :white_check_mark:   |             :material-close-thick:             |   :white_check_mark:   |
+| **Conversion to offset units** |      With offset       |             :material-close-thick:             |       No offset        |
+| **Text output**                | :material-close-thick: |               :white_check_mark:               |   :white_check_mark:   |
 
 As we can see above, absolute quantities have only two limitations, and both are connected
-to the offset units' usage. They can't use those because they must remain absolute
+to the use of offset units. They can't use those because they must remain absolute
 instead of being measured relative to some custom origin.
 
 Absolute quantities could be considered delta quantities that represent a whole
--- the entire entity being measured. This is why we can represent a system mass by adding
-absolute masses of all system elements or a system energy by adding absolute
-temperatures of all the system elements.
+-- the entire entity being measured. This is why we can represent a _system mass_ by
+adding absolute _masses_ of all system elements, or a _system energy_ by adding absolute
+_temperatures_ of all the system elements.
 
 As those are more related to deltas than points, it is impossible to specify their origin
 points. This also allows us to print them, as we do not need any special text to describe
-their origin as they are always measured against nothing/void.
+their origin, as they are always measured against nothing/void.
 
 
 ## Interfaces refactoring
