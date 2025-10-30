@@ -2679,7 +2679,7 @@ You're not viewing the latest version.
           
           <li class="md-meta__item">
             
-              9 min read
+              17 min read
             
           </li>
         
@@ -2689,15 +2689,20 @@ You're not viewing the latest version.
   </header>
   <div class="md-post__content md-typeset">
     <h2 id="introducing-absolute-quantities"><a class="toclink" href="../../2025/06/16/introducing-absolute-quantities/">Introducing absolute quantities</a></h2>
-<p>An absolute quantity is a quantity that represents a whole measurement of an entity (for
-example: a <em>mass</em>, a <em>temperature</em> on an absolute scale, or the total <em>height</em> of an object).</p>
-<p>Unlike an affine <code>point</code> (which is defined relative to a named origin) or a <code>delta</code>
-(which represents a difference), an absolute quantity behaves like a delta for arithmetic
-(you can add and multiply it) while conceptually denoting a whole value without a
-user-specified origin. This makes many common physical expressions (summing <em>masses</em>,
-computing <em>energies</em>) more natural and less verbose.</p>
+<p>An <strong>absolute quantity</strong> is a quantity that represents a whole measurement of an entity
+(for example: a <em>mass</em>, a <em>temperature</em> on an absolute scale, or the total <em>height</em> of
+an object).</p>
+<p>Unlike an affine <strong>point</strong> (which is measured relative to a named origin) or
+a <strong>delta</strong> (which represents a difference), an <strong>absolute</strong> quantity behaves like
+a delta for arithmetic (you can add, multiply, and divide it) while conceptually denoting
+a whole (typically non-negative) amount of a given quantity measured against an implicit
+well-established zero origin. This makes many common physical expressions
+(summing <em>masses</em>, computing <em>energies</em>) more natural and less verbose.</p>
 <p>We are considering making absolute quantities the default quantity abstraction in
 <strong>mp-units</strong> V3.</p>
+<hr />
+<p><em>Note: This article underwent significant revisions on October 30, 2025, to improve
+       clarity, accuracy, and depth of content.</em></p>
 
     
       <nav class="md-post__action">
