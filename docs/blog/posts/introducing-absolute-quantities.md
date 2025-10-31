@@ -7,79 +7,64 @@ categories:
 comments: true
 ---
 
-# Introducing absolute quantities
+# Introducing Absolute Quantities
 
-An **absolute quantity** is a quantity that represents an **_absolute amount_** of a physical
-property, measured against a well-established, true zero. For example: a _temperature_
-in Kelvin, a _mass_ in kilograms, or a _length_ in meters (as a size, not a position).
+An **absolute quantity** represents an **absolute amount** of a physical property —
+measured from a true, physically meaningful zero. Examples include _mass_ in kilograms,
+_temperature_ in Kelvin, or _length_ in meters (as a size, not a position). Such
+quantities live on a **ratio scale** and have a well-defined origin; negative values are
+typically meaningless.
 
-This is in contrast to:
+Absolute quantities stand in contrast to:
 
-- an affine **point** (e.g., 20 °C, 100 m above mean sea level), which is measured relative
-  to an arbitrary or user-defined origin (interval scale), and
-- a **delta** (e.g., 10 K, -5 kg), which represents a difference or change between two
-  quantities (vector/difference).
+- **Affine points** (e.g., $20\ \mathrm{°C}$, $100\ \mathrm{m}\ \mathrm{AMSL}$) — values
+  measured relative to an arbitrary or conventional origin.
+- **Deltas** (e.g., $10\ \mathrm{K}$, $–5\ \mathrm{kg}$) — differences between two values.
 
-Absolute quantities are measured on a **_ratio scale_**—they have a true, physically
-meaningful zero, and negative values are typically not allowed by convention
-(e.g., negative mass is not physically meaningful). Arithmetic operations on
-absolute quantities (addition, multiplication, etc.) are well-defined and match physical
-intuition.
-
-We are considering making absolute quantities the default quantity abstraction in
-**mp-units** V3, as they most closely match the way physical quantities are presented
-in scientific literature and practice.
+Arithmetic on absolute quantities behaves like ordinary algebra: addition, subtraction,
+and scaling are well-defined and map naturally to physical reasoning. This article
+proposes making absolute quantities the **default abstraction** in **mp-units V3**,
+reflecting how scientists express equations in practice.
 
 ---
 
-_Note: This article underwent significant revisions on October 31, 2025, to improve
-       clarity, accuracy, and depth of content._
+_Note: Revised October 31 2025 for clarity, accuracy, and completeness._
 
 <!-- more -->
 
-## Affine space in a nutshell
+## Background: Affine Space Recap
 
-So far, **mp-units** and other quantities and units libraries traditionally have been
-modeling two kinds of abstractions:
+Until now, **mp-units** modeled two fundamental abstractions:
 
-- **points**
-    - modeled with `quantity_point` class template in **mp-units** V2
-- **deltas**
-    - modeled with `quantity` class template in **mp-units** V2
+- **Points** – represented by `quantity_point` in V2
+- **Deltas** – represented by `quantity`
 
 !!! info
 
     More information on this subject can be found in
     [the Affine Space chapter](../../users_guide/framework_basics/the_affine_space.md).
 
+This design works but is sometimes awkward: users often misuse `quantity_point` to
+represent absolute magnitudes (e.g., total mass), losing arithmetic and printability.
+Conversely, using deltas everywhere hides physical intent and allows nonsensical operations.
 
-## Quantity points issues
+The new **absolute quantity** abstraction aims to bridge that gap.
 
-A current affine space implementation works well for many essential use cases. However,
-due to the lack of better tools, points are sometimes also used to denote absolute values
-in domains where they should not be conflated with deltas or where a non-negative value
-is required (even though points in general can't guarantee such non-negativity).
+## Current Pain Points
 
-Such usage results in some issues:
-
-1. Quantity points are hard to use in physical equations as:
-    - They can't be multiplied or divided by other quantities.
-    - They can't be added to accumulate the value (in proper use cases, it is
-      a great feature, but may be cumbersome when misused).
-2. We can't print quantity points, at least for today, as:
-    - We do not have the means to describe the user-provided origin in the text output properly.
-    - It is often unclear if those should be printed against the current relative origin
-      or the absolute one.
-    - The same point may be represented in many ways (different deltas from various
-      origins). Should such a point have the same or a different textual output for each
-      representation?
-
-To make both of the above work, a user needs to convert the quantity point to a delta with
-either `qp.quantity_from_zero()` or `qp.quantity_from(some_origin)` member functions.
-Doing that all the time is inconvenient and is a common reason for avoiding quantity points
-abstraction in many equations in the source code, where it would be a good fit otherwise.
-This is why users often use implicit deltas, which may lead to subtle bugs in our source
-code due to conflating points with deltas. Such oversimplification can be problematic.
+1. **Limited arithmetic for points** – Points can’t be multiplied, divided, or accumulated.
+   This often forces the users to convert the quantity point to a delta with either
+   `qp.quantity_from_zero()` or `qp.quantity_from(some_origin)` member functions, which is
+   at least cumbersome.
+2. **No text output for points** – A point’s textual representation depends on its origin,
+   which is often implicit or user-defined. As of today, we do not have the means to
+   provide text symbol for the point origin. Moreover, points may contain both an
+   absolute, and a relative origin at the same time which makes it harder to determine
+   which origin to use for printing. Also, the same point may be represented in many ways
+   (different deltas from various origins). Should such a point have the same or
+   a different textual output for each representation?
+3. **Error-prone simplifications** – Developers frequently replace points with deltas for
+   convenience, losing safety and physical clarity.
 
 !!! example
 
@@ -129,51 +114,36 @@ code due to conflating points with deltas. Such oversimplification can be proble
         std::cout << "Moisture content change: " << moisture_content_change(total_initial - total_dried, total_initial) << "\n";
         ```
 
-Despite the above drawbacks, affine space points are necessary to model some abstractions
-(e.g., _temperatures_ in degrees Celsius, tared _mass_ measurements, _altitudes_ above
-some reference point, etc.) and do it really well. Constrained affine space arithmetic
-(e.g., preventing accidental addition of points) also improves the safety of our programs.
-This is why it is a valuable abstraction and should be used even more frequently than it
-is now.
+In the above example:
 
+- `water_lost` should be a delta (difference in _mass_),
+- `total` should conceptually be non-negative absolute amount of _mass_, yet the type system
+  doesn’t enforce it.
 
-## Absolute quantities
+## Position of Absolute Quantities Among Abstractions
 
-To improve the user experience and open the door for new features in the future, we are
-considering adding a third abstraction for **absolute quantities**. In terms of properties,
-an absolute quantity will lie between points and deltas.
+| Feature                     |   Point    |     Absolute      |   Delta   |
+|-----------------------------|:----------:|:-----------------:|:---------:|
+| Interpolation               |     ✓      |         ✓         |     ✓     |
+| Multiplication / Division   |     ✗      |         ✓         |     ✓     |
+| Addition                    |     ✗      |         ✓         |     ✓     |
+| Subtraction                 |     ✓      |         ✓         |     ✓     |
+| May be non‑negative         |     ✓      |         ✓         |     ✗     |
+| Relative to origin          |  Explicit  | Implicit global 0 |     ✗     |
+| Can use offset units        |     ✓      |         ✗         |     ✓     |
+| Convertible to offset units | Via offset |         ✗         | No offset |
+| Text output                 |     ✗      |         ✓         |     ✓     |
 
-| Feature                        |         Point          |                    Absolute                    |         Delta          |
-|--------------------------------|:----------------------:|:----------------------------------------------:|:----------------------:|
-| **Interpolation**              |   :white_check_mark:   |               :white_check_mark:               |   :white_check_mark:   |
-| **Subtraction**                |   :white_check_mark:   |               :white_check_mark:               |   :white_check_mark:   |
-| **Addition**                   | :material-close-thick: |               :white_check_mark:               |   :white_check_mark:   |
-| **Multiply/Divide**            | :material-close-thick: |               :white_check_mark:               |   :white_check_mark:   |
-| **May be non-negative**        |   :white_check_mark:   |               :white_check_mark:               | :material-close-thick: |
-| **Relative to origin**         |  Absolute & relative   | No user-provided origin (implicit global zero) | :material-close-thick: |
-| **Can use offset units**       |   :white_check_mark:   |             :material-close-thick:             |   :white_check_mark:   |
-| **Conversion to offset units** |      With offset       |             :material-close-thick:             |       No offset        |
-| **Text output**                | :material-close-thick: |               :white_check_mark:               |   :white_check_mark:   |
+Absolute quantities sit logically between points and deltas: they behave like deltas
+algebraically, yet conceptually reference a true zero. This design simplifies arithmetic,
+improves printing, and preserves physical meaning.
 
 As we can see above, absolute quantities have only two limitations, and both are connected
 to the use of offset units. They can't use those because they must remain absolute
 instead of being measured relative to some custom origin.
 
-Absolute quantities are about expressing an **_absolute amount_** of a quantity, measured
-from a true, well-established zero. For example, 100 kg is an absolute mass, 293.15 K is
-an absolute temperature, and 10 m is an absolute length (as a size). These are not
-relative to any arbitrary origin—they are measured from the natural zero of the physical
-property.
 
-In contrast, points (such as 20°C or 100 m AMSL) are measured relative to a user-defined
-or conventional origin, and deltas (such as 10 K or -5 kg) represent (potentially negative)
-differences between two values.
-
-This distinction allows absolute quantities to be printed and used in arithmetic naturally,
-without ambiguity about their reference point.
-
-
-## Interfaces refactoring
+## Simplified API in V3
 
 As I mentioned in my [previous post](bringing-quantity-safety-to-the-next-level.md#should-we-get-rid-of-a-quantity_point),
 we are seriously considering removing the `quantity_point` class template and replacing it
@@ -213,6 +183,9 @@ static_assert(std::is_same_v<decltype(q2), quantity<delta<kg>>>);
 static_assert(std::is_same_v<decltype(q3), quantity<point<kg>>>);
 ```
 
+This mirrors the way physicists write equations: absolute values by default, with explicit
+Δ when needed.
+
 
 ## Quantity abstractions in physics
 
@@ -250,27 +223,7 @@ but also directly maps to the equations and reasoning found in scientific litera
 This makes code easier to review, verify, and maintain.
 
 
-## Non-negativity
-
-Non-negativity of absolute quantities is meant to be an opt-in feature in the quantity
-specification. For example, we can pass a `non_negative` tag type in quantity definition:
-
-```cpp
-inline constexpr struct mass final : quantity_spec<dim_length, non_negative> {} mass;
-```
-
-With that, we will be able to mark any quantity as non-negative and this property will be
-inherited by the subquantities in the quantity hierarchy tree of the same kind.
-
-We could also derive non-negativity for derived quantities based on their equations.
-A non-negative flag could be set only if all of the components in the equations are
-marked as non-negative. However, we will not be able to account for a negative scalar
-possibly used in an equation. This is why it is probably better to assume that ad-hoc
-derived quantities do not inherit this property. If this result is assigned to a
-typed/named quantity then the non-negativity will be check then (if set).
-
-
-## Conversions
+## Conversions Between Abstractions
 
 As absolute quantities share properties of both deltas and points with implicit origins,
 they should be explicitly convertible to those:
@@ -324,17 +277,16 @@ quantity<point<K>> temp2(temp1);                   // OK
 quantity<point<C>> temp3(temp1);                   // OK
 ```
 
-Below is a concise conversion matrix that summarizes what conversions are meaningful and
-how they should be performed. Rows are the source abstraction, and columns are the target.
+To summarize:
 
-|    From \ To |                   Point                    |       Absolute       |                    Delta                     |
-|-------------:|:------------------------------------------:|:--------------------:|:--------------------------------------------:|
-|    **Point** |            Identity — same type            |    `.absolute()`     | Subtract two points (point - point -> delta) |
-| **Absolute** |           Explicit or `.point()`           | Identity — same type |            Explicit or `.delta()`            |
-|    **Delta** | Add to an origin (origin + delta -> point) |    `.absolute()`     |             Identity — same type             |
+|    From \ To |         Point          |   Absolute    |         Delta          |
+|-------------:|:----------------------:|:-------------:|:----------------------:|
+|    **Point** |        Identity        | `.absolute()` | point - point → delta  |
+| **Absolute** | Explicit or `.point()` |   Identity    | Explicit or `.delta()` |
+|    **Delta** | origin + delta → point | `.absolute()` |        Identity        |
 
 
-## Arithmetic
+## Arithmetic Semantics
 
 Affine space arithmetic is well-defined and commonly used in physics and engineering.
 With the introduction of absolute quantities, it is important to clarify the meaning
@@ -358,11 +310,11 @@ and adding a delta to a point yields another point.
 
 Here is the summary of all the addition operations:
 
-| Lhs \ Rhs    |         Point          | Absolute | Delta |
-|--------------|:----------------------:|:--------:|:-----:|
-| **Point**    | :material-close-thick: |  Point   | Point |
+|    Lhs \ Rhs |         Point          | Absolute | Delta |
+|-------------:|:----------------------:|:--------:|:-----:|
+|    **Point** | :material-close-thick: |  Point   | Point |
 | **Absolute** |         Point          | Absolute | Delta |
-| **Delta**    |         Point          |  Delta   | Delta |
+|    **Delta** |         Point          |  Delta   | Delta |
 
 !!! info
 
@@ -378,7 +330,6 @@ Here is the summary of all the addition operations:
     quantity res3 = d + abs;                   // Delta
     ```
 
-
 ### Subtraction
 
 Subtraction in the context of physical quantities is best understood as finding the
@@ -387,6 +338,15 @@ difference between two amounts.
 **Subtracting two absolute quantities** (e.g., $50\ \mathrm{kg} - 5\ \mathrm{kg}$)
 yields a delta (difference), which may be negative or positive. This is consistent
 with the mathematical and physical meaning of subtraction.
+
+If an absolute result is needed (e.g., remaining _mass_), it should be obtained
+via an explicit conversion:
+
+```cpp
+quantity<kg> remaining = (total - used).absolute();
+```
+
+This rule prevents invalid negative absolutes while remaining explicit when needed.
 
 **Subtracting a delta from an absolute quantity** (e.g., $10\ \mathrm{kg} - 2\ \mathrm{kg}$)
 yields a delta. If you need an absolute quantity as a result, you must explicitly convert
@@ -398,101 +358,13 @@ code safety.
 **Subtracting an absolute quantity from a point** yields a point, and
 **subtracting a point from an absolute** quantity is not meaningful.
 
-The key point is that subtraction of two absolute quantities always yields a delta,
-not an "aggregate" or "remaining whole"—it is simply the difference between two amounts,
-which may be positive or negative depending on the order of operands.
-
-
-??? info "Subtraction return type discussion"
-
-    Depending on a particular scenario subtracting two absolute quantities can result with
-    either an absolute quantity (e.g., 20 kg + 5 kg - 20 kg) or a delta (e.g., 85 kg - 78 kg).
-
-    There are several possible ways to address those in the API:
-
-    1. **Always return delta**
-
-        - Subtracting two absolutes always yields a delta.
-        - Explicit conversion to absolute is needed.
-        - **Pros:** Consistent, matches how _temperature_, _position_, and _time_ work.
-        - **Cons:** May be surprising for _mass_/_length_, where subtraction often means
-          "remaining absolute". However, this improves safety and is one of the key
-          features of this proposal (e.g., it prevents `20 * kg - 42 * kg` from
-          producing physically impossible absolute quantity).
-
-        ```cpp
-        quantity<delta<K>> temp = 320 * K - 360 * K;
-        quantity<kg> mass = (50 * kg - 5 * kg).absolute();
-        quantity<one> ratio = (50 * kg - 25 * kg) / (50 * kg);
-        ```
-
-    2. **Always return absolute**
-
-        - Subtracting two absolutes always yields an absolute.
-        - If the result is negative, a precondition check may fail.
-        - Explicit conversion to delta needed.
-        - **Pros:** Intuitive for _mass_/_length_ (as long as non-negative), but not for
-          _temperature_/_position_/_time_.
-        - **Cons:** Breaks physical meaning for quantities where subtraction should yield
-          a delta.
-
-        ```cpp
-        quantity absolute = 320 * K - 360 * K;                  // precondition violation :-(
-        quantity<delta<K>> temp = absolute.delta();
-        quantity<kg> mass = 50 * kg - 5 * kg;                   // OK
-        quantity<one> ratio = (50 * kg - 25 * kg) / (50 * kg);
-        ```
-
-    3. **Return a distinct result type** (e.g., `quantity_difference`)
-
-        - Subtraction returns a proxy type convertible (implicitly or explicitly) to both
-          absolute and delta.
-        - It is to be decided if the proxy type should satisfy the `Quantity` concept.
-        - **Pros:** Forces user to clarify intent, avoids ambiguity.
-        - **Cons:** More complex API, but safest and most explicit.
-
-        ```cpp
-        auto res = 320 * K - 360 * K;                                   // quantity_difference
-
-        // implicit conversions
-        quantity<delta<K>> temp1 = res;                                 // OK
-        quantity<kg> mass1 = 50 * kg - 5 * kg;                          // May fail the precondition check if negative
-        quantity<one> ratio1 = (50 * kg - 25 * kg) / (50 * kg);         // May fail to compile if not quantity
-                                                                        // Also, type deduction may be tricky
-        // explicit conversions
-        quantity<delta<K>> temp2 = res.delta();                         // OK
-        quantity<kg> mass2 = (50 * kg - 5 * kg).absolute();             // OK
-        quantity<one> ratio2 = (50 * kg - 25 * kg).delta() / (50 * kg); // OK
-        ```
-
-    Here is a detailed discussion of all the available options:
-
-    | Approach                           | Safety  | API Complexity                                       | Cognitive Overhead                                             |
-    |------------------------------------|---------|------------------------------------------------------|----------------------------------------------------------------|
-    | Always Delta                       | High    | Medium (explicit conversion needed)                  | Low (safe and explicit)                                        |
-    | Always Absolute                    | Low     | Medium (explicit conversion needed)                  | Medium (can fail at runtime)                                   |
-    | Implicitly-convertible Result Type | High    | High (new type to support)                           | Highest (can fail at runtime, additional type to reason about) |
-    | Explicitly-convertible Result Type | Highest | Highest (new type to support + explicit conversions) | High (explicit, additional type to reason about)               |
-
-    After careful consideration, we recommend that subtracting two absolute quantities
-    should always yield a delta. This approach is the most physically consistent, matches
-    established practice in physics and engineering, and avoids subtle bugs. If an absolute
-    result is needed (e.g., remaining _mass_), it should be obtained via an explicit conversion:
-
-    ```cpp
-    quantity<kg> remaining = (total - used).absolute();
-    ```
-
-    This explicitness ensures that negative results are always intentional and checked,
-    increasing code safety.
-
 Here is a summary of all of the subtraction operations
 
-| Lhs \ Rhs    |         Point          | Absolute | Delta |
-|--------------|:----------------------:|:--------:|:-----:|
-| **Point**    |         Delta          |  Point   | Point |
+|    Lhs \ Rhs |         Point          | Absolute | Delta |
+|-------------:|:----------------------:|:--------:|:-----:|
+|    **Point** |         Delta          |  Point   | Point |
 | **Absolute** | :material-close-thick: |  Delta   | Delta |
-| **Delta**    | :material-close-thick: |  Delta   | Delta |
+|    **Delta** | :material-close-thick: |  Delta   | Delta |
 
 !!! info
 
@@ -512,15 +384,142 @@ Here is a summary of all of the subtraction operations
 
 ### Interpolation
 
-**Interpolation between two absolute quantities** (e.g., finding a value between $a$ and
-$b$) is well-defined and results in another absolute quantity. This is commonly used in
+**Interpolation of absolute quantities** (e.g., finding a value between $a$ and $b$)
+is well-defined and results in another absolute quantity. This is commonly used in
 physics and engineering for averaging, blending, or estimating values between two known
 points.
 
-## Example
 
-After discussing most of the theory, let's come back to our initial example and
-check how it works in practice. Here is what it can look like with the absolute
+## Non-negativity
+
+Non-negativity of absolute quantities is meant to be an opt-in feature in the quantity
+specification. For example, we can pass a `non_negative` tag type in quantity definition:
+
+```cpp
+inline constexpr struct mass final : quantity_spec<dim_length, non_negative> {} mass;
+```
+
+With that, we will be able to mark any quantity as non-negative and this property will be
+inherited by the subquantities in the quantity hierarchy tree of the same kind.
+
+We could also derive non-negativity for derived quantities based on their equations.
+A non-negative flag could be set only if all of the components in the equations are
+marked as non-negative. However, we will not be able to account for a negative scalar
+possibly used in an equation. This is why it is probably better to assume that ad-hoc
+derived quantities do not inherit this property. If this result is assigned to a
+typed/named quantity then the non-negativity will be check then (if set).
+
+
+## Interesting Quantity Types
+
+### Time
+
+Let's look closer at the quantity of _time_. There is no way to measure its absolute value
+as we don't even know where (when?) the _time_ axis starts... Only _time_ points and
+_time_ deltas (durations) make sense.
+
+However it seems that the ISQ thought this through already. It does not define a quantity
+of _time_ at all. It only provides _duration_ defined as:
+
+!!! quote "ISO 80000-3:2019"
+
+    **name:** duration
+
+    **symbol:** $t$
+
+    **Definition:** measure of the time difference between two events
+
+    **Remarks:** Duration is often just called time. Time is one of the seven base
+                 quantities in the International System of Quantities, ISQ
+                (see ISO 80000-1). Duration is a measure of a time interval.
+
+As long as absolute `quantity<isq::time[s]>` may seem off, `quantity<isq::duration[s]>`
+is OK as an absolute quantity. Durations typically should be non-negative as well.
+If we need a negative duration then `quantity<delta<isq::duration[s]>>` makes sense.
+
+`isq::time` should be reserved for affine space point only
+(e.g., `quantity<point<isq::time>[s]>`). You can find more about this in my
+[Bringing Quantity-Safety To The Next Level](bringing-quantity-safety-to-the-next-level.md#affine-spaces-within-quantity-trees)
+blog article.
+
+The above does not mean that we should always use typed quantities for _time_. We can
+still use simple quantities and the library will reason about them correctly:
+
+- `quantity<s>` or `42 * s` -> absolute _duration_
+- `quantity<delta<s>>` or `delta<s>(-3)` -> delta _duration_
+- `quantity<point<s>>` or `point<s>(94573457438583)` -> _time_ point
+
+### Length
+
+A somewhat similar case might be the _length_ quantity, as there is no one well-established
+zero origin that serves as a reference for all _length_ measurements. However, asking the
+users always to provide a `delta` specifier for _length_ would probably be overkill.
+Everyone can imagine what no _length_/_radius_/_height_ means. Also, most of us are okay
+with each object having its own _length_ measurement origin.
+
+!!! note
+
+    In the context of absolute quantities, `quantity<m>` always represents a size (such
+    as the _length_, _width_, or _height_ of an object), not a _position_ in space.
+
+    Positions are modeled using the `point<m>` abstraction, which always refers to
+    a location relative to a defined origin.
+
+    This distinction ensures that code using absolute quantities for size cannot be
+    confused with code representing positions. For example, `quantity<m>` is used
+    for the _length_ of a rod, not its _position_ in space.
+
+### Electric Current
+
+_Electric current_ is the only ISQ base quantity that has a well defined zero point
+(no _current_ flow in the wire), but its values can be both positive and negative
+depending on the direction the current flows.
+
+We could be tempted to model _electric current_ as the 1-dimensional vector quantity,
+but probably it is not the best idea. It is officially defined as a signed scalar
+quantity.
+
+Absolute _electric current_ values should be available, but should not perform a
+non-negative precondition check on construction and assignment.
+
+### Temperature
+
+As we pointed out before, it will be possible to form absolute quantity of _temperature_,
+but only in the unit is (potentially prefixed) Kelvin. For offset unit like degree
+Celsius it will not be possible.
+
+If the user has a temperature point in Celsius and wants to treat it as an absolute
+quantity and pass it to some quantity equation, then such point first needs to
+be converted to use Kelvin as its unit and then we need to create an absolute
+quantity from it:
+
+```cpp
+quantity temp = point<deg_C>(21);
+quantity kinetic_energy = 3 / 2 * si::boltzmann_constant * temp.in(K).absolute();
+```
+
+
+## Bug Prevention and Safety Benefits
+
+The new model eliminates a class of subtle bugs that arise from conflating positions,
+sizes, and differences. For example:
+
+- **No accidental addition of positions**
+    - the type system prevents adding two `point<m>` objects, which is physically
+      meaningless
+- **No silent sign errors**
+    - subtracting two absolute quantities always yields a delta, so negative results are
+      explicit and must be handled intentionally
+- **No misuse of offset units**
+    - absolute quantities cannot be constructed with offset units (like Celsius),
+      preventing incorrect temperature calculations
+- **Compile‑time enforcement**
+    - most mistakes caught before runtime
+
+
+## Practical Example
+
+Let's revisit our initial example. Here is what it can look like with the absolute
 quantities usage:
 
 !!! example
@@ -558,8 +557,11 @@ quantities usage:
     7. Test output works.
     8. Type safe!
 
+This version is concise, physically sound, and type‑safe. Function arguments can't be reordered
+and non‑negativity guarantees remove the need for manual runtime checks.
 
-## Migration recipe
+
+## Migration and Backward Compatibility
 
 Although the theory in the chapters above may seem intimidating, users will not be
 significantly affected by the changes in **mp-units** V3.
@@ -644,131 +646,21 @@ construct such absolute quantities (e.g., `300 * K`).
 Last, but not least, the `quantity_point<...>` class template will be replaced with
 `quantity<point<...>>` syntax.
 
-### Cheat sheet
+### Key Migration Rules
 
-| Old Pattern (V2)                      | New Pattern (V3)                             | Notes                                        |
+| V2 Pattern                            | V3 Equivalent                                | Notes                                        |
 |---------------------------------------|----------------------------------------------|----------------------------------------------|
-| `quantity<kg> m = ...;`               | `quantity<kg> m = ...;`                      | Now always absolute                          |
+| `quantity<kg>`                        | `quantity<kg>`                               | Before delta and now absolute                |
 | `quantity<kg> m = m1 - m2;`           | `quantity<kg> m = (m1 - m2).absolute();`     | Explicit if you want abs                     |
 | `quantity<kg> dm = m1 - m2;`          | `quantity<delta<kg>> dm = m1 - m2;`          | Explicit deltas when negative value possible |
 | `quantity_point<kg> p = ...;`         | `quantity<point<kg>> p = ...`                | Use `point<kg>` wrapper                      |
 | `quantity<kg> d = p - point<kg>(42);` | `quantity<delta<kg>> d = p - point<kg>(42);` | Deltas must be explicit                      |
 
-
-## Challenges
-
-### What about _time_?
-
-Everything looks promising and friendly for now. But let's look closer at the quantity
-of _time_. There is no way to measure its absolute value as we don't even know where
-(when?) the _time_ axis starts... Only _time_ points and _time_ deltas (durations) make
-sense.
-
-However it seems that the ISQ thought this through already. It does not define a quantity
-of _time_ at all. It only provides _duration_ defined as:
-
-!!! quote "ISO 80000-3:2019"
-
-    **name:** duration
-
-    **symbol:** $t$
-
-    **Definition:** measure of the time difference between two events
-
-    **Remarks:** Duration is often just called time. Time is one of the seven base
-                 quantities in the International System of Quantities, ISQ
-                (see ISO 80000-1). Duration is a measure of a time interval.
-
-As long as absolute `quantity<isq::time[s]>` may seem off, `quantity<isq::duration[s]>`
-is OK as an absolute quantity. Durations typically should be non-negative as well.
-If we need a negative duration then `quantity<delta<isq::duration[s]>>` makes sense.
-
-`isq::time` should be reserved for affine space point only
-(e.g., `quantity<point<isq::time>[s]>`). You can find more about this in my
-[Bringing Quantity-Safety To The Next Level](bringing-quantity-safety-to-the-next-level.md#affine-spaces-within-quantity-trees)
-blog article.
-
-The above does not mean that we should always use typed quantities for _time_. We can
-still use simple quantities and the library will reason about them correctly:
-
-- `quantity<s>` or `42 * s` -> absolute _duration_
-- `quantity<delta<s>>` or `delta<s>(-3)` -> delta _duration_
-- `quantity<point<s>>` or `point<s>(94573457438583)` -> _time_ point
+Most user code will continue to compile after adding explicit `delta` or `.absolute()`
+conversions where needed.
 
 
-### What about _length_?
-
-A somewhat similar case might be the _length_ quantity, as there is no one well-established
-zero origin that serves as a reference for all _length_ measurements. However, asking the
-users always to provide a `delta` specifier for _length_ would probably be overkill.
-Everyone can imagine what no _length_/_radius_/_height_ means. Also, most of us are okay
-with each object having its own _length_ measurement origin.
-
-!!! note
-
-    In the context of absolute quantities, `quantity<m>` always represents a size (such
-    as the _length_, _width_, or _height_ of an object), not a _position_ in space.
-
-    Positions are modeled using the `point<m>` abstraction, which always refers to
-    a location relative to a defined origin.
-
-    This distinction ensures that code using absolute quantities for size cannot be
-    confused with code representing positions. For example, `quantity<m>` is used
-    for the _length_ of a rod, not its _position_ in space.
-
-### What about _electric current_?
-
-_Electric current_ is the only ISQ base quantity that has a well defined zero point
-(no _current_ flow in the wire), but its values can be both positive and negative
-depending on the direction the current flows.
-
-We could be tempted to model _electric current_ as the 1-dimensional vector quantity,
-but probably it is not the best idea. It is officially defined as a signed scalar
-quantity.
-
-Absolute _electric current_ values should be available, but should not perform a
-non-negative precondition check on construction and assignment.
-
-### What about _temperature_?
-
-As we pointed out before, it will be possible to form absolute quantity of _temperature_,
-but only in the unit is (potentially prefixed) Kelvin. For offset unit like degree
-Celsius it will not be possible.
-
-If the user has a temperature point in Celsius and wants to treat it as an absolute
-quantity and pass it to some quantity equation, then such point first needs to
-be converted to use Kelvin as its unit and then we need to create an absolute
-quantity from it:
-
-```cpp
-quantity temp = point<deg_C>(21);
-quantity kinetic_energy = 3 / 2 * si::boltzmann_constant * temp.in(K).absolute();
-```
-
-
-## Preventing bugs and improving code safety
-
-The new model eliminates a class of subtle bugs that arise from conflating positions,
-sizes, and differences. For example:
-
-- **No accidental addition of positions**
-    - the type system prevents adding two `point<m>` objects, which is physically
-      meaningless
-- **No silent sign errors**
-    - subtracting two absolute quantities always yields a delta, so negative results are
-      explicit and must be handled intentionally
-- **No misuse of offset units**
-    - absolute quantities cannot be constructed with offset units (like Celsius),
-      preventing incorrect temperature calculations
-- **Safer arithmetic in safety-critical code**
-    - in domains like aerospace, medical, or automotive, these checks prevent unit and
-      logic errors that could have catastrophic consequences
-
-By making the intent explicit in code, the library helps catch most mistakes at compile
-time, not at runtime.
-
-
-## Non-negativity in physical equations vs API design
+## Non-negativity in Physical Equations vs API Design
 
 In most physical equations, the quantities we work with are expected to be
 **_non-negative amounts_**. For example, _mass_, _energy_, _distance_, and _duration_
@@ -834,9 +726,8 @@ makes your code more robust, and better reflects the intent of most physical equ
 
 ## New opportunities
 
-The new syntax simplifies the API as one `quantity` class template will now serve all quantity
-variations (possibly even more in the future). It also allows us to model quantities that
-were impossible to express before without some workarounds.
+The new syntax allows us to model quantities that were impossible to express before
+without some workarounds.
 
 For example, we can now correctly calculate _Carnot engine efficiency_ with any of the
 following:
@@ -862,16 +753,31 @@ quantity carnot_eff_2 = (temp_hot - temp_cold) / temp_hot.quantity_from_zero();
 It worked, but was far from being physically pure and pretty.
 
 
-## Summary
+## Design Philosophy and Standardization Rationale
 
-We believe that adding absolute quantities will be a significant improvement in the library,
-making programs easier to reason about, review, and maintain. The new model is not adding
-complexity arbitrarily, but rather exposing the complexity that already exists in physics
-and providing a type-safe way to manage it. This is especially critical in scientific,
-engineering, and safety-critical domains, where correctness is paramount.
-The new model brings C++ code closer to the clarity and rigor of physical textbooks,
-making it easier for both domain experts and programmers to collaborate.
+Absolute quantities make physical semantics explicit while simplifying common use cases.
+They expose existing conceptual complexity rather than adding new layers. The design is:
 
-We plan to deliver the features mentioned in this post as a part of **mp-units** V3.
+- **Consistent with ISQ** – mirrors the distinction between displacement, position, and
+  difference.
+- **Predictable** – clear subtraction and conversion rules.
+- **Scalable** – a single `quantity` class handles all variants via wrappers.
+- **Safe** – non‑negativity and offset‑unit rules prevent misuse.
+- **Extensible** – additional quantity abstractions may be added in the future by simply
+  introducing a new wrapper (e.g., anchored quantities).
 
-Please share your feedback.
+For standardization, this model brings three tangible benefits:
+
+1. **Closer alignment with physical reasoning** used by scientists and engineers.
+2. **Improved readability and verification** in generic C++ code.
+3. **Zero runtime overhead** — all checks are compile‑time or lightweight preconditions.
+
+
+## Conclusion
+
+Adding **absolute quantities** elevates `mp-units` from a dimensional analysis tool to
+a true **physical reasoning framework**. The proposal clarifies semantics, improves
+safety, and aligns code directly with equations found in textbooks. This is not extra
+complexity—it’s the formalisation of the real structure of physical space in C++ types.
+
+We plan to deliver this as part of **mp-units V3** and welcome community and WG21 feedback.
