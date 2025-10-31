@@ -27,7 +27,7 @@
     
     
       
-        <title>Introducing absolute quantities - mp-units</title>
+        <title>Introducing Absolute Quantities - mp-units</title>
       
     
     
@@ -64,7 +64,7 @@
       
         <meta  property="og:type"  content="website" >
       
-        <meta  property="og:title"  content="Introducing absolute quantities - mp-units" >
+        <meta  property="og:title"  content="Introducing Absolute Quantities - mp-units" >
       
         <meta  property="og:description"  content="The quantities and units library for C++" >
       
@@ -80,7 +80,7 @@
       
         <meta  name="twitter:card"  content="summary_large_image" >
       
-        <meta  name="twitter:title"  content="Introducing absolute quantities - mp-units" >
+        <meta  name="twitter:title"  content="Introducing Absolute Quantities - mp-units" >
       
         <meta  name="twitter:description"  content="The quantities and units library for C++" >
       
@@ -156,7 +156,7 @@ You're not viewing the latest version.
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Introducing absolute quantities
+              Introducing Absolute Quantities
             
           </span>
         </div>
@@ -2703,7 +2703,7 @@ You're not viewing the latest version.
                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 20a8 8 0 0 0 8-8 8 8 0 0 0-8-8 8 8 0 0 0-8 8 8 8 0 0 0 8 8m0-18a10 10 0 0 1 10 10 10 10 0 0 1-10 10C6.47 22 2 17.5 2 12A10 10 0 0 1 12 2m.5 5v5.25l4.5 2.67-.75 1.23L11 13V7z"/></svg>
                           <span class="md-ellipsis">
                             
-                              22 min read
+                              17 min read
                             
                           </span>
                         </div>
@@ -2732,36 +2732,36 @@ You're not viewing the latest version.
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#affine-space-in-a-nutshell" class="md-nav__link">
+  <a href="#background-affine-space-recap" class="md-nav__link">
     <span class="md-ellipsis">
-      Affine space in a nutshell
+      Background: Affine Space Recap
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#quantity-points-issues" class="md-nav__link">
+  <a href="#current-pain-points" class="md-nav__link">
     <span class="md-ellipsis">
-      Quantity points issues
+      Current Pain Points
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#absolute-quantities" class="md-nav__link">
+  <a href="#position-of-absolute-quantities-among-abstractions" class="md-nav__link">
     <span class="md-ellipsis">
-      Absolute quantities
+      Position of Absolute Quantities Among Abstractions
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#interfaces-refactoring" class="md-nav__link">
+  <a href="#simplified-api-in-v3" class="md-nav__link">
     <span class="md-ellipsis">
-      Interfaces refactoring
+      Simplified API in V3
     </span>
   </a>
   
@@ -2786,31 +2786,22 @@ You're not viewing the latest version.
 </li>
       
         <li class="md-nav__item">
-  <a href="#non-negativity" class="md-nav__link">
+  <a href="#conversions-between-abstractions" class="md-nav__link">
     <span class="md-ellipsis">
-      Non-negativity
+      Conversions Between Abstractions
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#conversions" class="md-nav__link">
+  <a href="#arithmetic-semantics" class="md-nav__link">
     <span class="md-ellipsis">
-      Conversions
+      Arithmetic Semantics
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#arithmetic" class="md-nav__link">
-    <span class="md-ellipsis">
-      Arithmetic
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Arithmetic">
+    <nav class="md-nav" aria-label="Arithmetic Semantics">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2846,28 +2837,55 @@ You're not viewing the latest version.
 </li>
       
         <li class="md-nav__item">
-  <a href="#example" class="md-nav__link">
+  <a href="#non-negativity" class="md-nav__link">
     <span class="md-ellipsis">
-      Example
+      Non-negativity
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#migration-recipe" class="md-nav__link">
+  <a href="#interesting-quantity-types" class="md-nav__link">
     <span class="md-ellipsis">
-      Migration recipe
+      Interesting Quantity Types
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Migration recipe">
+    <nav class="md-nav" aria-label="Interesting Quantity Types">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#cheat-sheet" class="md-nav__link">
+  <a href="#time" class="md-nav__link">
     <span class="md-ellipsis">
-      Cheat sheet
+      Time
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#length" class="md-nav__link">
+    <span class="md-ellipsis">
+      Length
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#electric-current" class="md-nav__link">
+    <span class="md-ellipsis">
+      Electric Current
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#temperature" class="md-nav__link">
+    <span class="md-ellipsis">
+      Temperature
     </span>
   </a>
   
@@ -2879,46 +2897,37 @@ You're not viewing the latest version.
 </li>
       
         <li class="md-nav__item">
-  <a href="#challenges" class="md-nav__link">
+  <a href="#bug-prevention-and-safety-benefits" class="md-nav__link">
     <span class="md-ellipsis">
-      Challenges
+      Bug Prevention and Safety Benefits
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Challenges">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#practical-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Practical Example
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#migration-and-backward-compatibility" class="md-nav__link">
+    <span class="md-ellipsis">
+      Migration and Backward Compatibility
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Migration and Backward Compatibility">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#what-about-time" class="md-nav__link">
+  <a href="#key-migration-rules" class="md-nav__link">
     <span class="md-ellipsis">
-      What about time?
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#what-about-length" class="md-nav__link">
-    <span class="md-ellipsis">
-      What about length?
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#what-about-electric-current" class="md-nav__link">
-    <span class="md-ellipsis">
-      What about electric current?
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#what-about-temperature" class="md-nav__link">
-    <span class="md-ellipsis">
-      What about temperature?
+      Key Migration Rules
     </span>
   </a>
   
@@ -2926,26 +2935,17 @@ You're not viewing the latest version.
         
       </ul>
     </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#preventing-bugs-and-improving-code-safety" class="md-nav__link">
-    <span class="md-ellipsis">
-      Preventing bugs and improving code safety
-    </span>
-  </a>
   
 </li>
       
         <li class="md-nav__item">
   <a href="#non-negativity-in-physical-equations-vs-api-design" class="md-nav__link">
     <span class="md-ellipsis">
-      Non-negativity in physical equations vs API design
+      Non-negativity in Physical Equations vs API Design
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Non-negativity in physical equations vs API design">
+    <nav class="md-nav" aria-label="Non-negativity in Physical Equations vs API Design">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2972,9 +2972,18 @@ You're not viewing the latest version.
 </li>
       
         <li class="md-nav__item">
-  <a href="#summary" class="md-nav__link">
+  <a href="#design-philosophy-and-standardization-rationale" class="md-nav__link">
     <span class="md-ellipsis">
-      Summary
+      Design Philosophy and Standardization Rationale
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conclusion
     </span>
   </a>
   
@@ -3011,77 +3020,57 @@ You're not viewing the latest version.
   
 
 
-<h1 id="introducing-absolute-quantities">Introducing absolute quantities<a class="headerlink" href="#introducing-absolute-quantities" title="Permanent link">&para;</a></h1>
-<p>An <strong>absolute quantity</strong> is a quantity that represents an <strong><em>absolute amount</em></strong> of a physical
-property, measured against a well-established, true zero. For example: a <em>temperature</em>
-in Kelvin, a <em>mass</em> in kilograms, or a <em>length</em> in meters (as a size, not a position).</p>
-<p>This is in contrast to:</p>
+<h1 id="introducing-absolute-quantities">Introducing Absolute Quantities<a class="headerlink" href="#introducing-absolute-quantities" title="Permanent link">&para;</a></h1>
+<p>An <strong>absolute quantity</strong> represents an <strong>absolute amount</strong> of a physical property —
+measured from a true, physically meaningful zero. Examples include <em>mass</em> in kilograms,
+<em>temperature</em> in Kelvin, or <em>length</em> in meters (as a size, not a position). Such
+quantities live on a <strong>ratio scale</strong> and have a well-defined origin; negative values are
+typically meaningless.</p>
+<p>Absolute quantities stand in contrast to:</p>
 <ul>
-<li>an affine <strong>point</strong> (e.g., 20 °C, 100 m above mean sea level), which is measured relative
-  to an arbitrary or user-defined origin (interval scale), and</li>
-<li>a <strong>delta</strong> (e.g., 10 K, -5 kg), which represents a difference or change between two
-  quantities (vector/difference).</li>
+<li><strong>Affine points</strong> (e.g., <span class="arithmatex">\(20\ \mathrm{°C}\)</span>, <span class="arithmatex">\(100\ \mathrm{m}\ \mathrm{AMSL}\)</span>) — values
+  measured relative to an arbitrary or conventional origin.</li>
+<li><strong>Deltas</strong> (e.g., <span class="arithmatex">\(10\ \mathrm{K}\)</span>, <span class="arithmatex">\(–5\ \mathrm{kg}\)</span>) — differences between two values.</li>
 </ul>
-<p>Absolute quantities are measured on a <strong><em>ratio scale</em></strong>—they have a true, physically
-meaningful zero, and negative values are typically not allowed by convention
-(e.g., negative mass is not physically meaningful). Arithmetic operations on
-absolute quantities (addition, multiplication, etc.) are well-defined and match physical
-intuition.</p>
-<p>We are considering making absolute quantities the default quantity abstraction in
-<strong>mp-units</strong> V3, as they most closely match the way physical quantities are presented
-in scientific literature and practice.</p>
+<p>Arithmetic on absolute quantities behaves like ordinary algebra: addition, subtraction,
+and scaling are well-defined and map naturally to physical reasoning. This article
+proposes making absolute quantities the <strong>default abstraction</strong> in <strong>mp-units V3</strong>,
+reflecting how scientists express equations in practice.</p>
 <hr />
-<p><em>Note: This article underwent significant revisions on October 31, 2025, to improve
-       clarity, accuracy, and depth of content.</em></p>
+<p><em>Note: Revised October 31 2025 for clarity, accuracy, and completeness.</em></p>
 <!-- more -->
 
-<h2 id="affine-space-in-a-nutshell">Affine space in a nutshell<a class="headerlink" href="#affine-space-in-a-nutshell" title="Permanent link">&para;</a></h2>
-<p>So far, <strong>mp-units</strong> and other quantities and units libraries traditionally have been
-modeling two kinds of abstractions:</p>
+<h2 id="background-affine-space-recap">Background: Affine Space Recap<a class="headerlink" href="#background-affine-space-recap" title="Permanent link">&para;</a></h2>
+<p>Until now, <strong>mp-units</strong> modeled two fundamental abstractions:</p>
 <ul>
-<li><strong>points</strong><ul>
-<li>modeled with <code>quantity_point</code> class template in <strong>mp-units</strong> V2</li>
-</ul>
-</li>
-<li><strong>deltas</strong><ul>
-<li>modeled with <code>quantity</code> class template in <strong>mp-units</strong> V2</li>
-</ul>
-</li>
+<li><strong>Points</strong> – represented by <code>quantity_point</code> in V2</li>
+<li><strong>Deltas</strong> – represented by <code>quantity</code></li>
 </ul>
 <div class="admonition info">
 <p class="admonition-title">Info</p>
 <p>More information on this subject can be found in
 <a href="../../../../../users_guide/framework_basics/the_affine_space/">the Affine Space chapter</a>.</p>
 </div>
-<h2 id="quantity-points-issues">Quantity points issues<a class="headerlink" href="#quantity-points-issues" title="Permanent link">&para;</a></h2>
-<p>A current affine space implementation works well for many essential use cases. However,
-due to the lack of better tools, points are sometimes also used to denote absolute values
-in domains where they should not be conflated with deltas or where a non-negative value
-is required (even though points in general can't guarantee such non-negativity).</p>
-<p>Such usage results in some issues:</p>
+<p>This design works but is sometimes awkward: users often misuse <code>quantity_point</code> to
+represent absolute magnitudes (e.g., total mass), losing arithmetic and printability.
+Conversely, using deltas everywhere hides physical intent and allows nonsensical operations.</p>
+<p>The new <strong>absolute quantity</strong> abstraction aims to bridge that gap.</p>
+<h2 id="current-pain-points">Current Pain Points<a class="headerlink" href="#current-pain-points" title="Permanent link">&para;</a></h2>
 <ol>
-<li>Quantity points are hard to use in physical equations as:<ul>
-<li>They can't be multiplied or divided by other quantities.</li>
-<li>They can't be added to accumulate the value (in proper use cases, it is
-  a great feature, but may be cumbersome when misused).</li>
-</ul>
-</li>
-<li>We can't print quantity points, at least for today, as:<ul>
-<li>We do not have the means to describe the user-provided origin in the text output properly.</li>
-<li>It is often unclear if those should be printed against the current relative origin
-  or the absolute one.</li>
-<li>The same point may be represented in many ways (different deltas from various
-  origins). Should such a point have the same or a different textual output for each
-  representation?</li>
-</ul>
-</li>
+<li><strong>Limited arithmetic for points</strong> – Points can’t be multiplied, divided, or accumulated.
+   This often forces the users to convert the quantity point to a delta with either
+   <code>qp.quantity_from_zero()</code> or <code>qp.quantity_from(some_origin)</code> member functions, which is
+   at least cumbersome.</li>
+<li><strong>No text output for points</strong> – A point’s textual representation depends on its origin,
+   which is often implicit or user-defined. As of today, we do not have the means to
+   provide text symbol for the point origin. Moreover, points may contain both an
+   absolute, and a relative origin at the same time which makes it harder to determine
+   which origin to use for printing. Also, the same point may be represented in many ways
+   (different deltas from various origins). Should such a point have the same or
+   a different textual output for each representation?</li>
+<li><strong>Error-prone simplifications</strong> – Developers frequently replace points with deltas for
+   convenience, losing safety and physical clarity.</li>
 </ol>
-<p>To make both of the above work, a user needs to convert the quantity point to a delta with
-either <code>qp.quantity_from_zero()</code> or <code>qp.quantity_from(some_origin)</code> member functions.
-Doing that all the time is inconvenient and is a common reason for avoiding quantity points
-abstraction in many equations in the source code, where it would be a good fit otherwise.
-This is why users often use implicit deltas, which may lead to subtle bugs in our source
-code due to conflating points with deltas. Such oversimplification can be problematic.</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
 <p>A food technologist is drying several samples of a specific product to estimate its
@@ -3130,16 +3119,13 @@ change in moisture content (on a wet basis) during the drying process.</p>
 </div>
 </div>
 </div>
-<p>Despite the above drawbacks, affine space points are necessary to model some abstractions
-(e.g., <em>temperatures</em> in degrees Celsius, tared <em>mass</em> measurements, <em>altitudes</em> above
-some reference point, etc.) and do it really well. Constrained affine space arithmetic
-(e.g., preventing accidental addition of points) also improves the safety of our programs.
-This is why it is a valuable abstraction and should be used even more frequently than it
-is now.</p>
-<h2 id="absolute-quantities">Absolute quantities<a class="headerlink" href="#absolute-quantities" title="Permanent link">&para;</a></h2>
-<p>To improve the user experience and open the door for new features in the future, we are
-considering adding a third abstraction for <strong>absolute quantities</strong>. In terms of properties,
-an absolute quantity will lie between points and deltas.</p>
+<p>In the above example:</p>
+<ul>
+<li><code>water_lost</code> should be a delta (difference in <em>mass</em>),</li>
+<li><code>total</code> should conceptually be non-negative absolute amount of <em>mass</em>, yet the type system
+  doesn’t enforce it.</li>
+</ul>
+<h2 id="position-of-absolute-quantities-among-abstractions">Position of Absolute Quantities Among Abstractions<a class="headerlink" href="#position-of-absolute-quantities-among-abstractions" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -3151,75 +3137,68 @@ an absolute quantity will lie between points and deltas.</p>
 </thead>
 <tbody>
 <tr>
-<td><strong>Interpolation</strong></td>
-<td style="text-align: center;"><img alt="✅" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/2705.svg" title=":white_check_mark:" /></td>
-<td style="text-align: center;"><img alt="✅" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/2705.svg" title=":white_check_mark:" /></td>
-<td style="text-align: center;"><img alt="✅" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/2705.svg" title=":white_check_mark:" /></td>
+<td>Interpolation</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
 </tr>
 <tr>
-<td><strong>Subtraction</strong></td>
-<td style="text-align: center;"><img alt="✅" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/2705.svg" title=":white_check_mark:" /></td>
-<td style="text-align: center;"><img alt="✅" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/2705.svg" title=":white_check_mark:" /></td>
-<td style="text-align: center;"><img alt="✅" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/2705.svg" title=":white_check_mark:" /></td>
+<td>Multiplication / Division</td>
+<td style="text-align: center;">✗</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
 </tr>
 <tr>
-<td><strong>Addition</strong></td>
-<td style="text-align: center;"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 6.91 17.09 4 12 9.09 6.91 4 4 6.91 9.09 12 4 17.09 6.91 20 12 14.91 17.09 20 20 17.09 14.91 12z"/></svg></span></td>
-<td style="text-align: center;"><img alt="✅" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/2705.svg" title=":white_check_mark:" /></td>
-<td style="text-align: center;"><img alt="✅" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/2705.svg" title=":white_check_mark:" /></td>
+<td>Addition</td>
+<td style="text-align: center;">✗</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
 </tr>
 <tr>
-<td><strong>Multiply/Divide</strong></td>
-<td style="text-align: center;"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 6.91 17.09 4 12 9.09 6.91 4 4 6.91 9.09 12 4 17.09 6.91 20 12 14.91 17.09 20 20 17.09 14.91 12z"/></svg></span></td>
-<td style="text-align: center;"><img alt="✅" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/2705.svg" title=":white_check_mark:" /></td>
-<td style="text-align: center;"><img alt="✅" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/2705.svg" title=":white_check_mark:" /></td>
+<td>Subtraction</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
 </tr>
 <tr>
-<td><strong>May be non-negative</strong></td>
-<td style="text-align: center;"><img alt="✅" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/2705.svg" title=":white_check_mark:" /></td>
-<td style="text-align: center;"><img alt="✅" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/2705.svg" title=":white_check_mark:" /></td>
-<td style="text-align: center;"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 6.91 17.09 4 12 9.09 6.91 4 4 6.91 9.09 12 4 17.09 6.91 20 12 14.91 17.09 20 20 17.09 14.91 12z"/></svg></span></td>
+<td>May be non‑negative</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✗</td>
 </tr>
 <tr>
-<td><strong>Relative to origin</strong></td>
-<td style="text-align: center;">Absolute &amp; relative</td>
-<td style="text-align: center;">No user-provided origin (implicit global zero)</td>
-<td style="text-align: center;"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 6.91 17.09 4 12 9.09 6.91 4 4 6.91 9.09 12 4 17.09 6.91 20 12 14.91 17.09 20 20 17.09 14.91 12z"/></svg></span></td>
+<td>Relative to origin</td>
+<td style="text-align: center;">Explicit</td>
+<td style="text-align: center;">Implicit global 0</td>
+<td style="text-align: center;">✗</td>
 </tr>
 <tr>
-<td><strong>Can use offset units</strong></td>
-<td style="text-align: center;"><img alt="✅" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/2705.svg" title=":white_check_mark:" /></td>
-<td style="text-align: center;"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 6.91 17.09 4 12 9.09 6.91 4 4 6.91 9.09 12 4 17.09 6.91 20 12 14.91 17.09 20 20 17.09 14.91 12z"/></svg></span></td>
-<td style="text-align: center;"><img alt="✅" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/2705.svg" title=":white_check_mark:" /></td>
+<td>Can use offset units</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✗</td>
+<td style="text-align: center;">✓</td>
 </tr>
 <tr>
-<td><strong>Conversion to offset units</strong></td>
-<td style="text-align: center;">With offset</td>
-<td style="text-align: center;"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 6.91 17.09 4 12 9.09 6.91 4 4 6.91 9.09 12 4 17.09 6.91 20 12 14.91 17.09 20 20 17.09 14.91 12z"/></svg></span></td>
+<td>Convertible to offset units</td>
+<td style="text-align: center;">Via offset</td>
+<td style="text-align: center;">✗</td>
 <td style="text-align: center;">No offset</td>
 </tr>
 <tr>
-<td><strong>Text output</strong></td>
-<td style="text-align: center;"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 6.91 17.09 4 12 9.09 6.91 4 4 6.91 9.09 12 4 17.09 6.91 20 12 14.91 17.09 20 20 17.09 14.91 12z"/></svg></span></td>
-<td style="text-align: center;"><img alt="✅" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/2705.svg" title=":white_check_mark:" /></td>
-<td style="text-align: center;"><img alt="✅" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/2705.svg" title=":white_check_mark:" /></td>
+<td>Text output</td>
+<td style="text-align: center;">✗</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
 </tr>
 </tbody>
 </table>
+<p>Absolute quantities sit logically between points and deltas: they behave like deltas
+algebraically, yet conceptually reference a true zero. This design simplifies arithmetic,
+improves printing, and preserves physical meaning.</p>
 <p>As we can see above, absolute quantities have only two limitations, and both are connected
 to the use of offset units. They can't use those because they must remain absolute
 instead of being measured relative to some custom origin.</p>
-<p>Absolute quantities are about expressing an <strong><em>absolute amount</em></strong> of a quantity, measured
-from a true, well-established zero. For example, 100 kg is an absolute mass, 293.15 K is
-an absolute temperature, and 10 m is an absolute length (as a size). These are not
-relative to any arbitrary origin—they are measured from the natural zero of the physical
-property.</p>
-<p>In contrast, points (such as 20°C or 100 m AMSL) are measured relative to a user-defined
-or conventional origin, and deltas (such as 10 K or -5 kg) represent (potentially negative)
-differences between two values.</p>
-<p>This distinction allows absolute quantities to be printed and used in arithmetic naturally,
-without ambiguity about their reference point.</p>
-<h2 id="interfaces-refactoring">Interfaces refactoring<a class="headerlink" href="#interfaces-refactoring" title="Permanent link">&para;</a></h2>
+<h2 id="simplified-api-in-v3">Simplified API in V3<a class="headerlink" href="#simplified-api-in-v3" title="Permanent link">&para;</a></h2>
 <p>As I mentioned in my <a href="../../../01/15/bringing-quantity-safety-to-the-next-level/#should-we-get-rid-of-a-quantity_point">previous post</a>,
 we are seriously considering removing the <code>quantity_point</code> class template and replacing it
 with a <code>quantity_spec</code> point wrapper. For example, <code>quantity_point&lt;isq::altitude[m]&gt;</code> will
@@ -3249,6 +3228,8 @@ physical equations. This is why we will not need any specifier to denote them in
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">is_same_v</span><span class="o">&lt;</span><span class="k">decltype</span><span class="p">(</span><span class="n">q2</span><span class="p">),</span><span class="w"> </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">delta</span><span class="o">&lt;</span><span class="n">kg</span><span class="o">&gt;&gt;&gt;</span><span class="p">);</span>
 </span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">is_same_v</span><span class="o">&lt;</span><span class="k">decltype</span><span class="p">(</span><span class="n">q3</span><span class="p">),</span><span class="w"> </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">point</span><span class="o">&lt;</span><span class="n">kg</span><span class="o">&gt;&gt;&gt;</span><span class="p">);</span>
 </span></code></pre></div>
+<p>This mirrors the way physicists write equations: absolute values by default, with explicit
+Δ when needed.</p>
 <h2 id="quantity-abstractions-in-physics">Quantity abstractions in physics<a class="headerlink" href="#quantity-abstractions-in-physics" title="Permanent link">&para;</a></h2>
 <p>Below is a summary table comparing the three main quantity abstractions:</p>
 <table>
@@ -3332,28 +3313,15 @@ engineering textbooks:</p>
 <p>This correspondence ensures that code written with <strong>mp-units</strong> is not only type-safe,
 but also directly maps to the equations and reasoning found in scientific literature.
 This makes code easier to review, verify, and maintain.</p>
-<h2 id="non-negativity">Non-negativity<a class="headerlink" href="#non-negativity" title="Permanent link">&para;</a></h2>
-<p>Non-negativity of absolute quantities is meant to be an opt-in feature in the quantity
-specification. For example, we can pass a <code>non_negative</code> tag type in quantity definition:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">mass</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">dim_length</span><span class="p">,</span><span class="w"> </span><span class="n">non_negative</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">mass</span><span class="p">;</span>
-</span></code></pre></div>
-<p>With that, we will be able to mark any quantity as non-negative and this property will be
-inherited by the subquantities in the quantity hierarchy tree of the same kind.</p>
-<p>We could also derive non-negativity for derived quantities based on their equations.
-A non-negative flag could be set only if all of the components in the equations are
-marked as non-negative. However, we will not be able to account for a negative scalar
-possibly used in an equation. This is why it is probably better to assume that ad-hoc
-derived quantities do not inherit this property. If this result is assigned to a
-typed/named quantity then the non-negativity will be check then (if set).</p>
-<h2 id="conversions">Conversions<a class="headerlink" href="#conversions" title="Permanent link">&para;</a></h2>
+<h2 id="conversions-between-abstractions">Conversions Between Abstractions<a class="headerlink" href="#conversions-between-abstractions" title="Permanent link">&para;</a></h2>
 <p>As absolute quantities share properties of both deltas and points with implicit origins,
 they should be explicitly convertible to those:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">delta</span><span class="o">&lt;</span><span class="n">kg</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">q1</span><span class="p">(</span><span class="mi">20</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="p">);</span>
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">point</span><span class="o">&lt;</span><span class="n">kg</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">q2</span><span class="p">(</span><span class="mi">20</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="p">);</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">delta</span><span class="o">&lt;</span><span class="n">kg</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">q1</span><span class="p">(</span><span class="mi">20</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="p">);</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">point</span><span class="o">&lt;</span><span class="n">kg</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">q2</span><span class="p">(</span><span class="mi">20</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="p">);</span>
 </span></code></pre></div>
 <p>or</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">delta</span><span class="o">&lt;</span><span class="n">kg</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">q1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">20</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="p">).</span><span class="n">delta</span><span class="p">();</span>
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">point</span><span class="o">&lt;</span><span class="n">kg</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">q2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">20</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="p">).</span><span class="n">point</span><span class="p">();</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">delta</span><span class="o">&lt;</span><span class="n">kg</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">q1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">20</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="p">).</span><span class="n">delta</span><span class="p">();</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">point</span><span class="o">&lt;</span><span class="n">kg</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">q2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">20</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="p">).</span><span class="n">point</span><span class="p">();</span>
 </span></code></pre></div>
 <p>The opposite is not always true:</p>
 <ul>
@@ -3362,28 +3330,27 @@ they should be explicitly convertible to those:</p>
 </ul>
 <p>This is why it is better only to expose named functions to convert points and deltas
 to absolute quantities:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">kg</span><span class="o">&gt;</span><span class="w"> </span><span class="n">q3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">q1</span><span class="p">.</span><span class="n">absolute</span><span class="p">();</span><span class="w">  </span><span class="c1">// may fail the pre-condition check if negative</span>
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">kg</span><span class="o">&gt;</span><span class="w"> </span><span class="n">q4</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">q2</span><span class="p">.</span><span class="n">absolute</span><span class="p">();</span><span class="w">  </span><span class="c1">// may fail the pre-condition check if negative</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">kg</span><span class="o">&gt;</span><span class="w"> </span><span class="n">q3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">q1</span><span class="p">.</span><span class="n">absolute</span><span class="p">();</span><span class="w">  </span><span class="c1">// may fail the pre-condition check if negative</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">kg</span><span class="o">&gt;</span><span class="w"> </span><span class="n">q4</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">q2</span><span class="p">.</span><span class="n">absolute</span><span class="p">();</span><span class="w">  </span><span class="c1">// may fail the pre-condition check if negative</span>
 </span></code></pre></div>
 <p>It is important to note that conversions between absolute quantities and a points should
 be available only when there is no point origin specified for a point (an implicit point
 origin is being used).</p>
 <p>If the user provided an explicit origin, then such a quantity can only be used as a delta:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">nhn_sea_level</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">absolute_point_origin</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">altitude</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">nhn_sea_level</span><span class="p">;</span>
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>
-</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">m</span><span class="o">&gt;</span><span class="w"> </span><span class="n">alt1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">42</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">;</span>
-</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">point</span><span class="o">&lt;</span><span class="n">m</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">alt2</span><span class="p">(</span><span class="n">alt1</span><span class="p">);</span><span class="w">                     </span><span class="c1">// OK</span>
-</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="c1">// quantity&lt;point&lt;m&gt;, nhn_sea_level&gt; alt3(alt1);   // Compile-time error</span>
-</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">point</span><span class="o">&lt;</span><span class="n">m</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">nhn_sea_level</span><span class="o">&gt;</span><span class="w"> </span><span class="n">alt4</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nhn_sea_level</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">alt1</span><span class="p">.</span><span class="n">delta</span><span class="p">();</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">nhn_sea_level</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">absolute_point_origin</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">altitude</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">nhn_sea_level</span><span class="p">;</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">m</span><span class="o">&gt;</span><span class="w"> </span><span class="n">alt1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">42</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">;</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">point</span><span class="o">&lt;</span><span class="n">m</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">alt2</span><span class="p">(</span><span class="n">alt1</span><span class="p">);</span><span class="w">                     </span><span class="c1">// OK</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="c1">// quantity&lt;point&lt;m&gt;, nhn_sea_level&gt; alt3(alt1);   // Compile-time error</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">point</span><span class="o">&lt;</span><span class="n">m</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">nhn_sea_level</span><span class="o">&gt;</span><span class="w"> </span><span class="n">alt4</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nhn_sea_level</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">alt1</span><span class="p">.</span><span class="n">delta</span><span class="p">();</span>
 </span></code></pre></div>
 <p>If the user used an offset unit, then a conversion should work fine as long as the point
 origin of the offset unit is defined in terms of the implicit point origin:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">K</span><span class="o">&gt;</span><span class="w"> </span><span class="n">temp1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">300</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">K</span><span class="p">;</span>
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">point</span><span class="o">&lt;</span><span class="n">K</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">temp2</span><span class="p">(</span><span class="n">temp1</span><span class="p">);</span><span class="w">                   </span><span class="c1">// OK</span>
-</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">point</span><span class="o">&lt;</span><span class="n">C</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">temp3</span><span class="p">(</span><span class="n">temp1</span><span class="p">);</span><span class="w">                   </span><span class="c1">// OK</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">K</span><span class="o">&gt;</span><span class="w"> </span><span class="n">temp1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">300</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">K</span><span class="p">;</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">point</span><span class="o">&lt;</span><span class="n">K</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">temp2</span><span class="p">(</span><span class="n">temp1</span><span class="p">);</span><span class="w">                   </span><span class="c1">// OK</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">point</span><span class="o">&lt;</span><span class="n">C</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">temp3</span><span class="p">(</span><span class="n">temp1</span><span class="p">);</span><span class="w">                   </span><span class="c1">// OK</span>
 </span></code></pre></div>
-<p>Below is a concise conversion matrix that summarizes what conversions are meaningful and
-how they should be performed. Rows are the source abstraction, and columns are the target.</p>
+<p>To summarize:</p>
 <table>
 <thead>
 <tr>
@@ -3396,25 +3363,25 @@ how they should be performed. Rows are the source abstraction, and columns are t
 <tbody>
 <tr>
 <td style="text-align: right;"><strong>Point</strong></td>
-<td style="text-align: center;">Identity — same type</td>
+<td style="text-align: center;">Identity</td>
 <td style="text-align: center;"><code>.absolute()</code></td>
-<td style="text-align: center;">Subtract two points (point - point -&gt; delta)</td>
+<td style="text-align: center;">point - point → delta</td>
 </tr>
 <tr>
 <td style="text-align: right;"><strong>Absolute</strong></td>
 <td style="text-align: center;">Explicit or <code>.point()</code></td>
-<td style="text-align: center;">Identity — same type</td>
+<td style="text-align: center;">Identity</td>
 <td style="text-align: center;">Explicit or <code>.delta()</code></td>
 </tr>
 <tr>
 <td style="text-align: right;"><strong>Delta</strong></td>
-<td style="text-align: center;">Add to an origin (origin + delta -&gt; point)</td>
+<td style="text-align: center;">origin + delta → point</td>
 <td style="text-align: center;"><code>.absolute()</code></td>
-<td style="text-align: center;">Identity — same type</td>
+<td style="text-align: center;">Identity</td>
 </tr>
 </tbody>
 </table>
-<h2 id="arithmetic">Arithmetic<a class="headerlink" href="#arithmetic" title="Permanent link">&para;</a></h2>
+<h2 id="arithmetic-semantics">Arithmetic Semantics<a class="headerlink" href="#arithmetic-semantics" title="Permanent link">&para;</a></h2>
 <p>Affine space arithmetic is well-defined and commonly used in physics and engineering.
 With the introduction of absolute quantities, it is important to clarify the meaning
 of arithmetic operations involving points, absolutes, and deltas.</p>
@@ -3434,7 +3401,7 @@ and adding a delta to a point yields another point.</p>
 <table>
 <thead>
 <tr>
-<th>Lhs \ Rhs</th>
+<th style="text-align: right;">Lhs \ Rhs</th>
 <th style="text-align: center;">Point</th>
 <th style="text-align: center;">Absolute</th>
 <th style="text-align: center;">Delta</th>
@@ -3442,19 +3409,19 @@ and adding a delta to a point yields another point.</p>
 </thead>
 <tbody>
 <tr>
-<td><strong>Point</strong></td>
+<td style="text-align: right;"><strong>Point</strong></td>
 <td style="text-align: center;"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 6.91 17.09 4 12 9.09 6.91 4 4 6.91 9.09 12 4 17.09 6.91 20 12 14.91 17.09 20 20 17.09 14.91 12z"/></svg></span></td>
 <td style="text-align: center;">Point</td>
 <td style="text-align: center;">Point</td>
 </tr>
 <tr>
-<td><strong>Absolute</strong></td>
+<td style="text-align: right;"><strong>Absolute</strong></td>
 <td style="text-align: center;">Point</td>
 <td style="text-align: center;">Absolute</td>
 <td style="text-align: center;">Delta</td>
 </tr>
 <tr>
-<td><strong>Delta</strong></td>
+<td style="text-align: right;"><strong>Delta</strong></td>
 <td style="text-align: center;">Point</td>
 <td style="text-align: center;">Delta</td>
 <td style="text-align: center;">Delta</td>
@@ -3465,12 +3432,12 @@ and adding a delta to a point yields another point.</p>
 <p class="admonition-title">Info</p>
 <p>Here are some numerical examples that present the available operations and their
 results:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">abs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="p">(</span><span class="mi">42</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">);</span>
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="n">quantity</span><span class="w"> </span><span class="n">pt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">point</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">altitude</span><span class="p">[</span><span class="n">m</span><span class="p">]</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
-</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="n">quantity</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">delta</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="p">[</span><span class="n">m</span><span class="p">]</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
-</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="n">quantity</span><span class="w"> </span><span class="n">res1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">abs</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">abs</span><span class="p">;</span><span class="w">                 </span><span class="c1">// Absolute</span>
-</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="n">quantity</span><span class="w"> </span><span class="n">res2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pt</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">abs</span><span class="p">;</span><span class="w">                  </span><span class="c1">// Point</span>
-</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="n">quantity</span><span class="w"> </span><span class="n">res3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">abs</span><span class="p">;</span><span class="w">                   </span><span class="c1">// Delta</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">abs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="p">(</span><span class="mi">42</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">);</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="n">quantity</span><span class="w"> </span><span class="n">pt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">point</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">altitude</span><span class="p">[</span><span class="n">m</span><span class="p">]</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="n">quantity</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">delta</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="p">[</span><span class="n">m</span><span class="p">]</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="n">quantity</span><span class="w"> </span><span class="n">res1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">abs</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">abs</span><span class="p">;</span><span class="w">                 </span><span class="c1">// Absolute</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="n">quantity</span><span class="w"> </span><span class="n">res2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pt</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">abs</span><span class="p">;</span><span class="w">                  </span><span class="c1">// Point</span>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="n">quantity</span><span class="w"> </span><span class="n">res3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">abs</span><span class="p">;</span><span class="w">                   </span><span class="c1">// Delta</span>
 </span></code></pre></div>
 </div>
 <h3 id="subtraction">Subtraction<a class="headerlink" href="#subtraction" title="Permanent link">&para;</a></h3>
@@ -3479,6 +3446,11 @@ difference between two amounts.</p>
 <p><strong>Subtracting two absolute quantities</strong> (e.g., <span class="arithmatex">\(50\ \mathrm{kg} - 5\ \mathrm{kg}\)</span>)
 yields a delta (difference), which may be negative or positive. This is consistent
 with the mathematical and physical meaning of subtraction.</p>
+<p>If an absolute result is needed (e.g., remaining <em>mass</em>), it should be obtained
+via an explicit conversion:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">kg</span><span class="o">&gt;</span><span class="w"> </span><span class="n">remaining</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">total</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">used</span><span class="p">).</span><span class="n">absolute</span><span class="p">();</span>
+</span></code></pre></div>
+<p>This rule prevents invalid negative absolutes while remaining explicit when needed.</p>
 <p><strong>Subtracting a delta from an absolute quantity</strong> (e.g., <span class="arithmatex">\(10\ \mathrm{kg} - 2\ \mathrm{kg}\)</span>)
 yields a delta. If you need an absolute quantity as a result, you must explicitly convert
 the delta to an absolute quantity (i.e., using <code>.absolute()</code>), which will check the
@@ -3487,122 +3459,11 @@ approach ensures that negative results are always intentional and checked, incre
 code safety.</p>
 <p><strong>Subtracting an absolute quantity from a point</strong> yields a point, and
 <strong>subtracting a point from an absolute</strong> quantity is not meaningful.</p>
-<p>The key point is that subtraction of two absolute quantities always yields a delta,
-not an "aggregate" or "remaining whole"—it is simply the difference between two amounts,
-which may be positive or negative depending on the order of operands.</p>
-<details class="info">
-<summary>Subtraction return type discussion</summary>
-<p>Depending on a particular scenario subtracting two absolute quantities can result with
-either an absolute quantity (e.g., 20 kg + 5 kg - 20 kg) or a delta (e.g., 85 kg - 78 kg).</p>
-<p>There are several possible ways to address those in the API:</p>
-<ol>
-<li>
-<p><strong>Always return delta</strong></p>
-<ul>
-<li>Subtracting two absolutes always yields a delta.</li>
-<li>Explicit conversion to absolute is needed.</li>
-<li><strong>Pros:</strong> Consistent, matches how <em>temperature</em>, <em>position</em>, and <em>time</em> work.</li>
-<li><strong>Cons:</strong> May be surprising for <em>mass</em>/<em>length</em>, where subtraction often means
-  "remaining absolute". However, this improves safety and is one of the key
-  features of this proposal (e.g., it prevents <code>20 * kg - 42 * kg</code> from
-  producing physically impossible absolute quantity).</li>
-</ul>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">delta</span><span class="o">&lt;</span><span class="n">K</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">temp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">320</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">K</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">360</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">K</span><span class="p">;</span>
-</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">kg</span><span class="o">&gt;</span><span class="w"> </span><span class="n">mass</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">50</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="p">).</span><span class="n">absolute</span><span class="p">();</span>
-</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">one</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ratio</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">50</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">25</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="mi">50</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="p">);</span>
-</span></code></pre></div>
-</li>
-<li>
-<p><strong>Always return absolute</strong></p>
-<ul>
-<li>Subtracting two absolutes always yields an absolute.</li>
-<li>If the result is negative, a precondition check may fail.</li>
-<li>Explicit conversion to delta needed.</li>
-<li><strong>Pros:</strong> Intuitive for <em>mass</em>/<em>length</em> (as long as non-negative), but not for
-  <em>temperature</em>/<em>position</em>/<em>time</em>.</li>
-<li><strong>Cons:</strong> Breaks physical meaning for quantities where subtraction should yield
-  a delta.</li>
-</ul>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">absolute</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">320</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">K</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">360</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">K</span><span class="p">;</span><span class="w">                  </span><span class="c1">// precondition violation :-(</span>
-</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">delta</span><span class="o">&lt;</span><span class="n">K</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">temp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">absolute</span><span class="p">.</span><span class="n">delta</span><span class="p">();</span>
-</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">kg</span><span class="o">&gt;</span><span class="w"> </span><span class="n">mass</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">50</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="p">;</span><span class="w">                   </span><span class="c1">// OK</span>
-</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">one</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ratio</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">50</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">25</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="mi">50</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="p">);</span>
-</span></code></pre></div>
-</li>
-<li>
-<p><strong>Return a distinct result type</strong> (e.g., <code>quantity_difference</code>)</p>
-<ul>
-<li>Subtraction returns a proxy type convertible (implicitly or explicitly) to both
-  absolute and delta.</li>
-<li>It is to be decided if the proxy type should satisfy the <code>Quantity</code> concept.</li>
-<li><strong>Pros:</strong> Forces user to clarify intent, avoids ambiguity.</li>
-<li><strong>Cons:</strong> More complex API, but safest and most explicit.</li>
-</ul>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="k">auto</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">320</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">K</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">360</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">K</span><span class="p">;</span><span class="w">                                   </span><span class="c1">// quantity_difference</span>
-</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>
-</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="c1">// implicit conversions</span>
-</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">delta</span><span class="o">&lt;</span><span class="n">K</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">temp1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">res</span><span class="p">;</span><span class="w">                                 </span><span class="c1">// OK</span>
-</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">kg</span><span class="o">&gt;</span><span class="w"> </span><span class="n">mass1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">50</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="p">;</span><span class="w">                          </span><span class="c1">// May fail the precondition check if negative</span>
-</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">one</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ratio1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">50</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">25</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="mi">50</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="p">);</span><span class="w">         </span><span class="c1">// May fail to compile if not quantity</span>
-</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="w">                                                                </span><span class="c1">// Also, type deduction may be tricky</span>
-</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="c1">// explicit conversions</span>
-</span><span id="__span-13-9"><a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">delta</span><span class="o">&lt;</span><span class="n">K</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">temp2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">res</span><span class="p">.</span><span class="n">delta</span><span class="p">();</span><span class="w">                         </span><span class="c1">// OK</span>
-</span><span id="__span-13-10"><a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">kg</span><span class="o">&gt;</span><span class="w"> </span><span class="n">mass2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">50</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="p">).</span><span class="n">absolute</span><span class="p">();</span><span class="w">             </span><span class="c1">// OK</span>
-</span><span id="__span-13-11"><a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">one</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ratio2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">50</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">25</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="p">).</span><span class="n">delta</span><span class="p">()</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="mi">50</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="p">);</span><span class="w"> </span><span class="c1">// OK</span>
-</span></code></pre></div>
-</li>
-</ol>
-<p>Here is a detailed discussion of all the available options:</p>
-<table>
-<thead>
-<tr>
-<th>Approach</th>
-<th>Safety</th>
-<th>API Complexity</th>
-<th>Cognitive Overhead</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Always Delta</td>
-<td>High</td>
-<td>Medium (explicit conversion needed)</td>
-<td>Low (safe and explicit)</td>
-</tr>
-<tr>
-<td>Always Absolute</td>
-<td>Low</td>
-<td>Medium (explicit conversion needed)</td>
-<td>Medium (can fail at runtime)</td>
-</tr>
-<tr>
-<td>Implicitly-convertible Result Type</td>
-<td>High</td>
-<td>High (new type to support)</td>
-<td>Highest (can fail at runtime, additional type to reason about)</td>
-</tr>
-<tr>
-<td>Explicitly-convertible Result Type</td>
-<td>Highest</td>
-<td>Highest (new type to support + explicit conversions)</td>
-<td>High (explicit, additional type to reason about)</td>
-</tr>
-</tbody>
-</table>
-<p>After careful consideration, we recommend that subtracting two absolute quantities
-should always yield a delta. This approach is the most physically consistent, matches
-established practice in physics and engineering, and avoids subtle bugs. If an absolute
-result is needed (e.g., remaining <em>mass</em>), it should be obtained via an explicit conversion:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">kg</span><span class="o">&gt;</span><span class="w"> </span><span class="n">remaining</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">total</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">used</span><span class="p">).</span><span class="n">absolute</span><span class="p">();</span>
-</span></code></pre></div>
-<p>This explicitness ensures that negative results are always intentional and checked,
-increasing code safety.</p>
-</details>
 <p>Here is a summary of all of the subtraction operations</p>
 <table>
 <thead>
 <tr>
-<th>Lhs \ Rhs</th>
+<th style="text-align: right;">Lhs \ Rhs</th>
 <th style="text-align: center;">Point</th>
 <th style="text-align: center;">Absolute</th>
 <th style="text-align: center;">Delta</th>
@@ -3610,19 +3471,19 @@ increasing code safety.</p>
 </thead>
 <tbody>
 <tr>
-<td><strong>Point</strong></td>
+<td style="text-align: right;"><strong>Point</strong></td>
 <td style="text-align: center;">Delta</td>
 <td style="text-align: center;">Point</td>
 <td style="text-align: center;">Point</td>
 </tr>
 <tr>
-<td><strong>Absolute</strong></td>
+<td style="text-align: right;"><strong>Absolute</strong></td>
 <td style="text-align: center;"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 6.91 17.09 4 12 9.09 6.91 4 4 6.91 9.09 12 4 17.09 6.91 20 12 14.91 17.09 20 20 17.09 14.91 12z"/></svg></span></td>
 <td style="text-align: center;">Delta</td>
 <td style="text-align: center;">Delta</td>
 </tr>
 <tr>
-<td><strong>Delta</strong></td>
+<td style="text-align: right;"><strong>Delta</strong></td>
 <td style="text-align: center;"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 6.91 17.09 4 12 9.09 6.91 4 4 6.91 9.09 12 4 17.09 6.91 20 12 14.91 17.09 20 20 17.09 14.91 12z"/></svg></span></td>
 <td style="text-align: center;">Delta</td>
 <td style="text-align: center;">Delta</td>
@@ -3633,175 +3494,39 @@ increasing code safety.</p>
 <p class="admonition-title">Info</p>
 <p>Here are some numerical examples that present the available operations and their
 results:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">abs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="p">(</span><span class="mi">42</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">);</span>
-</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="n">quantity</span><span class="w"> </span><span class="n">pt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">point</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">altitude</span><span class="p">[</span><span class="n">m</span><span class="p">]</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
-</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="n">quantity</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">delta</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="p">[</span><span class="n">m</span><span class="p">]</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
-</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="n">quantity</span><span class="w"> </span><span class="n">res1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pt</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">abs</span><span class="p">;</span><span class="w">                  </span><span class="c1">// Point</span>
-</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="c1">// quantity res2 = abs - pt;               // Compile-time error</span>
-</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="n">quantity</span><span class="w"> </span><span class="n">res3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">abs</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">pt</span><span class="p">.</span><span class="n">absolute</span><span class="p">();</span><span class="w">       </span><span class="c1">// Delta or quantity_difference</span>
-</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="n">quantity</span><span class="w"> </span><span class="n">res4</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">abs</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">d</span><span class="p">;</span><span class="w">                   </span><span class="c1">// Delta</span>
-</span><span id="__span-15-8"><a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a><span class="n">quantity</span><span class="w"> </span><span class="n">res5</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">abs</span><span class="p">;</span><span class="w">                   </span><span class="c1">// Delta</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">abs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="p">(</span><span class="mi">42</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">);</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="n">quantity</span><span class="w"> </span><span class="n">pt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">point</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">altitude</span><span class="p">[</span><span class="n">m</span><span class="p">]</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="n">quantity</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">delta</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="p">[</span><span class="n">m</span><span class="p">]</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="n">quantity</span><span class="w"> </span><span class="n">res1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pt</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">abs</span><span class="p">;</span><span class="w">                  </span><span class="c1">// Point</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="c1">// quantity res2 = abs - pt;               // Compile-time error</span>
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="n">quantity</span><span class="w"> </span><span class="n">res3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">abs</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">pt</span><span class="p">.</span><span class="n">absolute</span><span class="p">();</span><span class="w">       </span><span class="c1">// Delta or quantity_difference</span>
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="n">quantity</span><span class="w"> </span><span class="n">res4</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">abs</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">d</span><span class="p">;</span><span class="w">                   </span><span class="c1">// Delta</span>
+</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="n">quantity</span><span class="w"> </span><span class="n">res5</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">abs</span><span class="p">;</span><span class="w">                   </span><span class="c1">// Delta</span>
 </span></code></pre></div>
 </div>
 <h3 id="interpolation">Interpolation<a class="headerlink" href="#interpolation" title="Permanent link">&para;</a></h3>
-<p><strong>Interpolation between two absolute quantities</strong> (e.g., finding a value between <span class="arithmatex">\(a\)</span> and
-<span class="arithmatex">\(b\)</span>) is well-defined and results in another absolute quantity. This is commonly used in
+<p><strong>Interpolation of absolute quantities</strong> (e.g., finding a value between <span class="arithmatex">\(a\)</span> and <span class="arithmatex">\(b\)</span>)
+is well-defined and results in another absolute quantity. This is commonly used in
 physics and engineering for averaging, blending, or estimating values between two known
 points.</p>
-<h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
-<p>After discussing most of the theory, let's come back to our initial example and
-check how it works in practice. Here is what it can look like with the absolute
-quantities usage:</p>
-<div class="admonition example">
-<p class="admonition-title">Example</p>
-<p>A food technologist is drying several samples of a specific product to estimate its
-change in moisture content (on a wet basis) during the drying process.</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">delta</span><span class="o">&lt;</span><span class="n">percent</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="c1">// (1)!</span>
-</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="n">moisture_content_change</span><span class="p">(</span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">delta</span><span class="o">&lt;</span><span class="n">kg</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">water_lost</span><span class="p">,</span><span class="w"> </span><span class="c1">// (2)!</span>
-</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="w">                        </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">kg</span><span class="o">&gt;</span><span class="w"> </span><span class="n">total</span><span class="p">)</span><span class="w"> </span><span class="c1">// (3)!</span>
-</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="p">{</span>
-</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="w">  </span><span class="c1">// gsl_Expects(is_gt_zero(total)); (4)</span>
-</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">water_lost</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">total</span><span class="p">;</span>
-</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="p">}</span>
-</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>
-</span><span id="__span-16-9"><a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">kg</span><span class="o">&gt;</span><span class="w"> </span><span class="n">initial</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="mf">2.34</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="p">,</span><span class="w"> </span><span class="mf">1.93</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="p">,</span><span class="w"> </span><span class="mf">2.43</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="w"> </span><span class="p">};</span><span class="w"> </span><span class="c1">// (5)!</span>
-</span><span id="__span-16-10"><a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">kg</span><span class="o">&gt;</span><span class="w"> </span><span class="n">dried</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="mf">1.89</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="p">,</span><span class="w"> </span><span class="mf">1.52</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="p">,</span><span class="w"> </span><span class="mf">1.92</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="w"> </span><span class="p">};</span>
-</span><span id="__span-16-11"><a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a>
-</span><span id="__span-16-12"><a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a><span class="n">quantity</span><span class="w"> </span><span class="n">total_initial</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">reduce</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cbegin</span><span class="p">(</span><span class="n">initial</span><span class="p">),</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cend</span><span class="p">(</span><span class="n">initial</span><span class="p">));</span><span class="w"> </span><span class="c1">// (6)!</span>
-</span><span id="__span-16-13"><a id="__codelineno-16-13" name="__codelineno-16-13" href="#__codelineno-16-13"></a><span class="n">quantity</span><span class="w"> </span><span class="n">total_dried</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">reduce</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cbegin</span><span class="p">(</span><span class="n">dried</span><span class="p">),</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cend</span><span class="p">(</span><span class="n">dried</span><span class="p">));</span>
-</span><span id="__span-16-14"><a id="__codelineno-16-14" name="__codelineno-16-14" href="#__codelineno-16-14"></a>
-</span><span id="__span-16-15"><a id="__codelineno-16-15" name="__codelineno-16-15" href="#__codelineno-16-15"></a><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Initial product mass: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">total_initial</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="c1">// (7)!</span>
-</span><span id="__span-16-16"><a id="__codelineno-16-16" name="__codelineno-16-16" href="#__codelineno-16-16"></a><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Dried product mass: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">total_dried</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
-</span><span id="__span-16-17"><a id="__codelineno-16-17" name="__codelineno-16-17" href="#__codelineno-16-17"></a><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Moisture content change: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">moisture_content_change</span><span class="p">(</span><span class="n">total_initial</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">total_dried</span><span class="p">,</span><span class="w"> </span><span class="n">total_initial</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="c1">// (8)!</span>
+<h2 id="non-negativity">Non-negativity<a class="headerlink" href="#non-negativity" title="Permanent link">&para;</a></h2>
+<p>Non-negativity of absolute quantities is meant to be an opt-in feature in the quantity
+specification. For example, we can pass a <code>non_negative</code> tag type in quantity definition:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">mass</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">dim_length</span><span class="p">,</span><span class="w"> </span><span class="n">non_negative</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">mass</span><span class="p">;</span>
 </span></code></pre></div>
-<ol>
-<li>Theoretically a negative result is possible if the product gained water in the process of drying.</li>
-<li>Explicit delta.</li>
-<li>Absolute quantity.</li>
-<li>No longer needed as absolute quantities of mass will have a precondition of
-   being non-negative.</li>
-<li>Simple initialization of absolute quantities.</li>
-<li>Arithmetic works.</li>
-<li>Test output works.</li>
-<li>Type safe!</li>
-</ol>
-</div>
-<h2 id="migration-recipe">Migration recipe<a class="headerlink" href="#migration-recipe" title="Permanent link">&para;</a></h2>
-<p>Although the theory in the chapters above may seem intimidating, users will not be
-significantly affected by the changes in <strong>mp-units</strong> V3.</p>
-<p>As we can see, the new code above does not differ much from our previously unsafe but
-favored version. The only difference is that we spell <code>delta</code> explicitly now, and that we
-can safely assume that absolute values of mass are non-negative. The rest looks and feels
-the same, but the new solution is safer and more expressive.</p>
-<p>The biggest migration challenge is related to the results of subtraction on two
-quantities, points, or deltas. From now on, they will result in a different type
-(i.e., <code>quantity&lt;delta&lt;...&gt;&gt;</code>) which is not implicitly convertible to an absolute
-quantity.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Before</label><label for="__tabbed_2_2">After</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">km</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">h</span><span class="o">&gt;</span><span class="w"> </span><span class="n">avg_speed</span><span class="p">(</span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">km</span><span class="o">&gt;</span><span class="w"> </span><span class="n">distance</span><span class="p">,</span><span class="w"> </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">h</span><span class="o">&gt;</span><span class="w"> </span><span class="n">duration</span><span class="p">)</span>
-</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="p">{</span>
-</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">distance</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">duration</span><span class="p">;</span>
-</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="p">}</span>
-</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a>
-</span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">km</span><span class="o">&gt;</span><span class="w"> </span><span class="n">odo1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">...;</span>
-</span><span id="__span-17-7"><a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">s</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ts1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">...;</span>
-</span><span id="__span-17-8"><a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">km</span><span class="o">&gt;</span><span class="w"> </span><span class="n">odo2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">...;</span>
-</span><span id="__span-17-9"><a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">s</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ts2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">...;</span>
-</span><span id="__span-17-10"><a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a><span class="c1">// quantity res = avg_speed(odo2 - odo1, ts2 - ts1);  // Compile-time error</span>
-</span></code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">km</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">h</span><span class="o">&gt;</span><span class="w"> </span><span class="n">avg_speed</span><span class="p">(</span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">km</span><span class="o">&gt;</span><span class="w"> </span><span class="n">distance</span><span class="p">,</span><span class="w"> </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">h</span><span class="o">&gt;</span><span class="w"> </span><span class="n">duration</span><span class="p">)</span>
-</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="p">{</span>
-</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">distance</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">duration</span><span class="p">;</span>
-</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="p">}</span>
-</span><span id="__span-18-5"><a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a>
-</span><span id="__span-18-6"><a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">km</span><span class="o">&gt;</span><span class="w"> </span><span class="n">odo1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">...;</span>
-</span><span id="__span-18-7"><a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">s</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ts1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">...;</span>
-</span><span id="__span-18-8"><a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">km</span><span class="o">&gt;</span><span class="w"> </span><span class="n">odo2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">...;</span>
-</span><span id="__span-18-9"><a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">s</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ts2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">...;</span>
-</span><span id="__span-18-10"><a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a><span class="n">quantity</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">avg_speed</span><span class="p">((</span><span class="n">odo2</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">odo1</span><span class="p">).</span><span class="n">absolute</span><span class="p">(),</span><span class="w"> </span><span class="p">(</span><span class="n">ts2</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">ts1</span><span class="p">).</span><span class="n">absolute</span><span class="p">());</span><span class="w">  </span><span class="c1">// OK</span>
-</span></code></pre></div>
-</div>
-</div>
-</div>
-<p>In case of an invalid order of subtraction arguments the precondition check will fail
-at runtime only for the conversion to absolutes case. This increases safety of our
-code.</p>
-<p>Another migration challenge may be related to the usage of negative values. All of the
-ISQ base quantities besides <em>electric current</em> could be defined to be non-negative
-for absolute quantities. This means that if a user is dealing with a negative
-delta today, such code will fail the precondition check in the absolute quantity
-constructor. To fix that, the user will need to use explicit <code>delta</code> specifiers or
-construction helpers in such cases:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">m</span><span class="o">&gt;</span><span class="w"> </span><span class="n">d1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">;</span><span class="w">       </span><span class="c1">// Precondition check failure at runtime</span>
-</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">delta</span><span class="o">&lt;</span><span class="n">m</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">d2</span><span class="p">(</span><span class="mi">-2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">);</span><span class="w"> </span><span class="c1">// Precondition check failure at runtime</span>
-</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="n">quantity</span><span class="w"> </span><span class="n">d3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">delta</span><span class="o">&lt;</span><span class="n">m</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">-2</span><span class="p">);</span><span class="w">    </span><span class="c1">// OK</span>
-</span></code></pre></div>
-<p>Regarding temperature support, in the <a href="#absolute-quantities">Absolute quantities</a> chapter,
-we said that a new abstraction will not work for offset units. However, it was
-also the case in <strong>mp-units</strong> V2. If we check
-<a href="../../../../../users_guide/framework_basics/the_affine_space/#displacement-vector-is-modeled-by-quantity">The Affine Space chapter</a> we will find a note that:</p>
-<div class="admonition quote">
-<p class="admonition-title">Quote</p>
-<p>The multiply syntax support is disabled for units that provide a point origin in
-their definition (i.e., units of temperature like <code>K</code>, <code>deg_C</code>, and <code>deg_F</code>).</p>
-</div>
-<p>We always found those confusing and required our users to be explicit about the intent
-with <code>point</code> and <code>delta</code> construction helpers. So nothing changes here from the coding
-point of view. From the design point of view, we replace some strange corner case design
-constraint with a properly named abstraction that models that behavior.</p>
-<p>Actually, V3 will improve the temperature support a lot. Thanks to the new abstraction,
-we will be able to multiply and divide absolute temperature with other quantities, but
-only if the temperature is measured in Kelvin. Also, a multiply syntax will work to
-construct such absolute quantities (e.g., <code>300 * K</code>).</p>
-<p>Last, but not least, the <code>quantity_point&lt;...&gt;</code> class template will be replaced with
-<code>quantity&lt;point&lt;...&gt;&gt;</code> syntax.</p>
-<h3 id="cheat-sheet">Cheat sheet<a class="headerlink" href="#cheat-sheet" title="Permanent link">&para;</a></h3>
-<table>
-<thead>
-<tr>
-<th>Old Pattern (V2)</th>
-<th>New Pattern (V3)</th>
-<th>Notes</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>quantity&lt;kg&gt; m = ...;</code></td>
-<td><code>quantity&lt;kg&gt; m = ...;</code></td>
-<td>Now always absolute</td>
-</tr>
-<tr>
-<td><code>quantity&lt;kg&gt; m = m1 - m2;</code></td>
-<td><code>quantity&lt;kg&gt; m = (m1 - m2).absolute();</code></td>
-<td>Explicit if you want abs</td>
-</tr>
-<tr>
-<td><code>quantity&lt;kg&gt; dm = m1 - m2;</code></td>
-<td><code>quantity&lt;delta&lt;kg&gt;&gt; dm = m1 - m2;</code></td>
-<td>Explicit deltas when negative value possible</td>
-</tr>
-<tr>
-<td><code>quantity_point&lt;kg&gt; p = ...;</code></td>
-<td><code>quantity&lt;point&lt;kg&gt;&gt; p = ...</code></td>
-<td>Use <code>point&lt;kg&gt;</code> wrapper</td>
-</tr>
-<tr>
-<td><code>quantity&lt;kg&gt; d = p - point&lt;kg&gt;(42);</code></td>
-<td><code>quantity&lt;delta&lt;kg&gt;&gt; d = p - point&lt;kg&gt;(42);</code></td>
-<td>Deltas must be explicit</td>
-</tr>
-</tbody>
-</table>
-<h2 id="challenges">Challenges<a class="headerlink" href="#challenges" title="Permanent link">&para;</a></h2>
-<h3 id="what-about-time">What about <em>time</em>?<a class="headerlink" href="#what-about-time" title="Permanent link">&para;</a></h3>
-<p>Everything looks promising and friendly for now. But let's look closer at the quantity
-of <em>time</em>. There is no way to measure its absolute value as we don't even know where
-(when?) the <em>time</em> axis starts... Only <em>time</em> points and <em>time</em> deltas (durations) make
-sense.</p>
+<p>With that, we will be able to mark any quantity as non-negative and this property will be
+inherited by the subquantities in the quantity hierarchy tree of the same kind.</p>
+<p>We could also derive non-negativity for derived quantities based on their equations.
+A non-negative flag could be set only if all of the components in the equations are
+marked as non-negative. However, we will not be able to account for a negative scalar
+possibly used in an equation. This is why it is probably better to assume that ad-hoc
+derived quantities do not inherit this property. If this result is assigned to a
+typed/named quantity then the non-negativity will be check then (if set).</p>
+<h2 id="interesting-quantity-types">Interesting Quantity Types<a class="headerlink" href="#interesting-quantity-types" title="Permanent link">&para;</a></h2>
+<h3 id="time">Time<a class="headerlink" href="#time" title="Permanent link">&para;</a></h3>
+<p>Let's look closer at the quantity of <em>time</em>. There is no way to measure its absolute value
+as we don't even know where (when?) the <em>time</em> axis starts... Only <em>time</em> points and
+<em>time</em> deltas (durations) make sense.</p>
 <p>However it seems that the ISQ thought this through already. It does not define a quantity
 of <em>time</em> at all. It only provides <em>duration</em> defined as:</p>
 <div class="admonition quote">
@@ -3827,7 +3552,7 @@ still use simple quantities and the library will reason about them correctly:</p
 <li><code>quantity&lt;delta&lt;s&gt;&gt;</code> or <code>delta&lt;s&gt;(-3)</code> -&gt; delta <em>duration</em></li>
 <li><code>quantity&lt;point&lt;s&gt;&gt;</code> or <code>point&lt;s&gt;(94573457438583)</code> -&gt; <em>time</em> point</li>
 </ul>
-<h3 id="what-about-length">What about <em>length</em>?<a class="headerlink" href="#what-about-length" title="Permanent link">&para;</a></h3>
+<h3 id="length">Length<a class="headerlink" href="#length" title="Permanent link">&para;</a></h3>
 <p>A somewhat similar case might be the <em>length</em> quantity, as there is no one well-established
 zero origin that serves as a reference for all <em>length</em> measurements. However, asking the
 users always to provide a <code>delta</code> specifier for <em>length</em> would probably be overkill.
@@ -3843,7 +3568,7 @@ a location relative to a defined origin.</p>
 confused with code representing positions. For example, <code>quantity&lt;m&gt;</code> is used
 for the <em>length</em> of a rod, not its <em>position</em> in space.</p>
 </div>
-<h3 id="what-about-electric-current">What about <em>electric current</em>?<a class="headerlink" href="#what-about-electric-current" title="Permanent link">&para;</a></h3>
+<h3 id="electric-current">Electric Current<a class="headerlink" href="#electric-current" title="Permanent link">&para;</a></h3>
 <p><em>Electric current</em> is the only ISQ base quantity that has a well defined zero point
 (no <em>current</em> flow in the wire), but its values can be both positive and negative
 depending on the direction the current flows.</p>
@@ -3852,7 +3577,7 @@ but probably it is not the best idea. It is officially defined as a signed scala
 quantity.</p>
 <p>Absolute <em>electric current</em> values should be available, but should not perform a
 non-negative precondition check on construction and assignment.</p>
-<h3 id="what-about-temperature">What about <em>temperature</em>?<a class="headerlink" href="#what-about-temperature" title="Permanent link">&para;</a></h3>
+<h3 id="temperature">Temperature<a class="headerlink" href="#temperature" title="Permanent link">&para;</a></h3>
 <p>As we pointed out before, it will be possible to form absolute quantity of <em>temperature</em>,
 but only in the unit is (potentially prefixed) Kelvin. For offset unit like degree
 Celsius it will not be possible.</p>
@@ -3860,10 +3585,10 @@ Celsius it will not be possible.</p>
 quantity and pass it to some quantity equation, then such point first needs to
 be converted to use Kelvin as its unit and then we need to create an absolute
 quantity from it:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">temp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">point</span><span class="o">&lt;</span><span class="n">deg_C</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">21</span><span class="p">);</span>
-</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="n">quantity</span><span class="w"> </span><span class="n">kinetic_energy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">boltzmann_constant</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">temp</span><span class="p">.</span><span class="n">in</span><span class="p">(</span><span class="n">K</span><span class="p">).</span><span class="n">absolute</span><span class="p">();</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">temp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">point</span><span class="o">&lt;</span><span class="n">deg_C</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">21</span><span class="p">);</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="n">quantity</span><span class="w"> </span><span class="n">kinetic_energy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">boltzmann_constant</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">temp</span><span class="p">.</span><span class="n">in</span><span class="p">(</span><span class="n">K</span><span class="p">).</span><span class="n">absolute</span><span class="p">();</span>
 </span></code></pre></div>
-<h2 id="preventing-bugs-and-improving-code-safety">Preventing bugs and improving code safety<a class="headerlink" href="#preventing-bugs-and-improving-code-safety" title="Permanent link">&para;</a></h2>
+<h2 id="bug-prevention-and-safety-benefits">Bug Prevention and Safety Benefits<a class="headerlink" href="#bug-prevention-and-safety-benefits" title="Permanent link">&para;</a></h2>
 <p>The new model eliminates a class of subtle bugs that arise from conflating positions,
 sizes, and differences. For example:</p>
 <ul>
@@ -3882,15 +3607,163 @@ sizes, and differences. For example:</p>
   preventing incorrect temperature calculations</li>
 </ul>
 </li>
-<li><strong>Safer arithmetic in safety-critical code</strong><ul>
-<li>in domains like aerospace, medical, or automotive, these checks prevent unit and
-  logic errors that could have catastrophic consequences</li>
+<li><strong>Compile‑time enforcement</strong><ul>
+<li>most mistakes caught before runtime</li>
 </ul>
 </li>
 </ul>
-<p>By making the intent explicit in code, the library helps catch most mistakes at compile
-time, not at runtime.</p>
-<h2 id="non-negativity-in-physical-equations-vs-api-design">Non-negativity in physical equations vs API design<a class="headerlink" href="#non-negativity-in-physical-equations-vs-api-design" title="Permanent link">&para;</a></h2>
+<h2 id="practical-example">Practical Example<a class="headerlink" href="#practical-example" title="Permanent link">&para;</a></h2>
+<p>Let's revisit our initial example. Here is what it can look like with the absolute
+quantities usage:</p>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<p>A food technologist is drying several samples of a specific product to estimate its
+change in moisture content (on a wet basis) during the drying process.</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">delta</span><span class="o">&lt;</span><span class="n">percent</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="c1">// (1)!</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="n">moisture_content_change</span><span class="p">(</span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">delta</span><span class="o">&lt;</span><span class="n">kg</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">water_lost</span><span class="p">,</span><span class="w"> </span><span class="c1">// (2)!</span>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">                        </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">kg</span><span class="o">&gt;</span><span class="w"> </span><span class="n">total</span><span class="p">)</span><span class="w"> </span><span class="c1">// (3)!</span>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="p">{</span>
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="w">  </span><span class="c1">// gsl_Expects(is_gt_zero(total)); (4)</span>
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">water_lost</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">total</span><span class="p">;</span>
+</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="p">}</span>
+</span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>
+</span><span id="__span-14-9"><a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">kg</span><span class="o">&gt;</span><span class="w"> </span><span class="n">initial</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="mf">2.34</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="p">,</span><span class="w"> </span><span class="mf">1.93</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="p">,</span><span class="w"> </span><span class="mf">2.43</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="w"> </span><span class="p">};</span><span class="w"> </span><span class="c1">// (5)!</span>
+</span><span id="__span-14-10"><a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">kg</span><span class="o">&gt;</span><span class="w"> </span><span class="n">dried</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="mf">1.89</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="p">,</span><span class="w"> </span><span class="mf">1.52</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="p">,</span><span class="w"> </span><span class="mf">1.92</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="w"> </span><span class="p">};</span>
+</span><span id="__span-14-11"><a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a>
+</span><span id="__span-14-12"><a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a><span class="n">quantity</span><span class="w"> </span><span class="n">total_initial</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">reduce</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cbegin</span><span class="p">(</span><span class="n">initial</span><span class="p">),</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cend</span><span class="p">(</span><span class="n">initial</span><span class="p">));</span><span class="w"> </span><span class="c1">// (6)!</span>
+</span><span id="__span-14-13"><a id="__codelineno-14-13" name="__codelineno-14-13" href="#__codelineno-14-13"></a><span class="n">quantity</span><span class="w"> </span><span class="n">total_dried</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">reduce</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">cbegin</span><span class="p">(</span><span class="n">dried</span><span class="p">),</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cend</span><span class="p">(</span><span class="n">dried</span><span class="p">));</span>
+</span><span id="__span-14-14"><a id="__codelineno-14-14" name="__codelineno-14-14" href="#__codelineno-14-14"></a>
+</span><span id="__span-14-15"><a id="__codelineno-14-15" name="__codelineno-14-15" href="#__codelineno-14-15"></a><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Initial product mass: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">total_initial</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="c1">// (7)!</span>
+</span><span id="__span-14-16"><a id="__codelineno-14-16" name="__codelineno-14-16" href="#__codelineno-14-16"></a><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Dried product mass: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">total_dried</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+</span><span id="__span-14-17"><a id="__codelineno-14-17" name="__codelineno-14-17" href="#__codelineno-14-17"></a><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Moisture content change: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">moisture_content_change</span><span class="p">(</span><span class="n">total_initial</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">total_dried</span><span class="p">,</span><span class="w"> </span><span class="n">total_initial</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="c1">// (8)!</span>
+</span></code></pre></div>
+<ol>
+<li>Theoretically a negative result is possible if the product gained water in the process of drying.</li>
+<li>Explicit delta.</li>
+<li>Absolute quantity.</li>
+<li>No longer needed as absolute quantities of mass will have a precondition of
+   being non-negative.</li>
+<li>Simple initialization of absolute quantities.</li>
+<li>Arithmetic works.</li>
+<li>Test output works.</li>
+<li>Type safe!</li>
+</ol>
+</div>
+<p>This version is concise, physically sound, and type‑safe. Function arguments can't be reordered
+and non‑negativity guarantees remove the need for manual runtime checks.</p>
+<h2 id="migration-and-backward-compatibility">Migration and Backward Compatibility<a class="headerlink" href="#migration-and-backward-compatibility" title="Permanent link">&para;</a></h2>
+<p>Although the theory in the chapters above may seem intimidating, users will not be
+significantly affected by the changes in <strong>mp-units</strong> V3.</p>
+<p>As we can see, the new code above does not differ much from our previously unsafe but
+favored version. The only difference is that we spell <code>delta</code> explicitly now, and that we
+can safely assume that absolute values of mass are non-negative. The rest looks and feels
+the same, but the new solution is safer and more expressive.</p>
+<p>The biggest migration challenge is related to the results of subtraction on two
+quantities, points, or deltas. From now on, they will result in a different type
+(i.e., <code>quantity&lt;delta&lt;...&gt;&gt;</code>) which is not implicitly convertible to an absolute
+quantity.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Before</label><label for="__tabbed_2_2">After</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">km</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">h</span><span class="o">&gt;</span><span class="w"> </span><span class="n">avg_speed</span><span class="p">(</span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">km</span><span class="o">&gt;</span><span class="w"> </span><span class="n">distance</span><span class="p">,</span><span class="w"> </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">h</span><span class="o">&gt;</span><span class="w"> </span><span class="n">duration</span><span class="p">)</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="p">{</span>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">distance</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">duration</span><span class="p">;</span>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="p">}</span>
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">km</span><span class="o">&gt;</span><span class="w"> </span><span class="n">odo1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">...;</span>
+</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">s</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ts1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">...;</span>
+</span><span id="__span-15-8"><a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">km</span><span class="o">&gt;</span><span class="w"> </span><span class="n">odo2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">...;</span>
+</span><span id="__span-15-9"><a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">s</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ts2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">...;</span>
+</span><span id="__span-15-10"><a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a><span class="c1">// quantity res = avg_speed(odo2 - odo1, ts2 - ts1);  // Compile-time error</span>
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">km</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">h</span><span class="o">&gt;</span><span class="w"> </span><span class="n">avg_speed</span><span class="p">(</span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">km</span><span class="o">&gt;</span><span class="w"> </span><span class="n">distance</span><span class="p">,</span><span class="w"> </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">h</span><span class="o">&gt;</span><span class="w"> </span><span class="n">duration</span><span class="p">)</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="p">{</span>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">distance</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">duration</span><span class="p">;</span>
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="p">}</span>
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">km</span><span class="o">&gt;</span><span class="w"> </span><span class="n">odo1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">...;</span>
+</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">s</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ts1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">...;</span>
+</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">km</span><span class="o">&gt;</span><span class="w"> </span><span class="n">odo2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">...;</span>
+</span><span id="__span-16-9"><a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">s</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ts2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">...;</span>
+</span><span id="__span-16-10"><a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a><span class="n">quantity</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">avg_speed</span><span class="p">((</span><span class="n">odo2</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">odo1</span><span class="p">).</span><span class="n">absolute</span><span class="p">(),</span><span class="w"> </span><span class="p">(</span><span class="n">ts2</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">ts1</span><span class="p">).</span><span class="n">absolute</span><span class="p">());</span><span class="w">  </span><span class="c1">// OK</span>
+</span></code></pre></div>
+</div>
+</div>
+</div>
+<p>In case of an invalid order of subtraction arguments the precondition check will fail
+at runtime only for the conversion to absolutes case. This increases safety of our
+code.</p>
+<p>Another migration challenge may be related to the usage of negative values. All of the
+ISQ base quantities besides <em>electric current</em> could be defined to be non-negative
+for absolute quantities. This means that if a user is dealing with a negative
+delta today, such code will fail the precondition check in the absolute quantity
+constructor. To fix that, the user will need to use explicit <code>delta</code> specifiers or
+construction helpers in such cases:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">m</span><span class="o">&gt;</span><span class="w"> </span><span class="n">d1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">;</span><span class="w">       </span><span class="c1">// Precondition check failure at runtime</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">delta</span><span class="o">&lt;</span><span class="n">m</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">d2</span><span class="p">(</span><span class="mi">-2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">);</span><span class="w"> </span><span class="c1">// Precondition check failure at runtime</span>
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="n">quantity</span><span class="w"> </span><span class="n">d3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">delta</span><span class="o">&lt;</span><span class="n">m</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">-2</span><span class="p">);</span><span class="w">    </span><span class="c1">// OK</span>
+</span></code></pre></div>
+<p>Regarding temperature support, in the <a href="#absolute-quantities">Absolute quantities</a> chapter,
+we said that a new abstraction will not work for offset units. However, it was
+also the case in <strong>mp-units</strong> V2. If we check
+<a href="../../../../../users_guide/framework_basics/the_affine_space/#displacement-vector-is-modeled-by-quantity">The Affine Space chapter</a> we will find a note that:</p>
+<div class="admonition quote">
+<p class="admonition-title">Quote</p>
+<p>The multiply syntax support is disabled for units that provide a point origin in
+their definition (i.e., units of temperature like <code>K</code>, <code>deg_C</code>, and <code>deg_F</code>).</p>
+</div>
+<p>We always found those confusing and required our users to be explicit about the intent
+with <code>point</code> and <code>delta</code> construction helpers. So nothing changes here from the coding
+point of view. From the design point of view, we replace some strange corner case design
+constraint with a properly named abstraction that models that behavior.</p>
+<p>Actually, V3 will improve the temperature support a lot. Thanks to the new abstraction,
+we will be able to multiply and divide absolute temperature with other quantities, but
+only if the temperature is measured in Kelvin. Also, a multiply syntax will work to
+construct such absolute quantities (e.g., <code>300 * K</code>).</p>
+<p>Last, but not least, the <code>quantity_point&lt;...&gt;</code> class template will be replaced with
+<code>quantity&lt;point&lt;...&gt;&gt;</code> syntax.</p>
+<h3 id="key-migration-rules">Key Migration Rules<a class="headerlink" href="#key-migration-rules" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>V2 Pattern</th>
+<th>V3 Equivalent</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>quantity&lt;kg&gt;</code></td>
+<td><code>quantity&lt;kg&gt;</code></td>
+<td>Before delta and now absolute</td>
+</tr>
+<tr>
+<td><code>quantity&lt;kg&gt; m = m1 - m2;</code></td>
+<td><code>quantity&lt;kg&gt; m = (m1 - m2).absolute();</code></td>
+<td>Explicit if you want abs</td>
+</tr>
+<tr>
+<td><code>quantity&lt;kg&gt; dm = m1 - m2;</code></td>
+<td><code>quantity&lt;delta&lt;kg&gt;&gt; dm = m1 - m2;</code></td>
+<td>Explicit deltas when negative value possible</td>
+</tr>
+<tr>
+<td><code>quantity_point&lt;kg&gt; p = ...;</code></td>
+<td><code>quantity&lt;point&lt;kg&gt;&gt; p = ...</code></td>
+<td>Use <code>point&lt;kg&gt;</code> wrapper</td>
+</tr>
+<tr>
+<td><code>quantity&lt;kg&gt; d = p - point&lt;kg&gt;(42);</code></td>
+<td><code>quantity&lt;delta&lt;kg&gt;&gt; d = p - point&lt;kg&gt;(42);</code></td>
+<td>Deltas must be explicit</td>
+</tr>
+</tbody>
+</table>
+<p>Most user code will continue to compile after adding explicit <code>delta</code> or <code>.absolute()</code>
+conversions where needed.</p>
+<h2 id="non-negativity-in-physical-equations-vs-api-design">Non-negativity in Physical Equations vs API Design<a class="headerlink" href="#non-negativity-in-physical-equations-vs-api-design" title="Permanent link">&para;</a></h2>
 <p>In most physical equations, the quantities we work with are expected to be
 <strong><em>non-negative amounts</em></strong>. For example, <em>mass</em>, <em>energy</em>, <em>distance</em>, and <em>duration</em>
 are all inherently non-negative in physical reality. While the mathematical abstraction
@@ -3910,11 +3783,11 @@ meaningful and would indicate a logic error in most applications.</p>
 <p>This has important implications for API design. If a function like <code>avg_speed</code> accepts
 deltas as arguments, users might inadvertently pass negative values, leading to
 nonsensical results or subtle bugs:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="c1">// Problematic: allows negative duration</span>
-</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">m</span><span class="o">/</span><span class="n">s</span><span class="o">&gt;</span><span class="w"> </span><span class="n">avg_speed</span><span class="p">(</span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">delta</span><span class="o">&lt;</span><span class="n">m</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">distance</span><span class="p">,</span><span class="w"> </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">delta</span><span class="o">&lt;</span><span class="n">s</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">duration</span><span class="p">)</span>
-</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="p">{</span>
-</span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">distance</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">duration</span><span class="p">;</span>
-</span><span id="__span-21-5"><a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a><span class="p">}</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="c1">// Problematic: allows negative duration</span>
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">m</span><span class="o">/</span><span class="n">s</span><span class="o">&gt;</span><span class="w"> </span><span class="n">avg_speed</span><span class="p">(</span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">delta</span><span class="o">&lt;</span><span class="n">m</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">distance</span><span class="p">,</span><span class="w"> </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">delta</span><span class="o">&lt;</span><span class="n">s</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">duration</span><span class="p">)</span>
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="p">{</span>
+</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">distance</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">duration</span><span class="p">;</span>
+</span><span id="__span-18-5"><a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a><span class="p">}</span>
 </span></code></pre></div>
 <p>Instead, it is safer and more physically correct to require <em>absolute</em> quantities for
 such parameters, leveraging the fact that ISQ provides <code>distance</code> and <code>duration</code> as
@@ -3922,19 +3795,19 @@ non-negative quantities:</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Simple</label><label for="__tabbed_3_2">Typed</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="c1">// Safer: enforces non-negativity</span>
-</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">m</span><span class="o">/</span><span class="n">s</span><span class="o">&gt;</span><span class="w"> </span><span class="n">avg_speed</span><span class="p">(</span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">m</span><span class="o">&gt;</span><span class="w"> </span><span class="n">distance</span><span class="p">,</span><span class="w"> </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">s</span><span class="o">&gt;</span><span class="w"> </span><span class="n">duration</span><span class="p">)</span>
-</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a><span class="p">{</span>
-</span><span id="__span-22-4"><a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">distance</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">duration</span><span class="p">;</span>
-</span><span id="__span-22-5"><a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a><span class="p">}</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="c1">// Safer: enforces non-negativity</span>
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">m</span><span class="o">/</span><span class="n">s</span><span class="o">&gt;</span><span class="w"> </span><span class="n">avg_speed</span><span class="p">(</span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">m</span><span class="o">&gt;</span><span class="w"> </span><span class="n">distance</span><span class="p">,</span><span class="w"> </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">s</span><span class="o">&gt;</span><span class="w"> </span><span class="n">duration</span><span class="p">)</span>
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="p">{</span>
+</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">distance</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">duration</span><span class="p">;</span>
+</span><span id="__span-19-5"><a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a><span class="p">}</span>
 </span></code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="c1">// Safer: enforces non-negativity</span>
-</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">speed</span><span class="p">[</span><span class="n">m</span><span class="o">/</span><span class="n">s</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">avg_speed</span><span class="p">(</span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">distance</span><span class="p">[</span><span class="n">m</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">distance</span><span class="p">,</span><span class="w"> </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">duration</span><span class="p">[</span><span class="n">s</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">duration</span><span class="p">)</span>
-</span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a><span class="p">{</span>
-</span><span id="__span-23-4"><a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">distance</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">duration</span><span class="p">;</span>
-</span><span id="__span-23-5"><a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a><span class="p">}</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="c1">// Safer: enforces non-negativity</span>
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">speed</span><span class="p">[</span><span class="n">m</span><span class="o">/</span><span class="n">s</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">avg_speed</span><span class="p">(</span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">distance</span><span class="p">[</span><span class="n">m</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">distance</span><span class="p">,</span><span class="w"> </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">duration</span><span class="p">[</span><span class="n">s</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">duration</span><span class="p">)</span>
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="p">{</span>
+</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">distance</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">duration</span><span class="p">;</span>
+</span><span id="__span-20-5"><a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="p">}</span>
 </span></code></pre></div>
 </div>
 </div>
@@ -3943,35 +3816,48 @@ non-negative quantities:</p>
 <em>durations</em> or <em>distances</em> from entering your calculations. This reduces the risk of bugs,
 makes your code more robust, and better reflects the intent of most physical equations.</p>
 <h2 id="new-opportunities">New opportunities<a class="headerlink" href="#new-opportunities" title="Permanent link">&para;</a></h2>
-<p>The new syntax simplifies the API as one <code>quantity</code> class template will now serve all quantity
-variations (possibly even more in the future). It also allows us to model quantities that
-were impossible to express before without some workarounds.</p>
+<p>The new syntax allows us to model quantities that were impossible to express before
+without some workarounds.</p>
 <p>For example, we can now correctly calculate <em>Carnot engine efficiency</em> with any of the
 following:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">temp_cold</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">300.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">K</span><span class="p">;</span>
-</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a><span class="n">quantity</span><span class="w"> </span><span class="n">temp_hot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">500.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">K</span><span class="p">;</span>
-</span><span id="__span-24-3"><a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a><span class="n">quantity</span><span class="w"> </span><span class="n">carnot_eff_1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">temp_cold</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">temp_hot</span><span class="p">;</span>
-</span><span id="__span-24-4"><a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a><span class="n">quantity</span><span class="w"> </span><span class="n">carnot_eff_2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">temp_hot</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">temp_cold</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">temp_hot</span><span class="p">;</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">temp_cold</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">300.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">K</span><span class="p">;</span>
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="n">quantity</span><span class="w"> </span><span class="n">temp_hot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">500.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">K</span><span class="p">;</span>
+</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="n">quantity</span><span class="w"> </span><span class="n">carnot_eff_1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">temp_cold</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">temp_hot</span><span class="p">;</span>
+</span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="n">quantity</span><span class="w"> </span><span class="n">carnot_eff_2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">temp_hot</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">temp_cold</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">temp_hot</span><span class="p">;</span>
 </span></code></pre></div>
 <p>In the above code, we can easily create absolute or delta values of temperatures and perform
 arithmetic on them. Previously, we had to create deltas from both points artificially
 with:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">temp_cold</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">point</span><span class="o">&lt;</span><span class="n">K</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">300.</span><span class="p">);</span>
-</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a><span class="n">quantity</span><span class="w"> </span><span class="n">temp_hot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">point</span><span class="o">&lt;</span><span class="n">K</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">500.</span><span class="p">);</span>
-</span><span id="__span-25-3"><a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a><span class="n">quantity</span><span class="w"> </span><span class="n">carnot_eff_1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">temp_cold</span><span class="p">.</span><span class="n">quantity_from_zero</span><span class="p">()</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">temp_hot</span><span class="p">.</span><span class="n">quantity_from_zero</span><span class="p">();</span>
-</span><span id="__span-25-4"><a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a><span class="n">quantity</span><span class="w"> </span><span class="n">carnot_eff_2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">temp_hot</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">temp_cold</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">temp_hot</span><span class="p">.</span><span class="n">quantity_from_zero</span><span class="p">();</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">temp_cold</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">point</span><span class="o">&lt;</span><span class="n">K</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">300.</span><span class="p">);</span>
+</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a><span class="n">quantity</span><span class="w"> </span><span class="n">temp_hot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">point</span><span class="o">&lt;</span><span class="n">K</span><span class="o">&gt;</span><span class="p">(</span><span class="mf">500.</span><span class="p">);</span>
+</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a><span class="n">quantity</span><span class="w"> </span><span class="n">carnot_eff_1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">temp_cold</span><span class="p">.</span><span class="n">quantity_from_zero</span><span class="p">()</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">temp_hot</span><span class="p">.</span><span class="n">quantity_from_zero</span><span class="p">();</span>
+</span><span id="__span-22-4"><a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a><span class="n">quantity</span><span class="w"> </span><span class="n">carnot_eff_2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">temp_hot</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">temp_cold</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">temp_hot</span><span class="p">.</span><span class="n">quantity_from_zero</span><span class="p">();</span>
 </span></code></pre></div>
 <p>It worked, but was far from being physically pure and pretty.</p>
-<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">&para;</a></h2>
-<p>We believe that adding absolute quantities will be a significant improvement in the library,
-making programs easier to reason about, review, and maintain. The new model is not adding
-complexity arbitrarily, but rather exposing the complexity that already exists in physics
-and providing a type-safe way to manage it. This is especially critical in scientific,
-engineering, and safety-critical domains, where correctness is paramount.
-The new model brings C++ code closer to the clarity and rigor of physical textbooks,
-making it easier for both domain experts and programmers to collaborate.</p>
-<p>We plan to deliver the features mentioned in this post as a part of <strong>mp-units</strong> V3.</p>
-<p>Please share your feedback.</p>
+<h2 id="design-philosophy-and-standardization-rationale">Design Philosophy and Standardization Rationale<a class="headerlink" href="#design-philosophy-and-standardization-rationale" title="Permanent link">&para;</a></h2>
+<p>Absolute quantities make physical semantics explicit while simplifying common use cases.
+They expose existing conceptual complexity rather than adding new layers. The design is:</p>
+<ul>
+<li><strong>Consistent with ISQ</strong> – mirrors the distinction between displacement, position, and
+  difference.</li>
+<li><strong>Predictable</strong> – clear subtraction and conversion rules.</li>
+<li><strong>Scalable</strong> – a single <code>quantity</code> class handles all variants via wrappers.</li>
+<li><strong>Safe</strong> – non‑negativity and offset‑unit rules prevent misuse.</li>
+<li><strong>Extensible</strong> – additional quantity abstractions may be added in the future by simply
+  introducing a new wrapper (e.g., anchored quantities).</li>
+</ul>
+<p>For standardization, this model brings three tangible benefits:</p>
+<ol>
+<li><strong>Closer alignment with physical reasoning</strong> used by scientists and engineers.</li>
+<li><strong>Improved readability and verification</strong> in generic C++ code.</li>
+<li><strong>Zero runtime overhead</strong> — all checks are compile‑time or lightweight preconditions.</li>
+</ol>
+<h2 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Permanent link">&para;</a></h2>
+<p>Adding <strong>absolute quantities</strong> elevates <code>mp-units</code> from a dimensional analysis tool to
+a true <strong>physical reasoning framework</strong>. The proposal clarifies semantics, improves
+safety, and aligns code directly with equations found in textbooks. This is not extra
+complexity—it’s the formalisation of the real structure of physical space in C++ types.</p>
+<p>We plan to deliver this as part of <strong>mp-units V3</strong> and welcome community and WG21 feedback.</p>
 
 
 

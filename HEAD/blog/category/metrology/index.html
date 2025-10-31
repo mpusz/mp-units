@@ -2679,7 +2679,7 @@ You're not viewing the latest version.
           
           <li class="md-meta__item">
             
-              22 min read
+              17 min read
             
           </li>
         
@@ -2688,28 +2688,24 @@ You're not viewing the latest version.
     </div>
   </header>
   <div class="md-post__content md-typeset">
-    <h2 id="introducing-absolute-quantities"><a class="toclink" href="../../2025/06/16/introducing-absolute-quantities/">Introducing absolute quantities</a></h2>
-<p>An <strong>absolute quantity</strong> is a quantity that represents an <strong><em>absolute amount</em></strong> of a physical
-property, measured against a well-established, true zero. For example: a <em>temperature</em>
-in Kelvin, a <em>mass</em> in kilograms, or a <em>length</em> in meters (as a size, not a position).</p>
-<p>This is in contrast to:</p>
+    <h2 id="introducing-absolute-quantities"><a class="toclink" href="../../2025/06/16/introducing-absolute-quantities/">Introducing Absolute Quantities</a></h2>
+<p>An <strong>absolute quantity</strong> represents an <strong>absolute amount</strong> of a physical property —
+measured from a true, physically meaningful zero. Examples include <em>mass</em> in kilograms,
+<em>temperature</em> in Kelvin, or <em>length</em> in meters (as a size, not a position). Such
+quantities live on a <strong>ratio scale</strong> and have a well-defined origin; negative values are
+typically meaningless.</p>
+<p>Absolute quantities stand in contrast to:</p>
 <ul>
-<li>an affine <strong>point</strong> (e.g., 20 °C, 100 m above mean sea level), which is measured relative
-  to an arbitrary or user-defined origin (interval scale), and</li>
-<li>a <strong>delta</strong> (e.g., 10 K, -5 kg), which represents a difference or change between two
-  quantities (vector/difference).</li>
+<li><strong>Affine points</strong> (e.g., <span class="arithmatex">\(20\ \mathrm{°C}\)</span>, <span class="arithmatex">\(100\ \mathrm{m}\ \mathrm{AMSL}\)</span>) — values
+  measured relative to an arbitrary or conventional origin.</li>
+<li><strong>Deltas</strong> (e.g., <span class="arithmatex">\(10\ \mathrm{K}\)</span>, <span class="arithmatex">\(–5\ \mathrm{kg}\)</span>) — differences between two values.</li>
 </ul>
-<p>Absolute quantities are measured on a <strong><em>ratio scale</em></strong>—they have a true, physically
-meaningful zero, and negative values are typically not allowed by convention
-(e.g., negative mass is not physically meaningful). Arithmetic operations on
-absolute quantities (addition, multiplication, etc.) are well-defined and match physical
-intuition.</p>
-<p>We are considering making absolute quantities the default quantity abstraction in
-<strong>mp-units</strong> V3, as they most closely match the way physical quantities are presented
-in scientific literature and practice.</p>
+<p>Arithmetic on absolute quantities behaves like ordinary algebra: addition, subtraction,
+and scaling are well-defined and map naturally to physical reasoning. This article
+proposes making absolute quantities the <strong>default abstraction</strong> in <strong>mp-units V3</strong>,
+reflecting how scientists express equations in practice.</p>
 <hr />
-<p><em>Note: This article underwent significant revisions on October 31, 2025, to improve
-       clarity, accuracy, and depth of content.</em></p>
+<p><em>Note: Revised October 31 2025 for clarity, accuracy, and completeness.</em></p>
 
     
       <nav class="md-post__action">
