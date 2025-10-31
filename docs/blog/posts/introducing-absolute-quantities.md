@@ -32,7 +32,9 @@ _Note: Revised October 31 2025 for clarity, accuracy, and completeness._
 
 <!-- more -->
 
-## Background: Affine Space Recap
+## Background
+
+### Affine Space Recap
 
 Until now, **mp-units** modeled two fundamental abstractions:
 
@@ -50,7 +52,33 @@ Conversely, using deltas everywhere hides physical intent and allows nonsensical
 
 The new **absolute quantity** abstraction aims to bridge that gap.
 
-## Current Pain Points
+### Quantity abstractions in physics
+
+Below is a summary table comparing the three main quantity abstractions:
+
+| Feature              |         Point          |        Absolute         |         Delta          |
+|----------------------|:----------------------:|:-----------------------:|:----------------------:|
+| **Physical Model**   |     Interval Scale     |       Ratio Scale       |  Vector / Difference   |
+| **Example**          |   20 °C, 100 m AMSL    |    293.15 K, 100 kg     |      10 K, -5 kg       |
+| **Absolute Zero?**   |  No (Arbitrary Zero)   |     Yes (True Zero)     |          N/A           |
+| **Allows Negative?** |      Yes (-10 °C)      |       No (Opt-in)       |      Yes (-10 m)       |
+| **A + A**            | Error (20 °C + 10 °C)  | Absolute (10 kg + 5 kg) |         Delta          |
+| **A - A**            | Delta (30 °C - 10 °C)  |  Delta (50 kg - 5 kg)   |         Delta          |
+| **scalar * A**       |   Error (2 * 20 °C)    |  Absolute (2 * 10 kg)   |         Delta          |
+| **A / A**            |         Error          |  scalar (10 kg / 5 kg)  |         scalar         |
+| **API**              | `quantity<point<...>>` |     `quantity<...>`     | `quantity<delta<...>>` |
+
+This table summarizes the key differences in semantics, API, and physical meaning for each
+abstraction. Use it as a quick reference when deciding which concept to use in your code.
+
+
+## Motivation
+
+This section explains the driving reasons for introducing absolute quantities. It
+highlights the practical pain points, limitations, and sources of confusion in the
+current model, motivating the need for a new abstraction.
+
+### Current Pain Points
 
 1. **Limited arithmetic for points** – Points can’t be multiplied, divided, or accumulated.
    This often forces the users to convert the quantity point to a delta with either
@@ -66,7 +94,9 @@ The new **absolute quantity** abstraction aims to bridge that gap.
 3. **Error-prone simplifications** – Developers frequently replace points with deltas for
    convenience, losing safety and physical clarity.
 
-!!! example
+### Example
+
+!!! example "Mass Balance in Drying Process"
 
     A food technologist is drying several samples of a specific product to estimate its
     change in moisture content (on a wet basis) during the drying process.
@@ -120,7 +150,13 @@ In the above example:
 - `total` should conceptually be non-negative absolute amount of _mass_, yet the type system
   doesn’t enforce it.
 
-## Position of Absolute Quantities Among Abstractions
+## Semantics
+
+This section details the semantics of absolute quantities, their relationship to other
+abstractions, and how they interact in code and mathematics. It clarifies the rules,
+conversions, and algebraic properties that underpin the new model.
+
+### Position of Absolute Quantities Among Abstractions
 
 | Feature                     |   Point    |     Absolute      |   Delta   |
 |-----------------------------|:----------:|:-----------------:|:---------:|
@@ -143,7 +179,7 @@ to the use of offset units. They can't use those because they must remain absolu
 instead of being measured relative to some custom origin.
 
 
-## Simplified API in V3
+### Simplified API in V3
 
 As I mentioned in my [previous post](bringing-quantity-safety-to-the-next-level.md#should-we-get-rid-of-a-quantity_point),
 we are seriously considering removing the `quantity_point` class template and replacing it
@@ -187,27 +223,7 @@ This mirrors the way physicists write equations: absolute values by default, wit
 Δ when needed.
 
 
-## Quantity abstractions in physics
-
-Below is a summary table comparing the three main quantity abstractions:
-
-| Feature              |         Point          |        Absolute         |         Delta          |
-|----------------------|:----------------------:|:-----------------------:|:----------------------:|
-| **Physical Model**   |     Interval Scale     |       Ratio Scale       |  Vector / Difference   |
-| **API**              | `quantity<point<...>>` |     `quantity<...>`     | `quantity<delta<...>>` |
-| **Example**          |   20 °C, 100 m AMSL    |    293.15 K, 100 kg     |      10 K, -5 kg       |
-| **Absolute Zero?**   |  No (Arbitrary Zero)   |     Yes (True Zero)     |          N/A           |
-| **Allows Negative?** |      Yes (-10 °C)      |       No (Opt-in)       |      Yes (-10 m)       |
-| **A + A**            | Error (20 °C + 10 °C)  | Absolute (10 kg + 5 kg) |         Delta          |
-| **A - A**            | Delta (30 °C - 10 °C)  |  Delta (50 kg - 5 kg)   |         Delta          |
-| **scalar * A**       |   Error (2 * 20 °C)    |  Absolute (2 * 10 kg)   |         Delta          |
-| **A / A**            |         Error          |  scalar (10 kg / 5 kg)  |         scalar         |
-
-This table summarizes the key differences in semantics, API, and physical meaning for each
-abstraction. Use it as a quick reference when deciding which concept to use in your code.
-
-
-## Alignment with scientific practice
+### Alignment with scientific practice
 
 The proposed abstractions mirror the way quantities are treated in physics and
 engineering textbooks:
@@ -223,7 +239,7 @@ but also directly maps to the equations and reasoning found in scientific litera
 This makes code easier to review, verify, and maintain.
 
 
-## Conversions Between Abstractions
+### Conversions Between Abstractions
 
 As absolute quantities share properties of both deltas and points with implicit origins,
 they should be explicitly convertible to those:
@@ -286,13 +302,13 @@ To summarize:
 |    **Delta** | origin + delta → point | `.absolute()` |        Identity        |
 
 
-## Arithmetic Semantics
+### Arithmetic Semantics
 
 Affine space arithmetic is well-defined and commonly used in physics and engineering.
 With the introduction of absolute quantities, it is important to clarify the meaning
 of arithmetic operations involving points, absolutes, and deltas.
 
-### Addition
+#### Addition
 
 **Adding two absolute quantities** (e.g., $10\ \mathrm{kg} + 5\ \mathrm{kg}$) produces
 another absolute quantity. This is simply the sum of two non-negative amounts, both
@@ -330,7 +346,7 @@ Here is the summary of all the addition operations:
     quantity res3 = d + abs;                   // Delta
     ```
 
-### Subtraction
+#### Subtraction
 
 Subtraction in the context of physical quantities is best understood as finding the
 difference between two amounts.
@@ -382,7 +398,7 @@ Here is a summary of all of the subtraction operations
     quantity res5 = d - abs;                   // Delta
     ```
 
-### Interpolation
+#### Interpolation
 
 **Interpolation of absolute quantities** (e.g., finding a value between $a$ and $b$)
 is well-defined and results in another absolute quantity. This is commonly used in
@@ -390,7 +406,7 @@ physics and engineering for averaging, blending, or estimating values between tw
 points.
 
 
-## Non-negativity
+#### Non-negativity
 
 Non-negativity of absolute quantities is meant to be an opt-in feature in the quantity
 specification. For example, we can pass a `non_negative` tag type in quantity definition:
@@ -410,9 +426,9 @@ derived quantities do not inherit this property. If this result is assigned to a
 typed/named quantity then the non-negativity will be check then (if set).
 
 
-## Interesting Quantity Types
+### Interesting Quantity Types
 
-### Time
+#### Time
 
 Let's look closer at the quantity of _time_. There is no way to measure its absolute value
 as we don't even know where (when?) the _time_ axis starts... Only _time_ points and
@@ -449,7 +465,7 @@ still use simple quantities and the library will reason about them correctly:
 - `quantity<delta<s>>` or `delta<s>(-3)` -> delta _duration_
 - `quantity<point<s>>` or `point<s>(94573457438583)` -> _time_ point
 
-### Length
+#### Length
 
 A somewhat similar case might be the _length_ quantity, as there is no one well-established
 zero origin that serves as a reference for all _length_ measurements. However, asking the
@@ -469,7 +485,7 @@ with each object having its own _length_ measurement origin.
     confused with code representing positions. For example, `quantity<m>` is used
     for the _length_ of a rod, not its _position_ in space.
 
-### Electric Current
+#### Electric Current
 
 _Electric current_ is the only ISQ base quantity that has a well defined zero point
 (no _current_ flow in the wire), but its values can be both positive and negative
@@ -482,7 +498,7 @@ quantity.
 Absolute _electric current_ values should be available, but should not perform a
 non-negative precondition check on construction and assignment.
 
-### Temperature
+#### Temperature
 
 As we pointed out before, it will be possible to form absolute quantity of _temperature_,
 but only in the unit is (potentially prefixed) Kelvin. For offset unit like degree
@@ -499,7 +515,7 @@ quantity kinetic_energy = 3 / 2 * si::boltzmann_constant * temp.in(K).absolute()
 ```
 
 
-## Bug Prevention and Safety Benefits
+### Bug Prevention and Safety Benefits
 
 The new model eliminates a class of subtle bugs that arise from conflating positions,
 sizes, and differences. For example:
@@ -517,12 +533,12 @@ sizes, and differences. For example:
     - most mistakes caught before runtime
 
 
-## Practical Example
+### Revised Example
 
 Let's revisit our initial example. Here is what it can look like with the absolute
 quantities usage:
 
-!!! example
+!!! example "Mass Balance in Drying Process"
 
     A food technologist is drying several samples of a specific product to estimate its
     change in moisture content (on a wet basis) during the drying process.
@@ -660,7 +676,13 @@ Most user code will continue to compile after adding explicit `delta` or `.absol
 conversions where needed.
 
 
-## Non-negativity in Physical Equations vs API Design
+## Rationale
+
+Here we discuss the rationale behind the proposed changes, including the design philosophy,
+alignment with scientific practice, and the benefits for standardization and future
+extensibility.
+
+### Non-negativity in Physical Equations vs API Design
 
 In most physical equations, the quantities we work with are expected to be
 **_non-negative amounts_**. For example, _mass_, _energy_, _distance_, and _duration_
@@ -681,7 +703,7 @@ While the formula uses deltas, in almost all practical scenarios, both $\Delta l
 and $\Delta time$ are non-negative. A negative _duration_, for example, is not physically
 meaningful and would indicate a logic error in most applications.
 
-### Prefer absolute quantities for non-negative deltas
+#### Prefer absolute quantities for non-negative deltas
 
 This has important implications for API design. If a function like `avg_speed` accepts
 deltas as arguments, users might inadvertently pass negative values, leading to
@@ -724,7 +746,7 @@ _durations_ or _distances_ from entering your calculations. This reduces the ris
 makes your code more robust, and better reflects the intent of most physical equations.
 
 
-## New opportunities
+### New opportunities
 
 The new syntax allows us to model quantities that were impossible to express before
 without some workarounds.
@@ -753,7 +775,7 @@ quantity carnot_eff_2 = (temp_hot - temp_cold) / temp_hot.quantity_from_zero();
 It worked, but was far from being physically pure and pretty.
 
 
-## Design Philosophy and Standardization Rationale
+### Design Philosophy and Standardization
 
 Absolute quantities make physical semantics explicit while simplifying common use cases.
 They expose existing conceptual complexity rather than adding new layers. The design is:
