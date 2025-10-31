@@ -218,17 +218,17 @@ static_assert(std::is_same_v<decltype(q3), quantity<point<kg>>>);
 
 Below is a summary table comparing the three main quantity abstractions:
 
-| Feature              |         Point          |         Absolute         |         Delta          |
-|----------------------|:----------------------:|:------------------------:|:----------------------:|
-| **Physical Model**   |     Interval Scale     |       Ratio Scale        |  Vector / Difference   |
-| **API**              | `quantity<point<...>>` |     `quantity<...>`      | `quantity<delta<...>>` |
-| **Example**          |   20 °C, 100 m AMSL    |     293.15 K, 100 kg     |      10 K, -5 kg       |
-| **Absolute Zero?**   |  No (Arbitrary Zero)   |     Yes (True Zero)      |          N/A           |
-| **Allows Negative?** |      Yes (-10 °C)      | No (Physical convention) |      Yes (-10 m)       |
-| **A + A**            | Error (20 °C + 10 °C)  | Absolute (10 kg + 5 kg)  |         Delta          |
-| **A - A**            | Delta (30 °C - 10 °C)  |   Delta (50 kg - 5 kg)   |         Delta          |
-| **scalar * A**       |   Error (2 * 20 °C)    |   Absolute (2 * 10 kg)   |         Delta          |
-| **A / A**            |         Error          |  scalar (10 kg / 5 kg)   |         scalar         |
+| Feature              |         Point          |        Absolute         |         Delta          |
+|----------------------|:----------------------:|:-----------------------:|:----------------------:|
+| **Physical Model**   |     Interval Scale     |       Ratio Scale       |  Vector / Difference   |
+| **API**              | `quantity<point<...>>` |     `quantity<...>`     | `quantity<delta<...>>` |
+| **Example**          |   20 °C, 100 m AMSL    |    293.15 K, 100 kg     |      10 K, -5 kg       |
+| **Absolute Zero?**   |  No (Arbitrary Zero)   |     Yes (True Zero)     |          N/A           |
+| **Allows Negative?** |      Yes (-10 °C)      |       No (Opt-in)       |      Yes (-10 m)       |
+| **A + A**            | Error (20 °C + 10 °C)  | Absolute (10 kg + 5 kg) |         Delta          |
+| **A - A**            | Delta (30 °C - 10 °C)  |  Delta (50 kg - 5 kg)   |         Delta          |
+| **scalar * A**       |   Error (2 * 20 °C)    |  Absolute (2 * 10 kg)   |         Delta          |
+| **A / A**            |         Error          |  scalar (10 kg / 5 kg)  |         scalar         |
 
 This table summarizes the key differences in semantics, API, and physical meaning for each
 abstraction. Use it as a quick reference when deciding which concept to use in your code.
@@ -240,7 +240,7 @@ The proposed abstractions mirror the way quantities are treated in physics and
 engineering textbooks:
 
 - **Absolute quantities** (e.g., _mass_, _energy_, _length_) are always measured from
-  a natural zero and are non-negative.
+  a natural zero and are mostly non-negative.
 - **Points** (e.g., _position_, _temperature_ on a relative scale) are always defined
   relative to an origin.
 - **Deltas** (differences) are the result of subtracting two points or two absolutes.
@@ -248,6 +248,26 @@ engineering textbooks:
 This correspondence ensures that code written with **mp-units** is not only type-safe,
 but also directly maps to the equations and reasoning found in scientific literature.
 This makes code easier to review, verify, and maintain.
+
+
+## Non-negativity
+
+Non-negativity of absolute quantities is meant to be an opt-in feature in the quantity
+specification. For example, we can pass a `non_negative` tag type in quantity definition:
+
+```cpp
+inline constexpr struct mass final : quantity_spec<dim_length, non_negative> {} mass;
+```
+
+With that, we will be able to mark any quantity as non-negative and this property will be
+inherited by the subquantities in the quantity hierarchy tree of the same kind.
+
+We could also derive non-negativity for derived quantities based on their equations.
+A non-negative flag could be set only if all of the components in the equations are
+marked as non-negative. However, we will not be able to account for a negative scalar
+possibly used in an equation. This is why it is probably better to assume that ad-hoc
+derived quantities do not inherit this property. If this result is assigned to a
+typed/named quantity then the non-negativity will be check then (if set).
 
 
 ## Conversions
@@ -304,7 +324,7 @@ quantity<point<K>> temp2(temp1);                   // OK
 quantity<point<C>> temp3(temp1);                   // OK
 ```
 
-Below is a concise conversion matrix that summarises what conversions are meaningful and
+Below is a concise conversion matrix that summarizes what conversions are meaningful and
 how they should be performed. Rows are the source abstraction, and columns are the target.
 
 |    From \ To |                   Point                    |       Absolute       |                    Delta                     |
@@ -532,7 +552,7 @@ quantities usage:
     2. Explicit delta.
     3. Absolute quantity.
     4. No longer needed as absolute quantities of mass will have a precondition of
-    eing non-negative.
+       being non-negative.
     5. Simple initialization of absolute quantities.
     6. Arithmetic works.
     7. Test output works.
@@ -661,7 +681,7 @@ of _time_ at all. It only provides _duration_ defined as:
 
 As long as absolute `quantity<isq::time[s]>` may seem off, `quantity<isq::duration[s]>`
 is OK as an absolute quantity. Durations typically should be non-negative as well.
-If we need a negative duration than `quantity<delta<isq::duration[s]>>` makes sense.
+If we need a negative duration then `quantity<delta<isq::duration[s]>>` makes sense.
 
 `isq::time` should be reserved for affine space point only
 (e.g., `quantity<point<isq::time>[s]>`). You can find more about this in my
@@ -703,11 +723,27 @@ _Electric current_ is the only ISQ base quantity that has a well defined zero po
 depending on the direction the current flows.
 
 We could be tempted to model _electric current_ as the 1-dimensional vector quantity,
- but probably it is not the best idea. It is officially defined as a signed scalar
- quantity.
+but probably it is not the best idea. It is officially defined as a signed scalar
+quantity.
 
 Absolute _electric current_ values should be available, but should not perform a
-non-negative precodition check on construction and assignment.
+non-negative precondition check on construction and assignment.
+
+### What about _temperature_?
+
+As we pointed out before, it will be possible to form absolute quantity of _temperature_,
+but only in the unit is (potentially prefixed) Kelvin. For offset unit like degree
+Celsius it will not be possible.
+
+If the user has a temperature point in Celsius and wants to treat it as an absolute
+quantity and pass it to some quantity equation, then such point first needs to
+be converted to use Kelvin as its unit and then we need to create an absolute
+quantity from it:
+
+```cpp
+quantity temp = point<deg_C>(21);
+quantity kinetic_energy = 3 / 2 * si::boltzmann_constant * temp.in(K).absolute();
+```
 
 
 ## Preventing bugs and improving code safety
@@ -829,8 +865,10 @@ It worked, but was far from being physically pure and pretty.
 ## Summary
 
 We believe that adding absolute quantities will be a significant improvement in the library,
-making programs easier to reason about, review, and maintain. This is especially critical
-in scientific, engineering, and safety-critical domains, where correctness is paramount.
+making programs easier to reason about, review, and maintain. The new model is not adding
+complexity arbitrarily, but rather exposing the complexity that already exists in physics
+and providing a type-safe way to manage it. This is especially critical in scientific,
+engineering, and safety-critical domains, where correctness is paramount.
 The new model brings C++ code closer to the clarity and rigor of physical textbooks,
 making it easier for both domain experts and programmers to collaborate.
 
