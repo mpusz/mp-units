@@ -34,90 +34,90 @@ include(GNUInstallDirs)
 
 # check if libc++ is being used
 include(CheckLibcxxInUse)
-check_libcxx_in_use(${projectPrefix}LIBCXX)
+check_libcxx_in_use(MP_UNITS_LIBCXX)
 
 # project build options
-option(${projectPrefix}BUILD_AS_SYSTEM_HEADERS "Export library as system headers" OFF)
-option(${projectPrefix}BUILD_CXX_MODULES "Add C++ modules to the list of default targets" OFF)
-option(${projectPrefix}BUILD_INSTALL "Install the library" ON)
+option(MP_UNITS_BUILD_AS_SYSTEM_HEADERS "Export library as system headers" OFF)
+option(MP_UNITS_BUILD_CXX_MODULES "Add C++ modules to the list of default targets" OFF)
+option(MP_UNITS_BUILD_INSTALL "Install the library" ON)
 
-message(STATUS "${projectPrefix}BUILD_AS_SYSTEM_HEADERS: ${${projectPrefix}BUILD_AS_SYSTEM_HEADERS}")
-message(STATUS "${projectPrefix}BUILD_CXX_MODULES: ${${projectPrefix}BUILD_CXX_MODULES}")
-message(STATUS "${projectPrefix}BUILD_INSTALL: ${${projectPrefix}BUILD_INSTALL}")
+message(STATUS "MP_UNITS_BUILD_AS_SYSTEM_HEADERS: ${MP_UNITS_BUILD_AS_SYSTEM_HEADERS}")
+message(STATUS "MP_UNITS_BUILD_CXX_MODULES: ${MP_UNITS_BUILD_CXX_MODULES}")
+message(STATUS "MP_UNITS_BUILD_INSTALL: ${MP_UNITS_BUILD_INSTALL}")
 
-if(${projectPrefix}BUILD_AS_SYSTEM_HEADERS)
-    set(${projectPrefix}_AS_SYSTEM SYSTEM)
+if(MP_UNITS_BUILD_AS_SYSTEM_HEADERS)
+    set(MP_UNITS_AS_SYSTEM SYSTEM)
 endif()
 
 # check for C++ features
-check_cxx_feature_supported(__cpp_lib_format ${projectPrefix}LIB_FORMAT_SUPPORTED)
-check_cxx_feature_supported(__cpp_explicit_this_parameter ${projectPrefix}EXPLICIT_THIS_PARAMETER_SUPPORTED)
-check_cxx_feature_supported("__cpp_constexpr_exceptions >= 202411L" ${projectPrefix}CONSTEXPR_EXCEPTIONS_SUPPORTED)
+check_cxx_feature_supported(__cpp_lib_format MP_UNITS_LIB_FORMAT_SUPPORTED)
+check_cxx_feature_supported(__cpp_explicit_this_parameter MP_UNITS_EXPLICIT_THIS_PARAMETER_SUPPORTED)
+check_cxx_feature_supported("__cpp_constexpr_exceptions >= 202411L" MP_UNITS_CONSTEXPR_EXCEPTIONS_SUPPORTED)
 
 # libc++ has a basic supports for std::format but does not set __cpp_lib_format
 # https://github.com/llvm/llvm-project/issues/77773
-if(NOT ${projectPrefix}LIB_FORMAT_SUPPORTED AND ${projectPrefix}LIBCXX)
+if(NOT MP_UNITS_LIB_FORMAT_SUPPORTED AND MP_UNITS_LIBCXX)
     if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "17")
         message(STATUS "Clang 17+ with libc++ detected, overriding `std::format` support")
-        set(${projectPrefix}LIB_FORMAT_SUPPORTED ON)
+        set(MP_UNITS_LIB_FORMAT_SUPPORTED ON)
     endif()
     if(CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "16")
         message(STATUS "AppleClang 16+ with libc++ detected, overriding `std::format` support")
-        set(${projectPrefix}LIB_FORMAT_SUPPORTED ON)
+        set(MP_UNITS_LIB_FORMAT_SUPPORTED ON)
     endif()
 endif()
 
 # clang++-18 supports explicit `this` parameter
 # https://github.com/llvm/llvm-project/issues/82780
-if(NOT ${projectPrefix}EXPLICIT_THIS_PARAMETER_SUPPORTED
+if(NOT MP_UNITS_EXPLICIT_THIS_PARAMETER_SUPPORTED
    AND CMAKE_CXX_STANDARD GREATER_EQUAL 23
    AND CMAKE_CXX_COMPILER_ID STREQUAL "Clang"
    AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "18"
 )
     message(STATUS "Clang 18+ detected, overriding `no CRTP` support")
-    set(${projectPrefix}EXPLICIT_THIS_PARAMETER_SUPPORTED ON)
+    set(MP_UNITS_EXPLICIT_THIS_PARAMETER_SUPPORTED ON)
 endif()
 
 # project API settings
-option(${projectPrefix}API_STD_FORMAT "Enable `std::format` support" ${${projectPrefix}LIB_FORMAT_SUPPORTED})
-option(${projectPrefix}API_NO_CRTP "Enable class definitions without CRTP idiom"
-       ${${projectPrefix}EXPLICIT_THIS_PARAMETER_SUPPORTED}
+option(MP_UNITS_API_STD_FORMAT "Enable `std::format` support" ${MP_UNITS_LIB_FORMAT_SUPPORTED})
+option(MP_UNITS_API_NO_CRTP "Enable class definitions without CRTP idiom"
+       ${MP_UNITS_EXPLICIT_THIS_PARAMETER_SUPPORTED}
 )
-option(${projectPrefix}API_THROWING_CONSTRAINTS "Enable throwing constraints"
-       ${projectPrefix}CONSTEXPR_EXCEPTIONS_SUPPORTED
+option(MP_UNITS_API_THROWING_CONSTRAINTS "Enable throwing constraints"
+       MP_UNITS_CONSTEXPR_EXCEPTIONS_SUPPORTED
 )
-option(${projectPrefix}API_FREESTANDING "Builds only freestanding part of the library" OFF)
-set(${projectPrefix}API_CONTRACTS GSL-LITE CACHE STRING "Enable contract checking")
-check_cache_var_values(API_CONTRACTS NONE GSL-LITE MS-GSL)
-option(${projectPrefix}API_NATURAL_UNITS "Enables natural units support" ON)
+option(MP_UNITS_API_FREESTANDING "Builds only freestanding part of the library" OFF)
+set(MP_UNITS_API_CONTRACTS GSL-LITE CACHE STRING "Enable contract checking")
+check_cache_var_values(MP_UNITS_API_CONTRACTS NONE GSL-LITE MS-GSL)
+option(MP_UNITS_API_NATURAL_UNITS "Enables natural units support" ON)
 
-message(STATUS "${projectPrefix}API_STD_FORMAT: ${${projectPrefix}API_STD_FORMAT}")
-message(STATUS "${projectPrefix}API_NO_CRTP: ${${projectPrefix}API_NO_CRTP}")
-message(STATUS "${projectPrefix}API_THROWING_CONSTRAINTS: ${${projectPrefix}API_THROWING_CONSTRAINTS}")
-message(STATUS "${projectPrefix}API_FREESTANDING: ${${projectPrefix}API_FREESTANDING}")
-message(STATUS "${projectPrefix}API_CONTRACTS: ${${projectPrefix}API_CONTRACTS}")
-message(STATUS "${projectPrefix}API_NATURAL_UNITS: ${${projectPrefix}API_NATURAL_UNITS}")
+message(STATUS "MP_UNITS_API_STD_FORMAT: ${MP_UNITS_API_STD_FORMAT}")
+message(STATUS "MP_UNITS_API_NO_CRTP: ${MP_UNITS_API_NO_CRTP}")
+message(STATUS "MP_UNITS_API_THROWING_CONSTRAINTS: ${MP_UNITS_API_THROWING_CONSTRAINTS}")
+message(STATUS "MP_UNITS_API_FREESTANDING: ${MP_UNITS_API_FREESTANDING}")
+message(STATUS "MP_UNITS_API_CONTRACTS: ${MP_UNITS_API_CONTRACTS}")
+message(STATUS "MP_UNITS_API_NATURAL_UNITS: ${MP_UNITS_API_NATURAL_UNITS}")
 
 # validate options
-if(${projectPrefix}API_FREESTANDING AND NOT ${projectPrefix}API_CONTRACTS STREQUAL "NONE")
-    message(FATAL_ERROR "'${projectPrefix}API_CONTRACTS' should be set to 'NONE' for a freestanding build")
+if(MP_UNITS_API_FREESTANDING AND NOT MP_UNITS_API_CONTRACTS STREQUAL "NONE")
+    message(FATAL_ERROR "'MP_UNITS_API_CONTRACTS' should be set to 'NONE' for a freestanding build")
 endif()
 
-if(NOT ${projectPrefix}API_FREESTANDING AND ${projectPrefix}API_STD_FORMAT AND NOT ${projectPrefix}LIB_FORMAT_SUPPORTED)
+if(NOT MP_UNITS_API_FREESTANDING AND MP_UNITS_API_STD_FORMAT AND NOT MP_UNITS_LIB_FORMAT_SUPPORTED)
     message(FATAL_ERROR "`std::format` enabled but not supported")
 endif()
 
-if(${projectPrefix}API_NO_CRTP AND NOT ${projectPrefix}EXPLICIT_THIS_PARAMETER_SUPPORTED)
+if(MP_UNITS_API_NO_CRTP AND NOT MP_UNITS_EXPLICIT_THIS_PARAMETER_SUPPORTED)
     message(FATAL_ERROR "`NO_CRTP` mode enabled but explicit `this` parameter is not supported")
 endif()
 
-if(${projectPrefix}BUILD_CXX_MODULES)
+if(MP_UNITS_BUILD_CXX_MODULES)
     if(CMAKE_VERSION VERSION_LESS "3.29")
         message(FATAL_ERROR "CMake versions before 3.29 do not support C++ modules properly")
     endif()
-    set(${projectPrefix}TARGET_SCOPE "PUBLIC")
+    set(MP_UNITS_TARGET_SCOPE "PUBLIC")
 else()
-    set(${projectPrefix}TARGET_SCOPE "INTERFACE")
+    set(MP_UNITS_TARGET_SCOPE "INTERFACE")
 endif()
 
 if(CMAKE_CXX_MODULE_STD)
@@ -137,7 +137,7 @@ add_subdirectory(systems)
 # project-wide wrapper
 add_mp_units_module(mp-units mp-units DEPENDENCIES mp-units::core mp-units::systems MODULE_INTERFACE_UNIT mp-units.cpp)
 
-if(${projectPrefix}BUILD_INSTALL)
+if(MP_UNITS_BUILD_INSTALL)
     # local build
     export(EXPORT mp-unitsTargets NAMESPACE mp-units::)
     configure_file("mp-unitsConfig.cmake" "." COPYONLY)

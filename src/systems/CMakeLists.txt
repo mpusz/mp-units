@@ -57,14 +57,14 @@ add_mp_units_module(
     MODULE_INTERFACE_UNIT mp-units-systems.cpp
 )
 
-if(${projectPrefix}API_NATURAL_UNITS)
+if(MP_UNITS_API_NATURAL_UNITS)
     target_sources(
         mp-units-systems PUBLIC FILE_SET HEADERS BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include FILES
                                 include/mp-units/systems/natural.h
     )
 endif()
 
-if(NOT ${projectPrefix}API_FREESTANDING)
+if(NOT MP_UNITS_API_FREESTANDING)
     target_sources(
         mp-units-systems
         PUBLIC FILE_SET
@@ -78,6 +78,6 @@ if(NOT ${projectPrefix}API_FREESTANDING)
     )
 endif()
 
-if(${projectPrefix}DEV_TIME_TRACE STREQUAL "MODULES")
+if(MP_UNITS_DEV_TIME_TRACE STREQUAL "MODULES")
     target_compile_options(mp-units-systems PRIVATE "-ftime-trace")
 endif()
