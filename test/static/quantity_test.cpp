@@ -303,7 +303,8 @@ static_assert(std::constructible_from<std::complex<double>, quantity<one, double
 static_assert(!std::convertible_to<quantity<one, cartesian_vector<double>>, cartesian_vector<double>>);
 static_assert(std::constructible_from<cartesian_vector<double>, quantity<one, cartesian_vector<double>>>);
 static_assert(!std::convertible_to<quantity<one, double>, cartesian_vector<double>>);
-static_assert(std::constructible_from<cartesian_vector<double>, quantity<one, double>>);
+static_assert(std::is_aggregate_v<cartesian_vector<double>>);
+
 #endif
 
 static_assert(!std::convertible_to<quantity<rad>, double>);

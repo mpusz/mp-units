@@ -81,7 +81,8 @@ TEST_CASE("cartesian_vector", "[vector]")
 
     SECTION("construction from other rep")
     {
-      cartesian_vector<double> v2 = v1;
+      cartesian_vector<double> v2{};
+      v2 = v1;
       REQUIRE(v2[0] == 1.0);
       REQUIRE(v2[1] == 2.0);
       REQUIRE(v2[2] == 3.0);

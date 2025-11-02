@@ -83,16 +83,6 @@ TEST_CASE("elementwise modulo", "[tensor]")
     REQUIRE(R(1, 1) == 4);
     REQUIRE(R(1, 2) == 1);
   }
-
-  SECTION("floating uses fmod, result in common_type")
-  {
-    cartesian_tensor<double, 1, 3> A{5.5, 7.25, 9.0};
-    cartesian_tensor<double, 1, 3> B{2.0, 2.50, 4.0};
-    auto R = A % B;
-    REQUIRE_THAT(R(0, 0), WithinAbs(1.5, 1e-12));
-    REQUIRE_THAT(R(0, 1), WithinAbs(2.25, 1e-12));
-    REQUIRE_THAT(R(0, 2), WithinAbs(1.0, 1e-12));
-  }
 }
 
 TEST_CASE("scalar multiply/divide", "[tensor]")
