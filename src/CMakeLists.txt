@@ -37,17 +37,11 @@ include(CheckLibcxxInUse)
 check_libcxx_in_use(MP_UNITS_LIBCXX)
 
 # project build options
-option(MP_UNITS_BUILD_AS_SYSTEM_HEADERS "Export library as system headers" OFF)
 option(MP_UNITS_BUILD_CXX_MODULES "Add C++ modules to the list of default targets" OFF)
 option(MP_UNITS_BUILD_INSTALL "Install the library" ON)
 
-message(STATUS "MP_UNITS_BUILD_AS_SYSTEM_HEADERS: ${MP_UNITS_BUILD_AS_SYSTEM_HEADERS}")
 message(STATUS "MP_UNITS_BUILD_CXX_MODULES: ${MP_UNITS_BUILD_CXX_MODULES}")
 message(STATUS "MP_UNITS_BUILD_INSTALL: ${MP_UNITS_BUILD_INSTALL}")
-
-if(MP_UNITS_BUILD_AS_SYSTEM_HEADERS)
-    set(MP_UNITS_AS_SYSTEM SYSTEM)
-endif()
 
 # check for C++ features
 check_cxx_feature_supported(__cpp_lib_format MP_UNITS_LIB_FORMAT_SUPPORTED)

@@ -146,13 +146,6 @@ If you obtain them differently you may need to adjust some CMake files.
     (described above).
     Manual setting of the below CMake options is only needed when Conan is not being used.
 
-    [`MP_UNITS_BUILD_AS_SYSTEM_HEADERS`](#MP_UNITS_BUILD_AS_SYSTEM_HEADERS){ #MP_UNITS_BUILD_AS_SYSTEM_HEADERS }
-
-    :   [:octicons-tag-24: 2.2.0][release-2-2-0] · :octicons-milestone-24:
-        `ON`/`OFF` (Default: `OFF`)
-
-        Exports library as system headers.
-
     [`MP_UNITS_BUILD_CXX_MODULES`](#MP_UNITS_BUILD_CXX_MODULES){ #MP_UNITS_BUILD_CXX_MODULES }
 
     :   [:octicons-tag-24: 2.2.0][release-2-2-0] · :octicons-milestone-24:
@@ -490,7 +483,6 @@ with the following differences:
         SYSTEM YES
         EXCLUDE_FROM_ALL YES
         OPTIONS
-            "MP_UNITS_BUILD_AS_SYSTEM_HEADERS ON"
             "MP_UNITS_BUILD_INSTALL OFF"
     )
     # ...

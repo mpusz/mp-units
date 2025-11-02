@@ -49,8 +49,6 @@ include(ccache)
 enable_ccache(BASE_DIR ${PROJECT_SOURCE_DIR})
 
 if(MP_UNITS_DEV_IWYU)
-    set(MP_UNITS_BUILD_AS_SYSTEM_HEADERS ON)
-
     include(include-what-you-use)
     enable_iwyu(
         REQUIRED
