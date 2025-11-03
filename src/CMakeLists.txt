@@ -74,12 +74,8 @@ endif()
 
 # project API settings
 option(MP_UNITS_API_STD_FORMAT "Enable `std::format` support" ${MP_UNITS_LIB_FORMAT_SUPPORTED})
-option(MP_UNITS_API_NO_CRTP "Enable class definitions without CRTP idiom"
-       ${MP_UNITS_EXPLICIT_THIS_PARAMETER_SUPPORTED}
-)
-option(MP_UNITS_API_THROWING_CONSTRAINTS "Enable throwing constraints"
-       MP_UNITS_CONSTEXPR_EXCEPTIONS_SUPPORTED
-)
+option(MP_UNITS_API_NO_CRTP "Enable class definitions without CRTP idiom" ${MP_UNITS_EXPLICIT_THIS_PARAMETER_SUPPORTED})
+option(MP_UNITS_API_THROWING_CONSTRAINTS "Enable throwing constraints" MP_UNITS_CONSTEXPR_EXCEPTIONS_SUPPORTED)
 option(MP_UNITS_API_FREESTANDING "Builds only freestanding part of the library" OFF)
 set(MP_UNITS_API_CONTRACTS GSL-LITE CACHE STRING "Enable contract checking")
 check_cache_var_values(MP_UNITS_API_CONTRACTS NONE GSL-LITE MS-GSL)

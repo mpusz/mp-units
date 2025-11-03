@@ -22,9 +22,7 @@
 
 function(set_feature_flag name)
     if(NOT MP_UNITS_${name} STREQUAL "AUTO")
-        target_compile_definitions(
-            mp-units-core ${MP_UNITS_TARGET_SCOPE} MP_UNITS_${name}=$<BOOL:${MP_UNITS_${name}}>
-        )
+        target_compile_definitions(mp-units-core ${MP_UNITS_TARGET_SCOPE} MP_UNITS_${name}=$<BOOL:${MP_UNITS_${name}}>)
     endif()
 endfunction()
 
@@ -116,9 +114,8 @@ set_feature_flag(API_STD_FORMAT)
 set_feature_flag(API_NO_CRTP)
 
 # Text formatting
-if(NOT MP_UNITS_API_FREESTANDING
-   AND (NOT MP_UNITS_API_STD_FORMAT OR (MP_UNITS_API_STD_FORMAT STREQUAL "AUTO"
-                                               AND NOT MP_UNITS_LIB_FORMAT_SUPPORTED))
+if(NOT MP_UNITS_API_FREESTANDING AND (NOT MP_UNITS_API_STD_FORMAT OR (MP_UNITS_API_STD_FORMAT STREQUAL "AUTO"
+                                                                      AND NOT MP_UNITS_LIB_FORMAT_SUPPORTED))
 )
     if(NOT TARGET fmt::fmt)
         find_package(fmt REQUIRED)
@@ -165,8 +162,7 @@ endif()
 
 # Freestanding
 target_compile_definitions(
-    mp-units-core ${MP_UNITS_TARGET_SCOPE}
-                  MP_UNITS_HOSTED=$<NOT:$<BOOL:${MP_UNITS_API_FREESTANDING}>>
+    mp-units-core ${MP_UNITS_TARGET_SCOPE} MP_UNITS_HOSTED=$<NOT:$<BOOL:${MP_UNITS_API_FREESTANDING}>>
 )
 
 # Throwing constraints
@@ -180,8 +176,7 @@ endif()
 # Natural units support
 if(${MP_UNITS_API_NATURAL_UNITS})
     target_compile_definitions(
-        mp-units-core ${MP_UNITS_TARGET_SCOPE}
-                      MP_UNITS_API_NATURAL_UNITS=$<BOOL:${MP_UNITS_API_NATURAL_UNITS}>
+        mp-units-core ${MP_UNITS_TARGET_SCOPE} MP_UNITS_API_NATURAL_UNITS=$<BOOL:${MP_UNITS_API_NATURAL_UNITS}>
     )
 endif()
 
