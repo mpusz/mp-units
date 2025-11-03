@@ -23,7 +23,7 @@
         <link rel="alternate" type="application/rss+xml" title="RSS feed of updated content" href="../../../../../feed_rss_updated.xml">
       
       <link rel="icon" href="../../../../../assets/images/mp-units-color.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.22">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.23">
     
     
       
@@ -3141,7 +3141,7 @@ Conversely, using deltas everywhere hides physical intent and allows nonsensical
 <td><strong>Physical Model</strong></td>
 <td style="text-align: center;">Interval Scale</td>
 <td style="text-align: center;">Ratio Scale</td>
-<td style="text-align: center;">Vector / Difference</td>
+<td style="text-align: center;">Difference</td>
 </tr>
 <tr>
 <td><strong>Example</strong></td>
@@ -3474,8 +3474,8 @@ you must explicitly convert the delta to an absolute quantity (i.e., using <code
 which will check the non-negativity precondition at runtime and may fail if the value
 is negative. This approach ensures that negative results are always intentional and
 checked, increasing code safety.</p>
-<p><strong>Adding an absolute quantity to a point</strong> yields a point shifted by the given amount,
-and adding a delta to a point yields another point.</p>
+<p><strong>Adding an absolute quantity or delta to a point</strong> yields a point shifted by the given
+amount.</p>
 <p>Here is the summary of all the addition operations:</p>
 <table>
 <thead>
