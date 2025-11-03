@@ -58,7 +58,7 @@ Below is a summary table comparing the three main quantity abstractions:
 
 | Feature              |         Point          |        Absolute         |         Delta          |
 |----------------------|:----------------------:|:-----------------------:|:----------------------:|
-| **Physical Model**   |     Interval Scale     |       Ratio Scale       |  Vector / Difference   |
+| **Physical Model**   |     Interval Scale     |       Ratio Scale       |       Difference       |
 | **Example**          |   20 °C, 100 m AMSL    |    293.15 K, 100 kg     |      10 K, -5 kg       |
 | **Absolute Zero?**   |  No (Arbitrary Zero)   |     Yes (True Zero)     |          N/A           |
 | **Allows Negative?** |      Yes (-10 °C)      |       No (Opt-in)       |      Yes (-10 m)       |
@@ -321,8 +321,8 @@ which will check the non-negativity precondition at runtime and may fail if the 
 is negative. This approach ensures that negative results are always intentional and
 checked, increasing code safety.
 
-**Adding an absolute quantity to a point** yields a point shifted by the given amount,
-and adding a delta to a point yields another point.
+**Adding an absolute quantity or delta to a point** yields a point shifted by the given
+amount.
 
 Here is the summary of all the addition operations:
 
