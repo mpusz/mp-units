@@ -168,8 +168,8 @@ body:
       label: Usage Permissions
       description: How can we use this information?
       options:
-        - label: ✅ You can mention our organization name publicly
-        - label: ✅ You can use our testimonial in documentation and presentations
+        - label: You can use our testimonial in documentation and presentations
+        - label: You can mention our organization name publicly
 
   - type: markdown
     attributes:
