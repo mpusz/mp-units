@@ -210,9 +210,13 @@ We appreciate **every contribution**, from code to documentation to community su
 to get started! 🚀
 
 
-## 💫 Join the Future of C++ Quantities and Units
+## 💝 Support the Project
 
-**mp-units** is more than a library – it's the foundation for standardized
-dimensional analysis in C++29.
+**mp-units** is developed as open source with the ambitious goal of C++29 standardization.
+Your support helps maintain development momentum and accelerate standardization efforts!
 
-🌟 **Star us** • 🤝 **Contribute** • 📢 **Spread the word** • 🚀 **Build the future**
+**Ways to support:**
+- ⭐ **Star the repository** – Show your appreciation and help others discover **mp-units**
+- 💰 **Become a sponsor** – Financial support enables continued development
+- 📢 **Share your success story** – Help demonstrate real-world value for standardization
+- 🤝 **Contribute** – Code, documentation, feedback, and community support
