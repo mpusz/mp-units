@@ -1,0 +1,126 @@
+name: 🐛 Bug Report
+description: Create a bug report to help us improve mp-units
+title: "[Bug]: "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for taking the time to file a bug report! Please fill out this form as completely as possible.
+
+        **💡 Not sure if this is a bug?** Consider asking in [Discussions](https://github.com/mpusz/mp-units/discussions) first for help and clarification.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: A clear and concise description of what the bug is.
+      placeholder: Describe the issue you're experiencing...
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: Steps to reproduce the behavior
+      placeholder: |
+        1. Include minimal code example
+        2. Compilation command used
+        3. Error message received
+      value: |
+        ```cpp
+        // Minimal reproducible example
+        ```
+    validations:
+      required: true
+
+  - type: input
+    id: compiler_explorer
+    attributes:
+      label: 🚀 Compiler Explorer Link (Recommended)
+      description: |
+        Please provide a Compiler Explorer link demonstrating the issue if possible.
+        This helps us reproduce and understand the problem quickly!
+      placeholder: "https://godbolt.org/z/your-example-link"
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: A clear description of what you expected to happen
+    validations:
+      required: true
+
+  - type: dropdown
+    id: compiler
+    attributes:
+      label: Compiler
+      description: Which compiler are you using?
+      options:
+        - GCC 12+
+        - GCC 13+
+        - GCC 14+
+        - GCC 15+
+        - Clang 16+
+        - Clang 17+
+        - Clang 18+
+        - Clang 19+
+        - Clang 20+
+        - Clang 21+
+        - MSVC 194+
+        - Apple Clang 15+
+        - Apple Clang 16+
+        - Other (specify in additional context)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: std_version
+    attributes:
+      label: C++ Standard
+      description: Which C++ standard are you targeting?
+      options:
+        - C++20
+        - C++23
+        - C++26
+    validations:
+      required: true
+
+  - type: input
+    id: mp_units_version
+    attributes:
+      label: mp-units Version
+      description: Which version of mp-units are you using?
+      placeholder: "e.g., 2.4.0, master, commit hash"
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: build_config
+    attributes:
+      label: Build Configuration
+      description: Select all that apply to your build configuration
+      options:
+        - label: Using Conan
+        - label: Using CMake directly
+        - label: Header-only mode
+        - label: C++ modules enabled
+        - label: Freestanding mode
+        - label: Debug build
+        - label: Release build
+
+  - type: textarea
+    id: additional_context
+    attributes:
+      label: Additional Context
+      description: Add any other context about the problem here (compiler flags, build system configuration, etc.)
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      description: Please confirm the following
+      options:
+        - label: I have read the documentation and checked existing issues
+          required: true
