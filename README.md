@@ -181,7 +181,8 @@ For detailed environment documentation, see [`.devcontainer/README.md`](.devcont
 
 ### Install as a Dependency
 
-🥇 **Recommended:** We recommend using **Conan** to integrate **mp-units** with your project.
+🥇 **Recommended:** We recommend using [**Conan**](https://conan.io/center/recipes/mp-units)
+to integrate **mp-units** with your project.
 
 📋 **Multiple options available!** Please refer to our comprehensive
 [**Installation and Usage Guide**](https://mpusz.github.io/mp-units/latest/getting_started/installation_and_usage)
