@@ -108,5 +108,5 @@ body:
           required: true
         - label: I have read the project documentation
           required: true
-        - label: This feature aligns with the project's goals
+        - label: This feature aligns with the [project's goals](https://mpusz.github.io/mp-units/latest/getting_started/introduction/#key-features)
           required: true

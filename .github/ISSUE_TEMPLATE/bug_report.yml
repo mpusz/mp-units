@@ -44,33 +44,25 @@ body:
         This helps us reproduce and understand the problem quickly!
       placeholder: "https://godbolt.org/z/your-example-link"
 
-  - type: textarea
-    id: expected
-    attributes:
-      label: Expected Behavior
-      description: A clear description of what you expected to happen
-    validations:
-      required: true
-
   - type: dropdown
     id: compiler
     attributes:
       label: Compiler
       description: Which compiler are you using?
       options:
-        - GCC 12+
-        - GCC 13+
-        - GCC 14+
-        - GCC 15+
-        - Clang 16+
-        - Clang 17+
-        - Clang 18+
-        - Clang 19+
-        - Clang 20+
-        - Clang 21+
-        - MSVC 194+
-        - Apple Clang 15+
-        - Apple Clang 16+
+        - GCC 12
+        - GCC 13
+        - GCC 14
+        - GCC 15
+        - Clang 16
+        - Clang 17
+        - Clang 18
+        - Clang 19
+        - Clang 20
+        - Clang 21
+        - MSVC 194
+        - Apple Clang 15
+        - Apple Clang 16
         - Other (specify in additional context)
     validations:
       required: true
