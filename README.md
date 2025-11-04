@@ -170,3 +170,32 @@ For detailed environment documentation, see [`.devcontainer/README.md`](.devcont
 📋 **Multiple options available!** Please refer to our comprehensive
 [**Installation and Usage Guide**](https://mpusz.github.io/mp-units/latest/getting_started/installation_and_usage)
 for all supported integration methods.
+
+
+## 🤝 Contributors
+
+**mp-units** is made possible by our amazing community of contributors! 💪
+
+[![Contributors](https://img.shields.io/github/contributors/mpusz/mp-units?style=for-the-badge&logo=github&labelColor=black&color=blue)](https://github.com/mpusz/mp-units/graphs/contributors)
+[![Commits](https://img.shields.io/github/commit-activity/m/mpusz/mp-units?style=for-the-badge&logo=git&labelColor=black&color=green)](https://github.com/mpusz/mp-units/pulse)
+[![Stars](https://img.shields.io/github/stars/mpusz/mp-units?style=for-the-badge&logo=star&labelColor=black&color=gold)](https://github.com/mpusz/mp-units/stargazers)
+
+### 🏆 Core Team
+
+- 👑 **[Mateusz Pusz](https://github.com/mpusz)** – Project founder and lead
+- 🛠️ **[Johel Ernesto Guerrero Peña](https://github.com/JohelEGP)** – Core maintainer
+- 🧮 **[Chip Hogg](https://github.com/chiphogg)** – Core maintainer
+
+We appreciate **every contribution**, from code to documentation to community support!
+
+> **Ready to contribute?** Check out our
+[**Contributing Guide**](https://mpusz.github.io/mp-units/latest/getting_started/contributing/)
+to get started! 🚀
+
+
+## 💫 Join the Future of C++ Quantities and Units
+
+**mp-units** is more than a library – it's the foundation for standardized
+dimensional analysis in C++29.
+
+🌟 **Star us** • 🤝 **Contribute** • 📢 **Spread the word** • 🚀 **Build the future**
