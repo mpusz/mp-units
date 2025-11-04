@@ -42,7 +42,7 @@ Whether you're using mp-units in **production**, **research**, or **education**:
 - 🎓 **Academics**: Report research applications and teaching experiences
 - 🧑‍💻 **Developers**: Tell us about your innovative use cases and benefits
 
-[![Share Experience](https://img.shields.io/badge/Share_Your-Usage_Experience-blue?style=for-the-badge&labelColor=black)](https://github.com/mpusz/mp-units/issues/new?template=usage_experience.yml)
+[![Share Experience](https://img.shields.io/badge/Share_Your-Usage_Experience-blue?style=for-the-badge&labelColor=black&label=🌟%20Share%20Your)](https://github.com/mpusz/mp-units/issues/new?template=usage_experience.yml)
 
 
 ## 📚 Documentation
@@ -103,7 +103,7 @@ static_assert(10 * km / (5 * km) == 2 * one);
 static_assert(1000 / (1 * s) == 1 * kHz);
 ```
 
-> 🚀 [**Try it live on Compiler Explorer!**](https://godbolt.org/z/fT1r4sohs)
+[![Try it live on Compiler Explorer](https://img.shields.io/badge/Try_live_on-Compiler_Explorer-black?style=for-the-badge&logo=compilerexplorer&labelColor=black&color=67C52A)](https://godbolt.org/z/fT1r4sohs)
 
 ### Modern C++ Design
 
@@ -155,7 +155,8 @@ int main()
 }
 ```
 
-> 🚀 [**Try it live on Compiler Explorer!**](https://godbolt.org/z/fxcjs19ah)
+[![Try it live on Compiler Explorer](https://img.shields.io/badge/Try_live_on-Compiler_Explorer-black?style=for-the-badge&logo=compilerexplorer&labelColor=black&color=67C52A)](https://godbolt.org/z/fxcjs19ah)
+
 
 ## 🔍 Try It Out
 
@@ -170,7 +171,7 @@ Perfect for fast, zero‑setup trials and prototyping your ideas.
 For **advanced development** or **contributions**, we provide a fully configured cloud
 development environment with [GitHub Codespaces](https://docs.github.com/en/codespaces):
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/mpusz/mp-units)
+[![Open in GitHub Codespaces](https://img.shields.io/badge/Open_in-GitHub_Codespaces-blue?style=for-the-badge&logo=github&labelColor=black&color=2088FF)](https://codespaces.new/mpusz/mp-units)
 
 **Alternatives:**
 1. Navigate to the repository → **"Code"** → **"Codespaces"** → **"Create codespace on master"**
@@ -193,7 +194,7 @@ for all supported integration methods.
 
 [![Contributors](https://img.shields.io/github/contributors/mpusz/mp-units?style=for-the-badge&logo=github&labelColor=black&color=blue)](https://github.com/mpusz/mp-units/graphs/contributors)
 [![Commits](https://img.shields.io/github/commit-activity/m/mpusz/mp-units?style=for-the-badge&logo=git&labelColor=black&color=green)](https://github.com/mpusz/mp-units/pulse)
-[![Stars](https://img.shields.io/github/stars/mpusz/mp-units?style=for-the-badge&logo=star&labelColor=black&color=gold)](https://github.com/mpusz/mp-units/stargazers)
+[![Stars](https://img.shields.io/github/stars/mpusz/mp-units?style=for-the-badge&label=⭐%20Stars&labelColor=black&color=gold)](https://github.com/mpusz/mp-units/stargazers)
 
 ### 🏆 Core Team
 
