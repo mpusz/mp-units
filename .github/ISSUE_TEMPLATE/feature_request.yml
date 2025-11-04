@@ -33,7 +33,7 @@ body:
     attributes:
       label: 🚀 Compiler Explorer Example (Optional)
       description: |
-        If applicable, provide a Compiler Explorer link showing current behavior 
+        If applicable, provide a Compiler Explorer link showing current behavior
         or demonstrating what you'd like to achieve.
       placeholder: "https://godbolt.org/z/your-example-link"
 

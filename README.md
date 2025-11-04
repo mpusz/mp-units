@@ -39,7 +39,7 @@ Your testimonials help **demonstrate real-world value** to the ISO C++ Committee
 Whether you're using mp-units in **production**, **research**, or **education**:
 
 - 🏢 **Organizations**: Share your production deployments and success stories
-- 🎓 **Academics**: Report research applications and teaching experiences  
+- 🎓 **Academics**: Report research applications and teaching experiences
 - 🧑‍💻 **Developers**: Tell us about your innovative use cases and benefits
 
 [![Share Experience](https://img.shields.io/badge/Share_Your-Usage_Experience-blue?style=for-the-badge&labelColor=black)](https://github.com/mpusz/mp-units/issues/new?template=usage_experience.yml)
@@ -51,7 +51,7 @@ Extensive project documentation is available on the **[project site](https://mpu
 It includes:
 
 - 🚀 **Installation instructions** – Get up and running quickly
-- 📋 **Detailed user's guide** – Comprehensive usage documentation  
+- 📋 **Detailed user's guide** – Comprehensive usage documentation
 - 🧠 **Design rationale** – Understanding the architectural decisions
 - 🔍 **API reference** – Complete technical documentation
 - 🎓 **Tutorials** – Step-by-step learning resources
