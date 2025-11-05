@@ -522,9 +522,9 @@ answers:
 
 ```mermaid
 flowchart TD
-    ask_point{{Adding two values makes sense?}}
+    ask_point{{Adding two quantities of this type makes sense?}}
     ask_point -- No --> Point[Point]
-    ask_point -- Yes --> ask_delta{{Possibly negative difference/distance between two values?}}
+    ask_point -- Yes --> ask_delta{{Possibly negative difference/distance between two quantities?}}
     ask_delta -- Yes --> Delta[Delta]
     ask_delta -- No --> Absolute[Absolute]
 
