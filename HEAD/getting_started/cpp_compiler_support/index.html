@@ -2796,8 +2796,8 @@ a specific C++ feature:</p>
 <td style="text-align: center;">23</td>
 <td style="text-align: center;">14+</td>
 <td style="text-align: center;">18+</td>
-<td style="text-align: center;">None</td>
-<td style="text-align: center;">195+</td>
+<td style="text-align: center;">17+</td>
+<td style="text-align: center;">194+</td>
 </tr>
 </tbody>
 </table>
@@ -2884,7 +2884,11 @@ the customers' projects.</p>
   <a href="../../users_guide/framework_basics/systems_of_quantities/#defining-quantities"><code>quantity_spec</code> definitions</a>.</li>
 <li>To write code with wide compatibility
   a <a href="../../users_guide/use_cases/wide_compatibility/#QUANTITY_SPEC">dedicated macro may be used</a>.</li>
-<li>Tested with <code>__cpp_explicit_this_parameter</code> <a href="https://en.cppreference.com/w/cpp/feature_test">feature test macro</a>.</li>
+<li>Tested with <code>__cpp_explicit_this_parameter</code> <a href="https://en.cppreference.com/w/cpp/feature_test">feature test macro</a>.<ul>
+<li>Note that some compiler versions do not implement this macro even though they do support the
+  feature well enough. In such cases, compilation with explicit <code>this</code> is enforced.</li>
+</ul>
+</li>
 <li>Related build options:<ul>
 <li>Conan: <a href="../installation_and_usage/#no_crtp">no_crtp</a></li>
 <li>CMake: <a href="../installation_and_usage/#MP_UNITS_API_NO_CRTP">MP_UNITS_API_NO_CRTP</a></li>
