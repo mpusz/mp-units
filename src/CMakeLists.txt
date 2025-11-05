@@ -63,13 +63,21 @@ endif()
 
 # clang++-18 supports explicit `this` parameter
 # https://github.com/llvm/llvm-project/issues/82780
-if(NOT MP_UNITS_EXPLICIT_THIS_PARAMETER_SUPPORTED
-   AND CMAKE_CXX_STANDARD GREATER_EQUAL 23
-   AND CMAKE_CXX_COMPILER_ID STREQUAL "Clang"
-   AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "18"
-)
-    message(STATUS "Clang 18+ detected, overriding `no CRTP` support")
-    set(MP_UNITS_EXPLICIT_THIS_PARAMETER_SUPPORTED ON)
+# AppleClang 17 also supports explicit `this` parameter (feature check macro unimplemented)
+# https://developer.apple.com/documentation/xcode-release-notes/xcode-16_3-release-notes
+# MSVC 19.32 also supports explicit `this` parameter (feature check macro unimplemented in this version)
+# https://learn.microsoft.com/en-us/visualstudio/releases/2022/release-notes-v17.2
+if(NOT MP_UNITS_EXPLICIT_THIS_PARAMETER_SUPPORTED AND CMAKE_CXX_STANDARD GREATER_EQUAL 23)
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "18")
+        message(STATUS "Clang 18+ detected, overriding `no CRTP` support")
+        set(MP_UNITS_EXPLICIT_THIS_PARAMETER_SUPPORTED ON)
+    elseif(CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "17")
+        message(STATUS "AppleClang 17+ detected, overriding `no CRTP` support")
+        set(MP_UNITS_EXPLICIT_THIS_PARAMETER_SUPPORTED ON)
+    elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL "19.32")
+        message(STATUS "MSVC 19.32+ detected, overriding `no CRTP` support")
+        set(MP_UNITS_EXPLICIT_THIS_PARAMETER_SUPPORTED ON)
+    endif()
 endif()
 
 # project API settings
