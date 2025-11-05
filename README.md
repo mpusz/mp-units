@@ -34,7 +34,8 @@ More context can be found in the following ISO C++ proposals:
 ## 🌟 Share Your Success Story
 
 **Help shape the future of C++!**
-Your testimonials help **demonstrate real-world value** to the ISO C++ Committee!
+Your testimonials help **demonstrate real-world value** to the ISO C++ Committee and
+other potential library users!
 
 Whether you're using mp-units in **production**, **research**, or **education**:
 
@@ -219,4 +220,5 @@ Your support helps maintain development momentum and accelerate standardization 
 - ⭐ **Star the repository** – Show your appreciation and help others discover **mp-units**
 - 💰 **Become a sponsor** – Financial support enables continued development
 - 📢 **Share your success story** – Help demonstrate real-world value for standardization
+  and other potential users
 - 🤝 **Contribute** – Code, documentation, feedback, and community support
