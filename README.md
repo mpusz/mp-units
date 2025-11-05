@@ -23,9 +23,9 @@
 **The `mp-units` library is a candidate for ISO standardization for C++29.**
 More context can be found in the following ISO C++ proposals:
 
-- 📄 [P1935: A C++ Approach to Physical Units](https://wg21.link/p1935)
-- 🎯 [P2980: A motivation, scope, and plan for a quantities and units library](https://wg21.link/p2980)
-- 📐 [P3045: Quantities and units library](https://wg21.link/p3045)
+- [P1935: A C++ Approach to Physical Units](https://wg21.link/p1935)
+- [P2980: A motivation, scope, and plan for a quantities and units library](https://wg21.link/p2980)
+- [P3045: Quantities and units library](https://wg21.link/p3045)
 
 > 🤝 **We are actively seeking organizations and individuals interested in**
 > **field‑trialing the library!**
@@ -38,9 +38,9 @@ Your testimonials help **demonstrate real-world value** to the ISO C++ Committee
 
 Whether you're using mp-units in **production**, **research**, or **education**:
 
-- 🏢 **Organizations**: Share your production deployments and success stories
-- 🎓 **Academics**: Report research applications and teaching experiences
-- 🧑‍💻 **Developers**: Tell us about your innovative use cases and benefits
+- **Organizations**: Share your production deployments and success stories
+- **Academics**: Report research applications and teaching experiences
+- **Developers**: Tell us about your innovative use cases and benefits
 
 [![Share Experience](https://img.shields.io/badge/Share_Your-Usage_Experience-blue?style=for-the-badge&labelColor=black&label=🌟%20Share%20Your)](https://github.com/mpusz/mp-units/issues/new?template=usage_experience.yml)
 
@@ -50,12 +50,12 @@ Whether you're using mp-units in **production**, **research**, or **education**:
 Extensive project documentation is available on the **[project site](https://mpusz.github.io/mp-units)**.
 It includes:
 
-- 🚀 **Installation instructions** – Get up and running quickly
-- 📋 **Detailed user's guide** – Comprehensive usage documentation
-- 🧠 **Design rationale** – Understanding the architectural decisions
-- 🔍 **API reference** – Complete technical documentation
-- 🎓 **Tutorials** – Step-by-step learning resources
-- 💡 **Examples** – Real-world usage demonstrations
+- **Installation instructions** – Get up and running quickly
+- **Detailed user's guide** – Comprehensive usage documentation
+- **Design rationale** – Understanding the architectural decisions
+- **API reference** – Complete technical documentation
+- **Tutorials** – Step-by-step learning resources
+- **Examples** – Real-world usage demonstrations
 
 
 ## ⚡ TL;DR
@@ -65,14 +65,14 @@ dimensional analysis and safe manipulation of units, quantities, and quantity po
 
 ### Key Features
 
-- 🛡️ **Type Safety** – Strongly typed quantities, units, dimensions, and quantity points
-- ⚡ **Zero Runtime Cost** – Compile‑time dimensional analysis with no runtime overhead
-- 🎨 **Unified Design** – Comprehensive model for units, dimensions, quantities, and point origins
-- ✏️ **Rich Text Formatting** – Text formatting support with extensive options &
+- **Type Safety** – Strongly typed quantities, units, dimensions, and quantity points
+- **Zero Runtime Cost** – Compile‑time dimensional analysis with no runtime overhead
+- **Unified Design** – Comprehensive model for units, dimensions, quantities, and point origins
+- **Rich Text Formatting** – Text formatting support with extensive options &
   character sets
-- 📦 **Flexible Usage** – C++ modules support (when available) and header‑only usage
-- ⚙️ **Configurable** – Contracts, freestanding mode, and natural units (experimental)
-- 🔗 **Interoperable** – Seamless pathways for legacy and external libraries
+- **Flexible Usage** – C++ modules support (when available) and header‑only usage
+- **Configurable** – Contracts, freestanding mode, and natural units (experimental)
+- **Interoperable** – Seamless pathways for legacy and external libraries
 
 ### Quick Example
 
@@ -184,7 +184,7 @@ For detailed environment documentation, see [`.devcontainer/README.md`](.devcont
 🥇 **Recommended:** We recommend using [**Conan**](https://conan.io/center/recipes/mp-units)
 to integrate **mp-units** with your project.
 
-📋 **Multiple options available!** Please refer to our comprehensive
+**Multiple options available!** Please refer to our comprehensive
 [**Installation and Usage Guide**](https://mpusz.github.io/mp-units/latest/getting_started/installation_and_usage)
 for all supported integration methods.
 
@@ -199,9 +199,9 @@ for all supported integration methods.
 
 ### 🏆 Core Team
 
-- 👑 **[Mateusz Pusz](https://github.com/mpusz)** – Project founder and lead
-- 🛠️ **[Johel Ernesto Guerrero Peña](https://github.com/JohelEGP)** – Core maintainer
-- 🧮 **[Chip Hogg](https://github.com/chiphogg)** – Core maintainer
+- **[Mateusz Pusz](https://github.com/mpusz)** – Project founder and lead
+- **[Johel Ernesto Guerrero Peña](https://github.com/JohelEGP)** – Core maintainer
+- **[Chip Hogg](https://github.com/chiphogg)** – Core maintainer
 
 We appreciate **every contribution**, from code to documentation to community support!
 
