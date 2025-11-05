@@ -16,10 +16,11 @@ in the most user-friendly way. You can print the entire quantity or selected par
     not know how to output it in the text. There may be many ways to do it. For example,
     should we prepend or append the origin part to the quantity text?
 
-    For example, the text output of `42 m` for a quantity point may mean many things. It
-    may be an offset from the mountain top, sea level, or maybe the center of Mars.
-    Printing `42 m AMSL` for altitudes above mean sea level is a much better solution,
-    but the library does not have enough information to print it that way by itself.
+    For example, the text output of $42\ \mathrm{m}$ for a quantity point may mean many
+    things. It may be an offset from the mountain top, sea level, or maybe the center
+    of Mars. Printing $42\ \mathrm{m}\ \mathrm{AMSL}$ for altitudes above mean sea level
+    is a much better solution, but the library does not have enough information to print
+    it that way by itself.
 
     Please let us know if you have a good idea of how to solve this issue.
 

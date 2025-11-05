@@ -55,7 +55,7 @@ time from `h` to `s`. The converted values are used to calculate speed in `m/s` 
 is then again converted to the one in `km/h`. Those conversions not only impact the
 application's runtime performance but may also affect the precision of the final result.
 Such truncation can be easily observed in the first case where we deal with integral
-representation types (the resulting speed is `108 km/h`).
+representation types (the resulting speed is $108\ \mathrm{km/h}$).
 
 The second scenario is really similar to the previous one, but this time, function arguments
 have floating-point representation types:

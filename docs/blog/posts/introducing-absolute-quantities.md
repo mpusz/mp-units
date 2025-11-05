@@ -56,17 +56,17 @@ The new **absolute quantity** abstraction aims to bridge that gap.
 
 Below is a summary table comparing the three main quantity abstractions:
 
-| Feature              |         Point          |        Absolute         |         Delta          |
-|----------------------|:----------------------:|:-----------------------:|:----------------------:|
-| **Physical Model**   |     Interval Scale     |       Ratio Scale       |       Difference       |
-| **Example**          |   20 °C, 100 m AMSL    |    293.15 K, 100 kg     |      10 K, -5 kg       |
-| **Absolute Zero?**   |  No (Arbitrary Zero)   |     Yes (True Zero)     |          N/A           |
-| **Allows Negative?** |      Yes (-10 °C)      |       No (Opt-in)       |      Yes (-10 m)       |
-| **A + A**            | Error (20 °C + 10 °C)  | Absolute (10 kg + 5 kg) |         Delta          |
-| **A - A**            | Delta (30 °C - 10 °C)  |  Delta (50 kg - 5 kg)   |         Delta          |
-| **scalar * A**       |   Error (2 * 20 °C)    |  Absolute (2 * 10 kg)   |         Delta          |
-| **A / A**            |         Error          |  scalar (10 kg / 5 kg)  |         scalar         |
-| **API**              | `quantity<point<...>>` |     `quantity<...>`     | `quantity<delta<...>>` |
+| Feature              |                        Point                        |                   Absolute                    |                Delta                |
+|----------------------|:---------------------------------------------------:|:---------------------------------------------:|:-----------------------------------:|
+| **Physical Model**   |                   Interval Scale                    |                  Ratio Scale                  |             Difference              |
+| **Example**          | $20\ \mathrm{°C}$, $100\ \mathrm{m}\ \mathrm{AMSL}$ |   $293.15\ \mathrm{K}$, $100\ \mathrm{kg}$    | $10\ \mathrm{K}$, $-5\ \mathrm{kg}$ |
+| **Absolute Zero?**   |                 No (Arbitrary Zero)                 |                Yes (True Zero)                |                 N/A                 |
+| **Allows Negative?** |              Yes ($-10\ \mathrm{°C}$)               |                  No (Opt-in)                  |       Yes ($-10\ \mathrm{m}$)       |
+| **A + A**            |     Error ($20\ \mathrm{°C} + 10\ \mathrm{°C}$)     | Absolute ($10\ \mathrm{kg} + 5\ \mathrm{kg}$) |                Delta                |
+| **A - A**            |     Delta ($30\ \mathrm{°C} - 10\ \mathrm{°C}$)     |  Delta ($50\ \mathrm{kg} - 5\ \mathrm{kg}$)   |                Delta                |
+| **scalar * A**       |         Error ($2 \times 20\ \mathrm{°C}$)          |     Absolute ($2 \times 10\ \mathrm{kg}$)     |                Delta                |
+| **A / A**            |                        Error                        |  scalar ($10\ \mathrm{kg} / 5\ \mathrm{kg}$)  |               scalar                |
+| **API**              |               `quantity<point<...>>`                |                `quantity<...>`                |       `quantity<delta<...>>`        |
 
 This table summarizes the key differences in semantics, API, and physical meaning for each
 abstraction. Use it as a quick reference when deciding which concept to use in your code.
@@ -683,7 +683,7 @@ constraint with a properly named abstraction that models that behavior.
 Actually, V3 will improve temperature support significantly. Thanks to the new abstraction,
 we will be able to multiply and divide absolute temperatures with other quantities, but
 only if the temperature is measured in Kelvin. Also, the multiply syntax will work to
-construct such absolute quantities (e.g., `300 * K`).
+construct such absolute quantities (e.g., $300 \times \mathrm{K}$).
 
 Last, but not least, the `quantity_point<...>` class template will be replaced with
 `quantity<point<...>>` syntax.

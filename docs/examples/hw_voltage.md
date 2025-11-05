@@ -14,9 +14,9 @@ chapter, every measurement can (and probably should) be modeled as a `quantity_p
 This is a perfect example of such a use case.
 
 This example implements a simplified scenario of measuring voltage read from hardware
-through a mapped 16-bits register. The actual voltage range of [-10 V, 10 V] is mapped to
-[-32767, 32767] on hardware. Translation of the value requires not only scaling of the value
-but also applying of an offset.
+through a mapped 16-bits register. The actual voltage range of [$-10\ \mathrm{V}$,
+$10\ \mathrm{V}$] is mapped to [-32767, 32767] on hardware. Translation of the value
+requires not only scaling of the value but also applying of an offset.
 
 First we include all the dependencies:
 
