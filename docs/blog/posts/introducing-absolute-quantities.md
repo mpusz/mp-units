@@ -514,6 +514,31 @@ quantity temp = point<deg_C>(21);
 quantity kinetic_energy = 3 / 2 * si::boltzmann_constant * temp.in(K).absolute();
 ```
 
+### Which Quantity Abstraction Should I Use?
+
+The decision tree below provides guidance on choosing the appropriate quantity abstraction
+for a specific use case. Start with the first question and follow the path based on your
+answers:
+
+```mermaid
+flowchart TD
+    ask_point{{Adding two values makes sense?}}
+    ask_point -- No --> Point[Point]
+    ask_point -- Yes --> ask_delta{{Possibly negative difference/distance between two values?}}
+    ask_delta -- Yes --> Delta[Delta]
+    ask_delta -- No --> Absolute[Absolute]
+    
+    %% Styling
+    classDef pointStyle fill:#ff9999,stroke:#cc0000,stroke-width:2px,color:#000
+    classDef deltaStyle fill:#99ff99,stroke:#00cc00,stroke-width:2px,color:#000
+    classDef absoluteStyle fill:#99ccff,stroke:#0066cc,stroke-width:2px,color:#000
+    classDef questionStyle fill:#fff2cc,stroke:#d6b656,stroke-width:2px,color:#000
+    
+    class Point pointStyle
+    class Delta deltaStyle
+    class Absolute absoluteStyle
+    class ask_point,ask_delta questionStyle
+```
 
 ### Bug Prevention and Safety Benefits
 
