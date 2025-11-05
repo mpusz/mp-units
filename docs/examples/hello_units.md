@@ -6,7 +6,7 @@ tags:
 
 # `hello_units`
 
-[Try it in Compiler Explorer](https://godbolt.org/z/MYn5qjPzh){ .md-button }
+[Try it live on Compiler Explorer](https://godbolt.org/z/MYn5qjPzh){ .md-button }
 
 This is a really simple example showcasing the features of the **mp-units** library.
 

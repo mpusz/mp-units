@@ -56,7 +56,7 @@ Here is a small example of operations possible on scalar quantities:
     static_assert(1000 / (1 * s) == 1 * kHz);
     ```
 
-[Try it in Compiler Explorer](https://godbolt.org/z/fT1r4sohs){ .md-button }
+[Try it live on Compiler Explorer](https://godbolt.org/z/fT1r4sohs){ .md-button }
 
 This library requires some C++20 features
 ([concepts and constraints](https://en.cppreference.com/w/cpp/language/constraints),
@@ -149,7 +149,7 @@ Please see the below example for a quick preview of basic library features:
     }
     ```
 
-[Try it in Compiler Explorer](https://godbolt.org/z/fxcjs19ah){ .md-button }
+[Try it live on Compiler Explorer](https://godbolt.org/z/fxcjs19ah){ .md-button }
 
 !!! note
 

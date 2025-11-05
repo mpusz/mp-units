@@ -7,7 +7,7 @@ tags:
 
 # `hw_voltage`
 
-[Try it in Compiler Explorer](https://godbolt.org/z/MYn5qjPzh){ .md-button }
+[Try it live on Compiler Explorer](https://godbolt.org/z/MYn5qjPzh){ .md-button }
 
 As it was stated in [The Affine Space](../users_guide/framework_basics/the_affine_space.md)
 chapter, every measurement can (and probably should) be modeled as a `quantity_point`.

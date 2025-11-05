@@ -6,7 +6,7 @@ tags:
 
 # `avg_speed`
 
-[Try it in Compiler Explorer](https://godbolt.org/z/v9c5T6bc4){ .md-button }
+[Try it live on Compiler Explorer](https://godbolt.org/z/v9c5T6bc4){ .md-button }
 
 Let's continue the previous example. This time, our purpose will not be to showcase as many
 library features as possible, but we will focus on different interfaces one can provide with

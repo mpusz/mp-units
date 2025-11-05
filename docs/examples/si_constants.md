@@ -6,7 +6,7 @@ tags:
 
 # `si_constants`
 
-[Try it in Compiler Explorer](https://godbolt.org/z/eGqbW5d8K){ .md-button }
+[Try it live on Compiler Explorer](https://godbolt.org/z/eGqbW5d8K){ .md-button }
 
 The next example presents all the seven defining constants of the SI system. We can observe
 how [Faster-than-lightspeed Constants](../users_guide/framework_basics/faster_than_lightspeed_constants.md)
