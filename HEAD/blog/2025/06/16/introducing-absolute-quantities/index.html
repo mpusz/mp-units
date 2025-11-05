@@ -3681,9 +3681,9 @@ quantity from it:</p>
 for a specific use case. Start with the first question and follow the path based on your
 answers:</p>
 <pre class="mermaid"><code>flowchart TD
-    ask_point{{Adding two values makes sense?}}
+    ask_point{{Adding two quantities of this type makes sense?}}
     ask_point -- No --&gt; Point[Point]
-    ask_point -- Yes --&gt; ask_delta{{Possibly negative difference/distance between two values?}}
+    ask_point -- Yes --&gt; ask_delta{{Possibly negative difference/distance between two quantities?}}
     ask_delta -- Yes --&gt; Delta[Delta]
     ask_delta -- No --&gt; Absolute[Absolute]
 
