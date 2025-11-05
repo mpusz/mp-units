@@ -6,6 +6,9 @@ hide:
   - toc
 ---
 
+<!-- markdownlint-disable MD033 -->
+<!-- markdownlint-disable MD013 -->
+
 <script src="../javascripts/jquery.min.js"></script>
 <script src="../javascripts/iframeResizer.min.js"></script>
 

@@ -5,12 +5,12 @@ This chapter enumerates all the user-facing concepts in the **mp-units** library
 
 ## `Dimension<T>` { #Dimension }
 
-`Dimension` concept matches a [dimension](../../appendix/glossary.md#dimension) of either a base
-or derived [quantity](../../appendix/glossary.md#quantity):
+`Dimension` concept matches a [dimension](../../appendix/glossary.md#dimension) of either a
+base or derived [quantity](../../appendix/glossary.md#quantity):
 
-- [Base dimensions](../../appendix/glossary.md#base-dimension) are explicitly defined by the user
-  by inheriting from the instantiation of a `base_dimension` class template. It should be instantiated with
-  a unique symbol identifier describing this dimension in a specific
+- [Base dimensions](../../appendix/glossary.md#base-dimension) are explicitly defined by the
+  user by inheriting from the instantiation of a `base_dimension` class template. It should
+  be instantiated with a unique symbol identifier describing this dimension in a specific
   [system of quantities](../../appendix/glossary.md#system-of-quantities).
 - [Derived dimensions](../../appendix/glossary.md#derived-dimension) are implicitly created
   by the library's framework based on the [quantity equation](../../appendix/glossary.md#quantity-equation)
@@ -21,36 +21,39 @@ All of the above dimensions have to be marked as `final`.
 
 ### `DimensionOf<T, V>` { #DimensionOf }
 
-`DimensionOf` concept is satisfied when both arguments satisfy a [`Dimension`](#Dimension) concept and
-when they compare equal.
+`DimensionOf` concept is satisfied when both arguments satisfy a [`Dimension`](#Dimension)
+concept and when they compare equal.
 
 
 ## `QuantitySpec<T>` { #QuantitySpec }
 
-`QuantitySpec` concept matches all the [quantity specifications](../../appendix/glossary.md#quantity_spec)
-including:
+`QuantitySpec` concept matches all the
+[quantity specifications](../../appendix/glossary.md#quantity_spec) including:
 
-- [Base quantities](../../appendix/glossary.md#base-quantity) defined by a user by inheriting from
-  the `quantity_spec` class template instantiated with a [base dimension](../../appendix/glossary.md#base-dimension)
-  argument.
-- [Derived named quantities](../../appendix/glossary.md#derived-quantity) defined by a user by
-  inheriting from the `quantity_spec` class template instantiated with a result of a
+- [Base quantities](../../appendix/glossary.md#base-quantity) defined by a user by inheriting
+  from the `quantity_spec` class template instantiated with a
+  [base dimension](../../appendix/glossary.md#base-dimension) argument.
+- [Derived named quantities](../../appendix/glossary.md#derived-quantity) defined by a user
+  by inheriting from the `quantity_spec` class template instantiated with a result of a
   [quantity equation](../../appendix/glossary.md#quantity-equation) passed as an argument.
-- Other named quantities forming a [hierarchy of quantities](../../appendix/glossary.md#quantity-hierarchy)
-  of the same [kind](../../appendix/glossary.md#kind) defined by a user by inheriting from the
-  `quantity_spec` class template instantiated with another "parent" quantity specification passed as an
-  argument.
-- [Quantity kinds](../../appendix/glossary.md#kind) describing a family of mutually comparable quantities.
-- Intermediate [derived quantity](../../appendix/glossary.md#derived-quantity) specifications being
-  a result of a [quantity equations](../../appendix/glossary.md#quantity-equation) on other specifications.
+- Other named quantities forming a
+  [hierarchy of quantities](../../appendix/glossary.md#quantity-hierarchy) of the same
+  [kind](../../appendix/glossary.md#kind) defined by a user by inheriting from the
+  `quantity_spec` class template instantiated with another "parent" quantity specification
+  passed as an argument.
+- [Quantity kinds](../../appendix/glossary.md#kind) describing a family of mutually comparable
+  quantities.
+- Intermediate [derived quantity](../../appendix/glossary.md#derived-quantity) specifications
+  being a result of a [quantity equations](../../appendix/glossary.md#quantity-equation) on
+  other specifications.
 
 All of the above quantity specifications have to be marked as `final`.
 
 
 ### `QuantitySpecOf<T, V>` { #QuantitySpecOf }
 
-`QuantitySpecOf` concept is satisfied when both arguments satisfy a [`QuantitySpec`](#QuantitySpec) concept
-and when `T` is implicitly convertible to `V`.
+`QuantitySpecOf` concept is satisfied when both arguments satisfy a
+[`QuantitySpec`](#QuantitySpec) concept and when `T` is implicitly convertible to `V`.
 
 
 ## `UnitMagnitude<T>` { #UnitMagnitude }
@@ -66,16 +69,17 @@ and when `T` is implicitly convertible to `V`.
 
 `Unit` concept matches all the [units](../../appendix/glossary.md#unit) in the library including:
 
-- [Base units](../../appendix/glossary.md#base-unit) defined by a user by inheriting from the `named_unit`
-  class template instantiated with a unique symbol identifier describing this unit in a specific
-  [system of units](../../appendix/glossary.md#system-of-units).
+- [Base units](../../appendix/glossary.md#base-unit) defined by a user by inheriting from the
+  `named_unit` class template instantiated with a unique symbol identifier
+  describing this unit
+  in a specific [system of units](../../appendix/glossary.md#system-of-units).
 - Named scaled units defined by a user by inheriting from the `named_unit` class template instantiated
   with a unique symbol identifier and a product of multiplying another unit with some magnitude.
 - Prefixed units defined by a user by inheriting from the `prefixed_unit` class template instantiated
   with a prefix symbol, a magnitude, and a unit to be prefixed.
-- [Derived named units](../../appendix/glossary.md#derived-unit) defined by a user by inheriting from the
-  `named_unit` class template instantiated with a unique symbol identifier and a result of
-  [unit equation](../../appendix/glossary.md#unit-equation) passed as an argument.
+- [Derived named units](../../appendix/glossary.md#derived-unit) defined by a user by inheriting
+  from the `named_unit` class template instantiated with a unique symbol identifier and a result
+  of [unit equation](../../appendix/glossary.md#unit-equation) passed as an argument.
 - [Derived unnamed units](../../appendix/glossary.md#derived-unit) being a result of a
   [unit equations](../../appendix/glossary.md#unit-equation) on other units.
 
@@ -93,8 +97,8 @@ and is satisfied by:
 
 - All units derived from a `named_unit` class template instantiated with a unique symbol identifier
   and a [`QuantitySpec`](#QuantitySpec) of a [quantity kind](../../appendix/glossary.md#kind).
-- All units being a result of [unit equations](../../appendix/glossary.md#unit-equation) on other
-  associated units.
+- All units being a result of
+  [unit equations](../../appendix/glossary.md#unit-equation) on other associated units.
 
 ??? abstract "Examples"
 
@@ -125,14 +129,15 @@ types. Such types provide all the meta-information required to create a [`Quanti
 A `Reference` can either be:
 
 - An [`AssociatedUnit`](#AssociatedUnit).
-- The instantiation of a `reference` class template with a [`QuantitySpec`](#QuantitySpec) passed as
-  the first template argument and a [`Unit`](#Unit) passed as the second one.
+- The instantiation of a `reference` class template with a
+  [`QuantitySpec`](#QuantitySpec) passed as the first template argument and a
+  [`Unit`](#Unit) passed as the second one.
 
 
 ### `ReferenceOf<T, V>` { #ReferenceOf }
 
-`ReferenceOf` concept is satisfied by references `T` which have a quantity specification that satisfies
-[`QuantitySpecOf<V>`](#QuantitySpecOf) concept.
+`ReferenceOf` concept is satisfied by references `T` which have a quantity specification
+that satisfies [`QuantitySpecOf<V>`](#QuantitySpecOf) concept.
 
 
 ### `RepresentationOf<T, V>` { #RepresentationOf }
@@ -156,8 +161,9 @@ A `Reference` can either be:
 
 ## `Quantity<T>` { #Quantity }
 
-`Quantity` concept matches every [quantity](../../appendix/glossary.md#quantity) in the library and is
-satisfied by all types being or deriving from an instantiation of a `quantity` class template.
+`Quantity` concept matches every
+  [quantity](../../appendix/glossary.md#quantity) in the library and is satisfied by all types
+  being or deriving from an instantiation of a `quantity` class template.
 
 
 ### `QuantityOf<T, V>` { #QuantityOf }
@@ -168,12 +174,13 @@ is `true`.
 
 ### `QuantityLike<T>` { #QuantityLike }
 
-`QuantityLike` concept provides interoperability with other libraries and is satisfied by a type `T`
-for which an instantiation of `quantity_like_traits` type trait yields a valid type that provides:
+`QuantityLike` concept provides interoperability with other libraries and is satisfied by a
+  type `T` for which an instantiation of `quantity_like_traits` type trait yields a valid type
+  that provides:
 
 - `reference` static data member that matches the [`Reference`](#Reference) concept,
-- `rep` type that matches [`RepresentationOf`](#RepresentationOf) concept with the character provided
-  in `reference`,
+- `rep` type that matches
+  [`RepresentationOf`](#RepresentationOf) concept with the character provided in `reference`,
 - `explicit_import` static data member convertible to `bool` that specifies that the conversion
   from `T` to a `quantity` type should happen explicitly (if `true`),
 - `explicit_export` static data member convertible to `bool` that specifies that the conversion
@@ -211,8 +218,9 @@ for which an instantiation of `quantity_like_traits` type trait yields a valid t
 
 ## `PointOrigin<T>` { #PointOrigin }
 
-`PointOrigin` concept matches all [quantity point origins](../../appendix/glossary.md#point-origin) in
-the library. It is satisfied by either:
+`PointOrigin` concept matches all
+  [quantity point origins](../../appendix/glossary.md#point-origin) in the library. It is
+  satisfied by either:
 
 - All types derived from an `absolute_point_origin` class template.
 - All types derived from a `relative_point_origin` class template.
@@ -220,9 +228,10 @@ the library. It is satisfied by either:
 
 ### `PointOriginFor<T, V>` { #PointOriginFor }
 
-`PointOriginFor` concept is satisfied by all [`PointOrigin`](#PointOrigin) types that have quantity type
-implicitly convertible from quantity specification `V`, which means that `V` must satisfy
-[`QuantitySpecOf<T::quantity_spec>`](#QuantitySpecOf).
+`PointOriginFor` concept is satisfied by all
+  [`PointOrigin`](#PointOrigin) types that have quantity type implicitly convertible from
+  quantity specification `V`, which means that `V` must satisfy
+  [`QuantitySpecOf<T::quantity_spec>`](#QuantitySpecOf).
 
 ??? abstract "Examples"
 
@@ -244,13 +253,14 @@ implicitly convertible from quantity specification `V`, which means that `V` mus
 
 ## `QuantityPoint<T>` { #QuantityPoint }
 
-`QuantityPoint` concept is satisfied by all types being either a specialization or derived from `quantity_point`
-class template.
+`QuantityPoint` concept is satisfied by all types being either a specialization or derived
+  from `quantity_point` class template.
 
 
 ### `QuantityPointOf<T, V>` { #QuantityPointOf }
 
-`QuantityPointOf` concept is satisfied by all the quantity points `T` that match the following value `V`:
+`QuantityPointOf` concept is satisfied by all the quantity points `T` that match the
+  following value `V`:
 
 | `V`            | Condition                                                                                     |
 |----------------|-----------------------------------------------------------------------------------------------|
@@ -260,18 +270,20 @@ class template.
 
 ### `QuantityPointLike<T>` { #QuantityPointLike }
 
-`QuantityPointLike` concept provides interoperability with other libraries and is satisfied by a type `T`
-for which an instantiation of `quantity_point_like_traits` type trait yields a valid type that provides:
+`QuantityPointLike` concept provides interoperability with other libraries and is satisfied
+  by a type `T` for which an instantiation of `quantity_point_like_traits` type trait yields
+  a valid type that provides:
 
 - `reference` static data member that matches the [`Reference`](#Reference) concept.
 - `point_origin` static data member that matches the [`PointOrigin`](#PointOrigin) concept.
-- `rep` type that matches [`RepresentationOf`](#RepresentationOf) concept with the character provided
-  in `reference`.
+- `rep` type that matches
+  [`RepresentationOf`](#RepresentationOf) concept with the character provided in `reference`.
 - `explicit_import` static data member convertible to `bool` that specifies that the conversion
   from `T` to a `quantity_point` type should happen explicitly (if `true`),
 - `explicit_export` static data member convertible to `bool` that specifies that the conversion
   from a `quantity_point` type to `T` should happen explicitly (if `true`),
-- `to_numerical_value(T)` static member function returning a raw value of the quantity being the offset
+- `to_numerical_value(T)` static member function returning a raw value of the quantity
+  being the offset
   of the point from the origin,
 - `from_numerical_value(rep)` static member function returning `T`.
 

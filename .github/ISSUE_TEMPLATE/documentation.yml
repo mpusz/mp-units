@@ -1,0 +1,71 @@
+name: 📚 Documentation Issue
+description: Report an issue with documentation or request documentation improvements
+title: "[Docs]: "
+labels: ["documentation", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Help us improve the mp-units documentation! Please describe the documentation issue or enhancement.
+
+  - type: dropdown
+    id: doc_type
+    attributes:
+      label: Documentation Type
+      description: What type of documentation issue is this?
+      options:
+        - Error/Inaccuracy in existing docs
+        - Missing documentation
+        - Unclear/Confusing explanation
+        - Broken link or formatting
+        - Example code issue
+        - API reference issue
+        - Tutorial improvement
+        - Installation instructions
+        - Migration guide
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: page_url
+    attributes:
+      label: Page URL
+      description: If applicable, provide the URL of the documentation page
+      placeholder: "https://mpusz.github.io/mp-units/..."
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Issue Description
+      description: Describe the documentation issue or improvement needed
+      placeholder: The documentation says... but it should say...
+    validations:
+      required: true
+
+  - type: textarea
+    id: location
+    attributes:
+      label: Location
+      description: Where in the documentation is this issue? (section, paragraph, code example, etc.)
+
+  - type: textarea
+    id: suggested_fix
+    attributes:
+      label: Suggested Fix
+      description: If you have suggestions for how to fix or improve this documentation, please share them
+
+  - type: textarea
+    id: additional_context
+    attributes:
+      label: Additional Context
+      description: Any other context about the documentation issue
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      description: Please confirm the following
+      options:
+        - label: I have checked that this documentation issue doesn't already exist
+          required: true

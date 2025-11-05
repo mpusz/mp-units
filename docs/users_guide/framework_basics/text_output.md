@@ -1,34 +1,33 @@
 # Text Output
 
-Besides providing dimensional analysis and unit conversions, the library also tries hard to print
-any quantity in the most user-friendly way. We can print the entire quantity or its
-selected parts (numerical value, unit, or dimension).
+Besides dimensional analysis and unit conversions, the library strives to print quantities
+in the most user-friendly way. You can print the entire quantity or selected parts
+(numerical value, unit, or dimension).
 
 !!! note
 
-    The library does not provide a text output for quantity points. The quantity stored inside
-    is just an implementation detail of this type. It is a vector from a specific origin.
-    Without the knowledge of the origin, the vector by itself is useless as we can't determine
-    which point it describes.
+    The library does not provide a text output for quantity points. The quantity stored
+    inside is just an implementation detail of this type. It is a vector from a specific
+    origin. Without the knowledge of the origin, the vector by itself is useless as we
+    can't determine which point it describes.
 
-    In the current library design, point origin does not provide any text in its definition.
-    Even if we could add such information to the point's definition, we would not
-    know how to output it in the text. There may be many ways to do it. For example, should we
-    prepend or append the origin part to the quantity text?
+    In the current library design, point origin does not provide any text in its
+    definition. Even if we could add such information to the point's definition, we would
+    not know how to output it in the text. There may be many ways to do it. For example,
+    should we prepend or append the origin part to the quantity text?
 
-    For example, the text output of `42 m` for a quantity point may mean many things. It may be
-    an offset from the mountain top, sea level, or maybe the center of Mars.
-    Printing `42 m AMSL` for altitudes above mean sea level is a much better solution, but the
-    library does not have enough information to print it that way by itself.
+    For example, the text output of `42 m` for a quantity point may mean many things. It
+    may be an offset from the mountain top, sea level, or maybe the center of Mars.
+    Printing `42 m AMSL` for altitudes above mean sea level is a much better solution,
+    but the library does not have enough information to print it that way by itself.
 
     Please let us know if you have a good idea of how to solve this issue.
 
 
 ## Predefined symbols
 
-The definitions of dimensions, units, prefixes, and constants require assigning text symbols
-for each entity. Those symbols will be composed by the library's framework to express dimensions
-and units of derived quantities.
+Dimensions, units, prefixes, and constants require text symbols that the framework
+composes to express dimensions and units of derived quantities.
 
 === "Dimensions"
 
@@ -86,18 +85,18 @@ and units of derived quantities.
 
 !!! important
 
-    Two symbols always have to be provided if the primary symbol contains characters outside of
-    the [basic literal character set](https://en.cppreference.com/w/cpp/language/charset).
+    Two symbols always have to be provided if the primary symbol contains characters
+    outside of the [basic literal character set](https://en.cppreference.com/w/cpp/language/charset).
     The first must be provided as a UTF-8 literal and may contain any Unicode characters.
-    The second one must provide an alternative spelling and only use characters from within of
-    [basic literal character set](https://en.cppreference.com/w/cpp/language/charset).
+    The second one must provide an alternative spelling and only use characters from
+    within of [basic literal character set](https://en.cppreference.com/w/cpp/language/charset).
 
 !!! note
 
-    Unicode provides only a minimal set of characters available as subscripts, which are often used
-    to differentiate various constants and quantities of the same kind. To workaround this issue,
-    **mp-units** uses the '_' character to specify that the following characters should be considered
-    a subscript of the symbol.
+    Unicode provides only a minimal set of characters available as subscripts, which are
+    often used to differentiate various constants and quantities of the same kind. To
+    workaround this issue, **mp-units** uses the '_' character to specify that the
+    following characters should be considered a subscript of the symbol.
 
 !!! tip
 
@@ -119,7 +118,8 @@ text output. However, in some applications or environments, a standard portable 
 using only the characters from the [basic literal character set](https://en.cppreference.com/w/cpp/language/charset)
 can be preferred by users.
 
-This is why the library provides an option to change the default encoding to the portable one with:
+This is why the library provides an option to change the default encoding to the
+portable one with:
 
 ```cpp
 enum class text_encoding : std::int8_t {
@@ -198,7 +198,7 @@ enum class unit_symbol_solidus : std::int8_t {
   one_denominator,  // m/s;   kg m⁻¹ s⁻¹
   always,           // m/s;   kg/(m s)
   never,            // m s⁻¹; kg m⁻¹ s⁻¹
-  default_denominator = one_denominator
+  default_solidus = one_denominator
 };
 
 enum class unit_symbol_separator : std::int8_t {
@@ -209,7 +209,7 @@ enum class unit_symbol_separator : std::int8_t {
 
 struct unit_symbol_formatting {
   text_encoding encoding = text_encoding::default_encoding;
-  unit_symbol_solidus solidus = unit_symbol_solidus::default_denominator;
+  unit_symbol_solidus solidus = unit_symbol_solidus::default_solidus;
   unit_symbol_separator separator = unit_symbol_separator::default_separator;
 };
 ```
@@ -343,9 +343,10 @@ The [SI Brochure](../../appendix/references.md#SIBrochure) says:
 There are more units with such properties. For example, percent (`%`) and per mille(`‰`).
 
 To support the above and other similar cases, the library exposes `space_before_unit_symbol`
-customization point. By default, its value is `true` for all the units, so the space between a number
-and a unit will be inserted in the output text. To change this behavior, we have to provide a partial
-specialization for a specific unit:
+customization point. By default, its value is `true` for all the units, so the space
+between a number and a unit will be inserted in the output text. To change this
+behavior, we have to
+provide a partial specialization for a specific unit:
 
 ```cpp
 template<>
@@ -371,7 +372,8 @@ constexpr bool space_before_unit_symbol<non_si::degree> = false;
     The output streaming support is opt-in and can be enabled by including the `<mp-units/ostream.h>`
     header file.
 
-The easiest way to print a dimension, unit, or quantity is to provide its object to the output stream:
+The easiest way to print a dimension, unit, or quantity is to provide its object to the
+output stream:
 
 ```cpp
 const QuantityOf<isq::speed> auto v1 = avg_speed(220. * km, 2 * h);
@@ -401,9 +403,9 @@ The text output will always print the value using the default formatting for thi
 Only basic formatting can be applied to output streams. It includes control over width, fill,
 and alignment.
 
-The numerical value of the quantity will be printed according to the current stream state and standard
-manipulators may be used to customize that (assuming that the underlying representation type
-respects them).
+The numerical value of the quantity will be printed according to the current stream state
+and standard manipulators may be used to customize that (assuming that the underlying
+representation type respects them).
 
 ```cpp
 std::cout << "|" << std::setw(10) << 123 * m << "|\n";                       // |     123 m|
@@ -419,8 +421,8 @@ std::cout << "|" << std::setw(10) << std::setfill('*') << 123 * m << "|\n";  // 
 
 ## Text formatting
 
-The library provides custom formatters for `std::format` facility, which allows fine-grained control
-over what and how it is being printed in the text output.
+The library provides custom formatters for `std::format` facility, which allows
+fine-grained control over what and how it is being printed in the text output.
 
 !!! tip
 
@@ -429,10 +431,10 @@ over what and how it is being printed in the text output.
 
 ### Controlling width, fill, and alignment
 
-Formatting grammar for all the entities provides control over width, fill, and alignment. The C++
-standard grammar tokens `fill-and-align` and `width` are being used. They treat the entity as
-a contiguous text to be aligned. For example, here are a few examples of the quantity numerical
-value and symbol formatting:
+Formatting grammar for all the entities provides control over width, fill, and alignment.
+The C++ standard grammar tokens `fill-and-align` and `width` are being used. They treat the
+entity as a contiguous text to be aligned. For example, here are a few examples of the
+quantity numerical value and symbol formatting:
 
 ```cpp
 std::println("|{:0}|", 123 * m);     // |123 m|
@@ -446,8 +448,8 @@ std::println("|{:*^10}|", 123 * m);  // |**123 m***|
 ```
 
 It is important to note that in the second line above, the quantity text is aligned to
-the right by default, which is consistent with the formatting of numeric types. Units and dimensions behave
-as text and, thus, are aligned to the left by default.
+the right by default, which is consistent with the formatting of numeric types. Units and
+dimensions behave as text and, thus, are aligned to the left by default.
 
 !!! note
 
@@ -514,9 +516,10 @@ In the above grammar:
       (e.g., `m s⁻¹`, `kg m⁻¹ s⁻¹`)
 - `unit-symbol-separator` token specifies how multiplied unit symbols should be separated:
     - 's' (default) uses **space** as a separator (e.g., `kg m²/s²`)
-    - 'd' uses half-high **dot** (`⋅`) as a separator (e.g., `kg⋅m²/s²`) (requires the UTF-8 encoding)
-- 'L' is reserved for possible future localization use in case the C++ standard library gets access to
-  the ICU-like database.
+    - 'd' uses half-high **dot** (`⋅`) as a separator (e.g., `kg⋅m²/s²`) (requires the
+      UTF-8 encoding)
+- 'L' is reserved for possible future localization use in case the C++ standard library
+  gets access to the ICU-like database.
 
 !!! note
 
@@ -525,10 +528,11 @@ In the above grammar:
     to control the formatting of a unit symbol.
 
 Unit symbols of some quantities are specified to use Unicode signs by the [SI](../../appendix/glossary.md#si)
-(e.g., `Ω` symbol for the _resistance_ quantity). The library follows this by default. From the
-engineering point of view, Unicode text might not be the best solution sometimes, as terminals
-of many (especially embedded) devices can output only letters from the basic literal character set.
-In such a case, the unit symbol can be forced to be printed using such characters thanks to
+ (e.g., `Ω` symbol for the _resistance_ quantity). The library follows this by default.
+From the engineering point of view, Unicode text might not be the best solution sometimes,
+as terminals of many (especially embedded) devices can output only letters from the basic
+literal character set. In such a case, the unit symbol can be forced to be printed using
+such characters thanks to
 `character-set` token:
 
 ```cpp
@@ -540,13 +544,14 @@ std::println("{}", m / s2);       // m/s²
 std::println("{:P}", m / s2);     // m/s^2
 ```
 
-Additionally, both ISO 80000 and [SI](../../appendix/glossary.md#si) leave some freedom on how to
-print unit symbols. This is why two additional tokens were introduced.
+Additionally, both ISO 80000 and [SI](../../appendix/glossary.md#si) leave some freedom on
+how to print unit symbols. This is why two additional tokens were introduced.
 
 `unit-symbol-solidus` specifies how the division of units should look like. By default,
-`/` will be used only when the denominator contains only one unit. However, with the 'a' or 'n'
-options, we can force the facility to print the `/` character always (even when there are more units
-in the denominator), or never, in which case a parenthesis will be added to enclose all denominator
+`/` will be used only when the denominator contains only one unit. However, with the 'a'
+or 'n' options, we can force the facility to print the `/` character always (even when
+there are more units in the denominator), or never, in which case a parenthesis will be
+added to enclose all denominator
 units.
 
 ```cpp
@@ -599,15 +604,15 @@ In the above grammar:
     - '?' inserts an optional separator between the number and a unit based on the value of
       `space_before_unit_symbol` for this unit,
     - '%' just inserts '%' character.
-- `defaults-specs` token allows overwriting defaults for the underlying formatters with the custom
-  format string. Each override starts with a subentity identifier ('N', 'U', or 'D') followed by
-  the format string enclosed in square brackets.
+- `defaults-specs` token allows overwriting defaults for the underlying formatters with the
+  custom format string. Each override starts with a subentity identifier ('N', 'U', or 'D')
+  followed by the format string enclosed in square brackets.
 
 #### Default formatting
 
 To format `quantity` values, the formatting facility uses `quantity-format-spec`. If left empty,
-the default formatting is applied. The same default formatting is also applied to the output streams.
-This is why the following code lines produce the same output:
+the default formatting is applied. The same default formatting is also applied to the
+output streams. This is why the following code lines produce the same output:
 
 ```cpp
 std::cout << "Distance: " << 123 * km << "\n";

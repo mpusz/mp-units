@@ -23,10 +23,8 @@
 cmake_minimum_required(VERSION 3.25)
 
 function(check_cache_var_values name)
-    set_property(CACHE ${projectPrefix}${name} PROPERTY STRINGS ${ARGN})
-    if(NOT ${projectPrefix}${name} IN_LIST ARGN)
-        message(FATAL_ERROR
-                    "Invalid value '${${projectPrefix}${name}}' provided for a cache variable ${projectPrefix}${name} (${ARGN} allowed)"
-        )
+    set_property(CACHE ${name} PROPERTY STRINGS ${ARGN})
+    if(NOT ${name} IN_LIST ARGN)
+        message(FATAL_ERROR "Invalid value '${${name}}' provided for a cache variable ${name} (${ARGN} allowed)")
     endif()
 endfunction()

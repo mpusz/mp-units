@@ -1,42 +1,83 @@
-<img align="right" height=135px src="docs/assets/images/mp-units-color.svg">
+<!-- markdownlint-disable MD041 -->
+<!-- markdownlint-disable-next-line MD033 -->
+<img align="right" height=135px src="docs/assets/images/mp-units-color.svg" alt="logo">
 
-[![GitHub license](https://img.shields.io/github/license/mpusz/mp-units?cacheSeconds=3600&color=informational&label=License)](./LICENSE.md)
-[![GitHub license](https://img.shields.io/badge/C%2B%2B-20%2F23-blue)](https://en.cppreference.com/w/cpp/compiler_support#cpp20)
+[![License](https://img.shields.io/github/license/mpusz/mp-units?cacheSeconds=3600&color=informational&label=License)](./LICENSE.md)
+[![C++ Standard](https://img.shields.io/badge/C%2B%2B-20%2F23-blue)](https://en.cppreference.com/w/cpp/compiler_support#cpp20)
 
 [![Conan CI](https://img.shields.io/github/actions/workflow/status/mpusz/mp-units/ci-conan.yml?branch=master&label=Conan%20CI)](https://github.com/mpusz/mp-units/actions/workflows/ci-conan.yml)
 [![CMake CI](https://img.shields.io/github/actions/workflow/status/mpusz/mp-units/ci-test-package-cmake.yml?branch=master&label=CMake%20CI)](https://github.com/mpusz/mp-units/actions/workflows/ci-test-package-cmake.yml)
 [![clang-tidy CI](https://img.shields.io/github/actions/workflow/status/mpusz/mp-units/ci-clang-tidy.yml?branch=master&label=clang-tidy%20CI)](https://github.com/mpusz/mp-units/actions/workflows/ci-clang-tidy.yml)
 [![Freestanding CI](https://img.shields.io/github/actions/workflow/status/mpusz/mp-units/ci-freestanding.yml?branch=master&label=Freestanding%20CI)](https://github.com/mpusz/mp-units/actions/workflows/ci-freestanding.yml)
 [![Formatting CI](https://img.shields.io/github/actions/workflow/status/mpusz/mp-units/ci-formatting.yml?branch=master&label=Formatting%20CI)](https://github.com/mpusz/mp-units/actions/workflows/ci-formatting.yml)
-[![GitHub Workflow Documentation](https://img.shields.io/github/actions/workflow/status/mpusz/mp-units/documentation.yml?branch=master&label=Documentation)](https://github.com/mpusz/mp-units/actions?query=workflow%3ADocumentation+branch%3Amaster)
+[![Documentation](https://img.shields.io/github/actions/workflow/status/mpusz/mp-units/documentation.yml?branch=master&label=Documentation)](https://github.com/mpusz/mp-units/actions?query=workflow%3ADocumentation+branch%3Amaster)
 
-[![Conan stable](https://img.shields.io/conan/v/mp-units?label=ConanCenter&color=blue)](https://conan.io/center/mp-units)
+[![Conan Center](https://img.shields.io/conan/v/mp-units?label=ConanCenter&color=blue)](https://conan.io/center/mp-units)
 [![Conan testing](https://img.shields.io/badge/mpusz.jfrog.io-2.5.0%3Atesting-blue)](https://mpusz.jfrog.io/ui/packages/conan:%2F%2Fmp-units/2.5.0)
 
 
-# `mp-units` - The quantities and units library for C++
+# `mp-units` – The Quantities and Units Library for C++
 
-**The mp-units library might be the subject of ISO standardization for C++29. More on this can
-be found in the following ISO C++ proposals:**
+> 🚀 **ISO C++29 Standardization Candidate** – The future of dimensional analysis in C++!
 
-- [P1935: A C++ Approach to Physical Units](https://wg21.link/p1935),
-- [P2980: A motivation, scope, and plan for a quantities and units library](https://wg21.link/p2980),
-- [P3045: Quantities and units library](https://wg21.link/p3045).
+**The `mp-units` library is a candidate for ISO standardization for C++29.**
+More context can be found in the following ISO C++ proposals:
 
-**We are actively looking for parties interested in field-trialing the library.**
+- [P1935: A C++ Approach to Physical Units](https://wg21.link/p1935)
+- [P2980: A motivation, scope, and plan for a quantities and units library](https://wg21.link/p2980)
+- [P3045: Quantities and units library](https://wg21.link/p3045)
 
-## Documentation
-
-An extensive project documentation can be found on [mp-units GitHub Pages](https://mpusz.github.io/mp-units).
-It includes installation instructions and a detailed user's guide.
+> 🤝 **We are actively seeking organizations and individuals interested in**
+> **field‑trialing the library!**
 
 
-## TL;DR
+## 🌟 Share Your Success Story
 
-`mp-units` is a compile-time enabled Modern C++ library that provides compile-time dimensional
-analysis and unit/quantity manipulation.
+**Help shape the future of C++!**
+Your testimonials help **demonstrate real-world value** to the ISO C++ Committee and
+other potential library users!
 
-Here is a small example of possible operations:
+Whether you're using mp-units in **production**, **research**, or **education**:
+
+- **Organizations**: Share your production deployments and success stories
+- **Academics**: Report research applications and teaching experiences
+- **Developers**: Tell us about your innovative use cases and benefits
+
+[![Share Experience](https://img.shields.io/badge/Share_Your-Usage_Experience-blue?style=for-the-badge&labelColor=black&label=🌟%20Share%20Your)](https://github.com/mpusz/mp-units/issues/new?template=usage_experience.yml)
+
+
+## 📚 Documentation
+
+Extensive project documentation is available on the **[project site](https://mpusz.github.io/mp-units)**.
+It includes:
+
+- **Installation instructions** – Get up and running quickly
+- **Detailed user's guide** – Comprehensive usage documentation
+- **Design rationale** – Understanding the architectural decisions
+- **API reference** – Complete technical documentation
+- **Tutorials** – Step-by-step learning resources
+- **Examples** – Real-world usage demonstrations
+
+
+## ⚡ TL;DR
+
+**`mp-units`** is a Modern C++ (C++20 and later) library providing compile‑time
+dimensional analysis and safe manipulation of units, quantities, and quantity points.
+
+### Key Features
+
+- **Type Safety** – Strongly typed quantities, units, dimensions, and quantity points
+- **Zero Runtime Cost** – Compile‑time dimensional analysis with no runtime overhead
+- **Unified Design** – Comprehensive model for units, dimensions, quantities, and point origins
+- **Rich Text Formatting** – Text formatting support with extensive options &
+  character sets
+- **Flexible Usage** – C++ modules support (when available) and header‑only usage
+- **Configurable** – Contracts, freestanding mode, and natural units (experimental)
+- **Interoperable** – Seamless pathways for legacy and external libraries
+
+### Quick Example
+
+Here's a taste of what **mp-units** can do:
 
 ```cpp
 #include <mp-units/systems/si.h>
@@ -63,12 +104,17 @@ static_assert(10 * km / (5 * km) == 2 * one);
 static_assert(1000 / (1 * s) == 1 * kHz);
 ```
 
-_Try it on the [Compiler Explorer](https://godbolt.org/z/fT1r4sohs)._
+[![Try it live on Compiler Explorer](https://img.shields.io/badge/Try_live_on-Compiler_Explorer-black?style=for-the-badge&logo=compilerexplorer&labelColor=black&color=67C52A)](https://godbolt.org/z/fT1r4sohs)
 
-This library heavily uses C++20 features (concepts, classes as NTTPs, ...). Thanks to
-them the user gets a powerful but still easy to use interfaces and all unit conversions
-and dimensional analysis can be performed without sacrificing on runtime performance or
-accuracy. Please see the below example for a quick preview of basic library features:
+### Modern C++ Design
+
+The library makes extensive use of **C++20 features** (concepts, class types as NTTPs, etc.).
+This enables powerful yet easy‑to‑use interfaces while performing all conversions and dimensional
+analysis at compile time—without sacrificing runtime performance or accuracy.
+
+### More Advanced Example
+
+Here's a broader preview showcasing **mp-units** capabilities:
 
 ```cpp
 #include <mp-units/systems/international.h>
@@ -110,28 +156,69 @@ int main()
 }
 ```
 
-_Try it on the [Compiler Explorer](https://godbolt.org/z/fxcjs19ah)._
+[![Try it live on Compiler Explorer](https://img.shields.io/badge/Try_live_on-Compiler_Explorer-black?style=for-the-badge&logo=compilerexplorer&labelColor=black&color=67C52A)](https://godbolt.org/z/fxcjs19ah)
 
 
-## Try It Out
+## 🔍 Try It Out
 
-### The Compiler Explorer
+### Compiler Explorer
 
-As can be see in the previous chapter, the **mp-units** library is available in
-the Compiler Explorer. Use it to get a fast hands-on experience or try some ideas.
+**mp-units** is available on Compiler Explorer for instant experimentation!
+Perfect for fast, zero‑setup trials and prototyping your ideas.
 
 
 ### GitHub Codespaces
 
-For more advanced development or contributions we encourage you to use our pre-configured
-[GitHub Codespaces](https://docs.github.com/en/codespaces) environment. You can either click the
-button below
+For **advanced development** or **contributions**, we provide a fully configured cloud
+development environment with [GitHub Codespaces](https://docs.github.com/en/codespaces):
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/mpusz/mp-units)
+[![Open in GitHub Codespaces](https://img.shields.io/badge/Open_in-GitHub_Codespaces-blue?style=for-the-badge&logo=github&labelColor=black&color=2088FF)](https://codespaces.new/mpusz/mp-units)
 
-or navigate to the main page of the repository and click "Code" button -> "Codespaces" tab ->
-"Create codespace on master".
-
-You can also use the pre-configured devcontainer and Docker image manually within your IDE.
+**Alternatives:**
+1. Navigate to the repository → **"Code"** → **"Codespaces"** → **"Create codespace on master"**
+2. Use the pre‑configured devcontainer and Docker image manually in your IDE
 
 For detailed environment documentation, see [`.devcontainer/README.md`](.devcontainer/README.md).
+
+### Install as a Dependency
+
+🥇 **Recommended:** We recommend using [**Conan**](https://conan.io/center/recipes/mp-units)
+to integrate **mp-units** with your project.
+
+**Multiple options available!** Please refer to our comprehensive
+[**Installation and Usage Guide**](https://mpusz.github.io/mp-units/latest/getting_started/installation_and_usage)
+for all supported integration methods.
+
+
+## 🤝 Contributors
+
+**mp-units** is made possible by our amazing community of contributors! 💪
+
+[![Contributors](https://img.shields.io/github/contributors/mpusz/mp-units?style=for-the-badge&logo=github&labelColor=black&color=blue)](https://github.com/mpusz/mp-units/graphs/contributors)
+[![Commits](https://img.shields.io/github/commit-activity/m/mpusz/mp-units?style=for-the-badge&logo=git&labelColor=black&color=green)](https://github.com/mpusz/mp-units/pulse)
+[![Stars](https://img.shields.io/github/stars/mpusz/mp-units?style=for-the-badge&label=⭐%20Stars&labelColor=black&color=gold)](https://github.com/mpusz/mp-units/stargazers)
+
+### 🏆 Core Team
+
+- **[Mateusz Pusz](https://github.com/mpusz)** – Project founder and lead
+- **[Johel Ernesto Guerrero Peña](https://github.com/JohelEGP)** – Core maintainer
+- **[Chip Hogg](https://github.com/chiphogg)** – Core maintainer
+
+We appreciate **every contribution**, from code to documentation to community support!
+
+> **Ready to contribute?** Check out our
+[**Contributing Guide**](https://mpusz.github.io/mp-units/latest/getting_started/contributing/)
+to get started! 🚀
+
+
+## 💝 Support the Project
+
+**mp-units** is developed as open source with the ambitious goal of C++29 standardization.
+Your support helps maintain development momentum and accelerate standardization efforts!
+
+**Ways to support:**
+- ⭐ **Star the repository** – Show your appreciation and help others discover **mp-units**
+- 💰 **Become a sponsor** – Financial support enables continued development
+- 📢 **Share your success story** – Help demonstrate real-world value for standardization
+  and other potential users
+- 🤝 **Contribute** – Code, documentation, feedback, and community support

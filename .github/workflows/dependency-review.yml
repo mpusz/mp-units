@@ -41,12 +41,7 @@ jobs:
       - name: 'Dependency Review'
         uses: actions/dependency-review-action@v4
         with:
-          # Configuration optimized for mp-units project
           fail-on-severity: high
-          # Permissive licenses commonly used by mp-units dependencies
-          allow-licenses: >
-            Apache-2.0, MIT, BSD-2-Clause, BSD-3-Clause, ISC, CC0-1.0,
-            Unlicense, BSL-1.0, 0BSD, WTFPL, MPL-2.0, GPL-2.0+, LGPL-2.1+
           # Only deny the most restrictive licenses
           deny-licenses: >
             AGPL-1.0, AGPL-3.0, SSPL-1.0

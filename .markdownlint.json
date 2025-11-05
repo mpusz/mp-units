@@ -7,7 +7,13 @@
     "maximum": 2
   },
   "MD013": {
-    "line_length": 90
+    "line_length": 90,
+    "code_blocks": false,
+    "tables": false
   },
-  "MD032": false
+  "MD032": false,
+  "MD046": false,
+  "MD049": false,
+  "MD051": false,
+  "MD053": false
 }

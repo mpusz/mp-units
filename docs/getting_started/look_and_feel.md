@@ -56,13 +56,14 @@ Here is a small example of operations possible on scalar quantities:
     static_assert(1000 / (1 * s) == 1 * kHz);
     ```
 
-!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/fT1r4sohs)"
+[Try it in Compiler Explorer](https://godbolt.org/z/fT1r4sohs){ .md-button }
 
-
-This library requires some C++20 features ([concepts and constraints](https://en.cppreference.com/w/cpp/language/constraints),
-[classes as NTTP](https://en.cppreference.com/w/cpp/language/template_parameters), ...). Thanks to them,
-a user gets a powerful but still easy-to-use interface where all unit conversions and dimensional analysis can be
-performed without sacrificing accuracy. Please see the below example for a quick preview of basic library features:
+This library requires some C++20 features
+([concepts and constraints](https://en.cppreference.com/w/cpp/language/constraints),
+[classes as NTTP](https://en.cppreference.com/w/cpp/language/template_parameters), ...).
+Thanks to them, a user gets a powerful but still easy-to-use interface where all unit
+conversions and dimensional analysis can be performed without sacrificing accuracy.
+Please see the below example for a quick preview of basic library features:
 
 *[NTTP]: Non-Type Template Parameter
 
@@ -148,8 +149,8 @@ performed without sacrificing accuracy. Please see the below example for a quick
     }
     ```
 
-!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/fxcjs19ah)"
+[Try it in Compiler Explorer](https://godbolt.org/z/fxcjs19ah){ .md-button }
 
 !!! note
 
-    More code examples can be found in the [Examples](../users_guide/examples/tags_index.md) chapter.
+    More code examples can be found in the [Examples](../examples/tags_index.md) chapter.
