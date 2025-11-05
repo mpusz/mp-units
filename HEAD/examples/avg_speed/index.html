@@ -2686,7 +2686,7 @@ You're not viewing the latest version.
 
 
 <h1 id="avg_speed"><code>avg_speed</code><a class="headerlink" href="#avg_speed" title="Permanent link">&para;</a></h1>
-<p><a class="md-button" href="https://godbolt.org/z/v9c5T6bc4">Try it in Compiler Explorer</a></p>
+<p><a class="md-button" href="https://godbolt.org/z/v9c5T6bc4">Try it live on Compiler Explorer</a></p>
 <p>Let's continue the previous example. This time, our purpose will not be to showcase as many
 library features as possible, but we will focus on different interfaces one can provide with
 the <strong>mp-units</strong>. We will also describe some advantages and disadvantages of presented
@@ -2820,7 +2820,7 @@ time from <code>h</code> to <code>s</code>. The converted values are used to cal
 is then again converted to the one in <code>km/h</code>. Those conversions not only impact the
 application's runtime performance but may also affect the precision of the final result.
 Such truncation can be easily observed in the first case where we deal with integral
-representation types (the resulting speed is <code>108 km/h</code>).</p>
+representation types (the resulting speed is <span class="arithmatex">\(108\ \mathrm{km/h}\)</span>).</p>
 <p>The second scenario is really similar to the previous one, but this time, function arguments
 have floating-point representation types:</p>
 <div class="language-cpp highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">avg_speed.cpp</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-5-56">56</a></span>

@@ -2692,14 +2692,14 @@ You're not viewing the latest version.
 
 
 <h1 id="hw_voltage"><code>hw_voltage</code><a class="headerlink" href="#hw_voltage" title="Permanent link">&para;</a></h1>
-<p><a class="md-button" href="https://godbolt.org/z/MYn5qjPzh">Try it in Compiler Explorer</a></p>
+<p><a class="md-button" href="https://godbolt.org/z/MYn5qjPzh">Try it live on Compiler Explorer</a></p>
 <p>As it was stated in <a href="../../users_guide/framework_basics/the_affine_space/">The Affine Space</a>
 chapter, every measurement can (and probably should) be modeled as a <code>quantity_point</code>.
 This is a perfect example of such a use case.</p>
 <p>This example implements a simplified scenario of measuring voltage read from hardware
-through a mapped 16-bits register. The actual voltage range of [-10 V, 10 V] is mapped to
-[-32767, 32767] on hardware. Translation of the value requires not only scaling of the value
-but also applying of an offset.</p>
+through a mapped 16-bits register. The actual voltage range of [<span class="arithmatex">\(-10\ \mathrm{V}\)</span>,
+<span class="arithmatex">\(10\ \mathrm{V}\)</span>] is mapped to [-32767, 32767] on hardware. Translation of the value
+requires not only scaling of the value but also applying of an offset.</p>
 <p>First we include all the dependencies:</p>
 <div class="language-cpp highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">hw_voltage.cpp</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1"> 1</a></span>
 <span class="normal"><a href="#__codelineno-0-2"> 2</a></span>

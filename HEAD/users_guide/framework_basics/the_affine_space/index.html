@@ -3304,10 +3304,11 @@ which point it describes.</p>
 Even if we could add such information to the point's definition, we would not
 know how to output it in the text. There may be many ways to do it. For example, should we
 prepend or append the origin part to the quantity text?</p>
-<p>For example, the text output of <code>42 m</code> for a quantity point may mean many things. It may be
-an offset from the mountain top, sea level, or maybe the center of Mars.
-Printing <code>42 m AMSL</code> for altitudes above mean sea level is a much better solution, but the
-library does not have enough information to print it that way by itself.</p>
+<p>For example, the text output of <span class="arithmatex">\(42\ \mathrm{m}\)</span> for a quantity point may mean many
+things. It may be an offset from the mountain top, sea level, or maybe the center of Mars.
+Printing <span class="arithmatex">\(42\ \mathrm{m}\ \mathrm{AMSL}\)</span> for altitudes above mean sea level is a much
+better solution, but the library does not have enough information to print it that way
+by itself.</p>
 <h2 id="the-affine-space-is-about-type-safety">The affine space is about type-safety<a class="headerlink" href="#the-affine-space-is-about-type-safety" title="Permanent link">&para;</a></h2>
 <p>The following operations are not allowed in the affine space:</p>
 <ul>

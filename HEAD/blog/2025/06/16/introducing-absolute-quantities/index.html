@@ -3154,9 +3154,9 @@ Conversely, using deltas everywhere hides physical intent and allows nonsensical
 </tr>
 <tr>
 <td><strong>Example</strong></td>
-<td style="text-align: center;">20 °C, 100 m AMSL</td>
-<td style="text-align: center;">293.15 K, 100 kg</td>
-<td style="text-align: center;">10 K, -5 kg</td>
+<td style="text-align: center;"><span class="arithmatex">\(20\ \mathrm{°C}\)</span>, <span class="arithmatex">\(100\ \mathrm{m}\ \mathrm{AMSL}\)</span></td>
+<td style="text-align: center;"><span class="arithmatex">\(293.15\ \mathrm{K}\)</span>, <span class="arithmatex">\(100\ \mathrm{kg}\)</span></td>
+<td style="text-align: center;"><span class="arithmatex">\(10\ \mathrm{K}\)</span>, <span class="arithmatex">\(-5\ \mathrm{kg}\)</span></td>
 </tr>
 <tr>
 <td><strong>Absolute Zero?</strong></td>
@@ -3166,32 +3166,32 @@ Conversely, using deltas everywhere hides physical intent and allows nonsensical
 </tr>
 <tr>
 <td><strong>Allows Negative?</strong></td>
-<td style="text-align: center;">Yes (-10 °C)</td>
+<td style="text-align: center;">Yes (<span class="arithmatex">\(-10\ \mathrm{°C}\)</span>)</td>
 <td style="text-align: center;">No (Opt-in)</td>
-<td style="text-align: center;">Yes (-10 m)</td>
+<td style="text-align: center;">Yes (<span class="arithmatex">\(-10\ \mathrm{m}\)</span>)</td>
 </tr>
 <tr>
 <td><strong>A + A</strong></td>
-<td style="text-align: center;">Error (20 °C + 10 °C)</td>
-<td style="text-align: center;">Absolute (10 kg + 5 kg)</td>
+<td style="text-align: center;">Error (<span class="arithmatex">\(20\ \mathrm{°C} + 10\ \mathrm{°C}\)</span>)</td>
+<td style="text-align: center;">Absolute (<span class="arithmatex">\(10\ \mathrm{kg} + 5\ \mathrm{kg}\)</span>)</td>
 <td style="text-align: center;">Delta</td>
 </tr>
 <tr>
 <td><strong>A - A</strong></td>
-<td style="text-align: center;">Delta (30 °C - 10 °C)</td>
-<td style="text-align: center;">Delta (50 kg - 5 kg)</td>
+<td style="text-align: center;">Delta (<span class="arithmatex">\(30\ \mathrm{°C} - 10\ \mathrm{°C}\)</span>)</td>
+<td style="text-align: center;">Delta (<span class="arithmatex">\(50\ \mathrm{kg} - 5\ \mathrm{kg}\)</span>)</td>
 <td style="text-align: center;">Delta</td>
 </tr>
 <tr>
 <td><strong>scalar * A</strong></td>
-<td style="text-align: center;">Error (2 * 20 °C)</td>
-<td style="text-align: center;">Absolute (2 * 10 kg)</td>
+<td style="text-align: center;">Error (<span class="arithmatex">\(2 \times 20\ \mathrm{°C}\)</span>)</td>
+<td style="text-align: center;">Absolute (<span class="arithmatex">\(2 \times 10\ \mathrm{kg}\)</span>)</td>
 <td style="text-align: center;">Delta</td>
 </tr>
 <tr>
 <td><strong>A / A</strong></td>
 <td style="text-align: center;">Error</td>
-<td style="text-align: center;">scalar (10 kg / 5 kg)</td>
+<td style="text-align: center;">scalar (<span class="arithmatex">\(10\ \mathrm{kg} / 5\ \mathrm{kg}\)</span>)</td>
 <td style="text-align: center;">scalar</td>
 </tr>
 <tr>
@@ -3831,7 +3831,7 @@ constraint with a properly named abstraction that models that behavior.</p>
 <p>Actually, V3 will improve temperature support significantly. Thanks to the new abstraction,
 we will be able to multiply and divide absolute temperatures with other quantities, but
 only if the temperature is measured in Kelvin. Also, the multiply syntax will work to
-construct such absolute quantities (e.g., <code>300 * K</code>).</p>
+construct such absolute quantities (e.g., <span class="arithmatex">\(300 \times \mathrm{K}\)</span>).</p>
 <p>Last, but not least, the <code>quantity_point&lt;...&gt;</code> class template will be replaced with
 <code>quantity&lt;point&lt;...&gt;&gt;</code> syntax.</p>
 <h3 id="key-migration-rules">Key Migration Rules<a class="headerlink" href="#key-migration-rules" title="Permanent link">&para;</a></h3>
