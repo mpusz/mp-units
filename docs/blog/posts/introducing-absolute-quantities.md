@@ -527,13 +527,13 @@ flowchart TD
     ask_point -- Yes --> ask_delta{{Possibly negative difference/distance between two values?}}
     ask_delta -- Yes --> Delta[Delta]
     ask_delta -- No --> Absolute[Absolute]
-    
+
     %% Styling
     classDef pointStyle fill:#ff9999,stroke:#cc0000,stroke-width:2px,color:#000
     classDef deltaStyle fill:#99ff99,stroke:#00cc00,stroke-width:2px,color:#000
     classDef absoluteStyle fill:#99ccff,stroke:#0066cc,stroke-width:2px,color:#000
     classDef questionStyle fill:#fff2cc,stroke:#d6b656,stroke-width:2px,color:#000
-    
+
     class Point pointStyle
     class Delta deltaStyle
     class Absolute absoluteStyle
