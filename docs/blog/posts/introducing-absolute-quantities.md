@@ -84,10 +84,10 @@ current model, motivating the need for a new abstraction.
    This often forces the users to convert the quantity point to a delta with either
    `qp.quantity_from_zero()` or `qp.quantity_from(some_origin)` member functions, which is
    at least cumbersome.
-2. **No text output for points** – A point’s textual representation depends on its origin,
+2. **No text output for points** – A point's textual representation depends on its origin,
    which is often implicit or user-defined. As of today, we do not have the means to
-   provide text symbol for the point origin. Moreover, points may contain both an
-   absolute, and a relative origin at the same time which makes it harder to determine
+   provide a text symbol for the point origin. Moreover, points may contain both an
+   absolute and a relative origin at the same time, which makes it harder to determine
    which origin to use for printing. Also, the same point may be represented in many ways
    (different deltas from various origins). Should such a point have the same or
    a different textual output for each representation?
@@ -165,7 +165,7 @@ conversions, and algebraic properties that underpin the new model.
 | Addition                    |     ✗      |         ✓         |     ✓     |
 | Subtraction                 |     ✓      |         ✓         |     ✓     |
 | May be non‑negative         |     ✓      |         ✓         |     ✗     |
-| Relative to origin          |  Explicit  | Implicit global 0 |     ✗     |
+| Relative to origin          |  Explicit  | Implicit global 0 |     ✗     |
 | Can use offset units        |     ✓      |         ✗         |     ✓     |
 | Convertible to offset units | Via offset |         ✗         | No offset |
 | Text output                 |     ✗      |         ✓         |     ✓     |
@@ -269,7 +269,7 @@ quantity<kg> q3 = q1.absolute();  // may fail the pre-condition check if negativ
 quantity<kg> q4 = q2.absolute();  // may fail the pre-condition check if negative
 ```
 
-It is important to note that conversions between absolute quantities and a points should
+It is important to note that conversions between absolute quantities and points should
 be available only when there is no point origin specified for a point (an implicit point
 origin is being used).
 
@@ -423,7 +423,7 @@ A non-negative flag could be set only if all of the components in the equations 
 marked as non-negative. However, we will not be able to account for a negative scalar
 possibly used in an equation. This is why it is probably better to assume that ad-hoc
 derived quantities do not inherit this property. If this result is assigned to a
-typed/named quantity then the non-negativity will be check then (if set).
+typed/named quantity, then the non-negativity will be checked then (if set).
 
 
 ### Interesting Quantity Types
@@ -500,9 +500,9 @@ non-negative precondition check on construction and assignment.
 
 #### Temperature
 
-As we pointed out before, it will be possible to form absolute quantity of _temperature_,
-but only in the unit is (potentially prefixed) Kelvin. For offset unit like degree
-Celsius it will not be possible.
+As we pointed out before, it will be possible to form absolute quantities of _temperature_,
+but only when the unit is (potentially prefixed) Kelvin. For offset units like degree
+Celsius, it will not be possible.
 
 If the user has a temperature point in Celsius and wants to treat it as an absolute
 quantity and pass it to some quantity equation, then such point first needs to
@@ -647,8 +647,8 @@ quantity.
     quantity res = avg_speed((odo2 - odo1).absolute(), (ts2 - ts1).absolute());  // OK
     ```
 
-In case of an invalid order of subtraction arguments the precondition check will fail
-at runtime only for the conversion to absolutes case. This increases safety of our
+In case of an invalid order of subtraction arguments, the precondition check will fail
+at runtime only for the conversion to absolutes case. This increases the safety of our
 code.
 
 Another migration challenge may be related to the usage of negative values. All of the
@@ -667,7 +667,8 @@ quantity d3 = delta<m>(-2);    // OK
 Regarding temperature support, in the [Semantics](#semantics) chapter,
 we said that a new abstraction will not work for offset units. However, it was
 also the case in **mp-units** V2. If we check
-[The Affine Space chapter](../../users_guide/framework_basics/the_affine_space.md#displacement-vector-is-modeled-by-quantity) we will find a note that:
+[The Affine Space chapter](../../users_guide/framework_basics/the_affine_space.md#displacement-vector-is-modeled-by-quantity)
+we will find a note that:
 
 !!! quote
 
@@ -679,9 +680,9 @@ with `point` and `delta` construction helpers. So nothing changes here from the 
 point of view. From the design point of view, we replace some strange corner case design
 constraint with a properly named abstraction that models that behavior.
 
-Actually, V3 will improve the temperature support a lot. Thanks to the new abstraction,
-we will be able to multiply and divide absolute temperature with other quantities, but
-only if the temperature is measured in Kelvin. Also, a multiply syntax will work to
+Actually, V3 will improve temperature support significantly. Thanks to the new abstraction,
+we will be able to multiply and divide absolute temperatures with other quantities, but
+only if the temperature is measured in Kelvin. Also, the multiply syntax will work to
 construct such absolute quantities (e.g., `300 * K`).
 
 Last, but not least, the `quantity_point<...>` class template will be replaced with
@@ -822,9 +823,9 @@ For standardization, this model brings three tangible benefits:
 
 ## Conclusion
 
-Adding **absolute quantities** elevates `mp-units` from a dimensional analysis tool to
+Adding **absolute quantities** elevates **mp-units** from a dimensional analysis tool to
 a true **physical reasoning framework**. The proposal clarifies semantics, improves
 safety, and aligns code directly with equations found in textbooks. This is not extra
-complexity—it’s the formalisation of the real structure of physical space in C++ types.
+complexity—it's the formalization of the real structure of physical space in C++ types.
 
-We plan to deliver this as part of **mp-units V3** and welcome community and WG21 feedback.
+We plan to deliver this as part of **mp-units V3** and welcome community and WG21 feedback.
