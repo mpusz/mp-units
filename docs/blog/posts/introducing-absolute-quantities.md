@@ -664,7 +664,7 @@ quantity<delta<m>> d2(-2 * m); // Precondition check failure at runtime
 quantity d3 = delta<m>(-2);    // OK
 ```
 
-Regarding temperature support, in the [Absolute quantities](#absolute-quantities) chapter,
+Regarding temperature support, in the [Semantics](#semantics) chapter,
 we said that a new abstraction will not work for offset units. However, it was
 also the case in **mp-units** V2. If we check
 [The Affine Space chapter](../../users_guide/framework_basics/the_affine_space.md#displacement-vector-is-modeled-by-quantity) we will find a note that:
