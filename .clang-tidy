@@ -30,6 +30,7 @@ Checks: '
     -misc-include-cleaner,
     -modernize-use-trailing-return-type,
     -modernize-use-designated-initializers,
+    -portability-avoid-pragma-once,
     -readability-identifier-length,
     -readability-isolate-declaration,
     -readability-magic-numbers,
