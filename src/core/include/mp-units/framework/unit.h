@@ -184,7 +184,7 @@ struct unit_interface {
   template<Unit Lhs, Unit Rhs>
   [[nodiscard]] friend MP_UNITS_CONSTEVAL Unit auto operator*(Lhs lhs, Rhs rhs)
   {
-    return expr_multiply<derived_unit, struct one>(lhs, rhs);
+    return expr_multiply<derived_unit, one>(lhs, rhs);
   }
 
   /**
@@ -195,7 +195,7 @@ struct unit_interface {
   template<Unit Lhs, Unit Rhs>
   [[nodiscard]] friend MP_UNITS_CONSTEVAL Unit auto operator/(Lhs lhs, Rhs rhs)
   {
-    return expr_divide<derived_unit, struct one>(lhs, rhs);
+    return expr_divide<derived_unit, one>(lhs, rhs);
   }
 
   template<Unit Lhs, Unit Rhs>

@@ -46,7 +46,6 @@ import std;
 #include <concepts>
 #include <cstdint>
 #include <optional>
-#include <tuple>
 #include <type_traits>
 #endif
 #endif
@@ -181,7 +180,7 @@ struct quantity_spec_interface_base {
   [[nodiscard]] friend consteval QuantitySpec auto operator*(Lhs lhs, Rhs rhs)
   {
     return detail::clone_kind_of<Lhs{}, Rhs{}>(
-      detail::expr_multiply<derived_quantity_spec, struct dimensionless, type_list_of_quantity_spec_less>(
+      detail::expr_multiply<derived_quantity_spec, dimensionless, type_list_of_quantity_spec_less>(
         detail::remove_kind(lhs), detail::remove_kind(rhs)));
   }
 
@@ -189,7 +188,7 @@ struct quantity_spec_interface_base {
   [[nodiscard]] friend consteval QuantitySpec auto operator/(Lhs lhs, Rhs rhs)
   {
     return detail::clone_kind_of<Lhs{}, Rhs{}>(
-      detail::expr_divide<derived_quantity_spec, struct dimensionless, type_list_of_quantity_spec_less>(
+      detail::expr_divide<derived_quantity_spec, dimensionless, type_list_of_quantity_spec_less>(
         detail::remove_kind(lhs), detail::remove_kind(rhs)));
   }
 
