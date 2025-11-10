@@ -622,7 +622,10 @@ public:
     using ct = std::common_type_t<quantity, quantity<R2, Rep2>>;
     const ct ct_lhs(lhs);
     const ct ct_rhs(rhs);
+    MP_UNITS_DIAGNOSTIC_PUSH
+    MP_UNITS_DIAGNOSTIC_IGNORE_FLOAT_EQUAL
     return ct_lhs.numerical_value_ref_in(ct::unit) == ct_rhs.numerical_value_ref_in(ct::unit);
+    MP_UNITS_DIAGNOSTIC_PUSH
   }
 
   template<std::derived_from<quantity> Q, RepresentationOf<quantity_spec> Value>
