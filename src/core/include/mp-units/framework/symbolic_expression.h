@@ -161,7 +161,7 @@ template<typename T>
     return T::exponent;
   else
     return ratio{1};
-};
+}
 
 template<SymbolicArg T, ratio R>
 [[nodiscard]] consteval auto power_or_T_impl()

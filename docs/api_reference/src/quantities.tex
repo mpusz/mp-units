@@ -360,7 +360,7 @@ enum class @\libglobal{unit_symbol_solidus}@ : std::int8_t {
   one_denominator,
   always,
   never,
-  default_denominator = one_denominator
+  default_solidus = one_denominator
 };
 
 enum class @\libglobal{unit_symbol_separator}@ : std::int8_t {
@@ -371,7 +371,7 @@ enum class @\libglobal{unit_symbol_separator}@ : std::int8_t {
 
 struct @\libglobal{unit_symbol_formatting}@ {
   character_set char_set = character_set::default_character_set;
-  unit_symbol_solidus solidus = unit_symbol_solidus::default_denominator;
+  unit_symbol_solidus solidus = unit_symbol_solidus::default_solidus;
   unit_symbol_separator separator = unit_symbol_separator::default_separator;
 };
 

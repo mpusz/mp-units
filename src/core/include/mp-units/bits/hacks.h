@@ -146,6 +146,16 @@ MP_UNITS_DIAGNOSTIC_POP
 
 #endif
 
+#if MP_UNITS_COMP_MSVC
+
+#define MP_UNITS_EMPTY_BASES_WORKAROUND __declspec(empty_bases)
+
+#else
+
+#define MP_UNITS_EMPTY_BASES_WORKAROUND
+
+#endif
+
 #if !defined MP_UNITS_API_NO_CRTP && __cpp_explicit_this_parameter
 
 #define MP_UNITS_API_NO_CRTP 1

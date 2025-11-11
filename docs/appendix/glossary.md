@@ -4,17 +4,17 @@
 
 !!! note
 
-    The ISO terms provided below are only a few of many defined in
-    the [ISO/IEC Guide 99](https://www.iso.org/obp/ui#iso:std:iso-iec:guide:99:ed-1:v2:en).
+    The ISO terms provided below are only a few of many defined in the
+    [ISO/IEC Guide 99](https://www.iso.org/obp/ui#iso:std:iso-iec:guide:99:ed-1:v2:en).
 
 [`quantity`](#quantity){ #quantity }
 
-:   - Property of a phenomenon, body, or substance, where the property has a magnitude that can
-      be expressed by means of a number and a reference.
-    - A reference can be a [measurement unit](#unit), a measurement procedure, a reference material,
-      or a combination of such.
-    - A quantity as defined here is a scalar. However, a vector or a tensor, the components of
-      which are quantities, is also considered to be a quantity.
+:   - Property of a phenomenon, body, or substance, where the property has a magnitude that
+      can be expressed by means of a number and a reference.
+    - A reference can be a [measurement unit](#unit), a measurement procedure, a reference
+      material, or a combination of such.
+    - A quantity as defined here is a scalar. However, a vector or a tensor, the components
+      of which are quantities, is also considered to be a quantity.
     - The concept ’quantity’ may be generically divided into, e.g. ‘physical quantity’,
       ‘chemical quantity’, and ‘biological quantity’, or [‘base quantity’](#base-quantity)
       and [‘derived quantity’](#derived-quantity).
@@ -23,7 +23,8 @@
 [`kind of quantity, kind`](#kind){ #kind }
 
 :   - Aspect common to mutually comparable [quantities](#quantity).
-    - The division of the concept ‘quantity’ into several kinds is to some extent arbitrary, for example:
+    - The division of the concept ‘quantity’ into several kinds is to some extent
+      arbitrary, for example:
         - the quantities diameter, circumference, and wavelength are generally considered
           to be quantities of the same kind, namely, of the kind of quantity called length,
         - the quantities heat, kinetic energy, and potential energy are generally considered
@@ -63,25 +64,29 @@
 :   - [System of quantities](#system-of-quantities) based on the seven [base quantities](#base-quantity):
       length, mass, time, electric current, thermodynamic temperature, amount of substance,
       and luminous intensity.
-    - This system of quantities is published in the ISO 80000 and IEC 80000 series _Quantities and units_.
+    - This system of quantities is published in the ISO 80000 and IEC 80000 series
+      _Quantities and units_.
     - [The International System of Units (SI)](#si) is based on the ISQ.
 
 [`quantity dimension, dimension of a quantity, dimension`](#dimension){ #dimension }
 
 :   - Expression of the dependence of a [quantity](#quantity) on the [base quantities](#base-quantity)
-      of a [system of quantities](#system-of-quantities) as a product of powers of factors corresponding
-      to the [base quantities](#base-quantity), omitting any numerical factor.
-        - e.g. in the [ISQ](#isq), the quantity dimension of force is denoted by $\textsf{dim }F = \mathsf{LMT}^{–2}$.
+      of a [system of quantities](#system-of-quantities) as a product of powers of factors
+      corresponding to the [base quantities](#base-quantity), omitting any numerical factor.
+        - e.g. in the [ISQ](#isq), the quantity dimension of force is denoted by
+          $\textsf{dim }F = \mathsf{LMT}^{–2}$.
     - A power of a factor is the factor raised to an exponent. Each factor is the dimension
       of a [base quantity](#base-quantity).
     - In deriving the dimension of a quantity, no account is taken of its scalar, vector, or
       tensor character.
     - In a given [system of quantities](#system-of-quantities):
         - [quantities](#quantity) of the same [kind](#kind) have the same quantity dimension,
-        - [quantities](#quantity) of different quantity dimensions are always of different [kinds](#kind),
-        - [quantities](#quantity) having the same quantity dimension are not necessarily of the same
-          [kind](#kind).
-    - Symbols representing the dimensions of the [base quantities](#base-quantity) in the [ISQ](#isq) are:
+        - [quantities](#quantity) of different quantity dimensions are always of different
+          [kinds](#kind),
+        - [quantities](#quantity) having the same quantity dimension are not necessarily of
+          the same [kind](#kind).
+    - Symbols representing the dimensions of the [base quantities](#base-quantity) in the
+      [ISQ](#isq) are:
 
         | Base quantity             | Symbol for dimension |
         |---------------------------|:--------------------:|
@@ -97,6 +102,7 @@
         $\textsf{dim }Q = \mathsf{L}^α\mathsf{M}^β\mathsf{T}^γ\mathsf{I}^δ\mathsf{Θ}^ε\mathsf{N}^ζ\mathsf{J}^η$
         where the exponents, named dimensional exponents, are positive, negative, or zero.
 
+<!-- markdownlint-disable-next-line MD013 -->
 [`quantity of dimension one, dimensionless quantity`](#dimensionless-quantity){ #dimensionless-quantity }
 
 :     - [quantity](#quantity) for which all the exponents of the factors corresponding to the
@@ -115,23 +121,23 @@
 
 [`measurement unit, unit of measurement, unit`](#unit){ #unit }
 
-:   - Real scalar [quantity](#quantity), defined and adopted by convention, with which any other
-      [quantity of the same kind](#kind) can be compared to express the ratio of the two
-      [quantities](#quantity) as a number.
+:   - Real scalar [quantity](#quantity), defined and adopted by convention, with which any
+      other [quantity of the same kind](#kind) can be compared to express the ratio of
+      the two [quantities](#quantity) as a number.
     - Measurement units are designated by conventionally assigned names and symbols.
     - Measurement units of [quantities](#quantity) of the same [quantity dimension](#dimension)
       may be designated by the same name and symbol even when the [quantities](#quantity) are
       not of the same [kind](#kind).
-        - For example, joule per kelvin and J/K are respectively the name and symbol of both a
-          measurement unit of heat capacity and a measurement unit of entropy, which are generally
-          not considered to be [quantities of the same kind](#kind).
+        - For example, joule per kelvin and J/K are respectively the name and symbol of
+          both a measurement unit of heat capacity and a measurement unit of entropy,
+          which are generally not considered to be [quantities of the same kind](#kind).
     - However, in some cases special measurement unit names are restricted to be used with
       [quantities](#quantity) of specific [kind](#kind) only.
         - For example, the measurement unit ‘second to the power minus one’
           ($\mathsf{1/s}$) is called hertz ($\mathsf{Hz}$) when used for frequencies and
           becquerel ($\mathsf{Bq}$) when used for activities of radionuclides. As another example,
-          the joule ($\mathsf{J}$) is used as a unit of energy, but never as a unit of moment of
-          force, e.g. the newton metre ($\mathsf{N·m}$).
+          the joule ($\mathsf{J}$) is used as a unit of energy, but never as a unit of
+          moment of force, e.g. the newton metre ($\mathsf{N·m}$).
     - Measurement units of [quantities of dimension one](#dimensionless-quantity) are
       numbers. In some cases, these measurement units are given special names, e.g. radian,
       steradian, and decibel, or are expressed by quotients such as millimole per mole equal
@@ -140,8 +146,8 @@
 [`base unit`](#base-unit){ #base-unit }
 
 :   - [Measurement unit](#unit) that is adopted by convention for a [base quantity](#base-quantity).
-    - In each [coherent system of units](#coherent-system-of-units), there is only one base unit
-      for each [base quantity](#base-quantity).
+    - In each [coherent system of units](#coherent-system-of-units), there is only one
+      base unit for each [base quantity](#base-quantity).
         - e.g. in the [SI](#si), the metre is the base unit of length. In the CGS systems,
           the centimetre is the base unit of length.
     - A base unit may also serve for a [derived quantity](#derived-quantity) of the same
@@ -152,11 +158,11 @@
 [`derived unit`](#derived-unit){ #derived-unit }
 
 :   - [Measurement unit](#unit) for a [derived quantity](#derived-quantity).
-    - For example, the metre per second, symbol m/s, and the centimetre per second, symbol cm/s,
-      are derived units of speed in the [SI](#si). The kilometre per hour, symbol km/h, is a
-      [measurement unit](#unit) of speed outside the [SI](#si) but accepted for use with
-      the [SI](#si). The knot, equal to one nautical mile per hour, is a measurement unit of speed
-      outside the [SI](#si).
+    - For example, the metre per second, symbol m/s, and the centimetre per second,
+      symbol cm/s, are derived units of speed in the [SI](#si). The kilometre per hour,
+      symbol km/h, is a [measurement unit](#unit) of speed outside the [SI](#si) but
+      accepted for use with the [SI](#si). The knot, equal to one nautical mile per hour,
+      is a measurement unit of speed outside the [SI](#si).
 
 [`coherent derived unit`](#coherent-derived-unit){ #coherent-derived-unit }
 
@@ -166,20 +172,21 @@
     - A power of a [base unit](#base-unit) is the [base unit](#base-unit) raised to an exponent.
     - Coherence can be determined only with respect to a particular
       [system of quantities](#system-of-quantities) and a given set of [base units](#base-unit).
-        - For example, if the metre, the second, and the mole are base units, the metre per second is
-          the coherent derived unit of velocity when velocity is defined by the
-          [quantity equation](#quantity-equation) $v = \mathsf{d}r/\mathsf{d}t$, and the mole per
-          cubic metre is the coherent derived unit of amount-of-substance concentration when
-          amount-of-substance concentration is defined by the [quantity equation](#quantity-equation)
-          $c = n/V$. The kilometre per hour and the knot, given as examples of [derived units](#derived-unit),
-          are not coherent derived units in such a [system of quantities](#system-of-quantities).
+        - For example, if the metre, the second, and the mole are base units, the metre per
+          second is the coherent derived unit of velocity when velocity is defined by the
+          [quantity equation](#quantity-equation) $v = \mathsf{d}r/\mathsf{d}t$, and the
+          mole per cubic metre is the coherent derived unit of amount-of-substance
+          concentration when amount-of-substance concentration is defined by the
+          [quantity equation](#quantity-equation) $c = n/V$. The kilometre per hour and the
+          knot, given as examples of [derived units](#derived-unit), are not coherent derived
+          units in such a [system of quantities](#system-of-quantities).
     - A [derived unit](#derived-unit) can be coherent with respect to one
       [system of quantities](#system-of-quantities) but not to another.
-        - For example, the centimetre per second is the coherent derived unit of speed in a CGS system
-          of units but is not a coherent derived unit in the [SI](#si).
+        - For example, the centimetre per second is the coherent derived unit of speed in a
+          CGS system of units but is not a coherent derived unit in the [SI](#si).
     - The coherent derived unit for every [derived quantity of dimension one](#dimensionless-quantity)
-      in a given [system of units](#system-of-units) is the number one, symbol $1$. The name and
-      symbol of the [measurement unit](#unit) one are generally not indicated.
+      in a given [system of units](#system-of-units) is the number one, symbol $1$. The
+      name and symbol of the [measurement unit](#unit) one are generally not indicated.
 
 [`system of units`](#system-of-units){ #system-of-units }
 
@@ -190,12 +197,12 @@
 [`coherent system of units`](#coherent-system-of-units){ #coherent-system-of-units }
 
 :   - [System of units](#system-of-units), based on a given [system of quantities](#system-of-quantities),
-      in which the [measurement unit](#unit) for each [derived quantity](#derived-quantity) is
-      a [coherent derived unit](#coherent-derived-unit).
+      in which the [measurement unit](#unit) for each [derived quantity](#derived-quantity)
+      is a [coherent derived unit](#coherent-derived-unit).
     - A [system of units](#system-of-units) can be coherent only with respect to a
       [system of quantities](#system-of-quantities) and the adopted [base units](#base-unit).
-    - For a coherent system of units, [numerical value equations](#numerical-value-equation) have
-      the same form, including numerical factors, as the corresponding
+    - For a coherent system of units, [numerical value equations](#numerical-value-equation)
+      have the same form, including numerical factors, as the corresponding
       [quantity equations](#quantity-equation).
 
 [`off-system measurement unit, off-system unit`](#off-system-unit){ #off-system-unit }
@@ -222,14 +229,15 @@
         - For example, force acting on a given particle, e.g. in Cartesian components
           $(F_x; F_y; F_z) = (−31.5; 43.2; 17.0)\;\mathsf{N}$.
 
+<!-- markdownlint-disable-next-line MD013 -->
 [`numerical quantity value, numerical value of a quantity, numerical value`](#numerical-value){ #numerical-value }
 
-:   - Number in the expression of a [quantity value](#quantity-value), other than any number serving
-      as the reference
-        - For example, in an amount-of-substance fraction equal to $3\;\mathsf{mmol/mol}$, the numerical
-          quantity value is $3$ and the [unit](#unit) is $\mathsf{mmol/mol}$. The [unit](#unit)
-          $\mathsf{mmol/mol}$ is numerically equal to $0.001$, but this number $0.001$ is not part
-          of the numerical quantity value, which remains $3$.
+:   - Number in the expression of a [quantity value](#quantity-value), other than any
+      number serving as the reference
+        - For example, in an amount-of-substance fraction equal to $3\;\mathsf{mmol/mol}$,
+          the numerical quantity value is $3$ and the [unit](#unit) is $\mathsf{mmol/mol}$.
+          The [unit](#unit) $\mathsf{mmol/mol}$ is numerically equal to $0.001$, but this
+          number $0.001$ is not part of the numerical quantity value, which remains $3$.
 
 [`quantity equation`](#quantity-equation){ #quantity-equation }
 
@@ -247,6 +255,7 @@
       metre, and second, respectively. (The symbol $:=$ denotes “is by definition equal to”
       as given in the ISO 80000 and IEC 80000 series.). $1\;\mathsf{km/h} = (1/3.6)\;\mathsf{m/s}$.
 
+<!-- markdownlint-disable-next-line MD013 -->
 [`numerical value equation, numerical quantity value equation`](#numerical-value-equation){ #numerical-value-equation }
 
 :   - Mathematical relation between numerical [quantity values](#quantity-value), based on
@@ -339,7 +348,8 @@
 :   - A canonical representation of a unit consists of:
         - a reference unit being the result of extraction of all the intermediate
           [derived units](#derived-unit),
-        - a magnitude being a product of all the prefixes and magnitudes of extracted scaled units.
+        - a magnitude being a product of all the prefixes and magnitudes of extracted
+          scaled units.
     - All units having the same canonical unit are deemed equal.
     - All units having the same reference unit are convertible
       (their magnitude may differ and is used during conversion).
@@ -348,13 +358,16 @@
 
 :   See [canonical representation of a unit](#canonical-unit)
 
+<!-- markdownlint-disable-next-line MD013 -->
 [`absolute quantity point origin`, `absolute point origin`](#absolute-point-origin){ #absolute-point-origin }
 
-:   - An explicit point on an axis of values of a specific [quantity](#quantity) type that serves
-      as an absolute reference point for all [quantity points](#quantity-point) which definitions
-      are (explicitly or implicitly) based on it.
-    - For example, mean sea level is commonly used as an absolute reference point to measure altitudes.
+:   - An explicit point on an axis of values of a specific [quantity](#quantity) type that
+      serves as an absolute reference point for all [quantity points](#quantity-point) which
+      definitions are (explicitly or implicitly) based on it.
+    - For example, mean sea level is commonly used as an absolute reference point to
+      measure altitudes.
 
+<!-- markdownlint-disable-next-line MD013 -->
 [`relative quantity point origin`, `relative point origin`](#relative-point-origin){ #relative-point-origin }
 
 :   - An explicit, known at compile-time, point on an axis of values of a specific [quantity](#quantity)

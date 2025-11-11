@@ -9,16 +9,17 @@ comments: true
 
 # Bringing Quantity-Safety To The Next Level
 
-All quantities and units libraries need to be unit-safe. Most of the libraries on the market do
-this correctly. Some of them are also dimension-safe, which adds another level of protection for
-their users.
+All quantities and units libraries need to be unit-safe. Most of the libraries
+on the market do this correctly. Some of them are also dimension-safe, which
+adds another level of protection for their users.
 
-**mp-units** is probably the only library on the market that additionally is quantity-safe. This
-gives a new quality and possibilities. I've described the major idea behind it, implementation
-details, and benefits to the users in the [series of posts about the International System of Quantities](isq-part-5-benefits.md).
+**mp-units** is probably the only library on the market that additionally is
+quantity-safe. This gives a new quality and possibilities. I've described the
+major idea behind it, implementation details, and benefits to the users in the
+[series of posts about the International System of Quantities](isq-part-5-benefits.md).
 
-However, this is only the beginning. We've always planned more and worked on the extensions in our
-free time. In this post, I will describe:
+However, this is only the beginning. We've always planned more and worked on the
+extensions in our free time. In this post, I will describe:
 
 - What a quantity character is?
 - The importance of using proper representation types for the quantities.
@@ -39,17 +40,18 @@ Quantities defined by the ISQ may be of the following characters:
 - vector (e.g., _displacement_, _velocity_, _force_),
 - tensor (e.g., _moment of inertia_, _stress_, _strain_).
 
-From the beginning, **mp-units** V2 was meant to properly support quantities of various
-characters. By default, all quantity types are scalars, but we can set any other quantity character
-in a `quantity_spec` definition. For example:
+From the beginning, **mp-units** V2 was meant to properly support quantities of
+various characters. By default, all quantity types are scalars, but we can set
+any other quantity character in a `quantity_spec` definition. For example:
 
 ```cpp
 inline constexpr struct displacement final : quantity_spec<length, quantity_character::vector> {} displacement;
 ```
 
-Character of derived quantities is inherited from the quantity equation taking into account the
-operations and their ingredients. For example the below _velocity_ quantity will automatically
-get a vector character without the need to explicitly state it in the definition:
+Character of derived quantities is inherited from the quantity equation taking
+into account the operations and their ingredients. For example the below
+_velocity_ quantity will automatically get a vector character without the need
+to explicitly state it in the definition:
 
 ```cpp
 inline constexpr struct velocity final : quantity_spec<displacement / duration> {} velocity;
@@ -64,16 +66,16 @@ inline constexpr struct speed final : quantity_spec<magnitude(velocity)> {} spee
 
 ## Representation types
 
-**mp-units** V2 requires providing representation types compatible with a specific character set
-in its `quantity_spec` definition:
+**mp-units** V2 requires providing representation types compatible with a
+specific character set in its `quantity_spec` definition:
 
 ```cpp
 template<Reference auto R, RepresentationOf<get_quantity_spec(R)> Rep = double>
 class quantity;
 ```
 
-For example, this allows us to check that vector representation type is used to construct
-a _velocity_ quantity and to ensure that _speed_ gets a scalar:
+For example, this allows us to check that vector representation type is used to
+construct a _velocity_ quantity and to ensure that _speed_ gets a scalar:
 
 ```cpp
 quantity q = vector{1, 2, 3} * m / s;
@@ -85,8 +87,9 @@ Another example here may be a _complex power_ quantity that should use a represe
 modeling a complex number, but _apparent power_, _active power_, and _reactive power_ should
 get scalars.
 
-As we can see above, in the case of `q`, we can use any representation type with a quantity kind
-that just specify a unit ([simple quantities](../../users_guide/framework_basics/simple_and_typed_quantities.md#simple-quantities)).
+As we can see above, in the case of `q`, we can use any representation type
+with a quantity kind that just specify a unit
+([simple quantities](../../users_guide/framework_basics/simple_and_typed_quantities.md#simple-quantities)).
 However, we need to provide a compatible representation type when we want to use
 [strongly-typed quantities](../../users_guide/framework_basics/simple_and_typed_quantities.md#typed-quantities)
 and be quantity-safe.
@@ -116,8 +119,9 @@ The real power comes with implementing character-specific operations.
 
 ### Current state of the art
 
-Most units libraries on the market (not only for C++) provide only regular arithmetic operations for
-scalars and don't constrain them for quantities of other characters. They also do not offer any
+Most units libraries on the market (not only for C++) provide only regular
+arithmetic operations for scalars and don't constrain them for quantities of
+other characters. They also do not offer any
 character-specific operations.
 
 For example, let's look closer into vector quantities. Most of the libraries on the market
@@ -135,33 +139,38 @@ They will also accept the following line:
 auto moment_of_force = force * length;
 ```
 
-Does it mean that _moment of force_ and _work_ are the same quantities? Of course not! It is just
-how naive most libraries are today.
+Does it mean that _moment of force_ and _work_ are the same quantities? Of
+course not! It is just how naive most libraries are today.
 
 But first, to defend them, I must admit that the behavior above is partially OK. `force * length`
 could yield some specific quantity, but it is definitely not _work_ or _moment of force_.
 
 There are two problems here:
 
-1. Libraries on the market are not aware of the characters of the quantities being used in the equation.
-   This means they can't prevent scalar arithmetic operations from being performed on vector quantities.
-   This typically leads to compile-time errors when a proper linear algebra representation type is
-   used in a quantity, as most linear algebra libraries will not overload `operator*` for vectors,
-   and those that do, treat it as a dot product, which returns a scalar.
+1. Libraries on the market are not aware of the characters of the quantities
+    being used in the equation.
+    This means they can't prevent scalar arithmetic operations from being
+    performed on vector quantities.
+    This typically leads to compile-time errors when a proper linear algebra
+    representation type is used in a quantity, as most linear algebra libraries
+    will not overload `operator*` for vectors, and those that do, treat it as a
+    dot product, which returns a scalar.
 2. None of the libraries allows us to constrain the return type of such multiplication with
-   a specific quantity type to specify exactly what we want to achieve. Most of them allow for replacing
-   `auto` with a type that describes just a unit, or, at best, the dimension. This means that all of
-   them are unit-safe, and some are also dimension-safe. However, this is not helpful here and does
-   not allow the library to do any additional compile-time checks on the resulting quantities.
-   The fact that we named the results as `work` or `moment_of_force` does not mean anything to
-   the compiler or the library being used.
+    a specific quantity type to specify exactly what we want to achieve. Most of
+    them allow for replacing `auto` with a type that describes just a unit, or,
+    at best, the dimension. This means that all of them are unit-safe, and some
+    are also dimension-safe. However, this is not helpful here and does not allow
+    the library to do any additional compile-time checks on the resulting
+    quantities.
+    The fact that we named the results as `work` or `moment_of_force` does not
+    mean anything to the compiler or the library being used.
 
 This isn't good.
 
 ### Benefits of quantity-safe library
 
-As we've stated in the beginning, **mp-units**, besides being unit-safe and dimension-safe, is also
-quantity-safe. Let's see what it means.
+As we've stated in the beginning, **mp-units**, besides being unit-safe and
+dimension-safe, is also quantity-safe. Let's see what it means.
 
 !!! note
 
@@ -187,8 +196,8 @@ type:
 // quantity work = isq::work(q1);                        // Compile-time error
 ```
 
-Neither _moment of force_ nor _work_ quantity can be created from a scalar _length_. We need very
-specific vector quantities of kind _length_ to do that:
+Neither _moment of force_ nor _work_ quantity can be created from a scalar
+_length_. We need very specific vector quantities of kind _length_ to do that:
 
 ```cpp
 quantity displacement = get_displacement();
@@ -238,8 +247,8 @@ It might be surprising to many that none of the following code compiles:
 // quantity moment_of_force = isq::moment_of_force(q5);  // Compile-time error
 ```
 
-Do you know why it does not compile? Please try to think about it for a minute and figure out what
-is the problem before checking the answer below.
+Do you know why it does not compile? Please try to think about it for a minute
+and figure out what is the problem before checking the answer below.
 
 ??? Tip "!!! Spoiler alert !!!"
 
@@ -258,11 +267,13 @@ Do you start to see the need for such checks at compile-time already? :nerd:
 
 ### Explicit conversions are not really needed
 
-You may be worried by the fact that we needed explicit quantity conversions above and that the code
-without them compiled fine. It might look like a safety pitfall, but it is really not an issue.
+You may be worried by the fact that we needed explicit quantity conversions above
+and that the code without them compiled fine. It might look like a safety
+pitfall, but it is really not an issue.
 
-The code above used a `quantity` CTAD placeholder which works a bit like `auto`. It accepts any
-quantity and deduced proper type for it. And all of the above operations resulted in some
+The code above used a `quantity` CTAD placeholder which works a bit like `auto`.
+It accepts any quantity and deduced proper type for it. And all of the above
+operations resulted in some
 quantities, but often not the ones we were interested in.
 
 In the production code, we deal with strong types in many places (members in classes, function
@@ -285,29 +296,33 @@ func2(q6);
 
 ### Peeking under the hood
 
-Let's look at the definitions of _work_ and _moment of force_ quantities to understand how and why
-the above works:
+Let's look at the definitions of _work_ and _moment of force_ quantities to
+understand how and why the above works:
 
 ```cpp
 inline constexpr struct work final : quantity_spec<scalar_product(force, displacement)> {} work;
 inline constexpr struct moment_of_force final : quantity_spec<vector_product(position_vector, force)> {} moment_of_force;
 ```
 
-`scalar_product()` and `vector_product()` functions are overloaded not only for `quantity` but
-also for `quantity_spec` types. The results of such operations are symbolic expressions that
-identify those operations. When used as a quantity recipe in a `quantity_spec` definition, they
-tell the library which derived quantities may be implicitly converted to our quantity.
+`scalar_product()` and `vector_product()` functions are overloaded not only for
+`quantity` but also for `quantity_spec` types. The results of such operations
+are symbolic expressions that
+identify those operations. When used as a quantity recipe in a `quantity_spec`
+definition, they tell the library which derived quantities may be implicitly
+converted to our quantity.
 
 ### What do other libraries do?
 
-I am probably not wrong in stating that none of the major C++ units libraries on the market provides
-vector or complex operations on quantities. This is why none of them will work when a proper
-representation type will be provided to a quantity. Trying to do any operations on a quantity with
-a linear algebra vector as its representation type will fail to compile.
+I am probably not wrong in stating that none of the major C++ units libraries on
+the market provides vector or complex operations on quantities. This is why none
+of them will work when a proper representation type will be provided to a
+quantity. Trying to do any operations on a quantity with a linear algebra vector
+as its representation type will fail to compile.
 
 This is also mostly true for other programming languages.
-A great exception, and in fact the only library that I know which provides such operations, is
-Python's [Pint](https://pint.readthedocs.io/en/stable/user/numpy.html#Function/Method-Support)
+A great exception, and in fact the only library that I know which provides such
+operations, is Python's
+[Pint](https://pint.readthedocs.io/en/stable/user/numpy.html#Function/Method-Support)
 (thanks to [NumPy](https://numpy.org/doc/stable/index.html) support).
 
 As other libraries do not support quantities of a vector type, they require users to create
@@ -316,8 +331,8 @@ library. This approach can't be quantity-safe!
 
 In such scenarios, the units library can't detect if an external linear algebra library performs
 a scalar or vector product operation. It only observes the individual multiplications on scalar
-ingredients of an external vector type. This is actually why such multiplication operations are
-provided in other units libraries in the first place.
+ingredients of an external vector type. This is actually why such multiplication
+operations are provided in other units libraries in the first place.
 
 Let's compare those approaches:
 
@@ -351,17 +366,18 @@ Let's compare those approaches:
     quantity<si::joule> work = la::scalar_product(force, displacement);
     ```
 
-Of course, someone could argue that incorrect use of a vector product operation above would also
-be safe as it will not compile as the return type differs. Yes, it is true. However, please
+Of course, someone could argue that incorrect use of a vector product operation
+above would also be safe as it will not compile as the return type differs. Yes,
+it is true. However, please
 remember that there are more cases where errors may happen.
 
-For example, an external linear algebra library will not protect us from providing arguments to
-a vector product in an invalid order.
+For example, an external linear algebra library will not protect us from
+providing arguments to a vector product in an invalid order.
 
-Also, our `work` quantity will never be able to detect if what we are trying to assign to it is
-a result of a scalar product of two vector quantities of _displacement_ and _force_, or maybe just
-some naive multiplication of scalar quantities that accidentally matched the dimensionality of
-the expected result.
+Also, our `work` quantity will never be able to detect if what we are trying to
+assign to it is a result of a scalar product of two vector quantities of
+_displacement_ and _force_, or maybe just some naive multiplication of scalar
+quantities that accidentally matched the dimensionality of the expected result.
 
 Please also remember that the quantity characters are not only about linear algebra. For example,
 in the case of complex quantities, we want to ensure that only:
@@ -375,10 +391,10 @@ Mixing the above is a fatal error in power systems engineering.
 
 ## Implementation challenges
 
-I had planned to implement the above features for a few years now but never had enough time to do it.
-Now, I am close to finishing the work. However, I've discovered a few interesting issues on the way,
-and I have to solve them before putting my code on the mainline and releasing the next **mp-units**
-version.
+I had planned to implement the above features for a few years now but never had
+enough time to do it. Now, I am close to finishing the work. However, I've
+discovered a few interesting issues on the way, and I have to solve them before
+putting my code on the mainline and releasing the next **mp-units** version.
 
 ### Modeling magnitudes
 
@@ -408,7 +424,8 @@ flowchart TD
     length --- wavelength["<b>wavelength</b>"]
 ```
 
-Having the above, we can look a bit closer into how _velocity_ and _speed_ are defined in the ISQ:
+Having the above, we can look a bit closer into how _velocity_ and _speed_ are
+defined in the ISQ:
 
 !!! quote "ISO 80000-3: Space and time"
 
@@ -474,8 +491,8 @@ quantity q7 = pos2 - pos1;
 quantity displacement = quantity_cast<isq::displacement>(q7);
 ```
 
-Again, the above might be surprising and considered a usability issue. Let me describe why the code
-behaves like that.
+Again, the above might be surprising and considered a usability issue. Let me
+describe why the code behaves like that.
 
 As of today, the result of an addition or subtraction of two quantities is their common quantity
 type. When subtracting two _position vectors_ we end up with a _position vector_.
@@ -505,8 +522,9 @@ quantity q8 = pos1 + displacement;                       // Often a compile-time
 ```
 
 Unfortunately, this often fails on the very first step, even before assigning the result to
-the _position vector_ quantity. The reason for this is that in the hierarchy tree, the first common
-node for _position vector_ and _displacement_ is _distance_, which is a scalar quantity. Trying
+the _position vector_ quantity. The reason for this is that in the hierarchy
+tree, the first common node for _position vector_ and _displacement_ is
+_distance_, which is a scalar quantity. Trying
 to use a vector representation type for a scalar quantity yields an error as a result of already
 existing checks described in the [Representation types](#representation-types) chapter.
 
@@ -574,8 +592,9 @@ I need to update a few more things.
 ### Adding support to `quantity_point`
 
 `quantity_point` is intended to model "point" quantities and return "delta" quantities on
-subtraction or by calling `.quantity_from...()` family of member functions. This is possible and
-can be done. I've finished most of the implementation already. However, two interesting questions
+subtraction or by calling `.quantity_from...()` family of member functions. This
+is possible and can be done. I've finished most of the implementation already.
+However, two interesting questions
 arise:
 
 1. Should `isq::altitude` be reserved only for `quantity_point` and not available for
@@ -584,8 +603,9 @@ arise:
 
 I think that question #1 makes a lot of sense. If we realize that `quantity` always represents
 "delta" quantities, what would a `quantity` of `isq::altitude` mean? However, forcing the
-usage of `quantity_point` might be too strict here. Some users are not familiar or comfortable with
-this abstraction. Also, we can't multiply or divide quantity points.
+usage of `quantity_point` might be too strict here. Some users are not familiar
+or comfortable with this abstraction. Also, we can't multiply or divide
+quantity points.
 
 !!! question
 
@@ -594,8 +614,9 @@ this abstraction. Also, we can't multiply or divide quantity points.
     forming such derived quantities.
 
 Question #2 is also interesting. However, in this case, I think that the answer should be "NO".
-I can imagine a series of _height_ measurements. Every physical measurement can be modeled as
-a `quantity_point`, so a `quantity_point` of _height_ might make sense.
+I can imagine a series of _height_ measurements. Every physical measurement can
+be modeled as a `quantity_point`, so a `quantity_point` of _height_ might make
+sense.
 
 ### Opening can of worms
 
@@ -603,8 +624,8 @@ So far, so good. I thought I was done here and could continue my work on symboli
 for vector and complex quantities. However, I've realized that I've opened a can of worms.
 What about the convertibility of `quantity_spec`? How should `common_quantity_spec()` behave?
 
-Let's start with conversions. It might seem easy. `isq::altitude` and `isq::height` should not be
-convertible to each other. But more questions arise:
+Let's start with conversions. It might seem easy. `isq::altitude` and
+`isq::height` should not be convertible to each other. But more questions arise:
 
 1. Should it be possible to `quantity_cast` from `isq::altitude` to `isq::height` or vice versa?
 2. Should `isq::height` be convertible to `isq::length`?
@@ -619,28 +640,32 @@ allow casting between branches of one tree.
 The answer to questions #2 and #3 is "YES".
 
 We might be tempted to say "NO" to questions #4 and #5 as `isq::altitude` is defined as "point"
-while `isq::length` is not specified as such. However, I've just realized that it is not the case.
+while `isq::length` is not specified as such. However, I've just realized that
+it is not the case.
 
 The proper answer to questions #4 and #5 is "It depends". If we are dealing with a `quantity_point`
-then converting from `isq::altitude` to `isq::length` or the other way around should work. However,
-it would probably be a bad idea for a `quantity` type.
+then converting from `isq::altitude` to `isq::length` or the other way around
+should work. However, it would probably be a bad idea for a `quantity` type.
 
-It turns out that `common_quantity_spec()` is similar. It is probably safe to state that it should
-not compile for `isq::altitude` and `isq::height` arguments. This means that we will not be able
-to compare such quantities as well. As those are different abstractions, preventing that might be
-an excellent idea.
+It turns out that `common_quantity_spec()` is similar. It is probably safe to
+state that it should not compile for `isq::altitude` and `isq::height`
+arguments. This means that we will not be able to compare such quantities as
+well. As those are different abstractions, preventing that might be an
+excellent idea.
 
 Again, it gets tricky if we consider passing `isq::length` and `isq::altitude` to it. For
 `quantity_point` it probably should work fine and fail to compile for `quantity`.
 
-The above means that to determine the conversion rules and common quantity specifications, we need
-to know the context in which the `quantity_spec` is being used. This sucks!
+The above means that to determine the conversion rules and common quantity
+specifications, we need to know the context in which the `quantity_spec` is
+being used. This sucks!
 
 
 ### Should we get rid of a `quantity_point`?
 
-There are at least two ways of solving the above issue. In any case, we need to introduce a wrapper
-over the `quantity_spec` to denote it is being used in a "point" abstraction.
+There are at least two ways of solving the above issue. In any case, we need to
+introduce a wrapper over the `quantity_spec` to denote it is being used in a
+"point" abstraction.
 
 A simpler solution could be implicitly amending the `Reference` provided to the `quantity_point`
 class template with `point<...>`. So, for example, we would have the following members in
@@ -652,8 +677,9 @@ class template with `point<...>`. So, for example, we would have the following m
 This should work but might be a bit confusing as members of the class template would not exactly
 contain the types of template parameters.
 
-A better solution might be removing a dedicated `quantity_point` abstraction and providing both
-functionalities through the `quantity` class template. I still haven't figured out the best syntax.
+A better solution might be removing a dedicated `quantity_point` abstraction
+and providing both functionalities through the `quantity` class template. I
+still haven't figured out the best syntax.
 Please let me know if you have good ideas in the comments below. Here are some rough ideas:
 
 | Before                                             | After                                               | `quantity_spec`               |
@@ -666,10 +692,12 @@ Please let me know if you have good ideas in the comments below. Here are some r
 | `quantity_point<isq::altitude[m]>`                 | `quantity<point<isq::altitude[m]>>`                 | `point<isq::altitude>`        |
 | `quantity_point<isq::altitude[m], mean_sea_level>` | `quantity<point<isq::altitude[m], mean_sea_level>>` | `point<isq::altitude>`        |
 
-I am still undecided about whether we should pursue this option, which would involve a huge design
-change in the library. It may even require bumping the library major version to V3.
+I am still undecided about whether we should pursue this option, which would
+involve a huge design change in the library. It may even require bumping the
+library major version to V3.
 
-On the bright side, it would limit the number of abstractions in the library. It would also make
-the library more consistent with standards like ISO/IEC 80000, which talk about quantities and do
-not mention quantity points at all. This could also be useful before we start our work on the next
-big task - logarithmic quantities and units.
+On the bright side, it would limit the number of abstractions in the library.
+It would also make the library more consistent with standards like ISO/IEC
+80000, which talk about quantities and do not mention quantity points at all.
+This could also be useful before we start our work on the next big task -
+logarithmic quantities and units.

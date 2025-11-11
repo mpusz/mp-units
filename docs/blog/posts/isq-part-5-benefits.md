@@ -9,13 +9,15 @@ comments: true
 
 # International System of Quantities (ISQ): Part 5 - Benefits
 
-In the previous articles, we introduced the International System of Quantities, described how we
-can model and implement it in a programming language, and presented the issues of software that
-does not use such abstraction to implement a units library.
+In the previous articles, we introduced the International System of Quantities,
+described how we can model and implement it in a programming language, and
+presented the issues of software that does not use such abstraction to
+implement a units library.
 
-Some of the issues raised in [Part 2](isq-part-2-problems-when-isq-is-not-used.md) of our series
-were addressed in [Part 3](isq-part-3-modeling-isq.md) already. This article will present
-how our ISQ model elegantly addresses the remaining problems.
+Some of the issues raised in
+[Part 2](isq-part-2-problems-when-isq-is-not-used.md) of our series were
+addressed in [Part 3](isq-part-3-modeling-isq.md) already. This article will
+present how our ISQ model elegantly addresses the remaining problems.
 
 <!-- more -->
 
@@ -24,7 +26,7 @@ how our ISQ model elegantly addresses the remaining problems.
 - [Part 1 - Introduction](isq-part-1-introduction.md)
 - [Part 2 - Problems when ISQ is not used](isq-part-2-problems-when-isq-is-not-used.md)
 - [Part 3 - Modeling ISQ](isq-part-3-modeling-isq.md)
-- [Part 4 - Implementing ISQ](isq-part-4-implemeting-isq.md)
+- [Part 4 - Implementing ISQ](isq-part-4-implementing-isq.md)
 - Part 5 - Benefits
 - [Part 6 - Challenges](isq-part-6-challenges.md)
 
@@ -33,8 +35,8 @@ how our ISQ model elegantly addresses the remaining problems.
 
 Let's start with the implementation of a
 [generic utility function that would calculate the average speed based on provided arguments](isq-part-2-problems-when-isq-is-not-used.md#no-way-to-specify-a-quantity-type-in-generic-interfaces).
-The resulting quantity should use a derived unit of the provided arguments (e.g., `km/h` for
-`km` and `h`, `m/s` for `m` and `s`, ...).
+The resulting quantity should use a derived unit of the provided arguments
+(e.g., `km/h` for `km` and `h`, `m/s` for `m` and `s`, ...).
 
 With C++ concepts backed up with ISQ quantities, we can simply type it as:
 
@@ -46,18 +48,21 @@ constexpr QuantityOf<isq::speed> auto avg_speed(QuantityOf<isq::length> auto d,
 }
 ```
 
-The above constrains the algorithm to proper quantity types and ensures that a quantity of speed
-is returned. The latter is essential not only for the users to better understand what the function
-does but also serves as a unit test for our implementation. It ensures that our quantity equations
-are correct in the implementation part of the function, and we indeed return a quantity of _speed_.
+The above constrains the algorithm to proper quantity types and ensures that a
+quantity of speed is returned. The latter is essential not only for the users
+to better understand what the function does but also serves as a unit test for
+our implementation. It ensures that our quantity equations are correct in the
+implementation part of the function, and we indeed return a quantity of
+_speed_.
 
 
 ## Non-convertible units of currency
 
 Our second example was about
 [disjoint units of _currency_](isq-part-2-problems-when-isq-is-not-used.md#disjoint-units-of-the-same-quantity-type-do-not-work).
-We want to use various units of _currency_ but we can't provide compile-time known conversion
-factors between those as such ratios are only known at runtime.
+We want to use various units of _currency_ but we can't provide compile-time
+known conversion factors between those as such ratios are only known at
+runtime.
 
 First, we define:
 
@@ -81,7 +86,8 @@ inline constexpr auto USD = us_dollar;
 static_assert(!std::equality_comparable_with<quantity<euro, int>, quantity<us_dollar, int>>);
 ```
 
-Next, we can provide a custom currency exchange facility that accounts for a specific point in time:
+Next, we can provide a custom currency exchange facility that accounts for a
+specific point in time:
 
 ```cpp
 template<Unit auto From, Unit auto To>
@@ -121,16 +127,19 @@ std::cout << price_usd << " -> " << price_euro << "\n";
 
 ## Derived quantities of the same dimension but different kinds
 
-Until now, the issues discussed have not actually required modeling of the ISQ. The introduction
-of physical dimensions would be enough, and indeed, this is what most of the libraries on the
-market do. However, we have more exciting challenges to solve as well.
+Until now, the issues discussed have not actually required modeling of the ISQ.
+The introduction of physical dimensions would be enough, and indeed, this is
+what most of the libraries on the market do. However, we have more exciting
+challenges to solve as well.
 
-The next issue was related to different quantities having the same dimension. In many cases, we
-want to prevent conversions and any other compatibility between such distinct quantities.
+The next issue was related to different quantities having the same dimension.
+In many cases, we want to prevent conversions and any other compatibility
+between such distinct quantities.
 
 Let's try to implement
 [our _fuel consumption_ example](isq-part-2-problems-when-isq-is-not-used.md#derived-quantities-of-the-same-dimension-but-different-kinds).
-First, we define the quantity type and a handy identifier for a derived unit that we want to use:
+First, we define the quantity type and a handy identifier for a derived unit
+that we want to use:
 
 ```cpp
 inline constexpr struct fuel_consumption final : quantity_spec<isq::volume / isq::length> {} fuel_consumption;
@@ -140,8 +149,8 @@ static_assert(fuel_consumption != isq::area);
 static_assert(fuel_consumption.dimension == isq::area.dimension);
 ```
 
-Next, we define two quantities. The first one is based only on a derived unit of `L/[100 km]`,
-while the second uses a strongly typed quantity type:
+Next, we define two quantities. The first one is based only on a derived unit
+of `L/[100 km]`, while the second uses a strongly typed quantity type:
 
 ```cpp
 quantity q1 = 5.8 * L_per_100km;
@@ -154,22 +163,23 @@ static_assert(!explicitly_convertible(q2.quantity_spec, isq::area));
 static_assert(!castable(q2.quantity_spec, isq::area));
 ```
 
-As we can see, with just units (especially derived ones) and dimensions, we often can't achieve
-the same level of safety as with adequately modeled hierarchies of quantities. Only in case of `q2`
-we can prevent incorrect conversions to a different quantity of the same dimension.
+As we can see, with just units (especially derived ones) and dimensions, we
+often can't achieve the same level of safety as with adequately modeled
+hierarchies of quantities. Only in case of `q2` we can prevent incorrect
+conversions to a different quantity of the same dimension.
 
 
 ## Various quantities of the same dimension and kinds
 
-In the previous example, _area_ and _fuel consumption_ were quantities of the same dimension but
-of different kinds. In engineering, there are also many cases where we need to model distinct
-quantities of the same kind.
+In the previous example, _area_ and _fuel consumption_ were quantities of the
+same dimension but of different kinds. In engineering, there are also many
+cases where we need to model distinct quantities of the same kind.
 
 Let's try to improve the safety of
 [our `Box` example](isq-part-2-problems-when-isq-is-not-used.md#various-quantities-of-the-same-dimension-and-kinds).
 
-First, we need to extend our ISQ definitions by the _horizontal length_ quantity and a
-_horizontal area_ derived from it:
+First, we need to extend our ISQ definitions by the _horizontal length_ quantity
+and a _horizontal area_ derived from it:
 
 ```cpp
 inline constexpr struct horizontal_length final : quantity_spec<isq::length> {} horizontal_length;
@@ -194,11 +204,13 @@ static_assert(implicitly_convertible(horizontal_length * isq::width, isq::area))
 static_assert(implicitly_convertible(horizontal_length * isq::width, horizontal_area));
 ```
 
-With simple two lines of definition, we made the above logic automatically work without needing
-additional customization for special cases. Based on hierarchies of derived quantities and their
-recipes, the proposed model automatically inherits the properties of base quantities involved in
-the recipe. This makes the composition of derived quantities very easy, which is not true for
-alternative solutions based on tag types that do not compose their properties.
+With simple two lines of definition, we made the above logic automatically work
+without needing additional customization for special cases. Based on
+hierarchies of derived quantities and their recipes, the proposed model
+automatically inherits the properties of base quantities involved in the
+recipe. This makes the composition of derived quantities very easy, which is
+not true for alternative solutions based on tag types that do not compose their
+properties.
 
 Now we can refactor our `Box` to benefit from the introduced safe abstractions:
 
@@ -217,8 +229,8 @@ public:
 };
 ```
 
-It is important to note that the safety can be enforced only when a user provides typed quantities
-as arguments to the functions:
+It is important to note that the safety can be enforced only when a user
+provides typed quantities as arguments to the functions:
 
 ```cpp
 Box my_box1(2 * m, 3 * m, 1 * m);
@@ -234,8 +246,9 @@ Box my_box3(horizontal_length(2 * m), isq::width(3 * m), isq::height(1 * m));
 
 ## Various kinds of dimensionless quantities
 
-Most of the quantities hierarchies describe only one kind. There are some exceptions, though.
-One of them is a [hierarchy of _dimensionless_ quantities](isq-part-4-implemeting-isq.md#modeling-a-hierarchy-of-kind-dimensionless).
+Most of the quantities hierarchies describe only one kind. There are some
+exceptions, though. One of them is a
+[hierarchy of _dimensionless_ quantities](isq-part-4-implementing-isq.md#modeling-a-hierarchy-of-kind-dimensionless).
 This tree defines quantities that denote:
 
 - counts (e.g., _storage capacity_),
@@ -243,17 +256,18 @@ This tree defines quantities that denote:
 - angles (e.g., _angular measure_, _solid angular measure_),
 - scaled numbers.
 
-Each of the above could form a separate tree of mutually comparable quantities. However, all of
-them have a common property. Every quantity from this tree, despite often being measured in a
-dedicated unit (e.g., `bit`, `rad`, `sr`), should also be able to be measured in a unit `one`.
+Each of the above could form a separate tree of mutually comparable quantities.
+However, all of them have a common property. Every quantity from this tree,
+despite often being measured in a dedicated unit (e.g., `bit`, `rad`, `sr`),
+should also be able to be measured in a unit `one`.
 
 We've seen how to model such a hierarchy in a
-[previous article in our series](isq-part-4-implemeting-isq.md#modeling-a-hierarchy-of-kind-dimensionless).
+[previous article in our series](isq-part-4-implementing-isq.md#modeling-a-hierarchy-of-kind-dimensionless).
 This time, we will see a simplified part of a concrete, real-life example for this use case.
 
-We often need to provide strong types for different counts in the digital signal processing domain.
-Abstractions like _samples_, _beats_, _MIDI clock_, and others should not be possible to be
-intermixed with each other:
+We often need to provide strong types for different counts in the digital
+signal processing domain. Abstractions like _samples_, _beats_, _MIDI clock_,
+and others should not be possible to be intermixed with each other:
 
 ```cpp
 namespace ni {
@@ -264,9 +278,10 @@ inline constexpr struct MIDIClock final : quantity_spec<dimensionless, is_kind> 
 inline constexpr struct BeatCount final : quantity_spec<dimensionless, is_kind> {} BeatCount;
 ```
 
-We should also be able to create derived quantities from those. For example, when we divide such
-a quantity by _time_ we should get a new strong quantity that can be measured in both a dedicated
-unit (e.g., `Smpl/s` for _sample rate_) and hertz:
+We should also be able to create derived quantities from those. For example,
+when we divide such a quantity by _time_ we should get a new strong quantity
+that can be measured in both a dedicated unit (e.g., `Smpl/s` for _sample
+rate_) and hertz:
 
 ```cpp
 inline constexpr struct SampleDuration final : quantity_spec<isq::period_duration> {} SampleDuration;
@@ -280,7 +295,8 @@ inline constexpr struct BeatDuration final : quantity_spec<isq::period_duration>
 inline constexpr struct Tempo final : quantity_spec<isq::frequency, BeatCount / BeatDuration> {} Tempo;
 ```
 
-We can also define a collection of units associated with specific quantity kinds and their symbols:
+We can also define a collection of units associated with specific quantity kinds
+and their symbols:
 
 ```cpp
 inline constexpr struct Sample final : named_unit<"Smpl", one, kind_of<SampleCount>> {} Sample;
@@ -423,7 +439,7 @@ Transport Time is: 8.997726 s
     CppCon 2023 talk by Roth Michaels.
 
 
-## To be continued...
+## To be continued
 
 In the next part of this series, we will discuss the challenges and issues related to the modeling
 of the ISQ with a programming language.

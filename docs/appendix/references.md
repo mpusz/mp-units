@@ -6,7 +6,8 @@
     International Organization for Standardization.
 
 [`Quincey`](#Quincey){ #Quincey }
-:   ["Angles in the SI: a detailed proposal for solving the problem](https://arxiv.org/pdf/2108.05704.pdf),
+
+:   ["Angles in the SI: a detailed proposal for solving the problem"](https://arxiv.org/pdf/2108.05704.pdf),
     Quincey, Paul (1 October 2021).
 
 [`SIBrochure`](#SIBrochure){ #SIBrochure }

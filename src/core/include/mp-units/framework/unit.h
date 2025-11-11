@@ -184,7 +184,7 @@ struct unit_interface {
   template<Unit Lhs, Unit Rhs>
   [[nodiscard]] friend MP_UNITS_CONSTEVAL Unit auto operator*(Lhs lhs, Rhs rhs)
   {
-    return expr_multiply<derived_unit, struct one>(lhs, rhs);
+    return expr_multiply<derived_unit, one>(lhs, rhs);
   }
 
   /**
@@ -195,7 +195,7 @@ struct unit_interface {
   template<Unit Lhs, Unit Rhs>
   [[nodiscard]] friend MP_UNITS_CONSTEVAL Unit auto operator/(Lhs lhs, Rhs rhs)
   {
-    return expr_divide<derived_unit, struct one>(lhs, rhs);
+    return expr_divide<derived_unit, one>(lhs, rhs);
   }
 
   template<Unit Lhs, Unit Rhs>
@@ -226,7 +226,7 @@ struct propagate_point_origin<U, true> {
 };
 
 template<UnitMagnitude auto M, Unit U>
-struct scaled_unit_impl : detail::unit_interface, detail::propagate_point_origin<U> {
+struct MP_UNITS_EMPTY_BASES_WORKAROUND scaled_unit_impl : detail::unit_interface, detail::propagate_point_origin<U> {
   using _base_type_ = scaled_unit_impl;  // exposition only
   static constexpr UnitMagnitude auto _mag_ = M;
   static constexpr U _reference_unit_{};
@@ -300,7 +300,8 @@ struct named_unit;
  * @tparam QuantitySpec a specification of a base quantity to be measured with this unit
  */
 template<symbol_text Symbol, detail::QuantityKindSpec auto QS>
-  requires(!Symbol.empty()) && detail::BaseDimension<MP_UNITS_NONCONST_TYPE(QS.dimension)>
+  requires(!Symbol.empty()) &&
+          (detail::BaseDimension<MP_UNITS_NONCONST_TYPE(QS.dimension)> || detail::remove_kind(QS) == dimensionless)
 struct named_unit<Symbol, QS> : detail::unit_interface {
   using _base_type_ = named_unit;           // exposition only
   static constexpr auto _symbol_ = Symbol;  ///< Unique base unit identifier
@@ -308,7 +309,8 @@ struct named_unit<Symbol, QS> : detail::unit_interface {
 };
 
 template<symbol_text Symbol, detail::QuantityKindSpec auto QS, PointOrigin auto PO>
-  requires(!Symbol.empty()) && detail::BaseDimension<MP_UNITS_NONCONST_TYPE(QS.dimension)>
+  requires(!Symbol.empty()) &&
+          (detail::BaseDimension<MP_UNITS_NONCONST_TYPE(QS.dimension)> || detail::remove_kind(QS) == dimensionless)
 struct named_unit<Symbol, QS, PO> : detail::unit_interface {
   using _base_type_ = named_unit;           // exposition only
   static constexpr auto _symbol_ = Symbol;  ///< Unique base unit identifier
@@ -461,7 +463,9 @@ struct common_unit final : decltype(detail::get_common_scaled_unit(U1{}, U2{}, R
 namespace detail {
 
 template<typename... Expr>
-struct derived_unit_impl : detail::unit_interface, detail::expr_fractions<one, Expr...> {
+struct MP_UNITS_EMPTY_BASES_WORKAROUND derived_unit_impl :
+    detail::unit_interface,
+    detail::expr_fractions<one, Expr...> {
   using _base_type_ = derived_unit_impl;  // exposition only
 };
 

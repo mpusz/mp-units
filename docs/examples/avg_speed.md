@@ -6,11 +6,11 @@ tags:
 
 # `avg_speed`
 
-!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/v9c5T6bc4)"
+[Try it live on Compiler Explorer](https://godbolt.org/z/v9c5T6bc4){ .md-button }
 
 Let's continue the previous example. This time, our purpose will not be to showcase as many
-library features as possible, but we will scope on different interfaces one can provide
-with the **mp-units**. We will also describe some advantages and disadvantages of presented
+library features as possible, but we will focus on different interfaces one can provide with
+the **mp-units**. We will also describe some advantages and disadvantages of presented
 solutions.
 
 First, we either import a module or include all the necessary header files and import all
@@ -55,7 +55,7 @@ time from `h` to `s`. The converted values are used to calculate speed in `m/s` 
 is then again converted to the one in `km/h`. Those conversions not only impact the
 application's runtime performance but may also affect the precision of the final result.
 Such truncation can be easily observed in the first case where we deal with integral
-representation types (the resulting speed is `108 km/h`).
+representation types (the resulting speed is $108\ \mathrm{km/h}$).
 
 The second scenario is really similar to the previous one, but this time, function arguments
 have floating-point representation types:
@@ -65,7 +65,7 @@ have floating-point representation types:
 ```
 
 Conversion from floating-point to integral representation types is
-[considered value-truncating](../framework_basics/value_conversions.md#value-truncating-conversions)
+[considered value-truncating](../users_guide/framework_basics/value_conversions.md#value-truncating-conversions)
 and that is why now, in the first case, we need an explicit call to `value_cast<int>`.
 
 In the text output, we can observe that, again, the resulting value gets truncated during conversions
@@ -85,9 +85,9 @@ using international mile:
 --8<-- "example/avg_speed.cpp:100:131"
 ```
 
-One important difference here is the fact that as it is not possible to make a lossless conversion
-of miles to meters on a quantity using an integral representation type, so this time, we need a
-`value_cast<m, int>` to force it.
+One important difference here is the fact that as it is not possible to make a lossless
+conversion of miles to meters on a quantity using an integral representation type, so this
+time, we need a `value_cast<m, int>` to force it.
 
 If we check the text output of the above, we will see the following:
 

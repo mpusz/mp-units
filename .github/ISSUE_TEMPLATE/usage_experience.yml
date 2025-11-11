@@ -1,0 +1,187 @@
+name: 🌟 Share Your mp-units Usage Experience
+description: Help us showcase real-world usage for C++ standardization efforts
+title: "[Usage]: "
+labels: ["usage experience"]
+assignees: ["mpusz"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 🚀 Help Shape the Future of C++!
+
+        Your experience with **mp-units** is valuable for our C++29 standardization efforts!
+
+        Whether you're using mp-units in production, research, or personal projects, we'd love to hear about:
+        - Your use case and domain
+        - Benefits you've experienced
+        - Any challenges or limitations
+        - Impact on your development process
+
+        **This information will help demonstrate real-world value to the C++ standards committee.** ⚖️
+
+  - type: dropdown
+    id: organization_type
+    attributes:
+      label: Organization Type
+      description: What type of organization are you representing?
+      options:
+        - Individual Developer
+        - Startup (< 50 employees)
+        - Small Company (50-200 employees)
+        - Medium Company (200-1000 employees)
+        - Large Enterprise (1000+ employees)
+        - Academic Institution
+        - Research Organization
+        - Government/Public Sector
+        - Open Source Project
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: organization_name
+    attributes:
+      label: Organization Name (Optional)
+      description: Name of your company, institution, or project (leave blank if you prefer to remain anonymous)
+      placeholder: "e.g., Acme Corp, University of Technology, MyOpenSourceProject"
+
+  - type: dropdown
+    id: usage_domain
+    attributes:
+      label: Primary Domain/Industry
+      description: What domain do you primarily use mp-units in?
+      options:
+        - Aerospace/Aviation
+        - Automotive
+        - Robotics
+        - Scientific Computing
+        - Engineering Simulation
+        - Financial Modeling
+        - Game Development
+        - IoT/Embedded Systems
+        - Research & Development
+        - Education/Teaching
+        - Physics/Chemistry
+        - Manufacturing
+        - Energy/Power Systems
+        - Medical/Healthcare
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: other_domain
+    attributes:
+      label: Other Domain (if selected above)
+      description: Please specify your domain if you selected "Other"
+
+  - type: dropdown
+    id: project_stage
+    attributes:
+      label: Project Stage
+      description: What stage is your mp-units usage in?
+      options:
+        - Evaluation/Prototyping
+        - Development
+        - Testing/Validation
+        - Production/Deployed
+        - Research/Academic
+        - Educational Use
+    validations:
+      required: true
+
+  - type: dropdown
+    id: team_size
+    attributes:
+      label: Development Team Size
+      description: How many developers work on projects using mp-units?
+      options:
+        - Just me (1)
+        - Small team (2-5)
+        - Medium team (6-15)
+        - Large team (16+)
+        - Multiple teams
+    validations:
+      required: true
+
+  - type: textarea
+    id: use_case
+    attributes:
+      label: Use Case Description
+      description: Briefly describe how you use mp-units in your project(s)
+      placeholder: |
+        Example: "We use mp-units in our satellite orbit simulation software to ensure dimensional consistency across physics calculations. It handles units for position (km), velocity (km/s), and time (s) with compile-time validation."
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: features_used
+    attributes:
+      label: Features Used
+      description: Which mp-units features do you primarily use? (Select all that apply)
+      options:
+        - label: Basic quantity arithmetic (addition, subtraction, multiplication, division)
+        - label: Unit conversions (m to km, s to h, etc.)
+        - label: Dimensional analysis and compile-time validation
+        - label: Custom units and dimensions
+        - label: Quantity points
+        - label: Text formatting and I/O
+        - label: C++ modules support
+        - label: Interoperability with other libraries
+        - label: SI unit system
+        - label: Other unit systems (CGS, Imperial, etc.)
+        - label: Natural units
+        - label: Freestanding mode
+
+  - type: textarea
+    id: benefits
+    attributes:
+      label: Key Benefits Experienced
+      description: What benefits have you seen from using mp-units?
+      placeholder: |
+        Example benefits:
+        - Eliminated unit conversion errors
+        - Improved code readability and documentation
+        - Caught dimensional analysis bugs at compile time
+        - Simplified physics calculations
+        - Better API design with type safety
+    validations:
+      required: true
+
+  - type: dropdown
+    id: impact_level
+    attributes:
+      label: Impact on Your Project
+      description: How significant has mp-units been for your project?
+      options:
+        - Game-changing - Solved major problems
+        - Very helpful - Significant improvements
+        - Moderately useful - Some benefits
+        - Minor impact - Small improvements
+        - Still evaluating
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: usage_permissions
+    attributes:
+      label: Usage Permissions
+      description: How can we use this information?
+      options:
+        - label: You can use our testimonial in documentation and presentations
+        - label: You can mention our organization name publicly
+
+  - type: markdown
+    attributes:
+      value: |
+        ---
+
+        ## 🙏 Thank You!
+
+        Your contribution helps demonstrate the real-world value of dimensional analysis in C++ and supports our standardization efforts.
+
+        **What happens next?**
+        - We'll review your submission and may reach out for clarification
+        - Your experience may be featured in our documentation (with permission)
+        - Aggregate usage data helps our WG21 standardization efforts
+        - You're contributing to the future of safe, expressive C++!

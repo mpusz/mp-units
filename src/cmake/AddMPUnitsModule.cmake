@@ -58,7 +58,7 @@ function(add_mp_units_module name target_name)
     validate_unparsed(${name} ARG)
     validate_arguments_exists(${name} ARG MODULE_INTERFACE_UNIT)
 
-    if(${projectPrefix}TARGET_SCOPE STREQUAL INTERFACE)
+    if(MP_UNITS_TARGET_SCOPE STREQUAL INTERFACE)
         set(SCOPE "INTERFACE")
     endif()
 
@@ -67,11 +67,11 @@ function(add_mp_units_module name target_name)
 
     if(DEFINED CMAKE_CXX_STANDARD AND CMAKE_CXX_STANDARD GREATER 20)
         # TODO revise when a fixed version of CMake is released
-        target_compile_features(${target_name} ${${projectPrefix}TARGET_SCOPE} cxx_std_${CMAKE_CXX_STANDARD})
+        target_compile_features(${target_name} ${MP_UNITS_TARGET_SCOPE} cxx_std_${CMAKE_CXX_STANDARD})
     else()
-        target_compile_features(${target_name} ${${projectPrefix}TARGET_SCOPE} cxx_std_20)
+        target_compile_features(${target_name} ${MP_UNITS_TARGET_SCOPE} cxx_std_20)
     endif()
-    target_link_libraries(${target_name} ${${projectPrefix}TARGET_SCOPE} ${ARG_DEPENDENCIES})
+    target_link_libraries(${target_name} ${MP_UNITS_TARGET_SCOPE} ${ARG_DEPENDENCIES})
     set_target_properties(${target_name} PROPERTIES EXPORT_NAME ${name})
 
     if(ARG_HEADERS)
@@ -80,7 +80,7 @@ function(add_mp_units_module name target_name)
         )
     endif()
 
-    if(${projectPrefix}BUILD_CXX_MODULES)
+    if(MP_UNITS_BUILD_CXX_MODULES)
         target_sources(${target_name} PUBLIC FILE_SET CXX_MODULES FILES ${ARG_MODULE_INTERFACE_UNIT})
         install(TARGETS ${target_name}
                 EXPORT mp-unitsTargets

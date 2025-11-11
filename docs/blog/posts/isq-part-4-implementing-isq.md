@@ -9,14 +9,16 @@ comments: true
 
 # International System of Quantities (ISQ): Part 4 - Implementing ISQ
 
-Up until now, we have introduced the International System of Quantities and described how we can
-model its main aspects. This article will present how to implement those models in a programming
-language, and we will point out some of the first issues that stand in our way.
+Up until now, we have introduced the International System of Quantities and
+described how we can model its main aspects. This article will present how to
+implement those models in a programming language, and we will point out some of
+the first issues that stand in our way.
 
 <!-- more -->
 
-In the previous article, we have already introduced a notion of quantity kind, provided `kind_of<>`
-specifier, and described how it helps in the modeling of the system of units (e.g., SI).
+In the previous article, we have already introduced a notion of quantity kind,
+provided `kind_of<>` specifier, and described how it helps in the modeling of
+the system of units (e.g., SI).
 
 Now, it is time to see how we can implement hierarchies of quantities of the same kind.
 
@@ -33,8 +35,9 @@ Now, it is time to see how we can implement hierarchies of quantities of the sam
 
 ## Modeling a hierarchy of kind _length_
 
-First, let's start with something easy - hierarchy of kind _length_. ISO 80000-3 does a good job
-of describing all relations between quantities in this case.
+First, let's start with something easy - hierarchy of kind _length_. ISO
+80000-3 does a good job of describing all relations between quantities in this
+case.
 
 We've seen this tree already:
 
@@ -79,11 +82,11 @@ inline constexpr struct displacement final        : quantity_spec<length, quanti
 inline constexpr struct position_vector final     : quantity_spec<displacement> {} position_vector;
 ```
 
-Thanks to the expressivity and power of C++ templates, we can specify all quantity properties
-in one line of code. In the above code:
+Thanks to the expressivity and power of C++ templates, we can specify all
+quantity properties in one line of code. In the above code:
 
-- `length` takes the base dimension to indicate that we are creating a base quantity that will serve
-  as a root for a tree of quantities of the same kind,
+- `length` takes the base dimension to indicate that we are creating a base
+    quantity that will serve as a root for a tree of quantities of the same kind,
 - `width` and following quantities are branches and leaves of this tree with the parent always
   provided as the first argument to `quantity_spec` class template,
 - `breadth` is an alias name for the same quantity as `width`.
@@ -97,13 +100,14 @@ in one line of code. In the above code:
 
 ## Modeling a hierarchy of kind _energy_
 
-Base quantities are simple. It is more complicated when we start modeling derived quantities.
-Let's try to model the hierarchy for _energy_.
+Base quantities are simple. It is more complicated when we start modeling
+derived quantities. Let's try to model the hierarchy for _energy_.
 
-When we look into the ISO/IEC 80000 standards, this task immediately stops being as easy as
-the previous one. Derived quantity equations often do not automatically form a hierarchy tree,
-and ISO/IEC standards do not provide a clear answer to inter-quantity dependencies.
-This is why it is often not obvious what such a tree should look like.
+When we look into the ISO/IEC 80000 standards, this task immediately stops
+being as easy as the previous one. Derived quantity equations often do not
+automatically form a hierarchy tree, and ISO/IEC standards do not provide a
+clear answer to inter-quantity dependencies. This is why it is often not
+obvious what such a tree should look like.
 
 Even more, ISO explicitly states:
 
@@ -111,7 +115,8 @@ Even more, ISO explicitly states:
 
     The division of ‘quantity’ according to ‘kind of quantity’ is, to some extent, arbitrary.
 
-Let's try anyway. The below presents some arbitrary hierarchy of derived quantities of kind _energy_:
+Let's try anyway. The below presents some arbitrary hierarchy of derived
+quantities of kind _energy_:
 
 ```mermaid
 flowchart TD
@@ -128,22 +133,25 @@ flowchart TD
     energy --- active_energy["<b>active_energy</b>"]
 ```
 
-As we can see above, besides what we've already seen for _length_ hierarchy, derived quantities may
-provide specific recipes that can be used to create them implicitly:
+As we can see above, besides what we've already seen for _length_ hierarchy,
+derived quantities may provide specific recipes that can be used to create them
+implicitly:
 
-- _energy_ is the most generic one and thus can be created from base quantities of _mass_,
-  _length_, and _time_. As those are also the roots of quantities of their kinds and all other
-  quantities from their trees are implicitly convertible to them, it means that an _energy_ can be
-  implicitly constructed from any quantity of _mass_, _length_, and _time_:
+- _energy_ is the most generic one and thus can be created from base quantities
+  of _mass_, _length_, and _time_. As those are also the roots of quantities of
+  their kinds and all other quantities from their trees are implicitly
+  convertible to them, it means that an _energy_ can be implicitly constructed
+  from any quantity of _mass_, _length_, and _time_:
 
     ```cpp
     static_assert(implicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::time), isq::energy));
     static_assert(implicitly_convertible(isq::mass * pow<2>(isq::height) / pow<2>(isq::time), isq::energy));
     ```
 
-- _mechanical energy_ is a more "specialized" quantity than _energy_ (not every _energy_ is
-  a _mechanical energy_). It is why an explicit cast is needed to convert from either _energy_ or
-  the results of its [quantity equation](../../appendix/glossary.md#quantity-equation):
+- _mechanical energy_ is a more "specialized" quantity than _energy_ (not every
+  _energy_ is a _mechanical energy_). It is why an explicit cast is needed to
+  convert from either _energy_ or the results of its
+  [quantity equation](../../appendix/glossary.md#quantity-equation):
 
     ```cpp
     static_assert(!implicitly_convertible(isq::energy, isq::mechanical_energy));
@@ -154,11 +162,11 @@ provide specific recipes that can be used to create them implicitly:
                                          isq::mechanical_energy));
     ```
 
-- _gravitational potential energy_ is not only even more specialized one but additionally,
-  it is special in a way that it provides its own "constrained"
-  [quantity equation](../../appendix/glossary.md#quantity-equation). Maybe not every
-  `mass * pow<2>(length) / pow<2>(time)` is a _gravitational potential energy_, but every
-  `mass * acceleration_of_free_fall * height` is.
+- _gravitational potential energy_ is not only even more specialized one but
+  additionally, it is special in a way that it provides its own "constrained"
+  [quantity equation](../../appendix/glossary.md#quantity-equation). Maybe not
+  every `mass * pow<2>(length) / pow<2>(time)` is a _gravitational potential
+  energy_, but every `mass * acceleration_of_free_fall * height` is.
 
     ```cpp
     static_assert(!implicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::time),
@@ -187,19 +195,22 @@ inline constexpr struct Gibbs_energy final                   : quantity_spec<ent
 inline constexpr auto Gibbs_function = Gibbs_energy;
 ```
 
-Again, the first parameter of `quantity_spec` determines the position in the tree. If a second
-argument is provided, it denotes a recipe for this quantity.
+Again, the first parameter of `quantity_spec` determines the position in the
+tree. If a second argument is provided, it denotes a recipe for this quantity.
 
-With the above simple definitions we've automatically addressed our _energy_-related issues from
-the [Various quantities of the same dimension and kinds](isq-part-2-problems-when-isq-is-not-used.md#various-quantities-of-the-same-dimension-and-kinds)
+With the above simple definitions we've automatically addressed our
+_energy_-related issues from the
+[Various quantities of the same dimension and kinds](isq-part-2-problems-when-isq-is-not-used.md#various-quantities-of-the-same-dimension-and-kinds)
 chapter of the "Part 2" article.
 
 
 ## Modeling a hierarchy of kind _dimensionless_
 
-As the last example for this article, let's try to model and implement quantities of dimension one,
-often also called dimensionless quantities. This [quantity hierarchy](../../appendix/glossary.md#quantity-hierarchy)
-contains more than one [quantity kind](../../appendix/glossary.md#kind) and more than one unit in its tree:
+As the last example for this article, let's try to model and implement
+quantities of dimension one, often also called dimensionless quantities. This
+[quantity hierarchy](../../appendix/glossary.md#quantity-hierarchy) contains
+more than one [quantity kind](../../appendix/glossary.md#kind) and more than one
+unit in its tree:
 
 ```mermaid
 flowchart TD
@@ -215,8 +226,8 @@ flowchart TD
     dimensionless --- ...
 ```
 
-To enable such support in the library, we provided an `is_kind` specifier that can be appended
-to the quantity specification:
+To enable such support in the library, we provided an `is_kind` specifier that
+can be appended to the quantity specification:
 
 ```cpp
 inline constexpr struct dimensionless final            : quantity_spec<detail::derived_quantity_spec<>{}> {} dimensionless;
@@ -248,7 +259,7 @@ but still allow the usage of `one` and its scaled versions for such quantities.
     define it or something similar to it.
 
 
-## To be continued...
+## To be continued
 
 In the next part of this series, we will present how our ISQ model helps to address the remaining
 issues described in the [Part 2](isq-part-2-problems-when-isq-is-not-used.md) of our series.

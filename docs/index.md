@@ -4,11 +4,11 @@ hide:
   - toc
 ---
 
-# Welcome to **mp-units**!
+# Welcome to **mp-units**
 
-**mp-units** is a compile-time enabled feature-rich Modern C++ modular/header-only library that
-provides compile-time dimensional analysis and unit/quantity manipulation. Its key strengths
-include safety, performance, and developer experience.
+**mp-units** is a compile-time enabled feature-rich Modern C++ modular/header-only library
+that provides compile-time dimensional analysis and unit/quantity manipulation. Its key
+strengths include safety, performance, and developer experience.
 
 It is the first library on the market that, besides being **unit-safe** and **dimension-safe**,
 is also **quantity-safe**.
@@ -71,7 +71,7 @@ Output:
 Harvard Bridge length = 364.4 smoot (2034.6 ft, 620.14 m) ± 1 εar
 ```
 
-!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/xexMjMsxn)"
+[Try it live on Compiler Explorer](https://godbolt.org/z/xexMjMsxn){ .md-button }
 
 ??? question "What is `smoot`?"
 
