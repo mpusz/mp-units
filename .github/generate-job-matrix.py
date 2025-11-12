@@ -178,6 +178,10 @@ def main():
             pass
         case "all":
             collector.all_combinations()
+        case "all-hosted" | "all-conan" | "all-cmake":
+            collector.all_combinations(
+                freestanding=False,
+            )
         case "conan" | "cmake":
             config = dict(
                 contracts="gsl-lite",
@@ -217,6 +221,10 @@ def main():
                 toolchain=toolchains["Clang-18 (x86-64)"],
                 freestanding=False,
             )
+        case "all-freestanding":
+            collector.all_combinations(
+                freestanding=True,
+            )
         case "freestanding":
             collector.all_combinations(
                 toolchain=[toolchains[c] for c in ["GCC-14", "Clang-21 (x86-64)"]],
@@ -230,6 +238,7 @@ def main():
                 rgen=rgen,
                 min_samples_per_value=1,
                 toolchain=toolchains["Clang-21 (x86-64)"],
+                contracts="none",
                 freestanding=True,
                 std=23,
             )
