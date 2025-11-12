@@ -1,95 +1,22 @@
 import argparse
-import dataclasses
 import json
 import os
 import random
 import typing
-from dataclasses import dataclass
 from types import SimpleNamespace
 
-from job_matrix_builder import CombinationCollector
+from job_matrix import (
+    CombinationCollector,
+    Compiler,
+    ConanOptions,
+    Configuration,
+    Toolchain,
+    ToolchainFeatureSupport,
+)
 
 
-@dataclass(frozen=True, order=True, kw_only=True)
-class Compiler:
-    type: typing.Literal["GCC", "CLANG", "APPLE_CLANG", "MSVC"]
-    version: str | int
-    cc: str
-    cxx: str
-
-
-@dataclass(frozen=True, order=True, kw_only=True)
-class Features:
-    cxx_modules: bool = False
-    std_format: bool = False
-    import_std: bool = False
-    freestanding: bool = False
-
-
-@dataclass(frozen=True, order=True, kw_only=True)
-class Platform:
-    """This is really mainly the compiler."""
-
-    name: str
-    os: str
-    compiler: Compiler
-    lib: typing.Literal["libc++", "libstdc++"] | None = None
-    feature_support: Features
-
-    def __str__(self):
-        return self.name
-
-    def for_github(self):
-        ret = dataclasses.asdict(self)
-        del ret["feature_support"]
-        return ret
-
-
-@dataclass(frozen=True, order=True, kw_only=True)
-class Configuration(Features):
-    platform: Platform
-    std: typing.Literal[20, 23]
-    contracts: typing.Literal["none", "gsl-lite", "ms-gsl"]
-    build_type: typing.Literal["Release", "Debug"]
-
-    @property
-    def is_supported(self) -> bool:
-        # check if selected features are supported by the platform
-        s = self.platform.feature_support
-        for field in dataclasses.fields(Features):
-            if getattr(self, field.name) and not getattr(s, field.name):
-                return False
-        # additional checks for import_std
-        if self.import_std:
-            if self.std < 23:
-                return False
-            if not self.cxx_modules:
-                return False
-            if not self.std_format:
-                return False
-            if self.contracts != "none":
-                return False
-        return True
-
-    def for_github(self):
-        features = {
-            field.name: str(getattr(self, field.name))
-            for field in dataclasses.fields(Features)
-        }
-        ret = {
-            field.name: getattr(self, field.name)
-            for field in dataclasses.fields(self)
-            if field.name not in features
-        }
-        ret["platform"] = self.platform.for_github()
-        ret["formatting"] = "std::format" if self.std_format else "fmtlib"
-        features["contracts"] = self.contracts
-        ret["conan-config"] = " ".join(f"-o '&:{k}={v}'" for k, v in features.items())
-        return ret
-
-
-def make_gcc_platform(version: int) -> Platform:
-    return Platform(
+def make_gcc_config(version: int) -> Toolchain:
+    return Toolchain(
         name=f"GCC-{version}",
         os="ubuntu-24.04",
         compiler=Compiler(
@@ -98,31 +25,31 @@ def make_gcc_platform(version: int) -> Platform:
             cc=f"gcc-{version}",
             cxx=f"g++-{version}",
         ),
-        feature_support=Features(
+        feature_support=ToolchainFeatureSupport(
             std_format=version >= 13,
             freestanding=True,
         ),
     )
 
 
-def make_clang_platform(
-    version: int, architecture: typing.Literal["x86-64", "arm64"] = "x86-64"
-) -> Platform:
+def make_clang_config(
+    version: int, platform: typing.Literal["x86-64", "arm64"] = "x86-64"
+) -> Toolchain:
     cfg = SimpleNamespace(
-        name=f"Clang-{version} ({architecture})",
+        name=f"Clang-{version} ({platform})",
         compiler=SimpleNamespace(
             type="CLANG",
             version=version,
         ),
         lib="libc++",
-        feature_support=Features(
+        feature_support=ToolchainFeatureSupport(
             cxx_modules=version >= 17,
             std_format=version >= 17,
             import_std=version >= 18,
             freestanding=True,
         ),
     )
-    match architecture:
+    match platform:
         case "x86-64":
             cfg.os = "ubuntu-22.04" if version < 17 else "ubuntu-24.04"
             cfg.compiler.cc = f"clang-{version}"
@@ -133,16 +60,16 @@ def make_clang_platform(
             cfg.compiler.cc = f"{pfx}/clang"
             cfg.compiler.cxx = f"{pfx}/clang++"
         case _:
-            raise KeyError(f"Unsupported architecture {architecture!r} for Clang")
+            raise KeyError(f"Unsupported platform {platform!r} for Clang")
     ret = cfg
     ret.compiler = Compiler(**vars(cfg.compiler))
-    return Platform(**vars(ret))
+    return Toolchain(**vars(ret))
 
 
-def make_apple_clang_platform(
+def make_apple_clang_config(
     os: str, version: str, std_format_support: bool
-) -> Platform:
-    ret = Platform(
+) -> Toolchain:
+    ret = Toolchain(
         name=f"Apple Clang {version}",
         os=os,
         compiler=Compiler(
@@ -151,13 +78,13 @@ def make_apple_clang_platform(
             cc="clang",
             cxx="clang++",
         ),
-        feature_support=Features(std_format=std_format_support),
+        feature_support=ToolchainFeatureSupport(std_format=std_format_support),
     )
     return ret
 
 
-def make_msvc_platform(release: str, version: int) -> Platform:
-    ret = Platform(
+def make_msvc_config(release: str, version: int) -> Toolchain:
+    ret = Toolchain(
         name=f"MSVC {release}",
         os="windows-2022",
         compiler=Compiler(
@@ -166,44 +93,40 @@ def make_msvc_platform(release: str, version: int) -> Platform:
             cc="",
             cxx="",
         ),
-        feature_support=Features(
+        feature_support=ToolchainFeatureSupport(
             std_format=True,
         ),
     )
     return ret
 
 
-platforms = {
-    p.name: p
-    for p in [make_gcc_platform(ver) for ver in [12, 13, 14]]
+toolchains = {
+    t.name: t
+    for t in [make_gcc_config(ver) for ver in [12, 13, 14]]
     + [
-        make_clang_platform(ver, arch)
-        for ver in [16, 17, 18, 20]
-        for arch in ["x86-64", "arm64"]
+        make_clang_config(ver, platform)
+        for ver in [16, 17, 18, 20, 21]
+        for platform in ["x86-64", "arm64"]
         # arm64 runners are expensive; only consider one version
-        if ver == 18 or arch != "arm64"
+        if ver == 18 or platform != "arm64"
     ]
     + [
-        make_apple_clang_platform("macos-13", ver, std_format_support=False)
+        make_apple_clang_config("macos-13", ver, std_format_support=False)
         for ver in ["15.2"]
     ]
     # std::format is available in Xcode 16.1 or later
     + [
-        make_apple_clang_platform("macos-14", ver, std_format_support=True)
+        make_apple_clang_config("macos-14", ver, std_format_support=True)
         for ver in ["16.1"]
     ]
-    + [make_msvc_platform(release="14.4", version=194)]
+    + [make_msvc_config(release="14.4", version=194)]
 }
 
 full_matrix = dict(
-    platform=list(platforms.values()),
+    toolchain=list(toolchains.values()),
     std=[20, 23],
-    std_format=[False, True],
-    import_std=[False, True],
-    cxx_modules=[False, True],
-    freestanding=[False, True],
-    contracts=["none", "gsl-lite", "ms-gsl"],
     build_type=["Release", "Debug"],
+    **ConanOptions.full_matrix(),
 )
 
 
@@ -232,7 +155,7 @@ def main():
         or (
             # TODO For some reason Clang-18 Debug with -ffreestanding does not pass CMakeTestCXXCompiler
             c.freestanding
-            and c.platform.name.startswith("Clang-18")
+            and c.toolchain.name.startswith("Clang-18")
             and c.build_type == "Debug"
         ),
     )
@@ -248,7 +171,7 @@ def main():
             freestanding=args.preset == "freestanding",
             std=23,
             contracts="none",
-            platform=platforms["Clang-18 (x86-64)"],
+            toolchain=toolchains["Clang-18 (x86-64)"],
         )
     match args.preset:
         case None:
@@ -261,14 +184,16 @@ def main():
                 build_type="Debug",
                 std=20,
                 freestanding=False,
+                no_crtp=False,
+                natural_units=True,
             )
             collector.all_combinations(
                 std_format=True,
                 **config,
             )
-            # fmtlib for those platforms where we don't support std_format
+            # fmtlib for those toolchains where we don't support std_format
             collector.all_combinations(
-                filter=lambda me: not me.platform.feature_support.std_format,
+                filter=lambda me: not me.toolchain.feature_support.std_format,
                 std_format=False,
                 **config,
             )
@@ -277,24 +202,34 @@ def main():
                 min_samples_per_value=1,
                 freestanding=False,
             )
-            # add more coverage to import_std=False configurations;
+            # add more coverage to the mode usual configurations without import_std
             collector.sample_combinations(
                 rgen=rgen,
                 min_samples_per_value=2,
                 import_std=False,
                 freestanding=False,
+                no_crtp=False,
             )
         case "clang-tidy":
             collector.sample_combinations(
                 rgen=rgen,
                 min_samples_per_value=1,
-                platform=platforms["Clang-18 (x86-64)"],
+                toolchain=toolchains["Clang-18 (x86-64)"],
                 freestanding=False,
             )
         case "freestanding":
             collector.all_combinations(
-                platform=[platforms[c] for c in ["GCC-14", "Clang-20 (x86-64)"]],
+                toolchain=[toolchains[c] for c in ["GCC-14", "Clang-21 (x86-64)"]],
                 contracts="none",
+                freestanding=True,
+                std=23,
+                no_crtp=False,
+                natural_units=True,
+            )
+            collector.sample_combinations(
+                rgen=rgen,
+                min_samples_per_value=1,
+                toolchain=toolchains["Clang-21 (x86-64)"],
                 freestanding=True,
                 std=23,
             )
@@ -327,15 +262,20 @@ def main():
             case "json":
                 print(json.dumps(json_data, indent=4))
             case "combinations":
+                msg = []
                 for e in data:
                     std_format = "yes" if e.std_format else "no "
                     cxx_modules = "yes" if e.cxx_modules else "no "
                     import_std = "yes" if e.import_std else "no "
-                    print(
-                        f"{e.platform!s:17s}  c++{e.std:2d}  "
-                        f"{std_format=:3s}  {cxx_modules=:3s}  {import_std=:3s}  "
-                        f"{e.contracts:8s}  {e.build_type:8s}"
+                    no_crtp = "yes" if e.no_crtp else "no "
+                    nat_u = "yes" if e.natural_units else "no "
+                    msg.append(
+                        f"{e.toolchain!s:17s} c++{e.std:2d} "
+                        f"{std_format=:3s} {cxx_modules=:3s} {import_std=:3s} {no_crtp=:3s} {nat_u=:3s} "
+                        f"{e.contracts:8s} {e.build_type:8s}"
                     )
+                for m in sorted(msg):
+                    print(m)
             case "counts":
                 print(f"Total combinations {len(data)}")
             case "none":

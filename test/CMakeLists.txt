@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-if(NOT ${projectPrefix}API_FREESTANDING)
+if(NOT MP_UNITS_API_FREESTANDING)
     add_subdirectory(runtime)
 endif()
 add_subdirectory(static)

@@ -1,0 +1,84 @@
+{
+  "name": "mp-units Contribution Environment",
+  // Docker image with all required compilers and tools for mp-units development
+  // Dockerfile: https://github.com/train-it-eu/docker-images/blob/main/mp-units/Dockerfile
+  "image": "trainiteu/mp-units:latest",
+  "remoteUser": "ubuntu",
+  "features": {},
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "workbench.startupEditor": "none",
+        "editor.tabSize": 2,
+        "editor.formatOnSave": true,
+        "editor.bracketPairColorization.enabled": true,
+        "editor.guides.bracketPairs": "active",
+        "cmake.generator": "Ninja Multi-Config",
+        "cmake.configureOnOpen": true,
+        "cmake.useCMakePresets": "always",
+        "cmake.options.statusBarVisibility": "visible",
+        "cmake.options.advanced": {
+          "testPreset": {
+            "statusBarVisibility": "hidden"
+          },
+          "ctest": {
+            "statusBarVisibility": "hidden"
+          }
+        },
+        "clang-format.executable": "/usr/bin/clang-format",
+        "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+        "yaml.schemas": {
+          "https://squidfunk.github.io/mkdocs-material/schema.json": "mkdocs.yml"
+        },
+        "yaml.customTags": [
+          "!ENV scalar",
+          "!ENV sequence",
+          "tag:yaml.org,2002:python/name:materialx.emoji.to_svg",
+          "tag:yaml.org,2002:python/name:materialx.emoji.twemoji",
+          "tag:yaml.org,2002:python/name:pymdownx.superfences.fence_code_format"
+        ]
+      },
+      "extensions": [
+        "ms-vscode.cpptools",
+        "ms-vscode.cpptools-extension-pack",
+        "VisualStudioExptTeam.vscodeintellicode",
+        "VisualStudioExptTeam.intellicode-api-usage-examples",
+        "ms-vscode.cmake-tools",
+        "fredericbonnet.cmake-test-adapter",
+        "matepek.vscode-catch2-test-adapter",
+        "xaver.clang-format",
+        "bierner.markdown-mermaid",
+        "darkriszty.markdown-table-prettify",
+        "DavidAnson.vscode-markdownlint",
+        "ms-vscode.vscode-json",
+        "redhat.vscode-yaml",
+        "ms-python.python",
+        "ms-python.isort",
+        "ms-python.black-formatter",
+        "hbenl.vscode-test-explorer",
+        "mhutchie.git-graph",
+        "Gruntfuggly.todo-tree",
+        "streetsidesoftware.code-spell-checker",
+        "vivaxy.vscode-conventional-commits",
+        "github.vscode-github-actions",
+        "github.copilot",
+        "github.copilot-chat",
+        "ms-vsliveshare.vsliveshare"
+      ]
+    }
+  },
+  "runArgs": [
+    "--init"
+  ],
+  "postCreateCommand": "pipx upgrade conan && .devcontainer/api_reference.sh -s && .devcontainer/check_all.sh -d install",
+  "postStartCommand": "echo '🚀 mp-units development environment ready!' && echo '🧪 Use `.devcontainer/check_all.sh [-d] build` to test all compiler configurations.' && echo '📖 Use `.devcontainer/api_reference.sh` to generate the API reference documentation.'",
+  "forwardPorts": [
+    8000
+  ],
+  "portsAttributes": {
+    "8000": {
+      "label": "Documentation Server",
+      "onAutoForward": "notify"
+    }
+  }
+}

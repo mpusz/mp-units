@@ -173,8 +173,8 @@ public:
   {
     CharT txt[N + N2];
     CharT* it = txt;
-    for (CharT c : lhs) *it++ = c;
-    for (CharT c : rhs) *it++ = c;
+    for (CharT ch : lhs) *it++ = ch;
+    for (CharT ch : rhs) *it++ = ch;
     return basic_fixed_string<CharT, N + N2>(txt, it);
   }
 
@@ -183,7 +183,7 @@ public:
   {
     CharT txt[N + 1];
     CharT* it = txt;
-    for (CharT c : lhs) *it++ = c;
+    for (CharT ch : lhs) *it++ = ch;
     *it++ = rhs;
     return basic_fixed_string<CharT, N + 1>(txt, it);
   }
@@ -194,7 +194,7 @@ public:
     CharT txt[1 + N];
     CharT* it = txt;
     *it++ = lhs;
-    for (CharT c : rhs) *it++ = c;
+    for (CharT ch : rhs) *it++ = ch;
     return basic_fixed_string<CharT, 1 + N>(txt, it);
   }
 
@@ -205,8 +205,8 @@ public:
     MP_UNITS_EXPECTS(rhs[N2 - 1] == CharT{});
     CharT txt[N + N2];
     CharT* it = txt;
-    for (CharT c : lhs) *it++ = c;
-    for (CharT c : rhs) *it++ = c;
+    for (CharT ch : lhs) *it++ = ch;
+    for (CharT ch : rhs) *it++ = ch;
     return txt;
   }
 
@@ -218,7 +218,7 @@ public:
     CharT txt[N1 + N];
     CharT* it = txt;
     for (std::size_t i = 0; i != N1 - 1; ++i) *it++ = lhs[i];
-    for (CharT c : rhs) *it++ = c;
+    for (CharT ch : rhs) *it++ = ch;
     *it++ = CharT();
     return txt;
   }

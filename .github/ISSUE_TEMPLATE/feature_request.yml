@@ -1,0 +1,112 @@
+name: 🚀 Feature Request
+description: Suggest an idea or enhancement for mp-units
+title: "[Feature]: "
+labels: ["enhancement", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for your interest in improving mp-units! Please describe your feature request.
+
+        **💡 Want to discuss the idea first?** Consider starting a conversation in [Discussions](https://github.com/mpusz/mp-units/discussions) to get community feedback.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Description
+      description: Describe your specific use case for this feature or a specific problem you face.
+      placeholder: I would like to...
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: Describe the solution you'd like to see
+      placeholder: This could be solved by...
+    validations:
+      required: true
+
+  - type: input
+    id: compiler_explorer
+    attributes:
+      label: 🚀 Compiler Explorer Example (Optional)
+      description: |
+        If applicable, provide a Compiler Explorer link showing current behavior
+        or demonstrating what you'd like to achieve.
+      placeholder: "https://godbolt.org/z/your-example-link"
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Describe any alternative solutions or features you've considered
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Feature Category
+      description: What type of feature is this?
+      options:
+        - API Enhancement
+        - New Unit System
+        - New Dimension/Quantity
+        - Performance Improvement
+        - Documentation
+        - Build System
+        - Packaging
+        - Developer Experience
+        - Interoperability
+        - Standards Compliance
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: example
+    attributes:
+      label: Example Usage
+      description: If applicable, provide an example of how this feature would be used
+      placeholder: |
+        ```cpp
+        // Example of desired API usage
+        ```
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: How important is this feature for you?
+      options:
+        - Nice to have
+        - Important for my project
+        - Critical for my use case
+        - Blocking my adoption
+    validations:
+      required: true
+
+  - type: textarea
+    id: implementation
+    attributes:
+      label: Implementation Ideas
+      description: If you have ideas about how this could be implemented, please share them
+
+  - type: textarea
+    id: additional_context
+    attributes:
+      label: Additional Context
+      description: Add any other context, screenshots, or references about the feature request
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      description: Please confirm the following
+      options:
+        - label: I have searched existing issues to avoid duplicates
+          required: true
+        - label: I have read the project documentation
+          required: true
+        - label: This feature aligns with the [project's goals](https://mpusz.github.io/mp-units/latest/getting_started/introduction/#key-features)
+          required: true

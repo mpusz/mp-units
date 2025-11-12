@@ -474,7 +474,8 @@ static_assert(quantity{v{1., 2., 3}}.quantity_spec == kind_of<dimensionless>);
 
 using namespace std::chrono_literals;
 static_assert(std::is_same_v<decltype(quantity{123s})::rep, std::chrono::seconds::rep>);
-static_assert(std::is_same_v<decltype(quantity{123.s})::rep, long double>);
+static_assert(
+  std::is_same_v<decltype(quantity{123.s})::rep, decltype(::operator""s(static_cast<long double>(123.)))::rep>);
 static_assert(quantity{24h}.unit == si::hour);
 static_assert(quantity{24h}.quantity_spec == kind_of<isq::time>);
 #endif

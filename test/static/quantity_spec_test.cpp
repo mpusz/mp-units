@@ -331,7 +331,7 @@ concept invalid_operations = requires {
   requires !requires { 2 < t; };
   requires !requires { t + time[second]; };
   requires !requires { t - time[second]; };
-  requires !requires { t* time[second]; };
+  requires !requires { t * time[second]; };
   requires !requires { t / time[second]; };
   requires !requires { t == time[second]; };
   requires !requires { t < time[second]; };

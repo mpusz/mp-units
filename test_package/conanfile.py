@@ -47,7 +47,7 @@ class TestPackageConan(ConanFile):
             tc.cache_variables["CMAKE_CXX_MODULE_STD"] = True
             # Current experimental support according to `Help/dev/experimental.rst`
             tc.cache_variables["CMAKE_EXPERIMENTAL_CXX_IMPORT_STD"] = (
-                "0e5b6991-d74f-4b3d-a41c-cf096e0b2508"
+                "d0edc3af-4c50-42ea-a356-e2862fe7a444"
             )
         # TODO remove the below when Conan will learn to handle C++ modules
         if opt.cxx_modules:

@@ -46,7 +46,6 @@ import std;
 #include <concepts>
 #include <cstdint>
 #include <optional>
-#include <tuple>
 #include <type_traits>
 #endif
 #endif
@@ -181,7 +180,7 @@ struct quantity_spec_interface_base {
   [[nodiscard]] friend consteval QuantitySpec auto operator*(Lhs lhs, Rhs rhs)
   {
     return detail::clone_kind_of<Lhs{}, Rhs{}>(
-      detail::expr_multiply<derived_quantity_spec, struct dimensionless, type_list_of_quantity_spec_less>(
+      detail::expr_multiply<derived_quantity_spec, dimensionless, type_list_of_quantity_spec_less>(
         detail::remove_kind(lhs), detail::remove_kind(rhs)));
   }
 
@@ -189,7 +188,7 @@ struct quantity_spec_interface_base {
   [[nodiscard]] friend consteval QuantitySpec auto operator/(Lhs lhs, Rhs rhs)
   {
     return detail::clone_kind_of<Lhs{}, Rhs{}>(
-      detail::expr_divide<derived_quantity_spec, struct dimensionless, type_list_of_quantity_spec_less>(
+      detail::expr_divide<derived_quantity_spec, dimensionless, type_list_of_quantity_spec_less>(
         detail::remove_kind(lhs), detail::remove_kind(rhs)));
   }
 
@@ -206,23 +205,23 @@ template<typename Self>
 struct quantity_spec_interface : quantity_spec_interface_base {
 #if MP_UNITS_API_NO_CRTP
   template<typename Self, UnitOf<Self{}> U>
-  [[nodiscard]] consteval Reference auto operator[](this Self self, U u)
+  [[nodiscard]] consteval Reference auto operator[](this Self, U)
   {
-    return detail::make_reference(self, u);
+    return detail::make_reference(Self{}, U{});
   }
 
   template<typename Self, typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>>
     requires(mp_units::explicitly_convertible(Q::quantity_spec, Self{}))
-  [[nodiscard]] constexpr Quantity auto operator()(this Self self, FwdQ&& q)
+  [[nodiscard]] constexpr Quantity auto operator()(this Self, FwdQ&& q)
   {
     return quantity{std::forward<FwdQ>(q).numerical_value_is_an_implementation_detail_,
-                    detail::make_reference(self, Q::unit)};
+                    detail::make_reference(Self{}, Q::unit)};
   }
 #else
   template<typename Self_ = Self, UnitOf<Self_{}> U>
-  [[nodiscard]] MP_UNITS_CONSTEVAL Reference auto operator[](U u) const
+  [[nodiscard]] MP_UNITS_CONSTEVAL Reference auto operator[](U) const
   {
-    return detail::make_reference(Self{}, u);
+    return detail::make_reference(Self{}, U{});
   }
 
   template<typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>, typename Self_ = Self>
@@ -418,9 +417,9 @@ struct quantity_spec<Self, QS, Args...> : detail::propagate_equation<QS>, detail
 
 #if !MP_UNITS_API_NO_CRTP
   template<typename Self_ = Self, UnitOf<Self_{}> U>
-  [[nodiscard]] MP_UNITS_CONSTEVAL Reference auto operator[](U u) const
+  [[nodiscard]] MP_UNITS_CONSTEVAL Reference auto operator[](U) const
   {
-    return detail::make_reference(Self{}, u);
+    return detail::make_reference(Self{}, U{});
   }
 
   template<typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>, typename Self_ = Self>
@@ -1224,7 +1223,7 @@ template<QuantitySpec Q1, QuantitySpec Q2>
     // if quantities can't be converted in any direction check if they have a common base in the tree
     else if constexpr (detail::have_common_base(Q1{}, Q2{})) {
       constexpr auto base = detail::get_common_base(Q1{}, Q2{});
-      if constexpr (mp_units::implicitly_convertible(q1, base) && mp_units::implicitly_convertible(q2, base))
+      if constexpr (mp_units::implicitly_convertible(Q1{}, base) && mp_units::implicitly_convertible(Q2{}, base))
         return base;
       else
         return no_common_quantity_spec{};

@@ -39,14 +39,14 @@ namespace mp_units {
 namespace detail {
 
 template<typename Rep, Unit UFrom, Unit UTo>
-[[nodiscard]] consteval bool scaling_overflows_non_zero_values(UFrom from, UTo to)
+[[nodiscard]] consteval bool scaling_overflows_non_zero_values(UFrom, UTo)
 {
   if constexpr (is_same_v<UFrom, UTo> || treat_as_floating_point<Rep>)
     return false;
   else if constexpr (std::totally_ordered_with<Rep, std::uintmax_t> &&
                      requires(Rep v) { representation_values<Rep>::max(); }) {
     constexpr auto factor =
-      get_value<std::uintmax_t>(numerator(get_canonical_unit(from).mag / get_canonical_unit(to).mag));
+      get_value<std::uintmax_t>(numerator(get_canonical_unit(UFrom{}).mag / get_canonical_unit(UTo{}).mag));
     if constexpr (std::is_integral_v<Rep>)
       return !std::in_range<Rep>(factor);
     else

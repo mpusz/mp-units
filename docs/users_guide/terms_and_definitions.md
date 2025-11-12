@@ -10,4 +10,5 @@ and [BIPM](https://jcgm.bipm.org/vim/en).
 !!! tip
 
     Please familiarize yourself with terms from ["Glossary"](../appendix/glossary.md) to
-    better understand the documentation and improve domain-related communication and discussions.
+    better understand the documentation and improve domain-related communication and
+    discussions.

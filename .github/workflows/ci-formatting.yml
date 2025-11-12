@@ -24,6 +24,9 @@ name: Formatting CI
 
 on: [push, pull_request]
 
+permissions:
+  contents: read
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -44,3 +47,22 @@ jobs:
       - name: Check
         run: |
           pre-commit run --all-files
+
+      - name: Generate formatting summary
+        if: always()
+        run: |
+          echo "## 🎨 Code Formatting Summary" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ job.status }}" = "success" ]; then
+            echo "✅ **All formatting checks passed**" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "Code style is consistent across the repository." >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ **Formatting issues detected**" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**To fix formatting issues:**" >> $GITHUB_STEP_SUMMARY
+            echo "1. Run \`pre-commit run --all-files\` locally" >> $GITHUB_STEP_SUMMARY
+            echo "2. Or run \`pre-commit install\` to enable automatic formatting" >> $GITHUB_STEP_SUMMARY
+            echo "3. Commit the formatting changes" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Tools used:** clang-format, clang-tidy, various linters via pre-commit" >> $GITHUB_STEP_SUMMARY

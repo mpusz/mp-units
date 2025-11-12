@@ -2,8 +2,8 @@
 
 !!! warning
 
-    This chapter's features are experimental and subject to change or removal. Please share your feedback
-    if something seems wrong or could be improved.
+    This chapter's features are experimental and subject to change or removal.
+    Please share your feedback if something seems wrong or could be improved.
 
 
 ## Scalars, vectors, and tensors
@@ -18,21 +18,23 @@
 Such distinction is important because each quantity character represents different properties
 and allows different operations to be done on its quantities.
 
-For example, imagine a physical units library that allows the creation of a $speed$ quantity from both
-$length / time$ and $length * time$. It wouldn't be too safe to use such a product, right?
+For example, imagine a physical units library that allows the creation of a $speed$ quantity
+from both $length / time$ and $length * time$.
+It wouldn't be too safe to use such a product, right?
 
-Now we have to realize that both of the above operations (multiplication and division) are not even
-mathematically defined for linear algebra types such as vectors or tensors. On the other hand, two vectors
-can be passed as arguments to dot and cross-product operations. The result of the first one is
-a scalar. The second one results in a vector that is perpendicular to both vectors passed as arguments.
-Again, it wouldn't be safe to allow replacing those two operations with each other or expect the same
-results from both cases. This simply can't work.
+Now we have to realize that both of the above operations (multiplication and division)
+are not even mathematically defined for linear algebra types such as vectors or tensors.
+On the other hand, two vectors can be passed as arguments to dot and cross-product operations.
+The result of the first one is a scalar. The second one results in a vector that is
+perpendicular to both vectors passed as arguments. Again, it wouldn't be safe to allow
+replacing those two operations with each other or expect the same results from both cases.
+This simply can't work.
 
 
 ## ISQ defines quantities of all characters
 
-While defining quantities ISO 80000 explicitly mentions when a specific quantity has a vector or tensor
-character. Here are some examples:
+While defining quantities, ISO 80000 explicitly mentions when a specific quantity has a vector
+or tensor character. Here are some examples:
 
 | Quantity                 |  Character   |                    Quantity Equation                    |
 |--------------------------|:------------:|:-------------------------------------------------------:|
@@ -115,13 +117,13 @@ enumeration can be appended to the `quantity_spec` describing such a quantity ty
     QUANTITY_SPEC(position_vector, displacement);
     ```
 
-With the above, all the quantities derived from `position_vector` or `displacement` will have a correct
-character determined according to the kind of operations included in the
+With the above, all the quantities derived from `position_vector` or `displacement`
+will have a correct character determined according to the kind of operations included in the
 [quantity equation](../../appendix/glossary.md#quantity-equation) defining a
 [derived quantity](../../appendix/glossary.md#derived-quantity).
 
-For example, `velocity` in the below definition will be defined as a vector quantity (no explicit
-character override is needed):
+For example, `velocity` in the below definition will be defined as a vector quantity.
+No explicit character override is needed:
 
 === "C++23"
 
@@ -152,9 +154,10 @@ template<Reference auto R,
 class quantity;
 ```
 
-The second template parameter is constrained with a [`RepresentationOf`](concepts.md#RepresentationOf)
-concept that checks if the provided representation type satisfies the requirements for the character
-associated with this quantity type.
+The second template parameter is constrained with a
+[`RepresentationOf`](concepts.md#RepresentationOf) concept that checks if the provided
+representation type satisfies the requirements for the character associated with this
+quantity type.
 
 !!! note
 
@@ -178,8 +181,8 @@ using la_vector = STD_LA::fixed_size_column_vector<double, 3>;
 Quantity auto q = la_vector{1, 2, 3} * isq::velocity[m / s];
 ```
 
-In case there is an ambiguity of `operator*` between **mp-units** and a linear algebra library, we can
-either:
+In case there is an ambiguity of `operator*` between **mp-units** and a linear algebra
+library, we can either:
 
 - use two-parameter constructor
 
@@ -187,7 +190,8 @@ either:
     Quantity auto q = quantity{la_vector{1, 2, 3}, isq::velocity[m / s]};
     ```
 
-- provide a dedicated overload of `operator*` that will resolve the ambiguity and wrap the above
+- provide a dedicated overload of `operator*` that will resolve the ambiguity
+  and wrap the above
 
     ```cpp
     template<Reference R>

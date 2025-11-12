@@ -37,18 +37,21 @@ flowchart TD
 
 ## Dimension
 
-[Dimension](../../appendix/glossary.md#dimension) specifies the dependence of a quantity on the base
-quantities of a particular system of quantities. It is represented as a product of powers of factors
-corresponding to the base quantities, omitting any numerical factor.
+[Dimension](../../appendix/glossary.md#dimension) specifies the dependence of a quantity on
+the base quantities of a particular system of quantities. It is represented as a product of
+powers of factors corresponding to the base quantities, omitting any numerical factor.
 
 In the **mp-units** library, we use the terms:
 
-- **base dimension** to refer to the dimension of a [base quantity](../../appendix/glossary.md#base-quantity),
-- **derived dimension** to refer to the dimension of a [derived quantity](../../appendix/glossary.md#derived-quantity).
+- **base dimension** to refer to the dimension of a
+  [base quantity](../../appendix/glossary.md#base-quantity),
+- **derived dimension** to refer to the dimension of a
+  [derived quantity](../../appendix/glossary.md#derived-quantity).
 
 For example:
 
-- _length_ ($\mathsf{L}$), _mass_ ($\mathsf{M}$), _time_ ($\mathsf{T}$), _electric current_ ($\mathsf{I}$),
+- _length_ ($\mathsf{L}$), _mass_ ($\mathsf{M}$), _time_ ($\mathsf{T}$),
+  _electric current_ ($\mathsf{I}$),
   _thermodynamic temperature_ ($\mathsf{Θ}$), _amount of substance_ ($\mathsf{N}$), and
   _luminous intensity_ ($\mathsf{J}$) are the base dimensions of the [ISQ](../../appendix/glossary.md#isq).
 - A derived dimension of _force_ in the [ISQ](../../appendix/glossary.md#isq) is denoted by
@@ -110,21 +113,24 @@ The multiplication/division on quantity specifications also multiplies/divides t
 static_assert((length / time).dimension == dim_length / dim_time);
 ```
 
-The [dimension equation](../../appendix/glossary.md#dimension-equation) of `isq::dim_length / isq::dim_time`
-results in the `derived_dimension<isq::dim_length, per<isq::dim_time>>` type.
+The [dimension equation](../../appendix/glossary.md#dimension-equation) of
+`isq::dim_length / isq::dim_time` results in the
+`derived_dimension<isq::dim_length, per<isq::dim_time>>` type.
 
 
 ## Quantity character
 
-[ISO 80000](../../appendix/references.md#ISO80000) explicitly states that quantities (even of the same kind) may have
-different [characters](../../appendix/glossary.md#character):
+[ISO 80000](../../appendix/references.md#ISO80000) explicitly states that quantities
+(even of the same kind) may have different
+[characters](../../appendix/glossary.md#character):
 
 - real scalar (e.g., _time_, _width_, _speed_, _apparent power_),
 - complex scalar (e.g., _voltage phasor_, _complex power_, _impedance_),
 - vector (e.g., _displacement_, _velocity_, _force_),
 - tensor (e.g., _moment of inertia_, _stress_, _strain_).
 
-The quantity character in the **mp-units** library is implemented with the `quantity_character` enumeration:
+The quantity character in the **mp-units** library is implemented with the
+`quantity_character` enumeration:
 
 ```cpp
 enum class quantity_character { real_scalar, complex_scalar, vector, tensor };
@@ -139,7 +145,8 @@ enum class quantity_character { real_scalar, complex_scalar, vector, tensor };
 ## Quantity specification
 
 [Dimension is not enough to describe a quantity](systems_of_quantities.md#dimension-is-not-enough-to-describe-a-quantity).
-This is why the [ISO 80000](../../appendix/references.md#ISO80000) provides hundreds of named quantity
+This is why the [ISO 80000](../../appendix/references.md#ISO80000) provides hundreds
+of named quantity
 types. It turns out that there are many more quantity types in the [ISQ](../../appendix/glossary.md#isq)
 than the named units in the [SI](../../appendix/glossary.md#si).
 
@@ -148,7 +155,8 @@ This is why the **mp-units** library introduces a quantity specification entity 
 - [dimension](../../appendix/glossary.md#dimension),
 - quantity type/name,
 - [quantity character](../../appendix/glossary.md#character),
-- the [quantity equation](../../appendix/glossary.md#quantity-equation) being the recipe to create this quantity
+- the [quantity equation](../../appendix/glossary.md#quantity-equation) being the recipe
+  to create this quantity
   (only for derived quantities that specify such a recipe).
 
 !!! note
@@ -172,11 +180,14 @@ This is why the **mp-units** library introduces a quantity specification entity 
 For example:
 
 - `isq::length`, `isq::mass`, `isq::time`, `isq::electric_current`, `isq::thermodynamic_temperature`,
-  `isq::amount_of_substance`, and `isq::luminous_intensity` are the specifications of base quantities
+  `isq::amount_of_substance`, and `isq::luminous_intensity` are the specifications
+  of base quantities
   in the [ISQ](../../appendix/glossary.md#isq).
-- `isq::width`, `isq::height`, `isq::radius`, and `isq::position_vector` are only a few of many
+- `isq::width`, `isq::height`, `isq::radius`, and `isq::position_vector` are only a few
+  of many
    quantities of a kind length specified in the [ISQ](../../appendix/glossary.md#isq).
-- `isq::area`, `isq::speed`, `isq::moment_of_force` are only a few of many derived quantities provided
+- `isq::area`, `isq::speed`, `isq::moment_of_force` are only a few of many
+  derived quantities provided
   in the [ISQ](../../appendix/glossary.md#isq).
 
 Quantity specification  can be defined by the user in one of the following ways:
@@ -205,14 +216,16 @@ Quantity specification  can be defined by the user in one of the following ways:
     QUANTITY_SPEC(speed, length / time);
     ```
 
-The [quantity equation](../../appendix/glossary.md#quantity-equation) of `isq::length / isq::time` results
-in the `derived_quantity_spec<isq::length, per<isq::time>>` type.
+The [quantity equation](../../appendix/glossary.md#quantity-equation) of
+`isq::length / isq::time` results in the
+`derived_quantity_spec<isq::length, per<isq::time>>` type.
 
 
 ## Unit
 
-A [unit](../../appendix/glossary.md#unit) is a concrete amount of a quantity that allows us to
-measure the values of [quantities of the same kind](systems_of_quantities.md#quantities-of-the-same-kind)
+A [unit](../../appendix/glossary.md#unit) is a concrete amount of a quantity
+that allows us to measure the values of
+[quantities of the same kind](systems_of_quantities.md#quantities-of-the-same-kind)
 and represent the result as a number being the ratio of the two quantities.
 
 For example:
@@ -264,8 +277,9 @@ After that, it says:
     A reference can be a **_measurement unit_**, a measurement procedure, a reference material,
     or a combination of such.
 
-In the **mp-units** library, a quantity reference provides all the domain-specific metadata for the quantity
-besides its [numerical value](../../appendix/glossary.md#numerical-value):
+In the **mp-units** library, a quantity reference provides all the domain-specific
+metadata for the quantity besides its
+[numerical value](../../appendix/glossary.md#numerical-value):
 
 - all the data stored in the [quantity specification](#quantity-specification),
 - [unit](#unit).
@@ -288,16 +302,17 @@ For example:
 
 - `si::metre` is defined in the [SI](../../appendix/glossary.md#si) as a unit of `isq::length`
   and thus can be used as a reference to instantiate a quantity of length (e.g., `42 * m`).
-- The expression `isq::height[m]` results with `reference<isq::height, si::metre>`, which can be used to
-  instantiate a quantity of `isq::height` with a unit of `si::metre` (e.g., `42 * isq::height[m]`).
+- The expression `isq::height[m]` results with `reference<isq::height, si::metre>`,
+  which can be used to instantiate a quantity of `isq::height` with a unit of `si::metre`
+  (e.g., `42 * isq::height[m]`).
 
 
 ## Quantity representation
 
 Quantity representation defines the type used to store the
-[numerical value of a quantity](../../appendix/glossary.md#quantity-value). Such a type should be of
-a specific [quantity character](#quantity-character) provided in the
-[quantity specification](#quantity-specification).
+[numerical value of a quantity](../../appendix/glossary.md#quantity-value).
+Such a type should be of a specific [quantity character](#quantity-character) provided
+in the [quantity specification](#quantity-specification).
 
 !!! note
 
@@ -326,20 +341,23 @@ and a [reference](#quantity-reference).
 
 For example:
 
-- All of `42 * m`, `42 * si::metre`, `42 * isq::height[m]`, and `isq::height(42 * m)` create a quantity.
+- All of `42 * m`, `42 * si::metre`, `42 * isq::height[m]`, and `isq::height(42 * m)`
+  create a quantity.
 - A quantity type can also be specified explicitly (e.g., `quantity<si::metre, int>`,
   `quantity<isq::height[m]>`).
 
 
 ## Point origin
 
-In [the affine space theory](the_affine_space.md), the point origin specifies where the "zero" of our
-measurement's scale is.
+In [the affine space theory](the_affine_space.md), the point origin specifies
+where the "zero" of our measurement's scale is.
 
 In the **mp-units** library, we have two types of point origins:
 
-- [absolute](the_affine_space.md#absolute-point-origin) - defines an absolute "zero" for our point,
-- [relative](the_affine_space.md#relative-point-origin) - defines an origin that has some "offset" relative
+- [absolute](the_affine_space.md#absolute-point-origin) - defines an absolute "zero"
+  for our point,
+- [relative](the_affine_space.md#relative-point-origin) - defines an origin that has some
+  "offset" relative
   to an absolute point.
 
 For example:

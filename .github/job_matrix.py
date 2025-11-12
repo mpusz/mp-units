@@ -1,8 +1,119 @@
+import dataclasses
 import itertools
 import random
 import typing
+from dataclasses import dataclass
 
 T = typing.TypeVar("T")
+
+
+@dataclass(frozen=True, order=True, kw_only=True)
+class Compiler:
+    type: typing.Literal["GCC", "CLANG", "APPLE_CLANG", "MSVC"]
+    version: str | int
+    cc: str
+    cxx: str
+
+
+@dataclass(frozen=True, order=True, kw_only=True)
+class ToolchainFeatureSupport:
+    cxx_modules: bool = False
+    std_format: bool = False
+    import_std: bool = False
+    freestanding: bool = False
+
+
+@dataclass(frozen=True, order=True, kw_only=True)
+class ConanOptions:
+    cxx_modules: bool
+    import_std: bool
+    std_format: bool
+    no_crtp: bool
+    contracts: typing.Literal["none", "gsl-lite", "ms-gsl"]
+    freestanding: bool
+    natural_units: bool
+
+    def is_supported_on(self, feat: ToolchainFeatureSupport) -> bool:
+        feat = dataclasses.asdict(feat)
+        for k, v in feat.items():
+            if getattr(self, k) and not v:
+                return False
+        return True
+
+    @classmethod
+    def full_matrix(cls) -> dict[str, typing.Any]:
+        ret = {}
+        for field in dataclasses.fields(cls):
+            t = field.type
+            if t == bool:
+                opts = (False, True)
+            elif typing.get_origin(t) == typing.Literal:
+                opts = typing.get_args(t)
+            else:
+                raise TypeError(f"Unsupported type {t}")
+            ret[field.name] = tuple(opts)
+        return ret
+
+
+@dataclass(frozen=True, order=True, kw_only=True)
+class Toolchain:
+    name: str
+    os: str
+    compiler: Compiler
+    lib: typing.Literal["libc++", "libstdc++"] | None = None
+    feature_support: ToolchainFeatureSupport
+
+    def __str__(self):
+        return self.name
+
+    def for_github(self):
+        ret = dataclasses.asdict(self)
+        del ret["feature_support"]
+        return ret
+
+
+@dataclass(frozen=True, order=True, kw_only=True)
+class Configuration(ConanOptions):
+    toolchain: Toolchain
+    std: typing.Literal[20, 23]
+    build_type: typing.Literal["Release", "Debug"]
+
+    @property
+    def is_supported(self) -> bool:
+        # check if selected features are supported by the toolchain
+        if not self.is_supported_on(self.toolchain.feature_support):
+            return False
+        # additional checks for import_std
+        if self.import_std:
+            if self.std < 23:
+                return False
+            if not self.cxx_modules:
+                return False
+            if not self.std_format:
+                return False
+            if self.contracts != "none":
+                return False
+        return True
+
+    def for_github(self):
+        features = {
+            field.name: str(getattr(self, field.name))
+            for field in dataclasses.fields(ConanOptions)
+        }
+        ret = {
+            field.name: getattr(self, field.name)
+            for field in dataclasses.fields(self)
+            if field.name not in features
+        }
+        ret = dict(
+            formatting="std::format" if self.std_format else "fmtlib",
+            contracts=self.contracts,
+            config=self.toolchain.for_github(),
+            std=self.std,
+            build_type=self.build_type,
+        )
+        ret["conan-config"] = " ".join(f"-o '&:{k}={v}'" for k, v in features.items())
+        return ret
 
 
 class CombinationCollector(typing.Generic[T]):

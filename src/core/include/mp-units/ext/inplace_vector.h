@@ -34,6 +34,9 @@ import std;
 #include <concepts>
 #include <cstddef>
 #include <ranges>
+#if MP_UNITS_HOSTED
+#include <stdexcept>
+#endif
 #endif
 #endif
 
@@ -73,7 +76,7 @@ public:
   constexpr const_reverse_iterator crbegin() const noexcept { return const_reverse_iterator(cend()); }
   constexpr const_reverse_iterator crend() const noexcept { return const_reverse_iterator(cbegin()); }
 
-  [[nodiscard]] constexpr bool empty() const noexcept { return size() == 0; };
+  [[nodiscard]] constexpr bool empty() const noexcept { return size() == 0; }
   [[nodiscard]] constexpr size_type size() const noexcept { return size_; }
   [[nodiscard]] static constexpr size_type max_size() noexcept { return N; }
   [[nodiscard]] static constexpr size_type capacity() noexcept { return N; }

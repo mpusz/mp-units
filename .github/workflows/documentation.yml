@@ -37,6 +37,8 @@ on:
       - "mkdocs.yml"
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -45,6 +47,7 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
         with:
@@ -96,3 +99,25 @@ jobs:
         if: ${{!startsWith(github.event.ref, 'refs/tags/v')}}
         run: |
           mike deploy --push --update-aliases HEAD latest
+
+      - name: Generate documentation summary
+        if: always()
+        run: |
+          echo "## 📖 Documentation Build Summary" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ job.status }}" = "success" ]; then
+            echo "✅ **Documentation successfully built and deployed**" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            if [[ "${{ github.event.ref }}" == refs/tags/v* ]]; then
+              echo "🏷️ **Release Documentation**: Published version-specific docs" >> $GITHUB_STEP_SUMMARY
+              echo "📅 **Version**: \`$(conan inspect . | sed -n -r 's/version: ([0-9]+.[0-9]+).[0-9]+/\1/p')\`" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "🚀 **Development Documentation**: Published to 'latest'" >> $GITHUB_STEP_SUMMARY
+              echo "🔗 **Branch**: \`${{ github.ref_name }}\`" >> $GITHUB_STEP_SUMMARY
+            fi
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "🌐 **Live Documentation**: https://mpusz.github.io/units/" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ **Documentation build failed**" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "Please check the build logs for API reference generation or MkDocs issues." >> $GITHUB_STEP_SUMMARY
+          fi

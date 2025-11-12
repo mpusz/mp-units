@@ -60,8 +60,8 @@ jobs:
       - id: set-matrix
         run: python .github/generate-job-matrix.py --preset freestanding --seed ${{ inputs.matrix-seed || 0 }} --debug combinations counts
   build:
-    name: "${{ matrix.platform.name }} C++${{ matrix.std }} ${{ matrix.formatting }} ${{ matrix.contracts }} ${{ matrix.build_type }}"
-    runs-on: ${{ matrix.platform.os }}
+    name: "${{ matrix.config.name }} C++${{ matrix.std }} ${{ matrix.formatting }} ${{ matrix.contracts }} ${{ matrix.build_type }}"
+    runs-on: ${{ matrix.config.os }}
     needs: generate-matrix
     strategy:
       fail-fast: false
@@ -69,8 +69,8 @@ jobs:
         include: ${{fromJson(needs.generate-matrix.outputs.matrix)}}
 
     env:
-      CC: ${{ matrix.platform.compiler.cc }}
-      CXX: ${{ matrix.platform.compiler.cxx }}
+      CC: ${{ matrix.config.compiler.cc }}
+      CXX: ${{ matrix.config.compiler.cxx }}
 
     steps:
       - uses: actions/checkout@v4
@@ -82,35 +82,35 @@ jobs:
           cache-name: cache-conan-data
         with:
           path: ~/.conan2/p
-          key: freestanding-${{ matrix.platform.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.platform.compiler.type }}-${{ matrix.platform.lib }}-${{ matrix.build_type }}-${{ matrix.platform.compiler.version }}-${{ matrix.std }}-${{ env.cache_id }}
+          key: freestanding-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-${{ matrix.std }}-${{ env.cache_id }}
           restore-keys: |
-            freestanding-${{ matrix.platform.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.platform.compiler.type }}-${{ matrix.platform.lib }}-${{ matrix.build_type }}-${{ matrix.platform.compiler.version }}-${{ matrix.std }}-
-            freestanding-${{ matrix.platform.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.platform.compiler.type }}-${{ matrix.platform.lib }}-${{ matrix.build_type }}-${{ matrix.platform.compiler.version }}-
-            freestanding-${{ matrix.platform.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.platform.compiler.type }}-${{ matrix.platform.lib }}-${{ matrix.build_type }}-
-            freestanding-${{ matrix.platform.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.platform.compiler.type }}-${{ matrix.platform.lib }}-
-            freestanding-${{ matrix.platform.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.platform.compiler.type }}-
-            freestanding-${{ matrix.platform.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-
-            freestanding-${{ matrix.platform.os }}-${{ matrix.formatting }}-
-            freestanding-${{ matrix.platform.os }}-
+            freestanding-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-${{ matrix.std }}-
+            freestanding-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-
+            freestanding-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-
+            freestanding-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-
+            freestanding-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.config.compiler.type }}-
+            freestanding-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-
+            freestanding-${{ matrix.config.os }}-${{ matrix.formatting }}-
+            freestanding-${{ matrix.config.os }}-
       - uses: hendrikmuhs/ccache-action@v1.2
         if: runner.os == 'Linux'
         with:
-          key: ${{ matrix.platform.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.platform.compiler.type }}-${{ matrix.platform.lib }}-${{ matrix.build_type }}-${{ matrix.platform.compiler.version }}-${{ matrix.std }}
+          key: ${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-${{ matrix.std }}
           max-size: 50M
       - name: Install Clang
-        if: matrix.platform.compiler.type == 'CLANG'
+        if: matrix.config.compiler.type == 'CLANG'
         shell: bash
         working-directory: ${{ env.HOME }}
         run: |
           wget https://apt.llvm.org/llvm.sh
           chmod +x llvm.sh
-          sudo ./llvm.sh ${{ matrix.platform.compiler.version }}
-          sudo apt install -y clang-tools-${{ matrix.platform.compiler.version }}
+          sudo ./llvm.sh ${{ matrix.config.compiler.version }}
+          sudo apt install -y clang-tools-${{ matrix.config.compiler.version }}
       - name: Install Libc++
-        if: matrix.platform.compiler.type == 'CLANG' && matrix.platform.lib == 'libc++'
+        if: matrix.config.compiler.type == 'CLANG' && matrix.config.lib == 'libc++'
         shell: bash
         run: |
-          sudo apt install -y libc++-${{ matrix.platform.compiler.version }}-dev libc++abi-${{ matrix.platform.compiler.version }}-dev libunwind-${{ matrix.platform.compiler.version }}-dev
+          sudo apt install -y libc++-${{ matrix.config.compiler.version }}-dev libc++abi-${{ matrix.config.compiler.version }}-dev libunwind-${{ matrix.config.compiler.version }}-dev
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -127,8 +127,8 @@ jobs:
         shell: bash
         run: |
           conan profile detect --force
-          if [[ "${{ matrix.platform.compiler.type }}" == "CLANG" ]]; then
-            sed -i.backup '/^\[settings\]$/,/^\[/ s/^compiler.libcxx=.*/compiler.libcxx=${{ matrix.platform.lib }}/' ~/.conan2/profiles/default
+          if [[ "${{ matrix.config.compiler.type }}" == "CLANG" ]]; then
+            sed -i.backup '/^\[settings\]$/,/^\[/ s/^compiler.libcxx=.*/compiler.libcxx=${{ matrix.config.lib }}/' ~/.conan2/profiles/default
           fi
           sed -i.backup '/^\[settings\]$/,/^\[/ s/^compiler.cppstd=.*/compiler.cppstd=${{ matrix.std }}/' ~/.conan2/profiles/default
           sed -i.backup '/^\[settings\]$/,/^\[/ s/^build_type=.*/build_type=${{ matrix.build_type }}/' ~/.conan2/profiles/default
@@ -146,3 +146,25 @@ jobs:
           conan remove *#~latest --confirm
           conan remove *:*#~latest --confirm
           conan cache clean "*" -s -b -d
+
+      - name: Generate freestanding summary
+        if: always()
+        shell: bash
+        run: |
+          echo "## 🌐 Freestanding Build Summary" >> $GITHUB_STEP_SUMMARY
+          echo "| Configuration | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|---------------|--------|" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ job.status }}" = "success" ]; then
+            echo "| ${{ matrix.config.name }} C++${{ matrix.std }} ${{ matrix.formatting }} ${{ matrix.contracts }} ${{ matrix.build_type }} | ✅ Success |" >> $GITHUB_STEP_SUMMARY
+          elif [ "${{ job.status }}" = "failure" ]; then
+            echo "| ${{ matrix.config.name }} C++${{ matrix.std }} ${{ matrix.formatting }} ${{ matrix.contracts }} ${{ matrix.build_type }} | ❌ Failed |" >> $GITHUB_STEP_SUMMARY
+          elif [ "${{ job.status }}" = "cancelled" ]; then
+            echo "| ${{ matrix.config.name }} C++${{ matrix.std }} ${{ matrix.formatting }} ${{ matrix.contracts }} ${{ matrix.build_type }} | ⏹️ Cancelled |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| ${{ matrix.config.name }} C++${{ matrix.std }} ${{ matrix.formatting }} ${{ matrix.contracts }} ${{ matrix.build_type }} | ❓ ${{ job.status }} |" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Freestanding Build Details:**" >> $GITHUB_STEP_SUMMARY
+          echo "- Environment: Freestanding (no hosted library)" >> $GITHUB_STEP_SUMMARY
+          echo "- Compiler Flags: -ffreestanding" >> $GITHUB_STEP_SUMMARY
+          echo "- Target: Embedded/Kernel environments" >> $GITHUB_STEP_SUMMARY

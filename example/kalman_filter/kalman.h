@@ -210,8 +210,8 @@ class MP_UNITS_STD_FMT::formatter<kalman::system_state<QPs...>, Char> {
   std::array<std::basic_string<Char>, sizeof...(QPs)> format_str_;
   std::tuple<MP_UNITS_STD_FMT::formatter<typename QPs::quantity_type, Char>...> formatters_{};
 
-  template<typename Formatter>
-  constexpr const Char* parse_default_spec(const Char* begin, const Char* end, Formatter& f, std::string& format_str)
+  template<std::forward_iterator It, typename Formatter>
+  constexpr It parse_default_spec(It begin, It end, Formatter& f, std::string& format_str)
   {
     if (begin == end || *begin++ != '[')
       throw MP_UNITS_STD_FMT::format_error("`default-spec` should contain a `[` character");
@@ -231,9 +231,8 @@ class MP_UNITS_STD_FMT::formatter<kalman::system_state<QPs...>, Char> {
     return ++it;  // skip `]`
   }
 
-  template<std::size_t... Is>
-  [[nodiscard]] constexpr const Char* parse_default_spec(const Char* begin, const Char* end, size_t idx,
-                                                         std::index_sequence<Is...>)
+  template<std::forward_iterator It, std::size_t... Is>
+  [[nodiscard]] constexpr It parse_default_spec(It begin, It end, size_t idx, std::index_sequence<Is...>)
   {
     auto parse = [&](bool flag, auto& f, std::basic_string<Char>& str) {
       return flag ? parse_default_spec(begin, end, f, str) : begin;
@@ -241,7 +240,8 @@ class MP_UNITS_STD_FMT::formatter<kalman::system_state<QPs...>, Char> {
     return std::max({parse(idx == Is, std::get<Is>(formatters_), format_str_[Is])...});
   }
 
-  [[nodiscard]] constexpr const Char* parse_defaults_specs(const Char* begin, const Char* end)
+  template<std::forward_iterator It>
+  [[nodiscard]] constexpr It parse_defaults_specs(It begin, It end)
   {
     if (begin == end || *begin == '}') return begin;
     if (*begin++ != ':') throw MP_UNITS_STD_FMT::format_error("`defaults-specs` should start with a `:`");
