@@ -3,6 +3,7 @@ import itertools
 import random
 import typing
 from dataclasses import dataclass
+from types import MappingProxyType
 
 T = typing.TypeVar("T")
 
@@ -122,7 +123,33 @@ class Configuration(ConanOptions):
             build_type=self.build_type,
         )
         ret["conan-config"] = " ".join(f"-o '&:{k}={v}'" for k, v in features.items())
+        ret["config-summary-str"] = self.infostr(adjusted=False)
         return ret
+
+    def _formatters():
+        def yesno(k):
+            return (lambda v: f"{k}=" + ("yes" if v else "no"), len(k) + 4)
+
+        # freestanding is excluded on purpose - it runs in a completely different CI
+        return dict(
+            toolchain=(lambda v: str(v), 17),
+            std=(lambda v: f"C++{v:2d}", 5),
+            std_format=(lambda v: "std::format" if v else "fmtlib", 11),
+            cxx_modules=yesno("modules"),
+            import_std=yesno("import_std"),
+            no_crtp=yesno("no_crtp"),
+            natural_units=yesno("nat_u"),
+            contracts=(lambda v: str(v), 8),
+            build_type=(lambda v: str(v), 8),
+        )
+
+    _formatters = MappingProxyType(_formatters())
+
+    def infostr(self, adjusted: bool) -> str:
+        ret = []
+        for k, (fmt, w) in self._formatters.items():
+            ret.append(fmt(getattr(self, k)).ljust(w if adjusted else 0))
+        return " ".join(ret)
 
 
 class CombinationCollector(typing.Generic[T]):

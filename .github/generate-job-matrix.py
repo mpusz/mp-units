@@ -34,10 +34,10 @@ def make_gcc_config(version: int) -> Toolchain:
 
 
 def make_clang_config(
-    version: int, platform: typing.Literal["x86-64", "arm64"] = "x86-64"
+    version: int, architecture: typing.Literal["x86-64", "arm64"] = "x86-64"
 ) -> Toolchain:
     cfg = SimpleNamespace(
-        name=f"Clang-{version} ({platform})",
+        name=f"Clang-{version} ({architecture})",
         compiler=SimpleNamespace(
             type="CLANG",
             version=version,
@@ -51,7 +51,7 @@ def make_clang_config(
             freestanding=True,
         ),
     )
-    match platform:
+    match architecture:
         case "x86-64":
             cfg.os = "ubuntu-22.04" if version < 17 else "ubuntu-24.04"
             cfg.compiler.cc = f"clang-{version}"
@@ -62,7 +62,7 @@ def make_clang_config(
             cfg.compiler.cc = f"{pfx}/clang"
             cfg.compiler.cxx = f"{pfx}/clang++"
         case _:
-            raise KeyError(f"Unsupported platform {platform!r} for Clang")
+            raise KeyError(f"Unsupported architecture {architecture!r} for Clang")
     ret = cfg
     ret.compiler = Compiler(**vars(cfg.compiler))
     return Toolchain(**vars(ret))
@@ -109,11 +109,11 @@ toolchains = {
     t.name: t
     for t in [make_gcc_config(ver) for ver in [12, 13, 14]]
     + [
-        make_clang_config(ver, platform)
+        make_clang_config(ver, architecture)
         for ver in [16, 17, 18, 20, 21]
-        for platform in ["x86-64", "arm64"]
+        for architecture in ["x86-64", "arm64"]
         # arm64 runners are expensive; only consider one version
-        if ver == 18 or platform != "arm64"
+        if ver == 18 or architecture != "arm64"
     ]
     + [make_apple_clang_config("macos-13", ver) for ver in ["15.2"]]
     + [make_apple_clang_config("macos-14", ver) for ver in ["16.1"]]
@@ -268,18 +268,7 @@ def main():
             case "json":
                 print(json.dumps(json_data, indent=4))
             case "combinations":
-                msg = []
-                for e in data:
-                    std_format = "yes" if e.std_format else "no "
-                    cxx_modules = "yes" if e.cxx_modules else "no "
-                    import_std = "yes" if e.import_std else "no "
-                    no_crtp = "yes" if e.no_crtp else "no "
-                    nat_u = "yes" if e.natural_units else "no "
-                    msg.append(
-                        f"{e.toolchain!s:17s} c++{e.std:2d} "
-                        f"{std_format=:3s} {cxx_modules=:3s} {import_std=:3s} {no_crtp=:3s} {nat_u=:3s} "
-                        f"{e.contracts:8s} {e.build_type:8s}"
-                    )
+                msg = [e.infostr(adjusted=True) for e in data]
                 for m in sorted(msg):
                     print(m)
             case "counts":

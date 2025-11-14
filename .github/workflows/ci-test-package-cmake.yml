@@ -64,7 +64,7 @@ jobs:
       - id: set-matrix
         run: python .github/generate-job-matrix.py --preset conan --seed ${{ inputs.matrix-seed || 0 }} --debug combinations counts
   test_package:
-    name: "${{ matrix.config.name }} C++${{ matrix.std }} ${{ matrix.formatting }} ${{ matrix.contracts }} ${{ matrix.build_type }}"
+    name: "${{ matrix.config-summary-str }}"
     runs-on: ${{ matrix.config.os }}
     needs: generate-matrix
     strategy:
@@ -257,13 +257,13 @@ jobs:
           echo "| Configuration | Status |" >> $GITHUB_STEP_SUMMARY
           echo "|---------------|--------|" >> $GITHUB_STEP_SUMMARY
           if [ "${{ job.status }}" = "success" ]; then
-            echo "| ${{ matrix.config.name }} C++${{ matrix.std }} ${{ matrix.formatting }} ${{ matrix.contracts }} ${{ matrix.build_type }} | ✅ Passed |" >> $GITHUB_STEP_SUMMARY
+            echo "| ${{ matrix.config-summary-str }} | ✅ Passed |" >> $GITHUB_STEP_SUMMARY
           elif [ "${{ job.status }}" = "failure" ]; then
-            echo "| ${{ matrix.config.name }} C++${{ matrix.std }} ${{ matrix.formatting }} ${{ matrix.contracts }} ${{ matrix.build_type }} | ❌ Failed |" >> $GITHUB_STEP_SUMMARY
+            echo "| ${{ matrix.config-summary-str }} | ❌ Failed |" >> $GITHUB_STEP_SUMMARY
           elif [ "${{ job.status }}" = "cancelled" ]; then
-            echo "| ${{ matrix.config.name }} C++${{ matrix.std }} ${{ matrix.formatting }} ${{ matrix.contracts }} ${{ matrix.build_type }} | ⏹️ Cancelled |" >> $GITHUB_STEP_SUMMARY
+            echo "| ${{ matrix.config-summary-str }} | ⏹️ Cancelled |" >> $GITHUB_STEP_SUMMARY
           else
-            echo "| ${{ matrix.config.name }} C++${{ matrix.std }} ${{ matrix.formatting }} ${{ matrix.contracts }} ${{ matrix.build_type }} | ❓ ${{ job.status }} |" >> $GITHUB_STEP_SUMMARY
+            echo "| ${{ matrix.config-summary-str }} | ❓ ${{ job.status }} |" >> $GITHUB_STEP_SUMMARY
           fi
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Integration Test Details:**" >> $GITHUB_STEP_SUMMARY
