@@ -9,8 +9,8 @@ comments: true
 
 # International System of Quantities (ISQ): Part 6 - Challenges
 
-This article might be the last one from our series. This time, we will discuss the challenges and
-issues with modeling of the ISQ in software.
+This article might be the last one from our series. This time, we will discuss the
+challenges and issues with modeling of the ISQ in software.
 
 <!-- more -->
 
@@ -19,7 +19,7 @@ issues with modeling of the ISQ in software.
 - [Part 1 - Introduction](isq-part-1-introduction.md)
 - [Part 2 - Problems when ISQ is not used](isq-part-2-problems-when-isq-is-not-used.md)
 - [Part 3 - Modeling ISQ](isq-part-3-modeling-isq.md)
-- [Part 4 - Implementing ISQ](isq-part-4-implemeting-isq.md)
+- [Part 4 - Implementing ISQ](isq-part-4-implementing-isq.md)
 - [Part 5 - Benefits](isq-part-5-benefits.md)
 - Part 6 - Challenges
 
@@ -48,9 +48,9 @@ dimensions of the box, each of which will be a strong quantity that is not conve
 But we've failed.
 
 When we look at the
-[tree of quantities of length](isq-part-4-implemeting-isq.md#modeling-a-hierarchy-of-kind-length)
-we immediately see that both _width_ and _height_ are special _lengths_ so they are convertible to
-it.
+[tree of quantities of length](isq-part-4-implementing-isq.md#modeling-a-hierarchy-of-kind-length)
+we immediately see that both _width_ and _height_ are special _lengths_, so they are
+convertible to it.
 
 To implement our task correctly, we had to define and use a new quantity of kind _length_:
 
@@ -71,9 +71,9 @@ ISO 80000-1:2009 explicitly states:
     Two or more quantities cannot be added or subtracted unless they belong to the same category
     of mutually comparable quantities.
 
-This means that we should be able to add and subtract any quantities as long as they belong to
-the same kind. However, ISO/IEC documents do not provide any rules or even hints about what should
-be the result of such operations.
+This means that we should be able to add and subtract any quantities as long as they
+belong to the same kind. However, ISO/IEC documents do not provide any rules or
+even hints about what should be the result of such operations.
 
 If it is possible to add _radius_ and _distance_, then what quantity should be provided
 in return? Undoubtedly, the resulting quantity type can't be the same as any of the arguments.
@@ -116,15 +116,16 @@ To be consistent, ISO/IEC should either:
 
 ## Lack of definitions
 
-ISQ defines derived quantities in terms of other quantities provided in the series. However, some
-definitions mention quantities that are not defined in the ISQ at all.
+ISQ defines derived quantities in terms of other quantities provided in the series.
+However, some definitions mention quantities that are not defined in the ISQ at all.
 
 For example, _weight_ is defined as $F_\textsf{g} = m\;g$, where $m$ is the _mass_ of the body
-(item 4-1 of ISO 80000-4 "Mechanics"), and $g$ is the _local acceleration of free fall_ (ISO 80000-3).
+(item 4-1 of ISO 80000-4 "Mechanics"), and $g$ is the _local acceleration of free fall_
+(ISO 80000-3).
 
-The problem here is that ISO 80000-3 never defines a quantity with a symbol $g$ or named as a
-_local acceleration of free fall_. The closest one we have is _acceleration_ (item 3-11) with
-a symbol $a$.
+The problem here is that ISO 80000-3 never defines a quantity with a symbol $g$ or named as
+a _local acceleration of free fall_. The closest one we have is _acceleration_
+(item 3-11) with a symbol $a$.
 
 !!! info
 
@@ -138,17 +139,18 @@ a symbol $a$.
 Many quantities have proper physical definitions, but they are sometimes not engineering-friendly.
 
 For example, _velocity_ is defined as a rate of change of _position vector_
-$v = \frac{\textsf{d}r}{\textsf{d}t}$, where $r$ denotes the _position vector_ (item 3‑1.10) and
-$t$ the _duration_ (item 3‑9).
+$v = \frac{\textsf{d}r}{\textsf{d}t}$, where $r$ denotes the _position vector_
+(item 3-1.10) and $t$ the _duration_ (item 3-9).
 
 Next, a _speed_ quantity is defined as the magnitude of _velocity_. Despite being
-physically correct, requiring every _speed_ to be derived from the vector quantity of _velocity_
-in software would be inconvenient. If this was the only case, people would always need to use
-vector representations of _position vectors_ to talk about _speeds_, which differs from what we
-do in practice. In practice, we divide any kind of _length_ by _time_ to get some kind of _speed_.
+physically correct, requiring every _speed_ to be derived from the vector quantity
+of _velocity_ in software would be inconvenient. If this was the only case, people
+would always need to use vector representations of _position vectors_ to talk about
+_speeds_, which differs from what we do in practice. In practice, we divide any kind
+of _length_ by _time_ to get some kind of _speed_.
 
-ISO 80000-3 provides _length_, _height_, _distance_ and other quantities of kind _length_ that when
-divided by _duration_ can serve really well to calculate _speed_.
+ISO 80000-3 provides _length_, _height_, _distance_ and other quantities of kind _length_
+that when divided by _duration_ can serve really well to calculate _speed_.
 
 !!! info
 
@@ -176,8 +178,9 @@ divided by _duration_ can serve really well to calculate _speed_.
 
 ## Affine space agnostic
 
-[The affine space](../../users_guide/framework_basics/the_affine_space.md) is a powerful
-abstraction, allowing us to model some problems safer or more accurately. It has two types of
+[The affine space](../../users_guide/framework_basics/the_affine_space.md) is a
+powerful abstraction, allowing us to model some problems safer or more accurately.
+It has two types of
 entities:
 
 - point - a position specified with coordinate values (e.g., location, address, etc.),
@@ -191,8 +194,8 @@ possible to:
 - subtract a _point_ from a _vector_,
 - multiply nor divide _points_ with anything else.
 
-ISO/IEC series does not acknowledge this abstraction even though it would be really useful in
-some cases. Let's discuss the following two examples.
+ISO/IEC series does not acknowledge this abstraction even though it would be really
+useful in some cases. Let's discuss the following two examples.
 
 What does it mean to add two _altitudes_? It is not meaningful. On the other hand, subtracting
 those should not result in an _altitude_, but in a quantity of _height_. Adding or
@@ -218,10 +221,10 @@ is not modeled as a _displacement_ from the origin of a coordinate system).
 
 ## Non-negative quantities
 
-Some quantities in the ISQ are defined as non-negative. This is a really interesting property that
-may be checked at runtime to increase safety. However, the number of such quantities is minimal.
-From a few hundred quantities provided by the ISO/IEC series, only the following have this property
-mentioned explicitly:
+Some quantities in the ISQ are defined as non-negative. This is a really interesting
+property that may be checked at runtime to increase safety. However, the number of
+such quantities is minimal. From a few hundred quantities provided by the ISO/IEC
+series, only the following have this property mentioned explicitly:
 
 - _width_/_breadth_,
 - _thickness_,
@@ -235,8 +238,9 @@ it is hard to imagine something of a negative _width_ or _radius_. However, if w
 two _widths_, the second one may be larger. This will result in a negative
 quantity of _width_, violating our precondition. So, is it non-negative or not?
 
-Again, we have to talk about the affine space abstractions. Every empirical measurement can be
-expressed as a point. Such points for some quantities may be non-negative indeed.
+Again, we have to talk about the affine space abstractions. Every empirical
+measurement can be expressed as a point. Such points for some quantities may be
+non-negative indeed.
 
 Non-negative quantities do not end on the ones provided above. For example, _speed_ is a good
 example here as well. In general, all magnitudes of vector quantities will also have this property.
@@ -259,12 +263,13 @@ For example, _force_ is defined as:
 
     vector (ISO 80000-2) quantity describing interaction between bodies or particles.
 
-This is not helpful for programming languages that like explicit definitions. Different
-vendors may interpret the above differently, which will result in different implementations that
-will not be compatible with each other.
+This is not helpful for programming languages that like explicit definitions.
+Different vendors may interpret the above differently, which will result in
+different implementations that will not be compatible with each other.
 
-As the derived quantity of _force_ has to be a vector quantity, it has to be defined in terms of
-at least one other vector quantity. We have a few to choose from:
+As the derived quantity of _force_ has to be a vector quantity, it has to be
+defined in terms of at least one other vector quantity. We have a few to
+choose from:
 
 - _displacement_ ($\Delta{r}$),
 - _velocity_ ($v$),
@@ -279,17 +284,17 @@ It is not stated explicitly in ISQ which one of those should be used and how.
 
 ## Lack of generic quantities and name conflicts
 
-In the previous chapter, we complained about some definitions needing to be more complex or generic.
-On the other hand, we also lack some generic quantities in ISQ that could serve as a root for
-a quantity hierarchy tree.
+In the previous chapter, we complained about some definitions needing to be more complex
+or generic. On the other hand, we also lack some generic quantities in ISQ that could serve
+as a root for a quantity hierarchy tree.
 
 For example:
 
-- ISO 80000-4 "Mechanics" defines _power &lt;mechanics&gt;_ as $P = F\;v$ (scalar product of force $F$
-  (item 4-9.1) acting to a body and its velocity $v$ (ISO 80000-3)),
-- ISO 80000-6 "Electromagnetism" defines _power_ as $p = u\;i$ (scalar quantity given by the
-  product of _instantaneous voltage_ $u$ (item 6-11.3) and _instantaneous electric current_ $i$
-  (item 6-1)).
+- ISO 80000-4 "Mechanics" defines _power &lt;mechanics&gt;_ as $P = F\;v$ (scalar product of
+  force $F$ (item 4-9.1) acting to a body and its velocity $v$ (ISO 80000-3)),
+- ISO 80000-6 "Electromagnetism" defines _power_ as $p = u\;i$ (scalar quantity given
+    by the product of _instantaneous voltage_ $u$ (item 6-11.3) and _instantaneous
+    electric current_ $i$ (item 6-1)).
 
 First, the above definitions have somehow conflicting names which makes it hard for the programming
 languages to name them consistently by different vendors.
@@ -298,8 +303,8 @@ languages to name them consistently by different vendors.
 
     In **mp-units**, we chose `mechanical_power` and `electromagnetism_power` for those.
 
-Second, we do not have any other more generic definition of _power_ to put above those in the tree.
-Not having it makes it hard to answer what should be the result of:
+Second, we do not have any other more generic definition of _power_ to put above those in
+the tree. Not having it makes it hard to answer what should be the result of:
 
 ```cpp
 quantity q = isq::mechanical_power(42 * W) + isq::electromagnetism_power(60 * W);
@@ -331,14 +336,16 @@ Then ISO 80000-5 "Thermodynamics" defines _energy &lt;thermodynamics&gt;_ as:
 
 Next, _internal energy/thermodynamic energy_ is defined in terms of the change of heat.
 
-From the above, it seems that what is called _energy &lt;thermodynamics&gt;_ should actually be
-the root of our tree and probably be provided in Part 4 before the _mechanical energy_ is defined.
+From the above, it seems that what is called _energy &lt;thermodynamics&gt;_ should
+actually be the root of our tree and probably be provided in Part 4 before the
+_mechanical energy_ is defined.
 
 
 ## Hierarchies of derived quantities
 
-Derived quantities of the same kind are often independently defined in the ISQ. The ISO/IEC 80000
-series often does not suggest any hierarchy between those. Even more, it states:
+Derived quantities of the same kind are often independently defined in the ISQ.
+The ISO/IEC 80000 series often does not suggest any hierarchy between those.
+Even more, it states:
 
 !!! quote "ISO/IEC Guide 99"
 
@@ -395,14 +402,14 @@ the same kind.
 
 Some quantities are more complicated than others. For example, _power_ has:
 
-- scalar quantities expressed in:
+- real scalar quantities expressed in:
     - W (watts) (e.g., _mechanical power_, _active power_),
     - VA (volt-ampere) (e.g., _apparent power_),
     - var (e.g., _reactive power_),
-- complex quantities expressed in VA (volt-ampere) (e.g., _complex power_).
+- complex scalar quantities expressed in VA (volt-ampere) (e.g., _complex power_).
 
-How should we model this? Maybe those should be two or three independent trees of quantities, each
-having its own unit?
+How should we model this? Maybe those should be two or three independent trees of
+quantities, each having its own unit?
 
 ```mermaid
 flowchart TD
@@ -418,9 +425,9 @@ flowchart TD
     complex_power --- apparent_power["<b>apparent_power</b><br><i>(voltage * electric_current)<br>(mod(complex_power))</i>"]
 ```
 
-This will mean that we will not be able to add or compare _active power_, _reactive power_, and
-_apparent power_, which probably makes a lot of sense. However, it also means that the following
-will fail to compile:
+This will mean that we will not be able to add or compare _active power_,
+_reactive power_, and _apparent power_, which probably makes a lot of sense.
+However, it also means that the following will fail to compile:
 
 ```cpp
 quantity apparent = isq::apparent_power(100 * VA);
@@ -450,9 +457,9 @@ flowchart TD
     apparent_power --- complex_power["<b>complex_power</b><br>{complex}<br><i>(voltage_phasor * electric_current_phasor)<br>(active_power + j * reactive_power)</i>"]
 ```
 
-However, the above allows direct addition and comparison of _active power_ and _nonactive power_,
-and also will not complain if someone will try to use watt (W) as a unit of _apparent power_ or
-_reactive power_.
+However, the above allows direct addition and comparison of _active power_ and
+_nonactive power_, and also will not complain if someone will try to use watt
+(W) as a unit of _apparent power_ or _reactive power_.
 
 Again, ISQ does not provide a direct answer here.
 
@@ -470,17 +477,18 @@ It looks like a definition of a specialized dimensionless quantity or, more corr
 of dimension one. This would not be the only such case. Even in the same Part 13, we can find
 quantities like _storage capacity_ with a similar property.
 
-Only when we look closer do we start to see differences. All dimensionless quantities, even if they
-have their own dedicated units, can also be measured in a unit of one (1). This is true for
-_storage capacity_ (also measured in bits), _angular measure_ (also measured in radians),
-_solid angular measure (also measured in steradians), and more.
+Only when we look closer do we start to see differences. All dimensionless quantities, even
+if they have their own dedicated units, can also be measured in a unit of one (1). This is
+true for _storage capacity_ (also measured in bits), _angular measure_ (also measured in
+radians), _solid angular measure (also measured in steradians), and more.
 
 However, _traffic intensity_ can only be measured in erlangs (E), not in a unit one (1).
 Does it mean that it is a "hidden" 8-th base quantity in ISQ? If so, should it have its own
 dimension as well?
 
-Angular quantities are another interesting case here. Scientists have written petitions and papers
-for years to make them an additional dimension in ISQ and SI. More about this can be found in
+Angular quantities are another interesting case here. Scientists have written
+petitions and papers for years to make them an additional dimension in ISQ and
+SI. More about this can be found in
 our documentation's [Strong Angular System](../../users_guide/systems/strong_angular_system.md)
 chapter.
 
@@ -498,17 +506,17 @@ of ISQ and its benefits, and encourage authors of other libraries to implement i
 products.
 
 Despite all the benefits, it is essential to realize that ISQ has many problems. International
-standards should be specified in such a way that there is no room for ambiguity in their
-interpretation by different parties trying to use them. As described above, this is not the case
-here.
+standards should be specified in such a way that there is no room for ambiguity
+in their interpretation by different parties trying to use them. As described
+above, this is not the case here.
 
 ISQ is not ready to be unambiguously modeled in software by various vendors. Here are the most
 important problems to solve to allow this:
 
 1. ISQ needs to define basic operations on quantities:
 
-    - what the result of addition and subtraction should be when arguments differ,
-    - convertibility rules.
+    - what the result of addition and subtraction should be when arguments differ,
+    - convertibility rules.
 
 2. The exact quantity equation recipe needs to be included for many derived quantities.
 3. Many ISQ quantities do not provide their exact relation versus other quantities of the same
@@ -521,10 +529,11 @@ Additionally:
 - specifying more quantities as non-negative,
 - adding more base quantities (i.e., _angle_)
 
-could improve the safety of our programs and products that people depend on with their lives on
-a daily basis.
+could improve the safety of our programs and products that people depend on with
+their lives on a daily basis.
 
-I hope you enjoyed following this series and learned more about the International System
-of Quantities. Please try it out in your domain and share feedback with us. We always love to
-hear about the projects in which our library is being used and about use cases it helps
+I hope you enjoyed following this series and learned more about the International
+System of Quantities. Please try it out in your domain and share feedback with us.
+We always love to hear about the projects in which our library is being used and
+about use cases it helps
 address.

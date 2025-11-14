@@ -34,7 +34,6 @@ import std;
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else
-#include <mp-units/ostream.h>  // IWYU pragma: keep
 #include <mp-units/random.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si.h>
@@ -83,7 +82,7 @@ TEST_CASE("distributions", "[random][distribution]")
       auto dist = mp_units::uniform_real_distribution<q>();
 
       CHECK(dist.a() == q::zero());
-      CHECK(dist.b() == q::one());
+      CHECK(dist.b() == 1 * si::metre);
     }
 
     SECTION("parametrized")
@@ -111,7 +110,7 @@ TEST_CASE("distributions", "[random][distribution]")
       auto dist = mp_units::binomial_distribution<q>();
 
       CHECK(dist.p() == 0.5);
-      CHECK(dist.t() == q::one());
+      CHECK(dist.t() == 1 * si::metre);
     }
 
     SECTION("parametrized")
@@ -139,7 +138,7 @@ TEST_CASE("distributions", "[random][distribution]")
       auto dist = mp_units::negative_binomial_distribution<q>();
 
       CHECK(dist.p() == 0.5);
-      CHECK(dist.k() == q::one());
+      CHECK(dist.k() == 1 * si::metre);
     }
 
     SECTION("parametrized")
@@ -326,7 +325,7 @@ TEST_CASE("distributions", "[random][distribution]")
       auto dist = mp_units::normal_distribution<q>();
 
       CHECK(dist.mean() == q::zero());
-      CHECK(dist.stddev() == q::one());
+      CHECK(dist.stddev() == 1 * si::metre);
     }
 
     SECTION("parametrized")
@@ -354,7 +353,7 @@ TEST_CASE("distributions", "[random][distribution]")
       auto dist = mp_units::lognormal_distribution<q>();
 
       CHECK(dist.m() == q::zero());
-      CHECK(dist.s() == q::one());
+      CHECK(dist.s() == 1 * si::metre);
     }
 
     SECTION("parametrized")
@@ -407,7 +406,7 @@ TEST_CASE("distributions", "[random][distribution]")
       auto dist = mp_units::cauchy_distribution<q>();
 
       CHECK(dist.a() == q::zero());
-      CHECK(dist.b() == q::one());
+      CHECK(dist.b() == 1 * si::metre);
     }
 
     SECTION("parametrized")

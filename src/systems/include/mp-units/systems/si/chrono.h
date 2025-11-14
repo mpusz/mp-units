@@ -122,10 +122,10 @@ struct quantity_point_like_traits<std::chrono::time_point<C, std::chrono::durati
 
 namespace detail {
 
-[[nodiscard]] constexpr auto as_ratio(Magnitude auto m)
-  requires(_is_rational(m))
+[[nodiscard]] constexpr auto as_ratio(UnitMagnitude auto m)
+  requires(is_rational(m))
 {
-  return std::ratio<_get_value<std::intmax_t>(_numerator(m)), _get_value<std::intmax_t>(_denominator(m))>{};
+  return std::ratio<get_value<std::intmax_t>(numerator(m)), get_value<std::intmax_t>(denominator(m))>{};
 }
 
 }  // namespace detail
@@ -137,7 +137,7 @@ template<QuantityOf<MP_UNITS_IS_VALUE_WORKAROUND(isq::time)> Q>
 }
 
 template<QuantityPointOf<MP_UNITS_IS_VALUE_WORKAROUND(isq::time)> QP>
-  requires is_specialization_of<std::remove_const_t<decltype(QP::absolute_point_origin)>, chrono_point_origin_>
+  requires is_specialization_of<MP_UNITS_NONCONST_TYPE(QP::absolute_point_origin), chrono_point_origin_>
 [[nodiscard]] constexpr auto to_chrono_time_point(const QP& qp)
 {
   using clock = decltype(QP::absolute_point_origin)::clock;

@@ -32,21 +32,21 @@ namespace {
 
 using namespace mp_units;
 
-using enum text_encoding;
+using enum character_set;
 
 static_assert(dimension_symbol(dimension_one) == "1");
 
 // base dimensions
 static_assert(dimension_symbol(isq::dim_length) == "L");
 static_assert(dimension_symbol(isq::dim_thermodynamic_temperature) == "Θ");
-static_assert(dimension_symbol<dimension_symbol_formatting{.encoding = portable}>(isq::dim_thermodynamic_temperature) ==
+static_assert(dimension_symbol<dimension_symbol_formatting{.char_set = portable}>(isq::dim_thermodynamic_temperature) ==
               "O");
 
 // derived dimensions
 static_assert(dimension_symbol(isq::speed.dimension) == "LT⁻¹");
-static_assert(dimension_symbol<dimension_symbol_formatting{.encoding = portable}>(isq::speed.dimension) == "LT^-1");
+static_assert(dimension_symbol<dimension_symbol_formatting{.char_set = portable}>(isq::speed.dimension) == "LT^-1");
 static_assert(dimension_symbol(isq::power.dimension) == "L²MT⁻³");
-static_assert(dimension_symbol<dimension_symbol_formatting{.encoding = portable}>(isq::power.dimension) == "L^2MT^-3");
+static_assert(dimension_symbol<dimension_symbol_formatting{.char_set = portable}>(isq::power.dimension) == "L^2MT^-3");
 
 static_assert(dimension_symbol(pow<123>(isq::dim_length)) == "L¹²³");
 static_assert(dimension_symbol(pow<1, 2>(isq::dim_length)) == "L^(1/2)");

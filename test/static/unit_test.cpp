@@ -53,8 +53,13 @@ inline constexpr struct gram_ final : named_unit<"g", kind_of<isq::mass>> {} gra
 inline constexpr auto kilogram = kilo<gram>;
 inline constexpr struct kelvin_ final : named_unit<"K", kind_of<isq::thermodynamic_temperature>> {} kelvin;
 
+#if MP_UNITS_API_NATURAL_UNITS
 // hypothetical natural units for c=1
 inline constexpr struct nu_second_ final : named_unit<"s"> {} nu_second;
+#endif
+
+inline constexpr struct beat_ final : named_unit<"beat", one> {} beat;
+inline constexpr struct cow_ final : named_unit<"cow", kind_of<dimensionless>> {} cow;
 
 // derived named units
 inline constexpr struct radian_ final : named_unit<"rad", metre / metre, kind_of<isq::angular_measure>> {} radian;
@@ -67,6 +72,7 @@ inline constexpr struct pascal_ final : named_unit<"Pa", newton / square(metre)>
 inline constexpr struct joule_ final : named_unit<"J", newton * metre> {} joule;
 inline constexpr struct watt_ final : named_unit<"W", joule / second> {} watt;
 inline constexpr struct degree_Celsius_ final : named_unit<symbol_text{u8"℃", "`C"}, kelvin> {} degree_Celsius;
+inline constexpr struct degree_Fahrenheit_ final : named_unit<symbol_text{u8"℉", "`F"}, mag_ratio<5, 9> * degree_Celsius> {} degree_Fahrenheit;
 
 inline constexpr struct minute_ final : named_unit<"min", mag<60> * second> {} minute;
 inline constexpr struct hour_ final : named_unit<"h", mag<60> * minute> {} hour;
@@ -88,8 +94,7 @@ inline constexpr struct speed_of_light_in_vacuum_ final : named_unit<"c", mag<29
 // concepts verification
 static_assert(Unit<metre_>);
 static_assert(Unit<second_>);
-static_assert(Unit<nu_second_>);
-static_assert(Unit<std::remove_const_t<decltype(kilogram)>>);
+static_assert(Unit<MP_UNITS_NONCONST_TYPE(kilogram)>);
 static_assert(Unit<hertz_>);
 static_assert(Unit<newton_>);
 static_assert(Unit<minute_>);
@@ -98,37 +103,37 @@ static_assert(Unit<decltype(square(metre))>);
 static_assert(Unit<decltype(cubic(metre))>);
 static_assert(Unit<decltype(mag<60> * second)>);
 static_assert(Unit<decltype(second * second)>);
-static_assert(Unit<decltype(nu_second * nu_second)>);
 static_assert(Unit<decltype(metre / second)>);
+static_assert(Unit<MP_UNITS_NONCONST_TYPE(kilometre)>);
+#if MP_UNITS_API_NATURAL_UNITS
+static_assert(Unit<nu_second_>);
+static_assert(Unit<decltype(nu_second * nu_second)>);
 static_assert(Unit<decltype(nu_second / nu_second)>);
-static_assert(Unit<std::remove_const_t<decltype(kilometre)>>);
+#endif
 
 static_assert(PrefixableUnit<metre_>);
 static_assert(PrefixableUnit<hertz_>);
 static_assert(PrefixableUnit<newton_>);
 static_assert(PrefixableUnit<minute_>);
 static_assert(PrefixableUnit<radian_>);
-static_assert(!PrefixableUnit<std::remove_const_t<decltype(kilogram)>>);
+static_assert(!PrefixableUnit<MP_UNITS_NONCONST_TYPE(kilogram)>);
 static_assert(!PrefixableUnit<decltype(kilojoule)>);
 static_assert(!PrefixableUnit<si::kilo_<struct gram_>>);
 static_assert(!PrefixableUnit<decltype(square(metre))>);
 static_assert(!PrefixableUnit<decltype(cubic(metre))>);
 static_assert(!PrefixableUnit<decltype(mag<60> * second)>);
-static_assert(!PrefixableUnit<std::remove_const_t<decltype(kilometre)>>);
+static_assert(!PrefixableUnit<MP_UNITS_NONCONST_TYPE(kilometre)>);
 
 // named unit
 static_assert(is_of_type<metre, metre_>);
 static_assert(is_of_type<get_canonical_unit(metre).reference_unit, metre_>);
 static_assert(get_canonical_unit(metre).mag == mag<1>);
-static_assert(convertible(metre, metre));
-static_assert(!convertible(metre, second));
 static_assert(metre == metre);
 static_assert(metre != second);
 
 static_assert(is_of_type<degree_Celsius, degree_Celsius_>);
 static_assert(is_of_type<get_canonical_unit(degree_Celsius).reference_unit, kelvin_>);
 static_assert(get_canonical_unit(degree_Celsius).mag == mag<1>);
-static_assert(convertible(degree_Celsius, kelvin));
 static_assert(degree_Celsius != kelvin);
 static_assert(equivalent(degree_Celsius, kelvin));
 
@@ -139,28 +144,23 @@ static_assert(get_canonical_unit(radian).mag == mag<1>);
 static_assert(is_of_type<degree, degree_>);
 static_assert(is_of_type<get_canonical_unit(degree).reference_unit, one_>);
 static_assert(get_canonical_unit(degree).mag == mag<π> / mag<180>);
-static_assert(convertible(radian, degree));
 static_assert(radian != degree);
+static_assert(radian != one);
 
 static_assert(is_of_type<steradian, steradian_>);
 static_assert(is_of_type<get_canonical_unit(steradian).reference_unit, one_>);
 static_assert(get_canonical_unit(steradian).mag == mag<1>);
-static_assert(!convertible(radian, steradian));
 static_assert(radian != steradian);
 
 static_assert(is_of_type<minute, minute_>);
 static_assert(is_of_type<get_canonical_unit(minute).reference_unit, second_>);
 static_assert(get_canonical_unit(minute).mag == mag<60>);
-static_assert(convertible(minute, second));
 static_assert(minute != second);
 
 static_assert(is_of_type<hour, hour_>);
 static_assert(is_of_type<get_canonical_unit(hour).reference_unit, second_>);
 static_assert(get_canonical_unit(hour).mag == mag<3600>);
-static_assert(convertible(hour, second));
 
-static_assert(convertible(hour, minute));
-static_assert(convertible(hour, hour));
 static_assert(hour != second);
 static_assert(hour != minute);
 static_assert(hour == hour);
@@ -169,51 +169,46 @@ static_assert(is_of_type<newton, newton_>);
 static_assert(
   is_of_type<get_canonical_unit(newton).reference_unit, derived_unit<gram_, metre_, per<power<second_, 2>>>>);
 static_assert(get_canonical_unit(newton).mag == mag<1000>);  // !!! (because of kilogram)
-static_assert(convertible(newton, newton));
 static_assert(newton == newton);
 
 static_assert(is_of_type<joule, joule_>);
 static_assert(
   is_of_type<get_canonical_unit(joule).reference_unit, derived_unit<gram_, power<metre_, 2>, per<power<second_, 2>>>>);
 static_assert(get_canonical_unit(joule).mag == mag<1000>);  // !!! (because of kilogram)
-static_assert(convertible(joule, joule));
 static_assert(joule == joule);
 static_assert(joule != newton);
 
+#if MP_UNITS_API_NATURAL_UNITS
 static_assert(is_of_type<nu_second / nu_second, one_>);
+#endif
 
 // constant_unit
 static_assert(is_of_type<standard_gravity, standard_gravity_>);
 static_assert(
   is_of_type<get_canonical_unit(standard_gravity).reference_unit, derived_unit<metre_, per<power<second_, 2>>>>);
 static_assert(get_canonical_unit(standard_gravity).mag == mag_ratio<980'665, 100'000>);
-static_assert(convertible(standard_gravity, standard_gravity));
-static_assert(convertible(standard_gravity, metre / square(second)));
 static_assert(standard_gravity == standard_gravity);
 static_assert(standard_gravity != metre / square(second));  // magnitude is different
 static_assert(standard_gravity._symbol_ == symbol_text{u8"g₀", "g_0"});
 
 // prefixed_unit
-static_assert(is_of_type<kilometre, std::remove_const_t<decltype(kilo<metre>)>>);
+static_assert(is_of_type<kilometre, MP_UNITS_NONCONST_TYPE(kilo<metre>)>);
 static_assert(is_of_type<get_canonical_unit(kilometre).reference_unit, metre_>);
 static_assert(get_canonical_unit(kilometre).mag == mag<1000>);
-static_assert(convertible(kilometre, metre));
 static_assert(kilometre != metre);
 static_assert(kilometre._symbol_ == "km");
 
-static_assert(is_of_type<kilojoule, std::remove_const_t<decltype(kilo<joule>)>>);
+static_assert(is_of_type<kilojoule, MP_UNITS_NONCONST_TYPE(kilo<joule>)>);
 static_assert(is_of_type<get_canonical_unit(kilojoule).reference_unit,
                          derived_unit<gram_, power<metre_, 2>, per<power<second_, 2>>>>);
 static_assert(get_canonical_unit(kilojoule).mag == mag<1'000'000>);
-static_assert(convertible(kilojoule, joule));
 static_assert(kilojoule != joule);
 static_assert(kilojoule._symbol_ == "kJ");
 
 static_assert(is_of_type<kilo<metre>, kilo_<metre_>>);
 static_assert(is_of_type<kilo<joule>, kilo_<joule_>>);
 
-static_assert(
-  is_of_type<kilometre / metre, derived_unit<std::remove_const_t<decltype(kilo<metre>)>, per<metre_>>>);  // !!!
+static_assert(is_of_type<kilometre / metre, derived_unit<MP_UNITS_NONCONST_TYPE(kilo<metre>), per<metre_>>>);  // !!!
 
 
 // prefixes
@@ -449,11 +444,9 @@ static_assert(equivalent(kilo<metre> * milli<metre>, si::deca<metre>* si::deci<m
 // comparisons of equivalent units (named vs unnamed/derived)
 static_assert(one / second != hertz);
 static_assert(equivalent(one / second, hertz));
-static_assert(convertible(one / second, hertz));
 
 // comparisons of equivalent units of different quantities
 static_assert(hertz != becquerel);
-static_assert(!convertible(hertz, becquerel));
 
 // comparisons of scaled units
 static_assert(kilo<metre> == kilometre);
@@ -461,23 +454,16 @@ static_assert(mag<1000> * metre != kilo<metre>);
 static_assert(equivalent(mag<1000> * metre, kilo<metre>));
 static_assert(mag<1000> * metre != kilometre);
 static_assert(equivalent(mag<1000> * metre, kilometre));
-static_assert(convertible(kilo<metre>, kilometre));
-static_assert(convertible(mag<1000> * metre, kilo<metre>));
-static_assert(convertible(mag<1000> * metre, kilometre));
 
 static_assert(mag<60> * metre / second != metre / (mag_ratio<1, 60> * second));
 static_assert(equivalent(mag<60> * metre / second, metre / (mag_ratio<1, 60> * second)));
 
 static_assert(metre != kilometre);
-static_assert(convertible(metre, kilometre));
 static_assert(mag<100> * metre != kilometre);
-static_assert(convertible(mag<100> * metre, kilometre));
 static_assert(milli<metre> != kilometre);
-static_assert(convertible(milli<metre>, kilometre));
 
-// comparisons of non-convertible units
+// comparisons of non-compatible units
 static_assert(metre != metre * metre);
-static_assert(!convertible(metre, metre* metre));
 
 // one
 static_assert(is_of_type<metre / metre, one_>);
@@ -557,6 +543,11 @@ static_assert(
   is_of_type<get_common_unit(speed_of_light_in_vacuum, metre / second), derived_unit<metre_, per<second_>>>);
 
 static_assert(is_of_type<get_common_unit(radian, revolution), radian_>);
+static_assert(is_of_type<get_common_unit(beat, one), beat_>);
+
+template<auto u>
+concept no_common_unit = requires { requires !requires { get_common_unit(u, one); }; };
+static_assert(no_common_unit<cow>);
 
 // those should return instantiations of the `common_unit` class template
 static_assert(is_of_type<get_common_unit(kilometre, mile), common_unit<kilo_<metre_>, mile_>>);
@@ -566,6 +557,11 @@ static_assert(is_of_type<get_common_unit(kilometre / hour, metre / second),
 static_assert(is_of_type<get_common_unit(metre / second, kilometre / hour),
                          common_unit<decltype(kilometre / hour), decltype(metre / second)>>);
 static_assert(is_of_type<get_common_unit(radian, degree), common_unit<degree_, radian_>>);
+static_assert(
+  is_of_type<get_common_unit(degree_Celsius, degree_Fahrenheit), common_unit<degree_Celsius_, degree_Fahrenheit_>>);
+static_assert(is_of_type<get_common_unit(get_common_unit(degree_Celsius, degree_Fahrenheit),
+                                         get_common_unit(mag_ratio<5, 9>* degree_Celsius, si::milli<kelvin>)),
+                         decltype(get_common_unit(degree_Fahrenheit, si::milli<kelvin>))>);
 
 static_assert(
   is_of_type<get_common_unit(mile, kilometre) / second, derived_unit<common_unit<kilo_<metre_>, mile_>, per<second_>>>);

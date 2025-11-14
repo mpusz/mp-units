@@ -38,30 +38,22 @@ import std;
 #include <compare>  // IWYU pragma: export
 #include <cstddef>
 #include <cstdint>
-#endif
-#endif
-
-#if __cpp_lib_text_encoding
-#ifndef MP_UNITS_IN_MODULE_INTERFACE
-#ifdef MP_UNITS_IMPORT_STD
-import std;
-#else
-#include <text_encoding>
-#endif
-#endif
-static_assert(std::text_encoding::literal().mib() == std::text_encoding::id::UTF8);
-#endif
+#endif  // MP_UNITS_IMPORT_STD
+#endif  // MP_UNITS_IN_MODULE_INTERFACE
 
 namespace mp_units {
 
 // NOLINTNEXTLINE(readability-enum-initial-value)
-MP_UNITS_EXPORT enum class text_encoding : std::int8_t {
+MP_UNITS_EXPORT enum class character_set : std::int8_t {
   utf8,  // µs; m³;  L²MT⁻³
-  unicode [[deprecated("Use `utf8` instead")]] = utf8,
+  unicode [[deprecated("2.4.0: Use `utf8` instead")]] = utf8,
   portable,  // us; m^3; L^2MT^-3
-  ascii [[deprecated("Use `portable` instead")]] = portable,
-  default_encoding = utf8
+  ascii [[deprecated("2.4.0: Use `portable` instead")]] = portable,
+  default_character_set = utf8,
+  default_encoding [[deprecated("2.5.0: Use `default_character_set` instead")]] = default_character_set
 };
+
+using text_encoding [[deprecated("2.5.0: Use `character_set` instead")]] = character_set;
 
 namespace detail {
 
@@ -69,17 +61,24 @@ constexpr bool is_basic_literal_character_set_char(char ch)
 {
   // https://en.cppreference.com/w/cpp/language/charset
   return ch == 0x00 || (0x07 <= ch && ch <= 0x0D) || (0x20 <= ch && ch <= 0x7E);
-};
+}
+
+template<typename InputIt>
+constexpr bool is_basic_literal_character_set(InputIt begin, InputIt end) noexcept
+{
+  return all_of(begin, end, is_basic_literal_character_set_char);
+}
 
 template<std::size_t N>
 constexpr bool is_basic_literal_character_set(const char (&txt)[N]) noexcept
 {
-  return detail::all_of(std::begin(txt), std::end(txt), is_basic_literal_character_set_char);
+  return is_basic_literal_character_set(std::begin(txt), std::end(txt));
 }
 
 template<std::size_t N>
 constexpr fixed_u8string<N> to_u8string(fixed_string<N> txt)
 {
+  MP_UNITS_EXPECTS(is_basic_literal_character_set(txt.begin(), txt.end()));
   return std::bit_cast<fixed_u8string<N>>(txt);
 }
 
@@ -138,8 +137,8 @@ public:
 
   [[nodiscard]] constexpr const auto& utf8() const { return utf8_; }
   [[nodiscard]] constexpr const auto& portable() const { return portable_; }
-  [[deprecated("Use `utf8()` instead")]] constexpr const auto& unicode() const { return utf8(); }
-  [[deprecated("Use `portable()` instead")]] constexpr const auto& ascii() const { return portable(); }
+  [[deprecated("2.4.0: Use `utf8()` instead")]] constexpr const auto& unicode() const { return utf8(); }
+  [[deprecated("2.4.0: Use `portable()` instead")]] constexpr const auto& ascii() const { return portable(); }
 
   [[nodiscard]] constexpr bool empty() const
   {

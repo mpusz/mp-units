@@ -24,10 +24,10 @@
 
 #include <mp-units/bits/fixed_point.h>
 #include <mp-units/ext/type_traits.h>
-#include <mp-units/framework/magnitude.h>
 #include <mp-units/framework/quantity_concepts.h>
 #include <mp-units/framework/reference_concepts.h>
 #include <mp-units/framework/unit.h>
+#include <mp-units/framework/unit_magnitude.h>
 
 namespace mp_units::detail {
 
@@ -50,7 +50,7 @@ using maybe_common_type =
  * @tparam Rep1 first quantity representation type
  * @tparam Rep2 second quantity representation type
  */
-template<Magnitude auto M, typename Rep1, typename Rep2>
+template<UnitMagnitude auto M, typename Rep1, typename Rep2>
 struct conversion_type_traits {
   using c_rep_type = maybe_common_type<Rep1, Rep2>;
   using c_type = conditional<std::is_arithmetic_v<value_type_t<c_rep_type>>, value_type_t<c_rep_type>, double>;
@@ -103,8 +103,7 @@ template<QuantityPoint ToQP, typename FwdFromQP, QuantityPoint FromQP = std::rem
            (!equivalent(FromQP::unit, ToQP::unit)))
 [[nodiscard]] constexpr QuantityPoint auto sudo_cast(FwdFromQP&& qp)
 {
-  if constexpr (is_same_v<std::remove_const_t<decltype(ToQP::point_origin)>,
-                          std::remove_const_t<decltype(FromQP::point_origin)>>) {
+  if constexpr (is_same_v<MP_UNITS_NONCONST_TYPE(ToQP::point_origin), MP_UNITS_NONCONST_TYPE(FromQP::point_origin)>) {
     return quantity_point{
       sudo_cast<typename ToQP::quantity_type>(std::forward<FwdFromQP>(qp).quantity_from(FromQP::point_origin)),
       FromQP::point_origin};
@@ -120,7 +119,7 @@ template<QuantityPoint ToQP, typename FwdFromQP, QuantityPoint FromQP = std::rem
     // In the following, we carefully select the order of these three operations: each of (a) and (b) is scheduled
     // either before or after (c), such that (c) acts on the largest range possible among all combination of source
     // and target unit and representation.
-    constexpr Magnitude auto c_mag = get_canonical_unit(FromQP::unit).mag / get_canonical_unit(ToQP::unit).mag;
+    constexpr UnitMagnitude auto c_mag = get_canonical_unit(FromQP::unit).mag / get_canonical_unit(ToQP::unit).mag;
     using type_traits = conversion_type_traits<c_mag, typename FromQP::rep, typename ToQP::rep>;
     using c_type = type_traits::c_type;
     if constexpr (_get_value<long double>(c_mag) > 1.) {

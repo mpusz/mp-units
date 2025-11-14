@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 add_library(unit_tests_static_truncating quantity_test.cpp)
-if(NOT ${projectPrefix}API_FREESTANDING)
+if(NOT MP_UNITS_API_FREESTANDING)
     target_sources(unit_tests_static_truncating PRIVATE chrono_test.cpp)
 endif()
 target_link_libraries(unit_tests_static_truncating PRIVATE mp-units::mp-units)
@@ -46,10 +46,9 @@ add_library(
     iec_test.cpp
     imperial_test.cpp
     international_test.cpp
-    isq_test.cpp
     isq_angle_test.cpp
-    # magnitude_test.cpp
-    natural_test.cpp
+    isq_test.cpp
+    limits_test.cpp
     prime_test.cpp
     quantity_point_test.cpp
     quantity_spec_test.cpp
@@ -59,12 +58,17 @@ add_library(
     symbol_text_test.cpp
     type_list_test.cpp
     typographic_test.cpp
-    unit_test.cpp
+    # unit_magnitude_test.cpp
     unit_symbol_test.cpp
+    unit_test.cpp
     usc_test.cpp
 )
 
-if(NOT ${projectPrefix}API_FREESTANDING)
+if(MP_UNITS_API_NATURAL_UNITS)
+    target_sources(unit_tests_static PRIVATE natural_test.cpp)
+endif()
+
+if(NOT MP_UNITS_API_FREESTANDING)
     target_sources(unit_tests_static PRIVATE fractional_exponent_quantity.cpp math_test.cpp)
 endif()
 

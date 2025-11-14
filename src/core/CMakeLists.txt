@@ -21,10 +21,8 @@
 # SOFTWARE.
 
 function(set_feature_flag name)
-    if(NOT ${projectPrefix}${name} STREQUAL "AUTO")
-        target_compile_definitions(
-            mp-units-core ${${projectPrefix}TARGET_SCOPE} ${projectPrefix}${name}=$<BOOL:${${projectPrefix}${name}}>
-        )
+    if(NOT MP_UNITS_${name} STREQUAL "AUTO")
+        target_compile_definitions(mp-units-core ${MP_UNITS_TARGET_SCOPE} MP_UNITS_${name}=$<BOOL:${MP_UNITS_${name}}>)
     endif()
 endfunction()
 
@@ -36,13 +34,14 @@ add_mp_units_module(
             include/mp-units/bits/fixed_point.h
             include/mp-units/bits/get_associated_quantity.h
             include/mp-units/bits/hacks.h
-            include/mp-units/bits/math_concepts.h
             include/mp-units/bits/module_macros.h
             include/mp-units/bits/quantity_spec_hierarchy.h
             include/mp-units/bits/ratio.h
             include/mp-units/bits/sudo_cast.h
             include/mp-units/bits/text_tools.h
             include/mp-units/bits/type_list.h
+            include/mp-units/bits/unit_magnitude.h
+            include/mp-units/bits/unsatisfied.h
             include/mp-units/ext/algorithm.h
             include/mp-units/ext/contracts.h
             include/mp-units/ext/fixed_string.h
@@ -55,9 +54,6 @@ add_mp_units_module(
             include/mp-units/framework/customization_points.h
             include/mp-units/framework/dimension.h
             include/mp-units/framework/dimension_concepts.h
-            include/mp-units/framework/expression_template.h
-            include/mp-units/framework/magnitude.h
-            include/mp-units/framework/magnitude_concepts.h
             include/mp-units/framework/quantity.h
             include/mp-units/framework/quantity_cast.h
             include/mp-units/framework/quantity_concepts.h
@@ -70,9 +66,11 @@ add_mp_units_module(
             include/mp-units/framework/representation_concepts.h
             include/mp-units/framework/scaling.h
             include/mp-units/framework/symbol_text.h
-            include/mp-units/framework/system_reference.h
+            include/mp-units/framework/symbolic_expression.h
             include/mp-units/framework/unit.h
             include/mp-units/framework/unit_concepts.h
+            include/mp-units/framework/unit_magnitude.h
+            include/mp-units/framework/unit_magnitude_concepts.h
             include/mp-units/framework/unit_symbol_formatting.h
             include/mp-units/framework/value_cast.h
             include/mp-units/compat_macros.h
@@ -82,7 +80,14 @@ add_mp_units_module(
     MODULE_INTERFACE_UNIT mp-units-core.cpp
 )
 
-if(NOT ${projectPrefix}API_FREESTANDING)
+if(${MP_UNITS_API_NATURAL_UNITS})
+    target_sources(
+        mp-units-core PUBLIC FILE_SET HEADERS BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include FILES
+                             include/mp-units/framework/system_reference.h
+    )
+endif()
+
+if(NOT MP_UNITS_API_FREESTANDING)
     target_sources(
         mp-units-core
         PUBLIC FILE_SET
@@ -90,11 +95,13 @@ if(NOT ${projectPrefix}API_FREESTANDING)
                BASE_DIRS
                ${CMAKE_CURRENT_SOURCE_DIR}/include
                FILES
+               include/mp-units/bits/constexpr_format.h
                include/mp-units/bits/fmt.h
+               include/mp-units/bits/format.h
+               include/mp-units/bits/ostream.h
                include/mp-units/bits/requires_hosted.h
                include/mp-units/ext/format.h
                include/mp-units/cartesian_vector.h
-               include/mp-units/complex.h
                include/mp-units/format.h
                include/mp-units/math.h
                include/mp-units/ostream.h
@@ -102,27 +109,28 @@ if(NOT ${projectPrefix}API_FREESTANDING)
     )
 endif()
 
+# Disable VERIFY_INTERFACE_HEADER_SETS
+set_source_files_properties(include/mp-units/format.h include/mp-units/ostream.h PROPERTIES SKIP_LINTING ON)
+
 set_feature_flag(API_STD_FORMAT)
-set_feature_flag(API_STRING_VIEW_RET)
 set_feature_flag(API_NO_CRTP)
 
 # Text formatting
-if(NOT ${projectPrefix}API_FREESTANDING
-   AND (NOT ${projectPrefix}API_STD_FORMAT OR (${projectPrefix}API_STD_FORMAT STREQUAL "AUTO"
-                                               AND NOT ${projectPrefix}LIB_FORMAT_SUPPORTED))
+if(NOT MP_UNITS_API_FREESTANDING AND (NOT MP_UNITS_API_STD_FORMAT OR (MP_UNITS_API_STD_FORMAT STREQUAL "AUTO"
+                                                                      AND NOT MP_UNITS_LIB_FORMAT_SUPPORTED))
 )
     if(NOT TARGET fmt::fmt)
         find_package(fmt REQUIRED)
     endif()
-    target_link_libraries(mp-units-core ${${projectPrefix}TARGET_SCOPE} fmt::fmt)
+    target_link_libraries(mp-units-core ${MP_UNITS_TARGET_SCOPE} fmt::fmt)
 endif()
 
 # Contracts checking
-target_link_libraries(mp-units-core ${${projectPrefix}TARGET_SCOPE} mp-units-contracts)
+target_link_libraries(mp-units-core ${MP_UNITS_TARGET_SCOPE} mp-units-contracts)
 
 # C++20 modules
-if(${projectPrefix}BUILD_CXX_MODULES)
-    if(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
+if(MP_UNITS_BUILD_CXX_MODULES)
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
         if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 18)
             target_compile_definitions(mp-units-core PUBLIC _LIBCPP_NO_ABI_TAG)
         endif()
@@ -131,26 +139,64 @@ if(${projectPrefix}BUILD_CXX_MODULES)
             target_compile_options(mp-units-core PUBLIC "-Wno-include-angled-in-module-purview")
         endif()
     endif()
+
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+        # '#include <filename>' in the purview of module 'module-name-1' appears erroneous
+        target_compile_options(mp-units-core PUBLIC "/wd5244")
+    endif()
 endif()
 
 if(CMAKE_CXX_MODULE_STD)
-    target_compile_definitions(mp-units-core ${${projectPrefix}TARGET_SCOPE} ${projectPrefix}IMPORT_STD)
+    target_compile_definitions(mp-units-core ${MP_UNITS_TARGET_SCOPE} MP_UNITS_IMPORT_STD)
     # https://github.com/llvm/llvm-project/issues/75057
-    if(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 19)
-        target_compile_options(mp-units-core ${${projectPrefix}TARGET_SCOPE} "-Wno-deprecated-declarations")
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 19)
+        target_compile_options(mp-units-core ${MP_UNITS_TARGET_SCOPE} "-Wno-deprecated-declarations")
     endif()
 endif()
 
 # UTF-8 source and execution character set
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     target_compile_options(
-        mp-units-core ${${projectPrefix}TARGET_SCOPE}
+        mp-units-core ${MP_UNITS_TARGET_SCOPE}
         /utf-8 # Specifies both the source character set and the execution character set as UTF-8
     )
 endif()
 
 # Freestanding
 target_compile_definitions(
-    mp-units-core ${${projectPrefix}TARGET_SCOPE}
-                  ${projectPrefix}HOSTED=$<NOT:$<BOOL:${${projectPrefix}API_FREESTANDING}>>
+    mp-units-core ${MP_UNITS_TARGET_SCOPE} MP_UNITS_HOSTED=$<NOT:$<BOOL:${MP_UNITS_API_FREESTANDING}>>
 )
+
+# Throwing constraints
+if(MP_UNITS_API_THROWING_CONSTRAINTS)
+    target_compile_definitions(
+        mp-units-core ${MP_UNITS_TARGET_SCOPE}
+                      MP_UNITS_API_THROWING_CONSTRAINTS=$<BOOL:${MP_UNITS_API_THROWING_CONSTRAINTS}>
+    )
+endif()
+
+# Natural units support
+if(${MP_UNITS_API_NATURAL_UNITS})
+    target_compile_definitions(
+        mp-units-core ${MP_UNITS_TARGET_SCOPE} MP_UNITS_API_NATURAL_UNITS=$<BOOL:${MP_UNITS_API_NATURAL_UNITS}>
+    )
+endif()
+
+# https://github.com/llvm/llvm-project/issues/131410
+if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 20
+   AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 20.2
+)
+    target_compile_options(mp-units-core ${MP_UNITS_TARGET_SCOPE} "-Wno-unused-result")
+endif()
+
+# usage of uninitialized variable in c++/12/bits/char_traits.h
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 13)
+    target_compile_options(mp-units-core ${MP_UNITS_TARGET_SCOPE} "-Wno-maybe-uninitialized")
+endif()
+
+# time-trace
+if(MP_UNITS_DEV_TIME_TRACE STREQUAL "ALL")
+    target_compile_options(mp-units-core ${MP_UNITS_TARGET_SCOPE} "-ftime-trace")
+elseif(MP_UNITS_DEV_TIME_TRACE STREQUAL "MODULES")
+    target_compile_options(mp-units-core PRIVATE "-ftime-trace")
+endif()

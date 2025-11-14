@@ -2,64 +2,53 @@
 
 ## New style of definitions
 
-The **mp-units** library decided to use a rather unusual pattern to define entities.
-Here is how we define `metre` and `second` [SI](../../appendix/glossary.md#si) base units:
+The library uses an unusual but purposeful pattern to define entities. Here is how `metre`
+and `second` [SI](../../appendix/glossary.md#si) base units are defined:
 
 ```cpp
 inline constexpr struct metre final : named_unit<"m", kind_of<isq::length>> {} metre;
 inline constexpr struct second final : named_unit<"s", kind_of<isq::time>> {} second;
 ```
 
-Please note that the above reuses the same identifier for a type and its value. The rationale
-behind this is that:
+The above reuses the same identifier for a type and its value. Rationale:
 
-- Users always work with values and never have to spell such a type name.
-- The types appear in the compilation errors and during debugging.
+- Users write values and rarely need the verbose type name.
+- Types still appear in compilation errors and debuggers.
 
 !!! important
 
-    To improve compiler errors' readability and make it easier to correlate them with
-    a user's written code, a new idiom in the library is to use the same identifier for
-    a type and its instance.
+    To improve error readability and make correlation with user code easier, the library
+    adopts the idiom of reusing the same identifier for a type and its instance.
 
-    Also, to prevent possible issues in compile-time logic, all of the library's entities must be
-    marked `final`. This prevents the users to derive own strong types from them, which would
-    prevent expression template simplification of equivalent entities.
+    To prevent issues in compile-time logic all entities are `final`. This avoids users
+    deriving from them and preserves simplification of equivalent symbolic expressions.
 
 ## Strong types instead of aliases
 
-Let's look again at the above units definitions. Another important point to notice is that
-all the types describing entities in the library are short, nicely named identifiers
-that derive from longer, more verbose class template instantiations. This is really important
-to improve the user experience while debugging the program or analyzing the compilation error.
+Looking again at those unit definitions: each entity has a short, readable identifier that
+derives from a verbose class template instantiation. This greatly improves debugging and
+error analysis.
 
 !!! note
 
-    Such a practice is rare in the industry. Some popular C++ physical units libraries
-    generate enormously long error messages where even only the first line failed to fit
-    on a slide with a tiny font.
+    Such brevity is rare. Other units libraries often generate enormous error messages
+    where even the first line does not fit on a presentation slide.
 
 
 ## Entities composability
 
-Many physical units libraries (in C++ or any other programming language) assign strong types
-to library entities (e.g., derived units). While `metre_per_second` as a type may not look too
-scary, consider, for example, units of angular momentum. If we followed this path, its
-[coherent unit](../../appendix/glossary.md#coherent-derived-unit) would look like
-`kilogram_metre_sq_per_second`. Now, consider how many scaled versions of this unit you would
-predefine in the library to ensure that all users are happy with your choice?
-How expensive would it be from the implementation point of view?
-What about potential future standardization efforts?
+Many libraries assign strong types to every entity (e.g., each derived unit).
+`metre_per_second` may not look alarming, but units of angular momentum would yield a
+`kilogram_metre_sq_per_second` style type. How many scaled versions would you predefine?
+What is the maintenance and standardization cost?
 
-This is why in **mp-units**, we put a strong requirement to make everything as composable as
-possible. For example, to create a quantity with a unit of speed, one may write:
+Therefore **mp-units** emphasizes composability. To create a speed quantity you can write:
 
 ```cpp
 quantity<si::metre / si::second> q;
 ```
 
-In case we use such a unit often and would prefer to have a handy helper for it, we can
-always do something like this:
+If that unit recurs often you can introduce a helper:
 
 ```cpp
 constexpr auto metre_per_second = si::metre / si::second;
@@ -68,28 +57,25 @@ quantity<metre_per_second> q;
 
 or choose any shorter identifier of our choice.
 
-Coming back to the angular momentum case, thanks to the composability of units, a user can
-create such a quantity in the following way:
+For angular momentum, composability lets a user write:
 
 ```cpp
 using namespace mp_units::si::unit_symbols;
 auto q = la_vector{1, 2, 3} * isq::angular_momentum[kg * m2 / s];
 ```
 
-It is a much better solution. It is terse and easy to understand. Please also notice how
-easy it is to obtain any scaled version of such a unit (e.g., `mg * square(mm) / min`)
-without having to introduce hundreds of types to predefine them.
+This is terse, clear, and scales: `mg * square(mm) / min` needs no extra predefined types.
 
 
 ## Value-based equations
 
-The **mp-units** library is based on C++20, significantly improving user experience. One of
-such improvements is the usage of value-based equations.
+The library relies on C++20 features that improve user experience. One such improvement is
+value-based equations.
 
-As we have learned above, the entities are being used as values in the code, and they compose.
-Moreover, derived entities can be defined in the library using such value-based equations.
-This is a huge improvement compared to what we can find in other physical units libraries or
-what we have to deal with when we want to write some equations for `std::ratio`.
+Entities act as values and compose. Derived entities are defined using these value-based
+equations. This is a huge improvement compared to what we can find in other physical units
+libraries or what we have to deal with when we want to write some equations based on
+`std::ratio`.
 
 For example, below are a few definitions of the SI derived units showing the power of C++20
 extensions to Non-Type Template Parameters, which allow us to directly pass a result of
@@ -103,15 +89,12 @@ inline constexpr struct joule  final : named_unit<"J", newton * metre> {} joule;
 ```
 
 
-## Expression templates
+## Symbolic expressions
 
-The previous chapter provided a rationale for not having predefined types for derived entities.
-In many libraries, such an approach results in long and unreadable compilation errors, as
-framework-generated types are typically far from being easy to read and understand.
+Not predefining every derived type can harm error readability in other libraries because
+framework-generated types become unwieldy.
 
-The **mp-units** library greatly improves the user experience by extensively using
-expression templates. Such expressions are used consistently throughout the entire library
-to describe the results of:
+**mp-units** improves this by using symbolic expressions consistently to describe results of:
 
 - [dimension equation](../../appendix/glossary.md#dimension-equation) - the result is put into
   the `derived_dimension<>` class template
@@ -120,33 +103,29 @@ to describe the results of:
 - [unit equation](../../appendix/glossary.md#unit-equation) - the result is put into the
   `derived_unit<>` class template
 
-For example, if we take the above-defined base units and put the results of their division into
-the quantity class template like this:
+For example, dividing base units inside a quantity definition:
 
 ```cpp
 quantity<metre / second> q;
 ```
 
-we will observe the following type in the debugger
+produces the following type in the debugger:
 
-```
+```text
 (gdb) ptype q
 type = class mp_units::quantity<mp_units::derived_unit<metre, mp_units::per<second>>(), double> [with Rep = double] {
 ```
 
-The same type identifier will be visible in the compilation error (in case it happens).
+The same identifier appears in compilation errors.
 
 !!! important
 
-    Expressions templates are extensively used throughout the library to improve the readability
-    of the resulting types.
+    Expression templates are extensively used to improve readability of resulting types.
 
 
 ### Identities
 
-As mentioned above, equations can be performed on dimensions, quantities, and units. Each such domain must
-introduce an identity object that can be used in the resulting expressions. Here is the list of
-identities used in the library:
+Equations on dimensions, quantities, and units require an identity object for each domain:
 
 
 | Domain Concept |    Identity     |
@@ -155,7 +134,7 @@ identities used in the library:
 | `QuantitySpec` | `dimensionless` |
 | `Unit`         |      `one`      |
 
-In the equations, a user can explicitly refer to an identity object. For example:
+You can explicitly refer to an identity object:
 
 ```cpp
 constexpr auto my_unit = one / second;
@@ -169,14 +148,13 @@ constexpr auto my_unit = one / second;
     constexpr auto my_unit = inverse(second);
     ```
 
-    Both cases will result in the same expression template being generated and put into the wrapper
+    Both cases will result in the same symbolic expression being generated and put into the wrapper
     class template.
 
 
 ### Supported operations and their results
 
-There are only a few operations that one can do on such entities, and the result of each of them has
-its unique representation in the library:
+Only a few operations exist; each maps to a unique representation:
 
 |                   Operation                   | Resulting template expression arguments |
 |:---------------------------------------------:|:---------------------------------------:|
@@ -195,10 +173,9 @@ its unique representation in the library:
 | `sqrt({identity})` or `pow<1, 2>({identity})` |              `{identity}`               |
 
 
-### Simplifying the resulting expression templates
+### Simplifying the resulting symbolic expressions
 
-To limit the length and improve the readability of generated types, there are many rules to simplify
-the resulting expression template.
+To keep generated types short and readable, the library applies several simplification rules.
 
 1. **Ordering**
 
@@ -210,13 +187,12 @@ the resulting expression template.
     static_assert(std::is_same_v<decltype(A * B), decltype(B * A)>);
     ```
 
-    This is probably the most important of all the steps, as it allows comparing types and enables
-    the rest of the simplification rules.
+    This is probably the most important step: it enables comparing types and the rest of
+    the simplification rules.
 
 2. **Aggregation**
 
-    In case two of the same identifiers are found next to each other on the argument list they
-    will be aggregated in one entry:
+    Two identical adjacent identifiers aggregate into one entry:
 
     |              Before              |      After       |
     |:--------------------------------:|:----------------:|
@@ -227,8 +203,8 @@ the resulting expression template.
 
 3. **Simplification**
 
-    In case two of the same identifiers are found in the numerator and denominator argument lists;
-    they are being simplified into one entry:
+    In case two of the same identifiers are found in the numerator and denominator
+    argument lists; they are being simplified into one entry:
 
     |        Before         |        After         |
     |:---------------------:|:--------------------:|
@@ -244,14 +220,14 @@ the resulting expression template.
     such behavior. For example, the Hubble constant is expressed in `km⋅s⁻¹⋅Mpc⁻¹`, where both
     `km` and `Mpc` are units of _length_.
 
-    Also, to prevent possible issues in compile-time logic, all of the library's entities must be
-    marked `final`. This prevents the users to derive own strong types from them, which would
-    prevent expression template simplification of equivalent entities.
+    Also, to prevent possible issues in compile-time logic, all of the library's entities
+    must be marked `final`. This prevents the users to derive own strong types from them,
+    which would prevent symbolic expression simplification of equivalent entities.
 
 4. **Repacking**
 
-    In case an expression uses two results of other operations, the components of its arguments are repacked
-    into one resulting type and simplified there.
+    In case an expression uses two results of other operations, the components of its
+    arguments are repacked into one resulting type and simplified there.
 
     For example, assuming:
 

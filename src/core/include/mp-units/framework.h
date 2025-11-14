@@ -28,9 +28,6 @@
 #include <mp-units/framework/customization_points.h>
 #include <mp-units/framework/dimension.h>
 #include <mp-units/framework/dimension_concepts.h>
-#include <mp-units/framework/expression_template.h>
-#include <mp-units/framework/magnitude.h>
-#include <mp-units/framework/magnitude_concepts.h>
 #include <mp-units/framework/quantity.h>
 #include <mp-units/framework/quantity_cast.h>
 #include <mp-units/framework/quantity_concepts.h>
@@ -42,9 +39,14 @@
 #include <mp-units/framework/representation_concepts.h>
 #include <mp-units/framework/scaling.h>
 #include <mp-units/framework/symbol_text.h>
+#include <mp-units/framework/symbolic_expression.h>
+#if MP_UNITS_API_NATURAL_UNITS
 #include <mp-units/framework/system_reference.h>
+#endif
 #include <mp-units/framework/unit.h>
 #include <mp-units/framework/unit_concepts.h>
+#include <mp-units/framework/unit_magnitude.h>
+#include <mp-units/framework/unit_magnitude_concepts.h>
 #include <mp-units/framework/unit_symbol_formatting.h>
 #include <mp-units/framework/value_cast.h>
 // IWYU pragma: end_exports

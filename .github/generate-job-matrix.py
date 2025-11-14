@@ -53,18 +53,20 @@ def make_clang_config(
     return Configuration(**vars(ret))
 
 
-def make_apple_clang_config(version: int) -> Configuration:
+def make_apple_clang_config(
+    os: str, version: str, std_format_support: bool
+) -> Configuration:
     ret = Configuration(
         name=f"Apple Clang {version}",
-        os="macos-13",
+        os=os,
         compiler=Compiler(
             type="APPLE_CLANG",
-            version=f"{version}.0",
+            version=version,
             cc="clang",
             cxx="clang++",
         ),
         cxx_modules=False,
-        std_format_support=False,
+        std_format_support=std_format_support,
     )
     return ret
 
@@ -90,12 +92,20 @@ configs = {
     for c in [make_gcc_config(ver) for ver in [12, 13, 14]]
     + [
         make_clang_config(ver, platform)
-        for ver in [16, 17, 18]
+        for ver in [16, 17, 18, 20, 21]
         for platform in ["x86-64", "arm64"]
         # arm64 runners are expensive; only consider one version
         if ver == 18 or platform != "arm64"
     ]
-    + [make_apple_clang_config(ver) for ver in [15]]
+    + [
+        make_apple_clang_config("macos-13", ver, std_format_support=False)
+        for ver in ["15.2"]
+    ]
+    # std::format is available in Xcode 16.1 or later
+    + [
+        make_apple_clang_config("macos-14", ver, std_format_support=True)
+        for ver in ["16.1"]
+    ]
     + [make_msvc_config(release="14.4", version=194)]
 }
 
@@ -150,12 +160,8 @@ def main():
         case "clang-tidy":
             collector.all_combinations(config=configs["Clang-18 (x86-64)"])
         case "freestanding":
-            # TODO For some reason Clang-18 Debug with -ffreestanding does not pass CMakeTestCXXCompiler
             collector.all_combinations(
-                filter=lambda e: not (
-                    e.config.name.startswith("Clang-18") and e.build_type == "Debug"
-                ),
-                config=[configs[c] for c in ["GCC-14", "Clang-18 (x86-64)"]],
+                config=[configs[c] for c in ["GCC-14", "Clang-21 (x86-64)"]],
                 contracts="none",
                 std=23,
             )

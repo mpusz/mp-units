@@ -35,7 +35,6 @@ import std;
 import mp_units;
 #else
 #include <mp-units/framework.h>
-#include <mp-units/ostream.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si.h>
 #endif
@@ -124,6 +123,13 @@ public:
     return os << v.value() << " ± " << v.uncertainty();
   }
 
+  [[nodiscard]] friend constexpr measurement abs(const measurement& v)
+    requires requires { abs(v.value()); } || requires { std::abs(v.value()); }
+  {
+    using std::abs;
+    return measurement(abs(v.value()), v.uncertainty());
+  }
+
 private:
   value_type value_{};
   value_type uncertainty_{};
@@ -157,14 +163,10 @@ struct mp_units::scaling_traits<measurement<From>, measurement<To>> {
   }
 };
 
-
-template<typename T>
-constexpr bool mp_units::is_scalar<measurement<T>> = true;
-template<typename T>
-constexpr bool mp_units::is_vector<measurement<T>> = true;
-
-static_assert(mp_units::RepresentationOf<measurement<int>, mp_units::quantity_character::scalar>);
-static_assert(mp_units::RepresentationOf<measurement<double>, mp_units::quantity_character::scalar>);
+static_assert(mp_units::RepresentationOf<measurement<int>, mp_units::quantity_character::real_scalar>);
+static_assert(mp_units::RepresentationOf<measurement<int>, mp_units::quantity_character::vector>);
+static_assert(mp_units::RepresentationOf<measurement<double>, mp_units::quantity_character::real_scalar>);
+static_assert(mp_units::RepresentationOf<measurement<double>, mp_units::quantity_character::vector>);
 
 namespace {
 

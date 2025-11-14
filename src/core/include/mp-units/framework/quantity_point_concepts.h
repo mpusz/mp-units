@@ -65,7 +65,7 @@ struct point_origin_interface;
  * Satisfied by either quantity points or by all types derived from `absolute_point_origin` class template.
  */
 MP_UNITS_EXPORT template<typename T>
-concept PointOrigin = detail::SymbolicConstant<T> && std::derived_from<T, detail::point_origin_interface>;
+concept PointOrigin = std::derived_from<T, detail::point_origin_interface> && detail::SymbolicConstant<T>;
 
 /**
  * @brief A concept matching all quantity point origins for a specified quantity type in the library
@@ -117,7 +117,7 @@ concept SameAbsolutePointOriginAs =
 
 
 /**
- * @brief A concept matching all quantity points with provided quantity spec
+ * @brief A concept matching all quantity points of the provided property
  *
  * Satisfied by all quantity points with a quantity_spec being the instantiation derived from
  * the provided quantity_spec type, or quantity points having the origin with the same
@@ -125,8 +125,8 @@ concept SameAbsolutePointOriginAs =
  */
 MP_UNITS_EXPORT template<typename QP, auto V>
 concept QuantityPointOf =
-  QuantityPoint<QP> && (QuantitySpecOf<std::remove_const_t<decltype(QP::quantity_spec)>, V> ||
-                        detail::SameAbsolutePointOriginAs<std::remove_const_t<decltype(QP::absolute_point_origin)>, V>);
+  QuantityPoint<QP> && (ReferenceOf<MP_UNITS_NONCONST_TYPE(QP::reference), V> ||
+                        detail::SameAbsolutePointOriginAs<MP_UNITS_NONCONST_TYPE(QP::absolute_point_origin), V>);
 
 /**
  * @brief A concept matching all external quantity point like types

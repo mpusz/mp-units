@@ -25,8 +25,7 @@
 // IWYU pragma: private, include <mp-units/framework.h>
 #include <mp-units/bits/hacks.h>
 #include <mp-units/bits/module_macros.h>
-#include <mp-units/framework/dimension_concepts.h>
-#include <mp-units/framework/expression_template.h>
+#include <mp-units/framework/symbolic_expression.h>
 
 namespace mp_units {
 
@@ -37,15 +36,7 @@ struct quantity_spec_interface_base;
 }
 
 MP_UNITS_EXPORT template<typename T>
-concept QuantitySpec = detail::SymbolicConstant<T> && std::derived_from<T, detail::quantity_spec_interface_base>;
-
-MP_UNITS_EXPORT
-#if MP_UNITS_API_NO_CRTP
-template<auto...>
-#else
-template<typename, auto...>
-#endif
-struct quantity_spec;
+concept QuantitySpec = std::derived_from<T, detail::quantity_spec_interface_base> && detail::SymbolicConstant<T>;
 
 template<typename Q>
 struct kind_of_;
@@ -55,97 +46,19 @@ namespace detail {
 template<typename T>
 concept QuantityKindSpec = QuantitySpec<T> && is_specialization_of<T, kind_of_>;
 
-#if MP_UNITS_API_NO_CRTP
-template<auto... Args>
-void to_base_specialization_of_quantity_spec(const volatile quantity_spec<Args...>*);
-#else
-template<typename T, auto... Args>
-void to_base_specialization_of_quantity_spec(const volatile quantity_spec<T, Args...>*);
-#endif
+}  // namespace detail
 
-template<typename T>
-constexpr bool is_derived_from_specialization_of_quantity_spec =
-  requires(T* type) { to_base_specialization_of_quantity_spec(type); };
+MP_UNITS_EXPORT template<QuantitySpec From, QuantitySpec To>
+[[nodiscard]] consteval bool implicitly_convertible(From from, To to);
 
 /**
- * @brief Concept matching all named quantity specification types
+ * @brief A concept matching all quantity specifications of a provided quantity spec value
  *
- * Satisfied by all types that derive from `quantity_spec`.
+ * Satisfied by all quantity specifications that are implicitly convertible to the provided @c QS
+ * value.
  */
-template<typename T>
-concept NamedQuantitySpec =
-  QuantitySpec<T> && is_derived_from_specialization_of_quantity_spec<T> && (!QuantityKindSpec<T>);
-
-}  // namespace detail
-
-template<detail::SymbolicConstant... Expr>
-struct derived_quantity_spec;
-
-namespace detail {
-
-/**
- * @brief Concept matching all derived quantity specification types
- *
- * Satisfied by all `derived_quantity_spec` specializations.
- *
- * @note Deriving a strong type from it is considered a logic error and thus is
- * explicitly not supported here.
- */
-template<typename T>
-concept DerivedQuantitySpec =
-  QuantitySpec<T> && (is_specialization_of<T, derived_quantity_spec> ||
-                      (QuantityKindSpec<T> &&
-                       is_specialization_of<std::remove_const_t<decltype(T::_quantity_spec_)>, derived_quantity_spec>));
-
-}  // namespace detail
-
-
-MP_UNITS_EXPORT template<QuantitySpec Q>
-[[nodiscard]] consteval detail::QuantityKindSpec auto get_kind(Q q);
-
-namespace detail {
-
-template<auto QS1, auto QS2>
-concept SameQuantitySpec = QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS1))> &&
-                           QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS2))> && (QS1 == QS2);
-
-template<QuantitySpec Child, QuantitySpec Parent>
-[[nodiscard]] consteval bool is_child_of(Child ch, Parent p);
-
-template<auto Child, auto Parent>
-concept ChildQuantitySpecOf = (is_child_of(Child, Parent));
-
-template<auto To, auto From>
-concept NestedQuantityKindSpecOf =
-  QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(From))> && QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(To))> &&
-  (!SameQuantitySpec<get_kind(From), get_kind(To)>) && ChildQuantitySpecOf<To, get_kind(From)._quantity_spec_>;
-
-template<auto From, auto To>
-concept QuantitySpecConvertibleTo =
-  QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(From))> && QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(To))> &&
-  implicitly_convertible(From, To);
-
-template<auto From, auto To>
-concept QuantitySpecExplicitlyConvertibleTo =
-  QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(From))> && QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(To))> &&
-  explicitly_convertible(From, To);
-
-template<auto From, auto To>
-concept QuantitySpecCastableTo = QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(From))> &&
-                                 QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(To))> && castable(From, To);
-
-}  // namespace detail
-
 MP_UNITS_EXPORT template<typename T, auto QS>
 concept QuantitySpecOf =
-  QuantitySpec<T> && QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS))> && detail::QuantitySpecConvertibleTo<T{}, QS> &&
-  // the below is to make the following work
-  // static_assert(ReferenceOf<si::radian, isq::angular_measure>);
-  // static_assert(!ReferenceOf<si::radian, dimensionless>);
-  // static_assert(!ReferenceOf<isq::angular_measure[si::radian], dimensionless>
-  // static_assert(ReferenceOf<one, isq::angular_measure>);
-  // static_assert(!ReferenceOf<dimensionless[one], isq::angular_measure>);
-  !detail::NestedQuantityKindSpecOf<T{}, QS> &&
-  (detail::QuantityKindSpec<T> || !detail::NestedQuantityKindSpecOf<QS, T{}>);
+  QuantitySpec<T> && QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS))> && (mp_units::implicitly_convertible(T{}, QS));
 
 }  // namespace mp_units

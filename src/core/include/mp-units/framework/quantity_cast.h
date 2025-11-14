@@ -24,6 +24,7 @@
 
 // IWYU pragma: private, include <mp-units/framework.h>
 #include <mp-units/bits/module_macros.h>
+#include <mp-units/compat_macros.h>
 #include <mp-units/framework/quantity_concepts.h>
 #include <mp-units/framework/quantity_point_concepts.h>
 #include <mp-units/framework/reference.h>
@@ -57,7 +58,7 @@ namespace mp_units {
  * @tparam ToQS a quantity specification to use for a target quantity
  */
 template<QuantitySpec auto ToQS, typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>>
-  requires detail::QuantitySpecCastableTo<Q::quantity_spec, ToQS>
+  requires(castable(Q::quantity_spec, ToQS)) && (MP_UNITS_WEAK_UNIT_OF(MP_UNITS_NONCONST_TYPE(Q::unit), ToQS))
 [[nodiscard]] constexpr Quantity auto quantity_cast(FwdQ&& q)
 {
   return quantity{std::forward<FwdQ>(q).numerical_value_is_an_implementation_detail_, make_reference(ToQS, Q::unit)};
@@ -81,7 +82,7 @@ template<QuantitySpec auto ToQS, typename FwdQ, Quantity Q = std::remove_cvref_t
  * @tparam ToQS a quantity specification to use for a target quantity point
  */
 template<QuantitySpec auto ToQS, typename FwdQP, QuantityPoint QP = std::remove_cvref_t<FwdQP>>
-  requires detail::QuantitySpecCastableTo<QP::quantity_spec, ToQS>
+  requires(castable(QP::quantity_spec, ToQS)) && (MP_UNITS_WEAK_UNIT_OF(MP_UNITS_NONCONST_TYPE(QP::unit), ToQS))
 [[nodiscard]] constexpr QuantityPoint auto quantity_cast(FwdQP&& qp)
 {
   return QP{quantity_cast<ToQS>(std::forward<FwdQP>(qp).quantity_from_origin_is_an_implementation_detail_),

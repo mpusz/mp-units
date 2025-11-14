@@ -36,7 +36,6 @@ import std;
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else
-#include <mp-units/format.h>
 #include <mp-units/framework.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si.h>
@@ -100,19 +99,19 @@ std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>&
 
 inline namespace literals {
 
-constexpr latitude<long double> operator"" _N(long double v)
+constexpr latitude<long double> operator""_N(long double v)
 {
   return equator + ranged_representation<long double, -90, 90>{v} * mp_units::si::degree;
 }
-constexpr latitude<long double> operator"" _S(long double v)
+constexpr latitude<long double> operator""_S(long double v)
 {
   return equator - ranged_representation<long double, -90, 90>{v} * mp_units::si::degree;
 }
-constexpr longitude<long double> operator"" _E(long double v)
+constexpr longitude<long double> operator""_E(long double v)
 {
   return prime_meridian + ranged_representation<long double, -180, 180>{v} * mp_units::si::degree;
 }
-constexpr longitude<long double> operator"" _W(long double v)
+constexpr longitude<long double> operator""_W(long double v)
 {
   return prime_meridian - ranged_representation<long double, -180, 180>{v} * mp_units::si::degree;
 }
@@ -193,14 +192,14 @@ distance spherical_distance(position<T> from, position<T> to)
     // const auto central_angle = 2 * asin(sqrt(0.5 - cos(to_lat - from_lat) / 2 + cos(from_lat) * cos(to_lat) * (1
     // - cos(lon2_rad - from_lon)) / 2));
 
-    return quantity_cast<isq::distance>(earth_radius * central_angle);
+    return quantity_cast<isq::distance>((earth_radius * central_angle).in(earth_radius.unit));
   } else {
     // the haversine formula
     const quantity sin_lat = sin((to_lat - from_lat) / 2);
     const quantity sin_lon = sin((to_lon - from_lon) / 2);
     const quantity central_angle = 2 * asin(sqrt(sin_lat * sin_lat + cos(from_lat) * cos(to_lat) * sin_lon * sin_lon));
 
-    return quantity_cast<isq::distance>(earth_radius * central_angle);
+    return quantity_cast<isq::distance>((earth_radius * central_angle).in(earth_radius.unit));
   }
 }
 

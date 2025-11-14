@@ -53,7 +53,7 @@ jobs:
       - id: set-matrix
         run: python .github/generate-job-matrix.py --preset freestanding --seed 42 --debug combinations counts
   build:
-    name: "${{ matrix.formatting }} ${{ matrix.contracts }} C++${{ matrix.std }} ${{ matrix.config.name }} ${{ matrix.build_type }}"
+    name: "${{ matrix.config.name }} C++${{ matrix.std }} ${{ matrix.formatting }} ${{ matrix.contracts }} ${{ matrix.build_type }}"
     runs-on: ${{ matrix.config.os }}
     needs: generate-matrix
     strategy:
@@ -139,3 +139,25 @@ jobs:
           conan remove *#~latest --confirm
           conan remove *:*#~latest --confirm
           conan cache clean "*" -s -b -d
+
+      - name: Generate freestanding summary
+        if: always()
+        shell: bash
+        run: |
+          echo "## 🌐 Freestanding Build Summary" >> $GITHUB_STEP_SUMMARY
+          echo "| Configuration | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|---------------|--------|" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ job.status }}" = "success" ]; then
+            echo "| ${{ matrix.config.name }} C++${{ matrix.std }} ${{ matrix.formatting }} ${{ matrix.contracts }} ${{ matrix.build_type }} | ✅ Success |" >> $GITHUB_STEP_SUMMARY
+          elif [ "${{ job.status }}" = "failure" ]; then
+            echo "| ${{ matrix.config.name }} C++${{ matrix.std }} ${{ matrix.formatting }} ${{ matrix.contracts }} ${{ matrix.build_type }} | ❌ Failed |" >> $GITHUB_STEP_SUMMARY
+          elif [ "${{ job.status }}" = "cancelled" ]; then
+            echo "| ${{ matrix.config.name }} C++${{ matrix.std }} ${{ matrix.formatting }} ${{ matrix.contracts }} ${{ matrix.build_type }} | ⏹️ Cancelled |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| ${{ matrix.config.name }} C++${{ matrix.std }} ${{ matrix.formatting }} ${{ matrix.contracts }} ${{ matrix.build_type }} | ❓ ${{ job.status }} |" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Freestanding Build Details:**" >> $GITHUB_STEP_SUMMARY
+          echo "- Environment: Freestanding (no hosted library)" >> $GITHUB_STEP_SUMMARY
+          echo "- Compiler Flags: -ffreestanding" >> $GITHUB_STEP_SUMMARY
+          echo "- Target: Embedded/Kernel environments" >> $GITHUB_STEP_SUMMARY

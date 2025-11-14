@@ -93,6 +93,18 @@ constexpr ForwardIt max_element(ForwardIt first, ForwardIt last)
   return largest;
 }
 
+template<class ForwardIt, class Compare>
+constexpr ForwardIt max_element(ForwardIt first, ForwardIt last, Compare comp)
+{
+  if (first == last) return last;
+
+  ForwardIt largest = first;
+  while (++first != last)
+    if (comp(*largest, *first)) largest = first;
+
+  return largest;
+}
+
 template<class T>
 constexpr T max(std::initializer_list<T> ilist)
 {

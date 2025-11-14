@@ -705,8 +705,8 @@ static_assert(
   !std::convertible_to<quantity_point<si::kelvin, si::ice_point>, quantity_point<isq::height[m], mean_sea_level>>);
 
 // non-convertible quantity_specs
-static_assert(!std::constructible_from<quantity_point<special_height[m], mean_sea_level>,
-                                       quantity_point<isq::height[m], mean_sea_level>>);
+static_assert(std::constructible_from<quantity_point<special_height[m], mean_sea_level>,
+                                      quantity_point<isq::height[m], mean_sea_level>>);
 static_assert(!std::convertible_to<quantity_point<isq::height[m], mean_sea_level>,
                                    quantity_point<special_height[m], mean_sea_level>>);
 
@@ -766,8 +766,8 @@ static_assert(std::constructible_from<quantity_point<isq::height[m], mean_sea_le
 static_assert(std::convertible_to<quantity_point<special_height[m], mean_sea_level>,
                                   quantity_point<isq::height[m], mean_sea_level>>);
 
-static_assert(!std::constructible_from<quantity_point<special_height[m], mean_sea_level>,
-                                       quantity_point<isq::height[m], mean_sea_level>>);
+static_assert(std::constructible_from<quantity_point<special_height[m], mean_sea_level>,
+                                      quantity_point<isq::height[m], mean_sea_level>>);
 static_assert(!std::convertible_to<quantity_point<isq::height[m], mean_sea_level>,
                                    quantity_point<special_height[m], mean_sea_level>>);
 
@@ -808,8 +808,8 @@ static_assert(quantity_point{42 * m}.quantity_from_zero() == 42 * m);
 static_assert(quantity_point{isq::height(42 * m)}.quantity_from_zero() == 42 * m);
 static_assert(quantity_point{delta<deg_C>(20)}.quantity_from_zero() == delta<deg_C>(20));
 static_assert(quantity_point{delta<deg_C>(20.)}.in(deg_F).quantity_from_zero() == delta<deg_F>(68));
-static_assert(absolute<deg_C>(20).quantity_from_zero() == delta<deg_C>(20));
-static_assert(absolute<deg_C>(20.).in(deg_F).quantity_from_zero() == delta<deg_F>(68));
+static_assert(point<deg_C>(20).quantity_from_zero() == delta<deg_C>(20));
+static_assert(point<deg_C>(20.).in(deg_F).quantity_from_zero() == delta<deg_F>(68));
 
 static_assert((mean_sea_level + 42 * m).quantity_from_zero() == 42 * m);
 static_assert((ground_level + 42 * m).quantity_from_zero() == 84 * m);
@@ -888,9 +888,9 @@ static_assert(invalid_unit_conversion<quantity_point>);
 /////////
 
 static_assert(std::is_same_v<decltype(quantity_point{123 * m})::rep, int>);
-static_assert(std::is_same_v<std::remove_const_t<decltype(quantity_point{123 * m}.point_origin)>,
+static_assert(std::is_same_v<MP_UNITS_NONCONST_TYPE(quantity_point{123 * m}.point_origin),
                              zeroth_point_origin_<kind_of<isq::length>>>);
-static_assert(std::is_same_v<std::remove_const_t<decltype(quantity_point{123 * m}.absolute_point_origin)>,
+static_assert(std::is_same_v<MP_UNITS_NONCONST_TYPE(quantity_point{123 * m}.absolute_point_origin),
                              zeroth_point_origin_<kind_of<isq::length>>>);
 static_assert(quantity_point{123 * m}.unit == si::metre);
 static_assert(quantity_point{123 * m}.quantity_spec == kind_of<isq::length>);
@@ -914,9 +914,9 @@ static_assert(quantity_point{delta<deg_C>(20)}.quantity_spec == kind_of<isq::the
 #if MP_UNITS_HOSTED
 using namespace std::chrono_literals;
 static_assert(std::is_same_v<decltype(quantity_point{sys_seconds{123s}})::rep, std::chrono::seconds::rep>);
-static_assert(std::is_same_v<std::remove_const_t<decltype(quantity_point{sys_seconds{123s}}.point_origin)>,
+static_assert(std::is_same_v<MP_UNITS_NONCONST_TYPE(quantity_point{sys_seconds{123s}}.point_origin),
                              chrono_point_origin_<std::chrono::system_clock>>);
-static_assert(std::is_same_v<std::remove_const_t<decltype(quantity_point{sys_seconds{123s}}.absolute_point_origin)>,
+static_assert(std::is_same_v<MP_UNITS_NONCONST_TYPE(quantity_point{sys_seconds{123s}}.absolute_point_origin),
                              chrono_point_origin_<std::chrono::system_clock>>);
 static_assert(quantity_point{sys_seconds{24h}}.unit == si::second);
 static_assert(quantity_point{sys_seconds{24h}}.quantity_spec == kind_of<isq::time>);
@@ -1007,14 +1007,24 @@ static_assert([](auto v) {
 ////////////////////////
 
 // same type
-static_assert((mean_sea_level + 1 * m += 1 * m).quantity_from_zero().numerical_value_in(m) == 2);
-static_assert((mean_sea_level + 2 * m -= 1 * m).quantity_from_zero().numerical_value_in(m) == 1);
+static_assert(
+  [qp = mean_sea_level + 1 * m]() mutable { return qp += 1 * m; }().quantity_from_zero().numerical_value_in(m) == 2);
+static_assert(
+  [qp = mean_sea_level + 2 * m]() mutable { return qp -= 1 * m; }().quantity_from_zero().numerical_value_in(m) == 1);
 
 // different types
-static_assert((mean_sea_level + 2.5 * m += 3 * m).quantity_from_zero().numerical_value_in(m) == 5.5);
-static_assert((mean_sea_level + 123 * m += 1 * km).quantity_from_zero().numerical_value_in(m) == 1123);
-static_assert((mean_sea_level + 5.5 * m -= 3 * m).quantity_from_zero().numerical_value_in(m) == 2.5);
-static_assert((mean_sea_level + 1123 * m -= 1 * km).quantity_from_zero().numerical_value_in(m) == 123);
+static_assert(
+  [qp = mean_sea_level + 2.5 * m]() mutable { return qp += 3 * m; }().quantity_from_zero().numerical_value_in(m) ==
+  5.5);
+static_assert(
+  [qp = mean_sea_level + 123 * m]() mutable { return qp += 1 * km; }().quantity_from_zero().numerical_value_in(m) ==
+  1123);
+static_assert(
+  [qp = mean_sea_level + 5.5 * m]() mutable { return qp -= 3 * m; }().quantity_from_zero().numerical_value_in(m) ==
+  2.5);
+static_assert(
+  [qp = mean_sea_level + 1123 * m]() mutable { return qp -= 1 * km; }().quantity_from_zero().numerical_value_in(m) ==
+  123);
 
 
 template<template<auto, auto, typename> typename QP>
@@ -1697,7 +1707,8 @@ static_assert(invalid_subtraction(zero_Bq + 5 * isq::activity[Bq], 5 * isq::freq
 static_assert(invalid_subtraction(zero_Bq + 5 * isq::activity[Bq], zero_Hz + 5 * isq::frequency[Hz]));
 
 static_assert(invalid_addition(zero_Bq + 5 * isq::activity[Bq], 10 / (2 * isq::time[s]), 5 * isq::frequency[Hz]));
-static_assert(invalid_addition(5 * isq::activity[Bq], zero_Hz + 10 / (2 * isq::time[s]), 5 * isq::frequency[Hz]));
+static_assert(invalid_addition(5 * isq::activity[Bq], zero_Hz + 10 / (2 * isq::period_duration[s]),
+                               5 * isq::frequency[Hz]));
 static_assert(invalid_addition(5 * isq::activity[Bq], 10 / (2 * isq::time[s]), zero_Hz + 5 * isq::frequency[Hz]));
 static_assert(invalid_subtraction(zero_Bq + 5 * isq::activity[Bq], 10 / (2 * isq::time[s]), 5 * isq::frequency[Hz]));
 

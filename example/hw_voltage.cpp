@@ -36,7 +36,6 @@ import std;
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else
-#include <mp-units/format.h>
 #include <mp-units/systems/isq.h>
 #include <mp-units/systems/si.h>
 #endif
@@ -59,7 +58,7 @@ inline constexpr voltage_hw_t voltage_hw_zero = voltage_hw_range / 2;
 
 // clang-format off
 inline constexpr struct hw_voltage_origin final :
-  relative_point_origin<absolute<si::volt>(min_voltage)> {} hw_voltage_origin;
+  relative_point_origin<point<si::volt>(min_voltage)> {} hw_voltage_origin;
 
 inline constexpr struct hw_voltage_unit final :
   named_unit<"hwV", mag_ratio<voltage_range, voltage_hw_range> * si::volt, hw_voltage_origin> {} hw_voltage_unit;
@@ -74,7 +73,7 @@ std::optional<hw_voltage_quantity_point> read_hw_voltage()
 {
   voltage_hw_t local_copy = hw_voltage_value;
   if (local_copy == voltage_hw_error) return std::nullopt;
-  return absolute<hw_voltage_unit>(local_copy);
+  return point<hw_voltage_unit>(local_copy);
 }
 
 void print(QuantityPoint auto qp)

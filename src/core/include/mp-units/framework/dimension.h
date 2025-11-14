@@ -29,18 +29,20 @@
 #include <mp-units/compat_macros.h>
 #include <mp-units/ext/fixed_string.h>
 #include <mp-units/ext/inplace_vector.h>
-#include <mp-units/ext/type_name.h>
 #include <mp-units/ext/type_traits.h>
 #include <mp-units/framework/dimension_concepts.h>
-#include <mp-units/framework/expression_template.h>
 #include <mp-units/framework/symbol_text.h>
+#include <mp-units/framework/symbolic_expression.h>
+#if MP_UNITS_HOSTED
+#include <mp-units/bits/format.h>
+#include <mp-units/bits/ostream.h>
+#endif
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <mp-units/ext/contracts.h>
 #ifdef MP_UNITS_IMPORT_STD
 import std;
 #else
-#include <array>
 #include <cstdint>
 #include <iterator>
 #include <string_view>
@@ -59,12 +61,6 @@ MP_UNITS_EXPORT struct dimension_one;
 
 namespace detail {
 
-template<typename Lhs, typename Rhs>
-struct base_dimension_less : std::bool_constant<type_name<Lhs>() < type_name<Rhs>()> {};
-
-template<typename T1, typename T2>
-using type_list_of_base_dimension_less = expr_less<T1, T2, base_dimension_less>;
-
 template<typename... Expr>
 struct derived_dimension_impl : expr_fractions<dimension_one, Expr...> {};
 
@@ -72,13 +68,13 @@ struct dimension_interface {
   template<Dimension Lhs, Dimension Rhs>
   [[nodiscard]] friend consteval Dimension auto operator*(Lhs, Rhs)
   {
-    return expr_multiply<derived_dimension, struct dimension_one, type_list_of_base_dimension_less>(Lhs{}, Rhs{});
+    return expr_multiply<derived_dimension, dimension_one>(Lhs{}, Rhs{});
   }
 
   template<Dimension Lhs, Dimension Rhs>
   [[nodiscard]] friend consteval Dimension auto operator/(Lhs, Rhs)
   {
-    return expr_divide<derived_dimension, struct dimension_one, type_list_of_base_dimension_less>(Lhs{}, Rhs{});
+    return expr_divide<derived_dimension, dimension_one>(Lhs{}, Rhs{});
   }
 
   template<Dimension Lhs, Dimension Rhs>
@@ -129,7 +125,7 @@ struct base_dimension : detail::dimension_interface {
  * Derived dimension is an expression of the dependence of a quantity on the base quantities of a system of quantities
  * as a product of powers of factors corresponding to the base quantities, omitting any numerical factors.
  *
- * Instead of using a raw list of exponents this library decided to use expression template syntax to make types
+ * Instead of using a raw list of exponents this library decided to use symbolic expression syntax to make types
  * more digestable for the user. The positive exponents are ordered first and all negative exponents are put as a list
  * into the `per<...>` class template. If a power of exponent is different than `1` the dimension type is enclosed in
  * `power<Dim, Num, Den>` class template. Otherwise, it is just put directly in the list without any wrapper. There
@@ -194,11 +190,10 @@ MP_UNITS_EXPORT_BEGIN
  * @return Dimension The result of computation
  */
 template<std::intmax_t Num, std::intmax_t Den = 1, Dimension D>
-  requires detail::non_zero<Den>
+  requires(Den != 0)
 [[nodiscard]] consteval Dimension auto pow(D d)
 {
-  return detail::expr_pow<Num, Den, derived_dimension, struct dimension_one, detail::type_list_of_base_dimension_less>(
-    d);
+  return detail::expr_pow<Num, Den, derived_dimension, struct dimension_one>(d);
 }
 
 /**
@@ -221,7 +216,16 @@ template<std::intmax_t Num, std::intmax_t Den = 1, Dimension D>
 
 
 struct dimension_symbol_formatting {
-  text_encoding encoding = text_encoding::default_encoding;
+#if MP_UNITS_COMP_CLANG || MP_UNITS_COMP_MSVC
+  // TODO prevents the deprecated usage in implicit copy constructor warning
+  character_set char_set = character_set::default_character_set;
+#else
+  [[deprecated("2.5.0: Use `char_set` instead")]] character_set encoding = character_set::default_character_set;
+  MP_UNITS_DIAGNOSTIC_PUSH
+  MP_UNITS_DIAGNOSTIC_IGNORE_DEPRECATED
+  character_set char_set = encoding;
+  MP_UNITS_DIAGNOSTIC_POP
+#endif
 };
 
 MP_UNITS_EXPORT_END
@@ -232,7 +236,7 @@ template<typename CharT, std::output_iterator<CharT> Out, Dimension D>
   requires requires { D::_symbol_; }
 constexpr Out dimension_symbol_impl(Out out, D, const dimension_symbol_formatting& fmt, bool negative_power)
 {
-  return copy_symbol<CharT>(D::_symbol_, fmt.encoding, negative_power, out);
+  return copy_symbol<CharT>(D::_symbol_, fmt.char_set, negative_power, out);
 }
 
 template<typename CharT, std::output_iterator<CharT> Out, typename F, int Num, int... Den>
@@ -240,7 +244,7 @@ constexpr auto dimension_symbol_impl(Out out, const power<F, Num, Den...>&, cons
                                      bool negative_power)
 {
   out = dimension_symbol_impl<CharT>(out, F{}, fmt, false);  // negative power component will be added below if needed
-  return copy_symbol_exponent<CharT, Num, Den...>(fmt.encoding, negative_power, out);
+  return copy_symbol_exponent<CharT, Num, Den...>(fmt.char_set, negative_power, out);
 }
 
 template<typename CharT, std::output_iterator<CharT> Out, typename... Ms>
@@ -286,14 +290,10 @@ constexpr Out dimension_symbol_to(Out out, D d, const dimension_symbol_formattin
   return detail::dimension_symbol_impl<CharT>(out, d, fmt, false);
 }
 
-// TODO Refactor to `dimension_symbol(D, fmt)` when P1045: constexpr Function Parameters is available
-MP_UNITS_EXPORT template<dimension_symbol_formatting fmt = dimension_symbol_formatting{}, typename CharT = char,
-                         Dimension D>
-#if defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG <= 18
-[[nodiscard]] constexpr auto dimension_symbol(D)
-#else
-[[nodiscard]] consteval auto dimension_symbol(D)
-#endif
+namespace detail {
+
+MP_UNITS_EXPORT template<dimension_symbol_formatting fmt, typename CharT, Dimension D>
+[[nodiscard]] consteval auto dimension_symbol_impl(D)
 {
   constexpr auto oversized_symbol_text = []() consteval {
     // std::basic_string<CharT> text;  // TODO uncomment when https://wg21.link/P3032 is supported
@@ -301,14 +301,102 @@ MP_UNITS_EXPORT template<dimension_symbol_formatting fmt = dimension_symbol_form
     dimension_symbol_to<CharT>(std::back_inserter(text), D{}, fmt);
     return text;
   }();
-
-#if MP_UNITS_API_STRING_VIEW_RET  // Permitting static constexpr variables in constexpr functions
-  static constexpr basic_fixed_string<CharT, oversized_symbol_text.size()> storage(std::from_range,
-                                                                                   oversized_symbol_text);
-  return storage.view();
-#else
   return basic_fixed_string<CharT, oversized_symbol_text.size()>(std::from_range, oversized_symbol_text);
-#endif
 }
 
+template<dimension_symbol_formatting fmt, typename CharT, Dimension D>
+constexpr auto dimension_symbol_result = dimension_symbol_impl<fmt, CharT>(D{});
+
+}  // namespace detail
+
+// TODO Refactor to `dimension_symbol(D, fmt)` when P1045: constexpr Function Parameters is available
+MP_UNITS_EXPORT template<dimension_symbol_formatting fmt = dimension_symbol_formatting{}, typename CharT = char,
+                         Dimension D>
+[[nodiscard]] consteval std::basic_string_view<CharT> dimension_symbol(D)
+{
+  return detail::dimension_symbol_result<fmt, CharT, D>.view();
+}
+
+#if MP_UNITS_HOSTED
+
+MP_UNITS_EXPORT template<typename CharT, typename Traits, Dimension D>
+std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, D d)
+{
+  return detail::to_stream(os, [&](std::basic_ostream<CharT, Traits>& oss) {
+    dimension_symbol_to<CharT>(std::ostream_iterator<CharT>(oss), d);
+  });
+}
+
+#endif  // MP_UNITS_HOSTED
+
 }  // namespace mp_units
+
+#if MP_UNITS_HOSTED
+
+//
+// Grammar
+//
+// dimension-format-spec = [fill-and-align], [width], [dimension-spec];
+// dimension-spec        = [character-set];
+// character-set         = 'U' | 'P';
+//
+template<typename D, typename Char>
+  requires mp_units::detail::GCC_120625_is_complete<D> && mp_units::Dimension<D>
+class MP_UNITS_STD_FMT::formatter<D, Char> {
+  struct format_specs : mp_units::detail::fill_align_width_format_specs<Char>, mp_units::dimension_symbol_formatting {};
+  format_specs specs_{};
+  std::basic_string_view<Char> fill_align_width_format_str_;
+
+  template<std::forward_iterator It>
+  constexpr It parse_dimension_specs(It begin, It end)
+  {
+    auto it = begin;
+    if (it == end || *it == '}') return begin;
+
+    constexpr auto valid_modifiers = std::string_view{"UP"};
+    for (; it != end && *it != '}'; ++it) {
+      if (valid_modifiers.find(*it) == std::string_view::npos)
+        throw MP_UNITS_STD_FMT::format_error("invalid dimension modifier specified");
+    }
+    end = it;
+
+    if (it = mp_units::detail::at_most_one_of(begin, end, "UAP"); it != end)
+      // TODO 'A' stands for an old and deprecated ASCII encoding
+      specs_.char_set = (*it == 'U') ? mp_units::character_set::utf8 : mp_units::character_set::portable;
+
+    return end;
+  }
+
+public:
+  constexpr auto parse(MP_UNITS_STD_FMT::basic_format_parse_context<Char>& ctx) -> decltype(ctx.begin())
+  {
+    const auto begin = ctx.begin();
+    auto end = ctx.end();
+
+    auto it = parse_fill_align_width(ctx, begin, end, specs_);
+    fill_align_width_format_str_ = {begin, it};
+    if (it == end) return it;
+
+    return parse_dimension_specs(it, end);
+  }
+
+  template<typename FormatContext>
+  constexpr auto format(const D& d, FormatContext& ctx) const -> decltype(ctx.out())
+  {
+    auto specs = specs_;
+    mp_units::detail::handle_dynamic_spec<mp_units::detail::width_checker>(specs.width, specs.width_ref, ctx);
+
+    if (specs.width == 0)
+      // Avoid extra copying if width is not specified
+      return mp_units::dimension_symbol_to<Char>(ctx.out(), d, specs);
+    std::basic_string<Char> unit_buffer;
+    mp_units::dimension_symbol_to<Char>(std::back_inserter(unit_buffer), d, specs);
+
+    const std::basic_string<Char> global_format_buffer =
+      "{:" + std::basic_string<Char>{fill_align_width_format_str_} + "}";
+    return MP_UNITS_STD_FMT::vformat_to(ctx.out(), global_format_buffer,
+                                        MP_UNITS_STD_FMT::make_format_args(unit_buffer));
+  }
+};
+
+#endif  // MP_UNITS_HOSTED

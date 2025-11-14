@@ -116,7 +116,7 @@ struct value_type_impl {
 template<typename T>
   requires requires { typename wrapped_type_t<T>; }
 struct value_type_impl<T> {
-  using type = wrapped_type_t<T>;
+  using type = value_type_impl<wrapped_type_t<T>>::type;
 };
 
 }  // namespace detail
@@ -124,9 +124,6 @@ struct value_type_impl<T> {
 template<typename T>
   requires std::is_object_v<T>
 using value_type_t = detail::value_type_impl<T>::type;
-
-template<typename T, typename... Ts>
-concept one_of = (false || ... || std::same_as<T, Ts>);
 
 template<typename T, auto... Vs>
 [[nodiscard]] consteval bool contains()

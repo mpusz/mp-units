@@ -40,8 +40,6 @@ import std;
 import mp_units;
 #else
 #include <mp-units/cartesian_vector.h>
-#include <mp-units/format.h>
-#include <mp-units/ostream.h>  // IWYU pragma: keep
 #include <mp-units/systems/cgs.h>
 #include <mp-units/systems/isq/electromagnetism.h>
 #include <mp-units/systems/isq/mechanics.h>
@@ -55,7 +53,7 @@ using v = cartesian_vector<double>;
 
 TEST_CASE("dimension_symbol", "[dimension][symbol]")
 {
-  using enum text_encoding;
+  using enum character_set;
 
   std::ostringstream os;
 
@@ -67,14 +65,14 @@ TEST_CASE("dimension_symbol", "[dimension][symbol]")
 
   SECTION("Portable mode")
   {
-    os << dimension_symbol<dimension_symbol_formatting{.encoding = portable}>(isq::power.dimension);
+    os << dimension_symbol<dimension_symbol_formatting{.char_set = portable}>(isq::power.dimension);
     CHECK(os.str() == "L^2MT^-3");
   }
 }
 
 TEST_CASE("unit_symbol", "[unit][symbol]")
 {
-  using enum text_encoding;
+  using enum character_set;
   using enum unit_symbol_solidus;
   using enum unit_symbol_separator;
 
@@ -88,7 +86,7 @@ TEST_CASE("unit_symbol", "[unit][symbol]")
 
   SECTION("Portable mode")
   {
-    os << unit_symbol<unit_symbol_formatting{.encoding = portable}>(m / s2);
+    os << unit_symbol<unit_symbol_formatting{.char_set = portable}>(m / s2);
     CHECK(os.str() == "m/s^2");
   }
 

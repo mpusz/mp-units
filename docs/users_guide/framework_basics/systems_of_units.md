@@ -96,7 +96,7 @@ All of the above quantities are equivalent and mean exactly the same.
 
     The above code example may give the impression that the order of components in a derived
     unit is determined by the multiplication order. This is not the case. As stated in
-    [Simplifying the resulting expression templates](interface_introduction.md#simplifying-the-resulting-expression-templates),
+    [Simplifying the resulting symbolic expressions](interface_introduction.md#simplifying-the-resulting-symbolic-expressions),
     to be able to reason about and simplify units, the library needs to order them in an
     appropriate order. This will affect the order of components in a resulting type and
     text output.
@@ -118,16 +118,16 @@ with the same unit equation `1 / s`. However, it also explicitly states:
 
 The above means that the usage of `becquerel` as a unit of a _frequency_ quantity is an error.
 
-The library allows constraining such units to work only with quantities of a specific kind in
-the following way:
+The library allows constraining such units to work only with quantities of a specific kind
+in the following way:
 
 ```cpp
 inline constexpr struct hertz final : named_unit<"Hz", one / second, kind_of<isq::frequency>> {} hertz;
 inline constexpr struct becquerel final : named_unit<"Bq", one / second, kind_of<isq::activity>> {} becquerel;
 ```
 
-With the above, `hertz` can only be used with _frequencies_, while `becquerel` should only be used with
-quantities of _activity_. This means that the following equation will not compile:
+With the above, `hertz` can only be used with _frequencies_, while `becquerel` should only
+be used with quantities of _activity_. This means that the following equation will not compile:
 
 ```cpp
 auto q = 1 * Hz + 1 * Bq;   // Fails to compile
@@ -176,8 +176,8 @@ versions of those. However, those are only some of the options possible.
 
 For example, there is a list of [off-system units](../../appendix/glossary.md#off-system-unit)
 accepted for use with SI. Those are scaled versions of the SI units with ratios that can't
-be explicitly expressed with predefined SI prefixes. Those include units like minute, hour, or
-electronvolt:
+be explicitly expressed with predefined SI prefixes. Those include units like minute, hour,
+or electronvolt:
 
 ```cpp
 inline constexpr struct minute final : named_unit<"min", mag<60> * si::second> {} minute;
@@ -185,15 +185,16 @@ inline constexpr struct hour final : named_unit<"h", mag<60> * minute> {} hour;
 inline constexpr struct electronvolt final : named_unit<"eV", mag_ratio<1'602'176'634, 1'000'000'000> * mag_power<10, -19> * si::joule> {} electronvolt;
 ```
 
-Also, units of other [systems of units](../../appendix/glossary.md#system-of-units) are often defined
-in terms of scaled versions of the SI units. For example, the international yard is defined as:
+Also, units of other [systems of units](../../appendix/glossary.md#system-of-units) are
+often defined in terms of scaled versions of the SI units. For example, the international
+yard is defined as:
 
 ```cpp
 inline constexpr struct yard final : named_unit<"yd", mag_ratio<9'144, 10'000> * si::metre> {} yard;
 ```
 
-For some units, a magnitude might also be irrational. The best example here is a `degree` which
-is defined using a floating-point magnitude having a factor of the number π (Pi):
+For some units, a magnitude might also be irrational. The best example here is a `degree`
+which is defined using a floating-point magnitude having a factor of the number π (Pi):
 
 ```cpp
 inline constexpr struct pi final : mag_constant<symbol_text{u8"π", "pi"}, std::numbers::pi_v<long double>> {} pi;
@@ -274,10 +275,10 @@ This is why we provide both versions of identifiers for such units.
 
 ## Common units
 
-Adding, subtracting, or comparing two quantities of different units will force the library to find
-a common unit for those. This is to prevent data truncation. For the cases when one of the units is
-an integral multiple of the another, the resulting quantity will use a "smaller" one in its result.
-For example:
+Adding, subtracting, or comparing two quantities of different units will force the library
+to find a common unit for those. This is to prevent data truncation. For the cases when
+one of the units is an integral multiple of the another, the resulting quantity will use
+a "smaller" one in its result. For example:
 
 ```cpp
 static_assert((1 * kg + 1 * g).unit == g);
@@ -285,10 +286,10 @@ static_assert((1 * km + 1 * mm).unit == mm);
 static_assert((1 * yd + 1 * mi).unit == yd);
 ```
 
-However, in many cases an arithmetic operation on quantities of different units will result in
-a yet another unit. This happens when none of the source units is an integral multiple of another.
-In such cases, the library returns a special type that denotes that we are dealing with a common
-unit of such an equation:
+However, in many cases an arithmetic operation on quantities of different units will
+result in a yet another unit. This happens when none of the source units is an integral
+multiple of another. In such cases, the library returns a special type that denotes that
+we are dealing with a common unit of such an equation:
 
 ```cpp
 quantity q1 = 1 * km + 1 * mi;     // quantity<common_unit<international::mile, si::kilo_<si::metre>>{}, int>

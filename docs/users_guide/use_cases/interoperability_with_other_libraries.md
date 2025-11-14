@@ -1,9 +1,9 @@
 # Interoperability with Other Libraries
 
-**mp-units** makes it easy to cooperate with similar entities of other libraries.
-No matter if we want to provide interoperability with a simple home-grown strongly typed
-wrapper type (e.g., `Meter`, `Timestamp`, ...) or with a feature-rich quantities and units
-library, we have to provide specializations of:
+**mp-units** makes it easy to cooperate with similar entities of other libraries. Whether
+we want to provide interoperability with a simple home-grown strongly typed wrapper type
+(e.g., `Meter`, `Timestamp`, ...) or with a feature-rich quantities and units library, we have
+to provide specializations of:
 
 - a `quantity_like_traits` for external `quantity`-like type,
 - a `quantity_point_like_traits` for external `quantity_point`-like type.
@@ -22,8 +22,8 @@ Typically, the implicit conversions are allowed in cases where:
 
 - both abstractions mean exactly the same, and interchanging them in the code should not change
   its logic,
-- there is no significant runtime overhead introduced by such a conversion (e.g., no need for dynamic
-  allocation or copying of huge internal buffers),
+- there is no significant runtime overhead introduced by such a conversion (e.g., no need for
+  dynamic allocation or copying of huge internal buffers),
 - the target type of the conversion provides the same or better safety to the users,
 - we prefer the simplicity of implicit conversions over safety during the (hopefully short)
   transition period of refactoring our code base from the usage of one library to the other.
@@ -38,8 +38,8 @@ The names of the flags are as follows:
 
 - `explicit_import` to describe conversion from the external entity to the one in this
   library (import case),
-- `explicit_export` to describe conversion from the entity in this library to the external one
-  (export case).
+- `explicit_export` to describe conversion from the entity in this library to the external
+  one (export case).
 
 
 ## Quantities conversions
@@ -52,12 +52,12 @@ struct Meter {
 };
 ```
 
-As every usage of `Meter` is at least as good and safe as the usage of `quantity<si::metre, int>`,
-and as there is no significant runtime performance penalty, we would like to allow the conversion
-to `mp_units::quantity` to happen implicitly.
+As every usage of `Meter` is at least as good and safe as the usage of
+`quantity<si::metre, int>`, and as there is no significant runtime performance penalty, we
+would like to allow the conversion to `mp_units::quantity` to happen implicitly.
 
-On the other hand, the `quantity` type is much safer than the `Meter`, and that is why we would prefer
-to see the opposite conversions stated explicitly in our code.
+On the other hand, the `quantity` type is much safer than the `Meter`, and that is why we would
+prefer to see the opposite conversions stated explicitly in our code.
 
 To enable such interoperability, we must define a partial specialization of
 the `quantity_like_traits<T>` type trait. Such specialization should provide:
@@ -68,7 +68,8 @@ the `quantity_like_traits<T>` type trait. Such specialization should provide:
   from `T` to a `quantity` type should happen explicitly (if `true`),
 - `explicit_export` static data member convertible to `bool` that specifies that the conversion
   from a `quantity` type to `T` should happen explicitly (if `true`),
-- `to_numerical_value(T)` static member function returning a quantity's raw value of `rep` type,
+- `to_numerical_value(T)` static member function returning a quantity's raw value of `rep`
+  type,
 - `from_numerical_value(rep)` static member function returning `T`.
 
 For example, for our `Meter` type, we could provide the following:
@@ -164,8 +165,8 @@ int main()
 
 ## Quantity points conversions
 
-To play with quantity point conversions, let's assume that we have a `Timestamp` strong type in our
-codebase, and we would like to start using **mp-units** to work with this abstraction.
+To play with quantity point conversions, let's assume that we have a `Timestamp` strong type
+in our codebase, and we would like to start using **mp-units** to work with this abstraction.
 
 ```cpp
 struct Timestamp {
@@ -176,13 +177,13 @@ struct Timestamp {
 As we described in [The Affine Space](../framework_basics/the_affine_space.md) chapter, timestamps
 should be modeled as quantity points rather than regular quantities.
 
-To allow the conversion between our custom `Timestamp` type and the `quantity_point` class template
-we need to provide the following in the partial specialization of the `quantity_point_like_traits<T>`
-type trait:
+To allow the conversion between our custom `Timestamp` type and the `quantity_point` class
+template we need to provide the following in the partial specialization of the
+`quantity_point_like_traits<T>` type trait:
 
 - `reference` static data member that provides the quantity point reference (e.g., unit),
-- `point_origin` static data member that specifies the absolute point, which is the beginning of
-  our measurement scale for our points,
+- `point_origin` static data member that specifies the absolute point, which is the
+  beginning of our measurement scale for our points,
 - `rep` type that specifies the underlying storage type,
 - `explicit_import` static data member convertible to `bool` that specifies that the conversion
   from `T` to a `quantity` type should happen explicitly (if `true`),
@@ -240,16 +241,17 @@ int main()
 
 ## Interoperability with the C++ Standard Library
 
-In the C++ standard library, we have two types that handle quantities and model the affine space.
-Those are:
+In the C++ standard library, we have two types that handle quantities and model the affine
+space. Those are:
 
 - [`std::chrono::duration`](https://en.cppreference.com/w/cpp/chrono/duration) - specifies
   quantities of time,
 - [`std::chrono::time_point`](https://en.cppreference.com/w/cpp/chrono/time_point) - specifies
   quantity points of time.
 
-The **mp-units** library comes with built-in interoperability with those types. It is enough to
-include the _mp-units/systems/si/chrono.h_ file to benefit from it. This file provides:
+The **mp-units** library comes with built-in interoperability with those types. It is
+enough to include the _mp-units/systems/si/chrono.h_ file to benefit from it. This file
+provides:
 
 - partial specializations of `quantity_like_traits` and `quantity_point_like_traits` that provide
   support for implicit conversions between `std` and `mp_units` types in both directions,

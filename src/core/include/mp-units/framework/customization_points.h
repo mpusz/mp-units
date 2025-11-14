@@ -47,7 +47,7 @@ MP_UNITS_EXPORT_BEGIN
  * @brief Specifies if a value of a type should be treated as a floating-point value
  *
  * This type trait should be specialized for a custom representation type to specify
- * that values fo this type should be treated by the library as a floating-point ones
+ * that values of this type should be treated by the library as a floating-point ones
  * which will enable implicit conversions between quantities.
  *
  * @tparam Rep a representation type for which a type trait is defined
@@ -61,48 +61,32 @@ constexpr bool treat_as_floating_point =
 #endif
 
 /**
- * @brief Specifies a type to have a scalar character
+ * @brief Specifies if a specific conversion between two types preserves the value
  *
- * A scalar is a physical quantity that has magnitude but no direction.
+ * This type trait should be specialized for a custom representation types to specify
+ * weather the conversion from the source type to the destination type preserves the value
+ * or not. Value-truncating conversions should be forced by the user with explicit casts.
+ *
+ * @tparam From a source representation type
+ * @tparam To a destination representation type
  */
-template<typename Rep>
-constexpr bool is_scalar = std::is_floating_point_v<Rep> || (std::is_integral_v<Rep> && !is_same_v<Rep, bool>);
+template<typename From, typename To>
+constexpr bool is_value_preserving = treat_as_floating_point<To> || !treat_as_floating_point<From>;
 
-/**
- * @brief Specifies a type to have a complex character
- *
- * A complex is a physical quantity that has a complex representation type.
- */
 template<typename Rep>
+[[deprecated("2.5.0: `is_scalar` is no longer necessary and can simply be removed")]]
+constexpr bool is_scalar = false;
+
+template<typename Rep>
+[[deprecated("2.5.0: `is_complex` is no longer necessary and can simply be removed")]]
 constexpr bool is_complex = false;
 
-/**
- * @brief Specifies a type to have a vector character
- *
- * Vectors are physical quantities that possess both magnitude and direction
- * and whose operations obey the axioms of a vector space.
- *
- * In specific cases a scalar can represent a vector with the default direction.
- * If that is the intent, a user should provide a partial specialization:
- *
- * @code{.cpp}
- * template<class T>
- *   requires mp_units::is_scalar<T>
- * constexpr bool mp_units::is_vector<T> = true;
- * @endcode
- */
 template<typename Rep>
+[[deprecated("2.5.0: `is_vector` is no longer necessary and can simply be removed")]]
 constexpr bool is_vector = false;
 
-/**
- * @brief Specifies a type to have a tensor character
- *
- * Tensors can be used to describe more general physical quantities.
- *
- * A vector is a tensor of the first order and a scalar is a tensor of order zero.
- * Similarly to `is_vector` a partial specialization is needed in such cases.
- */
 template<typename Rep>
+[[deprecated("2.5.0: `is_tensor` is no longer necessary and can simply be removed")]]
 constexpr bool is_tensor = false;
 
 /**
@@ -116,9 +100,9 @@ constexpr bool is_tensor = false;
  */
 template<typename Rep>
 #if MP_UNITS_HOSTED
-struct quantity_values : std::chrono::duration_values<Rep> {
+struct representation_values : std::chrono::duration_values<Rep> {
 #else
-struct quantity_values {
+struct representation_values {
   static constexpr Rep zero() noexcept
     requires std::constructible_from<Rep, int>
   {
@@ -126,7 +110,7 @@ struct quantity_values {
   }
 
   static constexpr Rep min() noexcept
-    requires requires {
+    requires std::numeric_limits<Rep>::is_specialized && requires {
       { std::numeric_limits<Rep>::lowest() } -> std::same_as<Rep>;
     }
   {
@@ -134,7 +118,7 @@ struct quantity_values {
   }
 
   static constexpr Rep max() noexcept
-    requires requires {
+    requires std::numeric_limits<Rep>::is_specialized && requires {
       { std::numeric_limits<Rep>::max() } -> std::same_as<Rep>;
     }
   {
@@ -148,6 +132,9 @@ struct quantity_values {
     return Rep(1);
   }
 };
+
+template<typename Rep>
+using quantity_values [[deprecated("2.5.0: Use `representation_values` instead")]] = representation_values<Rep>;
 
 
 /**

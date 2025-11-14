@@ -60,9 +60,6 @@ public:
 
 }  // namespace
 
-template<typename T>
-constexpr bool mp_units::is_scalar<min_impl<T>> = true;
-
 template<typename T, typename U>
 struct std::common_type<min_impl<T>, min_impl<U>> : std::type_identity<min_impl<std::common_type_t<T, U>>> {};
 template<typename T, typename U>
@@ -75,8 +72,8 @@ namespace {
 
 using namespace mp_units;
 
-static_assert(Representation<min_impl<int>>);
-static_assert(Representation<min_impl<double>>);
+static_assert(RepresentationOf<min_impl<int>, quantity_character::real_scalar>);
+static_assert(RepresentationOf<min_impl<double>, quantity_character::real_scalar>);
 
 // construction from a value is not allowed
 static_assert(!std::constructible_from<quantity<si::metre, min_impl<int>>, min_impl<int>>);

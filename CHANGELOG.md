@@ -1,15 +1,165 @@
 # Release Notes
 
+This page documents the version history and changes for the **mp-units** library.
+
+<!-- markdownlint-disable MD033 -->
+
 ## mp-units
 
 ### 2.5.0 <small>WIP</small> { id="2.5.0" }
+
+- (!) feat: representation concepts improved
+- (!) feat: `representation_of` concept now also accepts a `quantity_spec` and
+  accepts any representation character for quantity kinds
+- (!) feat: `quantity::one()` removed
+- (!) feat: `Representation` concept removed
+- feat: `SymbolicArg` applied to expression templates
+- feat: `per` and `power` made `final`
+- feat: `derived_XXX` are now constrained with `SymbolicConstant`
+- feat: prime factorization extended to any magnitude (thanks
+  [@chiphogg](https://github.com/chiphogg))
+- feat: `cartesian_vector` added
+- feat: `equivalent` now accept any units (even non-convertible)
+- feat: text output should fallback to the portable mode when UTF-8 is not used for
+  `text_encoding`
+- feat: precondition added to `to_u8string`
+- feat: text output of scaled units is now enclosed in parenthesis `(...)` instead of
+  brackets `[...]`
+- feat: `abs(quantity)` exposed for conforming freestanding implementations
+- feat: proper constraints for `kind_of`
+- feat: missing precondition added for `quantity::op/`
+- feat: `quantity_spec` conversions improved
+- feat: `rankine` unit added
+- feat: `std::numeric_limits` support added
+- feat: `scaling_overflows_non_zero_values` added to detect conversions overflowing `rep`
+- feat: deprecation messages now provide the release version where the
+  deprecation happened
+- feat: electromagnetism.h updated to IEC80000-6-2022
+- feat: `ConvertibleWithNumber` introduced to improve convertibility of unit `one`
+  with raw numbers
+- feat: `lerp` and `midpoint` for points added
+- feat: `is_value_preserving` customization point added
+- feat(example): `is_vector` specialization no longer needed for `si_constants`
+- (!) refactor: `type_list` moved to implementation details
+- (!) refactor: from now `unit_symbol` and `dimension_symbol` always returns
+  `std::string_view`
+- (!) refactor: `text_encoding` renamed to `character_set`
+- (!) refactor: `Magnitude` renamed to `UnitMagnitude` and `magnitude` to `unit_magnitude`
+- (!) refactor: `unit_magnitude` moved to `detail` namespace
+- (!) refactor: `absolute` renamed to `point`
+- (!) refactor: `power` members refactored to be explicitly exposition only
+- (!) refactor: `is_XXX` customization points for representation types removed
+- (!) refactor: `quantity_values` renamed to representation values
+- (!) refactor: `scalar` and `complex` characters renamed to `real_scalar` and
+  `complex_scalar` respectively + concepts refactoring
+- (!) refactor: `MagConstant` concept renamed to `detail::is_mag_constant` variable trait
+- refactor: mp_units.core defined in terms of `core.h`
+- refactor: `MP_UNITS_NONCONST_TYPE` introduced to benefit from the C++23 feature
+- refactor: `SymbolicConstant` concept refactored
+- refactor: explicit type of `op/` for `quantity` and `reference` replaced with
+  constrained placeholder
+- refactor: private `unit_magnitude` interface renamed to not use leading `_`
+- refactor: `one_of` concept removed and replaced with `QSProperty` in `quantity_spec`
+- refactor: `std::is_trivial` will be deprecated in C++26
+- refactor: `SameQuantitySpec` concept removed and replaced with direct comparison
+- refactor: unused `SameReference` concept removed
+- refactor: `type_name_less` introduced and used as a default predicate for
+  expression templates
+- refactor: "expression templates" renamed to "symbolic expressions"
+- refactor: `all_are_kinds` removed and `get_associated_quantity` simplified
+- refactor: `reference` now returns explicit types for `inverse`, `pow`,
+  `sqrt`, and `cbrt`
+- refactor: repeated concept checks removed from `get_common_reference`
+- refactor: `std::assignable_from` used in `ValuePreservingTo` concept
+- refactor: `quantity` constructor refactored to use another constructor with the
+  result of `sudo_cast`
+- refactor: preconditions for quantity operations now use `is_neq_zero`
+- refactor: implicit expression variations used in `quantity` and
+  `quantity_point` constraints
+- refactor: `inverse()` constraints improved
+- refactor: `make_quantity_point` introduced
+- refactor: `point_origin_interface::op+` return type unified with the
+  rest of the interfaces
+- refactor: `std::convertible_to` replaced with `std::same_as` in `basic_fixed_string`
+- refactor: `less`, `ceil`, and `round` refactored and improved + more unit
+  tests for `round`
+- refactor: `math_concepts.h` removed and concepts replaced with explicit
+  expression in constraints
+- refactor: `visit_format_arg` is deprecated in C++26
+- refactor: deprecated literal operators
+- refactor: constraints refactoring
+- (!) fix: `electric_current_phasor`, `voltage_phasor`, `apparent_power` switched to
+  complex character
+- (!) fix: `position_vector` and `displacement` moved to a different place in a tree
+- (!) fix: `velocity` is now defined in terms of `displacement` instead of
+  `position_vector`
+- fix: missing `core.h` added to CMake
+- fix: `const` was leaking to some `SymbolicConstant`s
+- fix: `make_reference` should skip only the exact kinds deduced from a unit
+- fix: inconsistencies in `get_common_quantity_spec()` fixed
+- fix: unused `convertible_kinds()` argument removed
+- fix: compile-time branch condition fixed in `quantity_point::point_for`
+- fix: `inverse(Quantity)` fixed for subkinds of `dimensionless`
+- fix: `point_origin_interface::op+` constraints fixed
+- fix: missing `get_common_unit()` overload added
+- fix: `floor` and `ceil` constraints fixed
+- fix: quantity characters fixed in electromagnetism quantities
+- fix: `arg.visit` support fixed
+- fix: `expr_less` now also sorts powers
+- fix: `mag_constant` workarounds branches for clang fixed
+- fix: checking for clang versions fixed in CMake scripts
+- fix: text stripping in `type_name` fixed
+- test: lots of tests for complex quantities
+- test: runtime unit tests refactored to have a bigger granularity (less top level tests)
+- test: _surface tension_ replaced with _entropy_ in an fmt test
+- test: test_package now is tested also with C++20 modules
+- test: tests for dimensionless quantities static data members
+- test: a few more natural units tests added
+- test: tests to check if `quantity` satisfies `Scalar`
+- test: add static tests for concept `DimensionOf` (thanks
+  [@jvocht](https://github.com/jvocht))
+- test: quantity character concepts tests for quantities added
+- docs: ISQ part 6 released
+- docs: new chapter about our documentation added to the contributing guide
+- docs: directory name updated in the contributing guide
+- docs: mp-units Conan options added to conanfile.txt examples
+- docs: `contracts` Conan option default value description improved
+- docs: outdated note removed from the "Text Output" chapter
+- docs: a paragraph about additional formatting options removed (applicable only
+  to quantity symbols which we do not support)
+- docs: Wrocław 2024 meeting report
+- docs: explicit unit conversion example added to the "Symbols of common units" chapter
+- docs: "Bringing Quantity-Safety To The Next Level" blog post added
+- docs: quantity-safety mentioned in the docs
+- docs: `complex` character added to the "Quantity character" chapter
+- docs: intro to "Value Conversions" chapter added
+- docs: "Scaling overflow prevention" chapter added
+- docs: "Concepts" chapter updated
+- docs: old customization points removed from the "Character of a Quantity" chapter
+- docs: clang-19 issues mentioned in a compiler support table
+- docs(ref): document most of `mp_units.core` (thanks [@JohelEGP](https://github.com/JohelEGP))
+- build: `CheckCacheVarValues` CMake module file added
+- build: `MP_UNITS_DEV_TIME_TRACE` CMake option added
+- build: `MP_UNITS_API_NO_CRTP` removed from `test_package` CMake
+- build: require at least CMake 3.31 with Conan
+- build: clang-20 enabled in CI
+- build: clang-19 support removed from conanfile.py
+- build: clang-20.1 workaround added to `package_info`
+- build: update dependencies to gsl-lite/0.42.0, ms-gsl/4.1.0,
+  fmt/11.1.4, and catch2/3.8.0
+- build: suppress warnings for gcc-12 in conanfile
+- ci: CI matrix generation added (thanks [@burnpanck](https://github.com/burnpanck))
+- ci: `import_std` now checks if at least C++23 is being used
+- perf: caching of the results of heavy `consteval` functions execution added
+- perf: `expr_projectable` concept removed to improve compilation performance
 
 ### 2.4.0 <small>November 5, 2024</small> { id="2.4.0" }
 
 - (!) feat: `phase_velocity` and `group_velocity` aliases removed from ISQ by ISO
 - feat: `iec::bit` using-declared in `iec::unit_symbols`
 - feat: common unit symbols now use `EQUIV{u1, u2, ...}` syntax
-- feat: `scaled_unit` symbol printing improved (`[]` around the entire unit, small magnitude values do not use a power of `10` anymore)
+- feat: `scaled_unit` symbol printing improved (`[]` around the entire unit,
+  small magnitude values do not use a power of `10` anymore)
 - feat: `scaled_unit` does not have a priority over `derived_unit` anymore
 - feat: fractional exponents support added to `mag_power`
 - feat: tag types are now required to be empty
@@ -23,18 +173,22 @@
 - feat: `π` added as an alias for `pi`
 - feat: `expr_pow` extended to remove redundancy in callers
 - feat: `DerivedDimensionExpr`, `DerivedQuantitySpecExpr` and `DerivedUnitExpr` removed
-- feat: `MagnitudeSpecExpr` and `PowerVBase` removed and some functions renamed to limit possible ambiguity in overload resolution
+- feat: `MagnitudeSpecExpr` and `PowerVBase` removed and some functions renamed to
+  limit possible ambiguity in overload resolution
 - feat: `std::is_object` constraint applied to `value_type_t`
 - feat: `quantity_values` are now defined on top of `std::chrono::duration_values`
 - feat: from now on truncation is not allowed in compound assignment
 - feat(example): currency example now uses `chrono::time_point` and has better interfaces
 - feat(example): `treat_as_floating_point` specializations for examples' types removed
 - (!) refactor: all `iec` quantity specifications are now deprecated and moved to `isq`
-- (!) refactor: `mag_constant` now takes a symbol and a value and the class deriving from it must be final
-- (!) refactor: `op==(U1, U2)` now checks for the same type (old behavior available as `equivalent(U1, U2)`) + `convertible` now verifies associated `quantity_spec` as well
+- (!) refactor: `mag_constant` now takes a symbol and a value and the class deriving
+  from it must be final
+- (!) refactor: `op==(U1, U2)` now checks for the same type (old behavior available as
+  `equivalent(U1, U2)`) + `convertible` now verifies associated `quantity_spec` as well
 - (!) refactor: `ascii` -> `portable`, `unicode` -> `utf8`, 'A' -> 'P'
 - (!) refactor: `char_traits` removed from `fixed_string`
-- (!) refactor: convertibility traits and concepts refactored to use `bool` flags instead of wrappers
+- (!) refactor: convertibility traits and concepts refactored to use `bool` flags
+  instead of wrappers
 - (!) refactor: tag types should not expose their members
 - refactor: `convertible(U1, U2)` implementation simplified
 - refactor: `abs` moved to `constexpr_math.h`
@@ -48,7 +202,8 @@
 - refactor: `SameDimension` concept is not needed and can be inlined in `DimensionOf`
 - refactor: framework Unicode symbols are now spelled using their codes
 - refactor: `QuantitySpecWithNoSpecifiers` removed and `kind_of` definition simplified
-- refactor: `treat_as_floating_point` simplified and extended to use `std::chrono::treat_as_floating_point_v`
+- refactor: `treat_as_floating_point` simplified and extended to use
+  `std::chrono::treat_as_floating_point_v`
 - refactor: `wrapped_type_t` reuses `std::indirectly_readable_traits`
 - refactor: `expr_fractions` takes direct `OneType` type now instead of a trait
 - refactor: Unicode symbols description reworked based on the latest SG16 recommendations
@@ -56,11 +211,14 @@
 - refactor: `explicit` cleanup for deduction guides of `quantity` and `quantity_point`
 - refactor: `point_origin_interface::op-` cleanup
 - refactor: `QuantityLikeImpl` refactored to conform to API Reference by @JohelEGP
-- refactor: `get_complexity` refactored to be 0-based and not account for a number of arguments in a list
-- refactor: `get_complexity` refactored to returned maximum complexity of an element (instead of the sum of elements)
+- refactor: `get_complexity` refactored to be 0-based and not account for a number of
+  arguments in a list
+- refactor: `get_complexity` refactored to returned maximum complexity of an element
+  (instead of the sum of elements)
 - refactor(test): `derived_quantity` refactored to `child_quantity`
 - fix: missing `are_ingredients_convertible` overloads added
-- fix: constraints for magnitude added for `scaled_unit` and fixed `common_unit` instantiating it incorrectly
+- fix: constraints for magnitude added for `scaled_unit` and fixed `common_unit`
+  instantiating it incorrectly
 - fix: according to ISO 80000-16 `%` should always be prefixed with space
 - fix: extraneous space in unit symbol having only denominators removed
 - fix: explicit cast added to `less` for magnitudes to fix clang-arm64 conversion error
@@ -69,7 +227,8 @@
 - fix: `operator*(M, U u)` fixed for `U` being `scaled_unit`
 - fix: subsumption of `QuantityKindSpec` fixed
 - fix: `ValuePreservingTo` fixed to apply `std::remove_cvref_t` on `FromRep`
-- fix: compound assignment operations on quantities now behave the same as on the underlying representation types
+- fix: compound assignment operations on quantities now behave the same as on the
+  underlying representation types
 - fix: `QuantityConvertibleTo` used in `quantity_point` compound assignment
 - fix: `convertible_kinds` implementation fixed
 - fix(tests): freestanding build fixed
@@ -81,7 +240,8 @@
 - test: `pow<0>` and `pow<1>` tests added for dimensions
 - test: more `get_common_quantity_spec` tests added
 - build: setting of some test_package CMake options enabled only for a `cxx_modules` build
-- ci: `sudo apt update` added for documentation.yml in hope that it will resolve missing system packages issue
+- ci: `sudo apt update` added for documentation.yml in hope that it will resolve
+  missing system packages issue
 - ci: MSVC added to the CI
 - ci: the latest not-released docs will use "HEAD" as a version from now on
 - ci: documentation action should run on a new tag as well
@@ -92,9 +252,12 @@
 - docs: category of the ISO meeting reports changed to "WG21 Updates"
 - docs: blog comments support added
 - docs: Part 1-5 articles of the ISQ series added
-- docs: "Symbols of scaled units" chapter added + minor updates to scaled and common units chapters
-- docs: conan profile updated to present gcc-14 instead of gcc-12 which is no longer supported
-- docs: "Why derived units order is not preserved from the multiplication?" chapter added to FAQ
+- docs: "Symbols of scaled units" chapter added + minor updates to scaled and
+  common units chapters
+- docs: conan profile updated to present gcc-14 instead of gcc-12 which
+  is no longer supported
+- docs: "Why derived units order is not preserved from the multiplication?" chapter
+  added to FAQ
 - docs: "Many shades of the same unit" extended with a note about the derived units order
 - docs: API Reference now presents _index.html_ instead of _full.hml_
 
@@ -103,7 +266,8 @@
 - (!) feat: `delta` and `absolute` construction helpers
 - (!) feat: Conan and CMake options changed as requested at ConanCenter code review
 - (!) feat: `unit_can_be_prefixed` removed - from now on all named units can be prefixed
-- feat: formatting functions for units and dimensions marked as `constexpr` to enable compile-time text formatting
+- feat: formatting functions for units and dimensions marked as `constexpr` to enable
+  compile-time text formatting
 - feat: `qp1.quantity_from(qp2)` added
 - feat: non-member `swap` added for `fixed_string`
 - feat: simplified `inplace_vector` added
@@ -112,7 +276,8 @@
 - feat: all tags in the expression templates are now ordered by the type names
 - feat: convertibility of a quantity with a unit `one` with the raw value added
 - feat: `import std;` support added
-- feat: compute values for rational magnitude powers (thanks [@chiphogg](https://github.com/chiphogg))
+- feat: compute values for rational magnitude powers (thanks
+  [@chiphogg](https://github.com/chiphogg))
 - feat: `value_cast<Representation, Unit>()` complementary conversion function added
 - feat: `hw_voltage` example added
 - feat: `MP_UNITS_IMPORT_STD` and `MP_UNITS_MODULES` handled properly in `test_package.cpp`
@@ -137,7 +302,8 @@
 - refactor: `Representation` concepts now requires `WeaklyRegular` instead of `std::regular`
 - refactor: `quantity_point` default-constructibility removed from the `quantity_from` constraints
 - refactor: `has_common_type_v` simplified
-- refactor: `is_power_of_quantity_spec` and `is_power_of_dim` variable templates converted to concepts
+- refactor: `is_power_of_quantity_spec` and `is_power_of_dim` variable templates
+  converted to concepts
 - refactor: unnecessary custom versions of `is_specialization_of` removed
 - refactor: `is_derived_from_specialization_of_v` added and applied to remove custom traits
 - fix: signatures of capacity functions of `fixed_string` fixed
@@ -145,7 +311,8 @@
 - fix: `MP_UNITS_HOSTED` branch added to `core.h`
 - fix: mkdocs dependencies fixed in the gitpod dockerfile
 - fix: `MP_UNITS_API_CONTRACTS` should have a priority over headers availability
-- fix: `si.h` and `angular.h` now properly include `hacks.h` to define `MP_UNITS_HOSTED` before its usage
+- fix: `si.h` and `angular.h` now properly include `hacks.h` to define
+  `MP_UNITS_HOSTED` before its usage
 - fix: quantity scaling between different prefixes improved
 - fix: conversion operator to `std::chrono` types fixed
 - fix: `std::format` does not always use `Char*` as iterators
@@ -165,9 +332,11 @@
 - build: `generate()` in `test_package` now correctly propagates project's options
 - build: `target_include_directories` is not needed anymore
 - build: `target_compile_features` now uses `CMAKE_CXX_STANDARD`
-- build: `package_type` is dynamically set in conanfile.py depending if we build modules or not
+- build: `package_type` is dynamically set in conanfile.py depending if we build
+  modules or not
 - build(conan): packaging improved
-- ci: added test for upstream clang on macos-14, as an example for an arm64 platform by [@burnpanck](https://github.com/burnpanck)
+- ci: added test for upstream clang on macos-14, as an example for an arm64 platform by
+  [@burnpanck](https://github.com/burnpanck)
 - style: pre-commit updated to clang-format-18.1.8
 - docs: "Strong Angular System" chapter added
 - docs: docs updated to use new spelling for Conan options
@@ -196,15 +365,18 @@
 - (!) feat: ABI concerns resolved with introduction of u8 strings for symbols
 - (!) feat: API-related Conan, CMake, and preprocessor options redesigned
 - (!) feat: `core.h` removed
-- (!) feat: from now on units, dimensions, quantity specifications, and point origins have to be marked as `final`
+- (!) feat: from now on units, dimensions, quantity specifications, and point origins
+  have to be marked as `final`
 - feat: implicit point origins support added
 - feat: unit default point origin support added
 - feat: `fma`, `isfinite`, `isinf`, and `isnan` math function added by [@NAThompson](https://github.com/NAThompson)
 - feat: `fma` for quantity points added
 - feat: `quantity_point` support added for `quantity_cast` and `value_cast`
 - feat: `value_cast<Unit, Representation>` added
-- feat: `value_cast<Quantity>(q)`, `value_cast<Quantity>(qp)` and `value_cast<QuantityPoint>(qp)` added by [@burnpanck](https://github.com/burnpanck)
-- feat: `interconvertible(QuantitySpec, QuantitySpec)` added
+- feat: `value_cast<Quantity>(q)`, `value_cast<Quantity>(qp)` and
+  `value_cast<QuantityPoint>(qp)` added by
+  [@burnpanck](https://github.com/burnpanck)
+- feat: `interconvertible(quantity_spec, quantity_spec)` added
 - feat: `qp.quantity_from_zero()` added
 - feat: `value_type` type trait added
 - feat: do not print space between a number and `percent` or `per_mille`
@@ -215,7 +387,8 @@
 - feat: `std::format` support added
 - feat: unit text output support added
 - feat: formatting error messages improved
-- feat: improve types readability by eliminating extraneous `()` in references, prefixes, and `kind_of`
+- feat: improve types readability by eliminating extraneous `()` in references, prefixes,
+  and `kind_of`
 - feat: dimension and unit text output added
 - feat: some light and radiation ISQ quantities added
 - feat: allow configuring GSL library use
@@ -242,13 +415,14 @@
 - refactor: `validate_ascii_string` refactored to `is_basic_literal_character_set`
 - refactor: `underlying_type` split to `wrapped_type` and `value_type` and used in code
 - refactor: code refactored to comply with clang-tidy
-- refactor: remove dependency on `<ranges>` header and switch to use an iterator-based `copy` algorithm
+- refactor: remove dependency on `<ranges>` header and switch to use an iterator-based
+  `copy` algorithm
 - refactor: `terminate` replaced with `abort` and a header file added
 - refactor: most `std::remove_const_t` removed and some replaced with the GCC-specific workaround
 - refactor: not needed `remove_reference_t` and `remove_cvref_t` removed
 - refactor: binary operators of `quantity` and `quantity_point` are now hidden friends
 - fix: `QuantityLike` conversions required `Q::rep` instead of using one provided by `quantity_like_traits`
-- fix: `QuantitySpec[Unit]` replaced with `make_reference` in `value_cast`
+- fix: `quantity_spec[Unit]` replaced with `make_reference` in `value_cast`
 - fix: `ice_point` is now defined with the integral offset from `absolute_zero`
 - fix: performance regression in `sudo_cast` fixed
 - fix: explicit object parameter support fixed
@@ -260,7 +434,8 @@
 - docs: "Interoperability with Other Libraries" chapter added
 - docs: "Framework Basics" chapters updated and cleaned up
 - docs: `smoot` unit example added to the main page
-- docs: "Code Example" chapter renamed to "Look and Feel" and reordered in TOC to be after "Quick Start"
+- docs: "Code Example" chapter renamed to "Look and Feel" and reordered in TOC to be
+  after "Quick Start"
 - docs: "Quick Start" chapter reworked to be simpler and include quantity points
 - docs: "Quantity points" chapter extended
 - docs: "The Affine Space" chapter updated to reflect the recent design changes
@@ -278,7 +453,8 @@
 - docs: CITATION.cff updated
 - (!) build: Conan and CMake options refactored
 - (!) build: `MP_UNITS_AS_SYSTEM_HEADERS` renamed to `MP_UNITS_BUILD_AS_SYSTEM_HEADERS`
-- (!) build: `MP_UNITS_BUILD_LA` and `MP_UNITS_IWYU` CMake options now have `_DEV_` in the name
+- (!) build: `MP_UNITS_BUILD_LA` and `MP_UNITS_IWYU` CMake options now have `_DEV_`
+  in the name
 - build: gsl-lite updated to 0.41.0
 - build: catch2 updated to 3.5.1
 - build: fmt updated to 10.2.1
@@ -300,38 +476,45 @@
 
 ### 2.1.0 <small>December 9, 2023</small> { id="2.1.0" }
 
-- (!) feat: `inverse()` support added for dimensions, quantity_spec, units, and references
-            (`1 / s` will now create `quantity` and not a `Unit`)
+- (!) feat: `inverse()` support added for dimensions, quantity_spec, units, and
+  references (`1 / s` will now create `quantity` and not a `Unit`)
 - (!) feat: `quantity_point` does not provide `zero()` anymore
 - (!) feat: `quantity_spec` and its kind should not compare equal
 - (!) feat: mutating interface removed from `fixed_string`
-- (!) feat: `common_type` with a raw value is not needed anymore as for a long time now raw values are
-  not convertible to the dimensionless quantities
+- (!) feat: `common_type` with a raw value is not needed anymore as for a long
+  time now raw values are not convertible to the dimensionless quantities
 - (!) feat: `symbol_text` definition simplified
 - (!) feat: users are now allowed to inherit their own types from absolute point origins
 - (!) feat: interoperability with other libraries redesigned
-- feat: `basic_fixed_string(const CharT*, std::integral_constant<std::size_t, N>)` constructor added
+- feat: `basic_fixed_string(const CharT*,
+  std::integral_constant<std::size_t, N>)` constructor added
 - feat: `isq::activity` added and `becquerel` definition updated to benefit from it
 - feat: `gray` and `sievert` now have correct associated quantity kinds
-- feat: `UnitCompatibleWith` concept added and applied to `in(U)` and `force_in(U)` functions
-- feat: quantities can now be multiplied and divided by units (no parenthesis needed anymore)
+- feat: `UnitCompatibleWith` concept added and applied to `in(U)` and
+  `force_in(U)` functions
+- feat: quantities can now be multiplied and divided by units (no parenthesis
+  needed anymore)
 - feat: `Magnitude / Unit` operator added
-- feat: equality for dimensions now will allow derived classes as well (but not from `derived_dimension`)
+- feat: equality for dimensions now will allow derived classes as well (but not
+  from `derived_dimension`)
 - feat: `zero_Fahrenheit` point origin added
 - feat: equivalent point origins handling improved
 - feat(example): unit symbols added to the currency example
-- (!) refactor: `unit_symbol<fmt>(U)` signature refactored and the resulting text can now also be used at runtime
+- (!) refactor: `unit_symbol<fmt>(U)` signature refactored and the resulting text
+  can now also be used at runtime
 - (!) refactor: `make_xxx` factory functions replaced with two-parameter constructors
 - (!) refactor: `unit_symbol` changed to `consteval`
 - refactor: `in(U)` and `force_in(U)` now return `auto` to provide better diagnostics on clang
 - refactor: `quantity` operators constraints refactored
 - refactor: more type members added to `fixed_string` definition
-- refactor: `unit_symbol_formatting` enums now use `std::int8_t` as a representation type
+- refactor: `unit_symbol_formatting` enums now use `std::int8_t` as a
+  representation type
 - fix: symbols of named dimensionless units with the ratio = 1 were not printed
 - fix: iterator is now properly updated for all cases in `unit_symbol`
 - fix: Fahrenheit conversion ratio was inverted
 - fix: `CommonlyInvocableQuantities` was overconstrained for the current library design
-- fix: `are_ingredients_convertible` now mandates explicit conversion for `To` dimensionless quantities
+- fix: `are_ingredients_convertible` now mandates explicit conversion for `To`
+  dimensionless quantities
 - fix: `quantity_point::point_for(PO)` constraints fixed
 - fix(example): `latitude` and `longitude` fixed to include `0` for `N` and `E` respectively
 - ci: clang-17 enabled
@@ -362,24 +545,33 @@
 - unified and simplified quantity creation (#274)
 - determining the best way to create a quantity (#413)
 - V2 `quantity_point` (#414)
-- introduction of `quantity_spec` to store not only `dimension` but also additional information about quantities (#405)
-- `quantity` now takes `reference` object, which aggregates `quantity_spec` and a `unit` and a `representation` type
-- units, prefixes, dimensions, quantity specifications, and references are passed as NTTPs to templates and provide arithmetic operations and comparison
-- expression templates consistently used in all derived types to increase the readability (#351, #166)
+- introduction of `quantity_spec` to store not only `dimension` but also additional
+  information about quantities (#405)
+- `quantity` now takes `reference` object, which aggregates `quantity_spec` and a
+  `unit` and a `representation` type
+- units, prefixes, dimensions, quantity specifications, and references are passed as
+  NTTPs to templates and provide arithmetic operations and comparison
+- expression templates consistently used in all derived types to increase the
+  readability (#351, #166)
 - derived dimensions are now factors of only base dimensions (#281)
 - convertibility of derived quantities (#427)
-- dimensions, quantity specifications, units, and references are now composable, significantly reducing the number of definitions and resulting types
-- heavily simplified unit systems definitions (no need to define unnamed derived units, systems-specific dimensions, aliases for quantities, concepts, UDLs, ... anymore)
+- dimensions, quantity specifications, units, and references are now composable,
+  significantly reducing the number of definitions and resulting types
+- heavily simplified unit systems definitions (no need to define unnamed derived
+  units, systems-specific dimensions, aliases for quantities, concepts, UDLs,
+  ... anymore)
 - improved definition of all systems
 - support for ISO 80000 Part 3-6 quantities
 - faster than lightspeed constants (#169)
 - extensions to quantity formatting with `fmt`
 - `quantity_kind` removed
 - improved casting of unit with `.in(Unit)`, `.force_in(Unit)` for `quantity` and `quantity_spec`
-- numerical value accessor safety improved with `.numerical_value_in(Unit)` and `.force_numerical_value_in(Unit)`
+- numerical value accessor safety improved with
+  `.numerical_value_in(Unit)` and `.force_numerical_value_in(Unit)`
 - `quantity` can no longer be constructed with a raw value (#434)
 - Implicit construction of quantities from a value (#410)
-- `quantity_point` can no longer be constructed with just a `quantity` and an explicit `PointOrigin` is always needed
+- `quantity_point` can no longer be constructed with just a `quantity` and an
+  explicit `PointOrigin` is always needed
 - `ceil` and `floor` are dangerous (#432)
 - quecto, ronto, ronna, quetta new SI prefixes support
 - comparison against zero added (#487)
@@ -388,7 +580,8 @@
 
 ### 0.8.0 <small>June 14, 2023</small> { id="0.8.0" }
 
-- (!) refactor: `common_quantity`, `common_quantity_for`, `common_quantity_point`, `common_quantity_kind`, and `common_quantity_point_kind` removed
+- (!) refactor: `common_quantity`, `common_quantity_for`, `common_quantity_point`,
+  `common_quantity_kind`, and `common_quantity_point_kind` removed
 - (!) refactor: `named_derived_unit` removed as it was not used
 - (!) refactor: `derived_unit` renamed to `derived_scaled_unit`
 - (!) refactor: `unit` renamed to `derived_unit`
@@ -397,8 +590,10 @@
 - (!) refactor: `mi(naut)` renamed to `nmi`
 - (!) refactor: `knot` unit helper renamed to `kn` in FPS
 - (!) refactor: `knot` text symbol changed from `"knot"` to `"kn"`
-- refactor: `quantity` `op+()` and `op-()` reimplemented in terms of `reference` rather then `quantity` types
-- refactor(example): `glide_computer` now use dimensionless quantities with `ranged_representation` as `rep`
+- refactor: `quantity` `op+()` and `op-()` reimplemented in terms of `reference`
+  rather then `quantity` types
+- refactor(example): `glide_computer` now use dimensionless quantities with
+  `ranged_representation` as `rep`
 - feat: HEP system support added (thanks [@RalphSteinhagen](https://github.com/RalphSteinhagen))
 - feat: `floor()`, `ceil()`, and `round()` support added (thanks [@hofbi](https://github.com/hofbi))
 - feat: `std::format` support for compliant compilers added
@@ -426,7 +621,8 @@
 - (!) build: Conan 1.48 does not set `CMAKE_BUILD_TYPE` in the `conan_toolchain.cmake` anymore
 - build: AppleClang 13 support added (thanks [@fdischner](https://github.com/fdischner))
 - build: most of the `conanfile.py` refactored to be Conan 2.0 ready
-- build: `validate()` replaced with `configure()` to raise errors during `conan install` in Conan 1.X
+- build: `validate()` replaced with `configure()` to raise errors during `conan install`
+  in Conan 1.X
 - build: minimum Conan version changed to 1.40
 - build: `linear-algebra` Conan repo is no needed anymore
 - build: Gitpod support added
@@ -458,13 +654,15 @@
 - refactor: `abs()` definition refactored to be more explicit about the return type
 - feat: quantity (point) kind support added (thanks [@johelegp](https://github.com/johelegp))
 - feat: quantity references support added (thanks [@johelegp](https://github.com/johelegp))
-- feat: quantity aliases support addded
+- feat: quantity aliases support added
 - feat: interoperability with `std::chrono::duration` and other units libraries
 - feat: CTAD for dimensionless quantity added
 - feat: `modulation_rate` support added (thanks [@go2sh](https://github.com/go2sh))
 - feat: SI prefixes for `isq::iec80000` support added (thanks [@go2sh](https://github.com/go2sh))
-- feat: a possibility to disable quantity UDLs support with `UNITS_NO_LITERALS` preprocessor define
-- feat: a support to define ISQ derived dimensions in terms of different number or order of components
+- feat: a possibility to disable quantity UDLs support with `UNITS_NO_LITERALS`
+  preprocessor define
+- feat: a support to define ISQ derived dimensions in terms of different number or order
+  of components
 - perf: preconditions check do not influence the runtime performance of a Release build
 - perf: `quantity_cast()` generates less assembly instructions
 - perf: temporary string creation removed from `quantity::op<<()`
@@ -473,16 +671,20 @@
 - perf: limited the C++ Standard Library headers usage
 - perf: rvalue references support added for constructors and getters
 - (!) fix: `exp()` has sense only for dimensionless quantities
-- (!) fix: `dim_torque` now properly divides by an angle (instead of multiply) + default unit name change
+- (!) fix: `dim_torque` now properly divides by an angle (instead of multiply) +
+  default unit name change
 - fix: quantity's operators fixed to behave like the underlying types do
-- fix: `quantity_cast()` fixed to work correctly with representation types not convertible from `std::intmax_t`
+- fix: `quantity_cast()` fixed to work correctly with representation types not
+  convertible from `std::intmax_t`
 - fix: ambiguous case for empty type list resolved
 - fix: downcasting facility for non-default-constructible types
 - fix: restore user-warnings within the library implementation
 - fix: the text symbol of `foot_pound_force` and `foot_pound_force_per_second`
 - fix: quantity modulo arithmetics fixed
-- (!) build: Conan testing version is now hosted on [Artifactory](https://mpusz.jfrog.io/ui/packages/conan:%2F%2Fmp-units)
-- (!) build: Linear Algebra is now hosted on its [Artifactory](https://twonington.jfrog.io/artifactory/api/conan/conan-oss)
+- (!) build: Conan testing version is now hosted on
+  [Artifactory](https://mpusz.jfrog.io/ui/packages/conan:%2F%2Fmp-units)
+- (!) build: Linear Algebra is now hosted on its
+  [Artifactory](https://twonington.jfrog.io/artifactory/api/conan/conan-oss)
 - (!) build: `BUILD_DOCS` CMake option renamed to `UNITS_BUILD_DOCS`
 - build: doxygen updated to 1.8.20
 - build: catch2 updated to 2.13.4
@@ -510,7 +712,8 @@
 - (!) refactor: `exp` and `Exp` renamed to `exponent` and `Exponent`
 - (!) refactor: `Scalar` concept renamed to `ScalableNumber`
 - (!) refactor: Dimensionless quantities redesigned to be of a `quantity` type
-- refactor: `math.h` function signatures refactored to use a `Quantity` concept (thanks [@kwikius](https://github.com/kwikius))
+- refactor: `math.h` function signatures refactored to use a `Quantity` concept (thanks
+  [@kwikius](https://github.com/kwikius))
 - refactor: `[[nodiscard]]` added to many functions
 - fix: `si::day` unit symbol fixed to `d` (thanks [@komputerwiz](https://github.com/komputerwiz))
 - fix: `si::mole` unit symbol fixed to `mol` (thanks [@mikeford3](https://github.com/mikeford3))
@@ -529,8 +732,8 @@
 - Major refactoring and rewrite of the library
 - Units are now independent from dimensions
 - Dimensions now depend on units (base or coherent units are provided in a class template)
-- Quantity gets a Dimension template parameter again (as unit does not provide information about
-  its dimension anymore)
+- Quantity gets a Dimension template parameter again (as unit does not provide
+  information about its dimension anymore)
 - Spaceship operator support added
 - Added official CGS system support
 - Added official data information system support
@@ -555,8 +758,8 @@
 - Velocity renamed to speed
 
 Many thanks to GitHub users [@oschonrock](https://github.com/oschonrock),
-[@kwikius](https://github.com/kwikius), and [@i-ky](https://github.com/i-ky) for their support
-in drafting a new library design.
+[@kwikius](https://github.com/kwikius), and [@i-ky](https://github.com/i-ky) for
+their support in drafting a new library design.
 
 ### 0.4.0 <small>Nov 17, 2019</small> { id="0.4.0" }
 
@@ -579,8 +782,8 @@ in drafting a new library design.
 
 - The design as described on CppCon 2019 talk (<https://youtu.be/0YW6yxkdhlU>)
 - Applied the feedback from the Cologne evening session
-  - `upcasting_traits` renamed to `downcasting_traits`
-  - `Dimension` template parameter removed from quantity
+    - `upcasting_traits` renamed to `downcasting_traits`
+    - `Dimension` template parameter removed from quantity
 - `units` moved to a `std::experimental` namespace
 - Leading underscore prefix removed from UDLs
 - Added a few more derived dimensions

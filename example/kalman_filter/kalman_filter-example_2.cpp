@@ -31,16 +31,11 @@ import std;
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else
-#include <mp-units/format.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si/unit_symbols.h>
 #endif
 
 // Based on: https://www.kalmanfilter.net/alphabeta.html#ex2
-
-template<class T>
-  requires mp_units::is_scalar<T>
-constexpr bool mp_units::is_vector<T> = true;
 
 using namespace mp_units;
 

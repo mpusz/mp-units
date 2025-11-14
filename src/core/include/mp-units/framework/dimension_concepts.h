@@ -25,8 +25,8 @@
 // IWYU pragma: private, include <mp-units/framework.h>
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/ext/type_traits.h>
-#include <mp-units/framework/expression_template.h>
 #include <mp-units/framework/symbol_text.h>
+#include <mp-units/framework/symbolic_expression.h>
 
 namespace mp_units {
 
@@ -42,7 +42,7 @@ struct dimension_interface;
  * Satisfied by all dimension types in the library.
  */
 MP_UNITS_EXPORT template<typename T>
-concept Dimension = detail::SymbolicConstant<T> && std::derived_from<T, detail::dimension_interface>;
+concept Dimension = std::derived_from<T, detail::dimension_interface> && detail::SymbolicConstant<T>;
 
 MP_UNITS_EXPORT template<symbol_text Symbol>
 struct base_dimension;

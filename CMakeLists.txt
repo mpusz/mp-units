@@ -24,16 +24,21 @@ cmake_minimum_required(VERSION 3.25)
 project(mp-units-dev LANGUAGES CXX)
 
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
+list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/src/cmake")
+include(CheckCacheVarValues)
 
-set(projectPrefix MP_UNITS_)
+option(MP_UNITS_DEV_IWYU "Enables include-what-you-use" OFF)
+option(MP_UNITS_DEV_CLANG_TIDY "Enables clang-tidy" OFF)
+set(MP_UNITS_DEV_TIME_TRACE
+    NONE
+    CACHE STRING
+          "Enables `-ftime-trace` for a selected scope: NONE, ALL, MODULES, HEADERS. MODULES and HEADERS do not affect unit tests."
+)
+check_cache_var_values(MP_UNITS_DEV_TIME_TRACE NONE ALL MODULES HEADERS)
 
-option(${projectPrefix}DEV_BUILD_LA "Build code depending on the linear algebra library" OFF)
-option(${projectPrefix}DEV_IWYU "Enables include-what-you-use" OFF)
-option(${projectPrefix}DEV_CLANG_TIDY "Enables clang-tidy" OFF)
-
-message(STATUS "${projectPrefix}DEV_BUILD_LA: ${${projectPrefix}DEV_BUILD_LA}")
-message(STATUS "${projectPrefix}DEV_IWYU: ${${projectPrefix}DEV_IWYU}")
-message(STATUS "${projectPrefix}DEV_CLANG_TIDY: ${${projectPrefix}DEV_CLANG_TIDY}")
+message(STATUS "MP_UNITS_DEV_IWYU: ${MP_UNITS_DEV_IWYU}")
+message(STATUS "MP_UNITS_DEV_CLANG_TIDY: ${MP_UNITS_DEV_CLANG_TIDY}")
+message(STATUS "MP_UNITS_DEV_TIME_TRACE: ${MP_UNITS_DEV_TIME_TRACE}")
 
 # make sure that the file is being used as an entry point
 include(modern_project_structure)
@@ -43,9 +48,7 @@ ensure_entry_point()
 include(ccache)
 enable_ccache(BASE_DIR ${PROJECT_SOURCE_DIR})
 
-if(${projectPrefix}DEV_IWYU)
-    set(${projectPrefix}BUILD_AS_SYSTEM_HEADERS ON)
-
+if(MP_UNITS_DEV_IWYU)
     include(include-what-you-use)
     enable_iwyu(
         REQUIRED
@@ -54,7 +57,7 @@ if(${projectPrefix}DEV_IWYU)
         MAX_LINE_LENGTH 120
         NO_COMMENTS
     )
-elseif(${projectPrefix}DEV_CLANG_TIDY)
+elseif(MP_UNITS_DEV_CLANG_TIDY)
     include(static_analysis)
     enable_clang_tidy(PROGRAM clang-tidy-18 REQUIRED)
 else()
@@ -67,12 +70,11 @@ endif()
 # add project code
 add_subdirectory(src)
 
-if(NOT ${projectPrefix}API_FREESTANDING)
+if(NOT MP_UNITS_API_FREESTANDING)
     # add usage example
     add_subdirectory(example)
 endif()
 
 # add unit tests
 enable_testing()
-
 add_subdirectory(test)

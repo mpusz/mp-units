@@ -2,8 +2,8 @@
 
 !!! warning
 
-    This chapter's features are experimental and subject to change or removal. Please share your feedback
-    if something seems wrong or could be improved.
+    This chapter's features are experimental and subject to change or removal.
+    Please share your feedback if something seems wrong or could be improved.
 
 
 ## Scalars, vectors, and tensors
@@ -18,21 +18,23 @@
 Such distinction is important because each quantity character represents different properties
 and allows different operations to be done on its quantities.
 
-For example, imagine a physical units library that allows the creation of a $speed$ quantity from both
-$length / time$ and $length * time$. It wouldn't be too safe to use such a product, right?
+For example, imagine a physical units library that allows the creation of a $speed$ quantity
+from both $length / time$ and $length * time$.
+It wouldn't be too safe to use such a product, right?
 
-Now we have to realize that both of the above operations (multiplication and division) are not even
-mathematically defined for linear algebra types such as vectors or tensors. On the other hand, two vectors
-can be passed as arguments to dot and cross-product operations. The result of the first one is
-a scalar. The second one results in a vector that is perpendicular to both vectors passed as arguments.
-Again, it wouldn't be safe to allow replacing those two operations with each other or expect the same
-results from both cases. This simply can't work.
+Now we have to realize that both of the above operations (multiplication and division)
+are not even mathematically defined for linear algebra types such as vectors or tensors.
+On the other hand, two vectors can be passed as arguments to dot and cross-product operations.
+The result of the first one is a scalar. The second one results in a vector that is
+perpendicular to both vectors passed as arguments. Again, it wouldn't be safe to allow
+replacing those two operations with each other or expect the same results from both cases.
+This simply can't work.
 
 
 ## ISQ defines quantities of all characters
 
-While defining quantities ISO 80000 explicitly mentions when a specific quantity has a vector or tensor
-character. Here are some examples:
+While defining quantities, ISO 80000 explicitly mentions when a specific quantity has a vector
+or tensor character. Here are some examples:
 
 | Quantity                 |  Character   |                    Quantity Equation                    |
 |--------------------------|:------------:|:-------------------------------------------------------:|
@@ -115,13 +117,13 @@ enumeration can be appended to the `quantity_spec` describing such a quantity ty
     QUANTITY_SPEC(position_vector, displacement);
     ```
 
-With the above, all the quantities derived from `position_vector` or `displacement` will have a correct
-character determined according to the kind of operations included in the
+With the above, all the quantities derived from `position_vector` or `displacement`
+will have a correct character determined according to the kind of operations included in the
 [quantity equation](../../appendix/glossary.md#quantity-equation) defining a
 [derived quantity](../../appendix/glossary.md#derived-quantity).
 
-For example, `velocity` in the below definition will be defined as a vector quantity (no explicit
-character override is needed):
+For example, `velocity` in the below definition will be defined as a vector quantity.
+No explicit character override is needed:
 
 === "C++23"
 
@@ -152,9 +154,10 @@ template<Reference auto R,
 class quantity;
 ```
 
-The second template parameter is constrained with a [`RepresentationOf`](concepts.md#RepresentationOf)
-concept that checks if the provided representation type satisfies the requirements for the character
-associated with this quantity type.
+The second template parameter is constrained with a
+[`RepresentationOf`](concepts.md#RepresentationOf) concept that checks if the provided
+representation type satisfies the requirements for the character associated with this
+quantity type.
 
 !!! note
 
@@ -168,9 +171,6 @@ associated with this quantity type.
     However, thanks to the provided customization points, any linear algebra library types can be used
     as a vector or tensor quantity representation type.
 
-To enable the usage of a user-defined type as a representation type for vector or tensor quantities,
-we need to provide a partial specialization of `is_vector` or `is_tensor` customization points.
-
 For example, here is how it can be done for the [P1385](https://wg21.link/p1385) types:
 
 ```cpp
@@ -178,18 +178,11 @@ For example, here is how it can be done for the [P1385](https://wg21.link/p1385)
 
 using la_vector = STD_LA::fixed_size_column_vector<double, 3>;
 
-template<>
-constexpr bool mp_units::is_vector<la_vector> = true;
-```
-
-With the above, we can use `la_vector` as a representation type for our quantity:
-
-```cpp
 Quantity auto q = la_vector{1, 2, 3} * isq::velocity[m / s];
 ```
 
-In case there is an ambiguity of `operator*` between **mp-units** and a linear algebra library, we can
-either:
+In case there is an ambiguity of `operator*` between **mp-units** and a linear algebra
+library, we can either:
 
 - use two-parameter constructor
 
@@ -197,7 +190,8 @@ either:
     Quantity auto q = quantity{la_vector{1, 2, 3}, isq::velocity[m / s]};
     ```
 
-- provide a dedicated overload of `operator*` that will resolve the ambiguity and wrap the above
+- provide a dedicated overload of `operator*` that will resolve the ambiguity
+  and wrap the above
 
     ```cpp
     template<Reference R>
@@ -219,32 +213,3 @@ either:
 
     In all the cases above, the SI unit `m / s` has an associated scalar quantity of `isq::length / isq::time`.
     `la_vector` is not a correct representation type for a scalar quantity so the construction fails.
-
-
-## Hacking the character
-
-Sometimes we want to use a vector quantity, but we don't care about its direction. For example,
-the standard gravity acceleration constant always points down, so we might not care about this
-in a particular scenario. In such a case, we may want to "hack" the library to allow scalar types
-to be used as a representation type for scalar quantities.
-
-For example, we can do the following:
-
-```cpp
-template<class T>
-  requires mp_units::is_scalar<T>
-constexpr bool mp_units::is_vector<T> = true;
-```
-
-which says that every type that can be used as a scalar representation is also allowed for vector
-quantities.
-
-Doing the above is actually not such a big "hack" as the ISO 80000 explicitly allows it:
-
-
-!!! quote "ISO 80000-2"
-
-    A vector is a tensor of the first order and a scalar is a tensor of order zero.
-
-Despite it being allowed by ISO 80000, for type-safety reasons, we do not allow such a behavior
-by default, and a user has to opt into such scenarios explicitly.

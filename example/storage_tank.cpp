@@ -34,17 +34,10 @@ import std;
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else
-#include <mp-units/format.h>
 #include <mp-units/math.h>
 #include <mp-units/systems/isq.h>
 #include <mp-units/systems/si.h>
 #endif
-
-// allows standard gravity (acceleration) and weight (force) to be expressed with scalar representation
-// types instead of requiring the usage of Linear Algebra library for this simple example
-template<class T>
-  requires mp_units::is_scalar<T>
-constexpr bool mp_units::is_vector<T> = true;
 
 namespace {
 

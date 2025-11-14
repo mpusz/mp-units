@@ -80,7 +80,7 @@ public:
   using difference_type = std::ptrdiff_t;
 
   // construction and assignment
-  template<std::convertible_to<CharT>... Chars>
+  template<std::same_as<CharT>... Chars>
     requires(sizeof...(Chars) == N) && (... && !std::is_pointer_v<Chars>)
   constexpr explicit basic_fixed_string(Chars... chars) noexcept : data_{chars..., CharT{}}
   {
@@ -94,7 +94,7 @@ public:
   }
 
   template<std::input_iterator It, std::sentinel_for<It> S>
-    requires std::convertible_to<std::iter_value_t<It>, CharT>
+    requires std::same_as<std::iter_value_t<It>, CharT>
   constexpr basic_fixed_string(It begin, S end)
   {
     MP_UNITS_EXPECTS(std::distance(begin, end) == N);
@@ -102,7 +102,7 @@ public:
   }
 
   template<std::ranges::input_range R>
-    requires std::convertible_to<std::ranges::range_reference_t<R>, CharT>
+    requires std::same_as<std::ranges::range_value_t<R>, CharT>
   constexpr basic_fixed_string(std::from_range_t, R&& r)
   {
     MP_UNITS_EXPECTS(std::ranges::size(r) == N);
@@ -173,8 +173,8 @@ public:
   {
     CharT txt[N + N2];
     CharT* it = txt;
-    for (CharT c : lhs) *it++ = c;
-    for (CharT c : rhs) *it++ = c;
+    for (CharT ch : lhs) *it++ = ch;
+    for (CharT ch : rhs) *it++ = ch;
     return basic_fixed_string<CharT, N + N2>(txt, it);
   }
 
@@ -183,7 +183,7 @@ public:
   {
     CharT txt[N + 1];
     CharT* it = txt;
-    for (CharT c : lhs) *it++ = c;
+    for (CharT ch : lhs) *it++ = ch;
     *it++ = rhs;
     return basic_fixed_string<CharT, N + 1>(txt, it);
   }
@@ -194,7 +194,7 @@ public:
     CharT txt[1 + N];
     CharT* it = txt;
     *it++ = lhs;
-    for (CharT c : rhs) *it++ = c;
+    for (CharT ch : rhs) *it++ = ch;
     return basic_fixed_string<CharT, 1 + N>(txt, it);
   }
 
@@ -205,8 +205,8 @@ public:
     MP_UNITS_EXPECTS(rhs[N2 - 1] == CharT{});
     CharT txt[N + N2];
     CharT* it = txt;
-    for (CharT c : lhs) *it++ = c;
-    for (CharT c : rhs) *it++ = c;
+    for (CharT ch : lhs) *it++ = ch;
+    for (CharT ch : rhs) *it++ = ch;
     return txt;
   }
 
@@ -218,7 +218,7 @@ public:
     CharT txt[N1 + N];
     CharT* it = txt;
     for (std::size_t i = 0; i != N1 - 1; ++i) *it++ = lhs[i];
-    for (CharT c : rhs) *it++ = c;
+    for (CharT ch : rhs) *it++ = ch;
     *it++ = CharT();
     return txt;
   }
@@ -260,7 +260,7 @@ public:
 };
 
 // deduction guides
-template<typename CharT, std::convertible_to<CharT>... Rest>
+template<typename CharT, std::same_as<CharT>... Rest>
 basic_fixed_string(CharT, Rest...) -> basic_fixed_string<CharT, 1 + sizeof...(Rest)>;
 
 template<typename CharT, std::size_t N>

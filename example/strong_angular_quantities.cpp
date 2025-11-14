@@ -28,14 +28,9 @@ import std;
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else
-#include <mp-units/ostream.h>
 #include <mp-units/systems/isq_angle.h>
 #include <mp-units/systems/si.h>
 #endif
-
-template<class T>
-  requires mp_units::is_scalar<T>
-constexpr bool mp_units::is_vector<T> = true;
 
 int main()
 {

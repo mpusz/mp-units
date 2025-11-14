@@ -41,8 +41,12 @@ namespace mp_units::detail {
 
 template<typename T>
 [[nodiscard]] MP_UNITS_CONSTEVAL T abs(T v) noexcept
+  requires requires {
+    v < T{0};
+    -v;
+  }
 {
-  return v < 0 ? -v : v;
+  return v < T{0} ? -v : v;
 }
 
 // Raise an arbitrary arithmetic type to a positive integer power at compile time.
@@ -113,19 +117,8 @@ template<typename T>
     return std::nullopt;
   }
 
-  // Handle negative numbers: only odd roots are allowed.
-  if (x < 0) {
-    if (n % 2 == 0) {
-      return std::nullopt;
-    } else {
-      const auto negative_result = root(-x, n);
-      if (!negative_result.has_value()) {
-        return std::nullopt;
-      }
-      return static_cast<T>(-negative_result.value());
-    }
-  }
-
+  MP_UNITS_DIAGNOSTIC_PUSH
+  MP_UNITS_DIAGNOSTIC_IGNORE_FLOAT_EQUAL
   // Handle special cases of zero and one.
   if (x == 0 || x == 1) {
     return x;
@@ -181,6 +174,7 @@ template<typename T>
       hi = mid;
     }
   }
+  MP_UNITS_DIAGNOSTIC_POP
 
   // Pick whichever one gets closer to the target.
   const auto lo_diff = xld - checked_int_pow(lo, n).value();

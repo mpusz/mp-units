@@ -1,5 +1,18 @@
 # Value Conversions
 
+One of the most important features of every unit library is to provide support for
+compile-time-enabled conversions of a [numerical value of a quantity](../../appendix/glossary.md#numerical-value).
+
+A [numerical value of a quantity](../../appendix/glossary.md#numerical-value) depends on two
+elements:
+
+- quantity representation type (e.g., `int`, `double`) that stores the number expressing
+  the amount of quantity,
+- [unit](../../appendix/glossary.md#unit) in which the quantity is being measured.
+
+Changing any of the above may require changing the value stored in a quantity.
+
+
 ## Value-preserving conversions
 
 ```cpp
@@ -8,9 +21,9 @@ std::cout << q1.in(m) << '\n';
 quantity<si::metre, int> q2 = q1;
 ```
 
-The second line above converts the current quantity to the one expressed in meters and prints its
-contents. The third line converts the quantity expressed in kilometers into the one measured
-in meters.
+The second line above converts the current quantity to the one expressed in meters and
+prints its contents. The third line converts the quantity expressed in kilometers into
+the one measured in meters.
 
 In case a user would like to perform an opposite transformation:
 
@@ -55,8 +68,8 @@ std::cout << value_cast<km>(q1) << '\n';
 quantity<si::kilo<si::metre>, int> q2 = q1.force_in(km);
 ```
 
-This explicit cast makes it clear that something unsafe is going on. It is easy to spot in code
-reviews or while chasing a bug in the source code.
+This explicit cast makes it clear that something unsafe is going on. It is easy to spot
+in code reviews or while chasing a bug in the source code.
 
 !!! note
 
@@ -148,16 +161,17 @@ Price price{12.95 * USD};
 Scaled spx = value_cast<USD_s, std::int64_t>(price);
 ```
 
-As a shortcut, instead of providing a unit and a representation type to `value_cast`, you may also
-provide a `Quantity` type directly, from which unit and representation type are taken. However,
-`value_cast<Quantity>`, still only allows for changes in unit and representation type, but not
-changing the type of the quantity. For that, you will have to use a `quantity_cast` instead.
+As a shortcut, instead of providing a unit and a representation type to `value_cast`, you
+may also provide a `Quantity` type directly, from which unit and representation type are
+taken. However, `value_cast<Quantity>`, still only allows for changes in unit and
+representation type, but not changing the type of the quantity. For that, you will have
+to use a `quantity_cast` instead.
 
-Overloads are also provided for instances of `quantity_point`. All variants of `value_cast<...>(q)`
-that apply to instances of `quantity` have a corresponding version applicable to `quantity_point`,
-where the `point_origin` remains untouched, and the cast changes how the "offset" from the origin
-is represented. Specifically, for any `quantity_point` instance `qp`, all of the following
-equivalences hold:
+Overloads are also provided for instances of `quantity_point`. All variants of
+`value_cast<...>(q)` that apply to instances of `quantity` have a corresponding version
+applicable to `quantity_point`, where the `point_origin` remains untouched, and the cast
+changes how the "offset" from the origin is represented. Specifically, for any
+`quantity_point` instance `qp`, all of the following equivalences hold:
 
 ```cpp
 static_assert(value_cast<Rep>(qp) == quantity_point{value_cast<Rep>(qp.quantity_from(qp.point_origin)), qp.point_origin});
@@ -166,15 +180,39 @@ static_assert(value_cast<U, Rep>(qp) == quantity_point{value_cast<U, Rep>(qp.qua
 static_assert(value_cast<Q>(qp) == quantity_point{value_cast<Q>(qp.quantity_from(qp.point_origin)), qp.point_origin});
 ```
 
-Furthermore, there is one additional overload `value_cast<ToQP>(qp)`. This overload permits to
-additionally replace the `point_origin` with another compatible one, while still representing
+Furthermore, there is one additional overload `value_cast<ToQP>(qp)`. This overload permits
+to additionally replace the `point_origin` with another compatible one, while still representing
 the same point in the affine space. Thus, it is roughly equivalent to
 `value_cast<ToQP::unit, ToQP::rep>(qp).point_for(ToQP::point_origin)`.
 In contrast to a separate `value_cast` followed by `point_for` (or vice-versa), the combined
-`value_cast` tries to choose the order of the individual conversion steps in a way to avoid both
-overflow and unnecessary loss of precision. Overflow is a risk because the change of origin point
-may require an addition of a potentially large offset (the difference between the origin points),
-which may well be outside the range of one or both quantity types.
+`value_cast` tries to choose the order of the individual conversion steps in a way to avoid
+both overflow and unnecessary loss of precision. Overflow is a risk because the change of
+origin point may require an addition of a potentially large offset (the difference between
+the origin points), which may well be outside the range of one or both quantity types.
+
+
+## Scaling overflow prevention
+
+In the case of small integral types, it is easy to overflow the representation type for
+every value besides `0` while performing simple and popular unit conversions. This is why
+the library prevents such invalid conversions at compile-time both for explicit and implicit
+conversions:
+
+```cpp
+quantity q1 = std::int8_t(1) * km;
+quantity q2 = q1.force_in(m);   // Compile-time error (1)
+if(q1 != 1 * m) { /* ... */ }   // Compile-time error (2)
+```
+
+1. Forced conversion would overflow on scaling.
+2. Implicit conversion that brings arguments to a common unit before comparison would
+   overflow on scaling.
+
+In the above example, the conversion factor between `km` and `m` is `1'000`, which is
+larger than the maximum value that can be stored in `std::int8_t`. Even if we want to
+convert the smallest possible integral amount (e.g., `1 km`), we will overflow the quantity
+representation type. We decided not to allow such conversions for safety reasons despite
+the value of `0 km` would work.
 
 
 ## Value conversions summary
