@@ -62,7 +62,7 @@ jobs:
         run: python .github/generate-job-matrix.py --preset clang-tidy --seed ${{ inputs.matrix-seed || 0 }} --debug combinations counts
   build:
     name: "${{ matrix.config-summary-str }}"
-    runs-on: ${{ matrix.config.os }}
+    runs-on: ${{ matrix.toolchain.os }}
     needs: generate-matrix
     strategy:
       fail-fast: false
@@ -70,8 +70,8 @@ jobs:
         include: ${{fromJson(needs.generate-matrix.outputs.matrix)}}
 
     env:
-      CC: ${{ matrix.config.compiler.cc }}
-      CXX: ${{ matrix.config.compiler.cxx }}
+      CC: ${{ matrix.toolchain.compiler.cc }}
+      CXX: ${{ matrix.toolchain.compiler.cxx }}
 
     steps:
       - uses: actions/checkout@v4
@@ -83,35 +83,35 @@ jobs:
           cache-name: cache-conan-data
         with:
           path: ~/.conan2/p
-          key: clang-tidy-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-${{ matrix.std }}-${{ env.cache_id }}
+          key: clang-tidy-${{ matrix.toolchain.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.toolchain.compiler.type }}-${{ matrix.toolchain.lib }}-${{ matrix.build_type }}-${{ matrix.toolchain.compiler.version }}-${{ matrix.std }}-${{ env.cache_id }}
           restore-keys: |
-            clang-tidy-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-${{ matrix.std }}-
-            clang-tidy-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-
-            clang-tidy-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-
-            clang-tidy-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-
-            clang-tidy-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.config.compiler.type }}-
-            clang-tidy-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-
-            clang-tidy-${{ matrix.config.os }}-${{ matrix.formatting }}-
-            clang-tidy-${{ matrix.config.os }}-
+            clang-tidy-${{ matrix.toolchain.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.toolchain.compiler.type }}-${{ matrix.toolchain.lib }}-${{ matrix.build_type }}-${{ matrix.toolchain.compiler.version }}-${{ matrix.std }}-
+            clang-tidy-${{ matrix.toolchain.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.toolchain.compiler.type }}-${{ matrix.toolchain.lib }}-${{ matrix.build_type }}-${{ matrix.toolchain.compiler.version }}-
+            clang-tidy-${{ matrix.toolchain.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.toolchain.compiler.type }}-${{ matrix.toolchain.lib }}-${{ matrix.build_type }}-
+            clang-tidy-${{ matrix.toolchain.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.toolchain.compiler.type }}-${{ matrix.toolchain.lib }}-
+            clang-tidy-${{ matrix.toolchain.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.toolchain.compiler.type }}-
+            clang-tidy-${{ matrix.toolchain.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-
+            clang-tidy-${{ matrix.toolchain.os }}-${{ matrix.formatting }}-
+            clang-tidy-${{ matrix.toolchain.os }}-
       - uses: hendrikmuhs/ccache-action@v1.2
         if: runner.os == 'Linux'
         with:
-          key: ${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-${{ matrix.std }}
+          key: ${{ matrix.toolchain.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.toolchain.compiler.type }}-${{ matrix.toolchain.lib }}-${{ matrix.build_type }}-${{ matrix.toolchain.compiler.version }}-${{ matrix.std }}
           max-size: 50M
       - name: Install Clang
-        if: matrix.config.compiler.type == 'CLANG'
+        if: matrix.toolchain.compiler.type == 'CLANG'
         shell: bash
         working-directory: ${{ env.HOME }}
         run: |
           wget https://apt.llvm.org/llvm.sh
           chmod +x llvm.sh
-          sudo ./llvm.sh ${{ matrix.config.compiler.version }}
-          sudo apt install -y clang-tools-${{ matrix.config.compiler.version }}
+          sudo ./llvm.sh ${{ matrix.toolchain.compiler.version }}
+          sudo apt install -y clang-tools-${{ matrix.toolchain.compiler.version }}
       - name: Install Libc++
-        if: matrix.config.compiler.type == 'CLANG' && matrix.config.lib == 'libc++'
+        if: matrix.toolchain.compiler.type == 'CLANG' && matrix.toolchain.lib == 'libc++'
         shell: bash
         run: |
-          sudo apt install -y libc++-${{ matrix.config.compiler.version }}-dev libc++abi-${{ matrix.config.compiler.version }}-dev libunwind-${{ matrix.config.compiler.version }}-dev
+          sudo apt install -y libc++-${{ matrix.toolchain.compiler.version }}-dev libc++abi-${{ matrix.toolchain.compiler.version }}-dev libunwind-${{ matrix.toolchain.compiler.version }}-dev
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -128,8 +128,8 @@ jobs:
         shell: bash
         run: |
           conan profile detect --force
-          if [[ "${{ matrix.config.compiler.type }}" == "CLANG" ]]; then
-            sed -i.backup '/^\[settings\]$/,/^\[/ s/^compiler.libcxx=.*/compiler.libcxx=${{ matrix.config.lib }}/' ~/.conan2/profiles/default
+          if [[ "${{ matrix.toolchain.compiler.type }}" == "CLANG" ]]; then
+            sed -i.backup '/^\[settings\]$/,/^\[/ s/^compiler.libcxx=.*/compiler.libcxx=${{ matrix.toolchain.lib }}/' ~/.conan2/profiles/default
           fi
           sed -i.backup '/^\[settings\]$/,/^\[/ s/^compiler.cppstd=.*/compiler.cppstd=${{ matrix.std }}/' ~/.conan2/profiles/default
           sed -i.backup '/^\[settings\]$/,/^\[/ s/^build_type=.*/build_type=${{ matrix.build_type }}/' ~/.conan2/profiles/default
@@ -165,6 +165,6 @@ jobs:
           fi
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Analysis Details:**" >> $GITHUB_STEP_SUMMARY
-          echo "- Compiler: ${{ matrix.config.compiler.type }} ${{ matrix.config.compiler.version }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Standard Library: ${{ matrix.config.lib }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Compiler: ${{ matrix.toolchain.compiler.type }} ${{ matrix.toolchain.compiler.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Standard Library: ${{ matrix.toolchain.lib }}" >> $GITHUB_STEP_SUMMARY
           echo "- Analysis Tool: clang-tidy" >> $GITHUB_STEP_SUMMARY

@@ -118,7 +118,7 @@ class Configuration(ConanOptions):
         ret = dict(
             formatting="std::format" if self.std_format else "fmtlib",
             contracts=self.contracts,
-            config=self.toolchain.for_github(),
+            toolchain=self.toolchain.for_github(),
             std=self.std,
             build_type=self.build_type,
         )

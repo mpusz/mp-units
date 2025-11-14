@@ -72,7 +72,7 @@ jobs:
         run: python .github/generate-job-matrix.py --preset ${{ inputs.matrix-preset || 'conan' }} --seed ${{ inputs.matrix-seed || 0 }} --debug combinations counts
   test_package:
     name: "${{ matrix.config-summary-str }}"
-    runs-on: ${{ matrix.config.os }}
+    runs-on: ${{ matrix.toolchain.os }}
     needs: generate-matrix
     strategy:
       fail-fast: false
@@ -80,8 +80,8 @@ jobs:
         include: ${{fromJson(needs.generate-matrix.outputs.matrix)}}
 
     env:
-      CC: ${{ matrix.config.compiler.cc }}
-      CXX: ${{ matrix.config.compiler.cxx }}
+      CC: ${{ matrix.toolchain.compiler.cc }}
+      CXX: ${{ matrix.toolchain.compiler.cxx }}
 
     steps:
       - name: Downcase 'build_type'
@@ -100,45 +100,45 @@ jobs:
           cache-name: cache-conan-data
         with:
           path: ~/.conan2/p
-          key: cmake-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-${{ matrix.std }}-${{ env.cache_id }}
+          key: cmake-${{ matrix.toolchain.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.toolchain.compiler.type }}-${{ matrix.toolchain.lib }}-${{ matrix.build_type }}-${{ matrix.toolchain.compiler.version }}-${{ matrix.std }}-${{ env.cache_id }}
           restore-keys: |
-            cmake-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-${{ matrix.std }}-
-            cmake-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-${{ matrix.config.compiler.version }}-
-            cmake-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-${{ matrix.build_type }}-
-            cmake-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.config.compiler.type }}-${{ matrix.config.lib }}-
-            cmake-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.config.compiler.type }}-
-            cmake-${{ matrix.config.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-
-            cmake-${{ matrix.config.os }}-${{ matrix.formatting }}-
-            cmake-${{ matrix.config.os }}-
-      - name: Install gcc-${{ matrix.config.compiler.version }}
-        if: matrix.config.compiler.type == 'GCC'
+            cmake-${{ matrix.toolchain.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.toolchain.compiler.type }}-${{ matrix.toolchain.lib }}-${{ matrix.build_type }}-${{ matrix.toolchain.compiler.version }}-${{ matrix.std }}-
+            cmake-${{ matrix.toolchain.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.toolchain.compiler.type }}-${{ matrix.toolchain.lib }}-${{ matrix.build_type }}-${{ matrix.toolchain.compiler.version }}-
+            cmake-${{ matrix.toolchain.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.toolchain.compiler.type }}-${{ matrix.toolchain.lib }}-${{ matrix.build_type }}-
+            cmake-${{ matrix.toolchain.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.toolchain.compiler.type }}-${{ matrix.toolchain.lib }}-
+            cmake-${{ matrix.toolchain.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-${{ matrix.toolchain.compiler.type }}-
+            cmake-${{ matrix.toolchain.os }}-${{ matrix.formatting }}-${{ matrix.contracts }}-
+            cmake-${{ matrix.toolchain.os }}-${{ matrix.formatting }}-
+            cmake-${{ matrix.toolchain.os }}-
+      - name: Install gcc-${{ matrix.toolchain.compiler.version }}
+        if: matrix.toolchain.compiler.type == 'GCC'
         shell: bash
         run: |
-          sudo apt install -y g++-${{ matrix.config.compiler.version }}
+          sudo apt install -y g++-${{ matrix.toolchain.compiler.version }}
       - name: Install Clang with apt
-        if: matrix.config.compiler.type == 'CLANG' && matrix.config.os != 'macos-14'
+        if: matrix.toolchain.compiler.type == 'CLANG' && matrix.toolchain.os != 'macos-14'
         shell: bash
         working-directory: ${{ env.HOME }}
         run: |
           wget https://apt.llvm.org/llvm.sh
           chmod +x llvm.sh
-          sudo ./llvm.sh ${{ matrix.config.compiler.version }}
-          sudo apt install -y clang-tools-${{ matrix.config.compiler.version }}
+          sudo ./llvm.sh ${{ matrix.toolchain.compiler.version }}
+          sudo apt install -y clang-tools-${{ matrix.toolchain.compiler.version }}
       - name: Install Clang using homebrew
-        if: matrix.config.compiler.type == 'CLANG' && matrix.config.os == 'macos-14'
+        if: matrix.toolchain.compiler.type == 'CLANG' && matrix.toolchain.os == 'macos-14'
         shell: bash
         run: |
           brew install llvm@18
       - name: Install Libc++
-        if: matrix.config.compiler.type == 'CLANG' && matrix.config.lib == 'libc++' && matrix.config.os != 'macos-14'
+        if: matrix.toolchain.compiler.type == 'CLANG' && matrix.toolchain.lib == 'libc++' && matrix.toolchain.os != 'macos-14'
         shell: bash
         run: |
-          sudo apt install -y libc++-${{ matrix.config.compiler.version }}-dev libc++abi-${{ matrix.config.compiler.version }}-dev libunwind-${{ matrix.config.compiler.version }}-dev
+          sudo apt install -y libc++-${{ matrix.toolchain.compiler.version }}-dev libc++abi-${{ matrix.toolchain.compiler.version }}-dev libunwind-${{ matrix.toolchain.compiler.version }}-dev
       - name: Select Xcode version
-        if: matrix.config.compiler.type == 'APPLE_CLANG'
+        if: matrix.toolchain.compiler.type == 'APPLE_CLANG'
         shell: bash
         run: |
-          sudo xcode-select -s /Applications/Xcode_${{ matrix.config.compiler.version }}.app && /usr/bin/xcodebuild -version
+          sudo xcode-select -s /Applications/Xcode_${{ matrix.toolchain.compiler.version }}.app && /usr/bin/xcodebuild -version
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -156,8 +156,8 @@ jobs:
         run: |
           conan profile detect --force
           conan remote add artifactory https://mpusz.jfrog.io/artifactory/api/conan/conan-oss
-          if [[ "${{ matrix.config.compiler.type }}" == "CLANG" ]]; then
-            sed -i.backup '/^\[settings\]$/,/^\[/ s/^compiler.libcxx=.*/compiler.libcxx=${{ matrix.config.lib }}/' ~/.conan2/profiles/default
+          if [[ "${{ matrix.toolchain.compiler.type }}" == "CLANG" ]]; then
+            sed -i.backup '/^\[settings\]$/,/^\[/ s/^compiler.libcxx=.*/compiler.libcxx=${{ matrix.toolchain.lib }}/' ~/.conan2/profiles/default
           fi
           sed -i.backup '/^\[settings\]$/,/^\[/ s/^compiler.cppstd=.*/compiler.cppstd=${{ matrix.std }}/' ~/.conan2/profiles/default
           sed -i.backup '/^\[settings\]$/,/^\[/ s/^build_type=.*/build_type=${{ matrix.build_type }}/' ~/.conan2/profiles/default
@@ -173,7 +173,7 @@ jobs:
         run: |
           echo -e '{\n    "version": 4,\n    "include": [\n        "../CMakeUserPresets.json"\n    ]\n}' | cat > CMakeUserPresets.json
       - name: Configure mp-units CMake
-        if: matrix.config.compiler.type == 'VISUAL' || matrix.config.compiler.type == 'MSVC'
+        if: matrix.toolchain.compiler.type == 'VISUAL' || matrix.toolchain.compiler.type == 'MSVC'
         shell: cmd
         working-directory: src
         run: |
@@ -181,7 +181,7 @@ jobs:
           call ..\build\generators\conanvcvars.bat
           cmake --preset conan-default -DCMAKE_INSTALL_PREFIX=../out
       - name: Configure mp-units CMake
-        if: matrix.config.compiler.type != 'VISUAL' && matrix.config.compiler.type != 'MSVC'
+        if: matrix.toolchain.compiler.type != 'VISUAL' && matrix.toolchain.compiler.type != 'MSVC'
         shell: bash
         working-directory: src
         run: |
@@ -198,7 +198,7 @@ jobs:
         run: |
           echo -e '{\n    "version": 4,\n    "include": [\n        "../CMakeUserPresets.json"\n    ]\n}' | cat > CMakeUserPresets.json
       - name: Build test_package CMake (local build)
-        if: matrix.config.compiler.type == 'VISUAL' || matrix.config.compiler.type == 'MSVC'
+        if: matrix.toolchain.compiler.type == 'VISUAL' || matrix.toolchain.compiler.type == 'MSVC'
         shell: cmd
         working-directory: test_package
         run: |
@@ -206,7 +206,7 @@ jobs:
           cmake --preset conan-default -Dmp-units_DIR=../build -Bbuild/local
           cmake --build build/local --config ${{ matrix.build_type }}
       - name: Build test_package CMake (local build)
-        if: matrix.config.compiler.type != 'VISUAL' && matrix.config.compiler.type != 'MSVC'
+        if: matrix.toolchain.compiler.type != 'VISUAL' && matrix.toolchain.compiler.type != 'MSVC'
         shell: bash
         working-directory: test_package
         run: |
@@ -218,13 +218,13 @@ jobs:
         run: |
           ./test_package-headers
       - name: Run test_package (local build)
-        if: matrix.config.cxx_modules == 'True'
+        if: matrix.toolchain.cxx_modules == 'True'
         shell: bash
         working-directory: test_package/build/local/${{ matrix.build_type }}
         run: |
           ./test_package
       - name: Build test_package CMake (installation)
-        if: matrix.config.compiler.type == 'VISUAL' || matrix.config.compiler.type == 'MSVC'
+        if: matrix.toolchain.compiler.type == 'VISUAL' || matrix.toolchain.compiler.type == 'MSVC'
         shell: cmd
         working-directory: test_package
         run: |
@@ -232,7 +232,7 @@ jobs:
           cmake --preset conan-default -DCMAKE_INSTALL_PREFIX=../out -Bbuild/install
           cmake --build build/install --config ${{ matrix.build_type }}
       - name: Build test_package CMake (installation)
-        if: matrix.config.compiler.type != 'VISUAL' && matrix.config.compiler.type != 'MSVC'
+        if: matrix.toolchain.compiler.type != 'VISUAL' && matrix.toolchain.compiler.type != 'MSVC'
         shell: bash
         working-directory: test_package
         run: |
@@ -244,7 +244,7 @@ jobs:
         run: |
           ./test_package-headers
       - name: Run test_package (installation)
-        if: matrix.config.cxx_modules == 'True'
+        if: matrix.toolchain.cxx_modules == 'True'
         shell: bash
         working-directory: test_package/build/install/${{ matrix.build_type }}
         run: |

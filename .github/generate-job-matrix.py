@@ -230,7 +230,7 @@ def main():
                         )
                     collector.all_combinations(
                         std=20,
-                        contracts="none",
+                        contracts="gsl-lite",
                         **config,
                     )
 
