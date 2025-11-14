@@ -36,6 +36,13 @@ on:
         required: true
         type: number
         default: 0
+      matrix-preset:
+        description: The method how the subset from the full test-matrix should be sampled.
+        required: true
+        type: choice
+        options:
+          - conan
+          - release-tests
 
 env:
   CHANNEL: ${{ fromJSON('["testing", "stable"]')[github.ref_type == 'tag' && startsWith(github.ref_name, 'v')] }}
@@ -60,7 +67,7 @@ jobs:
         with:
           python-version: 3.x
       - id: set-matrix
-        run: python .github/generate-job-matrix.py --preset conan --seed ${{ inputs.matrix-seed || 0 }} --debug combinations counts
+        run: python .github/generate-job-matrix.py --preset ${{ inputs.matrix-preset || 'conan' }} --seed ${{ inputs.matrix-seed || 0 }} --debug combinations counts
   build:
     name: "${{ matrix.config-summary-str }}"
     runs-on: ${{ matrix.config.os }}

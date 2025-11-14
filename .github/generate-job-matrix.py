@@ -170,6 +170,8 @@ def main():
             std=23,
             contracts="none",
             toolchain=toolchains["Clang-18 (x86-64)"],
+            natural_units=True,
+            no_crtp=False,
         )
     match args.preset:
         case None:
@@ -180,7 +182,7 @@ def main():
             collector.all_combinations(
                 freestanding=False,
             )
-        case "conan" | "cmake":
+        case "conan" | "cmake" | "release-tests":
             config = dict(
                 contracts="gsl-lite",
                 build_type="Debug",
@@ -211,6 +213,27 @@ def main():
                 import_std=False,
                 freestanding=False,
             )
+            if args.preset == "release-tests":
+                for cxx_modules in [False, True]:
+                    config = dict(
+                        cxx_modules=cxx_modules,
+                        std_format=True,
+                        freestanding=False,
+                        natural_units=True,
+                    )
+                    for import_std in [False, True]:
+                        collector.all_combinations(
+                            no_crtp=True,
+                            contracts="none" if import_std else "gsl-lite",
+                            import_std=import_std,
+                            **config,
+                        )
+                    collector.all_combinations(
+                        std=20,
+                        contracts="none",
+                        **config,
+                    )
+
         case "clang-tidy":
             collector.sample_combinations(
                 rgen=rgen,
