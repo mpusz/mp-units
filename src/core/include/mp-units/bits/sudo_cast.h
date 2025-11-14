@@ -80,8 +80,7 @@ template<Quantity To, typename FwdFrom, Quantity From = std::remove_cvref_t<FwdF
   } else {
     constexpr UnitMagnitude auto c_mag = get_canonical_unit(From::unit).mag / get_canonical_unit(To::unit).mag;
 
-    typename To::rep res =
-      scale(std::type_identity<typename To::rep>{}, c_mag, q.numerical_value_is_an_implementation_detail_);
+    typename To::rep res = scale<typename To::rep>(c_mag, q.numerical_value_is_an_implementation_detail_);
     return To{res, To::reference};
   }
 }

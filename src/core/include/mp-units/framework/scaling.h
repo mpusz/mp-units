@@ -181,24 +181,16 @@ struct scaling_traits<From, unspecified_rep> : scaling_traits<From, From> {};
 MP_UNITS_EXPORT_BEGIN
 
 // @brief approximate the result of the symbolic multiplication of @c from by @c scaling_factor, and represent it as an
-// instance of @to
-template<typename To, UnitMagnitude M, typename From>
+// instance of @c To (chosen automatically if unspecified)
+template<typename To = unspecified_rep, UnitMagnitude M, typename From>
   requires detail::HasScalingTraits<From, To>
-constexpr To scale(std::type_identity<To>, M scaling_factor [[maybe_unused]], const From& value)
+constexpr To scale(M scaling_factor [[maybe_unused]], const From& value)
 {
-  static_assert(std::is_convertible_v<decltype(scaling_traits<From, To>::template scale<M{}>(value)), To>,
+  static_assert(std::is_same_v<To, unspecified_rep> ||
+                  std::is_convertible_v<decltype(scaling_traits<From, To>::template scale<M{}>(value)), To>,
                 "scaling_traits<From,To>::scale must produce a value that is convertible to To");
   return scaling_traits<From, To>::template scale<M{}>(value);
 }
-
-// @brief approximate the result of the symbolic multiplication of @c from by @c scaling_factor
-template<UnitMagnitude M, typename From>
-  requires detail::HasScalingTraits<From, unspecified_rep>
-constexpr auto scale(M scaling_factor [[maybe_unused]], const From& value)
-{
-  return scaling_traits<From, unspecified_rep>::template scale<M{}>(value);
-}
-
 
 MP_UNITS_EXPORT_END
 

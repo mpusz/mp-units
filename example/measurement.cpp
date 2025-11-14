@@ -144,8 +144,8 @@ struct mp_units::scaling_traits<measurement<T>, mp_units::unspecified_rep> {
   [[nodiscard]] static constexpr auto scale(const measurement<T>& value)
   {
     return measurement{
-      mp_units::scale(M, value.value()),
-      mp_units::scale(M, value.uncertainty()),
+      mp_units::scale<mp_units::unspecified_rep>(M, value.value()),
+      mp_units::scale<mp_units::unspecified_rep>(M, value.uncertainty()),
     };
   }
 };
@@ -155,10 +155,9 @@ struct mp_units::scaling_traits<measurement<From>, measurement<To>> {
   template<mp_units::UnitMagnitude auto M>
   [[nodiscard]] static constexpr measurement<To> scale(const measurement<From>& value)
   {
-    constexpr std::type_identity<To> to_type;
     return measurement<To>{
-      mp_units::scale(to_type, M, value.value()),
-      mp_units::scale(to_type, M, value.uncertainty()),
+      mp_units::scale<To>(M, value.value()),
+      mp_units::scale<To>(M, value.uncertainty()),
     };
   }
 };

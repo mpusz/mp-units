@@ -99,16 +99,25 @@ void check(double_width_int<T> value, V&& visitor)
   REQUIRE(actual_as_standard == expected);
 }
 
+// Produce some test integers in the vicinity (~ +-1, modulo overflow)
+// of those areas in their representation at risk of causing problems:
+// intmin,intmin/2,zero,intmax/2,intmax...
 template<std::integral T>
 std::vector<T> test_values()
 {
+  using U = std::make_unsigned_t<T>;
   std::vector<T> ret;
   for (int msb : {0, 1, 2, 3}) {
-    auto ref = static_cast<T>(msb) << (integer_rep_width_v<T> - 2);
+    // vicinities reached from msb=:
+    //   0: signed: zero; unsigned: zero, intmin and intmax
+    //   1: signed: intmax/2
+    //   2: unsigned: intmax/2; signed: intmin and intmax
+    //   3: signed: intmin/2
+    auto ref = static_cast<U>(msb) << (integer_rep_width_v<U> - 2);
     for (int lsb_corr : {-2, -1, 0, 1, 2}) {
-      auto corr = static_cast<T>(lsb_corr);
-      T value = ref + corr;
-      ret.push_back(value);
+      auto corr = static_cast<U>(lsb_corr);
+      U value = ref + corr;
+      ret.push_back(static_cast<T>(value));
     }
   }
   return ret;
