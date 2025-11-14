@@ -26,6 +26,8 @@
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/framework/customization_points.h>
 #include <mp-units/framework/quantity_spec_concepts.h>
+#include <mp-units/framework/scaling.h>
+#include <mp-units/framework/unit_magnitude.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #ifdef MP_UNITS_IMPORT_STD
@@ -172,6 +174,26 @@ concept NumberLike = Addable<T>
                      && WeaklyRegular<T>
 #endif
   ;
+
+/**
+ * @brief MagnitudeScalable
+ *
+ * Physical quantities can be represented as a product of a "number" $n$ times a unit $u$.
+ * Because the units $u$ of each physical dimension form a (mathematical) vector space over
+ * the field of the real numbers, and each such unit admits an equivalent representation
+ * of the same physical quantitiy, the "number" will have to embed the structure of the
+ * same (mathematical) vector space over the real numbers. That is,
+ * for some scaled unit $u' = f \cdot u$ ($f \in \mathcal{R}$), the two representations
+ * $(n \cdot f) \times u$ and $n \times u'$ are equivalent, and thus the mathematical space
+ * embedding $n$ must admit scaling by a real number. Same for addition.
+ *
+ */
+
+template<typename T>
+concept MagnitudeScalable = detail::WeaklyRegular<T> && requires(T a, std::type_identity<T> to_type) {
+  { mp_units::scale(mag<1>, a) } -> WeaklyRegular;
+  { mp_units::scale(to_type, mag<1>, a) } -> std::convertible_to<T>;
+};
 
 template<typename T>
 concept BaseScalar = NumberLike<T> && ScalableWith<T, T>;

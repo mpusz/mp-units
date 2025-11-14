@@ -37,6 +37,7 @@
 #include <mp-units/framework/quantity_spec_concepts.h>
 #include <mp-units/framework/reference.h>
 #include <mp-units/framework/representation_concepts.h>
+#include <mp-units/framework/scaling.h>
 #include <mp-units/framework/symbol_text.h>
 #include <mp-units/framework/symbolic_expression.h>
 #if MP_UNITS_API_NATURAL_UNITS

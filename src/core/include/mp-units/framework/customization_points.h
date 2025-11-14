@@ -136,6 +136,47 @@ struct representation_values {
 template<typename Rep>
 using quantity_values [[deprecated("2.5.0: Use `representation_values` instead")]] = representation_values<Rep>;
 
+
+/**
+ * @brief A type used in @c scaling_traits to indicate an unspecified @c To type.
+ */
+struct unspecified_rep {};
+
+/**
+ * @brief A type trait that defines the behavior of scaling a value using a magnitude
+ *
+ * Whereas C++ numeric types usually represent a (fixed) subset of the real numbers
+ * (or another vector-space over the field of the real numbers),
+ * the magnitude concept fundamentally can represent any real number.
+ * Thus, in general, the result of a scaling operation is not exactly representable,
+ * and some form of approximation may be needed. That approximation is not
+ * part of the semantics of a physical quantitiy, but of its representation
+ * in C++. Therefore, the approximation semantics are dictatet by the
+ * representation type, which can be customised for user-types through
+ * this type-trait.
+ *
+ * In the following, $\mathcal{V}$ shall denote the vector-space represented by all representation
+ * types involved in the following discussion.
+ *
+ * A specialisation @c scaling_traits<From,ToSpec> shall provide the following members:
+ *  - `template <Magnitude auto M> static constexpr auto scale(const From &value)`:
+ *    Given an element of $\mathcal{V}$ represented by @c value and, a real number represented by @c M,
+ *    return a value representing `M * value`, another element of $\mathcal{V}$.
+ *    Unless @c ToSpec is the type @c unspecified_rep, the result type is required to be convetrible to @c ToSpec.
+ *    When @c ToSpec is the type @c unspecified_rep, the implemenation may choose the best
+ *    representation availabe.
+ *    Because the scaling factor @c M encodes the represented real value in its type,
+ *    that representation may even depend on the actual scaling factor.
+ *  - `template <Magnitude auto M> static constexpr bool implicitly_scalable = ...`:
+ *    When true, the scaling is to be considered "safe", and may be used in implicit conversions.
+ *
+ * @tparam From a representation type whose value is being scaled
+ * @tparam To a representation type in which the result shall be represented, or @c unspecified_rep, indicating
+ *    the implementation is free to chose a representation.
+ */
+template<typename From, typename To>
+struct scaling_traits;
+
 /**
  * @brief Provides support for external quantity-like types
  *
