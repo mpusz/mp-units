@@ -25,6 +25,7 @@
 // IWYU pragma: private, include <mp-units/framework.h>
 #include <mp-units/bits/fixed_point.h>
 #include <mp-units/framework/customization_points.h>
+#include <mp-units/framework/unit_magnitude_concepts.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #ifdef MP_UNITS_IMPORT_STD
@@ -79,8 +80,8 @@ template<typename T>
 concept UsesFloatingPointScaling =
   treat_as_floating_point<T> && requires(T value, floating_point_scaling_factor_type<value_type_t<T>>::type f) {
     // the result representation does not necessarily have to be the same.
-    { value* f } -> std::equality_comparable;
-    { value* f } -> std::copyable;
+    { value * f } -> std::equality_comparable;
+    { value * f } -> std::copyable;
   };
 
 template<typename T>
@@ -122,21 +123,21 @@ struct scaling_traits<From, To> {
   using _scaling_factor_type = std::common_type_t<value_type_t<From>, value_type_t<To>>;
   static_assert(std::is_floating_point_v<_scaling_factor_type>);
 
-  template<Magnitude auto M>
+  template<UnitMagnitude auto M>
   static constexpr bool implicitly_scalable =
     std::is_convertible_v<decltype(detail::cast_if_integral<_scaling_factor_type>(std::declval<From>()) *
                                    std::declval<_scaling_factor_type>()),
                           To>;
 
-  template<Magnitude auto M>
+  template<UnitMagnitude auto M>
   static constexpr To scale(const From& value)
   {
     using U = _scaling_factor_type;
-    if constexpr (_is_integral(_pow<-1>(M)) && !_is_integral(M)) {
-      constexpr U div = static_cast<U>(_get_value<long double>(_pow<-1>(M)));
+    if constexpr (is_integral(pow<-1>(M)) && !is_integral(M)) {
+      constexpr U div = static_cast<U>(get_value<long double>(pow<-1>(M)));
       return static_cast<To>(detail::cast_if_integral<U>(value) / div);
     } else {
-      constexpr U ratio = static_cast<U>(_get_value<long double>(M));
+      constexpr U ratio = static_cast<U>(get_value<long double>(M));
       return static_cast<To>(detail::cast_if_integral<U>(value) * ratio);
     }
   }
@@ -154,20 +155,20 @@ struct scaling_traits<From, To> {
 
   // TODO: should we take possible overflow into account here? This would lead to this almost always resulting
   // in explicit conversions, except for small integral factors combined with a widening conversion.
-  template<Magnitude auto M>
-  static constexpr bool implicitly_scalable = std::is_convertible_v<From, To> && _is_integral(M);
+  template<UnitMagnitude auto M>
+  static constexpr bool implicitly_scalable = std::is_convertible_v<From, To> && is_integral(M);
 
-  template<Magnitude auto M>
+  template<UnitMagnitude auto M>
   static constexpr To scale(const From& value)
   {
-    if constexpr (_is_integral(M)) {
-      constexpr auto mul = _get_value<_common_type>(M);
+    if constexpr (is_integral(M)) {
+      constexpr auto mul = get_value<_common_type>(M);
       return static_cast<To>(static_cast<value_type_t<From>>(value) * mul);
-    } else if constexpr (_is_integral(_pow<-1>(M))) {
-      constexpr auto div = _get_value<_common_type>(_pow<-1>(M));
+    } else if constexpr (is_integral(pow<-1>(M))) {
+      constexpr auto div = get_value<_common_type>(pow<-1>(M));
       return static_cast<To>(static_cast<value_type_t<From>>(value) / div);
     } else {
-      constexpr auto ratio = detail::fixed_point<_common_type>(_get_value<long double>(M));
+      constexpr auto ratio = detail::fixed_point<_common_type>(get_value<long double>(M));
       return static_cast<To>(ratio.scale(static_cast<value_type_t<From>>(value)));
     }
   }
@@ -181,7 +182,7 @@ MP_UNITS_EXPORT_BEGIN
 
 // @brief approximate the result of the symbolic multiplication of @c from by @c scaling_factor, and represent it as an
 // instance of @to
-template<typename To, Magnitude M, typename From>
+template<typename To, UnitMagnitude M, typename From>
   requires detail::HasScalingTraits<From, To>
 constexpr To scale(std::type_identity<To>, M scaling_factor [[maybe_unused]], const From& value)
 {
@@ -191,7 +192,7 @@ constexpr To scale(std::type_identity<To>, M scaling_factor [[maybe_unused]], co
 }
 
 // @brief approximate the result of the symbolic multiplication of @c from by @c scaling_factor
-template<Magnitude M, typename From>
+template<UnitMagnitude M, typename From>
   requires detail::HasScalingTraits<From, unspecified_rep>
 constexpr auto scale(M scaling_factor [[maybe_unused]], const From& value)
 {

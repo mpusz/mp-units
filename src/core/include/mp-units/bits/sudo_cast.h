@@ -78,7 +78,7 @@ template<Quantity To, typename FwdFrom, Quantity From = std::remove_cvref_t<FwdF
             To::reference};  // this is the only (and recommended) way to do a truncating conversion on a number, so we
                              // are using static_cast to suppress all the compiler warnings on conversions
   } else {
-    constexpr Magnitude auto c_mag = get_canonical_unit(From::unit).mag / get_canonical_unit(To::unit).mag;
+    constexpr UnitMagnitude auto c_mag = get_canonical_unit(From::unit).mag / get_canonical_unit(To::unit).mag;
 
     typename To::rep res =
       scale(std::type_identity<typename To::rep>{}, c_mag, q.numerical_value_is_an_implementation_detail_);
@@ -122,7 +122,7 @@ template<QuantityPoint ToQP, typename FwdFromQP, QuantityPoint FromQP = std::rem
     constexpr UnitMagnitude auto c_mag = get_canonical_unit(FromQP::unit).mag / get_canonical_unit(ToQP::unit).mag;
     using type_traits = conversion_type_traits<c_mag, typename FromQP::rep, typename ToQP::rep>;
     using c_type = type_traits::c_type;
-    if constexpr (_get_value<long double>(c_mag) > 1.) {
+    if constexpr (get_value<long double>(c_mag) > 1.) {
       // original unit had a larger unit magnitude; if we first convert to the common representation but retain the
       // unit, we obtain the largest possible range while not causing truncation of fractional values. This is optimal
       // for the offset computation.

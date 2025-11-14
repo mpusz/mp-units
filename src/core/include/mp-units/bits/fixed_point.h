@@ -22,19 +22,24 @@
 
 #pragma once
 
-// IWYU pragma: private, include <mp-units/framework.h>
-#include <mp-units/framework/magnitude.h>
+#include <mp-units/bits/hacks.h>  // IWYU pragma: keep
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #ifdef MP_UNITS_IMPORT_STD
 import std;
 #else
+#include <algorithm>
 #include <bit>
 #include <concepts>
 #include <cstdint>
 #include <cstdlib>
 #include <limits>
 #include <numbers>
+#include <tuple>
+#include <type_traits>
+#include <version>
+// TODO: include unless -ffreestanding
+// #include <cmath>
 #endif
 #endif
 
@@ -43,6 +48,27 @@ namespace mp_units::detail {
 template<typename T>
 constexpr std::size_t integer_rep_width_v = std::numeric_limits<std::make_unsigned_t<T>>::digits;
 
+template<std::floating_point T>
+[[nodiscard]] consteval T int_power(T base, int exponent)
+{
+// TODO: Exclude GCC 14 with -ffreestanding, where they claim constexpr cmath, but don't provide <cmath>
+#if false && defined(__cpp_lib_constexpr_cmath) && __cpp_lib_constexpr_cmath >= 202202L
+  return std::ldexp(base, exponent);
+#else
+  if (exponent < 0) {
+    base = T{1} / base;
+    exponent = -exponent;
+  }
+  T ret = 1;
+  while (exponent) {
+    if (exponent & 1) ret *= base;
+    exponent >>= 1;
+    base *= base;
+  }
+  return ret;
+
+#endif
+}
 
 // this class synthesizes a double-width integer from two base-width integers.
 template<std::integral T>

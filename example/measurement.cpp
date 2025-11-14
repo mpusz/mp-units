@@ -140,7 +140,7 @@ private:
 
 template<typename T>
 struct mp_units::scaling_traits<measurement<T>, mp_units::unspecified_rep> {
-  template<mp_units::Magnitude auto M>
+  template<mp_units::UnitMagnitude auto M>
   [[nodiscard]] static constexpr auto scale(const measurement<T>& value)
   {
     return measurement{
@@ -152,7 +152,7 @@ struct mp_units::scaling_traits<measurement<T>, mp_units::unspecified_rep> {
 
 template<typename From, typename To>
 struct mp_units::scaling_traits<measurement<From>, measurement<To>> {
-  template<mp_units::Magnitude auto M>
+  template<mp_units::UnitMagnitude auto M>
   [[nodiscard]] static constexpr measurement<To> scale(const measurement<From>& value)
   {
     constexpr std::type_identity<To> to_type;

@@ -26,6 +26,7 @@
 #ifdef MP_UNITS_IMPORT_STD
 import std;
 #else
+#include <array>
 #include <cstdint>
 #include <limits>
 #include <tuple>

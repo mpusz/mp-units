@@ -25,9 +25,9 @@
 // IWYU pragma: private, include <mp-units/framework.h>
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/framework/customization_points.h>
-#include <mp-units/framework/magnitude.h>
 #include <mp-units/framework/quantity_spec_concepts.h>
 #include <mp-units/framework/scaling.h>
+#include <mp-units/framework/unit_magnitude.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #ifdef MP_UNITS_IMPORT_STD
