@@ -27,6 +27,7 @@ def make_gcc_config(version: int) -> Toolchain:
         ),
         feature_support=ToolchainFeatureSupport(
             std_format=version >= 13,
+            explicit_this=version >= 14,
             freestanding=True,
         ),
     )
@@ -46,6 +47,7 @@ def make_clang_config(
             cxx_modules=version >= 17,
             std_format=version >= 17,
             import_std=version >= 18,
+            explicit_this=version >= 18,
             freestanding=True,
         ),
     )
@@ -66,9 +68,8 @@ def make_clang_config(
     return Toolchain(**vars(ret))
 
 
-def make_apple_clang_config(
-    os: str, version: str, std_format_support: bool
-) -> Toolchain:
+def make_apple_clang_config(os: str, version: str) -> Toolchain:
+    major_version = int(version.split(".", 1)[0])
     ret = Toolchain(
         name=f"Apple Clang {version}",
         os=os,
@@ -78,7 +79,10 @@ def make_apple_clang_config(
             cc="clang",
             cxx="clang++",
         ),
-        feature_support=ToolchainFeatureSupport(std_format=std_format_support),
+        feature_support=ToolchainFeatureSupport(
+            std_format=major_version >= 16,
+            explicit_this=major_version >= 17,
+        ),
     )
     return ret
 
@@ -94,7 +98,8 @@ def make_msvc_config(release: str, version: int) -> Toolchain:
             cxx="",
         ),
         feature_support=ToolchainFeatureSupport(
-            std_format=True,
+            std_format=version >= 194,
+            explicit_this=version >= 194,
         ),
     )
     return ret
@@ -110,15 +115,8 @@ toolchains = {
         # arm64 runners are expensive; only consider one version
         if ver == 18 or platform != "arm64"
     ]
-    + [
-        make_apple_clang_config("macos-13", ver, std_format_support=False)
-        for ver in ["15.2"]
-    ]
-    # std::format is available in Xcode 16.1 or later
-    + [
-        make_apple_clang_config("macos-14", ver, std_format_support=True)
-        for ver in ["16.1"]
-    ]
+    + [make_apple_clang_config("macos-13", ver) for ver in ["15.2"]]
+    + [make_apple_clang_config("macos-14", ver) for ver in ["16.1"]]
     + [make_msvc_config(release="14.4", version=194)]
 }
 
@@ -206,13 +204,12 @@ def main():
                 min_samples_per_value=1,
                 freestanding=False,
             )
-            # add more coverage to the mode usual configurations without import_std
+            # add more coverage to the more usual configurations without import_std
             collector.sample_combinations(
                 rgen=rgen,
                 min_samples_per_value=2,
                 import_std=False,
                 freestanding=False,
-                no_crtp=False,
             )
         case "clang-tidy":
             collector.sample_combinations(

@@ -21,6 +21,7 @@ class ToolchainFeatureSupport:
     std_format: bool = False
     import_std: bool = False
     freestanding: bool = False
+    explicit_this: bool = False
 
 
 @dataclass(frozen=True, order=True, kw_only=True)
@@ -34,7 +35,13 @@ class ConanOptions:
     natural_units: bool
 
     def is_supported_on(self, feat: ToolchainFeatureSupport) -> bool:
+        """Defines mapping of conan options to toolchain feature support."""
         feat = dataclasses.asdict(feat)
+        # handle features without 1:1 mapping first
+        explicit_this = feat.pop("explicit_this")
+        if self.no_crtp and not explicit_this:
+            return False
+        # now, the rest
         for k, v in feat.items():
             if getattr(self, k) and not v:
                 return False
@@ -80,13 +87,15 @@ class Configuration(ConanOptions):
 
     @property
     def is_supported(self) -> bool:
+        """Defines allowable option combinations beyond what the toolchain defines."""
         # check if selected features are supported by the toolchain
         if not self.is_supported_on(self.toolchain.feature_support):
             return False
+        # minimum standard
+        if self.std < 23 and any([self.import_std, self.no_crtp]):
+            return False
         # additional checks for import_std
         if self.import_std:
-            if self.std < 23:
-                return False
             if not self.cxx_modules:
                 return False
             if not self.std_format:
