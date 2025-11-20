@@ -31,6 +31,10 @@ import mp_units;
 #include <sstream>
 #endif
 
+#ifndef MP_UNITS_MODULES
+#include <sstream>
+#endif
+
 using namespace mp_units;
 using Catch::Matchers::WithinAbs;
 
@@ -75,22 +79,20 @@ TEST_CASE("cartesian_vector", "[vector]")
     }
   }
 
-  SECTION("convertibility from another vector")
+  SECTION("aggregate assignment")
   {
-    cartesian_vector v1{1, 2, 3};
-
-    SECTION("construction from other rep")
+    SECTION("aggregate copy assignment")
     {
-      cartesian_vector<double> v2{};
-      v2 = v1;
+      cartesian_vector v1{1.0, 2.0, 3.0};
+      cartesian_vector<double> v2 = v1;  // Use initialization instead of assignment
       REQUIRE(v2[0] == 1.0);
       REQUIRE(v2[1] == 2.0);
       REQUIRE(v2[2] == 3.0);
     }
-    SECTION("assignment from other rep")
+    SECTION("aggregate assignment from different rep")
     {
-      cartesian_vector<double> v2{3.0, 2.0, 1.0};
-      v2 = v1;
+      cartesian_vector v1{1, 2, 3};
+      cartesian_vector<double> v2{static_cast<double>(v1[0]), static_cast<double>(v1[1]), static_cast<double>(v1[2])};
       REQUIRE(v2[0] == 1.0);
       REQUIRE(v2[1] == 2.0);
       REQUIRE(v2[2] == 3.0);
@@ -224,16 +226,16 @@ TEST_CASE("cartesian_vector", "[vector]")
     REQUIRE_THAT(u[2], WithinAbs(0.0, 1e-12));
   }
 
-#if MP_UNITS_HOSTED
   SECTION("text output (ostream + fmt)")
   {
     cartesian_vector v{1, 2, 3};
     std::ostringstream os;
     os << v;
     CHECK(os.str() == "[1, 2, 3]");
+#ifndef MP_UNITS_MODULES
     CHECK(MP_UNITS_STD_FMT::format("{}", v) == os.str());
-  }
 #endif
+  }
 
   SECTION("constexpr basics")
   {

@@ -22,8 +22,8 @@
 
 #pragma once
 
-#include <mp-units/bits/module_macros.h>
 #include <mp-units/bits/requires_hosted.h>
+#include <mp-units/bits/module_macros.h>
 #include <mp-units/cartesian_vector.h>
 #include <mp-units/framework/customization_points.h>
 #include <mp-units/framework/representation_concepts.h>
@@ -56,6 +56,8 @@ class cartesian_tensor {
   static_assert(R >= 1 && R <= 3 && C >= 1 && C <= 3, "cartesian_tensor supports sizes up to 3x3");
 
 public:
+  // NOTE: This type is intentionally an aggregate (like std::array).
+  // All special member functions are implicitly defined.
   T _data_[R * C];
   using value_type = T;
   static constexpr std::size_t rows_v = R;
@@ -82,7 +84,7 @@ public:
 };
 
 
-template<typename T, typename U, std::size_t R, std::size_t K, std::size_t C>
+MP_UNITS_EXPORT template<typename T, typename U, std::size_t R, std::size_t K, std::size_t C>
 [[nodiscard]] constexpr auto matmul(const cartesian_tensor<T, R, K>& A, const cartesian_tensor<U, K, C>& B)
 {
   using CT = std::common_type_t<T, U>;
@@ -96,7 +98,7 @@ template<typename T, typename U, std::size_t R, std::size_t K, std::size_t C>
   return Rm;
 }
 
-template<typename T, typename U>
+MP_UNITS_EXPORT template<typename T, typename U>
 [[nodiscard]] constexpr auto matvec(const cartesian_tensor<T, 3, 3>& tensor, const cartesian_vector<U>& vector)
 {
   using CT = std::common_type_t<T, U>;
@@ -109,7 +111,7 @@ template<typename T, typename U>
   return y;
 }
 
-template<typename T, typename U, std::size_t R, std::size_t C>
+MP_UNITS_EXPORT template<typename T, typename U, std::size_t R, std::size_t C>
 [[nodiscard]] constexpr auto double_contraction(const cartesian_tensor<T, R, C>& A, const cartesian_tensor<U, R, C>& B)
 {
   using CT = std::common_type_t<T, U>;
@@ -119,7 +121,7 @@ template<typename T, typename U, std::size_t R, std::size_t C>
 }
 
 
-template<typename T, typename U>
+MP_UNITS_EXPORT template<typename T, typename U>
 [[nodiscard]] constexpr auto outer_numeric(const cartesian_vector<T>& lhs, const cartesian_vector<U>& rhs)
 {
   using CT = std::common_type_t<T, U>;
@@ -129,7 +131,7 @@ template<typename T, typename U>
   return Rm;
 }
 
-template<typename T, typename U, std::size_t R, std::size_t C>
+MP_UNITS_EXPORT template<typename T, typename U, std::size_t R, std::size_t C>
   requires requires(const T& t, const U& u) { t + u; }
 [[nodiscard]] constexpr auto operator+(const cartesian_tensor<T, R, C>& A, const cartesian_tensor<U, R, C>& B)
 {
@@ -139,7 +141,7 @@ template<typename T, typename U, std::size_t R, std::size_t C>
   return Rm;
 }
 
-template<typename T, typename U, std::size_t R, std::size_t C>
+MP_UNITS_EXPORT template<typename T, typename U, std::size_t R, std::size_t C>
   requires requires(const T& t, const U& u) { t - u; }
 [[nodiscard]] constexpr auto operator-(const cartesian_tensor<T, R, C>& A, const cartesian_tensor<U, R, C>& B)
 {
@@ -149,7 +151,7 @@ template<typename T, typename U, std::size_t R, std::size_t C>
   return Rm;
 }
 
-template<typename T, typename U, std::size_t R, std::size_t C>
+MP_UNITS_EXPORT template<typename T, typename U, std::size_t R, std::size_t C>
   requires(!treat_as_floating_point<T> && !treat_as_floating_point<U> && requires(const T& t, const U& u) { t % u; })
 [[nodiscard]] constexpr auto operator%(const cartesian_tensor<T, R, C>& A, const cartesian_tensor<U, R, C>& B)
 {
@@ -159,7 +161,7 @@ template<typename T, typename U, std::size_t R, std::size_t C>
   return Rm;
 }
 
-template<typename T, typename S, std::size_t R, std::size_t C>
+MP_UNITS_EXPORT template<typename T, typename S, std::size_t R, std::size_t C>
   requires requires(const T& t, const S& s) { t * s; }
 [[nodiscard]] constexpr auto operator*(const cartesian_tensor<T, R, C>& tensor, const S& scalar)
 {
@@ -169,14 +171,14 @@ template<typename T, typename S, std::size_t R, std::size_t C>
   return Rm;
 }
 
-template<typename S, typename U, std::size_t R, std::size_t C>
+MP_UNITS_EXPORT template<typename S, typename U, std::size_t R, std::size_t C>
   requires requires(const S& s, const U& u) { s * u; }
 [[nodiscard]] constexpr auto operator*(const S& scalar, const cartesian_tensor<U, R, C>& tensor)
 {
   return tensor * scalar;
 }
 
-template<typename T, typename S, std::size_t R, std::size_t C>
+MP_UNITS_EXPORT template<typename T, typename S, std::size_t R, std::size_t C>
   requires requires(const T& t, const S& s) { t / s; }
 [[nodiscard]] constexpr auto operator/(const cartesian_tensor<T, R, C>& tensor, const S& scalar)
 {
@@ -192,8 +194,8 @@ template<typename T, typename S, std::size_t R, std::size_t C>
 template<typename T, std::size_t R, std::size_t C, typename Char>
 struct MP_UNITS_STD_FMT::formatter<mp_units::cartesian_tensor<T, R, C>, Char> :
     formatter<std::basic_string_view<Char>, Char> {
-  template<typename Ctx>
-  auto format(const mp_units::cartesian_tensor<T, R, C>& A, Ctx& ctx) const
+  template<typename FormatContext>
+  auto format(const mp_units::cartesian_tensor<T, R, C>& A, FormatContext& ctx) const
   {
     auto out = ctx.out();
     for (std::size_t r = 0; r < R; ++r) {

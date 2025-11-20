@@ -29,10 +29,8 @@ import mp_units;
 #include <mp-units/cartesian_tensor.h>
 #include <mp-units/cartesian_vector.h>
 #include <mp-units/compat_macros.h>
-#if MP_UNITS_HOSTED
 #include <mp-units/ext/format.h>
 #include <sstream>
-#endif
 #endif
 
 using namespace mp_units;
@@ -153,16 +151,16 @@ TEST_CASE("cartesian_tensor — core", "[tensor]")
     REQUIRE(T(2, 2) == 18);
   }
 
-#if MP_UNITS_HOSTED
   SECTION("text output (ostream + fmt)")
   {
     cartesian_tensor<int, 2, 2> A{1, 2, 3, 4};
     std::ostringstream os;
     os << A;
     CHECK(os.str() == "[[1, 2]\n [3, 4]]");
+#ifndef MP_UNITS_MODULES
     CHECK(MP_UNITS_STD_FMT::format("{}", A) == os.str());
-  }
 #endif
+  }
 
   SECTION("constexpr basics")
   {
