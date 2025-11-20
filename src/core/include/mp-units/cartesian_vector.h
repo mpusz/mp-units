@@ -22,8 +22,8 @@
 
 #pragma once
 
-#include <mp-units/bits/requires_hosted.h>
 #include <mp-units/bits/module_macros.h>
+#include <mp-units/bits/requires_hosted.h>
 #include <mp-units/framework/customization_points.h>
 #include <mp-units/framework/representation_concepts.h>
 #include <type_traits>
@@ -55,8 +55,8 @@ class cartesian_vector;
 MP_UNITS_EXPORT template<detail::Scalar T = double>
 class cartesian_vector {
 public:
+  // public members required to satisfy structural type requirements :-(
   // NOTE: This type is intentionally an aggregate (like std::array).
-  // All special member functions are implicitly defined.
   T _coordinates_[3];
   using value_type = T;
 

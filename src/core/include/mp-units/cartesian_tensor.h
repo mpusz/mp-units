@@ -22,8 +22,8 @@
 
 #pragma once
 
-#include <mp-units/bits/requires_hosted.h>
 #include <mp-units/bits/module_macros.h>
+#include <mp-units/bits/requires_hosted.h>
 #include <mp-units/cartesian_vector.h>
 #include <mp-units/framework/customization_points.h>
 #include <mp-units/framework/representation_concepts.h>
@@ -56,8 +56,8 @@ class cartesian_tensor {
   static_assert(R >= 1 && R <= 3 && C >= 1 && C <= 3, "cartesian_tensor supports sizes up to 3x3");
 
 public:
+  // public members required to satisfy structural type requirements :-(
   // NOTE: This type is intentionally an aggregate (like std::array).
-  // All special member functions are implicitly defined.
   T _data_[R * C];
   using value_type = T;
   static constexpr std::size_t rows_v = R;
