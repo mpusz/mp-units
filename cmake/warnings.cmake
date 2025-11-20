@@ -24,7 +24,9 @@
 
 cmake_minimum_required(VERSION 3.15)
 
-option(${projectPrefix}WARNINGS_AS_ERRORS "Treat compiler warnings as errors" ON)
+if(PROJECT_IS_TOP_LEVEL AND NOT DEFINED CMAKE_COMPILE_WARNING_AS_ERROR)
+    set(CMAKE_COMPILE_WARNING_AS_ERROR ON)
+endif()
 
 macro(_set_flags)
     set(MSVC_WARNINGS
@@ -84,12 +86,6 @@ macro(_set_flags)
         -Wduplicated-cond # warn about duplicated conditions in an if-else-if chain
     )
 
-    if(${projectPrefix}WARNINGS_AS_ERRORS)
-        set(GCC_WARNINGS ${GCC_WARNINGS} -Werror)
-        set(CLANG_WARNINGS ${CLANG_WARNINGS} -Werror)
-        set(MSVC_WARNINGS ${MSVC_WARNINGS} /WX)
-    endif()
-
     if(MSVC)
         set(flags ${MSVC_WARNINGS})
     elseif(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
@@ -107,7 +103,7 @@ function(set_warnings)
     _set_flags()
 
     message(STATUS "Setting restrictive compilation warnings")
-    message(STATUS "  Treat warnings as errors: ${${projectPrefix}WARNINGS_AS_ERRORS}")
+    message(STATUS "  Treat warnings as errors: ${CMAKE_COMPILE_WARNING_AS_ERROR}")
     message(STATUS "  Flags: ${flags}")
     message(STATUS "Setting restrictive compilation warnings - done")
 
@@ -125,7 +121,7 @@ function(set_target_warnings target scope)
     _set_flags()
 
     message(STATUS "Setting ${scope} restrictive compilation warnings for '${target}'")
-    message(STATUS "  Treat warnings as errors: ${${projectPrefix}WARNINGS_AS_ERRORS}")
+    message(STATUS "  Treat warnings as errors: ${CMAKE_COMPILE_WARNING_AS_ERROR}")
     message(STATUS "  Flags: ${flags}")
     message(STATUS "Setting ${scope} restrictive compilation warnings for '${target}' - done")
 

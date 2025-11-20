@@ -34,8 +34,8 @@ add_executable(
     quantity_test.cpp
     truncation_test.cpp
 )
-if(${projectPrefix}BUILD_CXX_MODULES)
-    target_compile_definitions(unit_tests_runtime PUBLIC ${projectPrefix}MODULES)
+if(MP_UNITS_BUILD_CXX_MODULES)
+    target_compile_definitions(unit_tests_runtime PUBLIC MP_UNITS_MODULES)
 endif()
 target_link_libraries(unit_tests_runtime PRIVATE mp-units::mp-units Catch2::Catch2WithMain)
 

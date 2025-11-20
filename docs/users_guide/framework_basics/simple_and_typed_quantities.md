@@ -24,8 +24,9 @@ template<Reference auto R,
 class quantity;
 ```
 
-The concept `Reference` is satisfied by a type that provides all the domain-specific metadata describing
-a quantity (besides the representation type and its value). Such a type can be either:
+The concept `Reference` is satisfied by a type that provides all the domain-specific
+metadata describing a quantity (besides the representation type and its value).
+Such a type can be either:
 
 - a unit with an associated quantity type (e.g., `si::metre`, `m / s`),
 - a reference type explicitly specifying the quantity type and its unit.
@@ -40,16 +41,18 @@ A reference type is implicitly created as a result of the following expression:
 constexpr auto ref = isq::length[m];
 ```
 
-The above example results in the following type `reference<isq::length(), si::metre()>` being instantiated.
+The above example results in the following type `reference<isq::length(), si::metre()>`
+being instantiated.
 
-As we have two alternative options that satisfy the `Reference` concept in the **mp-units** library,
-we also have two modes of dealing with quantities.
+As we have two alternative options that satisfy the `Reference` concept in the **mp-units**
+library, we also have two modes of dealing with quantities.
 
 
 ## Simple quantities
 
-The **simple mode** might be preferred by many developers. It is all about units. Quantities using this mode
-have shorter type identifiers, resulting in easier-to-understand error messages and better debugging experience.
+The **simple mode** might be preferred by many developers. It is all about units.
+Quantities using this mode have shorter type identifiers, resulting in easier-to-understand
+error messages and better debugging experience.
 
 Here is a simple example showing how to deal with such quantities:
 
@@ -113,7 +116,7 @@ The code above prints:
 A car driving 110 km in 2 h has an average speed of 15.28 m/s (55 km/h)
 ```
 
-!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/8EPTh8YrE)"
+[Try it live on Compiler Explorer](https://godbolt.org/z/8EPTh8YrE){ .md-button }
 
 
 ### User-provided unit wrappers
@@ -164,9 +167,9 @@ error: no viable conversion from returned value of type
 
 ## Typed quantities
 
-Simple mode is all about and just about units. **Typed quantities** should be preferred if we also
-want to be **quantity-safe**. This, for example, allows us to specify if we deal with _width_,
-_height_, or _radius_ and ensure we will not assign one to another by accident.
+Simple mode is all about and just about units. **Typed quantities** should be preferred if
+we also want to be **quantity-safe**. This, for example, allows us to specify if we deal
+with _width_, _height_, or _radius_ and ensure we will not assign one to another by accident.
 
 The previous example can be re-typed using typed quantities in the following way:
 
@@ -229,7 +232,7 @@ The previous example can be re-typed using typed quantities in the following way
 A car driving 110 km in 2 h has an average speed of 15.28 m/s (55 km/h)
 ```
 
-!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/joc4Yn9Mz)"
+[Try it live on Compiler Explorer](https://godbolt.org/z/joc4Yn9Mz){ .md-button }
 
 In case we will accidentally make the same calculation error as before, this time, we will
 get a bit longer error message, this time also containing information about the quantity type:
@@ -510,15 +513,16 @@ This time, a compiler provides the following compilation error:
       |                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ```
 
-What about derived quantities? In the above example, you probably noticed that we also defined
-a custom `horizontal_area` quantity of kind `isq::area`. This quantity has the unique property
-of being implicitly constructible only from the result of the multiplication of quantities of
-`horizontal_area` and `isq::width` or the ones that implicitly convert to them.
+What about derived quantities? In the above example, you probably noticed that we also
+defined a custom `horizontal_area` quantity of kind `isq::area`. This quantity has the
+unique property of being implicitly constructible only from the result of the multiplication
+of quantities of `horizontal_area` and `isq::width` or the ones that implicitly convert
+to them.
 
-Based on the above error message, we already know that a quantity of `isq::height` is not implicitly
-constructible to the quantity of `isq::width`. This property is transitively passed to derived
-quantities using them. If by accident, we will try to create a `StorageTank` base class
-in the following way:
+Based on the above error message, we already know that a quantity of `isq::height` is not
+implicitly constructible to the quantity of `isq::width`. This property is transitively
+passed to derived quantities using them. If by accident, we will try to create a `StorageTank`
+base class in the following way:
 
 ```cpp hl_lines="6"
 class RectangularStorageTank : public StorageTank {

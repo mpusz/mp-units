@@ -2,14 +2,13 @@
 
 ## `quantity` is a numeric wrapper
 
-If we think about it, the `quantity` class template is just a "smart" numeric wrapper. It exposes
-properly constrained set of arithmetic operations on one or two operands.
+The `quantity` class template is a "smart" numeric wrapper that exposes a properly constrained
+set of arithmetic operations on one or two operands.
 
 !!! important "Important: `quantity` propagates the underlying interface"
 
-    Every single arithmetic operator is exposed by the `quantity` class template only if
-    the underlying representation type provides it as well, and when its implementation has proper
-    semantics (e.g., returns a reasonable type).
+    `quantity` exposes arithmetic operators only if the underlying representation type provides
+    them with proper semantics (e.g., returns a reasonable type).
 
 For example, in the following code, `-a` will compile only if `MyInt` exposes such an operation
 as well:
@@ -23,7 +22,8 @@ Assuming that:
 
 - `q` is our quantity,
 - `qi` is a quantity implicitly convertible to `q`,
-- `qk` is a [quantity of the same kind](systems_of_quantities.md#quantities-of-the-same-kind) as `q`,
+- `qk` is a [quantity of the same kind](systems_of_quantities.md#quantities-of-the-same-kind)
+  as `q`,
 - `q1` is a [quantity of `dimension_one` with the unit `one`](dimensionless_quantities.md),
 - `qq` is any other quantity,
 - `number` is a value of a type "compatible" with `q`'s representation type,
@@ -59,9 +59,8 @@ here is the list of all the supported operators:
     - `q == qk`
     - `q <=> qk`
 
-As we can see, there are plenty of operations one can do on a value of a `quantity` type. As most
-of them are obvious, in the following chapters, we will discuss only the most important or non-trivial
-aspects of quantity arithmetics.
+Many operations are possible on `quantity` values. The following sections focus on the most
+important or non-trivial aspects of quantity arithmetics.
 
 
 ## Addition and subtraction
@@ -133,8 +132,9 @@ static_assert(isq::height(3 * m) * 0.5 == isq::height(1.5 * m));
     quantity q = isq::height(3 * m) *= 0.5; // Compile-time error
     ```
 
-However, suppose we multiply or divide quantities of the same or different types or we divide a raw
-number by a quantity. In that case, we most probably will end up in a quantity of yet another type:
+However, suppose we multiply or divide quantities of the same or different types or we
+divide a raw number by a quantity. In that case, we most probably will end up in a quantity
+of yet another type:
 
 ```cpp
 static_assert(120 * km / (2 * h) == 60 * km / h);
@@ -162,10 +162,11 @@ static_assert(5 * h / (120 * min) == 0 * one);  // (2)!
 static_assert(5. * h / (120 * min) == 2.5 * one);
 ```
 
-1. The resulting quantity type of the LHS is `isq::height / isq::width`, which is a quantity of the
-dimensionless kind.
-2. The resulting quantity of the LHS is `0 * dimensionless[h / min]`. To be consistent with the division
-of different quantity types, we do not convert quantity values to a common unit before the division.
+1. The resulting quantity type of the LHS is `isq::height / isq::width`, which is a quantity
+   of the dimensionless kind.
+2. The resulting quantity of the LHS is `0 * dimensionless[h / min]`. To be consistent with
+   the division of different quantity types, we do not convert quantity values to a common\
+   unit before the division.
 
 !!! important "Important: Beware of integral division"
 
@@ -184,14 +185,15 @@ of different quantity types, we do not convert quantity values to a common unit 
 
 ## Modulo
 
-Now that we know how addition, subtraction, multiplication, and division work, it is time to discuss
-modulo. What would we expect to be returned from the following quantity equation?
+Now that we know how addition, subtraction, multiplication, and division work, it is time
+to discuss modulo. What would we expect to be returned from the following quantity equation?
 
 ```cpp
 auto q = 5 * h % (120 * min);
 ```
 
-Most of us would probably expect to see `1 h` or `60 min` as a result. And this is where the problems start.
+Most of us would probably expect to see `1 h` or `60 min` as a result. And this is where
+the problems start.
 
 C++ language defines its `/` and `%` operators with the [quotient-remainder theorem](https://eel.is/c++draft/expr.mul#4):
 
@@ -201,9 +203,10 @@ r = a % b;
 q * b + r == a;
 ```
 
-The important property of the modulo operation is that it only works for integral representation
-types (it is undefined what modulo for floating-point types means). However, as we saw in the previous
-chapter, integral types are tricky because they often truncate the value.
+The important property of the modulo operation is that it only works for integral
+representation types (it is undefined what modulo for floating-point types means).
+However, as we saw in the previous chapter, integral types are tricky because they
+often truncate the value.
 
 From the quotient-remainder theorem, the result of modulo operation is `r = a - q * b`.
 Let's see what we get from such a quantity equation on integral representation types:
@@ -223,12 +226,13 @@ The above code outputs:
 reminder: 5 h
 ```
 
-And now, a tough question needs an answer. Do we really want modulo operation on physical units
-to be consistent with the quotient-remainder theorem and return `5 h` for `5 * h % (120 * min)`?
+And now, a tough question needs an answer. Do we really want modulo operation on physical
+units to be consistent with the quotient-remainder theorem and return `5 h` for
+`5 * h % (120 * min)`?
 
-This is exactly why we decided not to follow this hugely surprising path in the **mp-units** library.
-The selected approach was also consistent with the feedback from the C++ experts. For example,
-this is what Richard Smith said about this issue:
+This is exactly why we decided not to follow this hugely surprising path in the **mp-units**
+library. The selected approach was also consistent with the feedback from the C++ experts.
+For example, this is what Richard Smith said about this issue:
 
 !!! quote "Richard Smith"
 
@@ -278,8 +282,8 @@ static_assert(1 * h % (59 * min) == 1 * min);
 
 ## Comparison against zero
 
-In our code, we often want to compare the value of a quantity against zero. For example, we do it
-every time we want to ensure that we deal with a non-zero or positive value.
+In our code, we often want to compare the value of a quantity against zero. For example,
+we do it every time we want to ensure that we deal with a non-zero or positive value.
 
 We could implement such checks in the following way:
 
@@ -288,9 +292,9 @@ if (q1 / q2 != 0 * m / s)
   // ...
 ```
 
-The above would work (assuming we are dealing with the quantity of speed) but could be suboptimal
-if the result of `q1 / q2` is not expressed in `m / s`. To eliminate the need for conversion, we
-need to write:
+The above would work (assuming we are dealing with the quantity of speed) but could be
+suboptimal if the result of `q1 / q2` is not expressed in `m / s`. To eliminate the need
+for conversion, we need to write:
 
 ```cpp
 if (auto q = q1 / q2; q != q.zero())
@@ -300,8 +304,8 @@ if (auto q = q1 / q2; q != q.zero())
 but that is a bit inconvenient, and inexperienced users could be unaware of this technique
 and its reasons.
 
-For the above reasons, the library provides dedicated interfaces to compare against zero that
-follow the naming convention of
+For the above reasons, the library provides dedicated interfaces to compare against zero
+that follow the naming convention of
 [named comparison functions](https://en.cppreference.com/w/cpp/utility/compare/named_comparison_functions)
 in the C++ Standard Library. The _mp-units/compare.h_ header file exposes the following functions:
 
@@ -312,8 +316,8 @@ in the C++ Standard Library. The _mp-units/compare.h_ header file exposes the fo
 - `is_lteq_zero`
 - `is_gteq_zero`
 
-Thanks to them, to save typing and not pay for unneeded conversions, our check could be implemented
-as follows:
+Thanks to them, to save typing and not pay for unneeded conversions, our check could be
+implemented as follows:
 
 ```cpp
 if (is_neq_zero(q1 / q2))
@@ -330,9 +334,9 @@ if (is_neq_zero(q1 / q2))
 
 ## Other maths
 
-This chapter scopes only on the `quantity` type's operators. However, there are many named math
-functions taking quantities as arguments. Those can be found in the _mp-units/math.h_ header file.
-Among others, we can find there the following:
+This chapter scopes only on the `quantity` type's operators. However, there are many named
+math functions taking quantities as arguments. Those can be found in the _mp-units/math.h_
+header file. Among others, we can find there the following:
 
 - `pow()`, `sqrt()`, `cbrt()`,
 - `exp()`,
@@ -346,5 +350,5 @@ Among others, we can find there the following:
 - `sin()`, `cos()`, `tan()`,
 - `asin()`, `acos()`, `atan()`, `atan2()`.
 
-In the library, we can also find _mp-units/random.h_ header file with all the pseudo-random number
-generators working on quantity types.
+In the library, we can also find _mp-units/random.h_ header file with all the pseudo-random
+number generators working on quantity types.

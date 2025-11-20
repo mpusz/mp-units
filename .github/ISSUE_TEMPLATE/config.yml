@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: ❓ Ask Questions
+    url: https://github.com/mpusz/mp-units/discussions
+    about: For questions, help, discussions, and community support
+  - name: 📖 Documentation
+    url: https://mpusz.github.io/mp-units/
+    about: Comprehensive documentation with tutorials and examples

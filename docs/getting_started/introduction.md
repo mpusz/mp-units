@@ -1,42 +1,45 @@
 # Introduction
 
-**mp-units** is a Modern C++ library that provides compile-time dimensional analysis and unit/quantity
-manipulation. The initial versions of the library were inspired by the
-[`std::chrono::duration`](https://en.cppreference.com/w/cpp/chrono/duration)
-but with each release, the interfaces diverged from the original to provide a better user
-experience.
+**mp-units** is a modern C++ library for compile‑time dimensional analysis and
+unit/quantity manipulation. The earliest versions were inspired by
+[`std::chrono::duration`](https://en.cppreference.com/w/cpp/chrono/duration),
+but with each release the interfaces intentionally diverged to provide a better
+user experience.
 
 !!! info
 
-    A brief introduction to the library's interfaces and the rationale for changes in version 2.0
-    of **mp-units** were provided in detail by [Mateusz Pusz](https://github.com/mpusz) in the
-    ["The Power of C++ Templates With mp-units: Lessons Learned & a New Library Design" talk at the C++ on Sea 2023 conference](https://www.youtube.com/watch?v=eUdz0WvOMm0).
+  A brief introduction to the library's interfaces and the rationale for
+  changes in version 2.0 of **mp-units** were provided in detail by
+  [Mateusz Pusz](https://github.com/mpusz) in the
+  ["The Power of C++ Templates With mp-units: Lessons Learned & a New
+  Library Design" talk at the C++ on Sea 2023
+  conference](https://www.youtube.com/watch?v=eUdz0WvOMm0).
 
 
 ## Open Source
 
-**mp-units** is Free and Open Source, with a permissive
-[MIT license](https://github.com/mpusz/mp-units/blob/master/LICENSE.md). Check out the source
-code and issue tracking (for questions and support, reporting bugs, suggesting feature requests
-and improvements) at <https://github.com/mpusz/mp-units>.
+**mp-units** is Free and Open Source under the permissive
+[MIT license](https://github.com/mpusz/mp-units/blob/master/LICENSE.md). Browse the source,
+ask questions, report bugs, or suggest improvements at
+<https://github.com/mpusz/mp-units>.
 
 
 ## With the User's Experience in Mind
 
-Most of the critical design decisions in the library are dictated by the requirement of
-providing the best user experience possible. Other C++ physical units libraries are
-"famous" for their enormous and hard-to-understand error messages (one line of the error log often
-does not fit on one slide). The ultimate goal of **mp-units** is to improve this and make compile-time
-errors and debugging as easy and user-friendly as possible.
+Most key design decisions aim to deliver the best possible user experience. Many other C++
+physical‑units libraries are "famous" for enormous, hard‑to‑digest error messages.
+**mp-units** strives to invert that reputation: making compile‑time errors concise, readable,
+and actionable.
 
 To achieve this goal, several techniques are applied:
 
-- [usage of C++20 concepts](../users_guide/framework_basics/concepts.md) that improve
-  compile-times and the readability of error messages when compared to the traditional template
-  metaprogramming with [SFINAE](https://en.cppreference.com/w/cpp/language/sfinae),
-- [usage of strong types for framework entities](../users_guide/framework_basics/interface_introduction.md#strong-types-instead-of-aliases) (instead of type aliases),
-- [usage of symbolic expressions](../users_guide/framework_basics/interface_introduction.md#symbolic-expressions) to improve the readability of generated types,
-- limiting the number of template arguments to the bare minimum.
+- [Use of C++20 concepts](../users_guide/framework_basics/concepts.md) to improve
+  compile-time performance and error readability vs traditional SFINAE‑based metaprogramming.
+- [Strong types for framework entities](../users_guide/framework_basics/interface_introduction.md#strong-types-instead-of-aliases)
+  instead of type aliases.
+- [Symbolic expressions](../users_guide/framework_basics/interface_introduction.md#symbolic-expressions)
+  for readable generated types.
+- Minimizing the number of template parameters.
 
 !!! important "Important: It is all about errors"
 
@@ -48,14 +51,51 @@ To achieve this goal, several techniques are applied:
 
 ## Key Features
 
-| Feature                      | Description                                                                                                                                                                                                                                                                                                                                                                                                                |
-|------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Safety**                   | - [The affine space strong types] (`quantity` and `quantity_point`)<br>- [Compile-time checked conversions of quantities and units]<br>- [Unique support for many quantities of the same kind]<br>- [Type-safe equations on scalar, vector, and tensor quantities and their units]<br>- [Value-preserving conversions]                                                                                                     |
-| **Performance**              | - All the compile-time logic implemented as immediate (`consteval`) functions<br>- As fast or even faster than working with fundamental types<br>- No space size overhead needed to implement high-level abstractions                                                                                                                                                                                                      |
-| **Great User Experience**    | - [Optimized for readable compilation errors and great debugging experience]<br>- [Efficient and composable way to specify a unit of choice]<br>- [Value-based dimension, unit, and quantity equations]                                                                                                                                                                                                                    |
-| **Feature Rich**             | - [Systems of Quantities]<br>- [Systems of Units]<br>- [Scalar, vector, and tensor quantities]<br>- [The affine space]<br>- [Different models of the universe (e.g. natural units systems)]<br>- [Strong dimensionless quantities]<br>- [Strong angular system]<br>- [Supports any unit's magnitude (huge, small, floating-point)]<br>- [Faster-than-lightspeed constants]<br>- [Highly adjustable text-output formatting] |
-| **Easy to Extend**           | - [Each entity can be defined with a single line of code]<br>- [User can easily extend the systems with custom dimensions, quantities, and units]                                                                                                                                                                                                                                                                          |
-| **Low Standardization Cost** | - Small number of predefined entities thanks to their composability<br>- No external dependencies (assuming full C++20 support)<br>- No macros in the user interface (besides portability and standard-compliance issues)<br>- Possibility to be standardized as a [freestanding] part of the C++ Standard Library                                                                                                         |
+### Safety
+
+- [The affine space strong types] (`quantity`, `quantity_point`)
+- [Compile-time checked conversions of quantities and units]
+- [Unique support for many quantities of the same kind]
+- [Type-safe equations on scalar, vector, and tensor quantities and their units]
+- [Value-preserving conversions]
+
+### Performance
+
+- Compile-time logic via immediate (`consteval`) functions
+- Performance on par with (sometimes better than) fundamental types
+- Zero space overhead for high-level abstractions
+
+### Great User Experience
+
+- [Optimized for readable compilation errors and great debugging experience]
+- [Efficient and composable way to specify a unit of choice]
+- [Value-based dimension, unit, and quantity equations]
+
+### Feature Rich
+
+- [Systems of Quantities]
+- [Systems of Units]
+- [Scalar, vector, and tensor quantities]
+- [The affine space]
+- [Different models of the universe (e.g. natural units systems)]
+- [Strong dimensionless quantities]
+- [Strong angular system]
+- [Supports any unit's magnitude (huge, small, floating-point)]
+- [Faster-than-lightspeed constants]
+- [Highly adjustable text-output formatting]
+
+### Easy to Extend
+
+- [Each entity can be defined with a single line of code]
+- [User can easily extend the systems with custom dimensions, quantities, and units]
+
+
+### Low Standardization Cost
+
+- Few predefined entities due to high composability
+- No external dependencies (with full C++20 support)
+- Macro-free user interface (aside from portability / standard-compliance helpers)
+- Plausible candidate for [freestanding] standardization
 
 
 [The affine space strong types]: ../users_guide/framework_basics/the_affine_space.md

@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 add_library(unit_tests_static_truncating quantity_test.cpp)
-if(NOT ${projectPrefix}API_FREESTANDING)
+if(NOT MP_UNITS_API_FREESTANDING)
     target_sources(unit_tests_static_truncating PRIVATE chrono_test.cpp)
 endif()
 target_link_libraries(unit_tests_static_truncating PRIVATE mp-units::mp-units)
@@ -63,11 +63,11 @@ add_library(
     usc_test.cpp
 )
 
-if(${projectPrefix}API_NATURAL_UNITS)
+if(MP_UNITS_API_NATURAL_UNITS)
     target_sources(unit_tests_static PRIVATE natural_test.cpp)
 endif()
 
-if(NOT ${projectPrefix}API_FREESTANDING)
+if(NOT MP_UNITS_API_FREESTANDING)
     target_sources(unit_tests_static PRIVATE fractional_exponent_quantity.cpp math_test.cpp)
 endif()
 

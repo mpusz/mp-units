@@ -21,10 +21,8 @@
 # SOFTWARE.
 
 function(set_feature_flag name)
-    if(NOT ${projectPrefix}${name} STREQUAL "AUTO")
-        target_compile_definitions(
-            mp-units-core ${${projectPrefix}TARGET_SCOPE} ${projectPrefix}${name}=$<BOOL:${${projectPrefix}${name}}>
-        )
+    if(NOT MP_UNITS_${name} STREQUAL "AUTO")
+        target_compile_definitions(mp-units-core ${MP_UNITS_TARGET_SCOPE} MP_UNITS_${name}=$<BOOL:${MP_UNITS_${name}}>)
     endif()
 endfunction()
 
@@ -80,14 +78,14 @@ add_mp_units_module(
     MODULE_INTERFACE_UNIT mp-units-core.cpp
 )
 
-if(${${projectPrefix}API_NATURAL_UNITS})
+if(${MP_UNITS_API_NATURAL_UNITS})
     target_sources(
         mp-units-core PUBLIC FILE_SET HEADERS BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include FILES
                              include/mp-units/framework/system_reference.h
     )
 endif()
 
-if(NOT ${projectPrefix}API_FREESTANDING)
+if(NOT MP_UNITS_API_FREESTANDING)
     target_sources(
         mp-units-core
         PUBLIC FILE_SET
@@ -117,21 +115,20 @@ set_feature_flag(API_STD_FORMAT)
 set_feature_flag(API_NO_CRTP)
 
 # Text formatting
-if(NOT ${projectPrefix}API_FREESTANDING
-   AND (NOT ${projectPrefix}API_STD_FORMAT OR (${projectPrefix}API_STD_FORMAT STREQUAL "AUTO"
-                                               AND NOT ${projectPrefix}LIB_FORMAT_SUPPORTED))
+if(NOT MP_UNITS_API_FREESTANDING AND (NOT MP_UNITS_API_STD_FORMAT OR (MP_UNITS_API_STD_FORMAT STREQUAL "AUTO"
+                                                                      AND NOT MP_UNITS_LIB_FORMAT_SUPPORTED))
 )
     if(NOT TARGET fmt::fmt)
         find_package(fmt REQUIRED)
     endif()
-    target_link_libraries(mp-units-core ${${projectPrefix}TARGET_SCOPE} fmt::fmt)
+    target_link_libraries(mp-units-core ${MP_UNITS_TARGET_SCOPE} fmt::fmt)
 endif()
 
 # Contracts checking
-target_link_libraries(mp-units-core ${${projectPrefix}TARGET_SCOPE} mp-units-contracts)
+target_link_libraries(mp-units-core ${MP_UNITS_TARGET_SCOPE} mp-units-contracts)
 
 # C++20 modules
-if(${projectPrefix}BUILD_CXX_MODULES)
+if(MP_UNITS_BUILD_CXX_MODULES)
     if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
         if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 18)
             target_compile_definitions(mp-units-core PUBLIC _LIBCPP_NO_ABI_TAG)
@@ -149,40 +146,38 @@ if(${projectPrefix}BUILD_CXX_MODULES)
 endif()
 
 if(CMAKE_CXX_MODULE_STD)
-    target_compile_definitions(mp-units-core ${${projectPrefix}TARGET_SCOPE} ${projectPrefix}IMPORT_STD)
+    target_compile_definitions(mp-units-core ${MP_UNITS_TARGET_SCOPE} MP_UNITS_IMPORT_STD)
     # https://github.com/llvm/llvm-project/issues/75057
     if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 19)
-        target_compile_options(mp-units-core ${${projectPrefix}TARGET_SCOPE} "-Wno-deprecated-declarations")
+        target_compile_options(mp-units-core ${MP_UNITS_TARGET_SCOPE} "-Wno-deprecated-declarations")
     endif()
 endif()
 
 # UTF-8 source and execution character set
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     target_compile_options(
-        mp-units-core ${${projectPrefix}TARGET_SCOPE}
+        mp-units-core ${MP_UNITS_TARGET_SCOPE}
         /utf-8 # Specifies both the source character set and the execution character set as UTF-8
     )
 endif()
 
 # Freestanding
 target_compile_definitions(
-    mp-units-core ${${projectPrefix}TARGET_SCOPE}
-                  ${projectPrefix}HOSTED=$<NOT:$<BOOL:${${projectPrefix}API_FREESTANDING}>>
+    mp-units-core ${MP_UNITS_TARGET_SCOPE} MP_UNITS_HOSTED=$<NOT:$<BOOL:${MP_UNITS_API_FREESTANDING}>>
 )
 
 # Throwing constraints
-if(${projectPrefix}API_THROWING_CONSTRAINTS)
+if(MP_UNITS_API_THROWING_CONSTRAINTS)
     target_compile_definitions(
-        mp-units-core ${${projectPrefix}TARGET_SCOPE}
-                      ${projectPrefix}API_THROWING_CONSTRAINTS=$<BOOL:${${projectPrefix}API_THROWING_CONSTRAINTS}>
+        mp-units-core ${MP_UNITS_TARGET_SCOPE}
+                      MP_UNITS_API_THROWING_CONSTRAINTS=$<BOOL:${MP_UNITS_API_THROWING_CONSTRAINTS}>
     )
 endif()
 
 # Natural units support
-if(${${projectPrefix}API_NATURAL_UNITS})
+if(${MP_UNITS_API_NATURAL_UNITS})
     target_compile_definitions(
-        mp-units-core ${${projectPrefix}TARGET_SCOPE}
-                      ${projectPrefix}API_NATURAL_UNITS=$<BOOL:${${projectPrefix}API_NATURAL_UNITS}>
+        mp-units-core ${MP_UNITS_TARGET_SCOPE} MP_UNITS_API_NATURAL_UNITS=$<BOOL:${MP_UNITS_API_NATURAL_UNITS}>
     )
 endif()
 
@@ -190,17 +185,17 @@ endif()
 if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 20
    AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 20.2
 )
-    target_compile_options(mp-units-core ${${projectPrefix}TARGET_SCOPE} "-Wno-unused-result")
+    target_compile_options(mp-units-core ${MP_UNITS_TARGET_SCOPE} "-Wno-unused-result")
 endif()
 
 # usage of uninitialized variable in c++/12/bits/char_traits.h
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 13)
-    target_compile_options(mp-units-core ${${projectPrefix}TARGET_SCOPE} "-Wno-maybe-uninitialized")
+    target_compile_options(mp-units-core ${MP_UNITS_TARGET_SCOPE} "-Wno-maybe-uninitialized")
 endif()
 
 # time-trace
-if(${projectPrefix}DEV_TIME_TRACE STREQUAL "ALL")
-    target_compile_options(mp-units-core ${${projectPrefix}TARGET_SCOPE} "-ftime-trace")
-elseif(${projectPrefix}DEV_TIME_TRACE STREQUAL "MODULES")
+if(MP_UNITS_DEV_TIME_TRACE STREQUAL "ALL")
+    target_compile_options(mp-units-core ${MP_UNITS_TARGET_SCOPE} "-ftime-trace")
+elseif(MP_UNITS_DEV_TIME_TRACE STREQUAL "MODULES")
     target_compile_options(mp-units-core PRIVATE "-ftime-trace")
 endif()

@@ -7,16 +7,16 @@ tags:
 
 # `hw_voltage`
 
-!!! example "[Try it on Compiler Explorer](https://godbolt.org/z/jjod7hvsd)"
+[Try it live on Compiler Explorer](https://godbolt.org/z/MYn5qjPzh){ .md-button }
 
-As it was stated in [The Affine Space](../framework_basics/the_affine_space.md) chapter,
-every measurement can (and probably should) be modelled as a `quantity_point`. This is
-a perfect example of such a use case.
+As it was stated in [The Affine Space](../users_guide/framework_basics/the_affine_space.md)
+chapter, every measurement can (and probably should) be modeled as a `quantity_point`.
+This is a perfect example of such a use case.
 
-This example implements a simplified scenario of measuring voltage read from hardware through
-a mapped 16-bits register. The actual voltage range of [-10 V, 10 V] is mapped to [-32767, 32767]
-on hardware. Translation of the value requires not only scaling of the value but also applying
-of an offset.
+This example implements a simplified scenario of measuring voltage read from hardware
+through a mapped 16-bits register. The actual voltage range of [$-10\ \mathrm{V}$,
+$10\ \mathrm{V}$] is mapped to [-32767, 32767] on hardware. Translation of the value
+requires not only scaling of the value but also applying of an offset.
 
 First we include all the dependencies:
 
@@ -44,7 +44,8 @@ origin to offset the zero of the sale, and a dedicated quantity point alias usin
 ```
 
 Now, when everything is ready, we can simulate mapping of our hardware register, and provide
-a helper function that will read the value and construct a quantity point from the obtained copy:
+a helper function that will read the value and construct a quantity point from the obtained
+copy:
 
 ```cpp title="hw_voltage.cpp" linenums="35"
 --8<-- "example/hw_voltage.cpp:69:77"

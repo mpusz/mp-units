@@ -61,7 +61,7 @@ constexpr bool is_basic_literal_character_set_char(char ch)
 {
   // https://en.cppreference.com/w/cpp/language/charset
   return ch == 0x00 || (0x07 <= ch && ch <= 0x0D) || (0x20 <= ch && ch <= 0x7E);
-};
+}
 
 template<typename InputIt>
 constexpr bool is_basic_literal_character_set(InputIt begin, InputIt end) noexcept

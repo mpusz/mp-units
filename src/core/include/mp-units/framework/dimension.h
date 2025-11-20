@@ -43,7 +43,6 @@
 #ifdef MP_UNITS_IMPORT_STD
 import std;
 #else
-#include <array>
 #include <cstdint>
 #include <iterator>
 #include <string_view>
@@ -69,13 +68,13 @@ struct dimension_interface {
   template<Dimension Lhs, Dimension Rhs>
   [[nodiscard]] friend consteval Dimension auto operator*(Lhs, Rhs)
   {
-    return expr_multiply<derived_dimension, struct dimension_one>(Lhs{}, Rhs{});
+    return expr_multiply<derived_dimension, dimension_one>(Lhs{}, Rhs{});
   }
 
   template<Dimension Lhs, Dimension Rhs>
   [[nodiscard]] friend consteval Dimension auto operator/(Lhs, Rhs)
   {
-    return expr_divide<derived_dimension, struct dimension_one>(Lhs{}, Rhs{});
+    return expr_divide<derived_dimension, dimension_one>(Lhs{}, Rhs{});
   }
 
   template<Dimension Lhs, Dimension Rhs>

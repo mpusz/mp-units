@@ -1,4 +1,4 @@
-# Working with Legacy interfaces
+# Working with Legacy Interfaces
 
 In case we are working with a legacy/unsafe interface, we may need to extract the
 [numerical value of a quantity](../../appendix/glossary.md#numerical-value) and pass it to
@@ -39,5 +39,5 @@ legacy_set_speed_limit(&speed_limit.numerical_value_ref_in(km / h));
 ```
 
 This member function again requires a target unit to enforce safety. This overload does not
-participate in overload resolution if the provided unit has a different scaling factor than the
-current one.
+participate in overload resolution if the provided unit has a different scaling factor than
+the current one.

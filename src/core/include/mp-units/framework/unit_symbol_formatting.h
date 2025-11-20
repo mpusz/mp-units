@@ -43,7 +43,7 @@ enum class unit_symbol_solidus : std::int8_t {
   one_denominator,  // m/s;   kg m⁻¹ s⁻¹
   always,           // m/s;   kg/(m s)
   never,            // m s⁻¹; kg m⁻¹ s⁻¹
-  default_denominator = one_denominator
+  default_solidus = one_denominator
 };
 
 // NOLINTNEXTLINE(readability-enum-initial-value)
@@ -65,7 +65,7 @@ struct unit_symbol_formatting {
   MP_UNITS_DIAGNOSTIC_POP
 #endif
 
-  unit_symbol_solidus solidus = unit_symbol_solidus::default_denominator;
+  unit_symbol_solidus solidus = unit_symbol_solidus::default_solidus;
   unit_symbol_separator separator = unit_symbol_separator::default_separator;
 };
 
