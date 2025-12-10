@@ -110,7 +110,7 @@ more accessible and robust:
 ### Community Champions
 
 - **Educational Content**: Contributors who create tutorials, blog posts, and educational materials
-- **Issue Triage**: Community members who help with issue management and user support  
+- **Issue Triage**: Community members who help with issue management and user support
 - **Standards Advocacy**: People promoting **mp-units** in the C++ standards community
 - **Adoption**: Organizations and individuals field-testing the library
 

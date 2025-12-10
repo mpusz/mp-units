@@ -4,12 +4,10 @@ Update CONTRIBUTORS.md with current GitHub contributors
 This script fetches contributor information from GitHub API and updates the contributors list
 """
 
-import json
-import re
+import subprocess
 import sys
 from pathlib import Path
 from typing import Dict, List, Optional
-import subprocess
 
 try:
     import requests
@@ -223,7 +221,7 @@ def get_github_token() -> Optional[str]:
         )
         if result.returncode == 0:
             return result.stdout.strip()
-    except:
+    except Exception:
         pass
 
     return None
