@@ -29,6 +29,71 @@ wouldn't be possible without the dedication and hard work of our amazing communi
 
 <!-- This section will be automatically updated -->
 <!-- CONTRIBUTORS_START -->
+
+## Statistics
+
+- **Total Contributors**: 37
+- **Total Contributions**: 4275
+- **Major Contributors** (50+ contributions): 0
+- **Regular Contributors** (10-49 contributions): 10
+- **Occasional Contributors** (1-9 contributions): 24
+
+_Last updated: 2025-12-10_
+
+
+### Major Contributors
+
+_50+ contributions_
+
+*No contributors in this category yet.*
+
+
+### Regular Contributors
+
+_10-49 contributions_
+
+- **[czjhoppe](https://github.com/czjhoppe)** (48 contributions)
+- **[burnpanck](https://github.com/burnpanck)** (48 contributions)
+- **[rbrugo](https://github.com/rbrugo)** (44 contributions)
+- **[yasamoka](https://github.com/yasamoka)** (20 contributions)
+- **[hofbi](https://github.com/hofbi)** (19 contributions)
+- **[Twon](https://github.com/Twon)** (17 contributions)
+- **[rothmichaels](https://github.com/rothmichaels)** (17 contributions)
+- **[kwikius](https://github.com/kwikius)** (16 contributions)
+- **[RalphSteinhagen](https://github.com/RalphSteinhagen)** (14 contributions)
+- **[mikeford1](https://github.com/mikeford1)** (13 contributions)
+
+
+### All Contributors
+
+_Everyone who has contributed to mp-units_
+
+- **[fdischner](https://github.com/fdischner)**
+- **[NAThompson](https://github.com/NAThompson)**
+- **[HazardyKnusperkeks](https://github.com/HazardyKnusperkeks)**
+- **[nebkat](https://github.com/nebkat)**
+- **[jansende](https://github.com/jansende)**
+- **[jvocht](https://github.com/jvocht)**
+- **[uilianries](https://github.com/uilianries)**
+- **[sohamroy19](https://github.com/sohamroy19)**
+- **[alex-tee](https://github.com/alex-tee)**
+- **[go2sh](https://github.com/go2sh)**
+- **[dkavolis](https://github.com/dkavolis)**
+- **[dbraeckelmann](https://github.com/dbraeckelmann)**
+- **[tobylorenz](https://github.com/tobylorenz)**
+- **[TheCoconutChef](https://github.com/TheCoconutChef)**
+- **[mkrupcale](https://github.com/mkrupcale)**
+- **[komputerwiz](https://github.com/komputerwiz)**
+- **[KangarooKoala](https://github.com/KangarooKoala)**
+- **[jharwell](https://github.com/jharwell)**
+- **[FrancoisCarouge](https://github.com/FrancoisCarouge)**
+- **[badbadc0ffee](https://github.com/badbadc0ffee)**
+- **[bourumir-wyngs](https://github.com/bourumir-wyngs)**
+- **[AndreyG](https://github.com/AndreyG)**
+- **[alex-700](https://github.com/alex-700)**
+- **[aostrowski](https://github.com/aostrowski)**
+
+
 <!-- CONTRIBUTORS_END -->
 
 ## Special Recognition
