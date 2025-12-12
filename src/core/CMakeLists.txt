@@ -31,6 +31,7 @@ add_mp_units_module(
     core mp-units-core
     HEADERS include/mp-units/bits/constexpr_math.h
             include/mp-units/bits/core_gmf.h
+            include/mp-units/bits/fixed_point.h
             include/mp-units/bits/get_associated_quantity.h
             include/mp-units/bits/hacks.h
             include/mp-units/bits/module_macros.h
@@ -63,6 +64,7 @@ add_mp_units_module(
             include/mp-units/framework/reference.h
             include/mp-units/framework/reference_concepts.h
             include/mp-units/framework/representation_concepts.h
+            include/mp-units/framework/scaling.h
             include/mp-units/framework/symbol_text.h
             include/mp-units/framework/symbolic_expression.h
             include/mp-units/framework/unit.h

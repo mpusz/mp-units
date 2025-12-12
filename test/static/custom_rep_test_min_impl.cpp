@@ -67,6 +67,7 @@ struct std::common_type<min_impl<T>, U> : std::type_identity<min_impl<std::commo
 template<typename U, typename T>
 struct std::common_type<U, min_impl<T>> : std::type_identity<min_impl<std::common_type_t<T, U>>> {};
 
+
 namespace {
 
 using namespace mp_units;

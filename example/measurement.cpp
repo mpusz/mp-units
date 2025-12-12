@@ -69,51 +69,51 @@ public:
   [[nodiscard]] friend constexpr measurement operator+(const measurement& lhs, const measurement& rhs)
   {
     using namespace std;
-    return measurement(lhs.value() + rhs.value(), hypot(lhs.uncertainty(), rhs.uncertainty()));
+    return measurement{lhs.value() + rhs.value(), hypot(lhs.uncertainty(), rhs.uncertainty())};
   }
 
   [[nodiscard]] friend constexpr measurement operator-(const measurement& lhs, const measurement& rhs)
   {
     using namespace std;
-    return measurement(lhs.value() - rhs.value(), hypot(lhs.uncertainty(), rhs.uncertainty()));
+    return measurement{lhs.value() - rhs.value(), hypot(lhs.uncertainty(), rhs.uncertainty())};
   }
 
   [[nodiscard]] friend constexpr measurement operator*(const measurement& lhs, const measurement& rhs)
   {
     const auto val = lhs.value() * rhs.value();
     using namespace std;
-    return measurement(val, val * hypot(lhs.relative_uncertainty(), rhs.relative_uncertainty()));
+    return measurement{val, val * hypot(lhs.relative_uncertainty(), rhs.relative_uncertainty())};
   }
 
   [[nodiscard]] friend constexpr measurement operator*(const measurement& lhs, const value_type& value)
   {
     const auto val = lhs.value() * value;
-    return measurement(val, val * lhs.relative_uncertainty());
+    return measurement{val, val * lhs.relative_uncertainty()};
   }
 
   [[nodiscard]] friend constexpr measurement operator*(const value_type& value, const measurement& rhs)
   {
     const auto val = rhs.value() * value;
-    return measurement(val, val * rhs.relative_uncertainty());
+    return measurement{val, val * rhs.relative_uncertainty()};
   }
 
   [[nodiscard]] friend constexpr measurement operator/(const measurement& lhs, const measurement& rhs)
   {
     const auto val = lhs.value() / rhs.value();
     using namespace std;
-    return measurement(val, val * hypot(lhs.relative_uncertainty(), rhs.relative_uncertainty()));
+    return measurement{val, val * hypot(lhs.relative_uncertainty(), rhs.relative_uncertainty())};
   }
 
   [[nodiscard]] friend constexpr measurement operator/(const measurement& lhs, const value_type& value)
   {
     const auto val = lhs.value() / value;
-    return measurement(val, val * lhs.relative_uncertainty());
+    return measurement{val, val * lhs.relative_uncertainty()};
   }
 
   [[nodiscard]] friend constexpr measurement operator/(const value_type& value, const measurement& rhs)
   {
     const auto val = value / rhs.value();
-    return measurement(val, val * rhs.relative_uncertainty());
+    return measurement{val, val * rhs.relative_uncertainty()};
   }
 
   [[nodiscard]] constexpr auto operator<=>(const measurement&) const = default;
@@ -137,6 +137,33 @@ private:
 
 }  // namespace
 
+
+template<typename T>
+struct mp_units::scaling_traits<measurement<T>, mp_units::unspecified_rep> {
+  template<mp_units::UnitMagnitude auto M>
+  [[nodiscard]] static constexpr auto scale(const measurement<T>& value)
+  {
+    return measurement{
+      mp_units::scale<mp_units::unspecified_rep>(M, value.value()),
+      mp_units::scale<mp_units::unspecified_rep>(M, value.uncertainty()),
+    };
+  }
+};
+
+template<typename From, typename To>
+struct mp_units::scaling_traits<measurement<From>, measurement<To>> {
+  template<mp_units::UnitMagnitude auto M>
+  [[nodiscard]] static constexpr measurement<To> scale(const measurement<From>& value)
+  {
+    return measurement<To>{
+      mp_units::scale<To>(M, value.value()),
+      mp_units::scale<To>(M, value.uncertainty()),
+    };
+  }
+};
+
+static_assert(mp_units::RepresentationOf<measurement<int>, mp_units::quantity_character::real_scalar>);
+static_assert(mp_units::RepresentationOf<measurement<int>, mp_units::quantity_character::vector>);
 static_assert(mp_units::RepresentationOf<measurement<double>, mp_units::quantity_character::real_scalar>);
 static_assert(mp_units::RepresentationOf<measurement<double>, mp_units::quantity_character::vector>);
 
