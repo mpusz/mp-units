@@ -184,12 +184,15 @@ nav:
       - "Tutorial 7: Typed Quantities of the Same Kind": tutorials/tutorial_7.md
       - "Tutorial 8: Custom Units for Dimensionless Counters": tutorials/tutorial_8.md
   - Examples:
-      - Tags Index: examples/tags_index.md
+      - Overview: examples/overview.md
       - All Examples:
-          - hello_units: examples/hello_units.md
-          - avg_speed: examples/avg_speed.md
-          - si_constants: examples/si_constants.md
-          - hw_voltage: examples/hw_voltage.md
+          - Beginner:
+              - hello_units: examples/hello_units.md
+              - avg_speed: examples/avg_speed.md
+              - si_constants: examples/si_constants.md
+          - Intermediate:
+              - hw_voltage: examples/hw_voltage.md
+              - capacitor_time_curve: examples/capacitor_time_curve.md
   - Blog:
       - blog/index.md
   - Release Notes: release_notes.md

@@ -1,17 +1,35 @@
 ---
 tags:
-  - CGS System
-  - International System
+- Level - Beginner
+- System - CGS
+- System - International System
+- System - ISQ
+- Feature - Value Truncation
+- Feature - Representation Types
 ---
 
-# `avg_speed`
+# Average Speed: Representation Types and Conversions
 
-[Try it live on Compiler Explorer](https://godbolt.org/z/v9c5T6bc4){ .md-button }
+[Try it live on Compiler Explorer](https://godbolt.org/z/bPT9av1oM){ .md-button }
 
-Let's continue the previous example. This time, our purpose will not be to showcase as many
-library features as possible, but we will focus on different interfaces one can provide with
-the **mp-units**. We will also describe some advantages and disadvantages of presented
-solutions.
+## Overview
+
+This example builds on [hello_units](hello_units.md) by exploring different API design
+choices when working with quantities. It demonstrates how fixed-unit functions compare to
+generic quantity functions, and shows the impact of unit conversions and representation
+types on precision and performance.
+
+## Key Features Demonstrated
+
+- Fixed-unit vs. generic quantity function interfaces
+- Impact of representation types (`int` vs. `double`)
+- Value-preserving and value-truncating conversions
+- Working with multiple unit systems (SI, CGS, International)
+- Precision loss during unit conversions
+
+## Code Walkthrough
+
+### Including Headers and Namespaces
 
 First, we either import a module or include all the necessary header files and import all
 the identifiers from the `mp_units` namespace:
@@ -19,6 +37,8 @@ the identifiers from the `mp_units` namespace:
 ```cpp title="avg_speed.cpp" linenums="1"
 --8<-- "example/avg_speed.cpp:28:45"
 ```
+
+### Function Definitions
 
 Next, we define two functions calculating average speed based on quantities of fixed units
 and integral and floating-point representation types, respectively, and a third function
@@ -34,7 +54,12 @@ We also added a simple utility to print our results:
 --8<-- "example/avg_speed.cpp:63:69"
 ```
 
+### Comparing Function Behavior
+
 Now, let's analyze how those three utility functions behave with different sets of arguments.
+
+#### SI Units with Integral Representation
+
 First, we are going to use quantities of SI units and integral representation:
 
 ```cpp title="avg_speed.cpp" linenums="41"
@@ -78,6 +103,8 @@ Average speed of a car that makes 220 km in 2 h is 110 km/h.
 Average speed of a car that makes 220 km in 2 h is 110 km/h.
 ```
 
+#### International Mile Units
+
 Next, let's do the same for integral and floating-point representations, but this time
 using international mile:
 
@@ -105,6 +132,8 @@ Average speed of a car that makes 140 mi in 2 h is 112.654 km/h.
 
 Please note how the first and third results get truncated using integral representation types.
 
+#### CGS Units
+
 In the end, we repeat the scenario for CGS units:
 
 ```cpp title="avg_speed.cpp" linenums="100"
@@ -131,3 +160,35 @@ The example file ends with a simple `main()` function:
 ```cpp title="avg_speed.cpp" linenums="132"
 --8<-- "example/avg_speed.cpp:166:"
 ```
+
+## Key Takeaways
+
+### API Design Trade-offs
+
+1. **Fixed-Unit Functions** (`fixed_int_si_avg_speed`, `fixed_double_si_avg_speed`):
+
+    - ✅ Simple and explicit about units
+    - ❌ Require runtime unit conversions at call site
+    - ❌ May truncate the quantity value
+    - ❌ Less flexible for users
+
+2. **Generic Quantity Functions** (`avg_speed`):
+
+    - ✅ Accept any compatible units with no runtime overhead
+    - ✅ More convenient for users
+    - ✅ Better composability
+    - ⚠️ Require C++ templates (e.g., often provided in header files)
+
+### Precision Considerations
+
+- **Integral representations**: Value-truncating conversions can lose precision
+- **Floating-point representations**: Better for intermediate conversions
+- **Multiple conversions**: Each conversion step can accumulate errors
+- **Generic functions**: Minimize conversions by working in the user's units
+
+## Related Concepts
+
+- [Value Conversions](../users_guide/framework_basics/value_conversions.md) - Understanding
+  value-preserving vs. value-truncating conversions
+- [Generic Interfaces](../users_guide/framework_basics/generic_interfaces.md) - Designing
+  flexible APIs
