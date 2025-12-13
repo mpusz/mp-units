@@ -118,12 +118,16 @@ enum class prefix_range : std::uint8_t { engineering, full };
  *       - full mode: values displayed in range [1.0, 9.999...]
  */
 template<Quantity Q, std::invocable<Q> Func, PrefixableUnit U>
-  requires RepresentationOf<typename Q::rep, quantity_character::real_scalar> &&
-           treat_as_floating_point<typename Q::rep> && requires(Q::rep v) {
-             requires requires { abs(v); } || requires { std::abs(v); };
-             requires requires { log10(v); } || requires { std::log10(v); };
-             requires requires { floor(v); } || requires { std::floor(v); };
-           }
+  requires(
+#if !MP_UNITS_COMP_GCC
+    RepresentationOf<typename Q::rep, quantity_character::real_scalar> &&
+#endif
+    treat_as_floating_point<typename Q::rep> &&
+    requires(Q::rep v) {
+      requires requires { abs(v); } || requires { std::abs(v); };
+      requires requires { log10(v); } || requires { std::log10(v); };
+      requires requires { floor(v); } || requires { std::floor(v); };
+    })
 decltype(auto) invoke_with_prefixed(Func func, Q q, U u, prefix_range range = prefix_range::engineering,
                                     int min_integral_digits = 1)
 {
