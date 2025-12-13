@@ -21,10 +21,14 @@
 # SOFTWARE.
 
 add_library(example_utils-headers INTERFACE)
-target_sources(example_utils-headers INTERFACE
-    FILE_SET HEADERS
-    BASE_DIRS include
-    FILES
+target_sources(
+    example_utils-headers
+    INTERFACE
+        FILE_SET
+        HEADERS
+        BASE_DIRS
+        include
+        FILES
         include/geographic.h
         include/measurement.h
         include/ranged_representation.h
