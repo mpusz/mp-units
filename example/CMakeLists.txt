@@ -30,13 +30,13 @@ target_sources(example_utils-headers INTERFACE
         include/ranged_representation.h
         include/validated_type.h
 )
-target_link_libraries(example_utils-headers INTERFACE mp-units-contracts)
+target_link_libraries(example_utils-headers INTERFACE mp-units::mp-units)
 
 if(MP_UNITS_BUILD_CXX_MODULES)
     add_library(example_utils INTERFACE)
     target_compile_features(example_utils INTERFACE cxx_std_20)
     target_compile_definitions(example_utils INTERFACE MP_UNITS_MODULES)
-    target_link_libraries(example_utils INTERFACE example_utils-headers mp-units-contracts)
+    target_link_libraries(example_utils INTERFACE example_utils-headers)
 endif()
 
 #
