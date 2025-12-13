@@ -102,6 +102,7 @@ markdown_extensions:
   - attr_list
   - def_list
   - footnotes
+  - md_in_html
   - pymdownx.arithmatex:
       generic: true
   - pymdownx.details
@@ -191,8 +192,14 @@ nav:
               - avg_speed: examples/avg_speed.md
               - si_constants: examples/si_constants.md
           - Intermediate:
-              - hw_voltage: examples/hw_voltage.md
+              - foot_pound_second: examples/foot_pound_second.md
+              - spectroscopy_units: examples/spectroscopy_units.md
+              - storage_tank: examples/storage_tank.md
               - capacitor_time_curve: examples/capacitor_time_curve.md
+              - hw_voltage: examples/hw_voltage.md
+              - measurement: examples/measurement.md
+              - currency: examples/currency.md
+              - strong_angular_quantities: examples/strong_angular_quantities.md
   - Blog:
       - blog/index.md
   - Release Notes: release_notes.md
