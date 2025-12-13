@@ -144,9 +144,16 @@ class ContributorUpdater:
             categorized["occasional"], include_contributions=False
         )
 
-        # Generate statistics
-        total_contributors = len(contributors)
-        total_contributions = sum(c["contributions"] for c in contributors)
+        # Generate statistics (excluding core team)
+        core_team = {"mpusz", "JohelEGP", "chiphogg"}
+        core_team_lower = {name.lower() for name in core_team}
+        non_core_contributors = [
+            c
+            for c in contributors
+            if c["login"].lower() not in core_team_lower and c.get("type") != "Bot"
+        ]
+        total_contributors = len(non_core_contributors)
+        total_contributions = sum(c["contributions"] for c in non_core_contributors)
 
         stats_section = f"""## Statistics
 
