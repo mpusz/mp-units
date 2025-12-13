@@ -78,7 +78,7 @@ add_mp_units_module(
     MODULE_INTERFACE_UNIT mp-units-core.cpp
 )
 
-if(${MP_UNITS_API_NATURAL_UNITS})
+if(MP_UNITS_API_NATURAL_UNITS)
     target_sources(
         mp-units-core PUBLIC FILE_SET HEADERS BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include FILES
                              include/mp-units/framework/system_reference.h
@@ -174,7 +174,7 @@ if(MP_UNITS_API_THROWING_CONSTRAINTS)
 endif()
 
 # Natural units support
-if(${MP_UNITS_API_NATURAL_UNITS})
+if(MP_UNITS_API_NATURAL_UNITS)
     target_compile_definitions(
         mp-units-core ${MP_UNITS_TARGET_SCOPE} MP_UNITS_API_NATURAL_UNITS=$<BOOL:${MP_UNITS_API_NATURAL_UNITS}>
     )
