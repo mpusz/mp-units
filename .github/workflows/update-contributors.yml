@@ -7,10 +7,10 @@ on:
   workflow_dispatch:
     # Allow manual triggering
   push:
-    paths:
-      - ".github/scripts/update_contributors.py"
     branches:
       - master
+    paths:
+      - ".github/scripts/update_contributors.py"
 
 permissions:
   contents: write
