@@ -63,8 +63,6 @@ endfunction()
 
 add_example(avg_speed)
 add_example(capacitor_time_curve)
-add_example(clcpp_response)
-add_example(conversion_factor)
 add_example(currency)
 add_example(foot_pound_second)
 add_example(glide_computer glide_computer_lib)
