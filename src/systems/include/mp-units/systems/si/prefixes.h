@@ -120,6 +120,7 @@ enum class prefix_range : std::uint8_t { engineering, full };
 template<Quantity Q, std::invocable<Q> Func, PrefixableUnit U>
   requires(
 #if !MP_UNITS_COMP_GCC
+    // TODO GCC bug: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=123112
     RepresentationOf<typename Q::rep, quantity_character::real_scalar> &&
 #endif
     treat_as_floating_point<typename Q::rep> &&
