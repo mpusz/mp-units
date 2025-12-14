@@ -343,10 +343,10 @@ concept RepresentationOf =
 
 MP_UNITS_EXPORT template<typename T, auto V>
 concept RepresentationOf =
-  ((QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(V))> &&
-    ((detail::QuantityKindSpec<MP_UNITS_REMOVE_CONST(decltype(V))> && detail::SomeRepresentation<T>) ||
-     detail::IsOfCharacter<T, V.character>)) ||
-   (std::same_as<quantity_character, decltype(V)> && detail::IsOfCharacter<T, V>));
+  (QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(V))> &&
+   ((detail::QuantityKindSpec<MP_UNITS_REMOVE_CONST(decltype(V))> && detail::SomeRepresentation<T>) ||
+    detail::IsOfCharacter<T, V.character>)) ||
+  (std::same_as<quantity_character, MP_UNITS_REMOVE_CONST(decltype(V))> && detail::IsOfCharacter<T, V>);
 #endif
 
 }  // namespace mp_units
