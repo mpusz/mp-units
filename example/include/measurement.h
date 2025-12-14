@@ -168,14 +168,17 @@ public:
    * @brief Multiplication by an exact scalar.
    * @note The scalar is treated as exact (no uncertainty). Formula: σ_f = |k| × σ_x
    */
-  [[nodiscard]] friend constexpr measurement operator*(const measurement& lhs, const value_type& value)
+  [[nodiscard]] friend constexpr measurement operator*(const measurement& lhs,
+                                                       const std::convertible_to<value_type> auto& value)
   {
     using namespace std;
-    return measurement(lhs.value() * value, abs(value) * lhs.uncertainty());
+    return measurement(static_cast<value_type>(lhs.value() * value),
+                       static_cast<value_type>(abs(value) * lhs.uncertainty()));
   }
 
   /// @brief Multiplication by an exact scalar (commutative).
-  [[nodiscard]] friend constexpr measurement operator*(const value_type& value, const measurement& rhs)
+  [[nodiscard]] friend constexpr measurement operator*(const std::convertible_to<value_type> auto& value,
+                                                       const measurement& rhs)
   {
     using namespace std;
     return measurement(value * rhs.value(), abs(value) * rhs.uncertainty());
@@ -196,19 +199,22 @@ public:
    * @brief Division by an exact scalar.
    * @note The scalar is treated as exact (no uncertainty). Formula: σ_f = σ_x / |k|
    */
-  [[nodiscard]] friend constexpr measurement operator/(const measurement& lhs, const value_type& value)
+  [[nodiscard]] friend constexpr measurement operator/(const measurement& lhs,
+                                                       const std::convertible_to<value_type> auto& value)
   {
     using namespace std;
-    return measurement(lhs.value() / value, lhs.uncertainty() / abs(value));
+    return measurement(static_cast<value_type>(lhs.value()) / value,
+                       static_cast<value_type>(lhs.uncertainty() / abs(value)));
   }
 
   /**
    * @brief Division of an exact scalar by a measurement.
    * @note Formula: σ_f = |f| × (σ_x / x)
    */
-  [[nodiscard]] friend constexpr measurement operator/(const value_type& value, const measurement& rhs)
+  [[nodiscard]] friend constexpr measurement operator/(const std::convertible_to<value_type> auto& value,
+                                                       const measurement& rhs)
   {
-    const auto val = value / rhs.value();
+    const auto val = static_cast<value_type>(value / rhs.value());
     using namespace std;
     return measurement(val, abs(val) * rhs.relative_uncertainty());
   }
