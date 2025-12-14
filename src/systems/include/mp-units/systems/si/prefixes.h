@@ -26,12 +26,14 @@
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <mp-units/framework/unit.h>
+#if MP_UNITS_HOSTED
 #ifdef MP_UNITS_IMPORT_STD
 import std;
 #else
 #include <cmath>
-#endif
-#endif
+#endif  // MP_UNITS_IMPORT_STD
+#endif  // MP_UNITS_HOSTED
+#endif  // MP_UNITS_IN_MODULE_INTERFACE
 
 namespace mp_units::si {
 
@@ -88,6 +90,8 @@ template<PrefixableUnit auto U> constexpr yotta_<MP_UNITS_REMOVE_CONST(decltype(
 template<PrefixableUnit auto U> constexpr ronna_<MP_UNITS_REMOVE_CONST(decltype(U))> ronna;
 template<PrefixableUnit auto U> constexpr quetta_<MP_UNITS_REMOVE_CONST(decltype(U))> quetta;
 // clang-format on
+
+#if MP_UNITS_HOSTED
 
 enum class prefix_range : std::uint8_t { engineering, full };
 
@@ -173,6 +177,8 @@ decltype(auto) invoke_with_prefixed(Func func, Q q, U u, prefix_range range = pr
   else                                                    return func(q.in(si::quecto<U{}>));
   // clang-format on
 }
+
+#endif  // MP_UNITS_HOSTED
 
 MP_UNITS_EXPORT_END
 
