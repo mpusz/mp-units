@@ -133,6 +133,7 @@ nav:
   - Getting Started:
       - Introduction: getting_started/introduction.md
       - Quick Start: getting_started/quick_start.md
+      - Cheat Sheet: getting_started/cheat_sheet.md
       - Look and Feel: getting_started/look_and_feel.md
       - Project Structure: getting_started/project_structure.md
       - C++ compiler support (API/ABI): getting_started/cpp_compiler_support.md
