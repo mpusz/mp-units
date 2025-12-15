@@ -18,7 +18,7 @@
         <link rel="prev" href="../introduction/">
       
       
-        <link rel="next" href="../look_and_feel/">
+        <link rel="next" href="../cheat_sheet/">
       
       
         
@@ -538,6 +538,8 @@ You're not viewing the latest version.
       
         
       
+        
+      
     
     
     
@@ -704,6 +706,34 @@ You're not viewing the latest version.
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cheat_sheet/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cheat Sheet
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -3577,94 +3607,77 @@ base. This is why unit symbols are opt-in and typically should be imported only 
 context where they are being used (e.g., function scope).</p>
 <p>A user has several options here to choose from depending on the required scenario and
 possible naming conflicts:</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="5:1"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">using-directive</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="5:4"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><input id="__tabbed_5_3" name="__tabbed_5" type="radio" /><input id="__tabbed_5_4" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">using-directive</label><label for="__tabbed_5_2">using-declaration</label><label for="__tabbed_5_3">custom short identifier</label><label for="__tabbed_5_4">unit names</label></div>
 <div class="tabbed-content">
-<div class="tabbed-block"></div>
-</div>
-</div>
+<div class="tabbed-block">
 <p>Explicitly "import" all of the symbols of a specific system of units from a
 dedicated <code>unit_symbols</code> namespace with a
-    <a href="https://en.cppreference.com/w/cpp/language/namespace#Using-directives">using-directive</a>:</p>
-<div class="language-text highlight"><pre><span></span><code>```cpp
-using namespace mp_units;
-
-void foo(double speed_m_s)
-{
-  // imports all the SI symbols at once
-  using namespace si::unit_symbols;
-  quantity speed = speed_m_s * m / s;
-  // ...
-}
-```
-
-!!! note
-
-    This solution is perfect for small and isolated scopes but can cause surprising
-    issues when used in larger scopes or when used for the entire program namespace.
-
-    There are 29 named units in SI, and each of them has many prefixed variations
-    (e.g., `ng`, `kcd`, ...). It is pretty easy to introduce a name collision with
-    those.
-</code></pre></div>
-<div class="tabbed-set tabbed-alternate" data-tabs="6:1"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">using-declaration</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block"></div>
+<a href="https://en.cppreference.com/w/cpp/language/namespace#Using-directives">using-directive</a>:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">mp_units</span><span class="p">;</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="kt">void</span><span class="w"> </span><span class="nf">foo</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">speed_m_s</span><span class="p">)</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="p">{</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">  </span><span class="c1">// imports all the SI symbols at once</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">si</span><span class="o">::</span><span class="nn">unit_symbols</span><span class="p">;</span>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="w">  </span><span class="n">quantity</span><span class="w"> </span><span class="n">speed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">speed_m_s</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">s</span><span class="p">;</span>
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="w">  </span><span class="c1">// ...</span>
+</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="p">}</span>
+</span></code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This solution is perfect for small and isolated scopes but can cause surprising
+issues when used in larger scopes or when used for the entire program namespace.</p>
+<p>There are 29 named units in SI, and each of them has many prefixed variations
+(e.g., <code>ng</code>, <code>kcd</code>, ...). It is pretty easy to introduce a name collision with
+those.</p>
 </div>
 </div>
+<div class="tabbed-block">
 <p>Selectively bring only the required and not-conflicting symbols with
 <a href="https://en.cppreference.com/w/cpp/language/using_declaration">using-declarations</a>:</p>
-<div class="language-text highlight"><pre><span></span><code>```cpp
-using namespace mp_units;
-
-void foo(double N)
-{
-  // &#39;N&#39; would collide with the SI symbol for Newton; only bring what we need
-  using si::unit_symbols::m;
-  using si::unit_symbols::s;
-  quantity speed = N * m / s;
-  // ...
-}
-```
-</code></pre></div>
-<div class="tabbed-set tabbed-alternate" data-tabs="7:1"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">custom short identifier</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block"></div>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">mp_units</span><span class="p">;</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="kt">void</span><span class="w"> </span><span class="nf">foo</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">N</span><span class="p">)</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="p">{</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="w">  </span><span class="c1">// &#39;N&#39; would collide with the SI symbol for Newton; only bring what we need</span>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">unit_symbols</span><span class="o">::</span><span class="n">m</span><span class="p">;</span>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">unit_symbols</span><span class="o">::</span><span class="n">s</span><span class="p">;</span>
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="w">  </span><span class="n">quantity</span><span class="w"> </span><span class="n">speed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">N</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">s</span><span class="p">;</span>
+</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="w">  </span><span class="c1">// ...</span>
+</span><span id="__span-9-10"><a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="p">}</span>
+</span></code></pre></div>
 </div>
-</div>
+<div class="tabbed-block">
 <p>Specify a custom not conflicting unit identifier for a unit:</p>
-<div class="language-text highlight"><pre><span></span><code>```cpp
-using namespace mp_units;
-
-void foo(double speed_m_s)
-{
-  // local variable names conflict with the symbols we want to use
-  auto m = ...;
-  auto s = ...;
-
-  constexpr Unit auto mps = si::metre / si::second;
-  quantity speed = speed_m_s * mps;
-}
-```
-</code></pre></div>
-<div class="tabbed-set tabbed-alternate" data-tabs="8:1"><input checked="checked" id="__tabbed_8_1" name="__tabbed_8" type="radio" /><div class="tabbed-labels"><label for="__tabbed_8_1">unit names</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block"></div>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">mp_units</span><span class="p">;</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="kt">void</span><span class="w"> </span><span class="nf">foo</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">speed_m_s</span><span class="p">)</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="p">{</span>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="w">  </span><span class="c1">// local variable names conflict with the symbols we want to use</span>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">...;</span>
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">...;</span>
+</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>
+</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="w">  </span><span class="k">constexpr</span><span class="w"> </span><span class="n">Unit</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">mps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">second</span><span class="p">;</span>
+</span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="w">  </span><span class="n">quantity</span><span class="w"> </span><span class="n">speed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">speed_m_s</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">mps</span><span class="p">;</span>
+</span><span id="__span-10-11"><a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="p">}</span>
+</span></code></pre></div>
 </div>
-</div>
+<div class="tabbed-block">
 <p>Full unit names are straightforward to use and often provide the most readable code:</p>
-<div class="language-text highlight"><pre><span></span><code>```cpp
-using namespace mp_units;
-
-void foo(double m, double s)
-{
-  quantity speed = m * si::metre / (s * si::second);
-  // ...
-}
-```
-</code></pre></div>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">mp_units</span><span class="p">;</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="kt">void</span><span class="w"> </span><span class="nf">foo</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">s</span><span class="p">)</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="p">{</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="w">  </span><span class="n">quantity</span><span class="w"> </span><span class="n">speed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">s</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">second</span><span class="p">);</span>
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="w">  </span><span class="c1">// ...</span>
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="p">}</span>
+</span></code></pre></div>
+</div>
+</div>
+</div>
 </div>
 <p>Quantities of the same kind can be added, subtracted, and compared to each other:</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="9:2"><input checked="checked" id="__tabbed_9_1" name="__tabbed_9" type="radio" /><input id="__tabbed_9_2" name="__tabbed_9" type="radio" /><div class="tabbed-labels"><label for="__tabbed_9_1">C++ modules</label><label for="__tabbed_9_2">Header files</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">C++ modules</label><label for="__tabbed_6_2">Header files</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="k">import</span><span class="w"> </span><span class="n">mp_units</span><span class="p">;</span>
@@ -3702,7 +3715,7 @@ is provided explicitly, an implicit one will be provided by the library.</p>
 temperature points, timestamps, altitudes, readouts from the car's odometer, etc.).</p>
 <p>The set of operations that can be done on quantity points is limited compared to
 quantities. This introduces an additional type-safety.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="10:2"><input checked="checked" id="__tabbed_10_1" name="__tabbed_10" type="radio" /><input id="__tabbed_10_2" name="__tabbed_10" type="radio" /><div class="tabbed-labels"><label for="__tabbed_10_1">C++ modules</label><label for="__tabbed_10_2">Header files</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="7:2"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">C++ modules</label><label for="__tabbed_7_2">Header files</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;print&gt;</span>
@@ -3801,13 +3814,13 @@ learn more about quantity points.</p>
         
         
           
-          <a href="../look_and_feel/" class="md-footer__link md-footer__link--next" aria-label="Next: Look and Feel">
+          <a href="../cheat_sheet/" class="md-footer__link md-footer__link--next" aria-label="Next: Cheat Sheet">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Look and Feel
+                Cheat Sheet
               </div>
             </div>
             <div class="md-footer__button md-icon">
