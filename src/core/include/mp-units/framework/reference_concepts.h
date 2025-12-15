@@ -66,8 +66,7 @@ concept Reference = MP_UNITS_ASSOCIATED_UNIT_T(T) || is_specialization_of<T, ref
  * Satisfied by all references for which @c QuantitySpecOf<QS> is true.
  */
 template<typename T, auto QS>
-concept ReferenceOf = Reference<T> && QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS))> &&
-                      QuantitySpecOf<decltype(get_quantity_spec(T{})), QS>;
+concept ReferenceOf = Reference<T> && QuantitySpecOf<decltype(get_quantity_spec(T{})), QS>;
 
 MP_UNITS_EXPORT_END
 
