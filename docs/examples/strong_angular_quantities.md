@@ -104,5 +104,5 @@ angular quantities or when working with standards that treat angles dimensionall
 All of these benefit from treating angles as dimensional quantities rather than pure scalars.
 
 For more details on the theoretical background and design decisions, see the
-[Strong Angular System](../../users_guide/systems/strong_angular_system.md) chapter
+[Strong Angular System](../users_guide/systems/strong_angular_system.md) chapter
 in the user's guide.
