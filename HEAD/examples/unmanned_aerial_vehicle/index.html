@@ -1,0 +1,4321 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="The quantities and units library for C++">
+      
+      
+        <meta name="author" content="mp-units Team">
+      
+      
+        <link rel="canonical" href="https://mpusz.github.io/mp-units/HEAD/examples/unmanned_aerial_vehicle/">
+      
+      
+        <link rel="prev" href="../strong_angular_quantities/">
+      
+      
+        <link rel="next" href="../glide_computer/">
+      
+      
+        
+      
+      
+        <link rel="alternate" type="application/rss+xml" title="RSS feed" href="../../feed_rss_created.xml">
+        <link rel="alternate" type="application/rss+xml" title="RSS feed of updated content" href="../../feed_rss_updated.xml">
+      
+      <link rel="icon" href="../../assets/images/mp-units-color.svg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>unmanned_aerial_vehicle - mp-units</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.618322db.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  
+<meta property="og:type" content="website" />
+<meta property="og:title" content="unmanned_aerial_vehicle - mp-units" />
+<meta property="og:description" content="The quantities and units library for C++" />
+<meta property="og:image" content="https://mpusz.github.io/mp-units/HEAD/assets/images/social/examples/unmanned_aerial_vehicle.png" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:url" content="https://mpusz.github.io/mp-units/HEAD/examples/unmanned_aerial_vehicle/" />
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:title" content="unmanned_aerial_vehicle - mp-units" />
+<meta property="twitter:description" content="The quantities and units library for C++" />
+<meta property="twitter:image" content="https://mpusz.github.io/mp-units/HEAD/assets/images/social/examples/unmanned_aerial_vehicle.png" />
+</head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#uav-multiple-altitude-reference-systems" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+          <aside class="md-banner md-banner--warning">
+            <div class="md-banner__inner md-grid md-typeset">
+              
+You're not viewing the latest version.
+<a href="../../..">
+  <strong>Click here to go to latest.</strong>
+</a>
+
+            </div>
+            <script>var el=document.querySelector("[data-md-component=outdated]"),base=new URL("../.."),outdated=__md_get("__outdated",sessionStorage,base);!0===outdated&&el&&(el.hidden=!1)</script>
+          </aside>
+        
+      </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="mp-units" class="md-header__button md-logo" aria-label="mp-units" data-md-component="logo">
+      
+  <img src="../../assets/images/mp-units-transparent-white.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            mp-units
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              unmanned_aerial_vehicle
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1M8 13h8v-2H8zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4a5 5 0 0 0 5-5 5 5 0 0 0-5-5"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="custom"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/mpusz/mp-units" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    mpusz/mp-units
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting_started/introduction/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../users_guide/terms_and_definitions/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  User's Guide
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../api_reference/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  API Reference
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../tutorials/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Tutorials
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../overview/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Examples
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../blog/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Blog
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../release_notes/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Release Notes
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="mp-units" class="md-nav__button md-logo" aria-label="mp-units" data-md-component="logo">
+      
+  <img src="../../assets/images/mp-units-transparent-white.svg" alt="logo">
+
+    </a>
+    mp-units
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/mpusz/mp-units" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    mpusz/mp-units
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting Started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting_started/introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting_started/quick_start/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quick Start
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting_started/look_and_feel/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Look and Feel
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting_started/cheat_sheet/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cheat Sheet
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting_started/project_structure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Project Structure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting_started/cpp_compiler_support/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    C++ compiler support (API/ABI)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting_started/installation_and_usage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation and Usage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting_started/contributing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting_started/faq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FAQ
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User's Guide
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    User's Guide
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/terms_and_definitions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Terms and Definitions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Framework Basics
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Framework Basics
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/framework_basics/interface_introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Interface Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/framework_basics/design_overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/framework_basics/systems_of_quantities/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Systems of Quantities
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/framework_basics/systems_of_units/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Systems of Units
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/framework_basics/simple_and_typed_quantities/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Simple and Typed Quantities
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/framework_basics/value_conversions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Value Conversions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/framework_basics/character_of_a_quantity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Character of a Quantity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/framework_basics/dimensionless_quantities/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dimensionless Quantities
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/framework_basics/quantity_arithmetics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quantity Arithmetics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/framework_basics/generic_interfaces/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Generic Interfaces
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/framework_basics/faster_than_lightspeed_constants/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Faster-than-lightspeed Constants
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/framework_basics/the_affine_space/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The Affine Space
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/framework_basics/obtaining_metadata/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Obtaining Metadata
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/framework_basics/concepts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concepts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/framework_basics/text_output/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Text Output
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Systems
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Systems
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/systems/introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/systems/isq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    International System of Quantities (ISQ)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/systems/si/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    International System of Units (SI)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/systems/strong_angular_system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Strong Angular System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/systems/natural_units/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Natural Units
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Use Cases
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Use Cases
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/use_cases/pure_dimensional_analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pure Dimensional Analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/use_cases/working_with_legacy_interfaces/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Working with Legacy Interfaces
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/use_cases/using_custom_representation_types/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Using Custom Representation Types
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/use_cases/interoperability_with_other_libraries/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Interoperability with Other Libraries
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/use_cases/extending_the_library/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Extending the Library
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../users_guide/use_cases/wide_compatibility/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Wide Compatibility
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_5" id="__nav_3_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Appendix
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Appendix
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../appendix/references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api_reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../tutorials/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorials
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/tutorial_1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial 1: Refactor to Strong Types
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/tutorial_2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial 2: Refactor to Generic, Type-Safe Interfaces
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/tutorial_3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial 3: Extracting Numeric Values
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/tutorial_4/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial 4: Working with Temperatures
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/tutorial_5/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial 5: Affine Spaces and Reference Origins
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/tutorial_6/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial 6: Interop with std::chrono
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/tutorial_7/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial 7: Typed Quantities of the Same Kind
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/tutorial_8/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial 8: Custom Units for Dimensionless Counters
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Examples
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_6_2" id="__nav_6_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    All Examples
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    All Examples
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_2_1" id="__nav_6_2_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Beginner
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_6_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Beginner
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hello_units/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    hello_units
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../avg_speed/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    avg_speed
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../si_constants/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    si_constants
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_2_2" id="__nav_6_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Intermediate
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_6_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Intermediate
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../foot_pound_second/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    foot_pound_second
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../spectroscopy_units/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    spectroscopy_units
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../storage_tank/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    storage_tank
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../capacitor_time_curve/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    capacitor_time_curve
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hw_voltage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    hw_voltage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../measurement/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    measurement
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../currency/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    currency
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../strong_angular_quantities/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    strong_angular_quantities
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_2_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_6_2_3" id="__nav_6_2_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Advanced
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_6_2_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Advanced
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    unmanned_aerial_vehicle
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    unmanned_aerial_vehicle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-problem-multiple-altitude-datums" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Problem: Multiple Altitude Datums
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#type-safe-altitude-references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Type-Safe Altitude References
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Type-Safe Altitude References">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mean-sea-level-msl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mean Sea Level (MSL)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#multiple-earth-gravity-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Multiple Earth Gravity Models
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#height-above-launch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Height Above Launch
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#converting-between-reference-systems" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Converting Between Reference Systems
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Converting Between Reference Systems">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#msl-to-hae-conversion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MSL to HAE Conversion
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#relative-altitude-calculations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Relative Altitude Calculations
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#custom-formatting-for-each-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Custom Formatting for Each System
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#practical-uav-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Practical UAV Operations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#real-world-safety-impact" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Real-World Safety Impact
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-features-demonstrated" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Features Demonstrated
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Key Features Demonstrated">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-multiple-absolute-point-origins" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Multiple Absolute Point Origins
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-template-parameters-for-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Template Parameters for Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-safe-relative-calculations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Safe Relative Calculations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-custom-formatting-per-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Custom Formatting Per Reference
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-integration-with-geographic-systems" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Integration with Geographic Systems
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-takeaways" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Takeaways
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../glide_computer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    glide_computer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../kalman_filter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    kalman_filter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../blog/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Blog
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_7_2" id="__nav_7_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Archive
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Archive
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../blog/archive/2025/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2025
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../blog/archive/2024/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2024
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../blog/archive/2023/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2023
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_7_3" id="__nav_7_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Categories
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Categories
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../blog/category/metrology/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metrology
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../blog/category/releases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Releases
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../blog/category/wg21-updates/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WG21 Updates
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../release_notes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Release Notes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  <nav class="md-tags" >
+    
+      
+      
+      
+      
+        <a href="../overview/#tag:domain---aerospace" class="md-tag">Domain - Aerospace</a>
+      
+    
+      
+      
+      
+      
+        <a href="../overview/#tag:domain---aviation" class="md-tag">Domain - Aviation</a>
+      
+    
+      
+      
+      
+      
+        <a href="../overview/#tag:domain---embedded-systems" class="md-tag">Domain - Embedded Systems</a>
+      
+    
+      
+      
+      
+      
+        <a href="../overview/#tag:feature---affine-space" class="md-tag">Feature - Affine Space</a>
+      
+    
+      
+      
+      
+      
+        <a href="../overview/#tag:feature---multi-system-units" class="md-tag">Feature - Multi-System Units</a>
+      
+    
+      
+      
+      
+      
+        <a href="../overview/#tag:feature---runtime-conversion-functions" class="md-tag">Feature - Runtime Conversion Functions</a>
+      
+    
+      
+      
+      
+      
+        <a href="../overview/#tag:feature---text-formatting" class="md-tag">Feature - Text Formatting</a>
+      
+    
+      
+      
+      
+      
+        <a href="../overview/#tag:level---advanced" class="md-tag">Level - Advanced</a>
+      
+    
+      
+      
+      
+      
+        <a href="../overview/#tag:system---isq" class="md-tag">System - ISQ</a>
+      
+    
+      
+      
+      
+      
+        <a href="../overview/#tag:system---international" class="md-tag">System - International</a>
+      
+    
+      
+      
+      
+      
+        <a href="../overview/#tag:system---si" class="md-tag">System - SI</a>
+      
+    
+  </nav>
+
+
+  
+    <a href="https://github.com/mpusz/mp-units/edit/master/docs/examples/unmanned_aerial_vehicle.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
+    </a>
+  
+  
+    
+      
+    
+    <a href="https://github.com/mpusz/mp-units/raw/master/docs/examples/unmanned_aerial_vehicle.md" title="View source of this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 18c.56 0 1 .44 1 1s-.44 1-1 1-1-.44-1-1 .44-1 1-1m0-3c-2.73 0-5.06 1.66-6 4 .94 2.34 3.27 4 6 4s5.06-1.66 6-4c-.94-2.34-3.27-4-6-4m0 6.5a2.5 2.5 0 0 1-2.5-2.5 2.5 2.5 0 0 1 2.5-2.5 2.5 2.5 0 0 1 2.5 2.5 2.5 2.5 0 0 1-2.5 2.5M9.27 20H6V4h7v5h5v4.07c.7.08 1.36.25 2 .49V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h4.5a8.2 8.2 0 0 1-1.23-2"/></svg>
+    </a>
+  
+
+
+<h1 id="uav-multiple-altitude-reference-systems"><abbr title="Unmanned Aerial Vehicle">UAV</abbr>: Multiple Altitude Reference Systems<a class="headerlink" href="#uav-multiple-altitude-reference-systems" title="Permanent link">&para;</a></h1>
+<!-- markdownlint-disable MD013 -->
+<p><strong>Library:</strong></p>
+<ul>
+<li><a href="https://github.com/mpusz/units/blob/c54d18e4892d8b4c0173054750aca5507fbf8e2e/example/include/geographic.h"><code>include/geographic.h</code></a> - Geographic primitives (<abbr title="Mean Sea Level">MSL</abbr> altitude, position)</li>
+</ul>
+<p><strong>Example:</strong></p>
+<ul>
+<li><a href="https://github.com/mpusz/units/blob/c54d18e4892d8b4c0173054750aca5507fbf8e2e/example/unmanned_aerial_vehicle.cpp"><code>unmanned_aerial_vehicle.cpp</code></a> - <abbr title="Unmanned Aerial Vehicle">UAV</abbr> altitude reference systems</li>
+</ul>
+<!-- markdownlint-enable MD013 -->
+
+<p>This advanced example demonstrates a critical challenge in aviation software: managing
+multiple <em>altitude</em> reference systems simultaneously. In aviation, <em>altitudes</em> can be measured
+relative to different reference points (mean sea level, ground, ellipsoid, launch point),
+and confusing these can have catastrophic consequences. <strong>mp-units</strong> makes these distinctions
+type-safe and impossible to mix up.</p>
+<h2 id="the-problem-multiple-altitude-datums">The Problem: Multiple Altitude Datums<a class="headerlink" href="#the-problem-multiple-altitude-datums" title="Permanent link">&para;</a></h2>
+<p>In aviation and <abbr title="Unmanned Aerial Vehicle">UAV</abbr> operations, <em>altitude</em> can be expressed relative to several different reference
+points:</p>
+<ul>
+<li><strong><abbr title="Mean Sea Level">MSL</abbr></strong> (Mean Sea Level) - <em>standard barometric altitude</em></li>
+<li><strong><abbr title="Above Ground Level">AGL</abbr></strong> (Above Ground Level) - <em>height above local terrain</em></li>
+<li><strong><abbr title="Height Above Ellipsoid">HAE</abbr></strong> (Height Above Ellipsoid) - <em>GPS altitude relative to WGS84 ellipsoid</em></li>
+<li><strong><abbr title="Height Above Launch">HAL</abbr></strong> (Height Above Launch) - <em>relative altitude from takeoff point</em></li>
+</ul>
+<p>Each serves a different purpose, and <strong>mixing them is dangerous</strong>. For example:</p>
+<ul>
+<li>ATC (Air Traffic Control) uses <abbr title="Mean Sea Level">MSL</abbr> for separation</li>
+<li>Obstacle clearance requires <abbr title="Above Ground Level">AGL</abbr></li>
+<li>GPS provides <abbr title="Height Above Ellipsoid">HAE</abbr></li>
+<li>UAVs often track <abbr title="Height Above Launch">HAL</abbr> for relative navigation</li>
+</ul>
+<h2 id="type-safe-altitude-references">Type-Safe Altitude References<a class="headerlink" href="#type-safe-altitude-references" title="Permanent link">&para;</a></h2>
+<h3 id="mean-sea-level-msl">Mean Sea Level (<abbr title="Mean Sea Level">MSL</abbr>)<a class="headerlink" href="#mean-sea-level-msl" title="Permanent link">&para;</a></h3>
+<p>The example uses <abbr title="Mean Sea Level">MSL</abbr> altitude from the <code>geographic</code> module as the base reference:</p>
+<div class="language-cpp highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">geographic.h</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-46">46</a></span>
+<span class="normal"><a href="#__codelineno-0-47">47</a></span>
+<span class="normal"><a href="#__codelineno-0-48">48</a></span>
+<span class="normal"><a href="#__codelineno-0-49">49</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-46"><a id="__codelineno-0-46" name="__codelineno-0-46"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">mean_sea_level</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">absolute_point_origin</span><span class="o">&lt;</span><span class="n">mp_units</span><span class="o">::</span><span class="n">isq</span><span class="o">::</span><span class="n">altitude</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-47"><a id="__codelineno-0-47" name="__codelineno-0-47"></a><span class="p">}</span><span class="w"> </span><span class="n">mean_sea_level</span><span class="p">;</span>
+</span><span id="__span-0-48"><a id="__codelineno-0-48" name="__codelineno-0-48"></a>
+</span><span id="__span-0-49"><a id="__codelineno-0-49" name="__codelineno-0-49"></a><span class="k">using</span><span class="w"> </span><span class="n">msl_altitude</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">mp_units</span><span class="o">::</span><span class="n">isq</span><span class="o">::</span><span class="n">altitude</span><span class="p">[</span><span class="n">mp_units</span><span class="o">::</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">],</span><span class="w"> </span><span class="n">mean_sea_level</span><span class="o">&gt;</span><span class="p">;</span>
+</span></code></pre></div></td></tr></table></div>
+<p>This defines the <em>standard barometric altitude</em> reference used in aviation, with custom
+formatting that appends "AMSL" (Above Mean Sea Level) to clearly identify the reference system.</p>
+<h3 id="multiple-earth-gravity-models">Multiple Earth Gravity Models<a class="headerlink" href="#multiple-earth-gravity-models" title="Permanent link">&para;</a></h3>
+<p><em><abbr title="Height Above Ellipsoid">HAE</abbr> altitudes</em> depend on which Earth gravity model is used. The example defines an enum for
+different Earth gravity models and a templated point origin:</p>
+<div class="language-cpp highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">unmanned_aerial_vehicle.cpp</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-49">49</a></span>
+<span class="normal"><a href="#__codelineno-1-50">50</a></span>
+<span class="normal"><a href="#__codelineno-1-51">51</a></span>
+<span class="normal"><a href="#__codelineno-1-52">52</a></span>
+<span class="normal"><a href="#__codelineno-1-53">53</a></span>
+<span class="normal"><a href="#__codelineno-1-54">54</a></span>
+<span class="normal"><a href="#__codelineno-1-55">55</a></span>
+<span class="normal"><a href="#__codelineno-1-56">56</a></span>
+<span class="normal"><a href="#__codelineno-1-57">57</a></span>
+<span class="normal"><a href="#__codelineno-1-58">58</a></span>
+<span class="normal"><a href="#__codelineno-1-59">59</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-1-49"><a id="__codelineno-1-49" name="__codelineno-1-49"></a><span class="k">enum</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">earth_gravity_model</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">int8_t</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">egm84_15</span><span class="p">,</span><span class="w"> </span><span class="n">egm95_5</span><span class="p">,</span><span class="w"> </span><span class="n">egm2008_1</span><span class="w"> </span><span class="p">};</span>
+</span><span id="__span-1-50"><a id="__codelineno-1-50" name="__codelineno-1-50"></a>
+</span><span id="__span-1-51"><a id="__codelineno-1-51" name="__codelineno-1-51"></a><span class="k">template</span><span class="o">&lt;</span><span class="n">earth_gravity_model</span><span class="w"> </span><span class="n">M</span><span class="o">&gt;</span>
+</span><span id="__span-1-52"><a id="__codelineno-1-52" name="__codelineno-1-52"></a><span class="k">struct</span><span class="w"> </span><span class="nc">height_above_ellipsoid_t</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">absolute_point_origin</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">altitude</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-53"><a id="__codelineno-1-53" name="__codelineno-1-53"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">earth_gravity_model</span><span class="w"> </span><span class="n">egm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">M</span><span class="p">;</span>
+</span><span id="__span-1-54"><a id="__codelineno-1-54" name="__codelineno-1-54"></a><span class="p">};</span>
+</span><span id="__span-1-55"><a id="__codelineno-1-55" name="__codelineno-1-55"></a><span class="k">template</span><span class="o">&lt;</span><span class="n">earth_gravity_model</span><span class="w"> </span><span class="n">M</span><span class="o">&gt;</span>
+</span><span id="__span-1-56"><a id="__codelineno-1-56" name="__codelineno-1-56"></a><span class="k">constexpr</span><span class="w"> </span><span class="n">height_above_ellipsoid_t</span><span class="o">&lt;</span><span class="n">M</span><span class="o">&gt;</span><span class="w"> </span><span class="n">height_above_ellipsoid</span><span class="p">;</span><span class="w">  </span><span class="c1">// NOLINT(google-readability-casting)</span>
+</span><span id="__span-1-57"><a id="__codelineno-1-57" name="__codelineno-1-57"></a>
+</span><span id="__span-1-58"><a id="__codelineno-1-58" name="__codelineno-1-58"></a><span class="k">template</span><span class="o">&lt;</span><span class="n">earth_gravity_model</span><span class="w"> </span><span class="n">M</span><span class="o">&gt;</span>
+</span><span id="__span-1-59"><a id="__codelineno-1-59" name="__codelineno-1-59"></a><span class="k">using</span><span class="w"> </span><span class="n">hae_altitude</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">altitude</span><span class="p">[</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">],</span><span class="w"> </span><span class="n">height_above_ellipsoid</span><span class="o">&lt;</span><span class="n">M</span><span class="o">&gt;&gt;</span><span class="p">;</span>
+</span></code></pre></div></td></tr></table></div>
+<p>The template parameter ensures that <em><abbr title="Height Above Ellipsoid">HAE</abbr> altitudes</em> using different models are distinct
+types that cannot be accidentally mixed. Each combination of <em>altitude</em> reference and
+gravity model creates a unique type, making it impossible to accidentally mix them.</p>
+<h3 id="height-above-launch">Height Above Launch<a class="headerlink" href="#height-above-launch" title="Permanent link">&para;</a></h3>
+<p>For UAVs, tracking <em>altitude</em> relative to the launch point is critical:</p>
+<div class="language-cpp highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">unmanned_aerial_vehicle.cpp</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-123">123</a></span>
+<span class="normal"><a href="#__codelineno-2-124">124</a></span>
+<span class="normal"><a href="#__codelineno-2-125">125</a></span>
+<span class="normal"><a href="#__codelineno-2-126">126</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-2-123"><a id="__codelineno-2-123" name="__codelineno-2-123"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">height_above_launch</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">absolute_point_origin</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">altitude</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">height_above_launch</span><span class="p">;</span>
+</span><span id="__span-2-124"><a id="__codelineno-2-124" name="__codelineno-2-124"></a><span class="c1">// clang-format on</span>
+</span><span id="__span-2-125"><a id="__codelineno-2-125" name="__codelineno-2-125"></a>
+</span><span id="__span-2-126"><a id="__codelineno-2-126" name="__codelineno-2-126"></a><span class="k">using</span><span class="w"> </span><span class="n">hal_altitude</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">altitude</span><span class="p">[</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">],</span><span class="w"> </span><span class="n">height_above_launch</span><span class="o">&gt;</span><span class="p">;</span>
+</span></code></pre></div></td></tr></table></div>
+<p>This creates a completely separate <em>altitude</em> reference system for <abbr title="Unmanned Aerial Vehicle">UAV</abbr> operations,
+with its own absolute point origin distinct from <abbr title="Mean Sea Level">MSL</abbr>, <abbr title="Height Above Ellipsoid">HAE</abbr>, or any other reference.</p>
+<h2 id="converting-between-reference-systems">Converting Between Reference Systems<a class="headerlink" href="#converting-between-reference-systems" title="Permanent link">&para;</a></h2>
+<p>The type system prevents accidental conversions, but allows intentional ones:</p>
+<h3 id="msl-to-hae-conversion"><abbr title="Mean Sea Level">MSL</abbr> to <abbr title="Height Above Ellipsoid">HAE</abbr> Conversion<a class="headerlink" href="#msl-to-hae-conversion" title="Permanent link">&para;</a></h3>
+<p>Converting from <abbr title="Mean Sea Level">MSL</abbr> to <abbr title="Height Above Ellipsoid">HAE</abbr> requires accounting for the geoid undulation (the difference between
+the ellipsoid and mean sea level at a specific location):</p>
+<div class="language-cpp highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">unmanned_aerial_vehicle.cpp</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-109">109</a></span>
+<span class="normal"><a href="#__codelineno-3-110">110</a></span>
+<span class="normal"><a href="#__codelineno-3-111">111</a></span>
+<span class="normal"><a href="#__codelineno-3-112">112</a></span>
+<span class="normal"><a href="#__codelineno-3-113">113</a></span>
+<span class="normal"><a href="#__codelineno-3-114">114</a></span>
+<span class="normal"><a href="#__codelineno-3-115">115</a></span>
+<span class="normal"><a href="#__codelineno-3-116">116</a></span>
+<span class="normal"><a href="#__codelineno-3-117">117</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-3-109"><a id="__codelineno-3-109" name="__codelineno-3-109"></a><span class="k">template</span><span class="o">&lt;</span><span class="n">earth_gravity_model</span><span class="w"> </span><span class="n">M</span><span class="o">&gt;</span>
+</span><span id="__span-3-110"><a id="__codelineno-3-110" name="__codelineno-3-110"></a><span class="n">hae_altitude</span><span class="o">&lt;</span><span class="n">M</span><span class="o">&gt;</span><span class="w"> </span><span class="n">to_hae</span><span class="p">(</span><span class="n">msl_altitude</span><span class="w"> </span><span class="n">msl</span><span class="p">,</span><span class="w"> </span><span class="n">position</span><span class="o">&lt;</span><span class="kt">long</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span><span class="w"> </span><span class="n">pos</span><span class="p">)</span>
+</span><span id="__span-3-111"><a id="__codelineno-3-111" name="__codelineno-3-111"></a><span class="p">{</span>
+</span><span id="__span-3-112"><a id="__codelineno-3-112" name="__codelineno-3-112"></a><span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">geoid_undulation</span><span class="w"> </span><span class="o">=</span>
+</span><span id="__span-3-113"><a id="__codelineno-3-113" name="__codelineno-3-113"></a><span class="w">    </span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="p">(</span><span class="n">GeographicLibWhatsMyOffset</span><span class="p">(</span><span class="n">pos</span><span class="p">.</span><span class="n">lat</span><span class="p">.</span><span class="n">quantity_from_zero</span><span class="p">().</span><span class="n">numerical_value_in</span><span class="p">(</span><span class="n">si</span><span class="o">::</span><span class="n">degree</span><span class="p">),</span>
+</span><span id="__span-3-114"><a id="__codelineno-3-114" name="__codelineno-3-114"></a><span class="w">                                           </span><span class="n">pos</span><span class="p">.</span><span class="n">lon</span><span class="p">.</span><span class="n">quantity_from_zero</span><span class="p">().</span><span class="n">numerical_value_in</span><span class="p">(</span><span class="n">si</span><span class="o">::</span><span class="n">degree</span><span class="p">))</span><span class="w"> </span><span class="o">*</span>
+</span><span id="__span-3-115"><a id="__codelineno-3-115" name="__codelineno-3-115"></a><span class="w">                </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">);</span>
+</span><span id="__span-3-116"><a id="__codelineno-3-116" name="__codelineno-3-116"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">height_above_ellipsoid</span><span class="o">&lt;</span><span class="n">M</span><span class="o">&gt;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="n">msl</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">mean_sea_level</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">geoid_undulation</span><span class="p">);</span>
+</span><span id="__span-3-117"><a id="__codelineno-3-117" name="__codelineno-3-117"></a><span class="p">}</span>
+</span></code></pre></div></td></tr></table></div>
+<p>This conversion:</p>
+<ul>
+<li>Requires <em>geographic position</em> (latitude/longitude)</li>
+<li>Accounts for local geoid undulation</li>
+<li>Returns <em>altitude</em> of the correct <abbr title="Height Above Ellipsoid">HAE</abbr> type for the specified Earth model</li>
+</ul>
+<h3 id="relative-altitude-calculations">Relative Altitude Calculations<a class="headerlink" href="#relative-altitude-calculations" title="Permanent link">&para;</a></h3>
+<p>The <abbr title="Unmanned Aerial Vehicle">UAV</abbr> class demonstrates safe relative <em>altitude</em> tracking:</p>
+<div class="language-cpp highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">unmanned_aerial_vehicle.cpp</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-4-147">147</a></span>
+<span class="normal"><a href="#__codelineno-4-148">148</a></span>
+<span class="normal"><a href="#__codelineno-4-149">149</a></span>
+<span class="normal"><a href="#__codelineno-4-150">150</a></span>
+<span class="normal"><a href="#__codelineno-4-151">151</a></span>
+<span class="normal"><a href="#__codelineno-4-152">152</a></span>
+<span class="normal"><a href="#__codelineno-4-153">153</a></span>
+<span class="normal"><a href="#__codelineno-4-154">154</a></span>
+<span class="normal"><a href="#__codelineno-4-155">155</a></span>
+<span class="normal"><a href="#__codelineno-4-156">156</a></span>
+<span class="normal"><a href="#__codelineno-4-157">157</a></span>
+<span class="normal"><a href="#__codelineno-4-158">158</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-4-147"><a id="__codelineno-4-147" name="__codelineno-4-147"></a><span class="k">class</span><span class="w"> </span><span class="nc">unmanned_aerial_vehicle</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-4-148"><a id="__codelineno-4-148" name="__codelineno-4-148"></a><span class="w">  </span><span class="n">msl_altitude</span><span class="w"> </span><span class="n">current_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mean_sea_level</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">;</span>
+</span><span id="__span-4-149"><a id="__codelineno-4-149" name="__codelineno-4-149"></a><span class="w">  </span><span class="n">msl_altitude</span><span class="w"> </span><span class="n">launch_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">current_</span><span class="p">;</span>
+</span><span id="__span-4-150"><a id="__codelineno-4-150" name="__codelineno-4-150"></a><span class="k">public</span><span class="o">:</span>
+</span><span id="__span-4-151"><a id="__codelineno-4-151" name="__codelineno-4-151"></a><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="n">take_off</span><span class="p">(</span><span class="n">msl_altitude</span><span class="w"> </span><span class="n">alt</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">launch_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">alt</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-4-152"><a id="__codelineno-4-152" name="__codelineno-4-152"></a><span class="w">  </span><span class="p">[[</span><span class="n">nodiscard</span><span class="p">]]</span><span class="w"> </span><span class="n">msl_altitude</span><span class="w"> </span><span class="n">take_off</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">launch_</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-4-153"><a id="__codelineno-4-153" name="__codelineno-4-153"></a>
+</span><span id="__span-4-154"><a id="__codelineno-4-154" name="__codelineno-4-154"></a><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="n">current</span><span class="p">(</span><span class="n">msl_altitude</span><span class="w"> </span><span class="n">alt</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">current_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">alt</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-4-155"><a id="__codelineno-4-155" name="__codelineno-4-155"></a><span class="w">  </span><span class="p">[[</span><span class="n">nodiscard</span><span class="p">]]</span><span class="w"> </span><span class="n">msl_altitude</span><span class="w"> </span><span class="n">current</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">current_</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-4-156"><a id="__codelineno-4-156" name="__codelineno-4-156"></a>
+</span><span id="__span-4-157"><a id="__codelineno-4-157" name="__codelineno-4-157"></a><span class="w">  </span><span class="p">[[</span><span class="n">nodiscard</span><span class="p">]]</span><span class="w"> </span><span class="n">hal_altitude</span><span class="w"> </span><span class="n">hal</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">height_above_launch</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">current_</span><span class="p">.</span><span class="n">quantity_from</span><span class="p">(</span><span class="n">launch_</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-4-158"><a id="__codelineno-4-158" name="__codelineno-4-158"></a><span class="p">};</span>
+</span></code></pre></div></td></tr></table></div>
+<p>The <code>quantity_from()</code> method safely computes the difference between two points in the same
+reference system, returning a relative <em>altitude</em> (<em>height</em>) quantity.</p>
+<h2 id="custom-formatting-for-each-system">Custom Formatting for Each System<a class="headerlink" href="#custom-formatting-for-each-system" title="Permanent link">&para;</a></h2>
+<p>Each <em>altitude</em> reference system has custom formatting to make output unambiguous:</p>
+<div class="language-cpp highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">unmanned_aerial_vehicle.cpp</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-5-128">128</a></span>
+<span class="normal"><a href="#__codelineno-5-129">129</a></span>
+<span class="normal"><a href="#__codelineno-5-130">130</a></span>
+<span class="normal"><a href="#__codelineno-5-131">131</a></span>
+<span class="normal"><a href="#__codelineno-5-132">132</a></span>
+<span class="normal"><a href="#__codelineno-5-133">133</a></span>
+<span class="normal"><a href="#__codelineno-5-134">134</a></span>
+<span class="normal"><a href="#__codelineno-5-135">135</a></span>
+<span class="normal"><a href="#__codelineno-5-136">136</a></span>
+<span class="normal"><a href="#__codelineno-5-137">137</a></span>
+<span class="normal"><a href="#__codelineno-5-138">138</a></span>
+<span class="normal"><a href="#__codelineno-5-139">139</a></span>
+<span class="normal"><a href="#__codelineno-5-140">140</a></span>
+<span class="normal"><a href="#__codelineno-5-141">141</a></span>
+<span class="normal"><a href="#__codelineno-5-142">142</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-5-128"><a id="__codelineno-5-128" name="__codelineno-5-128"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">class</span><span class="w"> </span><span class="nc">CharT</span><span class="p">,</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">Traits</span><span class="o">&gt;</span>
+</span><span id="__span-5-129"><a id="__codelineno-5-129" name="__codelineno-5-129"></a><span class="n">std</span><span class="o">::</span><span class="n">basic_ostream</span><span class="o">&lt;</span><span class="n">CharT</span><span class="p">,</span><span class="w"> </span><span class="n">Traits</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="k">operator</span><span class="o">&lt;&lt;</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">basic_ostream</span><span class="o">&lt;</span><span class="n">CharT</span><span class="p">,</span><span class="w"> </span><span class="n">Traits</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">os</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">hal_altitude</span><span class="o">&amp;</span><span class="w"> </span><span class="n">a</span><span class="p">)</span>
+</span><span id="__span-5-130"><a id="__codelineno-5-130" name="__codelineno-5-130"></a><span class="p">{</span>
+</span><span id="__span-5-131"><a id="__codelineno-5-131" name="__codelineno-5-131"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">os</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">a</span><span class="p">.</span><span class="n">quantity_from</span><span class="p">(</span><span class="n">height_above_launch</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; HAL&quot;</span><span class="p">;</span>
+</span><span id="__span-5-132"><a id="__codelineno-5-132" name="__codelineno-5-132"></a><span class="p">}</span>
+</span><span id="__span-5-133"><a id="__codelineno-5-133" name="__codelineno-5-133"></a>
+</span><span id="__span-5-134"><a id="__codelineno-5-134" name="__codelineno-5-134"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">Char</span><span class="o">&gt;</span>
+</span><span id="__span-5-135"><a id="__codelineno-5-135" name="__codelineno-5-135"></a><span class="k">struct</span><span class="w"> </span><span class="nc">MP_UNITS_STD_FMT</span><span class="o">::</span><span class="n">formatter</span><span class="o">&lt;</span><span class="n">hal_altitude</span><span class="p">,</span><span class="w"> </span><span class="n">Char</span><span class="o">&gt;</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">formatter</span><span class="o">&lt;</span><span class="n">hal_altitude</span><span class="o">::</span><span class="n">quantity_type</span><span class="p">,</span><span class="w"> </span><span class="n">Char</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-5-136"><a id="__codelineno-5-136" name="__codelineno-5-136"></a><span class="w">  </span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">FormatContext</span><span class="o">&gt;</span>
+</span><span id="__span-5-137"><a id="__codelineno-5-137" name="__codelineno-5-137"></a><span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">format</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">hal_altitude</span><span class="o">&amp;</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">FormatContext</span><span class="o">&amp;</span><span class="w"> </span><span class="n">ctx</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="k">decltype</span><span class="p">(</span><span class="n">ctx</span><span class="p">.</span><span class="n">out</span><span class="p">())</span>
+</span><span id="__span-5-138"><a id="__codelineno-5-138" name="__codelineno-5-138"></a><span class="w">  </span><span class="p">{</span>
+</span><span id="__span-5-139"><a id="__codelineno-5-139" name="__codelineno-5-139"></a><span class="w">    </span><span class="n">formatter</span><span class="o">&lt;</span><span class="n">hal_altitude</span><span class="o">::</span><span class="n">quantity_type</span><span class="p">,</span><span class="w"> </span><span class="n">Char</span><span class="o">&gt;::</span><span class="n">format</span><span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">quantity_from</span><span class="p">(</span><span class="n">height_above_launch</span><span class="p">),</span><span class="w"> </span><span class="n">ctx</span><span class="p">);</span>
+</span><span id="__span-5-140"><a id="__codelineno-5-140" name="__codelineno-5-140"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">MP_UNITS_STD_FMT</span><span class="o">::</span><span class="n">format_to</span><span class="p">(</span><span class="n">ctx</span><span class="p">.</span><span class="n">out</span><span class="p">(),</span><span class="w"> </span><span class="s">&quot; HAL&quot;</span><span class="p">);</span>
+</span><span id="__span-5-141"><a id="__codelineno-5-141" name="__codelineno-5-141"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-5-142"><a id="__codelineno-5-142" name="__codelineno-5-142"></a><span class="p">};</span>
+</span></code></pre></div></td></tr></table></div>
+<p>Output clearly shows which reference system is being used:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>hal = 1219.20 m HAL
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>agl = 2925.00 m
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>EPPR: 54.24772° N 18.6745° E, 4.88 m AMSL, -24.61 m HAE(EGM2008-1)
+</span></code></pre></div>
+<h2 id="practical-uav-operations">Practical <abbr title="Unmanned Aerial Vehicle">UAV</abbr> Operations<a class="headerlink" href="#practical-uav-operations" title="Permanent link">&para;</a></h2>
+<p>The example shows realistic <abbr title="Unmanned Aerial Vehicle">UAV</abbr> scenarios:</p>
+<div class="language-cpp highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">unmanned_aerial_vehicle.cpp</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-7-163">163</a></span>
+<span class="normal"><a href="#__codelineno-7-164">164</a></span>
+<span class="normal"><a href="#__codelineno-7-165">165</a></span>
+<span class="normal"><a href="#__codelineno-7-166">166</a></span>
+<span class="normal"><a href="#__codelineno-7-167">167</a></span>
+<span class="normal"><a href="#__codelineno-7-168">168</a></span>
+<span class="normal"><a href="#__codelineno-7-169">169</a></span>
+<span class="normal"><a href="#__codelineno-7-170">170</a></span>
+<span class="normal"><a href="#__codelineno-7-171">171</a></span>
+<span class="normal"><a href="#__codelineno-7-172">172</a></span>
+<span class="normal"><a href="#__codelineno-7-173">173</a></span>
+<span class="normal"><a href="#__codelineno-7-174">174</a></span>
+<span class="normal"><a href="#__codelineno-7-175">175</a></span>
+<span class="normal"><a href="#__codelineno-7-176">176</a></span>
+<span class="normal"><a href="#__codelineno-7-177">177</a></span>
+<span class="normal"><a href="#__codelineno-7-178">178</a></span>
+<span class="normal"><a href="#__codelineno-7-179">179</a></span>
+<span class="normal"><a href="#__codelineno-7-180">180</a></span>
+<span class="normal"><a href="#__codelineno-7-181">181</a></span>
+<span class="normal"><a href="#__codelineno-7-182">182</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-7-163"><a id="__codelineno-7-163" name="__codelineno-7-163"></a><span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">mp_units</span><span class="o">::</span><span class="nn">si</span><span class="o">::</span><span class="nn">unit_symbols</span><span class="p">;</span>
+</span><span id="__span-7-164"><a id="__codelineno-7-164" name="__codelineno-7-164"></a><span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">mp_units</span><span class="o">::</span><span class="nn">international</span><span class="o">::</span><span class="nn">unit_symbols</span><span class="p">;</span>
+</span><span id="__span-7-165"><a id="__codelineno-7-165" name="__codelineno-7-165"></a>
+</span><span id="__span-7-166"><a id="__codelineno-7-166" name="__codelineno-7-166"></a><span class="w">  </span><span class="n">unmanned_aerial_vehicle</span><span class="w"> </span><span class="n">uav</span><span class="p">;</span>
+</span><span id="__span-7-167"><a id="__codelineno-7-167" name="__codelineno-7-167"></a><span class="w">  </span><span class="n">uav</span><span class="p">.</span><span class="n">take_off</span><span class="p">(</span><span class="n">mean_sea_level</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">6&#39;000</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ft</span><span class="p">);</span>
+</span><span id="__span-7-168"><a id="__codelineno-7-168" name="__codelineno-7-168"></a><span class="w">  </span><span class="n">uav</span><span class="p">.</span><span class="n">current</span><span class="p">(</span><span class="n">mean_sea_level</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">10&#39;000</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ft</span><span class="p">);</span>
+</span><span id="__span-7-169"><a id="__codelineno-7-169" name="__codelineno-7-169"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">MP_UNITS_STD_FMT</span><span class="o">::</span><span class="n">format</span><span class="p">(</span><span class="s">&quot;hal = {::N[.2f]}</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">uav</span><span class="p">.</span><span class="n">hal</span><span class="p">());</span>
+</span><span id="__span-7-170"><a id="__codelineno-7-170" name="__codelineno-7-170"></a>
+</span><span id="__span-7-171"><a id="__codelineno-7-171" name="__codelineno-7-171"></a><span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">msl_altitude</span><span class="w"> </span><span class="n">ground_level</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mean_sea_level</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">123</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">;</span>
+</span><span id="__span-7-172"><a id="__codelineno-7-172" name="__codelineno-7-172"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">MP_UNITS_STD_FMT</span><span class="o">::</span><span class="n">format</span><span class="p">(</span><span class="s">&quot;agl = {::N[.2f]}</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">uav</span><span class="p">.</span><span class="n">current</span><span class="p">().</span><span class="n">quantity_from</span><span class="p">(</span><span class="n">ground_level</span><span class="p">));</span>
+</span><span id="__span-7-173"><a id="__codelineno-7-173" name="__codelineno-7-173"></a>
+</span><span id="__span-7-174"><a id="__codelineno-7-174" name="__codelineno-7-174"></a><span class="w">  </span><span class="k">struct</span><span class="w"> </span><span class="nc">waypoint</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-7-175"><a id="__codelineno-7-175" name="__codelineno-7-175"></a><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">name</span><span class="p">;</span>
+</span><span id="__span-7-176"><a id="__codelineno-7-176" name="__codelineno-7-176"></a><span class="w">    </span><span class="n">geographic</span><span class="o">::</span><span class="n">position</span><span class="o">&lt;</span><span class="kt">long</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span><span class="w"> </span><span class="n">pos</span><span class="p">;</span>
+</span><span id="__span-7-177"><a id="__codelineno-7-177" name="__codelineno-7-177"></a><span class="w">    </span><span class="n">msl_altitude</span><span class="w"> </span><span class="n">msl_alt</span><span class="p">;</span>
+</span><span id="__span-7-178"><a id="__codelineno-7-178" name="__codelineno-7-178"></a><span class="w">  </span><span class="p">};</span>
+</span><span id="__span-7-179"><a id="__codelineno-7-179" name="__codelineno-7-179"></a>
+</span><span id="__span-7-180"><a id="__codelineno-7-180" name="__codelineno-7-180"></a><span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">waypoint</span><span class="w"> </span><span class="n">wpt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="s">&quot;EPPR&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="mf">54.24772</span><span class="n">_N</span><span class="p">,</span><span class="w"> </span><span class="mf">18.6745</span><span class="n">_E</span><span class="p">},</span><span class="w"> </span><span class="n">mean_sea_level</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">16.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ft</span><span class="p">};</span>
+</span><span id="__span-7-181"><a id="__codelineno-7-181" name="__codelineno-7-181"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">MP_UNITS_STD_FMT</span><span class="o">::</span><span class="n">format</span><span class="p">(</span><span class="s">&quot;{}: {} {}, {::N[.2f]}, {::N[.2f]}</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">wpt</span><span class="p">.</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">wpt</span><span class="p">.</span><span class="n">pos</span><span class="p">.</span><span class="n">lat</span><span class="p">,</span><span class="w"> </span><span class="n">wpt</span><span class="p">.</span><span class="n">pos</span><span class="p">.</span><span class="n">lon</span><span class="p">,</span>
+</span><span id="__span-7-182"><a id="__codelineno-7-182" name="__codelineno-7-182"></a><span class="w">                                        </span><span class="n">wpt</span><span class="p">.</span><span class="n">msl_alt</span><span class="p">,</span><span class="w"> </span><span class="n">to_hae</span><span class="o">&lt;</span><span class="n">earth_gravity_model</span><span class="o">::</span><span class="n">egm2008_1</span><span class="o">&gt;</span><span class="p">(</span><span class="n">wpt</span><span class="p">.</span><span class="n">msl_alt</span><span class="p">,</span><span class="w"> </span><span class="n">wpt</span><span class="p">.</span><span class="n">pos</span><span class="p">));</span>
+</span></code></pre></div></td></tr></table></div>
+<p>Each <em>altitude</em> is:</p>
+<ul>
+<li><strong>Type-safe</strong> - Cannot be accidentally mixed</li>
+<li><strong>Self-documenting</strong> - The type tells you which reference system</li>
+<li><strong>Correctly formatted</strong> - Output makes the reference system explicit</li>
+<li><strong>Efficiently stored</strong> - Zero runtime overhead for the type safety</li>
+</ul>
+<h2 id="real-world-safety-impact">Real-World Safety Impact<a class="headerlink" href="#real-world-safety-impact" title="Permanent link">&para;</a></h2>
+<p>In actual <abbr title="Unmanned Aerial Vehicle">UAV</abbr> operations, <em>altitude</em> confusion can cause:</p>
+<ul>
+<li><strong>Crashes</strong> - Flying into terrain thinking you're higher than you are</li>
+<li><strong>Airspace violations</strong> - Using wrong <em>altitude</em> reference for clearances</li>
+<li><strong>Loss of aircraft</strong> - GPS (<abbr title="Height Above Ellipsoid">HAE</abbr>) vs barometric (<abbr title="Mean Sea Level">MSL</abbr>) confusion</li>
+<li><strong>Regulatory violations</strong> - Incorrect <em>altitude</em> reporting</li>
+</ul>
+<p><strong>mp-units</strong> makes these errors <strong>impossible at compile-time</strong>:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">msl_altitude</span><span class="w"> </span><span class="n">msl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mean_sea_level</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1000</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">;</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="n">hal_altitude</span><span class="w"> </span><span class="n">hal</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">height_above_launch</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">500</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">;</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="c1">// auto sum = msl + hal;              // ✗ Compile error!</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="c1">// auto diff = msl - hal;             // ✗ Compile error!</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="c1">// if (msl &lt; hal) { /* ... */ }       // ✗ Compile error!</span>
+</span></code></pre></div>
+<p>The compiler prevents all accidental mixing of <em>altitude</em> references.</p>
+<h2 id="key-features-demonstrated">Key Features Demonstrated<a class="headerlink" href="#key-features-demonstrated" title="Permanent link">&para;</a></h2>
+<h3 id="1-multiple-absolute-point-origins">1. Multiple Absolute Point Origins<a class="headerlink" href="#1-multiple-absolute-point-origins" title="Permanent link">&para;</a></h3>
+<p>Different origins create incompatible types, preventing dangerous mistakes:</p>
+<ul>
+<li><code>mean_sea_level</code> (<abbr title="Mean Sea Level">MSL</abbr>)</li>
+<li><code>height_above_ellipsoid&lt;Model&gt;</code> (<abbr title="Height Above Ellipsoid">HAE</abbr>, templated by gravity model)</li>
+<li><code>height_above_launch</code> (<abbr title="Height Above Launch">HAL</abbr>)</li>
+</ul>
+<h3 id="2-template-parameters-for-configuration">2. Template Parameters for Configuration<a class="headerlink" href="#2-template-parameters-for-configuration" title="Permanent link">&para;</a></h3>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="n">earth_gravity_model</span><span class="w"> </span><span class="n">M</span><span class="o">&gt;</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="k">struct</span><span class="w"> </span><span class="nc">height_above_ellipsoid_t</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">absolute_point_origin</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">altitude</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">earth_gravity_model</span><span class="w"> </span><span class="n">egm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">M</span><span class="p">;</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="p">};</span>
+</span></code></pre></div>
+<p>The Earth model becomes part of the type, ensuring that <abbr title="Height Above Ellipsoid">HAE</abbr> <em>altitudes</em> using different models
+cannot be confused.</p>
+<h3 id="3-safe-relative-calculations">3. Safe Relative Calculations<a class="headerlink" href="#3-safe-relative-calculations" title="Permanent link">&para;</a></h3>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">altitude</span><span class="p">[</span><span class="n">m</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">hal</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">current_</span><span class="p">.</span><span class="n">quantity_from</span><span class="p">(</span><span class="n">launch_</span><span class="p">);</span>
+</span></code></pre></div>
+<p>The <code>quantity_from()</code> method safely computes relative <em>altitudes</em> between points in the same
+reference system.</p>
+<h3 id="4-custom-formatting-per-reference">4. Custom Formatting Per Reference<a class="headerlink" href="#4-custom-formatting-per-reference" title="Permanent link">&para;</a></h3>
+<p>Each <em>altitude</em> type has specialized formatting showing its reference system,
+making output unambiguous and safe to interpret.</p>
+<h3 id="5-integration-with-geographic-systems">5. Integration with Geographic Systems<a class="headerlink" href="#5-integration-with-geographic-systems" title="Permanent link">&para;</a></h3>
+<p>The example integrates with geographic coordinates and Earth models. The geoid undulation
+calculation is simplified (using a stub function that returns a constant value), but in
+production code this would call a proper geodetic library like
+<a href="https://geographiclib.sourceforge.io/">GeographicLib</a>.</p>
+<h2 id="key-takeaways">Key Takeaways<a class="headerlink" href="#key-takeaways" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Multiple <em>altitude</em> references are a critical safety issue in aviation</li>
+<li><strong>mp-units</strong> makes mixing different references a compile error</li>
+<li>Type safety extends to template parameters (gravity models)</li>
+<li>Zero runtime overhead for this additional safety</li>
+<li>Custom formatting prevents interpretation errors</li>
+<li>The type system documents which reference is being used</li>
+<li>Integration with geographic libraries is seamless</li>
+</ul>
+<p>For <abbr title="Unmanned Aerial Vehicle">UAV</abbr> and aviation software, this level of compile-time safety is invaluable and can
+literally save lives by preventing <em>altitude</em> confusion errors.</p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../strong_angular_quantities/" class="md-footer__link md-footer__link--prev" aria-label="Previous: strong_angular_quantities">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                strong_angular_quantities
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../glide_computer/" class="md-footer__link md-footer__link--next" aria-label="Next: glide_computer">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                glide_computer
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2018-2023 Mateusz Pusz
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.action.edit", "content.action.view", "content.code.annotate", "content.code.copy", "navigation.indexes", "navigation.tabs", "navigation.footer", "navigation.top", "search.highlight", "search.share", "search.suggest", "toc.follow", "toc.integrate"], "search": "../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+        <script src="../../javascripts/ce_embed.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
