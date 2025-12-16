@@ -155,7 +155,7 @@ _Timestamps_ are absolute points in _time_, not _durations_ - correctly modeled 
 ### 2. Custom Quantity Specifications
 
 ```cpp
-QUANTITY_SPEC(rate_of_climb_speed, mp_units::isq::speed, 
+QUANTITY_SPEC(rate_of_climb_speed, mp_units::isq::speed,
               mp_units::isq::height / mp_units::isq::time);
 ```
 
@@ -232,7 +232,7 @@ Task:
 - Start: EPPR
 - Finish: EPPR
 - Length:  162.5 km
-- Legs: 
+- Legs:
   * EPPR -> EPGI (81.2 km)
   * EPGI -> EPPR (81.2 km)
 
@@ -262,7 +262,7 @@ Scenario: Glider = SZD-56 Diana, Weather = Good
 Each flight phase shows:
 
 - **Duration** - _time_ for this phase and cumulative total
-- **Distance** - _distance_ covered and total so far  
+- **Distance** - _distance_ covered and total so far
 - **Height** - _altitude_ change and resulting _MSL altitude_
 
 The output demonstrates:

@@ -66,7 +66,7 @@ header provides generic, type-safe abstractions for Kalman filtering:
 
 ```cpp
 template<mp_units::QuantityPoint... QPs>
-  requires(sizeof...(QPs) > 0) && (sizeof...(QPs) <= 3) && 
+  requires(sizeof...(QPs) > 0) && (sizeof...(QPs) <= 3) &&
           detail::are_time_derivatives<QPs::dimension...>
 class system_state {
   std::tuple<QPs...> variables_;
@@ -89,8 +89,8 @@ template<mp_units::QuantityPoint QP, mp_units::QuantityPoint... Rest>
 class system_state_estimate {
   state_type state_;
   variance_type variance_;  // Type computed as pow<2>(standard_deviation_type)
-  
-  [[nodiscard]] constexpr standard_deviation_type standard_deviation() const 
+
+  [[nodiscard]] constexpr standard_deviation_type standard_deviation() const
   { return sqrt(variance_); }
 };
 ```
@@ -118,7 +118,7 @@ All operations preserve dimensional correctness:
     ```
 
     The Kalman gain is **dimensionless** (variance ratio), enabling:
-    
+
     - Type-safe blending between prediction and measurement
     - Automatic unit cancellation in variance division
     - Range validation (always between 0 and 1)
@@ -136,7 +136,7 @@ All operations preserve dimensional correctness:
     ```
 
     State update computes: **state_new = state_pred + K × (measurement − state_pred)**
-    
+
     - Dimensionless gain `K` scales the innovation (measurement residual)
     - Quantity point arithmetic ensures dimensional correctness
     - Innovation `(measured - predicted)` is a relative quantity
@@ -156,7 +156,7 @@ All operations preserve dimensional correctness:
     ```
 
     Projects state forward in time using physics:
-    
+
     - **position_new = position + velocity × Δt**
     - Handles quantity_point to quantity conversions automatically
     - For 3-state systems, includes **½ × acceleration × Δt²** term
@@ -185,7 +185,7 @@ All operations preserve dimensional correctness:
     ```
 
     Projects uncertainty forward: **P_pred = P + Q**
-    
+
     - Requires compatible quantity types (same physical dimension)
     - Process noise `Q` accounts for model imperfections
 
@@ -220,7 +220,7 @@ Simple fixed-gain filters with manually tuned gains:
 
     const state initial_guess{qp{1 * kg}};
     state next = initial_guess;
-    
+
     for (int index = 1; const auto& measurement : measurements) {
       const quantity gain = 1. / index;  // Decreasing gain over time
       const state current = state_update(next, measurement, gain);
@@ -240,11 +240,11 @@ Simple fixed-gain filters with manually tuned gains:
       qp,
       quantity_point<isq::velocity[m/s]>
     >;
-    
+
     const quantity interval = isq::duration(5 * s);
     const state initial{qp{30 * km}, quantity_point{40 * m/s}};
     std::array gain = {0.2 * one, 0.1 * one};  // α and β
-    
+
     state next = state_extrapolation(initial, interval);
     for (const auto& measurement : measurements) {
       const state current = state_update(next, measurement, gain, interval);
@@ -253,7 +253,7 @@ Simple fixed-gain filters with manually tuned gains:
     ```
 
     Tracks vehicle with constant _velocity_ (40 m/s). The α-β filter:
-    
+
     - **α = 0.2**: Updates _position_ estimate from measurement innovation
     - **β = 0.1**: Updates _velocity_ estimate from same innovation
     - Measurement interval: 5 seconds between GPS readings
@@ -263,11 +263,11 @@ Simple fixed-gain filters with manually tuned gains:
     ```cpp
     using qp = quantity_point<isq::displacement[m]>;
     using state = kalman::system_state<
-      qp, 
-      quantity_point<isq::velocity[m/s]>, 
+      qp,
+      quantity_point<isq::velocity[m/s]>,
       quantity_point<isq::acceleration[m/s2]>
     >;
-    
+
     const quantity interval = isq::duration(5 * s);
     const state initial{qp{30 * km}, quantity_point{50 * m/s}, quantity_point{0 * m/s2}};
     std::array gain = {0.5 * one, 0.4 * one, 0.1 * one};  // α, β, γ
@@ -309,15 +309,15 @@ Where:
     ```cpp
     using qp = quantity_point<isq::height[m]>;
     using estimate = kalman::system_state_estimate<qp>;
-    
+
     const estimate initial{state{qp{60. * m}}, 15. * m};              // 60m ± 15m
     const quantity measurement_error = isq::height(5. * m);
     const quantity measurement_variance = pow<2>(measurement_error);  // 25 m²
-    
-    auto predict = [](const estimate& current) { 
+
+    auto predict = [](const estimate& current) {
       return current;  // No state change (static system)
     };
-    
+
     estimate next = predict(initial);
     for (const auto& measurement : measurements) {
       const quantity gain = kalman::kalman_gain(next.variance(), measurement_variance);
@@ -327,7 +327,7 @@ Where:
     ```
 
     Estimates building _height_ (60 m true value) from 10 noisy measurements:
-    
+
     - Initial uncertainty: **15 m standard deviation** (225 m² variance)
     - Measurement noise: **5 m standard deviation** (25 m² variance)
     - No process noise (building height doesn't change)
@@ -338,12 +338,12 @@ Where:
     ```cpp
     using qp = quantity_point<isq::Celsius_temperature[deg_C]>;
     using estimate = kalman::system_state_estimate<qp>;
-    
+
     const quantity process_noise_variance = delta<pow<2>(deg_C)>(0.15);
     const estimate initial{state{qp{delta<deg_C>(10.)}}, delta<deg_C>(100.)}; // 10°C ± 100°C
     const quantity measurement_error = delta<deg_C>(0.1);
     const quantity measurement_variance = pow<2>(measurement_error);
-    
+
     auto predict = [=](const estimate& current) {
       return estimate{
         current.state(),
@@ -360,7 +360,7 @@ Where:
     ```
 
     Tracks warming liquid _temperature_ (true value increasing):
-    
+
     - Initial uncertainty: **100°C standard deviation** (very uncertain)
     - Measurement noise: **0.1°C** (precise sensor)
     - Process noise: **0.15 °C²** variance (_temperature_ rising unpredictably)
@@ -409,10 +409,10 @@ class system_state_estimate {
   using variance_type = quantity<pow<2>(standard_deviation_type::reference), ...>;
   //                                    ↑
   //                              e.g., quantity<pow<2>(isq::height[m])> = quantity<m²>
-  
+
   variance_type variance_;
-  
-  [[nodiscard]] constexpr standard_deviation_type standard_deviation() const 
+
+  [[nodiscard]] constexpr standard_deviation_type standard_deviation() const
   { return sqrt(variance_); }  // √(m²) = m
 };
 ```
@@ -429,11 +429,11 @@ The framework handles 1, 2, or 3 state variables:
 system_state<quantity_point<isq::mass[g]>>
 
 // 2-state (position + velocity)
-system_state<quantity_point<isq::displacement[m]>, 
+system_state<quantity_point<isq::displacement[m]>,
              quantity_point<isq::velocity[m/s]>>
 
 // 3-state (position + velocity + acceleration)
-system_state<quantity_point<isq::displacement[m]>, 
+system_state<quantity_point<isq::displacement[m]>,
              quantity_point<isq::velocity[m/s]>,
              quantity_point<isq::acceleration[m/s2]>>
 ```
