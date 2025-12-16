@@ -56,8 +56,8 @@ void print(auto iteration, QuantityOf<dimensionless> auto gain, QuantityPoint au
 int main()
 {
   using namespace mp_units::si::unit_symbols;
-  using state = kalman::system_state<quantity_point<isq::mass[g]>>;
   using qp = quantity_point<isq::mass[g]>;
+  using state = kalman::system_state<qp>;
 
   const state initial_guess{qp{1 * kg}};
   const std::array measurements = {qp{996 * g},  qp{994 * g}, qp{1021 * g}, qp{1000 * g}, qp{1002 * g},
@@ -66,9 +66,8 @@ int main()
   print_header(initial_guess);
   state next = initial_guess;
   for (int index = 1; const auto& measurement : measurements) {
-    const state& previous = next;
     const quantity gain = 1. / index;
-    const state current = state_update(previous, measurement, gain);
+    const state current = state_update(next, measurement, gain);
     next = current;
     print(index++, gain, measurement, current, next);
   }

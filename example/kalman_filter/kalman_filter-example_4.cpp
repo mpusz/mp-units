@@ -70,8 +70,7 @@ int main()
   print_header(initial);
   state next = state_extrapolation(initial, interval);
   for (int index = 1; const auto& measurement : measurements) {
-    const state& previous = next;
-    const state current = state_update(previous, measurement, gain, interval);
+    const state current = state_update(next, measurement, gain, interval);
     next = state_extrapolation(current, interval);
     print(index++, measurement, current, next);
   }
