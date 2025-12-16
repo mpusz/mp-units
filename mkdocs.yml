@@ -201,6 +201,10 @@ nav:
               - measurement: examples/measurement.md
               - currency: examples/currency.md
               - strong_angular_quantities: examples/strong_angular_quantities.md
+          - Advanced:
+              - unmanned_aerial_vehicle: examples/unmanned_aerial_vehicle.md
+              - glide_computer: examples/glide_computer.md
+              - kalman_filter: examples/kalman_filter.md
   - Blog:
       - blog/index.md
   - Release Notes: release_notes.md
