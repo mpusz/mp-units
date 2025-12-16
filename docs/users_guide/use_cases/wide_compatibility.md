@@ -10,7 +10,7 @@ special preprocessor macros that can be used to ensure the wide compatibility of
 
 !!! note
 
-    Those macros are used in our short [example applications](../../examples/overview.md)
+    Those macros are used in our short [example applications](../../examples/index.md)
     as those are meant to be built on all of
     [the supported compilers](../../getting_started/cpp_compiler_support.md). Some still
     do not support `std::format`, C++ modules, or C++ versions newer than C++20.

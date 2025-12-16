@@ -153,4 +153,4 @@ Please see the below example for a quick preview of basic library features:
 
 !!! note
 
-    More code examples can be found in the [Examples](../examples/overview.md) chapter.
+    More code examples can be found in the [Examples](../examples/index.md) chapter.

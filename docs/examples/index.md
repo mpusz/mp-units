@@ -1,4 +1,4 @@
-# Overview
+# Examples
 
 Welcome to the **mp-units** examples collection! These practical, runnable examples demonstrate
 how to use the library in real-world scenarios, from simple introductory programs to advanced
