@@ -113,7 +113,11 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Pattern:** \`$PATTERN\`" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Cache clearing operation completed." >> $GITHUB_STEP_SUMMARY
+          if [ "${{ job.status }}" = "success" ]; then
+            echo "✅ **Status:** Cache clearing completed successfully." >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ **Status:** Cache clearing completed with errors. Some caches may not have been deleted." >> $GITHUB_STEP_SUMMARY
+          fi
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Usage Tips:" >> $GITHUB_STEP_SUMMARY
           echo "- Use \`all\` to delete all caches" >> $GITHUB_STEP_SUMMARY
