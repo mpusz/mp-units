@@ -214,7 +214,7 @@ class MPUnitsConan(ConanFile):
                 self.requires("fmt/12.0.0", transitive_headers=True)
 
     def build_requirements(self):
-        self.tool_requires("cmake/[>=4.0.2 <5]")
+        self.tool_requires("cmake/[>=4.2.1 <5]")
         if self._build_all:
             if not self.options.freestanding:
                 self.test_requires("catch2/3.10.0")
