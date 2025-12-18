@@ -145,7 +145,8 @@ if(MP_UNITS_BUILD_INSTALL)
     # installation
     install(EXPORT mp-unitsTargets DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/mp-units NAMESPACE mp-units::)
 
-    install(FILES mp-unitsConfig.cmake ${CMAKE_CURRENT_BINARY_DIR}/mp-unitsConfigVersion.cmake
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/mp-unitsConfig.cmake
+                  ${CMAKE_CURRENT_BINARY_DIR}/mp-unitsConfigVersion.cmake
             DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/mp-units
     )
 endif()
