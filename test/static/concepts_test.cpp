@@ -22,8 +22,10 @@
 
 #include <mp-units/compat_macros.h>
 #include <mp-units/systems/isq.h>
-#include <mp-units/systems/natural.h>
 #include <mp-units/systems/si.h>
+#if MP_UNITS_API_NATURAL_UNITS
+#include <mp-units/systems/natural.h>
+#endif
 #if MP_UNITS_HOSTED
 #include <mp-units/cartesian_vector.h>
 #endif
