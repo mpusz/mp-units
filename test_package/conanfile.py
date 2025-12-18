@@ -43,9 +43,9 @@ class TestPackageConan(ConanFile):
     def generate(self):
         tc = CMakeToolchain(self)
         opt = self.dependencies["mp-units"].options
+        tc.cache_variables["MP_UNITS_BUILD_CXX_MODULES"] = opt.cxx_modules
         if opt.cxx_modules:
             tc.cache_variables["CMAKE_CXX_SCAN_FOR_MODULES"] = True
-            tc.cache_variables["MP_UNITS_BUILD_CXX_MODULES"] = True
         if opt.import_std:
             tc.cache_variables["CMAKE_CXX_MODULE_STD"] = True
             # Current experimental support according to `Help/dev/experimental.rst`
