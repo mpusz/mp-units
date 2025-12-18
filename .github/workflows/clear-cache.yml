@@ -50,43 +50,49 @@ jobs:
         run: |
           echo "🗑️ Deleting caches matching pattern: $PATTERN"
 
-          # Get the list of cache keys (paginate through all caches)
-          cache_list=$(gh cache list --limit 100 --json key --jq '.[].key')
+          # Get all cache keys without limit, save to temporary file to handle spaces
+          temp_file=$(mktemp)
+          gh cache list --json key --jq '.[].key' > "$temp_file"
 
-          if [ -z "$cache_list" ]; then
+          if [ ! -s "$temp_file" ]; then
             echo "ℹ️ No caches found"
+            rm -f "$temp_file"
             exit 0
           fi
 
           echo "Found the following caches:"
-          echo "$cache_list"
+          cat "$temp_file"
           echo ""
 
           deleted_count=0
           skipped_count=0
           failed_count=0
 
-          for cache_key in $cache_list; do
+          # Read cache keys line by line to handle spaces properly
+          while IFS= read -r cache_key; do
             # Use prefix matching for better precision
             if [ "$PATTERN" = "all" ] || [[ "$cache_key" == "$PATTERN"* ]]; then
               echo "🗑️ Deleting cache: $cache_key"
-              # Handle race conditions where cache might already be deleted
-              if gh cache delete "$cache_key" --confirm 2>&1; then
+              # Capture error output to distinguish between errors
+              if error_output=$(gh cache delete "$cache_key" --confirm 2>&1); then
                 deleted_count=$((deleted_count + 1))
               else
-                # Check if it's a "not found" error (race condition) vs actual failure
-                if gh cache list --json key --jq '.[].key' | grep -q "^${cache_key}$"; then
-                  echo "⚠️ Failed to delete cache: $cache_key"
-                  failed_count=$((failed_count + 1))
-                else
+                # Check if error is "not found" (race condition)
+                if echo "$error_output" | grep -q "could not find"; then
                   echo "ℹ️ Cache already deleted: $cache_key"
                   deleted_count=$((deleted_count + 1))
+                else
+                  echo "⚠️ Failed to delete cache: $cache_key"
+                  echo "   Error: $error_output"
+                  failed_count=$((failed_count + 1))
                 fi
               fi
             else
               skipped_count=$((skipped_count + 1))
             fi
-          done
+          done < "$temp_file"
+
+          rm -f "$temp_file"
 
           echo ""
           echo "✅ Cache clearing complete!"
