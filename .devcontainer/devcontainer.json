@@ -41,7 +41,6 @@
       "extensions": [
         "ms-vscode.cpptools",
         "ms-vscode.cpptools-extension-pack",
-        "VisualStudioExptTeam.vscodeintellicode",
         "VisualStudioExptTeam.intellicode-api-usage-examples",
         "ms-vscode.cmake-tools",
         "fredericbonnet.cmake-test-adapter",
