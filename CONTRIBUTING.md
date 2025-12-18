@@ -412,14 +412,15 @@ To manually clear the GitHub Actions cache:
 1. Navigate to the repository's **Actions** tab
 2. Select **Clear GitHub Actions Cache** from the workflow list
 3. Click **Run workflow** button
-4. Choose the cache pattern to delete:
+4. Choose the cache key prefix to delete (patterns match by prefix):
     - `all` - Delete all caches (default)
-    - `conan-` - Delete only Conan package caches
-    - `ccache-` - Delete only ccache caches
-    - `clang-tidy-` - Delete only clang-tidy caches
-    - `cmake-` - Delete only CMake test package caches
-    - `freestanding-` - Delete only freestanding build caches
-    - `mkdocs-material-` - Delete only documentation caches
+    - `conan-` - Delete Conan package caches
+    - `ccache-` - Delete ccache caches
+    - `clang-tidy-` - Delete clang-tidy caches
+    - `cmake-` - Delete CMake test package caches
+    - `freestanding-` - Delete freestanding build caches
+    - `mkdocs-material-` - Delete documentation caches
 5. Click **Run workflow** to execute
 
-The workflow will delete all matching caches and provide a summary of the operation.
+The workflow will delete all caches with keys starting with the specified prefix
+and provide a summary of the operation.

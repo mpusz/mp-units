@@ -26,7 +26,7 @@ on:
   workflow_dispatch:
     inputs:
       cache_key_pattern:
-        description: 'Cache key pattern to delete (e.g., "conan-", "ccache-", or "all" to delete all caches)'
+        description: 'Cache key prefix to delete (e.g., "conan-", "ccache-") or "all" to delete all caches'
         required: true
         default: 'all'
         type: string
@@ -50,8 +50,8 @@ jobs:
         run: |
           echo "🗑️ Deleting caches matching pattern: $PATTERN"
 
-          # Get the list of cache keys
-          cache_list=$(gh cache list --limit 1000 | awk '{print $1}')
+          # Get the list of cache keys (paginate through all caches)
+          cache_list=$(gh cache list --limit 100 --json key --jq '.[].key')
 
           if [ -z "$cache_list" ]; then
             echo "ℹ️ No caches found"
@@ -64,14 +64,24 @@ jobs:
 
           deleted_count=0
           skipped_count=0
+          failed_count=0
 
           for cache_key in $cache_list; do
-            if [ "$PATTERN" = "all" ] || [[ "$cache_key" == *"$PATTERN"* ]]; then
+            # Use prefix matching for better precision
+            if [ "$PATTERN" = "all" ] || [[ "$cache_key" == "$PATTERN"* ]]; then
               echo "🗑️ Deleting cache: $cache_key"
-              if gh cache delete "$cache_key" --confirm; then
+              # Handle race conditions where cache might already be deleted
+              if gh cache delete "$cache_key" --confirm 2>&1; then
                 deleted_count=$((deleted_count + 1))
               else
-                echo "⚠️ Failed to delete cache: $cache_key"
+                # Check if it's a "not found" error (race condition) vs actual failure
+                if gh cache list --json key --jq '.[].key' | grep -q "^${cache_key}$"; then
+                  echo "⚠️ Failed to delete cache: $cache_key"
+                  failed_count=$((failed_count + 1))
+                else
+                  echo "ℹ️ Cache already deleted: $cache_key"
+                  deleted_count=$((deleted_count + 1))
+                fi
               fi
             else
               skipped_count=$((skipped_count + 1))
@@ -82,9 +92,14 @@ jobs:
           echo "✅ Cache clearing complete!"
           echo "   - Deleted: $deleted_count caches"
           echo "   - Skipped: $skipped_count caches"
+          if [ $failed_count -gt 0 ]; then
+            echo "   - Failed: $failed_count caches"
+            exit 1
+          fi
           echo ""
 
       - name: Generate job summary
+        if: always()
         env:
           PATTERN: ${{ inputs.cache_key_pattern }}
         run: |
@@ -92,13 +107,14 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Pattern:** \`$PATTERN\`" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Cache clearing operation completed successfully." >> $GITHUB_STEP_SUMMARY
+          echo "Cache clearing operation completed." >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Usage Tips:" >> $GITHUB_STEP_SUMMARY
           echo "- Use \`all\` to delete all caches" >> $GITHUB_STEP_SUMMARY
-          echo "- Use \`conan-\` to delete only Conan caches" >> $GITHUB_STEP_SUMMARY
-          echo "- Use \`ccache-\` to delete only ccache caches" >> $GITHUB_STEP_SUMMARY
-          echo "- Use \`clang-tidy-\` to delete only clang-tidy caches" >> $GITHUB_STEP_SUMMARY
-          echo "- Use \`cmake-\` to delete only CMake test package caches" >> $GITHUB_STEP_SUMMARY
-          echo "- Use \`freestanding-\` to delete only freestanding build caches" >> $GITHUB_STEP_SUMMARY
-          echo "- Use \`mkdocs-material-\` to delete only documentation caches" >> $GITHUB_STEP_SUMMARY
+          echo "- Patterns match cache keys by prefix" >> $GITHUB_STEP_SUMMARY
+          echo "- Use \`conan-\` to delete Conan caches" >> $GITHUB_STEP_SUMMARY
+          echo "- Use \`ccache-\` to delete ccache caches" >> $GITHUB_STEP_SUMMARY
+          echo "- Use \`clang-tidy-\` to delete clang-tidy caches" >> $GITHUB_STEP_SUMMARY
+          echo "- Use \`cmake-\` to delete CMake test package caches" >> $GITHUB_STEP_SUMMARY
+          echo "- Use \`freestanding-\` to delete freestanding build caches" >> $GITHUB_STEP_SUMMARY
+          echo "- Use \`mkdocs-material-\` to delete documentation caches" >> $GITHUB_STEP_SUMMARY
