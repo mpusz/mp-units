@@ -4,12 +4,10 @@ Update CONTRIBUTORS.md with current GitHub contributors
 This script fetches contributor information from GitHub API and updates the contributors list
 """
 
-import json
-import re
+import subprocess
 import sys
 from pathlib import Path
 from typing import Dict, List, Optional
-import subprocess
 
 try:
     import requests
@@ -146,9 +144,16 @@ class ContributorUpdater:
             categorized["occasional"], include_contributions=False
         )
 
-        # Generate statistics
-        total_contributors = len(contributors)
-        total_contributions = sum(c["contributions"] for c in contributors)
+        # Generate statistics (excluding core team)
+        core_team = {"mpusz", "JohelEGP", "chiphogg"}
+        core_team_lower = {name.lower() for name in core_team}
+        non_core_contributors = [
+            c
+            for c in contributors
+            if c["login"].lower() not in core_team_lower and c.get("type") != "Bot"
+        ]
+        total_contributors = len(non_core_contributors)
+        total_contributions = sum(c["contributions"] for c in non_core_contributors)
 
         stats_section = f"""## Statistics
 
@@ -223,7 +228,7 @@ def get_github_token() -> Optional[str]:
         )
         if result.returncode == 0:
             return result.stdout.strip()
-    except:
+    except Exception:
         pass
 
     return None

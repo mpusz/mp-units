@@ -20,6 +20,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// !!! Before you commit any changes to this file please make sure to check if it !!!
+// !!! renders correctly in the documentation "Examples" section.                 !!!
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 #include <mp-units/compat_macros.h>
 #ifdef MP_UNITS_IMPORT_STD
 import std;
@@ -98,6 +103,5 @@ int main()
   const quantity_point price_euro = exchange_to<euro>(price_usd, timestamp);
 
   std::cout << price_usd.quantity_from_zero() << " -> " << price_euro.quantity_from_zero() << "\n";
-  // std::cout << price_usd.quantity_from_zero() + price_euro.quantity_from_zero() << "\n";  // does
-  // not compile
+  // std::cout << price_usd.quantity_from_zero() + price_euro.quantity_from_zero() << "\n";  // does not compile
 }

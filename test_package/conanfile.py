@@ -116,14 +116,6 @@ class TestPackageConan(ConanFile):
             tc.cache_variables["CMAKE_EXPERIMENTAL_CXX_IMPORT_STD"] = (
                 self._import_std_uuid_for()
             )
-        # TODO remove the below when Conan will learn to handle C++ modules
-        if opt.cxx_modules:
-            if opt.freestanding:
-                tc.cache_variables["MP_UNITS_API_FREESTANDING"] = True
-            else:
-                tc.cache_variables["MP_UNITS_API_STD_FORMAT"] = opt.std_format
-            tc.cache_variables["MP_UNITS_API_CONTRACTS"] = str(opt.contracts).upper()
-        tc.cache_variables["MP_UNITS_API_NATURAL_UNITS"] = opt.natural_units
         tc.generate()
 
     def build(self):

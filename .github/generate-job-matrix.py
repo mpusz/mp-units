@@ -115,6 +115,11 @@ toolchains = {
         # arm64 runners are expensive; only consider one version
         if ver == 18 or architecture != "arm64"
     ]
+    # std::format is available in Xcode 16.1 or later
+    + [
+        make_apple_clang_config("macos-14", ver, std_format_support=True)
+        for ver in ["16.1"]
+    ]
     + [make_apple_clang_config("macos-13", ver) for ver in ["15.2"]]
     + [make_apple_clang_config("macos-14", ver) for ver in ["16.1"]]
     + [make_msvc_config(release="14.4", version=194)]

@@ -284,7 +284,7 @@ concept Vector = requires(const T v) {
 namespace detail {
 
 template<typename T>
-constexpr bool is_quantity = false;
+constexpr bool is_quantity_like = false;
 
 // `std::complex<double>` * `long double` does not work, this is why we use the `value_type` if present and correct
 // TODO Remove when P3788 gets accepted
@@ -302,7 +302,7 @@ concept ScalableByFactor = requires(const T v, const scaling_factor_type_t<T> f)
 
 // TODO how can we use `(!Quantity<T>)` below?
 template<typename T>
-concept NotQuantity = (!is_quantity<T>);
+concept NotQuantity = (!is_quantity_like<T>);
 
 template<typename T>
 concept RealScalarRepresentation = NotQuantity<T> && RealScalar<T> && ScalableByFactor<T>;
@@ -343,10 +343,10 @@ concept RepresentationOf =
 
 MP_UNITS_EXPORT template<typename T, auto V>
 concept RepresentationOf =
-  ((QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(V))> &&
-    ((detail::QuantityKindSpec<MP_UNITS_REMOVE_CONST(decltype(V))> && detail::SomeRepresentation<T>) ||
-     detail::IsOfCharacter<T, V.character>)) ||
-   (std::same_as<quantity_character, decltype(V)> && detail::IsOfCharacter<T, V>));
+  (QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(V))> &&
+   ((detail::QuantityKindSpec<MP_UNITS_REMOVE_CONST(decltype(V))> && detail::SomeRepresentation<T>) ||
+    detail::IsOfCharacter<T, V.character>)) ||
+  (std::same_as<quantity_character, MP_UNITS_REMOVE_CONST(decltype(V))> && detail::IsOfCharacter<T, V>);
 #endif
 
 }  // namespace mp_units

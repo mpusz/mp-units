@@ -658,12 +658,8 @@ public:
 template<Reference R, RepresentationOf<get_quantity_spec(R{})> Value>
 quantity(Value v, R) -> quantity<R{}, Value>;
 
-#if MP_UNITS_COMP_GCC >= 14
-template<detail::SomeRepresentation Value>
-#else
-template<RepresentationOf<get_quantity_spec(one)> Value>
-#endif
-quantity(Value) -> quantity<one, Value>;
+template<Reference auto R = one, RepresentationOf<get_quantity_spec(R)> Value>
+quantity(Value) -> quantity<R, Value>;
 
 template<QuantityLike Q>
 quantity(Q) -> quantity<quantity_like_traits<Q>::reference, typename quantity_like_traits<Q>::rep>;

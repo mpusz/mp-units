@@ -32,13 +32,13 @@ wouldn't be possible without the dedication and hard work of our amazing communi
 
 ## Statistics
 
-- **Total Contributors**: 37
-- **Total Contributions**: 4275
+- **Total Contributors**: 34
+- **Total Contributions**: 318
 - **Major Contributors** (50+ contributions): 0
 - **Regular Contributors** (10-49 contributions): 10
 - **Occasional Contributors** (1-9 contributions): 24
 
-_Last updated: 2025-12-10_
+_Last updated: 2025-12-13_
 
 
 ### Major Contributors
@@ -110,7 +110,7 @@ more accessible and robust:
 ### Community Champions
 
 - **Educational Content**: Contributors who create tutorials, blog posts, and educational materials
-- **Issue Triage**: Community members who help with issue management and user support  
+- **Issue Triage**: Community members who help with issue management and user support
 - **Standards Advocacy**: People promoting **mp-units** in the C++ standards community
 - **Adoption**: Organizations and individuals field-testing the library
 

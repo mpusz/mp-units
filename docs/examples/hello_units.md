@@ -1,14 +1,34 @@
 ---
 tags:
-  - International System
-  - Text Formatting
+- Level - Beginner
+- System - International System
+- Feature - Text Formatting
+- Feature - Quantity Concepts
+- Feature - Unit Conversions
+- Feature - Value Truncation
 ---
 
-# `hello_units`
+# Introduction to Quantities and Units
 
-[Try it live on Compiler Explorer](https://godbolt.org/z/MYn5qjPzh){ .md-button }
+[Try it live on Compiler Explorer](https://godbolt.org/z/qzrb3n7bd){ .md-button }
 
-This is a really simple example showcasing the features of the **mp-units** library.
+## Overview
+
+This is a really simple example showcasing the basic features of the **mp-units** library.
+It demonstrates how to create quantities, perform calculations with them, convert between
+units, and format output in various ways.
+
+## Key Features Demonstrated
+
+- Creating quantities with units
+- Generic function templates with quantity concepts
+- Quantity kinds vs. typed quantities
+- Unit conversions (value-preserving and value-truncating)
+- Text formatting and stream output
+
+## Code Walkthrough
+
+### Including Headers and Namespaces
 
 First, we either import the `mp_units` module or include the headers for:
 
@@ -26,6 +46,8 @@ Also, to shorten the definitions, we "import" all the symbols from the `mp_units
 ```cpp title="hello_units.cpp" linenums="16"
 --8<-- "example/hello_units.cpp:44:45"
 ```
+
+### Defining a Generic Speed Function
 
 Next, we define a simple function that calculates the average speed based on the provided
 arguments of length and time:
@@ -45,6 +67,8 @@ that its quantity type is implicitly convertible to `isq::speed`.
     is beneficial for users of such a function as it provides more information about what to
     expect from a function than just using `auto`.
 
+### Using Unit Symbols
+
 ```cpp title="hello_units.cpp" linenums="21"
 --8<-- "example/hello_units.cpp:51:54"
 ```
@@ -52,6 +76,8 @@ that its quantity type is implicitly convertible to `isq::speed`.
 The above lines explicitly opt into using unit symbols from two systems of units.
 As this introduces a lot of short identifiers into the current scope, it is not done
 implicitly while including a header file.
+
+### Creating and Converting Quantities
 
 ```cpp title="hello_units.cpp" linenums="25"
 --8<-- "example/hello_units.cpp:56:62"
@@ -74,6 +100,8 @@ implicitly while including a header file.
 - Line `31` does a [value-truncating conversion](../users_guide/framework_basics/value_conversions.md#value-truncating-conversions)
   of changing the underlying representation type from `double` to `int`.
 
+### Formatting Output
+
 ```cpp title="hello_units.cpp" linenums="32"
 --8<-- "example/hello_units.cpp:64"
 ```
@@ -89,3 +117,11 @@ Both stream insertion operations and `std::format` facilities are supported.
 
     More about it can be found in the [Wide Compatibility](../users_guide/use_cases/wide_compatibility.md#mp_units_std_fmt)
     chapter.
+
+## Related Concepts
+
+<!-- markdownlint-disable MD013 -->
+- [Quantity Concepts](../users_guide/framework_basics/concepts.md#QuantityOf) - Understanding `QuantityOf`
+- [Simple and Typed Quantities](../users_guide/framework_basics/simple_and_typed_quantities.md) - Quantity kinds vs. typed quantities
+- [Value Conversions](../users_guide/framework_basics/value_conversions.md) - Different conversion types
+- [Text Output](../users_guide/framework_basics/text_output.md) - Formatting quantities
