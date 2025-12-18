@@ -49,22 +49,22 @@ jobs:
           PATTERN: ${{ inputs.cache_key_pattern }}
         run: |
           echo "🗑️ Deleting caches matching pattern: $PATTERN"
-          
+
           # Get the list of cache keys
           cache_list=$(gh cache list --limit 1000 | awk '{print $1}')
-          
+
           if [ -z "$cache_list" ]; then
             echo "ℹ️ No caches found"
             exit 0
           fi
-          
+
           echo "Found the following caches:"
           echo "$cache_list"
           echo ""
-          
+
           deleted_count=0
           skipped_count=0
-          
+
           for cache_key in $cache_list; do
             if [ "$PATTERN" = "all" ] || [[ "$cache_key" == *"$PATTERN"* ]]; then
               echo "🗑️ Deleting cache: $cache_key"
@@ -77,7 +77,7 @@ jobs:
               skipped_count=$((skipped_count + 1))
             fi
           done
-          
+
           echo ""
           echo "✅ Cache clearing complete!"
           echo "   - Deleted: $deleted_count caches"
