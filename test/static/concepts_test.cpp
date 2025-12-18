@@ -200,9 +200,9 @@ static_assert(Unit<struct one>);
 #if MP_UNITS_API_NATURAL_UNITS
 static_assert(Unit<struct nu::second>);
 static_assert(Unit<decltype(si::metre / nu::second)>);
+static_assert(!Unit<named_unit<"?">>);
 #endif
 static_assert(!Unit<named_unit<"?", kind_of<isq::length>>>);
-static_assert(!Unit<named_unit<"?">>);
 static_assert(!Unit<named_unit<"?", si::metre / si::second>>);
 static_assert(!Unit<named_unit<"?", si::metre, kind_of<isq::length>>>);
 static_assert(!Unit<prefixed_unit<"?", mag<10>, si::second>>);
@@ -229,7 +229,9 @@ static_assert(!PrefixableUnit<scaled_unit<mag<10>, struct si::second>>);
 static_assert(!PrefixableUnit<derived_unit<struct si::metre, per<struct si::second>>>);
 static_assert(!PrefixableUnit<struct one>);
 static_assert(!PrefixableUnit<named_unit<"?", kind_of<isq::length>>>);
+#if MP_UNITS_API_NATURAL_UNITS
 static_assert(!PrefixableUnit<named_unit<"?">>);
+#endif
 static_assert(!PrefixableUnit<named_unit<"?", si::metre / si::second>>);
 static_assert(!PrefixableUnit<named_unit<"?", si::metre, kind_of<isq::length>>>);
 static_assert(!PrefixableUnit<prefixed_unit<"?", mag<10>, si::second>>);
@@ -261,9 +263,9 @@ static_assert(
 static_assert(!MP_UNITS_ASSOCIATED_UNIT<decltype(si::metre / nu::second)>);
 static_assert(
   !MP_UNITS_ASSOCIATED_UNIT<decltype(get_common_unit(si::kilo<si::metre> / nu::hour, si::metre / nu::second))>);
+static_assert(!MP_UNITS_ASSOCIATED_UNIT<named_unit<"?">>);
 #endif
 static_assert(!MP_UNITS_ASSOCIATED_UNIT<named_unit<"?", kind_of<isq::length>>>);
-static_assert(!MP_UNITS_ASSOCIATED_UNIT<named_unit<"?">>);
 static_assert(!MP_UNITS_ASSOCIATED_UNIT<named_unit<"?", si::metre / si::second>>);
 static_assert(!MP_UNITS_ASSOCIATED_UNIT<named_unit<"?", si::metre, kind_of<isq::length>>>);
 static_assert(!MP_UNITS_ASSOCIATED_UNIT<prefixed_unit<"?", mag<10>, si::second>>);
