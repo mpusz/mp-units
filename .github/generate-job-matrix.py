@@ -117,7 +117,7 @@ toolchains = {
     ]
     # std::format is available in Xcode 16.1 or later
     + [
-        make_apple_clang_config("macos-14", ver, std_format_support=True)
+        make_apple_clang_config("macos-14", ver)
         for ver in ["16.1"]
     ]
     + [make_apple_clang_config("macos-13", ver) for ver in ["15.2"]]
