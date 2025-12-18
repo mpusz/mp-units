@@ -400,3 +400,26 @@ Each pull request triggers a comprehensive CI pipeline:
 - **Documentation**: Verification that docs build successfully
 - **Package testing**: Conan package creation and consumption tests
 - **Dependency security**: Automated vulnerability and license scanning
+
+### Clearing GitHub Actions Cache
+
+The CI workflows use GitHub Actions cache to speed up builds by caching Conan packages,
+ccache artifacts, and other dependencies. Sometimes it may be necessary to clear these caches
+(e.g., when troubleshooting build issues or after major dependency updates).
+
+To manually clear the GitHub Actions cache:
+
+1. Navigate to the repository's **Actions** tab
+2. Select **Clear GitHub Actions Cache** from the workflow list
+3. Click **Run workflow** button
+4. Choose the cache pattern to delete:
+    - `all` - Delete all caches (default)
+    - `conan-` - Delete only Conan package caches
+    - `ccache-` - Delete only ccache caches
+    - `clang-tidy-` - Delete only clang-tidy caches
+    - `cmake-` - Delete only CMake test package caches
+    - `freestanding-` - Delete only freestanding build caches
+    - `mkdocs-material-` - Delete only documentation caches
+5. Click **Run workflow** to execute
+
+The workflow will delete all matching caches and provide a summary of the operation.
