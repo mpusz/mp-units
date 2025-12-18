@@ -4063,8 +4063,9 @@ is convertible to a provided type:</p>
 </span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="n">quantity</span><span class="w"> </span><span class="n">duration</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">90</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">min</span><span class="p">).</span><span class="n">force_in</span><span class="p">(</span><span class="n">h</span><span class="p">);</span><span class="w">               </span><span class="c1">// ✓ 1 h (forced, may truncate)</span>
 </span><span id="__span-18-5"><a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a>
 </span><span id="__span-18-6"><a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a><span class="c1">// quantity wrong = (42 * m).in(km);                      // ✗ Error: truncating int conversion</span>
-</span><span id="__span-18-7"><a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a><span class="c1">// quantity bad = (1.5 * m).in&lt;int&gt;();                    // ✗ Error: double → int needs explicit cast</span>
-</span><span id="__span-18-8"><a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a><span class="c1">// quantity&lt;si::metre, int&gt; invalid = 1.5 * m;            // ✗ Error: double → int needs explicit cast</span>
+</span><span id="__span-18-7"><a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a><span class="c1">// quantity overflow = (std::int8_t{1} * m).in(mm);       // ✗ Error: only 0 preserves the value</span>
+</span><span id="__span-18-8"><a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a><span class="c1">// quantity bad = (1.5 * m).in&lt;int&gt;();                    // ✗ Error: double → int needs explicit cast</span>
+</span><span id="__span-18-9"><a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a><span class="c1">// quantity&lt;si::metre, int&gt; invalid = 1.5 * m;            // ✗ Error: double → int needs explicit cast</span>
 </span></code></pre></div>
 </div>
 <div class="tabbed-block">
