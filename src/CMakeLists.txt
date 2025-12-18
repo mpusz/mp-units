@@ -138,7 +138,7 @@ add_mp_units_module(mp-units mp-units DEPENDENCIES mp-units::core mp-units::syst
 if(MP_UNITS_BUILD_INSTALL)
     # local build
     export(EXPORT mp-unitsTargets NAMESPACE mp-units::)
-    configure_file("mp-unitsConfig.cmake" "." COPYONLY)
+    configure_file(mp-unitsConfig.cmake.in mp-unitsConfig.cmake @ONLY)
     include(CMakePackageConfigHelpers)
     write_basic_package_version_file(mp-unitsConfigVersion.cmake COMPATIBILITY SameMajorVersion)
 

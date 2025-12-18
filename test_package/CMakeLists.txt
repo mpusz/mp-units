@@ -24,7 +24,6 @@ cmake_minimum_required(VERSION 3.30.5)
 project(test_package LANGUAGES CXX)
 
 message(STATUS "MP_UNITS_BUILD_CXX_MODULES: ${MP_UNITS_BUILD_CXX_MODULES}")
-message(STATUS "MP_UNITS_API_STD_FORMAT: ${MP_UNITS_API_STD_FORMAT}")
 
 find_package(mp-units REQUIRED)
 
