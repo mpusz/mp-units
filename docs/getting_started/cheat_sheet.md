@@ -369,6 +369,7 @@ double speed_value = (100 * km / h).force_numerical_value_in(m / s); // 27 (2)
     quantity duration = (90 * min).force_in(h);               // ✓ 1 h (forced, may truncate)
 
     // quantity wrong = (42 * m).in(km);                      // ✗ Error: truncating int conversion
+    // quantity overflow = (std::int8_t{1} * m).in(mm);       // ✗ Error: only 0 preserves the value
     // quantity bad = (1.5 * m).in<int>();                    // ✗ Error: double → int needs explicit cast
     // quantity<si::metre, int> invalid = 1.5 * m;            // ✗ Error: double → int needs explicit cast
     ```
