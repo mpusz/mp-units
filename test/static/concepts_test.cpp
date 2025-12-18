@@ -185,7 +185,9 @@ static_assert(!detail::QuantityKindSpec<int>);
 static_assert(Unit<struct si::metre>);
 static_assert(Unit<MP_UNITS_NONCONST_TYPE(si::kilogram)>);
 static_assert(Unit<si::kilo_<struct si::gram>>);
+#if MP_UNITS_API_NATURAL_UNITS
 static_assert(Unit<struct natural::electronvolt>);
+#endif
 static_assert(Unit<decltype(si::metre / si::second)>);
 static_assert(Unit<decltype(inverse(si::second))>);
 static_assert(Unit<decltype(mag<10> * si::second)>);
@@ -212,7 +214,9 @@ static_assert(!Unit<std::chrono::seconds>);
 
 // PrefixableUnit
 static_assert(PrefixableUnit<struct si::metre>);
+#if MP_UNITS_API_NATURAL_UNITS
 static_assert(PrefixableUnit<struct natural::electronvolt>);
+#endif
 static_assert(!PrefixableUnit<MP_UNITS_NONCONST_TYPE(si::kilogram)>);
 static_assert(!PrefixableUnit<si::kilo_<struct si::gram>>);
 static_assert(!PrefixableUnit<decltype(si::metre / si::second)>);
@@ -285,7 +289,9 @@ static_assert(UnitOf<MP_UNITS_NONCONST_TYPE(si::radian / si::second), isq::angul
 static_assert(UnitOf<MP_UNITS_NONCONST_TYPE(one / si::second), isq::angular_velocity>);
 static_assert(!UnitOf<struct si::radian, dimensionless>);
 static_assert(!UnitOf<struct si::metre, isq::time>);
+#if MP_UNITS_API_NATURAL_UNITS
 static_assert(!UnitOf<struct natural::electronvolt, isq::energy>);
+#endif
 
 // Reference
 static_assert(Reference<struct si::metre>);
@@ -293,7 +299,9 @@ static_assert(Reference<decltype(si::metre / si::second)>);
 static_assert(Reference<decltype(isq::length[si::metre])>);
 static_assert(Reference<decltype(isq::radius[si::metre])>);
 static_assert(Reference<decltype(isq::radius[si::metre] / isq::time[si::second])>);
+#if MP_UNITS_API_NATURAL_UNITS
 static_assert(!Reference<struct natural::electronvolt>);
+#endif
 static_assert(!Reference<struct isq::length>);
 static_assert(!Reference<kind_of_<struct isq::length>>);
 static_assert(!Reference<struct isq::dim_length>);
