@@ -177,8 +177,9 @@ jobs:
         shell: cmd
         working-directory: src
         run: |
-          cmake --version
+          call ..\build\generators\conanbuild.bat
           call ..\build\generators\conanvcvars.bat
+          cmake --version
           cmake --preset conan-default -DCMAKE_INSTALL_PREFIX=../out
       - name: Configure mp-units CMake
         if: matrix.toolchain.compiler.type != 'VISUAL' && matrix.toolchain.compiler.type != 'MSVC'
@@ -190,9 +191,10 @@ jobs:
           cmake --preset conan-default -DCMAKE_INSTALL_PREFIX=../out
       - name: Install mp-units
         if: matrix.config.compiler.type == 'VISUAL' || matrix.config.compiler.type == 'MSVC'
-        shell: bash
+        shell: cmd
         working-directory: src
         run: |
+          call ..\build\generators\conanbuild.bat
           cmake --build --preset conan-${{ steps.build_type.outputs.lowercase }} --target install
       - name: Install mp-units
         if: matrix.config.compiler.type != 'VISUAL' && matrix.config.compiler.type != 'MSVC'
@@ -211,6 +213,7 @@ jobs:
         shell: cmd
         working-directory: test_package
         run: |
+          call ..\build\generators\conanbuild.bat
           call ..\build\generators\conanvcvars.bat
           cmake --preset conan-default -Dmp-units_DIR=../build -Bbuild/local
           cmake --build build/local --config ${{ matrix.build_type }}
@@ -238,6 +241,7 @@ jobs:
         shell: cmd
         working-directory: test_package
         run: |
+          call ..\build\generators\conanbuild.bat
           call ..\build\generators\conanvcvars.bat
           cmake --preset conan-default -DCMAKE_INSTALL_PREFIX=../out -Bbuild/install
           cmake --build build/install --config ${{ matrix.build_type }}
