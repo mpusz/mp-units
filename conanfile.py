@@ -259,10 +259,10 @@ class MPUnitsConan(ConanFile):
             )
             if self._run_clang_tidy:
                 tc.cache_variables["MP_UNITS_DEV_CLANG_TIDY"] = True
+tc.cache_variables["MP_UNITS_BUILD_CXX_MODULES"] = opt.cxx_modules
         if opt.cxx_modules:
             tc.cache_variables["CMAKE_CXX_SCAN_FOR_MODULES"] = True
-            tc.cache_variables["MP_UNITS_BUILD_CXX_MODULES"] = True
-        if opt.import_std:
+                    if opt.import_std:
             tc.cache_variables["CMAKE_CXX_MODULE_STD"] = True
             # Current experimental support according to `Help/dev/experimental.rst`
             tc.cache_variables["CMAKE_EXPERIMENTAL_CXX_IMPORT_STD"] = (

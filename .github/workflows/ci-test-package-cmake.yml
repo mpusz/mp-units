@@ -25,14 +25,14 @@ name: CMake Test Package CI
 on:
   push:
     branches:
-      - '**'
+      - "**"
     paths-ignore:
       - "docs/**"
       - "example/**"
       - "test/**"
   pull_request:
     branches:
-      - '**'
+      - "**"
     paths-ignore:
       - "docs/**"
       - "example/**"
@@ -185,12 +185,14 @@ jobs:
         shell: bash
         working-directory: src
         run: |
+          source ..\build\generators\conanbuild.sh
           cmake --version
           cmake --preset conan-default -DCMAKE_INSTALL_PREFIX=../out
       - name: Install mp-units
         shell: bash
         working-directory: src
         run: |
+          source ..\build\generators\conanbuild.sh
           cmake --build --preset conan-${{ steps.build_type.outputs.lowercase }} --target install
       - name: Provide dependencies for test_package
         shell: bash
@@ -210,6 +212,7 @@ jobs:
         shell: bash
         working-directory: test_package
         run: |
+          source ..\build\generators\conanbuild.sh
           cmake --preset conan-default -Dmp-units_DIR=../build -Bbuild/local
           cmake --build build/local --config ${{ matrix.build_type }}
       - name: Run test_package-headers (local build)
@@ -236,6 +239,7 @@ jobs:
         shell: bash
         working-directory: test_package
         run: |
+          source ..\build\generators\conanbuild.sh
           cmake --preset conan-default -DCMAKE_INSTALL_PREFIX=../out -Bbuild/install
           cmake --build build/install --config ${{ matrix.build_type }}
       - name: Run test_package-headers (installation)
