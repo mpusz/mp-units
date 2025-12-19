@@ -180,6 +180,13 @@ jobs:
           cmake --version
           cmake --preset conan-default -DCMAKE_INSTALL_PREFIX=../out
       - name: Install mp-units
+        if: matrix.config.compiler.type == 'VISUAL' || matrix.config.compiler.type == 'MSVC'
+        shell: bash
+        working-directory: src
+        run: |
+          cmake --build --preset conan-${{ steps.build_type.outputs.lowercase }} --target install
+      - name: Install mp-units
+        if: matrix.config.compiler.type != 'VISUAL' && matrix.config.compiler.type != 'MSVC'
         shell: bash
         working-directory: src
         run: |
