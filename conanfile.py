@@ -343,6 +343,10 @@ class MPUnitsConan(ConanFile):
             self.cpp_info.components["core"].defines.append(
                 "MP_UNITS_API_STD_FORMAT=" + str(int(self.options.std_format == True))
             )
+            self.cpp_info.components["core"].defines.append(
+                "MP_UNITS_API_NATURAL_UNITS="
+                + str(int(self.options.natural_units == True))
+            )
             if not self.options.std_format:
                 self.cpp_info.components["core"].requires.append("fmt::fmt")
 
