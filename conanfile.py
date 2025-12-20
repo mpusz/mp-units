@@ -353,7 +353,9 @@ class MPUnitsConan(ConanFile):
                 if not self.options.std_format:
                     self.cpp_info.components["core"].requires.append("fmt::fmt")
                 self.cpp_info.components["core"].defines.append(
-                    "MP_UNITS_API_STD_FORMAT=" + str(int(self.options.std_format == True)))
+                    "MP_UNITS_API_STD_FORMAT="
+                    + str(int(self.options.std_format == True))
+                )
 
             # handle import std
             if self.options.import_std:

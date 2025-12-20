@@ -50,7 +50,7 @@ constexpr QuantityOf<MP_UNITS_IS_VALUE_WORKAROUND(isq::speed)> auto avg_speed(
 int main()
 {
   using namespace mp_units::si::unit_symbols;
-#if defined(MP_UNITS_HOSTED) && MP_UNITS_HOSTED == 1
+#if MP_UNITS_HOSTED
   std::cout << MP_UNITS_STD_FMT::format("Average speed = {}\n", avg_speed(240 * km, 2 * h));
 #else
   [[maybe_unused]] auto value = avg_speed(240 * km, 2 * h);
