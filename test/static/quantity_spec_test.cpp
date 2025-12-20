@@ -127,11 +127,6 @@ static_assert(!detail::NamedQuantitySpec<decltype(inverse(time))>);
 static_assert(detail::DerivedQuantitySpec<decltype(inverse(time))>);
 static_assert(!detail::QuantityKindSpec<decltype(inverse(time))>);
 
-static_assert(QuantitySpec<dimensionless_>);
-static_assert(detail::NamedQuantitySpec<dimensionless_>);
-static_assert(!detail::DerivedQuantitySpec<dimensionless_>);
-static_assert(!detail::QuantityKindSpec<dimensionless_>);
-
 static_assert(QuantitySpec<kind_of_<length_>>);
 static_assert(!detail::NamedQuantitySpec<kind_of_<length_>>);
 static_assert(!detail::DerivedQuantitySpec<kind_of_<length_>>);
