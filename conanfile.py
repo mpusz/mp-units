@@ -341,18 +341,21 @@ class MPUnitsConan(ConanFile):
                 "MP_UNITS_API_NO_CRTP=" + str(int(self.options.no_crtp == True))
             )
             self.cpp_info.components["core"].defines.append(
-                "MP_UNITS_API_STD_FORMAT=" + str(int(self.options.std_format == True))
-            )
-            self.cpp_info.components["core"].defines.append(
                 "MP_UNITS_API_NATURAL_UNITS="
                 + str(int(self.options.natural_units == True))
             )
-            if not self.options.std_format:
-                self.cpp_info.components["core"].requires.append("fmt::fmt")
 
             # handle hosted configuration
-            if not self.options.freestanding:
+            if self.options.freestanding:
+                self.cpp_info.components["core"].defines.append("MP_UNITS_HOSTED=0")
+            else:
                 self.cpp_info.components["core"].defines.append("MP_UNITS_HOSTED=1")
+                if not self.options.std_format:
+                    self.cpp_info.components["core"].requires.append("fmt::fmt")
+                self.cpp_info.components["core"].defines.append(
+                    "MP_UNITS_API_STD_FORMAT="
+                    + str(int(self.options.std_format == True))
+                )
 
             # handle import std
             if self.options.import_std:
