@@ -22,7 +22,7 @@
 
 #include <mp-units/compat_macros.h>
 
-#if defined(MP_UNITS_HOSTED) && MP_UNITS_HOSTED == 1
+#if MP_UNITS_HOSTED
 #include <mp-units/ext/format.h>
 #ifdef MP_UNITS_IMPORT_STD
 import std;
