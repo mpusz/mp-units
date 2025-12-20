@@ -160,22 +160,11 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     )
 endif()
 
-# Freestanding
 target_compile_definitions(
-    mp-units-core ${MP_UNITS_TARGET_SCOPE} MP_UNITS_HOSTED=$<NOT:$<BOOL:${MP_UNITS_API_FREESTANDING}>>
-)
-
-# Throwing constraints
-if(MP_UNITS_API_THROWING_CONSTRAINTS)
-    target_compile_definitions(
-        mp-units-core ${MP_UNITS_TARGET_SCOPE}
-                      MP_UNITS_API_THROWING_CONSTRAINTS=$<BOOL:${MP_UNITS_API_THROWING_CONSTRAINTS}>
-    )
-endif()
-
-# Natural units support
-target_compile_definitions(
-    mp-units-core ${MP_UNITS_TARGET_SCOPE} MP_UNITS_API_NATURAL_UNITS=$<BOOL:${MP_UNITS_API_NATURAL_UNITS}>
+    mp-units-core
+    ${MP_UNITS_TARGET_SCOPE} MP_UNITS_HOSTED=$<NOT:$<BOOL:${MP_UNITS_API_FREESTANDING}>>
+    MP_UNITS_API_NATURAL_UNITS=$<BOOL:${MP_UNITS_API_NATURAL_UNITS}>
+    MP_UNITS_API_THROWING_CONSTRAINTS=$<BOOL:${MP_UNITS_API_THROWING_CONSTRAINTS}>
 )
 
 # https://github.com/llvm/llvm-project/issues/131410
