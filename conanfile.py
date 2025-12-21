@@ -225,6 +225,10 @@ class MPUnitsConan(ConanFile):
             raise ConanInvalidConfiguration(
                 "clang-19 does not build mp-units because of an unfixable bug in the compiler."
             )
+        if compiler == "apple-clang" and Version(compiler.version).major == 17:
+            raise ConanInvalidConfiguration(
+                "apple-clang-17 (Xcode 16.3+) does not build mp-units because it has the same unfixable bug as clang-19."
+            )
 
         self._check_feature_supported("mp-units", "minimum_support")
         for key, value in self._option_feature_map.items():
