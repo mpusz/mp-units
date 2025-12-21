@@ -211,10 +211,10 @@ class MPUnitsConan(ConanFile):
             elif self.options.contracts == "ms-gsl":
                 self.requires("ms-gsl/4.2.0", transitive_headers=True)
             if not self.options.std_format:
-                self.requires("fmt/12.0.0", transitive_headers=True)
+                self.requires("fmt/12.1.0", transitive_headers=True)
 
     def build_requirements(self):
-        self.tool_requires("cmake/[>=4.0.2 <5]")
+        self.tool_requires("cmake/[>=4.2.1 <5]")
         if self._build_all:
             if not self.options.freestanding:
                 self.test_requires("catch2/3.10.0")
@@ -263,9 +263,9 @@ class MPUnitsConan(ConanFile):
             )
             if self._run_clang_tidy:
                 tc.cache_variables["MP_UNITS_DEV_CLANG_TIDY"] = True
+        tc.cache_variables["MP_UNITS_BUILD_CXX_MODULES"] = opt.cxx_modules
         if opt.cxx_modules:
             tc.cache_variables["CMAKE_CXX_SCAN_FOR_MODULES"] = True
-            tc.cache_variables["MP_UNITS_BUILD_CXX_MODULES"] = True
         if opt.import_std:
             tc.cache_variables["CMAKE_CXX_MODULE_STD"] = True
             # Current experimental support according to `Help/dev/experimental.rst`
@@ -345,14 +345,21 @@ class MPUnitsConan(ConanFile):
                 "MP_UNITS_API_NO_CRTP=" + str(int(self.options.no_crtp == True))
             )
             self.cpp_info.components["core"].defines.append(
-                "MP_UNITS_API_STD_FORMAT=" + str(int(self.options.std_format == True))
+                "MP_UNITS_API_NATURAL_UNITS="
+                + str(int(self.options.natural_units == True))
             )
-            if not self.options.std_format:
-                self.cpp_info.components["core"].requires.append("fmt::fmt")
 
             # handle hosted configuration
-            if not self.options.freestanding:
+            if self.options.freestanding:
+                self.cpp_info.components["core"].defines.append("MP_UNITS_HOSTED=0")
+            else:
                 self.cpp_info.components["core"].defines.append("MP_UNITS_HOSTED=1")
+                if not self.options.std_format:
+                    self.cpp_info.components["core"].requires.append("fmt::fmt")
+                self.cpp_info.components["core"].defines.append(
+                    "MP_UNITS_API_STD_FORMAT="
+                    + str(int(self.options.std_format == True))
+                )
 
             # handle import std
             if self.options.import_std:

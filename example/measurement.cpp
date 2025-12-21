@@ -20,143 +20,59 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// !!! Before you commit any changes to this file please make sure to check if it !!!
+// !!! renders correctly in the documentation "Examples" section.                 !!!
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+#include "measurement.h"
 #include <mp-units/bits/hacks.h>
 #include <mp-units/compat_macros.h>
 #ifdef MP_UNITS_IMPORT_STD
 import std;
 #else
-#include <cmath>
-#include <compare>  // IWYU pragma: export
-#include <exception>
 #include <iostream>
-#include <utility>
 #endif
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else
 #include <mp-units/framework.h>
+#include <mp-units/math.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si.h>
 #endif
 
 namespace {
 
-template<typename T>
-class measurement {
-public:
-  using value_type = T;
-
-  measurement() = default;
-
-  // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-  constexpr explicit measurement(value_type val, const value_type& err = {}) :
-      value_(std::move(val)), uncertainty_([&] {
-        using namespace std;
-        return abs(err);
-      }())
-  {
-  }
-
-  [[nodiscard]] constexpr const value_type& value() const { return value_; }
-  [[nodiscard]] constexpr const value_type& uncertainty() const { return uncertainty_; }
-
-  [[nodiscard]] constexpr value_type relative_uncertainty() const { return uncertainty() / value(); }
-  [[nodiscard]] constexpr value_type lower_bound() const { return value() - uncertainty(); }
-  [[nodiscard]] constexpr value_type upper_bound() const { return value() + uncertainty(); }
-
-  [[nodiscard]] constexpr measurement operator-() const { return measurement(-value(), uncertainty()); }
-
-  [[nodiscard]] friend constexpr measurement operator+(const measurement& lhs, const measurement& rhs)
-  {
-    using namespace std;
-    return measurement(lhs.value() + rhs.value(), hypot(lhs.uncertainty(), rhs.uncertainty()));
-  }
-
-  [[nodiscard]] friend constexpr measurement operator-(const measurement& lhs, const measurement& rhs)
-  {
-    using namespace std;
-    return measurement(lhs.value() - rhs.value(), hypot(lhs.uncertainty(), rhs.uncertainty()));
-  }
-
-  [[nodiscard]] friend constexpr measurement operator*(const measurement& lhs, const measurement& rhs)
-  {
-    const auto val = lhs.value() * rhs.value();
-    using namespace std;
-    return measurement(val, val * hypot(lhs.relative_uncertainty(), rhs.relative_uncertainty()));
-  }
-
-  [[nodiscard]] friend constexpr measurement operator*(const measurement& lhs, const value_type& value)
-  {
-    const auto val = lhs.value() * value;
-    return measurement(val, val * lhs.relative_uncertainty());
-  }
-
-  [[nodiscard]] friend constexpr measurement operator*(const value_type& value, const measurement& rhs)
-  {
-    const auto val = rhs.value() * value;
-    return measurement(val, val * rhs.relative_uncertainty());
-  }
-
-  [[nodiscard]] friend constexpr measurement operator/(const measurement& lhs, const measurement& rhs)
-  {
-    const auto val = lhs.value() / rhs.value();
-    using namespace std;
-    return measurement(val, val * hypot(lhs.relative_uncertainty(), rhs.relative_uncertainty()));
-  }
-
-  [[nodiscard]] friend constexpr measurement operator/(const measurement& lhs, const value_type& value)
-  {
-    const auto val = lhs.value() / value;
-    return measurement(val, val * lhs.relative_uncertainty());
-  }
-
-  [[nodiscard]] friend constexpr measurement operator/(const value_type& value, const measurement& rhs)
-  {
-    const auto val = value / rhs.value();
-    return measurement(val, val * rhs.relative_uncertainty());
-  }
-
-  [[nodiscard]] constexpr auto operator<=>(const measurement&) const = default;
-
-  friend std::ostream& operator<<(std::ostream& os, const measurement& v)
-  {
-    return os << v.value() << " ± " << v.uncertainty();
-  }
-
-  [[nodiscard]] friend constexpr measurement abs(const measurement& v)
-    requires requires { abs(v.value()); } || requires { std::abs(v.value()); }
-  {
-    using std::abs;
-    return measurement(abs(v.value()), v.uncertainty());
-  }
-
-private:
-  value_type value_{};
-  value_type uncertainty_{};
-};
-
-}  // namespace
-
 static_assert(mp_units::RepresentationOf<measurement<double>, mp_units::quantity_character::real_scalar>);
 static_assert(mp_units::RepresentationOf<measurement<double>, mp_units::quantity_character::vector>);
-
-namespace {
 
 void example()
 {
   using namespace mp_units;
   using namespace mp_units::si::unit_symbols;
 
+  std::cout << "Mass of the Sun:        M_sun = " << measurement{19884, 2} * (mag_power<10, 26> * kg) << '\n';
+
   const auto acceleration = isq::acceleration(measurement{9.8, 0.1} * m / s2);
   const auto time = measurement{1.2, 0.1} * s;
-
   const QuantityOf<isq::velocity> auto velocity = acceleration * time;
-  std::cout << acceleration << " * " << time << " = " << velocity << " = " << velocity.in(km / h) << '\n';
+  std::cout << "Velocity calculation:   V = " << acceleration << " * " << time << " = " << velocity << " = "
+            << velocity.in(km / h) << '\n';
 
   const auto length = measurement{123., 1.} * m;
-  std::cout << "10 * " << length << " = " << 10 * length << '\n';
+  std::cout << "Scalar multiplication:  d = 10 * " << length << " = " << 10 * length << '\n';
 
-  std::cout << "Mass of the Sun: " << measurement{19884, 2} * (mag_power<10, 26> * kg) << '\n';
+  const auto radius = measurement{5.0, 0.1} * m;
+  const auto circumference = radius * (mag<2> * mag<π> * one);
+  const auto area = pow<2>(radius) * (mag<π> * one);
+  std::cout << "Radius:                 r = " << radius << '\n';
+  std::cout << "Circular circumference: 2πr = " << circumference << " = " << circumference.in(m) << '\n';
+  std::cout << "Circular area:          πr² = " << area << " = " << area.in(m2) << '\n';
+
+  const auto area_measured = measurement{25.0, 1.0} * (mag<π> * m2);
+  const auto radius_from_area = sqrt(area_measured / (mag<π> * one));
+  std::cout << "Radius from area:       A = " << area_measured << " -> r = √(A/π) = " << radius_from_area << '\n';
 }
 
 }  // namespace

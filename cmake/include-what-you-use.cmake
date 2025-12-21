@@ -71,7 +71,7 @@ macro(_process_iwyu_arguments offset log_postfix)
         message(STATUS "Enabling include-what-you-use${log_postfix}")
     endif()
 
-    if(${_enable_iwyu_REQUIRED})
+    if(_enable_iwyu_REQUIRED)
         set(_error_log_level FATAL_ERROR)
     elseif(NOT _enable_iwyu_QUIET)
         set(_error_log_level STATUS)

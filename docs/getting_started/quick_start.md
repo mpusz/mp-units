@@ -130,8 +130,8 @@ using optional unit symbols:
 
     === "using-directive"
 
-    Explicitly "import" all of the symbols of a specific system of units from a
-    dedicated `unit_symbols` namespace with a
+        Explicitly "import" all of the symbols of a specific system of units from a
+        dedicated `unit_symbols` namespace with a
         [using-directive](https://en.cppreference.com/w/cpp/language/namespace#Using-directives):
 
         ```cpp
@@ -157,8 +157,8 @@ using optional unit symbols:
 
     === "using-declaration"
 
-    Selectively bring only the required and not-conflicting symbols with
-    [using-declarations](https://en.cppreference.com/w/cpp/language/using_declaration):
+        Selectively bring only the required and not-conflicting symbols with
+        [using-declarations](https://en.cppreference.com/w/cpp/language/using_declaration):
 
         ```cpp
         using namespace mp_units;
@@ -175,7 +175,7 @@ using optional unit symbols:
 
     === "custom short identifier"
 
-    Specify a custom not conflicting unit identifier for a unit:
+        Specify a custom not conflicting unit identifier for a unit:
 
         ```cpp
         using namespace mp_units;
@@ -193,7 +193,7 @@ using optional unit symbols:
 
     === "unit names"
 
-    Full unit names are straightforward to use and often provide the most readable code:
+        Full unit names are straightforward to use and often provide the most readable code:
 
         ```cpp
         using namespace mp_units;

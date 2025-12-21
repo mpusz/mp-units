@@ -239,5 +239,5 @@ jobs:
       - name: Do housekeeping on conan-mpusz-oss
         shell: bash
         run: |
-          conan remove mp-units/*#!latest --confirm -r conan-mpusz-oss
-          conan remove mp-units/*:*#!latest --confirm -r conan-mpusz-oss
+          conan remove mp-units/*#~latest --confirm -r conan-mpusz-oss
+          conan remove mp-units/*:*#~latest --confirm -r conan-mpusz-oss
