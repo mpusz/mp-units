@@ -28,7 +28,7 @@ if(PROJECT_IS_TOP_LEVEL AND NOT DEFINED CMAKE_COMPILE_WARNING_AS_ERROR)
     set(CMAKE_COMPILE_WARNING_AS_ERROR ON)
 endif()
 
-macro(_set_flags)
+macro(set_flags)
     set(MSVC_WARNINGS
         /W4 # Baseline reasonable warnings
         /w14062 # enumerator 'identifier' in a switch of enum 'enumeration' is not handled
@@ -100,7 +100,7 @@ endmacro()
 
 # Set global compiler warning level
 function(set_warnings)
-    _set_flags()
+    set_flags()
 
     message(STATUS "Setting restrictive compilation warnings")
     message(STATUS "  Treat warnings as errors: ${CMAKE_COMPILE_WARNING_AS_ERROR}")
@@ -118,7 +118,7 @@ function(set_target_warnings target scope)
         message(FATAL_ERROR "'scope' argument should be one of ${scopes} ('${scope}' received)")
     endif()
 
-    _set_flags()
+    set_flags()
 
     message(STATUS "Setting ${scope} restrictive compilation warnings for '${target}'")
     message(STATUS "  Treat warnings as errors: ${CMAKE_COMPILE_WARNING_AS_ERROR}")

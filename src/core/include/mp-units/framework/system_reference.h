@@ -30,8 +30,6 @@
 #include <mp-units/framework/reference.h>
 #include <mp-units/framework/unit.h>
 
-#if MP_UNITS_API_NATURAL_UNITS
-
 MP_UNITS_EXPORT
 namespace mp_units {
 
@@ -80,5 +78,3 @@ struct system_reference {
 };
 
 }  // namespace mp_units
-
-#endif  // MP_UNITS_API_NATURAL_UNITS

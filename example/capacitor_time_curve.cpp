@@ -15,10 +15,10 @@
  along with this program. If not, see http://www.gnu.org/licenses./
 */
 
-/*
-    capacitor discharge curve using compile_time
-    physical_quantities
-*/
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// !!! Before you commit any changes to this file please make sure to check if it !!!
+// !!! renders correctly in the documentation "Examples" section.                 !!!
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 #ifdef MP_UNITS_IMPORT_STD
 import std;
@@ -33,36 +33,28 @@ import mp_units;
 #include <mp-units/systems/si.h>
 #endif
 
+
 int main()
 {
   using namespace mp_units;
   using namespace mp_units::si::unit_symbols;
 
-  std::cout << "mp-units capacitor time curve example...\n";
-  std::cout.setf(std::ios_base::fixed, std::ios_base::floatfield);
-  std::cout.precision(3);
-
   constexpr auto CC = isq::capacitance(0.47 * uF);
   constexpr auto V0 = isq::voltage(5.0 * V);
   constexpr auto RR = isq::resistance(4.7 * si::kilo<si::ohm>);
 
+  std::cout.setf(std::ios_base::fixed, std::ios_base::floatfield);
+  std::cout.precision(3);
+  std::cout << "Capacitor time curve example for the following parameters:\n";
+  std::cout << "Capacitance: " << CC << "\n";
+  std::cout << "Initial Voltage: " << V0 << "\n";
+  std::cout << "Resistance: " << RR << "\n";
+
+  std::cout << "Time curve:\n";
   for (auto tt = 0 * ms; tt <= 50 * ms; ++tt) {
-    const QuantityOf<isq::voltage> auto Vt = V0 * exp(dimensionless(-tt / (RR * CC)));
-    // TODO try to make the below work instead
-    // const QuantityOf<isq::voltage> auto Vt = V0 * exp(-tt / (RR * CC));
-
-    std::cout << "at " << tt << " voltage is ";
-
-    if (Vt >= 1 * V)
-      std::cout << Vt.in(V);
-    else if (Vt >= 1 * mV)
-      std::cout << Vt.in(mV);
-    else if (Vt >= 1 * uV)
-      std::cout << Vt.in(uV);
-    else if (Vt >= 1 * nV)
-      std::cout << Vt.in(nV);
-    else
-      std::cout << Vt.in(pV);
+    const QuantityOf<isq::voltage> auto Vt = V0 * exp(-tt / (RR * CC));
+    std::cout << "- at " << tt << " voltage is ";
+    si::invoke_with_prefixed([](auto q) { std::cout << q; }, Vt, V);
     std::cout << "\n";
   }
 }

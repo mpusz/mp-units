@@ -117,6 +117,8 @@ template<typename T>
     return std::nullopt;
   }
 
+  MP_UNITS_DIAGNOSTIC_PUSH
+  MP_UNITS_DIAGNOSTIC_IGNORE_FLOAT_EQUAL
   // Handle special cases of zero and one.
   if (x == 0 || x == 1) {
     return x;
@@ -172,6 +174,7 @@ template<typename T>
       hi = mid;
     }
   }
+  MP_UNITS_DIAGNOSTIC_POP
 
   // Pick whichever one gets closer to the target.
   const auto lo_diff = xld - checked_int_pow(lo, n).value();

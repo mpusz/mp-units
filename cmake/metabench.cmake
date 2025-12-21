@@ -304,7 +304,7 @@ function(metabench_add_chart target)
         VERBATIM
     )
 
-    if(${ARGS_ALL})
+    if(ARGS_ALL)
         add_custom_target(${target} ALL DEPENDS "${ARGS_OUTPUT}")
     else()
         add_custom_target(${target} DEPENDS "${ARGS_OUTPUT}")

@@ -204,7 +204,11 @@ for all supported integration methods.
 - **[Johel Ernesto Guerrero Peña](https://github.com/JohelEGP)** – Core maintainer
 - **[Chip Hogg](https://github.com/chiphogg)** – Core maintainer
 
+### 🙏 All Contributors
+
 We appreciate **every contribution**, from code to documentation to community support!
+
+🌟 See our [**Contributors Page**](CONTRIBUTORS.md) for the complete list and recognition details.
 
 > **Ready to contribute?** Check out our
 [**Contributing Guide**](https://mpusz.github.io/mp-units/latest/getting_started/contributing/)
