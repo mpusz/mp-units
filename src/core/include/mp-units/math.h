@@ -416,8 +416,7 @@ template<Unit auto To, auto R, typename Rep>
   if constexpr (!MP_UNITS_ASSOCIATED_UNIT<MP_UNITS_REMOVE_CONST(decltype(To))>) {
     constexpr Unit auto unit = To * quantity<R, Rep>::unit;
     return (representation_values<Rep>::one() * one).force_in(unit) / q;
-  }
-  else
+  } else
 #endif
   {
     constexpr QuantitySpec auto qs = get_quantity_spec(To) * quantity<R, Rep>::quantity_spec;
