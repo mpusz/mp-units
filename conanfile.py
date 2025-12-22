@@ -217,7 +217,7 @@ class MPUnitsConan(ConanFile):
         self.tool_requires("cmake/[>=4.2.1 <5]")
         if self._build_all:
             if not self.options.freestanding:
-                self.test_requires("catch2/3.10.0")
+                self.test_requires("catch2/3.11.0")
 
     def validate(self):
         compiler = self.settings.compiler
