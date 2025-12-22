@@ -259,6 +259,7 @@ class MPUnitsConan(ConanFile):
         tc.absolute_paths = True  # only needed for CMake CI
         if self._build_all:
             tc.cache_variables["CMAKE_EXPORT_COMPILE_COMMANDS"] = True
+            tc.cache_variables["CMAKE_COMPILE_WARNING_AS_ERROR"] = True
             tc.cache_variables["CMAKE_VERIFY_INTERFACE_HEADER_SETS"] = (
                 not opt.import_std
             )
