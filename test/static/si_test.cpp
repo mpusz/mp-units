@@ -91,7 +91,7 @@ static_assert(1 * l == 1 * cubic(dm));
 static_assert(1 * t == 1000 * kg);
 
 // invoke_with_prefixed
-#if MP_UNITS_HOSTED
+#if MP_UNITS_HOSTED && (__cpp_lib_constexpr_cmath || MP_UNITS_COMP_GCC)
 
 constexpr auto validate_prefix = [](auto expected_number, Unit auto expected_unit, Quantity auto qty, auto unit,
                                     si::prefix_range range = si::prefix_range::engineering,
@@ -168,6 +168,6 @@ static_assert(validate_prefix(1.5, si::femto<si::second>, 0.000'000'000'000'001'
 static_assert(validate_prefix(-1.5, si::kilo<si::volt>, -1500.0 * V, si::volt));
 static_assert(validate_prefix(-1.5, si::milli<si::volt>, -0.0015 * V, si::volt));
 
-#endif  // MP_UNITS_HOSTED
+#endif
 
 }  // namespace
