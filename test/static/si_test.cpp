@@ -24,6 +24,7 @@
 #ifdef MP_UNITS_IMPORT_STD
 import std;
 #else
+#include <limits>
 #include <type_traits>
 #endif
 
@@ -88,5 +89,85 @@ static_assert(1 * ha == 100 * a);
 static_assert(1 * l == 1 * cubic(dm));
 
 static_assert(1 * t == 1000 * kg);
+
+// invoke_with_prefixed
+#if MP_UNITS_HOSTED
+
+constexpr auto validate_prefix = [](auto expected_number, Unit auto expected_unit, Quantity auto qty, auto unit,
+                                    si::prefix_range range = si::prefix_range::engineering,
+                                    int min_integral_digits = 1) {
+  return si::invoke_with_prefixed(
+    [&](auto q) {
+      if (q.unit != expected_unit) return false;
+      const auto actual = q.numerical_value_in(expected_unit);
+      using std::abs;
+      using value_type = decltype(actual);
+      constexpr auto epsilon = std::numeric_limits<value_type>::epsilon() * 100;
+      return abs(actual - expected_number) <= epsilon * abs(expected_number) ||
+             abs(actual - expected_number) <= epsilon;
+    },
+    qty, unit, range, min_integral_digits);
+};
+
+// Engineering mode (default) - powers of 1000
+static_assert(validate_prefix(1.5, si::volt, 1.5 * V, si::volt));
+static_assert(validate_prefix(1.5, si::kilo<si::volt>, 1500.0 * V, si::volt));
+static_assert(validate_prefix(1.5, si::mega<si::volt>, 1'500'000.0 * V, si::volt));
+static_assert(validate_prefix(1.5, si::giga<si::volt>, 1'500'000'000.0 * V, si::volt));
+static_assert(validate_prefix(1.5, si::milli<si::volt>, 0.0015 * V, si::volt));
+static_assert(validate_prefix(1.5, si::micro<si::volt>, 0.000'001'5 * V, si::volt));
+static_assert(validate_prefix(1.5, si::nano<si::volt>, 0.000'000'001'5 * V, si::volt));
+
+// Engineering mode - values in range [1.0, 1000)
+static_assert(validate_prefix(1.0, si::kilo<si::volt>, 1000.0 * V, si::volt));
+static_assert(validate_prefix(999.0, si::volt, 999.0 * V, si::volt));
+static_assert(validate_prefix(1.0, si::milli<si::volt>, 0.001 * V, si::volt));
+
+// Full mode - includes all intermediate prefixes
+static_assert(validate_prefix(4.56, si::hecto<si::metre>, 456.0 * m, si::metre, si::prefix_range::full));
+static_assert(validate_prefix(1.5, si::deca<si::metre>, 15.0 * m, si::metre, si::prefix_range::full));
+static_assert(validate_prefix(1.5, si::deci<si::metre>, 0.15 * m, si::metre, si::prefix_range::full));
+static_assert(validate_prefix(1.5, si::centi<si::metre>, 0.015 * m, si::metre, si::prefix_range::full));
+
+// Full mode vs engineering mode comparison
+static_assert(validate_prefix(456.0, si::metre, 456.0 * m, si::metre, si::prefix_range::engineering));
+static_assert(validate_prefix(4.56, si::hecto<si::metre>, 456.0 * m, si::metre, si::prefix_range::full));
+
+// Zero values always use base unit
+static_assert(validate_prefix(0.0, si::volt, 0.0 * V, si::volt));
+static_assert(validate_prefix(0.0, si::metre, 0.0 * m, si::metre, si::prefix_range::full));
+
+// Different physical quantities
+static_assert(validate_prefix(1.234, si::milli<si::ampere>, 0.001'234 * A, si::ampere));
+static_assert(validate_prefix(4.7, si::kilo<si::ohm>, 4700.0 * ohm, si::ohm));
+static_assert(validate_prefix(470.0, si::nano<si::farad>, 0.000'000'47 * F, si::farad));
+static_assert(validate_prefix(2.5, si::kilo<si::watt>, 2500.0 * W, si::watt));
+
+// min_integral_digits parameter
+static_assert(validate_prefix(12.5, si::metre, 12.5 * m, si::metre, si::prefix_range::engineering, 1));
+static_assert(validate_prefix(12.5, si::metre, 12.5 * m, si::metre, si::prefix_range::engineering, 2));
+static_assert(validate_prefix(1.25, si::kilo<si::metre>, 1250.0 * m, si::metre, si::prefix_range::engineering, 1));
+static_assert(validate_prefix(1.250, si::metre, 1.250 * m, si::metre, si::prefix_range::engineering, 1));
+static_assert(validate_prefix(125.0, si::milli<si::metre>, 0.125 * m, si::metre, si::prefix_range::engineering, 3));
+
+// Boundary cases - exactly at prefix thresholds
+static_assert(validate_prefix(1.0, si::kilo<si::metre>, 1000.0 * m, si::metre));
+static_assert(validate_prefix(1.0, si::mega<si::metre>, 1'000'000.0 * m, si::metre));
+static_assert(validate_prefix(1.0, si::milli<si::metre>, 0.001 * m, si::metre));
+static_assert(validate_prefix(1.0, si::micro<si::metre>, 0.000'001 * m, si::metre));
+
+// Large prefixes
+static_assert(validate_prefix(1.5, si::tera<si::watt>, 1'500'000'000'000.0 * W, si::watt));
+static_assert(validate_prefix(1.5, si::peta<si::watt>, 1'500'000'000'000'000.0 * W, si::watt));
+
+// Small prefixes
+static_assert(validate_prefix(1.5, si::pico<si::second>, 0.000'000'000'001'5 * s, si::second));
+static_assert(validate_prefix(1.5, si::femto<si::second>, 0.000'000'000'000'001'5 * s, si::second));
+
+// Negative values
+static_assert(validate_prefix(-1.5, si::kilo<si::volt>, -1500.0 * V, si::volt));
+static_assert(validate_prefix(-1.5, si::milli<si::volt>, -0.0015 * V, si::volt));
+
+#endif  // MP_UNITS_HOSTED
 
 }  // namespace
