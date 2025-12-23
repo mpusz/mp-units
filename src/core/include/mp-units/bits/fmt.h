@@ -73,7 +73,7 @@ struct fmt_arg_ref {
     std::basic_string_view<Char> name;
 #endif
 
-    value() = default;
+    constexpr value() {}
     constexpr explicit value(int idx) : index(idx) {}
 #if MP_UNITS_USE_FMTLIB
     constexpr value(std::basic_string_view<Char> n) : name(n) {}
