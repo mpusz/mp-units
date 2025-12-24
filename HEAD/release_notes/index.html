@@ -3502,7 +3502,7 @@ You're not viewing the latest version.
   <a href="#2.5.0" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2.5.0 WIP
+        2.5.0 December 24, 2025
       
     </span>
   </a>
@@ -3736,7 +3736,7 @@ You're not viewing the latest version.
 <!-- markdownlint-disable MD033 -->
 
 <h2 id="mp-units">mp-units<a class="headerlink" href="#mp-units" title="Permanent link">&para;</a></h2>
-<h3 id="2.5.0">2.5.0 <small>WIP</small><a class="headerlink" href="#2.5.0" title="Permanent link">&para;</a></h3>
+<h3 id="2.5.0">2.5.0 <small>December 24, 2025</small><a class="headerlink" href="#2.5.0" title="Permanent link">&para;</a></h3>
 <ul>
 <li>(!) feat: representation concepts improved</li>
 <li>(!) feat: <code>representation_of</code> concept now also accepts a <code>quantity_spec</code> and
@@ -3764,12 +3764,24 @@ You're not viewing the latest version.
 <li>feat: <code>scaling_overflows_non_zero_values</code> added to detect conversions overflowing <code>rep</code></li>
 <li>feat: deprecation messages now provide the release version where the
   deprecation happened</li>
-<li>feat: electromagnetism.h updated to IEC80000-6-2022</li>
-<li>feat: <code>ConvertibleWithNumber</code> introduced to improve convertibility of unit <code>one</code>
+<li>feat: electromagnetism.h updated to IEC80000-6-2022
   with raw numbers</li>
 <li>feat: <code>lerp</code> and <code>midpoint</code> for points added</li>
 <li>feat: <code>is_value_preserving</code> customization point added</li>
+<li>feat: <code>EQUIV{...}</code> replaced with <code>[...]</code> in the text output of common units</li>
+<li>feat: <code>constexpr_format</code> added</li>
+<li>feat: <code>unsatisfied</code> added and enabled throwing constraints</li>
+<li>feat: some constraints refactored to throw exceptions with nice error messages</li>
+<li>feat: explicit constructor now can perform an explicit <code>quantity_spec</code> conversion</li>
+<li>feat: natural units support is now opt-in</li>
+<li>feat: <code>value_type_t</code> is now recursive</li>
+<li>feat: support for <code>root</code> of negative numbers removed</li>
+<li>feat: old MSVC workarounds disabled for the latest version</li>
+<li>feat: <code>invoke_with_prefixed</code> added to SI</li>
+<li>feat: <code>QuantityLike</code> should not satisfy the <code>Representation</code> concept</li>
 <li>feat(example): <code>is_vector</code> specialization no longer needed for <code>si_constants</code></li>
+<li>feat(example): measurement.h extracted for easier reuse</li>
+<li>feat(example): <code>clcpp_response</code> and <code>conversion_factor</code> examples removed</li>
 <li>(!) refactor: <code>type_list</code> moved to implementation details</li>
 <li>(!) refactor: from now <code>unit_symbol</code> and <code>dimension_symbol</code> always returns
   <code>std::string_view</code></li>
@@ -3783,6 +3795,10 @@ You're not viewing the latest version.
 <li>(!) refactor: <code>scalar</code> and <code>complex</code> characters renamed to <code>real_scalar</code> and
   <code>complex_scalar</code> respectively + concepts refactoring</li>
 <li>(!) refactor: <code>MagConstant</code> concept renamed to <code>detail::is_mag_constant</code> variable trait</li>
+<li>(!) refactor: <code>format.h</code> header file made deprecated</li>
+<li>(!) refactor: <code>ostream.h</code> header file made deprecated</li>
+<li>(!) refactor: rename <code>default_denominator</code> to <code>default_solidus</code> in
+  <code>unit_symbol_solidus</code> enum</li>
 <li>refactor: mp_units.core defined in terms of <code>core.h</code></li>
 <li>refactor: <code>MP_UNITS_NONCONST_TYPE</code> introduced to benefit from the C++23 feature</li>
 <li>refactor: <code>SymbolicConstant</code> concept refactored</li>
@@ -3818,6 +3834,19 @@ You're not viewing the latest version.
 <li>refactor: <code>visit_format_arg</code> is deprecated in C++26</li>
 <li>refactor: deprecated literal operators</li>
 <li>refactor: constraints refactoring</li>
+<li>refactor: compund assignment and pre-/post-increment operators are now lvalue-qualified
+  member functions</li>
+<li>refactor: <code>ValuePreservingScaling</code> concepts renamed</li>
+<li>refactor: <code>common_type</code> specializations refactored</li>
+<li>refactor: <code>NumberLike</code> renamed to <code>DimensionlessOne</code></li>
+<li>refactor: branching on a deprecated C++ feature improved</li>
+<li>refactor: all CTADs made implicit</li>
+<li>refactor: <code>MP_UNITS_REMOVE_CONST</code> gcc workaround added to <code>RepresentationOf</code></li>
+<li>refactor: <code>ReferenceOf</code> concept simplified</li>
+<li>refactor: explicitly defaulted special member functions removed</li>
+<li>refactor(example): slight refactoring of examples while working on their documentation</li>
+<li>refactor(example): kalman filter examples refactored to better match their</li>
+<li>refactor(example): <code>is_hae</code> function refactored to <code>HAEAltitude</code> concept</li>
 <li>(!) fix: <code>electric_current_phasor</code>, <code>voltage_phasor</code>, <code>apparent_power</code> switched to
   complex character</li>
 <li>(!) fix: <code>position_vector</code> and <code>displacement</code> moved to a different place in a tree</li>
@@ -3839,6 +3868,34 @@ You're not viewing the latest version.
 <li>fix: <code>mag_constant</code> workarounds branches for clang fixed</li>
 <li>fix: checking for clang versions fixed in CMake scripts</li>
 <li>fix: text stripping in <code>type_name</code> fixed</li>
+<li>fix: make quantity conversion to <code>Rep</code> <code>constexpr</code>
+  (thanks <a href="https://github.com/KangarooKoala">@KangarooKoala</a>)</li>
+<li>fix: MSVC compilation fixed</li>
+<li>fix: <code>abs</code> interface and implementation improved</li>
+<li>fix: unused parameters removed from <code>scaling_overflows_non_zero_values</code></li>
+<li>fix: invalid precondition check in <code>root</code> removed</li>
+<li>fix: workaround for fmt</li>
+<li>fix: CTAD issue workaround for MSVC</li>
+<li>fix: <code>dynamic_spec_id_handler</code> fixed for gcc-15</li>
+<li>fix: MSVC workarounds for <code>consteval</code> functions</li>
+<li>fix: resolve CMake compiler test failure in freestanding CI builds
+       (thanks <a href="https://github.com/rothmichaels">@rothmichaels</a>)</li>
+<li>fix: msvc empty bases workaround (thanks <a href="https://github.com/Radnyx">@Radnyx</a>)</li>
+<li>fix: seconds literal has unspecified type and depends on implementation
+       (thanks <a href="https://github.com/Radnyx">@Radnyx</a>)</li>
+<li>fix: <code>named_unit</code> can now be created for <code>kind_of&lt;dimensionless&gt;</code></li>
+<li>fix: enable runtime usage of inverse function by using compile-time unit extraction
+       (thanks <a href="https://github.com/rothmichaels">@rothmichaels</a>)</li>
+<li>fix: CTAD for dimensionless quantities fixed</li>
+<li>fix: concepts tests compilation fixed for <code>MP_UNITS_API_NATURAL_UNITS</code> OFF</li>
+<li>fix: missing natural units support added to <code>package_info()</code></li>
+<li>fix: freestanding build error in Conan <code>package_info()</code>
+       (thanks <a href="https://github.com/kammce">@kammce</a>)</li>
+<li>fix: replace <code>wstring_view</code> with <code>basic_string_view&lt;wchar_t&gt;</code>
+       (thanks <a href="https://github.com/kammce">@kammce</a>)</li>
+<li>Fix destination unit creation in <code>inverse</code></li>
+<li>fix(docs): typo in a file name fixed</li>
+<li>fix(example): text formatting fixed for <code>glide_computer</code> documentation</li>
 <li>test: lots of tests for complex quantities</li>
 <li>test: runtime unit tests refactored to have a bigger granularity (less top level tests)</li>
 <li>test: <em>surface tension</em> replaced with <em>entropy</em> in an fmt test</li>
@@ -3846,9 +3903,10 @@ You're not viewing the latest version.
 <li>test: tests for dimensionless quantities static data members</li>
 <li>test: a few more natural units tests added</li>
 <li>test: tests to check if <code>quantity</code> satisfies <code>Scalar</code></li>
-<li>test: add static tests for concept <code>DimensionOf</code> (thanks
-  <a href="https://github.com/jvocht">@jvocht</a>)</li>
+<li>test: add static tests for concept <code>DimensionOf</code> (thanks <a href="https://github.com/jvocht">@jvocht</a>)</li>
 <li>test: quantity character concepts tests for quantities added</li>
+<li>test: duplicated <code>dimensionless</code> tests removed</li>
+<li>test: additional concepts tests for quantity spec added</li>
 <li>docs: ISQ part 6 released</li>
 <li>docs: new chapter about our documentation added to the contributing guide</li>
 <li>docs: directory name updated in the contributing guide</li>
@@ -3867,6 +3925,31 @@ You're not viewing the latest version.
 <li>docs: "Concepts" chapter updated</li>
 <li>docs: old customization points removed from the "Character of a Quantity" chapter</li>
 <li>docs: clang-19 issues mentioned in a compiler support table</li>
+<li>docs: "Introducing absolute quantities" blog post added</li>
+<li>docs: relative path removed from the contributing guide</li>
+<li>docs: examples updated and deprecated tags generation replaced with modern usage</li>
+<li>docs: compiler explorer links replaced with buttons</li>
+<li>docs: "Installation and Usage" cleanup</li>
+<li>docs: "Introduction" chapter improved</li>
+<li>docs: "Quick Start" Improved</li>
+<li>docs: "Interface Introduction" improved</li>
+<li>docs: "Systems of Quantities" chapter improved</li>
+<li>docs: "Concepts" chapter improved</li>
+<li>docs: README updated</li>
+<li>docs: "Install as a Dependency" added to README</li>
+<li>docs: tutorials section added</li>
+<li>docs: info about <code>kind_of&lt;dimensionless&gt;</code> units added</li>
+<li>docs: adjust formatting in temperature printing function for better alignment</li>
+<li>docs: README visually improved</li>
+<li>docs: 2 new chapters added to README</li>
+<li>docs: link to mp-units in ConanCenter added to README</li>
+<li>docs: "Support the Project" added to README</li>
+<li>docs: enhance testimonials section for clarity and inclusivity</li>
+<li>docs: clarify flowchart labels for quantity addition and differences</li>
+<li>docs: CONTRIBUTORS.md added</li>
+<li>docs: examples reworked</li>
+<li>docs: "Cheat Sheet" added</li>
+<li>docs: "Auto-scaling of a quantity" chapter added</li>
 <li>docs(ref): document most of <code>mp_units.core</code> (thanks <a href="https://github.com/JohelEGP">@JohelEGP</a>)</li>
 <li>build: <code>CheckCacheVarValues</code> CMake module file added</li>
 <li>build: <code>MP_UNITS_DEV_TIME_TRACE</code> CMake option added</li>
@@ -3875,13 +3958,54 @@ You're not viewing the latest version.
 <li>build: clang-20 enabled in CI</li>
 <li>build: clang-19 support removed from conanfile.py</li>
 <li>build: clang-20.1 workaround added to <code>package_info</code></li>
-<li>build: update dependencies to gsl-lite/0.42.0, ms-gsl/4.1.0,
-  fmt/11.1.4, and catch2/3.8.0</li>
+<li>build: update dependencies to gsl-lite/1.0.1, ms-gsl/4.2.0,
+  fmt/12.1.0, catch2/3.11.0, cmake/4.2.1</li>
 <li>build: suppress warnings for gcc-12 in conanfile</li>
+<li>build: switch freestanding CI to clang-20</li>
+<li>build: gcc installation step is now mandatory for all gcc versions</li>
+<li>build: <code>import_std</code> set to <code>False</code> by default</li>
+<li>build: <code>wg21-linear_algebra</code> dependency removed</li>
+<li>build: <code>check_libcxx_in_use</code> improved</li>
+<li>build: Gitpod support removed</li>
+<li>build: CodeSpaces support added</li>
+<li>build: CMake switched to a new gsl-lite target</li>
+<li>build: clang-21 added to <code>check_all.sh</code></li>
+<li>build: gcc-15 enabled in <code>check_all.sh</code></li>
+<li>build: <code>explicit_this</code> enabled for AppleClang 17 and MSVC 19.32
+  (thanks <a href="https://github.com/alex-tee">@alex-tee</a>)</li>
+<li>build: add <code>build: add INSTALL option to cmake</code> option to cmake
+  (thanks <a href="https://github.com/alex-tee">@alex-tee</a>)</li>
+<li>build: projectPrefix CMake variable removed</li>
+<li>build: <code>MP_UNITS_BUILD_AS_SYSTEM_HEADERS</code> removed</li>
+<li>build: <code>warnings.cmake</code> refactored to use <code>CMAKE_COMPILE_WARNING_AS_ERROR</code></li>
+<li>build: <code>CMAKE_COMPILE_WARNING_AS_ERROR</code> set in conanfile</li>
+<li>build: <code>PROJECT_IS_TOP_LEVEL</code> used in <code>ensure_entry_point</code></li>
+<li>build: Various cleanup (thanks <a href="https://github.com/HazardyKnusperkeks">@HazardyKnusperkeks</a>)</li>
+<li>build: CMake config file variables handling fixed</li>
+<li>build: dereferencing CMake variables in <code>if()</code> conditions is not needed</li>
+<li>build: improved setting of <code>MP_UNITS_BUILD_CXX_MODULES</code> for <code>test_package</code></li>
+<li>build: <code>MP_UNITS_BUILD_CXX_MODULES</code> will now be always provided by Conan</li>
+<li>build: CMake CI should run the cmake executable provided by Conan</li>
+<li>build: C++23 enabled for <code>test_package</code> when <code>import std</code> is ON</li>
+<li>build: all <code>target_compile_definitions</code> aggregated in one place</li>
 <li>ci: CI matrix generation added (thanks <a href="https://github.com/burnpanck">@burnpanck</a>)</li>
 <li>ci: <code>import_std</code> now checks if at least C++23 is being used</li>
+<li>ci: GitHub actions improved</li>
+<li>ci: dependency review GitHub action added</li>
+<li>ci: clang-21 support added</li>
+<li>ci: update dependency review configuration</li>
+<li>ci: housekeeping after release step fixed in ci-conan</li>
+<li>ci: the macOS-13 based runner images are retired in GitHub</li>
+<li>ci: old 'VISUAL' decendant of Conan 1.x removed from CMake CI</li>
 <li>perf: caching of the results of heavy <code>consteval</code> functions execution added</li>
 <li>perf: <code>expr_projectable</code> concept removed to improve compilation performance</li>
+<li>style: pre-commit tools updated</li>
+<li>style: markdownlint rules updated</li>
+<li>style: MD036 added to .markdownlint.json</li>
+<li>chore: add issue templates for bug reports, documentation issues, and feature requests</li>
+<li>chore: add usage experience issue template and a chapter in README</li>
+<li>chore: PR template added</li>
+<li>chore: FUNDING.yml file added</li>
 </ul>
 <h3 id="2.4.0">2.4.0 <small>November 5, 2024</small><a class="headerlink" href="#2.4.0" title="Permanent link">&para;</a></h3>
 <ul>
