@@ -56,9 +56,21 @@ MP_UNITS_EXPORT template<detail::Scalar T = double>
 class cartesian_vector {
 public:
   // public members required to satisfy structural type requirements :-(
-  // NOTE: This type is intentionally an aggregate (like std::array).
   T _coordinates_[3];
   using value_type = T;
+
+  constexpr cartesian_vector() = default;
+
+  explicit constexpr cartesian_vector(T x) : _coordinates_{x, T{}, T{}} {}
+  constexpr cartesian_vector(T x, T y) : _coordinates_{x, y, T{}} {}
+  constexpr cartesian_vector(T x, T y, T z) : _coordinates_{x, y, z} {}
+
+  template<typename U>
+    requires std::constructible_from<T, U> && (!std::same_as<std::remove_cvref_t<U>, T>) &&
+             (!std::same_as<std::remove_cvref_t<U>, cartesian_vector>)
+  explicit constexpr cartesian_vector(U&& val) : _coordinates_{T(val), T(val), T(val)}
+  {
+  }
 
   [[nodiscard]] constexpr T magnitude() const
     requires treat_as_floating_point<T>
@@ -142,6 +154,88 @@ public:
     return vec.unit();
   }
 
+  template<typename U>
+    requires requires(const T& t, const U& u) { t + u; }
+  [[nodiscard]] friend constexpr auto operator+(const cartesian_vector& lhs, const cartesian_vector<U>& rhs)
+  {
+    return ::mp_units::cartesian_vector{lhs._coordinates_[0] + rhs._coordinates_[0],
+                                        lhs._coordinates_[1] + rhs._coordinates_[1],
+                                        lhs._coordinates_[2] + rhs._coordinates_[2]};
+  }
+
+  template<typename U>
+    requires requires(const T& t, const U& u) { t - u; }
+  [[nodiscard]] friend constexpr auto operator-(const cartesian_vector& lhs, const cartesian_vector<U>& rhs)
+  {
+    return ::mp_units::cartesian_vector{lhs._coordinates_[0] - rhs._coordinates_[0],
+                                        lhs._coordinates_[1] - rhs._coordinates_[1],
+                                        lhs._coordinates_[2] - rhs._coordinates_[2]};
+  }
+
+  template<typename U>
+    requires(!treat_as_floating_point<T> && !treat_as_floating_point<U> && requires(const T& t, const U& u) { t % u; })
+  [[nodiscard]] friend constexpr auto operator%(const cartesian_vector& lhs, const cartesian_vector<U>& rhs)
+  {
+    using CT = std::common_type_t<T, U>;
+    return ::mp_units::cartesian_vector<CT>{static_cast<CT>(lhs._coordinates_[0] % rhs._coordinates_[0]),
+                                            static_cast<CT>(lhs._coordinates_[1] % rhs._coordinates_[1]),
+                                            static_cast<CT>(lhs._coordinates_[2] % rhs._coordinates_[2])};
+  }
+
+  template<typename S>
+    requires(!std::same_as<std::remove_cvref_t<S>, cartesian_vector>) && detail::NotQuantity<S>
+  [[nodiscard]] friend constexpr auto operator*(const cartesian_vector& vector, const S& scalar)
+  {
+    return ::mp_units::cartesian_vector{vector._coordinates_[0] * scalar, vector._coordinates_[1] * scalar,
+                                        vector._coordinates_[2] * scalar};
+  }
+
+  template<typename S>
+    requires(!std::same_as<std::remove_cvref_t<S>, cartesian_vector>) && detail::NotQuantity<S>
+  [[nodiscard]] friend constexpr auto operator*(const S& scalar, const cartesian_vector& vector)
+  {
+    return vector * scalar;
+  }
+
+  template<typename S>
+    requires(!std::same_as<std::remove_cvref_t<S>, cartesian_vector>) && detail::NotQuantity<S>
+  [[nodiscard]] friend constexpr auto operator/(const cartesian_vector& vector, const S& scalar)
+  {
+    return ::mp_units::cartesian_vector{vector._coordinates_[0] / scalar, vector._coordinates_[1] / scalar,
+                                        vector._coordinates_[2] / scalar};
+  }
+
+  template<std::equality_comparable_with<T> U>
+  [[nodiscard]] friend constexpr bool operator==(const cartesian_vector& lhs, const cartesian_vector<U>& rhs)
+  {
+    return lhs._coordinates_[0] == rhs._coordinates_[0] && lhs._coordinates_[1] == rhs._coordinates_[1] &&
+           lhs._coordinates_[2] == rhs._coordinates_[2];
+  }
+
+  template<typename U>
+    requires requires(const T& t, const U& u, decltype(t * u) v) {
+      t * u;
+      v + v;
+    }
+  [[nodiscard]] friend constexpr auto scalar_product(const cartesian_vector& lhs, const cartesian_vector<U>& rhs)
+  {
+    return lhs._coordinates_[0] * rhs._coordinates_[0] + lhs._coordinates_[1] * rhs._coordinates_[1] +
+           lhs._coordinates_[2] * rhs._coordinates_[2];
+  }
+
+  template<typename U>
+    requires requires(const T& t, const U& u, decltype(t * u) v) {
+      t * u;
+      v - v;
+    }
+  [[nodiscard]] friend constexpr auto vector_product(const cartesian_vector& lhs, const cartesian_vector<U>& rhs)
+  {
+    return ::mp_units::cartesian_vector{
+      lhs._coordinates_[1] * rhs._coordinates_[2] - lhs._coordinates_[2] * rhs._coordinates_[1],
+      lhs._coordinates_[2] * rhs._coordinates_[0] - lhs._coordinates_[0] * rhs._coordinates_[2],
+      lhs._coordinates_[0] * rhs._coordinates_[1] - lhs._coordinates_[1] * rhs._coordinates_[0]};
+  }
+
 #if MP_UNITS_HOSTED
   friend std::ostream& operator<<(std::ostream& os, const cartesian_vector& vec)
   {
@@ -153,88 +247,6 @@ public:
 template<typename Arg, typename... Args>
   requires(sizeof...(Args) <= 2) && requires { typename std::common_type_t<Arg, Args...>; }
 cartesian_vector(Arg, Args...) -> cartesian_vector<std::common_type_t<Arg, Args...>>;
-
-MP_UNITS_EXPORT template<typename T, typename U>
-  requires requires(const T& t, const U& u) { t + u; }
-[[nodiscard]] constexpr auto operator+(const cartesian_vector<T>& lhs, const cartesian_vector<U>& rhs)
-{
-  return ::mp_units::cartesian_vector{lhs._coordinates_[0] + rhs._coordinates_[0],
-                                      lhs._coordinates_[1] + rhs._coordinates_[1],
-                                      lhs._coordinates_[2] + rhs._coordinates_[2]};
-}
-
-MP_UNITS_EXPORT template<typename T, typename U>
-  requires requires(const T& t, const U& u) { t - u; }
-[[nodiscard]] constexpr auto operator-(const cartesian_vector<T>& lhs, const cartesian_vector<U>& rhs)
-{
-  return ::mp_units::cartesian_vector{lhs._coordinates_[0] - rhs._coordinates_[0],
-                                      lhs._coordinates_[1] - rhs._coordinates_[1],
-                                      lhs._coordinates_[2] - rhs._coordinates_[2]};
-}
-
-MP_UNITS_EXPORT template<typename T, typename U>
-  requires(!treat_as_floating_point<T> && !treat_as_floating_point<U> && requires(const T& t, const U& u) { t % u; })
-[[nodiscard]] constexpr auto operator%(const cartesian_vector<T>& lhs, const cartesian_vector<U>& rhs)
-{
-  using CT = std::common_type_t<T, U>;
-  return ::mp_units::cartesian_vector<CT>{static_cast<CT>(lhs._coordinates_[0] % rhs._coordinates_[0]),
-                                          static_cast<CT>(lhs._coordinates_[1] % rhs._coordinates_[1]),
-                                          static_cast<CT>(lhs._coordinates_[2] % rhs._coordinates_[2])};
-}
-
-MP_UNITS_EXPORT template<typename T, typename S>
-  requires requires(const T& t, const S& s) { t * s; }
-[[nodiscard]] constexpr auto operator*(const cartesian_vector<T>& vector, const S& scalar)
-{
-  return ::mp_units::cartesian_vector{vector._coordinates_[0] * scalar, vector._coordinates_[1] * scalar,
-                                      vector._coordinates_[2] * scalar};
-}
-
-MP_UNITS_EXPORT template<typename S, typename U>
-  requires requires(const S& s, const U& u) { s * u; }
-[[nodiscard]] constexpr auto operator*(const S& scalar, const cartesian_vector<U>& vector)
-{
-  return vector * scalar;
-}
-
-MP_UNITS_EXPORT template<typename T, typename S>
-  requires requires(const T& t, const S& s) { t / s; }
-[[nodiscard]] constexpr auto operator/(const cartesian_vector<T>& vector, const S& scalar)
-{
-  return ::mp_units::cartesian_vector{vector._coordinates_[0] / scalar, vector._coordinates_[1] / scalar,
-                                      vector._coordinates_[2] / scalar};
-}
-
-MP_UNITS_EXPORT template<typename T, std::equality_comparable_with<T> U>
-[[nodiscard]] constexpr bool operator==(const cartesian_vector<T>& lhs, const cartesian_vector<U>& rhs)
-{
-  return lhs._coordinates_[0] == rhs._coordinates_[0] && lhs._coordinates_[1] == rhs._coordinates_[1] &&
-         lhs._coordinates_[2] == rhs._coordinates_[2];
-}
-
-MP_UNITS_EXPORT template<typename T, typename U>
-  requires requires(const T& t, const U& u, decltype(t * u) v) {
-    t * u;
-    v + v;
-  }
-[[nodiscard]] constexpr auto scalar_product(const cartesian_vector<T>& lhs, const cartesian_vector<U>& rhs)
-{
-  return lhs._coordinates_[0] * rhs._coordinates_[0] + lhs._coordinates_[1] * rhs._coordinates_[1] +
-         lhs._coordinates_[2] * rhs._coordinates_[2];
-}
-
-MP_UNITS_EXPORT template<typename T, typename U>
-  requires requires(const T& t, const U& u, decltype(t * u) v) {
-    t * u;
-    v - v;
-  }
-[[nodiscard]] constexpr auto vector_product(const cartesian_vector<T>& lhs, const cartesian_vector<U>& rhs)
-{
-  return ::mp_units::cartesian_vector{
-    lhs._coordinates_[1] * rhs._coordinates_[2] - lhs._coordinates_[2] * rhs._coordinates_[1],
-    lhs._coordinates_[2] * rhs._coordinates_[0] - lhs._coordinates_[0] * rhs._coordinates_[2],
-    lhs._coordinates_[0] * rhs._coordinates_[1] - lhs._coordinates_[1] * rhs._coordinates_[0]};
-}
 
 template<class T>
 inline constexpr bool treat_as_floating_point<cartesian_vector<T>> = treat_as_floating_point<T>;
