@@ -13,9 +13,9 @@
 The table below provides the minimum compiler version required to compile the code using
 a specific C++ feature:
 
-| C++ Feature                   | C++ version | gcc  |   clang    | apple-clang |                    MSVC                    |
-|-------------------------------|:-----------:|:----:|:----------:|:-----------:|:------------------------------------------:|
-| **Minimum support**           |     20      | 12+  | 16+ && !19 |     15+     | 194+ :bug:{ title="BEWARE of MSVC Bugs!" } |
+| C++ Feature                   | C++ version | gcc  |   clang    |  apple-clang   |                    MSVC                    |
+|-------------------------------|:-----------:|:----:|:----------:|:--------------:|:------------------------------------------:|
+| **Minimum support**           |     20      | 12+  | 16+ && !19 | 15-16 && !17.0 | 194+ :bug:{ title="BEWARE of MSVC Bugs!" } |
 | **`std::format`**             |     20      | 13+  |    17+     |     16+     |                    194+                    |
 | **C++ modules**               |     20      | None |    17+     |    None     |                    None                    |
 | **`import std;`**             |     23      | None |    18+     |    None     |                    None                    |
@@ -25,6 +25,12 @@ a specific C++ feature:
 
     Unfortunately, Clang-19 does not build **mp-units** because of an
     [unfixable bug in the compiler](https://github.com/llvm/llvm-project/pull/118288).
+
+??? note "Apple Clang-17.0 unfixable bug"
+
+    Unfortunately, Apple Clang-17.0 (Xcode 16.3, 16.4, 26.0, 26.0.1, 26.1, and 26.2-beta) does not
+    build **mp-units** because it has the same
+    [unfixable bug as Clang-19](https://github.com/llvm/llvm-project/pull/118288).
 
 ??? note "MSVC bugs"
 

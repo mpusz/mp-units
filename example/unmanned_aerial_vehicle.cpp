@@ -74,21 +74,21 @@ constexpr const char* to_text(earth_gravity_model m)
 }
 
 template<earth_gravity_model M>
-[[nodiscard]] consteval bool is_hae(height_above_ellipsoid_t<M>)
+[[nodiscard]] consteval bool is_hae_impl(height_above_ellipsoid_t<M>)
 {
   return true;
 }
-[[nodiscard]] consteval bool is_hae(...) { return false; }
 
-template<class CharT, class Traits, QuantityPoint QP>
-  requires(is_hae(QP::absolute_point_origin))
+template<typename T>
+concept HAEAltitude = QuantityPoint<T> && is_hae_impl(T::absolute_point_origin);
+
+template<class CharT, class Traits, HAEAltitude QP>
 std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os, const QP& a)
 {
   return os << a - a.absolute_point_origin << " HAE(" << to_text(a.absolute_point_origin.egm) << ")";
 }
 
-template<QuantityPoint QP, typename Char>
-  requires(is_hae(QP::absolute_point_origin))
+template<HAEAltitude QP, typename Char>
 struct MP_UNITS_STD_FMT::formatter<QP, Char> : formatter<typename QP::quantity_type, Char> {
   template<typename FormatContext>
   auto format(const QP& a, FormatContext& ctx) const -> decltype(ctx.out())

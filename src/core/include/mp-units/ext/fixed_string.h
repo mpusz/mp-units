@@ -299,8 +299,13 @@ template<std::size_t N>
 struct std::hash<mp_units::fixed_u16string<N>> : std::hash<std::u16string_view> {};
 template<std::size_t N>
 struct std::hash<mp_units::fixed_u32string<N>> : std::hash<std::u32string_view> {};
+
+// NOTE: We use std::basic_string_view<wchar_t> instead of std::wstring_view because LLVM only makes std::wstring_view
+// available when the macro _LIBCPP_HAS_WIDE_CHARACTERS is set to 1. The `wchar_t` type can continue to be used
+// without that macro definition. To avoid requiring an additional macro, we simply use std::basic_string_view<wchar_t>,
+// which is the underlying definition of std::wstring_view.
 template<std::size_t N>
-struct std::hash<mp_units::fixed_wstring<N>> : std::hash<std::wstring_view> {};
+struct std::hash<mp_units::fixed_wstring<N>> : std::hash<std::basic_string_view<wchar_t>> {};
 
 #if MP_UNITS_HOSTED
 // formatting support

@@ -217,13 +217,18 @@ class MPUnitsConan(ConanFile):
         self.tool_requires("cmake/[>=4.2.1 <5]")
         if self._build_all:
             if not self.options.freestanding:
-                self.test_requires("catch2/3.10.0")
+                self.test_requires("catch2/3.11.0")
 
     def validate(self):
         compiler = self.settings.compiler
         if compiler == "clang" and Version(compiler.version).major == 19:
             raise ConanInvalidConfiguration(
                 "clang-19 does not build mp-units because of an unfixable bug in the compiler."
+            )
+        if compiler == "apple-clang" and Version(compiler.version).major == 17:
+            raise ConanInvalidConfiguration(
+                "apple-clang-17 (Xcode 16.3+) does not build mp-units "
+                + "because it has the same unfixable bug as clang-19."
             )
 
         self._check_feature_supported("mp-units", "minimum_support")
@@ -254,6 +259,7 @@ class MPUnitsConan(ConanFile):
         tc.absolute_paths = True  # only needed for CMake CI
         if self._build_all:
             tc.cache_variables["CMAKE_EXPORT_COMPILE_COMMANDS"] = True
+            tc.cache_variables["CMAKE_COMPILE_WARNING_AS_ERROR"] = True
             tc.cache_variables["CMAKE_VERIFY_INTERFACE_HEADER_SETS"] = (
                 not opt.import_std
             )
@@ -341,18 +347,21 @@ class MPUnitsConan(ConanFile):
                 "MP_UNITS_API_NO_CRTP=" + str(int(self.options.no_crtp == True))
             )
             self.cpp_info.components["core"].defines.append(
-                "MP_UNITS_API_STD_FORMAT=" + str(int(self.options.std_format == True))
-            )
-            self.cpp_info.components["core"].defines.append(
                 "MP_UNITS_API_NATURAL_UNITS="
                 + str(int(self.options.natural_units == True))
             )
-            if not self.options.std_format:
-                self.cpp_info.components["core"].requires.append("fmt::fmt")
 
             # handle hosted configuration
-            if not self.options.freestanding:
+            if self.options.freestanding:
+                self.cpp_info.components["core"].defines.append("MP_UNITS_HOSTED=0")
+            else:
                 self.cpp_info.components["core"].defines.append("MP_UNITS_HOSTED=1")
+                if not self.options.std_format:
+                    self.cpp_info.components["core"].requires.append("fmt::fmt")
+                self.cpp_info.components["core"].defines.append(
+                    "MP_UNITS_API_STD_FORMAT="
+                    + str(int(self.options.std_format == True))
+                )
 
             # handle import std
             if self.options.import_std:
