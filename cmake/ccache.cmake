@@ -91,7 +91,7 @@ function(enable_ccache)
         message(STATUS "Enabling ccache")
     endif()
 
-    if(${_enable_ccache_REQUIRED})
+    if(_enable_ccache_REQUIRED)
         set(_error_log_level FATAL_ERROR)
     elseif(NOT _enable_ccache_QUIET)
         set(_error_log_level STATUS)

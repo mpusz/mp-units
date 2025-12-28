@@ -20,18 +20,28 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# find dependencies
+add_library(example_utils-headers INTERFACE)
+target_sources(
+    example_utils-headers
+    INTERFACE
+        FILE_SET
+        HEADERS
+        BASE_DIRS
+        include
+        FILES
+        include/geographic.h
+        include/measurement.h
+        include/ranged_representation.h
+        include/validated_type.h
+)
+target_link_libraries(example_utils-headers INTERFACE mp-units::mp-units)
+
 if(MP_UNITS_BUILD_CXX_MODULES)
     add_library(example_utils INTERFACE)
     target_compile_features(example_utils INTERFACE cxx_std_20)
     target_compile_definitions(example_utils INTERFACE MP_UNITS_MODULES)
-    target_include_directories(example_utils INTERFACE include)
-    target_link_libraries(example_utils INTERFACE mp-units-contracts)
+    target_link_libraries(example_utils INTERFACE example_utils-headers)
 endif()
-
-add_library(example_utils-headers INTERFACE)
-target_include_directories(example_utils-headers INTERFACE include)
-target_link_libraries(example_utils-headers INTERFACE mp-units-contracts)
 
 #
 # add_example(target <depependencies>...)
@@ -57,14 +67,12 @@ endfunction()
 
 add_example(avg_speed)
 add_example(capacitor_time_curve)
-add_example(clcpp_response)
-add_example(conversion_factor)
 add_example(currency)
 add_example(foot_pound_second)
 add_example(glide_computer glide_computer_lib)
 add_example(hello_units)
 add_example(hw_voltage)
-add_example(measurement)
+add_example(measurement example_utils)
 add_example(si_constants)
 add_example(spectroscopy_units)
 add_example(storage_tank)

@@ -190,11 +190,8 @@ public:
     return {representation_values<rep>::max(), reference};
   }
 
-  // construction, assignment, destruction
+  // construction and assignment
   quantity() = default;
-  quantity(const quantity&) = default;
-  quantity(quantity&&) = default;
-  ~quantity() = default;
 
   template<typename FwdValue, Reference R2>
     requires(equivalent(unit, get_unit(R2{}))) && detail::ValuePreservingConstruction<rep, FwdValue>
@@ -233,9 +230,6 @@ public:
       quantity(::mp_units::quantity{quantity_like_traits<Q>::to_numerical_value(q), quantity_like_traits<Q>::reference})
   {
   }
-
-  quantity& operator=(const quantity&) = default;
-  quantity& operator=(quantity&&) = default;
 
   template<typename FwdValue>
     requires detail::DimensionlessOne<reference> && detail::ValuePreservingAssignment<rep, FwdValue>
@@ -658,12 +652,8 @@ public:
 template<Reference R, RepresentationOf<get_quantity_spec(R{})> Value>
 quantity(Value v, R) -> quantity<R{}, Value>;
 
-#if MP_UNITS_COMP_GCC >= 14
-template<detail::SomeRepresentation Value>
-#else
-template<RepresentationOf<get_quantity_spec(one)> Value>
-#endif
-quantity(Value) -> quantity<one, Value>;
+template<Reference auto R = one, RepresentationOf<get_quantity_spec(R)> Value>
+quantity(Value) -> quantity<R, Value>;
 
 template<QuantityLike Q>
 quantity(Q) -> quantity<quantity_like_traits<Q>::reference, typename quantity_like_traits<Q>::rep>;

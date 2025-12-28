@@ -78,7 +78,7 @@ add_mp_units_module(
     MODULE_INTERFACE_UNIT mp-units-core.cpp
 )
 
-if(${MP_UNITS_API_NATURAL_UNITS})
+if(MP_UNITS_API_NATURAL_UNITS)
     target_sources(
         mp-units-core PUBLIC FILE_SET HEADERS BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include FILES
                              include/mp-units/framework/system_reference.h
@@ -161,25 +161,12 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     )
 endif()
 
-# Freestanding
 target_compile_definitions(
-    mp-units-core ${MP_UNITS_TARGET_SCOPE} MP_UNITS_HOSTED=$<NOT:$<BOOL:${MP_UNITS_API_FREESTANDING}>>
+    mp-units-core
+    ${MP_UNITS_TARGET_SCOPE} MP_UNITS_HOSTED=$<NOT:$<BOOL:${MP_UNITS_API_FREESTANDING}>>
+    MP_UNITS_API_NATURAL_UNITS=$<BOOL:${MP_UNITS_API_NATURAL_UNITS}>
+    MP_UNITS_API_THROWING_CONSTRAINTS=$<BOOL:${MP_UNITS_API_THROWING_CONSTRAINTS}>
 )
-
-# Throwing constraints
-if(MP_UNITS_API_THROWING_CONSTRAINTS)
-    target_compile_definitions(
-        mp-units-core ${MP_UNITS_TARGET_SCOPE}
-                      MP_UNITS_API_THROWING_CONSTRAINTS=$<BOOL:${MP_UNITS_API_THROWING_CONSTRAINTS}>
-    )
-endif()
-
-# Natural units support
-if(${MP_UNITS_API_NATURAL_UNITS})
-    target_compile_definitions(
-        mp-units-core ${MP_UNITS_TARGET_SCOPE} MP_UNITS_API_NATURAL_UNITS=$<BOOL:${MP_UNITS_API_NATURAL_UNITS}>
-    )
-endif()
 
 # https://github.com/llvm/llvm-project/issues/131410
 if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 20

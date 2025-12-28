@@ -6,7 +6,12 @@ This page documents the version history and changes for the **mp-units** library
 
 ## mp-units
 
-### 2.5.0 <small>WIP</small> { id="2.5.0" }
+### 2.6.0 <small>TBD</small> { id="2.6.0" }
+
+- (!) feat: `pi` and `π` is now a unit constant
+- (!) refactor: `pi` magnitude constant renamed to `pi_c`
+
+### 2.5.0 <small>December 24, 2025</small> { id="2.5.0" }
 
 - (!) feat: representation concepts improved
 - (!) feat: `representation_of` concept now also accepts a `quantity_spec` and
@@ -35,11 +40,23 @@ This page documents the version history and changes for the **mp-units** library
 - feat: deprecation messages now provide the release version where the
   deprecation happened
 - feat: electromagnetism.h updated to IEC80000-6-2022
-- feat: `ConvertibleWithNumber` introduced to improve convertibility of unit `one`
   with raw numbers
 - feat: `lerp` and `midpoint` for points added
 - feat: `is_value_preserving` customization point added
+- feat: `EQUIV{...}` replaced with `[...]` in the text output of common units
+- feat: `constexpr_format` added
+- feat: `unsatisfied` added and enabled throwing constraints
+- feat: some constraints refactored to throw exceptions with nice error messages
+- feat: explicit constructor now can perform an explicit `quantity_spec` conversion
+- feat: natural units support is now opt-in
+- feat: `value_type_t` is now recursive
+- feat: support for `root` of negative numbers removed
+- feat: old MSVC workarounds disabled for the latest version
+- feat: `invoke_with_prefixed` added to SI
+- feat: `QuantityLike` should not satisfy the `Representation` concept
 - feat(example): `is_vector` specialization no longer needed for `si_constants`
+- feat(example): measurement.h extracted for easier reuse
+- feat(example): `clcpp_response` and `conversion_factor` examples removed
 - (!) refactor: `type_list` moved to implementation details
 - (!) refactor: from now `unit_symbol` and `dimension_symbol` always returns
   `std::string_view`
@@ -53,6 +70,10 @@ This page documents the version history and changes for the **mp-units** library
 - (!) refactor: `scalar` and `complex` characters renamed to `real_scalar` and
   `complex_scalar` respectively + concepts refactoring
 - (!) refactor: `MagConstant` concept renamed to `detail::is_mag_constant` variable trait
+- (!) refactor: `format.h` header file made deprecated
+- (!) refactor: `ostream.h` header file made deprecated
+- (!) refactor: rename `default_denominator` to `default_solidus` in
+  `unit_symbol_solidus` enum
 - refactor: mp_units.core defined in terms of `core.h`
 - refactor: `MP_UNITS_NONCONST_TYPE` introduced to benefit from the C++23 feature
 - refactor: `SymbolicConstant` concept refactored
@@ -88,6 +109,19 @@ This page documents the version history and changes for the **mp-units** library
 - refactor: `visit_format_arg` is deprecated in C++26
 - refactor: deprecated literal operators
 - refactor: constraints refactoring
+- refactor: compund assignment and pre-/post-increment operators are now lvalue-qualified
+  member functions
+- refactor: `ValuePreservingScaling` concepts renamed
+- refactor: `common_type` specializations refactored
+- refactor: `NumberLike` renamed to `DimensionlessOne`
+- refactor: branching on a deprecated C++ feature improved
+- refactor: all CTADs made implicit
+- refactor: `MP_UNITS_REMOVE_CONST` gcc workaround added to `RepresentationOf`
+- refactor: `ReferenceOf` concept simplified
+- refactor: explicitly defaulted special member functions removed
+- refactor(example): slight refactoring of examples while working on their documentation
+- refactor(example): kalman filter examples refactored to better match their
+- refactor(example): `is_hae` function refactored to `HAEAltitude` concept
 - (!) fix: `electric_current_phasor`, `voltage_phasor`, `apparent_power` switched to
   complex character
 - (!) fix: `position_vector` and `displacement` moved to a different place in a tree
@@ -109,6 +143,34 @@ This page documents the version history and changes for the **mp-units** library
 - fix: `mag_constant` workarounds branches for clang fixed
 - fix: checking for clang versions fixed in CMake scripts
 - fix: text stripping in `type_name` fixed
+- fix: make quantity conversion to `Rep` `constexpr`
+  (thanks [@KangarooKoala](https://github.com/KangarooKoala))
+- fix: MSVC compilation fixed
+- fix: `abs` interface and implementation improved
+- fix: unused parameters removed from `scaling_overflows_non_zero_values`
+- fix: invalid precondition check in `root` removed
+- fix: workaround for fmt
+- fix: CTAD issue workaround for MSVC
+- fix: `dynamic_spec_id_handler` fixed for gcc-15
+- fix: MSVC workarounds for `consteval` functions
+- fix: resolve CMake compiler test failure in freestanding CI builds
+       (thanks [@rothmichaels](https://github.com/rothmichaels))
+- fix: msvc empty bases workaround (thanks [@Radnyx](https://github.com/Radnyx))
+- fix: seconds literal has unspecified type and depends on implementation
+       (thanks [@Radnyx](https://github.com/Radnyx))
+- fix: `named_unit` can now be created for `kind_of<dimensionless>`
+- fix: enable runtime usage of inverse function by using compile-time unit extraction
+       (thanks [@rothmichaels](https://github.com/rothmichaels))
+- fix: CTAD for dimensionless quantities fixed
+- fix: concepts tests compilation fixed for `MP_UNITS_API_NATURAL_UNITS` OFF
+- fix: missing natural units support added to `package_info()`
+- fix: freestanding build error in Conan `package_info()`
+       (thanks [@kammce](https://github.com/kammce))
+- fix: replace `wstring_view` with `basic_string_view<wchar_t>`
+       (thanks [@kammce](https://github.com/kammce))
+- Fix destination unit creation in `inverse`
+- fix(docs): typo in a file name fixed
+- fix(example): text formatting fixed for `glide_computer` documentation
 - test: lots of tests for complex quantities
 - test: runtime unit tests refactored to have a bigger granularity (less top level tests)
 - test: _surface tension_ replaced with _entropy_ in an fmt test
@@ -116,9 +178,10 @@ This page documents the version history and changes for the **mp-units** library
 - test: tests for dimensionless quantities static data members
 - test: a few more natural units tests added
 - test: tests to check if `quantity` satisfies `Scalar`
-- test: add static tests for concept `DimensionOf` (thanks
-  [@jvocht](https://github.com/jvocht))
+- test: add static tests for concept `DimensionOf` (thanks [@jvocht](https://github.com/jvocht))
 - test: quantity character concepts tests for quantities added
+- test: duplicated `dimensionless` tests removed
+- test: additional concepts tests for quantity spec added
 - docs: ISQ part 6 released
 - docs: new chapter about our documentation added to the contributing guide
 - docs: directory name updated in the contributing guide
@@ -137,6 +200,31 @@ This page documents the version history and changes for the **mp-units** library
 - docs: "Concepts" chapter updated
 - docs: old customization points removed from the "Character of a Quantity" chapter
 - docs: clang-19 issues mentioned in a compiler support table
+- docs: "Introducing absolute quantities" blog post added
+- docs: relative path removed from the contributing guide
+- docs: examples updated and deprecated tags generation replaced with modern usage
+- docs: compiler explorer links replaced with buttons
+- docs: "Installation and Usage" cleanup
+- docs: "Introduction" chapter improved
+- docs: "Quick Start" Improved
+- docs: "Interface Introduction" improved
+- docs: "Systems of Quantities" chapter improved
+- docs: "Concepts" chapter improved
+- docs: README updated
+- docs: "Install as a Dependency" added to README
+- docs: tutorials section added
+- docs: info about `kind_of<dimensionless>` units added
+- docs: adjust formatting in temperature printing function for better alignment
+- docs: README visually improved
+- docs: 2 new chapters added to README
+- docs: link to mp-units in ConanCenter added to README
+- docs: "Support the Project" added to README
+- docs: enhance testimonials section for clarity and inclusivity
+- docs: clarify flowchart labels for quantity addition and differences
+- docs: CONTRIBUTORS.md added
+- docs: examples reworked
+- docs: "Cheat Sheet" added
+- docs: "Auto-scaling of a quantity" chapter added
 - docs(ref): document most of `mp_units.core` (thanks [@JohelEGP](https://github.com/JohelEGP))
 - build: `CheckCacheVarValues` CMake module file added
 - build: `MP_UNITS_DEV_TIME_TRACE` CMake option added
@@ -145,13 +233,54 @@ This page documents the version history and changes for the **mp-units** library
 - build: clang-20 enabled in CI
 - build: clang-19 support removed from conanfile.py
 - build: clang-20.1 workaround added to `package_info`
-- build: update dependencies to gsl-lite/0.42.0, ms-gsl/4.1.0,
-  fmt/11.1.4, and catch2/3.8.0
+- build: update dependencies to gsl-lite/1.0.1, ms-gsl/4.2.0,
+  fmt/12.1.0, catch2/3.11.0, cmake/4.2.1
 - build: suppress warnings for gcc-12 in conanfile
+- build: switch freestanding CI to clang-20
+- build: gcc installation step is now mandatory for all gcc versions
+- build: `import_std` set to `False` by default
+- build: `wg21-linear_algebra` dependency removed
+- build: `check_libcxx_in_use` improved
+- build: Gitpod support removed
+- build: CodeSpaces support added
+- build: CMake switched to a new gsl-lite target
+- build: clang-21 added to `check_all.sh`
+- build: gcc-15 enabled in `check_all.sh`
+- build: `explicit_this` enabled for AppleClang 17 and MSVC 19.32
+  (thanks [@alex-tee](https://github.com/alex-tee))
+- build: add `build: add INSTALL option to cmake` option to cmake
+  (thanks [@alex-tee](https://github.com/alex-tee))
+- build: projectPrefix CMake variable removed
+- build: `MP_UNITS_BUILD_AS_SYSTEM_HEADERS` removed
+- build: `warnings.cmake` refactored to use `CMAKE_COMPILE_WARNING_AS_ERROR`
+- build: `CMAKE_COMPILE_WARNING_AS_ERROR` set in conanfile
+- build: `PROJECT_IS_TOP_LEVEL` used in `ensure_entry_point`
+- build: Various cleanup (thanks [@HazardyKnusperkeks](https://github.com/HazardyKnusperkeks))
+- build: CMake config file variables handling fixed
+- build: dereferencing CMake variables in `if()` conditions is not needed
+- build: improved setting of `MP_UNITS_BUILD_CXX_MODULES` for `test_package`
+- build: `MP_UNITS_BUILD_CXX_MODULES` will now be always provided by Conan
+- build: CMake CI should run the cmake executable provided by Conan
+- build: C++23 enabled for `test_package` when `import std` is ON
+- build: all `target_compile_definitions` aggregated in one place
 - ci: CI matrix generation added (thanks [@burnpanck](https://github.com/burnpanck))
 - ci: `import_std` now checks if at least C++23 is being used
+- ci: GitHub actions improved
+- ci: dependency review GitHub action added
+- ci: clang-21 support added
+- ci: update dependency review configuration
+- ci: housekeeping after release step fixed in ci-conan
+- ci: the macOS-13 based runner images are retired in GitHub
+- ci: old 'VISUAL' decendant of Conan 1.x removed from CMake CI
 - perf: caching of the results of heavy `consteval` functions execution added
 - perf: `expr_projectable` concept removed to improve compilation performance
+- style: pre-commit tools updated
+- style: markdownlint rules updated
+- style: MD036 added to .markdownlint.json
+- chore: add issue templates for bug reports, documentation issues, and feature requests
+- chore: add usage experience issue template and a chapter in README
+- chore: PR template added
+- chore: FUNDING.yml file added
 
 ### 2.4.0 <small>November 5, 2024</small> { id="2.4.0" }
 

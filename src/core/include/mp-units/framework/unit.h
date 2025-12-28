@@ -658,6 +658,9 @@ inline constexpr struct percent final : named_unit<"%", mag_ratio<1, 100> * one>
 inline constexpr struct per_mille final : named_unit<symbol_text{u8"‰" /* U+2030 PER MILLE SIGN */, "%o"}, mag_ratio<1, 1000> * one> {} per_mille;
 inline constexpr struct parts_per_million final : named_unit<"ppm", mag_ratio<1, 1'000'000> * one> {} parts_per_million;
 inline constexpr auto ppm = parts_per_million;
+// TODO make it a unit constant rather than a named unit when such support will be provided
+inline constexpr struct pi final : named_unit<symbol_text{u8"π" /* U+03C0 GREEK SMALL LETTER PI */, "pi"}, mag<pi_c> * one> {} pi;
+inline constexpr auto π /* U+03C0 GREEK SMALL LETTER PI */ = pi;
 // clang-format on
 
 

@@ -22,8 +22,10 @@
 
 #include <mp-units/compat_macros.h>
 #include <mp-units/systems/isq.h>
-#include <mp-units/systems/natural.h>
 #include <mp-units/systems/si.h>
+#if MP_UNITS_API_NATURAL_UNITS
+#include <mp-units/systems/natural.h>
+#endif
 #if MP_UNITS_HOSTED
 #include <mp-units/cartesian_vector.h>
 #endif
@@ -183,7 +185,9 @@ static_assert(!detail::QuantityKindSpec<int>);
 static_assert(Unit<struct si::metre>);
 static_assert(Unit<MP_UNITS_NONCONST_TYPE(si::kilogram)>);
 static_assert(Unit<si::kilo_<struct si::gram>>);
+#if MP_UNITS_API_NATURAL_UNITS
 static_assert(Unit<struct natural::electronvolt>);
+#endif
 static_assert(Unit<decltype(si::metre / si::second)>);
 static_assert(Unit<decltype(inverse(si::second))>);
 static_assert(Unit<decltype(mag<10> * si::second)>);
@@ -196,9 +200,9 @@ static_assert(Unit<struct one>);
 #if MP_UNITS_API_NATURAL_UNITS
 static_assert(Unit<struct nu::second>);
 static_assert(Unit<decltype(si::metre / nu::second)>);
+static_assert(!Unit<named_unit<"?">>);
 #endif
 static_assert(!Unit<named_unit<"?", kind_of<isq::length>>>);
-static_assert(!Unit<named_unit<"?">>);
 static_assert(!Unit<named_unit<"?", si::metre / si::second>>);
 static_assert(!Unit<named_unit<"?", si::metre, kind_of<isq::length>>>);
 static_assert(!Unit<prefixed_unit<"?", mag<10>, si::second>>);
@@ -210,7 +214,9 @@ static_assert(!Unit<std::chrono::seconds>);
 
 // PrefixableUnit
 static_assert(PrefixableUnit<struct si::metre>);
+#if MP_UNITS_API_NATURAL_UNITS
 static_assert(PrefixableUnit<struct natural::electronvolt>);
+#endif
 static_assert(!PrefixableUnit<MP_UNITS_NONCONST_TYPE(si::kilogram)>);
 static_assert(!PrefixableUnit<si::kilo_<struct si::gram>>);
 static_assert(!PrefixableUnit<decltype(si::metre / si::second)>);
@@ -223,7 +229,9 @@ static_assert(!PrefixableUnit<scaled_unit<mag<10>, struct si::second>>);
 static_assert(!PrefixableUnit<derived_unit<struct si::metre, per<struct si::second>>>);
 static_assert(!PrefixableUnit<struct one>);
 static_assert(!PrefixableUnit<named_unit<"?", kind_of<isq::length>>>);
+#if MP_UNITS_API_NATURAL_UNITS
 static_assert(!PrefixableUnit<named_unit<"?">>);
+#endif
 static_assert(!PrefixableUnit<named_unit<"?", si::metre / si::second>>);
 static_assert(!PrefixableUnit<named_unit<"?", si::metre, kind_of<isq::length>>>);
 static_assert(!PrefixableUnit<prefixed_unit<"?", mag<10>, si::second>>);
@@ -255,9 +263,9 @@ static_assert(
 static_assert(!MP_UNITS_ASSOCIATED_UNIT<decltype(si::metre / nu::second)>);
 static_assert(
   !MP_UNITS_ASSOCIATED_UNIT<decltype(get_common_unit(si::kilo<si::metre> / nu::hour, si::metre / nu::second))>);
+static_assert(!MP_UNITS_ASSOCIATED_UNIT<named_unit<"?">>);
 #endif
 static_assert(!MP_UNITS_ASSOCIATED_UNIT<named_unit<"?", kind_of<isq::length>>>);
-static_assert(!MP_UNITS_ASSOCIATED_UNIT<named_unit<"?">>);
 static_assert(!MP_UNITS_ASSOCIATED_UNIT<named_unit<"?", si::metre / si::second>>);
 static_assert(!MP_UNITS_ASSOCIATED_UNIT<named_unit<"?", si::metre, kind_of<isq::length>>>);
 static_assert(!MP_UNITS_ASSOCIATED_UNIT<prefixed_unit<"?", mag<10>, si::second>>);
@@ -283,7 +291,9 @@ static_assert(UnitOf<MP_UNITS_NONCONST_TYPE(si::radian / si::second), isq::angul
 static_assert(UnitOf<MP_UNITS_NONCONST_TYPE(one / si::second), isq::angular_velocity>);
 static_assert(!UnitOf<struct si::radian, dimensionless>);
 static_assert(!UnitOf<struct si::metre, isq::time>);
+#if MP_UNITS_API_NATURAL_UNITS
 static_assert(!UnitOf<struct natural::electronvolt, isq::energy>);
+#endif
 
 // Reference
 static_assert(Reference<struct si::metre>);
@@ -291,7 +301,9 @@ static_assert(Reference<decltype(si::metre / si::second)>);
 static_assert(Reference<decltype(isq::length[si::metre])>);
 static_assert(Reference<decltype(isq::radius[si::metre])>);
 static_assert(Reference<decltype(isq::radius[si::metre] / isq::time[si::second])>);
+#if MP_UNITS_API_NATURAL_UNITS
 static_assert(!Reference<struct natural::electronvolt>);
+#endif
 static_assert(!Reference<struct isq::length>);
 static_assert(!Reference<kind_of_<struct isq::length>>);
 static_assert(!Reference<struct isq::dim_length>);

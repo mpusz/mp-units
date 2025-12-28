@@ -235,7 +235,7 @@ The following steps may be performed to obtain an official library release:
 
         ```ini
         [requires]
-        mp-units/2.4.0
+        mp-units/2.5.0
 
         [options]
         # The below mp-units options are set to defaults by Conan.
@@ -269,7 +269,7 @@ The following steps may be performed to obtain an official library release:
 
             def requirements(self):
                 self.requires(
-                    "mp-units/2.4.0",
+                    "mp-units/2.5.0",
                     options={
                         # The below mp-units options are set to defaults by Conan.
                         # Uncomment and set to an explicit value to override the defaults.
@@ -352,7 +352,7 @@ with the following differences:
 
         ```ini hl_lines="2"
         [requires]
-        mp-units/2.5.0@mpusz/testing
+        mp-units/2.6.0@mpusz/testing
 
         [options]
         # The below mp-units options are set to defaults by Conan.
@@ -476,7 +476,7 @@ with the following differences:
     ```cmake
     CPMFindPackage(
         NAME mp-units
-        VERSION 2.4.0
+        VERSION 2.5.0
         GIT_TAG 6e06eddf205deaf6c2f2f63500c8c70ec220a99f
         GITHUB_REPOSITORY mpusz/mp-units
         SOURCE_SUBDIR src

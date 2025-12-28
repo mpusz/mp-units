@@ -127,11 +127,6 @@ static_assert(!detail::NamedQuantitySpec<decltype(inverse(time))>);
 static_assert(detail::DerivedQuantitySpec<decltype(inverse(time))>);
 static_assert(!detail::QuantityKindSpec<decltype(inverse(time))>);
 
-static_assert(QuantitySpec<dimensionless_>);
-static_assert(detail::NamedQuantitySpec<dimensionless_>);
-static_assert(!detail::DerivedQuantitySpec<dimensionless_>);
-static_assert(!detail::QuantityKindSpec<dimensionless_>);
-
 static_assert(QuantitySpec<kind_of_<length_>>);
 static_assert(!detail::NamedQuantitySpec<kind_of_<length_>>);
 static_assert(!detail::DerivedQuantitySpec<kind_of_<length_>>);
@@ -147,6 +142,11 @@ static_assert(!detail::NamedQuantitySpec<decltype(inverse(time))>);
 static_assert(detail::DerivedQuantitySpec<decltype(inverse(time))>);
 static_assert(!detail::QuantityKindSpec<decltype(inverse(time))>);
 
+static_assert(QuantitySpec<decltype(length / time)>);
+static_assert(!detail::NamedQuantitySpec<decltype(length / time)>);
+static_assert(detail::DerivedQuantitySpec<decltype(length / time)>);
+static_assert(!detail::QuantityKindSpec<decltype(length / time)>);
+
 static_assert(QuantitySpec<kind_of_<decltype(length / time)>>);
 static_assert(!detail::NamedQuantitySpec<kind_of_<decltype(length / time)>>);
 static_assert(detail::DerivedQuantitySpec<kind_of_<decltype(length / time)>>);
@@ -161,6 +161,16 @@ static_assert(QuantitySpec<decltype(kind_of<length> * kind_of<time>)>);
 static_assert(!detail::NamedQuantitySpec<decltype(kind_of<length> * kind_of<time>)>);
 static_assert(detail::DerivedQuantitySpec<decltype(kind_of<length> * kind_of<time>)>);
 static_assert(detail::QuantityKindSpec<decltype(kind_of<length> * kind_of<time>)>);
+
+static_assert(QuantitySpec<decltype(kind_of<length> * time)>);
+static_assert(!detail::NamedQuantitySpec<decltype(kind_of<length> * time)>);
+static_assert(detail::DerivedQuantitySpec<decltype(kind_of<length> * time)>);
+static_assert(!detail::QuantityKindSpec<decltype(kind_of<length> * time)>);
+
+static_assert(QuantitySpec<decltype(length * kind_of<time>)>);
+static_assert(!detail::NamedQuantitySpec<decltype(length * kind_of<time>)>);
+static_assert(detail::DerivedQuantitySpec<decltype(length * kind_of<time>)>);
+static_assert(!detail::QuantityKindSpec<decltype(length * kind_of<time>)>);
 
 // dimensionless
 static_assert(QuantitySpec<dimensionless_>);

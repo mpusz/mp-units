@@ -43,10 +43,6 @@ template<typename T>
 constexpr bool is_derived_from_specialization_of_quantity =
   requires(T* type) { to_base_specialization_of_quantity(type); };
 
-template<typename T>
-  requires is_derived_from_specialization_of_quantity<T>
-constexpr bool is_quantity<T> = true;
-
 }  // namespace detail
 
 /**
@@ -90,5 +86,13 @@ MP_UNITS_EXPORT template<typename T>
 concept QuantityLike = !Quantity<T> && detail::QuantityLikeImpl<T, quantity_like_traits> && requires {
   typename quantity<quantity_like_traits<T>::reference, typename quantity_like_traits<T>::rep>;
 };
+
+namespace detail {
+
+template<typename T>
+  requires Quantity<T> || QuantityLike<T>
+constexpr bool is_quantity_like<T> = true;
+
+}
 
 }  // namespace mp_units

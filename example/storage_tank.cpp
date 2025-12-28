@@ -20,6 +20,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// !!! Before you commit any changes to this file please make sure to check if it !!!
+// !!! renders correctly in the documentation "Examples" section.                 !!!
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 #include <mp-units/compat_macros.h>
 #include <mp-units/ext/format.h>
 #include <cassert>
@@ -92,7 +97,7 @@ public:
 class CylindricalStorageTank : public StorageTank {
 public:
   constexpr CylindricalStorageTank(const quantity<isq::radius[m]>& radius, const quantity<isq::height[m]>& height) :
-      StorageTank(quantity_cast<horizontal_area>(std::numbers::pi * pow<2>(radius)), height)
+      StorageTank(quantity_cast<horizontal_area>(pow<2>(radius) * π), height)
   {
   }
 };

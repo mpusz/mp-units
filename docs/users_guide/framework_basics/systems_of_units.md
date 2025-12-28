@@ -169,6 +169,86 @@ template<PrefixableUnit U> struct yobi_ : prefixed_unit<"Yi", mag_power<2, 80>, 
 template<PrefixableUnit auto U> constexpr yobi_<decltype(U)> yobi;
 ```
 
+### Auto-scaling of a quantity
+
+When displaying quantities with values that span many orders of magnitude, manually selecting
+the appropriate prefix can be tedious and error-prone. The **mp-units** library provides the
+`invoke_with_prefixed()` utility function that automatically scales a quantity to use
+the most appropriate SI prefix based on the magnitude of its value.
+
+#### Basic Usage
+
+The function takes a callable (like a lambda), a quantity to scale, and a prefixable unit,
+then invokes the callable with the quantity converted to the most appropriate prefixed version
+of that unit:
+
+```cpp
+quantity voltage = 0.001'234 * V;
+si::invoke_with_prefixed([](auto q) { std::cout << q << '\n'; }, voltage, V);
+// Prints: 1.234 mV
+```
+
+The prefix is selected automatically to ensure the value has at least one digit in the
+integral part, making it easier to read.
+
+#### Prefix Selection Modes
+
+The function supports two prefix selection modes via the `prefix_range` parameter:
+
+- **`prefix_range::engineering`** (default): Selects only engineering prefixes (powers of 1000:
+  kilo, mega, milli, micro, etc.), resulting in values in the range [1.0, 1000)
+- **`prefix_range::full`**: Selects from all SI prefixes including intermediate ones (deca, hecto,
+  deci, centi), often resulting in values in the range [1.0, 10.0)
+
+```cpp
+quantity length = 456 * m;
+si::invoke_with_prefixed([](auto q) { std::cout << q << '\n'; }, length, m, si::prefix_range::engineering);
+// Prints: 456 m
+
+si::invoke_with_prefixed([](auto q) { std::cout << q << '\n'; }, length, m, si::prefix_range::full);
+// Prints: 4.56 hm
+```
+
+#### Practical Example: Capacitor Discharge
+
+A real-world example from [capacitor_time_curve.cpp](../../examples/capacitor_time_curve.md)
+demonstrates automatic prefix selection for displaying voltage values that decay exponentially:
+
+```cpp
+for (auto tt = 0 * ms; tt <= 50 * ms; ++tt) {
+  const QuantityOf<isq::voltage> auto Vt = V0 * exp(-tt / (RR * CC));
+  std::cout << "- at " << tt << " voltage is ";
+  si::invoke_with_prefixed([](auto q) { std::cout << q; }, Vt, V);
+  std::cout << "\n";
+}
+```
+
+This automatically transitions between appropriate prefixes as the voltage decays:
+
+```text
+- at 0 ms voltage is 5.000 V
+- at 4 ms voltage is 817.638 mV
+- at 19 ms voltage is 919.446 µV
+- at 35 ms voltage is 657.491 nV
+- at 50 ms voltage is 739.358 pV
+```
+
+Without automatic prefix selection, the output would require manual unit conversions or display
+values like `0.000000000739358 V`, which are harder to read and interpret.
+
+#### Return Value
+
+The function returns whatever the callable returns, allowing flexible usage:
+
+```cpp
+// Use it just for output
+si::invoke_with_prefixed([](auto q) { std::cout << q << '\n'; }, voltage, V);
+
+// Use it to get a formatted string
+auto str = si::invoke_with_prefixed([](auto q) { return std::format("{}", q); }, voltage, V);
+```
+
+
 ## Scaled units
 
 In the [SI](../../appendix/glossary.md#si), all units are either base or derived units or prefixed
@@ -197,12 +277,13 @@ For some units, a magnitude might also be irrational. The best example here is a
 which is defined using a floating-point magnitude having a factor of the number π (Pi):
 
 ```cpp
-inline constexpr struct pi final : mag_constant<symbol_text{u8"π", "pi"}, std::numbers::pi_v<long double>> {} pi;
+inline constexpr struct pi_c final : mag_constant<symbol_text{u8"π", "pi"}, std::numbers::pi_v<long double>> {} pi_c;
+inline constexpr struct pi final : named_unit<symbol_text{u8"π", "pi"}, mag<pi_c> * one> {} pi;
 inline constexpr auto π = pi;
 ```
 
 ```cpp
-inline constexpr struct degree final : named_unit<{u8"°", "deg"}, mag<π> / mag<180> * si::radian> {} degree;
+inline constexpr struct degree final : named_unit<{u8"°", "deg"}, mag_ratio<1, 180> * π * si::radian> {} degree;
 ```
 
 

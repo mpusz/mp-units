@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 cmake_minimum_required(VERSION 3.25)
-project(mp-units VERSION 2.5.0 LANGUAGES CXX)
+project(mp-units VERSION 2.6.0 LANGUAGES CXX)
 
 set(projectPrefix MP_UNITS_)
 
@@ -138,14 +138,15 @@ add_mp_units_module(mp-units mp-units DEPENDENCIES mp-units::core mp-units::syst
 if(MP_UNITS_BUILD_INSTALL)
     # local build
     export(EXPORT mp-unitsTargets NAMESPACE mp-units::)
-    configure_file("mp-unitsConfig.cmake" "." COPYONLY)
+    configure_file(mp-unitsConfig.cmake.in mp-unitsConfig.cmake @ONLY)
     include(CMakePackageConfigHelpers)
     write_basic_package_version_file(mp-unitsConfigVersion.cmake COMPATIBILITY SameMajorVersion)
 
     # installation
     install(EXPORT mp-unitsTargets DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/mp-units NAMESPACE mp-units::)
 
-    install(FILES mp-unitsConfig.cmake ${CMAKE_CURRENT_BINARY_DIR}/mp-unitsConfigVersion.cmake
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/mp-unitsConfig.cmake
+                  ${CMAKE_CURRENT_BINARY_DIR}/mp-unitsConfigVersion.cmake
             DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/mp-units
     )
 endif()

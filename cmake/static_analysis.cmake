@@ -45,7 +45,7 @@ function(enable_clang_tidy)
         message(STATUS "Enabling clang-tidy${log_postfix}")
     endif()
 
-    if(${_enable_clang_tidy_REQUIRED})
+    if(_enable_clang_tidy_REQUIRED)
         set(_error_log_level FATAL_ERROR)
     elseif(NOT _enable_clang_tidy_QUIET)
         set(_error_log_level STATUS)
