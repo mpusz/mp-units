@@ -6,6 +6,11 @@ This page documents the version history and changes for the **mp-units** library
 
 ## mp-units
 
+### 2.6.0 <small>TBD</small> { id="2.6.0" }
+
+- (!) feat: `pi` and `π` is now a unit constant
+- (!) refactor: `pi` magnitude constant renamed to `pi_c`
+
 ### 2.5.0 <small>December 24, 2025</small> { id="2.5.0" }
 
 - (!) feat: representation concepts improved

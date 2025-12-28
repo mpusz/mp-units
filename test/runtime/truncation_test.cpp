@@ -41,11 +41,9 @@ using namespace mp_units;
 using namespace mp_units::angular;
 using namespace mp_units::angular::unit_symbols;
 
-inline constexpr struct half_revolution final : named_unit<"hrev", mag<π> * radian> {
+inline constexpr struct half_revolution final : named_unit<"hrev", π * radian> {
 } half_revolution;
 inline constexpr auto hrev = half_revolution;
-
-// constexpr auto revb6 = mag_ratio<1,3> * mag<π> * rad;
 
 TEST_CASE("value_cast should not truncate for valid inputs", "[value_cast]")
 {

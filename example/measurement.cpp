@@ -64,14 +64,14 @@ void example()
   std::cout << "Scalar multiplication:  d = 10 * " << length << " = " << 10 * length << '\n';
 
   const auto radius = measurement{5.0, 0.1} * m;
-  const auto circumference = radius * (mag<2> * mag<π> * one);
-  const auto area = pow<2>(radius) * (mag<π> * one);
+  const auto circumference = radius * (mag<2> * π);
+  const auto area = pow<2>(radius) * π;
   std::cout << "Radius:                 r = " << radius << '\n';
   std::cout << "Circular circumference: 2πr = " << circumference << " = " << circumference.in(m) << '\n';
   std::cout << "Circular area:          πr² = " << area << " = " << area.in(m2) << '\n';
 
-  const auto area_measured = measurement{25.0, 1.0} * (mag<π> * m2);
-  const auto radius_from_area = sqrt(area_measured / (mag<π> * one));
+  const auto area_measured = measurement{25.0, 1.0} * π * m2;
+  const auto radius_from_area = sqrt(area_measured / π);
   std::cout << "Radius from area:       A = " << area_measured << " -> r = √(A/π) = " << radius_from_area << '\n';
 }
 

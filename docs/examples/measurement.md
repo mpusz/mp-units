@@ -78,7 +78,7 @@ This showcases:
 2. **Kinematic calculations** - Multiplying _acceleration_ by _time_ with automatic unit
    conversions
 3. **Scalar multiplication** - Exact scaling preserves relative uncertainty
-4. **Faster-than-lightspeed constants** - Using `mag<π>` keeps π as an exact symbolic value,
+4. **Faster-than-lightspeed constants** - Using `π` keeps pi as an exact symbolic value,
    not a numeric approximation
 5. **Geometric calculations** - Computing _circumference_ and _area_ where π contributes
    zero uncertainty
@@ -93,8 +93,8 @@ Velocity calculation:   V = 9.8 ± 0.1 m/s² * 1.2 ± 0.1 s = 11.76 ± 0.98732 m
 Scalar multiplication:  d = 10 * 123 ± 1 m = 1230 ± 10 m
 Radius:                 r = 5 ± 0.1 m
 Circular circumference: 2πr = 5 ± 0.1 (2 π) m = 31.4159 ± 0.628319 m
-Circular area:          πr² = 25 ± 1 (π) m² = 78.5398 ± 3.14159 m²
-Radius from area:       A = 25 ± 1 (π m²) -> r = √(A/π) = 5 ± 0.1 m
+Circular area:          πr² = 25 ± 1 π m² = 78.5398 ± 3.14159 m²
+Radius from area:       A = 25 ± 1 π m² -> r = √(A/π) = 5 ± 0.1 m
 ```
 
 ### Uncertainty Propagation Analysis
