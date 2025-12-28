@@ -284,7 +284,7 @@ Let's see another example:
         public:
           constexpr CylindricalStorageTank(const quantity<si::metre>& radius,
                                            const quantity<si::metre>& height) :
-            StorageTank(std::numbers::pi * pow<2>(radius), height)
+            StorageTank(pow<2>(radius) * π, height)
           {
           }
         };
@@ -341,8 +341,7 @@ Let's see another example:
         public:
           constexpr CylindricalStorageTank(const quantity<isq::radius[si::metre]>& radius,
                                            const quantity<isq::height[si::metre]>& height) :
-            StorageTank(quantity_cast<horizontal_area>(std::numbers::pi * pow<2>(radius)),
-                        height)
+            StorageTank(quantity_cast<horizontal_area>(pow<2>(radius) * π), height)
           {
           }
         };
@@ -395,7 +394,7 @@ Let's see another example:
         public:
           constexpr CylindricalStorageTank(const quantity<si::metre>& radius,
                                            const quantity<si::metre>& height) :
-            StorageTank(std::numbers::pi * pow<2>(radius), height)
+            StorageTank(pow<2>(radius) * π, height)
           {
           }
         };
@@ -454,8 +453,7 @@ Let's see another example:
         public:
           constexpr CylindricalStorageTank(const quantity<isq::radius[si::metre]>& radius,
                                            const quantity<isq::height[si::metre]>& height) :
-            StorageTank(quantity_cast<horizontal_area>(std::numbers::pi * pow<2>(radius)),
-                        height)
+            StorageTank(quantity_cast<horizontal_area>(pow<2>(radius) * π), height)
           {
           }
         };
@@ -565,8 +563,7 @@ class CylindricalStorageTank : public StorageTank {
 public:
   constexpr CylindricalStorageTank(const quantity<isq::radius[m]>& radius,
                                    const quantity<isq::height[m]>& height) :
-    StorageTank(quantity_cast<horizontal_area>(std::numbers::pi * pow<2>(radius)),
-                height)
+    StorageTank(quantity_cast<horizontal_area>(pow<2>(radius) * π), height)
   {
   }
 };

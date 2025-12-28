@@ -286,7 +286,7 @@ constexpr Unit auto m3 = cubic(si::metre);
 constexpr Unit auto mps = m / s;
 
 // Constants as a unit
-constexpr Unit auto two_pi = mag<2> * mag<pi> * one;
+constexpr Unit auto two_pi = mag<2> * π;
 ```
 
 1. Non-SI unit accepted for use with SI

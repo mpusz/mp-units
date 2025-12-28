@@ -140,7 +140,7 @@ For more, see the [official documentation](https://mpusz.github.io/mp-units) and
     In case you would like to upload **mp-units** package to the Conan server, do the following:
 
     ```shell
-    conan upload -r <remote-name> --all mp-units/2.4.0@<user>/<channel>
+    conan upload -r <remote-name> --all mp-units/2.5.0@<user>/<channel>
     ```
 
 

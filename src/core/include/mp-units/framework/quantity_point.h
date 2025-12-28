@@ -209,11 +209,8 @@ public:
     return {quantity_type::max(), PO};
   }
 
-  // construction, assignment, destruction
+  // construction and assignment
   quantity_point() = default;
-  quantity_point(const quantity_point&) = default;
-  quantity_point(quantity_point&&) = default;
-  ~quantity_point() = default;
 
   template<typename FwdQ, QuantityOf<quantity_spec> Q = std::remove_cvref_t<FwdQ>>
     requires std::constructible_from<quantity_type, FwdQ> && (point_origin == default_point_origin(R))
@@ -264,9 +261,6 @@ public:
                                                         get_unit(quantity_point_like_traits<QP>::reference))
   {
   }
-
-  quantity_point& operator=(const quantity_point&) = default;
-  quantity_point& operator=(quantity_point&&) = default;
 
   template<detail::SameAbsolutePointOriginAs<absolute_point_origin> NewPO>
   [[nodiscard]] constexpr QuantityPointOf<(NewPO{})> auto point_for(NewPO new_origin) const

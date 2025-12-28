@@ -97,7 +97,7 @@ public:
 class CylindricalStorageTank : public StorageTank {
 public:
   constexpr CylindricalStorageTank(const quantity<isq::radius[m]>& radius, const quantity<isq::height[m]>& height) :
-      StorageTank(quantity_cast<horizontal_area>(std::numbers::pi * pow<2>(radius)), height)
+      StorageTank(quantity_cast<horizontal_area>(pow<2>(radius) * π), height)
   {
   }
 };

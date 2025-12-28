@@ -135,11 +135,6 @@ public:
   T _coordinates_[3];
   using value_type = T;
 
-  cartesian_vector(const cartesian_vector&) = default;
-  cartesian_vector(cartesian_vector&&) = default;
-  cartesian_vector& operator=(const cartesian_vector&) = default;
-  cartesian_vector& operator=(cartesian_vector&&) = default;
-
   template<typename... Args>
     requires(... && std::constructible_from<T, Args>)
   constexpr explicit(!(... && std::convertible_to<Args, T>)) cartesian_vector(Args&&... args) :

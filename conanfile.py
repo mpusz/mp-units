@@ -217,7 +217,7 @@ class MPUnitsConan(ConanFile):
         self.tool_requires("cmake/[>=4.2.1 <5]")
         if self._build_all:
             if not self.options.freestanding:
-                self.test_requires("catch2/3.10.0")
+                self.test_requires("catch2/3.11.0")
 
     def validate(self):
         compiler = self.settings.compiler
@@ -227,7 +227,8 @@ class MPUnitsConan(ConanFile):
             )
         if compiler == "apple-clang" and Version(compiler.version).major == 17:
             raise ConanInvalidConfiguration(
-                "apple-clang-17 (Xcode 16.3+) does not build mp-units because it has the same unfixable bug as clang-19."
+                "apple-clang-17 (Xcode 16.3+) does not build mp-units "
+                + "because it has the same unfixable bug as clang-19."
             )
 
         self._check_feature_supported("mp-units", "minimum_support")
@@ -258,6 +259,7 @@ class MPUnitsConan(ConanFile):
         tc.absolute_paths = True  # only needed for CMake CI
         if self._build_all:
             tc.cache_variables["CMAKE_EXPORT_COMPILE_COMMANDS"] = True
+            tc.cache_variables["CMAKE_COMPILE_WARNING_AS_ERROR"] = True
             tc.cache_variables["CMAKE_VERIFY_INTERFACE_HEADER_SETS"] = (
                 not opt.import_std
             )

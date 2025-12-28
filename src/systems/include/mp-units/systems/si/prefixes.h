@@ -128,8 +128,8 @@ template<Quantity Q, std::invocable<Q> Func, PrefixableUnit U, auto Character = 
              requires requires { log10(v); } || requires { std::log10(v); };
              requires requires { floor(v); } || requires { std::floor(v); };
            }
-decltype(auto) invoke_with_prefixed(Func func, Q q, U u, prefix_range range = prefix_range::engineering,
-                                    int min_integral_digits = 1)
+constexpr decltype(auto) invoke_with_prefixed(Func func, Q q, U u, prefix_range range = prefix_range::engineering,
+                                              int min_integral_digits = 1)
 {
   if (is_eq_zero(q)) return func(q.in(u));
 

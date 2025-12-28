@@ -63,7 +63,7 @@ inline constexpr struct cow_ final : named_unit<"cow", kind_of<dimensionless>> {
 
 // derived named units
 inline constexpr struct radian_ final : named_unit<"rad", metre / metre, kind_of<isq::angular_measure>> {} radian;
-inline constexpr struct revolution_ final : named_unit<"rev", mag<2> * mag<π> * radian> {} revolution;
+inline constexpr struct revolution_ final : named_unit<"rev", mag<2> * π * radian> {} revolution;
 inline constexpr struct steradian_ final : named_unit<"sr", square(metre) / square(metre), kind_of<isq::solid_angular_measure>> {} steradian;
 inline constexpr struct hertz_ final : named_unit<"Hz", inverse(second), kind_of<isq::frequency>> {} hertz;
 inline constexpr struct becquerel_ final : named_unit<"Bq", inverse(second), kind_of<isq::activity>> {} becquerel;
@@ -76,7 +76,7 @@ inline constexpr struct degree_Fahrenheit_ final : named_unit<symbol_text{u8"℉
 
 inline constexpr struct minute_ final : named_unit<"min", mag<60> * second> {} minute;
 inline constexpr struct hour_ final : named_unit<"h", mag<60> * minute> {} hour;
-inline constexpr struct degree_ final : named_unit<symbol_text{u8"°", "deg"}, mag<π> / mag<180> * radian> {} degree;
+inline constexpr struct degree_ final : named_unit<symbol_text{u8"°", "deg"}, mag_ratio<1, 180> * π * radian> {} degree;
 
 inline constexpr struct yard_ final : named_unit<"yd", mag_ratio<9'144, 10'000> * metre> {} yard;
 inline constexpr struct mile_ final : named_unit<"mi", mag<1760> * yard> {} mile;
@@ -143,7 +143,7 @@ static_assert(get_canonical_unit(radian).mag == mag<1>);
 
 static_assert(is_of_type<degree, degree_>);
 static_assert(is_of_type<get_canonical_unit(degree).reference_unit, one_>);
-static_assert(get_canonical_unit(degree).mag == mag<π> / mag<180>);
+static_assert(get_canonical_unit(degree).mag == mag<pi_c> / mag<180>);
 static_assert(radian != degree);
 static_assert(radian != one);
 
@@ -457,6 +457,10 @@ static_assert(equivalent(mag<1000> * metre, kilometre));
 
 static_assert(mag<60> * metre / second != metre / (mag_ratio<1, 60> * second));
 static_assert(equivalent(mag<60> * metre / second, metre / (mag_ratio<1, 60> * second)));
+
+// static_assert(mag<pi_c> * one * metre == mag<pi_c> * metre);
+// static_assert(mag<pi_c> * metre / (mag<pi_c> * one) == metre);
+// static_assert(mag<pi_c> * one / (mag<pi_c> * metre) == one / metre);
 
 static_assert(metre != kilometre);
 static_assert(mag<100> * metre != kilometre);
