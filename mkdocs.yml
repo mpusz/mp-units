@@ -171,6 +171,12 @@ nav:
           - Interoperability with Other Libraries: users_guide/use_cases/interoperability_with_other_libraries.md
           - Extending the Library: users_guide/use_cases/extending_the_library.md
           - Wide Compatibility: users_guide/use_cases/wide_compatibility.md
+      - Migration:
+          - Overview: users_guide/migration/index.md
+          - From Boost.Units: users_guide/migration/from_boost_units.md
+          - From nholthaus/units: users_guide/migration/from_nholthaus_units.md
+          - From std::chrono: users_guide/migration/from_std_chrono.md
+          - Version Upgrades: users_guide/migration/version_upgrades.md
       - Appendix:
           - Glossary: appendix/glossary.md
           - References: appendix/references.md
@@ -183,8 +189,8 @@ nav:
       - "Tutorial 4: Working with Temperatures": tutorials/tutorial_4.md
       - "Tutorial 5: Affine Spaces and Reference Origins": tutorials/tutorial_5.md
       - "Tutorial 6: Interop with std::chrono": tutorials/tutorial_6.md
-      - "Tutorial 7: Typed Quantities of the Same Kind": tutorials/tutorial_7.md
-      - "Tutorial 8: Custom Units for Dimensionless Counters": tutorials/tutorial_8.md
+      - "Tutorial 7: Custom Units for Dimensionless Counters": tutorials/tutorial_7.md
+      - "Tutorial 8: Typed Quantities of the Same Kind": tutorials/tutorial_8.md
   - Examples:
       - Overview: examples/index.md
       - Beginner:

@@ -22,5 +22,5 @@ practical, type-safe patterns will help you apply **mp-units** in real projects.
 4. [Working with Temperatures](tutorial_4.md)
 5. [Affine Spaces and Reference Origins](tutorial_5.md)
 6. [Interop with `std::chrono`](tutorial_6.md)
-7. [Typed Quantities of the Same Kind](tutorial_7.md)
-8. [Custom Units for Dimensionless Counters](tutorial_8.md)
+7. [Custom Units for Dimensionless Counters](tutorial_7.md)
+8. [Typed Quantities of the Same Kind](tutorial_8.md)

@@ -1,132 +1,146 @@
-# Tutorial 8: Custom Units for Dimensionless Counters
 
-This tutorial demonstrates how to use **mp-units** to create strongly-typed wrappers for
-common dimensionless counters in business and logistics, such as units and cartons.
-These are not related to physics, but benefit from type safety and automatic conversions.
+# Tutorial 8: Typed Quantities of the Same Kind
 
-## Scenario
+## Introduction
 
-A small electronics factory produces light bulbs. The production line outputs 3 units every
-minute, operates 14 hours per day, 5 days per week. Products are packed into cartons
-(1 carton = 12 units). For shipping, each truck can carry a fixed number of cartons.
+When working with physical quantities, it's common to encounter values with the same unit
+and dimension but different meanings. For example, in route planning for oversized vehicles,
+you may need to specify the cargo's _height_, _width_, and required _turn radius_—all
+measured in meters. Accidentally swapping these arguments can lead to incorrect or unsafe
+results.
+
+This tutorial introduces the concept of typed quantities to prevent such mistakes and make
+APIs self-documenting and robust.
+
+## Problem statement
+
+Suppose you are planning a route for a truck carrying a large electric turbine fan.
+The route planner must query a road database to find a path where:
+
+- The cargo's **_height_** can pass under all bridges and overpasses.
+- The cargo's **_width_** fits through all tunnels and narrow sections.
+- The truck's **_turn radius_** is accommodated at all intersections and curves.
+
+All three are _lengths_, but their roles are distinct and must not be confused.
 
 ## Your task
 
-1. Define custom dimensionless units for `unit` and `carton` with fixed
-   compile-time scaling (1 carton = 12 units).
-2. Given:
-    - Production rate: `3 * unit / min`
-    - Working hours per day: `14 * h`
-    - Working days per week: `5`
-    - Truck capacity: `60 * carton / truck`
-3. Calculate:
-    - Total weekly production in units and cartons
-    - Number of cartons needed for weekly production (every carton should be full of goods)
-    - Number of trucks required for shipment
-4. Use strongly-typed quantities and automatic conversions for all calculations.
-   Show how type safety prevents scaling errors.
+1. Based on the graph in the
+    [System of quantities is not only about kinds](../users_guide/framework_basics/systems_of_quantities.md#system-of-quantities-is-not-only-about-kinds)
+    chapter, refactor the `find_route` function and its usage to use semantic wrappers
+    (typed quantities) for each argument, so that accidental swaps are caught at compile
+    time. Make sure to update the return type as well.
+2. You do not need to introduce a typed quantity for every physical value—use them where
+   confusion is possible (e.g., _length_), and keep others simple (e.g., _duration_).
+3. Check how this approach prevents mistakes and clarifies the API.
+4. Try to pass `turn_radius` argument to `width` function parameter and vice-versa.
+   Analyze the difference and propose a solution to prevent this issue.
 
 ```cpp
 // ce-embed height=650 compiler=clang2110 flags="-std=c++23 -stdlib=libc++ -O3" mp-units=trunk
-#include <mp-units/core.h>
 #include <mp-units/systems/si.h>
 #include <iostream>
+#include <optional>
+#include <utility>
 
-namespace electronics {
+using namespace mp_units;
+using namespace mp_units::si::unit_symbols;
 
-// TODO: replace with strongly typed units
-constexpr int unit = 1;
-constexpr int carton = 12 * unit;
-constexpr int truck = 1;
-
+std::optional<std::pair<quantity<km>, quantity<min>>> find_route(quantity<m> height,
+                                                                 quantity<m> width,
+                                                                 quantity<m> turn_radius)
+{
+  std::cout << "Looking for a route that will satisfy the following constraints:\n"
+            << "- height: " << height << "\n"
+            << "- width: " << width << "\n"
+            << "- turn_radius: " << turn_radius << "\n";
+  // very simplified for the sake of this tutorial ;-)
+  if (height < 4.8 * m && width < 3.7 * m && turn_radius < 46 * m)
+    return std::pair(342 * km, 286 * min);
+  else
+    return std::nullopt;
 }
 
 int main()
 {
-  using namespace electronics;
-  using namespace mp_units;
-  using namespace mp_units::si::unit_symbols;
-
-  quantity production_rate = 3. * unit / min;
-  quantity hours_per_day = 14 * h;
-  quantity days_per_week = 5;
-  quantity truck_capacity = 60 * carton / truck;
-
-  quantity weekly_production = production_rate * hours_per_day * days_per_week;
-
-  std::cout << "Weekly production:\n"
-            // TODO: use correct units below
-            << "- " << weekly_production.numerical_value_in(one) << " unit\n"
-            << "- " << weekly_production.numerical_value_in(one) / carton << " carton\n";
-
-  // TODO: use mp-units math functions instead
-  quantity cartons_needed = std::floor((weekly_production / carton).numerical_value_in(one));
-  std::cout << "Cartons needed for packaging: " << cartons_needed << "\n";
-
-  quantity trucks_needed = std::ceil((weekly_production / truck_capacity).numerical_value_in(one));
-  std::cout << "Trucks needed for shipment: " << trucks_needed << "\n";
-
-  // TODO: the below should not compile
-  quantity bad1 = 1 * unit + 1;
-  quantity bad2 = 1 * unit + 1 * truck;
+  quantity height = 4.1 * m;
+  quantity width = 3.2 * m;
+  quantity turn_radius = 42 * m;
+  auto res = find_route(height, width, turn_radius);
+  if (res) {
+    auto [distance, duration] = *res;
+    std::cout << "Route found:\n"
+              << "- distance: " << distance << "\n"
+              << "- duration: " << duration << "\n";
+  }
+  else {
+    std::cout << "Route not found :-(\n";
+  }
 }
 ```
 
 ??? "Solution"
 
     ```cpp
-    #include <mp-units/core.h>
     #include <mp-units/systems/si.h>
     #include <iostream>
+    #include <optional>
+    #include <utility>
 
-    namespace electronics {
+    using namespace mp_units;
+    using namespace mp_units::si::unit_symbols;
 
-    inline constexpr struct unit final : mp_units::named_unit<"unit", mp_units::kind_of<mp_units::dimensionless>> {} unit;
-    inline constexpr struct carton final : mp_units::named_unit<"carton", mp_units::mag<12> * unit> {} carton;
-    inline constexpr struct truck final : mp_units::named_unit<"truck", mp_units::kind_of<mp_units::dimensionless>> {} truck;
+    inline constexpr struct payload_width final : quantity_spec<isq::width> {} payload_width;
 
+    std::optional<std::pair<quantity<isq::distance[km]>, quantity<min>>> find_route(quantity<isq::height[m]> height,
+                                                                                    quantity<payload_width[m]> width,
+                                                                                    quantity<isq::radius[m]> turn_radius)
+    {
+      std::cout << "Looking for a route that will satisfy the following constraints:\n"
+                << "- height: " << height << "\n"
+                << "- width: " << width << "\n"
+                << "- turn_radius: " << turn_radius << "\n";
+      // very simplified for the sake of this tutorial ;-)
+      if (height < 4.8 * m && width < 3.7 * m && turn_radius < 46 * m)
+        return std::pair(342 * km, 286 * min);
+      else
+        return std::nullopt;
     }
 
     int main()
     {
-      using namespace electronics;
-      using namespace mp_units;
-      using namespace mp_units::si::unit_symbols;
-
-      quantity production_rate = 3 * unit / min;
-      quantity hours_per_day = 14 * h;
-      quantity days_per_week = 5;
-      quantity truck_capacity = 60 * carton / truck;
-
-      quantity weekly_production = production_rate * hours_per_day * days_per_week;
-
-      std::cout << "Weekly production:\n"
-                << "- " << weekly_production.in(unit) << "\n"
-                << "- " << weekly_production.in(carton) << "\n";
-
-      quantity cartons_needed = floor<carton>(weekly_production);
-      std::cout << "Cartons needed for packaging: " << cartons_needed << "\n";
-
-      quantity trucks_needed = ceil<truck>(weekly_production / truck_capacity);
-      std::cout << "Trucks needed for shipment: " << trucks_needed << "\n";
-
-      // quantity bad1 = 1 * unit + 1;          // does not compile
-      // quantity bad2 = 1 * unit + 1 * truck;  // does not compile
+      quantity height = isq::height(4.1 * m);
+      quantity width = payload_width(3.2 * m);
+      quantity turn_radius = isq::radius(42 * m);
+      auto res = find_route(height, width, turn_radius);
+      if (res) {
+        auto [distance, duration] = *res;
+        std::cout << "Route found:\n"
+                  << "- distance: " << distance << "\n"
+                  << "- duration: " << duration << "\n";
+      }
+      else {
+        std::cout << "Route not found :-(\n";
+      }
     }
     ```
 
 
 ## References
 
-- [User's Guide: Systems of Units](../users_guide/framework_basics/systems_of_units.md)
-- [User's Guide: Dimensionless Quantities](../users_guide/framework_basics/dimensionless_quantities.md)
+- [User's Guide: Systems of Quantities](../users_guide/framework_basics/systems_of_quantities.md)
+- [User's Guide: Simple and Typed Quantities](../users_guide/framework_basics/simple_and_typed_quantities.md)
 - [API Reference](../api_reference.md)
 
 
 ## Takeaways
 
-- Strongly-typed wrappers for dimensionless counters prevent scaling and mixing errors.
-- Automatic conversions make calculations safe and clear.
-- This approach is valuable in production, logistics, and order processing domains.
-- **mp-units** is not limited to physics—use it for any domain where numeric confusion
-  is possible.
+- Typed quantities clarify the semantic role of each argument, even when their units and
+  dimensions match.
+- This approach prevents accidental swaps and makes code more maintainable and robust.
+- Use typed quantities for APIs where argument order matters and physical meaning is
+  distinct.
+- Extend the default quantity hierarchies when additional safety is needed.
+- Not all quantities need to be typed—use strong types where confusion is possible
+  (e.g., multiple _lengths_), and keep others simple when only one role exists
+  (e.g., _duration_).
