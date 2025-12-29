@@ -191,6 +191,7 @@ nav:
       - "Tutorial 6: Interop with std::chrono": tutorials/tutorial_6.md
       - "Tutorial 7: Custom Units for Dimensionless Counters": tutorials/tutorial_7.md
       - "Tutorial 8: Typed Quantities of the Same Kind": tutorials/tutorial_8.md
+      - "Tutorial 9: Custom Quantity Specifications": tutorials/tutorial_9.md
   - Examples:
       - Overview: examples/index.md
       - Beginner:
