@@ -58,7 +58,8 @@ namespace mp_units {
  * @tparam ToQS a quantity specification to use for a target quantity
  */
 template<QuantitySpec auto ToQS, typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>>
-  requires(castable(Q::quantity_spec, ToQS)) && (MP_UNITS_WEAK_UNIT_OF(MP_UNITS_NONCONST_TYPE(Q::unit), ToQS))
+  requires(castable(Q::quantity_spec, ToQS)) &&
+          requires { typename quantity<make_reference(ToQS, Q::unit), typename Q::rep>; }
 [[nodiscard]] constexpr Quantity auto quantity_cast(FwdQ&& q)
 {
   return quantity{std::forward<FwdQ>(q).numerical_value_is_an_implementation_detail_, make_reference(ToQS, Q::unit)};
