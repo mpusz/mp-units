@@ -1775,5 +1775,16 @@ static_assert(value_cast<quantity_point<isq::height[mm], ground_level, std::int8
                 quantity_point{4210 * isq::height[cm], mean_sea_level})
                 .quantity_from_origin_is_an_implementation_detail_.numerical_value_in(mm) == 100);
 
+//////////////////
+// explicit conversion
+//////////////////
+
+static_assert(is_of_type<isq::height(zeroth_length + 1 * m), quantity_point<isq::height[m], zeroth_length, int>>);
+static_assert(
+  is_of_type<isq::height(zeroth_length + isq::length(1 * m)), quantity_point<isq::height[m], zeroth_length, int>>);
+static_assert(
+  is_of_type<kind_of<isq::length>(zeroth_length + isq::length(1 * m)), quantity_point<si::metre, zeroth_length, int>>);
+static_assert(
+  is_of_type<kind_of<isq::length>(zeroth_length + isq::height(1 * m)), quantity_point<si::metre, zeroth_length, int>>);
 
 }  // namespace

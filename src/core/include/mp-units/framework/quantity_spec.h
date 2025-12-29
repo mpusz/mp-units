@@ -33,6 +33,7 @@
 #include <mp-units/ext/type_traits.h>
 #include <mp-units/framework/dimension.h>
 #include <mp-units/framework/quantity_concepts.h>
+#include <mp-units/framework/quantity_point_concepts.h>
 #include <mp-units/framework/quantity_spec_concepts.h>
 #include <mp-units/framework/reference_concepts.h>
 #include <mp-units/framework/representation_concepts.h>
@@ -218,6 +219,15 @@ struct quantity_spec_interface : quantity_spec_interface_base {
     return quantity{std::forward<FwdQ>(q).numerical_value_is_an_implementation_detail_,
                     detail::make_reference(Self{}, Q::unit)};
   }
+
+  template<typename Self, typename FwdQP, QuantityPoint QP = std::remove_cvref_t<FwdQP>>
+    requires(mp_units::explicitly_convertible(QP::quantity_spec, Self{})) &&
+            requires { typename quantity_point<make_reference(Self{}, QP::unit), QP::point_origin, typename QP::rep>; }
+  [[nodiscard]] constexpr QuantityPoint auto operator()(this Self self, FwdQP&& qp)
+  {
+    return quantity_point{self(std::forward<FwdQP>(qp).quantity_from_origin_is_an_implementation_detail_),
+                          qp.point_origin};
+  }
 #else
   template<typename Self_ = Self, UnitOf<Self_{}> U>
   [[nodiscard]] MP_UNITS_CONSTEVAL Reference auto operator[](U) const
@@ -232,6 +242,15 @@ struct quantity_spec_interface : quantity_spec_interface_base {
   {
     return quantity{std::forward<FwdQ>(q).numerical_value_is_an_implementation_detail_,
                     detail::make_reference(Self{}, Q::unit)};
+  }
+
+  template<typename FwdQP, QuantityPoint QP = std::remove_cvref_t<FwdQP>, typename Self_ = Self>
+    requires(mp_units::explicitly_convertible(QP::quantity_spec, Self_{})) &&
+            requires { typename quantity_point<make_reference(Self{}, QP::unit), QP::point_origin, typename QP::rep>; }
+  [[nodiscard]] constexpr QuantityPoint auto operator()(FwdQP&& qp) const
+  {
+    return quantity_point{Self{}(std::forward<FwdQP>(qp).quantity_from_origin_is_an_implementation_detail_),
+                          qp.point_origin};
   }
 #endif
 };
@@ -431,6 +450,15 @@ struct quantity_spec<Self, QS, Args...> : detail::propagate_equation<QS>, detail
   {
     return quantity{std::forward<FwdQ>(q).numerical_value_is_an_implementation_detail_,
                     detail::make_reference(Self{}, Q::unit)};
+  }
+
+  template<typename FwdQP, QuantityPoint QP = std::remove_cvref_t<FwdQP>, typename Self_ = Self>
+    requires(mp_units::explicitly_convertible(QP::quantity_spec, Self_{})) &&
+            requires { typename quantity_point<make_reference(Self{}, QP::unit), QP::point_origin, typename QP::rep>; }
+  [[nodiscard]] constexpr QuantityPoint auto operator()(FwdQP&& qp) const
+  {
+    return quantity_point{Self{}(std::forward<FwdQP>(qp).quantity_from_origin_is_an_implementation_detail_),
+                          qp.point_origin};
   }
 #endif
 };
