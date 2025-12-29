@@ -83,11 +83,12 @@ template<QuantitySpec auto ToQS, typename FwdQ, Quantity Q = std::remove_cvref_t
  * @tparam ToQS a quantity specification to use for a target quantity point
  */
 template<QuantitySpec auto ToQS, typename FwdQP, QuantityPoint QP = std::remove_cvref_t<FwdQP>>
-  requires(castable(QP::quantity_spec, ToQS)) && (MP_UNITS_WEAK_UNIT_OF(MP_UNITS_NONCONST_TYPE(QP::unit), ToQS))
+  requires(castable(QP::quantity_spec, ToQS)) &&
+          requires { typename quantity_point<make_reference(ToQS, QP::unit), QP::point_origin, typename QP::rep>; }
 [[nodiscard]] constexpr QuantityPoint auto quantity_cast(FwdQP&& qp)
 {
-  return QP{quantity_cast<ToQS>(std::forward<FwdQP>(qp).quantity_from_origin_is_an_implementation_detail_),
-            QP::point_origin};
+  return quantity_point{quantity_cast<ToQS>(std::forward<FwdQP>(qp).quantity_from_origin_is_an_implementation_detail_),
+                        qp.point_origin};
 }
 
 }  // namespace mp_units

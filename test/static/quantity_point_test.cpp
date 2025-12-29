@@ -1787,4 +1787,20 @@ static_assert(
 static_assert(
   is_of_type<kind_of<isq::length>(zeroth_length + isq::height(1 * m)), quantity_point<si::metre, zeroth_length, int>>);
 
+
+//////////////////
+// quantity_cast
+//////////////////
+
+static_assert(
+  is_of_type<quantity_cast<isq::height>(zeroth_length + 1 * m), quantity_point<isq::height[m], zeroth_length, int>>);
+static_assert(is_of_type<quantity_cast<isq::height>(zeroth_length + isq::length(1 * m)),
+                         quantity_point<isq::height[m], zeroth_length, int>>);
+static_assert(is_of_type<quantity_cast<isq::height>(zeroth_length + isq::width(1 * m)),
+                         quantity_point<isq::height[m], zeroth_length, int>>);
+static_assert(is_of_type<quantity_cast<kind_of<isq::length>>(zeroth_length + isq::length(1 * m)),
+                         quantity_point<si::metre, zeroth_length, int>>);
+static_assert(is_of_type<quantity_cast<kind_of<isq::length>>(zeroth_length + isq::height(1 * m)),
+                         quantity_point<si::metre, zeroth_length, int>>);
+
 }  // namespace
