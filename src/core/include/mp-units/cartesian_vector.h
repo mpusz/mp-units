@@ -22,8 +22,8 @@
 
 #pragma once
 
-#include <mp-units/bits/module_macros.h>
 #include <mp-units/bits/requires_hosted.h>
+#include <mp-units/bits/module_macros.h>
 #include <mp-units/framework/customization_points.h>
 #include <mp-units/framework/representation_concepts.h>
 #include <type_traits>
