@@ -26,6 +26,7 @@ add_executable(
     unit_tests_runtime
     atomic_test.cpp
     cartesian_vector_test.cpp
+    cartesian_tensor_test.cpp
     distribution_test.cpp
     fixed_string_test.cpp
     fmt_test.cpp
