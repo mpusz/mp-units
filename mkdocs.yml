@@ -192,6 +192,7 @@ nav:
       - "Tutorial 7: Custom Units for Dimensionless Counters": tutorials/tutorial_7.md
       - "Tutorial 8: Typed Quantities of the Same Kind": tutorials/tutorial_8.md
       - "Tutorial 9: Custom Quantity Specifications": tutorials/tutorial_9.md
+      - "Tutorial 10: Custom Base Dimensions": tutorials/tutorial_10.md
   - Examples:
       - Overview: examples/index.md
       - Beginner:
