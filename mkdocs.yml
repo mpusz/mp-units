@@ -182,7 +182,7 @@ nav:
           - References: appendix/references.md
   - API Reference: api_reference.md
   - Tutorials:
-      - Overview: tutorials/index.md
+      - Tutorials: tutorials/index.md
       - "Tutorial 1: Refactor to Strong Types": tutorials/tutorial_1.md
       - "Tutorial 2: Refactor to Generic, Type-Safe Interfaces": tutorials/tutorial_2.md
       - "Tutorial 3: Extracting Numeric Values": tutorials/tutorial_3.md
@@ -194,7 +194,7 @@ nav:
       - "Tutorial 9: Custom Quantity Specifications": tutorials/tutorial_9.md
       - "Tutorial 10: Custom Base Dimensions": tutorials/tutorial_10.md
   - Examples:
-      - Overview: examples/index.md
+      - Examples: examples/index.md
       - Beginner:
           - hello_units: examples/hello_units.md
           - avg_speed: examples/avg_speed.md
