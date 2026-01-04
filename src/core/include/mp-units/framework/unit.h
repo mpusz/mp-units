@@ -318,27 +318,6 @@ struct named_unit<Symbol, QS, PO> : detail::unit_interface {
   static constexpr auto _point_origin_ = PO;
 };
 
-#if MP_UNITS_API_NATURAL_UNITS
-
-/**
- * @brief Specialization for a unit that can be reused by several base quantities
- *
- * This specialization is used in rare cases where more than one base quantity in a specific
- * system of units uses the same unit. For example in a hypothetical system of natural units
- * where  constant for speed of light `c = 1`, length and time could be measured in seconds.
- * In such cases `system_reference` has to be used to explicitly express such a binding.
- *
- * @tparam Symbol a short text representation of the unit
- */
-template<symbol_text Symbol>
-  requires(!Symbol.empty())
-struct named_unit<Symbol> : detail::unit_interface {
-  using _base_type_ = named_unit;           // exposition only
-  static constexpr auto _symbol_ = Symbol;  ///< Unique base unit identifier
-};
-
-#endif  // MP_UNITS_API_NATURAL_UNITS
-
 /**
  * @brief Specialization for a unit with special name
  *
@@ -371,7 +350,7 @@ struct named_unit<Symbol, U, PO> : decltype(U)::_base_type_ {
  * @tparam Unit a unit for which we provide a special name
  * @tparam QuantitySpec a specification of a quantity to be measured with this unit
  */
-template<symbol_text Symbol, MP_UNITS_ASSOCIATED_UNIT auto U, detail::QuantityKindSpec auto QS>
+template<symbol_text Symbol, Unit auto U, detail::QuantityKindSpec auto QS>
   requires(!Symbol.empty()) && (QS.dimension == detail::get_associated_quantity(U).dimension)
 struct named_unit<Symbol, U, QS> : decltype(U)::_base_type_ {
   using _base_type_ = named_unit;           // exposition only
@@ -379,7 +358,7 @@ struct named_unit<Symbol, U, QS> : decltype(U)::_base_type_ {
   static constexpr auto _quantity_spec_ = QS;
 };
 
-template<symbol_text Symbol, MP_UNITS_ASSOCIATED_UNIT auto U, detail::QuantityKindSpec auto QS, PointOrigin auto PO>
+template<symbol_text Symbol, Unit auto U, detail::QuantityKindSpec auto QS, PointOrigin auto PO>
   requires(!Symbol.empty()) && (QS.dimension == detail::get_associated_quantity(U).dimension)
 struct named_unit<Symbol, U, QS, PO> : decltype(U)::_base_type_ {
   using _base_type_ = named_unit;           // exposition only

@@ -51,18 +51,12 @@ add_mp_units_module(
             include/mp-units/systems/international.h
             include/mp-units/systems/isq.h
             include/mp-units/systems/isq_angle.h
+            include/mp-units/systems/natural.h
             include/mp-units/systems/si.h
             include/mp-units/systems/typographic.h
             include/mp-units/systems/usc.h
     MODULE_INTERFACE_UNIT mp-units-systems.cpp
 )
-
-if(MP_UNITS_API_NATURAL_UNITS)
-    target_sources(
-        mp-units-systems PUBLIC FILE_SET HEADERS BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include FILES
-                                include/mp-units/systems/natural.h
-    )
-endif()
 
 if(NOT MP_UNITS_API_FREESTANDING)
     target_sources(

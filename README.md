@@ -72,7 +72,7 @@ dimensional analysis and safe manipulation of units, quantities, and quantity po
 - **Rich Text Formatting** – Text formatting support with extensive options &
   character sets
 - **Flexible Usage** – C++ modules support (when available) and header‑only usage
-- **Configurable** – Contracts, freestanding mode, and natural units (experimental)
+- **Configurable** – Contracts and freestanding mode
 - **Interoperable** – Seamless pathways for legacy and external libraries
 
 ### Quick Example

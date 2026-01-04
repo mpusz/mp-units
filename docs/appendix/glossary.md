@@ -330,11 +330,6 @@
     - [Dimension of a quantity](#dimension) is not enough to specify all the properties of
       a [quantity](#quantity).
 
-[`unit with an associated quantity, associated unit`](#associated-unit){ #associated-unit }
-
-:   - [Unit](#unit) that is used to measure [quantities of a specific kind](#kind) in a given
-      [system of units](#system-of-units).
-
 [`quantity reference, reference`](#reference){ #reference }
 
 :   - According to its definition, [quantity](#quantity) can be expressed by means of

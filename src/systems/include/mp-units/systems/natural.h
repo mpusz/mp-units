@@ -23,8 +23,8 @@
 #pragma once
 
 #include <mp-units/bits/module_macros.h>
-#include <mp-units/systems/isq/mechanics.h>
-#include <mp-units/systems/isq/space_and_time.h>
+#include <mp-units/framework/dimension.h>
+#include <mp-units/framework/quantity_spec.h>
 #include <mp-units/systems/si/prefixes.h>
 
 // IWYU pragma: begin_exports
@@ -37,24 +37,55 @@ MP_UNITS_EXPORT
 namespace mp_units::natural {
 
 // clang-format off
+// dimension and base quantity for natural units
+inline constexpr struct dim_energy final : base_dimension<"E"> {} dim_energy;
+QUANTITY_SPEC(energy, dim_energy);
+
+// Specialized quantities of kind energy (all have dimension energy but provide type safety)
+// Functions expecting mass won't accept energy without explicit cast
+QUANTITY_SPEC(mass, energy);
+QUANTITY_SPEC(momentum, energy);
+QUANTITY_SPEC(temperature, energy);
+QUANTITY_SPEC(acceleration, energy);  // dv/dt where v is dimensionless and t is 1/energy
+
+// Derived quantities - define base quantities first, then specializations
+QUANTITY_SPEC(inverse_energy, inverse(energy));
+QUANTITY_SPEC(time, inverse_energy);
+QUANTITY_SPEC(length, inverse_energy);
+
+QUANTITY_SPEC(energy_squared, pow<2>(energy));
+QUANTITY_SPEC(force, energy_squared);
+
+// Dimensionless quantities (all ratios with c = 1)
+QUANTITY_SPEC(speed, dimensionless);
+QUANTITY_SPEC(velocity, speed);
+QUANTITY_SPEC(angular_measure, dimensionless);
+
 // units
-inline constexpr struct electronvolt final : named_unit<"eV"> {} electronvolt;
+inline constexpr struct electronvolt final : named_unit<"eV", kind_of<energy>> {} electronvolt;
 inline constexpr auto gigaelectronvolt = si::giga<electronvolt>;
 
-// system references
-inline constexpr struct time : system_reference<isq::time, inverse(gigaelectronvolt)> {} time;
-inline constexpr struct length : system_reference<isq::length, inverse(gigaelectronvolt)> {} length;
-inline constexpr struct mass : system_reference<isq::mass, gigaelectronvolt> {} mass;
-inline constexpr struct velocity : system_reference<isq::velocity, one> {} velocity;
-inline constexpr struct speed : system_reference<isq::speed, one> {} speed;
-inline constexpr struct acceleration : system_reference<isq::acceleration, gigaelectronvolt> {} acceleration;
-inline constexpr struct momentum : system_reference<isq::momentum, gigaelectronvolt> {} momentum;
-inline constexpr struct force : system_reference<isq::force, square(gigaelectronvolt)> {} force;
-inline constexpr struct energy : system_reference<isq::mechanical_energy, gigaelectronvolt> {} energy;
-// clang-format on
+// In natural units (ℏ = c = 1), all quantities are expressed in powers of GeV:
+// - Energy, mass, momentum, temperature, acceleration: GeV (dimension: energy)
+// - Time, length: GeV⁻¹ (dimension: inverse_energy)
+// - Speed, velocity, angular_measure: dimensionless (v/c, θ)
+// - Force: GeV² (dimension: energy_squared)
+//
+// The quantity_spec hierarchy provides type safety at function boundaries:
+//   void compute(QuantityOf<natural::mass> auto m) { ... }           // accepts only mass
+//   void compute(QuantityOf<natural::energy> auto e) { ... }         // accepts energy, mass, momentum, temperature, acceleration
+//   void compute(QuantityOf<natural::time> auto t) { ... }           // accepts only time
+//   void compute(QuantityOf<natural::inverse_energy> auto x) { ... } // accepts time, length
+//   void compute(QuantityOf<natural::speed> auto v) { ... }          // accepts speed, velocity
+//   void compute(QuantityOf<dimensionless> auto x) { ... }           // accepts all dimensionless quantities
+//
+// While all these quantities share related dimensions in natural units,
+// the specialized quantity types prevent accidental misuse.
 
-// constants
-inline constexpr auto speed_of_light = speed[one];
+// Physical constants
+// Speed of light is dimensionless 1 in natural units
+inline constexpr auto speed_of_light = one;
+// clang-format on
 
 namespace unit_symbols {
 
