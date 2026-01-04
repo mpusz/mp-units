@@ -155,7 +155,7 @@ nav:
           - Generic Interfaces: users_guide/framework_basics/generic_interfaces.md
           - Faster-than-lightspeed Constants: users_guide/framework_basics/faster_than_lightspeed_constants.md
           - The Affine Space: users_guide/framework_basics/the_affine_space.md
-          - Obtaining Metadata: users_guide/framework_basics/obtaining_metadata.md
+          - Type Introspection: users_guide/framework_basics/type_introspection.md
           - Concepts: users_guide/framework_basics/concepts.md
           - Text Output: users_guide/framework_basics/text_output.md
       - Systems:

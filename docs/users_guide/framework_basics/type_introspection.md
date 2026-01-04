@@ -1,4 +1,4 @@
-# Obtaining Metadata
+# Type Introspection
 
 The **mp-units** library provides several class templates that expose public static members
 to query their properties at compile-time. These members allow users to inspect the metadata
