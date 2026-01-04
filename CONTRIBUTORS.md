@@ -32,13 +32,13 @@ wouldn't be possible without the dedication and hard work of our amazing communi
 
 ## Statistics
 
-- **Total Contributors**: 34
-- **Total Contributions**: 318
+- **Total Contributors**: 36
+- **Total Contributions**: 326
 - **Major Contributors** (50+ contributions): 0
 - **Regular Contributors** (10-49 contributions): 10
-- **Occasional Contributors** (1-9 contributions): 24
+- **Occasional Contributors** (1-9 contributions): 26
 
-_Last updated: 2025-12-13_
+_Last updated: 2026-01-01_
 
 
 ### Major Contributors
@@ -57,8 +57,8 @@ _10-49 contributions_
 - **[rbrugo](https://github.com/rbrugo)** (44 contributions)
 - **[yasamoka](https://github.com/yasamoka)** (20 contributions)
 - **[hofbi](https://github.com/hofbi)** (19 contributions)
+- **[rothmichaels](https://github.com/rothmichaels)** (19 contributions)
 - **[Twon](https://github.com/Twon)** (17 contributions)
-- **[rothmichaels](https://github.com/rothmichaels)** (17 contributions)
 - **[kwikius](https://github.com/kwikius)** (16 contributions)
 - **[RalphSteinhagen](https://github.com/RalphSteinhagen)** (14 contributions)
 - **[mikeford1](https://github.com/mikeford1)** (13 contributions)
@@ -73,9 +73,11 @@ _Everyone who has contributed to mp-units_
 - **[HazardyKnusperkeks](https://github.com/HazardyKnusperkeks)**
 - **[nebkat](https://github.com/nebkat)**
 - **[jansende](https://github.com/jansende)**
+- **[kammce](https://github.com/kammce)**
 - **[jvocht](https://github.com/jvocht)**
 - **[uilianries](https://github.com/uilianries)**
 - **[sohamroy19](https://github.com/sohamroy19)**
+- **[alejandro-alvarez-sonarsource](https://github.com/alejandro-alvarez-sonarsource)**
 - **[alex-tee](https://github.com/alex-tee)**
 - **[go2sh](https://github.com/go2sh)**
 - **[dkavolis](https://github.com/dkavolis)**
