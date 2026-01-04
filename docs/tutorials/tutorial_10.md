@@ -12,7 +12,7 @@ separate dimensions become necessary in large systems.
 
 ## Problem statement
 
-In [Tutorial 7]((tutorial_7.md)), we created dimensionless units for `unit`, `carton`,
+In [Tutorial 7](tutorial_7.md), we created dimensionless units for `unit`, `carton`,
 and `truck`. These had no conversion factors between unrelated types, preventing mixing:
 
 ```cpp
