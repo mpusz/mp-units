@@ -79,7 +79,7 @@ Create a complete system of quantities for product inventory management:
 
 1. **Define a custom base dimension** `dim_product_count` for product inventory
    (not dimensionless!)
-2. **Define the base quantity** `product_count` using this dimension  
+2. **Define the base quantity** `product_count` using this dimension
 3. **Create specialized product count quantities**:
     - `stock_level` (current inventory, a specific type of `product_count`)
     - `reorder_point` (threshold inventory level)
@@ -148,10 +148,10 @@ int main()
   quantity daily_sales = sales_rate(75 * item / si::day);
   quantity reorder_threshold = reorder_point(150 * item);
   quantity lead_time = 5 * si::day;  // delivery takes 5 days
-  
+
   auto days_remaining = days_of_inventory(current_stock, daily_sales);
   auto stock_at_delivery = current_stock - daily_sales * lead_time;
-  
+
   std::cout << "Inventory analysis:\n";
   std::cout << "- Current stock: " << current_stock << "\n";
   std::cout << "- Daily sales: " << daily_sales << "\n";
@@ -159,11 +159,11 @@ int main()
   std::cout << "- Days remaining: " << days_remaining.in(si::day) << "\n";
   std::cout << "- Stock at delivery (if ordered now): " << stock_at_delivery << "\n";
   std::cout << "- Reorder needed: " << (needs_reorder(current_stock, reorder_threshold) ? "YES" : "NO") << "\n";
-  
+
   // Economic order quantity scenario
   quantity target_stock = stock_level(1 * k_items);
   quantity replenishment_needed = target_stock - current_stock;
-  
+
   std::cout << "\nReplenishment planning:\n";
   std::cout << "- Target stock level: " << target_stock << "\n";
   std::cout << "- Replenishment needed: " << replenishment_needed.in<double>(doz) << "\n";
@@ -267,7 +267,7 @@ int main()
             - Works well for small systems with few unrelated types
             - All share `dimensionless` dimension
             - Derived quantities like `product/time` and `truck/time` have same type
-        
+
         === "Custom dimension approach (this tutorial)"
 
             ```cpp
