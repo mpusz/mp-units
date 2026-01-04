@@ -12,7 +12,7 @@
         <meta name="author" content="mp-units Team">
       
       
-        <link rel="canonical" href="https://mpusz.github.io/mp-units/HEAD/users_guide/framework_basics/obtaining_metadata/">
+        <link rel="canonical" href="https://mpusz.github.io/mp-units/HEAD/users_guide/framework_basics/type_introspection/">
       
       
         <link rel="prev" href="../the_affine_space/">
@@ -32,7 +32,7 @@
     
     
       
-        <title>Obtaining Metadata - mp-units</title>
+        <title>Type Introspection - mp-units</title>
       
     
     
@@ -68,17 +68,17 @@
     
   
 <meta property="og:type" content="website" />
-<meta property="og:title" content="Obtaining Metadata - mp-units" />
+<meta property="og:title" content="Type Introspection - mp-units" />
 <meta property="og:description" content="The quantities and units library for C++" />
-<meta property="og:image" content="https://mpusz.github.io/mp-units/HEAD/assets/images/social/users_guide/framework_basics/obtaining_metadata.png" />
+<meta property="og:image" content="https://mpusz.github.io/mp-units/HEAD/assets/images/social/users_guide/framework_basics/type_introspection.png" />
 <meta property="og:image:type" content="image/png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
-<meta property="og:url" content="https://mpusz.github.io/mp-units/HEAD/users_guide/framework_basics/obtaining_metadata/" />
+<meta property="og:url" content="https://mpusz.github.io/mp-units/HEAD/users_guide/framework_basics/type_introspection/" />
 <meta property="twitter:card" content="summary_large_image" />
-<meta property="twitter:title" content="Obtaining Metadata - mp-units" />
+<meta property="twitter:title" content="Type Introspection - mp-units" />
 <meta property="twitter:description" content="The quantities and units library for C++" />
-<meta property="twitter:image" content="https://mpusz.github.io/mp-units/HEAD/assets/images/social/users_guide/framework_basics/obtaining_metadata.png" />
+<meta property="twitter:image" content="https://mpusz.github.io/mp-units/HEAD/assets/images/social/users_guide/framework_basics/type_introspection.png" />
 </head>
   
   
@@ -98,7 +98,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#obtaining-metadata" class="md-skip">
+        <a href="#type-introspection" class="md-skip">
           Skip to content
         </a>
       
@@ -147,7 +147,7 @@ You're not viewing the latest version.
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Obtaining Metadata
+              Type Introspection
             
           </span>
         </div>
@@ -1380,7 +1380,7 @@ You're not viewing the latest version.
   <span class="md-ellipsis">
     
   
-    Obtaining Metadata
+    Type Introspection
   
 
     
@@ -1398,7 +1398,7 @@ You're not viewing the latest version.
   <span class="md-ellipsis">
     
   
-    Obtaining Metadata
+    Type Introspection
   
 
     
@@ -1424,10 +1424,10 @@ You're not viewing the latest version.
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#quantity-spec" class="md-nav__link">
+  <a href="#dimension" class="md-nav__link">
     <span class="md-ellipsis">
       
-        quantity spec
+        dimension
       
     </span>
   </a>
@@ -1435,10 +1435,10 @@ You're not viewing the latest version.
 </li>
       
         <li class="md-nav__item">
-  <a href="#unit" class="md-nav__link">
+  <a href="#quantity_spec" class="md-nav__link">
     <span class="md-ellipsis">
       
-        unit
+        quantity_spec
       
     </span>
   </a>
@@ -1446,13 +1446,30 @@ You're not viewing the latest version.
 </li>
       
         <li class="md-nav__item">
-  <a href="#reference" class="md-nav__link">
+  <a href="#unit-and-reference" class="md-nav__link">
     <span class="md-ellipsis">
       
-        reference
+        unit and Reference
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="unit and Reference">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-reference-concept" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Reference Concept
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1464,6 +1481,56 @@ You're not viewing the latest version.
       
     </span>
   </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quantity_point" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        quantity_point
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#compile-time-introspection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Compile-Time Introspection
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Compile-Time Introspection">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#advanced-introspection-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Advanced Introspection Examples
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#accessing-numerical-values-safely" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Accessing Numerical Values Safely
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -2385,6 +2452,8 @@ You're not viewing the latest version.
       
         
       
+        
+      
     
     
     
@@ -2676,6 +2745,34 @@ You're not viewing the latest version.
     
   
     Tutorial 9: Custom Quantity Specifications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorials/tutorial_10/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial 10: Custom Base Dimensions
   
 
     
@@ -3806,7 +3903,7 @@ You're not viewing the latest version.
 
 
   
-    <a href="https://github.com/mpusz/mp-units/edit/master/docs/users_guide/framework_basics/obtaining_metadata.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+    <a href="https://github.com/mpusz/mp-units/edit/master/docs/users_guide/framework_basics/type_introspection.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
     </a>
@@ -3815,18 +3912,304 @@ You're not viewing the latest version.
     
       
     
-    <a href="https://github.com/mpusz/mp-units/raw/master/docs/users_guide/framework_basics/obtaining_metadata.md" title="View source of this page" class="md-content__button md-icon">
+    <a href="https://github.com/mpusz/mp-units/raw/master/docs/users_guide/framework_basics/type_introspection.md" title="View source of this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 18c.56 0 1 .44 1 1s-.44 1-1 1-1-.44-1-1 .44-1 1-1m0-3c-2.73 0-5.06 1.66-6 4 .94 2.34 3.27 4 6 4s5.06-1.66 6-4c-.94-2.34-3.27-4-6-4m0 6.5a2.5 2.5 0 0 1-2.5-2.5 2.5 2.5 0 0 1 2.5-2.5 2.5 2.5 0 0 1 2.5 2.5 2.5 2.5 0 0 1-2.5 2.5M9.27 20H6V4h7v5h5v4.07c.7.08 1.36.25 2 .49V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h4.5a8.2 8.2 0 0 1-1.23-2"/></svg>
     </a>
   
 
 
-<h1 id="obtaining-metadata">Obtaining Metadata<a class="headerlink" href="#obtaining-metadata" title="Permanent link">&para;</a></h1>
-<h2 id="quantity-spec">quantity spec<a class="headerlink" href="#quantity-spec" title="Permanent link">&para;</a></h2>
-<h2 id="unit">unit<a class="headerlink" href="#unit" title="Permanent link">&para;</a></h2>
-<h2 id="reference">reference<a class="headerlink" href="#reference" title="Permanent link">&para;</a></h2>
-<h2 id="quantity">quantity<a class="headerlink" href="#quantity" title="Permanent link">&para;</a></h2>
+<h1 id="type-introspection">Type Introspection<a class="headerlink" href="#type-introspection" title="Permanent link">&para;</a></h1>
+<p>The <strong>mp-units</strong> library provides several class templates that expose public static members
+to query their properties at compile-time. These members allow users to inspect the metadata
+of quantities, units, and related types.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Public members with the <code>_XXX_</code> naming convention (where <code>XXX</code> is surrounded by underscores)
+are implementation details and should not be used in user code.</p>
+</div>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>For obtaining textual representations of units and dimensions, see the
+<a href="../text_output/">Text Output</a> chapter.</p>
+</div>
+<h2 id="dimension"><code>dimension</code><a class="headerlink" href="#dimension" title="Permanent link">&para;</a></h2>
+<p>Base dimensions created with <code>base_dimension</code> do not expose public static members.</p>
+<h2 id="quantity_spec"><code>quantity_spec</code><a class="headerlink" href="#quantity_spec" title="Permanent link">&para;</a></h2>
+<p>The <code>quantity_spec</code> class template and its specializations provide the following public
+static members:</p>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>dimension</code></td>
+<td><code>Dimension</code></td>
+<td>The dimension of the quantity specification</td>
+</tr>
+<tr>
+<td><code>character</code></td>
+<td><code>quantity_character</code></td>
+<td>The character of the quantity (scalar, vector, tensor)</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">length</span><span class="p">.</span><span class="n">dimension</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">dim_length</span><span class="p">);</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">length</span><span class="p">.</span><span class="n">character</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">quantity_character</span><span class="o">::</span><span class="n">real_scalar</span><span class="p">);</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">velocity</span><span class="p">.</span><span class="n">dimension</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">dim_length</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">dim_time</span><span class="p">);</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">velocity</span><span class="p">.</span><span class="n">character</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">quantity_character</span><span class="o">::</span><span class="n">vector</span><span class="p">);</span>
+</span></code></pre></div>
+</div>
+<h2 id="unit-and-reference"><code>unit</code> and <code>Reference</code><a class="headerlink" href="#unit-and-reference" title="Permanent link">&para;</a></h2>
+<p>Units, including specializations of <code>named_unit</code>, <code>prefixed_unit</code>, and <code>derived_unit</code>,
+are fundamental building blocks in <strong>mp-units</strong>. They satisfy the <code>Reference</code> concept,
+which is a key abstraction in the library.</p>
+<h3 id="the-reference-concept">The <code>Reference</code> Concept<a class="headerlink" href="#the-reference-concept" title="Permanent link">&para;</a></h3>
+<p>The <code>Reference</code> concept is satisfied by two different types:</p>
+<ol>
+<li><strong>Units</strong> - such as <code>si::metre</code>, <code>si::second</code>, or derived units like <code>si::metre / si::second</code></li>
+<li><strong><code>reference</code> class template</strong> - explicitly combining a quantity specification with a unit,
+   such as <code>isq::length[si::metre]</code></li>
+</ol>
+<p>Because the <code>Reference</code> concept is satisfied by different types with different internal
+structures, neither units nor explicit references expose public static data members for
+metadata access. Instead, the library provides non-member functions to extract metadata
+from any <code>Reference</code>:</p>
+<ul>
+<li><code>get_quantity_spec(R)</code> - extracts the quantity specification</li>
+<li><code>get_unit(R)</code> - extracts the unit</li>
+</ul>
+<div class="admonition info">
+<p class="admonition-title">Where <code>Reference</code> is Used?</p>
+<p>The <code>Reference</code> concept appears as a template parameter in:</p>
+<ul>
+<li><code>quantity&lt;R, Rep&gt;</code> - where <code>R</code> is a <code>Reference</code> (either a unit or explicit reference)</li>
+<li><code>quantity_point&lt;R, PO, Rep&gt;</code> - where <code>R</code> is a <code>Reference</code></li>
+</ul>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<p>Extracting metadata from different <code>Reference</code> types:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1">// From a unit (satisfies Reference concept)</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">get_quantity_spec</span><span class="p">(</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">kind_of</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">length</span><span class="o">&gt;</span><span class="p">);</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">get_unit</span><span class="p">(</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">);</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="c1">// From an explicit reference</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">ref</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">length</span><span class="p">[</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">];</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">get_quantity_spec</span><span class="p">(</span><span class="n">ref</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">length</span><span class="p">);</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">get_unit</span><span class="p">(</span><span class="n">ref</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">);</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="c1">// From a derived unit</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">speed_unit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">second</span><span class="p">;</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">get_quantity_spec</span><span class="p">(</span><span class="n">speed_unit</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">kind_of</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">length</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">time</span><span class="o">&gt;</span><span class="p">);</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">get_unit</span><span class="p">(</span><span class="n">speed_unit</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">second</span><span class="p">);</span>
+</span></code></pre></div>
+</div>
+<h2 id="quantity"><code>quantity</code><a class="headerlink" href="#quantity" title="Permanent link">&para;</a></h2>
+<p>The <code>quantity&lt;R, Rep&gt;</code> class template takes a <code>Reference</code> as its first template parameter.
+It provides the following public static members:</p>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>reference</code></td>
+<td><code>Reference</code></td>
+<td>The reference used to instantiate this quantity (can be a unit or explicit reference)</td>
+</tr>
+<tr>
+<td><code>quantity_spec</code></td>
+<td><code>QuantitySpec</code></td>
+<td>The quantity specification (extracted via <code>get_quantity_spec(reference)</code>)</td>
+</tr>
+<tr>
+<td><code>dimension</code></td>
+<td><code>Dimension</code></td>
+<td>The dimension of the quantity</td>
+</tr>
+<tr>
+<td><code>unit</code></td>
+<td><code>Unit</code></td>
+<td>The measurement unit (extracted via <code>get_unit(reference)</code>)</td>
+</tr>
+</tbody>
+</table>
+<p>Additionally, <code>quantity</code> provides a public type alias:</p>
+<ul>
+<li><code>rep</code> - the representation type used to store the numerical value</li>
+</ul>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">using</span><span class="w"> </span><span class="n">distance</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">length</span><span class="p">[</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">],</span><span class="w"> </span><span class="kt">int</span><span class="o">&gt;</span><span class="p">;</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">distance</span><span class="o">::</span><span class="n">reference</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">length</span><span class="p">[</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">]);</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">distance</span><span class="o">::</span><span class="n">quantity_spec</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">length</span><span class="p">);</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">distance</span><span class="o">::</span><span class="n">dimension</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">dim_length</span><span class="p">);</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">distance</span><span class="o">::</span><span class="n">unit</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">);</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">is_same_v</span><span class="o">&lt;</span><span class="n">distance</span><span class="o">::</span><span class="n">rep</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="o">&gt;</span><span class="p">);</span>
+</span></code></pre></div>
+<p>For dimensionless quantities:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">using</span><span class="w"> </span><span class="n">ratio</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">one</span><span class="o">&gt;</span><span class="p">;</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">ratio</span><span class="o">::</span><span class="n">reference</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">one</span><span class="p">);</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">ratio</span><span class="o">::</span><span class="n">quantity_spec</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">kind_of</span><span class="o">&lt;</span><span class="n">dimensionless</span><span class="o">&gt;</span><span class="p">);</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">ratio</span><span class="o">::</span><span class="n">dimension</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">dimension_one</span><span class="p">);</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">ratio</span><span class="o">::</span><span class="n">unit</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">one</span><span class="p">);</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">is_same_v</span><span class="o">&lt;</span><span class="n">ratio</span><span class="o">::</span><span class="n">rep</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span><span class="p">);</span>
+</span></code></pre></div>
+</div>
+<h2 id="quantity_point"><code>quantity_point</code><a class="headerlink" href="#quantity_point" title="Permanent link">&para;</a></h2>
+<p>The <code>quantity_point&lt;R, PO, Rep&gt;</code> class template takes a <code>Reference</code> as its first template
+parameter. It provides the following public static members:</p>
+<table>
+<thead>
+<tr>
+<th>Member</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>reference</code></td>
+<td><code>Reference</code></td>
+<td>The reference used to instantiate this quantity point (can be a unit or explicit reference)</td>
+</tr>
+<tr>
+<td><code>quantity_spec</code></td>
+<td><code>QuantitySpec</code></td>
+<td>The quantity specification (extracted via <code>get_quantity_spec(reference)</code>)</td>
+</tr>
+<tr>
+<td><code>dimension</code></td>
+<td><code>Dimension</code></td>
+<td>The dimension of the quantity point</td>
+</tr>
+<tr>
+<td><code>unit</code></td>
+<td><code>Unit</code></td>
+<td>The measurement unit (extracted via <code>get_unit(reference)</code>)</td>
+</tr>
+<tr>
+<td><code>point_origin</code></td>
+<td><code>PointOrigin</code></td>
+<td>The origin of this quantity point</td>
+</tr>
+<tr>
+<td><code>absolute_point_origin</code></td>
+<td><code>PointOrigin</code></td>
+<td>The absolute origin in the origin hierarchy</td>
+</tr>
+</tbody>
+</table>
+<p>Additionally, <code>quantity_point</code> provides public type aliases:</p>
+<ul>
+<li><code>rep</code> - the representation type used to store the numerical value</li>
+<li><code>quantity_type</code> - the corresponding quantity type (<code>quantity&lt;reference, rep&gt;</code>)</li>
+</ul>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<p>With default (zeroth) origin:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">using</span><span class="w"> </span><span class="n">length_point</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="o">&gt;</span><span class="p">;</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">length_point</span><span class="o">::</span><span class="n">reference</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">);</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">length_point</span><span class="o">::</span><span class="n">quantity_spec</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">kind_of</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">length</span><span class="o">&gt;</span><span class="p">);</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">length_point</span><span class="o">::</span><span class="n">dimension</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">dim_length</span><span class="p">);</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">length_point</span><span class="o">::</span><span class="n">unit</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">);</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">is_same_v</span><span class="o">&lt;</span><span class="n">length_point</span><span class="o">::</span><span class="n">rep</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span><span class="p">);</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">is_same_v</span><span class="o">&lt;</span><span class="n">length_point</span><span class="o">::</span><span class="n">quantity_type</span><span class="p">,</span><span class="w"> </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;&gt;</span><span class="p">);</span>
+</span></code></pre></div>
+<p>With explicit origin:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">mean_sea_level</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">absolute_point_origin</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">mean_sea_level</span><span class="p">;</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">ground_level</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">relative_point_origin</span><span class="o">&lt;</span><span class="n">mean_sea_level</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">42</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">ground_level</span><span class="p">;</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="k">using</span><span class="w"> </span><span class="n">altitude</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="p">[</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">],</span><span class="w"> </span><span class="n">mean_sea_level</span><span class="o">&gt;</span><span class="p">;</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="k">using</span><span class="w"> </span><span class="n">altitude_agl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="p">[</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">],</span><span class="w"> </span><span class="n">ground_level</span><span class="o">&gt;</span><span class="p">;</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">altitude</span><span class="o">::</span><span class="n">reference</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="p">[</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">]);</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">altitude</span><span class="o">::</span><span class="n">quantity_spec</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="p">);</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">altitude</span><span class="o">::</span><span class="n">dimension</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">dim_length</span><span class="p">);</span>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">altitude</span><span class="o">::</span><span class="n">unit</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">);</span>
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">is_same_v</span><span class="o">&lt;</span><span class="n">altitude</span><span class="o">::</span><span class="n">rep</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span><span class="p">);</span>
+</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">is_same_v</span><span class="o">&lt;</span><span class="n">altitude</span><span class="o">::</span><span class="n">quantity_type</span><span class="p">,</span><span class="w"> </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="p">[</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">]</span><span class="o">&gt;&gt;</span><span class="p">);</span>
+</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>
+</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">altitude</span><span class="o">::</span><span class="n">point_origin</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">mean_sea_level</span><span class="p">);</span>
+</span><span id="__span-5-15"><a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">altitude</span><span class="o">::</span><span class="n">absolute_point_origin</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">mean_sea_level</span><span class="p">);</span>
+</span><span id="__span-5-16"><a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a>
+</span><span id="__span-5-17"><a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">altitude_agl</span><span class="o">::</span><span class="n">point_origin</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">ground_level</span><span class="p">);</span>
+</span><span id="__span-5-18"><a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">altitude_agl</span><span class="o">::</span><span class="n">absolute_point_origin</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">mean_sea_level</span><span class="p">);</span>
+</span></code></pre></div>
+</div>
+<h2 id="compile-time-introspection">Compile-Time Introspection<a class="headerlink" href="#compile-time-introspection" title="Permanent link">&para;</a></h2>
+<p>All these static members can be used in constant expressions, enabling powerful
+compile-time introspection and type computations:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="n">Quantity</span><span class="w"> </span><span class="n">Q</span><span class="o">&gt;</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">get_dimension</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">Q</span><span class="o">::</span><span class="n">dimension</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="k">template</span><span class="o">&lt;</span><span class="n">Quantity</span><span class="w"> </span><span class="n">Q</span><span class="o">&gt;</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="k">constexpr</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">is_length_quantity</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">Q</span><span class="o">::</span><span class="n">dimension</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">dim_length</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">is_length_quantity</span><span class="o">&lt;</span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">length</span><span class="p">[</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">]</span><span class="o">&gt;&gt;</span><span class="p">());</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="k">static_assert</span><span class="p">(</span><span class="o">!</span><span class="n">is_length_quantity</span><span class="o">&lt;</span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">time</span><span class="p">[</span><span class="n">si</span><span class="o">::</span><span class="n">second</span><span class="p">]</span><span class="o">&gt;&gt;</span><span class="p">());</span>
+</span></code></pre></div>
+<h3 id="advanced-introspection-examples">Advanced Introspection Examples<a class="headerlink" href="#advanced-introspection-examples" title="Permanent link">&para;</a></h3>
+<p>Checking dimensional relationships between quantities:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="n">mp_units</span><span class="o">::</span><span class="n">Dimension</span><span class="w"> </span><span class="k">auto</span><span class="p">...</span><span class="w"> </span><span class="n">Ds</span><span class="o">&gt;</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="k">constexpr</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">are_time_derivatives</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="k">template</span><span class="o">&lt;</span><span class="n">mp_units</span><span class="o">::</span><span class="n">Dimension</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">D</span><span class="o">&gt;</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="k">constexpr</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">are_time_derivatives</span><span class="o">&lt;</span><span class="n">D</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="k">template</span><span class="o">&lt;</span><span class="n">mp_units</span><span class="o">::</span><span class="n">Dimension</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">D1</span><span class="p">,</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">Dimension</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">D2</span><span class="p">,</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">Dimension</span><span class="w"> </span><span class="k">auto</span><span class="p">...</span><span class="w"> </span><span class="n">Ds</span><span class="o">&gt;</span>
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="k">constexpr</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">are_time_derivatives</span><span class="o">&lt;</span><span class="n">D1</span><span class="p">,</span><span class="w"> </span><span class="n">D2</span><span class="p">,</span><span class="w"> </span><span class="n">Ds</span><span class="p">...</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span>
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="w">  </span><span class="p">(</span><span class="n">D1</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">D2</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">isq</span><span class="o">::</span><span class="n">dim_time</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">are_time_derivatives</span><span class="o">&lt;</span><span class="n">D2</span><span class="p">,</span><span class="w"> </span><span class="n">Ds</span><span class="p">...</span><span class="o">&gt;</span><span class="p">;</span>
+</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>
+</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="c1">// Position, velocity, acceleration are time derivatives</span>
+</span><span id="__span-7-12"><a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">are_time_derivatives</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">dim_length</span><span class="p">,</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">dim_length</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">dim_time</span><span class="p">,</span>
+</span><span id="__span-7-13"><a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a><span class="w">                                   </span><span class="n">isq</span><span class="o">::</span><span class="n">dim_length</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">pow</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">dim_time</span><span class="p">)</span><span class="o">&gt;</span><span class="p">);</span>
+</span></code></pre></div>
+<div class="admonition example">
+<p class="admonition-title">Real-World Application</p>
+<p>This pattern of checking time derivatives is particularly useful in Kalman filters,
+where system states often represent quantities and their derivatives (e.g., <em>position</em>,
+<em>velocity</em>, and <em>acceleration</em>). See the <a href="../../../examples/kalman_filter/">Kalman Filter Examples</a>
+for a complete implementation.</p>
+</div>
+<h3 id="accessing-numerical-values-safely">Accessing Numerical Values Safely<a class="headerlink" href="#accessing-numerical-values-safely" title="Permanent link">&para;</a></h3>
+<p>While metadata queries are always safe, accessing the numerical value requires care.
+The safest approach is to use <code>.numerical_value_in(unit)</code> with an explicit unit:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="o">&gt;</span><span class="w"> </span><span class="n">distance</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">;</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="k">auto</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">distance</span><span class="p">.</span><span class="n">numerical_value_in</span><span class="p">(</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">);</span><span class="w">  </span><span class="c1">// Safe: explicit unit</span>
+</span></code></pre></div>
+<p>In generic code, you can use the quantity's own unit, though this bypasses unit safety
+during refactoring:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="n">Quantity</span><span class="w"> </span><span class="n">Q</span><span class="o">&gt;</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="kt">void</span><span class="w"> </span><span class="n">process</span><span class="p">(</span><span class="n">Q</span><span class="w"> </span><span class="n">q</span><span class="p">)</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="p">{</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">  </span><span class="c1">// This will always compile but won&#39;t catch unit changes during refactoring</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">q</span><span class="p">.</span><span class="n">numerical_value_in</span><span class="p">(</span><span class="n">q</span><span class="p">.</span><span class="n">unit</span><span class="p">);</span>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="w">  </span><span class="c1">// ...</span>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="p">}</span>
+</span></code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Using <code>q.numerical_value_in(q.unit)</code> is type-safe but bypasses the unit safety
+that would catch accidental unit changes during refactoring. Prefer explicit
+units when possible.</p>
+</div>
 
 
 
