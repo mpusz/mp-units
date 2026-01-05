@@ -157,7 +157,7 @@ int main()
   using namespace si::unit_symbols;
 
   quantity propellant_mass = 15'000. * kg;
-  
+
   std::cout << "Rocket Stage Burn Time Analysis\n";
   std::cout << "================================\n";
   std::cout << "Propellant mass: " << propellant_mass << "\n\n";
@@ -177,11 +177,11 @@ int main()
   // Compare burn times
   quantity time_ratio = burn_time_2 / burn_time_1;
   std::cout << "Engine 2 burns " << time_ratio.in(one) << " times longer\n\n";
-  
+
   // Calculate total impulse - demonstrates seamless mixing of kgf and N
   quantity total_impulse_1 = engine1_thrust * burn_time_1;
   quantity total_impulse_2 = engine2_thrust * burn_time_2;
-  
+
   std::cout << "Total Impulse:\n";
   std::cout << "  Engine 1: " << total_impulse_1 << " = " << total_impulse_1.in(kN * s) << "\n";
   std::cout << "  Engine 2: " << total_impulse_2 << " = " << total_impulse_2.in(kN * s) << "\n";
@@ -248,7 +248,7 @@ int main()
       using namespace si::unit_symbols;
 
       quantity propellant_mass = 15'000. * kg;
-      
+
       std::cout << "Rocket Stage Burn Time Analysis\n";
       std::cout << "================================\n";
       std::cout << "Propellant mass: " << propellant_mass << "\n\n";
@@ -268,11 +268,11 @@ int main()
       // Compare burn times
       quantity time_ratio = burn_time_2 / burn_time_1;
       std::cout << "Engine 2 burns " << time_ratio.in(one) << " times longer\n\n";
-      
+
       // Calculate total impulse - demonstrates seamless mixing of kgf and N
       quantity total_impulse_1 = engine1_thrust * burn_time_1;
       quantity total_impulse_2 = engine2_thrust * burn_time_2;
-      
+
       std::cout << "Total Impulse:\n";
       std::cout << "  Engine 1: " << total_impulse_1 << " = " << total_impulse_1.in(kN * s) << "\n";
       std::cout << "  Engine 2: " << total_impulse_2 << " = " << total_impulse_2.in(kN * s) << "\n";
@@ -285,10 +285,10 @@ int main()
     - **For Engine 1 (thrust in kgf)**: The _burn time_ formula contains g₀ in the numerator,
       while kgf contains g₀ in its denominator. These factors cancel perfectly at compile-time,
       eliminating any runtime multiplication or division by 9.80665.
-    
+
     - **For Engine 2 (thrust in N)**: The g₀ factors don't cancel, but **mp-units** automatically
       handles the conversion, applying g₀ exactly where needed without manual intervention.
-    
+
     Both engines use identical code—the type system ensures correctness regardless of whether
     _thrust_ is specified in legacy (kgf) or modern (N) units.
 
