@@ -239,7 +239,7 @@ public:
     return *this;
   }
 
-  template<MP_UNITS_WEAK_UNIT_OF(quantity_spec) ToU>
+  template<UnitOf<quantity_spec> ToU>
     requires detail::ValuePreservingScaling<unit, ToU{}, rep>
   [[nodiscard]] constexpr QuantityOf<quantity_spec> auto in(ToU) const
   {
@@ -253,7 +253,7 @@ public:
     return quantity<reference, ToRep>{*this};
   }
 
-  template<RepresentationOf<quantity_spec> ToRep, MP_UNITS_WEAK_UNIT_OF(quantity_spec) ToU>
+  template<RepresentationOf<quantity_spec> ToRep, UnitOf<quantity_spec> ToU>
     requires detail::ValuePreservingConstruction<ToRep, rep> &&
              detail::ValuePreservingConversion<unit, rep, ToU{}, ToRep>
   [[nodiscard]] constexpr QuantityOf<quantity_spec> auto in(ToU) const
@@ -261,7 +261,7 @@ public:
     return quantity<detail::make_reference(quantity_spec, ToU{}), ToRep>{*this};
   }
 
-  template<MP_UNITS_WEAK_UNIT_OF(quantity_spec) ToU>
+  template<UnitOf<quantity_spec> ToU>
     requires detail::SaneScaling<unit, ToU{}, rep>
   [[nodiscard]] constexpr QuantityOf<quantity_spec> auto force_in(ToU) const
   {
@@ -275,7 +275,7 @@ public:
     return value_cast<ToRep>(*this);
   }
 
-  template<RepresentationOf<quantity_spec> ToRep, MP_UNITS_WEAK_UNIT_OF(quantity_spec) ToU>
+  template<RepresentationOf<quantity_spec> ToRep, UnitOf<quantity_spec> ToU>
     requires std::constructible_from<ToRep, rep> && detail::SaneScaling<unit, ToU{}, rep>
   [[nodiscard]] constexpr QuantityOf<quantity_spec> auto force_in(ToU) const
   {
@@ -306,14 +306,14 @@ public:
     = delete;
 #endif
 
-  template<MP_UNITS_WEAK_UNIT_OF(quantity_spec) U>
+  template<UnitOf<quantity_spec> U>
     requires detail::ValuePreservingScaling<unit, U{}, rep>
   [[nodiscard]] constexpr rep numerical_value_in(U) const noexcept
   {
     return in(U{}).numerical_value_is_an_implementation_detail_;
   }
 
-  template<MP_UNITS_WEAK_UNIT_OF(quantity_spec) U>
+  template<UnitOf<quantity_spec> U>
     requires detail::SaneScaling<unit, U{}, rep>
   [[nodiscard]] constexpr rep force_numerical_value_in(U) const noexcept
   {

@@ -69,20 +69,6 @@ inline constexpr struct metre_ final : named_unit<"m", kind_of<length>> {} metre
 inline constexpr struct gram_ final : named_unit<"g", kind_of<mass>> {} gram;
 inline constexpr auto kilogram = si::kilo<gram>;
 
-#if MP_UNITS_API_NATURAL_UNITS
-namespace nu {
-// hypothetical natural system of units for c=1
-
-inline constexpr struct second_ final : named_unit<"s"> {} second;
-inline constexpr struct minute_ final : named_unit<"min", mag<60> * second> {} minute;
-
-inline constexpr struct time : system_reference<time_{}, second> {} time;
-inline constexpr struct length : system_reference<length_{}, second> {} length;
-inline constexpr struct speed : system_reference<speed_{}, second / second> {} speed;
-
-}
-#endif
-
 // derived named units
 inline constexpr struct radian_ final : named_unit<"rad", metre / metre, kind_of<angular_measure>> {} radian;
 inline constexpr struct steradian_ final : named_unit<"sr", square(metre) / square(metre), kind_of<solid_angular_measure>> {} steradian;
@@ -220,43 +206,7 @@ static_assert(is_of_type<120.L * length[kilometre] / (2 * time[hour]),
 static_assert(is_of_type<1. / 4 * area[square(metre)], decltype(1. * area[square(metre)] / 4)>);
 static_assert(1. / 4 * area[square(metre)] == 1. * area[square(metre)] / 4);
 
-#if MP_UNITS_API_NATURAL_UNITS
-// Natural Units
-static_assert(is_of_type<42 * nu::time[nu::second], quantity<reference<time_, nu::second_>{}, int>>);
-static_assert(is_of_type<42 * nu::time[nu::minute], quantity<reference<time_, nu::minute_>{}, int>>);
-static_assert(is_of_type<42 * nu::length[nu::second], quantity<reference<length_, nu::second_>{}, int>>);
-static_assert(is_of_type<42 * nu::length[nu::minute], quantity<reference<length_, nu::minute_>{}, int>>);
-static_assert(is_of_type<42 * (nu::length[nu::second] / nu::time[nu::second]),
-                         quantity<reference<derived_quantity_spec<length_, per<time_>>, one_>{}, int>>);
-static_assert(is_of_type<42 * nu::length[nu::second] / (42 * nu::time[nu::second]),
-                         quantity<reference<derived_quantity_spec<length_, per<time_>>, one_>{}, int>>);
-static_assert(is_of_type<42 * nu::speed[nu::second / nu::second], quantity<reference<speed_, one_>{}, int>>);
-static_assert(is_of_type<42 * nu::speed[one], quantity<reference<speed_, one_>{}, int>>);
-static_assert(
-  is_of_type<
-    42 * mass[kilogram] * (1 * nu::length[nu::second]) / (1 * nu::time[nu::second]),
-    quantity<reference<derived_quantity_spec<length_, mass_, per<time_>>, MP_UNITS_NONCONST_TYPE(si::kilo<gram>)>{},
-             int>>);
-
-// Mixed-systems quantities
-static_assert(
-  is_of_type<
-    42 * metre / nu::time[nu::second],
-    quantity<reference<derived_quantity_spec<length_, per<time_>>, derived_unit<metre_, per<nu::second_>>>{}, int>>);
-
-template<auto dim, auto unit>
-concept invalid_nu_unit = !requires { dim[unit]; };
-
-static_assert(invalid_nu_unit<time, nu::second>);
-static_assert(invalid_nu_unit<nu::time, second>);
-static_assert(invalid_nu_unit<length / time, nu::second / nu::second>);
-static_assert(invalid_nu_unit<speed, nu::second / nu::second>);
-static_assert(invalid_nu_unit<speed, nu::second / second>);
-static_assert(invalid_nu_unit<mass * length / time, kilogram * nu::second / nu::second>);
-static_assert(invalid_nu_unit<force, kilogram * nu::second / nu::second>);
-#endif
-
-// mixing associated units and references
+// mixing units and references
 static_assert(second != time[second]);
 static_assert(time[second] != second);
 static_assert(second * second != time[second] * time[second]);

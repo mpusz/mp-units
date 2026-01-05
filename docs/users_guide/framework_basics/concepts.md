@@ -90,26 +90,6 @@ All of the above units have to be marked as `final`.
     In the **mp-units** library, [physical constants are also implemented as units](faster_than_lightspeed_constants.md).
 
 
-### `AssociatedUnit<T>` { #AssociatedUnit }
-
-`AssociatedUnit` concept describes a [unit with an associated quantity](../../appendix/glossary.md#associated-unit)
-and is satisfied by:
-
-- All units derived from a `named_unit` class template instantiated with a unique symbol identifier
-  and a [`QuantitySpec`](#QuantitySpec) of a [quantity kind](../../appendix/glossary.md#kind).
-- All units being a result of
-  [unit equations](../../appendix/glossary.md#unit-equation) on other associated units.
-
-??? abstract "Examples"
-
-    All units in the [SI](../../appendix/glossary.md#si) have associated quantities. For example,
-    `si::second` is specified to measure `isq::time`.
-
-    Natural units typically do not have an associated quantity. For example, if we assume `c = 1`,
-    a `natural::second` unit can be used to measure both `time` and `length`. In such case, `speed`
-    would have a unit of `one`.
-
-
 ### `PrefixableUnit<T>` { #PrefixableUnit }
 
 `PrefixableUnit` concept is satisfied by all units derived from a `named_unit` class template.
@@ -128,7 +108,7 @@ convertible to the provided [`QuantitySpec`](#QuantitySpec) value.
 types. Such types provide all the meta-information required to create a [`Quantity`](#Quantity).
 A `Reference` can either be:
 
-- An [`AssociatedUnit`](#AssociatedUnit).
+- A [`Unit`](#Unit).
 - The instantiation of a `reference` class template with a
   [`QuantitySpec`](#QuantitySpec) passed as the first template argument and a
   [`Unit`](#Unit) passed as the second one.

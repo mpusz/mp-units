@@ -27,12 +27,60 @@ namespace {
 using namespace mp_units;
 using namespace mp_units::natural::unit_symbols;
 
-static_assert(1 * natural::length[one / GeV] / (1 * natural::time[one / GeV]) == 1 * natural::speed[one]);
-static_assert(1 * natural::length[one / GeV] / (1 * natural::time[one / GeV] * (1 * natural::time[one / GeV])) ==
-              1 * natural::acceleration[GeV]);
-static_assert(1 * natural::mass[GeV] * (1 * natural::velocity[one]) == 1 * natural::momentum[GeV]);
-static_assert(1 * natural::mass[GeV] * (1 * natural::acceleration[GeV]) == 1 * natural::force[GeV2]);
-static_assert(1 * natural::mass[GeV] * (1 * natural::acceleration[GeV]) * (1 * natural::length[one / GeV]) ==
-              1 * natural::energy[GeV]);
+// In natural units, all quantities are expressed in powers of GeV
+// Quantity type safety is maintained through proper hierarchy
+
+// Test quantity hierarchy - mass is a kind of energy
+constexpr quantity test_mass = natural::mass(1. * GeV);
+static_assert(QuantityOf<decltype(test_mass), natural::energy>);
+
+// Test inverse_energy hierarchy - time and length are both inverse_energy
+constexpr quantity test_time = natural::time(1. / GeV);
+static_assert(QuantityOf<decltype(test_time), natural::inverse_energy>);
+constexpr quantity test_length = natural::length(1. / GeV);
+static_assert(QuantityOf<decltype(test_length), natural::inverse_energy>);
+
+// Dimensional relationships still hold at the unit level
+static_assert(1. / GeV / (1. / GeV) == 1. * one);                 // length/time = speed
+static_assert(1. / GeV / ((1. / GeV) * (1. / GeV)) == 1. * GeV);  // length/time² = acceleration
+
+// All energy-dimension quantities are compatible
+static_assert(1. * GeV * (1. * one) == 1. * GeV);               // mass * velocity = momentum (dimensionally)
+static_assert(1. * GeV * (1. * GeV) == 1. * GeV2);              // mass * acceleration = force
+static_assert(1. * GeV * (1. * GeV) * (1. / GeV) == 1. * GeV);  // force * length = energy
+
+// Quantity hierarchy tests
+using namespace mp_units::detail;
+using enum specs_convertible_result;
+
+static_assert(convertible(natural::mass, natural::energy) == yes);
+static_assert(convertible(natural::energy, natural::mass) == explicit_conversion);
+static_assert(convertible(natural::energy, natural::momentum) == explicit_conversion);
+static_assert(convertible(natural::mass, natural::momentum) == cast);
+
+static_assert(convertible(natural::time, natural::inverse_energy) == yes);
+static_assert(convertible(natural::inverse_energy, natural::time) == explicit_conversion);
+static_assert(convertible(natural::inverse_energy, natural::length) == explicit_conversion);
+static_assert(convertible(natural::time, natural::length) == cast);
+
+// Dimensionless quantity tests
+static_assert(convertible(natural::velocity, natural::speed) == yes);
+static_assert(convertible(natural::speed, natural::velocity) == explicit_conversion);
+static_assert(convertible(natural::speed, dimensionless) == yes);
+static_assert(convertible(natural::angular_measure, dimensionless) == yes);
+static_assert(convertible(natural::speed, natural::angular_measure) == cast);
+
+// Acceleration tests (acceleration has dimension energy in natural units)
+static_assert(convertible(natural::acceleration, natural::energy) == yes);
+static_assert(convertible(natural::energy, natural::acceleration) == explicit_conversion);
+
+// Force tests
+static_assert(convertible(natural::force, natural::energy_squared) == yes);
+static_assert(convertible(natural::energy_squared, natural::force) == explicit_conversion);
+
+// Cross-hierarchy tests (should never convert)
+static_assert(convertible(natural::energy, natural::inverse_energy) == no);
+static_assert(convertible(natural::energy, natural::energy_squared) == no);
+static_assert(convertible(natural::energy, dimensionless) == no);
 
 }  // namespace
