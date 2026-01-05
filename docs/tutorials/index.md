@@ -26,3 +26,4 @@ practical, type-safe patterns will help you apply **mp-units** in real projects.
 8. [Typed Quantities of the Same Kind](tutorial_8.md)
 9. [Custom Quantity Specifications](tutorial_9.md)
 10. [Custom Base Dimensions](tutorial_10.md)
+11. [Faster-than-Lightspeed Constants](tutorial_11.md)
