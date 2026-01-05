@@ -23,8 +23,6 @@
 #pragma once
 
 #include <mp-units/bits/module_macros.h>
-#include <mp-units/framework/dimension.h>
-#include <mp-units/framework/quantity_spec.h>
 #include <mp-units/systems/si/prefixes.h>
 
 // IWYU pragma: begin_exports
