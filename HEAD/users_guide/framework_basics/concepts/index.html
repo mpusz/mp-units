@@ -1531,17 +1531,6 @@ You're not viewing the latest version.
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#AssociatedUnit" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        AssociatedUnit&lt;T&gt;
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#PrefixableUnit" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4141,23 +4130,6 @@ concept and when they compare equal.</p>
 <p class="admonition-title">Note</p>
 <p>In the <strong>mp-units</strong> library, <a href="../faster_than_lightspeed_constants/">physical constants are also implemented as units</a>.</p>
 </div>
-<h3 id="AssociatedUnit"><code>AssociatedUnit&lt;T&gt;</code><a class="headerlink" href="#AssociatedUnit" title="Permanent link">&para;</a></h3>
-<p><code>AssociatedUnit</code> concept describes a <a href="../../../appendix/glossary/#associated-unit">unit with an associated quantity</a>
-and is satisfied by:</p>
-<ul>
-<li>All units derived from a <code>named_unit</code> class template instantiated with a unique symbol identifier
-  and a <a href="#QuantitySpec"><code>QuantitySpec</code></a> of a <a href="../../../appendix/glossary/#kind">quantity kind</a>.</li>
-<li>All units being a result of
-  <a href="../../../appendix/glossary/#unit-equation">unit equations</a> on other associated units.</li>
-</ul>
-<details class="abstract">
-<summary>Examples</summary>
-<p>All units in the <a href="../../../appendix/glossary/#si">SI</a> have associated quantities. For example,
-<code>si::second</code> is specified to measure <code>isq::time</code>.</p>
-<p>Natural units typically do not have an associated quantity. For example, if we assume <code>c = 1</code>,
-a <code>natural::second</code> unit can be used to measure both <code>time</code> and <code>length</code>. In such case, <code>speed</code>
-would have a unit of <code>one</code>.</p>
-</details>
 <h3 id="PrefixableUnit"><code>PrefixableUnit&lt;T&gt;</code><a class="headerlink" href="#PrefixableUnit" title="Permanent link">&para;</a></h3>
 <p><code>PrefixableUnit</code> concept is satisfied by all units derived from a <code>named_unit</code> class template.
 Such units can be passed as an argument to a <code>prefixed_unit</code> class template.</p>
@@ -4169,7 +4141,7 @@ convertible to the provided <a href="#QuantitySpec"><code>QuantitySpec</code></a
 types. Such types provide all the meta-information required to create a <a href="#Quantity"><code>Quantity</code></a>.
 A <code>Reference</code> can either be:</p>
 <ul>
-<li>An <a href="#AssociatedUnit"><code>AssociatedUnit</code></a>.</li>
+<li>A <a href="#Unit"><code>Unit</code></a>.</li>
 <li>The instantiation of a <code>reference</code> class template with a
   <a href="#QuantitySpec"><code>QuantitySpec</code></a> passed as the first template argument and a
   <a href="#Unit"><code>Unit</code></a> passed as the second one.</li>
