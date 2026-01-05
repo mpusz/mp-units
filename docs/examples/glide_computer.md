@@ -8,6 +8,7 @@ tags:
   - Feature - Custom Representation
   - Feature - Multi-System Units
   - Feature - Custom Quantities
+  - Feature - Representation Types
   - Feature - Text Formatting
   - Domain - Aerospace
   - Domain - Aviation

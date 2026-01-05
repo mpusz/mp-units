@@ -2,8 +2,8 @@
 tags:
   - Level - Advanced
   - System - SI
+  - System - ISQ
   - System - International
-  - Feature - ISQ
   - Feature - Affine Space
   - Domain - Aerospace
   - Domain - Embedded Systems
