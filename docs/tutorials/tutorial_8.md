@@ -1,8 +1,6 @@
 
 # Tutorial 8: Typed Quantities of the Same Kind
 
-## Introduction
-
 When working with physical quantities, it's common to encounter values with the same unit
 and dimension but different meanings. For example, in route planning for oversized vehicles,
 you may need to specify the cargo's _height_, _width_, and required _turn radius_—all
