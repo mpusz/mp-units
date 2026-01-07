@@ -120,7 +120,7 @@ A `Reference` can either be:
 that satisfies [`QuantitySpecOf<V>`](#QuantitySpecOf) concept.
 
 
-### `RepresentationOf<T, V>` { #RepresentationOf }
+## `RepresentationOf<T, V>` { #RepresentationOf }
 
 `RepresentationOf` concept constraints a type of a number that stores the
 [value of a quantity](../../appendix/glossary.md#quantity-value) and is satisfied:
