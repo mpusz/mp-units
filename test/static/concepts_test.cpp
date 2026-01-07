@@ -298,18 +298,15 @@ static_assert(!ReferenceOf<decltype(dimensionless[one]), isq::angular_measure>);
 // RepresentationOf
 static_assert(RepresentationOf<int, quantity_character::real_scalar>);
 static_assert(!RepresentationOf<int, quantity_character::complex_scalar>);
-static_assert(!RepresentationOf<int, quantity_character::complex_scalar>);
 static_assert(RepresentationOf<int, quantity_character::vector>);
 static_assert(!RepresentationOf<int, quantity_character::tensor>);
 
 static_assert(RepresentationOf<double, quantity_character::real_scalar>);
 static_assert(!RepresentationOf<double, quantity_character::complex_scalar>);
-static_assert(!RepresentationOf<double, quantity_character::complex_scalar>);
 static_assert(RepresentationOf<double, quantity_character::vector>);
 static_assert(!RepresentationOf<double, quantity_character::tensor>);
 
 static_assert(!RepresentationOf<bool, quantity_character::real_scalar>);
-static_assert(!RepresentationOf<bool, quantity_character::complex_scalar>);
 static_assert(!RepresentationOf<bool, quantity_character::complex_scalar>);
 static_assert(!RepresentationOf<bool, quantity_character::vector>);
 static_assert(!RepresentationOf<bool, quantity_character::tensor>);
@@ -325,13 +322,11 @@ static_assert(!RepresentationOf<std::complex<double>, quantity_character::tensor
 static_assert(!RepresentationOf<cartesian_vector<double>, quantity_character::real_scalar>);
 static_assert(!RepresentationOf<cartesian_vector<double>, quantity_character::complex_scalar>);
 static_assert(RepresentationOf<cartesian_vector<double>, quantity_character::vector>);
-static_assert(!RepresentationOf<cartesian_vector<double>, quantity_character::complex_scalar>);
 static_assert(!RepresentationOf<cartesian_vector<double>, quantity_character::tensor>);
 
 static_assert(!RepresentationOf<cartesian_vector<std::complex<double>>, quantity_character::real_scalar>);
 static_assert(!RepresentationOf<cartesian_vector<std::complex<double>>, quantity_character::complex_scalar>);
 static_assert(RepresentationOf<cartesian_vector<std::complex<double>>, quantity_character::vector>);
-static_assert(!RepresentationOf<cartesian_vector<std::complex<double>>, quantity_character::complex_scalar>);
 static_assert(!RepresentationOf<cartesian_vector<std::complex<double>>, quantity_character::tensor>);
 
 static_assert(!RepresentationOf<std::chrono::seconds, quantity_character::real_scalar>);
