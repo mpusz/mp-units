@@ -442,7 +442,7 @@ struct quantity_spec<Self, QS, Args...> : detail::propagate_equation<QS>, detail
  * @brief Specialization defining a leaf derived quantity in the hierarchy and refining paren't equation
  *
  * Quantities of the same kind form a hierarchy. This specialization adds new leaf to such a tree which
- * can later be used as a parent by other quantities. Additionally, this defintion adds additional
+ * can later be used as a parent by other quantities. Additionally, this definition adds additional
  * constraints on the derived quantity's equation.
  *
  * Such quantities obtain the character from the derived quantity equation.
@@ -1033,6 +1033,7 @@ template<QuantitySpec From, QuantitySpec To>
   }
 }
 
+// verifies convertibility when at least one of the specs is a kind
 template<QuantitySpec From, QuantitySpec To>
 [[nodiscard]] consteval specs_convertible_result convertible_kinds(From from, To)
 {
