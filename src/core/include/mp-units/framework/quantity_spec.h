@@ -1057,11 +1057,15 @@ template<NamedQuantitySpec From, NamedQuantitySpec To>
     return detail::convertible_common_base(From{}, To{});
   else if constexpr (detail::get_kind_tree_root(From{}) != detail::get_kind_tree_root(To{}))
     return no;
-  else if constexpr (detail::get_complexity(From{}) != detail::get_complexity(To{})) {
-    if constexpr (detail::get_complexity(From{}) > detail::get_complexity(To{}))
-      return detail::convertible(explode<get_complexity(To{})>(from).quantity, to);
+  else {
+    constexpr auto from_complexity = detail::get_complexity(From{});
+    constexpr auto to_complexity = detail::get_complexity(To{});
+    static_assert(from_complexity != to_complexity,
+                  "Is it possible to have different quantities of the same complexity here?");
+    if constexpr (from_complexity > to_complexity)
+      return detail::convertible(explode<to_complexity>(from).quantity, to);
     else {
-      auto res = detail::explode<get_complexity(From{})>(to);
+      auto res = detail::explode<from_complexity>(to);
       return detail::min(res.result, detail::convertible(from, res.quantity));
     }
   }
