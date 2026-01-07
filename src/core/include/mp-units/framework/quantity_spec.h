@@ -435,32 +435,6 @@ struct quantity_spec<Self, QS, Args...> : detail::propagate_equation<QS>, detail
   static constexpr auto _parent_ = QS;
   static constexpr Dimension auto dimension = _parent_.dimension;
   static constexpr quantity_character character = detail::quantity_character_init<Args...>(QS.character);
-
-#if !MP_UNITS_API_NO_CRTP
-  template<typename Self_ = Self, UnitOf<Self_{}> U>
-  [[nodiscard]] MP_UNITS_CONSTEVAL Reference auto operator[](U) const
-  {
-    return detail::make_reference(Self{}, U{});
-  }
-
-  template<typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>, typename Self_ = Self>
-    requires(explicitly_convertible(Q::quantity_spec, Self_{})) &&
-            requires { typename quantity<make_reference(Self{}, Q::unit), typename Q::rep>; }
-  [[nodiscard]] constexpr Quantity auto operator()(FwdQ&& q) const
-  {
-    return quantity{std::forward<FwdQ>(q).numerical_value_is_an_implementation_detail_,
-                    detail::make_reference(Self{}, Q::unit)};
-  }
-
-  template<typename FwdQP, QuantityPoint QP = std::remove_cvref_t<FwdQP>, typename Self_ = Self>
-    requires(mp_units::explicitly_convertible(QP::quantity_spec, Self_{})) &&
-            requires { typename quantity_point<make_reference(Self{}, QP::unit), QP::point_origin, typename QP::rep>; }
-  [[nodiscard]] constexpr QuantityPoint auto operator()(FwdQP&& qp) const
-  {
-    return quantity_point{Self{}(std::forward<FwdQP>(qp).quantity_from_origin_is_an_implementation_detail_),
-                          qp.point_origin};
-  }
-#endif
 };
 
 // clang-format off
