@@ -118,7 +118,7 @@ void real() = delete;  // poison pill
 
 struct real_t {
   // TODO how to constrain the return with RealScalar?
-  [[nodiscard]] constexpr auto operator()(const WeaklyRegular auto& clx) const
+  [[nodiscard]] constexpr auto operator()(const auto& clx) const
     requires requires { clx.real(); } || requires { real(clx); }
   {
     if constexpr (requires { clx.real(); })
@@ -142,7 +142,7 @@ void imag() = delete;  // poison pill
 
 struct imag_t {
   // TODO how to constrain the return with RealScalar?
-  [[nodiscard]] constexpr auto operator()(const WeaklyRegular auto& clx) const
+  [[nodiscard]] constexpr auto operator()(const auto& clx) const
     requires requires { clx.imag(); } || requires { imag(clx); }
   {
     if constexpr (requires { clx.imag(); })
@@ -167,7 +167,7 @@ void abs() = delete;      // poison pill
 
 struct modulus_t {
   // TODO how to constrain the return with RealScalar?
-  [[nodiscard]] constexpr auto operator()(const WeaklyRegular auto& clx) const
+  [[nodiscard]] constexpr auto operator()(const auto& clx) const
     requires requires { clx.modulus(); } || requires { modulus(clx); } || requires { clx.abs(); } ||
              requires { abs(clx); }
   {
@@ -216,7 +216,7 @@ void magnitude() = delete;  // poison pill
 void abs() = delete;        // poison pill
 
 struct magnitude_t {
-  template<WeaklyRegular T>
+  template<typename T>
   [[nodiscard]] constexpr Scalar auto operator()(const T& vec) const
     requires requires { vec.magnitude(); } || requires { magnitude(vec); } ||
              (RealScalar<T> && (std::is_arithmetic_v<T> || requires { vec.abs(); } || requires { abs(vec); }))

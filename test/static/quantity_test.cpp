@@ -38,6 +38,7 @@ import std;
 #include <concepts>
 #include <cstdint>
 #include <limits>
+#include <optional>
 #include <type_traits>
 #include <utility>
 #if MP_UNITS_HOSTED
@@ -1405,5 +1406,15 @@ concept overflowing_unit_conversion = requires {
   requires !requires { typename std::common_type_t<decltype(Q), quantity<si::metre, std::int8_t>>; };
 };
 static_assert(overflowing_unit_conversion<std::int8_t(1) * km>);
+
+// std::optional
+static_assert(
+  std::equality_comparable_with<std::optional<quantity<isq::length[m], int>>, quantity<isq::length[m], int>>);
+#if MP_UNITS_HOSTED
+static_assert(std::equality_comparable_with<std::optional<quantity<si::volt, std::complex<double>>>,
+                                            quantity<si::volt, std::complex<double>>>);
+static_assert(std::equality_comparable_with<std::optional<quantity<si::metre, cartesian_vector<double>>>,
+                                            quantity<si::metre, cartesian_vector<double>>>);
+#endif
 
 }  // namespace
