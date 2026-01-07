@@ -120,6 +120,6 @@ To achieve this goal, several techniques are applied:
 [Highly adjustable text-output formatting]: ../users_guide/framework_basics/text_output.md
 
 [Each entity can be defined with a single line of code]: ../users_guide/framework_basics/interface_introduction.md#new-style-of-definitions
-[User can easily extend the systems with custom dimensions, quantities, and units]: ../users_guide/use_cases/extending_the_library.md
+[User can easily extend the systems with custom dimensions, quantities, and units]: ../users_guide/systems/introduction.md
 
 [freestanding]: https://en.cppreference.com/w/cpp/freestanding
