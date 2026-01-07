@@ -97,6 +97,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#using-custom-representation-types" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -1673,8 +1678,6 @@ You're not viewing the latest version.
       
         
       
-        
-      
     
     
     
@@ -1787,6 +1790,26 @@ You're not viewing the latest version.
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Using Custom Representation Types
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         
@@ -1804,6 +1827,336 @@ You're not viewing the latest version.
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quantity-character" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quantity Character
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#representation-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Representation Requirements
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Representation Requirements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tensor-representations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tensor Representations
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#customization-points" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Customization Points
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Customization Points">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#character-determination" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Character Determination
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Character Determination">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#customization-point-objects-cpos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Customization Point Objects (CPOs)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#disable_realt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        disable_real&lt;T&gt;
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#behavior-and-values" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Behavior and Values
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Behavior and Values">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#value_type-or-element_type" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        value_type or element_type
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#treat_as_floating_pointrep" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        treat_as_floating_point&lt;Rep&gt;
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#is_value_preservingfrom-to" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        is_value_preserving&lt;From, To&gt;
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#representation_valuesrep" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        representation_values&lt;Rep&gt;
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#built-in-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Built-in Support
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Examples
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-define-your-type" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Define Your Type
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-provide-required-customization-points-if-needed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Provide Required Customization Points (if needed)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-optional-provide-formatting-support-if-needed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Optional: Provide Formatting Support (if needed)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-optional-specialize-representation_values-if-needed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Optional: Specialize representation_values (if needed)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-use-it-with-quantities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Use It with Quantities
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#common-pitfalls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Common Pitfalls
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Common Pitfalls">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#scaling-factor-type" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scaling Factor Type
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#adl-and-namespace-placement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ADL and Namespace Placement
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#see-also" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        See Also
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1825,34 +2178,6 @@ You're not viewing the latest version.
     
   
     Interoperability with Other Libraries
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../extending_the_library/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Extending the Library
   
 
     
@@ -2299,6 +2624,8 @@ You're not viewing the latest version.
       
         
       
+        
+      
     
     
     
@@ -2631,6 +2958,34 @@ You're not viewing the latest version.
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorials/tutorial_11/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial 11: Faster-than-Lightspeed Constants
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2867,6 +3222,8 @@ You're not viewing the latest version.
   
     
     
+      
+        
       
         
       
@@ -3138,6 +3495,34 @@ You're not viewing the latest version.
     
   
     strong_angular_quantities
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../examples/total_energy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    total_energy
   
 
     
@@ -3764,9 +4149,627 @@ You're not viewing the latest version.
   
 
 
-  <h1>Using Custom Representation Types</h1>
-
-
+<h1 id="using-custom-representation-types">Using Custom Representation Types<a class="headerlink" href="#using-custom-representation-types" title="Permanent link">&para;</a></h1>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
+<p>The <strong>mp-units</strong> library allows you to use any conforming custom type as the representation
+type for a quantity. While the library works seamlessly with fundamental arithmetic types
+(except <code>bool</code>) and <code>std::complex</code>, you can provide your own custom representation types
+to model domain-specific requirements—such as range-validated values, vectors, or
+specialized numeric types.</p>
+<p>Creating a quantity with a custom representation type is straightforward: simply multiply
+your custom value with a unit or reference:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mp-units/systems/si.h&gt;</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">mp_units</span><span class="p">;</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">mp_units</span><span class="o">::</span><span class="nn">si</span><span class="o">::</span><span class="nn">unit_symbols</span><span class="p">;</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="n">my_custom_type</span><span class="w"> </span><span class="n">value</span><span class="p">{</span><span class="mi">42</span><span class="p">};</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="k">auto</span><span class="w"> </span><span class="n">distance</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">;</span><span class="w">  </span><span class="c1">// quantity&lt;si::metre, my_custom_type&gt;</span>
+</span></code></pre></div>
+<p>However, your custom type must satisfy certain constraints defined by the library's
+representation concepts. To understand these constraints, we first need to understand
+<strong>quantity characters</strong>, which determine what operations are allowed on different types
+of quantities.</p>
+<h2 id="quantity-character">Quantity Character<a class="headerlink" href="#quantity-character" title="Permanent link">&para;</a></h2>
+<p>Quantities in physics have different mathematical natures that determine which operations
+make sense for them. For detailed information, see
+<a href="../../framework_basics/character_of_a_quantity/">Character of a Quantity</a>.</p>
+<p>The character is defined at the <strong>quantity specification</strong> level:</p>
+<ul>
+<li>Explicitly in the quantity spec definition (e.g., <code>displacement</code> is defined as a vector
+  quantity)</li>
+<li>Derived from quantity equations (e.g., <code>vector_product(v1, v2)</code> yields a vector,
+  <code>scalar_product(v1, v2)</code> yields a scalar)</li>
+<li>Defaults to <code>real_scalar</code> if not specified</li>
+</ul>
+<p>Common character requirements:</p>
+<ul>
+<li><strong>Real scalar types</strong> (like <code>int</code>, <code>double</code>) satisfy <code>real_scalar</code> character requirements</li>
+<li><strong>Complex types</strong> (like <code>std::complex&lt;double&gt;</code>) satisfy <code>complex_scalar</code> character requirements</li>
+<li><strong>Vector types</strong> (like <code>cartesian_vector&lt;double&gt;</code>) satisfy <code>vector</code> character requirements</li>
+</ul>
+<p>A single representation type may satisfy multiple character requirements. For example, <code>int</code>
+and <code>double</code> satisfy both <code>real_scalar</code> and <code>vector</code> requirements (as 1-dimensional vectors),
+so they work with both scalar and vector quantity specifications.</p>
+<p>When you use a <strong>typed quantity</strong> (with a specific quantity spec like <code>isq::height</code>),
+the library checks whether your representation type satisfies the character requirements:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">using</span><span class="w"> </span><span class="n">vec</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cartesian_vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">;</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="n">quantity</span><span class="w"> </span><span class="n">q1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">42</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">;</span><span class="w">                                  </span><span class="c1">// ✅ OK: quantity kind, no character checking</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">quantity</span><span class="w"> </span><span class="n">q2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vec</span><span class="p">{</span><span class="mf">1.</span><span class="p">,</span><span class="w"> </span><span class="mf">2.</span><span class="p">,</span><span class="w"> </span><span class="mf">3.</span><span class="p">}</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">;</span><span class="w">                     </span><span class="c1">// ✅ OK: quantity kind, no character checking</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="n">quantity</span><span class="w"> </span><span class="n">q3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">42</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="p">[</span><span class="n">m</span><span class="p">];</span><span class="w">                     </span><span class="c1">// ✅ OK: height is scalar, int satisfies scalar requirements</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="n">quantity</span><span class="w"> </span><span class="n">q4</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="p">(</span><span class="mi">42</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">);</span><span class="w">                     </span><span class="c1">// ✅ OK: same as above</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="n">quantity</span><span class="w"> </span><span class="n">q5</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">42</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">displacement</span><span class="p">[</span><span class="n">m</span><span class="p">];</span><span class="w">               </span><span class="c1">// ✅ OK: displacement is vector, int can represent 1-D vectors</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="n">quantity</span><span class="w"> </span><span class="n">q6</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">displacement</span><span class="p">(</span><span class="mi">42</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">);</span><span class="w">               </span><span class="c1">// ✅ OK: same as above</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="n">quantity</span><span class="w"> </span><span class="n">q7</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vec</span><span class="p">{</span><span class="mf">1.</span><span class="p">,</span><span class="w"> </span><span class="mf">2.</span><span class="p">,</span><span class="w"> </span><span class="mf">3.</span><span class="p">}</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">displacement</span><span class="p">[</span><span class="n">m</span><span class="p">];</span><span class="w">  </span><span class="c1">// ✅ OK: displacement is vector, vec satisfies vector requirements</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="n">quantity</span><span class="w"> </span><span class="n">q8</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">displacement</span><span class="p">(</span><span class="n">vec</span><span class="p">{</span><span class="mf">1.</span><span class="p">,</span><span class="w"> </span><span class="mf">2.</span><span class="p">,</span><span class="w"> </span><span class="mf">3.</span><span class="p">}</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">);</span><span class="w">  </span><span class="c1">// ✅ OK: same as above</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="c1">// quantity q9 = vec{1., 2., 3.} * isq::height[m];     // ❌ Error: height is scalar,</span>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">                                                       </span><span class="c1">//           vec doesn&#39;t satisfy scalar requirements</span>
+</span></code></pre></div>
+<h2 id="representation-requirements">Representation Requirements<a class="headerlink" href="#representation-requirements" title="Permanent link">&para;</a></h2>
+<p>To be used as a representation type in <strong>mp-units</strong>, a type must satisfy the
+<a href="../../framework_basics/concepts/#RepresentationOf"><code>RepresentationOf</code></a> concept.
+The library supports different types of representations corresponding to different
+quantity characters.</p>
+<p>The following table summarizes the requirements for different representation characters:</p>
+<table>
+<thead>
+<tr>
+<th>Requirement</th>
+<th style="text-align: center;">Real Scalar</th>
+<th style="text-align: center;">Complex Scalar</th>
+<th style="text-align: center;">Vector</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Copyable</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td>Addition/subtraction (<code>+</code>, <code>-</code>, unary <code>-</code>)</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td>Scalable (multiply/divide by scalar)</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td>Self-scalable (<code>T * T</code>, <code>T / T</code>)</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr>
+<td>Equality comparable (<code>==</code>)</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td>Totally ordered (<code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code>)</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr>
+<td>Not a quantity type itself</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td><strong>Construction</strong></td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;"><code>T{real, imag}</code></td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr>
+<td><strong>Required CPOs</strong></td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;"><code>mp_units::real()</code>, <code>mp_units::imag()</code>, <code>mp_units::modulus()</code></td>
+<td style="text-align: center;"><code>mp_units::magnitude()</code></td>
+</tr>
+<tr>
+<td><strong>Opt-out mechanism</strong></td>
+<td style="text-align: center;"><code>disable_real&lt;T&gt;</code></td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+</tr>
+<tr>
+<td><strong>Examples</strong></td>
+<td style="text-align: center;"><code>int</code>, <code>double</code>, <code>long double</code></td>
+<td style="text-align: center;"><code>std::complex&lt;double&gt;</code></td>
+<td style="text-align: center;"><code>cartesian_vector&lt;double&gt;</code>, <code>int</code>, <code>double</code></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">Scaling Factor Type</p>
+<p>All types must be scalable with a scaling factor type, typically their underlying value type or
+a standard numeric type (like <code>long double</code> or <code>std::intmax_t</code>).</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Weakly Regular Types</p>
+<p>All representation types must be <strong>weakly regular</strong>, which means they satisfy the
+<code>std::regular</code> concept except for the default-constructibility requirement. Specifically,
+they must be:</p>
+<ul>
+<li><strong>Copyable</strong> (<code>std::copyable</code>)</li>
+<li><strong>Equality comparable</strong> (<code>std::equality_comparable</code>)</li>
+</ul>
+<p>This ensures that representation types have value semantics suitable for use in quantities.
+Default construction is not required, allowing types like range-validated representations
+that may not have a meaningful default value.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Complex Types Construction and Total Ordering</p>
+<p><strong>Construction</strong></p>
+<p>Complex scalars <strong>must</strong> be constructible from real and imaginary parts: <code>T{real_value, imag_value}</code>.
+This requirement is essential for operations that combine real-valued quantities into complex results.
+For example, combining <em>active power</em> and <em>reactive power</em> into <em>complex power</em>:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">active</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">active_power</span><span class="p">(</span><span class="mf">100.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">W</span><span class="p">);</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">quantity</span><span class="w"> </span><span class="n">reactive</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">isq</span><span class="o">::</span><span class="n">reactive_power</span><span class="p">(</span><span class="mf">50.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">W</span><span class="p">);</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="c1">// Library needs to construct: std::complex&lt;double&gt;{active.numerical_value(), reactive.numerical_value()}</span>
+</span></code></pre></div>
+<p><strong>Total Ordering</strong></p>
+<p>The library assumes that well-designed complex-like types do not provide total ordering
+(<code>operator&lt;</code>, etc.) since there is no natural ordering for complex numbers. If you have
+a complex-like type that does provide ordering operators (e.g., lexicographical comparison
+for use in containers), use the <code>disable_real</code> opt-out mechanism:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">template</span><span class="o">&lt;&gt;</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">constexpr</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">disable_real</span><span class="o">&lt;</span><span class="n">my_complex_type</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+</span></code></pre></div>
+<p>Alternatively, the library could explicitly check for the absence of <code>mp_units::real()</code> and
+<code>mp_units::imag()</code> operations to distinguish real from complex scalars. This is a design
+choice that may be refined based on standardization discussions.</p>
+</div>
+<h3 id="tensor-representations">Tensor Representations<a class="headerlink" href="#tensor-representations" title="Permanent link">&para;</a></h3>
+<p>Tensor representations are planned for future support but are not yet fully implemented.</p>
+<h2 id="customization-points">Customization Points<a class="headerlink" href="#customization-points" title="Permanent link">&para;</a></h2>
+<p>The library provides several customization mechanisms for representation types. These are
+the tools you can use to adapt your custom types to work with <strong>mp-units</strong>.</p>
+<p>The customization points fall into two categories: <strong>Character determination</strong> (CPOs and opt-out
+mechanisms that determine what kind of representation type you have) and <strong>Behavior and values</strong>
+(customization points that control library behavior and provide special values).</p>
+<h3 id="character-determination">Character Determination<a class="headerlink" href="#character-determination" title="Permanent link">&para;</a></h3>
+<h4 id="customization-point-objects-cpos">Customization Point Objects (CPOs)<a class="headerlink" href="#customization-point-objects-cpos" title="Permanent link">&para;</a></h4>
+<p>The library uses several CPOs to support different representation types. Providing these CPOs
+determines the <strong>character</strong> of your representation type. Each CPO checks for implementations
+in the following priority order:</p>
+<p><strong><code>mp_units::real(c)</code></strong> - Returns the real part of a complex number:</p>
+<ol>
+<li><code>c.real()</code> member function</li>
+<li><code>real(c)</code> free function found via ADL</li>
+</ol>
+<p><strong><code>mp_units::imag(c)</code></strong> - Returns the imaginary part of a complex number:</p>
+<ol>
+<li><code>c.imag()</code> member function</li>
+<li><code>imag(c)</code> free function found via ADL</li>
+</ol>
+<p><strong><code>mp_units::modulus(c)</code></strong> - Returns the magnitude of a complex number:</p>
+<ol>
+<li><code>c.modulus()</code> member function</li>
+<li><code>modulus(c)</code> free function found via ADL</li>
+<li><code>c.abs()</code> member function</li>
+<li><code>abs(c)</code> free function found via ADL</li>
+</ol>
+<p><strong><code>mp_units::magnitude(v)</code></strong> - Returns the magnitude of a vector as a scalar:</p>
+<ol>
+<li><code>v.magnitude()</code> member function</li>
+<li><code>magnitude(v)</code> free function found via ADL</li>
+<li>For arithmetic types: <code>std::abs(v)</code></li>
+<li>For real scalar types: <code>v.abs()</code> member function</li>
+<li>For real scalar types: <code>abs(v)</code> free function found via ADL</li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Why <code>abs()</code> is also checked?</p>
+<p><strong>Complex Scalars (<code>modulus()</code> CPO)</strong></p>
+<p>Provides compatibility with <code>std::complex</code> and similar types that use <code>abs()</code> as the
+function name for returning the modulus value. This is checked as a fallback if
+<code>modulus()</code> is not provided.</p>
+<p><strong>Vectors (<code>magnitude()</code> CPO)</strong></p>
+<p>Allows real scalar types (like <code>int</code>, <code>double</code>) to represent 1-dimensional vectors,
+which is very common in engineering. This enables seamless use of arithmetic types
+for both scalar and vector quantities.</p>
+</div>
+<hr />
+<h4 id="disable_realt"><code>disable_real&lt;T&gt;</code><a class="headerlink" href="#disable_realt" title="Permanent link">&para;</a></h4>
+<p>A specializable variable template to opt out a type from being treated as a real scalar:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">constexpr</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">disable_real</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+</span></code></pre></div>
+<p><strong>Purpose:</strong> Controls the <strong>character</strong> of your representation type by preventing it from
+being classified as a real scalar, even if it satisfies the real scalar requirements
+(copyable, totally ordered, supports arithmetic operations).</p>
+<p><strong>When to specialize:</strong> If your type accidentally satisfies the real scalar requirements
+but shouldn't be used as one:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">template</span><span class="o">&lt;&gt;</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="k">constexpr</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">disable_real</span><span class="o">&lt;</span><span class="n">my_type</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+</span></code></pre></div>
+<p><strong>Example use case:</strong> The library uses this internally to prevent <code>bool</code> from being used
+as a scalar representation, even though <code>bool</code> is technically totally ordered and supports
+arithmetic operations.</p>
+<hr />
+<h3 id="behavior-and-values">Behavior and Values<a class="headerlink" href="#behavior-and-values" title="Permanent link">&para;</a></h3>
+<h4 id="value_type-or-element_type"><code>value_type</code> or <code>element_type</code><a class="headerlink" href="#value_type-or-element_type" title="Permanent link">&para;</a></h4>
+<p>The library uses <code>value_type_t&lt;T&gt;</code> to determine the underlying arithmetic type of your
+representation, which is used for:</p>
+<ul>
+<li>Determining the scaling factor type (what type to multiply/divide your type by)</li>
+<li>Checking if the type should be treated as floating-point</li>
+</ul>
+<p>How it works:</p>
+<ol>
+<li>If your type has a <code>value_type</code> or <code>element_type</code> member type (checked via <code>std::indirectly_readable_traits</code>),
+   the library recursively unwraps it until it finds the underlying type</li>
+<li>Otherwise, your type itself is used as the value type</li>
+</ol>
+<p><strong>Recommendation:</strong> Provide a <code>value_type</code> member type for wrapper types:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="k">class</span><span class="w"> </span><span class="nc">my_wrapper</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="k">public</span><span class="o">:</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">value_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">T</span><span class="p">;</span><span class="w">  </span><span class="c1">// Exposes the underlying type</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">  </span><span class="c1">// ...</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="p">};</span>
+</span></code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Don't provide both <code>value_type</code> and <code>element_type</code></p>
+<p>If your type provides both <code>value_type</code> and <code>element_type</code> that refer to <strong>different types</strong>,
+<code>std::indirectly_readable_traits&lt;T&gt;::value_type</code> will be ill-formed (undefined), and your type
+won't work with the library. If both exist and refer to the <strong>same type</strong>, that type will be used.</p>
+<p><strong>Recommendation:</strong> Provide only <code>value_type</code> unless you have a specific reason to provide both
+(e.g., satisfying iterator concepts), in which case ensure they refer to the same type.</p>
+</div>
+<hr />
+<h4 id="treat_as_floating_pointrep"><code>treat_as_floating_point&lt;Rep&gt;</code><a class="headerlink" href="#treat_as_floating_pointrep" title="Permanent link">&para;</a></h4>
+<p>A specializable variable template that tells the library whether a type should be treated as
+floating-point for the purpose of allowing implicit conversions:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">Rep</span><span class="o">&gt;</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="k">constexpr</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">treat_as_floating_point</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="cm">/* implementation-defined */</span><span class="p">;</span>
+</span></code></pre></div>
+<p><strong>Default behavior:</strong></p>
+<ul>
+<li>In hosted environments: uses <code>std::chrono::treat_as_floating_point_v&lt;value_type_t&lt;Rep&gt;&gt;</code></li>
+<li>In freestanding: uses <code>std::is_floating_point_v&lt;value_type_t&lt;Rep&gt;&gt;</code></li>
+</ul>
+<p><strong>When to specialize:</strong> If you have a custom type that wraps a floating-point value but the
+automatic detection doesn't work correctly:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="k">template</span><span class="o">&lt;&gt;</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="k">constexpr</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">treat_as_floating_point</span><span class="o">&lt;</span><span class="n">my_fixed_point_type</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+</span></code></pre></div>
+<p><strong>Impact:</strong> When <code>treat_as_floating_point&lt;Rep&gt;</code> is <code>true</code>, the type is treated as floating-point
+for conversion purposes. See <a href="../../framework_basics/value_conversions/#value-conversions">Value Conversions</a>
+for details on how this affects implicit conversions between quantities</p>
+<hr />
+<h4 id="is_value_preservingfrom-to"><code>is_value_preserving&lt;From, To&gt;</code><a class="headerlink" href="#is_value_preservingfrom-to" title="Permanent link">&para;</a></h4>
+<p>A specializable variable template that determines whether a conversion from one representation
+type to another preserves values:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">From</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">To</span><span class="o">&gt;</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="k">constexpr</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">is_value_preserving</span><span class="w"> </span><span class="o">=</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">  </span><span class="n">treat_as_floating_point</span><span class="o">&lt;</span><span class="n">To</span><span class="o">&gt;</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="o">!</span><span class="n">treat_as_floating_point</span><span class="o">&lt;</span><span class="n">From</span><span class="o">&gt;</span><span class="p">;</span>
+</span></code></pre></div>
+<p><strong>Default behavior:</strong> A conversion is value-preserving if:</p>
+<ul>
+<li>The destination type is floating-point (can represent any source value), OR</li>
+<li>The source type is not floating-point (integer → integer or integer → float is safe)</li>
+</ul>
+<p>This follows the same practice as <code>std::chrono::duration</code> conversions.</p>
+<p><strong>When to specialize:</strong> If you have custom types with specific value preservation semantics:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1">// Example: my_decimal has more precision than double</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="k">template</span><span class="o">&lt;&gt;</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="k">constexpr</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">is_value_preserving</span><span class="o">&lt;</span><span class="n">my_decimal</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="k">template</span><span class="o">&lt;&gt;</span>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="k">constexpr</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">is_value_preserving</span><span class="o">&lt;</span><span class="kt">double</span><span class="p">,</span><span class="w"> </span><span class="n">my_decimal</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+</span></code></pre></div>
+<p><strong>Impact:</strong> Controls whether conversions are implicit or require explicit casts.</p>
+<hr />
+<h4 id="representation_valuesrep"><code>representation_values&lt;Rep&gt;</code><a class="headerlink" href="#representation_valuesrep" title="Permanent link">&para;</a></h4>
+<p>A specializable class template that provides special values for a representation type:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">Rep</span><span class="o">&gt;</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="k">struct</span><span class="w"> </span><span class="nc">mp_units</span><span class="o">::</span><span class="n">representation_values</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">Rep</span><span class="w"> </span><span class="nf">zero</span><span class="p">()</span><span class="w"> </span><span class="k">noexcept</span><span class="p">;</span><span class="w">  </span><span class="c1">// Required for quantity::zero()</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">Rep</span><span class="w"> </span><span class="nf">one</span><span class="p">()</span><span class="w"> </span><span class="k">noexcept</span><span class="p">;</span><span class="w">   </span><span class="c1">// Required for quantity operations</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">Rep</span><span class="w"> </span><span class="nf">min</span><span class="p">()</span><span class="w"> </span><span class="k">noexcept</span><span class="p">;</span><span class="w">   </span><span class="c1">// Required for quantity::min()</span>
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">Rep</span><span class="w"> </span><span class="nf">max</span><span class="p">()</span><span class="w"> </span><span class="k">noexcept</span><span class="p">;</span><span class="w">   </span><span class="c1">// Required for quantity::max()</span>
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="p">};</span>
+</span></code></pre></div>
+<p><strong>Default behavior:</strong></p>
+<ul>
+<li>In hosted environments: inherits from <code>std::chrono::duration_values&lt;Rep&gt;</code></li>
+<li><code>zero()</code>: returns <code>Rep(0)</code> if Rep is constructible from <code>int</code></li>
+<li><code>one()</code>: returns <code>Rep(1)</code> if Rep is constructible from <code>int</code></li>
+<li><code>min()</code>: returns <code>std::numeric_limits&lt;Rep&gt;::lowest()</code> if available</li>
+<li><code>max()</code>: returns <code>std::numeric_limits&lt;Rep&gt;::max()</code> if available</li>
+</ul>
+<p><strong>When to specialize:</strong> If your type needs custom special values:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="k">struct</span><span class="w"> </span><span class="nc">mp_units</span><span class="o">::</span><span class="n">representation_values</span><span class="o">&lt;</span><span class="n">my_custom_type</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">my_custom_type</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">zero</span><span class="p">()</span><span class="w"> </span><span class="k">noexcept</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">my_custom_type</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">{</span><span class="n">T</span><span class="p">{</span><span class="mi">0</span><span class="p">}};</span>
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>
+</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">my_custom_type</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">one</span><span class="p">()</span><span class="w"> </span><span class="k">noexcept</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">my_custom_type</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">{</span><span class="n">T</span><span class="p">{</span><span class="mi">1</span><span class="p">}};</span>
+</span><span id="__span-12-9"><a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-12-10"><a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a>
+</span><span id="__span-12-11"><a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">my_custom_type</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">min</span><span class="p">()</span><span class="w"> </span><span class="k">noexcept</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-12-12"><a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">my_custom_type</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">{</span><span class="n">std</span><span class="o">::</span><span class="n">numeric_limits</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;::</span><span class="n">lowest</span><span class="p">()};</span>
+</span><span id="__span-12-13"><a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-12-14"><a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a>
+</span><span id="__span-12-15"><a id="__codelineno-12-15" name="__codelineno-12-15" href="#__codelineno-12-15"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">my_custom_type</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">max</span><span class="p">()</span><span class="w"> </span><span class="k">noexcept</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-12-16"><a id="__codelineno-12-16" name="__codelineno-12-16" href="#__codelineno-12-16"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">my_custom_type</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">{</span><span class="n">std</span><span class="o">::</span><span class="n">numeric_limits</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;::</span><span class="n">max</span><span class="p">()};</span>
+</span><span id="__span-12-17"><a id="__codelineno-12-17" name="__codelineno-12-17" href="#__codelineno-12-17"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-12-18"><a id="__codelineno-12-18" name="__codelineno-12-18" href="#__codelineno-12-18"></a><span class="p">};</span>
+</span></code></pre></div>
+<p><strong>Usage:</strong> These values are used by:</p>
+<ul>
+<li><code>quantity::zero()</code>, <code>quantity::min()</code>, <code>quantity::max()</code> static member functions</li>
+<li>Mathematical operations like <code>floor()</code>, <code>ceil()</code>, <code>round()</code></li>
+<li>Division by zero checks</li>
+</ul>
+<h2 id="built-in-support">Built-in Support<a class="headerlink" href="#built-in-support" title="Permanent link">&para;</a></h2>
+<p>All fundamental arithmetic types except <code>bool</code> satisfy the real scalar and 1-D vector
+representation requirements:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">length1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">42</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">;</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span><span class="w"> </span><span class="n">length2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">3.14</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">;</span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="p">,</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span><span class="w"> </span><span class="n">length3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.718L</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">;</span>
+</span></code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Why is <code>bool</code> excluded?</p>
+<p>Although <code>bool</code> technically satisfies the syntactic requirements (it's copyable, totally
+ordered, and supports arithmetic operations), it's excluded via <code>disable_real&lt;bool&gt; = true</code>
+because using boolean values as physical quantities rarely makes sense and can lead to
+confusing code.</p>
+</div>
+<p>The library also supports <code>std::complex</code> for complex-valued quantities:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;complex&gt;</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="n">std</span><span class="o">::</span><span class="n">complex</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="w"> </span><span class="n">impedance</span><span class="p">{</span><span class="mf">50.0</span><span class="p">,</span><span class="w"> </span><span class="mf">30.0</span><span class="p">};</span>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="n">quantity</span><span class="w"> </span><span class="n">z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">impedance</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">ohm</span><span class="p">;</span><span class="w">  </span><span class="c1">// Complex impedance</span>
+</span></code></pre></div>
+<h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h2>
+<details class="example">
+<summary>Range-Validated Representation</summary>
+<p>The library examples include a <code>ranged_representation</code> type that ensures values stay within
+specified bounds. This is useful for quantities with physical or logical constraints:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">movable</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">Min</span><span class="p">,</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">Max</span><span class="o">&gt;</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="k">class</span><span class="w"> </span><span class="nc">ranged_representation</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="w">  </span><span class="n">T</span><span class="w"> </span><span class="n">value_</span><span class="p">;</span>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="k">public</span><span class="o">:</span>
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="w">  </span><span class="k">constexpr</span><span class="w"> </span><span class="n">ranged_representation</span><span class="p">(</span><span class="n">T</span><span class="w"> </span><span class="n">v</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">value_</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">clamp</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">{</span><span class="n">Min</span><span class="p">},</span><span class="w"> </span><span class="n">T</span><span class="p">{</span><span class="n">Max</span><span class="p">}))</span><span class="w"> </span><span class="p">{}</span>
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>
+</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="w">  </span><span class="k">constexpr</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="n">value</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">value_</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-15-8"><a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a><span class="w">  </span><span class="k">constexpr</span><span class="w"> </span><span class="k">operator</span><span class="w"> </span><span class="n">T</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">value_</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w">  </span><span class="c1">// Conversion operator to underlying type</span>
+</span><span id="__span-15-9"><a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="w">  </span><span class="k">constexpr</span><span class="w"> </span><span class="n">ranged_representation</span><span class="w"> </span><span class="k">operator</span><span class="o">-</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">ranged_representation</span><span class="p">(</span><span class="o">-</span><span class="n">value_</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-15-10"><a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a><span class="w">  </span><span class="c1">// ... other required operations</span>
+</span><span id="__span-15-11"><a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a><span class="p">};</span>
+</span></code></pre></div>
+<p>This is used in the <a href="../../../examples/glide_computer/#geographic-integration">glide computer example</a>
+for <em>latitude</em> and <em>longitude</em>:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mp-units/systems/si.h&gt;</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">mp_units</span><span class="p">;</span>
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span>
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a><span class="k">using</span><span class="w"> </span><span class="n">latitude</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">degree</span><span class="p">,</span><span class="w"> </span><span class="n">equator</span><span class="p">,</span><span class="w"> </span><span class="n">ranged_representation</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="mi">-90</span><span class="p">,</span><span class="w"> </span><span class="mi">90</span><span class="o">&gt;&gt;</span><span class="p">;</span>
+</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a>
+</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span>
+</span><span id="__span-16-9"><a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a><span class="k">using</span><span class="w"> </span><span class="n">longitude</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">quantity_point</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">degree</span><span class="p">,</span><span class="w"> </span><span class="n">prime_meridian</span><span class="p">,</span><span class="w"> </span><span class="n">ranged_representation</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="mi">-180</span><span class="p">,</span><span class="w"> </span><span class="mi">180</span><span class="o">&gt;&gt;</span><span class="p">;</span>
+</span><span id="__span-16-10"><a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a>
+</span><span id="__span-16-11"><a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a><span class="kt">void</span><span class="w"> </span><span class="nf">example</span><span class="p">()</span>
+</span><span id="__span-16-12"><a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a><span class="p">{</span>
+</span><span id="__span-16-13"><a id="__codelineno-16-13" name="__codelineno-16-13" href="#__codelineno-16-13"></a><span class="w">  </span><span class="n">latitude</span><span class="w"> </span><span class="n">lat</span><span class="p">{</span><span class="mf">45.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">deg</span><span class="p">};</span><span class="w">    </span><span class="c1">// Valid: within [-90, 90]</span>
+</span><span id="__span-16-14"><a id="__codelineno-16-14" name="__codelineno-16-14" href="#__codelineno-16-14"></a><span class="w">  </span><span class="n">longitude</span><span class="w"> </span><span class="n">lon</span><span class="p">{</span><span class="mf">120.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">deg</span><span class="p">};</span><span class="w">  </span><span class="c1">// Valid: within [-180, 180]</span>
+</span><span id="__span-16-15"><a id="__codelineno-16-15" name="__codelineno-16-15" href="#__codelineno-16-15"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>The range validation happens at construction time, ensuring coordinates are always valid.</p>
+</details>
+<details class="example">
+<summary>Creating Your Own Representation Type</summary>
+<p>To create a custom representation type, follow these steps:</p>
+<h3 id="1-define-your-type">1. Define Your Type<a class="headerlink" href="#1-define-your-type" title="Permanent link">&para;</a></h3>
+<p>Create a class with the value semantics and operations you need:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="k">class</span><span class="w"> </span><span class="nc">my_custom_type</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="w">  </span><span class="n">T</span><span class="w"> </span><span class="n">value_</span><span class="p">;</span>
+</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="k">public</span><span class="o">:</span>
+</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">value_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">T</span><span class="p">;</span>
+</span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a>
+</span><span id="__span-17-7"><a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="w">  </span><span class="k">constexpr</span><span class="w"> </span><span class="k">explicit</span><span class="w"> </span><span class="n">my_custom_type</span><span class="p">(</span><span class="n">T</span><span class="w"> </span><span class="n">v</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">value_</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span>
+</span><span id="__span-17-8"><a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="w">  </span><span class="k">constexpr</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="n">value</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">value_</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-17-9"><a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a>
+</span><span id="__span-17-10"><a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a><span class="w">  </span><span class="c1">// Required: Arithmetic operations</span>
+</span><span id="__span-17-11"><a id="__codelineno-17-11" name="__codelineno-17-11" href="#__codelineno-17-11"></a><span class="w">  </span><span class="k">constexpr</span><span class="w"> </span><span class="n">my_custom_type</span><span class="w"> </span><span class="k">operator</span><span class="o">-</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">my_custom_type</span><span class="p">{</span><span class="o">-</span><span class="n">value_</span><span class="p">};</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-17-12"><a id="__codelineno-17-12" name="__codelineno-17-12" href="#__codelineno-17-12"></a>
+</span><span id="__span-17-13"><a id="__codelineno-17-13" name="__codelineno-17-13" href="#__codelineno-17-13"></a><span class="w">  </span><span class="k">friend</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">my_custom_type</span><span class="w"> </span><span class="k">operator</span><span class="o">+</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">my_custom_type</span><span class="o">&amp;</span><span class="w"> </span><span class="n">lhs</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">my_custom_type</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rhs</span><span class="p">)</span>
+</span><span id="__span-17-14"><a id="__codelineno-17-14" name="__codelineno-17-14" href="#__codelineno-17-14"></a><span class="w">  </span><span class="p">{</span>
+</span><span id="__span-17-15"><a id="__codelineno-17-15" name="__codelineno-17-15" href="#__codelineno-17-15"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">my_custom_type</span><span class="p">{</span><span class="n">lhs</span><span class="p">.</span><span class="n">value_</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">rhs</span><span class="p">.</span><span class="n">value_</span><span class="p">};</span>
+</span><span id="__span-17-16"><a id="__codelineno-17-16" name="__codelineno-17-16" href="#__codelineno-17-16"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-17-17"><a id="__codelineno-17-17" name="__codelineno-17-17" href="#__codelineno-17-17"></a>
+</span><span id="__span-17-18"><a id="__codelineno-17-18" name="__codelineno-17-18" href="#__codelineno-17-18"></a><span class="w">  </span><span class="k">friend</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">my_custom_type</span><span class="w"> </span><span class="k">operator</span><span class="o">-</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">my_custom_type</span><span class="o">&amp;</span><span class="w"> </span><span class="n">lhs</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">my_custom_type</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rhs</span><span class="p">)</span>
+</span><span id="__span-17-19"><a id="__codelineno-17-19" name="__codelineno-17-19" href="#__codelineno-17-19"></a><span class="w">  </span><span class="p">{</span>
+</span><span id="__span-17-20"><a id="__codelineno-17-20" name="__codelineno-17-20" href="#__codelineno-17-20"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">my_custom_type</span><span class="p">{</span><span class="n">lhs</span><span class="p">.</span><span class="n">value_</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">rhs</span><span class="p">.</span><span class="n">value_</span><span class="p">};</span>
+</span><span id="__span-17-21"><a id="__codelineno-17-21" name="__codelineno-17-21" href="#__codelineno-17-21"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-17-22"><a id="__codelineno-17-22" name="__codelineno-17-22" href="#__codelineno-17-22"></a>
+</span><span id="__span-17-23"><a id="__codelineno-17-23" name="__codelineno-17-23" href="#__codelineno-17-23"></a><span class="w">  </span><span class="c1">// Required: Scaling operations</span>
+</span><span id="__span-17-24"><a id="__codelineno-17-24" name="__codelineno-17-24" href="#__codelineno-17-24"></a><span class="w">  </span><span class="k">friend</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">my_custom_type</span><span class="w"> </span><span class="k">operator</span><span class="o">*</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">my_custom_type</span><span class="o">&amp;</span><span class="w"> </span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="n">factor</span><span class="p">)</span>
+</span><span id="__span-17-25"><a id="__codelineno-17-25" name="__codelineno-17-25" href="#__codelineno-17-25"></a><span class="w">  </span><span class="p">{</span>
+</span><span id="__span-17-26"><a id="__codelineno-17-26" name="__codelineno-17-26" href="#__codelineno-17-26"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">my_custom_type</span><span class="p">{</span><span class="n">v</span><span class="p">.</span><span class="n">value_</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">factor</span><span class="p">};</span>
+</span><span id="__span-17-27"><a id="__codelineno-17-27" name="__codelineno-17-27" href="#__codelineno-17-27"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-17-28"><a id="__codelineno-17-28" name="__codelineno-17-28" href="#__codelineno-17-28"></a>
+</span><span id="__span-17-29"><a id="__codelineno-17-29" name="__codelineno-17-29" href="#__codelineno-17-29"></a><span class="w">  </span><span class="k">friend</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">my_custom_type</span><span class="w"> </span><span class="k">operator</span><span class="o">*</span><span class="p">(</span><span class="n">T</span><span class="w"> </span><span class="n">factor</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">my_custom_type</span><span class="o">&amp;</span><span class="w"> </span><span class="n">v</span><span class="p">)</span>
+</span><span id="__span-17-30"><a id="__codelineno-17-30" name="__codelineno-17-30" href="#__codelineno-17-30"></a><span class="w">  </span><span class="p">{</span>
+</span><span id="__span-17-31"><a id="__codelineno-17-31" name="__codelineno-17-31" href="#__codelineno-17-31"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">my_custom_type</span><span class="p">{</span><span class="n">factor</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">v</span><span class="p">.</span><span class="n">value_</span><span class="p">};</span>
+</span><span id="__span-17-32"><a id="__codelineno-17-32" name="__codelineno-17-32" href="#__codelineno-17-32"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-17-33"><a id="__codelineno-17-33" name="__codelineno-17-33" href="#__codelineno-17-33"></a>
+</span><span id="__span-17-34"><a id="__codelineno-17-34" name="__codelineno-17-34" href="#__codelineno-17-34"></a><span class="w">  </span><span class="k">friend</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">my_custom_type</span><span class="w"> </span><span class="k">operator</span><span class="o">/</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">my_custom_type</span><span class="o">&amp;</span><span class="w"> </span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="n">factor</span><span class="p">)</span>
+</span><span id="__span-17-35"><a id="__codelineno-17-35" name="__codelineno-17-35" href="#__codelineno-17-35"></a><span class="w">  </span><span class="p">{</span>
+</span><span id="__span-17-36"><a id="__codelineno-17-36" name="__codelineno-17-36" href="#__codelineno-17-36"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">my_custom_type</span><span class="p">{</span><span class="n">v</span><span class="p">.</span><span class="n">value_</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">factor</span><span class="p">};</span>
+</span><span id="__span-17-37"><a id="__codelineno-17-37" name="__codelineno-17-37" href="#__codelineno-17-37"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-17-38"><a id="__codelineno-17-38" name="__codelineno-17-38" href="#__codelineno-17-38"></a>
+</span><span id="__span-17-39"><a id="__codelineno-17-39" name="__codelineno-17-39" href="#__codelineno-17-39"></a><span class="w">  </span><span class="c1">// Required for scalar types: Self-scaling operations</span>
+</span><span id="__span-17-40"><a id="__codelineno-17-40" name="__codelineno-17-40" href="#__codelineno-17-40"></a><span class="w">  </span><span class="k">friend</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">my_custom_type</span><span class="w"> </span><span class="k">operator</span><span class="o">*</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">my_custom_type</span><span class="o">&amp;</span><span class="w"> </span><span class="n">lhs</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">my_custom_type</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rhs</span><span class="p">)</span>
+</span><span id="__span-17-41"><a id="__codelineno-17-41" name="__codelineno-17-41" href="#__codelineno-17-41"></a><span class="w">  </span><span class="p">{</span>
+</span><span id="__span-17-42"><a id="__codelineno-17-42" name="__codelineno-17-42" href="#__codelineno-17-42"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">my_custom_type</span><span class="p">{</span><span class="n">lhs</span><span class="p">.</span><span class="n">value_</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">rhs</span><span class="p">.</span><span class="n">value_</span><span class="p">};</span>
+</span><span id="__span-17-43"><a id="__codelineno-17-43" name="__codelineno-17-43" href="#__codelineno-17-43"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-17-44"><a id="__codelineno-17-44" name="__codelineno-17-44" href="#__codelineno-17-44"></a>
+</span><span id="__span-17-45"><a id="__codelineno-17-45" name="__codelineno-17-45" href="#__codelineno-17-45"></a><span class="w">  </span><span class="k">friend</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">my_custom_type</span><span class="w"> </span><span class="k">operator</span><span class="o">/</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">my_custom_type</span><span class="o">&amp;</span><span class="w"> </span><span class="n">lhs</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">my_custom_type</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rhs</span><span class="p">)</span>
+</span><span id="__span-17-46"><a id="__codelineno-17-46" name="__codelineno-17-46" href="#__codelineno-17-46"></a><span class="w">  </span><span class="p">{</span>
+</span><span id="__span-17-47"><a id="__codelineno-17-47" name="__codelineno-17-47" href="#__codelineno-17-47"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">my_custom_type</span><span class="p">{</span><span class="n">lhs</span><span class="p">.</span><span class="n">value_</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">rhs</span><span class="p">.</span><span class="n">value_</span><span class="p">};</span>
+</span><span id="__span-17-48"><a id="__codelineno-17-48" name="__codelineno-17-48" href="#__codelineno-17-48"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-17-49"><a id="__codelineno-17-49" name="__codelineno-17-49" href="#__codelineno-17-49"></a>
+</span><span id="__span-17-50"><a id="__codelineno-17-50" name="__codelineno-17-50" href="#__codelineno-17-50"></a><span class="w">  </span><span class="c1">// Required: Equality comparison</span>
+</span><span id="__span-17-51"><a id="__codelineno-17-51" name="__codelineno-17-51" href="#__codelineno-17-51"></a><span class="w">  </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="k">operator</span><span class="o">==</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">my_custom_type</span><span class="o">&amp;</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="p">;</span>
+</span><span id="__span-17-52"><a id="__codelineno-17-52" name="__codelineno-17-52" href="#__codelineno-17-52"></a>
+</span><span id="__span-17-53"><a id="__codelineno-17-53" name="__codelineno-17-53" href="#__codelineno-17-53"></a><span class="w">  </span><span class="c1">// Required for real scalar types: Comparison</span>
+</span><span id="__span-17-54"><a id="__codelineno-17-54" name="__codelineno-17-54" href="#__codelineno-17-54"></a><span class="w">  </span><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="k">operator</span><span class="o">&lt;=&gt;</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">my_custom_type</span><span class="o">&amp;</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="p">;</span>
+</span><span id="__span-17-55"><a id="__codelineno-17-55" name="__codelineno-17-55" href="#__codelineno-17-55"></a><span class="p">};</span>
+</span></code></pre></div>
+<h3 id="2-provide-required-customization-points-if-needed">2. Provide Required Customization Points (if needed)<a class="headerlink" href="#2-provide-required-customization-points-if-needed" title="Permanent link">&para;</a></h3>
+<p>For complex scalars, provide the required customization points. You can do this via member functions:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="k">class</span><span class="w"> </span><span class="nc">my_complex_type</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="w">  </span><span class="n">T</span><span class="w"> </span><span class="n">real_</span><span class="p">,</span><span class="w"> </span><span class="n">imag_</span><span class="p">;</span>
+</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="k">public</span><span class="o">:</span>
+</span><span id="__span-18-5"><a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a><span class="w">  </span><span class="k">constexpr</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="n">real</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">real_</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-18-6"><a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a><span class="w">  </span><span class="k">constexpr</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="n">imag</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">imag_</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-18-7"><a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a><span class="w">  </span><span class="k">constexpr</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="n">modulus</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">hypot</span><span class="p">(</span><span class="n">real_</span><span class="p">,</span><span class="w"> </span><span class="n">imag_</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-18-8"><a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a><span class="w">  </span><span class="c1">// ... other required operations</span>
+</span><span id="__span-18-9"><a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a><span class="p">};</span>
+</span></code></pre></div>
+<p>Or via free functions found through ADL (Argument-Dependent Lookup):</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="k">constexpr</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="n">real</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">my_complex_type</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">c</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">get_real</span><span class="p">();</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>
+</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+</span><span id="__span-19-5"><a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a><span class="k">constexpr</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="n">imag</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">my_complex_type</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">c</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">get_imag</span><span class="p">();</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-19-6"><a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a>
+</span><span id="__span-19-7"><a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+</span><span id="__span-19-8"><a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a><span class="k">constexpr</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="n">modulus</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">my_complex_type</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">c</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">get_magnitude</span><span class="p">();</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-19-9"><a id="__codelineno-19-9" name="__codelineno-19-9" href="#__codelineno-19-9"></a><span class="c1">// Note: You can also provide abs() instead of modulus()</span>
+</span></code></pre></div>
+<p>For vectors, provide the <code>magnitude()</code> customization point:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="k">class</span><span class="w"> </span><span class="nc">my_vector_type</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="w">  </span><span class="c1">// ... implementation</span>
+</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="k">public</span><span class="o">:</span>
+</span><span id="__span-20-5"><a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="w">  </span><span class="k">constexpr</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="n">magnitude</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* compute magnitude */</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-20-6"><a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a><span class="w">  </span><span class="c1">// ... other required operations</span>
+</span><span id="__span-20-7"><a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a><span class="p">};</span>
+</span></code></pre></div>
+<p>Or via a free function:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="k">constexpr</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="n">magnitude</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">my_vector_type</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">v</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">v</span><span class="p">.</span><span class="n">compute_magnitude</span><span class="p">();</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="c1">// Note: You can also provide abs() instead of magnitude().</span>
+</span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="c1">//       abs() is also checked to allow real scalar types to represent 1-dimensional vectors.</span>
+</span></code></pre></div>
+<h3 id="3-optional-provide-formatting-support-if-needed">3. Optional: Provide Formatting Support (if needed)<a class="headerlink" href="#3-optional-provide-formatting-support-if-needed" title="Permanent link">&para;</a></h3>
+<p>To enable formatting with <code>std::format</code>, specialize the formatter:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">Char</span><span class="o">&gt;</span>
+</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a><span class="k">struct</span><span class="w"> </span><span class="nc">std</span><span class="o">::</span><span class="n">formatter</span><span class="o">&lt;</span><span class="n">my_custom_type</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">Char</span><span class="o">&gt;</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">formatter</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">Char</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a><span class="w">  </span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">FormatContext</span><span class="o">&gt;</span>
+</span><span id="__span-22-4"><a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a><span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">format</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">my_custom_type</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">FormatContext</span><span class="o">&amp;</span><span class="w"> </span><span class="n">ctx</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">formatter</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">Char</span><span class="o">&gt;::</span><span class="n">format</span><span class="p">(</span><span class="n">v</span><span class="p">.</span><span class="n">value</span><span class="p">(),</span><span class="w"> </span><span class="n">ctx</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-22-5"><a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a><span class="p">};</span>
+</span></code></pre></div>
+<h3 id="4-optional-specialize-representation_values-if-needed">4. Optional: Specialize <code>representation_values</code> (if needed)<a class="headerlink" href="#4-optional-specialize-representation_values-if-needed" title="Permanent link">&para;</a></h3>
+<p>If your type needs custom implementations for zero, one, minimum, or maximum values,
+specialize the <code>representation_values</code> trait. See the
+<a href="#representation_valuesrep"><code>representation_values&lt;Rep&gt;</code> customization point</a> for complete details.</p>
+<p>Example:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="k">struct</span><span class="w"> </span><span class="nc">mp_units</span><span class="o">::</span><span class="n">representation_values</span><span class="o">&lt;</span><span class="n">my_custom_type</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">my_custom_type</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">zero</span><span class="p">()</span><span class="w"> </span><span class="k">noexcept</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">my_custom_type</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">{</span><span class="n">T</span><span class="p">{</span><span class="mi">0</span><span class="p">}};</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-23-4"><a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">my_custom_type</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">one</span><span class="p">()</span><span class="w"> </span><span class="k">noexcept</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">my_custom_type</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">{</span><span class="n">T</span><span class="p">{</span><span class="mi">1</span><span class="p">}};</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-23-5"><a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">my_custom_type</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">min</span><span class="p">()</span><span class="w"> </span><span class="k">noexcept</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">my_custom_type</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">{</span><span class="n">std</span><span class="o">::</span><span class="n">numeric_limits</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;::</span><span class="n">lowest</span><span class="p">()};</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-23-6"><a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">my_custom_type</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">max</span><span class="p">()</span><span class="w"> </span><span class="k">noexcept</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">my_custom_type</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">{</span><span class="n">std</span><span class="o">::</span><span class="n">numeric_limits</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;::</span><span class="n">max</span><span class="p">()};</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-23-7"><a id="__codelineno-23-7" name="__codelineno-23-7" href="#__codelineno-23-7"></a><span class="p">};</span>
+</span></code></pre></div>
+<h3 id="5-use-it-with-quantities">5. Use It with Quantities<a class="headerlink" href="#5-use-it-with-quantities" title="Permanent link">&para;</a></h3>
+<p>Once your type satisfies the required concepts, use it naturally with units:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="n">my_custom_type</span><span class="w"> </span><span class="n">value</span><span class="p">{</span><span class="mf">42.0</span><span class="p">};</span>
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a><span class="k">auto</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">;</span><span class="w">  </span><span class="c1">// quantity&lt;si::metre, my_custom_type&lt;double&gt;&gt;</span>
+</span><span id="__span-24-3"><a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a>
+</span><span id="__span-24-4"><a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a><span class="k">auto</span><span class="w"> </span><span class="n">area</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">length</span><span class="p">;</span><span class="w">  </span><span class="c1">// Quantities compose naturally</span>
+</span></code></pre></div>
+<div class="admonition tip">
+<p class="admonition-title">Validation with <code>static_assert</code></p>
+<p>Use <code>static_assert</code> to verify your type satisfies the expected concepts:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">RepresentationOf</span><span class="o">&lt;</span><span class="n">my_custom_type</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">quantity_character</span><span class="o">::</span><span class="n">real_scalar</span><span class="o">&gt;</span><span class="p">);</span>
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">treat_as_floating_point</span><span class="o">&lt;</span><span class="n">my_custom_type</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;&gt;</span><span class="p">);</span>
+</span><span id="__span-25-3"><a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a><span class="k">static_assert</span><span class="p">(</span><span class="o">!</span><span class="n">treat_as_floating_point</span><span class="o">&lt;</span><span class="n">my_custom_type</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;</span><span class="p">);</span>
+</span></code></pre></div>
+<p>This provides clear compile-time feedback if something is missing.</p>
+</div>
+</details>
+<h2 id="common-pitfalls">Common Pitfalls<a class="headerlink" href="#common-pitfalls" title="Permanent link">&para;</a></h2>
+<h3 id="scaling-factor-type">Scaling Factor Type<a class="headerlink" href="#scaling-factor-type" title="Permanent link">&para;</a></h3>
+<p>The library needs to scale your type by a numeric factor during unit conversions. Make
+sure your type provides a <code>value_type</code> member to help the library determine the correct
+scaling factor type. See <a href="#value_type-or-element_type"><code>value_type</code> or <code>element_type</code></a>
+for complete details.</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a><span class="k">class</span><span class="w"> </span><span class="nc">my_type</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-26-3"><a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a><span class="k">public</span><span class="o">:</span>
+</span><span id="__span-26-4"><a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a><span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="n">value_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">T</span><span class="p">;</span><span class="w">  </span><span class="c1">// Helps the library determine the scaling factor type</span>
+</span><span id="__span-26-5"><a id="__codelineno-26-5" name="__codelineno-26-5" href="#__codelineno-26-5"></a><span class="w">  </span><span class="c1">// ...</span>
+</span><span id="__span-26-6"><a id="__codelineno-26-6" name="__codelineno-26-6" href="#__codelineno-26-6"></a><span class="p">};</span>
+</span></code></pre></div>
+<h3 id="adl-and-namespace-placement">ADL and Namespace Placement<a class="headerlink" href="#adl-and-namespace-placement" title="Permanent link">&para;</a></h3>
+<p>When providing free functions for customization points (like <code>real()</code>, <code>imag()</code>,
+<code>magnitude()</code>), place them in the same namespace as your type to ensure Argument-Dependent
+Lookup (ADL) finds them:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a><span class="k">namespace</span><span class="w"> </span><span class="nn">my_namespace</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a>
+</span><span id="__span-27-3"><a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a><span class="w">  </span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+</span><span id="__span-27-4"><a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a><span class="w">  </span><span class="k">class</span><span class="w"> </span><span class="nc">my_complex</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-27-5"><a id="__codelineno-27-5" name="__codelineno-27-5" href="#__codelineno-27-5"></a><span class="w">    </span><span class="c1">// ...</span>
+</span><span id="__span-27-6"><a id="__codelineno-27-6" name="__codelineno-27-6" href="#__codelineno-27-6"></a><span class="w">  </span><span class="p">};</span>
+</span><span id="__span-27-7"><a id="__codelineno-27-7" name="__codelineno-27-7" href="#__codelineno-27-7"></a>
+</span><span id="__span-27-8"><a id="__codelineno-27-8" name="__codelineno-27-8" href="#__codelineno-27-8"></a><span class="w">  </span><span class="c1">// ✅ Good: in the same namespace, found by ADL</span>
+</span><span id="__span-27-9"><a id="__codelineno-27-9" name="__codelineno-27-9" href="#__codelineno-27-9"></a><span class="w">  </span><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+</span><span id="__span-27-10"><a id="__codelineno-27-10" name="__codelineno-27-10" href="#__codelineno-27-10"></a><span class="w">  </span><span class="k">constexpr</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="n">real</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">my_complex</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">c</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">get_real</span><span class="p">();</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-27-11"><a id="__codelineno-27-11" name="__codelineno-27-11" href="#__codelineno-27-11"></a>
+</span><span id="__span-27-12"><a id="__codelineno-27-12" name="__codelineno-27-12" href="#__codelineno-27-12"></a><span class="p">}</span><span class="w">  </span><span class="c1">// namespace my_namespace</span>
+</span></code></pre></div>
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">&para;</a></h2>
+<p><strong>mp-units</strong> provides a flexible framework for custom representation types:</p>
+<ul>
+<li><strong>Use any type</strong> that satisfies the representation concepts</li>
+<li><strong>Built-in support</strong> for fundamental types and <code>std::complex</code></li>
+<li><strong>Examples provided</strong> for range-validated types, vectors, and more</li>
+<li><strong>Character system</strong> ensures type-safe operations based on physical meaning</li>
+<li><strong>Simple integration</strong>: just multiply your value with a unit</li>
+</ul>
+<p>By providing custom representation types, you can encode domain-specific constraints,
+use specialized numeric types, or work with mathematical objects like vectors and
+complex numbers—all while maintaining the strong type safety and dimensional analysis
+that <strong>mp-units</strong> provides.</p>
+<h2 id="see-also">See Also<a class="headerlink" href="#see-also" title="Permanent link">&para;</a></h2>
+<!-- markdownlint-disable MD013 -->
+<p><strong>Related Documentation:</strong></p>
+<ul>
+<li><a href="../../framework_basics/character_of_a_quantity/">Character of a Quantity</a> - Understanding quantity characters</li>
+<li><a href="../../framework_basics/value_conversions/">Value Conversions</a> - How <code>treat_as_floating_point</code> affects conversions</li>
+<li><a href="../../framework_basics/concepts/#RepresentationOf">Concepts</a> - The <code>RepresentationOf</code> concept definition</li>
+</ul>
+<p><strong>Implementation References:</strong></p>
+<ul>
+<li><a href="https://github.com/mpusz/mp-units/blob/1511c73d362649cca90191cdcfd3b369058c1dc1/src/core/include/mp-units/framework/representation_concepts.h"><code>representation_concepts.h</code></a> - Concept definitions</li>
+<li><a href="https://github.com/mpusz/mp-units/blob/1511c73d362649cca90191cdcfd3b369058c1dc1/src/core/include/mp-units/framework/customization_points.h"><code>customization_points.h</code></a> - CPO implementations</li>
+<li><a href="https://github.com/mpusz/mp-units/blob/1511c73d362649cca90191cdcfd3b369058c1dc1/src/core/include/mp-units/cartesian_vector.h"><code>cartesian_vector.h</code></a> - Vector implementation example</li>
+<li><a href="https://github.com/mpusz/mp-units/blob/1511c73d362649cca90191cdcfd3b369058c1dc1/example/include/ranged_representation.h"><code>ranged_representation.h</code></a> - Range-validated representation example</li>
+</ul>
+<!-- markdownlint-enable MD013 -->
 
 
 

@@ -97,6 +97,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#pure-dimensional-analysis" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -1673,8 +1678,6 @@ You're not viewing the latest version.
       
         
       
-        
-      
     
     
     
@@ -1731,6 +1734,26 @@ You're not viewing the latest version.
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pure Dimensional Analysis
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         
@@ -1748,6 +1771,124 @@ You're not viewing the latest version.
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Use Cases
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#working-with-dimensions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Working with Dimensions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#working-with-quantity-specifications" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Working with Quantity Specifications
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#embedding-in-custom-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Embedding in Custom Types
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-example-automatic-differentiation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Advanced Example: Automatic Differentiation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#real-world-example-kalman-filter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Real-World Example: Kalman Filter
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#benefits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Benefits
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1825,34 +1966,6 @@ You're not viewing the latest version.
     
   
     Interoperability with Other Libraries
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../extending_the_library/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Extending the Library
   
 
     
@@ -2299,6 +2412,8 @@ You're not viewing the latest version.
       
         
       
+        
+      
     
     
     
@@ -2631,6 +2746,34 @@ You're not viewing the latest version.
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorials/tutorial_11/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial 11: Faster-than-Lightspeed Constants
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2867,6 +3010,8 @@ You're not viewing the latest version.
   
     
     
+      
+        
       
         
       
@@ -3138,6 +3283,34 @@ You're not viewing the latest version.
     
   
     strong_angular_quantities
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../examples/total_energy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    total_energy
   
 
     
@@ -3764,9 +3937,266 @@ You're not viewing the latest version.
   
 
 
-  <h1>Pure Dimensional Analysis</h1>
-
-
+<h1 id="pure-dimensional-analysis">Pure Dimensional Analysis<a class="headerlink" href="#pure-dimensional-analysis" title="Permanent link">&para;</a></h1>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
+<p>The <strong>mp-units</strong> library is not limited to working with complete quantities (i.e., a numerical
+value paired with a unit). It also provides powerful support for <strong>pure dimensional analysis</strong>,
+where you can track and validate dimensions and quantity types without concerning yourself
+with actual quantity values.</p>
+<p>This feature allows users to embed <code>Dimension</code> or <code>QuantitySpec</code> types into their own custom
+arithmetic types and leverage the library's dimensional analysis capabilities. By propagating
+arithmetic operations to these embedded types through custom overloaded operators, the library
+automatically performs full dimensional analysis and type checking—all at compile-time, with
+zero runtime overhead.</p>
+<h2 id="use-cases">Use Cases<a class="headerlink" href="#use-cases" title="Permanent link">&para;</a></h2>
+<p>Pure dimensional analysis is particularly useful when:</p>
+<ul>
+<li>Designing symbolic computation systems that manipulate physical formulas</li>
+<li>Validating dimensional consistency in equation systems before numerical evaluation</li>
+<li>Working with templates or compile-time computations where actual values aren't available
+  yet</li>
+<li>Implementing custom arithmetic types (automatic differentiation, interval arithmetic,
+  symbolic expressions) while maintaining dimensional correctness</li>
+<li>Documenting and enforcing dimensional relationships in your API without committing to
+  specific units</li>
+</ul>
+<h2 id="working-with-dimensions">Working with Dimensions<a class="headerlink" href="#working-with-dimensions" title="Permanent link">&para;</a></h2>
+<p>A dimension represents the physical nature of a quantity without specifying its unit.
+In <strong>mp-units</strong>, dimensions can be used independently to verify dimensional consistency:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">// Extract dimensions from quantity specifications</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">length_dim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">length</span><span class="p">.</span><span class="n">dimension</span><span class="p">;</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">time_dim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">time</span><span class="p">.</span><span class="n">dimension</span><span class="p">;</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="c1">// Dimensions support arithmetic operations</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">velocity_dim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">length_dim</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">time_dim</span><span class="p">;</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">acceleration_dim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">velocity_dim</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">time_dim</span><span class="p">;</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="c1">// Verify dimensional consistency at compile-time</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">velocity_dim</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">velocity</span><span class="p">.</span><span class="n">dimension</span><span class="p">);</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">acceleration_dim</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">acceleration</span><span class="p">.</span><span class="n">dimension</span><span class="p">);</span>
+</span></code></pre></div>
+<h2 id="working-with-quantity-specifications">Working with Quantity Specifications<a class="headerlink" href="#working-with-quantity-specifications" title="Permanent link">&para;</a></h2>
+<p>While dimensions track the fundamental physical nature (like <em>length</em>, <em>time</em>, <em>mass</em>),
+quantity specifications (<code>quantity_spec</code>) provide a more refined type system that
+distinguishes between different quantities sharing the same dimension:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mp-units/systems/isq.h&gt;</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">mp_units</span><span class="p">;</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="c1">// Different quantities can have the same dimension</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">width</span><span class="p">.</span><span class="n">dimension</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="p">.</span><span class="n">dimension</span><span class="p">);</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">width</span><span class="p">.</span><span class="n">dimension</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">radius</span><span class="p">.</span><span class="n">dimension</span><span class="p">);</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="c1">// But they remain distinct types</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">width</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="p">);</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">width</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">radius</span><span class="p">);</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="c1">// Quantity specs also support arithmetic operations</span>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">area_spec</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">width</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="p">;</span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">volume_spec</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">area_spec</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">depth</span><span class="p">;</span>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="c1">// The derived specs use more specialized quantities than the library&#39;s canonical definitions,</span>
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="c1">// but they are implicitly convertible to them</span>
+</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">area_spec</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">area</span><span class="p">);</span>
+</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">volume_spec</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">volume</span><span class="p">);</span>
+</span><span id="__span-1-21"><a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">implicitly_convertible</span><span class="p">(</span><span class="n">area_spec</span><span class="p">,</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">area</span><span class="p">));</span>
+</span><span id="__span-1-22"><a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">implicitly_convertible</span><span class="p">(</span><span class="n">volume_spec</span><span class="p">,</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">volume</span><span class="p">));</span>
+</span></code></pre></div>
+<h2 id="embedding-in-custom-types">Embedding in Custom Types<a class="headerlink" href="#embedding-in-custom-types" title="Permanent link">&para;</a></h2>
+<p>The real power of pure dimensional analysis emerges when you embed dimensions or quantity
+specs into your own types. Here's an example with a simple symbolic expression type:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mp-units/systems/isq.h&gt;</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;string&gt;</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;format&gt;</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">mp_units</span><span class="p">;</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="c1">// A symbolic expression that tracks its physical dimension</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="k">template</span><span class="o">&lt;</span><span class="n">QuantitySpec</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">QS</span><span class="o">&gt;</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="k">class</span><span class="w"> </span><span class="nc">symbolic_expression</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">expr_</span><span class="p">;</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="k">public</span><span class="o">:</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="w">  </span><span class="k">explicit</span><span class="w"> </span><span class="n">symbolic_expression</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">expr</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">expr_</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">expr</span><span class="p">))</span><span class="w"> </span><span class="p">{}</span>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="w">  </span><span class="p">[[</span><span class="n">nodiscard</span><span class="p">]]</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">expression</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">expr_</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="w">  </span><span class="p">[[</span><span class="n">nodiscard</span><span class="p">]]</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">quantity_spec</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">QS</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="w">  </span><span class="p">[[</span><span class="n">nodiscard</span><span class="p">]]</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">dimension</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">QS</span><span class="p">.</span><span class="n">dimension</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="p">};</span>
+</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>
+</span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a><span class="c1">// Operator overloads that propagate dimensional analysis</span>
+</span><span id="__span-2-19"><a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a><span class="k">template</span><span class="o">&lt;</span><span class="n">QuantitySpec</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">QS1</span><span class="p">,</span><span class="w"> </span><span class="n">QuantitySpec</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">QS2</span><span class="o">&gt;</span>
+</span><span id="__span-2-20"><a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a><span class="k">auto</span><span class="w"> </span><span class="k">operator</span><span class="o">*</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">symbolic_expression</span><span class="o">&lt;</span><span class="n">QS1</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">lhs</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">symbolic_expression</span><span class="o">&lt;</span><span class="n">QS2</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">rhs</span><span class="p">)</span>
+</span><span id="__span-2-21"><a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a><span class="p">{</span>
+</span><span id="__span-2-22"><a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a><span class="w">  </span><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">result_qs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">QS1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">QS2</span><span class="p">;</span>
+</span><span id="__span-2-23"><a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">symbolic_expression</span><span class="o">&lt;</span><span class="n">result_qs</span><span class="o">&gt;</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">format</span><span class="p">(</span><span class="s">&quot;({} * {})&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">lhs</span><span class="p">.</span><span class="n">expression</span><span class="p">(),</span><span class="w"> </span><span class="n">rhs</span><span class="p">.</span><span class="n">expression</span><span class="p">()));</span>
+</span><span id="__span-2-24"><a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a><span class="p">}</span>
+</span><span id="__span-2-25"><a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a>
+</span><span id="__span-2-26"><a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a><span class="k">template</span><span class="o">&lt;</span><span class="n">QuantitySpec</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">QS1</span><span class="p">,</span><span class="w"> </span><span class="n">QuantitySpec</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">QS2</span><span class="o">&gt;</span>
+</span><span id="__span-2-27"><a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a><span class="k">auto</span><span class="w"> </span><span class="k">operator</span><span class="o">/</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">symbolic_expression</span><span class="o">&lt;</span><span class="n">QS1</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">lhs</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">symbolic_expression</span><span class="o">&lt;</span><span class="n">QS2</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">rhs</span><span class="p">)</span>
+</span><span id="__span-2-28"><a id="__codelineno-2-28" name="__codelineno-2-28" href="#__codelineno-2-28"></a><span class="p">{</span>
+</span><span id="__span-2-29"><a id="__codelineno-2-29" name="__codelineno-2-29" href="#__codelineno-2-29"></a><span class="w">  </span><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">result_qs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">QS1</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">QS2</span><span class="p">;</span>
+</span><span id="__span-2-30"><a id="__codelineno-2-30" name="__codelineno-2-30" href="#__codelineno-2-30"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">symbolic_expression</span><span class="o">&lt;</span><span class="n">result_qs</span><span class="o">&gt;</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">format</span><span class="p">(</span><span class="s">&quot;({} / {})&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">lhs</span><span class="p">.</span><span class="n">expression</span><span class="p">(),</span><span class="w"> </span><span class="n">rhs</span><span class="p">.</span><span class="n">expression</span><span class="p">()));</span>
+</span><span id="__span-2-31"><a id="__codelineno-2-31" name="__codelineno-2-31" href="#__codelineno-2-31"></a><span class="p">}</span>
+</span><span id="__span-2-32"><a id="__codelineno-2-32" name="__codelineno-2-32" href="#__codelineno-2-32"></a>
+</span><span id="__span-2-33"><a id="__codelineno-2-33" name="__codelineno-2-33" href="#__codelineno-2-33"></a><span class="k">template</span><span class="o">&lt;</span><span class="n">QuantitySpec</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">QS1</span><span class="p">,</span><span class="w"> </span><span class="n">QuantitySpec</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">QS2</span><span class="o">&gt;</span>
+</span><span id="__span-2-34"><a id="__codelineno-2-34" name="__codelineno-2-34" href="#__codelineno-2-34"></a><span class="k">auto</span><span class="w"> </span><span class="k">operator</span><span class="o">+</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">symbolic_expression</span><span class="o">&lt;</span><span class="n">QS1</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">lhs</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">symbolic_expression</span><span class="o">&lt;</span><span class="n">QS2</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">rhs</span><span class="p">)</span>
+</span><span id="__span-2-35"><a id="__codelineno-2-35" name="__codelineno-2-35" href="#__codelineno-2-35"></a><span class="w">  </span><span class="k">requires</span><span class="w"> </span><span class="k">requires</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">get_common_quantity_spec</span><span class="p">(</span><span class="n">QS1</span><span class="p">,</span><span class="w"> </span><span class="n">QS2</span><span class="p">);</span><span class="w"> </span><span class="p">}</span><span class="w">  </span><span class="c1">// Enforce dimensional compatibility for addition</span>
+</span><span id="__span-2-36"><a id="__codelineno-2-36" name="__codelineno-2-36" href="#__codelineno-2-36"></a><span class="p">{</span>
+</span><span id="__span-2-37"><a id="__codelineno-2-37" name="__codelineno-2-37" href="#__codelineno-2-37"></a><span class="w">  </span><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">result_qs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_common_quantity_spec</span><span class="p">(</span><span class="n">QS1</span><span class="p">,</span><span class="w"> </span><span class="n">QS2</span><span class="p">);</span>
+</span><span id="__span-2-38"><a id="__codelineno-2-38" name="__codelineno-2-38" href="#__codelineno-2-38"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">symbolic_expression</span><span class="o">&lt;</span><span class="n">result_qs</span><span class="o">&gt;</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">format</span><span class="p">(</span><span class="s">&quot;({} + {})&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">lhs</span><span class="p">.</span><span class="n">expression</span><span class="p">(),</span><span class="w"> </span><span class="n">rhs</span><span class="p">.</span><span class="n">expression</span><span class="p">()));</span>
+</span><span id="__span-2-39"><a id="__codelineno-2-39" name="__codelineno-2-39" href="#__codelineno-2-39"></a><span class="p">}</span>
+</span><span id="__span-2-40"><a id="__codelineno-2-40" name="__codelineno-2-40" href="#__codelineno-2-40"></a>
+</span><span id="__span-2-41"><a id="__codelineno-2-41" name="__codelineno-2-41" href="#__codelineno-2-41"></a><span class="kt">void</span><span class="w"> </span><span class="n">example</span><span class="p">()</span>
+</span><span id="__span-2-42"><a id="__codelineno-2-42" name="__codelineno-2-42" href="#__codelineno-2-42"></a><span class="p">{</span>
+</span><span id="__span-2-43"><a id="__codelineno-2-43" name="__codelineno-2-43" href="#__codelineno-2-43"></a><span class="w">  </span><span class="n">symbolic_expression</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">length</span><span class="o">&gt;</span><span class="w"> </span><span class="n">distance</span><span class="p">(</span><span class="s">&quot;d&quot;</span><span class="p">);</span>
+</span><span id="__span-2-44"><a id="__codelineno-2-44" name="__codelineno-2-44" href="#__codelineno-2-44"></a><span class="w">  </span><span class="n">symbolic_expression</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">time</span><span class="o">&gt;</span><span class="w"> </span><span class="n">duration</span><span class="p">(</span><span class="s">&quot;t&quot;</span><span class="p">);</span>
+</span><span id="__span-2-45"><a id="__codelineno-2-45" name="__codelineno-2-45" href="#__codelineno-2-45"></a><span class="w">  </span><span class="n">symbolic_expression</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">mass</span><span class="o">&gt;</span><span class="w"> </span><span class="n">mass</span><span class="p">(</span><span class="s">&quot;m&quot;</span><span class="p">);</span>
+</span><span id="__span-2-46"><a id="__codelineno-2-46" name="__codelineno-2-46" href="#__codelineno-2-46"></a>
+</span><span id="__span-2-47"><a id="__codelineno-2-47" name="__codelineno-2-47" href="#__codelineno-2-47"></a><span class="w">  </span><span class="c1">// These operations are dimensionally valid</span>
+</span><span id="__span-2-48"><a id="__codelineno-2-48" name="__codelineno-2-48" href="#__codelineno-2-48"></a><span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">velocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">distance</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">duration</span><span class="p">;</span>
+</span><span id="__span-2-49"><a id="__codelineno-2-49" name="__codelineno-2-49" href="#__codelineno-2-49"></a><span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">acceleration</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">velocity</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">duration</span><span class="p">;</span>
+</span><span id="__span-2-50"><a id="__codelineno-2-50" name="__codelineno-2-50" href="#__codelineno-2-50"></a><span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">force</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mass</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">acceleration</span><span class="p">;</span>
+</span><span id="__span-2-51"><a id="__codelineno-2-51" name="__codelineno-2-51" href="#__codelineno-2-51"></a><span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">distance</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">distance</span><span class="p">;</span>
+</span><span id="__span-2-52"><a id="__codelineno-2-52" name="__codelineno-2-52" href="#__codelineno-2-52"></a>
+</span><span id="__span-2-53"><a id="__codelineno-2-53" name="__codelineno-2-53" href="#__codelineno-2-53"></a><span class="w">  </span><span class="k">static_assert</span><span class="p">(</span><span class="n">implicitly_convertible</span><span class="p">(</span><span class="n">velocity</span><span class="p">.</span><span class="n">quantity_spec</span><span class="p">(),</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">speed</span><span class="p">));</span>
+</span><span id="__span-2-54"><a id="__codelineno-2-54" name="__codelineno-2-54" href="#__codelineno-2-54"></a><span class="w">  </span><span class="k">static_assert</span><span class="p">(</span><span class="n">force</span><span class="p">.</span><span class="n">dimension</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">force</span><span class="p">.</span><span class="n">dimension</span><span class="p">);</span>
+</span><span id="__span-2-55"><a id="__codelineno-2-55" name="__codelineno-2-55" href="#__codelineno-2-55"></a>
+</span><span id="__span-2-56"><a id="__codelineno-2-56" name="__codelineno-2-56" href="#__codelineno-2-56"></a><span class="w">  </span><span class="c1">// This would fail to compile due to dimensional mismatch:</span>
+</span><span id="__span-2-57"><a id="__codelineno-2-57" name="__codelineno-2-57" href="#__codelineno-2-57"></a><span class="w">  </span><span class="c1">// auto invalid = distance + duration;  // Error: cannot add length and time</span>
+</span><span id="__span-2-58"><a id="__codelineno-2-58" name="__codelineno-2-58" href="#__codelineno-2-58"></a><span class="p">}</span>
+</span></code></pre></div>
+<h2 id="advanced-example-automatic-differentiation">Advanced Example: Automatic Differentiation<a class="headerlink" href="#advanced-example-automatic-differentiation" title="Permanent link">&para;</a></h2>
+<p>Here's a more sophisticated example showing how pure dimensional analysis can be integrated
+with automatic differentiation:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mp-units/systems/isq.h&gt;</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">mp_units</span><span class="p">;</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="k">template</span><span class="o">&lt;</span><span class="n">QuantitySpec</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">ValueQS</span><span class="p">,</span><span class="w"> </span><span class="n">QuantitySpec</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">DerivativeQS</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="k">class</span><span class="w"> </span><span class="nc">dual_number</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">  </span><span class="n">T</span><span class="w"> </span><span class="n">value_</span><span class="p">;</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">  </span><span class="n">T</span><span class="w"> </span><span class="n">derivative_</span><span class="p">;</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="k">public</span><span class="o">:</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="w">  </span><span class="n">dual_number</span><span class="p">(</span><span class="n">T</span><span class="w"> </span><span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="n">derivative</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">value_</span><span class="p">(</span><span class="n">value</span><span class="p">),</span><span class="w"> </span><span class="n">derivative_</span><span class="p">(</span><span class="n">derivative</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="w">  </span><span class="p">[[</span><span class="n">nodiscard</span><span class="p">]]</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="n">value</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">value_</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="w">  </span><span class="p">[[</span><span class="n">nodiscard</span><span class="p">]]</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="n">derivative</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">derivative_</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="w">  </span><span class="p">[[</span><span class="n">nodiscard</span><span class="p">]]</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">value_quantity_spec</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">ValueQS</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="w">  </span><span class="p">[[</span><span class="n">nodiscard</span><span class="p">]]</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">derivative_quantity_spec</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">DerivativeQS</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="p">};</span>
+</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a>
+</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="k">template</span><span class="o">&lt;</span><span class="n">QuantitySpec</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">VQS1</span><span class="p">,</span><span class="w"> </span><span class="n">QuantitySpec</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">DQS1</span><span class="p">,</span>
+</span><span id="__span-3-21"><a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a><span class="w">         </span><span class="n">QuantitySpec</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">VQS2</span><span class="p">,</span><span class="w"> </span><span class="n">QuantitySpec</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">DQS2</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+</span><span id="__span-3-22"><a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a><span class="k">auto</span><span class="w"> </span><span class="k">operator</span><span class="o">*</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">dual_number</span><span class="o">&lt;</span><span class="n">VQS1</span><span class="p">,</span><span class="w"> </span><span class="n">DQS1</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">lhs</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">dual_number</span><span class="o">&lt;</span><span class="n">VQS2</span><span class="p">,</span><span class="w"> </span><span class="n">DQS2</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">rhs</span><span class="p">)</span>
+</span><span id="__span-3-23"><a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a><span class="p">{</span>
+</span><span id="__span-3-24"><a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a><span class="w">  </span><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">result_vqs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">VQS1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">VQS2</span><span class="p">;</span>
+</span><span id="__span-3-25"><a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a><span class="w">  </span><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">result_dqs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DQS1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">VQS2</span><span class="p">;</span><span class="w">  </span><span class="c1">// Simplified: assumes same differentiation variable</span>
+</span><span id="__span-3-26"><a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a><span class="w">  </span><span class="c1">// Product rule: (f·g)&#39; = f&#39;·g + f·g&#39;</span>
+</span><span id="__span-3-27"><a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">dual_number</span><span class="o">&lt;</span><span class="n">result_vqs</span><span class="p">,</span><span class="w"> </span><span class="n">result_dqs</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="o">&gt;</span><span class="p">(</span>
+</span><span id="__span-3-28"><a id="__codelineno-3-28" name="__codelineno-3-28" href="#__codelineno-3-28"></a><span class="w">    </span><span class="n">lhs</span><span class="p">.</span><span class="n">value</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">rhs</span><span class="p">.</span><span class="n">value</span><span class="p">(),</span>
+</span><span id="__span-3-29"><a id="__codelineno-3-29" name="__codelineno-3-29" href="#__codelineno-3-29"></a><span class="w">    </span><span class="n">lhs</span><span class="p">.</span><span class="n">derivative</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">rhs</span><span class="p">.</span><span class="n">value</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">lhs</span><span class="p">.</span><span class="n">value</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">rhs</span><span class="p">.</span><span class="n">derivative</span><span class="p">()</span>
+</span><span id="__span-3-30"><a id="__codelineno-3-30" name="__codelineno-3-30" href="#__codelineno-3-30"></a><span class="w">  </span><span class="p">);</span>
+</span><span id="__span-3-31"><a id="__codelineno-3-31" name="__codelineno-3-31" href="#__codelineno-3-31"></a><span class="p">}</span>
+</span><span id="__span-3-32"><a id="__codelineno-3-32" name="__codelineno-3-32" href="#__codelineno-3-32"></a>
+</span><span id="__span-3-33"><a id="__codelineno-3-33" name="__codelineno-3-33" href="#__codelineno-3-33"></a><span class="k">template</span><span class="o">&lt;</span><span class="n">QuantitySpec</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">VQS1</span><span class="p">,</span><span class="w"> </span><span class="n">QuantitySpec</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">DQS1</span><span class="p">,</span>
+</span><span id="__span-3-34"><a id="__codelineno-3-34" name="__codelineno-3-34" href="#__codelineno-3-34"></a><span class="w">         </span><span class="n">QuantitySpec</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">VQS2</span><span class="p">,</span><span class="w"> </span><span class="n">QuantitySpec</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">DQS2</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span>
+</span><span id="__span-3-35"><a id="__codelineno-3-35" name="__codelineno-3-35" href="#__codelineno-3-35"></a><span class="k">auto</span><span class="w"> </span><span class="k">operator</span><span class="o">/</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">dual_number</span><span class="o">&lt;</span><span class="n">VQS1</span><span class="p">,</span><span class="w"> </span><span class="n">DQS1</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">lhs</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">dual_number</span><span class="o">&lt;</span><span class="n">VQS2</span><span class="p">,</span><span class="w"> </span><span class="n">DQS2</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">rhs</span><span class="p">)</span>
+</span><span id="__span-3-36"><a id="__codelineno-3-36" name="__codelineno-3-36" href="#__codelineno-3-36"></a><span class="p">{</span>
+</span><span id="__span-3-37"><a id="__codelineno-3-37" name="__codelineno-3-37" href="#__codelineno-3-37"></a><span class="w">  </span><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">result_vqs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">VQS1</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">VQS2</span><span class="p">;</span>
+</span><span id="__span-3-38"><a id="__codelineno-3-38" name="__codelineno-3-38" href="#__codelineno-3-38"></a><span class="w">  </span><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">result_dqs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DQS1</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">VQS2</span><span class="p">;</span><span class="w">  </span><span class="c1">// Simplified: assumes same differentiation variable</span>
+</span><span id="__span-3-39"><a id="__codelineno-3-39" name="__codelineno-3-39" href="#__codelineno-3-39"></a><span class="w">  </span><span class="c1">// Quotient rule: (f/g)&#39; = (f&#39;·g - f·g&#39;) / g²</span>
+</span><span id="__span-3-40"><a id="__codelineno-3-40" name="__codelineno-3-40" href="#__codelineno-3-40"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">dual_number</span><span class="o">&lt;</span><span class="n">result_vqs</span><span class="p">,</span><span class="w"> </span><span class="n">result_dqs</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="o">&gt;</span><span class="p">(</span>
+</span><span id="__span-3-41"><a id="__codelineno-3-41" name="__codelineno-3-41" href="#__codelineno-3-41"></a><span class="w">    </span><span class="n">lhs</span><span class="p">.</span><span class="n">value</span><span class="p">()</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">rhs</span><span class="p">.</span><span class="n">value</span><span class="p">(),</span>
+</span><span id="__span-3-42"><a id="__codelineno-3-42" name="__codelineno-3-42" href="#__codelineno-3-42"></a><span class="w">    </span><span class="p">(</span><span class="n">lhs</span><span class="p">.</span><span class="n">derivative</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">rhs</span><span class="p">.</span><span class="n">value</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">lhs</span><span class="p">.</span><span class="n">value</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">rhs</span><span class="p">.</span><span class="n">derivative</span><span class="p">())</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">rhs</span><span class="p">.</span><span class="n">value</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">rhs</span><span class="p">.</span><span class="n">value</span><span class="p">())</span>
+</span><span id="__span-3-43"><a id="__codelineno-3-43" name="__codelineno-3-43" href="#__codelineno-3-43"></a><span class="w">  </span><span class="p">);</span>
+</span><span id="__span-3-44"><a id="__codelineno-3-44" name="__codelineno-3-44" href="#__codelineno-3-44"></a><span class="p">}</span>
+</span><span id="__span-3-45"><a id="__codelineno-3-45" name="__codelineno-3-45" href="#__codelineno-3-45"></a>
+</span><span id="__span-3-46"><a id="__codelineno-3-46" name="__codelineno-3-46" href="#__codelineno-3-46"></a><span class="kt">int</span><span class="w"> </span><span class="n">main</span><span class="p">()</span>
+</span><span id="__span-3-47"><a id="__codelineno-3-47" name="__codelineno-3-47" href="#__codelineno-3-47"></a><span class="p">{</span>
+</span><span id="__span-3-48"><a id="__codelineno-3-48" name="__codelineno-3-48" href="#__codelineno-3-48"></a><span class="w">  </span><span class="c1">// Compute kinetic energy E = (1/2) * m * v² and its derivative with respect to velocity</span>
+</span><span id="__span-3-49"><a id="__codelineno-3-49" name="__codelineno-3-49" href="#__codelineno-3-49"></a>
+</span><span id="__span-3-50"><a id="__codelineno-3-50" name="__codelineno-3-50" href="#__codelineno-3-50"></a><span class="w">  </span><span class="c1">// Mass: m = 2 kg, dm/dv = 0 (mass doesn&#39;t change with velocity)</span>
+</span><span id="__span-3-51"><a id="__codelineno-3-51" name="__codelineno-3-51" href="#__codelineno-3-51"></a><span class="w">  </span><span class="n">dual_number</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">mass</span><span class="p">,</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">mass</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">speed</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">);</span>
+</span><span id="__span-3-52"><a id="__codelineno-3-52" name="__codelineno-3-52" href="#__codelineno-3-52"></a>
+</span><span id="__span-3-53"><a id="__codelineno-3-53" name="__codelineno-3-53" href="#__codelineno-3-53"></a><span class="w">  </span><span class="c1">// Velocity: v = 10 m/s, dv/dv = 1 (dimensionless)</span>
+</span><span id="__span-3-54"><a id="__codelineno-3-54" name="__codelineno-3-54" href="#__codelineno-3-54"></a><span class="w">  </span><span class="n">dual_number</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">speed</span><span class="p">,</span><span class="w"> </span><span class="n">dimensionless</span><span class="o">&gt;</span><span class="w"> </span><span class="n">v</span><span class="p">(</span><span class="mf">10.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">);</span>
+</span><span id="__span-3-55"><a id="__codelineno-3-55" name="__codelineno-3-55" href="#__codelineno-3-55"></a>
+</span><span id="__span-3-56"><a id="__codelineno-3-56" name="__codelineno-3-56" href="#__codelineno-3-56"></a><span class="w">  </span><span class="c1">// Compute v² (value: speed², derivative: speed)</span>
+</span><span id="__span-3-57"><a id="__codelineno-3-57" name="__codelineno-3-57" href="#__codelineno-3-57"></a><span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">v_squared</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">v</span><span class="p">;</span>
+</span><span id="__span-3-58"><a id="__codelineno-3-58" name="__codelineno-3-58" href="#__codelineno-3-58"></a>
+</span><span id="__span-3-59"><a id="__codelineno-3-59" name="__codelineno-3-59" href="#__codelineno-3-59"></a><span class="w">  </span><span class="c1">// Compute (1/2) * m</span>
+</span><span id="__span-3-60"><a id="__codelineno-3-60" name="__codelineno-3-60" href="#__codelineno-3-60"></a><span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">half_m</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dual_number</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">mass</span><span class="p">,</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">mass</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">speed</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m</span><span class="p">.</span><span class="n">value</span><span class="p">()</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">);</span>
+</span><span id="__span-3-61"><a id="__codelineno-3-61" name="__codelineno-3-61" href="#__codelineno-3-61"></a>
+</span><span id="__span-3-62"><a id="__codelineno-3-62" name="__codelineno-3-62" href="#__codelineno-3-62"></a><span class="w">  </span><span class="c1">// Final kinetic energy: E = (1/2) * m * v²</span>
+</span><span id="__span-3-63"><a id="__codelineno-3-63" name="__codelineno-3-63" href="#__codelineno-3-63"></a><span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">kinetic_energy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">half_m</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">v_squared</span><span class="p">;</span>
+</span><span id="__span-3-64"><a id="__codelineno-3-64" name="__codelineno-3-64" href="#__codelineno-3-64"></a>
+</span><span id="__span-3-65"><a id="__codelineno-3-65" name="__codelineno-3-65" href="#__codelineno-3-65"></a><span class="w">  </span><span class="c1">// Display results:</span>
+</span><span id="__span-3-66"><a id="__codelineno-3-66" name="__codelineno-3-66" href="#__codelineno-3-66"></a><span class="w">  </span><span class="c1">// Energy value: E = 100 J (dimension: L²MT⁻²)</span>
+</span><span id="__span-3-67"><a id="__codelineno-3-67" name="__codelineno-3-67" href="#__codelineno-3-67"></a><span class="w">  </span><span class="c1">// Energy derivative: dE/dv = 20 kg⋅m/s (dimension: LMT⁻¹ - momentum)</span>
+</span><span id="__span-3-68"><a id="__codelineno-3-68" name="__codelineno-3-68" href="#__codelineno-3-68"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">kinetic_energy</span><span class="p">.</span><span class="n">value</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; of &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">kinetic_energy</span><span class="p">.</span><span class="n">value_quantity_spec</span><span class="p">().</span><span class="n">dimension</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span>
+</span><span id="__span-3-69"><a id="__codelineno-3-69" name="__codelineno-3-69" href="#__codelineno-3-69"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">kinetic_energy</span><span class="p">.</span><span class="n">derivative</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; of &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">kinetic_energy</span><span class="p">.</span><span class="n">derivative_quantity_spec</span><span class="p">().</span><span class="n">dimension</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span>
+</span><span id="__span-3-70"><a id="__codelineno-3-70" name="__codelineno-3-70" href="#__codelineno-3-70"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>Output:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>100 of L²MT⁻²
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>20 of LMT⁻¹
+</span></code></pre></div>
+<p>With this approach, you get both automatic differentiation <strong>and</strong> compile-time
+dimensional analysis, ensuring that your derivatives maintain proper physical dimensions
+throughout the computation.</p>
+<h2 id="real-world-example-kalman-filter">Real-World Example: Kalman Filter<a class="headerlink" href="#real-world-example-kalman-filter" title="Permanent link">&para;</a></h2>
+<p>The library includes a complete <a href="../../../examples/kalman_filter/">Kalman filter example</a>
+demonstrating pure dimensional analysis in a practical application. The implementation
+uses dimensions to enforce compile-time constraints on state variables:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="n">mp_units</span><span class="o">::</span><span class="n">Dimension</span><span class="w"> </span><span class="k">auto</span><span class="p">...</span><span class="w"> </span><span class="n">Ds</span><span class="o">&gt;</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="k">constexpr</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">are_time_derivatives</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="k">template</span><span class="o">&lt;</span><span class="n">mp_units</span><span class="o">::</span><span class="n">Dimension</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">D</span><span class="o">&gt;</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="k">constexpr</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">are_time_derivatives</span><span class="o">&lt;</span><span class="n">D</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="k">template</span><span class="o">&lt;</span><span class="n">mp_units</span><span class="o">::</span><span class="n">Dimension</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">D1</span><span class="p">,</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">Dimension</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">D2</span><span class="p">,</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">Dimension</span><span class="w"> </span><span class="k">auto</span><span class="p">...</span><span class="w"> </span><span class="n">Ds</span><span class="o">&gt;</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="k">constexpr</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">are_time_derivatives</span><span class="o">&lt;</span><span class="n">D1</span><span class="p">,</span><span class="w"> </span><span class="n">D2</span><span class="p">,</span><span class="w"> </span><span class="n">Ds</span><span class="p">...</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">  </span><span class="p">(</span><span class="n">D1</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">D2</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">isq</span><span class="o">::</span><span class="n">dim_time</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">are_time_derivatives</span><span class="o">&lt;</span><span class="n">D2</span><span class="p">,</span><span class="w"> </span><span class="n">Ds</span><span class="p">...</span><span class="o">&gt;</span><span class="p">;</span>
+</span></code></pre></div>
+<p>This metafunction validates that a sequence of dimensions represents successive time
+derivatives (e.g., <em>position</em> → <em>velocity</em> → <em>acceleration)</em>, where each dimension divided
+by the next equals time. The constraint ensures the Kalman filter state can only be
+instantiated with physically meaningful derivative chains:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="n">mp_units</span><span class="o">::</span><span class="n">QuantityPoint</span><span class="p">...</span><span class="w"> </span><span class="n">QPs</span><span class="o">&gt;</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">  </span><span class="k">requires</span><span class="p">(</span><span class="k">sizeof</span><span class="p">...(</span><span class="n">QPs</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span><span class="k">sizeof</span><span class="p">...(</span><span class="n">QPs</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">detail</span><span class="o">::</span><span class="n">are_time_derivatives</span><span class="o">&lt;</span><span class="n">QPs</span><span class="o">::</span><span class="n">dimension</span><span class="p">...</span><span class="o">&gt;</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="k">class</span><span class="w"> </span><span class="nc">system_state</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">  </span><span class="c1">// ...</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="p">};</span>
+</span></code></pre></div>
+<p>This is conceptually related to the automatic differentiation example above, but serves
+a different purpose: while automatic differentiation computes mathematical derivatives of
+functions, this validates that state variables represent successive physical time
+derivatives of each other. Both demonstrate how pure dimensional analysis enables
+sophisticated compile-time validation without requiring actual quantity values.</p>
+<h2 id="benefits">Benefits<a class="headerlink" href="#benefits" title="Permanent link">&para;</a></h2>
+<p>Using pure dimensional analysis in <strong>mp-units</strong> provides several advantages:</p>
+<ol>
+<li><strong>Type Safety</strong>: Dimensional errors are caught at compile-time, preventing entire
+  classes of bugs</li>
+<li><strong>Zero Runtime Overhead</strong>: All dimensional analysis happens at compile-time with no
+  runtime cost</li>
+<li><strong>Flexibility</strong>: You can use dimensions/quantity specs with any arithmetic type, not
+  just built-in numerics</li>
+<li><strong>Expressiveness</strong>: Code clearly documents the physical nature of computations</li>
+<li><strong>Composability</strong>: Easily integrate with other compile-time programming techniques</li>
+<li><strong>Unit Independence</strong>: Focus on dimensional relationships without committing to
+  specific units</li>
+</ol>
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">&para;</a></h2>
+<p>Pure dimensional analysis in <strong>mp-units</strong> enables you to leverage the library's powerful
+type system for dimensional validation even when you're not working with complete quantities.
+By embedding <code>Dimension</code> or <code>QuantitySpec</code> types into your custom arithmetic types and
+propagating operations to them, you achieve full compile-time dimensional analysis with
+zero runtime overhead.</p>
+<p>This feature unlocks new possibilities for symbolic computation, automatic differentiation,
+interval arithmetic, and other advanced use cases while maintaining the strong dimensional
+correctness guarantees that <strong>mp-units</strong> is known for.</p>
 
 
 

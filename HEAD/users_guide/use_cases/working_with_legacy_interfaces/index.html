@@ -1678,8 +1678,6 @@ You're not viewing the latest version.
       
         
       
-        
-      
     
     
     
@@ -1767,6 +1765,24 @@ You're not viewing the latest version.
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Working with Legacy Interfaces
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -1783,6 +1799,69 @@ You're not viewing the latest version.
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#extracting-values-with-unit-enforcement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Extracting Values with Unit Enforcement
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#handling-value-truncation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Handling Value Truncation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#accessing-the-underlying-storage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Accessing the Underlying Storage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1832,34 +1911,6 @@ You're not viewing the latest version.
     
   
     Interoperability with Other Libraries
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../extending_the_library/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Extending the Library
   
 
     
@@ -2306,6 +2357,8 @@ You're not viewing the latest version.
       
         
       
+        
+      
     
     
     
@@ -2638,6 +2691,34 @@ You're not viewing the latest version.
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorials/tutorial_11/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial 11: Faster-than-Lightspeed Constants
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2874,6 +2955,8 @@ You're not viewing the latest version.
   
     
     
+      
+        
       
         
       
@@ -3145,6 +3228,34 @@ You're not viewing the latest version.
     
   
     strong_angular_quantities
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../examples/total_energy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    total_energy
   
 
     
@@ -3772,32 +3883,85 @@ You're not viewing the latest version.
 
 
 <h1 id="working-with-legacy-interfaces">Working with Legacy Interfaces<a class="headerlink" href="#working-with-legacy-interfaces" title="Permanent link">&para;</a></h1>
-<p>In case we are working with a legacy/unsafe interface, we may need to extract the
+<p>When working with legacy or unsafe interfaces, you may need to extract the
 <a href="../../../appendix/glossary/#numerical-value">numerical value of a quantity</a> and pass it to
-some third-party legacy unsafe interfaces.</p>
-<p>In such situations we can use <code>.numerical_value_in(Unit)</code> member function:</p>
+third-party APIs that don't use type-safe units.</p>
+<p><strong>mp-units</strong> provides several member functions to safely bridge this gap while maintaining
+as much type safety as possible.</p>
+<h2 id="extracting-values-with-unit-enforcement">Extracting Values with Unit Enforcement<a class="headerlink" href="#extracting-values-with-unit-enforcement" title="Permanent link">&para;</a></h2>
+<p>The <code>.numerical_value_in(Unit)</code> member function extracts a numerical value while explicitly
+specifying the expected unit:</p>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kt">void</span><span class="w"> </span><span class="nf">legacy_check_speed_limit</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">speed_in_km_per_h</span><span class="p">);</span>
 </span></code></pre></div>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">legacy_check_speed_limit</span><span class="p">((</span><span class="mi">180</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">km</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">h</span><span class="p">)).</span><span class="n">numerical_value_in</span><span class="p">(</span><span class="n">km</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">h</span><span class="p">));</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">speed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">180</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">km</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">h</span><span class="p">);</span><span class="w">  </span><span class="c1">// 90 km/h</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">legacy_check_speed_limit</span><span class="p">(</span><span class="n">speed</span><span class="p">.</span><span class="n">numerical_value_in</span><span class="p">(</span><span class="n">km</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">h</span><span class="p">));</span><span class="w">  </span><span class="c1">// Passes 90</span>
 </span></code></pre></div>
-<p>Such a getter will explicitly enforce the usage of a correct unit required by the underlying
-interface, which reduces a significant number of safety-related issues.</p>
-<p>The above code will not compile in case value truncation may happen. To solve the issue, we
-need to either use a value-preserving representation type or force the truncating conversion
-with <code>.force_numerical_value_in(Unit)</code>:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">legacy_check_speed_limit</span><span class="p">((</span><span class="mi">140</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">mi</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">h</span><span class="p">)).</span><span class="n">force_numerical_value_in</span><span class="p">(</span><span class="n">km</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">h</span><span class="p">));</span>
+<p>This approach explicitly enforces the correct unit required by the underlying interface,
+significantly reducing safety-related issues. The code won't compile if you accidentally
+attempt to extract the value in the wrong unit.</p>
+<h2 id="handling-value-truncation">Handling Value Truncation<a class="headerlink" href="#handling-value-truncation" title="Permanent link">&para;</a></h2>
+<p>The <code>.numerical_value_in()</code> function won't compile if value truncation would occur (e.g.,
+converting a floating-point value to an integer). You have two options to resolve this:</p>
+<ol>
+<li><strong>Use a value-preserving representation type</strong> (e.g., <code>double</code> instead of <code>int</code>)</li>
+<li><strong>Explicitly allow truncation</strong> with <code>.force_numerical_value_in(Unit)</code>:</li>
+</ol>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">speed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">140</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">mi</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">h</span><span class="p">);</span><span class="w">  </span><span class="c1">// 70 mph = 112.654 km/h</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">legacy_check_speed_limit</span><span class="p">(</span><span class="n">speed</span><span class="p">.</span><span class="n">force_numerical_value_in</span><span class="p">(</span><span class="n">km</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">h</span><span class="p">));</span><span class="w">  </span><span class="c1">// Truncates to 112</span>
 </span></code></pre></div>
-<p>The getters mentioned above always return by value as a quantity value conversion may be required
-to adjust it to the target unit. In case a user needs a reference to the underlying storage
-<code>.numerical_value_ref_in(Unit)</code> should be used:</p>
+<p>Use <code>.force_numerical_value_in()</code> only when you're certain that truncation is acceptable
+for your use case.</p>
+<h2 id="accessing-the-underlying-storage">Accessing the Underlying Storage<a class="headerlink" href="#accessing-the-underlying-storage" title="Permanent link">&para;</a></h2>
+<p>The getters above always return by value because unit conversion may be required. When you
+need direct access to the underlying storage (without conversion), use
+<code>.numerical_value_ref_in(Unit)</code>:</p>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kt">void</span><span class="w"> </span><span class="nf">legacy_set_speed_limit</span><span class="p">(</span><span class="kt">int</span><span class="o">*</span><span class="w"> </span><span class="n">speed_in_km_per_h</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">*</span><span class="n">speed_in_km_per_h</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
 </span></code></pre></div>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">km</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">h</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">speed_limit</span><span class="p">;</span>
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">legacy_set_speed_limit</span><span class="p">(</span><span class="o">&amp;</span><span class="n">speed_limit</span><span class="p">.</span><span class="n">numerical_value_ref_in</span><span class="p">(</span><span class="n">km</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">h</span><span class="p">));</span>
 </span></code></pre></div>
-<p>This member function again requires a target unit to enforce safety. This overload does not
-participate in overload resolution if the provided unit has a different scaling factor than
-the current one.</p>
+<p>This member function requires specifying the target unit to enforce safety. It only
+participates in overload resolution if the provided unit has the same scaling factor as
+the quantity's current unit (i.e., no conversion is needed).</p>
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">&para;</a></h2>
+<p><strong>mp-units</strong> provides three functions for interfacing with legacy code:</p>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>Purpose</th>
+<th>Conversion</th>
+<th>Truncation</th>
+<th>Returns</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.numerical_value_in(Unit)</code></td>
+<td>Safe value extraction</td>
+<td>Yes</td>
+<td>Prevented</td>
+<td>By value</td>
+</tr>
+<tr>
+<td><code>.force_numerical_value_in(Unit)</code></td>
+<td>Value extraction with explicit truncation</td>
+<td>Yes</td>
+<td>Allowed</td>
+<td>By value</td>
+</tr>
+<tr>
+<td><code>.numerical_value_ref_in(Unit)</code></td>
+<td>Direct storage access</td>
+<td>No</td>
+<td>N/A</td>
+<td>By reference</td>
+</tr>
+</tbody>
+</table>
+<p>These functions maintain type safety at the boundary between type-safe and legacy code,
+helping prevent unit-related errors while still allowing interoperability with existing
+APIs.</p>
 
 
 
