@@ -162,7 +162,7 @@ using namespace mp_units::cgs::unit_symbols;
 quantity wavenumber = 15000 * K;                           // 15000 cm⁻¹
 
 // Convert to wavelength
-quantity wavelength = 1. / wavenumber;                     
+quantity wavelength = 1. / wavenumber;
 std::cout << wavelength.in(si::nano<si::metre>) << "\n";   // 666.667 nm
 ```
 
@@ -214,11 +214,11 @@ quantity momentum_si = momentum.in<double>(kg * m / s);    // 0.5 kg·m/s
 !!! note "Electromagnetic Units"
 
     The CGS system has several variants for electromagnetic quantities:
-    
+
     - **Gaussian CGS**: Uses statcoulomb and statvolt (no separate electrical base unit)
     - **ESU (Electrostatic)**: Based on Coulomb's law
     - **EMU (Electromagnetic)**: Based on Ampère's force law
-    
+
     The **mp-units** library currently provides only the mechanical CGS units shown above.
     Electromagnetic CGS variants may be added in future versions.
 
