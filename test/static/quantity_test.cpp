@@ -320,6 +320,25 @@ static_assert(!std::constructible_from<int, quantity<isq::angular_measure[one]>>
 static_assert(!std::convertible_to<quantity<isq::angular_measure[one], int>, double>);
 static_assert(!std::constructible_from<double, quantity<isq::angular_measure[one], int>>);
 
+
+///////////////////////////////////
+// multiply syntax
+///////////////////////////////////
+
+static_assert(is_of_type<42 * m, quantity<si::metre, int>>);
+static_assert(is_of_type<42. * km, quantity<si::kilo<si::metre>, double>>);
+static_assert(is_of_type<42 * isq::height[m], quantity<isq::height[m], int>>);
+static_assert(is_of_type<42. * isq::height[km], quantity<isq::height[km], double>>);
+static_assert(is_of_type<isq::height(42 * m), quantity<isq::height[m], int>>);
+static_assert(is_of_type<isq::height(42. * km), quantity<isq::height[km], double>>);
+
+#if MP_UNITS_HOSTED
+
+static_assert(is_of_type<cartesian_vector{1., 2., 3.} * m, quantity<si::metre, cartesian_vector<double>>>);
+
+#endif
+
+
 ///////////////////////////////////
 // converting to a different unit
 ///////////////////////////////////
