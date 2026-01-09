@@ -256,9 +256,9 @@ rules:
     - _time_ has nothing in common with _length_.
 
     ```cpp
-    static_assert(!implicitly_convertible(isq::time, isq::length));
-    static_assert(!explicitly_convertible(isq::time, isq::length));
-    static_assert(!castable(isq::time, isq::length));
+    static_assert(!implicitly_convertible(isq::duration, isq::length));
+    static_assert(!explicitly_convertible(isq::duration, isq::length));
+    static_assert(!castable(isq::duration, isq::length));
     ```
 
     Even the explicit casts will not force such a conversion:
@@ -326,7 +326,7 @@ Additionally, the result of operations on quantity kinds is also a quantity
 kind:
 
 ```cpp
-static_assert(same_type<kind_of<isq::length> / kind_of<isq::time>, kind_of<isq::length / isq::time>>);
+static_assert(same_type<kind_of<isq::length> / kind_of<isq::duration>, kind_of<isq::length / isq::duration>>);
 ```
 
 However, if at least one equation's operand is not a quantity kind, the result
@@ -334,8 +334,8 @@ becomes a "strong" quantity where all the kinds are converted to the hierarchy
 tree's root quantities:
 
 ```cpp
-static_assert(!same_type<kind_of<isq::length> / isq::time, kind_of<isq::length / isq::time>>);
-static_assert(same_type<kind_of<isq::length> / isq::time, isq::length / isq::time>);
+static_assert(!same_type<kind_of<isq::length> / isq::duration, kind_of<isq::length / isq::duration>>);
+static_assert(same_type<kind_of<isq::length> / isq::duration, isq::length / isq::duration>);
 ```
 
 !!! info

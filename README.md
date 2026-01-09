@@ -128,7 +128,7 @@ Here's a broader preview showcasing **mp-units** capabilities:
 using namespace mp_units;
 
 constexpr QuantityOf<isq::speed> auto avg_speed(QuantityOf<isq::length> auto d,
-                                                QuantityOf<isq::time> auto t)
+                                                QuantityOf<isq::duration> auto t)
 {
   return d / t;
 }

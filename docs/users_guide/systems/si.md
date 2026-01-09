@@ -46,7 +46,7 @@ The seven base units are defined in **mp-units** as:
 ```cpp
 namespace mp_units::si {
 
-inline constexpr struct second final : named_unit<"s", kind_of<isq::time>> {} second;
+inline constexpr struct second final : named_unit<"s", kind_of<isq::duration>> {} second;
 inline constexpr struct metre final : named_unit<"m", kind_of<isq::length>> {} metre;
 inline constexpr struct kilogram final : named_unit<"kg", kind_of<isq::mass>> {} kilogram;
 inline constexpr struct ampere final : named_unit<"A", kind_of<isq::electric_current>> {} ampere;

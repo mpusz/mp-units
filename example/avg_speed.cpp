@@ -55,12 +55,12 @@ constexpr quantity<si::metre / si::second> fixed_double_si_avg_speed(quantity<si
   return d / t;
 }
 
-constexpr QuantityOf<isq::speed> auto avg_speed(QuantityOf<isq::length> auto d, QuantityOf<isq::time> auto t)
+constexpr QuantityOf<isq::speed> auto avg_speed(QuantityOf<isq::length> auto d, QuantityOf<isq::duration> auto t)
 {
   return d / t;
 }
 
-template<QuantityOf<isq::length> D, QuantityOf<isq::time> T, QuantityOf<isq::speed> V>
+template<QuantityOf<isq::length> D, QuantityOf<isq::duration> T, QuantityOf<isq::speed> V>
 void print_result(D distance, T duration, V speed)
 {
   const auto result_in_kmph = speed.force_in(si::kilo<si::metre> / non_si::hour);

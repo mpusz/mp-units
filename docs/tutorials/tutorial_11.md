@@ -108,7 +108,7 @@ With these definitions in place, observe how:
 using namespace mp_units;
 
 inline constexpr struct specific_impulse final :
-    quantity_spec<isq::time, isq::force / (isq::mass_flow_rate * isq::acceleration)> {} specific_impulse;
+    quantity_spec<isq::duration, isq::force / (isq::mass_flow_rate * isq::acceleration)> {} specific_impulse;
 
 // TODO: Define standard gravity (g₀) as a unit (9.80665 m/s² = 980'665/100'000 m/s²)
 
@@ -123,8 +123,8 @@ QuantityOf<isq::mass_flow_rate> auto mass_flow_rate(QuantityOf<isq::force> auto 
   return thrust / (isp * g0);
 }
 
-QuantityOf<isq::time> auto burn_time_from_flow(QuantityOf<isq::mass> auto propellant_mass,
-                                                QuantityOf<isq::mass_flow_rate> auto flow_rate)
+QuantityOf<isq::duration> auto burn_time_from_flow(QuantityOf<isq::mass> auto propellant_mass,
+                                                   QuantityOf<isq::mass_flow_rate> auto flow_rate)
 {
   return propellant_mass / flow_rate;
 }
@@ -134,9 +134,9 @@ QuantityOf<isq::speed> auto exhaust_velocity(QuantityOf<specific_impulse> auto i
   return isp * g0;
 }
 
-QuantityOf<isq::time> auto burn_time_with_stats(QuantityOf<isq::mass> auto propellant_mass,
-                                                QuantityOf<specific_impulse> auto isp,
-                                                QuantityOf<isq::force> auto thrust)
+QuantityOf<isq::duration> auto burn_time_with_stats(QuantityOf<isq::mass> auto propellant_mass,
+                                                    QuantityOf<specific_impulse> auto isp,
+                                                    QuantityOf<isq::force> auto thrust)
 {
   quantity flow_rate = mass_flow_rate(thrust, isp);
   quantity burn_time = burn_time_from_flow(propellant_mass, flow_rate);
@@ -198,7 +198,7 @@ int main()
     using namespace mp_units;
 
     inline constexpr struct specific_impulse final :
-        quantity_spec<isq::time, isq::force / (isq::mass_flow_rate * isq::acceleration)> {} specific_impulse;
+        quantity_spec<isq::duration, isq::force / (isq::mass_flow_rate * isq::acceleration)> {} specific_impulse;
 
     inline constexpr struct standard_gravity final :
         named_unit<symbol_text{u8"g₀", "g_0"}, mag_ratio<980'665, 100'000> * si::metre / square(si::second)> {} standard_gravity;
@@ -214,8 +214,8 @@ int main()
       return thrust / (isp * g0);
     }
 
-    QuantityOf<isq::time> auto burn_time_from_flow(QuantityOf<isq::mass> auto propellant_mass,
-                                                   QuantityOf<isq::mass_flow_rate> auto flow_rate)
+    QuantityOf<isq::duration> auto burn_time_from_flow(QuantityOf<isq::mass> auto propellant_mass,
+                                                       QuantityOf<isq::mass_flow_rate> auto flow_rate)
     {
       return propellant_mass / flow_rate;
     }
@@ -225,9 +225,9 @@ int main()
       return isp * g0;
     }
 
-    QuantityOf<isq::time> auto burn_time_with_stats(QuantityOf<isq::mass> auto propellant_mass,
-                                                    QuantityOf<specific_impulse> auto isp,
-                                                    QuantityOf<isq::force> auto thrust)
+    QuantityOf<isq::duration> auto burn_time_with_stats(QuantityOf<isq::mass> auto propellant_mass,
+                                                        QuantityOf<specific_impulse> auto isp,
+                                                        QuantityOf<isq::force> auto thrust)
     {
       quantity flow_rate = mass_flow_rate(thrust, isp);
       quantity burn_time = burn_time_from_flow(propellant_mass, flow_rate);

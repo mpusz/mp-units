@@ -109,7 +109,7 @@ The value of the quantity is the product of the **number** and the **unit**:
     ```cpp
     // Basic ISQ quantities
     quantity distance = isq::distance(110 * km);
-    quantity duration = isq::time(2 * h);
+    quantity duration = isq::duration(2 * h);
     quantity height = isq::height(10 * m);
     quantity width = 5 * isq::width[m];
 
@@ -184,7 +184,7 @@ is convertible to a provided type:
 ```cpp
 // Generic function accepting any speed quantity in any unit
 constexpr QuantityOf<isq::speed> auto avg_speed(QuantityOf<isq::length> auto distance, // (1)!
-                                                QuantityOf<isq::time> auto time)
+                                                QuantityOf<isq::duration> auto time)
 {
   return distance / time;
 }
@@ -224,7 +224,7 @@ quantity<horizontal_area[m2]> base_area = base_length * base_width;        // âœ
 
 ```cpp
 // Time points (absolute time)
-inline constexpr struct epoch final : absolute_point_origin<kind_of<isq::time>> {} epoch;
+inline constexpr struct epoch final : absolute_point_origin<kind_of<isq::duration>> {} epoch;
 quantity_point later = epoch + 3600 * s;                 // 1 hour later
 quantity duration = later - epoch;                       // 3600 s
 
@@ -258,7 +258,7 @@ quantity sin_value = si::sin(angle_rad);                 // 1.0
 ### Defining Units
 
 ```cpp
-inline constexpr struct second final : named_unit<"s", kind_of<isq::time>> {} second;
+inline constexpr struct second final : named_unit<"s", kind_of<isq::duration>> {} second;
 inline constexpr struct metre final : named_unit<"m", kind_of<isq::length>> {} metre;
 inline constexpr struct gram final : named_unit<"g", kind_of<isq::mass>> {} gram;
 inline constexpr auto kilogram = si::kilo<gram>;

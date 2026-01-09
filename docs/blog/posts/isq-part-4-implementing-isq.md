@@ -144,8 +144,8 @@ implicitly:
   from any quantity of _mass_, _length_, and _time_:
 
     ```cpp
-    static_assert(implicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::time), isq::energy));
-    static_assert(implicitly_convertible(isq::mass * pow<2>(isq::height) / pow<2>(isq::time), isq::energy));
+    static_assert(implicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::duration), isq::energy));
+    static_assert(implicitly_convertible(isq::mass * pow<2>(isq::height) / pow<2>(isq::duration), isq::energy));
     ```
 
 - _mechanical energy_ is a more "specialized" quantity than _energy_ (not every
@@ -156,9 +156,9 @@ implicitly:
     ```cpp
     static_assert(!implicitly_convertible(isq::energy, isq::mechanical_energy));
     static_assert(explicitly_convertible(isq::energy, isq::mechanical_energy));
-    static_assert(!implicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::time),
+    static_assert(!implicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::duration),
                                           isq::mechanical_energy));
-    static_assert(explicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::time),
+    static_assert(explicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::duration),
                                          isq::mechanical_energy));
     ```
 
@@ -169,9 +169,9 @@ implicitly:
   energy_, but every `mass * acceleration_of_free_fall * height` is.
 
     ```cpp
-    static_assert(!implicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::time),
+    static_assert(!implicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::duration),
                                           gravitational_potential_energy));
-    static_assert(explicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::time),
+    static_assert(explicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::duration),
                                          gravitational_potential_energy));
     static_assert(implicitly_convertible(isq::mass * isq::acceleration_of_free_fall * isq::height,
                                          gravitational_potential_energy));

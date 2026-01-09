@@ -57,7 +57,7 @@ arguments of length and time:
 ```
 
 The above function template takes any quantities implicitly convertible to `isq::length`
-and `isq::time`, respectively. Those quantities can use any compatible unit and a
+and `isq::duration`, respectively. Those quantities can use any compatible unit and a
 representation type. The function returns a result of a straightforward equation and ensures
 that its quantity type is implicitly convertible to `isq::speed`.
 
@@ -83,11 +83,11 @@ implicitly while including a header file.
 --8<-- "example/hello_units.cpp:56:62"
 ```
 
-- Lines `25` & `26` create a quantity of kind `isq::length / isq::time` with the numbers
+- Lines `25` & `26` create a quantity of kind `isq::length / isq::duration` with the numbers
   and units provided. Such quantities can be converted or assigned to any other quantity
   with a matching kind.
 - Line `27` calls our function template with quantities of kind `isq::length` and
-  `isq::time` and number and units provided.
+  `isq::duration` and number and units provided.
 - Line `28` explicitly provides quantity types of the quantities passed to a function template.
   This time, those will not be quantity kinds anymore and will have
   [more restrictive conversion rules](../users_guide/framework_basics/simple_and_typed_quantities.md#quantity_cast-to-force-unsafe-conversions).

@@ -47,7 +47,7 @@ template<PrefixableUnit auto U> constexpr milli_<MP_UNITS_REMOVE_CONST(decltype(
 template<PrefixableUnit auto U> constexpr kilo_<MP_UNITS_REMOVE_CONST(decltype(U))> kilo;
 
 // base units
-inline constexpr struct second_ final : named_unit<"s", kind_of<isq::time>> {} second;
+inline constexpr struct second_ final : named_unit<"s", kind_of<isq::duration>> {} second;
 inline constexpr struct metre_ final : named_unit<"m", kind_of<isq::length>> {} metre;
 inline constexpr struct gram_ final : named_unit<"g", kind_of<isq::mass>> {} gram;
 inline constexpr auto kilogram = kilo<gram>;
@@ -394,21 +394,21 @@ concept invalid_operations = requires {
   requires !requires { 2 == s; };
   requires !requires { s < 2; };
   requires !requires { 2 < s; };
-  requires !requires { s + isq::time[second]; };
-  requires !requires { s - isq::time[second]; };
-  requires !requires { s < isq::time[second]; };
-  requires !requires { isq::time[second] + s; };
-  requires !requires { isq::time[second] - s; };
-  requires !requires { s + 1 * isq::time[second]; };
-  requires !requires { s - 1 * isq::time[second]; };
-  requires !requires { s * 1 * isq::time[second]; };
-  requires !requires { s / 1 * isq::time[second]; };
-  requires !requires { s == 1 * isq::time[second]; };
-  requires !requires { s == 1 * isq::time[second]; };
-  requires !requires { 1 * isq::time[second] + s; };
-  requires !requires { 1 * isq::time[second] - s; };
-  requires !requires { 1 * isq::time[second] == s; };
-  requires !requires { 1 * isq::time[second] < s; };
+  requires !requires { s + isq::duration[second]; };
+  requires !requires { s - isq::duration[second]; };
+  requires !requires { s < isq::duration[second]; };
+  requires !requires { isq::duration[second] + s; };
+  requires !requires { isq::duration[second] - s; };
+  requires !requires { s + 1 * isq::duration[second]; };
+  requires !requires { s - 1 * isq::duration[second]; };
+  requires !requires { s * 1 * isq::duration[second]; };
+  requires !requires { s / 1 * isq::duration[second]; };
+  requires !requires { s == 1 * isq::duration[second]; };
+  requires !requires { s == 1 * isq::duration[second]; };
+  requires !requires { 1 * isq::duration[second] + s; };
+  requires !requires { 1 * isq::duration[second] - s; };
+  requires !requires { 1 * isq::duration[second] == s; };
+  requires !requires { 1 * isq::duration[second] < s; };
 };
 static_assert(invalid_operations<second>);
 

@@ -47,8 +47,8 @@ inline constexpr struct dim_luminous_intensity final : base_dimension<"J"> {} di
 // base quantities
 QUANTITY_SPEC(length, dim_length);
 QUANTITY_SPEC(mass, dim_mass);
-QUANTITY_SPEC(time, dim_time);
-inline constexpr auto duration = time;
+QUANTITY_SPEC(duration, dim_time);
+inline constexpr auto time = duration;
 QUANTITY_SPEC(electric_current, dim_electric_current);
 QUANTITY_SPEC(thermodynamic_temperature, dim_thermodynamic_temperature);
 QUANTITY_SPEC(amount_of_substance, dim_amount_of_substance);

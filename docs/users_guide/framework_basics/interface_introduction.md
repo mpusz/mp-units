@@ -7,7 +7,7 @@ and `second` [SI](../../appendix/glossary.md#si) base units are defined:
 
 ```cpp
 inline constexpr struct metre final : named_unit<"m", kind_of<isq::length>> {} metre;
-inline constexpr struct second final : named_unit<"s", kind_of<isq::time>> {} second;
+inline constexpr struct second final : named_unit<"s", kind_of<isq::duration>> {} second;
 ```
 
 The above reuses the same identifier for a type and its value. Rationale:
@@ -263,7 +263,7 @@ The `acceleration` quantity, being the result of the above code, has the followi
 (after stripping the `mp_units` namespace for brevity):
 
 ```text
-quantity<reference<derived_quantity_spec<isq::speed, per<isq::time>>{}, derived_unit<si::kilo_<si::metre{}>, per<non_si::hour, si::second>>{}>{}, int>
+quantity<reference<derived_quantity_spec<isq::speed, per<isq::duration>>{}, derived_unit<si::kilo_<si::metre{}>, per<non_si::hour, si::second>>{}>{}, int>
 ```
 
 and the text output presents:

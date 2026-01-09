@@ -211,5 +211,5 @@ library, we can either:
     quantity<isq::velocity[m/s]> q3{la_vector{1, 2, 3} * m / s};
     ```
 
-    In all the cases above, the SI unit `m / s` has an associated scalar quantity of `isq::length / isq::time`.
+    In all the cases above, the SI unit `m / s` has an associated scalar quantity of `isq::length / isq::duration`.
     `la_vector` is not a correct representation type for a scalar quantity so the construction fails.

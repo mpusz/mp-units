@@ -144,7 +144,7 @@ All operations preserve dimensional correctness:
 === "State Extrapolation"
 
     ```cpp
-    template<typename QP1, typename QP2, QuantityOf<isq::time> T>
+    template<typename QP1, typename QP2, QuantityOf<isq::duration> T>
     [[nodiscard]] constexpr system_state<QP1, QP2> state_extrapolation(const system_state<QP1, QP2>& estimated,
                                                                        T interval)
     {

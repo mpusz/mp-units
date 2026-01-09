@@ -55,11 +55,11 @@ static_assert(1 * isq::length[le] == 5280 * isq::length[yd]);
 
 // Nautical
 static_assert(1 * isq::length[nmi] == 1852 * isq::length[si::metre]);
-static_assert(1 * isq::speed[kn] == isq::length(1 * nmi) / isq::time(1 * si::hour));
+static_assert(1 * isq::speed[kn] == isq::length(1 * nmi) / isq::duration(1 * si::hour));
 
 // Force
-static_assert(1 * isq::force[pdl] ==
-              isq::mass(1 * lb) * isq::length(1 * ft) / (isq::time(1 * si::second) * isq::time(1 * si::second)));
+static_assert(1 * isq::force[pdl] == isq::mass(1 * lb) * isq::length(1 * ft) /
+                                       (isq::duration(1 * si::second) * isq::duration(1 * si::second)));
 static_assert(1 * isq::force[lbf] == isq::mass(1 * lb) * (1 * si::standard_gravity));
 static_assert(1 * isq::force[kip] == 1000 * isq::force[lbf]);
 
@@ -67,6 +67,6 @@ static_assert(1 * isq::force[kip] == 1000 * isq::force[lbf]);
 static_assert(1 * isq::pressure[psi] == isq::force(1 * lbf) / isq::area(1 * square(inch)));
 
 // Power
-static_assert(1 * isq::power[hp] == isq::length(33'000 * ft) * isq::force(1 * lbf) / isq::time(1 * si::minute));
+static_assert(1 * isq::power[hp] == isq::length(33'000 * ft) * isq::force(1 * lbf) / isq::duration(1 * si::minute));
 
 }  // namespace

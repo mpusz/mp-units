@@ -42,7 +42,7 @@ With C++ concepts backed up with ISQ quantities, we can simply type it as:
 
 ```cpp
 constexpr QuantityOf<isq::speed> auto avg_speed(QuantityOf<isq::length> auto d,
-                                                QuantityOf<isq::time> auto t)
+                                                QuantityOf<isq::duration> auto t)
 {
   return d / t;
 }

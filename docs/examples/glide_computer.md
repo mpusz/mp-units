@@ -157,7 +157,7 @@ _Timestamps_ are absolute points in _time_, not _durations_ - correctly modeled 
 
 ```cpp
 QUANTITY_SPEC(rate_of_climb_speed, mp_units::isq::speed,
-              mp_units::isq::height / mp_units::isq::time);
+              mp_units::isq::height / mp_units::isq::duration);
 ```
 
 Creates a specialized _speed_ quantity specifically for vertical movement, distinct from

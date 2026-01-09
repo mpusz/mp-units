@@ -41,7 +41,7 @@ using v = cartesian_vector<double>;
 // https://en.wikipedia.org/wiki/Centimetre%E2%80%93gram%E2%80%93second_system_of_units#Definitions_and_conversion_factors_of_CGS_units_in_mechanics
 static_assert(isq::length(100 * cm) == isq::length(1 * si::metre));
 static_assert(isq::mass(1000 * g) == isq::mass(1 * si::kilogram));
-static_assert(isq::time(1 * s) == isq::time(1 * si::second));
+static_assert(isq::duration(1 * s) == isq::duration(1 * si::second));
 static_assert(isq::speed(100 * cm / s) == isq::speed(1 * si::metre / si::second));
 #if MP_UNITS_HOSTED
 static_assert(isq::acceleration(v{100} * Gal) == isq::acceleration(v{1} * si::metre / square(si::second)));

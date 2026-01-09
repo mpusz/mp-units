@@ -86,7 +86,7 @@ from any `Reference`:
 
     // From a derived unit
     constexpr auto speed_unit = si::metre / si::second;
-    static_assert(get_quantity_spec(speed_unit) == kind_of<isq::length / isq::time>);
+    static_assert(get_quantity_spec(speed_unit) == kind_of<isq::length / isq::duration>);
     static_assert(get_unit(speed_unit) == si::metre / si::second);
     ```
 
@@ -202,7 +202,7 @@ template<Quantity Q>
 constexpr bool is_length_quantity() { return Q::dimension == isq::dim_length; }
 
 static_assert(is_length_quantity<quantity<isq::length[si::metre]>>());
-static_assert(!is_length_quantity<quantity<isq::time[si::second]>>());
+static_assert(!is_length_quantity<quantity<isq::duration[si::second]>>());
 ```
 
 ### Advanced Introspection Examples

@@ -179,7 +179,7 @@ This is why the **mp-units** library introduces a quantity specification entity 
 
 For example:
 
-- `isq::length`, `isq::mass`, `isq::time`, `isq::electric_current`, `isq::thermodynamic_temperature`,
+- `isq::length`, `isq::mass`, `isq::duration`, `isq::electric_current`, `isq::thermodynamic_temperature`,
   `isq::amount_of_substance`, and `isq::luminous_intensity` are the specifications
   of base quantities
   in the [ISQ](../../appendix/glossary.md#isq).
@@ -217,8 +217,8 @@ Quantity specification  can be defined by the user in one of the following ways:
     ```
 
 The [quantity equation](../../appendix/glossary.md#quantity-equation) of
-`isq::length / isq::time` results in the
-`derived_quantity_spec<isq::length, per<isq::time>>` type.
+`isq::length / isq::duration` results in the
+`derived_quantity_spec<isq::length, per<isq::duration>>` type.
 
 
 ## Unit
@@ -248,7 +248,7 @@ A unit can be defined by the user in one of the following ways:
 template<PrefixableUnit U> struct kilo_ : prefixed_unit<"k", mag_power<10, 3>, U{}> {};
 template<PrefixableUnit auto U> constexpr kilo_<decltype(U)> kilo;
 
-inline constexpr struct second final : named_unit<"s", kind_of<isq::time>> {} second;
+inline constexpr struct second final : named_unit<"s", kind_of<isq::duration>> {} second;
 inline constexpr struct minute final : named_unit<"min", mag<60> * second> {} minute;
 inline constexpr struct gram   final : named_unit<"g", kind_of<isq::mass>> {} gram;
 inline constexpr auto kilogram = kilo<gram>;

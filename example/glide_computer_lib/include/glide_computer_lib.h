@@ -64,7 +64,7 @@ import mp_units;
 namespace glide_computer {
 
 // https://en.wikipedia.org/wiki/Flight_planning#Units_of_measurement
-QUANTITY_SPEC(rate_of_climb_speed, mp_units::isq::speed, mp_units::isq::height / mp_units::isq::time);
+QUANTITY_SPEC(rate_of_climb_speed, mp_units::isq::speed, mp_units::isq::height / mp_units::isq::duration);
 
 // length
 using distance = mp_units::quantity<mp_units::isq::distance[mp_units::si::kilo<mp_units::si::metre>]>;

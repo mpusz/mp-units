@@ -79,7 +79,7 @@ Please see the below example for a quick preview of basic library features:
     using namespace mp_units;
 
     constexpr QuantityOf<isq::speed> auto avg_speed(QuantityOf<isq::length> auto d,
-                                                    QuantityOf<isq::time> auto t)
+                                                    QuantityOf<isq::duration> auto t)
     {
       return d / t;
     }
@@ -121,7 +121,7 @@ Please see the below example for a quick preview of basic library features:
     using namespace mp_units;
 
     constexpr QuantityOf<isq::speed> auto avg_speed(QuantityOf<isq::length> auto d,
-                                                    QuantityOf<isq::time> auto t)
+                                                    QuantityOf<isq::duration> auto t)
     {
       return d / t;
     }

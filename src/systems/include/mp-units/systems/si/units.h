@@ -39,7 +39,7 @@ namespace si {
 
 // clang-format off
 // base units
-inline constexpr struct second final : named_unit<"s", kind_of<isq::time>> {} second;
+inline constexpr struct second final : named_unit<"s", kind_of<isq::duration>> {} second;
 inline constexpr struct metre final : named_unit<"m", kind_of<isq::length>> {} metre;
 inline constexpr struct gram final : named_unit<"g", kind_of<isq::mass>> {} gram;
 inline constexpr auto kilogram = kilo<gram>;

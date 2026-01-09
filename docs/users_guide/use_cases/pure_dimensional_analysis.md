@@ -36,7 +36,7 @@ In **mp-units**, dimensions can be used independently to verify dimensional cons
 ```cpp
 // Extract dimensions from quantity specifications
 constexpr auto length_dim = isq::length.dimension;
-constexpr auto time_dim = isq::time.dimension;
+constexpr auto time_dim = isq::duration.dimension;
 
 // Dimensions support arithmetic operations
 constexpr auto velocity_dim = length_dim / time_dim;
@@ -120,16 +120,16 @@ auto operator/(const symbolic_expression<QS1>& lhs, const symbolic_expression<QS
 
 template<QuantitySpec auto QS1, QuantitySpec auto QS2>
 auto operator+(const symbolic_expression<QS1>& lhs, const symbolic_expression<QS2>& rhs)
-  requires requires { get_common_quantity_spec(QS1, QS2); }  // Enforce dimensional compatibility for addition
+  requires requires { QS1 + QS2; }  // Enforce dimensional compatibility for addition
 {
-  constexpr auto result_qs = get_common_quantity_spec(QS1, QS2);
+  constexpr auto result_qs = QS1 + QS2;
   return symbolic_expression<result_qs>(std::format("({} + {})", lhs.expression(), rhs.expression()));
 }
 
 void example()
 {
   symbolic_expression<isq::length> distance("d");
-  symbolic_expression<isq::time> duration("t");
+  symbolic_expression<isq::duration> duration("t");
   symbolic_expression<isq::mass> mass("m");
 
   // These operations are dimensionally valid

@@ -133,10 +133,10 @@ namespace unit_symbols {
 }
 
 // Calculate days of inventory remaining
-[[nodiscard]] constexpr QuantityOf<isq::time> auto days_of_inventory(QuantityOf<stock_level> auto stock,
-                                                                     QuantityOf<sales_rate> auto rate)
+[[nodiscard]] constexpr QuantityOf<isq::duration> auto days_of_inventory(QuantityOf<stock_level> auto stock,
+                                                                         QuantityOf<sales_rate> auto rate)
 {
-  return isq::time(stock / rate);
+  return isq::duration(stock / rate);
 }
 
 int main()
@@ -191,8 +191,8 @@ int main()
     inline constexpr struct products_received final : quantity_spec<product_count> {} products_received;
 
     // Define derived quantities
-    inline constexpr struct consumption_rate final : quantity_spec<products_consumed / isq::time> {} consumption_rate;
-    inline constexpr struct replenishment_rate final : quantity_spec<products_received / isq::time> {} replenishment_rate;
+    inline constexpr struct consumption_rate final : quantity_spec<products_consumed / isq::duration> {} consumption_rate;
+    inline constexpr struct replenishment_rate final : quantity_spec<products_received / isq::duration> {} replenishment_rate;
     inline constexpr struct sales_rate final : quantity_spec<consumption_rate> {} sales_rate;
 
     // Define units
@@ -217,10 +217,10 @@ int main()
     }
 
     // Calculate days of inventory remaining
-    [[nodiscard]] constexpr QuantityOf<isq::time> auto days_of_inventory(QuantityOf<stock_level> auto stock,
-                                                                         QuantityOf<sales_rate> auto rate)
+    [[nodiscard]] constexpr QuantityOf<isq::duration> auto days_of_inventory(QuantityOf<stock_level> auto stock,
+                                                                             QuantityOf<sales_rate> auto rate)
     {
-      return isq::time(stock / rate);
+      return isq::duration(stock / rate);
     }
 
     int main()
