@@ -1,190 +1,238 @@
-# Tutorial 11: Faster-than-Lightspeed Constants
+# Tutorial 11: Preventing Confusion with Distinct Kinds
 
-Physical constants like standard gravity (g₀) or π often appear in calculations where
-they multiply in one place and divide in another. Traditional libraries implement these
-as constant values (e.g., `9.80665`), requiring runtime floating-point arithmetic even
-when the constants mathematically cancel out.
+Many engineering domains have quantities that share the same physical dimension but represent
+fundamentally different concepts. Hydraulic engineering uses "_head_"—a measure of
+**_potential energy per unit weight_** expressed as an equivalent _height_—in two
+incompatible ways:
 
-This tutorial demonstrates how **mp-units** implements constants as compile-time units,
-enabling automatic simplification when constants cancel, preserving exact arithmetic where
-possible, and delaying expensive conversions until necessary.
+- **_Fluid head_**: _Potential energy_ normalized to the actual fluid's _density_
+  (e.g., 2 m of mercury)
+- **_Water head_**: _Potential energy_ normalized to water's _density_ (e.g., 27.2 m water
+  equivalent)
+
+Both express **_energy_** using _length_ dimensions, but mixing them produces physically
+meaningless results—like mixing _gauge_ and _absolute pressure_ without conversion.
+Traditional code using raw `double` values allows such mistakes to silently compile.
+Remarkably, even units libraries from C++ and also other programming languages cannot
+prevent this error—they only check dimensional compatibility, not physical meaning.
+
+This tutorial demonstrates how **mp-units** uses `is_kind` to create distinct quantity
+**subkinds within an existing hierarchy**—a capability unique among units libraries worldwide.
+The key insight: `is_kind` lets quantities **inherit** properties (dimension, unit) from a
+parent while **isolating** them from each other. Just as the library prevents mixing
+_plane angles_ and _solid angles_ (both subkinds of _dimensionless_), you can create
+custom subkinds like _fluid head_ and _water head_ (both subkinds of _height_) that
+cannot be accidentally mixed.
 
 
-## Problem statement
+## Problem Statement
 
-Consider rocket stage burn time calculations for mission planning and flight software.
+Consider a pump system design for a chemical processing plant. Engineers must verify that
+the _pump capacity_ is adequate for the fluid being handled. This requires comparing:
 
-Rocket engineers face a messy mix of units:
+- **System requirement**: The fluid column that must be lifted, expressed as _fluid head_
+  (_energy_ normalized to the actual fluid's _density_)
+- **Pump specifications**: Rated in _water head_ (_energy_ normalized to _water density_)
 
-- **_Propellant mass_** in kilograms (kg)
-- **_Specific impulse_ (Isp)** in seconds - the industry-standard efficiency metric
-- **_Thrust_** often specified in **kilogram-force (kgf)** in legacy engine datasheets
-- **_Burn time_** needs to be calculated from these parameters
+The relationship between _fluid head_ and _water head_ reflects _energy conservation_
+with different _density_ normalizations:
 
-The relationship between _thrust_ (F), _mass flow rate_ ($\dot{m}$), and
-_specific impulse_ ($I_{sp}$) involves standard gravity ($g_0$):
+$$H_{water} = H_{fluid} \cdot SG$$
 
-$$F = \dot{m} \cdot I_{sp} \cdot g_0$$
+$$H_{fluid} = \frac{H_{water}}{SG}$$
 
-Rearranging to find _burn time_ ($t_{burn} = m_{prop} / \dot{m}$), we get:
+Where _specific gravity_ is the dimensionless ratio of _fluid density_ to _water density_.
+The same _potential energy_ is expressed as a larger _height_ for lighter fluids (water)
+and a smaller _height_ for denser fluids (mercury).
 
-$$t_{burn} = \frac{m_{prop}}{\dot{m}} = \frac{m_{prop} \cdot I_{sp} \cdot g_0}{F}$$
+Here's how different approaches handle (or fail to handle) this scenario:
 
-Here's a traditional implementation with helper functions but no type safety:
+=== "Raw doubles"
 
-```cpp
-const double g0 = 9.80665;  // m/s² - magic number!
+    ```cpp
+    // Traditional approach - all heights are just doubles
+    double h_mercury_m = 2.0;        // Height of mercury column
+    double h_pump_rating_m = 10.0;   // Pump rated for water
+    double sg_mercury = 13.6;        // Specific gravity
 
-double mass_flow_rate_kg_s(double thrust_N, double isp_s) { return thrust_N / (isp_s * g0); }
-double burn_time_from_flow_s(double mass_kg, double flow_rate_kg_s) { return mass_kg / flow_rate_kg_s; }
+    // Direct addition - compiles but physically wrong!
+    double total_head = h_mercury_m + h_pump_rating_m;  // 12 m - WRONG!
+    // This treats 2 m of mercury as if it were 2 m of water
 
-int main()
-{
-  double propellant_kg = 15000.0;
-  double isp_s = 311.0;
-  double thrust_kgf = 390000.0;  // Legacy engine spec in kgf!
-  double thrust_N = thrust_kgf * g0;
-  double flow_kg_s = mass_flow_rate_kg_s(thrust_N, isp_s);
-  double time_s = burn_time_from_flow_s(propellant_kg, flow_kg_s);
-  // Can you spot a missed optimization opportunity?
-}
-```
+    // Correct calculation requires manual tracking:
+    double h_mercury_as_water = h_mercury_m * sg_mercury;  // 27.2 m
+    
+    // Compare system requirement vs pump capacity
+    if (h_mercury_as_water > h_pump_rating_m) {
+      std::cout << "Pump is undersized!\n";  // This will trigger!
+    }
+    ```
 
-**Problems with this approach:**
+=== "Boost.Units (C++)"
 
-1. **Missed optimization**: Converting `thrust_kgf * g0` to `thrust_N`, then dividing by
-  `g0` in `mass_flow_rate_kg_s` — the `g0` factors cancel but we compute them anyway!
-2. **No type safety**: Nothing prevents passing `thrust_kgf` directly to
-  `mass_flow_rate_kg_s`, silently producing wrong results
-3. **Hidden unit conversions**: kgf is kg × g₀ by definition, but this relationship is
-  implicit in the code
-4. **Manual burden**: Programmers must track which conversions are needed and which
-  constants cancel
-5. **Historic disasters**: Unit confusion (mixing lbf and N) has caused real mission
-  failures like Mars Climate Orbiter
+    ```cpp
+    #include <boost/units/systems/si.hpp>
+    
+    using namespace boost::units;
+    using namespace boost::units::si;
+    
+    quantity<length> h_mercury = 2.0 * meters;
+    quantity<length> h_pump_rating = 10.0 * meters;
+    double sg_mercury = 13.6;
+    
+    // Direct addition - compiles but physically wrong!
+    quantity<length> total_head = h_mercury + h_pump_rating;  // WRONG!
+    // Both are lengths, so Boost.Units allows this
+    
+    // Correct calculation still requires manual tracking:
+    quantity<length> h_mercury_as_water = h_mercury * sg_mercury;
+    
+    // Compare system requirement vs pump capacity
+    if (h_mercury_as_water > h_pump_rating) {
+      std::cout << "Pump is undersized!\n";  // This will trigger!
+    }
+    ```
+    
+    **Problem**: Boost.Units checks dimensional compatibility (both are lengths), but cannot
+    distinguish between physically incompatible types of length.
+
+=== "Pint (Python)"
+
+    ```python
+    import pint
+    ureg = pint.UnitRegistry()
+    
+    h_mercury = 2.0 * ureg.meter
+    h_pump_rating = 10.0 * ureg.meter
+    sg_mercury = 13.6
+    
+    # Direct addition - works but physically wrong!
+    total_head = h_mercury + h_pump_rating  # WRONG!
+    # Both have dimension [length], so Pint allows this
+    
+    # Correct calculation still requires manual tracking:
+    h_mercury_as_water = h_mercury * sg_mercury
+    
+    # Compare system requirement vs pump capacity
+    if h_mercury_as_water > h_pump_rating:
+        print("Pump is undersized!")  # This will trigger!
+    ```
+    
+    **Problem**: Pint prevents dimensional errors but cannot distinguish between different
+    physical meanings of the same dimension.
+
+The fundamental limitation: **Units libraries check dimensional compatibility
+(_length_ + _length_ = OK), but cannot enforce that quantities with the same dimension
+may represent incompatible physical concepts.** This is where **mp-units** breaks new
+ground with its `is_kind` feature.
+
+**Problems common to all these approaches:**
+
+1. **No distinction**: Both _fluid head_ and _water head_ have the same dimensional type
+   (_length_), making them indistinguishable to the type system
+2. **Silent errors**: Adding incompatible _head_ types compiles successfully but produces
+   physically nonsense results
+3. **Manual tracking**: Programmers must remember which variables represent which type
+   of _head_—the type system provides no help
+4. **Comparison confusion**: `2 m < 10 m` numerically, but `2 m` of mercury represents
+   far more _energy_ (and _pressure_) than `10 m` of water
+5. **Easy to forget**: Forgetting the SG conversion factor leads to severely undersized
+   equipment—a potentially catastrophic error in chemical plants
 
 **Real-world scenario:**
 
-Flight software for a rocket stage must:
+A chemical plant pump system must:
 
-- Read engine specifications with _thrust_ in kgf (e.g., legacy Russian engines like RD-180)
-- Read _propellant mass_ from fuel tank sensors (in kg)
-- Use published _Isp_ values (efficiency metric in seconds)
-- Calculate _burn time_ to determine how long the stage will fire
-- Handle mixed units safely, as some engines use kgf while others use N
+- Handle mercury (SG = 13.6) from a 2 m column in a reactor vessel
+- Verify a pump rated for 10 m _water head_ can handle this load
+- Convert the mercury _fluid head_ to equivalent _water head_ for comparison
+- Prevent accidentally mixing _fluid head_ and _water head_ values
+- Require explicit conversion through _specific gravity_
 
-The g₀ constant appears in:
-
-- The definition of kgf (kilogram-force = kg × g₀)
-- The _burn time_ formula (numerator has g₀)
-- These should cancel perfectly, avoiding any 9.80665 multiplications
+**The challenge:** Both are _heights_ (dimension: _length_), but they're physically
+incompatible without conversion through _specific gravity_.
 
 
 ## Your task
 
-Refactor the rocket burn time calculator to use **mp-units** with g₀ as a compile-time
-constant unit. The helper functions are already provided with type-safe `QuantityOf`
-constraints.
+Implement a type-safe hydraulic head calculation system using **mp-units** that prevents
+mixing fluid head and water head without explicit conversion.
 
-Complete the implementation by defining:
+Create:
 
-1. **standard_gravity** (g₀) — Define `standard_gravity` as a unit which represents
-  9.80665 m/s²  as an exact rational 980'665/100'000 (or use predefined `si::standard_gravity`)
-2. **kilogram_force** (kgf) — Define as a `named_unit` that embeds g₀: `kg × g₀`
+1. **Distinct kinds**: Define `fluid_head` and `water_head` as separate kinds derived from
+  `isq::height`
+2. **Specific gravity type**: Define `specific_gravity` as a dimensionless `quantity_spec`
+3. **Conversion functions**: Implement type-safe conversions between the two head types:
+   - `to_water_head(h_fluid, sg)` — converts _fluid head_ to _water head_ using SG
+   - `to_fluid_head(h_water, sg)` — converts _water head_ to _fluid head_ using SG
 
-With these definitions in place, observe how:
+The solution should:
 
-- **Type safety**: `QuantityOf` constraints prevent passing wrong unit types
-- **Automatic optimization**: When thrust is in kgf, g₀ factors cancel at compile-time
-  without runtime cost
-- **Mixed units**: Both kgf (legacy) and N (modern) thrust specifications work seamlessly
+- Prevent direct addition or comparison of _fluid head_ and _water head_ (compile-time error)
+- Require explicit conversion through _specific gravity_
+- Use `QuantityOf` constraints for type safety
+- Work with any units of _length_ (meters, feet, etc.)
 
 ```cpp
-// ce-embed height=900 compiler=clang2110 flags="-std=c++23 -stdlib=libc++ -O3" mp-units=trunk
+// ce-embed height=800 compiler=clang2110 flags="-std=c++23 -stdlib=libc++ -O3" mp-units=trunk
 #include <mp-units/systems/si.h>
-#include <mp-units/systems/isq.h>
 #include <iostream>
 
 using namespace mp_units;
 
-inline constexpr struct specific_impulse final :
-    quantity_spec<isq::duration, isq::force / (isq::mass_flow_rate * isq::acceleration)> {} specific_impulse;
+// TODO: Define fluid_head as a distinct kind derived from isq::height
+// TODO: Define water_head as a distinct kind derived from isq::height
+// TODO: Define specific_gravity as a dimensionless quantity_spec
 
-// TODO: Define standard gravity (g₀) as a unit (9.80665 m/s² = 980'665/100'000 m/s²)
+// TODO: Implement to_water_head conversion function
+// Formula: H_water = H_fluid * SG
+// Hint: Return type should be QuantityOf<water_head> auto
 
-// TODO: Define kilogram-force (kgf) as kg × g₀
-
-inline constexpr Unit auto g0 = standard_gravity;
-inline constexpr Unit auto kgf = kilogram_force;
-
-QuantityOf<isq::mass_flow_rate> auto mass_flow_rate(QuantityOf<isq::force> auto thrust,
-                                                    QuantityOf<specific_impulse> auto isp)
-{
-  return thrust / (isp * g0);
-}
-
-QuantityOf<isq::duration> auto burn_time_from_flow(QuantityOf<isq::mass> auto propellant_mass,
-                                                   QuantityOf<isq::mass_flow_rate> auto flow_rate)
-{
-  return propellant_mass / flow_rate;
-}
-
-QuantityOf<isq::speed> auto exhaust_velocity(QuantityOf<specific_impulse> auto isp)
-{
-  return isp * g0;
-}
-
-QuantityOf<isq::duration> auto burn_time_with_stats(QuantityOf<isq::mass> auto propellant_mass,
-                                                    QuantityOf<specific_impulse> auto isp,
-                                                    QuantityOf<isq::force> auto thrust)
-{
-  quantity flow_rate = mass_flow_rate(thrust, isp);
-  quantity burn_time = burn_time_from_flow(propellant_mass, flow_rate);
-  quantity ve = exhaust_velocity(isp);
-
-  using namespace si::unit_symbols;
-  std::cout << "  Isp: " << isp << "\n";
-  std::cout << "  Thrust: " << thrust << " = " << thrust.template in<double>(kN) << "\n";
-  std::cout << "  Exhaust velocity: " << ve << " = " << ve.in(m / s) << "\n";
-  std::cout << "  Mass flow rate: " << flow_rate << " = " << flow_rate.in(kg / s) << "\n";
-  std::cout << "  Burn time: " << burn_time << " = " << burn_time.in(s) << "\n\n";
-
-  return burn_time;
-}
+// TODO: Implement to_fluid_head conversion function
+// Formula: H_fluid = H_water / SG
 
 int main()
 {
   using namespace si::unit_symbols;
 
-  quantity propellant_mass = 15'000. * kg;
+  // Scenario: Chemical reactor with 2m mercury column (SG = 13.6)
+  quantity h_mercury = fluid_head(2 * m);
+  quantity sg_mercury = specific_gravity(13.6 * one);
 
-  std::cout << "Rocket Stage Burn Time Analysis\n";
-  std::cout << "================================\n";
-  std::cout << "Propellant mass: " << propellant_mass << "\n\n";
+  // Pump rated for 10m water head
+  quantity h_pump_rating = water_head(10 * m);
 
-  // Engine 1: RD-180 (legacy Russian engine with thrust in kgf)
-  std::cout << "Engine 1 (RD-180):\n";
-  quantity engine1_isp = 311. * s;
-  quantity engine1_thrust = 390'000 * kgf;  // Legacy unit!
-  quantity burn_time_1 = burn_time_with_stats(propellant_mass, engine1_isp, engine1_thrust);
+  std::cout << "Pump System Design Analysis\n";
+  std::cout << "============================\n\n";
 
-  // Engine 2: Modern high-efficiency engine with thrust in Newtons
-  std::cout << "Engine 2 (Modern high-efficiency):\n";
-  quantity engine2_isp = 450. * s;
-  quantity engine2_thrust = 500. * kN;  // Modern SI unit
-  quantity burn_time_2 = burn_time_with_stats(propellant_mass, engine2_isp, engine2_thrust);
+  std::cout << "Mercury column height: " << h_mercury << "\n";
+  std::cout << "Mercury specific gravity: " << sg_mercury << "\n";
+  std::cout << "Pump rating (water head): " << h_pump_rating << "\n\n";
 
-  // Compare burn times
-  quantity time_ratio = burn_time_2 / burn_time_1;
-  std::cout << "Engine 2 burns " << time_ratio.in(one) << " times longer\n\n";
+  // Safety check: This should NOT compile!
+  // quantity wrong = h_mercury + h_pump_rating;  // Error: cannot mix kinds
 
-  // Calculate total impulse - demonstrates seamless mixing of kgf and N
-  quantity total_impulse_1 = engine1_thrust * burn_time_1;
-  quantity total_impulse_2 = engine2_thrust * burn_time_2;
+  // Convert mercury fluid head to equivalent water head
+  quantity h_mercury_as_water = to_water_head(h_mercury, sg_mercury);
+  
+  std::cout << "Mercury equivalent (water head): " << h_mercury_as_water << "\n\n";
 
-  std::cout << "Total Impulse:\n";
-  std::cout << "  Engine 1: " << total_impulse_1 << " = " << total_impulse_1.in(kN * s) << "\n";
-  std::cout << "  Engine 2: " << total_impulse_2 << " = " << total_impulse_2.in(kN * s) << "\n";
+  // Verify pump capacity against system requirement
+  if (h_mercury_as_water > h_pump_rating) {
+    std::cout << "WARNING: System requirement (" << h_mercury_as_water 
+              << ") exceeds pump rating (" << h_pump_rating << ")!\n";
+    std::cout << "Pump is UNDERSIZED for this application.\n";
+  }
+  else {
+    quantity excess_capacity = h_pump_rating - h_mercury_as_water;
+    std::cout << "Pump capacity is adequate.\n";
+    std::cout << "Excess capacity: " << excess_capacity << "\n";
+  }
+
+  // Demonstrate reverse conversion
+  quantity h_back_to_fluid = to_fluid_head(h_mercury_as_water, sg_mercury);
+  std::cout << "\nVerification - converted back: " << h_back_to_fluid << "\n";
 }
 ```
 
@@ -192,128 +240,129 @@ int main()
 
     ```cpp
     #include <mp-units/systems/si.h>
-    #include <mp-units/systems/isq.h>
     #include <iostream>
 
     using namespace mp_units;
 
-    inline constexpr struct specific_impulse final :
-        quantity_spec<isq::duration, isq::force / (isq::mass_flow_rate * isq::acceleration)> {} specific_impulse;
+    // 1. Define the distinct kinds (The Safety Layer)
+    inline constexpr struct fluid_head final : quantity_spec<isq::height, is_kind> {} fluid_head;
+    inline constexpr struct water_head final : quantity_spec<isq::height, is_kind> {} water_head;
 
-    inline constexpr struct standard_gravity final :
-        named_unit<symbol_text{u8"g₀", "g_0"}, mag_ratio<980'665, 100'000> * si::metre / square(si::second)> {} standard_gravity;
-    inline constexpr struct kilogram_force final :
-        named_unit<"kgf", si::kilogram * standard_gravity> {} kilogram_force;
+    // 2. Define a type for Specific Gravity (Dimensionless)
+    inline constexpr struct specific_gravity final : quantity_spec<dimensionless> {} specific_gravity;
 
-    inline constexpr Unit auto kgf = kilogram_force;
-    inline constexpr Unit auto g0 = standard_gravity;
-
-    QuantityOf<isq::mass_flow_rate> auto mass_flow_rate(QuantityOf<isq::force> auto thrust,
-                                                        QuantityOf<specific_impulse> auto isp)
+    // 3. Define Conversion Helpers
+    // Formula: H_water = H_fluid * SG
+    constexpr QuantityOf<water_head> auto to_water_head(QuantityOf<fluid_head> auto h_fluid, 
+                                                        QuantityOf<specific_gravity> auto sg)
     {
-      return thrust / (isp * g0);
+      // We explicitly cast the result to water_head because we know the physics is correct
+      return water_head(isq::height(h_fluid) * sg);
     }
 
-    QuantityOf<isq::duration> auto burn_time_from_flow(QuantityOf<isq::mass> auto propellant_mass,
-                                                       QuantityOf<isq::mass_flow_rate> auto flow_rate)
+    // Formula: H_fluid = H_water / SG
+    constexpr QuantityOf<fluid_head> auto to_fluid_head(QuantityOf<water_head> auto h_water, 
+                                                        QuantityOf<specific_gravity> auto sg)
     {
-      return propellant_mass / flow_rate;
-    }
-
-    QuantityOf<isq::speed> auto exhaust_velocity(QuantityOf<specific_impulse> auto isp)
-    {
-      return isp * g0;
-    }
-
-    QuantityOf<isq::duration> auto burn_time_with_stats(QuantityOf<isq::mass> auto propellant_mass,
-                                                        QuantityOf<specific_impulse> auto isp,
-                                                        QuantityOf<isq::force> auto thrust)
-    {
-      quantity flow_rate = mass_flow_rate(thrust, isp);
-      quantity burn_time = burn_time_from_flow(propellant_mass, flow_rate);
-      quantity ve = exhaust_velocity(isp);
-
-      using namespace si::unit_symbols;
-      std::cout << "  Isp: " << isp << "\n";
-      std::cout << "  Thrust: " << thrust << " = " << thrust.template in<double>(kN) << "\n";
-      std::cout << "  Exhaust velocity: " << ve << " = " << ve.in(m / s) << "\n";
-      std::cout << "  Mass flow rate: " << flow_rate << " = " << flow_rate.in(kg / s) << "\n";
-      std::cout << "  Burn time: " << burn_time << " = " << burn_time.in(s) << "\n\n";
-
-      return burn_time;
+      return fluid_head(isq::height(h_water) / sg);
     }
 
     int main()
     {
       using namespace si::unit_symbols;
 
-      quantity propellant_mass = 15'000. * kg;
+      // Scenario: Chemical reactor with 2m mercury column (SG = 13.6)
+      quantity h_mercury = fluid_head(2 * m);
+      quantity sg_mercury = specific_gravity(13.6 * one);
 
-      std::cout << "Rocket Stage Burn Time Analysis\n";
-      std::cout << "================================\n";
-      std::cout << "Propellant mass: " << propellant_mass << "\n\n";
+      // Pump rated for 10m water head
+      quantity h_pump_rating = water_head(10 * m);
 
-      // Engine 1: RD-180 (legacy Russian engine with thrust in kgf)
-      std::cout << "Engine 1 (RD-180):\n";
-      quantity engine1_isp = 311. * s;
-      quantity engine1_thrust = 390'000 * kgf;
-      quantity burn_time_1 = burn_time_with_stats(propellant_mass, engine1_isp, engine1_thrust);
+      std::cout << "Pump System Design Analysis\n";
+      std::cout << "============================\n\n";
 
-      // Engine 2: Modern high-efficiency engine with thrust in Newtons
-      std::cout << "Engine 2 (Modern high-efficiency):\n";
-      quantity engine2_isp = 450. * s;
-      quantity engine2_thrust = 500. * kN;
-      quantity burn_time_2 = burn_time_with_stats(propellant_mass, engine2_isp, engine2_thrust);
+      std::cout << "Mercury column height: " << h_mercury << "\n";
+      std::cout << "Mercury specific gravity: " << sg_mercury << "\n";
+      std::cout << "Pump rating (water head): " << h_pump_rating << "\n\n";
 
-      // Compare burn times
-      quantity time_ratio = burn_time_2 / burn_time_1;
-      std::cout << "Engine 2 burns " << time_ratio.in(one) << " times longer\n\n";
+      // Safety check: This would NOT compile!
+      // quantity wrong = h_mercury + h_pump_rating;  // Error: cannot mix kinds
 
-      // Calculate total impulse - demonstrates seamless mixing of kgf and N
-      quantity total_impulse_1 = engine1_thrust * burn_time_1;
-      quantity total_impulse_2 = engine2_thrust * burn_time_2;
+      // Convert mercury fluid head to equivalent water head
+      quantity h_mercury_as_water = to_water_head(h_mercury, sg_mercury);
+      
+      std::cout << "Mercury equivalent (water head): " << h_mercury_as_water << "\n\n";
 
-      std::cout << "Total Impulse:\n";
-      std::cout << "  Engine 1: " << total_impulse_1 << " = " << total_impulse_1.in(kN * s) << "\n";
-      std::cout << "  Engine 2: " << total_impulse_2 << " = " << total_impulse_2.in(kN * s) << "\n";
+      // Verify pump capacity against system requirement
+      if (h_mercury_as_water > h_pump_rating) {
+        std::cout << "WARNING: System requirement (" << h_mercury_as_water 
+                  << ") exceeds pump rating (" << h_pump_rating << ")!\n";
+        std::cout << "Pump is UNDERSIZED for this application.\n";
+      }
+      else {
+        quantity excess_capacity = h_pump_rating - h_mercury_as_water;
+        std::cout << "Pump capacity is adequate.\n";
+        std::cout << "Excess capacity: " << excess_capacity << "\n";
+      }
+
+      // Demonstrate reverse conversion
+      quantity h_back_to_fluid = to_fluid_head(h_mercury_as_water, sg_mercury);
+      std::cout << "\nVerification - converted back: " << h_back_to_fluid << "\n";
     }
     ```
 
-    The solution defines `kilogram_force` as `kg × standard_gravity`, embedding g₀ directly
-    into the unit definition. This enables elegant compile-time optimization:
+    **How the solution works:**
 
-    - **For Engine 1 (thrust in kgf)**: The _burn time_ formula contains g₀ in the numerator,
-      while kgf contains g₀ in its denominator. These factors cancel perfectly at compile-time,
-      eliminating any runtime multiplication or division by 9.80665.
+    By marking `fluid_head` and `water_head` with `is_kind`, we create distinct quantity types
+    that cannot be mixed despite sharing the `length` dimension:
 
-    - **For Engine 2 (thrust in N)**: The g₀ factors don't cancel, but **mp-units** automatically
-      handles the conversion, applying g₀ exactly where needed without manual intervention.
+    - **Compile-time prevention**: Direct addition, comparison, or assignment between fluid head
+      and water head results in a compile error
+    
+    - **Explicit conversion required**: The `to_water_head` and `to_fluid_head` functions
+      perform the physics-based conversion through specific gravity, making the conversion
+      visible and intentional in the code
+    
+    - **Type safety at boundaries**: Functions accepting `QuantityOf<fluid_head>` or
+      `QuantityOf<water_head>` cannot accidentally receive the wrong type
+    
+    - **Base quantity access**: When needed, both can be converted to `isq::height` using
+      `isq::height(h)`, allowing generic height operations while preserving type safety
+      at domain boundaries
 
-    Both engines use identical code—the type system ensures correctness regardless of whether
-    _thrust_ is specified in legacy (kgf) or modern (N) units.
+    This pattern is similar to how mp-units prevents mixing plane angles and solid angles—
+    both dimensionless quantities that share the same dimension but represent fundamentally
+    different physical concepts that cannot be meaningfully combined.
 
 
 ## References
 
-- [User's Guide: Faster-than-Lightspeed Constants](../users_guide/framework_basics/faster_than_lightspeed_constants.md)
+- [User's Guide: Systems of Quantities](../users_guide/framework_basics/systems_of_quantities.md)
+- [GitHub Discussion #757: Hydraulic Head](https://github.com/mpusz/mp-units/discussions/757)
 
 
 ## Takeaways
 
-- **Constants as units**: Physical constants like g₀ become part of the type system rather
-  than runtime values
-- **Automatic cancellation**: When constants appear in both numerator and denominator,
-  they cancel at compile-time without manual intervention
-- **Legacy unit support**: kgf (kilogram-force) embeds g₀ in its definition, enabling
-  seamless calculations with historical engine specifications
-- **Eliminates magic numbers**: No more manual `9.80665` conversions scattered throughout
-  code
-- **Perfect mathematical cancellation**: The formula t = (m × Isp × g₀) / F simplifies
-  automatically when F is in kgf
-- **Type safety**: The type system prevents mixing kg and kgf incorrectly
-- **Mixed unit support**: Modern (N) and legacy (kgf) _thrust_ specifications work
-  together in the same codebase
-- **Historical significance**: Prevents the type of unit confusion that caused real
-  mission failures (Mars Climate Orbiter)
-- **Formula generality**: The same _burn time_ calculation works correctly regardless
-  of whether _thrust_ is specified in kgf or N
+- **`is_kind` creates incompatible types**: Even when quantities share the same dimension,
+  `is_kind` prevents mixing them without explicit conversion
+- **Domain-specific safety**: Hydraulic engineering's distinction between _energy_ measurements
+  in different reference frames (_fluid head_ vs _water head_) becomes a compile-time guarantee
+- **Explicit conversions**: Physics-based conversions (through _specific gravity_) are visible
+  and required in the code
+- **Prevents subtle bugs**: The classic mistake of treating 2 m of mercury as 2 m of water
+  becomes a compile error
+- **Type system as documentation**: The code itself documents that these are different
+  physical concepts requiring conversion
+- **Similar to built-in protections**: Just as **mp-units** prevents mixing radians and
+  steradians (_angular measure_ vs _solid angular measure_), your domain can have custom
+  protections
+- **Explicit base conversion when needed**: Both can convert to generic `isq::height` using
+  `isq::height(h)` for algorithms that work on any _length_—but this requires an explicit
+  conversion call; implicit conversion will fail to compile, preserving type safety at
+  domain boundaries
+- **Real-world safety**: Equipment undersizing due to _head_ calculation errors can be
+  catastrophic in chemical plants—type safety prevents this
+- **Pattern for other domains**: This technique applies anywhere quantities share dimensions
+  but represent incompatible concepts—particularly _energy_ or _power_ measurements in
+  different reference frames (e.g., _gauge_ vs _absolute pressure_, _RMS_ vs _peak voltage_,
+  _true_ vs _apparent power_)
