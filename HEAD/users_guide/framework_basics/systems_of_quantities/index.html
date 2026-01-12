@@ -1229,6 +1229,78 @@ You're not viewing the latest version.
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#creating-distinct-quantity-kinds-with-is_kind" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Creating distinct quantity kinds with is_kind
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Creating distinct quantity kinds with is_kind">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#when-to-use-is_kind" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        When to use is_kind?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#defining-a-distinct-kind" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Defining a distinct kind
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#behavior-of-is_kind-quantities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Behavior of is_kind quantities
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#implementing-physics-based-conversions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Implementing physics-based conversions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#guidelines-for-using-is_kind" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Guidelines for using is_kind
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2221,6 +2293,8 @@ You're not viewing the latest version.
       
         
       
+        
+      
     
     
     
@@ -2567,7 +2641,35 @@ You're not viewing the latest version.
   <span class="md-ellipsis">
     
   
-    Tutorial 11: Faster-than-Lightspeed Constants
+    Tutorial 11: Preventing Confusion with Distinct Kinds
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorials/tutorial_12/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial 12: Faster-than-Lightspeed Constants
   
 
     
@@ -4108,6 +4210,179 @@ specifier. For example, <code>kind_of&lt;isq::width&gt;</code> will fail to comp
 <code>get_kind(q)</code> to obtain a kind of any quantity:</p>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">get_kind</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">width</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">kind_of</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">length</span><span class="o">&gt;</span><span class="p">);</span>
 </span></code></pre></div>
+</div>
+<h2 id="creating-distinct-quantity-kinds-with-is_kind">Creating distinct quantity kinds with <code>is_kind</code><a class="headerlink" href="#creating-distinct-quantity-kinds-with-is_kind" title="Permanent link">&para;</a></h2>
+<p>While dimension-based type safety prevents many errors, sometimes quantities share the same
+dimension but represent fundamentally incompatible physical concepts. The <code>is_kind</code> specifier
+allows creating distinct quantity types that cannot be mixed even though they share the same
+dimension and quantity hierarchy tree.</p>
+<h3 id="when-to-use-is_kind">When to use <code>is_kind</code>?<a class="headerlink" href="#when-to-use-is_kind" title="Permanent link">&para;</a></h3>
+<p>Use <code>is_kind</code> to create <strong>distinct subkinds within an existing quantity hierarchy</strong> when:</p>
+<ol>
+<li><strong>Multiple incompatible concepts</strong> need to share the <strong>same parent quantity's properties</strong>
+   (unit or dimension)</li>
+<li>These concepts <strong>cannot be meaningfully added or compared</strong> to each other without explicit
+   conversion</li>
+<li>They represent <strong>different reference frames</strong> or measurement contexts, but derive from
+   the same physical basis</li>
+</ol>
+<p>The key insight: use <code>is_kind</code> when quantities need to <strong>inherit</strong> from a parent
+(dimension, unit) but must be <strong>isolated</strong> from each other.</p>
+<p>Common examples of subkinds within existing trees include:</p>
+<ul>
+<li><em>Angular measure</em> (rad), <em>solid angular measure</em> (sr), <em>storage capacity</em> (bit) —
+  subkind of <em>dimensionless</em></li>
+<li><em>Fluid head</em> and <em>water head</em> in hydraulic engineering — subkinds of <em>height</em>
+  (dimension of <em>length</em>)</li>
+</ul>
+<h3 id="defining-a-distinct-kind">Defining a distinct kind<a class="headerlink" href="#defining-a-distinct-kind" title="Permanent link">&para;</a></h3>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The <code>is_kind</code> specifier creates <strong>subkinds within an existing quantity hierarchy tree</strong>,
+not independent trees. This allows the subkind to <strong>inherit properties</strong> from its parent:</p>
+<ul>
+<li><strong>Unit of measure</strong>: <em>fluid head</em> and <em>water head</em> inherit metre from <em>height</em>;
+  <em>angular measure</em> inherits one from <em>dimensionless</em></li>
+<li><strong>Physical dimension</strong>: Subkinds inherit their parent's dimension, which is crucial when
+  they appear in derived quantities (e.g., <em>sampling rate</em>, <em>tempo</em> can use Hz because
+  they properly model the dimensionless component divided by <em>duration</em>)</li>
+</ul>
+<p>For quantities that should be completely independent (different dimension trees),
+define separate root quantities instead (e.g., <em>frequency</em> and <em>activity</em> are
+independent roots, not subkinds).</p>
+</div>
+<p>To create a distinct quantity kind as a subkind, add the <code>is_kind</code> specifier to the
+<code>quantity_spec</code> definition:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:3"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><input id="__tabbed_2_3" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">C++23</label><label for="__tabbed_2_2">C++20</label><label for="__tabbed_2_3">Portable</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">fluid_head</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="p">,</span><span class="w"> </span><span class="n">is_kind</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">fluid_head</span><span class="p">;</span>
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">water_head</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="p">,</span><span class="w"> </span><span class="n">is_kind</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">water_head</span><span class="p">;</span>
+</span><span id="__span-25-3"><a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a><span class="c1">// Both inherit metre as unit and length as dimension from isq::height</span>
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">fluid_head</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">fluid_head</span><span class="p">,</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="p">,</span><span class="w"> </span><span class="n">is_kind</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">fluid_head</span><span class="p">;</span>
+</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">water_head</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">water_head</span><span class="p">,</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="p">,</span><span class="w"> </span><span class="n">is_kind</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">water_head</span><span class="p">;</span>
+</span><span id="__span-26-3"><a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a><span class="c1">// Both inherit metre as unit and length as dimension from isq::height</span>
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a><span class="n">QUANTITY_SPEC</span><span class="p">(</span><span class="n">fluid_head</span><span class="p">,</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="p">,</span><span class="w"> </span><span class="n">is_kind</span><span class="p">);</span>
+</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a><span class="n">QUANTITY_SPEC</span><span class="p">(</span><span class="n">water_head</span><span class="p">,</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="p">,</span><span class="w"> </span><span class="n">is_kind</span><span class="p">);</span>
+</span><span id="__span-27-3"><a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a><span class="c1">// Both inherit metre as unit and length as dimension from isq::height</span>
+</span></code></pre></div>
+</div>
+</div>
+</div>
+<p>Both <code>fluid_head</code> and <code>water_head</code> are subkinds of <em>height</em> (inheriting its dimension of <em>length</em>
+and unit of metre), but marking them with <code>is_kind</code> makes them distinct incompatible kinds that
+require explicit conversion.</p>
+<h3 id="behavior-of-is_kind-quantities">Behavior of <code>is_kind</code> quantities<a class="headerlink" href="#behavior-of-is_kind-quantities" title="Permanent link">&para;</a></h3>
+<p>Quantities marked with <code>is_kind</code> behave differently from regular hierarchy members:</p>
+<ol>
+<li>
+<p><strong>Cannot be implicitly converted to each other</strong>:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="k">static_assert</span><span class="p">(</span><span class="o">!</span><span class="n">implicitly_convertible</span><span class="p">(</span><span class="n">fluid_head</span><span class="p">,</span><span class="w"> </span><span class="n">water_head</span><span class="p">));</span>
+</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a><span class="k">static_assert</span><span class="p">(</span><span class="o">!</span><span class="n">explicitly_convertible</span><span class="p">(</span><span class="n">fluid_head</span><span class="p">,</span><span class="w"> </span><span class="n">water_head</span><span class="p">));</span>
+</span><span id="__span-28-3"><a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a><span class="k">static_assert</span><span class="p">(</span><span class="o">!</span><span class="n">castable</span><span class="p">(</span><span class="n">fluid_head</span><span class="p">,</span><span class="w"> </span><span class="n">water_head</span><span class="p">));</span>
+</span></code></pre></div>
+</li>
+<li>
+<p><strong>Cannot be added or compared directly</strong>:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">h_fluid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fluid_head</span><span class="p">(</span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">);</span>
+</span><span id="__span-29-2"><a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a><span class="n">quantity</span><span class="w"> </span><span class="n">h_water</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">water_head</span><span class="p">(</span><span class="mi">10</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">);</span>
+</span><span id="__span-29-3"><a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a>
+</span><span id="__span-29-4"><a id="__codelineno-29-4" name="__codelineno-29-4" href="#__codelineno-29-4"></a><span class="c1">// auto sum = h_fluid + h_water;  // Compile-time error!</span>
+</span><span id="__span-29-5"><a id="__codelineno-29-5" name="__codelineno-29-5" href="#__codelineno-29-5"></a><span class="c1">// bool cmp = h_fluid &lt; h_water;  // Compile-time error!</span>
+</span></code></pre></div>
+</li>
+<li>
+<p><strong>Require explicit conversion to base quantity</strong>:</p>
+<p>To perform generic operations or conversions between kinds, explicit conversion to the
+base quantity is required:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a><span class="c1">// Convert to base quantity explicitly</span>
+</span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a><span class="n">quantity</span><span class="w"> </span><span class="n">h1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="p">(</span><span class="n">h_fluid</span><span class="p">);</span><span class="w">  </span><span class="c1">// explicit conversion required</span>
+</span><span id="__span-30-3"><a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a><span class="n">quantity</span><span class="w"> </span><span class="n">h2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="p">(</span><span class="n">h_water</span><span class="p">);</span><span class="w">  </span><span class="c1">// explicit conversion required</span>
+</span><span id="__span-30-4"><a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a>
+</span><span id="__span-30-5"><a id="__codelineno-30-5" name="__codelineno-30-5" href="#__codelineno-30-5"></a><span class="c1">// Now generic operations are possible</span>
+</span><span id="__span-30-6"><a id="__codelineno-30-6" name="__codelineno-30-6" href="#__codelineno-30-6"></a><span class="k">auto</span><span class="w"> </span><span class="n">sum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">h1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">h2</span><span class="p">;</span><span class="w">  </span><span class="c1">// OK: both are isq::height</span>
+</span></code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Implicit conversion from <code>is_kind</code> quantities to their base is <strong>not allowed</strong>:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="p">[</span><span class="n">m</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">h_fluid</span><span class="p">;</span><span class="w">  </span><span class="c1">// Compile-time error!</span>
+</span></code></pre></div>
+</div>
+</li>
+<li>
+<p><strong>Can be used with <code>kind_of</code></strong>:</p>
+<p>Unlike regular hierarchy members, <code>is_kind</code> quantities can be used with <code>kind_of</code>:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">get_kind</span><span class="p">(</span><span class="n">fluid_head</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">kind_of</span><span class="o">&lt;</span><span class="n">fluid_head</span><span class="o">&gt;</span><span class="p">);</span>
+</span><span id="__span-32-2"><a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">get_kind</span><span class="p">(</span><span class="n">water_head</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">kind_of</span><span class="o">&lt;</span><span class="n">water_head</span><span class="o">&gt;</span><span class="p">);</span>
+</span><span id="__span-32-3"><a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">get_kind</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">kind_of</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">length</span><span class="o">&gt;</span><span class="p">);</span>
+</span><span id="__span-32-4"><a id="__codelineno-32-4" name="__codelineno-32-4" href="#__codelineno-32-4"></a><span class="c1">// static_assert(get_kind(isq::height) == kind_of&lt;isq::height&gt;);  // Compile-time error!</span>
+</span><span id="__span-32-5"><a id="__codelineno-32-5" name="__codelineno-32-5" href="#__codelineno-32-5"></a>
+</span><span id="__span-32-6"><a id="__codelineno-32-6" name="__codelineno-32-6" href="#__codelineno-32-6"></a><span class="c1">// Both are kinds of height, but different kinds</span>
+</span><span id="__span-32-7"><a id="__codelineno-32-7" name="__codelineno-32-7" href="#__codelineno-32-7"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">get_kind</span><span class="p">(</span><span class="n">fluid_head</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">get_kind</span><span class="p">(</span><span class="n">water_head</span><span class="p">));</span>
+</span><span id="__span-32-8"><a id="__codelineno-32-8" name="__codelineno-32-8" href="#__codelineno-32-8"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">get_kind</span><span class="p">(</span><span class="n">fluid_head</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">get_kind</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="p">));</span>
+</span></code></pre></div>
+</li>
+</ol>
+<h3 id="implementing-physics-based-conversions">Implementing physics-based conversions<a class="headerlink" href="#implementing-physics-based-conversions" title="Permanent link">&para;</a></h3>
+<p>When quantities are distinct kinds, domain-specific conversion functions should be provided
+to perform the correct physics-based transformations (if applicable):</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a><span class="c1">// Define specific gravity as dimensionless</span>
+</span><span id="__span-33-2"><a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">specific_gravity</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">dimensionless</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">specific_gravity</span><span class="p">;</span>
+</span><span id="__span-33-3"><a id="__codelineno-33-3" name="__codelineno-33-3" href="#__codelineno-33-3"></a>
+</span><span id="__span-33-4"><a id="__codelineno-33-4" name="__codelineno-33-4" href="#__codelineno-33-4"></a><span class="c1">// Physics: H_water = H_fluid * SG</span>
+</span><span id="__span-33-5"><a id="__codelineno-33-5" name="__codelineno-33-5" href="#__codelineno-33-5"></a><span class="k">constexpr</span><span class="w"> </span><span class="n">QuantityOf</span><span class="o">&lt;</span><span class="n">water_head</span><span class="o">&gt;</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">to_water_head</span><span class="p">(</span><span class="n">QuantityOf</span><span class="o">&lt;</span><span class="n">fluid_head</span><span class="o">&gt;</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">h_fluid</span><span class="p">,</span>
+</span><span id="__span-33-6"><a id="__codelineno-33-6" name="__codelineno-33-6" href="#__codelineno-33-6"></a><span class="w">                                                    </span><span class="n">QuantityOf</span><span class="o">&lt;</span><span class="n">specific_gravity</span><span class="o">&gt;</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">sg</span><span class="p">)</span>
+</span><span id="__span-33-7"><a id="__codelineno-33-7" name="__codelineno-33-7" href="#__codelineno-33-7"></a><span class="p">{</span>
+</span><span id="__span-33-8"><a id="__codelineno-33-8" name="__codelineno-33-8" href="#__codelineno-33-8"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">water_head</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="p">(</span><span class="n">h_fluid</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">sg</span><span class="p">);</span>
+</span><span id="__span-33-9"><a id="__codelineno-33-9" name="__codelineno-33-9" href="#__codelineno-33-9"></a><span class="p">}</span>
+</span><span id="__span-33-10"><a id="__codelineno-33-10" name="__codelineno-33-10" href="#__codelineno-33-10"></a>
+</span><span id="__span-33-11"><a id="__codelineno-33-11" name="__codelineno-33-11" href="#__codelineno-33-11"></a><span class="c1">// Physics: H_fluid = H_water / SG</span>
+</span><span id="__span-33-12"><a id="__codelineno-33-12" name="__codelineno-33-12" href="#__codelineno-33-12"></a><span class="k">constexpr</span><span class="w"> </span><span class="n">QuantityOf</span><span class="o">&lt;</span><span class="n">fluid_head</span><span class="o">&gt;</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">to_fluid_head</span><span class="p">(</span><span class="n">QuantityOf</span><span class="o">&lt;</span><span class="n">water_head</span><span class="o">&gt;</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">h_water</span><span class="p">,</span>
+</span><span id="__span-33-13"><a id="__codelineno-33-13" name="__codelineno-33-13" href="#__codelineno-33-13"></a><span class="w">                                                    </span><span class="n">QuantityOf</span><span class="o">&lt;</span><span class="n">specific_gravity</span><span class="o">&gt;</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">sg</span><span class="p">)</span>
+</span><span id="__span-33-14"><a id="__codelineno-33-14" name="__codelineno-33-14" href="#__codelineno-33-14"></a><span class="p">{</span>
+</span><span id="__span-33-15"><a id="__codelineno-33-15" name="__codelineno-33-15" href="#__codelineno-33-15"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">fluid_head</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="p">(</span><span class="n">h_water</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">sg</span><span class="p">);</span>
+</span><span id="__span-33-16"><a id="__codelineno-33-16" name="__codelineno-33-16" href="#__codelineno-33-16"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>This pattern:</p>
+<ul>
+<li><strong>Makes conversions explicit and visible</strong> in the code</li>
+<li><strong>Encodes the physics</strong> (specific gravity conversion formula)</li>
+<li><strong>Provides type-safe boundaries</strong> via <code>QuantityOf</code> constraints</li>
+<li><strong>Documents the relationship</strong> between different quantity kinds</li>
+</ul>
+<h3 id="guidelines-for-using-is_kind">Guidelines for using <code>is_kind</code><a class="headerlink" href="#guidelines-for-using-is_kind" title="Permanent link">&para;</a></h3>
+<p><strong>Use <code>is_kind</code> when:</strong></p>
+<ul>
+<li>Quantities share a parent but have <strong>fundamentally different physical meanings</strong></li>
+<li>Adding or comparing them <strong>is physically nonsensical</strong> (e.g., <em>plane angles</em> + <em>solid angles</em>,
+  <em>fluid head</em> + <em>water head</em>)</li>
+<li>You need <strong>compile-time prevention</strong> of a known category of errors</li>
+<li>Conversions between kinds either don't exist (<em>plane</em> vs <em>solid angles</em>) or require
+  domain-specific formulas (<em>fluid head</em> ↔ <em>water head</em> via <em>specific gravity</em>)</li>
+</ul>
+<p><strong>Don't use <code>is_kind</code> when:</strong></p>
+<ul>
+<li>Quantities are naturally part of the same hierarchy (use regular <code>quantity_spec</code> hierarchy)</li>
+<li>Conversions are just unit changes (use regular unit conversions)</li>
+<li>The distinction is purely semantic without different physics (document in comments instead)</li>
+</ul>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>For a complete practical example demonstrating how <code>is_kind</code> prevents catastrophic
+engineering errors in hydraulic systems, see
+<a href="../../../tutorials/tutorial_11/">Tutorial 11: Preventing Confusion with Distinct Kinds</a>.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Special dimensionless quantity kinds like <em>angular measure</em>, <em>solid angular measure</em>,
+and <em>storage capacity</em> are discussed in detail in the
+<a href="../dimensionless_quantities/#nested-quantity-kinds">Dimensionless Quantities</a> chapter.</p>
 </div>
 
 

@@ -18,7 +18,7 @@
         <link rel="prev" href="../tutorial_10/">
       
       
-        <link rel="next" href="../../examples/">
+        <link rel="next" href="../tutorial_12/">
       
       
         
@@ -32,7 +32,7 @@
     
     
       
-        <title>Tutorial 11: Faster-than-Lightspeed Constants - mp-units</title>
+        <title>Tutorial 11: Preventing Confusion with Distinct Kinds - mp-units</title>
       
     
     
@@ -68,7 +68,7 @@
     
   
 <meta property="og:type" content="website" />
-<meta property="og:title" content="Tutorial 11: Faster-than-Lightspeed Constants - mp-units" />
+<meta property="og:title" content="Tutorial 11: Preventing Confusion with Distinct Kinds - mp-units" />
 <meta property="og:description" content="The quantities and units library for C++" />
 <meta property="og:image" content="https://mpusz.github.io/mp-units/HEAD/assets/images/social/tutorials/tutorial_11.png" />
 <meta property="og:image:type" content="image/png" />
@@ -76,7 +76,7 @@
 <meta property="og:image:height" content="630" />
 <meta property="og:url" content="https://mpusz.github.io/mp-units/HEAD/tutorials/tutorial_11/" />
 <meta property="twitter:card" content="summary_large_image" />
-<meta property="twitter:title" content="Tutorial 11: Faster-than-Lightspeed Constants - mp-units" />
+<meta property="twitter:title" content="Tutorial 11: Preventing Confusion with Distinct Kinds - mp-units" />
 <meta property="twitter:description" content="The quantities and units library for C++" />
 <meta property="twitter:image" content="https://mpusz.github.io/mp-units/HEAD/assets/images/social/tutorials/tutorial_11.png" />
 </head>
@@ -98,7 +98,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#tutorial-11-faster-than-lightspeed-constants" class="md-skip">
+        <a href="#tutorial-11-preventing-confusion-with-distinct-kinds" class="md-skip">
           Skip to content
         </a>
       
@@ -147,7 +147,7 @@ You're not viewing the latest version.
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Tutorial 11: Faster-than-Lightspeed Constants
+              Tutorial 11: Preventing Confusion with Distinct Kinds
             
           </span>
         </div>
@@ -2081,6 +2081,8 @@ You're not viewing the latest version.
       
         
       
+        
+      
     
     
     
@@ -2439,7 +2441,7 @@ You're not viewing the latest version.
   <span class="md-ellipsis">
     
   
-    Tutorial 11: Faster-than-Lightspeed Constants
+    Tutorial 11: Preventing Confusion with Distinct Kinds
   
 
     
@@ -2457,7 +2459,7 @@ You're not viewing the latest version.
   <span class="md-ellipsis">
     
   
-    Tutorial 11: Faster-than-Lightspeed Constants
+    Tutorial 11: Preventing Confusion with Distinct Kinds
   
 
     
@@ -2486,7 +2488,7 @@ You're not viewing the latest version.
   <a href="#problem-statement" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Problem statement
+        Problem Statement
       
     </span>
   </a>
@@ -2530,6 +2532,34 @@ You're not viewing the latest version.
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial_12/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial 12: Faster-than-Lightspeed Constants
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -3698,305 +3728,352 @@ You're not viewing the latest version.
   
 
 
-<h1 id="tutorial-11-faster-than-lightspeed-constants">Tutorial 11: Faster-than-Lightspeed Constants<a class="headerlink" href="#tutorial-11-faster-than-lightspeed-constants" title="Permanent link">&para;</a></h1>
-<p>Physical constants like standard gravity (g₀) or π often appear in calculations where
-they multiply in one place and divide in another. Traditional libraries implement these
-as constant values (e.g., <code>9.80665</code>), requiring runtime floating-point arithmetic even
-when the constants mathematically cancel out.</p>
-<p>This tutorial demonstrates how <strong>mp-units</strong> implements constants as compile-time units,
-enabling automatic simplification when constants cancel, preserving exact arithmetic where
-possible, and delaying expensive conversions until necessary.</p>
-<h2 id="problem-statement">Problem statement<a class="headerlink" href="#problem-statement" title="Permanent link">&para;</a></h2>
-<p>Consider rocket stage burn time calculations for mission planning and flight software.</p>
-<p>Rocket engineers face a messy mix of units:</p>
+<h1 id="tutorial-11-preventing-confusion-with-distinct-kinds">Tutorial 11: Preventing Confusion with Distinct Kinds<a class="headerlink" href="#tutorial-11-preventing-confusion-with-distinct-kinds" title="Permanent link">&para;</a></h1>
+<p>Many engineering domains have quantities that share the same physical dimension but represent
+fundamentally different concepts. Hydraulic engineering uses "<em>head</em>"—a measure of
+<strong><em>potential energy per unit weight</em></strong> expressed as an equivalent <em>height</em>—in two
+incompatible ways:</p>
 <ul>
-<li><strong><em>Propellant mass</em></strong> in kilograms (kg)</li>
-<li><strong><em>Specific impulse</em> (Isp)</strong> in seconds - the industry-standard efficiency metric</li>
-<li><strong><em>Thrust</em></strong> often specified in <strong>kilogram-force (kgf)</strong> in legacy engine datasheets</li>
-<li><strong><em>Burn time</em></strong> needs to be calculated from these parameters</li>
+<li><strong><em>Fluid head</em></strong>: <em>Potential energy</em> normalized to the actual fluid's <em>density</em>
+  (e.g., 2 m of mercury)</li>
+<li><strong><em>Water head</em></strong>: <em>Potential energy</em> normalized to water's <em>density</em> (e.g., 27.2 m water
+  equivalent)</li>
 </ul>
-<p>The relationship between <em>thrust</em> (F), <em>mass flow rate</em> (<span class="arithmatex">\(\dot{m}\)</span>), and
-<em>specific impulse</em> (<span class="arithmatex">\(I_{sp}\)</span>) involves standard gravity (<span class="arithmatex">\(g_0\)</span>):</p>
-<div class="arithmatex">\[F = \dot{m} \cdot I_{sp} \cdot g_0\]</div>
-<p>Rearranging to find <em>burn time</em> (<span class="arithmatex">\(t_{burn} = m_{prop} / \dot{m}\)</span>), we get:</p>
-<div class="arithmatex">\[t_{burn} = \frac{m_{prop}}{\dot{m}} = \frac{m_{prop} \cdot I_{sp} \cdot g_0}{F}\]</div>
-<p>Here's a traditional implementation with helper functions but no type safety:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">const</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">g0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">9.80665</span><span class="p">;</span><span class="w">  </span><span class="c1">// m/s² - magic number!</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kt">double</span><span class="w"> </span><span class="nf">mass_flow_rate_kg_s</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">thrust_N</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">isp_s</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">thrust_N</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">isp_s</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">g0</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="kt">double</span><span class="w"> </span><span class="nf">burn_time_from_flow_s</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">mass_kg</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">flow_rate_kg_s</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">mass_kg</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">flow_rate_kg_s</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<p>Both express <strong><em>energy</em></strong> using <em>length</em> dimensions, but mixing them produces physically
+meaningless results—like mixing <em>gauge</em> and <em>absolute pressure</em> without conversion.
+Traditional code using raw <code>double</code> values allows such mistakes to silently compile.
+Remarkably, even units libraries from C++ and also other programming languages cannot
+prevent this error—they only check dimensional compatibility, not physical meaning.</p>
+<p>This tutorial demonstrates how <strong>mp-units</strong> uses <code>is_kind</code> to create distinct quantity
+<strong>subkinds within an existing hierarchy</strong>—a capability unique among units libraries worldwide.
+The key insight: <code>is_kind</code> lets quantities <strong>inherit</strong> properties (dimension, unit) from a
+parent while <strong>isolating</strong> them from each other. Just as the library prevents mixing
+<em>plane angles</em> and <em>solid angles</em> (both subkinds of <em>dimensionless</em>), you can create
+custom subkinds like <em>fluid head</em> and <em>water head</em> (both subkinds of <em>height</em>) that
+cannot be accidentally mixed.</p>
+<h2 id="problem-statement">Problem Statement<a class="headerlink" href="#problem-statement" title="Permanent link">&para;</a></h2>
+<p>Consider a pump system design for a chemical processing plant. Engineers must verify that
+the <em>pump capacity</em> is adequate for the fluid being handled. This requires comparing:</p>
+<ul>
+<li><strong>System requirement</strong>: The fluid column that must be lifted, expressed as <em>fluid head</em>
+  (<em>energy</em> normalized to the actual fluid's <em>density</em>)</li>
+<li><strong>Pump specifications</strong>: Rated in <em>water head</em> (<em>energy</em> normalized to <em>water density</em>)</li>
+</ul>
+<p>The relationship between <em>fluid head</em> and <em>water head</em> reflects <em>energy conservation</em>
+with different <em>density</em> normalizations:</p>
+<div class="arithmatex">\[H_{water} = H_{fluid} \cdot SG\]</div>
+<div class="arithmatex">\[H_{fluid} = \frac{H_{water}}{SG}\]</div>
+<p>Where <em>specific gravity</em> is the dimensionless ratio of <em>fluid density</em> to <em>water density</em>.
+The same <em>potential energy</em> is expressed as a larger <em>height</em> for lighter fluids (water)
+and a smaller <em>height</em> for denser fluids (mercury).</p>
+<p>Here's how different approaches handle (or fail to handle) this scenario:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:3"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Raw doubles</label><label for="__tabbed_1_2">Boost.Units (C++)</label><label for="__tabbed_1_3">Pint (Python)</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1">// Traditional approach - all heights are just doubles</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kt">double</span><span class="w"> </span><span class="n">h_mercury_m</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.0</span><span class="p">;</span><span class="w">        </span><span class="c1">// Height of mercury column</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kt">double</span><span class="w"> </span><span class="n">h_pump_rating_m</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">10.0</span><span class="p">;</span><span class="w">   </span><span class="c1">// Pump rated for water</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="kt">double</span><span class="w"> </span><span class="n">sg_mercury</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">13.6</span><span class="p">;</span><span class="w">        </span><span class="c1">// Specific gravity</span>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="p">{</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">  </span><span class="kt">double</span><span class="w"> </span><span class="n">propellant_kg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">15000.0</span><span class="p">;</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">  </span><span class="kt">double</span><span class="w"> </span><span class="n">isp_s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">311.0</span><span class="p">;</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">  </span><span class="kt">double</span><span class="w"> </span><span class="n">thrust_kgf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">390000.0</span><span class="p">;</span><span class="w">  </span><span class="c1">// Legacy engine spec in kgf!</span>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">  </span><span class="kt">double</span><span class="w"> </span><span class="n">thrust_N</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">thrust_kgf</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">g0</span><span class="p">;</span>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">  </span><span class="kt">double</span><span class="w"> </span><span class="n">flow_kg_s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mass_flow_rate_kg_s</span><span class="p">(</span><span class="n">thrust_N</span><span class="p">,</span><span class="w"> </span><span class="n">isp_s</span><span class="p">);</span>
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">  </span><span class="kt">double</span><span class="w"> </span><span class="n">time_s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">burn_time_from_flow_s</span><span class="p">(</span><span class="n">propellant_kg</span><span class="p">,</span><span class="w"> </span><span class="n">flow_kg_s</span><span class="p">);</span>
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">  </span><span class="c1">// Can you spot a missed optimization opportunity?</span>
-</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="p">}</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="c1">// Direct addition - compiles but physically wrong!</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="kt">double</span><span class="w"> </span><span class="n">total_head</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">h_mercury_m</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">h_pump_rating_m</span><span class="p">;</span><span class="w">  </span><span class="c1">// 12 m - WRONG!</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="c1">// This treats 2 m of mercury as if it were 2 m of water</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="c1">// Correct calculation requires manual tracking:</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="kt">double</span><span class="w"> </span><span class="n">h_mercury_as_water</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">h_mercury_m</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">sg_mercury</span><span class="p">;</span><span class="w">  </span><span class="c1">// 27.2 m</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="c1">// Compare system requirement vs pump capacity</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">h_mercury_as_water</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">h_pump_rating_m</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Pump is undersized!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w">  </span><span class="c1">// This will trigger!</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="p">}</span>
 </span></code></pre></div>
-<p><strong>Problems with this approach:</strong></p>
+</div>
+<div class="tabbed-block">
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;boost/units/systems/si.hpp&gt;</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">boost</span><span class="o">::</span><span class="nn">units</span><span class="p">;</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">boost</span><span class="o">::</span><span class="nn">units</span><span class="o">::</span><span class="nn">si</span><span class="p">;</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">length</span><span class="o">&gt;</span><span class="w"> </span><span class="n">h_mercury</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">meters</span><span class="p">;</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">length</span><span class="o">&gt;</span><span class="w"> </span><span class="n">h_pump_rating</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">10.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">meters</span><span class="p">;</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="kt">double</span><span class="w"> </span><span class="n">sg_mercury</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">13.6</span><span class="p">;</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="c1">// Direct addition - compiles but physically wrong!</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">length</span><span class="o">&gt;</span><span class="w"> </span><span class="n">total_head</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">h_mercury</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">h_pump_rating</span><span class="p">;</span><span class="w">  </span><span class="c1">// WRONG!</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="c1">// Both are lengths, so Boost.Units allows this</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="c1">// Correct calculation still requires manual tracking:</span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">length</span><span class="o">&gt;</span><span class="w"> </span><span class="n">h_mercury_as_water</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">h_mercury</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">sg_mercury</span><span class="p">;</span>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="c1">// Compare system requirement vs pump capacity</span>
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">h_mercury_as_water</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">h_pump_rating</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Pump is undersized!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w">  </span><span class="c1">// This will trigger!</span>
+</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="p">}</span>
+</span></code></pre></div>
+<p><strong>Problem</strong>: Boost.Units checks dimensional compatibility (both are lengths), but cannot
+distinguish between physically incompatible types of length.</p>
+</div>
+<div class="tabbed-block">
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">pint</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">ureg</span> <span class="o">=</span> <span class="n">pint</span><span class="o">.</span><span class="n">UnitRegistry</span><span class="p">()</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="n">h_mercury</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">ureg</span><span class="o">.</span><span class="n">meter</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="n">h_pump_rating</span> <span class="o">=</span> <span class="mf">10.0</span> <span class="o">*</span> <span class="n">ureg</span><span class="o">.</span><span class="n">meter</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="n">sg_mercury</span> <span class="o">=</span> <span class="mf">13.6</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="c1"># Direct addition - works but physically wrong!</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="n">total_head</span> <span class="o">=</span> <span class="n">h_mercury</span> <span class="o">+</span> <span class="n">h_pump_rating</span>  <span class="c1"># WRONG!</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="c1"># Both have dimension [length], so Pint allows this</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="c1"># Correct calculation still requires manual tracking:</span>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="n">h_mercury_as_water</span> <span class="o">=</span> <span class="n">h_mercury</span> <span class="o">*</span> <span class="n">sg_mercury</span>
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="c1"># Compare system requirement vs pump capacity</span>
+</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="k">if</span> <span class="n">h_mercury_as_water</span> <span class="o">&gt;</span> <span class="n">h_pump_rating</span><span class="p">:</span>
+</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Pump is undersized!&quot;</span><span class="p">)</span>  <span class="c1"># This will trigger!</span>
+</span></code></pre></div>
+<p><strong>Problem</strong>: Pint prevents dimensional errors but cannot distinguish between different
+physical meanings of the same dimension.</p>
+</div>
+</div>
+</div>
+<p>The fundamental limitation: <strong>Units libraries check dimensional compatibility
+(<em>length</em> + <em>length</em> = OK), but cannot enforce that quantities with the same dimension
+may represent incompatible physical concepts.</strong> This is where <strong>mp-units</strong> breaks new
+ground with its <code>is_kind</code> feature.</p>
+<p><strong>Problems common to all these approaches:</strong></p>
 <ol>
-<li><strong>Missed optimization</strong>: Converting <code>thrust_kgf * g0</code> to <code>thrust_N</code>, then dividing by
-  <code>g0</code> in <code>mass_flow_rate_kg_s</code> — the <code>g0</code> factors cancel but we compute them anyway!</li>
-<li><strong>No type safety</strong>: Nothing prevents passing <code>thrust_kgf</code> directly to
-  <code>mass_flow_rate_kg_s</code>, silently producing wrong results</li>
-<li><strong>Hidden unit conversions</strong>: kgf is kg × g₀ by definition, but this relationship is
-  implicit in the code</li>
-<li><strong>Manual burden</strong>: Programmers must track which conversions are needed and which
-  constants cancel</li>
-<li><strong>Historic disasters</strong>: Unit confusion (mixing lbf and N) has caused real mission
-  failures like Mars Climate Orbiter</li>
+<li><strong>No distinction</strong>: Both <em>fluid head</em> and <em>water head</em> have the same dimensional type
+   (<em>length</em>), making them indistinguishable to the type system</li>
+<li><strong>Silent errors</strong>: Adding incompatible <em>head</em> types compiles successfully but produces
+   physically nonsense results</li>
+<li><strong>Manual tracking</strong>: Programmers must remember which variables represent which type
+   of <em>head</em>—the type system provides no help</li>
+<li><strong>Comparison confusion</strong>: <code>2 m &lt; 10 m</code> numerically, but <code>2 m</code> of mercury represents
+   far more <em>energy</em> (and <em>pressure</em>) than <code>10 m</code> of water</li>
+<li><strong>Easy to forget</strong>: Forgetting the SG conversion factor leads to severely undersized
+   equipment—a potentially catastrophic error in chemical plants</li>
 </ol>
 <p><strong>Real-world scenario:</strong></p>
-<p>Flight software for a rocket stage must:</p>
+<p>A chemical plant pump system must:</p>
 <ul>
-<li>Read engine specifications with <em>thrust</em> in kgf (e.g., legacy Russian engines like RD-180)</li>
-<li>Read <em>propellant mass</em> from fuel tank sensors (in kg)</li>
-<li>Use published <em>Isp</em> values (efficiency metric in seconds)</li>
-<li>Calculate <em>burn time</em> to determine how long the stage will fire</li>
-<li>Handle mixed units safely, as some engines use kgf while others use N</li>
+<li>Handle mercury (SG = 13.6) from a 2 m column in a reactor vessel</li>
+<li>Verify a pump rated for 10 m <em>water head</em> can handle this load</li>
+<li>Convert the mercury <em>fluid head</em> to equivalent <em>water head</em> for comparison</li>
+<li>Prevent accidentally mixing <em>fluid head</em> and <em>water head</em> values</li>
+<li>Require explicit conversion through <em>specific gravity</em></li>
 </ul>
-<p>The g₀ constant appears in:</p>
-<ul>
-<li>The definition of kgf (kilogram-force = kg × g₀)</li>
-<li>The <em>burn time</em> formula (numerator has g₀)</li>
-<li>These should cancel perfectly, avoiding any 9.80665 multiplications</li>
-</ul>
+<p><strong>The challenge:</strong> Both are <em>heights</em> (dimension: <em>length</em>), but they're physically
+incompatible without conversion through <em>specific gravity</em>.</p>
 <h2 id="your-task">Your task<a class="headerlink" href="#your-task" title="Permanent link">&para;</a></h2>
-<p>Refactor the rocket burn time calculator to use <strong>mp-units</strong> with g₀ as a compile-time
-constant unit. The helper functions are already provided with type-safe <code>QuantityOf</code>
-constraints.</p>
-<p>Complete the implementation by defining:</p>
+<p>Implement a type-safe hydraulic head calculation system using <strong>mp-units</strong> that prevents
+mixing fluid head and water head without explicit conversion.</p>
+<p>Create:</p>
 <ol>
-<li><strong>standard_gravity</strong> (g₀) — Define <code>standard_gravity</code> as a unit which represents
-  9.80665 m/s²  as an exact rational 980'665/100'000 (or use predefined <code>si::standard_gravity</code>)</li>
-<li><strong>kilogram_force</strong> (kgf) — Define as a <code>named_unit</code> that embeds g₀: <code>kg × g₀</code></li>
+<li><strong>Distinct kinds</strong>: Define <code>fluid_head</code> and <code>water_head</code> as separate kinds derived from
+  <code>isq::height</code></li>
+<li><strong>Specific gravity type</strong>: Define <code>specific_gravity</code> as a dimensionless <code>quantity_spec</code></li>
+<li><strong>Conversion functions</strong>: Implement type-safe conversions between the two head types:</li>
+<li><code>to_water_head(h_fluid, sg)</code> — converts <em>fluid head</em> to <em>water head</em> using SG</li>
+<li><code>to_fluid_head(h_water, sg)</code> — converts <em>water head</em> to <em>fluid head</em> using SG</li>
 </ol>
-<p>With these definitions in place, observe how:</p>
+<p>The solution should:</p>
 <ul>
-<li><strong>Type safety</strong>: <code>QuantityOf</code> constraints prevent passing wrong unit types</li>
-<li><strong>Automatic optimization</strong>: When thrust is in kgf, g₀ factors cancel at compile-time
-  without runtime cost</li>
-<li><strong>Mixed units</strong>: Both kgf (legacy) and N (modern) thrust specifications work seamlessly</li>
+<li>Prevent direct addition or comparison of <em>fluid head</em> and <em>water head</em> (compile-time error)</li>
+<li>Require explicit conversion through <em>specific gravity</em></li>
+<li>Use <code>QuantityOf</code> constraints for type safety</li>
+<li>Work with any units of <em>length</em> (meters, feet, etc.)</li>
 </ul>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1">// ce-embed height=900 compiler=clang2110 flags=&quot;-std=c++23 -stdlib=libc++ -O3&quot; mp-units=trunk</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mp-units/systems/si.h&gt;</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mp-units/systems/isq.h&gt;</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">mp_units</span><span class="p">;</span>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">specific_impulse</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span>
-</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">    </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">duration</span><span class="p">,</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">force</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">mass_flow_rate</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">acceleration</span><span class="p">)</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">specific_impulse</span><span class="p">;</span>
-</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>
-</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="c1">// TODO: Define standard gravity (g₀) as a unit (9.80665 m/s² = 980&#39;665/100&#39;000 m/s²)</span>
-</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>
-</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="c1">// TODO: Define kilogram-force (kgf) as kg × g₀</span>
-</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>
-</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">Unit</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">g0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">standard_gravity</span><span class="p">;</span>
-</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">Unit</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">kgf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kilogram_force</span><span class="p">;</span>
-</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>
-</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="n">QuantityOf</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">mass_flow_rate</span><span class="o">&gt;</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">mass_flow_rate</span><span class="p">(</span><span class="n">QuantityOf</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">force</span><span class="o">&gt;</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">thrust</span><span class="p">,</span>
-</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="w">                                                    </span><span class="n">QuantityOf</span><span class="o">&lt;</span><span class="n">specific_impulse</span><span class="o">&gt;</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">isp</span><span class="p">)</span>
-</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="p">{</span>
-</span><span id="__span-1-21"><a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">thrust</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">isp</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">g0</span><span class="p">);</span>
-</span><span id="__span-1-22"><a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="p">}</span>
-</span><span id="__span-1-23"><a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a>
-</span><span id="__span-1-24"><a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="n">QuantityOf</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">duration</span><span class="o">&gt;</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">burn_time_from_flow</span><span class="p">(</span><span class="n">QuantityOf</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">mass</span><span class="o">&gt;</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">propellant_mass</span><span class="p">,</span>
-</span><span id="__span-1-25"><a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a><span class="w">                                                   </span><span class="n">QuantityOf</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">mass_flow_rate</span><span class="o">&gt;</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">flow_rate</span><span class="p">)</span>
-</span><span id="__span-1-26"><a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a><span class="p">{</span>
-</span><span id="__span-1-27"><a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">propellant_mass</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">flow_rate</span><span class="p">;</span>
-</span><span id="__span-1-28"><a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a><span class="p">}</span>
-</span><span id="__span-1-29"><a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a>
-</span><span id="__span-1-30"><a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a><span class="n">QuantityOf</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">speed</span><span class="o">&gt;</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">exhaust_velocity</span><span class="p">(</span><span class="n">QuantityOf</span><span class="o">&lt;</span><span class="n">specific_impulse</span><span class="o">&gt;</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">isp</span><span class="p">)</span>
-</span><span id="__span-1-31"><a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a><span class="p">{</span>
-</span><span id="__span-1-32"><a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">isp</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">g0</span><span class="p">;</span>
-</span><span id="__span-1-33"><a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a><span class="p">}</span>
-</span><span id="__span-1-34"><a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a>
-</span><span id="__span-1-35"><a id="__codelineno-1-35" name="__codelineno-1-35" href="#__codelineno-1-35"></a><span class="n">QuantityOf</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">duration</span><span class="o">&gt;</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">burn_time_with_stats</span><span class="p">(</span><span class="n">QuantityOf</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">mass</span><span class="o">&gt;</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">propellant_mass</span><span class="p">,</span>
-</span><span id="__span-1-36"><a id="__codelineno-1-36" name="__codelineno-1-36" href="#__codelineno-1-36"></a><span class="w">                                                    </span><span class="n">QuantityOf</span><span class="o">&lt;</span><span class="n">specific_impulse</span><span class="o">&gt;</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">isp</span><span class="p">,</span>
-</span><span id="__span-1-37"><a id="__codelineno-1-37" name="__codelineno-1-37" href="#__codelineno-1-37"></a><span class="w">                                                    </span><span class="n">QuantityOf</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">force</span><span class="o">&gt;</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">thrust</span><span class="p">)</span>
-</span><span id="__span-1-38"><a id="__codelineno-1-38" name="__codelineno-1-38" href="#__codelineno-1-38"></a><span class="p">{</span>
-</span><span id="__span-1-39"><a id="__codelineno-1-39" name="__codelineno-1-39" href="#__codelineno-1-39"></a><span class="w">  </span><span class="n">quantity</span><span class="w"> </span><span class="n">flow_rate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mass_flow_rate</span><span class="p">(</span><span class="n">thrust</span><span class="p">,</span><span class="w"> </span><span class="n">isp</span><span class="p">);</span>
-</span><span id="__span-1-40"><a id="__codelineno-1-40" name="__codelineno-1-40" href="#__codelineno-1-40"></a><span class="w">  </span><span class="n">quantity</span><span class="w"> </span><span class="n">burn_time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">burn_time_from_flow</span><span class="p">(</span><span class="n">propellant_mass</span><span class="p">,</span><span class="w"> </span><span class="n">flow_rate</span><span class="p">);</span>
-</span><span id="__span-1-41"><a id="__codelineno-1-41" name="__codelineno-1-41" href="#__codelineno-1-41"></a><span class="w">  </span><span class="n">quantity</span><span class="w"> </span><span class="n">ve</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">exhaust_velocity</span><span class="p">(</span><span class="n">isp</span><span class="p">);</span>
-</span><span id="__span-1-42"><a id="__codelineno-1-42" name="__codelineno-1-42" href="#__codelineno-1-42"></a>
-</span><span id="__span-1-43"><a id="__codelineno-1-43" name="__codelineno-1-43" href="#__codelineno-1-43"></a><span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">si</span><span class="o">::</span><span class="nn">unit_symbols</span><span class="p">;</span>
-</span><span id="__span-1-44"><a id="__codelineno-1-44" name="__codelineno-1-44" href="#__codelineno-1-44"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;  Isp: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">isp</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
-</span><span id="__span-1-45"><a id="__codelineno-1-45" name="__codelineno-1-45" href="#__codelineno-1-45"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;  Thrust: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">thrust</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; = &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">thrust</span><span class="p">.</span><span class="k">template</span><span class="w"> </span><span class="n">in</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span><span class="n">kN</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
-</span><span id="__span-1-46"><a id="__codelineno-1-46" name="__codelineno-1-46" href="#__codelineno-1-46"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;  Exhaust velocity: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">ve</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; = &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">ve</span><span class="p">.</span><span class="n">in</span><span class="p">(</span><span class="n">m</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">s</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
-</span><span id="__span-1-47"><a id="__codelineno-1-47" name="__codelineno-1-47" href="#__codelineno-1-47"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;  Mass flow rate: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">flow_rate</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; = &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">flow_rate</span><span class="p">.</span><span class="n">in</span><span class="p">(</span><span class="n">kg</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">s</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
-</span><span id="__span-1-48"><a id="__codelineno-1-48" name="__codelineno-1-48" href="#__codelineno-1-48"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;  Burn time: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">burn_time</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; = &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">burn_time</span><span class="p">.</span><span class="n">in</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n\n</span><span class="s">&quot;</span><span class="p">;</span>
-</span><span id="__span-1-49"><a id="__codelineno-1-49" name="__codelineno-1-49" href="#__codelineno-1-49"></a>
-</span><span id="__span-1-50"><a id="__codelineno-1-50" name="__codelineno-1-50" href="#__codelineno-1-50"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">burn_time</span><span class="p">;</span>
-</span><span id="__span-1-51"><a id="__codelineno-1-51" name="__codelineno-1-51" href="#__codelineno-1-51"></a><span class="p">}</span>
-</span><span id="__span-1-52"><a id="__codelineno-1-52" name="__codelineno-1-52" href="#__codelineno-1-52"></a>
-</span><span id="__span-1-53"><a id="__codelineno-1-53" name="__codelineno-1-53" href="#__codelineno-1-53"></a><span class="kt">int</span><span class="w"> </span><span class="n">main</span><span class="p">()</span>
-</span><span id="__span-1-54"><a id="__codelineno-1-54" name="__codelineno-1-54" href="#__codelineno-1-54"></a><span class="p">{</span>
-</span><span id="__span-1-55"><a id="__codelineno-1-55" name="__codelineno-1-55" href="#__codelineno-1-55"></a><span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">si</span><span class="o">::</span><span class="nn">unit_symbols</span><span class="p">;</span>
-</span><span id="__span-1-56"><a id="__codelineno-1-56" name="__codelineno-1-56" href="#__codelineno-1-56"></a>
-</span><span id="__span-1-57"><a id="__codelineno-1-57" name="__codelineno-1-57" href="#__codelineno-1-57"></a><span class="w">  </span><span class="n">quantity</span><span class="w"> </span><span class="n">propellant_mass</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">15&#39;000.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="p">;</span>
-</span><span id="__span-1-58"><a id="__codelineno-1-58" name="__codelineno-1-58" href="#__codelineno-1-58"></a>
-</span><span id="__span-1-59"><a id="__codelineno-1-59" name="__codelineno-1-59" href="#__codelineno-1-59"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Rocket Stage Burn Time Analysis</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
-</span><span id="__span-1-60"><a id="__codelineno-1-60" name="__codelineno-1-60" href="#__codelineno-1-60"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;================================</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
-</span><span id="__span-1-61"><a id="__codelineno-1-61" name="__codelineno-1-61" href="#__codelineno-1-61"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Propellant mass: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">propellant_mass</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n\n</span><span class="s">&quot;</span><span class="p">;</span>
-</span><span id="__span-1-62"><a id="__codelineno-1-62" name="__codelineno-1-62" href="#__codelineno-1-62"></a>
-</span><span id="__span-1-63"><a id="__codelineno-1-63" name="__codelineno-1-63" href="#__codelineno-1-63"></a><span class="w">  </span><span class="c1">// Engine 1: RD-180 (legacy Russian engine with thrust in kgf)</span>
-</span><span id="__span-1-64"><a id="__codelineno-1-64" name="__codelineno-1-64" href="#__codelineno-1-64"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Engine 1 (RD-180):</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
-</span><span id="__span-1-65"><a id="__codelineno-1-65" name="__codelineno-1-65" href="#__codelineno-1-65"></a><span class="w">  </span><span class="n">quantity</span><span class="w"> </span><span class="n">engine1_isp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">311.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">s</span><span class="p">;</span>
-</span><span id="__span-1-66"><a id="__codelineno-1-66" name="__codelineno-1-66" href="#__codelineno-1-66"></a><span class="w">  </span><span class="n">quantity</span><span class="w"> </span><span class="n">engine1_thrust</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">390&#39;000</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kgf</span><span class="p">;</span><span class="w">  </span><span class="c1">// Legacy unit!</span>
-</span><span id="__span-1-67"><a id="__codelineno-1-67" name="__codelineno-1-67" href="#__codelineno-1-67"></a><span class="w">  </span><span class="n">quantity</span><span class="w"> </span><span class="n">burn_time_1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">burn_time_with_stats</span><span class="p">(</span><span class="n">propellant_mass</span><span class="p">,</span><span class="w"> </span><span class="n">engine1_isp</span><span class="p">,</span><span class="w"> </span><span class="n">engine1_thrust</span><span class="p">);</span>
-</span><span id="__span-1-68"><a id="__codelineno-1-68" name="__codelineno-1-68" href="#__codelineno-1-68"></a>
-</span><span id="__span-1-69"><a id="__codelineno-1-69" name="__codelineno-1-69" href="#__codelineno-1-69"></a><span class="w">  </span><span class="c1">// Engine 2: Modern high-efficiency engine with thrust in Newtons</span>
-</span><span id="__span-1-70"><a id="__codelineno-1-70" name="__codelineno-1-70" href="#__codelineno-1-70"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Engine 2 (Modern high-efficiency):</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
-</span><span id="__span-1-71"><a id="__codelineno-1-71" name="__codelineno-1-71" href="#__codelineno-1-71"></a><span class="w">  </span><span class="n">quantity</span><span class="w"> </span><span class="n">engine2_isp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">450.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">s</span><span class="p">;</span>
-</span><span id="__span-1-72"><a id="__codelineno-1-72" name="__codelineno-1-72" href="#__codelineno-1-72"></a><span class="w">  </span><span class="n">quantity</span><span class="w"> </span><span class="n">engine2_thrust</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">500.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kN</span><span class="p">;</span><span class="w">  </span><span class="c1">// Modern SI unit</span>
-</span><span id="__span-1-73"><a id="__codelineno-1-73" name="__codelineno-1-73" href="#__codelineno-1-73"></a><span class="w">  </span><span class="n">quantity</span><span class="w"> </span><span class="n">burn_time_2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">burn_time_with_stats</span><span class="p">(</span><span class="n">propellant_mass</span><span class="p">,</span><span class="w"> </span><span class="n">engine2_isp</span><span class="p">,</span><span class="w"> </span><span class="n">engine2_thrust</span><span class="p">);</span>
-</span><span id="__span-1-74"><a id="__codelineno-1-74" name="__codelineno-1-74" href="#__codelineno-1-74"></a>
-</span><span id="__span-1-75"><a id="__codelineno-1-75" name="__codelineno-1-75" href="#__codelineno-1-75"></a><span class="w">  </span><span class="c1">// Compare burn times</span>
-</span><span id="__span-1-76"><a id="__codelineno-1-76" name="__codelineno-1-76" href="#__codelineno-1-76"></a><span class="w">  </span><span class="n">quantity</span><span class="w"> </span><span class="n">time_ratio</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">burn_time_2</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">burn_time_1</span><span class="p">;</span>
-</span><span id="__span-1-77"><a id="__codelineno-1-77" name="__codelineno-1-77" href="#__codelineno-1-77"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Engine 2 burns &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">time_ratio</span><span class="p">.</span><span class="n">in</span><span class="p">(</span><span class="n">one</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; times longer</span><span class="se">\n\n</span><span class="s">&quot;</span><span class="p">;</span>
-</span><span id="__span-1-78"><a id="__codelineno-1-78" name="__codelineno-1-78" href="#__codelineno-1-78"></a>
-</span><span id="__span-1-79"><a id="__codelineno-1-79" name="__codelineno-1-79" href="#__codelineno-1-79"></a><span class="w">  </span><span class="c1">// Calculate total impulse - demonstrates seamless mixing of kgf and N</span>
-</span><span id="__span-1-80"><a id="__codelineno-1-80" name="__codelineno-1-80" href="#__codelineno-1-80"></a><span class="w">  </span><span class="n">quantity</span><span class="w"> </span><span class="n">total_impulse_1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">engine1_thrust</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">burn_time_1</span><span class="p">;</span>
-</span><span id="__span-1-81"><a id="__codelineno-1-81" name="__codelineno-1-81" href="#__codelineno-1-81"></a><span class="w">  </span><span class="n">quantity</span><span class="w"> </span><span class="n">total_impulse_2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">engine2_thrust</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">burn_time_2</span><span class="p">;</span>
-</span><span id="__span-1-82"><a id="__codelineno-1-82" name="__codelineno-1-82" href="#__codelineno-1-82"></a>
-</span><span id="__span-1-83"><a id="__codelineno-1-83" name="__codelineno-1-83" href="#__codelineno-1-83"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Total Impulse:</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
-</span><span id="__span-1-84"><a id="__codelineno-1-84" name="__codelineno-1-84" href="#__codelineno-1-84"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;  Engine 1: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">total_impulse_1</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; = &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">total_impulse_1</span><span class="p">.</span><span class="n">in</span><span class="p">(</span><span class="n">kN</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">s</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
-</span><span id="__span-1-85"><a id="__codelineno-1-85" name="__codelineno-1-85" href="#__codelineno-1-85"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;  Engine 2: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">total_impulse_2</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; = &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">total_impulse_2</span><span class="p">.</span><span class="n">in</span><span class="p">(</span><span class="n">kN</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">s</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
-</span><span id="__span-1-86"><a id="__codelineno-1-86" name="__codelineno-1-86" href="#__codelineno-1-86"></a><span class="p">}</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1">// ce-embed height=800 compiler=clang2110 flags=&quot;-std=c++23 -stdlib=libc++ -O3&quot; mp-units=trunk</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mp-units/systems/si.h&gt;</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">mp_units</span><span class="p">;</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="c1">// TODO: Define fluid_head as a distinct kind derived from isq::height</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="c1">// TODO: Define water_head as a distinct kind derived from isq::height</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="c1">// TODO: Define specific_gravity as a dimensionless quantity_spec</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="c1">// TODO: Implement to_water_head conversion function</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="c1">// Formula: H_water = H_fluid * SG</span>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="c1">// Hint: Return type should be QuantityOf&lt;water_head&gt; auto</span>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="c1">// TODO: Implement to_fluid_head conversion function</span>
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="c1">// Formula: H_fluid = H_water / SG</span>
+</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>
+</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span>
+</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a><span class="p">{</span>
+</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a><span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">si</span><span class="o">::</span><span class="nn">unit_symbols</span><span class="p">;</span>
+</span><span id="__span-3-21"><a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a>
+</span><span id="__span-3-22"><a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a><span class="w">  </span><span class="c1">// Scenario: Chemical reactor with 2m mercury column (SG = 13.6)</span>
+</span><span id="__span-3-23"><a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a><span class="w">  </span><span class="n">quantity</span><span class="w"> </span><span class="n">h_mercury</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fluid_head</span><span class="p">(</span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">);</span>
+</span><span id="__span-3-24"><a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a><span class="w">  </span><span class="n">quantity</span><span class="w"> </span><span class="n">sg_mercury</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">specific_gravity</span><span class="p">(</span><span class="mf">13.6</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">one</span><span class="p">);</span>
+</span><span id="__span-3-25"><a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a>
+</span><span id="__span-3-26"><a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a><span class="w">  </span><span class="c1">// Pump rated for 10m water head</span>
+</span><span id="__span-3-27"><a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a><span class="w">  </span><span class="n">quantity</span><span class="w"> </span><span class="n">h_pump_rating</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">water_head</span><span class="p">(</span><span class="mi">10</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">);</span>
+</span><span id="__span-3-28"><a id="__codelineno-3-28" name="__codelineno-3-28" href="#__codelineno-3-28"></a>
+</span><span id="__span-3-29"><a id="__codelineno-3-29" name="__codelineno-3-29" href="#__codelineno-3-29"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Pump System Design Analysis</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+</span><span id="__span-3-30"><a id="__codelineno-3-30" name="__codelineno-3-30" href="#__codelineno-3-30"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;============================</span><span class="se">\n\n</span><span class="s">&quot;</span><span class="p">;</span>
+</span><span id="__span-3-31"><a id="__codelineno-3-31" name="__codelineno-3-31" href="#__codelineno-3-31"></a>
+</span><span id="__span-3-32"><a id="__codelineno-3-32" name="__codelineno-3-32" href="#__codelineno-3-32"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Mercury column height: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">h_mercury</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+</span><span id="__span-3-33"><a id="__codelineno-3-33" name="__codelineno-3-33" href="#__codelineno-3-33"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Mercury specific gravity: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">sg_mercury</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+</span><span id="__span-3-34"><a id="__codelineno-3-34" name="__codelineno-3-34" href="#__codelineno-3-34"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Pump rating (water head): &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">h_pump_rating</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n\n</span><span class="s">&quot;</span><span class="p">;</span>
+</span><span id="__span-3-35"><a id="__codelineno-3-35" name="__codelineno-3-35" href="#__codelineno-3-35"></a>
+</span><span id="__span-3-36"><a id="__codelineno-3-36" name="__codelineno-3-36" href="#__codelineno-3-36"></a><span class="w">  </span><span class="c1">// Safety check: This should NOT compile!</span>
+</span><span id="__span-3-37"><a id="__codelineno-3-37" name="__codelineno-3-37" href="#__codelineno-3-37"></a><span class="w">  </span><span class="c1">// quantity wrong = h_mercury + h_pump_rating;  // Error: cannot mix kinds</span>
+</span><span id="__span-3-38"><a id="__codelineno-3-38" name="__codelineno-3-38" href="#__codelineno-3-38"></a>
+</span><span id="__span-3-39"><a id="__codelineno-3-39" name="__codelineno-3-39" href="#__codelineno-3-39"></a><span class="w">  </span><span class="c1">// Convert mercury fluid head to equivalent water head</span>
+</span><span id="__span-3-40"><a id="__codelineno-3-40" name="__codelineno-3-40" href="#__codelineno-3-40"></a><span class="w">  </span><span class="n">quantity</span><span class="w"> </span><span class="n">h_mercury_as_water</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">to_water_head</span><span class="p">(</span><span class="n">h_mercury</span><span class="p">,</span><span class="w"> </span><span class="n">sg_mercury</span><span class="p">);</span>
+</span><span id="__span-3-41"><a id="__codelineno-3-41" name="__codelineno-3-41" href="#__codelineno-3-41"></a>
+</span><span id="__span-3-42"><a id="__codelineno-3-42" name="__codelineno-3-42" href="#__codelineno-3-42"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Mercury equivalent (water head): &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">h_mercury_as_water</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n\n</span><span class="s">&quot;</span><span class="p">;</span>
+</span><span id="__span-3-43"><a id="__codelineno-3-43" name="__codelineno-3-43" href="#__codelineno-3-43"></a>
+</span><span id="__span-3-44"><a id="__codelineno-3-44" name="__codelineno-3-44" href="#__codelineno-3-44"></a><span class="w">  </span><span class="c1">// Verify pump capacity against system requirement</span>
+</span><span id="__span-3-45"><a id="__codelineno-3-45" name="__codelineno-3-45" href="#__codelineno-3-45"></a><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">h_mercury_as_water</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">h_pump_rating</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-46"><a id="__codelineno-3-46" name="__codelineno-3-46" href="#__codelineno-3-46"></a><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;WARNING: System requirement (&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">h_mercury_as_water</span>
+</span><span id="__span-3-47"><a id="__codelineno-3-47" name="__codelineno-3-47" href="#__codelineno-3-47"></a><span class="w">              </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;) exceeds pump rating (&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">h_pump_rating</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;)!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+</span><span id="__span-3-48"><a id="__codelineno-3-48" name="__codelineno-3-48" href="#__codelineno-3-48"></a><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Pump is UNDERSIZED for this application.</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+</span><span id="__span-3-49"><a id="__codelineno-3-49" name="__codelineno-3-49" href="#__codelineno-3-49"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-3-50"><a id="__codelineno-3-50" name="__codelineno-3-50" href="#__codelineno-3-50"></a><span class="w">  </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-51"><a id="__codelineno-3-51" name="__codelineno-3-51" href="#__codelineno-3-51"></a><span class="w">    </span><span class="n">quantity</span><span class="w"> </span><span class="n">excess_capacity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">h_pump_rating</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">h_mercury_as_water</span><span class="p">;</span>
+</span><span id="__span-3-52"><a id="__codelineno-3-52" name="__codelineno-3-52" href="#__codelineno-3-52"></a><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Pump capacity is adequate.</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+</span><span id="__span-3-53"><a id="__codelineno-3-53" name="__codelineno-3-53" href="#__codelineno-3-53"></a><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Excess capacity: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">excess_capacity</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+</span><span id="__span-3-54"><a id="__codelineno-3-54" name="__codelineno-3-54" href="#__codelineno-3-54"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-3-55"><a id="__codelineno-3-55" name="__codelineno-3-55" href="#__codelineno-3-55"></a>
+</span><span id="__span-3-56"><a id="__codelineno-3-56" name="__codelineno-3-56" href="#__codelineno-3-56"></a><span class="w">  </span><span class="c1">// Demonstrate reverse conversion</span>
+</span><span id="__span-3-57"><a id="__codelineno-3-57" name="__codelineno-3-57" href="#__codelineno-3-57"></a><span class="w">  </span><span class="n">quantity</span><span class="w"> </span><span class="n">h_back_to_fluid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">to_fluid_head</span><span class="p">(</span><span class="n">h_mercury_as_water</span><span class="p">,</span><span class="w"> </span><span class="n">sg_mercury</span><span class="p">);</span>
+</span><span id="__span-3-58"><a id="__codelineno-3-58" name="__codelineno-3-58" href="#__codelineno-3-58"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n</span><span class="s">Verification - converted back: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">h_back_to_fluid</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+</span><span id="__span-3-59"><a id="__codelineno-3-59" name="__codelineno-3-59" href="#__codelineno-3-59"></a><span class="p">}</span>
 </span></code></pre></div>
 <details>
 <summary>Solution</summary>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mp-units/systems/si.h&gt;</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mp-units/systems/isq.h&gt;</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">mp_units</span><span class="p">;</span>
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
-</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">specific_impulse</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span>
-</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">    </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">duration</span><span class="p">,</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">force</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">mass_flow_rate</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">acceleration</span><span class="p">)</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">specific_impulse</span><span class="p">;</span>
-</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>
-</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">standard_gravity</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span>
-</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">    </span><span class="n">named_unit</span><span class="o">&lt;</span><span class="n">symbol_text</span><span class="p">{</span><span class="sa">u8</span><span class="s">&quot;g₀&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;g_0&quot;</span><span class="p">},</span><span class="w"> </span><span class="n">mag_ratio</span><span class="o">&lt;</span><span class="mi">980&#39;665</span><span class="p">,</span><span class="w"> </span><span class="mi">100&#39;000</span><span class="o">&gt;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">square</span><span class="p">(</span><span class="n">si</span><span class="o">::</span><span class="n">second</span><span class="p">)</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">standard_gravity</span><span class="p">;</span>
-</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">kilogram_force</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span>
-</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="w">    </span><span class="n">named_unit</span><span class="o">&lt;</span><span class="s">&quot;kgf&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">kilogram</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">standard_gravity</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">kilogram_force</span><span class="p">;</span>
-</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>
-</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">Unit</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">kgf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kilogram_force</span><span class="p">;</span>
-</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">Unit</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">g0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">standard_gravity</span><span class="p">;</span>
-</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>
-</span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a><span class="n">QuantityOf</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">mass_flow_rate</span><span class="o">&gt;</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">mass_flow_rate</span><span class="p">(</span><span class="n">QuantityOf</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">force</span><span class="o">&gt;</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">thrust</span><span class="p">,</span>
-</span><span id="__span-2-19"><a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a><span class="w">                                                    </span><span class="n">QuantityOf</span><span class="o">&lt;</span><span class="n">specific_impulse</span><span class="o">&gt;</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">isp</span><span class="p">)</span>
-</span><span id="__span-2-20"><a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a><span class="p">{</span>
-</span><span id="__span-2-21"><a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">thrust</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">isp</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">g0</span><span class="p">);</span>
-</span><span id="__span-2-22"><a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a><span class="p">}</span>
-</span><span id="__span-2-23"><a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a>
-</span><span id="__span-2-24"><a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a><span class="n">QuantityOf</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">duration</span><span class="o">&gt;</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">burn_time_from_flow</span><span class="p">(</span><span class="n">QuantityOf</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">mass</span><span class="o">&gt;</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">propellant_mass</span><span class="p">,</span>
-</span><span id="__span-2-25"><a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a><span class="w">                                                   </span><span class="n">QuantityOf</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">mass_flow_rate</span><span class="o">&gt;</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">flow_rate</span><span class="p">)</span>
-</span><span id="__span-2-26"><a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a><span class="p">{</span>
-</span><span id="__span-2-27"><a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">propellant_mass</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">flow_rate</span><span class="p">;</span>
-</span><span id="__span-2-28"><a id="__codelineno-2-28" name="__codelineno-2-28" href="#__codelineno-2-28"></a><span class="p">}</span>
-</span><span id="__span-2-29"><a id="__codelineno-2-29" name="__codelineno-2-29" href="#__codelineno-2-29"></a>
-</span><span id="__span-2-30"><a id="__codelineno-2-30" name="__codelineno-2-30" href="#__codelineno-2-30"></a><span class="n">QuantityOf</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">speed</span><span class="o">&gt;</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">exhaust_velocity</span><span class="p">(</span><span class="n">QuantityOf</span><span class="o">&lt;</span><span class="n">specific_impulse</span><span class="o">&gt;</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">isp</span><span class="p">)</span>
-</span><span id="__span-2-31"><a id="__codelineno-2-31" name="__codelineno-2-31" href="#__codelineno-2-31"></a><span class="p">{</span>
-</span><span id="__span-2-32"><a id="__codelineno-2-32" name="__codelineno-2-32" href="#__codelineno-2-32"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">isp</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">g0</span><span class="p">;</span>
-</span><span id="__span-2-33"><a id="__codelineno-2-33" name="__codelineno-2-33" href="#__codelineno-2-33"></a><span class="p">}</span>
-</span><span id="__span-2-34"><a id="__codelineno-2-34" name="__codelineno-2-34" href="#__codelineno-2-34"></a>
-</span><span id="__span-2-35"><a id="__codelineno-2-35" name="__codelineno-2-35" href="#__codelineno-2-35"></a><span class="n">QuantityOf</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">duration</span><span class="o">&gt;</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">burn_time_with_stats</span><span class="p">(</span><span class="n">QuantityOf</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">mass</span><span class="o">&gt;</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">propellant_mass</span><span class="p">,</span>
-</span><span id="__span-2-36"><a id="__codelineno-2-36" name="__codelineno-2-36" href="#__codelineno-2-36"></a><span class="w">                                                    </span><span class="n">QuantityOf</span><span class="o">&lt;</span><span class="n">specific_impulse</span><span class="o">&gt;</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">isp</span><span class="p">,</span>
-</span><span id="__span-2-37"><a id="__codelineno-2-37" name="__codelineno-2-37" href="#__codelineno-2-37"></a><span class="w">                                                    </span><span class="n">QuantityOf</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">force</span><span class="o">&gt;</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">thrust</span><span class="p">)</span>
-</span><span id="__span-2-38"><a id="__codelineno-2-38" name="__codelineno-2-38" href="#__codelineno-2-38"></a><span class="p">{</span>
-</span><span id="__span-2-39"><a id="__codelineno-2-39" name="__codelineno-2-39" href="#__codelineno-2-39"></a><span class="w">  </span><span class="n">quantity</span><span class="w"> </span><span class="n">flow_rate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mass_flow_rate</span><span class="p">(</span><span class="n">thrust</span><span class="p">,</span><span class="w"> </span><span class="n">isp</span><span class="p">);</span>
-</span><span id="__span-2-40"><a id="__codelineno-2-40" name="__codelineno-2-40" href="#__codelineno-2-40"></a><span class="w">  </span><span class="n">quantity</span><span class="w"> </span><span class="n">burn_time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">burn_time_from_flow</span><span class="p">(</span><span class="n">propellant_mass</span><span class="p">,</span><span class="w"> </span><span class="n">flow_rate</span><span class="p">);</span>
-</span><span id="__span-2-41"><a id="__codelineno-2-41" name="__codelineno-2-41" href="#__codelineno-2-41"></a><span class="w">  </span><span class="n">quantity</span><span class="w"> </span><span class="n">ve</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">exhaust_velocity</span><span class="p">(</span><span class="n">isp</span><span class="p">);</span>
-</span><span id="__span-2-42"><a id="__codelineno-2-42" name="__codelineno-2-42" href="#__codelineno-2-42"></a>
-</span><span id="__span-2-43"><a id="__codelineno-2-43" name="__codelineno-2-43" href="#__codelineno-2-43"></a><span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">si</span><span class="o">::</span><span class="nn">unit_symbols</span><span class="p">;</span>
-</span><span id="__span-2-44"><a id="__codelineno-2-44" name="__codelineno-2-44" href="#__codelineno-2-44"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;  Isp: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">isp</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
-</span><span id="__span-2-45"><a id="__codelineno-2-45" name="__codelineno-2-45" href="#__codelineno-2-45"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;  Thrust: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">thrust</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; = &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">thrust</span><span class="p">.</span><span class="k">template</span><span class="w"> </span><span class="n">in</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span><span class="n">kN</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
-</span><span id="__span-2-46"><a id="__codelineno-2-46" name="__codelineno-2-46" href="#__codelineno-2-46"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;  Exhaust velocity: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">ve</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; = &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">ve</span><span class="p">.</span><span class="n">in</span><span class="p">(</span><span class="n">m</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">s</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
-</span><span id="__span-2-47"><a id="__codelineno-2-47" name="__codelineno-2-47" href="#__codelineno-2-47"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;  Mass flow rate: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">flow_rate</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; = &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">flow_rate</span><span class="p">.</span><span class="n">in</span><span class="p">(</span><span class="n">kg</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">s</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
-</span><span id="__span-2-48"><a id="__codelineno-2-48" name="__codelineno-2-48" href="#__codelineno-2-48"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;  Burn time: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">burn_time</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; = &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">burn_time</span><span class="p">.</span><span class="n">in</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n\n</span><span class="s">&quot;</span><span class="p">;</span>
-</span><span id="__span-2-49"><a id="__codelineno-2-49" name="__codelineno-2-49" href="#__codelineno-2-49"></a>
-</span><span id="__span-2-50"><a id="__codelineno-2-50" name="__codelineno-2-50" href="#__codelineno-2-50"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">burn_time</span><span class="p">;</span>
-</span><span id="__span-2-51"><a id="__codelineno-2-51" name="__codelineno-2-51" href="#__codelineno-2-51"></a><span class="p">}</span>
-</span><span id="__span-2-52"><a id="__codelineno-2-52" name="__codelineno-2-52" href="#__codelineno-2-52"></a>
-</span><span id="__span-2-53"><a id="__codelineno-2-53" name="__codelineno-2-53" href="#__codelineno-2-53"></a><span class="kt">int</span><span class="w"> </span><span class="n">main</span><span class="p">()</span>
-</span><span id="__span-2-54"><a id="__codelineno-2-54" name="__codelineno-2-54" href="#__codelineno-2-54"></a><span class="p">{</span>
-</span><span id="__span-2-55"><a id="__codelineno-2-55" name="__codelineno-2-55" href="#__codelineno-2-55"></a><span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">si</span><span class="o">::</span><span class="nn">unit_symbols</span><span class="p">;</span>
-</span><span id="__span-2-56"><a id="__codelineno-2-56" name="__codelineno-2-56" href="#__codelineno-2-56"></a>
-</span><span id="__span-2-57"><a id="__codelineno-2-57" name="__codelineno-2-57" href="#__codelineno-2-57"></a><span class="w">  </span><span class="n">quantity</span><span class="w"> </span><span class="n">propellant_mass</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">15&#39;000.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="p">;</span>
-</span><span id="__span-2-58"><a id="__codelineno-2-58" name="__codelineno-2-58" href="#__codelineno-2-58"></a>
-</span><span id="__span-2-59"><a id="__codelineno-2-59" name="__codelineno-2-59" href="#__codelineno-2-59"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Rocket Stage Burn Time Analysis</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
-</span><span id="__span-2-60"><a id="__codelineno-2-60" name="__codelineno-2-60" href="#__codelineno-2-60"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;================================</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
-</span><span id="__span-2-61"><a id="__codelineno-2-61" name="__codelineno-2-61" href="#__codelineno-2-61"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Propellant mass: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">propellant_mass</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n\n</span><span class="s">&quot;</span><span class="p">;</span>
-</span><span id="__span-2-62"><a id="__codelineno-2-62" name="__codelineno-2-62" href="#__codelineno-2-62"></a>
-</span><span id="__span-2-63"><a id="__codelineno-2-63" name="__codelineno-2-63" href="#__codelineno-2-63"></a><span class="w">  </span><span class="c1">// Engine 1: RD-180 (legacy Russian engine with thrust in kgf)</span>
-</span><span id="__span-2-64"><a id="__codelineno-2-64" name="__codelineno-2-64" href="#__codelineno-2-64"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Engine 1 (RD-180):</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
-</span><span id="__span-2-65"><a id="__codelineno-2-65" name="__codelineno-2-65" href="#__codelineno-2-65"></a><span class="w">  </span><span class="n">quantity</span><span class="w"> </span><span class="n">engine1_isp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">311.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">s</span><span class="p">;</span>
-</span><span id="__span-2-66"><a id="__codelineno-2-66" name="__codelineno-2-66" href="#__codelineno-2-66"></a><span class="w">  </span><span class="n">quantity</span><span class="w"> </span><span class="n">engine1_thrust</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">390&#39;000</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kgf</span><span class="p">;</span>
-</span><span id="__span-2-67"><a id="__codelineno-2-67" name="__codelineno-2-67" href="#__codelineno-2-67"></a><span class="w">  </span><span class="n">quantity</span><span class="w"> </span><span class="n">burn_time_1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">burn_time_with_stats</span><span class="p">(</span><span class="n">propellant_mass</span><span class="p">,</span><span class="w"> </span><span class="n">engine1_isp</span><span class="p">,</span><span class="w"> </span><span class="n">engine1_thrust</span><span class="p">);</span>
-</span><span id="__span-2-68"><a id="__codelineno-2-68" name="__codelineno-2-68" href="#__codelineno-2-68"></a>
-</span><span id="__span-2-69"><a id="__codelineno-2-69" name="__codelineno-2-69" href="#__codelineno-2-69"></a><span class="w">  </span><span class="c1">// Engine 2: Modern high-efficiency engine with thrust in Newtons</span>
-</span><span id="__span-2-70"><a id="__codelineno-2-70" name="__codelineno-2-70" href="#__codelineno-2-70"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Engine 2 (Modern high-efficiency):</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
-</span><span id="__span-2-71"><a id="__codelineno-2-71" name="__codelineno-2-71" href="#__codelineno-2-71"></a><span class="w">  </span><span class="n">quantity</span><span class="w"> </span><span class="n">engine2_isp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">450.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">s</span><span class="p">;</span>
-</span><span id="__span-2-72"><a id="__codelineno-2-72" name="__codelineno-2-72" href="#__codelineno-2-72"></a><span class="w">  </span><span class="n">quantity</span><span class="w"> </span><span class="n">engine2_thrust</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">500.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kN</span><span class="p">;</span>
-</span><span id="__span-2-73"><a id="__codelineno-2-73" name="__codelineno-2-73" href="#__codelineno-2-73"></a><span class="w">  </span><span class="n">quantity</span><span class="w"> </span><span class="n">burn_time_2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">burn_time_with_stats</span><span class="p">(</span><span class="n">propellant_mass</span><span class="p">,</span><span class="w"> </span><span class="n">engine2_isp</span><span class="p">,</span><span class="w"> </span><span class="n">engine2_thrust</span><span class="p">);</span>
-</span><span id="__span-2-74"><a id="__codelineno-2-74" name="__codelineno-2-74" href="#__codelineno-2-74"></a>
-</span><span id="__span-2-75"><a id="__codelineno-2-75" name="__codelineno-2-75" href="#__codelineno-2-75"></a><span class="w">  </span><span class="c1">// Compare burn times</span>
-</span><span id="__span-2-76"><a id="__codelineno-2-76" name="__codelineno-2-76" href="#__codelineno-2-76"></a><span class="w">  </span><span class="n">quantity</span><span class="w"> </span><span class="n">time_ratio</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">burn_time_2</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">burn_time_1</span><span class="p">;</span>
-</span><span id="__span-2-77"><a id="__codelineno-2-77" name="__codelineno-2-77" href="#__codelineno-2-77"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Engine 2 burns &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">time_ratio</span><span class="p">.</span><span class="n">in</span><span class="p">(</span><span class="n">one</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; times longer</span><span class="se">\n\n</span><span class="s">&quot;</span><span class="p">;</span>
-</span><span id="__span-2-78"><a id="__codelineno-2-78" name="__codelineno-2-78" href="#__codelineno-2-78"></a>
-</span><span id="__span-2-79"><a id="__codelineno-2-79" name="__codelineno-2-79" href="#__codelineno-2-79"></a><span class="w">  </span><span class="c1">// Calculate total impulse - demonstrates seamless mixing of kgf and N</span>
-</span><span id="__span-2-80"><a id="__codelineno-2-80" name="__codelineno-2-80" href="#__codelineno-2-80"></a><span class="w">  </span><span class="n">quantity</span><span class="w"> </span><span class="n">total_impulse_1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">engine1_thrust</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">burn_time_1</span><span class="p">;</span>
-</span><span id="__span-2-81"><a id="__codelineno-2-81" name="__codelineno-2-81" href="#__codelineno-2-81"></a><span class="w">  </span><span class="n">quantity</span><span class="w"> </span><span class="n">total_impulse_2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">engine2_thrust</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">burn_time_2</span><span class="p">;</span>
-</span><span id="__span-2-82"><a id="__codelineno-2-82" name="__codelineno-2-82" href="#__codelineno-2-82"></a>
-</span><span id="__span-2-83"><a id="__codelineno-2-83" name="__codelineno-2-83" href="#__codelineno-2-83"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Total Impulse:</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
-</span><span id="__span-2-84"><a id="__codelineno-2-84" name="__codelineno-2-84" href="#__codelineno-2-84"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;  Engine 1: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">total_impulse_1</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; = &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">total_impulse_1</span><span class="p">.</span><span class="n">in</span><span class="p">(</span><span class="n">kN</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">s</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
-</span><span id="__span-2-85"><a id="__codelineno-2-85" name="__codelineno-2-85" href="#__codelineno-2-85"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;  Engine 2: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">total_impulse_2</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; = &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">total_impulse_2</span><span class="p">.</span><span class="n">in</span><span class="p">(</span><span class="n">kN</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">s</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
-</span><span id="__span-2-86"><a id="__codelineno-2-86" name="__codelineno-2-86" href="#__codelineno-2-86"></a><span class="p">}</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mp-units/systems/si.h&gt;</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">mp_units</span><span class="p">;</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="c1">// 1. Define the distinct kinds (The Safety Layer)</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">fluid_head</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="p">,</span><span class="w"> </span><span class="n">is_kind</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">fluid_head</span><span class="p">;</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">water_head</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="p">,</span><span class="w"> </span><span class="n">is_kind</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">water_head</span><span class="p">;</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="c1">// 2. Define a type for Specific Gravity (Dimensionless)</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">specific_gravity</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">dimensionless</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">specific_gravity</span><span class="p">;</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a><span class="c1">// 3. Define Conversion Helpers</span>
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="c1">// Formula: H_water = H_fluid * SG</span>
+</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="k">constexpr</span><span class="w"> </span><span class="n">QuantityOf</span><span class="o">&lt;</span><span class="n">water_head</span><span class="o">&gt;</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">to_water_head</span><span class="p">(</span><span class="n">QuantityOf</span><span class="o">&lt;</span><span class="n">fluid_head</span><span class="o">&gt;</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">h_fluid</span><span class="p">,</span>
+</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="w">                                                    </span><span class="n">QuantityOf</span><span class="o">&lt;</span><span class="n">specific_gravity</span><span class="o">&gt;</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">sg</span><span class="p">)</span>
+</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="p">{</span>
+</span><span id="__span-4-18"><a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="w">  </span><span class="c1">// We explicitly cast the result to water_head because we know the physics is correct</span>
+</span><span id="__span-4-19"><a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">water_head</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="p">(</span><span class="n">h_fluid</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">sg</span><span class="p">);</span>
+</span><span id="__span-4-20"><a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a><span class="p">}</span>
+</span><span id="__span-4-21"><a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a>
+</span><span id="__span-4-22"><a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a><span class="c1">// Formula: H_fluid = H_water / SG</span>
+</span><span id="__span-4-23"><a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a><span class="k">constexpr</span><span class="w"> </span><span class="n">QuantityOf</span><span class="o">&lt;</span><span class="n">fluid_head</span><span class="o">&gt;</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">to_fluid_head</span><span class="p">(</span><span class="n">QuantityOf</span><span class="o">&lt;</span><span class="n">water_head</span><span class="o">&gt;</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">h_water</span><span class="p">,</span>
+</span><span id="__span-4-24"><a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a><span class="w">                                                    </span><span class="n">QuantityOf</span><span class="o">&lt;</span><span class="n">specific_gravity</span><span class="o">&gt;</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">sg</span><span class="p">)</span>
+</span><span id="__span-4-25"><a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a><span class="p">{</span>
+</span><span id="__span-4-26"><a id="__codelineno-4-26" name="__codelineno-4-26" href="#__codelineno-4-26"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">fluid_head</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="p">(</span><span class="n">h_water</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">sg</span><span class="p">);</span>
+</span><span id="__span-4-27"><a id="__codelineno-4-27" name="__codelineno-4-27" href="#__codelineno-4-27"></a><span class="p">}</span>
+</span><span id="__span-4-28"><a id="__codelineno-4-28" name="__codelineno-4-28" href="#__codelineno-4-28"></a>
+</span><span id="__span-4-29"><a id="__codelineno-4-29" name="__codelineno-4-29" href="#__codelineno-4-29"></a><span class="kt">int</span><span class="w"> </span><span class="n">main</span><span class="p">()</span>
+</span><span id="__span-4-30"><a id="__codelineno-4-30" name="__codelineno-4-30" href="#__codelineno-4-30"></a><span class="p">{</span>
+</span><span id="__span-4-31"><a id="__codelineno-4-31" name="__codelineno-4-31" href="#__codelineno-4-31"></a><span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">si</span><span class="o">::</span><span class="nn">unit_symbols</span><span class="p">;</span>
+</span><span id="__span-4-32"><a id="__codelineno-4-32" name="__codelineno-4-32" href="#__codelineno-4-32"></a>
+</span><span id="__span-4-33"><a id="__codelineno-4-33" name="__codelineno-4-33" href="#__codelineno-4-33"></a><span class="w">  </span><span class="c1">// Scenario: Chemical reactor with 2m mercury column (SG = 13.6)</span>
+</span><span id="__span-4-34"><a id="__codelineno-4-34" name="__codelineno-4-34" href="#__codelineno-4-34"></a><span class="w">  </span><span class="n">quantity</span><span class="w"> </span><span class="n">h_mercury</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fluid_head</span><span class="p">(</span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">);</span>
+</span><span id="__span-4-35"><a id="__codelineno-4-35" name="__codelineno-4-35" href="#__codelineno-4-35"></a><span class="w">  </span><span class="n">quantity</span><span class="w"> </span><span class="n">sg_mercury</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">specific_gravity</span><span class="p">(</span><span class="mf">13.6</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">one</span><span class="p">);</span>
+</span><span id="__span-4-36"><a id="__codelineno-4-36" name="__codelineno-4-36" href="#__codelineno-4-36"></a>
+</span><span id="__span-4-37"><a id="__codelineno-4-37" name="__codelineno-4-37" href="#__codelineno-4-37"></a><span class="w">  </span><span class="c1">// Pump rated for 10m water head</span>
+</span><span id="__span-4-38"><a id="__codelineno-4-38" name="__codelineno-4-38" href="#__codelineno-4-38"></a><span class="w">  </span><span class="n">quantity</span><span class="w"> </span><span class="n">h_pump_rating</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">water_head</span><span class="p">(</span><span class="mi">10</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">);</span>
+</span><span id="__span-4-39"><a id="__codelineno-4-39" name="__codelineno-4-39" href="#__codelineno-4-39"></a>
+</span><span id="__span-4-40"><a id="__codelineno-4-40" name="__codelineno-4-40" href="#__codelineno-4-40"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Pump System Design Analysis</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+</span><span id="__span-4-41"><a id="__codelineno-4-41" name="__codelineno-4-41" href="#__codelineno-4-41"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;============================</span><span class="se">\n\n</span><span class="s">&quot;</span><span class="p">;</span>
+</span><span id="__span-4-42"><a id="__codelineno-4-42" name="__codelineno-4-42" href="#__codelineno-4-42"></a>
+</span><span id="__span-4-43"><a id="__codelineno-4-43" name="__codelineno-4-43" href="#__codelineno-4-43"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Mercury column height: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">h_mercury</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+</span><span id="__span-4-44"><a id="__codelineno-4-44" name="__codelineno-4-44" href="#__codelineno-4-44"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Mercury specific gravity: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">sg_mercury</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+</span><span id="__span-4-45"><a id="__codelineno-4-45" name="__codelineno-4-45" href="#__codelineno-4-45"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Pump rating (water head): &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">h_pump_rating</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n\n</span><span class="s">&quot;</span><span class="p">;</span>
+</span><span id="__span-4-46"><a id="__codelineno-4-46" name="__codelineno-4-46" href="#__codelineno-4-46"></a>
+</span><span id="__span-4-47"><a id="__codelineno-4-47" name="__codelineno-4-47" href="#__codelineno-4-47"></a><span class="w">  </span><span class="c1">// Safety check: This would NOT compile!</span>
+</span><span id="__span-4-48"><a id="__codelineno-4-48" name="__codelineno-4-48" href="#__codelineno-4-48"></a><span class="w">  </span><span class="c1">// quantity wrong = h_mercury + h_pump_rating;  // Error: cannot mix kinds</span>
+</span><span id="__span-4-49"><a id="__codelineno-4-49" name="__codelineno-4-49" href="#__codelineno-4-49"></a>
+</span><span id="__span-4-50"><a id="__codelineno-4-50" name="__codelineno-4-50" href="#__codelineno-4-50"></a><span class="w">  </span><span class="c1">// Convert mercury fluid head to equivalent water head</span>
+</span><span id="__span-4-51"><a id="__codelineno-4-51" name="__codelineno-4-51" href="#__codelineno-4-51"></a><span class="w">  </span><span class="n">quantity</span><span class="w"> </span><span class="n">h_mercury_as_water</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">to_water_head</span><span class="p">(</span><span class="n">h_mercury</span><span class="p">,</span><span class="w"> </span><span class="n">sg_mercury</span><span class="p">);</span>
+</span><span id="__span-4-52"><a id="__codelineno-4-52" name="__codelineno-4-52" href="#__codelineno-4-52"></a>
+</span><span id="__span-4-53"><a id="__codelineno-4-53" name="__codelineno-4-53" href="#__codelineno-4-53"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Mercury equivalent (water head): &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">h_mercury_as_water</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n\n</span><span class="s">&quot;</span><span class="p">;</span>
+</span><span id="__span-4-54"><a id="__codelineno-4-54" name="__codelineno-4-54" href="#__codelineno-4-54"></a>
+</span><span id="__span-4-55"><a id="__codelineno-4-55" name="__codelineno-4-55" href="#__codelineno-4-55"></a><span class="w">  </span><span class="c1">// Verify pump capacity against system requirement</span>
+</span><span id="__span-4-56"><a id="__codelineno-4-56" name="__codelineno-4-56" href="#__codelineno-4-56"></a><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">h_mercury_as_water</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">h_pump_rating</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-4-57"><a id="__codelineno-4-57" name="__codelineno-4-57" href="#__codelineno-4-57"></a><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;WARNING: System requirement (&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">h_mercury_as_water</span>
+</span><span id="__span-4-58"><a id="__codelineno-4-58" name="__codelineno-4-58" href="#__codelineno-4-58"></a><span class="w">              </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;) exceeds pump rating (&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">h_pump_rating</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;)!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+</span><span id="__span-4-59"><a id="__codelineno-4-59" name="__codelineno-4-59" href="#__codelineno-4-59"></a><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Pump is UNDERSIZED for this application.</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+</span><span id="__span-4-60"><a id="__codelineno-4-60" name="__codelineno-4-60" href="#__codelineno-4-60"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-4-61"><a id="__codelineno-4-61" name="__codelineno-4-61" href="#__codelineno-4-61"></a><span class="w">  </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-4-62"><a id="__codelineno-4-62" name="__codelineno-4-62" href="#__codelineno-4-62"></a><span class="w">    </span><span class="n">quantity</span><span class="w"> </span><span class="n">excess_capacity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">h_pump_rating</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">h_mercury_as_water</span><span class="p">;</span>
+</span><span id="__span-4-63"><a id="__codelineno-4-63" name="__codelineno-4-63" href="#__codelineno-4-63"></a><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Pump capacity is adequate.</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+</span><span id="__span-4-64"><a id="__codelineno-4-64" name="__codelineno-4-64" href="#__codelineno-4-64"></a><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Excess capacity: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">excess_capacity</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+</span><span id="__span-4-65"><a id="__codelineno-4-65" name="__codelineno-4-65" href="#__codelineno-4-65"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-4-66"><a id="__codelineno-4-66" name="__codelineno-4-66" href="#__codelineno-4-66"></a>
+</span><span id="__span-4-67"><a id="__codelineno-4-67" name="__codelineno-4-67" href="#__codelineno-4-67"></a><span class="w">  </span><span class="c1">// Demonstrate reverse conversion</span>
+</span><span id="__span-4-68"><a id="__codelineno-4-68" name="__codelineno-4-68" href="#__codelineno-4-68"></a><span class="w">  </span><span class="n">quantity</span><span class="w"> </span><span class="n">h_back_to_fluid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">to_fluid_head</span><span class="p">(</span><span class="n">h_mercury_as_water</span><span class="p">,</span><span class="w"> </span><span class="n">sg_mercury</span><span class="p">);</span>
+</span><span id="__span-4-69"><a id="__codelineno-4-69" name="__codelineno-4-69" href="#__codelineno-4-69"></a><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n</span><span class="s">Verification - converted back: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">h_back_to_fluid</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+</span><span id="__span-4-70"><a id="__codelineno-4-70" name="__codelineno-4-70" href="#__codelineno-4-70"></a><span class="p">}</span>
 </span></code></pre></div>
-<p>The solution defines <code>kilogram_force</code> as <code>kg × standard_gravity</code>, embedding g₀ directly
-into the unit definition. This enables elegant compile-time optimization:</p>
+<p><strong>How the solution works:</strong></p>
+<p>By marking <code>fluid_head</code> and <code>water_head</code> with <code>is_kind</code>, we create distinct quantity types
+that cannot be mixed despite sharing the <code>length</code> dimension:</p>
 <ul>
 <li>
-<p><strong>For Engine 1 (thrust in kgf)</strong>: The <em>burn time</em> formula contains g₀ in the numerator,
-  while kgf contains g₀ in its denominator. These factors cancel perfectly at compile-time,
-  eliminating any runtime multiplication or division by 9.80665.</p>
+<p><strong>Compile-time prevention</strong>: Direct addition, comparison, or assignment between fluid head
+  and water head results in a compile error</p>
 </li>
 <li>
-<p><strong>For Engine 2 (thrust in N)</strong>: The g₀ factors don't cancel, but <strong>mp-units</strong> automatically
-  handles the conversion, applying g₀ exactly where needed without manual intervention.</p>
+<p><strong>Explicit conversion required</strong>: The <code>to_water_head</code> and <code>to_fluid_head</code> functions
+  perform the physics-based conversion through specific gravity, making the conversion
+  visible and intentional in the code</p>
+</li>
+<li>
+<p><strong>Type safety at boundaries</strong>: Functions accepting <code>QuantityOf&lt;fluid_head&gt;</code> or
+  <code>QuantityOf&lt;water_head&gt;</code> cannot accidentally receive the wrong type</p>
+</li>
+<li>
+<p><strong>Base quantity access</strong>: When needed, both can be converted to <code>isq::height</code> using
+  <code>isq::height(h)</code>, allowing generic height operations while preserving type safety
+  at domain boundaries</p>
 </li>
 </ul>
-<p>Both engines use identical code—the type system ensures correctness regardless of whether
-<em>thrust</em> is specified in legacy (kgf) or modern (N) units.</p>
+<p>This pattern is similar to how mp-units prevents mixing plane angles and solid angles—
+both dimensionless quantities that share the same dimension but represent fundamentally
+different physical concepts that cannot be meaningfully combined.</p>
 </details>
 <h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
 <ul>
-<li><a href="../../users_guide/framework_basics/faster_than_lightspeed_constants/">User's Guide: Faster-than-Lightspeed Constants</a></li>
+<li><a href="../../users_guide/framework_basics/systems_of_quantities/">User's Guide: Systems of Quantities</a></li>
+<li><a href="https://github.com/mpusz/mp-units/discussions/757">GitHub Discussion #757: Hydraulic Head</a></li>
 </ul>
 <h2 id="takeaways">Takeaways<a class="headerlink" href="#takeaways" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>Constants as units</strong>: Physical constants like g₀ become part of the type system rather
-  than runtime values</li>
-<li><strong>Automatic cancellation</strong>: When constants appear in both numerator and denominator,
-  they cancel at compile-time without manual intervention</li>
-<li><strong>Legacy unit support</strong>: kgf (kilogram-force) embeds g₀ in its definition, enabling
-  seamless calculations with historical engine specifications</li>
-<li><strong>Eliminates magic numbers</strong>: No more manual <code>9.80665</code> conversions scattered throughout
-  code</li>
-<li><strong>Perfect mathematical cancellation</strong>: The formula t = (m × Isp × g₀) / F simplifies
-  automatically when F is in kgf</li>
-<li><strong>Type safety</strong>: The type system prevents mixing kg and kgf incorrectly</li>
-<li><strong>Mixed unit support</strong>: Modern (N) and legacy (kgf) <em>thrust</em> specifications work
-  together in the same codebase</li>
-<li><strong>Historical significance</strong>: Prevents the type of unit confusion that caused real
-  mission failures (Mars Climate Orbiter)</li>
-<li><strong>Formula generality</strong>: The same <em>burn time</em> calculation works correctly regardless
-  of whether <em>thrust</em> is specified in kgf or N</li>
+<li><strong><code>is_kind</code> creates incompatible types</strong>: Even when quantities share the same dimension,
+  <code>is_kind</code> prevents mixing them without explicit conversion</li>
+<li><strong>Domain-specific safety</strong>: Hydraulic engineering's distinction between <em>energy</em> measurements
+  in different reference frames (<em>fluid head</em> vs <em>water head</em>) becomes a compile-time guarantee</li>
+<li><strong>Explicit conversions</strong>: Physics-based conversions (through <em>specific gravity</em>) are visible
+  and required in the code</li>
+<li><strong>Prevents subtle bugs</strong>: The classic mistake of treating 2 m of mercury as 2 m of water
+  becomes a compile error</li>
+<li><strong>Type system as documentation</strong>: The code itself documents that these are different
+  physical concepts requiring conversion</li>
+<li><strong>Similar to built-in protections</strong>: Just as <strong>mp-units</strong> prevents mixing radians and
+  steradians (<em>angular measure</em> vs <em>solid angular measure</em>), your domain can have custom
+  protections</li>
+<li><strong>Explicit base conversion when needed</strong>: Both can convert to generic <code>isq::height</code> using
+  <code>isq::height(h)</code> for algorithms that work on any <em>length</em>—but this requires an explicit
+  conversion call; implicit conversion will fail to compile, preserving type safety at
+  domain boundaries</li>
+<li><strong>Real-world safety</strong>: Equipment undersizing due to <em>head</em> calculation errors can be
+  catastrophic in chemical plants—type safety prevents this</li>
+<li><strong>Pattern for other domains</strong>: This technique applies anywhere quantities share dimensions
+  but represent incompatible concepts—particularly <em>energy</em> or <em>power</em> measurements in
+  different reference frames (e.g., <em>gauge</em> vs <em>absolute pressure</em>, <em>RMS</em> vs <em>peak voltage</em>,
+  <em>true</em> vs <em>apparent power</em>)</li>
 </ul>
 
 
@@ -4050,13 +4127,13 @@ into the unit definition. This enables elegant compile-time optimization:</p>
         
         
           
-          <a href="../../examples/" class="md-footer__link md-footer__link--next" aria-label="Next: Examples">
+          <a href="../tutorial_12/" class="md-footer__link md-footer__link--next" aria-label="Next: Tutorial 12: Faster-than-Lightspeed Constants">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Examples
+                Tutorial 12: Faster-than-Lightspeed Constants
               </div>
             </div>
             <div class="md-footer__button md-icon">

@@ -2261,6 +2261,8 @@ You're not viewing the latest version.
       
         
       
+        
+      
     
     
     
@@ -2607,7 +2609,35 @@ You're not viewing the latest version.
   <span class="md-ellipsis">
     
   
-    Tutorial 11: Faster-than-Lightspeed Constants
+    Tutorial 11: Preventing Confusion with Distinct Kinds
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorials/tutorial_12/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial 12: Faster-than-Lightspeed Constants
   
 
     
@@ -3997,8 +4027,12 @@ one <a href="../../../appendix/glossary/#kind">quantity kind</a> and more than o
     dimensionless --- drag_factor["&lt;b&gt;drag_factor&lt;/b&gt;&lt;br&gt;&lt;i&gt;(drag_force / (mass_density * pow&lt;2&gt;(speed) * area))&lt;/i&gt;"]
     dimensionless --- storage_capacity["&lt;b&gt;storage_capacity&lt;/b&gt;&lt;br&gt;[bit]"] --- equivalent_binary_storage_capacity["&lt;b&gt;equivalent_binary_storage_capacity&lt;/b&gt;"]
     dimensionless --- ...</code></pre>
-<p>To provide such support in the library, we provided an <code>is_kind</code> specifier that can be
-appended to the quantity specification:</p>
+<p>To provide such support in the library, we use the <code>is_kind</code> specifier in the quantity
+specification. This feature is not limited to dimensionless quantities—it can be used
+with any dimension to create distinct quantity kinds. For a comprehensive explanation
+of <code>is_kind</code> and how to use it with dimensional quantities, see
+<a href="../systems_of_quantities/#creating-distinct-quantity-kinds-with-is_kind">Creating distinct quantity kinds with <code>is_kind</code></a>.</p>
+<p>For dimensionless quantities specifically, the <code>is_kind</code> specifier is applied as follows:</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:3"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">C++23</label><label for="__tabbed_1_2">C++20</label><label for="__tabbed_1_3">Portable</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
