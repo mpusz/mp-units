@@ -4220,14 +4220,14 @@ dimension and quantity hierarchy tree.</p>
 <p>Use <code>is_kind</code> to create <strong>distinct subkinds within an existing quantity hierarchy</strong> when:</p>
 <ol>
 <li><strong>Multiple incompatible concepts</strong> need to share the <strong>same parent quantity's properties</strong>
-   (unit or dimension)</li>
+   (unit or quantity type)</li>
 <li>These concepts <strong>cannot be meaningfully added or compared</strong> to each other without explicit
    conversion</li>
 <li>They represent <strong>different reference frames</strong> or measurement contexts, but derive from
    the same physical basis</li>
 </ol>
 <p>The key insight: use <code>is_kind</code> when quantities need to <strong>inherit</strong> from a parent
-(dimension, unit) but must be <strong>isolated</strong> from each other.</p>
+(quantity type, unit) but must be <strong>isolated</strong> from each other.</p>
 <p>Common examples of subkinds within existing trees include:</p>
 <ul>
 <li><em>Angular measure</em> (rad), <em>solid angular measure</em> (sr), <em>storage capacity</em> (bit) —
@@ -4243,9 +4243,10 @@ not independent trees. This allows the subkind to <strong>inherit properties</st
 <ul>
 <li><strong>Unit of measure</strong>: <em>fluid head</em> and <em>water head</em> inherit metre from <em>height</em>;
   <em>angular measure</em> inherits one from <em>dimensionless</em></li>
-<li><strong>Physical dimension</strong>: Subkinds inherit their parent's dimension, which is crucial when
-  they appear in derived quantities (e.g., <em>sampling rate</em>, <em>tempo</em> can use Hz because
-  they properly model the dimensionless component divided by <em>duration</em>)</li>
+<li><strong>Quantity type</strong>: Subkinds inherit their parent's quantity type, which is crucial
+  when they appear in derived quantities involving this quantity (e.g., <em>sampling rate</em>,
+  <em>tempo</em> can use Hz because they properly model the dimensionless component divided
+  by <em>duration</em>)</li>
 </ul>
 <p>For quantities that should be completely independent (different dimension trees),
 define separate root quantities instead (e.g., <em>frequency</em> and <em>activity</em> are
