@@ -445,3 +445,204 @@ static_assert(same_type<kind_of<isq::length> / isq::duration, isq::length / isq:
     ```cpp
     static_assert(get_kind(isq::width) == kind_of<isq::length>);
     ```
+
+
+## Creating distinct quantity kinds with `is_kind`
+
+While dimension-based type safety prevents many errors, sometimes quantities share the same
+dimension but represent fundamentally incompatible physical concepts. The `is_kind` specifier
+allows creating distinct quantity types that cannot be mixed even though they share the same
+dimension and quantity hierarchy tree.
+
+
+### When to use `is_kind`?
+
+Use `is_kind` to create **distinct subkinds within an existing quantity hierarchy** when:
+
+1. **Multiple incompatible concepts** need to share the **same parent quantity's properties**
+   (unit or dimension)
+2. These concepts **cannot be meaningfully added or compared** to each other without explicit
+   conversion
+3. They represent **different reference frames** or measurement contexts, but derive from
+   the same physical basis
+
+The key insight: use `is_kind` when quantities need to **inherit** from a parent
+(dimension, unit) but must be **isolated** from each other.
+
+Common examples of subkinds within existing trees include:
+
+- _Angular measure_ (rad), _solid angular measure_ (sr), _storage capacity_ (bit) —
+  subkind of _dimensionless_
+- _Fluid head_ and _water head_ in hydraulic engineering — subkinds of _height_
+  (dimension of _length_)
+
+
+### Defining a distinct kind
+
+!!! important
+
+    The `is_kind` specifier creates **subkinds within an existing quantity hierarchy tree**,
+    not independent trees. This allows the subkind to **inherit properties** from its parent:
+
+    - **Unit of measure**: _fluid head_ and _water head_ inherit metre from _height_;
+      _angular measure_ inherits one from _dimensionless_
+    - **Physical dimension**: Subkinds inherit their parent's dimension, which is crucial when
+      they appear in derived quantities (e.g., _sampling rate_, _tempo_ can use Hz because
+      they properly model the dimensionless component divided by _duration_)
+
+    For quantities that should be completely independent (different dimension trees),
+    define separate root quantities instead (e.g., _frequency_ and _activity_ are
+    independent roots, not subkinds).
+
+To create a distinct quantity kind as a subkind, add the `is_kind` specifier to the
+`quantity_spec` definition:
+
+=== "C++23"
+
+    ```cpp
+    inline constexpr struct fluid_head final : quantity_spec<isq::height, is_kind> {} fluid_head;
+    inline constexpr struct water_head final : quantity_spec<isq::height, is_kind> {} water_head;
+    // Both inherit metre as unit and length as dimension from isq::height
+    ```
+
+=== "C++20"
+
+    ```cpp
+    inline constexpr struct fluid_head final : quantity_spec<fluid_head, isq::height, is_kind> {} fluid_head;
+    inline constexpr struct water_head final : quantity_spec<water_head, isq::height, is_kind> {} water_head;
+    // Both inherit metre as unit and length as dimension from isq::height
+    ```
+
+=== "Portable"
+
+    ```cpp
+    QUANTITY_SPEC(fluid_head, isq::height, is_kind);
+    QUANTITY_SPEC(water_head, isq::height, is_kind);
+    // Both inherit metre as unit and length as dimension from isq::height
+    ```
+
+Both `fluid_head` and `water_head` are subkinds of _height_ (inheriting its dimension of _length_
+and unit of metre), but marking them with `is_kind` makes them distinct incompatible kinds that
+require explicit conversion.
+
+
+### Behavior of `is_kind` quantities
+
+Quantities marked with `is_kind` behave differently from regular hierarchy members:
+
+1. **Cannot be implicitly converted to each other**:
+
+    ```cpp
+    static_assert(!implicitly_convertible(fluid_head, water_head));
+    static_assert(!explicitly_convertible(fluid_head, water_head));
+    static_assert(!castable(fluid_head, water_head));
+    ```
+
+2. **Cannot be added or compared directly**:
+
+    ```cpp
+    quantity h_fluid = fluid_head(2 * m);
+    quantity h_water = water_head(10 * m);
+    
+    // auto sum = h_fluid + h_water;  // Compile-time error!
+    // bool cmp = h_fluid < h_water;  // Compile-time error!
+    ```
+
+3. **Require explicit conversion to base quantity**:
+
+    To perform generic operations or conversions between kinds, explicit conversion to the
+    base quantity is required:
+
+    ```cpp
+    // Convert to base quantity explicitly
+    quantity h1 = isq::height(h_fluid);  // explicit conversion required
+    quantity h2 = isq::height(h_water);  // explicit conversion required
+    
+    // Now generic operations are possible
+    auto sum = h1 + h2;  // OK: both are isq::height
+    ```
+
+    !!! warning
+
+        Implicit conversion from `is_kind` quantities to their base is **not allowed**:
+
+        ```cpp
+        quantity<isq::height[m]> h = h_fluid;  // Compile-time error!
+        ```
+
+4. **Can be used with `kind_of`**:
+
+    Unlike regular hierarchy members, `is_kind` quantities can be used with `kind_of`:
+
+    ```cpp
+    static_assert(get_kind(fluid_head) == kind_of<fluid_head>);
+    static_assert(get_kind(water_head) == kind_of<water_head>);
+    static_assert(get_kind(isq::height) == kind_of<isq::length>);
+    // static_assert(get_kind(isq::height) == kind_of<isq::height>);  // Compile-time error!
+
+    // Both are kinds of height, but different kinds
+    static_assert(get_kind(fluid_head) != get_kind(water_head));
+    static_assert(get_kind(fluid_head) != get_kind(isq::height));
+    ```
+
+
+### Implementing physics-based conversions
+
+When quantities are distinct kinds, domain-specific conversion functions should be provided
+to perform the correct physics-based transformations (if applicable):
+
+```cpp
+// Define specific gravity as dimensionless
+inline constexpr struct specific_gravity final : quantity_spec<dimensionless> {} specific_gravity;
+
+// Physics: H_water = H_fluid * SG
+constexpr QuantityOf<water_head> auto to_water_head(QuantityOf<fluid_head> auto h_fluid,
+                                                    QuantityOf<specific_gravity> auto sg)
+{
+  return water_head(isq::height(h_fluid) * sg);
+}
+
+// Physics: H_fluid = H_water / SG  
+constexpr QuantityOf<fluid_head> auto to_fluid_head(QuantityOf<water_head> auto h_water,
+                                                    QuantityOf<specific_gravity> auto sg)
+{
+  return fluid_head(isq::height(h_water) / sg);
+}
+```
+
+This pattern:
+
+- **Makes conversions explicit and visible** in the code
+- **Encodes the physics** (specific gravity conversion formula)
+- **Provides type-safe boundaries** via `QuantityOf` constraints
+- **Documents the relationship** between different quantity kinds
+
+
+### Guidelines for using `is_kind`
+
+**Use `is_kind` when:**
+
+- Quantities share a parent but have **fundamentally different physical meanings**
+- Adding or comparing them **is physically nonsensical** (e.g., _plane angles_ + _solid angles_,
+  _fluid head_ + _water head_)
+- You need **compile-time prevention** of a known category of errors
+- Conversions between kinds either don't exist (_plane_ vs _solid angles_) or require
+  domain-specific formulas (_fluid head_ ↔ _water head_ via _specific gravity_)
+
+**Don't use `is_kind` when:**
+
+- Quantities are naturally part of the same hierarchy (use regular `quantity_spec` hierarchy)
+- Conversions are just unit changes (use regular unit conversions)
+- The distinction is purely semantic without different physics (document in comments instead)
+
+!!! tip
+
+    For a complete practical example demonstrating how `is_kind` prevents catastrophic
+    engineering errors in hydraulic systems, see
+    [Tutorial 11: Preventing Confusion with Distinct Kinds](../../tutorials/tutorial_11.md).
+
+!!! note
+
+    Special dimensionless quantity kinds like _angular measure_, _solid angular measure_,
+    and _storage capacity_ are discussed in detail in the
+    [Dimensionless Quantities](dimensionless_quantities.md#nested-quantity-kinds) chapter.
