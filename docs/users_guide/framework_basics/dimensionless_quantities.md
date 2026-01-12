@@ -282,8 +282,13 @@ flowchart TD
     dimensionless --- ...
 ```
 
-To provide such support in the library, we provided an `is_kind` specifier that can be
-appended to the quantity specification:
+To provide such support in the library, we use the `is_kind` specifier in the quantity
+specification. This feature is not limited to dimensionless quantities—it can be used
+with any dimension to create distinct quantity kinds. For a comprehensive explanation
+of `is_kind` and how to use it with dimensional quantities, see
+[Creating distinct quantity kinds with `is_kind`](systems_of_quantities.md#creating-distinct-quantity-kinds-with-is_kind).
+
+For dimensionless quantities specifically, the `is_kind` specifier is applied as follows:
 
 === "C++23"
 
