@@ -460,14 +460,14 @@ dimension and quantity hierarchy tree.
 Use `is_kind` to create **distinct subkinds within an existing quantity hierarchy** when:
 
 1. **Multiple incompatible concepts** need to share the **same parent quantity's properties**
-   (unit or dimension)
+   (unit or quantity type)
 2. These concepts **cannot be meaningfully added or compared** to each other without explicit
    conversion
 3. They represent **different reference frames** or measurement contexts, but derive from
    the same physical basis
 
 The key insight: use `is_kind` when quantities need to **inherit** from a parent
-(dimension, unit) but must be **isolated** from each other.
+(quantity type, unit) but must be **isolated** from each other.
 
 Common examples of subkinds within existing trees include:
 
@@ -486,9 +486,10 @@ Common examples of subkinds within existing trees include:
 
     - **Unit of measure**: _fluid head_ and _water head_ inherit metre from _height_;
       _angular measure_ inherits one from _dimensionless_
-    - **Physical dimension**: Subkinds inherit their parent's dimension, which is crucial when
-      they appear in derived quantities (e.g., _sampling rate_, _tempo_ can use Hz because
-      they properly model the dimensionless component divided by _duration_)
+    - **Quantity type**: Subkinds inherit their parent's quantity type, which is crucial
+      when they appear in derived quantities involving this quantity (e.g., _sampling rate_,
+      _tempo_ can use Hz because they properly model the dimensionless component divided
+      by _duration_)
 
     For quantities that should be completely independent (different dimension trees),
     define separate root quantities instead (e.g., _frequency_ and _activity_ are
