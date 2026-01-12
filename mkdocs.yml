@@ -188,6 +188,7 @@ nav:
       - "Tutorial 9: Custom Quantity Specifications": tutorials/tutorial_9.md
       - "Tutorial 10: Custom Base Dimensions": tutorials/tutorial_10.md
       - "Tutorial 11: Faster-than-Lightspeed Constants": tutorials/tutorial_11.md
+      - "Tutorial 12: Preventing Confusion with Distinct Kinds": tutorials/tutorial_12.md
   - Examples:
       - Examples: examples/index.md
       - Beginner:
