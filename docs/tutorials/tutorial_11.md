@@ -61,7 +61,7 @@ Here's how different approaches handle (or fail to handle) this scenario:
 
     // Correct calculation requires manual tracking:
     double h_mercury_as_water = h_mercury_m * sg_mercury;  // 27.2 m
-    
+
     // Compare system requirement vs pump capacity
     if (h_mercury_as_water > h_pump_rating_m) {
       std::cout << "Pump is undersized!\n";  // This will trigger!
@@ -72,27 +72,27 @@ Here's how different approaches handle (or fail to handle) this scenario:
 
     ```cpp
     #include <boost/units/systems/si.hpp>
-    
+
     using namespace boost::units;
     using namespace boost::units::si;
-    
+
     quantity<length> h_mercury = 2.0 * meters;
     quantity<length> h_pump_rating = 10.0 * meters;
     double sg_mercury = 13.6;
-    
+
     // Direct addition - compiles but physically wrong!
     quantity<length> total_head = h_mercury + h_pump_rating;  // WRONG!
     // Both are lengths, so Boost.Units allows this
-    
+
     // Correct calculation still requires manual tracking:
     quantity<length> h_mercury_as_water = h_mercury * sg_mercury;
-    
+
     // Compare system requirement vs pump capacity
     if (h_mercury_as_water > h_pump_rating) {
       std::cout << "Pump is undersized!\n";  // This will trigger!
     }
     ```
-    
+
     **Problem**: Boost.Units checks dimensional compatibility (both are lengths), but cannot
     distinguish between physically incompatible types of length.
 
@@ -101,23 +101,23 @@ Here's how different approaches handle (or fail to handle) this scenario:
     ```python
     import pint
     ureg = pint.UnitRegistry()
-    
+
     h_mercury = 2.0 * ureg.meter
     h_pump_rating = 10.0 * ureg.meter
     sg_mercury = 13.6
-    
+
     # Direct addition - works but physically wrong!
     total_head = h_mercury + h_pump_rating  # WRONG!
     # Both have dimension [length], so Pint allows this
-    
+
     # Correct calculation still requires manual tracking:
     h_mercury_as_water = h_mercury * sg_mercury
-    
+
     # Compare system requirement vs pump capacity
     if h_mercury_as_water > h_pump_rating:
         print("Pump is undersized!")  # This will trigger!
     ```
-    
+
     **Problem**: Pint prevents dimensional errors but cannot distinguish between different
     physical meanings of the same dimension.
 
@@ -215,12 +215,12 @@ int main()
 
   // Convert mercury fluid head to equivalent water head
   quantity h_mercury_as_water = to_water_head(h_mercury, sg_mercury);
-  
+
   std::cout << "Mercury equivalent (water head): " << h_mercury_as_water << "\n\n";
 
   // Verify pump capacity against system requirement
   if (h_mercury_as_water > h_pump_rating) {
-    std::cout << "WARNING: System requirement (" << h_mercury_as_water 
+    std::cout << "WARNING: System requirement (" << h_mercury_as_water
               << ") exceeds pump rating (" << h_pump_rating << ")!\n";
     std::cout << "Pump is UNDERSIZED for this application.\n";
   }
@@ -253,7 +253,7 @@ int main()
 
     // 3. Define Conversion Helpers
     // Formula: H_water = H_fluid * SG
-    constexpr QuantityOf<water_head> auto to_water_head(QuantityOf<fluid_head> auto h_fluid, 
+    constexpr QuantityOf<water_head> auto to_water_head(QuantityOf<fluid_head> auto h_fluid,
                                                         QuantityOf<specific_gravity> auto sg)
     {
       // We explicitly cast the result to water_head because we know the physics is correct
@@ -261,7 +261,7 @@ int main()
     }
 
     // Formula: H_fluid = H_water / SG
-    constexpr QuantityOf<fluid_head> auto to_fluid_head(QuantityOf<water_head> auto h_water, 
+    constexpr QuantityOf<fluid_head> auto to_fluid_head(QuantityOf<water_head> auto h_water,
                                                         QuantityOf<specific_gravity> auto sg)
     {
       return fluid_head(isq::height(h_water) / sg);
@@ -290,12 +290,12 @@ int main()
 
       // Convert mercury fluid head to equivalent water head
       quantity h_mercury_as_water = to_water_head(h_mercury, sg_mercury);
-      
+
       std::cout << "Mercury equivalent (water head): " << h_mercury_as_water << "\n\n";
 
       // Verify pump capacity against system requirement
       if (h_mercury_as_water > h_pump_rating) {
-        std::cout << "WARNING: System requirement (" << h_mercury_as_water 
+        std::cout << "WARNING: System requirement (" << h_mercury_as_water
                   << ") exceeds pump rating (" << h_pump_rating << ")!\n";
         std::cout << "Pump is UNDERSIZED for this application.\n";
       }
@@ -318,14 +318,14 @@ int main()
 
     - **Compile-time prevention**: Direct addition, comparison, or assignment between fluid head
       and water head results in a compile error
-    
+
     - **Explicit conversion required**: The `to_water_head` and `to_fluid_head` functions
       perform the physics-based conversion through specific gravity, making the conversion
       visible and intentional in the code
-    
+
     - **Type safety at boundaries**: Functions accepting `QuantityOf<fluid_head>` or
       `QuantityOf<water_head>` cannot accidentally receive the wrong type
-    
+
     - **Base quantity access**: When needed, both can be converted to `isq::height` using
       `isq::height(h)`, allowing generic height operations while preserving type safety
       at domain boundaries

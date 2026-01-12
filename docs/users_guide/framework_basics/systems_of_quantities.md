@@ -543,7 +543,7 @@ Quantities marked with `is_kind` behave differently from regular hierarchy membe
     ```cpp
     quantity h_fluid = fluid_head(2 * m);
     quantity h_water = water_head(10 * m);
-    
+
     // auto sum = h_fluid + h_water;  // Compile-time error!
     // bool cmp = h_fluid < h_water;  // Compile-time error!
     ```
@@ -557,7 +557,7 @@ Quantities marked with `is_kind` behave differently from regular hierarchy membe
     // Convert to base quantity explicitly
     quantity h1 = isq::height(h_fluid);  // explicit conversion required
     quantity h2 = isq::height(h_water);  // explicit conversion required
-    
+
     // Now generic operations are possible
     auto sum = h1 + h2;  // OK: both are isq::height
     ```
@@ -602,7 +602,7 @@ constexpr QuantityOf<water_head> auto to_water_head(QuantityOf<fluid_head> auto 
   return water_head(isq::height(h_fluid) * sg);
 }
 
-// Physics: H_fluid = H_water / SG  
+// Physics: H_fluid = H_water / SG
 constexpr QuantityOf<fluid_head> auto to_fluid_head(QuantityOf<water_head> auto h_water,
                                                     QuantityOf<specific_gravity> auto sg)
 {
