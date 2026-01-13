@@ -456,6 +456,50 @@ quantity z = impedance * si::ohm;  // Complex impedance
 
     The range validation happens at construction time, ensuring coordinates are always valid.
 
+??? example "Vector Representation"
+
+    The library provides [`cartesian_vector`](https://github.com/mpusz/mp-units/blob/1511c73d362649cca90191cdcfd3b369058c1dc1/src/core/include/mp-units/cartesian_vector.h)
+    as a vector representation type with full support for vector operations:
+
+    ```cpp
+    #include <mp-units/cartesian_vector.h>
+    #include <mp-units/systems/si.h>
+    #include <mp-units/systems/isq.h>
+
+    using namespace mp_units;
+    using namespace mp_units::si::unit_symbols;
+
+    void example()
+    {
+      // Create 3D vector quantities
+      quantity_point pos1{cartesian_vector{1., 2., 3.} * m};
+      quantity_point pos2{cartesian_vector{4., 5., 6.} * m};
+
+      // Vector subtraction
+      quantity delta = pos2 - pos1;  // {3, 3, 3} m
+
+      // Scalar multiplication
+      quantity delta_scaled = 2 * delta;  // {6, 6, 6} m
+
+      // Magnitude (returns scalar quantity)
+      quantity distance = pos1.quantity_from_zero();
+      quantity mag = magnitude(distance);  // sqrt(1² + 2² + 3²) m
+
+      // Scalar product (dot product)
+      auto dot = scalar_product(pos1, pos2);  // Returns quantity with dimension m²
+
+      // Vector product (cross product)
+      auto cross = vector_product(pos1, pos2);  // Returns vector quantity with dimension m²
+    }
+    ```
+
+    The `cartesian_vector` implementation demonstrates how to create a full-featured vector type:
+
+    - Implements arithmetic operations (`+`, `-`, `*`, `/`)
+    - Provides `magnitude()` member function
+    - Supports scalar and vector products
+    - Works with quantity characters to distinguish between scalars and vectors
+
 ??? example "Creating Your Own Representation Type"
 
     To create a custom representation type, follow these steps:
