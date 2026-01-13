@@ -177,18 +177,18 @@ nav:
   - API Reference: api_reference.md
   - Tutorials:
       - Tutorials: tutorials/index.md
-      - "Tutorial 1: Refactor to Strong Types": tutorials/tutorial_1.md
-      - "Tutorial 2: Refactor to Generic, Type-Safe Interfaces": tutorials/tutorial_2.md
-      - "Tutorial 3: Extracting Numeric Values": tutorials/tutorial_3.md
-      - "Tutorial 4: Working with Temperatures": tutorials/tutorial_4.md
-      - "Tutorial 5: Affine Spaces and Reference Origins": tutorials/tutorial_5.md
-      - "Tutorial 6: Interop with std::chrono": tutorials/tutorial_6.md
-      - "Tutorial 7: Custom Units for Dimensionless Counters": tutorials/tutorial_7.md
-      - "Tutorial 8: Typed Quantities of the Same Kind": tutorials/tutorial_8.md
-      - "Tutorial 9: Custom Quantity Specifications": tutorials/tutorial_9.md
-      - "Tutorial 10: Custom Base Dimensions": tutorials/tutorial_10.md
-      - "Tutorial 11: Preventing Confusion with Distinct Kinds": tutorials/tutorial_11.md
-      - "Tutorial 12: Faster-than-Lightspeed Constants": tutorials/tutorial_12.md
+      - "Tutorial 1: Refactor to Strong Types": tutorials/refactor_to_strong_types.md
+      - "Tutorial 2: Refactor to Generic, Type-Safe Interfaces": tutorials/generic_type_safe_interfaces.md
+      - "Tutorial 3: Extracting Numeric Values": tutorials/extracting_numeric_values.md
+      - "Tutorial 4: Working with Temperatures": tutorials/working_with_temperatures.md
+      - "Tutorial 5: Affine Spaces and Reference Origins": tutorials/affine_spaces.md
+      - "Tutorial 6: Interop with std::chrono": tutorials/interop_with_std_chrono.md
+      - "Tutorial 7: Custom Units for Dimensionless Counters": tutorials/custom_dimensionless_units.md
+      - "Tutorial 8: Typed Quantities of the Same Kind": tutorials/typed_quantities_same_kind.md
+      - "Tutorial 9: Custom Quantity Specifications": tutorials/custom_quantity_specifications.md
+      - "Tutorial 10: Custom Base Dimensions": tutorials/custom_base_dimensions.md
+      - "Tutorial 11: Preventing Confusion with Distinct Kinds": tutorials/distinct_quantity_kinds.md
+      - "Tutorial 12: Faster-than-Lightspeed Constants": tutorials/faster_than_lightspeed_constants.md
   - Examples:
       - Examples: examples/index.md
       - Beginner:

@@ -1,6 +1,6 @@
 # Tutorial 10: Custom Base Dimensions
 
-[Tutorial 7](tutorial_7.md) showed how to create strongly-typed dimensionless quantities
+[Tutorial 7](custom_dimensionless_units.md) showed how to create strongly-typed dimensionless quantities
 using custom units with `kind_of<dimensionless>` but no conversion factors between
 unrelated types. This approach works well for small-scale systems, but as complexity grows,
 custom base dimensions provide better separation and scalability.
@@ -12,7 +12,7 @@ separate dimensions become necessary in large systems.
 
 ## Problem statement
 
-In [Tutorial 7](tutorial_7.md), we created dimensionless units for `unit`, `carton`,
+In [Tutorial 7](custom_dimensionless_units.md), we created dimensionless units for `unit`, `carton`,
 and `truck`. These had no conversion factors between unrelated types, preventing mixing:
 
 ```cpp
@@ -286,7 +286,7 @@ int main()
 
 - [User's Guide: Systems of Quantities](../users_guide/framework_basics/systems_of_quantities.md)
 - [User's Guide: Systems of Units](../users_guide/framework_basics/systems_of_units.md)
-- [Tutorial 7: Custom Units for Dimensionless Counters](tutorial_7.md)
+- [Tutorial 7: Custom Units for Dimensionless Counters](custom_dimensionless_units.md)
 - [Examples: Currency](../examples/currency.md)
 
 
@@ -298,7 +298,7 @@ int main()
   allows mixing all countable quantities, losing type safety in complex systems
 - **Progression of approaches**:
     - `dimensionless`: Simple, single-counter scenarios (loop iterations)
-    - Custom units ([Tutorial 7](tutorial_7.md)): Unrelated dimensionless types (product units
+    - Custom units ([Tutorial 7](custom_dimensionless_units.md)): Unrelated dimensionless types (product units
       vs trucks)
     - Custom dimensions (this tutorial): Fundamentally different domains requiring separate
       dimensions (_currencies_, _product counts_ vs _defect counts_)

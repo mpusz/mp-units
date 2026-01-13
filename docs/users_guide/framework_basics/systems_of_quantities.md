@@ -640,7 +640,7 @@ This pattern:
 
     For a complete practical example demonstrating how `is_kind` prevents catastrophic
     engineering errors in hydraulic systems, see
-    [Tutorial 11: Preventing Confusion with Distinct Kinds](../../tutorials/tutorial_11.md).
+    [Tutorial 11: Preventing Confusion with Distinct Kinds](../../tutorials/distinct_quantity_kinds.md).
 
 !!! note
 
