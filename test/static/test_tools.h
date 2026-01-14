@@ -27,7 +27,6 @@
 #ifdef MP_UNITS_IMPORT_STD
 import std;
 #else
-#include <cmath>
 #include <limits>
 #include <type_traits>
 #endif
