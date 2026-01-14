@@ -1,7 +1,7 @@
 ---
 tags:
 - Level - Beginner
-- System - International System
+- System - Yard-Pound System
 - Feature - Text Formatting
 - Feature - Quantity Concepts
 - Feature - Unit Conversions
@@ -10,7 +10,7 @@ tags:
 
 # Introduction to Quantities and Units
 
-[Try it live on Compiler Explorer](https://godbolt.org/z/qzrb3n7bd){ .md-button }
+[Try it live on Compiler Explorer](https://godbolt.org/z/9aoMcxb3o){ .md-button }
 
 ## Overview
 
@@ -34,7 +34,7 @@ First, we either import the `mp_units` module or include the headers for:
 
 - an International System of Quantities (ISQ),
 - an International System of Units (SI),
-- units derived from the International Yard and Pound,
+- units derived from the Yard and Pound (1959 international agreement),
 - text formatting and stream output support.
 
 ```cpp title="hello_units.cpp" linenums="1"

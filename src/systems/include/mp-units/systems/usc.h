@@ -25,7 +25,7 @@
 #include <mp-units/bits/module_macros.h>
 
 // IWYU pragma: begin_exports
-#include <mp-units/systems/international.h>
+#include <mp-units/systems/yard_pound.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <mp-units/framework.h>
@@ -35,7 +35,7 @@
 MP_UNITS_EXPORT
 namespace mp_units::usc {
 
-using namespace international;
+using namespace yard_pound;
 
 // clang-format off
 
@@ -136,7 +136,7 @@ inline constexpr struct degree_Fahrenheit final : named_unit<symbol_text{u8"℉"
 
 namespace unit_symbols {
 
-using namespace international::unit_symbols;
+using namespace yard_pound::unit_symbols;
 
 inline constexpr auto ftm = fathom;
 inline constexpr auto cb = cable;

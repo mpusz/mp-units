@@ -96,5 +96,5 @@ The choice of system depends on your application domain and requirements:
 - Use **Natural Units** for particle physics and cosmology calculations
 - Use **CGS** when interfacing with legacy physics code or specific scientific domains where
   it's standard
-- Use **International** or **USC** when required by industry standards or regulations
+- Use **Imperial** or **USC** when required by industry standards or regulations
   (e.g., aviation, construction in certain countries)

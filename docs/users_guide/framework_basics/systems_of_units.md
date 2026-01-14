@@ -373,7 +373,7 @@ multiple of another. In such cases, the library returns a special type that deno
 we are dealing with a common unit of such an equation:
 
 ```cpp
-quantity q1 = 1 * km + 1 * mi;     // quantity<common_unit<international::mile, si::kilo_<si::metre>>{}, int>
+quantity q1 = 1 * km + 1 * mi;     // quantity<common_unit<yard_pound::mile, si::kilo_<si::metre>>{}, int>
 quantity q2 = 1. * rad + 1. * deg; // quantity<common_unit<si::degree, si::radian>{}, double>
 ```
 

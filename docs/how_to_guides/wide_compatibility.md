@@ -56,9 +56,9 @@ write your code using **mp-units**:
 === "C++20 with header files"
 
     ```cpp
-    #include <mp-units/systems/international.h>
     #include <mp-units/systems/isq.h>
     #include <mp-units/systems/si.h>
+    #include <mp-units/systems/yard_pound.h>
     #include <format>
     #include <iostream>
 
@@ -74,9 +74,9 @@ write your code using **mp-units**:
 === "C++20 with header files + libfmt"
 
     ```cpp
-    #include <mp-units/systems/international.h>
     #include <mp-units/systems/isq.h>
     #include <mp-units/systems/si.h>
+    #include <mp-units/systems/yard_pound.h>
     #include <fmt/format.h>
     #include <iostream>
 
@@ -98,9 +98,9 @@ write your code using **mp-units**:
     #include <mp-units/compat_macros.h>
     import mp_units;
     #else
-    #include <mp-units/systems/international.h>
     #include <mp-units/systems/isq.h>
     #include <mp-units/systems/si.h>
+    #include <mp-units/systems/yard_pound.h>
     #endif
 
     // ...

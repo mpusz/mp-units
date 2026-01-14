@@ -130,12 +130,11 @@ The systems definitions can be found in the `mp-units/systems/...` subdirectory:
 - `mp-units/systems/angular.h` provides
   [strong angular units](../users_guide/systems/strong_angular_system.md) and associated
   math functions,
-- `mp-units/systems/international.h` provides
-  [international yard and pound](https://en.wikipedia.org/wiki/International_yard_and_pound)
-  units,
-- `mp-units/systems/imperial.h` includes `international.h` and extends it with
-  [imperial units](https://en.wikipedia.org/wiki/Imperial_units),
-- `mp-units/systems/usc.h` includes `international.h` and extends it with
+- `mp-units/systems/yard_pound.h` provides base units from the
+  [1959 international yard and pound agreement](https://en.wikipedia.org/wiki/International_yard_and_pound),
+- `mp-units/systems/imperial.h` includes `yard_pound.h` and extends it with
+  [British Imperial units](https://en.wikipedia.org/wiki/Imperial_units),
+- `mp-units/systems/usc.h` includes `yard_pound.h` and extends it with
   [United States customary system of units](https://en.wikipedia.org/wiki/United_States_customary_units),
 - `mp-units/systems/cgs.h` provides
   [centimetre-gram-second system of units](https://en.wikipedia.org/wiki/Centimetre%E2%80%93gram%E2%80%93second_system_of_units),

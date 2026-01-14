@@ -36,9 +36,9 @@ import std;
 import mp_units;
 #else
 #include <mp-units/bits/fmt.h>
-#include <mp-units/systems/international.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si.h>
+#include <mp-units/systems/yard_pound.h>
 #endif
 
 using namespace mp_units;
@@ -161,7 +161,7 @@ public:
 int main()
 {
   using namespace mp_units::si::unit_symbols;
-  using namespace mp_units::international::unit_symbols;
+  using namespace mp_units::yard_pound::unit_symbols;
 
   unmanned_aerial_vehicle uav;
   uav.take_off(mean_sea_level + 6'000 * ft);

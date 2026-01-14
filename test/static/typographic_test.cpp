@@ -20,15 +20,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <mp-units/systems/international.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/typographic.h>
+#include <mp-units/systems/yard_pound.h>
 
 namespace {
 
 using namespace mp_units;
 using namespace mp_units::typographic;
-using namespace mp_units::international::unit_symbols;
+using namespace mp_units::yard_pound::unit_symbols;
 
 static_assert(isq::length(1 * pica_us) == isq::length(12 * point_us));
 static_assert(isq::length(1 * pica_dtp) == isq::length(12 * point_dtp));

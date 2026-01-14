@@ -21,14 +21,14 @@
 // SOFTWARE.
 
 #include <mp-units/math.h>  // IWYU pragma: keep
-#include <mp-units/systems/international.h>
 #include <mp-units/systems/si.h>
+#include <mp-units/systems/yard_pound.h>
 
 namespace {
 
 using namespace mp_units;
 using namespace mp_units::si::unit_symbols;
-using namespace mp_units::international::unit_symbols;
+using namespace mp_units::yard_pound::unit_symbols;
 
 template<typename T1, typename T2, typename... Ts>
 [[nodiscard]] consteval bool compare(T1 v1, T2 v2, Ts... vs)

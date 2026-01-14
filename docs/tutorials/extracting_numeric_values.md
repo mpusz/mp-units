@@ -38,12 +38,12 @@ The legacy code below:
 ```cpp
 // ce-embed height=650 compiler=clang2110 flags="-std=c++23 -stdlib=libc++ -O3" mp-units=trunk
 #include <mp-units/systems/si.h>
-#include <mp-units/systems/international.h>
+#include <mp-units/systems/yard_pound.h>
 #include <iostream>
 
 using namespace mp_units;
 using namespace mp_units::si::unit_symbols;
-using namespace mp_units::international::unit_symbols;
+using namespace mp_units::yard_pound::unit_symbols;
 
 #define MIN_TO_H(d) ((d) / 60.0)           // Convert minutes to hours
 #define MPH_TO_KMH(s) ((s) * 1.609344)     // Convert mph to km/h
@@ -82,12 +82,12 @@ int main()
 
     ```cpp
     #include <mp-units/systems/si.h>
-    #include <mp-units/systems/international.h>
+    #include <mp-units/systems/yard_pound.h>
     #include <iostream>
 
     using namespace mp_units;
     using namespace mp_units::si::unit_symbols;
-    using namespace mp_units::international::unit_symbols;
+    using namespace mp_units::yard_pound::unit_symbols;
 
     // Simulate a legacy API that expects speed in km/h
     bool legacy_check_speed_limit(double speed_kmh, double limit_kmh)

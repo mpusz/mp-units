@@ -44,7 +44,6 @@ add_library(
     iau_test.cpp
     iec_test.cpp
     imperial_test.cpp
-    international_test.cpp
     isq_angle_test.cpp
     isq_test.cpp
     limits_test.cpp
@@ -62,6 +61,7 @@ add_library(
     unit_symbol_test.cpp
     unit_test.cpp
     usc_test.cpp
+    yard_pound_test.cpp
 )
 
 if(NOT MP_UNITS_API_FREESTANDING)

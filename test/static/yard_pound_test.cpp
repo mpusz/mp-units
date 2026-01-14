@@ -20,17 +20,17 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <mp-units/systems/international.h>
 #include <mp-units/systems/isq/mechanics.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si/constants.h>
 #include <mp-units/systems/si/units.h>
+#include <mp-units/systems/yard_pound.h>
 
 namespace {
 
 using namespace mp_units;
-using namespace mp_units::international;
-using namespace mp_units::international::unit_symbols;
+using namespace mp_units::yard_pound;
+using namespace mp_units::yard_pound::unit_symbols;
 
 // Mass
 static_assert(100'000'000 * isq::mass[lb] == 45'359'237 * isq::mass[si::kilogram]);
