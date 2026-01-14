@@ -175,6 +175,7 @@ nav:
           - Introduction: users_guide/systems/introduction.md
           - International System of Quantities (ISQ): users_guide/systems/isq.md
           - International System of Units (SI): users_guide/systems/si.md
+          - IAU Astronomical Units: users_guide/systems/iau.md
           - Centimetre-Gram-Second (CGS) System: users_guide/systems/cgs.md
           - Yard-Pound Systems: users_guide/systems/yard_pound.md
           - Strong Angular System: users_guide/systems/strong_angular_system.md
