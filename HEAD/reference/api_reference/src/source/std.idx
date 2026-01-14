@@ -1,0 +1,1608 @@
+\indexentry[generalindex]{scope|(hyperpage}{1}
+\indexentry[generalindex]{mp-units library|hyperpage}{1}
+\indexentry[generalindex]{scope|)}{1}
+\indexentry[generalindex]{references|(hyperpage}{2}
+\indexentry[generalindex]{references|)}{2}
+\indexentry[generalindex]{definitions|(hyperpage}{3}
+\indexentry[generalindex]{definitions|)}{3}
+\indexentry[generalindex]{module!mp-units|hyperpage}{4}
+\indexentry[moduleindex]{mp_units@\texttt  {\frenchspacing mp_units}|hyperindexformat{\idxbfpage}}{5}
+\indexentry[moduleindex]{mp_units.core@\texttt  {\frenchspacing mp_units.core}|hyperindexformat{\idxbfpage}}{5}
+\indexentry[libraryindex]{character_set@\texttt  {\frenchspacing character_set}|hyperpage}{5}
+\indexentry[conceptindex]{SymbolicConstant@\texttt  {\frenchspacing \textit  {SymbolicConstant}}|hyperpage}{6}
+\indexentry[libraryindex]{dimension_one@\texttt  {\frenchspacing dimension_one}|hyperpage}{6}
+\indexentry[conceptindex]{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{6}
+\indexentry[conceptindex]{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{6}
+\indexentry[conceptindex]{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{6}
+\indexentry[conceptindex]{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{6}
+\indexentry[conceptindex]{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{6}
+\indexentry[conceptindex]{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{6}
+\indexentry[conceptindex]{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{6}
+\indexentry[conceptindex]{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{6}
+\indexentry[libraryindex]{dimension_symbol_formatting@\texttt  {\frenchspacing dimension_symbol_formatting}|hyperpage}{6}
+\indexentry[conceptindex]{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{6}
+\indexentry[conceptindex]{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{6}
+\indexentry[libraryindex]{is_kind@\texttt  {\frenchspacing is_kind}|hyperpage}{6}
+\indexentry[conceptindex]{BaseDimension@\texttt  {\frenchspacing \textit  {BaseDimension}}|hyperpage}{7}
+\indexentry[conceptindex]{QSProperty@\texttt  {\frenchspacing \textit  {QSProperty}}|hyperpage}{7}
+\indexentry[conceptindex]{DerivedQuantitySpec@\texttt  {\frenchspacing \textit  {DerivedQuantitySpec}}|hyperpage}{7}
+\indexentry[conceptindex]{QSProperty@\texttt  {\frenchspacing \textit  {QSProperty}}|hyperpage}{7}
+\indexentry[conceptindex]{NamedQuantitySpec@\texttt  {\frenchspacing \textit  {NamedQuantitySpec}}|hyperpage}{7}
+\indexentry[conceptindex]{QSProperty@\texttt  {\frenchspacing \textit  {QSProperty}}|hyperpage}{7}
+\indexentry[conceptindex]{NamedQuantitySpec@\texttt  {\frenchspacing \textit  {NamedQuantitySpec}}|hyperpage}{7}
+\indexentry[conceptindex]{DerivedQuantitySpec@\texttt  {\frenchspacing \textit  {DerivedQuantitySpec}}|hyperpage}{7}
+\indexentry[conceptindex]{QSProperty@\texttt  {\frenchspacing \textit  {QSProperty}}|hyperpage}{7}
+\indexentry[conceptindex]{SymbolicConstant@\texttt  {\frenchspacing \textit  {SymbolicConstant}}|hyperpage}{7}
+\indexentry[libraryindex]{dimensionless@\texttt  {\frenchspacing dimensionless}|hyperpage}{7}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{7}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{7}
+\indexentry[libraryindex]{kind_of@\texttt  {\frenchspacing kind_of}|hyperpage}{7}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{7}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{7}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{7}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{7}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{7}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{7}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{7}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{7}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{7}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{7}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{7}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{7}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{7}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{7}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{7}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{7}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{7}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{7}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{7}
+\indexentry[conceptindex]{MagArg@\texttt  {\frenchspacing \textit  {MagArg}}|hyperpage}{8}
+\indexentry[conceptindex]{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{8}
+\indexentry[conceptindex]{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{8}
+\indexentry[conceptindex]{MagArg@\texttt  {\frenchspacing \textit  {MagArg}}|hyperpage}{8}
+\indexentry[conceptindex]{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{8}
+\indexentry[libraryindex]{pi@\texttt  {\frenchspacing pi}|hyperpage}{8}
+\indexentry[libraryindex]{pi@\texttt  {\frenchspacing pi}|hyperpage}{8}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{8}
+\indexentry[libraryindex]{space_before_unit_symbol@\texttt  {\frenchspacing space_before_unit_symbol}!one@\texttt  {\frenchspacing one}|hyperpage}{8}
+\indexentry[conceptindex]{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{8}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{8}
+\indexentry[conceptindex]{QuantityKindSpec@\texttt  {\frenchspacing \textit  {QuantityKindSpec}}|hyperpage}{9}
+\indexentry[conceptindex]{QuantityKindSpec@\texttt  {\frenchspacing \textit  {QuantityKindSpec}}|hyperpage}{9}
+\indexentry[conceptindex]{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{9}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{9}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{9}
+\indexentry[conceptindex]{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{9}
+\indexentry[conceptindex]{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{9}
+\indexentry[conceptindex]{QuantityKindSpec@\texttt  {\frenchspacing \textit  {QuantityKindSpec}}|hyperpage}{9}
+\indexentry[conceptindex]{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{9}
+\indexentry[conceptindex]{QuantityKindSpec@\texttt  {\frenchspacing \textit  {QuantityKindSpec}}|hyperpage}{9}
+\indexentry[conceptindex]{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{9}
+\indexentry[conceptindex]{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{9}
+\indexentry[conceptindex]{PrefixableUnit@\texttt  {\frenchspacing PrefixableUnit}|hyperpage}{9}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{9}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{9}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{9}
+\indexentry[conceptindex]{SymbolicConstant@\texttt  {\frenchspacing \textit  {SymbolicConstant}}|hyperpage}{9}
+\indexentry[libraryindex]{one@\texttt  {\frenchspacing one}|hyperpage}{9}
+\indexentry[libraryindex]{percent@\texttt  {\frenchspacing percent}|hyperpage}{9}
+\indexentry[libraryindex]{percent@\texttt  {\frenchspacing percent}|hyperpage}{9}
+\indexentry[libraryindex]{per_mille@\texttt  {\frenchspacing per_mille}|hyperpage}{9}
+\indexentry[libraryindex]{per_mille@\texttt  {\frenchspacing per_mille}|hyperpage}{9}
+\indexentry[libraryindex]{parts_per_million@\texttt  {\frenchspacing parts_per_million}|hyperpage}{10}
+\indexentry[libraryindex]{parts_per_million@\texttt  {\frenchspacing parts_per_million}|hyperpage}{10}
+\indexentry[libraryindex]{ppm@\texttt  {\frenchspacing ppm}|hyperpage}{10}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{10}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{10}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{10}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{10}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{10}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{10}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{10}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{10}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{10}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{10}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{10}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{10}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{10}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{10}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{10}
+\indexentry[conceptindex]{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{10}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{10}
+\indexentry[conceptindex]{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{10}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{10}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{10}
+\indexentry[libraryindex]{unit_symbol_solidus@\texttt  {\frenchspacing unit_symbol_solidus}|hyperpage}{10}
+\indexentry[libraryindex]{unit_symbol_separator@\texttt  {\frenchspacing unit_symbol_separator}|hyperpage}{10}
+\indexentry[libraryindex]{unit_symbol_formatting@\texttt  {\frenchspacing unit_symbol_formatting}|hyperpage}{10}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{10}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{10}
+\indexentry[libraryindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{10}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperindexformat{\idxbfpage}}{10}
+\indexentry[libraryindex]{ReferenceOf@\texttt  {\frenchspacing ReferenceOf}|hyperpage}{11}
+\indexentry[conceptindex]{ReferenceOf@\texttt  {\frenchspacing ReferenceOf}|hyperindexformat{\idxbfpage}}{11}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{11}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{11}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{11}
+\indexentry[conceptindex]{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{11}
+\indexentry[conceptindex]{OffsetUnit@\texttt  {\frenchspacing \textit  {OffsetUnit}}|hyperpage}{11}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{11}
+\indexentry[conceptindex]{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{11}
+\indexentry[conceptindex]{OffsetUnit@\texttt  {\frenchspacing \textit  {OffsetUnit}}|hyperpage}{11}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{11}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{11}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{11}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{11}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{11}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{11}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{11}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{11}
+\indexentry[conceptindex]{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{11}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{11}
+\indexentry[conceptindex]{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{11}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{11}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{11}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{11}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{11}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{11}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{11}
+\indexentry[conceptindex]{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{11}
+\indexentry[conceptindex]{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{11}
+\indexentry[conceptindex]{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{11}
+\indexentry[conceptindex]{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{11}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{11}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{11}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{11}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{11}
+\indexentry[libraryindex]{quantity_character@\texttt  {\frenchspacing quantity_character}|hyperpage}{11}
+\indexentry[libraryindex]{disable_scalar@\texttt  {\frenchspacing disable_scalar}!bool@\texttt  {\frenchspacing bool}|hyperpage}{12}
+\indexentry[libraryindex]{disable_scalar@\texttt  {\frenchspacing disable_scalar}!std::complex@\texttt  {\frenchspacing std::complex}|hyperpage}{12}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{13}
+\indexentry[conceptindex]{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{13}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{13}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{13}
+\indexentry[libraryindex]{delta@\texttt  {\frenchspacing delta}|hyperpage}{13}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{13}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{13}
+\indexentry[conceptindex]{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{13}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{13}
+\indexentry[conceptindex]{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{13}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{13}
+\indexentry[conceptindex]{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{13}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{13}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{13}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{13}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{13}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{13}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{13}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{13}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{13}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{13}
+\indexentry[conceptindex]{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{13}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{13}
+\indexentry[conceptindex]{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{13}
+\indexentry[libraryindex]{std::common_type@\texttt  {\frenchspacing std::common_type}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{13}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{14}
+\indexentry[conceptindex]{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{14}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{14}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{14}
+\indexentry[libraryindex]{zeroth_point_origin@\texttt  {\frenchspacing zeroth_point_origin}|hyperpage}{14}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{14}
+\indexentry[conceptindex]{PointOriginFor@\texttt  {\frenchspacing PointOriginFor}|hyperpage}{14}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{14}
+\indexentry[conceptindex]{PointOriginFor@\texttt  {\frenchspacing PointOriginFor}|hyperpage}{14}
+\indexentry[conceptindex]{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{14}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{14}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{14}
+\indexentry[libraryindex]{point@\texttt  {\frenchspacing point}|hyperpage}{14}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{14}
+\indexentry[conceptindex]{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{14}
+\indexentry[conceptindex]{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{15}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{15}
+\indexentry[conceptindex]{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{15}
+\indexentry[conceptindex]{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{15}
+\indexentry[conceptindex]{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{15}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{15}
+\indexentry[conceptindex]{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{15}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{15}
+\indexentry[conceptindex]{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{15}
+\indexentry[conceptindex]{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{15}
+\indexentry[conceptindex]{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{15}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{15}
+\indexentry[conceptindex]{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{15}
+\indexentry[moduleindex]{mp_units.systems@\texttt  {\frenchspacing mp_units.systems}|hyperindexformat{\idxbfpage}}{15}
+\indexentry[libraryindex]{chrono_point_origin@\texttt  {\frenchspacing chrono_point_origin}|hyperpage}{15}
+\indexentry[libraryindex]{is-specialization-of@\texttt  {\frenchspacing \textit  {is-specialization-of}}|hyperpage}{15}
+\indexentry[libraryindex]{is-derived-from-specialization-of@\texttt  {\frenchspacing \textit  {is-derived-from-specialization-of}}|hyperpage}{15}
+\indexentry[libraryindex]{ratio@\texttt  {\frenchspacing \textit  {ratio}}|hyperpage}{16}
+\indexentry[libraryindex]{operator==@\texttt  {\frenchspacing operator==}!ratio@\texttt  {\frenchspacing \textit  {ratio}}|hyperpage}{16}
+\indexentry[libraryindex]{ratio@\texttt  {\frenchspacing \textit  {ratio}}!operator==@\texttt  {\frenchspacing operator==}|hyperpage}{16}
+\indexentry[libraryindex]{operator<=>@\texttt  {\frenchspacing operator<=>}!ratio@\texttt  {\frenchspacing \textit  {ratio}}|hyperpage}{16}
+\indexentry[libraryindex]{ratio@\texttt  {\frenchspacing \textit  {ratio}}!operator<=>@\texttt  {\frenchspacing operator<=>}|hyperpage}{16}
+\indexentry[libraryindex]{operator-@\texttt  {\frenchspacing operator-}!ratio@\texttt  {\frenchspacing \textit  {ratio}}|hyperpage}{16}
+\indexentry[libraryindex]{ratio@\texttt  {\frenchspacing \textit  {ratio}}!operator-@\texttt  {\frenchspacing operator-}|hyperpage}{16}
+\indexentry[libraryindex]{operator+@\texttt  {\frenchspacing operator+}!ratio@\texttt  {\frenchspacing \textit  {ratio}}|hyperpage}{16}
+\indexentry[libraryindex]{ratio@\texttt  {\frenchspacing \textit  {ratio}}!operator+@\texttt  {\frenchspacing operator+}|hyperpage}{16}
+\indexentry[libraryindex]{operator/@\texttt  {\frenchspacing operator/}!ratio@\texttt  {\frenchspacing \textit  {ratio}}|hyperpage}{16}
+\indexentry[libraryindex]{ratio@\texttt  {\frenchspacing \textit  {ratio}}!operator/@\texttt  {\frenchspacing operator/}|hyperpage}{16}
+\indexentry[libraryindex]{is-integral@\texttt  {\frenchspacing \textit  {is-integral}}!ratio@\texttt  {\frenchspacing \textit  {ratio}}|hyperpage}{16}
+\indexentry[libraryindex]{ratio@\texttt  {\frenchspacing \textit  {ratio}}!is-integral@\texttt  {\frenchspacing \textit  {is-integral}}|hyperpage}{16}
+\indexentry[libraryindex]{ratio@\texttt  {\frenchspacing \textit  {ratio}}!constructor|hyperpage}{16}
+\indexentry[libraryindex]{operator*@\texttt  {\frenchspacing operator*}!ratio@\texttt  {\frenchspacing \textit  {ratio}}|hyperpage}{16}
+\indexentry[libraryindex]{ratio@\texttt  {\frenchspacing \textit  {ratio}}!operator*@\texttt  {\frenchspacing operator*}|hyperpage}{16}
+\indexentry[libraryindex]{common-ratio@\texttt  {\frenchspacing \textit  {common-ratio}}!ratio@\texttt  {\frenchspacing \textit  {ratio}}|hyperpage}{16}
+\indexentry[libraryindex]{ratio@\texttt  {\frenchspacing \textit  {ratio}}!common-ratio@\texttt  {\frenchspacing \textit  {common-ratio}}|hyperpage}{16}
+\indexentry[libraryindex]{symbol_text@\texttt  {\frenchspacing symbol_text}|hyperpage}{16}
+\indexentry[libraryindex]{utf8@\texttt  {\frenchspacing utf8}!symbol_text@\texttt  {\frenchspacing symbol_text}|hyperpage}{17}
+\indexentry[libraryindex]{symbol_text@\texttt  {\frenchspacing symbol_text}!utf8@\texttt  {\frenchspacing utf8}|hyperpage}{17}
+\indexentry[libraryindex]{portable@\texttt  {\frenchspacing portable}!symbol_text@\texttt  {\frenchspacing symbol_text}|hyperpage}{17}
+\indexentry[libraryindex]{symbol_text@\texttt  {\frenchspacing symbol_text}!portable@\texttt  {\frenchspacing portable}|hyperpage}{17}
+\indexentry[libraryindex]{empty@\texttt  {\frenchspacing empty}!symbol_text@\texttt  {\frenchspacing symbol_text}|hyperpage}{17}
+\indexentry[libraryindex]{symbol_text@\texttt  {\frenchspacing symbol_text}!empty@\texttt  {\frenchspacing empty}|hyperpage}{17}
+\indexentry[libraryindex]{symbol_text@\texttt  {\frenchspacing symbol_text}!constructor|hyperpage}{17}
+\indexentry[libraryindex]{operator+@\texttt  {\frenchspacing operator+}!symbol_text@\texttt  {\frenchspacing symbol_text}|hyperpage}{18}
+\indexentry[libraryindex]{symbol_text@\texttt  {\frenchspacing symbol_text}!operator+@\texttt  {\frenchspacing operator+}|hyperpage}{18}
+\indexentry[libraryindex]{operator==@\texttt  {\frenchspacing operator==}!symbol_text@\texttt  {\frenchspacing symbol_text}|hyperpage}{18}
+\indexentry[libraryindex]{symbol_text@\texttt  {\frenchspacing symbol_text}!operator==@\texttt  {\frenchspacing operator==}|hyperpage}{18}
+\indexentry[libraryindex]{operator<=>@\texttt  {\frenchspacing operator<=>}!symbol_text@\texttt  {\frenchspacing symbol_text}|hyperpage}{18}
+\indexentry[libraryindex]{symbol_text@\texttt  {\frenchspacing symbol_text}!operator<=>@\texttt  {\frenchspacing operator<=>}|hyperpage}{18}
+\indexentry[conceptindex]{SymbolicConstant@\texttt  {\frenchspacing \textit  {SymbolicConstant}}|hyperindexformat{\idxbfpage}}{18}
+\indexentry[conceptindex]{SymbolicConstant@\texttt  {\frenchspacing \textit  {SymbolicConstant}}|hyperpage}{18}
+\indexentry[libraryindex]{per@\texttt  {\frenchspacing per}|hyperpage}{18}
+\indexentry[libraryindex]{power@\texttt  {\frenchspacing power}|hyperpage}{18}
+\indexentry[libraryindex]{expr-type@\texttt  {\frenchspacing \textit  {expr-type}}|hyperpage}{19}
+\indexentry[libraryindex]{type-less-impl@\texttt  {\frenchspacing \textit  {type-less-impl}}|hyperpage}{19}
+\indexentry[libraryindex]{type-less@\texttt  {\frenchspacing \textit  {type-less}}|hyperpage}{19}
+\indexentry[libraryindex]{type-list@\texttt  {\frenchspacing \textit  {type-list}}|hyperpage}{19}
+\indexentry[libraryindex]{expr-fractions@\texttt  {\frenchspacing \textit  {expr-fractions}}|hyperpage}{19}
+\indexentry[conceptindex]{SymbolicConstant@\texttt  {\frenchspacing \textit  {SymbolicConstant}}|hyperpage}{19}
+\indexentry[libraryindex]{expr-multiply@\texttt  {\frenchspacing \textit  {expr-multiply}}|hyperpage}{19}
+\indexentry[libraryindex]{expr-divide@\texttt  {\frenchspacing \textit  {expr-divide}}|hyperpage}{19}
+\indexentry[libraryindex]{expr-invert@\texttt  {\frenchspacing \textit  {expr-invert}}|hyperpage}{19}
+\indexentry[libraryindex]{expr-pow@\texttt  {\frenchspacing \textit  {expr-pow}}|hyperpage}{19}
+\indexentry[libraryindex]{expr-map@\texttt  {\frenchspacing \textit  {expr-map}}|hyperpage}{21}
+\indexentry[libraryindex]{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{21}
+\indexentry[conceptindex]{Dimension@\texttt  {\frenchspacing Dimension}|hyperindexformat{\idxbfpage}}{21}
+\indexentry[conceptindex]{SymbolicConstant@\texttt  {\frenchspacing \textit  {SymbolicConstant}}|hyperpage}{21}
+\indexentry[conceptindex]{BaseDimension@\texttt  {\frenchspacing \textit  {BaseDimension}}|hyperindexformat{\idxbfpage}}{21}
+\indexentry[conceptindex]{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{21}
+\indexentry[libraryindex]{DimensionOf@\texttt  {\frenchspacing DimensionOf}|hyperpage}{21}
+\indexentry[conceptindex]{DimensionOf@\texttt  {\frenchspacing DimensionOf}|hyperindexformat{\idxbfpage}}{21}
+\indexentry[conceptindex]{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{21}
+\indexentry[conceptindex]{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{21}
+\indexentry[libraryindex]{base_dimension@\texttt  {\frenchspacing base_dimension}|hyperpage}{21}
+\indexentry[libraryindex]{derived_dimension@\texttt  {\frenchspacing derived_dimension}|hyperpage}{21}
+\indexentry[conceptindex]{SymbolicConstant@\texttt  {\frenchspacing \textit  {SymbolicConstant}}|hyperpage}{22}
+\indexentry[libraryindex]{dimension_one@\texttt  {\frenchspacing dimension_one}|hyperpage}{22}
+\indexentry[libraryindex]{dimension-interface@\texttt  {\frenchspacing \textit  {dimension-interface}}|hyperpage}{22}
+\indexentry[conceptindex]{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{22}
+\indexentry[conceptindex]{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{22}
+\indexentry[conceptindex]{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{22}
+\indexentry[conceptindex]{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{22}
+\indexentry[conceptindex]{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{22}
+\indexentry[conceptindex]{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{22}
+\indexentry[conceptindex]{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{22}
+\indexentry[conceptindex]{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{22}
+\indexentry[libraryindex]{operator*@\texttt  {\frenchspacing operator*}!Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{22}
+\indexentry[libraryindex]{Dimension@\texttt  {\frenchspacing Dimension}!operator*@\texttt  {\frenchspacing operator*}|hyperpage}{22}
+\indexentry[conceptindex]{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{22}
+\indexentry[conceptindex]{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{22}
+\indexentry[conceptindex]{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{22}
+\indexentry[libraryindex]{operator/@\texttt  {\frenchspacing operator/}!Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{22}
+\indexentry[libraryindex]{Dimension@\texttt  {\frenchspacing Dimension}!operator/@\texttt  {\frenchspacing operator/}|hyperpage}{22}
+\indexentry[conceptindex]{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{22}
+\indexentry[conceptindex]{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{22}
+\indexentry[conceptindex]{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{22}
+\indexentry[libraryindex]{operator==@\texttt  {\frenchspacing operator==}!Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{22}
+\indexentry[libraryindex]{Dimension@\texttt  {\frenchspacing Dimension}!operator==@\texttt  {\frenchspacing operator==}|hyperpage}{22}
+\indexentry[conceptindex]{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{22}
+\indexentry[conceptindex]{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{22}
+\indexentry[libraryindex]{inverse@\texttt  {\frenchspacing inverse}!Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{22}
+\indexentry[libraryindex]{Dimension@\texttt  {\frenchspacing Dimension}!inverse@\texttt  {\frenchspacing inverse}|hyperpage}{22}
+\indexentry[conceptindex]{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{22}
+\indexentry[conceptindex]{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{22}
+\indexentry[libraryindex]{pow@\texttt  {\frenchspacing pow}!Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{22}
+\indexentry[libraryindex]{Dimension@\texttt  {\frenchspacing Dimension}!pow@\texttt  {\frenchspacing pow}|hyperpage}{22}
+\indexentry[conceptindex]{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{22}
+\indexentry[conceptindex]{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{22}
+\indexentry[libraryindex]{sqrt@\texttt  {\frenchspacing sqrt}!Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{23}
+\indexentry[libraryindex]{Dimension@\texttt  {\frenchspacing Dimension}!sqrt@\texttt  {\frenchspacing sqrt}|hyperpage}{23}
+\indexentry[conceptindex]{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{23}
+\indexentry[conceptindex]{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{23}
+\indexentry[libraryindex]{cbrt@\texttt  {\frenchspacing cbrt}!Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{23}
+\indexentry[libraryindex]{Dimension@\texttt  {\frenchspacing Dimension}!cbrt@\texttt  {\frenchspacing cbrt}|hyperpage}{23}
+\indexentry[conceptindex]{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{23}
+\indexentry[conceptindex]{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{23}
+\indexentry[libraryindex]{dimension_symbol_to@\texttt  {\frenchspacing dimension_symbol_to}!Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{23}
+\indexentry[libraryindex]{Dimension@\texttt  {\frenchspacing Dimension}!dimension_symbol_to@\texttt  {\frenchspacing dimension_symbol_to}|hyperpage}{23}
+\indexentry[conceptindex]{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{23}
+\indexentry[libraryindex]{dimension_symbol@\texttt  {\frenchspacing dimension_symbol}!Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{23}
+\indexentry[libraryindex]{Dimension@\texttt  {\frenchspacing Dimension}!dimension_symbol@\texttt  {\frenchspacing dimension_symbol}|hyperpage}{23}
+\indexentry[conceptindex]{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{23}
+\indexentry[libraryindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{23}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperindexformat{\idxbfpage}}{23}
+\indexentry[conceptindex]{SymbolicConstant@\texttt  {\frenchspacing \textit  {SymbolicConstant}}|hyperpage}{23}
+\indexentry[conceptindex]{QuantityKindSpec@\texttt  {\frenchspacing \textit  {QuantityKindSpec}}|hyperindexformat{\idxbfpage}}{23}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{23}
+\indexentry[conceptindex]{NamedQuantitySpec@\texttt  {\frenchspacing \textit  {NamedQuantitySpec}}|hyperindexformat{\idxbfpage}}{23}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{23}
+\indexentry[conceptindex]{QuantityKindSpec@\texttt  {\frenchspacing \textit  {QuantityKindSpec}}|hyperpage}{23}
+\indexentry[conceptindex]{DerivedQuantitySpec@\texttt  {\frenchspacing \textit  {DerivedQuantitySpec}}|hyperindexformat{\idxbfpage}}{23}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{23}
+\indexentry[conceptindex]{QuantityKindSpec@\texttt  {\frenchspacing \textit  {QuantityKindSpec}}|hyperpage}{23}
+\indexentry[conceptindex]{ChildQuantitySpecOf@\texttt  {\frenchspacing \textit  {ChildQuantitySpecOf}}|hyperindexformat{\idxbfpage}}{23}
+\indexentry[conceptindex]{NestedQuantityKindSpecOf@\texttt  {\frenchspacing \textit  {NestedQuantityKindSpecOf}}|hyperindexformat{\idxbfpage}}{23}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{23}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{23}
+\indexentry[conceptindex]{ChildQuantitySpecOf@\texttt  {\frenchspacing \textit  {ChildQuantitySpecOf}}|hyperpage}{23}
+\indexentry[conceptindex]{QuantitySpecConvertibleTo@\texttt  {\frenchspacing \textit  {QuantitySpecConvertibleTo}}|hyperindexformat{\idxbfpage}}{23}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{23}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{23}
+\indexentry[conceptindex]{QuantitySpecExplicitlyConvertibleTo@\texttt  {\frenchspacing \textit  {QuantitySpecExplicitlyConvertibleTo}}|hyperindexformat{\idxbfpage}}{23}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{23}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{23}
+\indexentry[conceptindex]{QuantitySpecCastableTo@\texttt  {\frenchspacing \textit  {QuantitySpecCastableTo}}|hyperindexformat{\idxbfpage}}{23}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{23}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{23}
+\indexentry[libraryindex]{QuantitySpecOf@\texttt  {\frenchspacing QuantitySpecOf}|hyperpage}{24}
+\indexentry[conceptindex]{QuantitySpecOf@\texttt  {\frenchspacing QuantitySpecOf}|hyperindexformat{\idxbfpage}}{24}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{24}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{24}
+\indexentry[conceptindex]{QuantitySpecConvertibleTo@\texttt  {\frenchspacing \textit  {QuantitySpecConvertibleTo}}|hyperpage}{24}
+\indexentry[conceptindex]{NestedQuantityKindSpecOf@\texttt  {\frenchspacing \textit  {NestedQuantityKindSpecOf}}|hyperpage}{24}
+\indexentry[conceptindex]{QuantityKindSpec@\texttt  {\frenchspacing \textit  {QuantityKindSpec}}|hyperpage}{24}
+\indexentry[conceptindex]{NestedQuantityKindSpecOf@\texttt  {\frenchspacing \textit  {NestedQuantityKindSpecOf}}|hyperpage}{24}
+\indexentry[conceptindex]{QSProperty@\texttt  {\frenchspacing \textit  {QSProperty}}|hyperindexformat{\idxbfpage}}{24}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{24}
+\indexentry[libraryindex]{is_kind@\texttt  {\frenchspacing is_kind}|hyperpage}{24}
+\indexentry[libraryindex]{quantity_spec@\texttt  {\frenchspacing quantity_spec}|hyperpage}{24}
+\indexentry[conceptindex]{BaseDimension@\texttt  {\frenchspacing \textit  {BaseDimension}}|hyperpage}{24}
+\indexentry[conceptindex]{QSProperty@\texttt  {\frenchspacing \textit  {QSProperty}}|hyperpage}{24}
+\indexentry[conceptindex]{BaseDimension@\texttt  {\frenchspacing \textit  {BaseDimension}}|hyperpage}{24}
+\indexentry[conceptindex]{DerivedQuantitySpec@\texttt  {\frenchspacing \textit  {DerivedQuantitySpec}}|hyperpage}{24}
+\indexentry[conceptindex]{QSProperty@\texttt  {\frenchspacing \textit  {QSProperty}}|hyperpage}{24}
+\indexentry[conceptindex]{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{24}
+\indexentry[conceptindex]{NamedQuantitySpec@\texttt  {\frenchspacing \textit  {NamedQuantitySpec}}|hyperpage}{24}
+\indexentry[conceptindex]{QSProperty@\texttt  {\frenchspacing \textit  {QSProperty}}|hyperpage}{24}
+\indexentry[conceptindex]{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{24}
+\indexentry[conceptindex]{NamedQuantitySpec@\texttt  {\frenchspacing \textit  {NamedQuantitySpec}}|hyperpage}{24}
+\indexentry[conceptindex]{DerivedQuantitySpec@\texttt  {\frenchspacing \textit  {DerivedQuantitySpec}}|hyperpage}{24}
+\indexentry[conceptindex]{QSProperty@\texttt  {\frenchspacing \textit  {QSProperty}}|hyperpage}{24}
+\indexentry[conceptindex]{QuantitySpecExplicitlyConvertibleTo@\texttt  {\frenchspacing \textit  {QuantitySpecExplicitlyConvertibleTo}}|hyperpage}{24}
+\indexentry[conceptindex]{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{24}
+\indexentry[generalindex]{named quantity|hyperindexformat{\see{quantity, named}}}{24}
+\indexentry[generalindex]{quantity!named|hyperpage}{24}
+\indexentry[conceptindex]{NamedQuantitySpec@\texttt  {\frenchspacing \textit  {NamedQuantitySpec}}|hyperpage}{24}
+\indexentry[libraryindex]{derived_quantity_spec@\texttt  {\frenchspacing derived_quantity_spec}|hyperpage}{25}
+\indexentry[conceptindex]{NamedQuantitySpec@\texttt  {\frenchspacing \textit  {NamedQuantitySpec}}|hyperindexformat{\idxbfpage}}{25}
+\indexentry[conceptindex]{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{25}
+\indexentry[conceptindex]{SymbolicConstant@\texttt  {\frenchspacing \textit  {SymbolicConstant}}|hyperpage}{25}
+\indexentry[libraryindex]{dimensionless@\texttt  {\frenchspacing dimensionless}|hyperpage}{26}
+\indexentry[libraryindex]{kind_of_@\texttt  {\frenchspacing kind_of_}|hyperpage}{26}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{26}
+\indexentry[conceptindex]{QuantityKindSpec@\texttt  {\frenchspacing \textit  {QuantityKindSpec}}|hyperpage}{26}
+\indexentry[libraryindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}!clone-kind-of@\texttt  {\frenchspacing \textit  {clone-kind-of}}|hyperpage}{26}
+\indexentry[libraryindex]{clone-kind-of@\texttt  {\frenchspacing \textit  {clone-kind-of}}!QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{26}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{26}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{26}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{26}
+\indexentry[conceptindex]{QuantityKindSpec@\texttt  {\frenchspacing \textit  {QuantityKindSpec}}|hyperpage}{26}
+\indexentry[libraryindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}!remove-kind@\texttt  {\frenchspacing \textit  {remove-kind}}|hyperpage}{26}
+\indexentry[libraryindex]{remove-kind@\texttt  {\frenchspacing \textit  {remove-kind}}!QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{26}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{26}
+\indexentry[conceptindex]{QuantityKindSpec@\texttt  {\frenchspacing \textit  {QuantityKindSpec}}|hyperpage}{26}
+\indexentry[libraryindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}!make-reference@\texttt  {\frenchspacing \textit  {make-reference}}|hyperpage}{26}
+\indexentry[libraryindex]{make-reference@\texttt  {\frenchspacing \textit  {make-reference}}!QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{26}
+\indexentry[libraryindex]{Unit@\texttt  {\frenchspacing Unit}!make-reference@\texttt  {\frenchspacing \textit  {make-reference}}|hyperpage}{26}
+\indexentry[libraryindex]{make-reference@\texttt  {\frenchspacing \textit  {make-reference}}!Unit@\texttt  {\frenchspacing Unit}|hyperpage}{26}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{26}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{26}
+\indexentry[conceptindex]{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{26}
+\indexentry[conceptindex]{UnitOf@\texttt  {\frenchspacing UnitOf}|hyperpage}{26}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{26}
+\indexentry[libraryindex]{quantity-spec-interface@\texttt  {\frenchspacing \textit  {quantity-spec-interface}}|hyperpage}{27}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{27}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{27}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{27}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{27}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{27}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{27}
+\indexentry[conceptindex]{UnitOf@\texttt  {\frenchspacing UnitOf}|hyperpage}{27}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{27}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{27}
+\indexentry[conceptindex]{QuantitySpecExplicitlyConvertibleTo@\texttt  {\frenchspacing \textit  {QuantitySpecExplicitlyConvertibleTo}}|hyperpage}{27}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{27}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{27}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{27}
+\indexentry[libraryindex]{operator*@\texttt  {\frenchspacing operator*}!QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{27}
+\indexentry[libraryindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}!operator*@\texttt  {\frenchspacing operator*}|hyperpage}{27}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{27}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{27}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{27}
+\indexentry[libraryindex]{operator/@\texttt  {\frenchspacing operator/}!QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{27}
+\indexentry[libraryindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}!operator/@\texttt  {\frenchspacing operator/}|hyperpage}{27}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{27}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{27}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{27}
+\indexentry[libraryindex]{operator[]@\texttt  {\frenchspacing operator[]}!QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{27}
+\indexentry[libraryindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}!operator[]@\texttt  {\frenchspacing operator[]}|hyperpage}{27}
+\indexentry[conceptindex]{UnitOf@\texttt  {\frenchspacing UnitOf}|hyperpage}{27}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{27}
+\indexentry[libraryindex]{operator()@\texttt  {\frenchspacing operator()}!QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{27}
+\indexentry[libraryindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}!operator()@\texttt  {\frenchspacing operator()}|hyperpage}{27}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{27}
+\indexentry[conceptindex]{QuantitySpecExplicitlyConvertibleTo@\texttt  {\frenchspacing \textit  {QuantitySpecExplicitlyConvertibleTo}}|hyperpage}{27}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{27}
+\indexentry[libraryindex]{operator==@\texttt  {\frenchspacing operator==}!QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{27}
+\indexentry[libraryindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}!operator==@\texttt  {\frenchspacing operator==}|hyperpage}{27}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{27}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{27}
+\indexentry[libraryindex]{inverse@\texttt  {\frenchspacing inverse}!QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{27}
+\indexentry[libraryindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}!inverse@\texttt  {\frenchspacing inverse}|hyperpage}{27}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{27}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{27}
+\indexentry[libraryindex]{pow@\texttt  {\frenchspacing pow}!QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{27}
+\indexentry[libraryindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}!pow@\texttt  {\frenchspacing pow}|hyperpage}{27}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{27}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{27}
+\indexentry[libraryindex]{sqrt@\texttt  {\frenchspacing sqrt}!QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{28}
+\indexentry[libraryindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}!sqrt@\texttt  {\frenchspacing sqrt}|hyperpage}{28}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{28}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{28}
+\indexentry[libraryindex]{cbrt@\texttt  {\frenchspacing cbrt}!QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{28}
+\indexentry[libraryindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}!cbrt@\texttt  {\frenchspacing cbrt}|hyperpage}{28}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{28}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{28}
+\indexentry[libraryindex]{implicitly_convertible@\texttt  {\frenchspacing implicitly_convertible}!QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{28}
+\indexentry[libraryindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}!implicitly_convertible@\texttt  {\frenchspacing implicitly_convertible}|hyperpage}{28}
+\indexentry[libraryindex]{explicitly_convertible@\texttt  {\frenchspacing explicitly_convertible}!QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{28}
+\indexentry[libraryindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}!explicitly_convertible@\texttt  {\frenchspacing explicitly_convertible}|hyperpage}{28}
+\indexentry[libraryindex]{castable@\texttt  {\frenchspacing castable}!QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{28}
+\indexentry[libraryindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}!castable@\texttt  {\frenchspacing castable}|hyperpage}{28}
+\indexentry[libraryindex]{interconvertible@\texttt  {\frenchspacing interconvertible}!QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{28}
+\indexentry[libraryindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}!interconvertible@\texttt  {\frenchspacing interconvertible}|hyperpage}{28}
+\indexentry[libraryindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}!get-kind-tree-root@\texttt  {\frenchspacing \textit  {get-kind-tree-root}}|hyperpage}{28}
+\indexentry[libraryindex]{get-kind-tree-root@\texttt  {\frenchspacing \textit  {get-kind-tree-root}}!QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{28}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{28}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{28}
+\indexentry[conceptindex]{QuantityKindSpec@\texttt  {\frenchspacing \textit  {QuantityKindSpec}}|hyperpage}{28}
+\indexentry[conceptindex]{DerivedQuantitySpec@\texttt  {\frenchspacing \textit  {DerivedQuantitySpec}}|hyperpage}{28}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{28}
+\indexentry[libraryindex]{get_kind@\texttt  {\frenchspacing get_kind}!QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{28}
+\indexentry[libraryindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}!get_kind@\texttt  {\frenchspacing get_kind}|hyperpage}{28}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{28}
+\indexentry[conceptindex]{QuantityKindSpec@\texttt  {\frenchspacing \textit  {QuantityKindSpec}}|hyperpage}{28}
+\indexentry[libraryindex]{get_common_quantity_spec@\texttt  {\frenchspacing get_common_quantity_spec}!QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{28}
+\indexentry[libraryindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}!get_common_quantity_spec@\texttt  {\frenchspacing get_common_quantity_spec}|hyperpage}{28}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{28}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{28}
+\indexentry[conceptindex]{NestedQuantityKindSpecOf@\texttt  {\frenchspacing \textit  {NestedQuantityKindSpecOf}}|hyperpage}{29}
+\indexentry[conceptindex]{NestedQuantityKindSpecOf@\texttt  {\frenchspacing \textit  {NestedQuantityKindSpecOf}}|hyperpage}{29}
+\indexentry[conceptindex]{QuantityKindSpec@\texttt  {\frenchspacing \textit  {QuantityKindSpec}}|hyperpage}{29}
+\indexentry[conceptindex]{QuantityKindSpec@\texttt  {\frenchspacing \textit  {QuantityKindSpec}}|hyperpage}{29}
+\indexentry[conceptindex]{DerivedQuantitySpec@\texttt  {\frenchspacing \textit  {DerivedQuantitySpec}}|hyperpage}{29}
+\indexentry[conceptindex]{NamedQuantitySpec@\texttt  {\frenchspacing \textit  {NamedQuantitySpec}}|hyperpage}{29}
+\indexentry[conceptindex]{QuantityKindSpec@\texttt  {\frenchspacing \textit  {QuantityKindSpec}}|hyperpage}{29}
+\indexentry[conceptindex]{QuantityKindSpec@\texttt  {\frenchspacing \textit  {QuantityKindSpec}}|hyperpage}{29}
+\indexentry[conceptindex]{NamedQuantitySpec@\texttt  {\frenchspacing \textit  {NamedQuantitySpec}}|hyperpage}{29}
+\indexentry[conceptindex]{DerivedQuantitySpec@\texttt  {\frenchspacing \textit  {DerivedQuantitySpec}}|hyperpage}{29}
+\indexentry[conceptindex]{QuantitySpecConvertibleTo@\texttt  {\frenchspacing \textit  {QuantitySpecConvertibleTo}}|hyperpage}{29}
+\indexentry[conceptindex]{QuantitySpecConvertibleTo@\texttt  {\frenchspacing \textit  {QuantitySpecConvertibleTo}}|hyperpage}{29}
+\indexentry[libraryindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}!get-common-base@\texttt  {\frenchspacing \textit  {get-common-base}}|hyperpage}{29}
+\indexentry[libraryindex]{get-common-base@\texttt  {\frenchspacing \textit  {get-common-base}}!QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{29}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{29}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{29}
+\indexentry[libraryindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}!is-child-of@\texttt  {\frenchspacing \textit  {is-child-of}}|hyperpage}{30}
+\indexentry[libraryindex]{is-child-of@\texttt  {\frenchspacing \textit  {is-child-of}}!QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{30}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{30}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{30}
+\indexentry[libraryindex]{MagConstant@\texttt  {\frenchspacing MagConstant}|hyperpage}{30}
+\indexentry[conceptindex]{MagConstant@\texttt  {\frenchspacing MagConstant}|hyperindexformat{\idxbfpage}}{30}
+\indexentry[conceptindex]{SymbolicConstant@\texttt  {\frenchspacing \textit  {SymbolicConstant}}|hyperpage}{30}
+\indexentry[libraryindex]{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{30}
+\indexentry[conceptindex]{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperindexformat{\idxbfpage}}{30}
+\indexentry[conceptindex]{MagArg@\texttt  {\frenchspacing \textit  {MagArg}}|hyperindexformat{\idxbfpage}}{30}
+\indexentry[conceptindex]{MagConstant@\texttt  {\frenchspacing MagConstant}|hyperpage}{30}
+\indexentry[libraryindex]{mag_constant@\texttt  {\frenchspacing mag_constant}|hyperpage}{30}
+\indexentry[libraryindex]{unit-magnitude@\texttt  {\frenchspacing \textit  {unit-magnitude}}|hyperpage}{30}
+\indexentry[conceptindex]{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{30}
+\indexentry[conceptindex]{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{30}
+\indexentry[conceptindex]{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{30}
+\indexentry[conceptindex]{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{30}
+\indexentry[conceptindex]{MagArg@\texttt  {\frenchspacing \textit  {MagArg}}|hyperpage}{31}
+\indexentry[impldefindex]{behavior of unit-magnitude operations that do not fit in a std::intmax_t@behavior of \texttt  {\frenchspacing \textit  {unit-magnitude}} operations that do not fit in a \texttt  {\frenchspacing std::intmax_t}|hyperpage}{31}
+\indexentry[libraryindex]{operator*@\texttt  {\frenchspacing operator*}!UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{31}
+\indexentry[libraryindex]{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}!operator*@\texttt  {\frenchspacing operator*}|hyperpage}{31}
+\indexentry[conceptindex]{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{31}
+\indexentry[conceptindex]{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{31}
+\indexentry[libraryindex]{operator/@\texttt  {\frenchspacing operator/}!UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{31}
+\indexentry[libraryindex]{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}!operator/@\texttt  {\frenchspacing operator/}|hyperpage}{31}
+\indexentry[conceptindex]{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{31}
+\indexentry[libraryindex]{operator==@\texttt  {\frenchspacing operator==}!UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{31}
+\indexentry[libraryindex]{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}!operator==@\texttt  {\frenchspacing operator==}|hyperpage}{31}
+\indexentry[conceptindex]{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{31}
+\indexentry[libraryindex]{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}!pow@\texttt  {\frenchspacing \textit  {pow}}|hyperpage}{31}
+\indexentry[libraryindex]{pow@\texttt  {\frenchspacing \textit  {pow}}!UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{31}
+\indexentry[libraryindex]{mag@\texttt  {\frenchspacing mag}|hyperpage}{31}
+\indexentry[conceptindex]{MagArg@\texttt  {\frenchspacing \textit  {MagArg}}|hyperpage}{31}
+\indexentry[conceptindex]{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{31}
+\indexentry[conceptindex]{MagConstant@\texttt  {\frenchspacing MagConstant}|hyperpage}{31}
+\indexentry[libraryindex]{mag_ratio@\texttt  {\frenchspacing mag_ratio}|hyperpage}{31}
+\indexentry[conceptindex]{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{31}
+\indexentry[libraryindex]{mag_power@\texttt  {\frenchspacing mag_power}|hyperpage}{32}
+\indexentry[conceptindex]{MagArg@\texttt  {\frenchspacing \textit  {MagArg}}|hyperpage}{32}
+\indexentry[conceptindex]{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{32}
+\indexentry[libraryindex]{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}!is-positive-integral-power@\texttt  {\frenchspacing \textit  {is-positive-integral-power}}|hyperpage}{32}
+\indexentry[libraryindex]{is-positive-integral-power@\texttt  {\frenchspacing \textit  {is-positive-integral-power}}!UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{32}
+\indexentry[libraryindex]{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}!common-magnitude@\texttt  {\frenchspacing \textit  {common-magnitude}}|hyperpage}{32}
+\indexentry[libraryindex]{common-magnitude@\texttt  {\frenchspacing \textit  {common-magnitude}}!UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{32}
+\indexentry[libraryindex]{space_before_unit_symbol@\texttt  {\frenchspacing space_before_unit_symbol}|hyperpage}{32}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{32}
+\indexentry[libraryindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{32}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperindexformat{\idxbfpage}}{32}
+\indexentry[conceptindex]{SymbolicConstant@\texttt  {\frenchspacing \textit  {SymbolicConstant}}|hyperpage}{32}
+\indexentry[libraryindex]{PrefixableUnit@\texttt  {\frenchspacing PrefixableUnit}|hyperpage}{32}
+\indexentry[conceptindex]{PrefixableUnit@\texttt  {\frenchspacing PrefixableUnit}|hyperindexformat{\idxbfpage}}{32}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{32}
+\indexentry[libraryindex]{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{32}
+\indexentry[conceptindex]{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperindexformat{\idxbfpage}}{32}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{32}
+\indexentry[libraryindex]{UnitOf@\texttt  {\frenchspacing UnitOf}|hyperpage}{32}
+\indexentry[conceptindex]{UnitOf@\texttt  {\frenchspacing UnitOf}|hyperindexformat{\idxbfpage}}{32}
+\indexentry[conceptindex]{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{32}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{32}
+\indexentry[conceptindex]{QuantitySpecConvertibleTo@\texttt  {\frenchspacing \textit  {QuantitySpecConvertibleTo}}|hyperpage}{32}
+\indexentry[conceptindex]{NestedQuantityKindSpecOf@\texttt  {\frenchspacing \textit  {NestedQuantityKindSpecOf}}|hyperpage}{32}
+\indexentry[conceptindex]{UnitConvertibleTo@\texttt  {\frenchspacing \textit  {UnitConvertibleTo}}|hyperindexformat{\idxbfpage}}{32}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{32}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{32}
+\indexentry[conceptindex]{UnitCompatibleWith@\texttt  {\frenchspacing \textit  {UnitCompatibleWith}}|hyperindexformat{\idxbfpage}}{32}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{32}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{32}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{32}
+\indexentry[conceptindex]{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{32}
+\indexentry[conceptindex]{UnitOf@\texttt  {\frenchspacing UnitOf}|hyperpage}{32}
+\indexentry[conceptindex]{UnitConvertibleTo@\texttt  {\frenchspacing \textit  {UnitConvertibleTo}}|hyperpage}{32}
+\indexentry[conceptindex]{OffsetUnit@\texttt  {\frenchspacing \textit  {OffsetUnit}}|hyperindexformat{\idxbfpage}}{32}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{32}
+\indexentry[conceptindex]{PotentiallyConvertibleTo@\texttt  {\frenchspacing \textit  {PotentiallyConvertibleTo}}|hyperindexformat{\idxbfpage}}{32}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{32}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{32}
+\indexentry[conceptindex]{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{32}
+\indexentry[conceptindex]{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{32}
+\indexentry[conceptindex]{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{32}
+\indexentry[conceptindex]{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{32}
+\indexentry[libraryindex]{canonical-unit@\texttt  {\frenchspacing \textit  {canonical-unit}}|hyperpage}{33}
+\indexentry[conceptindex]{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{33}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{33}
+\indexentry[libraryindex]{Unit@\texttt  {\frenchspacing Unit}!get-canonical-unit@\texttt  {\frenchspacing \textit  {get-canonical-unit}}|hyperpage}{33}
+\indexentry[libraryindex]{get-canonical-unit@\texttt  {\frenchspacing \textit  {get-canonical-unit}}!Unit@\texttt  {\frenchspacing Unit}|hyperpage}{33}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{33}
+\indexentry[libraryindex]{scaled_unit@\texttt  {\frenchspacing scaled_unit}|hyperpage}{33}
+\indexentry[conceptindex]{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{33}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{33}
+\indexentry[conceptindex]{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{33}
+\indexentry[libraryindex]{named_unit@\texttt  {\frenchspacing named_unit}|hyperpage}{33}
+\indexentry[conceptindex]{QuantityKindSpec@\texttt  {\frenchspacing \textit  {QuantityKindSpec}}|hyperpage}{33}
+\indexentry[conceptindex]{BaseDimension@\texttt  {\frenchspacing \textit  {BaseDimension}}|hyperpage}{33}
+\indexentry[conceptindex]{QuantityKindSpec@\texttt  {\frenchspacing \textit  {QuantityKindSpec}}|hyperpage}{33}
+\indexentry[conceptindex]{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{33}
+\indexentry[conceptindex]{BaseDimension@\texttt  {\frenchspacing \textit  {BaseDimension}}|hyperpage}{33}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{34}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{34}
+\indexentry[conceptindex]{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{34}
+\indexentry[conceptindex]{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{34}
+\indexentry[conceptindex]{QuantityKindSpec@\texttt  {\frenchspacing \textit  {QuantityKindSpec}}|hyperpage}{34}
+\indexentry[conceptindex]{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{34}
+\indexentry[conceptindex]{QuantityKindSpec@\texttt  {\frenchspacing \textit  {QuantityKindSpec}}|hyperpage}{34}
+\indexentry[conceptindex]{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{34}
+\indexentry[generalindex]{named unit|hyperindexformat{\see{unit, named}}}{34}
+\indexentry[generalindex]{unit!named|hyperpage}{34}
+\indexentry[conceptindex]{PrefixableUnit@\texttt  {\frenchspacing PrefixableUnit}|hyperpage}{34}
+\indexentry[libraryindex]{prefixed_unit@\texttt  {\frenchspacing prefixed_unit}|hyperpage}{35}
+\indexentry[conceptindex]{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{35}
+\indexentry[conceptindex]{PrefixableUnit@\texttt  {\frenchspacing PrefixableUnit}|hyperpage}{35}
+\indexentry[conceptindex]{PrefixableUnit@\texttt  {\frenchspacing PrefixableUnit}|hyperpage}{35}
+\indexentry[conceptindex]{PrefixableUnit@\texttt  {\frenchspacing PrefixableUnit}|hyperpage}{35}
+\indexentry[libraryindex]{common_unit@\texttt  {\frenchspacing common_unit}|hyperpage}{35}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{35}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{35}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{35}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{35}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{35}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{35}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{35}
+\indexentry[libraryindex]{derived_unit@\texttt  {\frenchspacing derived_unit}|hyperpage}{36}
+\indexentry[conceptindex]{SymbolicConstant@\texttt  {\frenchspacing \textit  {SymbolicConstant}}|hyperpage}{36}
+\indexentry[libraryindex]{one@\texttt  {\frenchspacing one}|hyperpage}{36}
+\indexentry[libraryindex]{unit-interface@\texttt  {\frenchspacing \textit  {unit-interface}}|hyperpage}{36}
+\indexentry[conceptindex]{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{36}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{36}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{36}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{36}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{36}
+\indexentry[conceptindex]{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{36}
+\indexentry[conceptindex]{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{36}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{36}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{36}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{36}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{36}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{36}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry[libraryindex]{operator*@\texttt  {\frenchspacing operator*}!UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{37}
+\indexentry[libraryindex]{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}!operator*@\texttt  {\frenchspacing operator*}|hyperpage}{37}
+\indexentry[libraryindex]{operator*@\texttt  {\frenchspacing operator*}!Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry[libraryindex]{Unit@\texttt  {\frenchspacing Unit}!operator*@\texttt  {\frenchspacing operator*}|hyperpage}{37}
+\indexentry[conceptindex]{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{37}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry[conceptindex]{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{37}
+\indexentry[libraryindex]{operator/@\texttt  {\frenchspacing operator/}!UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{37}
+\indexentry[libraryindex]{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}!operator/@\texttt  {\frenchspacing operator/}|hyperpage}{37}
+\indexentry[libraryindex]{operator/@\texttt  {\frenchspacing operator/}!Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry[libraryindex]{Unit@\texttt  {\frenchspacing Unit}!operator/@\texttt  {\frenchspacing operator/}|hyperpage}{37}
+\indexentry[conceptindex]{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{37}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry[libraryindex]{operator*@\texttt  {\frenchspacing operator*}!Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry[libraryindex]{Unit@\texttt  {\frenchspacing Unit}!operator*@\texttt  {\frenchspacing operator*}|hyperpage}{37}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry[libraryindex]{operator/@\texttt  {\frenchspacing operator/}!Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry[libraryindex]{Unit@\texttt  {\frenchspacing Unit}!operator/@\texttt  {\frenchspacing operator/}|hyperpage}{37}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry[libraryindex]{inverse@\texttt  {\frenchspacing inverse}!Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry[libraryindex]{Unit@\texttt  {\frenchspacing Unit}!inverse@\texttt  {\frenchspacing inverse}|hyperpage}{37}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry[libraryindex]{pow@\texttt  {\frenchspacing pow}!Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry[libraryindex]{Unit@\texttt  {\frenchspacing Unit}!pow@\texttt  {\frenchspacing pow}|hyperpage}{37}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry[libraryindex]{sqrt@\texttt  {\frenchspacing sqrt}!Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry[libraryindex]{Unit@\texttt  {\frenchspacing Unit}!sqrt@\texttt  {\frenchspacing sqrt}|hyperpage}{37}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry[libraryindex]{cbrt@\texttt  {\frenchspacing cbrt}!Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry[libraryindex]{Unit@\texttt  {\frenchspacing Unit}!cbrt@\texttt  {\frenchspacing cbrt}|hyperpage}{37}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry[libraryindex]{square@\texttt  {\frenchspacing square}!Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry[libraryindex]{Unit@\texttt  {\frenchspacing Unit}!square@\texttt  {\frenchspacing square}|hyperpage}{37}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry[libraryindex]{cubic@\texttt  {\frenchspacing cubic}!Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry[libraryindex]{Unit@\texttt  {\frenchspacing Unit}!cubic@\texttt  {\frenchspacing cubic}|hyperpage}{37}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{38}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{38}
+\indexentry[libraryindex]{operator==@\texttt  {\frenchspacing operator==}!Unit@\texttt  {\frenchspacing Unit}|hyperpage}{38}
+\indexentry[libraryindex]{Unit@\texttt  {\frenchspacing Unit}!operator==@\texttt  {\frenchspacing operator==}|hyperpage}{38}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{38}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{38}
+\indexentry[libraryindex]{equivalent@\texttt  {\frenchspacing equivalent}!Unit@\texttt  {\frenchspacing Unit}|hyperpage}{38}
+\indexentry[libraryindex]{Unit@\texttt  {\frenchspacing Unit}!equivalent@\texttt  {\frenchspacing equivalent}|hyperpage}{38}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{38}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{38}
+\indexentry[libraryindex]{convertible@\texttt  {\frenchspacing convertible}!Unit@\texttt  {\frenchspacing Unit}|hyperpage}{38}
+\indexentry[libraryindex]{Unit@\texttt  {\frenchspacing Unit}!convertible@\texttt  {\frenchspacing convertible}|hyperpage}{38}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{38}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{38}
+\indexentry[conceptindex]{PotentiallyConvertibleTo@\texttt  {\frenchspacing \textit  {PotentiallyConvertibleTo}}|hyperpage}{38}
+\indexentry[libraryindex]{get_quantity_spec@\texttt  {\frenchspacing get_quantity_spec}!AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{38}
+\indexentry[libraryindex]{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}!get_quantity_spec@\texttt  {\frenchspacing get_quantity_spec}|hyperpage}{38}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{38}
+\indexentry[conceptindex]{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{38}
+\indexentry[libraryindex]{get_unit@\texttt  {\frenchspacing get_unit}!AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{38}
+\indexentry[libraryindex]{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}!get_unit@\texttt  {\frenchspacing get_unit}|hyperpage}{38}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{38}
+\indexentry[conceptindex]{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{38}
+\indexentry[libraryindex]{get_common_unit@\texttt  {\frenchspacing get_common_unit}!Unit@\texttt  {\frenchspacing Unit}|hyperpage}{38}
+\indexentry[libraryindex]{Unit@\texttt  {\frenchspacing Unit}!get_common_unit@\texttt  {\frenchspacing get_common_unit}|hyperpage}{38}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{38}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{38}
+\indexentry[libraryindex]{Unit@\texttt  {\frenchspacing Unit}!has-associated-quantity@\texttt  {\frenchspacing \textit  {has-associated-quantity}}|hyperpage}{39}
+\indexentry[libraryindex]{has-associated-quantity@\texttt  {\frenchspacing \textit  {has-associated-quantity}}!Unit@\texttt  {\frenchspacing Unit}|hyperpage}{39}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{39}
+\indexentry[libraryindex]{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}!get-associated-quantity@\texttt  {\frenchspacing \textit  {get-associated-quantity}}|hyperpage}{39}
+\indexentry[libraryindex]{get-associated-quantity@\texttt  {\frenchspacing \textit  {get-associated-quantity}}!AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{39}
+\indexentry[conceptindex]{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{39}
+\indexentry[conceptindex]{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{39}
+\indexentry[libraryindex]{unit_symbol_to@\texttt  {\frenchspacing unit_symbol_to}!Unit@\texttt  {\frenchspacing Unit}|hyperpage}{40}
+\indexentry[libraryindex]{Unit@\texttt  {\frenchspacing Unit}!unit_symbol_to@\texttt  {\frenchspacing unit_symbol_to}|hyperpage}{40}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{40}
+\indexentry[libraryindex]{unit_symbol@\texttt  {\frenchspacing unit_symbol}!Unit@\texttt  {\frenchspacing Unit}|hyperpage}{40}
+\indexentry[libraryindex]{Unit@\texttt  {\frenchspacing Unit}!unit_symbol@\texttt  {\frenchspacing unit_symbol}|hyperpage}{40}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{40}
+\indexentry[libraryindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{40}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperindexformat{\idxbfpage}}{40}
+\indexentry[conceptindex]{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{40}
+\indexentry[libraryindex]{ReferenceOf@\texttt  {\frenchspacing ReferenceOf}|hyperpage}{40}
+\indexentry[conceptindex]{ReferenceOf@\texttt  {\frenchspacing ReferenceOf}|hyperindexformat{\idxbfpage}}{40}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{40}
+\indexentry[conceptindex]{QuantitySpecOf@\texttt  {\frenchspacing QuantitySpecOf}|hyperpage}{40}
+\indexentry[libraryindex]{operator*@\texttt  {\frenchspacing operator*}!reference@\texttt  {\frenchspacing reference}|hyperpage}{40}
+\indexentry[libraryindex]{reference@\texttt  {\frenchspacing reference}!operator*@\texttt  {\frenchspacing operator*}|hyperpage}{40}
+\indexentry[libraryindex]{operator*@\texttt  {\frenchspacing operator*}!AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{40}
+\indexentry[libraryindex]{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}!operator*@\texttt  {\frenchspacing operator*}|hyperpage}{40}
+\indexentry[libraryindex]{operator/@\texttt  {\frenchspacing operator/}!reference@\texttt  {\frenchspacing reference}|hyperpage}{40}
+\indexentry[libraryindex]{reference@\texttt  {\frenchspacing reference}!operator/@\texttt  {\frenchspacing operator/}|hyperpage}{40}
+\indexentry[libraryindex]{operator/@\texttt  {\frenchspacing operator/}!AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{40}
+\indexentry[libraryindex]{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}!operator/@\texttt  {\frenchspacing operator/}|hyperpage}{40}
+\indexentry[libraryindex]{inverse@\texttt  {\frenchspacing inverse}!reference@\texttt  {\frenchspacing reference}|hyperpage}{40}
+\indexentry[libraryindex]{reference@\texttt  {\frenchspacing reference}!inverse@\texttt  {\frenchspacing inverse}|hyperpage}{40}
+\indexentry[libraryindex]{pow@\texttt  {\frenchspacing pow}!reference@\texttt  {\frenchspacing reference}|hyperpage}{40}
+\indexentry[libraryindex]{reference@\texttt  {\frenchspacing reference}!pow@\texttt  {\frenchspacing pow}|hyperpage}{40}
+\indexentry[libraryindex]{sqrt@\texttt  {\frenchspacing sqrt}!reference@\texttt  {\frenchspacing reference}|hyperpage}{40}
+\indexentry[libraryindex]{reference@\texttt  {\frenchspacing reference}!sqrt@\texttt  {\frenchspacing sqrt}|hyperpage}{40}
+\indexentry[libraryindex]{cbrt@\texttt  {\frenchspacing cbrt}!reference@\texttt  {\frenchspacing reference}|hyperpage}{40}
+\indexentry[libraryindex]{reference@\texttt  {\frenchspacing reference}!cbrt@\texttt  {\frenchspacing cbrt}|hyperpage}{40}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{40}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{40}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{40}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{40}
+\indexentry[libraryindex]{reference@\texttt  {\frenchspacing reference}|hyperpage}{40}
+\indexentry[conceptindex]{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{40}
+\indexentry[conceptindex]{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{40}
+\indexentry[conceptindex]{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{40}
+\indexentry[conceptindex]{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{40}
+\indexentry[conceptindex]{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{41}
+\indexentry[conceptindex]{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{41}
+\indexentry[conceptindex]{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{41}
+\indexentry[libraryindex]{operator*@\texttt  {\frenchspacing operator*}!Representation@\texttt  {\frenchspacing Representation}|hyperpage}{41}
+\indexentry[libraryindex]{Representation@\texttt  {\frenchspacing Representation}!operator*@\texttt  {\frenchspacing operator*}|hyperpage}{41}
+\indexentry[libraryindex]{operator*@\texttt  {\frenchspacing operator*}!Reference@\texttt  {\frenchspacing Reference}|hyperpage}{41}
+\indexentry[libraryindex]{Reference@\texttt  {\frenchspacing Reference}!operator*@\texttt  {\frenchspacing operator*}|hyperpage}{41}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{41}
+\indexentry[conceptindex]{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{41}
+\indexentry[conceptindex]{OffsetUnit@\texttt  {\frenchspacing \textit  {OffsetUnit}}|hyperpage}{41}
+\indexentry[libraryindex]{operator*@\texttt  {\frenchspacing operator*}!Representation@\texttt  {\frenchspacing Representation}|hyperpage}{41}
+\indexentry[libraryindex]{Representation@\texttt  {\frenchspacing Representation}!operator*@\texttt  {\frenchspacing operator*}|hyperpage}{41}
+\indexentry[libraryindex]{operator*@\texttt  {\frenchspacing operator*}!Reference@\texttt  {\frenchspacing Reference}|hyperpage}{41}
+\indexentry[libraryindex]{Reference@\texttt  {\frenchspacing Reference}!operator*@\texttt  {\frenchspacing operator*}|hyperpage}{41}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{41}
+\indexentry[conceptindex]{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{41}
+\indexentry[conceptindex]{OffsetUnit@\texttt  {\frenchspacing \textit  {OffsetUnit}}|hyperpage}{41}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{41}
+\indexentry[libraryindex]{operator*@\texttt  {\frenchspacing operator*}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{41}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!operator*@\texttt  {\frenchspacing operator*}|hyperpage}{41}
+\indexentry[libraryindex]{operator*@\texttt  {\frenchspacing operator*}!Reference@\texttt  {\frenchspacing Reference}|hyperpage}{41}
+\indexentry[libraryindex]{Reference@\texttt  {\frenchspacing Reference}!operator*@\texttt  {\frenchspacing operator*}|hyperpage}{41}
+\indexentry[libraryindex]{operator/@\texttt  {\frenchspacing operator/}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{41}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!operator/@\texttt  {\frenchspacing operator/}|hyperpage}{41}
+\indexentry[libraryindex]{operator/@\texttt  {\frenchspacing operator/}!Reference@\texttt  {\frenchspacing Reference}|hyperpage}{41}
+\indexentry[libraryindex]{Reference@\texttt  {\frenchspacing Reference}!operator/@\texttt  {\frenchspacing operator/}|hyperpage}{41}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{41}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{41}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{41}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{41}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{41}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{41}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{41}
+\indexentry[conceptindex]{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{41}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{42}
+\indexentry[conceptindex]{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{42}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{42}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{42}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{42}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{42}
+\indexentry[libraryindex]{operator==@\texttt  {\frenchspacing operator==}!reference@\texttt  {\frenchspacing reference}|hyperpage}{42}
+\indexentry[libraryindex]{reference@\texttt  {\frenchspacing reference}!operator==@\texttt  {\frenchspacing operator==}|hyperpage}{42}
+\indexentry[libraryindex]{operator==@\texttt  {\frenchspacing operator==}!reference@\texttt  {\frenchspacing reference}|hyperpage}{42}
+\indexentry[libraryindex]{reference@\texttt  {\frenchspacing reference}!operator==@\texttt  {\frenchspacing operator==}|hyperpage}{42}
+\indexentry[libraryindex]{operator==@\texttt  {\frenchspacing operator==}!AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{42}
+\indexentry[libraryindex]{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}!operator==@\texttt  {\frenchspacing operator==}|hyperpage}{42}
+\indexentry[conceptindex]{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{42}
+\indexentry[libraryindex]{convertible@\texttt  {\frenchspacing convertible}!reference@\texttt  {\frenchspacing reference}|hyperpage}{42}
+\indexentry[libraryindex]{reference@\texttt  {\frenchspacing reference}!convertible@\texttt  {\frenchspacing convertible}|hyperpage}{42}
+\indexentry[libraryindex]{convertible@\texttt  {\frenchspacing convertible}!reference@\texttt  {\frenchspacing reference}|hyperpage}{42}
+\indexentry[libraryindex]{reference@\texttt  {\frenchspacing reference}!convertible@\texttt  {\frenchspacing convertible}|hyperpage}{42}
+\indexentry[libraryindex]{convertible@\texttt  {\frenchspacing convertible}!AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{42}
+\indexentry[libraryindex]{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}!convertible@\texttt  {\frenchspacing convertible}|hyperpage}{42}
+\indexentry[conceptindex]{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{42}
+\indexentry[libraryindex]{convertible@\texttt  {\frenchspacing convertible}!reference@\texttt  {\frenchspacing reference}|hyperpage}{42}
+\indexentry[libraryindex]{reference@\texttt  {\frenchspacing reference}!convertible@\texttt  {\frenchspacing convertible}|hyperpage}{42}
+\indexentry[libraryindex]{convertible@\texttt  {\frenchspacing convertible}!AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{42}
+\indexentry[libraryindex]{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}!convertible@\texttt  {\frenchspacing convertible}|hyperpage}{42}
+\indexentry[conceptindex]{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{42}
+\indexentry[libraryindex]{get_quantity_spec@\texttt  {\frenchspacing get_quantity_spec}!reference@\texttt  {\frenchspacing reference}|hyperpage}{42}
+\indexentry[libraryindex]{reference@\texttt  {\frenchspacing reference}!get_quantity_spec@\texttt  {\frenchspacing get_quantity_spec}|hyperpage}{42}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{42}
+\indexentry[libraryindex]{get_unit@\texttt  {\frenchspacing get_unit}!reference@\texttt  {\frenchspacing reference}|hyperpage}{42}
+\indexentry[libraryindex]{reference@\texttt  {\frenchspacing reference}!get_unit@\texttt  {\frenchspacing get_unit}|hyperpage}{42}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{42}
+\indexentry[libraryindex]{get_common_reference@\texttt  {\frenchspacing get_common_reference}!AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{42}
+\indexentry[libraryindex]{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}!get_common_reference@\texttt  {\frenchspacing get_common_reference}|hyperpage}{42}
+\indexentry[conceptindex]{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{42}
+\indexentry[libraryindex]{get_common_reference@\texttt  {\frenchspacing get_common_reference}|hyperpage}{42}
+\indexentry[conceptindex]{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{42}
+\indexentry[conceptindex]{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{42}
+\indexentry[conceptindex]{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{42}
+\indexentry[libraryindex]{get_common_reference@\texttt  {\frenchspacing get_common_reference}!reference@\texttt  {\frenchspacing reference}|hyperpage}{43}
+\indexentry[libraryindex]{reference@\texttt  {\frenchspacing reference}!get_common_reference@\texttt  {\frenchspacing get_common_reference}|hyperpage}{43}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{43}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{43}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{43}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{43}
+\indexentry[libraryindex]{get_common_reference@\texttt  {\frenchspacing get_common_reference}|hyperpage}{43}
+\indexentry[libraryindex]{treat_as_floating_point@\texttt  {\frenchspacing treat_as_floating_point}|hyperpage}{43}
+\indexentry[libraryindex]{disable_scalar@\texttt  {\frenchspacing disable_scalar}|hyperpage}{43}
+\indexentry[libraryindex]{disable_complex@\texttt  {\frenchspacing disable_complex}|hyperpage}{43}
+\indexentry[libraryindex]{disable_vector@\texttt  {\frenchspacing disable_vector}|hyperpage}{43}
+\indexentry[libraryindex]{representation_values@\texttt  {\frenchspacing representation_values}|hyperpage}{44}
+\indexentry[conceptindex]{WeaklyRegular@\texttt  {\frenchspacing \textit  {WeaklyRegular}}|hyperpage}{44}
+\indexentry[conceptindex]{Scalar@\texttt  {\frenchspacing \textit  {Scalar}}|hyperpage}{44}
+\indexentry[conceptindex]{Scalar@\texttt  {\frenchspacing \textit  {Scalar}}|hyperpage}{44}
+\indexentry[conceptindex]{WeaklyRegular@\texttt  {\frenchspacing \textit  {WeaklyRegular}}|hyperpage}{44}
+\indexentry[conceptindex]{Scalar@\texttt  {\frenchspacing \textit  {Scalar}}|hyperpage}{44}
+\indexentry[conceptindex]{Scalar@\texttt  {\frenchspacing \textit  {Scalar}}|hyperpage}{44}
+\indexentry[conceptindex]{WeaklyRegular@\texttt  {\frenchspacing \textit  {WeaklyRegular}}|hyperpage}{44}
+\indexentry[conceptindex]{Scalar@\texttt  {\frenchspacing \textit  {Scalar}}|hyperpage}{44}
+\indexentry[conceptindex]{Scalar@\texttt  {\frenchspacing \textit  {Scalar}}|hyperpage}{45}
+\indexentry[conceptindex]{Scalar@\texttt  {\frenchspacing \textit  {Scalar}}|hyperpage}{45}
+\indexentry[conceptindex]{Scalar@\texttt  {\frenchspacing \textit  {Scalar}}|hyperpage}{45}
+\indexentry[conceptindex]{WeaklyRegular@\texttt  {\frenchspacing \textit  {WeaklyRegular}}|hyperpage}{45}
+\indexentry[conceptindex]{Scalar@\texttt  {\frenchspacing \textit  {Scalar}}|hyperpage}{45}
+\indexentry[conceptindex]{Scalar@\texttt  {\frenchspacing \textit  {Scalar}}|hyperpage}{45}
+\indexentry[conceptindex]{Scalar@\texttt  {\frenchspacing \textit  {Scalar}}|hyperpage}{45}
+\indexentry[conceptindex]{Scalar@\texttt  {\frenchspacing \textit  {Scalar}}|hyperpage}{45}
+\indexentry[conceptindex]{WeaklyRegular@\texttt  {\frenchspacing \textit  {WeaklyRegular}}|hyperindexformat{\idxbfpage}}{45}
+\indexentry[conceptindex]{Scalar@\texttt  {\frenchspacing \textit  {Scalar}}|hyperindexformat{\idxbfpage}}{45}
+\indexentry[conceptindex]{WeaklyRegular@\texttt  {\frenchspacing \textit  {WeaklyRegular}}|hyperpage}{45}
+\indexentry[conceptindex]{Complex@\texttt  {\frenchspacing \textit  {Complex}}|hyperindexformat{\idxbfpage}}{45}
+\indexentry[conceptindex]{WeaklyRegular@\texttt  {\frenchspacing \textit  {WeaklyRegular}}|hyperpage}{45}
+\indexentry[conceptindex]{Scalar@\texttt  {\frenchspacing \textit  {Scalar}}|hyperpage}{45}
+\indexentry[conceptindex]{Vector@\texttt  {\frenchspacing \textit  {Vector}}|hyperindexformat{\idxbfpage}}{46}
+\indexentry[conceptindex]{WeaklyRegular@\texttt  {\frenchspacing \textit  {WeaklyRegular}}|hyperpage}{46}
+\indexentry[conceptindex]{Scalar@\texttt  {\frenchspacing \textit  {Scalar}}|hyperpage}{46}
+\indexentry[conceptindex]{ScalarRepresentation@\texttt  {\frenchspacing \textit  {ScalarRepresentation}}|hyperindexformat{\idxbfpage}}{46}
+\indexentry[conceptindex]{Scalar@\texttt  {\frenchspacing \textit  {Scalar}}|hyperpage}{46}
+\indexentry[conceptindex]{ComplexRepresentation@\texttt  {\frenchspacing \textit  {ComplexRepresentation}}|hyperindexformat{\idxbfpage}}{46}
+\indexentry[conceptindex]{Complex@\texttt  {\frenchspacing \textit  {Complex}}|hyperpage}{46}
+\indexentry[conceptindex]{VectorRepresentation@\texttt  {\frenchspacing \textit  {VectorRepresentation}}|hyperindexformat{\idxbfpage}}{46}
+\indexentry[conceptindex]{Vector@\texttt  {\frenchspacing \textit  {Vector}}|hyperpage}{46}
+\indexentry[libraryindex]{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{46}
+\indexentry[conceptindex]{Representation@\texttt  {\frenchspacing Representation}|hyperindexformat{\idxbfpage}}{46}
+\indexentry[conceptindex]{ScalarRepresentation@\texttt  {\frenchspacing \textit  {ScalarRepresentation}}|hyperpage}{46}
+\indexentry[conceptindex]{ComplexRepresentation@\texttt  {\frenchspacing \textit  {ComplexRepresentation}}|hyperpage}{46}
+\indexentry[conceptindex]{VectorRepresentation@\texttt  {\frenchspacing \textit  {VectorRepresentation}}|hyperpage}{46}
+\indexentry[conceptindex]{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{46}
+\indexentry[conceptindex]{IsOfCharacter@\texttt  {\frenchspacing \textit  {IsOfCharacter}}|hyperindexformat{\idxbfpage}}{47}
+\indexentry[conceptindex]{Scalar@\texttt  {\frenchspacing \textit  {Scalar}}|hyperpage}{47}
+\indexentry[conceptindex]{Complex@\texttt  {\frenchspacing \textit  {Complex}}|hyperpage}{47}
+\indexentry[conceptindex]{Vector@\texttt  {\frenchspacing \textit  {Vector}}|hyperpage}{47}
+\indexentry[libraryindex]{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{47}
+\indexentry[conceptindex]{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperindexformat{\idxbfpage}}{47}
+\indexentry[conceptindex]{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{47}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{47}
+\indexentry[conceptindex]{QuantityKindSpec@\texttt  {\frenchspacing \textit  {QuantityKindSpec}}|hyperpage}{47}
+\indexentry[conceptindex]{IsOfCharacter@\texttt  {\frenchspacing \textit  {IsOfCharacter}}|hyperpage}{47}
+\indexentry[conceptindex]{IsOfCharacter@\texttt  {\frenchspacing \textit  {IsOfCharacter}}|hyperpage}{47}
+\indexentry[conceptindex]{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{47}
+\indexentry[conceptindex]{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{47}
+\indexentry[conceptindex]{qty-like-impl@\texttt  {\frenchspacing \textit  {qty-like-impl}}|hyperindexformat{\idxbfpage}}{47}
+\indexentry[libraryindex]{QuantityLike@\texttt  {\frenchspacing QuantityLike}|hyperpage}{47}
+\indexentry[conceptindex]{QuantityLike@\texttt  {\frenchspacing QuantityLike}|hyperindexformat{\idxbfpage}}{47}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{47}
+\indexentry[conceptindex]{qty-like-impl@\texttt  {\frenchspacing \textit  {qty-like-impl}}|hyperpage}{47}
+\indexentry[conceptindex]{qty-like-impl@\texttt  {\frenchspacing \textit  {qty-like-impl}}|hyperpage}{47}
+\indexentry[libraryindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{48}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperindexformat{\idxbfpage}}{48}
+\indexentry[libraryindex]{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{48}
+\indexentry[conceptindex]{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperindexformat{\idxbfpage}}{48}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{48}
+\indexentry[conceptindex]{QuantitySpecOf@\texttt  {\frenchspacing QuantitySpecOf}|hyperpage}{48}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{48}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{48}
+\indexentry[conceptindex]{IsFloatingPoint@\texttt  {\frenchspacing \textit  {IsFloatingPoint}}|hyperindexformat{\idxbfpage}}{48}
+\indexentry[conceptindex]{ValuePreservingTo@\texttt  {\frenchspacing \textit  {ValuePreservingTo}}|hyperindexformat{\idxbfpage}}{48}
+\indexentry[conceptindex]{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{48}
+\indexentry[conceptindex]{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{48}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{48}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{48}
+\indexentry[conceptindex]{IsFloatingPoint@\texttt  {\frenchspacing \textit  {IsFloatingPoint}}|hyperpage}{48}
+\indexentry[conceptindex]{QuantityConvertibleTo@\texttt  {\frenchspacing \textit  {QuantityConvertibleTo}}|hyperindexformat{\idxbfpage}}{48}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{48}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{48}
+\indexentry[conceptindex]{QuantitySpecConvertibleTo@\texttt  {\frenchspacing \textit  {QuantitySpecConvertibleTo}}|hyperpage}{48}
+\indexentry[conceptindex]{UnitConvertibleTo@\texttt  {\frenchspacing \textit  {UnitConvertibleTo}}|hyperpage}{48}
+\indexentry[conceptindex]{InvokeResultOf@\texttt  {\frenchspacing \textit  {InvokeResultOf}}|hyperindexformat{\idxbfpage}}{48}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{48}
+\indexentry[conceptindex]{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{48}
+\indexentry[conceptindex]{InvocableQuantities@\texttt  {\frenchspacing \textit  {InvocableQuantities}}|hyperindexformat{\idxbfpage}}{48}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{48}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{48}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{48}
+\indexentry[conceptindex]{InvokeResultOf@\texttt  {\frenchspacing \textit  {InvokeResultOf}}|hyperpage}{48}
+\indexentry[conceptindex]{HaveCommonReference@\texttt  {\frenchspacing \textit  {HaveCommonReference}}|hyperindexformat{\idxbfpage}}{48}
+\indexentry[conceptindex]{CommonlyInvocableQuantities@\texttt  {\frenchspacing \textit  {CommonlyInvocableQuantities}}|hyperindexformat{\idxbfpage}}{48}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{48}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{48}
+\indexentry[conceptindex]{HaveCommonReference@\texttt  {\frenchspacing \textit  {HaveCommonReference}}|hyperpage}{48}
+\indexentry[conceptindex]{InvocableQuantities@\texttt  {\frenchspacing \textit  {InvocableQuantities}}|hyperpage}{48}
+\indexentry[conceptindex]{SameValueAs@\texttt  {\frenchspacing \textit  {SameValueAs}}|hyperindexformat{\idxbfpage}}{49}
+\indexentry[conceptindex]{Mutable@\texttt  {\frenchspacing \textit  {Mutable}}|hyperindexformat{\idxbfpage}}{49}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{49}
+\indexentry[conceptindex]{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{49}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}|hyperpage}{49}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{49}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{49}
+\indexentry[conceptindex]{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{49}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{49}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{49}
+\indexentry[conceptindex]{SameValueAs@\texttt  {\frenchspacing \textit  {SameValueAs}}|hyperpage}{49}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{49}
+\indexentry[conceptindex]{SameValueAs@\texttt  {\frenchspacing \textit  {SameValueAs}}|hyperpage}{49}
+\indexentry[conceptindex]{QuantityConvertibleTo@\texttt  {\frenchspacing \textit  {QuantityConvertibleTo}}|hyperpage}{49}
+\indexentry[conceptindex]{ValuePreservingTo@\texttt  {\frenchspacing \textit  {ValuePreservingTo}}|hyperpage}{49}
+\indexentry[conceptindex]{QuantityConvertibleTo@\texttt  {\frenchspacing \textit  {QuantityConvertibleTo}}|hyperpage}{49}
+\indexentry[conceptindex]{QuantityLike@\texttt  {\frenchspacing QuantityLike}|hyperpage}{49}
+\indexentry[conceptindex]{QuantityConvertibleTo@\texttt  {\frenchspacing \textit  {QuantityConvertibleTo}}|hyperpage}{49}
+\indexentry[conceptindex]{ValuePreservingTo@\texttt  {\frenchspacing \textit  {ValuePreservingTo}}|hyperpage}{50}
+\indexentry[conceptindex]{UnitCompatibleWith@\texttt  {\frenchspacing \textit  {UnitCompatibleWith}}|hyperpage}{50}
+\indexentry[conceptindex]{QuantityConvertibleTo@\texttt  {\frenchspacing \textit  {QuantityConvertibleTo}}|hyperpage}{50}
+\indexentry[conceptindex]{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{50}
+\indexentry[conceptindex]{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{50}
+\indexentry[conceptindex]{QuantityConvertibleTo@\texttt  {\frenchspacing \textit  {QuantityConvertibleTo}}|hyperpage}{50}
+\indexentry[conceptindex]{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{50}
+\indexentry[conceptindex]{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{50}
+\indexentry[conceptindex]{UnitCompatibleWith@\texttt  {\frenchspacing \textit  {UnitCompatibleWith}}|hyperpage}{50}
+\indexentry[conceptindex]{QuantityConvertibleTo@\texttt  {\frenchspacing \textit  {QuantityConvertibleTo}}|hyperpage}{50}
+\indexentry[conceptindex]{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{50}
+\indexentry[conceptindex]{UnitCompatibleWith@\texttt  {\frenchspacing \textit  {UnitCompatibleWith}}|hyperpage}{50}
+\indexentry[conceptindex]{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{50}
+\indexentry[conceptindex]{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{50}
+\indexentry[conceptindex]{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{50}
+\indexentry[conceptindex]{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{50}
+\indexentry[conceptindex]{UnitCompatibleWith@\texttt  {\frenchspacing \textit  {UnitCompatibleWith}}|hyperpage}{50}
+\indexentry[conceptindex]{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{50}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{50}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{50}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{50}
+\indexentry[conceptindex]{UnitCompatibleWith@\texttt  {\frenchspacing \textit  {UnitCompatibleWith}}|hyperpage}{50}
+\indexentry[conceptindex]{QuantityConvertibleTo@\texttt  {\frenchspacing \textit  {QuantityConvertibleTo}}|hyperpage}{50}
+\indexentry[conceptindex]{UnitCompatibleWith@\texttt  {\frenchspacing \textit  {UnitCompatibleWith}}|hyperpage}{50}
+\indexentry[conceptindex]{QuantityLike@\texttt  {\frenchspacing QuantityLike}|hyperpage}{50}
+\indexentry[conceptindex]{QuantityConvertibleTo@\texttt  {\frenchspacing \textit  {QuantityConvertibleTo}}|hyperpage}{50}
+\indexentry[conceptindex]{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{51}
+\indexentry[conceptindex]{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{51}
+\indexentry[conceptindex]{Mutable@\texttt  {\frenchspacing \textit  {Mutable}}|hyperpage}{51}
+\indexentry[conceptindex]{Mutable@\texttt  {\frenchspacing \textit  {Mutable}}|hyperpage}{51}
+\indexentry[conceptindex]{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{51}
+\indexentry[conceptindex]{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{51}
+\indexentry[conceptindex]{Mutable@\texttt  {\frenchspacing \textit  {Mutable}}|hyperpage}{51}
+\indexentry[conceptindex]{Mutable@\texttt  {\frenchspacing \textit  {Mutable}}|hyperpage}{51}
+\indexentry[conceptindex]{Mutable@\texttt  {\frenchspacing \textit  {Mutable}}|hyperpage}{51}
+\indexentry[conceptindex]{Mutable@\texttt  {\frenchspacing \textit  {Mutable}}|hyperpage}{51}
+\indexentry[conceptindex]{ValuePreservingTo@\texttt  {\frenchspacing \textit  {ValuePreservingTo}}|hyperpage}{51}
+\indexentry[conceptindex]{Mutable@\texttt  {\frenchspacing \textit  {Mutable}}|hyperpage}{51}
+\indexentry[conceptindex]{ValuePreservingTo@\texttt  {\frenchspacing \textit  {ValuePreservingTo}}|hyperpage}{51}
+\indexentry[conceptindex]{Mutable@\texttt  {\frenchspacing \textit  {Mutable}}|hyperpage}{51}
+\indexentry[conceptindex]{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{51}
+\indexentry[conceptindex]{Mutable@\texttt  {\frenchspacing \textit  {Mutable}}|hyperpage}{51}
+\indexentry[conceptindex]{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{51}
+\indexentry[conceptindex]{CommonlyInvocableQuantities@\texttt  {\frenchspacing \textit  {CommonlyInvocableQuantities}}|hyperpage}{51}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{51}
+\indexentry[conceptindex]{CommonlyInvocableQuantities@\texttt  {\frenchspacing \textit  {CommonlyInvocableQuantities}}|hyperpage}{51}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{51}
+\indexentry[conceptindex]{CommonlyInvocableQuantities@\texttt  {\frenchspacing \textit  {CommonlyInvocableQuantities}}|hyperpage}{51}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{51}
+\indexentry[conceptindex]{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{51}
+\indexentry[conceptindex]{InvokeResultOf@\texttt  {\frenchspacing \textit  {InvokeResultOf}}|hyperpage}{51}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{51}
+\indexentry[conceptindex]{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{51}
+\indexentry[conceptindex]{InvokeResultOf@\texttt  {\frenchspacing \textit  {InvokeResultOf}}|hyperpage}{51}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{51}
+\indexentry[conceptindex]{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{52}
+\indexentry[conceptindex]{InvokeResultOf@\texttt  {\frenchspacing \textit  {InvokeResultOf}}|hyperpage}{52}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{52}
+\indexentry[conceptindex]{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{52}
+\indexentry[conceptindex]{InvokeResultOf@\texttt  {\frenchspacing \textit  {InvokeResultOf}}|hyperpage}{52}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{52}
+\indexentry[conceptindex]{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{52}
+\indexentry[conceptindex]{InvokeResultOf@\texttt  {\frenchspacing \textit  {InvokeResultOf}}|hyperpage}{52}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{52}
+\indexentry[conceptindex]{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{52}
+\indexentry[conceptindex]{InvokeResultOf@\texttt  {\frenchspacing \textit  {InvokeResultOf}}|hyperpage}{52}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{52}
+\indexentry[conceptindex]{InvocableQuantities@\texttt  {\frenchspacing \textit  {InvocableQuantities}}|hyperpage}{52}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{52}
+\indexentry[conceptindex]{InvocableQuantities@\texttt  {\frenchspacing \textit  {InvocableQuantities}}|hyperpage}{52}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{52}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{52}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{52}
+\indexentry[conceptindex]{InvokeResultOf@\texttt  {\frenchspacing \textit  {InvokeResultOf}}|hyperpage}{52}
+\indexentry[conceptindex]{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{52}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{52}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{52}
+\indexentry[conceptindex]{InvokeResultOf@\texttt  {\frenchspacing \textit  {InvokeResultOf}}|hyperpage}{52}
+\indexentry[conceptindex]{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{52}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{52}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{52}
+\indexentry[conceptindex]{InvokeResultOf@\texttt  {\frenchspacing \textit  {InvokeResultOf}}|hyperpage}{52}
+\indexentry[conceptindex]{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{52}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{52}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{52}
+\indexentry[conceptindex]{InvokeResultOf@\texttt  {\frenchspacing \textit  {InvokeResultOf}}|hyperpage}{52}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{52}
+\indexentry[conceptindex]{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{52}
+\indexentry[conceptindex]{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{52}
+\indexentry[conceptindex]{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{53}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{53}
+\indexentry[conceptindex]{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{53}
+\indexentry[conceptindex]{QuantityLike@\texttt  {\frenchspacing QuantityLike}|hyperpage}{53}
+\indexentry[libraryindex]{zero@\texttt  {\frenchspacing zero}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{53}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!zero@\texttt  {\frenchspacing zero}|hyperpage}{53}
+\indexentry[libraryindex]{one@\texttt  {\frenchspacing one}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{53}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!one@\texttt  {\frenchspacing one}|hyperpage}{53}
+\indexentry[libraryindex]{min@\texttt  {\frenchspacing min}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{53}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!min@\texttt  {\frenchspacing min}|hyperpage}{53}
+\indexentry[libraryindex]{max@\texttt  {\frenchspacing max}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{53}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!max@\texttt  {\frenchspacing max}|hyperpage}{53}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!constructor|hyperpage}{53}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{53}
+\indexentry[conceptindex]{SameValueAs@\texttt  {\frenchspacing \textit  {SameValueAs}}|hyperpage}{53}
+\indexentry[conceptindex]{ValuePreservingTo@\texttt  {\frenchspacing \textit  {ValuePreservingTo}}|hyperpage}{53}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!constructor|hyperpage}{53}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{53}
+\indexentry[conceptindex]{SameValueAs@\texttt  {\frenchspacing \textit  {SameValueAs}}|hyperpage}{53}
+\indexentry[conceptindex]{QuantityConvertibleTo@\texttt  {\frenchspacing \textit  {QuantityConvertibleTo}}|hyperpage}{53}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!constructor|hyperpage}{53}
+\indexentry[conceptindex]{QuantityConvertibleTo@\texttt  {\frenchspacing \textit  {QuantityConvertibleTo}}|hyperpage}{53}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!constructor|hyperpage}{53}
+\indexentry[conceptindex]{QuantityLike@\texttt  {\frenchspacing QuantityLike}|hyperpage}{53}
+\indexentry[conceptindex]{QuantityConvertibleTo@\texttt  {\frenchspacing \textit  {QuantityConvertibleTo}}|hyperpage}{53}
+\indexentry[libraryindex]{operator=@\texttt  {\frenchspacing operator=}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{54}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!operator=@\texttt  {\frenchspacing operator=}|hyperpage}{54}
+\indexentry[conceptindex]{ValuePreservingTo@\texttt  {\frenchspacing \textit  {ValuePreservingTo}}|hyperpage}{54}
+\indexentry[libraryindex]{in@\texttt  {\frenchspacing in}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{54}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!in@\texttt  {\frenchspacing in}|hyperpage}{54}
+\indexentry[conceptindex]{UnitCompatibleWith@\texttt  {\frenchspacing \textit  {UnitCompatibleWith}}|hyperpage}{54}
+\indexentry[conceptindex]{QuantityConvertibleTo@\texttt  {\frenchspacing \textit  {QuantityConvertibleTo}}|hyperpage}{54}
+\indexentry[conceptindex]{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{54}
+\indexentry[libraryindex]{in@\texttt  {\frenchspacing in}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{54}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!in@\texttt  {\frenchspacing in}|hyperpage}{54}
+\indexentry[conceptindex]{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{54}
+\indexentry[conceptindex]{QuantityConvertibleTo@\texttt  {\frenchspacing \textit  {QuantityConvertibleTo}}|hyperpage}{54}
+\indexentry[conceptindex]{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{54}
+\indexentry[libraryindex]{in@\texttt  {\frenchspacing in}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{54}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!in@\texttt  {\frenchspacing in}|hyperpage}{54}
+\indexentry[conceptindex]{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{54}
+\indexentry[conceptindex]{UnitCompatibleWith@\texttt  {\frenchspacing \textit  {UnitCompatibleWith}}|hyperpage}{54}
+\indexentry[conceptindex]{QuantityConvertibleTo@\texttt  {\frenchspacing \textit  {QuantityConvertibleTo}}|hyperpage}{54}
+\indexentry[conceptindex]{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{54}
+\indexentry[libraryindex]{force_in@\texttt  {\frenchspacing force_in}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{54}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!force_in@\texttt  {\frenchspacing force_in}|hyperpage}{54}
+\indexentry[conceptindex]{UnitCompatibleWith@\texttt  {\frenchspacing \textit  {UnitCompatibleWith}}|hyperpage}{54}
+\indexentry[conceptindex]{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{54}
+\indexentry[libraryindex]{force_in@\texttt  {\frenchspacing force_in}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{54}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!force_in@\texttt  {\frenchspacing force_in}|hyperpage}{54}
+\indexentry[conceptindex]{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{54}
+\indexentry[conceptindex]{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{54}
+\indexentry[libraryindex]{force_in@\texttt  {\frenchspacing force_in}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{54}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!force_in@\texttt  {\frenchspacing force_in}|hyperpage}{54}
+\indexentry[conceptindex]{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{54}
+\indexentry[conceptindex]{UnitCompatibleWith@\texttt  {\frenchspacing \textit  {UnitCompatibleWith}}|hyperpage}{54}
+\indexentry[conceptindex]{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{54}
+\indexentry[libraryindex]{numerical_value_ref_in@\texttt  {\frenchspacing numerical_value_ref_in}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{54}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!numerical_value_ref_in@\texttt  {\frenchspacing numerical_value_ref_in}|hyperpage}{54}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{54}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{54}
+\indexentry[libraryindex]{numerical_value_in@\texttt  {\frenchspacing numerical_value_in}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{54}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!numerical_value_in@\texttt  {\frenchspacing numerical_value_in}|hyperpage}{54}
+\indexentry[conceptindex]{UnitCompatibleWith@\texttt  {\frenchspacing \textit  {UnitCompatibleWith}}|hyperpage}{54}
+\indexentry[conceptindex]{QuantityConvertibleTo@\texttt  {\frenchspacing \textit  {QuantityConvertibleTo}}|hyperpage}{54}
+\indexentry[libraryindex]{force_numerical_value_in@\texttt  {\frenchspacing force_numerical_value_in}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{55}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!force_numerical_value_in@\texttt  {\frenchspacing force_numerical_value_in}|hyperpage}{55}
+\indexentry[conceptindex]{UnitCompatibleWith@\texttt  {\frenchspacing \textit  {UnitCompatibleWith}}|hyperpage}{55}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!operator constructible_from<Rep>@\texttt  {\frenchspacing operator constructible_from<Rep>}|hyperpage}{55}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!operator QuantityLike@\texttt  {\frenchspacing operator QuantityLike}|hyperpage}{55}
+\indexentry[conceptindex]{QuantityLike@\texttt  {\frenchspacing QuantityLike}|hyperpage}{55}
+\indexentry[conceptindex]{QuantityConvertibleTo@\texttt  {\frenchspacing \textit  {QuantityConvertibleTo}}|hyperpage}{55}
+\indexentry[libraryindex]{operator+@\texttt  {\frenchspacing operator+}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{55}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!operator+@\texttt  {\frenchspacing operator+}|hyperpage}{55}
+\indexentry[libraryindex]{operator-@\texttt  {\frenchspacing operator-}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{55}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!operator-@\texttt  {\frenchspacing operator-}|hyperpage}{55}
+\indexentry[conceptindex]{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{55}
+\indexentry[conceptindex]{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{55}
+\indexentry[libraryindex]{operator++@\texttt  {\frenchspacing operator++}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{55}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!operator++@\texttt  {\frenchspacing operator++}|hyperpage}{55}
+\indexentry[libraryindex]{operator--@\texttt  {\frenchspacing operator--}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{55}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!operator--@\texttt  {\frenchspacing operator--}|hyperpage}{55}
+\indexentry[conceptindex]{Mutable@\texttt  {\frenchspacing \textit  {Mutable}}|hyperpage}{55}
+\indexentry[conceptindex]{Mutable@\texttt  {\frenchspacing \textit  {Mutable}}|hyperpage}{55}
+\indexentry[libraryindex]{operator++@\texttt  {\frenchspacing operator++}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{55}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!operator++@\texttt  {\frenchspacing operator++}|hyperpage}{55}
+\indexentry[libraryindex]{operator--@\texttt  {\frenchspacing operator--}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{55}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!operator--@\texttt  {\frenchspacing operator--}|hyperpage}{55}
+\indexentry[conceptindex]{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{55}
+\indexentry[conceptindex]{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{55}
+\indexentry[libraryindex]{operator+=@\texttt  {\frenchspacing operator+=}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{56}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!operator+=@\texttt  {\frenchspacing operator+=}|hyperpage}{56}
+\indexentry[libraryindex]{operator-=@\texttt  {\frenchspacing operator-=}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{56}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!operator-=@\texttt  {\frenchspacing operator-=}|hyperpage}{56}
+\indexentry[libraryindex]{operator\%=@\texttt  {\frenchspacing operator\%=}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{56}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!operator\%=@\texttt  {\frenchspacing operator\%=}|hyperpage}{56}
+\indexentry[conceptindex]{Mutable@\texttt  {\frenchspacing \textit  {Mutable}}|hyperpage}{56}
+\indexentry[conceptindex]{Mutable@\texttt  {\frenchspacing \textit  {Mutable}}|hyperpage}{56}
+\indexentry[conceptindex]{Mutable@\texttt  {\frenchspacing \textit  {Mutable}}|hyperpage}{56}
+\indexentry[conceptindex]{QuantityConvertibleTo@\texttt  {\frenchspacing \textit  {QuantityConvertibleTo}}|hyperpage}{56}
+\indexentry[libraryindex]{operator*=@\texttt  {\frenchspacing operator*=}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{56}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!operator*=@\texttt  {\frenchspacing operator*=}|hyperpage}{56}
+\indexentry[libraryindex]{operator/=@\texttt  {\frenchspacing operator/=}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{56}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!operator/=@\texttt  {\frenchspacing operator/=}|hyperpage}{56}
+\indexentry[conceptindex]{Mutable@\texttt  {\frenchspacing \textit  {Mutable}}|hyperpage}{56}
+\indexentry[conceptindex]{ValuePreservingTo@\texttt  {\frenchspacing \textit  {ValuePreservingTo}}|hyperpage}{56}
+\indexentry[conceptindex]{Mutable@\texttt  {\frenchspacing \textit  {Mutable}}|hyperpage}{56}
+\indexentry[conceptindex]{ValuePreservingTo@\texttt  {\frenchspacing \textit  {ValuePreservingTo}}|hyperpage}{56}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{56}
+\indexentry[libraryindex]{operator*=@\texttt  {\frenchspacing operator*=}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{56}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!operator*=@\texttt  {\frenchspacing operator*=}|hyperpage}{56}
+\indexentry[libraryindex]{operator/=@\texttt  {\frenchspacing operator/=}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{56}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!operator/=@\texttt  {\frenchspacing operator/=}|hyperpage}{56}
+\indexentry[conceptindex]{Mutable@\texttt  {\frenchspacing \textit  {Mutable}}|hyperpage}{56}
+\indexentry[conceptindex]{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{56}
+\indexentry[conceptindex]{Mutable@\texttt  {\frenchspacing \textit  {Mutable}}|hyperpage}{56}
+\indexentry[conceptindex]{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{56}
+\indexentry[conceptindex]{ValuePreservingTo@\texttt  {\frenchspacing \textit  {ValuePreservingTo}}|hyperpage}{56}
+\indexentry[libraryindex]{operator+@\texttt  {\frenchspacing operator+}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{57}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!operator+@\texttt  {\frenchspacing operator+}|hyperpage}{57}
+\indexentry[libraryindex]{operator-@\texttt  {\frenchspacing operator-}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{57}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!operator-@\texttt  {\frenchspacing operator-}|hyperpage}{57}
+\indexentry[libraryindex]{operator\%@\texttt  {\frenchspacing operator\%}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{57}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!operator\%@\texttt  {\frenchspacing operator\%}|hyperpage}{57}
+\indexentry[conceptindex]{CommonlyInvocableQuantities@\texttt  {\frenchspacing \textit  {CommonlyInvocableQuantities}}|hyperpage}{57}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{57}
+\indexentry[conceptindex]{CommonlyInvocableQuantities@\texttt  {\frenchspacing \textit  {CommonlyInvocableQuantities}}|hyperpage}{57}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{57}
+\indexentry[conceptindex]{CommonlyInvocableQuantities@\texttt  {\frenchspacing \textit  {CommonlyInvocableQuantities}}|hyperpage}{57}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{57}
+\indexentry[conceptindex]{CommonlyInvocableQuantities@\texttt  {\frenchspacing \textit  {CommonlyInvocableQuantities}}|hyperpage}{57}
+\indexentry[libraryindex]{operator+@\texttt  {\frenchspacing operator+}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{57}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!operator+@\texttt  {\frenchspacing operator+}|hyperpage}{57}
+\indexentry[libraryindex]{operator-@\texttt  {\frenchspacing operator-}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{57}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!operator-@\texttt  {\frenchspacing operator-}|hyperpage}{57}
+\indexentry[libraryindex]{operator\%@\texttt  {\frenchspacing operator\%}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{57}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!operator\%@\texttt  {\frenchspacing operator\%}|hyperpage}{57}
+\indexentry[conceptindex]{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{57}
+\indexentry[conceptindex]{InvokeResultOf@\texttt  {\frenchspacing \textit  {InvokeResultOf}}|hyperpage}{57}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{57}
+\indexentry[conceptindex]{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{57}
+\indexentry[conceptindex]{InvokeResultOf@\texttt  {\frenchspacing \textit  {InvokeResultOf}}|hyperpage}{57}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{57}
+\indexentry[conceptindex]{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{57}
+\indexentry[conceptindex]{InvokeResultOf@\texttt  {\frenchspacing \textit  {InvokeResultOf}}|hyperpage}{57}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{57}
+\indexentry[libraryindex]{operator+@\texttt  {\frenchspacing operator+}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{57}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!operator+@\texttt  {\frenchspacing operator+}|hyperpage}{57}
+\indexentry[libraryindex]{operator-@\texttt  {\frenchspacing operator-}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{57}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!operator-@\texttt  {\frenchspacing operator-}|hyperpage}{57}
+\indexentry[libraryindex]{operator\%@\texttt  {\frenchspacing operator\%}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{57}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!operator\%@\texttt  {\frenchspacing operator\%}|hyperpage}{57}
+\indexentry[conceptindex]{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{57}
+\indexentry[conceptindex]{InvokeResultOf@\texttt  {\frenchspacing \textit  {InvokeResultOf}}|hyperpage}{57}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{57}
+\indexentry[conceptindex]{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{57}
+\indexentry[conceptindex]{InvokeResultOf@\texttt  {\frenchspacing \textit  {InvokeResultOf}}|hyperpage}{57}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{57}
+\indexentry[conceptindex]{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{57}
+\indexentry[conceptindex]{InvokeResultOf@\texttt  {\frenchspacing \textit  {InvokeResultOf}}|hyperpage}{57}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{57}
+\indexentry[libraryindex]{operator*@\texttt  {\frenchspacing operator*}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{57}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!operator*@\texttt  {\frenchspacing operator*}|hyperpage}{57}
+\indexentry[libraryindex]{operator/@\texttt  {\frenchspacing operator/}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{57}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!operator/@\texttt  {\frenchspacing operator/}|hyperpage}{57}
+\indexentry[conceptindex]{InvocableQuantities@\texttt  {\frenchspacing \textit  {InvocableQuantities}}|hyperpage}{57}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{57}
+\indexentry[conceptindex]{InvocableQuantities@\texttt  {\frenchspacing \textit  {InvocableQuantities}}|hyperpage}{57}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{57}
+\indexentry[libraryindex]{operator*@\texttt  {\frenchspacing operator*}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{58}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!operator*@\texttt  {\frenchspacing operator*}|hyperpage}{58}
+\indexentry[libraryindex]{operator/@\texttt  {\frenchspacing operator/}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{58}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!operator/@\texttt  {\frenchspacing operator/}|hyperpage}{58}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{58}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{58}
+\indexentry[conceptindex]{InvokeResultOf@\texttt  {\frenchspacing \textit  {InvokeResultOf}}|hyperpage}{58}
+\indexentry[conceptindex]{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{58}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{58}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{58}
+\indexentry[conceptindex]{InvokeResultOf@\texttt  {\frenchspacing \textit  {InvokeResultOf}}|hyperpage}{58}
+\indexentry[conceptindex]{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{58}
+\indexentry[libraryindex]{operator*@\texttt  {\frenchspacing operator*}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{58}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!operator*@\texttt  {\frenchspacing operator*}|hyperpage}{58}
+\indexentry[libraryindex]{operator/@\texttt  {\frenchspacing operator/}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{58}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!operator/@\texttt  {\frenchspacing operator/}|hyperpage}{58}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{58}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{58}
+\indexentry[conceptindex]{InvokeResultOf@\texttt  {\frenchspacing \textit  {InvokeResultOf}}|hyperpage}{58}
+\indexentry[conceptindex]{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{58}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{58}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{58}
+\indexentry[conceptindex]{InvokeResultOf@\texttt  {\frenchspacing \textit  {InvokeResultOf}}|hyperpage}{58}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{58}
+\indexentry[libraryindex]{operator==@\texttt  {\frenchspacing operator==}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{58}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!operator==@\texttt  {\frenchspacing operator==}|hyperpage}{58}
+\indexentry[libraryindex]{operator<=>@\texttt  {\frenchspacing operator<=>}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{58}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!operator<=>@\texttt  {\frenchspacing operator<=>}|hyperpage}{58}
+\indexentry[libraryindex]{operator==@\texttt  {\frenchspacing operator==}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{58}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!operator==@\texttt  {\frenchspacing operator==}|hyperpage}{58}
+\indexentry[libraryindex]{operator<=>@\texttt  {\frenchspacing operator<=>}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{58}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!operator<=>@\texttt  {\frenchspacing operator<=>}|hyperpage}{58}
+\indexentry[conceptindex]{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{58}
+\indexentry[conceptindex]{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{58}
+\indexentry[libraryindex]{is_eq_zero@\texttt  {\frenchspacing is_eq_zero}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{59}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!is_eq_zero@\texttt  {\frenchspacing is_eq_zero}|hyperpage}{59}
+\indexentry[libraryindex]{is_neq_zero@\texttt  {\frenchspacing is_neq_zero}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{59}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!is_neq_zero@\texttt  {\frenchspacing is_neq_zero}|hyperpage}{59}
+\indexentry[libraryindex]{is_lt_zero@\texttt  {\frenchspacing is_lt_zero}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{59}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!is_lt_zero@\texttt  {\frenchspacing is_lt_zero}|hyperpage}{59}
+\indexentry[libraryindex]{is_gt_zero@\texttt  {\frenchspacing is_gt_zero}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{59}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!is_gt_zero@\texttt  {\frenchspacing is_gt_zero}|hyperpage}{59}
+\indexentry[libraryindex]{is_lteq_zero@\texttt  {\frenchspacing is_lteq_zero}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{59}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!is_lteq_zero@\texttt  {\frenchspacing is_lteq_zero}|hyperpage}{59}
+\indexentry[libraryindex]{is_gteq_zero@\texttt  {\frenchspacing is_gteq_zero}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{59}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!is_gteq_zero@\texttt  {\frenchspacing is_gteq_zero}|hyperpage}{59}
+\indexentry[libraryindex]{delta_@\texttt  {\frenchspacing delta_}|hyperpage}{59}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{59}
+\indexentry[conceptindex]{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{59}
+\indexentry[libraryindex]{operator()@\texttt  {\frenchspacing operator()}!delta_@\texttt  {\frenchspacing delta_}|hyperpage}{59}
+\indexentry[libraryindex]{delta_@\texttt  {\frenchspacing delta_}!operator()@\texttt  {\frenchspacing operator()}|hyperpage}{59}
+\indexentry[conceptindex]{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{59}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!sudo-cast@\texttt  {\frenchspacing \textit  {sudo-cast}}|hyperpage}{59}
+\indexentry[libraryindex]{sudo-cast@\texttt  {\frenchspacing \textit  {sudo-cast}}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{59}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{59}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{59}
+\indexentry[libraryindex]{value_cast@\texttt  {\frenchspacing value_cast}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{59}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!value_cast@\texttt  {\frenchspacing value_cast}|hyperpage}{59}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{59}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{59}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{59}
+\indexentry[libraryindex]{value_cast@\texttt  {\frenchspacing value_cast}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{59}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!value_cast@\texttt  {\frenchspacing value_cast}|hyperpage}{59}
+\indexentry[conceptindex]{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{59}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{59}
+\indexentry[conceptindex]{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{59}
+\indexentry[libraryindex]{value_cast@\texttt  {\frenchspacing value_cast}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{60}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!value_cast@\texttt  {\frenchspacing value_cast}|hyperpage}{60}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{60}
+\indexentry[conceptindex]{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{60}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{60}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{60}
+\indexentry[conceptindex]{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{60}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{60}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{60}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{60}
+\indexentry[conceptindex]{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{60}
+\indexentry[libraryindex]{value_cast@\texttt  {\frenchspacing value_cast}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{60}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!value_cast@\texttt  {\frenchspacing value_cast}|hyperpage}{60}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{60}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{60}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{60}
+\indexentry[libraryindex]{quantity_cast@\texttt  {\frenchspacing quantity_cast}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{60}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!quantity_cast@\texttt  {\frenchspacing quantity_cast}|hyperpage}{60}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{60}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{60}
+\indexentry[conceptindex]{QuantitySpecCastableTo@\texttt  {\frenchspacing \textit  {QuantitySpecCastableTo}}|hyperpage}{60}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{60}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{60}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{60}
+\indexentry[conceptindex]{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{60}
+\indexentry[libraryindex]{std::common_type@\texttt  {\frenchspacing std::common_type}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{60}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{60}
+\indexentry[conceptindex]{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{60}
+\indexentry[libraryindex]{std::common_type@\texttt  {\frenchspacing std::common_type}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{60}
+\indexentry[generalindex]{origin|hyperpage}{61}
+\indexentry[libraryindex]{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{61}
+\indexentry[conceptindex]{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperindexformat{\idxbfpage}}{61}
+\indexentry[conceptindex]{SymbolicConstant@\texttt  {\frenchspacing \textit  {SymbolicConstant}}|hyperpage}{61}
+\indexentry[libraryindex]{PointOriginFor@\texttt  {\frenchspacing PointOriginFor}|hyperpage}{61}
+\indexentry[conceptindex]{PointOriginFor@\texttt  {\frenchspacing PointOriginFor}|hyperindexformat{\idxbfpage}}{61}
+\indexentry[conceptindex]{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{61}
+\indexentry[conceptindex]{QuantitySpecOf@\texttt  {\frenchspacing QuantitySpecOf}|hyperpage}{61}
+\indexentry[conceptindex]{SameAbsolutePointOriginAs@\texttt  {\frenchspacing \textit  {SameAbsolutePointOriginAs}}|hyperindexformat{\idxbfpage}}{61}
+\indexentry[conceptindex]{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{61}
+\indexentry[conceptindex]{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{61}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{61}
+\indexentry[libraryindex]{absolute_point_origin@\texttt  {\frenchspacing absolute_point_origin}|hyperpage}{61}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{61}
+\indexentry[generalindex]{absolute origin|hyperindexformat{\see{origin, absolute}}}{61}
+\indexentry[generalindex]{origin!absolute|hyperpage}{61}
+\indexentry[conceptindex]{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{61}
+\indexentry[libraryindex]{relative_point_origin@\texttt  {\frenchspacing relative_point_origin}|hyperpage}{61}
+\indexentry[conceptindex]{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{61}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{61}
+\indexentry[conceptindex]{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{61}
+\indexentry[generalindex]{relative origin|hyperindexformat{\see{origin, relative}}}{61}
+\indexentry[generalindex]{origin!relative|hyperpage}{61}
+\indexentry[conceptindex]{QuantityKindSpec@\texttt  {\frenchspacing \textit  {QuantityKindSpec}}|hyperpage}{61}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{62}
+\indexentry[libraryindex]{zeroth_point_origin_@\texttt  {\frenchspacing zeroth_point_origin_}|hyperpage}{62}
+\indexentry[conceptindex]{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{62}
+\indexentry[conceptindex]{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{62}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{62}
+\indexentry[conceptindex]{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{62}
+\indexentry[conceptindex]{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{62}
+\indexentry[conceptindex]{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{62}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{62}
+\indexentry[conceptindex]{ReferenceOf@\texttt  {\frenchspacing ReferenceOf}|hyperpage}{62}
+\indexentry[conceptindex]{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{62}
+\indexentry[conceptindex]{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{62}
+\indexentry[conceptindex]{SameAbsolutePointOriginAs@\texttt  {\frenchspacing \textit  {SameAbsolutePointOriginAs}}|hyperpage}{62}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{62}
+\indexentry[conceptindex]{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{62}
+\indexentry[conceptindex]{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{62}
+\indexentry[libraryindex]{operator+@\texttt  {\frenchspacing operator+}!point-origin-interface@\texttt  {\frenchspacing \textit  {point-origin-interface}}|hyperpage}{62}
+\indexentry[libraryindex]{point-origin-interface@\texttt  {\frenchspacing \textit  {point-origin-interface}}!operator+@\texttt  {\frenchspacing operator+}|hyperpage}{62}
+\indexentry[libraryindex]{operator+@\texttt  {\frenchspacing operator+}!quantity@\texttt  {\frenchspacing \textit  {quantity}}|hyperpage}{62}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing \textit  {quantity}}!operator+@\texttt  {\frenchspacing operator+}|hyperpage}{62}
+\indexentry[conceptindex]{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{62}
+\indexentry[conceptindex]{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{62}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{62}
+\indexentry[conceptindex]{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{62}
+\indexentry[conceptindex]{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{62}
+\indexentry[libraryindex]{operator-@\texttt  {\frenchspacing operator-}!point-origin-interface@\texttt  {\frenchspacing \textit  {point-origin-interface}}|hyperpage}{62}
+\indexentry[libraryindex]{point-origin-interface@\texttt  {\frenchspacing \textit  {point-origin-interface}}!operator-@\texttt  {\frenchspacing operator-}|hyperpage}{62}
+\indexentry[libraryindex]{operator-@\texttt  {\frenchspacing operator-}!quantity@\texttt  {\frenchspacing \textit  {quantity}}|hyperpage}{62}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing \textit  {quantity}}!operator-@\texttt  {\frenchspacing operator-}|hyperpage}{62}
+\indexentry[conceptindex]{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{62}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{62}
+\indexentry[conceptindex]{ReferenceOf@\texttt  {\frenchspacing ReferenceOf}|hyperpage}{62}
+\indexentry[conceptindex]{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{62}
+\indexentry[libraryindex]{operator-@\texttt  {\frenchspacing operator-}!point-origin-interface@\texttt  {\frenchspacing \textit  {point-origin-interface}}|hyperpage}{62}
+\indexentry[libraryindex]{point-origin-interface@\texttt  {\frenchspacing \textit  {point-origin-interface}}!operator-@\texttt  {\frenchspacing operator-}|hyperpage}{62}
+\indexentry[conceptindex]{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{62}
+\indexentry[conceptindex]{SameAbsolutePointOriginAs@\texttt  {\frenchspacing \textit  {SameAbsolutePointOriginAs}}|hyperpage}{62}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{62}
+\indexentry[conceptindex]{QuantitySpecOf@\texttt  {\frenchspacing QuantitySpecOf}|hyperpage}{62}
+\indexentry[libraryindex]{operator==@\texttt  {\frenchspacing operator==}!point-origin-interface@\texttt  {\frenchspacing \textit  {point-origin-interface}}|hyperpage}{63}
+\indexentry[libraryindex]{point-origin-interface@\texttt  {\frenchspacing \textit  {point-origin-interface}}!operator==@\texttt  {\frenchspacing operator==}|hyperpage}{63}
+\indexentry[conceptindex]{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{63}
+\indexentry[conceptindex]{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{63}
+\indexentry[libraryindex]{PointOrigin@\texttt  {\frenchspacing PointOrigin}!same-absolute-point-origins@\texttt  {\frenchspacing \textit  {same-absolute-point-origins}}|hyperpage}{63}
+\indexentry[libraryindex]{same-absolute-point-origins@\texttt  {\frenchspacing \textit  {same-absolute-point-origins}}!PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{63}
+\indexentry[conceptindex]{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{63}
+\indexentry[conceptindex]{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{63}
+\indexentry[libraryindex]{Reference@\texttt  {\frenchspacing Reference}!default_point_origin@\texttt  {\frenchspacing default_point_origin}|hyperpage}{63}
+\indexentry[libraryindex]{default_point_origin@\texttt  {\frenchspacing default_point_origin}!Reference@\texttt  {\frenchspacing Reference}|hyperpage}{63}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{63}
+\indexentry[conceptindex]{PointOriginFor@\texttt  {\frenchspacing PointOriginFor}|hyperpage}{63}
+\indexentry[libraryindex]{QuantityPointLike@\texttt  {\frenchspacing QuantityPointLike}|hyperpage}{63}
+\indexentry[conceptindex]{QuantityPointLike@\texttt  {\frenchspacing QuantityPointLike}|hyperindexformat{\idxbfpage}}{63}
+\indexentry[conceptindex]{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{63}
+\indexentry[conceptindex]{qty-like-impl@\texttt  {\frenchspacing \textit  {qty-like-impl}}|hyperpage}{63}
+\indexentry[libraryindex]{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{64}
+\indexentry[conceptindex]{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperindexformat{\idxbfpage}}{64}
+\indexentry[libraryindex]{QuantityPointOf@\texttt  {\frenchspacing QuantityPointOf}|hyperpage}{64}
+\indexentry[conceptindex]{QuantityPointOf@\texttt  {\frenchspacing QuantityPointOf}|hyperindexformat{\idxbfpage}}{64}
+\indexentry[conceptindex]{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{64}
+\indexentry[conceptindex]{QuantitySpecOf@\texttt  {\frenchspacing QuantitySpecOf}|hyperpage}{64}
+\indexentry[conceptindex]{SameAbsolutePointOriginAs@\texttt  {\frenchspacing \textit  {SameAbsolutePointOriginAs}}|hyperpage}{64}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{64}
+\indexentry[conceptindex]{PointOriginFor@\texttt  {\frenchspacing PointOriginFor}|hyperpage}{64}
+\indexentry[conceptindex]{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{64}
+\indexentry[libraryindex]{quantity_point@\texttt  {\frenchspacing quantity_point}|hyperpage}{64}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{64}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{64}
+\indexentry[conceptindex]{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{64}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{64}
+\indexentry[conceptindex]{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{64}
+\indexentry[conceptindex]{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{64}
+\indexentry[conceptindex]{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{64}
+\indexentry[conceptindex]{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{64}
+\indexentry[conceptindex]{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{64}
+\indexentry[conceptindex]{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{64}
+\indexentry[conceptindex]{SameAbsolutePointOriginAs@\texttt  {\frenchspacing \textit  {SameAbsolutePointOriginAs}}|hyperpage}{64}
+\indexentry[conceptindex]{QuantityPointOf@\texttt  {\frenchspacing QuantityPointOf}|hyperpage}{64}
+\indexentry[conceptindex]{QuantityPointLike@\texttt  {\frenchspacing QuantityPointLike}|hyperpage}{64}
+\indexentry[conceptindex]{SameAbsolutePointOriginAs@\texttt  {\frenchspacing \textit  {SameAbsolutePointOriginAs}}|hyperpage}{65}
+\indexentry[conceptindex]{QuantityPointOf@\texttt  {\frenchspacing QuantityPointOf}|hyperpage}{65}
+\indexentry[conceptindex]{UnitCompatibleWith@\texttt  {\frenchspacing \textit  {UnitCompatibleWith}}|hyperpage}{65}
+\indexentry[conceptindex]{QuantityPointOf@\texttt  {\frenchspacing QuantityPointOf}|hyperpage}{65}
+\indexentry[conceptindex]{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{65}
+\indexentry[conceptindex]{QuantityPointOf@\texttt  {\frenchspacing QuantityPointOf}|hyperpage}{65}
+\indexentry[conceptindex]{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{65}
+\indexentry[conceptindex]{UnitCompatibleWith@\texttt  {\frenchspacing \textit  {UnitCompatibleWith}}|hyperpage}{65}
+\indexentry[conceptindex]{QuantityPointOf@\texttt  {\frenchspacing QuantityPointOf}|hyperpage}{65}
+\indexentry[conceptindex]{UnitCompatibleWith@\texttt  {\frenchspacing \textit  {UnitCompatibleWith}}|hyperpage}{65}
+\indexentry[conceptindex]{QuantityPointOf@\texttt  {\frenchspacing QuantityPointOf}|hyperpage}{65}
+\indexentry[conceptindex]{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{65}
+\indexentry[conceptindex]{QuantityPointOf@\texttt  {\frenchspacing QuantityPointOf}|hyperpage}{65}
+\indexentry[conceptindex]{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{65}
+\indexentry[conceptindex]{UnitCompatibleWith@\texttt  {\frenchspacing \textit  {UnitCompatibleWith}}|hyperpage}{65}
+\indexentry[conceptindex]{QuantityPointOf@\texttt  {\frenchspacing QuantityPointOf}|hyperpage}{65}
+\indexentry[conceptindex]{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{65}
+\indexentry[conceptindex]{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{65}
+\indexentry[conceptindex]{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{65}
+\indexentry[conceptindex]{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{65}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{65}
+\indexentry[conceptindex]{QuantityPointOf@\texttt  {\frenchspacing QuantityPointOf}|hyperpage}{65}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{65}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{65}
+\indexentry[conceptindex]{QuantityPointLike@\texttt  {\frenchspacing QuantityPointLike}|hyperpage}{65}
+\indexentry[conceptindex]{QuantityPointLike@\texttt  {\frenchspacing QuantityPointLike}|hyperpage}{65}
+\indexentry[conceptindex]{Mutable@\texttt  {\frenchspacing \textit  {Mutable}}|hyperpage}{66}
+\indexentry[conceptindex]{Mutable@\texttt  {\frenchspacing \textit  {Mutable}}|hyperpage}{66}
+\indexentry[conceptindex]{Mutable@\texttt  {\frenchspacing \textit  {Mutable}}|hyperpage}{66}
+\indexentry[conceptindex]{Mutable@\texttt  {\frenchspacing \textit  {Mutable}}|hyperpage}{66}
+\indexentry[conceptindex]{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{66}
+\indexentry[conceptindex]{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{66}
+\indexentry[conceptindex]{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{66}
+\indexentry[conceptindex]{QuantityPointOf@\texttt  {\frenchspacing QuantityPointOf}|hyperpage}{66}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{66}
+\indexentry[conceptindex]{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{66}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{66}
+\indexentry[conceptindex]{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{66}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{66}
+\indexentry[conceptindex]{QuantityPointOf@\texttt  {\frenchspacing QuantityPointOf}|hyperpage}{66}
+\indexentry[conceptindex]{QuantityPointOf@\texttt  {\frenchspacing QuantityPointOf}|hyperpage}{66}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{66}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{66}
+\indexentry[conceptindex]{PointOriginFor@\texttt  {\frenchspacing PointOriginFor}|hyperpage}{66}
+\indexentry[conceptindex]{QuantityPointLike@\texttt  {\frenchspacing QuantityPointLike}|hyperpage}{66}
+\indexentry[libraryindex]{min@\texttt  {\frenchspacing min}!quantity_point@\texttt  {\frenchspacing quantity_point}|hyperpage}{67}
+\indexentry[libraryindex]{quantity_point@\texttt  {\frenchspacing quantity_point}!min@\texttt  {\frenchspacing min}|hyperpage}{67}
+\indexentry[libraryindex]{max@\texttt  {\frenchspacing max}!quantity_point@\texttt  {\frenchspacing quantity_point}|hyperpage}{67}
+\indexentry[libraryindex]{quantity_point@\texttt  {\frenchspacing quantity_point}!max@\texttt  {\frenchspacing max}|hyperpage}{67}
+\indexentry[libraryindex]{quantity_point@\texttt  {\frenchspacing quantity_point}!constructor|hyperpage}{67}
+\indexentry[conceptindex]{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{67}
+\indexentry[conceptindex]{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{67}
+\indexentry[libraryindex]{quantity_point@\texttt  {\frenchspacing quantity_point}!constructor|hyperpage}{67}
+\indexentry[conceptindex]{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{67}
+\indexentry[conceptindex]{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{67}
+\indexentry[conceptindex]{SameAbsolutePointOriginAs@\texttt  {\frenchspacing \textit  {SameAbsolutePointOriginAs}}|hyperpage}{67}
+\indexentry[libraryindex]{quantity_point@\texttt  {\frenchspacing quantity_point}!constructor|hyperpage}{67}
+\indexentry[conceptindex]{QuantityPointOf@\texttt  {\frenchspacing QuantityPointOf}|hyperpage}{67}
+\indexentry[libraryindex]{quantity_point@\texttt  {\frenchspacing quantity_point}!constructor|hyperpage}{67}
+\indexentry[conceptindex]{QuantityPointLike@\texttt  {\frenchspacing QuantityPointLike}|hyperpage}{67}
+\indexentry[libraryindex]{point_for@\texttt  {\frenchspacing point_for}!quantity_point@\texttt  {\frenchspacing quantity_point}|hyperpage}{68}
+\indexentry[libraryindex]{quantity_point@\texttt  {\frenchspacing quantity_point}!point_for@\texttt  {\frenchspacing point_for}|hyperpage}{68}
+\indexentry[conceptindex]{SameAbsolutePointOriginAs@\texttt  {\frenchspacing \textit  {SameAbsolutePointOriginAs}}|hyperpage}{68}
+\indexentry[conceptindex]{QuantityPointOf@\texttt  {\frenchspacing QuantityPointOf}|hyperpage}{68}
+\indexentry[libraryindex]{in@\texttt  {\frenchspacing in}!quantity_point@\texttt  {\frenchspacing quantity_point}|hyperpage}{68}
+\indexentry[libraryindex]{quantity_point@\texttt  {\frenchspacing quantity_point}!in@\texttt  {\frenchspacing in}|hyperpage}{68}
+\indexentry[libraryindex]{force_in@\texttt  {\frenchspacing force_in}!quantity_point@\texttt  {\frenchspacing quantity_point}|hyperpage}{68}
+\indexentry[libraryindex]{quantity_point@\texttt  {\frenchspacing quantity_point}!force_in@\texttt  {\frenchspacing force_in}|hyperpage}{68}
+\indexentry[conceptindex]{UnitCompatibleWith@\texttt  {\frenchspacing \textit  {UnitCompatibleWith}}|hyperpage}{68}
+\indexentry[conceptindex]{QuantityPointOf@\texttt  {\frenchspacing QuantityPointOf}|hyperpage}{68}
+\indexentry[conceptindex]{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{68}
+\indexentry[conceptindex]{QuantityPointOf@\texttt  {\frenchspacing QuantityPointOf}|hyperpage}{68}
+\indexentry[conceptindex]{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{68}
+\indexentry[conceptindex]{UnitCompatibleWith@\texttt  {\frenchspacing \textit  {UnitCompatibleWith}}|hyperpage}{68}
+\indexentry[conceptindex]{QuantityPointOf@\texttt  {\frenchspacing QuantityPointOf}|hyperpage}{68}
+\indexentry[conceptindex]{UnitCompatibleWith@\texttt  {\frenchspacing \textit  {UnitCompatibleWith}}|hyperpage}{68}
+\indexentry[conceptindex]{QuantityPointOf@\texttt  {\frenchspacing QuantityPointOf}|hyperpage}{68}
+\indexentry[conceptindex]{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{68}
+\indexentry[conceptindex]{QuantityPointOf@\texttt  {\frenchspacing QuantityPointOf}|hyperpage}{68}
+\indexentry[conceptindex]{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{68}
+\indexentry[conceptindex]{UnitCompatibleWith@\texttt  {\frenchspacing \textit  {UnitCompatibleWith}}|hyperpage}{68}
+\indexentry[conceptindex]{QuantityPointOf@\texttt  {\frenchspacing QuantityPointOf}|hyperpage}{68}
+\indexentry[libraryindex]{quantity_ref_from@\texttt  {\frenchspacing quantity_ref_from}!quantity_point@\texttt  {\frenchspacing quantity_point}|hyperpage}{68}
+\indexentry[libraryindex]{quantity_point@\texttt  {\frenchspacing quantity_point}!quantity_ref_from@\texttt  {\frenchspacing quantity_ref_from}|hyperpage}{68}
+\indexentry[conceptindex]{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{68}
+\indexentry[conceptindex]{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{68}
+\indexentry[libraryindex]{quantity_from@\texttt  {\frenchspacing quantity_from}!quantity_point@\texttt  {\frenchspacing quantity_point}|hyperpage}{68}
+\indexentry[libraryindex]{quantity_point@\texttt  {\frenchspacing quantity_point}!quantity_from@\texttt  {\frenchspacing quantity_from}|hyperpage}{68}
+\indexentry[conceptindex]{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{68}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{68}
+\indexentry[conceptindex]{QuantityPointOf@\texttt  {\frenchspacing QuantityPointOf}|hyperpage}{69}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{69}
+\indexentry[libraryindex]{quantity_from_zero@\texttt  {\frenchspacing quantity_from_zero}!quantity_point@\texttt  {\frenchspacing quantity_point}|hyperpage}{69}
+\indexentry[libraryindex]{quantity_point@\texttt  {\frenchspacing quantity_point}!quantity_from_zero@\texttt  {\frenchspacing quantity_from_zero}|hyperpage}{69}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{69}
+\indexentry[libraryindex]{quantity_point@\texttt  {\frenchspacing quantity_point}!operator QuantityPointLike@\texttt  {\frenchspacing operator QuantityPointLike}|hyperpage}{69}
+\indexentry[conceptindex]{QuantityPointLike@\texttt  {\frenchspacing QuantityPointLike}|hyperpage}{69}
+\indexentry[conceptindex]{QuantityPointLike@\texttt  {\frenchspacing QuantityPointLike}|hyperpage}{69}
+\indexentry[libraryindex]{operator++@\texttt  {\frenchspacing operator++}!quantity_point@\texttt  {\frenchspacing quantity_point}|hyperpage}{69}
+\indexentry[libraryindex]{quantity_point@\texttt  {\frenchspacing quantity_point}!operator++@\texttt  {\frenchspacing operator++}|hyperpage}{69}
+\indexentry[libraryindex]{operator--@\texttt  {\frenchspacing operator--}!quantity_point@\texttt  {\frenchspacing quantity_point}|hyperpage}{69}
+\indexentry[libraryindex]{quantity_point@\texttt  {\frenchspacing quantity_point}!operator--@\texttt  {\frenchspacing operator--}|hyperpage}{69}
+\indexentry[conceptindex]{Mutable@\texttt  {\frenchspacing \textit  {Mutable}}|hyperpage}{69}
+\indexentry[conceptindex]{Mutable@\texttt  {\frenchspacing \textit  {Mutable}}|hyperpage}{69}
+\indexentry[libraryindex]{operator++@\texttt  {\frenchspacing operator++}!quantity_point@\texttt  {\frenchspacing quantity_point}|hyperpage}{69}
+\indexentry[libraryindex]{quantity_point@\texttt  {\frenchspacing quantity_point}!operator++@\texttt  {\frenchspacing operator++}|hyperpage}{69}
+\indexentry[libraryindex]{operator--@\texttt  {\frenchspacing operator--}!quantity_point@\texttt  {\frenchspacing quantity_point}|hyperpage}{69}
+\indexentry[libraryindex]{quantity_point@\texttt  {\frenchspacing quantity_point}!operator--@\texttt  {\frenchspacing operator--}|hyperpage}{69}
+\indexentry[libraryindex]{operator+=@\texttt  {\frenchspacing operator+=}!quantity_point@\texttt  {\frenchspacing quantity_point}|hyperpage}{70}
+\indexentry[libraryindex]{quantity_point@\texttt  {\frenchspacing quantity_point}!operator+=@\texttt  {\frenchspacing operator+=}|hyperpage}{70}
+\indexentry[libraryindex]{operator+=@\texttt  {\frenchspacing operator+=}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{70}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!operator+=@\texttt  {\frenchspacing operator+=}|hyperpage}{70}
+\indexentry[libraryindex]{operator-=@\texttt  {\frenchspacing operator-=}!quantity_point@\texttt  {\frenchspacing quantity_point}|hyperpage}{70}
+\indexentry[libraryindex]{quantity_point@\texttt  {\frenchspacing quantity_point}!operator-=@\texttt  {\frenchspacing operator-=}|hyperpage}{70}
+\indexentry[libraryindex]{operator-=@\texttt  {\frenchspacing operator-=}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{70}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!operator-=@\texttt  {\frenchspacing operator-=}|hyperpage}{70}
+\indexentry[conceptindex]{Mutable@\texttt  {\frenchspacing \textit  {Mutable}}|hyperpage}{70}
+\indexentry[conceptindex]{Mutable@\texttt  {\frenchspacing \textit  {Mutable}}|hyperpage}{70}
+\indexentry[conceptindex]{QuantityConvertibleTo@\texttt  {\frenchspacing \textit  {QuantityConvertibleTo}}|hyperpage}{70}
+\indexentry[libraryindex]{operator+@\texttt  {\frenchspacing operator+}!quantity_point@\texttt  {\frenchspacing quantity_point}|hyperpage}{70}
+\indexentry[libraryindex]{quantity_point@\texttt  {\frenchspacing quantity_point}!operator+@\texttt  {\frenchspacing operator+}|hyperpage}{70}
+\indexentry[libraryindex]{operator+@\texttt  {\frenchspacing operator+}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{70}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!operator+@\texttt  {\frenchspacing operator+}|hyperpage}{70}
+\indexentry[libraryindex]{operator-@\texttt  {\frenchspacing operator-}!quantity_point@\texttt  {\frenchspacing quantity_point}|hyperpage}{70}
+\indexentry[libraryindex]{quantity_point@\texttt  {\frenchspacing quantity_point}!operator-@\texttt  {\frenchspacing operator-}|hyperpage}{70}
+\indexentry[libraryindex]{operator-@\texttt  {\frenchspacing operator-}!quantity@\texttt  {\frenchspacing quantity}|hyperpage}{70}
+\indexentry[libraryindex]{quantity@\texttt  {\frenchspacing quantity}!operator-@\texttt  {\frenchspacing operator-}|hyperpage}{70}
+\indexentry[conceptindex]{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{70}
+\indexentry[conceptindex]{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{70}
+\indexentry[conceptindex]{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{70}
+\indexentry[conceptindex]{ReferenceOf@\texttt  {\frenchspacing ReferenceOf}|hyperpage}{70}
+\indexentry[libraryindex]{operator-@\texttt  {\frenchspacing operator-}!quantity_point@\texttt  {\frenchspacing quantity_point}|hyperpage}{70}
+\indexentry[libraryindex]{quantity_point@\texttt  {\frenchspacing quantity_point}!operator-@\texttt  {\frenchspacing operator-}|hyperpage}{70}
+\indexentry[conceptindex]{QuantityPointOf@\texttt  {\frenchspacing QuantityPointOf}|hyperpage}{70}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{70}
+\indexentry[libraryindex]{operator-@\texttt  {\frenchspacing operator-}!quantity_point@\texttt  {\frenchspacing quantity_point}|hyperpage}{70}
+\indexentry[libraryindex]{quantity_point@\texttt  {\frenchspacing quantity_point}!operator-@\texttt  {\frenchspacing operator-}|hyperpage}{70}
+\indexentry[libraryindex]{operator-@\texttt  {\frenchspacing operator-}!PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{70}
+\indexentry[libraryindex]{PointOrigin@\texttt  {\frenchspacing PointOrigin}!operator-@\texttt  {\frenchspacing operator-}|hyperpage}{70}
+\indexentry[conceptindex]{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{70}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{70}
+\indexentry[conceptindex]{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{70}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{70}
+\indexentry[conceptindex]{QuantityPointOf@\texttt  {\frenchspacing QuantityPointOf}|hyperpage}{71}
+\indexentry[conceptindex]{ReferenceOf@\texttt  {\frenchspacing ReferenceOf}|hyperpage}{71}
+\indexentry[libraryindex]{operator==@\texttt  {\frenchspacing operator==}!quantity_point@\texttt  {\frenchspacing quantity_point}|hyperpage}{71}
+\indexentry[libraryindex]{quantity_point@\texttt  {\frenchspacing quantity_point}!operator==@\texttt  {\frenchspacing operator==}|hyperpage}{71}
+\indexentry[libraryindex]{operator<=>@\texttt  {\frenchspacing operator<=>}!quantity_point@\texttt  {\frenchspacing quantity_point}|hyperpage}{71}
+\indexentry[libraryindex]{quantity_point@\texttt  {\frenchspacing quantity_point}!operator<=>@\texttt  {\frenchspacing operator<=>}|hyperpage}{71}
+\indexentry[conceptindex]{QuantityPointOf@\texttt  {\frenchspacing QuantityPointOf}|hyperpage}{71}
+\indexentry[conceptindex]{QuantityPointOf@\texttt  {\frenchspacing QuantityPointOf}|hyperpage}{71}
+\indexentry[libraryindex]{point@\texttt  {\frenchspacing point}|hyperpage}{71}
+\indexentry[conceptindex]{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{71}
+\indexentry[conceptindex]{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{71}
+\indexentry[libraryindex]{operator()@\texttt  {\frenchspacing operator()}!point_@\texttt  {\frenchspacing point_}|hyperpage}{71}
+\indexentry[libraryindex]{point_@\texttt  {\frenchspacing point_}!operator()@\texttt  {\frenchspacing operator()}|hyperpage}{71}
+\indexentry[conceptindex]{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{71}
+\indexentry[libraryindex]{quantity_point@\texttt  {\frenchspacing quantity_point}!sudo-cast@\texttt  {\frenchspacing \textit  {sudo-cast}}|hyperpage}{71}
+\indexentry[libraryindex]{sudo-cast@\texttt  {\frenchspacing \textit  {sudo-cast}}!quantity_point@\texttt  {\frenchspacing quantity_point}|hyperpage}{71}
+\indexentry[conceptindex]{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{71}
+\indexentry[conceptindex]{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{71}
+\indexentry[conceptindex]{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{71}
+\indexentry[libraryindex]{value_cast@\texttt  {\frenchspacing value_cast}!quantity_point@\texttt  {\frenchspacing quantity_point}|hyperpage}{72}
+\indexentry[libraryindex]{quantity_point@\texttt  {\frenchspacing quantity_point}!value_cast@\texttt  {\frenchspacing value_cast}|hyperpage}{72}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{72}
+\indexentry[conceptindex]{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{72}
+\indexentry[conceptindex]{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{72}
+\indexentry[libraryindex]{value_cast@\texttt  {\frenchspacing value_cast}!quantity_point@\texttt  {\frenchspacing quantity_point}|hyperpage}{72}
+\indexentry[libraryindex]{quantity_point@\texttt  {\frenchspacing quantity_point}!value_cast@\texttt  {\frenchspacing value_cast}|hyperpage}{72}
+\indexentry[conceptindex]{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{72}
+\indexentry[conceptindex]{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{72}
+\indexentry[conceptindex]{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{72}
+\indexentry[libraryindex]{value_cast@\texttt  {\frenchspacing value_cast}!quantity_point@\texttt  {\frenchspacing quantity_point}|hyperpage}{72}
+\indexentry[libraryindex]{quantity_point@\texttt  {\frenchspacing quantity_point}!value_cast@\texttt  {\frenchspacing value_cast}|hyperpage}{72}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{72}
+\indexentry[conceptindex]{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{72}
+\indexentry[conceptindex]{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{72}
+\indexentry[conceptindex]{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{72}
+\indexentry[conceptindex]{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{72}
+\indexentry[conceptindex]{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{72}
+\indexentry[conceptindex]{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{72}
+\indexentry[conceptindex]{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{72}
+\indexentry[conceptindex]{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{72}
+\indexentry[libraryindex]{value_cast@\texttt  {\frenchspacing value_cast}!quantity_point@\texttt  {\frenchspacing quantity_point}|hyperpage}{72}
+\indexentry[libraryindex]{quantity_point@\texttt  {\frenchspacing quantity_point}!value_cast@\texttt  {\frenchspacing value_cast}|hyperpage}{72}
+\indexentry[conceptindex]{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{72}
+\indexentry[conceptindex]{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{72}
+\indexentry[conceptindex]{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{72}
+\indexentry[libraryindex]{value_cast@\texttt  {\frenchspacing value_cast}!quantity_point@\texttt  {\frenchspacing quantity_point}|hyperpage}{72}
+\indexentry[libraryindex]{quantity_point@\texttt  {\frenchspacing quantity_point}!value_cast@\texttt  {\frenchspacing value_cast}|hyperpage}{72}
+\indexentry[conceptindex]{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{72}
+\indexentry[conceptindex]{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{72}
+\indexentry[conceptindex]{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{72}
+\indexentry[libraryindex]{quantity_cast@\texttt  {\frenchspacing quantity_cast}!quantity_point@\texttt  {\frenchspacing quantity_point}|hyperpage}{72}
+\indexentry[libraryindex]{quantity_point@\texttt  {\frenchspacing quantity_point}!quantity_cast@\texttt  {\frenchspacing quantity_cast}|hyperpage}{72}
+\indexentry[conceptindex]{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{72}
+\indexentry[conceptindex]{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{72}
+\indexentry[conceptindex]{QuantitySpecCastableTo@\texttt  {\frenchspacing \textit  {QuantitySpecCastableTo}}|hyperpage}{72}
+\indexentry[conceptindex]{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{72}
+\indexentry[libraryindex]{quantity_like_traits@\texttt  {\frenchspacing quantity_like_traits}!std::chrono::duration@\texttt  {\frenchspacing std::chrono::duration}|hyperpage}{73}
+\indexentry[libraryindex]{chrono_point_origin_@\texttt  {\frenchspacing chrono_point_origin_}|hyperpage}{73}
+\indexentry[libraryindex]{quantity_point_like_traits@\texttt  {\frenchspacing quantity_point_like_traits}!std::chrono::time_point@\texttt  {\frenchspacing std::chrono::time_point}|hyperpage}{73}

@@ -1,0 +1,32 @@
+%!TEX root = std.tex
+\input{cover-wd}
+% \input{cover-reg}
+
+%%--------------------------------------------------
+%% The table of contents
+\markboth{\contentsname}{}
+
+%%--------------------------------------------------
+%% Make a bit more room for our long page numbers.
+\makeatletter
+\renewcommand\@pnumwidth{2.5em}
+\makeatother
+
+% Disable indexing within the table of contents
+\newcommand{\indexoff}[2][generalindex]{}
+\let\oindex\index
+\let\index\indexoff
+
+%% Include table of contents. Do not list "Contents"
+%% within it (per ISO request) but do include a
+%% bookmark for it in the PDF.
+\phantomsection
+\pdfbookmark{\contentsname}{toctarget}
+\hypertarget{toctarget}{\tableofcontents*}
+
+% Restore indexing
+\let\index\oindex
+
+\setcounter{tocdepth}{5}
+
+\input{preface}

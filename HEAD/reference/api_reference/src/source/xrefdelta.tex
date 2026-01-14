@@ -1,0 +1,33 @@
+%!TEX root = std.tex
+
+\newcommand{\secref}[1]{\hyperref[\indexescape{#1}]{\indexescape{#1}}}
+
+%%% Turn off page numbers for this glossary, they're not useful.
+\newcommand{\swallow}[1]{}
+\changeglossnumformat[xrefdelta]{|swallow}
+
+\newcommand{\oldxref}[2]{\glossary[xrefdelta]{\indexescape{#1}}{#2}}
+\newcommand{\removedxref}[1]{\oldxref{#1}{\textit{removed}}}
+\newcommand{\movedxrefs}[2]{\oldxref{#1}{\textit{see} #2}}
+\newcommand{\movedxref}[2]{\movedxrefs{#1}{\secref{#2}}}
+\newcommand{\movedxrefii}[3]{\movedxrefs{#1}{\secref{#2}, \secref{#3}}}
+\newcommand{\movedxrefiii}[4]{\movedxrefs{#1}{\secref{#2}, \secref{#3}, \secref{#4}}}
+\newcommand{\deprxref}[1]{\oldxref{#1}{\textit{see} \secref{depr.#1}}}
+
+%%% Removed features.
+%%% Example:
+%
+%   \removedxref{removed.label}
+
+%%% Renamed sections.
+%%% Examples:
+%
+%   \movedxref{old.label}{new.label}
+%   \movedxrefii{old.label}{new.label.1}{new.label.2}
+%   \movedxrefiii{old.label}{new.label.1}{new.label.2}{new.label.3}
+%   \movedxrefs{old.label}{new place (e.g., \tref{blah})}
+
+%%% Deprecated features.
+%%% Example:
+%
+%   \deprxref{old.label}  (if moved to depr.old.label, otherwise use \movedxref)

@@ -1,0 +1,286 @@
+\begin{theglossary}
+\glossitem {\memgloterm{assoc.qty}}{\memglodesc{(\ref {assoc.qty})}} {\memgloref{}}{\memglonum{
+		\memjustarg{39}}}
+\glossaryspace
+
+\glossitem {\memgloterm{defs}}{\memglodesc{(\ref {defs})}} {\memgloref{}}{\memglonum{
+		\memjustarg{2}}}
+\glossitem {\memgloterm{derived.qty}}{\memglodesc{(\ref {derived.qty})}} {\memgloref{}}{\memglonum{
+		\memjustarg{25}}}
+\glossitem {\memgloterm{dimless.qty}}{\memglodesc{(\ref {dimless.qty})}} {\memgloref{}}{\memglonum{
+		\memjustarg{26}}}
+\glossaryspace
+
+\glossitem {\memgloterm{get.common.qty.spec}}{\memglodesc{(\ref {get.common.qty.spec})}} {\memgloref{}}{\memglonum{
+		\memjustarg{28}}}
+\glossaryspace
+
+\glossitem {\memgloterm{kind.of.qty}}{\memglodesc{(\ref {kind.of.qty})}} {\memgloref{}}{\memglonum{
+		\memjustarg{26}}}
+\glossaryspace
+
+\glossitem {\memgloterm{mp.units.core.syn}}{\memglodesc{(\ref {mp.units.core.syn})}} {\memgloref{}}{\memglonum{
+		\memjustarg{5}}}
+\glossitem {\memgloterm{mp.units.syn}}{\memglodesc{(\ref {mp.units.syn})}} {\memgloref{}}{\memglonum{
+		\memjustarg{5}}}
+\glossitem {\memgloterm{mp.units.syns}}{\memglodesc{(\ref {mp.units.syns})}} {\memgloref{}}{\memglonum{
+		\memjustarg{5}}}
+\glossitem {\memgloterm{mp.units.systems.syn}}{\memglodesc{(\ref {mp.units.systems.syn})}} {\memgloref{}}{\memglonum{
+		\memjustarg{15}}}
+\glossaryspace
+
+\glossitem {\memgloterm{named.qty}}{\memglodesc{(\ref {named.qty})}} {\memgloref{}}{\memglonum{
+		\memjustarg{24}}}
+\glossaryspace
+
+\glossitem {\memgloterm{qty}}{\memglodesc{(\ref {qty})}} {\memgloref{}}{\memglonum{
+		\memjustarg{47}}}
+\glossitem {\memgloterm{qty.abs.pt.orig}}{\memglodesc{(\ref {qty.abs.pt.orig})}} {\memgloref{}}{\memglonum{
+		\memjustarg{61}}}
+\glossitem {\memgloterm{qty.arith.ops}}{\memglodesc{(\ref {qty.arith.ops})}} {\memgloref{}}{\memglonum{
+		\memjustarg{56}}}
+\glossitem {\memgloterm{qty.assign.ops}}{\memglodesc{(\ref {qty.assign.ops})}} {\memgloref{}}{\memglonum{
+		\memjustarg{56}}}
+\glossitem {\memgloterm{qty.canon.unit}}{\memglodesc{(\ref {qty.canon.unit})}} {\memgloref{}}{\memglonum{
+		\memjustarg{33}}}
+\glossitem {\memgloterm{qty.char.traits}}{\memglodesc{(\ref {qty.char.traits})}} {\memgloref{}}{\memglonum{
+		\memjustarg{43}}}
+\glossitem {\memgloterm{qty.chrono}}{\memglodesc{(\ref {qty.chrono})}} {\memgloref{}}{\memglonum{
+		\memjustarg{72}}}
+\glossitem {\memgloterm{qty.cmp}}{\memglodesc{(\ref {qty.cmp})}} {\memgloref{}}{\memglonum{
+		\memjustarg{58}}}
+\glossitem {\memgloterm{qty.common.type}}{\memglodesc{(\ref {qty.common.type})}} {\memgloref{}}{\memglonum{
+		\memjustarg{60}}}
+\glossitem {\memgloterm{qty.common.unit}}{\memglodesc{(\ref {qty.common.unit})}} {\memgloref{}}{\memglonum{
+		\memjustarg{35}}}
+\glossitem {\memgloterm{qty.cons}}{\memglodesc{(\ref {qty.cons})}} {\memgloref{}}{\memglonum{
+		\memjustarg{53}}}
+\glossitem {\memgloterm{qty.conv}}{\memglodesc{(\ref {qty.conv})}} {\memgloref{}}{\memglonum{
+		\memjustarg{54}}}
+\glossitem {\memgloterm{qty.conv.ops}}{\memglodesc{(\ref {qty.conv.ops})}} {\memgloref{}}{\memglonum{
+		\memjustarg{55}}}
+\glossitem {\memgloterm{qty.def.pt.orig}}{\memglodesc{(\ref {qty.def.pt.orig})}} {\memgloref{}}{\memglonum{
+		\memjustarg{63}}}
+\glossitem {\memgloterm{qty.delta}}{\memglodesc{(\ref {qty.delta})}} {\memgloref{}}{\memglonum{
+		\memjustarg{59}}}
+\glossitem {\memgloterm{qty.derived.unit}}{\memglodesc{(\ref {qty.derived.unit})}} {\memgloref{}}{\memglonum{
+		\memjustarg{36}}}
+\glossitem {\memgloterm{qty.dim}}{\memglodesc{(\ref {qty.dim})}} {\memgloref{}}{\memglonum{
+		\memjustarg{21}}}
+\glossitem {\memgloterm{qty.dim.concepts}}{\memglodesc{(\ref {qty.dim.concepts})}} {\memgloref{}}{\memglonum{
+		\memjustarg{21}}}
+\glossitem {\memgloterm{qty.dim.general}}{\memglodesc{(\ref {qty.dim.general})}} {\memgloref{}}{\memglonum{
+		\memjustarg{21}}}
+\glossitem {\memgloterm{qty.dim.ops}}{\memglodesc{(\ref {qty.dim.ops})}} {\memgloref{}}{\memglonum{
+		\memjustarg{22}}}
+\glossitem {\memgloterm{qty.dim.sym.fmt}}{\memglodesc{(\ref {qty.dim.sym.fmt})}} {\memgloref{}}{\memglonum{
+		\memjustarg{23}}}
+\glossitem {\memgloterm{qty.dim.types}}{\memglodesc{(\ref {qty.dim.types})}} {\memgloref{}}{\memglonum{
+		\memjustarg{21}}}
+\glossitem {\memgloterm{qty.fp.traits}}{\memglodesc{(\ref {qty.fp.traits})}} {\memgloref{}}{\memglonum{
+		\memjustarg{43}}}
+\glossitem {\memgloterm{qty.general}}{\memglodesc{(\ref {qty.general})}} {\memgloref{}}{\memglonum{
+		\memjustarg{47}}}
+\glossitem {\memgloterm{qty.get.common.base}}{\memglodesc{(\ref {qty.get.common.base})}} {\memgloref{}}{\memglonum{
+		\memjustarg{29}}}
+\glossitem {\memgloterm{qty.get.kind}}{\memglodesc{(\ref {qty.get.kind})}} {\memgloref{}}{\memglonum{
+		\memjustarg{28}}}
+\glossitem {\memgloterm{qty.imag.cpo}}{\memglodesc{(\ref {qty.imag.cpo})}} {\memgloref{}}{\memglonum{
+		\memjustarg{44}}}
+\glossitem {\memgloterm{qty.is.child.of}}{\memglodesc{(\ref {qty.is.child.of})}} {\memgloref{}}{\memglonum{
+		\memjustarg{29}}}
+\glossitem {\memgloterm{qty.like}}{\memglodesc{(\ref {qty.like})}} {\memgloref{}}{\memglonum{
+		\memjustarg{47}}}
+\glossitem {\memgloterm{qty.mag.cpo}}{\memglodesc{(\ref {qty.mag.cpo})}} {\memgloref{}}{\memglonum{
+		\memjustarg{45}}}
+\glossitem {\memgloterm{qty.modulus.cpo}}{\memglodesc{(\ref {qty.modulus.cpo})}} {\memgloref{}}{\memglonum{
+		\memjustarg{44}}}
+\glossitem {\memgloterm{qty.named.unit}}{\memglodesc{(\ref {qty.named.unit})}} {\memgloref{}}{\memglonum{
+		\memjustarg{33}}}
+\glossitem {\memgloterm{qty.non.mem.conv}}{\memglodesc{(\ref {qty.non.mem.conv})}} {\memgloref{}}{\memglonum{
+		\memjustarg{59}}}
+\glossitem {\memgloterm{qty.obs}}{\memglodesc{(\ref {qty.obs})}} {\memgloref{}}{\memglonum{
+		\memjustarg{54}}}
+\glossitem {\memgloterm{qty.point}}{\memglodesc{(\ref {qty.point})}} {\memgloref{}}{\memglonum{
+		\memjustarg{71}}}
+\glossitem {\memgloterm{qty.prefixed.unit}}{\memglodesc{(\ref {qty.prefixed.unit})}} {\memgloref{}}{\memglonum{
+		\memjustarg{35}}}
+\glossitem {\memgloterm{qty.pt}}{\memglodesc{(\ref {qty.pt})}} {\memgloref{}}{\memglonum{
+		\memjustarg{60}}}
+\glossitem {\memgloterm{qty.pt.arith.ops}}{\memglodesc{(\ref {qty.pt.arith.ops})}} {\memgloref{}}{\memglonum{
+		\memjustarg{70}}}
+\glossitem {\memgloterm{qty.pt.assign.ops}}{\memglodesc{(\ref {qty.pt.assign.ops})}} {\memgloref{}}{\memglonum{
+		\memjustarg{70}}}
+\glossitem {\memgloterm{qty.pt.cmp}}{\memglodesc{(\ref {qty.pt.cmp})}} {\memgloref{}}{\memglonum{
+		\memjustarg{71}}}
+\glossitem {\memgloterm{qty.pt.cons}}{\memglodesc{(\ref {qty.pt.cons})}} {\memgloref{}}{\memglonum{
+		\memjustarg{67}}}
+\glossitem {\memgloterm{qty.pt.conv}}{\memglodesc{(\ref {qty.pt.conv})}} {\memgloref{}}{\memglonum{
+		\memjustarg{68}}}
+\glossitem {\memgloterm{qty.pt.conv.ops}}{\memglodesc{(\ref {qty.pt.conv.ops})}} {\memgloref{}}{\memglonum{
+		\memjustarg{69}}}
+\glossitem {\memgloterm{qty.pt.general}}{\memglodesc{(\ref {qty.pt.general})}} {\memgloref{}}{\memglonum{
+		\memjustarg{61}}}
+\glossitem {\memgloterm{qty.pt.like}}{\memglodesc{(\ref {qty.pt.like})}} {\memgloref{}}{\memglonum{
+		\memjustarg{63}}}
+\glossitem {\memgloterm{qty.pt.non.mem.conv}}{\memglodesc{(\ref {qty.pt.non.mem.conv})}} {\memgloref{}}{\memglonum{
+		\memjustarg{71}}}
+\glossitem {\memgloterm{qty.pt.obs}}{\memglodesc{(\ref {qty.pt.obs})}} {\memgloref{}}{\memglonum{
+		\memjustarg{68}}}
+\glossitem {\memgloterm{qty.pt.orig}}{\memglodesc{(\ref {qty.pt.orig})}} {\memgloref{}}{\memglonum{
+		\memjustarg{61}}}
+\glossitem {\memgloterm{qty.pt.orig.concepts}}{\memglodesc{(\ref {qty.pt.orig.concepts})}} {\memgloref{}}{\memglonum{
+		\memjustarg{61}}}
+\glossitem {\memgloterm{qty.pt.orig.general}}{\memglodesc{(\ref {qty.pt.orig.general})}} {\memgloref{}}{\memglonum{
+		\memjustarg{61}}}
+\glossitem {\memgloterm{qty.pt.orig.ops}}{\memglodesc{(\ref {qty.pt.orig.ops})}} {\memgloref{}}{\memglonum{
+		\memjustarg{62}}}
+\glossitem {\memgloterm{qty.pt.orig.types}}{\memglodesc{(\ref {qty.pt.orig.types})}} {\memgloref{}}{\memglonum{
+		\memjustarg{61}}}
+\glossitem {\memgloterm{qty.pt.orig.utils}}{\memglodesc{(\ref {qty.pt.orig.utils})}} {\memgloref{}}{\memglonum{
+		\memjustarg{63}}}
+\glossitem {\memgloterm{qty.pt.static}}{\memglodesc{(\ref {qty.pt.static})}} {\memgloref{}}{\memglonum{
+		\memjustarg{67}}}
+\glossitem {\memgloterm{qty.pt.syn}}{\memglodesc{(\ref {qty.pt.syn})}} {\memgloref{}}{\memglonum{
+		\memjustarg{63}}}
+\glossitem {\memgloterm{qty.pt.unary.ops}}{\memglodesc{(\ref {qty.pt.unary.ops})}} {\memgloref{}}{\memglonum{
+		\memjustarg{69}}}
+\glossitem {\memgloterm{qty.ratio}}{\memglodesc{(\ref {qty.ratio})}} {\memgloref{}}{\memglonum{
+		\memjustarg{15}}}
+\glossitem {\memgloterm{qty.real.cpo}}{\memglodesc{(\ref {qty.real.cpo})}} {\memgloref{}}{\memglonum{
+		\memjustarg{44}}}
+\glossitem {\memgloterm{qty.ref}}{\memglodesc{(\ref {qty.ref})}} {\memgloref{}}{\memglonum{
+		\memjustarg{21}}}
+\glossitem {\memgloterm{qty.ref.cmp}}{\memglodesc{(\ref {qty.ref.cmp})}} {\memgloref{}}{\memglonum{
+		\memjustarg{42}}}
+\glossitem {\memgloterm{qty.ref.concepts}}{\memglodesc{(\ref {qty.ref.concepts})}} {\memgloref{}}{\memglonum{
+		\memjustarg{40}}}
+\glossitem {\memgloterm{qty.ref.general}}{\memglodesc{(\ref {qty.ref.general})}} {\memgloref{}}{\memglonum{
+		\memjustarg{21}}}
+\glossitem {\memgloterm{qty.ref.obs}}{\memglodesc{(\ref {qty.ref.obs})}} {\memgloref{}}{\memglonum{
+		\memjustarg{42}}}
+\glossitem {\memgloterm{qty.ref.ops}}{\memglodesc{(\ref {qty.ref.ops})}} {\memgloref{}}{\memglonum{
+		\memjustarg{41}}}
+\glossitem {\memgloterm{qty.ref.syn}}{\memglodesc{(\ref {qty.ref.syn})}} {\memgloref{}}{\memglonum{
+		\memjustarg{40}}}
+\glossitem {\memgloterm{qty.rel.pt.orig}}{\memglodesc{(\ref {qty.rel.pt.orig})}} {\memgloref{}}{\memglonum{
+		\memjustarg{61}}}
+\glossitem {\memgloterm{qty.rep}}{\memglodesc{(\ref {qty.rep})}} {\memgloref{}}{\memglonum{
+		\memjustarg{43}}}
+\glossitem {\memgloterm{qty.rep.concepts}}{\memglodesc{(\ref {qty.rep.concepts})}} {\memgloref{}}{\memglonum{
+		\memjustarg{45}}}
+\glossitem {\memgloterm{qty.rep.cpos}}{\memglodesc{(\ref {qty.rep.cpos})}} {\memgloref{}}{\memglonum{
+		\memjustarg{44}}}
+\glossitem {\memgloterm{qty.rep.cpos.general}}{\memglodesc{(\ref {qty.rep.cpos.general})}} {\memgloref{}}{\memglonum{
+		\memjustarg{44}}}
+\glossitem {\memgloterm{qty.rep.general}}{\memglodesc{(\ref {qty.rep.general})}} {\memgloref{}}{\memglonum{
+		\memjustarg{43}}}
+\glossitem {\memgloterm{qty.rep.traits}}{\memglodesc{(\ref {qty.rep.traits})}} {\memgloref{}}{\memglonum{
+		\memjustarg{43}}}
+\glossitem {\memgloterm{qty.same.abs.pt.origs}}{\memglodesc{(\ref {qty.same.abs.pt.origs})}} {\memgloref{}}{\memglonum{
+		\memjustarg{63}}}
+\glossitem {\memgloterm{qty.scaled.unit}}{\memglodesc{(\ref {qty.scaled.unit})}} {\memgloref{}}{\memglonum{
+		\memjustarg{33}}}
+\glossitem {\memgloterm{qty.spec}}{\memglodesc{(\ref {qty.spec})}} {\memgloref{}}{\memglonum{
+		\memjustarg{23}}}
+\glossitem {\memgloterm{qty.spec.concepts}}{\memglodesc{(\ref {qty.spec.concepts})}} {\memgloref{}}{\memglonum{
+		\memjustarg{23}}}
+\glossitem {\memgloterm{qty.spec.conv}}{\memglodesc{(\ref {qty.spec.conv})}} {\memgloref{}}{\memglonum{
+		\memjustarg{28}}}
+\glossitem {\memgloterm{qty.spec.general}}{\memglodesc{(\ref {qty.spec.general})}} {\memgloref{}}{\memglonum{
+		\memjustarg{23}}}
+\glossitem {\memgloterm{qty.spec.hier.algos}}{\memglodesc{(\ref {qty.spec.hier.algos})}} {\memgloref{}}{\memglonum{
+		\memjustarg{28}}}
+\glossitem {\memgloterm{qty.spec.ops}}{\memglodesc{(\ref {qty.spec.ops})}} {\memgloref{}}{\memglonum{
+		\memjustarg{27}}}
+\glossitem {\memgloterm{qty.spec.types}}{\memglodesc{(\ref {qty.spec.types})}} {\memgloref{}}{\memglonum{
+		\memjustarg{24}}}
+\glossitem {\memgloterm{qty.spec.utils}}{\memglodesc{(\ref {qty.spec.utils})}} {\memgloref{}}{\memglonum{
+		\memjustarg{26}}}
+\glossitem {\memgloterm{qty.static}}{\memglodesc{(\ref {qty.static})}} {\memgloref{}}{\memglonum{
+		\memjustarg{53}}}
+\glossitem {\memgloterm{qty.sym.expr}}{\memglodesc{(\ref {qty.sym.expr})}} {\memgloref{}}{\memglonum{
+		\memjustarg{18}}}
+\glossitem {\memgloterm{qty.sym.expr.algos}}{\memglodesc{(\ref {qty.sym.expr.algos})}} {\memgloref{}}{\memglonum{
+		\memjustarg{19}}}
+\glossitem {\memgloterm{qty.sym.expr.concepts}}{\memglodesc{(\ref {qty.sym.expr.concepts})}} {\memgloref{}}{\memglonum{
+		\memjustarg{18}}}
+\glossitem {\memgloterm{qty.sym.expr.general}}{\memglodesc{(\ref {qty.sym.expr.general})}} {\memgloref{}}{\memglonum{
+		\memjustarg{18}}}
+\glossitem {\memgloterm{qty.sym.expr.types}}{\memglodesc{(\ref {qty.sym.expr.types})}} {\memgloref{}}{\memglonum{
+		\memjustarg{18}}}
+\glossitem {\memgloterm{qty.sym.txt}}{\memglodesc{(\ref {qty.sym.txt})}} {\memgloref{}}{\memglonum{
+		\memjustarg{16}}}
+\glossitem {\memgloterm{qty.syn}}{\memglodesc{(\ref {qty.syn})}} {\memgloref{}}{\memglonum{
+		\memjustarg{47}}}
+\glossitem {\memgloterm{qty.systems}}{\memglodesc{(\ref {qty.systems})}} {\memgloref{}}{\memglonum{
+		\memjustarg{72}}}
+\glossitem {\memgloterm{qty.unary.ops}}{\memglodesc{(\ref {qty.unary.ops})}} {\memgloref{}}{\memglonum{
+		\memjustarg{55}}}
+\glossitem {\memgloterm{qty.unit}}{\memglodesc{(\ref {qty.unit})}} {\memgloref{}}{\memglonum{
+		\memjustarg{30}}}
+\glossitem {\memgloterm{qty.unit.cmp}}{\memglodesc{(\ref {qty.unit.cmp})}} {\memgloref{}}{\memglonum{
+		\memjustarg{38}}}
+\glossitem {\memgloterm{qty.unit.concepts}}{\memglodesc{(\ref {qty.unit.concepts})}} {\memgloref{}}{\memglonum{
+		\memjustarg{32}}}
+\glossitem {\memgloterm{qty.unit.general}}{\memglodesc{(\ref {qty.unit.general})}} {\memgloref{}}{\memglonum{
+		\memjustarg{30}}}
+\glossitem {\memgloterm{qty.unit.mag}}{\memglodesc{(\ref {qty.unit.mag})}} {\memgloref{}}{\memglonum{
+		\memjustarg{30}}}
+\glossitem {\memgloterm{qty.unit.mag.concepts}}{\memglodesc{(\ref {qty.unit.mag.concepts})}} {\memgloref{}}{\memglonum{
+		\memjustarg{30}}}
+\glossitem {\memgloterm{qty.unit.mag.general}}{\memglodesc{(\ref {qty.unit.mag.general})}} {\memgloref{}}{\memglonum{
+		\memjustarg{30}}}
+\glossitem {\memgloterm{qty.unit.mag.ops}}{\memglodesc{(\ref {qty.unit.mag.ops})}} {\memgloref{}}{\memglonum{
+		\memjustarg{31}}}
+\glossitem {\memgloterm{qty.unit.mag.types}}{\memglodesc{(\ref {qty.unit.mag.types})}} {\memgloref{}}{\memglonum{
+		\memjustarg{30}}}
+\glossitem {\memgloterm{qty.unit.mag.utils}}{\memglodesc{(\ref {qty.unit.mag.utils})}} {\memgloref{}}{\memglonum{
+		\memjustarg{32}}}
+\glossitem {\memgloterm{qty.unit.obs}}{\memglodesc{(\ref {qty.unit.obs})}} {\memgloref{}}{\memglonum{
+		\memjustarg{38}}}
+\glossitem {\memgloterm{qty.unit.one}}{\memglodesc{(\ref {qty.unit.one})}} {\memgloref{}}{\memglonum{
+		\memjustarg{36}}}
+\glossitem {\memgloterm{qty.unit.ops}}{\memglodesc{(\ref {qty.unit.ops})}} {\memgloref{}}{\memglonum{
+		\memjustarg{36}}}
+\glossitem {\memgloterm{qty.unit.sym.fmt}}{\memglodesc{(\ref {qty.unit.sym.fmt})}} {\memgloref{}}{\memglonum{
+		\memjustarg{39}}}
+\glossitem {\memgloterm{qty.unit.traits}}{\memglodesc{(\ref {qty.unit.traits})}} {\memgloref{}}{\memglonum{
+		\memjustarg{32}}}
+\glossitem {\memgloterm{qty.unit.types}}{\memglodesc{(\ref {qty.unit.types})}} {\memgloref{}}{\memglonum{
+		\memjustarg{32}}}
+\glossitem {\memgloterm{qty.utils}}{\memglodesc{(\ref {qty.utils})}} {\memgloref{}}{\memglonum{
+		\memjustarg{15}}}
+\glossitem {\memgloterm{qty.utils.non.types}}{\memglodesc{(\ref {qty.utils.non.types})}} {\memgloref{}}{\memglonum{
+		\memjustarg{15}}}
+\glossitem {\memgloterm{qty.val.cmp}}{\memglodesc{(\ref {qty.val.cmp})}} {\memgloref{}}{\memglonum{
+		\memjustarg{59}}}
+\glossitem {\memgloterm{qty.val.traits}}{\memglodesc{(\ref {qty.val.traits})}} {\memgloref{}}{\memglonum{
+		\memjustarg{43}}}
+\glossitem {\memgloterm{qty.zeroth.pt.orig}}{\memglodesc{(\ref {qty.zeroth.pt.orig})}} {\memgloref{}}{\memglonum{
+		\memjustarg{61}}}
+\glossitem {\memgloterm{quantities}}{\memglodesc{(\ref {quantities})}} {\memgloref{}}{\memglonum{
+		\memjustarg{5}}}
+\glossitem {\memgloterm{quantities.summary}}{\memglodesc{(\ref {quantities.summary})}} {\memgloref{}}{\memglonum{
+		\memjustarg{5}}}
+\glossaryspace
+
+\glossitem {\memgloterm{refs}}{\memglodesc{(\ref {refs})}} {\memgloref{}}{\memglonum{
+		\memjustarg{1}}}
+\glossaryspace
+
+\glossitem {\memgloterm{scope}}{\memglodesc{(\ref {scope})}} {\memgloref{}}{\memglonum{
+		\memjustarg{1}}}
+\glossitem {\memgloterm{spec}}{\memglodesc{(\ref {spec})}} {\memgloref{}}{\memglonum{
+		\memjustarg{3}}}
+\glossitem {\memgloterm{spec.cats}}{\memglodesc{(\ref {spec.cats})}} {\memgloref{}}{\memglonum{
+		\memjustarg{4}}}
+\glossitem {\memgloterm{spec.ext}}{\memglodesc{(\ref {spec.ext})}} {\memgloref{}}{\memglonum{
+		\memjustarg{4}}}
+\glossitem {\memgloterm{spec.mods}}{\memglodesc{(\ref {spec.mods})}} {\memgloref{}}{\memglonum{
+		\memjustarg{4}}}
+\glossitem {\memgloterm{spec.reqs}}{\memglodesc{(\ref {spec.reqs})}} {\memgloref{}}{\memglonum{
+		\memjustarg{4}}}
+\glossitem {\memgloterm{spec.res.names}}{\memglodesc{(\ref {spec.res.names})}} {\memgloref{}}{\memglonum{
+		\memjustarg{4}}}
+\end{theglossary}

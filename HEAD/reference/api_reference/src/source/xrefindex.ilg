@@ -1,0 +1,7 @@
+This is makeindex, version 2.17 [TeX Live 2023] (kpathsea + Thai support).
+Scanning style file /usr/share/texlive/texmf-dist/makeindex/memoir/basic.gst.......done (7 attributes redefined, 0 ignored).
+Scanning input file xrefindex.glo....done (134 entries accepted, 0 rejected).
+Sorting entries....done (1045 comparisons).
+Generating output file xrefindex.gls....done (286 lines written, 0 warnings).
+Output written in xrefindex.gls.
+Transcript written in xrefindex.ilg.

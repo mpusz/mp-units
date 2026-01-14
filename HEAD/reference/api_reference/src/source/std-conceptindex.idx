@@ -1,0 +1,1058 @@
+\indexentry{SymbolicConstant@\texttt  {\frenchspacing \textit  {SymbolicConstant}}|hyperpage}{6}
+\indexentry{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{6}
+\indexentry{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{6}
+\indexentry{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{6}
+\indexentry{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{6}
+\indexentry{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{6}
+\indexentry{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{6}
+\indexentry{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{6}
+\indexentry{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{6}
+\indexentry{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{6}
+\indexentry{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{6}
+\indexentry{BaseDimension@\texttt  {\frenchspacing \textit  {BaseDimension}}|hyperpage}{7}
+\indexentry{QSProperty@\texttt  {\frenchspacing \textit  {QSProperty}}|hyperpage}{7}
+\indexentry{DerivedQuantitySpec@\texttt  {\frenchspacing \textit  {DerivedQuantitySpec}}|hyperpage}{7}
+\indexentry{QSProperty@\texttt  {\frenchspacing \textit  {QSProperty}}|hyperpage}{7}
+\indexentry{NamedQuantitySpec@\texttt  {\frenchspacing \textit  {NamedQuantitySpec}}|hyperpage}{7}
+\indexentry{QSProperty@\texttt  {\frenchspacing \textit  {QSProperty}}|hyperpage}{7}
+\indexentry{NamedQuantitySpec@\texttt  {\frenchspacing \textit  {NamedQuantitySpec}}|hyperpage}{7}
+\indexentry{DerivedQuantitySpec@\texttt  {\frenchspacing \textit  {DerivedQuantitySpec}}|hyperpage}{7}
+\indexentry{QSProperty@\texttt  {\frenchspacing \textit  {QSProperty}}|hyperpage}{7}
+\indexentry{SymbolicConstant@\texttt  {\frenchspacing \textit  {SymbolicConstant}}|hyperpage}{7}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{7}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{7}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{7}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{7}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{7}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{7}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{7}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{7}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{7}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{7}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{7}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{7}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{7}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{7}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{7}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{7}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{7}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{7}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{7}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{7}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{7}
+\indexentry{MagArg@\texttt  {\frenchspacing \textit  {MagArg}}|hyperpage}{8}
+\indexentry{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{8}
+\indexentry{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{8}
+\indexentry{MagArg@\texttt  {\frenchspacing \textit  {MagArg}}|hyperpage}{8}
+\indexentry{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{8}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{8}
+\indexentry{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{8}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{8}
+\indexentry{QuantityKindSpec@\texttt  {\frenchspacing \textit  {QuantityKindSpec}}|hyperpage}{9}
+\indexentry{QuantityKindSpec@\texttt  {\frenchspacing \textit  {QuantityKindSpec}}|hyperpage}{9}
+\indexentry{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{9}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{9}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{9}
+\indexentry{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{9}
+\indexentry{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{9}
+\indexentry{QuantityKindSpec@\texttt  {\frenchspacing \textit  {QuantityKindSpec}}|hyperpage}{9}
+\indexentry{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{9}
+\indexentry{QuantityKindSpec@\texttt  {\frenchspacing \textit  {QuantityKindSpec}}|hyperpage}{9}
+\indexentry{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{9}
+\indexentry{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{9}
+\indexentry{PrefixableUnit@\texttt  {\frenchspacing PrefixableUnit}|hyperpage}{9}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{9}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{9}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{9}
+\indexentry{SymbolicConstant@\texttt  {\frenchspacing \textit  {SymbolicConstant}}|hyperpage}{9}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{10}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{10}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{10}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{10}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{10}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{10}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{10}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{10}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{10}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{10}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{10}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{10}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{10}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{10}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{10}
+\indexentry{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{10}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{10}
+\indexentry{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{10}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{10}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{10}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{10}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{10}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperindexformat{\idxbfpage}}{10}
+\indexentry{ReferenceOf@\texttt  {\frenchspacing ReferenceOf}|hyperindexformat{\idxbfpage}}{11}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{11}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{11}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{11}
+\indexentry{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{11}
+\indexentry{OffsetUnit@\texttt  {\frenchspacing \textit  {OffsetUnit}}|hyperpage}{11}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{11}
+\indexentry{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{11}
+\indexentry{OffsetUnit@\texttt  {\frenchspacing \textit  {OffsetUnit}}|hyperpage}{11}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{11}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{11}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{11}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{11}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{11}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{11}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{11}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{11}
+\indexentry{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{11}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{11}
+\indexentry{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{11}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{11}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{11}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{11}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{11}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{11}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{11}
+\indexentry{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{11}
+\indexentry{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{11}
+\indexentry{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{11}
+\indexentry{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{11}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{11}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{11}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{11}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{11}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{13}
+\indexentry{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{13}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{13}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{13}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{13}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{13}
+\indexentry{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{13}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{13}
+\indexentry{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{13}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{13}
+\indexentry{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{13}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{13}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{13}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{13}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{13}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{13}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{13}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{13}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{13}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{13}
+\indexentry{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{13}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{13}
+\indexentry{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{13}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{14}
+\indexentry{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{14}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{14}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{14}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{14}
+\indexentry{PointOriginFor@\texttt  {\frenchspacing PointOriginFor}|hyperpage}{14}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{14}
+\indexentry{PointOriginFor@\texttt  {\frenchspacing PointOriginFor}|hyperpage}{14}
+\indexentry{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{14}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{14}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{14}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{14}
+\indexentry{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{14}
+\indexentry{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{15}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{15}
+\indexentry{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{15}
+\indexentry{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{15}
+\indexentry{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{15}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{15}
+\indexentry{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{15}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{15}
+\indexentry{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{15}
+\indexentry{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{15}
+\indexentry{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{15}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{15}
+\indexentry{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{15}
+\indexentry{SymbolicConstant@\texttt  {\frenchspacing \textit  {SymbolicConstant}}|hyperindexformat{\idxbfpage}}{18}
+\indexentry{SymbolicConstant@\texttt  {\frenchspacing \textit  {SymbolicConstant}}|hyperpage}{18}
+\indexentry{SymbolicConstant@\texttt  {\frenchspacing \textit  {SymbolicConstant}}|hyperpage}{19}
+\indexentry{Dimension@\texttt  {\frenchspacing Dimension}|hyperindexformat{\idxbfpage}}{21}
+\indexentry{SymbolicConstant@\texttt  {\frenchspacing \textit  {SymbolicConstant}}|hyperpage}{21}
+\indexentry{BaseDimension@\texttt  {\frenchspacing \textit  {BaseDimension}}|hyperindexformat{\idxbfpage}}{21}
+\indexentry{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{21}
+\indexentry{DimensionOf@\texttt  {\frenchspacing DimensionOf}|hyperindexformat{\idxbfpage}}{21}
+\indexentry{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{21}
+\indexentry{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{21}
+\indexentry{SymbolicConstant@\texttt  {\frenchspacing \textit  {SymbolicConstant}}|hyperpage}{22}
+\indexentry{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{22}
+\indexentry{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{22}
+\indexentry{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{22}
+\indexentry{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{22}
+\indexentry{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{22}
+\indexentry{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{22}
+\indexentry{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{22}
+\indexentry{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{22}
+\indexentry{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{22}
+\indexentry{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{22}
+\indexentry{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{22}
+\indexentry{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{22}
+\indexentry{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{22}
+\indexentry{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{22}
+\indexentry{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{22}
+\indexentry{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{22}
+\indexentry{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{22}
+\indexentry{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{22}
+\indexentry{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{22}
+\indexentry{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{22}
+\indexentry{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{23}
+\indexentry{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{23}
+\indexentry{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{23}
+\indexentry{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{23}
+\indexentry{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{23}
+\indexentry{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{23}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperindexformat{\idxbfpage}}{23}
+\indexentry{SymbolicConstant@\texttt  {\frenchspacing \textit  {SymbolicConstant}}|hyperpage}{23}
+\indexentry{QuantityKindSpec@\texttt  {\frenchspacing \textit  {QuantityKindSpec}}|hyperindexformat{\idxbfpage}}{23}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{23}
+\indexentry{NamedQuantitySpec@\texttt  {\frenchspacing \textit  {NamedQuantitySpec}}|hyperindexformat{\idxbfpage}}{23}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{23}
+\indexentry{QuantityKindSpec@\texttt  {\frenchspacing \textit  {QuantityKindSpec}}|hyperpage}{23}
+\indexentry{DerivedQuantitySpec@\texttt  {\frenchspacing \textit  {DerivedQuantitySpec}}|hyperindexformat{\idxbfpage}}{23}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{23}
+\indexentry{QuantityKindSpec@\texttt  {\frenchspacing \textit  {QuantityKindSpec}}|hyperpage}{23}
+\indexentry{ChildQuantitySpecOf@\texttt  {\frenchspacing \textit  {ChildQuantitySpecOf}}|hyperindexformat{\idxbfpage}}{23}
+\indexentry{NestedQuantityKindSpecOf@\texttt  {\frenchspacing \textit  {NestedQuantityKindSpecOf}}|hyperindexformat{\idxbfpage}}{23}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{23}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{23}
+\indexentry{ChildQuantitySpecOf@\texttt  {\frenchspacing \textit  {ChildQuantitySpecOf}}|hyperpage}{23}
+\indexentry{QuantitySpecConvertibleTo@\texttt  {\frenchspacing \textit  {QuantitySpecConvertibleTo}}|hyperindexformat{\idxbfpage}}{23}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{23}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{23}
+\indexentry{QuantitySpecExplicitlyConvertibleTo@\texttt  {\frenchspacing \textit  {QuantitySpecExplicitlyConvertibleTo}}|hyperindexformat{\idxbfpage}}{23}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{23}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{23}
+\indexentry{QuantitySpecCastableTo@\texttt  {\frenchspacing \textit  {QuantitySpecCastableTo}}|hyperindexformat{\idxbfpage}}{23}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{23}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{23}
+\indexentry{QuantitySpecOf@\texttt  {\frenchspacing QuantitySpecOf}|hyperindexformat{\idxbfpage}}{24}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{24}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{24}
+\indexentry{QuantitySpecConvertibleTo@\texttt  {\frenchspacing \textit  {QuantitySpecConvertibleTo}}|hyperpage}{24}
+\indexentry{NestedQuantityKindSpecOf@\texttt  {\frenchspacing \textit  {NestedQuantityKindSpecOf}}|hyperpage}{24}
+\indexentry{QuantityKindSpec@\texttt  {\frenchspacing \textit  {QuantityKindSpec}}|hyperpage}{24}
+\indexentry{NestedQuantityKindSpecOf@\texttt  {\frenchspacing \textit  {NestedQuantityKindSpecOf}}|hyperpage}{24}
+\indexentry{QSProperty@\texttt  {\frenchspacing \textit  {QSProperty}}|hyperindexformat{\idxbfpage}}{24}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{24}
+\indexentry{BaseDimension@\texttt  {\frenchspacing \textit  {BaseDimension}}|hyperpage}{24}
+\indexentry{QSProperty@\texttt  {\frenchspacing \textit  {QSProperty}}|hyperpage}{24}
+\indexentry{BaseDimension@\texttt  {\frenchspacing \textit  {BaseDimension}}|hyperpage}{24}
+\indexentry{DerivedQuantitySpec@\texttt  {\frenchspacing \textit  {DerivedQuantitySpec}}|hyperpage}{24}
+\indexentry{QSProperty@\texttt  {\frenchspacing \textit  {QSProperty}}|hyperpage}{24}
+\indexentry{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{24}
+\indexentry{NamedQuantitySpec@\texttt  {\frenchspacing \textit  {NamedQuantitySpec}}|hyperpage}{24}
+\indexentry{QSProperty@\texttt  {\frenchspacing \textit  {QSProperty}}|hyperpage}{24}
+\indexentry{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{24}
+\indexentry{NamedQuantitySpec@\texttt  {\frenchspacing \textit  {NamedQuantitySpec}}|hyperpage}{24}
+\indexentry{DerivedQuantitySpec@\texttt  {\frenchspacing \textit  {DerivedQuantitySpec}}|hyperpage}{24}
+\indexentry{QSProperty@\texttt  {\frenchspacing \textit  {QSProperty}}|hyperpage}{24}
+\indexentry{QuantitySpecExplicitlyConvertibleTo@\texttt  {\frenchspacing \textit  {QuantitySpecExplicitlyConvertibleTo}}|hyperpage}{24}
+\indexentry{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{24}
+\indexentry{NamedQuantitySpec@\texttt  {\frenchspacing \textit  {NamedQuantitySpec}}|hyperpage}{24}
+\indexentry{NamedQuantitySpec@\texttt  {\frenchspacing \textit  {NamedQuantitySpec}}|hyperindexformat{\idxbfpage}}{25}
+\indexentry{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{25}
+\indexentry{SymbolicConstant@\texttt  {\frenchspacing \textit  {SymbolicConstant}}|hyperpage}{25}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{26}
+\indexentry{QuantityKindSpec@\texttt  {\frenchspacing \textit  {QuantityKindSpec}}|hyperpage}{26}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{26}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{26}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{26}
+\indexentry{QuantityKindSpec@\texttt  {\frenchspacing \textit  {QuantityKindSpec}}|hyperpage}{26}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{26}
+\indexentry{QuantityKindSpec@\texttt  {\frenchspacing \textit  {QuantityKindSpec}}|hyperpage}{26}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{26}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{26}
+\indexentry{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{26}
+\indexentry{UnitOf@\texttt  {\frenchspacing UnitOf}|hyperpage}{26}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{26}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{27}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{27}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{27}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{27}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{27}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{27}
+\indexentry{UnitOf@\texttt  {\frenchspacing UnitOf}|hyperpage}{27}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{27}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{27}
+\indexentry{QuantitySpecExplicitlyConvertibleTo@\texttt  {\frenchspacing \textit  {QuantitySpecExplicitlyConvertibleTo}}|hyperpage}{27}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{27}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{27}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{27}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{27}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{27}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{27}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{27}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{27}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{27}
+\indexentry{UnitOf@\texttt  {\frenchspacing UnitOf}|hyperpage}{27}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{27}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{27}
+\indexentry{QuantitySpecExplicitlyConvertibleTo@\texttt  {\frenchspacing \textit  {QuantitySpecExplicitlyConvertibleTo}}|hyperpage}{27}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{27}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{27}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{27}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{27}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{27}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{27}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{27}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{28}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{28}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{28}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{28}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{28}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{28}
+\indexentry{QuantityKindSpec@\texttt  {\frenchspacing \textit  {QuantityKindSpec}}|hyperpage}{28}
+\indexentry{DerivedQuantitySpec@\texttt  {\frenchspacing \textit  {DerivedQuantitySpec}}|hyperpage}{28}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{28}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{28}
+\indexentry{QuantityKindSpec@\texttt  {\frenchspacing \textit  {QuantityKindSpec}}|hyperpage}{28}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{28}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{28}
+\indexentry{NestedQuantityKindSpecOf@\texttt  {\frenchspacing \textit  {NestedQuantityKindSpecOf}}|hyperpage}{29}
+\indexentry{NestedQuantityKindSpecOf@\texttt  {\frenchspacing \textit  {NestedQuantityKindSpecOf}}|hyperpage}{29}
+\indexentry{QuantityKindSpec@\texttt  {\frenchspacing \textit  {QuantityKindSpec}}|hyperpage}{29}
+\indexentry{QuantityKindSpec@\texttt  {\frenchspacing \textit  {QuantityKindSpec}}|hyperpage}{29}
+\indexentry{DerivedQuantitySpec@\texttt  {\frenchspacing \textit  {DerivedQuantitySpec}}|hyperpage}{29}
+\indexentry{NamedQuantitySpec@\texttt  {\frenchspacing \textit  {NamedQuantitySpec}}|hyperpage}{29}
+\indexentry{QuantityKindSpec@\texttt  {\frenchspacing \textit  {QuantityKindSpec}}|hyperpage}{29}
+\indexentry{QuantityKindSpec@\texttt  {\frenchspacing \textit  {QuantityKindSpec}}|hyperpage}{29}
+\indexentry{NamedQuantitySpec@\texttt  {\frenchspacing \textit  {NamedQuantitySpec}}|hyperpage}{29}
+\indexentry{DerivedQuantitySpec@\texttt  {\frenchspacing \textit  {DerivedQuantitySpec}}|hyperpage}{29}
+\indexentry{QuantitySpecConvertibleTo@\texttt  {\frenchspacing \textit  {QuantitySpecConvertibleTo}}|hyperpage}{29}
+\indexentry{QuantitySpecConvertibleTo@\texttt  {\frenchspacing \textit  {QuantitySpecConvertibleTo}}|hyperpage}{29}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{29}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{29}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{30}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{30}
+\indexentry{MagConstant@\texttt  {\frenchspacing MagConstant}|hyperindexformat{\idxbfpage}}{30}
+\indexentry{SymbolicConstant@\texttt  {\frenchspacing \textit  {SymbolicConstant}}|hyperpage}{30}
+\indexentry{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperindexformat{\idxbfpage}}{30}
+\indexentry{MagArg@\texttt  {\frenchspacing \textit  {MagArg}}|hyperindexformat{\idxbfpage}}{30}
+\indexentry{MagConstant@\texttt  {\frenchspacing MagConstant}|hyperpage}{30}
+\indexentry{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{30}
+\indexentry{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{30}
+\indexentry{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{30}
+\indexentry{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{30}
+\indexentry{MagArg@\texttt  {\frenchspacing \textit  {MagArg}}|hyperpage}{31}
+\indexentry{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{31}
+\indexentry{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{31}
+\indexentry{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{31}
+\indexentry{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{31}
+\indexentry{MagArg@\texttt  {\frenchspacing \textit  {MagArg}}|hyperpage}{31}
+\indexentry{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{31}
+\indexentry{MagConstant@\texttt  {\frenchspacing MagConstant}|hyperpage}{31}
+\indexentry{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{31}
+\indexentry{MagArg@\texttt  {\frenchspacing \textit  {MagArg}}|hyperpage}{32}
+\indexentry{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{32}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{32}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperindexformat{\idxbfpage}}{32}
+\indexentry{SymbolicConstant@\texttt  {\frenchspacing \textit  {SymbolicConstant}}|hyperpage}{32}
+\indexentry{PrefixableUnit@\texttt  {\frenchspacing PrefixableUnit}|hyperindexformat{\idxbfpage}}{32}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{32}
+\indexentry{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperindexformat{\idxbfpage}}{32}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{32}
+\indexentry{UnitOf@\texttt  {\frenchspacing UnitOf}|hyperindexformat{\idxbfpage}}{32}
+\indexentry{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{32}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{32}
+\indexentry{QuantitySpecConvertibleTo@\texttt  {\frenchspacing \textit  {QuantitySpecConvertibleTo}}|hyperpage}{32}
+\indexentry{NestedQuantityKindSpecOf@\texttt  {\frenchspacing \textit  {NestedQuantityKindSpecOf}}|hyperpage}{32}
+\indexentry{UnitConvertibleTo@\texttt  {\frenchspacing \textit  {UnitConvertibleTo}}|hyperindexformat{\idxbfpage}}{32}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{32}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{32}
+\indexentry{UnitCompatibleWith@\texttt  {\frenchspacing \textit  {UnitCompatibleWith}}|hyperindexformat{\idxbfpage}}{32}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{32}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{32}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{32}
+\indexentry{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{32}
+\indexentry{UnitOf@\texttt  {\frenchspacing UnitOf}|hyperpage}{32}
+\indexentry{UnitConvertibleTo@\texttt  {\frenchspacing \textit  {UnitConvertibleTo}}|hyperpage}{32}
+\indexentry{OffsetUnit@\texttt  {\frenchspacing \textit  {OffsetUnit}}|hyperindexformat{\idxbfpage}}{32}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{32}
+\indexentry{PotentiallyConvertibleTo@\texttt  {\frenchspacing \textit  {PotentiallyConvertibleTo}}|hyperindexformat{\idxbfpage}}{32}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{32}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{32}
+\indexentry{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{32}
+\indexentry{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{32}
+\indexentry{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{32}
+\indexentry{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{32}
+\indexentry{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{33}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{33}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{33}
+\indexentry{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{33}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{33}
+\indexentry{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{33}
+\indexentry{QuantityKindSpec@\texttt  {\frenchspacing \textit  {QuantityKindSpec}}|hyperpage}{33}
+\indexentry{BaseDimension@\texttt  {\frenchspacing \textit  {BaseDimension}}|hyperpage}{33}
+\indexentry{QuantityKindSpec@\texttt  {\frenchspacing \textit  {QuantityKindSpec}}|hyperpage}{33}
+\indexentry{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{33}
+\indexentry{BaseDimension@\texttt  {\frenchspacing \textit  {BaseDimension}}|hyperpage}{33}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{34}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{34}
+\indexentry{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{34}
+\indexentry{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{34}
+\indexentry{QuantityKindSpec@\texttt  {\frenchspacing \textit  {QuantityKindSpec}}|hyperpage}{34}
+\indexentry{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{34}
+\indexentry{QuantityKindSpec@\texttt  {\frenchspacing \textit  {QuantityKindSpec}}|hyperpage}{34}
+\indexentry{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{34}
+\indexentry{PrefixableUnit@\texttt  {\frenchspacing PrefixableUnit}|hyperpage}{34}
+\indexentry{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{35}
+\indexentry{PrefixableUnit@\texttt  {\frenchspacing PrefixableUnit}|hyperpage}{35}
+\indexentry{PrefixableUnit@\texttt  {\frenchspacing PrefixableUnit}|hyperpage}{35}
+\indexentry{PrefixableUnit@\texttt  {\frenchspacing PrefixableUnit}|hyperpage}{35}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{35}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{35}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{35}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{35}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{35}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{35}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{35}
+\indexentry{SymbolicConstant@\texttt  {\frenchspacing \textit  {SymbolicConstant}}|hyperpage}{36}
+\indexentry{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{36}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{36}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{36}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{36}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{36}
+\indexentry{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{36}
+\indexentry{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{36}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{36}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{36}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{36}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{36}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{36}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{37}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{37}
+\indexentry{UnitMagnitude@\texttt  {\frenchspacing UnitMagnitude}|hyperpage}{37}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{37}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{38}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{38}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{38}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{38}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{38}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{38}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{38}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{38}
+\indexentry{PotentiallyConvertibleTo@\texttt  {\frenchspacing \textit  {PotentiallyConvertibleTo}}|hyperpage}{38}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{38}
+\indexentry{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{38}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{38}
+\indexentry{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{38}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{38}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{38}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{39}
+\indexentry{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{39}
+\indexentry{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{39}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{40}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{40}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperindexformat{\idxbfpage}}{40}
+\indexentry{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{40}
+\indexentry{ReferenceOf@\texttt  {\frenchspacing ReferenceOf}|hyperindexformat{\idxbfpage}}{40}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{40}
+\indexentry{QuantitySpecOf@\texttt  {\frenchspacing QuantitySpecOf}|hyperpage}{40}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{40}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{40}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{40}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{40}
+\indexentry{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{40}
+\indexentry{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{40}
+\indexentry{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{40}
+\indexentry{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{40}
+\indexentry{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{41}
+\indexentry{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{41}
+\indexentry{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{41}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{41}
+\indexentry{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{41}
+\indexentry{OffsetUnit@\texttt  {\frenchspacing \textit  {OffsetUnit}}|hyperpage}{41}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{41}
+\indexentry{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{41}
+\indexentry{OffsetUnit@\texttt  {\frenchspacing \textit  {OffsetUnit}}|hyperpage}{41}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{41}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{41}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{41}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{41}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{41}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{41}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{41}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{41}
+\indexentry{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{41}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{42}
+\indexentry{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{42}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{42}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{42}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{42}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{42}
+\indexentry{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{42}
+\indexentry{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{42}
+\indexentry{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{42}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{42}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{42}
+\indexentry{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{42}
+\indexentry{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{42}
+\indexentry{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{42}
+\indexentry{AssociatedUnit@\texttt  {\frenchspacing AssociatedUnit}|hyperpage}{42}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{43}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{43}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{43}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{43}
+\indexentry{WeaklyRegular@\texttt  {\frenchspacing \textit  {WeaklyRegular}}|hyperpage}{44}
+\indexentry{Scalar@\texttt  {\frenchspacing \textit  {Scalar}}|hyperpage}{44}
+\indexentry{Scalar@\texttt  {\frenchspacing \textit  {Scalar}}|hyperpage}{44}
+\indexentry{WeaklyRegular@\texttt  {\frenchspacing \textit  {WeaklyRegular}}|hyperpage}{44}
+\indexentry{Scalar@\texttt  {\frenchspacing \textit  {Scalar}}|hyperpage}{44}
+\indexentry{Scalar@\texttt  {\frenchspacing \textit  {Scalar}}|hyperpage}{44}
+\indexentry{WeaklyRegular@\texttt  {\frenchspacing \textit  {WeaklyRegular}}|hyperpage}{44}
+\indexentry{Scalar@\texttt  {\frenchspacing \textit  {Scalar}}|hyperpage}{44}
+\indexentry{Scalar@\texttt  {\frenchspacing \textit  {Scalar}}|hyperpage}{45}
+\indexentry{Scalar@\texttt  {\frenchspacing \textit  {Scalar}}|hyperpage}{45}
+\indexentry{Scalar@\texttt  {\frenchspacing \textit  {Scalar}}|hyperpage}{45}
+\indexentry{WeaklyRegular@\texttt  {\frenchspacing \textit  {WeaklyRegular}}|hyperpage}{45}
+\indexentry{Scalar@\texttt  {\frenchspacing \textit  {Scalar}}|hyperpage}{45}
+\indexentry{Scalar@\texttt  {\frenchspacing \textit  {Scalar}}|hyperpage}{45}
+\indexentry{Scalar@\texttt  {\frenchspacing \textit  {Scalar}}|hyperpage}{45}
+\indexentry{Scalar@\texttt  {\frenchspacing \textit  {Scalar}}|hyperpage}{45}
+\indexentry{WeaklyRegular@\texttt  {\frenchspacing \textit  {WeaklyRegular}}|hyperindexformat{\idxbfpage}}{45}
+\indexentry{Scalar@\texttt  {\frenchspacing \textit  {Scalar}}|hyperindexformat{\idxbfpage}}{45}
+\indexentry{WeaklyRegular@\texttt  {\frenchspacing \textit  {WeaklyRegular}}|hyperpage}{45}
+\indexentry{Complex@\texttt  {\frenchspacing \textit  {Complex}}|hyperindexformat{\idxbfpage}}{45}
+\indexentry{WeaklyRegular@\texttt  {\frenchspacing \textit  {WeaklyRegular}}|hyperpage}{45}
+\indexentry{Scalar@\texttt  {\frenchspacing \textit  {Scalar}}|hyperpage}{45}
+\indexentry{Vector@\texttt  {\frenchspacing \textit  {Vector}}|hyperindexformat{\idxbfpage}}{46}
+\indexentry{WeaklyRegular@\texttt  {\frenchspacing \textit  {WeaklyRegular}}|hyperpage}{46}
+\indexentry{Scalar@\texttt  {\frenchspacing \textit  {Scalar}}|hyperpage}{46}
+\indexentry{ScalarRepresentation@\texttt  {\frenchspacing \textit  {ScalarRepresentation}}|hyperindexformat{\idxbfpage}}{46}
+\indexentry{Scalar@\texttt  {\frenchspacing \textit  {Scalar}}|hyperpage}{46}
+\indexentry{ComplexRepresentation@\texttt  {\frenchspacing \textit  {ComplexRepresentation}}|hyperindexformat{\idxbfpage}}{46}
+\indexentry{Complex@\texttt  {\frenchspacing \textit  {Complex}}|hyperpage}{46}
+\indexentry{VectorRepresentation@\texttt  {\frenchspacing \textit  {VectorRepresentation}}|hyperindexformat{\idxbfpage}}{46}
+\indexentry{Vector@\texttt  {\frenchspacing \textit  {Vector}}|hyperpage}{46}
+\indexentry{Representation@\texttt  {\frenchspacing Representation}|hyperindexformat{\idxbfpage}}{46}
+\indexentry{ScalarRepresentation@\texttt  {\frenchspacing \textit  {ScalarRepresentation}}|hyperpage}{46}
+\indexentry{ComplexRepresentation@\texttt  {\frenchspacing \textit  {ComplexRepresentation}}|hyperpage}{46}
+\indexentry{VectorRepresentation@\texttt  {\frenchspacing \textit  {VectorRepresentation}}|hyperpage}{46}
+\indexentry{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{46}
+\indexentry{IsOfCharacter@\texttt  {\frenchspacing \textit  {IsOfCharacter}}|hyperindexformat{\idxbfpage}}{47}
+\indexentry{Scalar@\texttt  {\frenchspacing \textit  {Scalar}}|hyperpage}{47}
+\indexentry{Complex@\texttt  {\frenchspacing \textit  {Complex}}|hyperpage}{47}
+\indexentry{Vector@\texttt  {\frenchspacing \textit  {Vector}}|hyperpage}{47}
+\indexentry{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperindexformat{\idxbfpage}}{47}
+\indexentry{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{47}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{47}
+\indexentry{QuantityKindSpec@\texttt  {\frenchspacing \textit  {QuantityKindSpec}}|hyperpage}{47}
+\indexentry{IsOfCharacter@\texttt  {\frenchspacing \textit  {IsOfCharacter}}|hyperpage}{47}
+\indexentry{IsOfCharacter@\texttt  {\frenchspacing \textit  {IsOfCharacter}}|hyperpage}{47}
+\indexentry{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{47}
+\indexentry{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{47}
+\indexentry{qty-like-impl@\texttt  {\frenchspacing \textit  {qty-like-impl}}|hyperindexformat{\idxbfpage}}{47}
+\indexentry{QuantityLike@\texttt  {\frenchspacing QuantityLike}|hyperindexformat{\idxbfpage}}{47}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{47}
+\indexentry{qty-like-impl@\texttt  {\frenchspacing \textit  {qty-like-impl}}|hyperpage}{47}
+\indexentry{qty-like-impl@\texttt  {\frenchspacing \textit  {qty-like-impl}}|hyperpage}{47}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperindexformat{\idxbfpage}}{48}
+\indexentry{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperindexformat{\idxbfpage}}{48}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{48}
+\indexentry{QuantitySpecOf@\texttt  {\frenchspacing QuantitySpecOf}|hyperpage}{48}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{48}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{48}
+\indexentry{IsFloatingPoint@\texttt  {\frenchspacing \textit  {IsFloatingPoint}}|hyperindexformat{\idxbfpage}}{48}
+\indexentry{ValuePreservingTo@\texttt  {\frenchspacing \textit  {ValuePreservingTo}}|hyperindexformat{\idxbfpage}}{48}
+\indexentry{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{48}
+\indexentry{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{48}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{48}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{48}
+\indexentry{IsFloatingPoint@\texttt  {\frenchspacing \textit  {IsFloatingPoint}}|hyperpage}{48}
+\indexentry{QuantityConvertibleTo@\texttt  {\frenchspacing \textit  {QuantityConvertibleTo}}|hyperindexformat{\idxbfpage}}{48}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{48}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{48}
+\indexentry{QuantitySpecConvertibleTo@\texttt  {\frenchspacing \textit  {QuantitySpecConvertibleTo}}|hyperpage}{48}
+\indexentry{UnitConvertibleTo@\texttt  {\frenchspacing \textit  {UnitConvertibleTo}}|hyperpage}{48}
+\indexentry{InvokeResultOf@\texttt  {\frenchspacing \textit  {InvokeResultOf}}|hyperindexformat{\idxbfpage}}{48}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{48}
+\indexentry{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{48}
+\indexentry{InvocableQuantities@\texttt  {\frenchspacing \textit  {InvocableQuantities}}|hyperindexformat{\idxbfpage}}{48}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{48}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{48}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{48}
+\indexentry{InvokeResultOf@\texttt  {\frenchspacing \textit  {InvokeResultOf}}|hyperpage}{48}
+\indexentry{HaveCommonReference@\texttt  {\frenchspacing \textit  {HaveCommonReference}}|hyperindexformat{\idxbfpage}}{48}
+\indexentry{CommonlyInvocableQuantities@\texttt  {\frenchspacing \textit  {CommonlyInvocableQuantities}}|hyperindexformat{\idxbfpage}}{48}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{48}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{48}
+\indexentry{HaveCommonReference@\texttt  {\frenchspacing \textit  {HaveCommonReference}}|hyperpage}{48}
+\indexentry{InvocableQuantities@\texttt  {\frenchspacing \textit  {InvocableQuantities}}|hyperpage}{48}
+\indexentry{SameValueAs@\texttt  {\frenchspacing \textit  {SameValueAs}}|hyperindexformat{\idxbfpage}}{49}
+\indexentry{Mutable@\texttt  {\frenchspacing \textit  {Mutable}}|hyperindexformat{\idxbfpage}}{49}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{49}
+\indexentry{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{49}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{49}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{49}
+\indexentry{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{49}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{49}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{49}
+\indexentry{SameValueAs@\texttt  {\frenchspacing \textit  {SameValueAs}}|hyperpage}{49}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{49}
+\indexentry{SameValueAs@\texttt  {\frenchspacing \textit  {SameValueAs}}|hyperpage}{49}
+\indexentry{QuantityConvertibleTo@\texttt  {\frenchspacing \textit  {QuantityConvertibleTo}}|hyperpage}{49}
+\indexentry{ValuePreservingTo@\texttt  {\frenchspacing \textit  {ValuePreservingTo}}|hyperpage}{49}
+\indexentry{QuantityConvertibleTo@\texttt  {\frenchspacing \textit  {QuantityConvertibleTo}}|hyperpage}{49}
+\indexentry{QuantityLike@\texttt  {\frenchspacing QuantityLike}|hyperpage}{49}
+\indexentry{QuantityConvertibleTo@\texttt  {\frenchspacing \textit  {QuantityConvertibleTo}}|hyperpage}{49}
+\indexentry{ValuePreservingTo@\texttt  {\frenchspacing \textit  {ValuePreservingTo}}|hyperpage}{50}
+\indexentry{UnitCompatibleWith@\texttt  {\frenchspacing \textit  {UnitCompatibleWith}}|hyperpage}{50}
+\indexentry{QuantityConvertibleTo@\texttt  {\frenchspacing \textit  {QuantityConvertibleTo}}|hyperpage}{50}
+\indexentry{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{50}
+\indexentry{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{50}
+\indexentry{QuantityConvertibleTo@\texttt  {\frenchspacing \textit  {QuantityConvertibleTo}}|hyperpage}{50}
+\indexentry{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{50}
+\indexentry{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{50}
+\indexentry{UnitCompatibleWith@\texttt  {\frenchspacing \textit  {UnitCompatibleWith}}|hyperpage}{50}
+\indexentry{QuantityConvertibleTo@\texttt  {\frenchspacing \textit  {QuantityConvertibleTo}}|hyperpage}{50}
+\indexentry{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{50}
+\indexentry{UnitCompatibleWith@\texttt  {\frenchspacing \textit  {UnitCompatibleWith}}|hyperpage}{50}
+\indexentry{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{50}
+\indexentry{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{50}
+\indexentry{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{50}
+\indexentry{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{50}
+\indexentry{UnitCompatibleWith@\texttt  {\frenchspacing \textit  {UnitCompatibleWith}}|hyperpage}{50}
+\indexentry{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{50}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{50}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{50}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{50}
+\indexentry{UnitCompatibleWith@\texttt  {\frenchspacing \textit  {UnitCompatibleWith}}|hyperpage}{50}
+\indexentry{QuantityConvertibleTo@\texttt  {\frenchspacing \textit  {QuantityConvertibleTo}}|hyperpage}{50}
+\indexentry{UnitCompatibleWith@\texttt  {\frenchspacing \textit  {UnitCompatibleWith}}|hyperpage}{50}
+\indexentry{QuantityLike@\texttt  {\frenchspacing QuantityLike}|hyperpage}{50}
+\indexentry{QuantityConvertibleTo@\texttt  {\frenchspacing \textit  {QuantityConvertibleTo}}|hyperpage}{50}
+\indexentry{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{51}
+\indexentry{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{51}
+\indexentry{Mutable@\texttt  {\frenchspacing \textit  {Mutable}}|hyperpage}{51}
+\indexentry{Mutable@\texttt  {\frenchspacing \textit  {Mutable}}|hyperpage}{51}
+\indexentry{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{51}
+\indexentry{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{51}
+\indexentry{Mutable@\texttt  {\frenchspacing \textit  {Mutable}}|hyperpage}{51}
+\indexentry{Mutable@\texttt  {\frenchspacing \textit  {Mutable}}|hyperpage}{51}
+\indexentry{Mutable@\texttt  {\frenchspacing \textit  {Mutable}}|hyperpage}{51}
+\indexentry{Mutable@\texttt  {\frenchspacing \textit  {Mutable}}|hyperpage}{51}
+\indexentry{ValuePreservingTo@\texttt  {\frenchspacing \textit  {ValuePreservingTo}}|hyperpage}{51}
+\indexentry{Mutable@\texttt  {\frenchspacing \textit  {Mutable}}|hyperpage}{51}
+\indexentry{ValuePreservingTo@\texttt  {\frenchspacing \textit  {ValuePreservingTo}}|hyperpage}{51}
+\indexentry{Mutable@\texttt  {\frenchspacing \textit  {Mutable}}|hyperpage}{51}
+\indexentry{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{51}
+\indexentry{Mutable@\texttt  {\frenchspacing \textit  {Mutable}}|hyperpage}{51}
+\indexentry{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{51}
+\indexentry{CommonlyInvocableQuantities@\texttt  {\frenchspacing \textit  {CommonlyInvocableQuantities}}|hyperpage}{51}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{51}
+\indexentry{CommonlyInvocableQuantities@\texttt  {\frenchspacing \textit  {CommonlyInvocableQuantities}}|hyperpage}{51}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{51}
+\indexentry{CommonlyInvocableQuantities@\texttt  {\frenchspacing \textit  {CommonlyInvocableQuantities}}|hyperpage}{51}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{51}
+\indexentry{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{51}
+\indexentry{InvokeResultOf@\texttt  {\frenchspacing \textit  {InvokeResultOf}}|hyperpage}{51}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{51}
+\indexentry{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{51}
+\indexentry{InvokeResultOf@\texttt  {\frenchspacing \textit  {InvokeResultOf}}|hyperpage}{51}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{51}
+\indexentry{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{52}
+\indexentry{InvokeResultOf@\texttt  {\frenchspacing \textit  {InvokeResultOf}}|hyperpage}{52}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{52}
+\indexentry{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{52}
+\indexentry{InvokeResultOf@\texttt  {\frenchspacing \textit  {InvokeResultOf}}|hyperpage}{52}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{52}
+\indexentry{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{52}
+\indexentry{InvokeResultOf@\texttt  {\frenchspacing \textit  {InvokeResultOf}}|hyperpage}{52}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{52}
+\indexentry{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{52}
+\indexentry{InvokeResultOf@\texttt  {\frenchspacing \textit  {InvokeResultOf}}|hyperpage}{52}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{52}
+\indexentry{InvocableQuantities@\texttt  {\frenchspacing \textit  {InvocableQuantities}}|hyperpage}{52}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{52}
+\indexentry{InvocableQuantities@\texttt  {\frenchspacing \textit  {InvocableQuantities}}|hyperpage}{52}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{52}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{52}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{52}
+\indexentry{InvokeResultOf@\texttt  {\frenchspacing \textit  {InvokeResultOf}}|hyperpage}{52}
+\indexentry{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{52}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{52}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{52}
+\indexentry{InvokeResultOf@\texttt  {\frenchspacing \textit  {InvokeResultOf}}|hyperpage}{52}
+\indexentry{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{52}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{52}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{52}
+\indexentry{InvokeResultOf@\texttt  {\frenchspacing \textit  {InvokeResultOf}}|hyperpage}{52}
+\indexentry{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{52}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{52}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{52}
+\indexentry{InvokeResultOf@\texttt  {\frenchspacing \textit  {InvokeResultOf}}|hyperpage}{52}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{52}
+\indexentry{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{52}
+\indexentry{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{52}
+\indexentry{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{53}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{53}
+\indexentry{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{53}
+\indexentry{QuantityLike@\texttt  {\frenchspacing QuantityLike}|hyperpage}{53}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{53}
+\indexentry{SameValueAs@\texttt  {\frenchspacing \textit  {SameValueAs}}|hyperpage}{53}
+\indexentry{ValuePreservingTo@\texttt  {\frenchspacing \textit  {ValuePreservingTo}}|hyperpage}{53}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{53}
+\indexentry{SameValueAs@\texttt  {\frenchspacing \textit  {SameValueAs}}|hyperpage}{53}
+\indexentry{QuantityConvertibleTo@\texttt  {\frenchspacing \textit  {QuantityConvertibleTo}}|hyperpage}{53}
+\indexentry{QuantityConvertibleTo@\texttt  {\frenchspacing \textit  {QuantityConvertibleTo}}|hyperpage}{53}
+\indexentry{QuantityLike@\texttt  {\frenchspacing QuantityLike}|hyperpage}{53}
+\indexentry{QuantityConvertibleTo@\texttt  {\frenchspacing \textit  {QuantityConvertibleTo}}|hyperpage}{53}
+\indexentry{ValuePreservingTo@\texttt  {\frenchspacing \textit  {ValuePreservingTo}}|hyperpage}{54}
+\indexentry{UnitCompatibleWith@\texttt  {\frenchspacing \textit  {UnitCompatibleWith}}|hyperpage}{54}
+\indexentry{QuantityConvertibleTo@\texttt  {\frenchspacing \textit  {QuantityConvertibleTo}}|hyperpage}{54}
+\indexentry{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{54}
+\indexentry{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{54}
+\indexentry{QuantityConvertibleTo@\texttt  {\frenchspacing \textit  {QuantityConvertibleTo}}|hyperpage}{54}
+\indexentry{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{54}
+\indexentry{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{54}
+\indexentry{UnitCompatibleWith@\texttt  {\frenchspacing \textit  {UnitCompatibleWith}}|hyperpage}{54}
+\indexentry{QuantityConvertibleTo@\texttt  {\frenchspacing \textit  {QuantityConvertibleTo}}|hyperpage}{54}
+\indexentry{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{54}
+\indexentry{UnitCompatibleWith@\texttt  {\frenchspacing \textit  {UnitCompatibleWith}}|hyperpage}{54}
+\indexentry{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{54}
+\indexentry{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{54}
+\indexentry{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{54}
+\indexentry{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{54}
+\indexentry{UnitCompatibleWith@\texttt  {\frenchspacing \textit  {UnitCompatibleWith}}|hyperpage}{54}
+\indexentry{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{54}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{54}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{54}
+\indexentry{UnitCompatibleWith@\texttt  {\frenchspacing \textit  {UnitCompatibleWith}}|hyperpage}{54}
+\indexentry{QuantityConvertibleTo@\texttt  {\frenchspacing \textit  {QuantityConvertibleTo}}|hyperpage}{54}
+\indexentry{UnitCompatibleWith@\texttt  {\frenchspacing \textit  {UnitCompatibleWith}}|hyperpage}{55}
+\indexentry{QuantityLike@\texttt  {\frenchspacing QuantityLike}|hyperpage}{55}
+\indexentry{QuantityConvertibleTo@\texttt  {\frenchspacing \textit  {QuantityConvertibleTo}}|hyperpage}{55}
+\indexentry{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{55}
+\indexentry{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{55}
+\indexentry{Mutable@\texttt  {\frenchspacing \textit  {Mutable}}|hyperpage}{55}
+\indexentry{Mutable@\texttt  {\frenchspacing \textit  {Mutable}}|hyperpage}{55}
+\indexentry{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{55}
+\indexentry{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{55}
+\indexentry{Mutable@\texttt  {\frenchspacing \textit  {Mutable}}|hyperpage}{56}
+\indexentry{Mutable@\texttt  {\frenchspacing \textit  {Mutable}}|hyperpage}{56}
+\indexentry{Mutable@\texttt  {\frenchspacing \textit  {Mutable}}|hyperpage}{56}
+\indexentry{QuantityConvertibleTo@\texttt  {\frenchspacing \textit  {QuantityConvertibleTo}}|hyperpage}{56}
+\indexentry{Mutable@\texttt  {\frenchspacing \textit  {Mutable}}|hyperpage}{56}
+\indexentry{ValuePreservingTo@\texttt  {\frenchspacing \textit  {ValuePreservingTo}}|hyperpage}{56}
+\indexentry{Mutable@\texttt  {\frenchspacing \textit  {Mutable}}|hyperpage}{56}
+\indexentry{ValuePreservingTo@\texttt  {\frenchspacing \textit  {ValuePreservingTo}}|hyperpage}{56}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{56}
+\indexentry{Mutable@\texttt  {\frenchspacing \textit  {Mutable}}|hyperpage}{56}
+\indexentry{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{56}
+\indexentry{Mutable@\texttt  {\frenchspacing \textit  {Mutable}}|hyperpage}{56}
+\indexentry{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{56}
+\indexentry{ValuePreservingTo@\texttt  {\frenchspacing \textit  {ValuePreservingTo}}|hyperpage}{56}
+\indexentry{CommonlyInvocableQuantities@\texttt  {\frenchspacing \textit  {CommonlyInvocableQuantities}}|hyperpage}{57}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{57}
+\indexentry{CommonlyInvocableQuantities@\texttt  {\frenchspacing \textit  {CommonlyInvocableQuantities}}|hyperpage}{57}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{57}
+\indexentry{CommonlyInvocableQuantities@\texttt  {\frenchspacing \textit  {CommonlyInvocableQuantities}}|hyperpage}{57}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{57}
+\indexentry{CommonlyInvocableQuantities@\texttt  {\frenchspacing \textit  {CommonlyInvocableQuantities}}|hyperpage}{57}
+\indexentry{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{57}
+\indexentry{InvokeResultOf@\texttt  {\frenchspacing \textit  {InvokeResultOf}}|hyperpage}{57}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{57}
+\indexentry{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{57}
+\indexentry{InvokeResultOf@\texttt  {\frenchspacing \textit  {InvokeResultOf}}|hyperpage}{57}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{57}
+\indexentry{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{57}
+\indexentry{InvokeResultOf@\texttt  {\frenchspacing \textit  {InvokeResultOf}}|hyperpage}{57}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{57}
+\indexentry{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{57}
+\indexentry{InvokeResultOf@\texttt  {\frenchspacing \textit  {InvokeResultOf}}|hyperpage}{57}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{57}
+\indexentry{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{57}
+\indexentry{InvokeResultOf@\texttt  {\frenchspacing \textit  {InvokeResultOf}}|hyperpage}{57}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{57}
+\indexentry{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{57}
+\indexentry{InvokeResultOf@\texttt  {\frenchspacing \textit  {InvokeResultOf}}|hyperpage}{57}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{57}
+\indexentry{InvocableQuantities@\texttt  {\frenchspacing \textit  {InvocableQuantities}}|hyperpage}{57}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{57}
+\indexentry{InvocableQuantities@\texttt  {\frenchspacing \textit  {InvocableQuantities}}|hyperpage}{57}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{57}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{58}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{58}
+\indexentry{InvokeResultOf@\texttt  {\frenchspacing \textit  {InvokeResultOf}}|hyperpage}{58}
+\indexentry{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{58}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{58}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{58}
+\indexentry{InvokeResultOf@\texttt  {\frenchspacing \textit  {InvokeResultOf}}|hyperpage}{58}
+\indexentry{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{58}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{58}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{58}
+\indexentry{InvokeResultOf@\texttt  {\frenchspacing \textit  {InvokeResultOf}}|hyperpage}{58}
+\indexentry{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{58}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{58}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{58}
+\indexentry{InvokeResultOf@\texttt  {\frenchspacing \textit  {InvokeResultOf}}|hyperpage}{58}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{58}
+\indexentry{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{58}
+\indexentry{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{58}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{59}
+\indexentry{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{59}
+\indexentry{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{59}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{59}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{59}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{59}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{59}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{59}
+\indexentry{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{59}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{59}
+\indexentry{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{59}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{60}
+\indexentry{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{60}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{60}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{60}
+\indexentry{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{60}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{60}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{60}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{60}
+\indexentry{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{60}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{60}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{60}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{60}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{60}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{60}
+\indexentry{QuantitySpecCastableTo@\texttt  {\frenchspacing \textit  {QuantitySpecCastableTo}}|hyperpage}{60}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{60}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{60}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{60}
+\indexentry{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{60}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{60}
+\indexentry{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{60}
+\indexentry{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperindexformat{\idxbfpage}}{61}
+\indexentry{SymbolicConstant@\texttt  {\frenchspacing \textit  {SymbolicConstant}}|hyperpage}{61}
+\indexentry{PointOriginFor@\texttt  {\frenchspacing PointOriginFor}|hyperindexformat{\idxbfpage}}{61}
+\indexentry{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{61}
+\indexentry{QuantitySpecOf@\texttt  {\frenchspacing QuantitySpecOf}|hyperpage}{61}
+\indexentry{SameAbsolutePointOriginAs@\texttt  {\frenchspacing \textit  {SameAbsolutePointOriginAs}}|hyperindexformat{\idxbfpage}}{61}
+\indexentry{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{61}
+\indexentry{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{61}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{61}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{61}
+\indexentry{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{61}
+\indexentry{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{61}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{61}
+\indexentry{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{61}
+\indexentry{QuantityKindSpec@\texttt  {\frenchspacing \textit  {QuantityKindSpec}}|hyperpage}{61}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{62}
+\indexentry{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{62}
+\indexentry{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{62}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{62}
+\indexentry{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{62}
+\indexentry{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{62}
+\indexentry{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{62}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{62}
+\indexentry{ReferenceOf@\texttt  {\frenchspacing ReferenceOf}|hyperpage}{62}
+\indexentry{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{62}
+\indexentry{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{62}
+\indexentry{SameAbsolutePointOriginAs@\texttt  {\frenchspacing \textit  {SameAbsolutePointOriginAs}}|hyperpage}{62}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{62}
+\indexentry{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{62}
+\indexentry{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{62}
+\indexentry{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{62}
+\indexentry{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{62}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{62}
+\indexentry{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{62}
+\indexentry{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{62}
+\indexentry{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{62}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{62}
+\indexentry{ReferenceOf@\texttt  {\frenchspacing ReferenceOf}|hyperpage}{62}
+\indexentry{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{62}
+\indexentry{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{62}
+\indexentry{SameAbsolutePointOriginAs@\texttt  {\frenchspacing \textit  {SameAbsolutePointOriginAs}}|hyperpage}{62}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{62}
+\indexentry{QuantitySpecOf@\texttt  {\frenchspacing QuantitySpecOf}|hyperpage}{62}
+\indexentry{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{63}
+\indexentry{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{63}
+\indexentry{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{63}
+\indexentry{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{63}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{63}
+\indexentry{PointOriginFor@\texttt  {\frenchspacing PointOriginFor}|hyperpage}{63}
+\indexentry{QuantityPointLike@\texttt  {\frenchspacing QuantityPointLike}|hyperindexformat{\idxbfpage}}{63}
+\indexentry{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{63}
+\indexentry{qty-like-impl@\texttt  {\frenchspacing \textit  {qty-like-impl}}|hyperpage}{63}
+\indexentry{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperindexformat{\idxbfpage}}{64}
+\indexentry{QuantityPointOf@\texttt  {\frenchspacing QuantityPointOf}|hyperindexformat{\idxbfpage}}{64}
+\indexentry{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{64}
+\indexentry{QuantitySpecOf@\texttt  {\frenchspacing QuantitySpecOf}|hyperpage}{64}
+\indexentry{SameAbsolutePointOriginAs@\texttt  {\frenchspacing \textit  {SameAbsolutePointOriginAs}}|hyperpage}{64}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{64}
+\indexentry{PointOriginFor@\texttt  {\frenchspacing PointOriginFor}|hyperpage}{64}
+\indexentry{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{64}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{64}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{64}
+\indexentry{Dimension@\texttt  {\frenchspacing Dimension}|hyperpage}{64}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{64}
+\indexentry{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{64}
+\indexentry{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{64}
+\indexentry{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{64}
+\indexentry{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{64}
+\indexentry{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{64}
+\indexentry{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{64}
+\indexentry{SameAbsolutePointOriginAs@\texttt  {\frenchspacing \textit  {SameAbsolutePointOriginAs}}|hyperpage}{64}
+\indexentry{QuantityPointOf@\texttt  {\frenchspacing QuantityPointOf}|hyperpage}{64}
+\indexentry{QuantityPointLike@\texttt  {\frenchspacing QuantityPointLike}|hyperpage}{64}
+\indexentry{SameAbsolutePointOriginAs@\texttt  {\frenchspacing \textit  {SameAbsolutePointOriginAs}}|hyperpage}{65}
+\indexentry{QuantityPointOf@\texttt  {\frenchspacing QuantityPointOf}|hyperpage}{65}
+\indexentry{UnitCompatibleWith@\texttt  {\frenchspacing \textit  {UnitCompatibleWith}}|hyperpage}{65}
+\indexentry{QuantityPointOf@\texttt  {\frenchspacing QuantityPointOf}|hyperpage}{65}
+\indexentry{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{65}
+\indexentry{QuantityPointOf@\texttt  {\frenchspacing QuantityPointOf}|hyperpage}{65}
+\indexentry{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{65}
+\indexentry{UnitCompatibleWith@\texttt  {\frenchspacing \textit  {UnitCompatibleWith}}|hyperpage}{65}
+\indexentry{QuantityPointOf@\texttt  {\frenchspacing QuantityPointOf}|hyperpage}{65}
+\indexentry{UnitCompatibleWith@\texttt  {\frenchspacing \textit  {UnitCompatibleWith}}|hyperpage}{65}
+\indexentry{QuantityPointOf@\texttt  {\frenchspacing QuantityPointOf}|hyperpage}{65}
+\indexentry{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{65}
+\indexentry{QuantityPointOf@\texttt  {\frenchspacing QuantityPointOf}|hyperpage}{65}
+\indexentry{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{65}
+\indexentry{UnitCompatibleWith@\texttt  {\frenchspacing \textit  {UnitCompatibleWith}}|hyperpage}{65}
+\indexentry{QuantityPointOf@\texttt  {\frenchspacing QuantityPointOf}|hyperpage}{65}
+\indexentry{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{65}
+\indexentry{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{65}
+\indexentry{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{65}
+\indexentry{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{65}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{65}
+\indexentry{QuantityPointOf@\texttt  {\frenchspacing QuantityPointOf}|hyperpage}{65}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{65}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{65}
+\indexentry{QuantityPointLike@\texttt  {\frenchspacing QuantityPointLike}|hyperpage}{65}
+\indexentry{QuantityPointLike@\texttt  {\frenchspacing QuantityPointLike}|hyperpage}{65}
+\indexentry{Mutable@\texttt  {\frenchspacing \textit  {Mutable}}|hyperpage}{66}
+\indexentry{Mutable@\texttt  {\frenchspacing \textit  {Mutable}}|hyperpage}{66}
+\indexentry{Mutable@\texttt  {\frenchspacing \textit  {Mutable}}|hyperpage}{66}
+\indexentry{Mutable@\texttt  {\frenchspacing \textit  {Mutable}}|hyperpage}{66}
+\indexentry{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{66}
+\indexentry{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{66}
+\indexentry{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{66}
+\indexentry{QuantityPointOf@\texttt  {\frenchspacing QuantityPointOf}|hyperpage}{66}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{66}
+\indexentry{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{66}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{66}
+\indexentry{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{66}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{66}
+\indexentry{QuantityPointOf@\texttt  {\frenchspacing QuantityPointOf}|hyperpage}{66}
+\indexentry{QuantityPointOf@\texttt  {\frenchspacing QuantityPointOf}|hyperpage}{66}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{66}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{66}
+\indexentry{PointOriginFor@\texttt  {\frenchspacing PointOriginFor}|hyperpage}{66}
+\indexentry{QuantityPointLike@\texttt  {\frenchspacing QuantityPointLike}|hyperpage}{66}
+\indexentry{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{67}
+\indexentry{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{67}
+\indexentry{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{67}
+\indexentry{QuantityOf@\texttt  {\frenchspacing QuantityOf}|hyperpage}{67}
+\indexentry{SameAbsolutePointOriginAs@\texttt  {\frenchspacing \textit  {SameAbsolutePointOriginAs}}|hyperpage}{67}
+\indexentry{QuantityPointOf@\texttt  {\frenchspacing QuantityPointOf}|hyperpage}{67}
+\indexentry{QuantityPointLike@\texttt  {\frenchspacing QuantityPointLike}|hyperpage}{67}
+\indexentry{SameAbsolutePointOriginAs@\texttt  {\frenchspacing \textit  {SameAbsolutePointOriginAs}}|hyperpage}{68}
+\indexentry{QuantityPointOf@\texttt  {\frenchspacing QuantityPointOf}|hyperpage}{68}
+\indexentry{UnitCompatibleWith@\texttt  {\frenchspacing \textit  {UnitCompatibleWith}}|hyperpage}{68}
+\indexentry{QuantityPointOf@\texttt  {\frenchspacing QuantityPointOf}|hyperpage}{68}
+\indexentry{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{68}
+\indexentry{QuantityPointOf@\texttt  {\frenchspacing QuantityPointOf}|hyperpage}{68}
+\indexentry{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{68}
+\indexentry{UnitCompatibleWith@\texttt  {\frenchspacing \textit  {UnitCompatibleWith}}|hyperpage}{68}
+\indexentry{QuantityPointOf@\texttt  {\frenchspacing QuantityPointOf}|hyperpage}{68}
+\indexentry{UnitCompatibleWith@\texttt  {\frenchspacing \textit  {UnitCompatibleWith}}|hyperpage}{68}
+\indexentry{QuantityPointOf@\texttt  {\frenchspacing QuantityPointOf}|hyperpage}{68}
+\indexentry{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{68}
+\indexentry{QuantityPointOf@\texttt  {\frenchspacing QuantityPointOf}|hyperpage}{68}
+\indexentry{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{68}
+\indexentry{UnitCompatibleWith@\texttt  {\frenchspacing \textit  {UnitCompatibleWith}}|hyperpage}{68}
+\indexentry{QuantityPointOf@\texttt  {\frenchspacing QuantityPointOf}|hyperpage}{68}
+\indexentry{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{68}
+\indexentry{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{68}
+\indexentry{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{68}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{68}
+\indexentry{QuantityPointOf@\texttt  {\frenchspacing QuantityPointOf}|hyperpage}{69}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{69}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{69}
+\indexentry{QuantityPointLike@\texttt  {\frenchspacing QuantityPointLike}|hyperpage}{69}
+\indexentry{QuantityPointLike@\texttt  {\frenchspacing QuantityPointLike}|hyperpage}{69}
+\indexentry{Mutable@\texttt  {\frenchspacing \textit  {Mutable}}|hyperpage}{69}
+\indexentry{Mutable@\texttt  {\frenchspacing \textit  {Mutable}}|hyperpage}{69}
+\indexentry{Mutable@\texttt  {\frenchspacing \textit  {Mutable}}|hyperpage}{70}
+\indexentry{Mutable@\texttt  {\frenchspacing \textit  {Mutable}}|hyperpage}{70}
+\indexentry{QuantityConvertibleTo@\texttt  {\frenchspacing \textit  {QuantityConvertibleTo}}|hyperpage}{70}
+\indexentry{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{70}
+\indexentry{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{70}
+\indexentry{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{70}
+\indexentry{ReferenceOf@\texttt  {\frenchspacing ReferenceOf}|hyperpage}{70}
+\indexentry{QuantityPointOf@\texttt  {\frenchspacing QuantityPointOf}|hyperpage}{70}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{70}
+\indexentry{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{70}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{70}
+\indexentry{PointOrigin@\texttt  {\frenchspacing PointOrigin}|hyperpage}{70}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{70}
+\indexentry{QuantityPointOf@\texttt  {\frenchspacing QuantityPointOf}|hyperpage}{71}
+\indexentry{ReferenceOf@\texttt  {\frenchspacing ReferenceOf}|hyperpage}{71}
+\indexentry{QuantityPointOf@\texttt  {\frenchspacing QuantityPointOf}|hyperpage}{71}
+\indexentry{QuantityPointOf@\texttt  {\frenchspacing QuantityPointOf}|hyperpage}{71}
+\indexentry{Reference@\texttt  {\frenchspacing Reference}|hyperpage}{71}
+\indexentry{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{71}
+\indexentry{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{71}
+\indexentry{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{71}
+\indexentry{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{71}
+\indexentry{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{71}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{72}
+\indexentry{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{72}
+\indexentry{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{72}
+\indexentry{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{72}
+\indexentry{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{72}
+\indexentry{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{72}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{72}
+\indexentry{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{72}
+\indexentry{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{72}
+\indexentry{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{72}
+\indexentry{Representation@\texttt  {\frenchspacing Representation}|hyperpage}{72}
+\indexentry{Unit@\texttt  {\frenchspacing Unit}|hyperpage}{72}
+\indexentry{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{72}
+\indexentry{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{72}
+\indexentry{RepresentationOf@\texttt  {\frenchspacing RepresentationOf}|hyperpage}{72}
+\indexentry{Quantity@\texttt  {\frenchspacing Quantity}|hyperpage}{72}
+\indexentry{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{72}
+\indexentry{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{72}
+\indexentry{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{72}
+\indexentry{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{72}
+\indexentry{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{72}
+\indexentry{QuantitySpec@\texttt  {\frenchspacing QuantitySpec}|hyperpage}{72}
+\indexentry{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{72}
+\indexentry{QuantitySpecCastableTo@\texttt  {\frenchspacing \textit  {QuantitySpecCastableTo}}|hyperpage}{72}
+\indexentry{QuantityPoint@\texttt  {\frenchspacing QuantityPoint}|hyperpage}{72}

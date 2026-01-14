@@ -1,0 +1,145 @@
+\contentsline {chapter}{Foreword}{iii}{chapter*.3}%
+\contentsline {chapter}{Introduction}{iv}{chapter*.4}%
+\babel@toc {american}{}\relax 
+\babel@toc {american}{}\relax 
+\contentsline {chapter}{\chapternumberline {1}Scope}{1}{chapter.1}%
+\contentsline {chapter}{\chapternumberline {2}References}{2}{chapter.2}%
+\contentsline {chapter}{\chapternumberline {3}Terms and definitions}{3}{chapter.3}%
+\contentsline {chapter}{\chapternumberline {4}Specification}{4}{chapter.4}%
+\contentsline {section}{\numberline {4.1}External}{4}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Categories}{4}{section.4.2}%
+\contentsline {section}{\numberline {4.3}Modules}{4}{section.4.3}%
+\contentsline {section}{\numberline {4.4}Library-wide requirements}{4}{section.4.4}%
+\contentsline {subsection}{\numberline {4.4.1}Reserved names}{4}{subsection.4.4.1}%
+\contentsline {chapter}{\chapternumberline {5}Quantities and units library}{5}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Summary}{5}{section.5.1}%
+\contentsline {section}{\numberline {5.2}mp-units module synopses}{5}{section.5.2}%
+\contentsline {subsection}{\numberline {5.2.1}Module \texttt {\frenchspacing mp_units} synopsis}{5}{subsection.5.2.1}%
+\contentsline {subsection}{\numberline {5.2.2}Module \texttt {\frenchspacing mp_units.core} synopsis}{5}{subsection.5.2.2}%
+\contentsline {subsection}{\numberline {5.2.3}Module \texttt {\frenchspacing mp_units.systems} synopsis}{15}{subsection.5.2.3}%
+\contentsline {section}{\numberline {5.3}Utilities}{15}{section.5.3}%
+\contentsline {subsection}{\numberline {5.3.1}Non-types}{15}{subsection.5.3.1}%
+\contentsline {subsection}{\numberline {5.3.2}Ratio}{16}{subsection.5.3.2}%
+\contentsline {subsection}{\numberline {5.3.3}Symbol text}{16}{subsection.5.3.3}%
+\contentsline {subsection}{\numberline {5.3.4}Symbolic expressions}{18}{subsection.5.3.4}%
+\contentsline {subsubsection}{\numberline {5.3.4.1}General}{18}{subsubsection.5.3.4.1}%
+\contentsline {subsubsection}{\numberline {5.3.4.2}Concept \texttt {\frenchspacing \textit {SymbolicConstant}}}{18}{subsubsection.5.3.4.2}%
+\contentsline {subsubsection}{\numberline {5.3.4.3}Types}{18}{subsubsection.5.3.4.3}%
+\contentsline {subsubsection}{\numberline {5.3.4.4}Algorithms}{19}{subsubsection.5.3.4.4}%
+\contentsline {section}{\numberline {5.4}Reference}{21}{section.5.4}%
+\contentsline {subsection}{\numberline {5.4.1}General}{21}{subsection.5.4.1}%
+\contentsline {subsection}{\numberline {5.4.2}Dimension}{21}{subsection.5.4.2}%
+\contentsline {subsubsection}{\numberline {5.4.2.1}General}{21}{subsubsection.5.4.2.1}%
+\contentsline {subsubsection}{\numberline {5.4.2.2}Concepts}{21}{subsubsection.5.4.2.2}%
+\contentsline {subsubsection}{\numberline {5.4.2.3}Types}{21}{subsubsection.5.4.2.3}%
+\contentsline {subsubsection}{\numberline {5.4.2.4}Operations}{22}{subsubsection.5.4.2.4}%
+\contentsline {subsubsection}{\numberline {5.4.2.5}Symbol formatting}{23}{subsubsection.5.4.2.5}%
+\contentsline {subsection}{\numberline {5.4.3}Quantity specification}{23}{subsection.5.4.3}%
+\contentsline {subsubsection}{\numberline {5.4.3.1}General}{23}{subsubsection.5.4.3.1}%
+\contentsline {subsubsection}{\numberline {5.4.3.2}Concepts}{23}{subsubsection.5.4.3.2}%
+\contentsline {subsubsection}{\numberline {5.4.3.3}Types}{24}{subsubsection.5.4.3.3}%
+\contentsline {paragraph}{\numberline {5.4.3.3.1}Named}{24}{paragraph.5.4.3.3.1}%
+\contentsline {paragraph}{\numberline {5.4.3.3.2}Derived}{25}{paragraph.5.4.3.3.2}%
+\contentsline {paragraph}{\numberline {5.4.3.3.3}Base quantity of dimension one}{26}{paragraph.5.4.3.3.3}%
+\contentsline {paragraph}{\numberline {5.4.3.3.4}Kind of}{26}{paragraph.5.4.3.3.4}%
+\contentsline {subsubsection}{\numberline {5.4.3.4}Utilities}{26}{subsubsection.5.4.3.4}%
+\contentsline {subsubsection}{\numberline {5.4.3.5}Operations}{27}{subsubsection.5.4.3.5}%
+\contentsline {subsubsection}{\numberline {5.4.3.6}Hierarchy algorithms}{28}{subsubsection.5.4.3.6}%
+\contentsline {paragraph}{\numberline {5.4.3.6.1}Conversion}{28}{paragraph.5.4.3.6.1}%
+\contentsline {paragraph}{\numberline {5.4.3.6.2}Get kind}{28}{paragraph.5.4.3.6.2}%
+\contentsline {paragraph}{\numberline {5.4.3.6.3}Get common quantity specification}{28}{paragraph.5.4.3.6.3}%
+\contentsline {paragraph}{\numberline {5.4.3.6.4}Get common base}{29}{paragraph.5.4.3.6.4}%
+\contentsline {paragraph}{\numberline {5.4.3.6.5}Is child of}{30}{paragraph.5.4.3.6.5}%
+\contentsline {subsection}{\numberline {5.4.4}Unit}{30}{subsection.5.4.4}%
+\contentsline {subsubsection}{\numberline {5.4.4.1}General}{30}{subsubsection.5.4.4.1}%
+\contentsline {subsubsection}{\numberline {5.4.4.2}Magnitude}{30}{subsubsection.5.4.4.2}%
+\contentsline {paragraph}{\numberline {5.4.4.2.1}General}{30}{paragraph.5.4.4.2.1}%
+\contentsline {paragraph}{\numberline {5.4.4.2.2}Concepts}{30}{paragraph.5.4.4.2.2}%
+\contentsline {paragraph}{\numberline {5.4.4.2.3}Types}{30}{paragraph.5.4.4.2.3}%
+\contentsline {paragraph}{\numberline {5.4.4.2.4}Operations}{31}{paragraph.5.4.4.2.4}%
+\contentsline {paragraph}{\numberline {5.4.4.2.5}Utilities}{32}{paragraph.5.4.4.2.5}%
+\contentsline {subsubsection}{\numberline {5.4.4.3}Traits}{32}{subsubsection.5.4.4.3}%
+\contentsline {subsubsection}{\numberline {5.4.4.4}Concepts}{32}{subsubsection.5.4.4.4}%
+\contentsline {subsubsection}{\numberline {5.4.4.5}Types}{33}{subsubsection.5.4.4.5}%
+\contentsline {paragraph}{\numberline {5.4.4.5.1}Canonical}{33}{paragraph.5.4.4.5.1}%
+\contentsline {paragraph}{\numberline {5.4.4.5.2}Scaled}{33}{paragraph.5.4.4.5.2}%
+\contentsline {paragraph}{\numberline {5.4.4.5.3}Named}{33}{paragraph.5.4.4.5.3}%
+\contentsline {paragraph}{\numberline {5.4.4.5.4}Prefixed}{35}{paragraph.5.4.4.5.4}%
+\contentsline {paragraph}{\numberline {5.4.4.5.5}Common}{35}{paragraph.5.4.4.5.5}%
+\contentsline {paragraph}{\numberline {5.4.4.5.6}Derived}{36}{paragraph.5.4.4.5.6}%
+\contentsline {paragraph}{\numberline {5.4.4.5.7}One}{36}{paragraph.5.4.4.5.7}%
+\contentsline {subsubsection}{\numberline {5.4.4.6}Operations}{36}{subsubsection.5.4.4.6}%
+\contentsline {subsubsection}{\numberline {5.4.4.7}Comparison}{38}{subsubsection.5.4.4.7}%
+\contentsline {subsubsection}{\numberline {5.4.4.8}Observers}{38}{subsubsection.5.4.4.8}%
+\contentsline {subsubsection}{\numberline {5.4.4.9}Associated quantity}{39}{subsubsection.5.4.4.9}%
+\contentsline {subsubsection}{\numberline {5.4.4.10}Symbol formatting}{40}{subsubsection.5.4.4.10}%
+\contentsline {subsection}{\numberline {5.4.5}Concepts}{40}{subsection.5.4.5}%
+\contentsline {subsection}{\numberline {5.4.6}Class template \texttt {\frenchspacing reference}}{40}{subsection.5.4.6}%
+\contentsline {subsection}{\numberline {5.4.7}Operations}{41}{subsection.5.4.7}%
+\contentsline {subsection}{\numberline {5.4.8}Comparison}{42}{subsection.5.4.8}%
+\contentsline {subsection}{\numberline {5.4.9}Observers}{42}{subsection.5.4.9}%
+\contentsline {section}{\numberline {5.5}Representation}{43}{section.5.5}%
+\contentsline {subsection}{\numberline {5.5.1}General}{43}{subsection.5.5.1}%
+\contentsline {subsection}{\numberline {5.5.2}Traits}{43}{subsection.5.5.2}%
+\contentsline {subsubsection}{\numberline {5.5.2.1}Floating-point}{43}{subsubsection.5.5.2.1}%
+\contentsline {subsubsection}{\numberline {5.5.2.2}Quantity character}{43}{subsubsection.5.5.2.2}%
+\contentsline {subsubsection}{\numberline {5.5.2.3}Values}{44}{subsubsection.5.5.2.3}%
+\contentsline {subsection}{\numberline {5.5.3}Customization point objects}{44}{subsection.5.5.3}%
+\contentsline {subsubsection}{\numberline {5.5.3.1}General}{44}{subsubsection.5.5.3.1}%
+\contentsline {subsubsection}{\numberline {5.5.3.2}\texttt {\frenchspacing mp_units::real}}{44}{subsubsection.5.5.3.2}%
+\contentsline {subsubsection}{\numberline {5.5.3.3}\texttt {\frenchspacing mp_units::imag}}{44}{subsubsection.5.5.3.3}%
+\contentsline {subsubsection}{\numberline {5.5.3.4}\texttt {\frenchspacing mp_units::modulus}}{44}{subsubsection.5.5.3.4}%
+\contentsline {subsubsection}{\numberline {5.5.3.5}\texttt {\frenchspacing mp_units::magnitude}}{45}{subsubsection.5.5.3.5}%
+\contentsline {subsection}{\numberline {5.5.4}Concepts}{45}{subsection.5.5.4}%
+\contentsline {section}{\numberline {5.6}Quantity}{47}{section.5.6}%
+\contentsline {subsection}{\numberline {5.6.1}General}{47}{subsection.5.6.1}%
+\contentsline {subsection}{\numberline {5.6.2}Interoperability}{47}{subsection.5.6.2}%
+\contentsline {subsection}{\numberline {5.6.3}Class template \texttt {\frenchspacing quantity}}{48}{subsection.5.6.3}%
+\contentsline {subsection}{\numberline {5.6.4}Static member functions}{53}{subsection.5.6.4}%
+\contentsline {subsection}{\numberline {5.6.5}Constructors and assignment}{53}{subsection.5.6.5}%
+\contentsline {subsection}{\numberline {5.6.6}Conversions}{54}{subsection.5.6.6}%
+\contentsline {subsection}{\numberline {5.6.7}Numerical value observers}{54}{subsection.5.6.7}%
+\contentsline {subsection}{\numberline {5.6.8}Conversion operations}{55}{subsection.5.6.8}%
+\contentsline {subsection}{\numberline {5.6.9}Unary operations}{55}{subsection.5.6.9}%
+\contentsline {subsection}{\numberline {5.6.10}Compound assignment operations}{56}{subsection.5.6.10}%
+\contentsline {subsection}{\numberline {5.6.11}Arithmetic operations}{57}{subsection.5.6.11}%
+\contentsline {subsection}{\numberline {5.6.12}Comparison}{58}{subsection.5.6.12}%
+\contentsline {subsection}{\numberline {5.6.13}Value comparison}{59}{subsection.5.6.13}%
+\contentsline {subsection}{\numberline {5.6.14}Construction helper \texttt {\frenchspacing delta}}{59}{subsection.5.6.14}%
+\contentsline {subsection}{\numberline {5.6.15}Non-member conversions}{59}{subsection.5.6.15}%
+\contentsline {subsection}{\numberline {5.6.16}\texttt {\frenchspacing std::common_type} specializations}{60}{subsection.5.6.16}%
+\contentsline {section}{\numberline {5.7}Quantity point}{61}{section.5.7}%
+\contentsline {subsection}{\numberline {5.7.1}General}{61}{subsection.5.7.1}%
+\contentsline {subsection}{\numberline {5.7.2}Point origin}{61}{subsection.5.7.2}%
+\contentsline {subsubsection}{\numberline {5.7.2.1}General}{61}{subsubsection.5.7.2.1}%
+\contentsline {subsubsection}{\numberline {5.7.2.2}Concepts}{61}{subsubsection.5.7.2.2}%
+\contentsline {subsubsection}{\numberline {5.7.2.3}Types}{61}{subsubsection.5.7.2.3}%
+\contentsline {paragraph}{\numberline {5.7.2.3.1}Absolute}{61}{paragraph.5.7.2.3.1}%
+\contentsline {paragraph}{\numberline {5.7.2.3.2}Relative}{61}{paragraph.5.7.2.3.2}%
+\contentsline {paragraph}{\numberline {5.7.2.3.3}Zeroth}{61}{paragraph.5.7.2.3.3}%
+\contentsline {subsubsection}{\numberline {5.7.2.4}Operations}{62}{subsubsection.5.7.2.4}%
+\contentsline {subsubsection}{\numberline {5.7.2.5}Utilities}{63}{subsubsection.5.7.2.5}%
+\contentsline {paragraph}{\numberline {5.7.2.5.1}Same absolute}{63}{paragraph.5.7.2.5.1}%
+\contentsline {paragraph}{\numberline {5.7.2.5.2}Default}{63}{paragraph.5.7.2.5.2}%
+\contentsline {subsection}{\numberline {5.7.3}Interoperability}{63}{subsection.5.7.3}%
+\contentsline {subsection}{\numberline {5.7.4}Class template \texttt {\frenchspacing quantity_point}}{63}{subsection.5.7.4}%
+\contentsline {subsection}{\numberline {5.7.5}Static member functions}{67}{subsection.5.7.5}%
+\contentsline {subsection}{\numberline {5.7.6}Constructors}{67}{subsection.5.7.6}%
+\contentsline {subsection}{\numberline {5.7.7}Conversions}{68}{subsection.5.7.7}%
+\contentsline {subsection}{\numberline {5.7.8}Quantity value observers}{68}{subsection.5.7.8}%
+\contentsline {subsection}{\numberline {5.7.9}Conversion operations}{69}{subsection.5.7.9}%
+\contentsline {subsection}{\numberline {5.7.10}Unary operations}{69}{subsection.5.7.10}%
+\contentsline {subsection}{\numberline {5.7.11}Compound assignment operations}{70}{subsection.5.7.11}%
+\contentsline {subsection}{\numberline {5.7.12}Arithmetic operations}{70}{subsection.5.7.12}%
+\contentsline {subsection}{\numberline {5.7.13}Comparison}{71}{subsection.5.7.13}%
+\contentsline {subsection}{\numberline {5.7.14}Construction helper \texttt {\frenchspacing point}}{71}{subsection.5.7.14}%
+\contentsline {subsection}{\numberline {5.7.15}Non-member conversions}{71}{subsection.5.7.15}%
+\contentsline {section}{\numberline {5.8}Systems}{72}{section.5.8}%
+\contentsline {section}{\numberline {5.9}\texttt {\frenchspacing std::chrono} interoperability}{72}{section.5.9}%
+\let \chapternumberlinebox \annexnumberlinebox 
+\contentsline {chapter}{Cross-references}{75}{section*.8}%
+\contentsline {chapter}{Index}{77}{section*.9}%
+\contentsline {chapter}{Index of library modules}{78}{section*.19}%
+\contentsline {chapter}{Index of library names}{79}{section*.20}%
+\contentsline {chapter}{Index of library concepts}{84}{section*.42}%
+\contentsline {chapter}{Index of implementation-defined behavior}{85}{section*.43}%

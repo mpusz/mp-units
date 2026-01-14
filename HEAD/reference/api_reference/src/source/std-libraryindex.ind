@@ -1,0 +1,656 @@
+\begin{theindex}
+\rSecindex{library}{A}
+
+  \item \texttt  {\frenchspacing absolute_point_origin}, \hyperpage{61}
+  \item \texttt  {\frenchspacing AssociatedUnit}, \hyperpage{32}
+    \subitem \texttt  {\frenchspacing convertible}, \hyperpage{42}
+    \subitem \texttt  {\frenchspacing \textit  {get-associated-quantity}}, 
+		\hyperpage{39}
+    \subitem \texttt  {\frenchspacing get_common_reference}, 
+		\hyperpage{42}
+    \subitem \texttt  {\frenchspacing get_quantity_spec}, 
+		\hyperpage{38}
+    \subitem \texttt  {\frenchspacing get_unit}, \hyperpage{38}
+    \subitem \texttt  {\frenchspacing operator*}, \hyperpage{40}
+    \subitem \texttt  {\frenchspacing operator/}, \hyperpage{40}
+    \subitem \texttt  {\frenchspacing operator==}, \hyperpage{42}
+
+  \indexspace
+\rSecindex{library}{B}
+
+  \item \texttt  {\frenchspacing base_dimension}, \hyperpage{21}
+
+  \indexspace
+\rSecindex{library}{C}
+
+  \item \texttt  {\frenchspacing \textit  {canonical-unit}}, 
+		\hyperpage{33}
+  \item \texttt  {\frenchspacing castable}
+    \subitem \texttt  {\frenchspacing QuantitySpec}, \hyperpage{28}
+  \item \texttt  {\frenchspacing cbrt}
+    \subitem \texttt  {\frenchspacing Dimension}, \hyperpage{23}
+    \subitem \texttt  {\frenchspacing QuantitySpec}, \hyperpage{28}
+    \subitem \texttt  {\frenchspacing reference}, \hyperpage{40}
+    \subitem \texttt  {\frenchspacing Unit}, \hyperpage{37}
+  \item \texttt  {\frenchspacing character_set}, \hyperpage{5}
+  \item \texttt  {\frenchspacing chrono_point_origin}, \hyperpage{15}
+  \item \texttt  {\frenchspacing chrono_point_origin_}, \hyperpage{73}
+  \item \texttt  {\frenchspacing \textit  {clone-kind-of}}
+    \subitem \texttt  {\frenchspacing QuantitySpec}, \hyperpage{26}
+  \item \texttt  {\frenchspacing \textit  {common-magnitude}}
+    \subitem \texttt  {\frenchspacing UnitMagnitude}, \hyperpage{32}
+  \item \texttt  {\frenchspacing \textit  {common-ratio}}
+    \subitem \texttt  {\frenchspacing \textit  {ratio}}, \hyperpage{16}
+  \item \texttt  {\frenchspacing common_unit}, \hyperpage{35}
+  \item \texttt  {\frenchspacing convertible}
+    \subitem \texttt  {\frenchspacing AssociatedUnit}, \hyperpage{42}
+    \subitem \texttt  {\frenchspacing reference}, \hyperpage{42}
+    \subitem \texttt  {\frenchspacing Unit}, \hyperpage{38}
+  \item \texttt  {\frenchspacing cubic}
+    \subitem \texttt  {\frenchspacing Unit}, \hyperpage{37}
+
+  \indexspace
+\rSecindex{library}{D}
+
+  \item \texttt  {\frenchspacing default_point_origin}
+    \subitem \texttt  {\frenchspacing Reference}, \hyperpage{63}
+  \item \texttt  {\frenchspacing delta}, \hyperpage{13}
+  \item \texttt  {\frenchspacing delta_}, \hyperpage{59}
+    \subitem \texttt  {\frenchspacing operator()}, \hyperpage{59}
+  \item \texttt  {\frenchspacing derived_dimension}, \hyperpage{21}
+  \item \texttt  {\frenchspacing derived_quantity_spec}, \hyperpage{25}
+  \item \texttt  {\frenchspacing derived_unit}, \hyperpage{36}
+  \item \texttt  {\frenchspacing Dimension}, \hyperpage{21}
+    \subitem \texttt  {\frenchspacing cbrt}, \hyperpage{23}
+    \subitem \texttt  {\frenchspacing dimension_symbol}, \hyperpage{23}
+    \subitem \texttt  {\frenchspacing dimension_symbol_to}, 
+		\hyperpage{23}
+    \subitem \texttt  {\frenchspacing inverse}, \hyperpage{22}
+    \subitem \texttt  {\frenchspacing operator*}, \hyperpage{22}
+    \subitem \texttt  {\frenchspacing operator/}, \hyperpage{22}
+    \subitem \texttt  {\frenchspacing operator==}, \hyperpage{22}
+    \subitem \texttt  {\frenchspacing pow}, \hyperpage{22}
+    \subitem \texttt  {\frenchspacing sqrt}, \hyperpage{23}
+  \item \texttt  {\frenchspacing \textit  {dimension-interface}}, 
+		\hyperpage{22}
+  \item \texttt  {\frenchspacing dimension_one}, \hyperpage{6}, 
+		\hyperpage{22}
+  \item \texttt  {\frenchspacing dimension_symbol}
+    \subitem \texttt  {\frenchspacing Dimension}, \hyperpage{23}
+  \item \texttt  {\frenchspacing dimension_symbol_formatting}, 
+		\hyperpage{6}
+  \item \texttt  {\frenchspacing dimension_symbol_to}
+    \subitem \texttt  {\frenchspacing Dimension}, \hyperpage{23}
+  \item \texttt  {\frenchspacing dimensionless}, \hyperpage{7}, 
+		\hyperpage{26}
+  \item \texttt  {\frenchspacing DimensionOf}, \hyperpage{21}
+  \item \texttt  {\frenchspacing disable_complex}, \hyperpage{43}
+  \item \texttt  {\frenchspacing disable_scalar}, \hyperpage{43}
+    \subitem \texttt  {\frenchspacing bool}, \hyperpage{12}
+    \subitem \texttt  {\frenchspacing std::complex}, \hyperpage{12}
+  \item \texttt  {\frenchspacing disable_vector}, \hyperpage{43}
+
+  \indexspace
+\rSecindex{library}{E}
+
+  \item \texttt  {\frenchspacing empty}
+    \subitem \texttt  {\frenchspacing symbol_text}, \hyperpage{17}
+  \item \texttt  {\frenchspacing equivalent}
+    \subitem \texttt  {\frenchspacing Unit}, \hyperpage{38}
+  \item \texttt  {\frenchspacing explicitly_convertible}
+    \subitem \texttt  {\frenchspacing QuantitySpec}, \hyperpage{28}
+  \item \texttt  {\frenchspacing \textit  {expr-divide}}, 
+		\hyperpage{19}
+  \item \texttt  {\frenchspacing \textit  {expr-fractions}}, 
+		\hyperpage{19}
+  \item \texttt  {\frenchspacing \textit  {expr-invert}}, 
+		\hyperpage{19}
+  \item \texttt  {\frenchspacing \textit  {expr-map}}, \hyperpage{21}
+  \item \texttt  {\frenchspacing \textit  {expr-multiply}}, 
+		\hyperpage{19}
+  \item \texttt  {\frenchspacing \textit  {expr-pow}}, \hyperpage{19}
+  \item \texttt  {\frenchspacing \textit  {expr-type}}, \hyperpage{19}
+
+  \indexspace
+\rSecindex{library}{F}
+
+  \item \texttt  {\frenchspacing force_in}
+    \subitem \texttt  {\frenchspacing quantity}, \hyperpage{54}
+    \subitem \texttt  {\frenchspacing quantity_point}, \hyperpage{68}
+  \item \texttt  {\frenchspacing force_numerical_value_in}
+    \subitem \texttt  {\frenchspacing quantity}, \hyperpage{55}
+
+  \indexspace
+\rSecindex{library}{G}
+
+  \item \texttt  {\frenchspacing \textit  {get-associated-quantity}}
+    \subitem \texttt  {\frenchspacing AssociatedUnit}, \hyperpage{39}
+  \item \texttt  {\frenchspacing \textit  {get-canonical-unit}}
+    \subitem \texttt  {\frenchspacing Unit}, \hyperpage{33}
+  \item \texttt  {\frenchspacing \textit  {get-common-base}}
+    \subitem \texttt  {\frenchspacing QuantitySpec}, \hyperpage{29}
+  \item \texttt  {\frenchspacing \textit  {get-kind-tree-root}}
+    \subitem \texttt  {\frenchspacing QuantitySpec}, \hyperpage{28}
+  \item \texttt  {\frenchspacing get_common_quantity_spec}
+    \subitem \texttt  {\frenchspacing QuantitySpec}, \hyperpage{28}
+  \item \texttt  {\frenchspacing get_common_reference}, 
+		\hyperpage{42, 43}
+    \subitem \texttt  {\frenchspacing AssociatedUnit}, \hyperpage{42}
+    \subitem \texttt  {\frenchspacing reference}, \hyperpage{43}
+  \item \texttt  {\frenchspacing get_common_unit}
+    \subitem \texttt  {\frenchspacing Unit}, \hyperpage{38}
+  \item \texttt  {\frenchspacing get_kind}
+    \subitem \texttt  {\frenchspacing QuantitySpec}, \hyperpage{28}
+  \item \texttt  {\frenchspacing get_quantity_spec}
+    \subitem \texttt  {\frenchspacing AssociatedUnit}, \hyperpage{38}
+    \subitem \texttt  {\frenchspacing reference}, \hyperpage{42}
+  \item \texttt  {\frenchspacing get_unit}
+    \subitem \texttt  {\frenchspacing AssociatedUnit}, \hyperpage{38}
+    \subitem \texttt  {\frenchspacing reference}, \hyperpage{42}
+
+  \indexspace
+\rSecindex{library}{H}
+
+  \item \texttt  {\frenchspacing \textit  {has-associated-quantity}}
+    \subitem \texttt  {\frenchspacing Unit}, \hyperpage{39}
+
+  \indexspace
+\rSecindex{library}{I}
+
+  \item \texttt  {\frenchspacing implicitly_convertible}
+    \subitem \texttt  {\frenchspacing QuantitySpec}, \hyperpage{28}
+  \item \texttt  {\frenchspacing in}
+    \subitem \texttt  {\frenchspacing quantity}, \hyperpage{54}
+    \subitem \texttt  {\frenchspacing quantity_point}, \hyperpage{68}
+  \item \texttt  {\frenchspacing interconvertible}
+    \subitem \texttt  {\frenchspacing QuantitySpec}, \hyperpage{28}
+  \item \texttt  {\frenchspacing inverse}
+    \subitem \texttt  {\frenchspacing Dimension}, \hyperpage{22}
+    \subitem \texttt  {\frenchspacing QuantitySpec}, \hyperpage{27}
+    \subitem \texttt  {\frenchspacing reference}, \hyperpage{40}
+    \subitem \texttt  {\frenchspacing Unit}, \hyperpage{37}
+  \item \texttt  {\frenchspacing \textit  {is-child-of}}
+    \subitem \texttt  {\frenchspacing QuantitySpec}, \hyperpage{30}
+  \item \texttt  {\frenchspacing \textit  {is-derived-from-specialization-of}}, 
+		\hyperpage{15}
+  \item \texttt  {\frenchspacing \textit  {is-integral}}
+    \subitem \texttt  {\frenchspacing \textit  {ratio}}, \hyperpage{16}
+  \item \texttt  {\frenchspacing \textit  {is-positive-integral-power}}
+    \subitem \texttt  {\frenchspacing UnitMagnitude}, \hyperpage{32}
+  \item \texttt  {\frenchspacing \textit  {is-specialization-of}}, 
+		\hyperpage{15}
+  \item \texttt  {\frenchspacing is_eq_zero}
+    \subitem \texttt  {\frenchspacing quantity}, \hyperpage{59}
+  \item \texttt  {\frenchspacing is_gt_zero}
+    \subitem \texttt  {\frenchspacing quantity}, \hyperpage{59}
+  \item \texttt  {\frenchspacing is_gteq_zero}
+    \subitem \texttt  {\frenchspacing quantity}, \hyperpage{59}
+  \item \texttt  {\frenchspacing is_kind}, \hyperpage{6}, 
+		\hyperpage{24}
+  \item \texttt  {\frenchspacing is_lt_zero}
+    \subitem \texttt  {\frenchspacing quantity}, \hyperpage{59}
+  \item \texttt  {\frenchspacing is_lteq_zero}
+    \subitem \texttt  {\frenchspacing quantity}, \hyperpage{59}
+  \item \texttt  {\frenchspacing is_neq_zero}
+    \subitem \texttt  {\frenchspacing quantity}, \hyperpage{59}
+
+  \indexspace
+\rSecindex{library}{K}
+
+  \item \texttt  {\frenchspacing kind_of}, \hyperpage{7}
+  \item \texttt  {\frenchspacing kind_of_}, \hyperpage{26}
+
+  \indexspace
+\rSecindex{library}{M}
+
+  \item \texttt  {\frenchspacing mag}, \hyperpage{31}
+  \item \texttt  {\frenchspacing mag_constant}, \hyperpage{30}
+  \item \texttt  {\frenchspacing mag_power}, \hyperpage{32}
+  \item \texttt  {\frenchspacing mag_ratio}, \hyperpage{31}
+  \item \texttt  {\frenchspacing MagConstant}, \hyperpage{30}
+  \item \texttt  {\frenchspacing \textit  {make-reference}}
+    \subitem \texttt  {\frenchspacing QuantitySpec}, \hyperpage{26}
+    \subitem \texttt  {\frenchspacing Unit}, \hyperpage{26}
+  \item \texttt  {\frenchspacing max}
+    \subitem \texttt  {\frenchspacing quantity}, \hyperpage{53}
+    \subitem \texttt  {\frenchspacing quantity_point}, \hyperpage{67}
+  \item \texttt  {\frenchspacing min}
+    \subitem \texttt  {\frenchspacing quantity}, \hyperpage{53}
+    \subitem \texttt  {\frenchspacing quantity_point}, \hyperpage{67}
+
+  \indexspace
+\rSecindex{library}{N}
+
+  \item \texttt  {\frenchspacing named_unit}, \hyperpage{33}
+  \item \texttt  {\frenchspacing numerical_value_in}
+    \subitem \texttt  {\frenchspacing quantity}, \hyperpage{54}
+  \item \texttt  {\frenchspacing numerical_value_ref_in}
+    \subitem \texttt  {\frenchspacing quantity}, \hyperpage{54}
+
+  \indexspace
+\rSecindex{library}{O}
+
+  \item \texttt  {\frenchspacing one}, \hyperpage{9}, \hyperpage{36}
+    \subitem \texttt  {\frenchspacing quantity}, \hyperpage{53}
+  \item \texttt  {\frenchspacing operator()}
+    \subitem \texttt  {\frenchspacing delta_}, \hyperpage{59}
+    \subitem \texttt  {\frenchspacing point_}, \hyperpage{71}
+    \subitem \texttt  {\frenchspacing QuantitySpec}, \hyperpage{27}
+  \item \texttt  {\frenchspacing operator*}
+    \subitem \texttt  {\frenchspacing AssociatedUnit}, \hyperpage{40}
+    \subitem \texttt  {\frenchspacing Dimension}, \hyperpage{22}
+    \subitem \texttt  {\frenchspacing quantity}, \hyperpage{41}, 
+		\hyperpage{57, 58}
+    \subitem \texttt  {\frenchspacing QuantitySpec}, \hyperpage{27}
+    \subitem \texttt  {\frenchspacing \textit  {ratio}}, \hyperpage{16}
+    \subitem \texttt  {\frenchspacing Reference}, \hyperpage{41}
+    \subitem \texttt  {\frenchspacing reference}, \hyperpage{40}
+    \subitem \texttt  {\frenchspacing Representation}, \hyperpage{41}
+    \subitem \texttt  {\frenchspacing Unit}, \hyperpage{37}
+    \subitem \texttt  {\frenchspacing UnitMagnitude}, \hyperpage{31}, 
+		\hyperpage{37}
+  \item \texttt  {\frenchspacing operator*=}
+    \subitem \texttt  {\frenchspacing quantity}, \hyperpage{56}
+  \item \texttt  {\frenchspacing operator+}
+    \subitem \texttt  {\frenchspacing \textit  {point-origin-interface}}, 
+		\hyperpage{62}
+    \subitem \texttt  {\frenchspacing \textit  {quantity}}, 
+		\hyperpage{62}
+    \subitem \texttt  {\frenchspacing quantity}, \hyperpage{55}, 
+		\hyperpage{57}, \hyperpage{70}
+    \subitem \texttt  {\frenchspacing quantity_point}, \hyperpage{70}
+    \subitem \texttt  {\frenchspacing \textit  {ratio}}, \hyperpage{16}
+    \subitem \texttt  {\frenchspacing symbol_text}, \hyperpage{18}
+  \item \texttt  {\frenchspacing operator++}
+    \subitem \texttt  {\frenchspacing quantity}, \hyperpage{55}
+    \subitem \texttt  {\frenchspacing quantity_point}, \hyperpage{69}
+  \item \texttt  {\frenchspacing operator+=}
+    \subitem \texttt  {\frenchspacing quantity}, \hyperpage{56}, 
+		\hyperpage{70}
+    \subitem \texttt  {\frenchspacing quantity_point}, \hyperpage{70}
+  \item \texttt  {\frenchspacing operator-}
+    \subitem \texttt  {\frenchspacing \textit  {point-origin-interface}}, 
+		\hyperpage{62}
+    \subitem \texttt  {\frenchspacing PointOrigin}, \hyperpage{70}
+    \subitem \texttt  {\frenchspacing \textit  {quantity}}, 
+		\hyperpage{62}
+    \subitem \texttt  {\frenchspacing quantity}, \hyperpage{55}, 
+		\hyperpage{57}, \hyperpage{70}
+    \subitem \texttt  {\frenchspacing quantity_point}, \hyperpage{70}
+    \subitem \texttt  {\frenchspacing \textit  {ratio}}, \hyperpage{16}
+  \item \texttt  {\frenchspacing operator--}
+    \subitem \texttt  {\frenchspacing quantity}, \hyperpage{55}
+    \subitem \texttt  {\frenchspacing quantity_point}, \hyperpage{69}
+  \item \texttt  {\frenchspacing operator-=}
+    \subitem \texttt  {\frenchspacing quantity}, \hyperpage{56}, 
+		\hyperpage{70}
+    \subitem \texttt  {\frenchspacing quantity_point}, \hyperpage{70}
+  \item \texttt  {\frenchspacing operator/}
+    \subitem \texttt  {\frenchspacing AssociatedUnit}, \hyperpage{40}
+    \subitem \texttt  {\frenchspacing Dimension}, \hyperpage{22}
+    \subitem \texttt  {\frenchspacing quantity}, \hyperpage{41}, 
+		\hyperpage{57, 58}
+    \subitem \texttt  {\frenchspacing QuantitySpec}, \hyperpage{27}
+    \subitem \texttt  {\frenchspacing \textit  {ratio}}, \hyperpage{16}
+    \subitem \texttt  {\frenchspacing Reference}, \hyperpage{41}
+    \subitem \texttt  {\frenchspacing reference}, \hyperpage{40}
+    \subitem \texttt  {\frenchspacing Unit}, \hyperpage{37}
+    \subitem \texttt  {\frenchspacing UnitMagnitude}, \hyperpage{31}, 
+		\hyperpage{37}
+  \item \texttt  {\frenchspacing operator/=}
+    \subitem \texttt  {\frenchspacing quantity}, \hyperpage{56}
+  \item \texttt  {\frenchspacing operator<=>}
+    \subitem \texttt  {\frenchspacing quantity}, \hyperpage{58}
+    \subitem \texttt  {\frenchspacing quantity_point}, \hyperpage{71}
+    \subitem \texttt  {\frenchspacing \textit  {ratio}}, \hyperpage{16}
+    \subitem \texttt  {\frenchspacing symbol_text}, \hyperpage{18}
+  \item \texttt  {\frenchspacing operator=}
+    \subitem \texttt  {\frenchspacing quantity}, \hyperpage{54}
+  \item \texttt  {\frenchspacing operator==}
+    \subitem \texttt  {\frenchspacing AssociatedUnit}, \hyperpage{42}
+    \subitem \texttt  {\frenchspacing Dimension}, \hyperpage{22}
+    \subitem \texttt  {\frenchspacing \textit  {point-origin-interface}}, 
+		\hyperpage{63}
+    \subitem \texttt  {\frenchspacing quantity}, \hyperpage{58}
+    \subitem \texttt  {\frenchspacing quantity_point}, \hyperpage{71}
+    \subitem \texttt  {\frenchspacing QuantitySpec}, \hyperpage{27}
+    \subitem \texttt  {\frenchspacing \textit  {ratio}}, \hyperpage{16}
+    \subitem \texttt  {\frenchspacing reference}, \hyperpage{42}
+    \subitem \texttt  {\frenchspacing symbol_text}, \hyperpage{18}
+    \subitem \texttt  {\frenchspacing Unit}, \hyperpage{38}
+    \subitem \texttt  {\frenchspacing UnitMagnitude}, \hyperpage{31}
+  \item \texttt  {\frenchspacing operator[]}
+    \subitem \texttt  {\frenchspacing QuantitySpec}, \hyperpage{27}
+  \item \texttt  {\frenchspacing operator\%}
+    \subitem \texttt  {\frenchspacing quantity}, \hyperpage{57}
+  \item \texttt  {\frenchspacing operator\%=}
+    \subitem \texttt  {\frenchspacing quantity}, \hyperpage{56}
+
+  \indexspace
+\rSecindex{library}{P}
+
+  \item \texttt  {\frenchspacing parts_per_million}, \hyperpage{10}
+  \item \texttt  {\frenchspacing per}, \hyperpage{18}
+  \item \texttt  {\frenchspacing per_mille}, \hyperpage{9}
+  \item \texttt  {\frenchspacing percent}, \hyperpage{9}
+  \item \texttt  {\frenchspacing pi}, \hyperpage{8}
+  \item \texttt  {\frenchspacing point}, \hyperpage{14}, \hyperpage{71}
+  \item \texttt  {\frenchspacing \textit  {point-origin-interface}}
+    \subitem \texttt  {\frenchspacing operator+}, \hyperpage{62}
+    \subitem \texttt  {\frenchspacing operator-}, \hyperpage{62}
+    \subitem \texttt  {\frenchspacing operator==}, \hyperpage{63}
+  \item \texttt  {\frenchspacing point_}
+    \subitem \texttt  {\frenchspacing operator()}, \hyperpage{71}
+  \item \texttt  {\frenchspacing point_for}
+    \subitem \texttt  {\frenchspacing quantity_point}, \hyperpage{68}
+  \item \texttt  {\frenchspacing PointOrigin}, \hyperpage{61}
+    \subitem \texttt  {\frenchspacing operator-}, \hyperpage{70}
+    \subitem \texttt  {\frenchspacing \textit  {same-absolute-point-origins}}, 
+		\hyperpage{63}
+  \item \texttt  {\frenchspacing PointOriginFor}, \hyperpage{61}
+  \item \texttt  {\frenchspacing portable}
+    \subitem \texttt  {\frenchspacing symbol_text}, \hyperpage{17}
+  \item \texttt  {\frenchspacing \textit  {pow}}
+    \subitem \texttt  {\frenchspacing UnitMagnitude}, \hyperpage{31}
+  \item \texttt  {\frenchspacing pow}
+    \subitem \texttt  {\frenchspacing Dimension}, \hyperpage{22}
+    \subitem \texttt  {\frenchspacing QuantitySpec}, \hyperpage{27}
+    \subitem \texttt  {\frenchspacing reference}, \hyperpage{40}
+    \subitem \texttt  {\frenchspacing Unit}, \hyperpage{37}
+  \item \texttt  {\frenchspacing power}, \hyperpage{18}
+  \item \texttt  {\frenchspacing ppm}, \hyperpage{10}
+  \item \texttt  {\frenchspacing PrefixableUnit}, \hyperpage{32}
+  \item \texttt  {\frenchspacing prefixed_unit}, \hyperpage{35}
+
+  \indexspace
+\rSecindex{library}{Q}
+
+  \item \texttt  {\frenchspacing Quantity}, \hyperpage{48}
+  \item \texttt  {\frenchspacing \textit  {quantity}}
+    \subitem \texttt  {\frenchspacing operator+}, \hyperpage{62}
+    \subitem \texttt  {\frenchspacing operator-}, \hyperpage{62}
+  \item \texttt  {\frenchspacing quantity}, \hyperpage{49}
+    \subitem constructor, \hyperpage{53}
+    \subitem \texttt  {\frenchspacing force_in}, \hyperpage{54}
+    \subitem \texttt  {\frenchspacing force_numerical_value_in}, 
+		\hyperpage{55}
+    \subitem \texttt  {\frenchspacing in}, \hyperpage{54}
+    \subitem \texttt  {\frenchspacing is_eq_zero}, \hyperpage{59}
+    \subitem \texttt  {\frenchspacing is_gt_zero}, \hyperpage{59}
+    \subitem \texttt  {\frenchspacing is_gteq_zero}, \hyperpage{59}
+    \subitem \texttt  {\frenchspacing is_lt_zero}, \hyperpage{59}
+    \subitem \texttt  {\frenchspacing is_lteq_zero}, \hyperpage{59}
+    \subitem \texttt  {\frenchspacing is_neq_zero}, \hyperpage{59}
+    \subitem \texttt  {\frenchspacing max}, \hyperpage{53}
+    \subitem \texttt  {\frenchspacing min}, \hyperpage{53}
+    \subitem \texttt  {\frenchspacing numerical_value_in}, 
+		\hyperpage{54}
+    \subitem \texttt  {\frenchspacing numerical_value_ref_in}, 
+		\hyperpage{54}
+    \subitem \texttt  {\frenchspacing one}, \hyperpage{53}
+    \subitem \texttt  {\frenchspacing operator constructible_from<Rep>}, 
+		\hyperpage{55}
+    \subitem \texttt  {\frenchspacing operator QuantityLike}, 
+		\hyperpage{55}
+    \subitem \texttt  {\frenchspacing operator*}, \hyperpage{41}, 
+		\hyperpage{57, 58}
+    \subitem \texttt  {\frenchspacing operator*=}, \hyperpage{56}
+    \subitem \texttt  {\frenchspacing operator+}, \hyperpage{55}, 
+		\hyperpage{57}, \hyperpage{70}
+    \subitem \texttt  {\frenchspacing operator++}, \hyperpage{55}
+    \subitem \texttt  {\frenchspacing operator+=}, \hyperpage{56}, 
+		\hyperpage{70}
+    \subitem \texttt  {\frenchspacing operator-}, \hyperpage{55}, 
+		\hyperpage{57}, \hyperpage{70}
+    \subitem \texttt  {\frenchspacing operator--}, \hyperpage{55}
+    \subitem \texttt  {\frenchspacing operator-=}, \hyperpage{56}, 
+		\hyperpage{70}
+    \subitem \texttt  {\frenchspacing operator/}, \hyperpage{41}, 
+		\hyperpage{57, 58}
+    \subitem \texttt  {\frenchspacing operator/=}, \hyperpage{56}
+    \subitem \texttt  {\frenchspacing operator<=>}, \hyperpage{58}
+    \subitem \texttt  {\frenchspacing operator=}, \hyperpage{54}
+    \subitem \texttt  {\frenchspacing operator==}, \hyperpage{58}
+    \subitem \texttt  {\frenchspacing operator\%}, \hyperpage{57}
+    \subitem \texttt  {\frenchspacing operator\%=}, \hyperpage{56}
+    \subitem \texttt  {\frenchspacing quantity_cast}, \hyperpage{60}
+    \subitem \texttt  {\frenchspacing \textit  {sudo-cast}}, 
+		\hyperpage{59}
+    \subitem \texttt  {\frenchspacing value_cast}, \hyperpage{59, 60}
+    \subitem \texttt  {\frenchspacing zero}, \hyperpage{53}
+  \item \texttt  {\frenchspacing \textit  {quantity-spec-interface}}, 
+		\hyperpage{27}
+  \item \texttt  {\frenchspacing quantity_cast}
+    \subitem \texttt  {\frenchspacing quantity}, \hyperpage{60}
+    \subitem \texttt  {\frenchspacing quantity_point}, \hyperpage{72}
+  \item \texttt  {\frenchspacing quantity_character}, \hyperpage{11}
+  \item \texttt  {\frenchspacing quantity_from}
+    \subitem \texttt  {\frenchspacing quantity_point}, \hyperpage{68}
+  \item \texttt  {\frenchspacing quantity_from_zero}
+    \subitem \texttt  {\frenchspacing quantity_point}, \hyperpage{69}
+  \item \texttt  {\frenchspacing quantity_like_traits}
+    \subitem \texttt  {\frenchspacing std::chrono::duration}, 
+		\hyperpage{73}
+  \item \texttt  {\frenchspacing quantity_point}, \hyperpage{64}
+    \subitem constructor, \hyperpage{67}
+    \subitem \texttt  {\frenchspacing force_in}, \hyperpage{68}
+    \subitem \texttt  {\frenchspacing in}, \hyperpage{68}
+    \subitem \texttt  {\frenchspacing max}, \hyperpage{67}
+    \subitem \texttt  {\frenchspacing min}, \hyperpage{67}
+    \subitem \texttt  {\frenchspacing operator QuantityPointLike}, 
+		\hyperpage{69}
+    \subitem \texttt  {\frenchspacing operator+}, \hyperpage{70}
+    \subitem \texttt  {\frenchspacing operator++}, \hyperpage{69}
+    \subitem \texttt  {\frenchspacing operator+=}, \hyperpage{70}
+    \subitem \texttt  {\frenchspacing operator-}, \hyperpage{70}
+    \subitem \texttt  {\frenchspacing operator--}, \hyperpage{69}
+    \subitem \texttt  {\frenchspacing operator-=}, \hyperpage{70}
+    \subitem \texttt  {\frenchspacing operator<=>}, \hyperpage{71}
+    \subitem \texttt  {\frenchspacing operator==}, \hyperpage{71}
+    \subitem \texttt  {\frenchspacing point_for}, \hyperpage{68}
+    \subitem \texttt  {\frenchspacing quantity_cast}, \hyperpage{72}
+    \subitem \texttt  {\frenchspacing quantity_from}, \hyperpage{68}
+    \subitem \texttt  {\frenchspacing quantity_from_zero}, 
+		\hyperpage{69}
+    \subitem \texttt  {\frenchspacing quantity_ref_from}, 
+		\hyperpage{68}
+    \subitem \texttt  {\frenchspacing \textit  {sudo-cast}}, 
+		\hyperpage{71}
+    \subitem \texttt  {\frenchspacing value_cast}, \hyperpage{72}
+  \item \texttt  {\frenchspacing quantity_point_like_traits}
+    \subitem \texttt  {\frenchspacing std::chrono::time_point}, 
+		\hyperpage{73}
+  \item \texttt  {\frenchspacing quantity_ref_from}
+    \subitem \texttt  {\frenchspacing quantity_point}, \hyperpage{68}
+  \item \texttt  {\frenchspacing quantity_spec}, \hyperpage{24}
+  \item \texttt  {\frenchspacing QuantityLike}, \hyperpage{47}
+  \item \texttt  {\frenchspacing QuantityOf}, \hyperpage{48}
+  \item \texttt  {\frenchspacing QuantityPoint}, \hyperpage{64}
+  \item \texttt  {\frenchspacing QuantityPointLike}, \hyperpage{63}
+  \item \texttt  {\frenchspacing QuantityPointOf}, \hyperpage{64}
+  \item \texttt  {\frenchspacing QuantitySpec}, \hyperpage{23}
+    \subitem \texttt  {\frenchspacing castable}, \hyperpage{28}
+    \subitem \texttt  {\frenchspacing cbrt}, \hyperpage{28}
+    \subitem \texttt  {\frenchspacing \textit  {clone-kind-of}}, 
+		\hyperpage{26}
+    \subitem \texttt  {\frenchspacing explicitly_convertible}, 
+		\hyperpage{28}
+    \subitem \texttt  {\frenchspacing \textit  {get-common-base}}, 
+		\hyperpage{29}
+    \subitem \texttt  {\frenchspacing \textit  {get-kind-tree-root}}, 
+		\hyperpage{28}
+    \subitem \texttt  {\frenchspacing get_common_quantity_spec}, 
+		\hyperpage{28}
+    \subitem \texttt  {\frenchspacing get_kind}, \hyperpage{28}
+    \subitem \texttt  {\frenchspacing implicitly_convertible}, 
+		\hyperpage{28}
+    \subitem \texttt  {\frenchspacing interconvertible}, \hyperpage{28}
+    \subitem \texttt  {\frenchspacing inverse}, \hyperpage{27}
+    \subitem \texttt  {\frenchspacing \textit  {is-child-of}}, 
+		\hyperpage{30}
+    \subitem \texttt  {\frenchspacing \textit  {make-reference}}, 
+		\hyperpage{26}
+    \subitem \texttt  {\frenchspacing operator()}, \hyperpage{27}
+    \subitem \texttt  {\frenchspacing operator*}, \hyperpage{27}
+    \subitem \texttt  {\frenchspacing operator/}, \hyperpage{27}
+    \subitem \texttt  {\frenchspacing operator==}, \hyperpage{27}
+    \subitem \texttt  {\frenchspacing operator[]}, \hyperpage{27}
+    \subitem \texttt  {\frenchspacing pow}, \hyperpage{27}
+    \subitem \texttt  {\frenchspacing \textit  {remove-kind}}, 
+		\hyperpage{26}
+    \subitem \texttt  {\frenchspacing sqrt}, \hyperpage{28}
+  \item \texttt  {\frenchspacing QuantitySpecOf}, \hyperpage{24}
+
+  \indexspace
+\rSecindex{library}{R}
+
+  \item \texttt  {\frenchspacing \textit  {ratio}}, \hyperpage{16}
+    \subitem \texttt  {\frenchspacing \textit  {common-ratio}}, 
+		\hyperpage{16}
+    \subitem constructor, \hyperpage{16}
+    \subitem \texttt  {\frenchspacing \textit  {is-integral}}, 
+		\hyperpage{16}
+    \subitem \texttt  {\frenchspacing operator*}, \hyperpage{16}
+    \subitem \texttt  {\frenchspacing operator+}, \hyperpage{16}
+    \subitem \texttt  {\frenchspacing operator-}, \hyperpage{16}
+    \subitem \texttt  {\frenchspacing operator/}, \hyperpage{16}
+    \subitem \texttt  {\frenchspacing operator<=>}, \hyperpage{16}
+    \subitem \texttt  {\frenchspacing operator==}, \hyperpage{16}
+  \item \texttt  {\frenchspacing Reference}, \hyperpage{10}, 
+		\hyperpage{40}
+    \subitem \texttt  {\frenchspacing default_point_origin}, 
+		\hyperpage{63}
+    \subitem \texttt  {\frenchspacing operator*}, \hyperpage{41}
+    \subitem \texttt  {\frenchspacing operator/}, \hyperpage{41}
+  \item \texttt  {\frenchspacing reference}, \hyperpage{40}
+    \subitem \texttt  {\frenchspacing cbrt}, \hyperpage{40}
+    \subitem \texttt  {\frenchspacing convertible}, \hyperpage{42}
+    \subitem \texttt  {\frenchspacing get_common_reference}, 
+		\hyperpage{43}
+    \subitem \texttt  {\frenchspacing get_quantity_spec}, 
+		\hyperpage{42}
+    \subitem \texttt  {\frenchspacing get_unit}, \hyperpage{42}
+    \subitem \texttt  {\frenchspacing inverse}, \hyperpage{40}
+    \subitem \texttt  {\frenchspacing operator*}, \hyperpage{40}
+    \subitem \texttt  {\frenchspacing operator/}, \hyperpage{40}
+    \subitem \texttt  {\frenchspacing operator==}, \hyperpage{42}
+    \subitem \texttt  {\frenchspacing pow}, \hyperpage{40}
+    \subitem \texttt  {\frenchspacing sqrt}, \hyperpage{40}
+  \item \texttt  {\frenchspacing ReferenceOf}, \hyperpage{11}, 
+		\hyperpage{40}
+  \item \texttt  {\frenchspacing relative_point_origin}, \hyperpage{61}
+  \item \texttt  {\frenchspacing \textit  {remove-kind}}
+    \subitem \texttt  {\frenchspacing QuantitySpec}, \hyperpage{26}
+  \item \texttt  {\frenchspacing Representation}, \hyperpage{46}
+    \subitem \texttt  {\frenchspacing operator*}, \hyperpage{41}
+  \item \texttt  {\frenchspacing representation_values}, \hyperpage{44}
+  \item \texttt  {\frenchspacing RepresentationOf}, \hyperpage{47}
+
+  \indexspace
+\rSecindex{library}{S}
+
+  \item \texttt  {\frenchspacing \textit  {same-absolute-point-origins}}
+    \subitem \texttt  {\frenchspacing PointOrigin}, \hyperpage{63}
+  \item \texttt  {\frenchspacing scaled_unit}, \hyperpage{33}
+  \item \texttt  {\frenchspacing space_before_unit_symbol}, 
+		\hyperpage{32}
+    \subitem \texttt  {\frenchspacing one}, \hyperpage{8}
+  \item \texttt  {\frenchspacing sqrt}
+    \subitem \texttt  {\frenchspacing Dimension}, \hyperpage{23}
+    \subitem \texttt  {\frenchspacing QuantitySpec}, \hyperpage{28}
+    \subitem \texttt  {\frenchspacing reference}, \hyperpage{40}
+    \subitem \texttt  {\frenchspacing Unit}, \hyperpage{37}
+  \item \texttt  {\frenchspacing square}
+    \subitem \texttt  {\frenchspacing Unit}, \hyperpage{37}
+  \item \texttt  {\frenchspacing std::common_type}
+    \subitem \texttt  {\frenchspacing quantity}, \hyperpage{13}, 
+		\hyperpage{60}
+  \item \texttt  {\frenchspacing \textit  {sudo-cast}}
+    \subitem \texttt  {\frenchspacing quantity}, \hyperpage{59}
+    \subitem \texttt  {\frenchspacing quantity_point}, \hyperpage{71}
+  \item \texttt  {\frenchspacing symbol_text}, \hyperpage{16}
+    \subitem constructor, \hyperpage{17}
+    \subitem \texttt  {\frenchspacing empty}, \hyperpage{17}
+    \subitem \texttt  {\frenchspacing operator+}, \hyperpage{18}
+    \subitem \texttt  {\frenchspacing operator<=>}, \hyperpage{18}
+    \subitem \texttt  {\frenchspacing operator==}, \hyperpage{18}
+    \subitem \texttt  {\frenchspacing portable}, \hyperpage{17}
+    \subitem \texttt  {\frenchspacing utf8}, \hyperpage{17}
+
+  \indexspace
+\rSecindex{library}{T}
+
+  \item \texttt  {\frenchspacing treat_as_floating_point}, 
+		\hyperpage{43}
+  \item \texttt  {\frenchspacing \textit  {type-less}}, \hyperpage{19}
+  \item \texttt  {\frenchspacing \textit  {type-less-impl}}, 
+		\hyperpage{19}
+  \item \texttt  {\frenchspacing \textit  {type-list}}, \hyperpage{19}
+
+  \indexspace
+\rSecindex{library}{U}
+
+  \item \texttt  {\frenchspacing Unit}, \hyperpage{32}
+    \subitem \texttt  {\frenchspacing cbrt}, \hyperpage{37}
+    \subitem \texttt  {\frenchspacing convertible}, \hyperpage{38}
+    \subitem \texttt  {\frenchspacing cubic}, \hyperpage{37}
+    \subitem \texttt  {\frenchspacing equivalent}, \hyperpage{38}
+    \subitem \texttt  {\frenchspacing \textit  {get-canonical-unit}}, 
+		\hyperpage{33}
+    \subitem \texttt  {\frenchspacing get_common_unit}, \hyperpage{38}
+    \subitem \texttt  {\frenchspacing \textit  {has-associated-quantity}}, 
+		\hyperpage{39}
+    \subitem \texttt  {\frenchspacing inverse}, \hyperpage{37}
+    \subitem \texttt  {\frenchspacing \textit  {make-reference}}, 
+		\hyperpage{26}
+    \subitem \texttt  {\frenchspacing operator*}, \hyperpage{37}
+    \subitem \texttt  {\frenchspacing operator/}, \hyperpage{37}
+    \subitem \texttt  {\frenchspacing operator==}, \hyperpage{38}
+    \subitem \texttt  {\frenchspacing pow}, \hyperpage{37}
+    \subitem \texttt  {\frenchspacing sqrt}, \hyperpage{37}
+    \subitem \texttt  {\frenchspacing square}, \hyperpage{37}
+    \subitem \texttt  {\frenchspacing unit_symbol}, \hyperpage{40}
+    \subitem \texttt  {\frenchspacing unit_symbol_to}, \hyperpage{40}
+  \item \texttt  {\frenchspacing \textit  {unit-interface}}, 
+		\hyperpage{36}
+  \item \texttt  {\frenchspacing \textit  {unit-magnitude}}, 
+		\hyperpage{30}
+  \item \texttt  {\frenchspacing unit_symbol}
+    \subitem \texttt  {\frenchspacing Unit}, \hyperpage{40}
+  \item \texttt  {\frenchspacing unit_symbol_formatting}, 
+		\hyperpage{10}
+  \item \texttt  {\frenchspacing unit_symbol_separator}, \hyperpage{10}
+  \item \texttt  {\frenchspacing unit_symbol_solidus}, \hyperpage{10}
+  \item \texttt  {\frenchspacing unit_symbol_to}
+    \subitem \texttt  {\frenchspacing Unit}, \hyperpage{40}
+  \item \texttt  {\frenchspacing UnitMagnitude}, \hyperpage{30}
+    \subitem \texttt  {\frenchspacing \textit  {common-magnitude}}, 
+		\hyperpage{32}
+    \subitem \texttt  {\frenchspacing \textit  {is-positive-integral-power}}, 
+		\hyperpage{32}
+    \subitem \texttt  {\frenchspacing operator*}, \hyperpage{31}, 
+		\hyperpage{37}
+    \subitem \texttt  {\frenchspacing operator/}, \hyperpage{31}, 
+		\hyperpage{37}
+    \subitem \texttt  {\frenchspacing operator==}, \hyperpage{31}
+    \subitem \texttt  {\frenchspacing \textit  {pow}}, \hyperpage{31}
+  \item \texttt  {\frenchspacing UnitOf}, \hyperpage{32}
+  \item \texttt  {\frenchspacing utf8}
+    \subitem \texttt  {\frenchspacing symbol_text}, \hyperpage{17}
+
+  \indexspace
+\rSecindex{library}{V}
+
+  \item \texttt  {\frenchspacing value_cast}
+    \subitem \texttt  {\frenchspacing quantity}, \hyperpage{59, 60}
+    \subitem \texttt  {\frenchspacing quantity_point}, \hyperpage{72}
+
+  \indexspace
+\rSecindex{library}{Z}
+
+  \item \texttt  {\frenchspacing zero}
+    \subitem \texttt  {\frenchspacing quantity}, \hyperpage{53}
+  \item \texttt  {\frenchspacing zeroth_point_origin}, \hyperpage{14}
+  \item \texttt  {\frenchspacing zeroth_point_origin_}, \hyperpage{62}
+
+\end{theindex}
