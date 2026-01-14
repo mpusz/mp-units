@@ -24,6 +24,7 @@
 
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/systems/si/constants.h>
+#include <mp-units/systems/si/unit_symbols.h>
 #include <mp-units/systems/si/units.h>
 
 // IWYU pragma: begin_exports
@@ -35,69 +36,77 @@
 MP_UNITS_EXPORT
 namespace mp_units::iau {
 
-// https://en.wikipedia.org/wiki/Astronomical_system_of_units
+// IAU 2015 Resolution B3 - Nominal Solar and Planetary Conversion Constants
+// https://www.iau.org/Iau/Publications/List-of-Resolutions
 
 // clang-format off
-// time
-inline constexpr struct day final : named_unit<"D", si::day> {} day;
-inline constexpr struct Julian_year final : named_unit<"a", mag_ratio<365'25, 100> * day> {} Julian_year;
+// Nominal solar conversion constants (exact by definition)
+inline constexpr struct nominal_solar_radius final : named_unit<symbol_text{u8"R_☉ᴺ", "R_SUN_N"}, mag_ratio<6'957, 1'000> * mag_power<10, 8> * si::metre> {} nominal_solar_radius;
+inline constexpr struct nominal_total_solar_irradiance final : named_unit<symbol_text{u8"S_☉ᴺ", "S_SUN_N"}, mag<1361> * si::watt / square(si::metre)> {} nominal_total_solar_irradiance;
+inline constexpr struct nominal_solar_luminosity final : named_unit<symbol_text{u8"L_☉ᴺ", "L_SUN_N"}, mag_ratio<3'828, 1'000> * mag_power<10, 26> * si::watt> {} nominal_solar_luminosity;
+inline constexpr struct nominal_solar_effective_temperature final : named_unit<symbol_text{u8"Tₑff,☉ᴺ", "T_EFF_SUN_N"}, mag<5772> * si::kelvin> {} nominal_solar_effective_temperature;
+inline constexpr struct nominal_solar_mass_parameter final : named_unit<symbol_text{u8"(GM)_☉ᴺ", "(GM)_SUN_N"}, mag_ratio<13'271'244, 10'000'000> * mag_power<10, 20> * cubic(si::metre) / square(si::second)> {} nominal_solar_mass_parameter;
 
-// mass
-// https://en.wikipedia.org/wiki/Solar_mass
-// TODO What is the official mass of sun (every source in the Internet provides a different value)
-inline constexpr struct solar_mass final : named_unit<symbol_text{u8"M_☉", "M_SUN"}, mag_ratio<198'847, 100'000> * mag_power<10, 30> * si::kilogram> {} solar_mass;
-inline constexpr struct Jupiter_mass final : named_unit<"M_JUP", mag_ratio<1'898, 1'000> * mag_power<10, 27> * si::kilogram> {} Jupiter_mass;
-inline constexpr struct Earth_mass final : named_unit<"M_EARTH", mag_ratio<59'742, 10'000> * mag_power<10, 24> * si::kilogram> {} Earth_mass;
+// Nominal planetary conversion constants (exact by definition)
+inline constexpr struct nominal_terrestrial_equatorial_radius final : named_unit<symbol_text{u8"R_⊕ₑᴺ", "R_EARTH_E_N"}, mag_ratio<63'781, 10'000> * mag_power<10, 6> * si::metre> {} nominal_terrestrial_equatorial_radius;
+inline constexpr struct nominal_terrestrial_polar_radius final : named_unit<symbol_text{u8"R_⊕ₚᴺ", "R_EARTH_P_N"}, mag_ratio<63'568, 10'000> * mag_power<10, 6> * si::metre> {} nominal_terrestrial_polar_radius;
+inline constexpr struct nominal_jovian_equatorial_radius final : named_unit<symbol_text{u8"R_♃ₑᴺ", "R_JUP_E_N"}, mag_ratio<71'492, 10'000> * mag_power<10, 7> * si::metre> {} nominal_jovian_equatorial_radius;
+inline constexpr struct nominal_jovian_polar_radius final : named_unit<symbol_text{u8"R_♃ₚᴺ", "R_JUP_P_N"}, mag_ratio<66'854, 10'000> * mag_power<10, 7> * si::metre> {} nominal_jovian_polar_radius;
+inline constexpr struct nominal_terrestrial_mass_parameter final : named_unit<symbol_text{u8"(GM)_⊕ᴺ", "(GM)_EARTH_N"}, mag_ratio<3'986'004, 1'000'000> * mag_power<10, 14> * cubic(si::metre) / square(si::second)> {} nominal_terrestrial_mass_parameter;
+inline constexpr struct nominal_jovian_mass_parameter final : named_unit<symbol_text{u8"(GM)_♃ᴺ", "(GM)_JUP_N"}, mag_ratio<12'668'653, 10'000'000> * mag_power<10, 17> * cubic(si::metre) / square(si::second)> {} nominal_jovian_mass_parameter;
 
-// length
-inline constexpr auto astronomical_unit = si::astronomical_unit;
+// IAU 2012 Resolution B2 - astronomical unit
+// https://www.iau.org/Iau/Publications/List-of-Resolutions
+using non_si::astronomical_unit;
 
-// https://en.wikipedia.org/wiki/Lunar_distance_(astronomy)
-inline constexpr struct lunar_distance final : named_unit<"LD", mag<384'399> * si::kilo<si::metre>> {} lunar_distance;
-
-// https://en.wikipedia.org/wiki/Light-year
-inline constexpr struct light_year final : named_unit<"ly", mag<9'460'730'472'580'800> * si::metre> {} light_year;
-
-// https://en.wikipedia.org/wiki/Parsec
+// Derived unitss
 inline constexpr struct parsec final : named_unit<"pc", astronomical_unit / (mag_ratio<1, 3600> * si::degree)> {} parsec;
 
-// https://en.wikipedia.org/wiki/Angstrom
-inline constexpr struct angstrom final : named_unit<symbol_text{u8"Å", "A"}, mag_power<10, -10> * si::metre> {} angstrom;
+inline namespace codata2018 {
 
-// selected constants
-// https://en.wikipedia.org/wiki/Astronomical_constant
-inline constexpr struct gaussian_gravitational_constant final :
-    named_unit<"k", mag_ratio<1'720'209'895, 100'000'000'000> * pow<3, 2>(astronomical_unit) / pow<1,2>(solar_mass) / day> {} gaussian_gravitational_constant;
+// Newtonian constant of gravitation (CODATA 2018)
+// https://physics.nist.gov/cgi-bin/cuu/Value?bg
+inline constexpr struct newtonian_constant_of_gravitation final : named_unit<"G", mag_ratio<667'430, 100'000> * mag_power<10, -11> * cubic(si::metre) / si::kilogram / square(si::second)> {} newtonian_constant_of_gravitation;
 
-inline constexpr struct speed_of_light final :
-    named_unit<symbol_text{u8"c₀", "c_0"}, si::si2019::speed_of_light_in_vacuum> {} speed_of_light;
+// Derived SI masses using (GM)ᴺ / G
+inline constexpr struct solar_mass final : named_unit<symbol_text{u8"M_☉", "M_SUN"}, nominal_solar_mass_parameter / newtonian_constant_of_gravitation> {} solar_mass;
+inline constexpr struct terrestrial_mass final : named_unit<symbol_text{u8"M_⊕", "M_EARTH"}, nominal_terrestrial_mass_parameter / newtonian_constant_of_gravitation> {} terrestrial_mass;
+inline constexpr struct jovian_mass final : named_unit<symbol_text{u8"M_♃", "M_JUP"}, nominal_jovian_mass_parameter / newtonian_constant_of_gravitation> {} jovian_mass;
 
-inline constexpr struct constant_of_gravitation final :
-    named_unit<"G", mag_ratio<667'430, 100'000> * mag_power<10, -11> * cubic(si::metre) / si::kilogram / square(si::second)> {} constant_of_gravitation;
+namespace unit_symbols {
 
-inline constexpr struct hubble_constant final :
-    named_unit<symbol_text{u8"H₀", "H_0"}, mag_ratio<701, 10> * si::kilo<si::metre> / si::second / si::mega<parsec>> {} hubble_constant;
+inline constexpr auto G = newtonian_constant_of_gravitation;
+inline constexpr auto M_SUN = solar_mass;
+inline constexpr auto M_EARTH = terrestrial_mass;
+inline constexpr auto M_JUP = jovian_mass;
+
+}  // namespace unit_symbols
+
+}  // namespace codata2018
+
 // clang-format on
 
 namespace unit_symbols {
 
-inline constexpr auto D = day;
-inline constexpr auto a = Julian_year;
+// IAU 2015 Resolution B3 nominal values
+inline constexpr auto R_SUN_N = nominal_solar_radius;
+inline constexpr auto S_SUN_N = nominal_total_solar_irradiance;
+inline constexpr auto L_SUN_N = nominal_solar_luminosity;
+inline constexpr auto T_EFF_SUN_N = nominal_solar_effective_temperature;
+inline constexpr auto GM_SUN_N = nominal_solar_mass_parameter;
 
-inline constexpr auto M_SUN = solar_mass;
-inline constexpr auto M_JUP = Jupiter_mass;
-inline constexpr auto M_EARTH = Earth_mass;
+inline constexpr auto R_EARTH_E_N = nominal_terrestrial_equatorial_radius;
+inline constexpr auto R_EARTH_P_N = nominal_terrestrial_polar_radius;
+inline constexpr auto R_JUP_E_N = nominal_jovian_equatorial_radius;
+inline constexpr auto R_JUP_P_N = nominal_jovian_polar_radius;
+inline constexpr auto GM_EARTH_N = nominal_terrestrial_mass_parameter;
+inline constexpr auto GM_JUP_N = nominal_jovian_mass_parameter;
 
-inline constexpr auto au = astronomical_unit;
-inline constexpr auto LD = lunar_distance;
-inline constexpr auto ly = light_year;
+// IAU 2012 Resolution B1
+using non_si::unit_symbols::au;
+
+// Derived units
 inline constexpr auto pc = parsec;
-inline constexpr auto A = angstrom;
-
-inline constexpr auto k = gaussian_gravitational_constant;
-inline constexpr auto c_0 = speed_of_light;
-inline constexpr auto G = constant_of_gravitation;
-inline constexpr auto H_0 = hubble_constant;
 
 }  // namespace unit_symbols
 
