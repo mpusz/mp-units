@@ -26,7 +26,8 @@
 // This header is provided for backward compatibility and will be removed in a future release.
 // Please update your code to use <mp-units/systems/yard_pound.h> instead.
 
-#warning "The header <mp-units/systems/international.h> is deprecated. Use <mp-units/systems/yard_pound.h> instead."
+#warning \
+  "2.6.0: The header <mp-units/systems/international.h> is deprecated. Use <mp-units/systems/yard_pound.h> instead."
 
 // IWYU pragma: begin_exports
 #include <mp-units/systems/yard_pound.h>
@@ -37,7 +38,7 @@ namespace mp_units {
 
 // Deprecated namespace alias for backward compatibility
 namespace international
-  [[deprecated("The 'international' namespace has been renamed to 'yard_pound'. Please update your code.")]] {
+  [[deprecated("2.6.0: The 'international' namespace has been renamed to 'yard_pound'. Please update your code.")]] {
 using namespace yard_pound;
 }
 
