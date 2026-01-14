@@ -206,6 +206,7 @@ nav:
           - kalman_filter: examples/kalman_filter.md
   - Reference:
       - Cheat Sheet: reference/cheat_sheet.md
+      - Supported Systems Overview: reference/systems_overview.md
       - API Reference: reference/api_reference.md
       - Glossary: reference/glossary.md
       - Bibliography: reference/bibliography.md
