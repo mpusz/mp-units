@@ -26,12 +26,7 @@
 // This header is provided for backward compatibility and will be removed in a future release.
 // Please update your code to use <mp-units/systems/yard_pound.h> instead.
 
-#if defined(__GNUC__) || defined(__clang__)
 #warning "The header <mp-units/systems/international.h> is deprecated. Use <mp-units/systems/yard_pound.h> instead."
-#elif defined(_MSC_VER)
-#pragma message( \
-  "warning: The header <mp-units/systems/international.h> is deprecated. Use <mp-units/systems/yard_pound.h> instead.")
-#endif
 
 // IWYU pragma: begin_exports
 #include <mp-units/systems/yard_pound.h>
