@@ -32,6 +32,7 @@ target_compile_options(
 add_library(
     unit_tests_static
     angular_test.cpp
+    astronomy_test.cpp
     cgs_test.cpp
     compare_test.cpp
     concepts_test.cpp
