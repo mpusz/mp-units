@@ -62,8 +62,8 @@ std::println("Solar luminosity: {} = {::N[.3e]}", solar_power, solar_power.in(W)
 
 // Solar nominal effective temperature: Tₑff,☉ᴺ = 5772 K
 quantity_point sun_temp = point<T_EFF_SUN_N>(1.);
-std::println("Solar temperature: {} = {::N[.0f]}", 
-             sun_temp.quantity_from_zero(), 
+std::println("Solar temperature: {} = {::N[.0f]}",
+             sun_temp.quantity_from_zero(),
              sun_temp.quantity_from_zero().in(K));
 
 // Solar nominal gravitational parameter: (GM)☉ᴺ = 1.3271244 × 10²⁰ m³/s²
@@ -184,7 +184,7 @@ CODATA G:
 quantity M_sun = 1. * solar_mass;
 std::println("Solar mass: {::N[.4e]}", M_sun.in(kg));
 
-// M⊕ = (GM)⊕ᴺ / G  
+// M⊕ = (GM)⊕ᴺ / G
 quantity M_earth = 1. * terrestrial_mass;
 std::println("Earth mass: {::N[.4e]}", M_earth.in(kg));
 
@@ -298,18 +298,18 @@ Exoplanet mass: 0.13 M_⊕
 
 !!! tip "Astronomy Utilities"
 
-    For commonly used astronomy units not standardized by the IAU (such as light-years, 
+    For commonly used astronomy units not standardized by the IAU (such as light-years,
     jansky, sidereal days, Julian years, etc.), see the `astronomy` utility system:
-    
+
     ```cpp
     #include <mp-units/systems/astronomy.h>
-    
+
     using namespace mp_units::astronomy::unit_symbols;
-    
+
     quantity distance = 4.22 * ly;        // light-year
     quantity flux = 1.5 * Jy;             // jansky (radio astronomy)
     quantity period = 1. * D_sid;         // sidereal day
     quantity age = 13.8e9 * a;            // Julian year
     ```
-    
+
     These units can be freely mixed with IAU and SI units.
