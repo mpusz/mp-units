@@ -116,10 +116,37 @@ provide additional experimental systems of quantities and units that follow the 
 approach and treat _angle_ as a base quantity with a base unit of radian and
 _solid angle_ as its derived quantity.
 
-As those (at least for now) are not a part of SI, the _plain angle_ and _solid angle_
-definitions can be found in a dedicated `angular` system. Those definitions are also used
-in the `isq_angle` system of quantities to make the recipes for angle-based quantities
-like _torque_ or _angular velocity_ physically correct:
+The library provides two related but distinct Strong Angular Systems:
+
+### The `angular` System
+
+This is a standalone system that provides:
+
+- A strong dimension for angle (distinct from dimensionless)
+- Base quantities: _angle_ and derived _solid angle_
+- Units: radian (`rad`), degree (`deg`), and other angular units
+- Trigonometric functions working with angular quantities
+
+Use this system when you want explicit angular dimensions but don't need the full ISQ
+quantity hierarchy.
+
+### The `isq_angle` System
+
+This system amends the International System of Quantities (ISQ) by incorporating the
+strong angular definitions from the `angular` system. It redefines angle-based ISQ
+quantities to make their recipes physically correct:
+
+- Uses `angular::angle` as the base for ISQ angular quantities
+- Provides correct dimensional analysis for quantities like _torque_, _angular velocity_,
+  and _angular momentum_
+- Maintains compatibility with the ISQ quantity hierarchy
+
+Use this system when you need both strong angular dimensions and the full typed ISQ
+quantity system.
+
+### Example
+
+Here's an example using `isq_angle` to calculate _torque_ with proper dimensional analysis:
 
 ```cpp
 using namespace mp_units;
