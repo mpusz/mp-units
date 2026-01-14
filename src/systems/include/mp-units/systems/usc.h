@@ -41,8 +41,7 @@ using namespace yard_pound;
 
 // https://en.wikipedia.org/wiki/United_States_customary_units#Length
 // nautical
-inline constexpr struct fathom final : named_unit<"ftm(us)", mag<2> * yard> {} fathom;
-inline constexpr struct cable final : named_unit<"cb(us)", mag<120> * fathom> {} cable;
+inline constexpr struct cable final : named_unit<"cb(us)", mag<120> * yard_pound::fathom> {} cable;
 
 // survey
 struct us_survey_foot final : named_unit<"ft(us)", mag_ratio<1'200, 3'937> * si::metre> {};
@@ -138,7 +137,6 @@ namespace unit_symbols {
 
 using namespace yard_pound::unit_symbols;
 
-inline constexpr auto ftm = fathom;
 inline constexpr auto cb = cable;
 [[deprecated(
   "In accordance with NIST SP 811, as of January 1, 2023, the use of the U.S. survey foot and U.S. survey mile is "

@@ -47,7 +47,6 @@ inline constexpr struct furlong final : named_unit<"fur", mag<10> * chain> {} fu
 
 // maritime units
 inline constexpr struct cable final : named_unit<"cb", mag_ratio<1, 10> * nautical_mile> {} cable;
-inline constexpr struct fathom final : named_unit<"ftm", mag_ratio<1, 1000> * nautical_mile> {} fathom;
 
 // survey
 inline constexpr struct link final : named_unit<"li", mag_ratio<1, 100> * chain> {} link;
@@ -85,7 +84,6 @@ inline constexpr auto ch = chain;
 inline constexpr auto fur = furlong;
 
 inline constexpr auto cb = cable;
-inline constexpr auto ftm = fathom;
 
 inline constexpr auto li = link;
 inline constexpr auto rd = rod;
