@@ -20,9 +20,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#if MP_UNITS_HOSTED
-#include <mp-units/math.h>  // IWYU pragma: keep
-#endif
 #include "test_tools.h"
 #include <mp-units/systems/iau.h>
 #include <mp-units/systems/si.h>
@@ -38,10 +35,8 @@ using namespace mp_units::si::unit_symbols;
 // IAU 2012 Resolution B1 - astronomical unit
 static_assert(1. * au == 149'597'870'700. * m);
 
-#if MP_UNITS_HOSTED && (__cpp_lib_constexpr_cmath || MP_UNITS_COMP_GCC)
 // Derived unit: parsec
-static_assert(round<si::metre>(1.L * pc) == 30'856'775'814'913'673. * m);
-#endif
+static_assert(approx_equal(1.L * pc, 30'856'775'814'913'673. * m));
 
 // IAU 2015 Resolution B3 - Nominal solar conversion constants
 static_assert(approx_equal(1. * R_SUN_N, 6.957e8 * m));
