@@ -3,7 +3,7 @@ tags:
   - Level - Advanced
   - System - ISQ
   - System - SI
-  - System - International
+  - System - Yard-Pound
   - Feature - Affine Space
   - Feature - Custom Representation
   - Feature - Multi-System Units
@@ -137,7 +137,7 @@ The example naturally mixes unit systems as aviators actually do:
 ```
 
 - **SI units** (`km/h`, `m/s`) for glider performance
-- **Imperial/International units** (`ft`) for _altitude_ (standard in aviation)
+- **Yard-Pound units** (`ft`) for _altitude_ (standard in aviation)
 - **_Latitude_/_longitude_** in degrees with custom literals
 
 **mp-units** handles these conversions automatically and safely.

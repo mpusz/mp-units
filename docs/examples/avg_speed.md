@@ -2,7 +2,7 @@
 tags:
 - Level - Beginner
 - System - CGS
-- System - Yard-Pound System
+- System - Yard-Pound
 - System - ISQ
 - Feature - Value Truncation
 - Feature - Representation Types

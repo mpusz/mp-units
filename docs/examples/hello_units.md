@@ -1,7 +1,7 @@
 ---
 tags:
 - Level - Beginner
-- System - Yard-Pound System
+- System - Yard-Pound
 - Feature - Text Formatting
 - Feature - Quantity Concepts
 - Feature - Unit Conversions

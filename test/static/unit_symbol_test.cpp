@@ -36,7 +36,7 @@ namespace {
 using namespace mp_units;
 using namespace mp_units::si;
 using namespace mp_units::iec;
-using namespace mp_units::international;
+using namespace mp_units::yard_pound;
 
 using enum character_set;
 using enum unit_symbol_solidus;
@@ -205,7 +205,7 @@ static_assert(unit_symbol(mag<2> / (mag<pi_c> * mag<e>)*one) == "(2 e⁻¹ π⁻
 static_assert(unit_symbol<usf{.solidus = always}>(mag<2> / (mag<pi_c> * mag<e>)*one) == "(2/(e π))");
 
 // common units
-static_assert(unit_symbol(get_common_unit(kilo<metre>, mile)) == "[(1/25146 mi), (1/15625 km)]");
+static_assert(unit_symbol(get_common_unit(kilo<metre>, mile)) == "[(1/15625 km), (1/25146 mi)]");
 static_assert(unit_symbol(get_common_unit(kilo<metre> / hour, metre / second)) == "[(1/5 km/h), (1/18 m/s)]");
 static_assert(unit_symbol(get_common_unit(kilo<metre> / hour, metre / second) / second) ==
               "[(1/5 km/h), (1/18 m/s)]/s");
