@@ -194,7 +194,7 @@ quantity total_volume = uk_tank + us_tank;   // Correctly converts and adds both
     The word "ton" can refer to three completely different measurements:
 
     - **Short ton** (US): 2000 lb ≈ 907 kg
-    - **Long ton** (UK): 2240 lb ≈ 1016 kg  
+    - **Long ton** (UK): 2240 lb ≈ 1016 kg
     - **Metric ton** (SI): 1000 kg = 2204.6 lb
 
     **mp-units** distinguishes these as `usc::short_ton`, `imperial::long_ton`,
@@ -260,7 +260,7 @@ using namespace mp_units;
 quantity modern_mile = 5280 * yard_pound::foot;  // 1609.344 m exactly
 quantity plot_width = 100 * usc::foot;           // Uses international foot
 
-// Legacy survey units (for historical data only)  
+// Legacy survey units (for historical data only)
 quantity old_survey = 5280 * usc::survey1893::us_survey_foot;  // 1609.347 m
 quantity land_area = 1 * usc::acre;  // Based on survey chain
 
@@ -341,14 +341,14 @@ lead to errors when dealing with similar but different units (like imperial vs U
     ```cpp
     // Unsafe: Manual conversion factors
     constexpr double GALLON_TO_LITRE = 3.785411784;  // Which gallon?!
-    
+
     double uk_tank_gallons = 15.0;
     double us_tank_gallons = 15.0;
-    
+
     // ERROR: Using US conversion factor for UK gallon!
     double uk_tank_litres = uk_tank_gallons * GALLON_TO_LITRE;  // WRONG!
     double us_tank_litres = us_tank_gallons * GALLON_TO_LITRE;  // OK
-    
+
     // 68.2 L stored as 56.8 L - 20% error goes undetected!
     double total = uk_tank_litres + us_tank_litres;
     ```
@@ -359,12 +359,12 @@ lead to errors when dealing with similar but different units (like imperial vs U
     #include <mp-units/systems/imperial.h>
     #include <mp-units/systems/usc.h>
     #include <mp-units/systems/si.h>
-    
+
     using namespace mp_units;
-    
+
     quantity uk_tank = 15.0 * imperial::gallon;
     quantity us_tank = 15.0 * usc::gallon;
-   
+
     quantity total = (uk_tank + us_tank).in(si::litre); // 125.0 L - correct!
     ```
 
