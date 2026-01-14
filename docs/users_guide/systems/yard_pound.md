@@ -119,9 +119,9 @@ using namespace mp_units;
 using namespace mp_units::imperial::unit_symbols;
 
 // Imperial-specific units
-quantity volume = 5 * gal;          // Imperial gallon (≈ 4.546 L)
-quantity weight = 12 * st;          // Stone (14 lb)
-quantity heavy_mass = 2 * long_ton; // Long ton (2240 lb)
+quantity volume = 5 * gal;                    // Imperial gallon (≈ 4.546 L)
+quantity weight = 12 * st;                    // Stone (14 lb)
+quantity heavy_mass = 2 * imperial::long_ton; // Long ton (2240 lb)
 ```
 
 **Key imperial-specific units:**
@@ -147,9 +147,9 @@ using namespace mp_units::usc::unit_symbols;
 
 // US-specific units
 quantity volume = 5 * gal;                                    // US liquid gallon (≈ 3.785 L)
-quantity temp = point<deg_F>(72);                             // Fahrenheit temperature
+quantity_point temp = point<deg_F>(72);                       // Fahrenheit temperature
 quantity land_dist = 1000 * usc::survey1893::us_survey_foot;  // Deprecated US survey foot
-quantity shipping = 3 * short_ton;                            // Short ton (2000 lb)
+quantity shipping = 3 * usc::short_ton;                       // Short ton (2000 lb)
 ```
 
 **Key US-specific units:**
@@ -193,12 +193,33 @@ quantity total_volume = uk_tank + us_tank;   // Correctly converts and adds both
 
     The word "ton" can refer to three completely different measurements:
 
-    - **Short ton** (US): 2000 lb ≈ 907 kg
-    - **Long ton** (UK): 2240 lb ≈ 1016 kg
-    - **Metric ton** (SI): 1000 kg = 2204.6 lb
+    - **Short ton** (US): 2000 lb ≈ 907 kg - called simply "ton" in the United States
+    - **Long ton** (UK): 2240 lb ≈ 1016 kg - called simply "ton" in the United Kingdom
+    - **Metric ton** (SI): 1000 kg = 2204.6 lb - also called "tonne"
 
-    **mp-units** distinguishes these as `usc::short_ton`, `imperial::long_ton`,
-    and `si::tonne` respectively.
+    **Regional Usage:** In everyday speech, people in the UK say "ton" (meaning 2240 lb),
+    while people in the US say "ton" (meaning 2000 lb). The qualifiers "long" and "short"
+    are international technical terms used for disambiguation between regions.
+
+    **In mp-units:** Each system defines `ton` as its regional default:
+
+    ```cpp
+    using namespace mp_units;
+
+    // UK usage - "ton" means long ton (2240 lb)
+    quantity uk_cargo = 5 * imperial::ton;        // 2240 lb each
+    quantity uk_cargo2 = 5 * imperial::long_ton;  // Same thing (alias)
+
+    // US usage - "ton" means short ton (2000 lb)
+    quantity us_cargo = 5 * usc::ton;             // 2000 lb each
+    quantity us_cargo2 = 5 * usc::short_ton;      // Same thing (alias)
+
+    // Metric ton is different from both
+    quantity metric_cargo = 5 * si::tonne;        // 1000 kg each
+    ```
+
+    When working with both systems, use namespace qualification to be explicit:
+    `imperial::ton` vs `usc::ton` vs `si::tonne`.
 
 ### US Survey Units
 
@@ -408,7 +429,7 @@ quantity ground_speed = 450 * kn;
 quantity distance = 3500 * nmi;
 
 // Convert to SI for presentation
-std::cout << "Cruising altitude: " << altitude.in(si::metre) << "\n";
+std::cout << "Cruising altitude: " << altitude.in<double>(si::metre) << "\n";
 ```
 
 ### UK Recipe (Imperial Units)
@@ -436,12 +457,12 @@ using namespace mp_units::usc::unit_symbols;
 
 quantity pipe_length = 100 * ft;
 quantity flow_rate = 50 * gal / si::minute;
-quantity ambient_temp = point<deg_F>(72);
-quantity material_weight = 3.5 * short_ton;
+quantity_point ambient_temp = point<deg_F>(72);
+quantity material_weight = 3.5 * usc::short_ton;
 
 // Legacy land surveying (pre-2023) - use survey1893 units
 quantity old_plot_length = 660 * usc::survey1893::us_survey_foot;  // 1 survey furlong
-quantity land_area = 1 * usc::acre;  // Acre is based on survey chain
+quantity land_area = 1 * usc::acre;  // Acre is based on survey chains
 ```
 
 
