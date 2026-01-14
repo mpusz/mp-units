@@ -17,11 +17,11 @@ we base the quantities and units library on just units or dimensions.
 
 !!! note
 
-  The issues described in this article do not apply to the **mp-units**
-  library. Its interfaces, even if when we decide only to use
-  [simple quantities](../../users_guide/framework_basics/simple_and_typed_quantities.md)
-  that only use units, those are still backed up by quantity kinds under the
-  framework's hood.
+    The issues described in this article do not apply to the **mp-units**
+    library. Its interfaces, even if when we decide only to use
+    [simple quantities](../../users_guide/framework_basics/simple_and_typed_quantities.md)
+    that only use units, those are still backed up by quantity kinds under the
+    framework's hood.
 
 ## Articles from this series
 

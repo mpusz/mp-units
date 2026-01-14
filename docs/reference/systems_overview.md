@@ -26,6 +26,7 @@ indicates systems with detailed User's Guide documentation.
 | **HEP**                                                            |            |   ✓   | High-energy physics units (barn, electronvolt, particle masses). Use for high-energy physics experiments.                                                                                      |            |
 
 !!! note
+
     The checkmarks show what each system *defines*. Systems of units are always built upon
     systems of quantities, so including a system of units (like SI) also provides access to
     the quantities it depends on (though SI only imports the ISQ quantities needed for its

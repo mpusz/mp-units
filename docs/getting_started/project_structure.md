@@ -37,10 +37,10 @@ CMake-based projects:
 
 !!! important "Important: Library users should not use the top-level CMake file"
 
-  Top level _CMakeLists.txt_ file should only be used by **mp-units** developers and
-  contributors as an entry point for the project's development. We want to ensure that
-  everyone will build **ALL** the code correctly before pushing a commit. Having such options
-  would allow unintended issues to leak to PRs and CI.
+    Top level _CMakeLists.txt_ file should only be used by **mp-units** developers and
+    contributors as an entry point for the project's development. We want to ensure that
+    everyone will build **ALL** the code correctly before pushing a commit. Having such options
+    would allow unintended issues to leak to PRs and CI.
 
     This is why our projects have two entry points:
 
@@ -94,8 +94,8 @@ All of the project's header files can be found in the `mp-units/...` subdirector
 
 ??? info "More details"
 
-  More detailed header files can be found in subfolders which typically should not be
-  included by the end users:
+    More detailed header files can be found in subfolders which typically should not be
+    included by the end users:
 
     - `mp-units/framework/...` provides all the public interfaces of the framework,
     - `mp-units/bits/...` provides private implementation details only (no public definitions),
@@ -116,9 +116,9 @@ The systems definitions can be found in the `mp-units/systems/...` subdirectory:
 
 ??? tip "Tip: Improving compile times"
 
-  `mp-units/systems/isq.h` might be expensive to compile in every translation unit. There
-  are some smaller, domain targeted files available for explicit inclusion in the
-  `mp-units/systems/isq/...` subdirectory.
+    `mp-units/systems/isq.h` might be expensive to compile in every translation unit. There
+    are some smaller, domain targeted files available for explicit inclusion in the
+    `mp-units/systems/isq/...` subdirectory.
 
 #### Systems of units
 
@@ -149,8 +149,8 @@ The systems definitions can be found in the `mp-units/systems/...` subdirectory:
 
 ??? tip "Tip: Improving compile times"
 
-  `mp-units/systems/si.h` might be expensive to compile in every translation unit. There
-  are some smaller files available for explicit inclusion in the
-  `mp-units/systems/si/...` subdirectory.
+    `mp-units/systems/si.h` might be expensive to compile in every translation unit. There
+    are some smaller files available for explicit inclusion in the
+    `mp-units/systems/si/...` subdirectory.
 
     `mp-units/systems/si/unit_symbols.h` is the most expensive to include.
