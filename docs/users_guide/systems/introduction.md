@@ -19,7 +19,7 @@ flowchart TD
     subgraph quantities["Systems of Quantities"]
         ISQ["<b>ISQ</b><br/>length, mass, time, ..."]
     end
-    
+
     subgraph units["Systems of Units"]
         SI["<b>SI</b><br/>metre, kilogram, second, ..."]
         CGS["<b>CGS</b><br/>centimetre, gram, second, ..."]
@@ -69,6 +69,11 @@ This User's Guide provides in-depth documentation for the following systems:
   systems, defining quantities and their relationships
 - **[International System of Units (SI)](si.md)** - The modern metric system, most widely used
 - **[Centimetre-Gram-Second (CGS) System](cgs.md)** - Still used in some areas of physics and chemistry
+- **[Yard-Pound Systems](yard_pound.md)** - Family of measurement systems used primarily in
+  the United States and historically throughout the British Commonwealth:
+    - **`yard_pound`** - Foundation system based on the 1959 international agreement
+    - **`imperial`** - British Imperial system extending yard-pound with UK-specific units
+    - **`usc`** - United States customary system extending yard-pound with US-specific units
 - **[Strong Angular Systems](strong_angular_system.md)** - Experimental extensions treating angle
   as a dimensional quantity:
     - **`angular`** - Standalone system with strong angular dimensions and units
@@ -96,5 +101,7 @@ The choice of system depends on your application domain and requirements:
 - Use **Natural Units** for particle physics and cosmology calculations
 - Use **CGS** when interfacing with legacy physics code or specific scientific domains where
   it's standard
-- Use **Imperial** or **USC** when required by industry standards or regulations
-  (e.g., aviation, construction in certain countries)
+- Use **`yard_pound`**, **`imperial`**, or **`usc`** when required by industry standards or
+  regulations (e.g., aviation uses nautical miles and knots; US construction uses feet and inches;
+  UK recipes use stones and imperial pints) - see [Yard-Pound Systems](yard_pound.md) for details
+  on choosing between these related systems
