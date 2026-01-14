@@ -155,7 +155,7 @@ int main()
 
 - [User's Guide: Systems of Units](../users_guide/framework_basics/systems_of_units.md)
 - [User's Guide: Dimensionless Quantities](../users_guide/framework_basics/dimensionless_quantities.md)
-- [API Reference](../api_reference.md)
+- [API Reference](../reference/api_reference.md)
 
 
 ## Takeaways

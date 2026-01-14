@@ -86,7 +86,7 @@ struct mp_units::quantity_like_traits<Meter> {
 };
 ```
 
-After that, we can check that the [`QuantityLike`](../framework_basics/concepts.md#QuantityLike)
+After that, we can check that the [`QuantityLike`](../users_guide/framework_basics/concepts.md#QuantityLike)
 concept is satisfied:
 
 ```cpp
@@ -174,7 +174,7 @@ struct Timestamp {
 };
 ```
 
-As we described in [The Affine Space](../framework_basics/the_affine_space.md) chapter, timestamps
+As we described in [The Affine Space](../users_guide/framework_basics/the_affine_space.md) chapter, timestamps
 should be modeled as quantity points rather than regular quantities.
 
 To allow the conversion between our custom `Timestamp` type and the `quantity_point` class
@@ -208,7 +208,7 @@ struct mp_units::quantity_point_like_traits<Timestamp> {
 };
 ```
 
-After that, we can check that the [`QuantityPointLike`](../framework_basics/concepts.md#QuantityPointLike)
+After that, we can check that the [`QuantityPointLike`](../users_guide/framework_basics/concepts.md#QuantityPointLike)
 concept is satisfied:
 
 ```cpp

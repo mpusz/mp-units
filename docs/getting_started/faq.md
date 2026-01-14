@@ -3,7 +3,7 @@
 ## Why do we spell `metre` instead of `meter`?
 
 This is how the BIPM defines it in the
-[SI Brochure](../appendix/references.md#SIBrochure)
+[SI Brochure](../reference/bibliography.md#SIBrochure)
 (British English spelling is used by default).
 
 
@@ -175,7 +175,7 @@ Maybe this default order could be improved, but according to international stand
 there is no generic ordering rule. Various quantities use different, often domain-specific,
 ordering of derived unit components.
 
-Let's see what [SI](../appendix/references.md#SIBrochure) says here:
+Let's see what [SI](../reference/bibliography.md#SIBrochure) says here:
 
 | Derived quantity           | Symbol | Derived unit expressed in terms of base units |
 |----------------------------|:------:|:---------------------------------------------:|
@@ -239,8 +239,8 @@ identifiers to a `standard_case`, even if it results in harder-to-understand cod
 
 ## Why UTF-8 quantity symbols are used by default instead of portable characters?
 
-Both C++ and [ISO 80000](../appendix/references.md#ISO80000) are standardized by the ISO.
-[ISO 80000](../appendix/references.md#ISO80000) and the [SI](../appendix/references.md#SIBrochure)
+Both C++ and [ISO 80000](../reference/bibliography.md#ISO80000) are standardized by the ISO.
+[ISO 80000](../reference/bibliography.md#ISO80000) and the [SI](../reference/bibliography.md#SIBrochure)
 standards specify UTF-8 symbols as the official unit names for some quantities (e.g. `Ω` symbol
 for the resistance quantity). As the **mp-units** library will be proposed for standardization
 as part of the C++ Standard Library, we have to follow the rules and be consistent with ISO

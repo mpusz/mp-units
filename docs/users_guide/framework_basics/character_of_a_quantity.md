@@ -119,8 +119,8 @@ enumeration can be appended to the `quantity_spec` describing such a quantity ty
 
 With the above, all the quantities derived from `position_vector` or `displacement`
 will have a correct character determined according to the kind of operations included in the
-[quantity equation](../../appendix/glossary.md#quantity-equation) defining a
-[derived quantity](../../appendix/glossary.md#derived-quantity).
+[quantity equation](../../reference/glossary.md#quantity-equation) defining a
+[derived quantity](../../reference/glossary.md#derived-quantity).
 
 For example, `velocity` in the below definition will be defined as a vector quantity.
 No explicit character override is needed:

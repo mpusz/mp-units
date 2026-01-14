@@ -121,8 +121,8 @@ int main()
 
 ## References
 
-- [User's Guide: Working with Legacy Interfaces](../users_guide/how_to_guides/working_with_legacy_interfaces.md)
-- [API Reference](../api_reference.md)
+- [User's Guide: Working with Legacy Interfaces](../how_to_guides/working_with_legacy_interfaces.md)
+- [API Reference](../reference/api_reference.md)
 
 
 ## Takeaways

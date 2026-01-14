@@ -85,7 +85,7 @@ fail to compile.
 
 It turns out that the above issues can't be solved correctly without proper
 modeling of a
-[system of quantities](../../appendix/glossary.md#system-of-quantities).
+[system of quantities](../../reference/glossary.md#system-of-quantities).
 
 
 ## Quantities of the same kind
@@ -131,7 +131,7 @@ More than one quantity may be defined for the same dimension:
   _wavelength_, _position vector_).
 
 Two quantities can't be added, subtracted, or compared unless they belong to
-the same [kind](../../appendix/glossary.md#kind). As _frequency_, _activity_,
+the same [kind](../../reference/glossary.md#kind). As _frequency_, _activity_,
 and _modulation rate_ are of different kinds, the expression provided above
 should not compile.
 

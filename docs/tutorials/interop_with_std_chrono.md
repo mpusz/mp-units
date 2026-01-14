@@ -126,8 +126,8 @@ int main()
 
 ## References
 
-- [User's Guide: Interoperability with Other Libraries](../users_guide/how_to_guides/interoperability_with_other_libraries.md)
-- [API Reference](../api_reference.md)
+- [User's Guide: Interoperability with Other Libraries](../how_to_guides/interoperability_with_other_libraries.md)
+- [API Reference](../reference/api_reference.md)
 
 
 ## Takeaways

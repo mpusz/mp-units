@@ -7,7 +7,7 @@
 
     Even though the library benefits from the latest C++ versions (if available), C++20 is enough
     to compile and use all of the library's functionality. Newer features can be hidden behind
-    some [preprocessor macros](../users_guide/how_to_guides/wide_compatibility.md#compatibility-macros)
+    some [preprocessor macros](../how_to_guides/wide_compatibility.md#compatibility-macros)
     providing a backward-compatible way to use them.
 
 The table below provides the minimum compiler version required to compile the code using
@@ -63,7 +63,7 @@ a specific C++ feature:
     - the customer's project did not switch to `std::format` yet (even when the compiler
       supports it).
 - To write code with wide compatibility a
-  [dedicated macro may be used](../users_guide/how_to_guides/wide_compatibility.md#mp_units_std_fmt).
+  [dedicated macro may be used](../how_to_guides/wide_compatibility.md#mp_units_std_fmt).
 - Tested with `__cpp_lib_format` [feature test macro](https://en.cppreference.com/w/cpp/feature_test).
 - Related build options:
     - Conan: [std_format](installation_and_usage.md#std_format)
@@ -104,7 +104,7 @@ a specific C++ feature:
 - This feature removes the need for the usage of the CRTP idiom in the
   [`quantity_spec` definitions](../users_guide/framework_basics/systems_of_quantities.md#defining-quantities).
 - To write code with wide compatibility
-  a [dedicated macro may be used](../users_guide/how_to_guides/wide_compatibility.md#QUANTITY_SPEC).
+  a [dedicated macro may be used](../how_to_guides/wide_compatibility.md#QUANTITY_SPEC).
 - Tested with `__cpp_explicit_this_parameter` [feature test macro](https://en.cppreference.com/w/cpp/feature_test).
     - Note that some compiler versions do not implement this macro even though they do support the
       feature well enough. In such cases, compilation with explicit `this` is enforced.

@@ -31,7 +31,7 @@ extensions in our free time. In this post, I will describe:
 ## Quantity characters
 
 A quantity character determines the properties and operations that can be performed on the
-[numerical value of a quantity](../../appendix/glossary.md#numerical-value).
+[numerical value of a quantity](../../reference/glossary.md#numerical-value).
 
 Quantities defined by the ISQ may be of the following characters:
 

@@ -113,7 +113,7 @@ composes to express dimensions and units of derived quantities.
 
 ### `text_encoding`
 
-[ISQ](../../appendix/glossary.md#isq) and [SI](../../appendix/glossary.md#si) standards always
+[ISQ](../../reference/glossary.md#isq) and [SI](../../reference/glossary.md#si) standards always
 specify symbols using UTF-8 encoding. This is why it is a default and primary target for
 text output. However, in some applications or environments, a standard portable text output
 using only the characters from the [basic literal character set](https://en.cppreference.com/w/cpp/language/charset)
@@ -332,7 +332,7 @@ unit and its impact on the value stored in the quantity.
 
 ## `space_before_unit_symbol` customization point
 
-The [SI Brochure](../../appendix/references.md#SIBrochure) says:
+The [SI Brochure](../../reference/bibliography.md#SIBrochure) says:
 
 !!! quote "SI Brochure"
 
@@ -478,7 +478,7 @@ In the above grammar:
     - `P` forces non-standard **portable** output (e.g., `LT^-2`).
 
 Dimension symbols of some quantities are specified to use Unicode signs by the
-[ISQ](../../appendix/glossary.md#isq) (e.g., `Θ` symbol for the _thermodynamic temperature_
+[ISQ](../../reference/glossary.md#isq) (e.g., `Θ` symbol for the _thermodynamic temperature_
 dimension). The library follows this by default. From the engineering point of view, sometimes
 Unicode text might not be the best solution, as terminals of many (especially embedded) devices
 can output only letters from the basic literal character set. In such a case, the dimension
@@ -528,7 +528,7 @@ In the above grammar:
     any order as they have unique characters. Users shouldn't have to remember the order of those tokens
     to control the formatting of a unit symbol.
 
-Unit symbols of some quantities are specified to use Unicode signs by the [SI](../../appendix/glossary.md#si)
+Unit symbols of some quantities are specified to use Unicode signs by the [SI](../../reference/glossary.md#si)
  (e.g., `Ω` symbol for the _resistance_ quantity). The library follows this by default.
 From the engineering point of view, Unicode text might not be the best solution sometimes,
 as terminals of many (especially embedded) devices can output only letters from the basic
@@ -545,7 +545,7 @@ std::println("{}", m / s2);       // m/s²
 std::println("{:P}", m / s2);     // m/s^2
 ```
 
-Additionally, both ISO 80000 and [SI](../../appendix/glossary.md#si) leave some freedom on
+Additionally, both ISO 80000 and [SI](../../reference/glossary.md#si) leave some freedom on
 how to print unit symbols. This is why two additional tokens were introduced.
 
 `unit-symbol-solidus` specifies how the division of units should look like. By default,

@@ -175,7 +175,7 @@ Doing so has two important benefits:
    the thing being returned there.
 2. Such a concept constrains the type returned from the function. This means that it works
    as a unit test to verify if our function actually performs what it is supposed to do.
-   If there is an error in [quantity equations](../../appendix/glossary.md#quantity-equation),
+   If there is an error in [quantity equations](../../reference/glossary.md#quantity-equation),
    we will learn about it right away.
 
 

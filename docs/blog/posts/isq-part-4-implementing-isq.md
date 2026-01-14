@@ -151,7 +151,7 @@ implicitly:
 - _mechanical energy_ is a more "specialized" quantity than _energy_ (not every
   _energy_ is a _mechanical energy_). It is why an explicit cast is needed to
   convert from either _energy_ or the results of its
-  [quantity equation](../../appendix/glossary.md#quantity-equation):
+  [quantity equation](../../reference/glossary.md#quantity-equation):
 
     ```cpp
     static_assert(!implicitly_convertible(isq::energy, isq::mechanical_energy));
@@ -164,7 +164,7 @@ implicitly:
 
 - _gravitational potential energy_ is not only even more specialized one but
   additionally, it is special in a way that it provides its own "constrained"
-  [quantity equation](../../appendix/glossary.md#quantity-equation). Maybe not
+  [quantity equation](../../reference/glossary.md#quantity-equation). Maybe not
   every `mass * pow<2>(length) / pow<2>(time)` is a _gravitational potential
   energy_, but every `mass * acceleration_of_free_fall * height` is.
 
@@ -208,8 +208,8 @@ chapter of the "Part 2" article.
 
 As the last example for this article, let's try to model and implement
 quantities of dimension one, often also called dimensionless quantities. This
-[quantity hierarchy](../../appendix/glossary.md#quantity-hierarchy) contains
-more than one [quantity kind](../../appendix/glossary.md#kind) and more than one
+[quantity hierarchy](../../reference/glossary.md#quantity-hierarchy) contains
+more than one [quantity kind](../../reference/glossary.md#kind) and more than one
 unit in its tree:
 
 ```mermaid

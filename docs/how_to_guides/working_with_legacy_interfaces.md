@@ -1,7 +1,7 @@
 # Working with Legacy Interfaces
 
 When working with legacy or unsafe interfaces, you may need to extract the
-[numerical value of a quantity](../../appendix/glossary.md#numerical-value) and pass it to
+[numerical value of a quantity](../reference/glossary.md#numerical-value) and pass it to
 third-party APIs that don't use type-safe units.
 
 **mp-units** provides several member functions to safely bridge this gap while maintaining

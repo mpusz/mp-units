@@ -1,14 +1,14 @@
 # Systems of Quantities
 
 Most physical units libraries focus on modeling one or more
-[systems of units](../../appendix/glossary.md#system-of-units). However an equally (or more)
+[systems of units](../../reference/glossary.md#system-of-units). However an equally (or more)
 important abstraction is the
-[system of quantities](../../appendix/glossary.md#system-of-quantities).
+[system of quantities](../../reference/glossary.md#system-of-quantities).
 
 !!! info
 
     **mp-units** is likely the first Open Source library (in any language) that models the
-    [ISQ](../../appendix/glossary.md#isq) with the full ISO 80000 definition set. Feedback
+    [ISQ](../../reference/glossary.md#isq) with the full ISO 80000 definition set. Feedback
     is welcome.
 
 
@@ -60,7 +60,7 @@ Both have dimension $\mathsf{L}^{2}$ yet adding them is nonsensical and should f
       _wavelength_, _position vector_, ...)
 
 These issues require proper modeling of a
-[system of quantities](../../appendix/glossary.md#system-of-quantities).
+[system of quantities](../../reference/glossary.md#system-of-quantities).
 
 
 ## Quantities of the same kind
@@ -77,7 +77,7 @@ These issues require proper modeling of a
     - Quantities of the **same dimension are not necessarily of the same kind**
 
 ISO 80000 answers the earlier questions: two quantities cannot be added, subtracted, or
-compared unless they are of the same [kind](../../appendix/glossary.md#kind). Thus
+compared unless they are of the same [kind](../../reference/glossary.md#kind). Thus
 _frequency_, _activity_, and _modulation rate_ are incompatible.
 
 
@@ -123,7 +123,7 @@ type from a suitable instantiation.
     [explicit object parameter](https://en.cppreference.com/w/cpp/language/member_functions#Explicit_object_parameter)
     added in C++23 to remove the need for CRTP idiom, which significantly simplifies the code.
     However, as C++23 is far from being mainstream today,
-    a [portability macro `QUANTITY_SPEC()`](../how_to_guides/wide_compatibility.md#QUANTITY_SPEC)
+    a [portability macro `QUANTITY_SPEC()`](../../how_to_guides/wide_compatibility.md#QUANTITY_SPEC)
     is provided and used consistently through the library to allow the code to compile with C++20
     compilers, thanks to the CRTP usage under the hood.
 
@@ -354,7 +354,7 @@ flowchart TD
 ```
 
 Notice, that even though all of those quantities have the same dimension and can be expressed
-in the same units, they have different [quantity equations](../../appendix/glossary.md#quantity-equation)
+in the same units, they have different [quantity equations](../../reference/glossary.md#quantity-equation)
 that can be used to create them implicitly:
 
 - _energy_ is the most generic one and thus can be created from base quantities of _mass_,
@@ -370,7 +370,7 @@ that can be used to create them implicitly:
 
 - _mechanical energy_ is a more "specialized" quantity than _energy_ (not every _energy_ is
   a _mechanical energy_). It is why an explicit cast is needed to convert from either
-  _energy_ or the results of its [quantity equation](../../appendix/glossary.md#quantity-equation):
+  _energy_ or the results of its [quantity equation](../../reference/glossary.md#quantity-equation):
 
     ```cpp
     static_assert(!implicitly_convertible(isq::energy, isq::mechanical_energy));
@@ -383,7 +383,7 @@ that can be used to create them implicitly:
 
 - _gravitational potential energy_ is not only even more specialized one but additionally,
   it is special in a way that it provides its own "constrained"
-  [quantity equation](../../appendix/glossary.md#quantity-equation). Maybe not every
+  [quantity equation](../../reference/glossary.md#quantity-equation). Maybe not every
   `mass * pow<2>(length) / pow<2>(time)` is a _gravitational potential energy_, but every
   `mass * acceleration_of_free_fall * height` is.
 

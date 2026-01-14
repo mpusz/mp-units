@@ -30,7 +30,7 @@ only notable changes for typical end-users would be: improved units for the quan
 _torque_, _angular momentum_, and _moment of inertia_.
 
 Paul Quincey in his proposal
-[_"Angles in the SI: a detailed proposal for solving the problem"_](../../appendix/references.md#Quincey)
+[_"Angles in the SI: a detailed proposal for solving the problem"_](../../reference/bibliography.md#Quincey)
 states:
 
 !!! quote "Paul Quincey: Angles in the SI: a detailed proposal for solving the problem"
@@ -145,6 +145,6 @@ Applying a perpendicular force of 500 N to a 20 cm long lever results in 100 N m
 !!! note
 
     `cotes_angle` is a constant which represents an angle with the value of exactly `1 radian`.
-    You can find more information about this constant in [Quincey](../../appendix/references.md#Quincey).
+    You can find more information about this constant in [Quincey](../../reference/bibliography.md#Quincey).
 
 [Try it live on Compiler Explorer](https://godbolt.org/z/qfxosv9YM){ .md-button }

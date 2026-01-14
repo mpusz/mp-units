@@ -3,7 +3,7 @@
 The quantities discussed so far always had specific types and physical dimensions.
 However, this isn't always the case. Some computations produce "dimensionless" quantities.
 ISO defines them as
-[quantities of dimension one](../../appendix/glossary.md#dimensionless-quantity):
+[quantities of dimension one](../../reference/glossary.md#dimensionless-quantity):
 
 !!! quote "ISO/IEC Guide 99"
 
@@ -18,7 +18,7 @@ ISO defines them as
 ## Dividing two quantities of the same kind
 
 Dividing two quantities of the same kind always results in a
-[quantity of dimension one](../../appendix/glossary.md#dimensionless-quantity).
+[quantity of dimension one](../../reference/glossary.md#dimensionless-quantity).
 However, depending on what type of quantities we divide or what their units are, we may
 end up with slightly different results.
 
@@ -69,8 +69,8 @@ static_assert(q.quantity_spec == isq::work / isq::heat);
 ```
 
 As shown above, the result is not of a `dimensionless` type anymore. Instead, we get a
-quantity type derived from the performed [quantity equation](../../appendix/glossary.md#quantity-equation).
-According to the [ISQ](../../appendix/glossary.md#isq), _work_ divided by _heat_ is the recipe
+quantity type derived from the performed [quantity equation](../../reference/glossary.md#quantity-equation).
+According to the [ISQ](../../reference/glossary.md#isq), _work_ divided by _heat_ is the recipe
 for the _thermodynamic efficiency_ quantity, thus:
 
 ```cpp
@@ -129,7 +129,7 @@ of things. For example:
   in which the corresponding digits of two words of the same length are different.
 
 Thanks to assigning strong names to such quantities, later on, they can be explicitly used
-as arguments in the [quantity equations](../../appendix/glossary.md#quantity-equation) of
+as arguments in the [quantity equations](../../reference/glossary.md#quantity-equation) of
 other quantities deriving from them.
 
 
@@ -200,17 +200,17 @@ This property also expands to usual arithmetic operators.
 ## Angular quantities
 
 Special, often controversial, examples of dimensionless quantities are an _angular measure_
-and _solid angular measure_ quantities that are defined in the [ISQ](../../appendix/glossary.md#isq)
+and _solid angular measure_ quantities that are defined in the [ISQ](../../reference/glossary.md#isq)
 to be the result of a division of $arc\; length / radius$ and $area / radius^2$ respectively.
-Moreover, [ISQ](../../appendix/glossary.md#isq) also explicitly states that both can be
+Moreover, [ISQ](../../reference/glossary.md#isq) also explicitly states that both can be
 expressed in the unit `one`. This means that both _angular measure_ and _solid angular measure_
-should be of a [kind](../../appendix/glossary.md#kind) dimensionless.
+should be of a [kind](../../reference/glossary.md#kind) dimensionless.
 
-On the other hand, [ISQ](../../appendix/glossary.md#isq) also specifies that a unit radian
+On the other hand, [ISQ](../../reference/glossary.md#isq) also specifies that a unit radian
 can be used for _angular measure_, and a unit steradian can be used for _solid angular measure_.
 Those should not be mixed or used to express other types of dimensionless quantities. This
 means that both _angular measure_ and _solid angular measure_ should also be
-[quantity kinds](../../appendix/glossary.md#kind) by themselves.
+[quantity kinds](../../reference/glossary.md#kind) by themselves.
 
 !!! note
 
@@ -265,8 +265,8 @@ a similar case is a _storage capacity_ quantity specified in IEC-80000-13 that a
 allows expressing it in both `one` and `bit` units.
 
 Those cases make dimensionless quantities an exceptional tree in the library. This
-[quantity hierarchy](../../appendix/glossary.md#quantity-hierarchy) contains more than
-one [quantity kind](../../appendix/glossary.md#kind) and more than one unit in its tree:
+[quantity hierarchy](../../reference/glossary.md#quantity-hierarchy) contains more than
+one [quantity kind](../../reference/glossary.md#kind) and more than one unit in its tree:
 
 ```mermaid
 flowchart TD

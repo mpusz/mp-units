@@ -1,16 +1,13 @@
 ---
 title: API Reference - mp-units
 template: api_reference.html
-hide:
-  - navigation
-  - toc
 ---
 
 <!-- markdownlint-disable MD033 -->
 <!-- markdownlint-disable MD013 -->
 
-<script src="../javascripts/jquery.min.js"></script>
-<script src="../javascripts/iframeResizer.min.js"></script>
+<script src="../../javascripts/jquery.min.js"></script>
+<script src="../../javascripts/iframeResizer.min.js"></script>
 
 <iframe id="apiIframe" style="width: 100%; border: none;"></iframe>
 
@@ -18,7 +15,7 @@ hide:
 // injects scripts to the iframe source code
 $('#apiIframe').on('load', function() {
   body = $(this).contents().find('body');
-  body.append('<scr' + 'ipt src="../../javascripts/iframeResizer.contentWindow.min.js"></scr' + 'ipt>');
+  body.append('<scr' + 'ipt src="../../../javascripts/iframeResizer.contentWindow.min.js"></scr' + 'ipt>');
   body.append('<scr' + 'ipt>' +
     'var links = document.querySelectorAll("a");' +
     'for (var i = 0; i < links.length; i++) {' +
@@ -57,7 +54,7 @@ iFrameResize({
   // obtains the link URL clicked in the subpage
   onMessage: function(messageData) {
     url = messageData.message;
-    if (url.search("api_reference/gen") == -1) {
+    if (url.search("reference/api_reference/gen") == -1) {
       window.open(url);
     }
     else {

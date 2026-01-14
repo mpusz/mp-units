@@ -134,12 +134,25 @@ nav:
       - Introduction: getting_started/introduction.md
       - Quick Start: getting_started/quick_start.md
       - Look and Feel: getting_started/look_and_feel.md
-      - Cheat Sheet: getting_started/cheat_sheet.md
       - Project Structure: getting_started/project_structure.md
       - C++ compiler support (API/ABI): getting_started/cpp_compiler_support.md
       - Installation and Usage: getting_started/installation_and_usage.md
       - Contributing: getting_started/contributing.md
       - FAQ: getting_started/faq.md
+  - Tutorials:
+      - Tutorials: tutorials/index.md
+      - "Tutorial 1: Refactor to Strong Types": tutorials/refactor_to_strong_types.md
+      - "Tutorial 2: Refactor to Generic, Type-Safe Interfaces": tutorials/generic_type_safe_interfaces.md
+      - "Tutorial 3: Extracting Numeric Values": tutorials/extracting_numeric_values.md
+      - "Tutorial 4: Working with Temperatures": tutorials/working_with_temperatures.md
+      - "Tutorial 5: Affine Spaces and Reference Origins": tutorials/affine_spaces.md
+      - "Tutorial 6: Interop with std::chrono": tutorials/interop_with_std_chrono.md
+      - "Tutorial 7: Custom Units for Dimensionless Counters": tutorials/custom_dimensionless_units.md
+      - "Tutorial 8: Typed Quantities of the Same Kind": tutorials/typed_quantities_same_kind.md
+      - "Tutorial 9: Custom Quantity Specifications": tutorials/custom_quantity_specifications.md
+      - "Tutorial 10: Custom Base Dimensions": tutorials/custom_base_dimensions.md
+      - "Tutorial 11: Preventing Confusion with Distinct Kinds": tutorials/distinct_quantity_kinds.md
+      - "Tutorial 12: Faster-than-Lightspeed Constants": tutorials/faster_than_lightspeed_constants.md
   - User's Guide:
       - Terms and Definitions: users_guide/terms_and_definitions.md
       - Framework Basics:
@@ -165,30 +178,12 @@ nav:
           - Centimetre-Gram-Second (CGS) System: users_guide/systems/cgs.md
           - Strong Angular System: users_guide/systems/strong_angular_system.md
           - Natural Units: users_guide/systems/natural_units.md
-      - How-to Guides:
-          - Pure Dimensional Analysis: users_guide/how_to_guides/pure_dimensional_analysis.md
-          - Working with Legacy Interfaces: users_guide/how_to_guides/working_with_legacy_interfaces.md
-          - Using Custom Representation Types: users_guide/how_to_guides/using_custom_representation_types.md
-          - Interoperability with Other Libraries: users_guide/how_to_guides/interoperability_with_other_libraries.md
-          - Wide Compatibility: users_guide/how_to_guides/wide_compatibility.md
-      - Appendix:
-          - Glossary: appendix/glossary.md
-          - References: appendix/references.md
-  - API Reference: api_reference.md
-  - Tutorials:
-      - Tutorials: tutorials/index.md
-      - "Tutorial 1: Refactor to Strong Types": tutorials/refactor_to_strong_types.md
-      - "Tutorial 2: Refactor to Generic, Type-Safe Interfaces": tutorials/generic_type_safe_interfaces.md
-      - "Tutorial 3: Extracting Numeric Values": tutorials/extracting_numeric_values.md
-      - "Tutorial 4: Working with Temperatures": tutorials/working_with_temperatures.md
-      - "Tutorial 5: Affine Spaces and Reference Origins": tutorials/affine_spaces.md
-      - "Tutorial 6: Interop with std::chrono": tutorials/interop_with_std_chrono.md
-      - "Tutorial 7: Custom Units for Dimensionless Counters": tutorials/custom_dimensionless_units.md
-      - "Tutorial 8: Typed Quantities of the Same Kind": tutorials/typed_quantities_same_kind.md
-      - "Tutorial 9: Custom Quantity Specifications": tutorials/custom_quantity_specifications.md
-      - "Tutorial 10: Custom Base Dimensions": tutorials/custom_base_dimensions.md
-      - "Tutorial 11: Preventing Confusion with Distinct Kinds": tutorials/distinct_quantity_kinds.md
-      - "Tutorial 12: Faster-than-Lightspeed Constants": tutorials/faster_than_lightspeed_constants.md
+  - How-to Guides:
+      - Pure Dimensional Analysis: how_to_guides/pure_dimensional_analysis.md
+      - Working with Legacy Interfaces: how_to_guides/working_with_legacy_interfaces.md
+      - Using Custom Representation Types: how_to_guides/using_custom_representation_types.md
+      - Interoperability with Other Libraries: how_to_guides/interoperability_with_other_libraries.md
+      - Wide Compatibility: how_to_guides/wide_compatibility.md
   - Examples:
       - Examples: examples/index.md
       - Beginner:
@@ -209,6 +204,11 @@ nav:
           - unmanned_aerial_vehicle: examples/unmanned_aerial_vehicle.md
           - glide_computer: examples/glide_computer.md
           - kalman_filter: examples/kalman_filter.md
+  - Reference:
+      - Cheat Sheet: reference/cheat_sheet.md
+      - API Reference: reference/api_reference.md
+      - Glossary: reference/glossary.md
+      - Bibliography: reference/bibliography.md
   - Blog:
       - blog/index.md
   - Release Notes: release_notes.md

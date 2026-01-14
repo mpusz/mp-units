@@ -90,7 +90,7 @@ All of the project's header files can be found in the `mp-units/...` subdirector
 - `mp-units/math.h` provides overloads of common math functions for quantities,
 - `mp-units/random.h` provides C++ pseudo-random number generators for quantities,
 - `mp-units/compat_macros.h` provides macros for
-  [wide compatibility](../users_guide/how_to_guides/wide_compatibility.md).
+  [wide compatibility](../how_to_guides/wide_compatibility.md).
 
 ??? info "More details"
 

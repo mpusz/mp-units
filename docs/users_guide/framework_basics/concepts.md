@@ -5,16 +5,16 @@ This chapter enumerates all the user-facing concepts in the **mp-units** library
 
 ## `Dimension<T>` { #Dimension }
 
-`Dimension` concept matches a [dimension](../../appendix/glossary.md#dimension) of either a
-base or derived [quantity](../../appendix/glossary.md#quantity):
+`Dimension` concept matches a [dimension](../../reference/glossary.md#dimension) of either a
+base or derived [quantity](../../reference/glossary.md#quantity):
 
-- [Base dimensions](../../appendix/glossary.md#base-dimension) are explicitly defined by the
+- [Base dimensions](../../reference/glossary.md#base-dimension) are explicitly defined by the
   user by inheriting from the instantiation of a `base_dimension` class template. It should
   be instantiated with a unique symbol identifier describing this dimension in a specific
-  [system of quantities](../../appendix/glossary.md#system-of-quantities).
-- [Derived dimensions](../../appendix/glossary.md#derived-dimension) are implicitly created
-  by the library's framework based on the [quantity equation](../../appendix/glossary.md#quantity-equation)
-  provided in the [quantity specification](../../appendix/glossary.md#quantity_spec).
+  [system of quantities](../../reference/glossary.md#system-of-quantities).
+- [Derived dimensions](../../reference/glossary.md#derived-dimension) are implicitly created
+  by the library's framework based on the [quantity equation](../../reference/glossary.md#quantity-equation)
+  provided in the [quantity specification](../../reference/glossary.md#quantity_spec).
 
 All of the above dimensions have to be marked as `final`.
 
@@ -28,23 +28,23 @@ concept and when they compare equal.
 ## `QuantitySpec<T>` { #QuantitySpec }
 
 `QuantitySpec` concept matches all the
-[quantity specifications](../../appendix/glossary.md#quantity_spec) including:
+[quantity specifications](../../reference/glossary.md#quantity_spec) including:
 
-- [Base quantities](../../appendix/glossary.md#base-quantity) defined by a user by inheriting
+- [Base quantities](../../reference/glossary.md#base-quantity) defined by a user by inheriting
   from the `quantity_spec` class template instantiated with a
-  [base dimension](../../appendix/glossary.md#base-dimension) argument.
-- [Derived named quantities](../../appendix/glossary.md#derived-quantity) defined by a user
+  [base dimension](../../reference/glossary.md#base-dimension) argument.
+- [Derived named quantities](../../reference/glossary.md#derived-quantity) defined by a user
   by inheriting from the `quantity_spec` class template instantiated with a result of a
-  [quantity equation](../../appendix/glossary.md#quantity-equation) passed as an argument.
+  [quantity equation](../../reference/glossary.md#quantity-equation) passed as an argument.
 - Other named quantities forming a
-  [hierarchy of quantities](../../appendix/glossary.md#quantity-hierarchy) of the same
-  [kind](../../appendix/glossary.md#kind) defined by a user by inheriting from the
+  [hierarchy of quantities](../../reference/glossary.md#quantity-hierarchy) of the same
+  [kind](../../reference/glossary.md#kind) defined by a user by inheriting from the
   `quantity_spec` class template instantiated with another "parent" quantity specification
   passed as an argument.
-- [Quantity kinds](../../appendix/glossary.md#kind) describing a family of mutually comparable
+- [Quantity kinds](../../reference/glossary.md#kind) describing a family of mutually comparable
   quantities.
-- Intermediate [derived quantity](../../appendix/glossary.md#derived-quantity) specifications
-  being a result of a [quantity equations](../../appendix/glossary.md#quantity-equation) on
+- Intermediate [derived quantity](../../reference/glossary.md#derived-quantity) specifications
+  being a result of a [quantity equations](../../reference/glossary.md#quantity-equation) on
   other specifications.
 
 All of the above quantity specifications have to be marked as `final`.
@@ -67,21 +67,21 @@ All of the above quantity specifications have to be marked as `final`.
 
 ## `Unit<T>` { #Unit }
 
-`Unit` concept matches all the [units](../../appendix/glossary.md#unit) in the library including:
+`Unit` concept matches all the [units](../../reference/glossary.md#unit) in the library including:
 
-- [Base units](../../appendix/glossary.md#base-unit) defined by a user by inheriting from the
+- [Base units](../../reference/glossary.md#base-unit) defined by a user by inheriting from the
   `named_unit` class template instantiated with a unique symbol identifier
   describing this unit
-  in a specific [system of units](../../appendix/glossary.md#system-of-units).
+  in a specific [system of units](../../reference/glossary.md#system-of-units).
 - Named scaled units defined by a user by inheriting from the `named_unit` class template instantiated
   with a unique symbol identifier and a product of multiplying another unit with some magnitude.
 - Prefixed units defined by a user by inheriting from the `prefixed_unit` class template instantiated
   with a prefix symbol, a magnitude, and a unit to be prefixed.
-- [Derived named units](../../appendix/glossary.md#derived-unit) defined by a user by inheriting
+- [Derived named units](../../reference/glossary.md#derived-unit) defined by a user by inheriting
   from the `named_unit` class template instantiated with a unique symbol identifier and a result
-  of [unit equation](../../appendix/glossary.md#unit-equation) passed as an argument.
-- [Derived unnamed units](../../appendix/glossary.md#derived-unit) being a result of a
-  [unit equations](../../appendix/glossary.md#unit-equation) on other units.
+  of [unit equation](../../reference/glossary.md#unit-equation) passed as an argument.
+- [Derived unnamed units](../../reference/glossary.md#derived-unit) being a result of a
+  [unit equations](../../reference/glossary.md#unit-equation) on other units.
 
 All of the above units have to be marked as `final`.
 
@@ -104,7 +104,7 @@ convertible to the provided [`QuantitySpec`](#QuantitySpec) value.
 
 ## `Reference<T>` { #Reference }
 
-`Reference` concept is satisfied by all [quantity reference](../../appendix/glossary.md#reference)
+`Reference` concept is satisfied by all [quantity reference](../../reference/glossary.md#reference)
 types. Such types provide all the meta-information required to create a [`Quantity`](#Quantity).
 A `Reference` can either be:
 
@@ -123,26 +123,26 @@ that satisfies [`QuantitySpecOf<V>`](#QuantitySpecOf) concept.
 ## `RepresentationOf<T, V>` { #RepresentationOf }
 
 `RepresentationOf` concept constraints a type of a number that stores the
-[value of a quantity](../../appendix/glossary.md#quantity-value) and is satisfied:
+[value of a quantity](../../reference/glossary.md#quantity-value) and is satisfied:
 
 - if the type of `V` satisfies [`QuantitySpec`](#QuantitySpec):
 
     - by all representation types when `V` describes
-      a [quantity kind](../../appendix/glossary.md#kind),
+      a [quantity kind](../../reference/glossary.md#kind),
     - otherwise, by representation types that are of
-      a [quantity character](../../appendix/glossary.md#character) associated with a provided
+      a [quantity character](../../reference/glossary.md#character) associated with a provided
       quantity specification `V`.
 
 - if `V` is of `quantity_character` type:
 
     - by representation types that are of a provided
-      [quantity character](../../appendix/glossary.md#character).
+      [quantity character](../../reference/glossary.md#character).
 
 
 ## `Quantity<T>` { #Quantity }
 
 `Quantity` concept matches every
-  [quantity](../../appendix/glossary.md#quantity) in the library and is satisfied by all types
+  [quantity](../../reference/glossary.md#quantity) in the library and is satisfied by all types
   being or deriving from an instantiation of a `quantity` class template.
 
 
@@ -199,7 +199,7 @@ is `true`.
 ## `PointOrigin<T>` { #PointOrigin }
 
 `PointOrigin` concept matches all
-  [quantity point origins](../../appendix/glossary.md#point-origin) in the library. It is
+  [quantity point origins](../../reference/glossary.md#point-origin) in the library. It is
   satisfied by either:
 
 - All types derived from an `absolute_point_origin` class template.
