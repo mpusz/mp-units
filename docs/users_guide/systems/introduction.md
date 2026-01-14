@@ -83,7 +83,7 @@ This User's Guide provides in-depth documentation for the following systems:
 
 !!! tip "Complete Catalog"
 
-    For a comprehensive list of all available systems (including IEC 80000, IAU, Imperial, USC,
+    For a comprehensive list of all available systems (including IEC, IAU, Imperial, USC,
     Typographic, and HEP), see the [Supported Systems Overview](../../reference/systems_overview.md)
     in the Reference section.
 
