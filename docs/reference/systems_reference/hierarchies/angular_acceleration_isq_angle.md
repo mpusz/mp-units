@@ -7,5 +7,5 @@
 
 ```mermaid
 flowchart LR
-    isq_angle_angular_acceleration["<b>isq_angle::angular_acceleration</b><br><i>(angular_velocity / duration)</i>"]
+    isq_angle_angular_acceleration["<b>isq_angle::angular_acceleration</b><br><i>(angular_velocity / isq::duration)</i>"]
 ```

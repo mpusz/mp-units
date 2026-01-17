@@ -7,5 +7,5 @@
 
 ```mermaid
 flowchart LR
-    isq_angle_angular_repetency["<b>isq_angle::angular_repetency | isq_angle::angular_wavenumber</b><br><i>(cotes_angle_constant / wavelength)</i>"]
+    isq_angle_angular_repetency["<b>isq_angle::angular_repetency | isq_angle::angular_wavenumber</b><br><i>(cotes_angle_constant / isq::wavelength)</i>"]
 ```

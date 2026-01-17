@@ -19,14 +19,14 @@
 
 | Quantity | Character | Dimension | Kind of | Parent | Equation | Hierarchy |
 |----------|:---------:|:---------:|:-------:|:------:|----------|:---------:|
-| <span id="dimensionless"></span>`dimensionless` | Real | 1 | `dimensionless` | — | — | [view](../hierarchies/dimensionless.md) |
+| <span id="dimensionless"></span><code>dimensionless</code> | Real | 1 | <code>[dimensionless](core.md#dimensionless)</code> | — | — | [view](../hierarchies/dimensionless.md) |
 
 ## Units
 
 | Unit Name | Symbol | unit_symbol | Definition |
 |-----------|:------:|:-----------:|------------|
-| <span id="one"></span>`one` | 1 | — | — |
-| <span id="parts_per_million"></span>`parts_per_million` | ppm | — | `mag_ratio<1, 1'000'000> * one` |
-| <span id="per_mille"></span>`per_mille` | ‰ (%o) | — | `mag_ratio<1, 1000> * one` |
-| <span id="percent"></span>`percent` | % | — | `mag_ratio<1, 100> * one` |
-| <span id="pi"></span>`pi` | π (pi) | — | `mag<pi_c> * one` |
+| <span id="one"></span><code>one</code> | 1 | — | — |
+| <span id="parts_per_million"></span><code>parts_<wbr>per_<wbr>million</code> | ppm | — | <code>mag_ratio<1, 1'000'000> * <wbr>[one](core.md#one)</code> |
+| <span id="per_mille"></span><code>per_<wbr>mille</code> | ‰ (%o) | — | <code>mag_ratio<1, 1000> * <wbr>[one](core.md#one)</code> |
+| <span id="percent"></span><code>percent</code> | % | — | <code>mag_ratio<1, 100> * <wbr>[one](core.md#one)</code> |
+| <span id="pi"></span><code>pi</code> | π (pi) | — | <code>mag<pi_c> * <wbr>[one](core.md#one)</code> |

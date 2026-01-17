@@ -13,25 +13,25 @@
 
 | Unit Name | Symbol | unit_symbol | Definition |
 |-----------|:------:|:-----------:|------------|
-| <span id="acre"></span>`acre` | acre | — | `mag<4> * rood` |
-| <span id="barleycorn"></span>`barleycorn` | Bc | `Bc` | `mag_ratio<1, 3> * inch` |
-| <span id="cable"></span>`cable` | cb | `cb` | `mag_ratio<1, 10> * nautical_mile` |
-| <span id="chain"></span>`chain` | ch | `ch` | `mag<22> * yard` |
-| <span id="drachm"></span>`drachm` | — | — | alias to `yard_pound::dram` |
-| <span id="fluid_ounce"></span>`fluid_ounce` | fl oz | `fl_oz` | `mag_ratio<1, 5> * gill` |
-| <span id="furlong"></span>`furlong` | fur | `fur` | `mag<10> * chain` |
-| <span id="gallon"></span>`gallon` | gal | `gal` | `mag_ratio<454'609, 100'000> * si::litre` |
-| <span id="gill"></span>`gill` | gi | `gi` | `mag_ratio<1, 4> * pint` |
-| <span id="hand"></span>`hand` | hh | `hh` | `mag_ratio<1, 3> * foot` |
-| <span id="link"></span>`link` | li | `li` | `mag_ratio<1, 100> * chain` |
-| <span id="long_hundredweight"></span>`long_hundredweight` | cwt | `cwt` | `mag<8> * stone` |
-| <span id="long_ton"></span>`long_ton` | — | — | alias to `ton` |
-| <span id="perch"></span>`perch` | perch | — | `square(rod)` |
-| <span id="pint"></span>`pint` | pt | `pt` | `mag_ratio<1, 2> * quart` |
-| <span id="quart"></span>`quart` | qt | `qt` | `mag_ratio<1, 4> * gallon` |
-| <span id="quarter"></span>`quarter` | qr | `qr` | `mag<2> * stone` |
-| <span id="rod"></span>`rod` | rd | `rd` | `mag<25> * link` |
-| <span id="rood"></span>`rood` | rood | — | `mag<40> * perch` |
-| <span id="stone"></span>`stone` | st | `st` | `mag<14> * pound` |
-| <span id="thou"></span>`thou` | th | `th` | `mag_ratio<1, 12'000> * foot` |
-| <span id="ton"></span>`ton` | t | `t` | `mag<2'240> * pound` |
+| <span id="acre"></span><code>acre</code> | acre | `acre` | <code>mag<4> * <wbr>[rood](#rood)</code> |
+| <span id="barleycorn"></span><code>barleycorn</code> | Bc | `Bc` | <code>mag_ratio<1, 3> * <wbr>[yard_<wbr>pound::inch](yard_pound.md#inch)</code> |
+| <span id="cable"></span><code>cable</code> | cb | `cb` | <code>mag_ratio<1, 10> * <wbr>[yard_<wbr>pound::nautical_<wbr>mile](yard_pound.md#nautical_mile)</code> |
+| <span id="chain"></span><code>chain</code> | ch | `ch` | <code>mag<22> * <wbr>[yard_<wbr>pound::yard](yard_pound.md#yard)</code> |
+| <span id="drachm"></span><code>drachm</code> | — | — | alias to [yard_<wbr>pound::dram](yard_pound.md#dram) |
+| <span id="fluid_ounce"></span><code>fluid_<wbr>ounce</code> | fl oz | `fl_oz` | <code>mag_ratio<1, 5> * <wbr>[gill](#gill)</code> |
+| <span id="furlong"></span><code>furlong</code> | fur | `fur` | <code>mag<10> * <wbr>[chain](#chain)</code> |
+| <span id="gallon"></span><code>gallon</code> | gal | `gal` | <code>mag_ratio<454'609, 100'000> * <wbr>[si::litre](si.md#litre)</code> |
+| <span id="gill"></span><code>gill</code> | gi | `gi` | <code>mag_ratio<1, 4> * <wbr>[pint](#pint)</code> |
+| <span id="hand"></span><code>hand</code> | hh | `hh` | <code>mag_ratio<1, 3> * <wbr>[yard_<wbr>pound::foot](yard_pound.md#foot)</code> |
+| <span id="link"></span><code>link</code> | li | `li` | <code>mag_ratio<1, 100> * <wbr>[chain](#chain)</code> |
+| <span id="long_hundredweight"></span><code>long_<wbr>hundredweight</code> | cwt | `cwt` | <code>mag<8> * <wbr>[stone](#stone)</code> |
+| <span id="long_ton"></span><code>long_<wbr>ton</code> | — | — | alias to [ton](#ton) |
+| <span id="perch"></span><code>perch</code> | perch | `perch` | <code>square([rod](#rod))</code> |
+| <span id="pint"></span><code>pint</code> | pt | `pt` | <code>mag_ratio<1, 2> * <wbr>[quart](#quart)</code> |
+| <span id="quart"></span><code>quart</code> | qt | `qt` | <code>mag_ratio<1, 4> * <wbr>[gallon](#gallon)</code> |
+| <span id="quarter"></span><code>quarter</code> | qr | `qr` | <code>mag<2> * <wbr>[stone](#stone)</code> |
+| <span id="rod"></span><code>rod</code> | rd | `rd` | <code>mag<25> * <wbr>[link](#link)</code> |
+| <span id="rood"></span><code>rood</code> | rood | `rood` | <code>mag<40> * <wbr>[perch](#perch)</code> |
+| <span id="stone"></span><code>stone</code> | st | `st` | <code>mag<14> * <wbr>[yard_<wbr>pound::pound](yard_pound.md#pound)</code> |
+| <span id="thou"></span><code>thou</code> | th | `th` | <code>mag_ratio<1, 12'000> * <wbr>[yard_<wbr>pound::foot](yard_pound.md#foot)</code> |
+| <span id="ton"></span><code>ton</code> | t | `t` | <code>mag<2'240> * <wbr>[yard_<wbr>pound::pound](yard_pound.md#pound)</code> |

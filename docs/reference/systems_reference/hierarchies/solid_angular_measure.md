@@ -7,5 +7,5 @@
 
 ```mermaid
 flowchart LR
-    isq_angle_solid_angular_measure["<b>isq_angle::solid_angular_measure</b><br><i>(pow<2>(cotes_angle_constant) * area / pow<2>(radius))</i>"]
+    isq_angle_solid_angular_measure["<b>isq_angle::solid_angular_measure</b><br><i>(pow<2>(cotes_angle_constant) * isq::area / pow<2>(isq::radius))</i>"]
 ```

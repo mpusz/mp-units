@@ -21,48 +21,48 @@
 
 | Quantity | Character | Dimension | Kind of | Parent | Equation | Hierarchy |
 |----------|:---------:|:---------:|:-------:|:------:|----------|:---------:|
-| <span id="Hamming_distance"></span>`Hamming_distance` | Real | — | — | — | alias to `isq::Hamming_distance` | — |
-| <span id="binary_digit_rate"></span>`binary_digit_rate` | Real | — | — | — | alias to `isq::binary_digit_rate` | — |
-| <span id="bit_period"></span>`bit_period` | Real | — | — | — | alias to `isq::period_of_binary_digits` | — |
-| <span id="bit_rate"></span>`bit_rate` | Real | — | — | — | alias to `isq::binary_digit_rate` | — |
-| <span id="call_intensity"></span>`call_intensity` | Real | — | — | — | alias to `isq::call_intensity` | — |
-| <span id="calling_rate"></span>`calling_rate` | Real | — | — | — | alias to `isq::call_intensity` | — |
-| <span id="carrier_power"></span>`carrier_power` | Real | — | — | — | alias to `isq::carrier_power` | — |
-| <span id="clock_frequency"></span>`clock_frequency` | Real | — | — | — | alias to `isq::clock_frequency` | — |
-| <span id="clock_rate"></span>`clock_rate` | Real | — | — | — | alias to `isq::clock_frequency` | — |
-| <span id="completed_call_intensity"></span>`completed_call_intensity` | Real | — | — | — | alias to `isq::completed_call_intensity` | — |
-| <span id="decision_content"></span>`decision_content` | Real | — | — | — | alias to `isq::decision_content` | — |
-| <span id="equivalent_binary_digit_rate"></span>`equivalent_binary_digit_rate` | Real | — | — | — | alias to `isq::equivalent_binary_digit_rate` | — |
-| <span id="equivalent_binary_storage_capacity"></span>`equivalent_binary_storage_capacity` | Real | — | — | — | alias to `isq::equivalent_binary_storage_capacity` | — |
-| <span id="equivalent_bit_rate"></span>`equivalent_bit_rate` | Real | — | — | — | alias to `isq::bit_rate` | — |
-| <span id="error_probability"></span>`error_probability` | Real | — | — | — | alias to `isq::error_probability` | — |
-| <span id="line_digit_rate"></span>`line_digit_rate` | Real | — | — | — | alias to `isq::modulation_rate` | — |
-| <span id="loss_probability"></span>`loss_probability` | Real | — | — | — | alias to `isq::loss_probability` | — |
-| <span id="mean_queue_length"></span>`mean_queue_length` | Real | — | — | — | alias to `isq::mean_queue_length` | — |
-| <span id="modulation_rate"></span>`modulation_rate` | Real | — | — | — | alias to `isq::modulation_rate` | — |
-| <span id="period_of_binary_digits"></span>`period_of_binary_digits` | Real | — | — | — | alias to `isq::period_of_binary_digits` | — |
-| <span id="period_of_data_elements"></span>`period_of_data_elements` | Real | — | — | — | alias to `isq::period_of_data_elements` | — |
-| <span id="quantizing_distortion_power"></span>`quantizing_distortion_power` | Real | — | — | — | alias to `isq::quantizing_distortion_power` | — |
-| <span id="signal_energy_per_binary_digit"></span>`signal_energy_per_binary_digit` | Real | — | — | — | alias to `isq::signal_energy_per_binary_digit` | — |
-| <span id="storage_capacity"></span>`storage_capacity` | Real | — | — | — | alias to `isq::storage_capacity` | — |
-| <span id="storage_size"></span>`storage_size` | Real | — | — | — | alias to `isq::storage_capacity` | — |
-| <span id="traffic_carried_intensity"></span>`traffic_carried_intensity` | Real | — | — | — | alias to `isq::traffic_carried_intensity` | — |
-| <span id="traffic_intensity"></span>`traffic_intensity` | Real | — | — | — | alias to `isq::traffic_intensity` | — |
-| <span id="traffic_load"></span>`traffic_load` | Real | — | — | — | alias to `isq::traffic_carried_intensity` | — |
-| <span id="traffic_offered_intensity"></span>`traffic_offered_intensity` | Real | — | — | — | alias to `isq::traffic_offered_intensity` | — |
-| <span id="transfer_rate"></span>`transfer_rate` | Real | — | — | — | alias to `isq::transfer_rate` | — |
-| <span id="waiting_probability"></span>`waiting_probability` | Real | — | — | — | alias to `isq::waiting_probability` | — |
+| <span id="Hamming_distance"></span><code>Hamming_<wbr>distance</code> | Real | — | — | — | alias to [isq::Hamming_<wbr>distance](#Hamming_distance) | — |
+| <span id="binary_digit_rate"></span><code>binary_<wbr>digit_<wbr>rate</code> | Real | — | — | — | alias to [isq::binary_<wbr>digit_<wbr>rate](#binary_digit_rate) | — |
+| <span id="bit_period"></span><code>bit_<wbr>period</code> | Real | — | — | — | alias to [isq::period_<wbr>of_<wbr>binary_<wbr>digits](#period_of_binary_digits) | — |
+| <span id="bit_rate"></span><code>bit_<wbr>rate</code> | Real | — | — | — | alias to [isq::binary_<wbr>digit_<wbr>rate](#binary_digit_rate) | — |
+| <span id="call_intensity"></span><code>call_<wbr>intensity</code> | Real | — | — | — | alias to [isq::call_<wbr>intensity](#call_intensity) | — |
+| <span id="calling_rate"></span><code>calling_<wbr>rate</code> | Real | — | — | — | alias to [isq::call_<wbr>intensity](#call_intensity) | — |
+| <span id="carrier_power"></span><code>carrier_<wbr>power</code> | Real | — | — | — | alias to [isq::carrier_<wbr>power](#carrier_power) | — |
+| <span id="clock_frequency"></span><code>clock_<wbr>frequency</code> | Real | — | — | — | alias to [isq::clock_<wbr>frequency](#clock_frequency) | — |
+| <span id="clock_rate"></span><code>clock_<wbr>rate</code> | Real | — | — | — | alias to [isq::clock_<wbr>frequency](#clock_frequency) | — |
+| <span id="completed_call_intensity"></span><code>completed_<wbr>call_<wbr>intensity</code> | Real | — | — | — | alias to [isq::completed_<wbr>call_<wbr>intensity](#completed_call_intensity) | — |
+| <span id="decision_content"></span><code>decision_<wbr>content</code> | Real | — | — | — | alias to [isq::decision_<wbr>content](#decision_content) | — |
+| <span id="equivalent_binary_digit_rate"></span><code>equivalent_<wbr>binary_<wbr>digit_<wbr>rate</code> | Real | — | — | — | alias to [isq::equivalent_<wbr>binary_<wbr>digit_<wbr>rate](#equivalent_binary_digit_rate) | — |
+| <span id="equivalent_binary_storage_capacity"></span><code>equivalent_<wbr>binary_<wbr>storage_<wbr>capacity</code> | Real | — | — | — | alias to [isq::equivalent_<wbr>binary_<wbr>storage_<wbr>capacity](#equivalent_binary_storage_capacity) | — |
+| <span id="equivalent_bit_rate"></span><code>equivalent_<wbr>bit_<wbr>rate</code> | Real | — | — | — | alias to [isq::bit_<wbr>rate](#bit_rate) | — |
+| <span id="error_probability"></span><code>error_<wbr>probability</code> | Real | — | — | — | alias to [isq::error_<wbr>probability](#error_probability) | — |
+| <span id="line_digit_rate"></span><code>line_<wbr>digit_<wbr>rate</code> | Real | — | — | — | alias to [isq::modulation_<wbr>rate](#modulation_rate) | — |
+| <span id="loss_probability"></span><code>loss_<wbr>probability</code> | Real | — | — | — | alias to [isq::loss_<wbr>probability](#loss_probability) | — |
+| <span id="mean_queue_length"></span><code>mean_<wbr>queue_<wbr>length</code> | Real | — | — | — | alias to [isq::mean_<wbr>queue_<wbr>length](#mean_queue_length) | — |
+| <span id="modulation_rate"></span><code>modulation_<wbr>rate</code> | Real | — | — | — | alias to [isq::modulation_<wbr>rate](#modulation_rate) | — |
+| <span id="period_of_binary_digits"></span><code>period_<wbr>of_<wbr>binary_<wbr>digits</code> | Real | — | — | — | alias to [isq::period_<wbr>of_<wbr>binary_<wbr>digits](#period_of_binary_digits) | — |
+| <span id="period_of_data_elements"></span><code>period_<wbr>of_<wbr>data_<wbr>elements</code> | Real | — | — | — | alias to [isq::period_<wbr>of_<wbr>data_<wbr>elements](#period_of_data_elements) | — |
+| <span id="quantizing_distortion_power"></span><code>quantizing_<wbr>distortion_<wbr>power</code> | Real | — | — | — | alias to [isq::quantizing_<wbr>distortion_<wbr>power](#quantizing_distortion_power) | — |
+| <span id="signal_energy_per_binary_digit"></span><code>signal_<wbr>energy_<wbr>per_<wbr>binary_<wbr>digit</code> | Real | — | — | — | alias to [isq::signal_<wbr>energy_<wbr>per_<wbr>binary_<wbr>digit](#signal_energy_per_binary_digit) | — |
+| <span id="storage_capacity"></span><code>storage_<wbr>capacity</code> | Real | — | — | — | alias to [isq::storage_<wbr>capacity](#storage_capacity) | — |
+| <span id="storage_size"></span><code>storage_<wbr>size</code> | Real | — | — | — | alias to [isq::storage_<wbr>capacity](#storage_capacity) | — |
+| <span id="traffic_carried_intensity"></span><code>traffic_<wbr>carried_<wbr>intensity</code> | Real | — | — | — | alias to [isq::traffic_<wbr>carried_<wbr>intensity](#traffic_carried_intensity) | — |
+| <span id="traffic_intensity"></span><code>traffic_<wbr>intensity</code> | Real | — | — | — | alias to [isq::traffic_<wbr>intensity](#traffic_intensity) | — |
+| <span id="traffic_load"></span><code>traffic_<wbr>load</code> | Real | — | — | — | alias to [isq::traffic_<wbr>carried_<wbr>intensity](#traffic_carried_intensity) | — |
+| <span id="traffic_offered_intensity"></span><code>traffic_<wbr>offered_<wbr>intensity</code> | Real | — | — | — | alias to [isq::traffic_<wbr>offered_<wbr>intensity](#traffic_offered_intensity) | — |
+| <span id="transfer_rate"></span><code>transfer_<wbr>rate</code> | Real | — | — | — | alias to [isq::transfer_<wbr>rate](#transfer_rate) | — |
+| <span id="waiting_probability"></span><code>waiting_<wbr>probability</code> | Real | — | — | — | alias to [isq::waiting_<wbr>probability](#waiting_probability) | — |
 
 ## Units
 
 | Unit Name | Symbol | unit_symbol | Definition |
 |-----------|:------:|:-----------:|------------|
-| <span id="baud"></span>`baud` | Bd | `Bd` | `one / si::second`<br>kind: `isq::modulation_rate` |
-| <span id="bit"></span>`bit` | bit | `bit` | `one`<br>kind: `isq::storage_capacity` |
-| <span id="byte"></span>`byte` | B | `B` | `mag<8> * bit` |
-| <span id="erlang"></span>`erlang` | E | `E` | kind: `isq::traffic_intensity` |
-| <span id="octet"></span>`octet` | o | `o` | `mag<8> * bit` |
-| <span id="volt_ampere_reactive_power"></span>`volt_ampere_reactive_power` | var | `var` | `si::volt * si::ampere`<br>kind: `isq::reactive_power` |
+| <span id="baud"></span><code>baud</code> | Bd | `Bd` | <code>[one](core.md#one) / <wbr>[si::second](si.md#second)<br>kind: [isq::modulation_<wbr>rate](#modulation_rate)</code> |
+| <span id="bit"></span><code>bit</code> | bit | `bit` | <code>[one](core.md#one)<br>kind: [isq::storage_<wbr>capacity](#storage_capacity)</code> |
+| <span id="byte"></span><code>byte</code> | B | `B` | <code>mag<8> * <wbr>[bit](#bit)</code> |
+| <span id="erlang"></span><code>erlang</code> | E | `E` | <code>kind: [isq::traffic_<wbr>intensity](#traffic_intensity)</code> |
+| <span id="octet"></span><code>octet</code> | o | `o` | <code>mag<8> * <wbr>[bit](#bit)</code> |
+| <span id="volt_ampere_reactive_power"></span><code>volt_<wbr>ampere_<wbr>reactive_<wbr>power</code> | var | `var` | <code>[si::volt](si.md#volt) * <wbr>[si::ampere](si.md#ampere)<br>kind: [isq::reactive_<wbr>power](isq.md#reactive_power)</code> |
 
 ## Prefixes
 

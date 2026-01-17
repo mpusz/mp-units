@@ -17,24 +17,24 @@
 
 | Unit Name | Symbol | unit_symbol | Definition |
 |-----------|:------:|:-----------:|------------|
-| <span id="dram"></span>`dram` | dr | `dr` | `mag_ratio<1, 16> * ounce` |
-| <span id="fathom"></span>`fathom` | ftm | `ftm` | `mag<6> * foot` |
-| <span id="foot"></span>`foot` | ft | `ft` | `mag_ratio<1, 3> * yard` |
-| <span id="grain"></span>`grain` | gr | `gr` | `mag_ratio<1, 7'000> * pound` |
-| <span id="inch"></span>`inch` | in | `in` | `mag_ratio<1, 12> * foot` |
-| <span id="kip"></span>`kip` | — | — | `si::kilo<pound_force>` |
-| <span id="knot"></span>`knot` | kn | `kn`, `kt` | `nautical_mile / si::hour` |
-| <span id="league"></span>`league` | le | `le` | `mag<3> * mile` |
-| <span id="mechanical_horsepower"></span>`mechanical_horsepower` | hp(I) | `hp` | `mag<33'000> * foot * pound_force / si::minute` |
-| <span id="mil"></span>`mil` | mil | — | `mag_ratio<1, 1'000> * inch` |
-| <span id="mile"></span>`mile` | mi | `mi` | `mag<1760> * yard` |
-| <span id="nautical_mile"></span>`nautical_mile` | nmi | `nmi` | `mag<1852> * si::metre` |
-| <span id="ounce"></span>`ounce` | oz | `oz` | `mag_ratio<1, 16> * pound` |
-| <span id="pica"></span>`pica` | P | `P` | `mag_ratio<1, 6> * inch` |
-| <span id="point"></span>`point` | p | `p` | `mag_ratio<1, 12> * pica` |
-| <span id="pound"></span>`pound` | lb | `lb` | `mag_ratio<45'359'237, 100'000'000> * si::kilogram` |
-| <span id="pound_force"></span>`pound_force` | lbf | `lbf` | `pound * si::standard_gravity` |
-| <span id="poundal"></span>`poundal` | pdl | `pdl` | `pound * foot / square(si::second)` |
-| <span id="psi"></span>`psi` | psi | — | `pound_force / square(inch)` |
-| <span id="twip"></span>`twip` | twip | — | `mag_ratio<1, 20> * point` |
-| <span id="yard"></span>`yard` | yd | `yd` | `mag_ratio<9'144, 10'000> * si::metre` |
+| <span id="dram"></span><code>dram</code> | dr | `dr` | <code>mag_ratio<1, 16> * <wbr>[ounce](#ounce)</code> |
+| <span id="fathom"></span><code>fathom</code> | ftm | `ftm` | <code>mag<6> * <wbr>[foot](#foot)</code> |
+| <span id="foot"></span><code>foot</code> | ft | `ft` | <code>mag_ratio<1, 3> * <wbr>[yard](#yard)</code> |
+| <span id="grain"></span><code>grain</code> | gr | `gr` | <code>mag_ratio<1, 7'000> * <wbr>[pound](#pound)</code> |
+| <span id="inch"></span><code>inch</code> | in | `in` | <code>mag_ratio<1, 12> * <wbr>[foot](#foot)</code> |
+| <span id="kip"></span><code>kip</code> | — | `kip` | <code>[si::kilo](si.md#kilo)<[pound_<wbr>force](#pound_force)></code> |
+| <span id="knot"></span><code>knot</code> | kn | `kn`, `kt` | <code>[nautical_<wbr>mile](#nautical_mile) / <wbr>[si::hour](si.md#hour)</code> |
+| <span id="league"></span><code>league</code> | lea | `lea` | <code>mag<3> * <wbr>[mile](#mile)</code> |
+| <span id="mechanical_horsepower"></span><code>mechanical_<wbr>horsepower</code> | hp(I) | `hp` | <code>mag<33'000> * <wbr>[foot](#foot) * <wbr>[pound_<wbr>force](#pound_force) / <wbr>[si::minute](si.md#minute)</code> |
+| <span id="mil"></span><code>mil</code> | mil | `mil` | <code>mag_ratio<1, 1'000> * <wbr>[inch](#inch)</code> |
+| <span id="mile"></span><code>mile</code> | mi | `mi` | <code>mag<1760> * <wbr>[yard](#yard)</code> |
+| <span id="nautical_mile"></span><code>nautical_<wbr>mile</code> | nmi | `nmi` | <code>mag<1852> * <wbr>[si::metre](si.md#metre)</code> |
+| <span id="ounce"></span><code>ounce</code> | oz | `oz` | <code>mag_ratio<1, 16> * <wbr>[pound](#pound)</code> |
+| <span id="pica"></span><code>pica</code> | P | `P` | <code>mag_ratio<1, 6> * <wbr>[inch](#inch)</code> |
+| <span id="point"></span><code>point</code> | p | `p` | <code>mag_ratio<1, 12> * <wbr>[pica](#pica)</code> |
+| <span id="pound"></span><code>pound</code> | lb | `lb` | <code>mag_ratio<45'359'237, 100'000'000> * <wbr>[si::kilogram](si.md#kilogram)</code> |
+| <span id="pound_force"></span><code>pound_<wbr>force</code> | lbf | `lbf` | <code>[pound](#pound) * <wbr>[si::standard_<wbr>gravity](si.md#standard_gravity)</code> |
+| <span id="poundal"></span><code>poundal</code> | pdl | `pdl` | <code>[pound](#pound) * <wbr>[foot](#foot) / <wbr>square([si::second](si.md#second))</code> |
+| <span id="psi"></span><code>psi</code> | psi | `psi` | <code>[pound_<wbr>force](#pound_force) / <wbr>square([inch](#inch))</code> |
+| <span id="twip"></span><code>twip</code> | twip | `twip` | <code>mag_ratio<1, 20> * <wbr>[point](#point)</code> |
+| <span id="yard"></span><code>yard</code> | yd | `yd` | <code>mag_ratio<9'144, 10'000> * <wbr>[si::metre](si.md#metre)</code> |

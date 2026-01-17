@@ -11,6 +11,10 @@ repo_url: https://github.com/mpusz/mp-units
 # Copyright
 copyright: Copyright &copy; 2018-2023 Mateusz Pusz
 
+# Watch additional directories for changes during 'mkdocs serve'
+watch:
+  - src/systems/include/mp-units/systems
+
 # Hooks
 hooks:
   - scripts/systems_reference.py

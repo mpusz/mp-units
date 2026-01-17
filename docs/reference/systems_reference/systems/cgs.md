@@ -13,11 +13,11 @@
 
 | Unit Name | Symbol | unit_symbol | Definition |
 |-----------|:------:|:-----------:|------------|
-| <span id="barye"></span>`barye` | Ba | `Ba` | `gram / (centimetre * square(second))` |
-| <span id="centimetre"></span>`centimetre` | — | — | `si::centi<si::metre>` |
-| <span id="dyne"></span>`dyne` | dyn | `dyn` | `gram * centimetre / square(second)` |
-| <span id="erg"></span>`erg` | erg | — | `dyne * centimetre` |
-| <span id="gal"></span>`gal` | Gal | `Gal` | `centimetre / square(second)` |
-| <span id="kayser"></span>`kayser` | K | `K` | `one / centimetre` |
-| <span id="poise"></span>`poise` | P | `P` | `gram / (centimetre * second)` |
-| <span id="stokes"></span>`stokes` | St | `St` | `square(centimetre) / second` |
+| <span id="barye"></span><code>barye</code> | Ba | `Ba` | <code>[gram](si.md#gram) / <wbr>([centimetre](#centimetre) * <wbr>square([second](si.md#second)))</code> |
+| <span id="centimetre"></span><code>centimetre</code> | — | — | <code>[si::centi](si.md#centi)<[si::metre](si.md#metre)></code> |
+| <span id="dyne"></span><code>dyne</code> | dyn | `dyn` | <code>[gram](si.md#gram) * <wbr>[centimetre](#centimetre) / <wbr>square([second](si.md#second))</code> |
+| <span id="erg"></span><code>erg</code> | erg | `erg` | <code>[dyne](#dyne) * <wbr>[centimetre](#centimetre)</code> |
+| <span id="gal"></span><code>gal</code> | Gal | `Gal` | <code>[centimetre](#centimetre) / <wbr>square([second](si.md#second))</code> |
+| <span id="kayser"></span><code>kayser</code> | K | `K` | <code>[one](core.md#one) / <wbr>[centimetre](#centimetre)</code> |
+| <span id="poise"></span><code>poise</code> | P | `P` | <code>[gram](si.md#gram) / <wbr>([centimetre](#centimetre) * <wbr>[second](si.md#second))</code> |
+| <span id="stokes"></span><code>stokes</code> | St | `St` | <code>square([centimetre](#centimetre)) / <wbr>[second](si.md#second)</code> |

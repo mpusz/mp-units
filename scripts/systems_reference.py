@@ -1979,6 +1979,12 @@ class DocumentationGenerator:
                         f.write("\n")
                     f.write("## Quantities\n\n")
 
+                    # Helper to add word breaks to long identifiers
+                    def add_word_breaks(name: str) -> str:
+                        if "_" in name:
+                            return name.replace("_", "_<wbr>")
+                        return name
+
                     # Write table of quantities - columns reordered: Character, Dimension (3rd), Kind of, Parent
                     f.write(
                         "| Quantity | Character | Dimension | Kind of | Parent | Equation | Hierarchy |\n"
@@ -2041,7 +2047,7 @@ class DocumentationGenerator:
                                     hasattr(target_qty, "kind_of")
                                     and target_qty.kind_of
                                 ):
-                                    kind_of = f"`{target_qty.kind_of}`"
+                                    kind_of = f"<code>{self._linkify_definition(target_qty.kind_of, system)}</code>"
                                 else:
                                     kind_of = "—"
                                 # Use C++ extracted parent from target and linkify it
@@ -2052,7 +2058,7 @@ class DocumentationGenerator:
                                     else ""
                                 )
                                 if parent_cpp and parent_cpp != "<root>":
-                                    parent_display = f"`{parent_cpp}`"
+                                    parent_display = f"<code>{self._linkify_definition(parent_cpp, system)}</code>"
                                 else:
                                     parent_display = "—"
                             else:
@@ -2060,10 +2066,11 @@ class DocumentationGenerator:
                                 kind_of = "—"
                                 parent_display = "—"
 
+                            qty_name_display = add_word_breaks(qty.name)
                             f.write(
-                                f'| <span id="{qty.name}"></span>`{qty.name}` | '
+                                f'| <span id="{qty.name}"></span><code>{qty_name_display}</code> | '
                                 f"{character} | {dim_formula} | {kind_of} | "
-                                f"{parent_display} | alias to `{qty.alias_target}` | "
+                                f"{parent_display} | alias to {self._linkify_definition(qty.alias_target, system)} | "
                                 f"{hierarchy_link} |\n"
                             )
                         else:
@@ -2085,7 +2092,7 @@ class DocumentationGenerator:
                                 hierarchy_link = "—"
                             # Use C++ extracted kind_of and linkify it
                             if hasattr(qty, "kind_of") and qty.kind_of:
-                                kind_of = f"`{qty.kind_of}`"
+                                kind_of = f"<code>{self._linkify_definition(qty.kind_of, system)}</code>"
                             else:
                                 kind_of = "—"
                             # Use C++ extracted parent and linkify it
@@ -2096,16 +2103,18 @@ class DocumentationGenerator:
                                 else ""
                             )
                             if parent_cpp and parent_cpp != "<root>":
-                                parent_display = f"`{parent_cpp}`"
+                                parent_display = f"<code>{self._linkify_definition(parent_cpp, system)}</code>"
                             else:
                                 parent_display = "—"
                             # Normalize and linkify equation
                             if qty.equation:
-                                equation = f"`{self._normalize_equation(qty.equation)}`"
+                                normalized = self._normalize_equation(qty.equation)
+                                equation = f"<code>{self._linkify_definition(normalized, system)}</code>"
                             else:
                                 equation = "—"
+                            qty_name_display = add_word_breaks(qty.name)
                             f.write(
-                                f'| <span id="{qty.name}"></span>`{qty.name}` | '
+                                f'| <span id="{qty.name}"></span><code>{qty_name_display}</code> | '
                                 f"{character} | {dim_formula} | {kind_of} | "
                                 f"{parent_display} | {equation} | {hierarchy_link} |\n"
                             )
@@ -2166,31 +2175,46 @@ class DocumentationGenerator:
                     f.write("|------|:----:|------------|\n")
                     for origin in sorted(system.point_origins, key=lambda o: o.name):
                         if origin.alias_target:
-                            # This is an alias - show reference to original
+                            # This is an alias - show reference to original (linkified)
+                            alias_target_linked = self._linkify_definition(
+                                origin.alias_target, system
+                            )
                             f.write(
                                 f'| <span id="{origin.name}"></span>`{origin.name}` | — | '
-                                f"alias to `{origin.alias_target}` |\n"
+                                f"alias to {alias_target_linked} |\n"
                             )
                         else:
-                            # Regular definition
+                            # Regular definition - linkify and wrap in code tags
                             definition = origin.definition.replace("|", "\\|")
+                            definition_linked = self._linkify_definition(
+                                definition, system
+                            )
                             f.write(
                                 f'| <span id="{origin.name}"></span>`{origin.name}` | '
-                                f"{origin.origin_type} | `{definition}` |\n"
+                                f"{origin.origin_type} | <code>{definition_linked}</code> |\n"
                             )
                     # Note: Last section, no need_separator update needed
 
     def _write_unit_row(self, f, unit: Unit, system: SystemInfo):
         """Write a unit table row"""
+
+        # Helper to add word breaks to long identifiers
+        def add_word_breaks(name: str) -> str:
+            if "_" in name:
+                return name.replace("_", "_<wbr>")
+            return name
+
         # Show relative namespace prefix if in subnamespace
         unit_display = (
             f"{unit.subnamespace}::{unit.name}" if unit.subnamespace else unit.name
         )
+        unit_display_with_breaks = add_word_breaks(unit_display)
 
         if unit.alias_target:
-            # This is an alias - show reference to original
+            # This is an alias - show reference to original (linkified)
+            alias_target_linked = self._linkify_definition(unit.alias_target, system)
             f.write(
-                f'| <span id="{unit.name}"></span>`{unit_display}` | — | — | alias to `{unit.alias_target}` |\n'
+                f'| <span id="{unit.name}"></span><code>{unit_display_with_breaks}</code> | — | — | alias to {alias_target_linked} |\n'
             )
         else:
             # Regular definition
@@ -2270,15 +2294,28 @@ class DocumentationGenerator:
                             or origin in ["absolute_zero", "ice_point"]
                         ) and "<" not in origin.replace("point<", ""):
                             definition = base_def
-                            # Linkify the origin
-                            origin_line = f"origin: `{origin}`"
+                            # Store origin without backticks - will be linkified later
+                            origin_line = f"origin: {origin}"
 
-            # Linkify the main definition
+            # Linkify the main definition (before wrapping in backticks)
             if definition:
-                definition = f"`{definition}`"
+                definition = self._linkify_definition(definition, system)
+                # Actually, since links have [`text`](url) format, we don't wrap the whole thing
+                # definition = f"`{definition}`"  # Don't do this - links already have backticks
 
-            # Escape pipes in the definition (after linkification)
-            definition = definition.replace("|", "\\|")
+            # Linkify kind_line content
+            if kind_line:
+                # Extract the content after "kind: "
+                kind_content = kind_line.replace("kind: ", "").replace("`", "")
+                kind_content_linked = self._linkify_definition(kind_content, system)
+                kind_line = f"kind: {kind_content_linked}"
+
+            # Linkify origin_line content
+            if origin_line:
+                # Extract the content after "origin: "
+                origin_content = origin_line.replace("origin: ", "").replace("`", "")
+                origin_content_linked = self._linkify_definition(origin_content, system)
+                origin_line = f"origin: {origin_content_linked}"
 
             # Build the final definition cell with line breaks
             parts = []
@@ -2289,11 +2326,18 @@ class DocumentationGenerator:
             if origin_line:
                 parts.append(origin_line)
 
-            definition_cell = "<br>".join(parts) if parts else "—"
+            # Join parts and escape pipes
+            if parts:
+                definition_cell = "<br>".join(parts)
+                definition_cell = definition_cell.replace("|", "\\|")
+                # Wrap in HTML code tags to preserve code font for non-linked parts
+                definition_cell = f"<code>{definition_cell}</code>"
+            else:
+                definition_cell = "—"
 
             # unit_symbol_cell is already formatted with backticks or em-dash
             f.write(
-                f'| <span id="{unit.name}"></span>`{unit_display}` | {symbol} | '
+                f'| <span id="{unit.name}"></span><code>{unit_display_with_breaks}</code> | {symbol} | '
                 f"{short_symbol} | {definition_cell} |\n"
             )
 
@@ -2330,6 +2374,174 @@ class DocumentationGenerator:
             definition = re.sub(pattern, replacement, definition)
 
         return definition
+
+    def _linkify_definition(self, definition: str, current_system: SystemInfo) -> str:
+        """Convert unit/quantity/origin references in definition to markdown links while preserving code font.
+
+        Converts references like `yard` to [`yard`](#yard) or [`si::metre`](si.md#metre).
+        Preserves operators, numbers, and template syntax without linkification.
+        """
+        if not definition:
+            return definition
+
+        # Pattern to match identifiers (including namespace-qualified ones)
+        # Matches: word, namespace::word, nested::namespace::word
+        # Allow both lowercase and uppercase letters for names like Julian_year and zeroth_degree_Celsius
+        identifier_pattern = (
+            r"\b([a-zA-Z_][a-zA-Z0-9_]*(?:::[a-zA-Z_][a-zA-Z0-9_]*)*)\b"
+        )
+
+        # Collect all possible references from all systems
+        all_refs = {}  # name -> (system_namespace, anchor_name)
+
+        for sys_ns, system in self.parser.systems.items():
+            # Add units
+            for unit in system.units:
+                all_refs[unit.name] = (sys_ns, unit.name)
+                # Also add qualified names
+                all_refs[f"{sys_ns}::{unit.name}"] = (sys_ns, unit.name)
+
+            # Add point origins
+            for origin in system.point_origins:
+                all_refs[origin.name] = (sys_ns, origin.name)
+                all_refs[f"{sys_ns}::{origin.name}"] = (sys_ns, origin.name)
+
+            # Add quantities
+            for qty in system.quantities:
+                all_refs[qty.name] = (sys_ns, qty.name)
+                all_refs[f"{sys_ns}::{qty.name}"] = (sys_ns, qty.name)
+
+            # Add prefixes
+            for prefix in system.prefixes:
+                # Prefixes link to their specific anchor
+                all_refs[prefix.name] = (sys_ns, prefix.name)
+                all_refs[f"{sys_ns}::{prefix.name}"] = (sys_ns, prefix.name)
+
+        def replace_identifier(match):
+            identifier = match.group(1)
+
+            # Skip keywords and known functions/templates
+            skip_words = {
+                "mag",
+                "mag_ratio",
+                "mag_power",
+                "kind_of",
+                "kind",
+                "square",
+                "cubic",
+                "pow",
+                "sqrt",
+                "cbrt",
+                "abs",
+                "inverse",
+                "ratio",
+                "power",
+                "root",
+                "si",
+                "isq",
+                "iec",
+                "usc",
+                "cgs",
+                "iau",
+                "hep",
+                "imperial",
+                "non_si",
+                "typographic",
+                "angular",
+                "natural",
+                "isq_angle",
+                "mp_units",
+                "mp_units::point",  # Template functions
+            }
+
+            if identifier in skip_words:
+                return match.group(0)
+
+            # If it's a qualified name, check if we should strip the namespace prefix
+            display_text = identifier
+            if "::" in identifier:
+                parts = identifier.split("::")
+                namespace_prefix = "::".join(parts[:-1])
+                unqualified_name = parts[-1]
+
+                # Strip namespace if it matches current system
+                if namespace_prefix == current_system.namespace:
+                    display_text = unqualified_name
+
+            # Helper function to create link with word breaks for long identifiers
+            def make_link(text, url):
+                # For identifiers with underscores, insert <wbr> at underscores to allow breaking
+                # Markdown link text supports HTML, so we can use <wbr> tags in the text
+                if "_" in text:
+                    # Insert <wbr> after each underscore for better line breaking
+                    text_with_breaks = text.replace("_", "_<wbr>")
+                    return f"[{text_with_breaks}]({url})"
+                else:
+                    # Standard markdown link
+                    return f"[{text}]({url})"
+
+            # Check if this identifier is a reference we can link
+            # First check in current system for the unqualified name
+            unqualified_check = (
+                identifier.split("::")[-1] if "::" in identifier else identifier
+            )
+
+            # Build a key to check current system first
+            current_sys_key = f"{current_system.namespace}::{unqualified_check}"
+
+            # Special case: dimensionless is only defined in core, never link to self in other systems
+            if (
+                unqualified_check == "dimensionless"
+                and current_system.namespace != "core"
+            ):
+                # Always link to core for dimensionless
+                if "core::dimensionless" in all_refs:
+                    return make_link(display_text, "core.md#dimensionless")
+                elif "dimensionless" in all_refs:
+                    target_sys, anchor = all_refs["dimensionless"]
+                    return make_link(display_text, f"{target_sys}.md#{anchor}")
+
+            if current_sys_key in all_refs:
+                # Found in current system
+                target_sys, anchor = all_refs[current_sys_key]
+                return make_link(display_text, f"#{anchor}")
+            elif identifier in all_refs:
+                # Found with full identifier
+                target_sys, anchor = all_refs[identifier]
+
+                # Determine if same system or cross-system
+                if target_sys == current_system.namespace:
+                    # Same system - use anchor link
+                    return make_link(display_text, f"#{anchor}")
+                else:
+                    # Cross-system - use relative link
+                    return make_link(display_text, f"{target_sys}.md#{anchor}")
+
+            # If it's a qualified name that wasn't found, try the unqualified name
+            # (handles cases like iau::astronomical_unit where the unit is in si)
+            if "::" in identifier:
+                parts = identifier.split("::")
+                unqualified_name = parts[-1]
+                if unqualified_name in all_refs:
+                    target_sys, anchor = all_refs[unqualified_name]
+                    # Use the actual system where the unit is defined
+                    if target_sys == current_system.namespace:
+                        return make_link(display_text, f"#{anchor}")
+                    else:
+                        return make_link(display_text, f"{target_sys}.md#{anchor}")
+
+            # Not a linkable reference, return as-is
+            return match.group(0)
+
+        # Apply the replacement
+        result = re.sub(identifier_pattern, replace_identifier, definition)
+
+        # Add word break opportunities at natural break points to prevent table overflow
+        # Only add after operators, not within markdown link syntax
+        result = result.replace(" / ", " / <wbr>")
+        result = result.replace(" * ", " * <wbr>")
+
+        return result
 
     def _write_quantity_tree(self, f, qty: Quantity, qty_children: dict, indent: int):
         """Write quantity hierarchy tree recursively"""

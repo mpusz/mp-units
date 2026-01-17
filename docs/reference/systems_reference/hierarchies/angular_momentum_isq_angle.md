@@ -7,5 +7,5 @@
 
 ```mermaid
 flowchart LR
-    isq_angle_angular_momentum["<b>isq_angle::angular_momentum</b><br><i>(position_vector * momentum / cotes_angle_constant)</i>"]
+    isq_angle_angular_momentum["<b>isq_angle::angular_momentum</b><br><i>(isq::position_vector * isq::momentum / cotes_angle_constant)</i>"]
 ```
