@@ -7,5 +7,5 @@
 
 ```mermaid
 flowchart LR
-    isq_Poynting_vector["<b>isq::Poynting_vector</b><br><i>(electric_field_strength * magnetic_field_strength)</i>"]
+    isq_Poynting_vector["<b><a href="../../systems/isq/#Poynting_vector" style="color: black; text-decoration: none;">isq::Poynting_vector</a></b><br><i>(<a href="../../systems/isq/#electric_field_strength" style="color: black; text-decoration: none;">electric_field_strength</a> * <a href="../../systems/isq/#magnetic_field_strength" style="color: black; text-decoration: none;">magnetic_field_strength</a>)</i>"]
 ```

@@ -7,5 +7,5 @@
 
 ```mermaid
 flowchart LR
-    isq_magnetic_vector_potential["<b>isq::magnetic_vector_potential</b><br><i>(magnetic_flux_density * length)</i>"]
+    isq_magnetic_vector_potential["<b><a href="../../systems/isq/#magnetic_vector_potential" style="color: black; text-decoration: none;">isq::magnetic_vector_potential</a></b><br><i>(<a href="../../systems/isq/#magnetic_flux_density" style="color: black; text-decoration: none;">magnetic_flux_density</a> * <a href="../../systems/isq/#length" style="color: black; text-decoration: none;">length</a>)</i>"]
 ```

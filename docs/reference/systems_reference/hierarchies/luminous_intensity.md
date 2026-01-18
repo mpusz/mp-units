@@ -9,5 +9,5 @@
 
 ```mermaid
 flowchart LR
-    isq_luminous_intensity["<b>isq::luminous_intensity</b>"]
+    isq_luminous_intensity["<b><a href="../../systems/isq/#luminous_intensity" style="color: black; text-decoration: none;">isq::luminous_intensity</a></b>"]
 ```

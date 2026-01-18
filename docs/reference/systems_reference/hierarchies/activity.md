@@ -7,5 +7,5 @@
 
 ```mermaid
 flowchart LR
-    isq_activity["<b>isq::activity</b><br><i>(inverse(duration))</i>"]
+    isq_activity["<b><a href="../../systems/isq/#activity" style="color: black; text-decoration: none;">isq::activity</a></b><br><i>(inverse(<a href="../../systems/isq/#duration" style="color: black; text-decoration: none;">duration</a>))</i>"]
 ```

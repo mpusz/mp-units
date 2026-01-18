@@ -7,5 +7,5 @@
 
 ```mermaid
 flowchart LR
-    isq_surface_tension["<b>isq::surface_tension</b><br><i>(force / length)</i>"]
+    isq_surface_tension["<b><a href="../../systems/isq/#surface_tension" style="color: black; text-decoration: none;">isq::surface_tension</a></b><br><i>(<a href="../../systems/isq/#force" style="color: black; text-decoration: none;">force</a> / <a href="../../systems/isq/#length" style="color: black; text-decoration: none;">length</a>)</i>"]
 ```

@@ -7,5 +7,5 @@
 
 ```mermaid
 flowchart LR
-    isq_magnetic_moment["<b>isq::magnetic_moment | isq::magnetic_area_moment</b><br><i>(electric_current * area)</i>"]
+    isq_magnetic_moment["<b><a href="../../systems/isq/#magnetic_moment" style="color: black; text-decoration: none;">isq::magnetic_moment</a> | <a href="../../systems/isq/#magnetic_area_moment" style="color: black; text-decoration: none;">isq::magnetic_area_moment</a></b><br><i>(<a href="../../systems/isq/#electric_current" style="color: black; text-decoration: none;">electric_current</a> * <a href="../../systems/isq/#area" style="color: black; text-decoration: none;">area</a>)</i>"]
 ```

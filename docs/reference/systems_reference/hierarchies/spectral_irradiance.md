@@ -7,5 +7,5 @@
 
 ```mermaid
 flowchart LR
-    isq_spectral_irradiance["<b>isq::spectral_irradiance</b><br><i>(irradiance / wavelength)</i>"]
+    isq_spectral_irradiance["<b><a href="../../systems/isq/#spectral_irradiance" style="color: black; text-decoration: none;">isq::spectral_irradiance</a></b><br><i>(<a href="../../systems/isq/#irradiance" style="color: black; text-decoration: none;">irradiance</a> / <a href="../../systems/isq/#wavelength" style="color: black; text-decoration: none;">wavelength</a>)</i>"]
 ```

@@ -7,5 +7,5 @@
 
 ```mermaid
 flowchart LR
-    isq_radiant_intensity["<b>isq::radiant_intensity</b><br><i>(radiant_flux / solid_angular_measure)</i>"]
+    isq_radiant_intensity["<b><a href="../../systems/isq/#radiant_intensity" style="color: black; text-decoration: none;">isq::radiant_intensity</a></b><br><i>(<a href="../../systems/isq/#radiant_flux" style="color: black; text-decoration: none;">radiant_flux</a> / <a href="../../systems/isq/#solid_angular_measure" style="color: black; text-decoration: none;">solid_angular_measure</a>)</i>"]
 ```

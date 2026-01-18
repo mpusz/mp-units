@@ -7,5 +7,5 @@
 
 ```mermaid
 flowchart LR
-    isq_cubic_expansion_coefficient["<b>isq::cubic_expansion_coefficient</b><br><i>(inverse(volume) * (volume / thermodynamic_temperature))</i>"]
+    isq_cubic_expansion_coefficient["<b><a href="../../systems/isq/#cubic_expansion_coefficient" style="color: black; text-decoration: none;">isq::cubic_expansion_coefficient</a></b><br><i>(inverse(<a href="../../systems/isq/#volume" style="color: black; text-decoration: none;">volume</a>) * (<a href="../../systems/isq/#volume" style="color: black; text-decoration: none;">volume</a> / <a href="../../systems/isq/#thermodynamic_temperature" style="color: black; text-decoration: none;">thermodynamic_temperature</a>))</i>"]
 ```

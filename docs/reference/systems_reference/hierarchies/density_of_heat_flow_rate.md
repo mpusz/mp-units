@@ -7,5 +7,5 @@
 
 ```mermaid
 flowchart LR
-    isq_density_of_heat_flow_rate["<b>isq::density_of_heat_flow_rate</b><br><i>(heat_flow_rate / area)</i>"]
+    isq_density_of_heat_flow_rate["<b><a href="../../systems/isq/#density_of_heat_flow_rate" style="color: black; text-decoration: none;">isq::density_of_heat_flow_rate</a></b><br><i>(<a href="../../systems/isq/#heat_flow_rate" style="color: black; text-decoration: none;">heat_flow_rate</a> / <a href="../../systems/isq/#area" style="color: black; text-decoration: none;">area</a>)</i>"]
 ```

@@ -7,5 +7,5 @@
 
 ```mermaid
 flowchart LR
-    isq_linear_mass_density["<b>isq::linear_mass_density | isq::linear_density</b><br><i>(mass / length)</i>"]
+    isq_linear_mass_density["<b><a href="../../systems/isq/#linear_mass_density" style="color: black; text-decoration: none;">isq::linear_mass_density</a> | <a href="../../systems/isq/#linear_density" style="color: black; text-decoration: none;">isq::linear_density</a></b><br><i>(<a href="../../systems/isq/#mass" style="color: black; text-decoration: none;">mass</a> / <a href="../../systems/isq/#length" style="color: black; text-decoration: none;">length</a>)</i>"]
 ```

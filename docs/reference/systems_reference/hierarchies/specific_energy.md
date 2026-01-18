@@ -7,5 +7,5 @@
 
 ```mermaid
 flowchart LR
-    isq_specific_energy["<b>isq::specific_energy</b><br><i>(energy / mass)</i>"]
+    isq_specific_energy["<b><a href="../../systems/isq/#specific_energy" style="color: black; text-decoration: none;">isq::specific_energy</a></b><br><i>(<a href="../../systems/isq/#energy" style="color: black; text-decoration: none;">energy</a> / <a href="../../systems/isq/#mass" style="color: black; text-decoration: none;">mass</a>)</i>"]
 ```

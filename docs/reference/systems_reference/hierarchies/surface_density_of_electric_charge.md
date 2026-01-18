@@ -7,5 +7,5 @@
 
 ```mermaid
 flowchart LR
-    isq_surface_density_of_electric_charge["<b>isq::surface_density_of_electric_charge | isq::areic_charge | isq::areic_electric_charge</b><br><i>(electric_charge / area)</i>"]
+    isq_surface_density_of_electric_charge["<b><a href="../../systems/isq/#surface_density_of_electric_charge" style="color: black; text-decoration: none;">isq::surface_density_of_electric_charge</a> | <a href="../../systems/isq/#areic_charge" style="color: black; text-decoration: none;">isq::areic_charge</a> | <a href="../../systems/isq/#areic_electric_charge" style="color: black; text-decoration: none;">isq::areic_electric_charge</a></b><br><i>(<a href="../../systems/isq/#electric_charge" style="color: black; text-decoration: none;">electric_charge</a> / <a href="../../systems/isq/#area" style="color: black; text-decoration: none;">area</a>)</i>"]
 ```

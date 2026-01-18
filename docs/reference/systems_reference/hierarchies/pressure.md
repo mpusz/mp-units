@@ -7,13 +7,13 @@
 
 ```mermaid
 flowchart LR
-    isq_pressure["<b>isq::pressure</b><br><i>(force / area)</i>"]
-    isq_gauge_pressure["<b>isq::gauge_pressure</b>"]
+    isq_pressure["<b><a href="../../systems/isq/#pressure" style="color: black; text-decoration: none;">isq::pressure</a></b><br><i>(<a href="../../systems/isq/#force" style="color: black; text-decoration: none;">force</a> / <a href="../../systems/isq/#area" style="color: black; text-decoration: none;">area</a>)</i>"]
+    isq_gauge_pressure["<b><a href="../../systems/isq/#gauge_pressure" style="color: black; text-decoration: none;">isq::gauge_pressure</a></b>"]
     isq_pressure --- isq_gauge_pressure
-    isq_normal_stress["<b>isq::normal_stress</b>"]
+    isq_normal_stress["<b><a href="../../systems/isq/#normal_stress" style="color: black; text-decoration: none;">isq::normal_stress</a></b>"]
     isq_pressure --- isq_normal_stress
-    isq_shear_stress["<b>isq::shear_stress</b>"]
+    isq_shear_stress["<b><a href="../../systems/isq/#shear_stress" style="color: black; text-decoration: none;">isq::shear_stress</a></b>"]
     isq_pressure --- isq_shear_stress
-    isq_stress["<b>isq::stress</b>"]
+    isq_stress["<b><a href="../../systems/isq/#stress" style="color: black; text-decoration: none;">isq::stress</a></b>"]
     isq_pressure --- isq_stress
 ```

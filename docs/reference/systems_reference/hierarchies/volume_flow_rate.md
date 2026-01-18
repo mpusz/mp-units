@@ -7,5 +7,5 @@
 
 ```mermaid
 flowchart LR
-    isq_volume_flow_rate["<b>isq::volume_flow_rate</b><br><i>(velocity * area)</i>"]
+    isq_volume_flow_rate["<b><a href="../../systems/isq/#volume_flow_rate" style="color: black; text-decoration: none;">isq::volume_flow_rate</a></b><br><i>(<a href="../../systems/isq/#velocity" style="color: black; text-decoration: none;">velocity</a> * <a href="../../systems/isq/#area" style="color: black; text-decoration: none;">area</a>)</i>"]
 ```

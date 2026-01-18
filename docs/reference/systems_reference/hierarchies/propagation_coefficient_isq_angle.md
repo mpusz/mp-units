@@ -7,5 +7,5 @@
 
 ```mermaid
 flowchart LR
-    isq_angle_propagation_coefficient["<b>isq_angle::propagation_coefficient</b><br><i>(cotes_angle_constant / isq::length)</i>"]
+    isq_angle_propagation_coefficient["<b><a href="../../systems/isq_angle/#propagation_coefficient" style="color: black; text-decoration: none;">isq_angle::propagation_coefficient</a></b><br><i>(<a href="../../systems/isq_angle/#cotes_angle_constant" style="color: black; text-decoration: none;">cotes_angle_constant</a> / isq::length)</i>"]
 ```

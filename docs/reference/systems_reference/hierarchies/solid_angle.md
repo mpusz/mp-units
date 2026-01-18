@@ -7,5 +7,5 @@
 
 ```mermaid
 flowchart LR
-    angular_solid_angle["<b>angular::solid_angle</b><br><i>(pow<2>(angle))</i>"]
+    angular_solid_angle["<b><a href="../../systems/angular/#solid_angle" style="color: black; text-decoration: none;">angular::solid_angle</a></b><br><i>(pow<2>(<a href="../../systems/angular/#angle" style="color: black; text-decoration: none;">angle</a>))</i>"]
 ```

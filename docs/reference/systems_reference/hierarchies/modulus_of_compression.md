@@ -7,5 +7,5 @@
 
 ```mermaid
 flowchart LR
-    isq_modulus_of_compression["<b>isq::modulus_of_compression | isq::bulk_modulus</b><br><i>(pressure / relative_volume_strain)</i>"]
+    isq_modulus_of_compression["<b><a href="../../systems/isq/#modulus_of_compression" style="color: black; text-decoration: none;">isq::modulus_of_compression</a> | <a href="../../systems/isq/#bulk_modulus" style="color: black; text-decoration: none;">isq::bulk_modulus</a></b><br><i>(<a href="../../systems/isq/#pressure" style="color: black; text-decoration: none;">pressure</a> / <a href="../../systems/isq/#relative_volume_strain" style="color: black; text-decoration: none;">relative_volume_strain</a>)</i>"]
 ```

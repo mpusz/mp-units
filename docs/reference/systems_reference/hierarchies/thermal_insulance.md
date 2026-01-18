@@ -7,5 +7,5 @@
 
 ```mermaid
 flowchart LR
-    isq_thermal_insulance["<b>isq::thermal_insulance | isq::coefficient_of_thermal_insulance</b><br><i>(inverse(coefficient_of_heat_transfer))</i>"]
+    isq_thermal_insulance["<b><a href="../../systems/isq/#thermal_insulance" style="color: black; text-decoration: none;">isq::thermal_insulance</a> | <a href="../../systems/isq/#coefficient_of_thermal_insulance" style="color: black; text-decoration: none;">isq::coefficient_of_thermal_insulance</a></b><br><i>(inverse(<a href="../../systems/isq/#coefficient_of_heat_transfer" style="color: black; text-decoration: none;">coefficient_of_heat_transfer</a>))</i>"]
 ```

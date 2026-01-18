@@ -7,5 +7,5 @@
 
 ```mermaid
 flowchart LR
-    isq_attenuation["<b>isq::attenuation | isq::extinction</b><br><i>(inverse(distance))</i>"]
+    isq_attenuation["<b><a href="../../systems/isq/#attenuation" style="color: black; text-decoration: none;">isq::attenuation</a> | <a href="../../systems/isq/#extinction" style="color: black; text-decoration: none;">isq::extinction</a></b><br><i>(inverse(<a href="../../systems/isq/#distance" style="color: black; text-decoration: none;">distance</a>))</i>"]
 ```

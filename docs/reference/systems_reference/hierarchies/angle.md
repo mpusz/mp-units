@@ -9,5 +9,5 @@
 
 ```mermaid
 flowchart LR
-    angular_angle["<b>angular::angle</b>"]
+    angular_angle["<b><a href="../../systems/angular/#angle" style="color: black; text-decoration: none;">angular::angle</a></b>"]
 ```

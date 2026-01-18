@@ -7,5 +7,5 @@
 
 ```mermaid
 flowchart LR
-    isq_phase_coefficient["<b>isq::phase_coefficient</b><br><i>(phase_angle / path_length)</i>"]
+    isq_phase_coefficient["<b><a href="../../systems/isq/#phase_coefficient" style="color: black; text-decoration: none;">isq::phase_coefficient</a></b><br><i>(<a href="../../systems/isq/#phase_angle" style="color: black; text-decoration: none;">phase_angle</a> / <a href="../../systems/isq/#path_length" style="color: black; text-decoration: none;">path_length</a>)</i>"]
 ```

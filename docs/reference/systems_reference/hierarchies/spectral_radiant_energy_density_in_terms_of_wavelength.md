@@ -7,5 +7,5 @@
 
 ```mermaid
 flowchart LR
-    isq_spectral_radiant_energy_density_in_terms_of_wavelength["<b>isq::spectral_radiant_energy_density_in_terms_of_wavelength</b><br><i>(radiant_energy_density / wavelength)</i>"]
+    isq_spectral_radiant_energy_density_in_terms_of_wavelength["<b><a href="../../systems/isq/#spectral_radiant_energy_density_in_terms_of_wavelength" style="color: black; text-decoration: none;">isq::spectral_radiant_energy_density_in_terms_of_wavelength</a></b><br><i>(<a href="../../systems/isq/#radiant_energy_density" style="color: black; text-decoration: none;">radiant_energy_density</a> / <a href="../../systems/isq/#wavelength" style="color: black; text-decoration: none;">wavelength</a>)</i>"]
 ```

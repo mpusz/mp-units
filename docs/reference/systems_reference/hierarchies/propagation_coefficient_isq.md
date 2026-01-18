@@ -7,5 +7,5 @@
 
 ```mermaid
 flowchart LR
-    isq_propagation_coefficient["<b>isq::propagation_coefficient</b><br><i>(inverse(length))</i>"]
+    isq_propagation_coefficient["<b><a href="../../systems/isq/#propagation_coefficient" style="color: black; text-decoration: none;">isq::propagation_coefficient</a></b><br><i>(inverse(<a href="../../systems/isq/#length" style="color: black; text-decoration: none;">length</a>))</i>"]
 ```

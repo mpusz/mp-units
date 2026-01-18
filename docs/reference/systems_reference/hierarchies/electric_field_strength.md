@@ -7,5 +7,5 @@
 
 ```mermaid
 flowchart LR
-    isq_electric_field_strength["<b>isq::electric_field_strength</b><br><i>(force / electric_charge)</i>"]
+    isq_electric_field_strength["<b><a href="../../systems/isq/#electric_field_strength" style="color: black; text-decoration: none;">isq::electric_field_strength</a></b><br><i>(<a href="../../systems/isq/#force" style="color: black; text-decoration: none;">force</a> / <a href="../../systems/isq/#electric_charge" style="color: black; text-decoration: none;">electric_charge</a>)</i>"]
 ```

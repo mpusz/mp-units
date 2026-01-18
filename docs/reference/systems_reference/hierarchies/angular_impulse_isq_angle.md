@@ -7,5 +7,5 @@
 
 ```mermaid
 flowchart LR
-    isq_angle_angular_impulse["<b>isq_angle::angular_impulse</b><br><i>(moment_of_force * isq::duration)</i>"]
+    isq_angle_angular_impulse["<b><a href="../../systems/isq_angle/#angular_impulse" style="color: black; text-decoration: none;">isq_angle::angular_impulse</a></b><br><i>(<a href="../../systems/isq_angle/#moment_of_force" style="color: black; text-decoration: none;">moment_of_force</a> * isq::duration)</i>"]
 ```

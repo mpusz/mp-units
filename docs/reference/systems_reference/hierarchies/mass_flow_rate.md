@@ -7,5 +7,5 @@
 
 ```mermaid
 flowchart LR
-    isq_mass_flow_rate["<b>isq::mass_flow_rate</b><br><i>(mass_flow * area)</i>"]
+    isq_mass_flow_rate["<b><a href="../../systems/isq/#mass_flow_rate" style="color: black; text-decoration: none;">isq::mass_flow_rate</a></b><br><i>(<a href="../../systems/isq/#mass_flow" style="color: black; text-decoration: none;">mass_flow</a> * <a href="../../systems/isq/#area" style="color: black; text-decoration: none;">area</a>)</i>"]
 ```

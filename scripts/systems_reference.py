@@ -2810,6 +2810,48 @@ class DocumentationGenerator:
         equation = re.sub(r"(\/)(\w)", r"\1 \2", equation)
         return equation
 
+    def _linkify_equation_for_hierarchy(self, equation: str, qty_map: dict) -> str:
+        """Linkify quantity identifiers in an equation for Mermaid hierarchy
+
+        Args:
+            equation: The equation string (e.g., "velocity / duration")
+            qty_map: Dict mapping qualified_name -> Quantity object
+
+        Returns:
+            Equation with HTML links for quantity identifiers
+        """
+        if not equation:
+            return equation
+
+        # Pattern to match identifiers (including Unicode)
+        identifier_pattern = r"\b([a-zA-Z_\u0080-\uFFFF][a-zA-Z0-9_\u0080-\uFFFF]*)\b"
+
+        def replace_identifier(match):
+            identifier = match.group(1)
+
+            # Try to find this identifier in qty_map
+            # First try as a simple name (look for any qualified name ending with this identifier)
+            for qname, qty in qty_map.items():
+                if qty.name == identifier:
+                    # Found a match - generate URL
+                    if qname == "dimensionless":
+                        system_key = "core"
+                        qty_name = "dimensionless"
+                    else:
+                        parts = qname.split("::")
+                        system_key = parts[0] if len(parts) > 0 else ""
+                        qty_name = parts[-1] if len(parts) > 1 else qname
+
+                    url = f"../../systems/{system_key}/#{qty_name}"
+                    return f'<a href="{url}" style="color: black; text-decoration: none;">{identifier}</a>'
+
+            # Not a quantity identifier - return as-is
+            return identifier
+
+        # Replace all identifiers
+        result = re.sub(identifier_pattern, replace_identifier, equation)
+        return result
+
     def _build_mermaid_hierarchy(
         self, root_name: str, qty_children: dict, qualified_quantities: list
     ) -> str:
@@ -2843,19 +2885,53 @@ class DocumentationGenerator:
             # Create node ID from qualified name (sanitized for Mermaid)
             node_id = qualified_name.replace("::", "_").replace("-", "_")
 
-            # Build node label - use the qualified name directly (no prefix for dimensionless)
-            name_display = qualified_name
+            # Extract system namespace and quantity name for URL generation
+            if qualified_name == "dimensionless":
+                system_key = "core"
+                qty_name = "dimensionless"
+            else:
+                parts = qualified_name.split("::")
+                system_key = parts[0] if len(parts) > 0 else ""
+                qty_name = parts[-1] if len(parts) > 1 else qualified_name
 
-            # Add aliases to the name (e.g., "isq::height | isq::depth | isq::altitude")
+            # Generate relative URL to the quantity in the system page
+            # From hierarchies/*.md (served as hierarchies/*/index.html) we need to go up 2 levels
+            # Use served URL format (no .md extension) since these are HTML links, not markdown links
+            base_url = f"../../systems/{system_key}/"
+
+            # Build node label with HTML links
+            # Link the primary quantity name
+            name_display = f'<a href="{base_url}#{qty_name}" style="color: black; text-decoration: none;">{qualified_name}</a>'
+
+            # Add aliases with individual links
             if qualified_name in aliases_map:
-                alias_names = sorted(aliases_map[qualified_name])
-                name_display = name_display + " | " + " | ".join(alias_names)
+                alias_parts = []
+                for alias_qname in sorted(aliases_map[qualified_name]):
+                    # Extract alias system and name
+                    alias_parts_split = alias_qname.split("::")
+                    alias_system = (
+                        alias_parts_split[0] if len(alias_parts_split) > 0 else ""
+                    )
+                    alias_name = (
+                        alias_parts_split[-1]
+                        if len(alias_parts_split) > 1
+                        else alias_qname
+                    )
+                    alias_url = f"../../systems/{alias_system}/#{alias_name}"
+                    alias_parts.append(
+                        f'<a href="{alias_url}" style="color: black; text-decoration: none;">{alias_qname}</a>'
+                    )
+                name_display = name_display + " | " + " | ".join(alias_parts)
 
-            # Format equation in italics inside parentheses with normalized spacing
+            # Format equation with linkified identifiers
             equation = ""
             if qty.equation:
                 normalized_eq = self._normalize_equation(qty.equation)
-                equation = f"<br><i>({normalized_eq})</i>"
+                # Linkify identifiers in the equation
+                linkified_eq = self._linkify_equation_for_hierarchy(
+                    normalized_eq, qty_map
+                )
+                equation = f"<br><i>({linkified_eq})</i>"
 
             label = f"<b>{name_display}</b>{equation}"
 

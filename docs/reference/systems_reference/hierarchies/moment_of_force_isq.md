@@ -7,7 +7,7 @@
 
 ```mermaid
 flowchart LR
-    isq_moment_of_force["<b>isq::moment_of_force</b><br><i>(position_vector * force)</i>"]
-    isq_torque["<b>isq::torque</b>"]
+    isq_moment_of_force["<b><a href="../../systems/isq/#moment_of_force" style="color: black; text-decoration: none;">isq::moment_of_force</a></b><br><i>(<a href="../../systems/isq/#position_vector" style="color: black; text-decoration: none;">position_vector</a> * <a href="../../systems/isq/#force" style="color: black; text-decoration: none;">force</a>)</i>"]
+    isq_torque["<b><a href="../../systems/isq/#torque" style="color: black; text-decoration: none;">isq::torque</a></b>"]
     isq_moment_of_force --- isq_torque
 ```

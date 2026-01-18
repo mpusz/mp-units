@@ -7,5 +7,5 @@
 
 ```mermaid
 flowchart LR
-    isq_mass_concentration_of_water["<b>isq::mass_concentration_of_water</b><br><i>(mass / volume)</i>"]
+    isq_mass_concentration_of_water["<b><a href="../../systems/isq/#mass_concentration_of_water" style="color: black; text-decoration: none;">isq::mass_concentration_of_water</a></b><br><i>(<a href="../../systems/isq/#mass" style="color: black; text-decoration: none;">mass</a> / <a href="../../systems/isq/#volume" style="color: black; text-decoration: none;">volume</a>)</i>"]
 ```

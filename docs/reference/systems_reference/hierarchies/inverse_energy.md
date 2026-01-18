@@ -7,9 +7,9 @@
 
 ```mermaid
 flowchart LR
-    natural_inverse_energy["<b>natural::inverse_energy</b><br><i>(inverse(energy))</i>"]
-    natural_length["<b>natural::length</b>"]
+    natural_inverse_energy["<b><a href="../../systems/natural/#inverse_energy" style="color: black; text-decoration: none;">natural::inverse_energy</a></b><br><i>(inverse(<a href="../../systems/natural/#energy" style="color: black; text-decoration: none;">energy</a>))</i>"]
+    natural_length["<b><a href="../../systems/natural/#length" style="color: black; text-decoration: none;">natural::length</a></b>"]
     natural_inverse_energy --- natural_length
-    natural_time["<b>natural::time</b>"]
+    natural_time["<b><a href="../../systems/natural/#time" style="color: black; text-decoration: none;">natural::time</a></b>"]
     natural_inverse_energy --- natural_time
 ```

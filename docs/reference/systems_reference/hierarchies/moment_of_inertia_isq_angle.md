@@ -7,5 +7,5 @@
 
 ```mermaid
 flowchart LR
-    isq_angle_moment_of_inertia["<b>isq_angle::moment_of_inertia</b><br><i>(angular_momentum / angular_velocity)</i>"]
+    isq_angle_moment_of_inertia["<b><a href="../../systems/isq_angle/#moment_of_inertia" style="color: black; text-decoration: none;">isq_angle::moment_of_inertia</a></b><br><i>(<a href="../../systems/isq_angle/#angular_momentum" style="color: black; text-decoration: none;">angular_momentum</a> / <a href="../../systems/isq_angle/#angular_velocity" style="color: black; text-decoration: none;">angular_velocity</a>)</i>"]
 ```

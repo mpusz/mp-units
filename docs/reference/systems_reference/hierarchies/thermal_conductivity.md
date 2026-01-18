@@ -7,5 +7,5 @@
 
 ```mermaid
 flowchart LR
-    isq_thermal_conductivity["<b>isq::thermal_conductivity</b><br><i>(density_of_heat_flow_rate *(length / thermodynamic_temperature))</i>"]
+    isq_thermal_conductivity["<b><a href="../../systems/isq/#thermal_conductivity" style="color: black; text-decoration: none;">isq::thermal_conductivity</a></b><br><i>(<a href="../../systems/isq/#density_of_heat_flow_rate" style="color: black; text-decoration: none;">density_of_heat_flow_rate</a> *(<a href="../../systems/isq/#length" style="color: black; text-decoration: none;">length</a> / <a href="../../systems/isq/#thermodynamic_temperature" style="color: black; text-decoration: none;">thermodynamic_temperature</a>))</i>"]
 ```

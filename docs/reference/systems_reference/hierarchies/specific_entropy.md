@@ -7,5 +7,5 @@
 
 ```mermaid
 flowchart LR
-    isq_specific_entropy["<b>isq::specific_entropy</b><br><i>(entropy / mass)</i>"]
+    isq_specific_entropy["<b><a href="../../systems/isq/#specific_entropy" style="color: black; text-decoration: none;">isq::specific_entropy</a></b><br><i>(<a href="../../systems/isq/#entropy" style="color: black; text-decoration: none;">entropy</a> / <a href="../../systems/isq/#mass" style="color: black; text-decoration: none;">mass</a>)</i>"]
 ```

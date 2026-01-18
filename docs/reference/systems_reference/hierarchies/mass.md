@@ -9,5 +9,5 @@
 
 ```mermaid
 flowchart LR
-    isq_mass["<b>isq::mass</b>"]
+    isq_mass["<b><a href="../../systems/isq/#mass" style="color: black; text-decoration: none;">isq::mass</a></b>"]
 ```

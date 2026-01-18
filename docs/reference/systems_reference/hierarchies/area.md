@@ -7,5 +7,5 @@
 
 ```mermaid
 flowchart LR
-    isq_area["<b>isq::area</b><br><i>(pow<2>(length))</i>"]
+    isq_area["<b><a href="../../systems/isq/#area" style="color: black; text-decoration: none;">isq::area</a></b><br><i>(pow<2>(<a href="../../systems/isq/#length" style="color: black; text-decoration: none;">length</a>))</i>"]
 ```

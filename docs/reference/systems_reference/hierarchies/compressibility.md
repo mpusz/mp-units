@@ -7,5 +7,5 @@
 
 ```mermaid
 flowchart LR
-    isq_compressibility["<b>isq::compressibility</b><br><i>(inverse(volume) * (volume / pressure))</i>"]
+    isq_compressibility["<b><a href="../../systems/isq/#compressibility" style="color: black; text-decoration: none;">isq::compressibility</a></b><br><i>(inverse(<a href="../../systems/isq/#volume" style="color: black; text-decoration: none;">volume</a>) * (<a href="../../systems/isq/#volume" style="color: black; text-decoration: none;">volume</a> / <a href="../../systems/isq/#pressure" style="color: black; text-decoration: none;">pressure</a>))</i>"]
 ```

@@ -7,9 +7,9 @@
 
 ```mermaid
 flowchart LR
-    isq_transfer_rate["<b>isq::transfer_rate</b><br><i>(storage_capacity / isq::duration)</i>"]
-    isq_binary_digit_rate["<b>isq::binary_digit_rate | isq::bit_rate</b>"]
+    isq_transfer_rate["<b><a href="../../systems/isq/#transfer_rate" style="color: black; text-decoration: none;">isq::transfer_rate</a></b><br><i>(<a href="../../systems/isq/#storage_capacity" style="color: black; text-decoration: none;">storage_capacity</a> / isq::<a href="../../systems/isq/#duration" style="color: black; text-decoration: none;">duration</a>)</i>"]
+    isq_binary_digit_rate["<b><a href="../../systems/isq/#binary_digit_rate" style="color: black; text-decoration: none;">isq::binary_digit_rate</a> | <a href="../../systems/isq/#bit_rate" style="color: black; text-decoration: none;">isq::bit_rate</a></b>"]
     isq_transfer_rate --- isq_binary_digit_rate
-    isq_equivalent_binary_digit_rate["<b>isq::equivalent_binary_digit_rate</b>"]
+    isq_equivalent_binary_digit_rate["<b><a href="../../systems/isq/#equivalent_binary_digit_rate" style="color: black; text-decoration: none;">isq::equivalent_binary_digit_rate</a></b>"]
     isq_binary_digit_rate --- isq_equivalent_binary_digit_rate
 ```
