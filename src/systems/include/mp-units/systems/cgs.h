@@ -55,6 +55,7 @@ using si::unit_symbols::g;
 using si::unit_symbols::s;
 inline constexpr auto Gal = gal;
 inline constexpr auto dyn = dyne;
+using cgs::erg;
 inline constexpr auto Ba = barye;
 inline constexpr auto P = poise;
 inline constexpr auto St = stokes;

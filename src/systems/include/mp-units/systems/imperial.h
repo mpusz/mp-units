@@ -88,6 +88,10 @@ inline constexpr auto cb = cable;
 inline constexpr auto li = link;
 inline constexpr auto rd = rod;
 
+using imperial::perch;
+using imperial::rood;
+using imperial::acre;
+
 inline constexpr auto gal = gallon;
 inline constexpr auto qt = quart;
 inline constexpr auto pt = pint;

@@ -149,6 +149,9 @@ inline constexpr auto rd = rod;
 inline constexpr auto ch = chain;
 inline constexpr auto fur = furlong;
 
+using usc::acre;
+using usc::section;
+
 inline constexpr auto gal = gallon;
 inline constexpr auto pot = pottle;
 inline constexpr auto qt = quart;

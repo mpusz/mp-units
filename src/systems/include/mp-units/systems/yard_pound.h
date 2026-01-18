@@ -94,6 +94,8 @@ inline constexpr auto ft = foot;
 inline constexpr auto in = inch;
 inline constexpr auto P = pica;
 inline constexpr auto p = point;
+using yard_pound::mil;
+using yard_pound::twip;
 inline constexpr auto mi = mile;
 inline constexpr auto lea = league;
 
@@ -106,6 +108,9 @@ inline constexpr auto mph = mile / si::hour;
 
 inline constexpr auto pdl = poundal;
 inline constexpr auto lbf = pound_force;
+
+using yard_pound::kip;
+using yard_pound::psi;
 
 inline constexpr auto hp = mechanical_horsepower;
 
