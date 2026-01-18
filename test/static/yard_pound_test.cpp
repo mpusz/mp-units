@@ -50,8 +50,8 @@ static_assert(1 * isq::length[yd] == 3 * isq::length[ft]);
 static_assert(10'000 * isq::length[yd] == 9'144 * isq::length[si::metre]);
 static_assert(1 * isq::length[mi] == 5280 * isq::length[ft]);
 static_assert(1 * isq::length[mi] == 1760 * isq::length[yd]);
-static_assert(1 * isq::length[le] == 15'840 * isq::length[ft]);
-static_assert(1 * isq::length[le] == 5280 * isq::length[yd]);
+static_assert(1 * isq::length[lea] == 15'840 * isq::length[ft]);
+static_assert(1 * isq::length[lea] == 5280 * isq::length[yd]);
 static_assert(1 * isq::length[ftm] == 2 * isq::length[yd]);
 
 // Nautical

@@ -55,7 +55,7 @@ inline constexpr struct point final : named_unit<"p", mag_ratio<1, 12> * pica> {
 inline constexpr struct mil final : named_unit<"mil", mag_ratio<1, 1'000> * inch> {} mil;
 inline constexpr struct twip final : named_unit<"twip", mag_ratio<1, 20> * point> {} twip;
 inline constexpr struct mile final : named_unit<"mi", mag<1760> * yard> {} mile;
-inline constexpr struct league final : named_unit<"le", mag<3> * mile> {} league;
+inline constexpr struct league final : named_unit<"lea", mag<3> * mile> {} league;
 
 inline constexpr struct nautical_mile final : named_unit<"nmi", mag<1852> * si::metre> {} nautical_mile;
 inline constexpr struct fathom final : named_unit<"ftm", mag<6> * foot> {} fathom;
@@ -95,7 +95,7 @@ inline constexpr auto in = inch;
 inline constexpr auto P = pica;
 inline constexpr auto p = point;
 inline constexpr auto mi = mile;
-inline constexpr auto le = league;
+inline constexpr auto lea = league;
 
 inline constexpr auto nmi = nautical_mile;
 inline constexpr auto ftm = fathom;

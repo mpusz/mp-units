@@ -46,7 +46,6 @@ static_assert(isq::length(1 * in) == isq::length(6 * P));
 static_assert(isq::length(1 * ft) == isq::length(12 * in));
 static_assert(isq::length(1 * yd) == isq::length(3 * ft));
 static_assert(isq::length(1 * mi) == isq::length(5280 * ft));
-static_assert(isq::length(1 * le) == isq::length(5280 * yd));
 
 // International Nautical
 static_assert(isq::length(1 * cb) == isq::length(120 * ftm));

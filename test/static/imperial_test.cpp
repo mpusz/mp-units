@@ -42,7 +42,6 @@ static_assert(1 * isq::length[yd] == 3 * isq::length[ft]);
 static_assert(1 * isq::length[ch] == 22 * isq::length[yd]);
 static_assert(1 * isq::length[fur] == 10 * isq::length[ch]);
 static_assert(1 * isq::length[mi] == 8 * isq::length[fur]);
-static_assert(1 * isq::length[le] == 3 * isq::length[mi]);
 
 // International Nautical
 static_assert(1 * isq::length[nmi] == 10 * isq::length[cb]);

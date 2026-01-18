@@ -148,7 +148,6 @@ inline constexpr auto li = link;
 inline constexpr auto rd = rod;
 inline constexpr auto ch = chain;
 inline constexpr auto fur = furlong;
-inline constexpr auto lea = league;
 
 inline constexpr auto gal = gallon;
 inline constexpr auto pot = pottle;
