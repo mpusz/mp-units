@@ -35,8 +35,6 @@
 MP_UNITS_EXPORT
 namespace mp_units::usc {
 
-using namespace yard_pound;
-
 // clang-format off
 
 // https://en.wikipedia.org/wiki/United_States_customary_units#Length
@@ -53,7 +51,7 @@ inline constexpr us_survey_foot us_survey_foot;
 [[deprecated("In accordance with NIST SP 811, as of January 1, 2023, the use of the U.S. survey foot and U.S. survey mile is deprecated.")]]
 inline constexpr us_survey_mile us_survey_mile;
 
-inline constexpr struct link final : named_unit<"li", mag_ratio<33, 50> * foot> {} link;
+inline constexpr struct link final : named_unit<"li", mag_ratio<33, 50> * yard_pound::foot> {} link;
 inline constexpr struct rod final : named_unit<"rd", mag<25> * link> {} rod;
 inline constexpr struct chain final : named_unit<"ch", mag<4> * rod> {} chain;
 inline constexpr struct furlong final : named_unit<"fur", mag<10> * chain> {} furlong;
@@ -79,7 +77,7 @@ inline constexpr struct acre final : named_unit<"acre", mag<10> * square(survey1
 inline constexpr struct section final : named_unit<"section", mag<640> * acre> {} section;
 
 // https://en.wikipedia.org/wiki/United_States_customary_units#Fluid_volume
-inline constexpr struct gallon final : named_unit<"gal", mag<231> * cubic(inch)> {} gallon;
+inline constexpr struct gallon final : named_unit<"gal", mag<231> * cubic(yard_pound::inch)> {} gallon;
 inline constexpr struct pottle final : named_unit<"pot", mag_ratio<1, 2> * gallon> {} pottle;
 inline constexpr struct quart final : named_unit<"qt", mag_ratio<1, 2> * pottle> {} quart;
 inline constexpr struct pint final : named_unit<"pt", mag_ratio<1, 2> * quart> {} pint;
@@ -96,7 +94,7 @@ inline constexpr struct oil_barrel final : named_unit<"bbl", mag_ratio<4, 3> * b
 inline constexpr struct hogshead final : named_unit<"hogshead", mag<63> * gallon> {} hogshead;
 
 // https://en.wikipedia.org/wiki/United_States_customary_units#Dry_volume
-inline constexpr struct dry_barrel final : named_unit<"bbl", mag<7056> * cubic(inch)> {} dry_barrel;
+inline constexpr struct dry_barrel final : named_unit<"bbl", mag<7056> * cubic(yard_pound::inch)> {} dry_barrel;
 inline constexpr struct bushel final : named_unit<"bu", mag_ratio<3'523'907'016'688, 100'000'000'000> * si::litre> {} bushel;
 inline constexpr struct peck final : named_unit<"pk", mag_ratio<1, 4> * bushel> {} peck;
 inline constexpr struct dry_gallon final : named_unit<"gal", mag_ratio<1, 2> * peck> {} dry_gallon;
@@ -105,11 +103,11 @@ inline constexpr struct dry_pint final : named_unit<"pt", mag_ratio<1, 2> * dry_
 
 // https://en.wikipedia.org/wiki/United_States_customary_units#Mass_and_Weight
 // https://en.wikipedia.org/wiki/Avoirdupois_system#American_customary_system
-inline constexpr struct quarter final : named_unit<"qr", mag<25> * pound> {} quarter;
-inline constexpr struct short_hundredweight final : named_unit<"cwt", mag<100> * pound> {} short_hundredweight;
-inline constexpr struct ton final : named_unit<"t", mag<2'000> * pound> {} ton;
+inline constexpr struct quarter final : named_unit<"qr", mag<25> * yard_pound::pound> {} quarter;
+inline constexpr struct short_hundredweight final : named_unit<"cwt", mag<100> * yard_pound::pound> {} short_hundredweight;
+inline constexpr struct ton final : named_unit<"t", mag<2'000> * yard_pound::pound> {} ton;
 inline constexpr auto short_ton = ton;
-inline constexpr struct pennyweight final : named_unit<"dwt", mag<24> * grain> {} pennyweight;
+inline constexpr struct pennyweight final : named_unit<"dwt", mag<24> * yard_pound::grain> {} pennyweight;
 inline constexpr struct troy_once final : named_unit<"oz t", mag<20> * pennyweight> {} troy_once;
 inline constexpr struct troy_pound final : named_unit<"lb t", mag<12> * troy_once> {} troy_pound;
 
@@ -185,5 +183,7 @@ inline constexpr auto inHg = inch_of_mercury;
 inline constexpr auto deg_F = degree_Fahrenheit;
 
 }  // namespace unit_symbols
+
+using namespace yard_pound;
 
 }  // namespace mp_units::usc
