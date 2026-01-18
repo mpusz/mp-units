@@ -59,9 +59,9 @@ inline constexpr struct neutron_mass final : named_unit<"m_n", mag_ratio<1'674'9
 inline constexpr struct atomic_mass_unit final : named_unit<"u", mag_ratio<1'660'539'066'605, 1'000'000'000'000> * mag_power<10, -27> * si::kilogram> {} atomic_mass_unit;
 
 // fundamental constants commonly used in HEP
-inline constexpr auto speed_of_light = si::si2019::speed_of_light_in_vacuum;
-inline constexpr auto planck_constant = si::si2019::planck_constant;
-inline constexpr auto elementary_charge = si::si2019::elementary_charge;
+inline constexpr auto speed_of_light = si::speed_of_light_in_vacuum;
+inline constexpr auto planck_constant = si::planck_constant;
+inline constexpr auto elementary_charge = si::elementary_charge;
 // clang-format on
 
 namespace unit_symbols {

@@ -242,7 +242,7 @@ Since the 2019 redefinition, the SI is defined in terms of exact values for seve
 constants. These are provided in **mp-units**:
 
 ```cpp
-namespace mp_units::si::si2019 {
+namespace mp_units::si::inline si2019 {
 
 inline constexpr struct hyperfine_structure_transition_frequency_of_cs final :
   named_unit<symbol_text{u8"Δν_Cs", "dv_Cs"}, mag<9'192'631'770> * hertz> {}

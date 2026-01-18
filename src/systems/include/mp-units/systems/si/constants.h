@@ -32,7 +32,7 @@
 MP_UNITS_EXPORT
 namespace mp_units::si {
 
-namespace si2019 {
+inline namespace si2019 {
 
 // clang-format off
 inline constexpr struct hyperfine_structure_transition_frequency_of_cs final :

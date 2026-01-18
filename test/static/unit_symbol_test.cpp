@@ -278,8 +278,8 @@ static_assert(unit_symbol(pow<2>(mag<3600> * second)) == "(3600 s)²");
 static_assert(unit_symbol(radian) == "rad");
 
 // Physical constants
-static_assert(unit_symbol(si2019::speed_of_light_in_vacuum) == "c");
-static_assert(unit_symbol(gram * standard_gravity * si2019::speed_of_light_in_vacuum) == "g c g₀");
+static_assert(unit_symbol(speed_of_light_in_vacuum) == "c");
+static_assert(unit_symbol(gram * standard_gravity * speed_of_light_in_vacuum) == "g c g₀");
 static_assert(unit_symbol(gram / standard_gravity) == "g/g₀");
 static_assert(unit_symbol(kilo<metre> / second / mega<iau::parsec>) == "km Mpc⁻¹ s⁻¹");
 
