@@ -20,7 +20,7 @@ Automatically generated reference documentation for all **mp-units** systems.
 | [Angular](systems/angular.md) | 1 | 2 | 5 | — | — |
 | [Astronomy](systems/astronomy.md) | — | — | 10 | — | — |
 | [CGS](systems/cgs.md) | — | — | 8 | — | — |
-| [Core](systems/core.md) | 1 | 1 | 5 | — | — |
+| [Core](systems/core.md) | 1 | 1 | 7 | — | — |
 | [HEP](systems/hep.md) | — | — | 9 | — | — |
 | [IAU](systems/iau.md) | — | — | 16 | — | — |
 | [IEC](systems/iec.md) | — | 31 | 6 | 8 | — |
@@ -30,5 +30,5 @@ Automatically generated reference documentation for all **mp-units** systems.
 | [Natural](systems/natural.md) | 1 | 13 | 3 | — | — |
 | [SI](systems/si.md) | — | — | 52 | 24 | 5 |
 | [Typographic](systems/typographic.md) | — | — | 9 | — | — |
-| [USC](systems/usc.md) | — | — | 38 | — | 2 |
+| [USC](systems/usc.md) | — | — | 45 | — | 2 |
 | [Yard Pound](systems/yard_pound.md) | — | — | 21 | — | — |

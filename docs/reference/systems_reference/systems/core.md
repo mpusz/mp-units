@@ -30,3 +30,5 @@
 | <span id="per_mille"></span><code>per_<wbr>mille</code> | ‰ (%o) | — | <code>mag_ratio<1, 1000> * <wbr>[one](core.md#one)</code> |
 | <span id="percent"></span><code>percent</code> | % | — | <code>mag_ratio<1, 100> * <wbr>[one](core.md#one)</code> |
 | <span id="pi"></span><code>pi</code> | π (pi) | — | <code>mag<pi_c> * <wbr>[one](core.md#one)</code> |
+| <span id="ppm"></span><code>ppm</code> | — | — | alias to [mp_<wbr>units::parts_<wbr>per_<wbr>million](core.md#parts_per_million) |
+| <span id="π"></span><code>π</code> | — | — | alias to [mp_<wbr>units::pi](core.md#pi) |

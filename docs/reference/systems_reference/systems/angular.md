@@ -34,5 +34,5 @@
 | <span id="degree"></span><code>degree</code> | ° (deg) | `deg` | <code>mag_ratio<1, 360> * <wbr>[revolution](#revolution)</code> |
 | <span id="gradian"></span><code>gradian</code> | ᵍ (grad) | `grad` | <code>mag_ratio<1, 400> * <wbr>[revolution](#revolution)</code> |
 | <span id="radian"></span><code>radian</code> | rad | `rad` | <code>kind: [angle](#angle)</code> |
-| <span id="revolution"></span><code>revolution</code> | rev | `rev` | <code>mag<2> * <wbr>π * <wbr>[radian](#radian)</code> |
+| <span id="revolution"></span><code>revolution</code> | rev | `rev` | <code>mag<2> * <wbr>[π](core.md#π) * <wbr>[radian](#radian)</code> |
 | <span id="steradian"></span><code>steradian</code> | sr | `sr` | <code>square([radian](#radian))</code> |

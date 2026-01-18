@@ -50,6 +50,9 @@ class Quantity:
     character: str = "Real"  # Quantity character: Real, Complex, Vector, Tensor
     kind_of: str = ""  # e.g., "isq::length" - from C++ get_kind()
     parent_from_cpp: str = ""  # e.g., "isq::length" or "<root>" - from C++ qs._parent_
+    secondary_namespaces: list = (
+        None  # Namespaces where accessible via using declarations
+    )
 
 
 @dataclass
@@ -67,6 +70,9 @@ class Unit:
     subnamespace: Optional[str] = None  # Relative subnamespace (e.g., "survey1893")
     origin_namespace: Optional[str] = (
         None  # Original namespace where defined (e.g., "non_si")
+    )
+    secondary_namespaces: list = (
+        None  # Namespaces where accessible via using declarations
     )
     alias_target: Optional[str] = (
         None  # If this is an alias, the name of the original entity
@@ -91,6 +97,9 @@ class PointOrigin:
     alias_target: Optional[str] = (
         None  # If this is an alias, the name of the original entity
     )
+    secondary_namespaces: list = (
+        None  # Namespaces where accessible via using declarations
+    )
 
 
 @dataclass
@@ -103,6 +112,9 @@ class Prefix:
         ""  # Magnitude/scale (e.g., "mag_power<10, 3>" or "mag_power<2, 10>")
     )
     namespace: str = ""
+    secondary_namespaces: list = (
+        None  # Namespaces where accessible via using declarations
+    )
     file: str = ""
 
 
@@ -117,6 +129,9 @@ class SystemInfo:
     units: List[Unit] = field(default_factory=list)
     point_origins: List[PointOrigin] = field(default_factory=list)
     prefixes: List[Prefix] = field(default_factory=list)
+    inline_subnamespaces: Set[str] = field(
+        default_factory=set
+    )  # Track inline subnamespaces (e.g., "si2019", "codata2018")
 
 
 class SystemsParser:
@@ -152,15 +167,17 @@ class SystemsParser:
                     main_headers.append(main_header)
 
         # Parse each main header and its includes
+        # The parse_system_with_includes method follows include directives,
+        # ensuring dependencies are parsed before dependents (just like C++ compilation)
         for main_header in main_headers:
             self.parse_system_with_includes(main_header)
 
-        # After all files are parsed, assign unit_symbols as a second pass
-        for system in self.systems.values():
-            for file in system.files:
-                if file.exists():
-                    content = file.read_text()
-                    self._parse_unit_symbols(content, system)
+    def populate_secondary_namespaces(self):
+        """Populate secondary_namespaces for entities based on using-declarations"""
+        # For now, this is a placeholder. We'll populate this when we parse
+        # using-declarations like "using si::unit_symbols::cm;" in CGS
+        # This will map cm as a secondary namespace access point to centimetre
+        pass
 
     def _parse_core_framework(self):
         """Parse core framework entities (built-in units and quantities)"""
@@ -221,6 +238,7 @@ class SystemsParser:
                         content, core_system, str(unit_path), namespace_to_search=None
                     )
                     self._parse_unit_symbols(content, core_system)
+                    self._parse_aliases(content, core_system, str(unit_path))
             except Exception as e:
                 print(f"Warning: Could not parse {unit_path}: {e}")
             # Add core.h as the public header (not unit.h which is internal)
@@ -307,6 +325,19 @@ class SystemsParser:
         self._parse_point_origins(content, system, str(header_file))
         self._parse_prefixes(content, system, str(header_file))
         self._parse_aliases(content, system, str(header_file))
+        # Parse unit_symbols in the same pass
+        self._parse_unit_symbols(content, system)
+        # Detect inline subnamespaces
+        self._detect_inline_subnamespaces(content, system)
+
+    def _detect_inline_subnamespaces(self, content: str, system: SystemInfo):
+        """Detect and store inline subnamespaces"""
+        # Pattern: inline namespace NAME {
+        inline_ns_pattern = r"inline\s+namespace\s+(\w+)\s*\{"
+        for match in re.finditer(inline_ns_pattern, content):
+            subns_name = match.group(1)
+            if subns_name not in ["unit_symbols"]:  # Skip unit_symbols
+                system.inline_subnamespaces.add(subns_name)
 
     def _is_in_namespace(self, content: str, pos: int, namespace: str) -> bool:
         """Check if position is inside the specified namespace (not in a nested namespace)"""
@@ -337,10 +368,10 @@ class SystemsParser:
     def _detect_origin_namespace(
         self, content: str, match_pos: int, system_namespace: str
     ) -> Optional[str]:
-        """Detect the origin namespace including non_si and si2019"""
+        """Detect the origin namespace path (e.g., 'mp_units::non_si' or 'mp_units::si::si2019')"""
         before_match = content[:match_pos]
 
-        # Track ALL namespaces including ones we exclude from display
+        # Track ALL namespaces
         namespace_stack = []
         brace_depth = 0
 
@@ -352,28 +383,70 @@ class SystemsParser:
                 brace_depth += 1
             elif char == "}":
                 brace_depth -= 1
-                while namespace_stack and brace_depth <= namespace_stack[-1][1]:
+                while namespace_stack and brace_depth < namespace_stack[-1][1]:
                     namespace_stack.pop()
 
-            if before_match[i : i + 9] == "namespace":
+            if before_match[i : i + 6] == "inline":
+                # Check if this is "inline namespace"
+                rest = before_match[i + 6 :]
+                inline_ns_match = re.match(r"\s+namespace\s+(\S+)\s*\{", rest)
+                if inline_ns_match:
+                    ns_name = inline_ns_match.group(1)
+                    # Track inline namespaces except unit_symbols
+                    if ns_name not in ["unit_symbols"]:
+                        # The namespace will be at the NEXT brace depth (after its opening brace)
+                        target_depth = brace_depth + 1
+                        # Handle qualified names like "mp_units::si" - add each part
+                        if "::" in ns_name:
+                            for part in ns_name.split("::"):
+                                namespace_stack.append((part, target_depth))
+                        else:
+                            namespace_stack.append((ns_name, target_depth))
+                    # Skip past "inline namespace name {" and manually increment brace depth
+                    i += (
+                        6 + len(inline_ns_match.group(0)) - 1
+                    )  # -1 because we want to land on the {
+                    brace_depth += 1  # Account for the opening brace
+                    i += 1  # Move past the {
+                    continue
+            elif before_match[i : i + 9] == "namespace":
                 rest = before_match[i + 9 :]
-                ns_match = re.match(r"\s+(\w+)\s*\{", rest)
+                # Match "namespace name {" - name can contain ::
+                ns_match = re.match(r"\s+(\S+)\s*\{", rest)
                 if ns_match:
                     ns_name = ns_match.group(1)
-                    # Track all except main system and mp_units
-                    if (
-                        ns_name not in ["mp_units", "unit_symbols", system_namespace]
-                        and "::" not in ns_name
-                    ):
-                        namespace_stack.append((ns_name, brace_depth))
+                    # Track all namespaces except unit_symbols
+                    if ns_name not in ["unit_symbols"]:
+                        # The namespace will be at the NEXT brace depth (after its opening brace)
+                        target_depth = brace_depth + 1
+                        # Handle qualified names like "mp_units::si" - add each part
+                        if "::" in ns_name:
+                            for part in ns_name.split("::"):
+                                namespace_stack.append((part, target_depth))
+                        else:
+                            namespace_stack.append((ns_name, target_depth))
+                    # Skip past "namespace name {" and manually increment brace depth
+                    i += (
+                        9 + len(ns_match.group(0)) - 1
+                    )  # -1 because we want to land on the {
+                    brace_depth += 1  # Account for the opening brace
+                    i += 1  # Move past the {
+                    continue
 
             i += 1
 
-        # Return origin namespace if it's non_si or si2019
+        # Build the full namespace path
         if namespace_stack:
-            innermost = namespace_stack[-1][0]
-            if innermost in ["non_si", "si2019"]:
-                return innermost
+            ns_names = [ns[0] for ns in namespace_stack]
+
+            # If we have more than one namespace level (system + subnamespace(s)), return full path
+            # E.g., ["si", "si2019"] or ["usc", "survey1893"]
+            if len(ns_names) > 1:
+                return "::".join(ns_names)
+            # Also return if we have special standalone namespaces like "non_si"
+            elif ns_names and ns_names[0] in ["non_si"]:
+                return "::".join(ns_names)
+
         return None
 
     def _get_nested_namespace(
@@ -669,13 +742,7 @@ class SystemsParser:
 
             # Check namespace filtering
             if namespace_to_search is not None:
-                # We're looking for units in a specific namespace
-                nested_ns = self._get_nested_namespace(
-                    content, match_pos, namespace_to_search
-                )
-                # Skip if we have a nested namespace or we're not in the right namespace
-                if nested_ns:
-                    continue
+                # We're looking for units in a specific namespace (including its subnamespaces)
                 if not self._is_in_namespace(content, match_pos, namespace_to_search):
                     continue
             # If namespace_to_search is None, accept all units (no filtering)
@@ -738,13 +805,7 @@ class SystemsParser:
 
             # Check namespace filtering
             if namespace_to_search is not None:
-                # We're looking for units in a specific namespace
-                nested_ns = self._get_nested_namespace(
-                    content, match_pos, namespace_to_search
-                )
-                # Skip if we have a nested namespace or we're not in the right namespace
-                if nested_ns:
-                    continue
+                # We're looking for units in a specific namespace (including its subnamespaces)
                 if not self._is_in_namespace(content, match_pos, namespace_to_search):
                     continue
             # If namespace_to_search is None, accept all units (no filtering)
@@ -990,7 +1051,8 @@ class SystemsParser:
     def _parse_aliases(self, content: str, system: SystemInfo, file: str):
         """Parse alias assignments and add them to the appropriate entity collection"""
         # Pattern: inline constexpr auto NAME = other_name;
-        alias_pattern = r"inline\s+constexpr\s+auto\s+(\w+)\s*=\s*([^;]+);"
+        # Support Unicode identifiers (e.g., π) and comments between name and =
+        alias_pattern = r"inline\s+constexpr\s+auto\s+([\w\u0080-\uFFFF]+)\s*(?:/\*.*?\*/)?\s*=\s*([^;]+);"
 
         # Skip unit_symbols namespace
         unit_symbols_ns_match = re.search(r"namespace\s+.*unit_symbols", content)
@@ -1136,6 +1198,7 @@ class SystemsParser:
                         )
 
                 # Add as an alias unit (use current system's namespace, not target's)
+                # Don't copy origin_namespace/subnamespace - the alias is defined in the current system
                 alias_unit = Unit(
                     name=alias_name,
                     symbol=target_unit.symbol,
@@ -1143,8 +1206,8 @@ class SystemsParser:
                     namespace=f"mp_units::{system.namespace}",
                     file=file,
                     is_base=target_unit.is_base,
-                    subnamespace=target_unit.subnamespace,
-                    origin_namespace=target_unit.origin_namespace,
+                    subnamespace=None,  # Alias is in current system, not a subnamespace
+                    origin_namespace=None,  # Alias is defined here, not inherited from target
                     alias_target=alias_target_display,
                 )
                 system.units.append(alias_unit)
@@ -1157,7 +1220,7 @@ class SystemsParser:
         # Allow qualified names like si::ohm
         symbol_pattern = r"inline\s+constexpr\s+auto\s+(\w+)\s*=\s*([\w:]+)\s*;"
         # Pattern for using declarations: using namespace::name;
-        using_pattern = r"using\s+(?:[\w:]+::)?(\w+)\s*;"
+        using_pattern = r"using\s+([\w:]+)\s*;"
 
         for unit_symbols_match in re.finditer(
             r"namespace\s+(?:[\w:]+::)?unit_symbols\s*\{(.*?)\}", content, re.DOTALL
@@ -1178,15 +1241,63 @@ class SystemsParser:
                             unit.unit_symbols.append(symbol_name)
                         break
 
-            # Parse using declarations (e.g., using si::ohm;)
+            # Parse using declarations (e.g., using si::unit_symbols::cm;)
             for match in re.finditer(using_pattern, symbols_content):
-                unit_name = match.group(1)
+                qualified_name = match.group(1)
+                parts = qualified_name.split("::")
 
-                for unit in system.units:
-                    if unit.name == unit_name:
-                        if unit_name not in unit.unit_symbols:
-                            unit.unit_symbols.append(unit_name)
-                        break
+                # Check if this is a using declaration from another system's unit_symbols
+                if len(parts) >= 2 and parts[-2] == "unit_symbols":
+                    # This is like: using si::unit_symbols::cm;
+                    symbol_name = parts[-1]  # e.g., "cm"
+                    source_namespace = parts[0]  # e.g., "si"
+
+                    # Find the definition of this symbol in the source system's unit_symbols
+                    source_system = self.systems.get(source_namespace)
+                    if source_system:
+                        # Look for this symbol's definition in the source system's files
+                        symbol_definition = None
+                        for file in source_system.files:
+                            if file.exists():
+                                file_content = file.read_text()
+                                # Match: inline constexpr auto cm = centi<metre>;
+                                symbol_def_pattern = rf"inline\s+constexpr\s+auto\s+{re.escape(symbol_name)}\s*=\s*([\w<>:]+)\s*;"
+                                symbol_def_match = re.search(
+                                    symbol_def_pattern, file_content
+                                )
+                                if symbol_def_match:
+                                    symbol_definition = symbol_def_match.group(
+                                        1
+                                    )  # e.g., "centi<metre>"
+                                    break
+
+                        if symbol_definition:
+                            # Now find the unit in the current system that matches this definition
+                            # Strip namespace prefixes from definition for matching
+                            clean_definition = re.sub(
+                                r"\b[\w]+::", "", symbol_definition
+                            )
+
+                            for unit in system.units:
+                                # Clean the unit definition too
+                                clean_unit_def = re.sub(
+                                    r"\b[\w]+::", "", unit.definition
+                                )
+                                if (
+                                    clean_unit_def == clean_definition
+                                    or unit.definition == symbol_definition
+                                ):
+                                    if symbol_name not in unit.unit_symbols:
+                                        unit.unit_symbols.append(symbol_name)
+                                    break
+                else:
+                    # Simple using declaration like: using si::ohm;
+                    unit_name = parts[-1]
+                    for unit in system.units:
+                        if unit.name == unit_name:
+                            if unit_name not in unit.unit_symbols:
+                                unit.unit_symbols.append(unit_name)
+                            break
 
     def _parse_using_declarations(self, content: str, system: SystemInfo, file: str):
         """Parse using declarations for imported units (excluding math functions)"""
@@ -1482,14 +1593,19 @@ class DocumentationGenerator:
         output_file = self.output_dir / "units_index.md"
 
         all_units = []
+
         for sys_key, system in self.parser.systems.items():
             for unit in system.units:
-                # Extract the namespace path after mp_units::
-                full_ns = unit.namespace.replace("mp_units::", "")
-                # If empty (core system), show "mp_units"
-                if not full_ns:
-                    full_ns = "mp_units"
-                all_units.append((unit.name, sys_key, full_ns, unit))
+                # Use origin_namespace if it exists (strip mp_units:: for display)
+                if unit.origin_namespace:
+                    display_namespace = unit.origin_namespace.replace("mp_units::", "")
+                else:
+                    # Extract the namespace path after mp_units::
+                    full_ns = unit.namespace.replace("mp_units::", "")
+                    # If empty (core system), show "mp_units"
+                    display_namespace = full_ns if full_ns else "mp_units"
+
+                all_units.append((unit.name, sys_key, display_namespace, unit))
 
         with open(output_file, "w") as f:
             self._write_auto_generated_header(f)
@@ -1500,7 +1616,17 @@ class DocumentationGenerator:
             for name, sys_key, full_ns, unit in sorted(
                 all_units, key=lambda x: (x[0], x[2])
             ):
-                f.write(f"- [`{name}` ({full_ns})](systems/{sys_key}.md#{name})\n")
+                # Determine anchor - include subnamespace prefix if present
+                subns_prefix = None
+                if unit.origin_namespace:
+                    parts = unit.origin_namespace.replace("mp_units::", "").split("::")
+                    if len(parts) > 1:
+                        subns_prefix = parts[-1]
+                elif unit.subnamespace:
+                    subns_prefix = unit.subnamespace
+
+                anchor = f"{subns_prefix}-{name}" if subns_prefix else name
+                f.write(f"- [`{name}` ({full_ns})](systems/{sys_key}.md#{anchor})\n")
 
             f.write(f"\n**Total units:** {len(all_units)}\n")
 
@@ -2122,10 +2248,18 @@ class DocumentationGenerator:
 
                 # Units - separate non-SI (for SI system only)
                 regular_units = [
-                    u for u in system.units if u.origin_namespace != "non_si"
+                    u
+                    for u in system.units
+                    if not (
+                        u.origin_namespace and u.origin_namespace.endswith("non_si")
+                    )
                 ]
                 non_si_units = (
-                    [u for u in system.units if u.origin_namespace == "non_si"]
+                    [
+                        u
+                        for u in system.units
+                        if u.origin_namespace and u.origin_namespace.endswith("non_si")
+                    ]
                     if namespace == "si"
                     else []
                 )
@@ -2136,8 +2270,51 @@ class DocumentationGenerator:
                     f.write("## Units\n\n")
                     f.write("| Unit Name | Symbol | unit_symbol | Definition |\n")
                     f.write("|-----------|:------:|:-----------:|------------|\n")
-                    for unit in sorted(regular_units, key=lambda u: u.name):
+
+                    # Sort by display name (including subnamespace prefix)
+                    def get_unit_display_name(unit):
+                        """Get the display name for sorting (includes subnamespace prefix)"""
+                        subns_prefix = None
+                        if unit.origin_namespace:
+                            parts = unit.origin_namespace.replace(
+                                "mp_units::", ""
+                            ).split("::")
+                            if len(parts) > 1:
+                                subns_prefix = parts[-1]
+                        elif unit.subnamespace:
+                            subns_prefix = unit.subnamespace
+                        return (
+                            f"{subns_prefix}::{unit.name}"
+                            if subns_prefix
+                            else unit.name
+                        )
+
+                    for unit in sorted(regular_units, key=get_unit_display_name):
                         self._write_unit_row(f, unit, system)
+
+                    # Add admonition for inline subnamespaces if any units are from them
+                    inline_subns_used = set()
+                    for unit in regular_units:
+                        if unit.origin_namespace:
+                            parts = unit.origin_namespace.replace(
+                                "mp_units::", ""
+                            ).split("::")
+                            if len(parts) > 1:
+                                subns = parts[-1]
+                                if subns in system.inline_subnamespaces:
+                                    inline_subns_used.add(subns)
+
+                    if inline_subns_used:
+                        f.write("\n")
+                        f.write('!!! note "Inline Namespaces"\n\n')
+                        for subns in sorted(inline_subns_used):
+                            full_ns = f"mp_units::{namespace}::{subns}"
+                            parent_ns = f"mp_units::{namespace}"
+                            f.write(
+                                f"    The `{full_ns}` namespace is inline in `{parent_ns}`, "
+                                f"making its units directly accessible from the parent namespace.\n\n"
+                            )
+
                     need_separator = True
 
                 if non_si_units:
@@ -2146,8 +2323,15 @@ class DocumentationGenerator:
                     f.write("## Non-SI units accepted for use with the SI\n\n")
                     f.write("| Unit Name | Symbol | unit_symbol | Definition |\n")
                     f.write("|-----------|:------:|:-----------:|------------|\n")
-                    for unit in sorted(non_si_units, key=lambda u: u.name):
+                    for unit in sorted(non_si_units, key=get_unit_display_name):
                         self._write_unit_row(f, unit, system)
+                    f.write("\n")
+                    f.write('!!! note "Namespace"\n\n')
+                    f.write(
+                        "    These units are defined in the `mp_units::non_si` namespace "
+                        "and are made available in the `mp_units::si` namespace "
+                        "through a using-directive.\n"
+                    )
                     need_separator = True
 
                 # Prefixes
@@ -2204,17 +2388,29 @@ class DocumentationGenerator:
                 return name.replace("_", "_<wbr>")
             return name
 
-        # Show relative namespace prefix if in subnamespace
-        unit_display = (
-            f"{unit.subnamespace}::{unit.name}" if unit.subnamespace else unit.name
-        )
+        # Determine the subnamespace prefix to display
+        # Use origin_namespace if available, otherwise use subnamespace
+        subns_prefix = None
+        if unit.origin_namespace:
+            # Extract subnamespace from origin_namespace (e.g., "mp_units::si::si2019" -> "si2019")
+            parts = unit.origin_namespace.replace("mp_units::", "").split("::")
+            if len(parts) > 1:  # Has a subnamespace
+                subns_prefix = parts[-1]  # Last component is the subnamespace
+        elif unit.subnamespace:
+            subns_prefix = unit.subnamespace
+
+        # Show namespace prefix if it exists
+        unit_display = f"{subns_prefix}::{unit.name}" if subns_prefix else unit.name
         unit_display_with_breaks = add_word_breaks(unit_display)
+
+        # Anchor ID should include subnamespace to avoid conflicts
+        anchor_id = f"{subns_prefix}-{unit.name}" if subns_prefix else unit.name
 
         if unit.alias_target:
             # This is an alias - show reference to original (linkified)
             alias_target_linked = self._linkify_definition(unit.alias_target, system)
             f.write(
-                f'| <span id="{unit.name}"></span><code>{unit_display_with_breaks}</code> | — | — | alias to {alias_target_linked} |\n'
+                f'| <span id="{anchor_id}"></span><code>{unit_display_with_breaks}</code> | — | — | alias to {alias_target_linked} |\n'
             )
         else:
             # Regular definition
@@ -2337,7 +2533,7 @@ class DocumentationGenerator:
 
             # unit_symbol_cell is already formatted with backticks or em-dash
             f.write(
-                f'| <span id="{unit.name}"></span><code>{unit_display_with_breaks}</code> | {symbol} | '
+                f'| <span id="{anchor_id}"></span><code>{unit_display_with_breaks}</code> | {symbol} | '
                 f"{short_symbol} | {definition_cell} |\n"
             )
 
@@ -2387,9 +2583,8 @@ class DocumentationGenerator:
         # Pattern to match identifiers (including namespace-qualified ones)
         # Matches: word, namespace::word, nested::namespace::word
         # Allow both lowercase and uppercase letters for names like Julian_year and zeroth_degree_Celsius
-        identifier_pattern = (
-            r"\b([a-zA-Z_][a-zA-Z0-9_]*(?:::[a-zA-Z_][a-zA-Z0-9_]*)*)\b"
-        )
+        # Support Unicode identifiers (e.g., π)
+        identifier_pattern = r"\b([a-zA-Z_\u0080-\uFFFF][a-zA-Z0-9_\u0080-\uFFFF]*(?:::[a-zA-Z_\u0080-\uFFFF][a-zA-Z0-9_\u0080-\uFFFF]*)*)\b"
 
         # Collect all possible references from all systems
         all_refs = {}  # name -> (system_namespace, anchor_name)
@@ -2400,22 +2595,35 @@ class DocumentationGenerator:
                 all_refs[unit.name] = (sys_ns, unit.name)
                 # Also add qualified names
                 all_refs[f"{sys_ns}::{unit.name}"] = (sys_ns, unit.name)
+                # Add secondary namespace qualified names
+                if unit.secondary_namespaces:
+                    for sec_ns in unit.secondary_namespaces:
+                        all_refs[f"{sec_ns}::{unit.name}"] = (sys_ns, unit.name)
 
             # Add point origins
             for origin in system.point_origins:
                 all_refs[origin.name] = (sys_ns, origin.name)
                 all_refs[f"{sys_ns}::{origin.name}"] = (sys_ns, origin.name)
+                if origin.secondary_namespaces:
+                    for sec_ns in origin.secondary_namespaces:
+                        all_refs[f"{sec_ns}::{origin.name}"] = (sys_ns, origin.name)
 
             # Add quantities
             for qty in system.quantities:
                 all_refs[qty.name] = (sys_ns, qty.name)
                 all_refs[f"{sys_ns}::{qty.name}"] = (sys_ns, qty.name)
+                if qty.secondary_namespaces:
+                    for sec_ns in qty.secondary_namespaces:
+                        all_refs[f"{sec_ns}::{qty.name}"] = (sys_ns, qty.name)
 
             # Add prefixes
             for prefix in system.prefixes:
                 # Prefixes link to their specific anchor
                 all_refs[prefix.name] = (sys_ns, prefix.name)
                 all_refs[f"{sys_ns}::{prefix.name}"] = (sys_ns, prefix.name)
+                if prefix.secondary_namespaces:
+                    for sec_ns in prefix.secondary_namespaces:
+                        all_refs[f"{sec_ns}::{prefix.name}"] = (sys_ns, prefix.name)
 
         def replace_identifier(match):
             identifier = match.group(1)
@@ -2485,6 +2693,40 @@ class DocumentationGenerator:
             unqualified_check = (
                 identifier.split("::")[-1] if "::" in identifier else identifier
             )
+
+            # Special handling for sub-namespace references (e.g., non_si::day)
+            # Look for units where origin_namespace matches the namespace prefix
+            if "::" in identifier:
+                parts = identifier.split("::")
+                if len(parts) == 2:
+                    potential_origin_ns = parts[0]
+                    entity_name = parts[1]
+                    # Check all systems for a unit with this origin_namespace
+                    for sys_ns, system in self.parser.systems.items():
+                        for unit in system.units:
+                            # origin_namespace contains full path like "mp_units::non_si"
+                            # Check if it ends with the potential_origin_ns
+                            if (
+                                unit.name == entity_name
+                                and unit.origin_namespace
+                                and unit.origin_namespace.endswith(potential_origin_ns)
+                            ):
+                                return make_link(
+                                    display_text, f"{sys_ns}.md#{entity_name}"
+                                )
+                        # Check point_origins too
+                        for origin in system.point_origins:
+                            if (
+                                origin.name == entity_name
+                                and hasattr(origin, "origin_namespace")
+                                and origin.origin_namespace
+                                and origin.origin_namespace.endswith(
+                                    potential_origin_ns
+                                )
+                            ):
+                                return make_link(
+                                    display_text, f"{sys_ns}.md#{entity_name}"
+                                )
 
             # Build a key to check current system first
             current_sys_key = f"{current_system.namespace}::{unqualified_check}"
@@ -2900,6 +3142,7 @@ def main():
     print(f"Parsing systems from: {systems_dir}")
     parser = SystemsParser(systems_dir)
     parser.parse_all_systems()
+    parser.populate_secondary_namespaces()
 
     print(f"Found {len(parser.systems)} systems")
     for ns, system in parser.systems.items():

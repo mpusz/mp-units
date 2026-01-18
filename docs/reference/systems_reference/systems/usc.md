@@ -13,7 +13,7 @@
 
 | Unit Name | Symbol | unit_symbol | Definition |
 |-----------|:------:|:-----------:|------------|
-| <span id="acre"></span><code>acre</code> | acre | `acre` | <code>mag<10> * <wbr>square([survey1893::chain](#chain))</code> |
+| <span id="acre"></span><code>acre</code> | acre | `acre` | <code>mag<10> * <wbr>square([survey1893::chain](usc.md#chain))</code> |
 | <span id="barrel"></span><code>barrel</code> | bbl | `bbl` | <code>mag_ratio<315, 10> * <wbr>[gallon](#gallon)</code> |
 | <span id="bushel"></span><code>bushel</code> | bu | `bu` | <code>mag_ratio<3'523'907'016'688, 100'000'000'000> * <wbr>[si::litre](si.md#litre)</code> |
 | <span id="cable"></span><code>cable</code> | cb(us) | `cb` | <code>mag<120> * <wbr>[yard_<wbr>pound::fathom](yard_pound.md#fathom)</code> |
@@ -46,6 +46,13 @@
 | <span id="short_hundredweight"></span><code>short_<wbr>hundredweight</code> | cwt | `cwt` | <code>mag<100> * <wbr>[yard_<wbr>pound::pound](yard_pound.md#pound)</code> |
 | <span id="short_ton"></span><code>short_<wbr>ton</code> | — | — | alias to [ton](#ton) |
 | <span id="shot"></span><code>shot</code> | jig | `jig` | <code>mag<3> * <wbr>[tablespoon](#tablespoon)</code> |
+| <span id="survey1893-chain"></span><code>survey1893::chain</code> | ch | — | <code>mag<4> * <wbr>[survey1893::rod](usc.md#rod)</code> |
+| <span id="survey1893-furlong"></span><code>survey1893::furlong</code> | fur | — | <code>mag<10> * <wbr>[survey1893::chain](usc.md#chain)</code> |
+| <span id="survey1893-league"></span><code>survey1893::league</code> | lea | — | <code>mag<3> * <wbr>[survey1893::us_<wbr>survey_<wbr>mile](usc.md#us_survey_mile)</code> |
+| <span id="survey1893-link"></span><code>survey1893::link</code> | li | — | <code>mag_ratio<33, 50> * <wbr>[survey1893::us_<wbr>survey_<wbr>foot](usc.md#us_survey_foot)</code> |
+| <span id="survey1893-rod"></span><code>survey1893::rod</code> | rd | — | <code>mag<25> * <wbr>[survey1893::link](usc.md#link)</code> |
+| <span id="survey1893-us_survey_foot"></span><code>survey1893::us_<wbr>survey_<wbr>foot</code> | ft(us) | — | <code>mag_ratio<1'200, 3'937> * <wbr>[si::metre](si.md#metre)</code> |
+| <span id="survey1893-us_survey_mile"></span><code>survey1893::us_<wbr>survey_<wbr>mile</code> | mi(us) | — | <code>mag<8> * <wbr>[survey1893::furlong](usc.md#furlong)</code> |
 | <span id="tablespoon"></span><code>tablespoon</code> | tbsp | `tbsp` | <code>mag_ratio<1, 2> * <wbr>[fluid_<wbr>ounce](#fluid_ounce)</code> |
 | <span id="teaspoon"></span><code>teaspoon</code> | tsp | `tsp` | <code>mag_ratio<1, 3> * <wbr>[tablespoon](#tablespoon)</code> |
 | <span id="ton"></span><code>ton</code> | t | `t` | <code>mag<2'000> * <wbr>[yard_<wbr>pound::pound](yard_pound.md#pound)</code> |
