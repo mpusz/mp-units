@@ -53,9 +53,9 @@ using mp_units::si::unit_symbols::THz;
 using mp_units::si::unit_symbols::um;
 
 // physical constants
-constexpr auto c = 1 * si::si2019::speed_of_light_in_vacuum;
-constexpr auto h = 1 * si::si2019::planck_constant;
-constexpr auto kb = 1 * si::si2019::boltzmann_constant;
+constexpr auto c = 1 * si::speed_of_light_in_vacuum;
+constexpr auto h = 1 * si::planck_constant;
+constexpr auto kb = 1 * si::boltzmann_constant;
 
 // prints quantities in the resulting unit
 template<QuantityOf<isq::energy> T1, QuantityOf<isq::wavenumber> T2, QuantityOf<isq::frequency> T3,
