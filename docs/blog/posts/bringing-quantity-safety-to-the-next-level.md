@@ -410,8 +410,8 @@ the following:
 ```mermaid
 flowchart TD
     length["<b>length</b><br>[m]"]
-    length --- width["<b>width</b> / <b>breadth</b>"]
-    length --- height["<b>height</b> / <b>depth</b> / <b>altitude</b>"]
+    length --- width["<b>width</b> | <b>breadth</b>"]
+    length --- height["<b>height</b> | <b>depth</b> | <b>altitude</b>"]
     width --- thickness["<b>thickness</b>"]
     width --- diameter["<b>diameter</b>"]
     width --- radius["<b>radius</b>"]

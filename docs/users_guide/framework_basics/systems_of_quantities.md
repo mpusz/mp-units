@@ -91,8 +91,8 @@ For example, here are all quantities of the kind length provided in the ISO 8000
 ```mermaid
 flowchart TD
     length["<b>length</b><br>[m]"]
-    length --- width["<b>width</b> / <b>breadth</b>"]
-    length --- height["<b>height</b> / <b>depth</b> / <b>altitude</b>"]
+    length --- width["<b>width</b> | <b>breadth</b>"]
+    length --- height["<b>height</b> | <b>depth</b> | <b>altitude</b>"]
     width --- thickness["<b>thickness</b>"]
     width --- diameter["<b>diameter</b>"]
     width --- radius["<b>radius</b>"]
@@ -347,9 +347,9 @@ flowchart TD
     potential_energy --- elastic_potential_energy["<b>elastic_potential_energy</b><br><i>(spring_constant * amount_of_compression<sup>2</sup>)</i>"]
     mechanical_energy --- kinetic_energy["<b>kinetic_energy</b><br><i>(mass * speed<sup>2</sup>)</i>"]
     energy --- enthalpy["<b>enthalpy</b>"]
-    enthalpy --- internal_energy["<b>internal_energy</b> / <b>thermodynamic_energy</b>"]
-    internal_energy --- Helmholtz_energy["<b>Helmholtz_energy</b> / <b>Helmholtz_function</b>"]
-    enthalpy --- Gibbs_energy["<b>Gibbs_energy</b> / <b>Gibbs_function</b>"]
+    enthalpy --- internal_energy["<b>internal_energy</b> | <b>thermodynamic_energy</b>"]
+    internal_energy --- Helmholtz_energy["<b>Helmholtz_energy</b> | <b>Helmholtz_function</b>"]
+    enthalpy --- Gibbs_energy["<b>Gibbs_energy</b> | <b>Gibbs_function</b>"]
     energy --- active_energy["<b>active_energy</b>"]
 ```
 
