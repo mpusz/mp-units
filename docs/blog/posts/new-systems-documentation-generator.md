@@ -340,29 +340,29 @@ clickable between entities, the AI made... let's call it a "creative editing dec
     I see the issue! Markdown links don't work inside code blocks (backticks). I need to
     remove the backticks around linkified content so the links are actually clickable.
 
-    Let me fix this by not wrapping linkified definitions in backticks: 
+    Let me fix this by not wrapping linkified definitions in backticks:
 
-    Let me check the current state of the file after the first edit and make the rest one by one: 
+    Let me check the current state of the file after the first edit and make the rest one by one:
 
     ```shell
     cd /home/mpusz/repos/units_latest && python scripts/systems_reference.py --force 2>&1 | tail -5
     ```
 
-    I have a syntax error. Let me check what happened: 
+    I have a syntax error. Let me check what happened:
 
     > Read systems_reference.py, lines 2445 to 2455
 
-    I see the issue - my first replacement removed too much. Let me fix it: 
+    I see the issue - my first replacement removed too much. Let me fix it:
 
     > Read systems_reference.py, lines 2440 to 2460
 
-    I see - I accidentally removed the rest of the code. Let me check what should be there: 
+    I see - I accidentally removed the rest of the code. Let me check what should be there:
 
     ```shell
     cd /home/mpusz/repos/units_latest && git diff scripts/systems_reference.py | head -60
     ```
 
-    Let me revert my change and start fresh: 
+    Let me revert my change and start fresh:
 
     ```shell
     cd /home/mpusz/repos/units_latest && git checkout scripts/systems_reference.py
