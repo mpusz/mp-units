@@ -2600,13 +2600,27 @@ class DocumentationGenerator:
         for sys_ns, system in self.parser.systems.items():
             # Add units
             for unit in system.units:
-                all_refs[unit.name] = (sys_ns, unit.name)
+                # Compute anchor ID the same way as in the unit table generation
+                subns_prefix = None
+                if unit.origin_namespace:
+                    parts = unit.origin_namespace.replace("mp_units::", "").split("::")
+                    if len(parts) > 1:
+                        subns_prefix = parts[-1]
+                elif unit.subnamespace:
+                    subns_prefix = unit.subnamespace
+
+                anchor_id = f"{subns_prefix}-{unit.name}" if subns_prefix else unit.name
+
+                all_refs[unit.name] = (sys_ns, anchor_id)
                 # Also add qualified names
-                all_refs[f"{sys_ns}::{unit.name}"] = (sys_ns, unit.name)
+                all_refs[f"{sys_ns}::{unit.name}"] = (sys_ns, anchor_id)
+                # If there's a subnamespace, also add subnamespace::name format
+                if subns_prefix:
+                    all_refs[f"{subns_prefix}::{unit.name}"] = (sys_ns, anchor_id)
                 # Add secondary namespace qualified names
                 if unit.secondary_namespaces:
                     for sec_ns in unit.secondary_namespaces:
-                        all_refs[f"{sec_ns}::{unit.name}"] = (sys_ns, unit.name)
+                        all_refs[f"{sec_ns}::{unit.name}"] = (sys_ns, anchor_id)
 
             # Add point origins
             for origin in system.point_origins:
@@ -2719,8 +2733,23 @@ class DocumentationGenerator:
                                 and unit.origin_namespace
                                 and unit.origin_namespace.endswith(potential_origin_ns)
                             ):
+                                # Compute anchor ID with subnamespace prefix
+                                subns_prefix = None
+                                if unit.origin_namespace:
+                                    ns_parts = unit.origin_namespace.replace(
+                                        "mp_units::", ""
+                                    ).split("::")
+                                    if len(ns_parts) > 1:
+                                        subns_prefix = ns_parts[-1]
+                                elif unit.subnamespace:
+                                    subns_prefix = unit.subnamespace
+                                anchor_id = (
+                                    f"{subns_prefix}-{unit.name}"
+                                    if subns_prefix
+                                    else unit.name
+                                )
                                 return make_link(
-                                    display_text, f"{sys_ns}.md#{entity_name}"
+                                    display_text, f"{sys_ns}.md#{anchor_id}"
                                 )
                         # Check point_origins too
                         for origin in system.point_origins:
@@ -2732,8 +2761,10 @@ class DocumentationGenerator:
                                     potential_origin_ns
                                 )
                             ):
+                                # Compute anchor ID (point origins likely don't have subnamespace)
+                                anchor_id = origin.name
                                 return make_link(
-                                    display_text, f"{sys_ns}.md#{entity_name}"
+                                    display_text, f"{sys_ns}.md#{anchor_id}"
                                 )
 
             # Build a key to check current system first

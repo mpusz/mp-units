@@ -16,7 +16,7 @@
 | <span id="Julian_year"></span><code>Julian_<wbr>year</code> | a | `a` | <code>mag_ratio<365'25, 100> * <wbr>[day](#day)</code> |
 | <span id="century"></span><code>century</code> | c | `c` | <code>mag<100> * <wbr>[Julian_<wbr>year](#Julian_year)</code> |
 | <span id="day"></span><code>day</code> | D | `D` | <code>[non_<wbr>si::day](si.md#day)</code> |
-| <span id="gaussian_gravitational_constant"></span><code>gaussian_<wbr>gravitational_<wbr>constant</code> | k | `k` | <code>mag_ratio<1'720'209'895, 100'000'000'000> * <wbr>pow<3, 2>([iau::astronomical_<wbr>unit](si.md#astronomical_unit)) / <wbr>pow<1,2>([iau::solar_<wbr>mass](iau.md#solar_mass)) / <wbr>[day](#day)</code> |
+| <span id="gaussian_gravitational_constant"></span><code>gaussian_<wbr>gravitational_<wbr>constant</code> | k | `k` | <code>mag_ratio<1'720'209'895, 100'000'000'000> * <wbr>pow<3, 2>([iau::astronomical_<wbr>unit](si.md#astronomical_unit)) / <wbr>pow<1,2>([iau::solar_<wbr>mass](iau.md#codata2018-solar_mass)) / <wbr>[day](#day)</code> |
 | <span id="jansky"></span><code>jansky</code> | Jy | `Jy` | <code>mag_power<10, -26> * <wbr>[si::watt](si.md#watt) / <wbr>square([si::metre](si.md#metre)) / <wbr>[si::hertz](si.md#hertz)</code> |
 | <span id="light_year"></span><code>light_<wbr>year</code> | ly | `ly` | <code>mag<9'460'730'472'580'800> * <wbr>[si::metre](si.md#metre)</code> |
 | <span id="lunar_distance"></span><code>lunar_<wbr>distance</code> | LD | `LD` | <code>mag<384'399> * <wbr>[si::kilo](si.md#kilo)<[si::metre](si.md#metre)></code> |
