@@ -66,7 +66,6 @@
 
     The `mp_units::si::si2019` namespace is inline in `mp_units::si`, making its units directly accessible from the parent namespace.
 
-
 ## Non-SI units accepted for use with the SI
 
 | Unit Name | Symbol | unit_symbol | Definition |

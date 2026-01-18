@@ -33,4 +33,3 @@
 !!! note "Inline Namespaces"
 
     The `mp_units::iau::codata2018` namespace is inline in `mp_units::iau`, making its units directly accessible from the parent namespace.
-

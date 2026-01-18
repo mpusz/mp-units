@@ -1261,7 +1261,10 @@ class SystemsParser:
                             if file.exists():
                                 file_content = file.read_text()
                                 # Match: inline constexpr auto cm = centi<metre>;
-                                symbol_def_pattern = rf"inline\s+constexpr\s+auto\s+{re.escape(symbol_name)}\s*=\s*([\w<>:]+)\s*;"
+                                symbol_def_pattern = (
+                                    rf"inline\s+constexpr\s+auto\s+"
+                                    rf"{re.escape(symbol_name)}\s*=\s*([\w<>:]+)\s*;"
+                                )
                                 symbol_def_match = re.search(
                                     symbol_def_pattern, file_content
                                 )
@@ -1538,7 +1541,8 @@ class DocumentationGenerator:
                 origins_str = str(origins) if origins else "—"
 
                 f.write(
-                    f"| [{display}](systems/{namespace}.md) | {dims_str} | {qtys_str} | {units_str} | {prefixes_str} | {origins_str} |\n"
+                    f"| [{display}](systems/{namespace}.md) | {dims_str} | "
+                    f"{qtys_str} | {units_str} | {prefixes_str} | {origins_str} |\n"
                 )
 
     def generate_dimensions_index(self):
@@ -2312,7 +2316,7 @@ class DocumentationGenerator:
                             parent_ns = f"mp_units::{namespace}"
                             f.write(
                                 f"    The `{full_ns}` namespace is inline in `{parent_ns}`, "
-                                f"making its units directly accessible from the parent namespace.\n\n"
+                                f"making its units directly accessible from the parent namespace.\n"
                             )
 
                     need_separator = True
@@ -2410,7 +2414,8 @@ class DocumentationGenerator:
             # This is an alias - show reference to original (linkified)
             alias_target_linked = self._linkify_definition(unit.alias_target, system)
             f.write(
-                f'| <span id="{anchor_id}"></span><code>{unit_display_with_breaks}</code> | — | — | alias to {alias_target_linked} |\n'
+                f'| <span id="{anchor_id}"></span><code>{unit_display_with_breaks}'
+                f"</code> | — | — | alias to {alias_target_linked} |\n"
             )
         else:
             # Regular definition
@@ -2584,7 +2589,10 @@ class DocumentationGenerator:
         # Matches: word, namespace::word, nested::namespace::word
         # Allow both lowercase and uppercase letters for names like Julian_year and zeroth_degree_Celsius
         # Support Unicode identifiers (e.g., π)
-        identifier_pattern = r"\b([a-zA-Z_\u0080-\uFFFF][a-zA-Z0-9_\u0080-\uFFFF]*(?:::[a-zA-Z_\u0080-\uFFFF][a-zA-Z0-9_\u0080-\uFFFF]*)*)\b"
+        identifier_pattern = (
+            r"\b([a-zA-Z_\u0080-\uFFFF][a-zA-Z0-9_\u0080-\uFFFF]*"
+            r"(?:::[a-zA-Z_\u0080-\uFFFF][a-zA-Z0-9_\u0080-\uFFFF]*)*)\b"
+        )
 
         # Collect all possible references from all systems
         all_refs = {}  # name -> (system_namespace, anchor_name)
@@ -2843,7 +2851,11 @@ class DocumentationGenerator:
                         qty_name = parts[-1] if len(parts) > 1 else qname
 
                     url = f"../../systems/{system_key}/#{qty_name}"
-                    return f'<a href="{url}" style="color: black; text-decoration: none;">{identifier}</a>'
+                    return (
+                        f'<a href="{url}" '
+                        f'style="color: black; text-decoration: none;">'
+                        f"{identifier}</a>"
+                    )
 
             # Not a quantity identifier - return as-is
             return identifier
@@ -2901,7 +2913,11 @@ class DocumentationGenerator:
 
             # Build node label with HTML links
             # Link the primary quantity name
-            name_display = f'<a href="{base_url}#{qty_name}" style="color: black; text-decoration: none;">{qualified_name}</a>'
+            name_display = (
+                f'<a href="{base_url}#{qty_name}" '
+                f'style="color: black; text-decoration: none;">'
+                f"{qualified_name}</a>"
+            )
 
             # Add aliases with individual links
             if qualified_name in aliases_map:
@@ -2919,7 +2935,9 @@ class DocumentationGenerator:
                     )
                     alias_url = f"../../systems/{alias_system}/#{alias_name}"
                     alias_parts.append(
-                        f'<a href="{alias_url}" style="color: black; text-decoration: none;">{alias_qname}</a>'
+                        f'<a href="{alias_url}" '
+                        f'style="color: black; text-decoration: none;">'
+                        f"{alias_qname}</a>"
                     )
                 name_display = name_display + " | " + " | ".join(alias_parts)
 
