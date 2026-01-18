@@ -216,7 +216,6 @@ nav:
           - kalman_filter: examples/kalman_filter.md
   - Reference:
       - Cheat Sheet: reference/cheat_sheet.md
-      - Supported Systems Overview: reference/systems_overview.md
       - Systems Reference:
           - Overview: reference/systems_reference/index.md
           - Dimensions: reference/systems_reference/dimensions_index.md

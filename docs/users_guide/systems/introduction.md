@@ -89,8 +89,8 @@ This User's Guide provides in-depth documentation for the following systems:
 
     For a comprehensive list of all available systems (including IEC, Typographic, HEP,
     and the `astronomy` utility system for commonly used astronomy units like light-years,
-    jansky, sidereal days, etc.), see the [Supported Systems Overview](../../reference/systems_overview.md)
-    in the Reference section.
+    jansky, sidereal days, etc.), see the
+    [Systems Reference](../../reference/systems_reference/index.md) in the Reference section.
 
 ## Choosing the Right System
 
