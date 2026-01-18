@@ -5,14 +5,14 @@
 The **International System of Quantities (ISQ)** is the system of quantities used as the basis
 for the International System of Units (SI) and other systems of units.
 
-The ISQ is defined across the ISO/IEC 80000 series, which currently includes parts 1-17
-covering quantities and units in various domains.
-
 !!! info
 
     For a general introduction to systems of quantities and their importance, see
     [Systems of Quantities](../framework_basics/systems_of_quantities.md) in the
     Framework Basics section.
+
+The ISQ is defined across the ISO/IEC 80000 series, which currently includes parts 1-17
+covering quantities and units in various domains.
 
 **mp-units** provides comprehensive support for the ISQ, likely making it the first
 library (in any programming language) to model the complete ISO/IEC 80000 quantity
@@ -252,7 +252,9 @@ both are lengths.
 
 ## References
 
-- [ISO/IEC 80000 series](https://www.iso.org/standard/76921.html)
-- [SI Brochure (9th edition)](https://www.bipm.org/en/publications/si-brochure)
+- [ISQ Systems Reference](../../reference/systems_reference/systems/isq.md) - Complete
+  list of quantities, dimensions, and hierarchies
 - [Systems of Quantities](../framework_basics/systems_of_quantities.md) - Framework basics
 - [Systems of Units](../framework_basics/systems_of_units.md) - Framework basics
+- [ISO/IEC 80000 series](https://www.iso.org/standard/76921.html)
+- [SI Brochure (9th edition)](https://www.bipm.org/en/publications/si-brochure)

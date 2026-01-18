@@ -468,6 +468,11 @@ quantity land_area = 1 * usc::acre;  // Acre is based on survey chains
 
 ## Further Reading
 
+<!-- markdownlint-disable MD013 -->
+- [Yard-Pound Systems Reference](../../reference/systems_reference/systems/yard_pound.md) - Complete list of yard_pound units
+- [Imperial Systems Reference](../../reference/systems_reference/systems/imperial.md) - Complete list of imperial units
+- [USC Systems Reference](../../reference/systems_reference/systems/usc.md) - Complete list of US customary units
 - [The International Yard and Pound Agreement (1959)](https://www.ngs.noaa.gov/PUBS_LIB/FedRegister/FRdoc59-5442.pdf)
 - [United Kingdom Weights and Measures Act (1985)](https://www.legislation.gov.uk/ukpga/1985/72)
 - [NIST Special Publication 811: Guide for the Use of the International System of Units](https://www.nist.gov/pml/special-publication-811)
+<!-- markdownlint-enable MD013 -->

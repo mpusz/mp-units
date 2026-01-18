@@ -257,6 +257,8 @@ For general engineering and most modern scientific work, [SI units](si.md) are r
 
 ## References
 
-- [CGS Units on Wikipedia](https://en.wikipedia.org/wiki/Centimetre%E2%80%93gram%E2%80%93second_system_of_units)
-- [International System of Units (SI)](si.md)
+- [CGS Systems Reference](../../reference/systems_reference/systems/cgs.md) - Complete
+  list of units
 - [Systems of Units](../framework_basics/systems_of_units.md) - Framework basics
+- [International System of Units (SI)](si.md)
+- [CGS Units on Wikipedia](https://en.wikipedia.org/wiki/Centimetre%E2%80%93gram%E2%80%93second_system_of_units)

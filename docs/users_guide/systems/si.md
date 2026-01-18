@@ -322,6 +322,8 @@ std::cout << kinetic_energy.in(J) << "\n";        // Energy in joules
 
 ## References
 
+- [SI Systems Reference](../../reference/systems_reference/systems/si.md) - Complete
+  list of units, prefixes, and point origins
+- [Systems of Units](../framework_basics/systems_of_units.md) - Framework basics
 - [SI Brochure (9th edition)](https://www.bipm.org/en/publications/si-brochure)
 - [International System of Quantities (ISQ)](isq.md)
-- [Systems of Units](../framework_basics/systems_of_units.md) - Framework basics

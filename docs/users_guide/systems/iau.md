@@ -15,12 +15,23 @@ The **mp-units** IAU system implements:
 - **CODATA 2018**: Measured values for the Newtonian gravitational constant G and derived
   _masses_
 
-!!! tip "When to Use"
+!!! tip "Astronomy Utilities"
 
-    - Use **`iau`** for professional astronomy/astrophysics calculations requiring IAU standard values
-    - Use **`astronomy`** utilities (see tip at the end) for common astronomy units like light-years,
-      jansky, or sidereal days
-    - The two can be used together when needed
+    For commonly used astronomy units not standardized by the IAU (such as light-years,
+    jansky, sidereal days, Julian years, etc.), see the `astronomy` utility system:
+
+    ```cpp
+    #include <mp-units/systems/astronomy.h>
+
+    using namespace mp_units::astronomy::unit_symbols;
+
+    quantity distance = 4.22 * ly;        // light-year
+    quantity flux = 1.5 * Jy;             // jansky (radio astronomy)
+    quantity period = 1. * D_sid;         // sidereal day
+    quantity age = 13.8e9 * a;            // Julian year
+    ```
+
+    These units can be freely mixed with IAU and SI units.
 
 ## Resolution B3: Nominal Values
 
@@ -289,27 +300,13 @@ Exoplanet mass: 0.13 M_⊕
 
 ## References
 
-- [IAU Resolution B3 (2015)](https://www.iau.org/Iau/Publications/List-of-Resolutions) -
+- [IAU Systems Reference](../../reference/systems_reference/systems/iau.md) - Complete
+  list of IAU units
+- [Astronomy Systems Reference](../../reference/systems_reference/systems/astronomy.md) -
+  Complete list of astronomy utility units
+- [IAU 2015 Resolution B3](https://www.iau.org/Iau/Publications/List-of-Resolutions) -
   Nominal conversion constants for selected solar and planetary properties
-- [IAU Resolution B2 (2012)](https://www.iau.org/Iau/Publications/List-of-Resolutions) -
+- [IAU 2012 Resolution B2](https://www.iau.org/Iau/Publications/List-of-Resolutions) -
   On the re-definition of the astronomical unit of length
 - [CODATA 2018](https://physics.nist.gov/cuu/Constants/index.html) -
   Internationally recommended values of the fundamental physical constants
-
-!!! tip "Astronomy Utilities"
-
-    For commonly used astronomy units not standardized by the IAU (such as light-years,
-    jansky, sidereal days, Julian years, etc.), see the `astronomy` utility system:
-
-    ```cpp
-    #include <mp-units/systems/astronomy.h>
-
-    using namespace mp_units::astronomy::unit_symbols;
-
-    quantity distance = 4.22 * ly;        // light-year
-    quantity flux = 1.5 * Jy;             // jansky (radio astronomy)
-    quantity period = 1. * D_sid;         // sidereal day
-    quantity age = 13.8e9 * a;            // Julian year
-    ```
-
-    These units can be freely mixed with IAU and SI units.

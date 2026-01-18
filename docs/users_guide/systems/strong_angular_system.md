@@ -175,3 +175,11 @@ Applying a perpendicular force of 500 N to a 20 cm long lever results in 100 N m
     You can find more information about this constant in [Quincey](../../reference/bibliography.md#Quincey).
 
 [Try it live on Compiler Explorer](https://godbolt.org/z/qfxosv9YM){ .md-button }
+
+## References
+
+<!-- markdownlint-disable MD013 -->
+- [Angular Systems Reference](../../reference/systems_reference/systems/angular.md) - Complete list of quantities and units
+- [ISQ Angle Systems Reference](../../reference/systems_reference/systems/isq_angle.md) - ISQ with strong angular dimensions
+- [Quincey: Angles in the SI](../../reference/bibliography.md#Quincey) - Detailed proposal for solving the angle problem
+<!-- markdownlint-enable MD013 -->
