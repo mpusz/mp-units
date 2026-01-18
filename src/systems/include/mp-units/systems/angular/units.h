@@ -36,7 +36,7 @@ namespace mp_units {
 namespace angular {
 
 // clang-format off
-inline constexpr struct dim_angle final : base_dimension<"A"> {} dim_angle;
+inline constexpr struct dim_angle final : base_dimension<symbol_text{u8"α", "a"}> {} dim_angle;
 QUANTITY_SPEC(angle, dim_angle);
 QUANTITY_SPEC(solid_angle, pow<2>(angle));
 
