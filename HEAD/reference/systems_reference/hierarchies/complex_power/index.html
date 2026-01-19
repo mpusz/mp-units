@@ -9625,10 +9625,10 @@ You're not viewing the latest version.
 <h1 id="complex_power-hierarchy">complex_power Hierarchy<a class="headerlink" href="#complex_power-hierarchy" title="Permanent link">&para;</a></h1>
 <p><strong>System:</strong> ISQ</p>
 <pre class="mermaid"><code>flowchart LR
-    isq_complex_power["&lt;b&gt;&lt;a href="../../systems/isq/#complex_power" style="color: black; text-decoration: none;"&gt;isq::complex_power&lt;/a&gt;&lt;/b&gt;&lt;br&gt;&lt;i&gt;(&lt;a href="../../systems/isq/#voltage_phasor" style="color: black; text-decoration: none;"&gt;voltage_phasor&lt;/a&gt; * &lt;a href="../../systems/isq/#electric_current_phasor" style="color: black; text-decoration: none;"&gt;electric_current_phasor&lt;/a&gt;)&lt;/i&gt;"]
-    isq_apparent_power["&lt;b&gt;&lt;a href="../../systems/isq/#apparent_power" style="color: black; text-decoration: none;"&gt;isq::apparent_power&lt;/a&gt;&lt;/b&gt;"]
+    isq_complex_power["&lt;b&gt;&lt;a href="../../systems/isq/#complex_power" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::complex_power&lt;/a&gt;&lt;/b&gt;&lt;br&gt;&lt;i&gt;(&lt;a href="../../systems/isq/#voltage_phasor" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;voltage_phasor&lt;/a&gt; * &lt;a href="../../systems/isq/#electric_current_phasor" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;electric_current_phasor&lt;/a&gt;)&lt;/i&gt;"]
+    isq_apparent_power["&lt;b&gt;&lt;a href="../../systems/isq/#apparent_power" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::apparent_power&lt;/a&gt;&lt;/b&gt;"]
     isq_complex_power --- isq_apparent_power
-    isq_non_active_power["&lt;b&gt;&lt;a href="../../systems/isq/#non_active_power" style="color: black; text-decoration: none;"&gt;isq::non_active_power&lt;/a&gt;&lt;/b&gt;&lt;br&gt;&lt;i&gt;(pow&lt;1, 2&gt;(pow&lt;2&gt;(&lt;a href="../../systems/isq/#apparent_power" style="color: black; text-decoration: none;"&gt;apparent_power&lt;/a&gt;)))&lt;/i&gt;"]
+    isq_non_active_power["&lt;b&gt;&lt;a href="../../systems/isq/#non_active_power" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::non_active_power&lt;/a&gt;&lt;/b&gt;&lt;br&gt;&lt;i&gt;(pow&lt;1, 2&gt;(pow&lt;2&gt;(&lt;a href="../../systems/isq/#apparent_power" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;apparent_power&lt;/a&gt;)))&lt;/i&gt;"]
     isq_apparent_power --- isq_non_active_power</code></pre>
 
 

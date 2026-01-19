@@ -9625,26 +9625,26 @@ You're not viewing the latest version.
 <h1 id="energy-hierarchy">energy Hierarchy<a class="headerlink" href="#energy-hierarchy" title="Permanent link">&para;</a></h1>
 <p><strong>System:</strong> ISQ</p>
 <pre class="mermaid"><code>flowchart LR
-    isq_energy["&lt;b&gt;&lt;a href="../../systems/isq/#energy" style="color: black; text-decoration: none;"&gt;isq::energy&lt;/a&gt;&lt;/b&gt;&lt;br&gt;&lt;i&gt;(&lt;a href="../../systems/isq/#mass" style="color: black; text-decoration: none;"&gt;mass&lt;/a&gt; * pow&lt;2&gt;(&lt;a href="../../systems/isq/#length" style="color: black; text-decoration: none;"&gt;length&lt;/a&gt;) / pow&lt;2&gt;(&lt;a href="../../systems/isq/#time" style="color: black; text-decoration: none;"&gt;time&lt;/a&gt;))&lt;/i&gt;"]
-    isq_enthalpy["&lt;b&gt;&lt;a href="../../systems/isq/#enthalpy" style="color: black; text-decoration: none;"&gt;isq::enthalpy&lt;/a&gt;&lt;/b&gt;"]
+    isq_energy["&lt;b&gt;&lt;a href="../../systems/isq/#energy" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::energy&lt;/a&gt;&lt;/b&gt;&lt;br&gt;&lt;i&gt;(&lt;a href="../../systems/isq/#mass" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;mass&lt;/a&gt; * pow&lt;2&gt;(&lt;a href="../../systems/isq/#length" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;length&lt;/a&gt;) / pow&lt;2&gt;(&lt;a href="../../systems/isq/#time" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;time&lt;/a&gt;))&lt;/i&gt;"]
+    isq_enthalpy["&lt;b&gt;&lt;a href="../../systems/isq/#enthalpy" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::enthalpy&lt;/a&gt;&lt;/b&gt;"]
     isq_energy --- isq_enthalpy
-    isq_Gibbs_energy["&lt;b&gt;&lt;a href="../../systems/isq/#Gibbs_energy" style="color: black; text-decoration: none;"&gt;isq::Gibbs_energy&lt;/a&gt; | &lt;a href="../../systems/isq/#Gibbs_function" style="color: black; text-decoration: none;"&gt;isq::Gibbs_function&lt;/a&gt;&lt;/b&gt;"]
+    isq_Gibbs_energy["&lt;b&gt;&lt;a href="../../systems/isq/#Gibbs_energy" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::Gibbs_energy&lt;/a&gt; | &lt;a href="../../systems/isq/#Gibbs_function" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::Gibbs_function&lt;/a&gt;&lt;/b&gt;"]
     isq_enthalpy --- isq_Gibbs_energy
-    isq_internal_energy["&lt;b&gt;&lt;a href="../../systems/isq/#internal_energy" style="color: black; text-decoration: none;"&gt;isq::internal_energy&lt;/a&gt; | &lt;a href="../../systems/isq/#thermodynamic_energy" style="color: black; text-decoration: none;"&gt;isq::thermodynamic_energy&lt;/a&gt;&lt;/b&gt;"]
+    isq_internal_energy["&lt;b&gt;&lt;a href="../../systems/isq/#internal_energy" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::internal_energy&lt;/a&gt; | &lt;a href="../../systems/isq/#thermodynamic_energy" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::thermodynamic_energy&lt;/a&gt;&lt;/b&gt;"]
     isq_enthalpy --- isq_internal_energy
-    isq_Helmholtz_energy["&lt;b&gt;&lt;a href="../../systems/isq/#Helmholtz_energy" style="color: black; text-decoration: none;"&gt;isq::Helmholtz_energy&lt;/a&gt; | &lt;a href="../../systems/isq/#Helmholtz_function" style="color: black; text-decoration: none;"&gt;isq::Helmholtz_function&lt;/a&gt;&lt;/b&gt;"]
+    isq_Helmholtz_energy["&lt;b&gt;&lt;a href="../../systems/isq/#Helmholtz_energy" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::Helmholtz_energy&lt;/a&gt; | &lt;a href="../../systems/isq/#Helmholtz_function" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::Helmholtz_function&lt;/a&gt;&lt;/b&gt;"]
     isq_internal_energy --- isq_Helmholtz_energy
-    isq_heat["&lt;b&gt;&lt;a href="../../systems/isq/#heat" style="color: black; text-decoration: none;"&gt;isq::heat&lt;/a&gt; | &lt;a href="../../systems/isq/#amount_of_heat" style="color: black; text-decoration: none;"&gt;isq::amount_of_heat&lt;/a&gt;&lt;/b&gt;"]
+    isq_heat["&lt;b&gt;&lt;a href="../../systems/isq/#heat" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::heat&lt;/a&gt; | &lt;a href="../../systems/isq/#amount_of_heat" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::amount_of_heat&lt;/a&gt;&lt;/b&gt;"]
     isq_energy --- isq_heat
-    isq_latent_heat["&lt;b&gt;&lt;a href="../../systems/isq/#latent_heat" style="color: black; text-decoration: none;"&gt;isq::latent_heat&lt;/a&gt;&lt;/b&gt;"]
+    isq_latent_heat["&lt;b&gt;&lt;a href="../../systems/isq/#latent_heat" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::latent_heat&lt;/a&gt;&lt;/b&gt;"]
     isq_heat --- isq_latent_heat
-    isq_mechanical_energy["&lt;b&gt;&lt;a href="../../systems/isq/#mechanical_energy" style="color: black; text-decoration: none;"&gt;isq::mechanical_energy&lt;/a&gt;&lt;/b&gt;"]
+    isq_mechanical_energy["&lt;b&gt;&lt;a href="../../systems/isq/#mechanical_energy" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::mechanical_energy&lt;/a&gt;&lt;/b&gt;"]
     isq_energy --- isq_mechanical_energy
-    isq_kinetic_energy["&lt;b&gt;&lt;a href="../../systems/isq/#kinetic_energy" style="color: black; text-decoration: none;"&gt;isq::kinetic_energy&lt;/a&gt;&lt;/b&gt;&lt;br&gt;&lt;i&gt;(&lt;a href="../../systems/isq/#mass" style="color: black; text-decoration: none;"&gt;mass&lt;/a&gt; * pow&lt;2&gt;(&lt;a href="../../systems/isq/#speed" style="color: black; text-decoration: none;"&gt;speed&lt;/a&gt;))&lt;/i&gt;"]
+    isq_kinetic_energy["&lt;b&gt;&lt;a href="../../systems/isq/#kinetic_energy" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::kinetic_energy&lt;/a&gt;&lt;/b&gt;&lt;br&gt;&lt;i&gt;(&lt;a href="../../systems/isq/#mass" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;mass&lt;/a&gt; * pow&lt;2&gt;(&lt;a href="../../systems/isq/#speed" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;speed&lt;/a&gt;))&lt;/i&gt;"]
     isq_mechanical_energy --- isq_kinetic_energy
-    isq_potential_energy["&lt;b&gt;&lt;a href="../../systems/isq/#potential_energy" style="color: black; text-decoration: none;"&gt;isq::potential_energy&lt;/a&gt;&lt;/b&gt;"]
+    isq_potential_energy["&lt;b&gt;&lt;a href="../../systems/isq/#potential_energy" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::potential_energy&lt;/a&gt;&lt;/b&gt;"]
     isq_mechanical_energy --- isq_potential_energy
-    isq_radiant_energy["&lt;b&gt;&lt;a href="../../systems/isq/#radiant_energy" style="color: black; text-decoration: none;"&gt;isq::radiant_energy&lt;/a&gt;&lt;/b&gt;"]
+    isq_radiant_energy["&lt;b&gt;&lt;a href="../../systems/isq/#radiant_energy" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;isq::radiant_energy&lt;/a&gt;&lt;/b&gt;"]
     isq_energy --- isq_radiant_energy</code></pre>
 
 
