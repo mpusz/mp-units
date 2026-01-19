@@ -28,3 +28,4 @@ practical, type-safe patterns will help you apply **mp-units** in real projects.
 10. [Custom Base Dimensions](custom_base_dimensions.md)
 11. [Preventing Confusion with Distinct Kinds](distinct_quantity_kinds.md)
 12. [Faster-than-Lightspeed Constants](faster_than_lightspeed_constants.md)
+13. [Incremental Migration from Legacy Code](incremental_migration.md)
