@@ -295,6 +295,14 @@ int main()
     ```
 
 
+## References
+
+- [Interoperability with Other Libraries](../how_to_guides/interoperability_with_other_libraries.md) -
+  Complete guide to `quantity_like_traits`
+- [Working with Legacy Interfaces](../how_to_guides/working_with_legacy_interfaces.md) -
+  Advanced patterns for legacy integration
+
+
 ## Takeaways
 
 **Key concepts learned:**
@@ -335,11 +343,3 @@ int main()
 | **Progress tracking** | Count explicit casts = legacy debt                          | No clear metric                                                    |
 | **Team clarity**      | "This crosses into legacy land"                             | Boundary invisible to reviewers                                    |
 | **When to use**       | **Recommended for simple legacy wrappers** during migration | Established libraries (Boost.Units) with similar safety guarantees |
-
-
-## References
-
-- [Interoperability with Other Libraries](../how_to_guides/interoperability_with_other_libraries.md) -
-  Complete guide to `quantity_like_traits`
-- [Working with Legacy Interfaces](../how_to_guides/working_with_legacy_interfaces.md) -
-  Advanced patterns for legacy integration
