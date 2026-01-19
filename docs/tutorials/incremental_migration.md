@@ -325,14 +325,6 @@ int main()
       legacy functions from **mp-units** (e.g., `legacy_is_safe_velocity(MeterPerSecond(speed))`)
     - Unit conversions happen automatically in both directions (e.g., `km/h` ↔ `m/s`)
 
-**Real-world benefits:**
-
-- ✅ **Zero disruption**: Legacy code continues working unchanged
-- ✅ **Immediate value**: New code gains dimensional analysis, unit conversions, modern C++20
-- ✅ **Gradual learning**: Team learns **mp-units** while delivering features
-- ✅ **Clear metrics**: Track migration progress (% of modules migrated)
-- ✅ **Risk reduction**: Validate each module before moving to the next
-
 **Why explicit export helps migration:**
 
 | Aspect                | `explicit_export = true`                                    | `explicit_export = false`                                          |
@@ -343,3 +335,11 @@ int main()
 | **Progress tracking** | Count explicit casts = legacy debt                          | No clear metric                                                    |
 | **Team clarity**      | "This crosses into legacy land"                             | Boundary invisible to reviewers                                    |
 | **When to use**       | **Recommended for simple legacy wrappers** during migration | Established libraries (Boost.Units) with similar safety guarantees |
+
+**Real-world benefits:**
+
+- ✅ **Zero disruption**: Legacy code continues working unchanged
+- ✅ **Immediate value**: New code gains dimensional analysis, unit conversions, modern C++20
+- ✅ **Gradual learning**: Team learns **mp-units** while delivering features
+- ✅ **Clear metrics**: Track migration progress (% of modules migrated)
+- ✅ **Risk reduction**: Validate each module before moving to the next
