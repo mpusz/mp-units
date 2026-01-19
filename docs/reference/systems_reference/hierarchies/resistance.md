@@ -7,5 +7,5 @@
 
 ```mermaid
 flowchart LR
-    isq_resistance["<b><a href="../../systems/isq/#resistance" style="color: black; text-decoration: none;">isq::resistance</a></b><br><i>(<a href="../../systems/isq/#voltage" style="color: black; text-decoration: none;">voltage</a> / <a href="../../systems/isq/#electric_current" style="color: black; text-decoration: none;">electric_current</a>)</i>"]
+    isq_resistance["<b><a href="../../systems/isq/#resistance" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::resistance</a></b><br><i>(<a href="../../systems/isq/#voltage" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">voltage</a> / <a href="../../systems/isq/#electric_current" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">electric_current</a>)</i>"]
 ```

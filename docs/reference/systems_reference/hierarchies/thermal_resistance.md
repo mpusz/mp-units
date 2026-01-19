@@ -7,5 +7,5 @@
 
 ```mermaid
 flowchart LR
-    isq_thermal_resistance["<b><a href="../../systems/isq/#thermal_resistance" style="color: black; text-decoration: none;">isq::thermal_resistance</a></b><br><i>(<a href="../../systems/isq/#thermodynamic_temperature" style="color: black; text-decoration: none;">thermodynamic_temperature</a> / <a href="../../systems/isq/#heat_flow_rate" style="color: black; text-decoration: none;">heat_flow_rate</a>)</i>"]
+    isq_thermal_resistance["<b><a href="../../systems/isq/#thermal_resistance" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::thermal_resistance</a></b><br><i>(<a href="../../systems/isq/#thermodynamic_temperature" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">thermodynamic_temperature</a> / <a href="../../systems/isq/#heat_flow_rate" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">heat_flow_rate</a>)</i>"]
 ```

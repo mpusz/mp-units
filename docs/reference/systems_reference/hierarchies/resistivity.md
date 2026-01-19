@@ -7,5 +7,5 @@
 
 ```mermaid
 flowchart LR
-    isq_resistivity["<b><a href="../../systems/isq/#resistivity" style="color: black; text-decoration: none;">isq::resistivity</a></b><br><i>(inverse(<a href="../../systems/isq/#conductivity" style="color: black; text-decoration: none;">conductivity</a>))</i>"]
+    isq_resistivity["<b><a href="../../systems/isq/#resistivity" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::resistivity</a></b><br><i>(inverse(<a href="../../systems/isq/#conductivity" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">conductivity</a>))</i>"]
 ```

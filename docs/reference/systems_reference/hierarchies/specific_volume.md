@@ -7,5 +7,5 @@
 
 ```mermaid
 flowchart LR
-    isq_specific_volume["<b><a href="../../systems/isq/#specific_volume" style="color: black; text-decoration: none;">isq::specific_volume</a></b><br><i>(inverse(<a href="../../systems/isq/#mass_density" style="color: black; text-decoration: none;">mass_density</a>))</i>"]
+    isq_specific_volume["<b><a href="../../systems/isq/#specific_volume" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::specific_volume</a></b><br><i>(inverse(<a href="../../systems/isq/#mass_density" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">mass_density</a>))</i>"]
 ```

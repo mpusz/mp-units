@@ -7,5 +7,5 @@
 
 ```mermaid
 flowchart LR
-    isq_damping_coefficient["<b><a href="../../systems/isq/#damping_coefficient" style="color: black; text-decoration: none;">isq::damping_coefficient</a></b><br><i>(inverse(<a href="../../systems/isq/#time_constant" style="color: black; text-decoration: none;">time_constant</a>))</i>"]
+    isq_damping_coefficient["<b><a href="../../systems/isq/#damping_coefficient" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::damping_coefficient</a></b><br><i>(inverse(<a href="../../systems/isq/#time_constant" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">time_constant</a>))</i>"]
 ```

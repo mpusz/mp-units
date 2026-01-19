@@ -2884,7 +2884,7 @@ class DocumentationGenerator:
                     url = f"../../systems/{system_key}/#{qty_name}"
                     return (
                         f'<a href="{url}" '
-                        f'style="color: black; text-decoration: none;">'
+                        f'style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">'
                         f"{identifier}</a>"
                     )
 
@@ -2946,7 +2946,7 @@ class DocumentationGenerator:
             # Link the primary quantity name
             name_display = (
                 f'<a href="{base_url}#{qty_name}" '
-                f'style="color: black; text-decoration: none;">'
+                f'style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">'
                 f"{qualified_name}</a>"
             )
 
@@ -2967,7 +2967,7 @@ class DocumentationGenerator:
                     alias_url = f"../../systems/{alias_system}/#{alias_name}"
                     alias_parts.append(
                         f'<a href="{alias_url}" '
-                        f'style="color: black; text-decoration: none;">'
+                        f'style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">'
                         f"{alias_qname}</a>"
                     )
                 name_display = name_display + " | " + " | ".join(alias_parts)

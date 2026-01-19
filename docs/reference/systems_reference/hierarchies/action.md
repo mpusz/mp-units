@@ -7,5 +7,5 @@
 
 ```mermaid
 flowchart LR
-    isq_action["<b><a href="../../systems/isq/#action" style="color: black; text-decoration: none;">isq::action</a></b><br><i>(<a href="../../systems/isq/#energy" style="color: black; text-decoration: none;">energy</a> * <a href="../../systems/isq/#time" style="color: black; text-decoration: none;">time</a>)</i>"]
+    isq_action["<b><a href="../../systems/isq/#action" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::action</a></b><br><i>(<a href="../../systems/isq/#energy" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">energy</a> * <a href="../../systems/isq/#time" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">time</a>)</i>"]
 ```

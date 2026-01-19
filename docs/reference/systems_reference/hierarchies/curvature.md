@@ -7,5 +7,5 @@
 
 ```mermaid
 flowchart LR
-    isq_curvature["<b><a href="../../systems/isq/#curvature" style="color: black; text-decoration: none;">isq::curvature</a></b><br><i>(inverse(<a href="../../systems/isq/#radius_of_curvature" style="color: black; text-decoration: none;">radius_of_curvature</a>))</i>"]
+    isq_curvature["<b><a href="../../systems/isq/#curvature" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::curvature</a></b><br><i>(inverse(<a href="../../systems/isq/#radius_of_curvature" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">radius_of_curvature</a>))</i>"]
 ```
