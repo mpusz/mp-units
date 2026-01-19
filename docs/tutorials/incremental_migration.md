@@ -300,7 +300,7 @@ int main()
 - [Interoperability with Other Libraries](../how_to_guides/interoperability_with_other_libraries.md) -
   Complete guide to `quantity_like_traits`
 - [Working with Legacy Interfaces](../how_to_guides/working_with_legacy_interfaces.md) -
-  Advanced patterns for legacy integration
+  Extracting numerical values and working with `double`-based APIs
 
 
 ## Takeaways
