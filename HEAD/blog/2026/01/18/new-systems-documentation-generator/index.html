@@ -872,6 +872,8 @@ You're not viewing the latest version.
       
         
       
+        
+      
     
     
     
@@ -1247,6 +1249,34 @@ You're not viewing the latest version.
     
   
     Tutorial 12: Faster-than-Lightspeed Constants
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../tutorials/incremental_migration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial 13: Incremental Migration from Legacy Code
   
 
     
@@ -10194,22 +10224,22 @@ clickable between entities, the AI made... let's call it a "creative editing dec
 <p class="admonition-title">GitHub Copilot Chat</p>
 <p>I see the issue! Markdown links don't work inside code blocks (backticks). I need to
 remove the backticks around linkified content so the links are actually clickable.</p>
-<p>Let me fix this by not wrapping linkified definitions in backticks: </p>
-<p>Let me check the current state of the file after the first edit and make the rest one by one: </p>
+<p>Let me fix this by not wrapping linkified definitions in backticks:</p>
+<p>Let me check the current state of the file after the first edit and make the rest one by one:</p>
 <div class="language-shell highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nb">cd</span><span class="w"> </span>/home/mpusz/repos/units_latest<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>python<span class="w"> </span>scripts/systems_reference.py<span class="w"> </span>--force<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-5
 </span></code></pre></div>
-<p>I have a syntax error. Let me check what happened: </p>
+<p>I have a syntax error. Let me check what happened:</p>
 <blockquote>
 <p>Read systems_reference.py, lines 2445 to 2455</p>
 </blockquote>
-<p>I see the issue - my first replacement removed too much. Let me fix it: </p>
+<p>I see the issue - my first replacement removed too much. Let me fix it:</p>
 <blockquote>
 <p>Read systems_reference.py, lines 2440 to 2460</p>
 </blockquote>
-<p>I see - I accidentally removed the rest of the code. Let me check what should be there: </p>
+<p>I see - I accidentally removed the rest of the code. Let me check what should be there:</p>
 <div class="language-shell highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nb">cd</span><span class="w"> </span>/home/mpusz/repos/units_latest<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>diff<span class="w"> </span>scripts/systems_reference.py<span class="w"> </span><span class="p">|</span><span class="w"> </span>head<span class="w"> </span>-60
 </span></code></pre></div>
-<p>Let me revert my change and start fresh: </p>
+<p>Let me revert my change and start fresh:</p>
 <div class="language-shell highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nb">cd</span><span class="w"> </span>/home/mpusz/repos/units_latest<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>checkout<span class="w"> </span>scripts/systems_reference.py
 </span></code></pre></div>
 <p>...</p>
