@@ -341,15 +341,20 @@ The below presents some arbitrary hierarchy of derived quantities of kind _energ
 ```mermaid
 flowchart TD
     energy["<b>energy</b><br><i>(mass * length<sup>2</sup> / time<sup>2</sup>)</i><br>[J]"]
-    energy --- mechanical_energy["<b>mechanical_energy</b>"]
+    energy --- signal_energy_per_binary_digit["<b>signal_energy_per_binary_digit</b><br><i>(carrier_power * period_of_binary_digits)</i>"]
+    energy --- mechanical_work["<b>mechanical_work</b>"]
+    mechanical_work --- mechanical_energy["<b>mechanical_energy</b><br><i>(force * displacement)</i>"]
     mechanical_energy --- potential_energy["<b>potential_energy</b>"]
     potential_energy --- gravitational_potential_energy["<b>gravitational_potential_energy</b><br><i>(mass * acceleration_of_free_fall * height)</i>"]
     potential_energy --- elastic_potential_energy["<b>elastic_potential_energy</b><br><i>(spring_constant * amount_of_compression<sup>2</sup>)</i>"]
     mechanical_energy --- kinetic_energy["<b>kinetic_energy</b><br><i>(mass * speed<sup>2</sup>)</i>"]
-    energy --- enthalpy["<b>enthalpy</b>"]
-    enthalpy --- internal_energy["<b>internal_energy</b> | <b>thermodynamic_energy</b>"]
+    energy --- radiant_energy["<b>radiant_energy</b>"]
+    energy --- internal_energy["<b>internal_energy</b> | <b>thermodynamic_energy</b>"]
     internal_energy --- Helmholtz_energy["<b>Helmholtz_energy</b> | <b>Helmholtz_function</b>"]
+    internal_energy --- enthalpy["<b>enthalpy</b>"]
     enthalpy --- Gibbs_energy["<b>Gibbs_energy</b> | <b>Gibbs_function</b>"]
+    internal_energy --- heat["<b>heat</b> | <b>amount_of_heat</b>"]
+    heat --- latent_heat["<b>latent_heat</b>"]
     energy --- active_energy["<b>active_energy</b>"]
 ```
 
