@@ -14,6 +14,8 @@ flowchart LR
     isq_impedance --- isq_impedance_of_vacuum
     isq_reactance["<b><a href="../../systems/isq/#reactance" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::reactance</a></b>"]
     isq_impedance --- isq_reactance
+    isq_resistance["<b><a href="../../systems/isq/#resistance" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::resistance</a></b><br><i>(<a href="../../systems/isq/#voltage" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">voltage</a> / <a href="../../systems/isq/#electric_current" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">electric_current</a>)</i>"]
+    isq_impedance --- isq_resistance
     isq_resistance_to_alternating_current["<b><a href="../../systems/isq/#resistance_to_alternating_current" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::resistance_to_alternating_current</a></b>"]
     isq_impedance --- isq_resistance_to_alternating_current
 ```

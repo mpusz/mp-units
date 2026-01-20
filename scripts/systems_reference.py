@@ -50,6 +50,7 @@ class Quantity:
     character: str = "Real"  # Quantity character: Real, Complex, Vector, Tensor
     kind_of: str = ""  # e.g., "isq::length" - from C++ get_kind()
     parent_from_cpp: str = ""  # e.g., "isq::length" or "<root>" - from C++ qs._parent_
+    hierarchy_root: str = ""  # e.g., "isq::length" - from C++ get_hierarchy_root()
     secondary_namespaces: list = (
         None  # Namespaces where accessible via using declarations
     )
@@ -199,6 +200,7 @@ class SystemsParser:
             character="Real",
             kind_of="dimensionless",
             parent_from_cpp="<root>",
+            hierarchy_root="dimensionless",  # Root of its own hierarchy
         )
         core_system.quantities.append(dimensionless_qty)
 
@@ -572,7 +574,6 @@ class SystemsParser:
             qty_name = args[0].strip()
             second_param = args[1].strip()
             third_param = args[2].strip() if len(args) > 2 else None
-            has_is_kind_keyword = "is_kind" in args_str
 
             # Determine what the second parameter is:
             # - If it starts with 'dim_' → it's a dimension (and this is a kind/root)
@@ -602,13 +603,11 @@ class SystemsParser:
             parent = None
             dimension = None
             equation = None
-            is_kind = has_is_kind_keyword
+            # NOTE: is_kind is determined by C++ metadata extraction, not parsing
+            is_kind = False
 
             if is_dimension:
                 dimension = second_param
-                is_kind = (
-                    True  # Having a dim_* dimension as parent makes this a kind/root
-                )
                 # Third param might be an equation
                 if (
                     third_param
@@ -619,12 +618,6 @@ class SystemsParser:
             elif has_operators or has_function_call:
                 # Second param is an equation
                 equation = second_param
-                # This is a kind/root only if explicitly marked with is_kind or has no parent
-                if has_is_kind_keyword:
-                    is_kind = True
-                else:
-                    # If it has an equation and no parent, it's implicitly a kind
-                    is_kind = True
             else:
                 # Second param is a parent quantity (including 'dimensionless')
                 parent = second_param
@@ -635,7 +628,6 @@ class SystemsParser:
                     and not third_param.startswith("quantity_character::")
                 ):
                     equation = third_param
-                # is_kind remains as set by has_is_kind_keyword
 
             quantity = Quantity(
                 name=qty_name,
@@ -1430,6 +1422,19 @@ class DocumentationGenerator:
         """Build the YAML text for Systems Reference section"""
         lines = ["      - Systems Reference:\n"]
         lines.append("          - Overview: reference/systems_reference/index.md\n")
+        lines.append("          - Systems:\n")
+
+        for namespace in sorted(self.parser.systems.keys()):
+            system = self.parser.systems[namespace]
+            if not (system.units or system.dimensions or system.quantities):
+                continue
+
+            display_name = self._get_system_display_name(namespace)
+            lines.append(
+                f"              - {display_name}: reference/systems_reference/systems/{namespace}.md\n"
+            )
+
+        # Add index pages after Systems
         lines.append(
             "          - Dimensions: reference/systems_reference/dimensions_index.md\n"
         )
@@ -1443,17 +1448,6 @@ class DocumentationGenerator:
         lines.append(
             "          - Point Origins: reference/systems_reference/point_origins_index.md\n"
         )
-        lines.append("          - Systems:\n")
-
-        for namespace in sorted(self.parser.systems.keys()):
-            system = self.parser.systems[namespace]
-            if not (system.units or system.dimensions or system.quantities):
-                continue
-
-            display_name = self._get_system_display_name(namespace)
-            lines.append(
-                f"              - {display_name}: reference/systems_reference/systems/{namespace}.md\n"
-            )
 
         # Add Quantity Hierarchies section
         lines.append("          - Quantity Hierarchies:\n")
@@ -1864,6 +1858,66 @@ class DocumentationGenerator:
                     dimension_to_roots[dim_formula].append(qualified_name)
                     global_root_counts[qty.name].add(namespace)
 
+        # Build quantity counts for each root by traversing the tree
+        root_quantity_counts = {}  # qualified_root_name -> count
+
+        for root_qualified_name in set(
+            qname for roots in dimension_to_roots.values() for qname in roots
+        ):
+            # Find all systems that contribute to this root
+            root_name = root_qualified_name.split("::")[-1]
+
+            if root_qualified_name == "dimensionless":
+                # Count across all systems
+                contributing_namespaces = [
+                    ns for ns, sys in self.parser.systems.items() if sys.quantities
+                ]
+            else:
+                # Get namespace from qualified name
+                namespace = root_qualified_name.split("::")[0]
+                contributing_namespaces = [namespace]
+
+            # Collect all quantities from contributing systems
+            all_system_quantities = []
+            for ns in contributing_namespaces:
+                if ns in self.parser.systems:
+                    all_system_quantities.extend(self.parser.systems[ns].quantities)
+
+            # Build parent-child map using qualified names
+            qty_children = defaultdict(list)
+            qualified_quantities = {}
+
+            for qty in all_system_quantities:
+                sys_ns = qty.namespace.replace("mp_units::", "")
+                if qty.name == "dimensionless":
+                    qname = "dimensionless"
+                else:
+                    qname = f"{sys_ns}::{qty.name}"
+                qualified_quantities[qname] = qty
+
+                # Build parent-child relationships
+                if (
+                    hasattr(qty, "parent_from_cpp")
+                    and qty.parent_from_cpp
+                    and qty.parent_from_cpp != "<root>"
+                ):
+                    parent_name = qty.parent_from_cpp
+                    if parent_name == "dimensionless":
+                        qualified_parent = "dimensionless"
+                    else:
+                        qualified_parent = parent_name
+                    qty_children[qualified_parent].append(qname)
+
+            # Count all descendants of this root
+            def count_tree(node_name):
+                count = 1  # Count the node itself
+                if node_name in qty_children:
+                    for child in qty_children[node_name]:
+                        count += count_tree(child)
+                return count
+
+            root_quantity_counts[root_qualified_name] = count_tree(root_qualified_name)
+
         with open(output_file, "w") as f:
             self._write_auto_generated_header(f)
             f.write("# Quantity Hierarchies\n\n")
@@ -1885,6 +1939,10 @@ class DocumentationGenerator:
                     return (1, len(dim_formula), dim_formula)
 
             sorted_dims = sorted(dimension_to_roots.keys(), key=dim_sort_key)
+            total_hierarchies = sum(
+                len(set(dimension_to_roots[dim])) for dim in sorted_dims
+            )
+
             for idx, dim_formula in enumerate(sorted_dims):
                 roots = dimension_to_roots[dim_formula]
                 if not roots:
@@ -1909,11 +1967,16 @@ class DocumentationGenerator:
                         else:
                             link = f"[`{qualified_name}`]({root_name}.md)"
 
-                    f.write(f"- {link}\n")
+                    # Add quantity count
+                    count = root_quantity_counts.get(qualified_name, 1)
+                    qty_label = "quantity" if count == 1 else "quantities"
+                    f.write(f"- {link} ({count} {qty_label})\n")
 
                 # Add blank line between sections, but not after the last one
                 if idx < len(sorted_dims) - 1:
                     f.write("\n")
+
+            f.write(f"\n**Total hierarchies:** {total_hierarchies}\n")
 
     def generate_point_origins_index(self):
         """Generate alphabetical point origins index"""
@@ -2115,12 +2178,13 @@ class DocumentationGenerator:
                             return name.replace("_", "_<wbr>")
                         return name
 
-                    # Write table of quantities - columns reordered: Character, Dimension (3rd), Kind of, Parent
+                    # Write table of quantities - reordered columns
                     f.write(
-                        "| Quantity | Character | Dimension | Kind of | Parent | Equation | Hierarchy |\n"
+                        "| Quantity | Character | Dimension | is_kind | "
+                        "Kind of | Parent | Equation | Hierarchy |\n"
                     )
                     f.write(
-                        "|----------|:---------:|:---------:|:-------:|:------:|----------|:---------:|\n"
+                        "|----------|:---------:|:---------:|:-------:|:-------:|:------:|----------|:---------:|\n"
                     )
                     for qty in sorted(system.quantities, key=lambda q: q.name):
                         character = (
@@ -2143,21 +2207,22 @@ class DocumentationGenerator:
                                     break
 
                             if target_qty:
-                                # Get root name from kind_of (e.g., 'isq::length' -> 'length')
-                                root_name = (
-                                    target_qty.kind_of.split("::")[-1]
-                                    if hasattr(target_qty, "kind_of")
-                                    and target_qty.kind_of
-                                    else "dimensionless"
-                                )
-                                # Only generate hierarchy link if this root actually exists
-                                if root_name in global_root_counts:
-                                    hierarchy_file = self._get_hierarchy_filename(
-                                        root_name, system.namespace, global_root_counts
-                                    )
-                                    hierarchy_link = (
-                                        f"[view](../hierarchies/{hierarchy_file})"
-                                    )
+                                # Use hierarchy root from C++ extraction
+                                if target_qty.hierarchy_root:
+                                    root_name = target_qty.hierarchy_root.split("::")[
+                                        -1
+                                    ]
+                                    if root_name in global_root_counts:
+                                        hierarchy_file = self._get_hierarchy_filename(
+                                            root_name,
+                                            system.namespace,
+                                            global_root_counts,
+                                        )
+                                        hierarchy_link = (
+                                            f"[view](../hierarchies/{hierarchy_file})"
+                                        )
+                                    else:
+                                        hierarchy_link = "—"
                                 else:
                                     hierarchy_link = "—"
                                 # Get character and dimension from target
@@ -2197,27 +2262,28 @@ class DocumentationGenerator:
                                 parent_display = "—"
 
                             qty_name_display = add_word_breaks(qty.name)
+                            is_kind_marker = (
+                                "✓" if (target_qty and target_qty.is_kind) else "—"
+                            )
                             f.write(
                                 f'| <span id="{qty.name}"></span><code>{qty_name_display}</code> | '
-                                f"{character} | {dim_formula} | {kind_of} | "
+                                f"{character} | {dim_formula} | {is_kind_marker} | {kind_of} | "
                                 f"{parent_display} | alias to {self._linkify_definition(qty.alias_target, system)} | "
                                 f"{hierarchy_link} |\n"
                             )
                         else:
-                            # Get root name from kind_of (e.g., 'isq::length' -> 'length')
-                            root_name = (
-                                qty.kind_of.split("::")[-1]
-                                if hasattr(qty, "kind_of") and qty.kind_of
-                                else "dimensionless"
-                            )
-                            # Only generate hierarchy link if this root actually exists
-                            if root_name in global_root_counts:
-                                hierarchy_file = self._get_hierarchy_filename(
-                                    root_name, system.namespace, global_root_counts
-                                )
-                                hierarchy_link = (
-                                    f"[view](../hierarchies/{hierarchy_file})"
-                                )
+                            # Use hierarchy root from C++ extraction
+                            if qty.hierarchy_root:
+                                root_name = qty.hierarchy_root.split("::")[-1]
+                                if root_name in global_root_counts:
+                                    hierarchy_file = self._get_hierarchy_filename(
+                                        root_name, system.namespace, global_root_counts
+                                    )
+                                    hierarchy_link = (
+                                        f"[view](../hierarchies/{hierarchy_file})"
+                                    )
+                                else:
+                                    hierarchy_link = "—"
                             else:
                                 hierarchy_link = "—"
                             # Use C++ extracted kind_of and linkify it
@@ -2243,9 +2309,10 @@ class DocumentationGenerator:
                             else:
                                 equation = "—"
                             qty_name_display = add_word_breaks(qty.name)
+                            is_kind_marker = "✓" if qty.is_kind else "—"
                             f.write(
                                 f'| <span id="{qty.name}"></span><code>{qty_name_display}</code> | '
-                                f"{character} | {dim_formula} | {kind_of} | "
+                                f"{character} | {dim_formula} | {is_kind_marker} | {kind_of} | "
                                 f"{parent_display} | {equation} | {hierarchy_link} |\n"
                             )
                     need_separator = True
@@ -2898,8 +2965,12 @@ class DocumentationGenerator:
     def _build_mermaid_hierarchy(
         self, root_name: str, qty_children: dict, qualified_quantities: list
     ) -> str:
-        """Build Mermaid flowchart for quantity hierarchy using qualified names"""
+        """Build Mermaid flowchart for quantity hierarchy using qualified names
+
+        Returns a string containing the mermaid diagram and optional legend.
+        """
         lines = ["```mermaid", "flowchart LR"]
+        has_non_root_kinds = False  # Track if we need to show legend
 
         # Build a map of qualified_name -> quantity
         qty_map = {qname: qty for qname, qty in qualified_quantities}
@@ -2917,6 +2988,8 @@ class DocumentationGenerator:
                 aliases_map[target_qname].append(qname)
 
         def add_node(qualified_name: str, parent_id: str = None):
+            nonlocal has_non_root_kinds
+
             qty = qty_map.get(qualified_name)
             if not qty:
                 return
@@ -2982,7 +3055,15 @@ class DocumentationGenerator:
                 )
                 equation = f"<br><i>({linkified_eq})</i>"
 
-            label = f"<b>{name_display}</b>{equation}"
+            # Add is_kind indicator (lock icon) only for non-root kinds
+            # Root is always a kind by definition, so no need to mark it
+            is_root = parent_id is None
+            kind_indicator = ""
+            if qty.is_kind and not is_root:
+                kind_indicator = " 🔒"
+                has_non_root_kinds = True
+
+            label = f"<b>{name_display}{kind_indicator}</b>{equation}"
 
             # Add node definition
             lines.append(f'    {node_id}["{label}"]')
@@ -3010,7 +3091,18 @@ class DocumentationGenerator:
                     break
 
         lines.append("```")
-        return "\n".join(lines)
+
+        # Add legend if there are any non-root kinds in the hierarchy
+        result = "\n".join(lines)
+        if has_non_root_kinds:
+            result += "\n\n**Legend:**\n\n"
+            result += (
+                "- 🔒 indicates a root of a sub-kind - quantities that "
+                "cannot be added or compared to other quantities outside "
+                "their hierarchy subtree"
+            )
+
+        return result
 
 
 class CppMetadataExtractor:
@@ -3102,6 +3194,7 @@ class CppMetadataExtractor:
                 cpp_file.unlink()
             if exe_file.exists():
                 exe_file.unlink()
+            pass
 
     def _generate_cpp_program(self) -> str:
         """Generate C++ program that outputs metadata for all quantities"""
@@ -3143,12 +3236,14 @@ class CppMetadataExtractor:
             "template<QuantitySpec QS>",
             "void print_quantity(std::string_view namespace_name, std::string_view name, QS qs)",
             "{",
-            '  std::cout << namespace_name << ","',
-            '            << name << ","',
-            '            << character_to_string(qs.character) << ","',
-            '            << dimension_symbol(qs.dimension) << ","',
-            '            << detail::type_name<decltype(get_kind(qs))>() << ","',
-            "            << get_parent(qs) << '\\n';",
+            '  std::cout << namespace_name << ","                                                  // namespace',
+            '            << name << ","                                                            // quantity name',
+            '            << character_to_string(qs.character) << ","                               // character',
+            '            << dimension_symbol(qs.dimension) << ","                                  // dimension',
+            '            << std::boolalpha << (qs == detail::get_kind_tree_root(qs)) << ","        // is kind',
+            '            << detail::type_name<decltype(get_kind(qs))>() << ","                     // kind quantity',
+            '            << get_parent(qs) << ","                                                  // parent quantity',
+            '            << detail::type_name<decltype(detail::get_hierarchy_root(qs))>() << "\\n"; // hierarchy root',
             "}",
             "",
             "#define PRINT_QTY(ns, qty) print_quantity(#ns, #qty, ns::qty)",
@@ -3191,12 +3286,24 @@ class CppMetadataExtractor:
             if not line:
                 continue
 
-            # Format: namespace,name,character,dimension_symbol,kind_of_type,parent_type
-            parts = line.split(",", 5)
-            if len(parts) != 6:
+            # Format: namespace,name,character,dimension_symbol,is_kind,kind_of_type,parent_type,hierarchy_root
+            parts = line.split(",", 7)
+            if len(parts) != 8:
                 continue
 
-            namespace, name, character, dim_symbol, kind_of, parent = parts
+            (
+                namespace,
+                name,
+                character,
+                dim_symbol,
+                is_kind_str,
+                kind_of,
+                parent,
+                hierarchy_root,
+            ) = parts
+
+            # Parse is_kind boolean
+            is_kind = is_kind_str.strip().lower() == "true"
 
             # Extract kind_of from: mp_units::kind_of_<mp_units::isq::length>; std::string_view = ...
             # We want: isq::length
@@ -3217,6 +3324,14 @@ class CppMetadataExtractor:
                 else:
                     parent_str = parent
 
+            # Extract hierarchy_root from: mp_units::isq::length; std::string_view = ...
+            # We want: isq::length
+            hierarchy_root_match = hierarchy_root.split("mp_units::")
+            if len(hierarchy_root_match) > 1:
+                hierarchy_root_str = hierarchy_root_match[1].split(";")[0]
+            else:
+                hierarchy_root_str = hierarchy_root
+
             # Handle dimensionless specially
             if not namespace:
                 namespace = ""
@@ -3225,8 +3340,10 @@ class CppMetadataExtractor:
             key = (namespace, name)
             self.metadata[key] = {
                 "dimension": dim_symbol,
+                "is_kind": is_kind,
                 "kind_of": kind_str,
                 "parent": parent_str,
+                "hierarchy_root": hierarchy_root_str,
                 "character": character,
             }
 
@@ -3250,6 +3367,9 @@ class CppMetadataExtractor:
                     qty.character = meta["character"]
                     qty.kind_of = meta["kind_of"]
                     qty.parent_from_cpp = meta["parent"]
+                    qty.hierarchy_root = meta["hierarchy_root"]
+                    # Use the is_kind value from C++ (definitive source)
+                    qty.is_kind = meta["is_kind"]
 
 
 def main():

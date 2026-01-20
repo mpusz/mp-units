@@ -12,6 +12,10 @@ flowchart LR
     isq_admittance --- isq_admittance_of_vacuum
     isq_apparent_admittance["<b><a href="../../systems/isq/#apparent_admittance" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::apparent_admittance</a></b>"]
     isq_admittance --- isq_apparent_admittance
+    isq_conductance["<b><a href="../../systems/isq/#conductance" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::conductance</a></b><br><i>(inverse(<a href="../../systems/isq/#resistance" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">resistance</a>))</i>"]
+    isq_admittance --- isq_conductance
+    isq_conductance_for_alternating_current["<b><a href="../../systems/isq/#conductance_for_alternating_current" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::conductance_for_alternating_current</a></b>"]
+    isq_conductance --- isq_conductance_for_alternating_current
     isq_susceptance["<b><a href="../../systems/isq/#susceptance" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::susceptance</a></b>"]
     isq_admittance --- isq_susceptance
 ```

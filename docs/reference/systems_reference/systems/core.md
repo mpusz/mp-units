@@ -17,9 +17,9 @@
 
 ## Quantities
 
-| Quantity | Character | Dimension | Kind of | Parent | Equation | Hierarchy |
-|----------|:---------:|:---------:|:-------:|:------:|----------|:---------:|
-| <span id="dimensionless"></span><code>dimensionless</code> | Real | 1 | <code>[dimensionless](core.md#dimensionless)</code> | — | — | [view](../hierarchies/dimensionless.md) |
+| Quantity | Character | Dimension | is_kind | Kind of | Parent | Equation | Hierarchy |
+|----------|:---------:|:---------:|:-------:|:-------:|:------:|----------|:---------:|
+| <span id="dimensionless"></span><code>dimensionless</code> | Real | 1 | ✓ | <code>[dimensionless](core.md#dimensionless)</code> | — | — | [view](../hierarchies/dimensionless.md) |
 
 ## Units
 

@@ -14,7 +14,7 @@ flowchart LR
     dimensionless --- isq_Hamming_distance
     isq_Poisson_number["<b><a href="../../systems/isq/#Poisson_number" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::Poisson_number</a></b><br><i>(<a href="../../systems/isq/#width" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">width</a> / <a href="../../systems/isq/#length" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">length</a>)</i>"]
     dimensionless --- isq_Poisson_number
-    isq_angular_measure["<b><a href="../../systems/isq/#angular_measure" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::angular_measure</a></b><br><i>(<a href="../../systems/isq/#arc_length" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">arc_length</a> / <a href="../../systems/isq/#radius" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">radius</a>)</i>"]
+    isq_angular_measure["<b><a href="../../systems/isq/#angular_measure" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::angular_measure</a> 🔒</b><br><i>(<a href="../../systems/isq/#arc_length" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">arc_length</a> / <a href="../../systems/isq/#radius" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">radius</a>)</i>"]
     dimensionless --- isq_angular_measure
     isq_loss_angle["<b><a href="../../systems/isq/#loss_angle" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::loss_angle</a></b>"]
     isq_angular_measure --- isq_loss_angle
@@ -96,11 +96,11 @@ flowchart LR
     dimensionless --- isq_rotation
     isq_shear_strain["<b><a href="../../systems/isq/#shear_strain" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::shear_strain</a></b><br><i>(<a href="../../systems/isq/#displacement" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">displacement</a> / <a href="../../systems/isq/#thickness" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">thickness</a>)</i>"]
     dimensionless --- isq_shear_strain
-    isq_solid_angular_measure["<b><a href="../../systems/isq/#solid_angular_measure" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::solid_angular_measure</a></b><br><i>(<a href="../../systems/isq/#area" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">area</a> / pow<2>(<a href="../../systems/isq/#radius" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">radius</a>))</i>"]
+    isq_solid_angular_measure["<b><a href="../../systems/isq/#solid_angular_measure" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::solid_angular_measure</a> 🔒</b><br><i>(<a href="../../systems/isq/#area" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">area</a> / pow<2>(<a href="../../systems/isq/#radius" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">radius</a>))</i>"]
     dimensionless --- isq_solid_angular_measure
     isq_static_friction_coefficient["<b><a href="../../systems/isq/#static_friction_coefficient" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::static_friction_coefficient</a> | <a href="../../systems/isq/#coefficient_of_static_friction" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::coefficient_of_static_friction</a> | <a href="../../systems/isq/#static_friction_factor" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::static_friction_factor</a></b><br><i>(<a href="../../systems/isq/#static_friction_force" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">static_friction_force</a> / <a href="../../systems/isq/#force" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">force</a>)</i>"]
     dimensionless --- isq_static_friction_coefficient
-    isq_storage_capacity["<b><a href="../../systems/isq/#storage_capacity" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::storage_capacity</a> | <a href="../../systems/isq/#storage_size" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::storage_size</a></b>"]
+    isq_storage_capacity["<b><a href="../../systems/isq/#storage_capacity" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::storage_capacity</a> | <a href="../../systems/isq/#storage_size" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::storage_size</a> 🔒</b>"]
     dimensionless --- isq_storage_capacity
     isq_equivalent_binary_storage_capacity["<b><a href="../../systems/isq/#equivalent_binary_storage_capacity" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::equivalent_binary_storage_capacity</a></b>"]
     isq_storage_capacity --- isq_equivalent_binary_storage_capacity
@@ -117,3 +117,7 @@ flowchart LR
     natural_velocity["<b><a href="../../systems/natural/#velocity" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">natural::velocity</a></b>"]
     natural_speed --- natural_velocity
 ```
+
+**Legend:**
+
+- 🔒 indicates a root of a sub-kind - quantities that cannot be added or compared to other quantities outside their hierarchy subtree

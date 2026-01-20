@@ -8,4 +8,6 @@
 ```mermaid
 flowchart LR
     isq_magnetic_flux_density["<b><a href="../../systems/isq/#magnetic_flux_density" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::magnetic_flux_density</a></b><br><i>(<a href="../../systems/isq/#force" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">force</a> / (<a href="../../systems/isq/#electric_charge" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">electric_charge</a> * <a href="../../systems/isq/#velocity" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">velocity</a>))</i>"]
+    isq_magnetic_polarization["<b><a href="../../systems/isq/#magnetic_polarization" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">isq::magnetic_polarization</a></b><br><i>(<a href="../../systems/isq/#magnetic_constant" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">magnetic_constant</a> * <a href="../../systems/isq/#magnetization" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;">magnetization</a>)</i>"]
+    isq_magnetic_flux_density --- isq_magnetic_polarization
 ```
