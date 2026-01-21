@@ -192,6 +192,12 @@ static_assert(std::convertible_to<double, quantity<dimensionless[one]>>);
 static_assert(std::constructible_from<quantity<dimensionless[one]>, int>);
 static_assert(std::convertible_to<int, quantity<dimensionless[one]>>);
 
+static_assert(std::constructible_from<quantity<isq::rotation[one]>, double>);
+static_assert(std::convertible_to<double, quantity<isq::rotation[one]>>);
+
+static_assert(std::constructible_from<quantity<isq::angular_measure[one]>, double>);
+static_assert(!std::convertible_to<double, quantity<isq::angular_measure[one]>>);
+
 
 ///////////////////////////////////////
 // construction from another quantity
@@ -314,11 +320,11 @@ static_assert(!std::constructible_from<int, quantity<rad>>);
 static_assert(!std::convertible_to<quantity<rad, int>, double>);
 static_assert(!std::constructible_from<double, quantity<rad, int>>);
 static_assert(!std::convertible_to<quantity<isq::angular_measure[one]>, double>);
-static_assert(!std::constructible_from<double, quantity<isq::angular_measure[one]>>);
+static_assert(std::constructible_from<double, quantity<isq::angular_measure[one]>>);
 static_assert(!std::convertible_to<quantity<isq::angular_measure[one]>, int>);
-static_assert(!std::constructible_from<int, quantity<isq::angular_measure[one]>>);
+static_assert(std::constructible_from<int, quantity<isq::angular_measure[one]>>);
 static_assert(!std::convertible_to<quantity<isq::angular_measure[one], int>, double>);
-static_assert(!std::constructible_from<double, quantity<isq::angular_measure[one], int>>);
+static_assert(std::constructible_from<double, quantity<isq::angular_measure[one], int>>);
 
 
 ///////////////////////////////////

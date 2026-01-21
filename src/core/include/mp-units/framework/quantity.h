@@ -103,12 +103,17 @@ template<typename T, typename Rep>
 concept ScalarValuePreservingTo = (!Quantity<T>) && Scalar<T> && is_value_preserving<T, Rep>;
 
 template<auto R>
-concept DimensionlessOne =
-  Reference<MP_UNITS_REMOVE_CONST(decltype(R))> && (implicitly_convertible(get_quantity_spec(R), dimensionless)) &&
-  (equivalent(get_unit(R), one));
+concept UnitOne = Reference<MP_UNITS_REMOVE_CONST(decltype(R))> &&
+                  (equivalent(get_unit(R), one) && get_associated_quantity(get_unit(R)) == dimensionless);
+
+template<auto R>
+concept ExplicitFromNumber = UnitOne<R> && (explicitly_convertible(get_quantity_spec(R), dimensionless));
+
+template<auto R>
+concept ImplicitFromNumber = ExplicitFromNumber<R> && (implicitly_convertible(get_quantity_spec(R), dimensionless));
 
 template<typename Q>
-concept DimensionlessOneQuantity = Quantity<Q> && DimensionlessOne<Q::reference>;
+concept ImplicitFromNumberQuantity = Quantity<Q> && ImplicitFromNumber<Q::reference>;
 
 template<auto QS, typename Func, typename T, typename U>
 concept InvokeResultOf = QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS))> && std::regular_invocable<Func, T, U> &&
@@ -207,8 +212,9 @@ public:
   }
 
   template<typename FwdValue>
-    requires detail::DimensionlessOne<reference> && detail::ValuePreservingConstruction<rep, FwdValue>
-  constexpr explicit(!std::convertible_to<FwdValue, rep>) quantity(FwdValue&& val) :
+    requires detail::ExplicitFromNumber<reference> && detail::ValuePreservingConstruction<rep, FwdValue>
+  constexpr explicit(!std::convertible_to<FwdValue, rep> || !implicitly_convertible(quantity_spec, dimensionless))
+    quantity(FwdValue&& val) :
       numerical_value_is_an_implementation_detail_(std::forward<FwdValue>(val))
   {
   }
@@ -232,7 +238,7 @@ public:
   }
 
   template<typename FwdValue>
-    requires detail::DimensionlessOne<reference> && detail::ValuePreservingAssignment<rep, FwdValue>
+    requires detail::ImplicitFromNumber<reference> && detail::ValuePreservingAssignment<rep, FwdValue>
   constexpr quantity& operator=(FwdValue&& val)
   {
     numerical_value_is_an_implementation_detail_ = std::forward<FwdValue>(val);
@@ -322,7 +328,7 @@ public:
 
   // conversion operators
   template<typename V_, std::constructible_from<rep> Value = std::remove_cvref_t<V_>>
-    requires detail::DimensionlessOne<reference>
+    requires detail::ExplicitFromNumber<reference>
   [[nodiscard]] explicit constexpr operator V_() const& noexcept
   {
     return numerical_value_is_an_implementation_detail_;
@@ -446,7 +452,7 @@ public:
     return *this;
   }
 
-  template<detail::DimensionlessOneQuantity Q2>
+  template<detail::ImplicitFromNumberQuantity Q2>
     requires detail::ScalarValuePreservingTo<typename Q2::rep, rep> && requires(rep& a, const Q2::rep b) {
       { a *= b } -> std::same_as<rep&>;
     }
@@ -466,7 +472,7 @@ public:
     return *this;
   }
 
-  template<detail::DimensionlessOneQuantity Q2>
+  template<detail::ImplicitFromNumberQuantity Q2>
     requires detail::ScalarValuePreservingTo<typename Q2::rep, rep> && requires(rep& a, const Q2::rep b) {
       { a /= b } -> std::same_as<rep&>;
     }
@@ -488,7 +494,7 @@ public:
   }
 
   template<std::derived_from<quantity> Q, RepresentationOf<quantity_spec> Value>
-    requires detail::DimensionlessOne<Q::reference> &&
+    requires detail::ImplicitFromNumber<Q::reference> &&
              detail::InvokeResultOf<quantity_spec, std::plus<>, Rep, const Value&>
   [[nodiscard]] friend constexpr Quantity auto operator+(const Q& lhs, const Value& rhs)
   {
@@ -496,7 +502,7 @@ public:
   }
 
   template<std::derived_from<quantity> Q, RepresentationOf<quantity_spec> Value>
-    requires detail::DimensionlessOne<Q::reference> &&
+    requires detail::ImplicitFromNumber<Q::reference> &&
              detail::InvokeResultOf<quantity_spec, std::plus<>, Rep, const Value&>
   [[nodiscard]] friend constexpr Quantity auto operator+(const Value& lhs, const Q& rhs)
   {
@@ -515,7 +521,7 @@ public:
   }
 
   template<std::derived_from<quantity> Q, RepresentationOf<quantity_spec> Value>
-    requires detail::DimensionlessOne<Q::reference> &&
+    requires detail::ImplicitFromNumber<Q::reference> &&
              detail::InvokeResultOf<quantity_spec, std::minus<>, Rep, const Value&>
   [[nodiscard]] friend constexpr Quantity auto operator-(const Q& lhs, const Value& rhs)
   {
@@ -523,7 +529,7 @@ public:
   }
 
   template<std::derived_from<quantity> Q, RepresentationOf<quantity_spec> Value>
-    requires detail::DimensionlessOne<Q::reference> &&
+    requires detail::ImplicitFromNumber<Q::reference> &&
              detail::InvokeResultOf<quantity_spec, std::minus<>, Rep, const Value&>
   [[nodiscard]] friend constexpr Quantity auto operator-(const Value& lhs, const Q& rhs)
   {
@@ -544,7 +550,7 @@ public:
   }
 
   template<std::derived_from<quantity> Q, RepresentationOf<quantity_spec> Value>
-    requires detail::DimensionlessOne<Q::reference> &&
+    requires detail::ImplicitFromNumber<Q::reference> &&
              detail::InvokeResultOf<quantity_spec, std::modulus<>, Rep, const Value&>
   [[nodiscard]] friend constexpr Quantity auto operator%(const Q& lhs, const Value& rhs)
   {
@@ -552,7 +558,7 @@ public:
   }
 
   template<std::derived_from<quantity> Q, RepresentationOf<quantity_spec> Value>
-    requires detail::DimensionlessOne<Q::reference> &&
+    requires detail::ImplicitFromNumber<Q::reference> &&
              detail::InvokeResultOf<quantity_spec, std::modulus<>, Rep, const Value&>
   [[nodiscard]] friend constexpr Quantity auto operator%(const Value& lhs, const Q& rhs)
   {
@@ -623,7 +629,7 @@ public:
   }
 
   template<std::derived_from<quantity> Q, RepresentationOf<quantity_spec> Value>
-    requires detail::DimensionlessOne<Q::reference> && std::equality_comparable_with<rep, Value>
+    requires detail::ImplicitFromNumber<Q::reference> && std::equality_comparable_with<rep, Value>
   [[nodiscard]] friend constexpr bool operator==(const Q& lhs, const Value& rhs)
   {
     return lhs.numerical_value_ref_in(unit) == rhs;
@@ -641,7 +647,7 @@ public:
   }
 
   template<std::derived_from<quantity> Q, RepresentationOf<quantity_spec> Value>
-    requires detail::DimensionlessOne<Q::reference> && std::three_way_comparable_with<rep, Value>
+    requires detail::ImplicitFromNumber<Q::reference> && std::three_way_comparable_with<rep, Value>
   [[nodiscard]] friend constexpr auto operator<=>(const Q& lhs, const Value& rhs)
   {
     return lhs.numerical_value_ref_in(unit) <=> rhs;
