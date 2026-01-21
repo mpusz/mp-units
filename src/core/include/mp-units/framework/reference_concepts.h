@@ -35,7 +35,7 @@ struct reference;
 
 MP_UNITS_EXPORT_BEGIN
 
-template<MP_UNITS_ASSOCIATED_UNIT U>
+template<Unit U>
 [[nodiscard]] consteval QuantitySpec auto get_quantity_spec(U);
 
 template<typename Q, typename U>
@@ -44,7 +44,7 @@ template<typename Q, typename U>
   return Q{};
 }
 
-[[nodiscard]] consteval Unit auto get_unit(MP_UNITS_ASSOCIATED_UNIT auto u) { return u; }
+[[nodiscard]] consteval Unit auto get_unit(Unit auto u) { return u; }
 
 template<typename Q, typename U>
 [[nodiscard]] consteval Unit auto get_unit(reference<Q, U>)
@@ -58,7 +58,7 @@ template<typename Q, typename U>
  * Satisfied by all specializations of @c reference.
  */
 template<typename T>
-concept Reference = MP_UNITS_ASSOCIATED_UNIT_T(T) || is_specialization_of<T, reference>;
+concept Reference = Unit<T> || is_specialization_of<T, reference>;
 
 /**
  * @brief A concept matching all references of the provided quantity spec

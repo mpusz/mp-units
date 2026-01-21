@@ -72,7 +72,7 @@ dimensional analysis and safe manipulation of units, quantities, and quantity po
 - **Rich Text Formatting** – Text formatting support with extensive options &
   character sets
 - **Flexible Usage** – C++ modules support (when available) and header‑only usage
-- **Configurable** – Contracts, freestanding mode, and natural units (experimental)
+- **Configurable** – Contracts and freestanding mode
 - **Interoperable** – Seamless pathways for legacy and external libraries
 
 ### Quick Example
@@ -117,9 +117,9 @@ analysis at compile time—without sacrificing runtime performance or accuracy.
 Here's a broader preview showcasing **mp-units** capabilities:
 
 ```cpp
-#include <mp-units/systems/international.h>
 #include <mp-units/systems/isq.h>
 #include <mp-units/systems/si.h>
+#include <mp-units/systems/yard_pound.h>
 #include <format>
 #include <iomanip>
 #include <iostream>
@@ -128,7 +128,7 @@ Here's a broader preview showcasing **mp-units** capabilities:
 using namespace mp_units;
 
 constexpr QuantityOf<isq::speed> auto avg_speed(QuantityOf<isq::length> auto d,
-                                                QuantityOf<isq::time> auto t)
+                                                QuantityOf<isq::duration> auto t)
 {
   return d / t;
 }
@@ -136,7 +136,7 @@ constexpr QuantityOf<isq::speed> auto avg_speed(QuantityOf<isq::length> auto d,
 int main()
 {
   using namespace mp_units::si::unit_symbols;
-  using namespace mp_units::international::unit_symbols;
+  using namespace mp_units::yard_pound::unit_symbols;
 
   constexpr quantity v1 = 110 * km / h;
   constexpr quantity v2 = 70 * mph;
@@ -156,7 +156,7 @@ int main()
 }
 ```
 
-[![Try it live on Compiler Explorer](https://img.shields.io/badge/Try_live_on-Compiler_Explorer-black?style=for-the-badge&logo=compilerexplorer&labelColor=black&color=67C52A)](https://godbolt.org/z/fxcjs19ah)
+[![Try it live on Compiler Explorer](https://img.shields.io/badge/Try_live_on-Compiler_Explorer-black?style=for-the-badge&logo=compilerexplorer&labelColor=black&color=67C52A)](https://godbolt.org/z/rYq7cfdxY)
 
 
 ## 🔍 Try It Out

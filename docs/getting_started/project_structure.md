@@ -37,10 +37,10 @@ CMake-based projects:
 
 !!! important "Important: Library users should not use the top-level CMake file"
 
-  Top level _CMakeLists.txt_ file should only be used by **mp-units** developers and
-  contributors as an entry point for the project's development. We want to ensure that
-  everyone will build **ALL** the code correctly before pushing a commit. Having such options
-  would allow unintended issues to leak to PRs and CI.
+    Top level _CMakeLists.txt_ file should only be used by **mp-units** developers and
+    contributors as an entry point for the project's development. We want to ensure that
+    everyone will build **ALL** the code correctly before pushing a commit. Having such options
+    would allow unintended issues to leak to PRs and CI.
 
     This is why our projects have two entry points:
 
@@ -90,12 +90,12 @@ All of the project's header files can be found in the `mp-units/...` subdirector
 - `mp-units/math.h` provides overloads of common math functions for quantities,
 - `mp-units/random.h` provides C++ pseudo-random number generators for quantities,
 - `mp-units/compat_macros.h` provides macros for
-  [wide compatibility](../users_guide/use_cases/wide_compatibility.md).
+  [wide compatibility](../how_to_guides/wide_compatibility.md).
 
 ??? info "More details"
 
-  More detailed header files can be found in subfolders which typically should not be
-  included by the end users:
+    More detailed header files can be found in subfolders which typically should not be
+    included by the end users:
 
     - `mp-units/framework/...` provides all the public interfaces of the framework,
     - `mp-units/bits/...` provides private implementation details only (no public definitions),
@@ -116,9 +116,9 @@ The systems definitions can be found in the `mp-units/systems/...` subdirectory:
 
 ??? tip "Tip: Improving compile times"
 
-  `mp-units/systems/isq.h` might be expensive to compile in every translation unit. There
-  are some smaller, domain targeted files available for explicit inclusion in the
-  `mp-units/systems/isq/...` subdirectory.
+    `mp-units/systems/isq.h` might be expensive to compile in every translation unit. There
+    are some smaller, domain targeted files available for explicit inclusion in the
+    `mp-units/systems/isq/...` subdirectory.
 
 #### Systems of units
 
@@ -130,12 +130,11 @@ The systems definitions can be found in the `mp-units/systems/...` subdirectory:
 - `mp-units/systems/angular.h` provides
   [strong angular units](../users_guide/systems/strong_angular_system.md) and associated
   math functions,
-- `mp-units/systems/international.h` provides
-  [international yard and pound](https://en.wikipedia.org/wiki/International_yard_and_pound)
-  units,
-- `mp-units/systems/imperial.h` includes `international.h` and extends it with
-  [imperial units](https://en.wikipedia.org/wiki/Imperial_units),
-- `mp-units/systems/usc.h` includes `international.h` and extends it with
+- `mp-units/systems/yard_pound.h` provides base units from the
+  [1959 international yard and pound agreement](https://en.wikipedia.org/wiki/International_yard_and_pound),
+- `mp-units/systems/imperial.h` includes `yard_pound.h` and extends it with
+  [British Imperial units](https://en.wikipedia.org/wiki/Imperial_units),
+- `mp-units/systems/usc.h` includes `yard_pound.h` and extends it with
   [United States customary system of units](https://en.wikipedia.org/wiki/United_States_customary_units),
 - `mp-units/systems/cgs.h` provides
   [centimetre-gram-second system of units](https://en.wikipedia.org/wiki/Centimetre%E2%80%93gram%E2%80%93second_system_of_units),
@@ -150,8 +149,8 @@ The systems definitions can be found in the `mp-units/systems/...` subdirectory:
 
 ??? tip "Tip: Improving compile times"
 
-  `mp-units/systems/si.h` might be expensive to compile in every translation unit. There
-  are some smaller files available for explicit inclusion in the
-  `mp-units/systems/si/...` subdirectory.
+    `mp-units/systems/si.h` might be expensive to compile in every translation unit. There
+    are some smaller files available for explicit inclusion in the
+    `mp-units/systems/si/...` subdirectory.
 
     `mp-units/systems/si/unit_symbols.h` is the most expensive to include.

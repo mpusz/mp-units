@@ -4,7 +4,7 @@ tags:
 - Feature - Faster-Than-Lightspeed Constants
 - Feature - Physical Constants
 - Feature - Text Formatting
-- System - International System
+- System - SI
 ---
 
 # SI Defining Constants and Symbolic Values

@@ -5,6 +5,8 @@ ignore =
     E711,
     # comparison to True should be 'if cond is True:' or 'if cond:'
     E712,
+    # whitespace before ':' - conflicts with Black formatter
+    E203,
     # line break before binary operator
     W503
 per-file-ignores =

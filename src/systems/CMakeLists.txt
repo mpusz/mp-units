@@ -42,27 +42,26 @@ add_mp_units_module(
             include/mp-units/systems/si/unit_symbols.h
             include/mp-units/systems/si/units.h
             include/mp-units/systems/angular.h
+            include/mp-units/systems/astronomy.h
             include/mp-units/systems/cgs.h
             include/mp-units/systems/hep.h
             include/mp-units/systems/iau.h
             include/mp-units/systems/iec.h
             include/mp-units/systems/iec80000.h
             include/mp-units/systems/imperial.h
-            include/mp-units/systems/international.h
+            include/mp-units/systems/international.h # deprecated wrapper
             include/mp-units/systems/isq.h
             include/mp-units/systems/isq_angle.h
+            include/mp-units/systems/natural.h
             include/mp-units/systems/si.h
             include/mp-units/systems/typographic.h
             include/mp-units/systems/usc.h
+            include/mp-units/systems/yard_pound.h
     MODULE_INTERFACE_UNIT mp-units-systems.cpp
 )
 
-if(MP_UNITS_API_NATURAL_UNITS)
-    target_sources(
-        mp-units-systems PUBLIC FILE_SET HEADERS BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include FILES
-                                include/mp-units/systems/natural.h
-    )
-endif()
+# Disable VERIFY_INTERFACE_HEADER_SETS for deprecated wrapper
+set_source_files_properties(include/mp-units/systems/international.h PROPERTIES SKIP_LINTING ON)
 
 if(NOT MP_UNITS_API_FREESTANDING)
     target_sources(

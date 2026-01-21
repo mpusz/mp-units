@@ -182,7 +182,7 @@ The previous example can be re-typed using typed quantities in the following way
     using namespace mp_units;
 
     constexpr quantity<isq::speed[si::metre / si::second]> avg_speed(quantity<isq::length[si::metre]> dist,
-                                                                     quantity<isq::time[si::second]> time)
+                                                                     quantity<isq::duration[si::second]> time)
     {
       return dist / time;
     }
@@ -192,7 +192,7 @@ The previous example can be re-typed using typed quantities in the following way
       using namespace mp_units::si::unit_symbols;
 
       const quantity distance = isq::distance(110 * km);
-      const quantity duration = isq::time(2 * h);
+      const quantity duration = isq::duration(2 * h);
       const quantity speed = avg_speed(distance, duration);
 
       std::println("A car driving {} in {} has an average speed of {::N[.4]} ({::N[.4]})",
@@ -210,7 +210,7 @@ The previous example can be re-typed using typed quantities in the following way
     using namespace mp_units;
 
     constexpr quantity<isq::speed[si::metre / si::second]> avg_speed(quantity<isq::length[si::metre]> dist,
-                                                                     quantity<isq::time[si::second]> time)
+                                                                     quantity<isq::duration[si::second]> time)
     {
       return dist / time;
     }
@@ -220,7 +220,7 @@ The previous example can be re-typed using typed quantities in the following way
       using namespace mp_units::si::unit_symbols;
 
       const quantity distance = isq::distance(110 * km);
-      const quantity duration = isq::time(2 * h);
+      const quantity duration = isq::duration(2 * h);
       const quantity speed = avg_speed(distance, duration);
 
       std::println("A car driving {} in {} has an average speed of {::N[.4]} ({::N[.4]})",

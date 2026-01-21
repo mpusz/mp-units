@@ -404,7 +404,7 @@ assert(qp2 == qp2A);
 Support for temperature quantity points is probably one of the most common examples of relative
 point origins in action that we use in daily life.
 
-The [SI](../../appendix/references.md#SIBrochure) definition in the library provides a few
+The [SI](../../reference/bibliography.md#SIBrochure) definition in the library provides a few
 predefined point origins for this purpose:
 
 ```cpp

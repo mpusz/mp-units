@@ -5,7 +5,7 @@ tags:
 - Feature - Affine Space
 - Feature - Volatile Quantities
 - Feature - Text Formatting
-- Domain - Embedded
+- Domain - Embedded Systems
 - Domain - Electronics
 ---
 

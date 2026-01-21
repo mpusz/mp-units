@@ -139,7 +139,7 @@ of yet another type:
 ```cpp
 static_assert(120 * km / (2 * h) == 60 * km / h);
 static_assert(isq::width(2 * m) * isq::length(2 * m) == isq::area(4 * m2));
-static_assert(50 / isq::time(1 * s) == isq::frequency(50 * Hz));
+static_assert(50 / isq::duration(1 * s) == isq::frequency(50 * Hz));
 ```
 
 !!! note

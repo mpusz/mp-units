@@ -77,7 +77,7 @@ TEST_CASE("math operations", "[math]")
   SECTION("'fma()' on quantity changes the value and the dimension accordingly")
   {
     REQUIRE(fma(1.0 * isq::length[m], 2.0 * one, 2.0 * isq::length[m]) == 4.0 * isq::length[m]);
-    REQUIRE(fma(isq::speed(10.0 * m / s), isq::time(2.0 * s), isq::height(42.0 * m)) == isq::length(62.0 * m));
+    REQUIRE(fma(isq::speed(10.0 * m / s), isq::duration(2.0 * s), isq::height(42.0 * m)) == isq::length(62.0 * m));
   }
 
   SECTION("fmod functions")
@@ -151,51 +151,51 @@ TEST_CASE("math operations", "[math]")
   {
     SECTION("floor 1 second with target unit second should be 1 second")
     {
-      REQUIRE(floor<si::second>(1 * isq::time[s]) == 1 * isq::time[s]);
+      REQUIRE(floor<si::second>(1 * isq::duration[s]) == 1 * isq::duration[s]);
     }
     SECTION("floor 1000 milliseconds with target unit second should be 1 second")
     {
-      REQUIRE(floor<si::second>(1000 * isq::time[ms]) == 1 * isq::time[s]);
+      REQUIRE(floor<si::second>(1000 * isq::duration[ms]) == 1 * isq::duration[s]);
     }
     SECTION("floor 1001 milliseconds with target unit second should be 1 second")
     {
-      REQUIRE(floor<si::second>(1001 * isq::time[ms]) == 1 * isq::time[s]);
+      REQUIRE(floor<si::second>(1001 * isq::duration[ms]) == 1 * isq::duration[s]);
     }
     SECTION("floor 1999 milliseconds with target unit second should be 1 second")
     {
-      REQUIRE(floor<si::second>(1999 * isq::time[ms]) == 1 * isq::time[s]);
+      REQUIRE(floor<si::second>(1999 * isq::duration[ms]) == 1 * isq::duration[s]);
     }
     SECTION("floor -1000 milliseconds with target unit second should be -1 second")
     {
-      REQUIRE(floor<si::second>(-1000 * isq::time[ms]) == -1 * isq::time[s]);
+      REQUIRE(floor<si::second>(-1000 * isq::duration[ms]) == -1 * isq::duration[s]);
     }
     SECTION("floor -999 milliseconds with target unit second should be -1 second")
     {
-      REQUIRE(floor<si::second>(-999 * isq::time[ms]) == -1 * isq::time[s]);
+      REQUIRE(floor<si::second>(-999 * isq::duration[ms]) == -1 * isq::duration[s]);
     }
     SECTION("floor 1.3 seconds with target unit second should be 1 second")
     {
-      REQUIRE(floor<si::second>(1.3 * isq::time[s]) == 1 * isq::time[s]);
+      REQUIRE(floor<si::second>(1.3 * isq::duration[s]) == 1 * isq::duration[s]);
     }
     SECTION("floor -1.3 seconds with target unit second should be -2 seconds")
     {
-      REQUIRE(floor<si::second>(-1.3 * isq::time[s]) == -2 * isq::time[s]);
+      REQUIRE(floor<si::second>(-1.3 * isq::duration[s]) == -2 * isq::duration[s]);
     }
     SECTION("floor 1001. milliseconds with target unit second should be 1 second")
     {
-      REQUIRE(floor<si::second>(1001. * isq::time[ms]) == 1 * isq::time[s]);
+      REQUIRE(floor<si::second>(1001. * isq::duration[ms]) == 1 * isq::duration[s]);
     }
     SECTION("floor 1999. milliseconds with target unit second should be 1 second")
     {
-      REQUIRE(floor<si::second>(1999. * isq::time[ms]) == 1 * isq::time[s]);
+      REQUIRE(floor<si::second>(1999. * isq::duration[ms]) == 1 * isq::duration[s]);
     }
     SECTION("floor -1000. milliseconds with target unit second should be -1 second")
     {
-      REQUIRE(floor<si::second>(-1000. * isq::time[ms]) == -1 * isq::time[s]);
+      REQUIRE(floor<si::second>(-1000. * isq::duration[ms]) == -1 * isq::duration[s]);
     }
     SECTION("floor -999. milliseconds with target unit second should be -1 second")
     {
-      REQUIRE(floor<si::second>(-999. * isq::time[ms]) == -1 * isq::time[s]);
+      REQUIRE(floor<si::second>(-999. * isq::duration[ms]) == -1 * isq::duration[s]);
     }
 
     // TODO Add tests for `N`, `kN` and `kg * m / s2` i `kg * km / s2`
@@ -205,51 +205,51 @@ TEST_CASE("math operations", "[math]")
   {
     SECTION("ceil 1 second with target unit second should be 1 second")
     {
-      REQUIRE(ceil<si::second>(1 * isq::time[s]) == 1 * isq::time[s]);
+      REQUIRE(ceil<si::second>(1 * isq::duration[s]) == 1 * isq::duration[s]);
     }
     SECTION("ceil 1000 milliseconds with target unit second should be 1 second")
     {
-      REQUIRE(ceil<si::second>(1000 * isq::time[ms]) == 1 * isq::time[s]);
+      REQUIRE(ceil<si::second>(1000 * isq::duration[ms]) == 1 * isq::duration[s]);
     }
     SECTION("ceil 1001 milliseconds with target unit second should be 2 seconds")
     {
-      REQUIRE(ceil<si::second>(1001 * isq::time[ms]) == 2 * isq::time[s]);
+      REQUIRE(ceil<si::second>(1001 * isq::duration[ms]) == 2 * isq::duration[s]);
     }
     SECTION("ceil 1999 milliseconds with target unit second should be 2 seconds")
     {
-      REQUIRE(ceil<si::second>(1999 * isq::time[ms]) == 2 * isq::time[s]);
+      REQUIRE(ceil<si::second>(1999 * isq::duration[ms]) == 2 * isq::duration[s]);
     }
     SECTION("ceil -1000 milliseconds with target unit second should be -1 second")
     {
-      REQUIRE(ceil<si::second>(-1000 * isq::time[ms]) == -1 * isq::time[s]);
+      REQUIRE(ceil<si::second>(-1000 * isq::duration[ms]) == -1 * isq::duration[s]);
     }
     SECTION("ceil -999 milliseconds with target unit second should be 0 seconds")
     {
-      REQUIRE(ceil<si::second>(-999 * isq::time[ms]) == 0 * isq::time[s]);
+      REQUIRE(ceil<si::second>(-999 * isq::duration[ms]) == 0 * isq::duration[s]);
     }
     SECTION("ceil 1.3 seconds with target unit second should be 2 seconds")
     {
-      REQUIRE(ceil<si::second>(1.3 * isq::time[s]) == 2 * isq::time[s]);
+      REQUIRE(ceil<si::second>(1.3 * isq::duration[s]) == 2 * isq::duration[s]);
     }
     SECTION("ceil -1.3 seconds with target unit second should be -1 second")
     {
-      REQUIRE(ceil<si::second>(-1.3 * isq::time[s]) == -1 * isq::time[s]);
+      REQUIRE(ceil<si::second>(-1.3 * isq::duration[s]) == -1 * isq::duration[s]);
     }
     SECTION("ceil 1001. milliseconds with target unit second should be 2 seconds")
     {
-      REQUIRE(ceil<si::second>(1001. * isq::time[ms]) == 2 * isq::time[s]);
+      REQUIRE(ceil<si::second>(1001. * isq::duration[ms]) == 2 * isq::duration[s]);
     }
     SECTION("ceil 1999. milliseconds with target unit second should be 2 seconds")
     {
-      REQUIRE(ceil<si::second>(1999. * isq::time[ms]) == 2 * isq::time[s]);
+      REQUIRE(ceil<si::second>(1999. * isq::duration[ms]) == 2 * isq::duration[s]);
     }
     SECTION("ceil -1000. milliseconds with target unit second should be -1 second")
     {
-      REQUIRE(ceil<si::second>(-1000. * isq::time[ms]) == -1 * isq::time[s]);
+      REQUIRE(ceil<si::second>(-1000. * isq::duration[ms]) == -1 * isq::duration[s]);
     }
     SECTION("ceil -999. milliseconds with target unit second should be 0 seconds")
     {
-      REQUIRE(ceil<si::second>(-999. * isq::time[ms]) == 0 * isq::time[s]);
+      REQUIRE(ceil<si::second>(-999. * isq::duration[ms]) == 0 * isq::duration[s]);
     }
   }
 
@@ -257,87 +257,87 @@ TEST_CASE("math operations", "[math]")
   {
     SECTION("round 1 second with target unit second should be 1 second")
     {
-      REQUIRE(round<si::second>(1 * isq::time[s]) == 1 * isq::time[s]);
+      REQUIRE(round<si::second>(1 * isq::duration[s]) == 1 * isq::duration[s]);
     }
     SECTION("round 1000 milliseconds with target unit second should be 1 second")
     {
-      REQUIRE(round<si::second>(1000 * isq::time[ms]) == 1 * isq::time[s]);
+      REQUIRE(round<si::second>(1000 * isq::duration[ms]) == 1 * isq::duration[s]);
     }
     SECTION("round 1001 milliseconds with target unit second should be 1 second")
     {
-      REQUIRE(round<si::second>(1001 * isq::time[ms]) == 1 * isq::time[s]);
+      REQUIRE(round<si::second>(1001 * isq::duration[ms]) == 1 * isq::duration[s]);
     }
     SECTION("round 1499 milliseconds with target unit second should be 1 second")
     {
-      REQUIRE(round<si::second>(1499 * isq::time[ms]) == 1 * isq::time[s]);
+      REQUIRE(round<si::second>(1499 * isq::duration[ms]) == 1 * isq::duration[s]);
     }
     SECTION("round 1500 milliseconds with target unit second should be 2 seconds")
     {
-      REQUIRE(round<si::second>(1500 * isq::time[ms]) == 2 * isq::time[s]);
+      REQUIRE(round<si::second>(1500 * isq::duration[ms]) == 2 * isq::duration[s]);
     }
     SECTION("round 1999 milliseconds with target unit second should be 2 seconds")
     {
-      REQUIRE(round<si::second>(1999 * isq::time[ms]) == 2 * isq::time[s]);
+      REQUIRE(round<si::second>(1999 * isq::duration[ms]) == 2 * isq::duration[s]);
     }
     SECTION("round -1000 milliseconds with target unit second should be -1 second")
     {
-      REQUIRE(round<si::second>(-1000 * isq::time[ms]) == -1 * isq::time[s]);
+      REQUIRE(round<si::second>(-1000 * isq::duration[ms]) == -1 * isq::duration[s]);
     }
     SECTION("round -1001 milliseconds with target unit second should be -1 second")
     {
-      REQUIRE(round<si::second>(-1001 * isq::time[ms]) == -1 * isq::time[s]);
+      REQUIRE(round<si::second>(-1001 * isq::duration[ms]) == -1 * isq::duration[s]);
     }
     SECTION("round -1499 milliseconds with target unit second should be -1 second")
     {
-      REQUIRE(round<si::second>(-1499 * isq::time[ms]) == -1 * isq::time[s]);
+      REQUIRE(round<si::second>(-1499 * isq::duration[ms]) == -1 * isq::duration[s]);
     }
     SECTION("round -1500 milliseconds with target unit second should be -2 seconds")
     {
-      REQUIRE(round<si::second>(-1500 * isq::time[ms]) == -2 * isq::time[s]);
+      REQUIRE(round<si::second>(-1500 * isq::duration[ms]) == -2 * isq::duration[s]);
     }
     SECTION("round -1999 milliseconds with target unit second should be -2 seconds")
     {
-      REQUIRE(round<si::second>(-1999 * isq::time[ms]) == -2 * isq::time[s]);
+      REQUIRE(round<si::second>(-1999 * isq::duration[ms]) == -2 * isq::duration[s]);
     }
     SECTION("round 1000. milliseconds with target unit second should be 1 second")
     {
-      REQUIRE(round<si::second>(1000. * isq::time[ms]) == 1 * isq::time[s]);
+      REQUIRE(round<si::second>(1000. * isq::duration[ms]) == 1 * isq::duration[s]);
     }
     SECTION("round 1001. milliseconds with target unit second should be 1 second")
     {
-      REQUIRE(round<si::second>(1001. * isq::time[ms]) == 1 * isq::time[s]);
+      REQUIRE(round<si::second>(1001. * isq::duration[ms]) == 1 * isq::duration[s]);
     }
     SECTION("round 1499. milliseconds with target unit second should be 1 second")
     {
-      REQUIRE(round<si::second>(1499. * isq::time[ms]) == 1 * isq::time[s]);
+      REQUIRE(round<si::second>(1499. * isq::duration[ms]) == 1 * isq::duration[s]);
     }
     SECTION("round 1500. milliseconds with target unit second should be 2 seconds")
     {
-      REQUIRE(round<si::second>(1500. * isq::time[ms]) == 2 * isq::time[s]);
+      REQUIRE(round<si::second>(1500. * isq::duration[ms]) == 2 * isq::duration[s]);
     }
     SECTION("round 1999. milliseconds with target unit second should be 2 seconds")
     {
-      REQUIRE(round<si::second>(1999. * isq::time[ms]) == 2 * isq::time[s]);
+      REQUIRE(round<si::second>(1999. * isq::duration[ms]) == 2 * isq::duration[s]);
     }
     SECTION("round -1000. milliseconds with target unit second should be -1 second")
     {
-      REQUIRE(round<si::second>(-1000. * isq::time[ms]) == -1 * isq::time[s]);
+      REQUIRE(round<si::second>(-1000. * isq::duration[ms]) == -1 * isq::duration[s]);
     }
     SECTION("round -1001. milliseconds with target unit second should be -1 second")
     {
-      REQUIRE(round<si::second>(-1001. * isq::time[ms]) == -1 * isq::time[s]);
+      REQUIRE(round<si::second>(-1001. * isq::duration[ms]) == -1 * isq::duration[s]);
     }
     SECTION("round -1499. milliseconds with target unit second should be -1 second")
     {
-      REQUIRE(round<si::second>(-1499. * isq::time[ms]) == -1 * isq::time[s]);
+      REQUIRE(round<si::second>(-1499. * isq::duration[ms]) == -1 * isq::duration[s]);
     }
     SECTION("round -1500. milliseconds with target unit second should be -2 seconds")
     {
-      REQUIRE(round<si::second>(-1500. * isq::time[ms]) == -2 * isq::time[s]);
+      REQUIRE(round<si::second>(-1500. * isq::duration[ms]) == -2 * isq::duration[s]);
     }
     SECTION("round -1999. milliseconds with target unit second should be -2 seconds")
     {
-      REQUIRE(round<si::second>(-1999. * isq::time[ms]) == -2 * isq::time[s]);
+      REQUIRE(round<si::second>(-1999. * isq::duration[ms]) == -2 * isq::duration[s]);
     }
   }
 
@@ -594,7 +594,7 @@ TEST_CASE("math operations", "[math]")
   {
     SECTION("inverse of time quantity returns frequency")
     {
-      auto period = 2.0 * isq::time[s];
+      auto period = 2.0 * isq::duration[s];
       auto frequency = inverse<si::hertz>(period);
       REQUIRE(frequency == 0.5 * isq::frequency[Hz]);
     }
@@ -603,7 +603,7 @@ TEST_CASE("math operations", "[math]")
     {
       // Test the specific case that fails with consteval
       double runtime_value = 3.0;
-      auto period = runtime_value * isq::time[s];
+      auto period = runtime_value * isq::duration[s];
       auto frequency = inverse<si::hertz>(period);
       auto expected = (1.0 / 3.0) * isq::frequency[Hz];
       REQUIRE_THAT(frequency, AlmostEquals(expected));
@@ -611,7 +611,7 @@ TEST_CASE("math operations", "[math]")
 
     SECTION("inverse with different input units")
     {
-      auto period_ms = 500.0 * isq::time[ms];
+      auto period_ms = 500.0 * isq::duration[ms];
       auto frequency = inverse<si::hertz>(period_ms);
       REQUIRE(frequency == 2.0 * isq::frequency[Hz]);
     }

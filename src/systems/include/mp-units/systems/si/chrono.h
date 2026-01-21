@@ -130,7 +130,7 @@ namespace detail {
 
 }  // namespace detail
 
-template<QuantityOf<MP_UNITS_IS_VALUE_WORKAROUND(isq::time)> Q>
+template<QuantityOf<MP_UNITS_IS_VALUE_WORKAROUND(isq::duration)> Q>
 [[nodiscard]] constexpr auto to_chrono_duration(const Q& q)
 {
   return std::chrono::duration<typename Q::rep, decltype(detail::as_ratio(get_canonical_unit(Q::unit).mag))>{q};

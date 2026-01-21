@@ -78,7 +78,7 @@ QUANTITY_SPEC(relative_permittivity, dimensionless, permittivity / electric_cons
 QUANTITY_SPEC(electric_susceptibility, dimensionless,
               electric_polarization / electric_constant / electric_field_strength, quantity_character::real_scalar);
 QUANTITY_SPEC(electric_flux, electric_flux_density* area, quantity_character::real_scalar);
-QUANTITY_SPEC(displacement_current_density, electric_flux_density / time);  // vector
+QUANTITY_SPEC(displacement_current_density, electric_current_density, electric_flux_density / time);  // vector
 QUANTITY_SPEC(displacement_current, electric_current, displacement_current_density* area,
               quantity_character::real_scalar);
 QUANTITY_SPEC(total_current, electric_current);
@@ -98,8 +98,8 @@ QUANTITY_SPEC(permeability, magnetic_flux_density / magnetic_field_strength, qua
 QUANTITY_SPEC(relative_permeability, dimensionless, permeability / magnetic_constant);
 QUANTITY_SPEC(magnetic_susceptibility, dimensionless, magnetization / magnetic_field_strength,
               quantity_character::real_scalar);
-QUANTITY_SPEC(magnetic_polarization, magnetic_constant* magnetization);     // vector
-QUANTITY_SPEC(magnetic_dipole_moment, magnetic_constant* magnetic_moment);  // vector
+QUANTITY_SPEC(magnetic_polarization, magnetic_flux_density, magnetic_constant* magnetization);  // vector
+QUANTITY_SPEC(magnetic_dipole_moment, magnetic_constant* magnetic_moment);                      // vector
 QUANTITY_SPEC(coercivity, magnetic_field_strength, quantity_character::real_scalar);
 inline constexpr auto coercive_field_strength = coercivity;
 QUANTITY_SPEC(electromagnetic_energy_density, electric_field_strength* electric_flux_density,
@@ -124,8 +124,6 @@ QUANTITY_SPEC(conductivity, electric_current_density / electric_field_strength, 
 QUANTITY_SPEC(resistivity, inverse(conductivity));
 QUANTITY_SPEC(electromagnetism_power, power, voltage* electric_current);  // different name than in ISQ
 inline constexpr auto instantaneous_power = electromagnetism_power;
-QUANTITY_SPEC(resistance, voltage / electric_current);
-QUANTITY_SPEC(conductance, inverse(resistance));
 QUANTITY_SPEC(phase_difference, phase_angle);
 QUANTITY_SPEC(electric_current_phasor, electric_current, quantity_character::complex_scalar);
 QUANTITY_SPEC(voltage_phasor, voltage, quantity_character::complex_scalar);
@@ -134,6 +132,7 @@ QUANTITY_SPEC(impedance, voltage_phasor / electric_current_phasor);    // comple
 inline constexpr auto complex_impedance = impedance;                   // complex
 QUANTITY_SPEC(impedance_of_vacuum, impedance);                         // complex
 inline constexpr auto wave_impedance_in_vacuum = impedance_of_vacuum;  // complex
+QUANTITY_SPEC(resistance, impedance, voltage / electric_current);
 QUANTITY_SPEC(
   resistance_to_alternating_current, impedance,
   quantity_character::real_scalar);  // called resistance in the latest ISQ (we use the old name to avoid ambiguity)
@@ -142,6 +141,7 @@ QUANTITY_SPEC(apparent_impedance, impedance, quantity_character::real_scalar);
 QUANTITY_SPEC(admittance, inverse(impedance));                                  // complex
 inline constexpr auto complex_admittance = admittance;                          // complex
 QUANTITY_SPEC(admittance_of_vacuum, admittance, inverse(impedance_of_vacuum));  // complex
+QUANTITY_SPEC(conductance, admittance, inverse(resistance));
 QUANTITY_SPEC(
   conductance_for_alternating_current, conductance,
   quantity_character::real_scalar);  // called resistance in the latest ISQ (we use the old name to avoid ambiguity)
@@ -154,8 +154,8 @@ QUANTITY_SPEC(active_power, isq::power, inverse(period) * (instantaneous_power *
 QUANTITY_SPEC(complex_power, voltage_phasor* electric_current_phasor);  // complex // separate kind
 QUANTITY_SPEC(apparent_power, complex_power, quantity_character::real_scalar);
 QUANTITY_SPEC(power_factor, dimensionless, active_power / apparent_power);
-QUANTITY_SPEC(reactive_power, isq::mass* pow<2>(isq::length) / pow<3>(isq::time));  // separate kind
-QUANTITY_SPEC(non_active_power, pow<1, 2>(pow<2>(apparent_power)));                 // separate kind
-QUANTITY_SPEC(active_energy, instantaneous_power* time);
+QUANTITY_SPEC(reactive_power, isq::mass* pow<2>(isq::length) / pow<3>(isq::duration));  // separate kind
+QUANTITY_SPEC(non_active_power, pow<1, 2>(pow<2>(apparent_power)));                     // separate kind
+QUANTITY_SPEC(active_energy, energy, instantaneous_power* time);
 
 }  // namespace mp_units::isq

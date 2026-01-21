@@ -91,13 +91,23 @@ Harvard Bridge length = 364.4 smoot (2034.6 ft, 620.14 m) ± 1 εar
     More on the smoot unit of length can be found at <https://en.wikipedia.org/wiki/Smoot>.
 
 
-!!! important "Important: Help needed!"
+!!! important "Important: Help shape the future of C++!"
 
-    The **mp-units** library might be the subject of ISO standardization for C++29. More on this can
-    be found in the following ISO C++ proposals:
+    The **mp-units** library is a candidate for ISO standardization in C++29. To support this effort,
+    we need your help in demonstrating its real-world value to the ISO C++ Committee.
 
-    - [P1935: A C++ Approach to Physical Units](https://wg21.link/p1935),
-    - [P2980: A motivation, scope, and plan for a physical quantities and units library](https://wg21.link/p2980),
-    - [P3045: Quantities and units library](https://wg21.link/p3045).
+    **We are seeking:**
 
-    We are actively looking for parties interested in field-trialing the library.
+    - **Field trial partners** – Organizations interested in evaluating the library in production environments
+    - **Success stories** – Real-world testimonials from production deployments, research projects, or educational use
+    - **Feedback** – Practical insights from developers, academics, and organizations using the library
+
+    Your experience—whether from production systems, research applications, or teaching—provides
+    invaluable evidence for standardization and helps other potential users evaluate the library.
+
+    [![Share Your Experience](https://img.shields.io/badge/Share_Your-Usage_Experience-blue?style=for-the-badge&labelColor=black&label=🌟%20Share%20Your)](https://github.com/mpusz/mp-units/issues/new?template=usage_experience.yml)
+
+    For more details, see the ISO C++ proposals:
+    [P1935](https://wg21.link/p1935) ·
+    [P2980](https://wg21.link/p2980) ·
+    [P3045](https://wg21.link/p3045)

@@ -25,7 +25,7 @@
 #include <mp-units/bits/module_macros.h>
 
 // IWYU pragma: begin_exports
-#include <mp-units/systems/international.h>
+#include <mp-units/systems/yard_pound.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #include <mp-units/framework.h>
@@ -35,19 +35,16 @@
 MP_UNITS_EXPORT
 namespace mp_units::imperial {
 
-using namespace international;
-
 // clang-format off
 // https://en.wikipedia.org/wiki/Imperial_units#Length
-inline constexpr struct hand final : named_unit<"hh", mag_ratio<1, 3> * foot> {} hand;
-inline constexpr struct barleycorn final : named_unit<"Bc", mag_ratio<1, 3> * inch> {} barleycorn;
-inline constexpr struct thou final : named_unit<"th", mag_ratio<1, 12'000> * foot> {} thou;
-inline constexpr struct chain final : named_unit<"ch", mag<22> * yard> {} chain;
+inline constexpr struct hand final : named_unit<"hh", mag_ratio<1, 3> * yard_pound::foot> {} hand;
+inline constexpr struct barleycorn final : named_unit<"Bc", mag_ratio<1, 3> * yard_pound::inch> {} barleycorn;
+inline constexpr struct thou final : named_unit<"th", mag_ratio<1, 12'000> * yard_pound::foot> {} thou;
+inline constexpr struct chain final : named_unit<"ch", mag<22> * yard_pound::yard> {} chain;
 inline constexpr struct furlong final : named_unit<"fur", mag<10> * chain> {} furlong;
 
 // maritime units
-inline constexpr struct cable final : named_unit<"cb", mag_ratio<1, 10> * nautical_mile> {} cable;
-inline constexpr struct fathom final : named_unit<"ftm", mag_ratio<1, 1000> * nautical_mile> {} fathom;
+inline constexpr struct cable final : named_unit<"cb", mag_ratio<1, 10> * yard_pound::nautical_mile> {} cable;
 
 // survey
 inline constexpr struct link final : named_unit<"li", mag_ratio<1, 100> * chain> {} link;
@@ -66,17 +63,17 @@ inline constexpr struct gill final : named_unit<"gi", mag_ratio<1, 4> * pint> {}
 inline constexpr struct fluid_ounce final : named_unit<"fl oz", mag_ratio<1, 5> * gill> {} fluid_ounce;
 
 // https://en.wikipedia.org/wiki/Avoirdupois_system#Post-Elizabethan_units
-inline constexpr auto drachm = dram;
-inline constexpr struct stone final : named_unit<"st", mag<14> * pound> {} stone;
+inline constexpr auto drachm = yard_pound::dram;
+inline constexpr struct stone final : named_unit<"st", mag<14> * yard_pound::pound> {} stone;
 inline constexpr struct quarter final : named_unit<"qr", mag<2> * stone> {} quarter;
 inline constexpr struct long_hundredweight final : named_unit<"cwt", mag<8> * stone> {} long_hundredweight;
-inline constexpr struct ton final : named_unit<"t", mag<2'240> * pound> {} ton;
+inline constexpr struct ton final : named_unit<"t", mag<2'240> * yard_pound::pound> {} ton;
 inline constexpr auto long_ton = ton;
 // clang-format on
 
 namespace unit_symbols {
 
-using namespace international::unit_symbols;
+using namespace yard_pound::unit_symbols;
 
 inline constexpr auto hh = hand;
 inline constexpr auto Bc = barleycorn;
@@ -85,10 +82,13 @@ inline constexpr auto ch = chain;
 inline constexpr auto fur = furlong;
 
 inline constexpr auto cb = cable;
-inline constexpr auto ftm = fathom;
 
 inline constexpr auto li = link;
 inline constexpr auto rd = rod;
+
+using imperial::perch;
+using imperial::rood;
+using imperial::acre;
 
 inline constexpr auto gal = gallon;
 inline constexpr auto qt = quart;
@@ -102,5 +102,7 @@ inline constexpr auto cwt = long_hundredweight;
 inline constexpr auto t = ton;
 
 }  // namespace unit_symbols
+
+using namespace yard_pound;
 
 }  // namespace mp_units::imperial

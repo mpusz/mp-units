@@ -2,7 +2,7 @@
 tags:
 - Level - Beginner
 - System - CGS
-- System - International System
+- System - Yard-Pound
 - System - ISQ
 - Feature - Value Truncation
 - Feature - Representation Types
@@ -10,7 +10,7 @@ tags:
 
 # Average Speed: Representation Types and Conversions
 
-[Try it live on Compiler Explorer](https://godbolt.org/z/bPT9av1oM){ .md-button }
+[Try it live on Compiler Explorer](https://godbolt.org/z/GTazhvx3o){ .md-button }
 
 ## Overview
 
@@ -24,7 +24,7 @@ types on precision and performance.
 - Fixed-unit vs. generic quantity function interfaces
 - Impact of representation types (`int` vs. `double`)
 - Value-preserving and value-truncating conversions
-- Working with multiple unit systems (SI, CGS, International)
+- Working with multiple unit systems (SI, CGS, Yard-Pound)
 - Precision loss during unit conversions
 
 ## Code Walkthrough
@@ -103,10 +103,10 @@ Average speed of a car that makes 220 km in 2 h is 110 km/h.
 Average speed of a car that makes 220 km in 2 h is 110 km/h.
 ```
 
-#### International Mile Units
+#### Yard-Pound Mile Units
 
 Next, let's do the same for integral and floating-point representations, but this time
-using international mile:
+using mile from the yard-pound system:
 
 ```cpp title="avg_speed.cpp" linenums="68"
 --8<-- "example/avg_speed.cpp:100:131"
@@ -119,12 +119,12 @@ time, we need a `value_cast<m, int>` to force it.
 If we check the text output of the above, we will see the following:
 
 ```text
-International mile with 'int' as representation
+Yard-pound mile with 'int' as representation
 Average speed of a car that makes 140 mi in 2 h is 111 km/h.
 Average speed of a car that makes 140 mi in 2 h is 112.654 km/h.
 Average speed of a car that makes 140 mi in 2 h is 112 km/h.
 
-International mile with 'double' as representation
+Yard-pound mile with 'double' as representation
 Average speed of a car that makes 140 mi in 2 h is 111 km/h.
 Average speed of a car that makes 140 mi in 2 h is 112.654 km/h.
 Average speed of a car that makes 140 mi in 2 h is 112.654 km/h.

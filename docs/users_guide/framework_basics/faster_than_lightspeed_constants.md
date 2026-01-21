@@ -57,7 +57,7 @@ With the above definitions, we can calculate _vacuum permittivity_ as:
 
 ```cpp
 constexpr auto permeability_of_vacuum = 1. * si::magnetic_constant;
-constexpr auto speed_of_light_in_vacuum = 1 * si::si2019::speed_of_light_in_vacuum;
+constexpr auto speed_of_light_in_vacuum = 1 * si::speed_of_light_in_vacuum;
 
 QuantityOf<isq::permittivity_of_vacuum> auto q = 1 / (permeability_of_vacuum * pow<2>(speed_of_light_in_vacuum));
 
@@ -87,7 +87,7 @@ QuantityOf<isq::mechanical_energy> auto total_energy(QuantityOf<isq::momentum> a
 
 ```cpp
 constexpr auto GeV = si::giga<si::electronvolt>;
-constexpr QuantityOf<isq::speed> auto c = 1. * si::si2019::speed_of_light_in_vacuum;
+constexpr QuantityOf<isq::speed> auto c = 1. * si::speed_of_light_in_vacuum;
 constexpr auto c2 = pow<2>(c);
 
 const auto p1 = isq::momentum(4. * GeV / c);

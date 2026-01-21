@@ -11,6 +11,14 @@ repo_url: https://github.com/mpusz/mp-units
 # Copyright
 copyright: Copyright &copy; 2018-2023 Mateusz Pusz
 
+# Watch additional directories for changes during 'mkdocs serve'
+watch:
+  - src/systems/include/mp-units/systems
+
+# Hooks
+hooks:
+  - scripts/systems_reference.py
+
 # Configuration
 theme:
   name: material
@@ -134,12 +142,26 @@ nav:
       - Introduction: getting_started/introduction.md
       - Quick Start: getting_started/quick_start.md
       - Look and Feel: getting_started/look_and_feel.md
-      - Cheat Sheet: getting_started/cheat_sheet.md
       - Project Structure: getting_started/project_structure.md
       - C++ compiler support (API/ABI): getting_started/cpp_compiler_support.md
       - Installation and Usage: getting_started/installation_and_usage.md
       - Contributing: getting_started/contributing.md
       - FAQ: getting_started/faq.md
+  - Tutorials:
+      - Tutorials: tutorials/index.md
+      - "Tutorial 1: Refactor to Strong Types": tutorials/refactor_to_strong_types.md
+      - "Tutorial 2: Refactor to Generic, Type-Safe Interfaces": tutorials/generic_type_safe_interfaces.md
+      - "Tutorial 3: Extracting Numeric Values": tutorials/extracting_numeric_values.md
+      - "Tutorial 4: Working with Temperatures": tutorials/working_with_temperatures.md
+      - "Tutorial 5: Affine Spaces and Reference Origins": tutorials/affine_spaces.md
+      - "Tutorial 6: Interop with std::chrono": tutorials/interop_with_std_chrono.md
+      - "Tutorial 7: Custom Units for Dimensionless Counters": tutorials/custom_dimensionless_units.md
+      - "Tutorial 8: Typed Quantities of the Same Kind": tutorials/typed_quantities_same_kind.md
+      - "Tutorial 9: Custom Quantity Specifications": tutorials/custom_quantity_specifications.md
+      - "Tutorial 10: Custom Base Dimensions": tutorials/custom_base_dimensions.md
+      - "Tutorial 11: Preventing Confusion with Distinct Kinds": tutorials/distinct_quantity_kinds.md
+      - "Tutorial 12: Faster-than-Lightspeed Constants": tutorials/faster_than_lightspeed_constants.md
+      - "Tutorial 13: Incremental Migration from Legacy Code": tutorials/incremental_migration.md
   - User's Guide:
       - Terms and Definitions: users_guide/terms_and_definitions.md
       - Framework Basics:
@@ -155,38 +177,26 @@ nav:
           - Generic Interfaces: users_guide/framework_basics/generic_interfaces.md
           - Faster-than-lightspeed Constants: users_guide/framework_basics/faster_than_lightspeed_constants.md
           - The Affine Space: users_guide/framework_basics/the_affine_space.md
-          - Obtaining Metadata: users_guide/framework_basics/obtaining_metadata.md
+          - Type Introspection: users_guide/framework_basics/type_introspection.md
           - Concepts: users_guide/framework_basics/concepts.md
           - Text Output: users_guide/framework_basics/text_output.md
       - Systems:
           - Introduction: users_guide/systems/introduction.md
           - International System of Quantities (ISQ): users_guide/systems/isq.md
           - International System of Units (SI): users_guide/systems/si.md
+          - IAU Astronomical Units: users_guide/systems/iau.md
+          - Centimetre-Gram-Second (CGS) System: users_guide/systems/cgs.md
+          - Yard-Pound Systems: users_guide/systems/yard_pound.md
           - Strong Angular System: users_guide/systems/strong_angular_system.md
           - Natural Units: users_guide/systems/natural_units.md
-      - Use Cases:
-          - Pure Dimensional Analysis: users_guide/use_cases/pure_dimensional_analysis.md
-          - Working with Legacy Interfaces: users_guide/use_cases/working_with_legacy_interfaces.md
-          - Using Custom Representation Types: users_guide/use_cases/using_custom_representation_types.md
-          - Interoperability with Other Libraries: users_guide/use_cases/interoperability_with_other_libraries.md
-          - Extending the Library: users_guide/use_cases/extending_the_library.md
-          - Wide Compatibility: users_guide/use_cases/wide_compatibility.md
-      - Appendix:
-          - Glossary: appendix/glossary.md
-          - References: appendix/references.md
-  - API Reference: api_reference.md
-  - Tutorials:
-      - Overview: tutorials/index.md
-      - "Tutorial 1: Refactor to Strong Types": tutorials/tutorial_1.md
-      - "Tutorial 2: Refactor to Generic, Type-Safe Interfaces": tutorials/tutorial_2.md
-      - "Tutorial 3: Extracting Numeric Values": tutorials/tutorial_3.md
-      - "Tutorial 4: Working with Temperatures": tutorials/tutorial_4.md
-      - "Tutorial 5: Affine Spaces and Reference Origins": tutorials/tutorial_5.md
-      - "Tutorial 6: Interop with std::chrono": tutorials/tutorial_6.md
-      - "Tutorial 7: Typed Quantities of the Same Kind": tutorials/tutorial_7.md
-      - "Tutorial 8: Custom Units for Dimensionless Counters": tutorials/tutorial_8.md
+  - How-to Guides:
+      - Pure Dimensional Analysis: how_to_guides/pure_dimensional_analysis.md
+      - Working with Legacy Interfaces: how_to_guides/working_with_legacy_interfaces.md
+      - Using Custom Representation Types: how_to_guides/using_custom_representation_types.md
+      - Interoperability with Other Libraries: how_to_guides/interoperability_with_other_libraries.md
+      - Wide Compatibility: how_to_guides/wide_compatibility.md
   - Examples:
-      - Overview: examples/index.md
+      - Examples: examples/index.md
       - Beginner:
           - hello_units: examples/hello_units.md
           - avg_speed: examples/avg_speed.md
@@ -200,10 +210,190 @@ nav:
           - measurement: examples/measurement.md
           - currency: examples/currency.md
           - strong_angular_quantities: examples/strong_angular_quantities.md
+          - total_energy: examples/total_energy.md
       - Advanced:
           - unmanned_aerial_vehicle: examples/unmanned_aerial_vehicle.md
           - glide_computer: examples/glide_computer.md
           - kalman_filter: examples/kalman_filter.md
+  - Reference:
+      - Cheat Sheet: reference/cheat_sheet.md
+      - Systems Reference:
+          - Overview: reference/systems_reference/index.md
+          - Systems:
+              - Angular: reference/systems_reference/systems/angular.md
+              - Astronomy: reference/systems_reference/systems/astronomy.md
+              - CGS: reference/systems_reference/systems/cgs.md
+              - Core: reference/systems_reference/systems/core.md
+              - HEP: reference/systems_reference/systems/hep.md
+              - IAU: reference/systems_reference/systems/iau.md
+              - IEC: reference/systems_reference/systems/iec.md
+              - Imperial: reference/systems_reference/systems/imperial.md
+              - ISQ: reference/systems_reference/systems/isq.md
+              - ISQ Angle: reference/systems_reference/systems/isq_angle.md
+              - Natural: reference/systems_reference/systems/natural.md
+              - SI: reference/systems_reference/systems/si.md
+              - Typographic: reference/systems_reference/systems/typographic.md
+              - USC: reference/systems_reference/systems/usc.md
+              - Yard Pound: reference/systems_reference/systems/yard_pound.md
+          - Dimensions: reference/systems_reference/dimensions_index.md
+          - Quantities: reference/systems_reference/quantities_index.md
+          - Units: reference/systems_reference/units_index.md
+          - Prefixes: reference/systems_reference/prefixes_index.md
+          - Point Origins: reference/systems_reference/point_origins_index.md
+          - Quantity Hierarchies:
+              - Overview: reference/systems_reference/hierarchies/index.md
+              - Joule_Thomson_coefficient: reference/systems_reference/hierarchies/Joule_Thomson_coefficient.md
+              - Massieu_function: reference/systems_reference/hierarchies/Massieu_function.md
+              - Planck_function: reference/systems_reference/hierarchies/Planck_function.md
+              - Poynting_vector: reference/systems_reference/hierarchies/Poynting_vector.md
+              - absorbed_dose: reference/systems_reference/hierarchies/absorbed_dose.md
+              - acceleration: reference/systems_reference/hierarchies/acceleration.md
+              - action: reference/systems_reference/hierarchies/action.md
+              - activity: reference/systems_reference/hierarchies/activity.md
+              - admittance: reference/systems_reference/hierarchies/admittance.md
+              - amount_of_substance: reference/systems_reference/hierarchies/amount_of_substance.md
+              - angle: reference/systems_reference/hierarchies/angle.md
+              - angular_acceleration (isq): reference/systems_reference/hierarchies/angular_acceleration_isq.md
+              - angular_acceleration (isq_angle): reference/systems_reference/hierarchies/angular_acceleration_isq_angle.md
+              - angular_frequency (isq): reference/systems_reference/hierarchies/angular_frequency_isq.md
+              - angular_frequency (isq_angle): reference/systems_reference/hierarchies/angular_frequency_isq_angle.md
+              - angular_impulse: reference/systems_reference/hierarchies/angular_impulse.md
+              - angular_momentum (isq): reference/systems_reference/hierarchies/angular_momentum_isq.md
+              - angular_momentum (isq_angle): reference/systems_reference/hierarchies/angular_momentum_isq_angle.md
+              - angular_repetency (isq): reference/systems_reference/hierarchies/angular_repetency_isq.md
+              - angular_repetency (isq_angle): reference/systems_reference/hierarchies/angular_repetency_isq_angle.md
+              - angular_velocity (isq): reference/systems_reference/hierarchies/angular_velocity_isq.md
+              - angular_velocity (isq_angle): reference/systems_reference/hierarchies/angular_velocity_isq_angle.md
+              - area: reference/systems_reference/hierarchies/area.md
+              - attenuation: reference/systems_reference/hierarchies/attenuation.md
+              - call_intensity: reference/systems_reference/hierarchies/call_intensity.md
+              - capacitance: reference/systems_reference/hierarchies/capacitance.md
+              - coefficient_of_heat_transfer: reference/systems_reference/hierarchies/coefficient_of_heat_transfer.md
+              - complex_power: reference/systems_reference/hierarchies/complex_power.md
+              - compressibility: reference/systems_reference/hierarchies/compressibility.md
+              - conductivity: reference/systems_reference/hierarchies/conductivity.md
+              - cubic_expansion_coefficient: reference/systems_reference/hierarchies/cubic_expansion_coefficient.md
+              - curvature: reference/systems_reference/hierarchies/curvature.md
+              - damping_coefficient: reference/systems_reference/hierarchies/damping_coefficient.md
+              - density_of_heat_flow_rate: reference/systems_reference/hierarchies/density_of_heat_flow_rate.md
+              - dimensionless: reference/systems_reference/hierarchies/dimensionless.md
+              - dose_equivalent: reference/systems_reference/hierarchies/dose_equivalent.md
+              - duration: reference/systems_reference/hierarchies/duration.md
+              - dynamic_viscosity: reference/systems_reference/hierarchies/dynamic_viscosity.md
+              - electric_charge: reference/systems_reference/hierarchies/electric_charge.md
+              - electric_charge_density: reference/systems_reference/hierarchies/electric_charge_density.md
+              - electric_constant: reference/systems_reference/hierarchies/electric_constant.md
+              - electric_current: reference/systems_reference/hierarchies/electric_current.md
+              - electric_current_density: reference/systems_reference/hierarchies/electric_current_density.md
+              - electric_dipole_moment: reference/systems_reference/hierarchies/electric_dipole_moment.md
+              - electric_field_strength: reference/systems_reference/hierarchies/electric_field_strength.md
+              - electric_flux: reference/systems_reference/hierarchies/electric_flux.md
+              - electric_polarization: reference/systems_reference/hierarchies/electric_polarization.md
+              - electric_potential: reference/systems_reference/hierarchies/electric_potential.md
+              - electromagnetic_energy_density: reference/systems_reference/hierarchies/electromagnetic_energy_density.md
+              - energy (isq): reference/systems_reference/hierarchies/energy_isq.md
+              - energy (natural): reference/systems_reference/hierarchies/energy_natural.md
+              - energy_squared: reference/systems_reference/hierarchies/energy_squared.md
+              - entropy: reference/systems_reference/hierarchies/entropy.md
+              - force: reference/systems_reference/hierarchies/force.md
+              - frequency: reference/systems_reference/hierarchies/frequency.md
+              - group_speed: reference/systems_reference/hierarchies/group_speed.md
+              - heat_capacity: reference/systems_reference/hierarchies/heat_capacity.md
+              - heat_flow_rate: reference/systems_reference/hierarchies/heat_flow_rate.md
+              - impedance: reference/systems_reference/hierarchies/impedance.md
+              - inductance: reference/systems_reference/hierarchies/inductance.md
+              - inverse_energy: reference/systems_reference/hierarchies/inverse_energy.md
+              - irradiance: reference/systems_reference/hierarchies/irradiance.md
+              - kinematic_viscosity: reference/systems_reference/hierarchies/kinematic_viscosity.md
+              - length: reference/systems_reference/hierarchies/length.md
+              - linear_density_of_electric_charge: reference/systems_reference/hierarchies/linear_density_of_electric_charge.md
+              - linear_electric_current_density: reference/systems_reference/hierarchies/linear_electric_current_density.md
+              - linear_expansion_coefficient: reference/systems_reference/hierarchies/linear_expansion_coefficient.md
+              - linear_mass_density: reference/systems_reference/hierarchies/linear_mass_density.md
+              - luminous_intensity: reference/systems_reference/hierarchies/luminous_intensity.md
+              - magnetic_constant: reference/systems_reference/hierarchies/magnetic_constant.md
+              - magnetic_dipole_moment: reference/systems_reference/hierarchies/magnetic_dipole_moment.md
+              - magnetic_flux: reference/systems_reference/hierarchies/magnetic_flux.md
+              - magnetic_flux_density: reference/systems_reference/hierarchies/magnetic_flux_density.md
+              - magnetic_moment: reference/systems_reference/hierarchies/magnetic_moment.md
+              - magnetic_vector_potential: reference/systems_reference/hierarchies/magnetic_vector_potential.md
+              - magnetization: reference/systems_reference/hierarchies/magnetization.md
+              - mass: reference/systems_reference/hierarchies/mass.md
+              - mass_change_rate: reference/systems_reference/hierarchies/mass_change_rate.md
+              - mass_density: reference/systems_reference/hierarchies/mass_density.md
+              - mass_flow: reference/systems_reference/hierarchies/mass_flow.md
+              - mass_flow_rate: reference/systems_reference/hierarchies/mass_flow_rate.md
+              - modulation_rate: reference/systems_reference/hierarchies/modulation_rate.md
+              - modulus_of_compression: reference/systems_reference/hierarchies/modulus_of_compression.md
+              - modulus_of_elasticity: reference/systems_reference/hierarchies/modulus_of_elasticity.md
+              - modulus_of_rigidity: reference/systems_reference/hierarchies/modulus_of_rigidity.md
+              - moment_of_force (isq): reference/systems_reference/hierarchies/moment_of_force_isq.md
+              - moment_of_force (isq_angle): reference/systems_reference/hierarchies/moment_of_force_isq_angle.md
+              - moment_of_inertia (isq): reference/systems_reference/hierarchies/moment_of_inertia_isq.md
+              - moment_of_inertia (isq_angle): reference/systems_reference/hierarchies/moment_of_inertia_isq_angle.md
+              - momentum: reference/systems_reference/hierarchies/momentum.md
+              - mutual_inductance: reference/systems_reference/hierarchies/mutual_inductance.md
+              - permeability: reference/systems_reference/hierarchies/permeability.md
+              - permeance: reference/systems_reference/hierarchies/permeance.md
+              - permittivity: reference/systems_reference/hierarchies/permittivity.md
+              - phase_coefficient (isq): reference/systems_reference/hierarchies/phase_coefficient_isq.md
+              - phase_coefficient (isq_angle): reference/systems_reference/hierarchies/phase_coefficient_isq_angle.md
+              - phase_speed: reference/systems_reference/hierarchies/phase_speed.md
+              - phase_speed_of_electromagnetic_waves: reference/systems_reference/hierarchies/phase_speed_of_electromagnetic_waves.md
+              - power: reference/systems_reference/hierarchies/power.md
+              - pressure: reference/systems_reference/hierarchies/pressure.md
+              - pressure_coefficient: reference/systems_reference/hierarchies/pressure_coefficient.md
+              - propagation_coefficient (isq): reference/systems_reference/hierarchies/propagation_coefficient_isq.md
+              - propagation_coefficient (isq_angle): reference/systems_reference/hierarchies/propagation_coefficient_isq_angle.md
+              - protoflux: reference/systems_reference/hierarchies/protoflux.md
+              - radiance: reference/systems_reference/hierarchies/radiance.md
+              - radiant_energy_density: reference/systems_reference/hierarchies/radiant_energy_density.md
+              - radiant_exitance: reference/systems_reference/hierarchies/radiant_exitance.md
+              - radiant_exposure: reference/systems_reference/hierarchies/radiant_exposure.md
+              - radiant_intensity: reference/systems_reference/hierarchies/radiant_intensity.md
+              - reactive_power: reference/systems_reference/hierarchies/reactive_power.md
+              - relative_pressure_coefficient: reference/systems_reference/hierarchies/relative_pressure_coefficient.md
+              - reluctance: reference/systems_reference/hierarchies/reluctance.md
+              - repetency: reference/systems_reference/hierarchies/repetency.md
+              - resistivity: reference/systems_reference/hierarchies/resistivity.md
+              - rotational_frequency: reference/systems_reference/hierarchies/rotational_frequency.md
+              - second_axial_moment_of_area: reference/systems_reference/hierarchies/second_axial_moment_of_area.md
+              - second_polar_moment_of_area: reference/systems_reference/hierarchies/second_polar_moment_of_area.md
+              - section_modulus: reference/systems_reference/hierarchies/section_modulus.md
+              - solid_angle: reference/systems_reference/hierarchies/solid_angle.md
+              - solid_angular_measure: reference/systems_reference/hierarchies/solid_angular_measure.md
+              - specific_energy: reference/systems_reference/hierarchies/specific_energy.md
+              - specific_entropy: reference/systems_reference/hierarchies/specific_entropy.md
+              - specific_gas_constant: reference/systems_reference/hierarchies/specific_gas_constant.md
+              - specific_heat_capacity: reference/systems_reference/hierarchies/specific_heat_capacity.md
+              - specific_volume: reference/systems_reference/hierarchies/specific_volume.md
+              - spectral_irradiance: reference/systems_reference/hierarchies/spectral_irradiance.md
+              - spectral_radiance: reference/systems_reference/hierarchies/spectral_radiance.md
+              - spectral_radiant_energy: reference/systems_reference/hierarchies/spectral_radiant_energy.md
+              - spectral_radiant_energy_density_in_terms_of_wavelength: reference/systems_reference/hierarchies/spectral_radiant_energy_density_in_terms_of_wavelength.md
+              - spectral_radiant_energy_density_in_terms_of_wavenumber: reference/systems_reference/hierarchies/spectral_radiant_energy_density_in_terms_of_wavenumber.md
+              - spectral_radiant_exitance: reference/systems_reference/hierarchies/spectral_radiant_exitance.md
+              - spectral_radiant_exposure: reference/systems_reference/hierarchies/spectral_radiant_exposure.md
+              - spectral_radiant_flux: reference/systems_reference/hierarchies/spectral_radiant_flux.md
+              - spectral_radiant_intensity: reference/systems_reference/hierarchies/spectral_radiant_intensity.md
+              - speed: reference/systems_reference/hierarchies/speed.md
+              - surface_coefficient_of_heat_transfer: reference/systems_reference/hierarchies/surface_coefficient_of_heat_transfer.md
+              - surface_density_of_electric_charge: reference/systems_reference/hierarchies/surface_density_of_electric_charge.md
+              - surface_mass_density: reference/systems_reference/hierarchies/surface_mass_density.md
+              - surface_tension: reference/systems_reference/hierarchies/surface_tension.md
+              - thermal_conductance: reference/systems_reference/hierarchies/thermal_conductance.md
+              - thermal_conductivity: reference/systems_reference/hierarchies/thermal_conductivity.md
+              - thermal_diffusivity: reference/systems_reference/hierarchies/thermal_diffusivity.md
+              - thermal_insulance: reference/systems_reference/hierarchies/thermal_insulance.md
+              - thermal_resistance: reference/systems_reference/hierarchies/thermal_resistance.md
+              - thermodynamic_temperature: reference/systems_reference/hierarchies/thermodynamic_temperature.md
+              - traffic_intensity: reference/systems_reference/hierarchies/traffic_intensity.md
+              - transfer_rate: reference/systems_reference/hierarchies/transfer_rate.md
+              - volume: reference/systems_reference/hierarchies/volume.md
+              - volume_flow_rate: reference/systems_reference/hierarchies/volume_flow_rate.md
+      - API Reference: reference/api_reference.md
+      - Glossary: reference/glossary.md
+      - Bibliography: reference/bibliography.md
   - Blog:
       - blog/index.md
   - Release Notes: release_notes.md

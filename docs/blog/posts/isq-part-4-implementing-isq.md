@@ -44,8 +44,8 @@ We've seen this tree already:
 ```mermaid
 flowchart TD
     length["<b>length</b><br>[m]"]
-    length --- width["<b>width</b> / <b>breadth</b>"]
-    length --- height["<b>height</b> / <b>depth</b> / <b>altitude</b>"]
+    length --- width["<b>width</b> | <b>breadth</b>"]
+    length --- height["<b>height</b> | <b>depth</b> | <b>altitude</b>"]
     width --- thickness["<b>thickness</b>"]
     width --- diameter["<b>diameter</b>"]
     width --- radius["<b>radius</b>"]
@@ -127,9 +127,9 @@ flowchart TD
     potential_energy --- elastic_potential_energy["<b>elastic_potential_energy</b><br><i>(spring_constant * amount_of_compression<sup>2</sup>)</i>"]
     mechanical_energy --- kinetic_energy["<b>kinetic_energy</b><br><i>(mass * speed<sup>2</sup>)</i>"]
     energy --- enthalpy["<b>enthalpy</b>"]
-    enthalpy --- internal_energy["<b>internal_energy</b> / <b>thermodynamic_energy</b>"]
-    internal_energy --- Helmholtz_energy["<b>Helmholtz_energy</b> / <b>Helmholtz_function</b>"]
-    enthalpy --- Gibbs_energy["<b>Gibbs_energy</b> / <b>Gibbs_function</b>"]
+    enthalpy --- internal_energy["<b>internal_energy</b> | <b>thermodynamic_energy</b>"]
+    internal_energy --- Helmholtz_energy["<b>Helmholtz_energy</b> | <b>Helmholtz_function</b>"]
+    enthalpy --- Gibbs_energy["<b>Gibbs_energy</b> | <b>Gibbs_function</b>"]
     energy --- active_energy["<b>active_energy</b>"]
 ```
 
@@ -144,34 +144,34 @@ implicitly:
   from any quantity of _mass_, _length_, and _time_:
 
     ```cpp
-    static_assert(implicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::time), isq::energy));
-    static_assert(implicitly_convertible(isq::mass * pow<2>(isq::height) / pow<2>(isq::time), isq::energy));
+    static_assert(implicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::duration), isq::energy));
+    static_assert(implicitly_convertible(isq::mass * pow<2>(isq::height) / pow<2>(isq::duration), isq::energy));
     ```
 
 - _mechanical energy_ is a more "specialized" quantity than _energy_ (not every
   _energy_ is a _mechanical energy_). It is why an explicit cast is needed to
   convert from either _energy_ or the results of its
-  [quantity equation](../../appendix/glossary.md#quantity-equation):
+  [quantity equation](../../reference/glossary.md#quantity-equation):
 
     ```cpp
     static_assert(!implicitly_convertible(isq::energy, isq::mechanical_energy));
     static_assert(explicitly_convertible(isq::energy, isq::mechanical_energy));
-    static_assert(!implicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::time),
+    static_assert(!implicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::duration),
                                           isq::mechanical_energy));
-    static_assert(explicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::time),
+    static_assert(explicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::duration),
                                          isq::mechanical_energy));
     ```
 
 - _gravitational potential energy_ is not only even more specialized one but
   additionally, it is special in a way that it provides its own "constrained"
-  [quantity equation](../../appendix/glossary.md#quantity-equation). Maybe not
+  [quantity equation](../../reference/glossary.md#quantity-equation). Maybe not
   every `mass * pow<2>(length) / pow<2>(time)` is a _gravitational potential
   energy_, but every `mass * acceleration_of_free_fall * height` is.
 
     ```cpp
-    static_assert(!implicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::time),
+    static_assert(!implicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::duration),
                                           gravitational_potential_energy));
-    static_assert(explicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::time),
+    static_assert(explicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::duration),
                                          gravitational_potential_energy));
     static_assert(implicitly_convertible(isq::mass * isq::acceleration_of_free_fall * isq::height,
                                          gravitational_potential_energy));
@@ -208,8 +208,8 @@ chapter of the "Part 2" article.
 
 As the last example for this article, let's try to model and implement
 quantities of dimension one, often also called dimensionless quantities. This
-[quantity hierarchy](../../appendix/glossary.md#quantity-hierarchy) contains
-more than one [quantity kind](../../appendix/glossary.md#kind) and more than one
+[quantity hierarchy](../../reference/glossary.md#quantity-hierarchy) contains
+more than one [quantity kind](../../reference/glossary.md#kind) and more than one
 unit in its tree:
 
 ```mermaid

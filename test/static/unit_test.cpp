@@ -47,16 +47,11 @@ template<PrefixableUnit auto U> constexpr milli_<MP_UNITS_REMOVE_CONST(decltype(
 template<PrefixableUnit auto U> constexpr kilo_<MP_UNITS_REMOVE_CONST(decltype(U))> kilo;
 
 // base units
-inline constexpr struct second_ final : named_unit<"s", kind_of<isq::time>> {} second;
+inline constexpr struct second_ final : named_unit<"s", kind_of<isq::duration>> {} second;
 inline constexpr struct metre_ final : named_unit<"m", kind_of<isq::length>> {} metre;
 inline constexpr struct gram_ final : named_unit<"g", kind_of<isq::mass>> {} gram;
 inline constexpr auto kilogram = kilo<gram>;
 inline constexpr struct kelvin_ final : named_unit<"K", kind_of<isq::thermodynamic_temperature>> {} kelvin;
-
-#if MP_UNITS_API_NATURAL_UNITS
-// hypothetical natural units for c=1
-inline constexpr struct nu_second_ final : named_unit<"s"> {} nu_second;
-#endif
 
 inline constexpr struct beat_ final : named_unit<"beat", one> {} beat;
 inline constexpr struct cow_ final : named_unit<"cow", kind_of<dimensionless>> {} cow;
@@ -105,12 +100,6 @@ static_assert(Unit<decltype(mag<60> * second)>);
 static_assert(Unit<decltype(second * second)>);
 static_assert(Unit<decltype(metre / second)>);
 static_assert(Unit<MP_UNITS_NONCONST_TYPE(kilometre)>);
-#if MP_UNITS_API_NATURAL_UNITS
-static_assert(Unit<nu_second_>);
-static_assert(Unit<decltype(nu_second * nu_second)>);
-static_assert(Unit<decltype(nu_second / nu_second)>);
-#endif
-
 static_assert(PrefixableUnit<metre_>);
 static_assert(PrefixableUnit<hertz_>);
 static_assert(PrefixableUnit<newton_>);
@@ -177,10 +166,6 @@ static_assert(
 static_assert(get_canonical_unit(joule).mag == mag<1000>);  // !!! (because of kilogram)
 static_assert(joule == joule);
 static_assert(joule != newton);
-
-#if MP_UNITS_API_NATURAL_UNITS
-static_assert(is_of_type<nu_second / nu_second, one_>);
-#endif
 
 // constant_unit
 static_assert(is_of_type<standard_gravity, standard_gravity_>);
@@ -409,21 +394,21 @@ concept invalid_operations = requires {
   requires !requires { 2 == s; };
   requires !requires { s < 2; };
   requires !requires { 2 < s; };
-  requires !requires { s + isq::time[second]; };
-  requires !requires { s - isq::time[second]; };
-  requires !requires { s < isq::time[second]; };
-  requires !requires { isq::time[second] + s; };
-  requires !requires { isq::time[second] - s; };
-  requires !requires { s + 1 * isq::time[second]; };
-  requires !requires { s - 1 * isq::time[second]; };
-  requires !requires { s * 1 * isq::time[second]; };
-  requires !requires { s / 1 * isq::time[second]; };
-  requires !requires { s == 1 * isq::time[second]; };
-  requires !requires { s == 1 * isq::time[second]; };
-  requires !requires { 1 * isq::time[second] + s; };
-  requires !requires { 1 * isq::time[second] - s; };
-  requires !requires { 1 * isq::time[second] == s; };
-  requires !requires { 1 * isq::time[second] < s; };
+  requires !requires { s + isq::duration[second]; };
+  requires !requires { s - isq::duration[second]; };
+  requires !requires { s < isq::duration[second]; };
+  requires !requires { isq::duration[second] + s; };
+  requires !requires { isq::duration[second] - s; };
+  requires !requires { s + 1 * isq::duration[second]; };
+  requires !requires { s - 1 * isq::duration[second]; };
+  requires !requires { s * 1 * isq::duration[second]; };
+  requires !requires { s / 1 * isq::duration[second]; };
+  requires !requires { s == 1 * isq::duration[second]; };
+  requires !requires { s == 1 * isq::duration[second]; };
+  requires !requires { 1 * isq::duration[second] + s; };
+  requires !requires { 1 * isq::duration[second] - s; };
+  requires !requires { 1 * isq::duration[second] == s; };
+  requires !requires { 1 * isq::duration[second] < s; };
 };
 static_assert(invalid_operations<second>);
 

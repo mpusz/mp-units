@@ -40,8 +40,8 @@ import std;
 #ifdef MP_UNITS_MODULES
 import mp_units;
 #else
-#include <mp-units/systems/international.h>
 #include <mp-units/systems/si.h>
+#include <mp-units/systems/yard_pound.h>
 #endif
 
 namespace {
@@ -75,7 +75,7 @@ auto get_weather_conditions()
 auto get_waypoints()
 {
   using namespace geographic::literals;
-  using namespace mp_units::international::unit_symbols;
+  using namespace mp_units::yard_pound::unit_symbols;
   static const std::array waypoints = {
     waypoint{"EPPR", {54.24772_N, 18.6745_E}, mean_sea_level + 16. * ft},   // N54°14'51.8" E18°40'28.2"
     waypoint{"EPGI", {53.52442_N, 18.84947_E}, mean_sea_level + 115. * ft}  // N53°31'27.9" E18°50'58.1"

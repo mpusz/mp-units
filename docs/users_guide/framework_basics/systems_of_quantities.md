@@ -1,14 +1,14 @@
 # Systems of Quantities
 
 Most physical units libraries focus on modeling one or more
-[systems of units](../../appendix/glossary.md#system-of-units). However an equally (or more)
+[systems of units](../../reference/glossary.md#system-of-units). However an equally (or more)
 important abstraction is the
-[system of quantities](../../appendix/glossary.md#system-of-quantities).
+[system of quantities](../../reference/glossary.md#system-of-quantities).
 
 !!! info
 
     **mp-units** is likely the first Open Source library (in any language) that models the
-    [ISQ](../../appendix/glossary.md#isq) with the full ISO 80000 definition set. Feedback
+    [ISQ](../../reference/glossary.md#isq) with the full ISO 80000 definition set. Feedback
     is welcome.
 
 
@@ -60,7 +60,7 @@ Both have dimension $\mathsf{L}^{2}$ yet adding them is nonsensical and should f
       _wavelength_, _position vector_, ...)
 
 These issues require proper modeling of a
-[system of quantities](../../appendix/glossary.md#system-of-quantities).
+[system of quantities](../../reference/glossary.md#system-of-quantities).
 
 
 ## Quantities of the same kind
@@ -77,7 +77,7 @@ These issues require proper modeling of a
     - Quantities of the **same dimension are not necessarily of the same kind**
 
 ISO 80000 answers the earlier questions: two quantities cannot be added, subtracted, or
-compared unless they are of the same [kind](../../appendix/glossary.md#kind). Thus
+compared unless they are of the same [kind](../../reference/glossary.md#kind). Thus
 _frequency_, _activity_, and _modulation rate_ are incompatible.
 
 
@@ -91,8 +91,8 @@ For example, here are all quantities of the kind length provided in the ISO 8000
 ```mermaid
 flowchart TD
     length["<b>length</b><br>[m]"]
-    length --- width["<b>width</b> / <b>breadth</b>"]
-    length --- height["<b>height</b> / <b>depth</b> / <b>altitude</b>"]
+    length --- width["<b>width</b> | <b>breadth</b>"]
+    length --- height["<b>height</b> | <b>depth</b> | <b>altitude</b>"]
     width --- thickness["<b>thickness</b>"]
     width --- diameter["<b>diameter</b>"]
     width --- radius["<b>radius</b>"]
@@ -123,7 +123,7 @@ type from a suitable instantiation.
     [explicit object parameter](https://en.cppreference.com/w/cpp/language/member_functions#Explicit_object_parameter)
     added in C++23 to remove the need for CRTP idiom, which significantly simplifies the code.
     However, as C++23 is far from being mainstream today,
-    a [portability macro `QUANTITY_SPEC()`](../use_cases/wide_compatibility.md#QUANTITY_SPEC)
+    a [portability macro `QUANTITY_SPEC()`](../../how_to_guides/wide_compatibility.md#QUANTITY_SPEC)
     is provided and used consistently through the library to allow the code to compile with C++20
     compilers, thanks to the CRTP usage under the hood.
 
@@ -310,9 +310,9 @@ rules.
     - _time_ has nothing in common with _length_
 
     ```cpp
-    static_assert(!implicitly_convertible(isq::time, isq::length));
-    static_assert(!explicitly_convertible(isq::time, isq::length));
-    static_assert(!castable(isq::time, isq::length));
+    static_assert(!implicitly_convertible(isq::duration, isq::length));
+    static_assert(!explicitly_convertible(isq::duration, isq::length));
+    static_assert(!castable(isq::duration, isq::length));
     ```
 
     Even the explicit casts will not force such a conversion:
@@ -341,20 +341,25 @@ The below presents some arbitrary hierarchy of derived quantities of kind _energ
 ```mermaid
 flowchart TD
     energy["<b>energy</b><br><i>(mass * length<sup>2</sup> / time<sup>2</sup>)</i><br>[J]"]
-    energy --- mechanical_energy["<b>mechanical_energy</b>"]
+    energy --- signal_energy_per_binary_digit["<b>signal_energy_per_binary_digit</b><br><i>(carrier_power * period_of_binary_digits)</i>"]
+    energy --- mechanical_work["<b>mechanical_work</b>"]
+    mechanical_work --- mechanical_energy["<b>mechanical_energy</b><br><i>(force * displacement)</i>"]
     mechanical_energy --- potential_energy["<b>potential_energy</b>"]
     potential_energy --- gravitational_potential_energy["<b>gravitational_potential_energy</b><br><i>(mass * acceleration_of_free_fall * height)</i>"]
     potential_energy --- elastic_potential_energy["<b>elastic_potential_energy</b><br><i>(spring_constant * amount_of_compression<sup>2</sup>)</i>"]
     mechanical_energy --- kinetic_energy["<b>kinetic_energy</b><br><i>(mass * speed<sup>2</sup>)</i>"]
-    energy --- enthalpy["<b>enthalpy</b>"]
-    enthalpy --- internal_energy["<b>internal_energy</b> / <b>thermodynamic_energy</b>"]
-    internal_energy --- Helmholtz_energy["<b>Helmholtz_energy</b> / <b>Helmholtz_function</b>"]
-    enthalpy --- Gibbs_energy["<b>Gibbs_energy</b> / <b>Gibbs_function</b>"]
+    energy --- radiant_energy["<b>radiant_energy</b>"]
+    energy --- internal_energy["<b>internal_energy</b> | <b>thermodynamic_energy</b>"]
+    internal_energy --- Helmholtz_energy["<b>Helmholtz_energy</b> | <b>Helmholtz_function</b>"]
+    internal_energy --- enthalpy["<b>enthalpy</b>"]
+    enthalpy --- Gibbs_energy["<b>Gibbs_energy</b> | <b>Gibbs_function</b>"]
+    internal_energy --- heat["<b>heat</b> | <b>amount_of_heat</b>"]
+    heat --- latent_heat["<b>latent_heat</b>"]
     energy --- active_energy["<b>active_energy</b>"]
 ```
 
 Notice, that even though all of those quantities have the same dimension and can be expressed
-in the same units, they have different [quantity equations](../../appendix/glossary.md#quantity-equation)
+in the same units, they have different [quantity equations](../../reference/glossary.md#quantity-equation)
 that can be used to create them implicitly:
 
 - _energy_ is the most generic one and thus can be created from base quantities of _mass_,
@@ -364,35 +369,35 @@ that can be used to create them implicitly:
   from any quantity of _mass_, _length_, and _time_:
 
     ```cpp
-    static_assert(implicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::time), isq::energy));
-    static_assert(implicitly_convertible(isq::mass * pow<2>(isq::height) / pow<2>(isq::time), isq::energy));
+    static_assert(implicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::duration), isq::energy));
+    static_assert(implicitly_convertible(isq::mass * pow<2>(isq::height) / pow<2>(isq::duration), isq::energy));
     ```
 
 - _mechanical energy_ is a more "specialized" quantity than _energy_ (not every _energy_ is
   a _mechanical energy_). It is why an explicit cast is needed to convert from either
-  _energy_ or the results of its [quantity equation](../../appendix/glossary.md#quantity-equation):
+  _energy_ or the results of its [quantity equation](../../reference/glossary.md#quantity-equation):
 
     ```cpp
     static_assert(!implicitly_convertible(isq::energy, isq::mechanical_energy));
     static_assert(explicitly_convertible(isq::energy, isq::mechanical_energy));
-    static_assert(!implicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::time),
+    static_assert(!implicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::duration),
                                           isq::mechanical_energy));
-    static_assert(explicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::time),
+    static_assert(explicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::duration),
                                          isq::mechanical_energy));
     ```
 
 - _gravitational potential energy_ is not only even more specialized one but additionally,
   it is special in a way that it provides its own "constrained"
-  [quantity equation](../../appendix/glossary.md#quantity-equation). Maybe not every
+  [quantity equation](../../reference/glossary.md#quantity-equation). Maybe not every
   `mass * pow<2>(length) / pow<2>(time)` is a _gravitational potential energy_, but every
   `mass * acceleration_of_free_fall * height` is.
 
     ```cpp
     static_assert(!implicitly_convertible(isq::energy, gravitational_potential_energy));
     static_assert(explicitly_convertible(isq::energy, gravitational_potential_energy));
-    static_assert(!implicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::time),
+    static_assert(!implicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::duration),
                                           gravitational_potential_energy));
-    static_assert(explicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::time),
+    static_assert(explicitly_convertible(isq::mass * pow<2>(isq::length) / pow<2>(isq::duration),
                                          gravitational_potential_energy));
     static_assert(implicitly_convertible(isq::mass * isq::acceleration_of_free_fall * isq::height,
                                          gravitational_potential_energy));
@@ -424,15 +429,15 @@ static_assert(implicitly_convertible(kind_of<isq::length>, isq::height));
 Additionally, the result of operations on quantity kinds is also a quantity kind:
 
 ```cpp
-static_assert(same_type<kind_of<isq::length> / kind_of<isq::time>, kind_of<isq::length / isq::time>>);
+static_assert(same_type<kind_of<isq::length> / kind_of<isq::duration>, kind_of<isq::length / isq::duration>>);
 ```
 
 However, if at least one equation's operand is not a quantity kind, the result becomes a "strong"
 quantity where all the kinds are converted to the hierarchy tree's root quantities:
 
 ```cpp
-static_assert(!same_type<kind_of<isq::length> / isq::time, kind_of<isq::length / isq::time>>);
-static_assert(same_type<kind_of<isq::length> / isq::time, isq::length / isq::time>);
+static_assert(!same_type<kind_of<isq::length> / isq::duration, kind_of<isq::length / isq::duration>>);
+static_assert(same_type<kind_of<isq::length> / isq::duration, isq::length / isq::duration>);
 ```
 
 !!! info
@@ -445,3 +450,205 @@ static_assert(same_type<kind_of<isq::length> / isq::time, isq::length / isq::tim
     ```cpp
     static_assert(get_kind(isq::width) == kind_of<isq::length>);
     ```
+
+
+## Creating distinct quantity kinds with `is_kind`
+
+While dimension-based type safety prevents many errors, sometimes quantities share the same
+dimension but represent fundamentally incompatible physical concepts. The `is_kind` specifier
+allows creating distinct quantity types that cannot be mixed even though they share the same
+dimension and quantity hierarchy tree.
+
+
+### When to use `is_kind`?
+
+Use `is_kind` to create **distinct subkinds within an existing quantity hierarchy** when:
+
+1. **Multiple incompatible concepts** need to share the **same parent quantity's properties**
+   (unit or quantity type)
+2. These concepts **cannot be meaningfully added or compared** to each other without explicit
+   conversion
+3. They represent **different reference frames** or measurement contexts, but derive from
+   the same physical basis
+
+The key insight: use `is_kind` when quantities need to **inherit** from a parent
+(quantity type, unit) but must be **isolated** from each other.
+
+Common examples of subkinds within existing trees include:
+
+- _Angular measure_ (rad), _solid angular measure_ (sr), _storage capacity_ (bit) —
+  subkind of _dimensionless_
+- _Fluid head_ and _water head_ in hydraulic engineering — subkinds of _height_
+  (dimension of _length_)
+
+
+### Defining a distinct kind
+
+!!! important
+
+    The `is_kind` specifier creates **subkinds within an existing quantity hierarchy tree**,
+    not independent trees. This allows the subkind to **inherit properties** from its parent:
+
+    - **Unit of measure**: _fluid head_ and _water head_ inherit metre from _height_;
+      _angular measure_ inherits one from _dimensionless_
+    - **Quantity type**: Subkinds inherit their parent's quantity type, which is crucial
+      when they appear in derived quantities involving this quantity (e.g., _sampling rate_,
+      _tempo_ can use Hz because they properly model the dimensionless component divided
+      by _duration_)
+
+    For quantities that should be completely independent (different dimension trees),
+    define separate root quantities instead (e.g., _frequency_ and _activity_ are
+    independent roots, not subkinds).
+
+To create a distinct quantity kind as a subkind, add the `is_kind` specifier to the
+`quantity_spec` definition:
+
+=== "C++23"
+
+    ```cpp
+    inline constexpr struct fluid_head final : quantity_spec<isq::height, is_kind> {} fluid_head;
+    inline constexpr struct water_head final : quantity_spec<isq::height, is_kind> {} water_head;
+    // Both inherit metre as unit and length as dimension from isq::height
+    ```
+
+=== "C++20"
+
+    ```cpp
+    inline constexpr struct fluid_head final : quantity_spec<fluid_head, isq::height, is_kind> {} fluid_head;
+    inline constexpr struct water_head final : quantity_spec<water_head, isq::height, is_kind> {} water_head;
+    // Both inherit metre as unit and length as dimension from isq::height
+    ```
+
+=== "Portable"
+
+    ```cpp
+    QUANTITY_SPEC(fluid_head, isq::height, is_kind);
+    QUANTITY_SPEC(water_head, isq::height, is_kind);
+    // Both inherit metre as unit and length as dimension from isq::height
+    ```
+
+Both `fluid_head` and `water_head` are subkinds of _height_ (inheriting its dimension of _length_
+and unit of metre), but marking them with `is_kind` makes them distinct incompatible kinds that
+require explicit conversion.
+
+
+### Behavior of `is_kind` quantities
+
+Quantities marked with `is_kind` behave differently from regular hierarchy members:
+
+1. **Cannot be implicitly converted to each other**:
+
+    ```cpp
+    static_assert(!implicitly_convertible(fluid_head, water_head));
+    static_assert(!explicitly_convertible(fluid_head, water_head));
+    static_assert(!castable(fluid_head, water_head));
+    ```
+
+2. **Cannot be added or compared directly**:
+
+    ```cpp
+    quantity h_fluid = fluid_head(2 * m);
+    quantity h_water = water_head(10 * m);
+
+    // auto sum = h_fluid + h_water;  // Compile-time error!
+    // bool cmp = h_fluid < h_water;  // Compile-time error!
+    ```
+
+3. **Require explicit conversion to base quantity**:
+
+    To perform generic operations or conversions between kinds, explicit conversion to the
+    base quantity is required:
+
+    ```cpp
+    // Convert to base quantity explicitly
+    quantity h1 = isq::height(h_fluid);  // explicit conversion required
+    quantity h2 = isq::height(h_water);  // explicit conversion required
+
+    // Now generic operations are possible
+    auto sum = h1 + h2;  // OK: both are isq::height
+    ```
+
+    !!! warning
+
+        Implicit conversion from `is_kind` quantities to their base is **not allowed**:
+
+        ```cpp
+        quantity<isq::height[m]> h = h_fluid;  // Compile-time error!
+        ```
+
+4. **Can be used with `kind_of`**:
+
+    Unlike regular hierarchy members, `is_kind` quantities can be used with `kind_of`:
+
+    ```cpp
+    static_assert(get_kind(fluid_head) == kind_of<fluid_head>);
+    static_assert(get_kind(water_head) == kind_of<water_head>);
+    static_assert(get_kind(isq::height) == kind_of<isq::length>);
+    // static_assert(get_kind(isq::height) == kind_of<isq::height>);  // Compile-time error!
+
+    // Both are kinds of height, but different kinds
+    static_assert(get_kind(fluid_head) != get_kind(water_head));
+    static_assert(get_kind(fluid_head) != get_kind(isq::height));
+    ```
+
+
+### Implementing physics-based conversions
+
+When quantities are distinct kinds, domain-specific conversion functions should be provided
+to perform the correct physics-based transformations (if applicable):
+
+```cpp
+// Define specific gravity as dimensionless
+inline constexpr struct specific_gravity final : quantity_spec<dimensionless> {} specific_gravity;
+
+// Physics: H_water = H_fluid * SG
+constexpr QuantityOf<water_head> auto to_water_head(QuantityOf<fluid_head> auto h_fluid,
+                                                    QuantityOf<specific_gravity> auto sg)
+{
+  return water_head(isq::height(h_fluid) * sg);
+}
+
+// Physics: H_fluid = H_water / SG
+constexpr QuantityOf<fluid_head> auto to_fluid_head(QuantityOf<water_head> auto h_water,
+                                                    QuantityOf<specific_gravity> auto sg)
+{
+  return fluid_head(isq::height(h_water) / sg);
+}
+```
+
+This pattern:
+
+- **Makes conversions explicit and visible** in the code
+- **Encodes the physics** (specific gravity conversion formula)
+- **Provides type-safe boundaries** via `QuantityOf` constraints
+- **Documents the relationship** between different quantity kinds
+
+
+### Guidelines for using `is_kind`
+
+**Use `is_kind` when:**
+
+- Quantities share a parent but have **fundamentally different physical meanings**
+- Adding or comparing them **is physically nonsensical** (e.g., _plane angles_ + _solid angles_,
+  _fluid head_ + _water head_)
+- You need **compile-time prevention** of a known category of errors
+- Conversions between kinds either don't exist (_plane_ vs _solid angles_) or require
+  domain-specific formulas (_fluid head_ ↔ _water head_ via _specific gravity_)
+
+**Don't use `is_kind` when:**
+
+- Quantities are naturally part of the same hierarchy (use regular `quantity_spec` hierarchy)
+- Conversions are just unit changes (use regular unit conversions)
+- The distinction is purely semantic without different physics (document in comments instead)
+
+!!! tip
+
+    For a complete practical example demonstrating how `is_kind` prevents catastrophic
+    engineering errors in hydraulic systems, see
+    [Tutorial 11: Preventing Confusion with Distinct Kinds](../../tutorials/distinct_quantity_kinds.md).
+
+!!! note
+
+    Special dimensionless quantity kinds like _angular measure_, _solid angular measure_,
+    and _storage capacity_ are discussed in detail in the
+    [Dimensionless Quantities](dimensionless_quantities.md#nested-quantity-kinds) chapter.

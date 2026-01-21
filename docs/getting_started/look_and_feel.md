@@ -79,7 +79,7 @@ Please see the below example for a quick preview of basic library features:
     using namespace mp_units;
 
     constexpr QuantityOf<isq::speed> auto avg_speed(QuantityOf<isq::length> auto d,
-                                                    QuantityOf<isq::time> auto t)
+                                                    QuantityOf<isq::duration> auto t)
     {
       return d / t;
     }
@@ -87,7 +87,7 @@ Please see the below example for a quick preview of basic library features:
     int main()
     {
       using namespace mp_units::si::unit_symbols;
-      using namespace mp_units::international::unit_symbols;
+      using namespace mp_units::yard_pound::unit_symbols;
 
       constexpr quantity v1 = 110 * km / h;
       constexpr quantity v2 = 70 * mph;
@@ -110,9 +110,9 @@ Please see the below example for a quick preview of basic library features:
 === "Header files"
 
     ```cpp
-    #include <mp-units/systems/international.h>
     #include <mp-units/systems/isq.h>
     #include <mp-units/systems/si.h>
+    #include <mp-units/systems/yard_pound.h>
     #include <format>
     #include <iomanip>
     #include <iostream>
@@ -121,7 +121,7 @@ Please see the below example for a quick preview of basic library features:
     using namespace mp_units;
 
     constexpr QuantityOf<isq::speed> auto avg_speed(QuantityOf<isq::length> auto d,
-                                                    QuantityOf<isq::time> auto t)
+                                                    QuantityOf<isq::duration> auto t)
     {
       return d / t;
     }
@@ -129,7 +129,7 @@ Please see the below example for a quick preview of basic library features:
     int main()
     {
       using namespace mp_units::si::unit_symbols;
-      using namespace mp_units::international::unit_symbols;
+      using namespace mp_units::yard_pound::unit_symbols;
 
       constexpr quantity v1 = 110 * km / h;
       constexpr quantity v2 = 70 * mph;
@@ -149,7 +149,7 @@ Please see the below example for a quick preview of basic library features:
     }
     ```
 
-[Try it live on Compiler Explorer](https://godbolt.org/z/fxcjs19ah){ .md-button }
+[Try it live on Compiler Explorer](https://godbolt.org/z/rYq7cfdxY){ .md-button }
 
 !!! note
 

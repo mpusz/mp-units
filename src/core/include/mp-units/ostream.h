@@ -23,4 +23,4 @@
 
 #pragma once
 
-#warning "This header file is deprecated and does not have to be included anymore."
+#warning "2.5.0: This header file is deprecated and does not have to be included anymore."

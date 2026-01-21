@@ -55,47 +55,6 @@ struct named_unit;
 MP_UNITS_EXPORT template<typename T>
 concept PrefixableUnit = Unit<T> && is_derived_from_specialization_of_v<T, named_unit>;
 
-#if MP_UNITS_API_NATURAL_UNITS
-
-namespace detail {
-
-template<Unit U>
-[[nodiscard]] consteval bool has_associated_quantity(U);
-
-template<typename U, auto... Vs>
-[[nodiscard]] consteval bool has_associated_quantity(power<U, Vs...>)
-{
-  return has_associated_quantity(U{});
-}
-
-template<typename... Us>
-[[nodiscard]] consteval bool has_associated_quantity(type_list<Us...>)
-{
-  return (... && has_associated_quantity(Us{}));
-}
-
-template<Unit U>
-[[nodiscard]] consteval bool has_associated_quantity(U)
-{
-  if constexpr (requires { U::_quantity_spec_; }) return true;
-  if constexpr (requires { U::_reference_unit_; })
-    return has_associated_quantity(U::_reference_unit_);
-  else if constexpr (requires { typename U::_num_; })
-    return has_associated_quantity(typename U::_num_{}) && has_associated_quantity(typename U::_den_{});
-  else
-    return false;
-}
-
-}  // namespace detail
-
-/**
- * @brief A concept matching all units that can be used as quantity references
- */
-MP_UNITS_EXPORT template<typename U>
-concept AssociatedUnit = Unit<U> && detail::has_associated_quantity(U{});
-
-#endif
-
 /**
  * @brief A concept matching all units associated with the provided quantity spec
  *
@@ -104,20 +63,12 @@ concept AssociatedUnit = Unit<U> && detail::has_associated_quantity(U{});
  */
 MP_UNITS_EXPORT template<typename U, auto QS>
 concept UnitOf =
-  MP_UNITS_ASSOCIATED_UNIT<U> && QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS))> &&
+  Unit<U> && QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS))> &&
   (implicitly_convertible(get_quantity_spec(U{}), QS) ||
    (unsatisfied<"Unit '{}' is associated with quantity of kind '{}' which is not convertible to the '{}' quantity">(
      U{}, type_name(get_quantity_spec(U{})._quantity_spec_), type_name(QS))));
 
 namespace detail {
-
-#if MP_UNITS_API_NATURAL_UNITS
-
-template<typename U, auto QS>
-concept WeakUnitOf =
-  Unit<U> && QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS))> && ((!AssociatedUnit<U>) || UnitOf<U, QS>);
-
-#endif
 
 template<auto U1, auto U2>
 concept UnitsOfCompatibleQuantities =
@@ -136,8 +87,7 @@ template<typename U1, auto U2>
 concept UnitConvertibleTo =
   Unit<U1> && Unit<MP_UNITS_REMOVE_CONST(decltype(U2))> &&
   ((U1{} == U2) ||
-   ((!MP_UNITS_ASSOCIATED_UNIT_T(U1) || !MP_UNITS_ASSOCIATED_UNIT_T(MP_UNITS_REMOVE_CONST(decltype(U2))) ||
-     UnitsOfCompatibleQuantities<U1{}, U2>) &&
+   ((!Unit<U1> || !Unit<MP_UNITS_REMOVE_CONST(decltype(U2))> || UnitsOfCompatibleQuantities<U1{}, U2>) &&
     ConvertibleUnits<U1{}, U2>));
 
 template<typename T>

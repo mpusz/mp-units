@@ -20,6 +20,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// !!! Before you commit any changes to this file please make sure to check if it !!!
+// !!! renders correctly in the documentation "Examples" section.                 !!!
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 #ifdef MP_UNITS_IMPORT_STD
 import std;
 #else
@@ -43,7 +48,13 @@ using namespace mp_units;
 QuantityOf<isq::mechanical_energy> auto total_energy(QuantityOf<isq::momentum> auto p, QuantityOf<isq::mass> auto m,
                                                      QuantityOf<isq::speed> auto c)
 {
-  return isq::mechanical_energy(sqrt(pow<2>(p * c) + pow<2>(m * pow<2>(c))));
+  return isq::mechanical_energy(hypot(p * c, m * pow<2>(c)));
+}
+
+// In natural units (ℏ = c = 1), the energy-momentum relation simplifies to E² = p² + m²
+QuantityOf<natural::energy> auto total_energy(QuantityOf<natural::momentum> auto p, QuantityOf<natural::mass> auto m)
+{
+  return natural::energy(hypot(p, m));
 }
 
 void si_example()
@@ -94,12 +105,11 @@ void natural_example()
   using namespace mp_units::natural;
   using namespace mp_units::natural::unit_symbols;
 
-  constexpr quantity c = 1. * speed_of_light;
-  const quantity p = 4. * momentum[GeV];
-  const quantity m = 3. * mass[GeV];
-  const quantity E = total_energy(p, m, c);
+  const auto p = momentum(4. * GeV);  // momentum
+  const auto m = mass(3. * GeV);      // mass (rest energy: E = m when c = 1)
+  const auto E = total_energy(p, m);
 
-  std::cout << "\n*** Natural units (c = " << c << ") ***\n"
+  std::cout << "\n*** Natural units (c = 1) ***\n"
             << "p = " << p << "\n"
             << "m = " << m << "\n"
             << "E = " << E << "\n";
