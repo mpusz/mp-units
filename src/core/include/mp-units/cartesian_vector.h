@@ -23,6 +23,7 @@
 #pragma once
 
 #include <mp-units/bits/requires_hosted.h>
+//
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/framework/customization_points.h>
 #include <mp-units/framework/representation_concepts.h>
@@ -66,9 +67,10 @@ public:
   constexpr cartesian_vector(T x, T y, T z) : _coordinates_{x, y, z} {}
 
   template<typename U>
-    requires std::constructible_from<T, U> && (!std::same_as<std::remove_cvref_t<U>, T>) &&
-             (!std::same_as<std::remove_cvref_t<U>, cartesian_vector>)
-  explicit constexpr cartesian_vector(U&& val) : _coordinates_{T(val), T(val), T(val)}
+    requires std::constructible_from<T, U>
+  constexpr explicit(!std::convertible_to<U, T>) cartesian_vector(cartesian_vector<U>&& other) :
+      _coordinates_{static_cast<T>(std::move(other[0])), static_cast<T>(std::move(other[1])),
+                    static_cast<T>(std::move(other[2]))}
   {
   }
 
