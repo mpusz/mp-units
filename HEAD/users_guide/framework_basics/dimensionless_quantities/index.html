@@ -874,6 +874,8 @@ You're not viewing the latest version.
       
         
       
+        
+      
     
     
     
@@ -1241,6 +1243,34 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
+      <a href="../../../tutorials/strongly_typed_counts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial 12: Strongly-Typed Counts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../tutorials/faster_than_lightspeed_constants/" class="md-nav__link">
         
   
@@ -1248,7 +1278,7 @@ You're not viewing the latest version.
   <span class="md-ellipsis">
     
   
-    Tutorial 12: Faster-than-Lightspeed Constants
+    Tutorial 13: Faster-than-Lightspeed Constants
   
 
     
@@ -1276,7 +1306,7 @@ You're not viewing the latest version.
   <span class="md-ellipsis">
     
   
-    Tutorial 13: Incremental Migration from Legacy Code
+    Tutorial 14: Incremental Migration from Legacy Code
   
 
     
@@ -1859,6 +1889,84 @@ You're not viewing the latest version.
       
     </span>
   </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#using-dimensionless-quantities-as-strongly-typed-numeric-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Using dimensionless quantities as strongly-typed numeric types
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Using dimensionless quantities as strongly-typed numeric types">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#type-safety-vs-convenience-trade-offs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Type safety vs convenience trade-offs
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Type safety vs convenience trade-offs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#implicit-construction-the-convenience-first-approach" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Implicit construction: The convenience-first approach
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#explicit-construction-with-is_kind-maximum-type-safety" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Explicit construction with is_kind: Maximum type safety
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#comparison-with-traditional-strong-type-approaches" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Comparison with traditional strong-type approaches
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-dimensionless-instead-of-custom-dimensions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why dimensionless instead of custom dimensions?
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -9536,6 +9644,367 @@ quantity. Such a conversion must be explicit and be preceded by an explicit unit
 </span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">dimensionless</span><span class="p">[</span><span class="n">one</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">q2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dimensionless</span><span class="p">(</span><span class="n">q1</span><span class="p">.</span><span class="n">in</span><span class="p">(</span><span class="n">one</span><span class="p">));</span>
 </span></code></pre></div>
 </div>
+<h2 id="using-dimensionless-quantities-as-strongly-typed-numeric-types">Using dimensionless quantities as strongly-typed numeric types<a class="headerlink" href="#using-dimensionless-quantities-as-strongly-typed-numeric-types" title="Permanent link">&para;</a></h2>
+<p>For decades, the C++ community has sought ways to create strongly-typed wrappers for fundamental
+types to prevent bugs that arise from accidentally mixing semantically different values. Consider
+functions like <code>process(10, 20)</code> or <code>draw_point(x, y)</code>—when parameters have the same underlying
+type (<code>int</code>, <code>double</code>), it's easy to swap them accidentally, leading to subtle bugs that compilers
+cannot detect.</p>
+<p>The C++ standard library provides no built-in support for creating such strong types. However,
+several third-party libraries like <a href="https://github.com/joboccara/NamedType">NamedType</a>,
+<a href="https://github.com/foonathan/type_safe">type_safe</a>, and
+<a href="https://github.com/PeterSommerlad/PSsst">PSsst</a> have emerged to fill this gap, providing
+generic solutions for creating distinct types from primitives. These approaches typically
+require manual definition of operators for each type or explicit opt-in for each
+operation, and they don't inherently understand derived quantities or dimensional analysis.</p>
+<p><strong>mp-units</strong> offers a unique approach: leverage dimensionless quantities to create
+strongly-typed numeric types that benefit from the library's built-in dimensional analysis
+infrastructure. This isn't about physical dimensions or scaling by units factors—it's about
+using the framework's type system to prevent mixing semantically different counts,
+coordinates, or identifiers while maintaining zero-overhead and natural arithmetic
+semantics.</p>
+<h3 id="type-safety-vs-convenience-trade-offs">Type safety vs convenience trade-offs<a class="headerlink" href="#type-safety-vs-convenience-trade-offs" title="Permanent link">&para;</a></h3>
+<h4 id="implicit-construction-the-convenience-first-approach">Implicit construction: The convenience-first approach<a class="headerlink" href="#implicit-construction-the-convenience-first-approach" title="Permanent link">&para;</a></h4>
+<p>The <a href="#superpowers-of-the-unit-one">Superpowers of the unit <code>one</code></a> described before
+provide a convenient way to work with dimensionless quantities. Quantities implicitly
+convertible to <code>dimensionless</code> with unit <code>one</code> can be implicitly constructed from raw values,
+explicitly converted back to raw values, and compared with raw values. This makes them easy
+to use with existing code and APIs.</p>
+<p>This convenience comes at a cost: <strong>such syntax behaves a bit like raw <code>int</code> or <code>double</code>
+values when it comes to type safety</strong>.</p>
+<p>Consider the following example:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">item_count</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">dimensionless</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">item_count</span><span class="p">;</span>
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">widget_count</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">dimensionless</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">widget_count</span><span class="p">;</span>
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>
+</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="kt">void</span><span class="w"> </span><span class="nf">process</span><span class="p">(</span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">item_count</span><span class="p">[</span><span class="n">one</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">items</span><span class="p">,</span><span class="w"> </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">widget_count</span><span class="p">[</span><span class="n">one</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">widgets</span><span class="p">)</span>
+</span><span id="__span-19-5"><a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a><span class="p">{</span>
+</span><span id="__span-19-6"><a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a><span class="w">  </span><span class="cm">/* ... */</span>
+</span><span id="__span-19-7"><a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a><span class="p">}</span>
+</span><span id="__span-19-8"><a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a>
+</span><span id="__span-19-9"><a id="__codelineno-19-9" name="__codelineno-19-9" href="#__codelineno-19-9"></a><span class="n">process</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">);</span><span class="w">                       </span><span class="c1">// Which is items? Which is widgets? Unclear!</span>
+</span><span id="__span-19-10"><a id="__codelineno-19-10" name="__codelineno-19-10" href="#__codelineno-19-10"></a><span class="n">process</span><span class="p">(</span><span class="mi">10</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">one</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">one</span><span class="p">);</span><span class="w">           </span><span class="c1">// Which is items? Which is widgets? Unclear!</span>
+</span><span id="__span-19-11"><a id="__codelineno-19-11" name="__codelineno-19-11" href="#__codelineno-19-11"></a>
+</span><span id="__span-19-12"><a id="__codelineno-19-12" name="__codelineno-19-12" href="#__codelineno-19-12"></a><span class="c1">// With explicit types, the compiler checks the order</span>
+</span><span id="__span-19-13"><a id="__codelineno-19-13" name="__codelineno-19-13" href="#__codelineno-19-13"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">item_count</span><span class="p">[</span><span class="n">one</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">items</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span>
+</span><span id="__span-19-14"><a id="__codelineno-19-14" name="__codelineno-19-14" href="#__codelineno-19-14"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">widget_count</span><span class="p">[</span><span class="n">one</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">widgets</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">20</span><span class="p">;</span>
+</span><span id="__span-19-15"><a id="__codelineno-19-15" name="__codelineno-19-15" href="#__codelineno-19-15"></a><span class="n">process</span><span class="p">(</span><span class="n">items</span><span class="p">,</span><span class="w"> </span><span class="n">widgets</span><span class="p">);</span><span class="w">    </span><span class="c1">// OK</span>
+</span><span id="__span-19-16"><a id="__codelineno-19-16" name="__codelineno-19-16" href="#__codelineno-19-16"></a><span class="c1">// process(widgets, items); // Compile-time error!</span>
+</span></code></pre></div>
+<p>When you already have typed quantities, the compiler <strong>does</strong> enforce the correct order—swapping
+them produces a compile error. However, the real problem is calling the function with raw
+values like <code>process(10, 20)</code> where there's no indication which parameter is which.
+This is better than raw <code>int</code> or <code>double</code> (at least functions can document their types),
+but it's still unclear at the call site when using literal values.</p>
+<p>Another drawback of such a hierarchy is that these types model <code>dimensionless</code> tagged
+numbers which means they can be mixed in arithmetic operations and comparisons:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">item_count</span><span class="p">[</span><span class="n">one</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">items</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span>
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">widget_count</span><span class="p">[</span><span class="n">one</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">widgets</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">20</span><span class="p">;</span>
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a>
+</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="c1">// These compile but may be semantically incorrect:</span>
+</span><span id="__span-20-5"><a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="n">quantity</span><span class="w"> </span><span class="n">total</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">items</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">widgets</span><span class="p">;</span><span class="w">    </span><span class="c1">// Compiles! Both convert to dimensionless</span>
+</span><span id="__span-20-6"><a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">items</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">widgets</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">               </span><span class="c1">// Compiles! Comparison through dimensionless</span>
+</span><span id="__span-20-7"><a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a><span class="w">  </span><span class="c1">// ...</span>
+</span><span id="__span-20-8"><a id="__codelineno-20-8" name="__codelineno-20-8" href="#__codelineno-20-8"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>While the compiler allows these operations, they may not make semantic sense—adding items
+and widgets together, or comparing them directly, is likely a logic error in most domains.</p>
+<h4 id="explicit-construction-with-is_kind-maximum-type-safety">Explicit construction with <code>is_kind</code>: Maximum type safety<a class="headerlink" href="#explicit-construction-with-is_kind-maximum-type-safety" title="Permanent link">&para;</a></h4>
+<p>To address the type safety concerns shown above, <strong>mp-units</strong> offers the <code>is_kind</code> specifier.
+When you mark a quantity with <code>is_kind</code>, it becomes a distinct quantity kind that cannot be
+implicitly mixed with other kinds (even with the parent kind). Such sub-kinds inherit
+properties of the parent kind (dimension, character, unit, etc.). This also disables
+the implicit conversion from raw values because those are now more than just tagged numbers.
+They have strong semantical meaning and the library should respect that.</p>
+<p>This however, creates an important trade-off:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Without <code>is_kind</code> (implicit conversion)</label><label for="__tabbed_2_2">With <code>is_kind</code> (explicit construction)</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">item_count</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">dimensionless</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">item_count</span><span class="p">;</span>
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">widget_count</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">dimensionless</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">widget_count</span><span class="p">;</span>
+</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a>
+</span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="kt">void</span><span class="w"> </span><span class="nf">process</span><span class="p">(</span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">item_count</span><span class="p">[</span><span class="n">one</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">items</span><span class="p">,</span><span class="w"> </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">widget_count</span><span class="p">[</span><span class="n">one</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">widgets</span><span class="p">)</span>
+</span><span id="__span-21-5"><a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a><span class="p">{</span>
+</span><span id="__span-21-6"><a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a><span class="w">  </span><span class="cm">/* ... */</span>
+</span><span id="__span-21-7"><a id="__codelineno-21-7" name="__codelineno-21-7" href="#__codelineno-21-7"></a><span class="p">}</span>
+</span><span id="__span-21-8"><a id="__codelineno-21-8" name="__codelineno-21-8" href="#__codelineno-21-8"></a>
+</span><span id="__span-21-9"><a id="__codelineno-21-9" name="__codelineno-21-9" href="#__codelineno-21-9"></a><span class="c1">// Can call with raw values - convenient but unclear</span>
+</span><span id="__span-21-10"><a id="__codelineno-21-10" name="__codelineno-21-10" href="#__codelineno-21-10"></a><span class="n">process</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">);</span><span class="w">             </span><span class="c1">// ⚠️ Which parameter is which? No way to tell!</span>
+</span><span id="__span-21-11"><a id="__codelineno-21-11" name="__codelineno-21-11" href="#__codelineno-21-11"></a>
+</span><span id="__span-21-12"><a id="__codelineno-21-12" name="__codelineno-21-12" href="#__codelineno-21-12"></a><span class="c1">// With typed quantities, the compiler does enforce order</span>
+</span><span id="__span-21-13"><a id="__codelineno-21-13" name="__codelineno-21-13" href="#__codelineno-21-13"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">item_count</span><span class="p">[</span><span class="n">one</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">items</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span>
+</span><span id="__span-21-14"><a id="__codelineno-21-14" name="__codelineno-21-14" href="#__codelineno-21-14"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">widget_count</span><span class="p">[</span><span class="n">one</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">widgets</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">20</span><span class="p">;</span>
+</span><span id="__span-21-15"><a id="__codelineno-21-15" name="__codelineno-21-15" href="#__codelineno-21-15"></a><span class="n">process</span><span class="p">(</span><span class="n">items</span><span class="p">,</span><span class="w"> </span><span class="n">widgets</span><span class="p">);</span><span class="w">     </span><span class="c1">// ✅ OK - correct order</span>
+</span><span id="__span-21-16"><a id="__codelineno-21-16" name="__codelineno-21-16" href="#__codelineno-21-16"></a><span class="n">process</span><span class="p">(</span><span class="n">widgets</span><span class="p">,</span><span class="w"> </span><span class="n">items</span><span class="p">);</span><span class="w">     </span><span class="c1">// ❌ Compile error! Good.</span>
+</span><span id="__span-21-17"><a id="__codelineno-21-17" name="__codelineno-21-17" href="#__codelineno-21-17"></a>
+</span><span id="__span-21-18"><a id="__codelineno-21-18" name="__codelineno-21-18" href="#__codelineno-21-18"></a><span class="c1">// Another problem: can mix semantically different types in arithmetic</span>
+</span><span id="__span-21-19"><a id="__codelineno-21-19" name="__codelineno-21-19" href="#__codelineno-21-19"></a><span class="k">auto</span><span class="w"> </span><span class="n">total</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">items</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">widgets</span><span class="p">;</span><span class="w">  </span><span class="c1">// ⚠️ Compiles! Both convert to dimensionless</span>
+</span><span id="__span-21-20"><a id="__codelineno-21-20" name="__codelineno-21-20" href="#__codelineno-21-20"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">items</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">widgets</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">         </span><span class="c1">// ⚠️ Compiles! Comparison through dimensionless</span>
+</span><span id="__span-21-21"><a id="__codelineno-21-21" name="__codelineno-21-21" href="#__codelineno-21-21"></a><span class="w">  </span><span class="c1">// ...</span>
+</span><span id="__span-21-22"><a id="__codelineno-21-22" name="__codelineno-21-22" href="#__codelineno-21-22"></a><span class="p">}</span>
+</span></code></pre></div>
+<p><strong>Pros</strong>: Convenient—works with raw values, typed quantities enforce correct parameter order</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="kt">void</span><span class="w"> </span><span class="nf">draw_rect</span><span class="p">(</span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">pixel_x</span><span class="p">[</span><span class="n">one</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">pixel_y</span><span class="p">[</span><span class="n">one</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">y</span><span class="p">,</span>
+</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a><span class="w">               </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">pixel_x</span><span class="p">[</span><span class="n">one</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">width</span><span class="p">,</span><span class="w"> </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">pixel_y</span><span class="p">[</span><span class="n">one</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">height</span><span class="p">)</span>
+</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a><span class="p">{</span>
+</span><span id="__span-22-4"><a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a><span class="w">  </span><span class="c1">// ...</span>
+</span><span id="__span-22-5"><a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a><span class="p">}</span>
+</span><span id="__span-22-6"><a id="__codelineno-22-6" name="__codelineno-22-6" href="#__codelineno-22-6"></a>
+</span><span id="__span-22-7"><a id="__codelineno-22-7" name="__codelineno-22-7" href="#__codelineno-22-7"></a><span class="c1">// All arguments may be passed as raw numbers (when we are sure what we are doing)</span>
+</span><span id="__span-22-8"><a id="__codelineno-22-8" name="__codelineno-22-8" href="#__codelineno-22-8"></a><span class="n">draw_rect</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="mi">50</span><span class="p">);</span>
+</span></code></pre></div>
+<p><strong>Cons</strong>: Using raw values at call sites lacks clarity; can mix different dimensionless
+types in arithmetic and comparisons because they share common <code>dimensionless</code> root</p>
+</div>
+<div class="tabbed-block">
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">item_count</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">dimensionless</span><span class="p">,</span><span class="w"> </span><span class="n">is_kind</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">item_count</span><span class="p">;</span>
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">widget_count</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">dimensionless</span><span class="p">,</span><span class="w"> </span><span class="n">is_kind</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">widget_count</span><span class="p">;</span>
+</span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a>
+</span><span id="__span-23-4"><a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a><span class="kt">void</span><span class="w"> </span><span class="nf">process</span><span class="p">(</span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">item_count</span><span class="p">[</span><span class="n">one</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">items</span><span class="p">,</span><span class="w"> </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">widget_count</span><span class="p">[</span><span class="n">one</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">widgets</span><span class="p">)</span>
+</span><span id="__span-23-5"><a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a><span class="p">{</span>
+</span><span id="__span-23-6"><a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a><span class="w">  </span><span class="cm">/* ... */</span>
+</span><span id="__span-23-7"><a id="__codelineno-23-7" name="__codelineno-23-7" href="#__codelineno-23-7"></a><span class="p">}</span>
+</span><span id="__span-23-8"><a id="__codelineno-23-8" name="__codelineno-23-8" href="#__codelineno-23-8"></a>
+</span><span id="__span-23-9"><a id="__codelineno-23-9" name="__codelineno-23-9" href="#__codelineno-23-9"></a><span class="c1">// Cannot call with raw values - must be explicit</span>
+</span><span id="__span-23-10"><a id="__codelineno-23-10" name="__codelineno-23-10" href="#__codelineno-23-10"></a><span class="n">process</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">);</span><span class="w">             </span><span class="c1">// ❌ Compile error! Good.</span>
+</span><span id="__span-23-11"><a id="__codelineno-23-11" name="__codelineno-23-11" href="#__codelineno-23-11"></a>
+</span><span id="__span-23-12"><a id="__codelineno-23-12" name="__codelineno-23-12" href="#__codelineno-23-12"></a><span class="c1">// Must use typed quantities, and order is enforced</span>
+</span><span id="__span-23-13"><a id="__codelineno-23-13" name="__codelineno-23-13" href="#__codelineno-23-13"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">item_count</span><span class="p">[</span><span class="n">one</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">items</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
+</span><span id="__span-23-14"><a id="__codelineno-23-14" name="__codelineno-23-14" href="#__codelineno-23-14"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">widget_count</span><span class="p">[</span><span class="n">one</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">widgets</span><span class="p">(</span><span class="mi">20</span><span class="p">);</span>
+</span><span id="__span-23-15"><a id="__codelineno-23-15" name="__codelineno-23-15" href="#__codelineno-23-15"></a><span class="n">process</span><span class="p">(</span><span class="n">items</span><span class="p">,</span><span class="w"> </span><span class="n">widgets</span><span class="p">);</span><span class="w">     </span><span class="c1">// ✅ OK - correct order</span>
+</span><span id="__span-23-16"><a id="__codelineno-23-16" name="__codelineno-23-16" href="#__codelineno-23-16"></a><span class="n">process</span><span class="p">(</span><span class="n">widgets</span><span class="p">,</span><span class="w"> </span><span class="n">items</span><span class="p">);</span><span class="w">     </span><span class="c1">// ❌ Compile error! Good.</span>
+</span><span id="__span-23-17"><a id="__codelineno-23-17" name="__codelineno-23-17" href="#__codelineno-23-17"></a>
+</span><span id="__span-23-18"><a id="__codelineno-23-18" name="__codelineno-23-18" href="#__codelineno-23-18"></a><span class="c1">// Arithmetic operations also enforce type safety</span>
+</span><span id="__span-23-19"><a id="__codelineno-23-19" name="__codelineno-23-19" href="#__codelineno-23-19"></a><span class="k">auto</span><span class="w"> </span><span class="n">mixed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">items</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">widgets</span><span class="p">;</span><span class="w">  </span><span class="c1">// ❌ Compile error! Good.</span>
+</span><span id="__span-23-20"><a id="__codelineno-23-20" name="__codelineno-23-20" href="#__codelineno-23-20"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">items</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">widgets</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">         </span><span class="c1">// ❌ Compile error! Good.</span>
+</span><span id="__span-23-21"><a id="__codelineno-23-21" name="__codelineno-23-21" href="#__codelineno-23-21"></a><span class="w">  </span><span class="c1">// ...</span>
+</span><span id="__span-23-22"><a id="__codelineno-23-22" name="__codelineno-23-22" href="#__codelineno-23-22"></a><span class="p">}</span>
+</span></code></pre></div>
+<p><strong>Pros</strong>: Maximum type safety—distinct types cannot be accidentally mixed or reordered</p>
+<p><strong>Cons</strong>: Less convenient—requires explicit construction everywhere, especially verbose
+for functions with multiple parameters:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="kt">void</span><span class="w"> </span><span class="nf">draw_rect</span><span class="p">(</span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">pixel_x</span><span class="p">[</span><span class="n">one</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">pixel_y</span><span class="p">[</span><span class="n">one</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">y</span><span class="p">,</span>
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a><span class="w">               </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">pixel_x</span><span class="p">[</span><span class="n">one</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">width</span><span class="p">,</span><span class="w"> </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">pixel_y</span><span class="p">[</span><span class="n">one</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">height</span><span class="p">)</span>
+</span><span id="__span-24-3"><a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a><span class="p">{</span>
+</span><span id="__span-24-4"><a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a><span class="w">  </span><span class="c1">// ...</span>
+</span><span id="__span-24-5"><a id="__codelineno-24-5" name="__codelineno-24-5" href="#__codelineno-24-5"></a><span class="p">}</span>
+</span><span id="__span-24-6"><a id="__codelineno-24-6" name="__codelineno-24-6" href="#__codelineno-24-6"></a>
+</span><span id="__span-24-7"><a id="__codelineno-24-7" name="__codelineno-24-7" href="#__codelineno-24-7"></a><span class="c1">// All parameters need explicit construction</span>
+</span><span id="__span-24-8"><a id="__codelineno-24-8" name="__codelineno-24-8" href="#__codelineno-24-8"></a><span class="n">draw_rect</span><span class="p">(</span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">pixel_x</span><span class="p">[</span><span class="n">one</span><span class="p">]</span><span class="o">&gt;</span><span class="p">{</span><span class="mi">10</span><span class="p">},</span><span class="w"> </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">pixel_y</span><span class="p">[</span><span class="n">one</span><span class="p">]</span><span class="o">&gt;</span><span class="p">{</span><span class="mi">20</span><span class="p">},</span>
+</span><span id="__span-24-9"><a id="__codelineno-24-9" name="__codelineno-24-9" href="#__codelineno-24-9"></a><span class="w">          </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">pixel_x</span><span class="p">[</span><span class="n">one</span><span class="p">]</span><span class="o">&gt;</span><span class="p">{</span><span class="mi">100</span><span class="p">},</span><span class="w"> </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">pixel_y</span><span class="p">[</span><span class="n">one</span><span class="p">]</span><span class="o">&gt;</span><span class="p">{</span><span class="mi">50</span><span class="p">});</span>
+</span><span id="__span-24-10"><a id="__codelineno-24-10" name="__codelineno-24-10" href="#__codelineno-24-10"></a><span class="c1">// or to use quantity_spec as a quantity creation helper</span>
+</span><span id="__span-24-11"><a id="__codelineno-24-11" name="__codelineno-24-11" href="#__codelineno-24-11"></a><span class="n">draw_rect</span><span class="p">(</span><span class="n">pixel_x</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span><span class="w"> </span><span class="n">pixel_y</span><span class="p">(</span><span class="mi">20</span><span class="p">),</span><span class="w"> </span><span class="n">pixel_x</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span><span class="w"> </span><span class="n">pixel_y</span><span class="p">(</span><span class="mi">50</span><span class="p">));</span>
+</span></code></pre></div>
+</div>
+</div>
+</div>
+<p><strong>Choosing the right approach:</strong></p>
+<ul>
+<li>
+<p><strong>Use <code>is_kind</code></strong> when type safety is paramount and you want to prevent any accidental mixing
+  of semantically different counts or coordinates. Accept the verbosity of explicit construction.</p>
+</li>
+<li>
+<p><strong>Skip <code>is_kind</code></strong> for convenience when the types rarely interact and the risk of mixing them
+  is low, or when you need to frequently pass raw values to functions.</p>
+</li>
+</ul>
+<h3 id="comparison-with-traditional-strong-type-approaches">Comparison with traditional strong-type approaches<a class="headerlink" href="#comparison-with-traditional-strong-type-approaches" title="Permanent link">&para;</a></h3>
+<p>Traditional approaches to creating strong numeric types each face different trade-offs:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:4"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><input id="__tabbed_3_3" name="__tabbed_3" type="radio" /><input id="__tabbed_3_4" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Type aliases (unsafe)</label><label for="__tabbed_3_2">Wrapper classes (verbose)</label><label for="__tabbed_3_3">Generic libraries (NamedType, type_safe, PSsst)</label><label for="__tabbed_3_4">mp-units (specialized for numeric types)</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="k">using</span><span class="w"> </span><span class="n">PixelX</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">int</span><span class="p">;</span>
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a><span class="k">using</span><span class="w"> </span><span class="n">PixelY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">int</span><span class="p">;</span>
+</span><span id="__span-25-3"><a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a><span class="k">using</span><span class="w"> </span><span class="n">PixelArea</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">int</span><span class="p">;</span>
+</span><span id="__span-25-4"><a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a>
+</span><span id="__span-25-5"><a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a><span class="kt">void</span><span class="w"> </span><span class="nf">draw_point</span><span class="p">(</span><span class="n">PixelX</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">PixelY</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* ... */</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-25-6"><a id="__codelineno-25-6" name="__codelineno-25-6" href="#__codelineno-25-6"></a>
+</span><span id="__span-25-7"><a id="__codelineno-25-7" name="__codelineno-25-7" href="#__codelineno-25-7"></a><span class="n">PixelArea</span><span class="w"> </span><span class="nf">calculate_area</span><span class="p">(</span><span class="n">PixelX</span><span class="w"> </span><span class="n">width</span><span class="p">,</span><span class="w"> </span><span class="n">PixelY</span><span class="w"> </span><span class="n">height</span><span class="p">)</span>
+</span><span id="__span-25-8"><a id="__codelineno-25-8" name="__codelineno-25-8" href="#__codelineno-25-8"></a><span class="p">{</span>
+</span><span id="__span-25-9"><a id="__codelineno-25-9" name="__codelineno-25-9" href="#__codelineno-25-9"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">width</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">height</span><span class="p">;</span>
+</span><span id="__span-25-10"><a id="__codelineno-25-10" name="__codelineno-25-10" href="#__codelineno-25-10"></a><span class="p">}</span>
+</span><span id="__span-25-11"><a id="__codelineno-25-11" name="__codelineno-25-11" href="#__codelineno-25-11"></a>
+</span><span id="__span-25-12"><a id="__codelineno-25-12" name="__codelineno-25-12" href="#__codelineno-25-12"></a><span class="n">PixelX</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span><span class="p">;</span>
+</span><span id="__span-25-13"><a id="__codelineno-25-13" name="__codelineno-25-13" href="#__codelineno-25-13"></a><span class="n">PixelY</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">200</span><span class="p">;</span>
+</span><span id="__span-25-14"><a id="__codelineno-25-14" name="__codelineno-25-14" href="#__codelineno-25-14"></a><span class="n">draw_point</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">);</span><span class="w">   </span><span class="c1">// ✅ Good!</span>
+</span><span id="__span-25-15"><a id="__codelineno-25-15" name="__codelineno-25-15" href="#__codelineno-25-15"></a><span class="n">draw_point</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">);</span><span class="w">   </span><span class="c1">// ⚠️ Compiles! Wrong order.</span>
+</span><span id="__span-25-16"><a id="__codelineno-25-16" name="__codelineno-25-16" href="#__codelineno-25-16"></a>
+</span><span id="__span-25-17"><a id="__codelineno-25-17" name="__codelineno-25-17" href="#__codelineno-25-17"></a><span class="c1">// Can mix with unrelated types</span>
+</span><span id="__span-25-18"><a id="__codelineno-25-18" name="__codelineno-25-18" href="#__codelineno-25-18"></a><span class="kt">int</span><span class="w"> </span><span class="n">random</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">42</span><span class="p">;</span>
+</span><span id="__span-25-19"><a id="__codelineno-25-19" name="__codelineno-25-19" href="#__codelineno-25-19"></a><span class="n">draw_point</span><span class="p">(</span><span class="n">random</span><span class="p">,</span><span class="w"> </span><span class="n">random</span><span class="p">);</span><span class="w">  </span><span class="c1">// ⚠️ Compiles!</span>
+</span><span id="__span-25-20"><a id="__codelineno-25-20" name="__codelineno-25-20" href="#__codelineno-25-20"></a>
+</span><span id="__span-25-21"><a id="__codelineno-25-21" name="__codelineno-25-21" href="#__codelineno-25-21"></a><span class="n">PixelX</span><span class="w"> </span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1920</span><span class="p">;</span>
+</span><span id="__span-25-22"><a id="__codelineno-25-22" name="__codelineno-25-22" href="#__codelineno-25-22"></a><span class="n">PixelY</span><span class="w"> </span><span class="n">height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1080</span><span class="p">;</span>
+</span><span id="__span-25-23"><a id="__codelineno-25-23" name="__codelineno-25-23" href="#__codelineno-25-23"></a><span class="n">PixelArea</span><span class="w"> </span><span class="n">area</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">calculate_area</span><span class="p">(</span><span class="n">width</span><span class="p">,</span><span class="w"> </span><span class="n">height</span><span class="p">);</span><span class="w">      </span><span class="c1">// ✅ Good!</span>
+</span><span id="__span-25-24"><a id="__codelineno-25-24" name="__codelineno-25-24" href="#__codelineno-25-24"></a><span class="n">PixelArea</span><span class="w"> </span><span class="n">bad_area</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">calculate_area</span><span class="p">(</span><span class="n">height</span><span class="p">,</span><span class="w"> </span><span class="n">width</span><span class="p">);</span><span class="w">  </span><span class="c1">// ⚠️ Compiles! Wrong order.</span>
+</span><span id="__span-25-25"><a id="__codelineno-25-25" name="__codelineno-25-25" href="#__codelineno-25-25"></a>
+</span><span id="__span-25-26"><a id="__codelineno-25-26" name="__codelineno-25-26" href="#__codelineno-25-26"></a><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Area: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">area</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; = &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">area</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">2073600.0</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; FHD = &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">area</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">8294400.0</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; 4K</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+</span></code></pre></div>
+<p><strong>Problem</strong>: No type safety—all errors compile. Manual scaling requires magic numbers.</p>
+</div>
+<div class="tabbed-block">
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="k">struct</span><span class="w"> </span><span class="nc">PixelX</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">value</span><span class="p">;</span><span class="w"> </span><span class="p">};</span>
+</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a><span class="k">struct</span><span class="w"> </span><span class="nc">PixelY</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">value</span><span class="p">;</span><span class="w"> </span><span class="p">};</span>
+</span><span id="__span-26-3"><a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a><span class="k">struct</span><span class="w"> </span><span class="nc">PixelArea</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">value</span><span class="p">;</span><span class="w"> </span><span class="p">};</span>
+</span><span id="__span-26-4"><a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a>
+</span><span id="__span-26-5"><a id="__codelineno-26-5" name="__codelineno-26-5" href="#__codelineno-26-5"></a><span class="kt">void</span><span class="w"> </span><span class="nf">draw_point</span><span class="p">(</span><span class="n">PixelX</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">PixelY</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* ... */</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-26-6"><a id="__codelineno-26-6" name="__codelineno-26-6" href="#__codelineno-26-6"></a>
+</span><span id="__span-26-7"><a id="__codelineno-26-7" name="__codelineno-26-7" href="#__codelineno-26-7"></a><span class="n">PixelArea</span><span class="w"> </span><span class="nf">calculate_area</span><span class="p">(</span><span class="n">PixelX</span><span class="w"> </span><span class="n">width</span><span class="p">,</span><span class="w"> </span><span class="n">PixelY</span><span class="w"> </span><span class="n">height</span><span class="p">)</span>
+</span><span id="__span-26-8"><a id="__codelineno-26-8" name="__codelineno-26-8" href="#__codelineno-26-8"></a><span class="p">{</span>
+</span><span id="__span-26-9"><a id="__codelineno-26-9" name="__codelineno-26-9" href="#__codelineno-26-9"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">PixelArea</span><span class="p">{</span><span class="n">width</span><span class="p">.</span><span class="n">value</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">height</span><span class="p">.</span><span class="n">value</span><span class="p">};</span><span class="w">  </span><span class="c1">// Manual unwrap &amp; wrap</span>
+</span><span id="__span-26-10"><a id="__codelineno-26-10" name="__codelineno-26-10" href="#__codelineno-26-10"></a><span class="p">}</span>
+</span><span id="__span-26-11"><a id="__codelineno-26-11" name="__codelineno-26-11" href="#__codelineno-26-11"></a>
+</span><span id="__span-26-12"><a id="__codelineno-26-12" name="__codelineno-26-12" href="#__codelineno-26-12"></a><span class="n">PixelX</span><span class="w"> </span><span class="n">x</span><span class="p">{</span><span class="mi">100</span><span class="p">};</span>
+</span><span id="__span-26-13"><a id="__codelineno-26-13" name="__codelineno-26-13" href="#__codelineno-26-13"></a><span class="n">PixelY</span><span class="w"> </span><span class="n">y</span><span class="p">{</span><span class="mi">200</span><span class="p">};</span>
+</span><span id="__span-26-14"><a id="__codelineno-26-14" name="__codelineno-26-14" href="#__codelineno-26-14"></a><span class="n">draw_point</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">);</span><span class="w">   </span><span class="c1">// ✅ Good!</span>
+</span><span id="__span-26-15"><a id="__codelineno-26-15" name="__codelineno-26-15" href="#__codelineno-26-15"></a><span class="n">draw_point</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">);</span><span class="w">   </span><span class="c1">// ❌ Compile error! Good.</span>
+</span><span id="__span-26-16"><a id="__codelineno-26-16" name="__codelineno-26-16" href="#__codelineno-26-16"></a>
+</span><span id="__span-26-17"><a id="__codelineno-26-17" name="__codelineno-26-17" href="#__codelineno-26-17"></a><span class="n">PixelX</span><span class="w"> </span><span class="n">width</span><span class="p">{</span><span class="mi">1920</span><span class="p">};</span>
+</span><span id="__span-26-18"><a id="__codelineno-26-18" name="__codelineno-26-18" href="#__codelineno-26-18"></a><span class="n">PixelY</span><span class="w"> </span><span class="n">height</span><span class="p">{</span><span class="mi">1080</span><span class="p">};</span>
+</span><span id="__span-26-19"><a id="__codelineno-26-19" name="__codelineno-26-19" href="#__codelineno-26-19"></a><span class="n">PixelArea</span><span class="w"> </span><span class="n">area</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">calculate_area</span><span class="p">(</span><span class="n">width</span><span class="p">,</span><span class="w"> </span><span class="n">height</span><span class="p">);</span><span class="w">      </span><span class="c1">// ✅ Good!</span>
+</span><span id="__span-26-20"><a id="__codelineno-26-20" name="__codelineno-26-20" href="#__codelineno-26-20"></a><span class="n">PixelArea</span><span class="w"> </span><span class="n">bad_area</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">calculate_area</span><span class="p">(</span><span class="n">height</span><span class="p">,</span><span class="w"> </span><span class="n">width</span><span class="p">);</span><span class="w">  </span><span class="c1">// ❌ Compile error! Good.</span>
+</span><span id="__span-26-21"><a id="__codelineno-26-21" name="__codelineno-26-21" href="#__codelineno-26-21"></a><span class="c1">// But: no help with derived quantities - must manually manage relationships</span>
+</span><span id="__span-26-22"><a id="__codelineno-26-22" name="__codelineno-26-22" href="#__codelineno-26-22"></a><span class="c1">// Need PixelArea / PixelX = PixelY? Define more operators manually!</span>
+</span><span id="__span-26-23"><a id="__codelineno-26-23" name="__codelineno-26-23" href="#__codelineno-26-23"></a>
+</span><span id="__span-26-24"><a id="__codelineno-26-24" name="__codelineno-26-24" href="#__codelineno-26-24"></a><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Area: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">area</span><span class="p">.</span><span class="n">value</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; = &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">area</span><span class="p">.</span><span class="n">value</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">2073600.0</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; FHD = &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">area</span><span class="p">.</span><span class="n">value</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">8294400.0</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; 4K</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+</span></code></pre></div>
+<p><strong>Problem</strong>: Type safety requires boilerplate. No dimensional analysis or derived quantities.</p>
+</div>
+<div class="tabbed-block">
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a><span class="k">using</span><span class="w"> </span><span class="n">PixelX</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fluent</span><span class="o">::</span><span class="n">NamedType</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">PixelXTag</span><span class="p">,</span><span class="w"> </span><span class="n">fluent</span><span class="o">::</span><span class="n">Addable</span><span class="o">&gt;</span><span class="p">;</span>
+</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a><span class="k">using</span><span class="w"> </span><span class="n">PixelY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fluent</span><span class="o">::</span><span class="n">NamedType</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">PixelYTag</span><span class="p">,</span><span class="w"> </span><span class="n">fluent</span><span class="o">::</span><span class="n">Addable</span><span class="o">&gt;</span><span class="p">;</span>
+</span><span id="__span-27-3"><a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a><span class="k">using</span><span class="w"> </span><span class="n">PixelArea</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fluent</span><span class="o">::</span><span class="n">NamedType</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">PixelAreaTag</span><span class="p">,</span><span class="w"> </span><span class="n">fluent</span><span class="o">::</span><span class="n">Addable</span><span class="o">&gt;</span><span class="p">;</span>
+</span><span id="__span-27-4"><a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a>
+</span><span id="__span-27-5"><a id="__codelineno-27-5" name="__codelineno-27-5" href="#__codelineno-27-5"></a><span class="kt">void</span><span class="w"> </span><span class="nf">draw_point</span><span class="p">(</span><span class="n">PixelX</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">PixelY</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* ... */</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-27-6"><a id="__codelineno-27-6" name="__codelineno-27-6" href="#__codelineno-27-6"></a>
+</span><span id="__span-27-7"><a id="__codelineno-27-7" name="__codelineno-27-7" href="#__codelineno-27-7"></a><span class="n">PixelArea</span><span class="w"> </span><span class="nf">calculate_area</span><span class="p">(</span><span class="n">PixelX</span><span class="w"> </span><span class="n">width</span><span class="p">,</span><span class="w"> </span><span class="n">PixelY</span><span class="w"> </span><span class="n">height</span><span class="p">)</span>
+</span><span id="__span-27-8"><a id="__codelineno-27-8" name="__codelineno-27-8" href="#__codelineno-27-8"></a><span class="p">{</span>
+</span><span id="__span-27-9"><a id="__codelineno-27-9" name="__codelineno-27-9" href="#__codelineno-27-9"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">PixelArea</span><span class="p">{</span><span class="n">width</span><span class="p">.</span><span class="n">get</span><span class="p">()</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">height</span><span class="p">.</span><span class="n">get</span><span class="p">()};</span><span class="w">  </span><span class="c1">// Manual unwrap &amp; wrap</span>
+</span><span id="__span-27-10"><a id="__codelineno-27-10" name="__codelineno-27-10" href="#__codelineno-27-10"></a><span class="p">}</span>
+</span><span id="__span-27-11"><a id="__codelineno-27-11" name="__codelineno-27-11" href="#__codelineno-27-11"></a>
+</span><span id="__span-27-12"><a id="__codelineno-27-12" name="__codelineno-27-12" href="#__codelineno-27-12"></a><span class="n">PixelX</span><span class="w"> </span><span class="n">x</span><span class="p">{</span><span class="mi">100</span><span class="p">};</span>
+</span><span id="__span-27-13"><a id="__codelineno-27-13" name="__codelineno-27-13" href="#__codelineno-27-13"></a><span class="n">PixelY</span><span class="w"> </span><span class="n">y</span><span class="p">{</span><span class="mi">200</span><span class="p">};</span>
+</span><span id="__span-27-14"><a id="__codelineno-27-14" name="__codelineno-27-14" href="#__codelineno-27-14"></a><span class="n">draw_point</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">);</span><span class="w">   </span><span class="c1">// ✅ Good!</span>
+</span><span id="__span-27-15"><a id="__codelineno-27-15" name="__codelineno-27-15" href="#__codelineno-27-15"></a><span class="n">draw_point</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">);</span><span class="w">   </span><span class="c1">// ❌ Compile error! Good.</span>
+</span><span id="__span-27-16"><a id="__codelineno-27-16" name="__codelineno-27-16" href="#__codelineno-27-16"></a>
+</span><span id="__span-27-17"><a id="__codelineno-27-17" name="__codelineno-27-17" href="#__codelineno-27-17"></a><span class="n">PixelX</span><span class="w"> </span><span class="n">width</span><span class="p">{</span><span class="mi">1920</span><span class="p">};</span>
+</span><span id="__span-27-18"><a id="__codelineno-27-18" name="__codelineno-27-18" href="#__codelineno-27-18"></a><span class="n">PixelY</span><span class="w"> </span><span class="n">height</span><span class="p">{</span><span class="mi">1080</span><span class="p">};</span>
+</span><span id="__span-27-19"><a id="__codelineno-27-19" name="__codelineno-27-19" href="#__codelineno-27-19"></a><span class="n">PixelArea</span><span class="w"> </span><span class="n">area</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">calculate_area</span><span class="p">(</span><span class="n">width</span><span class="p">,</span><span class="w"> </span><span class="n">height</span><span class="p">);</span><span class="w">      </span><span class="c1">// ✅ Good!</span>
+</span><span id="__span-27-20"><a id="__codelineno-27-20" name="__codelineno-27-20" href="#__codelineno-27-20"></a><span class="n">PixelArea</span><span class="w"> </span><span class="n">bad_area</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">calculate_area</span><span class="p">(</span><span class="n">height</span><span class="p">,</span><span class="w"> </span><span class="n">width</span><span class="p">);</span><span class="w">  </span><span class="c1">// ❌ Compile error! Good.</span>
+</span><span id="__span-27-21"><a id="__codelineno-27-21" name="__codelineno-27-21" href="#__codelineno-27-21"></a><span class="c1">// But: no automatic understanding that PixelX × PixelY → PixelArea</span>
+</span><span id="__span-27-22"><a id="__codelineno-27-22" name="__codelineno-27-22" href="#__codelineno-27-22"></a>
+</span><span id="__span-27-23"><a id="__codelineno-27-23" name="__codelineno-27-23" href="#__codelineno-27-23"></a><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Area: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">area</span><span class="p">.</span><span class="n">get</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; = &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">area</span><span class="p">.</span><span class="n">get</span><span class="p">()</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">2073600.0</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; FHD = &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">area</span><span class="p">.</span><span class="n">get</span><span class="p">()</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">8294400.0</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; 4K</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+</span></code></pre></div>
+<p><strong>Problem</strong>: Strong types but no dimensional analysis. Must manually extract, compute, and wrap.</p>
+<p>Examples: <a href="https://github.com/joboccara/NamedType">NamedType</a>,
+<a href="https://github.com/foonathan/type_safe">type_safe</a>,
+<a href="https://github.com/PeterSommerlad/PSsst">PSsst</a></p>
+</div>
+<div class="tabbed-block">
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">pixel_x</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">dimensionless</span><span class="p">,</span><span class="w"> </span><span class="n">is_kind</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">pixel_x</span><span class="p">;</span>
+</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">pixel_y</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">dimensionless</span><span class="p">,</span><span class="w"> </span><span class="n">is_kind</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">pixel_y</span><span class="p">;</span>
+</span><span id="__span-28-3"><a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">pixel_area</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">dimensionless</span><span class="p">,</span><span class="w"> </span><span class="n">pixel_x</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">pixel_y</span><span class="p">,</span><span class="w"> </span><span class="n">is_kind</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">pixel_area</span><span class="p">;</span>
+</span><span id="__span-28-4"><a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a>
+</span><span id="__span-28-5"><a id="__codelineno-28-5" name="__codelineno-28-5" href="#__codelineno-28-5"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">fhd</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">named_unit</span><span class="o">&lt;</span><span class="s">&quot;FHD&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">mag</span><span class="o">&lt;</span><span class="mi">1920</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">1080</span><span class="o">&gt;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">one</span><span class="p">,</span><span class="w"> </span><span class="n">kind_of</span><span class="o">&lt;</span><span class="n">pixel_area</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">fhd</span><span class="p">;</span>
+</span><span id="__span-28-6"><a id="__codelineno-28-6" name="__codelineno-28-6" href="#__codelineno-28-6"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">uhd_4k</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">named_unit</span><span class="o">&lt;</span><span class="s">&quot;4K&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">mag</span><span class="o">&lt;</span><span class="mi">3840</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">2160</span><span class="o">&gt;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">one</span><span class="p">,</span><span class="w"> </span><span class="n">kind_of</span><span class="o">&lt;</span><span class="n">pixel_area</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">uhd_4k</span><span class="p">;</span>
+</span><span id="__span-28-7"><a id="__codelineno-28-7" name="__codelineno-28-7" href="#__codelineno-28-7"></a>
+</span><span id="__span-28-8"><a id="__codelineno-28-8" name="__codelineno-28-8" href="#__codelineno-28-8"></a><span class="kt">void</span><span class="w"> </span><span class="nf">draw_point</span><span class="p">(</span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">pixel_x</span><span class="p">[</span><span class="n">one</span><span class="p">],</span><span class="w"> </span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">x</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">pixel_y</span><span class="p">[</span><span class="n">one</span><span class="p">],</span><span class="w"> </span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">y</span><span class="o">&gt;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* ... */</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-28-9"><a id="__codelineno-28-9" name="__codelineno-28-9" href="#__codelineno-28-9"></a>
+</span><span id="__span-28-10"><a id="__codelineno-28-10" name="__codelineno-28-10" href="#__codelineno-28-10"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">pixel_area</span><span class="p">[</span><span class="n">one</span><span class="p">],</span><span class="w"> </span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">calculate_area</span><span class="p">(</span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">pixel_x</span><span class="p">[</span><span class="n">one</span><span class="p">],</span><span class="w"> </span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">width</span><span class="p">,</span>
+</span><span id="__span-28-11"><a id="__codelineno-28-11" name="__codelineno-28-11" href="#__codelineno-28-11"></a><span class="w">                                              </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">pixel_y</span><span class="p">[</span><span class="n">one</span><span class="p">],</span><span class="w"> </span><span class="kt">int</span><span class="o">&gt;</span><span class="w"> </span><span class="n">height</span><span class="p">)</span>
+</span><span id="__span-28-12"><a id="__codelineno-28-12" name="__codelineno-28-12" href="#__codelineno-28-12"></a><span class="p">{</span>
+</span><span id="__span-28-13"><a id="__codelineno-28-13" name="__codelineno-28-13" href="#__codelineno-28-13"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">width</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">height</span><span class="p">;</span>
+</span><span id="__span-28-14"><a id="__codelineno-28-14" name="__codelineno-28-14" href="#__codelineno-28-14"></a><span class="p">}</span>
+</span><span id="__span-28-15"><a id="__codelineno-28-15" name="__codelineno-28-15" href="#__codelineno-28-15"></a>
+</span><span id="__span-28-16"><a id="__codelineno-28-16" name="__codelineno-28-16" href="#__codelineno-28-16"></a><span class="n">quantity</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pixel_x</span><span class="p">(</span><span class="mi">100</span><span class="p">);</span>
+</span><span id="__span-28-17"><a id="__codelineno-28-17" name="__codelineno-28-17" href="#__codelineno-28-17"></a><span class="n">quantity</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pixel_y</span><span class="p">(</span><span class="mi">200</span><span class="p">);</span>
+</span><span id="__span-28-18"><a id="__codelineno-28-18" name="__codelineno-28-18" href="#__codelineno-28-18"></a><span class="n">draw_point</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">);</span><span class="w">   </span><span class="c1">// ✅ Good!</span>
+</span><span id="__span-28-19"><a id="__codelineno-28-19" name="__codelineno-28-19" href="#__codelineno-28-19"></a><span class="n">draw_point</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">);</span><span class="w">   </span><span class="c1">// ❌ Compile error! Good.</span>
+</span><span id="__span-28-20"><a id="__codelineno-28-20" name="__codelineno-28-20" href="#__codelineno-28-20"></a>
+</span><span id="__span-28-21"><a id="__codelineno-28-21" name="__codelineno-28-21" href="#__codelineno-28-21"></a><span class="n">quantity</span><span class="w"> </span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pixel_x</span><span class="p">(</span><span class="mi">1920</span><span class="p">);</span>
+</span><span id="__span-28-22"><a id="__codelineno-28-22" name="__codelineno-28-22" href="#__codelineno-28-22"></a><span class="n">quantity</span><span class="w"> </span><span class="n">height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pixel_y</span><span class="p">(</span><span class="mi">1080</span><span class="p">);</span>
+</span><span id="__span-28-23"><a id="__codelineno-28-23" name="__codelineno-28-23" href="#__codelineno-28-23"></a><span class="n">quantity</span><span class="w"> </span><span class="n">area</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">calculate_area</span><span class="p">(</span><span class="n">width</span><span class="p">,</span><span class="w"> </span><span class="n">height</span><span class="p">);</span><span class="w">      </span><span class="c1">// ✅ Good!</span>
+</span><span id="__span-28-24"><a id="__codelineno-28-24" name="__codelineno-28-24" href="#__codelineno-28-24"></a><span class="n">quantity</span><span class="w"> </span><span class="n">bad_area</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">calculate_area</span><span class="p">(</span><span class="n">height</span><span class="p">,</span><span class="w"> </span><span class="n">width</span><span class="p">);</span><span class="w">  </span><span class="c1">// ❌ Compile error! Good.</span>
+</span><span id="__span-28-25"><a id="__codelineno-28-25" name="__codelineno-28-25" href="#__codelineno-28-25"></a>
+</span><span id="__span-28-26"><a id="__codelineno-28-26" name="__codelineno-28-26" href="#__codelineno-28-26"></a><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Area: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">area</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; = &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">area</span><span class="p">.</span><span class="n">in</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span><span class="n">fhd</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; = &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">area</span><span class="p">.</span><span class="n">in</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span><span class="n">uhd_4k</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span>
+</span></code></pre></div>
+<p><strong>Advantages</strong>: Type safety + dimensional analysis + automatic derived quantities.
+Custom units with automatic conversions. Zero overhead, minimal boilerplate.</p>
+</div>
+</div>
+</div>
+<p><strong>Key comparison:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Type Alias</th>
+<th>Wrapper Class</th>
+<th>Generic Library</th>
+<th><strong>mp-units dimensionless</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Type safety</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Zero overhead</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Arithmetic operators</td>
+<td>✅</td>
+<td>Manual</td>
+<td>Manual</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Derived quantities</td>
+<td>❌</td>
+<td>Manual</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Dimensional analysis</td>
+<td>❌</td>
+<td>Manual</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Unit conversions</td>
+<td>❌</td>
+<td>Manual</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Boilerplate per type</td>
+<td>Minimal</td>
+<td>High</td>
+<td>Medium</td>
+<td>Minimal</td>
+</tr>
+</tbody>
+</table>
+<p><strong>mp-units</strong> specializes in numeric types, enabling automatic arithmetic and dimensional
+analysis that generic strong-type libraries cannot provide.</p>
+<h3 id="why-dimensionless-instead-of-custom-dimensions">Why dimensionless instead of custom dimensions?<a class="headerlink" href="#why-dimensionless-instead-of-custom-dimensions" title="Permanent link">&para;</a></h3>
+<p>Dimensionless quantities with <code>is_kind</code> automatically work with unit <code>one</code> and its scaled
+versions, support explicit conversions to/from raw types, and participate in ISQ for
+derived quantities. Custom dimensions are better for physically distinct concepts
+(see <a href="../../../tutorials/custom_base_dimensions/">Tutorial 10: Custom Base Dimensions</a>).</p>
+<p>For a comprehensive example of using dimensionless quantities as strongly-typed numeric types,
+see <a href="../../../tutorials/strongly_typed_counts/">Tutorial 12: Strongly-Typed Counts</a>.</p>
 
 
 
