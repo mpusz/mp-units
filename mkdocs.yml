@@ -160,8 +160,9 @@ nav:
       - "Tutorial 9: Custom Quantity Specifications": tutorials/custom_quantity_specifications.md
       - "Tutorial 10: Custom Base Dimensions": tutorials/custom_base_dimensions.md
       - "Tutorial 11: Preventing Confusion with Distinct Kinds": tutorials/distinct_quantity_kinds.md
-      - "Tutorial 12: Faster-than-Lightspeed Constants": tutorials/faster_than_lightspeed_constants.md
-      - "Tutorial 13: Incremental Migration from Legacy Code": tutorials/incremental_migration.md
+      - "Tutorial 12: Strongly-Typed Counts": tutorials/strongly_typed_counts.md
+      - "Tutorial 13: Faster-than-Lightspeed Constants": tutorials/faster_than_lightspeed_constants.md
+      - "Tutorial 14: Incremental Migration from Legacy Code": tutorials/incremental_migration.md
   - User's Guide:
       - Terms and Definitions: users_guide/terms_and_definitions.md
       - Framework Basics:
