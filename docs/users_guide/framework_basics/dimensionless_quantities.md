@@ -345,3 +345,357 @@ but still allow the usage of `one` and its scaled versions for such quantities.
     quantity q1 = isq::angular_measure(42. * rad);
     quantity<dimensionless[one]> q2 = dimensionless(q1.in(one));
     ```
+
+
+## Using dimensionless quantities as strongly-typed numeric types
+
+For decades, the C++ community has sought ways to create strongly-typed wrappers for fundamental
+types to prevent bugs that arise from accidentally mixing semantically different values. Consider
+functions like `process(10, 20)` or `draw_point(x, y)`—when parameters have the same underlying
+type (`int`, `double`), it's easy to swap them accidentally, leading to subtle bugs that compilers
+cannot detect.
+
+The C++ standard library provides no built-in support for creating such strong types. However,
+several third-party libraries like [NamedType](https://github.com/joboccara/NamedType),
+[type_safe](https://github.com/foonathan/type_safe), and
+[PSsst](https://github.com/PeterSommerlad/PSsst) have emerged to fill this gap, providing
+generic solutions for creating distinct types from primitives. These approaches typically
+require manual definition of operators for each type or explicit opt-in for each
+operation, and they don't inherently understand derived quantities or dimensional analysis.
+
+**mp-units** offers a unique approach: leverage dimensionless quantities to create
+strongly-typed numeric types that benefit from the library's built-in dimensional analysis
+infrastructure. This isn't about physical dimensions or scaling by units factors—it's about
+using the framework's type system to prevent mixing semantically different counts,
+coordinates, or identifiers while maintaining zero-overhead and natural arithmetic
+semantics.
+
+
+### Type safety vs convenience trade-offs
+
+#### Implicit construction: The convenience-first approach
+
+The [Superpowers of the unit `one`](#superpowers-of-the-unit-one) described before
+provide a convenient way to work with dimensionless quantities. Quantities implicitly
+convertible to `dimensionless` with unit `one` can be implicitly constructed from raw values,
+explicitly converted back to raw values, and compared with raw values. This makes them easy
+to use with existing code and APIs.
+
+This convenience comes at a cost: **such syntax behaves a bit like raw `int` or `double`
+values when it comes to type safety**.
+
+Consider the following example:
+
+```cpp
+inline constexpr struct item_count final : quantity_spec<dimensionless> {} item_count;
+inline constexpr struct widget_count final : quantity_spec<dimensionless> {} widget_count;
+
+void process(quantity<item_count[one]> items, quantity<widget_count[one]> widgets)
+{
+  /* ... */
+}
+
+process(10, 20);                       // Which is items? Which is widgets? Unclear!
+process(10 * one, 20 * one);           // Which is items? Which is widgets? Unclear!
+
+// With explicit types, the compiler checks the order
+quantity<item_count[one]> items = 10;
+quantity<widget_count[one]> widgets = 20;
+process(items, widgets);    // OK
+// process(widgets, items); // Compile-time error!
+```
+
+When you already have typed quantities, the compiler **does** enforce the correct order—swapping
+them produces a compile error. However, the real problem is calling the function with raw
+values like `process(10, 20)` where there's no indication which parameter is which.
+This is better than raw `int` or `double` (at least functions can document their types),
+but it's still unclear at the call site when using literal values.
+
+Another drawback of such a hierarchy is that these types model `dimensionless` tagged
+numbers which means they can be mixed in arithmetic operations and comparisons:
+
+```cpp
+quantity<item_count[one]> items = 10;
+quantity<widget_count[one]> widgets = 20;
+
+// These compile but may be semantically incorrect:
+quantity total = items + widgets;    // Compiles! Both convert to dimensionless
+if (items < widgets) {               // Compiles! Comparison through dimensionless
+  // ...
+}
+```
+
+While the compiler allows these operations, they may not make semantic sense—adding items
+and widgets together, or comparing them directly, is likely a logic error in most domains.
+
+
+#### Explicit construction with `is_kind`: Maximum type safety
+
+To address the type safety concerns shown above, **mp-units** offers the `is_kind` specifier.
+When you mark a quantity with `is_kind`, it becomes a distinct quantity kind that cannot be
+implicitly mixed with other kinds (even with the parent kind). Such sub-kinds inherit
+properties of the parent kind (dimension, character, unit, etc.). This also disables
+the implicit conversion from raw values because those are now more than just tagged numbers.
+They have strong semantical meaning and the library should respect that.
+
+This however, creates an important trade-off:
+
+=== "Without `is_kind` (implicit conversion)"
+
+    ```cpp
+    inline constexpr struct item_count final : quantity_spec<dimensionless> {} item_count;
+    inline constexpr struct widget_count final : quantity_spec<dimensionless> {} widget_count;
+
+    void process(quantity<item_count[one]> items, quantity<widget_count[one]> widgets)
+    {
+      /* ... */
+    }
+
+    // Can call with raw values - convenient but unclear
+    process(10, 20);             // ⚠️ Which parameter is which? No way to tell!
+
+    // With typed quantities, the compiler does enforce order
+    quantity<item_count[one]> items = 10;
+    quantity<widget_count[one]> widgets = 20;
+    process(items, widgets);     // ✅ OK - correct order
+    process(widgets, items);     // ❌ Compile error! Good.
+
+    // Another problem: can mix semantically different types in arithmetic
+    auto total = items + widgets;  // ⚠️ Compiles! Both convert to dimensionless
+    if (items < widgets) {         // ⚠️ Compiles! Comparison through dimensionless
+      // ...
+    }
+    ```
+
+    **Pros**: Convenient—works with raw values, typed quantities enforce correct parameter order
+
+    ```cpp
+    void draw_rect(quantity<pixel_x[one]> x, quantity<pixel_y[one]> y,
+                   quantity<pixel_x[one]> width, quantity<pixel_y[one]> height)
+    {
+      // ...
+    }
+
+    // All arguments may be passed as raw numbers (when we are sure what we are doing)
+    draw_rect(10, 20, 100, 50);
+    ```
+
+    **Cons**: Using raw values at call sites lacks clarity; can mix different dimensionless
+    types in arithmetic and comparisons because they share common `dimensionless` root
+
+=== "With `is_kind` (explicit construction)"
+
+    ```cpp
+    inline constexpr struct item_count final : quantity_spec<dimensionless, is_kind> {} item_count;
+    inline constexpr struct widget_count final : quantity_spec<dimensionless, is_kind> {} widget_count;
+
+    void process(quantity<item_count[one]> items, quantity<widget_count[one]> widgets)
+    {
+      /* ... */
+    }
+
+    // Cannot call with raw values - must be explicit
+    process(10, 20);             // ❌ Compile error! Good.
+
+    // Must use typed quantities, and order is enforced
+    quantity<item_count[one]> items(10);
+    quantity<widget_count[one]> widgets(20);
+    process(items, widgets);     // ✅ OK - correct order
+    process(widgets, items);     // ❌ Compile error! Good.
+
+    // Arithmetic operations also enforce type safety
+    auto mixed = items + widgets;  // ❌ Compile error! Good.
+    if (items < widgets) {         // ❌ Compile error! Good.
+      // ...
+    }
+    ```
+
+    **Pros**: Maximum type safety—distinct types cannot be accidentally mixed or reordered
+
+    **Cons**: Less convenient—requires explicit construction everywhere, especially verbose
+    for functions with multiple parameters:
+
+    ```cpp
+    void draw_rect(quantity<pixel_x[one]> x, quantity<pixel_y[one]> y,
+                   quantity<pixel_x[one]> width, quantity<pixel_y[one]> height)
+    {
+      // ...
+    }
+
+    // All parameters need explicit construction
+    draw_rect(quantity<pixel_x[one]>{10}, quantity<pixel_y[one]>{20},
+              quantity<pixel_x[one]>{100}, quantity<pixel_y[one]>{50});
+    // or to use quantity_spec as a quantity creation helper
+    draw_rect(pixel_x(10), pixel_y(20), pixel_x(100), pixel_y(50));
+    ```
+
+**Choosing the right approach:**
+
+- **Use `is_kind`** when type safety is paramount and you want to prevent any accidental mixing
+  of semantically different counts or coordinates. Accept the verbosity of explicit construction.
+
+- **Skip `is_kind`** for convenience when the types rarely interact and the risk of mixing them
+  is low, or when you need to frequently pass raw values to functions.
+
+
+### Comparison with traditional strong-type approaches
+
+Traditional approaches to creating strong numeric types each face different trade-offs:
+
+=== "Type aliases (unsafe)"
+
+    ```cpp
+    using PixelX = int;
+    using PixelY = int;
+    using PixelArea = int;
+
+    void draw_point(PixelX x, PixelY y) { /* ... */ }
+
+    PixelArea calculate_area(PixelX width, PixelY height)
+    {
+      return width * height;
+    }
+
+    PixelX x = 100;
+    PixelY y = 200;
+    draw_point(x, y);   // ✅ Good!
+    draw_point(y, x);   // ⚠️ Compiles! Wrong order.
+
+    // Can mix with unrelated types
+    int random = 42;
+    draw_point(random, random);  // ⚠️ Compiles!
+
+    PixelX width = 1920;
+    PixelY height = 1080;
+    PixelArea area = calculate_area(width, height);      // ✅ Good!
+    PixelArea bad_area = calculate_area(height, width);  // ⚠️ Compiles! Wrong order.
+
+    std::cout << "Area: " << area << " = " << area / 2073600.0 << " FHD = " << area / 8294400.0 << " 4K\n";
+    ```
+
+    **Problem**: No type safety—all errors compile. Manual scaling requires magic numbers.
+
+=== "Wrapper classes (verbose)"
+
+    ```cpp
+    struct PixelX { int value; };
+    struct PixelY { int value; };
+    struct PixelArea { int value; };
+
+    void draw_point(PixelX x, PixelY y) { /* ... */ }
+
+    PixelArea calculate_area(PixelX width, PixelY height)
+    {
+      return PixelArea{width.value * height.value};  // Manual unwrap & wrap
+    }
+
+    PixelX x{100};
+    PixelY y{200};
+    draw_point(x, y);   // ✅ Good!
+    draw_point(y, x);   // ❌ Compile error! Good.
+
+    PixelX width{1920};
+    PixelY height{1080};
+    PixelArea area = calculate_area(width, height);      // ✅ Good!
+    PixelArea bad_area = calculate_area(height, width);  // ❌ Compile error! Good.
+    // But: no help with derived quantities - must manually manage relationships
+    // Need PixelArea / PixelX = PixelY? Define more operators manually!
+
+    std::cout << "Area: " << area.value << " = " << area.value / 2073600.0 << " FHD = " << area.value / 8294400.0 << " 4K\n";
+    ```
+
+    **Problem**: Type safety requires boilerplate. No dimensional analysis or derived quantities.
+
+=== "Generic libraries (NamedType, type_safe, PSsst)"
+
+    ```cpp
+    using PixelX = fluent::NamedType<int, struct PixelXTag, fluent::Addable>;
+    using PixelY = fluent::NamedType<int, struct PixelYTag, fluent::Addable>;
+    using PixelArea = fluent::NamedType<int, struct PixelAreaTag, fluent::Addable>;
+
+    void draw_point(PixelX x, PixelY y) { /* ... */ }
+
+    PixelArea calculate_area(PixelX width, PixelY height)
+    {
+      return PixelArea{width.get() * height.get()};  // Manual unwrap & wrap
+    }
+
+    PixelX x{100};
+    PixelY y{200};
+    draw_point(x, y);   // ✅ Good!
+    draw_point(y, x);   // ❌ Compile error! Good.
+
+    PixelX width{1920};
+    PixelY height{1080};
+    PixelArea area = calculate_area(width, height);      // ✅ Good!
+    PixelArea bad_area = calculate_area(height, width);  // ❌ Compile error! Good.
+    // But: no automatic understanding that PixelX × PixelY → PixelArea
+
+    std::cout << "Area: " << area.get() << " = " << area.get() / 2073600.0 << " FHD = " << area.get() / 8294400.0 << " 4K\n";
+    ```
+
+    **Problem**: Strong types but no dimensional analysis. Must manually extract, compute, and wrap.
+
+    Examples: [NamedType](https://github.com/joboccara/NamedType),
+    [type_safe](https://github.com/foonathan/type_safe),
+    [PSsst](https://github.com/PeterSommerlad/PSsst)
+
+=== "mp-units (specialized for numeric types)"
+
+    ```cpp
+    inline constexpr struct pixel_x final : quantity_spec<dimensionless, is_kind> {} pixel_x;
+    inline constexpr struct pixel_y final : quantity_spec<dimensionless, is_kind> {} pixel_y;
+    inline constexpr struct pixel_area final : quantity_spec<dimensionless, pixel_x * pixel_y, is_kind> {} pixel_area;
+
+    inline constexpr struct fhd final : named_unit<"FHD", mag<1920 * 1080> * one, kind_of<pixel_area>> {} fhd;
+    inline constexpr struct uhd_4k final : named_unit<"4K", mag<3840 * 2160> * one, kind_of<pixel_area>> {} uhd_4k;
+
+    void draw_point(quantity<pixel_x[one], int> x>, quantity<pixel_y[one], int> y>) { /* ... */ }
+
+    quantity<pixel_area[one], int> calculate_area(quantity<pixel_x[one], int> width,
+                                                  quantity<pixel_y[one], int> height)
+    {
+      return width * height;
+    }
+
+    quantity x = pixel_x(100);
+    quantity y = pixel_y(200);
+    draw_point(x, y);   // ✅ Good!
+    draw_point(y, x);   // ❌ Compile error! Good.
+
+    quantity width = pixel_x(1920);
+    quantity height = pixel_y(1080);
+    quantity area = calculate_area(width, height);      // ✅ Good!
+    quantity bad_area = calculate_area(height, width);  // ❌ Compile error! Good.
+
+    std::cout << "Area: " << area << " = " << area.in<double>(fhd) << " = " << area.in<double>(uhd_4k) << '\n';
+    ```
+
+    **Advantages**: Type safety + dimensional analysis + automatic derived quantities.
+    Custom units with automatic conversions. Zero overhead, minimal boilerplate.
+
+**Key comparison:**
+
+| Feature              | Type Alias | Wrapper Class | Generic Library | **mp-units dimensionless** |
+|----------------------|------------|---------------|-----------------|----------------------------|
+| Type safety          | ❌          | ✅             | ✅               | ✅                          |
+| Zero overhead        | ✅          | ✅             | ✅               | ✅                          |
+| Arithmetic operators | ✅          | Manual        | Manual          | ✅                          |
+| Derived quantities   | ❌          | Manual        | ❌               | ✅                          |
+| Dimensional analysis | ❌          | Manual        | ❌               | ✅                          |
+| Unit conversions     | ❌          | Manual        | ❌               | ✅                          |
+| Boilerplate per type | Minimal    | High          | Medium          | Minimal                    |
+
+**mp-units** specializes in numeric types, enabling automatic arithmetic and dimensional
+analysis that generic strong-type libraries cannot provide.
+
+
+### Why dimensionless instead of custom dimensions?
+
+Dimensionless quantities with `is_kind` automatically work with unit `one` and its scaled
+versions, support explicit conversions to/from raw types, and participate in ISQ for
+derived quantities. Custom dimensions are better for physically distinct concepts
+(see [Tutorial 10: Custom Base Dimensions](../../tutorials/custom_base_dimensions.md)).
+
+For a comprehensive example of using dimensionless quantities as strongly-typed numeric types,
+see [Tutorial 12: Strongly-Typed Counts](../../tutorials/strongly_typed_counts.md).
