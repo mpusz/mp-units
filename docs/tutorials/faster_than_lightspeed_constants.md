@@ -145,7 +145,7 @@ QuantityOf<isq::duration> auto burn_time_with_stats(QuantityOf<isq::mass> auto p
   using namespace si::unit_symbols;
   std::cout << "  Isp: " << isp << "\n";
   std::cout << "  Thrust: " << thrust << " = " << thrust.template in<double>(kN) << "\n";
-  std::cout << "  Exhaust velocity: " << ve << " = " << ve.in(m / s) << "\n";
+  std::cout << "  Exhaust speed: " << ve << " = " << ve.in(m / s) << "\n";
   std::cout << "  Mass flow rate: " << flow_rate << " = " << flow_rate.in(kg / s) << "\n";
   std::cout << "  Burn time: " << burn_time << " = " << burn_time.in(s) << "\n\n";
 
@@ -188,7 +188,7 @@ int main()
 }
 ```
 
-??? "Solution"
+??? tip "Solution"
 
     ```cpp
     #include <mp-units/systems/si.h>
@@ -236,7 +236,7 @@ int main()
       using namespace si::unit_symbols;
       std::cout << "  Isp: " << isp << "\n";
       std::cout << "  Thrust: " << thrust << " = " << thrust.template in<double>(kN) << "\n";
-      std::cout << "  Exhaust velocity: " << ve << " = " << ve.in(m / s) << "\n";
+      std::cout << "  Exhaust speed: " << ve << " = " << ve.in(m / s) << "\n";
       std::cout << "  Mass flow rate: " << flow_rate << " = " << flow_rate.in(kg / s) << "\n";
       std::cout << "  Burn time: " << burn_time << " = " << burn_time.in(s) << "\n\n";
 
@@ -291,6 +291,146 @@ int main()
 
     Both engines use identical code—the type system ensures correctness regardless of whether
     _thrust_ is specified in legacy (kgf) or modern (N) units.
+
+
+??? abstract "What you learned?"
+
+    ### Constants as compile-time units
+
+    Traditional approach treats constants as runtime values:
+
+    ```cpp
+    // ❌ Traditional: g₀ as runtime constant
+    const double g0 = 9.80665;
+    double force_N = mass_kg * g0;
+    double flow_rate = thrust_N / (isp_s * g0);  // Runtime arithmetic!
+    ```
+
+    **mp-units** makes constants part of the type system:
+
+    ```cpp
+    // ✅ mp-units: g₀ as compile-time unit
+    inline constexpr struct standard_gravity :
+      named_unit<"g₀", mag_ratio<980'665, 100'000> * si::metre / square(si::second)> {} standard_gravity;
+
+    inline constexpr Unit auto g0 = standard_gravity;
+    ```
+
+    Benefits:
+
+    - No runtime multiplication/division when constants cancel
+    - Exact rational representation (980'665/100'000) preserves precision
+    - Type-level tracking enables automatic simplification
+
+    ### Automatic cancellation when constants appear in numerator and denominator
+
+    The burn time formula contains g₀ in both places:
+
+    ```cpp
+    // Formula: t_burn = (m_prop × Isp × g₀) / F
+    // When F is in kgf = kg × g₀, the formula becomes:
+    // t_burn = (m_prop × Isp × g₀) / (F_kgf × g₀) = (m_prop × Isp) / F_kgf
+    //                          ^               ^
+    //                          These cancel at compile time!
+
+    QuantityOf<isq::mass_flow_rate> auto mass_flow_rate(QuantityOf<isq::force> auto thrust,
+                                                        QuantityOf<specific_impulse> auto isp)
+    {
+      return thrust / (isp * g0);  // g₀ cancels if thrust is in kgf
+    }
+    ```
+
+    When `thrust` is in `kgf`:
+
+    - `kgf` = `kg × g₀` (by definition)
+    - Division by `isp × g0` cancels the `g₀` factors
+    - No runtime multiplication by 9.80665!
+
+    When `thrust` is in `N`:
+
+    - No cancellation occurs
+    - **mp-units** applies g₀ conversion automatically
+
+    ### Defining units with embedded constants
+
+    kilogram-force embeds g₀ in its definition:
+
+    ```cpp
+    inline constexpr struct kilogram_force : named_unit<"kgf", si::kilogram * standard_gravity> {} kilogram_force;
+    ```
+
+    This definition:
+
+    - Makes the relationship explicit: 1 kgf ≡ 1 kg × g₀
+    - Enables automatic cancellation when used with g₀
+    - Preserves historical unit while ensuring correctness
+    - Works seamlessly with modern SI units
+
+    Usage with different thrust specifications:
+
+    ```cpp
+    quantity thrust_legacy = 390'000 * kgf;  // Legacy Russian engines
+    quantity thrust_modern = 500 * kN;        // Modern engines
+
+    // Same function works for both:
+    auto flow1 = mass_flow_rate(thrust_legacy, isp);  // g₀ cancels
+    auto flow2 = mass_flow_rate(thrust_modern, isp);  // g₀ applied
+    ```
+
+    ### Mixed unit systems without manual tracking
+
+    Real-world scenario with mixed specifications:
+
+    ```cpp
+    // Engine datasheet uses kgf (legacy)
+    quantity engine_thrust = 390'000 * kgf;
+
+    // Propellant specs use kg (SI)
+    quantity propellant = 15'000 * kg;
+
+    // Performance specs use seconds (dimensionless Isp)
+    quantity isp = 311 * s;
+
+    // Calculation just works - no manual g₀ tracking needed:
+    quantity burn_time = (propellant * isp * g0) / engine_thrust;
+    // g₀ factors cancel automatically!
+    ```
+
+    The type system:
+
+    - Tracks which quantities contain g₀
+    - Simplifies when g₀ appears in numerator and denominator
+    - Applies conversions only when necessary
+    - Works across different unit systems (kgf, N, lbf, etc.)
+
+    ### Historical significance and safety
+
+    Mars Climate Orbiter (1999) was lost due to unit confusion:
+
+    - Software expected _thrust_ in Newtons
+    - Guidance system provided _thrust_ in pound-force (lbf)
+    - No type checking caught the error
+    - $327 million mission destroyed
+
+    **mp-units** prevents this:
+
+    ```cpp
+    void set_thrust(QuantityOf<isq::force> auto F);
+
+    quantity thrust_lbf = 1000 * lbf;   // Legacy Imperial
+    quantity thrust_N = 4448 * N;       // Modern SI
+
+    set_thrust(thrust_lbf);  // ✅ Works - automatic conversion
+    set_thrust(thrust_N);    // ✅ Works - no conversion needed
+    set_thrust(1000);        // ❌ Does not compile - prevents raw numbers
+    ```
+
+    Type safety ensures:
+
+    - Units are always tracked
+    - Conversions happen automatically and correctly
+    - Raw numbers cannot accidentally enter calculations
+    - Historical unit confusion becomes impossible
 
 
 ## References

@@ -73,7 +73,7 @@ int main()
 }
 ```
 
-??? "Solution"
+??? tip "Solution"
 
     ```cpp
     #include <mp-units/systems/si.h>
@@ -93,6 +93,62 @@ int main()
       std::cout << "Clearance = " << clearance << "\n";
     }
     ```
+
+
+??? abstract "What you learned?"
+
+    ### Affine space concepts
+
+    Affine spaces separate **points** (absolute positions) from **vectors** (displacements):
+
+    ```cpp
+    quantity_point alt_bridge = nhn_sea_level + 285. * m;  // Point: absolute altitude
+    quantity clearance = alt_bridge - alt_river;           // Vector: height difference
+    ```
+
+    - **Points**: Represent absolute positions relative to an origin
+    - **Vectors**: Represent displacements/differences between points
+    - Point - Point → Vector
+    - Point + Vector → Point
+    - Point + Point → Not allowed (mathematically meaningless)
+
+    ### Multiple reference origins
+
+    Different measurements may use different reference points:
+
+    ```cpp
+    inline constexpr struct nhn_sea_level final : absolute_point_origin<isq::altitude> {} nhn_sea_level;
+    inline constexpr struct swiss_sea_level final : relative_point_origin<nhn_sea_level - 27*cm> {} swiss_sea_level;
+    ```
+
+    - **Absolute origins**: Primary reference point (e.g., sea level)
+    - **Relative origins**: Defined relative to another origin (e.g., local datum offset)
+    - Enables working with different surveying standards, coordinate systems, etc.
+
+    ### Automatic origin conversion
+
+    When subtracting points with different origins, the library converts automatically:
+
+    ```cpp
+    quantity_point alt_bridge = nhn_sea_level + 285. * m;
+    quantity_point alt_river = swiss_sea_level + 278. * m;
+    quantity clearance = alt_bridge - alt_river;  // Automatic conversion!
+    ```
+
+    - The library knows the relationship between origins
+    - Subtraction accounts for the 27 cm offset between NHN and Swiss sea level
+    - Result is correct even though measurements use different references
+
+    ### Beyond temperatures
+
+    Affine spaces apply to many domains:
+
+    - **Geography**: Different elevation datums, coordinate systems
+    - **Time**: UTC, local time zones, epoch timestamps
+    - **Engineering**: Different measurement references, calibration points
+    - **Graphics**: World space vs. camera space coordinates
+
+    Any domain with "absolute positions" and "relative offsets" benefits from this pattern.
 
 
 ## References

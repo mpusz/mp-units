@@ -26,7 +26,7 @@ All are just integers, but mixing them causes subtle bugs:
     {
       // Easy to accidentally swap x and y
       draw_at(y, x, sprite_count);  // Bug! Wrong order
-      
+
       // Or use a coordinate as a count
       if (sprite_count > x) {  // Compiles but meaningless comparison
         // ...
@@ -40,7 +40,7 @@ All are just integers, but mixing them causes subtle bugs:
     using PixelX = int;
     using PixelY = int;
     using SpriteCount = int;
-    
+
     void render(PixelX x, PixelY y, SpriteCount count)
     {
       draw_at(y, x, count);  // Still compiles! Type aliases provide no safety
@@ -61,7 +61,7 @@ quantities. The system should:
 
 1. **Define distinct quantity types** for:
     - `pixel_x` — X-axis screen coordinates
-    - `pixel_y` — Y-axis screen coordinates  
+    - `pixel_y` — Y-axis screen coordinates
     - `sprite_count` — Number of sprites
     - `frame_count` — Number of animation frames
     - `buffer_index` — 1D buffer position/offset
@@ -114,7 +114,7 @@ using namespace mp_units;
 // Return type: bool
 // Parameters:
 //   - x: QuantityOf<pixel_x> auto
-//   - y: QuantityOf<pixel_y> auto  
+//   - y: QuantityOf<pixel_y> auto
 //   - width: QuantityOf<resolution_width> auto
 //   - height: QuantityOf<resolution_height> auto
 [[nodiscard]] constexpr bool is_within_bounds(/* TODO: add parameters */)
@@ -149,32 +149,32 @@ using namespace mp_units;
 int main()
 {
   using namespace si::unit_symbols;
-  
+
   // Screen configuration
   quantity screen_width = resolution_width(1920 * one);
   quantity screen_height = resolution_height(1080 * one);
-  
+
   // Sprite position
   quantity pos_x = pixel_x(100 * one);
   quantity pos_y = pixel_y(50 * one);
-  
+
   // Rendering stats
   quantity rendered = sprite_count(1500 * one);
   quantity target_fps = 60.0 / s;
   quantity frame_time = 1.0 / target_fps;
-  
+
   // Validate position
   if (is_within_bounds(pos_x, pos_y, screen_width, screen_height))
     std::cout << "Position (" << pos_x << ", " << pos_y << ") is valid\n";
-  
+
   // Calculate buffer index
   quantity index = grid_index(pos_x, pos_y, screen_width);
   std::cout << "Buffer index: " << index << "\n";
-  
+
   // Calculate render rate
   quantity rate = render_rate_calc(rendered, frame_time);
   std::cout << "Render rate: " << rate.in(one / s) << "\n";
-  
+
   // Try these intentional errors (uncomment to test):
   // auto bad_sum = pos_x + pos_y;  // ERROR: Cannot mix X and Y coordinates
   // auto bad_cmp = (rendered < pos_x);  // ERROR: Cannot compare count with coordinate
@@ -182,7 +182,7 @@ int main()
 }
 ```
 
-??? "Solution"
+??? tip "Solution"
 
     ```cpp
     #include <mp-units/systems/si.h>
@@ -234,28 +234,28 @@ int main()
     int main()
     {
       using namespace si::unit_symbols;
-      
+
       // Screen configuration
       quantity screen_width = resolution_width(1920 * one);
       quantity screen_height = resolution_height(1080 * one);
-      
+
       // Sprite position
       quantity pos_x = pixel_x(100 * one);
       quantity pos_y = pixel_y(50 * one);
-      
+
       // Rendering stats
       quantity rendered = sprite_count(1500 * one);
       quantity target_fps = 60.0 / s;
       quantity frame_time = 1.0 / target_fps;
-      
+
       // Validate position
       if (is_within_bounds(pos_x, pos_y, screen_width, screen_height))
         std::cout << "Position (" << pos_x << ", " << pos_y << ") is valid\n";
-      
+
       // Calculate buffer index
       quantity index = grid_index(pos_x, pos_y, screen_width);
       std::cout << "Buffer index: " << index << "\n";
-      
+
       // Calculate render rate
       quantity rate = render_rate_calc(rendered, frame_time);
       std::cout << "Render rate: " << rate << "\n";
@@ -263,119 +263,121 @@ int main()
     ```
 
 
-## What you learned?
+??? abstract "What you learned?"
 
-### Type safety without boilerplate
+    ### Type safety without boilerplate
 
-By defining `pixel_x`, `pixel_y`, `sprite_count`, `frame_count`, and `buffer_index` as
-distinct kinds of dimensionless quantities using `is_kind`, you get:
+    By defining `pixel_x`, `pixel_y`, `sprite_count`, `frame_count`, and `buffer_index` as
+    distinct kinds of dimensionless quantities using `is_kind`, you get:
 
-- **Automatic type safety**: Cannot mix coordinates, counts, frames, and indices
-- **All arithmetic operators**: Addition, subtraction, comparison, etc., work automatically
-- **Zero overhead**: Compiles to the same machine code as raw integers
-- **Clear semantics**: Function signatures document what each parameter represents
+    - **Automatic type safety**: Cannot mix coordinates, counts, frames, and indices
+    - **All arithmetic operators**: Addition, subtraction, comparison, etc., work
+      automatically within the kind
+    - **Zero overhead**: Compiles to the same machine code as raw integers
+    - **Clear semantics**: Function signatures document what each parameter represents
 
-### The power of `is_kind`
+    ### The power of `is_kind`
 
-The `is_kind` specifier creates distinct quantity **subkinds** within the dimensionless
-hierarchy:
+    The `is_kind` specifier creates distinct quantity **subkinds** within the quantity
+    hierarchy:
 
-```cpp
-inline constexpr struct pixel_x final : quantity_spec<dimensionless, is_kind> {} pixel_x;
-inline constexpr struct pixel_y final : quantity_spec<dimensionless, is_kind> {} pixel_y;
-```
+    ```cpp
+    inline constexpr struct pixel_x final : quantity_spec<dimensionless, is_kind> {} pixel_x;
+    inline constexpr struct pixel_y final : quantity_spec<dimensionless, is_kind> {} pixel_y;
+    ```
 
-This means:
+    This means:
 
-- ✅ `pixel_x` and `pixel_y` are both dimensionless (dimension is `dimension_one`)
-- ✅ Both can use the unit `one` and its scaled versions
-- ✅ Both benefit from unit `one` superpowers (implicit construction from raw values)
-- ❌ But `pixel_x` and `pixel_y` **cannot be mixed** in arithmetic or comparisons
-- ❌ They are **distinct kinds** that require explicit conversion
+    - ✅ `pixel_x` and `pixel_y` are both dimensionless (dimension is `dimension_one`)
+    - ✅ Both can use the unit `one` and its scaled versions
+    - ✅ Both benefit from unit `one` superpowers (implicit construction from raw values)
+    - ❌ But `pixel_x` and `pixel_y` **cannot be mixed** in arithmetic or comparisons
+    - ❌ They are **distinct kinds** that require explicit conversion
 
-### Hierarchies within kinds
+    ### Hierarchies within kinds
 
-You can create hierarchies within your custom kinds:
+    You can create hierarchies within your custom kinds:
 
-```cpp
-inline constexpr struct pixel_x final : quantity_spec<dimensionless, is_kind> {} pixel_x;
-inline constexpr struct resolution_width final : quantity_spec<pixel_x> {} resolution_width;
-```
+    ```cpp
+    inline constexpr struct pixel_x final : quantity_spec<dimensionless, is_kind> {} pixel_x;
+    inline constexpr struct resolution_width final : quantity_spec<pixel_x> {} resolution_width;
+    ```
 
-- `resolution_width` **is a** `pixel_x` (implicitly convertible)
-- `pixel_x` **is not** a `resolution_width` (would require explicit conversion)
-- Neither can be mixed with `pixel_y`, `sprite_count`, `frame_count`, or `buffer_index`
+    - `resolution_width` **is a** `pixel_x` (implicitly convertible)
+    - `pixel_x` **is not** a `resolution_width` (would require explicit conversion)
+    - Neither can be mixed with `pixel_y`, `sprite_count`, `frame_count`, or `buffer_index`
 
-This allows building rich type hierarchies while maintaining type safety.
+    This allows building rich type hierarchies while maintaining type safety.
 
-### Derived quantities
+    ### Derived quantities
 
-You can create derived quantities from your custom types:
+    You can create derived quantities from your custom types:
 
-```cpp
-inline constexpr struct render_rate final : quantity_spec<sprite_count / isq::time> {} render_rate;
-inline constexpr struct frame_rate final : quantity_spec<frame_count / isq::time> {} frame_rate;
-```
+    ```cpp
+    inline constexpr struct render_rate final : quantity_spec<sprite_count / isq::time> {} render_rate;
+    inline constexpr struct frame_rate final : quantity_spec<frame_count / isq::time> {} frame_rate;
+    ```
 
-This automatically works with dimensional analysis:
+    This automatically works with dimensional analysis:
 
-```cpp
-// Frame rate: frames per time, and inverse gives time per frame
-quantity target_fps = 60.0 / s;
-quantity frame_time = 1.0 / target_fps;  // Dimensional analysis!
+    ```cpp
+    // Frame rate: frames per time, and inverse gives time per frame
+    quantity target_fps = 60.0 / s;
+    quantity frame_time = 1.0 / target_fps;  // Dimensional analysis!
 
-// Render rate: sprites per time
-quantity rendered = sprite_count(1500 * one);
-// sprite_count / time implicitly converts to render_rate
-quantity<render_rate[one / s]> rate = rendered / frame_time;
-```
+    // Render rate: sprites per time
+    quantity rendered = sprite_count(1500 * one);
+    // sprite_count / time implicitly converts to render_rate
+    quantity<render_rate[one / s]> rate = rendered / frame_time;
+    ```
 
-### When to use this approach
+    ### When to use this approach
 
-Use dimensionless quantities with `is_kind` for:
+    Use dimensionless quantities with `is_kind` for:
 
-- **Counts and indices**: item counts, array indices, iteration counts
-- **Coordinates**: screen pixels, grid positions (when axes should not mix)
-- **Identifiers**: user IDs, session IDs (when used in arithmetic)
-- **Discrete quantities**: button presses, error counts, retry attempts
+    - **Counts and indices**: item counts, array indices, iteration counts
+    - **Coordinates**: screen pixels, grid positions (when axes should not mix)
+    - **Identifiers**: user IDs, session IDs (when used in arithmetic)
+    - **Discrete quantities**: button presses, error counts, retry attempts
 
-**Don't use custom dimensions** when:
+    **Don't use custom dimensions** when:
 
-- You want to use the unit `one` automatically
-- Values are fundamentally countable/dimensionless
-- You need natural numeric semantics
+    - You want to use the unit `one` automatically
+    - Values are fundamentally countable/dimensionless
+    - You need natural numeric semantics
 
-**Use custom dimensions** (see [Tutorial 10: Custom Base Dimensions](custom_base_dimensions.md)) when:
+    **Use custom dimensions** (see [Tutorial 10: Custom Base Dimensions](custom_base_dimensions.md))
+    when:
 
-- Values represent truly distinct physical concepts
-- You need complete isolation from ISQ
-- Custom base dimensions better reflect your domain model
+    - Values represent truly distinct physical concepts
+    - You need complete isolation from ISQ
+    - Custom base dimensions better reflect your domain model
 
 
-## Alternative: Using explicit unit kinds
+    ## Alternative: Using explicit unit kinds
 
-If you want even stricter type safety where each quantity type has its own unit, you can
-define units with `kind_of`:
+    If you want even stricter type safety where each quantity type has its own unit, you can
+    define units with `kind_of`:
 
-```cpp
-inline constexpr struct pixel_x_unit final : named_unit<"px_x", one, kind_of<pixel_x>> {} pixel_x_unit;
-inline constexpr auto px_x = pixel_x_unit;
-inline constexpr struct pixel_y_unit final : named_unit<"px_y", one, kind_of<pixel_y>> {} pixel_y_unit;
-inline constexpr auto px_y = pixel_y_unit;
-inline constexpr struct sprite final : named_unit<"sprite", one, kind_of<sprite_count>> {} sprite;
-inline constexpr struct frame final : named_unit<"frame", one, kind_of<frame_count>> {} frame;
+    ```cpp
+    inline constexpr struct pixel_x_unit final : named_unit<"px_x", one, kind_of<pixel_x>> {} pixel_x_unit;
+    inline constexpr auto px_x = pixel_x_unit;
+    inline constexpr struct pixel_y_unit final : named_unit<"px_y", one, kind_of<pixel_y>> {} pixel_y_unit;
+    inline constexpr auto px_y = pixel_y_unit;
+    inline constexpr struct sprite final : named_unit<"sprite", one, kind_of<sprite_count>> {} sprite;
+    inline constexpr struct frame final : named_unit<"frame", one, kind_of<frame_count>> {} frame;
 
-quantity x = 100 * px_x;                 // pixel_x[px_x]
-quantity y = 50 * px_y;                  // pixel_y[px_y]
-quantity sprites = 1500 * sprite;        // sprite_count[sprite]
-quantity frames = 60 * frame;            // frame_count[frame]
-quantity fps = 60.0 * (frame / s);       // frame_count/time[frame/s]
-```
+    quantity x = 100 * px_x;                 // pixel_x[px_x]
+    quantity y = 50 * px_y;                  // pixel_y[px_y]
+    quantity sprites = 1500 * sprite;        // sprite_count[sprite]
+    quantity frames = 60 * frame;            // frame_count[frame]
+    quantity fps = 60.0 * (frame / s);       // frame_count/time[frame/s]
+    ```
 
-However, this prevents using the unit `one` and its superpowers (implicit construction from
-numeric literals, implicit conversion to numeric types). The approach shown in the main
-tutorial (using `one` with `is_kind` quantity specs) is more flexible and ergonomic for most
-use cases.
+    However, this prevents using the unit `one` and its superpowers (implicit construction from
+    numeric literals, implicit conversion to numeric types). The approach shown in the main
+    tutorial (using `one` with `is_kind` quantity specs) is more flexible and ergonomic for most
+    use cases.
 
 
 ## References

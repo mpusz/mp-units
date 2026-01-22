@@ -75,7 +75,7 @@ int main()
 }
 ```
 
-??? "Solution"
+??? tip "Solution"
 
     ```cpp
     #include <mp-units/systems/si.h>
@@ -122,6 +122,89 @@ int main()
       schedule_driver_alert(tp2 + dur_to_arrival);
     }
     ```
+
+
+??? abstract "What you learned?"
+
+    ### Seamless interoperability between `std::chrono` and **mp-units**
+
+    **mp-units** and `std::chrono` are complementary libraries with different strengths:
+
+    ```cpp
+    using car_clock = std::chrono::system_clock;
+
+    auto tp1 = car_clock::now();                                // std::chrono for system time
+    quantity_point qp1 = tp1;                                   // Implicit conversion to mp-units
+    quantity duration = quantity_point{car_clock::now()} - qp1; // Time calculations in mp-units
+    quantity avg_speed = distance / duration;                   // Dimensional analysis across quantity types!
+    ```
+
+    - **`std::chrono`** is designed for clocks, calendars, and system timestamps
+    - **mp-units** is designed for dimensional analysis across different physical quantities
+    - Converting between compatible types is implicit and zero-cost
+
+    ### Implicit conversions for compatible types
+
+    Converting between `std::chrono` and **mp-units** is seamless with CTAD:
+
+    ```cpp
+    auto tp2 = car_clock::now();
+    auto tp1 = tp2 - std::chrono::minutes{20};
+
+    // std::chrono → mp-units (always implicit with CTAD)
+    quantity mp_duration = tp2 - tp1;  // Deduces exact unit and representation
+
+    // mp-units → std::chrono (implicit when types match)
+    car_clock::duration chrono_dur = mp_duration;  // OK, same resolution and representation
+    ```
+
+    **Why this works:**
+
+    - `quantity` with CTAD deduces the exact unit and representation from `std::chrono::duration`
+    - `quantity_point` with CTAD deduces from `std::chrono::time_point`
+    - No conversion needed - types match perfectly
+    - Conversion back to `std::chrono` is implicit when there's no precision loss
+
+    ### Explicit conversions with `.force_in<Rep>(Unit)`
+
+    When truncation or overflow is possible, use explicit conversion:
+
+    ```cpp
+    quantity avg_speed = distance / duration;  // mp-units calculation
+
+    // Truncating conversion requires explicit cast:
+    car_clock::duration dur = (5 * km / avg_speed).force_in<car_clock::rep>(unit_for<car_clock::duration>);
+    schedule_alert(tp2 + dur);  // Use result with std::chrono
+    ```
+
+    The `.force_in<Rep>(Unit)` method:
+
+    - Converts the quantity to the specified unit and representation type
+    - Explicitly acknowledges potential precision loss (truncation, overflow)
+    - Returns the representation type expected by `std::chrono` duration constructors
+
+    ### Best practices for hybrid applications
+
+    **Use each library for its strengths:**
+
+    ```cpp
+    // ✅ Good: Use std::chrono for timestamps and clocks
+    auto checkpoint_time = car_clock::now();
+
+    // ✅ Good: Use mp-units for calculations
+    quantity duration = tp2 - tp1;
+    quantity distance = odo2 - odo1;
+    quantity avg_speed = distance / duration;  // Dimensional analysis!
+
+    // ✅ Good: Convert units/representation as needed
+    print_stats(duration.in<double>(min), distance, avg_speed.in(km / h));
+    ```
+
+    **Keep conversions at boundaries:**
+
+    - Perform calculations using **mp-units** for type safety
+    - Convert to/from `std::chrono` only when interfacing with APIs that require it
+    - Let the compiler catch unit mismatches during development
 
 
 ## References

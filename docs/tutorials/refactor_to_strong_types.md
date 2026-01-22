@@ -55,7 +55,7 @@ int main()
 }
 ```
 
-??? "Solution"
+??? tip "Solution"
 
     ```cpp
     #include <mp-units/systems/si.h>
@@ -81,6 +81,48 @@ int main()
     ```
 
 
+??? abstract "What you learned?"
+
+    ### Compile-time dimensional safety
+
+    By using `quantity` types with explicit units, the compiler enforces dimensional
+    correctness:
+
+    ```cpp
+    quantity<si::kilogram> mass = 80 * kg;
+    quantity<si::metre / si::second> speed = 12.5 * m / s;
+    ```
+
+    - ✅ Function signatures document expected units
+    - ✅ Wrong units (e.g., passing `length` instead of `mass`) fail at compile time
+    - ✅ No runtime overhead—quantities compile to the same assembly as raw numbers
+
+    ### Automatic dimensional analysis
+
+    The library automatically computes result dimensions from operands:
+
+    ```cpp
+    quantity energy = 0.5 * mass * pow<2>(speed);  // Automatically: kg·m²/s²
+    ```
+
+    - The return type is a derived unit (kg·m²/s²) computed from the arithmetic
+    - This derived unit is compatible with and convertible to `joule` via `.in(J)`
+    - No manual dimension tracking needed
+    - Dimensional consistency is mathematically guaranteed
+
+    ### Unit conversions with `.in()`
+
+    The `.in()` method converts quantities to different units of the same dimension:
+
+    ```cpp
+    energy.in(kJ)  // Convert joules to kilojoules
+    ```
+
+    - Only compatible units are allowed (_length_ cannot convert to _time_)
+    - Conversion factors are applied automatically
+    - Result is a `quantity` in the new unit
+
+
 ## References
 
 - [Getting Started: Quick Start](../getting_started/quick_start.md)
@@ -93,4 +135,5 @@ int main()
 - Wrong‑unit calls fail at compile time, preventing latent bugs.
 - The return type
     - communicates its physical meaning, not just a raw number,
-    - ensures that the object returned from a function is the result of correct quantity arithmetic.
+    - ensures that the object returned from a function is the result of correct quantity
+      arithmetic.

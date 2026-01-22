@@ -43,7 +43,8 @@ int bad2 = weekly_units + trucks_needed;   // Mixing units and trucks!
 2. **Manual conversions**: Must remember scaling factors (12, 60, etc.) everywhere
 3. **Easy to forget**: Time units (minutes vs hours) and conversion factors get mixed up
 4. **Rounding errors**: Integer division and ceiling operations must be done manually
-5. **Silent bugs**: Wrong calculations compile successfully and produce plausible-looking results
+5. **Silent bugs**: Wrong calculations compile successfully and produce plausible-looking
+  results
 
 ## Your task
 
@@ -107,7 +108,7 @@ int main()
 }
 ```
 
-??? "Solution"
+??? tip "Solution"
 
     ```cpp
     #include <mp-units/core.h>
@@ -151,10 +152,109 @@ int main()
     ```
 
 
+??? abstract "What you learned?"
+
+    ### Strongly-typed dimensionless units prevent scaling errors
+
+    Raw integers and constants lead to easy-to-make mistakes:
+
+    ```cpp
+    // ❌ Traditional approach - no type safety
+    const int UNITS_PER_CARTON = 12;
+    int weekly_units = 25200;
+    int weekly_cartons = weekly_units / UNITS_PER_CARTON;  // Easy to forget!
+
+    // Nothing prevents these errors:
+    int bad = weekly_units + weekly_cartons;  // Compiles! Wrong!
+    ```
+
+    With **mp-units**, scaling relationships are encoded in the type system:
+
+    ```cpp
+    // ✅ Type-safe approach
+    inline constexpr struct unit final : named_unit<"unit", kind_of<dimensionless>> {} unit;
+    inline constexpr struct carton final : named_unit<"carton", mag<12> * unit> {} carton;
+
+    quantity weekly_production = 3 * unit / min * 14 * h * 5;
+    quantity in_cartons = weekly_production.in(carton);  // Automatic conversion!
+
+    // quantity bad = 1 * unit + 1 * carton;  // Does not compile!
+    ```
+
+    The `mag<12>` magnitude specifies the exact scaling relationship at compile time.
+
+    ### Automatic conversions handle scaling for you
+
+    Once you define the unit relationships, conversions happen automatically:
+
+    ```cpp
+    quantity production = 25200 * unit;  // Integer quantity (counting discrete items)
+
+    // Automatic conversion when no precision loss:
+    std::cout << production.in(unit);           // "25200 unit"
+
+    // For conversions that could truncate, specify representation type:
+    std::cout << production.in<double>(carton); // "2100 carton" (divided by 12)
+
+    // Or use force_in for explicit truncation:
+    std::cout << production.force_in(carton);   // "2100 carton" (truncates if needed)
+
+    quantity from_cartons = 2100 * carton;
+    std::cout << from_cartons.in(unit);         // "25200 unit" (multiplied by 12)
+    ```
+
+    No manual multiplication or division—the library handles it based on the magnitude.
+
+    ### Rounding operations with `floor` and `ceil`
+
+    When dealing with discrete units (cartons, trucks), rounding is common:
+
+    ```cpp
+    quantity weekly_production = production_rate * hours_per_day * days_per_week;
+
+    // Must ship in full cartons only:
+    quantity full_cartons = floor<carton>(weekly_production);  // Round down
+
+    // Must ship in whole trucks only:
+    quantity trucks = ceil<truck>(weekly_production / truck_capacity);  // Round up
+    ```
+
+    - `floor<Unit>(q)` rounds down to the nearest whole unit
+    - `ceil<Unit>(q)` rounds up to the nearest whole unit
+    - Both preserve strong typing and prevent errors
+
+    ### Beyond physics: Business and logistics applications
+
+    **mp-units** isn't limited to physical quantities. Use it anywhere numeric confusion is possible:
+
+    ```cpp
+    // Inventory management:
+    inline constexpr struct crate final : named_unit<"crate", mag<24> * bottle> {} crate;
+    inline constexpr struct pallet final : named_unit<"pallet", mag<50> * crate> {} pallet;
+
+    // Currency subdivisions:
+    inline constexpr struct dollar final : named_unit<"dollar", kind_of<dimensionless>> {} dollar;
+    inline constexpr struct dime final : named_unit<"dime", mag_ratio<1, 10> * dollar> {} dime;
+    inline constexpr struct cent final : named_unit<"cent", mag_ratio<1, 100> * dollar> {} cent;
+
+    // Order processing:
+    inline constexpr struct item final : named_unit<"item", kind_of<dimensionless>> {} item;
+    inline constexpr struct dozen final : named_unit<"dozen", mag<12> * item> {} dozen;
+    ```
+
+    **Benefits:**
+
+    - Compile-time prevention of mixing incompatible units
+    - Automatic scaling without manual constants
+    - Self-documenting code (units are visible in types)
+    - Zero runtime overhead (all conversions are compile-time)
+
+
 ## References
 
 - [User's Guide: Systems of Units](../users_guide/framework_basics/systems_of_units.md)
 - [User's Guide: Dimensionless Quantities](../users_guide/framework_basics/dimensionless_quantities.md)
+- [Systems Reference: Dimensionless Quantity Hierarchy](../reference/systems_reference/hierarchies/dimensionless.md)
 - [API Reference](../reference/api_reference.md)
 
 

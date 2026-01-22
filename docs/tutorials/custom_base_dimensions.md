@@ -1,285 +1,367 @@
 # Tutorial 10: Custom Base Dimensions
 
-[Tutorial 7](custom_dimensionless_units.md) showed how to create strongly-typed dimensionless quantities
-using custom units with `kind_of<dimensionless>` but no conversion factors between
-unrelated types. This approach works well for small-scale systems, but as complexity grows,
-custom base dimensions provide better separation and scalability.
-
-This tutorial teaches you when to progress from custom dimensionless units to custom base
-dimensions, and how to create them. We'll use inventory management to demonstrate why
-separate dimensions become necessary in large systems.
+This tutorial demonstrates when and how to create custom base dimensions for quantities that
+cannot be expressed in terms of existing ISQ dimensions. We'll build a stock portfolio
+tracking system using **shares** and **currency** as examples of fundamentally distinct
+quantities that need complete type separation.
 
 
 ## Problem statement
 
-In [Tutorial 7](custom_dimensionless_units.md), we created dimensionless units for `unit`, `carton`,
-and `truck`. These had no conversion factors between unrelated types, preventing mixing:
+When tracking a stock portfolio, we work with two fundamentally different quantities:
+
+- **_Shares_**: The number of stock shares you own (e.g., 100 shares of AAPL)
+- **_Currency_**: Money in dollars (e.g., $15,000 portfolio value)
+
+These are **completely different types** that should never be mixed:
 
 ```cpp
-inline constexpr struct unit final : named_unit<"unit", kind_of<dimensionless>> {} unit;
-inline constexpr struct carton final : named_unit<"carton", mag<12> * unit> {} carton;
-inline constexpr struct truck final : named_unit<"truck", kind_of<dimensionless>> {} truck;
+// These operations should not compile:
+shares + currency           // ❌ Can't add shares to dollars
+currency - shares           // ❌ Can't subtract shares from dollars
+if (shares > currency) {}   // ❌ Can't compare shares with dollars
 ```
 
-This prevents `1 * unit + 1 * truck` from compiling, which is good! But consider a
-large warehouse system tracking:
+However, they **combine through multiplication** to create meaningful derived quantities:
 
-- **Product inventory**: items available for sale (unit, carton, pallet)
-- **Packaging materials**: boxes, containers, wrapping
-- **Spare parts**: maintenance components (piece, set, kit)
-- **Quality metrics**: defect counts, inspection counts
-- **Personnel**: worker counts, shift counts
+```cpp
+shares × (currency/share) = currency    // ✅ Portfolio valuation
+currency / shares = (currency/share)    // ✅ Average share price
+```
 
-Similarly, financial systems dealing with multiple currencies (USD, EUR, GBP) need to prevent
-accidental mixing while supporting derived quantities like _cash flow_ (_currency_/_time_).
+### Why not use dimensionless or existing ISQ dimensions?
 
-Even international standards like ISO/IEC 80000 extend the traditional seven ISQ base dimensions
-with custom dimensions for specialized domains, such as _traffic intensity_ in telecommunications,
-which cannot be expressed in terms of _length_, _mass_, _time_, _electric_ current, _temperature_,
-_amount of substance_, or _luminous intensity_.
+**Option 1: Dimensionless quantities** ([Tutorial 12](strongly_typed_counts.md) approach)
 
-### Limitations of the Tutorial 7 approach
+- ❌ Shares aren't dimensionless — they have a distinct dimension
+- ❌ Using `one` as a unit doesn't make sense ("100 one" is not "100 shares")
+- ❌ Mixing _shares_ and _currency_ is as wrong as mixing _length_ and _time_
 
-1. **All share `dimensionless`**: Even though specifying units as unrelated based on the
-   `kind_of<dimensionless>` prevents direct mixing, all unrelated types (products, pallets,
-   defects, workers) conceptually belong to the same dimension. They all report as
-   "dimensionless" despite representing fundamentally different things.
+**Option 2: Existing ISQ dimensions**
 
-2. **No clear semantic grouping**: Related units (unit/carton/pallet) and unrelated units
-   (defects/workers) all look the same to the type system
+- ❌ Can't express "shares" or "currency" using _length_, _mass_, _time_, etc.
+- ❌ These are financial/economic concepts, not physical quantities
 
-3. **Generic interfaces lose meaning**: Functions accepting `QuantityOf<dimensionless> auto`
-   parameters don't convey whether they expect units, trucks, or workers. With custom
-   dimensions, `QuantityOf<product_count> auto` makes the intent explicit.
+**Option 3: Custom base dimensions** ✅
 
-4. **Scalability issues**: With dozens of unrelated unit types, managing `kind_of`
-   relationships becomes complex and error-prone
-
-5. **Derived quantities ambiguous**: Is `count / time` a production rate, consumption
-   rate, or defect rate? All have the same type.
-
-### Why custom dimensions?
-
-For large systems, dedicated dimensions provide:
-
-- **Complete semantic separation**: Products and packaging live in different type universes
-- **Clear grouping**: Related quantities share a dimension (product quantities use `dim_product_count`)
-- **Unambiguous derived quantities**: Production rate and defect rate have different types
-- **Better error messages**: Compiler can say "can't add product_count to packaging_count"
-  instead of generic dimensionless errors
-- **Scalability**: Easy to add new dimensions without affecting existing code
+- ✅ Complete isolation — _shares_ and _currency_ live in separate dimensional universes
+- ✅ Cannot be converted to each other (no exchange rate makes sense)
+- ✅ Can create derived quantities like _share price_ (_currency_/_share_) naturally
+- ✅ Portfolio calculations have dimensional correctness: _shares_ × _price_ = _value_
 
 
 ## Your task
 
-Build a warehouse inventory management system that requires custom dimensions for better
-semantic separation than Tutorial 7's dimensionless approach could provide.
+Build a stock portfolio tracking system:
 
-Create a complete system of quantities for product inventory management:
+1. **Define custom base dimensions**:
+    - `dim_shares` — dimension for _stock shares_
+    - `dim_currency` — dimension for _money_
 
-1. **Define a custom base dimension** `dim_product_count` for product inventory
-   (not dimensionless!)
-2. **Define the base quantity** `product_count` using this dimension
-3. **Create specialized product count quantities**:
-    - `stock_level` (current inventory, a specific type of `product_count`)
-    - `reorder_point` (threshold inventory level)
-    - `products_consumed` (products sold/used)
-    - `products_received` (products obtained/delivered)
-4. **Define derived quantities**:
-    - `consumption_rate` as `products_consumed / time`
-    - `replenishment_rate` as `products_received / time`
-    - `sales_rate` (specialized `consumption_rate` for sales)
-5. **Create units**: `item` (base unit), with scaled units like `dozen`, `gross`, `thousand`
+2. **Define quantity specifications**:
+    - `shares` — number of _stock shares_
+    - `currency` — amount of _money_ (dollars)
+    - *(Refinements `dividend` and `capital` are already provided)*
+    - *(Derived quantities `share_price` and `dividend_per_share` are already provided)*
+
+3. **Define units**:
+    - `share` — unit for counting shares
+    - `USD` — unit for U.S. dollars
+
+4. **Constrain helper function signatures**:
+    - The functions are already implemented, but use unconstrained `auto` parameters
+    - Add `QuantityOf<T>` constraints to parameters and return types for type safety
+    - Example: `[[nodiscard]] constexpr QuantityOf<currency> auto portfolio_value(QuantityOf<shares> auto num_shares, ...)`
 
 ```cpp
-// ce-embed height=650 compiler=clang2110 flags="-std=c++23 -stdlib=libc++ -O3" mp-units=trunk
+// ce-embed height=900 compiler=clang2110 flags="-std=c++23 -stdlib=libc++ -O3" mp-units=trunk
+#include <mp-units/core.h>
 #include <mp-units/systems/si.h>
 #include <iostream>
 
 using namespace mp_units;
 
-// TODO: Define custom base dimension for product count
+namespace finance {
 
-// TODO: Define base quantity 'product_count' for this dimension
+// TODO: Define custom base dimensions for shares (symbol "N") and currency (symbol "$")
 
-// TODO: Define specialized product count quantities:
-// - stock_level (derived from product_count)
-// - reorder_point (derived from product_count)
-// - products_consumed (derived from product_count)
-// - products_received (derived from product_count)
+// TODO: Define quantity specifications for shares and currency flows
+// Refinements for different currency flows
+inline constexpr struct dividend final : quantity_spec<currency> {} dividend;
+inline constexpr struct capital final : quantity_spec<currency> {} capital;
 
-// TODO: Define derived quantities:
-// - consumption_rate as products_consumed / time
-// - replenishment_rate as products_received / time
-// - sales_rate (specialized consumption_rate for sales)
+// Derived quantities
+inline constexpr struct share_price final : quantity_spec<currency / shares> {} share_price;
+inline constexpr struct dividend_per_share final : quantity_spec<dividend / shares> {} dividend_per_share;
 
-// TODO: Define units:
-// - item (base unit) - singular discrete product
-// - dozen = 12 items
-// - gross = 144 items (12 dozen)
-// - thousand = 1000 items
+// TODO Define unit share for shares and USD for currency
 
-namespace unit_symbols {
-
-// TODO: Create convenient unit symbols (doz, gr, k_items, etc.)
-
-}
-
-// Check if reorder is needed
-[[nodiscard]] constexpr bool needs_reorder(QuantityOf<stock_level> auto current_stock,
-                                           QuantityOf<reorder_point> auto reorder_threshold)
+// TODO: For all functions below constrain function parameters
+//       and the return type using QuantityOf<> concept
+[[nodiscard]] constexpr auto portfolio_value(auto num_shares
+                                             auto price_per_share)
 {
-  return current_stock <= reorder_threshold;
+  return num_shares * price_per_share;
 }
 
-// Calculate days of inventory remaining
-[[nodiscard]] constexpr QuantityOf<isq::duration> auto days_of_inventory(QuantityOf<stock_level> auto stock,
-                                                                         QuantityOf<sales_rate> auto rate)
+[[nodiscard]] constexpr auto shares_affordable(auto budget,
+                                               auto price_per_share)
 {
-  return isq::duration(stock / rate);
+  // Calculate how many whole shares can be purchased
+  return floor<share>(budget / price_per_share);
 }
+
+[[nodiscard]] constexpr auto dividend_income(auto num_shares,
+                                             auto div_per_share)
+{
+  return num_shares * div_per_share;
+}
+
+}  // namespace finance
 
 int main()
 {
-  using namespace unit_symbols;
+  using namespace finance;
 
-  // Warehouse inventory scenario
-  quantity current_stock = stock_level(500 * item);
-  quantity daily_sales = sales_rate(75 * item / si::day);
-  quantity reorder_threshold = reorder_point(150 * item);
-  quantity lead_time = 5 * si::day;  // delivery takes 5 days
+  // Portfolio: Multiple purchases of stock
+  quantity purchase1_shares = 50 * share;
+  quantity purchase1_price = 120.0 * USD / share;
+  quantity purchase1_cost = capital(purchase1_shares * purchase1_price);
 
-  auto days_remaining = days_of_inventory(current_stock, daily_sales);
-  auto stock_at_delivery = current_stock - daily_sales * lead_time;
+  quantity purchase2_shares = 30 * share;
+  quantity purchase2_price = 135.0 * USD / share;
+  quantity purchase2_cost = capital(purchase2_shares * purchase2_price);
 
-  std::cout << "Inventory analysis:\n";
-  std::cout << "- Current stock: " << current_stock << "\n";
-  std::cout << "- Daily sales: " << daily_sales << "\n";
-  std::cout << "- Reorder point: " << reorder_threshold << "\n";
-  std::cout << "- Days remaining: " << days_remaining.in(si::day) << "\n";
-  std::cout << "- Stock at delivery (if ordered now): " << stock_at_delivery << "\n";
-  std::cout << "- Reorder needed: " << (needs_reorder(current_stock, reorder_threshold) ? "YES" : "NO") << "\n";
+  quantity purchase3_shares = 20 * share;
+  quantity purchase3_price = 142.0 * USD / share;
+  quantity purchase3_cost = capital(purchase3_shares * purchase3_price);
 
-  // Economic order quantity scenario
-  quantity target_stock = stock_level(1 * k_items);
-  quantity replenishment_needed = target_stock - current_stock;
+  // Calculate totals
+  quantity total_shares = purchase1_shares + purchase2_shares + purchase3_shares;
+  quantity total_spent = purchase1_cost + purchase2_cost + purchase3_cost;
+  quantity average_cost_basis = total_spent / total_shares;
 
-  std::cout << "\nReplenishment planning:\n";
-  std::cout << "- Target stock level: " << target_stock << "\n";
-  std::cout << "- Replenishment needed: " << replenishment_needed.in<double>(doz) << "\n";
+  std::cout << "Portfolio Summary:\n";
+  std::cout << "  Total shares: " << total_shares << "\n";
+  std::cout << "  Total invested: " << total_spent << "\n";
+  std::cout << "  Average cost basis: " << average_cost_basis << "\n\n";
+
+  // Current market conditions
+  quantity current_price = 150.0 * USD / share;
+  quantity current_value = portfolio_value(total_shares, current_price);
+  quantity profit = current_value - total_spent;
+
+  std::cout << "Current Valuation:\n";
+  std::cout << "  Current price: " << current_price << "\n";
+  std::cout << "  Portfolio value: " << current_value << "\n";
+  std::cout << "  Unrealized profit: " << profit << "\n\n";
+
+  // Dividend income (quarterly)
+  quantity div_per_share = dividend(2.50 * USD) / share;
+  quantity quarterly_dividend = dividend_income(total_shares, div_per_share);
+  std::cout << "Dividend Income:\n";
+  std::cout << "  Quarterly dividend: " << quarterly_dividend << "\n\n";
+
+  // Check if we can afford more shares
+  quantity available_cash = 5000.0 * USD;
+  quantity max_shares = shares_affordable(available_cash, current_price);
+  quantity purchase_cost = max_shares * current_price;
+  std::cout << "Purchase Analysis:\n";
+  std::cout << "  Available cash: " << available_cash << "\n";
+  std::cout << "  Current price: " << current_price << "\n";
+  std::cout << "  Max affordable shares: " << max_shares << "\n";
+  std::cout << "  Total cost: " << purchase_cost << "\n";
+
+  // These should NOT compile (uncomment to verify):
+  // auto bad1 = total_shares + total_spent;     // ERROR: Can't add shares + currency
+  // auto bad2 = current_value - total_shares;   // ERROR: Can't subtract shares from currency
+  // if (total_shares > current_value) {}        // ERROR: Can't compare shares with currency
 }
 ```
 
-??? "Solution"
+??? tip "Solution"
 
     ```cpp
+    #include <mp-units/core.h>
     #include <mp-units/systems/si.h>
     #include <iostream>
 
     using namespace mp_units;
 
-    // Define custom base dimension for product count
-    inline constexpr struct dim_product_count final : base_dimension<"P"> {} dim_product_count;
+    namespace finance {
 
-    // Define base quantity
-    inline constexpr struct product_count final : quantity_spec<dim_product_count> {} product_count;
+    // Define custom base dimensions
+    inline constexpr struct dim_shares final : base_dimension<"N"> {} dim_shares;
+    inline constexpr struct dim_currency final : base_dimension<"$"> {} dim_currency;
 
-    // Define specialized product count quantities
-    inline constexpr struct stock_level final : quantity_spec<product_count> {} stock_level;
-    inline constexpr struct reorder_point final : quantity_spec<product_count> {} reorder_point;
-    inline constexpr struct products_consumed final : quantity_spec<product_count> {} products_consumed;
-    inline constexpr struct products_received final : quantity_spec<product_count> {} products_received;
+    // Define quantity specifications
+    inline constexpr struct shares final : quantity_spec<dim_shares> {} shares;
+    inline constexpr struct currency final : quantity_spec<dim_currency> {} currency;
 
-    // Define derived quantities
-    inline constexpr struct consumption_rate final : quantity_spec<products_consumed / isq::duration> {} consumption_rate;
-    inline constexpr struct replenishment_rate final : quantity_spec<products_received / isq::duration> {} replenishment_rate;
-    inline constexpr struct sales_rate final : quantity_spec<consumption_rate> {} sales_rate;
+    // Refinements for different currency flows
+    inline constexpr struct dividend final : quantity_spec<currency> {} dividend;
+    inline constexpr struct capital final : quantity_spec<currency> {} capital;
+
+    // Derived quantities
+    inline constexpr struct share_price final : quantity_spec<currency / shares> {} share_price;
+    inline constexpr struct dividend_per_share final : quantity_spec<dividend / shares> {} dividend_per_share;
 
     // Define units
-    inline constexpr struct item final : named_unit<"item", kind_of<product_count>> {} item;
-    inline constexpr struct dozen final : named_unit<"doz", mag<12> * item> {} dozen;
-    inline constexpr struct gross final : named_unit<"gr", mag<12> * dozen> {} gross;
-    inline constexpr struct thousand final : named_unit<"k", mag<1000> * item> {} thousand;
+    inline constexpr struct share final : named_unit<"share", kind_of<shares>> {} share;
+    inline constexpr struct USD final : named_unit<"USD", kind_of<currency>> {} USD;
 
-    namespace unit_symbols {
-
-    inline constexpr auto doz = dozen;
-    inline constexpr auto gr = gross;
-    inline constexpr auto k_items = thousand;
-
-    }
-
-    // Check if reorder is needed
-    [[nodiscard]] constexpr bool needs_reorder(QuantityOf<stock_level> auto current_stock,
-                                               QuantityOf<reorder_point> auto reorder_threshold)
+    [[nodiscard]] constexpr QuantityOf<currency> auto portfolio_value(QuantityOf<shares> auto num_shares,
+                                                                      QuantityOf<share_price> auto price_per_share)
     {
-      return current_stock <= reorder_threshold;
+      return num_shares * price_per_share;
     }
 
-    // Calculate days of inventory remaining
-    [[nodiscard]] constexpr QuantityOf<isq::duration> auto days_of_inventory(QuantityOf<stock_level> auto stock,
-                                                                             QuantityOf<sales_rate> auto rate)
+    [[nodiscard]] constexpr QuantityOf<shares> auto shares_affordable(QuantityOf<currency> auto budget,
+                                                                      QuantityOf<share_price> auto price_per_share)
     {
-      return isq::duration(stock / rate);
+      // Calculate how many whole shares can be purchased
+      return floor<share>(budget / price_per_share);
     }
+
+    [[nodiscard]] constexpr QuantityOf<dividend> auto dividend_income(QuantityOf<shares> auto num_shares,
+                                                                      QuantityOf<dividend_per_share> auto div_per_share)
+    {
+      return num_shares * div_per_share;
+    }
+
+    }  // namespace finance
 
     int main()
     {
-      using namespace unit_symbols;
+      using namespace finance;
 
-      // Warehouse inventory scenario
-      quantity current_stock = stock_level(500 * item);
-      quantity daily_sales = sales_rate(75 * item / si::day);
-      quantity reorder_threshold = reorder_point(150 * item);
-      quantity lead_time = 5 * si::day;  // delivery takes 5 days
+      // Portfolio: Multiple purchases of stock
+      quantity purchase1_shares = 50 * share;
+      quantity purchase1_price = 120.0 * USD / share;
+      quantity purchase1_cost = capital(purchase1_shares * purchase1_price);
 
-      auto days_remaining = days_of_inventory(current_stock, daily_sales);
-      auto stock_at_delivery = current_stock - daily_sales * lead_time;
+      quantity purchase2_shares = 30 * share;
+      quantity purchase2_price = 135.0 * USD / share;
+      quantity purchase2_cost = capital(purchase2_shares * purchase2_price);
 
-      std::cout << "Inventory analysis:\n";
-      std::cout << "- Current stock: " << current_stock << "\n";
-      std::cout << "- Daily sales: " << daily_sales << "\n";
-      std::cout << "- Reorder point: " << reorder_threshold << "\n";
-      std::cout << "- Days remaining: " << days_remaining.in(si::day) << "\n";
-      std::cout << "- Stock at delivery (if ordered now): " << stock_at_delivery << "\n";
-      std::cout << "- Reorder needed: " << (needs_reorder(current_stock, reorder_threshold) ? "YES" : "NO") << "\n";
+      quantity purchase3_shares = 20 * share;
+      quantity purchase3_price = 142.0 * USD / share;
+      quantity purchase3_cost = capital(purchase3_shares * purchase3_price);
 
-      // Economic order quantity scenario
-      quantity target_stock = stock_level(1 * k_items);
-      quantity replenishment_needed = target_stock - current_stock;
+      // Calculate totals
+      quantity total_shares = purchase1_shares + purchase2_shares + purchase3_shares;
+      quantity total_spent = purchase1_cost + purchase2_cost + purchase3_cost;
+      quantity average_cost_basis = total_spent / total_shares;
 
-      std::cout << "\nReplenishment planning:\n";
-      std::cout << "- Target stock level: " << target_stock << "\n";
-      std::cout << "- Replenishment needed: " << replenishment_needed.in<double>(doz) << "\n";
+      std::cout << "Portfolio Summary:\n";
+      std::cout << "  Total shares: " << total_shares << "\n";
+      std::cout << "  Total invested: " << total_spent << "\n";
+      std::cout << "  Average cost basis: " << average_cost_basis << "\n\n";
+
+      // Current market conditions
+      quantity current_price = 150.0 * USD / share;
+      quantity current_value = portfolio_value(total_shares, current_price);
+      quantity profit = current_value - total_spent;
+
+      std::cout << "Current Valuation:\n";
+      std::cout << "  Current price: " << current_price << "\n";
+      std::cout << "  Portfolio value: " << current_value << "\n";
+      std::cout << "  Unrealized profit: " << profit << "\n\n";
+
+      // Dividend income (quarterly)
+      quantity div_per_share = dividend(2.50 * USD) / share;
+      quantity quarterly_dividend = dividend_income(total_shares, div_per_share);
+      std::cout << "Dividend Income:\n";
+      std::cout << "  Quarterly dividend: " << quarterly_dividend << "\n\n";
+
+      // Check if we can afford more shares
+      quantity available_cash = 5000.0 * USD;
+      quantity max_shares = shares_affordable(available_cash, current_price);
+      quantity purchase_cost = max_shares * current_price;
+      std::cout << "Purchase Analysis:\n";
+      std::cout << "  Available cash: " << available_cash << "\n";
+      std::cout << "  Current price: " << current_price << "\n";
+      std::cout << "  Max affordable shares: " << max_shares << "\n";
+      std::cout << "  Total cost: " << purchase_cost << "\n";
     }
     ```
 
-    !!! info "Tutorial 7 approach vs Custom Dimensions"
 
-        === "Tutorial 7 approach (dimensionless with `kind_of`)"
+??? abstract "What you learned?"
 
-            ```cpp
-            inline constexpr struct product final : named_unit<"product", kind_of<dimensionless>> {} product;
-            inline constexpr struct carton final : named_unit<"carton", mag<12> * product> {} carton;
-            inline constexpr struct truck final : named_unit<"truck", kind_of<dimensionless>> {} truck;
-            ```
+    ### Complete dimensional isolation
 
-            - Works well for small systems with few unrelated types
-            - All share `dimensionless` dimension
-            - Derived quantities like `product/time` and `truck/time` have same type
+    Custom base dimensions create completely separate dimensional "universes":
 
-        === "Custom dimension approach (this tutorial)"
+    ```cpp
+    inline constexpr struct dim_shares final : base_dimension<"N"> {} dim_shares;
+    inline constexpr struct dim_currency final : base_dimension<"$"> {} dim_currency;
+    ```
 
-            ```cpp
-            inline constexpr struct dim_product_count final : base_dimension<"P"> {} dim_product_count;
-            inline constexpr struct product_count final : quantity_spec<dim_product_count> {} product_count;
-            inline constexpr struct item final : named_unit<"item", kind_of<product_count>> {} item;
-            ```
+    - ✅ `shares` and `currency` cannot be added, subtracted, or compared
+    - ✅ No conversion path exists between them — not even explicit conversion
+    - ✅ Each dimension is truly independent, just like _length_ and _time_ in physics
 
-            - Better for large systems with many unrelated countable types
-            - Each category gets its own dimension (products, packaging, defects, etc.)
-            - Derived quantities have distinct types (`product_rate` vs `defect_rate`)
-            - Cannot be converted to `dimensionless` or use unit `one`
+    ### Derived quantities from custom dimensions
+
+    Just like physical dimensions, custom dimensions can create derived quantities:
+
+    ```cpp
+    // Named derived quantity spec (like ISQ speed, force, etc.)
+    inline constexpr struct share_price final : quantity_spec<currency / shares> {} share_price;
+    inline constexpr struct dividend_per_share final : quantity_spec<dividend / shares> {} dividend_per_share;
+
+    quantity price = 150.0 * USD / share;           // Share price: currency/shares
+    quantity num_shares = 100 * share;              // Number of shares
+    quantity value = num_shares * price;            // Portfolio value: currency
+    ```
+
+    **Why named instead of `auto share_price = currency / shares`?**
+
+    Named quantity specs enable refinement hierarchies for specialized types.
+    For example, an order book system could refine share prices:
+
+    ```cpp
+    // Named derived quantity allows refinement
+    inline constexpr struct share_price final : quantity_spec<currency / shares> {} share_price;
+
+    // Refinements for specific price types in order book
+    inline constexpr struct bid_price final : quantity_spec<share_price> {} bid_price;
+    inline constexpr struct ask_price final : quantity_spec<share_price> {} ask_price;
+    inline constexpr struct limit_price final : quantity_spec<share_price> {} limit_price;
+
+    // Type-safe order book operations
+    quantity best_bid = bid_price(149.95 * USD / share);
+    quantity best_ask = ask_price(150.05 * USD / share);
+    quantity spread = best_ask - best_bid;  // Spread is generic share_price
+    ```
+
+    ### Quantity kinds vs explicit quantity specs
+
+    **When multiplying values with units:**
+
+    ```cpp
+    quantity amount = 100.0 * USD;  // Creates a quantity *kind* - matches any currency refinement
+    ```
+
+    A quantity **kind** is flexible - it can match `currency`, `dividend`, or `capital`.
+    This is useful in generic contexts (e.g., function parameters, type aliases).
+
+    **When you need to be specific:**
+
+    ```cpp
+    // Explicit type specification (kind is implicitly converted)
+    quantity<capital[USD]> invested = 100.0 * USD;     // Kind → capital
+    quantity<dividend[USD]> income = 50.0 * USD;       // Kind → dividend
+
+    // Quantity spec conversion (explicitly converts kind)
+    quantity invested = capital(100.0 * USD);          // Kind → capital via conversion
+    quantity income = dividend(50.0 * USD);            // Kind → dividend via conversion
+
+    // Direct construction (not a kind conversion)
+    quantity invested = 100.0 * capital[USD];          // Directly creates capital
+    quantity income = 50.0 * dividend[USD];            // Directly creates dividend
+    ```
 
 
 ## References
@@ -287,33 +369,24 @@ int main()
 - [User's Guide: Systems of Quantities](../users_guide/framework_basics/systems_of_quantities.md)
 - [User's Guide: Systems of Units](../users_guide/framework_basics/systems_of_units.md)
 - [Tutorial 7: Custom Units for Dimensionless Counters](custom_dimensionless_units.md)
+- [Tutorial 11: Distinct Quantity Kinds](distinct_quantity_kinds.md)
+- [Tutorial 12: Strongly-Typed Counts](strongly_typed_counts.md)
 - [Examples: Currency](../examples/currency.md)
 
 
 ## Takeaways
 
-- **When to use custom dimensions**: Use when you have fundamentally unrelated countable
-  things that should never be mixed (_product count_ vs _pallet count_ vs _defect count_)
-- **Dimensionless isn't always right**: While convenient for single counters, `dimensionless`
-  allows mixing all countable quantities, losing type safety in complex systems
-- **Progression of approaches**:
-    - `dimensionless`: Simple, single-counter scenarios (loop iterations)
-    - Custom units ([Tutorial 7](custom_dimensionless_units.md)): Unrelated dimensionless types (product units
-      vs trucks)
-    - Custom dimensions (this tutorial): Fundamentally different domains requiring separate
-      dimensions (_currencies_, _product counts_ vs _defect counts_)
-- **Scalability**: In large systems with many countable types, separate dimensions prevent
-  a whole class of bugs that would slip through with `dimensionless`
-- **Complete type safety**: Custom dimensions work just like ISQ dimensions, preventing
-  accidental mixing at compile time
-- **Derived quantities**: Combine custom dimensions with ISQ _time_ to create domain-specific
-  rates (_consumption rate_, _replenishment rate_)
-- **Practical applications**: Essential for domains like:
-    - Finance: multiple currencies (USD, EUR, GBP) with derived quantities like _cash flow_
-    - Telecommunications (ISO/IEC 80000): _traffic intensity_ not expressible in traditional
-      ISQ base dimensions
-    - Manufacturing: _part counts_, _defect counts_, _cycle counts_
-    - Logistics: _product inventory_, _shipping container counts_, _transport vehicle counts_
-    - Retail: _product counts_, _customer counts_, _transaction counts_
-- **Design principle**: Create separate dimensions when there's no meaningful conversion
-  factor and mixing would always be an error
+- **Custom base dimensions** create completely isolated type systems for incommensurable quantities
+    - Use them when quantities represent fundamentally different concepts (shares ≠ currency)
+- **Different from dimensionless**: Custom dimensions cannot use `one` or convert to dimensionless
+- **Natural dimensional algebra**: Custom dimensions support derived quantities (`currency/share`,
+  `share × price = value`)
+- **Complete type safety**: Prevents mixing incompatible types at compile time
+  (shares + currency ❌)
+- **When to choose custom dimensions**:
+    - No meaningful direct conversion exists (shares ↔ currency needs price)
+    - Unit `one` doesn't apply to the quantity
+    - Quantities combine through multiplication/division, not addition
+- **Real-world domains**: Finance (shares, bonds, currencies), telecommunications
+  (call attempts, erlangs), manufacturing (different part types), inventory
+  (product categories)

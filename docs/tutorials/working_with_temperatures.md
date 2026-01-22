@@ -67,7 +67,7 @@ int main()
 }
 ```
 
-??? "Solution"
+??? tip "Solution"
 
     ```cpp
     #include <mp-units/systems/si.h>
@@ -101,6 +101,64 @@ int main()
       print_temp("Later", later);
     }
     ```
+
+
+??? abstract "What you learned?"
+
+    ### Temperature points vs. deltas
+
+    _Temperatures_ require two distinct types:
+
+    ```cpp
+    quantity_point today = point<deg_C>(19.);     // Absolute temperature
+    quantity diff = delta<deg_C>(5.);             // Temperature difference
+    ```
+
+    - **Points** (`quantity_point`): Absolute _temperatures_ ("19 °C")
+    - **Deltas** (`quantity`): _Temperature_ differences ("5 °C warmer")
+    - You cannot add two points, but you can add a delta to a point
+
+    ### Different conversion formulas
+
+    The key insight: absolute and relative _temperatures_ convert differently:
+
+    ```cpp
+    // Converting a point: 0°C = 32°F  (different zeros!)
+    point<deg_C>(0.) → point<deg_F>(32.)
+
+    // Converting a delta: 1°C difference = 1.8°F difference
+    delta<deg_C>(1.) → delta<deg_F>(1.8)
+    ```
+
+    - Points account for offset between zero points
+    - Deltas only scale by the ratio between units
+    - **mp-units** applies the correct formula automatically
+
+    ### Type-safe temperature operations
+
+    The type system prevents common errors:
+
+    ```cpp
+    quantity_point - quantity_point → quantity     // ✅ Difference between temps
+    quantity_point + quantity → quantity_point     // ✅ Adding a delta to a point
+    quantity_point + quantity_point → ERROR        // ❌ Can't add two absolute temps
+    ```
+
+    ### Extracting deltas from the origin
+
+    The `.quantity_from_zero()` method gives you the delta from the unit's point origin:
+
+    ```cpp
+    quantity_point temp = point<deg_C>(20.);
+    quantity delta_from_origin = temp.quantity_from_zero();  // 20 °C from 0 °C
+    ```
+
+    - For units with defined point origins (like °C, °F, K), returns the delta from that
+      origin (0 °C, 0 °F, or 0 K)
+    - For quantities with explicitly defined absolute point origins (like _altitude_
+      from mean sea level), returns the delta from that absolute origin
+    - Useful when you need to express a temperature point as a difference from its scale's
+      reference
 
 
 ## References

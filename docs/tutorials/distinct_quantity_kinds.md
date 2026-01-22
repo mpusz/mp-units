@@ -236,7 +236,7 @@ int main()
 }
 ```
 
-??? "Solution"
+??? tip "Solution"
 
     ```cpp
     #include <mp-units/systems/si.h>
@@ -333,6 +333,119 @@ int main()
     This pattern is similar to how mp-units prevents mixing plane angles and solid angles—
     both dimensionless quantities that share the same dimension but represent fundamentally
     different physical concepts that cannot be meaningfully combined.
+
+
+??? abstract "What you learned?"
+
+    ### `is_kind` creates absolute type separation
+
+    Unlike regular `quantity_spec` inheritance where subtypes can implicitly convert to their
+    parent, `is_kind` creates **incompatible types** even when they share the same dimension:
+
+    ```cpp
+    // Regular inheritance - implicit conversions allowed:
+    inline constexpr struct length_a : quantity_spec<isq::length> {} length_a;
+    inline constexpr struct length_b : quantity_spec<isq::length> {} length_b;
+
+    quantity a = length_a(5 * m);
+    quantity b = length_b(10 * m);
+    quantity sum = a + b;  // ✅ Compiles! Result: isq::length
+
+    // With is_kind - no implicit conversions:
+    inline constexpr struct fluid_head : quantity_spec<isq::height, is_kind> {} fluid_head;
+    inline constexpr struct water_head : quantity_spec<isq::height, is_kind> {} water_head;
+
+    quantity h_fluid = fluid_head(2 * m);
+    quantity h_water = water_head(10 * m);
+    // quantity bad = h_fluid + h_water;  // ❌ Does not compile!
+    ```
+
+    This absolute separation is crucial when quantities have the same dimension but represent
+    incompatible physical concepts that require explicit conversion.
+
+    ### Real-world physics requires conversion formulas
+
+    _Energy_ conservation with different _density_ normalizations:
+
+    ```cpp
+    // H_water = H_fluid × SG (lighter reference needs larger height for same energy)
+    constexpr QuantityOf<water_head> auto to_water_head(QuantityOf<fluid_head> auto h_fluid,
+                                                        QuantityOf<specific_gravity> auto sg)
+    {
+      return water_head(isq::height(h_fluid) * sg);
+    }
+
+    // H_fluid = H_water / SG (denser reference needs smaller height for same energy)
+    constexpr QuantityOf<fluid_head> auto to_fluid_head(QuantityOf<water_head> auto h_water,
+                                                        QuantityOf<specific_gravity> auto sg)
+    {
+      return fluid_head(isq::height(h_water) / sg);
+    }
+    ```
+
+    The conversion functions:
+
+    - Make the physical relationship explicit (_energy_ = _weight_ × _height_)
+    - Require specific _gravity_ (_density ratio_) as a parameter
+    - Document the direction of conversion in the function name
+    - Preserve dimensional correctness (both inputs and outputs are _lengths_)
+
+    ### Converting to base type for generic algorithms
+
+    When you need to work with the underlying dimension:
+
+    ```cpp
+    quantity h_fluid = fluid_head(2 * m);
+
+    // ❌ Cannot pass directly to generic length function:
+    // void process_length(QuantityOf<isq::length> auto len);
+    // process_length(h_fluid);  // Does not compile!
+
+    // ✅ Explicit conversion to base quantity:
+    process_length(isq::height(h_fluid));  // Now compiles!
+    ```
+
+    This explicit conversion requirement:
+
+    - Prevents accidental mixing of incompatible concepts
+    - Makes domain boundary crossings visible in code
+    - Allows generic algorithms to work with base quantities
+    - Documents when physical meaning is intentionally discarded
+
+    ### Comparison with built-in protections
+
+    **mp-units** uses `is_kind` internally for dimensionless angle types:
+
+    ```cpp
+    // Built-in to mp-units:
+    inline constexpr struct angular_measure : quantity_spec<dimensionless, is_kind> {} angular_measure;
+    inline constexpr struct solid_angular_measure : quantity_spec<dimensionless, is_kind> {} solid_angular_measure;
+
+    quantity angle = angular_measure(π * rad);
+    quantity solid = solid_angular_measure(4*π * sr);
+    // quantity bad = angle + solid;  // ❌ Does not compile!
+    ```
+
+    Your domain can have the same protection:
+
+    - _Hydraulic head_ (fluid vs water reference)
+    - _Pressure_ (gauge vs absolute)
+    - _Voltage_ (RMS vs peak)
+    - _Power_ (true vs apparent)
+
+    ### When to use `is_kind` vs regular `quantity_spec`
+
+    **Use regular `quantity_spec` when:**
+
+    - Subtypes are conceptually compatible (_height_, _width_, _radius_ are all _lengths_)
+    - Addition/comparison makes physical sense
+    - Common ancestor captures the relationship
+
+    **Use `is_kind` when:**
+
+    - Same dimension but fundamentally different meanings
+    - Direct mixing produces physically nonsense results
+    - Conversion requires a formula (not just unit conversion)
 
 
 ## References

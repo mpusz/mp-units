@@ -81,7 +81,7 @@ int main()
 }
 ```
 
-??? "Solution"
+??? tip "Solution"
 
     ```cpp
     #include <mp-units/systems/isq.h>
@@ -106,6 +106,48 @@ int main()
       std::cout << res << '\n';
     }
     ```
+
+
+??? abstract "What you learned?"
+
+    ### Generic programming with concepts
+
+    The `QuantityOf` concept allows functions to accept any compatible quantity type:
+
+    ```cpp
+    constexpr QuantityOf<isq::mass> auto mass       // Accepts kg, g, ton, etc.
+    constexpr QuantityOf<isq::area> auto area       // Accepts m², cm², km², etc.
+    ```
+
+    - ✅ Works with any unit of the specified quantity kind
+    - ✅ Works with any representation type (`double`, `float`, `int`, etc.)
+    - ✅ No unnecessary conversions—preserves input units for optimal performance
+    - ✅ Compiler enforces dimensional correctness automatically
+
+    ### Automatic return type deduction
+
+    The return type constraint documents expectations and verifies correctness:
+
+    ```cpp
+    constexpr QuantityOf<isq::surface_mass_density> auto surface_mass_density(...)
+    ```
+
+    - **Documents the return type**: Tells users what kind of quantity to expect without
+      revealing specific units or representation type
+    - **Verifies the calculation**: Checks that `mass / area` produces a valid surface mass
+      density
+    - **Prevents errors**: If you accidentally write `mass * area`, it won't compile
+    - **Better than naked `auto`**: Plain `auto` forces users to read the entire function
+      body to understand what's returned
+    - The actual concrete type (e.g., `quantity<g/cm²>`) is deduced from the operation
+
+    ### Zero-cost abstractions
+
+    Generic interfaces maintain runtime efficiency:
+
+    - No implicit conversions happen unless explicitly requested
+    - The compiler optimizes away all type information
+    - Result has same performance as hand-written code for specific units
 
 
 ## References

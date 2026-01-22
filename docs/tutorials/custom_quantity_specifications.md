@@ -39,7 +39,8 @@ All these are energies measured in joules, but they represent different physical
 **Well-defined conversion rules** ensure type safety while allowing valid operations:
 
 - Adding two `gravitational_potential_energy` values is valid (same type)
-- Adding `gravitational_potential_energy` + `kinetic_energy` → `mechanical_energy` (both are subtypes)
+- Adding `gravitational_potential_energy` + `kinetic_energy` → `mechanical_energy`
+  (both are subtypes)
 - Dividing `mechanical_energy` by `motor_efficiency` → `motor_energy` (equation-based conversion)
 - Passing `motor_energy` where `kinetic_energy` is expected should fail at compile time
 
@@ -189,7 +190,7 @@ int main()
 }
 ```
 
-??? "Solution"
+??? tip "Solution"
 
     ```cpp
     #include <mp-units/core.h>
@@ -292,10 +293,122 @@ int main()
     ```
 
 
+??? abstract "What you learned?"
+
+    ### Domain-specific quantity hierarchies
+
+    Real-world applications often need to distinguish between quantities that share the
+    same dimension but have different semantic meanings:
+
+    ```cpp
+    // All are masses (kg), but semantically different:
+    inline constexpr struct cabin_mass final : quantity_spec<isq::mass> {} cabin_mass;
+    inline constexpr struct passenger_mass final : quantity_spec<isq::mass> {} passenger_mass;
+    inline constexpr struct total_mass final : quantity_spec<isq::mass> {} total_mass;
+
+    quantity cabin = cabin_mass(800 * kg);
+    quantity passengers = passenger_mass(400 * kg);
+    quantity total = cabin + passengers;  // Compiles! Result type: isq::mass (common parent)
+    ```
+
+    Each custom `quantity_spec` extends the ISQ hierarchy with application-specific semantics.
+    Adding different specs yields their common ancestor (`isq::mass` here), not a specific
+    subtype like `total_mass`. Use `quantity_cast` for explicit semantic conversions.
+
+    ### Equation-based quantity specifications
+
+    Some quantities are defined by their physical relationships:
+
+    ```cpp
+    // Gravitational potential energy: E_p = m * g * h
+    inline constexpr struct gravitational_potential_energy final :
+      quantity_spec<isq::mass * isq::acceleration * isq::height> {} gravitational_potential_energy;
+
+    // Type-checked dimensional analysis!
+    quantity energy =
+      gravitational_potential_energy(total_mass(1200 * kg) * isq::acceleration(1 * si::standard_gravity) * travel_height(30 * m));
+    ```
+
+    The equation form `mass * acceleration * height`:
+
+    - Makes the physics explicit in the type system
+    - Ensures correct ingredients are used in calculations
+    - Provides compile-time validation of dimensional correctness
+
+    ### Type-safe conversions in quantity hierarchies
+
+    Different `quantity_spec` types have controlled conversion rules:
+
+    ```cpp
+    // ✅ Allowed: Adding subtypes yields common parent
+    quantity ep = gravitational_potential_energy(/* ... */);
+    quantity ek = isq::kinetic_energy(/* ... */);
+    quantity total = ep + ek;  // Result: isq::mechanical_energy (common parent)
+
+    // ✅ Allowed: Derived specifications from equations
+    quantity motor_input = qs::motor_energy(e_mech / efficiency);
+
+    // ❌ Prevented: Wrong quantity type at compile time
+    void process_kinetic(QuantityOf<isq::kinetic_energy> auto ek);
+    process_kinetic(ep);  // Does not compile! Gravitational ≠ kinetic
+    ```
+
+    **Hierarchy rules:**
+
+    - Quantities of the same kind tree can be added/subtracted and compared
+    - Addition/subtraction of quantities yields their common ancestor
+    - Equation-based specs enforce their defining relationships
+    - Incompatible specs prevent accidental mixing at compile time
+
+    ### Using `quantity_cast` for explicit conversions
+
+    When you need to explicitly combine different subtypes:
+
+    ```cpp
+    constexpr quantity<qs::total_mass[kg]> total_mass(quantity<qs::cabin_mass[kg]> cabin,
+                                                      quantity<qs::passenger_mass[kg]> passengers)
+    {
+      return quantity_cast<qs::total_mass>(cabin + passengers);
+    }
+    ```
+
+    `quantity_cast<TargetSpec>(q)` explicitly converts between specs from the same
+    hierarchy tree:
+
+    - Useful when the result should have a specific semantic type
+    - Provides documentation of the intended conversion
+    - Still type-safe—won't allow incompatible conversions (e.g., to quantities of
+      other dimensions)
+
+    ### Benefits for engineering applications
+
+    **Self-documenting APIs:**
+
+    ```cpp
+    // Clear what each parameter represents:
+    constexpr quantity<qs::gravitational_potential_energy[J]> lifting_energy(quantity<qs::total_mass[kg]> mass,
+                                                                             quantity<qs::travel_height[m]> height);
+
+    constexpr quantity<qs::motor_energy[J]> required_input_energy(quantity<isq::mechanical_energy[J]> e_mech,
+                                                                  quantity<qs::motor_efficiency[one]> efficiency);
+    ```
+
+    **Compile-time error prevention:**
+
+    ```cpp
+    // ❌ Prevented at compile time:
+    auto wrong = lifting_energy(passengers, cabin);        // Wrong mass type!
+    auto bad = required_input_energy(E_lift, trip.speed);  // Wrong energy type!
+
+    // ✅ Correct code is enforced:
+    auto correct = lifting_energy(m_total, trip.height);   // Types match!
+    ```
+
+
 ## References
 
 - [User's Guide: Systems of Quantities](../users_guide/framework_basics/systems_of_quantities.md)
-- [API Reference](../reference/api_reference.md)
+- [Quantity Hierarchies](../reference/systems_reference/hierarchies/index.md)
 
 
 ## Takeaways
@@ -310,6 +423,8 @@ int main()
   `isq::mass * isq::acceleration * isq::height` for `gravitational_potential_energy`
   makes the physics explicit in the type system and requires correct ingredients
   to be used in a quantity equation to get the desired outcome
-- **Practical engineering**: This approach is valuable for real applications like
-  motor sizing, where mixing up different _masses_ or _energy_ types could lead to
-  incorrect designs
+- **Practical applications**: Valuable in motor sizing (cabin/passenger/total mass),
+  energy calculations (potential, kinetic, mechanical, input), structural analysis
+  (live load, dead load, total load), and thermal systems (sensible heat, latent heat,
+  total heat), where mixing up semantically different quantities could lead to incorrect
+  or unsafe designs
