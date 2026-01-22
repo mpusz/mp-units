@@ -10,7 +10,7 @@ A **quantity** is a concrete amount of a unit representing a quantity type of a
 specified dimension with a specific representation. It is represented in the
 library with a `quantity` class template.
 
-The [SI Brochure](../appendix/references.md#SIBrochure) says:
+The [SI Brochure](../reference/bibliography.md#SIBrochure) says:
 
 !!! quote "SI Brochure"
 

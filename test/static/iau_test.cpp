@@ -20,36 +20,46 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#if MP_UNITS_HOSTED
-#include <mp-units/math.h>  // IWYU pragma: keep
-#endif
+#include "test_tools.h"
 #include <mp-units/systems/iau.h>
-#include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si.h>
 
-/* ************** DERIVED DIMENSIONS THAT INCLUDE UNITS WITH SPECIAL NAMES **************** */
+/* ************** IAU 2015 Resolution B3 - Nominal Solar and Planetary Conversion Constants **************** */
 
 namespace {
 
 using namespace mp_units;
-using namespace mp_units::iau;
 using namespace mp_units::iau::unit_symbols;
-using enum mp_units::quantity_character;
+using namespace mp_units::si::unit_symbols;
 
-static_assert(isq::time(1 * D) == 86'400 * si::second);
-static_assert(isq::time(1 * a) == 365.25 * D);
+// IAU 2012 Resolution B1 - astronomical unit
+static_assert(1. * au == 149'597'870'700. * m);
 
-static_assert(isq::length(1 * au) == 149'597'870'700 * si::metre);
-static_assert(isq::length(1 * LD) == 384'399 * si::kilo<si::metre>);
-static_assert(isq::length(1 * ly) == 9'460'730'472'580'800 * si::metre);
-static_assert(isq::length(10'000'000'000 * A) == 1 * si::metre);
+// Derived unit: parsec
+static_assert(approx_equal(1.L * pc, 30'856'775'814'913'673. * m));
 
-#if MP_UNITS_HOSTED && (__cpp_lib_constexpr_cmath || MP_UNITS_COMP_GCC)
-// TODO Should the below work for `1 * pc`? If yes, how to extent the type and how to convert it to a floating-point
-// representation for comparison purposes?
-static_assert(round<si::metre>(isq::length(1.L * pc)) == 30'856'775'814'913'673 * si::metre);
-#endif
+// IAU 2015 Resolution B3 - Nominal solar conversion constants
+static_assert(approx_equal(1. * R_SUN_N, 6.957e8 * m));
+static_assert(1. * S_SUN_N == 1361. * W / m2);
+static_assert(approx_equal(1. * L_SUN_N, 3.828e26 * W));
+static_assert(point<T_EFF_SUN_N>(1.) == point<K>(5772.));
+static_assert(approx_equal(1. * GM_SUN_N, 1.3271244e20 * m3 / s2));
 
-static_assert(isq::speed(1 * c_0) == 299'792'458 * si::metre / si::second);
+// IAU 2015 Resolution B3 - Nominal planetary conversion constants
+static_assert(approx_equal(1. * R_EARTH_E_N, 6.3781e6 * m));
+static_assert(approx_equal(1. * R_EARTH_P_N, 6.3568e6 * m));
+static_assert(approx_equal(1. * R_JUP_E_N, 7.1492e7 * m));
+static_assert(approx_equal(1. * R_JUP_P_N, 6.6854e7 * m));
+static_assert(approx_equal(1. * GM_EARTH_N, 3.986004e14 * m3 / s2));
+static_assert(approx_equal(1. * GM_JUP_N, 1.2668653e17 * m3 / s2));
+
+// CODATA 2018 - Newtonian constant of gravitation
+static_assert(approx_equal(1. * G, 6.6743e-11 * m3 / kg / s2));
+
+// CODATA 2018 - Derived SI masses (using (GM)ᴺ / G)
+static_assert(1. * M_SUN == 1. * iau::nominal_solar_mass_parameter / (1. * iau::newtonian_constant_of_gravitation));
+static_assert(1. * M_EARTH ==
+              1. * iau::nominal_terrestrial_mass_parameter / (1. * iau::newtonian_constant_of_gravitation));
+static_assert(1. * M_JUP == 1. * iau::nominal_jovian_mass_parameter / (1. * iau::newtonian_constant_of_gravitation));
 
 }  // namespace

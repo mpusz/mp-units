@@ -33,6 +33,7 @@
 #include <mp-units/ext/type_traits.h>
 #include <mp-units/framework/dimension.h>
 #include <mp-units/framework/quantity_concepts.h>
+#include <mp-units/framework/quantity_point_concepts.h>
 #include <mp-units/framework/quantity_spec_concepts.h>
 #include <mp-units/framework/reference_concepts.h>
 #include <mp-units/framework/representation_concepts.h>
@@ -106,7 +107,7 @@ concept DerivedQuantitySpec =
    (QuantityKindSpec<T> && is_specialization_of<MP_UNITS_NONCONST_TYPE(T::_quantity_spec_), derived_quantity_spec>));
 
 
-template<QuantitySpec QS, MP_UNITS_WEAK_UNIT_OF(QS{}) U>
+template<QuantitySpec QS, UnitOf<QS{}> U>
 [[nodiscard]] consteval Reference auto make_reference(QS, U u)
 {
   if constexpr (requires { requires(mp_units::get_quantity_spec(U{}) == QS{}); })
@@ -211,11 +212,21 @@ struct quantity_spec_interface : quantity_spec_interface_base {
   }
 
   template<typename Self, typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>>
-    requires(mp_units::explicitly_convertible(Q::quantity_spec, Self{}))
+    requires(mp_units::explicitly_convertible(Q::quantity_spec, Self{})) &&
+            requires { typename quantity<make_reference(Self{}, Q::unit), typename Q::rep>; }
   [[nodiscard]] constexpr Quantity auto operator()(this Self, FwdQ&& q)
   {
     return quantity{std::forward<FwdQ>(q).numerical_value_is_an_implementation_detail_,
                     detail::make_reference(Self{}, Q::unit)};
+  }
+
+  template<typename Self, typename FwdQP, QuantityPoint QP = std::remove_cvref_t<FwdQP>>
+    requires(mp_units::explicitly_convertible(QP::quantity_spec, Self{})) &&
+            requires { typename quantity_point<make_reference(Self{}, QP::unit), QP::point_origin, typename QP::rep>; }
+  [[nodiscard]] constexpr QuantityPoint auto operator()(this Self self, FwdQP&& qp)
+  {
+    return quantity_point{self(std::forward<FwdQP>(qp).quantity_from_origin_is_an_implementation_detail_),
+                          qp.point_origin};
   }
 #else
   template<typename Self_ = Self, UnitOf<Self_{}> U>
@@ -225,11 +236,21 @@ struct quantity_spec_interface : quantity_spec_interface_base {
   }
 
   template<typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>, typename Self_ = Self>
-    requires(mp_units::explicitly_convertible(Q::quantity_spec, Self_{}))
+    requires(mp_units::explicitly_convertible(Q::quantity_spec, Self_{})) &&
+            requires { typename quantity<make_reference(Self{}, Q::unit), typename Q::rep>; }
   [[nodiscard]] constexpr Quantity auto operator()(FwdQ&& q) const
   {
     return quantity{std::forward<FwdQ>(q).numerical_value_is_an_implementation_detail_,
                     detail::make_reference(Self{}, Q::unit)};
+  }
+
+  template<typename FwdQP, QuantityPoint QP = std::remove_cvref_t<FwdQP>, typename Self_ = Self>
+    requires(mp_units::explicitly_convertible(QP::quantity_spec, Self_{})) &&
+            requires { typename quantity_point<make_reference(Self{}, QP::unit), QP::point_origin, typename QP::rep>; }
+  [[nodiscard]] constexpr QuantityPoint auto operator()(FwdQP&& qp) const
+  {
+    return quantity_point{Self{}(std::forward<FwdQP>(qp).quantity_from_origin_is_an_implementation_detail_),
+                          qp.point_origin};
   }
 #endif
 };
@@ -414,22 +435,6 @@ struct quantity_spec<Self, QS, Args...> : detail::propagate_equation<QS>, detail
   static constexpr auto _parent_ = QS;
   static constexpr Dimension auto dimension = _parent_.dimension;
   static constexpr quantity_character character = detail::quantity_character_init<Args...>(QS.character);
-
-#if !MP_UNITS_API_NO_CRTP
-  template<typename Self_ = Self, UnitOf<Self_{}> U>
-  [[nodiscard]] MP_UNITS_CONSTEVAL Reference auto operator[](U) const
-  {
-    return detail::make_reference(Self{}, U{});
-  }
-
-  template<typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>, typename Self_ = Self>
-    requires(explicitly_convertible(Q::quantity_spec, Self_{}))
-  [[nodiscard]] constexpr Quantity auto operator()(FwdQ&& q) const
-  {
-    return quantity{std::forward<FwdQ>(q).numerical_value_is_an_implementation_detail_,
-                    detail::make_reference(Self{}, Q::unit)};
-  }
-#endif
 };
 
 // clang-format off
@@ -437,7 +442,7 @@ struct quantity_spec<Self, QS, Args...> : detail::propagate_equation<QS>, detail
  * @brief Specialization defining a leaf derived quantity in the hierarchy and refining paren't equation
  *
  * Quantities of the same kind form a hierarchy. This specialization adds new leaf to such a tree which
- * can later be used as a parent by other quantities. Additionally, this defintion adds additional
+ * can later be used as a parent by other quantities. Additionally, this definition adds additional
  * constraints on the derived quantity's equation.
  *
  * Such quantities obtain the character from the derived quantity equation.
@@ -1028,6 +1033,7 @@ template<QuantitySpec From, QuantitySpec To>
   }
 }
 
+// verifies convertibility when at least one of the specs is a kind
 template<QuantitySpec From, QuantitySpec To>
 [[nodiscard]] consteval specs_convertible_result convertible_kinds(From from, To)
 {
@@ -1052,11 +1058,15 @@ template<NamedQuantitySpec From, NamedQuantitySpec To>
     return detail::convertible_common_base(From{}, To{});
   else if constexpr (detail::get_kind_tree_root(From{}) != detail::get_kind_tree_root(To{}))
     return no;
-  else if constexpr (detail::get_complexity(From{}) != detail::get_complexity(To{})) {
-    if constexpr (detail::get_complexity(From{}) > detail::get_complexity(To{}))
-      return detail::convertible(explode<get_complexity(To{})>(from).quantity, to);
+  else {
+    constexpr auto from_complexity = detail::get_complexity(From{});
+    constexpr auto to_complexity = detail::get_complexity(To{});
+    static_assert(from_complexity != to_complexity,
+                  "Is it possible to have different quantities of the same complexity here?");
+    if constexpr (from_complexity > to_complexity)
+      return detail::convertible(explode<to_complexity>(from).quantity, to);
     else {
-      auto res = detail::explode<get_complexity(From{})>(to);
+      auto res = detail::explode<from_complexity>(to);
       return detail::min(res.result, detail::convertible(from, res.quantity));
     }
   }

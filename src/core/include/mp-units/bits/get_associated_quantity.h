@@ -34,7 +34,7 @@ struct common_unit;
 
 namespace detail {
 
-template<MP_UNITS_ASSOCIATED_UNIT U>
+template<Unit U>
 [[nodiscard]] consteval auto get_associated_quantity(U u);
 
 template<typename... Us>
@@ -43,10 +43,10 @@ template<typename... Us>
   return get_common_quantity_spec(get_associated_quantity(Us{})...);
 }
 
-template<MP_UNITS_ASSOCIATED_UNIT U>
+template<Unit U>
 using to_quantity_spec = decltype(get_associated_quantity(U{}));
 
-template<MP_UNITS_ASSOCIATED_UNIT U>
+template<Unit U>
 [[nodiscard]] consteval auto get_associated_quantity_impl(U u)
 {
   if constexpr (requires { U::_quantity_spec_; })
@@ -57,10 +57,10 @@ template<MP_UNITS_ASSOCIATED_UNIT U>
     return expr_map<to_quantity_spec, derived_quantity_spec, struct dimensionless>(u);
 }
 
-template<MP_UNITS_ASSOCIATED_UNIT U>
+template<Unit U>
 constexpr auto get_associated_quantity_result = get_associated_quantity_impl(U{});
 
-template<MP_UNITS_ASSOCIATED_UNIT U>
+template<Unit U>
 [[nodiscard]] consteval auto get_associated_quantity(U)
 {
   return get_associated_quantity_result<U>;

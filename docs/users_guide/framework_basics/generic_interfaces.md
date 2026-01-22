@@ -116,7 +116,7 @@ provided with the library:
 
     ```cpp
     template<typename Distance, typename Duration>
-      requires QuantityOf<Distance, isq::length> && QuantityOf<Duration, isq::time>
+      requires QuantityOf<Distance, isq::length> && QuantityOf<Duration, isq::duration>
     auto avg_speed(Distance distance, Duration duration)
     {
       return isq::speed(distance / duration);
@@ -126,7 +126,7 @@ provided with the library:
 === "The shorthand notation"
 
     ```cpp
-    template<QuantityOf<isq::length> Distance, QuantityOf<isq::time> Duration>
+    template<QuantityOf<isq::length> Distance, QuantityOf<isq::duration> Duration>
     auto avg_speed(Distance distance, Duration duration)
     {
       return isq::speed(distance / duration);
@@ -137,7 +137,7 @@ provided with the library:
 
     ```cpp
     auto avg_speed(QuantityOf<isq::length> auto distance,
-                   QuantityOf<isq::time> auto duration)
+                   QuantityOf<isq::duration> auto duration)
     {
       return isq::speed(distance / duration);
     }
@@ -145,8 +145,8 @@ provided with the library:
 
 This explicitly states that the arguments passed by the user must not only satisfy
 a [`Quantity`](concepts.md#Quantity) concept, but also their quantity specification must
-be implicitly convertible to `isq::length` and `isq::time` accordingly. This no longer leaves
-room for error while still allowing the compiler to generate the most efficient code.
+be implicitly convertible to `isq::length` and `isq::duration` accordingly. This no longer
+leaves room for error while still allowing the compiler to generate the most efficient code.
 
 !!! tip
 
@@ -162,7 +162,7 @@ However, we can do even better here by additionally constraining the return type
 
 ```cpp
 QuantityOf<isq::speed> auto avg_speed(QuantityOf<isq::length> auto distance,
-                                      QuantityOf<isq::time> auto duration)
+                                      QuantityOf<isq::duration> auto duration)
 {
   return isq::speed(distance / duration);
 }
@@ -175,7 +175,7 @@ Doing so has two important benefits:
    the thing being returned there.
 2. Such a concept constrains the type returned from the function. This means that it works
    as a unit test to verify if our function actually performs what it is supposed to do.
-   If there is an error in [quantity equations](../../appendix/glossary.md#quantity-equation),
+   If there is an error in [quantity equations](../../reference/glossary.md#quantity-equation),
    we will learn about it right away.
 
 

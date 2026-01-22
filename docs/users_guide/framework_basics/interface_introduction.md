@@ -3,11 +3,11 @@
 ## New style of definitions
 
 The library uses an unusual but purposeful pattern to define entities. Here is how `metre`
-and `second` [SI](../../appendix/glossary.md#si) base units are defined:
+and `second` [SI](../../reference/glossary.md#si) base units are defined:
 
 ```cpp
 inline constexpr struct metre final : named_unit<"m", kind_of<isq::length>> {} metre;
-inline constexpr struct second final : named_unit<"s", kind_of<isq::time>> {} second;
+inline constexpr struct second final : named_unit<"s", kind_of<isq::duration>> {} second;
 ```
 
 The above reuses the same identifier for a type and its value. Rationale:
@@ -79,7 +79,7 @@ libraries or what we have to deal with when we want to write some equations base
 
 For example, below are a few definitions of the SI derived units showing the power of C++20
 extensions to Non-Type Template Parameters, which allow us to directly pass a result of
-the value-based [unit equation](../../appendix/glossary.md#unit-equation) to a class template
+the value-based [unit equation](../../reference/glossary.md#unit-equation) to a class template
 definition:
 
 ```cpp
@@ -96,11 +96,11 @@ framework-generated types become unwieldy.
 
 **mp-units** improves this by using symbolic expressions consistently to describe results of:
 
-- [dimension equation](../../appendix/glossary.md#dimension-equation) - the result is put into
+- [dimension equation](../../reference/glossary.md#dimension-equation) - the result is put into
   the `derived_dimension<>` class template
-- [quantity equation](../../appendix/glossary.md#quantity-equation) - the result is put into
+- [quantity equation](../../reference/glossary.md#quantity-equation) - the result is put into
   the `derived_quantity_spec<>` class template
-- [unit equation](../../appendix/glossary.md#unit-equation) - the result is put into the
+- [unit equation](../../reference/glossary.md#unit-equation) - the result is put into the
   `derived_unit<>` class template
 
 For example, dividing base units inside a quantity definition:
@@ -263,7 +263,7 @@ The `acceleration` quantity, being the result of the above code, has the followi
 (after stripping the `mp_units` namespace for brevity):
 
 ```text
-quantity<reference<derived_quantity_spec<isq::speed, per<isq::time>>{}, derived_unit<si::kilo_<si::metre{}>, per<non_si::hour, si::second>>{}>{}, int>
+quantity<reference<derived_quantity_spec<isq::speed, per<isq::duration>>{}, derived_unit<si::kilo_<si::metre{}>, per<non_si::hour, si::second>>{}>{}, int>
 ```
 
 and the text output presents:

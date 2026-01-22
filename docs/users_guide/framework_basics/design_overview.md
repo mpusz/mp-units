@@ -37,29 +37,29 @@ flowchart TD
 
 ## Dimension
 
-[Dimension](../../appendix/glossary.md#dimension) specifies the dependence of a quantity on
+[Dimension](../../reference/glossary.md#dimension) specifies the dependence of a quantity on
 the base quantities of a particular system of quantities. It is represented as a product of
 powers of factors corresponding to the base quantities, omitting any numerical factor.
 
 In the **mp-units** library, we use the terms:
 
 - **base dimension** to refer to the dimension of a
-  [base quantity](../../appendix/glossary.md#base-quantity),
+  [base quantity](../../reference/glossary.md#base-quantity),
 - **derived dimension** to refer to the dimension of a
-  [derived quantity](../../appendix/glossary.md#derived-quantity).
+  [derived quantity](../../reference/glossary.md#derived-quantity).
 
 For example:
 
 - _length_ ($\mathsf{L}$), _mass_ ($\mathsf{M}$), _time_ ($\mathsf{T}$),
   _electric current_ ($\mathsf{I}$),
   _thermodynamic temperature_ ($\mathsf{Θ}$), _amount of substance_ ($\mathsf{N}$), and
-  _luminous intensity_ ($\mathsf{J}$) are the base dimensions of the [ISQ](../../appendix/glossary.md#isq).
-- A derived dimension of _force_ in the [ISQ](../../appendix/glossary.md#isq) is denoted by
+  _luminous intensity_ ($\mathsf{J}$) are the base dimensions of the [ISQ](../../reference/glossary.md#isq).
+- A derived dimension of _force_ in the [ISQ](../../reference/glossary.md#isq) is denoted by
   $\textsf{dim }F = \mathsf{LMT}^{–2}$.
 - The implementation of IEC 80000 in this library provides `iec::dim_traffic_intensity`
   base dimension to extend ISQ with strong information technology quantities.
 
-[Base dimensions](../../appendix/glossary.md#base-dimension) can be defined by the user in
+[Base dimensions](../../reference/glossary.md#base-dimension) can be defined by the user in
 the following way:
 
 ```cpp
@@ -67,9 +67,9 @@ inline constexpr struct dim_length final : base_dimension<"L"> {} dim_length;
 inline constexpr struct dim_time final : base_dimension<"T"> {} dim_time;
 ```
 
-[Derived dimensions](../../appendix/glossary.md#derived-dimension) are implicitly created
-by the library's framework based on the [quantity equation](../../appendix/glossary.md#quantity-equation)
-provided in the [quantity specification](../../appendix/glossary.md#quantity_spec):
+[Derived dimensions](../../reference/glossary.md#derived-dimension) are implicitly created
+by the library's framework based on the [quantity equation](../../reference/glossary.md#quantity-equation)
+provided in the [quantity specification](../../reference/glossary.md#quantity_spec):
 
 === "C++23"
 
@@ -113,16 +113,16 @@ The multiplication/division on quantity specifications also multiplies/divides t
 static_assert((length / time).dimension == dim_length / dim_time);
 ```
 
-The [dimension equation](../../appendix/glossary.md#dimension-equation) of
+The [dimension equation](../../reference/glossary.md#dimension-equation) of
 `isq::dim_length / isq::dim_time` results in the
 `derived_dimension<isq::dim_length, per<isq::dim_time>>` type.
 
 
 ## Quantity character
 
-[ISO 80000](../../appendix/references.md#ISO80000) explicitly states that quantities
+[ISO 80000](../../reference/bibliography.md#ISO80000) explicitly states that quantities
 (even of the same kind) may have different
-[characters](../../appendix/glossary.md#character):
+[characters](../../reference/glossary.md#character):
 
 - real scalar (e.g., _time_, _width_, _speed_, _apparent power_),
 - complex scalar (e.g., _voltage phasor_, _complex power_, _impedance_),
@@ -145,17 +145,17 @@ enum class quantity_character { real_scalar, complex_scalar, vector, tensor };
 ## Quantity specification
 
 [Dimension is not enough to describe a quantity](systems_of_quantities.md#dimension-is-not-enough-to-describe-a-quantity).
-This is why the [ISO 80000](../../appendix/references.md#ISO80000) provides hundreds
+This is why the [ISO 80000](../../reference/bibliography.md#ISO80000) provides hundreds
 of named quantity
-types. It turns out that there are many more quantity types in the [ISQ](../../appendix/glossary.md#isq)
-than the named units in the [SI](../../appendix/glossary.md#si).
+types. It turns out that there are many more quantity types in the [ISQ](../../reference/glossary.md#isq)
+than the named units in the [SI](../../reference/glossary.md#si).
 
 This is why the **mp-units** library introduces a quantity specification entity that stores:
 
-- [dimension](../../appendix/glossary.md#dimension),
+- [dimension](../../reference/glossary.md#dimension),
 - quantity type/name,
-- [quantity character](../../appendix/glossary.md#character),
-- the [quantity equation](../../appendix/glossary.md#quantity-equation) being the recipe
+- [quantity character](../../reference/glossary.md#character),
+- the [quantity equation](../../reference/glossary.md#quantity-equation) being the recipe
   to create this quantity
   (only for derived quantities that specify such a recipe).
 
@@ -163,7 +163,7 @@ This is why the **mp-units** library introduces a quantity specification entity 
 
     We know that it might be sometimes confusing to talk about quantities, quantity types/names, and quantity
     specifications. However, it might be important to notice here that even the
-    [ISO 80000](../../appendix/references.md#ISO80000) admits that:
+    [ISO 80000](../../reference/bibliography.md#ISO80000) admits that:
 
     > It is customary to use the same term, "quantity", to refer to both general quantities, such as length,
     > mass, etc., and their instances, such as given lengths, given masses, etc. Accordingly, we are used to
@@ -179,16 +179,16 @@ This is why the **mp-units** library introduces a quantity specification entity 
 
 For example:
 
-- `isq::length`, `isq::mass`, `isq::time`, `isq::electric_current`, `isq::thermodynamic_temperature`,
+- `isq::length`, `isq::mass`, `isq::duration`, `isq::electric_current`, `isq::thermodynamic_temperature`,
   `isq::amount_of_substance`, and `isq::luminous_intensity` are the specifications
   of base quantities
-  in the [ISQ](../../appendix/glossary.md#isq).
+  in the [ISQ](../../reference/glossary.md#isq).
 - `isq::width`, `isq::height`, `isq::radius`, and `isq::position_vector` are only a few
   of many
-   quantities of a kind length specified in the [ISQ](../../appendix/glossary.md#isq).
+   quantities of a kind length specified in the [ISQ](../../reference/glossary.md#isq).
 - `isq::area`, `isq::speed`, `isq::moment_of_force` are only a few of many
   derived quantities provided
-  in the [ISQ](../../appendix/glossary.md#isq).
+  in the [ISQ](../../reference/glossary.md#isq).
 
 Quantity specification  can be defined by the user in one of the following ways:
 
@@ -216,14 +216,14 @@ Quantity specification  can be defined by the user in one of the following ways:
     QUANTITY_SPEC(speed, length / time);
     ```
 
-The [quantity equation](../../appendix/glossary.md#quantity-equation) of
-`isq::length / isq::time` results in the
-`derived_quantity_spec<isq::length, per<isq::time>>` type.
+The [quantity equation](../../reference/glossary.md#quantity-equation) of
+`isq::length / isq::duration` results in the
+`derived_quantity_spec<isq::length, per<isq::duration>>` type.
 
 
 ## Unit
 
-A [unit](../../appendix/glossary.md#unit) is a concrete amount of a quantity
+A [unit](../../reference/glossary.md#unit) is a concrete amount of a quantity
 that allows us to measure the values of
 [quantities of the same kind](systems_of_quantities.md#quantities-of-the-same-kind)
 and represent the result as a number being the ratio of the two quantities.
@@ -231,10 +231,10 @@ and represent the result as a number being the ratio of the two quantities.
 For example:
 
 - `si::second`, `si::metre`, `si::kilogram`, `si::ampere`, `si::kelvin`, `si::mole`, and `si::candela`
-  are the base units of the [SI](../../appendix/glossary.md#si).
+  are the base units of the [SI](../../reference/glossary.md#si).
 - `si::kilo<si::metre>` is a prefixed unit of length.
 - `si::radian`, `si::newton`, and `si::watt` are examples of named derived units within the
-  [SI](../../appendix/glossary.md#si).
+  [SI](../../reference/glossary.md#si).
 - `non_si::minute` is an example of a scaled unit of time.
 - `si::si2019::speed_of_light_in_vacuum` is a physical constant standardized by the SI in 2019.
 
@@ -248,7 +248,7 @@ A unit can be defined by the user in one of the following ways:
 template<PrefixableUnit U> struct kilo_ : prefixed_unit<"k", mag_power<10, 3>, U{}> {};
 template<PrefixableUnit auto U> constexpr kilo_<decltype(U)> kilo;
 
-inline constexpr struct second final : named_unit<"s", kind_of<isq::time>> {} second;
+inline constexpr struct second final : named_unit<"s", kind_of<isq::duration>> {} second;
 inline constexpr struct minute final : named_unit<"min", mag<60> * second> {} minute;
 inline constexpr struct gram   final : named_unit<"g", kind_of<isq::mass>> {} gram;
 inline constexpr auto kilogram = kilo<gram>;
@@ -257,7 +257,7 @@ inline constexpr struct newton final : named_unit<"N", kilogram * metre / square
 inline constexpr struct speed_of_light_in_vacuum final : named_unit<"c", mag<299'792'458> * metre / second> {} speed_of_light_in_vacuum;
 ```
 
-The [unit equation](../../appendix/glossary.md#unit-equation) of `si::metre / si::second` results
+The [unit equation](../../reference/glossary.md#unit-equation) of `si::metre / si::second` results
 in the `derived_unit<si::metre, per<si::second>>` type.
 
 
@@ -279,7 +279,7 @@ After that, it says:
 
 In the **mp-units** library, a quantity reference provides all the domain-specific
 metadata for the quantity besides its
-[numerical value](../../appendix/glossary.md#numerical-value):
+[numerical value](../../reference/glossary.md#numerical-value):
 
 - all the data stored in the [quantity specification](#quantity-specification),
 - [unit](#unit).
@@ -295,12 +295,12 @@ In the library, we have two different ways to provide a reference:
 
 !!! note
 
-    All the units of the [SI](../../appendix/glossary.md#si) have associated quantity kinds
+    All the units of the [SI](../../reference/glossary.md#si) have associated quantity kinds
     and may serve as a reference.
 
 For example:
 
-- `si::metre` is defined in the [SI](../../appendix/glossary.md#si) as a unit of `isq::length`
+- `si::metre` is defined in the [SI](../../reference/glossary.md#si) as a unit of `isq::length`
   and thus can be used as a reference to instantiate a quantity of length (e.g., `42 * m`).
 - The expression `isq::height[m]` results with `reference<isq::height, si::metre>`,
   which can be used to instantiate a quantity of `isq::height` with a unit of `si::metre`
@@ -310,7 +310,7 @@ For example:
 ## Quantity representation
 
 Quantity representation defines the type used to store the
-[numerical value of a quantity](../../appendix/glossary.md#quantity-value).
+[numerical value of a quantity](../../reference/glossary.md#quantity-value).
 Such a type should be of a specific [quantity character](#quantity-character) provided
 in the [quantity specification](#quantity-specification).
 

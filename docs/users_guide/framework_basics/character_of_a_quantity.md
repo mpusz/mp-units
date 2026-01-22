@@ -119,8 +119,8 @@ enumeration can be appended to the `quantity_spec` describing such a quantity ty
 
 With the above, all the quantities derived from `position_vector` or `displacement`
 will have a correct character determined according to the kind of operations included in the
-[quantity equation](../../appendix/glossary.md#quantity-equation) defining a
-[derived quantity](../../appendix/glossary.md#derived-quantity).
+[quantity equation](../../reference/glossary.md#quantity-equation) defining a
+[derived quantity](../../reference/glossary.md#derived-quantity).
 
 For example, `velocity` in the below definition will be defined as a vector quantity.
 No explicit character override is needed:
@@ -211,5 +211,5 @@ library, we can either:
     quantity<isq::velocity[m/s]> q3{la_vector{1, 2, 3} * m / s};
     ```
 
-    In all the cases above, the SI unit `m / s` has an associated scalar quantity of `isq::length / isq::time`.
+    In all the cases above, the SI unit `m / s` has an associated scalar quantity of `isq::length / isq::duration`.
     `la_vector` is not a correct representation type for a scalar quantity so the construction fails.

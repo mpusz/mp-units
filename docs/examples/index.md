@@ -5,7 +5,7 @@ how to use the library in real-world scenarios, from simple introductory program
 domain-specific applications.
 
 All examples are designed to work with all [supported compilers](../getting_started/cpp_compiler_support.md)
-and use the [Wide Compatibility](../users_guide/use_cases/wide_compatibility.md) mode to ensure
+and use the [Wide Compatibility](../how_to_guides/wide_compatibility.md) mode to ensure
 maximum portability.
 
 ## How to Use This Section

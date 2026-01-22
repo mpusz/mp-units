@@ -28,6 +28,9 @@
 *.out
 *.app
 
+# macOS files
+.DS_Store
+
 # IDE-specific
 /.idea/
 /.vs/
@@ -48,8 +51,8 @@ CMakeUserPresets.json
 /test_package/build/
 
 # cxxdraft-htmlgen
-docs/api_reference/src/source/
-docs/api_reference/gen
+docs/reference/api_reference/src/source/
+docs/reference/api_reference/gen
 
-# macOS files
-.DS_Store
+# Generated website files
+site/

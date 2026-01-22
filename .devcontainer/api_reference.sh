@@ -102,8 +102,8 @@ clone_if_missing "https://github.com/JohelEGP/cxxdraft-htmlgen.git" "standardese
 
 # Configure CMake
 echo "Configuring CMake for API reference documentation..."
-BUILD_DIR="$PROJECT_ROOT/build/docs/api_reference"
-SOURCE_DIR="$PROJECT_ROOT/docs/api_reference/src"
+BUILD_DIR="$PROJECT_ROOT/build/docs/reference/api_reference"
+SOURCE_DIR="$PROJECT_ROOT/docs/reference/api_reference/src"
 
 if [[ ! -d "$SOURCE_DIR" ]]; then
     echo "Error: Source directory not found: $SOURCE_DIR" >&2
@@ -119,9 +119,9 @@ cmake -S "$SOURCE_DIR" \
 echo "CMake configuration completed successfully."
 
 # Create symlink for generated HTML documentation
-# This allows accessing the generated docs via docs/api_reference/gen
+# This allows accessing the generated docs via docs/reference/api_reference/gen
 echo "Creating symlink for generated documentation..."
-SYMLINK_TARGET="$PROJECT_ROOT/docs/api_reference/gen"
+SYMLINK_TARGET="$PROJECT_ROOT/docs/reference/api_reference/gen"
 SYMLINK_SOURCE="${BUILD_DIR}/mp-units.html"
 
 # Ensure the parent directory exists

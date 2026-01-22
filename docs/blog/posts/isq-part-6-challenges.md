@@ -253,7 +253,7 @@ having affine space abstractions acknowledged in ISQ would greatly help here.
 ## Lack of quantity recipes
 
 Definition of many derived quantities provides their recipes in the form of
-[quantity equations](../../appendix/glossary.md#quantity-equation) (e.g., _weight_ equation
+[quantity equations](../../reference/glossary.md#quantity-equation) (e.g., _weight_ equation
 in the previous chapter). However, some of them do not. Instead, they often provide a very
 generic description.
 

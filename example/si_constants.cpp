@@ -46,19 +46,18 @@ int main()
 
   std::cout << "The seven defining constants of the SI and the seven corresponding units they define:\n";
   std::cout << MP_UNITS_STD_FMT::format("- hyperfine transition frequency of Cs: {} = {::N[.0]}\n",
-                                        1. * si2019::hyperfine_structure_transition_frequency_of_cs,
-                                        (1. * si2019::hyperfine_structure_transition_frequency_of_cs).in(Hz));
+                                        1. * hyperfine_structure_transition_frequency_of_cs,
+                                        (1. * hyperfine_structure_transition_frequency_of_cs).in(Hz));
   std::cout << MP_UNITS_STD_FMT::format("- speed of light in vacuum:             {} = {::N[.0]}\n",
-                                        1. * si2019::speed_of_light_in_vacuum,
-                                        (1. * si2019::speed_of_light_in_vacuum).in(m / s));
+                                        1. * speed_of_light_in_vacuum, (1. * speed_of_light_in_vacuum).in(m / s));
   std::cout << MP_UNITS_STD_FMT::format("- Planck constant:                      {} = {::N[.8e]}\n",
-                                        1. * si2019::planck_constant, (1. * si2019::planck_constant).in(J * s));
+                                        1. * planck_constant, (1. * planck_constant).in(J * s));
   std::cout << MP_UNITS_STD_FMT::format("- elementary charge:                    {} = {::N[.9e]}\n",
-                                        1. * si2019::elementary_charge, (1. * si2019::elementary_charge).in(C));
+                                        1. * elementary_charge, (1. * elementary_charge).in(C));
   std::cout << MP_UNITS_STD_FMT::format("- Boltzmann constant:                   {} = {::N[.6e]}\n",
-                                        1. * si2019::boltzmann_constant, (1. * si2019::boltzmann_constant).in(J / K));
+                                        1. * boltzmann_constant, (1. * boltzmann_constant).in(J / K));
   std::cout << MP_UNITS_STD_FMT::format("- Avogadro constant:                    {} = {::N[.8e]}\n",
-                                        1. * si2019::avogadro_constant, (1. * si2019::avogadro_constant).in(one / mol));
-  std::cout << MP_UNITS_STD_FMT::format("- luminous efficacy:                    {} = {}\n",
-                                        1. * si2019::luminous_efficacy, (1. * si2019::luminous_efficacy).in(lm / W));
+                                        1. * avogadro_constant, (1. * avogadro_constant).in(one / mol));
+  std::cout << MP_UNITS_STD_FMT::format("- luminous efficacy:                    {} = {}\n", 1. * luminous_efficacy,
+                                        (1. * luminous_efficacy).in(lm / W));
 }

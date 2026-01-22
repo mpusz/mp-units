@@ -135,18 +135,18 @@ static_assert(default_point_origin(mag<10> * si::degree_Celsius) == si::ice_poin
 
 static_assert(default_point_origin(si::metre) == zeroth_point_origin<kind_of<isq::length>>);
 static_assert(default_point_origin(si::kelvin / si::second) ==
-              zeroth_point_origin<kind_of<isq::thermodynamic_temperature / isq::time>>);
+              zeroth_point_origin<kind_of<isq::thermodynamic_temperature / isq::duration>>);
 static_assert(default_point_origin(si::degree_Celsius / si::second) ==
-              zeroth_point_origin<kind_of<isq::thermodynamic_temperature / isq::time>>);
+              zeroth_point_origin<kind_of<isq::thermodynamic_temperature / isq::duration>>);
 
-static_assert(zeroth_point_origin<isq::length / isq::time> == zeroth_point_origin<isq::speed>);
+static_assert(zeroth_point_origin<isq::length / isq::duration> == zeroth_point_origin<isq::speed>);
 static_assert(zeroth_point_origin<inverse(isq::period_duration)> == zeroth_point_origin<isq::frequency>);
 static_assert(zeroth_point_origin<kind_of<isq::length>> == zeroth_point_origin<isq::height>);
-static_assert(zeroth_point_origin<kind_of<inverse(isq::time)>> == zeroth_point_origin<isq::frequency>);
+static_assert(zeroth_point_origin<kind_of<inverse(isq::duration)>> == zeroth_point_origin<isq::frequency>);
 
 static_assert(zeroth_point_origin<isq::length> != zeroth_point_origin<isq::height>);
 static_assert(zeroth_point_origin<isq::width> != zeroth_point_origin<isq::height>);
-static_assert(zeroth_point_origin<inverse(isq::time)> != zeroth_point_origin<isq::frequency>);
+static_assert(zeroth_point_origin<inverse(isq::duration)> != zeroth_point_origin<isq::frequency>);
 
 /////////////////////
 // class invariants
@@ -414,11 +414,11 @@ static_assert(!std::convertible_to<quantity<isq::speed[m / s]>, quantity_point<m
 static_assert(std::constructible_from<quantity_point<isq::speed[m / s]>, quantity<m / s>>);
 static_assert(!std::convertible_to<quantity<m / s>, quantity_point<isq::speed[m / s]>>);
 
-static_assert(std::constructible_from<quantity_point<isq::length[m] / isq::time[s]>, quantity<isq::speed[m / s]>>);
-static_assert(!std::convertible_to<quantity<isq::speed[m / s]>, quantity_point<isq::length[m] / isq::time[s]>>);
+static_assert(std::constructible_from<quantity_point<isq::length[m] / isq::duration[s]>, quantity<isq::speed[m / s]>>);
+static_assert(!std::convertible_to<quantity<isq::speed[m / s]>, quantity_point<isq::length[m] / isq::duration[s]>>);
 
-static_assert(std::constructible_from<quantity_point<isq::speed[m / s]>, quantity<isq::length[m] / isq::time[s]>>);
-static_assert(!std::convertible_to<quantity<isq::length[m] / isq::time[s]>, quantity_point<isq::speed[m / s]>>);
+static_assert(std::constructible_from<quantity_point<isq::speed[m / s]>, quantity<isq::length[m] / isq::duration[s]>>);
+static_assert(!std::convertible_to<quantity<isq::length[m] / isq::duration[s]>, quantity_point<isq::speed[m / s]>>);
 
 static_assert(std::constructible_from<quantity_point<isq::speed[m / s]>, quantity<m / s>>);
 static_assert(!std::convertible_to<quantity<m / s>, quantity_point<isq::speed[m / s]>>);
@@ -456,8 +456,8 @@ static_assert(!std::convertible_to<quantity<special_height[m]>, quantity_point<i
 static_assert(!std::constructible_from<quantity_point<si::second>, std::chrono::seconds>);
 static_assert(!std::convertible_to<std::chrono::seconds, quantity_point<si::second>>);
 
-static_assert(!std::constructible_from<quantity_point<isq::time[s]>, std::chrono::seconds>);
-static_assert(!std::convertible_to<std::chrono::seconds, quantity_point<isq::time[s]>>);
+static_assert(!std::constructible_from<quantity_point<isq::duration[s]>, std::chrono::seconds>);
+static_assert(!std::convertible_to<std::chrono::seconds, quantity_point<isq::duration[s]>>);
 
 static_assert(!std::constructible_from<quantity_point<isq::period_duration[s]>, std::chrono::seconds>);
 static_assert(!std::convertible_to<std::chrono::seconds, quantity_point<isq::period_duration[s]>>);
@@ -514,10 +514,10 @@ static_assert(!std::constructible_from<quantity_point<si::second, chrono_point_o
 static_assert(!std::convertible_to<std::chrono::seconds,
                                    quantity_point<si::second, chrono_point_origin<std::chrono::system_clock>>>);
 
-static_assert(!std::constructible_from<quantity_point<isq::time[s], chrono_point_origin<std::chrono::system_clock>>,
+static_assert(!std::constructible_from<quantity_point<isq::duration[s], chrono_point_origin<std::chrono::system_clock>>,
                                        std::chrono::seconds>);
 static_assert(!std::convertible_to<std::chrono::seconds,
-                                   quantity_point<isq::time[s], chrono_point_origin<std::chrono::system_clock>>>);
+                                   quantity_point<isq::duration[s], chrono_point_origin<std::chrono::system_clock>>>);
 
 static_assert(
   !std::constructible_from<quantity_point<isq::period_duration[s], chrono_point_origin<std::chrono::system_clock>>,
@@ -544,14 +544,15 @@ static_assert(std::constructible_from<quantity_point<isq::height[m]>, quantity_p
 static_assert(std::convertible_to<quantity_point<si::metre>, quantity_point<isq::height[m]>>);
 
 static_assert(
-  std::constructible_from<quantity_point<isq::length[m] / isq::time[s]>, quantity_point<isq::speed[m / s]>>);
-static_assert(std::convertible_to<quantity_point<isq::speed[m / s]>, quantity_point<isq::length[m] / isq::time[s]>>);
+  std::constructible_from<quantity_point<isq::length[m] / isq::duration[s]>, quantity_point<isq::speed[m / s]>>);
+static_assert(
+  std::convertible_to<quantity_point<isq::speed[m / s]>, quantity_point<isq::length[m] / isq::duration[s]>>);
 
 static_assert(std::constructible_from<quantity_point<m / s>, quantity_point<isq::speed[m / s]>>);
 static_assert(std::convertible_to<quantity_point<isq::speed[m / s]>, quantity_point<m / s>>);
 
-static_assert(std::constructible_from<quantity_point<m / s>, quantity_point<isq::length[m] / isq::time[s]>>);
-static_assert(std::convertible_to<quantity_point<isq::length[m] / isq::time[s]>, quantity_point<m / s>>);
+static_assert(std::constructible_from<quantity_point<m / s>, quantity_point<isq::length[m] / isq::duration[s]>>);
+static_assert(std::convertible_to<quantity_point<isq::length[m] / isq::duration[s]>, quantity_point<m / s>>);
 
 // convertible but different quantity_specs
 static_assert(!std::constructible_from<quantity_point<isq::length[m]>, quantity_point<isq::height[m]>>);
@@ -1078,17 +1079,18 @@ concept invalid_binary_operations = requires {
   requires !requires { QP<si::metre, zeroth_point_origin<isq::height>, int>(1 * m) - isq::length(1 * m); };
   requires !requires { QP<isq::height[m], zeroth_point_origin<isq::height>, int>(1 * m) - isq::length(1 * m); };
   requires !requires {
-    QP<isq::height[m] / isq::time[s], zeroth_point_origin<isq::height / isq::time>, int>(10 * isq::height[m] /
-                                                                                         (2 * isq::time[s])) +
+    QP<isq::height[m] / isq::duration[s], zeroth_point_origin<isq::height / isq::duration>, int>(
+      10 * isq::height[m] / (2 * isq::duration[s])) +
       5 * isq::speed[m / s];
   };
   requires !requires {
-    5 * isq::speed[m / s] + QP<isq::height[m] / isq::time[s], zeroth_point_origin<isq::height / isq::time>, int>(
-                              10 * isq::height[m] / (2 * isq::time[s]));
+    5 * isq::speed[m / s] +
+      QP<isq::height[m] / isq::duration[s], zeroth_point_origin<isq::height / isq::duration>, int>(
+        10 * isq::height[m] / (2 * isq::duration[s]));
   };
   requires !requires {
-    QP<isq::height[m] / isq::time[s], zeroth_point_origin<isq::height / isq::time>, int>(10 * isq::height[m] /
-                                                                                         (2 * isq::time[s])) -
+    QP<isq::height[m] / isq::duration[s], zeroth_point_origin<isq::height / isq::duration>, int>(
+      10 * isq::height[m] / (2 * isq::duration[s])) -
       5 * isq::speed[m / s];
   };
   requires !requires { Origin - isq::length(1 * m); };
@@ -1127,12 +1129,12 @@ concept invalid_binary_operations = requires {
     quantity_point{isq::length(1 * m)} - QP<isq::width[m], zeroth_point_origin<isq::width>, int>(1 * m);
   };
   requires !requires {
-    quantity_point{10 * isq::height[m] / (2 * isq::time[s])} -
+    quantity_point{10 * isq::height[m] / (2 * isq::duration[s])} -
       QP<isq::speed[m / s], zeroth_point_origin<isq::speed>, int>(5 * isq::speed[m / s]);
   };
   requires !requires {
     QP<isq::speed[m / s], zeroth_point_origin<isq::speed>, int>(5 * isq::speed[m / s]) -
-      quantity_point{10 * isq::height[m] / (2 * isq::time[s])};
+      quantity_point{10 * isq::height[m] / (2 * isq::duration[s])};
   };
 
   // cant'subtract two unrelated points
@@ -1530,89 +1532,90 @@ inline constexpr struct zero_m_per_s final : absolute_point_origin<kind_of<isq::
 } zero_m_per_s;
 
 // commutativity and associativity
-static_assert(((zero_m_per_s + 10 * isq::height[m] / (2 * isq::time[s])) + 5 * isq::speed[m / s])
+static_assert(((zero_m_per_s + 10 * isq::height[m] / (2 * isq::duration[s])) + 5 * isq::speed[m / s])
                 .quantity_from(zero_m_per_s) == 10 * isq::speed[m / s]);
-static_assert((10 * isq::height[m] / (2 * isq::time[s]) + (zero_m_per_s + 5 * isq::speed[m / s]))
+static_assert((10 * isq::height[m] / (2 * isq::duration[s]) + (zero_m_per_s + 5 * isq::speed[m / s]))
                 .quantity_from(zero_m_per_s) == 10 * isq::speed[m / s]);
-static_assert(((zero_m_per_s + 5 * isq::speed[m / s]) + 10 * isq::height[m] / (2 * isq::time[s]))
+static_assert(((zero_m_per_s + 5 * isq::speed[m / s]) + 10 * isq::height[m] / (2 * isq::duration[s]))
                 .quantity_from(zero_m_per_s) == 10 * isq::speed[m / s]);
-static_assert((5 * isq::speed[m / s] + (zero_m_per_s + 10 * isq::height[m] / (2 * isq::time[s])))
+static_assert((5 * isq::speed[m / s] + (zero_m_per_s + 10 * isq::height[m] / (2 * isq::duration[s])))
                 .quantity_from(zero_m_per_s) == 10 * isq::speed[m / s]);
-static_assert(((zero_m_per_s + 10 * isq::height[m] / (2 * isq::time[s])) - 5 * isq::speed[m / s])
+static_assert(((zero_m_per_s + 10 * isq::height[m] / (2 * isq::duration[s])) - 5 * isq::speed[m / s])
                 .quantity_from(zero_m_per_s) == 0 * isq::speed[m / s]);
-static_assert(((zero_m_per_s + 5 * isq::speed[m / s]) - 10 * isq::height[m] / (2 * isq::time[s]))
+static_assert(((zero_m_per_s + 5 * isq::speed[m / s]) - 10 * isq::height[m] / (2 * isq::duration[s]))
                 .quantity_from(zero_m_per_s) == 0 * isq::speed[m / s]);
-static_assert((zero_m_per_s + 10 * isq::height[m] / (2 * isq::time[s])) - (zero_m_per_s + 5 * isq::speed[m / s]) ==
+static_assert((zero_m_per_s + 10 * isq::height[m] / (2 * isq::duration[s])) - (zero_m_per_s + 5 * isq::speed[m / s]) ==
               0 * isq::speed[m / s]);
-static_assert((zero_m_per_s + 5 * isq::speed[m / s]) - (zero_m_per_s + 10 * isq::height[m] / (2 * isq::time[s])) ==
+static_assert((zero_m_per_s + 5 * isq::speed[m / s]) - (zero_m_per_s + 10 * isq::height[m] / (2 * isq::duration[s])) ==
               0 * isq::speed[m / s]);
 
-static_assert(is_of_type<(zero_m_per_s + 10 * isq::height[m] / (2 * isq::time[s])) + 5 * isq::speed[m / s],
+static_assert(is_of_type<(zero_m_per_s + 10 * isq::height[m] / (2 * isq::duration[s])) + 5 * isq::speed[m / s],
                          quantity_point<isq::speed[m / s], zero_m_per_s, int>>);
-static_assert(is_of_type<10 * isq::height[m] / (2 * isq::time[s]) + (zero_m_per_s + 5 * isq::speed[m / s]),
+static_assert(is_of_type<10 * isq::height[m] / (2 * isq::duration[s]) + (zero_m_per_s + 5 * isq::speed[m / s]),
                          quantity_point<isq::speed[m / s], zero_m_per_s, int>>);
-static_assert(is_of_type<(zero_m_per_s + 5 * isq::speed[m / s]) + 10 * isq::height[m] / (2 * isq::time[s]),
+static_assert(is_of_type<(zero_m_per_s + 5 * isq::speed[m / s]) + 10 * isq::height[m] / (2 * isq::duration[s]),
                          quantity_point<isq::speed[m / s], zero_m_per_s, int>>);
-static_assert(is_of_type<5 * isq::speed[m / s] + (zero_m_per_s + 10 * isq::height[m] / (2 * isq::time[s])),
+static_assert(is_of_type<5 * isq::speed[m / s] + (zero_m_per_s + 10 * isq::height[m] / (2 * isq::duration[s])),
                          quantity_point<isq::speed[m / s], zero_m_per_s, int>>);
-static_assert(is_of_type<(zero_m_per_s + 10 * isq::height[m] / (2 * isq::time[s])) - 5 * isq::speed[m / s],
+static_assert(is_of_type<(zero_m_per_s + 10 * isq::height[m] / (2 * isq::duration[s])) - 5 * isq::speed[m / s],
                          quantity_point<isq::speed[m / s], zero_m_per_s, int>>);
-static_assert(is_of_type<(zero_m_per_s + 5 * isq::speed[m / s]) - 10 * isq::height[m] / (2 * isq::time[s]),
+static_assert(is_of_type<(zero_m_per_s + 5 * isq::speed[m / s]) - 10 * isq::height[m] / (2 * isq::duration[s]),
                          quantity_point<isq::speed[m / s], zero_m_per_s, int>>);
 static_assert(
-  is_of_type<(zero_m_per_s + 10 * isq::height[m] / (2 * isq::time[s])) - (zero_m_per_s + 5 * isq::speed[m / s]),
+  is_of_type<(zero_m_per_s + 10 * isq::height[m] / (2 * isq::duration[s])) - (zero_m_per_s + 5 * isq::speed[m / s]),
              quantity<isq::speed[m / s], int>>);
 static_assert(
-  is_of_type<(zero_m_per_s + 5 * isq::speed[m / s]) - (zero_m_per_s + 10 * isq::height[m] / (2 * isq::time[s])),
+  is_of_type<(zero_m_per_s + 5 * isq::speed[m / s]) - (zero_m_per_s + 10 * isq::height[m] / (2 * isq::duration[s])),
+             quantity<isq::speed[m / s], int>>);
+
+static_assert(is_of_type<(zero_m_per_s + 10 * isq::height[m] / (2 * isq::duration[s])) +
+                           (10 * isq::height[m] / (2 * isq::duration[s])),
+                         quantity_point<(isq::height / isq::duration)[m / s], zero_m_per_s, int>>);
+
+static_assert((quantity_point{5 * isq::speed[m / s]} + 10 * isq::length[m] / (2 * isq::duration[s]))
+                .quantity_from_zero() == 10 * isq::speed[m / s]);
+static_assert((10 * isq::length[m] / (2 * isq::duration[s]) + quantity_point{5 * isq::speed[m / s]})
+                .quantity_from_zero() == 10 * isq::speed[m / s]);
+static_assert((quantity_point{5 * isq::speed[m / s]} - 10 * isq::length[m] / (2 * isq::duration[s]))
+                .quantity_from_zero() == 0 * isq::speed[m / s]);
+
+static_assert((quantity_point{10 * isq::length[m] / (2 * isq::duration[s])} + 5 * isq::speed[m / s])
+                .quantity_from_zero() == 10 * isq::speed[m / s]);
+static_assert((5 * isq::speed[m / s] + quantity_point{10 * isq::length[m] / (2 * isq::duration[s])})
+                .quantity_from_zero() == 10 * isq::speed[m / s]);
+static_assert((quantity_point{10 * isq::length[m] / (2 * isq::duration[s])} - 5 * isq::speed[m / s])
+                .quantity_from_zero() == 0 * isq::speed[m / s]);
+
+static_assert((quantity_point{5 * isq::speed[m / s]} + 10 * isq::height[m] / (2 * isq::duration[s]))
+                .quantity_from_zero() == 10 * isq::speed[m / s]);
+static_assert((10 * isq::height[m] / (2 * isq::duration[s]) + quantity_point{5 * isq::speed[m / s]})
+                .quantity_from_zero() == 10 * isq::speed[m / s]);
+static_assert((quantity_point{5 * isq::speed[m / s]} - 10 * isq::height[m] / (2 * isq::duration[s]))
+                .quantity_from_zero() == 0 * isq::speed[m / s]);
+
+static_assert(is_of_type<quantity_point{10 * isq::length[m] / (2 * isq::duration[s])} + 5 * isq::speed[m / s],
+                         quantity_point<isq::speed[m / s], zeroth_point_origin<isq::speed>, int>>);
+static_assert(is_of_type<10 * isq::height[m] / (2 * isq::duration[s]) + quantity_point{5 * isq::speed[m / s]},
+                         quantity_point<isq::speed[m / s], zeroth_point_origin<isq::speed>, int>>);
+static_assert(is_of_type<quantity_point{5 * isq::speed[m / s]} + 10 * isq::height[m] / (2 * isq::duration[s]),
+                         quantity_point<isq::speed[m / s], zeroth_point_origin<isq::speed>, int>>);
+static_assert(is_of_type<5 * isq::speed[m / s] + quantity_point{10 * isq::length[m] / (2 * isq::duration[s])},
+                         quantity_point<isq::speed[m / s], zeroth_point_origin<isq::speed>, int>>);
+static_assert(is_of_type<quantity_point{10 * isq::length[m] / (2 * isq::duration[s])} - 5 * isq::speed[m / s],
+                         quantity_point<isq::speed[m / s], zeroth_point_origin<isq::speed>, int>>);
+static_assert(is_of_type<quantity_point{5 * isq::speed[m / s]} - 10 * isq::height[m] / (2 * isq::duration[s]),
+                         quantity_point<isq::speed[m / s], zeroth_point_origin<isq::speed>, int>>);
+static_assert(
+  is_of_type<quantity_point{10 * isq::length[m] / (2 * isq::duration[s])} - quantity_point{5 * isq::speed[m / s]},
+             quantity<isq::speed[m / s], int>>);
+static_assert(
+  is_of_type<quantity_point{5 * isq::speed[m / s]} - quantity_point{10 * isq::length[m] / (2 * isq::duration[s])},
              quantity<isq::speed[m / s], int>>);
 
 static_assert(
-  is_of_type<(zero_m_per_s + 10 * isq::height[m] / (2 * isq::time[s])) + (10 * isq::height[m] / (2 * isq::time[s])),
-             quantity_point<(isq::height / isq::time)[m / s], zero_m_per_s, int>>);
-
-static_assert((quantity_point{5 * isq::speed[m / s]} + 10 * isq::length[m] / (2 * isq::time[s])).quantity_from_zero() ==
-              10 * isq::speed[m / s]);
-static_assert((10 * isq::length[m] / (2 * isq::time[s]) + quantity_point{5 * isq::speed[m / s]}).quantity_from_zero() ==
-              10 * isq::speed[m / s]);
-static_assert((quantity_point{5 * isq::speed[m / s]} - 10 * isq::length[m] / (2 * isq::time[s])).quantity_from_zero() ==
-              0 * isq::speed[m / s]);
-
-static_assert((quantity_point{10 * isq::length[m] / (2 * isq::time[s])} + 5 * isq::speed[m / s]).quantity_from_zero() ==
-              10 * isq::speed[m / s]);
-static_assert((5 * isq::speed[m / s] + quantity_point{10 * isq::length[m] / (2 * isq::time[s])}).quantity_from_zero() ==
-              10 * isq::speed[m / s]);
-static_assert((quantity_point{10 * isq::length[m] / (2 * isq::time[s])} - 5 * isq::speed[m / s]).quantity_from_zero() ==
-              0 * isq::speed[m / s]);
-
-static_assert((quantity_point{5 * isq::speed[m / s]} + 10 * isq::height[m] / (2 * isq::time[s])).quantity_from_zero() ==
-              10 * isq::speed[m / s]);
-static_assert((10 * isq::height[m] / (2 * isq::time[s]) + quantity_point{5 * isq::speed[m / s]}).quantity_from_zero() ==
-              10 * isq::speed[m / s]);
-static_assert((quantity_point{5 * isq::speed[m / s]} - 10 * isq::height[m] / (2 * isq::time[s])).quantity_from_zero() ==
-              0 * isq::speed[m / s]);
-
-static_assert(is_of_type<quantity_point{10 * isq::length[m] / (2 * isq::time[s])} + 5 * isq::speed[m / s],
-                         quantity_point<isq::speed[m / s], zeroth_point_origin<isq::speed>, int>>);
-static_assert(is_of_type<10 * isq::height[m] / (2 * isq::time[s]) + quantity_point{5 * isq::speed[m / s]},
-                         quantity_point<isq::speed[m / s], zeroth_point_origin<isq::speed>, int>>);
-static_assert(is_of_type<quantity_point{5 * isq::speed[m / s]} + 10 * isq::height[m] / (2 * isq::time[s]),
-                         quantity_point<isq::speed[m / s], zeroth_point_origin<isq::speed>, int>>);
-static_assert(is_of_type<5 * isq::speed[m / s] + quantity_point{10 * isq::length[m] / (2 * isq::time[s])},
-                         quantity_point<isq::speed[m / s], zeroth_point_origin<isq::speed>, int>>);
-static_assert(is_of_type<quantity_point{10 * isq::length[m] / (2 * isq::time[s])} - 5 * isq::speed[m / s],
-                         quantity_point<isq::speed[m / s], zeroth_point_origin<isq::speed>, int>>);
-static_assert(is_of_type<quantity_point{5 * isq::speed[m / s]} - 10 * isq::height[m] / (2 * isq::time[s]),
-                         quantity_point<isq::speed[m / s], zeroth_point_origin<isq::speed>, int>>);
-static_assert(
-  is_of_type<quantity_point{10 * isq::length[m] / (2 * isq::time[s])} - quantity_point{5 * isq::speed[m / s]},
-             quantity<isq::speed[m / s], int>>);
-static_assert(
-  is_of_type<quantity_point{5 * isq::speed[m / s]} - quantity_point{10 * isq::length[m] / (2 * isq::time[s])},
-             quantity<isq::speed[m / s], int>>);
-
-static_assert(
-  is_of_type<quantity_point{10 * isq::height[m] / (2 * isq::time[s])} + (10 * isq::height[m] / (2 * isq::time[s])),
-             quantity_point<(isq::height / isq::time)[m / s], zeroth_point_origin<isq::height / isq::time>, int>>);
+  is_of_type<
+    quantity_point{10 * isq::height[m] / (2 * isq::duration[s])} + (10 * isq::height[m] / (2 * isq::duration[s])),
+    quantity_point<(isq::height / isq::duration)[m / s], zeroth_point_origin<isq::height / isq::duration>, int>>);
 
 inline constexpr struct zero_Hz final : absolute_point_origin<kind_of<isq::frequency>> {
 } zero_Hz;
@@ -1706,21 +1709,25 @@ static_assert(invalid_addition(5 * isq::activity[Bq], zero_Hz + 5 * isq::frequen
 static_assert(invalid_subtraction(zero_Bq + 5 * isq::activity[Bq], 5 * isq::frequency[Hz]));
 static_assert(invalid_subtraction(zero_Bq + 5 * isq::activity[Bq], zero_Hz + 5 * isq::frequency[Hz]));
 
-static_assert(invalid_addition(zero_Bq + 5 * isq::activity[Bq], 10 / (2 * isq::time[s]), 5 * isq::frequency[Hz]));
+static_assert(invalid_addition(zero_Bq + 5 * isq::activity[Bq], 10 / (2 * isq::duration[s]), 5 * isq::frequency[Hz]));
 static_assert(invalid_addition(5 * isq::activity[Bq], zero_Hz + 10 / (2 * isq::period_duration[s]),
                                5 * isq::frequency[Hz]));
-static_assert(invalid_addition(5 * isq::activity[Bq], 10 / (2 * isq::time[s]), zero_Hz + 5 * isq::frequency[Hz]));
-static_assert(invalid_subtraction(zero_Bq + 5 * isq::activity[Bq], 10 / (2 * isq::time[s]), 5 * isq::frequency[Hz]));
+static_assert(invalid_addition(5 * isq::activity[Bq], 10 / (2 * isq::duration[s]), zero_Hz + 5 * isq::frequency[Hz]));
+static_assert(invalid_subtraction(zero_Bq + 5 * isq::activity[Bq], 10 / (2 * isq::duration[s]),
+                                  5 * isq::frequency[Hz]));
 
 static_assert(invalid_addition(quantity_point{5 * isq::activity[Bq]}, 5 * isq::frequency[Hz]));
 static_assert(invalid_addition(5 * isq::activity[Bq], quantity_point{5 * isq::frequency[Hz]}));
 static_assert(invalid_subtraction(quantity_point{5 * isq::activity[Bq]}, 5 * isq::frequency[Hz]));
 static_assert(invalid_subtraction(quantity_point{5 * isq::activity[Bq]}, quantity_point{5 * isq::frequency[Hz]}));
 
-static_assert(invalid_addition(quantity_point{5 * isq::activity[Bq]}, 10 / (2 * isq::time[s]), 5 * isq::frequency[Hz]));
-static_assert(invalid_addition(5 * isq::activity[Bq], quantity_point{10 / (2 * isq::time[s])}, 5 * isq::frequency[Hz]));
-static_assert(invalid_addition(5 * isq::activity[Bq], 10 / (2 * isq::time[s]), quantity_point{5 * isq::frequency[Hz]}));
-static_assert(invalid_subtraction(quantity_point{5 * isq::activity[Bq]}, 10 / (2 * isq::time[s]),
+static_assert(invalid_addition(quantity_point{5 * isq::activity[Bq]}, 10 / (2 * isq::duration[s]),
+                               5 * isq::frequency[Hz]));
+static_assert(invalid_addition(5 * isq::activity[Bq], quantity_point{10 / (2 * isq::duration[s])},
+                               5 * isq::frequency[Hz]));
+static_assert(invalid_addition(5 * isq::activity[Bq], 10 / (2 * isq::duration[s]),
+                               quantity_point{5 * isq::frequency[Hz]}));
+static_assert(invalid_subtraction(quantity_point{5 * isq::activity[Bq]}, 10 / (2 * isq::duration[s]),
                                   5 * isq::frequency[Hz]));
 
 // value_cast
@@ -1775,5 +1782,32 @@ static_assert(value_cast<quantity_point<isq::height[mm], ground_level, std::int8
                 quantity_point{4210 * isq::height[cm], mean_sea_level})
                 .quantity_from_origin_is_an_implementation_detail_.numerical_value_in(mm) == 100);
 
+//////////////////
+// explicit conversion
+//////////////////
+
+static_assert(is_of_type<isq::height(zeroth_length + 1 * m), quantity_point<isq::height[m], zeroth_length, int>>);
+static_assert(
+  is_of_type<isq::height(zeroth_length + isq::length(1 * m)), quantity_point<isq::height[m], zeroth_length, int>>);
+static_assert(
+  is_of_type<kind_of<isq::length>(zeroth_length + isq::length(1 * m)), quantity_point<si::metre, zeroth_length, int>>);
+static_assert(
+  is_of_type<kind_of<isq::length>(zeroth_length + isq::height(1 * m)), quantity_point<si::metre, zeroth_length, int>>);
+
+
+//////////////////
+// quantity_cast
+//////////////////
+
+static_assert(
+  is_of_type<quantity_cast<isq::height>(zeroth_length + 1 * m), quantity_point<isq::height[m], zeroth_length, int>>);
+static_assert(is_of_type<quantity_cast<isq::height>(zeroth_length + isq::length(1 * m)),
+                         quantity_point<isq::height[m], zeroth_length, int>>);
+static_assert(is_of_type<quantity_cast<isq::height>(zeroth_length + isq::width(1 * m)),
+                         quantity_point<isq::height[m], zeroth_length, int>>);
+static_assert(is_of_type<quantity_cast<kind_of<isq::length>>(zeroth_length + isq::length(1 * m)),
+                         quantity_point<si::metre, zeroth_length, int>>);
+static_assert(is_of_type<quantity_cast<kind_of<isq::length>>(zeroth_length + isq::height(1 * m)),
+                         quantity_point<si::metre, zeroth_length, int>>);
 
 }  // namespace

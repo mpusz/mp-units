@@ -123,7 +123,7 @@ template<typename QP, mp_units::QuantityPoint QM, mp_units::QuantityOf<mp_units:
 }
 
 template<typename QP1, typename QP2, mp_units::QuantityPoint QM, mp_units::QuantityOf<mp_units::dimensionless> K,
-         mp_units::QuantityOf<mp_units::isq::time> T>
+         mp_units::QuantityOf<mp_units::isq::duration> T>
   requires(implicitly_convertible(QM::quantity_spec, QP1::quantity_spec))
 [[nodiscard]] constexpr system_state<QP1, QP2> state_update(const system_state<QP1, QP2>& predicted, QM measured,
                                                             std::array<K, 2> gain, T interval)
@@ -134,7 +134,7 @@ template<typename QP1, typename QP2, mp_units::QuantityPoint QM, mp_units::Quant
 }
 
 template<typename QP1, typename QP2, typename QP3, mp_units::QuantityPoint QM,
-         mp_units::QuantityOf<mp_units::dimensionless> K, mp_units::QuantityOf<mp_units::isq::time> T>
+         mp_units::QuantityOf<mp_units::dimensionless> K, mp_units::QuantityOf<mp_units::isq::duration> T>
   requires(implicitly_convertible(QM::quantity_spec, QP1::quantity_spec))
 [[nodiscard]] constexpr system_state<QP1, QP2, QP3> state_update(const system_state<QP1, QP2, QP3>& predicted,
                                                                  QM measured, std::array<K, 3> gain, T interval)
@@ -161,7 +161,7 @@ template<mp_units::QuantityPoint... QPs, mp_units::QuantityPoint QP, mp_units::Q
 
 
 // state extrapolation
-template<typename QP1, typename QP2, mp_units::QuantityOf<mp_units::isq::time> T>
+template<typename QP1, typename QP2, mp_units::QuantityOf<mp_units::isq::duration> T>
 [[nodiscard]] constexpr system_state<QP1, QP2> state_extrapolation(const system_state<QP1, QP2>& estimated, T interval)
 {
   auto to_quantity = [](const auto& qp) { return qp.quantity_ref_from(qp.point_origin); };
@@ -170,7 +170,7 @@ template<typename QP1, typename QP2, mp_units::QuantityOf<mp_units::isq::time> T
   return system_state<QP1, QP2>{qp1, qp2};
 }
 
-template<typename QP1, typename QP2, typename QP3, mp_units::QuantityOf<mp_units::isq::time> T>
+template<typename QP1, typename QP2, typename QP3, mp_units::QuantityOf<mp_units::isq::duration> T>
 [[nodiscard]] constexpr system_state<QP1, QP2, QP3> state_extrapolation(const system_state<QP1, QP2, QP3>& estimated,
                                                                         T interval)
 {

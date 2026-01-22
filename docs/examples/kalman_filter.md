@@ -2,8 +2,7 @@
 tags:
   - Level - Advanced
   - System - SI
-  - System - International
-  - Feature - ISQ
+  - System - ISQ
   - Feature - Affine Space
   - Domain - Aerospace
   - Domain - Embedded Systems
@@ -144,7 +143,7 @@ All operations preserve dimensional correctness:
 === "State Extrapolation"
 
     ```cpp
-    template<typename QP1, typename QP2, QuantityOf<isq::time> T>
+    template<typename QP1, typename QP2, QuantityOf<isq::duration> T>
     [[nodiscard]] constexpr system_state<QP1, QP2> state_extrapolation(const system_state<QP1, QP2>& estimated,
                                                                        T interval)
     {

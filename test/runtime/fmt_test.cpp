@@ -354,7 +354,7 @@ TEST_CASE("default quantity formatting", "[quantity][ostream][fmt]")
 
   SECTION("quantity with a predefined prefixed unit")
   {
-    const auto q = 125 * isq::time[us];
+    const auto q = 125 * isq::duration[us];
     os << q;
 
     SECTION("iostream") { CHECK(os.str() == "125 µs"); }
@@ -370,7 +370,7 @@ TEST_CASE("default quantity formatting", "[quantity][ostream][fmt]")
     {
       SECTION("acceleration")
       {
-        const auto q = 20 * isq::length[m] / (2 * isq::time[s]) / (1 * isq::time[s]);
+        const auto q = 20 * isq::length[m] / (2 * isq::duration[s]) / (1 * isq::duration[s]);
         os << q;
 
         SECTION("iostream") { CHECK(os.str() == "10 m/s²"); }
@@ -418,7 +418,7 @@ TEST_CASE("default quantity formatting", "[quantity][ostream][fmt]")
     {
       SECTION("speed")
       {
-        const auto q = 20 * isq::length[km] / (2 * isq::time[h]);
+        const auto q = 20 * isq::length[km] / (2 * isq::duration[h]);
         os << q;
 
         SECTION("iostream") { CHECK(os.str() == "10 km/h"); }
@@ -745,7 +745,7 @@ TEST_CASE("quantity subentities selection", "[quantity][fmt]")
     {
       SECTION("positive value")
       {
-        CHECK(MP_UNITS_STD_FMT::format("{:%N}", 221. * isq::length[km] / (2 * isq::time[h])) == "110.5");
+        CHECK(MP_UNITS_STD_FMT::format("{:%N}", 221. * isq::length[km] / (2 * isq::duration[h])) == "110.5");
       }
 
       SECTION("negative value")
@@ -774,7 +774,7 @@ TEST_CASE("quantity subentities selection", "[quantity][fmt]")
   {
     CHECK(MP_UNITS_STD_FMT::format("{:%U}", 123 * isq::speed[km / h]) == "km/h");
     CHECK(MP_UNITS_STD_FMT::format("{:%U}", 123 * isq::resistance[si::kilo<si::ohm>]) == "kΩ");
-    CHECK(MP_UNITS_STD_FMT::format("{:%U}", 123 * isq::time[us]) == "µs");
+    CHECK(MP_UNITS_STD_FMT::format("{:%U}", 123 * isq::duration[us]) == "µs");
     CHECK(MP_UNITS_STD_FMT::format("{:%U}", v{1, 2, 3} * isq::acceleration[m / s2]) == "m/s²");
     CHECK(MP_UNITS_STD_FMT::format("{:%U}", 123 * percent) == "%");
   }
@@ -1099,7 +1099,7 @@ TEST_CASE("check if `value_cast` properly changes the numerical value of a quant
 
   SECTION("int to double representation")
   {
-    const auto q = 121 * isq::length[km] / (2 * isq::time[h]);
+    const auto q = 121 * isq::length[km] / (2 * isq::duration[h]);
 
     SECTION("original")
     {
@@ -1122,7 +1122,7 @@ TEST_CASE("check if `value_cast` properly changes the numerical value of a quant
 
   SECTION("double to int representation")
   {
-    const auto q = 121. * isq::length[km] / (2 * isq::time[h]);
+    const auto q = 121. * isq::length[km] / (2 * isq::duration[h]);
 
     SECTION("original")
     {

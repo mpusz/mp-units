@@ -38,14 +38,14 @@ import std;
 import mp_units;
 #else
 #include <mp-units/systems/imperial.h>
-#include <mp-units/systems/international.h>  // IWYU pragma: keep
 #include <mp-units/systems/isq/mechanics.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si.h>
+#include <mp-units/systems/yard_pound.h>  // IWYU pragma: keep
 #endif
 
 using namespace mp_units;
-using namespace mp_units::international::unit_symbols;
+using namespace mp_units::yard_pound::unit_symbols;
 using namespace mp_units::si::unit_symbols;
 
 
@@ -92,7 +92,7 @@ void print_details(std::string_view description, const Ship& ship)
 
 int main()
 {
-  using mp_units::international::unit_symbols::ft;  // collides with si::femto<si::tonne>
+  using mp_units::yard_pound::unit_symbols::ft;  // collides with si::femto<si::tonne>
 
   // KMS Bismark, using the units the Germans would use, taken from Wiki
   auto bismark = Ship{.length{251. * m},

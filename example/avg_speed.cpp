@@ -35,9 +35,9 @@ import std;
 import mp_units;
 #else
 #include <mp-units/systems/cgs.h>
-#include <mp-units/systems/international.h>
 #include <mp-units/systems/isq.h>
 #include <mp-units/systems/si.h>
+#include <mp-units/systems/yard_pound.h>
 #endif
 
 namespace {
@@ -55,12 +55,12 @@ constexpr quantity<si::metre / si::second> fixed_double_si_avg_speed(quantity<si
   return d / t;
 }
 
-constexpr QuantityOf<isq::speed> auto avg_speed(QuantityOf<isq::length> auto d, QuantityOf<isq::time> auto t)
+constexpr QuantityOf<isq::speed> auto avg_speed(QuantityOf<isq::length> auto d, QuantityOf<isq::duration> auto t)
 {
   return d / t;
 }
 
-template<QuantityOf<isq::length> D, QuantityOf<isq::time> T, QuantityOf<isq::speed> V>
+template<QuantityOf<isq::length> D, QuantityOf<isq::duration> T, QuantityOf<isq::speed> V>
 void print_result(D distance, T duration, V speed)
 {
   const auto result_in_kmph = speed.force_in(si::kilo<si::metre> / non_si::hour);
@@ -97,14 +97,14 @@ void example()
     print_result(distance, duration, avg_speed(distance, duration));
   }
 
-  // International mile (int)
+  // Yard-pound mile (int)
   {
-    using namespace mp_units::international::unit_symbols;
+    using namespace mp_units::yard_pound::unit_symbols;
 
     constexpr auto distance = 140 * mi;
     constexpr auto duration = 2 * h;
 
-    std::cout << "\nInternational mile with 'int' as representation\n";
+    std::cout << "\nYard-pound mile with 'int' as representation\n";
 
     // it is not possible to make a lossless conversion of miles to meters on an integral type
     // (explicit cast needed)
@@ -113,14 +113,14 @@ void example()
     print_result(distance, duration, avg_speed(distance, duration));
   }
 
-  // International mile (double)
+  // Yard-pound mile (double)
   {
-    using namespace mp_units::international::unit_symbols;
+    using namespace mp_units::yard_pound::unit_symbols;
 
     constexpr auto distance = 140. * mi;
     constexpr auto duration = 2. * h;
 
-    std::cout << "\nInternational mile with 'double' as representation\n";
+    std::cout << "\nYard-pound mile with 'double' as representation\n";
 
     // conversion from a floating-point to an integral type is a truncating one so an explicit cast is needed
     // also it is not possible to make a lossless conversion of miles to meters on an integral type

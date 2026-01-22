@@ -3,11 +3,12 @@ tags:
   - Level - Advanced
   - System - ISQ
   - System - SI
-  - System - International
+  - System - Yard-Pound
   - Feature - Affine Space
   - Feature - Custom Representation
   - Feature - Multi-System Units
   - Feature - Custom Quantities
+  - Feature - Representation Types
   - Feature - Text Formatting
   - Domain - Aerospace
   - Domain - Aviation
@@ -136,7 +137,7 @@ The example naturally mixes unit systems as aviators actually do:
 ```
 
 - **SI units** (`km/h`, `m/s`) for glider performance
-- **Imperial/International units** (`ft`) for _altitude_ (standard in aviation)
+- **Yard-Pound units** (`ft`) for _altitude_ (standard in aviation)
 - **_Latitude_/_longitude_** in degrees with custom literals
 
 **mp-units** handles these conversions automatically and safely.
@@ -156,7 +157,7 @@ _Timestamps_ are absolute points in _time_, not _durations_ - correctly modeled 
 
 ```cpp
 QUANTITY_SPEC(rate_of_climb_speed, mp_units::isq::speed,
-              mp_units::isq::height / mp_units::isq::time);
+              mp_units::isq::height / mp_units::isq::duration);
 ```
 
 Creates a specialized _speed_ quantity specifically for vertical movement, distinct from

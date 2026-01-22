@@ -42,10 +42,13 @@ QUANTITY_SPEC(linear_expansion_coefficient, inverse(length) * (length / thermody
 QUANTITY_SPEC(cubic_expansion_coefficient, inverse(volume) * (volume / thermodynamic_temperature));
 QUANTITY_SPEC(relative_pressure_coefficient, inverse(pressure) * (pressure / thermodynamic_temperature));
 QUANTITY_SPEC(pressure_coefficient, pressure / thermodynamic_temperature);
-QUANTITY_SPEC(isothermal_compressibility, inverse(volume) * (volume / pressure));  // TODO how to handle "negative" part
-QUANTITY_SPEC(isentropic_compressibility, inverse(volume) * (volume / pressure));  // TODO how to handle "negative" part
+QUANTITY_SPEC(isothermal_compressibility, compressibility, inverse(volume) * (volume / pressure),
+              is_kind);  // TODO how to handle "negative" part
+QUANTITY_SPEC(isentropic_compressibility, compressibility, inverse(volume) * (volume / pressure),
+              is_kind);  // TODO how to handle "negative" part
 // energy definition moved to mechanics
-QUANTITY_SPEC(heat, energy);
+QUANTITY_SPEC(internal_energy, energy);  // differs from ISO 80000
+QUANTITY_SPEC(heat, internal_energy);
 inline constexpr auto amount_of_heat = heat;
 QUANTITY_SPEC(latent_heat, heat);  // TODO what is a correct equation here?
 QUANTITY_SPEC(heat_flow_rate, heat / time);
@@ -70,20 +73,19 @@ QUANTITY_SPEC(isentropic_exponent,
 inline constexpr auto isentropic_expansion_factor = isentropic_exponent;
 QUANTITY_SPEC(entropy, kinetic_energy / thermodynamic_temperature);
 QUANTITY_SPEC(specific_entropy, entropy / mass);
-QUANTITY_SPEC(enthalpy, energy);           // differs from ISO 80000
-QUANTITY_SPEC(internal_energy, enthalpy);  // differs from ISO 80000
+QUANTITY_SPEC(enthalpy, internal_energy);  // differs from ISO 80000
 inline constexpr auto thermodynamic_energy = internal_energy;
 QUANTITY_SPEC(Helmholtz_energy, internal_energy);
 inline constexpr auto Helmholtz_function = Helmholtz_energy;
 QUANTITY_SPEC(Gibbs_energy, enthalpy);
 inline constexpr auto Gibbs_function = Gibbs_energy;
 QUANTITY_SPEC(specific_energy, energy / mass);
-QUANTITY_SPEC(specific_internal_energy, internal_energy / mass);
+QUANTITY_SPEC(specific_internal_energy, specific_energy, internal_energy / mass);
 inline constexpr auto specific_thermodynamic_energy = specific_internal_energy;
-QUANTITY_SPEC(specific_enthalpy, enthalpy / mass);
-QUANTITY_SPEC(specific_Helmholtz_energy, Helmholtz_energy / mass);
+QUANTITY_SPEC(specific_enthalpy, specific_internal_energy, enthalpy / mass);
+QUANTITY_SPEC(specific_Helmholtz_energy, specific_internal_energy, Helmholtz_energy / mass);
 inline constexpr auto specific_Helmholtz_function = specific_Helmholtz_energy;
-QUANTITY_SPEC(specific_Gibbs_energy, Gibbs_energy / mass);
+QUANTITY_SPEC(specific_Gibbs_energy, specific_enthalpy, Gibbs_energy / mass);
 inline constexpr auto specific_Gibbs_function = specific_Gibbs_energy;
 QUANTITY_SPEC(Massieu_function, Helmholtz_energy / thermodynamic_temperature);  // TODO how to handle "negative" part
 QUANTITY_SPEC(Planck_function, Gibbs_energy / thermodynamic_temperature);       // TODO how to handle "negative" part
@@ -91,8 +93,8 @@ QUANTITY_SPEC(Joule_Thomson_coefficient, thermodynamic_temperature / pressure);
 QUANTITY_SPEC(thermodynamic_efficiency, dimensionless, work / heat);
 QUANTITY_SPEC(maximum_efficiency, thermodynamic_temperature / thermodynamic_temperature);
 QUANTITY_SPEC(specific_gas_constant, entropy / mass);
-QUANTITY_SPEC(mass_concentration_of_water, mass / volume);
-QUANTITY_SPEC(mass_concentration_of_water_vapour, mass / volume);
+QUANTITY_SPEC(mass_concentration_of_water, mass_density, mass / volume, is_kind);
+QUANTITY_SPEC(mass_concentration_of_water_vapour, mass_density, mass / volume, is_kind);
 QUANTITY_SPEC(mass_ratio_of_water_to_dry_matter, mass / mass);
 QUANTITY_SPEC(mass_ratio_of_water_vapour_to_dry_gas, mass / mass);
 QUANTITY_SPEC(mass_fraction_of_water, mass_ratio_of_water_to_dry_matter / mass_ratio_of_water_to_dry_matter);

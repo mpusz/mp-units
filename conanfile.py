@@ -61,7 +61,6 @@ class MPUnitsConan(ConanFile):
         "no_crtp": [True, False],
         "contracts": ["none", "gsl-lite", "ms-gsl"],
         "freestanding": [True, False],
-        "natural_units": [True, False],
     }
     default_options = {
         # "cxx_modules" default set in config_options()
@@ -71,7 +70,6 @@ class MPUnitsConan(ConanFile):
         "import_std": False,  # still experimental in CMake
         "contracts": "gsl-lite",
         "freestanding": False,
-        "natural_units": True,
     }
     implements = ["auto_header_only"]
     exports = "LICENSE.md"
@@ -285,7 +283,6 @@ class MPUnitsConan(ConanFile):
             tc.cache_variables["MP_UNITS_API_STD_FORMAT"] = opt.std_format
         tc.cache_variables["MP_UNITS_API_NO_CRTP"] = opt.no_crtp
         tc.cache_variables["MP_UNITS_API_CONTRACTS"] = str(opt.contracts).upper()
-        tc.cache_variables["MP_UNITS_API_NATURAL_UNITS"] = opt.natural_units
 
         tc.generate()
         deps = CMakeDeps(self)
@@ -345,10 +342,6 @@ class MPUnitsConan(ConanFile):
             # handle API options
             self.cpp_info.components["core"].defines.append(
                 "MP_UNITS_API_NO_CRTP=" + str(int(self.options.no_crtp == True))
-            )
-            self.cpp_info.components["core"].defines.append(
-                "MP_UNITS_API_NATURAL_UNITS="
-                + str(int(self.options.natural_units == True))
             )
 
             # handle hosted configuration

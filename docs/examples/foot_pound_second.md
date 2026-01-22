@@ -11,7 +11,7 @@ tags:
 
 # Working with Imperial and FPS Units
 
-[Try it live on Compiler Explorer](https://godbolt.org/z/aWvvfMPMf){ .md-button }
+[Try it live on Compiler Explorer](https://godbolt.org/z/dzKP7dETq){ .md-button }
 
 ## Overview
 

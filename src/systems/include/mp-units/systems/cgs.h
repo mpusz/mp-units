@@ -23,6 +23,7 @@
 #pragma once
 
 #include <mp-units/bits/module_macros.h>
+#include <mp-units/systems/si/unit_symbols.h>
 #include <mp-units/systems/si/units.h>
 
 // IWYU pragma: begin_exports
@@ -36,8 +37,8 @@ namespace mp_units::cgs {
 
 // clang-format off
 inline constexpr auto centimetre = si::centi<si::metre>;
-inline constexpr auto gram = si::gram;
-inline constexpr auto second = si::second;
+using si::gram;
+using si::second;
 inline constexpr struct gal final : named_unit<"Gal", centimetre / square(second)> {} gal;
 inline constexpr struct dyne final : named_unit<"dyn", gram * centimetre / square(second)> {} dyne;
 inline constexpr struct erg final : named_unit<"erg", dyne * centimetre> {} erg;
@@ -49,11 +50,12 @@ inline constexpr struct kayser final : named_unit<"K", one / centimetre> {} kays
 
 namespace unit_symbols {
 
-inline constexpr auto cm = centimetre;
-inline constexpr auto g = gram;
-inline constexpr auto s = second;
+using si::unit_symbols::cm;
+using si::unit_symbols::g;
+using si::unit_symbols::s;
 inline constexpr auto Gal = gal;
 inline constexpr auto dyn = dyne;
+using cgs::erg;
 inline constexpr auto Ba = barye;
 inline constexpr auto P = poise;
 inline constexpr auto St = stokes;
@@ -62,8 +64,8 @@ inline constexpr auto K = kayser;
 // commonly used squared and cubic units
 inline constexpr auto cm2 = square(centimetre);
 inline constexpr auto cm3 = cubic(centimetre);
-inline constexpr auto s2 = square(second);
-inline constexpr auto s3 = cubic(second);
+using si::unit_symbols::s2;
+using si::unit_symbols::s3;
 
 }  // namespace unit_symbols
 

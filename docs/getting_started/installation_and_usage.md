@@ -195,13 +195,6 @@ If you obtain them differently you may need to adjust some CMake files.
         [`-ffreestanding`](https://gcc.gnu.org/onlinedocs/gcc/C-Dialect-Options.html)
         compilation option without any issues.
 
-    [`MP_UNITS_API_NATURAL_UNITS`](#MP_UNITS_API_NATURAL_UNITS){ #MP_UNITS_API_NATURAL_UNITS }
-
-    :   [:octicons-tag-24: 2.5.0][release-2-5-0] · :octicons-milestone-24:
-        `ON`/`OFF` (Default: `ON`)
-
-        Enables experimental natural units systems support.
-
 [release-2-2-0]: https://github.com/mpusz/mp-units/releases/tag/v2.2.0
 [release-2-3-0]: https://github.com/mpusz/mp-units/releases/tag/v2.3.0
 [release-2-5-0]: https://github.com/mpusz/mp-units/releases/tag/v2.5.0

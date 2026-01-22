@@ -41,27 +41,6 @@ import std;
 
 namespace mp_units {
 
-namespace detail {
-
-template<typename T>
-concept WeaklyRegular = std::copyable<T> && std::equality_comparable<T>;
-
-template<typename T, typename S>
-concept ScalableWith = requires(const T v, const S s) {
-  { v * s / s } -> std::common_with<T>;
-  { s * v / s } -> std::common_with<T>;
-  { v / s * s } -> std::common_with<T>;
-};
-
-template<typename T>
-concept Addable = requires(const T a, const T b) {
-  { -a } -> std::common_with<T>;
-  { a + b } -> std::common_with<T>;
-  { a - b } -> std::common_with<T>;
-};
-
-}  // namespace detail
-
 /**
  * @brief Quantity character
  *
@@ -83,6 +62,54 @@ concept Addable = requires(const T a, const T b) {
  */
 MP_UNITS_EXPORT enum class quantity_character : std::int8_t { real_scalar, complex_scalar, vector, tensor };
 
+namespace detail {
+
+template<typename T>
+concept WeaklyRegular = std::copyable<T> && std::equality_comparable<T>;
+
+template<typename T, typename S>
+concept ScalableWith = requires(const T v, const S s) {
+  { v * s / s } -> std::common_with<T>;
+  { s * v / s } -> std::common_with<T>;
+  { v / s * s } -> std::common_with<T>;
+};
+
+template<typename T>
+concept Addable = requires(const T a, const T b) {
+  { -a } -> std::common_with<T>;
+  { a + b } -> std::common_with<T>;
+  { a - b } -> std::common_with<T>;
+};
+
+template<typename T>
+concept NumberLike = Addable<T>
+#if MP_UNITS_COMP_GCC != 12 && !defined(MP_UNITS_XCODE15_HACKS)
+                     && WeaklyRegular<T>
+#endif
+  ;
+
+template<typename T>
+concept BaseScalar = NumberLike<T> && ScalableWith<T, T>;
+
+}  // namespace detail
+
+
+/////////////// REAL SCALAR ///////////////
+
+MP_UNITS_EXPORT template<typename T>
+constexpr bool disable_real = false;
+
+template<>
+MP_UNITS_INLINE constexpr bool disable_real<bool> = true;
+
+namespace detail {
+
+template<typename T>
+concept RealScalar = (!disable_real<T>) && BaseScalar<T> && std::totally_ordered<T>;
+
+}
+
+
 /////////////// COMPLEX SCALAR ///////////////
 
 namespace detail::real_impl {
@@ -91,7 +118,7 @@ void real() = delete;  // poison pill
 
 struct real_t {
   // TODO how to constrain the return with RealScalar?
-  [[nodiscard]] constexpr auto operator()(const WeaklyRegular auto& clx) const
+  [[nodiscard]] constexpr auto operator()(const auto& clx) const
     requires requires { clx.real(); } || requires { real(clx); }
   {
     if constexpr (requires { clx.real(); })
@@ -115,7 +142,7 @@ void imag() = delete;  // poison pill
 
 struct imag_t {
   // TODO how to constrain the return with RealScalar?
-  [[nodiscard]] constexpr auto operator()(const WeaklyRegular auto& clx) const
+  [[nodiscard]] constexpr auto operator()(const auto& clx) const
     requires requires { clx.imag(); } || requires { imag(clx); }
   {
     if constexpr (requires { clx.imag(); })
@@ -140,7 +167,7 @@ void abs() = delete;      // poison pill
 
 struct modulus_t {
   // TODO how to constrain the return with RealScalar?
-  [[nodiscard]] constexpr auto operator()(const WeaklyRegular auto& clx) const
+  [[nodiscard]] constexpr auto operator()(const auto& clx) const
     requires requires { clx.modulus(); } || requires { modulus(clx); } || requires { clx.abs(); } ||
              requires { abs(clx); }
   {
@@ -167,45 +194,13 @@ MP_UNITS_EXPORT inline constexpr ::mp_units::detail::modulus_impl::modulus_t mod
 namespace detail {
 
 template<typename T>
-concept NumberLike = Addable<T>
-#if MP_UNITS_COMP_GCC != 12 && !defined(MP_UNITS_XCODE15_HACKS)
-                     && WeaklyRegular<T>
-#endif
-  ;
-
-template<typename T>
-concept BaseScalar = NumberLike<T> && ScalableWith<T, T>;
-
-template<typename T>
-concept HasComplexOperations = requires(const T v, const T& ref) {
+concept ComplexScalar = requires(const T v, const T& ref) {
   requires std::constructible_from<T, decltype(::mp_units::real(ref)), decltype(::mp_units::imag(ref))>;
   ::mp_units::real(v);
   ::mp_units::imag(v);
   ::mp_units::modulus(v);
   requires ScalableWith<T, decltype(::mp_units::modulus(v))>;
-};
-
-template<typename T>
-concept ComplexScalar =
-  // TODO should the below be provided?
-  // (!disable_complex<T>) &&
-  HasComplexOperations<T> && BaseScalar<T>;
-
-}  // namespace detail
-
-
-/////////////// REAL SCALAR ///////////////
-
-MP_UNITS_EXPORT template<typename T>
-constexpr bool disable_real = false;
-
-template<>
-MP_UNITS_INLINE constexpr bool disable_real<bool> = true;
-
-namespace detail {
-
-template<typename T>
-concept RealScalar = (!disable_real<T>) && (!HasComplexOperations<T>) && BaseScalar<T> && std::totally_ordered<T>;
+} && BaseScalar<T>;
 
 template<typename T>
 concept Scalar = RealScalar<T> || ComplexScalar<T>;
@@ -221,7 +216,7 @@ void magnitude() = delete;  // poison pill
 void abs() = delete;        // poison pill
 
 struct magnitude_t {
-  template<WeaklyRegular T>
+  template<typename T>
   [[nodiscard]] constexpr Scalar auto operator()(const T& vec) const
     requires requires { vec.magnitude(); } || requires { magnitude(vec); } ||
              (RealScalar<T> && (std::is_arithmetic_v<T> || requires { vec.abs(); } || requires { abs(vec); }))

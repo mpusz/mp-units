@@ -85,7 +85,7 @@ fail to compile.
 
 It turns out that the above issues can't be solved correctly without proper
 modeling of a
-[system of quantities](../../appendix/glossary.md#system-of-quantities).
+[system of quantities](../../reference/glossary.md#system-of-quantities).
 
 
 ## Quantities of the same kind
@@ -131,7 +131,7 @@ More than one quantity may be defined for the same dimension:
   _wavelength_, _position vector_).
 
 Two quantities can't be added, subtracted, or compared unless they belong to
-the same [kind](../../appendix/glossary.md#kind). As _frequency_, _activity_,
+the same [kind](../../reference/glossary.md#kind). As _frequency_, _activity_,
 and _modulation rate_ are of different kinds, the expression provided above
 should not compile.
 
@@ -148,8 +148,8 @@ ISO 80000-3:
 ```mermaid
 flowchart TD
     length["<b>length</b><br>[m]"]
-    length --- width["<b>width</b> / <b>breadth</b>"]
-    length --- height["<b>height</b> / <b>depth</b> / <b>altitude</b>"]
+    length --- width["<b>width</b> | <b>breadth</b>"]
+    length --- height["<b>height</b> | <b>depth</b> | <b>altitude</b>"]
     width --- thickness["<b>thickness</b>"]
     width --- diameter["<b>diameter</b>"]
     width --- radius["<b>radius</b>"]
@@ -256,9 +256,9 @@ rules:
     - _time_ has nothing in common with _length_.
 
     ```cpp
-    static_assert(!implicitly_convertible(isq::time, isq::length));
-    static_assert(!explicitly_convertible(isq::time, isq::length));
-    static_assert(!castable(isq::time, isq::length));
+    static_assert(!implicitly_convertible(isq::duration, isq::length));
+    static_assert(!explicitly_convertible(isq::duration, isq::length));
+    static_assert(!castable(isq::duration, isq::length));
     ```
 
     Even the explicit casts will not force such a conversion:
@@ -326,7 +326,7 @@ Additionally, the result of operations on quantity kinds is also a quantity
 kind:
 
 ```cpp
-static_assert(same_type<kind_of<isq::length> / kind_of<isq::time>, kind_of<isq::length / isq::time>>);
+static_assert(same_type<kind_of<isq::length> / kind_of<isq::duration>, kind_of<isq::length / isq::duration>>);
 ```
 
 However, if at least one equation's operand is not a quantity kind, the result
@@ -334,8 +334,8 @@ becomes a "strong" quantity where all the kinds are converted to the hierarchy
 tree's root quantities:
 
 ```cpp
-static_assert(!same_type<kind_of<isq::length> / isq::time, kind_of<isq::length / isq::time>>);
-static_assert(same_type<kind_of<isq::length> / isq::time, isq::length / isq::time>);
+static_assert(!same_type<kind_of<isq::length> / isq::duration, kind_of<isq::length / isq::duration>>);
+static_assert(same_type<kind_of<isq::length> / isq::duration, isq::length / isq::duration>);
 ```
 
 !!! info

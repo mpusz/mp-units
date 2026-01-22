@@ -78,13 +78,6 @@ add_mp_units_module(
     MODULE_INTERFACE_UNIT mp-units-core.cpp
 )
 
-if(MP_UNITS_API_NATURAL_UNITS)
-    target_sources(
-        mp-units-core PUBLIC FILE_SET HEADERS BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include FILES
-                             include/mp-units/framework/system_reference.h
-    )
-endif()
-
 if(NOT MP_UNITS_API_FREESTANDING)
     target_sources(
         mp-units-core
@@ -102,7 +95,7 @@ if(NOT MP_UNITS_API_FREESTANDING)
                include/mp-units/cartesian_vector.h
                include/mp-units/format.h # deprecated
                include/mp-units/math.h
-               include/mp-units/ostream.h
+               include/mp-units/ostream.h # deprecated
                include/mp-units/random.h
     )
 endif()
@@ -161,10 +154,8 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 endif()
 
 target_compile_definitions(
-    mp-units-core
-    ${MP_UNITS_TARGET_SCOPE} MP_UNITS_HOSTED=$<NOT:$<BOOL:${MP_UNITS_API_FREESTANDING}>>
-    MP_UNITS_API_NATURAL_UNITS=$<BOOL:${MP_UNITS_API_NATURAL_UNITS}>
-    MP_UNITS_API_THROWING_CONSTRAINTS=$<BOOL:${MP_UNITS_API_THROWING_CONSTRAINTS}>
+    mp-units-core ${MP_UNITS_TARGET_SCOPE} MP_UNITS_HOSTED=$<NOT:$<BOOL:${MP_UNITS_API_FREESTANDING}>>
+                  MP_UNITS_API_THROWING_CONSTRAINTS=$<BOOL:${MP_UNITS_API_THROWING_CONSTRAINTS}>
 )
 
 # https://github.com/llvm/llvm-project/issues/131410
