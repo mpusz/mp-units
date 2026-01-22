@@ -100,7 +100,6 @@ if(NOT MP_UNITS_API_FREESTANDING)
                include/mp-units/bits/requires_hosted.h
                include/mp-units/ext/format.h
                include/mp-units/cartesian_vector.h
-               include/mp-units/cartesian_tensor.h
                include/mp-units/format.h # deprecated
                include/mp-units/math.h
                include/mp-units/ostream.h
