@@ -1,7 +1,7 @@
-# Tutorial 3: Extracting Numeric Values for Legacy APIs
+# Workshop 3: Extracting Numeric Values for Legacy APIs
 
 When working with **mp-units**, you'll often need to interface with legacy code or
-external APIs that expect raw numeric values in specific units. This tutorial shows how
+external APIs that expect raw numeric values in specific units. This workshop shows how
 to safely extract numeric values from strongly-typed quantities while maintaining the
 benefits of compile-time unit checking.
 
@@ -11,7 +11,7 @@ responses.
 
 ## Problem statement
 
-This tutorial demonstrates how to:
+This workshop demonstrates how to:
 
 - Compute a physical quantity (_speed_) in one unit system (e.g., miles per hour),
 - Convert and pass it as a numeric value in another unit (e.g., km/h) to a legacy API,

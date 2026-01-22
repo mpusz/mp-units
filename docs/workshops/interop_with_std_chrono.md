@@ -1,7 +1,7 @@
-# Tutorial 6: Interop with `std::chrono`
+# Workshop 6: Interop with `std::chrono`
 
 Modern C++ applications often need to work with both time measurements (`std::chrono`) and
-physical quantities (**mp-units**). This tutorial shows how these complementary libraries
+physical quantities (**mp-units**). This workshop shows how these complementary libraries
 can work together effectively. We'll use an autonomous driving scenario where `std::chrono`
 handles system timestamps while **mp-units** ensures type-safe calculations on quantities.
 

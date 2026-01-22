@@ -1,4 +1,4 @@
-# Tutorial 11: Preventing Confusion with Distinct Kinds
+# Workshop 11: Preventing Confusion with Distinct Kinds
 
 Many engineering domains have quantities that share the same physical dimension but represent
 fundamentally different concepts. Hydraulic engineering uses "_head_"—a measure of
@@ -16,7 +16,7 @@ Traditional code using raw `double` values allows such mistakes to silently comp
 Remarkably, even units libraries from C++ and also other programming languages cannot
 prevent this error—they only check dimensional compatibility, not physical meaning.
 
-This tutorial demonstrates how **mp-units** uses `is_kind` to create distinct quantity
+This workshop demonstrates how **mp-units** uses `is_kind` to create distinct quantity
 **subkinds within an existing hierarchy**—a capability unique among units libraries worldwide.
 The key insight: `is_kind` lets quantities **inherit** properties (dimension, unit) from a
 parent while **isolating** them from each other. Just as the library prevents mixing

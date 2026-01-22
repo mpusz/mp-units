@@ -1,11 +1,11 @@
-# Tutorial 4: Working with Temperatures
+# Workshop 4: Working with Temperatures
 
 Temperature conversions are one of the most error-prone areas in scientific and
 engineering calculations. The distinction between _temperature points_ (absolute values)
 and _temperature differences_ (deltas) is crucial but often overlooked, leading to
 subtle bugs that can have serious real-world consequences.
 
-This tutorial will teach you how to use **mp-units** to handle temperature calculations
+This workshop will teach you how to use **mp-units** to handle temperature calculations
 correctly and safely, preventing common conversion errors that plague many codebases.
 
 

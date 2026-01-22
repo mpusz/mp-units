@@ -1,4 +1,4 @@
-# Tutorial 7: Custom Units for Dimensionless Counters
+# Workshop 7: Custom Units for Dimensionless Counters
 
 Many real-world applications involve counting discrete items—products, packages, vehicles—that
 have no physical dimensions but follow fixed scaling relationships. A carton contains a specific
@@ -10,7 +10,7 @@ Traditional code treats these as raw integers or floating-point numbers, leading
 - **Type confusion**: Accidentally adding units and cartons, or units and trucks
 - **Silent bugs**: Calculations compile but produce nonsense results
 
-This tutorial demonstrates how **mp-units** extends beyond physical quantities to create
+This workshop demonstrates how **mp-units** extends beyond physical quantities to create
 strongly-typed dimensionless counters for business and logistics domains, preventing these
 errors through compile-time type checking and automatic conversions.
 

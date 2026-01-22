@@ -1,6 +1,6 @@
-# Tutorial 10: Custom Base Dimensions
+# Workshop 10: Custom Base Dimensions
 
-This tutorial demonstrates when and how to create custom base dimensions for quantities that
+This workshop demonstrates when and how to create custom base dimensions for quantities that
 cannot be expressed in terms of existing ISQ dimensions. We'll build a stock portfolio
 tracking system using **shares** and **currency** as examples of fundamentally distinct
 quantities that need complete type separation.
@@ -31,7 +31,7 @@ currency / shares = (currency/share)    // ✅ Average share price
 
 ### Why not use dimensionless or existing ISQ dimensions?
 
-**Option 1: Dimensionless quantities** ([Tutorial 12](strongly_typed_counts.md) approach)
+**Option 1: Dimensionless quantities** ([Workshop 12](strongly_typed_counts.md) approach)
 
 - ❌ Shares aren't dimensionless — they have a distinct dimension
 - ❌ Using `one` as a unit doesn't make sense ("100 one" is not "100 shares")
@@ -368,9 +368,9 @@ int main()
 
 - [User's Guide: Systems of Quantities](../users_guide/framework_basics/systems_of_quantities.md)
 - [User's Guide: Systems of Units](../users_guide/framework_basics/systems_of_units.md)
-- [Tutorial 7: Custom Units for Dimensionless Counters](custom_dimensionless_units.md)
-- [Tutorial 11: Distinct Quantity Kinds](distinct_quantity_kinds.md)
-- [Tutorial 12: Strongly-Typed Counts](strongly_typed_counts.md)
+- [Workshop 7: Custom Units for Dimensionless Counters](custom_dimensionless_units.md)
+- [Workshop 11: Distinct Quantity Kinds](distinct_quantity_kinds.md)
+- [Workshop 12: Strongly-Typed Counts](strongly_typed_counts.md)
 - [Examples: Currency](../examples/currency.md)
 
 

@@ -1,5 +1,5 @@
 
-# Tutorial 8: Typed Quantities of the Same Kind
+# Workshop 8: Typed Quantities of the Same Kind
 
 When working with physical quantities, it's common to encounter values with the same unit
 and dimension but different meanings. For example, in route planning for oversized vehicles,
@@ -7,7 +7,7 @@ you may need to specify the cargo's _height_, _width_, and required _turn radius
 measured in meters. Accidentally swapping these arguments can lead to incorrect or unsafe
 results.
 
-This tutorial introduces the concept of typed quantities to prevent such mistakes and make
+This workshop introduces the concept of typed quantities to prevent such mistakes and make
 APIs self-documenting and robust.
 
 ## Problem statement
@@ -52,7 +52,7 @@ std::optional<std::pair<quantity<km>, quantity<min>>> find_route(quantity<m> hei
             << "- height: " << height << "\n"
             << "- width: " << width << "\n"
             << "- turn_radius: " << turn_radius << "\n";
-  // very simplified for the sake of this tutorial ;-)
+  // very simplified for the sake of this workshop ;-)
   if (height < 4.8 * m && width < 3.7 * m && turn_radius < 46 * m)
     return std::pair(342 * km, 286 * min);
   else
@@ -96,7 +96,7 @@ int main()
                 << "- height: " << height << "\n"
                 << "- width: " << width << "\n"
                 << "- turn_radius: " << turn_radius << "\n";
-      // very simplified for the sake of this tutorial ;-)
+      // very simplified for the sake of this workshop ;-)
       if (height < 4.8 * m && width < 3.7 * m && turn_radius < 46 * m)
         return std::pair(342 * km, 286 * min);
       else
@@ -168,7 +168,7 @@ int main()
 
     !!! note
         For domain-specific quantities not covered by ISQ, you can define custom quantity
-        specifications. This is covered in [Tutorial 9](custom_quantity_specifications.md).
+        specifications. This is covered in [Workshop 9](custom_quantity_specifications.md).
 
     ### When to use typed quantities
 

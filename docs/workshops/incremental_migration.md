@@ -1,9 +1,9 @@
-# Tutorial 14: Incremental Migration from Legacy Units
+# Workshop 14: Incremental Migration from Legacy Units
 
 Many codebases use home-grown strong-type wrappers or established units libraries like
 [Boost.Units](https://github.com/boostorg/units) or [nholthaus/units](https://github.com/nholthaus/units).
 Rewriting everything at once is risky—massive code churn, difficult validation, and
-team disruption. This tutorial demonstrates how to **safely extend and incrementally migrate**
+team disruption. This workshop demonstrates how to **safely extend and incrementally migrate**
 using **mp-units' interoperability layer**, allowing old and new code to coexist during
 transition.
 
@@ -13,7 +13,7 @@ while keeping existing code working unchanged. For complete details on `quantity
 see the [Interoperability with Other Libraries](../how_to_guides/interoperability_with_other_libraries.md)
 guide.
 
-**Key migration strategy**: This tutorial demonstrates an asymmetric approach to interoperability.
+**Key migration strategy**: This workshop demonstrates an asymmetric approach to interoperability.
 Legacy types can flow naturally into new **mp-units** code, gaining safety and modern features.
 However, when passing **mp-units** quantities back to legacy code, explicit conversions are
 required. This intentional asymmetry provides visible integration points, makes the migration

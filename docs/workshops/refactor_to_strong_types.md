@@ -1,6 +1,6 @@
-# Tutorial 1: Refactor to Strong Types
+# Workshop 1: Refactor to Strong Types
 
-In this tutorial, you’ll refactor a small legacy function that uses raw doubles into a
+In this workshop, you'll refactor a small legacy function that uses raw doubles into a
 type‑safe version using **mp-units**. The goal is to accept and return strong, unit‑aware
 types to prevent dimensional bugs at compile time.
 

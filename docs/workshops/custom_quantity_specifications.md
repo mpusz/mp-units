@@ -1,4 +1,4 @@
-# Tutorial 9: Custom Quantity Specifications
+# Workshop 9: Custom Quantity Specifications
 
 While the ISQ (International System of Quantities) provides many standard quantity types,
 real-world applications often require domain-specific distinctions between quantities that
@@ -6,7 +6,7 @@ share the same dimension. For example, in an elevator system, both _cabin mass_ 
 _passenger mass_ are masses (kg), but treating them as interchangeable could lead to
 incorrect calculations or unsafe designs.
 
-This tutorial teaches you how to define your own custom `quantity_spec` types to create
+This workshop teaches you how to define your own custom `quantity_spec` types to create
 semantic distinctions within your domain. You'll learn to extend the ISQ hierarchy with
 application-specific types that make APIs self-documenting and prevent subtle bugs at
 compile time.

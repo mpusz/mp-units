@@ -1,7 +1,7 @@
-# Tutorial 5: Affine Spaces and Reference Origins
+# Workshop 5: Affine Spaces and Reference Origins
 
 Many real-world measurements are relative to different reference points (origins).
-This tutorial explores how to use **mp-units** to safely handle absolute and relative quantities,
+This workshop explores how to use **mp-units** to safely handle absolute and relative quantities,
 using affine spaces. We'll use a real-world example: computing the _height_ of the
 Hochrheinbrücke bridge over the Rhine, given different AMSL (Above Mean Sea Level) reference
 levels in Germany and Switzerland.
@@ -26,14 +26,14 @@ The official AMSL reference in Germany is the Normalhöhennull (NHN).
 In Switzerland, it's the "Meter über Meer" system (Pierre du Niton),
 which is **27 cm lower** than NHN.
 
-For this tutorial, let's work with a simplified scenario:
+For this workshop, let's work with a simplified scenario:
 
 - A bridge deck is measured as 285 m above NHN (German reference)
 - The river surface is measured as 278 m above the Swiss reference system
 
 !!! Note
 
-    These are hypothetical height measurements used for this tutorial to demonstrate
+    These are hypothetical height measurements used for this workshop to demonstrate
     affine space concepts - they don't represent the actual elevations of the Hochrheinbrücke.
 
 ## Your task

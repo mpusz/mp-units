@@ -56,6 +56,7 @@ It includes:
 - **Design rationale** – Understanding the architectural decisions
 - **API reference** – Complete technical documentation
 - **Tutorials** – Step-by-step learning resources
+- **Workshops** – Hands-on practice exercises
 - **Examples** – Real-world usage demonstrations
 
 

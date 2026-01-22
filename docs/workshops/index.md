@@ -1,9 +1,18 @@
-# Tutorials
+# Workshops
 
-Welcome to the **mp-units** tutorials — your step-by-step guide to mastering type-safe
-physical quantities and units in C++.
+Welcome to the **mp-units** workshops — hands-on exercises to practice advanced patterns
+and techniques with type-safe physical quantities and units in C++.
 
-Each lesson is:
+!!! note "Prerequisites"
+
+    These workshops assume you are already familiar with **mp-units** basics. We recommend:
+
+    1. Complete the [Tutorials](../tutorials/index.md) first for step-by-step learning
+    2. Review the [User's Guide](../users_guide/terms_and_definitions.md) as needed for reference
+
+    Each workshop is exercise-driven with TODO markers guiding you through the implementation.
+
+Each workshop is:
 
 - **Exercise-driven:** Learn by doing, with real-world scenarios and hands-on code.
 - **Type-safe:** Avoid common bugs by leveraging strong types and modern C++ features.
@@ -11,8 +20,8 @@ Each lesson is:
 - **Incremental:** Progress from basic refactoring to advanced topics like affine spaces
   and `std::chrono` interop.
 
-Whether you're new to physical units in C++ or looking to deepen your expertise, these
-practical, type-safe patterns will help you apply **mp-units** in real projects.
+Whether you're deepening your expertise or exploring advanced patterns, these
+practical workshops will help you apply **mp-units** in real projects.
 
 ## Learning Path
 

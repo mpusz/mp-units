@@ -1,11 +1,11 @@
-# Tutorial 13: Faster-than-Lightspeed Constants
+# Workshop 13: Faster-than-Lightspeed Constants
 
 Physical constants like standard gravity (g₀) or π often appear in calculations where
 they multiply in one place and divide in another. Traditional libraries implement these
 as constant values (e.g., `9.80665`), requiring runtime floating-point arithmetic even
 when the constants mathematically cancel out.
 
-This tutorial demonstrates how **mp-units** implements constants as compile-time units,
+This workshop demonstrates how **mp-units** implements constants as compile-time units,
 enabling automatic simplification when constants cancel, preserving exact arithmetic where
 possible, and delaying expensive conversions until necessary.
 

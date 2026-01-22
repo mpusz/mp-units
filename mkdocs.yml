@@ -147,22 +147,6 @@ nav:
       - Installation and Usage: getting_started/installation_and_usage.md
       - Contributing: getting_started/contributing.md
       - FAQ: getting_started/faq.md
-  - Tutorials:
-      - Tutorials: tutorials/index.md
-      - "Tutorial 1: Refactor to Strong Types": tutorials/refactor_to_strong_types.md
-      - "Tutorial 2: Refactor to Generic, Type-Safe Interfaces": tutorials/generic_type_safe_interfaces.md
-      - "Tutorial 3: Extracting Numeric Values": tutorials/extracting_numeric_values.md
-      - "Tutorial 4: Working with Temperatures": tutorials/working_with_temperatures.md
-      - "Tutorial 5: Affine Spaces and Reference Origins": tutorials/affine_spaces.md
-      - "Tutorial 6: Interop with std::chrono": tutorials/interop_with_std_chrono.md
-      - "Tutorial 7: Custom Units for Dimensionless Counters": tutorials/custom_dimensionless_units.md
-      - "Tutorial 8: Typed Quantities of the Same Kind": tutorials/typed_quantities_same_kind.md
-      - "Tutorial 9: Custom Quantity Specifications": tutorials/custom_quantity_specifications.md
-      - "Tutorial 10: Custom Base Dimensions": tutorials/custom_base_dimensions.md
-      - "Tutorial 11: Preventing Confusion with Distinct Kinds": tutorials/distinct_quantity_kinds.md
-      - "Tutorial 12: Strongly-Typed Counts": tutorials/strongly_typed_counts.md
-      - "Tutorial 13: Faster-than-Lightspeed Constants": tutorials/faster_than_lightspeed_constants.md
-      - "Tutorial 14: Incremental Migration from Legacy Code": tutorials/incremental_migration.md
   - User's Guide:
       - Terms and Definitions: users_guide/terms_and_definitions.md
       - Framework Basics:
@@ -190,6 +174,22 @@ nav:
           - Yard-Pound Systems: users_guide/systems/yard_pound.md
           - Strong Angular System: users_guide/systems/strong_angular_system.md
           - Natural Units: users_guide/systems/natural_units.md
+  - Workshops:
+      - Workshops: workshops/index.md
+      - "Workshop 1: Refactor to Strong Types": workshops/refactor_to_strong_types.md
+      - "Workshop 2: Generic, Type-Safe Interfaces": workshops/generic_type_safe_interfaces.md
+      - "Workshop 3: Extracting Numeric Values": workshops/extracting_numeric_values.md
+      - "Workshop 4: Working with Temperatures": workshops/working_with_temperatures.md
+      - "Workshop 5: Affine Spaces and Origins": workshops/affine_spaces.md
+      - "Workshop 6: Interop with std::chrono": workshops/interop_with_std_chrono.md
+      - "Workshop 7: Custom Dimensionless Units": workshops/custom_dimensionless_units.md
+      - "Workshop 8: Typed Quantities of Same Kind": workshops/typed_quantities_same_kind.md
+      - "Workshop 9: Custom Quantity Specifications": workshops/custom_quantity_specifications.md
+      - "Workshop 10: Custom Base Dimensions": workshops/custom_base_dimensions.md
+      - "Workshop 11: Distinct Quantity Kinds": workshops/distinct_quantity_kinds.md
+      - "Workshop 12: Strongly-Typed Counts": workshops/strongly_typed_counts.md
+      - "Workshop 13: Faster-than-Lightspeed Constants": workshops/faster_than_lightspeed_constants.md
+      - "Workshop 14: Incremental Migration": workshops/incremental_migration.md
   - How-to Guides:
       - Pure Dimensional Analysis: how_to_guides/pure_dimensional_analysis.md
       - Working with Legacy Interfaces: how_to_guides/working_with_legacy_interfaces.md
