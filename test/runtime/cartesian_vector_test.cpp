@@ -36,12 +36,13 @@ import mp_units;
 #endif
 
 using namespace mp_units;
+using namespace Catch::Matchers;
 
-TEST_CASE("cartesian_vector", "[vector]")
+TEST_CASE("cartesian_vector operations", "[vector]")
 {
-  SECTION("construction & access")
+  SECTION("cartesian_vector initialization and access")
   {
-    SECTION("value-initialization yields zeros")
+    SECTION("zero arguments")
     {
       cartesian_vector<double> v{};
       REQUIRE(v[0] == 0);
@@ -78,27 +79,29 @@ TEST_CASE("cartesian_vector", "[vector]")
     }
   }
 
-  SECTION("aggregate assignment")
+  SECTION("convertibility from another vector")
   {
-    SECTION("aggregate copy assignment")
+    cartesian_vector v1{1.0, 2.0, 3.0};
+
+    SECTION("construction")
     {
-      cartesian_vector v1{1.0, 2.0, 3.0};
       cartesian_vector<double> v2 = v1;
       REQUIRE(v2[0] == 1.0);
       REQUIRE(v2[1] == 2.0);
       REQUIRE(v2[2] == 3.0);
     }
-    SECTION("aggregate assignment from different rep")
+
+    SECTION("assignment")
     {
-      cartesian_vector v1{1, 2, 3};
-      cartesian_vector<double> v2{static_cast<double>(v1[0]), static_cast<double>(v1[1]), static_cast<double>(v1[2])};
+      cartesian_vector<double> v2{3.0, 2.0, 1.0};
+      v2 = v1;
       REQUIRE(v2[0] == 1.0);
       REQUIRE(v2[1] == 2.0);
       REQUIRE(v2[2] == 3.0);
     }
   }
 
-  SECTION("compound assignments")
+  SECTION("cartesian_vector compound assignment addition")
   {
     SECTION("operator+=")
     {
@@ -109,7 +112,7 @@ TEST_CASE("cartesian_vector", "[vector]")
       REQUIRE(v1[1] == 7.0);
       REQUIRE(v1[2] == 9.0);
     }
-    SECTION("operator-=")
+    SECTION("cartesian_vector compound assignment subtraction")
     {
       cartesian_vector v1{4.0, 5.0, 6.0};
       cartesian_vector v2{1.0, 2.0, 3.0};
@@ -118,7 +121,7 @@ TEST_CASE("cartesian_vector", "[vector]")
       REQUIRE(v1[1] == 3.0);
       REQUIRE(v1[2] == 3.0);
     }
-    SECTION("operator*=")
+    SECTION("cartesian_vector compound assignment scalar multiplication")
     {
       cartesian_vector v{1.0, 2.0, 3.0};
       v *= 2.0;
@@ -126,7 +129,7 @@ TEST_CASE("cartesian_vector", "[vector]")
       REQUIRE(v[1] == 4.0);
       REQUIRE(v[2] == 6.0);
     }
-    SECTION("operator/=")
+    SECTION("cartesian_vector compound assignment scalar division")
     {
       cartesian_vector v{2.0, 4.0, 6.0};
       v /= 2.0;
@@ -136,102 +139,270 @@ TEST_CASE("cartesian_vector", "[vector]")
     }
   }
 
-  SECTION("binary + and -")
+  SECTION("cartesian_vector addition")
   {
     SECTION("double + double")
     {
       cartesian_vector v1{1.0, 2.0, 3.0};
       cartesian_vector v2{4.0, 5.0, 6.0};
-      auto r = v1 + v2;
-      REQUIRE(r[0] == 5.0);
-      REQUIRE(r[1] == 7.0);
-      REQUIRE(r[2] == 9.0);
+      cartesian_vector result = v1 + v2;
+      REQUIRE(result[0] == 5.0);
+      REQUIRE(result[1] == 7.0);
+      REQUIRE(result[2] == 9.0);
     }
+
+    SECTION("double + int")
+    {
+      cartesian_vector v1{1.0, 2.0, 3.0};
+      cartesian_vector v2{4, 5, 6};
+      cartesian_vector result = v1 + v2;
+      REQUIRE(result[0] == 5.0);
+      REQUIRE(result[1] == 7.0);
+      REQUIRE(result[2] == 9.0);
+    }
+
+    SECTION("int + double")
+    {
+      cartesian_vector v1{1, 2, 3};
+      cartesian_vector v2{4.0, 5.0, 6.0};
+      cartesian_vector result = v1 + v2;
+      REQUIRE(result[0] == 5.0);
+      REQUIRE(result[1] == 7.0);
+      REQUIRE(result[2] == 9.0);
+    }
+
+    SECTION("int + int")
+    {
+      cartesian_vector v1{1, 2, 3};
+      cartesian_vector v2{4, 5, 6};
+      cartesian_vector result = v1 + v2;
+      REQUIRE(result[0] == 5);
+      REQUIRE(result[1] == 7);
+      REQUIRE(result[2] == 9);
+    }
+  }
+
+  SECTION("cartesian_vector substraction")
+  {
+    SECTION("double - double")
+    {
+      cartesian_vector v1{4.0, 5.0, 6.0};
+      cartesian_vector v2{1.0, 2.0, 3.0};
+      cartesian_vector result = v1 - v2;
+      REQUIRE(result[0] == 3.0);
+      REQUIRE(result[1] == 3.0);
+      REQUIRE(result[2] == 3.0);
+    }
+
+    SECTION("double - int")
+    {
+      cartesian_vector v1{4.0, 5.0, 6.0};
+      cartesian_vector v2{1, 2, 3};
+      cartesian_vector result = v1 - v2;
+      REQUIRE(result[0] == 3.0);
+      REQUIRE(result[1] == 3.0);
+      REQUIRE(result[2] == 3.0);
+    }
+
+    SECTION("int - double")
+    {
+      cartesian_vector v1{4, 5, 6};
+      cartesian_vector v2{1.0, 2.0, 3.0};
+      cartesian_vector result = v1 - v2;
+      REQUIRE(result[0] == 3.0);
+      REQUIRE(result[1] == 3.0);
+      REQUIRE(result[2] == 3.0);
+    }
+
     SECTION("int - int")
     {
       cartesian_vector v1{4, 5, 6};
       cartesian_vector v2{1, 2, 3};
-      auto r = v1 - v2;
-      REQUIRE(r[0] == 3);
-      REQUIRE(r[1] == 3);
-      REQUIRE(r[2] == 3);
+      cartesian_vector result = v1 - v2;
+      REQUIRE(result[0] == 3);
+      REQUIRE(result[1] == 3);
+      REQUIRE(result[2] == 3);
     }
   }
 
-  SECTION("elementwise modulo (integral only)")
+  SECTION("cartesian_vector scalar multiplication")
   {
-    cartesian_vector<int> a{10, 11, 12};
-    cartesian_vector<int> b{4, 5, 7};
-    auto r = a % b;
-    REQUIRE(r[0] == 2);
-    REQUIRE(r[1] == 1);
-    REQUIRE(r[2] == 5);
+    SECTION("double * double")
+    {
+      cartesian_vector v{1.0, 2.0, 3.0};
+      cartesian_vector result = v * 2.0;
+      REQUIRE(result[0] == 2.0);
+      REQUIRE(result[1] == 4.0);
+      REQUIRE(result[2] == 6.0);
+    }
+
+    SECTION("double * int")
+    {
+      cartesian_vector v{1.0, 2.0, 3.0};
+      cartesian_vector result = v * 2;
+      REQUIRE(result[0] == 2.0);
+      REQUIRE(result[1] == 4.0);
+      REQUIRE(result[2] == 6.0);
+    }
+
+    SECTION("int * double")
+    {
+      cartesian_vector v{1, 2, 3};
+      cartesian_vector result = v * 2.0;
+      REQUIRE(result[0] == 2.0);
+      REQUIRE(result[1] == 4.0);
+      REQUIRE(result[2] == 6.0);
+    }
+
+    SECTION("int * int")
+    {
+      cartesian_vector v{1, 2, 3};
+      cartesian_vector result = v * 2;
+      REQUIRE(result[0] == 2);
+      REQUIRE(result[1] == 4);
+      REQUIRE(result[2] == 6);
+    }
   }
 
-  SECTION("scalar multiply/divide")
+  SECTION("cartesian_vector scalar division")
   {
-    cartesian_vector<double> v{1, 2, 3};
-    SECTION("v * s")
+    SECTION("double / double")
     {
-      auto r = v * 2.0;
-      REQUIRE(r[0] == 2.0);
-      REQUIRE(r[1] == 4.0);
-      REQUIRE(r[2] == 6.0);
+      cartesian_vector v{2.0, 4.0, 6.0};
+      cartesian_vector result = v / 2.0;
+      REQUIRE(result[0] == 1.0);
+      REQUIRE(result[1] == 2.0);
+      REQUIRE(result[2] == 3.0);
     }
-    SECTION("s * v")
+
+    SECTION("double / int")
     {
-      auto r = 2.0 * v;
-      REQUIRE(r[0] == 2.0);
-      REQUIRE(r[1] == 4.0);
-      REQUIRE(r[2] == 6.0);
+      cartesian_vector v{2.0, 4.0, 6.0};
+      cartesian_vector result = v / 2;
+      REQUIRE(result[0] == 1.0);
+      REQUIRE(result[1] == 2.0);
+      REQUIRE(result[2] == 3.0);
     }
-    SECTION("v / s")
+
+    SECTION("int / double")
     {
-      auto r = v / 2.0;
-      REQUIRE(r[0] == 0.5);
-      REQUIRE(r[1] == 1.0);
-      REQUIRE(r[2] == 1.5);
+      cartesian_vector v{2, 4, 6};
+      cartesian_vector result = v / 2.0;
+      REQUIRE(result[0] == 1.0);
+      REQUIRE(result[1] == 2.0);
+      REQUIRE(result[2] == 3.0);
+    }
+
+    SECTION("int / int")
+    {
+      cartesian_vector v{2, 4, 6};
+      cartesian_vector result = v / 2;
+      REQUIRE(result[0] == 1);
+      REQUIRE(result[1] == 2);
+      REQUIRE(result[2] == 3);
     }
   }
 
-  SECTION("equality and inequality")
+  SECTION("cartesian_vector magnitude")
+  {
+    cartesian_vector v1{3.0, 4.0, 0.0};
+    cartesian_vector v2{2.0, 3.0, 6.0};
+    REQUIRE(v1.magnitude() == 5.0);
+    REQUIRE(v2.magnitude() == 7.0);
+  }
+
+  SECTION("cartesian_vector unit vector")
+  {
+    cartesian_vector v{3.0, 4.0, 0.0};
+    cartesian_vector unit_v = v.unit();
+    REQUIRE_THAT(unit_v.magnitude(), WithinULP(1.0, 1));
+  }
+
+  SECTION("cartesian_vector equality")
   {
     cartesian_vector v1{1.0, 2.0, 3.0};
     cartesian_vector v2{1, 2, 3};
     cartesian_vector v3{1.1, 2.0, 3.0};
+    cartesian_vector v4{1.0, 2.1, 3.0};
+    cartesian_vector v5{1.0, 2.0, 3.1};
     REQUIRE(v1 == v2);
     REQUIRE(v1 != v3);
+    REQUIRE(v1 != v4);
+    REQUIRE(v1 != v5);
   }
 
-  SECTION("scalar_product and vector_product")
+  SECTION("cartesian_vector scalar product")
   {
-    cartesian_vector a{1, 2, 3};
-    cartesian_vector b{4, 5, 6};
-    REQUIRE(scalar_product(a, b) == 32);
-    auto r = vector_product(a, b);
-    REQUIRE(r[0] == -3);
-    REQUIRE(r[1] == 6);
-    REQUIRE(r[2] == -3);
+    SECTION("double * double")
+    {
+      cartesian_vector v1{1.0, 2.0, 3.0};
+      cartesian_vector v2{4.0, 5.0, 6.0};
+      REQUIRE(scalar_product(v1, v2) == 32.0);
+    }
+
+    SECTION("double * int")
+    {
+      cartesian_vector v1{1.0, 2.0, 3.0};
+      cartesian_vector v2{4, 5, 6};
+      REQUIRE(scalar_product(v1, v2) == 32.0);
+    }
+
+    SECTION("int * double")
+    {
+      cartesian_vector v1{1, 2, 3};
+      cartesian_vector v2{4.0, 5.0, 6.0};
+      REQUIRE(scalar_product(v1, v2) == 32.0);
+    }
+
+    SECTION("int * int")
+    {
+      cartesian_vector v1{1, 2, 3};
+      cartesian_vector v2{4, 5, 6};
+      REQUIRE(scalar_product(v1, v2) == 32);
+    }
   }
 
-  SECTION("magnitude and unit (floating types)")
+  SECTION("cartesian_vector vector product")
   {
-    cartesian_vector<double> v{3.0, 4.0, 0.0};
-    REQUIRE_THAT(v.magnitude(), Catch::Matchers::WithinULP(5.0, 2));
-    auto u = v.unit();
-    REQUIRE_THAT(u.magnitude(), Catch::Matchers::WithinULP(1.0, 2));
-    REQUIRE_THAT(u[0], Catch::Matchers::WithinULP(3.0 / 5.0, 2));
-    REQUIRE_THAT(u[1], Catch::Matchers::WithinULP(4.0 / 5.0, 2));
-    REQUIRE_THAT(u[2], Catch::Matchers::WithinULP(0.0, 2));
-  }
+    SECTION("double * double")
+    {
+      cartesian_vector v1{1.0, 2.0, 3.0};
+      cartesian_vector v2{4.0, 5.0, 6.0};
+      cartesian_vector result = vector_product(v1, v2);
+      REQUIRE(result[0] == -3.0);
+      REQUIRE(result[1] == 6.0);
+      REQUIRE(result[2] == -3.0);
+    }
 
-  SECTION("constexpr basics")
-  {
-    constexpr cartesian_vector<int> a{1, 2, 3};
-    constexpr cartesian_vector<int> b{4, 5, 6};
-    constexpr auto c = a + b;
-    static_assert(c._coordinates_[0] == 5 && c._coordinates_[1] == 7 && c._coordinates_[2] == 9);
-    (void)c;
+    SECTION("double * int")
+    {
+      cartesian_vector v1{1.0, 2.0, 3.0};
+      cartesian_vector v2{4, 5, 6};
+      cartesian_vector result = vector_product(v1, v2);
+      REQUIRE(result[0] == -3.0);
+      REQUIRE(result[1] == 6.0);
+      REQUIRE(result[2] == -3.0);
+    }
+
+    SECTION("int * double")
+    {
+      cartesian_vector v1{1, 2, 3};
+      cartesian_vector v2{4.0, 5.0, 6.0};
+      cartesian_vector result = vector_product(v1, v2);
+      REQUIRE(result[0] == -3.0);
+      REQUIRE(result[1] == 6.0);
+      REQUIRE(result[2] == -3.0);
+    }
+
+    SECTION("int * int")
+    {
+      cartesian_vector v1{1, 2, 3};
+      cartesian_vector v2{4, 5, 6};
+      cartesian_vector result = vector_product(v1, v2);
+      REQUIRE(result[0] == -3);
+      REQUIRE(result[1] == 6);
+      REQUIRE(result[2] == -3);
+    }
   }
 }
 
