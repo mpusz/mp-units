@@ -1,4 +1,4 @@
-# Workshop 2: Refactor to Generic, Type-Safe Interfaces
+# Refactor to Generic, Type-Safe Interfaces
 
 In this exercise, you’ll refactor a function that computes a derived quantity from quantities
 measured in SI base units, where the arguments may use different prefixes or scaled units.
@@ -152,9 +152,9 @@ int main()
 
 ## References
 
-- [User's Guide: Generic Interfaces](../users_guide/framework_basics/generic_interfaces.md)
-- [User's Guide: Concepts](../users_guide/framework_basics/concepts.md)
-- [API Reference](../reference/api_reference.md)
+- [User's Guide: Generic Interfaces](../../users_guide/framework_basics/generic_interfaces.md)
+- [User's Guide: Concepts](../../users_guide/framework_basics/concepts.md)
+- [API Reference](../../reference/api_reference.md)
 
 
 ## Takeaways

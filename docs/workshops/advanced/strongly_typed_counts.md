@@ -1,4 +1,4 @@
-# Workshop 12: Strongly-Typed Counts
+# Strongly-Typed Counts
 
 Most values in our programs aren't physical quantities with units—they're counts,
 coordinates, identifiers, or indices. These discrete values don't need unit-based scaling
@@ -346,7 +346,7 @@ int main()
     - Values are fundamentally countable/dimensionless
     - You need natural numeric semantics
 
-    **Use custom dimensions** (see [Workshop 10: Custom Base Dimensions](custom_base_dimensions.md))
+    **Use custom dimensions** (see [Workshop: Custom Base Dimensions](../extensions/custom_base_dimensions.md))
     when:
 
     - Values represent truly distinct physical concepts
@@ -382,11 +382,11 @@ int main()
 
 ## References
 
-- [User's Guide: Dimensionless Quantities](../users_guide/framework_basics/dimensionless_quantities.md)
-- [User's Guide: Using dimensionless quantities as strongly-typed numeric types](../users_guide/framework_basics/dimensionless_quantities.md#using-dimensionless-quantities-as-strongly-typed-numeric-types)
-- [Workshop 7: Custom Dimensionless Units](custom_dimensionless_units.md)
-- [Workshop 10: Custom Base Dimensions](custom_base_dimensions.md)
-- [Workshop 11: Distinct Quantity Kinds](distinct_quantity_kinds.md)
+- [User's Guide: Dimensionless Quantities](../../users_guide/framework_basics/dimensionless_quantities.md)
+- [User's Guide: Using dimensionless quantities as strongly-typed numeric types](../../users_guide/framework_basics/dimensionless_quantities.md#using-dimensionless-quantities-as-strongly-typed-numeric-types)
+- [Workshop: Custom Dimensionless Units](../extensions/custom_dimensionless_units.md)
+- [Workshop: Custom Base Dimensions](../extensions/custom_base_dimensions.md)
+- [Workshop: Distinct Quantity Kinds](../extensions/distinct_quantity_kinds.md)
 
 
 ## Takeaways
@@ -401,4 +401,4 @@ int main()
 - This approach is ideal for counts, coordinates, identifiers, and discrete quantities
 - Zero overhead—compiles to the same machine code as raw integers
 - For truly distinct physical concepts, use custom dimensions instead
-  (see [Workshop 10: Custom Base Dimensions](custom_base_dimensions.md))
+  (see [Workshop: Custom Base Dimensions](../extensions/custom_base_dimensions.md))

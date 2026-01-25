@@ -1,4 +1,4 @@
-# Workshop 5: Affine Spaces and Reference Origins
+# Affine Spaces and Reference Origins
 
 Many real-world measurements are relative to different reference points (origins).
 This workshop explores how to use **mp-units** to safely handle absolute and relative quantities,
@@ -51,7 +51,7 @@ Given:
 
     In this example, we use both absolute and relative point origins to represent different
     reference systems (NHN and Swiss). This approach makes conversions explicit and safe.
-    For more details, see [The Affine Space](../users_guide/framework_basics/the_affine_space.md)
+    For more details, see [The Affine Space](../../users_guide/framework_basics/the_affine_space.md)
     in the user guide.
 
 ```cpp
@@ -153,8 +153,8 @@ int main()
 
 ## References
 
-- [User's Guide: The Affine Space](../users_guide/framework_basics/the_affine_space.md)
-- [API Reference](../reference/api_reference.md)
+- [User's Guide: The Affine Space](../../users_guide/framework_basics/the_affine_space.md)
+- [API Reference](../../reference/api_reference.md)
 
 
 ## Takeaways
@@ -164,7 +164,7 @@ int main()
 - Always convert to a common reference before comparing or subtracting _points_.
 - Using absolute and relative point origins in your code helps make reference system
   conversions explicit and less error-prone.
-  See the [user guide](../users_guide/framework_basics/the_affine_space.md) for more on
+  See the [user guide](../../users_guide/framework_basics/the_affine_space.md) for more on
   this feature.
 - The Swiss reference (Pierre du Niton) is about 27 cm **lower** than the German NHN.
 - Always check the direction of such offsets!

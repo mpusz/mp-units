@@ -1,4 +1,4 @@
-# Workshop 11: Preventing Confusion with Distinct Kinds
+# Preventing Confusion with Distinct Kinds
 
 Many engineering domains have quantities that share the same physical dimension but represent
 fundamentally different concepts. Hydraulic engineering uses "_head_"—a measure of
@@ -450,7 +450,7 @@ int main()
 
 ## References
 
-- [User's Guide: Systems of Quantities](../users_guide/framework_basics/systems_of_quantities.md)
+- [User's Guide: Systems of Quantities](../../users_guide/framework_basics/systems_of_quantities.md)
 - [GitHub Discussion #757: Hydraulic Head](https://github.com/mpusz/mp-units/discussions/757)
 
 

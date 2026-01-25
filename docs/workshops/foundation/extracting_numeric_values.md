@@ -1,4 +1,4 @@
-# Workshop 3: Extracting Numeric Values for Legacy APIs
+# Extracting Numeric Values for Legacy APIs
 
 When working with **mp-units**, you'll often need to interface with legacy code or
 external APIs that expect raw numeric values in specific units. This workshop shows how
@@ -160,8 +160,8 @@ int main()
 
 ## References
 
-- [User's Guide: Working with Legacy Interfaces](../how_to_guides/integration/working_with_legacy_interfaces.md)
-- [API Reference](../reference/api_reference.md)
+- [User's Guide: Working with Legacy Interfaces](../../how_to_guides/integration/working_with_legacy_interfaces.md)
+- [API Reference](../../reference/api_reference.md)
 
 
 ## Takeaways

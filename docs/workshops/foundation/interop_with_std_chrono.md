@@ -1,4 +1,4 @@
-# Workshop 6: Interop with `std::chrono`
+# Interop with `std::chrono`
 
 Modern C++ applications often need to work with both time measurements (`std::chrono`) and
 physical quantities (**mp-units**). This workshop shows how these complementary libraries
@@ -209,8 +209,8 @@ int main()
 
 ## References
 
-- [User's Guide: Interoperability with Other Libraries](../how_to_guides/integration/interoperability_with_other_libraries.md)
-- [API Reference](../reference/api_reference.md)
+- [User's Guide: Interoperability with Other Libraries](../../how_to_guides/integration/interoperability_with_other_libraries.md)
+- [API Reference](../../reference/api_reference.md)
 
 
 ## Takeaways

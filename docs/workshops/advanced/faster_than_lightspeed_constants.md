@@ -1,4 +1,4 @@
-# Workshop 13: Faster-than-Lightspeed Constants
+# Faster-than-Lightspeed Constants
 
 Physical constants like standard gravity (g₀) or π often appear in calculations where
 they multiply in one place and divide in another. Traditional libraries implement these
@@ -435,7 +435,7 @@ int main()
 
 ## References
 
-- [User's Guide: Faster-than-Lightspeed Constants](../users_guide/framework_basics/faster_than_lightspeed_constants.md)
+- [User's Guide: Faster-than-Lightspeed Constants](../../users_guide/framework_basics/faster_than_lightspeed_constants.md)
 
 
 ## Takeaways

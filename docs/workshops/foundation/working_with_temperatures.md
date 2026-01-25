@@ -1,4 +1,4 @@
-# Workshop 4: Working with Temperatures
+# Working with Temperatures
 
 Temperature conversions are one of the most error-prone areas in scientific and
 engineering calculations. The distinction between _temperature points_ (absolute values)
@@ -163,8 +163,8 @@ int main()
 
 ## References
 
-- [User's Guide: The Affine Space](../users_guide/framework_basics/the_affine_space.md)
-- [API Reference](../reference/api_reference.md)
+- [User's Guide: The Affine Space](../../users_guide/framework_basics/the_affine_space.md)
+- [API Reference](../../reference/api_reference.md)
 
 
 ## Takeaways

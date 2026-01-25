@@ -1,4 +1,4 @@
-# Workshop 1: Refactor to Strong Types
+# Refactor to Strong Types
 
 In this workshop, you'll refactor a small legacy function that uses raw doubles into a
 type‑safe version using **mp-units**. The goal is to accept and return strong, unit‑aware
@@ -125,8 +125,8 @@ int main()
 
 ## References
 
-- [Getting Started: Quick Start](../getting_started/quick_start.md)
-- [API Reference](../reference/api_reference.md)
+- [Getting Started: Quick Start](../../getting_started/quick_start.md)
+- [API Reference](../../reference/api_reference.md)
 
 
 ## Takeaways

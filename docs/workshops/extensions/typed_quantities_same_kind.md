@@ -1,5 +1,5 @@
 
-# Workshop 8: Typed Quantities of the Same Kind
+# Typed Quantities of the Same Kind
 
 When working with physical quantities, it's common to encounter values with the same unit
 and dimension but different meanings. For example, in route planning for oversized vehicles,
@@ -24,7 +24,7 @@ All three are _lengths_, but their roles are distinct and must not be confused.
 ## Your task
 
 1. Based on the graph in the
-    [System of quantities is not only about kinds](../users_guide/framework_basics/systems_of_quantities.md#system-of-quantities-is-not-only-about-kinds)
+    [System of quantities is not only about kinds](../../users_guide/framework_basics/systems_of_quantities.md#system-of-quantities-is-not-only-about-kinds)
     chapter, refactor the `find_route` function and its usage to use semantic wrappers
     (typed quantities) for each argument, so that accidental swaps are caught at compile
     time. Make sure to update the return type as well.
@@ -200,9 +200,9 @@ int main()
 
 ## References
 
-- [User's Guide: Systems of Quantities](../users_guide/framework_basics/systems_of_quantities.md)
-- [User's Guide: Simple and Typed Quantities](../users_guide/framework_basics/simple_and_typed_quantities.md)
-- [Systems Reference: Length Hierarchy](../reference/systems_reference/hierarchies/length.md)
+- [User's Guide: Systems of Quantities](../../users_guide/framework_basics/systems_of_quantities.md)
+- [User's Guide: Simple and Typed Quantities](../../users_guide/framework_basics/simple_and_typed_quantities.md)
+- [Systems Reference: Length Hierarchy](../../reference/systems_reference/hierarchies/length.md)
 
 
 ## Takeaways

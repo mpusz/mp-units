@@ -695,7 +695,7 @@ analysis that generic strong-type libraries cannot provide.
 Dimensionless quantities with `is_kind` automatically work with unit `one` and its scaled
 versions, support explicit conversions to/from raw types, and participate in ISQ for
 derived quantities. Custom dimensions are better for physically distinct concepts
-(see [Workshop 11: Custom Base Dimensions](../../workshops/custom_base_dimensions.md)).
+(see [Workshop: Custom Base Dimensions](../../workshops/extensions/custom_base_dimensions.md)).
 
 For a comprehensive example of using dimensionless quantities as strongly-typed numeric types,
-see [Workshop 8: Strongly-Typed Counts](../../workshops/strongly_typed_counts.md).
+see [Workshop: Strongly-Typed Counts](../../workshops/advanced/strongly_typed_counts.md).

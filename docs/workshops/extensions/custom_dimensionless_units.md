@@ -1,4 +1,4 @@
-# Workshop 7: Custom Units for Dimensionless Counters
+# Custom Units for Dimensionless Counters
 
 Many real-world applications involve counting discrete items—products, packages, vehicles—that
 have no physical dimensions but follow fixed scaling relationships. A carton contains a specific
@@ -252,10 +252,10 @@ int main()
 
 ## References
 
-- [User's Guide: Systems of Units](../users_guide/framework_basics/systems_of_units.md)
-- [User's Guide: Dimensionless Quantities](../users_guide/framework_basics/dimensionless_quantities.md)
-- [Systems Reference: Dimensionless Quantity Hierarchy](../reference/systems_reference/hierarchies/dimensionless.md)
-- [API Reference](../reference/api_reference.md)
+- [User's Guide: Systems of Units](../../users_guide/framework_basics/systems_of_units.md)
+- [User's Guide: Dimensionless Quantities](../../users_guide/framework_basics/dimensionless_quantities.md)
+- [Systems Reference: Dimensionless Quantity Hierarchy](../../reference/systems_reference/hierarchies/dimensionless.md)
+- [API Reference](../../reference/api_reference.md)
 
 
 ## Takeaways

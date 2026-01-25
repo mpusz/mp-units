@@ -1,4 +1,4 @@
-# Workshop 9: Custom Quantity Specifications
+# Custom Quantity Specifications
 
 While the ISQ (International System of Quantities) provides many standard quantity types,
 real-world applications often require domain-specific distinctions between quantities that
@@ -84,7 +84,7 @@ flowchart TD
 !!! tip
 
     See
-    [Hierarchies of Derived Quantities](../users_guide/framework_basics/systems_of_quantities.md#hierarchies-of-derived-quantities)
+    [Hierarchies of Derived Quantities](../../users_guide/framework_basics/systems_of_quantities.md#hierarchies-of-derived-quantities)
     for more details.
 
 The rest of the code is provided—your task is to properly define these quantity
@@ -407,8 +407,8 @@ int main()
 
 ## References
 
-- [User's Guide: Systems of Quantities](../users_guide/framework_basics/systems_of_quantities.md)
-- [Quantity Hierarchies](../reference/systems_reference/hierarchies/index.md)
+- [User's Guide: Systems of Quantities](../../users_guide/framework_basics/systems_of_quantities.md)
+- [Quantity Hierarchies](../../reference/systems_reference/hierarchies/index.md)
 
 
 ## Takeaways

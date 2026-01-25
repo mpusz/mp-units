@@ -197,20 +197,23 @@ nav:
           - Natural Units: users_guide/systems/natural_units.md
   - Workshops:
       - Workshops: workshops/index.md
-      - "Workshop 1: Refactor to Strong Types": workshops/refactor_to_strong_types.md
-      - "Workshop 2: Generic, Type-Safe Interfaces": workshops/generic_type_safe_interfaces.md
-      - "Workshop 3: Extracting Numeric Values": workshops/extracting_numeric_values.md
-      - "Workshop 4: Working with Temperatures": workshops/working_with_temperatures.md
-      - "Workshop 5: Affine Spaces and Origins": workshops/affine_spaces.md
-      - "Workshop 6: Interop with std::chrono": workshops/interop_with_std_chrono.md
-      - "Workshop 7: Custom Dimensionless Units": workshops/custom_dimensionless_units.md
-      - "Workshop 8: Typed Quantities of Same Kind": workshops/typed_quantities_same_kind.md
-      - "Workshop 9: Custom Quantity Specifications": workshops/custom_quantity_specifications.md
-      - "Workshop 10: Custom Base Dimensions": workshops/custom_base_dimensions.md
-      - "Workshop 11: Distinct Quantity Kinds": workshops/distinct_quantity_kinds.md
-      - "Workshop 12: Strongly-Typed Counts": workshops/strongly_typed_counts.md
-      - "Workshop 13: Faster-than-Lightspeed Constants": workshops/faster_than_lightspeed_constants.md
-      - "Workshop 14: Incremental Migration": workshops/incremental_migration.md
+      - Foundation:
+          - "Refactor to Strong Types": workshops/foundation/refactor_to_strong_types.md
+          - "Generic, Type-Safe Interfaces": workshops/foundation/generic_type_safe_interfaces.md
+          - "Extracting Numeric Values": workshops/foundation/extracting_numeric_values.md
+          - "Working with Temperatures": workshops/foundation/working_with_temperatures.md
+          - "Affine Spaces and Origins": workshops/foundation/affine_spaces.md
+          - "Interop with std::chrono": workshops/foundation/interop_with_std_chrono.md
+      - Extensions:
+          - "Custom Dimensionless Units": workshops/extensions/custom_dimensionless_units.md
+          - "Typed Quantities of Same Kind": workshops/extensions/typed_quantities_same_kind.md
+          - "Custom Quantity Specifications": workshops/extensions/custom_quantity_specifications.md
+          - "Custom Base Dimensions": workshops/extensions/custom_base_dimensions.md
+          - "Distinct Quantity Kinds": workshops/extensions/distinct_quantity_kinds.md
+      - Advanced:
+          - "Strongly-Typed Counts": workshops/advanced/strongly_typed_counts.md
+          - "Faster-than-Lightspeed Constants": workshops/advanced/faster_than_lightspeed_constants.md
+          - "Incremental Migration": workshops/advanced/incremental_migration.md
   - How-to Guides:
       - How-to Guides: how_to_guides/index.md
       - Advanced Usage:
