@@ -209,7 +209,7 @@ int main()
 
 ## References
 
-- [User's Guide: Interoperability with Other Libraries](../how_to_guides/interoperability_with_other_libraries.md)
+- [User's Guide: Interoperability with Other Libraries](../how_to_guides/integration/interoperability_with_other_libraries.md)
 - [API Reference](../reference/api_reference.md)
 
 

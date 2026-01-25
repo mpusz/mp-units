@@ -160,7 +160,7 @@ int main()
 
 ## References
 
-- [User's Guide: Working with Legacy Interfaces](../how_to_guides/working_with_legacy_interfaces.md)
+- [User's Guide: Working with Legacy Interfaces](../how_to_guides/integration/working_with_legacy_interfaces.md)
 - [API Reference](../reference/api_reference.md)
 
 

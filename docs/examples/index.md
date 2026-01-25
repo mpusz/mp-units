@@ -16,7 +16,8 @@ These examples:
 - ✅ Range from beginner to advanced complexity
 - ✅ Are organized by level, system, feature, and domain
 - ✅ Work with all [supported compilers](../getting_started/cpp_compiler_support.md)
-- ✅ Use [Wide Compatibility](../how_to_guides/wide_compatibility.md) mode for maximum portability
+- ✅ Use [Wide Compatibility](../how_to_guides/integration/wide_compatibility.md) mode for
+  maximum portability
 
 **Prerequisites**: Basic familiarity with **mp-units** from [Tutorials](../tutorials/index.md).
 Beginner examples include detailed explanations; intermediate and advanced examples assume

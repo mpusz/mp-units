@@ -239,7 +239,7 @@ throughout the computation.
 
 ## Real-World Example: Kalman Filter
 
-The library includes a complete [Kalman filter example](../examples/kalman_filter.md)
+The library includes a complete [Kalman filter example](../../examples/kalman_filter.md)
 demonstrating pure dimensional analysis in a practical application. The implementation
 uses dimensions to enforce compile-time constraints on state variables:
 

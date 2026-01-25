@@ -20,13 +20,16 @@ fundamentals, then refer to these guides when you need to solve specific problem
 
 ## Available Guides
 
-### Working with the Library
+### [Advanced Usage](advanced_usage/index.md)
 
-- [Pure Dimensional Analysis](pure_dimensional_analysis.md) - Use dimensions without specific units
-- [Working with Legacy Interfaces](working_with_legacy_interfaces.md) - Integrate with existing code
-- [Using Custom Representation Types](using_custom_representation_types.md) - Define custom numeric types
-- [Interoperability with Other Libraries](interoperability_with_other_libraries.md) - Work with third-party libraries
-- [Wide Compatibility](wide_compatibility.md) - Maximize portability across compilers
+Advanced techniques and patterns for sophisticated scenarios beyond standard quantity
+calculations.
+
+### [Integration](integration/index.md)
+
+Guides for integrating **mp-units** with existing codebases, custom types, third-party
+libraries, and various compiler environments.
+
 
 ## When to Use How-to Guides?
 

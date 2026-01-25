@@ -48,30 +48,22 @@ Core concepts that form the foundation of **mp-units**:
 - [Text Output](framework_basics/text_output.md) - Formatting and printing quantities
 <!-- markdownlint-enable MD013 -->
 
-### Systems
+### [Systems](systems/index.md)
 
-Available unit systems and their specifics:
-
-- [Introduction](systems/index.md) - Overview of supported systems
-- [International System of Quantities (ISQ)](systems/isq.md) - Standard quantity system
-- [International System of Units (SI)](systems/si.md) - Metric system
-- [IAU Astronomical Units](systems/iau.md) - Astronomical measurements
-- [Centimetre-Gram-Second (CGS) System](systems/cgs.md) - CGS units
-- [Yard-Pound Systems](systems/yard_pound.md) - Imperial and US customary units
-- [Strong Angular System](systems/strong_angular_system.md) - Type-safe angle handling
-- [Natural Units](systems/natural_units.md) - Units for particle physics
+Detailed documentation of available unit systems (SI, CGS, Imperial, astronomical units,
+natural units, etc.) with guidance on choosing the right one for your application domain.
 
 ## How to Use This Guide?
 
 **Sequential Reading**: Start with [Terms and Definitions](terms_and_definitions.md) and
-progress through [Framework Basics](#framework-basics) to build a complete mental model
-of the library.
+progress through the Framework Basics chapters to build a complete mental model of the
+library.
 
-**Reference Reading**: Jump to specific chapters when you need to understand a particular
-concept in depth.
+**Reference Reading**: Jump directly to specific chapters when you need to understand a
+particular concept in depth.
 
-**Combined Approach**: Read [Framework Basics](#framework-basics) sequentially for core
-concepts, then refer to [Systems](#systems) chapters as needed for your specific domain.
+**Domain-Focused**: After covering Framework Basics, explore the [Systems](systems/index.md)
+chapter most relevant to your application domain.
 
 ## When to Use the User's Guide?
 

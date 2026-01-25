@@ -31,7 +31,7 @@ of quantities.
 
 Quantities in physics have different mathematical natures that determine which operations
 make sense for them. For detailed information, see
-[Character of a Quantity](../users_guide/framework_basics/character_of_a_quantity.md).
+[Character of a Quantity](../../users_guide/framework_basics/character_of_a_quantity.md).
 
 The character is defined at the **quantity specification** level:
 
@@ -75,7 +75,7 @@ quantity q8 = isq::displacement(vec{1., 2., 3.} * m);  // ✅ OK: same as above
 ## Representation Requirements
 
 To be used as a representation type in **mp-units**, a type must satisfy the
-[`RepresentationOf`](../users_guide/framework_basics/concepts.md#RepresentationOf) concept.
+[`RepresentationOf`](../../users_guide/framework_basics/concepts.md#RepresentationOf) concept.
 The library supports different types of representations corresponding to different
 quantity characters.
 
@@ -295,7 +295,7 @@ constexpr bool mp_units::treat_as_floating_point<my_fixed_point_type> = true;
 ```
 
 **Impact:** When `treat_as_floating_point<Rep>` is `true`, the type is treated as floating-point
-for conversion purposes. See [Value Conversions](../users_guide/framework_basics/value_conversions.md#value-conversions)
+for conversion purposes. See [Value Conversions](../../users_guide/framework_basics/value_conversions.md#value-conversions)
 for details on how this affects implicit conversions between quantities
 
 ---
@@ -433,7 +433,7 @@ quantity z = impedance * si::ohm;  // Complex impedance
     };
     ```
 
-    This is used in the [glide computer example](../examples/glide_computer.md#geographic-integration)
+    This is used in the [glide computer example](../../examples/glide_computer.md#geographic-integration)
     for _latitude_ and _longitude_:
 
     ```cpp
@@ -732,9 +732,9 @@ that **mp-units** provides.
 <!-- markdownlint-disable MD013 -->
 **Related Documentation:**
 
-- [Character of a Quantity](../users_guide/framework_basics/character_of_a_quantity.md) - Understanding quantity characters
-- [Value Conversions](../users_guide/framework_basics/value_conversions.md) - How `treat_as_floating_point` affects conversions
-- [Concepts](../users_guide/framework_basics/concepts.md#RepresentationOf) - The `RepresentationOf` concept definition
+- [Character of a Quantity](../../users_guide/framework_basics/character_of_a_quantity.md) - Understanding quantity characters
+- [Value Conversions](../../users_guide/framework_basics/value_conversions.md) - How `treat_as_floating_point` affects conversions
+- [Concepts](../../users_guide/framework_basics/concepts.md#RepresentationOf) - The `RepresentationOf` concept definition
 
 **Implementation References:**
 

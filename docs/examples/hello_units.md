@@ -115,7 +115,7 @@ Both stream insertion operations and `std::format` facilities are supported.
     support `std::format` or a user prefers to use the `{fmt}` library, this macro will
     resolve to `fmt` namespace. Otherwise, the `std` namespace will be used.
 
-    More about it can be found in the [Wide Compatibility](../how_to_guides/wide_compatibility.md#mp_units_std_fmt)
+    More about it can be found in the [Wide Compatibility](../how_to_guides/integration/wide_compatibility.md#mp_units_std_fmt)
     chapter.
 
 ## Related Concepts

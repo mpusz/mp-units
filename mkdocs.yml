@@ -213,11 +213,15 @@ nav:
       - "Workshop 14: Incremental Migration": workshops/incremental_migration.md
   - How-to Guides:
       - How-to Guides: how_to_guides/index.md
-      - Pure Dimensional Analysis: how_to_guides/pure_dimensional_analysis.md
-      - Working with Legacy Interfaces: how_to_guides/working_with_legacy_interfaces.md
-      - Using Custom Representation Types: how_to_guides/using_custom_representation_types.md
-      - Interoperability with Other Libraries: how_to_guides/interoperability_with_other_libraries.md
-      - Wide Compatibility: how_to_guides/wide_compatibility.md
+      - Advanced Usage:
+          - Overview: how_to_guides/advanced_usage/index.md
+          - Pure Dimensional Analysis: how_to_guides/advanced_usage/pure_dimensional_analysis.md
+      - Integration:
+          - Overview: how_to_guides/integration/index.md
+          - Working with Legacy Interfaces: how_to_guides/integration/working_with_legacy_interfaces.md
+          - Using Custom Representation Types: how_to_guides/integration/using_custom_representation_types.md
+          - Interoperability with Other Libraries: how_to_guides/integration/interoperability_with_other_libraries.md
+          - Wide Compatibility: how_to_guides/integration/wide_compatibility.md
   - Examples:
       - Examples: examples/index.md
       - Tags: examples/tags.md
