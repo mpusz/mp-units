@@ -109,7 +109,7 @@ providing compile-time dimensional safety.
     Notice the output when mixing different units:
 
     **Addition/subtraction** (averaging lengths):
-    
+
     - Unit multiples: `Average (width, radius): 7.5 m` - clean result (m and km are multiples)
     - Non-multiples: `Average (width, height): 10060 [(1/1250 m), (1/381 ft)]` - GCD unit!
 
@@ -122,7 +122,7 @@ providing compile-time dimensional safety.
     multiplied (potential overflow risk).
 
     **Multiplication/division** (calculating time):
-    
+
     - Same units cancel: `Time at 50 km/h: 2 h` - clean result (km cancels)
     - Different units: `Time at 30 mi/h: 3.33333 h km/mi` - composite units!
 
