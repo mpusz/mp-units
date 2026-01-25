@@ -74,6 +74,7 @@ public:
   {
   }
 
+
   [[nodiscard]] constexpr T magnitude() const
     requires treat_as_floating_point<T>
   {
@@ -125,7 +126,9 @@ public:
   }
 
   template<typename S>
-    requires requires(T& t, const S& s) { t *= s; }
+    requires requires(T& t, const S& s) {
+      { t *= s } -> std::same_as<T&>;
+    }
   constexpr cartesian_vector& operator*=(const S& scalar)
   {
     _coordinates_[0] *= scalar;
@@ -135,7 +138,9 @@ public:
   }
 
   template<typename S>
-    requires requires(T& t, const S& s) { t /= s; }
+    requires requires(T& t, const S& s) {
+      { t /= s } -> std::same_as<T&>;
+    }
   constexpr cartesian_vector& operator/=(const S& scalar)
   {
     _coordinates_[0] /= scalar;
