@@ -2,1102 +2,1186 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/release_notes/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/blog/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/blog/2023/09/24/whats-new-in-mp-units-20/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/blog/2023/12/09/mp-units-210-released/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/blog/2024/06/14/mp-units-220-released/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/blog/2024/09/27/mp-units-230-released/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/blog/2024/11/05/mp-units-240-released/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/blog/2025/12/24/mp-units-250-released/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/blog/2025/01/15/bringing-quantity-safety-to-the-next-level/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/blog/2025/06/16/introducing-absolute-quantities/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/blog/2024/10/07/international-system-of-quantities-isq-part-1---introduction/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/blog/2024/10/14/international-system-of-quantities-isq-part-2---problems-when-isq-is-not-used/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/blog/2024/10/21/international-system-of-quantities-isq-part-3---modeling-isq/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/blog/2024/10/28/international-system-of-quantities-isq-part-4---implementing-isq/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/blog/2024/11/04/international-system-of-quantities-isq-part-5---benefits/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/blog/2024/11/11/international-system-of-quantities-isq-part-6---challenges/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/blog/2023/11/12/report-from-the-kona-2023-iso-c-committee-meeting/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/blog/2026/01/18/new-systems-documentation-generator/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/blog/2024/07/02/report-from-the-st-louis-2024-iso-c-committee-meeting/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/blog/2024/04/15/report-from-the-tokyo-2024-iso-c-committee-meeting/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/blog/2024/11/25/report-from-the-wroc%C5%82aw-2024-iso-c-committee-meeting/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/examples/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/examples/avg_speed/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/examples/capacitor_time_curve/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/examples/currency/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/examples/foot_pound_second/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/examples/glide_computer/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/examples/hello_units/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/examples/hw_voltage/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/examples/kalman_filter/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/examples/measurement/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/examples/si_constants/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/examples/spectroscopy_units/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/examples/storage_tank/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/examples/strong_angular_quantities/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
+    </url>
+    <url>
+         <loc>https://mpusz.github.io/mp-units/HEAD/examples/tags/</loc>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/examples/total_energy/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/examples/unmanned_aerial_vehicle/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/getting_started/contributing/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/getting_started/cpp_compiler_support/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/getting_started/faq/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/getting_started/installation_and_usage/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/getting_started/introduction/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/getting_started/look_and_feel/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/getting_started/project_structure/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/getting_started/quick_start/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
-         <loc>https://mpusz.github.io/mp-units/HEAD/how_to_guides/interoperability_with_other_libraries/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <loc>https://mpusz.github.io/mp-units/HEAD/how_to_guides/</loc>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
-         <loc>https://mpusz.github.io/mp-units/HEAD/how_to_guides/pure_dimensional_analysis/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <loc>https://mpusz.github.io/mp-units/HEAD/how_to_guides/advanced_usage/</loc>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
-         <loc>https://mpusz.github.io/mp-units/HEAD/how_to_guides/using_custom_representation_types/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <loc>https://mpusz.github.io/mp-units/HEAD/how_to_guides/advanced_usage/pure_dimensional_analysis/</loc>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
-         <loc>https://mpusz.github.io/mp-units/HEAD/how_to_guides/wide_compatibility/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <loc>https://mpusz.github.io/mp-units/HEAD/how_to_guides/integration/</loc>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
-         <loc>https://mpusz.github.io/mp-units/HEAD/how_to_guides/working_with_legacy_interfaces/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <loc>https://mpusz.github.io/mp-units/HEAD/how_to_guides/integration/interoperability_with_other_libraries/</loc>
+         <lastmod>2026-01-25</lastmod>
+    </url>
+    <url>
+         <loc>https://mpusz.github.io/mp-units/HEAD/how_to_guides/integration/using_custom_representation_types/</loc>
+         <lastmod>2026-01-25</lastmod>
+    </url>
+    <url>
+         <loc>https://mpusz.github.io/mp-units/HEAD/how_to_guides/integration/wide_compatibility/</loc>
+         <lastmod>2026-01-25</lastmod>
+    </url>
+    <url>
+         <loc>https://mpusz.github.io/mp-units/HEAD/how_to_guides/integration/working_with_legacy_interfaces/</loc>
+         <lastmod>2026-01-25</lastmod>
+    </url>
+    <url>
+         <loc>https://mpusz.github.io/mp-units/HEAD/reference/</loc>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/api_reference/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/bibliography/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/cheat_sheet/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/glossary/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/dimensions_index/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/point_origins_index/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/prefixes_index/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/quantities_index/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/units_index/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/Joule_Thomson_coefficient/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/Massieu_function/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/Planck_function/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/Poynting_vector/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/absorbed_dose/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/acceleration/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/action/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/activity/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/admittance/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/amount_of_substance/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/angle/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/angular_acceleration_isq/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/angular_acceleration_isq_angle/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/angular_frequency_isq/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/angular_frequency_isq_angle/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/angular_impulse/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/angular_momentum_isq/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/angular_momentum_isq_angle/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/angular_repetency_isq/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/angular_repetency_isq_angle/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/angular_velocity_isq/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/angular_velocity_isq_angle/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/area/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/attenuation/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/call_intensity/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/capacitance/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/coefficient_of_heat_transfer/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/complex_power/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/compressibility/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/conductivity/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/cubic_expansion_coefficient/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/curvature/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/damping_coefficient/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/density_of_heat_flow_rate/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/dimensionless/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/dose_equivalent/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/duration/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/dynamic_viscosity/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/electric_charge/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/electric_charge_density/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/electric_constant/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/electric_current/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/electric_current_density/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/electric_dipole_moment/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/electric_field_strength/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/electric_flux/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/electric_polarization/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/electric_potential/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/electromagnetic_energy_density/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/energy_isq/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/energy_natural/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/energy_squared/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/entropy/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/force/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/frequency/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/group_speed/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/heat_capacity/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/heat_flow_rate/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/impedance/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/inductance/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/inverse_energy/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/irradiance/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/kinematic_viscosity/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/length/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/linear_density_of_electric_charge/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/linear_electric_current_density/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/linear_expansion_coefficient/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/linear_mass_density/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/luminous_intensity/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/magnetic_constant/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/magnetic_dipole_moment/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/magnetic_flux/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/magnetic_flux_density/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/magnetic_moment/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/magnetic_vector_potential/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/magnetization/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/mass/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/mass_change_rate/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/mass_density/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/mass_flow/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/mass_flow_rate/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/modulation_rate/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/modulus_of_compression/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/modulus_of_elasticity/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/modulus_of_rigidity/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/moment_of_force_isq/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/moment_of_force_isq_angle/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/moment_of_inertia_isq/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/moment_of_inertia_isq_angle/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/momentum/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/mutual_inductance/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/permeability/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/permeance/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/permittivity/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/phase_coefficient_isq/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/phase_coefficient_isq_angle/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/phase_speed/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/phase_speed_of_electromagnetic_waves/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/power/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/pressure/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/pressure_coefficient/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/propagation_coefficient_isq/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/propagation_coefficient_isq_angle/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/protoflux/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/radiance/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/radiant_energy_density/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/radiant_exitance/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/radiant_exposure/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/radiant_intensity/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/reactive_power/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/relative_pressure_coefficient/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/reluctance/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/repetency/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/resistivity/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/rotational_frequency/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/second_axial_moment_of_area/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/second_polar_moment_of_area/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/section_modulus/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/solid_angle/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/solid_angular_measure/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/specific_energy/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/specific_entropy/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/specific_gas_constant/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/specific_heat_capacity/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/specific_volume/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/spectral_irradiance/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/spectral_radiance/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/spectral_radiant_energy/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/spectral_radiant_energy_density_in_terms_of_wavelength/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/spectral_radiant_energy_density_in_terms_of_wavenumber/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/spectral_radiant_exitance/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/spectral_radiant_exposure/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/spectral_radiant_flux/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/spectral_radiant_intensity/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/speed/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/surface_coefficient_of_heat_transfer/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/surface_density_of_electric_charge/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/surface_mass_density/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/surface_tension/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/thermal_conductance/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/thermal_conductivity/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/thermal_diffusivity/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/thermal_insulance/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/thermal_resistance/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/thermodynamic_temperature/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/traffic_intensity/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/transfer_rate/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/volume/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/hierarchies/volume_flow_rate/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/systems/angular/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/systems/astronomy/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/systems/cgs/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/systems/core/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/systems/hep/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/systems/iau/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/systems/iec/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/systems/imperial/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/systems/isq/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/systems/isq_angle/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/systems/natural/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/systems/si/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/systems/typographic/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/systems/usc/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/reference/systems_reference/systems/yard_pound/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/tutorials/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
-         <loc>https://mpusz.github.io/mp-units/HEAD/tutorials/affine_spaces/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <loc>https://mpusz.github.io/mp-units/HEAD/tutorials/affine_space/point_origins/</loc>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
-         <loc>https://mpusz.github.io/mp-units/HEAD/tutorials/custom_base_dimensions/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <loc>https://mpusz.github.io/mp-units/HEAD/tutorials/affine_space/points_and_quantities/</loc>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
-         <loc>https://mpusz.github.io/mp-units/HEAD/tutorials/custom_dimensionless_units/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <loc>https://mpusz.github.io/mp-units/HEAD/tutorials/affine_space/temperature_applications/</loc>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
-         <loc>https://mpusz.github.io/mp-units/HEAD/tutorials/custom_quantity_specifications/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <loc>https://mpusz.github.io/mp-units/HEAD/tutorials/affine_space/temperature_handling/</loc>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
-         <loc>https://mpusz.github.io/mp-units/HEAD/tutorials/distinct_quantity_kinds/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <loc>https://mpusz.github.io/mp-units/HEAD/tutorials/quick_start/building_calculator/</loc>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
-         <loc>https://mpusz.github.io/mp-units/HEAD/tutorials/extracting_numeric_values/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <loc>https://mpusz.github.io/mp-units/HEAD/tutorials/quick_start/first_quantities/</loc>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
-         <loc>https://mpusz.github.io/mp-units/HEAD/tutorials/faster_than_lightspeed_constants/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <loc>https://mpusz.github.io/mp-units/HEAD/tutorials/quick_start/simple_math/</loc>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
-         <loc>https://mpusz.github.io/mp-units/HEAD/tutorials/generic_type_safe_interfaces/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <loc>https://mpusz.github.io/mp-units/HEAD/tutorials/type_safety/compile_time_protection/</loc>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
-         <loc>https://mpusz.github.io/mp-units/HEAD/tutorials/incremental_migration/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <loc>https://mpusz.github.io/mp-units/HEAD/tutorials/type_safety/dimensional_analysis/</loc>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
-         <loc>https://mpusz.github.io/mp-units/HEAD/tutorials/interop_with_std_chrono/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <loc>https://mpusz.github.io/mp-units/HEAD/tutorials/type_safety/generic_interfaces/</loc>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
-         <loc>https://mpusz.github.io/mp-units/HEAD/tutorials/refactor_to_strong_types/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <loc>https://mpusz.github.io/mp-units/HEAD/tutorials/type_safety/quantity_specifications/</loc>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
-         <loc>https://mpusz.github.io/mp-units/HEAD/tutorials/strongly_typed_counts/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <loc>https://mpusz.github.io/mp-units/HEAD/tutorials/working_with_units/extracting_numeric_values/</loc>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
-         <loc>https://mpusz.github.io/mp-units/HEAD/tutorials/typed_quantities_same_kind/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <loc>https://mpusz.github.io/mp-units/HEAD/tutorials/working_with_units/safe_unsafe_conversions/</loc>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
-         <loc>https://mpusz.github.io/mp-units/HEAD/tutorials/working_with_temperatures/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <loc>https://mpusz.github.io/mp-units/HEAD/tutorials/working_with_units/unit_conversions/</loc>
+         <lastmod>2026-01-25</lastmod>
+    </url>
+    <url>
+         <loc>https://mpusz.github.io/mp-units/HEAD/users_guide/</loc>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/users_guide/terms_and_definitions/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/users_guide/framework_basics/character_of_a_quantity/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/users_guide/framework_basics/concepts/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/users_guide/framework_basics/design_overview/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/users_guide/framework_basics/dimensionless_quantities/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/users_guide/framework_basics/faster_than_lightspeed_constants/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/users_guide/framework_basics/generic_interfaces/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/users_guide/framework_basics/interface_introduction/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/users_guide/framework_basics/quantity_arithmetics/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/users_guide/framework_basics/simple_and_typed_quantities/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/users_guide/framework_basics/systems_of_quantities/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/users_guide/framework_basics/systems_of_units/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/users_guide/framework_basics/text_output/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/users_guide/framework_basics/the_affine_space/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/users_guide/framework_basics/type_introspection/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/users_guide/framework_basics/value_conversions/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
+    </url>
+    <url>
+         <loc>https://mpusz.github.io/mp-units/HEAD/users_guide/systems/</loc>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/users_guide/systems/cgs/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/users_guide/systems/iau/</loc>
-         <lastmod>2026-01-21</lastmod>
-    </url>
-    <url>
-         <loc>https://mpusz.github.io/mp-units/HEAD/users_guide/systems/introduction/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/users_guide/systems/isq/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/users_guide/systems/natural_units/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/users_guide/systems/si/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/users_guide/systems/strong_angular_system/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/users_guide/systems/yard_pound/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
+    </url>
+    <url>
+         <loc>https://mpusz.github.io/mp-units/HEAD/workshops/</loc>
+         <lastmod>2026-01-25</lastmod>
+    </url>
+    <url>
+         <loc>https://mpusz.github.io/mp-units/HEAD/workshops/advanced/faster_than_lightspeed_constants/</loc>
+         <lastmod>2026-01-25</lastmod>
+    </url>
+    <url>
+         <loc>https://mpusz.github.io/mp-units/HEAD/workshops/advanced/incremental_migration/</loc>
+         <lastmod>2026-01-25</lastmod>
+    </url>
+    <url>
+         <loc>https://mpusz.github.io/mp-units/HEAD/workshops/advanced/strongly_typed_counts/</loc>
+         <lastmod>2026-01-25</lastmod>
+    </url>
+    <url>
+         <loc>https://mpusz.github.io/mp-units/HEAD/workshops/extensions/custom_base_dimensions/</loc>
+         <lastmod>2026-01-25</lastmod>
+    </url>
+    <url>
+         <loc>https://mpusz.github.io/mp-units/HEAD/workshops/extensions/custom_dimensionless_units/</loc>
+         <lastmod>2026-01-25</lastmod>
+    </url>
+    <url>
+         <loc>https://mpusz.github.io/mp-units/HEAD/workshops/extensions/custom_quantity_specifications/</loc>
+         <lastmod>2026-01-25</lastmod>
+    </url>
+    <url>
+         <loc>https://mpusz.github.io/mp-units/HEAD/workshops/extensions/distinct_quantity_kinds/</loc>
+         <lastmod>2026-01-25</lastmod>
+    </url>
+    <url>
+         <loc>https://mpusz.github.io/mp-units/HEAD/workshops/extensions/typed_quantities_same_kind/</loc>
+         <lastmod>2026-01-25</lastmod>
+    </url>
+    <url>
+         <loc>https://mpusz.github.io/mp-units/HEAD/workshops/foundation/affine_spaces/</loc>
+         <lastmod>2026-01-25</lastmod>
+    </url>
+    <url>
+         <loc>https://mpusz.github.io/mp-units/HEAD/workshops/foundation/extracting_numeric_values/</loc>
+         <lastmod>2026-01-25</lastmod>
+    </url>
+    <url>
+         <loc>https://mpusz.github.io/mp-units/HEAD/workshops/foundation/generic_type_safe_interfaces/</loc>
+         <lastmod>2026-01-25</lastmod>
+    </url>
+    <url>
+         <loc>https://mpusz.github.io/mp-units/HEAD/workshops/foundation/interop_with_std_chrono/</loc>
+         <lastmod>2026-01-25</lastmod>
+    </url>
+    <url>
+         <loc>https://mpusz.github.io/mp-units/HEAD/workshops/foundation/refactor_to_strong_types/</loc>
+         <lastmod>2026-01-25</lastmod>
+    </url>
+    <url>
+         <loc>https://mpusz.github.io/mp-units/HEAD/workshops/foundation/working_with_temperatures/</loc>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/blog/archive/2026/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/blog/archive/2025/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/blog/archive/2024/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/blog/archive/2023/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/blog/category/features/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/blog/category/releases/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/blog/category/metrology/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/blog/category/wg21-updates/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/blog/page/2/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
     <url>
          <loc>https://mpusz.github.io/mp-units/HEAD/blog/archive/2024/page/2/</loc>
-         <lastmod>2026-01-21</lastmod>
+         <lastmod>2026-01-25</lastmod>
     </url>
 </urlset>
