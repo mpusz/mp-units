@@ -1,4 +1,4 @@
-# Introduction
+# Systems
 
 This section provides detailed documentation for the most commonly used systems of quantities
 and units available in **mp-units**. While the library supports many systems through its

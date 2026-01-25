@@ -4,41 +4,62 @@ Welcome to the **mp-units** examples collection! These practical, runnable examp
 how to use the library in real-world scenarios, from simple introductory programs to advanced
 domain-specific applications.
 
-All examples are designed to work with all [supported compilers](../getting_started/cpp_compiler_support.md)
-and use the [Wide Compatibility](../how_to_guides/wide_compatibility.md) mode to ensure
-maximum portability.
+## What are Examples?
 
-## How to Use This Section
+Examples bridge the gap between learning and doing, showing complete, working applications
+that you can study and adapt for your own projects.
 
-Examples are organized by complexity and tagged by features, systems, and application domains
-to help you find exactly what you need:
+These examples:
+
+- ✅ Show complete, runnable code in real-world scenarios
+- ✅ Demonstrate library features in context
+- ✅ Range from beginner to advanced complexity
+- ✅ Are organized by level, system, feature, and domain
+- ✅ Work with all [supported compilers](../getting_started/cpp_compiler_support.md)
+- ✅ Use [Wide Compatibility](../how_to_guides/wide_compatibility.md) mode for maximum portability
+
+**Prerequisites**: Basic familiarity with **mp-units** from [Tutorials](../tutorials/index.md).
+Beginner examples include detailed explanations; intermediate and advanced examples assume
+fundamental knowledge.
+
+## How to Use This Section?
 
 ### Learning Path
 
-- **Beginner Examples** (`Level - Beginner`): Start here if you're new to **mp-units**.
-  These examples provide detailed, line-by-line explanations of library fundamentals\
-  including how to structure your code, which headers to include, and which namespaces to use.
+Follow examples sequentially by complexity level:
 
-- **Intermediate Examples** (`Level - Intermediate`): Once you understand the basics,
-  explore these examples that demonstrate specific features in depth. They skip repetitive
-  boilerplate explanations and focus on the unique value each example provides.
+- **Beginner** - Start here if you're new to **mp-units**. Detailed, line-by-line explanations
+  of library fundamentals including code structure, headers, and namespaces.
 
-- **Advanced Examples** (`Level - Advanced`): Complex, real-world applications showing how
-  **mp-units** solves challenging problems in specialized domains.
+- **Intermediate** - Demonstrate specific features in depth. Skip repetitive boilerplate and
+  focus on unique value each example provides.
 
-### Finding Examples by Interest
+- **Advanced** - Complex, real-world applications showing how **mp-units** solves challenging
+  problems in specialized domains.
 
-Use the tag system below to jump directly to examples matching your interests:
+### Finding Examples by Tags
 
-- **By System**: Find examples using specific unit systems (SI, CGS, Imperial, etc.)
-- **By Feature**: Discover examples demonstrating particular library capabilities (conversions,
-  affine space, mathematical operations, etc.)
-- **By Domain**: Locate examples relevant to your field (embedded systems, electronics,
-  physics, aerospace, etc.)
+Browse the [tag index](tags.md) to filter examples by:
 
-You can explore examples sequentially in the documentation order, or use tags to create your
-own learning path based on your specific needs.
+- **Level** - Beginner, intermediate, or advanced
+- **System** - SI, CGS, Imperial, Natural, IAU, and more
+- **Feature** - Conversions, affine space, custom units, generic programming, and more
+- **Domain** - Physics, electronics, aerospace, embedded systems, and more
 
-## Tags
+## When to Use Examples?
 
-<!-- material/tags -->
+Use Examples when you:
+
+- Want to see complete, working applications
+- Need inspiration for your own projects
+- Want to understand how features work together
+- Are looking for patterns to adapt to your use case
+- Need domain-specific implementation examples
+
+## Other Resources
+
+- **[Tutorials](../tutorials/index.md)** - Learning-oriented lessons for getting started
+- **[User's Guide](../users_guide/index.md)** - Explanation-oriented understanding of concepts
+- **[How-to Guides](../how_to_guides/index.md)** - Task-oriented solutions to specific problems
+- **[Workshops](../workshops/index.md)** - Practice advanced patterns with hands-on exercises
+- **[Reference](../reference/index.md)** - Information-oriented technical descriptions

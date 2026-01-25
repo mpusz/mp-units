@@ -147,7 +147,28 @@ nav:
       - Installation and Usage: getting_started/installation_and_usage.md
       - Contributing: getting_started/contributing.md
       - FAQ: getting_started/faq.md
+  - Tutorials:
+      - Tutorials: tutorials/index.md
+      - "Quick Start":
+          - "Your First Quantities": tutorials/quick_start/first_quantities.md
+          - "Simple Math": tutorials/quick_start/simple_math.md
+          - "Building a Calculator": tutorials/quick_start/building_calculator.md
+      - "Working with Units":
+          - "Unit Conversions": tutorials/working_with_units/unit_conversions.md
+          - "Safe and Unsafe Conversions": tutorials/working_with_units/safe_unsafe_conversions.md
+          - "Extracting Numeric Values": tutorials/working_with_units/extracting_numeric_values.md
+      - "Type Safety":
+          - "Compile-Time Protection": tutorials/type_safety/compile_time_protection.md
+          - "Automatic Dimensional Analysis": tutorials/type_safety/dimensional_analysis.md
+          - "Quantity Specifications": tutorials/type_safety/quantity_specifications.md
+          - "Generic Interfaces": tutorials/type_safety/generic_interfaces.md
+      - "Affine Space":
+          - "Points and Quantities": tutorials/affine_space/points_and_quantities.md
+          - "Point Origins": tutorials/affine_space/point_origins.md
+          - "Temperature Handling": tutorials/affine_space/temperature_handling.md
+          - "Temperature Applications": tutorials/affine_space/temperature_applications.md
   - User's Guide:
+      - User's Guide: users_guide/index.md
       - Terms and Definitions: users_guide/terms_and_definitions.md
       - Framework Basics:
           - Interface Introduction: users_guide/framework_basics/interface_introduction.md
@@ -166,7 +187,7 @@ nav:
           - Concepts: users_guide/framework_basics/concepts.md
           - Text Output: users_guide/framework_basics/text_output.md
       - Systems:
-          - Introduction: users_guide/systems/introduction.md
+          - Systems: users_guide/systems/index.md
           - International System of Quantities (ISQ): users_guide/systems/isq.md
           - International System of Units (SI): users_guide/systems/si.md
           - IAU Astronomical Units: users_guide/systems/iau.md
@@ -191,6 +212,7 @@ nav:
       - "Workshop 13: Faster-than-Lightspeed Constants": workshops/faster_than_lightspeed_constants.md
       - "Workshop 14: Incremental Migration": workshops/incremental_migration.md
   - How-to Guides:
+      - How-to Guides: how_to_guides/index.md
       - Pure Dimensional Analysis: how_to_guides/pure_dimensional_analysis.md
       - Working with Legacy Interfaces: how_to_guides/working_with_legacy_interfaces.md
       - Using Custom Representation Types: how_to_guides/using_custom_representation_types.md
@@ -198,6 +220,7 @@ nav:
       - Wide Compatibility: how_to_guides/wide_compatibility.md
   - Examples:
       - Examples: examples/index.md
+      - Tags: examples/tags.md
       - Beginner:
           - hello_units: examples/hello_units.md
           - avg_speed: examples/avg_speed.md
@@ -217,6 +240,7 @@ nav:
           - glide_computer: examples/glide_computer.md
           - kalman_filter: examples/kalman_filter.md
   - Reference:
+      - Reference: reference/index.md
       - Cheat Sheet: reference/cheat_sheet.md
       - Systems Reference:
           - Overview: reference/systems_reference/index.md

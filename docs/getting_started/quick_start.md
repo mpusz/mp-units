@@ -2,7 +2,7 @@
 
 This chapter provides a quick introduction to get you started with **mp-units**. Much
 more details can be found in our
-[User's Guide](../users_guide/terms_and_definitions.md).
+[User's Guide](../users_guide/index.md).
 
 ## Quantities
 
