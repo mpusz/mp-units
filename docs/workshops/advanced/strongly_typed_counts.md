@@ -151,15 +151,15 @@ int main()
   using namespace si::unit_symbols;
 
   // Screen configuration
-  quantity screen_width = resolution_width(1920 * one);
-  quantity screen_height = resolution_height(1080 * one);
+  quantity screen_width = resolution_width(1920);
+  quantity screen_height = resolution_height(1080);
 
   // Sprite position
-  quantity pos_x = pixel_x(100 * one);
-  quantity pos_y = pixel_y(50 * one);
+  quantity pos_x = pixel_x(100);
+  quantity pos_y = pixel_y(50);
 
   // Rendering stats
-  quantity rendered = sprite_count(1500 * one);
+  quantity rendered = sprite_count(1500);
   quantity target_fps = 60.0 / s;
   quantity frame_time = 1.0 / target_fps;
 
@@ -212,7 +212,7 @@ int main()
                                                   QuantityOf<resolution_width> auto width,
                                                   QuantityOf<resolution_height> auto height)
     {
-      return x >= 0 * one && x < width && y >= 0 * one && y < height;
+      return is_gteq_zero(x) && x < width && is_gteq_zero(y) && y < height;
     }
 
     [[nodiscard]] constexpr QuantityOf<render_rate> auto render_rate_calc(QuantityOf<sprite_count> auto count,
@@ -236,15 +236,15 @@ int main()
       using namespace si::unit_symbols;
 
       // Screen configuration
-      quantity screen_width = resolution_width(1920 * one);
-      quantity screen_height = resolution_height(1080 * one);
+      quantity screen_width = resolution_width(1920);
+      quantity screen_height = resolution_height(1080);
 
       // Sprite position
-      quantity pos_x = pixel_x(100 * one);
-      quantity pos_y = pixel_y(50 * one);
+      quantity pos_x = pixel_x(100);
+      quantity pos_y = pixel_y(50);
 
       // Rendering stats
-      quantity rendered = sprite_count(1500 * one);
+      quantity rendered = sprite_count(1500);
       quantity target_fps = 60.0 / s;
       quantity frame_time = 1.0 / target_fps;
 
@@ -326,7 +326,7 @@ int main()
     quantity frame_time = 1.0 / target_fps;  // Dimensional analysis!
 
     // Render rate: sprites per time
-    quantity rendered = sprite_count(1500 * one);
+    quantity rendered = sprite_count(1500);
     // sprite_count / time implicitly converts to render_rate
     quantity<render_rate[one / s]> rate = rendered / frame_time;
     ```
@@ -382,7 +382,6 @@ int main()
 
 ## References
 
-- [User's Guide: Dimensionless Quantities](../../users_guide/framework_basics/dimensionless_quantities.md)
 - [User's Guide: Using dimensionless quantities as strongly-typed numeric types](../../users_guide/framework_basics/dimensionless_quantities.md#using-dimensionless-quantities-as-strongly-typed-numeric-types)
 - [Workshop: Custom Dimensionless Units](../extensions/custom_dimensionless_units.md)
 - [Workshop: Custom Base Dimensions](../extensions/custom_base_dimensions.md)

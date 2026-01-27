@@ -198,7 +198,7 @@ int main()
 
   // Scenario: Chemical reactor with 2m mercury column (SG = 13.6)
   quantity h_mercury = fluid_head(2 * m);
-  quantity sg_mercury = specific_gravity(13.6 * one);
+  quantity sg_mercury = specific_gravity(13.6);
 
   // Pump rated for 10m water head
   quantity h_pump_rating = water_head(10 * m);
@@ -273,7 +273,7 @@ int main()
 
       // Scenario: Chemical reactor with 2m mercury column (SG = 13.6)
       quantity h_mercury = fluid_head(2 * m);
-      quantity sg_mercury = specific_gravity(13.6 * one);
+      quantity sg_mercury = specific_gravity(13.6);
 
       // Pump rated for 10m water head
       quantity h_pump_rating = water_head(10 * m);

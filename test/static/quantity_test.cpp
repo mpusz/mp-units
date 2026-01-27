@@ -1087,6 +1087,15 @@ static_assert(v{2., 4., 6.} * one - v{1., 2., 3.} == v{1., 2., 3.});
 static_assert(v{2., 4., 6.} - v{1., 2., 3.} * one == v{1., 2., 3.});
 #endif
 
+static_assert(is_of_type<dimensionless(42), quantity<dimensionless[one], int>>);
+static_assert(is_of_type<isq::rotation(3.14), quantity<isq::rotation[one], double>>);
+static_assert(is_of_type<isq::angular_measure(3.14), quantity<isq::angular_measure[one], double>>);
+
+template<auto QS>
+concept invalid_dimensionless_conversion = requires { requires !requires { QS(42); }; };
+
+static_assert(invalid_dimensionless_conversion<isq::length>);
+
 static_assert(2 * rad * (2 * rad) == 4 * pow<2>(rad));
 
 // modulo arithmetics

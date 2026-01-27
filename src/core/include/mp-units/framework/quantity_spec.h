@@ -200,6 +200,10 @@ struct quantity_spec_interface_base {
   }
 };
 
+[[nodiscard]] consteval bool explicitly_convertible_to_dimensionless(QuantitySpec auto qs);
+template<QuantitySpec auto QS, typename FwdValue>
+[[nodiscard]] constexpr Quantity auto make_quantity_of_one(FwdValue&& val);
+
 #if !MP_UNITS_API_NO_CRTP
 template<typename Self>
 #endif
@@ -228,6 +232,13 @@ struct quantity_spec_interface : quantity_spec_interface_base {
     return quantity_point{self(std::forward<FwdQP>(qp).quantity_from_origin_is_an_implementation_detail_),
                           qp.point_origin};
   }
+
+  template<typename Self, typename FwdValue, RepresentationOf<Self{}> Value = std::remove_cvref_t<FwdValue>>
+    requires(detail::explicitly_convertible_to_dimensionless(Self{}))
+  [[nodiscard]] constexpr Quantity auto operator()(this Self, FwdValue&& val)
+  {
+    return make_quantity_of_one<Self{}>(std::forward<FwdValue>(val));
+  }
 #else
   template<typename Self_ = Self, UnitOf<Self_{}> U>
   [[nodiscard]] MP_UNITS_CONSTEVAL Reference auto operator[](U) const
@@ -251,6 +262,13 @@ struct quantity_spec_interface : quantity_spec_interface_base {
   {
     return quantity_point{Self{}(std::forward<FwdQP>(qp).quantity_from_origin_is_an_implementation_detail_),
                           qp.point_origin};
+  }
+
+  template<typename FwdValue, typename Self_ = Self, RepresentationOf<Self_{}> Value = std::remove_cvref_t<FwdValue>>
+    requires(detail::explicitly_convertible_to_dimensionless(Self_{}))
+  [[nodiscard]] constexpr Quantity auto operator()(FwdValue&& val) const
+  {
+    return make_quantity_of_one<Self{}>(std::forward<FwdValue>(val));
   }
 #endif
 };
@@ -1132,6 +1150,11 @@ template<QuantitySpec QS1, QuantitySpec QS2>
 MP_UNITS_EXPORT_END
 
 namespace detail {
+
+[[nodiscard]] consteval bool explicitly_convertible_to_dimensionless(QuantitySpec auto qs)
+{
+  return explicitly_convertible(qs, dimensionless);
+}
 
 template<QuantitySpec Q>
   requires requires(Q q) { detail::get_kind_tree_root(q); }

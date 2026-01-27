@@ -399,8 +399,8 @@ process(10, 20);                       // Which is items? Which is widgets? Uncl
 process(10 * one, 20 * one);           // Which is items? Which is widgets? Unclear!
 
 // With explicit types, the compiler checks the order
-quantity<item_count[one]> items = 10;
-quantity<widget_count[one]> widgets = 20;
+quantity items = item_count(10);
+quantity widgets = widget_count(20);
 process(items, widgets);    // OK
 // process(widgets, items); // Compile-time error!
 ```
@@ -415,8 +415,8 @@ Another drawback of such a hierarchy is that these types model `dimensionless` t
 numbers which means they can be mixed in arithmetic operations and comparisons:
 
 ```cpp
-quantity<item_count[one]> items = 10;
-quantity<widget_count[one]> widgets = 20;
+quantity items = item_count(10);
+quantity widgets = widget_count(20);
 
 // These compile but may be semantically incorrect:
 quantity total = items + widgets;    // Compiles! Both convert to dimensionless
@@ -455,8 +455,8 @@ This however, creates an important trade-off:
     process(10, 20);             // ⚠️ Which parameter is which? No way to tell!
 
     // With typed quantities, the compiler does enforce order
-    quantity<item_count[one]> items = 10;
-    quantity<widget_count[one]> widgets = 20;
+    quantity items = item_count(10);
+    quantity widgets = widget_count(20);
     process(items, widgets);     // ✅ OK - correct order
     process(widgets, items);     // ❌ Compile error! Good.
 
@@ -498,8 +498,8 @@ This however, creates an important trade-off:
     process(10, 20);             // ❌ Compile error! Good.
 
     // Must use typed quantities, and order is enforced
-    quantity<item_count[one]> items(10);
-    quantity<widget_count[one]> widgets(20);
+    quantity items = item_count(10);
+    quantity widgets = widget_count(20);
     process(items, widgets);     // ✅ OK - correct order
     process(widgets, items);     // ❌ Compile error! Good.
 

@@ -685,6 +685,16 @@ std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>&
 
 MP_UNITS_EXPORT_END
 
+namespace detail {
+
+template<QuantitySpec auto QS, typename FwdValue>
+[[nodiscard]] constexpr Quantity auto make_quantity_of_one(FwdValue&& val)
+{
+  return quantity{std::forward<FwdValue>(val), QS[one]};
+}
+
+}  // namespace detail
+
 }  // namespace mp_units
 
 template<auto R1, typename Rep1, auto R2, typename Rep2>
