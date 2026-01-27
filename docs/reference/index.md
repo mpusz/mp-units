@@ -45,11 +45,11 @@ Detailed C++ API documentation for all library components.
     The API Reference is written in formal standardese (standard specification language)
     because we plan to use it as wording for the ISO C++ proposal. The content is maintained
     in LaTeX format for standards submission.
-    
+
     We understand that standardese can be difficult to understand for non-expert audiences,
     and we apologize for this complexity. However, we need to maintain this formal language
     to ensure the documentation can be directly used in the standardization process.
-    
+
     Unfortunately, despite our best efforts, the documentation may occasionally be slightly
     outdated due to the complexity of maintaining standardese alongside the implementation.
 
