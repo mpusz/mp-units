@@ -93,7 +93,9 @@ QUANTITY_SPEC_(strain, dimensionless, quantity_character::tensor);
 QUANTITY_SPEC_(power, force* velocity, quantity_character::real_scalar);
 QUANTITY_SPEC_(efficiency, power / power);
 QUANTITY_SPEC_(energy, mass * pow<2>(length) / pow<2>(time));
-QUANTITY_SPEC_(mechanical_energy, energy);
+QUANTITY_SPEC_(mechanical_work, energy, force* displacement, quantity_character::real_scalar);
+inline constexpr auto work = mechanical_work;
+QUANTITY_SPEC_(mechanical_energy, mechanical_work, mass* pow<2>(length) / pow<2>(time));
 QUANTITY_SPEC_(potential_energy, mechanical_energy);
 QUANTITY_SPEC_(gravitational_potential_energy, potential_energy, mass * acceleration_of_free_fall * height);
 QUANTITY_SPEC_(kinetic_energy, mechanical_energy, mass* pow<2>(speed));
@@ -469,7 +471,6 @@ static_assert(!defines_equation(special_rate_of_climb));
 static_assert(defines_equation(energy));
 static_assert(defines_equation(kinetic_energy));
 static_assert(defines_equation(gravitational_potential_energy));
-static_assert(!defines_equation(mechanical_energy));
 static_assert(!defines_equation(potential_energy));
 
 // get_complexity
@@ -680,7 +681,7 @@ static_assert(convertible(area / pow<2>(length), solid_angular_measure) == expli
 static_assert(convertible(force * position_vector, torque) == explicit_conversion);
 static_assert(convertible(length / time, special_speed) == explicit_conversion);
 static_assert(convertible(height / time, special_rate_of_climb) == explicit_conversion);
-static_assert(convertible(mass * pow<2>(length) / pow<2>(time), mechanical_energy) == explicit_conversion);
+static_assert(convertible(mass * pow<2>(length) / pow<2>(time), mechanical_energy) == yes);
 static_assert(convertible(mass * pow<2>(length) / pow<2>(time), potential_energy) == explicit_conversion);
 static_assert(convertible(mass * pow<2>(length) / pow<2>(time), gravitational_potential_energy) == explicit_conversion);
 
