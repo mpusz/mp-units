@@ -3384,10 +3384,10 @@ You're not viewing the latest version.
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
+  <a href="#what-is-pure-dimensional-analysis" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Overview
+        What is Pure Dimensional Analysis?
       
     </span>
   </a>
@@ -3395,10 +3395,10 @@ You're not viewing the latest version.
 </li>
       
         <li class="md-nav__item">
-  <a href="#use-cases" class="md-nav__link">
+  <a href="#when-to-use-pure-dimensional-analysis" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Use Cases
+        When to Use Pure Dimensional Analysis?
       
     </span>
   </a>
@@ -10424,17 +10424,24 @@ You're not viewing the latest version.
 
 
 <h1 id="pure-dimensional-analysis">Pure Dimensional Analysis<a class="headerlink" href="#pure-dimensional-analysis" title="Permanent link">&para;</a></h1>
-<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<p>The <strong>mp-units</strong> library is not limited to working with complete quantities (i.e., a numerical
-value paired with a unit). It also provides powerful support for <strong>pure dimensional analysis</strong>,
-where you can track and validate dimensions and quantity types without concerning yourself
-with actual quantity values.</p>
-<p>This feature allows users to embed <code>Dimension</code> or <code>QuantitySpec</code> types into their own custom
-arithmetic types and leverage the library's dimensional analysis capabilities. By propagating
-arithmetic operations to these embedded types through custom overloaded operators, the library
-automatically performs full dimensional analysis and type checking—all at compile-time, with
-zero runtime overhead.</p>
-<h2 id="use-cases">Use Cases<a class="headerlink" href="#use-cases" title="Permanent link">&para;</a></h2>
+<p>This guide shows you how to use <strong>mp-units</strong> for pure dimensional analysis—working with
+dimensions and quantity specifications without actual numerical values. You'll learn how
+to embed dimensions into custom types, validate dimensional consistency at compile-time,
+and build sophisticated systems like symbolic computation or automatic differentiation
+while maintaining full dimensional correctness.</p>
+<p>For background on dimensions and quantity specifications, see
+<a href="../../../users_guide/framework_basics/systems_of_quantities/">Systems of Quantities</a> and
+<a href="../../../users_guide/framework_basics/systems_of_units/">Systems of Units</a> in the User's Guide.</p>
+<h2 id="what-is-pure-dimensional-analysis">What is Pure Dimensional Analysis?<a class="headerlink" href="#what-is-pure-dimensional-analysis" title="Permanent link">&para;</a></h2>
+<p>The <strong>mp-units</strong> library is not limited to working with complete quantities (numerical values
+paired with units). It also supports <strong>pure dimensional analysis</strong>, where you track and validate
+dimensions and quantity types without concerning yourself with actual quantity values.</p>
+<p>This works by embedding <a href="../../../users_guide/framework_basics/concepts/#Dimension"><code>Dimension</code></a>
+or <a href="../../../users_guide/framework_basics/concepts/#QuantitySpec"><code>QuantitySpec</code></a> types into
+your own custom arithmetic types. By propagating arithmetic operations to these embedded
+types through overloaded operators, the library automatically performs full dimensional
+analysis and type checking—all at compile-time, with zero runtime overhead.</p>
+<h2 id="when-to-use-pure-dimensional-analysis">When to Use Pure Dimensional Analysis?<a class="headerlink" href="#when-to-use-pure-dimensional-analysis" title="Permanent link">&para;</a></h2>
 <p>Pure dimensional analysis is particularly useful when:</p>
 <ul>
 <li>Designing symbolic computation systems that manipulate physical formulas</li>
@@ -10465,28 +10472,24 @@ In <strong>mp-units</strong>, dimensions can be used independently to verify dim
 <p>While dimensions track the fundamental physical nature (like <em>length</em>, <em>time</em>, <em>mass</em>),
 quantity specifications (<code>quantity_spec</code>) provide a more refined type system that
 distinguishes between different quantities sharing the same dimension:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mp-units/systems/isq.h&gt;</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">mp_units</span><span class="p">;</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1">// Different quantities can have the same dimension</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">width</span><span class="p">.</span><span class="n">dimension</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="p">.</span><span class="n">dimension</span><span class="p">);</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">width</span><span class="p">.</span><span class="n">dimension</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">radius</span><span class="p">.</span><span class="n">dimension</span><span class="p">);</span>
 </span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="c1">// Different quantities can have the same dimension</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">width</span><span class="p">.</span><span class="n">dimension</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="p">.</span><span class="n">dimension</span><span class="p">);</span>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">width</span><span class="p">.</span><span class="n">dimension</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">radius</span><span class="p">.</span><span class="n">dimension</span><span class="p">);</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="c1">// But they remain distinct types</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">width</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="p">);</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">width</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">radius</span><span class="p">);</span>
 </span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>
-</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="c1">// But they remain distinct types</span>
-</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">width</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="p">);</span>
-</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">width</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">radius</span><span class="p">);</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="c1">// Quantity specs also support arithmetic operations</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">area_spec</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">width</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="p">;</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">volume_spec</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">area_spec</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">depth</span><span class="p">;</span>
 </span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>
-</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="c1">// Quantity specs also support arithmetic operations</span>
-</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">area_spec</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">width</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="p">;</span>
-</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">volume_spec</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">area_spec</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">depth</span><span class="p">;</span>
-</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>
-</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="c1">// The derived specs use more specialized quantities than the library&#39;s canonical definitions,</span>
-</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="c1">// but they are implicitly convertible to them</span>
-</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">area_spec</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">area</span><span class="p">);</span>
-</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">volume_spec</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">volume</span><span class="p">);</span>
-</span><span id="__span-1-21"><a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">implicitly_convertible</span><span class="p">(</span><span class="n">area_spec</span><span class="p">,</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">area</span><span class="p">));</span>
-</span><span id="__span-1-22"><a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">implicitly_convertible</span><span class="p">(</span><span class="n">volume_spec</span><span class="p">,</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">volume</span><span class="p">));</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="c1">// The derived specs use more specialized quantities than the library&#39;s canonical definitions,</span>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="c1">// but they are implicitly convertible to them</span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">area_spec</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">area</span><span class="p">);</span>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">volume_spec</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">volume</span><span class="p">);</span>
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">implicitly_convertible</span><span class="p">(</span><span class="n">area_spec</span><span class="p">,</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">area</span><span class="p">));</span>
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="k">static_assert</span><span class="p">(</span><span class="n">implicitly_convertible</span><span class="p">(</span><span class="n">volume_spec</span><span class="p">,</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">volume</span><span class="p">));</span>
 </span></code></pre></div>
 <h2 id="embedding-in-custom-types">Embedding in Custom Types<a class="headerlink" href="#embedding-in-custom-types" title="Permanent link">&para;</a></h2>
 <p>The real power of pure dimensional analysis emerges when you embed dimensions or quantity
@@ -10538,12 +10541,12 @@ specs into your own types. Here's an example with a simple symbolic expression t
 </span><span id="__span-2-45"><a id="__codelineno-2-45" name="__codelineno-2-45" href="#__codelineno-2-45"></a><span class="w">  </span><span class="n">symbolic_expression</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">mass</span><span class="o">&gt;</span><span class="w"> </span><span class="n">mass</span><span class="p">(</span><span class="s">&quot;m&quot;</span><span class="p">);</span>
 </span><span id="__span-2-46"><a id="__codelineno-2-46" name="__codelineno-2-46" href="#__codelineno-2-46"></a>
 </span><span id="__span-2-47"><a id="__codelineno-2-47" name="__codelineno-2-47" href="#__codelineno-2-47"></a><span class="w">  </span><span class="c1">// These operations are dimensionally valid</span>
-</span><span id="__span-2-48"><a id="__codelineno-2-48" name="__codelineno-2-48" href="#__codelineno-2-48"></a><span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">velocity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">distance</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">duration</span><span class="p">;</span>
-</span><span id="__span-2-49"><a id="__codelineno-2-49" name="__codelineno-2-49" href="#__codelineno-2-49"></a><span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">acceleration</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">velocity</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">duration</span><span class="p">;</span>
+</span><span id="__span-2-48"><a id="__codelineno-2-48" name="__codelineno-2-48" href="#__codelineno-2-48"></a><span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">speed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">distance</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">duration</span><span class="p">;</span>
+</span><span id="__span-2-49"><a id="__codelineno-2-49" name="__codelineno-2-49" href="#__codelineno-2-49"></a><span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">acceleration</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">speed</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">duration</span><span class="p">;</span>
 </span><span id="__span-2-50"><a id="__codelineno-2-50" name="__codelineno-2-50" href="#__codelineno-2-50"></a><span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">force</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mass</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">acceleration</span><span class="p">;</span>
 </span><span id="__span-2-51"><a id="__codelineno-2-51" name="__codelineno-2-51" href="#__codelineno-2-51"></a><span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">distance</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">distance</span><span class="p">;</span>
 </span><span id="__span-2-52"><a id="__codelineno-2-52" name="__codelineno-2-52" href="#__codelineno-2-52"></a>
-</span><span id="__span-2-53"><a id="__codelineno-2-53" name="__codelineno-2-53" href="#__codelineno-2-53"></a><span class="w">  </span><span class="k">static_assert</span><span class="p">(</span><span class="n">implicitly_convertible</span><span class="p">(</span><span class="n">velocity</span><span class="p">.</span><span class="n">quantity_spec</span><span class="p">(),</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">speed</span><span class="p">));</span>
+</span><span id="__span-2-53"><a id="__codelineno-2-53" name="__codelineno-2-53" href="#__codelineno-2-53"></a><span class="w">  </span><span class="k">static_assert</span><span class="p">(</span><span class="n">implicitly_convertible</span><span class="p">(</span><span class="n">speed</span><span class="p">.</span><span class="n">quantity_spec</span><span class="p">(),</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">speed</span><span class="p">));</span>
 </span><span id="__span-2-54"><a id="__codelineno-2-54" name="__codelineno-2-54" href="#__codelineno-2-54"></a><span class="w">  </span><span class="k">static_assert</span><span class="p">(</span><span class="n">force</span><span class="p">.</span><span class="n">dimension</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">force</span><span class="p">.</span><span class="n">dimension</span><span class="p">);</span>
 </span><span id="__span-2-55"><a id="__codelineno-2-55" name="__codelineno-2-55" href="#__codelineno-2-55"></a>
 </span><span id="__span-2-56"><a id="__codelineno-2-56" name="__codelineno-2-56" href="#__codelineno-2-56"></a><span class="w">  </span><span class="c1">// This would fail to compile due to dimensional mismatch:</span>
@@ -10645,9 +10648,9 @@ uses dimensions to enforce compile-time constraints on state variables:</p>
 </span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="k">constexpr</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">are_time_derivatives</span><span class="o">&lt;</span><span class="n">D1</span><span class="p">,</span><span class="w"> </span><span class="n">D2</span><span class="p">,</span><span class="w"> </span><span class="n">Ds</span><span class="p">...</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span>
 </span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="w">  </span><span class="p">(</span><span class="n">D1</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">D2</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">mp_units</span><span class="o">::</span><span class="n">isq</span><span class="o">::</span><span class="n">dim_time</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">are_time_derivatives</span><span class="o">&lt;</span><span class="n">D2</span><span class="p">,</span><span class="w"> </span><span class="n">Ds</span><span class="p">...</span><span class="o">&gt;</span><span class="p">;</span>
 </span></code></pre></div>
-<p>This metafunction validates that a sequence of dimensions represents successive time
+<p>This metafunction validates that a sequence of dimensions represents successive <em>time</em>
 derivatives (e.g., <em>position</em> → <em>velocity</em> → <em>acceleration)</em>, where each dimension divided
-by the next equals time. The constraint ensures the Kalman filter state can only be
+by the next equals <em>time</em>. The constraint ensures the Kalman filter state can only be
 instantiated with physically meaningful derivative chains:</p>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="n">mp_units</span><span class="o">::</span><span class="n">QuantityPoint</span><span class="p">...</span><span class="w"> </span><span class="n">QPs</span><span class="o">&gt;</span>
 </span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">  </span><span class="k">requires</span><span class="p">(</span><span class="k">sizeof</span><span class="p">...(</span><span class="n">QPs</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span><span class="k">sizeof</span><span class="p">...(</span><span class="n">QPs</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">detail</span><span class="o">::</span><span class="n">are_time_derivatives</span><span class="o">&lt;</span><span class="n">QPs</span><span class="o">::</span><span class="n">dimension</span><span class="p">...</span><span class="o">&gt;</span>
@@ -10677,9 +10680,10 @@ sophisticated compile-time validation without requiring actual quantity values.<
 <h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">&para;</a></h2>
 <p>Pure dimensional analysis in <strong>mp-units</strong> enables you to leverage the library's powerful
 type system for dimensional validation even when you're not working with complete quantities.
-By embedding <code>Dimension</code> or <code>QuantitySpec</code> types into your custom arithmetic types and
-propagating operations to them, you achieve full compile-time dimensional analysis with
-zero runtime overhead.</p>
+By embedding <a href="../../../users_guide/framework_basics/concepts/#Dimension"><code>Dimension</code></a>
+or <a href="../../../users_guide/framework_basics/concepts/#QuantitySpec"><code>QuantitySpec</code></a>
+types into your custom arithmetic types and propagating operations to them, you
+achieve full compile-time dimensional analysis with zero runtime overhead.</p>
 <p>This feature unlocks new possibilities for symbolic computation, automatic differentiation,
 interval arithmetic, and other advanced use cases while maintaining the strong dimensional
 correctness guarantees that <strong>mp-units</strong> is known for.</p>
