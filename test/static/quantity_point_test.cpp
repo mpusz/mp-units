@@ -237,6 +237,8 @@ static_assert(quantity_point<si::metre>::dimension == isq::dim_length);
 static_assert(quantity_point<si::metre>::unit == si::metre);
 static_assert(is_of_type<quantity_point<si::metre>::point_origin, zeroth_point_origin_<kind_of<isq::length>>>);
 static_assert(is_of_type<quantity_point<si::metre>::absolute_point_origin, zeroth_point_origin_<kind_of<isq::length>>>);
+static_assert(unit_for<quantity_point<si::metre>> == si::metre);
+static_assert(reference_for<quantity_point<si::metre>> == si::metre);
 
 static_assert(quantity_point<isq::height[m]>::reference == isq::height[m]);
 static_assert(quantity_point<isq::height[m]>::quantity_spec == isq::height);
@@ -244,6 +246,8 @@ static_assert(quantity_point<isq::height[m]>::dimension == isq::dim_length);
 static_assert(quantity_point<isq::height[m]>::unit == si::metre);
 static_assert(is_of_type<quantity_point<isq::height[m]>::point_origin, zeroth_point_origin_<isq::height>>);
 static_assert(is_of_type<quantity_point<isq::height[m]>::absolute_point_origin, zeroth_point_origin_<isq::height>>);
+static_assert(unit_for<quantity_point<isq::height[m]>> == si::metre);
+static_assert(reference_for<quantity_point<isq::height[m]>> == isq::height[m]);
 
 static_assert(quantity_point<si::metre, mean_sea_level>::reference == si::metre);
 static_assert(quantity_point<si::metre, mean_sea_level>::quantity_spec == kind_of<isq::length>);
@@ -251,6 +255,8 @@ static_assert(quantity_point<si::metre, mean_sea_level>::dimension == isq::dim_l
 static_assert(quantity_point<si::metre, mean_sea_level>::unit == si::metre);
 static_assert(is_of_type<quantity_point<si::metre, mean_sea_level>::point_origin, struct mean_sea_level>);
 static_assert(is_of_type<quantity_point<si::metre, mean_sea_level>::absolute_point_origin, struct mean_sea_level>);
+static_assert(unit_for<quantity_point<si::metre, mean_sea_level>> == si::metre);
+static_assert(reference_for<quantity_point<si::metre, mean_sea_level>> == si::metre);
 
 static_assert(quantity_point<isq::height[m], mean_sea_level>::reference == isq::height[m]);
 static_assert(quantity_point<isq::height[m], mean_sea_level>::quantity_spec == isq::height);
@@ -258,6 +264,8 @@ static_assert(quantity_point<isq::height[m], mean_sea_level>::dimension == isq::
 static_assert(quantity_point<isq::height[m], mean_sea_level>::unit == si::metre);
 static_assert(is_of_type<quantity_point<isq::height[m], mean_sea_level>::point_origin, struct mean_sea_level>);
 static_assert(is_of_type<quantity_point<isq::height[m], mean_sea_level>::absolute_point_origin, struct mean_sea_level>);
+static_assert(unit_for<quantity_point<isq::height[m], mean_sea_level>> == si::metre);
+static_assert(reference_for<quantity_point<isq::height[m], mean_sea_level>> == isq::height[m]);
 
 static_assert(quantity_point<isq::height[m], ground_level>::reference == isq::height[m]);
 static_assert(quantity_point<isq::height[m], ground_level>::quantity_spec == isq::height);
@@ -265,6 +273,8 @@ static_assert(quantity_point<isq::height[m], ground_level>::dimension == isq::di
 static_assert(quantity_point<isq::height[m], ground_level>::unit == si::metre);
 static_assert(is_of_type<quantity_point<isq::height[m], ground_level>::point_origin, struct ground_level>);
 static_assert(is_of_type<quantity_point<isq::height[m], ground_level>::absolute_point_origin, struct mean_sea_level>);
+static_assert(unit_for<quantity_point<isq::height[m], ground_level>> == si::metre);
+static_assert(reference_for<quantity_point<isq::height[m], ground_level>> == isq::height[m]);
 
 static_assert(quantity_point<isq::height[m], tower_peak>::reference == isq::height[m]);
 static_assert(quantity_point<isq::height[m], tower_peak>::quantity_spec == isq::height);
@@ -272,6 +282,8 @@ static_assert(quantity_point<isq::height[m], tower_peak>::dimension == isq::dim_
 static_assert(quantity_point<isq::height[m], tower_peak>::unit == si::metre);
 static_assert(is_of_type<quantity_point<isq::height[m], tower_peak>::point_origin, struct tower_peak>);
 static_assert(is_of_type<quantity_point<isq::height[m], tower_peak>::absolute_point_origin, struct mean_sea_level>);
+static_assert(unit_for<quantity_point<isq::height[m], tower_peak>> == si::metre);
+static_assert(reference_for<quantity_point<isq::height[m], tower_peak>> == isq::height[m]);
 
 static_assert(quantity_point<si::kelvin, si::absolute_zero>::reference == si::kelvin);
 static_assert(quantity_point<si::kelvin, si::absolute_zero>::quantity_spec == kind_of<isq::thermodynamic_temperature>);
@@ -280,6 +292,8 @@ static_assert(quantity_point<si::kelvin, si::absolute_zero>::unit == si::kelvin)
 static_assert(is_of_type<quantity_point<si::kelvin, si::absolute_zero>::point_origin, struct si::absolute_zero>);
 static_assert(
   is_of_type<quantity_point<si::kelvin, si::absolute_zero>::absolute_point_origin, struct si::absolute_zero>);
+static_assert(unit_for<quantity_point<si::kelvin, si::absolute_zero>> == si::kelvin);
+static_assert(reference_for<quantity_point<si::kelvin, si::absolute_zero>> == si::kelvin);
 
 static_assert(quantity_point<isq::thermodynamic_temperature[si::kelvin], si::absolute_zero>::reference ==
               isq::thermodynamic_temperature[si::kelvin]);
@@ -293,6 +307,9 @@ static_assert(is_of_type<quantity_point<isq::thermodynamic_temperature[si::kelvi
 static_assert(
   is_of_type<quantity_point<isq::thermodynamic_temperature[si::kelvin], si::absolute_zero>::absolute_point_origin,
              struct si::absolute_zero>);
+static_assert(unit_for<quantity_point<isq::thermodynamic_temperature[si::kelvin], si::absolute_zero>> == si::kelvin);
+static_assert(reference_for<quantity_point<isq::thermodynamic_temperature[si::kelvin], si::absolute_zero>> ==
+              isq::thermodynamic_temperature[si::kelvin]);
 
 static_assert(quantity_point<isq::Celsius_temperature[si::kelvin], si::absolute_zero>::reference ==
               isq::Celsius_temperature[si::kelvin]);
@@ -305,6 +322,9 @@ static_assert(is_of_type<quantity_point<isq::Celsius_temperature[si::kelvin], si
                          struct si::absolute_zero>);
 static_assert(is_of_type<quantity_point<isq::Celsius_temperature[si::kelvin], si::absolute_zero>::absolute_point_origin,
                          struct si::absolute_zero>);
+static_assert(unit_for<quantity_point<isq::Celsius_temperature[si::kelvin], si::absolute_zero>> == si::kelvin);
+static_assert(reference_for<quantity_point<isq::Celsius_temperature[si::kelvin], si::absolute_zero>> ==
+              isq::Celsius_temperature[si::kelvin]);
 
 static_assert(quantity_point<si::degree_Celsius, si::ice_point>::reference == si::degree_Celsius);
 static_assert(quantity_point<si::degree_Celsius, si::ice_point>::quantity_spec ==
@@ -314,6 +334,8 @@ static_assert(quantity_point<si::degree_Celsius, si::ice_point>::unit == si::deg
 static_assert(is_of_type<quantity_point<si::degree_Celsius, si::ice_point>::point_origin, struct si::ice_point>);
 static_assert(
   is_of_type<quantity_point<si::degree_Celsius, si::ice_point>::absolute_point_origin, struct si::absolute_zero>);
+static_assert(unit_for<quantity_point<si::degree_Celsius, si::ice_point>> == si::degree_Celsius);
+static_assert(reference_for<quantity_point<si::degree_Celsius, si::ice_point>> == si::degree_Celsius);
 
 static_assert(quantity_point<isq::Celsius_temperature[si::degree_Celsius], si::ice_point>::reference ==
               isq::Celsius_temperature[si::degree_Celsius]);
@@ -327,6 +349,10 @@ static_assert(is_of_type<quantity_point<isq::Celsius_temperature[si::degree_Cels
 static_assert(
   is_of_type<quantity_point<isq::Celsius_temperature[si::degree_Celsius], si::ice_point>::absolute_point_origin,
              struct si::absolute_zero>);
+static_assert(unit_for<quantity_point<isq::Celsius_temperature[si::degree_Celsius], si::ice_point>> ==
+              si::degree_Celsius);
+static_assert(reference_for<quantity_point<isq::Celsius_temperature[si::degree_Celsius], si::ice_point>> ==
+              isq::Celsius_temperature[si::degree_Celsius]);
 
 
 //////////////////
@@ -921,6 +947,9 @@ static_assert(std::is_same_v<MP_UNITS_NONCONST_TYPE(quantity_point{sys_seconds{1
                              chrono_point_origin_<std::chrono::system_clock>>);
 static_assert(quantity_point{sys_seconds{24h}}.unit == si::second);
 static_assert(quantity_point{sys_seconds{24h}}.quantity_spec == kind_of<isq::time>);
+static_assert(unit_for<decltype(quantity_point{sys_seconds{24h}})> == si::second);
+static_assert(reference_for<decltype(quantity_point{sys_seconds{24h}})> == si::second);
+static_assert(std::is_same_v<rep_for<decltype(quantity_point{sys_seconds{123s}})>, std::chrono::seconds::rep>);
 #endif
 
 

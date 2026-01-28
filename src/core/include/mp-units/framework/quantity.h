@@ -683,9 +683,20 @@ std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>&
 
 #endif  // MP_UNITS_HOSTED
 
+template<auto R, typename Rep>
+constexpr auto unit_for<quantity<R, Rep>> = quantity<R, Rep>::unit;
+
+template<auto R, typename Rep>
+constexpr auto reference_for<quantity<R, Rep>> = R;
+
 MP_UNITS_EXPORT_END
 
 namespace detail {
+
+template<auto R, typename Rep>
+struct rep_for_impl<quantity<R, Rep>> {
+  using type = Rep;
+};
 
 template<QuantitySpec auto QS, typename FwdValue>
 [[nodiscard]] constexpr Quantity auto make_quantity_of_one(FwdValue&& val)

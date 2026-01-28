@@ -119,38 +119,52 @@ static_assert(quantity<si::metre>::reference == si::metre);
 static_assert(quantity<si::metre>::quantity_spec == kind_of<isq::length>);
 static_assert(quantity<si::metre>::dimension == isq::dim_length);
 static_assert(quantity<si::metre>::unit == si::metre);
+static_assert(unit_for<quantity<si::metre>> == si::metre);
+static_assert(reference_for<quantity<si::metre>> == si::metre);
 
 static_assert(quantity<isq::length[m]>::reference == isq::length[m]);
 static_assert(quantity<isq::length[m]>::quantity_spec == isq::length);
 static_assert(quantity<isq::length[m]>::dimension == isq::dim_length);
 static_assert(quantity<isq::length[m]>::unit == si::metre);
+static_assert(unit_for<quantity<isq::length[m]>> == si::metre);
+static_assert(reference_for<quantity<isq::length[m]>> == isq::length[m]);
 
 static_assert(quantity<one>::reference == one);
 static_assert(quantity<one>::quantity_spec == kind_of<dimensionless>);
 static_assert(quantity<one>::dimension == dimension_one);
 static_assert(quantity<one>::unit == one);
+static_assert(unit_for<quantity<one>> == one);
+static_assert(reference_for<quantity<one>> == one);
 
 static_assert(quantity<dimensionless[one]>::reference == dimensionless[one]);
 static_assert(quantity<dimensionless[one]>::quantity_spec == dimensionless);
 static_assert(quantity<dimensionless[one]>::dimension == dimension_one);
 static_assert(quantity<dimensionless[one]>::unit == one);
+static_assert(unit_for<quantity<dimensionless[one]>> == one);
+static_assert(reference_for<quantity<dimensionless[one]>> == dimensionless[one]);
 
 static_assert(quantity<si::radian>::reference == si::radian);
 static_assert(quantity<si::radian>::quantity_spec == kind_of<isq::angular_measure>);
 static_assert(quantity<si::radian>::dimension == dimension_one);
 static_assert(quantity<si::radian>::unit == si::radian);
+static_assert(unit_for<quantity<si::radian>> == si::radian);
+static_assert(reference_for<quantity<si::radian>> == si::radian);
 
 static_assert(quantity<isq::angular_measure[rad]>::reference == isq::angular_measure[rad]);
 static_assert(quantity<isq::angular_measure[rad]>::quantity_spec == isq::angular_measure);
 static_assert(quantity<isq::angular_measure[rad]>::dimension == dimension_one);
 static_assert(quantity<isq::angular_measure[rad]>::unit == si::radian);
+static_assert(unit_for<quantity<isq::angular_measure[rad]>> == si::radian);
+static_assert(reference_for<quantity<isq::angular_measure[rad]>> == isq::angular_measure[rad]);
 
 /////////////////
 // member types
 /////////////////
 
 static_assert(is_same_v<quantity<isq::length[m]>::rep, double>);
+static_assert(is_same_v<rep_for<quantity<isq::length[m]>>, double>);
 static_assert(is_same_v<quantity<isq::length[m], int>::rep, int>);
+static_assert(is_same_v<rep_for<quantity<isq::length[m], int>>, int>);
 
 [[maybe_unused]] volatile std::int16_t vint = 123;
 static_assert(is_same_v<decltype(quantity(vint * m))::rep, std::int16_t>);
@@ -500,9 +514,15 @@ static_assert(quantity{v{1., 2., 3}}.quantity_spec == kind_of<dimensionless>);
 
 using namespace std::chrono_literals;
 static_assert(std::is_same_v<decltype(quantity{123s})::rep, std::chrono::seconds::rep>);
+static_assert(std::is_same_v<rep_for<decltype(quantity{123s})>, std::chrono::seconds::rep>);
+
 static_assert(
   std::is_same_v<decltype(quantity{123.s})::rep, decltype(::operator""s(static_cast<long double>(123.)))::rep>);
+static_assert(
+  std::is_same_v<rep_for<decltype(quantity{123.s})>, decltype(::operator""s(static_cast<long double>(123.)))::rep>);
 static_assert(quantity{24h}.unit == si::hour);
+static_assert(unit_for<decltype(quantity{24h})> == si::hour);
+static_assert(reference_for<decltype(quantity{24h})> == si::hour);
 static_assert(quantity{24h}.quantity_spec == kind_of<isq::duration>);
 #endif
 

@@ -171,6 +171,8 @@ template<PointOrigin PO>
 
 }  // namespace detail
 
+MP_UNITS_EXPORT_BEGIN
+
 /**
  * @brief A quantity point
  *
@@ -180,8 +182,8 @@ template<PointOrigin PO>
  * @tparam PO a type that represents the origin point from which the quantity point is measured from
  * @tparam Rep a type to be used to represent values of a quantity point
  */
-MP_UNITS_EXPORT template<Reference auto R, PointOriginFor<get_quantity_spec(R)> auto PO = default_point_origin(R),
-                         RepresentationOf<get_quantity_spec(R)> Rep = double>
+template<Reference auto R, PointOriginFor<get_quantity_spec(R)> auto PO = default_point_origin(R),
+         RepresentationOf<get_quantity_spec(R)> Rep = double>
 class quantity_point {
 public:
   // member types and values
@@ -568,6 +570,22 @@ template<QuantityPointLike QP>
 quantity_point(QP)
   -> quantity_point<quantity_point_like_traits<QP>::reference, quantity_point_like_traits<QP>::point_origin,
                     typename quantity_point_like_traits<QP>::rep>;
+
+template<auto R, auto PO, typename Rep>
+constexpr auto unit_for<quantity_point<R, PO, Rep>> = quantity_point<R, PO, Rep>::unit;
+
+template<auto R, auto PO, typename Rep>
+constexpr auto reference_for<quantity_point<R, PO, Rep>> = R;
+MP_UNITS_EXPORT_END
+
+namespace detail {
+
+template<auto R, auto PO, typename Rep>
+struct rep_for_impl<quantity_point<R, PO, Rep>> {
+  using type = Rep;
+};
+
+}  // namespace detail
 
 }  // namespace mp_units
 
