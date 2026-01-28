@@ -7,7 +7,7 @@
 
     Even though the library benefits from the latest C++ versions (if available), C++20 is enough
     to compile and use all of the library's functionality. Newer features can be hidden behind
-    some [preprocessor macros](../how_to_guides/integration/wide_compatibility.md#compatibility-macros)
+    some [preprocessor macros](../how_to_guides/integration/wide_compatibility.md#using-compatibility-macros)
     providing a backward-compatible way to use them.
 
 The table below provides the minimum compiler version required to compile the code using

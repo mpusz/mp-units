@@ -1,20 +1,28 @@
 # Pure Dimensional Analysis
 
-## Overview
+This guide shows you how to use **mp-units** for pure dimensional analysis—working with
+dimensions and quantity specifications without actual numerical values. You'll learn how
+to embed dimensions into custom types, validate dimensional consistency at compile-time,
+and build sophisticated systems like symbolic computation or automatic differentiation
+while maintaining full dimensional correctness.
 
-The **mp-units** library is not limited to working with complete quantities (i.e., a numerical
-value paired with a unit). It also provides powerful support for **pure dimensional analysis**,
-where you can track and validate dimensions and quantity types without concerning yourself
-with actual quantity values.
+For background on dimensions and quantity specifications, see
+[Systems of Quantities](../../users_guide/framework_basics/systems_of_quantities.md) and
+[Systems of Units](../../users_guide/framework_basics/systems_of_units.md) in the User's Guide.
 
-This feature allows users to embed `Dimension` or `QuantitySpec` types into their own custom
-arithmetic types and leverage the library's dimensional analysis capabilities. By propagating
-arithmetic operations to these embedded types through custom overloaded operators, the library
-automatically performs full dimensional analysis and type checking—all at compile-time, with
-zero runtime overhead.
+## What is Pure Dimensional Analysis?
 
+The **mp-units** library is not limited to working with complete quantities (numerical values
+paired with units). It also supports **pure dimensional analysis**, where you track and validate
+dimensions and quantity types without concerning yourself with actual quantity values.
 
-## Use Cases
+This works by embedding [`Dimension`](../../users_guide/framework_basics/concepts.md#Dimension)
+or [`QuantitySpec`](../../users_guide/framework_basics/concepts.md#QuantitySpec) types into
+your own custom arithmetic types. By propagating arithmetic operations to these embedded
+types through overloaded operators, the library automatically performs full dimensional
+analysis and type checking—all at compile-time, with zero runtime overhead.
+
+## When to Use Pure Dimensional Analysis?
 
 Pure dimensional analysis is particularly useful when:
 
@@ -55,10 +63,6 @@ quantity specifications (`quantity_spec`) provide a more refined type system tha
 distinguishes between different quantities sharing the same dimension:
 
 ```cpp
-#include <mp-units/systems/isq.h>
-
-using namespace mp_units;
-
 // Different quantities can have the same dimension
 static_assert(isq::width.dimension == isq::height.dimension);
 static_assert(isq::width.dimension == isq::radius.dimension);
@@ -133,12 +137,12 @@ void example()
   symbolic_expression<isq::mass> mass("m");
 
   // These operations are dimensionally valid
-  auto velocity = distance / duration;
-  auto acceleration = velocity / duration;
+  auto speed = distance / duration;
+  auto acceleration = speed / duration;
   auto force = mass * acceleration;
   auto length = distance + distance;
 
-  static_assert(implicitly_convertible(velocity.quantity_spec(), isq::speed));
+  static_assert(implicitly_convertible(speed.quantity_spec(), isq::speed));
   static_assert(force.dimension() == isq::force.dimension);
 
   // This would fail to compile due to dimensional mismatch:
@@ -255,9 +259,9 @@ constexpr bool are_time_derivatives<D1, D2, Ds...> =
   (D1 / D2 == mp_units::isq::dim_time) && are_time_derivatives<D2, Ds...>;
 ```
 
-This metafunction validates that a sequence of dimensions represents successive time
+This metafunction validates that a sequence of dimensions represents successive _time_
 derivatives (e.g., _position_ → _velocity_ → _acceleration)_, where each dimension divided
-by the next equals time. The constraint ensures the Kalman filter state can only be
+by the next equals _time_. The constraint ensures the Kalman filter state can only be
 instantiated with physically meaningful derivative chains:
 
 ```cpp
@@ -295,9 +299,10 @@ Using pure dimensional analysis in **mp-units** provides several advantages:
 
 Pure dimensional analysis in **mp-units** enables you to leverage the library's powerful
 type system for dimensional validation even when you're not working with complete quantities.
-By embedding `Dimension` or `QuantitySpec` types into your custom arithmetic types and
-propagating operations to them, you achieve full compile-time dimensional analysis with
-zero runtime overhead.
+By embedding [`Dimension`](../../users_guide/framework_basics/concepts.md#Dimension)
+or [`QuantitySpec`](../../users_guide/framework_basics/concepts.md#QuantitySpec)
+types into your custom arithmetic types and propagating operations to them, you
+achieve full compile-time dimensional analysis with zero runtime overhead.
 
 This feature unlocks new possibilities for symbolic computation, automatic differentiation,
 interval arithmetic, and other advanced use cases while maintaining the strong dimensional
