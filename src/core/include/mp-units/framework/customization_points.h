@@ -173,8 +173,19 @@ struct quantity_like_traits;
 template<typename T>
 struct quantity_point_like_traits;
 
+/**
+ * @brief Sentinel type indicating no default implementation for a variable template
+ *
+ * This type is used as a placeholder for primary variable templates that should not
+ * have a default implementation, working around the language limitation that variable
+ * templates cannot be "deleted" like functions can.
+ */
+struct undefined_t {};
+
+inline constexpr undefined_t undefined{};
+
 template<typename T>
-constexpr auto unit_for = std::ignore;
+constexpr auto unit_for = undefined;
 
 template<typename T>
   requires requires { quantity_like_traits<T>::reference; }
@@ -185,7 +196,7 @@ template<typename T>
 constexpr auto unit_for<T> = get_unit(quantity_point_like_traits<T>::reference);
 
 template<typename T>
-constexpr auto reference_for = std::ignore;
+constexpr auto reference_for = undefined;
 
 template<typename T>
   requires requires { quantity_like_traits<T>::reference; }
