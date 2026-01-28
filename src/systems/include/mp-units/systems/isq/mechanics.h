@@ -100,9 +100,9 @@ QUANTITY_SPEC(power, mass* pow<2>(length) / pow<3>(time));  // not in ISO 80000
 QUANTITY_SPEC(mechanical_power, power, force* velocity, quantity_character::real_scalar);
 QUANTITY_SPEC(mechanical_work, energy, force* displacement, quantity_character::real_scalar);
 inline constexpr auto work = mechanical_work;
-QUANTITY_SPEC(mechanical_energy, mechanical_work);                      // differs from ISO 80000
-QUANTITY_SPEC(potential_energy, mechanical_energy);                     // differs from ISO 80000
-QUANTITY_SPEC(kinetic_energy, mechanical_energy, mass* pow<2>(speed));  // differs from ISO 80000
+QUANTITY_SPEC(mechanical_energy, mechanical_work, mass* pow<2>(length) / pow<2>(time));  // differs from ISO 80000
+QUANTITY_SPEC(potential_energy, mechanical_energy);                                      // differs from ISO 80000
+QUANTITY_SPEC(kinetic_energy, mechanical_energy, mass* pow<2>(speed));                   // differs from ISO 80000
 QUANTITY_SPEC(mechanical_efficiency, mechanical_power / mechanical_power);
 QUANTITY_SPEC(mass_flow, mass_density* velocity);  // vector
 QUANTITY_SPEC(mass_flow_rate, mass_flow* area, quantity_character::real_scalar);
