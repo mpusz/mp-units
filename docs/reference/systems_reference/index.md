@@ -12,6 +12,7 @@ Automatically generated reference documentation for all **mp-units** systems.
 - [Units](units_index.md) - All units
 - [Prefixes](prefixes_index.md) - All prefixes
 - [Point Origins](point_origins_index.md) - All point origins
+- [Quantity Hierarchies](hierarchies/index.md) - ISQ quantity type hierarchies
 
 ## Systems
 
