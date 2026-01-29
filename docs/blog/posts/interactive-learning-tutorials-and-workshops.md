@@ -35,27 +35,27 @@ No installation required. No setup overhead. Just start typing and learning.
     In the tutorials, every code example appears as an embedded interactive editor.
     You can modify the code directly in the documentation page and see it compile
     and run instantly. For example, a speed calculation tutorial might show:
-    
+
     ```cpp
     // ce-embed height=400 compiler=clang2110 flags="-std=c++23 -stdlib=libc++ -O3" mp-units=trunk
     #include <mp-units/systems/si.h>
     #include <iostream>
-    
+
     int main()
     {
       using namespace mp_units;
       using namespace mp_units::si::unit_symbols;
-      
+
       quantity distance = 100 * m;
       quantity time = 9.58 * s;
       quantity speed = distance / time;  // Automatically derives m/s
-      
+
       std::cout << "Distance: " << distance << "\n";
       std::cout << "Time: " << time << "\n";
       std::cout << "Speed: " << speed << "\n";
     }
     ```
-    
+
     Just edit the numbers or units in the embedded editor, and watch the output update
     automatically below the code.
 
