@@ -139,7 +139,8 @@ markdown_extensions:
 nav:
   - Home: index.md
   - Getting Started:
-      - Introduction: getting_started/introduction.md
+      - Getting Started: getting_started/index.md
+      - About mp-units: getting_started/about.md
       - Quick Start: getting_started/quick_start.md
       - Look and Feel: getting_started/look_and_feel.md
       - Project Structure: getting_started/project_structure.md

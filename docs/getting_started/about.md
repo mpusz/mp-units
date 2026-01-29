@@ -1,4 +1,4 @@
-# Introduction
+# About mp-units
 
 **mp-units** is a modern C++ library for compile‑time dimensional analysis and
 unit/quantity manipulation. The earliest versions were inspired by
