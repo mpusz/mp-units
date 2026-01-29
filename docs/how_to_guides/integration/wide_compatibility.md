@@ -327,7 +327,7 @@ environment.
   options:
     - [Conan options](../../getting_started/installation_and_usage.md#conan-options) - Control
       compatibility features via Conan
-    - [CMake options](../../getting_started/installation_and_usage.md##cmake-options) - Control
+    - [CMake options](../../getting_started/installation_and_usage.md#cmake-options) - Control
       compatibility features via CMake
 - [C++ Compiler Support](../../getting_started/cpp_compiler_support.md) - Supported compilers
   and features
