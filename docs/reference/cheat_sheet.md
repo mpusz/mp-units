@@ -455,8 +455,9 @@ double speed_value = (100 * km / h).force_numerical_value_in(m / s); // 27 (2)
 
 ## Learn More
 
-- **Getting Started**: [Introduction](../getting_started/introduction.md) and [Installation](../getting_started/installation_and_usage.md)
+- **Getting Started**: [Getting Started Guide](../getting_started/index.md)
 - **Simple vs Typed**: [Simple and Typed Quantities](../users_guide/framework_basics/simple_and_typed_quantities.md)
-- **ISQ Deep Dive**: [ISQ Blog Series](../blog/posts/isq-part-1-introduction.md) - Understanding quantity hierarchies and kinds
+- **ISQ Deep Dive**: [ISQ Blog Series](../blog/posts/isq-part-1-introduction.md) -
+  Understanding quantity hierarchies and kinds
 - **Examples**: [Hello Units](../examples/hello_units.md) and [Average Speed](../examples/avg_speed.md)
 - **FAQ**: [Frequently Asked Questions](../getting_started/faq.md)
