@@ -94,7 +94,6 @@ QUANTITY_SPEC_(power, force* velocity, quantity_character::real_scalar);
 QUANTITY_SPEC_(efficiency, power / power);
 QUANTITY_SPEC_(energy, mass * pow<2>(length) / pow<2>(time));
 QUANTITY_SPEC_(mechanical_work, energy, force* displacement, quantity_character::real_scalar);
-inline constexpr auto work = mechanical_work;
 QUANTITY_SPEC_(mechanical_energy, mechanical_work, mass* pow<2>(length) / pow<2>(time));
 QUANTITY_SPEC_(potential_energy, mechanical_energy);
 QUANTITY_SPEC_(gravitational_potential_energy, potential_energy, mass * acceleration_of_free_fall * height);
