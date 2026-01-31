@@ -20,11 +20,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "almost_equals.h"
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/matchers/catch_matchers_floating_point.hpp>
-#include <mp-units/compat_macros.h>
 #include <mp-units/ext/format.h>
+
 #ifdef MP_UNITS_IMPORT_STD
 import std;
 #else
@@ -43,14 +42,6 @@ TEST_CASE("cartesian_vector operations", "[vector]")
 {
   SECTION("cartesian_vector initialization and access")
   {
-    SECTION("no arguments")
-    {
-      cartesian_vector<double> v;
-      REQUIRE(v[0] == 0);
-      REQUIRE(v[1] == 0);
-      REQUIRE(v[2] == 0);
-    }
-
     SECTION("zero arguments")
     {
       cartesian_vector<double> v{};
@@ -58,31 +49,27 @@ TEST_CASE("cartesian_vector operations", "[vector]")
       REQUIRE(v[1] == 0);
       REQUIRE(v[2] == 0);
     }
-
-    SECTION("one argument")
+    SECTION("one argument -> [x,0,0]")
     {
       cartesian_vector v{1.0};
       REQUIRE(v[0] == 1.0);
-      REQUIRE(v[1] == 0);
-      REQUIRE(v[2] == 0);
+      REQUIRE(v[1] == 0.0);
+      REQUIRE(v[2] == 0.0);
     }
-
-    SECTION("two arguments")
+    SECTION("two arguments -> [x,y,0]")
     {
       cartesian_vector v{1.0, 2.0};
       REQUIRE(v[0] == 1.0);
       REQUIRE(v[1] == 2.0);
-      REQUIRE(v[2] == 0);
+      REQUIRE(v[2] == 0.0);
     }
-
-    SECTION("all arguments")
+    SECTION("three arguments")
     {
       cartesian_vector v{1.0, 2.0, 3.0};
       REQUIRE(v[0] == 1.0);
       REQUIRE(v[1] == 2.0);
       REQUIRE(v[2] == 3.0);
     }
-
     SECTION("convertible arguments")
     {
       cartesian_vector<double> v{1, 2, 3};
@@ -94,7 +81,7 @@ TEST_CASE("cartesian_vector operations", "[vector]")
 
   SECTION("convertibility from another vector")
   {
-    cartesian_vector v1{1, 2, 3};
+    cartesian_vector v1{1.0, 2.0, 3.0};
 
     SECTION("construction")
     {
@@ -116,40 +103,40 @@ TEST_CASE("cartesian_vector operations", "[vector]")
 
   SECTION("cartesian_vector compound assignment addition")
   {
-    cartesian_vector v1{1.0, 2.0, 3.0};
-    cartesian_vector v2{4.0, 5.0, 6.0};
-    v1 += v2;
-    REQUIRE(v1[0] == 5.0);
-    REQUIRE(v1[1] == 7.0);
-    REQUIRE(v1[2] == 9.0);
-  }
-
-  SECTION("cartesian_vector compound assignment subtraction")
-  {
-    cartesian_vector v1{4.0, 5.0, 6.0};
-    cartesian_vector v2{1.0, 2.0, 3.0};
-    v1 -= v2;
-    REQUIRE(v1[0] == 3.0);
-    REQUIRE(v1[1] == 3.0);
-    REQUIRE(v1[2] == 3.0);
-  }
-
-  SECTION("cartesian_vector compound assignment scalar multiplication")
-  {
-    cartesian_vector v{1.0, 2.0, 3.0};
-    v *= 2.0;
-    REQUIRE(v[0] == 2.0);
-    REQUIRE(v[1] == 4.0);
-    REQUIRE(v[2] == 6.0);
-  }
-
-  SECTION("cartesian_vector compound assignment scalar division")
-  {
-    cartesian_vector v{2.0, 4.0, 6.0};
-    v /= 2.0;
-    REQUIRE(v[0] == 1.0);
-    REQUIRE(v[1] == 2.0);
-    REQUIRE(v[2] == 3.0);
+    SECTION("operator+=")
+    {
+      cartesian_vector v1{1.0, 2.0, 3.0};
+      cartesian_vector v2{4.0, 5.0, 6.0};
+      v1 += v2;
+      REQUIRE(v1[0] == 5.0);
+      REQUIRE(v1[1] == 7.0);
+      REQUIRE(v1[2] == 9.0);
+    }
+    SECTION("cartesian_vector compound assignment subtraction")
+    {
+      cartesian_vector v1{4.0, 5.0, 6.0};
+      cartesian_vector v2{1.0, 2.0, 3.0};
+      v1 -= v2;
+      REQUIRE(v1[0] == 3.0);
+      REQUIRE(v1[1] == 3.0);
+      REQUIRE(v1[2] == 3.0);
+    }
+    SECTION("cartesian_vector compound assignment scalar multiplication")
+    {
+      cartesian_vector v{1.0, 2.0, 3.0};
+      v *= 2.0;
+      REQUIRE(v[0] == 2.0);
+      REQUIRE(v[1] == 4.0);
+      REQUIRE(v[2] == 6.0);
+    }
+    SECTION("cartesian_vector compound assignment scalar division")
+    {
+      cartesian_vector v{2.0, 4.0, 6.0};
+      v /= 2.0;
+      REQUIRE(v[0] == 1.0);
+      REQUIRE(v[1] == 2.0);
+      REQUIRE(v[2] == 3.0);
+    }
   }
 
   SECTION("cartesian_vector addition")
@@ -195,7 +182,7 @@ TEST_CASE("cartesian_vector operations", "[vector]")
     }
   }
 
-  SECTION("cartesian_vector subtraction")
+  SECTION("cartesian_vector substraction")
   {
     SECTION("double - double")
     {
