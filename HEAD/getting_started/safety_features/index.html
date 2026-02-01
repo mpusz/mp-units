@@ -10521,7 +10521,7 @@ types, and component integration.</p>
 <p><strong>mp-units provides stronger unit safety than most libraries</strong>, especially in value
 extraction. While <code>std::chrono::duration::count()</code> returns raw numbers without verification,
 <code>mp-units::numerical_value_in(Unit)</code> requires specifying the exact unit. For more details,
-see <a href="../../how_to_guides/integration/working_with_legacy_interfaces.md">Working with Legacy Interfaces</a>.</p>
+see <a href="../../how_to_guides/integration/working_with_legacy_interfaces/">Working with Legacy Interfaces</a>.</p>
 <h2 id="representation-safety">Representation Safety<a class="headerlink" href="#representation-safety" title="Permanent link">&para;</a></h2>
 <p><strong>Representation safety</strong> protects against numerical issues like overflow, underflow, and
 precision loss during conversions and arithmetic operations.</p>
@@ -10552,25 +10552,25 @@ For such cases, use custom representation types with runtime checks.</p>
 <h2 id="quantity-kind-safety">Quantity Kind Safety<a class="headerlink" href="#quantity-kind-safety" title="Permanent link">&para;</a></h2>
 <p><strong>Quantity kind safety</strong> distinguishes between quantities that share the same dimension but
 represent different physical concepts.</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">radian</span><span class="o">&gt;</span><span class="w"> </span><span class="n">plane_angle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">rad</span><span class="p">;</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">steradian</span><span class="o">&gt;</span><span class="w"> </span><span class="n">solid_angle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">sr</span><span class="p">;</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">absorbed_dose</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">Gy</span><span class="p">;</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">quantity</span><span class="w"> </span><span class="n">dose_equivalent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">Sv</span><span class="p">;</span>
 </span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="c1">// auto result = plane_angle + solid_angle;                 // ❌ Compile-time error!</span>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="c1">// Error: cannot add plane angle and solid angle (both dimensionless, but different kinds)</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="c1">// auto result = absorbed_dose + dose_equivalent;           // ❌ Compile-time error!</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="c1">// Error: cannot add absorbed dose and dose equivalent (both L²T⁻², but different kinds)</span>
 </span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
-</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="c1">// QuantityOf&lt;isq::angular_measure&gt; auto alpha = 2.5 * sr;  // ❌ Compile-time error!</span>
-</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="c1">// Error: cannot initialize plane angle with solid angle (different quantity kinds)</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="c1">// QuantityOf&lt;isq::absorbed_dose&gt; auto d = 2.5 * Sv;        // ❌ Compile-time error!</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="c1">// Error: cannot initialize absorbed dose with dose equivalent (different quantity kinds)</span>
 </span></code></pre></div>
 <p>Examples of quantities with same dimension but different kinds:</p>
 <ul>
-<li><strong>Frequency (Hz)</strong> and <strong>Activity (Bq)</strong>: Both <code>1/time</code></li>
 <li><strong>Absorbed dose (Gy)</strong> and <strong>Dose equivalent (Sv)</strong>: Both <code>length²/time²</code></li>
+<li><strong>Frequency (Hz)</strong> and <strong>Activity (Bq)</strong>: Both <code>1/time</code></li>
 <li><strong>Plane angle (rad)</strong> and <strong>Solid angle (sr)</strong>: Both dimensionless</li>
 </ul>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
 <p><strong>mp-units is the only C++ library implementing quantity kind safety.</strong> It fully
-distinguishes all SI quantity kinds including Hz/Bq, rad/sr, and Gy/Sv.</p>
+distinguishes all SI quantity kinds including Gy/Sv, Hz/Bq, and rad/sr.</p>
 </div>
 <h2 id="quantity-safety">Quantity Safety<a class="headerlink" href="#quantity-safety" title="Permanent link">&para;</a></h2>
 <p><strong>Quantity safety</strong> is the highest level, providing semantic correctness through:</p>
