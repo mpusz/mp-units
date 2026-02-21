@@ -2283,6 +2283,8 @@ You're not viewing the latest version.
       
         
       
+        
+      
     
     
     
@@ -2490,6 +2492,34 @@ You're not viewing the latest version.
     
   
     Strong Angular System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="hep/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    High Energy Physics (HEP)
   
 
     
@@ -11207,12 +11237,16 @@ significantly if included when not needed.</p>
 <li><strong><code>isq_angle</code></strong> - ISQ amendment incorporating strong angular definitions</li>
 </ul>
 </li>
+<li><strong><a href="hep/">High Energy Physics (HEP)</a></strong> - System of Quantities and Units for
+  particle physics with energy and electric charge as base quantities (unlike
+  ISQ), using mm, ns, MeV, eplus as base units; provides CODATA 2014/2018/2022
+  physical constants for interoperability with CLHEP, Gaudi, Geant4, and ROOT</li>
 <li><strong><a href="natural_units/">Natural Units</a></strong> - High-energy physics system where fundamental constants
   equal unity</li>
 </ul>
 <div class="admonition tip">
 <p class="admonition-title">Complete Catalog</p>
-<p>For a comprehensive list of all available systems (including IEC, Typographic, HEP,
+<p>For a comprehensive list of all available systems (including IEC, Typographic,
 and the <code>astronomy</code> utility system for commonly used astronomy units like light-years,
 jansky, sidereal days, etc.), see the
 <a href="../../reference/systems_reference/">Systems Reference</a> in the Reference section.</p>
@@ -11230,7 +11264,13 @@ jansky, sidereal days, etc.), see the
 <li>Use <strong>IAU</strong> for professional astronomy/astrophysics requiring official IAU standardized
   constants (nominal solar/planetary values, CODATA masses); use <strong><code>astronomy</code></strong> utilities
   for common astronomy units like light-years, jansky, sidereal days not standardized by IAU</li>
-<li>Use <strong>Natural Units</strong> for particle physics and cosmology calculations</li>
+<li>Use <strong>HEP</strong> for particle physics experiments and detector simulations that
+  need dimensional analysis with energy and electric charge as base quantities
+  (instead of mass and current); provides HEP-natural base units (mm, ns, MeV,
+  eplus) and CODATA 2014/2018/2022 physical constants for compatibility with
+  CLHEP, Gaudi, Geant4, and ROOT frameworks</li>
+<li>Use <strong>Natural Units</strong> for theoretical particle physics and cosmology
+  calculations where setting ℏ = c = 1 simplifies equations</li>
 <li>Use <strong>CGS</strong> when interfacing with legacy physics code or specific scientific domains where
   it's standard</li>
 <li>Use <strong><code>yard_pound</code></strong>, <strong><code>imperial</code></strong>, or <strong><code>usc</code></strong> when required by industry standards or
