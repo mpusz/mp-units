@@ -5814,6 +5814,16 @@ You're not viewing the latest version.
       
         
       
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
     
     
     
@@ -8981,14 +8991,42 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../../reference/systems_reference/hierarchies/momentum/" class="md-nav__link">
+      <a href="../../../reference/systems_reference/hierarchies/momentum_hep/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    momentum
+    momentum (hep)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/systems_reference/hierarchies/momentum_isq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    momentum (isq)
   
 
     
@@ -9017,6 +9055,34 @@ You're not viewing the latest version.
     
   
     mutual_inductance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/systems_reference/hierarchies/number_density/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    number_density
   
 
     
@@ -9409,6 +9475,34 @@ You're not viewing the latest version.
     
   
     propagation_coefficient (isq_angle)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/systems_reference/hierarchies/proper_velocity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    proper_velocity
   
 
     
@@ -10325,14 +10419,42 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../../reference/systems_reference/hierarchies/speed/" class="md-nav__link">
+      <a href="../../../reference/systems_reference/hierarchies/speed_hep/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    speed
+    speed (hep)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/systems_reference/hierarchies/speed_isq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    speed (isq)
   
 
     
@@ -10697,6 +10819,34 @@ You're not viewing the latest version.
     
   
     transfer_rate
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/systems_reference/hierarchies/velocity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    velocity
   
 
     
@@ -11770,7 +11920,7 @@ They have strong semantical meaning and the library should respect that.</p>
 </span><span id="__span-21-16"><a id="__codelineno-21-16" name="__codelineno-21-16" href="#__codelineno-21-16"></a><span class="n">process</span><span class="p">(</span><span class="n">widgets</span><span class="p">,</span><span class="w"> </span><span class="n">items</span><span class="p">);</span><span class="w">     </span><span class="c1">// ❌ Compile error! Good.</span>
 </span><span id="__span-21-17"><a id="__codelineno-21-17" name="__codelineno-21-17" href="#__codelineno-21-17"></a>
 </span><span id="__span-21-18"><a id="__codelineno-21-18" name="__codelineno-21-18" href="#__codelineno-21-18"></a><span class="c1">// Another problem: can mix semantically different types in arithmetic</span>
-</span><span id="__span-21-19"><a id="__codelineno-21-19" name="__codelineno-21-19" href="#__codelineno-21-19"></a><span class="k">auto</span><span class="w"> </span><span class="n">total</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">items</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">widgets</span><span class="p">;</span><span class="w">  </span><span class="c1">// ⚠️ Compiles! Both convert to dimensionless</span>
+</span><span id="__span-21-19"><a id="__codelineno-21-19" name="__codelineno-21-19" href="#__codelineno-21-19"></a><span class="k">auto</span><span class="w"> </span><span class="n">mixed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">items</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">widgets</span><span class="p">;</span><span class="w">  </span><span class="c1">// ⚠️ Compiles! Both convert to dimensionless</span>
 </span><span id="__span-21-20"><a id="__codelineno-21-20" name="__codelineno-21-20" href="#__codelineno-21-20"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">items</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">widgets</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">         </span><span class="c1">// ⚠️ Compiles! Comparison through dimensionless</span>
 </span><span id="__span-21-21"><a id="__codelineno-21-21" name="__codelineno-21-21" href="#__codelineno-21-21"></a><span class="w">  </span><span class="c1">// ...</span>
 </span><span id="__span-21-22"><a id="__codelineno-21-22" name="__codelineno-21-22" href="#__codelineno-21-22"></a><span class="p">}</span>

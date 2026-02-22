@@ -5563,6 +5563,16 @@ You're not viewing the latest version.
       
         
       
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
     
     
     
@@ -8740,14 +8750,42 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../momentum/" class="md-nav__link">
+      <a href="../momentum_hep/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    momentum
+    momentum (hep)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../momentum_isq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    momentum (isq)
   
 
     
@@ -8776,6 +8814,34 @@ You're not viewing the latest version.
     
   
     mutual_inductance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../number_density/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    number_density
   
 
     
@@ -9168,6 +9234,34 @@ You're not viewing the latest version.
     
   
     propagation_coefficient (isq_angle)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../proper_velocity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    proper_velocity
   
 
     
@@ -10084,14 +10178,42 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../speed/" class="md-nav__link">
+      <a href="../speed_hep/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    speed
+    speed (hep)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../speed_isq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    speed (isq)
   
 
     
@@ -10456,6 +10578,34 @@ You're not viewing the latest version.
     
   
     transfer_rate
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../velocity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    velocity
   
 
     
@@ -11179,7 +11329,19 @@ You're not viewing the latest version.
 <p><strong>System:</strong> HEP</p>
 <p><strong>Dimension:</strong> dim_time</p>
 <pre class="mermaid"><code>flowchart LR
-    hep_duration["&lt;b&gt;&lt;a href="../../systems/hep/#duration" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;hep::duration&lt;/a&gt;&lt;/b&gt;"]</code></pre>
+    hep_duration["&lt;b&gt;&lt;a href="../../systems/hep/#duration" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;hep::duration&lt;/a&gt;&lt;/b&gt;"]
+    hep_coordinate_time["&lt;b&gt;&lt;a href="../../systems/hep/#coordinate_time" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;hep::coordinate_time&lt;/a&gt;&lt;/b&gt;"]
+    hep_duration --- hep_coordinate_time
+    hep_lifetime["&lt;b&gt;&lt;a href="../../systems/hep/#lifetime" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;hep::lifetime&lt;/a&gt;&lt;/b&gt;"]
+    hep_duration --- hep_lifetime
+    hep_half_life["&lt;b&gt;&lt;a href="../../systems/hep/#half_life" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;hep::half_life&lt;/a&gt;&lt;/b&gt;"]
+    hep_lifetime --- hep_half_life
+    hep_mean_lifetime["&lt;b&gt;&lt;a href="../../systems/hep/#mean_lifetime" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;hep::mean_lifetime&lt;/a&gt;&lt;/b&gt;"]
+    hep_lifetime --- hep_mean_lifetime
+    hep_proper_time["&lt;b&gt;&lt;a href="../../systems/hep/#proper_time" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;hep::proper_time&lt;/a&gt;&lt;/b&gt;"]
+    hep_duration --- hep_proper_time
+    hep_time_of_flight["&lt;b&gt;&lt;a href="../../systems/hep/#time_of_flight" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;hep::time_of_flight&lt;/a&gt;&lt;/b&gt;"]
+    hep_duration --- hep_time_of_flight</code></pre>
 
 
 

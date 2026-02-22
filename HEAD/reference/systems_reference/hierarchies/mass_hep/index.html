@@ -5563,6 +5563,16 @@ You're not viewing the latest version.
       
         
       
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
     
     
     
@@ -8740,14 +8750,42 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../momentum/" class="md-nav__link">
+      <a href="../momentum_hep/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    momentum
+    momentum (hep)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../momentum_isq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    momentum (isq)
   
 
     
@@ -8776,6 +8814,34 @@ You're not viewing the latest version.
     
   
     mutual_inductance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../number_density/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    number_density
   
 
     
@@ -9168,6 +9234,34 @@ You're not viewing the latest version.
     
   
     propagation_coefficient (isq_angle)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../proper_velocity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    proper_velocity
   
 
     
@@ -10084,14 +10178,42 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../speed/" class="md-nav__link">
+      <a href="../speed_hep/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    speed
+    speed (hep)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../speed_isq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    speed (isq)
   
 
     
@@ -10456,6 +10578,34 @@ You're not viewing the latest version.
     
   
     transfer_rate
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../velocity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    velocity
   
 
     
@@ -11178,7 +11328,15 @@ You're not viewing the latest version.
 <h1 id="mass-hierarchy">mass Hierarchy<a class="headerlink" href="#mass-hierarchy" title="Permanent link">&para;</a></h1>
 <p><strong>System:</strong> HEP</p>
 <pre class="mermaid"><code>flowchart LR
-    hep_mass["&lt;b&gt;&lt;a href="../../systems/hep/#mass" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;hep::mass&lt;/a&gt;&lt;/b&gt;&lt;br&gt;&lt;i&gt;(&lt;a href="../../systems/hep/#energy" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;energy&lt;/a&gt; * pow&lt;2&gt;(&lt;a href="../../systems/hep/#duration" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;duration&lt;/a&gt;) / pow&lt;2&gt;(&lt;a href="../../systems/hep/#length" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;length&lt;/a&gt;))&lt;/i&gt;"]</code></pre>
+    hep_mass["&lt;b&gt;&lt;a href="../../systems/hep/#mass" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;hep::mass&lt;/a&gt;&lt;/b&gt;&lt;br&gt;&lt;i&gt;(&lt;a href="../../systems/hep/#energy" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;energy&lt;/a&gt; * pow&lt;2&gt;(&lt;a href="../../systems/hep/#duration" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;duration&lt;/a&gt;) / pow&lt;2&gt;(&lt;a href="../../systems/hep/#length" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;length&lt;/a&gt;))&lt;/i&gt;"]
+    hep_effective_mass["&lt;b&gt;&lt;a href="../../systems/hep/#effective_mass" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;hep::effective_mass&lt;/a&gt;&lt;/b&gt;"]
+    hep_mass --- hep_effective_mass
+    hep_invariant_mass["&lt;b&gt;&lt;a href="../../systems/hep/#invariant_mass" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;hep::invariant_mass&lt;/a&gt;&lt;/b&gt;"]
+    hep_mass --- hep_invariant_mass
+    hep_reduced_mass["&lt;b&gt;&lt;a href="../../systems/hep/#reduced_mass" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;hep::reduced_mass&lt;/a&gt;&lt;/b&gt;"]
+    hep_mass --- hep_reduced_mass
+    hep_rest_mass["&lt;b&gt;&lt;a href="../../systems/hep/#rest_mass" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;hep::rest_mass&lt;/a&gt;&lt;/b&gt;"]
+    hep_mass --- hep_rest_mass</code></pre>
 
 
 

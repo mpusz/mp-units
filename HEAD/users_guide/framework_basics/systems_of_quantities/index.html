@@ -5768,6 +5768,16 @@ You're not viewing the latest version.
       
         
       
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
     
     
     
@@ -8935,14 +8945,42 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../../reference/systems_reference/hierarchies/momentum/" class="md-nav__link">
+      <a href="../../../reference/systems_reference/hierarchies/momentum_hep/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    momentum
+    momentum (hep)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/systems_reference/hierarchies/momentum_isq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    momentum (isq)
   
 
     
@@ -8971,6 +9009,34 @@ You're not viewing the latest version.
     
   
     mutual_inductance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/systems_reference/hierarchies/number_density/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    number_density
   
 
     
@@ -9363,6 +9429,34 @@ You're not viewing the latest version.
     
   
     propagation_coefficient (isq_angle)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/systems_reference/hierarchies/proper_velocity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    proper_velocity
   
 
     
@@ -10279,14 +10373,42 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../../reference/systems_reference/hierarchies/speed/" class="md-nav__link">
+      <a href="../../../reference/systems_reference/hierarchies/speed_hep/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    speed
+    speed (hep)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/systems_reference/hierarchies/speed_isq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    speed (isq)
   
 
     
@@ -10651,6 +10773,34 @@ You're not viewing the latest version.
     
   
     transfer_rate
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/systems_reference/hierarchies/velocity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    velocity
   
 
     
@@ -11647,8 +11797,8 @@ is sometimes not obvious what such a tree should look like. Also, ISO explicitly
 <pre class="mermaid"><code>flowchart TD
     energy["&lt;b&gt;energy&lt;/b&gt;&lt;br&gt;&lt;i&gt;(mass * length&lt;sup&gt;2&lt;/sup&gt; / time&lt;sup&gt;2&lt;/sup&gt;)&lt;/i&gt;&lt;br&gt;[J]"]
     energy --- signal_energy_per_binary_digit["&lt;b&gt;signal_energy_per_binary_digit&lt;/b&gt;&lt;br&gt;&lt;i&gt;(carrier_power * period_of_binary_digits)&lt;/i&gt;"]
-    energy --- mechanical_work["&lt;b&gt;mechanical_work&lt;/b&gt;"]
-    mechanical_work --- mechanical_energy["&lt;b&gt;mechanical_energy&lt;/b&gt;&lt;br&gt;&lt;i&gt;(force * displacement)&lt;/i&gt;"]
+    energy --- mechanical_work["&lt;b&gt;mechanical_work&lt;/b&gt;&lt;br&gt;&lt;i&gt;(force * displacement)&lt;/i&gt;"]
+    mechanical_work --- mechanical_energy["&lt;b&gt;mechanical_energy&lt;/b&gt;&lt;br&gt;&lt;i&gt;(mass * length&lt;sup&gt;2&lt;/sup&gt; / time&lt;sup&gt;2&lt;/sup&gt;)&lt;/i&gt;"]
     mechanical_energy --- potential_energy["&lt;b&gt;potential_energy&lt;/b&gt;"]
     potential_energy --- gravitational_potential_energy["&lt;b&gt;gravitational_potential_energy&lt;/b&gt;&lt;br&gt;&lt;i&gt;(mass * acceleration_of_free_fall * height)&lt;/i&gt;"]
     potential_energy --- elastic_potential_energy["&lt;b&gt;elastic_potential_energy&lt;/b&gt;&lt;br&gt;&lt;i&gt;(spring_constant * amount_of_compression&lt;sup&gt;2&lt;/sup&gt;)&lt;/i&gt;"]
@@ -11660,7 +11810,7 @@ is sometimes not obvious what such a tree should look like. Also, ISO explicitly
     enthalpy --- Gibbs_energy["&lt;b&gt;Gibbs_energy&lt;/b&gt; | &lt;b&gt;Gibbs_function&lt;/b&gt;"]
     internal_energy --- heat["&lt;b&gt;heat&lt;/b&gt; | &lt;b&gt;amount_of_heat&lt;/b&gt;"]
     heat --- latent_heat["&lt;b&gt;latent_heat&lt;/b&gt;"]
-    energy --- active_energy["&lt;b&gt;active_energy&lt;/b&gt;"]</code></pre>
+    energy --- active_energy["&lt;b&gt;active_energy&lt;/b&gt;&lt;br&gt;&lt;i&gt;(instantaneous_power * time)&lt;/i&gt;"]</code></pre>
 <p>Notice, that even though all of those quantities have the same dimension and can be expressed
 in the same units, they have different <a href="../../../reference/glossary/#quantity-equation">quantity equations</a>
 that can be used to create them implicitly:</p>
@@ -11833,7 +11983,7 @@ base quantity is required:</p>
 </span><span id="__span-30-3"><a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a><span class="n">quantity</span><span class="w"> </span><span class="n">h2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="p">(</span><span class="n">h_water</span><span class="p">);</span><span class="w">  </span><span class="c1">// explicit conversion required</span>
 </span><span id="__span-30-4"><a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a>
 </span><span id="__span-30-5"><a id="__codelineno-30-5" name="__codelineno-30-5" href="#__codelineno-30-5"></a><span class="c1">// Now generic operations are possible</span>
-</span><span id="__span-30-6"><a id="__codelineno-30-6" name="__codelineno-30-6" href="#__codelineno-30-6"></a><span class="k">auto</span><span class="w"> </span><span class="n">sum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">h1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">h2</span><span class="p">;</span><span class="w">  </span><span class="c1">// OK: both are isq::height</span>
+</span><span id="__span-30-6"><a id="__codelineno-30-6" name="__codelineno-30-6" href="#__codelineno-30-6"></a><span class="n">quantity</span><span class="w"> </span><span class="n">sum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">h1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">h2</span><span class="p">;</span><span class="w">  </span><span class="c1">// OK: both are isq::height</span>
 </span></code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
