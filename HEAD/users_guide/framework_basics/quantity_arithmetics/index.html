@@ -11661,36 +11661,36 @@ we do it every time we want to ensure that we deal with a non-zero or positive v
 </span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="w">  </span><span class="c1">// ...</span>
 </span></code></pre></div>
 <p>The above would work (assuming we are dealing with the quantity of speed) but could be
-suboptimal if the result of <code>q1 / q2</code> is not expressed in <code>m / s</code>. To eliminate the need
-for conversion, we need to write:</p>
+suboptimal if the result of <code>q1 / q2</code> is not expressed in <code>m / s</code>. The library would
+need to rescale the arguments to the common unit before comparing if the value is zero.</p>
+<p>To eliminate the need for conversion, we need to write:</p>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">q</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">q1</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">q2</span><span class="p">;</span><span class="w"> </span><span class="n">q</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">q</span><span class="p">.</span><span class="n">zero</span><span class="p">())</span>
 </span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="w">  </span><span class="c1">// ...</span>
 </span></code></pre></div>
 <p>but that is a bit inconvenient, and inexperienced users could be unaware of this technique
 and its reasons.</p>
-<p>For the above reasons, the library provides dedicated interfaces to compare against zero
-that follow the naming convention of
-<a href="https://en.cppreference.com/w/cpp/utility/compare/named_comparison_functions">named comparison functions</a>
-in the C++ Standard Library. The <em>mp-units/compare.h</em> header file exposes the following functions:</p>
-<ul>
-<li><code>is_eq_zero</code></li>
-<li><code>is_neq_zero</code></li>
-<li><code>is_lt_zero</code></li>
-<li><code>is_gt_zero</code></li>
-<li><code>is_lteq_zero</code></li>
-<li><code>is_gteq_zero</code></li>
-</ul>
-<p>Thanks to them, to save typing and not pay for unneeded conversions, our check could be
+<p>For the above reasons, the library provides special support for comparisons against the
+literal <code>0</code>. Only this one value has elevated privileges and does not have to state the
+unit — the numerical value zero is common to all scaled units of any kind.</p>
+<p>Thanks to that, to save typing and not pay for unneeded conversions, our check could be
 implemented as follows:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">is_neq_zero</span><span class="p">(</span><span class="n">q1</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">q2</span><span class="p">))</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">q1</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">q2</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
 </span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="w">  </span><span class="c1">// ...</span>
+</span></code></pre></div>
+<p>This works for all six comparison operators (<code>==</code>, <code>!=</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code>):</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">q</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="w">  </span><span class="c1">// ...</span>
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">q</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="w">  </span><span class="c1">// ...</span>
 </span></code></pre></div>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p>Those functions will work with any type <code>T</code> that exposes <code>zero()</code> member function returning
-something comparable to <code>T</code>. Thanks to that, we can use them not only with quantities but also
-with <a href="https://en.cppreference.com/w/cpp/chrono/duration"><code>std::chrono::duration</code></a> or any other
-type that exposes such an interface.</p>
+<p>All six comparison operators support comparison against zero without specifying a unit.
+This works with any representation type <code>rep</code> for which
+<code>representation_values&lt;rep&gt;::zero()</code> is provided.</p>
+<p>Only a compile-time zero is accepted: an integer or floating-point literal that is zero
+(e.g., <code>0</code>, <code>0.</code>, <code>0.f</code>, <code>0LL</code>). Passing another literal or a runtime variable — even one
+whose value happens to be zero — is rejected at compile time.</p>
 </div>
 <h2 id="other-maths">Other maths<a class="headerlink" href="#other-maths" title="Permanent link">&para;</a></h2>
 <p>This chapter scopes only on the <code>quantity</code> type's operators. However, there are many named
