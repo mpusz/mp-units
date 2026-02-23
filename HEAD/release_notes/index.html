@@ -11601,7 +11601,70 @@ You're not viewing the latest version.
 <h3 id="2.6.0">2.6.0 <small>TBD</small><a class="headerlink" href="#2.6.0" title="Permanent link">&para;</a></h3>
 <ul>
 <li>(!) feat: <code>pi</code> and <code>π</code> is now a unit constant</li>
+<li>(!) feat: natural units reworked from scratch</li>
+<li>(!) feat: IAU system definition improved</li>
+<li>feat: comparisons against literal <code>0</code></li>
+<li>feat: <code>hep</code> system refactored to be similar to leading projects in the HEP domain</li>
+<li>feat: <code>hep</code> system extended with new constants and specialized quantities</li>
+<li>feat: <code>unit_for</code>, <code>reference_for</code>, and <code>rep_for</code> added</li>
+<li>feat: type conversions improved to raise compile-time warnings on truncation</li>
+<li>feat: dimensionless quantities with unit one can now be created with <code>quantity_spec::op(Val)</code>
+        explicit conversions</li>
+<li>feat: explicit construction from number enabled for <code>dimensionless</code> subkinds</li>
+<li>feat: quantity hierarchies improved</li>
+<li>feat: <code>dim_angle</code> text symbol changed to <code>α</code></li>
+<li>feat: missing unit symbols added for cases where the unit and symbol have the same identifier</li>
+<li>feat: <code>league</code> symbol set to <code>lea</code></li>
+<li>feat: <code>si2019</code> namespace made inline</li>
+<li>feat: typographic system extended</li>
+<li>feat: astronomy system added</li>
+<li>feat: explicit <code>quantity_spec</code> conversions added for <code>quantity_point</code></li>
 <li>(!) refactor: <code>pi</code> magnitude constant renamed to <code>pi_c</code></li>
+<li>(!) refactor: <code>international</code> system renamed to <code>yard_pound</code></li>
+<li>refactor: CGS &lt;-&gt; SI interop improved with using declarations</li>
+<li>refactor: <code>isq::time</code> swapped with <code>isq::duration</code></li>
+<li>refactor: deprecation warnings now include the release version</li>
+<li>refactor: representation concepts cleanup</li>
+<li>refactor: <code>quantity_spec</code> call operator constraints improved</li>
+<li>refactor: <code>quantity_cast</code> constraints improved</li>
+<li>fix: dimensionless quantities truncation prevention fixed</li>
+<li>fix: clang-18 workaround for pragmas not working in a C++ module build</li>
+<li>fix: <code>normal_stress</code> and <code>shear_stress</code> fixed to have <code>stress</code> as a parent</li>
+<li>fix: <code>mechanical_energy</code> requires a very generic equation that overrides the one from <code>mechanical_work</code></li>
+<li>fix: <code>fathom</code> definition fixed and moved to <code>yard_pound</code> system</li>
+<li>fix: <code>quantity_cast</code> support fixed for <code>quantity_point</code></li>
+<li>test: multiply syntax unit tests added</li>
+<li>test: <code>gravitational_potential_energy</code> definition updated to match ISQ</li>
+<li>test: <code>fathom</code> test moved to <code>yard_pound</code></li>
+<li>build: deprecation comments added to CMake file for <code>format.h</code> and <code>ostream.h</code></li>
+<li>ci: <code>build_policy</code> and CI detection support added to <code>check_all.sh</code></li>
+<li>ci: environment tests moved to <code>validate_environment.sh</code> script</li>
+<li>chore: <code>site/</code> subdirectory added to <code>.gitignore</code></li>
+<li>chore: persistency for conan and pipx packages added to devcontainer</li>
+<li>docs: systems reference documentation generator added</li>
+<li>docs: HEP system description added</li>
+<li>docs: "Safety Features" chapter added</li>
+<li>docs: "Yard-Pound Systems" chapter added</li>
+<li>docs: IAU and astronomy systems documentation added</li>
+<li>docs: ISQ, SI, and CGS systems documentation added</li>
+<li>docs: "Using Custom Representation Types" chapter added</li>
+<li>docs: "Pure Dimensional Analysis" chapter added</li>
+<li>docs: How-to Guides improved</li>
+<li>docs: "Creating distinct quantity kinds with <code>is_kind</code>" chapter added</li>
+<li>docs: "Strongly-Typed Counts" workshop added</li>
+<li>docs: incremental migration workshop added</li>
+<li>docs: workshops restructured into subdirectories</li>
+<li>docs: "New Systems Documentation Generator" blog post added</li>
+<li>docs: interactive learning blog post added</li>
+<li>docs: quantity hierarchies added to User's Guide</li>
+<li>docs: multiple new workshops added (tutorials 9–12)</li>
+<li>docs: "Type Safety in Practice" chapter updated</li>
+<li>docs: IEC 80000 renamed to IEC in documentation</li>
+<li>docs: "Use Cases" renamed to "How-to Guides"</li>
+<li>docs: "Obtaining Metadata" renamed to "Type Introspection"</li>
+<li>docs: documentation TOC restructured</li>
+<li>docs: total_energy example added</li>
+<li>docs: "AI-Generated Contributions" chapter added to CONTRIBUTING</li>
 </ul>
 <h3 id="2.5.0">2.5.0 <small>December 24, 2025</small><a class="headerlink" href="#2.5.0" title="Permanent link">&para;</a></h3>
 <ul>
