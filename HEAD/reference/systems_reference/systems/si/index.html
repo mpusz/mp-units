@@ -4494,6 +4494,8 @@ You're not viewing the latest version.
       
         
       
+        
+      
     
     
     
@@ -5005,6 +5007,17 @@ You're not viewing the latest version.
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#prefixes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prefixes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#units" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5027,10 +5040,10 @@ You're not viewing the latest version.
 </li>
       
         <li class="md-nav__item">
-  <a href="#prefixes" class="md-nav__link">
+  <a href="#constants" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Prefixes
+        Constants
       
     </span>
   </a>
@@ -5212,6 +5225,34 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
+      <a href="../../prefixes_index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prefixes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../units_index/" class="md-nav__link">
         
   
@@ -5240,14 +5281,14 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../prefixes_index/" class="md-nav__link">
+      <a href="../../constants_index/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Prefixes
+    Constants
   
 
     
@@ -5675,7 +5716,7 @@ You're not viewing the latest version.
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8_3_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8_3_9" >
         
           
           <div class="md-nav__link md-nav__container">
@@ -5697,14 +5738,14 @@ You're not viewing the latest version.
             </a>
             
               
-              <label class="md-nav__link " for="__nav_8_3_8" id="__nav_8_3_8_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_8_3_9" id="__nav_8_3_9_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_8_3_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_8_3_8">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_8_3_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8_3_9">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -11419,352 +11460,6 @@ You're not viewing the latest version.
 <li><code>&lt;mp-units/systems/si/unit_symbols.h&gt;</code></li>
 <li><code>&lt;mp-units/systems/si/units.h&gt;</code></li>
 </ul>
-<h2 id="units">Units<a class="headerlink" href="#units" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th>Unit Name</th>
-<th style="text-align: center;">Symbol</th>
-<th style="text-align: center;">unit_symbol</th>
-<th>Definition</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><span id="ampere"></span><code>ampere</code></td>
-<td style="text-align: center;">A</td>
-<td style="text-align: center;"><code>A</code></td>
-<td><code>kind: <a href="../isq/#electric_current">isq::electric_<wbr>current</a></code></td>
-</tr>
-<tr>
-<td><span id="becquerel"></span><code>becquerel</code></td>
-<td style="text-align: center;">Bq</td>
-<td style="text-align: center;"><code>Bq</code></td>
-<td><code><a href="../core/#one">one</a> / <wbr><a href="#second">second</a><br>kind: <a href="../isq/#activity">isq::activity</a></code></td>
-</tr>
-<tr>
-<td><span id="candela"></span><code>candela</code></td>
-<td style="text-align: center;">cd</td>
-<td style="text-align: center;"><code>cd</code></td>
-<td><code>kind: <a href="../isq/#luminous_intensity">isq::luminous_<wbr>intensity</a></code></td>
-</tr>
-<tr>
-<td><span id="coulomb"></span><code>coulomb</code></td>
-<td style="text-align: center;">C</td>
-<td style="text-align: center;"><code>C</code></td>
-<td><code><a href="#ampere">ampere</a> * <wbr><a href="#second">second</a></code></td>
-</tr>
-<tr>
-<td><span id="degree_Celsius"></span><code>degree_<wbr>Celsius</code></td>
-<td style="text-align: center;">℃ (`C)</td>
-<td style="text-align: center;"><code>deg_C</code></td>
-<td><code><a href="#kelvin">kelvin</a><br>origin: <a href="#zeroth_degree_Celsius">zeroth_<wbr>degree_<wbr>Celsius</a></code></td>
-</tr>
-<tr>
-<td><span id="farad"></span><code>farad</code></td>
-<td style="text-align: center;">F</td>
-<td style="text-align: center;"><code>F</code></td>
-<td><code><a href="#coulomb">coulomb</a> / <wbr><a href="#volt">volt</a></code></td>
-</tr>
-<tr>
-<td><span id="gram"></span><code>gram</code></td>
-<td style="text-align: center;">g</td>
-<td style="text-align: center;"><code>g</code></td>
-<td><code>kind: <a href="../isq/#mass">isq::mass</a></code></td>
-</tr>
-<tr>
-<td><span id="gray"></span><code>gray</code></td>
-<td style="text-align: center;">Gy</td>
-<td style="text-align: center;"><code>Gy</code></td>
-<td><code><a href="#joule">joule</a> / <wbr><a href="#kilogram">kilogram</a><br>kind: <a href="../isq/#absorbed_dose">isq::absorbed_<wbr>dose</a></code></td>
-</tr>
-<tr>
-<td><span id="henry"></span><code>henry</code></td>
-<td style="text-align: center;">H</td>
-<td style="text-align: center;"><code>H</code></td>
-<td><code><a href="#weber">weber</a> / <wbr><a href="#ampere">ampere</a></code></td>
-</tr>
-<tr>
-<td><span id="hertz"></span><code>hertz</code></td>
-<td style="text-align: center;">Hz</td>
-<td style="text-align: center;"><code>Hz</code></td>
-<td><code><a href="../core/#one">one</a> / <wbr><a href="#second">second</a><br>kind: <a href="../isq/#frequency">isq::frequency</a></code></td>
-</tr>
-<tr>
-<td><span id="joule"></span><code>joule</code></td>
-<td style="text-align: center;">J</td>
-<td style="text-align: center;"><code>J</code></td>
-<td><code><a href="#newton">newton</a> * <wbr><a href="#metre">metre</a></code></td>
-</tr>
-<tr>
-<td><span id="katal"></span><code>katal</code></td>
-<td style="text-align: center;">kat</td>
-<td style="text-align: center;"><code>kat</code></td>
-<td><code><a href="#mole">mole</a> / <wbr><a href="#second">second</a></code></td>
-</tr>
-<tr>
-<td><span id="kelvin"></span><code>kelvin</code></td>
-<td style="text-align: center;">K</td>
-<td style="text-align: center;"><code>K</code></td>
-<td><code>kind: <a href="../isq/#thermodynamic_temperature">isq::thermodynamic_<wbr>temperature</a><br>origin: <a href="#zeroth_kelvin">zeroth_<wbr>kelvin</a></code></td>
-</tr>
-<tr>
-<td><span id="kilogram"></span><code>kilogram</code></td>
-<td style="text-align: center;">—</td>
-<td style="text-align: center;"><code>kg</code></td>
-<td><code><a href="#kilo">kilo</a>&lt;<a href="#gram">gram</a>&gt;</code></td>
-</tr>
-<tr>
-<td><span id="lumen"></span><code>lumen</code></td>
-<td style="text-align: center;">lm</td>
-<td style="text-align: center;"><code>lm</code></td>
-<td><code><a href="#candela">candela</a> * <wbr><a href="#steradian">steradian</a></code></td>
-</tr>
-<tr>
-<td><span id="lux"></span><code>lux</code></td>
-<td style="text-align: center;">lx</td>
-<td style="text-align: center;"><code>lx</code></td>
-<td><code><a href="#lumen">lumen</a> / <wbr>square(<a href="#metre">metre</a>)</code></td>
-</tr>
-<tr>
-<td><span id="magnetic_constant"></span><code>magnetic_<wbr>constant</code></td>
-<td style="text-align: center;">μ₀ (u_0)</td>
-<td style="text-align: center;">—</td>
-<td><code>mag&lt;4&gt; * <wbr>mag_power&lt;10, -7&gt; * <wbr><a href="../core/#π">π</a> * <wbr><a href="#henry">henry</a> / <wbr><a href="#metre">metre</a></code></td>
-</tr>
-<tr>
-<td><span id="metre"></span><code>metre</code></td>
-<td style="text-align: center;">m</td>
-<td style="text-align: center;"><code>m</code></td>
-<td><code>kind: <a href="../isq/#length">isq::length</a></code></td>
-</tr>
-<tr>
-<td><span id="mole"></span><code>mole</code></td>
-<td style="text-align: center;">mol</td>
-<td style="text-align: center;"><code>mol</code></td>
-<td><code>kind: <a href="../isq/#amount_of_substance">isq::amount_<wbr>of_<wbr>substance</a></code></td>
-</tr>
-<tr>
-<td><span id="newton"></span><code>newton</code></td>
-<td style="text-align: center;">N</td>
-<td style="text-align: center;"><code>N</code></td>
-<td><code><a href="#kilogram">kilogram</a> * <wbr><a href="#metre">metre</a> / <wbr>square(<a href="#second">second</a>)</code></td>
-</tr>
-<tr>
-<td><span id="ohm"></span><code>ohm</code></td>
-<td style="text-align: center;">Ω (ohm)</td>
-<td style="text-align: center;"><code>Ω</code>, <code>ohm</code></td>
-<td><code><a href="#volt">volt</a> / <wbr><a href="#ampere">ampere</a></code></td>
-</tr>
-<tr>
-<td><span id="pascal"></span><code>pascal</code></td>
-<td style="text-align: center;">Pa</td>
-<td style="text-align: center;"><code>Pa</code></td>
-<td><code><a href="#newton">newton</a> / <wbr>square(<a href="#metre">metre</a>)</code></td>
-</tr>
-<tr>
-<td><span id="radian"></span><code>radian</code></td>
-<td style="text-align: center;">rad</td>
-<td style="text-align: center;"><code>rad</code></td>
-<td><code><a href="#metre">metre</a> / <wbr><a href="#metre">metre</a><br>kind: <a href="../isq/#angular_measure">isq::angular_<wbr>measure</a></code></td>
-</tr>
-<tr>
-<td><span id="second"></span><code>second</code></td>
-<td style="text-align: center;">s</td>
-<td style="text-align: center;"><code>s</code></td>
-<td><code>kind: <a href="../isq/#duration">isq::duration</a></code></td>
-</tr>
-<tr>
-<td><span id="si2019-avogadro_constant"></span><code>si2019::avogadro_<wbr>constant</code></td>
-<td style="text-align: center;">N_A</td>
-<td style="text-align: center;">—</td>
-<td><code>mag_ratio&lt;602'214'076, 100'000'000&gt; * <wbr>mag_power&lt;10, 23&gt; / <wbr><a href="#mole">mole</a></code></td>
-</tr>
-<tr>
-<td><span id="si2019-boltzmann_constant"></span><code>si2019::boltzmann_<wbr>constant</code></td>
-<td style="text-align: center;">k</td>
-<td style="text-align: center;">—</td>
-<td><code>mag_ratio&lt;1'380'649, 1'000'000&gt; * <wbr>mag_power&lt;10, -23&gt; * <wbr><a href="#joule">joule</a> / <wbr><a href="#kelvin">kelvin</a></code></td>
-</tr>
-<tr>
-<td><span id="si2019-elementary_charge"></span><code>si2019::elementary_<wbr>charge</code></td>
-<td style="text-align: center;">e</td>
-<td style="text-align: center;">—</td>
-<td><code>mag_ratio&lt;1'602'176'634, 1'000'000'000&gt; * <wbr>mag_power&lt;10, -19&gt; * <wbr><a href="#coulomb">coulomb</a></code></td>
-</tr>
-<tr>
-<td><span id="si2019-hyperfine_structure_transition_frequency_of_cs"></span><code>si2019::hyperfine_<wbr>structure_<wbr>transition_<wbr>frequency_<wbr>of_<wbr>cs</code></td>
-<td style="text-align: center;">Δν_Cs (dv_Cs)</td>
-<td style="text-align: center;">—</td>
-<td><code>mag&lt;9'192'631'770&gt; * <wbr><a href="#hertz">hertz</a></code></td>
-</tr>
-<tr>
-<td><span id="si2019-luminous_efficacy"></span><code>si2019::luminous_<wbr>efficacy</code></td>
-<td style="text-align: center;">K_cd</td>
-<td style="text-align: center;">—</td>
-<td><code>mag&lt;683&gt; * <wbr><a href="#lumen">lumen</a> / <wbr><a href="#watt">watt</a></code></td>
-</tr>
-<tr>
-<td><span id="si2019-planck_constant"></span><code>si2019::planck_<wbr>constant</code></td>
-<td style="text-align: center;">h</td>
-<td style="text-align: center;">—</td>
-<td><code>mag_ratio&lt;662'607'015, 100'000'000&gt; * <wbr>mag_power&lt;10, -34&gt; * <wbr><a href="#joule">joule</a> * <wbr><a href="#second">second</a></code></td>
-</tr>
-<tr>
-<td><span id="si2019-speed_of_light_in_vacuum"></span><code>si2019::speed_<wbr>of_<wbr>light_<wbr>in_<wbr>vacuum</code></td>
-<td style="text-align: center;">c</td>
-<td style="text-align: center;">—</td>
-<td><code>mag&lt;299'792'458&gt; * <wbr><a href="#metre">metre</a> / <wbr><a href="#second">second</a></code></td>
-</tr>
-<tr>
-<td><span id="siemens"></span><code>siemens</code></td>
-<td style="text-align: center;">S</td>
-<td style="text-align: center;"><code>S</code></td>
-<td><code><a href="../core/#one">one</a> / <wbr><a href="#ohm">ohm</a></code></td>
-</tr>
-<tr>
-<td><span id="sievert"></span><code>sievert</code></td>
-<td style="text-align: center;">Sv</td>
-<td style="text-align: center;"><code>Sv</code></td>
-<td><code><a href="#joule">joule</a> / <wbr><a href="#kilogram">kilogram</a><br>kind: <a href="../isq/#dose_equivalent">isq::dose_<wbr>equivalent</a></code></td>
-</tr>
-<tr>
-<td><span id="standard_gravity"></span><code>standard_<wbr>gravity</code></td>
-<td style="text-align: center;">g₀ (g_0)</td>
-<td style="text-align: center;">—</td>
-<td><code>mag_ratio&lt;980'665, 100'000&gt; * <wbr><a href="#metre">metre</a> / <wbr>square(<a href="#second">second</a>)</code></td>
-</tr>
-<tr>
-<td><span id="steradian"></span><code>steradian</code></td>
-<td style="text-align: center;">sr</td>
-<td style="text-align: center;"><code>sr</code></td>
-<td><code>square(<a href="#metre">metre</a>) / <wbr>square(<a href="#metre">metre</a>)<br>kind: <a href="../isq/#solid_angular_measure">isq::solid_<wbr>angular_<wbr>measure</a></code></td>
-</tr>
-<tr>
-<td><span id="tesla"></span><code>tesla</code></td>
-<td style="text-align: center;">T</td>
-<td style="text-align: center;"><code>T</code></td>
-<td><code><a href="#weber">weber</a> / <wbr>square(<a href="#metre">metre</a>)</code></td>
-</tr>
-<tr>
-<td><span id="volt"></span><code>volt</code></td>
-<td style="text-align: center;">V</td>
-<td style="text-align: center;"><code>V</code></td>
-<td><code><a href="#watt">watt</a> / <wbr><a href="#ampere">ampere</a></code></td>
-</tr>
-<tr>
-<td><span id="watt"></span><code>watt</code></td>
-<td style="text-align: center;">W</td>
-<td style="text-align: center;"><code>W</code></td>
-<td><code><a href="#joule">joule</a> / <wbr><a href="#second">second</a></code></td>
-</tr>
-<tr>
-<td><span id="weber"></span><code>weber</code></td>
-<td style="text-align: center;">Wb</td>
-<td style="text-align: center;"><code>Wb</code></td>
-<td><code><a href="#volt">volt</a> * <wbr><a href="#second">second</a></code></td>
-</tr>
-</tbody>
-</table>
-<div class="admonition note">
-<p class="admonition-title">Inline Namespaces</p>
-<p>The <code>mp_units::si::si2019</code> namespace is inline in <code>mp_units::si</code>, making its units directly accessible from the parent namespace.</p>
-</div>
-<h2 id="non-si-units-accepted-for-use-with-the-si">Non-SI units accepted for use with the SI<a class="headerlink" href="#non-si-units-accepted-for-use-with-the-si" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th>Unit Name</th>
-<th style="text-align: center;">Symbol</th>
-<th style="text-align: center;">unit_symbol</th>
-<th>Definition</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><span id="arcminute"></span><code>arcminute</code></td>
-<td style="text-align: center;">′ (')</td>
-<td style="text-align: center;"><code>arcmin</code></td>
-<td><code>mag_ratio&lt;1, 60&gt; * <wbr><a href="#degree">degree</a></code></td>
-</tr>
-<tr>
-<td><span id="arcsecond"></span><code>arcsecond</code></td>
-<td style="text-align: center;">″ ('')</td>
-<td style="text-align: center;"><code>arcsec</code></td>
-<td><code>mag_ratio&lt;1, 60&gt; * <wbr><a href="#arcminute">arcminute</a></code></td>
-</tr>
-<tr>
-<td><span id="are"></span><code>are</code></td>
-<td style="text-align: center;">a</td>
-<td style="text-align: center;"><code>a</code></td>
-<td><code>square(<a href="#deca">deca</a>&lt;<a href="./#metre">metre</a>&gt;)</code></td>
-</tr>
-<tr>
-<td><span id="astronomical_unit"></span><code>astronomical_<wbr>unit</code></td>
-<td style="text-align: center;">au</td>
-<td style="text-align: center;"><code>au</code></td>
-<td><code>mag&lt;149'597'870'700&gt; * <wbr><a href="./#metre">metre</a></code></td>
-</tr>
-<tr>
-<td><span id="dalton"></span><code>dalton</code></td>
-<td style="text-align: center;">Da</td>
-<td style="text-align: center;"><code>Da</code></td>
-<td><code>mag_ratio&lt;16'605'390'666'050, 10'000'000'000'000&gt; * <wbr>mag_power&lt;10, -27&gt; * <wbr><a href="./#kilogram">kilogram</a></code></td>
-</tr>
-<tr>
-<td><span id="day"></span><code>day</code></td>
-<td style="text-align: center;">d</td>
-<td style="text-align: center;"><code>d</code></td>
-<td><code>mag&lt;24&gt; * <wbr><a href="#hour">hour</a></code></td>
-</tr>
-<tr>
-<td><span id="degree"></span><code>degree</code></td>
-<td style="text-align: center;">° (deg)</td>
-<td style="text-align: center;"><code>deg</code></td>
-<td><code>mag_ratio&lt;1, 180&gt; * <wbr><a href="../core/#π">π</a> * <wbr><a href="./#radian">radian</a></code></td>
-</tr>
-<tr>
-<td><span id="electronvolt"></span><code>electronvolt</code></td>
-<td style="text-align: center;">eV</td>
-<td style="text-align: center;"><code>eV</code></td>
-<td><code>mag_ratio&lt;1'602'176'634, 1'000'000'000&gt; * <wbr>mag_power&lt;10, -19&gt; * <wbr><a href="./#joule">joule</a></code></td>
-</tr>
-<tr>
-<td><span id="hectare"></span><code>hectare</code></td>
-<td style="text-align: center;">—</td>
-<td style="text-align: center;"><code>ha</code></td>
-<td><code><a href="#hecto">hecto</a>&lt;<a href="#are">are</a>&gt;</code></td>
-</tr>
-<tr>
-<td><span id="hour"></span><code>hour</code></td>
-<td style="text-align: center;">h</td>
-<td style="text-align: center;"><code>h</code></td>
-<td><code>mag&lt;60&gt; * <wbr><a href="#minute">minute</a></code></td>
-</tr>
-<tr>
-<td><span id="litre"></span><code>litre</code></td>
-<td style="text-align: center;">L</td>
-<td style="text-align: center;"><code>l</code>, <code>L</code></td>
-<td><code>cubic(<a href="#deci">deci</a>&lt;<a href="./#metre">metre</a>&gt;)</code></td>
-</tr>
-<tr>
-<td><span id="minute"></span><code>minute</code></td>
-<td style="text-align: center;">min</td>
-<td style="text-align: center;"><code>min</code></td>
-<td><code>mag&lt;60&gt; * <wbr><a href="./#second">second</a></code></td>
-</tr>
-<tr>
-<td><span id="tonne"></span><code>tonne</code></td>
-<td style="text-align: center;">t</td>
-<td style="text-align: center;"><code>t</code></td>
-<td><code>mag&lt;1000&gt; * <wbr><a href="./#kilogram">kilogram</a></code></td>
-</tr>
-</tbody>
-</table>
-<div class="admonition note">
-<p class="admonition-title">Namespace</p>
-<p>These units are defined in the <code>mp_units::non_si</code> namespace and are made available in the <code>mp_units::si</code> namespace through a using-directive.</p>
-</div>
 <h2 id="prefixes">Prefixes<a class="headerlink" href="#prefixes" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -11897,6 +11592,365 @@ You're not viewing the latest version.
 </tr>
 </tbody>
 </table>
+<h2 id="units">Units<a class="headerlink" href="#units" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Unit Name</th>
+<th style="text-align: center;">Symbol</th>
+<th style="text-align: center;">unit_symbol</th>
+<th>Definition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span id="ampere"></span><code>ampere</code></td>
+<td style="text-align: center;">A</td>
+<td style="text-align: center;"><code>A</code></td>
+<td><code>kind: <a href="../isq/#electric_current">isq::electric_<wbr>current</a></code></td>
+</tr>
+<tr>
+<td><span id="becquerel"></span><code>becquerel</code></td>
+<td style="text-align: center;">Bq</td>
+<td style="text-align: center;"><code>Bq</code></td>
+<td><code><a href="../core/#one">one</a> / <wbr><a href="#second">second</a><br>kind: <a href="../isq/#activity">isq::activity</a></code></td>
+</tr>
+<tr>
+<td><span id="candela"></span><code>candela</code></td>
+<td style="text-align: center;">cd</td>
+<td style="text-align: center;"><code>cd</code></td>
+<td><code>kind: <a href="../isq/#luminous_intensity">isq::luminous_<wbr>intensity</a></code></td>
+</tr>
+<tr>
+<td><span id="coulomb"></span><code>coulomb</code></td>
+<td style="text-align: center;">C</td>
+<td style="text-align: center;"><code>C</code></td>
+<td><code><a href="#ampere">ampere</a> * <wbr><a href="#second">second</a></code></td>
+</tr>
+<tr>
+<td><span id="degree_Celsius"></span><code>degree_<wbr>Celsius</code></td>
+<td style="text-align: center;">℃ (`C)</td>
+<td style="text-align: center;"><code>deg_C</code></td>
+<td><code><a href="#kelvin">kelvin</a><br>origin: <a href="#zeroth_degree_Celsius">zeroth_<wbr>degree_<wbr>Celsius</a></code></td>
+</tr>
+<tr>
+<td><span id="farad"></span><code>farad</code></td>
+<td style="text-align: center;">F</td>
+<td style="text-align: center;"><code>F</code></td>
+<td><code><a href="#coulomb">coulomb</a> / <wbr><a href="#volt">volt</a></code></td>
+</tr>
+<tr>
+<td><span id="gram"></span><code>gram</code></td>
+<td style="text-align: center;">g</td>
+<td style="text-align: center;"><code>g</code></td>
+<td><code>kind: <a href="../isq/#mass">isq::mass</a></code></td>
+</tr>
+<tr>
+<td><span id="gray"></span><code>gray</code></td>
+<td style="text-align: center;">Gy</td>
+<td style="text-align: center;"><code>Gy</code></td>
+<td><code><a href="#joule">joule</a> / <wbr><a href="#kilogram">kilogram</a><br>kind: <a href="../isq/#absorbed_dose">isq::absorbed_<wbr>dose</a></code></td>
+</tr>
+<tr>
+<td><span id="henry"></span><code>henry</code></td>
+<td style="text-align: center;">H</td>
+<td style="text-align: center;"><code>H</code></td>
+<td><code><a href="#weber">weber</a> / <wbr><a href="#ampere">ampere</a></code></td>
+</tr>
+<tr>
+<td><span id="hertz"></span><code>hertz</code></td>
+<td style="text-align: center;">Hz</td>
+<td style="text-align: center;"><code>Hz</code></td>
+<td><code><a href="../core/#one">one</a> / <wbr><a href="#second">second</a><br>kind: <a href="../isq/#frequency">isq::frequency</a></code></td>
+</tr>
+<tr>
+<td><span id="joule"></span><code>joule</code></td>
+<td style="text-align: center;">J</td>
+<td style="text-align: center;"><code>J</code></td>
+<td><code><a href="#newton">newton</a> * <wbr><a href="#metre">metre</a></code></td>
+</tr>
+<tr>
+<td><span id="katal"></span><code>katal</code></td>
+<td style="text-align: center;">kat</td>
+<td style="text-align: center;"><code>kat</code></td>
+<td><code><a href="#mole">mole</a> / <wbr><a href="#second">second</a></code></td>
+</tr>
+<tr>
+<td><span id="kelvin"></span><code>kelvin</code></td>
+<td style="text-align: center;">K</td>
+<td style="text-align: center;"><code>K</code></td>
+<td><code>kind: <a href="../isq/#thermodynamic_temperature">isq::thermodynamic_<wbr>temperature</a><br>origin: <a href="#zeroth_kelvin">zeroth_<wbr>kelvin</a></code></td>
+</tr>
+<tr>
+<td><span id="kilogram"></span><code>kilogram</code></td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;"><code>kg</code></td>
+<td><code><a href="#kilo">kilo</a>&lt;<a href="#gram">gram</a>&gt;</code></td>
+</tr>
+<tr>
+<td><span id="lumen"></span><code>lumen</code></td>
+<td style="text-align: center;">lm</td>
+<td style="text-align: center;"><code>lm</code></td>
+<td><code><a href="#candela">candela</a> * <wbr><a href="#steradian">steradian</a></code></td>
+</tr>
+<tr>
+<td><span id="lux"></span><code>lux</code></td>
+<td style="text-align: center;">lx</td>
+<td style="text-align: center;"><code>lx</code></td>
+<td><code><a href="#lumen">lumen</a> / <wbr>square(<a href="#metre">metre</a>)</code></td>
+</tr>
+<tr>
+<td><span id="metre"></span><code>metre</code></td>
+<td style="text-align: center;">m</td>
+<td style="text-align: center;"><code>m</code></td>
+<td><code>kind: <a href="../isq/#length">isq::length</a></code></td>
+</tr>
+<tr>
+<td><span id="mole"></span><code>mole</code></td>
+<td style="text-align: center;">mol</td>
+<td style="text-align: center;"><code>mol</code></td>
+<td><code>kind: <a href="../isq/#amount_of_substance">isq::amount_<wbr>of_<wbr>substance</a></code></td>
+</tr>
+<tr>
+<td><span id="newton"></span><code>newton</code></td>
+<td style="text-align: center;">N</td>
+<td style="text-align: center;"><code>N</code></td>
+<td><code><a href="#kilogram">kilogram</a> * <wbr><a href="#metre">metre</a> / <wbr>square(<a href="#second">second</a>)</code></td>
+</tr>
+<tr>
+<td><span id="ohm"></span><code>ohm</code></td>
+<td style="text-align: center;">Ω (ohm)</td>
+<td style="text-align: center;"><code>Ω</code>, <code>ohm</code></td>
+<td><code><a href="#volt">volt</a> / <wbr><a href="#ampere">ampere</a></code></td>
+</tr>
+<tr>
+<td><span id="pascal"></span><code>pascal</code></td>
+<td style="text-align: center;">Pa</td>
+<td style="text-align: center;"><code>Pa</code></td>
+<td><code><a href="#newton">newton</a> / <wbr>square(<a href="#metre">metre</a>)</code></td>
+</tr>
+<tr>
+<td><span id="radian"></span><code>radian</code></td>
+<td style="text-align: center;">rad</td>
+<td style="text-align: center;"><code>rad</code></td>
+<td><code><a href="#metre">metre</a> / <wbr><a href="#metre">metre</a><br>kind: <a href="../isq/#angular_measure">isq::angular_<wbr>measure</a></code></td>
+</tr>
+<tr>
+<td><span id="second"></span><code>second</code></td>
+<td style="text-align: center;">s</td>
+<td style="text-align: center;"><code>s</code></td>
+<td><code>kind: <a href="../isq/#duration">isq::duration</a></code></td>
+</tr>
+<tr>
+<td><span id="siemens"></span><code>siemens</code></td>
+<td style="text-align: center;">S</td>
+<td style="text-align: center;"><code>S</code></td>
+<td><code><a href="../core/#one">one</a> / <wbr><a href="#ohm">ohm</a></code></td>
+</tr>
+<tr>
+<td><span id="sievert"></span><code>sievert</code></td>
+<td style="text-align: center;">Sv</td>
+<td style="text-align: center;"><code>Sv</code></td>
+<td><code><a href="#joule">joule</a> / <wbr><a href="#kilogram">kilogram</a><br>kind: <a href="../isq/#dose_equivalent">isq::dose_<wbr>equivalent</a></code></td>
+</tr>
+<tr>
+<td><span id="steradian"></span><code>steradian</code></td>
+<td style="text-align: center;">sr</td>
+<td style="text-align: center;"><code>sr</code></td>
+<td><code>square(<a href="#metre">metre</a>) / <wbr>square(<a href="#metre">metre</a>)<br>kind: <a href="../isq/#solid_angular_measure">isq::solid_<wbr>angular_<wbr>measure</a></code></td>
+</tr>
+<tr>
+<td><span id="tesla"></span><code>tesla</code></td>
+<td style="text-align: center;">T</td>
+<td style="text-align: center;"><code>T</code></td>
+<td><code><a href="#weber">weber</a> / <wbr>square(<a href="#metre">metre</a>)</code></td>
+</tr>
+<tr>
+<td><span id="volt"></span><code>volt</code></td>
+<td style="text-align: center;">V</td>
+<td style="text-align: center;"><code>V</code></td>
+<td><code><a href="#watt">watt</a> / <wbr><a href="#ampere">ampere</a></code></td>
+</tr>
+<tr>
+<td><span id="watt"></span><code>watt</code></td>
+<td style="text-align: center;">W</td>
+<td style="text-align: center;"><code>W</code></td>
+<td><code><a href="#joule">joule</a> / <wbr><a href="#second">second</a></code></td>
+</tr>
+<tr>
+<td><span id="weber"></span><code>weber</code></td>
+<td style="text-align: center;">Wb</td>
+<td style="text-align: center;"><code>Wb</code></td>
+<td><code><a href="#volt">volt</a> * <wbr><a href="#second">second</a></code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="non-si-units-accepted-for-use-with-the-si">Non-SI units accepted for use with the SI<a class="headerlink" href="#non-si-units-accepted-for-use-with-the-si" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Unit Name</th>
+<th style="text-align: center;">Symbol</th>
+<th style="text-align: center;">unit_symbol</th>
+<th>Definition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span id="arcminute"></span><code>arcminute</code></td>
+<td style="text-align: center;">′ (')</td>
+<td style="text-align: center;"><code>arcmin</code></td>
+<td><code>mag_ratio&lt;1, 60&gt; * <wbr><a href="#degree">degree</a></code></td>
+</tr>
+<tr>
+<td><span id="arcsecond"></span><code>arcsecond</code></td>
+<td style="text-align: center;">″ ('')</td>
+<td style="text-align: center;"><code>arcsec</code></td>
+<td><code>mag_ratio&lt;1, 60&gt; * <wbr><a href="#arcminute">arcminute</a></code></td>
+</tr>
+<tr>
+<td><span id="are"></span><code>are</code></td>
+<td style="text-align: center;">a</td>
+<td style="text-align: center;"><code>a</code></td>
+<td><code>square(<a href="#deca">deca</a>&lt;<a href="./#metre">metre</a>&gt;)</code></td>
+</tr>
+<tr>
+<td><span id="astronomical_unit"></span><code>astronomical_<wbr>unit</code></td>
+<td style="text-align: center;">au</td>
+<td style="text-align: center;"><code>au</code></td>
+<td><code>mag&lt;149'597'870'700&gt; * <wbr><a href="./#metre">metre</a></code></td>
+</tr>
+<tr>
+<td><span id="dalton"></span><code>dalton</code></td>
+<td style="text-align: center;">Da</td>
+<td style="text-align: center;"><code>Da</code></td>
+<td><code>mag_ratio&lt;16'605'390'666'050, 10'000'000'000'000&gt; * <wbr>mag_power&lt;10, -27&gt; * <wbr><a href="./#kilogram">kilogram</a></code></td>
+</tr>
+<tr>
+<td><span id="day"></span><code>day</code></td>
+<td style="text-align: center;">d</td>
+<td style="text-align: center;"><code>d</code></td>
+<td><code>mag&lt;24&gt; * <wbr><a href="#hour">hour</a></code></td>
+</tr>
+<tr>
+<td><span id="degree"></span><code>degree</code></td>
+<td style="text-align: center;">° (deg)</td>
+<td style="text-align: center;"><code>deg</code></td>
+<td><code>mag_ratio&lt;1, 180&gt; * <wbr><a href="../core/#π">π</a> * <wbr><a href="./#radian">radian</a></code></td>
+</tr>
+<tr>
+<td><span id="electronvolt"></span><code>electronvolt</code></td>
+<td style="text-align: center;">eV</td>
+<td style="text-align: center;"><code>eV</code></td>
+<td><code>mag_ratio&lt;1'602'176'634, 1'000'000'000&gt; * <wbr>mag_power&lt;10, -19&gt; * <wbr><a href="./#joule">joule</a></code></td>
+</tr>
+<tr>
+<td><span id="hectare"></span><code>hectare</code></td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;"><code>ha</code></td>
+<td><code><a href="#hecto">hecto</a>&lt;<a href="#are">are</a>&gt;</code></td>
+</tr>
+<tr>
+<td><span id="hour"></span><code>hour</code></td>
+<td style="text-align: center;">h</td>
+<td style="text-align: center;"><code>h</code></td>
+<td><code>mag&lt;60&gt; * <wbr><a href="#minute">minute</a></code></td>
+</tr>
+<tr>
+<td><span id="litre"></span><code>litre</code></td>
+<td style="text-align: center;">L</td>
+<td style="text-align: center;"><code>l</code>, <code>L</code></td>
+<td><code>cubic(<a href="#deci">deci</a>&lt;<a href="./#metre">metre</a>&gt;)</code></td>
+</tr>
+<tr>
+<td><span id="minute"></span><code>minute</code></td>
+<td style="text-align: center;">min</td>
+<td style="text-align: center;"><code>min</code></td>
+<td><code>mag&lt;60&gt; * <wbr><a href="./#second">second</a></code></td>
+</tr>
+<tr>
+<td><span id="tonne"></span><code>tonne</code></td>
+<td style="text-align: center;">t</td>
+<td style="text-align: center;"><code>t</code></td>
+<td><code>mag&lt;1000&gt; * <wbr><a href="./#kilogram">kilogram</a></code></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">Namespace</p>
+<p>These units are defined in the <code>mp_units::non_si</code> namespace and are made available in the <code>mp_units::si</code> namespace through a using-directive.</p>
+</div>
+<h2 id="constants">Constants<a class="headerlink" href="#constants" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th style="text-align: center;">Symbol</th>
+<th style="text-align: center;">unit_symbol</th>
+<th>Definition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span id="magnetic_constant"></span><code>magnetic_<wbr>constant</code></td>
+<td style="text-align: center;">μ₀ (u_0)</td>
+<td style="text-align: center;">—</td>
+<td><code>mag&lt;4&gt; * <wbr>mag_power&lt;10, -7&gt; * <wbr><a href="../core/#π">π</a> * <wbr><a href="#henry">henry</a> / <wbr><a href="#metre">metre</a></code></td>
+</tr>
+<tr>
+<td><span id="si2019-avogadro_constant"></span><code>si2019::avogadro_<wbr>constant</code></td>
+<td style="text-align: center;">N_A</td>
+<td style="text-align: center;">—</td>
+<td><code>mag_ratio&lt;602'214'076, 100'000'000&gt; * <wbr>mag_power&lt;10, 23&gt; / <wbr><a href="#mole">mole</a></code></td>
+</tr>
+<tr>
+<td><span id="si2019-boltzmann_constant"></span><code>si2019::boltzmann_<wbr>constant</code></td>
+<td style="text-align: center;">k</td>
+<td style="text-align: center;">—</td>
+<td><code>mag_ratio&lt;1'380'649, 1'000'000&gt; * <wbr>mag_power&lt;10, -23&gt; * <wbr><a href="#joule">joule</a> / <wbr><a href="#kelvin">kelvin</a></code></td>
+</tr>
+<tr>
+<td><span id="si2019-elementary_charge"></span><code>si2019::elementary_<wbr>charge</code></td>
+<td style="text-align: center;">e</td>
+<td style="text-align: center;">—</td>
+<td><code>mag_ratio&lt;1'602'176'634, 1'000'000'000&gt; * <wbr>mag_power&lt;10, -19&gt; * <wbr><a href="#coulomb">coulomb</a></code></td>
+</tr>
+<tr>
+<td><span id="si2019-hyperfine_structure_transition_frequency_of_cs"></span><code>si2019::hyperfine_<wbr>structure_<wbr>transition_<wbr>frequency_<wbr>of_<wbr>cs</code></td>
+<td style="text-align: center;">Δν_Cs (dv_Cs)</td>
+<td style="text-align: center;">—</td>
+<td><code>mag&lt;9'192'631'770&gt; * <wbr><a href="#hertz">hertz</a></code></td>
+</tr>
+<tr>
+<td><span id="si2019-luminous_efficacy"></span><code>si2019::luminous_<wbr>efficacy</code></td>
+<td style="text-align: center;">K_cd</td>
+<td style="text-align: center;">—</td>
+<td><code>mag&lt;683&gt; * <wbr><a href="#lumen">lumen</a> / <wbr><a href="#watt">watt</a></code></td>
+</tr>
+<tr>
+<td><span id="si2019-planck_constant"></span><code>si2019::planck_<wbr>constant</code></td>
+<td style="text-align: center;">h</td>
+<td style="text-align: center;">—</td>
+<td><code>mag_ratio&lt;662'607'015, 100'000'000&gt; * <wbr>mag_power&lt;10, -34&gt; * <wbr><a href="#joule">joule</a> * <wbr><a href="#second">second</a></code></td>
+</tr>
+<tr>
+<td><span id="si2019-speed_of_light_in_vacuum"></span><code>si2019::speed_<wbr>of_<wbr>light_<wbr>in_<wbr>vacuum</code></td>
+<td style="text-align: center;">c</td>
+<td style="text-align: center;">—</td>
+<td><code>mag&lt;299'792'458&gt; * <wbr><a href="#metre">metre</a> / <wbr><a href="#second">second</a></code></td>
+</tr>
+<tr>
+<td><span id="standard_gravity"></span><code>standard_<wbr>gravity</code></td>
+<td style="text-align: center;">g₀ (g_0)</td>
+<td style="text-align: center;">—</td>
+<td><code>mag_ratio&lt;980'665, 100'000&gt; * <wbr><a href="#metre">metre</a> / <wbr>square(<a href="#second">second</a>)</code></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">Inline Namespaces</p>
+<p>The <code>mp_units::si::si2019</code> namespace is inline in <code>mp_units::si</code>, making its members directly accessible from the parent namespace.</p>
+</div>
 <h2 id="point-origins">Point Origins<a class="headerlink" href="#point-origins" title="Permanent link">&para;</a></h2>
 <table>
 <thead>

@@ -4646,6 +4646,8 @@ You're not viewing the latest version.
       
         
       
+        
+      
     
     
     
@@ -5271,6 +5273,34 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
+      <a href="../../../reference/systems_reference/prefixes_index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prefixes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../reference/systems_reference/units_index/" class="md-nav__link">
         
   
@@ -5299,14 +5329,14 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../../reference/systems_reference/prefixes_index/" class="md-nav__link">
+      <a href="../../../reference/systems_reference/constants_index/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Prefixes
+    Constants
   
 
     
@@ -5734,7 +5764,7 @@ You're not viewing the latest version.
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8_3_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8_3_9" >
         
           
           <div class="md-nav__link md-nav__container">
@@ -5756,14 +5786,14 @@ You're not viewing the latest version.
             </a>
             
               
-              <label class="md-nav__link " for="__nav_8_3_8" id="__nav_8_3_8_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_8_3_9" id="__nav_8_3_9_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_8_3_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_8_3_8">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_8_3_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8_3_9">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -11645,7 +11675,7 @@ constraints.</p>
 </span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">    </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">duration</span><span class="p">,</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">force</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">isq</span><span class="o">::</span><span class="n">mass_flow_rate</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">acceleration</span><span class="p">)</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">specific_impulse</span><span class="p">;</span>
 </span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>
 </span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">standard_gravity</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span>
-</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">    </span><span class="n">named_unit</span><span class="o">&lt;</span><span class="n">symbol_text</span><span class="p">{</span><span class="sa">u8</span><span class="s">&quot;g₀&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;g_0&quot;</span><span class="p">},</span><span class="w"> </span><span class="n">mag_ratio</span><span class="o">&lt;</span><span class="mi">980&#39;665</span><span class="p">,</span><span class="w"> </span><span class="mi">100&#39;000</span><span class="o">&gt;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">square</span><span class="p">(</span><span class="n">si</span><span class="o">::</span><span class="n">second</span><span class="p">)</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">standard_gravity</span><span class="p">;</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">    </span><span class="n">named_constant</span><span class="o">&lt;</span><span class="n">symbol_text</span><span class="p">{</span><span class="sa">u8</span><span class="s">&quot;g₀&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;g_0&quot;</span><span class="p">},</span><span class="w"> </span><span class="n">mag_ratio</span><span class="o">&lt;</span><span class="mi">980&#39;665</span><span class="p">,</span><span class="w"> </span><span class="mi">100&#39;000</span><span class="o">&gt;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">square</span><span class="p">(</span><span class="n">si</span><span class="o">::</span><span class="n">second</span><span class="p">)</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">standard_gravity</span><span class="p">;</span>
 </span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">kilogram_force</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span>
 </span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="w">    </span><span class="n">named_unit</span><span class="o">&lt;</span><span class="s">&quot;kgf&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">kilogram</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">standard_gravity</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">kilogram_force</span><span class="p">;</span>
 </span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>
@@ -11750,7 +11780,7 @@ into the unit definition. This enables elegant compile-time optimization:</p>
 <p><strong>mp-units</strong> makes constants part of the type system:</p>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1">// ✅ mp-units: g₀ as compile-time unit</span>
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">standard_gravity</span><span class="w"> </span><span class="o">:</span>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">  </span><span class="n">named_unit</span><span class="o">&lt;</span><span class="s">&quot;g₀&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">mag_ratio</span><span class="o">&lt;</span><span class="mi">980&#39;665</span><span class="p">,</span><span class="w"> </span><span class="mi">100&#39;000</span><span class="o">&gt;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">square</span><span class="p">(</span><span class="n">si</span><span class="o">::</span><span class="n">second</span><span class="p">)</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">standard_gravity</span><span class="p">;</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">  </span><span class="n">named_constant</span><span class="o">&lt;</span><span class="s">&quot;g₀&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">mag_ratio</span><span class="o">&lt;</span><span class="mi">980&#39;665</span><span class="p">,</span><span class="w"> </span><span class="mi">100&#39;000</span><span class="o">&gt;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">square</span><span class="p">(</span><span class="n">si</span><span class="o">::</span><span class="n">second</span><span class="p">)</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">standard_gravity</span><span class="p">;</span>
 </span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>
 </span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">Unit</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">g0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">standard_gravity</span><span class="p">;</span>
 </span></code></pre></div>

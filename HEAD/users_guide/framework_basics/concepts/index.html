@@ -4792,6 +4792,8 @@ You're not viewing the latest version.
       
         
       
+        
+      
     
     
     
@@ -5417,6 +5419,34 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
+      <a href="../../../reference/systems_reference/prefixes_index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prefixes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../reference/systems_reference/units_index/" class="md-nav__link">
         
   
@@ -5445,14 +5475,14 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../../reference/systems_reference/prefixes_index/" class="md-nav__link">
+      <a href="../../../reference/systems_reference/constants_index/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Prefixes
+    Constants
   
 
     
@@ -5880,7 +5910,7 @@ You're not viewing the latest version.
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8_3_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8_3_9" >
         
           
           <div class="md-nav__link md-nav__container">
@@ -5902,14 +5932,14 @@ You're not viewing the latest version.
             </a>
             
               
-              <label class="md-nav__link " for="__nav_8_3_8" id="__nav_8_3_8_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_8_3_9" id="__nav_8_3_9_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_8_3_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_8_3_8">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_8_3_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8_3_9">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -11660,25 +11690,25 @@ concept and when they compare equal.</p>
 <h2 id="Unit"><code>Unit&lt;T&gt;</code><a class="headerlink" href="#Unit" title="Permanent link">&para;</a></h2>
 <p><code>Unit</code> concept matches all the <a href="../../../reference/glossary/#unit">units</a> in the library including:</p>
 <ul>
-<li><a href="../../../reference/glossary/#base-unit">Base units</a> defined by a user by inheriting from the
-  <code>named_unit</code> class template instantiated with a unique symbol identifier
-  describing this unit
-  in a specific <a href="../../../reference/glossary/#system-of-units">system of units</a>.</li>
-<li>Named scaled units defined by a user by inheriting from the <code>named_unit</code> class template instantiated
-  with a unique symbol identifier and a product of multiplying another unit with some magnitude.</li>
-<li>Prefixed units defined by a user by inheriting from the <code>prefixed_unit</code> class template instantiated
-  with a prefix symbol, a magnitude, and a unit to be prefixed.</li>
-<li><a href="../../../reference/glossary/#derived-unit">Derived named units</a> defined by a user by inheriting
-  from the <code>named_unit</code> class template instantiated with a unique symbol identifier and a result
-  of <a href="../../../reference/glossary/#unit-equation">unit equation</a> passed as an argument.</li>
+<li><a href="../../../reference/glossary/#base-unit">Base units</a> defined by a user by inheriting from
+  the <code>named_unit</code> class template instantiated with a unique symbol identifier describing
+  this unit in a specific <a href="../../../reference/glossary/#system-of-units">system of units</a>.</li>
+<li>Named scaled units defined by a user by inheriting from the <code>named_unit</code> class template
+  instantiated with a unique symbol identifier and a product of multiplying another unit
+  with some magnitude.</li>
+<li>Prefixed units defined by a user by inheriting from the <code>prefixed_unit</code> class template
+  instantiated with a prefix symbol, a magnitude, and a unit to be prefixed.</li>
+<li><a href="../../../reference/glossary/#derived-unit">Derived named units</a> defined by a user by
+  inheriting from the <code>named_unit</code> class template instantiated with a unique symbol identifier
+  and a result of <a href="../../../reference/glossary/#unit-equation">unit equation</a> passed as
+  an argument.</li>
 <li><a href="../../../reference/glossary/#derived-unit">Derived unnamed units</a> being a result of a
   <a href="../../../reference/glossary/#unit-equation">unit equations</a> on other units.</li>
+<li>Physical constants defined by a user by inheriting from the <code>named_constant</code> class template
+  instantiated with a unique symbol identifier and a product of multiplying another unit with
+  some magnitude.</li>
 </ul>
 <p>All of the above units have to be marked as <code>final</code>.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>In the <strong>mp-units</strong> library, <a href="../faster_than_lightspeed_constants/">physical constants are also implemented as units</a>.</p>
-</div>
 <h3 id="PrefixableUnit"><code>PrefixableUnit&lt;T&gt;</code><a class="headerlink" href="#PrefixableUnit" title="Permanent link">&para;</a></h3>
 <p><code>PrefixableUnit</code> concept is satisfied by all units derived from a <code>named_unit</code> class template.
 Such units can be passed as an argument to a <code>prefixed_unit</code> class template.</p>

@@ -4747,6 +4747,8 @@ You're not viewing the latest version.
       
         
       
+        
+      
     
     
     
@@ -5372,6 +5374,34 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
+      <a href="../../../reference/systems_reference/prefixes_index/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prefixes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../reference/systems_reference/units_index/" class="md-nav__link">
         
   
@@ -5400,14 +5430,14 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../../../reference/systems_reference/prefixes_index/" class="md-nav__link">
+      <a href="../../../reference/systems_reference/constants_index/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Prefixes
+    Constants
   
 
     
@@ -5835,7 +5865,7 @@ You're not viewing the latest version.
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8_3_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8_3_9" >
         
           
           <div class="md-nav__link md-nav__container">
@@ -5857,14 +5887,14 @@ You're not viewing the latest version.
             </a>
             
               
-              <label class="md-nav__link " for="__nav_8_3_8" id="__nav_8_3_8_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_8_3_9" id="__nav_8_3_9_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_8_3_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_8_3_8">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_8_3_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8_3_9">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -11643,7 +11673,7 @@ for big and expensive representation types. With this, we can easily define thin
 that uses a unit that is proportional to the ratio of kilometers per megaparsecs, which are
 both units of <em>length</em>:</p>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">hubble_constant</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span>
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">    </span><span class="n">named_unit</span><span class="o">&lt;</span><span class="p">{</span><span class="sa">u8</span><span class="s">&quot;H₀&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;H_0&quot;</span><span class="p">},</span><span class="w"> </span><span class="n">mag_ratio</span><span class="o">&lt;</span><span class="mi">701</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="o">&gt;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">kilo</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="o">&gt;</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">second</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">mega</span><span class="o">&lt;</span><span class="n">parsec</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">hubble_constant</span><span class="p">;</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">    </span><span class="n">named_constant</span><span class="o">&lt;</span><span class="p">{</span><span class="sa">u8</span><span class="s">&quot;H₀&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;H_0&quot;</span><span class="p">},</span><span class="w"> </span><span class="n">mag_ratio</span><span class="o">&lt;</span><span class="mi">701</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="o">&gt;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">kilo</span><span class="o">&lt;</span><span class="n">si</span><span class="o">::</span><span class="n">metre</span><span class="o">&gt;</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">second</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">si</span><span class="o">::</span><span class="n">mega</span><span class="o">&lt;</span><span class="n">parsec</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">hubble_constant</span><span class="p">;</span>
 </span></code></pre></div>
 <h2 id="counts-of-things">Counts of things<a class="headerlink" href="#counts-of-things" title="Permanent link">&para;</a></h2>
 <p>Another important use case for dimensionless quantities is to provide strong types for counts
