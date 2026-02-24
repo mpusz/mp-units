@@ -5599,10 +5599,6 @@ You're not viewing the latest version.
       
         
       
-        
-      
-        
-      
     
     
     
@@ -6026,42 +6022,14 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../angle_angular/" class="md-nav__link">
+      <a href="../angle/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    angle (angular)
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../angle_hep/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    angle (hep)
+    angle
   
 
     
@@ -9732,42 +9700,14 @@ You're not viewing the latest version.
   
   
     <li class="md-nav__item">
-      <a href="../solid_angle_angular/" class="md-nav__link">
+      <a href="../solid_angle/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    solid_angle (angular)
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../solid_angle_hep/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    solid_angle (hep)
+    solid_angle
   
 
     
@@ -11366,9 +11306,11 @@ You're not viewing the latest version.
     hep_length --- hep_displacement
     hep_position_vector["&lt;b&gt;&lt;a href="../../systems/hep/#position_vector" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;hep::position_vector&lt;/a&gt;&lt;/b&gt;"]
     hep_displacement --- hep_position_vector
+    hep_height["&lt;b&gt;&lt;a href="../../systems/hep/#height" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;hep::height&lt;/a&gt;&lt;/b&gt;"]
+    hep_length --- hep_height
     hep_impact_parameter["&lt;b&gt;&lt;a href="../../systems/hep/#impact_parameter" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;hep::impact_parameter&lt;/a&gt;&lt;/b&gt;"]
     hep_length --- hep_impact_parameter
-    hep_interaction_length["&lt;b&gt;&lt;a href="../../systems/hep/#interaction_length" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;hep::interaction_length&lt;/a&gt;&lt;/b&gt;"]
+    hep_interaction_length["&lt;b&gt;&lt;a href="../../systems/hep/#interaction_length" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;hep::interaction_length&lt;/a&gt; 🔒&lt;/b&gt;"]
     hep_length --- hep_interaction_length
     hep_nuclear_interaction_length["&lt;b&gt;&lt;a href="../../systems/hep/#nuclear_interaction_length" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;hep::nuclear_interaction_length&lt;/a&gt;&lt;/b&gt;"]
     hep_interaction_length --- hep_nuclear_interaction_length
@@ -11376,7 +11318,7 @@ You're not viewing the latest version.
     hep_length --- hep_mean_free_path
     hep_path_length["&lt;b&gt;&lt;a href="../../systems/hep/#path_length" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;hep::path_length&lt;/a&gt;&lt;/b&gt;"]
     hep_length --- hep_path_length
-    hep_radiation_length["&lt;b&gt;&lt;a href="../../systems/hep/#radiation_length" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;hep::radiation_length&lt;/a&gt;&lt;/b&gt;"]
+    hep_radiation_length["&lt;b&gt;&lt;a href="../../systems/hep/#radiation_length" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;hep::radiation_length&lt;/a&gt; 🔒&lt;/b&gt;"]
     hep_length --- hep_radiation_length
     hep_radius["&lt;b&gt;&lt;a href="../../systems/hep/#radius" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;hep::radius&lt;/a&gt;&lt;/b&gt;"]
     hep_length --- hep_radius
@@ -11384,8 +11326,14 @@ You're not viewing the latest version.
     hep_length --- hep_range
     hep_vertex_position["&lt;b&gt;&lt;a href="../../systems/hep/#vertex_position" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;hep::vertex_position&lt;/a&gt;&lt;/b&gt;"]
     hep_length --- hep_vertex_position
-    hep_wavelength["&lt;b&gt;&lt;a href="../../systems/hep/#wavelength" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;hep::wavelength&lt;/a&gt;&lt;/b&gt;"]
-    hep_length --- hep_wavelength</code></pre>
+    hep_wavelength["&lt;b&gt;&lt;a href="../../systems/hep/#wavelength" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;hep::wavelength&lt;/a&gt; 🔒&lt;/b&gt;"]
+    hep_length --- hep_wavelength
+    hep_width["&lt;b&gt;&lt;a href="../../systems/hep/#width" style="color: var(--md-mermaid-label-fg-color); text-decoration: none;"&gt;hep::width&lt;/a&gt;&lt;/b&gt;"]
+    hep_length --- hep_width</code></pre>
+<p><strong>Legend:</strong></p>
+<ul>
+<li>🔒 indicates a root of a sub-kind - quantities that cannot be added or compared to other quantities outside their hierarchy subtree</li>
+</ul>
 
 
 
