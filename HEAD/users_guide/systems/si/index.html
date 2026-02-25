@@ -2560,6 +2560,67 @@ You're not viewing the latest version.
 </li>
       
         <li class="md-nav__item">
+  <a href="#header-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Header Files
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Header Files">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#umbrella-header-mp-unitssystemssih" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Umbrella header — &lt;mp-units/systems/si.h&gt;
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lean-umbrella-mp-unitssystemssicoreh" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lean umbrella — &lt;mp-units/systems/si/core.h&gt;
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#individual-headers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Individual headers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#at-a-glance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        At a glance
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#usage-examples" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -11785,36 +11846,256 @@ constants. These are provided in <strong>mp-units</strong>:</p>
 <p>The <code>si2019</code> nested namespace indicates these values are from the 2019 SI definition.
 This allows for future updates if the constants are ever redefined.</p>
 </div>
+<h2 id="header-files">Header Files<a class="headerlink" href="#header-files" title="Permanent link">&para;</a></h2>
+<p>When not using C++ modules, the SI system is exposed through a set of headers under
+<code>&lt;mp-units/systems/si/...&gt;</code>. Choose the headers that match your use case to keep
+compile times as low as possible.</p>
+<h3 id="umbrella-header-mp-unitssystemssih">Umbrella header — <code>&lt;mp-units/systems/si.h&gt;</code><a class="headerlink" href="#umbrella-header-mp-unitssystemssih" title="Permanent link">&para;</a></h3>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mp-units/systems/si.h&gt;</span>
+</span></code></pre></div>
+<p>The all-in-one header. It pulls in everything the SI system offers:</p>
+<ul>
+<li>all SI units, prefixes and SI-defining constants</li>
+<li>all short-name unit symbols (e.g. <code>m</code>, <code>km</code>, <code>Hz</code>) via <code>si::unit_symbols</code></li>
+<li><code>&lt;chrono&gt;</code> interoperability (hosted only)</li>
+<li>SI <code>math.h</code> overloads of <code>&lt;cmath&gt;</code> functions for quantities (hosted only)</li>
+<li><code>invoke_with_prefixed</code> and <code>prefix_range</code> utilities (hosted only)</li>
+</ul>
+<p><strong>When to use:</strong> application code where SI breadth is more important than
+individual include cost — the typical choice for <code>.cpp</code> files.</p>
+<h3 id="lean-umbrella-mp-unitssystemssicoreh">Lean umbrella — <code>&lt;mp-units/systems/si/core.h&gt;</code><a class="headerlink" href="#lean-umbrella-mp-unitssystemssicoreh" title="Permanent link">&para;</a></h3>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mp-units/systems/si/core.h&gt;</span>
+</span></code></pre></div>
+<p>A lighter umbrella that includes units, prefixes, and constants but deliberately
+omits <code>unit_symbols.h</code>, <code>chrono.h</code>, <code>math.h</code>, and <code>prefix_utils.h</code>.</p>
+<p><strong>When to use:</strong> library headers (<code>.h</code>/<code>.hpp</code>) that use SI units internally but
+should not force <code>unit_symbols</code>, <code>&lt;chrono&gt;</code>, or <code>&lt;cmath&gt;</code> on their users. Also the
+recommended include for other system headers that build on top of SI (e.g. CGS,
+imperial) to avoid bringing in the full symbol table.</p>
+<h3 id="individual-headers">Individual headers<a class="headerlink" href="#individual-headers" title="Permanent link">&para;</a></h3>
+<p>Use these when you need only a specific slice of the SI system.</p>
+<ul>
+<li>
+<p><code>&lt;mp-units/systems/si/prefixes.h&gt;</code></p>
+<p>Provides only the 24 SI prefix class templates (<code>quecto_</code> … <code>quetta_</code>) and their
+corresponding variable templates (<code>quecto</code> … <code>quetta</code>).
+Does <strong>not</strong> bring in any units, constants, or runtime utilities.</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mp-units/systems/si/prefixes.h&gt;</span>
+</span></code></pre></div>
+<p><strong>When to use:</strong> when defining a new unit system that needs SI prefixes but none
+of the SI units themselves (e.g., HEP).</p>
+</li>
+<li>
+<p><code>&lt;mp-units/systems/si/units.h&gt;</code></p>
+<p>Provides all SI named units (base and derived) and the non-SI units accepted for
+use with the SI (<code>non_si::minute</code>, <code>non_si::hour</code>, <code>non_si::litre</code>, …).
+Depends on <code>prefixes.h</code> and the ISQ quantity definitions.</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mp-units/systems/si/units.h&gt;</span>
+</span></code></pre></div>
+</li>
+<li>
+<p><code>&lt;mp-units/systems/si/constants.h&gt;</code></p>
+<p>Provides the seven SI-defining constants from the 2019 redefinition
+(<code>si::speed_of_light_in_vacuum</code>, <code>si::planck_constant</code>, etc.) in the inline
+namespace <code>si::si2019</code> and a few more directly in the <code>si</code> namespace.
+Depends on <code>units.h</code>.</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mp-units/systems/si/constants.h&gt;</span>
+</span></code></pre></div>
+</li>
+<li>
+<p><code>&lt;mp-units/systems/si/unit_symbols.h&gt;</code></p>
+<p>Opens <code>namespace mp_units::si::unit_symbols</code> and defines short-name <code>inline
+constexpr</code> variables for every SI unit and all its prefixed variants
+(<code>m</code>, <code>km</code>, <code>mm</code>, …, <code>Hz</code>, <code>kHz</code>, …).</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This header instantiates a large number of prefixed units at parse time,
+which is the main compile-time cost of <code>si.h</code>.</p>
+</div>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mp-units/systems/si/unit_symbols.h&gt;</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">mp_units</span><span class="o">::</span><span class="nn">si</span><span class="o">::</span><span class="nn">unit_symbols</span><span class="p">;</span>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="n">quantity</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">km</span><span class="p">;</span>
+</span></code></pre></div>
+<p><strong>When to use:</strong> <code>.cpp</code> files or translation units where the concise symbol
+syntax is desired. Avoid in widely-included library headers.</p>
+</li>
+<li>
+<p><code>&lt;mp-units/systems/si/chrono.h&gt;</code> <em>(hosted only)</em></p>
+<p>Provides interoperability between <code>std::chrono::duration</code> / <code>std::chrono::time_point</code>
+and <strong>mp-units</strong> quantities. Includes <code>&lt;chrono&gt;</code>.</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mp-units/systems/si/chrono.h&gt;</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="k">auto</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">seconds</span><span class="p">{</span><span class="mi">5</span><span class="p">};</span>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="n">quantity</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">d</span><span class="p">;</span><span class="w">  </span><span class="c1">// quantity&lt;si::second, std::int64_t&gt;</span>
+</span></code></pre></div>
+</li>
+<li>
+<p><code>&lt;mp-units/systems/si/math.h&gt;</code> <em>(hosted only)</em></p>
+<p>Provides quantity-aware overloads of the <code>&lt;cmath&gt;</code> transcendental and rounding
+functions (<code>sin</code>, <code>cos</code>, <code>pow</code>, <code>sqrt</code>, <code>floor</code>, <code>ceil</code>, …) that are aware of
+angular-measure semantics.</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mp-units/systems/si/math.h&gt;</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="n">quantity</span><span class="w"> </span><span class="n">angle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">30</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">deg</span><span class="p">;</span>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="k">auto</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sin</span><span class="p">(</span><span class="n">angle</span><span class="p">);</span><span class="w">  </span><span class="c1">// converts to radians internally</span>
+</span></code></pre></div>
+</li>
+<li>
+<p><code>&lt;mp-units/systems/si/prefix_utils.h&gt;</code> <em>(hosted only)</em></p>
+<p>Provides the <code>prefix_range</code> enum and the <code>invoke_with_prefixed</code> function template,
+which automatically selects the most readable SI prefix for a quantity and calls
+a user-supplied functor with the rescaled value.</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mp-units/systems/si/prefix_utils.h&gt;</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="n">invoke_with_prefixed</span><span class="p">([](</span><span class="k">auto</span><span class="w"> </span><span class="n">q</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">q</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="mf">0.005</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="n">m</span><span class="p">);</span>
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="c1">// prints: 5 mm</span>
+</span></code></pre></div>
+</li>
+</ul>
+<h3 id="at-a-glance">At a glance<a class="headerlink" href="#at-a-glance" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Header</th>
+<th style="text-align: center;">Units</th>
+<th style="text-align: center;">Prefixes</th>
+<th style="text-align: center;">Constants</th>
+<th style="text-align: center;">Symbols</th>
+<th style="text-align: center;">chrono</th>
+<th style="text-align: center;">math</th>
+<th style="text-align: center;">prefix_utils</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>si.h</code></td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+</tr>
+<tr>
+<td><code>si/core.h</code></td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td><code>si/prefixes.h</code></td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td><code>si/units.h</code></td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td><code>si/constants.h</code></td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td><code>si/unit_symbols.h</code></td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td><code>si/chrono.h</code></td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td><code>si/math.h</code></td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
+</tr>
+<tr>
+<td><code>si/prefix_utils.h</code></td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">Freestanding environments</p>
+<p>Headers marked <em>hosted only</em> (<code>chrono.h</code>, <code>math.h</code>, <code>prefix_utils.h</code>) require a
+hosted C++ standard library and are silently excluded when <code>MP_UNITS_HOSTED</code> is
+not set. The remaining headers are safe to use in freestanding environments.</p>
+</div>
 <h2 id="usage-examples">Usage Examples<a class="headerlink" href="#usage-examples" title="Permanent link">&para;</a></h2>
 <h3 id="basic-calculations">Basic Calculations<a class="headerlink" href="#basic-calculations" title="Permanent link">&para;</a></h3>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">mp_units</span><span class="p">;</span>
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">mp_units</span><span class="o">::</span><span class="nn">si</span><span class="o">::</span><span class="nn">unit_symbols</span><span class="p">;</span>
-</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>
-</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="c1">// Simple calculations</span>
-</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="n">quantity</span><span class="w"> </span><span class="n">distance</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">;</span>
-</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="n">quantity</span><span class="w"> </span><span class="n">time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">s</span><span class="p">;</span>
-</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="n">quantity</span><span class="w"> </span><span class="n">speed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">distance</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">time</span><span class="p">;</span><span class="w">                 </span><span class="c1">// 20 m/s</span>
-</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>
-</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="c1">// Using derived units</span>
-</span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="n">quantity</span><span class="w"> </span><span class="n">force</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">N</span><span class="p">;</span>
-</span><span id="__span-8-11"><a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a><span class="n">quantity</span><span class="w"> </span><span class="n">displacement</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">;</span>
-</span><span id="__span-8-12"><a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a><span class="n">quantity</span><span class="w"> </span><span class="n">work</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">force</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">displacement</span><span class="p">;</span><span class="w">             </span><span class="c1">// 20 J</span>
-</span><span id="__span-8-13"><a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a>
-</span><span id="__span-8-14"><a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a><span class="c1">// Unit conversions</span>
-</span><span id="__span-8-15"><a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a><span class="n">quantity</span><span class="w"> </span><span class="n">speed_kmph</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">speed</span><span class="p">.</span><span class="n">in</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span><span class="n">km</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">h</span><span class="p">);</span><span class="w">   </span><span class="c1">// 72 km/h</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">mp_units</span><span class="p">;</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">mp_units</span><span class="o">::</span><span class="nn">si</span><span class="o">::</span><span class="nn">unit_symbols</span><span class="p">;</span>
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>
+</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="c1">// Simple calculations</span>
+</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="n">quantity</span><span class="w"> </span><span class="n">distance</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">;</span>
+</span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a><span class="n">quantity</span><span class="w"> </span><span class="n">time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">s</span><span class="p">;</span>
+</span><span id="__span-17-7"><a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="n">quantity</span><span class="w"> </span><span class="n">speed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">distance</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">time</span><span class="p">;</span><span class="w">                 </span><span class="c1">// 20 m/s</span>
+</span><span id="__span-17-8"><a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a>
+</span><span id="__span-17-9"><a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a><span class="c1">// Using derived units</span>
+</span><span id="__span-17-10"><a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a><span class="n">quantity</span><span class="w"> </span><span class="n">force</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">N</span><span class="p">;</span>
+</span><span id="__span-17-11"><a id="__codelineno-17-11" name="__codelineno-17-11" href="#__codelineno-17-11"></a><span class="n">quantity</span><span class="w"> </span><span class="n">displacement</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">;</span>
+</span><span id="__span-17-12"><a id="__codelineno-17-12" name="__codelineno-17-12" href="#__codelineno-17-12"></a><span class="n">quantity</span><span class="w"> </span><span class="n">work</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">force</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">displacement</span><span class="p">;</span><span class="w">             </span><span class="c1">// 20 J</span>
+</span><span id="__span-17-13"><a id="__codelineno-17-13" name="__codelineno-17-13" href="#__codelineno-17-13"></a>
+</span><span id="__span-17-14"><a id="__codelineno-17-14" name="__codelineno-17-14" href="#__codelineno-17-14"></a><span class="c1">// Unit conversions</span>
+</span><span id="__span-17-15"><a id="__codelineno-17-15" name="__codelineno-17-15" href="#__codelineno-17-15"></a><span class="n">quantity</span><span class="w"> </span><span class="n">speed_kmph</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">speed</span><span class="p">.</span><span class="n">in</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span><span class="n">km</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">h</span><span class="p">);</span><span class="w">   </span><span class="c1">// 72 km/h</span>
 </span></code></pre></div>
 <h3 id="strong-typing-with-isq">Strong Typing with ISQ<a class="headerlink" href="#strong-typing-with-isq" title="Permanent link">&para;</a></h3>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">mp_units</span><span class="p">;</span>
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">mp_units</span><span class="o">::</span><span class="nn">si</span><span class="o">::</span><span class="nn">unit_symbols</span><span class="p">;</span>
-</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
-</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="c1">// Strong quantity types from ISQ</span>
-</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="n">quantity</span><span class="w"> </span><span class="n">height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="p">(</span><span class="mf">1.8</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">);</span>
-</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="n">quantity</span><span class="w"> </span><span class="n">mass</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">mass</span><span class="p">(</span><span class="mi">75</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="p">);</span>
-</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="n">quantity</span><span class="w"> </span><span class="n">walking_speed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">speed</span><span class="p">(</span><span class="mf">1.4</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">s</span><span class="p">);</span>
-</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>
-</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="c1">// Dimensional analysis ensures correctness</span>
-</span><span id="__span-9-10"><a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="n">quantity</span><span class="w"> </span><span class="n">kinetic_energy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">mass</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">pow</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="p">(</span><span class="n">walking_speed</span><span class="p">);</span>
-</span><span id="__span-9-11"><a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">kinetic_energy</span><span class="p">.</span><span class="n">in</span><span class="p">(</span><span class="n">J</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w">        </span><span class="c1">// Energy in joules</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">mp_units</span><span class="p">;</span>
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">mp_units</span><span class="o">::</span><span class="nn">si</span><span class="o">::</span><span class="nn">unit_symbols</span><span class="p">;</span>
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>
+</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="c1">// Strong quantity types from ISQ</span>
+</span><span id="__span-18-5"><a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a><span class="n">quantity</span><span class="w"> </span><span class="n">height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">height</span><span class="p">(</span><span class="mf">1.8</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="p">);</span>
+</span><span id="__span-18-6"><a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a><span class="n">quantity</span><span class="w"> </span><span class="n">mass</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">mass</span><span class="p">(</span><span class="mi">75</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="p">);</span>
+</span><span id="__span-18-7"><a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a><span class="n">quantity</span><span class="w"> </span><span class="n">walking_speed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">speed</span><span class="p">(</span><span class="mf">1.4</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">s</span><span class="p">);</span>
+</span><span id="__span-18-8"><a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a>
+</span><span id="__span-18-9"><a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a><span class="c1">// Dimensional analysis ensures correctness</span>
+</span><span id="__span-18-10"><a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a><span class="n">quantity</span><span class="w"> </span><span class="n">kinetic_energy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">mass</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">pow</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="p">(</span><span class="n">walking_speed</span><span class="p">);</span>
+</span><span id="__span-18-11"><a id="__codelineno-18-11" name="__codelineno-18-11" href="#__codelineno-18-11"></a><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">kinetic_energy</span><span class="p">.</span><span class="n">in</span><span class="p">(</span><span class="n">J</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w">        </span><span class="c1">// Energy in joules</span>
 </span></code></pre></div>
 <h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
 <ul>
