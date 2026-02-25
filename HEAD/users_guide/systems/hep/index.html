@@ -11860,18 +11860,17 @@ with each other:</p>
 over time as measurements improve. Different frameworks may use different CODATA
 recommendations, leading to inconsistencies.</p>
 <h3 id="the-problem">The Problem<a class="headerlink" href="#the-problem" title="Permanent link">&para;</a></h3>
-<p>As noted by ATLAS Offline Software Coordinator John Chapman:</p>
+<p>As noted by John Chapman (currently one of the ATLAS Offline Software coordinators):</p>
 <div class="admonition quote">
-<p class="admonition-title">CERN Feedback</p>
-<p>"The values used in the physical constants headers are taken from the CODATA recommendations.
-Note that these do change over time! This is particularly a problem for applications where
-it is then not clear which version of a constant should be used. It also, unfortunately,
-ties any updates to physical constants to releases of CLHEP, ROOT, Gaudi or Geant4.</p>
-<p>For example, currently the head versions of CLHEP and Gaudi use the 2018 CODATA
-recommendations and the head version of ROOT uses the 2022 CODATA recommendations.</p>
+<p class="admonition-title">HEP community feedback</p>
+<p>"HEP Software stacks typically rely on multiple projects. Each of which define their
+physical constants based on the CODATA recommendations. (Note these do change over time!)</p>
+<p>Currently the CODATA version is fixed for a particular release of a project, which can
+lead to (small) inconsistencies, for example if an older version of one project needs to
+be used, but another project needs to be updated to pick up new functionality.</p>
 <p>I would like to find a way to avoid this. If they all depended on a single external
-library which we could easily configure to use a particular set of recommendations, then
-that would make things easier."</p>
+library which we could easily configure to use a particular set of recommendations,
+then that would make things easier."</p>
 </div>
 <h3 id="the-solution-codata-namespaces">The Solution: CODATA Namespaces<a class="headerlink" href="#the-solution-codata-namespaces" title="Permanent link">&para;</a></h3>
 <p>The <strong>mp-units</strong> HEP system provides constants organized by CODATA release,
