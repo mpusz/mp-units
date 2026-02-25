@@ -2655,22 +2655,22 @@ You're not viewing the latest version.
 </li>
       
         <li class="md-nav__item">
-  <a href="#interoperability-with-existing-hep-frameworks" class="md-nav__link">
+  <a href="#distinct-quantity-subkinds" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Interoperability with Existing HEP Frameworks
+        Distinct Quantity Subkinds
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Interoperability with Existing HEP Frameworks">
+    <nav class="md-nav" aria-label="Distinct Quantity Subkinds">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#current-landscape" class="md-nav__link">
+  <a href="#relativistic-time-proper_time-and-coordinate_time" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Current Landscape
+        Relativistic Time: proper_time and coordinate_time
       
     </span>
   </a>
@@ -2678,10 +2678,10 @@ You're not viewing the latest version.
 </li>
         
           <li class="md-nav__item">
-  <a href="#the-multiply-to-set-divide-to-get-pattern" class="md-nav__link">
+  <a href="#wave-property-wavelength" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The "Multiply to Set, Divide to Get" Pattern
+        Wave Property: wavelength
       
     </span>
   </a>
@@ -2689,22 +2689,10 @@ You're not viewing the latest version.
 </li>
         
           <li class="md-nav__item">
-  <a href="#migration-strategy" class="md-nav__link">
+  <a href="#material-characteristic-lengths-radiation_length-and-interaction_length" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Migration Strategy
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Migration Strategy">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#phase-1-drop-in-replacements-for-unit-constant-headers" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Phase 1: Drop-in replacements for unit constant headers
+        Material Characteristic Lengths: radiation_length and interaction_length
       
     </span>
   </a>
@@ -2712,120 +2700,10 @@ You're not viewing the latest version.
 </li>
         
           <li class="md-nav__item">
-  <a href="#phase-2-new-code-uses-typed-quantities-from-the-start" class="md-nav__link">
+  <a href="#dimensionless-relativistic-quantities" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Phase 2: New code uses typed quantities from the start
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#phase-3-wrap-existing-interfaces-with-type-safe-overloads" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Phase 3: Wrap existing interfaces with type-safe overloads
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#phase-4-refactor-internals-add-typed-getters-deprecate-double-api" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Phase 4: Refactor internals; add typed getters; deprecate double API
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#phase-5-complete-the-migration-remove-_qty-suffix" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Phase 5: Complete the migration; remove _qty suffix
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#type-safety-in-practice" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Type Safety in Practice
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Type Safety in Practice">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#wrong-dimensions" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Wrong Dimensions
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#arguments-swapped" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Arguments Swapped
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#wrong-unit-scale-framework-mismatch" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Wrong Unit Scale (Framework Mismatch)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#wrong-quantity-of-the-same-kind" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Wrong Quantity of the Same Kind
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#summary" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Summary
+        Dimensionless Relativistic Quantities
       
     </span>
   </a>
@@ -11880,7 +11758,7 @@ system uses units natural to particle physics:</p>
 </tbody>
 </table>
 <h2 id="specialized-quantities-of-the-same-kind">Specialized Quantities of the Same Kind<a class="headerlink" href="#specialized-quantities-of-the-same-kind" title="Permanent link">&para;</a></h2>
-<p>Beyond basic dimensional safety, the HEP system provides <strong>specialized quantities</strong>
+<p>Beyond the basic dimensional safety, the HEP system provides <strong>specialized quantities</strong>
 to distinguish physically distinct concepts that share the same dimension. This
 addresses real problems in particle physics code where mixing conceptually different
 values is physically meaningless but dimensionally valid.</p>
@@ -11900,473 +11778,83 @@ values is physically meaningless but dimensionally valid.</p>
 </ul>
 <p>For complete hierarchy trees and all available specialized quantities, see the
 <a href="../../../reference/systems_reference/systems/hep/">HEP System Reference</a>.</p>
-<h2 id="interoperability-with-existing-hep-frameworks">Interoperability with Existing HEP Frameworks<a class="headerlink" href="#interoperability-with-existing-hep-frameworks" title="Permanent link">&para;</a></h2>
-<p>The HEP system is designed to coexist with legacy unit definitions during
-migration. This is crucial for large projects like ATLAS where multiple
-frameworks maintain their own unit constants.</p>
-<h3 id="current-landscape">Current Landscape<a class="headerlink" href="#current-landscape" title="Permanent link">&para;</a></h3>
-<p>Major HEP frameworks currently use hand-maintained header files with <code>constexpr double</code> values:</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="1:4"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><input id="__tabbed_1_4" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">CLHEP</label><label for="__tabbed_1_2">Gaudi</label><label for="__tabbed_1_3">Geant4</label><label for="__tabbed_1_4">ROOT</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1">// https://gitlab.cern.ch/CLHEP/CLHEP/-/blob/develop/Units/Units/SystemOfUnits.h</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">namespace</span><span class="w"> </span><span class="nn">CLHEP</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">mm</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="p">;</span>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">mm2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mm</span><span class="o">*</span><span class="n">mm</span><span class="p">;</span>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">mm3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mm</span><span class="o">*</span><span class="n">mm</span><span class="o">*</span><span class="n">mm</span><span class="p">;</span>
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
-</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">centimeter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">10.</span><span class="o">*</span><span class="n">mm</span><span class="p">;</span>
-</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">meter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1000.</span><span class="o">*</span><span class="n">mm</span><span class="p">;</span>
-</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>
-</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">nanosecond</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="p">;</span>
-</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">second</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="n">e</span><span class="o">+</span><span class="mi">9</span><span class="w"> </span><span class="o">*</span><span class="n">nanosecond</span><span class="p">;</span>
-</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>
-</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">MeV</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="p">;</span>
-</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">GeV</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="n">e</span><span class="o">+</span><span class="mi">3</span><span class="o">*</span><span class="n">MeV</span><span class="p">;</span>
-</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="p">}</span>
+<h2 id="distinct-quantity-subkinds">Distinct Quantity Subkinds<a class="headerlink" href="#distinct-quantity-subkinds" title="Permanent link">&para;</a></h2>
+<p>Some HEP quantities share the same dimension, unit,  and even the same parent quantity,
+yet represent fundamentally <strong>incompatible physical concepts</strong> that should never be added
+to or compared with each other. The HEP system uses the <code>is_kind</code> specifier to enforce
+this at compile time. See
+<a href="../../framework_basics/systems_of_quantities/#creating-distinct-quantity-kinds-with-is_kind">Creating Distinct Quantity Kinds with <code>is_kind</code></a>
+for the general mechanism.</p>
+<h3 id="relativistic-time-proper_time-and-coordinate_time">Relativistic Time: <code>proper_time</code> and <code>coordinate_time</code><a class="headerlink" href="#relativistic-time-proper_time-and-coordinate_time" title="Permanent link">&para;</a></h3>
+<p>Both are sub-quantities of <code>duration</code>, but they live in different reference frames and
+are related by the Lorentz factor, not by addition:</p>
+<div class="arithmatex">\[\tau = \frac{t}{\gamma}\]</div>
+<p>Adding a proper time to a coordinate time is a classic special-relativity mistake —
+one is Lorentz-invariant, the other is frame-dependent:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">tau</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">10.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">hep</span><span class="o">::</span><span class="n">ns</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">proper_time</span><span class="p">;</span><span class="w">  </span><span class="c1">// particle rest frame</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">quantity</span><span class="w"> </span><span class="n">t</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mf">25.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">hep</span><span class="o">::</span><span class="n">ns</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">coordinate_time</span><span class="p">;</span><span class="w">  </span><span class="c1">// lab frame</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="c1">// auto wrong = tau + t;  // Compile error — different kinds ✓</span>
 </span></code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1">// https://gitlab.cern.ch/gaudi/Gaudi/-/blob/main/GaudiKernel/include/GaudiKernel/SystemOfUnits.h</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">namespace</span><span class="w"> </span><span class="nn">Gaudi</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">  </span><span class="k">namespace</span><span class="w"> </span><span class="nn">Units</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">millimeter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="p">;</span>
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">millimeter2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">millimeter</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">millimeter</span><span class="p">;</span>
-</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">millimeter3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">millimeter</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">millimeter</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">millimeter</span><span class="p">;</span>
-</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>
-</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">centimeter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">10.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">millimeter</span><span class="p">;</span>
-</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">meter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1000.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">millimeter</span><span class="p">;</span>
-</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>
-</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">nanosecond</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="p">;</span>
-</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">second</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="n">e</span><span class="o">+</span><span class="mi">9</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">nanosecond</span><span class="p">;</span>
-</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>
-</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">MeV</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="p">;</span>
-</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a><span class="w">    </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">GeV</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="n">e</span><span class="o">+</span><span class="mi">3</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">MeV</span><span class="p">;</span>
-</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="w">  </span><span class="p">}</span>
-</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="p">}</span>
+<p>To convert between them, the Lorentz factor must be applied explicitly:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">gamma</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">lorentz_factor</span><span class="p">;</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">quantity</span><span class="w"> </span><span class="n">t_lab</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">coordinate_time</span><span class="p">(</span><span class="n">tau</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">gamma</span><span class="p">);</span><span class="w">  </span><span class="c1">// explicit physics conversion</span>
 </span></code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1">// https://gitlab.cern.ch/geant4/geant4/-/blob/master/source/externals/clhep/include/CLHEP/Units/SystemOfUnits.h</span>
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="c1">// Geant4 vendors CLHEP internally, uses same conventions</span>
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="k">namespace</span><span class="w"> </span><span class="nn">CLHEP</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">mm</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="p">;</span>
-</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">ns</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="p">;</span>
-</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">MeV</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="p">;</span>
-</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w">  </span><span class="c1">// ... etc</span>
-</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="p">}</span>
+<h3 id="wave-property-wavelength">Wave Property: <code>wavelength</code><a class="headerlink" href="#wave-property-wavelength" title="Permanent link">&para;</a></h3>
+<p><code>wavelength</code> is a periodic property of an oscillating field (photon or de Broglie
+wave). It is not a spatial distance and cannot be compared to or added with geometric
+lengths such as <code>decay_length</code>, <code>path_length</code>, or <code>radiation_length</code>:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">lambda</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">400.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">hep</span><span class="o">::</span><span class="n">nm</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">wavelength</span><span class="p">;</span><span class="w">   </span><span class="c1">// optical photon wavelength</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">quantity</span><span class="w"> </span><span class="n">L</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="mf">1.5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">hep</span><span class="o">::</span><span class="n">m</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">decay_length</span><span class="p">;</span><span class="w">   </span><span class="c1">// detector geometry</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="c1">// auto wrong = lambda + L;  // Compile error — different kinds ✓</span>
 </span></code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1">// https://github.com/root-project/root/blob/master/geom/geom/inc/TGeoSystemOfUnits.h</span>
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="k">namespace</span><span class="w"> </span><span class="nn">TGeoUnit</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">mm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.1</span><span class="p">;</span>
-</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">cm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="p">;</span><span class="w">     </span><span class="c1">// Base unit (centimeter)</span>
-</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">100.</span><span class="p">;</span>
-</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>
-</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="w">  </span><span class="c1">// Note: ROOT uses seconds as base, differs from others!</span>
-</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">ns</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="n">e</span><span class="mi">-9</span><span class="p">;</span>
-</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="p">;</span><span class="w">      </span><span class="c1">// Base unit (second)</span>
-</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>
-</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">GeV</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="p">;</span><span class="w">    </span><span class="c1">// Base unit (GeV not MeV!)</span>
-</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">MeV</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="n">e</span><span class="mi">-3</span><span class="p">;</span>
-</span><span id="__span-6-13"><a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a><span class="p">}</span>
-</span></code></pre></div>
-</div>
-</div>
-</div>
-<div class="admonition warning">
-<p class="admonition-title">Inconsistencies Between Frameworks</p>
-<p>Note that different frameworks choose different base units:</p>
+<h3 id="material-characteristic-lengths-radiation_length-and-interaction_length">Material Characteristic Lengths: <code>radiation_length</code> and <code>interaction_length</code><a class="headerlink" href="#material-characteristic-lengths-radiation_length-and-interaction_length" title="Permanent link">&para;</a></h3>
+<p>These are properties of a material, not distances travelled by a particle. They appear
+as <strong>denominators</strong> in physics expressions (number of radiation lengths traversed = path
+/ X₀), never as addends.</p>
 <ul>
-<li><strong><em>Length</em></strong>: CLHEP/Gaudi/Geant4 use mm=1, ROOT uses cm=1</li>
-<li><strong><em>Time</em></strong>: CLHEP/Gaudi/Geant4 use ns=1, ROOT uses s=1  </li>
-<li><strong><em>Energy</em></strong>: CLHEP/Gaudi/Geant4 use MeV=1, ROOT uses GeV=1</li>
+<li><strong><code>radiation_length</code> (X₀)</strong>: mean distance over which an electron loses 1/e of its
+  energy through Bremsstrahlung — an electromagnetic material property.</li>
+<li><strong><code>interaction_length</code> (λ_I)</strong>: mean free path before a hadronic nuclear interaction —
+  a nuclear material property.</li>
+<li><strong><code>nuclear_interaction_length</code></strong>: a specialisation of <code>interaction_length</code> for nuclear
+  (as opposed to hadronic-elastic) interactions.</li>
 </ul>
-<p>These differences require careful attention at framework boundaries. The <strong>mp-units</strong> HEP
-system uses mm, ns, and MeV as base units (matching the majority), but supports all
-units with proper conversions.</p>
-</div>
-<h3 id="the-multiply-to-set-divide-to-get-pattern">The "Multiply to Set, Divide to Get" Pattern<a class="headerlink" href="#the-multiply-to-set-divide-to-get-pattern" title="Permanent link">&para;</a></h3>
-<p>Understanding the legacy unit pattern is essential for migration. In CLHEP/Geant4/Gaudi/ROOT,
-units are simply <code>constexpr double</code> scaling factors:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="k">namespace</span><span class="w"> </span><span class="nn">CLHEP</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">mm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="p">;</span><span class="w">        </span><span class="c1">// Base unit</span>
-</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">cm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">10.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">mm</span><span class="p">;</span><span class="w">  </span><span class="c1">// = 10.0</span>
-</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">MeV</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="p">;</span><span class="w">       </span><span class="c1">// Base unit  </span>
-</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">GeV</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="n">e</span><span class="o">+</span><span class="mi">3</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">MeV</span><span class="p">;</span><span class="w">  </span><span class="c1">// = 1000.0</span>
-</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="p">}</span>
+<p>All three are distinct from each other and from geometric lengths:</p>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">X0</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="mf">88.97</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">hep</span><span class="o">::</span><span class="n">mm</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">radiation_length</span><span class="p">;</span><span class="w">      </span><span class="c1">// lead X₀</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">quantity</span><span class="w"> </span><span class="n">lambda_I</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">194.4</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">hep</span><span class="o">::</span><span class="n">mm</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">interaction_length</span><span class="p">;</span><span class="w">   </span><span class="c1">// lead λ_I</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="n">quantity</span><span class="w"> </span><span class="n">path</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mf">50.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">hep</span><span class="o">::</span><span class="n">mm</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">path_length</span><span class="p">;</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="c1">// auto wrong1 = X0 + lambda_I;  // Compile error — different kinds ✓</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="c1">// auto wrong2 = X0 + path;      // Compile error — different kinds ✓</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="c1">// Correct usage: use as a denominator</span>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="n">quantity</span><span class="w"> </span><span class="n">n_X0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">path</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">X0</span><span class="p">;</span><span class="w">                             </span><span class="c1">// dimensionless: number of X₀ traversed</span>
 </span></code></pre></div>
-<p>The pattern is:</p>
+<h3 id="dimensionless-relativistic-quantities">Dimensionless Relativistic Quantities<a class="headerlink" href="#dimensionless-relativistic-quantities" title="Permanent link">&para;</a></h3>
+<p><code>lorentz_factor</code> (γ) and <code>relativistic_beta</code> (β) are dimensionless quantities with
+specific physical meaning that must not be mixed with generic dimensionless values or
+with each other:</p>
 <ul>
-<li><strong>Multiply to create values</strong>: <code>double energy = 50.0 * GeV;</code> stores <code>50000.0</code>
-  (in base units: MeV)</li>
-<li><strong>Divide to extract/convert</strong>: <code>double val_in_gev = energy / GeV;</code> returns <code>50.0</code></li>
-<li><strong>APIs expect bare doubles</strong>: Function parameters are <code>double</code>, documented to expect
-  specific units</li>
+<li><strong><code>lorentz_factor</code> (γ = E/E₀)</strong>: characterises relativistic time dilation and length
+  contraction; ranges from 1 (at rest) to ∞.</li>
+<li><strong><code>relativistic_beta</code> (β = v/c)</strong>: velocity expressed as a fraction of the speed of
+  light; ranges from 0 to 1. Related to γ by <span class="arithmatex">\(\beta = \sqrt{1 - 1/\gamma^2}\)</span>.</li>
+<li><strong><code>phase</code></strong>: quantum mechanical phase angle — a cyclic, dimensionless quantity
+  incompatible with both γ and β and with the angular <code>angle</code> kind.</li>
 </ul>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1">// Creating values - multiply by unit constant</span>
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="kt">double</span><span class="w"> </span><span class="n">particle_energy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">50.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">GeV</span><span class="p">;</span><span class="w">   </span><span class="c1">// Stores 50000.0 MeV internally</span>
-</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="kt">double</span><span class="w"> </span><span class="n">track_length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">meter</span><span class="p">;</span><span class="w">     </span><span class="c1">// Stores 2500.0 mm internally</span>
-</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>
-</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="c1">// Converting - divide by unit constant  </span>
-</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Energy in MeV: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">particle_energy</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">MeV</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w">   </span><span class="c1">// Prints 50000</span>
-</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Length in cm: &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">track_length</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">cm</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span><span class="w">        </span><span class="c1">// Prints 250</span>
-</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>
-</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="c1">// API consumption - pass bare double (assumed to be in base units)</span>
-</span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="kt">void</span><span class="w"> </span><span class="nf">processParticle</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">energy_MeV</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">length_mm</span><span class="p">);</span><span class="w">  </span><span class="c1">// Units in documentation only!</span>
-</span><span id="__span-8-11"><a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a><span class="n">processParticle</span><span class="p">(</span><span class="n">particle_energy</span><span class="p">,</span><span class="w"> </span><span class="n">track_length</span><span class="p">);</span><span class="w">  </span><span class="c1">// Passes 50000.0, 2500.0</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">gamma</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mf">10.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">lorentz_factor</span><span class="p">;</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="n">quantity</span><span class="w"> </span><span class="n">beta</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mf">0.995</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">relativistic_beta</span><span class="p">;</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="n">quantity</span><span class="w"> </span><span class="n">phi</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mf">1.57</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">phase</span><span class="p">;</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="c1">// auto wrong1 = gamma + beta;   // Compile error — different kinds ✓</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="c1">// auto wrong2 = gamma + phi;    // Compile error — different kinds ✓</span>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="c1">// auto wrong3 = gamma + 1.;     // Compile error — not a plain dimensionless ✓</span>
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="c1">// Physics: recover beta from gamma</span>
+</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="n">quantity</span><span class="w"> </span><span class="n">beta_from_gamma</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">relativistic_beta</span><span class="p">(</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">1.</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">1.</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">pow</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="p">(</span><span class="n">gamma</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">lorentz_factor</span><span class="p">)));</span>
 </span></code></pre></div>
-<p><strong>The fundamental problems</strong>:</p>
-<ol>
-<li><strong>No dimensional safety</strong>: <code>double result = energy + length;</code> compiles without error</li>
-<li><strong>API ambiguity</strong>: <code>setRadius(double r)</code> - is <code>r</code> in mm? cm? Must check documentation</li>
-<li><strong>Conversion confusion</strong>: When to multiply vs divide? Easy to get backwards</li>
-<li><strong>Silent logic bugs</strong>: Forgetting to multiply/divide gives wrong numerical values with
-   no warning</li>
-</ol>
-<p>This is why <strong>mp-units</strong> is valuable: it makes units and dimensions explicit in the type system.</p>
-<h3 id="migration-strategy">Migration Strategy<a class="headerlink" href="#migration-strategy" title="Permanent link">&para;</a></h3>
-<h4 id="phase-1-drop-in-replacements-for-unit-constant-headers">Phase 1: Drop-in replacements for unit constant headers<a class="headerlink" href="#phase-1-drop-in-replacements-for-unit-constant-headers" title="Permanent link">&para;</a></h4>
-<p>Replace hand-maintained <code>constexpr double</code> unit constants with mp-units-derived
-values. All existing code that multiplies and divides by these constants continues
-to compile and produce identical results — no other changes needed at this stage.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Before</label><label for="__tabbed_2_2">After</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1">// Hand-maintained constants — values must be kept in sync manually</span>
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="k">namespace</span><span class="w"> </span><span class="nn">CLHEP</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">mm</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="p">;</span><span class="w">             </span><span class="c1">// Base unit</span>
-</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">cm</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mf">10.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">mm</span><span class="p">;</span><span class="w">       </span><span class="c1">// = 10.0</span>
-</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">MeV</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="p">;</span><span class="w">             </span><span class="c1">// Base unit</span>
-</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">GeV</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="n">e</span><span class="o">+</span><span class="mi">3</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">MeV</span><span class="p">;</span><span class="w">   </span><span class="c1">// = 1000.0</span>
-</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="p">}</span>
-</span></code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1">// mp-units derives the values — no manual arithmetic, always correct</span>
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="k">namespace</span><span class="w"> </span><span class="nn">CLHEP</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">  </span><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">mp_units</span><span class="o">::</span><span class="nn">hep</span><span class="o">::</span><span class="nn">unit_symbols</span><span class="p">;</span>
-</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">mm</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mf">1.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">mm</span><span class="w"> </span><span class="p">).</span><span class="n">numerical_value_in</span><span class="p">(</span><span class="n">mm</span><span class="w"> </span><span class="p">);</span><span class="w">  </span><span class="c1">// = 1.0  (base unit)</span>
-</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">cm</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mf">1.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">cm</span><span class="w"> </span><span class="p">).</span><span class="n">numerical_value_in</span><span class="p">(</span><span class="n">mm</span><span class="w"> </span><span class="p">);</span><span class="w">  </span><span class="c1">// = 10.0</span>
-</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">MeV</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mf">1.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">MeV</span><span class="p">).</span><span class="n">numerical_value_in</span><span class="p">(</span><span class="n">MeV</span><span class="p">);</span><span class="w">  </span><span class="c1">// = 1.0  (base unit)</span>
-</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">GeV</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mf">1.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">GeV</span><span class="p">).</span><span class="n">numerical_value_in</span><span class="p">(</span><span class="n">MeV</span><span class="p">);</span><span class="w">  </span><span class="c1">// = 1000.0</span>
-</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="p">}</span>
-</span></code></pre></div>
-</div>
-</div>
-</div>
-<h4 id="phase-2-new-code-uses-typed-quantities-from-the-start">Phase 2: New code uses typed quantities from the start<a class="headerlink" href="#phase-2-new-code-uses-typed-quantities-from-the-start" title="Permanent link">&para;</a></h4>
-<p>All newly written functions and classes use <code>quantity&lt;...&gt;</code> types directly. Legacy
-code is untouched; new callsites enjoy full dimensional safety.</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">hep</span><span class="o">::</span><span class="n">momentum</span><span class="p">[</span><span class="n">GeV</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">c</span><span class="p">]</span><span class="o">&gt;</span>
-</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="n">calculate_momentum</span><span class="p">(</span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">hep</span><span class="o">::</span><span class="n">energy</span><span class="p">[</span><span class="n">GeV</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">energy</span><span class="p">,</span><span class="w"> </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">hep</span><span class="o">::</span><span class="n">mass</span><span class="p">[</span><span class="n">GeV</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">c2</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">mass</span><span class="p">)</span>
-</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="p">{</span>
-</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">sqrt</span><span class="p">(</span><span class="n">pow</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="p">(</span><span class="n">energy</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">pow</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="p">(</span><span class="n">mass</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">c2</span><span class="p">))</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">c</span><span class="p">;</span>
-</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="p">}</span>
-</span></code></pre></div>
-<h4 id="phase-3-wrap-existing-interfaces-with-type-safe-overloads">Phase 3: Wrap existing interfaces with type-safe overloads<a class="headerlink" href="#phase-3-wrap-existing-interfaces-with-type-safe-overloads" title="Permanent link">&para;</a></h4>
-<p>Add typed setter overloads to existing classes. The class internals (data members,
-private implementation) are left completely unchanged — they still store raw
-<code>double</code>s. The new typed overloads simply convert at the public boundary and delegate
-to the existing <code>double</code>-based methods. New callers use the typed API; old callers with
-raw <code>double</code>s still compile without any modification.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The typed <strong>getter</strong> overloads cannot be added at this stage: C++ does not allow
-overloading on return type alone, so the existing <code>double</code> getters must remain
-unchanged. Only setters — which differ by parameter type — can be overloaded.</p>
-</div>
-<h4 id="phase-4-refactor-internals-add-typed-getters-deprecate-double-api">Phase 4: Refactor internals; add typed getters; deprecate <code>double</code> API<a class="headerlink" href="#phase-4-refactor-internals-add-typed-getters-deprecate-double-api" title="Permanent link">&para;</a></h4>
-<p>Once all external interfaces are wrapped and there is time to tackle the internals,
-refactor the class to store typed quantities as data members. Add new typed getters
-with a <code>_qty</code> suffix (e.g., <code>getMass_qty()</code>) alongside the existing <code>double</code> getters.
-Deprecate both the old <code>double</code> setters and getters, driving migration to the typed API.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Because C++ cannot overload on return type alone, typed getters must use different
-names. The <code>_qty</code> suffix makes scripted migration easy: consumers can mechanically
-replace <code>getMass_qty()</code> → <code>getMass()</code> in Phase 5. Old code continues to work with
-deprecation warnings; new code uses the typed interface.</p>
-</div>
-<h4 id="phase-5-complete-the-migration-remove-_qty-suffix">Phase 5: Complete the migration; remove <code>_qty</code> suffix<a class="headerlink" href="#phase-5-complete-the-migration-remove-_qty-suffix" title="Permanent link">&para;</a></h4>
-<p>Once all call sites have migrated to the typed API (no more uses of deprecated <code>double</code>
-methods), remove the deprecated overloads and rename the typed getters to their final
-names. Since all consumers are already using typed quantities, this phase is just a
-simple rename with no logic changes.</p>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
-<p>This phase can be done with a simple regex replace: <code>s/(\w+)_qty\(\)/\1()/g</code>.
-For example, <code>getMass_qty()</code> → <code>getMass()</code>. All the heavy lifting (migrating to typed
-quantities) was already done in Phase 4 when consumers switched away from the deprecated API.</p>
-</div>
-<div class="tabbed-set tabbed-alternate" data-tabs="3:3"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><input id="__tabbed_3_3" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Phase 3</label><label for="__tabbed_3_2">Phase 4</label><label for="__tabbed_3_3">Phase 5</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">Particle</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="w">  </span><span class="kt">double</span><span class="w"> </span><span class="n">m_mass</span><span class="p">{};</span><span class="w">    </span><span class="c1">// Still raw double — internals untouched</span>
-</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="w">  </span><span class="kt">double</span><span class="w"> </span><span class="n">m_width</span><span class="p">{};</span>
-</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="w">  </span><span class="kt">double</span><span class="w"> </span><span class="n">m_charge</span><span class="p">{};</span>
-</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="k">public</span><span class="o">:</span>
-</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="w">  </span><span class="c1">// Existing double-based interface — unchanged, still works:</span>
-</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="w">  </span><span class="kt">double</span><span class="w"> </span><span class="n">getMass</span><span class="p">()</span><span class="w">   </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">m_mass</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
-</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="w">  </span><span class="kt">double</span><span class="w"> </span><span class="n">getWidth</span><span class="p">()</span><span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">m_width</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
-</span><span id="__span-12-9"><a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a><span class="w">  </span><span class="kt">double</span><span class="w"> </span><span class="n">getCharge</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">m_charge</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
-</span><span id="__span-12-10"><a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a>
-</span><span id="__span-12-11"><a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="n">setMass</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">mass_MeV_per_c2</span><span class="p">)</span><span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="n">m_mass</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">mass_MeV_per_c2</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
-</span><span id="__span-12-12"><a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="n">setWidth</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">width_MeV</span><span class="p">)</span><span class="w">       </span><span class="p">{</span><span class="w"> </span><span class="n">m_width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">width_MeV</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
-</span><span id="__span-12-13"><a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="n">setCharge</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">charge_eplus</span><span class="p">)</span><span class="w">   </span><span class="p">{</span><span class="w"> </span><span class="n">m_charge</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">charge_eplus</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
-</span><span id="__span-12-14"><a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a>
-</span><span id="__span-12-15"><a id="__codelineno-12-15" name="__codelineno-12-15" href="#__codelineno-12-15"></a><span class="w">  </span><span class="c1">// New typed overloads — convert at the boundary, delegate to existing setters:</span>
-</span><span id="__span-12-16"><a id="__codelineno-12-16" name="__codelineno-12-16" href="#__codelineno-12-16"></a><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="n">setMass</span><span class="p">(</span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">hep</span><span class="o">::</span><span class="n">rest_mass</span><span class="p">[</span><span class="n">MeV</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">c2</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">mass</span><span class="p">)</span>
-</span><span id="__span-12-17"><a id="__codelineno-12-17" name="__codelineno-12-17" href="#__codelineno-12-17"></a><span class="w">  </span><span class="p">{</span>
-</span><span id="__span-12-18"><a id="__codelineno-12-18" name="__codelineno-12-18" href="#__codelineno-12-18"></a><span class="w">    </span><span class="n">setMass</span><span class="p">(</span><span class="n">mass</span><span class="p">.</span><span class="n">numerical_value_in</span><span class="p">(</span><span class="n">MeV</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">c2</span><span class="p">));</span>
-</span><span id="__span-12-19"><a id="__codelineno-12-19" name="__codelineno-12-19" href="#__codelineno-12-19"></a><span class="w">  </span><span class="p">}</span>
-</span><span id="__span-12-20"><a id="__codelineno-12-20" name="__codelineno-12-20" href="#__codelineno-12-20"></a><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="n">setWidth</span><span class="p">(</span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">hep</span><span class="o">::</span><span class="n">decay_width</span><span class="p">[</span><span class="n">MeV</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">width</span><span class="p">)</span>
-</span><span id="__span-12-21"><a id="__codelineno-12-21" name="__codelineno-12-21" href="#__codelineno-12-21"></a><span class="w">  </span><span class="p">{</span>
-</span><span id="__span-12-22"><a id="__codelineno-12-22" name="__codelineno-12-22" href="#__codelineno-12-22"></a><span class="w">    </span><span class="n">setWidth</span><span class="p">(</span><span class="n">width</span><span class="p">.</span><span class="n">numerical_value_in</span><span class="p">(</span><span class="n">MeV</span><span class="p">));</span>
-</span><span id="__span-12-23"><a id="__codelineno-12-23" name="__codelineno-12-23" href="#__codelineno-12-23"></a><span class="w">  </span><span class="p">}</span>
-</span><span id="__span-12-24"><a id="__codelineno-12-24" name="__codelineno-12-24" href="#__codelineno-12-24"></a><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="n">setCharge</span><span class="p">(</span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">hep</span><span class="o">::</span><span class="n">electric_charge</span><span class="p">[</span><span class="n">eplus</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">charge</span><span class="p">)</span>
-</span><span id="__span-12-25"><a id="__codelineno-12-25" name="__codelineno-12-25" href="#__codelineno-12-25"></a><span class="w">  </span><span class="p">{</span>
-</span><span id="__span-12-26"><a id="__codelineno-12-26" name="__codelineno-12-26" href="#__codelineno-12-26"></a><span class="w">    </span><span class="n">setCharge</span><span class="p">(</span><span class="n">charge</span><span class="p">.</span><span class="n">numerical_value_in</span><span class="p">(</span><span class="n">eplus</span><span class="p">));</span>
-</span><span id="__span-12-27"><a id="__codelineno-12-27" name="__codelineno-12-27" href="#__codelineno-12-27"></a><span class="w">  </span><span class="p">}</span>
-</span><span id="__span-12-28"><a id="__codelineno-12-28" name="__codelineno-12-28" href="#__codelineno-12-28"></a><span class="p">};</span>
-</span></code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">Particle</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="w">  </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">hep</span><span class="o">::</span><span class="n">rest_mass</span><span class="p">[</span><span class="n">MeV</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">c2</span><span class="p">]</span><span class="o">&gt;</span><span class="w">    </span><span class="n">m_mass</span><span class="p">{};</span><span class="w">    </span><span class="c1">// Now typed quantities</span>
-</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">  </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">hep</span><span class="o">::</span><span class="n">decay_width</span><span class="p">[</span><span class="n">MeV</span><span class="p">]</span><span class="o">&gt;</span><span class="w">       </span><span class="n">m_width</span><span class="p">{};</span>
-</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="w">  </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">hep</span><span class="o">::</span><span class="n">electric_charge</span><span class="p">[</span><span class="n">eplus</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_charge</span><span class="p">{};</span>
-</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="k">public</span><span class="o">:</span>
-</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="w">  </span><span class="c1">// New typed interface — getters with _qty suffix and setters:</span>
-</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="w">  </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">hep</span><span class="o">::</span><span class="n">rest_mass</span><span class="p">[</span><span class="n">MeV</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">c2</span><span class="p">]</span><span class="o">&gt;</span><span class="w">    </span><span class="n">getMass_qty</span><span class="p">()</span><span class="w">   </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">m_mass</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
-</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="w">  </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">hep</span><span class="o">::</span><span class="n">decay_width</span><span class="p">[</span><span class="n">MeV</span><span class="p">]</span><span class="o">&gt;</span><span class="w">       </span><span class="n">getWidth_qty</span><span class="p">()</span><span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">m_width</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
-</span><span id="__span-13-9"><a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a><span class="w">  </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">hep</span><span class="o">::</span><span class="n">electric_charge</span><span class="p">[</span><span class="n">eplus</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">getCharge_qty</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">m_charge</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
-</span><span id="__span-13-10"><a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a>
-</span><span id="__span-13-11"><a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="n">setMass</span><span class="p">(</span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">hep</span><span class="o">::</span><span class="n">rest_mass</span><span class="p">[</span><span class="n">MeV</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">c2</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">mass</span><span class="p">)</span><span class="w">         </span><span class="p">{</span><span class="w"> </span><span class="n">m_mass</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">mass</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
-</span><span id="__span-13-12"><a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="n">setWidth</span><span class="p">(</span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">hep</span><span class="o">::</span><span class="n">decay_width</span><span class="p">[</span><span class="n">MeV</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">width</span><span class="p">)</span><span class="w">          </span><span class="p">{</span><span class="w"> </span><span class="n">m_width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">width</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
-</span><span id="__span-13-13"><a id="__codelineno-13-13" name="__codelineno-13-13" href="#__codelineno-13-13"></a><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="n">setCharge</span><span class="p">(</span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">hep</span><span class="o">::</span><span class="n">electric_charge</span><span class="p">[</span><span class="n">eplus</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">charge</span><span class="p">)</span><span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="n">m_charge</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">charge</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
-</span><span id="__span-13-14"><a id="__codelineno-13-14" name="__codelineno-13-14" href="#__codelineno-13-14"></a>
-</span><span id="__span-13-15"><a id="__codelineno-13-15" name="__codelineno-13-15" href="#__codelineno-13-15"></a><span class="w">  </span><span class="c1">// Old double interface — now deprecated:</span>
-</span><span id="__span-13-16"><a id="__codelineno-13-16" name="__codelineno-13-16" href="#__codelineno-13-16"></a><span class="w">  </span><span class="p">[[</span><span class="n">deprecated</span><span class="p">(</span><span class="s">&quot;Use getMass_qty() instead&quot;</span><span class="p">)]]</span>
-</span><span id="__span-13-17"><a id="__codelineno-13-17" name="__codelineno-13-17" href="#__codelineno-13-17"></a><span class="w">  </span><span class="kt">double</span><span class="w"> </span><span class="n">getMass</span><span class="p">()</span><span class="w">   </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">m_mass</span><span class="p">.</span><span class="n">numerical_value_in</span><span class="p">(</span><span class="n">MeV</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">c2</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
-</span><span id="__span-13-18"><a id="__codelineno-13-18" name="__codelineno-13-18" href="#__codelineno-13-18"></a><span class="w">  </span><span class="p">[[</span><span class="n">deprecated</span><span class="p">(</span><span class="s">&quot;Use getWidth_qty() instead&quot;</span><span class="p">)]]</span>
-</span><span id="__span-13-19"><a id="__codelineno-13-19" name="__codelineno-13-19" href="#__codelineno-13-19"></a><span class="w">  </span><span class="kt">double</span><span class="w"> </span><span class="n">getWidth</span><span class="p">()</span><span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">m_width</span><span class="p">.</span><span class="n">numerical_value_in</span><span class="p">(</span><span class="n">MeV</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
-</span><span id="__span-13-20"><a id="__codelineno-13-20" name="__codelineno-13-20" href="#__codelineno-13-20"></a><span class="w">  </span><span class="p">[[</span><span class="n">deprecated</span><span class="p">(</span><span class="s">&quot;Use getCharge_qty() instead&quot;</span><span class="p">)]]</span>
-</span><span id="__span-13-21"><a id="__codelineno-13-21" name="__codelineno-13-21" href="#__codelineno-13-21"></a><span class="w">  </span><span class="kt">double</span><span class="w"> </span><span class="n">getCharge</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">m_charge</span><span class="p">.</span><span class="n">numerical_value_in</span><span class="p">(</span><span class="n">eplus</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
-</span><span id="__span-13-22"><a id="__codelineno-13-22" name="__codelineno-13-22" href="#__codelineno-13-22"></a>
-</span><span id="__span-13-23"><a id="__codelineno-13-23" name="__codelineno-13-23" href="#__codelineno-13-23"></a><span class="w">  </span><span class="p">[[</span><span class="n">deprecated</span><span class="p">(</span><span class="s">&quot;Use setMass(quantity&lt;hep::rest_mass[MeV / c2]&gt;) instead&quot;</span><span class="p">)]]</span>
-</span><span id="__span-13-24"><a id="__codelineno-13-24" name="__codelineno-13-24" href="#__codelineno-13-24"></a><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="n">setMass</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">mass_MeV_per_c2</span><span class="p">)</span>
-</span><span id="__span-13-25"><a id="__codelineno-13-25" name="__codelineno-13-25" href="#__codelineno-13-25"></a><span class="w">  </span><span class="p">{</span>
-</span><span id="__span-13-26"><a id="__codelineno-13-26" name="__codelineno-13-26" href="#__codelineno-13-26"></a><span class="w">    </span><span class="n">setMass</span><span class="p">(</span><span class="n">mass_MeV_per_c2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">MeV</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">c2</span><span class="p">);</span>
-</span><span id="__span-13-27"><a id="__codelineno-13-27" name="__codelineno-13-27" href="#__codelineno-13-27"></a><span class="w">  </span><span class="p">}</span>
-</span><span id="__span-13-28"><a id="__codelineno-13-28" name="__codelineno-13-28" href="#__codelineno-13-28"></a><span class="w">  </span><span class="p">[[</span><span class="n">deprecated</span><span class="p">(</span><span class="s">&quot;Use setWidth(quantity&lt;hep::decay_width[MeV]&gt;) instead&quot;</span><span class="p">)]]</span>
-</span><span id="__span-13-29"><a id="__codelineno-13-29" name="__codelineno-13-29" href="#__codelineno-13-29"></a><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="n">setWidth</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">width_MeV</span><span class="p">)</span>
-</span><span id="__span-13-30"><a id="__codelineno-13-30" name="__codelineno-13-30" href="#__codelineno-13-30"></a><span class="w">  </span><span class="p">{</span>
-</span><span id="__span-13-31"><a id="__codelineno-13-31" name="__codelineno-13-31" href="#__codelineno-13-31"></a><span class="w">    </span><span class="n">setWidth</span><span class="p">(</span><span class="n">width_MeV</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">MeV</span><span class="p">);</span>
-</span><span id="__span-13-32"><a id="__codelineno-13-32" name="__codelineno-13-32" href="#__codelineno-13-32"></a><span class="w">  </span><span class="p">}</span>
-</span><span id="__span-13-33"><a id="__codelineno-13-33" name="__codelineno-13-33" href="#__codelineno-13-33"></a><span class="w">  </span><span class="p">[[</span><span class="n">deprecated</span><span class="p">(</span><span class="s">&quot;Use setCharge(quantity&lt;hep::electric_charge[eplus]&gt;) instead&quot;</span><span class="p">)]]</span>
-</span><span id="__span-13-34"><a id="__codelineno-13-34" name="__codelineno-13-34" href="#__codelineno-13-34"></a><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="n">setCharge</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">charge_eplus</span><span class="p">)</span>
-</span><span id="__span-13-35"><a id="__codelineno-13-35" name="__codelineno-13-35" href="#__codelineno-13-35"></a><span class="w">  </span><span class="p">{</span>
-</span><span id="__span-13-36"><a id="__codelineno-13-36" name="__codelineno-13-36" href="#__codelineno-13-36"></a><span class="w">    </span><span class="n">setCharge</span><span class="p">(</span><span class="n">charge_eplus</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">eplus</span><span class="p">);</span>
-</span><span id="__span-13-37"><a id="__codelineno-13-37" name="__codelineno-13-37" href="#__codelineno-13-37"></a><span class="w">  </span><span class="p">}</span>
-</span><span id="__span-13-38"><a id="__codelineno-13-38" name="__codelineno-13-38" href="#__codelineno-13-38"></a><span class="p">};</span>
-</span></code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">Particle</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="w">  </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">hep</span><span class="o">::</span><span class="n">rest_mass</span><span class="p">[</span><span class="n">MeV</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">c2</span><span class="p">]</span><span class="o">&gt;</span><span class="w">    </span><span class="n">m_mass</span><span class="p">{};</span>
-</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">  </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">hep</span><span class="o">::</span><span class="n">decay_width</span><span class="p">[</span><span class="n">MeV</span><span class="p">]</span><span class="o">&gt;</span><span class="w">       </span><span class="n">m_width</span><span class="p">{};</span>
-</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="w">  </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">hep</span><span class="o">::</span><span class="n">electric_charge</span><span class="p">[</span><span class="n">eplus</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_charge</span><span class="p">{};</span>
-</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="k">public</span><span class="o">:</span>
-</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="w">  </span><span class="c1">// Fully typed interface — deprecated methods removed, _qty suffix removed:</span>
-</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="w">  </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">hep</span><span class="o">::</span><span class="n">rest_mass</span><span class="p">[</span><span class="n">MeV</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">c2</span><span class="p">]</span><span class="o">&gt;</span><span class="w">    </span><span class="n">getMass</span><span class="p">()</span><span class="w">   </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">m_mass</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
-</span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="w">  </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">hep</span><span class="o">::</span><span class="n">decay_width</span><span class="p">[</span><span class="n">MeV</span><span class="p">]</span><span class="o">&gt;</span><span class="w">       </span><span class="n">getWidth</span><span class="p">()</span><span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">m_width</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
-</span><span id="__span-14-9"><a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="w">  </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">hep</span><span class="o">::</span><span class="n">electric_charge</span><span class="p">[</span><span class="n">eplus</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">getCharge</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">m_charge</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
-</span><span id="__span-14-10"><a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a>
-</span><span id="__span-14-11"><a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="n">setMass</span><span class="p">(</span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">hep</span><span class="o">::</span><span class="n">rest_mass</span><span class="p">[</span><span class="n">MeV</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">c2</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">mass</span><span class="p">)</span><span class="w">         </span><span class="p">{</span><span class="w"> </span><span class="n">m_mass</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">mass</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
-</span><span id="__span-14-12"><a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="n">setWidth</span><span class="p">(</span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">hep</span><span class="o">::</span><span class="n">decay_width</span><span class="p">[</span><span class="n">MeV</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">width</span><span class="p">)</span><span class="w">          </span><span class="p">{</span><span class="w"> </span><span class="n">m_width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">width</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
-</span><span id="__span-14-13"><a id="__codelineno-14-13" name="__codelineno-14-13" href="#__codelineno-14-13"></a><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="n">setCharge</span><span class="p">(</span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">hep</span><span class="o">::</span><span class="n">electric_charge</span><span class="p">[</span><span class="n">eplus</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">charge</span><span class="p">)</span><span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="n">m_charge</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">charge</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
-</span><span id="__span-14-14"><a id="__codelineno-14-14" name="__codelineno-14-14" href="#__codelineno-14-14"></a><span class="p">};</span>
-</span></code></pre></div>
-</div>
-</div>
-</div>
-<h2 id="type-safety-in-practice">Type Safety in Practice<a class="headerlink" href="#type-safety-in-practice" title="Permanent link">&para;</a></h2>
-<p>The following examples demonstrate four categories of bugs that specialized quantity
-types eliminate: dimensional errors, argument swaps, unit scale mismatches, and
-same-kind confusion. Each example compares legacy <code>double</code>-based code with the
-type-safe mp-units equivalent.</p>
-<p>For all examples, consider this typical HEP API:</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Legacy API</label><label for="__tabbed_4_2">Type-safe API</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="c1">// All parameters are just double - units documented in comments</span>
-</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="kt">void</span><span class="w"> </span><span class="nf">setParticleProperties</span><span class="p">(</span><span class="kt">double</span><span class="w"> </span><span class="n">mass_MeV_per_c2</span><span class="p">,</span><span class="w">   </span><span class="c1">// Mass in MeV/c²</span>
-</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="w">                           </span><span class="kt">double</span><span class="w"> </span><span class="n">width_MeV</span><span class="p">,</span><span class="w">         </span><span class="c1">// Decay width in MeV</span>
-</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="w">                           </span><span class="kt">double</span><span class="w"> </span><span class="n">charge</span><span class="p">);</span><span class="w">           </span><span class="c1">// Electric charge</span>
-</span></code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="c1">// Types enforce correct dimensions and units at compile time</span>
-</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="kt">void</span><span class="w"> </span><span class="nf">setParticleProperties</span><span class="p">(</span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">hep</span><span class="o">::</span><span class="n">rest_mass</span><span class="p">[</span><span class="n">MeV</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">c2</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">mass</span><span class="p">,</span>
-</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="w">                           </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">hep</span><span class="o">::</span><span class="n">decay_width</span><span class="p">[</span><span class="n">MeV</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">width</span><span class="p">,</span>
-</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="w">                           </span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">hep</span><span class="o">::</span><span class="n">electric_charge</span><span class="p">[</span><span class="n">eplus</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">charge</span><span class="p">);</span>
-</span></code></pre></div>
-</div>
-</div>
-</div>
-<h3 id="wrong-dimensions">Wrong Dimensions<a class="headerlink" href="#wrong-dimensions" title="Permanent link">&para;</a></h3>
-<p>Passing a value with incorrect physical dimensions is a common error. For example,
-passing <em>energy</em> (E) where <em>mass</em> (E/c²) is expected. In legacy code, the compiler
-cannot detect this — both are just <code>double</code>. The wrong numerical value flows through
-calculations, producing physically incorrect results.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">Legacy (unsafe)</label><label for="__tabbed_5_2">mp-units (safe)</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="kt">double</span><span class="w"> </span><span class="n">higgs_mass</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">125.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">GeV</span><span class="p">;</span><span class="w">  </span><span class="c1">// Energy in MeV (125&#39;000.0), not mass!</span>
-</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="kt">double</span><span class="w"> </span><span class="n">higgs_width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">4.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">MeV</span><span class="p">;</span>
-</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>
-</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="c1">// Should have divided by c_squared first - but compiler doesn&#39;t know!</span>
-</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="n">setParticleProperties</span><span class="p">(</span><span class="n">higgs_mass</span><span class="p">,</span><span class="w"> </span><span class="n">higgs_width</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">);</span>
-</span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a><span class="c1">// Passes 125&#39;000.0 as mass_MeV_per_c2 - catastrophically wrong</span>
-</span><span id="__span-17-7"><a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="c1">// ✓ Compiles  ☠️ Wrong physics  ❌ No warning</span>
-</span></code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">higgs_mass</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">125.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">GeV</span><span class="p">;</span><span class="w">  </span><span class="c1">// Compiler knows this is energy</span>
-</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="n">quantity</span><span class="w"> </span><span class="n">higgs_width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">4.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">MeV</span><span class="p">;</span>
-</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>
-</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="c1">// setParticleProperties(higgs_mass, higgs_width, 0.0 * eplus);</span>
-</span><span id="__span-18-5"><a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a><span class="c1">// Compile error! Cannot convert energy to mass</span>
-</span><span id="__span-18-6"><a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a><span class="c1">// &quot;note: no known conversion from energy to rest_mass&quot;</span>
-</span><span id="__span-18-7"><a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a>
-</span><span id="__span-18-8"><a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a><span class="c1">// Must explicitly convert - the dimension error is caught:</span>
-</span><span id="__span-18-9"><a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a><span class="n">setParticleProperties</span><span class="p">(</span><span class="n">higgs_mass</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">c2</span><span class="p">,</span><span class="w"> </span><span class="n">higgs_width</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">eplus</span><span class="p">);</span><span class="w">  </span><span class="c1">// ✓</span>
-</span></code></pre></div>
-</div>
-</div>
-</div>
-<h3 id="arguments-swapped">Arguments Swapped<a class="headerlink" href="#arguments-swapped" title="Permanent link">&para;</a></h3>
-<p>Function parameters with the same underlying type (<code>double</code>) but different semantic
-meanings can be accidentally swapped. The compiler has no way to detect this in
-legacy code because all parameters have identical types.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Legacy (unsafe)</label><label for="__tabbed_6_2">mp-units (safe)</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="kt">double</span><span class="w"> </span><span class="n">higgs_mass</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">125.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">GeV</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">c_squared</span><span class="p">;</span>
-</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="kt">double</span><span class="w"> </span><span class="n">higgs_width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">4.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">MeV</span><span class="p">;</span>
-</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>
-</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="c1">// Accidentally reversed the arguments!</span>
-</span><span id="__span-19-5"><a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a><span class="n">setParticleProperties</span><span class="p">(</span><span class="n">higgs_width</span><span class="p">,</span><span class="w">  </span><span class="c1">// should be higgs_mass</span>
-</span><span id="__span-19-6"><a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a><span class="w">                      </span><span class="n">higgs_mass</span><span class="p">,</span><span class="w">   </span><span class="c1">// should be higgs_width</span>
-</span><span id="__span-19-7"><a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a><span class="w">                      </span><span class="mf">0.0</span><span class="p">);</span>
-</span><span id="__span-19-8"><a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a><span class="c1">// Results: mass=4.0 MeV/c² (off by 31&#39;000×), width=125&#39;000 MeV</span>
-</span><span id="__span-19-9"><a id="__codelineno-19-9" name="__codelineno-19-9" href="#__codelineno-19-9"></a><span class="c1">// ✓ Compiles  ☠️ Catastrophic  ❌ No warning</span>
-</span></code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">higgs_mass</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">125.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">GeV</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">c2</span><span class="p">;</span>
-</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="n">quantity</span><span class="w"> </span><span class="n">higgs_width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">4.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">MeV</span><span class="p">;</span>
-</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a>
-</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="c1">// setParticleProperties(higgs_width, higgs_mass, 0.0 * eplus);</span>
-</span><span id="__span-20-5"><a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="c1">// Compile error! Types don&#39;t match</span>
-</span><span id="__span-20-6"><a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a><span class="c1">// &quot;note: no known conversion from decay_width to rest_mass&quot;</span>
-</span><span id="__span-20-7"><a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a>
-</span><span id="__span-20-8"><a id="__codelineno-20-8" name="__codelineno-20-8" href="#__codelineno-20-8"></a><span class="n">setParticleProperties</span><span class="p">(</span><span class="n">higgs_mass</span><span class="p">,</span><span class="w"> </span><span class="n">higgs_width</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">eplus</span><span class="p">);</span><span class="w">  </span><span class="c1">// ✓</span>
-</span></code></pre></div>
-</div>
-</div>
-</div>
-<h3 id="wrong-unit-scale-framework-mismatch">Wrong Unit Scale (Framework Mismatch)<a class="headerlink" href="#wrong-unit-scale-framework-mismatch" title="Permanent link">&para;</a></h3>
-<p>Different HEP frameworks use different base units (ROOT uses GeV=1, CLHEP uses MeV=1).
-When interfacing between frameworks, forgetting to convert units produces values
-off by factors of 1000 or more. In legacy code, these are just <code>double</code> values —
-the compiler cannot detect the mismatch.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="7:2"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">Legacy (unsafe)</label><label for="__tabbed_7_2">mp-units (safe)</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="kt">double</span><span class="w"> </span><span class="n">higgs_mass</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">125.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">GeV</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">c_squared</span><span class="p">;</span>
-</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="kt">double</span><span class="w"> </span><span class="n">higgs_width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_from_ROOT</span><span class="p">();</span><span class="w">  </span><span class="c1">// Returns 0.004 (ROOT uses GeV=1)</span>
-</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a>
-</span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="c1">// Forgot to convert ROOT&#39;s GeV to CLHEP&#39;s MeV!</span>
-</span><span id="__span-21-5"><a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a><span class="n">setParticleProperties</span><span class="p">(</span><span class="n">higgs_mass</span><span class="p">,</span><span class="w"> </span><span class="n">higgs_width</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">);</span>
-</span><span id="__span-21-6"><a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a><span class="c1">// API expects MeV, receives 0.004 → width = 0.004 MeV (off by 1000×!)</span>
-</span><span id="__span-21-7"><a id="__codelineno-21-7" name="__codelineno-21-7" href="#__codelineno-21-7"></a><span class="c1">// ✓ Compiles  ☠️ 1000× wrong  ❌ No warning</span>
-</span></code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="n">quantity</span><span class="w"> </span><span class="n">higgs_mass</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">125.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">GeV</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">c2</span><span class="p">;</span>
-</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a><span class="kt">double</span><span class="w"> </span><span class="n">higgs_width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_from_ROOT</span><span class="p">();</span><span class="w">  </span><span class="c1">// Returns bare 0.004</span>
-</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a>
-</span><span id="__span-22-4"><a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a><span class="c1">// setParticleProperties(higgs_mass, higgs_width, 0.0 * eplus);</span>
-</span><span id="__span-22-5"><a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a><span class="c1">// Compile error! Cannot convert double to quantity</span>
-</span><span id="__span-22-6"><a id="__codelineno-22-6" name="__codelineno-22-6" href="#__codelineno-22-6"></a><span class="c1">// Forces explicit unit attachment</span>
-</span><span id="__span-22-7"><a id="__codelineno-22-7" name="__codelineno-22-7" href="#__codelineno-22-7"></a>
-</span><span id="__span-22-8"><a id="__codelineno-22-8" name="__codelineno-22-8" href="#__codelineno-22-8"></a><span class="c1">// Must specify the unit - conversion happens automatically:</span>
-</span><span id="__span-22-9"><a id="__codelineno-22-9" name="__codelineno-22-9" href="#__codelineno-22-9"></a><span class="n">setParticleProperties</span><span class="p">(</span><span class="n">higgs_mass</span><span class="p">,</span><span class="w"> </span><span class="n">higgs_width</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">GeV</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">eplus</span><span class="p">);</span>
-</span><span id="__span-22-10"><a id="__codelineno-22-10" name="__codelineno-22-10" href="#__codelineno-22-10"></a><span class="c1">// ✓ Compiles! 0.004 * GeV = 4 MeV (automatic conversion)</span>
-</span></code></pre></div>
-</div>
-</div>
-</div>
-<h3 id="wrong-quantity-of-the-same-kind">Wrong Quantity of the Same Kind<a class="headerlink" href="#wrong-quantity-of-the-same-kind" title="Permanent link">&para;</a></h3>
-<p>Some physically distinct concepts share the same dimension but have different meanings.
-For example, <em>invariant mass</em> reconstructed from decay products vs. <em>rest mass</em> of a
-particle species. Mixing these is physically meaningless even though they're
-dimensionally identical. Legacy <code>double</code> code cannot distinguish them.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="8:2"><input checked="checked" id="__tabbed_8_1" name="__tabbed_8" type="radio" /><input id="__tabbed_8_2" name="__tabbed_8" type="radio" /><div class="tabbed-labels"><label for="__tabbed_8_1">Legacy (unsafe)</label><label for="__tabbed_8_2">mp-units (safe)</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="c1">// From 4-momenta reconstruction</span>
-</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="kt">double</span><span class="w"> </span><span class="nf">compute_invariant_mass</span><span class="p">();</span>
-</span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a>
-</span><span id="__span-23-4"><a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a><span class="kt">double</span><span class="w"> </span><span class="n">m_inv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">compute_invariant_mass</span><span class="p">();</span>
-</span><span id="__span-23-5"><a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a><span class="kt">double</span><span class="w"> </span><span class="n">higgs_width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">4.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">MeV</span><span class="p">;</span>
-</span><span id="__span-23-6"><a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a>
-</span><span id="__span-23-7"><a id="__codelineno-23-7" name="__codelineno-23-7" href="#__codelineno-23-7"></a><span class="c1">// Invariant mass of ONE EVENT ≠ rest mass of THE HIGGS BOSON</span>
-</span><span id="__span-23-8"><a id="__codelineno-23-8" name="__codelineno-23-8" href="#__codelineno-23-8"></a><span class="n">setParticleProperties</span><span class="p">(</span><span class="n">m_inv</span><span class="p">,</span><span class="w"> </span><span class="n">higgs_width</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">);</span>
-</span><span id="__span-23-9"><a id="__codelineno-23-9" name="__codelineno-23-9" href="#__codelineno-23-9"></a><span class="c1">// Both are mass dimension (MeV/c²) - compiler cannot tell them apart</span>
-</span><span id="__span-23-10"><a id="__codelineno-23-10" name="__codelineno-23-10" href="#__codelineno-23-10"></a><span class="c1">// ✓ Compiles  ☠️ Wrong physics  ❌ No warning</span>
-</span></code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="c1">// From 4-momenta reconstruction</span>
-</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">hep</span><span class="o">::</span><span class="n">invariant_mass</span><span class="p">[</span><span class="n">GeV</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">c2</span><span class="p">]</span><span class="o">&gt;</span><span class="w"> </span><span class="n">compute_invariant_mass</span><span class="p">();</span>
-</span><span id="__span-24-3"><a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a>
-</span><span id="__span-24-4"><a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a><span class="n">quantity</span><span class="w"> </span><span class="n">m_inv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">compute_invariant_mass</span><span class="p">();</span>
-</span><span id="__span-24-5"><a id="__codelineno-24-5" name="__codelineno-24-5" href="#__codelineno-24-5"></a><span class="n">quantity</span><span class="w"> </span><span class="n">higgs_width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hep</span><span class="o">::</span><span class="n">decay_width</span><span class="p">(</span><span class="mf">4.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">MeV</span><span class="p">);</span>
-</span><span id="__span-24-6"><a id="__codelineno-24-6" name="__codelineno-24-6" href="#__codelineno-24-6"></a>
-</span><span id="__span-24-7"><a id="__codelineno-24-7" name="__codelineno-24-7" href="#__codelineno-24-7"></a><span class="c1">// setParticleProperties(m_inv, higgs_width, 0.0 * eplus);</span>
-</span><span id="__span-24-8"><a id="__codelineno-24-8" name="__codelineno-24-8" href="#__codelineno-24-8"></a><span class="c1">// Compile error! Wrong quantity kind</span>
-</span><span id="__span-24-9"><a id="__codelineno-24-9" name="__codelineno-24-9" href="#__codelineno-24-9"></a><span class="c1">// &quot;note: no known conversion from invariant_mass to rest_mass&quot;</span>
-</span><span id="__span-24-10"><a id="__codelineno-24-10" name="__codelineno-24-10" href="#__codelineno-24-10"></a><span class="c1">// Physics constraints enforced by type system</span>
-</span></code></pre></div>
-</div>
-</div>
-</div>
-<h3 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">&para;</a></h3>
-<p>The mp-units type system makes all four classes of error <strong>impossible</strong> — they're
-caught at compile time before the code ever runs. The physics constraints are
-enforced by the compiler, not just by documentation and code review.</p>
-<p>The type hierarchy also captures physical relationships. For <em>energy</em>, adding child
-quantities yields their common parent, enforcing E = KE + mc²:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">mp_units</span><span class="o">::</span><span class="nn">hep</span><span class="o">::</span><span class="nn">unit_symbols</span><span class="p">;</span>
-</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>
-</span><span id="__span-25-3"><a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a><span class="n">quantity</span><span class="w"> </span><span class="n">KE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hep</span><span class="o">::</span><span class="n">kinetic_energy</span><span class="p">(</span><span class="mf">100.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">GeV</span><span class="p">);</span>
-</span><span id="__span-25-4"><a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a><span class="n">quantity</span><span class="w"> </span><span class="n">E0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hep</span><span class="o">::</span><span class="n">rest_mass_energy</span><span class="p">(</span><span class="mf">938.27</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">MeV</span><span class="p">);</span><span class="w">  </span><span class="c1">// proton rest energy</span>
-</span><span id="__span-25-5"><a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a>
-</span><span id="__span-25-6"><a id="__codelineno-25-6" name="__codelineno-25-6" href="#__codelineno-25-6"></a><span class="c1">// Addition yields the common parent: total_energy</span>
-</span><span id="__span-25-7"><a id="__codelineno-25-7" name="__codelineno-25-7" href="#__codelineno-25-7"></a><span class="n">quantity</span><span class="w"> </span><span class="n">E_total</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">KE</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">E0</span><span class="p">;</span><span class="w">  </span><span class="c1">// quantity&lt;hep::total_energy[...]&gt;</span>
-</span><span id="__span-25-8"><a id="__codelineno-25-8" name="__codelineno-25-8" href="#__codelineno-25-8"></a>
-</span><span id="__span-25-9"><a id="__codelineno-25-9" name="__codelineno-25-9" href="#__codelineno-25-9"></a><span class="c1">// The result cannot be silently narrowed back to a child type:</span>
-</span><span id="__span-25-10"><a id="__codelineno-25-10" name="__codelineno-25-10" href="#__codelineno-25-10"></a><span class="c1">// quantity&lt;hep::kinetic_energy[MeV]&gt; KE2 = E_total;    // Compile error!</span>
-</span><span id="__span-25-11"><a id="__codelineno-25-11" name="__codelineno-25-11" href="#__codelineno-25-11"></a><span class="c1">// quantity&lt;hep::rest_mass_energy[MeV]&gt; E02 = E_total;  // Compile error!</span>
-</span></code></pre></div>
-<p>For other quantity categories (<em>lengths</em>, <em>times</em>, <em>masses</em>, <em>angles</em>), specialized types
-are siblings — they prevent implicit mixing but share a common parent for explicit
-conversions.</p>
 <h2 id="physical-constants-with-codata-versions">Physical Constants with CODATA Versions<a class="headerlink" href="#physical-constants-with-codata-versions" title="Permanent link">&para;</a></h2>
 <p>One of the major challenges in HEP software is that physical constants change
 over time as measurements improve. Different frameworks may use different CODATA
@@ -12388,31 +11876,31 @@ that would make things easier."</p>
 <h3 id="the-solution-codata-namespaces">The Solution: CODATA Namespaces<a class="headerlink" href="#the-solution-codata-namespaces" title="Permanent link">&para;</a></h3>
 <p>The <strong>mp-units</strong> HEP system provides constants organized by CODATA release,
 allowing explicit version selection:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mp-units/systems/hep.h&gt;</span>
-</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a>
-</span><span id="__span-26-3"><a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">mp_units</span><span class="p">;</span>
-</span><span id="__span-26-4"><a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">mp_units</span><span class="o">::</span><span class="nn">hep</span><span class="o">::</span><span class="nn">unit_symbols</span><span class="p">;</span>
-</span><span id="__span-26-5"><a id="__codelineno-26-5" name="__codelineno-26-5" href="#__codelineno-26-5"></a>
-</span><span id="__span-26-6"><a id="__codelineno-26-6" name="__codelineno-26-6" href="#__codelineno-26-6"></a><span class="c1">// Default: CODATA 2018 (inline namespace - matches CLHEP, Gaudi, Geant4)</span>
-</span><span id="__span-26-7"><a id="__codelineno-26-7" name="__codelineno-26-7" href="#__codelineno-26-7"></a><span class="n">quantity</span><span class="w"> </span><span class="n">kinetic_energy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">10.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">MeV</span><span class="p">;</span>
-</span><span id="__span-26-8"><a id="__codelineno-26-8" name="__codelineno-26-8" href="#__codelineno-26-8"></a><span class="n">quantity</span><span class="w"> </span><span class="n">beta_2018</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kinetic_energy</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">hep</span><span class="o">::</span><span class="n">electron_mass</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">c2</span><span class="p">);</span><span class="w">  </span><span class="c1">// Uses CODATA 2018</span>
-</span><span id="__span-26-9"><a id="__codelineno-26-9" name="__codelineno-26-9" href="#__codelineno-26-9"></a>
-</span><span id="__span-26-10"><a id="__codelineno-26-10" name="__codelineno-26-10" href="#__codelineno-26-10"></a><span class="c1">// Interface with ROOT analysis using CODATA 2022</span>
-</span><span id="__span-26-11"><a id="__codelineno-26-11" name="__codelineno-26-11" href="#__codelineno-26-11"></a><span class="n">quantity</span><span class="w"> </span><span class="nf">analyze_with_root</span><span class="p">()</span>
-</span><span id="__span-26-12"><a id="__codelineno-26-12" name="__codelineno-26-12" href="#__codelineno-26-12"></a><span class="p">{</span>
-</span><span id="__span-26-13"><a id="__codelineno-26-13" name="__codelineno-26-13" href="#__codelineno-26-13"></a><span class="w">  </span><span class="c1">// All constants now use CODATA 2022 values to match ROOT</span>
-</span><span id="__span-26-14"><a id="__codelineno-26-14" name="__codelineno-26-14" href="#__codelineno-26-14"></a><span class="w">  </span><span class="n">quantity</span><span class="w"> </span><span class="n">rest_energy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hep</span><span class="o">::</span><span class="n">codata2022</span><span class="o">::</span><span class="n">electron_mass</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">c2</span><span class="p">;</span><span class="w">  </span><span class="c1">// 0.51099895069 MeV</span>
-</span><span id="__span-26-15"><a id="__codelineno-26-15" name="__codelineno-26-15" href="#__codelineno-26-15"></a><span class="w">  </span><span class="n">quantity</span><span class="w"> </span><span class="n">momentum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sqrt</span><span class="p">(</span><span class="n">pow</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="p">(</span><span class="n">kinetic_energy</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">rest_energy</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">pow</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="p">(</span><span class="n">rest_energy</span><span class="p">));</span>
-</span><span id="__span-26-16"><a id="__codelineno-26-16" name="__codelineno-26-16" href="#__codelineno-26-16"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">momentum</span><span class="p">;</span>
-</span><span id="__span-26-17"><a id="__codelineno-26-17" name="__codelineno-26-17" href="#__codelineno-26-17"></a><span class="p">}</span>
-</span><span id="__span-26-18"><a id="__codelineno-26-18" name="__codelineno-26-18" href="#__codelineno-26-18"></a>
-</span><span id="__span-26-19"><a id="__codelineno-26-19" name="__codelineno-26-19" href="#__codelineno-26-19"></a><span class="c1">// Reproduce legacy results with CODATA 2014</span>
-</span><span id="__span-26-20"><a id="__codelineno-26-20" name="__codelineno-26-20" href="#__codelineno-26-20"></a><span class="n">quantity</span><span class="w"> </span><span class="nf">validate_legacy_analysis</span><span class="p">(</span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">MeV</span><span class="o">&gt;</span><span class="w"> </span><span class="n">E_gamma</span><span class="p">)</span>
-</span><span id="__span-26-21"><a id="__codelineno-26-21" name="__codelineno-26-21" href="#__codelineno-26-21"></a><span class="p">{</span>
-</span><span id="__span-26-22"><a id="__codelineno-26-22" name="__codelineno-26-22" href="#__codelineno-26-22"></a><span class="w">  </span><span class="c1">// Use older constants for exact reproducibility</span>
-</span><span id="__span-26-23"><a id="__codelineno-26-23" name="__codelineno-26-23" href="#__codelineno-26-23"></a><span class="w">  </span><span class="n">quantity</span><span class="w"> </span><span class="n">threshold</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">hep</span><span class="o">::</span><span class="n">codata2014</span><span class="o">::</span><span class="n">electron_mass</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">c2</span><span class="p">;</span><span class="w">  </span><span class="c1">// Pair production</span>
-</span><span id="__span-26-24"><a id="__codelineno-26-24" name="__codelineno-26-24" href="#__codelineno-26-24"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">E_gamma</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">threshold</span><span class="p">)</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">E_gamma</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">threshold</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mf">0.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">MeV</span><span class="p">;</span>
-</span><span id="__span-26-25"><a id="__codelineno-26-25" name="__codelineno-26-25" href="#__codelineno-26-25"></a><span class="p">}</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;mp-units/systems/hep.h&gt;</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">mp_units</span><span class="p">;</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">mp_units</span><span class="o">::</span><span class="nn">hep</span><span class="o">::</span><span class="nn">unit_symbols</span><span class="p">;</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="c1">// Default: CODATA 2018 (inline namespace - matches CLHEP, Gaudi, Geant4)</span>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="n">quantity</span><span class="w"> </span><span class="n">kinetic_energy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">10.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">MeV</span><span class="p">;</span>
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="n">quantity</span><span class="w"> </span><span class="n">beta_2018</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kinetic_energy</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">hep</span><span class="o">::</span><span class="n">electron_mass</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">c2</span><span class="p">);</span><span class="w">  </span><span class="c1">// Uses CODATA 2018</span>
+</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>
+</span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="c1">// Interface with ROOT analysis using CODATA 2022</span>
+</span><span id="__span-8-11"><a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a><span class="n">quantity</span><span class="w"> </span><span class="nf">analyze_with_root</span><span class="p">()</span>
+</span><span id="__span-8-12"><a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a><span class="p">{</span>
+</span><span id="__span-8-13"><a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a><span class="w">  </span><span class="c1">// All constants now use CODATA 2022 values to match ROOT</span>
+</span><span id="__span-8-14"><a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a><span class="w">  </span><span class="n">quantity</span><span class="w"> </span><span class="n">rest_energy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hep</span><span class="o">::</span><span class="n">codata2022</span><span class="o">::</span><span class="n">electron_mass</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">c2</span><span class="p">;</span><span class="w">  </span><span class="c1">// 0.51099895069 MeV</span>
+</span><span id="__span-8-15"><a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a><span class="w">  </span><span class="n">quantity</span><span class="w"> </span><span class="n">momentum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sqrt</span><span class="p">(</span><span class="n">pow</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="p">(</span><span class="n">kinetic_energy</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">rest_energy</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">pow</span><span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="p">(</span><span class="n">rest_energy</span><span class="p">));</span>
+</span><span id="__span-8-16"><a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">momentum</span><span class="p">;</span>
+</span><span id="__span-8-17"><a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a><span class="p">}</span>
+</span><span id="__span-8-18"><a id="__codelineno-8-18" name="__codelineno-8-18" href="#__codelineno-8-18"></a>
+</span><span id="__span-8-19"><a id="__codelineno-8-19" name="__codelineno-8-19" href="#__codelineno-8-19"></a><span class="c1">// Reproduce legacy results with CODATA 2014</span>
+</span><span id="__span-8-20"><a id="__codelineno-8-20" name="__codelineno-8-20" href="#__codelineno-8-20"></a><span class="n">quantity</span><span class="w"> </span><span class="nf">validate_legacy_analysis</span><span class="p">(</span><span class="n">quantity</span><span class="o">&lt;</span><span class="n">MeV</span><span class="o">&gt;</span><span class="w"> </span><span class="n">E_gamma</span><span class="p">)</span>
+</span><span id="__span-8-21"><a id="__codelineno-8-21" name="__codelineno-8-21" href="#__codelineno-8-21"></a><span class="p">{</span>
+</span><span id="__span-8-22"><a id="__codelineno-8-22" name="__codelineno-8-22" href="#__codelineno-8-22"></a><span class="w">  </span><span class="c1">// Use older constants for exact reproducibility</span>
+</span><span id="__span-8-23"><a id="__codelineno-8-23" name="__codelineno-8-23" href="#__codelineno-8-23"></a><span class="w">  </span><span class="n">quantity</span><span class="w"> </span><span class="n">threshold</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">hep</span><span class="o">::</span><span class="n">codata2014</span><span class="o">::</span><span class="n">electron_mass</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">c2</span><span class="p">;</span><span class="w">  </span><span class="c1">// Pair production</span>
+</span><span id="__span-8-24"><a id="__codelineno-8-24" name="__codelineno-8-24" href="#__codelineno-8-24"></a><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">E_gamma</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">threshold</span><span class="p">)</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">E_gamma</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">threshold</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mf">0.</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">MeV</span><span class="p">;</span>
+</span><span id="__span-8-25"><a id="__codelineno-8-25" name="__codelineno-8-25" href="#__codelineno-8-25"></a><span class="p">}</span>
 </span></code></pre></div>
 <h3 id="key-differences-between-codata-releases">Key Differences Between CODATA Releases<a class="headerlink" href="#key-differences-between-codata-releases" title="Permanent link">&para;</a></h3>
 <table>
