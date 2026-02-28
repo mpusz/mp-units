@@ -196,7 +196,7 @@ MP_UNITS_EXPORT inline constexpr ::mp_units::detail::modulus_impl::modulus_t mod
 namespace detail {
 
 template<typename T>
-concept HasComplexOperations = requires(const T v, const T& ref) {
+concept ComplexScalar = requires(const T v, const T& ref) {
   requires std::constructible_from<T, decltype(::mp_units::real(ref)), decltype(::mp_units::imag(ref))>;
   ::mp_units::real(v);
   ::mp_units::imag(v);
@@ -217,7 +217,7 @@ concept MagnitudeScalable = WeaklyRegular<T> && requires(T a) {
 };
 
 template<typename T>
-concept Scalar = RealScalar<T> || HasComplexOperations<T>;
+concept Scalar = RealScalar<T> || ComplexScalar<T>;
 
 }  // namespace detail
 
@@ -317,7 +317,7 @@ template<typename T>
 concept RealScalarRepresentation = NotQuantity<T> && RealScalar<T> && ScalableByFactor<T>;
 
 template<typename T>
-concept ComplexScalarRepresentation = NotQuantity<T> && HasComplexOperations<T> && ScalableByFactor<T>;
+concept ComplexScalarRepresentation = NotQuantity<T> && ComplexScalar<T> && ScalableByFactor<T>;
 
 template<typename T>
 concept ScalarRepresentation = RealScalarRepresentation<T> || ComplexScalarRepresentation<T>;
