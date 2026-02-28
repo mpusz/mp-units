@@ -150,8 +150,8 @@ struct unspecified_rep {};
  * the magnitude concept fundamentally can represent any real number.
  * Thus, in general, the result of a scaling operation is not exactly representable,
  * and some form of approximation may be needed. That approximation is not
- * part of the semantics of a physical quantitiy, but of its representation
- * in C++. Therefore, the approximation semantics are dictatet by the
+ * part of the semantics of a physical quantity, but of its representation
+ * in C++. Therefore, the approximation semantics are dictated by the
  * representation type, which can be customised for user-types through
  * this type-trait.
  *
@@ -162,9 +162,9 @@ struct unspecified_rep {};
  *  - `template <Magnitude auto M> static constexpr auto scale(const From &value)`:
  *    Given an element of $\mathcal{V}$ represented by @c value and, a real number represented by @c M,
  *    return a value representing `M * value`, another element of $\mathcal{V}$.
- *    Unless @c ToSpec is the type @c unspecified_rep, the result type is required to be convetrible to @c ToSpec.
- *    When @c ToSpec is the type @c unspecified_rep, the implemenation may choose the best
- *    representation availabe.
+ *    Unless @c ToSpec is the type @c unspecified_rep, the result type is required to be convertible to @c ToSpec.
+ *    When @c ToSpec is the type @c unspecified_rep, the implementation may choose the best
+ *    representation available.
  *    Because the scaling factor @c M encodes the represented real value in its type,
  *    that representation may even depend on the actual scaling factor.
  *  - `template <Magnitude auto M> static constexpr bool implicitly_scalable = ...`:
