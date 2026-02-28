@@ -61,7 +61,7 @@ struct floating_point_scaling_factor_type<T> {
 };
 
 // try to choose the smallest standard floating-point type which can represent the integer exactly (has at least as many
-// mantiassa bits as the integer is wide)
+// mantissa bits as the integer is wide)
 template<std::integral T>
 struct floating_point_scaling_factor_type<T> {
   using type = min_digit_float_t<std::numeric_limits<T>::digits>;
@@ -70,10 +70,10 @@ struct floating_point_scaling_factor_type<T> {
 template<typename T>
   requires requires {
     typename T::value_type;
-    typename floating_point_scaling_factor_type<typename T::value_Type>::type;
+    typename floating_point_scaling_factor_type<typename T::value_type>::type;
   }
 struct floating_point_scaling_factor_type<T> {
-  using type = floating_point_scaling_factor_type<typename T::value_Type>::type;
+  using type = floating_point_scaling_factor_type<typename T::value_type>::type;
 };
 
 template<typename T>
