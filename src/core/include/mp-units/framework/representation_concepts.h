@@ -26,6 +26,8 @@
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/framework/customization_points.h>
 #include <mp-units/framework/quantity_spec_concepts.h>
+#include <mp-units/framework/scaling.h>
+#include <mp-units/framework/unit_magnitude.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #ifdef MP_UNITS_IMPORT_STD
@@ -194,7 +196,7 @@ MP_UNITS_EXPORT inline constexpr ::mp_units::detail::modulus_impl::modulus_t mod
 namespace detail {
 
 template<typename T>
-concept ComplexScalar = requires(const T v, const T& ref) {
+concept HasComplexOperations = requires(const T v, const T& ref) {
   requires std::constructible_from<T, decltype(::mp_units::real(ref)), decltype(::mp_units::imag(ref))>;
   ::mp_units::real(v);
   ::mp_units::imag(v);
@@ -202,8 +204,20 @@ concept ComplexScalar = requires(const T v, const T& ref) {
   requires ScalableWith<T, decltype(::mp_units::modulus(v))>;
 } && BaseScalar<T>;
 
+/**
+ * @brief MagnitudeScalable
+ *
+ * A type is `MagnitudeScalable` if it supports scaling by a unit magnitude, i.e. there is a
+ * customization point `scaling_traits<T, To>` that provides a `scale` member function.
+ */
 template<typename T>
-concept Scalar = RealScalar<T> || ComplexScalar<T>;
+concept MagnitudeScalable = WeaklyRegular<T> && requires(T a) {
+  // TODO: We could additionally check the return type here (e.g. std::same_as<T>)
+  { mp_units::scale<T>(mag<1>, a) } -> std::convertible_to<T>;
+};
+
+template<typename T>
+concept Scalar = RealScalar<T> || HasComplexOperations<T>;
 
 }  // namespace detail
 
@@ -303,7 +317,7 @@ template<typename T>
 concept RealScalarRepresentation = NotQuantity<T> && RealScalar<T> && ScalableByFactor<T>;
 
 template<typename T>
-concept ComplexScalarRepresentation = NotQuantity<T> && ComplexScalar<T> && ScalableByFactor<T>;
+concept ComplexScalarRepresentation = NotQuantity<T> && HasComplexOperations<T> && ScalableByFactor<T>;
 
 template<typename T>
 concept ScalarRepresentation = RealScalarRepresentation<T> || ComplexScalarRepresentation<T>;
