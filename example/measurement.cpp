@@ -42,104 +42,6 @@ import mp_units;
 #include <mp-units/systems/si.h>
 #endif
 
-namespace {
-
-template<typename T>
-class measurement {
-public:
-  using value_type = T;
-
-  measurement() = default;
-
-  // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
-  constexpr explicit measurement(value_type val, const value_type& err = {}) :
-      value_(std::move(val)), uncertainty_([&] {
-        using namespace std;
-        return abs(err);
-      }())
-  {
-  }
-
-  [[nodiscard]] constexpr const value_type& value() const { return value_; }
-  [[nodiscard]] constexpr const value_type& uncertainty() const { return uncertainty_; }
-
-  [[nodiscard]] constexpr value_type relative_uncertainty() const { return uncertainty() / value(); }
-  [[nodiscard]] constexpr value_type lower_bound() const { return value() - uncertainty(); }
-  [[nodiscard]] constexpr value_type upper_bound() const { return value() + uncertainty(); }
-
-  [[nodiscard]] constexpr measurement operator-() const { return measurement(-value(), uncertainty()); }
-
-  [[nodiscard]] friend constexpr measurement operator+(const measurement& lhs, const measurement& rhs)
-  {
-    using namespace std;
-    return measurement(lhs.value() + rhs.value(), hypot(lhs.uncertainty(), rhs.uncertainty()));
-  }
-
-  [[nodiscard]] friend constexpr measurement operator-(const measurement& lhs, const measurement& rhs)
-  {
-    using namespace std;
-    return measurement(lhs.value() - rhs.value(), hypot(lhs.uncertainty(), rhs.uncertainty()));
-  }
-
-  [[nodiscard]] friend constexpr measurement operator*(const measurement& lhs, const measurement& rhs)
-  {
-    const auto val = lhs.value() * rhs.value();
-    using namespace std;
-    return measurement(val, val * hypot(lhs.relative_uncertainty(), rhs.relative_uncertainty()));
-  }
-
-  [[nodiscard]] friend constexpr measurement operator*(const measurement& lhs, const value_type& value)
-  {
-    const auto val = lhs.value() * value;
-    return measurement(val, val * lhs.relative_uncertainty());
-  }
-
-  [[nodiscard]] friend constexpr measurement operator*(const value_type& value, const measurement& rhs)
-  {
-    const auto val = rhs.value() * value;
-    return measurement(val, val * rhs.relative_uncertainty());
-  }
-
-  [[nodiscard]] friend constexpr measurement operator/(const measurement& lhs, const measurement& rhs)
-  {
-    const auto val = lhs.value() / rhs.value();
-    using namespace std;
-    return measurement(val, val * hypot(lhs.relative_uncertainty(), rhs.relative_uncertainty()));
-  }
-
-  [[nodiscard]] friend constexpr measurement operator/(const measurement& lhs, const value_type& value)
-  {
-    const auto val = lhs.value() / value;
-    return measurement(val, val * lhs.relative_uncertainty());
-  }
-
-  [[nodiscard]] friend constexpr measurement operator/(const value_type& value, const measurement& rhs)
-  {
-    const auto val = value / rhs.value();
-    return measurement(val, val * rhs.relative_uncertainty());
-  }
-
-  [[nodiscard]] constexpr auto operator<=>(const measurement&) const = default;
-
-  friend std::ostream& operator<<(std::ostream& os, const measurement& v)
-  {
-    return os << v.value() << " ± " << v.uncertainty();
-  }
-
-  [[nodiscard]] friend constexpr measurement abs(const measurement& v)
-    requires requires { abs(v.value()); } || requires { std::abs(v.value()); }
-  {
-    using std::abs;
-    return measurement(abs(v.value()), v.uncertainty());
-  }
-
-private:
-  value_type value_{};
-  value_type uncertainty_{};
-};
-
-}  // namespace
-
 
 template<typename T>
 struct mp_units::scaling_traits<measurement<T>, mp_units::unspecified_rep> {
@@ -197,8 +99,6 @@ void example()
   const auto radius_from_area = sqrt(area_measured / π);
   std::cout << "Radius from area:       A = " << area_measured << " -> r = √(A/π) = " << radius_from_area << '\n';
 }
-
-}  // namespace
 
 int main()
 {
