@@ -16,7 +16,7 @@ Changing any of the above may require changing the value stored in a quantity.
 ## Value-preserving conversions
 
 ```cpp
-auto q1 = 5 * km;
+quantity q1 = 5 * km;
 std::cout << q1.in(m) << '\n';
 quantity<si::metre, int> q2 = q1;
 ```
@@ -28,18 +28,18 @@ the one measured in meters.
 In case a user would like to perform an opposite transformation:
 
 ```cpp
-auto q1 = 5 * m;
+quantity q1 = 5 * m;
 std::cout << q1.in(km) << '\n';
 quantity<si::kilo<si::metre>, int> q2 = q1;
 ```
 
-Both conversions will fail to compile.
+Both conversions will fail to compile because they try to truncate the quantity value.
 
 There are two ways to make the above work. The first solution is to use a floating-point
 representation type:
 
 ```cpp
-auto q1 = 5. * m;
+quantity q1 = 5. * m;
 std::cout << q1.in(km) << '\n';
 quantity<si::kilo<si::metre>> q2 = q1;
 ```
@@ -47,7 +47,8 @@ quantity<si::kilo<si::metre>> q2 = q1;
 or
 
 ```cpp
-auto q1 = 5 * m;
+quantity q1 = 5 * m;
+std::cout << q1.in<double>(km) << '\n';
 std::cout << value_cast<double>(q1).in(km) << '\n';
 quantity<si::kilo<si::metre>> q2 = q1;  // double by default
 ```
@@ -55,7 +56,8 @@ quantity<si::kilo<si::metre>> q2 = q1;  // double by default
 !!! important
 
     The **mp-units** library follows [`std::chrono::duration`](https://en.cppreference.com/w/cpp/chrono/duration)
-    logic and treats floating-point types as value-preserving.
+    logic and treats floating-point types as
+    [value-preserving](../../how_to_guides/integration/using_custom_representation_types.md#is_value_preserving).
 
 
 ## Value-truncating conversions
@@ -63,7 +65,7 @@ quantity<si::kilo<si::metre>> q2 = q1;  // double by default
 The second solution is to force a truncating conversion:
 
 ```cpp
-auto q1 = 5 * m;
+quantity q1 = 5 * m;
 std::cout << value_cast<km>(q1) << '\n';
 quantity<si::kilo<si::metre>, int> q2 = q1.force_in(km);
 ```
@@ -93,7 +95,8 @@ quantity<si::metre, int> q3 = value_cast<int>(3.14 * m);
 
 In some cases, a unit and a representation type should be changed simultaneously. Moreover,
 sometimes, the order of doing those operations matters. In such cases, the library provides
-the `value_cast<U, Rep>(q)` which always returns the most precise result:
+the `value_cast<U, Rep>(q)` and `q.force_in<Rep>(U)` which always return the most precise
+result:
 
 === "C++23"
 
@@ -158,19 +161,21 @@ the `value_cast<U, Rep>(q)` which always returns the most precise result:
 ```cpp
 using namespace unit_symbols;
 Price price{12.95 * USD};
-Scaled spx = value_cast<USD_s, std::int64_t>(price);
+Scaled spx1 = value_cast<USD_s, std::int64_t>(price);
+Scaled spx2 = price.force_in<std::int64_t>(USD_s);
 ```
 
 As a shortcut, instead of providing a unit and a representation type to `value_cast`, you
 may also provide a `Quantity` type directly, from which unit and representation type are
 taken. However, `value_cast<Quantity>`, still only allows for changes in unit and
 representation type, but not changing the type of the quantity. For that, you will have
-to use a `quantity_cast` instead.
+to use a [`quantity_cast`](simple_and_typed_quantities.md#quantity_cast-to-force-unsafe-conversions)
+instead.
 
-Overloads are also provided for instances of `quantity_point`. All variants of
-`value_cast<...>(q)` that apply to instances of `quantity` have a corresponding version
-applicable to `quantity_point`, where the `point_origin` remains untouched, and the cast
-changes how the "offset" from the origin is represented. Specifically, for any
+Overloads are also provided for instances of [`quantity_point`](the_affine_space.md#quantity_point).
+All variants of `value_cast<...>(q)` that apply to instances of `quantity` have a corresponding
+version applicable to `quantity_point`, where the `point_origin` remains untouched, and
+the cast changes how the "offset" from the origin is represented. Specifically, for any
 `quantity_point` instance `qp`, all of the following equivalences hold:
 
 ```cpp
