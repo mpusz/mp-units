@@ -271,7 +271,7 @@ public:
 
 ---
 
-#### `treat_as_floating_point<Rep>`
+#### `treat_as_floating_point<Rep>` { #treat_as_floating_point }
 
 A specializable variable template that tells the library whether a type should be treated as
 floating-point for the purpose of allowing implicit conversions:
@@ -300,7 +300,7 @@ for details on how this affects implicit conversions between quantities
 
 ---
 
-#### `is_value_preserving<From, To>`
+#### `is_value_preserving<From, To>` { #is_value_preserving }
 
 A specializable variable template that determines whether a conversion from one representation
 type to another preserves values:
@@ -333,7 +333,7 @@ constexpr bool mp_units::is_value_preserving<double, my_decimal> = true;
 
 ---
 
-#### `representation_values<Rep>`
+#### `representation_values<Rep>` { #representation_values }
 
 A specializable class template that provides special values for a representation type:
 
