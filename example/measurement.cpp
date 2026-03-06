@@ -45,7 +45,7 @@ import mp_units;
 
 template<typename T, typename U>
 struct mp_units::scaling_traits<measurement<T>, measurement<U>> {
-  template<mp_units::UnitMagnitude auto M>
+  template<auto M>
   [[nodiscard]] static constexpr measurement<U> scale(const measurement<T>& value)
   {
     return measurement<U>(mp_units::scale<U>(M, value.value()), mp_units::scale<U>(M, value.uncertainty()));

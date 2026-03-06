@@ -411,7 +411,7 @@ type:
 ```cpp
 template<typename T, typename U>
 struct mp_units::scaling_traits<MyType<T>, MyType<U>> {
-  template<mp_units::UnitMagnitude auto M>
+  template<auto M>
   [[nodiscard]] static constexpr MyType<U> scale(const MyType<T>& value) { ... }
 };
 ```
@@ -439,7 +439,7 @@ satisfies the `MagnitudeScalable` concept and can be used as the representation 
     ```cpp
     template<typename T, typename U>
     struct mp_units::scaling_traits<measurement<T>, measurement<U>> {
-      template<mp_units::UnitMagnitude auto M>
+      template<auto M>
       [[nodiscard]] static constexpr measurement<U> scale(const measurement<T>& value)
       {
         return measurement<U>(

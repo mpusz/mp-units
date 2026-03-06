@@ -153,7 +153,7 @@ using quantity_values [[deprecated("2.5.0: Use `representation_values` instead")
  * types involved in the following discussion.
  *
  * A specialization @c scaling_traits<From, To> shall provide the following member:
- *  - `template <UnitMagnitude auto M> static constexpr To scale(const From& value)`:
+ *  - `template <auto M> static constexpr To scale(const From& value)`:
  *    Given an element of $\mathcal{V}$ represented by @c value and a real number represented by @c M,
  *    return a value of type @c To representing `M * value`, another element of $\mathcal{V}$.
  *    The scaling factor @c M encodes the represented real value in its type.

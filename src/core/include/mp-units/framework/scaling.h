@@ -81,7 +81,7 @@ constexpr decltype(auto) cast_if_integral(const T& value)
 
 template<typename From, typename To>
 struct scaling_traits_impl {
-  template<UnitMagnitude auto M>
+  template<auto M>
     requires(UsesFloatingPointScaling<From> || UsesFloatingPointScaling<To> ||
              (UsesFixedPointScaling<From> && UsesFixedPointScaling<To>))
   [[nodiscard]] static constexpr To scale(const From& value)
