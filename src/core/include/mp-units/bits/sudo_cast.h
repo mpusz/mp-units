@@ -36,7 +36,7 @@ constexpr bool has_common_type_v = requires { typename std::common_type_t<Ts...>
 
 template<typename T, typename Other>
 using maybe_common_type =
-  std::conditional_t<has_common_type_v<T, Other>, std::common_type<T, Other>, std::type_identity<T>>::type;
+  conditional<has_common_type_v<T, Other>, std::common_type<T, Other>, std::type_identity<T>>::type;
 
 /**
  * @brief Magnitude-only details about a unit conversion factor
@@ -76,25 +76,6 @@ struct conversion_type_traits {
 };
 
 /**
- * @brief Single point of intentional narrowing/truncation with compiler diagnostics disabled
- *
- * Every `static_cast` that intentionally converts to a lower-precision type (e.g. `long double`
- * intermediate → `double` result) must go through this helper so that the diagnostic suppression
- * macros appear in exactly one place and are easy to audit.
- *
- * @tparam To target type
- * @tparam From source type (deduced)
- */
-template<typename To, typename From>
-[[nodiscard]] constexpr To silent_cast(From value) noexcept
-{
-  MP_UNITS_DIAGNOSTIC_PUSH
-  MP_UNITS_DIAGNOSTIC_IGNORE_FLOAT_CONVERSION
-  return static_cast<To>(value);
-  MP_UNITS_DIAGNOSTIC_POP
-}
-
-/**
  * @brief Explicit cast between different quantity types
  *
  * @note This is a low-level facility and is too powerful to be used by the users directly. They should either use
@@ -116,7 +97,8 @@ template<Quantity To, typename FwdFrom, Quantity From = std::remove_cvref_t<FwdF
   } else {
     constexpr UnitMagnitude auto c_mag = get_canonical_unit(From::unit).mag / get_canonical_unit(To::unit).mag;
 
-    typename To::rep res = scale<typename To::rep>(c_mag, q.numerical_value_is_an_implementation_detail_);
+    typename To::rep res =
+      silent_cast<typename To::rep>(scale<typename To::rep>(c_mag, q.numerical_value_is_an_implementation_detail_));
     return To{res, To::reference};
   }
 }

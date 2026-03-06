@@ -61,16 +61,15 @@ constexpr bool treat_as_floating_point =
 #endif
 
 /**
- * @brief Specifies if a specific conversion between two types preserves the value
+ * @brief Specifies if a specific conversion between two types is representable without data loss
  *
- * This type trait should be specialized for a custom representation types to specify
- * weather the conversion from the source type to the destination type preserves the value
- * or not. Value-truncating conversions should be forced by the user with explicit casts.
+ * @deprecated Use `mp_units::implicitly_scalable` instead.
  *
  * @tparam From a source representation type
  * @tparam To a destination representation type
  */
 template<typename From, typename To>
+[[deprecated("2.6.0: Use `mp_units::implicitly_scalable` instead")]]
 constexpr bool is_value_preserving = treat_as_floating_point<To> || !treat_as_floating_point<From>;
 
 template<typename Rep>
@@ -138,11 +137,6 @@ using quantity_values [[deprecated("2.5.0: Use `representation_values` instead")
 
 
 /**
- * @brief A type used in @c scaling_traits to indicate an unspecified @c To type.
- */
-struct unspecified_rep {};
-
-/**
  * @brief A type trait that defines the behavior of scaling a value using a magnitude
  *
  * Whereas C++ numeric types usually represent a (fixed) subset of the real numbers
@@ -158,21 +152,14 @@ struct unspecified_rep {};
  * In the following, $\mathcal{V}$ shall denote the vector-space represented by all representation
  * types involved in the following discussion.
  *
- * A specialisation @c scaling_traits<From,ToSpec> shall provide the following members:
- *  - `template <Magnitude auto M> static constexpr auto scale(const From &value)`:
- *    Given an element of $\mathcal{V}$ represented by @c value and, a real number represented by @c M,
- *    return a value representing `M * value`, another element of $\mathcal{V}$.
- *    Unless @c ToSpec is the type @c unspecified_rep, the result type is required to be convertible to @c ToSpec.
- *    When @c ToSpec is the type @c unspecified_rep, the implementation may choose the best
- *    representation available.
- *    Because the scaling factor @c M encodes the represented real value in its type,
- *    that representation may even depend on the actual scaling factor.
- *  - `template <Magnitude auto M> static constexpr bool implicitly_scalable = ...`:
- *    When true, the scaling is to be considered "safe", and may be used in implicit conversions.
+ * A specialization @c scaling_traits<From, To> shall provide the following member:
+ *  - `template <UnitMagnitude auto M> static constexpr To scale(const From& value)`:
+ *    Given an element of $\mathcal{V}$ represented by @c value and a real number represented by @c M,
+ *    return a value of type @c To representing `M * value`, another element of $\mathcal{V}$.
+ *    The scaling factor @c M encodes the represented real value in its type.
  *
  * @tparam From a representation type whose value is being scaled
- * @tparam To a representation type in which the result shall be represented, or @c unspecified_rep, indicating
- *    the implementation is free to chose a representation.
+ * @tparam To   a representation type in which the result shall be represented
  */
 template<typename From, typename To>
 struct scaling_traits;
@@ -251,6 +238,9 @@ constexpr auto reference_for<T> = quantity_point_like_traits<T>::reference;
 MP_UNITS_EXPORT_END
 
 namespace detail {
+
+template<typename T>
+concept WeaklyRegular = std::copyable<T> && std::equality_comparable<T>;
 
 template<typename T>
 struct rep_for_impl {};

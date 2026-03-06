@@ -43,27 +43,12 @@ import mp_units;
 #endif
 
 
-template<typename T>
-struct mp_units::scaling_traits<measurement<T>, mp_units::unspecified_rep> {
+template<typename T, typename U>
+struct mp_units::scaling_traits<measurement<T>, measurement<U>> {
   template<mp_units::UnitMagnitude auto M>
-  [[nodiscard]] static constexpr auto scale(const measurement<T>& value)
+  [[nodiscard]] static constexpr measurement<U> scale(const measurement<T>& value)
   {
-    return measurement{
-      mp_units::scale<mp_units::unspecified_rep>(M, value.value()),
-      mp_units::scale<mp_units::unspecified_rep>(M, value.uncertainty()),
-    };
-  }
-};
-
-template<typename From, typename To>
-struct mp_units::scaling_traits<measurement<From>, measurement<To>> {
-  template<mp_units::UnitMagnitude auto M>
-  [[nodiscard]] static constexpr measurement<To> scale(const measurement<From>& value)
-  {
-    return measurement<To>{
-      mp_units::scale<To>(M, value.value()),
-      mp_units::scale<To>(M, value.uncertainty()),
-    };
+    return measurement<U>(mp_units::scale<U>(M, value.value()), mp_units::scale<U>(M, value.uncertainty()));
   }
 };
 

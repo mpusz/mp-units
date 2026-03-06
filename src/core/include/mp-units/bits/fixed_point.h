@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include <mp-units/bits/hacks.h>  // IWYU pragma: keep
+#include <mp-units/bits/hacks.h>       // IWYU pragma: keep
+#include <mp-units/ext/type_traits.h>  // IWYU pragma: keep
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #ifdef MP_UNITS_IMPORT_STD
@@ -90,7 +91,7 @@ private:
 #endif
   constexpr double_width_int(Th hi, Tl lo) : hi_(hi), lo_(lo) {}
 
-  friend struct double_width_int<std::conditional_t<is_signed, std::make_unsigned_t<T>, std::make_signed_t<T>>>;
+  friend struct double_width_int<conditional<is_signed, std::make_unsigned_t<T>, std::make_signed_t<T>>>;
 
 public:
   static constexpr double_width_int from_hi_lo(Th hi, Tl lo) { return {hi, lo}; }
@@ -156,7 +157,7 @@ public:
     requires(std::numeric_limits<Rhs>::digits <= base_width)
   [[nodiscard]] friend constexpr auto operator*(const double_width_int& lhs, Rhs rhs)
   {
-    using RT = std::conditional_t<std::is_signed_v<Rhs>, std::make_signed_t<Tl>, Tl>;
+    using RT = conditional<std::is_signed_v<Rhs>, std::make_signed_t<Tl>, Tl>;
     auto lo_prod = double_width_int<RT>::wide_product_of(rhs, lhs.lo_);
     // Normal C++ rules; with respect to signedness, the wider type always wins.
     using ret_t = double_width_int<Th>;
@@ -319,8 +320,7 @@ template<typename T>
 constexpr bool is_signed_v<double_width_int<T>> = double_width_int<T>::is_signed;
 
 template<typename T>
-using make_signed_t =
-  std::conditional_t<!std::is_same_v<T, uint128_t>, std::make_signed<T>, std::type_identity<int128_t>>::type;
+using make_signed_t = conditional<!is_same_v<T, uint128_t>, std::make_signed<T>, std::type_identity<int128_t>>::type;
 
 template<std::size_t N>
 using min_width_uint_t =
@@ -330,15 +330,9 @@ using min_width_uint_t =
 template<std::size_t N>
 using min_width_int_t = make_signed_t<min_width_uint_t<N>>;
 
-// TODO: other standard floating point types (half-width floats?)
-template<std::size_t N>
-using min_digit_float_t =
-  std::conditional_t<(N <= std::numeric_limits<float>::digits), float,
-                     std::conditional_t<(N <= std::numeric_limits<double>::digits), double, long double>>;
-
 template<typename T>
-using double_width_int_for_t = std::conditional_t<is_signed_v<T>, min_width_int_t<integer_rep_width_v<T> * 2>,
-                                                  min_width_uint_t<integer_rep_width_v<T> * 2>>;
+using double_width_int_for_t = conditional<is_signed_v<T>, min_width_int_t<integer_rep_width_v<T> * 2>,
+                                           min_width_uint_t<integer_rep_width_v<T> * 2>>;
 
 template<typename Lhs, typename Rhs>
 constexpr auto wide_product_of(Lhs lhs, Rhs rhs)
@@ -384,8 +378,7 @@ struct fixed_point {
   [[nodiscard]] constexpr auto scale(U v) const
   {
     auto res = v * int_repr_;
-    return static_cast<std::conditional_t<is_signed_v<decltype((res))>, std::make_signed_t<U>, U>>(res >>
-                                                                                                   fractional_bits);
+    return static_cast<conditional<is_signed_v<decltype((res))>, std::make_signed_t<U>, U>>(res >> fractional_bits);
   }
 private:
   value_type int_repr_;

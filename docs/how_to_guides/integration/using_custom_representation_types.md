@@ -300,36 +300,49 @@ for details on how this affects implicit conversions between quantities
 
 ---
 
-#### `is_value_preserving<From, To>` { #is_value_preserving }
+#### `implicitly_scalable<FromUnit, FromRep, ToUnit, ToRep>` { #implicitly_scalable }
 
-A specializable variable template that determines whether a conversion from one representation
-type to another preserves values:
-
-```cpp
-template<typename From, typename To>
-constexpr bool mp_units::is_value_preserving =
-  treat_as_floating_point<To> || !treat_as_floating_point<From>;
-```
-
-**Default behavior:** A conversion is value-preserving if:
-
-- The destination type is floating-point (can represent any source value), OR
-- The source type is not floating-point (integer → integer or integer → float is safe)
-
-This follows the same practice as `std::chrono::duration` conversions.
-
-**When to specialize:** If you have custom types with specific value preservation semantics:
+A specializable variable template that controls whether a conversion from
+`quantity<FromUnit, FromRep>` to `quantity<ToUnit, ToRep>` is implicit or requires an
+explicit cast via `value_cast`/`force_in`:
 
 ```cpp
-// Example: my_decimal has more precision than double
-template<>
-constexpr bool mp_units::is_value_preserving<my_decimal, double> = false;
-
-template<>
-constexpr bool mp_units::is_value_preserving<double, my_decimal> = true;
+template<auto FromUnit, typename FromRep, auto ToUnit, typename ToRep>
+constexpr bool mp_units::implicitly_scalable =
+  std::is_convertible_v<FromRep, ToRep> &&
+  (treat_as_floating_point<ToRep> ||
+   (!treat_as_floating_point<FromRep> && is_integral_scaling(FromUnit, ToUnit)));
 ```
 
-**Impact:** Controls whether conversions are implicit or require explicit casts.
+**Default behavior:** A conversion is implicit iff all of the following hold:
+
+- `FromRep` is convertible to `ToRep`, AND
+- one of:
+    - `ToRep` is floating-point (absorbs any numeric value without truncation), OR
+    - neither rep is floating-point AND the unit magnitude ratio is an integral factor
+      (e.g. `m → mm`: ×1000), as reported by `mp_units::is_integral_scaling(from, to)`
+
+`mp_units::is_integral_scaling(from, to)` is a `consteval` predicate you can also use
+in your own specializations to distinguish the integral-factor case from fractional ones
+(e.g. `mm → m`: ÷1000, `ft → m`, `deg → rad`).
+
+Conversions with a fractional factor are always explicit for integer reps.
+
+**When to specialize:** If your custom type has different implicit-conversion semantics:
+
+```cpp
+// my_decimal is safe to receive from double implicitly, but double cannot losslessly
+// represent my_decimal (more precision), so that direction stays explicit.
+template<auto FromUnit, auto ToUnit>
+constexpr bool mp_units::implicitly_scalable<FromUnit, double, ToUnit, my_decimal> = true;
+
+template<auto FromUnit, auto ToUnit>
+constexpr bool mp_units::implicitly_scalable<FromUnit, my_decimal, ToUnit, double> = false;
+```
+
+**Impact:** Controls whether conversions between quantity types are implicit or require
+`value_cast`/`force_in`. See [Value Conversions](../../users_guide/framework_basics/value_conversions.md)
+for the full picture.
 
 ---
 
@@ -383,6 +396,63 @@ struct mp_units::representation_values<my_custom_type<T>> {
 - `quantity::zero()`, `quantity::min()`, `quantity::max()` static member functions
 - Mathematical operations like `floor()`, `ceil()`, `round()`
 - Division by zero checks
+
+---
+
+#### `scaling_traits<From, To>` { #scaling_traits }
+
+A class template specialization that defines how a value of type `From` is scaled by a
+unit magnitude to produce a value of type `To`.  Built-in support is provided for all
+standard floating-point and integral types.
+
+To support a custom representation type, specialize `mp_units::scaling_traits` for your
+type:
+
+```cpp
+template<typename T, typename U>
+struct mp_units::scaling_traits<MyType<T>, MyType<U>> {
+  template<mp_units::UnitMagnitude auto M>
+  [[nodiscard]] static constexpr MyType<U> scale(const MyType<T>& value) { ... }
+};
+```
+
+The `mp_units::scale<To>(M, value)` free function calls
+`scaling_traits<From, To>::template scale<M{}>(value)`, and is the primary way the
+library scales values during unit conversions.  A helper `mp_units::silent_cast<To>(value)`
+performs a `static_cast` with truncating conversion warnings suppressed — useful when
+you need to cast the scaled result to the target type.
+
+To control whether a particular conversion is implicit or explicit, specialize
+[`mp_units::implicitly_scalable<>`](#implicitly_scalable) separately —
+`scaling_traits::scale<M>()` is responsible for *how* to scale, not *whether* to do so
+implicitly.
+
+Once a `scaling_traits` specialization is provided, the custom type automatically
+satisfies the `MagnitudeScalable` concept and can be used as the representation type of a
+`quantity`.
+
+??? example "`measurement<T>`"
+
+    A `measurement<T>` type carries both a value and an uncertainty.  Scaling a measurement
+    must apply the same factor to both components:
+
+    ```cpp
+    template<typename T, typename U>
+    struct mp_units::scaling_traits<measurement<T>, measurement<U>> {
+      template<mp_units::UnitMagnitude auto M>
+      [[nodiscard]] static constexpr measurement<U> scale(const measurement<T>& value)
+      {
+        return measurement<U>(
+          mp_units::scale<U>(M, value.value()),
+          mp_units::scale<U>(M, value.uncertainty()));
+      }
+    };
+    ```
+
+    ```cpp
+    static_assert(mp_units::RepresentationOf<measurement<int>, mp_units::quantity_character::real_scalar>);
+    static_assert(mp_units::RepresentationOf<measurement<double>, mp_units::quantity_character::real_scalar>);
+    ```
 
 
 ## Built-in Support

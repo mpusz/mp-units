@@ -45,8 +45,8 @@ template<typename Rep, Unit UFrom, Unit UTo>
     return false;
   else if constexpr (std::totally_ordered_with<Rep, std::uintmax_t> &&
                      requires(Rep v) { representation_values<Rep>::max(); }) {
-    constexpr auto factor = get_value<std::uintmax_t>(
-      numerator(mp_units::get_canonical_unit(UFrom{}).mag / mp_units::get_canonical_unit(UTo{}).mag));
+    constexpr auto factor =
+      get_value<std::uintmax_t>(numerator(get_canonical_unit(UFrom{}).mag / get_canonical_unit(UTo{}).mag));
     if constexpr (std::is_integral_v<Rep>)
       return !std::in_range<Rep>(factor);
     else
@@ -58,12 +58,53 @@ template<typename Rep, Unit UFrom, Unit UTo>
 }
 
 template<auto FromU, auto ToU, typename Rep>
-concept SaneScaling = UnitConvertibleTo<MP_UNITS_REMOVE_CONST(decltype(FromU)), ToU> &&
-                      ((!detail::scaling_overflows_non_zero_values<Rep>(FromU, ToU)) ||
-                       unsatisfied<"The result of scaling '{}' to '{}' overflows the '{}' representation type">(
-                         FromU, ToU, type_name<Rep>()));
+concept ExplicitlyCastable = UnitConvertibleTo<MP_UNITS_REMOVE_CONST(decltype(FromU)), ToU> &&
+                             ((!scaling_overflows_non_zero_values<Rep>(FromU, ToU)) ||
+                              unsatisfied<"The result of scaling '{}' to '{}' overflows the '{}' representation type">(
+                                FromU, ToU, type_name<Rep>()));
 
 }  // namespace detail
+
+/**
+ * @brief Returns `true` if the scaling factor from @p from to @p to is an exact positive integer.
+ *
+ * This is the key predicate used by the default `implicitly_scalable` to decide whether
+ * conversions between integer-like representation types are non-truncating (and therefore
+ * may be implicit).  For example, `m → mm` has an integral factor (×1000), so integer
+ * conversions in that direction are implicit; `mm → m` has a fractional factor (÷1000),
+ * so they are explicit.
+ *
+ * @param from source unit
+ * @param to   target unit
+ */
+[[nodiscard]] consteval bool is_integral_scaling(Unit auto from, Unit auto to)
+{
+  if constexpr (is_same_v<decltype(from), decltype(to)>)
+    return true;
+  else
+    return is_integral(get_canonical_unit(from).mag / get_canonical_unit(to).mag);
+}
+
+/**
+ * @brief Controls whether conversion from `quantity<FromUnit, FromRep>` to
+ *        `quantity<ToUnit, ToRep>` is implicit or explicit.
+ *
+ * The default is `true` iff `FromRep` is convertible to `ToRep` and the scaling is
+ * non-truncating: either `ToRep` is floating-point, or both reps are non-floating-point
+ * and the unit magnitude ratio is an integral factor.
+ *
+ * Specialize this variable template to customize the implicit/explicit decision for
+ * your own representation types.
+ *
+ * @tparam FromUnit the source unit value (NTTP)
+ * @tparam FromRep  the source representation type
+ * @tparam ToUnit   the target unit value (NTTP)
+ * @tparam ToRep    the target representation type
+ */
+template<auto FromUnit, typename FromRep, auto ToUnit, typename ToRep>
+constexpr bool implicitly_scalable =
+  std::is_convertible_v<FromRep, ToRep> &&
+  (treat_as_floating_point<ToRep> || (!treat_as_floating_point<FromRep> && is_integral_scaling(FromUnit, ToUnit)));
 
 /**
  * @brief Explicit cast of a quantity's unit
@@ -77,7 +118,7 @@ concept SaneScaling = UnitConvertibleTo<MP_UNITS_REMOVE_CONST(decltype(FromU)), 
  */
 template<auto ToU, typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>>
   requires UnitOf<MP_UNITS_REMOVE_CONST(decltype(ToU)), Q::quantity_spec> &&
-           detail::SaneScaling<Q::unit, ToU, typename Q::rep>
+           detail::ExplicitlyCastable<Q::unit, ToU, typename Q::rep>
 [[nodiscard]] constexpr Quantity auto value_cast(FwdQ&& q)
 {
   return detail::sudo_cast<quantity<detail::make_reference(Q::quantity_spec, ToU), typename Q::rep>>(
@@ -115,7 +156,7 @@ template<typename ToRep, typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>>
 template<Unit auto ToU, typename ToRep, typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>>
   requires UnitOf<MP_UNITS_REMOVE_CONST(decltype(ToU)), Q::quantity_spec> &&
            RepresentationOf<ToRep, Q::quantity_spec> && std::constructible_from<ToRep, typename Q::rep> &&
-           detail::SaneScaling<Q::unit, ToU, ToRep>
+           detail::ExplicitlyCastable<Q::unit, ToU, ToRep>
 [[nodiscard]] constexpr Quantity auto value_cast(FwdQ&& q)
 {
   return detail::sudo_cast<quantity<detail::make_reference(Q::quantity_spec, ToU), ToRep>>(std::forward<FwdQ>(q));
@@ -124,7 +165,7 @@ template<Unit auto ToU, typename ToRep, typename FwdQ, Quantity Q = std::remove_
 template<typename ToRep, Unit auto ToU, typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>>
   requires UnitOf<MP_UNITS_REMOVE_CONST(decltype(ToU)), Q::quantity_spec> &&
            RepresentationOf<ToRep, Q::quantity_spec> && std::constructible_from<ToRep, typename Q::rep> &&
-           detail::SaneScaling<Q::unit, ToU, ToRep>
+           detail::ExplicitlyCastable<Q::unit, ToU, ToRep>
 [[nodiscard]] constexpr Quantity auto value_cast(FwdQ&& q)
 {
   return value_cast<ToU, ToRep>(std::forward<FwdQ>(q));
@@ -148,7 +189,7 @@ template<typename ToRep, Unit auto ToU, typename FwdQ, Quantity Q = std::remove_
 template<Quantity ToQ, typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>>
   requires(ToQ::quantity_spec == Q::quantity_spec) && UnitOf<MP_UNITS_NONCONST_TYPE(ToQ::unit), Q::quantity_spec> &&
           std::constructible_from<typename ToQ::rep, typename Q::rep> &&
-          detail::SaneScaling<Q::unit, ToQ::unit, typename ToQ::rep>
+          detail::ExplicitlyCastable<Q::unit, ToQ::unit, typename ToQ::rep>
 [[nodiscard]] constexpr Quantity auto value_cast(FwdQ&& q)
 {
   return detail::sudo_cast<ToQ>(std::forward<FwdQ>(q));
@@ -166,7 +207,7 @@ template<Quantity ToQ, typename FwdQ, Quantity Q = std::remove_cvref_t<FwdQ>>
  */
 template<Unit auto ToU, typename FwdQP, QuantityPoint QP = std::remove_cvref_t<FwdQP>>
   requires UnitOf<MP_UNITS_REMOVE_CONST(decltype(ToU)), QP::quantity_spec> &&
-           detail::SaneScaling<QP::unit, ToU, typename QP::rep>
+           detail::ExplicitlyCastable<QP::unit, ToU, typename QP::rep>
 [[nodiscard]] constexpr QuantityPoint auto value_cast(FwdQP&& qp)
 {
   return quantity_point{value_cast<ToU>(std::forward<FwdQP>(qp).quantity_from_origin_is_an_implementation_detail_),
@@ -205,7 +246,7 @@ template<typename ToRep, typename FwdQP, QuantityPoint QP = std::remove_cvref_t<
 template<Unit auto ToU, typename ToRep, typename FwdQP, QuantityPoint QP = std::remove_cvref_t<FwdQP>>
   requires UnitOf<MP_UNITS_REMOVE_CONST(decltype(ToU)), QP::quantity_spec> &&
            RepresentationOf<ToRep, QP::quantity_spec> && std::constructible_from<ToRep, typename QP::rep> &&
-           detail::SaneScaling<QP::unit, ToU, ToRep>
+           detail::ExplicitlyCastable<QP::unit, ToU, ToRep>
 [[nodiscard]] constexpr QuantityPoint auto value_cast(FwdQP&& qp)
 {
   return quantity_point{
@@ -216,7 +257,7 @@ template<Unit auto ToU, typename ToRep, typename FwdQP, QuantityPoint QP = std::
 template<typename ToRep, Unit auto ToU, typename FwdQP, QuantityPoint QP = std::remove_cvref_t<FwdQP>>
   requires UnitOf<MP_UNITS_REMOVE_CONST(decltype(ToU)), QP::quantity_spec> &&
            RepresentationOf<ToRep, QP::quantity_spec> && std::constructible_from<ToRep, typename QP::rep> &&
-           detail::SaneScaling<QP::unit, ToU, ToRep>
+           detail::ExplicitlyCastable<QP::unit, ToU, ToRep>
 [[nodiscard]] constexpr QuantityPoint auto value_cast(FwdQP&& qp)
 {
   return value_cast<ToU, ToRep>(std::forward<FwdQP>(qp));
@@ -241,7 +282,7 @@ template<typename ToRep, Unit auto ToU, typename FwdQP, QuantityPoint QP = std::
 template<Quantity ToQ, typename FwdQP, QuantityPoint QP = std::remove_cvref_t<FwdQP>>
   requires(ToQ::quantity_spec == QP::quantity_spec) && UnitOf<MP_UNITS_NONCONST_TYPE(ToQ::unit), QP::quantity_spec> &&
           std::constructible_from<typename ToQ::rep, typename QP::rep> &&
-          detail::SaneScaling<QP::unit, ToQ::unit, typename ToQ::rep>
+          detail::ExplicitlyCastable<QP::unit, ToQ::unit, typename ToQ::rep>
 [[nodiscard]] constexpr QuantityPoint auto value_cast(FwdQP&& qp)
 {
   return quantity_point{value_cast<ToQ>(std::forward<FwdQP>(qp).quantity_from_origin_is_an_implementation_detail_),
@@ -280,7 +321,7 @@ template<QuantityPoint ToQP, typename FwdQP, QuantityPoint QP = std::remove_cvre
   requires(ToQP::quantity_spec == QP::quantity_spec) && UnitOf<MP_UNITS_NONCONST_TYPE(ToQP::unit), QP::quantity_spec> &&
           (detail::same_absolute_point_origins(ToQP::point_origin, QP::point_origin)) &&
           std::constructible_from<typename ToQP::rep, typename QP::rep> &&
-          detail::SaneScaling<QP::unit, ToQP::unit, typename ToQP::rep>
+          detail::ExplicitlyCastable<QP::unit, ToQP::unit, typename ToQP::rep>
 [[nodiscard]] constexpr QuantityPoint auto value_cast(FwdQP&& qp)
 {
   return detail::sudo_cast<ToQP>(std::forward<FwdQP>(qp));

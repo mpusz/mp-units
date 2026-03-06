@@ -56,8 +56,9 @@ quantity<si::kilo<si::metre>> q2 = q1;  // double by default
 !!! important
 
     The **mp-units** library follows [`std::chrono::duration`](https://en.cppreference.com/w/cpp/chrono/duration)
-    logic and treats floating-point types as
-    [value-preserving](../../how_to_guides/integration/using_custom_representation_types.md#is_value_preserving).
+    logic and treats floating-point types as implicitly convertible to any unit —
+    see [`implicitly_scalable`](../../how_to_guides/integration/using_custom_representation_types.md#implicitly_scalable)
+    for details.
 
 
 ## Value-truncating conversions
@@ -196,6 +197,77 @@ origin point may require an addition of a potentially large offset (the differen
 the origin points), which may well be outside the range of one or both quantity types.
 
 
+## Integer scaling: fixed-point arithmetic
+
+When both the source and target representation are integral types, unit conversions with
+a non-integer conversion factor (e.g. `deg → grad`, factor 10/9) raise two challenges
+that a naive implementation cannot handle correctly:
+
+- **Intermediate overflow** — computing `value × num / den` in `intmax_t` overflows for
+  large values even when the final result fits in the representation type, producing
+  silently wrong results:
+
+    ```cpp
+    // deg -> grad: factor 10/9
+    // A naive implementation multiplies first: 1e18 * 10 overflows int64_t (max ≈ 9.22e18):
+    quantity q = (std::int64_t{1'000'000'000'000'000'000} * deg).force_in(grad);
+    // Expected:          1'111'111'111'111'111'111ᵍ
+    // Naive result:       -938'527'119'301'061'290ᵍ (silent undefined behaviour)
+    // mp-units result:   1'111'111'111'111'111'111ᵍ (correct)
+    ```
+
+- **Floating-point dependency** — conversions involving irrational factors (e.g. `deg → rad`,
+  factor `π/180`) require a `double` intermediate in a naive implementation.  This fails
+  silently on FPU-less embedded targets and loses precision for 64-bit integer values
+  (a `double` has only 53 bits of mantissa).
+
+Both challenges are addressed by using **fixed-point arithmetic**: the conversion factor is
+represented at compile time as a double-width integer constant, so the runtime computation
+is a pure integer multiply followed by a right-shift with no risk of intermediate overflow
+and no floating-point operations.
+
+??? info "Implementation details"
+
+    The library distinguishes three sub-cases based on the magnitude $M$ that relates the
+    two units:
+
+    | Case              | Condition                 | Example                    | Operation            | Conversion |
+    |-------------------|---------------------------|----------------------------|----------------------|:----------:|
+    | Integral factor   | $M \in \mathbb{Z}^+$      | `m → mm` ($\times 1000$)   | `value * M`          |  implicit  |
+    | Integral divisor  | $M^{-1} \in \mathbb{Z}^+$ | `mm → m` ($\div 1000$)     | `value / M`          |  explicit  |
+    | Non-integer ratio | otherwise                 | `ft → m` ($\times 0.3048$) | fixed-point multiply |  explicit  |
+
+    For the non-integer case the magnitude is converted **at compile time** to a
+    fixed-point constant with double the bit-width of the representation type.  For
+    example, when scaling a 32-bit integer value, a 64-bit fixed-point intermediate is
+    used.  The actual runtime computation is then a pure integer multiply followed by a
+    right-shift:
+
+    $$
+    \text{result} = \left\lfloor \text{value} \times \lfloor M \cdot 2^N \rfloor \right\rfloor \gg N
+    $$
+
+    where $N$ equals the bit-width of the source representation type.  On platforms where
+    `__int128` is available (most 64-bit targets), the double-width arithmetic is
+    implemented natively; on others, a portable `double_width_int` emulation is used in
+    `constexpr` context.
+
+    Because the intermediate is double-width, it cannot overflow as long as the input
+    value fits in the representation type — a value of `std::int64_t` will never silently
+    overflow during the multiplication step.
+
+    For the non-integer ratio path, the result is **truncated toward zero**.  The
+    fixed-point constant is rounded *away* from zero at compile time to compensate for
+    one level of double-rounding, keeping the maximum error within 1 ULP of the true
+    result (i.e. at most ±1 relative to the last bit of the output).
+
+    !!! hint
+
+        Chained conversions can accumulate this truncation error additively.  Where exact
+        round-trip behavior is required, prefer floating-point representations or perform
+        conversions in a single step rather than via an intermediate unit.
+
+
 ## Scaling overflow prevention
 
 In the case of small integral types, it is easy to overflow the representation type for
@@ -218,6 +290,14 @@ larger than the maximum value that can be stored in `std::int8_t`. Even if we wa
 convert the smallest possible integral amount (e.g., `1 km`), we will overflow the quantity
 representation type. We decided not to allow such conversions for safety reasons despite
 the value of `0 km` would work.
+
+
+## Custom representation types
+
+For information on how to integrate a custom representation type with the quantity
+conversion machinery — including how to provide a `scaling_traits<From, To>` specialization
+and `implicitly_scalable<FromUnit, FromRep, ToUnit, ToRep>` — see
+[Using Custom Representation Types](../../how_to_guides/integration/using_custom_representation_types.md#scaling_traits).
 
 
 ## Value conversions summary

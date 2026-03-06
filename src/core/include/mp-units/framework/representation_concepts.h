@@ -66,9 +66,6 @@ MP_UNITS_EXPORT enum class quantity_character : std::int8_t { real_scalar, compl
 
 namespace detail {
 
-template<typename T>
-concept WeaklyRegular = std::copyable<T> && std::equality_comparable<T>;
-
 template<typename T, typename S>
 concept ScalableWith = requires(const T v, const S s) {
   { v * s / s } -> std::common_with<T>;
@@ -207,13 +204,16 @@ concept ComplexScalar = requires(const T v, const T& ref) {
 /**
  * @brief MagnitudeScalable
  *
- * A type is `MagnitudeScalable` if it supports scaling by a unit magnitude, i.e. there is a
- * customization point `scaling_traits<T, To>` that provides a `scale` member function.
+ * A type is `MagnitudeScalable` if it can be scaled by a unit magnitude, i.e.
+ * `mp_units::scaling_traits<T, T>::scale<M>(value)` is well-formed and returns something
+ * convertible to `T`.  This covers:
+ * - the library's built-in floating-point scaling (treat_as_floating_point types),
+ * - the library's built-in fixed-point integer scaling, and
+ * - any user-provided `mp_units::scaling_traits<T, T>` specialization.
  */
 template<typename T>
 concept MagnitudeScalable = WeaklyRegular<T> && requires(T a) {
-  // TODO: We could additionally check the return type here (e.g. std::same_as<T>)
-  { mp_units::scale<T>(mag<1>, a) } -> std::convertible_to<T>;
+  { scaling_traits<T, T>::template scale<mp_units::mag<1>>(a) } -> std::convertible_to<T>;
 };
 
 template<typename T>

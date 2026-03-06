@@ -91,6 +91,24 @@ TEST_CASE("value_cast should not truncate for valid inputs", "[value_cast]")
     REQUIRE_THAT(value_cast<hrev>(63 * rad), AlmostEquals(20 * hrev));
     REQUIRE_THAT(value_cast<hrev>(126 * rad), AlmostEquals(40 * hrev));
   }
+
+  SECTION("rational > 1, irrational < 1")
+  {
+    // rad -> deg: factor = 180/π ≈ 57.296
+    REQUIRE_THAT(value_cast<deg>(1 * rad), AlmostEquals(57 * deg));
+    REQUIRE_THAT(value_cast<deg>(3 * rad), AlmostEquals(171 * deg));
+    REQUIRE_THAT(value_cast<deg>(6 * rad), AlmostEquals(343 * deg));
+    REQUIRE_THAT(value_cast<deg>(9 * rad), AlmostEquals(515 * deg));
+  }
+
+  SECTION("rational < 1, irrational > 1")
+  {
+    // deg -> rad: factor = π/180 ≈ 0.01745
+    REQUIRE_THAT(value_cast<rad>(180 * deg), AlmostEquals(3 * rad));
+    REQUIRE_THAT(value_cast<rad>(360 * deg), AlmostEquals(6 * rad));
+    REQUIRE_THAT(value_cast<rad>(540 * deg), AlmostEquals(9 * rad));
+    REQUIRE_THAT(value_cast<rad>(1080 * deg), AlmostEquals(18 * rad));
+  }
 }
 
 
@@ -123,6 +141,22 @@ TEMPLATE_TEST_CASE("value_cast should not overflow internally for valid inputs",
       INFO(MP_UNITS_STD_FMT::format("{} rev ~ {} rad", rev_number, rad_number));
       REQUIRE_THAT(value_cast<rad>(rev_number * rev), AlmostEquals(rad_number * rad));
       REQUIRE_THAT(value_cast<rev>(rad_number * rad), AlmostEquals(rev_number * rev));
+    }
+
+    SECTION("deg -> rad")
+    {
+      // The factor π/180 has rational numerator 1, so the compile-time
+      // scaling_overflows_non_zero_values check passes for all integral
+      // representation types — any degree value can be converted to radians
+      // without internal intermediate overflow.
+      // (The reverse, rad -> deg, has factor 180/π whose rational numerator 180
+      //  exceeds the range of int8_t, so that direction is correctly rejected at
+      //  compile time for that type and is covered by the narrower-value tests
+      //  for types where 180 fits within the range.)
+      auto deg_number = tv;
+      auto rad_number = static_cast<TestType>(std::trunc(std::numbers::pi / 180.0 * deg_number));
+      INFO(MP_UNITS_STD_FMT::format("{} deg ~ {} rad", deg_number, rad_number));
+      REQUIRE_THAT(value_cast<rad>(deg_number * deg), AlmostEquals(rad_number * rad));
     }
   }
 }
