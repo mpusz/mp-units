@@ -1789,27 +1789,59 @@ static_assert(value_cast_is_forbidden<quantity_point<m>, quantity_point<isq::wid
               "value_cast shall not cast between different quantity types");
 static_assert(value_cast_is_forbidden<quantity_point<isq::width[m]>, quantity_point<m>>(),
               "value_cast shall not cast between different quantity types");
-// value_cast which does not touch the point_origin
+// value_cast which does not touch the point_origin (branch 1: same origin, delegates to quantity sudo_cast)
 static_assert(value_cast<quantity_point<isq::height[m]>>(quantity_point{2 * isq::height[km]})
                 .quantity_from_origin_is_an_implementation_detail_.numerical_value_in(m) == 2000);
 static_assert(value_cast<quantity_point<isq::height[km]>>(quantity_point{2000 * isq::height[m]})
                 .quantity_from_origin_is_an_implementation_detail_.numerical_value_in(km) == 2);
-// a value_cast which includes a change to the point origin
+
+// value_cast which changes only the point origin, same unit (branch 2: no unit scaling, pure origin shift)
+// -- floating-point intermediate (int input, default double output)
 static_assert(value_cast<quantity_point<isq::height[m], mean_sea_level>>(quantity_point{2000 * isq::height[m],
                                                                                         ground_level})
                 .quantity_from_origin_is_an_implementation_detail_.numerical_value_in(m) == 2042);
-// a value_cast which includes a change to the point origin as-well as a change in units
+// -- integer intermediate: both reps are int, no promotion to double
+static_assert(value_cast<quantity_point<isq::height[m], mean_sea_level, int>>(quantity_point{int{2000} * isq::height[m],
+                                                                                             ground_level})
+                .quantity_from_origin_is_an_implementation_detail_.numerical_value_in(m) == 2042);
+static_assert(value_cast<quantity_point<isq::height[m], ground_level, int>>(quantity_point{int{2042} * isq::height[m],
+                                                                                           mean_sea_level})
+                .quantity_from_origin_is_an_implementation_detail_.numerical_value_in(m) == 2000);
+// -- double intermediate with a fractional value
+static_assert(value_cast<quantity_point<isq::height[m], mean_sea_level, double>>(quantity_point{2000.5 * isq::height[m],
+                                                                                                ground_level})
+                .quantity_from_origin_is_an_implementation_detail_.numerical_value_in(m) == 2042.5);
+
+// value_cast which changes both unit and point origin with a floating-point intermediate
+// (branch 3: point_for path avoids FP precision loss when computing the offset in the intermediate unit)
+// -- from-unit is larger (km→m): intermediate stays in km, then point_for shifts to MSL
 static_assert(value_cast<quantity_point<isq::height[m], mean_sea_level>>(quantity_point{2 * isq::height[km],
                                                                                         ground_level})
                 .quantity_from_origin_is_an_implementation_detail_.numerical_value_in(m) == 2042);
-// a value_cast which changes all three of unit, rep, point_origin simultaneously, and the range of either FromQP or
-// ToQP does not include the other's point_origin
+// -- to-unit is larger (m→km): intermediate moves to km; 2000.0 m → 2.0 km, then +42 m → 2042.0 m → 2.042 km
+static_assert(value_cast<quantity_point<isq::height[km], mean_sea_level>>(quantity_point{2000.0 * isq::height[m],
+                                                                                         ground_level})
+                .quantity_from_origin_is_an_implementation_detail_.numerical_value_in(km) == 2.042);
+
+// value_cast which changes unit, rep, and point origin with an integer intermediate (branches 4 & 5)
+// -- branch 4: offset fits in output unit → use output unit as intermediate
+//    c_rep_type = common_type<int8_t, int> = int; offset = +42 m = 4200 cm fits in int
+//    100 mm from ground_level = 10 cm; 10 cm + 4200 cm = 4210 cm from MSL
 static_assert(value_cast<quantity_point<isq::height[cm], mean_sea_level, int>>(
                 quantity_point{std::int8_t{100} * isq::height[mm], ground_level})
                 .quantity_from_origin_is_an_implementation_detail_.numerical_value_in(cm) == 4210);
+// -- branch 4 reversed: c_rep_type = common_type<int, int8_t> = int; offset = −42 m = −42000 mm fits in int
+//    4210 cm from MSL = 42100 mm; 42100 mm + (−42000 mm) = 100 mm from ground_level
 static_assert(value_cast<quantity_point<isq::height[mm], ground_level, std::int8_t>>(
                 quantity_point{4210 * isq::height[cm], mean_sea_level})
                 .quantity_from_origin_is_an_implementation_detail_.numerical_value_in(mm) == 100);
+// -- branch 5: offset overflows output unit → fall back to input unit
+//    c_rep_type = common_type<int16_t, int16_t> = int16_t (range −32768..32767)
+//    offset in mm (output unit) = −42000 mm < −32768 → overflows int16_t → fall back to m (input unit)
+//    offset in m = −42 fits in int16_t; 43 m + (−42 m) = 1 m from ground_level = 1000 mm
+static_assert(value_cast<quantity_point<isq::height[mm], ground_level, std::int16_t>>(
+                quantity_point{std::int16_t{43} * isq::height[m], mean_sea_level})
+                .quantity_from_origin_is_an_implementation_detail_.numerical_value_in(mm) == 1000);
 
 //////////////////
 // explicit conversion

@@ -121,40 +121,99 @@ template<QuantityPoint ToQP, typename FwdFromQP, QuantityPoint FromQP = std::rem
 [[nodiscard]] constexpr QuantityPoint auto sudo_cast(FwdFromQP&& qp)
 {
   if constexpr (is_same_v<MP_UNITS_NONCONST_TYPE(ToQP::point_origin), MP_UNITS_NONCONST_TYPE(FromQP::point_origin)>) {
+    // Same origin: delegate entirely to the quantity sudo_cast — no offset arithmetic needed.
     return quantity_point{
       sudo_cast<typename ToQP::quantity_type>(std::forward<FwdFromQP>(qp).quantity_from(FromQP::point_origin)),
-      FromQP::point_origin};
+      ToQP::point_origin};
   } else {
-    // it's unclear how hard we should try to avoid truncation here. For now, the only corner case we cater for,
-    // is when the range of the quantity type of at most one of QP or ToQP doesn't cover the offset between the
-    // point origins. In that case, we need to be careful to ensure we use the quantity type with the larger range
-    // of the two to perform the point_origin conversion.
+    // Different origins: we need to (a) convert the rep/unit, (b) add the origin offset.
+    // The order and intermediate unit choice matters for accuracy and overflow avoidance.
+    //
+    // Strategy: pick an intermediate unit/rep, then compute:
+    //   result = sudo_cast<intermediate>(input_quantity) + offset
+    // where offset is the static difference between the two origins expressed in the
+    // intermediate unit.  Finally, sudo_cast the sum to the target type.
+    //
     // Numerically, we'll potentially need to do three things:
     //  (a) cast the representation type
     //  (b) scale the numerical value
     //  (c) add/subtract the origin difference
-    // In the following, we carefully select the order of these three operations: each of (a) and (b) is scheduled
-    // either before or after (c), such that (c) acts on the largest range possible among all combination of source
-    // and target unit and representation.
+    // The intermediate unit determines the order of (b) and (c).
+
     constexpr UnitMagnitude auto c_mag =
       mp_units::get_canonical_unit(FromQP::unit).mag / mp_units::get_canonical_unit(ToQP::unit).mag;
     using type_traits = conversion_type_traits<c_mag, typename FromQP::rep, typename ToQP::rep>;
+    using c_rep_type = type_traits::c_rep_type;
     using c_type = type_traits::c_type;
-    if constexpr (get_value<long double>(c_mag) > 1.) {
-      // original unit had a larger unit magnitude; if we first convert to the common representation but retain the
-      // unit, we obtain the largest possible range while not causing truncation of fractional values. This is optimal
-      // for the offset computation.
-      return sudo_cast<ToQP>(
-        sudo_cast<quantity_point<FromQP::reference, FromQP::point_origin, c_type>>(std::forward<FwdFromQP>(qp))
-          .point_for(ToQP::point_origin));
+
+    // Helper: statically compute the origin offset expressed in the given quantity type Q.
+    // We go via quantity_point subtraction to handle all origin relationships correctly,
+    // including cases where two zeroth_point_origins of different units exist.
+    constexpr auto offset_as = [&]<typename Q>(std::type_identity<Q>) {
+      constexpr auto zero = typename Q::rep{0} * Q::reference;
+      return sudo_cast<Q>(quantity_point{zero, FromQP::point_origin} - quantity_point{zero, ToQP::point_origin});
+    };
+
+    constexpr auto output_unit_ref = make_reference(FromQP::quantity_spec, ToQP::unit);
+
+    if constexpr (equivalent(FromQP::unit, ToQP::unit)) {
+      // Same unit, different origin: no scaling needed — add the offset directly in the
+      // common rep without any unit conversion.  This is always exact.
+      using intermediate_type = quantity<FromQP::reference, c_rep_type>;
+      constexpr auto offset = offset_as(std::type_identity<intermediate_type>{});
+      return quantity_point{
+        sudo_cast<typename ToQP::quantity_type>(
+          sudo_cast<intermediate_type>(std::forward<FwdFromQP>(qp).quantity_from(FromQP::point_origin)) + offset),
+        ToQP::point_origin};
+    } else if constexpr (treat_as_floating_point<c_type>) {
+      // Floating-point intermediate: prefer the larger unit to minimise the magnitude of scaling
+      // applied to the input value, then use point_for to let the library's common-unit quantity
+      // arithmetic handle the origin offset (e.g. 2.0 km + 42 m → 2042.0 m, not 2.0 + 0.042 km).
+      // This avoids the FP precision loss that would occur if we expressed the offset explicitly
+      // in the intermediate unit.
+      constexpr auto intermediate_ref = [&]() {
+        if constexpr (!is_integral(pow<-1>(c_mag)))
+          return FromQP::reference;  // from-unit is larger
+        else
+          return output_unit_ref;  // to-unit is larger (or equal)
+      }();
+      using intermediate_type = quantity<intermediate_ref, c_type>;
+      return quantity_point{
+        sudo_cast<typename ToQP::quantity_type>(
+          quantity_point{sudo_cast<intermediate_type>(std::forward<FwdFromQP>(qp).quantity_from(FromQP::point_origin)),
+                         FromQP::point_origin}
+            .point_for(ToQP::point_origin)
+            .quantity_from(ToQP::point_origin)),
+        ToQP::point_origin};
     } else {
-      // new unit may have a larger unit magnitude; we first need to convert to the new unit (potentially causing
-      // truncation, but no more than if we did the conversion later), but make sure we keep the larger of the two
-      // representation types. Then, we can perform the offset computation.
-      return sudo_cast<ToQP>(
-        sudo_cast<quantity_point<make_reference(FromQP::quantity_spec, ToQP::unit), FromQP::point_origin, c_type>>(
-          std::forward<FwdFromQP>(qp))
-          .point_for(ToQP::point_origin));
+      // Integer intermediate: use the output unit so the result is already in the right
+      // unit before add, giving the most-accurate truncation.  However, if the offset
+      // would overflow in the output unit (e.g. because it was defined in a larger one),
+      // fall back to the input unit.
+      //
+      // Detect overflow by computing the offset in long double expressed in the output unit
+      // and comparing against the representable range of c_rep_type.
+      constexpr long double offset_in_output_ld =
+        offset_as(std::type_identity<quantity<output_unit_ref, long double>>{}).numerical_value_in(ToQP::unit);
+      constexpr bool offset_fits_in_output =
+        offset_in_output_ld >= static_cast<long double>(std::numeric_limits<c_rep_type>::min()) &&
+        offset_in_output_ld <= static_cast<long double>(std::numeric_limits<c_rep_type>::max());
+      if constexpr (offset_fits_in_output) {
+        using intermediate_type = quantity<output_unit_ref, c_rep_type>;
+        constexpr auto offset = offset_as(std::type_identity<intermediate_type>{});
+        return quantity_point{
+          sudo_cast<typename ToQP::quantity_type>(
+            sudo_cast<intermediate_type>(std::forward<FwdFromQP>(qp).quantity_from(FromQP::point_origin)) + offset),
+          ToQP::point_origin};
+      } else {
+        // offset overflows in the output unit — use the input unit instead
+        using intermediate_type = quantity<FromQP::reference, c_rep_type>;
+        constexpr auto offset = offset_as(std::type_identity<intermediate_type>{});
+        return quantity_point{
+          sudo_cast<typename ToQP::quantity_type>(
+            sudo_cast<intermediate_type>(std::forward<FwdFromQP>(qp).quantity_from(FromQP::point_origin)) + offset),
+          ToQP::point_origin};
+      }
     }
   }
 }
