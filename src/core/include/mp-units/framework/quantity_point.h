@@ -325,29 +325,28 @@ public:
 
   // unit conversions
   template<UnitOf<quantity_spec> ToU>
-    requires detail::ValuePreservingScaling<unit, ToU{}, rep>
+    requires detail::ImplicitScaling<unit, ToU{}, rep>
   [[nodiscard]] constexpr QuantityPointOf<quantity_spec> auto in(ToU) const
   {
     return ::mp_units::quantity_point{quantity_ref_from(point_origin).in(ToU{}), point_origin};
   }
 
   template<RepresentationOf<quantity_spec> ToRep>
-    requires detail::ValuePreservingConstruction<ToRep, rep>
+    requires detail::RepConvertibleFrom<ToRep, rep>
   [[nodiscard]] constexpr QuantityPointOf<quantity_spec> auto in() const
   {
     return ::mp_units::quantity_point{quantity_ref_from(point_origin).template in<ToRep>(), point_origin};
   }
 
   template<RepresentationOf<quantity_spec> ToRep, UnitOf<quantity_spec> ToU>
-    requires detail::ValuePreservingConstruction<ToRep, rep> &&
-             detail::ValuePreservingConversion<unit, rep, ToU{}, ToRep>
+    requires detail::RepConvertibleFrom<ToRep, rep> && detail::ImplicitConversion<unit, rep, ToU{}, ToRep>
   [[nodiscard]] constexpr QuantityPointOf<quantity_spec> auto in(ToU) const
   {
     return ::mp_units::quantity_point{quantity_ref_from(point_origin).template in<ToRep>(ToU{}), point_origin};
   }
 
   template<UnitOf<quantity_spec> ToU>
-    requires detail::SaneScaling<unit, ToU{}, rep>
+    requires detail::ExplicitlyCastable<unit, ToU{}, rep>
   [[nodiscard]] constexpr QuantityPointOf<quantity_spec> auto force_in(ToU) const
   {
     return ::mp_units::quantity_point{quantity_ref_from(point_origin).force_in(ToU{}), point_origin};
@@ -361,7 +360,7 @@ public:
   }
 
   template<RepresentationOf<quantity_spec> ToRep, UnitOf<quantity_spec> ToU>
-    requires std::constructible_from<ToRep, rep> && detail::SaneScaling<unit, ToU{}, rep>
+    requires std::constructible_from<ToRep, rep> && detail::ExplicitlyCastable<unit, ToU{}, rep>
   [[nodiscard]] constexpr QuantityPointOf<quantity_spec> auto force_in(ToU) const
   {
     return ::mp_units::quantity_point{quantity_ref_from(point_origin).template force_in<ToRep>(ToU{}), point_origin};
@@ -434,7 +433,7 @@ public:
   // compound assignment operators
   template<auto R2, typename Rep2>
     requires(mp_units::implicitly_convertible(get_quantity_spec(R2), quantity_spec)) &&
-            detail::ValuePreservingConversion<get_unit(R2), Rep2, unit, rep> &&
+            detail::ImplicitConversion<get_unit(R2), Rep2, unit, rep> &&
             requires(const quantity_type q) { quantity_from_origin_is_an_implementation_detail_ += q; }
   constexpr quantity_point& operator+=(const quantity<R2, Rep2>& q) &
   {
@@ -444,7 +443,7 @@ public:
 
   template<auto R2, typename Rep2>
     requires(mp_units::implicitly_convertible(get_quantity_spec(R2), quantity_spec)) &&
-            detail::ValuePreservingConversion<get_unit(R2), Rep2, unit, rep> &&
+            detail::ImplicitConversion<get_unit(R2), Rep2, unit, rep> &&
             requires(const quantity_type q) { quantity_from_origin_is_an_implementation_detail_ -= q; }
   constexpr quantity_point& operator-=(const quantity<R2, Rep2>& q) &
   {

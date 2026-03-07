@@ -85,7 +85,7 @@ truncation and is blocked - even without changing units!
     You can customize this behavior with:
 
     - `treat_as_floating_point<Rep>`: Tells the library if a type should be treated as floating-point
-    - `is_value_preserving<From, To>`: Determines if a conversion preserves values
+    - `implicitly_scalable<FromUnit, FromRep, ToUnit, ToRep>`: Controls whether a specific conversion is implicit or explicit
 
     By default, **mp-units** uses `std::chrono::duration`-like logic for these.
 

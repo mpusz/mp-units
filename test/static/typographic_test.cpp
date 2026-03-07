@@ -52,8 +52,10 @@ static_assert(isq::length(4 * h) == 1 * si::milli<si::metre>);
 static_assert(isq::length(1 * q) == isq::length(1 * h));
 static_assert(isq::length(1 * Q) == isq::length(1 * H));
 
-// TeX point
-static_assert(isq::length(72.27 * tex_point).numerical_value_in(in) == 1);
-static_assert(isq::length(72.27 * pt_tex).numerical_value_in(in) == 1);
+// The TeX point is defined as exactly 100/7227 of an inch, so 7227 tex points = 100 inches.
+// Avoid floating-point 72.27 (which is not exactly representable as double) and use the
+// exact integer equivalents instead.
+static_assert(value_cast<in>(7227 * tex_point).numerical_value_in(in) == 100);
+static_assert(value_cast<in>(7227 * pt_tex).numerical_value_in(in) == 100);
 
 }  // namespace

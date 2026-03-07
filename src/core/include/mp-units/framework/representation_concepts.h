@@ -26,6 +26,8 @@
 #include <mp-units/bits/module_macros.h>
 #include <mp-units/framework/customization_points.h>
 #include <mp-units/framework/quantity_spec_concepts.h>
+#include <mp-units/framework/scaling.h>
+#include <mp-units/framework/unit_magnitude.h>
 
 #ifndef MP_UNITS_IN_MODULE_INTERFACE
 #ifdef MP_UNITS_IMPORT_STD
@@ -63,9 +65,6 @@ namespace mp_units {
 MP_UNITS_EXPORT enum class quantity_character : std::int8_t { real_scalar, complex_scalar, vector, tensor };
 
 namespace detail {
-
-template<typename T>
-concept WeaklyRegular = std::copyable<T> && std::equality_comparable<T>;
 
 template<typename T, typename S>
 concept ScalableWith = requires(const T v, const S s) {
@@ -201,6 +200,21 @@ concept ComplexScalar = requires(const T v, const T& ref) {
   ::mp_units::modulus(v);
   requires ScalableWith<T, decltype(::mp_units::modulus(v))>;
 } && BaseScalar<T>;
+
+/**
+ * @brief MagnitudeScalable
+ *
+ * A type is `MagnitudeScalable` if it can be scaled by a unit magnitude, i.e.
+ * `mp_units::scaling_traits<T, T>::scale<M>(value)` is well-formed and returns something
+ * convertible to `T`.  This covers:
+ * - the library's built-in floating-point scaling (treat_as_floating_point types),
+ * - the library's built-in fixed-point integer scaling, and
+ * - any user-provided `mp_units::scaling_traits<T, T>` specialization.
+ */
+template<typename T>
+concept MagnitudeScalable = WeaklyRegular<T> && requires(T a) {
+  { scaling_traits<T, T>::template scale<mp_units::mag<1>>(a) } -> std::convertible_to<T>;
+};
 
 template<typename T>
 concept Scalar = RealScalar<T> || ComplexScalar<T>;

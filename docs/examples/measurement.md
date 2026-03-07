@@ -53,11 +53,23 @@ projects:
 
 ### Integration with mp-units
 
-To use a custom type as a quantity representation, it must satisfy the `RepresentationOf`
-concept. The library verifies this at compile time:
+To use `measurement<T>` as a quantity representation, two things must be provided.
+
+First, a `scaling_traits` specialization that teaches the library how to scale a
+`measurement<T>` to a `measurement<U>` by a unit magnitude:
 
 ```cpp title="measurement.cpp"
---8<-- "example/measurement.cpp:47:48"
+--8<-- "example/measurement.cpp:46:53"
+```
+
+The `scale<U>(M, value)` call recurses into the built-in `scaling_traits` for the
+underlying scalar type `T` → `U`, so uncertainty propagation is exact and type-safe.
+
+Second, the library verifies at compile time that `measurement<T>` satisfies the
+`RepresentationOf` concept:
+
+```cpp title="measurement.cpp"
+--8<-- "example/measurement.cpp:55:58"
 ```
 
 This allows `measurement<T>` to be used seamlessly with any **mp-units** quantity type.
@@ -69,7 +81,7 @@ This allows `measurement<T>` to be used seamlessly with any **mp-units** quantit
 The example demonstrates various uncertainty propagation scenarios:
 
 ```cpp title="measurement.cpp"
---8<-- "example/measurement.cpp:50:77"
+--8<-- "example/measurement.cpp:62:85"
 ```
 
 This showcases:

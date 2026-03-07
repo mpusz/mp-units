@@ -42,8 +42,18 @@ import mp_units;
 #include <mp-units/systems/si.h>
 #endif
 
-namespace {
 
+template<typename T, typename U>
+struct mp_units::scaling_traits<measurement<T>, measurement<U>> {
+  template<auto M>
+  [[nodiscard]] static constexpr measurement<U> scale(const measurement<T>& value)
+  {
+    return measurement<U>(mp_units::scale<U>(M, value.value()), mp_units::scale<U>(M, value.uncertainty()));
+  }
+};
+
+static_assert(mp_units::RepresentationOf<measurement<int>, mp_units::quantity_character::real_scalar>);
+static_assert(mp_units::RepresentationOf<measurement<int>, mp_units::quantity_character::vector>);
 static_assert(mp_units::RepresentationOf<measurement<double>, mp_units::quantity_character::real_scalar>);
 static_assert(mp_units::RepresentationOf<measurement<double>, mp_units::quantity_character::vector>);
 
@@ -74,8 +84,6 @@ void example()
   const auto radius_from_area = sqrt(area_measured / π);
   std::cout << "Radius from area:       A = " << area_measured << " -> r = √(A/π) = " << radius_from_area << '\n';
 }
-
-}  // namespace
 
 int main()
 {

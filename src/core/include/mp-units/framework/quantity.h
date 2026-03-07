@@ -72,47 +72,45 @@ struct zero {
   }
 };
 
-template<Unit UFrom, Unit UTo>
-[[nodiscard]] consteval bool integral_conversion_factor(UFrom from, UTo to)
-{
-  if constexpr (is_same_v<UFrom, UTo>)
-    return true;
-  else
-    return is_integral(mp_units::get_canonical_unit(from).mag / mp_units::get_canonical_unit(to).mag);
-}
 
 template<typename T, typename Arg>
-concept ValuePreservingConstruction =
-  std::constructible_from<T, Arg> && is_value_preserving<std::remove_cvref_t<Arg>, T>;
+concept RepConvertibleFrom =
+  std::constructible_from<T, Arg> &&
+  (treat_as_floating_point<T> || !treat_as_floating_point<std::remove_cvref_t<Arg>> ||
+   unsatisfied<"Implicit conversion from floating-point '{}' to non-floating-point '{}' is truncating">(
+     type_name<std::remove_cvref_t<Arg>>(), type_name<T>()));
 
 template<typename T, typename Arg>
-concept ValuePreservingAssignment = std::assignable_from<T&, Arg> && is_value_preserving<std::remove_cvref_t<Arg>, T>;
+concept RepAssignableFrom =
+  std::assignable_from<T&, Arg> &&
+  (treat_as_floating_point<T> || !treat_as_floating_point<std::remove_cvref_t<Arg>> ||
+   unsatisfied<"Implicit assignment from floating-point '{}' to non-floating-point '{}' is truncating">(
+     type_name<std::remove_cvref_t<Arg>>(), type_name<T>()));
 
 template<auto FromUnit, auto ToUnit, typename Rep>
-concept ValuePreservingScaling =
-  SaneScaling<FromUnit, ToUnit, Rep> &&
-  (treat_as_floating_point<Rep> || integral_conversion_factor(FromUnit, ToUnit) ||
-   unsatisfied<"Scaling from '{}' to '{}' is not value-preserving for '{}' representation type">(
-     unit_symbol(FromUnit), unit_symbol(ToUnit), type_name<Rep>()));
+concept ImplicitScaling = ExplicitlyCastable<FromUnit, ToUnit, Rep> &&
+                          (mp_units::implicitly_scalable<FromUnit, Rep, ToUnit, Rep> ||
+                           unsatisfied<"Scaling from '{}' to '{}' is truncating for '{}' representation type">(
+                             unit_symbol(FromUnit), unit_symbol(ToUnit), type_name<Rep>()));
 
 template<auto FromUnit, typename FromRep, auto ToUnit, typename ToRep>
-concept ValuePreservingConversion =
-  // TODO consider providing constraints of sudo_cast to check if representation types can be scaled between each other
-  //  CastableReps<FromRep, ToRep, FromUnit, ToUnit> &&
-  SaneScaling<FromUnit, ToUnit, ToRep> &&
-  (treat_as_floating_point<ToRep> ||
-   (!treat_as_floating_point<FromRep> && integral_conversion_factor(FromUnit, ToUnit)) ||
-   unsatisfied<"Scaling from '{}' as '{}' to '{}' as '{}' is not value-preserving">(
-     unit_symbol(FromUnit), type_name<FromRep>(), unit_symbol(ToUnit), type_name<ToRep>()));
+concept ImplicitConversion = ExplicitlyCastable<FromUnit, ToUnit, ToRep> &&
+                             (mp_units::implicitly_scalable<FromUnit, FromRep, ToUnit, ToRep> ||
+                              unsatisfied<"Conversion from '{}' as '{}' to '{}' as '{}' is truncating">(
+                                unit_symbol(FromUnit), type_name<FromRep>(), unit_symbol(ToUnit), type_name<ToRep>()));
 
 template<typename QTo, typename QFrom>
 concept QuantityConstructibleFrom =
   Quantity<QTo> && Quantity<QFrom> && mp_units::explicitly_convertible(QFrom::quantity_spec, QTo::quantity_spec) &&
-  ValuePreservingConstruction<typename QTo::rep, typename QFrom::rep> &&
-  ValuePreservingConversion<QFrom::unit, typename QFrom::rep, QTo::unit, typename QTo::rep>;
+  RepConvertibleFrom<typename QTo::rep, typename QFrom::rep> &&
+  ImplicitConversion<QFrom::unit, typename QFrom::rep, QTo::unit, typename QTo::rep>;
 
 template<typename T, typename Rep>
-concept ScalarValuePreservingTo = (!Quantity<T>) && Scalar<T> && is_value_preserving<T, Rep>;
+concept ScalarRepConvertible =
+  (!Quantity<T>) && Scalar<T> &&
+  (treat_as_floating_point<Rep> || !treat_as_floating_point<T> ||
+   unsatisfied<"Scaling a non-floating-point '{}' quantity by a floating-point '{}' scalar is truncating">(
+     type_name<Rep>(), type_name<T>()));
 
 template<auto R>
 concept UnitOne = Reference<MP_UNITS_REMOVE_CONST(decltype(R))> &&
@@ -218,10 +216,10 @@ public:
   }
 
   template<typename Value, Reference R2>
-    requires(equivalent(unit, get_unit(R2{}))) && (!detail::ValuePreservingConstruction<rep, Value>)
+    requires(equivalent(unit, get_unit(R2{}))) && (!detail::RepConvertibleFrom<rep, Value>)
   constexpr quantity(Value val, R2)
 #if __cpp_deleted_function
-    = delete("Conversion is not value-preserving");
+    = delete("Conversion is truncating");
 #else
     = delete;
 #endif
@@ -240,18 +238,18 @@ public:
   }
 
   template<typename Value>
-    requires detail::ExplicitFromNumber<reference> && detail::ValuePreservingConstruction<rep, Value> &&
+    requires detail::ExplicitFromNumber<reference> && detail::RepConvertibleFrom<rep, Value> &&
              (!std::convertible_to<Value, rep>)
   constexpr explicit quantity(Value val) : numerical_value_is_an_implementation_detail_(std::move(val))
   {
   }
 
   template<typename Value>
-    requires detail::ExplicitFromNumber<reference> && (!detail::ValuePreservingConstruction<rep, Value>)
+    requires detail::ExplicitFromNumber<reference> && (!detail::RepConvertibleFrom<rep, Value>)
   constexpr explicit(!std::convertible_to<Value, rep> ||
                      !mp_units::implicitly_convertible(quantity_spec, dimensionless)) quantity(Value val)
 #if __cpp_deleted_function
-    = delete("Conversion is not value-preserving");
+    = delete("Conversion is truncating");
 #else
     = delete;
 #endif
@@ -260,7 +258,8 @@ public:
     requires detail::QuantityConstructibleFrom<quantity, quantity<R2, Rep2>> && (equivalent(unit, get_unit(R2)))
   // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
   constexpr explicit(!mp_units::implicitly_convertible(get_quantity_spec(R2), quantity_spec) ||
-                     !std::convertible_to<Rep2, rep>) quantity(const quantity<R2, Rep2>& q) :
+                     !mp_units::implicitly_scalable<get_unit(R2), Rep2, unit, rep>)
+    quantity(const quantity<R2, Rep2>& q) :
       numerical_value_is_an_implementation_detail_(q.numerical_value_in(q.unit))
   {
   }
@@ -269,7 +268,8 @@ public:
     requires detail::QuantityConstructibleFrom<quantity, quantity<R2, Rep2>> && (!equivalent(unit, get_unit(R2)))
   // NOLINTNEXTLINE(google-explicit-constructor, hicpp-explicit-conversions)
   constexpr explicit(!mp_units::implicitly_convertible(get_quantity_spec(R2), quantity_spec) ||
-                     !std::convertible_to<Rep2, rep>) quantity(const quantity<R2, Rep2>& q) :
+                     !mp_units::implicitly_scalable<get_unit(R2), Rep2, unit, rep>)
+    quantity(const quantity<R2, Rep2>& q) :
       quantity(detail::sudo_cast<quantity>(q))
   {
   }
@@ -284,7 +284,7 @@ public:
   }
 
   template<typename FwdValue>
-    requires detail::ImplicitFromNumber<reference> && detail::ValuePreservingAssignment<rep, FwdValue>
+    requires detail::ImplicitFromNumber<reference> && detail::RepAssignableFrom<rep, FwdValue>
   constexpr quantity& operator=(FwdValue&& val)
   {
     numerical_value_is_an_implementation_detail_ = std::forward<FwdValue>(val);
@@ -292,29 +292,28 @@ public:
   }
 
   template<UnitOf<quantity_spec> ToU>
-    requires detail::ValuePreservingScaling<unit, ToU{}, rep>
+    requires detail::ImplicitScaling<unit, ToU{}, rep>
   [[nodiscard]] constexpr QuantityOf<quantity_spec> auto in(ToU) const
   {
     return quantity<detail::make_reference(quantity_spec, ToU{}), Rep>{*this};
   }
 
   template<RepresentationOf<quantity_spec> ToRep>
-    requires detail::ValuePreservingConstruction<ToRep, rep>
+    requires detail::RepConvertibleFrom<ToRep, rep>
   [[nodiscard]] constexpr QuantityOf<quantity_spec> auto in() const
   {
     return quantity<reference, ToRep>{*this};
   }
 
   template<RepresentationOf<quantity_spec> ToRep, UnitOf<quantity_spec> ToU>
-    requires detail::ValuePreservingConstruction<ToRep, rep> &&
-             detail::ValuePreservingConversion<unit, rep, ToU{}, ToRep>
+    requires detail::RepConvertibleFrom<ToRep, rep> && detail::ImplicitConversion<unit, rep, ToU{}, ToRep>
   [[nodiscard]] constexpr QuantityOf<quantity_spec> auto in(ToU) const
   {
     return quantity<detail::make_reference(quantity_spec, ToU{}), ToRep>{*this};
   }
 
   template<UnitOf<quantity_spec> ToU>
-    requires detail::SaneScaling<unit, ToU{}, rep>
+    requires detail::ExplicitlyCastable<unit, ToU{}, rep>
   [[nodiscard]] constexpr QuantityOf<quantity_spec> auto force_in(ToU) const
   {
     return value_cast<ToU{}>(*this);
@@ -328,7 +327,7 @@ public:
   }
 
   template<RepresentationOf<quantity_spec> ToRep, UnitOf<quantity_spec> ToU>
-    requires std::constructible_from<ToRep, rep> && detail::SaneScaling<unit, ToU{}, rep>
+    requires std::constructible_from<ToRep, rep> && detail::ExplicitlyCastable<unit, ToU{}, rep>
   [[nodiscard]] constexpr QuantityOf<quantity_spec> auto force_in(ToU) const
   {
     return value_cast<ToU{}, ToRep>(*this);
@@ -359,14 +358,14 @@ public:
 #endif
 
   template<UnitOf<quantity_spec> U>
-    requires detail::ValuePreservingScaling<unit, U{}, rep>
+    requires detail::ImplicitScaling<unit, U{}, rep>
   [[nodiscard]] constexpr rep numerical_value_in(U) const noexcept
   {
     return in(U{}).numerical_value_is_an_implementation_detail_;
   }
 
   template<UnitOf<quantity_spec> U>
-    requires detail::SaneScaling<unit, U{}, rep>
+    requires detail::ExplicitlyCastable<unit, U{}, rep>
   [[nodiscard]] constexpr rep force_numerical_value_in(U) const noexcept
   {
     return force_in(U{}).numerical_value_is_an_implementation_detail_;
@@ -447,7 +446,7 @@ public:
   // compound assignment operators
   template<auto R2, typename Rep2>
     requires(mp_units::implicitly_convertible(get_quantity_spec(R2), quantity_spec)) &&
-            detail::ValuePreservingConversion<get_unit(R2), Rep2, unit, rep> && requires(rep& a, const Rep2 b) {
+            detail::ImplicitConversion<get_unit(R2), Rep2, unit, rep> && requires(rep& a, const Rep2 b) {
               { a += b } -> std::same_as<rep&>;
             }
   constexpr quantity& operator+=(const quantity<R2, Rep2>& other) &
@@ -461,7 +460,7 @@ public:
 
   template<auto R2, typename Rep2>
     requires(mp_units::implicitly_convertible(get_quantity_spec(R2), quantity_spec)) &&
-            detail::ValuePreservingConversion<get_unit(R2), Rep2, unit, rep> && requires(rep& a, const Rep2 b) {
+            detail::ImplicitConversion<get_unit(R2), Rep2, unit, rep> && requires(rep& a, const Rep2 b) {
               { a -= b } -> std::same_as<rep&>;
             }
   constexpr quantity& operator-=(const quantity<R2, Rep2>& other) &
@@ -476,7 +475,7 @@ public:
   template<auto R2, typename Rep2>
     requires(!treat_as_floating_point<rep>) &&
             (mp_units::implicitly_convertible(get_quantity_spec(R2), quantity_spec)) &&
-            detail::ValuePreservingConversion<get_unit(R2), Rep2, unit, rep> && requires(rep& a, const Rep2 b) {
+            detail::ImplicitConversion<get_unit(R2), Rep2, unit, rep> && requires(rep& a, const Rep2 b) {
               { a %= b } -> std::same_as<rep&>;
             }
   constexpr quantity& operator%=(const quantity<R2, Rep2>& other) &
@@ -489,7 +488,7 @@ public:
     return *this;
   }
 
-  template<detail::ScalarValuePreservingTo<rep> Value>
+  template<detail::ScalarRepConvertible<rep> Value>
     requires requires(rep& a, const Value b) {
       { a *= b } -> std::same_as<rep&>;
     }
@@ -500,7 +499,7 @@ public:
   }
 
   template<detail::ImplicitFromNumberQuantity Q2>
-    requires detail::ScalarValuePreservingTo<typename Q2::rep, rep> && requires(rep& a, const Q2::rep b) {
+    requires detail::ScalarRepConvertible<typename Q2::rep, rep> && requires(rep& a, const Q2::rep b) {
       { a *= b } -> std::same_as<rep&>;
     }
   constexpr quantity& operator*=(const Q2& other) &
@@ -508,7 +507,7 @@ public:
     return *this *= other.numerical_value_is_an_implementation_detail_;
   }
 
-  template<detail::ScalarValuePreservingTo<rep> Value>
+  template<detail::ScalarRepConvertible<rep> Value>
     requires requires(rep& a, const Value b) {
       { a /= b } -> std::same_as<rep&>;
     }
@@ -520,7 +519,7 @@ public:
   }
 
   template<detail::ImplicitFromNumberQuantity Q2>
-    requires detail::ScalarValuePreservingTo<typename Q2::rep, rep> && requires(rep& a, const Q2::rep b) {
+    requires detail::ScalarRepConvertible<typename Q2::rep, rep> && requires(rep& a, const Q2::rep b) {
       { a /= b } -> std::same_as<rep&>;
     }
   constexpr quantity& operator/=(const Q2& rhs) &

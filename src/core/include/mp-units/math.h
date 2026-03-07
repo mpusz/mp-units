@@ -407,7 +407,7 @@ template<Unit auto To, auto R, typename Rep>
  */
 template<Unit auto To, auto R, typename Rep>
 [[nodiscard]] constexpr Quantity auto inverse(const quantity<R, Rep>& q)
-  requires(!detail::scaling_overflows_non_zero_values<Rep>(one / get_unit(R), To)) && requires {
+  requires requires {
     representation_values<Rep>::one();
     value_cast<To>(representation_values<Rep>::one() / q);
   }
