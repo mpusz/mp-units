@@ -59,7 +59,7 @@ static_assert(scale<long>(mag<60>, 2l) == 120l);
 static_assert(scale<int>(mag_ratio<1, 1000>, 5000) == 5);
 static_assert(scale<int>(mag_ratio<1, 60>, 120) == 2);
 
-// rational M (3/2 * 4 == 6): double-width fixed-point arithmetic
+// rational M (3/2 * 4 == 6): exact double-width integer arithmetic
 static_assert(scale<int>(mag_ratio<3, 2>, 4) == 6);
 // (1/3 * 9 == 3)
 static_assert(scale<int>(mag_ratio<1, 3>, 9) == 3);
@@ -88,9 +88,9 @@ static_assert(value_cast<angular::radian>(180 * angular::degree).numerical_value
 static_assert(!std::is_convertible_v<quantity<angular::radian, int>, quantity<angular::degree, int>>);
 static_assert(!std::is_convertible_v<quantity<angular::degree, int>, quantity<angular::radian, int>>);
 
-// Large-value safety: deg -> grad uses factor 10/9.  The computation is done in
-// long double (≥ 64-bit mantissa on x86), avoiding integer overflow and giving the
-// correct truncated integer result for this value.
+// Large-value safety: deg -> grad uses factor 10/9.  Being a pure rational, the
+// computation uses exact 128-bit integer arithmetic — correct on all platforms,
+// including ARM / Apple Silicon where long double == double (64-bit mantissa).
 static_assert(value_cast<angular::gradian>(std::int64_t{1'000'000'000'000'000'000} * angular::degree)
                 .numerical_value_in(angular::gradian) == std::int64_t{1'111'111'111'111'111'111});
 

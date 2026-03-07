@@ -101,8 +101,6 @@ struct scaling_traits_impl {
       }
     } else {
       // Both sides are integer-like: exact integer arithmetic, no floating-point involved.
-      // For rational M that is neither integral nor has an integral inverse, double-width
-      // fixed-point arithmetic is used via detail::fixed_point<>.
       using common_t = std::common_type_t<value_type_t<From>, value_type_t<To>>;
       static_assert(treat_as_integral<common_t>);
       if constexpr (is_integral(M)) {
@@ -111,7 +109,17 @@ struct scaling_traits_impl {
       } else if constexpr (is_integral(pow<-1>(M))) {
         constexpr common_t div = get_value<common_t>(pow<-1>(M));
         return static_cast<To>(static_cast<value_type_t<From>>(value) / div);
+      } else if constexpr (is_integral(M * (denominator(M) / numerator(M)))) {
+        // M is a pure rational p/q (no irrational factors such as π).
+        // Use exact double-width integer arithmetic: avoids long double precision loss
+        // on platforms where long double == double (e.g. ARM / Apple Silicon).
+        constexpr common_t num = get_value<common_t>(numerator(M));
+        constexpr common_t den = get_value<common_t>(denominator(M));
+        using wide_t = detail::double_width_int_for_t<common_t>;
+        return static_cast<To>(
+          static_cast<common_t>(static_cast<wide_t>(static_cast<value_type_t<From>>(value)) * num / den));
       } else {
+        // M has irrational factors (e.g. π); use long double fixed-point approximation.
         constexpr auto ratio = detail::fixed_point<common_t>(get_value<long double>(M));
         return static_cast<To>(ratio.scale(static_cast<value_type_t<From>>(value)));
       }
