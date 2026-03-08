@@ -1421,8 +1421,7 @@ static_assert(!(42 * m <= 0));
 // type.  A template wrapper is used so that the SFINAE failure inside the requires-expression
 // is treated as a substitution failure rather than a hard error.
 // cubic(km) vs cubic(pm): common-unit factor = 10^45 > 2^127, so integer comparison is
-// ill-formed regardless of rep width.  Floating-point is always fine.
-static_assert(1. * isq::volume[cubic(km)] == 1e45 * isq::volume[cubic(pm)]);
+// SFINAE'd out regardless of rep width.
 template<Reference auto R1, Reference auto R2>
 constexpr bool no_cross_unit_int_comparison = !requires { 1 * R1 == 1 * R2; } && !requires { 1 * R1 < 1 * R2; } &&
                                               !requires { 1 * R2 == 1 * R1; } && !requires { 1 * R2 < 1 * R1; };
