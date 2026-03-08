@@ -186,6 +186,33 @@ template<typename T>
   }
 }
 
+/**
+ * @brief  Multiply one magnitude element's contribution into an optional running product.
+ *
+ * Used by try_get_value.  Taking M as an NTTP (rather than a function argument) makes it a
+ * constant expression on all compilers, including GCC 12.
+ */
+template<typename T, auto M>
+consteval void try_accumulate_element(std::optional<T>& result)
+{
+  if (!result) return;
+  if constexpr (is_negative_tag<decltype(get_base(M))>) {
+    result = std::nullopt;  // (-1) factor: not representable as unsigned
+    return;
+  }
+  const auto elem =
+    checked_int_pow(static_cast<T>(get_base_value(M)), static_cast<std::uintmax_t>(get_exponent(M).num));
+  if (!elem) {
+    result = std::nullopt;
+    return;
+  }
+  if (*result != 0 && *elem > std::numeric_limits<T>::max() / *result) {
+    result = std::nullopt;
+    return;
+  }
+  *result *= *elem;
+}
+
 [[nodiscard]] consteval bool is_rational_impl(auto element)
 {
   if constexpr (is_negative_tag<decltype(element)>)
@@ -472,15 +499,37 @@ private:
   }
 
   /**
+   * @brief  Like get_value<T> but returns std::nullopt instead of aborting on overflow.
+   *
+   * Useful for overflow-detection in concepts and constraints, where a hard abort would
+   * prevent the expression from being softly evaluated in a `requires` clause.
+   * Only available for unsigned integral T.
+   */
+  template<typename T>
+    requires std::is_unsigned_v<T> && ((is_integral_impl(Ms) && ...))
+  [[nodiscard]] friend consteval std::optional<T> try_get_value(const unit_magnitude&)
+  {
+    std::optional<T> result{T{1}};
+    (try_accumulate_element<T, Ms>(result), ...);
+    return result;
+  }
+
+  /**
    * @brief  The value of a Magnitude in a desired type T.
    */
   template<typename T>
     requires((is_integral_impl(Ms) && ...)) || treat_as_floating_point<T>
   [[nodiscard]] friend consteval T get_value(const unit_magnitude&)
   {
-    // Force the expression to be evaluated in a constexpr context, to catch, e.g., overflow.
-    constexpr T result = checked_static_cast<T>((compute_base_power<T>(Ms) * ... * T{1}));
-    return result;
+    if constexpr (std::is_unsigned_v<T>) {
+      constexpr auto result = try_get_value<T>(unit_magnitude{});
+      static_assert(result.has_value(), "Magnitude value overflows the target unsigned type");
+      return *result;
+    } else {
+      // Signed integer or floating-point: use the widening fold expression via compute_base_power.
+      constexpr T result = checked_static_cast<T>((compute_base_power<T>(Ms) * ... * T{1}));
+      return result;
+    }
   }
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

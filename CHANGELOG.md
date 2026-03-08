@@ -35,10 +35,10 @@ This page documents the version history and changes for the **mp-units** library
 - refactor: representation concepts cleanup
 - refactor: `quantity_spec` call operator constraints improved
 - refactor: `quantity_cast` constraints improved
-- fix: fixed-point arithmetic for integer unit conversions (#764, based on original work by
-  [@burnpanck](https://github.com/burnpanck) in #580)
-- fix: overflow-safe cross-unit integer comparisons using double-width arithmetic (#766, based on original
-  work by [@burnpanck](https://github.com/burnpanck) in #580)
+- fix: fixed-point arithmetic for integer unit conversions
+  (#764, based on original work by [@burnpanck](https://github.com/burnpanck) in #580)
+- fix: overflow-safe cross-unit integer comparisons using double-width arithmetic
+  (#766, based on original work by [@burnpanck](https://github.com/burnpanck) in #580)
 - fix: dimensionless quantities truncation prevention fixed
 - fix: clang-18 workaround for pragmas not working in a C++ module build
 - fix: `normal_stress` and `shear_stress` fixed to have `stress` as a parent
