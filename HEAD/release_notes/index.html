@@ -11567,6 +11567,10 @@ You're not viewing the latest version.
 <li>refactor: representation concepts cleanup</li>
 <li>refactor: <code>quantity_spec</code> call operator constraints improved</li>
 <li>refactor: <code>quantity_cast</code> constraints improved</li>
+<li>fix: fixed-point arithmetic for integer unit conversions
+  (#764, based on original work by <a href="https://github.com/burnpanck">@burnpanck</a> in #580)</li>
+<li>fix: overflow-safe cross-unit integer comparisons using double-width arithmetic
+  (#766, based on original work by <a href="https://github.com/burnpanck">@burnpanck</a> in #580)</li>
 <li>fix: dimensionless quantities truncation prevention fixed</li>
 <li>fix: clang-18 workaround for pragmas not working in a C++ module build</li>
 <li>fix: <code>normal_stress</code> and <code>shear_stress</code> fixed to have <code>stress</code> as a parent</li>
