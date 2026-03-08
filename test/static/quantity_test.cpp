@@ -1416,6 +1416,21 @@ static_assert(0 * m <= 0);
 static_assert(!(-42 * m >= 0));
 static_assert(!(42 * m <= 0));
 
+// Comparisons between quantities of the same dimension but incompatible units are disabled
+// at compile-time when the unit-ratio scaling would overflow even the double-width integer
+// type.  A template wrapper is used so that the SFINAE failure inside the requires-expression
+// is treated as a substitution failure rather than a hard error.
+// cubic(km) vs cubic(pm): common-unit factor = 10^45 > 2^127, so integer comparison is
+// ill-formed regardless of rep width.  Floating-point is always fine.
+static_assert(1. * isq::volume[cubic(km)] == 1e45 * isq::volume[cubic(pm)]);
+template<Reference auto R1, Reference auto R2>
+constexpr bool no_cross_unit_int_comparison = !requires { 1 * R1 == 1 * R2; } && !requires { 1 * R1 < 1 * R2; } &&
+                                              !requires { 1 * R2 == 1 * R1; } && !requires { 1 * R2 < 1 * R1; };
+static_assert(no_cross_unit_int_comparison<isq::volume[cubic(km)], isq::volume[cubic(pm)]>);
+// Linear length pair: Zm (10^21 m) vs am (10^-18 m): factor = 10^39 > 2^127, so even value=1
+// makes integer comparison ill-formed.
+static_assert(no_cross_unit_int_comparison<isq::length[Zm], isq::length[am]>);
+
 
 //////////////////
 // dimensionless

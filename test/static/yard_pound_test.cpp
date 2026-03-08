@@ -23,18 +23,19 @@
 #include <mp-units/systems/isq/mechanics.h>
 #include <mp-units/systems/isq/space_and_time.h>
 #include <mp-units/systems/si/constants.h>
+#include <mp-units/systems/si/unit_symbols.h>
 #include <mp-units/systems/si/units.h>
 #include <mp-units/systems/yard_pound.h>
 
 namespace {
 
 using namespace mp_units;
+using namespace mp_units::si::unit_symbols;
 using namespace mp_units::yard_pound;
 using namespace mp_units::yard_pound::unit_symbols;
 
 // Mass
-// static_assert(100'000'000 * isq::mass[lb] == 45'359'237 * isq::mass[si::kilogram]);
-// the previous test is currently disabled; it surfaced #614
+static_assert(47 * isq::mass[lb] < 47 * isq::mass[si::kilogram]);
 static_assert(1 * isq::mass[lb] == 16 * isq::mass[oz]);
 static_assert(1 * isq::mass[oz] == 16 * isq::mass[dr]);
 static_assert(7'000 * isq::mass[gr] == 1 * isq::mass[lb]);
@@ -70,5 +71,32 @@ static_assert(1 * isq::pressure[psi] == isq::force(1 * lbf) / isq::area(1 * squa
 
 // Power
 static_assert(1 * isq::power[hp] == isq::length(33'000 * ft) * isq::force(1 * lbf) / isq::duration(1 * si::minute));
+
+// Cross-unit integer comparisons: both operand values fit in int64, but both scaled intermediates
+// exceed INT64_MAX and require __int128 arithmetic (double_width_int_for_t<int64_t>) to compare
+// correctly — demonstrating the overflow-safe widening introduced for cross-unit comparisons.
+
+// lb vs kg: common unit is their magnitude-GCD (≈ 1.7×10⁻⁷ g), scale factors are huge.
+//   100'000'000'000'000 × factor_lb ≈ 4.54×10²¹ > INT64_MAX
+static_assert(100'000'000'000'000 * isq::mass[lb] == 45'359'237'000'000 * isq::mass[si::kilogram]);
+
+// mi vs km: common unit is 64 mm (GCD of 1'609'344 mm and 1'000'000 mm);
+//   scale factors km→cu = 15'625, mi→cu = 25'146.
+//   590'295'810'380'364 × 15'625 ≈ 9.223×10¹⁸ > INT64_MAX
+//   366'792'811'468'750 × 25'146 ≈ 9.223×10¹⁸ > INT64_MAX
+static_assert(590'295'810'380'364LL * isq::length[km] == 366'792'811'468'750LL * isq::length[mi]);
+static_assert(590'295'810'380'364LL * isq::length[km] > 366'792'811'468'749LL * isq::length[mi]);
+static_assert(590'295'810'380'364LL * isq::length[km] < 366'792'811'468'751LL * isq::length[mi]);
+
+// Comparisons disabled at compile-time when unit-ratio scaling would overflow even __int128.
+// A template wrapper is used so that SFINAE failure inside requires is a soft error, not a
+// hard error on GCC.
+template<Reference auto R1, Reference auto R2>
+constexpr bool no_cross_unit_int_comparison = !requires { 1 * R1 == 1 * R2; } && !requires { 1 * R1 < 1 * R2; } &&
+                                              !requires { 1 * R2 == 1 * R1; } && !requires { 1 * R2 < 1 * R1; };
+
+// cubic(mi) vs cubic(pm): factor = (1.609344×10^15)^3 ≈ 4.17×10^45 > 2^127,
+// so even value=1 makes integer comparison ill-formed.
+static_assert(no_cross_unit_int_comparison<isq::volume[cubic(mi)], isq::volume[cubic(pm)]>);
 
 }  // namespace

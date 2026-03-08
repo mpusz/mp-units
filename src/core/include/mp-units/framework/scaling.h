@@ -115,9 +115,15 @@ struct scaling_traits_impl {
         // on platforms where long double == double (e.g. ARM / Apple Silicon).
         constexpr common_t num = get_value<common_t>(numerator(M));
         constexpr common_t den = get_value<common_t>(denominator(M));
-        using wide_t = detail::double_width_int_for_t<common_t>;
-        return static_cast<To>(
-          static_cast<common_t>(static_cast<wide_t>(static_cast<value_type_t<From>>(value)) * num / den));
+        if constexpr (sizeof(common_t) < sizeof(detail::int128_t)) {
+          // A wider native type exists: use it to avoid intermediate overflow.
+          using wide_t = detail::double_width_int_for_t<common_t>;
+          return static_cast<To>(
+            static_cast<common_t>(static_cast<wide_t>(static_cast<value_type_t<From>>(value)) * num / den));
+        } else {
+          // common_t is already the widest native integer; compute directly in common_t.
+          return static_cast<To>(static_cast<common_t>(static_cast<value_type_t<From>>(value)) * num / den);
+        }
       } else {
         // M has irrational factors (e.g. π); use long double fixed-point approximation.
         constexpr auto ratio = detail::fixed_point<common_t>(get_value<long double>(M));

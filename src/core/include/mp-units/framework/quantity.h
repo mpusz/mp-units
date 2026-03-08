@@ -159,6 +159,55 @@ concept CommonlyInvocableQuantities =
   (!overflows_non_zero_common_values<std::invoke_result_t<Func, typename Q1::rep, typename Q2::rep>>(Q1::unit,
                                                                                                      Q2::unit));
 
+// Returns true if the unit ratio between Q1 and Q2, when scaled to the common unit, fits within
+// the double-width integer type for ct_rep.  For floating-point or already-widest integer
+// representations no check is needed (float is always fine; int128 falls back to the direct
+// narrowing path which conservative-assumes no overflow for that type).
+template<typename Q1, typename Q2>
+[[nodiscard]] consteval bool comparable_in_wide_type()
+{
+  using ct = std::common_type_t<Q1, Q2>;
+  using ct_rep = value_type_t<typename ct::rep>;
+  if constexpr (!treat_as_floating_point<ct_rep> && sizeof(ct_rep) < sizeof(int128_t))
+    return !overflows_non_zero_common_values<double_width_int_for_t<ct_rep>>(Q1::unit, Q2::unit);
+  else
+    return true;
+}
+
+template<typename Q1, typename Q2>
+concept CommonlyComparableQuantities =
+  Quantity<Q1> && Quantity<Q2> && HaveCommonReference<Q1::reference, Q2::reference> &&
+  requires { typename std::common_type_t<Q1, Q2>; } && comparable_in_wide_type<Q1, Q2>();
+
+template<typename Q1, typename Q2, typename Cmp>
+  requires CommonlyComparableQuantities<Q1, Q2>
+[[nodiscard]] constexpr auto compare_quantities(const Q1& lhs, const Q2& rhs, Cmp cmp)
+{
+  using ct = std::common_type_t<Q1, Q2>;
+  using ct_rep = value_type_t<typename ct::rep>;
+  // Integer path: scale into double-width type to avoid overflow.
+  // The nested if constexpr is intentional: forming double_width_int_for_t<ct_rep> as a
+  // template argument is itself part of type instantiation, so it must be guarded by a
+  // separate if constexpr (not just a && in the same condition) to prevent it from being
+  // instantiated when ct_rep is a floating-point type or already-widest integer.
+  if constexpr (!treat_as_floating_point<ct_rep> && sizeof(ct_rep) < sizeof(int128_t)) {
+    using wide_t = double_width_int_for_t<ct_rep>;
+    if constexpr (!overflows_non_zero_common_values<wide_t>(Q1::unit, Q2::unit)) {
+      constexpr UnitMagnitude auto lhs_m = get_canonical_unit(Q1::unit).mag / get_canonical_unit(ct::unit).mag;
+      constexpr UnitMagnitude auto rhs_m = get_canonical_unit(Q2::unit).mag / get_canonical_unit(ct::unit).mag;
+      return cmp(scale<wide_t>(lhs_m, lhs.numerical_value_is_an_implementation_detail_),
+                 scale<wide_t>(rhs_m, rhs.numerical_value_is_an_implementation_detail_));
+    }
+  }
+  // Fallback: floating-point, already-widest integer, or unit ratio too large for wide_t.
+  const ct ct_lhs(lhs);
+  const ct ct_rhs(rhs);
+  MP_UNITS_DIAGNOSTIC_PUSH
+  MP_UNITS_DIAGNOSTIC_IGNORE_FLOAT_EQUAL
+  return cmp(ct_lhs.numerical_value_ref_in(ct::unit), ct_rhs.numerical_value_ref_in(ct::unit));
+  MP_UNITS_DIAGNOSTIC_POP
+}
+
 template<typename T>
 using quantity_like_type = quantity<quantity_like_traits<T>::reference, typename quantity_like_traits<T>::rep>;
 
@@ -661,17 +710,11 @@ public:
   }
 
   template<std::derived_from<quantity> Q, auto R2, typename Rep2>
-    requires requires { typename std::common_type_t<quantity, quantity<R2, Rep2>>; } &&
+    requires detail::CommonlyComparableQuantities<Q, quantity<R2, Rep2>> &&
              std::equality_comparable<typename std::common_type_t<quantity, quantity<R2, Rep2>>::rep>
   [[nodiscard]] friend constexpr bool operator==(const Q& lhs, const quantity<R2, Rep2>& rhs)
   {
-    using ct = std::common_type_t<quantity, quantity<R2, Rep2>>;
-    const ct ct_lhs(lhs);
-    const ct ct_rhs(rhs);
-    MP_UNITS_DIAGNOSTIC_PUSH
-    MP_UNITS_DIAGNOSTIC_IGNORE_FLOAT_EQUAL
-    return ct_lhs.numerical_value_ref_in(ct::unit) == ct_rhs.numerical_value_ref_in(ct::unit);
-    MP_UNITS_DIAGNOSTIC_PUSH
+    return detail::compare_quantities(lhs, rhs, std::equal_to{});
   }
 
   template<std::derived_from<quantity> Q, RepresentationOf<quantity_spec> Value>
@@ -689,14 +732,11 @@ public:
   }
 
   template<std::derived_from<quantity> Q, auto R2, typename Rep2>
-    requires requires { typename std::common_type_t<quantity, quantity<R2, Rep2>>; } &&
+    requires detail::CommonlyComparableQuantities<Q, quantity<R2, Rep2>> &&
              std::three_way_comparable<typename std::common_type_t<quantity, quantity<R2, Rep2>>::rep>
   [[nodiscard]] friend constexpr auto operator<=>(const Q& lhs, const quantity<R2, Rep2>& rhs)
   {
-    using ct = std::common_type_t<quantity, quantity<R2, Rep2>>;
-    const ct ct_lhs(lhs);
-    const ct ct_rhs(rhs);
-    return ct_lhs.numerical_value_ref_in(ct::unit) <=> ct_rhs.numerical_value_ref_in(ct::unit);
+    return detail::compare_quantities(lhs, rhs, std::compare_three_way{});
   }
 
   template<std::derived_from<quantity> Q, RepresentationOf<quantity_spec> Value>

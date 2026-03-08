@@ -46,11 +46,13 @@ template<typename Rep, Unit UFrom, Unit UTo>
   else if constexpr (std::totally_ordered_with<Rep, std::uintmax_t> &&
                      requires(Rep v) { representation_values<Rep>::max(); }) {
     constexpr auto factor =
-      get_value<std::uintmax_t>(numerator(get_canonical_unit(UFrom{}).mag / get_canonical_unit(UTo{}).mag));
-    if constexpr (std::is_integral_v<Rep>)
-      return !std::in_range<Rep>(factor);
+      try_get_value<std::uintmax_t>(numerator(get_canonical_unit(UFrom{}).mag / get_canonical_unit(UTo{}).mag));
+    if constexpr (!factor.has_value())
+      return true;  // factor overflows uintmax_t => certainly overflows Rep too
+    else if constexpr (std::is_integral_v<Rep>)
+      return !std::in_range<Rep>(*factor);
     else
-      return factor > representation_values<Rep>::max();
+      return *factor > representation_values<Rep>::max();
   } else
     // if the representation is not totally ordered with std::uintmax_t or does not have max() defined
     // then we assume that it might store any value
