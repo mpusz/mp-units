@@ -11583,6 +11583,12 @@ You're not viewing the latest version.
 <li>build: deprecation comments added to CMake file for <code>format.h</code> and <code>ostream.h</code></li>
 <li>ci: <code>build_policy</code> and CI detection support added to <code>check_all.sh</code></li>
 <li>ci: environment tests moved to <code>validate_environment.sh</code> script</li>
+<li>ci: CI build matrix generated dynamically from a Python script
+  (#767, based on original work by <a href="https://github.com/burnpanck">@burnpanck</a> in #637)</li>
+<li>ci: toolchain feature support thresholds derived from <code>conanfile.py</code> via AST to
+       eliminate duplication between the Python script and the Conan recipe</li>
+<li>ci: <code>generate-matrix-summary.py</code> added to write a Markdown build matrix table
+       and per-value coverage statistics to <code>GITHUB_STEP_SUMMARY</code></li>
 <li>chore: <code>site/</code> subdirectory added to <code>.gitignore</code></li>
 <li>chore: persistency for conan and pipx packages added to devcontainer</li>
 <li>docs: systems reference documentation generator added</li>
