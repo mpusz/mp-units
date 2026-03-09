@@ -1,18 +1,56 @@
 import argparse
+import ast
 import json
 import os
+import pathlib
 import random
 import typing
 from types import SimpleNamespace
 
+from job_matrix import ToolchainFeatureSupport  # used by _make_feature_support
 from job_matrix import (
     CombinationCollector,
     Compiler,
     ConanOptions,
     Configuration,
     Toolchain,
-    ToolchainFeatureSupport,
 )
+
+
+def _load_feature_compat() -> dict:
+    """Parse _feature_compatibility from conanfile.py via AST (no Conan import needed)."""
+    conanfile = pathlib.Path(__file__).parent.parent / "conanfile.py"
+    tree = ast.parse(conanfile.read_text())
+    for node in ast.walk(tree):
+        if (
+            isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+            and node.name == "_feature_compatibility"
+        ):
+            for stmt in node.body:
+                if isinstance(stmt, ast.Return):
+                    return ast.literal_eval(stmt.value)
+    raise RuntimeError("Could not find _feature_compatibility in conanfile.py")
+
+
+_FEATURE_COMPAT = _load_feature_compat()
+
+
+def _make_feature_support(
+    conan_compiler: str, version: int, *, freestanding: bool = False
+) -> ToolchainFeatureSupport:
+    """Derive ToolchainFeatureSupport from conanfile.py's _feature_compatibility."""
+
+    def supports(feature: str) -> bool:
+        min_ver = _FEATURE_COMPAT[feature]["compiler"].get(conan_compiler)
+        return bool(min_ver and version >= int(min_ver))
+
+    return ToolchainFeatureSupport(
+        cxx_modules=supports("cxx_modules"),
+        std_format=supports("std_format"),
+        import_std=supports("import_std"),
+        explicit_this=supports("explicit_this"),
+        freestanding=freestanding,
+    )
 
 
 def make_gcc_config(version: int) -> Toolchain:
@@ -25,11 +63,7 @@ def make_gcc_config(version: int) -> Toolchain:
             cc=f"gcc-{version}",
             cxx=f"g++-{version}",
         ),
-        feature_support=ToolchainFeatureSupport(
-            std_format=version >= 13,
-            explicit_this=version >= 14,
-            freestanding=True,
-        ),
+        feature_support=_make_feature_support("gcc", version, freestanding=True),
     )
 
 
@@ -43,13 +77,7 @@ def make_clang_config(
             version=version,
         ),
         lib="libc++",
-        feature_support=ToolchainFeatureSupport(
-            cxx_modules=version >= 17,
-            std_format=version >= 17,
-            import_std=version >= 18,
-            explicit_this=version >= 18,
-            freestanding=True,
-        ),
+        feature_support=_make_feature_support("clang", version, freestanding=True),
     )
     match architecture:
         case "x86-64":
@@ -79,10 +107,7 @@ def make_apple_clang_config(os: str, version: str) -> Toolchain:
             cc="clang",
             cxx="clang++",
         ),
-        feature_support=ToolchainFeatureSupport(
-            std_format=major_version >= 16,
-            explicit_this=major_version >= 17,
-        ),
+        feature_support=_make_feature_support("apple-clang", major_version),
     )
     return ret
 
@@ -97,10 +122,7 @@ def make_msvc_config(release: str, version: int) -> Toolchain:
             cc="",
             cxx="",
         ),
-        feature_support=ToolchainFeatureSupport(
-            std_format=version >= 194,
-            explicit_this=version >= 194,
-        ),
+        feature_support=_make_feature_support("msvc", version),
     )
     return ret
 
