@@ -267,8 +267,9 @@ def main():
     if not args.suppress_output:
         if output_file:
             print(f"Writing outputs to {output_file}")
-            with open(output_file, "wt") as fh:
-                fh.write(f"matrix={json.dumps(json_data)}")
+            with open(output_file, "at") as fh:
+                fh.write(f"matrix={json.dumps(json_data)}\n")
+                fh.write(f"seed={args.seed}\n")
         else:
             print("No output file received!")
 

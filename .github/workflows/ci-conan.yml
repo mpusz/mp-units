@@ -52,6 +52,7 @@ jobs:
     name: "Generate build matrix for ${{ github.workflow }}"
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
+      seed: ${{ steps.set-matrix.outputs.seed }}
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
@@ -61,6 +62,12 @@ jobs:
           python-version: 3.x
       - id: set-matrix
         run: python .github/generate-job-matrix.py --preset conan --seed ${{ inputs.matrix-seed || 0 }} --debug combinations counts
+      - name: Generate job summary
+        if: always()
+        env:
+          MATRIX_JSON: ${{ steps.set-matrix.outputs.matrix }}
+          MATRIX_SEED: ${{ steps.set-matrix.outputs.seed }}
+        run: python .github/generate-matrix-summary.py >> $GITHUB_STEP_SUMMARY
   build:
     name: "${{ matrix.config-summary-str }}"
     runs-on: ${{ matrix.toolchain.os }}

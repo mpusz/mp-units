@@ -51,6 +51,12 @@ This page documents the version history and changes for the **mp-units** library
 - build: deprecation comments added to CMake file for `format.h` and `ostream.h`
 - ci: `build_policy` and CI detection support added to `check_all.sh`
 - ci: environment tests moved to `validate_environment.sh` script
+- ci: CI build matrix generated dynamically from a Python script
+  (#767, based on original work by [@burnpanck](https://github.com/burnpanck) in #637)
+- ci: toolchain feature support thresholds derived from `conanfile.py` via AST to
+       eliminate duplication between the Python script and the Conan recipe
+- ci: `generate-matrix-summary.py` added to write a Markdown build matrix table
+       and per-value coverage statistics to `GITHUB_STEP_SUMMARY`
 - chore: `site/` subdirectory added to `.gitignore`
 - chore: persistency for conan and pipx packages added to devcontainer
 - docs: systems reference documentation generator added
