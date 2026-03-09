@@ -178,16 +178,12 @@ jobs:
           conan cache clean "*" -s -b -d
 
       - name: Generate clang-tidy summary
-        if: failure() || cancelled()
+        if: failure()
         shell: bash
         run: |
-          if [ "${{ job.status }}" = "failure" ]; then
-            echo "## ⚠️ Clang-Tidy Issues: ${{ matrix.config-summary-str }}" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "**Local repro:**" >> $GITHUB_STEP_SUMMARY
-            echo '```sh' >> $GITHUB_STEP_SUMMARY
-            echo "conan build . -b missing ${{ matrix.conan-settings }} -c user.mp-units.build:all=True -c user.mp-units.analyze:clang-tidy=True -c tools.build:skip_test=True ${{ matrix.conan-config }}" >> $GITHUB_STEP_SUMMARY
-            echo '```' >> $GITHUB_STEP_SUMMARY
-          else
-            echo "## ⏹️ Clang-Tidy Cancelled: ${{ matrix.config-summary-str }}" >> $GITHUB_STEP_SUMMARY
-          fi
+          echo "## ⚠️ Clang-Tidy Issues: ${{ matrix.config-summary-str }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Local repro:**" >> $GITHUB_STEP_SUMMARY
+          echo '```sh' >> $GITHUB_STEP_SUMMARY
+          echo "conan build . -b missing ${{ matrix.conan-settings }} -c user.mp-units.build:all=True -c user.mp-units.analyze:clang-tidy=True -c tools.build:skip_test=True ${{ matrix.conan-config }}" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY

@@ -200,20 +200,16 @@ jobs:
           conan cache clean "*" -s -b -d
 
       - name: Generate job summary
-        if: failure() || cancelled()
+        if: failure()
         shell: bash
         run: |
-          if [ "${{ job.status }}" = "failure" ]; then
-            echo "## ❌ Build Failed: ${{ matrix.config-summary-str }}" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "**Local repro:**" >> $GITHUB_STEP_SUMMARY
-            echo '```sh' >> $GITHUB_STEP_SUMMARY
-            [ "${{ matrix.toolchain.compiler.type }}" != "MSVC" ] && ALL="True" || ALL="False"
-            echo "conan create . -b mp-units/* -b missing ${{ matrix.conan-settings }} -c user.mp-units.build:all=${ALL} ${{ matrix.conan-config }}" >> $GITHUB_STEP_SUMMARY
-            echo '```' >> $GITHUB_STEP_SUMMARY
-          else
-            echo "## ⏹️ Build Cancelled: ${{ matrix.config-summary-str }}" >> $GITHUB_STEP_SUMMARY
-          fi
+          echo "## ❌ Build Failed: ${{ matrix.config-summary-str }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Local repro:**" >> $GITHUB_STEP_SUMMARY
+          echo '```sh' >> $GITHUB_STEP_SUMMARY
+          [ "${{ matrix.toolchain.compiler.type }}" != "MSVC" ] && ALL="True" || ALL="False"
+          echo "conan create . -b mp-units/* -b missing ${{ matrix.conan-settings }} -c user.mp-units.build:all=${ALL} ${{ matrix.conan-config }}" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
 
     outputs:
       package_ref: ${{ steps.get-package-ref.outputs.PACKAGE_REF }}

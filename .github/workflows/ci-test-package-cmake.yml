@@ -280,27 +280,23 @@ jobs:
           conan cache clean "*" -s -b -d
 
       - name: Generate test package summary
-        if: failure() || cancelled()
+        if: failure()
         shell: bash
         run: |
-          if [ "${{ job.status }}" = "failure" ]; then
-            echo "## ❌ CMake Test Package Failed: ${{ matrix.config-summary-str }}" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "**Local repro:**" >> $GITHUB_STEP_SUMMARY
-            if [ "${{ matrix.toolchain.compiler.type }}" != "MSVC" ]; then
-              BUILD_TYPE_LOWER=$(echo "${{ matrix.build_type }}" | tr '[:upper:]' '[:lower:]')
-              echo '```sh' >> $GITHUB_STEP_SUMMARY
-              echo "echo 'tools.cmake.cmake_layout:build_folder_vars=[\"settings.compiler\", \"settings.compiler.version\", \"settings.compiler.cppstd\"]' >> ~/.conan2/global.conf" >> $GITHUB_STEP_SUMMARY
-              echo "conan install . -b missing ${{ matrix.conan-settings }} -c user.mp-units.build:all=False ${{ matrix.conan-config }}" >> $GITHUB_STEP_SUMMARY
-              echo "echo '{\"version\":4,\"include\":[\"../CMakeUserPresets.json\"]}' > src/CMakeUserPresets.json" >> $GITHUB_STEP_SUMMARY
-              echo "echo '{\"version\":4,\"include\":[\"../CMakeUserPresets.json\"]}' > test_package/CMakeUserPresets.json" >> $GITHUB_STEP_SUMMARY
-              echo "(cd src && source ../build/${{ matrix.conan-build-folder }}/generators/conanbuild.sh && cmake --preset conan-default -DCMAKE_INSTALL_PREFIX=../out && cmake --build --preset conan-${BUILD_TYPE_LOWER} --target install)" >> $GITHUB_STEP_SUMMARY
-              echo "(cd test_package && source ../build/${{ matrix.conan-build-folder }}/generators/conanbuild.sh && cmake --preset conan-default -Dmp-units_DIR=../build/${{ matrix.conan-build-folder }} -Bbuild/local && cmake --build build/local --config ${{ matrix.build_type }})" >> $GITHUB_STEP_SUMMARY
-              echo "./test_package/build/local/${{ matrix.build_type }}/test_package-headers" >> $GITHUB_STEP_SUMMARY
-              echo '```' >> $GITHUB_STEP_SUMMARY
-            else
-              echo "_MSVC: refer to the workflow steps in \`ci-test-package-cmake.yml\`._" >> $GITHUB_STEP_SUMMARY
-            fi
+          echo "## ❌ CMake Test Package Failed: ${{ matrix.config-summary-str }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Local repro:**" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ matrix.toolchain.compiler.type }}" != "MSVC" ]; then
+            BUILD_TYPE_LOWER=$(echo "${{ matrix.build_type }}" | tr '[:upper:]' '[:lower:]')
+            echo '```sh' >> $GITHUB_STEP_SUMMARY
+            echo "echo 'tools.cmake.cmake_layout:build_folder_vars=[\"settings.compiler\", \"settings.compiler.version\", \"settings.compiler.cppstd\"]' >> ~/.conan2/global.conf" >> $GITHUB_STEP_SUMMARY
+            echo "conan install . -b missing ${{ matrix.conan-settings }} -c user.mp-units.build:all=False ${{ matrix.conan-config }}" >> $GITHUB_STEP_SUMMARY
+            echo "echo '{\"version\":4,\"include\":[\"../CMakeUserPresets.json\"]}' > src/CMakeUserPresets.json" >> $GITHUB_STEP_SUMMARY
+            echo "echo '{\"version\":4,\"include\":[\"../CMakeUserPresets.json\"]}' > test_package/CMakeUserPresets.json" >> $GITHUB_STEP_SUMMARY
+            echo "(cd src && source ../build/${{ matrix.conan-build-folder }}/generators/conanbuild.sh && cmake --preset conan-default -DCMAKE_INSTALL_PREFIX=../out && cmake --build --preset conan-${BUILD_TYPE_LOWER} --target install)" >> $GITHUB_STEP_SUMMARY
+            echo "(cd test_package && source ../build/${{ matrix.conan-build-folder }}/generators/conanbuild.sh && cmake --preset conan-default -Dmp-units_DIR=../build/${{ matrix.conan-build-folder }} -Bbuild/local && cmake --build build/local --config ${{ matrix.build_type }})" >> $GITHUB_STEP_SUMMARY
+            echo "./test_package/build/local/${{ matrix.build_type }}/test_package-headers" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
           else
-            echo "## ⏹️ CMake Test Package Cancelled: ${{ matrix.config-summary-str }}" >> $GITHUB_STEP_SUMMARY
+            echo "_MSVC: refer to the workflow steps in \`ci-test-package-cmake.yml\`._" >> $GITHUB_STEP_SUMMARY
           fi
