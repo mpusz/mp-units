@@ -172,7 +172,9 @@ def _guarantee_api_coverage(
     """Guarantee ≥1 import_std and ≥1 no_crtp configuration per supporting toolchain."""
     no_crtp_extra = {} if contracts is None else {"contracts": contracts}
     for tc in toolchains_iter:
-        if tc.feature_support.import_std:
+        # import_std is incompatible with freestanding: the pre-built std.pcm
+        # is compiled without -ffreestanding and cannot be reused.
+        if tc.feature_support.import_std and not freestanding:
             collector.sample_combinations(
                 rgen=rgen,
                 min_samples=1,
@@ -319,6 +321,7 @@ def main():
                 toolchain=freestanding_toolchains,
                 contracts="none",
                 freestanding=True,
+                import_std=False,
                 std=23,
             )
             # Guarantee import_std and no_crtp API coverage per supporting toolchain.
