@@ -282,23 +282,11 @@ jobs:
           conan cache clean "*" -s -b -d
 
       - name: Generate test package summary
-        if: always()
+        if: failure() || cancelled()
         shell: bash
         run: |
-          echo "## 🧪 CMake Test Package Summary" >> $GITHUB_STEP_SUMMARY
-          echo "| Configuration | Status |" >> $GITHUB_STEP_SUMMARY
-          echo "|---------------|--------|" >> $GITHUB_STEP_SUMMARY
-          if [ "${{ job.status }}" = "success" ]; then
-            echo "| ${{ matrix.config-summary-str }} | ✅ Passed |" >> $GITHUB_STEP_SUMMARY
-          elif [ "${{ job.status }}" = "failure" ]; then
-            echo "| ${{ matrix.config-summary-str }} | ❌ Failed |" >> $GITHUB_STEP_SUMMARY
-          elif [ "${{ job.status }}" = "cancelled" ]; then
-            echo "| ${{ matrix.config-summary-str }} | ⏹️ Cancelled |" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ job.status }}" = "failure" ]; then
+            echo "## ❌ CMake Test Package Failed: ${{ matrix.config-summary-str }}" >> $GITHUB_STEP_SUMMARY
           else
-            echo "| ${{ matrix.config-summary-str }} | ❓ ${{ job.status }} |" >> $GITHUB_STEP_SUMMARY
+            echo "## ⏹️ CMake Test Package Cancelled: ${{ matrix.config-summary-str }}" >> $GITHUB_STEP_SUMMARY
           fi
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Integration Test Details:**" >> $GITHUB_STEP_SUMMARY
-          echo "- Build System: CMake" >> $GITHUB_STEP_SUMMARY
-          echo "- Package Manager: Conan" >> $GITHUB_STEP_SUMMARY
-          echo "- Test Type: Consumer Integration" >> $GITHUB_STEP_SUMMARY

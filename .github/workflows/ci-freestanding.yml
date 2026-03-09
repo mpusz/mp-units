@@ -166,23 +166,16 @@ jobs:
           conan cache clean "*" -s -b -d
 
       - name: Generate freestanding summary
-        if: always()
+        if: failure() || cancelled()
         shell: bash
         run: |
-          echo "## 🌐 Freestanding Build Summary" >> $GITHUB_STEP_SUMMARY
-          echo "| Configuration | Status |" >> $GITHUB_STEP_SUMMARY
-          echo "|---------------|--------|" >> $GITHUB_STEP_SUMMARY
-          if [ "${{ job.status }}" = "success" ]; then
-            echo "| ${{ matrix.config-summary-str }} | ✅ Success |" >> $GITHUB_STEP_SUMMARY
-          elif [ "${{ job.status }}" = "failure" ]; then
-            echo "| ${{ matrix.config-summary-str }} | ❌ Failed |" >> $GITHUB_STEP_SUMMARY
-          elif [ "${{ job.status }}" = "cancelled" ]; then
-            echo "| ${{ matrix.config-summary-str }} | ⏹️ Cancelled |" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ job.status }}" = "failure" ]; then
+            echo "## ❌ Freestanding Build Failed: ${{ matrix.config-summary-str }}" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**Local repro:**" >> $GITHUB_STEP_SUMMARY
+            echo '```sh' >> $GITHUB_STEP_SUMMARY
+            echo "conan build . -b missing -c user.mp-units.build:all=True -c tools.build:cxxflags=\"['-ffreestanding']\" ${{ matrix.conan-config }}" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
           else
-            echo "| ${{ matrix.config-summary-str }} | ❓ ${{ job.status }} |" >> $GITHUB_STEP_SUMMARY
+            echo "## ⏹️ Freestanding Build Cancelled: ${{ matrix.config-summary-str }}" >> $GITHUB_STEP_SUMMARY
           fi
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Freestanding Build Details:**" >> $GITHUB_STEP_SUMMARY
-          echo "- Environment: Freestanding (no hosted library)" >> $GITHUB_STEP_SUMMARY
-          echo "- Compiler Flags: -ffreestanding" >> $GITHUB_STEP_SUMMARY
-          echo "- Target: Embedded/Kernel environments" >> $GITHUB_STEP_SUMMARY
