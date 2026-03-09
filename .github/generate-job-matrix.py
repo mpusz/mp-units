@@ -187,6 +187,8 @@ def _guarantee_api_coverage(
                 freestanding=freestanding,
             )
         if tc.feature_support.explicit_this:
+            # import_std is incompatible with freestanding; pin it off.
+            import_std_extra = {"import_std": False} if freestanding else {}
             collector.sample_combinations(
                 rgen=rgen,
                 min_samples=1,
@@ -194,6 +196,7 @@ def _guarantee_api_coverage(
                 no_crtp=True,
                 std=23,
                 freestanding=freestanding,
+                **import_std_extra,
                 **no_crtp_extra,
             )
 
