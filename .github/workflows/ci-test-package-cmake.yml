@@ -203,14 +203,14 @@ jobs:
         working-directory: src
         run: |
           call ..\build\${{ matrix.conan-build-folder }}\generators\conanbuild.bat
-          cmake --build --preset conan-${{ steps.build_type.outputs.lowercase }} --target install
+          cmake --build --preset conan-${{ matrix.conan-build-folder }}-${{ steps.build_type.outputs.lowercase }} --target install
       - name: Install mp-units
         if: matrix.toolchain.compiler.type != 'MSVC'
         shell: bash
         working-directory: src
         run: |
           source ../build/${{ matrix.conan-build-folder }}/generators/conanbuild.sh
-          cmake --build --preset conan-${{ steps.build_type.outputs.lowercase }} --target install
+          cmake --build --preset conan-${{ matrix.conan-build-folder }}-${{ steps.build_type.outputs.lowercase }} --target install
       - name: Provide dependencies for test_package
         shell: bash
         working-directory: test_package
@@ -293,7 +293,7 @@ jobs:
             echo "conan install . -b missing ${{ matrix.conan-settings }} -c user.mp-units.build:all=False ${{ matrix.conan-config }}" >> $GITHUB_STEP_SUMMARY
             echo "echo '{\"version\":4,\"include\":[\"../CMakeUserPresets.json\"]}' > src/CMakeUserPresets.json" >> $GITHUB_STEP_SUMMARY
             echo "echo '{\"version\":4,\"include\":[\"../CMakeUserPresets.json\"]}' > test_package/CMakeUserPresets.json" >> $GITHUB_STEP_SUMMARY
-            echo "(cd src && source ../build/${{ matrix.conan-build-folder }}/generators/conanbuild.sh && cmake --preset conan-${{ matrix.conan-build-folder }} -DCMAKE_INSTALL_PREFIX=../out && cmake --build --preset conan-${BUILD_TYPE_LOWER} --target install)" >> $GITHUB_STEP_SUMMARY
+            echo "(cd src && source ../build/${{ matrix.conan-build-folder }}/generators/conanbuild.sh && cmake --preset conan-${{ matrix.conan-build-folder }} -DCMAKE_INSTALL_PREFIX=../out && cmake --build --preset conan-${{ matrix.conan-build-folder }}-${BUILD_TYPE_LOWER} --target install)" >> $GITHUB_STEP_SUMMARY
             echo "(cd test_package && source ../build/${{ matrix.conan-build-folder }}/generators/conanbuild.sh && cmake --preset conan-${{ matrix.conan-build-folder }} -Dmp-units_DIR=../build/${{ matrix.conan-build-folder }} -Bbuild/local && cmake --build build/local --config ${{ matrix.build_type }})" >> $GITHUB_STEP_SUMMARY
             echo "./test_package/build/local/${{ matrix.build_type }}/test_package-headers" >> $GITHUB_STEP_SUMMARY
             echo '```' >> $GITHUB_STEP_SUMMARY
