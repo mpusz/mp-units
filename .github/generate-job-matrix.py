@@ -1,15 +1,60 @@
 import argparse
+import ast
 import json
 import os
+import pathlib
 import random
 import typing
 from types import SimpleNamespace
 
-from job_matrix import CombinationCollector, Compiler, Configuration
+from job_matrix import ToolchainFeatureSupport  # used by _make_feature_support
+from job_matrix import (
+    CombinationCollector,
+    Compiler,
+    ConanOptions,
+    Configuration,
+    Toolchain,
+)
 
 
-def make_gcc_config(version: int) -> Configuration:
-    return Configuration(
+def _load_feature_compat() -> dict:
+    """Parse _feature_compatibility from conanfile.py via AST (no Conan import needed)."""
+    conanfile = pathlib.Path(__file__).parent.parent / "conanfile.py"
+    tree = ast.parse(conanfile.read_text())
+    for node in ast.walk(tree):
+        if (
+            isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+            and node.name == "_feature_compatibility"
+        ):
+            for stmt in node.body:
+                if isinstance(stmt, ast.Return):
+                    return ast.literal_eval(stmt.value)
+    raise RuntimeError("Could not find _feature_compatibility in conanfile.py")
+
+
+_FEATURE_COMPAT = _load_feature_compat()
+
+
+def _make_feature_support(
+    conan_compiler: str, version: int, *, freestanding: bool = False
+) -> ToolchainFeatureSupport:
+    """Derive ToolchainFeatureSupport from conanfile.py's _feature_compatibility."""
+
+    def supports(feature: str) -> bool:
+        min_ver = _FEATURE_COMPAT[feature]["compiler"].get(conan_compiler)
+        return bool(min_ver and version >= int(min_ver))
+
+    return ToolchainFeatureSupport(
+        cxx_modules=supports("cxx_modules"),
+        std_format=supports("std_format"),
+        import_std=supports("import_std"),
+        explicit_this=supports("explicit_this"),
+        freestanding=freestanding,
+    )
+
+
+def make_gcc_config(version: int) -> Toolchain:
+    return Toolchain(
         name=f"GCC-{version}",
         os="ubuntu-24.04",
         compiler=Compiler(
@@ -18,25 +63,23 @@ def make_gcc_config(version: int) -> Configuration:
             cc=f"gcc-{version}",
             cxx=f"g++-{version}",
         ),
-        cxx_modules=False,
-        std_format_support=version >= 13,
+        feature_support=_make_feature_support("gcc", version, freestanding=True),
     )
 
 
 def make_clang_config(
-    version: int, platform: typing.Literal["x86-64", "arm64"] = "x86-64"
-) -> Configuration:
+    version: int, architecture: typing.Literal["x86-64", "arm64"] = "x86-64"
+) -> Toolchain:
     cfg = SimpleNamespace(
-        name=f"Clang-{version} ({platform})",
+        name=f"Clang-{version} ({architecture})",
         compiler=SimpleNamespace(
             type="CLANG",
             version=version,
         ),
         lib="libc++",
-        cxx_modules=version >= 17,
-        std_format_support=version >= 17,
+        feature_support=_make_feature_support("clang", version, freestanding=True),
     )
-    match platform:
+    match architecture:
         case "x86-64":
             cfg.os = "ubuntu-22.04" if version < 17 else "ubuntu-24.04"
             cfg.compiler.cc = f"clang-{version}"
@@ -46,33 +89,43 @@ def make_clang_config(
             pfx = f"/opt/homebrew/opt/llvm@{version}/bin"
             cfg.compiler.cc = f"{pfx}/clang"
             cfg.compiler.cxx = f"{pfx}/clang++"
+            # macOS uses the SDK's libc++ which has no std.cppm; import_std only
+            # works with Linux (apt) LLVM where we can set up the required symlinks.
+            cfg.feature_support = ToolchainFeatureSupport(
+                cxx_modules=cfg.feature_support.cxx_modules,
+                std_format=cfg.feature_support.std_format,
+                import_std=False,
+                explicit_this=cfg.feature_support.explicit_this,
+                freestanding=cfg.feature_support.freestanding,
+            )
         case _:
-            raise KeyError(f"Unsupported platform {platform!r} for Clang")
+            raise KeyError(f"Unsupported architecture {architecture!r} for Clang")
     ret = cfg
     ret.compiler = Compiler(**vars(cfg.compiler))
-    return Configuration(**vars(ret))
+    return Toolchain(**vars(ret))
 
 
 def make_apple_clang_config(
-    os: str, version: str, std_format_support: bool
-) -> Configuration:
-    ret = Configuration(
-        name=f"Apple Clang {version}",
+    os: str, version: str, xcode_version: str | None = None
+) -> Toolchain:
+    major_version = int(version.split(".", 1)[0])
+    ret = Toolchain(
+        name=f"Apple Clang {xcode_version or version}",
         os=os,
         compiler=Compiler(
             type="APPLE_CLANG",
             version=version,
             cc="clang",
             cxx="clang++",
+            xcode_version=xcode_version,
         ),
-        cxx_modules=False,
-        std_format_support=std_format_support,
+        feature_support=_make_feature_support("apple-clang", major_version),
     )
     return ret
 
 
-def make_msvc_config(release: str, version: int) -> Configuration:
-    ret = Configuration(
+def make_msvc_config(release: str, version: int) -> Toolchain:
+    ret = Toolchain(
         name=f"MSVC {release}",
         os="windows-2022",
         compiler=Compiler(
@@ -81,85 +134,205 @@ def make_msvc_config(release: str, version: int) -> Configuration:
             cc="",
             cxx="",
         ),
-        cxx_modules=False,
-        std_format_support=True,
+        feature_support=_make_feature_support("msvc", version),
     )
     return ret
 
 
-configs = {
-    c.name: c
-    for c in [make_gcc_config(ver) for ver in [12, 13, 14]]
+toolchains = {
+    t.name: t
+    for t in [make_gcc_config(ver) for ver in [12, 13, 14, 15]]
     + [
-        make_clang_config(ver, platform)
+        make_clang_config(ver, architecture)
         for ver in [16, 17, 18, 20, 21]
-        for platform in ["x86-64", "arm64"]
+        for architecture in ["x86-64", "arm64"]
         # arm64 runners are expensive; only consider one version
-        if ver == 18 or platform != "arm64"
+        if ver == 18 or architecture != "arm64"
     ]
-    # std::format is available in Xcode 16.1 or later
-    + [
-        make_apple_clang_config("macos-14", ver, std_format_support=True)
-        for ver in ["16.1"]
-    ]
+    + [make_apple_clang_config("macos-14", "16", xcode_version="16.1")]
     + [make_msvc_config(release="14.4", version=194)]
 }
 
 full_matrix = dict(
-    config=list(configs.values()),
+    toolchain=list(toolchains.values()),
     std=[20, 23],
-    formatting=["std::format", "fmtlib"],
-    contracts=["none", "gsl-lite", "ms-gsl"],
     build_type=["Release", "Debug"],
+    **ConanOptions.full_matrix(),
 )
+
+
+def _guarantee_api_coverage(
+    collector: CombinationCollector,
+    rgen: random.Random,
+    toolchains_iter,
+    *,
+    freestanding: bool,
+    contracts: str | None = None,
+) -> None:
+    """Guarantee ≥1 import_std and ≥1 no_crtp configuration per supporting toolchain."""
+    no_crtp_extra = {} if contracts is None else {"contracts": contracts}
+    for tc in toolchains_iter:
+        # import_std is incompatible with freestanding: the pre-built std.pcm
+        # is compiled without -ffreestanding and cannot be reused.
+        if tc.feature_support.import_std and not freestanding:
+            collector.sample_combinations(
+                rgen=rgen,
+                min_samples=1,
+                toolchain=tc,
+                import_std=True,
+                cxx_modules=True,
+                std_format=True,
+                contracts="none",
+                std=23,
+                freestanding=freestanding,
+            )
+        if tc.feature_support.explicit_this:
+            collector.sample_combinations(
+                rgen=rgen,
+                min_samples=1,
+                toolchain=tc,
+                no_crtp=True,
+                std=23,
+                freestanding=freestanding,
+                **no_crtp_extra,
+            )
 
 
 def main():
     parser = argparse.ArgumentParser()
     #    parser.add_argument("-I","--include",nargs="+",action="append")
     #    parser.add_argument("-X","--exclude",nargs="+",action="append")
-    parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--seed", type=int, default=None)
     parser.add_argument("--preset", default=None)
     parser.add_argument("--debug", nargs="+", default=["combinations"])
     parser.add_argument("--suppress-output", default=False, action="store_true")
 
     args = parser.parse_args()
 
+    if not args.seed:
+        args.seed = random.randint(0, (1 << 32) - 1)
+
+    print(f"Random-seed for this matrix is {args.seed}")
+
     rgen = random.Random(args.seed)
 
     collector = CombinationCollector(
-        full_matrix,
-        hard_excludes=lambda e: (
-            e.formatting == "std::format" and not e.config.std_format_support
-        ),
+        full_matrix=full_matrix,
+        configuration_element_type=Configuration,
+        hard_excludes=lambda c: (not c.is_supported),
     )
     match args.preset:
         case None:
             pass
         case "all":
             collector.all_combinations()
+        case "all-hosted" | "all-conan" | "all-cmake":
+            collector.all_combinations(
+                freestanding=False,
+            )
         case "conan" | "cmake":
-            collector.all_combinations(
-                formatting="std::format",
+            config = dict(
                 contracts="gsl-lite",
                 build_type="Debug",
                 std=20,
+                freestanding=False,
             )
             collector.all_combinations(
-                filter=lambda me: not me.config.std_format_support,
-                formatting="fmtlib",
-                contracts="gsl-lite",
-                build_type="Debug",
-                std=20,
+                std_format=True,
+                **config,
             )
-            collector.sample_combinations(rgen=rgen, min_samples_per_value=2)
+            # fmtlib for those toolchains where we don't support std_format
+            collector.all_combinations(
+                filter=lambda me: not me.toolchain.feature_support.std_format,
+                std_format=False,
+                **config,
+            )
+            # import_std and no_crtp are key library APIs: guarantee at least one
+            # configuration per toolchain that supports each, so any regression in
+            # the library interface is caught regardless of the random seed.
+            _guarantee_api_coverage(
+                collector, rgen, toolchains.values(), freestanding=False
+            )
+            collector.sample_combinations(
+                rgen=rgen,
+                min_samples_per_value=1,
+                freestanding=False,
+            )
+            # add more random coverage across all configurations
+            collector.sample_combinations(
+                rgen=rgen,
+                min_samples_per_value=2,
+                freestanding=False,
+            )
+
         case "clang-tidy":
-            collector.all_combinations(config=configs["Clang-18 (x86-64)"])
-        case "freestanding":
+            # Always run on the latest supported Clang for best analysis quality
+            latest_clang = max(
+                (
+                    tc
+                    for tc in toolchains.values()
+                    if tc.compiler.type == "CLANG" and tc.os.startswith("ubuntu")
+                ),
+                key=lambda tc: tc.compiler.version,
+            )
+            # Guarantee import_std and no_crtp API coverage before random sampling
+            _guarantee_api_coverage(collector, rgen, [latest_clang], freestanding=False)
+            collector.sample_combinations(
+                rgen=rgen,
+                min_samples_per_value=1,
+                toolchain=latest_clang,
+                freestanding=False,
+            )
+        case "all-freestanding":
             collector.all_combinations(
-                config=[configs[c] for c in ["GCC-14", "Clang-21 (x86-64)"]],
+                freestanding=True,
+            )
+        case "freestanding":
+            freestanding_toolchains = [
+                tc
+                for tc in toolchains.values()
+                if tc.feature_support.freestanding and not tc.os.startswith("macos")
+            ]
+            base = dict(
                 contracts="none",
+                freestanding=True,
                 std=23,
+                no_crtp=False,
+                cxx_modules=False,
+                import_std=False,
+                build_type="Release",
+            )
+            # One baseline config per toolchain: std_format=True for those that support it
+            collector.all_combinations(
+                toolchain=freestanding_toolchains,
+                std_format=True,
+                **base,
+            )
+            # fmtlib for those toolchains where we don't support std_format
+            collector.all_combinations(
+                filter=lambda me: not me.toolchain.feature_support.std_format,
+                toolchain=freestanding_toolchains,
+                std_format=False,
+                **base,
+            )
+            collector.sample_combinations(
+                rgen=rgen,
+                min_samples_per_value=1,
+                toolchain=freestanding_toolchains,
+                contracts="none",
+                freestanding=True,
+                import_std=False,
+                std=23,
+            )
+            # Guarantee import_std and no_crtp API coverage per supporting toolchain.
+            # (all_combinations above fixes no_crtp=False, so no_crtp=True needs an
+            # explicit guarantee; import_std is also made explicit for clarity.)
+            _guarantee_api_coverage(
+                collector,
+                rgen,
+                freestanding_toolchains,
+                freestanding=True,
+                contracts="none",
             )
         case _:
             raise KeyError(f"Unsupported preset {args.preset!r}")
@@ -169,14 +342,15 @@ def main():
 
     data = sorted(collector.combinations)
 
-    json_data = [e.as_json() for e in data]
+    json_data = [e.for_github() for e in data]
 
     output_file = os.environ.get("GITHUB_OUTPUT")
     if not args.suppress_output:
         if output_file:
             print(f"Writing outputs to {output_file}")
-            with open(output_file, "wt") as fh:
-                fh.write(f"matrix={json.dumps(json_data)}")
+            with open(output_file, "at") as fh:
+                fh.write(f"matrix={json.dumps(json_data)}\n")
+                fh.write(f"seed={args.seed}\n")
         else:
             print("No output file received!")
 
@@ -190,13 +364,18 @@ def main():
             case "json":
                 print(json.dumps(json_data, indent=4))
             case "combinations":
-                for e in data:
-                    print(
-                        f"{e.config!s:17s}  c++{e.std:2d}  {e.formatting:11s}  {e.contracts:8s}  {e.build_type:8s}"
-                    )
+                msg = [e.infostr(adjusted=True) for e in data]
+                for m in sorted(msg):
+                    print(m)
             case "counts":
                 print(f"Total combinations {len(data)}")
-                for (k, v), n in sorted(collector.per_value_counts.items()):
+                per_value: dict[tuple[str, typing.Any], int] = {}
+                for e in data:
+                    for k, v in vars(e).items():
+                        per_value[k, v] = per_value.get((k, v), 0) + 1
+                for (k, v), n in sorted(
+                    per_value.items(), key=lambda x: (x[0][0], str(x[0][1]))
+                ):
                     print(f"  {k}={v}: {n}")
             case "none":
                 pass

@@ -166,6 +166,14 @@ target_compile_definitions(
                   MP_UNITS_API_THROWING_CONSTRAINTS=$<BOOL:${MP_UNITS_API_THROWING_CONSTRAINTS}>
 )
 
+if(MP_UNITS_API_FREESTANDING)
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+        target_compile_options(mp-units-core ${MP_UNITS_TARGET_SCOPE} /kernel)
+    else()
+        target_compile_options(mp-units-core ${MP_UNITS_TARGET_SCOPE} -ffreestanding)
+    endif()
+endif()
+
 # https://github.com/llvm/llvm-project/issues/131410
 if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 20
    AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 20.2

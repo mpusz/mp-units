@@ -35,6 +35,7 @@
 #ifdef MP_UNITS_IMPORT_STD
 import std;
 #else
+#include <bit>
 #include <compare>  // IWYU pragma: export
 #include <cstddef>
 #include <cstdint>
