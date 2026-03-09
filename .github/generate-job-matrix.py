@@ -89,6 +89,15 @@ def make_clang_config(
             pfx = f"/opt/homebrew/opt/llvm@{version}/bin"
             cfg.compiler.cc = f"{pfx}/clang"
             cfg.compiler.cxx = f"{pfx}/clang++"
+            # macOS uses the SDK's libc++ which has no std.cppm; import_std only
+            # works with Linux (apt) LLVM where we can set up the required symlinks.
+            cfg.feature_support = ToolchainFeatureSupport(
+                cxx_modules=cfg.feature_support.cxx_modules,
+                std_format=cfg.feature_support.std_format,
+                import_std=False,
+                explicit_this=cfg.feature_support.explicit_this,
+                freestanding=cfg.feature_support.freestanding,
+            )
         case _:
             raise KeyError(f"Unsupported architecture {architecture!r} for Clang")
     ret = cfg
