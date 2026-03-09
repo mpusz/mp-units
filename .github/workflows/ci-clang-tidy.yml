@@ -118,6 +118,12 @@ jobs:
         shell: bash
         run: |
           sudo apt install -y libc++-${{ matrix.toolchain.compiler.version }}-dev libc++abi-${{ matrix.toolchain.compiler.version }}-dev libunwind-${{ matrix.toolchain.compiler.version }}-dev
+      - name: Fix libc++ std.cppm path for CMake
+        if: matrix.import_std == 'True' && matrix.toolchain.compiler.type == 'CLANG'
+        shell: bash
+        run: |
+          sudo mkdir -p /lib/share
+          sudo ln -sfn /usr/lib/llvm-${{ matrix.toolchain.compiler.version }}/share/libc++ /lib/share/libc++
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
