@@ -213,6 +213,31 @@ def main():
                 std_format=False,
                 **config,
             )
+            # import_std and no_crtp are key library APIs: guarantee at least one
+            # configuration per toolchain that supports each, so any regression in
+            # the library interface is caught regardless of the random seed.
+            for tc in toolchains.values():
+                if tc.feature_support.import_std:
+                    collector.sample_combinations(
+                        rgen=rgen,
+                        min_samples=1,
+                        toolchain=tc,
+                        import_std=True,
+                        cxx_modules=True,
+                        std_format=True,
+                        contracts="none",
+                        std=23,
+                        freestanding=False,
+                    )
+                if tc.feature_support.explicit_this:
+                    collector.sample_combinations(
+                        rgen=rgen,
+                        min_samples=1,
+                        toolchain=tc,
+                        no_crtp=True,
+                        std=23,
+                        freestanding=False,
+                    )
             collector.sample_combinations(
                 rgen=rgen,
                 min_samples_per_value=1,
@@ -238,8 +263,11 @@ def main():
                 freestanding=True,
             )
         case "freestanding":
+            freestanding_toolchains = [
+                toolchains[c] for c in ["GCC-14", "Clang-21 (x86-64)"]
+            ]
             collector.all_combinations(
-                toolchain=[toolchains[c] for c in ["GCC-14", "Clang-21 (x86-64)"]],
+                toolchain=freestanding_toolchains,
                 contracts="none",
                 freestanding=True,
                 std=23,
@@ -253,6 +281,20 @@ def main():
                 freestanding=True,
                 std=23,
             )
+            # Guarantee at least one no_crtp=True config per supporting toolchain.
+            # (all_combinations above fixes no_crtp=False; sample_combinations above
+            # covers Clang-21 but not GCC-14 for no_crtp=True.)
+            for tc in freestanding_toolchains:
+                if tc.feature_support.explicit_this:
+                    collector.sample_combinations(
+                        rgen=rgen,
+                        min_samples=1,
+                        toolchain=tc,
+                        no_crtp=True,
+                        contracts="none",
+                        freestanding=True,
+                        std=23,
+                    )
         case _:
             raise KeyError(f"Unsupported preset {args.preset!r}")
 
