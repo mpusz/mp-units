@@ -211,7 +211,19 @@ jobs:
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "**Local repro:**" >> $GITHUB_STEP_SUMMARY
             echo '```sh' >> $GITHUB_STEP_SUMMARY
-            echo "conan create . -b mp-units/* -b missing -c user.mp-units.build:all=True ${{ matrix.conan-config }}" >> $GITHUB_STEP_SUMMARY
+            case "${{ matrix.toolchain.compiler.type }}" in
+              GCC)         CONAN_COMPILER="gcc" ;;
+              CLANG)       CONAN_COMPILER="clang" ;;
+              APPLE_CLANG) CONAN_COMPILER="apple-clang" ;;
+              MSVC)        CONAN_COMPILER="msvc" ;;
+            esac
+            SETTINGS="-s compiler=${CONAN_COMPILER} -s compiler.version=${{ matrix.toolchain.compiler.version }} -s compiler.cppstd=${{ matrix.std }} -s build_type=${{ matrix.build_type }}"
+            [ "${{ matrix.toolchain.compiler.type }}" = "CLANG" ] && SETTINGS="${SETTINGS} -s compiler.libcxx=libc++"
+            CC="${{ matrix.toolchain.compiler.cc }}"
+            CXX="${{ matrix.toolchain.compiler.cxx }}"
+            [ -n "${CC}" ] && COMPILER_CONF="-c 'tools.build:compiler_executables={\"c\": \"${CC}\", \"cpp\": \"${CXX}\"}'" || COMPILER_CONF=""
+            [ "${{ matrix.toolchain.compiler.type }}" != "MSVC" ] && ALL="True" || ALL="False"
+            echo "conan create . -b mp-units/* -b missing ${SETTINGS} ${COMPILER_CONF} -c user.mp-units.build:all=${ALL} ${{ matrix.conan-config }}" >> $GITHUB_STEP_SUMMARY
             echo '```' >> $GITHUB_STEP_SUMMARY
           else
             echo "## ⏹️ Build Cancelled: ${{ matrix.config-summary-str }}" >> $GITHUB_STEP_SUMMARY

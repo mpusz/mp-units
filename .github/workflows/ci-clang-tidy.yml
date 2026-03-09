@@ -168,7 +168,10 @@ jobs:
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "**Local repro:**" >> $GITHUB_STEP_SUMMARY
             echo '```sh' >> $GITHUB_STEP_SUMMARY
-            echo "conan build . -b missing -c user.mp-units.build:all=True -c user.mp-units.analyze:clang-tidy=True -c tools.build:skip_test=True ${{ matrix.conan-config }}" >> $GITHUB_STEP_SUMMARY
+            CC="${{ matrix.toolchain.compiler.cc }}"
+            CXX="${{ matrix.toolchain.compiler.cxx }}"
+            SETTINGS="-s compiler=clang -s compiler.version=${{ matrix.toolchain.compiler.version }} -s compiler.libcxx=libc++ -s compiler.cppstd=${{ matrix.std }} -s build_type=${{ matrix.build_type }}"
+            echo "conan build . -b missing ${SETTINGS} -c 'tools.build:compiler_executables={\"c\": \"${CC}\", \"cpp\": \"${CXX}\"}' -c user.mp-units.build:all=True -c user.mp-units.analyze:clang-tidy=True -c tools.build:skip_test=True ${{ matrix.conan-config }}" >> $GITHUB_STEP_SUMMARY
             echo '```' >> $GITHUB_STEP_SUMMARY
           else
             echo "## ⏹️ Clang-Tidy Cancelled: ${{ matrix.config-summary-str }}" >> $GITHUB_STEP_SUMMARY

@@ -174,7 +174,15 @@ jobs:
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "**Local repro:**" >> $GITHUB_STEP_SUMMARY
             echo '```sh' >> $GITHUB_STEP_SUMMARY
-            echo "conan build . -b missing -c user.mp-units.build:all=True -c tools.build:cxxflags=\"['-ffreestanding']\" ${{ matrix.conan-config }}" >> $GITHUB_STEP_SUMMARY
+            case "${{ matrix.toolchain.compiler.type }}" in
+              GCC)   CONAN_COMPILER="gcc" ;;
+              CLANG) CONAN_COMPILER="clang" ;;
+            esac
+            SETTINGS="-s compiler=${CONAN_COMPILER} -s compiler.version=${{ matrix.toolchain.compiler.version }} -s compiler.cppstd=${{ matrix.std }} -s build_type=${{ matrix.build_type }}"
+            [ "${{ matrix.toolchain.compiler.type }}" = "CLANG" ] && SETTINGS="${SETTINGS} -s compiler.libcxx=libc++"
+            CC="${{ matrix.toolchain.compiler.cc }}"
+            CXX="${{ matrix.toolchain.compiler.cxx }}"
+            echo "conan build . -b missing ${SETTINGS} -c 'tools.build:compiler_executables={\"c\": \"${CC}\", \"cpp\": \"${CXX}\"}' -c user.mp-units.build:all=True -c tools.build:cxxflags=\"['-ffreestanding']\" ${{ matrix.conan-config }}" >> $GITHUB_STEP_SUMMARY
             echo '```' >> $GITHUB_STEP_SUMMARY
           else
             echo "## ⏹️ Freestanding Build Cancelled: ${{ matrix.config-summary-str }}" >> $GITHUB_STEP_SUMMARY
