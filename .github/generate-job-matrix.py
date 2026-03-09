@@ -284,7 +284,9 @@ def main():
             )
         case "freestanding":
             freestanding_toolchains = [
-                toolchains[c] for c in ["GCC-14", "Clang-21 (x86-64)"]
+                tc
+                for tc in toolchains.values()
+                if tc.feature_support.freestanding and not tc.os.startswith("macos")
             ]
             collector.all_combinations(
                 toolchain=freestanding_toolchains,
@@ -296,7 +298,7 @@ def main():
             collector.sample_combinations(
                 rgen=rgen,
                 min_samples_per_value=1,
-                toolchain=toolchains["Clang-21 (x86-64)"],
+                toolchain=freestanding_toolchains,
                 contracts="none",
                 freestanding=True,
                 std=23,

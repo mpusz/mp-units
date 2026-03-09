@@ -162,26 +162,21 @@ jobs:
         shell: bash
         run: |
           conan profile detect --force
-          if [[ "${{ matrix.toolchain.compiler.type }}" == "CLANG" ]]; then
-            sed -i.backup '/^\[settings\]$/,/^\[/ s/^compiler.libcxx=.*/compiler.libcxx=${{ matrix.toolchain.lib }}/' ~/.conan2/profiles/default
-          fi
-          sed -i.backup '/^\[settings\]$/,/^\[/ s/^compiler.cppstd=.*/compiler.cppstd=${{ matrix.std }}/' ~/.conan2/profiles/default
-          sed -i.backup '/^\[settings\]$/,/^\[/ s/^build_type=.*/build_type=${{ matrix.build_type }}/' ~/.conan2/profiles/default
           conan profile show -pr default
       - name: Create Conan package
         if: matrix.toolchain.compiler.type != 'MSVC'
         shell: bash
         run: |
           conan create . --user mpusz --channel ${CHANNEL} --lockfile-out=package.lock \
-                         -b mp-units/* -b missing -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" -c user.mp-units.build:all=True \
-                         ${{ matrix.conan-config }}
+                         -b mp-units/* -b missing ${{ matrix.conan-settings }} \
+                         -c user.mp-units.build:all=True ${{ matrix.conan-config }}
       - name: Create Conan package
         if: matrix.toolchain.compiler.type == 'MSVC'
         shell: bash
         run: |
           conan create . --user mpusz --channel ${CHANNEL} --lockfile-out=package.lock \
-                         -b mp-units/* -b missing -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" -c user.mp-units.build:all=False \
-                         ${{ matrix.conan-config }}
+                         -b mp-units/* -b missing ${{ matrix.conan-settings }} \
+                         -c user.mp-units.build:all=False ${{ matrix.conan-config }}
       - name: Obtain package reference
         id: get-package-ref
         shell: bash
@@ -211,19 +206,8 @@ jobs:
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "**Local repro:**" >> $GITHUB_STEP_SUMMARY
             echo '```sh' >> $GITHUB_STEP_SUMMARY
-            case "${{ matrix.toolchain.compiler.type }}" in
-              GCC)         CONAN_COMPILER="gcc" ;;
-              CLANG)       CONAN_COMPILER="clang" ;;
-              APPLE_CLANG) CONAN_COMPILER="apple-clang" ;;
-              MSVC)        CONAN_COMPILER="msvc" ;;
-            esac
-            SETTINGS="-s compiler=${CONAN_COMPILER} -s compiler.version=${{ matrix.toolchain.compiler.version }} -s compiler.cppstd=${{ matrix.std }} -s build_type=${{ matrix.build_type }}"
-            [ "${{ matrix.toolchain.compiler.type }}" = "CLANG" ] && SETTINGS="${SETTINGS} -s compiler.libcxx=libc++"
-            CC="${{ matrix.toolchain.compiler.cc }}"
-            CXX="${{ matrix.toolchain.compiler.cxx }}"
-            [ -n "${CC}" ] && COMPILER_CONF="-c 'tools.build:compiler_executables={\"c\": \"${CC}\", \"cpp\": \"${CXX}\"}'" || COMPILER_CONF=""
             [ "${{ matrix.toolchain.compiler.type }}" != "MSVC" ] && ALL="True" || ALL="False"
-            echo "conan create . -b mp-units/* -b missing ${SETTINGS} ${COMPILER_CONF} -c user.mp-units.build:all=${ALL} ${{ matrix.conan-config }}" >> $GITHUB_STEP_SUMMARY
+            echo "conan create . -b mp-units/* -b missing ${{ matrix.conan-settings }} -c user.mp-units.build:all=${ALL} ${{ matrix.conan-config }}" >> $GITHUB_STEP_SUMMARY
             echo '```' >> $GITHUB_STEP_SUMMARY
           else
             echo "## ⏹️ Build Cancelled: ${{ matrix.config-summary-str }}" >> $GITHUB_STEP_SUMMARY

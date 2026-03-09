@@ -120,6 +120,23 @@ class Configuration(ConanOptions):
         ret.update(features)
         ret["conan-config"] = " ".join(f"-o '&:{k}={v}'" for k, v in features.items())
         ret["config-summary-str"] = self.infostr(adjusted=False)
+        # Pre-build the -s flags so workflows and repro scripts can use them directly
+        # without sed-patching the auto-detected Conan profile.
+        _COMPILER_TYPE_MAP = {
+            "GCC": "gcc",
+            "CLANG": "clang",
+            "APPLE_CLANG": "apple-clang",
+            "MSVC": "msvc",
+        }
+        settings = [
+            f"-s compiler={_COMPILER_TYPE_MAP[self.toolchain.compiler.type]}",
+            f"-s compiler.version={self.toolchain.compiler.version}",
+            f"-s compiler.cppstd={self.std}",
+            f"-s build_type={self.build_type}",
+        ]
+        if self.toolchain.lib:
+            settings.append(f"-s compiler.libcxx={self.toolchain.lib}")
+        ret["conan-settings"] = " ".join(settings)
         return ret
 
     def _formatters():

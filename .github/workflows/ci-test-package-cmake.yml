@@ -73,6 +73,7 @@ jobs:
   test_package:
     name: "${{ matrix.config-summary-str }}"
     runs-on: ${{ matrix.toolchain.os }}
+    timeout-minutes: 120
     needs: generate-matrix
     strategy:
       fail-fast: false
@@ -166,17 +167,12 @@ jobs:
         run: |
           conan profile detect --force
           conan remote add artifactory https://mpusz.jfrog.io/artifactory/api/conan/conan-oss
-          if [[ "${{ matrix.toolchain.compiler.type }}" == "CLANG" ]]; then
-            sed -i.backup '/^\[settings\]$/,/^\[/ s/^compiler.libcxx=.*/compiler.libcxx=${{ matrix.toolchain.lib }}/' ~/.conan2/profiles/default
-          fi
-          sed -i.backup '/^\[settings\]$/,/^\[/ s/^compiler.cppstd=.*/compiler.cppstd=${{ matrix.std }}/' ~/.conan2/profiles/default
-          sed -i.backup '/^\[settings\]$/,/^\[/ s/^build_type=.*/build_type=${{ matrix.build_type }}/' ~/.conan2/profiles/default
           conan profile show -pr default
       - name: Install Conan dependencies
         shell: bash
         run: |
-          conan install . -b missing -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" -c user.mp-units.build:all=False \
-                          ${{ matrix.conan-config }}
+          conan install . -b missing ${{ matrix.conan-settings }} \
+                          -c user.mp-units.build:all=False ${{ matrix.conan-config }}
       - name: Provide dependencies for the build
         shell: bash
         working-directory: src
@@ -290,19 +286,9 @@ jobs:
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "**Local repro:**" >> $GITHUB_STEP_SUMMARY
             if [ "${{ matrix.toolchain.compiler.type }}" != "MSVC" ]; then
-              case "${{ matrix.toolchain.compiler.type }}" in
-                GCC)         CONAN_COMPILER="gcc" ;;
-                CLANG)       CONAN_COMPILER="clang" ;;
-                APPLE_CLANG) CONAN_COMPILER="apple-clang" ;;
-              esac
-              SETTINGS="-s compiler=${CONAN_COMPILER} -s compiler.version=${{ matrix.toolchain.compiler.version }} -s compiler.cppstd=${{ matrix.std }} -s build_type=${{ matrix.build_type }}"
-              [ "${{ matrix.toolchain.compiler.type }}" = "CLANG" ] && SETTINGS="${SETTINGS} -s compiler.libcxx=libc++"
-              CC="${{ matrix.toolchain.compiler.cc }}"
-              CXX="${{ matrix.toolchain.compiler.cxx }}"
-              COMPILER_CONF="-c 'tools.build:compiler_executables={\"c\": \"${CC}\", \"cpp\": \"${CXX}\"}'"
               BUILD_TYPE_LOWER=$(echo "${{ matrix.build_type }}" | tr '[:upper:]' '[:lower:]')
               echo '```sh' >> $GITHUB_STEP_SUMMARY
-              echo "conan install . -b missing ${SETTINGS} ${COMPILER_CONF} -c user.mp-units.build:all=False ${{ matrix.conan-config }}" >> $GITHUB_STEP_SUMMARY
+              echo "conan install . -b missing ${{ matrix.conan-settings }} -c user.mp-units.build:all=False ${{ matrix.conan-config }}" >> $GITHUB_STEP_SUMMARY
               echo "echo '{\"version\":4,\"include\":[\"../CMakeUserPresets.json\"]}' > src/CMakeUserPresets.json" >> $GITHUB_STEP_SUMMARY
               echo "echo '{\"version\":4,\"include\":[\"../CMakeUserPresets.json\"]}' > test_package/CMakeUserPresets.json" >> $GITHUB_STEP_SUMMARY
               echo "(cd src && source ../build/generators/conanbuild.sh && cmake --preset conan-default -DCMAKE_INSTALL_PREFIX=../out && cmake --build --preset conan-${BUILD_TYPE_LOWER} --target install)" >> $GITHUB_STEP_SUMMARY
