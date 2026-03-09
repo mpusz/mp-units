@@ -138,7 +138,9 @@ class Configuration(ConanOptions):
         if self.toolchain.lib:
             settings.append(f"-s compiler.libcxx={self.toolchain.lib}")
         ret["conan-settings"] = " ".join(settings)
-        ret["conan-build-folder"] = f"{_COMPILER_TYPE_MAP[self.toolchain.compiler.type]}-{self.toolchain.compiler.version}-{self.std}"
+        ret["conan-build-folder"] = (
+            f"{_COMPILER_TYPE_MAP[self.toolchain.compiler.type]}-{self.toolchain.compiler.version}-{self.std}"
+        )
         return ret
 
     def _formatters():
