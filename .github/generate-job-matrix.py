@@ -105,7 +105,9 @@ def make_clang_config(
     return Toolchain(**vars(ret))
 
 
-def make_apple_clang_config(os: str, version: str, xcode_version: str | None = None) -> Toolchain:
+def make_apple_clang_config(
+    os: str, version: str, xcode_version: str | None = None
+) -> Toolchain:
     major_version = int(version.split(".", 1)[0])
     ret = Toolchain(
         name=f"Apple Clang {xcode_version or version}",
@@ -289,12 +291,27 @@ def main():
                 for tc in toolchains.values()
                 if tc.feature_support.freestanding and not tc.os.startswith("macos")
             ]
-            collector.all_combinations(
-                toolchain=freestanding_toolchains,
+            base = dict(
                 contracts="none",
                 freestanding=True,
                 std=23,
                 no_crtp=False,
+                cxx_modules=False,
+                import_std=False,
+                build_type="Release",
+            )
+            # One baseline config per toolchain: std_format=True for those that support it
+            collector.all_combinations(
+                toolchain=freestanding_toolchains,
+                std_format=True,
+                **base,
+            )
+            # fmtlib for those toolchains where we don't support std_format
+            collector.all_combinations(
+                filter=lambda me: not me.toolchain.feature_support.std_format,
+                toolchain=freestanding_toolchains,
+                std_format=False,
+                **base,
             )
             collector.sample_combinations(
                 rgen=rgen,
