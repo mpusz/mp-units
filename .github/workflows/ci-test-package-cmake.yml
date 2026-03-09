@@ -287,6 +287,31 @@ jobs:
         run: |
           if [ "${{ job.status }}" = "failure" ]; then
             echo "## ❌ CMake Test Package Failed: ${{ matrix.config-summary-str }}" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**Local repro:**" >> $GITHUB_STEP_SUMMARY
+            if [ "${{ matrix.toolchain.compiler.type }}" != "MSVC" ]; then
+              case "${{ matrix.toolchain.compiler.type }}" in
+                GCC)         CONAN_COMPILER="gcc" ;;
+                CLANG)       CONAN_COMPILER="clang" ;;
+                APPLE_CLANG) CONAN_COMPILER="apple-clang" ;;
+              esac
+              SETTINGS="-s compiler=${CONAN_COMPILER} -s compiler.version=${{ matrix.toolchain.compiler.version }} -s compiler.cppstd=${{ matrix.std }} -s build_type=${{ matrix.build_type }}"
+              [ "${{ matrix.toolchain.compiler.type }}" = "CLANG" ] && SETTINGS="${SETTINGS} -s compiler.libcxx=libc++"
+              CC="${{ matrix.toolchain.compiler.cc }}"
+              CXX="${{ matrix.toolchain.compiler.cxx }}"
+              COMPILER_CONF="-c 'tools.build:compiler_executables={\"c\": \"${CC}\", \"cpp\": \"${CXX}\"}'"
+              BUILD_TYPE_LOWER=$(echo "${{ matrix.build_type }}" | tr '[:upper:]' '[:lower:]')
+              echo '```sh' >> $GITHUB_STEP_SUMMARY
+              echo "conan install . -b missing ${SETTINGS} ${COMPILER_CONF} -c user.mp-units.build:all=False ${{ matrix.conan-config }}" >> $GITHUB_STEP_SUMMARY
+              echo "echo '{\"version\":4,\"include\":[\"../CMakeUserPresets.json\"]}' > src/CMakeUserPresets.json" >> $GITHUB_STEP_SUMMARY
+              echo "echo '{\"version\":4,\"include\":[\"../CMakeUserPresets.json\"]}' > test_package/CMakeUserPresets.json" >> $GITHUB_STEP_SUMMARY
+              echo "(cd src && source ../build/generators/conanbuild.sh && cmake --preset conan-default -DCMAKE_INSTALL_PREFIX=../out && cmake --build --preset conan-${BUILD_TYPE_LOWER} --target install)" >> $GITHUB_STEP_SUMMARY
+              echo "(cd test_package && source ../build/generators/conanbuild.sh && cmake --preset conan-default -Dmp-units_DIR=../build -Bbuild/local && cmake --build build/local --config ${{ matrix.build_type }})" >> $GITHUB_STEP_SUMMARY
+              echo "./test_package/build/local/${{ matrix.build_type }}/test_package-headers" >> $GITHUB_STEP_SUMMARY
+              echo '```' >> $GITHUB_STEP_SUMMARY
+            else
+              echo "_MSVC: refer to the workflow steps in \`ci-test-package-cmake.yml\`._" >> $GITHUB_STEP_SUMMARY
+            fi
           else
             echo "## ⏹️ CMake Test Package Cancelled: ${{ matrix.config-summary-str }}" >> $GITHUB_STEP_SUMMARY
           fi
