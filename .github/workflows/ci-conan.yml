@@ -145,7 +145,7 @@ jobs:
         if: matrix.toolchain.compiler.type == 'APPLE_CLANG'
         shell: bash
         run: |
-          sudo xcode-select -s /Applications/Xcode_${{ matrix.toolchain.compiler.version }}.app && /usr/bin/xcodebuild -version
+          sudo xcode-select -s /Applications/Xcode_${{ matrix.toolchain.compiler.xcode_version }}.app && /usr/bin/xcodebuild -version
       - name: Set up Python
         uses: actions/setup-python@v5
         with:

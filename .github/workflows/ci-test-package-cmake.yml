@@ -149,7 +149,7 @@ jobs:
         if: matrix.toolchain.compiler.type == 'APPLE_CLANG'
         shell: bash
         run: |
-          sudo xcode-select -s /Applications/Xcode_${{ matrix.toolchain.compiler.version }}.app && /usr/bin/xcodebuild -version
+          sudo xcode-select -s /Applications/Xcode_${{ matrix.toolchain.compiler.xcode_version }}.app && /usr/bin/xcodebuild -version
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -167,6 +167,7 @@ jobs:
         run: |
           conan profile detect --force
           conan remote add artifactory https://mpusz.jfrog.io/artifactory/api/conan/conan-oss
+          echo 'tools.cmake.cmake_layout:build_folder_vars=["settings.compiler", "settings.compiler.version", "settings.compiler.cppstd"]' >> ~/.conan2/global.conf
           conan profile show -pr default
       - name: Install Conan dependencies
         shell: bash
@@ -184,8 +185,8 @@ jobs:
         shell: cmd
         working-directory: src
         run: |
-          call ..\build\generators\conanbuild.bat
-          call ..\build\generators\conanvcvars.bat
+          call ..\build\${{ matrix.conan-build-folder }}\generators\conanbuild.bat
+          call ..\build\${{ matrix.conan-build-folder }}\generators\conanvcvars.bat
           cmake --version
           cmake --preset conan-default -DCMAKE_INSTALL_PREFIX=../out
       - name: Configure mp-units CMake
@@ -193,7 +194,7 @@ jobs:
         shell: bash
         working-directory: src
         run: |
-          source ../build/generators/conanbuild.sh
+          source ../build/${{ matrix.conan-build-folder }}/generators/conanbuild.sh
           cmake --version
           cmake --preset conan-default -DCMAKE_INSTALL_PREFIX=../out
       - name: Install mp-units
@@ -201,14 +202,14 @@ jobs:
         shell: cmd
         working-directory: src
         run: |
-          call ..\build\generators\conanbuild.bat
+          call ..\build\${{ matrix.conan-build-folder }}\generators\conanbuild.bat
           cmake --build --preset conan-${{ steps.build_type.outputs.lowercase }} --target install
       - name: Install mp-units
         if: matrix.toolchain.compiler.type != 'MSVC'
         shell: bash
         working-directory: src
         run: |
-          source ../build/generators/conanbuild.sh
+          source ../build/${{ matrix.conan-build-folder }}/generators/conanbuild.sh
           cmake --build --preset conan-${{ steps.build_type.outputs.lowercase }} --target install
       - name: Provide dependencies for test_package
         shell: bash
@@ -220,17 +221,17 @@ jobs:
         shell: cmd
         working-directory: test_package
         run: |
-          call ..\build\generators\conanbuild.bat
-          call ..\build\generators\conanvcvars.bat
-          cmake --preset conan-default -Dmp-units_DIR=../build -Bbuild/local
+          call ..\build\${{ matrix.conan-build-folder }}\generators\conanbuild.bat
+          call ..\build\${{ matrix.conan-build-folder }}\generators\conanvcvars.bat
+          cmake --preset conan-default -Dmp-units_DIR=../build/${{ matrix.conan-build-folder }} -Bbuild/local
           cmake --build build/local --config ${{ matrix.build_type }}
       - name: Build test_package CMake (local build)
         if: matrix.toolchain.compiler.type != 'MSVC'
         shell: bash
         working-directory: test_package
         run: |
-          source ../build/generators/conanbuild.sh
-          cmake --preset conan-default -Dmp-units_DIR=../build -Bbuild/local
+          source ../build/${{ matrix.conan-build-folder }}/generators/conanbuild.sh
+          cmake --preset conan-default -Dmp-units_DIR=../build/${{ matrix.conan-build-folder }} -Bbuild/local
           cmake --build build/local --config ${{ matrix.build_type }}
       - name: Run test_package-headers (local build)
         shell: bash
@@ -248,8 +249,8 @@ jobs:
         shell: cmd
         working-directory: test_package
         run: |
-          call ..\build\generators\conanbuild.bat
-          call ..\build\generators\conanvcvars.bat
+          call ..\build\${{ matrix.conan-build-folder }}\generators\conanbuild.bat
+          call ..\build\${{ matrix.conan-build-folder }}\generators\conanvcvars.bat
           cmake --preset conan-default -DCMAKE_INSTALL_PREFIX=../out -Bbuild/install
           cmake --build build/install --config ${{ matrix.build_type }}
       - name: Build test_package CMake (installation)
@@ -257,7 +258,7 @@ jobs:
         shell: bash
         working-directory: test_package
         run: |
-          source ../build/generators/conanbuild.sh
+          source ../build/${{ matrix.conan-build-folder }}/generators/conanbuild.sh
           cmake --preset conan-default -DCMAKE_INSTALL_PREFIX=../out -Bbuild/install
           cmake --build build/install --config ${{ matrix.build_type }}
       - name: Run test_package-headers (installation)
@@ -289,11 +290,12 @@ jobs:
             if [ "${{ matrix.toolchain.compiler.type }}" != "MSVC" ]; then
               BUILD_TYPE_LOWER=$(echo "${{ matrix.build_type }}" | tr '[:upper:]' '[:lower:]')
               echo '```sh' >> $GITHUB_STEP_SUMMARY
+              echo "echo 'tools.cmake.cmake_layout:build_folder_vars=[\"settings.compiler\", \"settings.compiler.version\", \"settings.compiler.cppstd\"]' >> ~/.conan2/global.conf" >> $GITHUB_STEP_SUMMARY
               echo "conan install . -b missing ${{ matrix.conan-settings }} -c user.mp-units.build:all=False ${{ matrix.conan-config }}" >> $GITHUB_STEP_SUMMARY
               echo "echo '{\"version\":4,\"include\":[\"../CMakeUserPresets.json\"]}' > src/CMakeUserPresets.json" >> $GITHUB_STEP_SUMMARY
               echo "echo '{\"version\":4,\"include\":[\"../CMakeUserPresets.json\"]}' > test_package/CMakeUserPresets.json" >> $GITHUB_STEP_SUMMARY
-              echo "(cd src && source ../build/generators/conanbuild.sh && cmake --preset conan-default -DCMAKE_INSTALL_PREFIX=../out && cmake --build --preset conan-${BUILD_TYPE_LOWER} --target install)" >> $GITHUB_STEP_SUMMARY
-              echo "(cd test_package && source ../build/generators/conanbuild.sh && cmake --preset conan-default -Dmp-units_DIR=../build -Bbuild/local && cmake --build build/local --config ${{ matrix.build_type }})" >> $GITHUB_STEP_SUMMARY
+              echo "(cd src && source ../build/${{ matrix.conan-build-folder }}/generators/conanbuild.sh && cmake --preset conan-default -DCMAKE_INSTALL_PREFIX=../out && cmake --build --preset conan-${BUILD_TYPE_LOWER} --target install)" >> $GITHUB_STEP_SUMMARY
+              echo "(cd test_package && source ../build/${{ matrix.conan-build-folder }}/generators/conanbuild.sh && cmake --preset conan-default -Dmp-units_DIR=../build/${{ matrix.conan-build-folder }} -Bbuild/local && cmake --build build/local --config ${{ matrix.build_type }})" >> $GITHUB_STEP_SUMMARY
               echo "./test_package/build/local/${{ matrix.build_type }}/test_package-headers" >> $GITHUB_STEP_SUMMARY
               echo '```' >> $GITHUB_STEP_SUMMARY
             else

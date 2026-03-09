@@ -105,16 +105,17 @@ def make_clang_config(
     return Toolchain(**vars(ret))
 
 
-def make_apple_clang_config(os: str, version: str) -> Toolchain:
+def make_apple_clang_config(os: str, version: str, xcode_version: str | None = None) -> Toolchain:
     major_version = int(version.split(".", 1)[0])
     ret = Toolchain(
-        name=f"Apple Clang {version}",
+        name=f"Apple Clang {xcode_version or version}",
         os=os,
         compiler=Compiler(
             type="APPLE_CLANG",
             version=version,
             cc="clang",
             cxx="clang++",
+            xcode_version=xcode_version,
         ),
         feature_support=_make_feature_support("apple-clang", major_version),
     )
@@ -146,7 +147,7 @@ toolchains = {
         # arm64 runners are expensive; only consider one version
         if ver == 18 or architecture != "arm64"
     ]
-    + [make_apple_clang_config("macos-14", ver) for ver in ["16.1"]]
+    + [make_apple_clang_config("macos-14", "16", xcode_version="16.1")]
     + [make_msvc_config(release="14.4", version=194)]
 }
 
