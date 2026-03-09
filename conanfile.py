@@ -347,6 +347,10 @@ class MPUnitsConan(ConanFile):
             # handle hosted configuration
             if self.options.freestanding:
                 self.cpp_info.components["core"].defines.append("MP_UNITS_HOSTED=0")
+                if compiler == "msvc":
+                    self.cpp_info.components["core"].cxxflags.append("/kernel")
+                else:
+                    self.cpp_info.components["core"].cxxflags.append("-ffreestanding")
             else:
                 self.cpp_info.components["core"].defines.append("MP_UNITS_HOSTED=1")
                 if not self.options.std_format:

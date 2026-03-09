@@ -161,7 +161,7 @@ jobs:
         run: |
           conan build . -b missing ${{ matrix.conan-settings }} \
                         -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" \
-                        -c user.mp-units.build:all=True -c tools.build:cxxflags="['-ffreestanding']" \
+                        -c user.mp-units.build:all=True \
                         ${{ matrix.conan-config }}
       - name: Clean Conan cache before backup
         shell: bash
@@ -178,5 +178,5 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Local repro:**" >> $GITHUB_STEP_SUMMARY
           echo '```sh' >> $GITHUB_STEP_SUMMARY
-          echo "conan build . -b missing ${{ matrix.conan-settings }} -c user.mp-units.build:all=True -c tools.build:cxxflags=\"['-ffreestanding']\" ${{ matrix.conan-config }}" >> $GITHUB_STEP_SUMMARY
+          echo "conan build . -b missing ${{ matrix.conan-settings }} -c user.mp-units.build:all=True ${{ matrix.conan-config }}" >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
