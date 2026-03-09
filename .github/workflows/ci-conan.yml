@@ -112,6 +112,10 @@ jobs:
         if: matrix.toolchain.compiler.type == 'GCC'
         shell: bash
         run: |
+          if [[ "${{ matrix.toolchain.compiler.version }}" -ge 15 ]]; then
+            sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+            sudo apt update
+          fi
           sudo apt install -y g++-${{ matrix.toolchain.compiler.version }}
       - name: Install Clang with apt
         if: matrix.toolchain.compiler.type == 'CLANG' && matrix.toolchain.os != 'macos-14'

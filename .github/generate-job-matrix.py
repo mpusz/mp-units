@@ -129,7 +129,7 @@ def make_msvc_config(release: str, version: int) -> Toolchain:
 
 toolchains = {
     t.name: t
-    for t in [make_gcc_config(ver) for ver in [12, 13, 14]]
+    for t in [make_gcc_config(ver) for ver in [12, 13, 14, 15]]
     + [
         make_clang_config(ver, architecture)
         for ver in [16, 17, 18, 20, 21]
