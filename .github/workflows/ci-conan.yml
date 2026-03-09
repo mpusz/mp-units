@@ -135,6 +135,12 @@ jobs:
         shell: bash
         run: |
           sudo apt install -y libc++-${{ matrix.toolchain.compiler.version }}-dev libc++abi-${{ matrix.toolchain.compiler.version }}-dev libunwind-${{ matrix.toolchain.compiler.version }}-dev
+      - name: Fix libc++ std.cppm path for CMake
+        if: matrix.import_std == 'True' && matrix.toolchain.compiler.type == 'CLANG' && matrix.toolchain.os != 'macos-14'
+        shell: bash
+        run: |
+          sudo mkdir -p /lib/share
+          sudo ln -sfn /usr/lib/llvm-${{ matrix.toolchain.compiler.version }}/share/libc++ /lib/share/libc++
       - name: Select Xcode version
         if: matrix.toolchain.compiler.type == 'APPLE_CLANG'
         shell: bash
