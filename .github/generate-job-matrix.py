@@ -149,6 +149,41 @@ full_matrix = dict(
 )
 
 
+def _guarantee_api_coverage(
+    collector: CombinationCollector,
+    rgen: random.Random,
+    toolchains_iter,
+    *,
+    freestanding: bool,
+    contracts: str | None = None,
+) -> None:
+    """Guarantee ≥1 import_std and ≥1 no_crtp configuration per supporting toolchain."""
+    no_crtp_extra = {} if contracts is None else {"contracts": contracts}
+    for tc in toolchains_iter:
+        if tc.feature_support.import_std:
+            collector.sample_combinations(
+                rgen=rgen,
+                min_samples=1,
+                toolchain=tc,
+                import_std=True,
+                cxx_modules=True,
+                std_format=True,
+                contracts="none",
+                std=23,
+                freestanding=freestanding,
+            )
+        if tc.feature_support.explicit_this:
+            collector.sample_combinations(
+                rgen=rgen,
+                min_samples=1,
+                toolchain=tc,
+                no_crtp=True,
+                std=23,
+                freestanding=freestanding,
+                **no_crtp_extra,
+            )
+
+
 def main():
     parser = argparse.ArgumentParser()
     #    parser.add_argument("-I","--include",nargs="+",action="append")
@@ -172,21 +207,6 @@ def main():
         configuration_element_type=Configuration,
         hard_excludes=lambda c: (not c.is_supported),
     )
-    if args.preset:
-        # whatever the preset; we always want to have a test that does import_std;
-        # that requires a very specific configuration
-        collector.sample_combinations(
-            rgen=rgen,
-            min_samples=1,
-            std_format=True,
-            import_std=True,
-            cxx_modules=True,
-            freestanding=args.preset == "freestanding",
-            std=23,
-            contracts="none",
-            toolchain=toolchains["Clang-18 (x86-64)"],
-            no_crtp=False,
-        )
     match args.preset:
         case None:
             pass
@@ -216,46 +236,37 @@ def main():
             # import_std and no_crtp are key library APIs: guarantee at least one
             # configuration per toolchain that supports each, so any regression in
             # the library interface is caught regardless of the random seed.
-            for tc in toolchains.values():
-                if tc.feature_support.import_std:
-                    collector.sample_combinations(
-                        rgen=rgen,
-                        min_samples=1,
-                        toolchain=tc,
-                        import_std=True,
-                        cxx_modules=True,
-                        std_format=True,
-                        contracts="none",
-                        std=23,
-                        freestanding=False,
-                    )
-                if tc.feature_support.explicit_this:
-                    collector.sample_combinations(
-                        rgen=rgen,
-                        min_samples=1,
-                        toolchain=tc,
-                        no_crtp=True,
-                        std=23,
-                        freestanding=False,
-                    )
+            _guarantee_api_coverage(
+                collector, rgen, toolchains.values(), freestanding=False
+            )
             collector.sample_combinations(
                 rgen=rgen,
                 min_samples_per_value=1,
                 freestanding=False,
             )
-            # add more coverage to the more usual configurations without import_std
+            # add more random coverage across all configurations
             collector.sample_combinations(
                 rgen=rgen,
                 min_samples_per_value=2,
-                import_std=False,
                 freestanding=False,
             )
 
         case "clang-tidy":
+            # Always run on the latest supported Clang for best analysis quality
+            latest_clang = max(
+                (
+                    tc
+                    for tc in toolchains.values()
+                    if tc.compiler.type == "CLANG" and tc.os.startswith("ubuntu")
+                ),
+                key=lambda tc: tc.compiler.version,
+            )
+            # Guarantee import_std and no_crtp API coverage before random sampling
+            _guarantee_api_coverage(collector, rgen, [latest_clang], freestanding=False)
             collector.sample_combinations(
                 rgen=rgen,
                 min_samples_per_value=1,
-                toolchain=toolchains["Clang-18 (x86-64)"],
+                toolchain=latest_clang,
                 freestanding=False,
             )
         case "all-freestanding":
@@ -281,20 +292,16 @@ def main():
                 freestanding=True,
                 std=23,
             )
-            # Guarantee at least one no_crtp=True config per supporting toolchain.
-            # (all_combinations above fixes no_crtp=False; sample_combinations above
-            # covers Clang-21 but not GCC-14 for no_crtp=True.)
-            for tc in freestanding_toolchains:
-                if tc.feature_support.explicit_this:
-                    collector.sample_combinations(
-                        rgen=rgen,
-                        min_samples=1,
-                        toolchain=tc,
-                        no_crtp=True,
-                        contracts="none",
-                        freestanding=True,
-                        std=23,
-                    )
+            # Guarantee import_std and no_crtp API coverage per supporting toolchain.
+            # (all_combinations above fixes no_crtp=False, so no_crtp=True needs an
+            # explicit guarantee; import_std is also made explicit for clarity.)
+            _guarantee_api_coverage(
+                collector,
+                rgen,
+                freestanding_toolchains,
+                freestanding=True,
+                contracts="none",
+            )
         case _:
             raise KeyError(f"Unsupported preset {args.preset!r}")
 
