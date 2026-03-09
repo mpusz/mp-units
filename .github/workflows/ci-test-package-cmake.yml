@@ -172,6 +172,7 @@ jobs:
         shell: bash
         run: |
           conan install . -b missing ${{ matrix.conan-settings }} \
+                          -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" \
                           -c user.mp-units.build:all=False ${{ matrix.conan-config }}
       - name: Provide dependencies for the build
         shell: bash

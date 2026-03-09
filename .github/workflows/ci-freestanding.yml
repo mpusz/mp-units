@@ -151,6 +151,7 @@ jobs:
         shell: bash
         run: |
           conan build . -b missing ${{ matrix.conan-settings }} \
+                        -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" \
                         -c user.mp-units.build:all=True -c tools.build:cxxflags="['-ffreestanding']" \
                         ${{ matrix.conan-config }}
       - name: Clean Conan cache before backup

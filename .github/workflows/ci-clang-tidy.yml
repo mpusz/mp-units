@@ -145,6 +145,7 @@ jobs:
         shell: bash
         run: |
           conan build . -b missing ${{ matrix.conan-settings }} \
+                        -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" \
                         -c user.mp-units.build:all=True -c user.mp-units.analyze:clang-tidy=True -c tools.build:skip_test=True \
                         ${{ matrix.conan-config }} 2>&1 | tee /tmp/clang-tidy.log
           exit ${PIPESTATUS[0]}

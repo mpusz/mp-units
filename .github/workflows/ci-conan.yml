@@ -169,14 +169,16 @@ jobs:
         run: |
           conan create . --user mpusz --channel ${CHANNEL} --lockfile-out=package.lock \
                          -b mp-units/* -b missing ${{ matrix.conan-settings }} \
-                         -c user.mp-units.build:all=True ${{ matrix.conan-config }}
+                         -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" -c user.mp-units.build:all=True \
+                         ${{ matrix.conan-config }}
       - name: Create Conan package
         if: matrix.toolchain.compiler.type == 'MSVC'
         shell: bash
         run: |
           conan create . --user mpusz --channel ${CHANNEL} --lockfile-out=package.lock \
                          -b mp-units/* -b missing ${{ matrix.conan-settings }} \
-                         -c user.mp-units.build:all=False ${{ matrix.conan-config }}
+                         -c tools.cmake.cmaketoolchain:generator="Ninja Multi-Config" -c user.mp-units.build:all=False \
+                         ${{ matrix.conan-config }}
       - name: Obtain package reference
         id: get-package-ref
         shell: bash
