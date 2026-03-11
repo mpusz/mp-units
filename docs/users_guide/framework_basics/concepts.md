@@ -122,7 +122,7 @@ that satisfies [`QuantitySpecOf<V>`](#QuantitySpecOf) concept.
 ## `RepresentationOf<T, V>` { #RepresentationOf }
 
 `RepresentationOf` concept constrains a type `T` of a number that stores the
-[value of a quantity](../../reference/glossary.md#quantity-value).
+[numerical value of a quantity](../../reference/glossary.md#numerical-value).
 
 Every representation type must satisfy a common baseline:
 
