@@ -78,7 +78,7 @@ flowchart TD
     mechanical_energy --- motor_energy["<b>motor_energy</b><br><i>(isq::mechanical_energy / motor_efficiency)</i>"]
 
     potential_energy["<b>isq::potential_energy</b><br>[J]"]
-    potential_energy --- gravitational_potential_energy["<b>gravitational_potential_energy</b><br><i>(isq::mass * isq::acceleration * isq::height)</i>"]
+    potential_energy --- gravitational_potential_energy["<b>gravitational_potential_energy</b><br><i>(isq::mass * isq::acceleration_of_free_fall * isq::height)</i>"]
 ```
 
 !!! tip
@@ -131,8 +131,8 @@ constexpr quantity<qs::total_mass[kg]> total_mass(quantity<qs::cabin_mass[kg]> c
 constexpr quantity<qs::gravitational_potential_energy[J]> lifting_energy(quantity<qs::total_mass[kg]> mass,
                                                                          quantity<qs::travel_height[m]> height)
 {
-  constexpr quantity g = isq::acceleration(1 * si::standard_gravity);
-  return mass * g * height;
+  constexpr quantity g0 = isq::acceleration_of_free_fall(1 * si::standard_gravity);
+  return mass * g0 * height;
 }
 
 constexpr quantity<isq::kinetic_energy[J]> acceleration_energy(quantity<qs::total_mass[kg]> mass,
@@ -210,7 +210,7 @@ int main()
     inline constexpr struct cruising_speed final : quantity_spec<isq::speed> {} cruising_speed;
     inline constexpr struct motor_efficiency final : quantity_spec<isq::mechanical_efficiency> {} motor_efficiency;
     inline constexpr struct motor_energy final : quantity_spec<isq::mechanical_energy, isq::mechanical_energy / motor_efficiency> {} motor_energy;
-    inline constexpr struct gravitational_potential_energy final : quantity_spec<isq::potential_energy, isq::mass * isq::acceleration * isq::height> {} gravitational_potential_energy;
+    inline constexpr struct gravitational_potential_energy final : quantity_spec<isq::potential_energy, isq::mass * isq::acceleration_of_free_fall * isq::height> {} gravitational_potential_energy;
 
     }
 
@@ -229,14 +229,14 @@ int main()
     }
 
     constexpr quantity<qs::gravitational_potential_energy[J]> lifting_energy(quantity<qs::total_mass[kg]> mass,
-                                                                            quantity<qs::travel_height[m]> height)
+                                                                             quantity<qs::travel_height[m]> height)
     {
-      constexpr quantity g = isq::acceleration(1 * si::standard_gravity);
-      return mass * g * height;
+      constexpr quantity g0 = isq::acceleration_of_free_fall(1 * si::standard_gravity);
+      return mass * g0 * height;
     }
 
     constexpr quantity<isq::kinetic_energy[J]> acceleration_energy(quantity<qs::total_mass[kg]> mass,
-                                                                  quantity<qs::cruising_speed[m/s]> speed)
+                                                                   quantity<qs::cruising_speed[m/s]> speed)
     {
       return 0.5 * mass * pow<2>(speed);
     }
@@ -322,14 +322,14 @@ int main()
     ```cpp
     // Gravitational potential energy: E_p = m * g * h
     inline constexpr struct gravitational_potential_energy final :
-      quantity_spec<isq::mass * isq::acceleration * isq::height> {} gravitational_potential_energy;
+      quantity_spec<isq::mass * isq::acceleration_of_free_fall * isq::height> {} gravitational_potential_energy;
 
     // Type-checked dimensional analysis!
     quantity energy =
-      gravitational_potential_energy(total_mass(1200 * kg) * isq::acceleration(1 * si::standard_gravity) * travel_height(30 * m));
+      gravitational_potential_energy(total_mass(1200 * kg) * isq::acceleration_of_free_fall(1 * si::standard_gravity) * travel_height(30 * m));
     ```
 
-    The equation form `mass * acceleration * height`:
+    The equation form `mass * acceleration_of_free_fall * height`:
 
     - Makes the physics explicit in the type system
     - Ensures correct ingredients are used in calculations
@@ -420,7 +420,7 @@ int main()
 - **Self-documenting APIs**: Function signatures clearly communicate what kind of
   quantity each parameter expects
 - **Equation-based specifications**: Using equation forms like
-  `isq::mass * isq::acceleration * isq::height` for `gravitational_potential_energy`
+  `isq::mass * isq::acceleration_of_free_fall * isq::height` for `gravitational_potential_energy`
   makes the physics explicit in the type system and requires correct ingredients
   to be used in a quantity equation to get the desired outcome
 - **Practical applications**: Valuable in motor sizing (cabin/passenger/total mass),
