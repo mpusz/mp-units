@@ -28,7 +28,7 @@
         <link rel="alternate" type="application/rss+xml" title="RSS feed of updated content" href="../../../feed_rss_updated.xml">
       
       <link rel="icon" href="../../../assets/images/mp-units-color.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.4">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.5">
     
     
       
@@ -1785,6 +1785,8 @@ You're not viewing the latest version.
       
         
       
+        
+      
     
     
     
@@ -2157,6 +2159,34 @@ You're not viewing the latest version.
     
   
     Character of a Quantity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../representation_types/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Representation Types
   
 
     
@@ -11555,7 +11585,7 @@ than the named units in the <a href="../../../reference/glossary/#si">SI</a>.</p
 <p>This is why the <strong>mp-units</strong> library introduces a quantity specification entity that stores:</p>
 <ul>
 <li><a href="../../../reference/glossary/#dimension">dimension</a>,</li>
-<li>quantity type/name,</li>
+<li>quantity type/name and its kind,</li>
 <li><a href="../../../reference/glossary/#character">quantity character</a>,</li>
 <li>the <a href="../../../reference/glossary/#quantity-equation">quantity equation</a> being the recipe
   to create this quantity
@@ -11580,19 +11610,103 @@ context to remove the ambiguity.</p>
   a specific <strong>quantity type/name</strong>.</li>
 </ul>
 </div>
-<p>For example:</p>
-<ul>
-<li><code>isq::length</code>, <code>isq::mass</code>, <code>isq::duration</code>, <code>isq::electric_current</code>, <code>isq::thermodynamic_temperature</code>,
-  <code>isq::amount_of_substance</code>, and <code>isq::luminous_intensity</code> are the specifications
-  of base quantities
-  in the <a href="../../../reference/glossary/#isq">ISQ</a>.</li>
-<li><code>isq::width</code>, <code>isq::height</code>, <code>isq::radius</code>, and <code>isq::position_vector</code> are only a few
-  of many
-   quantities of a kind length specified in the <a href="../../../reference/glossary/#isq">ISQ</a>.</li>
-<li><code>isq::area</code>, <code>isq::speed</code>, <code>isq::moment_of_force</code> are only a few of many
-  derived quantities provided
-  in the <a href="../../../reference/glossary/#isq">ISQ</a>.</li>
-</ul>
+<table>
+<thead>
+<tr>
+<th>Quantity Specification</th>
+<th>Dimension</th>
+<th>Quantity Kind</th>
+<th>Character</th>
+<th>Equation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>isq::length</code></td>
+<td>L</td>
+<td><code>isq::length</code></td>
+<td>scalar</td>
+<td>base quantity</td>
+</tr>
+<tr>
+<td><code>isq::mass</code></td>
+<td>M</td>
+<td><code>isq::mass</code></td>
+<td>scalar</td>
+<td>base quantity</td>
+</tr>
+<tr>
+<td><code>isq::time</code></td>
+<td>T</td>
+<td><code>isq::time</code></td>
+<td>scalar</td>
+<td>base quantity</td>
+</tr>
+<tr>
+<td><code>isq::width</code></td>
+<td>L</td>
+<td><code>isq::length</code></td>
+<td>scalar</td>
+<td><code>isq::length</code></td>
+</tr>
+<tr>
+<td><code>isq::height</code></td>
+<td>L</td>
+<td><code>isq::length</code></td>
+<td>scalar</td>
+<td><code>isq::length</code></td>
+</tr>
+<tr>
+<td><code>isq::position_vector</code></td>
+<td>L</td>
+<td><code>isq::length</code></td>
+<td>vector</td>
+<td><code>isq::length</code></td>
+</tr>
+<tr>
+<td><code>isq::area</code></td>
+<td>L²</td>
+<td><code>isq::area</code></td>
+<td>scalar</td>
+<td><code>isq::length²</code></td>
+</tr>
+<tr>
+<td><code>isq::speed</code></td>
+<td>LT⁻¹</td>
+<td><code>isq::speed</code></td>
+<td>scalar</td>
+<td><code>isq::length / isq::time</code></td>
+</tr>
+<tr>
+<td><code>isq::velocity</code></td>
+<td>LT⁻¹</td>
+<td><code>isq::speed</code></td>
+<td>vector</td>
+<td><code>isq::position_vector / isq::time</code></td>
+</tr>
+<tr>
+<td><code>isq::acceleration</code></td>
+<td>LT⁻²</td>
+<td><code>isq::acceleration</code></td>
+<td>scalar</td>
+<td><code>isq::speed / isq::time</code></td>
+</tr>
+<tr>
+<td><code>isq::force</code></td>
+<td>LMT⁻²</td>
+<td><code>isq::force</code></td>
+<td>scalar</td>
+<td><code>isq::mass * isq::acceleration</code></td>
+</tr>
+<tr>
+<td><code>isq::moment_of_force</code></td>
+<td>L²MT⁻²</td>
+<td><code>isq::moment_of_force</code></td>
+<td>scalar</td>
+<td><code>isq::force * isq::length</code></td>
+</tr>
+</tbody>
+</table>
 <p>Quantity specification  can be defined by the user in one of the following ways:</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:3"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><input id="__tabbed_2_3" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">C++23</label><label for="__tabbed_2_2">C++20</label><label for="__tabbed_2_3">Portable</label></div>
 <div class="tabbed-content">
@@ -11700,7 +11814,8 @@ Such a type should be of a specific <a href="#quantity-character">quantity chara
 in the <a href="#quantity-specification">quantity specification</a>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>By default, all floating-point and integral (besides <code>bool</code>) types are treated as scalars.</p>
+<p>By default, all floating-point and integral (besides <code>bool</code>) types are treated as real scalars
+and <code>std::complex</code> as complex scalar.</p>
 </div>
 <h2 id="quantity">Quantity<a class="headerlink" href="#quantity" title="Permanent link">&para;</a></h2>
 <p>ISO defines a quantity as:</p>

@@ -28,7 +28,7 @@
         <link rel="alternate" type="application/rss+xml" title="RSS feed of updated content" href="../../../feed_rss_updated.xml">
       
       <link rel="icon" href="../../../assets/images/mp-units-color.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.4">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.5">
     
     
       
@@ -1785,6 +1785,8 @@ You're not viewing the latest version.
       
         
       
+        
+      
     
     
     
@@ -2011,6 +2013,34 @@ You're not viewing the latest version.
     
   
     Character of a Quantity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../representation_types/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Representation Types
   
 
     
@@ -11669,8 +11699,21 @@ A <code>Reference</code> can either be:</p>
 <p><code>ReferenceOf</code> concept is satisfied by references <code>T</code> which have a quantity specification
 that satisfies <a href="#QuantitySpecOf"><code>QuantitySpecOf&lt;V&gt;</code></a> concept.</p>
 <h2 id="RepresentationOf"><code>RepresentationOf&lt;T, V&gt;</code><a class="headerlink" href="#RepresentationOf" title="Permanent link">&para;</a></h2>
-<p><code>RepresentationOf</code> concept constraints a type of a number that stores the
-<a href="../../../reference/glossary/#quantity-value">value of a quantity</a> and is satisfied:</p>
+<p><code>RepresentationOf</code> concept constrains a type <code>T</code> of a number that stores the
+<a href="../../../reference/glossary/#numerical-value">numerical value of a quantity</a>.</p>
+<p>Every representation type must satisfy a common baseline:</p>
+<ul>
+<li><strong>Weakly regular</strong>: copyable and equality comparable (default-constructibility is not required).</li>
+<li><strong><code>MagnitudeScalable</code></strong>: the library must be able to apply a unit magnitude ratio to it
+  via <code>mp_units::scale&lt;T&gt;(M, value)</code>. Most standard types satisfy this
+  automatically; see
+  <a href="../representation_types/#scaling_traits">Representation Types</a> for details.</li>
+<li><strong>Character-specific operations</strong>: additional arithmetic operations required by the
+  <a href="../../../reference/glossary/#character">quantity character</a> (e.g. total ordering for real
+  scalars, <code>real()</code>/<code>imag()</code>/<code>modulus()</code> CPOs for complex scalars, <code>norm()</code>/<code>magnitude()</code>
+  CPO for vectors).</li>
+</ul>
+<p>The second template argument <code>V</code> further constrains which characters are accepted:</p>
 <ul>
 <li>
 <p>if the type of <code>V</code> satisfies <a href="#QuantitySpec"><code>QuantitySpec</code></a>:</p>
@@ -11690,6 +11733,8 @@ that satisfies <a href="#QuantitySpecOf"><code>QuantitySpecOf&lt;V&gt;</code></a
 </ul>
 </li>
 </ul>
+<p>See <a href="../representation_types/">Representation Types</a> for the full requirements and available
+customization points.</p>
 <h2 id="Quantity"><code>Quantity&lt;T&gt;</code><a class="headerlink" href="#Quantity" title="Permanent link">&para;</a></h2>
 <p><code>Quantity</code> concept matches every
   <a href="../../../reference/glossary/#quantity">quantity</a> in the library and is satisfied by all types

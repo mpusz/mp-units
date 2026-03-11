@@ -28,7 +28,7 @@
         <link rel="alternate" type="application/rss+xml" title="RSS feed of updated content" href="../../../feed_rss_updated.xml">
       
       <link rel="icon" href="../../../assets/images/mp-units-color.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.4">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.5">
     
     
       
@@ -1785,6 +1785,8 @@ You're not viewing the latest version.
       
         
       
+        
+      
     
     
     
@@ -2163,6 +2165,34 @@ You're not viewing the latest version.
     
   
     Character of a Quantity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../representation_types/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Representation Types
   
 
     
@@ -11475,7 +11505,7 @@ What is the maintenance and standardization cost?</p>
 <p>or choose any shorter identifier of our choice.</p>
 <p>For angular momentum, composability lets a user write:</p>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">mp_units</span><span class="o">::</span><span class="nn">si</span><span class="o">::</span><span class="nn">unit_symbols</span><span class="p">;</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">auto</span><span class="w"> </span><span class="n">q</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">la_vector</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">}</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">angular_momentum</span><span class="p">[</span><span class="n">kg</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m2</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">s</span><span class="p">];</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">auto</span><span class="w"> </span><span class="n">q</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cartesian_vector</span><span class="p">{</span><span class="mf">1.</span><span class="p">,</span><span class="w"> </span><span class="mf">2.</span><span class="p">,</span><span class="w"> </span><span class="mf">3.</span><span class="p">}</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">isq</span><span class="o">::</span><span class="n">angular_momentum</span><span class="p">[</span><span class="n">kg</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">m2</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">s</span><span class="p">];</span>
 </span></code></pre></div>
 <p>This is terse, clear, and scales: <code>mg * square(mm) / min</code> needs no extra predefined types.</p>
 <h2 id="value-based-equations">Value-based equations<a class="headerlink" href="#value-based-equations" title="Permanent link">&para;</a></h2>
