@@ -146,70 +146,38 @@ No explicit character override is needed:
 
 ## Representation types for vector and tensor quantities
 
-As we remember, the `quantity` class template is defined as follows:
-
-```cpp
-template<Reference auto R,
-         RepresentationOf<get_quantity_spec(R)> Rep = double>
-class quantity;
-```
-
-The second template parameter is constrained with a
-[`RepresentationOf`](concepts.md#RepresentationOf) concept that checks if the provided
-representation type satisfies the requirements for the character associated with this
-quantity type.
+The `quantity` class template's second parameter is constrained with
+[`RepresentationOf`](concepts.md#RepresentationOf), which verifies that the representation
+type satisfies the requirements for the quantity's character. See
+[Representation Types](representation_types.md) for the full details on requirements and
+how to use custom types.
 
 !!! note
 
     The current version of the C++ Standard Library does not provide any types that could be used as
-    a representation type for vector and tensor quantities. This is why users are on their own here
-    :worried:.
+    a representation type for vector and tensor quantities. **mp-units** ships a built-in
+    `cartesian_vector<T>` type for 3-D Cartesian vectors. Any third-party linear algebra library
+    types can also be used via the customization points described in
+    [Representation Types](representation_types.md).
 
-    To provide examples and implement unit tests, our library uses the types proposed in
-    the [P1385](https://wg21.link/p1385) and available as
-    [a Conan package in the Conan Center](https://conan.io/center/wg21-linear_algebra).
-    However, thanks to the provided customization points, any linear algebra library types can be used
-    as a vector or tensor quantity representation type.
-
-For example, here is how it can be done for the [P1385](https://wg21.link/p1385) types:
+For example, using the built-in `cartesian_vector`:
 
 ```cpp
-#include <matrix>
+#include <mp-units/cartesian_vector.h>
 
-using la_vector = STD_LA::fixed_size_column_vector<double, 3>;
-
-Quantity auto q = la_vector{1, 2, 3} * isq::velocity[m / s];
+Quantity auto q = cartesian_vector{1., 2., 3.} * isq::velocity[m / s];
 ```
-
-In case there is an ambiguity of `operator*` between **mp-units** and a linear algebra
-library, we can either:
-
-- use two-parameter constructor
-
-    ```cpp
-    Quantity auto q = quantity{la_vector{1, 2, 3}, isq::velocity[m / s]};
-    ```
-
-- provide a dedicated overload of `operator*` that will resolve the ambiguity
-  and wrap the above
-
-    ```cpp
-    template<Reference R>
-    Quantity auto operator*(la_vector rep, R)
-    {
-      return quantity{rep, R{}};
-    }
-    ```
 
 !!! note
 
     The following does not work:
 
     ```cpp
-    Quantity auto q1 = la_vector{1, 2, 3} * m / s;
-    Quantity auto q2 = isq::velocity(la_vector{1, 2, 3} * m / s);
-    quantity<isq::velocity[m/s]> q3{la_vector{1, 2, 3} * m / s};
+    Quantity auto q1 = cartesian_vector{1., 2., 3.} * m / s;
+    Quantity auto q2 = isq::velocity(cartesian_vector{1., 2., 3.} * m / s);
+    quantity<isq::velocity[m/s]> q3{cartesian_vector{1., 2., 3.} * m / s};
     ```
 
     In all the cases above, the SI unit `m / s` has an associated scalar quantity of `isq::length / isq::duration`.
-    `la_vector` is not a correct representation type for a scalar quantity so the construction fails.
+    `cartesian_vector` is not a correct representation type for a scalar quantity so the construction fails.
+

@@ -1,15 +1,16 @@
 # Using Custom Representation Types
 
-## Overview
+This guide shows you how to create and integrate your own custom representation types
+with **mp-units**. You'll learn the steps needed to make your type work seamlessly with
+the library's quantity system.
 
-The **mp-units** library allows you to use any conforming custom type as the representation
-type for a quantity. While the library works seamlessly with fundamental arithmetic types
-(except `bool`) and `std::complex`, you can provide your own custom representation types
-to model domain-specific requirements—such as range-validated values, vectors, or
-specialized numeric types.
+For background on representation type design and requirements, see the
+[Representation Types](../../users_guide/framework_basics/representation_types.md)
+section in the User's Guide.
 
-Creating a quantity with a custom representation type is straightforward: simply multiply
-your custom value with a unit or reference:
+## Quick Start
+
+Creating a quantity with a custom representation type is straightforward:
 
 ```cpp
 #include <mp-units/systems/si.h>
@@ -21,749 +22,379 @@ my_custom_type value{42};
 auto distance = value * m;  // quantity<si::metre, my_custom_type>
 ```
 
-However, your custom type must satisfy certain constraints defined by the library's
-representation concepts. To understand these constraints, we first need to understand
-**quantity characters**, which determine what operations are allowed on different types
-of quantities.
+Your custom type must satisfy the library's
+[`RepresentationOf`](../../users_guide/framework_basics/concepts.md#RepresentationOf) concept,
+which verifies your type provides the operations needed for its intended
+[quantity character](../../users_guide/framework_basics/character_of_a_quantity.md).
 
+## Creating Your Own Representation Type
 
-## Quantity Character
+Follow these steps to create a custom representation type that works with **mp-units**.
 
-Quantities in physics have different mathematical natures that determine which operations
-make sense for them. For detailed information, see
-[Character of a Quantity](../../users_guide/framework_basics/character_of_a_quantity.md).
+### Step 1: Define Your Type with Required Operations
 
-The character is defined at the **quantity specification** level:
-
-- Explicitly in the quantity spec definition (e.g., `displacement` is defined as a vector
-  quantity)
-- Derived from quantity equations (e.g., `vector_product(v1, v2)` yields a vector,
-  `scalar_product(v1, v2)` yields a scalar)
-- Defaults to `real_scalar` if not specified
-
-Common character requirements:
-
-- **Real scalar types** (like `int`, `double`) satisfy `real_scalar` character requirements
-- **Complex types** (like `std::complex<double>`) satisfy `complex_scalar` character requirements
-- **Vector types** (like `cartesian_vector<double>`) satisfy `vector` character requirements
-
-A single representation type may satisfy multiple character requirements. For example, `int`
-and `double` satisfy both `real_scalar` and `vector` requirements (as 1-dimensional vectors),
-so they work with both scalar and vector quantity specifications.
-
-When you use a **typed quantity** (with a specific quantity spec like `isq::height`),
-the library checks whether your representation type satisfies the character requirements:
-
-```cpp
-using vec = cartesian_vector<double>;
-
-quantity q1 = 42 * m;                                  // ✅ OK: quantity kind, no character checking
-quantity q2 = vec{1., 2., 3.} * m;                     // ✅ OK: quantity kind, no character checking
-
-quantity q3 = 42 * isq::height[m];                     // ✅ OK: height is scalar, int satisfies scalar requirements
-quantity q4 = isq::height(42 * m);                     // ✅ OK: same as above
-quantity q5 = 42 * isq::displacement[m];               // ✅ OK: displacement is vector, int can represent 1-D vectors
-quantity q6 = isq::displacement(42 * m);               // ✅ OK: same as above
-quantity q7 = vec{1., 2., 3.} * isq::displacement[m];  // ✅ OK: displacement is vector, vec satisfies vector requirements
-quantity q8 = isq::displacement(vec{1., 2., 3.} * m);  // ✅ OK: same as above
-
-// quantity q9 = vec{1., 2., 3.} * isq::height[m];     // ❌ Error: height is scalar,
-                                                       //           vec doesn't satisfy scalar requirements
-```
-
-
-## Representation Requirements
-
-To be used as a representation type in **mp-units**, a type must satisfy the
-[`RepresentationOf`](../../users_guide/framework_basics/concepts.md#RepresentationOf) concept.
-The library supports different types of representations corresponding to different
-quantity characters.
-
-The following table summarizes the requirements for different representation characters:
-
-| Requirement                                |          Real Scalar           |                        Complex Scalar                         |                   Vector                    |
-|--------------------------------------------|:------------------------------:|:-------------------------------------------------------------:|:-------------------------------------------:|
-| Copyable                                   |               ✅                |                               ✅                               |                      ✅                      |
-| Addition/subtraction (`+`, `-`, unary `-`) |               ✅                |                               ✅                               |                      ✅                      |
-| Scalable (multiply/divide by scalar)       |               ✅                |                               ✅                               |                      ✅                      |
-| Self-scalable (`T * T`, `T / T`)           |               ✅                |                               ✅                               |                      -                      |
-| Equality comparable (`==`)                 |               ✅                |                               ✅                               |                      ✅                      |
-| Totally ordered (`<`, `>`, `<=`, `>=`)     |               ✅                |                               -                               |                      -                      |
-| Not a quantity type itself                 |               ✅                |                               ✅                               |                      ✅                      |
-| **Construction**                           |               -                |                        `T{real, imag}`                        |                      -                      |
-| **Required CPOs**                          |               -                | `mp_units::real()`, `mp_units::imag()`, `mp_units::modulus()` |           `mp_units::magnitude()`           |
-| **Opt-out mechanism**                      |       `disable_real<T>`        |                               -                               |                      -                      |
-| **Examples**                               | `int`, `double`, `long double` |                    `std::complex<double>`                     | `cartesian_vector<double>`, `int`, `double` |
-
-!!! note "Scaling Factor Type"
-
-    All types must be scalable with a scaling factor type, typically their underlying value type or
-    a standard numeric type (like `long double` or `std::intmax_t`).
-
-!!! note "Weakly Regular Types"
-
-    All representation types must be **weakly regular**, which means they satisfy the
-    `std::regular` concept except for the default-constructibility requirement. Specifically,
-    they must be:
-
-    - **Copyable** (`std::copyable`)
-    - **Equality comparable** (`std::equality_comparable`)
-
-    This ensures that representation types have value semantics suitable for use in quantities.
-    Default construction is not required, allowing types like range-validated representations
-    that may not have a meaningful default value.
-
-!!! note "Complex Types Construction and Total Ordering"
-
-    **Construction**
-
-    Complex scalars **must** be constructible from real and imaginary parts: `T{real_value, imag_value}`.
-    This requirement is essential for operations that combine real-valued quantities into complex results.
-    For example, combining _active power_ and _reactive power_ into _complex power_:
-
-    ```cpp
-    quantity active = isq::active_power(100.0 * W);
-    quantity reactive = isq::isq::reactive_power(50.0 * W);
-    // Library needs to construct: std::complex<double>{active.numerical_value(), reactive.numerical_value()}
-    ```
-
-    **Total Ordering**
-
-    The library assumes that well-designed complex-like types do not provide total ordering
-    (`operator<`, etc.) since there is no natural ordering for complex numbers. If you have
-    a complex-like type that does provide ordering operators (e.g., lexicographical comparison
-    for use in containers), use the `disable_real` opt-out mechanism:
-
-    ```cpp
-    template<>
-    constexpr bool mp_units::disable_real<my_complex_type> = true;
-    ```
-
-    Alternatively, the library could explicitly check for the absence of `mp_units::real()` and
-    `mp_units::imag()` operations to distinguish real from complex scalars. This is a design
-    choice that may be refined based on standardization discussions.
-
-### Tensor Representations
-
-Tensor representations are planned for future support but are not yet fully implemented.
-
-
-## Customization Points
-
-The library provides several customization mechanisms for representation types. These are
-the tools you can use to adapt your custom types to work with **mp-units**.
-
-The customization points fall into two categories: **Character determination** (CPOs and opt-out
-mechanisms that determine what kind of representation type you have) and **Behavior and values**
-(customization points that control library behavior and provide special values).
-
-### Character Determination
-
-#### Customization Point Objects (CPOs)
-
-The library uses several CPOs to support different representation types. Providing these CPOs
-determines the **character** of your representation type. Each CPO checks for implementations
-in the following priority order:
-
-**`mp_units::real(c)`** - Returns the real part of a complex number:
-
-1. `c.real()` member function
-2. `real(c)` free function found via ADL
-
-**`mp_units::imag(c)`** - Returns the imaginary part of a complex number:
-
-1. `c.imag()` member function
-2. `imag(c)` free function found via ADL
-
-**`mp_units::modulus(c)`** - Returns the magnitude of a complex number:
-
-1. `c.modulus()` member function
-2. `modulus(c)` free function found via ADL
-3. `c.abs()` member function
-4. `abs(c)` free function found via ADL
-
-**`mp_units::magnitude(v)`** - Returns the magnitude of a vector as a scalar:
-
-1. `v.magnitude()` member function
-2. `magnitude(v)` free function found via ADL
-3. For arithmetic types: `std::abs(v)`
-4. For real scalar types: `v.abs()` member function
-5. For real scalar types: `abs(v)` free function found via ADL
-
-!!! note "Why `abs()` is also checked?"
-
-    **Complex Scalars (`modulus()` CPO)**
-
-    Provides compatibility with `std::complex` and similar types that use `abs()` as the
-    function name for returning the modulus value. This is checked as a fallback if
-    `modulus()` is not provided.
-
-    **Vectors (`magnitude()` CPO)**
-
-    Allows real scalar types (like `int`, `double`) to represent 1-dimensional vectors,
-    which is very common in engineering. This enables seamless use of arithmetic types
-    for both scalar and vector quantities.
-
----
-
-#### `disable_real<T>`
-
-A specializable variable template to opt out a type from being treated as a real scalar:
+Create a class with value semantics and the operations your character needs. Here's a template
+for a **real scalar** type:
 
 ```cpp
 template<typename T>
-constexpr bool mp_units::disable_real = false;
+class my_scalar_type {
+  T value_;
+public:
+  using value_type = T;  // Helps library determine scaling factor type
+
+  constexpr explicit my_scalar_type(T v) : value_(v) {}
+  constexpr T value() const { return value_; }
+
+  // Required: Arithmetic operations
+  constexpr my_scalar_type operator-() const { return my_scalar_type{-value_}; }
+
+  friend constexpr my_scalar_type operator+(const my_scalar_type& lhs, const my_scalar_type& rhs)
+  {
+    return my_scalar_type{lhs.value_ + rhs.value_};
+  }
+
+  friend constexpr my_scalar_type operator-(const my_scalar_type& lhs, const my_scalar_type& rhs)
+  {
+    return my_scalar_type{lhs.value_ - rhs.value_};
+  }
+
+  // Required for floating-point T: scaling operations used by the built-in conversion engine.
+  // For integer T, implicit conversions to/from value_type_t<T> are used instead (see note below).
+  // Either path satisfies MagnitudeScalable; alternatively provide a scaling_traits specialisation.
+  friend constexpr my_scalar_type operator*(const my_scalar_type& v, T factor)
+  {
+    return my_scalar_type{v.value_ * factor};
+  }
+
+  friend constexpr my_scalar_type operator*(T factor, const my_scalar_type& v)
+  {
+    return my_scalar_type{factor * v.value_};
+  }
+
+  friend constexpr my_scalar_type operator/(const my_scalar_type& v, T factor)
+  {
+    return my_scalar_type{v.value_ / factor};
+  }
+
+  // Required for scalar types: Self-scaling operations (multiply/divide by same type)
+  friend constexpr my_scalar_type operator*(const my_scalar_type& lhs, const my_scalar_type& rhs)
+  {
+    return my_scalar_type{lhs.value_ * rhs.value_};
+  }
+
+  friend constexpr my_scalar_type operator/(const my_scalar_type& lhs, const my_scalar_type& rhs)
+  {
+    return my_scalar_type{lhs.value_ / rhs.value_};
+  }
+
+  // Required: Equality comparison
+  constexpr bool operator==(const my_scalar_type&) const = default;
+
+  // Required for real scalar types: Total ordering
+  constexpr auto operator<=>(const my_scalar_type&) const = default;
+};
 ```
 
-**Purpose:** Controls the **character** of your representation type by preventing it from
-being classified as a real scalar, even if it satisfies the real scalar requirements
-(copyable, totally ordered, supports arithmetic operations).
+### Step 2: Provide Character-Specific Customization Points (if needed)
 
-**When to specialize:** If your type accidentally satisfies the real scalar requirements
-but shouldn't be used as one:
+!!! info "CPOs vs Customization Point Functions"
+
+    The library provides **Customization Point Objects (CPOs)** like `mp_units::real`, `mp_units::imag`,
+    `mp_units::norm`, etc. You provide **customization point functions** (as member functions or
+    ADL-findable free functions) that these CPOs will find and invoke.
+
+For **complex scalars**, provide the required customization point functions via member functions:
 
 ```cpp
-template<>
-constexpr bool mp_units::disable_real<my_type> = true;
+template<typename T>
+class my_complex_type {
+  T real_, imag_;
+public:
+  using value_type = T;
+
+  constexpr my_complex_type(T r, T i) : real_(r), imag_(i) {}
+
+  // Required customization point functions as member functions
+  constexpr T real() const { return real_; }
+  constexpr T imag() const { return imag_; }
+  constexpr T modulus() const { return std::hypot(real_, imag_); }
+
+  // ... other required operations (addition, scaling, equality)
+};
 ```
 
-**Example use case:** The library uses this internally to prevent `bool` from being used
-as a scalar representation, even though `bool` is technically totally ordered and supports
-arithmetic operations.
+Or via free functions found through ADL:
 
----
+```cpp
+template<typename T>
+constexpr T real(const my_complex_type<T>& c) { return c.get_real(); }
 
-### Behavior and Values
+template<typename T>
+constexpr T imag(const my_complex_type<T>& c) { return c.get_imag(); }
 
-#### `value_type` or `element_type`
+template<typename T>
+constexpr T modulus(const my_complex_type<T>& c) { return c.get_magnitude(); }
+// Note: You can also provide abs() instead of modulus()
+```
 
-The library uses `value_type_t<T>` to determine the underlying arithmetic type of your
-representation, which is used for:
+For **vectors**, provide the `norm()` customization point function:
 
-- Determining the scaling factor type (what type to multiply/divide your type by)
-- Checking if the type should be treated as floating-point
+```cpp
+template<typename T>
+class my_vector_type {
+  // ... implementation
+public:
+  using value_type = T;
 
-How it works:
+  constexpr T norm() const { /* compute magnitude */ }
+  // ... other required operations
+};
+```
 
-1. If your type has a `value_type` or `element_type` member type (checked via `std::indirectly_readable_traits`),
-   the library recursively unwraps it until it finds the underlying type
-2. Otherwise, your type itself is used as the value type
+Or via a free function:
 
-**Recommendation:** Provide a `value_type` member type for wrapper types:
+```cpp
+template<typename T>
+constexpr T norm(const my_vector_type<T>& v) { return v.compute_norm(); }
+```
+
+!!! tip "Use `norm()` for vectors"
+
+    While `magnitude()` is also supported for compatibility, prefer implementing `norm()` to match
+    industry standard libraries (Eigen, NumPy, MATLAB, Armadillo).
+
+### Step 3: Add Formatting Support (optional)
+
+Enable formatting with `std::format`:
+
+```cpp
+template<typename T, typename Char>
+struct std::formatter<my_scalar_type<T>, Char> : std::formatter<T, Char> {
+  template<typename FormatContext>
+  auto format(const my_scalar_type<T>& v, FormatContext& ctx) const {
+    return std::formatter<T, Char>::format(v.value(), ctx);
+  }
+};
+```
+
+### Step 4: Specialize `representation_values` (if needed)
+
+If your type needs custom special values (see the
+[`representation_values<Rep>`](../../users_guide/framework_basics/representation_types.md#representation_values)
+documentation):
+
+```cpp
+template<typename T>
+struct mp_units::representation_values<my_scalar_type<T>> {
+  static constexpr my_scalar_type<T> zero() noexcept {
+    return my_scalar_type<T>{T{0}};
+  }
+  static constexpr my_scalar_type<T> one() noexcept {
+    return my_scalar_type<T>{T{1}};
+  }
+  static constexpr my_scalar_type<T> min() noexcept {
+    return my_scalar_type<T>{std::numeric_limits<T>::lowest()};
+  }
+  static constexpr my_scalar_type<T> max() noexcept {
+    return my_scalar_type<T>{std::numeric_limits<T>::max()};
+  }
+};
+```
+
+### Step 5: Specialize `scaling_traits` (if needed) { #scaling_traits }
+
+The library provides built-in scaling for two broad categories of types (see the
+[`scaling_traits`](../../users_guide/framework_basics/representation_types.md#scaling_traits)
+reference):
+
+- **Floating-point types**: any type where `treat_as_floating_point` is `true` and
+  `value * value_type_t<T>` compiles — no specialization needed.
+- **Integer-like types**: types whose `value_type_t` is a non-floating-point integer type
+  and that are convertible to/from that type — no specialization needed. The built-in
+  implementation uses exact double-width integer arithmetic for rational factors, avoiding
+  floating-point precision loss.
+
+You need to specialize `scaling_traits` **only** when scaling must operate on multiple
+internal fields simultaneously and the built-in single-value approach doesn't apply. A
+common example is a type that carries both a value and an uncertainty:
+
+```cpp
+template<typename T, typename U>
+struct mp_units::scaling_traits<my_measurement<T>, my_measurement<U>> {
+  template<auto M>
+  [[nodiscard]] static constexpr my_measurement<U> scale(const my_measurement<T>& v)
+  {
+    return my_measurement<U>(
+      mp_units::scale<U>(M, v.value()),
+      mp_units::scale<U>(M, v.uncertainty()));
+  }
+};
+```
+
+### Step 6: Specialize `implicitly_scalable` (if needed) { #implicitly_scalable }
+
+By default, a conversion between two quantity types is implicit only when it is
+non-truncating: the target representation is floating-point, or both representations are
+integer-like and the unit ratio is an integer multiplier (e.g. `m → mm`). All other
+integer-to-integer conversions (fractional ratios such as `mm → m`) are explicit and
+require `value_cast` or `force_in`.
+
+If your type has different implicit-conversion semantics, specialize
+[`mp_units::implicitly_scalable`](../../users_guide/framework_basics/representation_types.md#implicitly_scalable):
+
+```cpp
+// Allow implicit narrowing from double to my_safe_decimal (it can represent any double value)
+template<auto FromUnit, auto ToUnit>
+constexpr bool mp_units::implicitly_scalable<FromUnit, double, ToUnit, my_safe_decimal> = true;
+
+// Keep double → my_safe_decimal explicit (my_safe_decimal has higher precision)
+template<auto FromUnit, auto ToUnit>
+constexpr bool mp_units::implicitly_scalable<FromUnit, my_safe_decimal, ToUnit, double> = false;
+```
+
+You can use `mp_units::is_integral_scaling(from, to)` in your specialization to reuse the
+library's "is the ratio an integer?" predicate.
+
+### Step 7: Use It with Quantities
+
+```cpp
+my_scalar_type value{42.0};
+auto length = value * m;  // quantity<si::metre, my_scalar_type<double>>
+
+auto area = length * length;  // Quantities compose naturally
+```
+
+!!! tip "Validate with `static_assert`"
+
+    Verify your type satisfies the expected concepts:
+
+    ```cpp
+    static_assert(RepresentationOf<my_scalar_type<double>, quantity_character::real_scalar>);
+    static_assert(treat_as_floating_point<my_scalar_type<double>>);
+    ```
+
+
+## Practical Examples
+
+### Range-Validated Representation
+
+The library examples include a `ranged_representation` type that ensures values stay within
+specified bounds:
+
+```cpp
+template<std::movable T, auto Min, auto Max>
+class ranged_representation {
+  T value_;
+public:
+  constexpr ranged_representation(T v) : value_(std::clamp(v, T{Min}, T{Max})) {}
+
+  constexpr T value() const { return value_; }
+  constexpr operator T() const { return value_; }  // Conversion to underlying type
+  constexpr ranged_representation operator-() const { return ranged_representation(-value_); }
+  // ... other required operations
+};
+```
+
+This is used in the [glide computer example](../../examples/glide_computer.md#geographic-integration)
+for _latitude_ and _longitude_:
+
+```cpp
+#include <mp-units/systems/si.h>
+
+using namespace mp_units;
+
+template<typename T = double>
+using latitude = quantity_point<si::degree, equator, ranged_representation<T, -90, 90>>;
+
+template<typename T = double>
+using longitude = quantity_point<si::degree, prime_meridian, ranged_representation<T, -180, 180>>;
+
+void example()
+{
+  latitude lat{45.0 * deg};    // Valid: within [-90, 90]
+  longitude lon{120.0 * deg};  // Valid: within [-180, 180]
+}
+```
+
+The range validation happens at construction time, ensuring coordinates are always valid.
+
+**Implementation reference:**
+[`ranged_representation.h`](https://github.com/mpusz/mp-units/blob/1511c73d362649cca90191cdcfd3b369058c1dc1/example/include/ranged_representation.h)
+
+### Vector Representation
+
+The library provides [`cartesian_vector`](https://github.com/mpusz/mp-units/blob/1511c73d362649cca90191cdcfd3b369058c1dc1/src/core/include/mp-units/cartesian_vector.h)
+as a vector representation type with full support for vector operations:
+
+```cpp
+#include <mp-units/cartesian_vector.h>
+#include <mp-units/systems/si.h>
+#include <mp-units/systems/isq.h>
+
+using namespace mp_units;
+using namespace mp_units::si::unit_symbols;
+
+void example()
+{
+  // Create 3D vector quantities
+  quantity_point pos1{cartesian_vector{1., 2., 3.} * m};
+  quantity_point pos2{cartesian_vector{4., 5., 6.} * m};
+
+  // Vector subtraction
+  quantity delta = pos2 - pos1;  // {3, 3, 3} m
+
+  // Scalar multiplication
+  quantity delta_scaled = 2 * delta;  // {6, 6, 6} m
+
+  // Magnitude (returns scalar quantity)
+  quantity distance = pos1.quantity_from_zero();
+  quantity mag = magnitude(distance);  // sqrt(1² + 2² + 3²) m
+
+  // Scalar product (dot product)
+  auto dot = scalar_product(pos1, pos2);  // Returns quantity with dimension m²
+
+  // Vector product (cross product)
+  auto cross = vector_product(pos1, pos2);  // Returns vector quantity with dimension m²
+}
+```
+
+The `cartesian_vector` implementation demonstrates how to create a full-featured vector type with:
+
+- Arithmetic operations (`+`, `-`, `*`, `/`)
+- `norm()` member function (and `magnitude()` alias)
+- Support for scalar and vector products
+- Integration with quantity characters
+
+**Implementation reference:**
+[`cartesian_vector.h`](https://github.com/mpusz/mp-units/blob/1511c73d362649cca90191cdcfd3b369058c1dc1/src/core/include/mp-units/cartesian_vector.h)
+
+
+## Common Pitfalls
+
+### Provide `value_type` for Wrapper Types
+
+The library needs to scale your type by a numeric factor during unit conversions. Make
+sure wrapper types provide a `value_type` member to help determine the correct scaling
+factor type:
 
 ```cpp
 template<typename T>
 class my_wrapper {
 public:
-  using value_type = T;  // Exposes the underlying type
+  using value_type = T;  // ✅ Helps library determine scaling factor type
   // ...
 };
 ```
 
-!!! warning "Don't provide both `value_type` and `element_type`"
-
-    If your type provides both `value_type` and `element_type` that refer to **different types**,
-    `std::indirectly_readable_traits<T>::value_type` will be ill-formed (undefined), and your type
-    won't work with the library. If both exist and refer to the **same type**, that type will be used.
-
-    **Recommendation:** Provide only `value_type` unless you have a specific reason to provide both
-    (e.g., satisfying iterator concepts), in which case ensure they refer to the same type.
-
----
-
-#### `treat_as_floating_point<Rep>` { #treat_as_floating_point }
-
-A specializable variable template that tells the library whether a type should be treated as
-floating-point for the purpose of allowing implicit conversions:
-
-```cpp
-template<typename Rep>
-constexpr bool mp_units::treat_as_floating_point = /* implementation-defined */;
-```
-
-**Default behavior:**
-
-- In hosted environments: uses `std::chrono::treat_as_floating_point_v<value_type_t<Rep>>`
-- In freestanding: uses `std::is_floating_point_v<value_type_t<Rep>>`
-
-**When to specialize:** If you have a custom type that wraps a floating-point value but the
-automatic detection doesn't work correctly:
-
-```cpp
-template<>
-constexpr bool mp_units::treat_as_floating_point<my_fixed_point_type> = true;
-```
-
-**Impact:** When `treat_as_floating_point<Rep>` is `true`, the type is treated as floating-point
-for conversion purposes. See [Value Conversions](../../users_guide/framework_basics/value_conversions.md#value-conversions)
-for details on how this affects implicit conversions between quantities
-
----
-
-#### `implicitly_scalable<FromUnit, FromRep, ToUnit, ToRep>` { #implicitly_scalable }
-
-A specializable variable template that controls whether a conversion from
-`quantity<FromUnit, FromRep>` to `quantity<ToUnit, ToRep>` is implicit or requires an
-explicit cast via `value_cast`/`force_in`:
-
-```cpp
-template<auto FromUnit, typename FromRep, auto ToUnit, typename ToRep>
-constexpr bool mp_units::implicitly_scalable =
-  std::is_convertible_v<FromRep, ToRep> &&
-  (treat_as_floating_point<ToRep> ||
-   (!treat_as_floating_point<FromRep> && is_integral_scaling(FromUnit, ToUnit)));
-```
-
-**Default behavior:** A conversion is implicit iff all of the following hold:
-
-- `FromRep` is convertible to `ToRep`, AND
-- one of:
-    - `ToRep` is floating-point (absorbs any numeric value without truncation), OR
-    - neither rep is floating-point AND the unit magnitude ratio is an integral factor
-      (e.g. `m → mm`: ×1000), as reported by `mp_units::is_integral_scaling(from, to)`
-
-`mp_units::is_integral_scaling(from, to)` is a `consteval` predicate you can also use
-in your own specializations to distinguish the integral-factor case from fractional ones
-(e.g. `mm → m`: ÷1000, `ft → m`, `deg → rad`).
-
-Conversions with a fractional factor are always explicit for integer reps.
-
-**When to specialize:** If your custom type has different implicit-conversion semantics:
-
-```cpp
-// my_decimal is safe to receive from double implicitly, but double cannot losslessly
-// represent my_decimal (more precision), so that direction stays explicit.
-template<auto FromUnit, auto ToUnit>
-constexpr bool mp_units::implicitly_scalable<FromUnit, double, ToUnit, my_decimal> = true;
-
-template<auto FromUnit, auto ToUnit>
-constexpr bool mp_units::implicitly_scalable<FromUnit, my_decimal, ToUnit, double> = false;
-```
-
-**Impact:** Controls whether conversions between quantity types are implicit or require
-`value_cast`/`force_in`. See [Value Conversions](../../users_guide/framework_basics/value_conversions.md)
-for the full picture.
-
----
-
-#### `representation_values<Rep>` { #representation_values }
-
-A specializable class template that provides special values for a representation type:
-
-```cpp
-template<typename Rep>
-struct mp_units::representation_values {
-  static constexpr Rep zero() noexcept;  // Required for quantity::zero()
-  static constexpr Rep one() noexcept;   // Required for quantity operations
-  static constexpr Rep min() noexcept;   // Required for quantity::min()
-  static constexpr Rep max() noexcept;   // Required for quantity::max()
-};
-```
-
-**Default behavior:**
-
-- In hosted environments: inherits from `std::chrono::duration_values<Rep>`
-- `zero()`: returns `Rep(0)` if Rep is constructible from `int`
-- `one()`: returns `Rep(1)` if Rep is constructible from `int`
-- `min()`: returns `std::numeric_limits<Rep>::lowest()` if available
-- `max()`: returns `std::numeric_limits<Rep>::max()` if available
-
-**When to specialize:** If your type needs custom special values:
-
-```cpp
-template<typename T>
-struct mp_units::representation_values<my_custom_type<T>> {
-  static constexpr my_custom_type<T> zero() noexcept {
-    return my_custom_type<T>{T{0}};
-  }
-
-  static constexpr my_custom_type<T> one() noexcept {
-    return my_custom_type<T>{T{1}};
-  }
-
-  static constexpr my_custom_type<T> min() noexcept {
-    return my_custom_type<T>{std::numeric_limits<T>::lowest()};
-  }
-
-  static constexpr my_custom_type<T> max() noexcept {
-    return my_custom_type<T>{std::numeric_limits<T>::max()};
-  }
-};
-```
-
-**Usage:** These values are used by:
-
-- `quantity::zero()`, `quantity::min()`, `quantity::max()` static member functions
-- Mathematical operations like `floor()`, `ceil()`, `round()`
-- Division by zero checks
-
----
-
-#### `scaling_traits<From, To>` { #scaling_traits }
-
-A class template specialization that defines how a value of type `From` is scaled by a
-unit magnitude to produce a value of type `To`.  Built-in support is provided for all
-standard floating-point and integral types.
-
-To support a custom representation type, specialize `mp_units::scaling_traits` for your
-type:
-
-```cpp
-template<typename T, typename U>
-struct mp_units::scaling_traits<MyType<T>, MyType<U>> {
-  template<auto M>
-  [[nodiscard]] static constexpr MyType<U> scale(const MyType<T>& value) { ... }
-};
-```
-
-The `mp_units::scale<To>(M, value)` free function calls
-`scaling_traits<From, To>::template scale<M{}>(value)`, and is the primary way the
-library scales values during unit conversions.  A helper `mp_units::silent_cast<To>(value)`
-performs a `static_cast` with truncating conversion warnings suppressed — useful when
-you need to cast the scaled result to the target type.
-
-To control whether a particular conversion is implicit or explicit, specialize
-[`mp_units::implicitly_scalable<>`](#implicitly_scalable) separately —
-`scaling_traits::scale<M>()` is responsible for *how* to scale, not *whether* to do so
-implicitly.
-
-Once a `scaling_traits` specialization is provided, the custom type automatically
-satisfies the `MagnitudeScalable` concept and can be used as the representation type of a
-`quantity`.
-
-??? example "`measurement<T>`"
-
-    A `measurement<T>` type carries both a value and an uncertainty.  Scaling a measurement
-    must apply the same factor to both components:
-
-    ```cpp
-    template<typename T, typename U>
-    struct mp_units::scaling_traits<measurement<T>, measurement<U>> {
-      template<auto M>
-      [[nodiscard]] static constexpr measurement<U> scale(const measurement<T>& value)
-      {
-        return measurement<U>(
-          mp_units::scale<U>(M, value.value()),
-          mp_units::scale<U>(M, value.uncertainty()));
-      }
-    };
-    ```
-
-    ```cpp
-    static_assert(mp_units::RepresentationOf<measurement<int>, mp_units::quantity_character::real_scalar>);
-    static_assert(mp_units::RepresentationOf<measurement<double>, mp_units::quantity_character::real_scalar>);
-    ```
-
-
-## Built-in Support
-
-All fundamental arithmetic types except `bool` satisfy the real scalar and 1-D vector
-representation requirements:
-
-```cpp
-quantity<si::metre, int> length1 = 42 * m;
-quantity<si::metre, double> length2 = 3.14 * m;
-quantity<si::metre, long double> length3 = 2.718L * m;
-```
-
-!!! note "Why is `bool` excluded?"
-
-    Although `bool` technically satisfies the syntactic requirements (it's copyable, totally
-    ordered, and supports arithmetic operations), it's excluded via `disable_real<bool> = true`
-    because using boolean values as physical quantities rarely makes sense and can lead to
-    confusing code.
-
-The library also supports `std::complex` for complex-valued quantities:
-
-```cpp
-#include <complex>
-
-std::complex<double> impedance{50.0, 30.0};
-quantity z = impedance * si::ohm;  // Complex impedance
-```
-
-## Examples
-
-??? example "Range-Validated Representation"
-
-    The library examples include a `ranged_representation` type that ensures values stay within
-    specified bounds. This is useful for quantities with physical or logical constraints:
-
-    ```cpp
-    template<std::movable T, auto Min, auto Max>
-    class ranged_representation {
-      T value_;
-    public:
-      constexpr ranged_representation(T v) : value_(std::clamp(v, T{Min}, T{Max})) {}
-
-      constexpr T value() const { return value_; }
-      constexpr operator T() const { return value_; }  // Conversion operator to underlying type
-      constexpr ranged_representation operator-() const { return ranged_representation(-value_); }
-      // ... other required operations
-    };
-    ```
-
-    This is used in the [glide computer example](../../examples/glide_computer.md#geographic-integration)
-    for _latitude_ and _longitude_:
-
-    ```cpp
-    #include <mp-units/systems/si.h>
-
-    using namespace mp_units;
-
-    template<typename T = double>
-    using latitude = quantity_point<si::degree, equator, ranged_representation<T, -90, 90>>;
-
-    template<typename T = double>
-    using longitude = quantity_point<si::degree, prime_meridian, ranged_representation<T, -180, 180>>;
-
-    void example()
-    {
-      latitude lat{45.0 * deg};    // Valid: within [-90, 90]
-      longitude lon{120.0 * deg};  // Valid: within [-180, 180]
-    }
-    ```
-
-    The range validation happens at construction time, ensuring coordinates are always valid.
-
-??? example "Vector Representation"
-
-    The library provides [`cartesian_vector`](https://github.com/mpusz/mp-units/blob/1511c73d362649cca90191cdcfd3b369058c1dc1/src/core/include/mp-units/cartesian_vector.h)
-    as a vector representation type with full support for vector operations:
-
-    ```cpp
-    #include <mp-units/cartesian_vector.h>
-    #include <mp-units/systems/si.h>
-    #include <mp-units/systems/isq.h>
-
-    using namespace mp_units;
-    using namespace mp_units::si::unit_symbols;
-
-    void example()
-    {
-      // Create 3D vector quantities
-      quantity_point pos1{cartesian_vector{1., 2., 3.} * m};
-      quantity_point pos2{cartesian_vector{4., 5., 6.} * m};
-
-      // Vector subtraction
-      quantity delta = pos2 - pos1;  // {3, 3, 3} m
-
-      // Scalar multiplication
-      quantity delta_scaled = 2 * delta;  // {6, 6, 6} m
-
-      // Magnitude (returns scalar quantity)
-      quantity distance = pos1.quantity_from_zero();
-      quantity mag = magnitude(distance);  // sqrt(1² + 2² + 3²) m
-
-      // Scalar product (dot product)
-      auto dot = scalar_product(pos1, pos2);  // Returns quantity with dimension m²
-
-      // Vector product (cross product)
-      auto cross = vector_product(pos1, pos2);  // Returns vector quantity with dimension m²
-    }
-    ```
-
-    The `cartesian_vector` implementation demonstrates how to create a full-featured vector type:
-
-    - Implements arithmetic operations (`+`, `-`, `*`, `/`)
-    - Provides `magnitude()` member function
-    - Supports scalar and vector products
-    - Works with quantity characters to distinguish between scalars and vectors
-
-??? example "Creating Your Own Representation Type"
-
-    To create a custom representation type, follow these steps:
-
-    ### 1. Define Your Type
-
-    Create a class with the value semantics and operations you need:
-
-    ```cpp
-    template<typename T>
-    class my_custom_type {
-      T value_;
-    public:
-      using value_type = T;
-
-      constexpr explicit my_custom_type(T v) : value_(v) {}
-      constexpr T value() const { return value_; }
-
-      // Required: Arithmetic operations
-      constexpr my_custom_type operator-() const { return my_custom_type{-value_}; }
-
-      friend constexpr my_custom_type operator+(const my_custom_type& lhs, const my_custom_type& rhs)
-      {
-        return my_custom_type{lhs.value_ + rhs.value_};
-      }
-
-      friend constexpr my_custom_type operator-(const my_custom_type& lhs, const my_custom_type& rhs)
-      {
-        return my_custom_type{lhs.value_ - rhs.value_};
-      }
-
-      // Required: Scaling operations
-      friend constexpr my_custom_type operator*(const my_custom_type& v, T factor)
-      {
-        return my_custom_type{v.value_ * factor};
-      }
-
-      friend constexpr my_custom_type operator*(T factor, const my_custom_type& v)
-      {
-        return my_custom_type{factor * v.value_};
-      }
-
-      friend constexpr my_custom_type operator/(const my_custom_type& v, T factor)
-      {
-        return my_custom_type{v.value_ / factor};
-      }
-
-      // Required for scalar types: Self-scaling operations
-      friend constexpr my_custom_type operator*(const my_custom_type& lhs, const my_custom_type& rhs)
-      {
-        return my_custom_type{lhs.value_ * rhs.value_};
-      }
-
-      friend constexpr my_custom_type operator/(const my_custom_type& lhs, const my_custom_type& rhs)
-      {
-        return my_custom_type{lhs.value_ / rhs.value_};
-      }
-
-      // Required: Equality comparison
-      constexpr bool operator==(const my_custom_type&) const = default;
-
-      // Required for real scalar types: Comparison
-      constexpr auto operator<=>(const my_custom_type&) const = default;
-    };
-    ```
-
-    ### 2. Provide Required Customization Points (if needed)
-
-    For complex scalars, provide the required customization points. You can do this via member functions:
-
-    ```cpp
-    template<typename T>
-    class my_complex_type {
-      T real_, imag_;
-    public:
-      constexpr T real() const { return real_; }
-      constexpr T imag() const { return imag_; }
-      constexpr T modulus() const { return std::hypot(real_, imag_); }
-      // ... other required operations
-    };
-    ```
-
-    Or via free functions found through ADL (Argument-Dependent Lookup):
-
-    ```cpp
-    template<typename T>
-    constexpr T real(const my_complex_type<T>& c) { return c.get_real(); }
-
-    template<typename T>
-    constexpr T imag(const my_complex_type<T>& c) { return c.get_imag(); }
-
-    template<typename T>
-    constexpr T modulus(const my_complex_type<T>& c) { return c.get_magnitude(); }
-    // Note: You can also provide abs() instead of modulus()
-    ```
-
-    For vectors, provide the `magnitude()` customization point:
-
-    ```cpp
-    template<typename T>
-    class my_vector_type {
-      // ... implementation
-    public:
-      constexpr T magnitude() const { /* compute magnitude */ }
-      // ... other required operations
-    };
-    ```
-
-    Or via a free function:
-
-    ```cpp
-    template<typename T>
-    constexpr T magnitude(const my_vector_type<T>& v) { return v.compute_magnitude(); }
-    // Note: You can also provide abs() instead of magnitude().
-    //       abs() is also checked to allow real scalar types to represent 1-dimensional vectors.
-    ```
-
-    ### 3. Optional: Provide Formatting Support (if needed)
-
-    To enable formatting with `std::format`, specialize the formatter:
-
-    ```cpp
-    template<typename T, typename Char>
-    struct std::formatter<my_custom_type<T>, Char> : std::formatter<T, Char> {
-      template<typename FormatContext>
-      auto format(const my_custom_type<T>& v, FormatContext& ctx) const { return std::formatter<T, Char>::format(v.value(), ctx); }
-    };
-    ```
-
-    ### 4. Optional: Specialize `representation_values` (if needed)
-
-    If your type needs custom implementations for zero, one, minimum, or maximum values,
-    specialize the `representation_values` trait. See the
-    [`representation_values<Rep>` customization point](#representation_valuesrep) for complete details.
-
-    Example:
-
-    ```cpp
-    template<typename T>
-    struct mp_units::representation_values<my_custom_type<T>> {
-      static constexpr my_custom_type<T> zero() noexcept { return my_custom_type<T>{T{0}}; }
-      static constexpr my_custom_type<T> one() noexcept { return my_custom_type<T>{T{1}}; }
-      static constexpr my_custom_type<T> min() noexcept { return my_custom_type<T>{std::numeric_limits<T>::lowest()}; }
-      static constexpr my_custom_type<T> max() noexcept { return my_custom_type<T>{std::numeric_limits<T>::max()}; }
-    };
-    ```
-
-    ### 5. Use It with Quantities
-
-    Once your type satisfies the required concepts, use it naturally with units:
-
-    ```cpp
-    my_custom_type value{42.0};
-    auto length = value * m;  // quantity<si::metre, my_custom_type<double>>
-
-    auto area = length * length;  // Quantities compose naturally
-    ```
-
-    !!! tip "Validation with `static_assert`"
-
-        Use `static_assert` to verify your type satisfies the expected concepts:
-
-        ```cpp
-        static_assert(RepresentationOf<my_custom_type<double>, quantity_character::real_scalar>);
-        static_assert(treat_as_floating_point<my_custom_type<double>>);
-        static_assert(!treat_as_floating_point<my_custom_type<int>>);
-        ```
-
-        This provides clear compile-time feedback if something is missing.
-
-
-## Common Pitfalls
-
-### Scaling Factor Type
-
-The library needs to scale your type by a numeric factor during unit conversions. Make
-sure your type provides a `value_type` member to help the library determine the correct
-scaling factor type. See [`value_type` or `element_type`](#value_type-or-element_type)
+See [`value_type` or `element_type`](../../users_guide/framework_basics/representation_types.md#value_type-or-element_type)
 for complete details.
 
-```cpp
-template<typename T>
-class my_type {
-public:
-  using value_type = T;  // Helps the library determine the scaling factor type
-  // ...
-};
-```
+### Place Customization Point Functions in the Same Namespace (ADL)
 
-### ADL and Namespace Placement
-
-When providing free functions for customization points (like `real()`, `imag()`,
-`magnitude()`), place them in the same namespace as your type to ensure Argument-Dependent
-Lookup (ADL) finds them:
+When providing customization point functions (like `real()`, `imag()`, `norm()`),
+place them in the same namespace as your type to ensure Argument-Dependent Lookup (ADL)
+finds them:
 
 ```cpp
 namespace my_namespace {
@@ -781,34 +412,57 @@ namespace my_namespace {
 ```
 
 
+### Assuming Implicit Conversions that Are Actually Explicit
+
+The default `implicitly_scalable` only allows implicit conversion when the unit ratio is a
+non-truncating integer multiplier (or the target representation is floating-point). If you
+expect implicit conversion between, say, `mm` and `m` with an integer representation, you'll
+get a compilation error:
+
+```cpp
+quantity<si::millimetre, int> a = 1000 * mm;
+quantity<si::metre, int> b = a;        // ❌ explicit conversion required (truncating: 1000 → 1)
+quantity<si::metre, int> c = value_cast<si::metre>(a);  // ✅ OK
+```
+
+This is intentional — the conversion is truncating. Specialize `mp_units::implicitly_scalable`
+only when you are certain your type handles the conversion without data loss.
+
 ## Summary
 
-**mp-units** provides a flexible framework for custom representation types:
+To create a custom representation type:
 
-- **Use any type** that satisfies the representation concepts
-- **Built-in support** for fundamental types and `std::complex`
-- **Examples provided** for range-validated types, vectors, and more
-- **Character system** ensures type-safe operations based on physical meaning
-- **Simple integration**: just multiply your value with a unit
+1. **Implement required operations** for your character (scalar/complex/vector/tensor)
+2. **Provide character-specific functions** (if needed): `real()`, `imag()`, `norm()`, etc.,
+   via member functions or ADL-findable free functions
+3. **Add formatting support** (optional) via `std::formatter`
+4. **Add `value_type`** to help the library determine the scaling factor type
+5. **Specialize `representation_values<Rep>`** (if needed) for custom special values
+6. **Specialize `scaling_traits<From, To>`** (if needed) when scaling must operate on
+   multiple internal fields simultaneously (e.g. value + uncertainty types)
+7. **Specialize `implicitly_scalable`** (if needed) to control implicit vs. explicit
+   conversion semantics
+8. **Verify with concepts** using `static_assert`
 
-By providing custom representation types, you can encode domain-specific constraints,
-use specialized numeric types, or work with mathematical objects like vectors and
-complex numbers—all while maintaining the strong type safety and dimensional analysis
-that **mp-units** provides.
+The library handles the rest, providing strong type safety and dimensional analysis for your
+custom types.
 
 
 ## See Also
 
 <!-- markdownlint-disable MD013 -->
-**Related Documentation:**
+**User's Guide:**
 
+- [Representation Types](../../users_guide/framework_basics/representation_types.md) - Complete design and requirements reference
 - [Character of a Quantity](../../users_guide/framework_basics/character_of_a_quantity.md) - Understanding quantity characters
-- [Value Conversions](../../users_guide/framework_basics/value_conversions.md) - How `treat_as_floating_point` affects conversions
+- [Value Conversions](../../users_guide/framework_basics/value_conversions.md) - How `treat_as_floating_point` and `implicitly_scalable` affect conversions
 - [Concepts](../../users_guide/framework_basics/concepts.md#RepresentationOf) - The `RepresentationOf` concept definition
 
 **Implementation References:**
 
 - [`representation_concepts.h`](https://github.com/mpusz/mp-units/blob/1511c73d362649cca90191cdcfd3b369058c1dc1/src/core/include/mp-units/framework/representation_concepts.h) - Concept definitions
+- [`scaling.h`](https://github.com/mpusz/mp-units/blob/1511c73d362649cca90191cdcfd3b369058c1dc1/src/core/include/mp-units/framework/scaling.h) - `scaling_traits` and built-in scaling implementation
+- [`value_cast.h`](https://github.com/mpusz/mp-units/blob/1511c73d362649cca90191cdcfd3b369058c1dc1/src/core/include/mp-units/framework/value_cast.h) - `implicitly_scalable` and `is_integral_scaling`
 - [`customization_points.h`](https://github.com/mpusz/mp-units/blob/1511c73d362649cca90191cdcfd3b369058c1dc1/src/core/include/mp-units/framework/customization_points.h) - CPO implementations
 - [`cartesian_vector.h`](https://github.com/mpusz/mp-units/blob/1511c73d362649cca90191cdcfd3b369058c1dc1/src/core/include/mp-units/cartesian_vector.h) - Vector implementation example
 - [`ranged_representation.h`](https://github.com/mpusz/mp-units/blob/1511c73d362649cca90191cdcfd3b369058c1dc1/example/include/ranged_representation.h) - Range-validated representation example

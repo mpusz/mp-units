@@ -38,6 +38,7 @@ Core concepts that form the foundation of **mp-units**:
 - [Simple and Typed Quantities](framework_basics/simple_and_typed_quantities.md) - Two approaches to quantity creation
 - [Value Conversions](framework_basics/value_conversions.md) - Converting between representations
 - [Character of a Quantity](framework_basics/character_of_a_quantity.md) - Scalar, vector, and tensor quantities
+- [Representation Types](framework_basics/representation_types.md) - Numeric types for quantity values
 - [Dimensionless Quantities](framework_basics/dimensionless_quantities.md) - Handling ratios and counts
 - [Quantity Arithmetics](framework_basics/quantity_arithmetics.md) - Mathematical operations
 - [Generic Interfaces](framework_basics/generic_interfaces.md) - Writing flexible, type-safe code

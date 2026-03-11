@@ -61,7 +61,7 @@ For angular momentum, composability lets a user write:
 
 ```cpp
 using namespace mp_units::si::unit_symbols;
-auto q = la_vector{1, 2, 3} * isq::angular_momentum[kg * m2 / s];
+auto q = cartesian_vector{1., 2., 3.} * isq::angular_momentum[kg * m2 / s];
 ```
 
 This is terse, clear, and scales: `mg * square(mm) / min` needs no extra predefined types.

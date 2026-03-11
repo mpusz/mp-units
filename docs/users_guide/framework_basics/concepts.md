@@ -121,8 +121,22 @@ that satisfies [`QuantitySpecOf<V>`](#QuantitySpecOf) concept.
 
 ## `RepresentationOf<T, V>` { #RepresentationOf }
 
-`RepresentationOf` concept constraints a type of a number that stores the
-[value of a quantity](../../reference/glossary.md#quantity-value) and is satisfied:
+`RepresentationOf` concept constrains a type `T` of a number that stores the
+[value of a quantity](../../reference/glossary.md#quantity-value).
+
+Every representation type must satisfy a common baseline:
+
+- **Weakly regular**: copyable and equality comparable (default-constructibility is not required).
+- **`MagnitudeScalable`**: the library must be able to apply a unit magnitude ratio to it
+  via `mp_units::scale<T>(M, value)`. Most standard types satisfy this
+  automatically; see
+  [Representation Types](representation_types.md#scaling_traits) for details.
+- **Character-specific operations**: additional arithmetic operations required by the
+  [quantity character](../../reference/glossary.md#character) (e.g. total ordering for real
+  scalars, `real()`/`imag()`/`modulus()` CPOs for complex scalars, `norm()`/`magnitude()`
+  CPO for vectors).
+
+The second template argument `V` further constrains which characters are accepted:
 
 - if the type of `V` satisfies [`QuantitySpec`](#QuantitySpec):
 
@@ -136,6 +150,9 @@ that satisfies [`QuantitySpecOf<V>`](#QuantitySpecOf) concept.
 
     - by representation types that are of a provided
       [quantity character](../../reference/glossary.md#character).
+
+See [Representation Types](representation_types.md) for the full requirements and available
+customization points.
 
 
 ## `Quantity<T>` { #Quantity }
