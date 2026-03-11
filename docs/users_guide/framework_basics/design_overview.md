@@ -153,7 +153,7 @@ than the named units in the [SI](../../reference/glossary.md#si).
 This is why the **mp-units** library introduces a quantity specification entity that stores:
 
 - [dimension](../../reference/glossary.md#dimension),
-- quantity type/name,
+- quantity type/name and its kind,
 - [quantity character](../../reference/glossary.md#character),
 - the [quantity equation](../../reference/glossary.md#quantity-equation) being the recipe
   to create this quantity
@@ -177,18 +177,20 @@ This is why the **mp-units** library introduces a quantity specification entity 
     - **quantity specification** - implemented with a `quantity_spec` class template that among others identifies
       a specific **quantity type/name**.
 
-For example:
-
-- `isq::length`, `isq::mass`, `isq::duration`, `isq::electric_current`, `isq::thermodynamic_temperature`,
-  `isq::amount_of_substance`, and `isq::luminous_intensity` are the specifications
-  of base quantities
-  in the [ISQ](../../reference/glossary.md#isq).
-- `isq::width`, `isq::height`, `isq::radius`, and `isq::position_vector` are only a few
-  of many
-   quantities of a kind length specified in the [ISQ](../../reference/glossary.md#isq).
-- `isq::area`, `isq::speed`, `isq::moment_of_force` are only a few of many
-  derived quantities provided
-  in the [ISQ](../../reference/glossary.md#isq).
+| Quantity Specification | Dimension | Quantity Kind          | Character | Equation                           |
+|------------------------|-----------|------------------------|-----------|------------------------------------|
+| `isq::length`          | L         | `isq::length`          | scalar    | base quantity                      |
+| `isq::mass`            | M         | `isq::mass`            | scalar    | base quantity                      |
+| `isq::time`            | T         | `isq::time`            | scalar    | base quantity                      |
+| `isq::width`           | L         | `isq::length`          | scalar    | `isq::length`                      |
+| `isq::height`          | L         | `isq::length`          | scalar    | `isq::length`                      |
+| `isq::position_vector` | L         | `isq::length`          | vector    | `isq::length`                      |
+| `isq::area`            | L²        | `isq::area`            | scalar    | `isq::length²`                     |
+| `isq::speed`           | LT⁻¹      | `isq::speed`           | scalar    | `isq::length / isq::time`          |
+| `isq::velocity`        | LT⁻¹      | `isq::speed`           | vector    | `isq::position_vector / isq::time` |
+| `isq::acceleration`    | LT⁻²      | `isq::acceleration`    | scalar    | `isq::speed / isq::time`           |
+| `isq::force`           | LMT⁻²     | `isq::force`           | scalar    | `isq::mass * isq::acceleration`    |
+| `isq::moment_of_force` | L²MT⁻²    | `isq::moment_of_force` | scalar    | `isq::force * isq::length`         |
 
 Quantity specification  can be defined by the user in one of the following ways:
 
@@ -316,7 +318,8 @@ in the [quantity specification](#quantity-specification).
 
 !!! note
 
-    By default, all floating-point and integral (besides `bool`) types are treated as scalars.
+    By default, all floating-point and integral (besides `bool`) types are treated as real scalars
+    and `std::complex` as complex scalar.
 
 
 ## Quantity
