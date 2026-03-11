@@ -11815,11 +11815,13 @@ You're not viewing the latest version.
 
 
 <h1 id="introducing-absolute-quantities">Introducing Absolute Quantities<a class="headerlink" href="#introducing-absolute-quantities" title="Permanent link">&para;</a></h1>
+<p>Until now, <strong>mp-units</strong> forced users to choose between points (no arithmetic) and deltas
+(no physical semantics) — missing the most common case: a non-negative absolute amount.</p>
 <p>An <strong>absolute quantity</strong> represents an <strong>absolute amount</strong> of a physical property —
 measured from a true, physically meaningful zero. Examples include <em>mass</em> in kilograms,
 <em>temperature</em> in Kelvin, or <em>length</em> in meters (as a size, not a position). Such
-quantities live on a <strong>ratio scale</strong> and have a well-defined origin; negative values are
-typically meaningless.</p>
+quantities live on a <strong>ratio scale</strong> and are anchored at a physically meaningful zero;
+negative values are typically meaningless.</p>
 <p>Absolute quantities stand in contrast to:</p>
 <ul>
 <li><strong>Affine points</strong> (e.g., <span class="arithmatex">\(20\ \mathrm{°C}\)</span>, <span class="arithmatex">\(100\ \mathrm{m}\ \mathrm{AMSL}\)</span>) — values
@@ -11831,7 +11833,7 @@ and scaling are well-defined and map naturally to physical reasoning. This artic
 proposes making absolute quantities the <strong>default abstraction</strong> in <strong>mp-units V3</strong>,
 reflecting how scientists express equations in practice.</p>
 <hr />
-<p><em>Note: Revised October 31 2025 for clarity, accuracy, and completeness.</em></p>
+<p><em>Note: Revised on March 11, 2026 for clarity, accuracy, and completeness.</em></p>
 <!-- more -->
 
 <h2 id="background">Background<a class="headerlink" href="#background" title="Permanent link">&para;</a></h2>
@@ -11875,7 +11877,7 @@ Conversely, using deltas everywhere hides physical intent and allows nonsensical
 <td style="text-align: center;"><span class="arithmatex">\(10\ \mathrm{K}\)</span>, <span class="arithmatex">\(-5\ \mathrm{kg}\)</span></td>
 </tr>
 <tr>
-<td><strong>Absolute Zero?</strong></td>
+<td><strong>True Zero?</strong></td>
 <td style="text-align: center;">No (Arbitrary Zero)</td>
 <td style="text-align: center;">Yes (True Zero)</td>
 <td style="text-align: center;">N/A</td>
@@ -12041,10 +12043,10 @@ conversions, and algebraic properties that underpin the new model.</p>
 <td style="text-align: center;">✗</td>
 </tr>
 <tr>
-<td>Relative to origin</td>
-<td style="text-align: center;">Explicit</td>
-<td style="text-align: center;">Implicit global 0</td>
-<td style="text-align: center;">✗</td>
+<td>Zero reference</td>
+<td style="text-align: center;">Explicit origin</td>
+<td style="text-align: center;">Anchored at true zero</td>
+<td style="text-align: center;">N/A</td>
 </tr>
 <tr>
 <td>Can use offset units</td>
@@ -12118,8 +12120,8 @@ engineering textbooks:</p>
 but also directly maps to the equations and reasoning found in scientific literature.
 This makes code easier to review, verify, and maintain.</p>
 <h3 id="conversions-between-abstractions">Conversions Between Abstractions<a class="headerlink" href="#conversions-between-abstractions" title="Permanent link">&para;</a></h3>
-<p>As absolute quantities share properties of both deltas and points with implicit origins,
-they should be explicitly convertible to those:</p>
+<p>As absolute quantities share properties of both deltas and points with implicit point
+origins, they should be explicitly convertible to those:</p>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">delta</span><span class="o">&lt;</span><span class="n">kg</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">q1</span><span class="p">(</span><span class="mi">20</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="p">);</span>
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">point</span><span class="o">&lt;</span><span class="n">kg</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">q2</span><span class="p">(</span><span class="mi">20</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">kg</span><span class="p">);</span>
 </span></code></pre></div>
@@ -12138,8 +12140,8 @@ to absolute quantities:</p>
 </span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">quantity</span><span class="o">&lt;</span><span class="n">kg</span><span class="o">&gt;</span><span class="w"> </span><span class="n">q4</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">q2</span><span class="p">.</span><span class="n">absolute</span><span class="p">();</span><span class="w">  </span><span class="c1">// may fail the pre-condition check if negative</span>
 </span></code></pre></div>
 <p>It is important to note that conversions between absolute quantities and points should
-be available only when there is no point origin specified for a point (an implicit point
-origin is being used).</p>
+be available only when there is no point origin specified for a point (the point uses
+an implicit point origin — no explicit origin).</p>
 <p>If the user provided an explicit origin, then such a quantity can only be used as a delta:</p>
 <div class="language-cpp highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">nhn_sea_level</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">absolute_point_origin</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">altitude</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">nhn_sea_level</span><span class="p">;</span>
 </span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>
@@ -12194,11 +12196,12 @@ of arithmetic operations involving points, absolutes, and deltas.</p>
 another absolute quantity. This is simply the sum of two non-negative amounts, both
 measured from the true zero of the physical property.</p>
 <p><strong>Adding a delta to an absolute quantity</strong> (e.g., <span class="arithmatex">\(10\ \mathrm{kg} + (-2\ \mathrm{kg})\)</span>)
-yields a (potentially negative) delta. If you need an absolute quantity as a result,
-you must explicitly convert the delta to an absolute quantity (i.e., using <code>.absolute()</code>),
-which will check the non-negativity precondition at runtime and may fail if the value
-is negative. This approach ensures that negative results are always intentional and
-checked, increasing code safety.</p>
+yields a (potentially negative) delta. The library cannot statically determine at compile
+time whether a delta is positive, so the result is conservatively typed as a delta.
+If you need an absolute quantity as a result, you must explicitly convert via <code>.absolute()</code>,
+which checks the non-negativity precondition at runtime and may fail if the value is
+negative. This ensures that negative results are always intentional and checked,
+increasing code safety.</p>
 <p><strong>Adding an absolute quantity or delta to a point</strong> yields a point shifted by the given
 amount.</p>
 <p>Here is the summary of all the addition operations:</p>
@@ -12263,6 +12266,10 @@ approach ensures that negative results are always intentional and checked, incre
 code safety.</p>
 <p><strong>Subtracting an absolute quantity from a point</strong> yields a point, and
 <strong>subtracting a point from an absolute</strong> quantity is not meaningful.</p>
+<p><strong>Subtracting an absolute quantity from a delta</strong> (e.g., <span class="arithmatex">\(2\ \mathrm{kg} - 10\ \mathrm{kg}\)</span>)
+also yields a delta. The result has no guarantee of positivity — the library cannot
+determine at compile time whether the delta exceeds the absolute — so the type
+conservatively remains a delta.</p>
 <p>Here is a summary of all of the subtraction operations</p>
 <table>
 <thead>
@@ -12674,7 +12681,7 @@ They expose existing conceptual complexity rather than adding new layers. The de
 <li><strong>Scalable</strong> – a single <code>quantity</code> class handles all variants via wrappers.</li>
 <li><strong>Safe</strong> – non‑negativity and offset‑unit rules prevent misuse.</li>
 <li><strong>Extensible</strong> – additional quantity abstractions may be added in the future by simply
-  introducing a new wrapper (e.g., anchored quantities).</li>
+  introducing a new wrapper.</li>
 </ul>
 <p>For standardization, this model brings three tangible benefits:</p>
 <ol>

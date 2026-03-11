@@ -11340,11 +11340,13 @@ You're not viewing the latest version.
   </header>
   <div class="md-post__content md-typeset">
     <h2 id="introducing-absolute-quantities"><a class="toclink" href="../../2025/06/16/introducing-absolute-quantities/">Introducing Absolute Quantities</a></h2>
+<p>Until now, <strong>mp-units</strong> forced users to choose between points (no arithmetic) and deltas
+(no physical semantics) — missing the most common case: a non-negative absolute amount.</p>
 <p>An <strong>absolute quantity</strong> represents an <strong>absolute amount</strong> of a physical property —
 measured from a true, physically meaningful zero. Examples include <em>mass</em> in kilograms,
 <em>temperature</em> in Kelvin, or <em>length</em> in meters (as a size, not a position). Such
-quantities live on a <strong>ratio scale</strong> and have a well-defined origin; negative values are
-typically meaningless.</p>
+quantities live on a <strong>ratio scale</strong> and are anchored at a physically meaningful zero;
+negative values are typically meaningless.</p>
 <p>Absolute quantities stand in contrast to:</p>
 <ul>
 <li><strong>Affine points</strong> (e.g., <span class="arithmatex">\(20\ \mathrm{°C}\)</span>, <span class="arithmatex">\(100\ \mathrm{m}\ \mathrm{AMSL}\)</span>) — values
@@ -11356,7 +11358,7 @@ and scaling are well-defined and map naturally to physical reasoning. This artic
 proposes making absolute quantities the <strong>default abstraction</strong> in <strong>mp-units V3</strong>,
 reflecting how scientists express equations in practice.</p>
 <hr />
-<p><em>Note: Revised October 31 2025 for clarity, accuracy, and completeness.</em></p>
+<p><em>Note: Revised on March 11, 2026 for clarity, accuracy, and completeness.</em></p>
 
     
       <nav class="md-post__action">
