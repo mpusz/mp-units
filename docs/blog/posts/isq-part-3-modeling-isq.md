@@ -380,18 +380,6 @@ The `kind_of<isq::length>` above states explicitly that this unit has an
 associated quantity kind. In other words, `si::metre` (and scaled units based on
 it) can be used to express the amount of any quantity of kind _length_.
 
-!!! note
-
-    For some systems of units (e.g., natural units), a unit may not have an
-    associated quantity type. For example, if we define the speed of light
-    constant as `c = 1`, we can define a system where both _length_ and _time_
-    will be measured in seconds, and _speed_ will be a quantity measured with
-    the unit `one`. In such case, the definition will look as follows:
-
-    ```cpp
-    inline constexpr struct second final : named_unit<"s"> {} second;
-    ```
-
 ### Constraining a derived unit to work only with a specific derived quantity
 
 Some derived units are valid only for specific derived quantities. For example,
