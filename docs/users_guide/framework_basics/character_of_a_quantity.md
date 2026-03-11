@@ -180,4 +180,3 @@ Quantity auto q = cartesian_vector{1., 2., 3.} * isq::velocity[m / s];
 
     In all the cases above, the SI unit `m / s` has an associated scalar quantity of `isq::length / isq::duration`.
     `cartesian_vector` is not a correct representation type for a scalar quantity so the construction fails.
-
