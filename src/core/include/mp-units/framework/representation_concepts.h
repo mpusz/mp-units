@@ -205,7 +205,7 @@ concept ComplexScalar = requires(const T v, const T& ref) {
  * @brief MagnitudeScalable
  *
  * A type is `MagnitudeScalable` if it can be scaled by a unit magnitude, i.e.
- * `mp_units::scaling_traits<T, T>::scale<M>(value)` is well-formed and returns something
+ * `mp_units::scale<T>(mp_units::mag<1>, value)` is well-formed and returns something
  * convertible to `T`.  This covers:
  * - the library's built-in floating-point scaling (treat_as_floating_point types),
  * - the library's built-in fixed-point integer scaling, and
@@ -213,7 +213,7 @@ concept ComplexScalar = requires(const T v, const T& ref) {
  */
 template<typename T>
 concept MagnitudeScalable = WeaklyRegular<T> && requires(T a) {
-  { scaling_traits<T, T>::template scale<mp_units::mag<1>>(a) } -> std::convertible_to<T>;
+  { ::mp_units::scale<T>(mp_units::mag<1>, a) } -> std::convertible_to<T>;
 };
 
 template<typename T>
@@ -295,35 +295,21 @@ namespace detail {
 template<typename T>
 constexpr bool is_quantity_like = false;
 
-// `std::complex<double>` * `long double` does not work, this is why we use the `value_type` if present and correct
-// TODO Remove when P3788 gets accepted
-template<typename T>
-using scaling_factor_type_t = conditional<std::is_arithmetic_v<value_type_t<T>>, value_type_t<T>,
-                                          conditional<treat_as_floating_point<T>, long double, std::intmax_t>>;
-
-// TODO replace the below and above with the logic from #615 when available
-template<typename T>
-concept ScalableByFactor = requires(const T v, const scaling_factor_type_t<T> f) {
-  { v * f } -> std::common_with<T>;
-  { f * v } -> std::common_with<T>;
-  { v / f } -> std::common_with<T>;
-};
-
 // TODO how can we use `(!Quantity<T>)` below?
 template<typename T>
 concept NotQuantity = (!is_quantity_like<T>);
 
 template<typename T>
-concept RealScalarRepresentation = NotQuantity<T> && RealScalar<T> && ScalableByFactor<T>;
+concept RealScalarRepresentation = NotQuantity<T> && RealScalar<T> && MagnitudeScalable<T>;
 
 template<typename T>
-concept ComplexScalarRepresentation = NotQuantity<T> && ComplexScalar<T> && ScalableByFactor<T>;
+concept ComplexScalarRepresentation = NotQuantity<T> && ComplexScalar<T> && MagnitudeScalable<T>;
 
 template<typename T>
 concept ScalarRepresentation = RealScalarRepresentation<T> || ComplexScalarRepresentation<T>;
 
 template<typename T>
-concept VectorRepresentation = NotQuantity<T> && Vector<T> && ScalableByFactor<T>;
+concept VectorRepresentation = NotQuantity<T> && Vector<T> && MagnitudeScalable<T>;
 
 // template<typename T>
 // concept TensorRepresentation = NotQuantity<T> && Tensor<T>;
