@@ -9,11 +9,14 @@ comments: true
 
 # Introducing Absolute Quantities
 
+Until now, **mp-units** forced users to choose between points (no arithmetic) and deltas
+(no physical semantics) — missing the most common case: a non-negative absolute amount.
+
 An **absolute quantity** represents an **absolute amount** of a physical property —
 measured from a true, physically meaningful zero. Examples include _mass_ in kilograms,
 _temperature_ in Kelvin, or _length_ in meters (as a size, not a position). Such
-quantities live on a **ratio scale** and have a well-defined origin; negative values are
-typically meaningless.
+quantities live on a **ratio scale** and are anchored at a physically meaningful zero;
+negative values are typically meaningless.
 
 Absolute quantities stand in contrast to:
 
@@ -28,7 +31,7 @@ reflecting how scientists express equations in practice.
 
 ---
 
-_Note: Revised October 31 2025 for clarity, accuracy, and completeness._
+_Note: Revised on March 11, 2026 for clarity, accuracy, and completeness._
 
 <!-- more -->
 
@@ -60,7 +63,7 @@ Below is a summary table comparing the three main quantity abstractions:
 |----------------------|:---------------------------------------------------:|:---------------------------------------------:|:-----------------------------------:|
 | **Physical Model**   |                   Interval Scale                    |                  Ratio Scale                  |             Difference              |
 | **Example**          | $20\ \mathrm{°C}$, $100\ \mathrm{m}\ \mathrm{AMSL}$ |   $293.15\ \mathrm{K}$, $100\ \mathrm{kg}$    | $10\ \mathrm{K}$, $-5\ \mathrm{kg}$ |
-| **Absolute Zero?**   |                 No (Arbitrary Zero)                 |                Yes (True Zero)                |                 N/A                 |
+| **True Zero?**       |                 No (Arbitrary Zero)                 |                Yes (True Zero)                |                 N/A                 |
 | **Allows Negative?** |              Yes ($-10\ \mathrm{°C}$)               |                  No (Opt-in)                  |       Yes ($-10\ \mathrm{m}$)       |
 | **A + A**            |     Error ($20\ \mathrm{°C} + 10\ \mathrm{°C}$)     | Absolute ($10\ \mathrm{kg} + 5\ \mathrm{kg}$) |                Delta                |
 | **A - A**            |     Delta ($30\ \mathrm{°C} - 10\ \mathrm{°C}$)     |  Delta ($50\ \mathrm{kg} - 5\ \mathrm{kg}$)   |                Delta                |
@@ -158,17 +161,17 @@ conversions, and algebraic properties that underpin the new model.
 
 ### Position of Absolute Quantities Among Abstractions
 
-| Feature                     |   Point    |     Absolute      |   Delta   |
-|-----------------------------|:----------:|:-----------------:|:---------:|
-| Interpolation               |     ✓      |         ✓         |     ✓     |
-| Multiplication / Division   |     ✗      |         ✓         |     ✓     |
-| Addition                    |     ✗      |         ✓         |     ✓     |
-| Subtraction                 |     ✓      |         ✓         |     ✓     |
-| May be non‑negative         |     ✓      |         ✓         |     ✗     |
-| Relative to origin          |  Explicit  | Implicit global 0 |     ✗     |
-| Can use offset units        |     ✓      |         ✗         |     ✓     |
-| Convertible to offset units | Via offset |         ✗         | No offset |
-| Text output                 |     ✗      |         ✓         |     ✓     |
+| Feature                     |      Point      |       Absolute        |   Delta   |
+|-----------------------------|:---------------:|:---------------------:|:---------:|
+| Interpolation               |        ✓        |           ✓           |     ✓     |
+| Multiplication / Division   |        ✗        |           ✓           |     ✓     |
+| Addition                    |        ✗        |           ✓           |     ✓     |
+| Subtraction                 |        ✓        |           ✓           |     ✓     |
+| May be non‑negative         |        ✓        |           ✓           |     ✗     |
+| Zero reference              | Explicit origin | Anchored at true zero |    N/A    |
+| Can use offset units        |        ✓        |           ✗           |     ✓     |
+| Convertible to offset units |   Via offset    |           ✗           | No offset |
+| Text output                 |        ✗        |           ✓           |     ✓     |
 
 Absolute quantities sit logically between points and deltas: they behave like deltas
 algebraically, yet conceptually reference a true zero. This design simplifies arithmetic,
@@ -241,8 +244,8 @@ This makes code easier to review, verify, and maintain.
 
 ### Conversions Between Abstractions
 
-As absolute quantities share properties of both deltas and points with implicit origins,
-they should be explicitly convertible to those:
+As absolute quantities share properties of both deltas and points with implicit point
+origins, they should be explicitly convertible to those:
 
 ```cpp
 quantity<delta<kg>> q1(20 * kg);
@@ -270,8 +273,8 @@ quantity<kg> q4 = q2.absolute();  // may fail the pre-condition check if negativ
 ```
 
 It is important to note that conversions between absolute quantities and points should
-be available only when there is no point origin specified for a point (an implicit point
-origin is being used).
+be available only when there is no point origin specified for a point (the point uses
+an implicit point origin — no explicit origin).
 
 If the user provided an explicit origin, then such a quantity can only be used as a delta:
 
@@ -315,11 +318,12 @@ another absolute quantity. This is simply the sum of two non-negative amounts, b
 measured from the true zero of the physical property.
 
 **Adding a delta to an absolute quantity** (e.g., $10\ \mathrm{kg} + (-2\ \mathrm{kg})$)
-yields a (potentially negative) delta. If you need an absolute quantity as a result,
-you must explicitly convert the delta to an absolute quantity (i.e., using `.absolute()`),
-which will check the non-negativity precondition at runtime and may fail if the value
-is negative. This approach ensures that negative results are always intentional and
-checked, increasing code safety.
+yields a (potentially negative) delta. The library cannot statically determine at compile
+time whether a delta is positive, so the result is conservatively typed as a delta.
+If you need an absolute quantity as a result, you must explicitly convert via `.absolute()`,
+which checks the non-negativity precondition at runtime and may fail if the value is
+negative. This ensures that negative results are always intentional and checked,
+increasing code safety.
 
 **Adding an absolute quantity or delta to a point** yields a point shifted by the given
 amount.
@@ -373,6 +377,11 @@ code safety.
 
 **Subtracting an absolute quantity from a point** yields a point, and
 **subtracting a point from an absolute** quantity is not meaningful.
+
+**Subtracting an absolute quantity from a delta** (e.g., $2\ \mathrm{kg} - 10\ \mathrm{kg}$)
+also yields a delta. The result has no guarantee of positivity — the library cannot
+determine at compile time whether the delta exceeds the absolute — so the type
+conservatively remains a delta.
 
 Here is a summary of all of the subtraction operations
 
@@ -812,7 +821,7 @@ They expose existing conceptual complexity rather than adding new layers. The de
 - **Scalable** – a single `quantity` class handles all variants via wrappers.
 - **Safe** – non‑negativity and offset‑unit rules prevent misuse.
 - **Extensible** – additional quantity abstractions may be added in the future by simply
-  introducing a new wrapper (e.g., anchored quantities).
+  introducing a new wrapper.
 
 For standardization, this model brings three tangible benefits:
 
