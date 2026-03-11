@@ -175,7 +175,7 @@ public:
     return *this;
   }
 
-  [[nodiscard]] constexpr T magnitude() const
+  [[nodiscard]] constexpr T norm() const
     requires treat_as_floating_point<T>
   {
     using namespace std;
@@ -186,10 +186,16 @@ public:
       return hypot(_coordinates_[0], _coordinates_[1], _coordinates_[2]);
   }
 
+  [[nodiscard]] constexpr T magnitude() const
+    requires treat_as_floating_point<T>
+  {
+    return norm();
+  }
+
   [[nodiscard]] constexpr cartesian_vector unit() const
     requires treat_as_floating_point<T>
   {
-    return *this / magnitude();
+    return *this / norm();
   }
 
   [[nodiscard]] constexpr T& operator[](std::size_t i) { return _coordinates_[i]; }
@@ -249,10 +255,16 @@ public:
     return *this;
   }
 
+  [[nodiscard]] friend constexpr T norm(const cartesian_vector& vec)
+    requires treat_as_floating_point<T>
+  {
+    return vec.norm();
+  }
+
   [[nodiscard]] friend constexpr T magnitude(const cartesian_vector& vec)
     requires treat_as_floating_point<T>
   {
-    return vec.magnitude();
+    return vec.norm();
   }
 
   [[nodiscard]] friend constexpr cartesian_vector unit_vector(const cartesian_vector& vec)

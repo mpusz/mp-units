@@ -316,18 +316,31 @@ TEST_CASE("cartesian_vector operations", "[vector]")
     }
   }
 
+  SECTION("cartesian_vector norm")
+  {
+    cartesian_vector v1{3.0, 4.0, 0.0};
+    cartesian_vector v2{2.0, 3.0, 6.0};
+    REQUIRE(v1.norm() == 5.0);
+    REQUIRE(v2.norm() == 7.0);
+    REQUIRE(norm(v1) == 5.0);
+    REQUIRE(norm(v2) == 7.0);
+  }
+
   SECTION("cartesian_vector magnitude")
   {
     cartesian_vector v1{3.0, 4.0, 0.0};
     cartesian_vector v2{2.0, 3.0, 6.0};
     REQUIRE(v1.magnitude() == 5.0);
     REQUIRE(v2.magnitude() == 7.0);
+    REQUIRE(magnitude(v1) == 5.0);
+    REQUIRE(magnitude(v2) == 7.0);
   }
 
   SECTION("cartesian_vector unit vector")
   {
     cartesian_vector v{3.0, 4.0, 0.0};
     cartesian_vector unit_v = v.unit();
+    REQUIRE_THAT(unit_v.norm(), WithinULP(1.0, 1));
     REQUIRE_THAT(unit_v.magnitude(), WithinULP(1.0, 1));
   }
 
