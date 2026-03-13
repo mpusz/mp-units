@@ -80,5 +80,6 @@ add_example(strong_angular_quantities)
 add_example(total_energy)
 add_example(unmanned_aerial_vehicle example_utils)
 
+add_subdirectory(audio)
 add_subdirectory(glide_computer_lib)
 add_subdirectory(kalman_filter)
