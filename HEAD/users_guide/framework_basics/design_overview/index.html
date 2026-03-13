@@ -11622,6 +11622,13 @@ context to remove the ambiguity.</p>
 </thead>
 <tbody>
 <tr>
+<td><code>isq::duration</code></td>
+<td>T</td>
+<td><code>isq::duration</code></td>
+<td>scalar</td>
+<td>base quantity</td>
+</tr>
+<tr>
 <td><code>isq::length</code></td>
 <td>L</td>
 <td><code>isq::length</code></td>
@@ -11632,13 +11639,6 @@ context to remove the ambiguity.</p>
 <td><code>isq::mass</code></td>
 <td>M</td>
 <td><code>isq::mass</code></td>
-<td>scalar</td>
-<td>base quantity</td>
-</tr>
-<tr>
-<td><code>isq::time</code></td>
-<td>T</td>
-<td><code>isq::time</code></td>
 <td>scalar</td>
 <td>base quantity</td>
 </tr>
@@ -11664,6 +11664,13 @@ context to remove the ambiguity.</p>
 <td><code>isq::length</code></td>
 </tr>
 <tr>
+<td><code>isq::displacement</code></td>
+<td>L</td>
+<td><code>isq::length</code></td>
+<td>vector</td>
+<td><code>isq::length</code></td>
+</tr>
+<tr>
 <td><code>isq::area</code></td>
 <td>L²</td>
 <td><code>isq::area</code></td>
@@ -11675,64 +11682,45 @@ context to remove the ambiguity.</p>
 <td>LT⁻¹</td>
 <td><code>isq::speed</code></td>
 <td>scalar</td>
-<td><code>isq::length / isq::time</code></td>
+<td><code>isq::length / isq::duration</code></td>
 </tr>
 <tr>
 <td><code>isq::velocity</code></td>
 <td>LT⁻¹</td>
 <td><code>isq::speed</code></td>
 <td>vector</td>
-<td><code>isq::position_vector / isq::time</code></td>
+<td><code>isq::displacement / isq::duration</code></td>
 </tr>
 <tr>
 <td><code>isq::acceleration</code></td>
 <td>LT⁻²</td>
 <td><code>isq::acceleration</code></td>
-<td>scalar</td>
-<td><code>isq::speed / isq::time</code></td>
+<td>vector</td>
+<td><code>isq::velocity / isq::duration</code></td>
 </tr>
 <tr>
 <td><code>isq::force</code></td>
 <td>LMT⁻²</td>
 <td><code>isq::force</code></td>
-<td>scalar</td>
+<td>vector</td>
 <td><code>isq::mass * isq::acceleration</code></td>
 </tr>
 <tr>
 <td><code>isq::moment_of_force</code></td>
 <td>L²MT⁻²</td>
 <td><code>isq::moment_of_force</code></td>
-<td>scalar</td>
-<td><code>isq::force * isq::length</code></td>
+<td>vector</td>
+<td><code>isq::position_vector * isq::force</code></td>
 </tr>
 </tbody>
 </table>
-<p>Quantity specification  can be defined by the user in one of the following ways:</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="2:3"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><input id="__tabbed_2_3" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">C++23</label><label for="__tabbed_2_2">C++20</label><label for="__tabbed_2_3">Portable</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">length</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">dim_length</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">length</span><span class="p">;</span>
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">height</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">length</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">height</span><span class="p">;</span>
-</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">speed</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">length</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">time</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">speed</span><span class="p">;</span>
-</span></code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">length</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">length</span><span class="p">,</span><span class="w"> </span><span class="n">dim_length</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">length</span><span class="p">;</span>
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">height</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">height</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">height</span><span class="p">;</span>
-</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">speed</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">quantity_spec</span><span class="o">&lt;</span><span class="n">speed</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">time</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">speed</span><span class="p">;</span>
-</span></code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">QUANTITY_SPEC</span><span class="p">(</span><span class="n">length</span><span class="p">,</span><span class="w"> </span><span class="n">dim_length</span><span class="p">);</span>
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="n">QUANTITY_SPEC</span><span class="p">(</span><span class="n">height</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="p">);</span>
-</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="n">QUANTITY_SPEC</span><span class="p">(</span><span class="n">speed</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">time</span><span class="p">);</span>
-</span></code></pre></div>
-</div>
-</div>
-</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
 <p>The <a href="../../../reference/glossary/#quantity-equation">quantity equation</a> of
 <code>isq::length / isq::duration</code> results in the
-<code>derived_quantity_spec&lt;isq::length, per&lt;isq::duration&gt;&gt;</code> type.</p>
+<code>derived_quantity_spec&lt;isq::length, per&lt;isq::duration&gt;&gt;</code> type which is convertible to <code>isq::speed</code>,
+but not the <code>isq::speed</code> itself.</p>
+</div>
 <h2 id="unit">Unit<a class="headerlink" href="#unit" title="Permanent link">&para;</a></h2>
 <p>A <a href="../../../reference/glossary/#unit">unit</a> is a concrete amount of a quantity
 that allows us to measure the values of
@@ -11753,16 +11741,16 @@ and represent the result as a number being the ratio of the two quantities.</p>
 <p>In the <strong>mp-units</strong> library, <a href="../faster_than_lightspeed_constants/">physical constants are also implemented as units</a>.</p>
 </div>
 <p>A unit can be defined by the user in one of the following ways:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="n">PrefixableUnit</span><span class="w"> </span><span class="n">U</span><span class="o">&gt;</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">kilo_</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">prefixed_unit</span><span class="o">&lt;</span><span class="s">&quot;k&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">mag_power</span><span class="o">&lt;</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">U</span><span class="p">{}</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{};</span>
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="k">template</span><span class="o">&lt;</span><span class="n">PrefixableUnit</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">U</span><span class="o">&gt;</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">kilo_</span><span class="o">&lt;</span><span class="k">decltype</span><span class="p">(</span><span class="n">U</span><span class="p">)</span><span class="o">&gt;</span><span class="w"> </span><span class="n">kilo</span><span class="p">;</span>
-</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
-</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">second</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">named_unit</span><span class="o">&lt;</span><span class="s">&quot;s&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">kind_of</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">duration</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">second</span><span class="p">;</span>
-</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">minute</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">named_unit</span><span class="o">&lt;</span><span class="s">&quot;min&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">mag</span><span class="o">&lt;</span><span class="mi">60</span><span class="o">&gt;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">second</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">minute</span><span class="p">;</span>
-</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">gram</span><span class="w">   </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">named_unit</span><span class="o">&lt;</span><span class="s">&quot;g&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">kind_of</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">mass</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">gram</span><span class="p">;</span>
-</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">kilogram</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kilo</span><span class="o">&lt;</span><span class="n">gram</span><span class="o">&gt;</span><span class="p">;</span>
-</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">newton</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">named_unit</span><span class="o">&lt;</span><span class="s">&quot;N&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">kilogram</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">metre</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">square</span><span class="p">(</span><span class="n">second</span><span class="p">)</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">newton</span><span class="p">;</span>
-</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>
-</span><span id="__span-9-10"><a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">speed_of_light_in_vacuum</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">named_constant</span><span class="o">&lt;</span><span class="s">&quot;c&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">mag</span><span class="o">&lt;</span><span class="mi">299&#39;792&#39;458</span><span class="o">&gt;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">metre</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">second</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">speed_of_light_in_vacuum</span><span class="p">;</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="n">PrefixableUnit</span><span class="w"> </span><span class="n">U</span><span class="o">&gt;</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">kilo_</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">prefixed_unit</span><span class="o">&lt;</span><span class="s">&quot;k&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">mag_power</span><span class="o">&lt;</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">U</span><span class="p">{}</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{};</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="k">template</span><span class="o">&lt;</span><span class="n">PrefixableUnit</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">U</span><span class="o">&gt;</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="n">kilo_</span><span class="o">&lt;</span><span class="k">decltype</span><span class="p">(</span><span class="n">U</span><span class="p">)</span><span class="o">&gt;</span><span class="w"> </span><span class="n">kilo</span><span class="p">;</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">second</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">named_unit</span><span class="o">&lt;</span><span class="s">&quot;s&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">kind_of</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">duration</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">second</span><span class="p">;</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">minute</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">named_unit</span><span class="o">&lt;</span><span class="s">&quot;min&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">mag</span><span class="o">&lt;</span><span class="mi">60</span><span class="o">&gt;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">second</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">minute</span><span class="p">;</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">gram</span><span class="w">   </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">named_unit</span><span class="o">&lt;</span><span class="s">&quot;g&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">kind_of</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">mass</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">gram</span><span class="p">;</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">kilogram</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kilo</span><span class="o">&lt;</span><span class="n">gram</span><span class="o">&gt;</span><span class="p">;</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">newton</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">named_unit</span><span class="o">&lt;</span><span class="s">&quot;N&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">kilogram</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">metre</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">square</span><span class="p">(</span><span class="n">second</span><span class="p">)</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">newton</span><span class="p">;</span>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">speed_of_light_in_vacuum</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">named_constant</span><span class="o">&lt;</span><span class="s">&quot;c&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">mag</span><span class="o">&lt;</span><span class="mi">299&#39;792&#39;458</span><span class="o">&gt;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">metre</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">second</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">speed_of_light_in_vacuum</span><span class="p">;</span>
 </span></code></pre></div>
 <p>The <a href="../../../reference/glossary/#unit-equation">unit equation</a> of <code>si::metre / si::second</code> results
 in the <code>derived_unit&lt;si::metre, per&lt;si::second&gt;&gt;</code> type.</p>
@@ -11825,9 +11813,9 @@ and <code>std::complex</code> as complex scalar.</p>
 that can be expressed as a <strong><em>number</em></strong> and a <strong><em>reference</em></strong></p>
 </div>
 <p>This is why a <code>quantity</code> class template is defined in the library as:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="n">Reference</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">R</span><span class="p">,</span>
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">         </span><span class="n">RepresentationOf</span><span class="o">&lt;</span><span class="n">get_quantity_spec</span><span class="p">(</span><span class="n">R</span><span class="p">)</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Rep</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span>
-</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="k">class</span><span class="w"> </span><span class="nc">quantity</span><span class="p">;</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="n">Reference</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">R</span><span class="p">,</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">         </span><span class="n">RepresentationOf</span><span class="o">&lt;</span><span class="n">get_quantity_spec</span><span class="p">(</span><span class="n">R</span><span class="p">)</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Rep</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="k">class</span><span class="w"> </span><span class="nc">quantity</span><span class="p">;</span>
 </span></code></pre></div>
 <p>Its value can be easily created by multiplying/dividing the <a href="#quantity-representation">numerical value</a>
 and a <a href="#quantity-reference">reference</a>.</p>
@@ -11853,20 +11841,20 @@ where the "zero" of our measurement's scale is.</p>
 <ul>
 <li>the absolute point origin can be defined in the following way:</li>
 </ul>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">absolute_zero</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">absolute_point_origin</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">thermodynamic_temperature</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">absolute_zero</span><span class="p">;</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">absolute_zero</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">absolute_point_origin</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">thermodynamic_temperature</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">absolute_zero</span><span class="p">;</span>
 </span></code></pre></div>
 <ul>
 <li>the relative point origin can be defined in the following way:</li>
 </ul>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">ice_point</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">relative_point_origin</span><span class="o">&lt;</span><span class="n">absolute_zero</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">273&#39;150</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">milli</span><span class="o">&lt;</span><span class="n">kelvin</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">ice_point</span><span class="p">;</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="kr">inline</span><span class="w"> </span><span class="k">constexpr</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">ice_point</span><span class="w"> </span><span class="k">final</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">relative_point_origin</span><span class="o">&lt;</span><span class="n">absolute_zero</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">273&#39;150</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">milli</span><span class="o">&lt;</span><span class="n">kelvin</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{}</span><span class="w"> </span><span class="n">ice_point</span><span class="p">;</span>
 </span></code></pre></div>
 <h2 id="quantity-point">Quantity point<a class="headerlink" href="#quantity-point" title="Permanent link">&para;</a></h2>
 <p>Quantity point implements a <em>point</em> in <a href="../the_affine_space/">the affine space theory</a>.</p>
 <p>In the <strong>mp-units</strong> library, the quantity point is implemented as:</p>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="n">Reference</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">R</span><span class="p">,</span>
-</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="w">         </span><span class="n">PointOriginFor</span><span class="o">&lt;</span><span class="n">get_quantity_spec</span><span class="p">(</span><span class="n">R</span><span class="p">)</span><span class="o">&gt;</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">PO</span><span class="p">,</span>
-</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">         </span><span class="n">RepresentationOf</span><span class="o">&lt;</span><span class="n">get_quantity_spec</span><span class="p">(</span><span class="n">R</span><span class="p">)</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Rep</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span>
-</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="k">class</span><span class="w"> </span><span class="nc">quantity_point</span><span class="p">;</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="k">template</span><span class="o">&lt;</span><span class="n">Reference</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">R</span><span class="p">,</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">         </span><span class="n">PointOriginFor</span><span class="o">&lt;</span><span class="n">get_quantity_spec</span><span class="p">(</span><span class="n">R</span><span class="p">)</span><span class="o">&gt;</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">PO</span><span class="p">,</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">         </span><span class="n">RepresentationOf</span><span class="o">&lt;</span><span class="n">get_quantity_spec</span><span class="p">(</span><span class="n">R</span><span class="p">)</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Rep</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">double</span><span class="o">&gt;</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="k">class</span><span class="w"> </span><span class="nc">quantity_point</span><span class="p">;</span>
 </span></code></pre></div>
 <p>Its value can be easily created by adding/subtracting the <a href="#quantity">quantity</a> with
 a <a href="#point-origin">point origin</a>.</p>
@@ -11875,7 +11863,7 @@ a <a href="#point-origin">point origin</a>.</p>
 <li>The following specifies a quantity point defined in terms of an <code>ice_point</code> provided in
   the previous example:</li>
 </ul>
-<div class="language-cpp highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">room_reference_temperature</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ice_point</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">delta</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">Celsius_temperature</span><span class="p">[</span><span class="n">deg_C</span><span class="p">]</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">21</span><span class="p">);</span>
+<div class="language-cpp highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="k">constexpr</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">room_reference_temperature</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ice_point</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">delta</span><span class="o">&lt;</span><span class="n">isq</span><span class="o">::</span><span class="n">Celsius_temperature</span><span class="p">[</span><span class="n">deg_C</span><span class="p">]</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">21</span><span class="p">);</span>
 </span></code></pre></div>
 
 
