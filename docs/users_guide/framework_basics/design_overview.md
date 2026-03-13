@@ -177,50 +177,28 @@ This is why the **mp-units** library introduces a quantity specification entity 
     - **quantity specification** - implemented with a `quantity_spec` class template that among others identifies
       a specific **quantity type/name**.
 
-| Quantity Specification | Dimension | Quantity Kind          | Character | Equation                           |
-|------------------------|-----------|------------------------|-----------|------------------------------------|
-| `isq::length`          | L         | `isq::length`          | scalar    | base quantity                      |
-| `isq::mass`            | M         | `isq::mass`            | scalar    | base quantity                      |
-| `isq::time`            | T         | `isq::time`            | scalar    | base quantity                      |
-| `isq::width`           | L         | `isq::length`          | scalar    | `isq::length`                      |
-| `isq::height`          | L         | `isq::length`          | scalar    | `isq::length`                      |
-| `isq::position_vector` | L         | `isq::length`          | vector    | `isq::length`                      |
-| `isq::area`            | L²        | `isq::area`            | scalar    | `isq::length²`                     |
-| `isq::speed`           | LT⁻¹      | `isq::speed`           | scalar    | `isq::length / isq::time`          |
-| `isq::velocity`        | LT⁻¹      | `isq::speed`           | vector    | `isq::position_vector / isq::time` |
-| `isq::acceleration`    | LT⁻²      | `isq::acceleration`    | scalar    | `isq::speed / isq::time`           |
-| `isq::force`           | LMT⁻²     | `isq::force`           | scalar    | `isq::mass * isq::acceleration`    |
-| `isq::moment_of_force` | L²MT⁻²    | `isq::moment_of_force` | scalar    | `isq::force * isq::length`         |
+| Quantity Specification | Dimension | Quantity Kind          | Character | Equation                            |
+|------------------------|-----------|------------------------|-----------|-------------------------------------|
+| `isq::duration`        | T         | `isq::duration`        | scalar    | base quantity                       |
+| `isq::length`          | L         | `isq::length`          | scalar    | base quantity                       |
+| `isq::mass`            | M         | `isq::mass`            | scalar    | base quantity                       |
+| `isq::width`           | L         | `isq::length`          | scalar    | `isq::length`                       |
+| `isq::height`          | L         | `isq::length`          | scalar    | `isq::length`                       |
+| `isq::position_vector` | L         | `isq::length`          | vector    | `isq::length`                       |
+| `isq::displacement`    | L         | `isq::length`          | vector    | `isq::length`                       |
+| `isq::area`            | L²        | `isq::area`            | scalar    | `isq::length²`                      |
+| `isq::speed`           | LT⁻¹      | `isq::speed`           | scalar    | `isq::length / isq::duration`       |
+| `isq::velocity`        | LT⁻¹      | `isq::speed`           | vector    | `isq::displacement / isq::duration` |
+| `isq::acceleration`    | LT⁻²      | `isq::acceleration`    | vector    | `isq::velocity / isq::duration`     |
+| `isq::force`           | LMT⁻²     | `isq::force`           | vector    | `isq::mass * isq::acceleration`     |
+| `isq::moment_of_force` | L²MT⁻²    | `isq::moment_of_force` | vector    | `isq::position_vector * isq::force` |
 
-Quantity specification  can be defined by the user in one of the following ways:
+!!! note
 
-=== "C++23"
-
-    ```cpp
-    inline constexpr struct length final : quantity_spec<dim_length> {} length;
-    inline constexpr struct height final : quantity_spec<length> {} height;
-    inline constexpr struct speed final : quantity_spec<length / time> {} speed;
-    ```
-
-=== "C++20"
-
-    ```cpp
-    inline constexpr struct length final : quantity_spec<length, dim_length> {} length;
-    inline constexpr struct height final : quantity_spec<height, length> {} height;
-    inline constexpr struct speed final : quantity_spec<speed, length / time> {} speed;
-    ```
-
-=== "Portable"
-
-    ```cpp
-    QUANTITY_SPEC(length, dim_length);
-    QUANTITY_SPEC(height, length);
-    QUANTITY_SPEC(speed, length / time);
-    ```
-
-The [quantity equation](../../reference/glossary.md#quantity-equation) of
-`isq::length / isq::duration` results in the
-`derived_quantity_spec<isq::length, per<isq::duration>>` type.
+    The [quantity equation](../../reference/glossary.md#quantity-equation) of
+    `isq::length / isq::duration` results in the
+    `derived_quantity_spec<isq::length, per<isq::duration>>` type which is convertible to `isq::speed`,
+    but not the `isq::speed` itself.
 
 
 ## Unit
