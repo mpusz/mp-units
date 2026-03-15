@@ -175,19 +175,15 @@ public:
     return *this;
   }
 
-  [[nodiscard]] constexpr T norm() const
-    requires treat_as_floating_point<T>
+  [[nodiscard]] constexpr auto norm() const
+    requires requires(T t) { requires requires { hypot(t, t, t); } || requires { std::hypot(t, t, t); }; }
   {
-    using namespace std;
-    if constexpr (detail::ComplexScalar<T>)
-      return hypot(mp_units::modulus(_coordinates_[0]), mp_units::modulus(_coordinates_[1]),
-                   mp_units::modulus(_coordinates_[2]));
-    else
-      return hypot(_coordinates_[0], _coordinates_[1], _coordinates_[2]);
+    using std::hypot;
+    return hypot(_coordinates_[0], _coordinates_[1], _coordinates_[2]);
   }
 
-  [[nodiscard]] constexpr T magnitude() const
-    requires treat_as_floating_point<T>
+  [[nodiscard]] constexpr auto magnitude() const
+    requires requires(const cartesian_vector& v) { v.norm(); }
   {
     return norm();
   }
@@ -255,14 +251,14 @@ public:
     return *this;
   }
 
-  [[nodiscard]] friend constexpr T norm(const cartesian_vector& vec)
-    requires treat_as_floating_point<T>
+  [[nodiscard]] friend constexpr auto norm(const cartesian_vector& vec)
+    requires requires { vec.norm(); }
   {
     return vec.norm();
   }
 
-  [[nodiscard]] friend constexpr T magnitude(const cartesian_vector& vec)
-    requires treat_as_floating_point<T>
+  [[nodiscard]] friend constexpr auto magnitude(const cartesian_vector& vec)
+    requires requires { vec.norm(); }
   {
     return vec.norm();
   }
@@ -285,7 +281,23 @@ template<typename Arg, typename... Args>
   requires(sizeof...(Args) <= 2) && requires { typename std::common_type_t<Arg, Args...>; }
 cartesian_vector(Arg, Args...) -> cartesian_vector<std::common_type_t<Arg, Args...>>;
 
+template<typename From, typename To>
+struct scaling_traits<cartesian_vector<From>, cartesian_vector<To>> {
+  template<auto M>
+    requires requires(const From& f) { mp_units::scale<To>(M, f); }
+  [[nodiscard]] static constexpr cartesian_vector<To> scale(const cartesian_vector<From>& v)
+  {
+    return {mp_units::scale<To>(M, v[0]), mp_units::scale<To>(M, v[1]), mp_units::scale<To>(M, v[2])};
+  }
+};
+
 }  // namespace mp_units
+
+template<typename T, typename U>
+  requires requires { typename std::common_type_t<T, U>; }
+struct std::common_type<mp_units::cartesian_vector<T>, mp_units::cartesian_vector<U>> {
+  using type = mp_units::cartesian_vector<std::common_type_t<T, U>>;
+};
 
 #if MP_UNITS_HOSTED
 // TODO use parse and use formatter for the underlying type

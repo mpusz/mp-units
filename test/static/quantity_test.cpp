@@ -387,6 +387,8 @@ static_assert(is_of_type<isq::height(42. * km), quantity<isq::height[km], double
 #if MP_UNITS_HOSTED
 
 static_assert(is_of_type<cartesian_vector{1., 2., 3.} * m, quantity<si::metre, cartesian_vector<double>>>);
+// self-referential constraint cycle when dividing cartesian_vector<Quantity> by a unit
+static_assert(requires { cartesian_vector{0, 0, -60} * km / h; });
 
 #endif
 

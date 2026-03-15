@@ -326,7 +326,7 @@ static_assert(!RepresentationOf<cartesian_vector<double>, quantity_character::te
 
 static_assert(!RepresentationOf<cartesian_vector<std::complex<double>>, quantity_character::real_scalar>);
 static_assert(!RepresentationOf<cartesian_vector<std::complex<double>>, quantity_character::complex_scalar>);
-static_assert(RepresentationOf<cartesian_vector<std::complex<double>>, quantity_character::vector>);
+static_assert(!RepresentationOf<cartesian_vector<std::complex<double>>, quantity_character::vector>);
 static_assert(!RepresentationOf<cartesian_vector<std::complex<double>>, quantity_character::tensor>);
 
 static_assert(!RepresentationOf<std::chrono::seconds, quantity_character::real_scalar>);
