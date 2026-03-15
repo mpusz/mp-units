@@ -300,16 +300,16 @@ template<typename T>
 concept NotQuantity = (!is_quantity_like<T>);
 
 template<typename T>
-concept RealScalarRepresentation = NotQuantity<T> && RealScalar<T> && MagnitudeScalable<T>;
+concept RealScalarRepresentation = NotQuantity<value_type_t<T>> && RealScalar<T> && MagnitudeScalable<T>;
 
 template<typename T>
-concept ComplexScalarRepresentation = NotQuantity<T> && ComplexScalar<T> && MagnitudeScalable<T>;
+concept ComplexScalarRepresentation = NotQuantity<value_type_t<T>> && ComplexScalar<T> && MagnitudeScalable<T>;
 
 template<typename T>
 concept ScalarRepresentation = RealScalarRepresentation<T> || ComplexScalarRepresentation<T>;
 
 template<typename T>
-concept VectorRepresentation = NotQuantity<T> && Vector<T> && MagnitudeScalable<T>;
+concept VectorRepresentation = NotQuantity<value_type_t<T>> && Vector<T> && MagnitudeScalable<T>;
 
 // template<typename T>
 // concept TensorRepresentation = NotQuantity<T> && Tensor<T>;

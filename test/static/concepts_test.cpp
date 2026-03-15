@@ -296,21 +296,25 @@ static_assert(!ReferenceOf<decltype(dimensionless[one]), isq::rotation>);
 static_assert(!ReferenceOf<decltype(dimensionless[one]), isq::angular_measure>);
 
 // RepresentationOf
+// int: real scalar and (as a degenerate 1D case) vector, but not complex/tensor
 static_assert(RepresentationOf<int, quantity_character::real_scalar>);
 static_assert(!RepresentationOf<int, quantity_character::complex_scalar>);
 static_assert(RepresentationOf<int, quantity_character::vector>);
 static_assert(!RepresentationOf<int, quantity_character::tensor>);
 
+// double: same as int
 static_assert(RepresentationOf<double, quantity_character::real_scalar>);
 static_assert(!RepresentationOf<double, quantity_character::complex_scalar>);
 static_assert(RepresentationOf<double, quantity_character::vector>);
 static_assert(!RepresentationOf<double, quantity_character::tensor>);
 
+// bool: disabled via disable_real<bool>
 static_assert(!RepresentationOf<bool, quantity_character::real_scalar>);
 static_assert(!RepresentationOf<bool, quantity_character::complex_scalar>);
 static_assert(!RepresentationOf<bool, quantity_character::vector>);
 static_assert(!RepresentationOf<bool, quantity_character::tensor>);
 
+// non-numeric type: not a representation at all
 static_assert(!RepresentationOf<std::optional<int>, quantity_character::real_scalar>);
 
 #if MP_UNITS_HOSTED
@@ -319,15 +323,30 @@ static_assert(RepresentationOf<std::complex<double>, quantity_character::complex
 static_assert(!RepresentationOf<std::complex<double>, quantity_character::vector>);
 static_assert(!RepresentationOf<std::complex<double>, quantity_character::tensor>);
 
+// cartesian_vector<double>: 3D vector, not scalar
 static_assert(!RepresentationOf<cartesian_vector<double>, quantity_character::real_scalar>);
 static_assert(!RepresentationOf<cartesian_vector<double>, quantity_character::complex_scalar>);
 static_assert(RepresentationOf<cartesian_vector<double>, quantity_character::vector>);
 static_assert(!RepresentationOf<cartesian_vector<double>, quantity_character::tensor>);
 
+// cartesian_vector<int>: integer element type is supported (norm() returns double via std::hypot)
+static_assert(!RepresentationOf<cartesian_vector<int>, quantity_character::real_scalar>);
+static_assert(!RepresentationOf<cartesian_vector<int>, quantity_character::complex_scalar>);
+static_assert(RepresentationOf<cartesian_vector<int>, quantity_character::vector>);
+static_assert(!RepresentationOf<cartesian_vector<int>, quantity_character::tensor>);
+
+// cartesian_vector<complex<double>>: no hypot(complex,complex,complex) -> not a vector representation
 static_assert(!RepresentationOf<cartesian_vector<std::complex<double>>, quantity_character::real_scalar>);
 static_assert(!RepresentationOf<cartesian_vector<std::complex<double>>, quantity_character::complex_scalar>);
 static_assert(!RepresentationOf<cartesian_vector<std::complex<double>>, quantity_character::vector>);
 static_assert(!RepresentationOf<cartesian_vector<std::complex<double>>, quantity_character::tensor>);
+
+// quantity types must never themselves be a representation (NotQuantity guard)
+static_assert(!RepresentationOf<quantity<si::metre>, quantity_character::real_scalar>);
+static_assert(!RepresentationOf<quantity<si::metre>, quantity_character::vector>);
+
+// cartesian_vector whose element is a quantity must not be a representation
+static_assert(!RepresentationOf<cartesian_vector<quantity<si::metre>>, quantity_character::vector>);
 
 static_assert(!RepresentationOf<std::chrono::seconds, quantity_character::real_scalar>);
 static_assert(!RepresentationOf<std::string, quantity_character::real_scalar>);
