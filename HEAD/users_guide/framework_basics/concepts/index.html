@@ -11705,9 +11705,9 @@ that satisfies <a href="#QuantitySpecOf"><code>QuantitySpecOf&lt;V&gt;</code></a
 <ul>
 <li><strong>Weakly regular</strong>: copyable and equality comparable (default-constructibility is not required).</li>
 <li><strong><code>MagnitudeScalable</code></strong>: the library must be able to apply a unit magnitude ratio to it
-  via <code>mp_units::scale&lt;T&gt;(M, value)</code>. Most standard types satisfy this
+  internally. Most standard types satisfy this
   automatically; see
-  <a href="../representation_types/#scaling_traits">Representation Types</a> for details.</li>
+  <a href="../representation_types/#how-scaling-works">Representation Types</a> for details.</li>
 <li><strong>Character-specific operations</strong>: additional arithmetic operations required by the
   <a href="../../../reference/glossary/#character">quantity character</a> (e.g. total ordering for real
   scalars, <code>real()</code>/<code>imag()</code>/<code>modulus()</code> CPOs for complex scalars, <code>norm()</code>/<code>magnitude()</code>

@@ -11697,9 +11697,9 @@ representation type. We decided not to allow such conversions for safety reasons
 the value of <code>0 km</code> would work.</p>
 <h2 id="custom-representation-types">Custom representation types<a class="headerlink" href="#custom-representation-types" title="Permanent link">&para;</a></h2>
 <p>For information on how to integrate a custom representation type with the quantity
-conversion machinery — including how to provide a <code>scaling_traits&lt;From, To&gt;</code> specialization
-and <code>implicitly_scalable&lt;FromUnit, FromRep, ToUnit, ToRep&gt;</code> — see
-<a href="../../../how_to_guides/integration/using_custom_representation_types/#scaling_traits">Using Custom Representation Types</a>.</p>
+conversion machinery — including how to implement the correct <code>operator*</code> and
+<code>implicitly_scalable&lt;FromUnit, FromRep, ToUnit, ToRep&gt;</code> — see
+<a href="../../../how_to_guides/integration/using_custom_representation_types/#creating-your-own-representation-type">Using Custom Representation Types</a>.</p>
 <h2 id="value-conversions-summary">Value conversions summary<a class="headerlink" href="#value-conversions-summary" title="Permanent link">&para;</a></h2>
 <p>The table below provides all the value conversion functions that may be run on <code>x</code> being the
 instance of either <code>quantity</code> or <code>quantity_point</code>:</p>
