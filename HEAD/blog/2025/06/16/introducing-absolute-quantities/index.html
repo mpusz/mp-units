@@ -11355,7 +11355,7 @@ You're not viewing the latest version.
                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 20a8 8 0 0 0 8-8 8 8 0 0 0-8-8 8 8 0 0 0-8 8 8 8 0 0 0 8 8m0-18a10 10 0 0 1 10 10 10 10 0 0 1-10 10C6.47 22 2 17.5 2 12A10 10 0 0 1 12 2m.5 5v5.25l4.5 2.67-.75 1.23L11 13V7z"/></svg>
                           <span class="md-ellipsis">
                             
-                              20 min read
+                              24 min read
                             
                           </span>
                         </div>
@@ -11795,6 +11795,122 @@ You're not viewing the latest version.
 </li>
       
         <li class="md-nav__item">
+  <a href="#frequently-asked-questions-the-v3-physical-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frequently Asked Questions: The V3 Physical Model
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Frequently Asked Questions: The V3 Physical Model">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-why-do-we-need-absolute-quantities-if-we-already-have-delta-quantities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Why do we need "Absolute Quantities" if we already have "Delta Quantities"?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-is-velocity-a-delta-or-an-absolute-quantity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Is Velocity a Delta or an Absolute Quantity?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-why-does-absolute-delta-result-in-a-delta" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Why does Absolute - Delta result in a Delta?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-if-i-cant-burn-negative-fuel-why-is-burnrate-time-a-delta" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. If I can't burn "negative fuel," why is BurnRate * Time a Delta?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-why-not-just-use-runtime-contracts-for-negative-absolute-results" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Why not just use Runtime Contracts for negative Absolute results?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-should-time-points-be-treated-the-same-as-position-points" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Should Time Points be treated the same as Position Points?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7-why-is-quantity-the-default-for-absolute-in-v3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Why is Quantity the default for Absolute in V3?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#8-isnt-pointabsolute-just-more-boilerplate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Isn't point.absolute() just more boilerplate?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#9-is-the-3-category-model-too-complex-for-users" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Is the 3-category model too complex for users?
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#conclusion" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -11855,7 +11971,7 @@ and scaling are well-defined and map naturally to physical reasoning. This artic
 proposes making absolute quantities the <strong>default abstraction</strong> in <strong>mp-units V3</strong>,
 reflecting how scientists express equations in practice.</p>
 <hr />
-<p><em>Note: Revised on March 19, 2026 for clarity, accuracy, and completeness.</em></p>
+<p><em>Note: Revised on March 23, 2026 for clarity, accuracy, and completeness.</em></p>
 <!-- more -->
 
 <h2 id="background">Background<a class="headerlink" href="#background" title="Permanent link">&para;</a></h2>
@@ -12835,6 +12951,113 @@ They expose existing conceptual complexity rather than adding new layers. The de
 <li><strong>Improved readability and verification</strong> in generic C++ code.</li>
 <li><strong>Zero runtime overhead</strong> — all checks are compile‑time or lightweight preconditions.</li>
 </ol>
+<h2 id="frequently-asked-questions-the-v3-physical-model">Frequently Asked Questions: The V3 Physical Model<a class="headerlink" href="#frequently-asked-questions-the-v3-physical-model" title="Permanent link">&para;</a></h2>
+<p>As <strong>mp-units</strong> moves toward a more rigorous modeling of physical spaces, several questions
+arise regarding the distinction between <strong>Points</strong>, <strong>Deltas</strong>, and <strong>Absolute Quantities</strong>.
+This Q&amp;A addresses the most common technical and philosophical inquiries.</p>
+<hr />
+<h3 id="1-why-do-we-need-absolute-quantities-if-we-already-have-delta-quantities">1. Why do we need "Absolute Quantities" if we already have "Delta Quantities"?<a class="headerlink" href="#1-why-do-we-need-absolute-quantities-if-we-already-have-delta-quantities" title="Permanent link">&para;</a></h3>
+<p>While both can share the same underlying representation (e.g., <code>double</code>), they represent
+different <strong>mathematical structures</strong>.</p>
+<ul>
+<li><strong>Delta Quantities</strong> belong to a <strong>Vector Space</strong>. They represent a displacement, can be
+  negative, and lack a natural origin.</li>
+<li><strong>Absolute Quantities</strong> belong to a <strong>Ratio Scale</strong>. They represent a magnitude measured
+  from a unique, non-arbitrary physical zero (like <span class="arithmatex">\(0\text{ K}\)</span> or <span class="arithmatex">\(0\text{ kg}\)</span>).</li>
+</ul>
+<p>Without the Absolute abstraction, the library cannot distinguish between a
+<strong>Change in Temperature</strong> (<span class="arithmatex">\(\Delta 20\text{ K}\)</span>) and a <strong>State of Temperature</strong>
+(<span class="arithmatex">\(20\text{ K}\)</span> absolute). This leads to the "Offset Unit Trap," where a user might
+accidentally plug <span class="arithmatex">\(20^\circ\text{C}\)</span> (a delta) into an ideal gas law equation, yielding
+a result off by a factor of 15.</p>
+<hr />
+<h3 id="2-is-velocity-a-delta-or-an-absolute-quantity">2. Is Velocity a Delta or an Absolute Quantity?<a class="headerlink" href="#2-is-velocity-a-delta-or-an-absolute-quantity" title="Permanent link">&para;</a></h3>
+<p><strong>Velocity is a Delta Quantity (Vector).</strong> It represents a displacement over time and
+carries direction (or a sign in 1-D).</p>
+<p><strong>Speed is an Absolute Quantity (Scalar).</strong> It is the magnitude (norm) of that velocity.</p>
+<p>In V3, we use the type hierarchy to model this: <code>velocity</code> is a child of <code>speed</code>. When
+you call <code>norm(velocity)</code>, the type "decays" from the Vector-Delta space to the
+Absolute-Scalar space.</p>
+<hr />
+<h3 id="3-why-does-absolute-delta-result-in-a-delta">3. Why does <code>Absolute - Delta</code> result in a <code>Delta</code>?<a class="headerlink" href="#3-why-does-absolute-delta-result-in-a-delta" title="Permanent link">&para;</a></h3>
+<p>One might assume that as <span class="arithmatex">\(A - A = D\)</span> then <span class="arithmatex">\(A - D = A\)</span>. However, this violates the
+<strong>Non-Negativity Guarantee</strong> of the Absolute type.</p>
+<p>Consider a fuel tank and an engine that burns fuel on the way to destination:</p>
+<ul>
+<li><code>fuel_present</code> = <span class="arithmatex">\(10\text{ kg}\)</span> (Absolute)</li>
+<li><code>fuel_required</code> = <span class="arithmatex">\(15\text{ kg}\)</span> (Delta)</li>
+<li><code>result</code> = <span class="arithmatex">\(-5\text{ kg}\)</span></li>
+</ul>
+<p>A "Negative Absolute Mass" is a physical impossibility. However, a <strong>Negative Delta</strong>
+is mathematically valid—it represents a deficit. To ensure compile-time safety, any
+operation that <em>can</em> result in a negative value must return a <code>Delta</code>. Subtraction
+is a "Type Demoter" that moves you from the restricted absolute Ratio scale back into
+the unrestricted Vector space.</p>
+<hr />
+<h3 id="4-if-i-cant-burn-negative-fuel-why-is-burnrate-time-a-delta">4. If I can't burn "negative fuel," why is <code>BurnRate * Time</code> a Delta?<a class="headerlink" href="#4-if-i-cant-burn-negative-fuel-why-is-burnrate-time-a-delta" title="Permanent link">&para;</a></h3>
+<p>This is a distinction between a Stock (State) and a Flow (Transaction):</p>
+<ul>
+<li><strong>Stocks (Absolute):</strong> Represent the "Inventory" (e.g., Fuel in the tank). These are strictly
+  non-negative.</li>
+<li><strong>Flows (Delta):</strong> Represent the "Transfer." Even if a specific process (like an engine)
+  only flows in one direction, the mathematical category of a flow must support directionality.</li>
+</ul>
+<p>Even if an engine only burns fuel (negative flow), the category of "Flow" must support
+directionality to handle both consumption and refueling. By modeling the flow as a Delta
+from the start, we maintain a consistent algebraic chain:</p>
+<div class="arithmatex">\[State_{new} = State_{old} + Flow\]</div>
+<div class="arithmatex">\[Absolute_{new} = Absolute_{old} + Delta_{flow}\]</div>
+<p>This allows the type system to handle both <em>Fuel Consumption</em> (Negative Delta) and <em>Refueling</em>
+(Positive Delta) using the same logic, without forcing the user to treat "Refilling" and
+"Burning" as two different mathematical universes.</p>
+<hr />
+<h3 id="5-why-not-just-use-runtime-contracts-for-negative-absolute-results">5. Why not just use Runtime Contracts for negative Absolute results?<a class="headerlink" href="#5-why-not-just-use-runtime-contracts-for-negative-absolute-results" title="Permanent link">&para;</a></h3>
+<p>We could, but it weakens the type system. If <span class="arithmatex">\(Absolute - Delta\)</span> returns an <span class="arithmatex">\(Absolute\)</span>,
+the compiler assumes the result is a valid non-negative magnitude. If it isn't, the
+program crashes or triggers a contract violation at runtime. By returning a Delta Quantity,
+we handle the "Negative Possibility" at compile-time. The user is forced to acknowledge
+that the result might be a deficit before treating it as a magnitude again.</p>
+<hr />
+<h3 id="6-should-time-points-be-treated-the-same-as-position-points">6. Should Time Points be treated the same as Position Points?<a class="headerlink" href="#6-should-time-points-be-treated-the-same-as-position-points" title="Permanent link">&para;</a></h3>
+<p>Mathematically, both are <strong>Affine Spaces</strong>. However, they differ in dimensionality:</p>
+<ul>
+<li><strong>Position</strong> exists in a 3-D space; its "Deltas" are <strong>Vectors</strong> (<span class="arithmatex">\(\vec{r}\)</span>).</li>
+<li><strong>Time</strong> exists in a 1-D space; its "Deltas" are <strong>Signed Scalars</strong>.</li>
+</ul>
+<p>V3 respects this by allowing 1-D deltas to carry a sign bit (direction), whereas
+Absolute Quantities (like Age or Duration-amount) are strictly non-negative. Treating
+a 1-D time-delta as a pure scalar is dangerous because it allows directionality to
+propagate into equations where only magnitude is required.</p>
+<p>For example, if you calculate the <em>Total Energy</em> (<span class="arithmatex">\(Q = P \times \Delta t\)</span>) during
+a reverse-time simulation, a negative <span class="arithmatex">\(\Delta t\)</span> will result in a negative <span class="arithmatex">\(Q\)</span>.
+If that <span class="arithmatex">\(Q\)</span> is then used to calculate a required <em>Mass</em> or <em>Volume</em>, you would get
+a physically impossible negative result.</p>
+<p>By distinguishing between a Delta (the step) and an Absolute (the duration magnitude),
+V3 forces you to be explicit about whether the direction of time matters to your equation.</p>
+<hr />
+<h3 id="7-why-is-quantity-the-default-for-absolute-in-v3">7. Why is <code>Quantity</code> the default for Absolute in V3?<a class="headerlink" href="#7-why-is-quantity-the-default-for-absolute-in-v3" title="Permanent link">&para;</a></h3>
+<p>It aligns the library with how physics is taught. In V2, the most "natural" syntax
+(<code>quantity&lt;K&gt;</code>) was often used to represent deltas, forcing users to use more complex
+syntax for absolute states. In V3, we align the library with physics textbooks:</p>
+<ul>
+<li><strong>Textbook:</strong> <span class="arithmatex">\(PV = nRT\)</span> (Uses absolute temperature).</li>
+<li><strong>V3 Code:</strong> <code>(P * V) / (n * T)</code> (Uses <code>quantity&lt;K&gt;</code>, which is Absolute by default).</li>
+</ul>
+<p>By making <strong>Absolute</strong> the default, the most common physics equations become the easiest
+to write and the safest to execute. If you need a point or a delta, you wrap it; if you
+have a magnitude, you just use it.</p>
+<hr />
+<h3 id="8-isnt-pointabsolute-just-more-boilerplate">8. Isn't <code>point.absolute()</code> just more boilerplate?<a class="headerlink" href="#8-isnt-pointabsolute-just-more-boilerplate" title="Permanent link">&para;</a></h3>
+<p>It is a <strong>Type-Safety Checkpoint</strong>. When you convert a <code>point&lt;deg_C&gt;</code> to an <code>absolute&lt;K&gt;</code>,
+you are performing a non-trivial physical transformation (shifting the origin to absolute
+zero). Forcing the user to call <code>.absolute()</code> ensures that this conversion is intentional.
+It prevents the silent bug of dividing two "points" and getting a meaningless ratio.</p>
+<hr />
+<h3 id="9-is-the-3-category-model-too-complex-for-users">9. Is the 3-category model too complex for users?<a class="headerlink" href="#9-is-the-3-category-model-too-complex-for-users" title="Permanent link">&para;</a></h3>
+<p>It has a learning curve, but it maps more closely to how we think. We don't think of
+"The distance to the moon" as a "Delta of Position" in daily life; we think of it as
+a magnitude. By providing the Absolute category, we give users a name for the
+"buckets of stuff" they are actually measuring.</p>
 <h2 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Permanent link">&para;</a></h2>
 <p>Adding <strong>absolute quantities</strong> elevates <strong>mp-units</strong> from a dimensional analysis tool to
 a true <strong>physical reasoning framework</strong>. The proposal clarifies semantics, improves
